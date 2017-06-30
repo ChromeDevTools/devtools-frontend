@@ -73,9 +73,8 @@ SDK.NetworkRequest = class extends Common.Object {
 
     /** @type {!Common.ResourceType} */
     this._resourceType = Common.resourceTypes.Other;
-    // TODO(allada) Migrate everything away from this and remove it.
-    this._contentEncoded = false;
-    this._pendingContentCallbacks = [];
+    /** @type {?Promise<!SDK.NetworkRequest.ContentData>} */
+    this._contentData = null;
     /** @type {!Array.<!SDK.NetworkRequest.WebSocketFrame>} */
     this._frames = [];
     /** @type {!Array.<!SDK.NetworkRequest.EventSourceMessage>} */
@@ -862,30 +861,6 @@ SDK.NetworkRequest = class extends Common.Object {
     return values.join(', ');
   }
 
-  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
-  /**
-   * @return {?string|undefined}
-   */
-  get content() {
-    return this._content;
-  }
-
-  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
-  /**
-   * @return {?Protocol.Error|undefined}
-   */
-  contentError() {
-    return this._contentError;
-  }
-
-  // TODO(allada) Migrate everything away from using this function and use .contentData() instead.
-  /**
-   * @return {boolean}
-   */
-  get contentEncoded() {
-    return this._contentEncoded;
-  }
-
   /**
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
@@ -917,12 +892,7 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {!Promise<?string>}
    */
   async requestContent() {
-    var contentData = await this.contentData();
-    // TODO(allada) Migrate away from anyone using .content, .contentError and .contentEncoded.
-    this._content = contentData.content;
-    this._contentError = contentData.error;
-    this._contentEncoded = contentData.encoded;
-    return contentData.content;
+    return (await this.contentData()).content;
   }
 
   /**

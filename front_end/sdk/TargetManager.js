@@ -468,8 +468,12 @@ SDK.ChildTargetManager = class {
    * @return {number}
    */
   _capabilitiesForType(type) {
-    if (type === 'worker')
-      return SDK.Target.Capability.JS | SDK.Target.Capability.Log;
+    if (type === 'worker') {
+      if (Runtime.experiments.isEnabled('networkInWorkers'))
+        return SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network;
+      else
+        return SDK.Target.Capability.JS | SDK.Target.Capability.Log;
+    }
     if (type === 'service_worker')
       return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (type === 'iframe') {

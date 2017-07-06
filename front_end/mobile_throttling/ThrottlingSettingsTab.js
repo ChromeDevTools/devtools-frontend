@@ -6,10 +6,10 @@
  * @implements {UI.ListWidget.Delegate}
  * @unrestricted
  */
-MobileThrottling.NetworkConditionsSettingsTab = class extends UI.VBox {
+MobileThrottling.ThrottlingSettingsTab = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('mobile_throttling/networkConditionsSettingsTab.css');
+    this.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
 
     this.contentElement.createChild('div', 'header').textContent = Common.UIString('Network Throttling Profiles');
 
@@ -19,7 +19,7 @@ MobileThrottling.NetworkConditionsSettingsTab = class extends UI.VBox {
 
     this._list = new UI.ListWidget(this);
     this._list.element.classList.add('conditions-list');
-    this._list.registerRequiredCSS('mobile_throttling/networkConditionsSettingsTab.css');
+    this._list.registerRequiredCSS('mobile_throttling/throttlingSettingsTab.css');
     this._list.show(this.contentElement);
 
     this._customSetting = Common.moduleSetting('customNetworkConditions');
@@ -66,10 +66,9 @@ MobileThrottling.NetworkConditionsSettingsTab = class extends UI.VBox {
     titleText.title = conditions.title;
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent =
-        MobileThrottling.NetworkConditionsSelector.throughputText(conditions.download);
+        MobileThrottling.throughputText(conditions.download);
     element.createChild('div', 'conditions-list-separator');
-    element.createChild('div', 'conditions-list-text').textContent =
-        MobileThrottling.NetworkConditionsSelector.throughputText(conditions.upload);
+    element.createChild('div', 'conditions-list-text').textContent = MobileThrottling.throughputText(conditions.upload);
     element.createChild('div', 'conditions-list-separator');
     element.createChild('div', 'conditions-list-text').textContent = Common.UIString('%dms', conditions.latency);
     return element;
@@ -198,4 +197,21 @@ MobileThrottling.NetworkConditionsSettingsTab = class extends UI.VBox {
       return !value || (/^[\d]+$/.test(value) && value >= 0 && value <= 1000000);
     }
   }
+};
+
+/**
+ * @param {number} throughput
+ * @param {boolean=} plainText
+ * @return {string}
+ */
+MobileThrottling.throughputText = function(throughput, plainText) {
+  if (throughput < 0)
+    return '';
+  var throughputInKbps = throughput / (1024 / 8);
+  var delimiter = plainText ? '' : ' ';
+  if (throughputInKbps < 1024)
+    return Common.UIString('%d%skb/s', throughputInKbps, delimiter);
+  if (throughputInKbps < 1024 * 10)
+    return Common.UIString('%.1f%sMb/s', throughputInKbps / 1024, delimiter);
+  return Common.UIString('%d%sMb/s', (throughputInKbps / 1024) | 0, delimiter);
 };

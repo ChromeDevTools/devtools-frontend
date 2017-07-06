@@ -77,8 +77,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     /** @type {?Timeline.PerformanceModel} */
     this._pendingPerformanceModel = null;
 
-    this._cpuThrottlingManager = new MobileThrottling.CPUThrottlingManager();
-
     this._viewModeSetting =
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
 
@@ -258,8 +256,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
         this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString('Capture settings'));
     SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, this._updateShowSettingsToolbarButton, this);
-    this._cpuThrottlingManager.addEventListener(
-        MobileThrottling.CPUThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
+    MobileThrottling.throttlingManager().addEventListener(
+        MobileThrottling.ThrottlingManager.Events.RateChanged, this._updateShowSettingsToolbarButton, this);
     this._disableCaptureJSProfileSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
     this._captureLayersAndPicturesSetting.addChangeListener(this._updateShowSettingsToolbarButton, this);
 
@@ -281,12 +279,15 @@ Timeline.TimelinePanel = class extends UI.Panel {
     throttlingPane.element.classList.add('flex-auto');
     throttlingPane.show(this._settingsPane.element);
 
-    var throttlingToolbar1 = new UI.Toolbar('', throttlingPane.element);
-    throttlingToolbar1.appendText(Common.UIString('Network:'));
-    throttlingToolbar1.appendToolbarItem(this._createNetworkConditionsSelect());
-    var throttlingToolbar2 = new UI.Toolbar('', throttlingPane.element);
-    throttlingToolbar2.appendText(Common.UIString('CPU:'));
-    throttlingToolbar2.appendToolbarItem(this._cpuThrottlingManager.createControl());
+    var networkThrottlingToolbar = new UI.Toolbar('', throttlingPane.element);
+    networkThrottlingToolbar.appendText(Common.UIString('Network:'));
+    this._networkThrottlingSelect = this._createNetworkConditionsSelect();
+    networkThrottlingToolbar.appendToolbarItem(this._networkThrottlingSelect);
+
+    var cpuThrottlingToolbar = new UI.Toolbar('', throttlingPane.element);
+    cpuThrottlingToolbar.appendText(Common.UIString('CPU:'));
+    this._cpuThrottlingSelect = MobileThrottling.throttlingManager().createCPUThrottlingSelector();
+    cpuThrottlingToolbar.appendToolbarItem(this._cpuThrottlingSelect);
 
     this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
     this._updateSettingsPaneVisibility();
@@ -323,7 +324,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _createNetworkConditionsSelect() {
     var toolbarItem = new UI.ToolbarComboBox(null);
     toolbarItem.setMaxWidth(140);
-    MobileThrottling.NetworkConditionsSelector.decorateSelect(toolbarItem.selectElement());
+    MobileThrottling.throttlingManager().decorateSelectWithNetworkThrottling(toolbarItem.selectElement());
     return toolbarItem;
   }
 
@@ -498,7 +499,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _updateShowSettingsToolbarButton() {
     var messages = [];
-    if (this._cpuThrottlingManager.rate() !== 1)
+    if (MobileThrottling.throttlingManager().cpuThrottlingRate() !== 1)
       messages.push(Common.UIString('- CPU throttling is enabled'));
     if (SDK.multitargetNetworkManager.isThrottling())
       messages.push(Common.UIString('- Network throttling is enabled'));

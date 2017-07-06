@@ -22,9 +22,6 @@ Emulation.DeviceModeToolbar = class {
     this._showUserAgentTypeSetting = Common.settings.createSetting('emulation.showUserAgentType', false);
     this._showUserAgentTypeSetting.addChangeListener(this._updateUserAgentTypeVisibility, this);
 
-    this._showNetworkConditionsSetting = Common.settings.createSetting('emulation.showNetworkConditions', false);
-    this._showNetworkConditionsSetting.addChangeListener(this._updateNetworkConditionsVisibility, this);
-
     /** @type {!Map<!Emulation.EmulatedDevice, !Emulation.EmulatedDevice.Mode>} */
     this._lastMode = new Map();
 
@@ -169,6 +166,9 @@ Emulation.DeviceModeToolbar = class {
     this._uaItem.setGlyph('');
     this._uaItem.turnIntoSelect();
     toolbar.appendToolbarItem(this._uaItem);
+
+    this._throttlingConditionsItem = MobileThrottling.throttlingManager().createMobileThrottlingButton();
+    toolbar.appendToolbarItem(this._throttlingConditionsItem);
   }
 
   /**
@@ -186,12 +186,6 @@ Emulation.DeviceModeToolbar = class {
    * @param {!UI.Toolbar} toolbar
    */
   _fillOptionsToolbar(toolbar) {
-    this._networkConditionsItem = MobileThrottling.NetworkConditionsSelector.createToolbarMenuButton();
-    this._networkConditionsItem.setVisible(this._showNetworkConditionsSetting.get());
-    this._networkConditionsItem.setTitle(Common.UIString('Network throttling'));
-    this._networkConditionsItem.element.style.maxWidth = '140px';
-    toolbar.appendToolbarItem(this._networkConditionsItem);
-
     var moreOptionsButton = new UI.ToolbarMenuButton(this._appendOptionsMenuItems.bind(this));
     moreOptionsButton.setTitle(Common.UIString('More options'));
     toolbar.appendToolbarItem(moreOptionsButton);
@@ -300,9 +294,6 @@ Emulation.DeviceModeToolbar = class {
         Common.UIString('Add device pixel ratio'));
     appendToggleItem(
         this._showUserAgentTypeSetting, Common.UIString('Remove device type'), Common.UIString('Add device type'));
-    appendToggleItem(
-        this._showNetworkConditionsSetting, Common.UIString('Remove network throttling'),
-        Common.UIString('Add network throttling'));
     contextMenu.appendSeparator();
     contextMenu.appendItemsAtLocation('deviceModeMenu');
     contextMenu.appendSeparator();
@@ -327,7 +318,6 @@ Emulation.DeviceModeToolbar = class {
     this._showUserAgentTypeSetting.set(false);
     this._showMediaInspectorSetting.set(false);
     this._showRulersSetting.set(false);
-    this._showNetworkConditionsSetting.set(false);
     this._model.reset();
   }
 
@@ -440,10 +430,6 @@ Emulation.DeviceModeToolbar = class {
 
   _updateUserAgentTypeVisibility() {
     this._uaItem.setVisible(this._showUserAgentTypeSetting.get());
-  }
-
-  _updateNetworkConditionsVisibility() {
-    this._networkConditionsItem.setVisible(this._showNetworkConditionsSetting.get());
   }
 
   /**

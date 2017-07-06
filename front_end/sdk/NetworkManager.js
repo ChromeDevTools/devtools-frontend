@@ -182,23 +182,48 @@ SDK.NetworkManager._MIMETypes = {
   'text/vtt': {'texttrack': true},
 };
 
-
-/** @typedef {{download: number, upload: number, latency: number, title: string}} */
+/**
+ * @typedef {{
+ *   download: number,
+ *   upload: number,
+ *   latency: number,
+ *   title: string,
+ * }}
+ **/
 SDK.NetworkManager.Conditions;
+
 /** @type {!SDK.NetworkManager.Conditions} */
 SDK.NetworkManager.NoThrottlingConditions = {
-  title: Common.UIString('No throttling'),
+  title: Common.UIString('Online'),
   download: -1,
   upload: -1,
   latency: 0
 };
+
 /** @type {!SDK.NetworkManager.Conditions} */
 SDK.NetworkManager.OfflineConditions = {
   title: Common.UIString('Offline'),
   download: 0,
   upload: 0,
-  latency: 0
+  latency: 0,
 };
+
+/** @type {!SDK.NetworkManager.Conditions} */
+SDK.NetworkManager.Slow3GConditions = {
+  title: Common.UIString('Slow 3G'),
+  download: 500 * 1024 / 8 * .8,
+  upload: 500 * 1024 / 8 * .8,
+  latency: 400 * 5,
+};
+
+/** @type {!SDK.NetworkManager.Conditions} */
+SDK.NetworkManager.Fast3GConditions = {
+  title: Common.UIString('Fast 3G'),
+  download: 1.6 * 1024 * 1024 / 8 * .9,
+  upload: 750 * 1024 / 8 * .9,
+  latency: 150 * 3.75,
+};
+
 /** @typedef {{url: string, enabled: boolean}} */
 SDK.NetworkManager.BlockedPattern;
 

@@ -18,7 +18,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();
 
-    this._toolbar.appendToolbarItem(MobileThrottling.NetworkConditionsSelector.createOfflineToolbarCheckbox());
+    this._toolbar.appendToolbarItem(MobileThrottling.throttlingManager().createOfflineToolbarCheckbox());
     var updateOnReloadSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
     updateOnReloadSetting.setTitle(Common.UIString('Update on reload'));
     var forceUpdate = new UI.ToolbarSettingCheckbox(

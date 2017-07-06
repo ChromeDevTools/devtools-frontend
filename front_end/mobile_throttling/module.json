@@ -11,7 +11,7 @@
             "actionId": "network-conditions.network-offline",
             "category": "Network",
             "title": "Go offline",
-            "className": "MobileThrottling.NetworkConditionsActionDelegate",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
             "tags": "device"
         },
         {
@@ -19,16 +19,16 @@
             "actionId": "network-conditions.network-online",
             "category": "Network",
             "title": "Go online",
-            "className": "MobileThrottling.NetworkConditionsActionDelegate",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
             "tags": "device"
         },
         {
             "type": "view",
             "location": "settings-view",
-            "id": "network-conditions",
+            "id": "throttling-conditions",
             "title": "Throttling",
             "order": 35,
-            "className": "MobileThrottling.NetworkConditionsSettingsTab",
+            "className": "MobileThrottling.ThrottlingSettingsTab",
             "settings": [
                 "customNetworkConditions"
             ]
@@ -41,11 +41,13 @@
         "protocol"
     ],
     "scripts": [
-        "NetworkConditionsSelector.js",
-        "NetworkConditionsSettingsTab.js",
-        "CPUThrottlingManager.js"
+        "ThrottlingPresets.js",
+        "MobileThrottlingSelector.js",
+        "NetworkThrottlingSelector.js",
+        "ThrottlingSettingsTab.js",
+        "ThrottlingManager.js"
     ],
     "resources": [
-        "networkConditionsSettingsTab.css"
+        "throttlingSettingsTab.css"
     ]
 }

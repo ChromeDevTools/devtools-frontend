@@ -180,11 +180,10 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
     var securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
-    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable &&
-        this._ranInsecureContentStyle)
+    if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable && this._ranInsecureContentStyle)
       securityState = this._ranInsecureContentStyle;
     else if (
-        request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable &&
+        request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable &&
         this._displayedInsecureContentStyle)
       securityState = this._displayedInsecureContentStyle;
 
@@ -231,16 +230,16 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.NetworkRequest} request
    */
   _updateFilterRequestCounts(request) {
-    if (request.mixedContentType === Protocol.Network.RequestMixedContentType.None)
+    if (request.mixedContentType === Protocol.Security.MixedContentType.None)
       return;
 
     /** @type {!Network.NetworkLogView.MixedContentFilterValues} */
     var filterKey = Network.NetworkLogView.MixedContentFilterValues.All;
     if (request.wasBlocked())
       filterKey = Network.NetworkLogView.MixedContentFilterValues.Blocked;
-    else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.Blockable)
+    else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable)
       filterKey = Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
-    else if (request.mixedContentType === Protocol.Network.RequestMixedContentType.OptionallyBlockable)
+    else if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable)
       filterKey = Network.NetworkLogView.MixedContentFilterValues.Displayed;
 
     if (!this._filterRequestCounts.has(filterKey))

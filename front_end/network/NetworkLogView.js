@@ -244,13 +244,13 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   static _requestMixedContentFilter(value, request) {
     if (value === Network.NetworkLogView.MixedContentFilterValues.Displayed)
-      return request.mixedContentType === 'optionally-blockable';
+      return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
     else if (value === Network.NetworkLogView.MixedContentFilterValues.Blocked)
-      return request.mixedContentType === 'blockable' && request.wasBlocked();
+      return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
     else if (value === Network.NetworkLogView.MixedContentFilterValues.BlockOverridden)
-      return request.mixedContentType === 'blockable' && !request.wasBlocked();
+      return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
     else if (value === Network.NetworkLogView.MixedContentFilterValues.All)
-      return request.mixedContentType !== 'none';
+      return request.mixedContentType !== Protocol.Security.MixedContentType.None;
 
     return false;
   }
@@ -1024,17 +1024,17 @@ Network.NetworkLogView = class extends UI.VBox {
           Network.NetworkLogView.FilterType.Priority, NetworkPriorities.uiLabelForPriority(priority));
     }
 
-    if (request.mixedContentType !== 'none') {
+    if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
       this._suggestionBuilder.addItem(
           Network.NetworkLogView.FilterType.MixedContent, Network.NetworkLogView.MixedContentFilterValues.All);
     }
 
-    if (request.mixedContentType === 'optionally-blockable') {
+    if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
       this._suggestionBuilder.addItem(
           Network.NetworkLogView.FilterType.MixedContent, Network.NetworkLogView.MixedContentFilterValues.Displayed);
     }
 
-    if (request.mixedContentType === 'blockable') {
+    if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
       var suggestion = request.wasBlocked() ? Network.NetworkLogView.MixedContentFilterValues.Blocked :
                                               Network.NetworkLogView.MixedContentFilterValues.BlockOverridden;
       this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.MixedContent, suggestion);

@@ -63,8 +63,8 @@ SDK.NetworkRequest = class extends Common.Object {
     this.requestMethod = '';
     this.requestTime = 0;
     this.protocol = '';
-    /** @type {!Protocol.Network.RequestMixedContentType} */
-    this.mixedContentType = Protocol.Network.RequestMixedContentType.None;
+    /** @type {!Protocol.Security.MixedContentType} */
+    this.mixedContentType = Protocol.Security.MixedContentType.None;
 
     /** @type {?Protocol.Network.ResourcePriority} */
     this._initialPriority = null;

@@ -25,7 +25,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     this._rootElement.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._rootElement.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
     this._rootElement.addEventListener('click', this._onClick.bind(this), false);
-
+    this._rootElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     this.registerRequiredCSS('accessibility/axBreadcrumbs.css');
   }
 
@@ -236,6 +236,31 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     });
 
     return true;
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _contextMenuEventFired(event) {
+    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-node');
+    if (!breadcrumbElement)
+      return;
+
+    var axNode = breadcrumbElement.breadcrumb.axNode();
+    if (!axNode.isDOMNode() || !axNode.deferredDOMNode())
+      return;
+
+    var contextMenu = new UI.ContextMenu(event);
+    contextMenu.appendItem(Common.UIString('Scroll into view'), () => {
+      axNode.deferredDOMNode().resolvePromise().then(domNode => {
+        if (!domNode)
+          return;
+        domNode.scrollIntoView();
+      });
+    });
+
+    contextMenu.appendApplicableItems(axNode.deferredDOMNode());
+    contextMenu.show();
   }
 };
 

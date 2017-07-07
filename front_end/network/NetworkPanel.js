@@ -52,7 +52,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._filterBar.show(this.element);
     this.setDefaultFocusedChild(this._filterBar);
 
-    this._filmStripPlaceholderElement = this.element.createChild('div');
+    this._filmStripPlaceholderElement = this.element.createChild('div', 'network-film-strip-placeholder');
 
     // Create top overview component.
     this._overviewPane = new PerfUI.TimelineOverviewPane('network');

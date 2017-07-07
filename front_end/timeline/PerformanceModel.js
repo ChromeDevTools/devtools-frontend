@@ -154,11 +154,11 @@ Timeline.PerformanceModel = class extends Common.Object {
 
   /**
    * @param {!Common.OutputStream} stream
-   * @param {!Bindings.OutputStreamDelegate} delegate
+   * @return {!Promise<?FileError>}
    */
-  save(stream, delegate) {
+  save(stream) {
     var backingStorage = /** @type {!Bindings.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
-    backingStorage.writeToStream(stream, delegate);
+    return backingStorage.writeToStream(stream);
   }
 };
 

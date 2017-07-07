@@ -40,7 +40,7 @@ Profiler.ProfileHeader = class extends Common.Object {
    * @return {!Profiler.ProfileSidebarTreeElement}
    */
   createSidebarTreeElement(dataDisplayDelegate) {
-    throw new Error('Needs implemented.');
+    throw new Error('Not implemented.');
   }
 
   /**
@@ -67,14 +67,14 @@ Profiler.ProfileHeader = class extends Common.Object {
   }
 
   saveToFile() {
-    throw new Error('Needs implemented');
+    throw new Error('Not implemented');
   }
 
   /**
    * @param {!File} file
    */
   loadFromFile(file) {
-    throw new Error('Needs implemented');
+    throw new Error('Not implemented');
   }
 
   /**

@@ -365,7 +365,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (!accepted)
       return;
 
-    performanceModel.save(stream, new Timeline.TracingTimelineSaver());
+    var error = await performanceModel.save(stream);
+    if (!error)
+      return;
+    Common.console.error(
+        Common.UIString('Failed to save timeline: %s (%s, %s)', error.message, error.name, error.code));
   }
 
   async _showHistory() {
@@ -387,12 +391,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     return true;
   }
 
-  /**
-   * @return {boolean}
-   */
   _selectFileToLoad() {
     this._fileSelectorElement.click();
-    return true;
   }
 
   /**

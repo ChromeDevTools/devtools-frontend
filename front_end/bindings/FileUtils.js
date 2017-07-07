@@ -27,27 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/**
- * @interface
- */
-Bindings.OutputStreamDelegate = function() {};
-
-Bindings.OutputStreamDelegate.prototype = {
-  onTransferStarted() {},
-
-  onTransferFinished() {},
-
-  /**
-   * @param {!Bindings.ChunkedReader} reader
-   */
-  onChunkTransferred(reader) {},
-
-  /**
-   * @param {!Bindings.ChunkedReader} reader
-   * @param {!Event} event
-   */
-  onError(reader, event) {},
-};
 
 /**
  * @interface
@@ -70,7 +49,12 @@ Bindings.ChunkedReader.prototype = {
    */
   fileName() {},
 
-  cancel() {}
+  cancel() {},
+
+  /**
+   * @return {?FileError}
+   */
+  error() {}
 };
 
 /**
@@ -81,29 +65,33 @@ Bindings.ChunkedFileReader = class {
   /**
    * @param {!File} file
    * @param {number} chunkSize
-   * @param {!Bindings.OutputStreamDelegate} delegate
+   * @param {function(!Bindings.ChunkedReader)=} chunkTransferredCallback
    */
-  constructor(file, chunkSize, delegate) {
+  constructor(file, chunkSize, chunkTransferredCallback) {
     this._file = file;
     this._fileSize = file.size;
     this._loadedSize = 0;
     this._chunkSize = chunkSize;
-    this._delegate = delegate;
+    this._chunkTransferredCallback = chunkTransferredCallback;
     this._decoder = new TextDecoder();
     this._isCanceled = false;
+    /** @type {?FileError} */
+    this._error = null;
   }
 
   /**
    * @param {!Common.OutputStream} output
+   * @return {!Promise<boolean>}
    */
-  start(output) {
+  read(output) {
+    if (this._chunkTransferredCallback)
+      this._chunkTransferredCallback(this);
     this._output = output;
-
     this._reader = new FileReader();
     this._reader.onload = this._onChunkLoaded.bind(this);
-    this._reader.onerror = this._delegate.onError.bind(this._delegate, this);
-    this._delegate.onTransferStarted();
+    this._reader.onerror = this._onError.bind(this);
     this._loadChunk();
+    return new Promise(resolve => this._transferFinished = resolve);
   }
 
   /**
@@ -138,6 +126,14 @@ Bindings.ChunkedFileReader = class {
   }
 
   /**
+   * @override
+   * @return {?FileError}
+   */
+  error() {
+    return this._error;
+  }
+
+  /**
    * @param {!Event} event
    */
   _onChunkLoaded(event) {
@@ -154,13 +150,14 @@ Bindings.ChunkedFileReader = class {
     this._output.write(decodedString);
     if (this._isCanceled)
       return;
-    this._delegate.onChunkTransferred(this);
+    if (this._chunkTransferredCallback)
+      this._chunkTransferredCallback(this);
 
     if (endOfFile) {
       this._file = null;
       this._reader = null;
       this._output.close();
-      this._delegate.onTransferFinished();
+      this._transferFinished(!this._error);
       return;
     }
 
@@ -172,6 +169,14 @@ Bindings.ChunkedFileReader = class {
     var chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
     var nextPart = this._file.slice(chunkStart, chunkEnd);
     this._reader.readAsArrayBuffer(nextPart);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onError(event) {
+    this._error = event.target.error;
+    this._transferFinished(false);
   }
 };
 

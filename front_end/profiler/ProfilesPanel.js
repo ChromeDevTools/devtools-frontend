@@ -159,13 +159,13 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
           continue;
         extensions.push(extension);
       }
-      Common.console.error(Common.UIString(
-          'Can\'t load file. Only files with extensions \'%s\' can be loaded.', extensions.join('\', \'')));
+      Common.console.error(
+          Common.UIString(`Can't load file. Only files with extensions '%s' can be loaded.`, extensions.join(`', '`)));
       return;
     }
 
     if (!!profileType.profileBeingRecorded()) {
-      Common.console.error(Common.UIString('Can\'t load profile while another profile is recording.'));
+      Common.console.error(Common.UIString(`Can't load profile while another profile is being recorded.`));
       return;
     }
 

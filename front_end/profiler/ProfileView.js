@@ -383,7 +383,6 @@ Profiler.ProfileView.ViewTypes = {
 
 /**
  * @implements {Common.OutputStream}
- * @implements {Bindings.OutputStreamDelegate}
  * @unrestricted
  */
 Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
@@ -399,54 +398,17 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
   }
 
   /**
-   * @override
-   */
-  onTransferStarted() {
-    this._jsonifiedProfile = '';
-    this.updateStatus(Common.UIString('Loading\u2026 %s', Number.bytesToString(this._jsonifiedProfile.length)), true);
-  }
-
-  /**
-   * @override
    * @param {!Bindings.ChunkedReader} reader
    */
-  onChunkTransferred(reader) {
+  _onChunkTransferred(reader) {
     this.updateStatus(Common.UIString('Loading\u2026 %d%%', Number.bytesToString(this._jsonifiedProfile.length)));
   }
 
   /**
-   * @override
-   */
-  onTransferFinished() {
-    this.updateStatus(Common.UIString('Parsing\u2026'), true);
-    this._profile = JSON.parse(this._jsonifiedProfile);
-    this._jsonifiedProfile = null;
-    this.updateStatus(Common.UIString('Loaded'), false);
-
-    if (this.profileType().profileBeingRecorded() === this)
-      this.profileType().setProfileBeingRecorded(null);
-  }
-
-  /**
-   * @override
    * @param {!Bindings.ChunkedReader} reader
-   * @param {!Event} e
    */
-  onError(reader, e) {
-    var subtitle;
-    switch (e.target.error.code) {
-      case e.target.error.NOT_FOUND_ERR:
-        subtitle = Common.UIString('\'%s\' not found.', reader.fileName());
-        break;
-      case e.target.error.NOT_READABLE_ERR:
-        subtitle = Common.UIString('\'%s\' is not readable', reader.fileName());
-        break;
-      case e.target.error.ABORT_ERR:
-        return;
-      default:
-        subtitle = Common.UIString('\'%s\' error %d', reader.fileName(), e.target.error.code);
-    }
-    this.updateStatus(subtitle);
+  _onError(reader) {
+    this.updateStatus(Common.UIString(`File '%s' read error: %s`, reader.fileName(), reader.error().message));
   }
 
   /**
@@ -522,10 +484,24 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    * @override
    * @param {!File} file
    */
-  loadFromFile(file) {
+  async loadFromFile(file) {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
-    var fileReader = new Bindings.ChunkedFileReader(file, 10000000, this);
-    fileReader.start(this);
+    var fileReader = new Bindings.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
+    this._jsonifiedProfile = '';
+
+    var success = await fileReader.read(this);
+    if (!success) {
+      this._onError(fileReader);
+      return;
+    }
+
+    this.updateStatus(Common.UIString('Parsing\u2026'), true);
+    this._profile = JSON.parse(this._jsonifiedProfile);
+    this._jsonifiedProfile = null;
+    this.updateStatus(Common.UIString('Loaded'), false);
+
+    if (this.profileType().profileBeingRecorded() === this)
+      this.profileType().setProfileBeingRecorded(null);
   }
 
   /**

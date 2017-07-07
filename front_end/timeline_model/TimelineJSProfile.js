@@ -143,18 +143,21 @@ TimelineModel.TimelineJSProfileProcessor = class {
     function filterStackFrames(stack) {
       if (showAllEvents)
         return;
-      var isPreviousFrameNative = false;
+      var previousNativeFrameName = null;
       for (var i = 0, j = 0; i < stack.length; ++i) {
         const frame = stack[i];
         const url = frame.url;
         const isNativeFrame = url && url.startsWith('native ');
         if (!showNativeFunctions && isNativeFrame)
           continue;
-        if (TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) && !showNativeName(frame.functionName))
+        var isNativeRuntimeFrame = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame);
+        if (isNativeRuntimeFrame && !showNativeName(frame.functionName))
           continue;
-        if (isPreviousFrameNative && isNativeFrame)
+        var nativeFrameName =
+            isNativeRuntimeFrame ? TimelineModel.TimelineJSProfileProcessor.nativeGroup(frame.functionName) : null;
+        if (previousNativeFrameName && previousNativeFrameName === nativeFrameName)
           continue;
-        isPreviousFrameNative = isNativeFrame;
+        previousNativeFrameName = nativeFrameName;
         stack[j++] = frame;
       }
       stack.length = j;
@@ -214,22 +217,11 @@ TimelineModel.TimelineJSProfileProcessor = class {
    * @return {?TimelineModel.TimelineJSProfileProcessor.NativeGroups}
    */
   static nativeGroup(nativeName) {
-    var map = TimelineModel.TimelineJSProfileProcessor.nativeGroup._map;
-    if (!map) {
-      const nativeGroups = TimelineModel.TimelineJSProfileProcessor.NativeGroups;
-      map = new Map([
-        ['Compile', nativeGroups.Compile], ['CompileCode', nativeGroups.Compile],
-        ['CompileCodeLazy', nativeGroups.Compile], ['CompileDeserialize', nativeGroups.Compile],
-        ['CompileEval', nativeGroups.Compile], ['CompileFullCode', nativeGroups.Compile],
-        ['CompileIgnition', nativeGroups.Compile], ['CompilerDispatcher', nativeGroups.Compile],
-        ['CompileSerialize', nativeGroups.Compile], ['ParseProgram', nativeGroups.Parse],
-        ['ParseFunction', nativeGroups.Parse], ['RecompileConcurrent', nativeGroups.Compile],
-        ['RecompileSynchronous', nativeGroups.Compile], ['ParseLazy', nativeGroups.Parse]
-      ]);
-      /** @type {!Map<string, !TimelineModel.TimelineJSProfileProcessor.NativeGroups>} */
-      TimelineModel.TimelineJSProfileProcessor.nativeGroup._map = map;
-    }
-    return map.get(nativeName) || null;
+    if (nativeName.startsWith('Parse'))
+      return TimelineModel.TimelineJSProfileProcessor.NativeGroups.Parse;
+    if (nativeName.startsWith('Compile') || nativeName.startsWith('Recompile'))
+      return TimelineModel.TimelineJSProfileProcessor.NativeGroups.Compile;
+    return null;
   }
 
   /**

@@ -36,9 +36,11 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
 
     var quota = this._reportView.appendSection(Common.UIString('Usage'));
     this._quotaRow = quota.appendRow();
+    this._quotaUsage = null;
     this._pieChart = new PerfUI.PieChart(110, Number.bytesToString, true);
-    this._pieChartLegend = createElementWithClass('div', 'legend');
+    this._pieChartLegend = createElement('div');
     var usageBreakdownRow = quota.appendRow();
+    usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart.element);
     usageBreakdownRow.appendChild(this._pieChartLegend);
 
@@ -196,23 +198,22 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._quotaRow.textContent = Common.UIString(
         '%s used out of %s storage quota', Number.bytesToString(response.usage), Number.bytesToString(response.quota));
 
-    this._resetPieChart(response.usage);
-    var colorIndex = 0;
-    for (var usageForType of response.usageBreakdown) {
-      if (!usageForType.usage)
-        continue;
-      if (colorIndex === this._pieColors.length)
-        colorIndex = 0;
-      this._appendLegendRow(
-          this._getStorageTypeName(usageForType.storageType), usageForType.usage, this._pieColors[colorIndex++]);
+    if (!this._quotaUsage || this._quotaUsage !== response.usage) {
+      this._quotaUsage = response.usage;
+      this._resetPieChart(response.usage);
+      var colorIndex = 0;
+      for (var usageForType of response.usageBreakdown) {
+        if (!usageForType.usage)
+          continue;
+        if (colorIndex === this._pieColors.length)
+          colorIndex = 0;
+        this._appendLegendRow(
+            this._getStorageTypeName(usageForType.storageType), usageForType.usage, this._pieColors[colorIndex++]);
+      }
     }
 
     this._usageUpdatedForTest(response.usage, response.quota, response.usageBreakdown);
     this.update();
-  }
-
-  _formatPieChartBytes(value) {
-    return Number.bytesToString(value);
   }
 
   /**

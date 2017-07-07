@@ -672,10 +672,24 @@ SDK.NetworkRequest = class extends Common.Object {
   /**
    * @return {string}
    */
+  _filteredProtocolName() {
+    var protocol = this.protocol.toLowerCase();
+    if (protocol === 'h2')
+      return 'http/2.0';
+    return protocol.replace(/^http\/2(\.0)?\+/, 'http/2.0+');
+  }
+
+  /**
+   * @return {string}
+   */
   requestHttpVersion() {
     var headersText = this.requestHeadersText();
-    if (!headersText)
-      return this.requestHeaderValue('version') || this.requestHeaderValue(':version') || 'unknown';
+    if (!headersText) {
+      var version = this.requestHeaderValue('version') || this.requestHeaderValue(':version');
+      if (version)
+        return version;
+      return this._filteredProtocolName();
+    }
     var firstLine = headersText.split(/\r\n/)[0];
     var match = firstLine.match(/(HTTP\/\d+\.\d+)$/);
     return match ? match[1] : 'HTTP/0.9';
@@ -822,8 +836,12 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   responseHttpVersion() {
     var headersText = this._responseHeadersText;
-    if (!headersText)
-      return this.responseHeaderValue('version') || this.responseHeaderValue(':version') || 'unknown';
+    if (!headersText) {
+      var version = this.responseHeaderValue('version') || this.responseHeaderValue(':version');
+      if (version)
+        return version;
+      return this._filteredProtocolName();
+    }
     var firstLine = headersText.split(/\r\n/)[0];
     var match = firstLine.match(/^(HTTP\/\d+\.\d+)/);
     return match ? match[1] : 'HTTP/0.9';

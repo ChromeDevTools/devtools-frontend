@@ -325,6 +325,13 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   /**
+   * @return {number}
+   */
+  timeToPixel() {
+    return this._offsetWidth / (this._timeWindowRight - this._timeWindowLeft);
+  }
+
+  /**
    * @param {boolean} visible
    */
   _showCursor(visible) {

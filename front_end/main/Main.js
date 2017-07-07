@@ -311,8 +311,10 @@ Main.Main = class {
   }
 
   _registerForwardedShortcuts() {
-    /** @const */ var forwardedActions =
-        ['main.toggle-dock', 'debugger.toggle-breakpoints-active', 'debugger.toggle-pause', 'commandMenu.show'];
+    /** @const */ var forwardedActions = [
+      'main.toggle-dock', 'debugger.toggle-breakpoints-active', 'debugger.toggle-pause', 'commandMenu.show',
+      'console.show'
+    ];
     var actionKeys =
         UI.shortcutRegistry.keysForActions(forwardedActions).map(UI.KeyboardShortcut.keyCodeAndModifiersFromKey);
     InspectorFrontendHost.setWhitelistedShortcuts(JSON.stringify(actionKeys));

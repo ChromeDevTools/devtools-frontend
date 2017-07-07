@@ -312,6 +312,7 @@ QuickOpen.CommandMenu.ShowActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
+    InspectorFrontendHost.bringToFront();
     QuickOpen.QuickOpen.show('>');
     return true;
   }

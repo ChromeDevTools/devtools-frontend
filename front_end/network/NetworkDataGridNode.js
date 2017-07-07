@@ -681,7 +681,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {boolean}
    */
   isNavigationRequest() {
-    var pageLoad = NetworkLog.networkLog.pageLoadForRequest(this._request);
+    var pageLoad = NetworkLog.PageLoad.forRequest(this._request);
     return pageLoad ? pageLoad.mainRequest === this._request : false;
   }
 

@@ -265,14 +265,6 @@ NetworkLog.NetworkLog = class extends Common.Object {
     return request[NetworkLog.NetworkLog._initiatorDataSymbol].request;
   }
 
-  /**
-   * @param {!SDK.NetworkRequest} request
-   * @return {?NetworkLog.PageLoad}
-   */
-  pageLoadForRequest(request) {
-    return request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] || null;
-  }
-
   _willReloadPage() {
     if (!Common.moduleSetting('network_log.preserve-log').get())
       this.reset();
@@ -314,7 +306,7 @@ NetworkLog.NetworkLog = class extends Common.Object {
       oldRequestsSet.delete(request);
       this._requests.push(request);
       this._requestsSet.add(request);
-      request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = currentPageLoad;
+      currentPageLoad.bindRequest(request);
       this.dispatchEventToListeners(NetworkLog.NetworkLog.Events.RequestAdded, request);
     }
 
@@ -340,7 +332,7 @@ NetworkLog.NetworkLog = class extends Common.Object {
     var manager = SDK.NetworkManager.forRequest(request);
     var pageLoad = manager ? this._pageLoadForManager.get(manager) : null;
     if (pageLoad)
-      request[NetworkLog.NetworkLog._pageLoadForRequestSymbol] = pageLoad;
+      pageLoad.bindRequest(request);
     this.dispatchEventToListeners(NetworkLog.NetworkLog.Events.RequestAdded, request);
   }
 
@@ -410,9 +402,25 @@ NetworkLog.PageLoad = class {
     this.contentLoadTime;
     this.mainRequest = mainRequest;
   }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {?NetworkLog.PageLoad}
+   */
+  static forRequest(request) {
+    return request[NetworkLog.PageLoad._pageLoadForRequestSymbol] || null;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  bindRequest(request) {
+    request[NetworkLog.PageLoad._pageLoadForRequestSymbol] = this;
+  }
 };
 
 NetworkLog.PageLoad._lastIdentifier = 0;
+NetworkLog.PageLoad._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
 
 /** @typedef {!{initiators: !Set<!SDK.NetworkRequest>, initiated: !Set<!SDK.NetworkRequest>}} */
 NetworkLog.NetworkLog.InitiatorGraph;
@@ -427,7 +435,6 @@ NetworkLog.NetworkLog.Events = {
 NetworkLog.NetworkLog._InitiatorInfo;
 
 NetworkLog.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
-NetworkLog.NetworkLog._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
 NetworkLog.NetworkLog._events = Symbol('NetworkLog.NetworkLog.events');
 
 /** @type {!NetworkLog.NetworkLog} */

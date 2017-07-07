@@ -305,7 +305,8 @@ Network.RequestTimingView = class extends UI.VBox {
     }
 
     /**
-     * param {string} title
+     * @param {string} title
+     * @return {!Element}
      */
     function createHeader(title) {
       var dataHeader = tableElement.createChild('tr', 'network-timing-table-header');

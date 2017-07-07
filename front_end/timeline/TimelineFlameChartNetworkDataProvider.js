@@ -191,16 +191,18 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
      * @return {number}
      */
     function timeToPixel(time) {
-      return Math.floor(unclippedBarX + (time - startTime) * timeToPixelRatio);
+      return Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
     }
 
     var /** @const */ minBarWidthPx = 2;
+    var beginTime = request.beginTime();
     var startTime = request.startTime;
     var endTime = request.endTime;
     var requestTime = request.timing.requestTime * 1000;
     var sendStart = Math.max(timeToPixel(requestTime + request.timing.sendStart), unclippedBarX);
     var headersEnd = Math.max(timeToPixel(requestTime + request.timing.receiveHeadersEnd), sendStart);
     var finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
+    var start = timeToPixel(startTime);
     var end = Math.max(timeToPixel(endTime), finish);
 
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
@@ -208,6 +210,26 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     context.fillStyle = UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background);
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
+
+    if (request.timing.pushStart) {
+      var pushStart = timeToPixel(request.timing.pushStart * 1000);
+      var pushEnd = timeToPixel(request.timing.pushEnd * 1000);
+      var dentSize = Number.constrain(pushEnd - pushStart - 2, 0, 4);
+      var padding = 1;
+      context.save();
+      context.beginPath();
+      context.moveTo(pushStart + dentSize, barY + barHeight / 2);
+      context.lineTo(pushStart, barY + padding);
+      context.lineTo(pushEnd - dentSize, barY + padding);
+      context.lineTo(pushEnd, barY + barHeight / 2);
+      context.lineTo(pushEnd - dentSize, barY + barHeight - padding);
+      context.lineTo(pushStart, barY + barHeight - padding);
+      context.closePath();
+      context.fillStyle = this.entryColor(index);
+      context.globalAlpha = 0.3;
+      context.fill();
+      context.restore();
+    }
 
     /**
      * @param {number} begin
@@ -222,10 +244,11 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       context.lineTo(end, y);
     }
 
+    context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = '#ccc';
     var lineY = Math.floor(barY + barHeight / 2) + 0.5;
-    var leftTick = Math.floor(unclippedBarX) + 0.5;
+    var leftTick = start + 0.5;
     var rightTick = end - 0.5;
     drawTick(leftTick, sendStart, lineY);
     drawTick(rightTick, finish, lineY);
@@ -328,12 +351,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     var maxLevel = 0;
     for (var i = 0; i < this._requests.length; ++i) {
       var r = this._requests[i];
-      var visible = r.startTime < this._endTime && r.endTime > this._startTime;
+      var beginTime = r.beginTime();
+      var visible = beginTime < this._endTime && r.endTime > this._startTime;
       if (!visible) {
         this._timelineData.entryLevels[i] = -1;
         continue;
       }
-      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= r.startTime)
+      while (lastTimeByLevel.length && lastTimeByLevel.peekLast() <= beginTime)
         lastTimeByLevel.pop();
       this._timelineData.entryLevels[i] = lastTimeByLevel.length;
       lastTimeByLevel.push(r.endTime);
@@ -355,8 +379,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   _appendEntry(request) {
     this._requests.push(request);
-    this._timelineData.entryStartTimes.push(request.startTime);
-    this._timelineData.entryTotalTimes.push(request.endTime - request.startTime);
+    this._timelineData.entryStartTimes.push(request.beginTime());
+    this._timelineData.entryTotalTimes.push(request.endTime - request.beginTime());
     this._timelineData.entryLevels.push(this._requests.length - 1);
   }
 

@@ -1354,6 +1354,13 @@ TimelineModel.TimelineModel.NetworkRequest = class {
     if (eventData['fromServiceWorker'])
       this.fromServiceWorker = true;
   }
+
+  /**
+   * @return {number}
+   */
+  beginTime() {
+    return Math.min(this.startTime, this.timing && this.timing.pushStart * 1000 || Infinity);
+  }
 };
 
 

@@ -920,7 +920,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var request = this._request;
     var initiator = NetworkLog.networkLog.initiatorInfoForRequest(request);
 
-    if (request.timing && request.timing.pushStart)
+    var timing = request.timing;
+    if (timing && timing.pushStart)
       cell.appendChild(createTextNode(Common.UIString('Push / ')));
     switch (initiator.type) {
       case SDK.NetworkRequest.InitiatorType.Parser:

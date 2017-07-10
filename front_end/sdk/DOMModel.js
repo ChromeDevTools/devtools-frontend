@@ -866,7 +866,7 @@ SDK.DOMNode = class {
    * @return {!Promise<?SDK.RemoteObject>}
    */
   async resolveToObject(objectGroup) {
-    var object = await this._agent.resolveNode(this.id, objectGroup);
+    var object = await this._agent.resolveNode(this.id, undefined, objectGroup);
     return object && this._domModel._runtimeModel.createRemoteObject(object);
   }
 

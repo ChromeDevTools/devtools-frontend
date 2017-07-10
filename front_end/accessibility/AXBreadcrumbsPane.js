@@ -10,6 +10,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     super(Common.UIString('Accessibility Tree'));
 
     this.element.classList.add('ax-subpane');
+    UI.ARIAUtils.markAsTree(this.element);
 
     this._axSidebarView = axSidebarView;
 
@@ -53,11 +54,14 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
 
     var depth = 0;
     var breadcrumb = null;
+    var parent = null;
     for (ancestor of ancestorChain) {
       breadcrumb = new Accessibility.AXBreadcrumb(ancestor, depth, (ancestor === axNode));
-      if (ancestor.children().length)
-        breadcrumb.element().classList.add('parent');
-      this._rootElement.appendChild(breadcrumb.element());
+      if (parent)
+        parent.appendChild(breadcrumb);
+      else
+        this._rootElement.appendChild(breadcrumb.element());
+      parent = breadcrumb;
       depth++;
     }
 
@@ -68,7 +72,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
 
     for (var child of axNode.children()) {
       var childBreadcrumb = new Accessibility.AXBreadcrumb(child, depth, false);
-      this._rootElement.appendChild(childBreadcrumb.element());
+      inspectedNodeBreadcrumb.appendChild(childBreadcrumb);
     }
 
     this._selectedByUser = false;
@@ -115,11 +119,11 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @return {boolean}
    */
   _preselectPrevious() {
-    var previousElement = this._preselectedBreadcrumb.element().previousSibling;
-    if (!previousElement)
+    var previousBreadcrumb = this._preselectedBreadcrumb.previousBreadcrumb();
+    if (!previousBreadcrumb)
       return false;
     this._selectedByUser = true;
-    this._setPreselectedBreadcrumb(previousElement.breadcrumb);
+    this._setPreselectedBreadcrumb(previousBreadcrumb);
     return true;
   }
 
@@ -127,11 +131,11 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @return {boolean}
    */
   _preselectNext() {
-    var nextElement = this._preselectedBreadcrumb.element().nextSibling;
-    if (!nextElement)
+    var nextBreadcrumb = this._preselectedBreadcrumb.nextBreadcrumb();
+    if (!nextBreadcrumb)
       return false;
     this._selectedByUser = true;
-    this._setPreselectedBreadcrumb(nextElement.breadcrumb);
+    this._setPreselectedBreadcrumb(nextBreadcrumb);
     return true;
   }
 
@@ -161,7 +165,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-node');
+    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement) {
       this._setHoveredBreadcrumb(null);
       return;
@@ -176,7 +180,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _onClick(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-node');
+    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement) {
       this._setHoveredBreadcrumb(null);
       return;
@@ -274,22 +278,32 @@ Accessibility.AXBreadcrumb = class {
     /** @type {!Accessibility.AccessibilityNode} */
     this._axNode = axNode;
 
-    this._element = createElementWithClass('div', 'ax-node');
+    this._element = createElementWithClass('div', 'ax-breadcrumb');
+    UI.ARIAUtils.markAsTreeitem(this._element);
     this._element.breadcrumb = this;
 
+    this._nodeElement = createElementWithClass('div', 'ax-node');
+    this._element.appendChild(this._nodeElement);
+    this._nodeWrapper = createElementWithClass('div', 'wrapper');
+    this._nodeElement.appendChild(this._nodeWrapper);
+
     this._selectionElement = createElementWithClass('div', 'selection fill');
-    this._element.appendChild(this._selectionElement);
+    this._nodeElement.appendChild(this._selectionElement);
 
-    this._nodeWrapper = createElementWithClass('span', 'wrapper');
-    this._element.appendChild(this._nodeWrapper);
+    this._childrenGroupElement = createElementWithClass('div', 'children');
+    UI.ARIAUtils.markAsGroup(this._childrenGroupElement);
+    this._element.appendChild(this._childrenGroupElement);
 
+    /** @type !Array<!Accessibility.AXBreadcrumb> */
+    this._children = [];
     this._hovered = false;
     this._preselected = false;
+    this._parent = null;
 
     this._inspected = inspected;
-    this.element().classList.toggle('inspected', inspected);
+    this._nodeElement.classList.toggle('inspected', inspected);
 
-    this._element.style.paddingLeft = (16 * depth + 4) + 'px';
+    this._nodeElement.style.paddingLeft = (16 * depth + 4) + 'px';
 
     if (this._axNode.ignored()) {
       this._appendIgnoredNodeElement();
@@ -302,10 +316,10 @@ Accessibility.AXBreadcrumb = class {
     }
 
     if (this._axNode.hasOnlyUnloadedChildren())
-      this._element.classList.add('children-unloaded');
+      this._nodeElement.classList.add('children-unloaded');
 
     if (!this._axNode.isDOMNode())
-      this._element.classList.add('no-dom-node');
+      this._nodeElement.classList.add('no-dom-node');
   }
 
   /**
@@ -313,6 +327,24 @@ Accessibility.AXBreadcrumb = class {
    */
   element() {
     return this._element;
+  }
+
+  /**
+   * @param {!Accessibility.AXBreadcrumb} breadcrumb
+   */
+  appendChild(breadcrumb) {
+    this._children.push(breadcrumb);
+    breadcrumb.setParent(this);
+    this._nodeElement.classList.add('parent');
+    UI.ARIAUtils.setExpanded(this._element, true);
+    this._childrenGroupElement.appendChild(breadcrumb.element());
+  }
+
+  /**
+   * @param {!Accessibility.AXBreadcrumb} breadcrumb
+   */
+  setParent(breadcrumb) {
+    this._parent = breadcrumb;
   }
 
   /**
@@ -330,14 +362,14 @@ Accessibility.AXBreadcrumb = class {
     if (this._preselected === preselected)
       return;
     this._preselected = preselected;
-    this.element().classList.toggle('preselected', preselected);
+    this._nodeElement.classList.toggle('preselected', preselected);
     if (preselected)
-      this.element().setAttribute('tabIndex', 0);
+      this._nodeElement.setAttribute('tabIndex', 0);
     else
-      this.element().removeAttribute('tabIndex');
+      this._nodeElement.removeAttribute('tabIndex');
     if (this._preselected) {
       if (selectedByUser)
-        this.element().focus();
+        this._nodeElement.focus();
       if (!this._inspected)
         this._axNode.highlightDOMNode();
       else
@@ -352,9 +384,9 @@ Accessibility.AXBreadcrumb = class {
     if (this._hovered === hovered)
       return;
     this._hovered = hovered;
-    this.element().classList.toggle('hovered', hovered);
+    this._nodeElement.classList.toggle('hovered', hovered);
     if (this._hovered) {
-      this.element().classList.toggle('hovered', true);
+      this._nodeElement.classList.toggle('hovered', true);
       this._axNode.highlightDOMNode();
     }
   }
@@ -378,6 +410,29 @@ Accessibility.AXBreadcrumb = class {
    */
   isDOMNode() {
     return this._axNode.isDOMNode();
+  }
+
+  /**
+   * @return {?Accessibility.AXBreadcrumb}
+   */
+  nextBreadcrumb() {
+    if (this._children.length)
+      return this._children[0];
+    var nextSibling = this.element().nextSibling;
+    if (nextSibling)
+      return nextSibling.breadcrumb;
+    return null;
+  }
+
+  /**
+   * @return {?Accessibility.AXBreadcrumb}
+   */
+  previousBreadcrumb() {
+    var previousSibling = this.element().previousSibling;
+    if (previousSibling)
+      return previousSibling.breadcrumb;
+
+    return this._parent;
   }
 
   /**

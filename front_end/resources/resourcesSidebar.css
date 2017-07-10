@@ -26,21 +26,6 @@ li.storage-group-list-item::before {
     display: none;
 }
 
-li.storage-group-list-item
-.trailing-icons {
-    width: 14px;
-    height: 14px;
-    margin-left: 6px;
-}
-
-li.storage-group-list-item
-.trailing-icons
-.sidebar-section-button {
-    position: relative;
-    top: -1px;
-    left: -8px;
-}
-
 .navigator-tree-item {
     margin: -3px -7px -3px -7px;
 }

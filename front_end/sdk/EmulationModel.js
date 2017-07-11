@@ -59,26 +59,6 @@ SDK.EmulationModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {number} width
-   * @param {number} height
-   * @return {!Promise}
-   */
-  setVisibleSize(width, height) {
-    return this._emulationAgent.setVisibleSize(width, height);
-  }
-
-  /**
-   * @param {{x: number, y: number, scale: number}|null} viewport
-   * @return {!Promise}
-   */
-  forceViewport(viewport) {
-    if (viewport)
-      return this._emulationAgent.forceViewport(viewport.x, viewport.y, viewport.scale);
-    else
-      return this._emulationAgent.resetViewport();
-  }
-
-  /**
    * @return {?SDK.OverlayModel}
    */
   overlayModel() {

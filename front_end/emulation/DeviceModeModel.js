@@ -619,7 +619,6 @@ Emulation.DeviceModeModel = class extends Common.Object {
           height: pageHeight,
           deviceScaleFactor: deviceScaleFactor,
           mobile: mobile,
-          fitWindow: false,
           scale: scale,
           screenWidth: screenSize.width,
           screenHeight: screenSize.height,
@@ -653,30 +652,41 @@ Emulation.DeviceModeModel = class extends Common.Object {
     if (overlayModel)
       overlayModel.setShowViewportSizeOnResize(false);
 
-    var pageSize = fullSize ? new UI.Size(metrics.contentWidth, metrics.contentHeight) : this._emulatedPageSize;
-    var promises = [];
-    promises.push(this._emulationModel.setVisibleSize(Math.floor(pageSize.width), Math.floor(pageSize.height)));
+    // Emulate full size device if necessary.
+    var deviceMetrics;
     if (fullSize) {
-      promises.push(this._emulationModel.forceViewport({x: 0, y: 0, scale: 1}));
-    } else {
-      promises.push(this._emulationModel.forceViewport(
-          {x: Math.floor(metrics.viewportX), y: Math.floor(metrics.viewportY), scale: metrics.viewportScale}));
+      var pageSize = fullSize ? new UI.Size(metrics.contentWidth, metrics.contentHeight) : this._emulatedPageSize;
+      deviceMetrics = {
+        width: Math.floor(pageSize.width),
+        height: Math.floor(pageSize.height),
+        deviceScaleFactor: this._device ? this._device.deviceScaleFactor : window.devicePixelRatio,
+        mobile: this._isMobile(),
+      };
+
+      if (this._device) {
+        var screenOrientation = this._mode.orientation === Emulation.EmulatedDevice.Horizontal ?
+            Protocol.Emulation.ScreenOrientationType.LandscapePrimary :
+            Protocol.Emulation.ScreenOrientationType.PortraitPrimary;
+        var screenOrientationAngle =
+            screenOrientation === Protocol.Emulation.ScreenOrientationType.LandscapePrimary ? 90 : 0;
+        deviceMetrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};
+      }
+      await this._emulationModel.resetPageScaleFactor();
+      await this._emulationModel.emulateDevice(deviceMetrics);
     }
-    promises.push(this._emulationModel.emulateDevice({
-      width: 0,
-      height: 0,
-      deviceScaleFactor: this._appliedDeviceScaleFactor,
-      mobile: this._isMobile(),
-      fitWindow: false,
-      scale: 1,
-    }));
-    await Promise.all(promises);
 
     var screenshot = await screenCaptureModel.captureScreenshot('png', 100);
-    this._emulationModel.setVisibleSize(
-        Math.floor(this._emulatedPageSize.width * this._scale),
-        Math.floor(this._emulatedPageSize.height * this._scale));
-    this._emulationModel.forceViewport(null);
+    if (fullSize) {
+      if (this._device) {
+        var orientation = this._device.orientationByName(this._mode.orientation);
+        deviceMetrics.width = orientation.width;
+        deviceMetrics.height = orientation.height;
+      } else {
+        deviceMetrics.width = 0;
+        deviceMetrics.height = 0;
+      }
+      await this._emulationModel.emulateDevice(deviceMetrics);
+    }
     this._calculateAndEmulate(false);
     return screenshot;
   }

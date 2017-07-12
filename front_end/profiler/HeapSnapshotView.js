@@ -166,6 +166,9 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     this._populate();
     this._searchThrottler = new Common.Throttler(0);
+
+    for (var existingProfile of this._profiles())
+      existingProfile.addEventListener(Profiler.ProfileHeader.Events.ProfileTitleChanged, this._updateControls, this);
   }
 
   /**
@@ -607,33 +610,33 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
   _updateBaseOptions() {
     var list = this._profiles();
-    // We're assuming that snapshots can only be added.
-    if (this._baseSelect.size() === list.length)
-      return;
+    var selectedIndex = this._baseSelect.selectedIndex();
 
-    for (var i = this._baseSelect.size(), n = list.length; i < n; ++i) {
-      var title = list[i].title;
-      this._baseSelect.createOption(title);
-    }
+    this._baseSelect.removeOptions();
+    for (var item of list)
+      this._baseSelect.createOption(item.title);
+
+    if (selectedIndex > -1)
+      this._baseSelect.setSelectedIndex(selectedIndex);
   }
 
   _updateFilterOptions() {
     var list = this._profiles();
-    // We're assuming that snapshots can only be added.
-    if (this._filterSelect.size() - 1 === list.length)
-      return;
+    var selectedIndex = this._filterSelect.selectedIndex();
 
-    if (!this._filterSelect.size())
-      this._filterSelect.createOption(Common.UIString('All objects'));
-
-    for (var i = this._filterSelect.size() - 1, n = list.length; i < n; ++i) {
-      var title = list[i].title;
+    this._filterSelect.removeOptions();
+    this._filterSelect.createOption(Common.UIString('All objects'));
+    for (var i = 0; i < list.length; ++i) {
+      var title;
       if (!i)
-        title = Common.UIString('Objects allocated before %s', title);
+        title = Common.UIString('Objects allocated before %s', list[i].title);
       else
-        title = Common.UIString('Objects allocated between %s and %s', list[i - 1].title, title);
+        title = Common.UIString('Objects allocated between %s and %s', list[i - 1].title, list[i].title);
       this._filterSelect.createOption(title);
     }
+
+    if (selectedIndex > -1)
+      this._filterSelect.setSelectedIndex(selectedIndex);
   }
 
   _updateControls() {
@@ -647,6 +650,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   _onReceiveSnapshot(event) {
     this._updateControls();
+    var profile = event.data;
+    profile.addEventListener(Profiler.ProfileHeader.Events.ProfileTitleChanged, this._updateControls, this);
   }
 
   /**
@@ -654,6 +659,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   _onProfileHeaderRemoved(event) {
     var profile = event.data;
+    profile.removeEventListener(Profiler.ProfileHeader.Events.ProfileTitleChanged, this._updateControls, this);
+
     if (this._profile === profile) {
       this.detach();
       this._profile.profileType().removeEventListener(

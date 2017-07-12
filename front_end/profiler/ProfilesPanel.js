@@ -641,6 +641,41 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
       this.listItemElement.classList.toggle('wait', statusUpdate.wait);
   }
 
+  /**
+   * @override
+   * @param {!Event} event
+   * @return {boolean}
+   */
+  ondblclick(event) {
+    if (!this._editing)
+      this._startEditing(/** @type {!Element} */ (event.target));
+    return false;
+  }
+
+  /**
+   * @param {!Element} eventTarget
+   */
+  _startEditing(eventTarget) {
+    var container = eventTarget.enclosingNodeOrSelfWithClass('title');
+    if (!container)
+      return;
+    var config = new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this._editingCancelled.bind(this));
+    this._editing = UI.InplaceEditor.startEditing(container, config);
+  }
+
+  /**
+   * @param {!Element} container
+   * @param {string} newTitle
+   */
+  _editingCommitted(container, newTitle) {
+    delete this._editing;
+    this.profile.setTitle(newTitle);
+  }
+
+  _editingCancelled() {
+    delete this._editing;
+  }
+
   dispose() {
     this.profile.removeEventListener(Profiler.ProfileHeader.Events.UpdateStatus, this._updateStatus, this);
     this.profile.removeEventListener(Profiler.ProfileHeader.Events.ProfileReceived, this._onProfileReceived, this);

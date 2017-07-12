@@ -19,6 +19,14 @@ Profiler.ProfileHeader = class extends Common.Object {
   }
 
   /**
+   * @param {string} title
+   */
+  setTitle(title) {
+    this.title = title;
+    this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileTitleChanged, this);
+  }
+
+  /**
    * @return {!Profiler.ProfileType}
    */
   profileType() {
@@ -108,5 +116,6 @@ Profiler.ProfileHeader.StatusUpdate = class {
 /** @enum {symbol} */
 Profiler.ProfileHeader.Events = {
   UpdateStatus: Symbol('UpdateStatus'),
-  ProfileReceived: Symbol('ProfileReceived')
+  ProfileReceived: Symbol('ProfileReceived'),
+  ProfileTitleChanged: Symbol('ProfileTitleChanged')
 };

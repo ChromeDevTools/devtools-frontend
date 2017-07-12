@@ -59,38 +59,16 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  completions(expression, prefix, force) {
+  async completions(expression, prefix, force) {
     if (!prefix)
-      return Promise.resolve([]);
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    var results = [];
+      return [];
 
     prefix = prefix.toLowerCase();
-
-    function accumulateMatches(textArray) {
-      for (var i = 0; i < textArray.length; ++i) {
-        var text = textArray[i].toLowerCase();
-        if (text.length < prefix.length)
-          continue;
-        if (!text.startsWith(prefix))
-          continue;
-        results.push(textArray[i]);
-      }
-    }
-    function tableNamesCallback(tableNames) {
-      accumulateMatches(tableNames.map(function(name) {
-        return name + ' ';
-      }));
-      accumulateMatches([
-        'SELECT ', 'FROM ', 'WHERE ', 'LIMIT ', 'DELETE FROM ', 'CREATE ', 'DROP ', 'TABLE ', 'INDEX ', 'UPDATE ',
-        'INSERT INTO ', 'VALUES ('
-      ]);
-
-      fulfill(results.map(completion => ({text: completion})));
-    }
-    this.database.getTableNames(tableNamesCallback);
-    return promise;
+    var tableNames = await this.database.tableNames();
+    return tableNames.map(name => name + ' ')
+        .concat(Resources.DatabaseQueryView._SQL_BUILT_INS)
+        .filter(proposal => proposal.toLowerCase().startsWith(prefix))
+        .map(completion => ({text: completion}));
   }
 
   _selectStart(event) {
@@ -200,3 +178,8 @@ Resources.DatabaseQueryView = class extends UI.VBox {
 Resources.DatabaseQueryView.Events = {
   SchemaUpdated: Symbol('SchemaUpdated')
 };
+
+Resources.DatabaseQueryView._SQL_BUILT_INS = [
+  'SELECT ', 'FROM ', 'WHERE ', 'LIMIT ', 'DELETE FROM ', 'CREATE ', 'DROP ', 'TABLE ', 'INDEX ', 'UPDATE ',
+  'INSERT INTO ', 'VALUES ('
+];

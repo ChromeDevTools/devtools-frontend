@@ -700,19 +700,10 @@ Resources.DatabaseTreeElement = class extends Resources.BaseStorageTreeElement {
     this._updateChildren();
   }
 
-  _updateChildren() {
-    this.removeChildren();
-
-    /**
-     * @param {!Array.<string>} tableNames
-     * @this {Resources.DatabaseTreeElement}
-     */
-    function tableNamesCallback(tableNames) {
-      var tableNamesLength = tableNames.length;
-      for (var i = 0; i < tableNamesLength; ++i)
-        this.appendChild(new Resources.DatabaseTableTreeElement(this._sidebar, this._database, tableNames[i]));
-    }
-    this._database.getTableNames(tableNamesCallback.bind(this));
+  async _updateChildren() {
+    var tableNames = await this._database.tableNames();
+    for (var tableName of tableNames)
+      this.appendChild(new Resources.DatabaseTableTreeElement(this._sidebar, this._database, tableName));
   }
 };
 

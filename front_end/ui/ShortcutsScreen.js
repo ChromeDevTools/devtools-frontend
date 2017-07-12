@@ -106,6 +106,8 @@ UI.ShortcutsScreen = class {
     section.addAlternateKeys(
         UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, Common.UIString('Toggle breakpoint'));
     section.addAlternateKeys(
+        UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpointEnabled, Common.UIString('Toggle breakpoint enabled'));
+    section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.toggle-breakpoints-active'),
         Common.UIString('Toggle all breakpoints'));
 
@@ -431,6 +433,9 @@ UI.ShortcutsScreen.SourcesPanelShortcuts = {
   GoToLine: [UI.KeyboardShortcut.makeDescriptor('g', UI.KeyboardShortcut.Modifiers.Ctrl)],
 
   ToggleBreakpoint: [UI.KeyboardShortcut.makeDescriptor('b', UI.KeyboardShortcut.Modifiers.CtrlOrMeta)],
+
+  ToggleBreakpointEnabled: [UI.KeyboardShortcut.makeDescriptor(
+      'b', UI.KeyboardShortcut.Modifiers.CtrlOrMeta | UI.KeyboardShortcut.Modifiers.Shift)],
 
   NextCallFrame:
       [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Period, UI.KeyboardShortcut.Modifiers.Ctrl)],

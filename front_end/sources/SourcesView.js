@@ -153,7 +153,11 @@ Sources.SourcesView = class extends UI.VBox {
     registerShortcut.call(
         this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineQuickOpen.bind(this));
     registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint, this._toggleBreakpoint.bind(this));
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint,
+        this._toggleBreakpoint.bind(this, false /* onlyDisable */));
+    registerShortcut.call(
+        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpointEnabled,
+        this._toggleBreakpoint.bind(this, true /* onlyDisable */));
     registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.Save, this._save.bind(this));
     registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.SaveAll, this._saveAll.bind(this));
   }
@@ -660,16 +664,17 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
+   * @param {boolean} onlyDisable
    * @return {boolean}
    */
-  _toggleBreakpoint() {
+  _toggleBreakpoint(onlyDisable) {
     var sourceFrame = this.currentSourceFrame();
     if (!sourceFrame)
       return false;
 
     if (sourceFrame instanceof Sources.JavaScriptSourceFrame) {
       var javaScriptSourceFrame = /** @type {!Sources.JavaScriptSourceFrame} */ (sourceFrame);
-      javaScriptSourceFrame.toggleBreakpointOnCurrentLine();
+      javaScriptSourceFrame.toggleBreakpointOnCurrentLine(onlyDisable);
       return true;
     }
     return false;

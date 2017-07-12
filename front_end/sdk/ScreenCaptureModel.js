@@ -46,7 +46,7 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    * @return {!Promise<?string>}
    */
   captureScreenshot(format, quality) {
-    return this._agent.captureScreenshot(format, quality, true);
+    return this._agent.captureScreenshot(format, quality, undefined, true);
   }
 
   /**

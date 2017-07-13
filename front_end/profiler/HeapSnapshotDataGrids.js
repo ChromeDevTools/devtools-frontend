@@ -389,7 +389,6 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
       var hasChildren = child.hasChildren();
       child.removeChildren();
       child.setHasChildren(hasChildren);
-      child.revealed = true;
       parentNode.appendChild(child);
       position += child.nodeSelfHeight();
       position += this._addVisibleNodes(child, topBound - position, bottomBound - position);
@@ -414,8 +413,6 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
    * @return {number}
    */
   _nodeHeight(node) {
-    if (!node.revealed)
-      return 0;
     var result = node.nodeSelfHeight();
     if (!node.expanded)
       return result;

@@ -1374,7 +1374,7 @@ DataGrid.DataGridNode = class extends Common.Object {
       currentAncestor = currentAncestor.parent;
     }
 
-    this._revealed = true;
+    this.revealed = true;
     return true;
   }
 

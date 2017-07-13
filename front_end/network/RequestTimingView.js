@@ -251,7 +251,7 @@ Network.RequestTimingView = class extends UI.VBox {
     var note = footer.createChild('td');
     note.colSpan = 1;
     note.appendChild(
-        UI.createDocumentationLink('network-performance/reference#timing', Common.UIString('Explanation')));
+        UI.createDocumentationLink('network-performance/reference#timing-explanation', Common.UIString('Explanation')));
     footer.createChild('td');
     footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
 

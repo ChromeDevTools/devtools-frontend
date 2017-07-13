@@ -33,7 +33,6 @@
 Elements.EventListenersWidget = class extends UI.ThrottledWidget {
   constructor() {
     super();
-    this.element.classList.add('events-pane');
     this._toolbarItems = [];
 
     this._showForAncestorsSetting = Common.settings.moduleSetting('showEventListenersForAncestors');

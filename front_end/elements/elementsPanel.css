@@ -42,11 +42,6 @@
     overflow-x: hidden;
 }
 
-.elements-topbar {
-    border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
-    flex-shrink: 0;
-}
-
 #elements-crumbs {
     flex: 0 0 19px;
     background-color: white;
@@ -62,85 +57,6 @@
 
 .style-panes-wrapper > div:not(:first-child) {
     border-top: 1px solid #ccc;
-}
-
-.styles-animations-controls-pane > * {
-    margin: 6px 4px;
-}
-
-.styles-animations-controls-pane {
-    border-bottom: 1px solid rgb(189, 189, 189);
-    height: 60px;
-    overflow: hidden;
-    background-color: #eee;
-}
-
-.animations-controls {
-    width: 100%;
-    max-width: 200px;
-    display: flex;
-    align-items: center;
-}
-
-.animations-controls > .toolbar {
-    display: inline-block;
-}
-
-.animations-controls > input {
-    flex-grow: 1;
-    margin-right: 10px;
-}
-
-.animations-controls > .playback-label {
-    width: 35px;
-}
-
-.metrics-and-styles,
-.metrics-and-computed {
-    display: flex !important;
-    flex-direction: column !important;
-    position: relative;
-}
-
-.animation-section-body {
-    display: none;
-}
-
-.animation-section-body.expanded {
-    display: block;
-}
-
-.animation-section-body .section {
-    border-bottom: 1px solid rgb(191, 191, 191);
-}
-
-.animationsHeader {
-    padding-top: 23px;
-}
-
-.global-animations-toolbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    background-color: #eee;
-    border-bottom: 1px solid rgb(163, 163, 163);
-    padding-left: 10px;
-}
-
-.view > .toolbar {
-    border-bottom: 1px solid #eee;
-}
-
-.events-pane .section:not(:first-of-type) {
-    border-top: 1px solid rgb(231, 231, 231);
-}
-
-.events-pane .section {
-    margin: 0;
-}
-
-.events-pane .toolbar {
-    border-bottom: 1px solid #eee;
 }
 
 .properties-widget-section {

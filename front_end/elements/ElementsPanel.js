@@ -803,11 +803,11 @@ Elements.ElementsPanel = class extends UI.Panel {
       splitWidget.setSidebarWidget(computedStylePanesWrapper);
     } else {
       // Styles and computed are in separate tabs.
-      stylesView.element.classList.add('flex-auto', 'metrics-and-styles');
+      stylesView.element.classList.add('flex-auto');
       matchedStylePanesWrapper.show(stylesView.element);
 
       var computedView = new UI.SimpleView(Common.UIString('Computed'));
-      computedView.element.classList.add('composite', 'fill', 'metrics-and-computed');
+      computedView.element.classList.add('composite', 'fill');
       computedStylePanesWrapper.show(computedView.element);
 
       tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, tabSelected, this);

@@ -487,16 +487,15 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._entryTypeByLevel[this._currentLevel] = Timeline.TimelineFlameChartDataProvider.EntryType.Screenshot;
     var prevTimestamp;
     for (var screenshot of screenshots) {
-      var index = this._entryData.length;
       this._entryData.push(screenshot);
-      this._timelineData.entryLevels[index] = this._currentLevel;
-      this._timelineData.entryStartTimes[index] = screenshot.timestamp;
+      this._timelineData.entryLevels.push(this._currentLevel);
+      this._timelineData.entryStartTimes.push(screenshot.timestamp);
       if (prevTimestamp)
-        this._timelineData.entryTotalTimes[index - 1] = screenshot.timestamp - prevTimestamp;
+        this._timelineData.entryTotalTimes.push(screenshot.timestamp - prevTimestamp);
       prevTimestamp = screenshot.timestamp;
     }
-    this._timelineData.entryTotalTimes[this._timelineData.entryTotalTimes.length - 1] =
-        this._model.maximumRecordTime() - prevTimestamp;
+    if (screenshots.length)
+      this._timelineData.entryTotalTimes.push(this._model.maximumRecordTime() - prevTimestamp);
     ++this._currentLevel;
   }
 
@@ -644,8 +643,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       this.dispatchEventToListeners(Timeline.TimelineFlameChartDataProvider.Events.DataChanged);
       return;
     }
-    context.fillStyle = '#eee';
-    context.fillRect(barX, barY, barWidth, barHeight);
+
     var image = this._screenshotImageCache.get(screenshot);
     if (!image)
       return;
@@ -653,12 +651,14 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     var imageY = barY + 1;
     var imageHeight = barHeight - 2;
     var scale = imageHeight / image.naturalHeight;
-    var imageWidth = image.naturalWidth * scale;
+    var imageWidth = Math.floor(image.naturalWidth * scale);
     context.save();
     context.beginPath();
-    context.rect(imageX, imageY, barWidth - 2, imageHeight);
+    context.rect(barX, barY, barWidth, barHeight);
     context.clip();
     context.drawImage(image, imageX, imageY, imageWidth, imageHeight);
+    context.strokeStyle = '#ccc';
+    context.strokeRect(imageX - 0.5, imageY - 0.5, Math.min(barWidth - 1, imageWidth + 1), imageHeight);
     context.restore();
   }
 

@@ -168,6 +168,8 @@ PerfUI.FlameChart = class extends UI.VBox {
   highlightEntry(entryIndex) {
     if (this._highlightedEntryIndex === entryIndex)
       return;
+    if (!this._dataProvider.entryColor(entryIndex))
+      return;
     this._highlightedEntryIndex = entryIndex;
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntryHighlighted, entryIndex);
@@ -692,7 +694,6 @@ PerfUI.FlameChart = class extends UI.VBox {
       var color = colors[c];
       var indexes = colorBuckets.get(color);
       context.beginPath();
-      context.fillStyle = color;
       for (var i = 0; i < indexes.length; ++i) {
         var entryIndex = indexes[i];
         var entryStartTime = entryStartTimes[entryIndex];
@@ -709,14 +710,17 @@ PerfUI.FlameChart = class extends UI.VBox {
         }
         var barRight = this._timeToPositionClipped(entryStartTime + duration);
         var barWidth = Math.max(barRight - barX, 1);
-        context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+        if (color)
+          context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
         if (barWidth > minTextWidth || this._dataProvider.forceDecoration(entryIndex))
           titleIndices.push(entryIndex);
       }
+      if (!color)
+        continue;
+      context.fillStyle = color;
       context.fill();
     }
 
-    context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
     context.beginPath();
     for (var m = 0; m < markerIndices.length; ++m) {
       var entryIndex = markerIndices[m];
@@ -727,6 +731,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       context.moveTo(barX + this._markerRadius, y);
       context.arc(barX, y, this._markerRadius, 0, Math.PI * 2);
     }
+    context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
     context.stroke();
 
     context.textBaseline = 'alphabetic';

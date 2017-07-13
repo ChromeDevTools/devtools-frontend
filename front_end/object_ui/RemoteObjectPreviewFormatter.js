@@ -167,7 +167,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
      */
     function appendUndefined(index) {
       var span = parentElement.createChild('span', 'object-value-undefined');
-      span.textContent = Common.UIString('undefined × %d', index - lastNonEmptyArrayIndex - 1);
+      span.textContent = Common.UIString('empty × %d', index - lastNonEmptyArrayIndex - 1);
       elementsAdded = true;
     }
   }

@@ -38,7 +38,6 @@ function buildTask() {
     'toolbox',
     'formatter_worker',
     'heap_snapshot_worker',
-    'utility_shared_worker',
     '--input_path',
     frontendPath,
     '--output_path',

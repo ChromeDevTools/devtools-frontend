@@ -13,7 +13,7 @@ Timeline.TimelineLoader = class {
   constructor(client) {
     this._client = client;
 
-    this._backingStorage = new Bindings.TempFileBackingStorage('tracing');
+    this._backingStorage = new Bindings.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel(this._backingStorage);
 
     /** @type {?function()} */

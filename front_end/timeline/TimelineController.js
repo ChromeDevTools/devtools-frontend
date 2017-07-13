@@ -18,7 +18,7 @@ Timeline.TimelineController = class {
     this._performanceModel = performanceModel;
     this._client = client;
 
-    var backingStorage = new Bindings.TempFileBackingStorage('tracing');
+    var backingStorage = new Bindings.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel(backingStorage);
 
     this._performanceModel.setMainTarget(tracingManager.target());

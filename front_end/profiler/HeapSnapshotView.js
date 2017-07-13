@@ -1358,14 +1358,12 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
   }
 
-  async _finishLoad() {
+  _finishLoad() {
     if (!this._wasDisposed)
       this._receiver.close();
     if (!this._bufferedWriter)
       return;
-    var file = await this._bufferedWriter.finishWriting();
-    this._bufferedWriter = null;
-    this._didWriteToTempFile(file);
+    this._didWriteToTempFile(this._bufferedWriter);
   }
 
   /**
@@ -1437,7 +1435,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
    */
   transferChunk(chunk) {
     if (!this._bufferedWriter)
-      this._bufferedWriter = new Bindings.DeferredTempFile('heap-profiler', String(this.uid));
+      this._bufferedWriter = new Bindings.TempFile();
     this._bufferedWriter.write([chunk]);
 
     ++this._totalNumberOfChunks;

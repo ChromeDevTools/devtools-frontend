@@ -1,8 +1,0 @@
-{
-    "modules": [
-        { "name": "worker_service", "type": "autostart" },
-        { "name": "utility_shared_worker", "type": "autostart" }
-    ],
-
-    "has_html": false
-}

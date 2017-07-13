@@ -285,40 +285,6 @@ var Runtime = class {
   }
 
   /**
-   * @param {string} appName
-   */
-  static startSharedWorker(appName) {
-    var startPromise = Runtime.startApplication(appName);
-
-    /**
-     * @param {!MessageEvent} event
-     */
-    self.onconnect = function(event) {
-      var newPort = /** @type {!MessagePort} */ (event.ports[0]);
-      startPromise.then(sendWorkerReadyAndContinue);
-
-      function sendWorkerReadyAndContinue() {
-        newPort.postMessage('workerReady');
-        if (Runtime._sharedWorkerNewPortCallback)
-          Runtime._sharedWorkerNewPortCallback.call(null, newPort);
-        else
-          Runtime._sharedWorkerConnectedPorts.push(newPort);
-      }
-    };
-  }
-
-  /**
-   * @param {function(!MessagePort)} callback
-   */
-  static setSharedWorkerNewPortCallback(callback) {
-    Runtime._sharedWorkerNewPortCallback = callback;
-    while (Runtime._sharedWorkerConnectedPorts.length) {
-      var port = Runtime._sharedWorkerConnectedPorts.shift();
-      callback.call(null, port);
-    }
-  }
-
-  /**
    * @param {string} name
    * @return {?string}
    */
@@ -591,12 +557,6 @@ Runtime._instanceSymbol = Symbol('instance');
 Runtime.cachedResources = {
   __proto__: null
 };
-
-
-/** @type {?function(!MessagePort)} */
-Runtime._sharedWorkerNewPortCallback = null;
-/** @type {!Array<!MessagePort>} */
-Runtime._sharedWorkerConnectedPorts = [];
 
 
 Runtime._console = console;

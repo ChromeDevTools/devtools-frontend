@@ -453,31 +453,17 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
   /**
    * @override
    */
-  saveToFile() {
+  async saveToFile() {
     var fileOutputStream = new Bindings.FileOutputStream();
     this._fileName = this._fileName ||
         `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
-    fileOutputStream.open(this._fileName).then(onOpenForSave.bind(this));
-
-    /**
-     * @param {boolean} accepted
-     * @this {Profiler.WritableProfileHeader}
-     */
-    async function onOpenForSave(accepted) {
-      if (!accepted)
-        return;
-      if (this._failedToCreateTempFile) {
-        Common.console.error('Failed to open temp file with heap snapshot');
-        fileOutputStream.close();
-      } else if (this._tempFile) {
-        var data = await this._tempFile.read();
-        if (data)
-          await fileOutputStream.write(data);
-        fileOutputStream.close();
-      } else {
-        this._onTempFileReady = onOpenForSave.bind(this, accepted);
-      }
-    }
+    var accepted = await fileOutputStream.open(this._fileName);
+    if (!accepted || !this._tempFile)
+      return;
+    var data = await this._tempFile.read();
+    if (data)
+      await fileOutputStream.write(data);
+    fileOutputStream.close();
   }
 
   /**
@@ -509,50 +495,9 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    */
   setProtocolProfile(profile) {
     this._protocolProfile = profile;
-    this._saveProfileDataToTempFile(profile);
+    this._tempFile = new Bindings.TempFile();
+    this._tempFile.write([JSON.stringify(profile)]);
     if (this.canSaveToFile())
       this.dispatchEventToListeners(Profiler.ProfileHeader.Events.ProfileReceived);
-  }
-
-  /**
-   * @param {*} data
-   */
-  _saveProfileDataToTempFile(data) {
-    var serializedData = JSON.stringify(data);
-
-    /**
-     * @this {Profiler.WritableProfileHeader}
-     */
-    function didCreateTempFile(tempFile) {
-      this._writeToTempFile(tempFile, serializedData);
-    }
-    Bindings.TempFile.create('cpu-profiler', String(this.uid)).then(didCreateTempFile.bind(this));
-  }
-
-  /**
-   * @param {?Bindings.TempFile} tempFile
-   * @param {string} serializedData
-   */
-  async _writeToTempFile(tempFile, serializedData) {
-    this._tempFile = tempFile;
-    if (!tempFile) {
-      this._failedToCreateTempFile = true;
-      this._notifyTempFileReady();
-      return;
-    }
-
-    var fileSize = await tempFile.write([serializedData]);
-
-    if (!fileSize)
-      this._failedToCreateTempFile = true;
-    tempFile.finishWriting();
-    this._notifyTempFileReady();
-  }
-
-  _notifyTempFileReady() {
-    if (this._onTempFileReady) {
-      this._onTempFileReady();
-      this._onTempFileReady = null;
-    }
   }
 };

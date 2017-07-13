@@ -581,7 +581,7 @@ Audits2.ProtocolService = class extends Common.Object {
 
   _initWorker() {
     this._backendPromise =
-        Services.serviceManager.createAppService('audits2_worker', 'Audits2Service', false).then(backend => {
+        Services.serviceManager.createAppService('audits2_worker', 'Audits2Service').then(backend => {
           if (this._backend)
             return;
           this._backend = backend;

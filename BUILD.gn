@@ -750,10 +750,6 @@ all_devtools_files = [
   "front_end/ui/ZoomManager.js",
   "front_end/unit_test_runner.js",
   "front_end/unit_test_runner.json",
-  "front_end/utility_shared_worker.js",
-  "front_end/utility_shared_worker.json",
-  "front_end/utility_shared_worker/module.json",
-  "front_end/utility_shared_worker/TempStorage.js",
   "front_end/worker_service/ServiceDispatcher.js",
   "front_end/workspace/FileManager.js",
   "front_end/workspace/module.json",
@@ -888,7 +884,6 @@ generated_applications = [
   "$resources_out_dir/audits2_worker.js",
   "$resources_out_dir/formatter_worker.js",
   "$resources_out_dir/heap_snapshot_worker.js",
-  "$resources_out_dir/utility_shared_worker.js",
 ]
 
 generated_non_autostart_non_remote_modules = [
@@ -951,7 +946,6 @@ devtools_applications = [
   "formatter_worker",
   "audits2_worker",
   "heap_snapshot_worker",
-  "utility_shared_worker",
 ]
 
 #-------------------------------------------------------------------------------

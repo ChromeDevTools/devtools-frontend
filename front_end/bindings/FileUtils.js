@@ -63,13 +63,13 @@ Bindings.ChunkedReader.prototype = {
  */
 Bindings.ChunkedFileReader = class {
   /**
-   * @param {!File} file
+   * @param {!Blob} blob
    * @param {number} chunkSize
    * @param {function(!Bindings.ChunkedReader)=} chunkTransferredCallback
    */
-  constructor(file, chunkSize, chunkTransferredCallback) {
-    this._file = file;
-    this._fileSize = file.size;
+  constructor(blob, chunkSize, chunkTransferredCallback) {
+    this._file = blob;
+    this._fileSize = blob.size;
     this._loadedSize = 0;
     this._chunkSize = chunkSize;
     this._chunkTransferredCallback = chunkTransferredCallback;

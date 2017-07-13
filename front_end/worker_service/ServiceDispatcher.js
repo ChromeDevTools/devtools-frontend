@@ -187,14 +187,6 @@ var WorkerServicePort = class {
 
 var dispatchers = [];
 
-if (self.SharedWorkerGlobalScope) {
-  function onNewPort(port) {
-    var dispatcher = new ServiceDispatcher(new WorkerServicePort(port));
-    dispatchers.push(dispatcher);
-  }
-  Runtime.setSharedWorkerNewPortCallback(onNewPort);
-} else {
-  var worker = /** @type {!Object} */ (self);
-  var servicePort = new WorkerServicePort(/** @type {!Worker} */ (worker));
-  dispatchers.push(new ServiceDispatcher(servicePort));
-}
+var worker = /** @type {!Object} */ (self);
+var servicePort = new WorkerServicePort(/** @type {!Worker} */ (worker));
+dispatchers.push(new ServiceDispatcher(servicePort));

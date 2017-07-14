@@ -37,6 +37,7 @@ Common.ParsedURL = class {
     this.isValid = false;
     this.url = url;
     this.scheme = '';
+    this.user = '';
     this.host = '';
     this.port = '';
     this.path = '';
@@ -49,11 +50,12 @@ Common.ParsedURL = class {
     if (match) {
       this.isValid = true;
       this.scheme = match[2].toLowerCase();
-      this.host = match[3];
-      this.port = match[4];
-      this.path = match[5] || '/';
-      this.queryParams = match[6] || '';
-      this.fragment = match[7];
+      this.user = match[3];
+      this.host = match[4];
+      this.port = match[5];
+      this.path = match[6] || '/';
+      this.queryParams = match[7] || '';
+      this.fragment = match[8];
     } else {
       if (this.url.startsWith('data:')) {
         this.scheme = 'data';
@@ -99,12 +101,14 @@ Common.ParsedURL = class {
     // RegExp groups:
     // 1 - scheme, hostname, ?port
     // 2 - scheme (using the RFC3986 grammar)
-    // 3 - hostname
-    // 4 - ?port
-    // 5 - ?path
-    // 6 - ?query
-    // 7 - ?fragment
+    // 3 - ?user:password
+    // 4 - hostname
+    // 5 - ?port
+    // 6 - ?path
+    // 7 - ?query
+    // 8 - ?fragment
     var schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
+    var userRegex = /(?:([A-Za-z0-9\-._~%!$&'()*+,;=:]*)@)?/;
     var hostRegex = /([^\s\/:]*)/;
     var portRegex = /(?::([\d]+))?/;
     var pathRegex = /(\/[^#?]*)?/;
@@ -112,8 +116,8 @@ Common.ParsedURL = class {
     var fragmentRegex = /(?:#(.*))?/;
 
     Common.ParsedURL._urlRegexInstance = new RegExp(
-        '^(' + schemeRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source + queryRegex.source +
-        fragmentRegex.source + '$');
+        '^(' + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source +
+        queryRegex.source + fragmentRegex.source + '$');
     return Common.ParsedURL._urlRegexInstance;
   }
 

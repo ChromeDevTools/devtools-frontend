@@ -91,7 +91,7 @@ TestRunner.runTests = function(tests) {
  * @param {!Object} receiver
  * @param {string} methodName
  * @param {!Function} override
- * @param {boolean} opt_sticky
+ * @param {boolean=} opt_sticky
  */
 TestRunner.addSniffer = function(receiver, methodName, override, opt_sticky) {
   override = TestRunner.safeWrap(override);
@@ -187,7 +187,7 @@ TestRunner.createKeyEvent = function(key, ctrlKey, altKey, shiftKey, metaKey) {
 };
 
 /**
- * @param {!Function} func
+ * @param {!Function|undefined} func
  * @param {!Function=} onexception
  * @return {!Function}
  */
@@ -210,6 +210,44 @@ TestRunner.safeWrap = function(func, onexception) {
     }
   }
   return result;
+};
+
+/**
+ * @param {!Element} node
+ * @return {string}
+ */
+TestRunner.textContentWithLineBreaks = function(node) {
+  function padding(currentNode) {
+    var result = 0;
+    while (currentNode && currentNode !== node) {
+      if (currentNode.nodeName === 'OL' &&
+          !(currentNode.classList && currentNode.classList.contains('object-properties-section')))
+        ++result;
+      currentNode = currentNode.parentNode;
+    }
+    return Array(result * 4 + 1).join(' ');
+  }
+
+  var buffer = '';
+  var currentNode = node;
+  var ignoreFirst = false;
+  while (currentNode.traverseNextNode(node)) {
+    currentNode = currentNode.traverseNextNode(node);
+    if (currentNode.nodeType === Node.TEXT_NODE) {
+      buffer += currentNode.nodeValue;
+    } else if (currentNode.nodeName === 'LI' || currentNode.nodeName === 'TR') {
+      if (!ignoreFirst)
+        buffer += '\n' + padding(currentNode);
+      else
+        ignoreFirst = false;
+    } else if (currentNode.nodeName === 'STYLE') {
+      currentNode = currentNode.traverseNextNode(node);
+      continue;
+    } else if (currentNode.classList && currentNode.classList.contains('object-properties-section')) {
+      ignoreFirst = true;
+    }
+  }
+  return buffer;
 };
 
 /**

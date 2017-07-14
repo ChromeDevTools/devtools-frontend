@@ -41,10 +41,17 @@ IntegrationTestRunner._setupTestHelpers = function(target) {
 };
 
 /**
- * @param {string} code
+ * @param {string|!Function} code
  * @param {!Function} callback
  */
 TestRunner.evaluateInPage = async function(code, callback) {
+  if (typeof code === 'function') {
+    if (code.length) {
+      TestRunner.addResult('ERROR: do not use evaluateInPage on a function with parameters: ' + code.toString());
+      TestRunner.addResult('TestRunner.evaluateInPage invokes the function without arguments');
+    }
+    code = `(${code.toString()})()`;
+  }
   var response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   if (!response[Protocol.Error]) {
     TestRunner.safeWrap(callback)(
@@ -53,7 +60,7 @@ TestRunner.evaluateInPage = async function(code, callback) {
 };
 
 /**
- * @param {string} code
+ * @param {string|!Function} code
  * @return {!Promise<!SDK.RemoteObject>}
  */
 TestRunner.evaluateInPagePromise = function(code) {
@@ -67,6 +74,15 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
   var targets = SDK.targetManager.targets();
   var promises = targets.map(target => new Promise(resolve => target._deprecatedRunAfterPendingDispatches(resolve)));
   Promise.all(promises).then(TestRunner.safeWrap(callback));
+};
+
+/**
+ * @param {string} html
+ * @return {!Promise<!SDK.RemoteObject>}
+ */
+TestRunner.loadHTML = function(html) {
+  html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
+  return TestRunner.evaluateInPagePromise(`document.write('${html}');document.close();`);
 };
 
 /** @type {boolean} */

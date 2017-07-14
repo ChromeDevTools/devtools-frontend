@@ -2,11 +2,9 @@
   "dependencies": [
     "test_runner",
     "integration_test_runner",
-    "console",
-    "console_model",
-    "main"
+    "elements"
   ],
   "scripts": [
-    "ConsoleTestRunner.js"
+    "ElementsTestRunner.js"
   ]
 }

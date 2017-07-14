@@ -3,7 +3,7 @@
     { "name": "test_runner", "type": "autostart" },
     { "name": "integration_test_runner", "type": "autostart" },
     { "name": "console_test_runner" },
-
+    { "name": "elements_test_runner" },
 
 
     { "name": "platform", "type": "autostart" },

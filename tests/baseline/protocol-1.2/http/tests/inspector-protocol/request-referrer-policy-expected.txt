@@ -1,9 +1,0 @@
-Tests that network requests are annotated with the correct referrer policy.
-
-Network agent enabled
-FAIL: Request with policy undefined observed (expected unsafe-url)
-FAIL: Request with policy undefined observed (expected no-referrer-when-downgrade)
-FAIL: Request with policy undefined observed (expected no-referrer)
-FAIL: Request with policy undefined observed (expected origin)
-FAIL: Request with policy undefined observed (expected origin-when-cross-origin)
-

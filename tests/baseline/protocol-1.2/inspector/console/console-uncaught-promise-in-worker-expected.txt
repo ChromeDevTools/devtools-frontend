@@ -1,7 +1,0 @@
-CONSOLE ERROR: line 3: Uncaught (in promise) Error: err1
-CONSOLE ERROR: line 21: Uncaught (in promise) Error: err2
-Tests that uncaught promise rejections happenned in workers are logged into console.
-
-worker-with-unhandled-promises.js:3 Uncaught (in promise) Error: err1
-worker-with-unhandled-promises.js:21 Uncaught (in promise) Error: err2
-

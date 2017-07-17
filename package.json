@@ -7,7 +7,6 @@
     "server": "node scripts/hosted_mode/server.js",
     "test": "node scripts/npm_test.js",
     "debug-test": "node scripts/npm_test.js --debug-devtools",
-    "compat-test": "node scripts/npm_test.js --compat-protocol=1.2",
     "lint": "eslint front_end",
     "format": "git cl format --js .",
     "closure": "python scripts/compile_frontend.py",

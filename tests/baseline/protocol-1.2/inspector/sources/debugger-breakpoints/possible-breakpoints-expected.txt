@@ -1,7 +1,0 @@
-Checks that BreakpointManager.possibleBreakpoints returns correct locations
-
-Locations for first line
-All locations
-Existing location by position
-Not existing location by position
-

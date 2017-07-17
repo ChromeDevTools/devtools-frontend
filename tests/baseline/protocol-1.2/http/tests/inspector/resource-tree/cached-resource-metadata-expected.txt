@@ -1,6 +1,0 @@
-CONSOLE MESSAGE: line 1: Done.
-Verify that cached resource has metadata.
-
-Last modified: null
-Content size: null
-

@@ -1,8 +1,0 @@
-Tests that generated agent prototypes match with domains returned by schema.getDomains.
-
-agent Browser is missing from target
-agent Worker is missing from target
-domain SystemInfo is missing from schema.getDomains
-domain Target is missing from schema.getDomains
-domain Tethering is missing from schema.getDomains
-

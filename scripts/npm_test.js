@@ -264,16 +264,19 @@ function getTestFlags() {
   var flagValues = Object.keys(Flags).map(key => Flags[key]);
   return process.argv.slice(2).filter(arg => {
     var flagName = utils.includes(arg, '=') ? arg.slice(0, arg.indexOf('=')) : arg;
-    return !utils.includes(flagValues, flagName) && !utils.includes(arg, 'inspector');
+    return !utils.includes(flagValues, flagName) && !utils.includes(arg, 'inspector') &&
+        !utils.includes(arg, 'http/tests/devtools');
   });
 }
 
 function getInspectorTests() {
-  var specificTests = process.argv.filter(arg => utils.includes(arg, 'inspector'));
+  var specificTests =
+      process.argv.filter(arg => utils.includes(arg, 'inspector') || utils.includes(arg, 'http/tests/devtools'));
   if (specificTests.length)
     return specificTests;
   return [
     'inspector*',
     'http/tests/inspector*',
+    'http/tests/devtools',
   ];
 }

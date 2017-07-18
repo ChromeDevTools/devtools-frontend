@@ -119,7 +119,6 @@ Sources.SourcesPanel = class extends UI.Panel {
     new Sources.WorkspaceMappingTip(this, this._workspace);
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
-    Components.DataSaverInfobar.maybeShowInPanel(this);
     SDK.targetManager.observeTargets(this);
   }
 

@@ -127,7 +127,6 @@ all_devtools_files = [
   "front_end/common/Trie.js",
   "front_end/common/UIString.js",
   "front_end/common/Worker.js",
-  "front_end/components/DataSaverInfobar.js",
   "front_end/components/DockController.js",
   "front_end/components/domBreakpointsSidebarPane.css",
   "front_end/components/DOMBreakpointsSidebarPane.js",

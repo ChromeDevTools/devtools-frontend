@@ -45,6 +45,33 @@ Common.ResourceType = class {
   }
 
   /**
+   * @param {?string} mimeType
+   * @return {!Common.ResourceType}
+   */
+  static fromMimeType(mimeType) {
+    var contentTypeAndTopLevelType = mimeType.match(/(\w*)\/\w*/);
+    if (!contentTypeAndTopLevelType)
+      return Common.resourceTypes.Other;
+
+    var resourceType = Common.ResourceType._resourceTypeByMimeType.get(contentTypeAndTopLevelType[0]);
+    if (resourceType)
+      return resourceType;
+
+    resourceType = Common.ResourceType._resourceTypeByMimeType.get(contentTypeAndTopLevelType[1]);
+    if (resourceType)
+      return resourceType;
+    return Common.resourceTypes.Other;
+  }
+
+  /**
+   * @param {string} url
+   * @return {?Common.ResourceType}
+   */
+  static fromURL(url) {
+    return Common.ResourceType._resourceTypeByExtension.get(Common.ParsedURL.extractExtension(url)) || null;
+  }
+
+  /**
    * @param {string} url
    * @return {string|undefined}
    */
@@ -206,6 +233,21 @@ Common.ResourceType._mimeTypeByName = new Map([
   ['Cakefile', 'text/x-coffeescript']
 ]);
 
+Common.ResourceType._resourceTypeByExtension = new Map([
+  ['js', Common.resourceTypes.Script],
+
+  ['css', Common.resourceTypes.Stylesheet], ['xsl', Common.resourceTypes.Stylesheet],
+
+  ['jpeg', Common.resourceTypes.Image], ['jpg', Common.resourceTypes.Image], ['svg', Common.resourceTypes.Image],
+  ['gif', Common.resourceTypes.Image], ['png', Common.resourceTypes.Image], ['ico', Common.resourceTypes.Image],
+  ['tiff', Common.resourceTypes.Image], ['tif', Common.resourceTypes.Image], ['bmp', Common.resourceTypes.Image],
+
+  ['webp', Common.resourceTypes.Media],
+
+  ['ttf', Common.resourceTypes.Font], ['otf', Common.resourceTypes.Font], ['ttc', Common.resourceTypes.Font],
+  ['woff', Common.resourceTypes.Font]
+]);
+
 Common.ResourceType._mimeTypeByExtension = new Map([
   // Web extensions
   ['js', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'], ['htm', 'text/html'],
@@ -272,4 +314,16 @@ Common.ResourceType._mimeTypeByExtension = new Map([
 
   // Font
   ['ttf', 'font/opentype'], ['otf', 'font/opentype'], ['ttc', 'font/opentype'], ['woff', 'application/font-woff']
+]);
+
+Common.ResourceType._resourceTypeByMimeType = new Map([
+  // Web types
+  ['text/javascript', Common.resourceTypes.Script], ['text/css', Common.resourceTypes.Stylesheet],
+  ['text/html', Common.resourceTypes.Document],
+
+  // Image
+  ['image', Common.resourceTypes.Image],
+
+  // Font
+  ['font', Common.resourceTypes.Font], ['application/font-woff', Common.resourceTypes.Font]
 ]);

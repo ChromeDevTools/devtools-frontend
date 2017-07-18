@@ -902,6 +902,14 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
+   * @param {!SDK.NetworkRequest.ContentData} data
+   */
+  setContentData(data) {
+    console.assert(!this._contentData, 'contentData can only be set once.');
+    this._contentData = Promise.resolve(data);
+  }
+
+  /**
    * @override
    * @return {string}
    */

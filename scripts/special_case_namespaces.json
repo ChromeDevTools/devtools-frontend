@@ -3,5 +3,6 @@
   "ui": "UI",
   "object_ui": "ObjectUI",
   "perf_ui": "PerfUI",
-  "css_tracker": "CSSTracker"
+  "css_tracker": "CSSTracker",
+  "har_importer": "HARImporter"
 }

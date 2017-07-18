@@ -1,0 +1,11 @@
+{
+    "dependencies": [
+        "common",
+        "network_log",
+        "sdk"
+    ],
+    "scripts": [
+        "HARFormat.js",
+        "HARImporter.js"
+    ]
+}

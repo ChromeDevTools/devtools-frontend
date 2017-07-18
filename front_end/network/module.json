@@ -122,6 +122,7 @@
         "network_log",
         "product_registry",
         "mobile_throttling",
+        "har_importer",
         "network_priorities"
     ],
     "scripts": [

@@ -17,6 +17,7 @@
         { "name": "services", "type": "autostart" },
         { "name": "elements", "condition": "!v8only" },
         { "name": "network", "condition": "!v8only" },
+        { "name": "har_importer", "condition": "!v8only" },
         { "name": "sources" },
         { "name": "timeline", "condition": "!v8only" },
         { "name": "timeline_model", "condition": "!v8only" },

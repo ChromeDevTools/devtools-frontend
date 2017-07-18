@@ -737,6 +737,7 @@ Runtime.Module = class {
       'ui': 'UI',
       'object_ui': 'ObjectUI',
       'perf_ui': 'PerfUI',
+      'har_importer': 'HARImporter',
     };
     var namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};

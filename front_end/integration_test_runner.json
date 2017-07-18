@@ -16,6 +16,7 @@
     { "name": "host", "type": "autostart" },
     { "name": "common", "type": "autostart" },
     { "name": "emulation", "type": "autostart" },
+    { "name": "har_importer", "condition": "!v8only" },
     { "name": "workspace", "type": "autostart" },
     { "name": "bindings", "type": "autostart" },
     { "name": "persistence", "type": "autostart" },

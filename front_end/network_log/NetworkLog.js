@@ -323,6 +323,20 @@ NetworkLog.NetworkLog = class extends Common.Object {
   }
 
   /**
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   */
+  importRequests(requests) {
+    this.reset();
+    this._requests = [];
+    this._requestsSet.clear();
+    for (var request of requests) {
+      this._requests.push(request);
+      this._requestsSet.add(request);
+      this.dispatchEventToListeners(NetworkLog.NetworkLog.Events.RequestAdded, request);
+    }
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _onRequestStarted(event) {

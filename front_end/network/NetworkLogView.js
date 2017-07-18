@@ -108,6 +108,9 @@ Network.NetworkLogView = class extends UI.VBox {
     this._resetSuggestionBuilder();
     this._initializeView();
 
+    new UI.DropTarget(
+        this.element, [UI.DropTarget.Types.Files], Common.UIString('Drop HAR files here'), this._handleDrop.bind(this));
+
     Common.moduleSetting('networkColorCodeResourceTypes')
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
@@ -379,6 +382,48 @@ Network.NetworkLogView = class extends UI.VBox {
           contentData.content, request.mimeType, contentData.encoded, contentData.encoded ? 'utf-8' : null);
     }
     InspectorFrontendHost.copyText(content || '');
+  }
+
+  /**
+   * @param {!DataTransfer} dataTransfer
+   */
+  _handleDrop(dataTransfer) {
+    var items = dataTransfer.items;
+    if (!items.length)
+      return;
+    var entry = items[0].webkitGetAsEntry();
+    if (entry.isDirectory)
+      return;
+
+    entry.file(this._onLoadFromFile.bind(this));
+  }
+
+  /**
+   * @param {!File} file
+   */
+  async _onLoadFromFile(file) {
+    var outputStream = new Common.StringOutputStream();
+    var reader = new Bindings.ChunkedFileReader(file, /* chunkSize */ 10000000);
+    var success = await reader.read(outputStream);
+    if (!success) {
+      this._harLoadFailed(reader.error().message);
+      return;
+    }
+    try {
+      // HARRoot and JSON.parse might throw.
+      var harRoot = new HARImporter.HARRoot(JSON.parse(outputStream.data()));
+    } catch (e) {
+      this._harLoadFailed(e);
+      return;
+    }
+    NetworkLog.networkLog.importRequests(HARImporter.Importer.requestsFromHARLog(harRoot.log));
+  }
+
+  /**
+   * @param {string} message
+   */
+  _harLoadFailed(message) {
+    Common.console.error('Failed to load HAR file with following error: ' + message);
   }
 
   /**

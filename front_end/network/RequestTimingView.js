@@ -148,20 +148,23 @@ Network.RequestTimingView = class extends UI.VBox {
     if (issueTime < startTime)
       addRange(Network.RequestTimeRangeNames.Queueing, issueTime, startTime);
 
+    var responseReceived = (request.responseReceivedTime - startTime) * 1000;
     if (request.fetchedViaServiceWorker) {
       addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, timing.workerStart);
       addOffsetRange(Network.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
       addOffsetRange(Network.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
-      addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
+      addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, responseReceived);
     } else if (!timing.pushStart) {
-      var blocking = firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart]) || 0;
-      addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, blocking);
+      var blockingEnd = firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart, responseReceived]) || 0;
+      addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, blockingEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Proxy, timing.proxyStart, timing.proxyEnd);
       addOffsetRange(Network.RequestTimeRangeNames.DNS, timing.dnsStart, timing.dnsEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Connecting, timing.connectStart, timing.connectEnd);
       addOffsetRange(Network.RequestTimeRangeNames.SSL, timing.sslStart, timing.sslEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Sending, timing.sendStart, timing.sendEnd);
-      addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, timing.receiveHeadersEnd);
+      addOffsetRange(
+          Network.RequestTimeRangeNames.Waiting,
+          Math.max(timing.sendEnd, timing.connectEnd, timing.dnsEnd, timing.proxyEnd, blockingEnd), responseReceived);
     }
 
     if (request.endTime !== -1) {

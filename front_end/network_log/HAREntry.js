@@ -61,14 +61,19 @@ NetworkLog.HAREntry = class {
     if (portPositionInString !== -1)
       ipAddress = ipAddress.substr(0, portPositionInString);
 
+    var timings = this._buildTimings();
+    // "ssl" is included in the connect field, so do not double count it.
+    var time = timings.blocked + timings.dns + timings.connect + timings.send + timings.wait + timings.receive;
+
     var entry = {
-      startedDateTime: NetworkLog.HARLog.pseudoWallTime(this._request, this._request.startTime),
-      time: this._request.timing ? NetworkLog.HAREntry._toMilliseconds(this._request.duration) : 0,
+      startedDateTime: NetworkLog.HARLog.pseudoWallTime(this._request, this._request.issueTime()),
+      time: time,
       request: this._buildRequest(),
       response: this._buildResponse(),
       cache: {},  // Not supported yet.
-      timings: this._buildTimings(),
-      serverIPAddress: ipAddress
+      timings: timings,
+      // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
+      serverIPAddress: ipAddress.replace(/\[\]/g, '')
     };
 
     if (this._request.connectionId !== '0')
@@ -136,43 +141,79 @@ NetworkLog.HAREntry = class {
   }
 
   /**
-   * @return {!Object}
+   * @return {!NetworkLog.HAREntry.Timing}
    */
   _buildTimings() {
-    // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], receive_headers_end
-    // HAR 'blocked' time is time before first network activity.
-
+    // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
     var timing = this._request.timing;
-    if (!timing)
-      return {blocked: -1, dns: -1, connect: -1, send: 0, wait: 0, receive: 0, ssl: -1};
+    var issueTime = this._request.issueTime();
+    var startTime = this._request.startTime;
 
-    function firstNonNegative(values) {
-      for (var i = 0; i < values.length; ++i) {
-        if (values[i] >= 0)
-          return values[i];
-      }
-      console.assert(false, 'Incomplete request timing information.');
+    var result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: -1, _blocked_queueing: -1};
+
+    var queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
+    result.blocked = queuedTime;
+    result._blocked_queueing = NetworkLog.HAREntry._toMilliseconds(queuedTime);
+
+    var highestTime = 0;
+    if (timing) {
+      // "blocked" here represents both queued + blocked/stalled + proxy (ie: anything before request was started).
+      // We pick the better of when the network request start was reported and pref timing.
+      var blockedStart = leastNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
+      if (blockedStart !== Infinity)
+        result.blocked += blockedStart;
+
+      // Proxy is part of blocked but sometimes (like quic) blocked is -1 but has proxy timings.
+      if (timing.proxyEnd !== -1)
+        result._blocked_proxy = timing.proxyEnd - timing.proxyStart;
+      if (result._blocked_proxy && result._blocked_proxy > result.blocked)
+        result.blocked = result._blocked_proxy;
+
+      var dnsStart = timing.dnsEnd >= 0 ? blockedStart : 0;
+      var dnsEnd = timing.dnsEnd >= 0 ? timing.dnsEnd : -1;
+      result.dns = dnsEnd - dnsStart;
+
+      // SSL timing is included in connection timing.
+      var sslStart = timing.sslEnd > 0 ? timing.sslStart : 0;
+      var sslEnd = timing.sslEnd > 0 ? timing.sslEnd : -1;
+      result.ssl = sslEnd - sslStart;
+
+      var connectStart = timing.connectEnd >= 0 ? leastNonNegative([dnsEnd, blockedStart]) : 0;
+      var connectEnd = timing.connectEnd >= 0 ? timing.connectEnd : -1;
+      result.connect = connectEnd - connectStart;
+
+      // Send should not be -1 for legacy reasons even if it is served from cache.
+      var sendStart = timing.sendEnd >= 0 ? Math.max(connectEnd, dnsEnd, blockedStart) : 0;
+      var sendEnd = timing.sendEnd >= 0 ? timing.sendEnd : 0;
+      result.send = sendEnd - sendStart;
+      // Quic sometimes says that sendStart is before connectionEnd (see: crbug.com/740792)
+      if (result.send < 0)
+        result.send = 0;
+      highestTime = Math.max(sendEnd, connectEnd, sslEnd, dnsEnd, blockedStart, 0);
+    } else if (this._request.responseReceivedTime === -1) {
+      // Means that we don't have any more details after blocked, so attribute all to blocked.
+      result.blocked = this._request.endTime - issueTime;
+      return result;
     }
 
-    var blocked = firstNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
+    var requestTime = timing ? timing.requestTime : startTime;
+    var waitStart = highestTime;
+    var waitEnd = NetworkLog.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    result.wait = waitEnd - waitStart;
 
-    var dns = -1;
-    if (timing.dnsStart >= 0)
-      dns = firstNonNegative([timing.connectStart, timing.sendStart]) - timing.dnsStart;
+    var receiveStart = waitEnd;
+    var receiveEnd = NetworkLog.HAREntry._toMilliseconds(this._request.endTime - issueTime);
+    result.receive = Math.max(receiveEnd - receiveStart, 0);
 
-    var connect = -1;
-    if (timing.connectStart >= 0)
-      connect = timing.sendStart - timing.connectStart;
+    return result;
 
-    var send = timing.sendEnd - timing.sendStart;
-    var wait = timing.receiveHeadersEnd - timing.sendEnd;
-    var receive = NetworkLog.HAREntry._toMilliseconds(this._request.duration) - timing.receiveHeadersEnd;
-
-    var ssl = -1;
-    if (timing.sslStart >= 0 && timing.sslEnd >= 0)
-      ssl = timing.sslEnd - timing.sslStart;
-
-    return {blocked: blocked, dns: dns, connect: connect, send: send, wait: wait, receive: receive, ssl: ssl};
+    /**
+     * @param {!Array<number>} values
+     * @return {number}
+     */
+    function leastNonNegative(values) {
+      return values.reduce((best, value) => (value >= 0 && value < best) ? value : best, Infinity);
+    }
   }
 
   /**
@@ -257,6 +298,19 @@ NetworkLog.HAREntry = class {
     return this._request.resourceSize - this.responseBodySize;
   }
 };
+
+/** @typedef {!{
+  blocked: number,
+  dns: number,
+  ssl: number,
+  connect: number,
+  send: number,
+  wait: number,
+  receive: number,
+  _blocked_queueing: number,
+  _blocked_proxy: (number|undefined)
+}} */
+NetworkLog.HAREntry.Timing;
 
 
 /**

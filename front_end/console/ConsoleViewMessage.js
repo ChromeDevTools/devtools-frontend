@@ -204,7 +204,12 @@ Console.ConsoleViewMessage = class {
           break;
         case ConsoleModel.ConsoleMessage.MessageType.Clear:
           messageElement = createElementWithClass('span', 'console-info');
-          messageElement.textContent = Common.UIString('Console was cleared');
+          if (Common.moduleSetting('preserveConsoleLog').get())
+            messageElement.textContent = Common.UIString('console.clear() was prevented due to \'Preserve log\'');
+          else
+            messageElement.textContent = Common.UIString('Console was cleared');
+          messageElement.title =
+              Common.UIString('Clear all messages with ' + UI.shortcutRegistry.shortcutTitleForAction('console.clear'));
           break;
         case ConsoleModel.ConsoleMessage.MessageType.Assert:
           var args = [Common.UIString('Assertion failed:')];

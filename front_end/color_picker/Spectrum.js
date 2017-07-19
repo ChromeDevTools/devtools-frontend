@@ -115,7 +115,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     UI.installDragHandle(
         this._colorElement, dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null, 'default');
 
-    this.element.classList.add('palettes-enabled');
+    this.element.classList.add('palettes-enabled', 'flex-none');
     /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');

@@ -159,7 +159,7 @@ UI.GlassPane = class {
 
     var showArrow = this._marginBehavior === UI.GlassPane.MarginBehavior.Arrow;
     var gutterSize = showArrow ? 8 : (this._marginBehavior === UI.GlassPane.MarginBehavior.NoMargin ? 0 : 3);
-    var scrollbarSize = 14;
+    var scrollbarSize = 15;
     var arrowSize = 10;
 
     var container = UI.GlassPane._containers.get(/** @type {!Document} */ (this.element.ownerDocument));

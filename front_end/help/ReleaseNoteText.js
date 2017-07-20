@@ -12,6 +12,33 @@ var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shif
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 4,
+    header: 'Highlights from the Chrome 61 update',
+    highlights: [
+      {
+        title: 'Mobile device throttling',
+        subtitle: 'Simulate a mobile device\'s CPU and network throttling from Device Mode.',
+        link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#throttling',
+      },
+      {
+        title: 'Storage usage',
+        subtitle: 'See how much storage (IndexedDB, local, session, cache, etc.) an origin is using.',
+        link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#storage',
+      },
+      {
+        title: 'Cache timestamps',
+        subtitle: 'View when a service worker cached a response.',
+        link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#time-cached',
+      },
+      {
+        title: 'ES6 Modules support',
+        subtitle: 'Debug ES6 Modules natively from the Sources panel.',
+        link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes#modules',
+      }
+    ],
+    link: 'https://developers.google.com/web/updates/2017/07/devtools-release-notes',
+  },
+  {
     version: 3,
     header: 'Highlights from the Chrome 60 update',
     highlights: [

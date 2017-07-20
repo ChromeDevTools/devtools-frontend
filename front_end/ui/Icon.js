@@ -174,6 +174,7 @@ UI.Icon.Descriptors = {
   'largeicon-dock-to-bottom': {position: 'd8', spritesheet: 'largeicons', isMask: true},
   'largeicon-dock-to-left': {position: 'd7', spritesheet: 'largeicons', isMask: true},
   'largeicon-dock-to-right': {position: 'd6', spritesheet: 'largeicons', isMask: true},
+  'largeicon-download': {position: 'h6', spritesheet: 'largeicons', isMask: true},
   'largeicon-edit': {position: 'a5', spritesheet: 'largeicons', isMask: true},
   'largeicon-eyedropper': {position: 'b5', spritesheet: 'largeicons', isMask: true},
   'largeicon-filter': {position: 'c5', spritesheet: 'largeicons', isMask: true},

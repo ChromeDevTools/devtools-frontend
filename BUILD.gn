@@ -48,7 +48,6 @@ all_devtools_files = [
   "front_end/audits2/Audits2Panel.js",
   "front_end/audits2/audits2Dialog.css",
   "front_end/audits2/audits2Panel.css",
-  "front_end/audits2/audits2Tree.css",
   "front_end/audits2/lighthouse/renderer/dom.js",
   "front_end/audits2/lighthouse/renderer/details-renderer.js",
   "front_end/audits2/lighthouse/renderer/category-renderer.js",

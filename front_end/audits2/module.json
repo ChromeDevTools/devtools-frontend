@@ -29,7 +29,6 @@
     "resources": [
         "audits2Dialog.css",
         "audits2Panel.css",
-        "audits2Tree.css",
         "lighthouse/report-styles.css",
         "lighthouse/templates.html"
     ]

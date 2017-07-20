@@ -93,14 +93,15 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._rulerEnabled = true;
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
-    this._timeWindowLeft = 0;
-    this._timeWindowRight = Infinity;
+    this._timeWindowLeft = dataProvider.minimumBoundary();
+    this._timeWindowRight = this._timeWindowLeft + dataProvider.totalTime();
     this._rangeSelectionStart = 0;
     this._rangeSelectionEnd = 0;
     this._barHeight = 17;
     this._textBaseline = 5;
     this._textPadding = 5;
     this._markerRadius = 6;
+    this._chartViewport.setWindowTimes(this._timeWindowLeft, this._timeWindowRight);
 
     /** @const */
     this._headerLeftPadding = 6;

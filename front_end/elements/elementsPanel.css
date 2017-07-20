@@ -59,11 +59,6 @@
     border-top: 1px solid #ccc;
 }
 
-.properties-widget-section {
-    padding: 2px 0px 2px 5px;
-    flex: none;
-}
-
 .elements-tree-header {
     height: 24px;
     border-top: 1px solid #eee;

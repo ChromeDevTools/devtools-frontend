@@ -279,6 +279,7 @@
         "elementsTreeOutline.css",
         "metricsSidebarPane.css",
         "platformFontsWidget.css",
+        "propertiesWidget.css",
         "stylesSectionTree.css",
         "stylesSidebarPane.css"
     ]

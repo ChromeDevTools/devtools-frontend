@@ -131,6 +131,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._onModeChanged();
     this._populateToolbar();
     this._showLandingPage();
+    this._updateTimelineControls();
 
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.TraceProviderAdded, this._appendExtensionsToToolbar, this);
@@ -223,6 +224,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._onClearButton());
     this._panelToolbar.appendToolbarItem(this._clearButton);
+
+    // Save
+    this._saveButton = new UI.ToolbarButton(Common.UIString('Save profile...'), 'largeicon-download');
+    this._saveButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._saveToFile());
+    this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._saveButton);
+
     // History
     if (this._historyManager) {
       this._panelToolbar.appendSeparator();
@@ -584,6 +592,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._clearButton.setEnabled(this._state === state.Idle);
     this._panelToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
+    this._saveButton.setEnabled(this._state === state.Idle && !!this._performanceModel);
   }
 
   _toggleRecording() {
@@ -658,6 +667,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     }
     if (this._flameChart)
       this._flameChart.resizeToPreferredHeights();
+    this._updateTimelineControls();
   }
 
   _recordingStarted() {

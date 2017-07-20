@@ -12,7 +12,7 @@
    height="216"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="largeIcons.svg">
   <metadata
      id="metadata606">
@@ -36,17 +36,20 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1407"
-     inkscape:window-height="1195"
+     inkscape:window-width="1946"
+     inkscape:window-height="1546"
      id="namedview602"
      showgrid="true"
      inkscape:zoom="17.481482"
-     inkscape:cx="183.14435"
-     inkscape:cy="135.46745"
+     inkscape:cx="192.21515"
+     inkscape:cy="108.993"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg2">
+     inkscape:current-layer="svg2"
+     inkscape:snap-grids="true"
+     showguides="true"
+     inkscape:guide-bbox="true">
     <inkscape:grid
        type="xygrid"
        id="grid3583"
@@ -422,26 +425,19 @@
        id="path190"
        inkscape:connector-curvature="0" />
   </g>
-  <g
-     transform="translate(112,24)"
-     id="g192">
-    <path
-       transform="translate(-192,-72)"
-       d="m 200.5,78.5 h 14 v 12 h -14 z"
-       id="path196"
-       inkscape:connector-curvature="0"
-       style="fill:none;stroke:#000000" />
-    <path
-       transform="translate(-192,-72)"
-       d="m 207,84.5 5,-3.25 v 6.5"
-       id="path198"
-       inkscape:connector-curvature="0" />
-    <path
-       transform="translate(-192,-72)"
-       d="m 204,78 h 1 v 13 h -1 z"
-       id="path200"
-       inkscape:connector-curvature="0" />
-  </g>
+  <path
+     style="fill:none;stroke:#000000"
+     inkscape:connector-curvature="0"
+     id="path196"
+     d="m 120.5,30.5 h 14 v 12 h -14 z" />
+  <path
+     inkscape:connector-curvature="0"
+     id="path198"
+     d="m 127,36.5 5,-3.25 v 6.5" />
+  <path
+     inkscape:connector-curvature="0"
+     id="path200"
+     d="m 124,30 h 1 v 13 h -1 z" />
   <g
      transform="translate(112,48)"
      id="g202">
@@ -1421,19 +1417,21 @@
          style="fill:#000000" />
     </g>
   </g>
-  <g
+  <path
      style="fill:#000000"
-     id="g4305"
-     transform="translate(196,72)">
-    <path
-       id="path4295"
-       d="m 17,10 -3,0 0,-4 -4,0 0,4 -3,0 5,6 z m -10,7 0,1 10,0 0,-1 z"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccc" />
-    <path
-       id="path4297"
-       d="M 0,0 H 24 V 24 H 0 z"
-       inkscape:connector-curvature="0"
-       style="fill:none" />
-  </g>
+     sodipodi:nodetypes="ccccccccccccc"
+     inkscape:connector-curvature="0"
+     d="m 215,82 -3,0 0,-4 -4,0 0,4 -3,0 5,6 z m -10,7 0,1 10,0 0,-1 z"
+     id="path4295" />
+  <path
+     style="fill:none"
+     inkscape:connector-curvature="0"
+     d="m 196,72 h 24 v 24 h -24 z"
+     id="path4297" />
+  <path
+     style="fill:#000000"
+     d="m 210,102 -5,6 3,0 0,4 4,0 0,-4 3,0 z m -5,11 0,1 10,0 0,-1 z"
+     id="path4295-3"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccccccccc" />
 </svg>

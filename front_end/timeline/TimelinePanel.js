@@ -225,10 +225,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._onClearButton());
     this._panelToolbar.appendToolbarItem(this._clearButton);
 
-    // Save
+    // Load / Save
+    this._loadButton = new UI.ToolbarButton(Common.UIString('Load profile...'), 'largeicon-load');
+    this._loadButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._selectFileToLoad());
     this._saveButton = new UI.ToolbarButton(Common.UIString('Save profile...'), 'largeicon-download');
     this._saveButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._saveToFile());
     this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._loadButton);
     this._panelToolbar.appendToolbarItem(this._saveButton);
 
     // History
@@ -592,6 +595,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._clearButton.setEnabled(this._state === state.Idle);
     this._panelToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
+    this._loadButton.setEnabled(this._state === state.Idle);
     this._saveButton.setEnabled(this._state === state.Idle && !!this._performanceModel);
   }
 

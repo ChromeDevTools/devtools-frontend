@@ -623,7 +623,8 @@ Emulation.DeviceModeModel = class extends Common.Object {
           screenWidth: screenSize.width,
           screenHeight: screenSize.height,
           positionX: positionX,
-          positionY: positionY
+          positionY: positionY,
+          dontSetVisibleSize: true
         };
         if (screenOrientation)
           metrics.screenOrientation = {type: screenOrientation, angle: screenOrientationAngle};

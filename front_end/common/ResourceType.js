@@ -319,7 +319,7 @@ Common.ResourceType._mimeTypeByExtension = new Map([
 Common.ResourceType._resourceTypeByMimeType = new Map([
   // Web types
   ['text/javascript', Common.resourceTypes.Script], ['text/css', Common.resourceTypes.Stylesheet],
-  ['text/html', Common.resourceTypes.Document],
+  ['text/html', Common.resourceTypes.Document], ['application/json', Common.resourceTypes.Script],
 
   // Image
   ['image', Common.resourceTypes.Image],

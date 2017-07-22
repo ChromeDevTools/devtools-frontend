@@ -211,12 +211,6 @@
         },
         {
             "type": "@UI.ToolbarItem.Provider",
-            "className": "Main.Main.WarningErrorCounter",
-            "order": 1,
-            "location": "main-toolbar-right"
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
             "separator": true,
             "order": 98,
             "location": "main-toolbar-right"
@@ -436,7 +430,8 @@
         "persistence",
         "help",
         "console_model",
-        "network_log"
+        "network_log",
+        "console_counters"
     ],
     "scripts": [
         "RenderingOptions.js",
@@ -447,7 +442,6 @@
         "Main.js"
     ],
     "resources": [
-        "errorWarningCounter.css",
         "nodeIcon.css",
         "remoteDebuggingTerminatedScreen.css",
         "renderingOptions.css",

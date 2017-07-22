@@ -39,8 +39,9 @@ const MODULES_TO_REMOVE = [];
  * If moving to an existing module:
  * {file: 'ui/SomeFile.js', existing: 'common'}
  */
-const JS_FILES_MAPPING =
-    [{file: 'common/FormatterWorkerPool.js', new: 'formatter'}, {file: 'sources/ScriptFormatter.js', new: 'formatter'}];
+const JS_FILES_MAPPING = [
+  {file: 'main/WarningErrorCounter.js', new: 'console_counters'},
+];
 
 /**
  * List all new modules here:
@@ -52,11 +53,11 @@ const JS_FILES_MAPPING =
  * }
  */
 const MODULE_MAPPING = {
-  formatter: {
-    dependencies: ['common'],
-    dependents: ['sources', 'audits', 'network', 'sass'],
-    applications: ['inspector.json'],
-    autostart: false,
+  console_counters: {
+    dependencies: ['common', 'ui', 'console_model'],
+    dependents: ['main', 'console_test_runner'],
+    applications: ['inspector.json', 'integration_test_runner.json'],
+    autostart: true,
   },
 };
 
@@ -72,7 +73,9 @@ const NEW_DEPENDENCIES_BY_EXISTING_MODULES = {
  * If an existing module will no longer have a dependency on a module:
  * console: ['former_dependency']
  */
-const REMOVE_DEPENDENCIES_BY_EXISTING_MODULES = {};
+const REMOVE_DEPENDENCIES_BY_EXISTING_MODULES = {
+  console_test_runner: ['main']
+};
 
 /*
  * ==========================================

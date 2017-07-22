@@ -69,7 +69,8 @@
     { "name": "changes"},
     { "name": "mobile_throttling", "type": "autostart"},
     { "name": "network_priorities"},
-    { "name": "formatter" }
+    { "name": "formatter" },
+    { "name": "console_counters", "type": "autostart" }
   ],
 
   "has_html": true

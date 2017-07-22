@@ -4,7 +4,7 @@
     "integration_test_runner",
     "console",
     "console_model",
-    "main"
+    "console_counters"
   ],
   "scripts": [
     "ConsoleTestRunner.js"

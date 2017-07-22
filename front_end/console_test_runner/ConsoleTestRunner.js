@@ -291,7 +291,7 @@ ConsoleTestRunner.dumpConsoleClassesBrief = function() {
 };
 
 ConsoleTestRunner.dumpConsoleCounters = function() {
-  var counter = Main.Main.WarningErrorCounter._instanceForTest;
+  var counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
   for (var index = 0; index < counter._titles.length; ++index)
     TestRunner.addResult(counter._titles[index]);
   ConsoleTestRunner.dumpConsoleClassesBrief();

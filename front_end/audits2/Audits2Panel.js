@@ -9,8 +9,8 @@
 Audits2.Audits2Panel = class extends UI.Panel {
   constructor() {
     super('audits2');
-    this.registerRequiredCSS('audits2/audits2Panel.css');
     this.registerRequiredCSS('audits2/lighthouse/report-styles.css');
+    this.registerRequiredCSS('audits2/audits2Panel.css');
 
     this._protocolService = new Audits2.ProtocolService();
     this._protocolService.registerStatusCallback(msg => this._updateStatus(Common.UIString(msg)));
@@ -210,6 +210,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
         UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), '', true /* primary */);
+    this._startButton.autofocus = true;
     this._updateStartButtonEnabled();
     buttonsRow.appendChild(this._startButton);
     this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this));
@@ -537,8 +538,6 @@ Audits2.ProtocolService = class extends Common.Object {
   attach() {
     return SDK.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
       this._rawConnection = rawConnection;
-      this._rawConnection.sendMessage(
-          JSON.stringify({id: 0, method: 'Input.setIgnoreInputEvents', params: {ignore: true}}));
     });
   }
 
@@ -715,7 +714,7 @@ Audits2.ReportSelector.Item = class {
       return;
     }
 
-    this._reportContainer = this._resultsView.createChild('div', 'report-container lh-vars lh-root lh-devtools');
+    this._reportContainer = this._resultsView.createChild('div', 'lh-vars lh-root lh-devtools');
 
     var dom = new DOM(/** @type {!Document} */ (this._resultsView.ownerDocument));
     var detailsRenderer = new Audits2.DetailsRenderer(dom);

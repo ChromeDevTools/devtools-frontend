@@ -47,15 +47,16 @@
 }
 
 .lh-root {
-  --report-menu-width: 0 !important;
+  --report-menu-width: 0;
   user-select: initial;
+  background: #fff;
 }
 
 .audits2-landing-center button {
     margin-top: 20px;
 }
 
-.report-container {
-    overflow: auto;
+.audits2-results-container {
+    overflow-y: scroll;
     position: relative;
 }

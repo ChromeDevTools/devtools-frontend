@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license Copyright 2017 Google Inc. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 'use strict';
 
@@ -28,17 +18,14 @@ class ReportRenderer {
   /**
    * @param {!DOM} dom
    * @param {!CategoryRenderer} categoryRenderer
-   * @param {?ReportUIFeatures=} uiFeatures
    */
-  constructor(dom, categoryRenderer, uiFeatures = null) {
+  constructor(dom, categoryRenderer) {
     /** @private {!DOM} */
     this._dom = dom;
     /** @private {!CategoryRenderer} */
     this._categoryRenderer = categoryRenderer;
     /** @private {!Document|!Element} */
     this._templateContext = this._dom.document();
-    /** @private {ReportUIFeatures} */
-    this._uiFeatures = uiFeatures;
   }
 
   /**
@@ -48,12 +35,6 @@ class ReportRenderer {
   renderReport(report, container) {
     container.textContent = ''; // Remove previous report.
     const element = container.appendChild(this._renderReport(report));
-
-    // Hook in JS features and page-level event listeners after the report
-    // is in the document.
-    if (this._uiFeatures) {
-      this._uiFeatures.initFeatures(report);
-    }
 
     return /** @type {!Element} **/ (element);
   }
@@ -127,7 +108,7 @@ class ReportRenderer {
       this._dom.find('.leftnav-item__category', navItem).textContent = category.name;
       const score = this._dom.find('.leftnav-item__score', navItem);
       score.classList.add(`lh-score__value--${Util.calculateRating(category.score)}`);
-      score.textContent = Math.round(Util.formatNumber(category.score));
+      score.textContent = Math.round(category.score);
       nav.appendChild(navItem);
     }
     return leftNav;
@@ -139,18 +120,21 @@ class ReportRenderer {
    */
   _renderReport(report) {
     const container = this._dom.createElement('div', 'lh-container');
-
     container.appendChild(this._renderReportHeader(report)); // sticky header goes at the top.
     container.appendChild(this._renderReportNav(report));
-
     const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));
 
-    const scoreHeader = reportSection.appendChild(
-        this._dom.createElement('div', 'lh-scores-header'));
+    let scoreHeader;
+    const isSoloCategory = report.reportCategories.length === 1;
+    if (!isSoloCategory) {
+      scoreHeader = reportSection.appendChild(this._dom.createElement('div', 'lh-scores-header'));
+    }
 
     const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
     for (const category of report.reportCategories) {
-      scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));
+      if (scoreHeader) {
+        scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));
+      }
       categories.appendChild(this._categoryRenderer.render(category, report.reportGroups));
     }
 
@@ -205,7 +189,7 @@ ReportRenderer.CategoryJSON; // eslint-disable-line no-unused-expressions
 /**
  * @typedef {{
  *     title: string,
- *     description: string,
+ *     description: (string|undefined),
  * }}
  */
 ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions

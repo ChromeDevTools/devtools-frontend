@@ -1,17 +1,7 @@
 /**
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * @license Copyright 2017 Google Inc. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 'use strict';
 
@@ -72,8 +62,30 @@ class DetailsRenderer {
    * @return {!Element}
    */
   _renderURL(text) {
-    const element = this._renderText(text);
+    const url = text.text || '';
+
+    let displayedURL;
+    let title;
+    try {
+      displayedURL = Util.parseURL(url).file;
+      title = url;
+    } catch (/** @type {!Error} */ e) {
+      if (!(e instanceof TypeError)) {
+        throw e;
+      }
+      displayedURL = url;
+    }
+
+    const element = this._renderText({
+      type: 'url',
+      text: displayedURL
+    });
     element.classList.add('lh-text__url');
+
+    if (title) {
+      element.title = url;
+    }
+
     return element;
   }
 
@@ -113,6 +125,7 @@ class DetailsRenderer {
     if (!list.items.length) return this._dom.createElement('span');
 
     const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
     if (list.header) {
       const summary = this._dom.createElement('summary', 'lh-list__header');
       summary.textContent = list.header.text;
@@ -135,6 +148,7 @@ class DetailsRenderer {
     if (!details.items.length) return this._dom.createElement('span');
 
     const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
     if (details.header) {
       element.appendChild(this._dom.createElement('summary')).textContent = details.header;
     }
@@ -182,6 +196,7 @@ class DetailsRenderer {
    */
   _renderCards(details) {
     const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
     if (details.header) {
       element.appendChild(this._dom.createElement('summary')).textContent = details.header.text;
     }
@@ -216,7 +231,7 @@ class DetailsRenderer {
     for (const thumbnail of details.items) {
       const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');
 
-      let timing = thumbnail.timing.toLocaleString() + ' ms';
+      let timing = Util.formatMilliseconds(thumbnail.timing, 1);
       if (thumbnail.timing > 1000) {
         timing = Util.formatNumber(thumbnail.timing / 1000) + ' s';
       }

@@ -508,16 +508,16 @@ Console.ConsoleViewMessage = class {
     var type = forceObjectFormat ? 'object' : (output.subtype || output.type);
     var element;
     switch (type) {
-      case 'array':
-      case 'typedarray':
-        element = this._formatParameterAsObject(output, includePreview);
-        break;
       case 'error':
         element = this._formatParameterAsError(output);
         break;
       case 'function':
         element = this._formatParameterAsFunction(output, includePreview);
         break;
+      case 'array':
+      case 'arraybuffer':
+      case 'blob':
+      case 'dataview':
       case 'generator':
       case 'iterator':
       case 'map':
@@ -525,6 +525,7 @@ Console.ConsoleViewMessage = class {
       case 'promise':
       case 'proxy':
       case 'set':
+      case 'typedarray':
       case 'weakmap':
       case 'weakset':
         element = this._formatParameterAsObject(output, includePreview);

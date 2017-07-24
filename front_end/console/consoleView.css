@@ -362,6 +362,10 @@
 
 .console-view-object-properties-section {
     padding: 0px;
+    position: relative;
+    vertical-align: baseline;
+    color: inherit;
+    display: inline-block;
 }
 
 .console-message-stack-trace-toggle {

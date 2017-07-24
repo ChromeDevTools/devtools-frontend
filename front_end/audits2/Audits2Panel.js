@@ -279,6 +279,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
       if (preset.setting.get())
         categoryIDs.push(preset.configID);
     }
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Started);
 
     return Promise.resolve()
         .then(_ => this._updateInspectedURL())
@@ -368,6 +369,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
   async _stopAndReattach() {
     await this._protocolService.detach();
     Emulation.InspectedPagePlaceholder.instance().update(true);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Finished);
     var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
     // reload to reset the page state
     await resourceTreeModel.navigate(this._inspectedURL);

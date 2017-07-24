@@ -91,6 +91,8 @@ Host.UserMetrics.Action = {
   ChangeInspectedNodeInElementsPanel: 26,
   StyleRuleCopied: 27,
   CoverageStarted: 28,
+  Audits2Started: 29,
+  Audits2Finished: 30
 };
 
 Host.UserMetrics._PanelCodes = {

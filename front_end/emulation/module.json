@@ -55,6 +55,14 @@
             "tags": "device"
         },
         {
+            "type": "@UI.ActionDelegate",
+            "actionId": "emulation.capture-node-screenshot",
+            "category": "Mobile",
+            "className": "Emulation.DeviceModeWrapper.ActionDelegate",
+            "title": "Capture node screenshot",
+            "tags": "device"
+        },
+        {
             "type": "context-menu-item",
             "location": "deviceModeMenu/tools",
             "order": 13,

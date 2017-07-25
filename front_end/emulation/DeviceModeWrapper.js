@@ -27,14 +27,17 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
 
   /**
    * @param {boolean=} fullSize
+   * @param {!Protocol.Page.Viewport=} clip
    * @return {boolean}
    */
-  _captureScreenshot(fullSize) {
+  _captureScreenshot(fullSize, clip) {
     if (!this._deviceModeView)
       this._deviceModeView = new Emulation.DeviceModeView();
     this._deviceModeView.setNonEmulatedAvailableSize(this._inspectedPagePlaceholder.element);
     if (fullSize)
       this._deviceModeView.captureFullSizeScreenshot();
+    else if (clip)
+      this._deviceModeView.captureAreaScreenshot(clip);
     else
       this._deviceModeView.captureScreenshot();
     return true;
@@ -85,6 +88,30 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
       switch (actionId) {
         case 'emulation.capture-screenshot':
           return Emulation.DeviceModeView._wrapperInstance._captureScreenshot();
+
+        case 'emulation.capture-node-screenshot': {
+          var node = UI.context.flavor(SDK.DOMNode);
+          if (!node)
+            return true;
+          async function captureClip() {
+            var object = await node.resolveToObject();
+            var result = await object.callFunctionPromise(function() {
+              var rect = this.getBoundingClientRect();
+              var docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+              return JSON.stringify({
+                x: rect.left - docRect.left,
+                y: rect.top - docRect.top,
+                width: rect.width,
+                height: rect.height,
+                scale: 1
+              });
+            });
+            var clip = /** @type {!Protocol.Page.Viewport} */ (JSON.parse(result.object.value));
+            Emulation.DeviceModeView._wrapperInstance._captureScreenshot(false, clip);
+          }
+          captureClip();
+          return true;
+        }
 
         case 'emulation.capture-full-height-screenshot':
           return Emulation.DeviceModeView._wrapperInstance._captureScreenshot(true);

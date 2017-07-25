@@ -416,13 +416,32 @@ Emulation.DeviceModeView = class extends UI.VBox {
     SDK.OverlayModel.unmuteHighlight();
     if (screenshot === null)
       return;
+    return this._saveScreenshotBase64(screenshot);
+  }
 
+  /**
+   * @param {!Protocol.Page.Viewport=} clip
+   * @return {!Promise}
+   */
+  async captureAreaScreenshot(clip) {
+    SDK.OverlayModel.muteHighlight();
+    var screenshot = await this._model.captureScreenshot(false, clip);
+    SDK.OverlayModel.unmuteHighlight();
+    if (screenshot === null)
+      return;
+    return this._saveScreenshotBase64(screenshot);
+  }
+
+  /**
+   * @param {string} screenshot
+   */
+  _saveScreenshotBase64(screenshot) {
     var pageImage = new Image();
     pageImage.src = 'data:image/png;base64,' + screenshot;
     pageImage.onload = () => {
       var canvas = createElement('canvas');
-      canvas.width = pageImage.width;
-      canvas.height = pageImage.height;
+      canvas.width = pageImage.naturalWidth;
+      canvas.height = pageImage.naturalHeight;
       var ctx = canvas.getContext('2d');
       ctx.imageSmoothingEnabled = false;
       ctx.drawImage(pageImage, 0, 0);

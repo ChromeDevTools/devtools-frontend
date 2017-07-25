@@ -1,0 +1,12 @@
+{
+  "name": "chrome-devtools-migrate-test",
+  "version": "0.1.0",
+  "author": "The Chromium Authors",
+  "license": "SEE LICENSE IN https://chromium.googlesource.com/chromium/src/+/master/LICENSE",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "mkdirp": "^0.5.1",
+    "recast": "^0.12.6",
+    "yargs": "^8.0.2"
+  }
+}

@@ -513,3 +513,11 @@ ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, 
     return null;
   }
 };
+
+/**
+ * @param {!Function} override
+ * @param {boolean=} opt_sticky
+ */
+ConsoleTestRunner.addConsoleSniffer = function(override, opt_sticky) {
+  TestRunner.addSniffer(ConsoleModel.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
+};

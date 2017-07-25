@@ -45,13 +45,14 @@ IntegrationTestRunner._setupTestHelpers = function(target) {
  * @param {!Function} callback
  */
 TestRunner.evaluateInPage = async function(code, callback) {
-  if (typeof code === 'function') {
-    if (code.length) {
-      TestRunner.addResult('ERROR: do not use evaluateInPage on a function with parameters: ' + code.toString());
-      TestRunner.addResult('TestRunner.evaluateInPage invokes the function without arguments');
-    }
-    code = `(${code.toString()})()`;
-  }
+  var lines = new Error().stack.split('at ');
+  var components = lines[lines.length - 2].trim().split('/');
+  var source = components[components.length - 1].slice(0, -1).split(':');
+  var fileName = source[0];
+  var lineOffset = parseInt(source[1], 10);
+  code = '\n'.repeat(lineOffset - 1) + code;
+  if (code.indexOf('sourceURL=') === -1)
+    code += `//# sourceURL=${fileName}`;
   var response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   if (!response[Protocol.Error]) {
     TestRunner.safeWrap(callback)(

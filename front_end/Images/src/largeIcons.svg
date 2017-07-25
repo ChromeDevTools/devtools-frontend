@@ -40,9 +40,9 @@
      inkscape:window-height="1546"
      id="namedview602"
      showgrid="true"
-     inkscape:zoom="17.481482"
-     inkscape:cx="192.21515"
-     inkscape:cy="108.993"
+     inkscape:zoom="4.3703705"
+     inkscape:cx="90.664772"
+     inkscape:cy="118.13064"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -95,7 +95,7 @@
     </g>
   </g>
   <g
-     transform="translate(28,0)"
+     transform="translate(26,0)"
      id="g18">
     <path
        transform="translate(-32,0)"
@@ -104,7 +104,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,24)"
+     transform="translate(-2.003,24)"
      id="g24">
     <path
        transform="translate(-224,-120)"
@@ -113,7 +113,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(28,24)"
+     transform="translate(26,24)"
      id="g30">
     <path
        transform="translate(-96,-145)"
@@ -156,7 +156,7 @@
        style="fill:#212121" />
   </g>
   <g
-     transform="translate(28,48)"
+     transform="translate(26,48)"
      id="g50">
     <path
        transform="translate(-96,-24)"
@@ -172,7 +172,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,0)"
+     transform="translate(54,0)"
      id="g58">
     <g
        id="g62"
@@ -239,7 +239,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,72)"
+     transform="translate(-2,72)"
      id="g92">
     <path
        transform="translate(-64,0)"
@@ -267,7 +267,7 @@
     </g>
   </g>
   <g
-     transform="translate(56,72)"
+     transform="translate(54,72)"
      id="g108">
     <path
        transform="translate(0,-24)"
@@ -316,7 +316,7 @@
        style="fill:none" />
   </g>
   <g
-     transform="translate(84,0)"
+     transform="translate(82,0)"
      id="g128">
     <path
        transform="translate(-128,0)"
@@ -325,7 +325,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,24)"
+     transform="translate(82,24)"
      id="g134">
     <path
        transform="translate(-32,-24)"
@@ -334,7 +334,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,48)"
+     transform="translate(82,48)"
      id="g140">
     <path
        transform="translate(-224,-48)"
@@ -343,7 +343,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,72)"
+     transform="translate(82,72)"
      id="g146">
     <path
        transform="translate(-256,-48)"
@@ -352,7 +352,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,96)"
+     transform="translate(-2,96)"
      id="g152">
     <path
        transform="translate(-160,0)"
@@ -361,7 +361,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(28,96)"
+     transform="translate(26,96)"
      id="g158">
     <path
        transform="translate(-288,-120)"
@@ -370,7 +370,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,96)"
+     transform="translate(54,96)"
      id="g164">
     <path
        transform="translate(-32,-48)"
@@ -385,7 +385,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,96)"
+     transform="translate(82.001,96)"
      id="g172">
     <path
        transform="matrix(0.75,0,0,0.75,-74.421,-143.43)"
@@ -406,7 +406,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(112,0)"
+     transform="translate(110,0)"
      id="g182">
     <path
        transform="matrix(0,-1,1,0,-112,-260)"
@@ -429,17 +429,17 @@
      style="fill:none;stroke:#000000"
      inkscape:connector-curvature="0"
      id="path196"
-     d="m 120.5,30.5 h 14 v 12 h -14 z" />
+     d="m 118.5,30.5 h 14 v 12 h -14 z" />
   <path
      inkscape:connector-curvature="0"
      id="path198"
-     d="m 127,36.5 5,-3.25 v 6.5" />
+     d="m 125,36.5 5,-3.25 v 6.5" />
   <path
      inkscape:connector-curvature="0"
      id="path200"
-     d="m 124,30 h 1 v 13 h -1 z" />
+     d="m 122,30 h 1 v 13 h -1 z" />
   <g
-     transform="translate(112,48)"
+     transform="translate(110,48)"
      id="g202">
     <path
        transform="matrix(-1,0,0,1,-192,-120)"
@@ -459,7 +459,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(112,72)"
+     transform="translate(110,72)"
      id="g212">
     <path
        transform="matrix(0,1,1,0,-88,283)"
@@ -479,7 +479,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(112,96)"
+     transform="translate(110,96)"
      id="g222">
     <path
        transform="translate(-224,0)"
@@ -513,7 +513,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,120)"
+     transform="translate(-2,120)"
      id="g238">
     <path
        transform="translate(0,-144)"
@@ -567,7 +567,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(28,120)"
+     transform="translate(26,120)"
      id="g262">
     <path
        transform="translate(-290,-46)"
@@ -576,7 +576,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,120)"
+     transform="translate(54,120)"
      id="g268">
     <g
        id="g272"
@@ -715,7 +715,7 @@
     </g>
   </g>
   <g
-     transform="translate(140,120)"
+     transform="translate(138,120)"
      id="g340">
     <g
        id="g344"
@@ -745,7 +745,7 @@
        style="stroke:#000000" />
   </g>
   <g
-     transform="translate(28,144)"
+     transform="translate(26,144)"
      id="g356">
     <path
        transform="translate(-320,0)"
@@ -754,7 +754,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,144)"
+     transform="translate(54,144)"
      id="g362">
     <path
        transform="translate(-32,-72)"
@@ -768,7 +768,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,144)"
+     transform="translate(82,144)"
      id="g370">
     <path
        transform="translate(-256,0)"
@@ -777,7 +777,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(112,144)"
+     transform="translate(110,144)"
      id="g376">
     <g
        font-weight="400"
@@ -800,7 +800,7 @@
     </g>
   </g>
   <g
-     transform="translate(140,144)"
+     transform="translate(138,144)"
      id="g386">
     <path
        transform="translate(-320,-48)"
@@ -809,7 +809,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,168)"
+     transform="translate(-2,168)"
      id="g392">
     <path
        transform="translate(-96,-48)"
@@ -818,7 +818,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(28,168)"
+     transform="translate(26,168)"
      id="g398">
     <path
        transform="translate(-64,-48)"
@@ -827,7 +827,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,168)"
+     transform="translate(54,168)"
      id="g404">
     <path
        transform="translate(-256,-24)"
@@ -841,7 +841,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,168)"
+     transform="translate(82,168)"
      id="g412">
     <g
        id="g416">
@@ -862,7 +862,7 @@
     </g>
   </g>
   <g
-     transform="translate(112,168)"
+     transform="translate(110,168)"
      id="g424">
     <path
        transform="translate(8,4)"
@@ -871,7 +871,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(140,168)"
+     transform="translate(138,168)"
      id="g430">
     <path
        transform="translate(0,-72)"
@@ -885,7 +885,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,0)"
+     transform="translate(166,0)"
      id="g438">
     <path
        transform="translate(-160,-120)"
@@ -894,7 +894,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,24)"
+     transform="translate(166,24)"
      id="g444">
     <path
        transform="translate(8,4)"
@@ -903,7 +903,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,48)"
+     transform="translate(166,48)"
      id="g450">
     <path
        transform="translate(-288,-72)"
@@ -942,7 +942,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,72)"
+     transform="translate(166,72)"
      id="g466">
     <path
        transform="matrix(0,-1,1,0,-136,251)"
@@ -962,7 +962,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,96)"
+     transform="translate(166,96)"
      id="g476">
     <path
        transform="translate(-160,-72)"
@@ -982,7 +982,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,120)"
+     transform="translate(166,120)"
      id="g486">
     <path
        transform="matrix(-1,0,0,1,-192,-96)"
@@ -1002,7 +1002,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,144)"
+     transform="translate(166,144)"
      id="g496">
     <path
        transform="matrix(0,1,1,0,-88,219)"
@@ -1022,7 +1022,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(168,168)"
+     transform="translate(166,168)"
      id="g506">
     <path
        transform="translate(-288,0)"
@@ -1031,7 +1031,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(0,192)"
+     transform="translate(-2,192)"
      id="g512">
     <path
        transform="translate(-64,-72)"
@@ -1045,7 +1045,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(28,192)"
+     transform="translate(26,192)"
      id="g520">
     <path
        transform="translate(-96,-72)"
@@ -1059,7 +1059,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(56,192)"
+     transform="translate(54,192)"
      id="g528">
     <path
        transform="translate(-128,-72)"
@@ -1079,7 +1079,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(84,192)"
+     transform="translate(82,192)"
      id="g538">
     <path
        transform="translate(-288,-24)"
@@ -1120,7 +1120,7 @@
     </defs>
   </g>
   <g
-     transform="translate(112,192)"
+     transform="translate(110,192)"
      id="g554">
     <g
        id="g558">
@@ -1144,7 +1144,7 @@
     </g>
   </g>
   <g
-     transform="translate(140,192)"
+     transform="translate(138,192)"
      id="g566">
     <path
        transform="translate(-128,-24)"
@@ -1172,7 +1172,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(196,0)"
+     transform="translate(194,0)"
      id="g582">
     <path
        transform="translate(-96,0)"
@@ -1181,7 +1181,7 @@
        inkscape:connector-curvature="0" />
   </g>
   <g
-     transform="translate(196,24)"
+     transform="translate(194,24)"
      id="g588">
     <path
        transform="translate(-128,-48)"

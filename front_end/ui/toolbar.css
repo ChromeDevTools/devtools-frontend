@@ -117,7 +117,6 @@
 .toolbar-glyph {
     background-color: #5a5a5a;
     flex: none;
-    transform: translateX(-2px);
 }
 
 /* Button */

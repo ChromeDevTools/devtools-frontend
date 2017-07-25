@@ -7,8 +7,10 @@
 1. Any straight lines should be snapped to the closest pixel value.
    - Use the `Edit paths by nodes` tool (F2) to edit the path directly.
    - Tweak the X, Y values at the top to be integers.
-1. Generate pngs from the SVGs:
+1. Generate PNGs from the SVGs:
    - `./scripts/convert_svg_images_to_png.py`
+1. Optimize PNGs:
+   - `./scripts/optimize_png_images.py`
 1. In `ui/Icon.js` add an entry in `UI.Icon.Descriptors`.
    - Look at the spritesheet's axes to identify the correct grid position.
 1. You may want to regenerate devtools resources:

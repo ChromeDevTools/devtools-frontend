@@ -271,7 +271,9 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
     element.classList.toggle(
         'websocket-frame-view-row-error', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Error);
     element.classList.toggle(
-        'websocket-frame-view-row-outcoming', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Send);
+        'websocket-frame-view-row-send', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Send);
+    element.classList.toggle(
+        'websocket-frame-view-row-receive', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive);
     element.classList.toggle('websocket-frame-view-row-opcode', !this._isTextFrame);
     super.createCells(element);
   }

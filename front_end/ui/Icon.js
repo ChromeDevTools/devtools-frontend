@@ -120,6 +120,7 @@ UI.Icon.Descriptors = {
   'smallicon-bezier': {position: 'a5', spritesheet: 'smallicons', isMask: true},
   'smallicon-checkmark': {position: 'b5', spritesheet: 'smallicons'},
   'smallicon-command-result': {position: 'a4', spritesheet: 'smallicons'},
+  'smallicon-contrast-ratio': {position: 'a6', spritesheet: 'smallicons', isMask: true},
   'smallicon-cross': {position: 'b4', spritesheet: 'smallicons'},
   'smallicon-device': {position: 'c5', spritesheet: 'smallicons'},
   'smallicon-error': {position: 'c4', spritesheet: 'smallicons'},

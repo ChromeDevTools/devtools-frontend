@@ -90,6 +90,47 @@
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
+.spectrum-contrast-info {
+    position: absolute;
+    right: 10px;
+    left: auto;
+    bottom: 10px;
+    color: white;
+    border-radius: 2px;
+    padding: 3px 3px 2px;
+    background-color: rgba(255, 255, 255, 0.2);
+    align-items: center;
+    transition: right .05s ease-out, left .05s ease-out, bottom .05s ease-out, top .05s ease-out;
+}
+
+.spectrum-contrast-info .low-contrast {
+    display: none;
+    margin-right: 3px;
+}
+
+.spectrum-contrast-info.contrast-fail .low-contrast {
+    display: initial;
+}
+
+.spectrum-contrast-info.contrast-info-left {
+    left: 10px;
+    right: auto;
+}
+
+.spectrum-contrast-info.contrast-info-top {
+    top: 10px;
+    bottom: auto;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.spectrum-contrast-info.contrast-fail {
+    background-color: #b40202;
+}
+
+.spectrum-contrast-info .value {
+    margin-right: 4px;
+}
+
 .swatch {
     width: 32px;
     height: 32px;

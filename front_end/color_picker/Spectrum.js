@@ -52,8 +52,9 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._colorDragElement = this._colorElement.createChild('div', 'spectrum-sat fill')
                                  .createChild('div', 'spectrum-val fill')
                                  .createChild('div', 'spectrum-dragger');
-    var contrastRatioSVG = this._colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
-    this._contrastRatioLine = contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line');
+
+    if (Runtime.experiments.isEnabled('colorContrastRatio'))
+      this._setUpContrastRatioUI();
 
     var toolbar = new UI.Toolbar('spectrum-eye-dropper', this.contentElement);
     this._colorPickerButton = new UI.ToolbarToggle(Common.UIString('Toggle color picker'), 'largeicon-eyedropper');
@@ -194,7 +195,25 @@ ColorPicker.Spectrum = class extends UI.VBox {
       var hsva = this._hsv.slice();
       hsva[1] = Number.constrain((event.x - this._colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Number.constrain(1 - (event.y - this._colorOffset.top) / this.dragHeight, 0, 1);
+
+      if (Runtime.experiments.isEnabled('colorContrastRatio'))
+        positionContrastInfo(this._contrastInfo, event);
+
       this._innerSetColor(hsva, '', undefined, ColorPicker.Spectrum._ChangeSource.Other);
+    }
+
+    /**
+     * @param {!Element} info
+     * @param {!Event} event
+     */
+    function positionContrastInfo(info, event) {
+      if (!info.boxInWindow().contains(event.x, event.y))
+        return;
+
+      if (info.offsetWidth > ((info.offsetParent.offsetWidth / 2) - 10))
+        info.classList.toggle('contrast-info-top');
+      else
+        info.classList.toggle('contrast-info-left');
     }
   }
 
@@ -696,8 +715,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
   /**
    * @param {number} requiredContrast
+   * @param {!Array<number>} bgRGBA
+   * @param {!Array<number>} fgRGBA
    */
-  _drawContrastRatioLine(requiredContrast) {
+  _drawContrastRatioLine(requiredContrast, bgRGBA, fgRGBA) {
     if (!this._contrastColor || !this.dragWidth || !this.dragHeight)
       return;
 
@@ -710,11 +731,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     /** const */ var V = 2;
     /** const */ var A = 3;
 
-    var fgRGBA = [];
-    Common.Color.hsva2rgba(this._hsv, fgRGBA);
-    var fgLuminance = Common.Color.luminance(fgRGBA);
-    var bgRGBA = this._contrastColor.rgba();
     var bgLuminance = Common.Color.luminance(bgRGBA);
+    var blendedRGBA = [];
+    Common.Color.blendColors(fgRGBA, bgRGBA, blendedRGBA);
+    var fgLuminance = Common.Color.luminance(blendedRGBA);
     var fgIsLighter = fgLuminance > bgLuminance;
     var desiredLuminance = Common.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
@@ -724,7 +744,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
     var pathBuilder = [];
     var candidateRGBA = [];
     Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-    var blendedRGBA = [];
     Common.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
 
     /**
@@ -780,13 +799,64 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._contrastRatioLine.setAttribute('d', pathBuilder.join(' '));
   }
 
+  _setUpContrastRatioUI() {
+    var contrastRatioSVG = this._colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
+    this._contrastRatioLine = contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line');
+    this._contrastInfo = this._colorElement.createChild('div', 'spectrum-contrast-info');
+    this._contrastInfo.classList.add('force-white-icons');
+    this._contrastInfo.createChild('span', 'low-contrast').textContent = Common.UIString('Low contrast');
+    this._contrastInfo.createChild('span', 'value');
+    this._contrastInfo.appendChild(UI.Icon.create('smallicon-contrast-ratio'));
+  }
+
+
+  /**
+   * @param {boolean} show
+   */
+  _setContrastInfoVisible(show) {
+    var info = this._contrastInfo;
+    if (!show) {
+      info.classList.add('hidden');
+      return;
+    }
+
+    info.classList.remove('hidden');
+
+    var fgRGBA = [];
+    Common.Color.hsva2rgba(this._hsv, fgRGBA);
+    var bgRGBA = this._contrastColor.rgba();
+    var contrastRatio = Common.Color.calculateContrastRatio(fgRGBA, bgRGBA);
+
+    // TODO(aboxhall): Determine size of text and switch between AA/AAA ratings.
+    var requiredContrast = 4.5;
+
+    this._contrastInfo.querySelector('.value').textContent = contrastRatio.toFixed(2);
+    this._contrastInfo.classList.toggle('contrast-fail', (contrastRatio < requiredContrast));
+    this._drawContrastRatioLine(requiredContrast, bgRGBA, fgRGBA);
+
+    var draggerBox = this._colorDragElement.boxInWindow();
+    var dragX = draggerBox.x + (draggerBox.width / 2);
+    var dragY = draggerBox.y + (draggerBox.height / 2);
+    var infoBox = info.boxInWindow();
+    if (infoBox.contains(dragX, dragY)) {
+      if (info.offsetWidth > ((info.offsetParent.offsetWidth / 2) - 10))
+        info.classList.toggle('contrast-info-top');
+      else
+        info.classList.toggle('contrast-info-left');
+    }
+  }
+
+
   _updateUI() {
     var h = Common.Color.fromHSVA([this._hsv[0], 1, 1, 1]);
     this._colorElement.style.backgroundColor = /** @type {string} */ (h.asString(Common.Color.Format.RGB));
     if (Runtime.experiments.isEnabled('colorContrastRatio')) {
-      // TODO(samli): Determine size of text and switch between AA/AAA ratings.
-      this._drawContrastRatioLine(4.5);
+      if (this.dragWidth && this._contrastColor)
+        this._setContrastInfoVisible(true);
+      else
+        this._setContrastInfoVisible(false);
     }
+
     this._swatchInnerElement.style.backgroundColor =
         /** @type {string} */ (this._color().asString(Common.Color.Format.RGBA));
     // Show border if the swatch is white.

@@ -543,6 +543,9 @@ ConsoleModel.ConsoleMessage = class {
     if (!msg)
       return false;
 
+    if (this._exceptionId || msg._exceptionId)
+      return false;
+
     if (!this._isEqualStackTraces(this.stackTrace, msg.stackTrace))
       return false;
 
@@ -551,13 +554,9 @@ ConsoleModel.ConsoleMessage = class {
         return false;
 
       for (var i = 0; i < msg.parameters.length; ++i) {
-        // Never treat objects as equal - their properties might change over time. Errors can be treated as equal
-        // since they are always formatted as strings.
-        if (msg.parameters[i].type === 'object' && msg.parameters[i].subtype !== 'error')
-          return false;
-        if (this.parameters[i].type !== msg.parameters[i].type ||
-            this.parameters[i].value !== msg.parameters[i].value ||
-            this.parameters[i].description !== msg.parameters[i].description)
+        // Never treat objects as equal - their properties might change over time.
+        if (this.parameters[i].type !== msg.parameters[i].type || msg.parameters[i].type === 'object' ||
+            this.parameters[i].value !== msg.parameters[i].value)
           return false;
       }
     }

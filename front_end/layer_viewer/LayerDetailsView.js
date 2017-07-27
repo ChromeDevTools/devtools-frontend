@@ -102,9 +102,63 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     if (this._selection.scrollRectIndex === index)
       element.classList.add('active');
     element.textContent = Common.UIString(
-        '%s (%s, %s, %s, %s)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
+        '%s %d × %d (at %d, %d)', LayerViewer.LayerDetailsView._slowScrollRectNames.get(scrollRect.type),
         scrollRect.rect.x, scrollRect.rect.y, scrollRect.rect.width, scrollRect.rect.height);
     element.addEventListener('click', this._onScrollRectClicked.bind(this, index), false);
+  }
+
+  /**
+   * @param {string} title
+   * @param {?SDK.Layer} layer
+   * @return {string}
+   */
+  _formatStickyAncestorLayer(title, layer) {
+    if (!layer)
+      return '';
+
+    var node = layer.nodeForSelfOrAncestor();
+    var name = node ? Components.DOMPresentationUtils.simpleSelector(node) : Common.UIString('<unnamed>');
+    return Common.UIString('%s: %s (%s)', title, name, layer.id());
+  }
+
+  /**
+   * @param {string} title
+   * @param {?SDK.Layer} layer
+   */
+  _createStickyAncestorChild(title, layer) {
+    if (!layer)
+      return;
+
+    this._stickyPositionConstraintCell.createTextChild(', ');
+    var child = this._stickyPositionConstraintCell.createChild('span');
+    child.textContent = this._formatStickyAncestorLayer(title, layer);
+  }
+
+  /**
+   * @param {?SDK.Layer.StickyPositionConstraint} constraint
+   */
+  _populateStickyPositionConstraintCell(constraint) {
+    this._stickyPositionConstraintCell.removeChildren();
+    if (!constraint)
+      return;
+
+    var stickyBoxRect = constraint.stickyBoxRect();
+    var stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
+    stickyBoxRectElement.textContent = Common.UIString(
+        'Sticky Box %d × %d (at %d, %d)', stickyBoxRect.width, stickyBoxRect.height, stickyBoxRect.x, stickyBoxRect.y);
+
+    this._stickyPositionConstraintCell.createTextChild(', ');
+
+    var containingBlockRect = constraint.containingBlockRect();
+    var containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');
+    containingBlockRectElement.textContent = Common.UIString(
+        'Containing Block %d × %d (at %d, %d)', containingBlockRect.width, containingBlockRect.height,
+        containingBlockRect.x, containingBlockRect.y);
+
+    this._createStickyAncestorChild(
+        Common.UIString('Nearest Layer Shifting Sticky Box'), constraint.nearestLayerShiftingStickyBox());
+    this._createStickyAncestorChild(
+        Common.UIString('Nearest Layer Shifting Containing Block'), constraint.nearestLayerShiftingContainingBlock());
   }
 
   update() {
@@ -126,6 +180,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     layer.requestCompositingReasons().then(this._updateCompositingReasons.bind(this));
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
+    this._populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
     var snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
         /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
         null;
@@ -140,6 +195,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._memoryEstimateCell = this._createRow(Common.UIString('Memory estimate'));
     this._paintCountCell = this._createRow(Common.UIString('Paint count'));
     this._scrollRectsCell = this._createRow(Common.UIString('Slow scroll regions'));
+    this._stickyPositionConstraintCell = this._createRow(Common.UIString('Sticky position constraint'));
     this._paintProfilerButton = this.contentElement.createChild('a', 'hidden link');
     this._paintProfilerButton.textContent = Common.UIString('Paint Profiler');
     this._paintProfilerButton.addEventListener('click', this._onPaintProfilerButtonClicked.bind(this));

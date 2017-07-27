@@ -477,7 +477,7 @@ Console.ConsoleView = class extends UI.VBox {
     if (viewMessage.consoleMessage().type === ConsoleModel.ConsoleMessage.MessageType.EndGroup) {
       if (lastMessage && !this._currentGroup.messagesHidden())
         lastMessage.incrementCloseGroupDecorationCount();
-      this._currentGroup = this._currentGroup.parentGroup();
+      this._currentGroup = this._currentGroup.parentGroup() || this._currentGroup;
       return;
     }
     if (!this._currentGroup.messagesHidden()) {
@@ -978,9 +978,6 @@ Console.ConsoleView = class extends UI.VBox {
 
 Console.ConsoleView.persistedHistorySize = 300;
 
-/**
- * @unrestricted
- */
 Console.ConsoleViewFilter = class {
   /**
    * @param {function()} filterChangedCallback
@@ -1003,6 +1000,9 @@ Console.ConsoleViewFilter = class {
 
     this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, true);
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
+    this._filterText = this._textFilterUI.value();
+    /** @type {?RegExp} */
+    this._filterRegex = null;
 
     this._levelLabels = {};
     this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Verbose] = Common.UIString('Verbose');
@@ -1247,9 +1247,6 @@ Console.ConsoleCommand = class extends Console.ConsoleViewMessage {
  */
 Console.ConsoleCommand.MaxLengthToIgnoreHighlighter = 10000;
 
-/**
- * @unrestricted
- */
 Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
   /**
    * @param {!ConsoleModel.ConsoleMessage} message
@@ -1278,9 +1275,6 @@ Console.ConsoleCommandResult = class extends Console.ConsoleViewMessage {
   }
 };
 
-/**
- * @unrestricted
- */
 Console.ConsoleGroup = class {
   /**
    * @param {?Console.ConsoleGroup} parentGroup
@@ -1318,14 +1312,12 @@ Console.ConsoleGroup = class {
    * @return {?Console.ConsoleGroup}
    */
   parentGroup() {
-    return this._parentGroup || this;
+    return this._parentGroup;
   }
 };
 
-
 /**
  * @implements {UI.ActionDelegate}
- * @unrestricted
  */
 Console.ConsoleView.ActionDelegate = class {
   /**

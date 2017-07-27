@@ -64,7 +64,7 @@ Common.Color = class {
     // Simple - #hex, rgb(), nickname, hsl()
     var value = text.toLowerCase().replace(/\s+/g, '');
     var simple =
-        /^(?:#([0-9a-f]{3}|[0-9a-f]{6})|rgb\(((?:-?\d+%?,){2}-?\d+%?)\)|(\w+)|hsl\((-?\d+\.?\d*(?:,-?\d+\.?\d*%){2})\))$/i;
+        /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|rgb\(((?:-?\d+%?,){2}-?\d+%?)\)|(\w+)|hsl\((-?\d+\.?\d*(?:,-?\d+\.?\d*%){2})\))$/i;
     var match = value.match(simple);
     if (match) {
       if (match[1]) {  // hex
@@ -73,13 +73,22 @@ Common.Color = class {
         if (hex.length === 3) {
           format = Common.Color.Format.ShortHEX;
           hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2);
-        } else {
+        } else if (hex.length === 4) {
+          format = Common.Color.Format.ShortHEXA;
+          hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2) +
+              hex.charAt(3) + hex.charAt(3);
+        } else if (hex.length === 6) {
           format = Common.Color.Format.HEX;
+        } else {
+          format = Common.Color.Format.HEXA;
         }
         var r = parseInt(hex.substring(0, 2), 16);
         var g = parseInt(hex.substring(2, 4), 16);
         var b = parseInt(hex.substring(4, 6), 16);
-        return new Common.Color([r / 255, g / 255, b / 255, 1], format, text);
+        var a = 1;
+        if (hex.length === 8)
+          a = parseInt(hex.substring(6, 8), 16) / 255;
+        return new Common.Color([r / 255, g / 255, b / 255, a], format, text);
       }
 
       if (match[2]) {  // rgb
@@ -373,8 +382,8 @@ Common.Color = class {
       format = (color.hasAlpha() ? cf.RGBA : cf.RGB);
     else if (formatSetting === cf.HSL)
       format = (color.hasAlpha() ? cf.HSLA : cf.HSL);
-    else if (!color.hasAlpha())
-      format = (color.canBeShortHex() ? cf.ShortHEX : cf.HEX);
+    else if (formatSetting === cf.HEX)
+      format = color.detectHEXFormat();
     else
       format = cf.RGBA;
 
@@ -455,17 +464,23 @@ Common.Color = class {
   }
 
   /**
-   * @return {boolean}
+   * @return {!Common.Color.Format}
    */
-  canBeShortHex() {
-    if (this.hasAlpha())
-      return false;
-    for (var i = 0; i < 3; ++i) {
+  detectHEXFormat() {
+    var canBeShort = true;
+    for (var i = 0; i < 4; ++i) {
       var c = Math.round(this._rgba[i] * 255);
-      if (c % 17)
-        return false;
+      if (c % 17) {
+        canBeShort = false;
+        break;
+      }
     }
-    return true;
+
+    var hasAlpha = this.hasAlpha();
+    var cf = Common.Color.Format;
+    if (canBeShort)
+      return hasAlpha ? cf.ShortHEXA : cf.ShortHEX;
+    return hasAlpha ? cf.HEXA : cf.HEX;
   }
 
   /**
@@ -526,14 +541,31 @@ Common.Color = class {
         return String.sprintf(
             'hsla(%d, %d%, %d%, %f)', Math.round(hsla[0] * 360), Math.round(hsla[1] * 100), Math.round(hsla[2] * 100),
             hsla[3]);
+      case Common.Color.Format.HEXA:
+        return String
+            .sprintf(
+                '#%s%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]),
+                toHexValue(this._rgba[3]))
+            .toLowerCase();
       case Common.Color.Format.HEX:
         if (this.hasAlpha())
           return null;
         return String
             .sprintf('#%s%s%s', toHexValue(this._rgba[0]), toHexValue(this._rgba[1]), toHexValue(this._rgba[2]))
             .toLowerCase();
+      case Common.Color.Format.ShortHEXA:
+        var hexFormat = this.detectHEXFormat();
+        if (hexFormat !== Common.Color.Format.ShortHEXA && hexFormat !== Common.Color.Format.ShortHEX)
+          return null;
+        return String
+            .sprintf(
+                '#%s%s%s%s', toShortHexValue(this._rgba[0]), toShortHexValue(this._rgba[1]),
+                toShortHexValue(this._rgba[2]), toShortHexValue(this._rgba[3]))
+            .toLowerCase();
       case Common.Color.Format.ShortHEX:
-        if (!this.canBeShortHex())
+        if (this.hasAlpha())
+          return null;
+        if (this.detectHEXFormat() !== Common.Color.Format.ShortHEX)
           return null;
         return String
             .sprintf(
@@ -627,7 +659,7 @@ Common.Color = class {
 };
 
 /** @type {!RegExp} */
-Common.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3}|\b[a-zA-Z]+\b(?!-))/g;
+Common.Color.Regex = /((?:rgb|hsl)a?\([^)]+\)|#[0-9a-fA-F]{8}|#[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|\b[a-zA-Z]+\b(?!-))/g;
 
 /**
  * @enum {string}
@@ -637,6 +669,8 @@ Common.Color.Format = {
   Nickname: 'nickname',
   HEX: 'hex',
   ShortHEX: 'shorthex',
+  HEXA: 'hexa',
+  ShortHEXA: 'shorthexa',
   RGB: 'rgb',
   RGBA: 'rgba',
   HSL: 'hsl',

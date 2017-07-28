@@ -24,8 +24,10 @@ SourceFrame.PreviewFactory = class {
 
     var resourceType = provider.contentType() || Common.resourceTypes.Other;
 
-    if (resourceType.isTextType())
-      return SourceFrame.ResourceSourceFrame.createSearchableView(provider, mimeType);
+    if (resourceType.isTextType()) {
+      var highlighterType = mimeType.replace(/;.*/, '');  // remove charset
+      return SourceFrame.ResourceSourceFrame.createSearchableView(provider, highlighterType);
+    }
 
     switch (resourceType) {
       case Common.resourceTypes.Image:

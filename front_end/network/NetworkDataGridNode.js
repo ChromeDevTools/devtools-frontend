@@ -978,7 +978,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   _renderSizeCell(cell) {
     if (this._request.fetchedViaServiceWorker) {
-      this._setTextAndTitle(cell, Common.UIString('(from ServiceWorker)'));
+      this._setTextAndTitle(cell, Common.UIString('(from service worker)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       if (this._request.cachedInMemory())

@@ -376,7 +376,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       var statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
       var statusText = this._request.statusCode + ' ' + this._request.statusText;
       if (this._request.fetchedViaServiceWorker) {
-        statusText += ' ' + Common.UIString('(from ServiceWorker)');
+        statusText += ' ' + Common.UIString('(from service worker)');
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.cached()) {
         if (this._request.cachedInMemory())

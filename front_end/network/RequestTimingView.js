@@ -69,9 +69,9 @@ Network.RequestTimingView = class extends UI.VBox {
       case Network.RequestTimeRangeNames.Sending:
         return Common.UIString('Request sent');
       case Network.RequestTimeRangeNames.ServiceWorker:
-        return Common.UIString('Request to ServiceWorker');
+        return Common.UIString('Request to service worker');
       case Network.RequestTimeRangeNames.ServiceWorkerPreparation:
-        return Common.UIString('ServiceWorker Preparation');
+        return Common.UIString('Service worker Preparation');
       case Network.RequestTimeRangeNames.SSL:
         return Common.UIString('SSL');
       case Network.RequestTimeRangeNames.Total:

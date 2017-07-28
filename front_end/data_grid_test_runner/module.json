@@ -1,10 +1,9 @@
 {
   "dependencies": [
     "test_runner",
-    "sdk",
-    "network_log"
+    "data_grid"
   ],
   "scripts": [
-    "IntegrationTestRunner.js"
+    "DataGridTestRunner.js"
   ]
 }

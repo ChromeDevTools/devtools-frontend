@@ -4,6 +4,8 @@
     { "name": "integration_test_runner", "type": "autostart" },
     { "name": "console_test_runner" },
     { "name": "elements_test_runner" },
+    { "name": "sources_test_runner" },
+    { "name": "data_grid_test_runner" },
 
 
     { "name": "platform", "type": "autostart" },

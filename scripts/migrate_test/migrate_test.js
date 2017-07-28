@@ -12,21 +12,16 @@ const mkdirp = require('mkdirp');
 const recast = require('recast');
 const types = recast.types;
 const b = recast.types.builders;
-const args = require('yargs')
-                 .wrap(Math.min(process.stdout.columns, 120))
-                 .example('node $0 existing-test.html')
-                 .boolean('dry-run')
-                 .help('help')
-                 .demand(1)
-                 .argv;
 
 const utils = require('../utils');
 
+const DRY_RUN = process.env.DRY_RUN || false;
 const FRONT_END_PATH = path.resolve(__dirname, '..', '..', 'front_end');
 const LINE_BREAK = '$$SECRET_IDENTIFIER_FOR_LINE_BREAK$$();';
 
 function main() {
-  const inputPaths = args._.map(p => path.isAbsolute(p) ? p : path.resolve(process.cwd(), p));
+  const files = process.argv.slice(2);
+  const inputPaths = files.map(p => path.isAbsolute(p) ? p : path.resolve(process.cwd(), p));
   const identifierMap = generateTestHelperMap();
   for (const inputPath of inputPaths) {
     migrateTest(inputPath, identifierMap);
@@ -75,7 +70,7 @@ function migrateTest(inputPath, identifierMap) {
     console.log('ERROR: ', err);
     return;
   }
-  if (args.dryRun) {
+  if (DRY_RUN) {
     console.log(outputCode);
   } else {
     const outPath = getOutPath(inputPath);
@@ -249,8 +244,7 @@ function getOutPath(inputPath) {
   const layoutTestPrefix = 'LayoutTests/inspector';
   const postfix =
       inputPath.slice(inputPath.indexOf(layoutTestPrefix) + layoutTestPrefix.length + 1).replace('.html', '.js');
-  const out = path.resolve(
-      __dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'inspector', 'devtools-js', postfix);
+  const out = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'devtools', postfix);
   return out;
 }
 
@@ -318,6 +312,11 @@ function generateTestHelperMap() {
       scrapeTestHelperIdentifiers(path.resolve(testRunnerModulePath, filename));
     }
   }
+
+  // Manual overrides
+  map.set('consoleModel', 'ConsoleModel');
+  map.set('networkLog', 'NetworkLog');
+
   return map;
 
   function scrapeTestHelperIdentifiers(filePath) {
@@ -327,7 +326,7 @@ function generateTestHelperMap() {
       var line = line.trim();
       if (line.indexOf('TestRunner.') === -1)
         continue;
-      var match = line.match(/^(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*(\=[^,}]|[;])/) ||
+      var match = line.match(/^\s*(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*(\=[^,}]|[;])/) ||
           line.match(/^(TestRunner.[a-z_A-Z0-9]+)\s*\=$/);
       if (!match)
         continue;
@@ -344,6 +343,7 @@ function generateTestHelperMap() {
  * Hack to quickly create an AST node
  */
 function createExpressionNode(code) {
+  code = escapeCode(code);
   return recast.parse(code).program.body[0];
 }
 
@@ -351,5 +351,10 @@ function createExpressionNode(code) {
  * Hack to quickly create an AST node
  */
 function createAwaitExpressionNode(code) {
+  code = escapeCode(code);
   return recast.parse(`(async function(){${code}})`).program.body[0].expression.body.body[0];
+}
+
+function escapeCode(code) {
+  return code.replace('\n', '\\n');
 }

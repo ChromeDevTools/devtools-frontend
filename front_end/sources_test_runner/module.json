@@ -2,10 +2,10 @@
   "dependencies": [
     "test_runner",
     "integration_test_runner",
-    "elements",
-    "event_listeners"
+    "sources",
+    "workspace"
   ],
   "scripts": [
-    "ElementsTestRunner.js"
+    "SourcesTestRunner.js"
   ]
 }

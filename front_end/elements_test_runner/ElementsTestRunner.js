@@ -79,3 +79,45 @@ ElementsTestRunner.findNode = function(matchFunction, callback) {
     doc.getChildNodes(processChildren.bind(null, doc));
   });
 };
+
+/**
+ * @param {!EventListeners.EventListenersView} eventListenersView
+ * @param {function():void} callback
+ * @param {boolean=} force
+ */
+ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, callback, force) {
+  function listenersArrived() {
+    var listenerTypes = eventListenersView._treeOutline.rootElement().children();
+    for (var i = 0; i < listenerTypes.length; ++i) {
+      listenerTypes[i].expand();
+      var listenerItems = listenerTypes[i].children();
+      for (var j = 0; j < listenerItems.length; ++j)
+        listenerItems[j].expand();
+    }
+    TestRunner.deprecatedRunAfterPendingDispatches(objectsExpanded);
+  }
+
+  function objectsExpanded() {
+    var listenerTypes = eventListenersView._treeOutline.rootElement().children();
+    for (var i = 0; i < listenerTypes.length; ++i) {
+      if (!listenerTypes[i].children().length)
+        continue;
+      var eventType = listenerTypes[i]._title;
+      TestRunner.addResult('');
+      TestRunner.addResult('======== ' + eventType + ' ========');
+      var listenerItems = listenerTypes[i].children();
+      for (var j = 0; j < listenerItems.length; ++j) {
+        TestRunner.addResult('== ' + listenerItems[j].eventListener().origin());
+        TestRunner.dumpObjectPropertyTreeElement(listenerItems[j]);
+      }
+    }
+    callback();
+  }
+
+  if (force) {
+    listenersArrived();
+  } else {
+    TestRunner.addSniffer(
+        EventListeners.EventListenersView.prototype, '_eventListenersArrivedForTest', listenersArrived);
+  }
+};

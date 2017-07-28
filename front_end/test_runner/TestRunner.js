@@ -21,15 +21,19 @@ TestRunner.executeTestScript = function() {
 /** @type {!Array<string>} */
 TestRunner._results = [];
 
-/**
- * @suppressGlobalPropertiesCheck
- */
 TestRunner.completeTest = function() {
   if (!self.testRunner) {
     console.log('Test Done');
     return;
   }
+  TestRunner.flushResults();
+  self.testRunner.notifyDone();
+};
 
+/**
+ * @suppressGlobalPropertiesCheck
+ */
+TestRunner.flushResults = function() {
   Array.prototype.forEach.call(document.documentElement.childNodes, x => x.remove());
   var outputElement = document.createElement('div');
   // Support for svg - add to document, not body, check for style.
@@ -44,7 +48,6 @@ TestRunner.completeTest = function() {
     outputElement.appendChild(document.createElement('br'));
   }
   TestRunner._results = [];
-  self.testRunner.notifyDone();
 };
 
 /**

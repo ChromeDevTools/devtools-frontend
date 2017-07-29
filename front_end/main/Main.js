@@ -892,6 +892,10 @@ Main.BackendSettingsSync = class {
   constructor() {
     this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
     this._autoAttachSetting.addChangeListener(this._update, this);
+
+    this._adBlockEnabledSetting = Common.settings.moduleSetting('network.adBlockingEnabled');
+    this._adBlockEnabledSetting.addChangeListener(this._update, this);
+
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
@@ -900,6 +904,7 @@ Main.BackendSettingsSync = class {
    */
   _updateTarget(target) {
     target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
+    target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
   }
 
   _update() {

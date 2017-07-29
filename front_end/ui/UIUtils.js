@@ -2019,44 +2019,31 @@ UI.createFileSelectorElement = function(callback) {
  */
 UI.MaxLengthForDisplayedURLs = 150;
 
-/**
- * @unrestricted
- */
-UI.ConfirmDialog = class extends UI.VBox {
+UI.ConfirmDialog = class {
   /**
-   * @param {!Document|!Element} where
    * @param {string} message
-   * @param {!Function} callback
+   * @param {!Document|!Element=} where
+   * @return {!Promise<boolean>}
    */
-  static show(where, message, callback) {
+  static async show(message, where) {
     var dialog = new UI.Dialog();
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.addCloseButton();
     dialog.setDimmed(true);
-    new UI
-        .ConfirmDialog(
-            message,
-            () => {
-              dialog.hide();
-              callback();
-            },
-            () => dialog.hide())
-        .show(dialog.contentElement);
-    dialog.show(where);
-  }
-
-  /**
-   * @param {string} message
-   * @param {!Function} okCallback
-   * @param {!Function} cancelCallback
-   */
-  constructor(message, okCallback, cancelCallback) {
-    super(true);
-    this.registerRequiredCSS('ui/confirmDialog.css');
-    this.contentElement.createChild('div', 'message').createChild('span').textContent = message;
-    var buttonsBar = this.contentElement.createChild('div', 'button');
-    buttonsBar.appendChild(UI.createTextButton(Common.UIString('Ok'), okCallback));
-    buttonsBar.appendChild(UI.createTextButton(Common.UIString('Cancel'), cancelCallback));
+    var shadowRoot = UI.createShadowRootWithCoreStyles(dialog.contentElement, 'ui/confirmDialog.css');
+    var content = shadowRoot.createChild('div', 'widget');
+    content.createChild('div', 'message').createChild('span').textContent = message;
+    var buttonsBar = content.createChild('div', 'button');
+    var result = await new Promise(resolve => {
+      buttonsBar.appendChild(UI.createTextButton(Common.UIString('OK'), () => resolve(true), '', true));
+      buttonsBar.appendChild(UI.createTextButton(Common.UIString('Cancel'), () => resolve(false)));
+      dialog.setOutsideClickCallback(event => {
+        event.consume();
+        resolve(false);
+      });
+      dialog.show(where);
+    });
+    dialog.hide();
+    return result;
   }
 };
 

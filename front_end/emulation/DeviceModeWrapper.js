@@ -18,6 +18,8 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     var model = self.singleton(Emulation.DeviceModeModel);
     this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
+    SDK.targetManager.addModelListener(
+        SDK.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested, this._screenshotRequestedFromOverlay, this);
     this._update(true);
   }
 
@@ -41,6 +43,14 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     else
       this._deviceModeView.captureScreenshot();
     return true;
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _screenshotRequestedFromOverlay(event) {
+    var clip = /** @type {!Protocol.Page.Viewport} */ (event.data);
+    this._captureScreenshot(false, clip);
   }
 
   /**

@@ -231,6 +231,14 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     var deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
     this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectNodeRequested, deferredNode);
   }
+
+  /**
+   * @override
+   * @param {!Protocol.Page.Viewport} viewport
+   */
+  screenshotRequested(viewport) {
+    this.dispatchEventToListeners(SDK.OverlayModel.Events.ScreenshotRequested, viewport);
+  }
 };
 
 SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
@@ -240,6 +248,7 @@ SDK.OverlayModel.Events = {
   InspectModeWillBeToggled: Symbol('InspectModeWillBeToggled'),
   HighlightNodeRequested: Symbol('HighlightNodeRequested'),
   InspectNodeRequested: Symbol('InspectNodeRequested'),
+  ScreenshotRequested: Symbol('ScreenshotRequested'),
 };
 
 /**

@@ -175,6 +175,15 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
 };
 
 /**
+ * @param {string} code
+ * @param {boolean=} dontForceMainContext
+ * @return {!Promise}
+ */
+ConsoleTestRunner.evaluateInConsolePromise = function(code, dontForceMainContext) {
+  return new Promise(fulfill => ConsoleTestRunner.evaluateInConsole(code, fulfill, dontForceMainContext));
+};
+
+/**
  * @param {!Function} override
  * @param {boolean=} opt_sticky
  */

@@ -107,13 +107,13 @@ Console.ConsolePrompt = class extends UI.Widget {
 
     switch (keyboardEvent.keyCode) {
       case UI.KeyboardShortcut.Keys.Up.code:
-        if (this._editor.selection().endLine > 0)
+        if (keyboardEvent.shiftKey || this._editor.selection().endLine > 0)
           break;
         newText = this._history.previous(this.text());
         isPrevious = true;
         break;
       case UI.KeyboardShortcut.Keys.Down.code:
-        if (this._editor.selection().endLine < this._editor.fullRange().endLine)
+        if (keyboardEvent.shiftKey || this._editor.selection().endLine < this._editor.fullRange().endLine)
           break;
         newText = this._history.next();
         break;

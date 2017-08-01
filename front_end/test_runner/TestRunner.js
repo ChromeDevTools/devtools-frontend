@@ -163,10 +163,10 @@ TestRunner.loadModule = function(module) {
 
 /**
  * @param {string} panel
- * @return {!Promise<!UI.Panel>}
+ * @return {!Promise.<?UI.Panel>}
  */
-TestRunner.loadPanel = function(panel) {
-  return UI.inspectorView.panel(panel);
+TestRunner.showPanel = function(panel) {
+  return UI.viewManager.showView(panel);
 };
 
 /**

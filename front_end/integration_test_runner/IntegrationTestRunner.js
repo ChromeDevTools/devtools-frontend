@@ -141,6 +141,23 @@ TestRunner.loadHTML = function(html) {
 };
 
 /**
+ * @param {string} path
+ * @return {!Promise<!SDK.RemoteObject>}
+ */
+TestRunner.addScriptTag = function(path) {
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  var resolvedPath = testScriptURL + '/../' + path;
+
+  return TestRunner.evaluateInPagePromise(`
+    (function(){
+      var script = document.createElement('script');
+      script.src = '${resolvedPath}';
+      document.head.append(script);
+    })();
+  `);
+};
+
+/**
  * @param {string} title
  */
 TestRunner.markStep = function(title) {

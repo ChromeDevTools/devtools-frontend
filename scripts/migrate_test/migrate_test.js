@@ -35,18 +35,30 @@ function migrateTest(inputPath, identifierMap) {
   console.log('Starting to migrate: ', inputPath);
   const htmlTestFile = fs.readFileSync(inputPath, 'utf-8');
   const $ = cheerio.load(htmlTestFile);
-  const additionalHelperBlocks = [];
+  const javascriptFixtures = [];
   const inputCode = $('script:not([src])')
                         .toArray()
                         .map(n => n.children[0].data)
-                        .map(code => processScriptCode(code, additionalHelperBlocks))
+                        .map(code => processScriptCode(code, javascriptFixtures))
                         .filter(x => !!x)
                         .join('\n');
   const bodyText = $('body').text().trim();
-  const helperScripts = $('script[src]').toArray().map((n) => n.attribs.src).map(src => {
+  const helperScripts = [];
+  const resourceScripts = [];
+  $('script[src]').toArray().map((n) => n.attribs.src).forEach(src => {
+    if (src.indexOf('resources/') !== -1) {
+      resourceScripts.push(src);
+      return;
+    }
     const components = src.split('/');
-    return components[components.length - 1].split('.')[0];
+    var filename = components[components.length - 1].split('.')[0];
+    helperScripts.push(filename);
   });
+
+  const outPath = getOutPath(inputPath);
+  const srcResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(inputPath), s));
+  const destResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(outPath), s));
+  const relativeResourcePaths = destResourcePaths.map(p => p.slice(p.indexOf('/http/tests') + '/http/tests'.length));
 
   let outputCode;
   try {
@@ -63,30 +75,47 @@ function migrateTest(inputPath, identifierMap) {
     }
     const onloadFunctionName = $('body')[0].attribs.onload.slice(0, -2);
     outputCode = transformTestScript(
-        inputCode, bodyText, identifierMap, testHelpers, additionalHelperBlocks, getPanel(inputPath), domFixture,
-        onloadFunctionName);
+        inputCode, bodyText, identifierMap, testHelpers, javascriptFixtures, getPanel(inputPath), domFixture,
+        onloadFunctionName, relativeResourcePaths);
   } catch (err) {
     console.log('Unable to migrate: ', inputPath);
     console.log('ERROR: ', err);
     return;
   }
-  if (DRY_RUN) {
-    console.log(outputCode);
-  } else {
-    const outPath = getOutPath(inputPath);
+
+  console.log(outputCode);
+  if (!DRY_RUN) {
     mkdirp.sync(path.dirname(outPath));
+
     fs.writeFileSync(outPath, outputCode);
     const expectationsPath = inputPath.replace('.html', '-expected.txt');
     copyExpectations(expectationsPath, outPath);
+    copyResourceScripts(srcResourcePaths, destResourcePaths);
+
     fs.unlinkSync(inputPath);
     fs.unlinkSync(expectationsPath);
-    console.log(outputCode);
     console.log('Migrated to: ', outPath);
   }
 }
 
+function copyResourceScripts(srcResourcePaths, destResourcePaths) {
+  destResourcePaths.forEach((p, i) => {
+    mkdirp.sync(path.dirname(p));
+    if (!utils.isFile(p)) {
+      fs.writeFileSync(p, fs.readFileSync(srcResourcePaths[i]));
+    } else {
+      const originalResource = fs.readFileSync(srcResourcePaths[i]);
+      const newResource = fs.readFileSync(p);
+      if (originalResource !== newResource) {
+        console.log('Discrepancy with resource script', p, 'for file: ', inputPath);
+      }
+    }
+  });
+}
+
 function transformTestScript(
-    inputCode, bodyText, identifierMap, testHelpers, additionalHelperBlocks, panel, domFixture, onloadFunctionName) {
+    inputCode, bodyText, identifierMap, explicitTestHelpers, javascriptFixtures, panel, domFixture, onloadFunctionName,
+    relativeResourcePaths) {
   const ast = recast.parse(inputCode);
 
   /**
@@ -107,24 +136,70 @@ function transformTestScript(
   unwrapTestFunctionExpressionIfNecessary(ast);
   unwrapTestFunctionDeclarationIfNecessary(ast);
 
+
+  /**
+   * Need to track all of the namespaces used because test helper refactoring
+   * requires additional fine-grained dependencies for some tests
+   */
+  const namespacesUsed = new Set();
+
+  /**
+   * Migrate all the call sites from InspectorTest to .*TestRunner
+   */
+  recast.visit(ast, {
+    visitIdentifier: function(path) {
+      if (path.parentPath && path.parentPath.value && path.parentPath.value.object &&
+          path.parentPath.value.object.name === 'InspectorTest' && path.value.name !== 'InspectorTest') {
+        const newParentIdentifier = identifierMap.get(path.value.name);
+        if (!newParentIdentifier) {
+          throw new Error('Could not find identifier for: ' + path.value.name);
+        }
+        path.parentPath.value.object.name = newParentIdentifier;
+        namespacesUsed.add(newParentIdentifier.split('.')[0]);
+      }
+      return false;
+    }
+  });
+
+  const allTestHelpers = new Set();
+
+  for (const helper of explicitTestHelpers) {
+    allTestHelpers.add(helper);
+  }
+
+  for (const namespace of namespacesUsed) {
+    if (namespace === 'TestRunner')
+      continue;
+    const moduleName = namespace.replace(/([A-Z])/g, '_$1').replace(/^_/, '').toLowerCase();
+    allTestHelpers.add(moduleName);
+  }
+
   /**
    * Create test header based on extracted data
    */
   const headerLines = [];
   headerLines.push(createExpressionNode(`TestRunner.addResult('${bodyText}\\n');`));
-  headerLines.push(createExpressionNode(LINE_BREAK));
-  for (const helper of testHelpers) {
+  headerLines.push(createNewLineNode());
+  for (const helper of allTestHelpers) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadModule('${helper}');`));
   }
   headerLines.push(createAwaitExpressionNode(`await TestRunner.loadPanel('${panel}');`));
-  for (const helper of additionalHelperBlocks) {
-    headerLines.push(helper);
-  }
+  headerLines.push(createAwaitExpressionNode(`await TestRunner.showPanel('${panel}');`));
 
   if (domFixture) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadHTML(\`
 ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   \`)`));
+  }
+
+  if (relativeResourcePaths.length) {
+    relativeResourcePaths.forEach(p => {
+      headerLines.push(createAwaitExpressionNode(`await TestRunner.loadScript('${p}');`));
+    });
+  }
+
+  for (const fixture of javascriptFixtures) {
+    headerLines.push(fixture);
   }
 
   let nonTestCode = nonTestNodes.reduce((acc, node) => {
@@ -142,6 +217,9 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   ${nonTestCode}
   \`)`)));
   }
+
+  headerLines.push(createNewLineNode());
+
   ast.program.body = headerLines.concat(ast.program.body);
 
   /**
@@ -150,23 +228,6 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   const iife = b.functionExpression(null, [], b.blockStatement(ast.program.body));
   iife.async = true;
   ast.program.body = [b.expressionStatement(b.callExpression(iife, []))];
-
-  /**
-   * Migrate all the call sites from InspectorTest to .*TestRunner
-   */
-  recast.visit(ast, {
-    visitIdentifier: function(path) {
-      if (path.parentPath && path.parentPath.value && path.parentPath.value.object &&
-          path.parentPath.value.object.name === 'InspectorTest' && path.value.name !== 'InspectorTest') {
-        const newParentIdentifier = identifierMap.get(path.value.name);
-        if (!newParentIdentifier) {
-          throw new Error('Could not find identifier for', path.value.name);
-        }
-        path.parentPath.value.object.name = newParentIdentifier;
-      }
-      return false;
-    }
-  });
 
   return print(ast);
 }
@@ -234,16 +295,20 @@ function print(ast) {
    */
   let code = recast.prettyPrint(ast, {tabWidth: 2, wrapColumn: 120, quote: 'single'}).code;
   code = code.replace(/(\/\/\#\s*sourceURL=[\w-]+)\.html/, '$1.js');
-  const copyrightedCode = copyrightNotice + code.split(LINE_BREAK).join('') + '\n';
+  code = code.replace(/\s*\$\$SECRET_IDENTIFIER_FOR_LINE_BREAK\$\$\(\);/g, '\n');
+  const copyrightedCode = copyrightNotice + code + '\n';
   return copyrightedCode;
 }
 
 
 function getOutPath(inputPath) {
-  // TODO: Only works for non-http tests
-  const layoutTestPrefix = 'LayoutTests/inspector';
-  const postfix =
-      inputPath.slice(inputPath.indexOf(layoutTestPrefix) + layoutTestPrefix.length + 1).replace('.html', '.js');
+  const nonHttpLayoutTestPrefix = 'LayoutTests/inspector';
+  const httpLayoutTestPrefix = 'LayoutTests/http/tests/inspector';
+  const postfix = inputPath.indexOf(nonHttpLayoutTestPrefix) === -1 ?
+      inputPath.slice(inputPath.indexOf(httpLayoutTestPrefix) + httpLayoutTestPrefix.length + 1)
+          .replace('.html', '.js') :
+      inputPath.slice(inputPath.indexOf(nonHttpLayoutTestPrefix) + nonHttpLayoutTestPrefix.length + 1)
+          .replace('.html', '.js');
   const out = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'devtools', postfix);
   return out;
 }
@@ -266,8 +331,9 @@ function getPanel(inputPath) {
     'timeline': 'timeline',
     'tracing': 'timeline',
   };
-  // Only works for non-http tests
-  const folder = inputPath.slice(inputPath.indexOf('LayoutTests/')).split('/')[2];
+
+  const components = inputPath.slice(inputPath.indexOf('LayoutTests/')).split('/');
+  const folder = inputPath.indexOf('LayoutTests/inspector') === -1 ? components[4] : components[2];
   const panel = panelByFolder[folder];
   if (!panel) {
     throw new Error('Could not figure out which panel to map folder: ' + folder);
@@ -281,6 +347,7 @@ function mapTestHelpers(testHelpers) {
     'inspector-test': SKIP,
     'console-test': 'console_test_runner',
     'elements-test': 'elements_test_runner',
+    'sources-test': 'sources_test_runner',
   };
   const mappedHelpers = [];
   for (const helper of testHelpers) {
@@ -343,7 +410,6 @@ function generateTestHelperMap() {
  * Hack to quickly create an AST node
  */
 function createExpressionNode(code) {
-  code = escapeCode(code);
   return recast.parse(code).program.body[0];
 }
 
@@ -351,10 +417,9 @@ function createExpressionNode(code) {
  * Hack to quickly create an AST node
  */
 function createAwaitExpressionNode(code) {
-  code = escapeCode(code);
   return recast.parse(`(async function(){${code}})`).program.body[0].expression.body.body[0];
 }
 
-function escapeCode(code) {
-  return code.replace('\n', '\\n');
+function createNewLineNode() {
+  return createExpressionNode(LINE_BREAK);
 }

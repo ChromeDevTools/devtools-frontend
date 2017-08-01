@@ -877,11 +877,4 @@ SDK.PageDispatcher = class {
     this._resourceTreeModel._isInterstitialShowing = false;
     this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
   }
-
-  /**
-   * @override
-   */
-  navigationRequested() {
-    // Frontend is not interested in when navigations are requested.
-  }
 };

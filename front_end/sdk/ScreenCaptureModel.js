@@ -184,12 +184,6 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   interstitialHidden() {
   }
-
-  /**
-   * @override
-   */
-  navigationRequested() {
-  }
 };
 
 SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

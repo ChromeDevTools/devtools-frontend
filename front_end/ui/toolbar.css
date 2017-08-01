@@ -65,6 +65,7 @@
     overflow: hidden;
     min-width: 28px;
     background: transparent;
+    border-radius: 0;
 }
 
 .toolbar-text {

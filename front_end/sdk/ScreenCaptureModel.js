@@ -160,17 +160,20 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
 
   /**
    * @override
+   * @param {string} url
    * @param {string} message
    * @param {string} dialogType
+   * @param {string=} prompt
    */
-  javascriptDialogOpening(message, dialogType) {
+  javascriptDialogOpening(url, message, dialogType, prompt) {
   }
 
   /**
    * @override
    * @param {boolean} result
+   * @param {string} userInput
    */
-  javascriptDialogClosed(result) {
+  javascriptDialogClosed(result, userInput) {
   }
 
   /**

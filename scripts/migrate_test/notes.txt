@@ -1,0 +1,4 @@
+inspector/console/command-line-api-getEventListeners.html
+- handle <script> extraction
+- add output method
+- regex in javascript function causing issue

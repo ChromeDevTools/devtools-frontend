@@ -13,6 +13,7 @@ const recast = require('recast');
 const types = recast.types;
 const b = recast.types.builders;
 
+const migrateUtils = require('./migrate_utils');
 const utils = require('../utils');
 
 const DRY_RUN = process.env.DRY_RUN || false;
@@ -55,7 +56,7 @@ function migrateTest(inputPath, identifierMap) {
     helperScripts.push(filename);
   });
 
-  const outPath = getOutPath(inputPath);
+  const outPath = migrateUtils.getOutPath(inputPath);
   const srcResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(inputPath), s));
   const destResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(outPath), s));
   const relativeResourcePaths = destResourcePaths.map(p => p.slice(p.indexOf('/http/tests') + '/http/tests'.length));
@@ -80,7 +81,7 @@ function migrateTest(inputPath, identifierMap) {
   } catch (err) {
     console.log('Unable to migrate: ', inputPath);
     console.log('ERROR: ', err);
-    return;
+    process.exit(1);
   }
 
   console.log(outputCode);
@@ -298,19 +299,6 @@ function print(ast) {
   code = code.replace(/\s*\$\$SECRET_IDENTIFIER_FOR_LINE_BREAK\$\$\(\);/g, '\n');
   const copyrightedCode = copyrightNotice + code + '\n';
   return copyrightedCode;
-}
-
-
-function getOutPath(inputPath) {
-  const nonHttpLayoutTestPrefix = 'LayoutTests/inspector';
-  const httpLayoutTestPrefix = 'LayoutTests/http/tests/inspector';
-  const postfix = inputPath.indexOf(nonHttpLayoutTestPrefix) === -1 ?
-      inputPath.slice(inputPath.indexOf(httpLayoutTestPrefix) + httpLayoutTestPrefix.length + 1)
-          .replace('.html', '.js') :
-      inputPath.slice(inputPath.indexOf(nonHttpLayoutTestPrefix) + nonHttpLayoutTestPrefix.length + 1)
-          .replace('.html', '.js');
-  const out = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'devtools', postfix);
-  return out;
 }
 
 function getPanel(inputPath) {

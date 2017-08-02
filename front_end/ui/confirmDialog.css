@@ -19,6 +19,10 @@
     margin-top: 10px;
 }
 
+.button button {
+    min-width: 80px;
+}
+
 .reason {
     color: #8b0000;
 }

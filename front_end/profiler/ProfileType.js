@@ -137,6 +137,7 @@ Profiler.ProfileType = class extends Common.Object {
 
   /**
    * @param {!File} file
+   * @return {!Promise<?Error>}
    */
   loadFromFile(file) {
     var name = file.name;
@@ -147,7 +148,7 @@ Profiler.ProfileType = class extends Common.Object {
     profile.setFromFile();
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
-    profile.loadFromFile(file);
+    return profile.loadFromFile(file);
   }
 
   /**

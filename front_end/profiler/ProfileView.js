@@ -469,6 +469,7 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
   /**
    * @override
    * @param {!File} file
+   * @return {!Promise<?Error>}
    */
   async loadFromFile(file) {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
@@ -478,22 +479,31 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
     var success = await fileReader.read(this);
     if (!success) {
       this._onError(fileReader);
-      return;
+      return new Error(Common.UIString('Failed to read file'));
     }
 
     this.updateStatus(Common.UIString('Parsing\u2026'), true);
-    this._profile = JSON.parse(this._jsonifiedProfile);
+    var error = null;
+    try {
+      this._profile = /** @type {!Protocol.Profiler.Profile} */ (JSON.parse(this._jsonifiedProfile));
+      this.setProfile(this._profile);
+      this.updateStatus(Common.UIString('Loaded'), false);
+    } catch (e) {
+      error = e;
+      this.profileType().removeProfile(this);
+    }
     this._jsonifiedProfile = null;
-    this.updateStatus(Common.UIString('Loaded'), false);
 
     if (this.profileType().profileBeingRecorded() === this)
       this.profileType().setProfileBeingRecorded(null);
+    return error;
   }
 
   /**
-   * @param {*} profile
+   * @param {!Protocol.Profiler.Profile} profile
    */
   setProtocolProfile(profile) {
+    this.setProfile(profile);
     this._protocolProfile = profile;
     this._tempFile = new Bindings.TempFile();
     this._tempFile.write([JSON.stringify(profile)]);

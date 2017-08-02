@@ -130,37 +130,26 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.element.appendChild(this._fileSelectorElement);
   }
 
+  /**
+   * @param {string} fileName
+   * @return {?Profiler.ProfileType}
+   */
   _findProfileTypeByExtension(fileName) {
-    var types = this._profileTypes;
-    for (var i = 0; i < types.length; i++) {
-      var type = types[i];
-      var extension = type.fileExtension();
-      if (!extension)
-        continue;
-      if (fileName.endsWith(type.fileExtension()))
-        return type;
-    }
-    return null;
+    return this._profileTypes.find(type => !!type.fileExtension() && fileName.endsWith(type.fileExtension() || '')) ||
+        null;
   }
 
   /**
    * @param {!File} file
    */
-  _loadFromFile(file) {
+  async _loadFromFile(file) {
     this._createFileSelectorElement();
 
     var profileType = this._findProfileTypeByExtension(file.name);
     if (!profileType) {
-      var extensions = [];
-      var types = this._profileTypes;
-      for (var i = 0; i < types.length; i++) {
-        var extension = types[i].fileExtension();
-        if (!extension || extensions.indexOf(extension) !== -1)
-          continue;
-        extensions.push(extension);
-      }
+      var extensions = new Set(this._profileTypes.map(type => type.fileExtension()).filter(ext => ext));
       Common.console.error(
-          Common.UIString(`Can't load file. Only files with extensions '%s' can be loaded.`, extensions.join(`', '`)));
+          Common.UIString(`Can't load file. Supported file extensions: '%s'.`, Array.from(extensions).join(`', '`)));
       return;
     }
 
@@ -169,7 +158,9 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
       return;
     }
 
-    profileType.loadFromFile(file);
+    var error = await profileType.loadFromFile(file);
+    if (error)
+      UI.MessageDialog.show(Common.UIString('Profile loading failed: %s.', error.message));
   }
 
   /**

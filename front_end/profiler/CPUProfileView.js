@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
  * @implements {UI.Searchable}
  * @unrestricted
@@ -33,7 +34,7 @@ Profiler.CPUProfileView = class extends Profiler.ProfileView {
   constructor(profileHeader) {
     super();
     this._profileHeader = profileHeader;
-    this.profile = new SDK.CPUProfileDataModel(profileHeader._profile || profileHeader.protocolProfile());
+    this.profile = profileHeader.profileModel();
     this.adjustedTotal = this.profile.profileHead.total;
     this.adjustedTotal -= this.profile.idleNode ? this.profile.idleNode.total : 0;
     this.initialize(new Profiler.CPUProfileView.NodeFormatter(this));
@@ -225,6 +226,21 @@ Profiler.CPUProfileHeader = class extends Profiler.WritableProfileHeader {
    */
   protocolProfile() {
     return this._protocolProfile;
+  }
+
+  /**
+   * @return {!SDK.CPUProfileDataModel}
+   */
+  profileModel() {
+    return this._profileModel;
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Profiler.Profile} profile
+   */
+  setProfile(profile) {
+    this._profileModel = new SDK.CPUProfileDataModel(profile);
   }
 };
 

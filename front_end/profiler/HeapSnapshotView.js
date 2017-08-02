@@ -1519,6 +1519,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
   /**
    * @override
    * @param {!File} file
+   * @return {!Promise<?Error>}
    */
   async loadFromFile(file) {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
@@ -1527,6 +1528,7 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
     var success = await reader.read(/** @type {!Common.OutputStream} */ (this._receiver));
     if (!success)
       this.updateStatus(reader.error().message);
+    return success ? null : reader.error();
   }
 };
 

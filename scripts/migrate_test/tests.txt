@@ -1,8 +1,18 @@
 inspector/console/alert-toString-exception.html 
 inspector/console/console-api-on-call-frame.html 
+inspector/console/console-bind-fake.html http/tests/devtools/console/console-bind-fake.js
+inspector/console/console-call-getter-on-proto.html http/tests/devtools/console/console-call-getter-on-proto.js
 inspector/console/console-clear-function.html 
+inspector/console/console-command-clear.html http/tests/devtools/console/console-command-clear.js
 inspector/console/console-command-copy.html 
 inspector/console/console-context-selector.html 
+inspector/console/console-control-characters.html http/tests/devtools/console/console-control-characters.js
 inspector/console/console-copy-treeoutline.html 
 inspector/console/console-copy-truncated-text.html 
+inspector/console/console-correct-suggestions.html http/tests/devtools/console/console-correct-suggestions.js
+inspector/console/console-css-unterminated-comment.html http/tests/devtools/console/console-css-unterminated-comment.js
+inspector/console/console-dir-deprecated.html http/tests/devtools/console/console-dir-deprecated.js
+inspector/console/console-dir-global.html http/tests/devtools/console/console-dir-global.js
+inspector/console/console-dir.html http/tests/devtools/console/console-dir.js
+inspector/console/console-edit-property-value.html http/tests/devtools/console/console-edit-property-value.js
 inspector/console/console-error-on-call-frame.html 

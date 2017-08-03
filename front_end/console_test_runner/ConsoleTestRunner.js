@@ -217,7 +217,7 @@ ConsoleTestRunner.consoleMessagesCount = function() {
 };
 
 /**
- * @param {function(!Element):string|undefined} messageFormatter
+ * @param {function(!Element):string} messageFormatter
  * @param {!Element} node
  * @return {string}
  */
@@ -261,7 +261,7 @@ ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames = function(
     printOriginatingCommand, dumpClassNames, messageFormatter) {
   TestRunner.addResults(ConsoleTestRunner.dumpConsoleMessagesIntoArray(
       printOriginatingCommand, dumpClassNames,
-      ConsoleTestRunner.formatterIgnoreStackFrameUrls.bind(this, messageFormatter)));
+      messageFormatter ? ConsoleTestRunner.formatterIgnoreStackFrameUrls.bind(this, messageFormatter) : undefined));
 };
 
 ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
@@ -410,11 +410,11 @@ ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
 ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
   var fulfill;
   var promise = new Promise(x => (fulfill = x));
-  var prompt = Console.ConsoleView.instance()._prompt;
-  if (prompt._editor)
-    fulfill(prompt._editor);
+  var editor = Console.ConsoleView.instance()._prompt._editor;
+  if (editor)
+    fulfill(editor);
   else
-    TestRunner.addSniffer(Console.ConsolePrompt.prototype, '_editorSetForTest', _ => fulfill(prompt._editor));
+    TestRunner.addSniffer(Console.ConsolePrompt.prototype, '_editorSetForTest', _ => fulfill(editor));
   return promise;
 };
 

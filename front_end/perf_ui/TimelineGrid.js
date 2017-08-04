@@ -48,7 +48,7 @@ PerfUI.TimelineGrid = class {
   /**
    * @param {!PerfUI.TimelineGrid.Calculator} calculator
    * @param {number=} freeZoneAtLeft
-   * @return {!{offsets: !Array.<number>, precision: number}}
+   * @return {!PerfUI.TimelineGrid.DividersData}
    */
   static calculateDividerOffsets(calculator, freeZoneAtLeft) {
     /** @const */ var minGridSlicePx = 64;  // minimal distance between grid lines.
@@ -87,7 +87,7 @@ PerfUI.TimelineGrid = class {
       var time = firstDividerTime + gridSliceTime * i;
       if (calculator.computePosition(time) < freeZoneAtLeft)
         continue;
-      offsets.push(time);
+      offsets.push({position: Math.floor(calculator.computePosition(time)), time: time});
     }
 
     return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
@@ -95,49 +95,55 @@ PerfUI.TimelineGrid = class {
 
   /**
    * @param {!CanvasRenderingContext2D} context
-   * @param {!PerfUI.TimelineGrid.Calculator} calculator
-   * @param {number} paddingTop
-   * @param {number=} headerHeight
-   * @param {number=} freeZoneAtLeft
+   * @param {!PerfUI.TimelineGrid.DividersData} dividersData
    */
-  static drawCanvasGrid(context, calculator, paddingTop, headerHeight, freeZoneAtLeft) {
+  static drawCanvasGrid(context, dividersData) {
     context.save();
-    var ratio = window.devicePixelRatio;
-    context.scale(ratio, ratio);
-    var width = context.canvas.width / window.devicePixelRatio;
-    var height = context.canvas.height / window.devicePixelRatio;
-    var dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(calculator);
-    var dividerOffsets = dividersData.offsets;
-    var precision = dividersData.precision;
-
-    if (headerHeight) {
-      context.fillStyle =
-          UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
-      context.fillRect(0, 0, width, headerHeight);
-    }
-
-    context.fillStyle = UI.themeSupport.patchColorText('#333', UI.ThemeSupport.ColorUsage.Foreground);
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
+    var height = Math.floor(context.canvas.height / window.devicePixelRatio);
     context.strokeStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.1)', UI.ThemeSupport.ColorUsage.Foreground);
-    context.textBaseline = 'hanging';
-    context.font = '11px ' + Host.fontFamily();
     context.lineWidth = 1;
 
     context.translate(0.5, 0.5);
-    const paddingRight = 4;
-    for (var i = 0; i < dividerOffsets.length; ++i) {
-      var time = dividerOffsets[i];
-      var position = calculator.computePosition(time);
-      context.moveTo(position, 0);
-      context.lineTo(position, height);
-      if (!headerHeight)
-        continue;
-      var text = calculator.formatValue(time, precision);
+    context.beginPath();
+    for (var offsetInfo of dividersData.offsets) {
+      context.moveTo(offsetInfo.position, 0);
+      context.lineTo(offsetInfo.position, height);
+    }
+    context.stroke();
+    context.restore();
+  }
+
+  /**
+   * @param {!CanvasRenderingContext2D} context
+   * @param {!PerfUI.TimelineGrid.DividersData} dividersData
+   * @param {function(number):string} formatTimeFunction
+   * @param {number} paddingTop
+   * @param {number} headerHeight
+   * @param {number=} freeZoneAtLeft
+   */
+  static drawCanvasHeaders(context, dividersData, formatTimeFunction, paddingTop, headerHeight, freeZoneAtLeft) {
+    context.save();
+    context.scale(window.devicePixelRatio, window.devicePixelRatio);
+    var width = Math.ceil(context.canvas.width / window.devicePixelRatio);
+
+    context.beginPath();
+    context.fillStyle =
+        UI.themeSupport.patchColorText('rgba(255, 255, 255, 0.5)', UI.ThemeSupport.ColorUsage.Background);
+    context.fillRect(0, 0, width, headerHeight);
+
+    context.fillStyle = UI.themeSupport.patchColorText('#333', UI.ThemeSupport.ColorUsage.Foreground);
+    context.textBaseline = 'hanging';
+    context.font = '11px ' + Host.fontFamily();
+
+    var paddingRight = 4;
+    for (var offsetInfo of dividersData.offsets) {
+      var text = formatTimeFunction(offsetInfo.time);
       var textWidth = context.measureText(text).width;
-      var textPosition = position - textWidth - paddingRight;
+      var textPosition = offsetInfo.position - textWidth - paddingRight;
       if (!freeZoneAtLeft || freeZoneAtLeft < textPosition)
         context.fillText(text, textPosition, paddingTop);
     }
-    context.stroke();
     context.restore();
   }
 
@@ -185,8 +191,8 @@ PerfUI.TimelineGrid = class {
         this._dividersLabelBarElement.appendChild(dividerLabelBar);
       }
 
-      var time = dividerOffsets[i];
-      var position = calculator.computePosition(time);
+      var time = dividerOffsets[i].time;
+      var position = dividerOffsets[i].position;
       dividerLabelBar._labelElement.textContent = calculator.formatValue(time, precision);
 
       var percentLeft = 100 * position / dividersElementClientWidth;
@@ -257,6 +263,8 @@ PerfUI.TimelineGrid = class {
   }
 };
 
+/** @typedef {!{offsets: !Array<!{position: number, time: number}>, precision: number}} */
+PerfUI.TimelineGrid.DividersData;
 
 /**
  * @interface

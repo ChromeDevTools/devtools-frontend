@@ -402,7 +402,11 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
 
     const freeZoneAtLeft = 75;
     const freeZoneAtRight = 18;
-    PerfUI.TimelineGrid.drawCanvasGrid(context, this._calculator, this._fontSize, this._headerHeight, freeZoneAtLeft);
+    var dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(this._calculator);
+    PerfUI.TimelineGrid.drawCanvasGrid(context, dividersData);
+    PerfUI.TimelineGrid.drawCanvasHeaders(
+        context, dividersData, time => this._calculator.formatValue(time, dividersData.precision), this._fontSize,
+        this._headerHeight, freeZoneAtLeft);
     context.clearRect(this._offsetWidth - freeZoneAtRight, 0, freeZoneAtRight, this._headerHeight);
     this._didDrawForTest();
   }

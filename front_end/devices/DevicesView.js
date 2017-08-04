@@ -1,9 +1,7 @@
 // Copyright 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
+
 Devices.DevicesView = class extends UI.VBox {
   constructor() {
     super(true);
@@ -28,6 +26,10 @@ Devices.DevicesView = class extends UI.VBox {
     this._devices = [];
     /** @type {!Map<string, !Element>} */
     this._listItemById = new Map();
+    /** @type {?Element} */
+    this._selectedListItem = null;
+    /** @type {?UI.Widget} */
+    this._visibleView = null;
 
     this._viewContainer = hbox.createChild('div', 'flex-auto vbox');
 
@@ -200,10 +202,6 @@ Devices.DevicesView = class extends UI.VBox {
   }
 };
 
-
-/**
- * @unrestricted
- */
 Devices.DevicesView.DiscoveryView = class extends UI.VBox {
   constructor() {
     super();
@@ -260,8 +258,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
 };
 
 /**
- * @implements {UI.ListWidget.Delegate}
- * @unrestricted
+ * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
  */
 Devices.DevicesView.PortForwardingView = class extends UI.VBox {
   /**
@@ -285,6 +282,7 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     portForwardingFooter.appendChild(UI.createExternalLink(
         'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding', Common.UIString('Learn more')));
 
+    /** @type {!UI.ListWidget<!Adb.PortForwardingRule>} */
     this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('devices/devicesView.css');
     this._list.element.classList.add('port-forwarding-list');
@@ -292,6 +290,8 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     placeholder.textContent = Common.UIString('No rules');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
+    /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
+    this._editor = null;
 
     this.element.appendChild(
         UI.createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
@@ -325,12 +325,11 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem(item, editable) {
-    var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+  renderItem(rule, editable) {
     var element = createElementWithClass('div', 'port-forwarding-list-item');
     var port = element.createChild('div', 'port-forwarding-value port-forwarding-port');
     port.createChild('span', 'port-localhost').textContent = Common.UIString('localhost:');
@@ -342,10 +341,10 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {number} index
    */
-  removeItemRequested(item, index) {
+  removeItemRequested(rule, index) {
     this._portForwardingConfig.splice(index, 1);
     this._list.removeItem(index);
     this._update();
@@ -353,12 +352,11 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
-  commitEdit(item, editor, isNew) {
-    var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+  commitEdit(rule, editor, isNew) {
     rule.port = editor.control('port').value.trim();
     rule.address = editor.control('address').value.trim();
     if (isNew)
@@ -368,11 +366,10 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @return {!UI.ListWidget.Editor}
    */
-  beginEdit(item) {
-    var rule = /** @type {!Adb.PortForwardingRule} */ (item);
+  beginEdit(rule) {
     var editor = this._createEditor();
     editor.control('port').value = rule.port;
     editor.control('address').value = rule.address;
@@ -380,7 +377,7 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
    */
   _createEditor() {
     if (this._editor)
@@ -398,13 +395,13 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     return editor;
 
     /**
-     * @param {*} item
+     * @param {!Adb.PortForwardingRule} rule
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @this {Devices.DevicesView.PortForwardingView}
      * @return {boolean}
      */
-    function portValidator(item, index, input) {
+    function portValidator(rule, index, input) {
       var value = input.value.trim();
       var match = value.match(/^(\d+)$/);
       if (!match)
@@ -420,12 +417,12 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     }
 
     /**
-     * @param {*} item
+     * @param {!Adb.PortForwardingRule} rule
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {boolean}
      */
-    function addressValidator(item, index, input) {
+    function addressValidator(rule, index, input) {
       var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match)
         return false;
@@ -436,8 +433,7 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
 };
 
 /**
- * @implements {UI.ListWidget.Delegate}
- * @unrestricted
+ * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
  */
 Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
   /**
@@ -470,6 +466,7 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
       networkDiscoveryFooter.createChild('span').textContent = Common.UIString('Define the target connection address');
     }
 
+    /** @type {!UI.ListWidget<!Adb.PortForwardingRule>} */
     this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('devices/devicesView.css');
     this._list.element.classList.add('network-discovery-list');
@@ -478,6 +475,8 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
         nodeFrontend ? Common.UIString('No connections specified') : Common.UIString('No addresses defined');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
+    /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
+    this._editor = null;
 
     var addButton = UI.createTextButton(
         nodeFrontend ? Common.UIString('Add connection') : Common.UIString('Add address'),
@@ -500,7 +499,7 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
   }
 
   _addNetworkTargetButtonClicked() {
-    this._list.addNewItem(this._networkDiscoveryConfig.length, {address: ''});
+    this._list.addNewItem(this._networkDiscoveryConfig.length, {address: '', port: ''});
   }
 
   /**
@@ -514,7 +513,7 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
     this._networkDiscoveryConfig = [];
     this._list.clear();
     for (var address of networkDiscoveryConfig) {
-      var item = {address: address};
+      var item = {address: address, port: ''};
       this._networkDiscoveryConfig.push(item);
       this._list.appendItem(item, true);
     }
@@ -529,23 +528,22 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {boolean} editable
    * @return {!Element}
    */
-  renderItem(item, editable) {
+  renderItem(rule, editable) {
     var element = createElementWithClass('div', 'network-discovery-list-item');
-    element.createChild('div', 'network-discovery-value network-discovery-address').textContent =
-        /** @type {string} */ (item.address);
+    element.createChild('div', 'network-discovery-value network-discovery-address').textContent = rule.address;
     return element;
   }
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {number} index
    */
-  removeItemRequested(item, index) {
+  removeItemRequested(rule, index) {
     this._networkDiscoveryConfig.splice(index, 1);
     this._list.removeItem(index);
     this._update();
@@ -553,30 +551,30 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @param {!UI.ListWidget.Editor} editor
    * @param {boolean} isNew
    */
-  commitEdit(item, editor, isNew) {
-    item.address = editor.control('address').value.trim();
+  commitEdit(rule, editor, isNew) {
+    rule.address = editor.control('address').value.trim();
     if (isNew)
-      this._networkDiscoveryConfig.push(/** @type {{address: string}} */ (item));
+      this._networkDiscoveryConfig.push(rule);
     this._update();
   }
 
   /**
    * @override
-   * @param {*} item
+   * @param {!Adb.PortForwardingRule} rule
    * @return {!UI.ListWidget.Editor}
    */
-  beginEdit(item) {
+  beginEdit(rule) {
     var editor = this._createEditor();
-    editor.control('address').value = item.address;
+    editor.control('address').value = rule.address;
     return editor;
   }
 
   /**
-   * @return {!UI.ListWidget.Editor}
+   * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
    */
   _createEditor() {
     if (this._editor)
@@ -591,12 +589,12 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
     return editor;
 
     /**
-     * @param {*} item
+     * @param {!Adb.PortForwardingRule} rule
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @return {boolean}
      */
-    function addressValidator(item, index, input) {
+    function addressValidator(rule, index, input) {
       var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match)
         return false;
@@ -606,9 +604,6 @@ Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
   }
 };
 
-/**
- * @unrestricted
- */
 Devices.DevicesView.DeviceView = class extends UI.VBox {
   constructor() {
     super();
@@ -632,6 +627,9 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     /** @type {!Map<string, !Devices.DevicesView.BrowserSection>} */
     this._browserById = new Map();
 
+    /** @type {?string} */
+    this._cachedPortStatus = null;
+    /** @type {?Adb.Device} */
     this._device = null;
   }
 

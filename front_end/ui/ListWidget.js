@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @unrestricted
+ * @template T
  */
 UI.ListWidget = class extends UI.VBox {
   /**
-   * @param {!UI.ListWidget.Delegate} delegate
+   * @param {!UI.ListWidget.Delegate<T>} delegate
    */
   constructor(delegate) {
     super(true);
@@ -16,9 +16,18 @@ UI.ListWidget = class extends UI.VBox {
     this._list = this.contentElement.createChild('div', 'list');
     this.element.tabIndex = -1;
 
-    /** @type {?UI.ListWidget.Editor} */
+    this._lastSeparator = false;
+    /** @type {?UI.ElementFocusRestorer} */
+    this._focusRestorer = null;
+    /** @type {!Array<T>} */
+    this._items = [];
+    /** @type {!Array<boolean>} */
+    this._editable = [];
+    /** @type {!Array<!Element>} */
+    this._elements = [];
+    /** @type {?UI.ListWidget.Editor<T>} */
     this._editor = null;
-    /** @type {*|null} */
+    /** @type {?T} */
     this._editItem = null;
     /** @type {?Element} */
     this._editElement = null;
@@ -26,7 +35,7 @@ UI.ListWidget = class extends UI.VBox {
     /** @type {?Element} */
     this._emptyPlaceholder = null;
 
-    this.clear();
+    this._updatePlaceholder();
   }
 
   clear() {
@@ -40,7 +49,7 @@ UI.ListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {boolean} editable
    */
   appendItem(item, editable) {
@@ -94,7 +103,7 @@ UI.ListWidget = class extends UI.VBox {
 
   /**
    * @param {number} index
-   * @param {*} item
+   * @param {!T} item
    */
   addNewItem(index, item) {
     this._startEditing(item, null, this._elements[index] || null);
@@ -109,7 +118,7 @@ UI.ListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {!Element} element
    * @return {!Element}
    */
@@ -169,7 +178,7 @@ UI.ListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {?Element} element
    * @param {?Element} insertionPoint
    */
@@ -198,7 +207,7 @@ UI.ListWidget = class extends UI.VBox {
   _commitEditing() {
     var editItem = this._editItem;
     var isNew = !this._editElement;
-    var editor = /** @type {!UI.ListWidget.Editor} */ (this._editor);
+    var editor = /** @type {!UI.ListWidget.Editor<T>} */ (this._editor);
     this._stopEditing();
     this._delegate.commitEdit(editItem, editor, isNew);
   }
@@ -220,40 +229,41 @@ UI.ListWidget = class extends UI.VBox {
 };
 
 /**
+ * @template T
  * @interface
  */
 UI.ListWidget.Delegate = function() {};
 
 UI.ListWidget.Delegate.prototype = {
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {boolean} editable
    * @return {!Element}
    */
   renderItem(item, editable) {},
 
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {number} index
    */
   removeItemRequested(item, index) {},
 
   /**
-   * @param {*} item
-   * @return {!UI.ListWidget.Editor}
+   * @param {!T} item
+   * @return {!UI.ListWidget.Editor<T>}
    */
   beginEdit(item) {},
 
   /**
-   * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
+   * @param {!T} item
+   * @param {!UI.ListWidget.Editor<T>} editor
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {}
 };
 
 /**
- * @unrestricted
+ * @template T
  */
 UI.ListWidget.Editor = class {
   constructor() {
@@ -287,14 +297,14 @@ UI.ListWidget.Editor = class {
     this._controls = [];
     /** @type {!Map<string, !HTMLInputElement|!HTMLSelectElement>} */
     this._controlByName = new Map();
-    /** @type {!Array<function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean>} */
+    /** @type {!Array<function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean>} */
     this._validators = [];
 
     /** @type {?function()} */
     this._commit = null;
     /** @type {?function()} */
     this._cancel = null;
-    /** @type {*|null} */
+    /** @type {?T} */
     this._item = null;
     /** @type {number} */
     this._index = -1;
@@ -311,7 +321,7 @@ UI.ListWidget.Editor = class {
    * @param {string} name
    * @param {string} type
    * @param {string} title
-   * @param {function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
    * @return {!HTMLInputElement}
    */
   createInput(name, type, title, validator) {
@@ -328,7 +338,7 @@ UI.ListWidget.Editor = class {
   /**
    * @param {string} name
    * @param {!Array<string>} options
-   * @param {function(*, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
    * @return {!HTMLSelectElement}
    */
   createSelect(name, options, validator) {
@@ -369,7 +379,7 @@ UI.ListWidget.Editor = class {
   }
 
   /**
-   * @param {*} item
+   * @param {!T} item
    * @param {number} index
    * @param {string} commitButtonTitle
    * @param {function()} commit

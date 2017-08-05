@@ -167,6 +167,6 @@
 @keyframes source-line-modification-foreground-fadeout {
     from { color: white; }
     50% { color: white; }
-    90% { color: intial; }
-    to { color: intial; }
+    90% { color: initial; }
+    to { color: initial; }
 }

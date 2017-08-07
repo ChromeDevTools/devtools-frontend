@@ -216,7 +216,7 @@ TestRunner.safeWrap = function(func, onexception) {
 };
 
 /**
- * @param {!Element} node
+ * @param {!Node} node
  * @return {string}
  */
 TestRunner.textContentWithLineBreaks = function(node) {
@@ -249,6 +249,23 @@ TestRunner.textContentWithLineBreaks = function(node) {
     } else if (currentNode.classList && currentNode.classList.contains('object-properties-section')) {
       ignoreFirst = true;
     }
+  }
+  return buffer;
+};
+
+/**
+ * @param {!Node} node
+ * @return {string}
+ */
+TestRunner.textContentWithoutStyles = function(node) {
+  var buffer = '';
+  var currentNode = node;
+  while (currentNode.traverseNextNode(node)) {
+    currentNode = currentNode.traverseNextNode(node);
+    if (currentNode.nodeType === Node.TEXT_NODE)
+      buffer += currentNode.nodeValue;
+    else if (currentNode.nodeName === 'STYLE')
+      currentNode = currentNode.traverseNextNode(node);
   }
   return buffer;
 };

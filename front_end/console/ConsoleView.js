@@ -405,24 +405,15 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!ConsoleModel.ConsoleMessage} message
    */
   _addConsoleMessage(message) {
-    /**
-     * @param {!Console.ConsoleViewMessage} viewMessage1
-     * @param {!Console.ConsoleViewMessage} viewMessage2
-     * @return {number}
-     */
-    function compareTimestamps(viewMessage1, viewMessage2) {
-      return ConsoleModel.ConsoleMessage.timestampComparator(
-          viewMessage1.consoleMessage(), viewMessage2.consoleMessage());
-    }
-
-    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
-        message.type === ConsoleModel.ConsoleMessage.MessageType.Result) {
-      message.timestamp =
-          this._consoleMessages.length ? this._consoleMessages.peekLast().consoleMessage().timestamp : 0;
-    }
     var viewMessage = this._createViewMessage(message);
     message[this._viewMessageSymbol] = viewMessage;
-    var insertAt = this._consoleMessages.upperBound(viewMessage, compareTimestamps);
+    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
+        message.type === ConsoleModel.ConsoleMessage.MessageType.Result) {
+      var lastMessage = this._consoleMessages.peekLast();
+      viewMessage[Console.ConsoleView._messageSortingTimeSymbol] = lastMessage ? timeForSorting(lastMessage) : 0;
+    }
+    var insertAt = this._consoleMessages.upperBound(
+        viewMessage, (viewMessage1, viewMessage2) => timeForSorting(viewMessage1) - timeForSorting(viewMessage2));
     var insertedInMiddle = insertAt < this._consoleMessages.length;
     this._consoleMessages.splice(insertAt, 0, viewMessage);
 
@@ -441,6 +432,14 @@ Console.ConsoleView = class extends UI.VBox {
 
     this._scheduleViewportRefresh();
     this._consoleMessageAddedForTest(viewMessage);
+
+    /**
+     * @param {!Console.ConsoleViewMessage} viewMessage
+     * @return {number}
+     */
+    function timeForSorting(viewMessage) {
+      return viewMessage[Console.ConsoleView._messageSortingTimeSymbol] || viewMessage.consoleMessage().timestamp;
+    }
   }
 
   /**
@@ -1347,3 +1346,6 @@ Console.ConsoleView.ActionDelegate = class {
  * @typedef {{messageIndex: number, matchIndex: number}}
  */
 Console.ConsoleView.RegexMatchRange;
+
+/** @type {symbol} */
+Console.ConsoleView._messageSortingTimeSymbol = Symbol('messageSortingTime');

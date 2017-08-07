@@ -446,15 +446,6 @@ ConsoleModel.ConsoleMessage = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} a
-   * @param {!ConsoleModel.ConsoleMessage} b
-   * @return {number}
-   */
-  static timestampComparator(a, b) {
-    return a.timestamp - b.timestamp;
-  }
-
-  /**
    * @param {!SDK.RuntimeModel} runtimeModel
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    * @param {string=} messageType

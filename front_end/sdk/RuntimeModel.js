@@ -396,10 +396,17 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {number} executionContextId
    * @param {number} timestamp
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
+   * @param {string=} context
    */
-  _consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
-    var consoleAPICall =
-        {type: type, args: args, executionContextId: executionContextId, timestamp: timestamp, stackTrace: stackTrace};
+  _consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
+    var consoleAPICall = {
+      type: type,
+      args: args,
+      executionContextId: executionContextId,
+      timestamp: timestamp,
+      stackTrace: stackTrace,
+      context: context
+    };
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ConsoleAPICalled, consoleAPICall);
   }
 
@@ -512,9 +519,10 @@ SDK.RuntimeDispatcher = class {
    * @param {number} executionContextId
    * @param {number} timestamp
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
+   * @param {string=} context
    */
-  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace) {
-    this._runtimeModel._consoleAPICalled(type, args, executionContextId, timestamp, stackTrace);
+  consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
+    this._runtimeModel._consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context);
   }
 
   /**

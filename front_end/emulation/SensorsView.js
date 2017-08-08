@@ -431,9 +431,18 @@ Emulation.SensorsView = class extends UI.VBox {
     select.appendChild(new Option(Common.UIString('Force enabled'), 'enabled'));
     select.addEventListener('change', applyTouch, false);
 
+    var reloadWarning = groupElement.createChild('div', 'reload-warning hidden');
+    reloadWarning.textContent = Common.UIString('*Requires reload');
+
     function applyTouch() {
       for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
         emulationModel.overrideEmulateTouch(select.value === 'enabled');
+      reloadWarning.classList.remove('hidden');
+      var resourceTreeModel = SDK.targetManager.models(SDK.ResourceTreeModel)[0];
+      if (resourceTreeModel) {
+        resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated)
+            .then(() => reloadWarning.classList.add('hidden'));
+      }
     }
   }
 };

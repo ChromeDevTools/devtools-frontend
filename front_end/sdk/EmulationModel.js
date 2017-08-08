@@ -132,29 +132,12 @@ SDK.EmulationModel = class extends SDK.SDKModel {
     var configuration = {
       enabled: this._touchEnabled,
       configuration: this._touchMobile ? 'mobile' : 'desktop',
-      scriptId: ''
     };
     if (this._customTouchEnabled)
-      configuration = {enabled: true, configuration: 'mobile', scriptId: ''};
+      configuration = {enabled: true, configuration: 'mobile'};
 
     if (this._overlayModel && this._overlayModel.inspectModeEnabled())
-      configuration = {enabled: false, configuration: 'mobile', scriptId: ''};
-
-    /**
-     * @suppressGlobalPropertiesCheck
-     */
-    const injectedFunction = function() {
-      const touchEvents = ['ontouchstart', 'ontouchend', 'ontouchmove', 'ontouchcancel'];
-      var recepients = [window.__proto__, document.__proto__];
-      for (var i = 0; i < touchEvents.length; ++i) {
-        for (var j = 0; j < recepients.length; ++j) {
-          if (!(touchEvents[i] in recepients[j])) {
-            Object.defineProperty(
-                recepients[j], touchEvents[i], {value: null, writable: true, configurable: true, enumerable: true});
-          }
-        }
-      }
-    };
+      configuration = {enabled: false, configuration: 'mobile'};
 
     if (!this._touchConfiguration.enabled && !configuration.enabled)
       return;
@@ -162,15 +145,7 @@ SDK.EmulationModel = class extends SDK.SDKModel {
         this._touchConfiguration.configuration === configuration.configuration)
       return;
 
-    if (this._touchConfiguration.scriptId)
-      this._pageAgent.removeScriptToEvaluateOnLoad(this._touchConfiguration.scriptId);
     this._touchConfiguration = configuration;
-    if (configuration.enabled) {
-      this._pageAgent.addScriptToEvaluateOnLoad('(' + injectedFunction.toString() + ')()').then(scriptId => {
-        this._touchConfiguration.scriptId = scriptId || '';
-      });
-    }
-
     this._emulationAgent.setTouchEmulationEnabled(configuration.enabled, configuration.configuration);
   }
 };

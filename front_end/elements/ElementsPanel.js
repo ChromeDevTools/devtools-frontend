@@ -741,7 +741,9 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._splitMode = splitMode;
 
     var extensionSidebarPanes = Extensions.extensionServer.sidebarPanes();
+    var lastSelectedTabId = null;
     if (this.sidebarPaneView) {
+      lastSelectedTabId = this.sidebarPaneView.tabbedPane().selectedTabId;
       this.sidebarPaneView.tabbedPane().detach();
       this._splitWidget.uninstallResizer(this.sidebarPaneView.tabbedPane().headerElement());
     }
@@ -820,6 +822,9 @@ Elements.ElementsPanel = class extends UI.Panel {
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
     for (var i = 0; i < extensionSidebarPanes.length; ++i)
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);
+
+    if (lastSelectedTabId)
+      this.sidebarPaneView.tabbedPane().selectTab(lastSelectedTabId);
 
     this._splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
   }

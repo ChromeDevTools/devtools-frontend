@@ -724,6 +724,24 @@
         {type: 'keyUp', windowsVirtualKeyCode: 0x23, key: 'End'});
   };
 
+  // Simple sanity check to make sure network throttling is wired up
+  // See crbug.com/747724
+  TestSuite.prototype.testOfflineNetworkConditions = async function() {
+    var test = this;
+    SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
+
+    function finishRequest(request) {
+      test.assertEquals(
+          'net::ERR_INTERNET_DISCONNECTED', request.localizedFailDescription, 'Request should have failed');
+      test.releaseControl();
+    }
+
+    this.addSniffer(SDK.NetworkDispatcher.prototype, '_finishNetworkRequest', finishRequest);
+
+    test.takeControl();
+    test.evaluateInConsole_('window.location.reload(true);', function(resultText) {});
+  };
+
   TestSuite.prototype.testEmulateNetworkConditions = function() {
     var test = this;
 

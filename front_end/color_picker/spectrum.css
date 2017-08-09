@@ -131,6 +131,123 @@
     margin-right: 4px;
 }
 
+.spectrum-contrast-details {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    height: 111px;
+    top: 124px;
+    z-index: 13;
+    font-size: 13px;
+    color: #333;
+    display: none;
+    line-height: initial;
+}
+
+.spectrum-contrast-details div.toolbar {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    margin: 0;
+}
+
+.spectrum-contrast-details div.toolbar [is=ui-icon] {
+    position: absolute;
+    right: 6px;
+    top: 6px;
+    margin: 0;
+    background: transparent;
+}
+
+.spectrum-contrast-details.visible {
+    display: initial;
+}
+
+.spectrum-contrast-details div {
+    margin: 12px;
+}
+
+.contrast-pass-fail {
+    margin-left: 0.5em;
+}
+
+.contrast-threshold .smallicon-checkmark-square,
+.contrast-threshold .smallicon-no{
+    display: none;
+}
+
+.contrast-threshold.pass .smallicon-checkmark-square {
+    display: inline-block;
+    background-color: #00b06f;
+}
+
+.contrast-threshold.fail .smallicon-no {
+    display: inline-block;
+    background-color: #b40202;
+}
+
+.contrast-threshold-value {
+    font-weight: bold;
+}
+.spectrum-contrast-details .contrast-thresholds div {
+    margin: 0;
+}
+
+.contrast-link {
+    margin-left: 0.5em;
+}
+
+.contrast-link .mediumicon-info {
+    margin-top: -3px;
+    background-color: #333;
+}
+
+.contrast-details-value {
+    color: white;
+    border-radius: 2px;
+    margin-left: 0.5em;
+    padding: 1px 3px;
+    align-items:  baseline;
+}
+
+.contrast-details-value.contrast-color-white {
+    border: 1px solid #ddd;
+}
+
+.contrast-details-value.contrast-fail.hover {
+    color: #333 !important;
+    background-color: white !important;
+}
+
+.contrast-details-value.contrast-fail.hover [is=ui-icon] {
+    background-color: black !important;
+}
+
+.contrast-details-value [is=ui-icon] {
+    display: none;
+    margin-left: 0.5em;
+}
+
+.contrast-details-value .smallicon-checkmark-behind {
+    margin-left: -6px;
+}
+
+.contrast-details-value.contrast-fail .smallicon-no {
+    display: inline-block;
+}
+
+.contrast-details-value.contrast-fail .smallicon-no {
+    display: inline-block;
+}
+
+.contrast-details-value.contrast-aa .smallicon-checkmark-square {
+    display: inline-block;
+}
+
+.contrast-details-value.contrast-aaa .smallicon-checkmark-behind {
+    display: inline-block;
+}
+
 .swatch {
     width: 32px;
     height: 32px;
@@ -459,4 +576,38 @@ div.palette-preview {
 .delete-color-toolbar-active {
     background-color: #ddd;
     color: white;
+}
+
+.swatch.contrast {
+    width: 20px;
+    height: 20px;
+    margin: -10px;
+    position: relative;
+    top: -5px;
+    left: 17px;
+    background-image: url(Images/checker.png);
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.swatch.contrast .swatch-overlay {
+    padding: 0;
+}
+
+.swatch.contrast [is=ui-icon] {
+    margin: -2px;
+}
+
+button.background-color-picker {
+    border: 0;
+    padding:  0;
+    background: none;
+    position: relative;
+    margin-top: -12px;
+    left: 26px;
+    top: 7px;
+}
+
+button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask{
+    background-color: hsl(218, 81%, 59%);
 }

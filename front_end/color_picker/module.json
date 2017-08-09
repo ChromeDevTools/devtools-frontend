@@ -4,6 +4,7 @@
         "sdk"
     ],
     "scripts": [
+        "Contrast.js",
         "Spectrum.js"
     ],
     "resources": [

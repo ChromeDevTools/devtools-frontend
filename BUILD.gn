@@ -104,6 +104,7 @@ all_devtools_files = [
   "front_end/cm_web_modes/htmlmixed.js",
   "front_end/cm_web_modes/javascript.js",
   "front_end/cm_web_modes/xml.js",
+  "front_end/color_picker/Contrast.js",
   "front_end/color_picker/module.json",
   "front_end/color_picker/spectrum.css",
   "front_end/color_picker/Spectrum.js",

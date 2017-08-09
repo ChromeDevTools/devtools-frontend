@@ -2016,29 +2016,10 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     var swatchIcon = new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
 
     /**
-     * @param {?Array<string>} backgroundColors
+     * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
      */
-    function computedCallback(backgroundColors) {
-      // TODO(aboxhall): distinguish between !backgroundColors (no text) and
-      // !backgroundColors.length (no computed bg color)
-      if (!backgroundColors || !backgroundColors.length)
-        return;
-      // TODO(samli): figure out what to do in the case of multiple background colors (i.e. gradients)
-      var bgColorText = backgroundColors[0];
-      var bgColor = Common.Color.parse(bgColorText);
-      if (!bgColor)
-        return;
-
-      // If we have a semi-transparent background color over an unknown
-      // background, draw the line for the "worst case" scenario: where
-      // the unknown background is the same color as the text.
-      if (bgColor.hasAlpha) {
-        var blendedRGBA = [];
-        Common.Color.blendColors(bgColor.rgba(), color.rgba(), blendedRGBA);
-        bgColor = new Common.Color(blendedRGBA, Common.Color.Format.RGBA);
-      }
-
-      swatchIcon.setContrastColor(bgColor);
+    function computedCallback(contrastInfo) {
+      swatchIcon.setContrastInfo(contrastInfo);
     }
 
     if (Runtime.experiments.isEnabled('colorContrastRatio') && this.property.name === 'color' &&

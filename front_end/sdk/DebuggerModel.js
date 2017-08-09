@@ -683,37 +683,11 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} code
-   * @param {string} objectGroup
-   * @param {boolean} includeCommandLineAPI
-   * @param {boolean} silent
-   * @param {boolean} returnByValue
-   * @param {boolean} generatePreview
-   * @param {function(?SDK.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
+   * @param {!SDK.RuntimeModel.EvaluationOptions} options
+   * @return {!Promise<!SDK.RuntimeModel.EvaluationResult>}
    */
-  evaluateOnSelectedCallFrame(
-      code,
-      objectGroup,
-      includeCommandLineAPI,
-      silent,
-      returnByValue,
-      generatePreview,
-      callback) {
-    /**
-     * @param {?Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @param {string=} error
-     * @this {SDK.DebuggerModel}
-     */
-    function didEvaluate(result, exceptionDetails, error) {
-      if (!result)
-        callback(null, undefined, error);
-      else
-        callback(this._runtimeModel.createRemoteObject(result), exceptionDetails);
-    }
-
-    this.selectedCallFrame().evaluate(
-        code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, didEvaluate.bind(this));
+  evaluateOnSelectedCallFrame(options) {
+    return this.selectedCallFrame().evaluate(options);
   }
 
   /**
@@ -1200,61 +1174,29 @@ SDK.DebuggerModel.CallFrame = class {
   }
 
   /**
-   * @param {string} code
-   * @param {string} objectGroup
-   * @param {boolean} includeCommandLineAPI
-   * @param {boolean} silent
-   * @param {boolean} returnByValue
-   * @param {boolean} generatePreview
-   * @param {function(?Protocol.Runtime.RemoteObject, !Protocol.Runtime.ExceptionDetails=, string=)} callback
+   * @param {!SDK.RuntimeModel.EvaluationOptions} options
+   * @return {!Promise<!SDK.RuntimeModel.EvaluationResult>}
    */
-  async evaluate(code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback) {
+  async evaluate(options) {
     var response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
-      callFrameId: this._payload.callFrameId,
-      expression: code,
-      objectGroup: objectGroup,
-      includeCommandLineAPI: includeCommandLineAPI,
-      silent: silent,
-      returnByValue: returnByValue,
-      generatePreview: generatePreview
+      callFrameId: this.id,
+      expression: options.expression,
+      objectGroup: options.objectGroup,
+      includeCommandLineAPI: options.includeCommandLineAPI,
+      silent: options.silent,
+      returnByValue: options.returnByValue,
+      generatePreview: options.generatePreview,
+      throwOnSideEffect: false
     });
     var error = response[Protocol.Error];
     if (error) {
       console.error(error);
-      callback(null, undefined, error);
-      return;
+      return {error: error};
     }
-    callback(response.result, response.exceptionDetails);
-  }
-
-  /**
-   * @param {string} code
-   * @param {string} objectGroup
-   * @param {boolean} includeCommandLineAPI
-   * @param {boolean} silent
-   * @param {boolean} returnByValue
-   * @param {boolean} generatePreview
-   * @return {!Promise<?SDK.RemoteObject>}
-   */
-  evaluatePromise(code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview) {
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    this.evaluate(
-        code, objectGroup, includeCommandLineAPI, silent, returnByValue, generatePreview, callback.bind(this));
-    return promise;
-
-    /**
-     * @param {?Protocol.Runtime.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @param {string=} error
-     * @this {SDK.DebuggerModel.CallFrame}
-     */
-    function callback(result, exceptionDetails, error) {
-      if (!result || exceptionDetails)
-        fulfill(null);
-      else
-        fulfill(this.debuggerModel._runtimeModel.createRemoteObject(result));
-    }
+    return {
+      object: this.debuggerModel.runtimeModel().createRemoteObject(response.result),
+      exceptionDetails: response.exceptionDetails
+    };
   }
 
   async restart() {

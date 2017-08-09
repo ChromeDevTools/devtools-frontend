@@ -248,10 +248,10 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
    * @param {boolean=} wasThrown
    */
   _onEvaluate(title, callback, error, result, wasThrown) {
-    if (error)
+    if (error || !result)
       callback(error.toString());
     else
-      this._setObject(/** @type {!SDK.RemoteObject} */ (result), title, callback);
+      this._setObject(result, title, callback);
   }
 
   _createObjectPropertiesView() {

@@ -152,7 +152,7 @@ Console.ConsolePrompt = class extends UI.Widget {
   /**
    * @param {!KeyboardEvent} event
    */
-  _enterKeyPressed(event) {
+  async _enterKeyPressed(event) {
     if (event.altKey || event.ctrlKey || event.shiftKey)
       return;
 
@@ -169,27 +169,19 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._appendCommand(str, true);
       return;
     }
-    currentExecutionContext.runtimeModel.compileScript(
-        str, '', false, currentExecutionContext.id, compileCallback.bind(this));
-
-    /**
-     * @param {!Protocol.Runtime.ScriptId=} scriptId
-     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {Console.ConsolePrompt}
-     */
-    function compileCallback(scriptId, exceptionDetails) {
-      if (str !== this.text())
-        return;
-      if (exceptionDetails &&
-          (exceptionDetails.exception.description.startsWith('SyntaxError: Unexpected end of input') ||
-           exceptionDetails.exception.description.startsWith('SyntaxError: Unterminated template literal'))) {
-        this._editor.newlineAndIndent();
-        this._enterProcessedForTest();
-        return;
-      }
-      this._appendCommand(str, true);
+    var result = await currentExecutionContext.runtimeModel.compileScript(str, '', false, currentExecutionContext.id);
+    if (str !== this.text())
+      return;
+    var exceptionDetails = result.exceptionDetails;
+    if (exceptionDetails &&
+        (exceptionDetails.exception.description.startsWith('SyntaxError: Unexpected end of input') ||
+         exceptionDetails.exception.description.startsWith('SyntaxError: Unterminated template literal'))) {
+      this._editor.newlineAndIndent();
       this._enterProcessedForTest();
+      return;
     }
+    this._appendCommand(str, true);
+    this._enterProcessedForTest();
   }
 
   /**

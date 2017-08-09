@@ -248,16 +248,23 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     // Evaluate location.href for a more specific URL than inspectedURL provides so that SPA hash navigation routes
     // will be respected and audited.
-    return new Promise(resolve => {
-      executionContext.evaluate('window.location.href', 'audits', false, false, true, false, false, (object, err) => {
-        if (!err && object) {
-          this._inspectedURL = object.value;
-          object.release();
-        }
-
-        resolve();
-      });
-    });
+    return executionContext
+        .evaluate(
+            {
+              expression: 'window.location.href',
+              objectGroup: 'audits',
+              includeCommandLineAPI: false,
+              silent: false,
+              returnByValue: true,
+              generatePreview: false
+            },
+            /* userGesture */ false, /* awaitPromise */ false)
+        .then(result => {
+          if (!result.exceptionDetails && result.object) {
+            this._inspectedURL = result.object.value;
+            result.object.release();
+          }
+        });
   }
 
   _start() {

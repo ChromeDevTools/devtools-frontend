@@ -221,8 +221,9 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
   /**
    * @param {!SDK.ExecutionContext} executionContext
    * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Promise<undefined>}
    */
-  evaluateScriptSnippet(executionContext, uiSourceCode) {
+  async evaluateScriptSnippet(executionContext, uiSourceCode) {
     console.assert(uiSourceCode.project().type() === Workspace.projectTypes.Snippets);
     var breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._releaseSnippetScript(uiSourceCode);
@@ -234,40 +235,25 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
     var mapping = this._mappingForDebuggerModel.get(debuggerModel);
     mapping._setEvaluationIndex(evaluationIndex, uiSourceCode);
     var evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
-    uiSourceCode.requestContent().then(compileSnippet.bind(this));
-
-    /**
-     * @this {Snippets.ScriptSnippetModel}
-     */
-    function compileSnippet() {
-      var expression = uiSourceCode.workingCopy();
-      Common.console.show();
-      runtimeModel.compileScript(expression, '', true, executionContext.id, compileCallback.bind(this));
+    await uiSourceCode.requestContent();
+    var expression = uiSourceCode.workingCopy();
+    Common.console.show();
+    var result = await runtimeModel.compileScript(expression, '', true, executionContext.id);
+    if (!result || mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
+      return;
+    var script = /** @type {!SDK.Script} */ (
+        debuggerModel.scriptForId(/** @type {string} */ (result.scriptId || result.exceptionDetails.scriptId)));
+    mapping._addScript(script, uiSourceCode);
+    if (!result.scriptId) {
+      this._printRunOrCompileScriptResultFailure(
+          runtimeModel, /** @type {!Protocol.Runtime.ExceptionDetails} */ (result.exceptionDetails), evaluationUrl);
+      return;
     }
 
-    /**
-     * @param {!Protocol.Runtime.ScriptId=} scriptId
-     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {Snippets.ScriptSnippetModel}
-     */
-    function compileCallback(scriptId, exceptionDetails) {
-      if (mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
-        return;
+    breakpointLocations = this._removeBreakpoints(uiSourceCode);
+    this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
-      var script = /** @type {!SDK.Script} */ (
-          debuggerModel.scriptForId(/** @type {string} */ (scriptId || exceptionDetails.scriptId)));
-      mapping._addScript(script, uiSourceCode);
-      if (!scriptId) {
-        this._printRunOrCompileScriptResultFailure(
-            runtimeModel, /** @type {!Protocol.Runtime.ExceptionDetails} */ (exceptionDetails), evaluationUrl);
-        return;
-      }
-
-      var breakpointLocations = this._removeBreakpoints(uiSourceCode);
-      this._restoreBreakpoints(uiSourceCode, breakpointLocations);
-
-      this._runScript(scriptId, executionContext, evaluationUrl);
-    }
+    this._runScript(script.scriptId, executionContext, evaluationUrl);
   }
 
   /**
@@ -275,28 +261,22 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!SDK.ExecutionContext} executionContext
    * @param {?string=} sourceURL
    */
-  _runScript(scriptId, executionContext, sourceURL) {
+  async _runScript(scriptId, executionContext, sourceURL) {
     var runtimeModel = executionContext.runtimeModel;
-    runtimeModel.runScript(
+    var result = await runtimeModel.runScript(
         scriptId, executionContext.id, 'console', /* silent */ false, /* includeCommandLineAPI */ true,
-        /* returnByValue */ false, /* generatePreview */ true, /* awaitPromise */ undefined, runCallback.bind(this));
-
-    /**
-     * @param {?Protocol.Runtime.RemoteObject} result
-     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {Snippets.ScriptSnippetModel}
-     */
-    function runCallback(result, exceptionDetails) {
-      if (!exceptionDetails)
-        this._printRunScriptResult(runtimeModel, result, scriptId, sourceURL);
-      else
-        this._printRunOrCompileScriptResultFailure(runtimeModel, exceptionDetails, sourceURL);
-    }
+        /* returnByValue */ false, /* generatePreview */ true);
+    if (result.error)
+      return;
+    if (!result.exceptionDetails)
+      this._printRunScriptResult(runtimeModel, result.object || null, scriptId, sourceURL);
+    else
+      this._printRunOrCompileScriptResultFailure(runtimeModel, result.exceptionDetails, sourceURL);
   }
 
   /**
    * @param {!SDK.RuntimeModel} runtimeModel
-   * @param {?Protocol.Runtime.RemoteObject} result
+   * @param {?SDK.RemoteObject} result
    * @param {!Protocol.Runtime.ScriptId} scriptId
    * @param {?string=} sourceURL
    */

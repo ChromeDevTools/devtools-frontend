@@ -124,33 +124,30 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    * @param {string} text
    * @param {boolean} useCommandLineAPI
    */
-  evaluateCommandInConsole(executionContext, text, useCommandLineAPI) {
-    var requestedText = text;
+  async evaluateCommandInConsole(executionContext, text, useCommandLineAPI) {
     var commandMessage = new ConsoleModel.ConsoleMessage(
         executionContext.runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, null, text,
         ConsoleModel.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
 
-    /**
-     * @param {?SDK.RemoteObject} result
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {ConsoleModel.ConsoleModel}
-     */
-    function printResult(result, exceptionDetails) {
-      if (!result)
-        return;
-
-      Common.console.showPromise().then(() => {
-        this.dispatchEventToListeners(
-            ConsoleModel.ConsoleModel.Events.CommandEvaluated,
-            {result: result, text: requestedText, commandMessage: commandMessage, exceptionDetails: exceptionDetails});
-      });
-    }
-
-    text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
-    executionContext.evaluate(text, 'console', useCommandLineAPI, false, false, true, true, printResult.bind(this));
+    var result = await executionContext.evaluate(
+        {
+          expression: SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text),
+          objectGroup: 'console',
+          includeCommandLineAPI: useCommandLineAPI,
+          silent: false,
+          returnByValue: false,
+          generatePreview: true
+        },
+        /* userGesture */ true, /* awaitPromise */ false);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
+    if (result.error)
+      return;
+    await Common.console.showPromise();
+    this.dispatchEventToListeners(
+        ConsoleModel.ConsoleModel.Events.CommandEvaluated,
+        {result: result.object, commandMessage: commandMessage, exceptionDetails: result.exceptionDetails});
   }
 
   /**

@@ -38,7 +38,7 @@ Sources.JavaScriptCompiler = class {
     return SDK.targetManager.mainTarget() ? SDK.targetManager.mainTarget().model(SDK.RuntimeModel) : null;
   }
 
-  _compile() {
+  async _compile() {
     var runtimeModel = this._findRuntimeModel();
     if (!runtimeModel)
       return;
@@ -48,27 +48,22 @@ Sources.JavaScriptCompiler = class {
 
     this._compiling = true;
     var code = this._sourceFrame.textEditor.text();
-    runtimeModel.compileScript(code, '', false, currentExecutionContext.id, compileCallback.bind(this));
-
-    /**
-     * @param {!Protocol.Runtime.ScriptId=} scriptId
-     * @param {?Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     * @this {Sources.JavaScriptCompiler}
-     */
-    function compileCallback(scriptId, exceptionDetails) {
-      this._compiling = false;
-      if (this._recompileScheduled) {
-        delete this._recompileScheduled;
-        this.scheduleCompile();
-        return;
-      }
-      if (!exceptionDetails)
-        return;
-      var text = SDK.RuntimeModel.simpleTextFromException(exceptionDetails);
-      this._sourceFrame.uiSourceCode().addLineMessage(
-          Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
-      this._compilationFinishedForTest();
+    var result = await runtimeModel.compileScript(code, '', false, currentExecutionContext.id);
+    if (!result)
+      return;
+    this._compiling = false;
+    if (this._recompileScheduled) {
+      delete this._recompileScheduled;
+      this.scheduleCompile();
+      return;
     }
+    if (!result.exceptionDetails)
+      return;
+    var exceptionDetails = result.exceptionDetails;
+    var text = SDK.RuntimeModel.simpleTextFromException(exceptionDetails);
+    this._sourceFrame.uiSourceCode().addLineMessage(
+        Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
+    this._compilationFinishedForTest();
   }
 
   _compilationFinishedForTest() {

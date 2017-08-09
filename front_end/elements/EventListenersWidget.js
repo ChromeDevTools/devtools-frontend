@@ -141,30 +141,33 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {!Promise<!SDK.RemoteObject>}
+   * @return {!Promise<?SDK.RemoteObject>}
    */
   _windowObjectInNodeContext(node) {
-    return new Promise(windowObjectInNodeContext);
-
-    /**
-     * @param {function(?)} fulfill
-     * @param {function(*)} reject
-     */
-    function windowObjectInNodeContext(fulfill, reject) {
-      var executionContexts = node.domModel().runtimeModel().executionContexts();
-      var context = null;
-      if (node.frameId()) {
-        for (var i = 0; i < executionContexts.length; ++i) {
-          var executionContext = executionContexts[i];
-          if (executionContext.frameId === node.frameId() && executionContext.isDefault)
-            context = executionContext;
-        }
-      } else {
-        context = executionContexts[0];
+    var executionContexts = node.domModel().runtimeModel().executionContexts();
+    var context = null;
+    if (node.frameId()) {
+      for (var i = 0; i < executionContexts.length; ++i) {
+        var executionContext = executionContexts[i];
+        if (executionContext.frameId === node.frameId() && executionContext.isDefault)
+          context = executionContext;
       }
-      context.evaluate(
-          'self', Elements.EventListenersWidget._objectGroupName, false, true, false, false, false, fulfill);
+    } else {
+      context = executionContexts[0];
     }
+    return context
+        .evaluate(
+            {
+              expression: 'self',
+              objectGroup: Elements.EventListenersWidget._objectGroupName,
+              includeCommandLineAPI: false,
+              silent: true,
+              returnByValue: false,
+              generatePreview: false
+            },
+            /* userGesture */ false,
+            /* awaitPromise */ false)
+        .then(result => result.object || null);
   }
 
   _eventListenersArrivedForTest() {

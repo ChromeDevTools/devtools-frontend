@@ -110,7 +110,18 @@ TestRunner.evaluateInPageWithTimeout = function(code) {
 TestRunner.evaluateFunctionInOverlay = function(func, callback) {
   var expression = 'testRunner.evaluateInWebInspectorOverlay("(" + ' + func + ' + ")()")';
   var mainContext = TestRunner.runtimeModel.executionContexts()[0];
-  mainContext.evaluate(expression, '', false, false, true, false, false, result => void callback(result.value));
+  mainContext
+      .evaluate(
+          {
+            expression: expression,
+            objectGroup: '',
+            includeCommandLineAPI: false,
+            silent: false,
+            returnByValue: true,
+            generatePreview: false
+          },
+          /* userGesture */ false, /* awaitPromise*/ false)
+      .then(result => void callback(result.object.value));
 };
 
 /**

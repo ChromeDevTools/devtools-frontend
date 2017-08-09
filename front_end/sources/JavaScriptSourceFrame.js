@@ -459,11 +459,17 @@ Sources.JavaScriptSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         var resolvedText = await Sources.SourceMapNamesResolver.resolveExpression(
             /** @type {!SDK.DebuggerModel.CallFrame} */ (selectedCallFrame), evaluationText, this._debuggerSourceCode,
             lineNumber, startHighlight, endHighlight);
-        var remoteObject = await selectedCallFrame.evaluatePromise(
-            resolvedText || evaluationText, 'popover', false, true, false, false);
-        if (!remoteObject)
+        var result = await selectedCallFrame.evaluate({
+          expression: resolvedText || evaluationText,
+          objectGroup: 'popover',
+          includeCommandLineAPI: false,
+          silent: true,
+          returnByValue: false,
+          generatePreview: false
+        });
+        if (!result.object)
           return false;
-        objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(remoteObject, popover);
+        objectPopoverHelper = await ObjectUI.ObjectPopoverHelper.buildObjectPopover(result.object, popover);
         var potentiallyUpdatedCallFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
         if (!objectPopoverHelper || selectedCallFrame !== potentiallyUpdatedCallFrame) {
           debuggerModel.runtimeModel().releaseObjectGroup('popover');

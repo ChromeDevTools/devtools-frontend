@@ -900,53 +900,44 @@ Sources.SourcesPanel = class extends UI.Panel {
   /**
    * @param {!SDK.RemoteObject} remoteObject
    */
-  _saveToTempVariable(remoteObject) {
+  async _saveToTempVariable(remoteObject) {
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!currentExecutionContext)
       return;
 
-    currentExecutionContext.globalObject('', false, didGetGlobalObject);
-    /**
-     * @param {?SDK.RemoteObject} global
-     * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-     */
-    function didGetGlobalObject(global, exceptionDetails) {
-      /**
-       * @suppressReceiverCheck
-       * @this {Window}
-       */
-      function remoteFunction(value) {
-        var prefix = 'temp';
-        var index = 1;
-        while ((prefix + index) in this)
-          ++index;
-        var name = prefix + index;
-        this[name] = value;
-        return name;
-      }
-
-      if (!!exceptionDetails || !global) {
-        failedToSave(global);
-      } else {
-        global.callFunction(
-            remoteFunction, [SDK.RemoteObject.toCallArgument(remoteObject)], didSave.bind(null, global));
-      }
+    var result = await currentExecutionContext.globalObject(/* objectGroup */ '', /* generatePreview */ false);
+    if (!!result.exceptionDetails || !result.object) {
+      failedToSave(result.object || null);
+      return;
     }
 
+    var globalObject = result.object;
+    var callFunctionResult =
+        await globalObject.callFunctionPromise(saveVariable, [SDK.RemoteObject.toCallArgument(remoteObject)]);
+    globalObject.release();
+    if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {
+      failedToSave(callFunctionResult.object || null);
+    } else {
+      ConsoleModel.consoleModel.evaluateCommandInConsole(
+          /** @type {!SDK.ExecutionContext} */ (currentExecutionContext),
+          /** @type {string} */ (callFunctionResult.object.value),
+          /* useCommandLineAPI */ false);
+    }
+    if (callFunctionResult.object)
+      callFunctionResult.object.release();
+
     /**
-     * @param {!SDK.RemoteObject} global
-     * @param {?SDK.RemoteObject} result
-     * @param {boolean=} wasThrown
+     * @suppressReceiverCheck
+     * @this {Window}
      */
-    function didSave(global, result, wasThrown) {
-      global.release();
-      if (wasThrown || !result || result.type !== 'string') {
-        failedToSave(result);
-      } else {
-        ConsoleModel.consoleModel.evaluateCommandInConsole(
-            /** @type {!SDK.ExecutionContext} */ (currentExecutionContext), /** @type {string} */ (result.value),
-            /* useCommandLineAPI */ false);
-      }
+    function saveVariable(value) {
+      var prefix = 'temp';
+      var index = 1;
+      while ((prefix + index) in this)
+        ++index;
+      var name = prefix + index;
+      this[name] = value;
+      return name;
     }
 
     /**
@@ -954,10 +945,8 @@ Sources.SourcesPanel = class extends UI.Panel {
      */
     function failedToSave(result) {
       var message = Common.UIString('Failed to save to temp variable.');
-      if (result) {
+      if (result)
         message += ' ' + result.description;
-        result.release();
-      }
       Common.console.error(message);
     }
   }

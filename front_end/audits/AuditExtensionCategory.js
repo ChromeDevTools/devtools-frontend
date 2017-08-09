@@ -163,22 +163,18 @@ Audits.AuditExtensionCategoryResults = class {
   evaluate(expression, evaluateOptions, callback) {
     /**
      * @param {?string} error
-     * @param {!Protocol.Runtime.RemoteObject} result
+     * @param {?SDK.RemoteObject} result
      * @param {boolean=} wasThrown
      * @this {Audits.AuditExtensionCategoryResults}
      */
     function onEvaluate(error, result, wasThrown) {
       var runtimeModel = this._target.model(SDK.RuntimeModel);
-      if (wasThrown || !runtimeModel)
+      if (wasThrown || !runtimeModel || !result)
         return;
-      var object = runtimeModel.createRemoteObject(result);
-      callback(object);
+      callback(result);
     }
-
-    var evaluateCallback =
-        /** @type {function(?string, ?SDK.RemoteObject, boolean=)} */ (onEvaluate.bind(this));
     Extensions.extensionServer.evaluate(
-        expression, false, false, evaluateOptions, this._category._extensionOrigin, evaluateCallback);
+        expression, false, false, evaluateOptions, this._category._extensionOrigin, onEvaluate.bind(this));
   }
 };
 

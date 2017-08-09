@@ -61,42 +61,32 @@ ObjectUI.JavaScriptAutocomplete._clipExpression = function(text, allowEndingBrac
  * @param {string} query
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
-ObjectUI.JavaScriptAutocomplete._mapCompletions = function(text, query) {
+ObjectUI.JavaScriptAutocomplete._mapCompletions = async function(text, query) {
   var mapMatch = text.match(/\.\s*(get|set|delete)\s*\(\s*$/);
   var executionContext = UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext || !mapMatch)
-    return Promise.resolve([]);
+    return [];
 
   var clippedExpression = ObjectUI.JavaScriptAutocomplete._clipExpression(text.substring(0, mapMatch.index));
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
-  executionContext.evaluate(clippedExpression, 'completion', true, true, false, false, false, evaluated);
-  return promise;
-
-  /**
-   * @param {?SDK.RemoteObject} result
-   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
-   */
-  function evaluated(result, exceptionDetails) {
-    if (!result || !!exceptionDetails || result.subtype !== 'map') {
-      fulfill([]);
-      return;
-    }
-    result.getOwnPropertiesPromise(false).then(extractEntriesProperty);
-  }
-
-  /**
-   * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} properties
-   */
-  function extractEntriesProperty(properties) {
-    var internalProperties = properties.internalProperties || [];
-    var entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
-    if (!entriesProperty) {
-      fulfill([]);
-      return;
-    }
-    entriesProperty.value.callFunctionJSONPromise(getEntries).then(keysObj => gotKeys(Object.keys(keysObj)));
-  }
+  var result = await executionContext.evaluate(
+      {
+        expression: clippedExpression,
+        objectGroup: 'completion',
+        includeCommandLineAPI: true,
+        silent: true,
+        returnByValue: false,
+        generatePreview: false
+      },
+      /* userGesture */ false, /* awaitPromise */ false);
+  if (result.error || !!result.exceptionDetails || result.object.subtype !== 'map')
+    return [];
+  var properties = await result.object.getOwnPropertiesPromise(false);
+  var internalProperties = properties.internalProperties || [];
+  var entriesProperty = internalProperties.find(property => property.name === '[[Entries]]');
+  if (!entriesProperty)
+    return [];
+  var keysObj = await entriesProperty.value.callFunctionJSONPromise(getEntries);
+  return gotKeys(Object.keys(keysObj));
 
   /**
    * @suppressReceiverCheck
@@ -114,6 +104,7 @@ ObjectUI.JavaScriptAutocomplete._mapCompletions = function(text, query) {
 
   /**
    * @param {!Array<string>} rawKeys
+   * @return {!UI.SuggestBox.Suggestions}
    */
   function gotKeys(rawKeys) {
     var caseSensitivePrefix = [];
@@ -151,7 +142,7 @@ ObjectUI.JavaScriptAutocomplete._mapCompletions = function(text, query) {
     var suggestions = caseSensitivePrefix.concat(caseInsensitivePrefix, caseSensitiveAnywhere, caseInsensitiveAnywhere);
     if (suggestions.length)
       suggestions[0].subtitle = Common.UIString('Keys');
-    fulfill(suggestions);
+    return suggestions;
   }
 };
 
@@ -161,10 +152,10 @@ ObjectUI.JavaScriptAutocomplete._mapCompletions = function(text, query) {
  * @param {boolean=} force
  * @return {!Promise<!UI.SuggestBox.Suggestions>}
  */
-ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionString, query, force) {
+ObjectUI.JavaScriptAutocomplete.completionsForExpression = async function(expressionString, query, force) {
   var executionContext = UI.context.flavor(SDK.ExecutionContext);
   if (!executionContext)
-    return Promise.resolve([]);
+    return [];
 
   var lastIndex = expressionString.length - 1;
 
@@ -178,54 +169,67 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionSt
 
   // User is entering float value, do not suggest anything.
   if ((expressionString && !isNaN(expressionString)) || (!expressionString && query && !isNaN(query)))
-    return Promise.resolve([]);
+    return [];
 
 
   if (!query && !expressionString && !force)
-    return Promise.resolve([]);
-
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
+    return [];
   var selectedFrame = executionContext.debuggerModel.selectedCallFrame();
-  if (!expressionString && selectedFrame)
-    variableNamesInScopes(selectedFrame, receivedPropertyNames);
-  else
-    executionContext.evaluate(expressionString, 'completion', true, true, false, false, false, evaluated);
+  if (!expressionString && selectedFrame) {
+    return completionsOnPause(selectedFrame);
+  } else {
+    var result = await executionContext.evaluate(
+        {
+          expression: expressionString,
+          objectGroup: 'completion',
+          includeCommandLineAPI: true,
+          silent: true,
+          returnByValue: false,
+          generatePreview: false
+        },
+        /* userGesture */ false, /* awaitPromise */ false);
+    return completionsOnGlobal(result);
+  }
 
-  return promise;
   /**
-   * @param {?SDK.RemoteObject} result
-   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
+   * @param {!SDK.RuntimeModel.EvaluationResult} result
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  function evaluated(result, exceptionDetails) {
-    if (!result || !!exceptionDetails) {
-      fulfill([]);
-      return;
-    }
+  async function completionsOnGlobal(result) {
+    if (result.error || !!result.exceptionDetails || !result.object)
+      return [];
 
-    /**
-     * @param {?SDK.RemoteObject} object
-     * @return {!Promise<?SDK.RemoteObject>}
-     */
-    function extractTarget(object) {
-      if (!object)
-        return Promise.resolve(/** @type {?SDK.RemoteObject} */ (null));
-      if (object.type !== 'object' || object.subtype !== 'proxy')
-        return Promise.resolve(/** @type {?SDK.RemoteObject} */ (object));
-      return object.getOwnPropertiesPromise(false /* generatePreview */)
-          .then(extractTargetFromProperties)
-          .then(extractTarget);
-    }
-
-    /**
-     * @param {!{properties: ?Array<!SDK.RemoteObjectProperty>, internalProperties: ?Array<!SDK.RemoteObjectProperty>}} properties
-     * @return {?SDK.RemoteObject}
-     */
-    function extractTargetFromProperties(properties) {
+    var object = result.object;
+    while (object && object.type === 'object' && object.subtype === 'proxy') {
+      var properties = await object.getOwnPropertiesPromise(false /* generatePreview */);
       var internalProperties = properties.internalProperties || [];
       var target = internalProperties.find(property => property.name === '[[Target]]');
-      return target ? target.value : null;
+      object = target ? target.value : null;
     }
+    if (!object)
+      return [];
+    var completions = [];
+    if (object.type === 'object' || object.type === 'function') {
+      completions =
+          await object.callFunctionJSONPromise(getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)]);
+    } else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean') {
+      var evaluateResult = await executionContext.evaluate(
+          {
+            expression: '(' + getCompletions + ')("' + object.type + '")',
+            objectGroup: 'completion',
+            includeCommandLineAPI: false,
+            silent: true,
+            returnByValue: true,
+            generatePreview: false
+          },
+          /* userGesture */ false,
+          /* awaitPromise */ false);
+      if (evaluateResult.object && !evaluateResult.exceptionDetails)
+        completions = evaluateResult.object.value;
+    }
+    executionContext.runtimeModel.releaseObjectGroup('completion');
+    return receivedPropertyNames(completions);
+
 
     /**
      * @param {string=} type
@@ -271,79 +275,36 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionSt
       }
       return result;
     }
-
-    /**
-     * @param {?SDK.RemoteObject} object
-     */
-    function completionsForObject(object) {
-      if (!object) {
-        receivedPropertyNames(null);
-      } else if (object.type === 'object' || object.type === 'function') {
-        object.callFunctionJSON(
-            getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)], receivedPropertyNames);
-      } else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean') {
-        executionContext.evaluate(
-            '(' + getCompletions + ')("' + result.type + '")', 'completion', false, true, true, false, false,
-            receivedPropertyNamesFromEval);
-      }
-    }
-
-    extractTarget(result).then(completionsForObject);
   }
 
   /**
    * @param {!SDK.DebuggerModel.CallFrame} callFrame
-   * @param {function(!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>)} callback
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  function variableNamesInScopes(callFrame, callback) {
+  async function completionsOnPause(callFrame) {
     var result = [{items: ['this']}];
-
-    /**
-     * @param {string} name
-     * @param {?Array<!SDK.RemoteObjectProperty>} properties
-     */
-    function propertiesCollected(name, properties) {
-      var group = {title: name, items: []};
-      result.push(group);
-      for (var i = 0; properties && i < properties.length; ++i)
-        group.items.push(properties[i].name);
-      if (--pendingRequests === 0)
-        callback(result);
-    }
-
     var scopeChain = callFrame.scopeChain();
-    var pendingRequests = scopeChain.length;
-    for (var i = 0; i < scopeChain.length; ++i) {
-      var scope = scopeChain[i];
-      var object = scope.object();
-      object.getAllProperties(
-          false /* accessorPropertiesOnly */, false /* generatePreview */,
-          propertiesCollected.bind(null, scope.typeName()));
+    var groupPromises = [];
+    for (var scope of scopeChain) {
+      groupPromises.push(scope.object()
+                             .getAllPropertiesPromise(false /* accessorPropertiesOnly */, false /* generatePreview */)
+                             .then(result => ({properties: result.properties, name: scope.name()})));
     }
+    var fullScopes = await Promise.all(groupPromises);
+    executionContext.runtimeModel.releaseObjectGroup('completion');
+    for (var scope of fullScopes)
+      result.push({title: scope.name, items: scope.properties.map(property => property.name)});
+    return receivedPropertyNames(result);
   }
 
   /**
-   * @param {?SDK.RemoteObject} result
-   * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
+   * @param {?Object} completions
+   * @return {!UI.SuggestBox.Suggestions}
    */
-  function receivedPropertyNamesFromEval(result, exceptionDetails) {
-    executionContext.runtimeModel.releaseObjectGroup('completion');
-    if (result && !exceptionDetails)
-      receivedPropertyNames(/** @type {!Object} */ (result.value));
-    else
-      fulfill([]);
-  }
-
-  /**
-   * @param {?Object} object
-   */
-  function receivedPropertyNames(object) {
-    executionContext.runtimeModel.releaseObjectGroup('completion');
-    if (!object) {
-      fulfill([]);
-      return;
-    }
-    var propertyGroups = /** @type {!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} */ (object);
+  function receivedPropertyNames(completions) {
+    if (!completions)
+      return [];
+    var propertyGroups = /** @type {!Array<!ObjectUI.JavaScriptAutocomplete.CompletionGroup>} */ (completions);
     var includeCommandLineAPI = (!dotNotation && !bracketNotation);
     if (includeCommandLineAPI) {
       const commandLineAPI = [
@@ -370,8 +331,8 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = function(expressionSt
       ];
       propertyGroups.push({items: commandLineAPI});
     }
-    fulfill(ObjectUI.JavaScriptAutocomplete._completionsForQuery(
-        dotNotation, bracketNotation, expressionString, query, propertyGroups));
+    return ObjectUI.JavaScriptAutocomplete._completionsForQuery(
+        dotNotation, bracketNotation, expressionString, query, propertyGroups);
   }
 };
 

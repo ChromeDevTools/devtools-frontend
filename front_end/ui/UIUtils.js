@@ -668,6 +668,7 @@ UI.asyncStackTraceLabel = function(description) {
 UI.installComponentRootStyles = function(element) {
   UI.appendStyle(element, 'ui/inspectorCommon.css');
   UI.themeSupport.injectHighlightStyleSheets(element);
+  UI.themeSupport.injectCustomStyleSheets(element);
   element.classList.add('platform-' + Host.platform());
 
   /**
@@ -698,6 +699,7 @@ UI.createShadowRootWithCoreStyles = function(element, cssFile) {
   var shadowRoot = element.createShadowRoot();
   UI.appendStyle(shadowRoot, 'ui/inspectorCommon.css');
   UI.themeSupport.injectHighlightStyleSheets(shadowRoot);
+  UI.themeSupport.injectCustomStyleSheets(shadowRoot);
   if (cssFile)
     UI.appendStyle(shadowRoot, cssFile);
   shadowRoot.addEventListener('focus', UI._focusChanged.bind(UI), true);
@@ -1675,6 +1677,7 @@ UI.ThemeSupport = class {
     /** @type {!Map<string, string>} */
     this._cachedThemePatches = new Map();
     this._setting = setting;
+    this._customSheets = new Set();
   }
 
   /**
@@ -1700,6 +1703,25 @@ UI.ThemeSupport = class {
     if (this._themeName === 'dark')
       UI.appendStyle(element, 'ui/inspectorSyntaxHighlightDark.css');
     this._injectingStyleSheet = false;
+  }
+
+   /**
+   * @param {!Element|!ShadowRoot} element
+   */
+  injectCustomStyleSheets(element) {
+    for (const sheet of this._customSheets){
+      var styleElement = createElement('style');
+      styleElement.type = 'text/css';
+      styleElement.textContent = sheet;
+      element.appendChild(styleElement);
+    }
+  }
+
+  /**
+   * @param {string} sheetText
+   */
+  addCustomStylesheet(sheetText) {
+    this._customSheets.add(sheetText);
   }
 
   /**

@@ -260,6 +260,13 @@ Extensions.ExtensionServer = class extends Common.Object {
     var styleSheet = createElement('style');
     styleSheet.textContent = message.styleSheet;
     document.head.appendChild(styleSheet);
+
+    UI.themeSupport.addCustomStylesheet(message.styleSheet);
+    // Add to all the shadow roots that have already been created
+    for (var node = document.body; node; node = node.traverseNextNode(document.body)) {
+      if (node instanceof ShadowRoot)
+        UI.themeSupport.injectCustomStyleSheets(node);
+    }
   }
 
   _onCreatePanel(message, port) {

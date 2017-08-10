@@ -17,3 +17,4 @@ npm-debug.log
 /scripts/local_node/runtimes
 /scripts/visualize_deps/out
 /front_end/protocol_externs.js
+package-lock.json

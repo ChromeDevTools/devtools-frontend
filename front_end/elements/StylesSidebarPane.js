@@ -32,6 +32,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     super();
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS('elements/stylesSidebarPane.css');
+    this.element.tabIndex = -1;
 
     Common.moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
@@ -45,7 +46,12 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     /** @type {?UI.ToolbarToggle} */
     this._pendingWidgetToggle = null;
     this._toolbarPaneElement = this._createStylesSidebarToolbar();
+
     this._sectionsContainer = this.contentElement.createChild('div');
+    this._sectionsContainer.addEventListener('keydown', this._sectionsContainerKeyDown.bind(this), false);
+    this._sectionsContainer.addEventListener('focusin', this._sectionsContainerFocusChanged.bind(this), false);
+    this._sectionsContainer.addEventListener('focusout', this._sectionsContainerFocusChanged.bind(this), false);
+
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._linkifier = new Components.Linkifier(Elements.StylesSidebarPane._maxLinkLength, /* useLinkDecorator */ true);
     /** @type {?Elements.StylePropertyHighlighter} */
@@ -181,6 +187,40 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._swatchPopoverHelper.hide();
     this._resetCache();
     this.update();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _sectionsContainerKeyDown(event) {
+    var activeElement = this._sectionsContainer.ownerDocument.deepActiveElement();
+    if (!activeElement)
+      return;
+    var section = activeElement._section;
+    if (!section)
+      return;
+
+    switch (event.key) {
+      case 'ArrowUp':
+      case 'ArrowLeft':
+        var sectionToFocus = section.previousSibling() || section.lastSibling();
+        sectionToFocus.element.focus();
+        event.consume(true);
+        break;
+      case 'ArrowDown':
+      case 'ArrowRight':
+        var sectionToFocus = section.nextSibling() || section.firstSibling();
+        sectionToFocus.element.focus();
+        event.consume(true);
+        break;
+    }
+  }
+
+  _sectionsContainerFocusChanged() {
+    // When a styles section is focused, shift+tab should leave the section.
+    // Leaving tabIndex = 0 on the first element would cause it to be focused instead.
+    if (this._sectionBlocks[0] && this._sectionBlocks[0].sections[0])
+      this._sectionBlocks[0].sections[0].element.tabIndex = this._sectionsContainer.hasFocus() ? -1 : 0;
   }
 
   /**
@@ -337,9 +377,26 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   /**
+   * @return {number}
+   */
+  _focusedSectionIndex() {
+    var index = 0;
+    for (var block of this._sectionBlocks) {
+      for (var section of block.sections) {
+        if (section.element.hasFocus())
+          return index;
+        index++;
+      }
+    }
+    return -1;
+  }
+
+  /**
    * @param {?SDK.CSSMatchedStyles} matchedStyles
    */
   _innerRebuildUpdate(matchedStyles) {
+    var focusedIndex = this._focusedSectionIndex();
+
     this._linkifier.reset();
     this._sectionsContainer.removeChildren();
     this._sectionBlocks = [];
@@ -371,14 +428,22 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
         block.sections.push(new Elements.KeyframePropertiesSection(this, matchedStyles, keyframe.style));
       this._sectionBlocks.push(block);
     }
-
+    var index = 0;
     for (var block of this._sectionBlocks) {
       var titleElement = block.titleElement();
       if (titleElement)
         this._sectionsContainer.appendChild(titleElement);
-      for (var section of block.sections)
+      for (var section of block.sections) {
         this._sectionsContainer.appendChild(section.element);
+        if (index === focusedIndex)
+          section.element.focus();
+        index++;
+      }
     }
+    if (focusedIndex >= index)
+      this._sectionBlocks[0].sections[0].element.focus();
+
+    this._sectionsContainerFocusChanged();
 
     if (this._filterRegex)
       this._updateFilter();
@@ -695,12 +760,16 @@ Elements.StylePropertiesSection = class {
 
     var rule = style.parentRule;
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
+    this.element.tabIndex = -1;
+    this._editing = false;
+    this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this.element._section = this;
     this._innerElement = this.element.createChild('div');
 
     this._titleElement = this._innerElement.createChild('div', 'styles-section-title ' + (rule ? 'styles-selector' : ''));
 
     this.propertiesTreeOutline = new UI.TreeOutlineInShadow();
+    this.propertiesTreeOutline.setFocusable(false);
     this.propertiesTreeOutline.registerRequiredCSS('elements/stylesSectionTree.css');
     this.propertiesTreeOutline.element.classList.add('style-properties', 'matched-styles', 'monospace');
     this.propertiesTreeOutline.section = this;
@@ -820,6 +889,26 @@ Elements.StylePropertiesSection = class {
   }
 
   /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    if (this._editing || !this.editable || event.altKey || event.ctrlKey || event.metaKey)
+      return;
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        this._startEditingAtFirstPosition();
+        event.consume(true);
+        break;
+      default:
+        // Filter out non-printable key strokes.
+        if (event.key.length === 1)
+          this.addNewBlankProperty(0).startEditing();
+        break;
+    }
+  }
+
+  /**
    * @param {boolean} isHovered
    */
   _setSectionHovered(isHovered) {
@@ -850,25 +939,30 @@ Elements.StylePropertiesSection = class {
     var textShadowButton = new UI.ToolbarButton(Common.UIString('Add text-shadow'), 'largeicon-text-shadow');
     textShadowButton.addEventListener(
         UI.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'text-shadow'));
+    textShadowButton.element.tabIndex = -1;
     items.push(textShadowButton);
 
     var boxShadowButton = new UI.ToolbarButton(Common.UIString('Add box-shadow'), 'largeicon-box-shadow');
     boxShadowButton.addEventListener(
         UI.ToolbarButton.Events.Click, this._onInsertShadowPropertyClick.bind(this, 'box-shadow'));
+    boxShadowButton.element.tabIndex = -1;
     items.push(boxShadowButton);
 
     var colorButton = new UI.ToolbarButton(Common.UIString('Add color'), 'largeicon-foreground-color');
     colorButton.addEventListener(UI.ToolbarButton.Events.Click, this._onInsertColorPropertyClick, this);
+    colorButton.element.tabIndex = -1;
     items.push(colorButton);
 
     var backgroundButton = new UI.ToolbarButton(Common.UIString('Add background-color'), 'largeicon-background-color');
     backgroundButton.addEventListener(UI.ToolbarButton.Events.Click, this._onInsertBackgroundColorPropertyClick, this);
+    backgroundButton.element.tabIndex = -1;
     items.push(backgroundButton);
 
     var newRuleButton = null;
     if (this._style.parentRule) {
       newRuleButton = new UI.ToolbarButton(Common.UIString('Insert Style Rule Below'), 'largeicon-add');
       newRuleButton.addEventListener(UI.ToolbarButton.Events.Click, this._onNewRuleClick, this);
+      newRuleButton.element.tabIndex = -1;
       items.push(newRuleButton);
     }
 
@@ -877,6 +971,7 @@ Elements.StylePropertiesSection = class {
       sectionToolbar.appendToolbarItem(items[i]);
 
     var menuButton = new UI.ToolbarButton(Common.UIString('More tools\u2026'), 'largeicon-menu');
+    menuButton.element.tabIndex = -1;
     sectionToolbar.appendToolbarItem(menuButton);
     setItemsVisibility.call(this, items, false);
     sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(this, items, true));
@@ -1486,7 +1581,7 @@ Elements.StylePropertiesSection = class {
       event.consume(true);
       return;
     }
-    this._startEditingOnMouseEvent();
+    this._startEditingAtFirstPosition();
     event.consume(true);
   }
 
@@ -1506,18 +1601,14 @@ Elements.StylePropertiesSection = class {
       Common.Revealer.reveal(uiLocation, !focus);
   }
 
-  _startEditingOnMouseEvent() {
+  _startEditingAtFirstPosition() {
     if (!this.editable || this._isSASSStyle())
       return;
 
-    var rule = this._style.parentRule;
-    if (!rule && !this.propertiesTreeOutline.rootElement().childCount()) {
-      this.addNewBlankProperty().startEditing();
+    if (!this._style.parentRule) {
+      this._moveEditorFromSelector('forward');
       return;
     }
-
-    if (!rule)
-      return;
 
     this.startEditingSelector();
   }
@@ -1664,6 +1755,7 @@ Elements.StylePropertiesSection = class {
   _startEditing() {
     this._manuallySetHeight();
     this.element.addEventListener('input', this._scheduleHeightUpdate, true);
+    this._editing = true;
   }
 
   /**
@@ -1679,6 +1771,9 @@ Elements.StylePropertiesSection = class {
     this.element.style.removeProperty('height');
     this.element.style.removeProperty('contain');
     this.element.removeEventListener('input', this._scheduleHeightUpdate, true);
+    this._editing = false;
+    if (this._parentPane.element.hasFocus())
+      this.element.focus();
   }
 };
 
@@ -2674,6 +2769,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
         (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput));
     var section = /** @type {!Elements.StylePropertiesSection} */ (this.section());
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
+      this._parentPane.element.focus();
       section._afterUpdate = moveToNextCallback.bind(this, this._newProperty, !blankInput, section);
       var propertyText;
       if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {

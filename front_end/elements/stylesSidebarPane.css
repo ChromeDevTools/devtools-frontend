@@ -29,6 +29,13 @@
     background-color: #eee;
 }
 
+.styles-section[data-keyboard-focus="true"]:focus {
+    background-color: hsl(214, 67%, 95%);
+}
+.styles-section.read-only[data-keyboard-focus="true"]:focus {
+    background-color: hsl(215, 25%, 91%);
+}
+
 .styles-filter-engaged,
 .styles-section .simple-selector.filter-match {
     background-color: rgba(255, 255, 0, 0.5);
@@ -201,6 +208,10 @@
     visibility: hidden;
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 0;
+}
+
+.styles-section[data-keyboard-focus="true"]:focus .sidebar-pane-section-toolbar {
+    background-color: hsla(214, 67%, 95%, 0.9);
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {

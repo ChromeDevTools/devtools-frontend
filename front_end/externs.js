@@ -825,3 +825,9 @@ Terminal.prototype = {
   /** @param {string} eventName * @param {!Function} handler */
   on: function(eventName, handler) {}
 };
+
+/**
+ * @param {string} context
+ * @return {!Console}
+ */
+Console.prototype.context = function(context) {};

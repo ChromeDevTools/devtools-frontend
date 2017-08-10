@@ -225,6 +225,7 @@ Protocol.TargetBase = class {
     this._dispatchers = {};
     this._callbacks = {};
     this._initialize(Protocol.inspectorBackend._agentPrototypes, Protocol.inspectorBackend._dispatcherPrototypes);
+    this._domainToLogger = new Map();
     if (!Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches) {
       Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches =
           this._deprecatedRunAfterPendingDispatches.bind(this);
@@ -288,7 +289,7 @@ Protocol.TargetBase = class {
     var message = JSON.stringify(messageObject);
 
     if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
-      this._dumpProtocolMessage('frontend: ' + message);
+      this._dumpProtocolMessage('frontend: ' + message, '[FE] ' + domain);
 
     this._connection.sendMessage(message);
     ++this._pendingResponsesCount;
@@ -327,8 +328,10 @@ Protocol.TargetBase = class {
    * @param {!Object|string} message
    */
   _onMessage(message) {
-    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
-      this._dumpProtocolMessage('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
+    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages) {
+      this._dumpProtocolMessage(
+          'backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)), 'Backend');
+    }
 
     var messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
@@ -341,14 +344,14 @@ Protocol.TargetBase = class {
 
       var timingLabel = 'time-stats: ' + callback.methodName;
       if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-        console.time(timingLabel);
+        Protocol.InspectorBackend._timeLogger.time(timingLabel);
 
       this._agent(callback.domain).dispatchResponse(messageObject, callback.methodName, callback);
       --this._pendingResponsesCount;
       delete this._callbacks[messageObject.id];
 
       if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-        console.timeEnd(timingLabel);
+        Protocol.InspectorBackend._timeLogger.timeEnd(timingLabel);
 
       if (this._scripts && !this._pendingResponsesCount)
         this._deprecatedRunAfterPendingDispatches();
@@ -412,9 +415,13 @@ Protocol.TargetBase = class {
 
   /**
    * @param {string} message
+   * @param {string} context
    */
-  _dumpProtocolMessage(message) {
-    console.log(message);  // eslint-disable-line no-console
+  _dumpProtocolMessage(message, context) {
+    if (!this._domainToLogger.get(context))
+      this._domainToLogger.set(context, console.context ? console.context(context) : console);
+    var logger = this._domainToLogger.get(context);
+    logger.log(message);
   }
 
   /**
@@ -687,7 +694,7 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
 
     var timingLabel = 'time-stats: ' + messageObject.method;
     if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-      console.time(timingLabel);
+      Protocol.InspectorBackend._timeLogger.time(timingLabel);
 
     for (var index = 0; index < this._dispatchers.length; ++index) {
       var dispatcher = this._dispatchers[index];
@@ -696,7 +703,7 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
     }
 
     if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-      console.timeEnd(timingLabel);
+      Protocol.InspectorBackend._timeLogger.timeEnd(timingLabel);
   }
 };
 
@@ -705,3 +712,5 @@ Protocol.InspectorBackend.Options = {
   dumpInspectorProtocolMessages: false,
   suppressRequestErrors: false
 };
+
+Protocol.InspectorBackend._timeLogger = console.context ? console.context('Protocol timing') : console;

@@ -145,6 +145,10 @@
 .styles-sidebar-pane-toolbar-container {
     flex-shrink: 0;
     overflow: hidden;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
 }
 
 .styles-sidebar-pane-toolbar {
@@ -196,6 +200,7 @@
     bottom: 0;
     visibility: hidden;
     background-color: rgba(255, 255, 255, 0.9);
+    z-index: 0;
 }
 
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {

@@ -186,11 +186,22 @@ ColorPicker.ContrastOverlay = class {
     this._contrastValueBubble.title = Common.UIString('Click to toggle contrast ratio details');
     this._contrastValueBubble.addEventListener('mousedown', this._toggleContrastDetails.bind(this), true);
 
+    /** @type {!AnchorBox} */
+    this._contrastValueBubbleBoxInWindow = new AnchorBox(0, 0, 0, 0);
+
     this._contrastDetails = new ColorPicker.ContrastDetails(
         this._contrastInfo, contentElement, toggleMainColorPickerCallback, this._update.bind(this));
 
     this._width = 0;
     this._height = 0;
+
+    this._contrastRatioLineThrottler = new Common.Throttler(0);
+    this._drawContrastRatioLineBound = this._drawContrastRatioLine.bind(this);
+
+    /** @type {?number} */
+    this._hueForCurrentLine = null;
+    /** @type {?number} */
+    this._alphaForCurrentLine = null;
   }
 
   /**
@@ -215,10 +226,10 @@ ColorPicker.ContrastOverlay = class {
    * @param {number} y
    */
   moveAwayFrom(x, y) {
-    var bubble = this._contrastValueBubble;
-    if (!bubble.boxInWindow().contains(x, y))
+    if (!this._contrastValueBubbleBoxInWindow.contains(x, y))
       return;
 
+    var bubble = this._contrastValueBubble;
     if (bubble.offsetWidth > ((bubble.offsetParent.offsetWidth / 2) - 10))
       bubble.classList.toggle('contrast-info-top');
     else
@@ -230,13 +241,13 @@ ColorPicker.ContrastOverlay = class {
       return;
 
     this._contrastValue.textContent = this._contrastInfo.contrastRatio().toFixed(2);
+    this._contrastValueBubbleBoxInWindow = this._contrastValueBubble.boxInWindow();
 
     var AA = this._contrastInfo.contrastRatioThreshold('AA');
     if (!AA)
       return;
 
-    // TODO(aboxhall): only redraw line if hue value changes
-    this._drawContrastRatioLine(AA, this._width, this._height);
+    this._contrastRatioLineThrottler.schedule(this._drawContrastRatioLineBound);
 
     var passesAA = this._contrastInfo.contrastRatio() >= AA;
     this._contrastValueBubble.classList.toggle('contrast-fail', !passesAA);
@@ -247,9 +258,10 @@ ColorPicker.ContrastOverlay = class {
   /**
    * @param {number} width
    * @param {number} height
-   * @param {!AnchorBox} draggerBox
+   * @param {number} dragX
+   * @param {number} dragY
    */
-  show(width, height, draggerBox) {
+  show(width, height, dragX, dragY) {
     if (this._contrastInfo.contrastRatio() === null) {
       this.hide();
       return;
@@ -260,9 +272,6 @@ ColorPicker.ContrastOverlay = class {
     this._update();
 
     this._contrastValueBubble.classList.remove('hidden');
-
-    var dragX = draggerBox.x + (draggerBox.width / 2);
-    var dragY = draggerBox.y + (draggerBox.height / 2);
     this.moveAwayFrom(dragX, dragY);
   }
 
@@ -281,19 +290,14 @@ ColorPicker.ContrastOverlay = class {
   }
 
   /**
-   * @param {number} requiredContrast
-   * @param {number} width
-   * @param {number} height
+   * @return {!Promise}
    */
-  _drawContrastRatioLine(requiredContrast, width, height) {
-    // TODO(aboxhall): throttle this to avoid being called in rapid succession when using eyedropper
-    if (!width || !height)
-      return;
-
-    var hsva = this._contrastInfo.hsva();
-    var bgColor = this._contrastInfo.bgColor();
-    if (!hsva || !bgColor)
-      return;
+  _drawContrastRatioLine() {
+    var width = this._width;
+    var height = this._height;
+    var requiredContrast = this._contrastInfo.contrastRatioThreshold('AA');
+    if (!width || !height || !requiredContrast)
+      return Promise.resolve();
 
     const dS = 0.02;
     const epsilon = 0.002;
@@ -301,6 +305,13 @@ ColorPicker.ContrastOverlay = class {
     const S = 1;
     const V = 2;
     const A = 3;
+
+    var hsva = this._contrastInfo.hsva();
+    var bgColor = this._contrastInfo.bgColor();
+    if (!hsva || !bgColor)
+      return Promise.resolve();
+    if (hsva[H] === this._hueForCurrentLine && hsva[A] === this._alphaForCurrentLine)
+      return Promise.resolve();
 
     var fgRGBA = [];
     Common.Color.hsva2rgba(hsva, fgRGBA);
@@ -339,8 +350,8 @@ ColorPicker.ContrastOverlay = class {
 
         if (Math.abs(dLuminance) < (onAxis ? epsilon / 10 : epsilon))
           return x;
-        else
-          x += (index === V ? -dLuminance : dLuminance);
+
+        x += (index === V ? -dLuminance : dLuminance);
       }
       return null;
     }
@@ -372,6 +383,10 @@ ColorPicker.ContrastOverlay = class {
     }
 
     this._contrastRatioLine.setAttribute('d', pathBuilder.join(' '));
+    this._hueForCurrentLine = hsva[H];
+    this._alphaForCurrentLine = hsva[A];
+
+    return Promise.resolve();
   }
 };
 

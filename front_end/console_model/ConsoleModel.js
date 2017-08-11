@@ -121,33 +121,43 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
 
   /**
    * @param {!SDK.ExecutionContext} executionContext
-   * @param {string} text
+   * @param {!ConsoleModel.ConsoleMessage} originatingMessage
+   * @param {string} expression
    * @param {boolean} useCommandLineAPI
+   * @param {boolean} awaitPromise
    */
-  async evaluateCommandInConsole(executionContext, text, useCommandLineAPI) {
-    var commandMessage = new ConsoleModel.ConsoleMessage(
-        executionContext.runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, null, text,
-        ConsoleModel.ConsoleMessage.MessageType.Command);
-    commandMessage.setExecutionContextId(executionContext.id);
-    this.addMessage(commandMessage);
-
+  async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI, awaitPromise) {
     var result = await executionContext.evaluate(
         {
-          expression: SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text),
+          expression: expression,
           objectGroup: 'console',
           includeCommandLineAPI: useCommandLineAPI,
           silent: false,
           returnByValue: false,
           generatePreview: true
         },
-        /* userGesture */ true, /* awaitPromise */ false);
+        /* userGesture */ true, awaitPromise);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error)
       return;
     await Common.console.showPromise();
     this.dispatchEventToListeners(
         ConsoleModel.ConsoleModel.Events.CommandEvaluated,
-        {result: result.object, commandMessage: commandMessage, exceptionDetails: result.exceptionDetails});
+        {result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails});
+  }
+
+  /**
+   * @param {!SDK.ExecutionContext} executionContext
+   * @param {string} text
+   * @return {!ConsoleModel.ConsoleMessage}
+   */
+  addCommandMessage(executionContext, text) {
+    var commandMessage = new ConsoleModel.ConsoleMessage(
+        executionContext.runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, null, text,
+        ConsoleModel.ConsoleMessage.MessageType.Command);
+    commandMessage.setExecutionContextId(executionContext.id);
+    this.addMessage(commandMessage);
+    return commandMessage;
   }
 
   /**

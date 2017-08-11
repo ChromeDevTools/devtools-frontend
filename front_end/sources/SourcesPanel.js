@@ -918,10 +918,13 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {
       failedToSave(callFunctionResult.object || null);
     } else {
+      var executionContext = /** @type {!SDK.ExecutionContext} */ (currentExecutionContext);
+      var text = /** @type {string} */ (callFunctionResult.object.value);
+      var message = ConsoleModel.consoleModel.addCommandMessage(executionContext, text);
+      text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
       ConsoleModel.consoleModel.evaluateCommandInConsole(
-          /** @type {!SDK.ExecutionContext} */ (currentExecutionContext),
-          /** @type {string} */ (callFunctionResult.object.value),
-          /* useCommandLineAPI */ false);
+          executionContext, message, text,
+          /* useCommandLineAPI */ false, /* awaitPromise */ false);
     }
     if (callFunctionResult.object)
       callFunctionResult.object.release();
@@ -1247,8 +1250,12 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
         if (frame) {
           var text = frame.textEditor.text(frame.textEditor.selection());
           var executionContext = UI.context.flavor(SDK.ExecutionContext);
-          if (executionContext)
-            ConsoleModel.consoleModel.evaluateCommandInConsole(executionContext, text, /* useCommandLineAPI */ true);
+          if (executionContext) {
+            var message = ConsoleModel.consoleModel.addCommandMessage(executionContext, text);
+            text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
+            ConsoleModel.consoleModel.evaluateCommandInConsole(
+                executionContext, message, text, /* useCommandLineAPI */ true, /* awaitPromise */ false);
+          }
         }
         return true;
     }

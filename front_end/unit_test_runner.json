@@ -19,7 +19,8 @@
         { "name": "protocol" },
         { "name": "data_grid" },
         { "name": "product_registry" },
-        { "name": "product_registry_impl" }
+        { "name": "product_registry_impl" },
+        { "name": "formatter" }
     ],
     "has_html": true
 }

@@ -11,7 +11,15 @@ TestRunner.executeTestScript = function() {
   const testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
   fetch(testScriptURL)
       .then(data => data.text())
-      .then(testScript => eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`))
+      .then(testScript => {
+        if (!self.testRunner || Runtime.queryParam('debugFrontend')) {
+          self.eval(`function test(){${testScript}}\n//# sourceURL=${testScriptURL}`);
+          TestRunner.addResult = console.log;
+          TestRunner.completeTest = () => console.log('Test completed');
+          return;
+        }
+        eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`);
+      })
       .catch(error => {
         TestRunner.addResult(`Unable to execute test script because of error: ${error}`);
         TestRunner.completeTest();
@@ -22,10 +30,6 @@ TestRunner.executeTestScript = function() {
 TestRunner._results = [];
 
 TestRunner.completeTest = function() {
-  if (!self.testRunner) {
-    console.log('Test Done');
-    return;
-  }
   TestRunner.flushResults();
   self.testRunner.notifyDone();
 };
@@ -54,10 +58,7 @@ TestRunner.flushResults = function() {
  * @param {*} text
  */
 TestRunner.addResult = function(text) {
-  if (self.testRunner)
-    TestRunner._results.push(String(text));
-  else
-    console.log(text);
+  TestRunner._results.push(String(text));
 };
 
 /**
@@ -269,17 +270,6 @@ TestRunner.textContentWithoutStyles = function(node) {
   }
   return buffer;
 };
-
-/**
- * @param {!Function} testFunction
- * @return {!Function}
- */
-function debugTest(testFunction) {
-  self.test = testFunction;
-  TestRunner.addResult = console.log;
-  TestRunner.completeTest = () => console.log('Test completed');
-  return () => {};
-}
 
 (function() {
   /**

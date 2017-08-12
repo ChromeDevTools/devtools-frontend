@@ -38,37 +38,27 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @param {string} text
-   * @param {!Security.SecurityPanel} panel
+   * @param {string} origin
    * @return {!Element}
    */
-  static createCertificateViewerButton(text, panel) {
-    /**
-     * @param {!Event} e
-     */
-    function showCertificateViewer(e) {
+  static createCertificateViewerButtonForOrigin(text, origin) {
+    return UI.createTextButton(text, async e => {
       e.consume();
-      panel.showCertificateViewer();
-    }
-
-    return UI.createTextButton(text, showCertificateViewer, 'security-certificate-button');
+      var names = await SDK.multitargetNetworkManager.getCertificate(origin);
+      InspectorFrontendHost.showCertificateViewer(names);
+    }, 'security-certificate-button');
   }
 
   /**
    * @param {string} text
-   * @param {string} origin
+   * @param {!Array<string>} names
    * @return {!Element}
    */
-  static createCertificateViewerButton2(text, origin) {
-    /**
-     * @param {!Event} e
-     */
-    function showCertificateViewer(e) {
+  static createCertificateViewerButtonForCert(text, names) {
+    return UI.createTextButton(text, e => {
       e.consume();
-      SDK.multitargetNetworkManager.getCertificate(origin).then(
-          names => InspectorFrontendHost.showCertificateViewer(names));
-    }
-
-    return UI.createTextButton(text, showCertificateViewer, 'security-certificate-button');
+      InspectorFrontendHost.showCertificateViewer(names);
+    }, 'security-certificate-button');
   }
 
   /**
@@ -256,10 +246,6 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    */
   filterRequestCount(filterKey) {
     return this._filterRequestCounts.get(filterKey) || 0;
-  }
-
-  showCertificateViewer() {
-    this._securityModel.showCertificateViewer();
   }
 
   /**
@@ -614,11 +600,10 @@ Security.SecurityMainView = class extends UI.VBox {
     text.createChild('div', 'security-explanation-title').textContent = explanation.summary;
     text.createChild('div').textContent = explanation.description;
 
-    if (explanation.hasCertificate) {
-      text.appendChild(
-          Security.SecurityPanel.createCertificateViewerButton(Common.UIString('View certificate'), this._panel));
+    if (explanation.certificate.length) {
+      text.appendChild(Security.SecurityPanel.createCertificateViewerButtonForCert(
+          Common.UIString('View certificate'), explanation.certificate));
     }
-
     return text;
   }
 
@@ -682,10 +667,11 @@ Security.SecurityMainView = class extends UI.VBox {
 
     if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0) {
       var explanation = /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
-        'securityState': Protocol.Security.SecurityState.Info,
-        'summary': Common.UIString('Blocked mixed content'),
-        'description': Common.UIString('Your page requested non-secure resources that were blocked.'),
-        'mixedContentType': Protocol.Security.MixedContentType.Blockable
+        securityState: Protocol.Security.SecurityState.Info,
+        summary: Common.UIString('Blocked mixed content'),
+        description: Common.UIString('Your page requested non-secure resources that were blocked.'),
+        mixedContentType: Protocol.Security.MixedContentType.Blockable,
+        certificate: []
       });
       this._addMixedContentExplanation(
           this._securityExplanationsMain, explanation, Network.NetworkLogView.MixedContentFilterValues.Blocked);
@@ -805,9 +791,11 @@ Security.SecurityOriginView = class extends UI.VBox {
       table.addRow(Common.UIString('Valid from'), validFromString);
       table.addRow(Common.UIString('Valid until'), validUntilString);
       table.addRow(Common.UIString('Issuer'), originState.securityDetails.issuer);
+
       table.addRow(
-          '', Security.SecurityPanel.createCertificateViewerButton2(
-                  Common.UIString('Open full certificate details'), origin));
+          '',
+          Security.SecurityPanel.createCertificateViewerButtonForOrigin(
+              Common.UIString('Open full certificate details'), origin));
 
       if (!originState.securityDetails.signedCertificateTimestampList.length)
         return;

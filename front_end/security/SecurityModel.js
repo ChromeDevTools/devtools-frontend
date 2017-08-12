@@ -58,10 +58,6 @@ Security.SecurityModel = class extends SDK.SDKModel {
 
     return aScore - bScore;
   }
-
-  showCertificateViewer() {
-    this._securityAgent.showCertificateViewer();
-  }
 };
 
 SDK.SDKModel.register(Security.SecurityModel, SDK.Target.Capability.Security, false);

@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "emulation"
+  ],
+  "scripts": [
+    "DeviceModeTestRunner.js"
+  ],
+  "skip_compilation": [
+    "DeviceModeTestRunner.js"
+  ]
+}

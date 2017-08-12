@@ -5,5 +5,8 @@
   ],
   "scripts": [
     "DataGridTestRunner.js"
+  ],
+  "skip_compilation": [
+    "DataGridTestRunner.js"
   ]
 }

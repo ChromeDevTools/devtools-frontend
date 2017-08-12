@@ -3,9 +3,21 @@
     "test_runner",
     "integration_test_runner",
     "elements",
-    "event_listeners"
+    "event_listeners",
+    "animation"
   ],
   "scripts": [
-    "ElementsTestRunner.js"
+    "ElementsTestRunner.js",
+    "EditDOMTestRunner.js",
+    "SetOuterHTMLTestRunner.js",
+    "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
+    "StylesUpdateLinksTestRunner.js"
+  ],
+  "skip_compilation": [
+    "ElementsTestRunner.js",
+    "EditDOMTestRunner.js",
+    "SetOuterHTMLTestRunner.js",
+    "ElementsPanelShadowSelectionOnRefreshTestRunner.js",
+    "StylesUpdateLinksTestRunner.js"
   ]
 }

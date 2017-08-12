@@ -9,6 +9,7 @@ const path = require('path');
 
 const cheerio = require('cheerio');
 const mkdirp = require('mkdirp');
+const prettier = require('prettier');
 const recast = require('recast');
 const types = recast.types;
 const b = recast.types.builders;
@@ -24,6 +25,7 @@ function main() {
   const files = process.argv.slice(2);
   const inputPaths = files.map(p => path.isAbsolute(p) ? p : path.resolve(process.cwd(), p));
   const identifierMap = generateTestHelperMap();
+
   for (const inputPath of inputPaths) {
     migrateTest(inputPath, identifierMap);
   }
@@ -36,11 +38,12 @@ function migrateTest(inputPath, identifierMap) {
   console.log('Starting to migrate: ', inputPath);
   const htmlTestFile = fs.readFileSync(inputPath, 'utf-8');
   const $ = cheerio.load(htmlTestFile);
+  const onloadFunctionName = $('body')[0].attribs.onload ? $('body')[0].attribs.onload.slice(0, -2) : '';
   const javascriptFixtures = [];
   const inputCode = $('script:not([src])')
                         .toArray()
                         .map(n => n.children[0].data)
-                        .map(code => processScriptCode(code, javascriptFixtures))
+                        .map(code => processScriptCode(code, javascriptFixtures, onloadFunctionName))
                         .filter(x => !!x)
                         .join('\n');
   const bodyText = $('body').text().trim();
@@ -56,12 +59,6 @@ function migrateTest(inputPath, identifierMap) {
     helperScripts.push(filename);
   });
 
-  const testsPath = path.resolve(__dirname, 'tests.txt');
-  const newToOldTests = new Map(fs.readFileSync(testsPath, 'utf-8').split('\n').map(line => line.split(' ').reverse()));
-  const originalTestPath = path.resolve(
-      __dirname, '..', '..', '..', '..', 'LayoutTests', newToOldTests.get(inputPath.slice(inputPath.indexOf('http/'))));
-
-  const srcResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(originalTestPath), s));
   const destResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(inputPath), s));
   const relativeResourcePaths = destResourcePaths.map(p => p.slice(p.indexOf('/http/tests') + '/http/tests'.length));
 
@@ -74,14 +71,17 @@ function migrateTest(inputPath, identifierMap) {
                          // Tries to remove it if it has it's own line
                          .replace(bodyText + '\n', '')
                          // Tries to remove it if it's inline
-                         .replace(bodyText, '');
-    if (/<p>\s*<\/p>/.test(domFixture)) {
-      domFixture = undefined;
-    }
-    const onloadFunctionName = $('body')[0].attribs.onload.slice(0, -2);
+                         .replace(bodyText, '')
+                         .replace(/<p>\s*<\/p>/, '')
+                         .replace(/<div>\s*<\/div>/, '')
+                         .trim();
+    const docType = htmlTestFile.match(/<!DOCTYPE.*>/) ? htmlTestFile.match(/<!DOCTYPE.*>/)[0] : '';
+    if (docType)
+      domFixture = docType + (domFixture.length ? '\n' : '') + domFixture;
     outputCode = transformTestScript(
         inputCode, bodyText, identifierMap, testHelpers, javascriptFixtures, getPanel(inputPath), domFixture,
         onloadFunctionName, relativeResourcePaths);
+    outputCode = prettier.format(outputCode, {tabWidth: 2, printWidth: 120, singleQuote: true});
   } catch (err) {
     console.log('Unable to migrate: ', inputPath);
     console.log('ERROR: ', err);
@@ -90,13 +90,22 @@ function migrateTest(inputPath, identifierMap) {
 
   console.log(outputCode);
   if (!DRY_RUN) {
+    const testsPath = path.resolve(__dirname, 'tests.txt');
+    const newToOldTests =
+        new Map(fs.readFileSync(testsPath, 'utf-8').split('\n').map(line => line.split(' ').reverse()));
+    const originalTestPath = path.resolve(
+        __dirname, '..', '..', '..', '..', 'LayoutTests',
+        newToOldTests.get(inputPath.slice(inputPath.indexOf('http/'))));
+
+    const srcResourcePaths = resourceScripts.map(s => path.resolve(path.dirname(originalTestPath), s));
+
     fs.writeFileSync(inputPath, outputCode);
-    copyResourceScripts(srcResourcePaths, destResourcePaths);
+    copyResourceScripts(srcResourcePaths, destResourcePaths, inputPath);
     console.log('Migrated: ', inputPath);
   }
 }
 
-function copyResourceScripts(srcResourcePaths, destResourcePaths) {
+function copyResourceScripts(srcResourcePaths, destResourcePaths, inputPath) {
   destResourcePaths.forEach((p, i) => {
     mkdirp.sync(path.dirname(p));
     if (!utils.isFile(p)) {
@@ -131,8 +140,8 @@ function transformTestScript(
     nonTestNodes.push(node);
   }
 
-  unwrapTestFunctionExpressionIfNecessary(ast);
-  unwrapTestFunctionDeclarationIfNecessary(ast);
+  unwrapFunctionExpression(ast, 'test');
+  unwrapFunctionDeclaration(ast, 'test');
 
 
   /**
@@ -159,6 +168,24 @@ function transformTestScript(
     }
   });
 
+  /**
+   * Migrate all the .bind call sites
+   * Example: SourcesTestRunner.waitUntilPaused.bind(InspectorTest, didPause)
+   */
+  recast.visit(ast, {
+    visitCallExpression: function(path) {
+      const node = path.value;
+      if (node.callee.property && node.callee.property.name === 'bind') {
+        const code = recast.prettyPrint(node);
+        if (node.arguments[0].name === 'InspectorTest') {
+          node.arguments[0].name = node.callee.object.object.name;
+        }
+      }
+      this.traverse(path);
+    }
+  });
+
+
   const allTestHelpers = new Set();
 
   for (const helper of explicitTestHelpers) {
@@ -181,7 +208,8 @@ function transformTestScript(
   for (const helper of allTestHelpers) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadModule('${helper}');`));
   }
-  headerLines.push(createAwaitExpressionNode(`await TestRunner.showPanel('${panel}');`));
+  if (panel)
+    headerLines.push(createAwaitExpressionNode(`await TestRunner.showPanel('${panel}');`));
 
   if (domFixture) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadHTML(\`
@@ -200,15 +228,15 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   }
 
   let nonTestCode = nonTestNodes.reduce((acc, node) => {
-    let code = recast.print(node).code.split('\n').map(line => '    ' + line).join('\n');
-    if (node.id && node.id.name === onloadFunctionName) {
-      code = code.replace('        runTest();\n', '');
-      code = `    (${code.trimLeft()})();`;
-    };
+    const ast = recast.parse(recast.print(node).code);
+    unwrapFunctionExpression(ast, onloadFunctionName);
+    unwrapFunctionDeclaration(ast, onloadFunctionName);
+    let code = recast.print(ast).code.split('\n').map(line => '    ' + line).join('\n');
+    code = code.replace(/\s*runTest\(\);?\s*/, '');
+    code = `    ${code.trim()};`;
     return acc + '\n' + code;
   }, '');
-
-  nonTestCode = nonTestCode.startsWith('\n') && nonTestCode.slice(2);
+  nonTestCode = '  ' + nonTestCode.trimLeft();
   if (nonTestCode) {
     headerLines.push((createAwaitExpressionNode(`await TestRunner.evaluateInPagePromise(\`
   ${nonTestCode}
@@ -238,7 +266,7 @@ function copyExpectations(expectationsPath, outTestPath) {
  * If the <script></script> block doesn't contain a test function
  * assume that it needs to be serialized
  */
-function processScriptCode(code, additionalHelperBlocks) {
+function processScriptCode(code, javascriptFixtures, onloadFunctionName) {
   const ast = recast.parse(code);
   const testFunctionExpression =
       ast.program.body.find(n => n.type === 'VariableDeclaration' && n.declarations[0].id.name === 'test');
@@ -246,8 +274,16 @@ function processScriptCode(code, additionalHelperBlocks) {
   if (testFunctionExpression || testFunctionDeclaration) {
     return code;
   }
-  const formattedCode = code.trimRight().split('\n').map(line => '    ' + line).join('\n');
-  additionalHelperBlocks.push(createAwaitExpressionNode(`await TestRunner.evaluateInPagePromise(\`${formattedCode}
+  unwrapFunctionExpression(ast, onloadFunctionName);
+  unwrapFunctionDeclaration(ast, onloadFunctionName);
+  const formattedCode = recast.print(ast)
+                            .code.trimRight()
+                            .split('\n')
+                            .map(line => '    ' + line)
+                            .join('\n')
+                            .replace(/\s*runTest\(\);?\s*/, '');
+
+  javascriptFixtures.push(createAwaitExpressionNode(`await TestRunner.evaluateInPagePromise(\`${formattedCode}
   \`)`));
   return;
 }
@@ -256,9 +292,9 @@ function processScriptCode(code, additionalHelperBlocks) {
  * Unwrap test if it's a function expression
  * var test = function () {...}
  */
-function unwrapTestFunctionExpressionIfNecessary(ast) {
+function unwrapFunctionExpression(ast, functionName) {
   const index =
-      ast.program.body.findIndex(n => n.type === 'VariableDeclaration' && n.declarations[0].id.name === 'test');
+      ast.program.body.findIndex(n => n.type === 'VariableDeclaration' && n.declarations[0].id.name === functionName);
   if (index > -1) {
     const testFunctionNode = ast.program.body[index];
     ast.program.body = testFunctionNode.declarations[0].init.body.body;
@@ -270,8 +306,8 @@ function unwrapTestFunctionExpressionIfNecessary(ast) {
  * Unwrap test if it's a function declaration
  * function test () {...}
  */
-function unwrapTestFunctionDeclarationIfNecessary(ast) {
-  const index = ast.program.body.findIndex(n => n.type === 'FunctionDeclaration' && n.id.name === 'test');
+function unwrapFunctionDeclaration(ast, functionName) {
+  const index = ast.program.body.findIndex(n => n.type === 'FunctionDeclaration' && n.id.name === functionName);
   if (index > -1) {
     const testFunctionNode = ast.program.body[index];
     ast.program.body.splice(index, 1);
@@ -318,6 +354,8 @@ function getPanel(inputPath) {
 
   const components = inputPath.slice(inputPath.indexOf('LayoutTests/')).split('/');
   const folder = inputPath.indexOf('LayoutTests/inspector') === -1 ? components[4] : components[2];
+  if (folder.endsWith('.html'))
+    return;
   const panel = panelByFolder[folder];
   if (!panel) {
     throw new Error('Could not figure out which panel to map folder: ' + folder);
@@ -326,24 +364,18 @@ function getPanel(inputPath) {
 }
 
 function mapTestHelpers(testHelpers) {
-  const SKIP = 'SKIP';
-  const testHelperMap = {
-    'inspector-test': SKIP,
-    'console-test': 'console_test_runner',
-    'elements-test': 'elements_test_runner',
-    'sources-test': 'sources_test_runner',
-  };
-  const mappedHelpers = [];
+  const mappedHelpers = new Set();
   for (const helper of testHelpers) {
-    const mappedHelper = testHelperMap[helper];
+    const namespace = migrateUtils.mapTestFilename(helper).namespacePrefix + 'TestRunner';
+    const mappedHelper = namespace.replace(/([A-Z])/g, '_$1').replace(/^_/, '').toLowerCase();
     if (!mappedHelper) {
       throw Error('Could not map helper ' + helper);
     }
-    if (mappedHelper !== SKIP) {
-      mappedHelpers.push(mappedHelper);
+    if (mappedHelper !== 'inspector_test_runner') {
+      mappedHelpers.add(mappedHelper);
     }
   }
-  return mappedHelpers;
+  return Array.from(mappedHelpers);
 }
 
 function generateTestHelperMap() {

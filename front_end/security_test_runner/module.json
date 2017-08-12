@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "security"
+  ],
+  "scripts": [
+    "SecurityTestRunner.js"
+  ],
+  "skip_compilation": [
+    "SecurityTestRunner.js"
+  ]
+}

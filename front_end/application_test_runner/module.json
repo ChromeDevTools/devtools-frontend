@@ -1,0 +1,26 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "resources",
+    "console_test_runner",
+    "sources",
+    "sources_test_runner"
+  ],
+  "scripts": [
+    "AppcacheTestRunner.js",
+    "CacheStorageTestRunner.js",
+    "IndexedDBTestRunner.js",
+    "ResourceTreeTestRunner.js",
+    "ResourcesTestRunner.js",
+    "ServiceWorkersTestRunner.js"
+  ],
+  "skip_compilation": [
+    "AppcacheTestRunner.js",
+    "CacheStorageTestRunner.js",
+    "IndexedDBTestRunner.js",
+    "ResourceTreeTestRunner.js",
+    "ResourcesTestRunner.js",
+    "ServiceWorkersTestRunner.js"
+  ]
+}

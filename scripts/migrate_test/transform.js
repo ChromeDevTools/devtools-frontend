@@ -27,7 +27,7 @@ function main() {
       continue;
     const fullTestPath = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', testPath);
     try {
-      childProcess.execSync(`node ${MIGRATE_SCRIPT_PATH} ${fullTestPath}`)
+      childProcess.execSync(`node ${MIGRATE_SCRIPT_PATH} ${fullTestPath}`);
     } catch (err) {
       console.log(err.stdout.toString());
       continue;
@@ -56,7 +56,7 @@ function main() {
       updatedTestExpecationLines.push(line);
       continue;
     }
-    if (line === '# ====== DevTools test migration failures until here ======') {
+    if (line === '### Manually fix after migration') {
       seenEndSentinel = true;
       updatedTestExpecationLines.push(line);
       continue;

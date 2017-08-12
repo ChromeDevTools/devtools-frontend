@@ -258,6 +258,8 @@ common_closure_args = [
 def check_conditional_dependencies(modules_by_name):
     errors_found = False
     for name in modules_by_name:
+        if 'test_runner' in name:
+            continue
         for dep_name in modules_by_name[name].get('dependencies', []):
             dependency = modules_by_name[dep_name]
             if dependency.get('experiment') or dependency.get('condition'):

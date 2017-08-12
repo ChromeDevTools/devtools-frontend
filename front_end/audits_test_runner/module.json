@@ -1,0 +1,13 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "audits"
+  ],
+  "scripts": [
+    "AuditsTestRunner.js"
+  ],
+  "skip_compilation": [
+    "AuditsTestRunner.js"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "dependencies": [
+    "test_runner",
+    "integration_test_runner",
+    "layers",
+    "components"
+  ],
+  "scripts": [
+    "LayersTestRunner.js"
+  ],
+  "skip_compilation": [
+    "LayersTestRunner.js"
+  ]
+}

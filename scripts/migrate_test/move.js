@@ -15,8 +15,9 @@ const utils = require('../utils');
 
 const MIGRATE_TEST_PATH = path.resolve(__dirname, 'migrate_test.js');
 const TESTS_PATH = path.resolve(__dirname, 'tests.txt');
-const TEST_EXPECTATIONS_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'TestExpectations');
-const FLAG_EXPECTATIONS_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'FlagExpectations');
+const LAYOUT_TESTS_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests');
+const TEST_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'TestExpectations');
+const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations');
 
 function main() {
   const originalTests = fs.readFileSync(TESTS_PATH, 'utf-8').split('\n').map(line => line.split(' ')[0]);
@@ -62,30 +63,78 @@ function main() {
 
   const newTestPaths = Array.from(oldToNewTestPath.values()).filter(x => x);
 
+  const TestExpectationFailureTypes =
+      ['Crash', 'Failure', 'Rebaseline', 'Skip', 'Timeout', 'WontFix', 'Missing', 'NeedsManualRebaseline'];
+
+  const testsAlreadyExempted = new Set();
+
   // Update TestExpectations
   const testExpectations = fs.readFileSync(TEST_EXPECTATIONS_PATH, 'utf-8');
-  const updatedTestExpecations = testExpectations.split('\n').map(line => {
+  let updatedTestExpecations = testExpectations.split('\n').map(line => {
     for (const [oldTestPath, newTestPath] of oldToNewTestPath) {
       if (!newTestPath)
         continue;
-      if (line.indexOf(oldTestPath) !== -1)
+      if (line.indexOf(oldTestPath) !== -1) {
+        if (TestExpectationFailureTypes.some(x => line.indexOf(x) !== -1)) {
+          testsAlreadyExempted.add(newTestPath);
+        }
         return line.replace(oldTestPath, newTestPath);
+      }
+    }
+    return line;
+  });
+
+  updatedTestExpecations = updatedTestExpecations.map(line => {
+    for (const [oldTestPath, newTestPath] of oldToNewTestPath) {
+      if (!newTestPath)
+        continue;
       if (line === '# See crbug.com/667560 for details') {
-        return line + '\n' + Array.from(newTestPaths).map(x => `crbug.com/667560 ${x} [ Skip ]`).join('\n');
+        return line + '\n' +
+            Array.from(newTestPaths)
+                .filter(t => !testsAlreadyExempted.has(t))
+                .map(x => `crbug.com/667560 ${x} [ Skip ]`)
+                .join('\n');
       }
       if (line === '### virtual/mojo-loading/http/tests/devtools') {
         return line + '\n' +
-            Array.from(newTestPaths).map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`).join('\n');
+            Array.from(newTestPaths)
+                .filter(t => !testsAlreadyExempted.has(t))
+                .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
+                .join('\n');
+      }
+
+      // Put mojo tests here so we don't re-enable the test after migrating
+      if (line === '### Manually fix after migration') {
+        return line + '\n' +
+            Array.from(newTestPaths)
+                .filter(t => testsAlreadyExempted.has(t))
+                .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
+                .join('\n');
       }
     }
     return line;
   });
   fs.writeFileSync(TEST_EXPECTATIONS_PATH, updatedTestExpecations.join('\n'));
 
+  // Update additional test expectations
+  for (const filename
+           of ['ASANExpectations', 'LeakExpectations', 'MSANExpectations', 'NeverFixTests', 'SlowTests', 'SmokeTests',
+               'StaleTestExpectations']) {
+    const filePath = path.resolve(LAYOUT_TESTS_PATH, filename);
+    updateExpectationsFile(filePath);
+  }
+
   // Update FlagExpectations
-  for (const folder of fs.readdirSync(FLAG_EXPECTATIONS_PATH)) {
-    const flagFilePath = path.resolve(FLAG_EXPECTATIONS_PATH, folder);
-    const expectations = fs.readFileSync(flagFilePath, 'utf-8');
+  for (const filename of fs.readdirSync(FLAG_EXPECTATIONS_PATH)) {
+    const filePath = path.resolve(FLAG_EXPECTATIONS_PATH, filename);
+    updateExpectationsFile(filePath);
+  }
+
+  for (const [oldResourcesPath, newResourcesPath] of oldToNewResourcesPath)
+    utils.copyRecursive(oldResourcesPath, path.dirname(newResourcesPath));
+
+  function updateExpectationsFile(filePath) {
+    const expectations = fs.readFileSync(filePath, 'utf-8');
     const updatedExpectations = expectations.split('\n').map(line => {
       for (const [oldTestPath, newTestPath] of oldToNewTestPath) {
         if (!newTestPath)
@@ -96,11 +145,8 @@ function main() {
       }
       return line;
     });
-    fs.writeFileSync(flagFilePath, updatedExpectations.join('\n'));
+    fs.writeFileSync(filePath, updatedExpectations.join('\n'));
   }
-
-  for (const [oldResourcesPath, newResourcesPath] of oldToNewResourcesPath)
-    utils.copyRecursive(oldResourcesPath, path.dirname(newResourcesPath));
 }
 
 main();

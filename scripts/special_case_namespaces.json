@@ -4,5 +4,6 @@
   "object_ui": "ObjectUI",
   "perf_ui": "PerfUI",
   "css_tracker": "CSSTracker",
-  "har_importer": "HARImporter"
+  "har_importer": "HARImporter",
+  "sass_test_runner": "SASSTestRunner"
 }

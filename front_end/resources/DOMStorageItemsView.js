@@ -36,8 +36,8 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     this.element.classList.add('storage-view', 'table');
 
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, weight: 50},
-      {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, weight: 50}
+      {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
+      {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, longText: true, weight: 50}
     ]);
     this._dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
     this._dataGrid.setStriped(true);

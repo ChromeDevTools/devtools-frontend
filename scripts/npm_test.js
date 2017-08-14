@@ -10,11 +10,12 @@ var shell = require('child_process').execSync;
 var utils = require('./utils');
 
 var Flags = {
+  DEBUG_RELEASE: '--debug-release',
   DEBUG_DEVTOOLS: '--debug-devtools',
   DEBUG_DEVTOOLS_SHORTHAND: '-d',
   FETCH_CONTENT_SHELL: '--fetch-content-shell',
-  CHROMIUM_PATH: '--chromium-path',      // useful for bisecting
-  TARGET: '--target',                    // build sub-directory (e.g. Release, Default)
+  CHROMIUM_PATH: '--chromium-path',  // useful for bisecting
+  TARGET: '--target',                // build sub-directory (e.g. Release, Default)
 };
 
 var COMPAT_URL_MAPPING = {
@@ -23,6 +24,7 @@ var COMPAT_URL_MAPPING = {
 
 var IS_DEBUG_ENABLED =
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) || utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
+var IS_DEBUG_RELEASE = utils.includes(process.argv, Flags.DEBUG_RELEASE);
 var CUSTOM_CHROMIUM_PATH = utils.parseArgs(process.argv)[Flags.CHROMIUM_PATH];
 var IS_FETCH_CONTENT_SHELL = utils.includes(process.argv, Flags.FETCH_CONTENT_SHELL);
 var TARGET = utils.parseArgs(process.argv)[Flags.TARGET] || 'Release';
@@ -247,7 +249,7 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
   else
     console.log('TIP: You can debug a test using: npm run debug-test inspector/test-name.html');
 
-  if (IS_DEBUG_ENABLED) {
+  if (IS_DEBUG_ENABLED || IS_DEBUG_RELEASE) {
     testArgs.push('--additional-driver-flag=--remote-debugging-port=9222');
     testArgs.push('--time-out-ms=6000000');
     console.log('\n=============================================');

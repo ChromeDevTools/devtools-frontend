@@ -89,27 +89,30 @@ function main() {
       if (!newTestPath)
         continue;
       if (line === '# See crbug.com/667560 for details') {
-        return line + '\n' +
-            Array.from(newTestPaths)
-                .filter(t => !testsAlreadyExempted.has(t))
-                .map(x => `crbug.com/667560 ${x} [ Skip ]`)
-                .join('\n');
+        const newLines = Array.from(newTestPaths)
+                             .filter(t => !testsAlreadyExempted.has(t))
+                             .map(x => `crbug.com/667560 ${x} [ Skip ]`)
+                             .join('\n');
+        if (newLines.length)
+          return line + '\n' + newLines;
       }
       if (line === '### virtual/mojo-loading/http/tests/devtools') {
-        return line + '\n' +
-            Array.from(newTestPaths)
-                .filter(t => !testsAlreadyExempted.has(t))
-                .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
-                .join('\n');
+        const newLines = Array.from(newTestPaths)
+                             .filter(t => !testsAlreadyExempted.has(t))
+                             .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
+                             .join('\n');
+        if (newLines.length)
+          return line + '\n' + newLines;
       }
 
       // Put mojo tests here so we don't re-enable the test after migrating
       if (line === '### Manually fix after migration') {
-        return line + '\n' +
-            Array.from(newTestPaths)
-                .filter(t => testsAlreadyExempted.has(t))
-                .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
-                .join('\n');
+        const newLines = Array.from(newTestPaths)
+                             .filter(t => testsAlreadyExempted.has(t))
+                             .map(x => `crbug.com/667560 virtual/mojo-loading/${x} [ Skip ]`)
+                             .join('\n');
+        if (newLines.length)
+          return line + '\n' + newLines;
       }
     }
     return line;

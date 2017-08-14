@@ -1,8 +1,1 @@
-inspector/console/alert-toString-exception.html 
-inspector/console/console-api-on-call-frame.html 
-inspector/console/console-clear-function.html 
-inspector/console/console-command-copy.html 
-inspector/console/console-context-selector.html 
-inspector/console/console-copy-treeoutline.html 
-inspector/console/console-copy-truncated-text.html 
-inspector/console/console-error-on-call-frame.html 
+inspector/elements/styles-4/keyframes-source-offsets.html

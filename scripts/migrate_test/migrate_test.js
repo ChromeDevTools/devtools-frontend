@@ -34,10 +34,27 @@ function main() {
 
 main();
 
+function getPrologue(inputExpectationsPath, bodyText) {
+  const expectations = fs.readFileSync(inputExpectationsPath, 'utf-8').split('\n');
+  const prologueBeginning = bodyText.split('\n')[0];
+  for (const line of expectations) {
+    if (line.startsWith(prologueBeginning)) {
+      return line;
+    }
+  }
+}
+
 function migrateTest(inputPath, identifierMap) {
   console.log('Starting to migrate: ', inputPath);
+
   const htmlTestFile = fs.readFileSync(inputPath, 'utf-8');
   const $ = cheerio.load(htmlTestFile);
+
+  const inputExpectationsPath = inputPath.replace('.js', '-expected.txt').replace('.html', '-expected.txt');
+  const bodyText = $('body').text().trim();
+  const prologue = getPrologue(inputExpectationsPath, bodyText);
+
+  const stylesheetPaths = $('link').toArray().filter(l => l.attribs.rel === 'stylesheet').map(l => l.attribs.href);
   const onloadFunctionName = $('body')[0].attribs.onload ? $('body')[0].attribs.onload.slice(0, -2) : '';
   const javascriptFixtures = [];
   const inputCode = $('script:not([src])')
@@ -46,7 +63,6 @@ function migrateTest(inputPath, identifierMap) {
                         .map(code => processScriptCode(code, javascriptFixtures, onloadFunctionName))
                         .filter(x => !!x)
                         .join('\n');
-  const bodyText = $('body').text().trim();
   const helperScripts = [];
   const resourceScripts = [];
   $('script[src]').toArray().map((n) => n.attribs.src).forEach(src => {
@@ -69,9 +85,9 @@ function migrateTest(inputPath, identifierMap) {
                          .html()
                          .trim()
                          // Tries to remove it if it has it's own line
-                         .replace(bodyText + '\n', '')
+                         .replace(prologue + '\n', '')
                          // Tries to remove it if it's inline
-                         .replace(bodyText, '')
+                         .replace(prologue, '')
                          .replace(/<p>\s*<\/p>/, '')
                          .replace(/<div>\s*<\/div>/, '')
                          .trim();
@@ -79,8 +95,8 @@ function migrateTest(inputPath, identifierMap) {
     if (docType)
       domFixture = docType + (domFixture.length ? '\n' : '') + domFixture;
     outputCode = transformTestScript(
-        inputCode, bodyText, identifierMap, testHelpers, javascriptFixtures, getPanel(inputPath), domFixture,
-        onloadFunctionName, relativeResourcePaths);
+        inputCode, prologue, identifierMap, testHelpers, javascriptFixtures, getPanel(inputPath), domFixture,
+        onloadFunctionName, relativeResourcePaths, stylesheetPaths);
     outputCode = prettier.format(outputCode, {tabWidth: 2, printWidth: 120, singleQuote: true});
   } catch (err) {
     console.log('Unable to migrate: ', inputPath);
@@ -121,8 +137,8 @@ function copyResourceScripts(srcResourcePaths, destResourcePaths, inputPath) {
 }
 
 function transformTestScript(
-    inputCode, bodyText, identifierMap, explicitTestHelpers, javascriptFixtures, panel, domFixture, onloadFunctionName,
-    relativeResourcePaths) {
+    inputCode, prologue, identifierMap, explicitTestHelpers, javascriptFixtures, panel, domFixture, onloadFunctionName,
+    relativeResourcePaths, stylesheetPaths) {
   const ast = recast.parse(inputCode);
 
   /**
@@ -203,7 +219,7 @@ function transformTestScript(
    * Create test header based on extracted data
    */
   const headerLines = [];
-  headerLines.push(createExpressionNode(`TestRunner.addResult(\`${bodyText}\\n\`);`));
+  headerLines.push(createExpressionNode(`TestRunner.addResult(\`${prologue}\\n\`);`));
   headerLines.push(createNewLineNode());
   for (const helper of allTestHelpers) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadModule('${helper}');`));
@@ -217,11 +233,15 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   \`)`));
   }
 
-  if (relativeResourcePaths.length) {
-    relativeResourcePaths.forEach(p => {
-      headerLines.push(createAwaitExpressionNode(`await TestRunner.loadScript('${p}');`));
-    });
-  }
+  stylesheetPaths.forEach(p => {
+    headerLines.push(createAwaitExpressionNode(`await TestRunner.addStylesheetTag('${p}');`));
+  });
+
+  relativeResourcePaths.forEach(p => {
+    headerLines.push(createAwaitExpressionNode(`await TestRunner.addScriptTag('${p}');`));
+  });
+
+
 
   for (const fixture of javascriptFixtures) {
     headerLines.push(fixture);
@@ -237,7 +257,7 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
     return acc + '\n' + code;
   }, '');
   nonTestCode = '  ' + nonTestCode.trimLeft();
-  if (nonTestCode) {
+  if (nonTestCode.trim()) {
     headerLines.push((createAwaitExpressionNode(`await TestRunner.evaluateInPagePromise(\`
   ${nonTestCode}
   \`)`)));
@@ -255,11 +275,6 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   ast.program.body = [b.expressionStatement(b.callExpression(iife, []))];
 
   return print(ast);
-}
-
-function copyExpectations(expectationsPath, outTestPath) {
-  const outExpectationsPath = path.resolve(path.dirname(outTestPath), path.basename(expectationsPath));
-  fs.writeFileSync(outExpectationsPath, fs.readFileSync(expectationsPath));
 }
 
 /**

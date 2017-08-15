@@ -154,12 +154,33 @@ TestRunner.addSnifferPromise = function(receiver, methodName) {
   });
 };
 
+/** @type {number} */
+TestRunner._pendingInits = 0;
+
+/** @type {function():void} */
+TestRunner._resolveOnFinishInits;
+
+/**
+ * @param {function():!Promise} asyncFunction
+ */
+TestRunner.initAsync = async function(asyncFunction) {
+  TestRunner._pendingInits++;
+  await asyncFunction();
+  TestRunner._pendingInits--;
+  if (!TestRunner._pendingInits)
+    TestRunner._resolveOnFinishInits();
+};
+
 /**
  * @param {string} module
  * @return {!Promise<undefined>}
  */
-TestRunner.loadModule = function(module) {
-  return self.runtime.loadModulePromise(module);
+TestRunner.loadModule = async function(module) {
+  var promise = new Promise(resolve => TestRunner._resolveOnFinishInits = resolve);
+  await self.runtime.loadModulePromise(module);
+  if (!TestRunner._pendingInits)
+    return;
+  return promise;
 };
 
 /**

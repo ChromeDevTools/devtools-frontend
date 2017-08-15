@@ -100,10 +100,10 @@ ApplicationTestRunner.indexedDBModel = function() {
   return TestRunner.mainTarget.model(Resources.IndexedDBModel);
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function _openWebSQLDatabase(name) {
       return new Promise(resolve => openDatabase(name, '1.0', '', 1024 * 1024, resolve));
     }
   `);
-})();
+});

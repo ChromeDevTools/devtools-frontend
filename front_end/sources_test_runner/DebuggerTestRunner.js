@@ -748,10 +748,10 @@ SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName)
   }
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function scheduleTestFunction() {
       setTimeout(testFunction, 0);
     }
   `);
-})();
+});

@@ -185,7 +185,7 @@ ApplicationTestRunner.ensureFrameStatusEventsReceived = function(frameId, count,
   ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId] = {count: eventsLeft, callback: callback};
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     var framesCount = 0;
 
@@ -212,4 +212,4 @@ ApplicationTestRunner.ensureFrameStatusEventsReceived = function(frameId, count,
       iframe.contentWindow.applicationCache.swapCache();
     }
   `);
-})();
+});

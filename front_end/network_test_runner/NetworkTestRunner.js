@@ -146,7 +146,7 @@ NetworkTestRunner.HARPropertyFormatters = {
 NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(NetworkTestRunner.HARPropertyFormatters));
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     var lastXHRIndex = 0;
 
@@ -225,4 +225,4 @@ NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
       });
     }
   `);
-})();
+});

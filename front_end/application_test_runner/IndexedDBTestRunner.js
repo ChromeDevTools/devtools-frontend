@@ -133,7 +133,7 @@ ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName,
       'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function dispatchCallback(callbackId) {
       console.log(callbackId);
@@ -353,4 +353,4 @@ ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName,
       return promise;
     }
   `);
-})();
+});

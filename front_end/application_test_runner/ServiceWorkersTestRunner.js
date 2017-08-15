@@ -57,7 +57,7 @@ ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestIni
   TestRunner.callFunctionInPageAsync('makeFetchInServiceWorker', [scope, url, requestInitializer]).then(callback);
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     var registrations = {};
 
@@ -101,4 +101,4 @@ ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestIni
       });
     }
   `);
-})();
+});

@@ -48,7 +48,7 @@ ExtensionsTestRunner.runExtensionTests = async function() {
   Extensions.extensionServer.initializeExtensions();
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function extensionFunctions() {
       var functions = '';
@@ -72,4 +72,4 @@ ExtensionsTestRunner.runExtensionTests = async function() {
       InspectorTest.runExtensionTests();
     };
   `);
-})();
+});

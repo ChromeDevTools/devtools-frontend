@@ -130,7 +130,7 @@ ApplicationTestRunner.clearAllCaches = function() {
   return TestRunner.callFunctionInPageAsync('clearAllCaches');
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function onCacheStorageError(e) {
       console.error('CacheStorage error: ' + e);
@@ -170,4 +170,4 @@ ApplicationTestRunner.clearAllCaches = function() {
       return caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key)))).catch(onCacheStorageError.bind(this, undefined));
     }
   `);
-})();
+});

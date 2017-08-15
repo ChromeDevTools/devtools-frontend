@@ -371,7 +371,7 @@ PerformanceTestRunner.loadTimeline = function(timelineData) {
   return promise;
 };
 
-(async function() {
+TestRunner.initAsync(async function() {
   await TestRunner.evaluateInPagePromise(`
     function wrapCallFunctionForTimeline(f) {
       var script = document.createElement('script');
@@ -405,4 +405,4 @@ PerformanceTestRunner.loadTimeline = function(timelineData) {
       return promise;
     }
   `);
-})();
+});

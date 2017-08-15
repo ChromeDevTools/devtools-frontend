@@ -118,6 +118,7 @@ Main.Main = class {
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('continueToLocationMarkers', 'Continue to location markers', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
+    Runtime.experiments.register('highlightCssGrid', 'Highlight CSS grid layout');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('logManagement', 'Log management', true);
     Runtime.experiments.register('liveSASS', 'Live SASS');

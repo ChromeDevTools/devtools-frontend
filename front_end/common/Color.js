@@ -849,7 +849,8 @@ Common.Color.PageHighlight = {
   MarginLight: Common.Color.fromRGBA([246, 178, 107, .5]),
   EventTarget: Common.Color.fromRGBA([255, 196, 196, .66]),
   Shape: Common.Color.fromRGBA([96, 82, 177, 0.8]),
-  ShapeMargin: Common.Color.fromRGBA([96, 82, 127, .6])
+  ShapeMargin: Common.Color.fromRGBA([96, 82, 127, .6]),
+  CssGrid: Common.Color.fromRGBA([0x4b, 0, 0x82, 1])
 };
 
 Common.Color.Generator = class {

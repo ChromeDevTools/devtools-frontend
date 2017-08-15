@@ -19,6 +19,8 @@ function main() {
     glob(p);
   }
   let contents = fs.readFileSync(TESTS_PATH, 'utf-8');
+  if (contents)
+    contents += '\n';
   const tests = new Set(contents.split('\n').map(l => l.split(' ')[0]));
   for (const p of globbedPaths) {
     const relativePath = p.slice(p.indexOf('LayoutTests') + 'LayoutTests'.length + 1);

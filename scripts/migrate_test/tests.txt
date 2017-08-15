@@ -1,1 +1,0 @@
-inspector/elements/styles-4/keyframes-source-offsets.html

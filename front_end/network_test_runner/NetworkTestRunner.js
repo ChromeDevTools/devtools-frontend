@@ -82,9 +82,12 @@ NetworkTestRunner.makeSimpleXHRWithPayload = function(method, url, async, payloa
 
 NetworkTestRunner.makeXHR = function(
     method, url, async, user, password, headers, withCredentials, payload, type, callback) {
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  var resolvedPath = testScriptURL + '/../' + url;
+
   var args = {};
   args.method = method;
-  args.url = url;
+  args.url = resolvedPath;
   args.async = async;
   args.user = user;
   args.password = password;

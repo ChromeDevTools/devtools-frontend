@@ -199,6 +199,32 @@ TestRunner.addStylesheetTag = function(path) {
 };
 
 /**
+ * @param {string} path
+ * @return {!Promise<!SDK.RemoteObject|undefined>}
+ */
+TestRunner.addIframe = function(path) {
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  var resolvedPath = testScriptURL + '/../' + path;
+
+  return TestRunner.evaluateInPageAsync(`
+    (function(){
+      var iframe = document.createElement('iframe');
+      iframe.src = '${resolvedPath}';
+      iframe.onload = onload;
+      document.body.appendChild(iframe);
+
+      var resolve;
+      var promise = new Promise(r => resolve = r);
+      function onload() {
+        resolve();
+      }
+      return promise;
+    })();
+  `);
+};
+
+
+/**
  * @param {string} title
  */
 TestRunner.markStep = function(title) {
@@ -813,7 +839,7 @@ IntegrationTestRunner.TestObserver = class {
       return;
     IntegrationTestRunner._startedTest = true;
     IntegrationTestRunner._setupTestHelpers(target);
-    TestRunner.executeTestScript();
+    IntegrationTestRunner.runTest();
   }
 
   /**
@@ -822,6 +848,17 @@ IntegrationTestRunner.TestObserver = class {
    */
   targetRemoved(target) {
   }
+};
+
+IntegrationTestRunner.runTest = async function() {
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  var basePath = testScriptURL + '/../';
+  await TestRunner.evaluateInPagePromise(`
+    function relativeToTest(relativePath) {
+      return '${basePath}' + relativePath;
+    }
+  `);
+  TestRunner.executeTestScript();
 };
 
 SDK.targetManager.observeTargets(new IntegrationTestRunner.TestObserver());

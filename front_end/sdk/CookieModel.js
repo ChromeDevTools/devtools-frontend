@@ -20,7 +20,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
     cookie.addAttribute('path', protocolCookie['path']);
     cookie.addAttribute('port', protocolCookie['port']);
     if (protocolCookie['expires'])
-      cookie.addAttribute('expires', protocolCookie['expires']);
+      cookie.addAttribute('expires', String(protocolCookie['expires'] * 1000));
     if (protocolCookie['httpOnly'])
       cookie.addAttribute('httpOnly');
     if (protocolCookie['secure'])
@@ -96,7 +96,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
     return this.target()
         .networkAgent()
         .setCookie(
-            cookie.url(), cookie.name(), cookie.value(), domain, cookie.path(), cookie.secure(), cookie.httpOnly(),
+            cookie.name(), cookie.value(), cookie.url(), domain, cookie.path(), cookie.secure(), cookie.httpOnly(),
             cookie.sameSite(), expires)
         .then(success => !!success);
   }

@@ -300,7 +300,7 @@ ColorPicker.ContrastOverlay = class {
       return Promise.resolve();
 
     const dS = 0.02;
-    const epsilon = 0.002;
+    const epsilon = 0.0002;
     const H = 0;
     const S = 1;
     const V = 2;
@@ -333,53 +333,87 @@ ColorPicker.ContrastOverlay = class {
     Common.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
 
     /**
-     * Approach the desired contrast ratio by modifying the given component
-     * from the given starting value.
      * @param {number} index
      * @param {number} x
-     * @param {boolean} onAxis
-     * @return {?number}
      */
-    function approach(index, x, onAxis) {
-      while (0 <= x && x <= 1) {
-        candidateHSVA[index] = x;
-        Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
-        Common.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
-        var fgLuminance = Common.Color.luminance(blendedRGBA);
-        var dLuminance = fgLuminance - desiredLuminance;
+    function updateCandidateAndComputeDelta(index, x) {
+      candidateHSVA[index] = x;
+      Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
+      Common.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
+      return Common.Color.luminance(blendedRGBA) - desiredLuminance;
+    }
 
-        if (Math.abs(dLuminance) < (onAxis ? epsilon / 10 : epsilon))
+    /**
+     * Approach a value of the given component of `candidateHSVA` such that the
+     * calculated luminance of `candidateHSVA` approximates `desiredLuminance`.
+     * @param {number} index The component of `candidateHSVA` to modify.
+     * @return {?number} The new value for the modified component, or `null` if
+     *     no suitable value exists.
+     */
+    function approach(index) {
+      var x = candidateHSVA[index];
+      var multiplier = 1;
+      var dLuminance = updateCandidateAndComputeDelta(index, x);
+      var previousSign = Math.sign(dLuminance);
+
+      for (var guard = 100; guard; guard--) {
+        if (Math.abs(dLuminance) < epsilon)
           return x;
 
-        x += (index === V ? -dLuminance : dLuminance);
+        var sign = Math.sign(dLuminance);
+        if (sign !== previousSign) {
+          // If `x` overshoots the correct value, halve the step size.
+          multiplier /= 2;
+          previousSign = sign;
+        } else if (x < 0 || x > 1) {
+          // If there is no overshoot and `x` is out of bounds, there is no
+          // acceptable value for `x`.
+          return null;
+        }
+
+        // Adjust `x` by a multiple of `dLuminance` to decrease step size as
+        // the computed luminance converges on `desiredLuminance`.
+        x += multiplier * (index === V ? -dLuminance : dLuminance);
+
+        dLuminance = updateCandidateAndComputeDelta(index, x);
       }
+      // The loop should always converge or go out of bounds on its own.
+      console.error('Loop exited unexpectedly');
       return null;
     }
 
+    // Plot V for values of S such that the computed luminance approximates
+    // `desiredLuminance`, until no suitable value for V can be found, or the
+    // current value of S goes of out bounds.
     for (var s = 0; s < 1 + dS; s += dS) {
       s = Math.min(1, s);
       candidateHSVA[S] = s;
 
-      var v = lastV;
-      v = lastV + currentSlope * dS;
+      // Extrapolate the approximate next value for `v` using the approximate
+      // gradient of the curve.
+      candidateHSVA[V] = lastV + currentSlope * dS;
 
-      v = approach(V, v, s === 0);
+      var v = approach(V);
       if (v === null)
         break;
 
-      currentSlope = (v - lastV) / dS;
+      // Approximate the current gradient of the curve.
+      currentSlope = s === 0 ? 0 : (v - lastV) / dS;
+      lastV = v;
 
       pathBuilder.push(pathBuilder.length ? 'L' : 'M');
-      pathBuilder.push(s * width);
-      pathBuilder.push((1 - v) * height);
+      pathBuilder.push((s * width).toFixed(2));
+      pathBuilder.push(((1 - v) * height).toFixed(2));
     }
 
+    // If no suitable V value for an in-bounds S value was found, find the value
+    // of S such that V === 1 and add that to the path.
     if (s < 1 + dS) {
       s -= dS;
       candidateHSVA[V] = 1;
-      s = approach(S, s, true);
+      s = approach(S);
       if (s !== null)
-        pathBuilder = pathBuilder.concat(['L', s * width, -1]);
+        pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
     }
 
     this._contrastRatioLine.setAttribute('d', pathBuilder.join(' '));

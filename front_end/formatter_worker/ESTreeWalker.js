@@ -93,6 +93,7 @@ FormatterWorker.ESTreeWalker.SkipSubtree = {};
 FormatterWorker.ESTreeWalker._walkOrder = {
   'AwaitExpression': ['arguments'],
   'ArrayExpression': ['elements'],
+  'ArrayPattern': ['elements'],
   'ArrowFunctionExpression': ['params', 'body'],
   'AssignmentExpression': ['left', 'right'],
   'BinaryExpression': ['left', 'right'],

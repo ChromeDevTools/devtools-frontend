@@ -11,7 +11,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this.contentElement.tabIndex = 0;
     this.setDefaultFocusedElement(this.contentElement);
 
-    this._typeField = this.contentElement.createChild('div', 'shadow-editor-field');
+    this._typeField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
     this._typeField.createChild('label', 'shadow-editor-label').textContent = Common.UIString('Type');
     this._outsetButton = this._typeField.createChild('button', 'shadow-editor-button-left');
     this._outsetButton.textContent = Common.UIString('Outset');
@@ -34,11 +34,12 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this._xySlider.addEventListener('keydown', this._onCanvasArrowKey.bind(this), false);
     this._xySlider.addEventListener('blur', this._onCanvasBlur.bind(this), false);
 
-    var blurField = this.contentElement.createChild('div', 'shadow-editor-blur-field');
+    var blurField =
+        this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field shadow-editor-blur-field');
     this._blurInput = this._createTextInput(blurField, Common.UIString('Blur'));
     this._blurSlider = this._createSlider(blurField);
 
-    this._spreadField = this.contentElement.createChild('div', 'shadow-editor-field');
+    this._spreadField = this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
     this._spreadInput = this._createTextInput(this._spreadField, Common.UIString('Spread'));
     this._spreadSlider = this._createSlider(this._spreadField);
   }

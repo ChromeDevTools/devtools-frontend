@@ -15,10 +15,14 @@
     font-size: 12px;
 }
 
-.shadow-editor-blur-field {
-    height: 24px;
+.shadow-editor-flex-field {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.shadow-editor-field.shadow-editor-blur-field {
     margin-top: 40px;
-    font-size: 12px;
 }
 
 .shadow-editor-2D-slider {

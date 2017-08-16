@@ -373,6 +373,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
       var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
       var originGroup = new UI.TreeElement(originGroupName, true);
       originGroup.selectable = false;
+      originGroup.setCollapsible(false);
       originGroup.expand();
       originGroup.listItemElement.classList.add('security-sidebar-origins');
       this._originGroups.set(originGroupName, originGroup);

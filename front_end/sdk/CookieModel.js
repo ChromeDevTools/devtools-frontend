@@ -20,7 +20,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
     cookie.addAttribute('path', protocolCookie['path']);
     cookie.addAttribute('port', protocolCookie['port']);
     if (protocolCookie['expires'])
-      cookie.addAttribute('expires', String(protocolCookie['expires'] * 1000));
+      cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
     if (protocolCookie['httpOnly'])
       cookie.addAttribute('httpOnly');
     if (protocolCookie['secure'])
@@ -127,7 +127,9 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   _deleteAll(cookies, callback) {
     var networkAgent = this.target().networkAgent();
-    Promise.all(cookies.map(cookie => networkAgent.deleteCookie(cookie.name(), cookie.url())))
+    Promise
+        .all(
+            cookies.map(cookie => networkAgent.deleteCookies(cookie.name(), undefined, cookie.domain(), cookie.path())))
         .then(callback || function() {});
   }
 };

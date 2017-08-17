@@ -340,7 +340,7 @@ SDK.Cookie = class {
 
   /**
    * @param {string} key
-   * @param {string=} value
+   * @param {string|number=} value
    */
   addAttribute(key, value) {
     this._attributes[key.toLowerCase()] = value;

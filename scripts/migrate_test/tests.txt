@@ -1,5 +1,1 @@
  
-inspector/sources/debugger-async/async-await/async-callstack-async-await1.html http/tests/devtools/sources/debugger-async/async-await/async-callstack-async-await1.js
-inspector/sources/debugger-async/async-await/async-callstack-async-await2.html http/tests/devtools/sources/debugger-async/async-await/async-callstack-async-await2.js
-inspector/sources/debugger-async/async-await/async-callstack-async-await3.html http/tests/devtools/sources/debugger-async/async-await/async-callstack-async-await3.js
-inspector/sources/debugger-async/async-await/async-pause-on-exception.html http/tests/devtools/sources/debugger-async/async-await/async-pause-on-exception.js

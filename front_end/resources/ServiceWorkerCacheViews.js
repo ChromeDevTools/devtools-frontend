@@ -16,6 +16,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
 
+    var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
     this._splitWidget = new UI.SplitWidget(false, false);
     this._splitWidget.show(this.element);
 
@@ -34,8 +35,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._lastPageSize = null;
     /** @type {?number} */
     this._lastSkipCount = null;
-
-    var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
     this._pageBackButton = new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageBackButtonClicked, this);
@@ -75,6 +74,19 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   /**
+   * @param {string} requestUrl
+   * @return {string}
+   */
+  static _requestPath(requestUrl) {
+    var path = Common.ParsedURL.extractPath(requestUrl);
+    if (!path)
+      return requestUrl;
+    if (path.match(/\/.+/))
+      return path.substring(1);
+    return path;
+  }
+
+  /**
    * @param {?UI.Widget} preview
    */
   _showPreview(preview) {
@@ -91,9 +103,10 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   _createDataGrid() {
     var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'number', title: Common.UIString('#'), width: '50px'}, {id: 'request', title: Common.UIString('Request')},
-      {id: 'response', title: Common.UIString('Response')},
-      {id: 'responseTime', title: Common.UIString('Time Cached')}
+      // {id: 'number', title: Common.UIString('#'), width: '50px'},
+      {id: 'path', title: Common.UIString('Path')},
+      // {id: 'response', title: Common.UIString('Response')},
+      {id: 'responseTime', title: Common.UIString('Time Cached'), width: '12em'}
     ]);
     var dataGrid = new DataGrid.DataGrid(
         columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
@@ -159,9 +172,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._entries = entries;
     for (var i = 0; i < entries.length; ++i) {
       var data = {};
-      data['number'] = i + skipCount;
       data['request'] = entries[i].request;
-      data['response'] = entries[i].response;
+      data['path'] = Resources.ServiceWorkerCacheView._requestPath(entries[i].request);
       data['responseTime'] = entries[i].responseTime;
       var node = new DataGrid.DataGridNode(data);
       node.selectable = true;

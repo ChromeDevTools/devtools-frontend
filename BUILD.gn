@@ -600,6 +600,7 @@ all_devtools_files = [
   "front_end/source_frame/fontView.css",
   "front_end/source_frame/FontView.js",
   "front_end/source_frame/imageView.css",
+  "front_end/source_frame/jsonView.css",
   "front_end/source_frame/JSONView.js",
   "front_end/source_frame/ImageView.js",
   "front_end/source_frame/messagesPopover.css",

@@ -37,6 +37,7 @@ SourceFrame.JSONView = class extends UI.VBox {
    */
   constructor(parsedJSON) {
     super();
+    this.registerRequiredCSS('source_frame/jsonView.css');
     this._parsedJSON = parsedJSON;
     this.element.classList.add('json-view');
 

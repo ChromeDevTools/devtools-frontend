@@ -55,6 +55,7 @@
     "resources": [
         "fontView.css",
         "imageView.css",
+        "jsonView.css",
         "messagesPopover.css",
         "xmlTree.css",
         "xmlView.css"

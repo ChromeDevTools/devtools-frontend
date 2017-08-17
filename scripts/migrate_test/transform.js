@@ -41,6 +41,7 @@ function main() {
   }
 
   console.log(`Successfully migrated: ${migratedTests.size} of ${testCount}`);
+  console.log('May need to rebaseline these tests');
 
   const updatedTests = Array.from(oldToNewTests.entries()).map(line => line.join(' ')).join('\n');
   console.log(updatedTests);

@@ -72,7 +72,7 @@ function renameIdentifiers(identifierMap) {
   walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
   walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
   // walkSync('../../../../LayoutTests/inspector', write);
-  walkSync('../../../../LayoutTests/inspector/console', write);
+  walkSync('../../../../LayoutTests/inspector/elements', write);
   walkSync('../../../../LayoutTests/inspector-enabled', write);
 
   function walkSync(currentDirPath, process) {

@@ -68,12 +68,12 @@ function generateTestHelperMap() {
 }
 
 function renameIdentifiers(identifierMap) {
-  // walkSync('../../../../LayoutTests/http/tests/inspector', write);
-  walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
-  walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
+  walkSync('../../../../LayoutTests/http/tests/inspector', write);
+  // walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
+  // walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
   // walkSync('../../../../LayoutTests/inspector', write);
-  walkSync('../../../../LayoutTests/inspector/elements', write);
-  walkSync('../../../../LayoutTests/inspector-enabled', write);
+  // walkSync('../../../../LayoutTests/inspector/elements', write);
+  // walkSync('../../../../LayoutTests/inspector-enabled', write);
 
   function walkSync(currentDirPath, process) {
     fs.readdirSync(currentDirPath).forEach(function(name) {
@@ -102,7 +102,7 @@ function renameIdentifiers(identifierMap) {
     }
 
     if (newContent.indexOf('InspectorTest') !== -1) {
-      console.log('WARNING', filePath, 'has InspectorTest references remaining');
+      console.log('WARNING', filePath, 'has old inspector test references remaining');
       console.log(newContent);
     }
 

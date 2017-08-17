@@ -441,7 +441,7 @@ function generateTestHelperMap() {
       if (line.indexOf('TestRunner.') === -1)
         continue;
       var match = line.match(/^\s*(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*(\=[^,}]|[;])/) ||
-          line.match(/^(TestRunner.[a-z_A-Z0-9]+)\s*\=$/);
+          line.match(/^(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*\=$/);
       if (!match)
         continue;
       var name = match[1];

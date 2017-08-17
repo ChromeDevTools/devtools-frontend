@@ -53,7 +53,7 @@ function generateTestHelperMap() {
       if (line.indexOf('TestRunner.') === -1)
         continue;
       var match = line.match(/^\s*(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*(\=[^,}]|[;])/) ||
-          line.match(/^(TestRunner.[a-z_A-Z0-9]+)\s*\=$/);
+          line.match(/^(\b\w*TestRunner.[a-z_A-Z0-9]+)\s*\=$/);
       if (!match)
         continue;
       var name = match[1];
@@ -68,10 +68,11 @@ function generateTestHelperMap() {
 }
 
 function renameIdentifiers(identifierMap) {
-  walkSync('../../../../LayoutTests/http/tests/inspector', write);
+  // walkSync('../../../../LayoutTests/http/tests/inspector', write);
   // walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
   // walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
-  // walkSync('../../../../LayoutTests/inspector', write);
+  walkSync('../../../../LayoutTests/inspector/sources', write);
+  walkSync('../../../../LayoutTests/inspector/tracing', write);
   // walkSync('../../../../LayoutTests/inspector/elements', write);
   // walkSync('../../../../LayoutTests/inspector-enabled', write);
 
@@ -101,9 +102,10 @@ function renameIdentifiers(identifierMap) {
       newContent = newContent.replaceAll(originalIdentifier, newIdentifier);
     }
 
-    if (newContent.indexOf('InspectorTest') !== -1) {
+    const ignoreBindContent = newContent.replace(/.bind\(InspectorTest/g, '.bind(IGNOREDIT');
+    if (ignoreBindContent.indexOf('InspectorTest') !== -1) {
       console.log('WARNING', filePath, 'has old inspector test references remaining');
-      console.log(newContent);
+      console.log(ignoreBindContent);
     }
 
     if (content !== newContent)

@@ -307,6 +307,7 @@ SourcesTestRunner.captureStackTraceIntoString = function(callFrames, asyncStackT
 
       var s = ((isFramework ? '  * ' : '    ')) + printed++ + ') ' + frame.functionName + ' (' + url +
           ((options.dropLineNumbers ? '' : ':' + lineNumber)) + ')';
+      s = s.replace(/scheduleTestFunction.+$/, 'scheduleTestFunction <omitted>');
       results.push(s);
 
       if (options.printReturnValue && returnValueFunction && returnValueFunction.call(frame))

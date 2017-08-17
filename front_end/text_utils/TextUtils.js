@@ -139,7 +139,7 @@ TextUtils.TextUtils = {
   /**
    * @param {string} text
    * @param {!Array<!RegExp>} regexes
-   * @return {!Array<{value: string, position: number, regexIndex: number}>}
+   * @return {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>}
    */
   splitStringByRegexes(text, regexes) {
     var matches = [];
@@ -162,7 +162,7 @@ TextUtils.TextUtils = {
     function doSplit(text, regexIndex, startIndex) {
       if (regexIndex >= globalRegexes.length) {
         // Set regexIndex as -1 if text did not match with any regular expression
-        matches.push({value: text, position: startIndex, regexIndex: -1});
+        matches.push({value: text, position: startIndex, regexIndex: -1, captureGroups: []});
         return;
       }
       var regex = globalRegexes[regexIndex];
@@ -174,7 +174,12 @@ TextUtils.TextUtils = {
         if (stringBeforeMatch)
           doSplit(stringBeforeMatch, regexIndex + 1, startIndex + currentIndex);
         var match = result[0];
-        matches.push({value: match, position: startIndex + result.index, regexIndex: regexIndex});
+        matches.push({
+          value: match,
+          position: startIndex + result.index,
+          regexIndex: regexIndex,
+          captureGroups: result.slice(1)
+        });
         currentIndex = result.index + match.length;
       }
       var stringAfterMatches = text.substring(currentIndex);
@@ -184,6 +189,51 @@ TextUtils.TextUtils = {
   }
 };
 
+TextUtils.FilterParser = class {
+  /**
+   * @param {!Array<string>} keys
+   */
+  constructor(keys) {
+    this._keys = keys;
+  }
+
+  /**
+   * @param {string} query
+   * @return {!Array<{key:(string|undefined), text:(string|undefined), regex:(!RegExp|undefined), negative:boolean}>}
+   */
+  parse(query) {
+    var splitResult = TextUtils.TextUtils.splitStringByRegexes(query, [
+      TextUtils.TextUtils._keyValueFilterRegex, TextUtils.TextUtils._regexFilterRegex,
+      TextUtils.TextUtils._textFilterRegex
+    ]);
+    var filters = [];
+    for (var i = 0; i < splitResult.length; i++) {
+      var regexIndex = splitResult[i].regexIndex;
+      if (regexIndex === -1)
+        continue;
+      var result = splitResult[i].captureGroups;
+      if (regexIndex === 0) {
+        if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1)
+          filters.push({key: result[1], text: result[2], negative: !!result[0]});
+        else
+          filters.push({text: result[1] + ':' + result[2], negative: !!result[0]});
+      } else if (regexIndex === 1) {
+        try {
+          filters.push({regex: new RegExp(result[1], 'i'), negative: !!result[0]});
+        } catch (e) {
+          filters.push({text: '/' + result[1] + '/', negative: !!result[0]});
+        }
+      } else if (regexIndex === 2) {
+        filters.push({text: result[1], negative: !!result[0]});
+      }
+    }
+    return filters;
+  }
+};
+
+TextUtils.TextUtils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
+TextUtils.TextUtils._regexFilterRegex = /(?:^|\s)(\-)?\/([^\s]+)\//;
+TextUtils.TextUtils._textFilterRegex = /(?:^|\s)(\-)?([^\s]+)/;
 TextUtils.TextUtils._SpaceCharRegex = /\s/;
 
 /**

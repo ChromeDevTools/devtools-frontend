@@ -116,7 +116,7 @@ Network.NetworkLogView = class extends UI.VBox {
     /** @type {?Network.GroupLookupInterface} */
     this._activeGroupLookup = null;
 
-    this._textFilterUI = new UI.TextFilterUI(true);
+    this._textFilterUI = new UI.TextFilterUI();
     this._textFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged, this);
     filterBar.addFilter(this._textFilterUI);
 
@@ -132,6 +132,7 @@ Network.NetworkLogView = class extends UI.VBox {
         UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     filterBar.addFilter(this._resourceCategoryFilterUI);
 
+    this._filterParser = new TextUtils.FilterParser(Network.NetworkLogView._searchKeys);
     this._suggestionBuilder = new Network.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys);
     this._resetSuggestionBuilder();
 
@@ -1024,7 +1025,6 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   setTextFilterValue(filterString) {
     this._textFilterUI.setValue(filterString);
-    this._textFilterUI.setRegexChecked(false);
     this._dataURLFilterUI.setChecked(false);
     this._resourceCategoryFilterUI.reset();
   }
@@ -1430,57 +1430,23 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {string} query
    */
   _parseFilterQuery(query) {
-    var parsedQuery;
-    if (this._textFilterUI.isRegexChecked() && query !== '')
-      parsedQuery = {text: [query], filters: []};
-    else
-      parsedQuery = this._suggestionBuilder.parseQuery(query);
-
-    this._filters = parsedQuery.text.map(this._createTextFilter, this);
-
-    var n = parsedQuery.filters.length;
-    for (var i = 0; i < n; ++i) {
-      var filter = parsedQuery.filters[i];
-      var filterType = /** @type {!Network.NetworkLogView.FilterType} */ (filter.type.toLowerCase());
-      this._filters.push(this._createFilter(filterType, filter.data, filter.negative));
-    }
-  }
-
-  /**
-   * @param {string} text
-   * @return {!Network.NetworkLogView.Filter}
-   */
-  _createTextFilter(text) {
-    var negative = false;
-    /** @type {?RegExp} */
-    var regex;
-    if (!this._textFilterUI.isRegexChecked() && text[0] === '-' && text.length > 1) {
-      negative = true;
-      text = text.substring(1);
-      regex = new RegExp(text.escapeForRegExp(), 'i');
-    } else {
-      regex = this._textFilterUI.regex();
-    }
-
-    var filter = Network.NetworkLogView._requestPathFilter.bind(null, regex);
-    if (negative)
-      filter = Network.NetworkLogView._negativeFilter.bind(null, filter);
-    return filter;
-  }
-
-  /**
-   * @param {!Network.NetworkLogView.FilterType} type
-   * @param {string} value
-   * @param {boolean} negative
-   * @return {!Network.NetworkLogView.Filter}
-   */
-  _createFilter(type, value, negative) {
-    var filter = this._createSpecialFilter(type, value);
-    if (!filter)
-      return this._createTextFilter((negative ? '-' : '') + type + ':' + value);
-    if (negative)
-      return Network.NetworkLogView._negativeFilter.bind(null, filter);
-    return filter;
+    var descriptors = this._filterParser.parse(query);
+    this._filters = descriptors.map(descriptor => {
+      var key = descriptor.key;
+      var text = descriptor.text || '';
+      var regex = descriptor.regex;
+      var filter;
+      if (key) {
+        var defaultText = (key + ':' + text).escapeForRegExp();
+        filter = this._createSpecialFilter(/** @type {!Network.NetworkLogView.FilterType} */ (key), text) ||
+            Network.NetworkLogView._requestPathFilter.bind(null, new RegExp(defaultText, 'i'));
+      } else if (descriptor.regex) {
+        filter = Network.NetworkLogView._requestPathFilter.bind(null, /** @type {!RegExp} */ (regex));
+      } else {
+        filter = Network.NetworkLogView._requestPathFilter.bind(null, new RegExp(text.escapeForRegExp(), 'i'));
+      }
+      return descriptor.negative ? Network.NetworkLogView._negativeFilter.bind(null, filter) : filter;
+    });
   }
 
   /**

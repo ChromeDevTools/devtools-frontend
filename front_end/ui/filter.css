@@ -120,10 +120,6 @@
     margin: auto 0;
 }
 
-.filter-text-invalid {
-    background-color: rgb(255, 200, 200);
-}
-
 .filter-checkbox-filter .checkbox-filter-checkbox {
     width: 10px;
     height: 10px;
@@ -142,7 +138,7 @@
     border-radius: 2px;
     padding: 1px 3px 0;
     margin: 0 0 0 3px;
-    width: 143px;
+    width: 163px;
     height: 20px;
     line-height: 17px;
     display: inline-block;

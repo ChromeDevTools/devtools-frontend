@@ -167,14 +167,8 @@ UI.FilterUI.prototype = {
  * @unrestricted
  */
 UI.TextFilterUI = class extends Common.Object {
-  /**
-   * @param {boolean=} supportRegex
-   */
-  constructor(supportRegex) {
+  constructor() {
     super();
-    this._supportRegex = !!supportRegex;
-    this._regex = null;
-
     this._filterElement = createElement('div');
     this._filterElement.className = 'filter-text-filter';
 
@@ -183,24 +177,14 @@ UI.TextFilterUI = class extends Common.Object {
     this._prompt = new UI.TextPrompt();
     this._prompt.initialize(this._completions.bind(this), ' ');
     this._proxyElement = this._prompt.attach(this._filterInputElement);
-    this._prompt.setPlaceholder(Common.UIString('Filter'));
+    this._proxyElement.title = Common.UIString('Filter');
+    this._prompt.setPlaceholder(Common.UIString('e.g. /small[\\d]+/ url:a.com/b'));
 
     this._proxyElement.addEventListener('keydown', this._onInputKeyDown.bind(this), false);
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._valueChanged.bind(this));
 
     /** @type {?function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>} */
     this._suggestionProvider = null;
-
-    if (this._supportRegex) {
-      this._filterElement.classList.add('supports-regex');
-      var label = UI.CheckboxLabel.create(Common.UIString('Regex'));
-      this._regexCheckBox = label.checkboxElement;
-      this._regexCheckBox.id = 'text-filter-regex';
-      this._regexCheckBox.addEventListener('change', this._valueChanged.bind(this), false);
-      this._filterElement.appendChild(label);
-
-      this._regexLabel = this._filterElement.textElement;
-    }
   }
 
   /**
@@ -210,7 +194,7 @@ UI.TextFilterUI = class extends Common.Object {
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   _completions(expression, prefix, force) {
-    if (this._suggestionProvider && !this.isRegexChecked())
+    if (this._suggestionProvider)
       return this._suggestionProvider(expression, prefix, force);
     return Promise.resolve([]);
   }
@@ -231,13 +215,6 @@ UI.TextFilterUI = class extends Common.Object {
   }
 
   /**
-   * @return {boolean}
-   */
-  isRegexChecked() {
-    return this._supportRegex ? this._regexCheckBox.checked : false;
-  }
-
-  /**
    * @return {string}
    */
   value() {
@@ -250,21 +227,6 @@ UI.TextFilterUI = class extends Common.Object {
   setValue(value) {
     this._prompt.setText(value);
     this._valueChanged();
-  }
-
-  /**
-   * @param {boolean} checked
-   */
-  setRegexChecked(checked) {
-    if (this._supportRegex)
-      this._regexCheckBox.checked = checked;
-  }
-
-  /**
-   * @return {?RegExp}
-   */
-  regex() {
-    return this._regex;
   }
 
   focus() {
@@ -280,26 +242,6 @@ UI.TextFilterUI = class extends Common.Object {
   }
 
   _valueChanged() {
-    var filterQuery = this.value();
-
-    this._regex = null;
-    this._filterInputElement.classList.remove('filter-text-invalid');
-    if (filterQuery) {
-      if (this.isRegexChecked()) {
-        try {
-          this._regex = new RegExp(filterQuery, 'i');
-        } catch (e) {
-          this._filterInputElement.classList.add('filter-text-invalid');
-        }
-      } else {
-        this._regex = createPlainTextSearchRegex(filterQuery, 'i');
-      }
-    }
-
-    this._dispatchFilterChanged();
-  }
-
-  _dispatchFilterChanged() {
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 

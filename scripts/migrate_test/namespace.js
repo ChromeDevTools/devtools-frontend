@@ -68,13 +68,11 @@ function generateTestHelperMap() {
 }
 
 function renameIdentifiers(identifierMap) {
-  // walkSync('../../../../LayoutTests/http/tests/inspector', write);
-  // walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
-  // walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
-  walkSync('../../../../LayoutTests/inspector/sources', write);
-  walkSync('../../../../LayoutTests/inspector/tracing', write);
-  // walkSync('../../../../LayoutTests/inspector/elements', write);
-  // walkSync('../../../../LayoutTests/inspector-enabled', write);
+  walkSync('../../../../LayoutTests/http/tests/inspector', write);
+  walkSync('../../../../LayoutTests/http/tests/inspector-enabled', write);
+  walkSync('../../../../LayoutTests/http/tests/inspector-unit', write);
+  walkSync('../../../../LayoutTests/inspector-enabled', write);
+  walkSync('../../../../LayoutTests/inspector', write);
 
   function walkSync(currentDirPath, process) {
     fs.readdirSync(currentDirPath).forEach(function(name) {

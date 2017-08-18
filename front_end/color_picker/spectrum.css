@@ -103,6 +103,10 @@
     transition: right .05s ease-out, left .05s ease-out, bottom .05s ease-out, top .05s ease-out;
 }
 
+.spectrum-contrast-info.contrast-unknown .value {
+    display: none;
+}
+
 .spectrum-contrast-info .low-contrast {
     display: none;
     margin-right: 3px;
@@ -208,6 +212,16 @@
     margin-left: 0.5em;
     padding: 1px 3px;
     align-items:  baseline;
+    position: absolute;
+    margin-top: -2px;
+}
+
+.contrast-details-value.contrast-unknown {
+    background-color: white;
+    color: #333;
+    border: 1px solid #ddd;
+    width: 3em;
+    text-align: center;
 }
 
 .contrast-details-value.contrast-color-white {

@@ -28,11 +28,6 @@ ColorPicker.ContrastInfo = class {
     this._contrastRatioThresholds = null;
     this._bgColor = null;
 
-    // TODO(aboxhall): distinguish between !backgroundColors (no text) and
-    // !backgroundColors.length (no computed bg color)
-    if (!contrastInfo.backgroundColors || !contrastInfo.backgroundColors.length)
-      return;
-
     if (contrastInfo.computedFontSize && contrastInfo.computedFontWeight && contrastInfo.computedBodyFontSize) {
       var isLargeFont = ColorPicker.ContrastInfo.computeIsLargeFont(
           contrastInfo.computedFontSize, contrastInfo.computedFontWeight, contrastInfo.computedBodyFontSize);
@@ -40,6 +35,9 @@ ColorPicker.ContrastInfo = class {
       this._contrastRatioThresholds =
           ColorPicker.ContrastInfo._ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
     }
+
+    if (!contrastInfo.backgroundColors || !contrastInfo.backgroundColors.length)
+      return;
 
     // TODO(aboxhall): figure out what to do in the case of multiple background colors (i.e. gradients)
     var bgColorText = contrastInfo.backgroundColors[0];
@@ -127,6 +125,8 @@ ColorPicker.ContrastInfo = class {
    * @return {?number}
    */
   contrastRatioThreshold(level) {
+    if (!this._contrastRatioThresholds)
+      return null;
     return this._contrastRatioThresholds[level];
   }
 
@@ -226,7 +226,8 @@ ColorPicker.ContrastOverlay = class {
    * @param {number} y
    */
   moveAwayFrom(x, y) {
-    if (!this._contrastValueBubbleBoxInWindow.contains(x, y))
+    if (!this._contrastValueBubbleBoxInWindow.width || !this._contrastValueBubbleBoxInWindow.height ||
+        !this._contrastValueBubbleBoxInWindow.contains(x, y))
       return;
 
     var bubble = this._contrastValueBubble;
@@ -237,21 +238,23 @@ ColorPicker.ContrastOverlay = class {
   }
 
   _update() {
-    if (this._contrastInfo.contrastRatio() === null)
-      return;
-
-    this._contrastValue.textContent = this._contrastInfo.contrastRatio().toFixed(2);
-    this._contrastValueBubbleBoxInWindow = this._contrastValueBubble.boxInWindow();
-
     var AA = this._contrastInfo.contrastRatioThreshold('AA');
     if (!AA)
       return;
 
-    this._contrastRatioLineThrottler.schedule(this._drawContrastRatioLineBound);
+    this._contrastValue.textContent = '';
+    if (this._contrastInfo.contrastRatio() !== null) {
+      this._contrastValue.textContent = this._contrastInfo.contrastRatio().toFixed(2);
+      this._contrastRatioLineThrottler.schedule(this._drawContrastRatioLineBound);
+      var passesAA = this._contrastInfo.contrastRatio() >= AA;
+      this._contrastValueBubble.classList.toggle('contrast-fail', !passesAA);
+      this._contrastValueBubble.classList.remove('contrast-unknown');
+    } else {
+      this._contrastValueBubble.classList.remove('contrast-fail');
+      this._contrastValueBubble.classList.add('contrast-unknown');
+    }
 
-    var passesAA = this._contrastInfo.contrastRatio() >= AA;
-    this._contrastValueBubble.classList.toggle('contrast-fail', !passesAA);
-
+    this._contrastValueBubbleBoxInWindow = this._contrastValueBubble.boxInWindow();
     this._contrastDetails.update();
   }
 
@@ -262,7 +265,7 @@ ColorPicker.ContrastOverlay = class {
    * @param {number} dragY
    */
   show(width, height, dragX, dragY) {
-    if (this._contrastInfo.contrastRatio() === null) {
+    if (this._contrastInfo.contrastRatioThreshold('AA') === null) {
       this.hide();
       return;
     }
@@ -467,6 +470,9 @@ ColorPicker.ContrastDetails = class {
     closeButton.addEventListener(UI.ToolbarButton.Events.Click, this.hide.bind(this));
     toolbar.appendToolbarItem(closeButton);
 
+    this._chooseBgColor = this._contrastDetails.createChild('div', 'contrast-choose-bg-color');
+    this._chooseBgColor.textContent = Common.UIString('Please select background color to compute contrast ratio.');
+
     this._contrastThresholds = this._contrastDetails.createChild('div', 'contrast-thresholds');
     this._contrastAA = this._contrastThresholds.createChild('div', 'contrast-threshold');
     this._contrastAA.appendChild(UI.Icon.create('smallicon-checkmark-square'));
@@ -489,16 +495,26 @@ ColorPicker.ContrastDetails = class {
   }
 
   update() {
-    var contrastRatio = this._contrastInfo.contrastRatio();
-    var bgColor = this._contrastInfo.bgColor();
-    if (!contrastRatio || !bgColor)
-      return;
-
-    this._contrastValue.textContent = contrastRatio.toFixed(2);
-    this._bgColorSwatch.setColor(bgColor);
-
     var AA = this._contrastInfo.contrastRatioThreshold('AA');
     var AAA = this._contrastInfo.contrastRatioThreshold('AAA');
+    if (!AA)
+      return;
+
+    var contrastRatio = this._contrastInfo.contrastRatio();
+    var bgColor = this._contrastInfo.bgColor();
+    if (!contrastRatio || !bgColor) {
+      this._contrastValue.textContent = '?';
+      this._contrastValueBubble.classList.add('contrast-unknown');
+      this._chooseBgColor.classList.remove('hidden');
+      this._contrastThresholds.classList.add('hidden');
+      return;
+    }
+
+    this._chooseBgColor.classList.add('hidden');
+    this._contrastThresholds.classList.remove('hidden');
+    this._contrastValueBubble.classList.remove('contrast-unknown');
+    this._contrastValue.textContent = contrastRatio.toFixed(2);
+    this._bgColorSwatch.setColor(bgColor);
 
     var passesAA = this._contrastInfo.contrastRatio() >= AA;
     this._contrastPassFailAA.textContent = '';

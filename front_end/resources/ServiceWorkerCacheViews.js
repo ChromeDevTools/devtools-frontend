@@ -53,6 +53,16 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._deleteSelectedButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
+    var needsRefresh = createElement('div');
+    var needsRefreshIcon = needsRefresh.createChild('label', '', 'dt-icon-label');
+    needsRefreshIcon.type = 'smallicon-warning';
+    needsRefreshIcon.createChild('span').textContent = Common.UIString('Refresh needed');
+    this._needsRefresh = new UI.ToolbarItem(needsRefresh);
+    this._needsRefresh.setVisible(false);
+    this._needsRefresh.setTitle(Common.UIString('Some entries have been modified'));
+    editorToolbar.appendSpacer();
+    editorToolbar.appendToolbarItem(this._needsRefresh);
+
     this._pageSize = 50;
     this._skipCount = 0;
 
@@ -171,6 +181,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     }
     this._pageBackButton.setEnabled(!!skipCount);
     this._pageForwardButton.setEnabled(hasMore);
+    this._needsRefresh.setVisible(false);
   }
 
   /**
@@ -199,6 +210,10 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   _refreshButtonClicked(event) {
     this._updateData(true);
+  }
+
+  markNeedsRefresh() {
+    this._needsRefresh.setVisible(true);
   }
 
   clear() {

@@ -495,7 +495,7 @@ function scanHelpers() {
     for (const file of files) {
       if (utils.isDir(file))
         scan(file);
-      else if (file.indexOf('extensions-audits-tests.js') !== -1)
+      else if (file.indexOf('editing-test-suite.js') !== -1)
         paths.push(file);
     }
   }

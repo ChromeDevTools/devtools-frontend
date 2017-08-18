@@ -528,6 +528,7 @@ all_devtools_files = [
   "front_end/sass/SASSSourceMapFactory.js",
   "front_end/sass/SASSSupport.js",
   "front_end/sass_test_runner/module.json",
+  "front_end/sass_test_runner/SASSEditingTestRunner.js",
   "front_end/sass_test_runner/SASSTestRunner.js",
   "front_end/screencast/InputModel.js",
   "front_end/screencast/module.json",

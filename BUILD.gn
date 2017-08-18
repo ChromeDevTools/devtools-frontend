@@ -263,6 +263,7 @@ all_devtools_files = [
   "front_end/extensions/ExtensionServer.js",
   "front_end/extensions/ExtensionView.js",
   "front_end/extensions/module.json",
+  "front_end/extensions_test_runner/ExtensionsAuditsTestRunner.js",
   "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
   "front_end/extensions_test_runner/ExtensionsTestRunner.js",
   "front_end/extensions_test_runner/module.json",

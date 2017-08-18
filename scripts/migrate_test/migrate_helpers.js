@@ -495,11 +495,7 @@ function scanHelpers() {
     for (const file of files) {
       if (utils.isDir(file))
         scan(file);
-      else if (
-          file.indexOf('-test.js') !== -1 || file.indexOf('syntax-highlight.js') !== -1 ||
-          file.indexOf('timeline-data.js') !== -1 || file.indexOf('styles-update-links.js') !== -1 ||
-          file.indexOf('breakpoint-manager.js') !== -1 ||
-          file.indexOf('elements-panel-shadow-selection-on-refresh.js') !== -1 || file.indexOf('page-mock.js') !== -1)
+      else if (file.indexOf('extensions-audits-tests.js') !== -1)
         paths.push(file);
     }
   }
@@ -512,8 +508,8 @@ function scanHelpers() {
  */
 function createAwaitExpressionNode(code) {
   return recast
-      .parse(`(async function(){
+      .parse(`TestRunner.initAsync(async function(){
   ${code}
-  })()`)
+  });`)
       .program.body[0];
 }

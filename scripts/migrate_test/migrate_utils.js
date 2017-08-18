@@ -100,6 +100,8 @@ function mapTestFilename(filename) {
     namespacePrefix = 'SASS'
     filenamePrefix = 'SASS'
   }
+  if (namespacePrefix === 'ExtensionsAudits')
+    namespacePrefix = 'Extensions';
   return {namespacePrefix, filenamePrefix};
 }
 

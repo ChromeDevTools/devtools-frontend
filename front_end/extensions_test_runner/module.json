@@ -6,10 +6,12 @@
   ],
   "scripts": [
     "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js"
+    "ExtensionsTestRunner.js",
+    "ExtensionsAuditsTestRunner.js"
   ],
   "skip_compilation": [
     "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js"
+    "ExtensionsTestRunner.js",
+    "ExtensionsAuditsTestRunner.js"
   ]
 }

@@ -8,7 +8,6 @@
     position: relative;
     background-color: #eee;
     border-bottom: 1px solid #ccc;
-    padding-right: 10px;
 }
 
 .service-worker-cache-data-view .data-view-toolbar .key-input {

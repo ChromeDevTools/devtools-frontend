@@ -4,11 +4,14 @@
 
 ColorPicker.ContrastInfo = class {
   constructor() {
-    /** @type {?Array<number>} */
-    this._hsva = null;
+    /** @type {?Common.Color} */
+    this._fgColor = null;
 
     /** @type {?Common.Color} */
     this._bgColor = null;
+
+    /** @type {?Array<!Common.Color>} */
+    this._gradient = null;
 
     /** @type {?number} */
     this._contrastRatio = null;
@@ -27,6 +30,7 @@ ColorPicker.ContrastInfo = class {
     this._contrastRatio = null;
     this._contrastRatioThresholds = null;
     this._bgColor = null;
+    this._gradient = null;
 
     if (contrastInfo.computedFontSize && contrastInfo.computedFontWeight && contrastInfo.computedBodyFontSize) {
       var isLargeFont = ColorPicker.ContrastInfo.computeIsLargeFont(
@@ -39,13 +43,21 @@ ColorPicker.ContrastInfo = class {
     if (!contrastInfo.backgroundColors || !contrastInfo.backgroundColors.length)
       return;
 
-    // TODO(aboxhall): figure out what to do in the case of multiple background colors (i.e. gradients)
-    var bgColorText = contrastInfo.backgroundColors[0];
-    var bgColor = Common.Color.parse(bgColorText);
-    if (!bgColor)
-      return;
-
-    this.setBgColor(bgColor);
+    if (contrastInfo.backgroundColors.length > 1) {
+      this._gradient = [];
+      for (var bgColorText of contrastInfo.backgroundColors) {
+        var bgColor = Common.Color.parse(bgColorText);
+        if (bgColor)
+          this._gradient.push(bgColor);
+      }
+      if (this._fgColor)
+        this._updateBgColorFromGradient();
+    } else {
+      var bgColorText = contrastInfo.backgroundColors[0];
+      var bgColor = Common.Color.parse(bgColorText);
+      if (bgColor)
+        this.setBgColor(bgColor);
+    }
   }
 
   /**
@@ -53,9 +65,19 @@ ColorPicker.ContrastInfo = class {
    * @param {string} colorString
    */
   setColor(hsva, colorString) {
-    this._hsva = hsva;
+    this._fgColor = Common.Color.fromHSVA(hsva);
     this._colorString = colorString;
-    this._updateContrastRatio();
+    if (this._gradient)
+      this._updateBgColorFromGradient();
+    else
+      this._updateContrastRatio();
+  }
+
+  /**
+   * @return {?number}
+   */
+  contrastRatio() {
+    return this._contrastRatio;
   }
 
   /**
@@ -69,7 +91,7 @@ ColorPicker.ContrastInfo = class {
    * @return {?Array<number>}
    */
   hsva() {
-    return this._hsva;
+    return this._fgColor.hsva();
   }
 
   /**
@@ -78,11 +100,10 @@ ColorPicker.ContrastInfo = class {
   setBgColor(bgColor) {
     this._bgColor = bgColor;
 
-    if (!this._hsva)
+    if (!this._fgColor)
       return;
 
-    var fgRGBA = [];
-    Common.Color.hsva2rgba(this._hsva, fgRGBA);
+    var fgRGBA = this._fgColor.rgba();
 
     // If we have a semi-transparent background color over an unknown
     // background, draw the line for the "worst case" scenario: where
@@ -93,15 +114,7 @@ ColorPicker.ContrastInfo = class {
       this._bgColor = new Common.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
 
-    var bgRGBA = this._bgColor.rgba();
-    this._contrastRatio = Common.Color.calculateContrastRatio(fgRGBA, bgRGBA);
-  }
-
-  /**
-   * @return {?number}
-   */
-  contrastRatio() {
-    return this._contrastRatio;
+    this._contrastRatio = Common.Color.calculateContrastRatio(fgRGBA, this._bgColor.rgba());
   }
 
   /**
@@ -111,13 +124,38 @@ ColorPicker.ContrastInfo = class {
     return this._bgColor;
   }
 
+  /**
+   * @return {?Array<!Common.Color>}
+   */
+  gradient() {
+    return this._gradient;
+  }
+
   _updateContrastRatio() {
-    if (!this._bgColor || !this._hsva)
+    if (!this._bgColor || !this._fgColor)
       return;
-    var fgRGBA = [];
-    Common.Color.hsva2rgba(this._hsva, fgRGBA);
-    var bgRGBA = this._bgColor.rgba();
-    this._contrastRatio = Common.Color.calculateContrastRatio(fgRGBA, bgRGBA);
+    this._contrastRatio = Common.Color.calculateContrastRatio(this._fgColor.rgba(), this._bgColor.rgba());
+  }
+
+  /**
+   * Choose the gradient stop closest in luminance to the foreground color.
+   */
+  _updateBgColorFromGradient() {
+    if (!this._gradient || !this._fgColor)
+      return;
+    var fgLuminance = Common.Color.luminance(this._fgColor.rgba());
+    var luminanceDiff = 2;  // Max luminance == 1
+    var closestBgColor = null;
+    for (var bgColor of this._gradient) {
+      var bgLuminance = Common.Color.luminance(bgColor.rgba());
+      var currentLuminanceDiff = Math.abs(fgLuminance - bgLuminance);
+      if (currentLuminanceDiff < luminanceDiff) {
+        closestBgColor = bgColor;
+        luminanceDiff = currentLuminanceDiff;
+      }
+    }
+    if (closestBgColor)
+      this.setBgColor(closestBgColor);
   }
 
   /**
@@ -202,6 +240,8 @@ ColorPicker.ContrastOverlay = class {
     this._hueForCurrentLine = null;
     /** @type {?number} */
     this._alphaForCurrentLine = null;
+    /** @type {?string} */
+    this._bgColorForCurrentLine = null;
   }
 
   /**
@@ -313,7 +353,9 @@ ColorPicker.ContrastOverlay = class {
     var bgColor = this._contrastInfo.bgColor();
     if (!hsva || !bgColor)
       return Promise.resolve();
-    if (hsva[H] === this._hueForCurrentLine && hsva[A] === this._alphaForCurrentLine)
+    var bgColorString = bgColor.asString(Common.Color.Format.RGBA);
+    if (hsva[H] === this._hueForCurrentLine && hsva[A] === this._alphaForCurrentLine &&
+        bgColorString === this._bgColorForCurrentLine)
       return Promise.resolve();
 
     var fgRGBA = [];
@@ -420,6 +462,7 @@ ColorPicker.ContrastOverlay = class {
     }
 
     this._contrastRatioLine.setAttribute('d', pathBuilder.join(' '));
+    this._bgColorForCurrentLine = bgColorString;
     this._hueForCurrentLine = hsva[H];
     this._alphaForCurrentLine = hsva[A];
 
@@ -486,7 +529,7 @@ ColorPicker.ContrastDetails = class {
 
     var bgColorRow = this._contrastDetails.createChild('div');
     bgColorRow.createTextChild(Common.UIString('Background color:'));
-    this._bgColorSwatch = new ColorPicker.Spectrum.Swatch(bgColorRow, 'contrast');
+    this._bgColorSwatch = new ColorPicker.ContrastDetails.Swatch(bgColorRow);
 
     this._bgColorPicker = bgColorRow.createChild('button', 'background-color-picker');
     this._bgColorPicker.appendChild(UI.Icon.create('largeicon-eyedropper'));
@@ -514,7 +557,24 @@ ColorPicker.ContrastDetails = class {
     this._contrastThresholds.classList.remove('hidden');
     this._contrastValueBubble.classList.remove('contrast-unknown');
     this._contrastValue.textContent = contrastRatio.toFixed(2);
-    this._bgColorSwatch.setColor(bgColor);
+
+    var gradient = this._contrastInfo.gradient();
+    if (gradient && gradient.length) {
+      var darkest = null;
+      var lightness = null;
+      for (var color of gradient) {
+        var hsla = color.hsla();
+        if (!darkest || hsla[2] < lightness) {
+          darkest = color;
+          lightness = hsla[2];
+        }
+      }
+      var gradientStrings = gradient.map(color => color.asString(Common.Color.Format.RGBA));
+      var gradientString = String.sprintf('linear-gradient(90deg, %s)', gradientStrings.join(', '));
+      this._bgColorSwatch.setColor(/** @type {!Common.Color} */ (darkest), gradientString);
+    } else {
+      this._bgColorSwatch.setColor(bgColor);
+    }
 
     var passesAA = this._contrastInfo.contrastRatio() >= AA;
     this._contrastPassFailAA.textContent = '';
@@ -616,5 +676,31 @@ ColorPicker.ContrastDetails = class {
             'background', this._contrastInfo.colorString(), 'important');
       }
     }
+  }
+};
+
+ColorPicker.ContrastDetails.Swatch = class {
+  /**
+   * @param {!Element} parentElement
+   */
+  constructor(parentElement) {
+    this._parentElement = parentElement;
+    this._swatchElement = parentElement.createChild('span', 'swatch contrast');
+    this._swatchInnerElement = this._swatchElement.createChild('span', 'swatch-inner');
+  }
+
+  /**
+   * @param {!Common.Color} color
+   * @param {string=} colorString
+   */
+  setColor(color, colorString) {
+    if (colorString) {
+      this._swatchInnerElement.style.background = colorString;
+    } else {
+      this._swatchInnerElement.style.background =
+          /** @type {string} */ (color.asString(Common.Color.Format.RGBA));
+    }
+    // Show border if the swatch is white.
+    this._swatchElement.classList.toggle('swatch-inner-white', color.hsla()[2] > 0.9);
   }
 };

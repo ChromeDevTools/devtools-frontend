@@ -970,15 +970,12 @@ ColorPicker.Spectrum.MaterialPalette = {
 ColorPicker.Spectrum.Swatch = class {
   /**
    * @param {!Element} parentElement
-   * @param {string=} className
    */
-  constructor(parentElement, className) {
+  constructor(parentElement) {
     /** @type {?string} */
     this._colorString;
 
     var swatchElement = parentElement.createChild('span', 'swatch');
-    if (className)
-      swatchElement.classList.add(className);
     this._swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
 
     this._swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');

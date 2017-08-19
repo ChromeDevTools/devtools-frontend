@@ -214,6 +214,7 @@
     align-items:  baseline;
     position: absolute;
     margin-top: -2px;
+    border: 1px solid transparent;
 }
 
 .contrast-details-value.contrast-unknown {
@@ -225,7 +226,7 @@
 }
 
 .contrast-details-value.contrast-color-white {
-    border: 1px solid #ddd;
+    border-color: #ddd;
 }
 
 .contrast-details-value.contrast-fail.hover {

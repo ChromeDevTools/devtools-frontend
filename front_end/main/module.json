@@ -235,6 +235,7 @@
             "settingType": "boolean",
             "order": 0,
             "defaultValue": false,
+            "userActionCondition": "hasOtherClients",
             "options": [
                 {
                     "value": true,

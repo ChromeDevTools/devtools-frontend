@@ -17,6 +17,7 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
     var model = self.singleton(Emulation.DeviceModeModel);
     this._showDeviceModeSetting = model.enabledSetting();
+    this._showDeviceModeSetting.setRequiresUserAction(!!Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
     SDK.targetManager.addModelListener(
         SDK.OverlayModel, SDK.OverlayModel.Events.ScreenshotRequested, this._screenshotRequestedFromOverlay, this);

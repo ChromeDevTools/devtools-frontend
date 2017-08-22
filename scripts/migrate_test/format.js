@@ -25,7 +25,7 @@ function main() {
   walkSync('../../../../LayoutTests/http/tests/inspector-unit');
   walkSync('../../../../LayoutTests/inspector-enabled');
   // walkSync('../../../../LayoutTests/inspector');
-  walkSync('../../../../LayoutTests/inspector/console');
+  walkSync('../../../../LayoutTests/inspector/sources');
 }
 
 function walkSync(currentDirPath) {
@@ -80,14 +80,28 @@ function formatFile(filePath, isDryRun) {
     return;
   }
 
+  let locStart = functionNode.loc.start;
+  let locEnd = functionNode.loc.end;
+
+  (functionNode.comments || []).forEach(comment => {
+    if ((comment.loc.start.line === locStart.line && comment.loc.start.column < locStart.column) ||
+        comment.loc.start.line < locStart.line) {
+      locStart = comment.loc.start;
+    }
+    if ((comment.loc.end.line === locEnd.line && comment.loc.end.column > locEnd.column) ||
+        comment.loc.end.line > locEnd.line) {
+      locEnd = comment.loc.end;
+    }
+  });
+
   let newTestScript = testScript.split('\n')
                           .map((line, index) => {
                             const lineNumber = index + 1;
 
-                            if (lineNumber === functionNode.loc.start.line) {
+                            if (lineNumber === locStart.line) {
                               return line.split('')
                                   .map((char, columnNumber) => {
-                                    if (columnNumber === functionNode.loc.start.column) {
+                                    if (columnNumber === locStart.column) {
                                       return '@@START_TEST_FUNCTION@@' + char;
                                     }
                                     return char;
@@ -95,10 +109,10 @@ function formatFile(filePath, isDryRun) {
                                   .join('');
                             }
 
-                            if (lineNumber === functionNode.loc.end.line) {
+                            if (lineNumber === locEnd.line) {
                               return line.split('')
                                   .map((char, columnNumber) => {
-                                    if (columnNumber === functionNode.loc.end.column - 1) {
+                                    if (columnNumber === locEnd.column - 1) {
                                       return char + '@@END_TEST_FUNCTION@@';
                                     }
                                     return char;

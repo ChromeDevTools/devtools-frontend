@@ -771,8 +771,6 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
     SDK.targetManager.addModelListener(
         SDK.ServiceWorkerCacheModel, SDK.ServiceWorkerCacheModel.Events.CacheRemoved, this._cacheRemoved, this);
     this._swCacheModel.addEventListener(
-        SDK.ServiceWorkerCacheModel.Events.CacheStorageListUpdated, this._refreshCaches, this);
-    this._swCacheModel.addEventListener(
         SDK.ServiceWorkerCacheModel.Events.CacheStorageContentUpdated, this._cacheContentUpdated, this);
   }
 

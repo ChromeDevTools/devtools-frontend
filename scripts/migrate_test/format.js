@@ -25,7 +25,7 @@ function main() {
   walkSync('../../../../LayoutTests/http/tests/inspector-unit');
   walkSync('../../../../LayoutTests/inspector-enabled');
   // walkSync('../../../../LayoutTests/inspector');
-  walkSync('../../../../LayoutTests/inspector/sources');
+  walkSync('../../../../LayoutTests/inspector/elements');
 }
 
 function walkSync(currentDirPath) {

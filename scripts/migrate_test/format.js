@@ -20,7 +20,7 @@ function main() {
     formatFile(args[2], true);
     return;
   }
-  // walkSync('../../../../LayoutTests/http/tests/inspector');
+  walkSync('../../../../LayoutTests/http/tests/inspector');
   walkSync('../../../../LayoutTests/http/tests/inspector-enabled');
   walkSync('../../../../LayoutTests/http/tests/inspector-unit');
   walkSync('../../../../LayoutTests/inspector-enabled');

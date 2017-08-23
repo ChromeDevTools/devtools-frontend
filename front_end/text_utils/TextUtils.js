@@ -199,7 +199,7 @@ TextUtils.FilterParser = class {
 
   /**
    * @param {string} query
-   * @return {!Array<{key:(string|undefined), text:(string|undefined), regex:(!RegExp|undefined), negative:boolean}>}
+   * @return {!Array<!TextUtils.FilterParser.ParsedFilter>}
    */
   parse(query) {
     var splitResult = TextUtils.TextUtils.splitStringByRegexes(query, [
@@ -230,6 +230,9 @@ TextUtils.FilterParser = class {
     return filters;
   }
 };
+
+/** @typedef {{key:(string|undefined), text:(string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
+TextUtils.FilterParser.ParsedFilter;
 
 TextUtils.TextUtils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
 TextUtils.TextUtils._regexFilterRegex = /(?:^|\s)(\-)?\/([^\s]+)\//;

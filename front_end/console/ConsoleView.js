@@ -1021,11 +1021,12 @@ Console.ConsoleViewFilter = class {
     this._filterByExecutionContextSetting.addChangeListener(this._filterChanged);
     this._filterByConsoleAPISetting.addChangeListener(this._filterChanged);
 
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, true);
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('e.g. /event\\d/ -cdn url:a.com'), 0.2, 1, true);
+    this._textFilterUI.element.title = Common.UIString('Filter');
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
-    this._filterText = this._textFilterUI.value();
-    /** @type {?RegExp} */
-    this._filterRegex = null;
+    this._filterParser = new TextUtils.FilterParser(Object.values(Console.ConsoleViewFilter._filterType));
+    /** @type {!Array<!TextUtils.FilterParser.ParsedFilter>} */
+    this._filters = [];
 
     this._levelLabels = {};
     this._levelLabels[ConsoleModel.ConsoleMessage.MessageLevel.Verbose] = Common.UIString('Verbose');
@@ -1126,14 +1127,7 @@ Console.ConsoleViewFilter = class {
   }
 
   _textFilterChanged() {
-    this._filterText = this._textFilterUI.value();
-    this._filterRegex = null;
-    if (this._filterText.startsWith('/') && this._filterText.endsWith('/')) {
-      try {
-        this._filterRegex = new RegExp(this._filterText.substring(1, this._filterText.length - 1), 'i');
-      } catch (e) {
-      }
-    }
+    this._filters = this._filterParser.parse(this._textFilterUI.value());
     this._filterChanged();
   }
 
@@ -1200,20 +1194,30 @@ Console.ConsoleViewFilter = class {
     if (!levels[message.level])
       return false;
 
-    if (this._filterRegex) {
-      if (!viewMessage.matchesFilterRegex(this._filterRegex))
-        return false;
-    } else if (this._filterText) {
-      if (!viewMessage.matchesFilterText(this._filterText))
-        return false;
-    }
-
     if (this._filterByConsoleAPISetting.get() &&
         message.source !== ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI)
       return false;
 
     if (this._context !== Console.ConsoleSidebar.AllContextsFilter && message.context !== this._context)
       return false;
+
+    for (var filter of this._filters) {
+      if (!filter.key) {
+        if (filter.regex && viewMessage.matchesFilterRegex(filter.regex) === filter.negative)
+          return false;
+        if (filter.text && viewMessage.matchesFilterText(filter.text) === filter.negative)
+          return false;
+      } else {
+        switch (filter.key) {
+          case Console.ConsoleViewFilter._filterType.Url:
+            if (!message.url && !filter.negative)
+              return false;
+            if (message.url && message.url.includes(/** @type {string} */ (filter.text)) === filter.negative)
+              return false;
+            break;
+        }
+      }
+    }
 
     return true;
   }
@@ -1228,6 +1232,11 @@ Console.ConsoleViewFilter = class {
     this._textFilterUI.setValue('');
     this._textFilterChanged();
   }
+};
+
+/** @enum {string} */
+Console.ConsoleViewFilter._filterType = {
+  Url: 'url'
 };
 
 /**

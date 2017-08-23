@@ -455,7 +455,8 @@ Console.ConsoleView = class extends UI.VBox {
      * @return {number}
      */
     function timeForSorting(viewMessage) {
-      return viewMessage[Console.ConsoleView._messageSortingTimeSymbol] || viewMessage.consoleMessage().timestamp;
+      var adjustedTime = viewMessage[Console.ConsoleView._messageSortingTimeSymbol];
+      return typeof adjustedTime === 'undefined' ? viewMessage.consoleMessage().timestamp : adjustedTime;
     }
   }
 

@@ -584,6 +584,9 @@ Console.ConsoleViewMessage = class {
       titleElement.createTextChild(obj.description || '');
     }
 
+    if (!obj.hasChildren || obj.customPreview())
+      return titleElement;
+
     var note = titleElement.createChild('span', 'object-state-note');
     note.classList.add('info-note');
     note.title = Common.UIString('Value below was evaluated just now.');

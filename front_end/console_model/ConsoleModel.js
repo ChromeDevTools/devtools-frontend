@@ -97,6 +97,8 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
           SDK.RuntimeModel.Events.ConsoleAPICalled, this._consoleAPICalled.bind(this, runtimeModel)));
       eventListeners.push(runtimeModel.debuggerModel().addEventListener(
           SDK.DebuggerModel.Events.GlobalObjectCleared, this._clearIfNecessary, this));
+      eventListeners.push(runtimeModel.addEventListener(
+          SDK.RuntimeModel.Events.QueryObjectRequested, this._queryObjectRequested.bind(this, runtimeModel)));
     }
 
     var networkManager = target.model(SDK.NetworkManager);
@@ -254,6 +256,18 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
         /** @type {string} */ (message), call.type, callFrame ? callFrame.url : undefined,
         callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, undefined,
         call.args, call.stackTrace, call.timestamp, call.executionContextId, undefined, undefined, call.context);
+    this.addMessage(consoleMessage);
+  }
+
+  /**
+   * @param {!SDK.RuntimeModel} runtimeModel
+   * @param {!Common.Event} event
+   */
+  _queryObjectRequested(runtimeModel, event) {
+    var consoleMessage = new ConsoleModel.ConsoleMessage(
+        runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI,
+        ConsoleModel.ConsoleMessage.MessageLevel.Info, '', undefined, undefined, undefined, undefined, undefined,
+        [event.data.objects], undefined, undefined, undefined, undefined, undefined, undefined);
     this.addMessage(consoleMessage);
   }
 

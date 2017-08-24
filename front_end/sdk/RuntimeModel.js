@@ -297,6 +297,23 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!SDK.RemoteObject} prototype
+   * @return {!Promise<!SDK.RuntimeModel.QueryObjectResult>}
+   */
+  async queryObjects(prototype) {
+    if (!prototype.objectId)
+      return {error: 'Prototype should be an Object.'};
+    var response =
+        await this._agent.invoke_queryObjects({prototypeObjectId: /** @type {string} */ (prototype.objectId)});
+    var error = response[Protocol.Error];
+    if (error) {
+      console.error(error);
+      return {error: error};
+    }
+    return {objects: this.createRemoteObject(response.objects)};
+  }
+
+  /**
    * @param {!Protocol.Runtime.RemoteObject} payload
    * @param {!Object=} hints
    */
@@ -305,6 +322,11 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
 
     if (hints.copyToClipboard) {
       this._copyRequested(object);
+      return;
+    }
+
+    if (hints.queryObjects) {
+      this._queryObjectsRequested(object);
       return;
     }
 
@@ -357,6 +379,19 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
         return '' + this;
       }
     }
+  }
+
+  /**
+   * @param {!SDK.RemoteObject} object
+   */
+  async _queryObjectsRequested(object) {
+    var result = await this.queryObjects(object);
+    object.release();
+    if (result.error) {
+      Common.console.error(result.error);
+      return;
+    }
+    this.dispatchEventToListeners(SDK.RuntimeModel.Events.QueryObjectRequested, {objects: result.objects});
   }
 
   /**
@@ -443,6 +478,7 @@ SDK.RuntimeModel.Events = {
   ExceptionThrown: Symbol('ExceptionThrown'),
   ExceptionRevoked: Symbol('ExceptionRevoked'),
   ConsoleAPICalled: Symbol('ConsoleAPICalled'),
+  QueryObjectRequested: Symbol('QueryObjectRequested'),
 };
 
 /** @typedef {{timestamp: number, details: !Protocol.Runtime.ExceptionDetails}} */
@@ -473,6 +509,13 @@ SDK.RuntimeModel.EvaluationOptions;
  *  }}
  */
 SDK.RuntimeModel.EvaluationResult;
+
+/** @typedef {{
+ *    objects: (!SDK.RemoteObject|undefined),
+ *    error: (!Protocol.Error|undefined)}
+ *  }}
+ */
+SDK.RuntimeModel.QueryObjectResult;
 
 /**
  * @typedef {{

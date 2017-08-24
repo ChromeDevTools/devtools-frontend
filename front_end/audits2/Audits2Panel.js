@@ -118,6 +118,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
     if (/^about:/.test(inspectedURL))
       return Common.UIString('Cannot audit about:* pages. Navigate to a different page to start an audit.');
 
+    if (!Runtime.queryParam('can_dock'))
+      return Common.UIString('Can only audit tabs. Navigate to this page in a separate tab to start an audit.');
+
     return null;
   }
 

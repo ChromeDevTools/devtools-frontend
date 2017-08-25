@@ -652,16 +652,18 @@ SDK.NetworkDispatcher = class {
 
   /**
    * @override
-   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.InterceptionId} interceptionId
    * @param {!Protocol.Network.Request} request
-   * @param {string} resourceType
+   * @param {!Protocol.Page.ResourceType} resourceType
    * @param {boolean} isNavigationRequest
    * @param {!Protocol.Network.Headers=} redirectHeaders
    * @param {number=} redirectStatusCode
    * @param {string=} redirectUrl
+   * @param {!Protocol.Network.AuthChallenge=} authChallenge
    */
   requestIntercepted(
-      requestId, request, resourceType, isNavigationRequest, redirectHeaders, redirectStatusCode, redirectUrl) {
+      interceptionId, request, resourceType, isNavigationRequest, redirectHeaders, redirectStatusCode, redirectUrl,
+      authChallenge) {
     // Stub implementation.  Event not currently used by the frontend.
   }
 

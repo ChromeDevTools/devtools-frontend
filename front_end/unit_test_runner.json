@@ -15,10 +15,10 @@
         { "name": "test_runner", "type": "autostart" },
         { "name": "quick_open" },
         { "name": "inline_editor" },
-        { "name": "sdk" },
-        { "name": "protocol" },
+        { "name": "sdk", "type": "autostart" },
+        { "name": "protocol", "type": "autostart" },
         { "name": "data_grid" },
-        { "name": "product_registry" },
+        { "name": "product_registry", "type": "autostart" },
         { "name": "product_registry_impl" },
         { "name": "formatter" }
     ],

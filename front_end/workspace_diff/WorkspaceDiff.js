@@ -234,7 +234,7 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
 
     if (current === null || baseline === null)
       return null;
-    return Diff.Diff.lineDiff(baseline.split('\n'), current.split('\n'));
+    return Diff.Diff.lineDiff(baseline.split(/\r\n|\n|\r/), current.split(/\r\n|\n|\r/));
   }
 };
 

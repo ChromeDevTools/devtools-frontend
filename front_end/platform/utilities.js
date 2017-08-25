@@ -1227,6 +1227,8 @@ Multimap.prototype = {
    */
   delete: function(key, value) {
     var values = this.get(key);
+    if (!values)
+      return false;
     var result = values.delete(value);
     if (!values.size)
       this._map.delete(key);

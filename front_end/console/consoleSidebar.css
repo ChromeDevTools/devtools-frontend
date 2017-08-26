@@ -11,14 +11,14 @@
 
 .list {
     flex: 1;
+    overflow-x: hidden;
 }
 
 .context-item {
     cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
     padding: 6px 6px 6px 16px;
     height: 28px;
+    display: flex;
 }
 
 .context-item.selected {
@@ -26,11 +26,37 @@
 }
 
 .name {
-    display: inline-block;
-    white-space: nowrap;
-    margin-bottom: 10px;
+    flex-grow: 1;
+    flex-shrink: 0;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
 }
 
 .context-item.selected .name {
     color: white;
+}
+
+.info-count, .warning-count, .error-count {
+  background-color: white;
+  border-radius: 4px;
+  margin: 0 3px;
+  text-align: center;
+  height: 14px;
+  line-height: 14px;
+  padding: 0px 3px;
+}
+
+.warning-count {
+  background-color: hsl(50, 100%, 90%);
+  color: brown;
+}
+
+.error-count {
+  background-color: hsl(0, 100%, 90%);
+  color: crimson;
+}
+
+.counters {
+  margin-left: 10px;
 }

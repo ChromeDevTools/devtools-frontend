@@ -274,10 +274,10 @@ Timeline.PerformanceMonitor = class extends UI.VBox {
    */
   onResize() {
     super.onResize();
-    this._width = this._canvas.offsetWidth * window.devicePixelRatio;
-    this._height = this._canvas.offsetHeight * window.devicePixelRatio;
-    this._canvas.width = this._width;
-    this._canvas.height = this._height;
+    this._width = this._canvas.offsetWidth;
+    this._height = this._canvas.offsetHeight;
+    this._canvas.width = this._width * window.devicePixelRatio;
+    this._canvas.height = this._height * window.devicePixelRatio;
     this._draw();
   }
 };

@@ -273,6 +273,7 @@
         "NetworkRequest.js",
         "PaintProfiler.js",
         "HeapProfilerModel.js",
+        "PerformanceMetricsModel.js",
         "../SupportedCSSProperties.js",
         "FilmStripModel.js"
     ],

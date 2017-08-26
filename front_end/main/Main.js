@@ -123,6 +123,7 @@ Main.Main = class {
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('networkGroupingRequests', 'Network request groups support', true);
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
+    Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);

@@ -18,7 +18,11 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector/editor',
+    '../../../../LayoutTests/inspector/elements/styles',
+    '../../../../LayoutTests/inspector/elements/styles-1',
+    '../../../../LayoutTests/inspector/elements/styles-2',
+    '../../../../LayoutTests/inspector/elements/styles-3',
+    '../../../../LayoutTests/inspector/elements/styles-4',
   ]);
 
   console.log(originalTests);

@@ -231,8 +231,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
       return;
     }
     var entries = response.cacheDataEntries.map(
-        dataEntry => new SDK.ServiceWorkerCacheModel.Entry(
-            dataEntry.request, dataEntry.response, new Date(dataEntry.responseTime * 1000).toLocaleString()));
+        dataEntry =>
+            new SDK.ServiceWorkerCacheModel.Entry(dataEntry.request, dataEntry.response, dataEntry.responseTime));
     callback(entries, response.hasMore);
   }
 
@@ -241,8 +241,6 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @override
    */
   cacheStorageListUpdated(origin) {
-    if (origin.endsWith('/'))
-      origin = origin.slice(0, -1);
     this._originsUpdated.add(origin);
 
     this._throttler.schedule(() => {
@@ -279,12 +277,12 @@ SDK.ServiceWorkerCacheModel.Entry = class {
   /**
    * @param {string} request
    * @param {string} response
-   * @param {string} responseTime
+   * @param {number} timestamp
    */
-  constructor(request, response, responseTime) {
+  constructor(request, response, timestamp) {
     this.request = request;
     this.response = response;
-    this.responseTime = responseTime;
+    this.timestamp = timestamp;
   }
 };
 

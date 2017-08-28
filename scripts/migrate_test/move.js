@@ -18,11 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector/elements/styles',
-    '../../../../LayoutTests/inspector/elements/styles-1',
-    '../../../../LayoutTests/inspector/elements/styles-2',
-    '../../../../LayoutTests/inspector/elements/styles-3',
-    '../../../../LayoutTests/inspector/elements/styles-4',
+    '../../../../LayoutTests/inspector/elements',
   ]);
 
   console.log(originalTests);
@@ -52,8 +48,8 @@ function main() {
     oldToNewTestPath.set(inputRelativePath, outRelativePath);
 
     // Move expectation file
-    const inputExpectationsPath = inputPath.replace('.html', '-expected.txt');
-    const outExpectationsPath = outPath.replace('.html', '-expected.txt');
+    const inputExpectationsPath = inputPath.replace(/\.x?html/, '-expected.txt');
+    const outExpectationsPath = outPath.replace(/\.x?html/, '-expected.txt');
     fs.writeFileSync(outExpectationsPath, fs.readFileSync(inputExpectationsPath, 'utf-8'));
     fs.unlinkSync(inputExpectationsPath);
   }
@@ -114,7 +110,7 @@ function scanForTests(dirPaths) {
       if (utils.isDir(p) && filename !== 'resources') {
         glob(p);
       }
-      if (utils.isFile(p) && p.endsWith('.html')) {
+      if (utils.isFile(p) && (p.endsWith('.html') || p.endsWith('.xhtml'))) {
         globbedPaths.push(p);
       }
     }

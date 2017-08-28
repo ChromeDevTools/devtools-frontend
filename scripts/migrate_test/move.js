@@ -18,11 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector/sources/debugger',
-    '../../../../LayoutTests/inspector/sources/debugger-async',
-    '../../../../LayoutTests/inspector/sources/debugger-breakpoints',
-    '../../../../LayoutTests/inspector/sources/debugger-console',
-    '../../../../LayoutTests/inspector/sources/debugger-frameworks',
+    '../../../../LayoutTests/inspector/editor',
   ]);
 
   console.log(originalTests);

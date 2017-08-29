@@ -38,7 +38,8 @@ PerformanceTestRunner.timelinePropertyFormatters = {
   thread: 'formatAsTypeName',
   allottedMilliseconds: 'formatAsTypeName',
   timedOut: 'formatAsTypeName',
-  networkTime: 'formatAsTypeName'
+  networkTime: 'formatAsTypeName',
+  timing: 'formatAsTypeName'
 };
 
 PerformanceTestRunner.InvalidationFormatters = {

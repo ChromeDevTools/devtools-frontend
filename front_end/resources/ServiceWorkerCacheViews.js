@@ -12,6 +12,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this.registerRequiredCSS('resources/serviceWorkerCacheViews.css');
 
     this._model = model;
+    this._entriesForTest = null;
 
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
@@ -58,7 +59,6 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._skipCount = 0;
 
     this.update(cache);
-    this._entries = [];
   }
 
   /**
@@ -135,7 +135,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       if (!node)
         return;
     }
-    await this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data.url));
+    await this._model.deleteCacheEntry(this._cache, /** @type {string} */ (node.data.requestURL));
     node.remove();
   }
 
@@ -155,13 +155,14 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
 
   /**
    * @param {number} skipCount
-   * @param {!Array<!SDK.ServiceWorkerCacheModel.Entry>} entries
+   * @param {!Array<!Protocol.CacheStorage.DataEntry>} entries
    * @param {boolean} hasMore
    * @this {Resources.ServiceWorkerCacheView}
    */
   _updateDataCallback(skipCount, entries, hasMore) {
-    var selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url;
+    var selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.requestURL;
     this._refreshButton.setEnabled(true);
+    this._entriesForTest = entries;
 
     /** @type {!Map<string, !DataGrid.DataGridNode>} */
     var oldEntries = new Map();
@@ -169,17 +170,15 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     for (var node of rootNode.children)
       oldEntries.set(node.data.url, node);
     rootNode.removeChildren();
-    this._entries = entries;
     var selectedNode = null;
     for (var entry of entries) {
-      var node = oldEntries.get(entry.request);
-      if (!node || node.data.timestamp !== entry.timestamp) {
-        var data = new Resources.ServiceWorkerCacheView._Response(this._cache, entry.request, entry.timestamp);
-        node = new DataGrid.DataGridNode(data);
+      var node = oldEntries.get(entry.requestURL);
+      if (!node || node.data.responseTime !== entry.responseTime) {
+        node = new Resources.ServiceWorkerCacheView.DataGridNode(entry);
         node.selectable = true;
       }
       rootNode.appendChild(node);
-      if (entry.request === selected)
+      if (entry.requestURL === selected)
         selectedNode = node;
     }
     this._pageBackButton.setEnabled(!!skipCount);
@@ -228,113 +227,76 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   }
 
   /**
-   * @param {!Resources.ServiceWorkerCacheView._Response} response
+   * @param {!Protocol.CacheStorage.DataEntry} entry
    */
-  async _previewCachedResponse(response) {
-    var preview = await response._previewPromise;
+  async _previewCachedResponse(entry) {
+    var preview = entry[Resources.ServiceWorkerCacheView._previewSymbol];
+    if (!preview) {
+      preview = await this._entryPreview(entry);
+      entry[Resources.ServiceWorkerCacheView._previewSymbol] = preview;
+    }
+
     // It is possible that table selection changes before the preview opens.
-    if (response === this._dataGrid.selectedNode.data)
+    if (entry === this._dataGrid.selectedNode.data)
       this._showPreview(preview);
+  }
+
+  /**
+   * @param {!Protocol.CacheStorage.DataEntry} entry
+   * @return {!Promise<!UI.Widget>}
+   */
+  async _entryPreview(entry) {
+    var response = await this._cache.requestCachedResponse(entry.requestURL);
+    if (!response)
+      return new UI.EmptyWidget(Common.UIString('Preview is not available'));
+
+    var header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
+    var contentType = header ? header.value : 'text/plain';
+    var resourceType = Common.ResourceType.fromMimeType(contentType);
+    var body = resourceType.isTextType() ? window.atob(response.body) : response.body;
+    var provider = new Common.StaticContentProvider(entry.requestURL, resourceType, () => Promise.resolve(body));
+    var preview = SourceFrame.PreviewFactory.createPreview(provider, contentType);
+    if (!preview)
+      return new UI.EmptyWidget(Common.UIString('Preview is not available'));
+    return preview;
   }
 
   _updatedForTest() {
   }
 };
 
-Resources.ServiceWorkerCacheView._Response = class {
-  /**
-   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
-   * @param {string} url
-   * @param {number} timestamp
-   */
-  constructor(cache, url, timestamp) {
-    this.url = url;
-    this.timestamp = timestamp;
-    /** @type {!Promise<!UI.Widget>} */
-    this._previewPromise = this._innerPreview(cache);
-    this.path = Resources.ServiceWorkerCacheView._Response._requestPath(url);
-    this.responseTime = new Date(timestamp * 1000).toLocaleString();
-  }
 
-  /**
-   * @param {string} url
-   * @return {string}
-   */
-  static _requestPath(url) {
-    var path = Common.ParsedURL.extractPath(url);
-    if (!path)
-      return url;
-    if (path.length > 1 && path.startsWith('/'))
-      return path.substring(1);
-    return path;
-  }
-
-  /**
-   * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
-   * @return {!Promise<!UI.Widget>}
-   */
-  async _innerPreview(cache) {
-    var response = await cache.requestCachedResponse(this.url);
-    if (!response)
-      return new UI.EmptyWidget(Common.UIString('Preview is not available'));
-
-    var contentType = response.headers['content-type'];
-    var resourceType = Common.ResourceType.fromMimeType(contentType);
-    var body = resourceType.isTextType() ? window.atob(response.body) : response.body;
-    var provider = new Resources.ServiceWorkerCacheView._ResponseContentProvider(this.url, resourceType, body);
-    var preview = SourceFrame.PreviewFactory.createPreview(provider, contentType);
-    if (!preview)
-      return new UI.EmptyWidget(Common.UIString('Preview is not available'));
-    return preview;
-  }
-};
-
-/**
- * @implements {Common.ContentProvider}
- */
-Resources.ServiceWorkerCacheView._ResponseContentProvider = class {
-  /**
-   * @param {string} url
-   * @param {!Common.ResourceType} resourceType
-   * @param {string} body
-   */
-  constructor(url, resourceType, body) {
-    this._url = url;
-    this._resourceType = resourceType;
-    this._body = body;
-  }
-
-  /**
-   * @override
-   * @return {!Common.ResourceType}
-   */
-  contentType() {
-    return this._resourceType;
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  contentURL() {
-    return this._url;
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?string>}
-   */
-  requestContent() {
-    return /** @type {!Promise<?string>} */ (Promise.resolve(this._body));
-  }
-
-  /**
-   * @override
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
-   */
-  searchInContent() {
-    return Promise.resolve([]);
-  }
-};
+Resources.ServiceWorkerCacheView._previewSymbol = Symbol('preview');
 
 Resources.ServiceWorkerCacheView._RESPONSE_CACHE_SIZE = 10;
+
+Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridNode {
+  /**
+   * @param {!Protocol.CacheStorage.DataEntry} entry
+   */
+  constructor(entry) {
+    super(entry);
+    this._path = Common.ParsedURL.extractPath(entry.requestURL);
+    if (!this._path)
+      this._path = entry.requestURL;
+    if (this._path.length > 1 && this._path.startsWith('/'))
+      this._path = this._path.substring(1);
+    this._responseTime = new Date(entry.responseTime * 1000).toLocaleString();
+  }
+
+  /**
+   * @override
+   * @param {string} columnId
+   * @return {!Element}
+   */
+  createCell(columnId) {
+    var cell = this.createTD(columnId);
+    var value;
+    if (columnId === 'path')
+      value = this._path;
+    else if (columnId === 'responseTime')
+      value = this._responseTime;
+    DataGrid.DataGrid.setElementText(cell, value || '', true);
+    return cell;
+  }
+};

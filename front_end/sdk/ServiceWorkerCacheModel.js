@@ -91,7 +91,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array.<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
+   * @param {function(!Array.<!Protocol.CacheStorage.DataEntry>, boolean)} callback
    */
   loadCacheData(cache, skipCount, pageSize, callback) {
     this._requestEntries(cache, skipCount, pageSize, callback);
@@ -222,7 +222,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    * @param {number} skipCount
    * @param {number} pageSize
-   * @param {function(!Array<!SDK.ServiceWorkerCacheModel.Entry>, boolean)} callback
+   * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, boolean)} callback
    */
   async _requestEntries(cache, skipCount, pageSize, callback) {
     var response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize});
@@ -230,10 +230,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response[Protocol.Error]);
       return;
     }
-    var entries = response.cacheDataEntries.map(
-        dataEntry =>
-            new SDK.ServiceWorkerCacheModel.Entry(dataEntry.request, dataEntry.response, dataEntry.responseTime));
-    callback(entries, response.hasMore);
+    callback(response.cacheDataEntries, response.hasMore);
   }
 
   /**
@@ -268,22 +265,6 @@ SDK.ServiceWorkerCacheModel.Events = {
   CacheAdded: Symbol('CacheAdded'),
   CacheRemoved: Symbol('CacheRemoved'),
   CacheStorageContentUpdated: Symbol('CacheStorageContentUpdated')
-};
-
-/**
- * @unrestricted
- */
-SDK.ServiceWorkerCacheModel.Entry = class {
-  /**
-   * @param {string} request
-   * @param {string} response
-   * @param {number} timestamp
-   */
-  constructor(request, response, timestamp) {
-    this.request = request;
-    this.response = response;
-    this.timestamp = timestamp;
-  }
 };
 
 /**

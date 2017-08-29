@@ -100,6 +100,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    */
   _drawGrid(ctx) {
+    var darkGray = 'hsla(0, 0%, 0%, 0.08)';
+    var lightGray = 'hsla(0, 0%, 0%, 0.02)';
     ctx.font = '10px ' + Host.fontFamily();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     for (var sec = 0;; ++sec) {
@@ -111,9 +113,14 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       ctx.lineTo(Math.round(x) + 0.5, this._height);
       if (sec % 5 === 0)
         ctx.fillText(Common.UIString('%d sec', sec), Math.round(x) + 4, 12);
-      ctx.strokeStyle = sec % 5 ? 'hsla(0, 0%, 0%, 0.02)' : 'hsla(0, 0%, 0%, 0.08)';
+      ctx.strokeStyle = sec % 5 ? lightGray : darkGray;
       ctx.stroke();
     }
+    ctx.beginPath();
+    ctx.moveTo(0, this._height - 4.5);
+    ctx.lineTo(this._width, this._height - 4.5);
+    ctx.strokeStyle = darkGray;
+    ctx.stroke();
   }
 
   /**
@@ -126,32 +133,25 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     var height = this._height;
     var startTime = Date.now() - this._pollIntervalMs * 2 - width / this._pixelsPerMs;
     var info = this._controlPane.metricInfo(metricName);
-    var min = Infinity;
     var max = -Infinity;
     var pixelsPerMs = this._pixelsPerMs;
-    if (info.min || info.max) {
-      min = info.min;
-      max = info.max;
-    } else {
-      for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
-        var metrics = this._metricsBuffer[i];
-        var value = metrics.metrics.get(metricName);
-        min = Math.min(min, value);
-        max = Math.max(max, value);
-        if (metrics.timestamp < startTime)
-          break;
-      }
-      if (isFinite(min) && isFinite(max)) {
-        var alpha = 0.1;
-        info.currentMin = min * alpha + (info.currentMin || min) * (1 - alpha);
-        info.currentMax = max * alpha + (info.currentMax || max) * (1 - alpha);
-        min = info.currentMin;
-        max = info.currentMax;
-      }
+    for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
+      var metrics = this._metricsBuffer[i];
+      var value = metrics.metrics.get(metricName);
+      max = Math.max(max, value);
+      if (metrics.timestamp < startTime)
+        break;
     }
-    var span = 1.15 * (max - min) || 1;
+    if (isFinite(max)) {
+      var alpha = 0.1;
+      info.currentMax = max * alpha + (info.currentMax || max) * (1 - alpha);
+      max = info.currentMax;
+    }
+    if (typeof info.max === 'number')
+      max = info.max;
+    var span = 1.2 * max || 1;
     ctx.beginPath();
-    ctx.moveTo(width + 5, height + 5);
+    ctx.moveTo(width + 5, calcY(0));
     var x = 0;
     var lastY = 0;
     var lastX = 0;
@@ -171,11 +171,11 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       if (metrics.timestamp < startTime)
         break;
     }
-    ctx.lineTo(x, height + 5);
     ctx.strokeStyle = info.color;
     ctx.lineWidth = 0.5;
     ctx.stroke();
-    ctx.globalAlpha = 0.03;
+    ctx.lineTo(x, calcY(0));
+    ctx.globalAlpha = 0.02;
     ctx.fillStyle = info.color;
     ctx.fill();
     ctx.restore();
@@ -185,7 +185,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
      * @return {number}
      */
     function calcY(value) {
-      return Math.round(height - 5 - height * (value - min) / span) + 0.5;
+      return Math.round(height - 5 - height * value / span) + 0.5;
     }
   }
 
@@ -212,9 +212,7 @@ Timeline.PerformanceMonitor.Mode = {
  *   title: string,
  *   color: string,
  *   mode: (!Timeline.PerformanceMonitor.Mode|undefined),
- *   min: (number|undefined),
  *   max: (number|undefined),
- *   currentMin: (number|undefined),
  *   currentMax: (number|undefined),
  *   format: (function(number):string|undefined)
  * }}
@@ -239,7 +237,6 @@ Timeline.PerformanceMonitor.ControlPane = class {
           title: Common.UIString('CPU utilization'),
           color: 'red',
           mode: Timeline.PerformanceMonitor.Mode.CumulativeTime,
-          min: 0,
           max: 100
         }
       ],
@@ -248,7 +245,6 @@ Timeline.PerformanceMonitor.ControlPane = class {
           title: Common.UIString('Script duration'),
           color: 'orange',
           mode: Timeline.PerformanceMonitor.Mode.CumulativeTime,
-          min: 0,
           max: 100
         }
       ],
@@ -256,7 +252,6 @@ Timeline.PerformanceMonitor.ControlPane = class {
         'LayoutDuration', {
           title: Common.UIString('Layout duration'),
           color: 'magenta',
-          min: 0,
           max: 100,
           mode: Timeline.PerformanceMonitor.Mode.CumulativeTime
         }
@@ -265,7 +260,6 @@ Timeline.PerformanceMonitor.ControlPane = class {
         'RecalcStyleDuration', {
           title: Common.UIString('Style recalc duration'),
           color: 'violet',
-          min: 0,
           max: 100,
           mode: Timeline.PerformanceMonitor.Mode.CumulativeTime
         }

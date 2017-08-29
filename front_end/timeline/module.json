@@ -12,7 +12,7 @@
             "type": "view",
             "location": "drawer-view",
             "id": "performance.monitor",
-            "title": "Performance Monitor",
+            "title": "Performance monitor",
             "persistence": "closeable",
             "order": 100,
             "className": "Timeline.PerformanceMonitor",

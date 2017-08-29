@@ -1019,8 +1019,8 @@ Console.ConsoleViewFilter = class {
     this._filterByExecutionContextSetting.addChangeListener(this._filterChanged);
     this._filterByConsoleAPISetting.addChangeListener(this._filterChanged);
 
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('e.g. /event\\d/ -cdn url:a.com'), 0.2, 1, true);
-    this._textFilterUI.element.title = Common.UIString('Filter');
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, true);
+    this._textFilterUI.element.title = Common.UIString('e.g. /event\\d/ -cdn url:a.com');
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._textFilterChanged, this);
     this._filterParser = new TextUtils.FilterParser(Object.values(Console.ConsoleViewFilter._filterType));
     /** @type {!Array<!TextUtils.FilterParser.ParsedFilter>} */

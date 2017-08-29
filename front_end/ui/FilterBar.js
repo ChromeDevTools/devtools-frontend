@@ -177,8 +177,8 @@ UI.TextFilterUI = class extends Common.Object {
     this._prompt = new UI.TextPrompt();
     this._prompt.initialize(this._completions.bind(this), ' ');
     this._proxyElement = this._prompt.attach(this._filterInputElement);
-    this._proxyElement.title = Common.UIString('Filter');
-    this._prompt.setPlaceholder(Common.UIString('e.g. /small[\\d]+/ url:a.com/b'));
+    this._proxyElement.title = Common.UIString('e.g. /small[\\d]+/ url:a.com/b');
+    this._prompt.setPlaceholder(Common.UIString('Filter'));
 
     this._proxyElement.addEventListener('keydown', this._onInputKeyDown.bind(this), false);
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._valueChanged.bind(this));

@@ -4,9 +4,70 @@
  * found in the LICENSE file.
  */
 
-canvas {
+.perfmon-pane {
+  overflow: hidden;
+}
+
+.perfmon-control-pane {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.perfmon-indicator {
+  padding: 6px 12px;
+  margin: -1px 0;
+  display: flex;
+  flex-shrink: 0;
+  width: 200px;
+}
+
+.perfmon-indicator:hover {
+  background-color: #f8f8f8;
+}
+
+.perfmon-indicator-swatch {
+  flex: 0 0 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-right: 6px;
+  margin-top: 1px;
+  height: 10px;
+}
+
+.perfmon-indicator:not(.active) .perfmon-indicator-swatch {
+  border-color: #ccc !important;
+}
+
+.perfmon-indicator-title {
+  flex: 0 0 115px;
+}
+
+.perfmon-indicator-value {
+  flex: 0 0 44px;
+  text-align: right;
+}
+
+.perfmon-indicator:not(.active) .perfmon-indicator-value {
+  opacity: 0;
+}
+
+.perfmon-indicator-close {
+  padding-left: 4px;
+}
+
+.perfmon-indicator:not(:hover) .perfmon-indicator-close {
+  opacity: 0;
+}
+
+.perfmon-add-button:not(:hover) {
+  color: #bbb;
+}
+
+.perfmon-pane canvas {
   display: flex;
   flex: 1 1;
-  margin: 10px;
-  border: 1px solid #ccc;
+  border-left: 1px solid #ccc;
 }

@@ -724,6 +724,20 @@ Extensions.ExtensionServer = class extends Common.Object {
   }
 
   /**
+   * @param {string} url
+   * @param {!TextUtils.TextRange} range
+   */
+  sourceSelectionChanged(url, range) {
+    this._postNotification(Extensions.extensionAPI.Events.PanelObjectSelected + 'sources', {
+      startLine: range.startLine,
+      startColumn: range.startColumn,
+      endLine: range.endLine,
+      endColumn: range.endColumn,
+      url: url,
+    });
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _addExtensions(event) {

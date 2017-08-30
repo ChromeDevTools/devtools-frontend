@@ -45,6 +45,10 @@
   flex: 0 0 115px;
 }
 
+.perfmon-indicator:not(.active) .perfmon-indicator-title {
+  color: #aaa;
+}
+
 .perfmon-indicator-value {
   flex: 0 0 44px;
   text-align: right;

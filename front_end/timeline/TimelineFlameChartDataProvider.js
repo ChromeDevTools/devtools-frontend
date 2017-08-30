@@ -339,9 +339,10 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     var flowEventsEnabled = Runtime.experiments.isEnabled('timelineFlowEvents');
     var blackboxingEnabled = !isExtension && Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     var maxStackDepth = 0;
+    var markerEventsFilter = Timeline.TimelineUIUtils.paintEventsFilter();
     for (var i = 0; i < events.length; ++i) {
       var e = events[i];
-      if (!isExtension && TimelineModel.TimelineModel.isMarkerEvent(e)) {
+      if (!isExtension && TimelineModel.TimelineModel.isMarkerEvent(e) && markerEventsFilter.accept(e)) {
         this._markers.push(new Timeline.TimelineFlameChartMarker(
             e.startTime, e.startTime - this._model.minimumRecordTime(),
             Timeline.TimelineUIUtils.markerStyleForEvent(e)));
@@ -956,9 +957,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @return {boolean}
    */
   _isVisible(event) {
-    return this._filters.every(function(filter) {
-      return filter.accept(event);
-    });
+    return this._filters.every(filter => filter.accept(event));
   }
 
   /**

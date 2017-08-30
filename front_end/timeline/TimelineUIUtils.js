@@ -1471,7 +1471,10 @@ Timeline.TimelineUIUtils = class {
    */
   static paintEventsFilter() {
     var recordTypes = TimelineModel.TimelineModel.RecordType;
-    return new TimelineModel.TimelineInvisibleEventsFilter([recordTypes.MarkFMP, recordTypes.MarkFMPCandidate]);
+    return new TimelineModel.TimelineInvisibleEventsFilter(
+        !Runtime.experiments.isEnabled('timelinePaintTimingMarkers') ?
+            [recordTypes.MarkFMP, recordTypes.MarkFMPCandidate] :
+            []);
   }
 
   /**

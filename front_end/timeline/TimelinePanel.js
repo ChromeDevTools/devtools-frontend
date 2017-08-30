@@ -69,8 +69,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._filters.push(Timeline.TimelineUIUtils.visibleEventsFilter());
       this._filters.push(new TimelineModel.ExcludeTopLevelFilter());
     }
-    if (!Runtime.experiments.isEnabled('timelinePaintTimingMarkers'))
-      this._filters.push(Timeline.TimelineUIUtils.paintEventsFilter());
 
     /** @type {?Timeline.PerformanceModel} */
     this._performanceModel = null;
@@ -846,8 +844,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     var markers = new Map();
     var recordTypes = TimelineModel.TimelineModel.RecordType;
     var zeroTime = timelineModel.minimumRecordTime();
+    var filter = Timeline.TimelineUIUtils.paintEventsFilter();
     for (var event of timelineModel.eventDividers()) {
       if (event.name === recordTypes.TimeStamp || event.name === recordTypes.ConsoleTime)
+        continue;
+      if (!filter.accept(event))
         continue;
       markers.set(event.startTime, Timeline.TimelineUIUtils.createEventDivider(event, zeroTime));
     }

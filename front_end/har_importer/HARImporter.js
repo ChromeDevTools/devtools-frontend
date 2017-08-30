@@ -96,7 +96,7 @@ HARImporter.Importer = class {
     var contentData = {error: null, content: null, encoded: entry.response.content.encoding === 'base64'};
     if (entry.response.content.text !== undefined)
       contentData.content = entry.response.content.text;
-    request.setContentData(contentData);
+    request.setContentDataProvider(async () => contentData);
 
     // Timing data.
     HARImporter.Importer._setupTiming(request, issueTime, entry.time, entry.timings);

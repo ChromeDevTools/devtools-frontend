@@ -897,16 +897,19 @@ SDK.NetworkRequest = class extends Common.Object {
   contentData() {
     if (this._contentData)
       return this._contentData;
-    this._contentData = SDK.NetworkManager.requestContentData(this);
+    if (this._contentDataProvider)
+      this._contentData = this._contentDataProvider();
+    else
+      this._contentData = SDK.NetworkManager.requestContentData(this);
     return this._contentData;
   }
 
   /**
-   * @param {!SDK.NetworkRequest.ContentData} data
+   * @param {function():!Promise<!SDK.NetworkRequest.ContentData>} dataProvider
    */
-  setContentData(data) {
+  setContentDataProvider(dataProvider) {
     console.assert(!this._contentData, 'contentData can only be set once.');
-    this._contentData = Promise.resolve(data);
+    this._contentDataProvider = dataProvider;
   }
 
   /**

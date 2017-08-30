@@ -1053,14 +1053,14 @@ Runtime.experiments = new Runtime.ExperimentsSupport();
 /**
  * @type {?string}
  */
-Runtime._remoteBase = Runtime.queryParam('remoteBase');
-{
-  (function validateRemoteBase() {
-    var remoteBaseRegexp = /^https:\/\/chrome-devtools-frontend\.appspot\.com\/serve_file\/@[0-9a-zA-Z]+\/?$/;
-    if (Runtime._remoteBase && !remoteBaseRegexp.test(Runtime._remoteBase))
-      Runtime._remoteBase = null;
-  })();
-}
+Runtime._remoteBase;
+(function validateRemoteBase() {
+  if (location.href.startsWith('chrome-devtools://devtools/bundled/') && Runtime.queryParam('remoteBase')) {
+    var versionMatch = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(Runtime.queryParam('remoteBase'));
+    if (versionMatch)
+      Runtime._remoteBase = `${location.origin}/remote/serve_file/${versionMatch[1]}/`;
+  }
+})();
 
 
 /**

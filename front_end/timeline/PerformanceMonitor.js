@@ -17,6 +17,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._pixelsPerMs = 20 / 1000;
     /** @const */
     this._pollIntervalMs = 500;
+    this._gridColor = 'hsla(0, 0%, 0%, 0.08)';
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
   }
@@ -26,6 +27,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    */
   wasShown() {
     this._model.enable();
+    this._startTimestamp = 0;
     this._pollTimer = setInterval(() => this._poll(), this._pollIntervalMs);
     this.onResize();
     animate.call(this);
@@ -59,7 +61,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    */
   _processMetrics(metrics) {
     var metricsMap = new Map();
-    var timestamp = Date.now();
+    var timestamp = performance.now();
     for (var metric of metrics) {
       var info = this._controlPane.metricInfo(metric.name);
       var value;
@@ -84,6 +86,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       }
       metricsMap.set(metric.name, value);
     }
+    if (!this._metricsBuffer.length)
+      this._startTimestamp = timestamp;
     this._metricsBuffer.push({timestamp, metrics: metricsMap});
     var millisPerWidth = this._width / this._pixelsPerMs;
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
@@ -99,9 +103,27 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     ctx.clearRect(0, 0, this._width, this._height);
     this._drawGrid(ctx);
+    var timeMetrics = [];
+    var countMetrics = [];
     for (var metricName of this._controlPane.metrics()) {
-      if (this._controlPane.isActive(metricName))
-        this._drawMetric(ctx, metricName);
+      if (!this._controlPane.isActive(metricName))
+        continue;
+      if (this._controlPane.metricInfo(metricName).mode === Timeline.PerformanceMonitor.Mode.CumulativeTime)
+        timeMetrics.push(metricName);
+      else
+        countMetrics.push(metricName);
+    }
+
+    var timeGraphHeight = 90;
+    ctx.translate(0, 16);  // Reserve space for the scale bar.
+    if (timeMetrics.length) {
+      this._drawChart(ctx, timeMetrics, timeGraphHeight, true);
+      ctx.translate(0, timeGraphHeight);
+    }
+    var counterChartHeight = 90;
+    for (var metricName of countMetrics) {
+      this._drawChart(ctx, [metricName], counterChartHeight, false);
+      ctx.translate(0, counterChartHeight);
     }
     ctx.restore();
   }
@@ -110,56 +132,119 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    */
   _drawGrid(ctx) {
-    var darkGray = 'hsla(0, 0%, 0%, 0.08)';
+    if (!this._startTimestamp)
+      return;
     var lightGray = 'hsla(0, 0%, 0%, 0.02)';
     ctx.font = '10px ' + Host.fontFamily();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-    for (var sec = 0;; ++sec) {
-      var x = this._width - sec * this._pixelsPerMs * 1000;
-      if (x < 0)
+    var duration = performance.now() - this._startTimestamp;
+    for (var sec = Math.floor(duration / 1000); sec >= 0; --sec) {
+      var x = this._width - (duration - sec * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
+      if (x < -40)
         break;
       ctx.beginPath();
       ctx.moveTo(Math.round(x) + 0.5, 0);
       ctx.lineTo(Math.round(x) + 0.5, this._height);
       if (sec % 5 === 0)
         ctx.fillText(Common.UIString('%d sec', sec), Math.round(x) + 4, 12);
-      ctx.strokeStyle = sec % 5 ? lightGray : darkGray;
+      ctx.strokeStyle = sec % 5 ? lightGray : this._gridColor;
       ctx.stroke();
     }
+  }
+
+  /**
+   * @param {!CanvasRenderingContext2D} ctx
+   * @param {!Array<string>} metrics
+   * @param {number} height
+   * @param {boolean} smooth
+   */
+  _drawChart(ctx, metrics, height, smooth) {
+    ctx.save();
+    ctx.rect(0, 0, this._width, height);
+    ctx.clip();
+    var bottomPadding = 8;
+    var showGrid = true;
+    for (var metricName of metrics) {
+      if (!this._controlPane.isActive(metricName))
+        continue;
+      this._drawMetric(ctx, metricName, height - bottomPadding, smooth, showGrid);
+      showGrid = false;
+    }
     ctx.beginPath();
-    ctx.moveTo(0, this._height - 4.5);
-    ctx.lineTo(this._width, this._height - 4.5);
-    ctx.strokeStyle = darkGray;
+    ctx.moveTo(0, height - bottomPadding + 0.5);
+    ctx.lineTo(this._width, height - bottomPadding + 0.5);
+    ctx.strokeStyle = 'hsla(0, 0%, 0%, 0.3)';
     ctx.stroke();
+    ctx.restore();
   }
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
    * @param {string} metricName
+   * @param {number} height
+   * @param {boolean} smooth
+   * @param {boolean} showGrid
    */
-  _drawMetric(ctx, metricName) {
+  _drawMetric(ctx, metricName, height, smooth, showGrid) {
+    var topPadding = 5;
+    var visibleHeight = height - topPadding;
+    if (visibleHeight < 1)
+      return;
     ctx.save();
     var width = this._width;
-    var height = this._height;
-    var startTime = Date.now() - this._pollIntervalMs * 2 - width / this._pixelsPerMs;
+    var startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
     var info = this._controlPane.metricInfo(metricName);
     var max = -Infinity;
     var pixelsPerMs = this._pixelsPerMs;
-    for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
-      var metrics = this._metricsBuffer[i];
-      var value = metrics.metrics.get(metricName);
-      max = Math.max(max, value);
-      if (metrics.timestamp < startTime)
-        break;
+    if (typeof info.max === 'number') {
+      max = info.max;
+    } else {
+      for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
+        var metrics = this._metricsBuffer[i];
+        var value = metrics.metrics.get(metricName);
+        max = Math.max(max, value);
+        if (metrics.timestamp < startTime)
+          break;
+      }
+      max = Math.max(1, max);
     }
+    var base10 = Math.pow(10, Math.floor(Math.log10(max)));
+    var leadingDigit = Math.ceil(max / base10);
+    var scaleMax = Math.ceil(leadingDigit) * base10;
+    if (leadingDigit !== 1 && leadingDigit % 2)
+      scaleMax *= 2;
+
+    max = scaleMax;
     if (isFinite(max)) {
       var alpha = 0.1;
+      max = Math.max(max, 1);
       info.currentMax = max * alpha + (info.currentMax || max) * (1 - alpha);
       max = info.currentMax;
     }
     if (typeof info.max === 'number')
       max = info.max;
-    var span = 1.2 * max || 1;
+    var span = max;
+
+    // Draw vertical grid.
+    if (showGrid) {
+      var scaleValue = scaleMax;
+      for (var i = 0; i < 2; ++i) {
+        var y = Math.round(calcY(scaleValue)) - 0.5;
+        var labelText = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(4, y);
+        ctx.moveTo(ctx.measureText(labelText).width + 12, y);
+        ctx.lineTo(this._width, y);
+        ctx.strokeStyle = this._gridColor;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.stroke();
+        ctx.fillText(labelText, 8, calcY(scaleValue) + 3);
+        scaleValue /= 2;
+      }
+    }
+
+    // Draw chart.
     ctx.beginPath();
     ctx.moveTo(width + 5, calcY(0));
     var x = 0;
@@ -174,8 +259,13 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       var metrics = this._metricsBuffer[i];
       var y = calcY(metrics.metrics.get(metricName));
       x = (metrics.timestamp - startTime) * pixelsPerMs;
-      var midX = (lastX + x) / 2;
-      ctx.bezierCurveTo(midX, lastY, midX, y, x, y);
+      if (smooth) {
+        var midX = (lastX + x) / 2;
+        ctx.bezierCurveTo(midX, lastY, midX, y, x, y);
+      } else {
+        ctx.lineTo(x, lastY);
+        ctx.lineTo(x, y);
+      }
       lastX = x;
       lastY = y;
       if (metrics.timestamp < startTime)
@@ -185,8 +275,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ctx.lineWidth = 0.5;
     ctx.stroke();
     ctx.lineTo(x, calcY(0));
-    ctx.globalAlpha = 0.02;
     ctx.fillStyle = info.color;
+    ctx.globalAlpha = 0.02;
     ctx.fill();
     ctx.restore();
 
@@ -195,7 +285,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
      * @return {number}
      */
     function calcY(value) {
-      return Math.round(height - 5 - height * value / span) + 0.5;
+      return (height - visibleHeight * value / span) + 0.5;
     }
   }
 
@@ -276,9 +366,9 @@ Timeline.PerformanceMonitor.ControlPane = class {
         }
       ],
       ['NodeCount', {title: Common.UIString('DOM Nodes'), color: 'green'}],
+      ['JSEventListenerCount', {title: Common.UIString('JS event listeners'), color: 'yellowgreen'}],
       ['DocumentCount', {title: Common.UIString('Documents'), color: 'blue'}],
       ['FrameCount', {title: Common.UIString('Frames'), color: 'darkcyan'}],
-      ['JSEventListenerCount', {title: Common.UIString('JS event listeners'), color: 'yellowgreen'}],
       [
         'LayoutCount', {
           title: Common.UIString('Layouts / sec'),
@@ -374,11 +464,20 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
 
   /**
    * @param {number} value
+   * @param {!Timeline.PerformanceMonitor.Info} info
+   * @return {string}
    */
-  setValue(value) {
-    this._valueElement.textContent = this._info.mode === Timeline.PerformanceMonitor.Mode.CumulativeTime ?
+  static _formatNumber(value, info) {
+    return info.mode === Timeline.PerformanceMonitor.Mode.CumulativeTime ?
         value.toFixed() + '%' :
         Timeline.PerformanceMonitor.MetricIndicator._format.format(value);
+  }
+
+  /**
+   * @param {number} value
+   */
+  setValue(value) {
+    this._valueElement.textContent = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(value, this._info);
   }
 
   _toggleIndicator() {

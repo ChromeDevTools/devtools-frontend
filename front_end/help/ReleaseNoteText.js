@@ -12,6 +12,48 @@ var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shif
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 5,
+    header: 'Highlights from the Chrome 62 update',
+    highlights: [
+      {
+        title: 'Top-level await operators in the Console',
+        subtitle: 'Use await to conveniently experiment with asynchronous functions in the Console.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#await',
+      },
+      {
+        title: 'New screenshot workflows',
+        subtitle: 'Take screenshots of a portion of the viewport, or of specific HTML nodes.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#screenshots',
+      },
+      {
+        title: 'CSS Grid highlighting',
+        subtitle: 'Hover over an element to see the CSS Grid that\'s affecting it.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#css-grid-highlighting',
+      },
+      {
+        title: 'A new Console API for querying objects',
+        subtitle: 'Call queryObjects(Constructor) to get an array of objects instantiated with that constructor.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#query-objects',
+      },
+      {
+        title: 'New Console filters',
+        subtitle: 'Filter out logging noise with the new negative and URL filters.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#console-filters',
+      },
+      {
+        title: 'HAR imports in the Network panel',
+        subtitle: 'Drag-and-drop a HAR file to analyze a previous network recording.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#har-imports',
+      },
+      {
+        title: 'Previewable cache resources in the Application panel',
+        subtitle: 'Click a row in a Cache Storage table to see a preview of that resource.',
+        link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes#cache-preview',
+      }
+    ],
+    link: 'https://developers.google.com/web/updates/2017/08/devtools-release-notes',
+  },
+  {
     version: 4,
     header: 'Highlights from the Chrome 61 update',
     highlights: [

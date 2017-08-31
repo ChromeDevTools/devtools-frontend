@@ -21,7 +21,7 @@
   margin: -1px 0;
   display: flex;
   flex-shrink: 0;
-  width: 200px;
+  width: 210px;
 }
 
 .perfmon-indicator:hover {
@@ -50,8 +50,9 @@
 }
 
 .perfmon-indicator-value {
-  flex: 0 0 44px;
+  flex: 0 0 55px;
   text-align: right;
+  overflow: visible;
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-value {

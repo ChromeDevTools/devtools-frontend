@@ -115,8 +115,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
       return null;
 
     var inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
-    if (/^about:/.test(inspectedURL))
-      return Common.UIString('Cannot audit about:* pages. Navigate to a different page to start an audit.');
+    if (!/^(http|chrome-extension)/.test(inspectedURL)) {
+      return Common.UIString(
+          'Can only audit HTTP/HTTPS pages and Chrome extensions. ' +
+          'Navigate to a different page to start an audit.');
+    }
 
     if (!Runtime.queryParam('can_dock'))
       return Common.UIString('Can only audit tabs. Navigate to this page in a separate tab to start an audit.');
@@ -411,7 +414,14 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._statusIcon.classList.add('error');
     this._statusElement.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
     this._statusElement.createChild('em').createTextChild(err.message);
-    this._createBugReportLink(err, this._statusElement);
+    if (Audits2.Audits2Panel.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
+      var message = Common.UIString(
+          'Try to navigate to the URL in a fresh Chrome profile without any other tabs or ' +
+          'extensions open and try again.');
+      this._statusElement.createChild('p').createTextChild(message);
+    } else {
+      this._createBugReportLink(err, this._statusElement);
+    }
   }
 
   /**
@@ -431,7 +441,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 ${err.stack}
 \`\`\`
     `;
-    var body = '&body=' + encodeURI(issueBody.trim());
+    var body = '&body=' + encodeURIComponent(issueBody.trim());
     var reportErrorEl = parentElem.createChild('a', 'audits2-link audits2-report-error');
     reportErrorEl.href = baseURI + title + body;
     reportErrorEl.textContent = Common.UIString('Report this bug');
@@ -499,6 +509,14 @@ class ReportUIFeatures {
   initFeatures(report) {
   }
 }
+
+/** @type {!Array.<!RegExp>} */
+Audits2.Audits2Panel.KnownBugPatterns = [
+  /Tracing already started/,
+  /^Unable to load the page/,
+  /^You must provide a url to the runner/,
+  /^You probably have multiple tabs open/,
+];
 
 /** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
 Audits2.Audits2Panel.Preset;

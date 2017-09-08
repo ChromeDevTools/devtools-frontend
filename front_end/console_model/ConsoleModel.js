@@ -663,6 +663,23 @@ ConsoleModel.ConsoleMessage.MessageLevel = {
   Error: 'error'
 };
 
+/** @type {!Map<!ConsoleModel.ConsoleMessage.MessageSource, string>} */
+ConsoleModel.ConsoleMessage.MessageSourceDisplayName = new Map([
+  [ConsoleModel.ConsoleMessage.MessageSource.XML, 'xml'], [ConsoleModel.ConsoleMessage.MessageSource.JS, 'javascript'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Network, 'network'],
+  [ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI, 'console-api'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Storage, 'storage'],
+  [ConsoleModel.ConsoleMessage.MessageSource.AppCache, 'appcache'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Rendering, 'rendering'],
+  [ConsoleModel.ConsoleMessage.MessageSource.CSS, 'css'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Security, 'security'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Deprecation, 'deprecation'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Worker, 'worker'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Violation, 'violation'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Intervention, 'intervention'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Other, 'other']
+]);
+
 ConsoleModel.ConsoleModel._events = Symbol('ConsoleModel.ConsoleModel.events');
 
 /**

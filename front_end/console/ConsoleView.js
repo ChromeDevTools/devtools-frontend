@@ -1207,17 +1207,46 @@ Console.ConsoleViewFilter = class {
           return false;
       } else {
         switch (filter.key) {
-          case Console.ConsoleViewFilter._filterType.Url:
-            if (!message.url && !filter.negative)
+          case Console.ConsoleViewFilter._filterType.Context:
+            if (!passesFilter(filter, message.context, false /* exactMatch */))
               return false;
-            if (message.url && message.url.includes(/** @type {string} */ (filter.text)) === filter.negative)
+            break;
+          case Console.ConsoleViewFilter._filterType.Source:
+            var sourceNameForMessage = message.source ?
+                ConsoleModel.ConsoleMessage.MessageSourceDisplayName.get(
+                    /** @type {!ConsoleModel.ConsoleMessage.MessageSource} */ (message.source)) :
+                message.source;
+            if (!passesFilter(filter, sourceNameForMessage, true /* exactMatch */))
+              return false;
+            break;
+          case Console.ConsoleViewFilter._filterType.Url:
+            if (!passesFilter(filter, message.url, false /* exactMatch */))
               return false;
             break;
         }
       }
     }
-
     return true;
+
+    /**
+     * @param {!TextUtils.FilterParser.ParsedFilter} filter
+     * @param {string|undefined} value
+     * @param {boolean} exactMatch
+     * @return {boolean}
+     */
+    function passesFilter(filter, value, exactMatch) {
+      if (!value && !filter.negative)
+        return false;
+      if (value) {
+        var filterText = /** @type {string} */ (filter.text).toLowerCase();
+        var lowerCaseValue = value.toLowerCase();
+        if (exactMatch && (lowerCaseValue === filterText) === filter.negative)
+          return false;
+        if (!exactMatch && lowerCaseValue.includes(filterText) === filter.negative)
+          return false;
+      }
+      return true;
+    }
   }
 
   reset() {
@@ -1234,6 +1263,8 @@ Console.ConsoleViewFilter = class {
 
 /** @enum {string} */
 Console.ConsoleViewFilter._filterType = {
+  Context: 'context',
+  Source: 'source',
   Url: 'url'
 };
 

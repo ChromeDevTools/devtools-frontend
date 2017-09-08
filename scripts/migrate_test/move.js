@@ -18,7 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector/',
+    '../../../../LayoutTests/inspector-enabled/',
   ]);
 
   console.log(originalTests);
@@ -30,9 +30,9 @@ function main() {
       continue;
     }
     const inputPath = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', inputRelativePath);
-    const inputResourcesPath = path.resolve(path.dirname(inputPath), 'resources');
-    const outPath = migrateUtils.getOutPath(inputPath);
-    const outResourcesPath = path.resolve(path.dirname(outPath), 'resources');
+    const inputResourcesPath = path.resolve(inputPath, 'resources');
+    const outPath = migrateUtils.getOutPath(inputPath, true);
+    const outResourcesPath = path.resolve(outPath, 'resources');
 
     if (utils.isDir(inputResourcesPath))
       oldToNewResourcesPath.set(inputResourcesPath, outResourcesPath);

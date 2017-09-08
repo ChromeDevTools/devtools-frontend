@@ -6,13 +6,16 @@
 
 const path = require('path');
 
-function getOutPath(inputPath) {
-  const nonHttpLayoutTestPrefix = 'LayoutTests/inspector';
-  const httpLayoutTestPrefix = 'LayoutTests/http/tests/inspector';
+function getOutPath(inputPath, isEnabledTest) {
+  const nonHttpLayoutTestPrefix = isEnabledTest ? 'LayoutTests/inspector-enabled' : 'LayoutTests/inspector';
+  const httpLayoutTestPrefix =
+      isEnabledTest ? 'LayoutTests/http/tests/inspector-enabled' : 'LayoutTests/http/tests/inspector';
   const postfix = inputPath.indexOf(nonHttpLayoutTestPrefix) === -1 ?
       inputPath.slice(inputPath.indexOf(httpLayoutTestPrefix) + httpLayoutTestPrefix.length + 1) :
       inputPath.slice(inputPath.indexOf(nonHttpLayoutTestPrefix) + nonHttpLayoutTestPrefix.length + 1);
-  const out = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'devtools', postfix);
+  const out = path.resolve(
+      __dirname, '..', '..', '..', '..', 'LayoutTests', 'http', 'tests', 'devtools', isEnabledTest ? 'startup' : '',
+      postfix);
   return out;
 }
 

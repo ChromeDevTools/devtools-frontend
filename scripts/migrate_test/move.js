@@ -18,8 +18,17 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector/tracing',
-    '../../../../LayoutTests/inspector/profiler',
+    '../../../../LayoutTests/inspector/animation',
+    '../../../../LayoutTests/inspector/audits',
+    '../../../../LayoutTests/inspector/changes',
+    '../../../../LayoutTests/inspector/color_picker',
+    '../../../../LayoutTests/inspector/components',
+    '../../../../LayoutTests/inspector/coverage',
+    '../../../../LayoutTests/inspector/domdebugger',
+    '../../../../LayoutTests/inspector/help',
+    '../../../../LayoutTests/inspector/layers',
+    '../../../../LayoutTests/inspector/network',
+
   ]);
 
   console.log(originalTests);
@@ -49,8 +58,9 @@ function main() {
     oldToNewTestPath.set(inputRelativePath, outRelativePath);
 
     // Move expectation file
-    const inputExpectationsPath = inputPath.replace(/\.x?html/, '-expected.txt');
-    const outExpectationsPath = outPath.replace(/\.x?html/, '-expected.txt');
+    const inputExpectationsPath =
+        inputPath.replace(/\.x?html/, '-expected.txt').replace('-expected-expected', '-expected');
+    const outExpectationsPath = outPath.replace(/\.x?html/, '-expected.txt').replace('-expected-expected', '-expected');
     fs.writeFileSync(outExpectationsPath, fs.readFileSync(inputExpectationsPath, 'utf-8'));
     fs.unlinkSync(inputExpectationsPath);
   }

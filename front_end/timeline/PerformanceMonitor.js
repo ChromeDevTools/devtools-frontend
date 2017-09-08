@@ -17,7 +17,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._pixelsPerMs = 20 / 1000;
     /** @const */
     this._pollIntervalMs = 500;
-    this._gridColor = 'rgba(0, 0, 0, 0.08)';
+    this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
   }
@@ -125,9 +125,9 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    */
   _drawHorizontalGrid(ctx) {
-    var lightGray = 'rgba(0, 0, 0, 0.02)';
+    var lightGray = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.ThemeSupport.ColorUsage.Foreground);
     ctx.font = '9px ' + Host.fontFamily();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
     var currentTime = Date.now() / 1000;
     for (var sec = Math.ceil(currentTime);; --sec) {
       var x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
@@ -162,11 +162,6 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
         continue;
       this._drawMetric(ctx, metricName, height - bottomPadding, max);
     }
-    ctx.beginPath();
-    ctx.moveTo(0, height - bottomPadding + 0.5);
-    ctx.lineTo(this._width, height - bottomPadding + 0.5);
-    ctx.strokeStyle = 'hsla(0, 0%, 0%, 0.3)';
-    ctx.stroke();
     ctx.restore();
   }
 
@@ -218,20 +213,25 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     var span = max;
     var topPadding = 5;
     var visibleHeight = height - topPadding;
+    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.strokeStyle = this._gridColor;
+    ctx.beginPath();
     for (var i = 0; i < 2; ++i) {
       var y = calcY(scaleValue);
       var labelText = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
-      ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
       ctx.lineTo(this._width, y);
-      ctx.strokeStyle = this._gridColor;
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-      ctx.stroke();
       ctx.fillText(labelText, 8, calcY(scaleValue) + 3);
       scaleValue /= 2;
     }
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, height + 0.5);
+    ctx.lineTo(this._width, height + 0.5);
+    ctx.strokeStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.2)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.stroke();
     /**
      * @param {number} value
      * @return {number}
@@ -427,6 +427,8 @@ Timeline.PerformanceMonitor.ControlPane = class {
         {title: Common.UIString('Style recalcs / sec'), color: 'deeppink', mode: mode.CumulativeCount}
       ],
     ]);
+    for (var info of this._metricsInfo.values())
+      info.color = UI.themeSupport.patchColorText(info.color, UI.ThemeSupport.ColorUsage.Foreground);
 
     this._indicators = new Map();
     for (var metricName of this._metricsInfo.keys()) {

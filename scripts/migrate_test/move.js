@@ -18,7 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/inspector-enabled/',
+    '../../../../LayoutTests/http/tests/inspector/network',
   ]);
 
   console.log(originalTests);
@@ -31,16 +31,16 @@ function main() {
     }
     const inputPath = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', inputRelativePath);
     const inputResourcesPath = path.resolve(inputPath, 'resources');
-    const outPath = migrateUtils.getOutPath(inputPath, true);
+    const outPath = migrateUtils.getOutPath(inputPath, false);
     const outResourcesPath = path.resolve(outPath, 'resources');
 
     if (utils.isDir(inputResourcesPath))
       oldToNewResourcesPath.set(inputResourcesPath, outResourcesPath);
     mkdirp.sync(path.dirname(outPath));
 
-    // Move .html -> .js
     const original = fs.readFileSync(inputPath, 'utf-8');
-    const updatedReferences = original.split('http/tests/inspector').join('inspector');
+    const updatedReferences = original.replace(/src="..\/(?=.+-test)/g, 'src="../../inspector/')
+                                  .replace(/src="(?=\w.+-test)/g, 'src="../inspector/');
     fs.writeFileSync(outPath, updatedReferences);
     fs.unlinkSync(inputPath);
 
@@ -85,9 +85,7 @@ function main() {
           continue;
         if (line.indexOf(oldTestPath) !== -1) {
           const newLine = line.replace(oldTestPath, newTestPath);
-          return newLine + '\n' +
-              newLine.replace(newTestPath, `virtual/mojo-loading/${newTestPath}`)
-                  .replace(/crbug.com\/\d+/, 'crbug.com/667560');
+          return newLine;
         }
       }
       return line;

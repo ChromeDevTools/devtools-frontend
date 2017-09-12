@@ -75,6 +75,7 @@ Accessibility.AccessibilitySidebarView = class extends UI.ThrottledWidget {
     var node = this.node();
     this._axNodeSubPane.setNode(node);
     this._ariaSubPane.setNode(node);
+    this._breadcrumbsSubPane.setNode(node);
     if (!node)
       return Promise.resolve();
     var accessibilityModel = node.domModel().target().model(Accessibility.AccessibilityModel);

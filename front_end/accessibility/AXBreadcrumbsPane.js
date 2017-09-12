@@ -16,6 +16,8 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
 
     /** @type {?Accessibility.AXBreadcrumb} */
     this._preselectedBreadcrumb = null;
+    /** @type {?Accessibility.AXBreadcrumb} */
+    this._inspectedNodeBreadcrumb = null;
 
     this._selectedByUser = true;
 
@@ -27,6 +29,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     this._rootElement.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
     this._rootElement.addEventListener('click', this._onClick.bind(this), false);
     this._rootElement.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
+    this._rootElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
     this.registerRequiredCSS('accessibility/axBreadcrumbs.css');
   }
 
@@ -65,14 +68,14 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
       depth++;
     }
 
-    var inspectedNodeBreadcrumb = breadcrumb;
-    inspectedNodeBreadcrumb.setPreselected(true, this._selectedByUser);
+    this._inspectedNodeBreadcrumb = breadcrumb;
+    this._inspectedNodeBreadcrumb.setPreselected(true, this._selectedByUser);
 
-    this._setPreselectedBreadcrumb(inspectedNodeBreadcrumb);
+    this._setPreselectedBreadcrumb(this._inspectedNodeBreadcrumb);
 
     for (var child of axNode.children()) {
       var childBreadcrumb = new Accessibility.AXBreadcrumb(child, depth, false);
-      inspectedNodeBreadcrumb.appendChild(childBreadcrumb);
+      this._inspectedNodeBreadcrumb.appendChild(childBreadcrumb);
     }
 
     this._selectedByUser = false;
@@ -147,10 +150,12 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
       return;
     if (this._preselectedBreadcrumb)
       this._preselectedBreadcrumb.setPreselected(false, this._selectedByUser);
-    this._preselectedBreadcrumb = breadcrumb;
-    if (this._preselectedBreadcrumb)
-      this._preselectedBreadcrumb.setPreselected(true, this._selectedByUser);
-    else if (this._selectedByUser)
+    if (breadcrumb)
+      this._preselectedBreadcrumb = breadcrumb;
+    else
+      this._preselectedBreadcrumb = this._inspectedNodeBreadcrumb;
+    this._preselectedBreadcrumb.setPreselected(true, this._selectedByUser);
+    if (!breadcrumb && this._selectedByUser)
       SDK.OverlayModel.hideDOMNodeHighlight();
   }
 
@@ -171,9 +176,18 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
       return;
     }
     var breadcrumb = breadcrumbElement.breadcrumb;
-    if (breadcrumb.preselected() || breadcrumb.inspected() || !breadcrumb.isDOMNode())
+    if (!breadcrumb.isDOMNode())
       return;
     this._setHoveredBreadcrumb(breadcrumb);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onFocusOut(event) {
+    if (!this._preselectedBreadcrumb || event.target !== this._preselectedBreadcrumb.nodeElement())
+      return;
+    this._setPreselectedBreadcrumb(null);
   }
 
   /**
@@ -189,7 +203,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     if (breadcrumb.inspected()) {
       // If the user is clicking the inspected breadcrumb, they probably want to
       // focus it.
-      breadcrumb.element().focus();
+      breadcrumb.nodeElement().focus();
       return;
     }
     if (!breadcrumb.isDOMNode())
@@ -239,7 +253,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-node');
+    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement)
       return;
 
@@ -272,10 +286,11 @@ Accessibility.AXBreadcrumb = class {
     this._axNode = axNode;
 
     this._element = createElementWithClass('div', 'ax-breadcrumb');
-    UI.ARIAUtils.markAsTreeitem(this._element);
     this._element.breadcrumb = this;
 
     this._nodeElement = createElementWithClass('div', 'ax-node');
+    UI.ARIAUtils.markAsTreeitem(this._nodeElement);
+    this._nodeElement.tabIndex = -1;
     this._element.appendChild(this._nodeElement);
     this._nodeWrapper = createElementWithClass('div', 'wrapper');
     this._nodeElement.appendChild(this._nodeWrapper);
@@ -323,13 +338,20 @@ Accessibility.AXBreadcrumb = class {
   }
 
   /**
+   * @return {!Element}
+   */
+  nodeElement() {
+    return this._nodeElement;
+  }
+
+  /**
    * @param {!Accessibility.AXBreadcrumb} breadcrumb
    */
   appendChild(breadcrumb) {
     this._children.push(breadcrumb);
     breadcrumb.setParent(this);
     this._nodeElement.classList.add('parent');
-    UI.ARIAUtils.setExpanded(this._element, true);
+    UI.ARIAUtils.setExpanded(this._nodeElement, true);
     this._childrenGroupElement.appendChild(breadcrumb.element());
   }
 
@@ -359,7 +381,7 @@ Accessibility.AXBreadcrumb = class {
     if (preselected)
       this._nodeElement.setAttribute('tabIndex', 0);
     else
-      this._nodeElement.removeAttribute('tabIndex');
+      this._nodeElement.setAttribute('tabIndex', -1);
     if (this._preselected) {
       if (selectedByUser)
         this._nodeElement.focus();

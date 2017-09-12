@@ -18,7 +18,17 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/http/tests/inspector/network',
+    '../../../../LayoutTests/http/tests/inspector/appcache',
+    '../../../../LayoutTests/http/tests/inspector/audits',
+    '../../../../LayoutTests/http/tests/inspector/cache-storage',
+    '../../../../LayoutTests/http/tests/inspector/debugger',
+    '../../../../LayoutTests/http/tests/inspector/elements',
+    '../../../../LayoutTests/http/tests/inspector/resource-tree',
+    '../../../../LayoutTests/http/tests/inspector/search',
+    '../../../../LayoutTests/http/tests/inspector/security',
+    '../../../../LayoutTests/http/tests/inspector/service-workers',
+    '../../../../LayoutTests/http/tests/inspector/sources',
+    '../../../../LayoutTests/http/tests/inspector/stacktraces',
   ]);
 
   console.log(originalTests);
@@ -30,17 +40,24 @@ function main() {
       continue;
     }
     const inputPath = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', inputRelativePath);
-    const inputResourcesPath = path.resolve(inputPath, 'resources');
+    const inputResourcesPath = path.resolve(path.dirname(inputPath), 'resources');
     const outPath = migrateUtils.getOutPath(inputPath, false);
-    const outResourcesPath = path.resolve(outPath, 'resources');
+    const outResourcesPath = path.resolve(path.dirname(outPath), 'resources');
 
+    debugger;
     if (utils.isDir(inputResourcesPath))
       oldToNewResourcesPath.set(inputResourcesPath, outResourcesPath);
     mkdirp.sync(path.dirname(outPath));
 
     const original = fs.readFileSync(inputPath, 'utf-8');
-    const updatedReferences = original.replace(/src="..\/(?=.+-test)/g, 'src="../../inspector/')
-                                  .replace(/src="(?=\w.+-test)/g, 'src="../inspector/');
+    debugger;
+    const updatedReferences = original.replace(/127.0.0.1:8000\/inspector/g, '127.0.0.1:8000/devtools')
+                                  .replace(/script src="\.\//g, 'script src="')
+                                  .replace(/script src="..\/(?=.+-test)/g, 'script src="../../inspector/')
+                                  .replace(
+                                      /script src="(?=\w.+-test)/g,
+                                      `script src="${path.relative(path.dirname(outPath), path.dirname(inputPath))}/`)
+                                  .replace(/..\/..\/inspector\/..\//g, '../../../inspector/');
     fs.writeFileSync(outPath, updatedReferences);
     fs.unlinkSync(inputPath);
 
@@ -51,8 +68,10 @@ function main() {
     const inputExpectationsPath =
         inputPath.replace(/\.x?html/, '-expected.txt').replace('-expected-expected', '-expected');
     const outExpectationsPath = outPath.replace(/\.x?html/, '-expected.txt').replace('-expected-expected', '-expected');
-    fs.writeFileSync(outExpectationsPath, fs.readFileSync(inputExpectationsPath, 'utf-8'));
-    fs.unlinkSync(inputExpectationsPath);
+    if (utils.isFile(inputExpectationsPath)) {
+      fs.writeFileSync(outExpectationsPath, fs.readFileSync(inputExpectationsPath, 'utf-8'));
+      fs.unlinkSync(inputExpectationsPath);
+    }
   }
 
   const newTestPaths = Array.from(oldToNewTestPath.values()).filter(x => x);
@@ -74,8 +93,10 @@ function main() {
     updateExpectationsFile(filePath);
   }
 
-  for (const [oldResourcesPath, newResourcesPath] of oldToNewResourcesPath)
+  for (const [oldResourcesPath, newResourcesPath] of oldToNewResourcesPath) {
     utils.copyRecursive(oldResourcesPath, path.dirname(newResourcesPath));
+    utils.removeRecursive(oldResourcesPath);
+  }
 
   function updateExpectationsFile(filePath) {
     const expectations = fs.readFileSync(filePath, 'utf-8');

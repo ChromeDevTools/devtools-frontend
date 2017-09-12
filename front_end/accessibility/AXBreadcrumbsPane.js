@@ -228,15 +228,8 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     this._selectedByUser = true;
 
     axNode.deferredDOMNode().resolve(domNode => {
-      var inspectedDOMNode = UI.context.flavor(SDK.DOMNode);
-      // Special case the root accessibility node: set the node for the
-      // accessibility panel, not the Elements tree, as it maps to the Document
-      // node which is not shown in the DOM panel, causing the first child to be
-      // inspected instead.
-      if (axNode.parentNode() && domNode !== inspectedDOMNode)
-        Common.Revealer.reveal(domNode, true /* omitFocus */);
-      else
-        this._axSidebarView.setNode(domNode);
+      this._axSidebarView.setNode(domNode, true /* fromAXTree */);
+      Common.Revealer.reveal(domNode, true /* omitFocus */);
     });
 
     return true;

@@ -124,6 +124,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
 
   _addOrigin(securityOrigin) {
     this._loadCacheNames(securityOrigin);
+    var parsedURL = securityOrigin.asParsedURL();
+    if (!parsedURL || !parsedURL.scheme.startsWith('http'))
+      return;
     this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
   }
 
@@ -138,6 +141,9 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
         this._cacheRemoved(cache);
       }
     }
+    var parsedURL = securityOrigin.asParsedURL();
+    if (!parsedURL || !parsedURL.scheme.startsWith('http'))
+      return;
     this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
   }
 

@@ -83,9 +83,23 @@ Resources.ServiceWorkersView = class extends UI.VBox {
 
   _updateSectionVisibility() {
     var securityOrigins = new Set(this._securityOriginManager.securityOrigins());
+    var matchingSections = new Set();
     for (var section of this._sections.values()) {
-      var visible = this._showAllCheckbox.checked() || securityOrigins.has(section._registration.securityOrigin);
-      section._section.element.classList.toggle('hidden', !visible);
+      if (securityOrigins.has(section._registration.securityOrigin))
+        matchingSections.add(section._section);
+    }
+
+    this._reportView.sortSections((a, b) => {
+      var aMatching = matchingSections.has(a);
+      var bMatching = matchingSections.has(b);
+      if (aMatching === bMatching)
+        return a.title().localeCompare(b.title());
+      return aMatching ? -1 : 1;
+    });
+
+    for (var section of this._sections.values()) {
+      var sameOrigin = securityOrigins.has(section._registration.securityOrigin);
+      section._section.element.classList.toggle('hidden', !this._showAllCheckbox.checked() && !sameOrigin);
     }
   }
 
@@ -139,8 +153,10 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   _updateRegistration(registration) {
     var section = this._sections.get(registration);
     if (!section) {
-      section =
-          new Resources.ServiceWorkersView.Section(this._manager, this._reportView.appendSection(''), registration);
+      section = new Resources.ServiceWorkersView.Section(
+          this._manager,
+          this._reportView.appendSection(Resources.ServiceWorkersView._displayScopeURL(registration.scopeURL)),
+          registration);
       this._sections.set(registration, section);
     }
     this._updateSectionVisibility();
@@ -161,8 +177,20 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   _removeRegistrationFromList(registration) {
     var section = this._sections.get(registration);
     if (section)
-      section._section.remove();
+      section._section.detach();
     this._sections.delete(registration);
+  }
+
+  /**
+   * @param {string} scopeURL
+   * @return {string}
+   */
+  static _displayScopeURL(scopeURL) {
+    var parsedURL = scopeURL.asParsedURL();
+    var path = parsedURL.path;
+    if (path.endsWith('/'))
+      path = path.substring(0, path.length - 1);
+    return parsedURL.host + path;
   }
 };
 
@@ -244,8 +272,8 @@ Resources.ServiceWorkersView.Section = class {
     this._toolbar.setEnabled(!this._registration.isDeleted);
 
     var versions = this._registration.versionsByMode();
-    var title = this._registration.isDeleted ? Common.UIString('%s - deleted', this._registration.scopeURL) :
-                                               this._registration.scopeURL;
+    var scopeURL = Resources.ServiceWorkersView._displayScopeURL(this._registration.scopeURL);
+    var title = this._registration.isDeleted ? Common.UIString('%s - deleted', scopeURL) : scopeURL;
     this._section.setTitle(title);
 
     var active = versions.get(SDK.ServiceWorkerVersion.Modes.Active);

@@ -18,17 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/http/tests/inspector/appcache',
-    '../../../../LayoutTests/http/tests/inspector/audits',
-    '../../../../LayoutTests/http/tests/inspector/cache-storage',
-    '../../../../LayoutTests/http/tests/inspector/debugger',
-    '../../../../LayoutTests/http/tests/inspector/elements',
-    '../../../../LayoutTests/http/tests/inspector/resource-tree',
-    '../../../../LayoutTests/http/tests/inspector/search',
-    '../../../../LayoutTests/http/tests/inspector/security',
-    '../../../../LayoutTests/http/tests/inspector/service-workers',
-    '../../../../LayoutTests/http/tests/inspector/sources',
-    '../../../../LayoutTests/http/tests/inspector/stacktraces',
+    '../../../../LayoutTests/http/tests/inspector/',
   ]);
 
   console.log(originalTests);

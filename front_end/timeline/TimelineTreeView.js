@@ -131,7 +131,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._threadSelector.setMaxWidth(230);
     this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
     toolbar.appendToolbarItem(this._threadSelector);
-    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'), 0, 0, true);
+    this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'));
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
     toolbar.appendToolbarItem(this._textFilterUI);
 

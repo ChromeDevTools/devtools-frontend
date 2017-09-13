@@ -575,16 +575,14 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {string} placeholder
    * @param {number=} growFactor
    * @param {number=} shrinkFactor
-   * @param {boolean=} isSearchField
    */
-  constructor(placeholder, growFactor, shrinkFactor, isSearchField) {
+  constructor(placeholder, growFactor, shrinkFactor) {
     super(createElementWithClass('div', 'toolbar-input'));
 
     this.input = this.element.createChild('input');
     this.input.addEventListener('focus', () => this.element.classList.add('focused'));
     this.input.addEventListener('blur', () => this.element.classList.remove('focused'));
     this.input.addEventListener('input', () => this._onChangeCallback(), false);
-    this._isSearchField = !!isSearchField;
     if (growFactor)
       this.element.style.flexGrow = growFactor;
     if (shrinkFactor)
@@ -592,8 +590,10 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     if (placeholder)
       this.input.setAttribute('placeholder', placeholder);
 
-    if (isSearchField)
-      this._setupSearchControls();
+    var clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
+    clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
+    clearButton.addEventListener('click', () => this._internalSetValue('', true));
+    this.input.addEventListener('keydown', event => this._onKeydownCallback(event));
 
     this._updateEmptyStyles();
   }
@@ -604,13 +604,6 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    */
   _applyEnabledState(enabled) {
     this.input.disabled = !enabled;
-  }
-
-  _setupSearchControls() {
-    var clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
-    clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
-    clearButton.addEventListener('click', () => this._internalSetValue('', true));
-    this.input.addEventListener('keydown', event => this._onKeydownCallback(event));
   }
 
   /**
@@ -642,7 +635,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _onKeydownCallback(event) {
-    if (!this._isSearchField || !isEscKey(event) || !this.input.value)
+    if (!isEscKey(event) || !this.input.value)
       return;
     this._internalSetValue('', true);
     event.consume(true);

@@ -73,7 +73,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._filterType = null;
 
     var placeholder = 'Enter regex, for example: (web)?socket';
-    this._filterTextInput = new UI.ToolbarInput(Common.UIString(placeholder), 0.4, undefined, true);
+    this._filterTextInput = new UI.ToolbarInput(Common.UIString(placeholder), 0.4);
     this._filterTextInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
     this._mainToolbar.appendToolbarItem(this._filterTextInput);
     this._filterRegex = null;

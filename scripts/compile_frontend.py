@@ -93,7 +93,7 @@ invalid_non_object_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or 
 error_warning_regex = re.compile(r'WARNING|ERROR')
 loaded_css_regex = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.createStyleElement)\s*\(\s*"(.+)"\s*\)')
 
-java_build_regex = re.compile(r'^\w+ version "(\d+)\.(\d+)')
+java_build_regex = re.compile(r'\w+ version "(\d+)\.(\d+)')
 
 
 def log_error(message):

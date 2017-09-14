@@ -124,10 +124,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
 
   _addOrigin(securityOrigin) {
     this._loadCacheNames(securityOrigin);
-    var parsedURL = securityOrigin.asParsedURL();
-    if (!parsedURL || !parsedURL.scheme.startsWith('http'))
-      return;
-    this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
+    if (this._isValidSecurityOrigin(securityOrigin))
+      this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
   }
 
   /**
@@ -141,10 +139,17 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
         this._cacheRemoved(cache);
       }
     }
+    if (this._isValidSecurityOrigin(securityOrigin))
+      this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
+  }
+
+  /**
+   * @param {string} securityOrigin
+   * @return {boolean}
+   */
+  _isValidSecurityOrigin(securityOrigin) {
     var parsedURL = securityOrigin.asParsedURL();
-    if (!parsedURL || !parsedURL.scheme.startsWith('http'))
-      return;
-    this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
+    return !!parsedURL && parsedURL.scheme.startsWith('http');
   }
 
   /**

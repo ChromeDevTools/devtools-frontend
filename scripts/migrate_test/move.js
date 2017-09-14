@@ -18,7 +18,7 @@ const FLAG_EXPECTATIONS_PATH = path.resolve(LAYOUT_TESTS_PATH, 'FlagExpectations
 
 function main() {
   const originalTests = scanForTests([
-    '../../../../LayoutTests/http/tests/inspector/',
+    '../../../../LayoutTests/http/tests/inspector-enabled/',
   ]);
 
   console.log(originalTests);
@@ -31,19 +31,17 @@ function main() {
     }
     const inputPath = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests', inputRelativePath);
     const inputResourcesPath = path.resolve(path.dirname(inputPath), 'resources');
-    const outPath = migrateUtils.getOutPath(inputPath, false);
+    const outPath = migrateUtils.getOutPath(inputPath, true);
     const outResourcesPath = path.resolve(path.dirname(outPath), 'resources');
 
-    debugger;
     if (utils.isDir(inputResourcesPath))
       oldToNewResourcesPath.set(inputResourcesPath, outResourcesPath);
     mkdirp.sync(path.dirname(outPath));
 
     const original = fs.readFileSync(inputPath, 'utf-8');
-    debugger;
     const updatedReferences = original.replace(/127.0.0.1:8000\/inspector/g, '127.0.0.1:8000/devtools')
                                   .replace(/script src="\.\//g, 'script src="')
-                                  .replace(/script src="..\/(?=.+-test)/g, 'script src="../../inspector/')
+                                  .replace(/script src="..\/(?=.+-test)/g, 'script src="../../')
                                   .replace(
                                       /script src="(?=\w.+-test)/g,
                                       `script src="${path.relative(path.dirname(outPath), path.dirname(inputPath))}/`)

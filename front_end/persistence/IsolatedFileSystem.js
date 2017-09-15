@@ -261,13 +261,59 @@ Persistence.IsolatedFileSystem = class {
 
   /**
    * @param {string} path
+   * @return {!Promise<?Blob>}
+   */
+  requestFileBlob(path) {
+    return new Promise(resolve => {
+      this._domFileSystem.root.getFile(path, undefined, entry => {
+        entry.file(resolve, errorHandler.bind(this));
+      }, errorHandler.bind(this));
+
+      /**
+       * @this {Persistence.IsolatedFileSystem}
+       */
+      function errorHandler(error) {
+        if (error.name === 'NotFoundError') {
+          resolve(null);
+          return;
+        }
+
+        var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
+        console.error(errorMessage + ' when getting content for file \'' + (this._path + '/' + path) + '\'');
+        resolve(null);
+      }
+    });
+  }
+
+  /**
+   * @param {string} path
    * @return {!Promise<?string>}
    */
-  requestFileContentPromise(path) {
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    this.requestFileContent(path, fulfill);
-    return promise;
+  async requestFileContentPromise(path) {
+    var blob = await this.requestFileBlob(path);
+    if (!blob)
+      return null;
+
+    var reader = new FileReader();
+    var fileContentsLoadedPromise = new Promise(resolve => reader.onloadend = resolve);
+    if (Persistence.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
+      reader.readAsDataURL(blob);
+    else
+      reader.readAsText(blob);
+    await fileContentsLoadedPromise;
+    if (reader.error) {
+      console.error('Can\'t read file: ' + path + ': ' + reader.error);
+      return null;
+    }
+    try {
+      var result = reader.result;
+    } catch (e) {
+      result = null;
+      console.error('Can\'t read file: ' + path + ': ' + e);
+    }
+    if (result === undefined)
+      return null;
+    return result;
   }
 
   /**
@@ -275,55 +321,7 @@ Persistence.IsolatedFileSystem = class {
    * @param {function(?string)} callback
    */
   requestFileContent(path, callback) {
-    this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
-
-    /**
-     * @param {!FileEntry} entry
-     * @this {Persistence.IsolatedFileSystem}
-     */
-    function fileEntryLoaded(entry) {
-      entry.file(fileLoaded, errorHandler.bind(this));
-    }
-
-    /**
-     * @param {!Blob} file
-     */
-    function fileLoaded(file) {
-      var reader = new FileReader();
-      reader.onloadend = readerLoadEnd;
-      if (Persistence.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
-        reader.readAsDataURL(file);
-      else
-        reader.readAsText(file);
-    }
-
-    /**
-     * @this {!FileReader}
-     */
-    function readerLoadEnd() {
-      /** @type {?string} */
-      var string = null;
-      try {
-        string = /** @type {string} */ (this.result);
-      } catch (e) {
-        console.error('Can\'t read file: ' + path + ': ' + e);
-      }
-      callback(string);
-    }
-
-    /**
-     * @this {Persistence.IsolatedFileSystem}
-     */
-    function errorHandler(error) {
-      if (error.name === 'NotFoundError') {
-        callback(null);
-        return;
-      }
-
-      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-      console.error(errorMessage + ' when getting content for file \'' + (this._path + '/' + path) + '\'');
-      callback(null);
-    }
+    this.requestFileContentPromise(path).then(callback);
   }
 
   /**

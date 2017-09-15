@@ -20,6 +20,16 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
     this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
+
+    var mode = Timeline.PerformanceMonitor.MetricMode;
+    /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricMode>} */
+    this._metricModes = new Map([
+      ['TaskDuration', mode.CumulativeTime], ['ScriptDuration', mode.CumulativeTime],
+      ['LayoutDuration', mode.CumulativeTime], ['RecalcStyleDuration', mode.CumulativeTime],
+      ['LayoutCount', mode.CumulativeCount], ['RecalcStyleCount', mode.CumulativeCount]
+    ]);
+    /** @type {!Map<string, !{lastValue: (number|undefined), lastTimestamp: (number|undefined)}>} */
+    this._metricData = new Map();
   }
 
   /**
@@ -63,22 +73,26 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     var metrics = new Map();
     var timestamp = performance.now();
     for (var metric of rawMetrics) {
-      var info = this._controlPane.metricInfo(metric.name);
+      var data = this._metricData.get(metric.name);
+      if (!data) {
+        data = {};
+        this._metricData.set(metric.name, data);
+      }
       var value;
-      switch (info.mode) {
-        case Timeline.PerformanceMonitor.Mode.CumulativeTime:
-          value = info.lastTimestamp ?
-              Number.constrain((metric.value - info.lastValue) * 1000 / (timestamp - info.lastTimestamp), 0, 1) :
+      switch (this._metricModes.get(metric.name)) {
+        case Timeline.PerformanceMonitor.MetricMode.CumulativeTime:
+          value = data.lastTimestamp ?
+              Number.constrain((metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
               0;
-          info.lastValue = metric.value;
-          info.lastTimestamp = timestamp;
+          data.lastValue = metric.value;
+          data.lastTimestamp = timestamp;
           break;
-        case Timeline.PerformanceMonitor.Mode.CumulativeCount:
-          value = info.lastTimestamp ?
-              Math.max(0, (metric.value - info.lastValue) * 1000 / (timestamp - info.lastTimestamp)) :
+        case Timeline.PerformanceMonitor.MetricMode.CumulativeCount:
+          value = data.lastTimestamp ?
+              Math.max(0, (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp)) :
               0;
-          info.lastValue = metric.value;
-          info.lastTimestamp = timestamp;
+          data.lastValue = metric.value;
+          data.lastTimestamp = timestamp;
           break;
         default:
           value = metric.value;
@@ -96,17 +110,6 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   _draw() {
-    /** @type {!Map<symbol, !Array<string>>} */
-    var charts = new Map();
-    for (var metricName of this._controlPane.metrics()) {
-      if (!this._controlPane.isActive(metricName))
-        continue;
-      var chartId = this._controlPane.metricInfo(metricName).chartId || Symbol('Chart');
-      if (!charts.has(chartId))
-        charts.set(chartId, []);
-      charts.get(chartId).push(metricName);
-    }
-
     var graphHeight = 90;
     var ctx = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     ctx.save();
@@ -114,8 +117,10 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ctx.clearRect(0, 0, this._width, this._height);
     this._drawHorizontalGrid(ctx);
     ctx.translate(0, 16);  // Reserve space for the scale bar.
-    for (var metrics of charts.values()) {
-      this._drawChart(ctx, metrics, graphHeight);
+    for (var chartInfo of this._controlPane.charts()) {
+      if (!this._controlPane.isActive(chartInfo.metrics[0].name))
+        continue;
+      this._drawChart(ctx, chartInfo, graphHeight);
       ctx.translate(0, graphHeight);
     }
     ctx.restore();
@@ -145,41 +150,36 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
-   * @param {!Array<string>} metrics
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
    * @param {number} height
    */
-  _drawChart(ctx, metrics, height) {
+  _drawChart(ctx, chartInfo, height) {
     ctx.save();
     ctx.rect(0, 0, this._width, height);
     ctx.clip();
     var bottomPadding = 8;
     var extraSpace = 1.05;
-    var max = this._calcMax(metrics) * extraSpace;
-    var info = this._controlPane.metricInfo(metrics[0]);
-    this._drawVerticalGrid(ctx, height - bottomPadding, max, info);
-    for (var metricName of metrics) {
-      if (!this._controlPane.isActive(metricName))
-        continue;
-      this._drawMetric(ctx, metricName, height - bottomPadding, max);
-    }
+    var max = this._calcMax(chartInfo) * extraSpace;
+    this._drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
+    for (var metricInfo of chartInfo.metrics)
+      this._drawMetric(ctx, chartInfo, metricInfo, height - bottomPadding, max);
     ctx.restore();
   }
 
   /**
-   * @param {!Array<string>} metricNames
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
    * @return {number}
    */
-  _calcMax(metricNames) {
+  _calcMax(chartInfo) {
+    if (chartInfo.max)
+      return chartInfo.max;
     var width = this._width;
     var startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
     var max = -Infinity;
-    for (var metricName of metricNames) {
-      var info = this._controlPane.metricInfo(metricName);
-      if (typeof info.max === 'number')
-        return info.max;
+    for (var metricInfo of chartInfo.metrics) {
       for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
         var metrics = this._metricsBuffer[i];
-        var value = metrics.metrics.get(metricName);
+        var value = metrics.metrics.get(metricInfo.name);
         max = Math.max(max, value);
         if (metrics.timestamp < startTime)
           break;
@@ -193,15 +193,15 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     max = Math.ceil(max / base10 / 2) * base10 * 2;
 
     var alpha = 0.1;
-    info.currentMax = max * alpha + (info.currentMax || max) * (1 - alpha);
-    return info.currentMax;
+    chartInfo.currentMax = max * alpha + (chartInfo.currentMax || max) * (1 - alpha);
+    return chartInfo.currentMax;
   }
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
    * @param {number} height
    * @param {number} max
-   * @param {!Timeline.PerformanceMonitor.Info} info
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
    */
   _drawVerticalGrid(ctx, height, max, info) {
     var base = Math.pow(10, Math.floor(Math.log10(max)));
@@ -243,21 +243,23 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
-   * @param {string} metricName
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!Timeline.PerformanceMonitor.MetricInfo} metricInfo
    * @param {number} height
    * @param {number} scaleMax
    */
-  _drawMetric(ctx, metricName, height, scaleMax) {
+  _drawMetric(ctx, chartInfo, metricInfo, height, scaleMax) {
     var topPadding = 5;
     var visibleHeight = height - topPadding;
     if (visibleHeight < 1)
       return;
     ctx.save();
     var span = scaleMax;
-    var info = this._controlPane.metricInfo(metricName);
+    var metricName = metricInfo.name;
+    var color = metricInfo.color;
     var pixelsPerMs = this._pixelsPerMs;
     var startTime = performance.now() - this._pollIntervalMs - this._width / pixelsPerMs;
-    var smooth = info.mode === Timeline.PerformanceMonitor.Mode.CumulativeTime;
+    var smooth = chartInfo.smooth;
 
     ctx.beginPath();
     ctx.moveTo(this._width + 5, calcY(0));
@@ -285,12 +287,12 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       if (metrics.timestamp < startTime)
         break;
     }
-    ctx.strokeStyle = info.color;
+    ctx.strokeStyle = color;
     ctx.lineWidth = 0.5;
     ctx.stroke();
     ctx.lineTo(x, calcY(0));
-    ctx.fillStyle = info.color;
-    ctx.globalAlpha = 0.02;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.05;
     ctx.fill();
     ctx.restore();
 
@@ -317,7 +319,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 };
 
 /** @enum {symbol} */
-Timeline.PerformanceMonitor.Mode = {
+Timeline.PerformanceMonitor.MetricMode = {
   CumulativeTime: Symbol('CumulativeTime'),
   CumulativeCount: Symbol('CumulativeCount'),
 };
@@ -328,24 +330,26 @@ Timeline.PerformanceMonitor.Format = {
   Bytes: Symbol('Bytes'),
 };
 
-/** @enum {symbol} */
-Timeline.PerformanceMonitor.ChartId = {
-  CPU: Symbol('CPU'),
-  Memory: Symbol('Memory'),
-};
-
 /**
  * @typedef {!{
  *   title: string,
- *   color: string,
- *   mode: (!Timeline.PerformanceMonitor.Mode|undefined),
+ *   metrics: !Array<!Timeline.PerformanceMonitor.MetricInfo>,
  *   max: (number|undefined),
  *   currentMax: (number|undefined),
  *   format: (!Timeline.PerformanceMonitor.Format|undefined),
- *   chartId: (!Timeline.PerformanceMonitor.ChartId|undefined)
+ *   smooth: (boolean|undefined)
  * }}
  */
-Timeline.PerformanceMonitor.Info;
+Timeline.PerformanceMonitor.ChartInfo;
+
+/**
+ * @typedef {!{
+ *   name: string,
+ *   color: string,
+ *   mode: (!Timeline.PerformanceMonitor.MetricMode|undefined)
+ * }}
+ */
+Timeline.PerformanceMonitor.MetricInfo;
 
 Timeline.PerformanceMonitor.ControlPane = class {
   /**
@@ -354,117 +358,69 @@ Timeline.PerformanceMonitor.ControlPane = class {
   constructor(parent) {
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
-    this._enabledMetricsSetting = Common.settings.createSetting('perfmonActiveIndicators2', [
-      'TaskDuration', 'ScriptDuration', 'LayoutDuration', 'RecalcStyleDuration', 'JSHeapTotalSize', 'JSHeapUsedSize',
-      'NodeCount'
-    ]);
+    this._enabledChartsSetting =
+        Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'NodeCount']);
     /** @type {!Set<string>} */
-    this._enabledMetrics = new Set(this._enabledMetricsSetting.get());
-    var mode = Timeline.PerformanceMonitor.Mode;
+    this._enabledCharts = new Set(this._enabledChartsSetting.get());
     var format = Timeline.PerformanceMonitor.Format;
-    var chartId = Timeline.PerformanceMonitor.ChartId;
-    /** @type {!Map<string, !Timeline.PerformanceMonitor.Info>} */
-    this._metricsInfo = new Map([
-      [
-        'TaskDuration', {
-          title: Common.UIString('CPU utilization'),
-          color: 'red',
-          mode: mode.CumulativeTime,
-          format: format.Percent,
-          chartId: chartId.CPU,
-          max: 1
-        }
-      ],
-      [
-        'ScriptDuration', {
-          title: Common.UIString('Script duration'),
-          color: 'orange',
-          mode: mode.CumulativeTime,
-          format: format.Percent,
-          chartId: chartId.CPU,
-          max: 1
-        }
-      ],
-      [
-        'LayoutDuration', {
-          title: Common.UIString('Layout duration'),
-          color: 'magenta',
-          mode: mode.CumulativeTime,
-          format: format.Percent,
-          chartId: chartId.CPU,
-          max: 1
-        }
-      ],
-      [
-        'RecalcStyleDuration', {
-          title: Common.UIString('Style recalc duration'),
-          color: 'violet',
-          mode: mode.CumulativeTime,
-          format: format.Percent,
-          chartId: chartId.CPU,
-          max: 1
-        }
-      ],
-      [
-        'JSHeapTotalSize', {
-          title: Common.UIString('Total JS heap size'),
-          format: format.Bytes,
-          chartId: chartId.Memory,
-          color: 'royalblue'
-        }
-      ],
-      [
-        'JSHeapUsedSize',
-        {title: Common.UIString('Used JS heap size'), format: format.Bytes, chartId: chartId.Memory, color: 'blue'}
-      ],
-      ['NodeCount', {title: Common.UIString('DOM Nodes'), color: 'green'}],
-      ['JSEventListenerCount', {title: Common.UIString('JS event listeners'), color: 'yellowgreen'}],
-      ['DocumentCount', {title: Common.UIString('Documents'), color: 'darkblue'}],
-      ['FrameCount', {title: Common.UIString('Frames'), color: 'darkcyan'}],
-      ['LayoutCount', {title: Common.UIString('Layouts / sec'), color: 'hotpink', mode: mode.CumulativeCount}],
-      [
-        'RecalcStyleCount',
-        {title: Common.UIString('Style recalcs / sec'), color: 'deeppink', mode: mode.CumulativeCount}
-      ],
-    ]);
-    for (var info of this._metricsInfo.values())
-      info.color = UI.themeSupport.patchColorText(info.color, UI.ThemeSupport.ColorUsage.Foreground);
 
+    /** @type {!Array<!Timeline.PerformanceMonitor.ChartInfo>} */
+    this._chartsInfo = [
+      {
+        title: Common.UIString('CPU usage'),
+        metrics: [
+          {name: 'TaskDuration', color: 'red'}, {name: 'ScriptDuration', color: 'orange'},
+          {name: 'LayoutDuration', color: 'blueviolet'}, {name: 'RecalcStyleDuration', color: 'violet'}
+        ],
+        format: format.Percent,
+        smooth: true,
+        max: 1
+      },
+      {
+        title: Common.UIString('JS heap size'),
+        metrics: [{name: 'JSHeapUsedSize', color: 'blue'}, {name: 'JSHeapTotalSize', color: '#99f'}],
+        format: format.Bytes,
+      },
+      {title: Common.UIString('DOM Nodes'), metrics: [{name: 'NodeCount', color: 'green'}]},
+      {title: Common.UIString('JS event listeners'), metrics: [{name: 'JSEventListenerCount', color: 'yellowgreen'}]},
+      {title: Common.UIString('Documents'), metrics: [{name: 'DocumentCount', color: 'darkblue'}]},
+      {title: Common.UIString('Frames'), metrics: [{name: 'FrameCount', color: 'darkcyan'}]},
+      {title: Common.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
+      {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
+    ];
+    for (var info of this._chartsInfo) {
+      for (var metric of info.metrics)
+        metric.color = UI.themeSupport.patchColorText(metric.color, UI.ThemeSupport.ColorUsage.Foreground);
+    }
+
+    /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricIndicator>} */
     this._indicators = new Map();
-    for (var metricName of this._metricsInfo.keys()) {
-      var info = this._metricsInfo.get(metricName);
-      var active = this._enabledMetrics.has(metricName);
+    for (var chartInfo of this._chartsInfo) {
+      var chartName = chartInfo.metrics[0].name;
+      var active = this._enabledCharts.has(chartName);
       var indicator = new Timeline.PerformanceMonitor.MetricIndicator(
-          this.element, info, active, this._onToggle.bind(this, metricName));
-      this._indicators.set(metricName, indicator);
+          this.element, chartInfo, active, this._onToggle.bind(this, chartName));
+      this._indicators.set(chartName, indicator);
     }
   }
 
   /**
-   * @param {string} metricName
+   * @param {string} chartName
    * @param {boolean} active
    */
-  _onToggle(metricName, active) {
+  _onToggle(chartName, active) {
     if (active)
-      this._enabledMetrics.add(metricName);
+      this._enabledCharts.add(chartName);
     else
-      this._enabledMetrics.delete(metricName);
-    this._enabledMetricsSetting.set(Array.from(this._enabledMetrics));
+      this._enabledCharts.delete(chartName);
+    this._enabledChartsSetting.set(Array.from(this._enabledCharts));
   }
 
   /**
-   * @return {!IteratorIterable<string>}
+   * @return {!Array<!Timeline.PerformanceMonitor.ChartInfo>}
    */
-  metrics() {
-    return this._metricsInfo.keys();
-  }
-
-  /**
-   * @param {string} metricName
-   * @return {!Timeline.PerformanceMonitor.Info}
-   */
-  metricInfo(metricName) {
-    return this._metricsInfo.get(metricName) || {};
+  charts() {
+    return this._chartsInfo;
   }
 
   /**
@@ -472,16 +428,16 @@ Timeline.PerformanceMonitor.ControlPane = class {
    * @return {boolean}
    */
   isActive(metricName) {
-    return this._enabledMetrics.has(metricName);
+    return this._enabledCharts.has(metricName);
   }
 
   /**
    * @param {!Map<string, number>} metrics
    */
   updateMetrics(metrics) {
-    for (const [name, indicator] of this._indicators) {
+    for (var name of this._indicators.keys()) {
       if (metrics.has(name))
-        indicator.setValue(metrics.get(name));
+        this._indicators.get(name).setValue(metrics.get(name));
     }
   }
 };
@@ -489,27 +445,28 @@ Timeline.PerformanceMonitor.ControlPane = class {
 Timeline.PerformanceMonitor.MetricIndicator = class {
   /**
    * @param {!Element} parent
-   * @param {!Timeline.PerformanceMonitor.Info} info
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
    * @param {boolean} active
    * @param {function(boolean)} onToggle
    */
   constructor(parent, info, active, onToggle) {
+    var color = info.metrics[0].color;
     this._info = info;
     this._active = active;
     this._onToggle = onToggle;
     this.element = parent.createChild('div', 'perfmon-indicator');
     this._swatchElement = this.element.createChild('div', 'perfmon-indicator-swatch');
-    this._swatchElement.style.borderColor = info.color;
+    this._swatchElement.style.borderColor = color;
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;
     this._valueElement = this.element.createChild('div', 'perfmon-indicator-value');
-    this._valueElement.style.color = info.color;
+    this._valueElement.style.color = color;
     this.element.addEventListener('click', () => this._toggleIndicator());
     this.element.classList.toggle('active', active);
   }
 
   /**
    * @param {number} value
-   * @param {!Timeline.PerformanceMonitor.Info} info
+   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
    * @return {string}
    */
   static _formatNumber(value, info) {

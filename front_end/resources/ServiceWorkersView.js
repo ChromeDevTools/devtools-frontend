@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /**
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
- * @unrestricted
  */
 Resources.ServiceWorkersView = class extends UI.VBox {
   constructor() {
@@ -17,6 +16,11 @@ Resources.ServiceWorkersView = class extends UI.VBox {
 
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();
+
+    /** @type {?SDK.ServiceWorkerManager} */
+    this._manager = null;
+    /** @type {?SDK.SecurityOriginManager} */
+    this._securityOriginManager = null;
 
     this._toolbar.appendToolbarItem(MobileThrottling.throttlingManager().createOfflineToolbarCheckbox());
     var updateOnReloadSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
@@ -58,8 +62,6 @@ Resources.ServiceWorkersView = class extends UI.VBox {
           SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._registrationUpdated, this),
       this._manager.addEventListener(
           SDK.ServiceWorkerManager.Events.RegistrationDeleted, this._registrationDeleted, this),
-      this._manager.addEventListener(
-          SDK.ServiceWorkerManager.Events.RegistrationErrorAdded, this._registrationErrorAdded, this),
       this._securityOriginManager.addEventListener(
           SDK.SecurityOriginManager.Events.SecurityOriginAdded, this._updateSectionVisibility, this),
       this._securityOriginManager.addEventListener(
@@ -136,25 +138,13 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _registrationErrorAdded(event) {
-    var registration = /** @type {!SDK.ServiceWorkerRegistration} */ (event.data['registration']);
-    var error = /** @type {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} */ (event.data['error']);
-    var section = this._sections.get(registration);
-    if (!section)
-      return;
-    section._addError(error);
-  }
-
-  /**
    * @param {!SDK.ServiceWorkerRegistration} registration
    */
   _updateRegistration(registration) {
     var section = this._sections.get(registration);
     if (!section) {
       section = new Resources.ServiceWorkersView.Section(
-          this._manager,
+          /** @type {!SDK.ServiceWorkerManager} */ (this._manager),
           this._reportView.appendSection(Resources.ServiceWorkersView._displayScopeURL(registration.scopeURL)),
           registration);
       this._sections.set(registration, section);
@@ -194,9 +184,6 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   }
 };
 
-/**
- * @unrestricted
- */
 Resources.ServiceWorkersView.Section = class {
   /**
    * @param {!SDK.ServiceWorkerManager} manager
@@ -207,6 +194,8 @@ Resources.ServiceWorkersView.Section = class {
     this._manager = manager;
     this._section = section;
     this._registration = registration;
+    /** @type {?symbol} */
+    this._fingerprint = null;
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
@@ -226,18 +215,13 @@ Resources.ServiceWorkersView.Section = class {
     this._toolbar.appendToolbarItem(this._deleteButton);
 
     // Preserve the order.
-    this._section.appendField(Common.UIString('Source'));
-    this._section.appendField(Common.UIString('Status'));
-    this._section.appendField(Common.UIString('Clients'));
-    this._section.appendField(Common.UIString('Errors'));
-    this._errorsList = this._wrapWidget(this._section.appendRow());
-    this._errorsList.classList.add('service-worker-error-stack', 'monospace', 'hidden');
+    this._sourceField = this._wrapWidget(this._section.appendField(Common.UIString('Source')));
+    this._statusField = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
+    this._clientsField = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
 
     this._linkifier = new Components.Linkifier();
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
     this._clientInfoCache = new Map();
-    for (var error of registration.errors)
-      this._addError(error);
     this._throttler = new Common.Throttler(500);
   }
 
@@ -261,6 +245,53 @@ Resources.ServiceWorkersView.Section = class {
   }
 
   /**
+   * @param {!Element} versionsStack
+   * @param {string} icon
+   * @param {string} label
+   * @return {!Element}
+   */
+  _addVersion(versionsStack, icon, label) {
+    var installingEntry = versionsStack.createChild('div', 'service-worker-version');
+    installingEntry.createChild('div', icon);
+    installingEntry.createChild('span').textContent = label;
+    return installingEntry;
+  }
+
+  /**
+   * @param {!SDK.ServiceWorkerVersion} version
+   */
+  _updateClientsField(version) {
+    this._clientsField.removeChildren();
+    this._section.setFieldVisible(Common.UIString('Clients'), version.controlledClients.length);
+    for (var client of version.controlledClients) {
+      var clientLabelText = this._clientsField.createChild('div', 'service-worker-client');
+      if (this._clientInfoCache.has(client)) {
+        this._updateClientInfo(
+            clientLabelText, /** @type {!Protocol.Target.TargetInfo} */ (this._clientInfoCache.get(client)));
+      }
+      this._manager.target().targetAgent().getTargetInfo(client).then(this._onClientInfo.bind(this, clientLabelText));
+    }
+  }
+
+  /**
+   * @param {!SDK.ServiceWorkerVersion} version
+   */
+  _updateSourceField(version) {
+    this._sourceField.removeChildren();
+    var fileName = Common.ParsedURL.extractName(version.scriptURL);
+    var name = this._sourceField.createChild('div', 'report-field-value-filename');
+    name.appendChild(Components.Linkifier.linkifyURL(version.scriptURL, {text: fileName}));
+    if (this._registration.errors.length) {
+      var errorsLabel = UI.createLabel(String(this._registration.errors.length), 'smallicon-error');
+      errorsLabel.classList.add('link');
+      errorsLabel.addEventListener('click', () => Common.console.show());
+      name.appendChild(errorsLabel);
+    }
+    this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =
+        Common.UIString('Received %s', new Date(version.scriptResponseTime * 1000).toLocaleString());
+  }
+
+  /**
    * @return {!Promise}
    */
   _update() {
@@ -279,24 +310,17 @@ Resources.ServiceWorkersView.Section = class {
     var active = versions.get(SDK.ServiceWorkerVersion.Modes.Active);
     var waiting = versions.get(SDK.ServiceWorkerVersion.Modes.Waiting);
     var installing = versions.get(SDK.ServiceWorkerVersion.Modes.Installing);
+    var redundant = versions.get(SDK.ServiceWorkerVersion.Modes.Redundant);
 
-    var statusValue = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
-    statusValue.removeChildren();
-    var versionsStack = statusValue.createChild('div', 'service-worker-version-stack');
+    this._statusField.removeChildren();
+    var versionsStack = this._statusField.createChild('div', 'service-worker-version-stack');
     versionsStack.createChild('div', 'service-worker-version-stack-bar');
 
     if (active) {
-      var scriptElement = this._section.appendField(Common.UIString('Source'));
-      scriptElement.removeChildren();
-      var fileName = Common.ParsedURL.extractName(active.scriptURL);
-      scriptElement.appendChild(Components.Linkifier.linkifyURL(active.scriptURL, {text: fileName}));
-      scriptElement.createChild('div', 'report-field-value-subtitle').textContent =
-          Common.UIString('Received %s', new Date(active.scriptResponseTime * 1000).toLocaleString());
-
-      var activeEntry = versionsStack.createChild('div', 'service-worker-version');
-      activeEntry.createChild('div', 'service-worker-active-circle');
-      activeEntry.createChild('span').textContent =
-          Common.UIString('#%s activated and is %s', active.id, active.runningStatus);
+      this._updateSourceField(active);
+      var activeEntry = this._addVersion(
+          versionsStack, 'service-worker-active-circle',
+          Common.UIString('#%s activated and is %s', active.id, active.runningStatus));
 
       if (active.isRunning() || active.isStarting()) {
         createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
@@ -305,24 +329,17 @@ Resources.ServiceWorkersView.Section = class {
       } else if (active.isStartable()) {
         createLink(activeEntry, Common.UIString('start'), this._startButtonClicked.bind(this));
       }
-
-      var clientsList = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
-      clientsList.removeChildren();
-      this._section.setFieldVisible(Common.UIString('Clients'), active.controlledClients.length);
-      for (var client of active.controlledClients) {
-        var clientLabelText = clientsList.createChild('div', 'service-worker-client');
-        if (this._clientInfoCache.has(client)) {
-          this._updateClientInfo(
-              clientLabelText, /** @type {!Protocol.Target.TargetInfo} */ (this._clientInfoCache.get(client)));
-        }
-        this._manager.target().targetAgent().getTargetInfo(client).then(this._onClientInfo.bind(this, clientLabelText));
-      }
+      this._updateClientsField(active);
+    } else if (redundant) {
+      this._updateSourceField(redundant);
+      var activeEntry = this._addVersion(
+          versionsStack, 'service-worker-redundant-circle', Common.UIString('#%s is redundant', redundant.id));
+      this._updateClientsField(redundant);
     }
 
     if (waiting) {
-      var waitingEntry = versionsStack.createChild('div', 'service-worker-version');
-      waitingEntry.createChild('div', 'service-worker-waiting-circle');
-      waitingEntry.createChild('span').textContent = Common.UIString('#%s waiting to activate', waiting.id);
+      var waitingEntry = this._addVersion(
+          versionsStack, 'service-worker-waiting-circle', Common.UIString('#%s waiting to activate', waiting.id));
       createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
       waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
           Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
@@ -330,25 +347,13 @@ Resources.ServiceWorkersView.Section = class {
         createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
     }
     if (installing) {
-      var installingEntry = versionsStack.createChild('div', 'service-worker-version');
-      installingEntry.createChild('div', 'service-worker-installing-circle');
-      installingEntry.createChild('span').textContent = Common.UIString('#%s installing', installing.id);
+      var installingEntry = this._addVersion(
+          versionsStack, 'service-worker-installing-circle', Common.UIString('#%s installing', installing.id));
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
           Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
         createLink(installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
     }
-
-    this._section.setFieldVisible(Common.UIString('Errors'), !!this._registration.errors.length);
-    var errorsValue = this._wrapWidget(this._section.appendField(Common.UIString('Errors')));
-    var errorsLabel = UI.createLabel(String(this._registration.errors.length), 'smallicon-error');
-    errorsLabel.classList.add('service-worker-errors-label');
-    errorsValue.appendChild(errorsLabel);
-    this._moreButton = createLink(
-        errorsValue,
-        this._errorsList.classList.contains('hidden') ? Common.UIString('details') : Common.UIString('hide'),
-        this._moreErrorsButtonClicked.bind(this));
-    createLink(errorsValue, Common.UIString('clear'), this._clearErrorsButtonClicked.bind(this));
 
     /**
      * @param {!Element} parent
@@ -363,18 +368,6 @@ Resources.ServiceWorkersView.Section = class {
       return span;
     }
     return Promise.resolve();
-  }
-
-  /**
-   * @param {!Protocol.ServiceWorker.ServiceWorkerErrorMessage} error
-   */
-  _addError(error) {
-    var target = this._targetForVersionId(error.versionId);
-    var message = this._errorsList.createChild('div');
-    if (this._errorsList.childElementCount > 100)
-      this._errorsList.firstElementChild.remove();
-    message.appendChild(this._linkifier.linkifyScriptLocation(target, null, error.sourceURL, error.lineNumber));
-    message.appendChild(UI.createLabel('#' + error.versionId + ': ' + error.errorMessage, 'smallicon-error'));
   }
 
   /**
@@ -455,20 +448,6 @@ Resources.ServiceWorkersView.Section = class {
    */
   _stopButtonClicked(versionId) {
     this._manager.stopWorker(versionId);
-  }
-
-  _moreErrorsButtonClicked() {
-    var newVisible = this._errorsList.classList.contains('hidden');
-    this._moreButton.textContent = newVisible ? Common.UIString('hide') : Common.UIString('details');
-    this._errorsList.classList.toggle('hidden', !newVisible);
-  }
-
-  _clearErrorsButtonClicked() {
-    this._errorsList.removeChildren();
-    this._registration.clearErrors();
-    this._scheduleUpdate();
-    if (!this._errorsList.classList.contains('hidden'))
-      this._moreErrorsButtonClicked();
   }
 
   /**

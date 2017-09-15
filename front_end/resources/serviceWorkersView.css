@@ -55,6 +55,7 @@
 }
 
 .service-worker-active-circle,
+.service-worker-redundant-circle,
 .service-worker-waiting-circle,
 .service-worker-installing-circle {
     position: relative;
@@ -78,6 +79,9 @@
     background-color: white;
 }
 
+.service-worker-redundant-circle {
+    background-color: gray;
+}
 
 .service-worker-subtitle {
     padding-left: 14px;

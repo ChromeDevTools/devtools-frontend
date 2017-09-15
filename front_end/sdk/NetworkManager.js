@@ -1239,21 +1239,41 @@ SDK.InterceptedRequest = class {
   }
 
   /**
-   * @param {string} content
-   * @param {string} mimeType
+   * @param {!Blob} contentBlob
    */
-  continueRequestWithContent(content, mimeType) {
+  async continueRequestWithContent(contentBlob) {
     this._hasResponded = true;
     var headers = [
       'HTTP/1.1 200 OK',
       'Date: ' + (new Date()).toUTCString(),
       'Server: Chrome Devtools Request Interceptor',
       'Connection: closed',
-      'Content-Length: ' + content.length,
-      'Content-Type: ' + mimeType,
+      'Content-Length: ' + contentBlob.size,
+      'Content-Type: ' + contentBlob.type || 'text/x-unknown',
     ];
-    var encodedResponse = (headers.join('\r\n') + '\r\n\r\n' + content).toBase64();
+    var encodedResponse = await blobToBase64(new Blob([headers.join('\r\n'), '\r\n\r\n', contentBlob]));
     this._networkAgent.continueInterceptedRequest(this._interceptionId, undefined, encodedResponse);
+
+    /**
+     * @param {!Blob} blob
+     * @return {!Promise<string>}
+     */
+    async function blobToBase64(blob) {
+      var reader = new FileReader();
+      var fileContentsLoadedPromise = new Promise(resolve => reader.onloadend = resolve);
+      reader.readAsDataURL(blob);
+      await fileContentsLoadedPromise;
+      if (reader.error) {
+        console.error('Could not convert blob to base64.', reader.error);
+        return '';
+      }
+      var result = reader.result;
+      if (result === undefined) {
+        console.error('Could not convert blob to base64.');
+        return '';
+      }
+      return result.substring(result.indexOf(',') + 1);
+    }
   }
 
   continueRequestWithoutChange() {

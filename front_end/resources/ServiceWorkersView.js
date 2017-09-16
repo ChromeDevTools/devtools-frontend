@@ -100,8 +100,10 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     });
 
     for (var section of this._sections.values()) {
-      var sameOrigin = securityOrigins.has(section._registration.securityOrigin);
-      section._section.element.classList.toggle('hidden', !this._showAllCheckbox.checked() && !sameOrigin);
+      if (this._showAllCheckbox.checked() || securityOrigins.has(section._registration.securityOrigin))
+        section._section.showWidget();
+      else
+        section._section.hideWidget();
     }
   }
 
@@ -196,19 +198,15 @@ Resources.ServiceWorkersView.Section = class {
     this._registration = registration;
     /** @type {?symbol} */
     this._fingerprint = null;
+    this._pushNotificationDataSetting =
+        Common.settings.createLocalSetting('pushData', Common.UIString('Test push message from DevTools.'));
+    this._syncTagNameSetting = Common.settings.createLocalSetting('syncTagName', 'test-tag-from-devtools');
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
     this._updateButton = new UI.ToolbarButton(Common.UIString('Update'), undefined, Common.UIString('Update'));
     this._updateButton.addEventListener(UI.ToolbarButton.Events.Click, this._updateButtonClicked, this);
     this._toolbar.appendToolbarItem(this._updateButton);
-    this._pushButton = new UI.ToolbarButton(Common.UIString('Emulate push event'), undefined, Common.UIString('Push'));
-    this._pushButton.addEventListener(UI.ToolbarButton.Events.Click, this._pushButtonClicked, this);
-    this._toolbar.appendToolbarItem(this._pushButton);
-    this._syncButton =
-        new UI.ToolbarButton(Common.UIString('Emulate background sync event'), undefined, Common.UIString('Sync'));
-    this._syncButton.addEventListener(UI.ToolbarButton.Events.Click, this._syncButtonClicked, this);
-    this._toolbar.appendToolbarItem(this._syncButton);
     this._deleteButton =
         new UI.ToolbarButton(Common.UIString('Unregister service worker'), undefined, Common.UIString('Unregister'));
     this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._unregisterButtonClicked, this);
@@ -218,11 +216,58 @@ Resources.ServiceWorkersView.Section = class {
     this._sourceField = this._wrapWidget(this._section.appendField(Common.UIString('Source')));
     this._statusField = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
     this._clientsField = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
+    this._createPushNotificationField();
+    this._createSyncNotificationField();
 
     this._linkifier = new Components.Linkifier();
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
     this._clientInfoCache = new Map();
     this._throttler = new Common.Throttler(500);
+  }
+
+  _createPushNotificationField() {
+    var form = this._wrapWidget(this._section.appendField(Common.UIString('Push')))
+                   .createChild('form', 'service-worker-editor-with-button');
+    var editorContainer = form.createChild('div', 'service-worker-notification-editor');
+    var button = UI.createTextButton(Common.UIString('Push'));
+    button.type = 'submit';
+    form.appendChild(button);
+
+    var editorOptions =
+        {lineNumbers: false, lineWrapping: true, autoHeight: true, padBottom: false, mimeType: 'application/json'};
+    var editor = new TextEditor.CodeMirrorTextEditor(editorOptions);
+    editor.setText(this._pushNotificationDataSetting.get());
+    editor.addEventListener(UI.TextEditor.Events.TextChanged, () => button.disabled = !editor.text());
+    editor.element.addEventListener('keydown', e => {
+      if (e.key === 'Tab')
+        e.consume(false);
+    }, true);
+    editor.show(editorContainer);
+    form.addEventListener('submit', e => {
+      var payload = editor.text();
+      if (payload)
+        this._push(payload);
+      e.consume(true);
+    });
+  }
+
+  _createSyncNotificationField() {
+    var form = this._wrapWidget(this._section.appendField(Common.UIString('Sync')))
+                   .createChild('form', 'service-worker-editor-with-button');
+    var editor = form.createChild('input', 'source-code service-worker-notification-editor');
+    var button = UI.createTextButton(Common.UIString('Sync'));
+    button.type = 'submit';
+    form.appendChild(button);
+
+    editor.value = this._syncTagNameSetting.get();
+    editor.placeholder = Common.UIString('Sync tag');
+    editor.addEventListener('input', () => button.disabled = !editor.value);
+
+    form.addEventListener('submit', e => {
+      if (editor.value)
+        this._sync(true, editor.value);
+      e.consume(true);
+    });
   }
 
   _scheduleUpdate() {
@@ -385,19 +430,19 @@ Resources.ServiceWorkersView.Section = class {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {string} data
    */
-  _pushButtonClicked(event) {
-    var data = 'Test push message from DevTools.';
+  _push(data) {
+    this._pushNotificationDataSetting.set(data);
     this._manager.deliverPushMessage(this._registration.id, data);
   }
 
   /**
-   * @param {!Common.Event} event
+   * @param {boolean} lastChance
+   * @param {string} tag
    */
-  _syncButtonClicked(event) {
-    var tag = 'test-tag-from-devtools';
-    var lastChance = true;
+  _sync(lastChance, tag) {
+    this._syncTagNameSetting.set(tag);
     this._manager.dispatchSyncEvent(this._registration.id, tag, lastChance);
   }
 

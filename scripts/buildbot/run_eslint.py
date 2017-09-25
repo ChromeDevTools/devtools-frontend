@@ -8,7 +8,9 @@ import sys
 
 scripts_path = path.dirname(path.dirname(path.abspath(__file__)))
 devtools_path = path.dirname(scripts_path)
-eslint_path = path.join(devtools_path, "devtools-node-modules", "third_party", "node_modules", ".bin", "eslint")
+eslint_path = path.join(devtools_path, path.pardir, path.pardir, path.pardir,
+                        "devtools-node-modules", "third_party", "node_modules",
+                        ".bin", "eslint")
 node_path = path.join(scripts_path, "local_node", "runtimes", "4.5.0", "bin", "node")
 
 eslint_proc = subprocess.Popen(

@@ -1243,12 +1243,12 @@ group("devtools_eslint") {
     # Needed for isolate script to execute.
     ".eslintignore",
     ".eslintrc.js",
-    "devtools-node-modules/",
     "front_end/",
     "scripts/buildbot/run_eslint.py",
     "scripts/local_node/",
     "//testing/scripts/common.py",
     "//testing/scripts/run_devtools_check.py",
     "//testing/xvfb.py",
+    "//third_party/devtools-node-modules/",
   ]
 }

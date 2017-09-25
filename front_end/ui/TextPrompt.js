@@ -202,6 +202,16 @@ UI.TextPrompt = class extends Common.Object {
       this._element.removeAttribute('data-placeholder');
   }
 
+  /**
+   * @param {boolean} enabled
+   */
+  setEnabled(enabled) {
+    if (enabled)
+      this._element.setAttribute('contenteditable', 'plaintext-only');
+    else
+      this._element.removeAttribute('contenteditable');
+  }
+
   _removeFromElement() {
     this.clearAutocomplete();
     this._element.removeEventListener('keydown', this._boundOnKeyDown, false);

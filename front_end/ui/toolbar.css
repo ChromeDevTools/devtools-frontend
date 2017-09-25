@@ -223,8 +223,8 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 
 .toolbar-input {
     width: 120px;
-    height: 20px;
-    padding: 3px;
+    height: 19px;
+    padding: 4px 3px 3px 3px;
     margin: 1px 3px;
     background-color: white;
     border: solid 1px #d8d8d8;
@@ -255,6 +255,17 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 
 .toolbar-input-empty .toolbar-input-clear-button {
     display: none;
+}
+
+.toolbar-prompt-proxy {
+    flex: 1;
+}
+
+.toolbar-input-prompt {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: auto;
 }
 
 /* Separator */

@@ -79,6 +79,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
       fontPreview.createTextChild(SourceFrame.FontView._fontPreviewLines[i]);
     }
     this.fontPreviewElement = fontPreview.cloneNode(true);
+    this.fontPreviewElement.style.overflow = 'hidden';
     this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
     this.fontPreviewElement.style.setProperty('visibility', 'hidden');
 

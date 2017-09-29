@@ -290,7 +290,7 @@ Sources.WatchExpression = class extends Common.Object {
    */
   _finishEditing(event, canceled) {
     if (event)
-      event.consume(true);
+      event.consume(canceled);
 
     this._editing = false;
     this._textPrompt.detach();

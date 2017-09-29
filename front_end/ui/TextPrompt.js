@@ -296,6 +296,8 @@ UI.TextPrompt = class extends Common.Object {
       case 'Control':
         break;
     }
+    if (isEnterKey(event))
+      event.preventDefault();
 
     if (!handled && this._isSuggestBoxVisible())
       handled = this._suggestBox.keyPressed(event);

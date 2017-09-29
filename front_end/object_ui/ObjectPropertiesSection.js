@@ -880,7 +880,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
    */
   _promptKeyDown(originalContent, event) {
     if (isEnterKey(event)) {
-      event.consume(true);
+      event.consume();
       this._editingCommitted(originalContent);
       return;
     }

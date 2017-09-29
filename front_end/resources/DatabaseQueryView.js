@@ -98,7 +98,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _enterKeyPressed(event) {
-    event.consume(true);
+    event.consume();
 
     this._prompt.clearAutocomplete();
 

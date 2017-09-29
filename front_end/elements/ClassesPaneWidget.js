@@ -52,7 +52,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
       return;
 
     if (isEnterKey(event)) {
-      event.consume(true);
+      event.consume();
       if (this._prompt.acceptAutoComplete())
         return;
     }

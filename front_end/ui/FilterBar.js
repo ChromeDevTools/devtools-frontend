@@ -179,8 +179,6 @@ UI.TextFilterUI = class extends Common.Object {
     this._proxyElement = this._prompt.attach(this._filterInputElement);
     this._proxyElement.title = Common.UIString('e.g. /small[\\d]+/ url:a.com/b');
     this._prompt.setPlaceholder(Common.UIString('Filter'));
-
-    this._proxyElement.addEventListener('keydown', this._onInputKeyDown.bind(this), false);
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._valueChanged.bind(this));
 
     /** @type {?function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>} */
@@ -243,14 +241,6 @@ UI.TextFilterUI = class extends Common.Object {
 
   _valueChanged() {
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onInputKeyDown(event) {
-    if (isEnterKey(event))
-      event.consume(true);
   }
 };
 

@@ -643,8 +643,6 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {!Event} event
    */
   _onKeydownCallback(event) {
-    if (isEnterKey(event))
-      event.consume(true);
     if (!isEscKey(event) || !this._prompt.text())
       return;
     this._internalSetValue('', true);

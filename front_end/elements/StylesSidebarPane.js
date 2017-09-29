@@ -2600,7 +2600,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     var result;
 
     if (isEnterKey(event)) {
-      event.preventDefault();
       result = 'forward';
     } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
       result = 'cancel';

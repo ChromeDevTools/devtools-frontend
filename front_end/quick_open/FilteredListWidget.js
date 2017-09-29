@@ -202,7 +202,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @param {!Event} event
    */
   _onEnter(event) {
-    event.preventDefault();
     if (!this._provider)
       return;
     var selectedIndexInProvider = this._provider.itemCount() ? this._list.selectedItem() : null;

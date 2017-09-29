@@ -570,10 +570,6 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
       case 'activeModalDialog':
         reasonElement = UI.formatLocalized('Element is hidden by active modal dialog:\u00a0', []);
         break;
-      case 'ancestorDisallowsChild':
-        reasonElement = UI.formatLocalized('Element is not permitted as child of ', []);
-        break;
-      // http://www.w3.org/TR/wai-aria/roles#childrenArePresentational
       case 'ancestorIsLeafNode':
         reasonElement = UI.formatLocalized('Ancestor\'s children are all presentational:\u00a0', []);
         break;
@@ -581,7 +577,7 @@ Accessibility.AXNodeIgnoredReasonTreeElement = class extends Accessibility.AXNod
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         reasonElement = UI.formatLocalized('Element is %s.', [ariaHiddenSpan]);
         break;
-      case 'ariaHiddenSubTree':
+      case 'ariaHiddenSubtree':
         var ariaHiddenSpan = createElement('span', 'source-code').textContent = 'aria-hidden';
         var trueSpan = createElement('span', 'source-code').textContent = 'true';
         reasonElement = UI.formatLocalized('%s is %s on ancestor:\u00a0', [ariaHiddenSpan, trueSpan]);

@@ -762,12 +762,13 @@ Console.ConsoleViewMessage = class {
 
     /**
      * @param {boolean} force
+     * @param {boolean} includePreview
      * @param {!SDK.RemoteObject} obj
      * @return {!Element}
      * @this {Console.ConsoleViewMessage}
      */
-    function parameterFormatter(force, obj) {
-      return this._formatParameter(obj, force, false);
+    function parameterFormatter(force, includePreview, obj) {
+      return this._formatParameter(obj, force, includePreview);
     }
 
     function stringFormatter(obj) {
@@ -815,7 +816,7 @@ Console.ConsoleViewMessage = class {
     }
 
     // Firebug uses %o for formatting objects.
-    formatters.o = parameterFormatter.bind(this, false);
+    formatters.o = parameterFormatter.bind(this, false /* force */, true /* includePreview */);
     formatters.s = stringFormatter;
     formatters.f = floatFormatter;
     // Firebug allows both %i and %d for formatting integers.
@@ -826,7 +827,7 @@ Console.ConsoleViewMessage = class {
     formatters.c = styleFormatter;
 
     // Support %O to force object formatting, instead of the type-based %o formatting.
-    formatters.O = parameterFormatter.bind(this, true);
+    formatters.O = parameterFormatter.bind(this, true /* force */, false /* includePreview */);
 
     formatters._ = bypassFormatter;
 

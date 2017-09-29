@@ -697,9 +697,10 @@ Elements.ElementsPanel = class extends UI.Panel {
 
   /**
    * @param {!SDK.DOMNode} node
+   * @param {boolean} focus
    * @return {!Promise}
    */
-  revealAndSelectNode(node) {
+  revealAndSelectNode(node, focus) {
     if (Elements.inspectElementModeController && Elements.inspectElementModeController.isInInspectElementMode())
       Elements.inspectElementModeController.stopInspection();
 
@@ -708,8 +709,8 @@ Elements.ElementsPanel = class extends UI.Panel {
     node = Common.moduleSetting('showUAShadowDOM').get() ? node : this._leaveUserAgentShadowDOM(node);
     node.highlightForTwoSeconds();
 
-    return UI.viewManager.showView('elements').then(() => {
-      this.selectDOMNode(node, true);
+    return UI.viewManager.showView('elements', false, !focus).then(() => {
+      this.selectDOMNode(node, focus);
       delete this._omitDefaultSelection;
 
       if (!this._notFirstInspectElement)
@@ -887,9 +888,10 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
   /**
    * @override
    * @param {!Object} node
+   * @param {boolean=} omitFocus
    * @return {!Promise}
    */
-  reveal(node) {
+  reveal(node, omitFocus) {
     var panel = Elements.ElementsPanel.instance();
     panel._pendingNodeReveal = true;
 
@@ -922,7 +924,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
         panel._pendingNodeReveal = false;
 
         if (resolvedNode) {
-          panel.revealAndSelectNode(resolvedNode).then(resolve);
+          panel.revealAndSelectNode(resolvedNode, !omitFocus).then(resolve);
           return;
         }
         reject(new Error('Could not resolve node to reveal.'));

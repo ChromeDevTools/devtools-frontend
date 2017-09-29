@@ -346,9 +346,10 @@ UI.ViewManager = class {
   /**
    * @param {string} viewId
    * @param {boolean=} userGesture
+   * @param {boolean=} omitFocus
    * @return {!Promise}
    */
-  showView(viewId, userGesture) {
+  showView(viewId, userGesture, omitFocus) {
     var view = this._views.get(viewId);
     if (!view) {
       console.error('Could not find view for id: \'' + viewId + '\' ' + new Error().stack);
@@ -362,14 +363,14 @@ UI.ViewManager = class {
     var location = view[UI.ViewManager._Location.symbol];
     if (location) {
       location._reveal();
-      return location.showView(view, undefined, userGesture);
+      return location.showView(view, undefined, userGesture, omitFocus);
     }
 
     return this._resolveLocation(locationName).then(location => {
       if (!location)
         throw new Error('Could not resolve location for view: ' + viewId);
       location._reveal();
-      return location.showView(view, undefined, userGesture);
+      return location.showView(view, undefined, userGesture, omitFocus);
     });
   }
 
@@ -747,12 +748,14 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
    * @param {!UI.View} view
    * @param {?UI.View=} insertBefore
    * @param {boolean=} userGesture
+   * @param {boolean=} omitFocus
    * @return {!Promise}
    */
-  showView(view, insertBefore, userGesture) {
+  showView(view, insertBefore, userGesture, omitFocus) {
     this.appendView(view, insertBefore);
     this._tabbedPane.selectTab(view.viewId(), userGesture);
-    this._tabbedPane.focus();
+    if (!omitFocus)
+      this._tabbedPane.focus();
     var widget = /** @type {!UI.ViewManager._ContainerWidget} */ (this._tabbedPane.tabView(view.viewId()));
     return widget._materialize();
   }

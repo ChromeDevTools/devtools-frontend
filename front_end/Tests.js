@@ -974,6 +974,13 @@
     }
   };
 
+  TestSuite.prototype.testDOMWarnings = function() {
+    var messages = ConsoleModel.consoleModel.messages();
+    this.assertEquals(1, messages.length);
+    var expectedPrefix = '[DOM] Found 2 elements with non-unique id #dup:';
+    this.assertTrue(messages[0].messageText.startsWith(expectedPrefix));
+  };
+
   TestSuite.prototype.waitForTestResultsInConsole = function() {
     var messages = ConsoleModel.consoleModel.messages();
     for (var i = 0; i < messages.length; ++i) {

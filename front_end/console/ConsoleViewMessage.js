@@ -256,13 +256,17 @@ Console.ConsoleViewMessage = class {
         messageElement = this._format([messageText]);
       }
     } else {
+      var messageInParameters =
+          this._message.parameters && messageText === /** @type {string} */ (this._message.parameters[0]);
       if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
         messageText = Common.UIString('[Violation] %s', messageText);
       else if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Intervention)
         messageText = Common.UIString('[Intervention] %s', messageText);
-      if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation)
+      else if (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation)
         messageText = Common.UIString('[Deprecation] %s', messageText);
       var args = this._message.parameters || [messageText];
+      if (messageInParameters)
+        args[0] = messageText;
       messageElement = this._format(args);
     }
     messageElement.classList.add('console-message-text');
@@ -1031,6 +1035,7 @@ Console.ConsoleViewMessage = class {
         case ConsoleModel.ConsoleMessage.MessageSource.Violation:
         case ConsoleModel.ConsoleMessage.MessageSource.Deprecation:
         case ConsoleModel.ConsoleMessage.MessageSource.Intervention:
+        case ConsoleModel.ConsoleMessage.MessageSource.Recommendation:
           this._element.classList.add('console-warning-level');
           break;
       }

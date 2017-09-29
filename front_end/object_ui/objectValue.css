@@ -54,10 +54,9 @@
 }
 
 .object-value-node {
-    color: rgb(136, 18, 128);
     position: relative;
     vertical-align: baseline;
-    color: inherit;
+    color: rgb(48, 57, 66);
     display: inline-block;
 }
 

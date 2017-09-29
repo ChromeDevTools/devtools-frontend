@@ -3480,7 +3480,8 @@ category:'UX',
 name:'password-inputs-can-be-pasted-into',
 description:'Allows users to paste into password fields',
 failureDescription:'Prevents users to paste into password fields',
-helpText:'',
+helpText:'Preventing password pasting undermines good security policy. '+
+'[Learn more](https://www.ncsc.gov.uk/blog-post/let-them-paste-passwords)',
 requiredArtifacts:['PasswordInputsWithPreventedPaste']};
 
 }
@@ -8885,12 +8886,16 @@ throw new Error(
 if(typeof auditDefinition.meta.failureDescription!=='string'&&
 auditDefinition.meta.informative!==true&&
 auditDefinition.meta.scoringMode!==Audit.SCORING_MODES.NUMERIC){
-log.warn('config',`${auditName} has no failureDescription and should.`);
+throw new Error(`${auditName} has no failureDescription and should.`);
 }
 
 if(typeof auditDefinition.meta.helpText!=='string'){
 throw new Error(
 `${auditName} has no meta.helpText property, or the property is not a string.`);
+
+}else if(auditDefinition.meta.helpText===''){
+throw new Error(
+`${auditName} has an empty meta.helpText string. Please add a description for the UI.`);
 
 }
 
@@ -10714,9 +10719,14 @@ if(typeof maxWaitMs!=='number')maxWaitMs=Driver.MAX_WAIT_FOR_FULLY_LOADED;
 
 
 return this._beginNetworkStatusMonitoring(url).
-then(_=>this.sendCommand('Page.enable')).
-then(_=>this.sendCommand('Emulation.setScriptExecutionDisabled',{value:disableJS})).
-then(_=>this.sendCommand('Page.navigate',{url})).
+then(_=>{
+
+
+
+this.sendCommand('Page.enable');
+this.sendCommand('Emulation.setScriptExecutionDisabled',{value:disableJS});
+this.sendCommand('Page.navigate',{url});
+}).
 then(_=>waitForLoad&&this._waitForFullyLoaded(pauseAfterLoadMs,
 networkQuietThresholdMs,cpuQuietThresholdMs,maxWaitMs)).
 then(_=>this._endNetworkStatusMonitoring());
@@ -48901,6 +48911,6 @@ calculateSpeedIndexes};
 
 },{"image-ssim":105}],115:[function(require,module,exports){
 module.exports={
-"version":"2.3.0"};
+"version":"2.3.1"};
 
 },{}]},{},[35]);

@@ -204,7 +204,9 @@ Coverage.CoverageListView = class extends UI.VBox {
     var types = [];
     if (type & Coverage.CoverageType.CSS)
       types.push(Common.UIString('CSS'));
-    if (type & Coverage.CoverageType.JavaScript)
+    if (type & Coverage.CoverageType.JavaScriptCoarse)
+      types.push(Common.UIString('JS (coarse)'));
+    else if (type & Coverage.CoverageType.JavaScript)
       types.push(Common.UIString('JS'));
     return types.join('+');
   }
@@ -271,6 +273,8 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         break;
       case 'type':
         cell.textContent = Coverage.CoverageListView._typeToString(this._coverageInfo.type());
+        if (this._coverageInfo.type() & Coverage.CoverageType.JavaScriptCoarse)
+          cell.title = Common.UIString('JS coverage is function-level only. Reload the page for block-level coverage.');
         break;
       case 'size':
         cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);

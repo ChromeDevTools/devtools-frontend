@@ -150,6 +150,13 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
   stopPreciseCoverage() {
     return this._profilerAgent.stopPreciseCoverage();
   }
+
+  /**
+   * @return {!Promise<!Array<!Protocol.Profiler.ScriptCoverage>>}
+   */
+  bestEffortCoverage() {
+    return this._profilerAgent.getBestEffortCoverage().then(result => result || []);
+  }
 };
 
 SDK.SDKModel.register(SDK.CPUProfilerModel, SDK.Target.Capability.JS, true);

@@ -18,6 +18,11 @@ CoverageTestRunner.stopCoverage = function() {
   return coverageView._stopRecording();
 };
 
+CoverageTestRunner.pollCoverage = function() {
+  var coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  return coverageView._poll();
+};
+
 CoverageTestRunner.sourceDecorated = async function(source) {
   await UI.inspectorView.showPanel('sources');
   var decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, '_innerDecorate');

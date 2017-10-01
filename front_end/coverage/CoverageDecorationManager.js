@@ -31,9 +31,13 @@ Coverage.CoverageDecorationManager = class {
     Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 
-  dispose() {
+  reset() {
     for (var uiSourceCode of Workspace.workspace.uiSourceCodes())
       uiSourceCode.removeDecorationsForType(Coverage.CoverageDecorationManager._decoratorType);
+  }
+
+  dispose() {
+    this.reset();
     Workspace.workspace.removeEventListener(
         Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }

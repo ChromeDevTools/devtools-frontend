@@ -14,6 +14,7 @@ Coverage.CoverageSegment;
 Coverage.CoverageType = {
   CSS: (1 << 0),
   JavaScript: (1 << 1),
+  JavaScriptCoarse: (1 << 2),
 };
 
 Coverage.CoverageModel = class extends SDK.SDKModel {
@@ -30,6 +31,8 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     this._coverageByURL = new Map();
     /** @type {!Map<!Common.ContentProvider, !Coverage.CoverageInfo>} */
     this._coverageByContentProvider = new Map();
+    /** @type {?Promise<!Array<!Protocol.Profiler.ScriptCoverage>>} */
+    this._bestEffortCoveragePromise = null;
   }
 
   /**
@@ -42,8 +45,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       this._clearCSS();
       this._cssModel.startCoverage();
     }
-    if (this._cpuProfilerModel)
+    if (this._cpuProfilerModel) {
+      this._bestEffortCoveragePromise = this._cpuProfilerModel.bestEffortCoverage();
       this._cpuProfilerModel.startPreciseCoverage();
+    }
     return !!(this._cssModel || this._cpuProfilerModel);
   }
 
@@ -57,6 +62,11 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     if (this._cssModel)
       this._cssModel.stopCoverage();
     return pollPromise;
+  }
+
+  reset() {
+    this._coverageByURL = new Map();
+    this._coverageByContentProvider = new Map();
   }
 
   /**
@@ -109,6 +119,11 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     if (!this._cpuProfilerModel)
       return [];
     var rawCoverageData = await this._cpuProfilerModel.takePreciseCoverage();
+    if (this._bestEffortCoveragePromise) {
+      var bestEffortCoverage = await this._bestEffortCoveragePromise;
+      this._bestEffortCoveragePromise = null;
+      rawCoverageData = bestEffortCoverage.concat(rawCoverageData);
+    }
     return this._processJSCoverage(rawCoverageData);
   }
 
@@ -123,11 +138,18 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       if (!script)
         continue;
       var ranges = [];
+      var type = Coverage.CoverageType.JavaScript;
       for (var func of entry.functions) {
+        // Do not coerce undefined to false, i.e. only consider blockLevel to be false
+        // if back-end explicitly provides blockLevel field, otherwise presume blockLevel
+        // coverage is not available. Also, ignore non-block level functions that weren't
+        // ever called.
+        if (func.isBlockCoverage === false && !(func.ranges.length === 1 && !func.ranges[0].count))
+          type |= Coverage.CoverageType.JavaScriptCoarse;
         for (var range of func.ranges)
           ranges.push(range);
       }
-      var entry = this._addCoverage(script, script.contentLength, script.lineOffset, script.columnOffset, ranges);
+      var entry = this._addCoverage(script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type);
       if (entry)
         updatedEntries.push(entry);
     }
@@ -168,7 +190,7 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       var ranges = /** @type {!Array<!Coverage.RangeUseCount>} */ (entry[1]);
       var entry = this._addCoverage(
           styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn,
-          ranges);
+          ranges, Coverage.CoverageType.CSS);
       if (entry)
         updatedEntries.push(entry);
     }
@@ -226,9 +248,10 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
    * @param {number} startLine
    * @param {number} startColumn
    * @param {!Array<!Coverage.RangeUseCount>} ranges
+   * @param {!Coverage.CoverageType} type
    * @return {?Coverage.CoverageInfo}
    */
-  _addCoverage(contentProvider, contentLength, startLine, startColumn, ranges) {
+  _addCoverage(contentProvider, contentLength, startLine, startColumn, ranges, type) {
     var url = contentProvider.contentURL();
     if (!url)
       return null;
@@ -237,7 +260,8 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
       urlCoverage = new Coverage.URLCoverageInfo(url);
       this._coverageByURL.set(url, urlCoverage);
     }
-    var coverageInfo = urlCoverage._ensureEntry(contentProvider, contentLength, startLine, startColumn);
+
+    var coverageInfo = urlCoverage._ensureEntry(contentProvider, contentLength, startLine, startColumn, type);
     this._coverageByContentProvider.set(contentProvider, coverageInfo);
     var segments = Coverage.CoverageModel._convertToDisjointSegments(ranges);
     if (segments.length && segments.peekLast().end < contentLength)
@@ -313,23 +337,29 @@ Coverage.URLCoverageInfo = class {
    * @param {number} contentLength
    * @param {number} lineOffset
    * @param {number} columnOffset
+   * @param {!Coverage.CoverageType} type
    * @return {!Coverage.CoverageInfo}
    */
-  _ensureEntry(contentProvider, contentLength, lineOffset, columnOffset) {
+  _ensureEntry(contentProvider, contentLength, lineOffset, columnOffset, type) {
     var key = `${lineOffset}:${columnOffset}`;
     var entry = this._coverageInfoByLocation.get(key);
 
-    if (entry)
+    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size)
+      this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
+    this._type |= type;
+
+    if (entry) {
+      entry._coverageType |= type;
       return entry;
+    }
 
-    entry = new Coverage.CoverageInfo(contentProvider, contentLength);
-
-    if (entry.type() === Coverage.CoverageType.JavaScript && !this._coverageInfoByLocation.size)
+    if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size)
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
 
+    entry = new Coverage.CoverageInfo(contentProvider, contentLength, type);
     this._coverageInfoByLocation.set(key, entry);
     this._size += contentLength;
-    this._type |= entry.type();
+
     return entry;
   }
 };
@@ -338,20 +368,14 @@ Coverage.CoverageInfo = class {
   /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {number} size
+   * @param {!Coverage.CoverageType} type
    */
-  constructor(contentProvider, size) {
+  constructor(contentProvider, size, type) {
     this._contentProvider = contentProvider;
     this._size = size;
     this._usedSize = 0;
+    this._coverageType = type;
 
-    if (contentProvider.contentType().isScript()) {
-      this._coverageType = Coverage.CoverageType.JavaScript;
-    } else if (contentProvider.contentType().isStyleSheet()) {
-      this._coverageType = Coverage.CoverageType.CSS;
-    } else {
-      console.assert(
-          false, `Unexpected resource type ${contentProvider.contentType().name} for ${contentProvider.contentURL()}`);
-    }
     /** !Array<!Coverage.CoverageSegment> */
     this._segments = [];
   }

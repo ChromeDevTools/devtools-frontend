@@ -12,6 +12,8 @@ Coverage.CoverageView = class extends UI.VBox {
     this._pollTimer;
     /** @type {?Coverage.CoverageDecorationManager} */
     this._decorationManager = null;
+    /** @type {?SDK.ResourceTreeModel} */
+    this._resourceTreeModel = null;
 
     this.registerRequiredCSS('coverage/coverageView.css');
 
@@ -95,33 +97,29 @@ Coverage.CoverageView = class extends UI.VBox {
     var enable = !this._toggleRecordAction.toggled();
 
     if (enable)
-      this._startRecording();
+      this._startRecording(false);
     else
       this._stopRecording();
   }
 
-  _startWithReload() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
-      return;
-    var resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
-    if (!resourceTreeModel)
-      return;
-    this._model = null;
-    this._startRecording();
-    resourceTreeModel.reloadPage();
-  }
-
-  _startRecording() {
+  /**
+   * @param {boolean} reload
+   */
+  _startRecording(reload) {
     this._reset();
     var mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
-    if (!this._model)
+    this._resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
+    if (!this._resourceTreeModel)
+      return;
+    if (!this._model || reload)
       this._model = new Coverage.CoverageModel(mainTarget);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CoverageStarted);
     if (!this._model.start())
       return;
+    this._resourceTreeModel.addEventListener(
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
     this._decorationManager = new Coverage.CoverageDecorationManager(this._model);
     this._toggleRecordAction.setToggled(true);
     this._clearButton.setEnabled(false);
@@ -130,7 +128,10 @@ Coverage.CoverageView = class extends UI.VBox {
     if (this._landingPage.isShowing())
       this._landingPage.detach();
     this._listView.show(this._coverageResultsElement);
-    this._poll();
+    if (reload)
+      this._resourceTreeModel.reloadPage();
+    else
+      this._poll();
   }
 
   async _poll() {
@@ -145,11 +146,21 @@ Coverage.CoverageView = class extends UI.VBox {
       clearTimeout(this._pollTimer);
       delete this._pollTimer;
     }
+    this._resourceTreeModel.removeEventListener(
+        SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
+    this._resourceTreeModel = null;
     var updatedEntries = await this._model.stop();
     this._updateViews(updatedEntries);
     this._toggleRecordAction.setToggled(false);
     this._startWithReloadButton.setEnabled(true);
     this._clearButton.setEnabled(true);
+  }
+
+  _onMainFrameNavigated() {
+    this._model.reset();
+    this._decorationManager.reset();
+    this._listView.reset();
+    this._poll();
   }
 
   /**
@@ -232,7 +243,7 @@ Coverage.CoverageView.ActionDelegate = class {
         coverageView._toggleRecording();
         break;
       case 'coverage.start-with-reload':
-        coverageView._startWithReload();
+        coverageView._startRecording(true);
         break;
       default:
         console.assert(false, `Unknown action: ${actionId}`);

@@ -956,7 +956,6 @@ generated_applications = [
 
 generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/animation/animation_module.js",
-  "$resources_out_dir/audits/audits_module.js",
   "$resources_out_dir/audits2/audits2_module.js",
   "$resources_out_dir/changes/changes_module.js",
   "$resources_out_dir/cm/cm_module.js",

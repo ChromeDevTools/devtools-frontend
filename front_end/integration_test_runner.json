@@ -25,7 +25,7 @@
     { "name": "heap_snapshot_worker" },
 
 
-    
+
     { "name": "platform", "type": "autostart" },
     { "name": "dom_extension", "type": "autostart" },
     { "name": "main", "type": "autostart" },
@@ -51,7 +51,7 @@
     { "name": "product_registry_impl", "condition": "!v8only", "type": "remote" },
     { "name": "profiler" },
     { "name": "resources", "condition": "!v8only" },
-    { "name": "audits", "condition": "!v8only" },
+    { "name": "audits", "condition": "!v8only", "type": "remote" },
     { "name": "audits2", "condition": "!v8only" },
     { "name": "devices" },
     { "name": "security", "condition": "!v8only" },

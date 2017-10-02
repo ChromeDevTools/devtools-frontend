@@ -250,9 +250,10 @@
 
     /**
      * @param {string} url
+     * @param {string=} fileSystemPath
      */
-    savedURL(url) {
-      this._dispatchOnInspectorFrontendAPI('savedURL', [url]);
+    savedURL(url, fileSystemPath) {
+      this._dispatchOnInspectorFrontendAPI('savedURL', [url, fileSystemPath]);
     }
 
     /**

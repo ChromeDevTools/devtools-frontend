@@ -194,10 +194,10 @@ Bindings.FileOutputStream = class {
     /** @type {!Array<function()>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
-    var success = await Workspace.fileManager.save(this._fileName, '', true);
-    if (success)
+    var saveResponse = await Workspace.fileManager.save(this._fileName, '', true);
+    if (saveResponse)
       Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
-    return success;
+    return !!saveResponse;
   }
 
   /**

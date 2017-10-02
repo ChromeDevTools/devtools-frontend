@@ -345,9 +345,10 @@ Workspace.UISourceCode = class extends Common.Object {
   }
 
   saveAs() {
-    Workspace.fileManager.save(this._url, this.workingCopy(), true).then(accepted => {
-      if (accepted)
-        this._contentCommitted(this.workingCopy(), true);
+    Workspace.fileManager.save(this._url, this.workingCopy(), true).then(saveResponse => {
+      if (!saveResponse)
+        return;
+      this._contentCommitted(this.workingCopy(), true);
     });
     Workspace.fileManager.close(this._url);
   }

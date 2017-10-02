@@ -48,7 +48,12 @@ IntegrationTestRunner._setupTestHelpers = function(target) {
  */
 TestRunner.evaluateInPage = async function(code, callback) {
   var lines = new Error().stack.split('at ');
-  var components = lines[lines.length - 2].trim().split('/');
+
+  // Handles cases where the function is safe wrapped
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
+  var functionLine = lines.reduce((acc, line) => line.includes(testScriptURL) ? line : acc, lines[lines.length - 2]);
+
+  var components = functionLine.trim().split('/');
   var source = components[components.length - 1].slice(0, -1).split(':');
   var fileName = source[0];
   var lineOffset = parseInt(source[1], 10);

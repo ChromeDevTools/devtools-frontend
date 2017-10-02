@@ -131,7 +131,7 @@ function migrateTest(inputPath, identifierMap) {
   if (!DRY_RUN) {
     const jsInputPath = inputPath.replace('.html', '.js');
     fs.writeFileSync(jsInputPath, outputCode);
-    console.log('Migrated: ', inputPath);
+    console.log('Migrated: ', jsInputPath);
     fs.unlinkSync(inputPath);
     updateTestExpectations(path.relative(LAYOUT_TESTS_PATH, inputPath), path.relative(LAYOUT_TESTS_PATH, jsInputPath));
   }
@@ -252,7 +252,7 @@ ${domFixture.split('\n').map(line => '    ' + line).join('\n')}
   if (formattedNonTestCode.trim()) {
     headerLines.push((createAwaitExpressionNode(`await TestRunner.evaluateInPagePromise(\`
 ${formattedNonTestCode}
-  \`);`)));
+\`);`)));
   }
 
   headerLines.push(createNewLineNode());
@@ -295,6 +295,9 @@ function formatNonTestCode(ast, onloadFunctionName) {
       .split('\n')
       .map(line => '    ' + line)
       .join('\n')
+      .replace(/\\n/g, '\\\\n')
+      .replace(/new Worker\("(.*)"\)/g, 'new Worker(relativeToTest("$1"))')
+      .replace(/img\.src = "(.*)"/, `img.src = relativeToTest("$1")`)
       .replace(RUN_TEST_REGEX, '');
 }
 
@@ -344,7 +347,7 @@ function print(ast) {
 
 `;
 
-  let code = recast.prettyPrint(ast, {tabWidth: 2, wrapColumn: 120}).code;
+  let code = recast.print(ast, {tabWidth: 2, wrapColumn: 120}).code;
   code = code.replace(/(\/\/\#\s*sourceURL=[\w-]+)\.html/, '$1.js');
   code = code.replace(/\s*\$\$SECRET_IDENTIFIER_FOR_LINE_BREAK\$\$\(\);/g, '\n');
   const copyrightedCode = copyrightNotice + code.trim() + '\n';

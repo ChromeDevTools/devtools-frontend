@@ -170,6 +170,7 @@
     ],
     "scripts": [
         "ConsoleContextSelector.js",
+        "ConsoleFilter.js",
         "ConsoleSidebar.js",
         "ConsoleViewport.js",
         "ConsoleViewMessage.js",

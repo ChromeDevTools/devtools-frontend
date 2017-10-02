@@ -153,6 +153,7 @@ all_devtools_files = [
   "front_end/components/module.json",
   "front_end/components/Reload.js",
   "front_end/console/ConsoleContextSelector.js",
+  "front_end/console/ConsoleFilter.js",
   "front_end/console/ConsoleSidebar.js",
   "front_end/console/ConsolePanel.js",
   "front_end/console/ConsolePrompt.js",

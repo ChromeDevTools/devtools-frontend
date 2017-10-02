@@ -54,6 +54,10 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    * @param {!Protocol.Animation.Animation} payload
    */
   animationStarted(payload) {
+    // We are not interested in animations without effect or target.
+    if (!payload.source || !payload.source.backendNodeId)
+      return;
+
     var animation = Animation.AnimationModel.Animation.parsePayload(this, payload);
 
     // Ignore Web Animations custom effects & groups.
@@ -181,7 +185,8 @@ Animation.AnimationModel.Animation = class {
   constructor(animationModel, payload) {
     this._animationModel = animationModel;
     this._payload = payload;
-    this._source = new Animation.AnimationModel.AnimationEffect(animationModel, this._payload.source);
+    this._source = new Animation.AnimationModel.AnimationEffect(
+        animationModel, /** @type {!Protocol.Animation.AnimationEffect} */ (this._payload.source));
   }
 
   /**
@@ -445,7 +450,7 @@ Animation.AnimationModel.AnimationEffect = class {
    * @return {number}
    */
   backendNodeId() {
-    return this._payload.backendNodeId;
+    return /** @type {number} */ (this._payload.backendNodeId);
   }
 
   /**

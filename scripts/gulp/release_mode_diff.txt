@@ -1,3 +1,0 @@
-Only in ../../release/Images: cookie.png
-Only in ../../release/Images: transformControls_2x.png
-Only in ../../release/Images: transformControls.png

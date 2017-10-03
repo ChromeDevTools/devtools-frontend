@@ -31,18 +31,10 @@ Services.ServiceManager = class {
     var url = appName + '.js';
     var remoteBase = Runtime.queryParam('remoteBase');
     var debugFrontend = Runtime.queryParam('debugFrontend');
-    var isUnderTest = Host.isUnderTest();
-
-    var queryParams = [];
     if (remoteBase)
-      queryParams.push('remoteBase=' + remoteBase);
+      url += '?remoteBase=' + remoteBase;
     if (debugFrontend)
-      queryParams.push('debugFrontend=' + debugFrontend);
-    if (isUnderTest)
-      queryParams.push('isUnderTest=true');
-
-    if (queryParams.length)
-      url += `?${queryParams.join('&')}`;
+      url += '?debugFrontend=' + debugFrontend;
 
     var worker = new Worker(url);
     var connection = new Services.ServiceManager.Connection(new Services.ServiceManager.WorkerServicePort(worker));

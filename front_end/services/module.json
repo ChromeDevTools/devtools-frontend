@@ -1,7 +1,6 @@
 {
     "dependencies": [
-        "common",
-        "host"
+        "common"
     ],
     "scripts": [
         "ServiceManager.js"

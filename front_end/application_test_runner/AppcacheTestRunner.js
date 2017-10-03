@@ -185,31 +185,29 @@ ApplicationTestRunner.ensureFrameStatusEventsReceived = function(frameId, count,
   ApplicationTestRunner.awaitedFrameStatusEventsCount[frameId] = {count: eventsLeft, callback: callback};
 };
 
-TestRunner.initAsync(async function() {
-  await TestRunner.evaluateInPagePromise(`
-    var framesCount = 0;
+TestRunner.initAsync(`
+  var framesCount = 0;
 
-    function createAndNavigateIFrame(url) {
-      var iframe = document.createElement('iframe');
-      iframe.src = url;
-      iframe.name = 'frame' + ++framesCount;
-      iframe.id = iframe.name;
-      document.body.appendChild(iframe);
-    }
+  function createAndNavigateIFrame(url) {
+    var iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.name = 'frame' + ++framesCount;
+    iframe.id = iframe.name;
+    document.body.appendChild(iframe);
+  }
 
-    function removeIFrame(name) {
-      var iframe = document.querySelector('#' + name);
-      iframe.parentElement.removeChild(iframe);
-    }
+  function removeIFrame(name) {
+    var iframe = document.querySelector('#' + name);
+    iframe.parentElement.removeChild(iframe);
+  }
 
-    function navigateIFrame(name, url) {
-      var iframe = document.querySelector('#' + name);
-      iframe.src = url;
-    }
+  function navigateIFrame(name, url) {
+    var iframe = document.querySelector('#' + name);
+    iframe.src = url;
+  }
 
-    function swapFrameCache(name) {
-      var iframe = document.querySelector('#' + name);
-      iframe.contentWindow.applicationCache.swapCache();
-    }
-  `);
-});
+  function swapFrameCache(name) {
+    var iframe = document.querySelector('#' + name);
+    iframe.contentWindow.applicationCache.swapCache();
+  }
+`);

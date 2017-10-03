@@ -130,44 +130,42 @@ ApplicationTestRunner.clearAllCaches = function() {
   return TestRunner.callFunctionInPageAsync('clearAllCaches');
 };
 
-TestRunner.initAsync(async function() {
-  await TestRunner.evaluateInPagePromise(`
-    function onCacheStorageError(e) {
-      console.error('CacheStorage error: ' + e);
-    }
+TestRunner.initAsync(`
+  function onCacheStorageError(e) {
+    console.error('CacheStorage error: ' + e);
+  }
 
-    function createCache(cacheName) {
-      return caches.open(cacheName).catch(onCacheStorageError);
-    }
+  function createCache(cacheName) {
+    return caches.open(cacheName).catch(onCacheStorageError);
+  }
 
-    function addCacheEntry(cacheName, requestUrl, responseText) {
-      return caches.open(cacheName).then(function(cache) {
-        var request = new Request(requestUrl);
-        var myBlob = new Blob();
+  function addCacheEntry(cacheName, requestUrl, responseText) {
+    return caches.open(cacheName).then(function(cache) {
+      var request = new Request(requestUrl);
+      var myBlob = new Blob();
 
-        var init = {
-          'status': 200,
-          'statusText': responseText
-        };
+      var init = {
+        'status': 200,
+        'statusText': responseText
+      };
 
-        var response = new Response(myBlob, init);
-        return cache.put(request, response);
-      }).catch(onCacheStorageError);
-    }
+      var response = new Response(myBlob, init);
+      return cache.put(request, response);
+    }).catch(onCacheStorageError);
+  }
 
-    function deleteCache(cacheName) {
-      return caches.delete(cacheName).then(function(success) {
-        if (!success)
-          onCacheStorageError('Could not find cache ' + cacheName);
-      }).catch(onCacheStorageError);
-    }
+  function deleteCache(cacheName) {
+    return caches.delete(cacheName).then(function(success) {
+      if (!success)
+        onCacheStorageError('Could not find cache ' + cacheName);
+    }).catch(onCacheStorageError);
+  }
 
-    function deleteCacheEntry(cacheName, requestUrl) {
-      return caches.open(cacheName).then(cache => cache.delete(new Request(requestUrl))).catch(onCacheStorageError);
-    }
+  function deleteCacheEntry(cacheName, requestUrl) {
+    return caches.open(cacheName).then(cache => cache.delete(new Request(requestUrl))).catch(onCacheStorageError);
+  }
 
-    function clearAllCaches() {
-      return caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key)))).catch(onCacheStorageError.bind(this, undefined));
-    }
-  `);
-});
+  function clearAllCaches() {
+    return caches.keys().then(keys => Promise.all(keys.map(key => caches.delete(key)))).catch(onCacheStorageError.bind(this, undefined));
+  }
+`);

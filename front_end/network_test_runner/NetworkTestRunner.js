@@ -143,83 +143,81 @@ NetworkTestRunner.HARPropertyFormatters = {
 NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(NetworkTestRunner.HARPropertyFormatters));
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
-TestRunner.initAsync(async function() {
-  await TestRunner.evaluateInPagePromise(`
-    var lastXHRIndex = 0;
+TestRunner.initAsync(`
+  var lastXHRIndex = 0;
 
-    function xhrLoadedCallback() {
-      console.log('XHR loaded: ' + ++lastXHRIndex);
-    }
+  function xhrLoadedCallback() {
+    console.log('XHR loaded: ' + ++lastXHRIndex);
+  }
 
-    function makeSimpleXHR(method, url, async, callback) {
-      makeSimpleXHRWithPayload(method, url, async, null, callback);
-    }
+  function makeSimpleXHR(method, url, async, callback) {
+    makeSimpleXHRWithPayload(method, url, async, null, callback);
+  }
 
-    function makeSimpleXHRWithPayload(method, url, async, payload, callback) {
-      makeXHR(method, url, async, undefined, undefined, [], false, payload, callback);
-    }
+  function makeSimpleXHRWithPayload(method, url, async, payload, callback) {
+    makeXHR(method, url, async, undefined, undefined, [], false, payload, callback);
+  }
 
-    function makeXHR(method, url, async, user, password, headers, withCredentials, payload, type, callback) {
-      var xhr = new XMLHttpRequest();
+  function makeXHR(method, url, async, user, password, headers, withCredentials, payload, type, callback) {
+    var xhr = new XMLHttpRequest();
 
-      if (type == undefined)
-        xhr.responseType = '';
-      else
-        xhr.responseType = type;
+    if (type == undefined)
+      xhr.responseType = '';
+    else
+      xhr.responseType = type;
 
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (typeof callback === 'function')
-            callback();
-        }
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (typeof callback === 'function')
+          callback();
+      }
+    };
+
+    xhr.open(method, url, async, user, password);
+    xhr.withCredentials = withCredentials;
+
+    for (var i = 0; i < headers.length; ++i)
+      xhr.setRequestHeader(headers[i][0], headers[i][1]);
+
+    xhr.send(payload);
+  }
+
+  function makeXHRForJSONArguments(jsonArgs) {
+    var args = JSON.parse(jsonArgs);
+
+    makeXHR(
+      args.method,
+      args.url,
+      args.async,
+      args.user,
+      args.password,
+      args.headers || [],
+      args.withCredentials,
+      args.payload,
+      args.type,
+      xhrLoadedCallback
+    );
+  }
+
+  function makeFetch(url, requestInitializer) {
+    return fetch(url, requestInitializer).then(res => {
+      res.text();
+      return res;
+    }).catch(e => e);
+  }
+
+  function makeFetchInWorker(url, requestInitializer) {
+    return new Promise(resolve => {
+      var worker = new Worker('/inspector/network/resources/fetch-worker.js');
+
+      worker.onmessage = event => {
+        resolve(event.data);
       };
 
-      xhr.open(method, url, async, user, password);
-      xhr.withCredentials = withCredentials;
-
-      for (var i = 0; i < headers.length; ++i)
-        xhr.setRequestHeader(headers[i][0], headers[i][1]);
-
-      xhr.send(payload);
-    }
-
-    function makeXHRForJSONArguments(jsonArgs) {
-      var args = JSON.parse(jsonArgs);
-
-      makeXHR(
-        args.method,
-        args.url,
-        args.async,
-        args.user,
-        args.password,
-        args.headers || [],
-        args.withCredentials,
-        args.payload,
-        args.type,
-        xhrLoadedCallback
-      );
-    }
-
-    function makeFetch(url, requestInitializer) {
-      return fetch(url, requestInitializer).then(res => {
-        res.text();
-        return res;
-      }).catch(e => e);
-    }
-
-    function makeFetchInWorker(url, requestInitializer) {
-      return new Promise(resolve => {
-        var worker = new Worker('/inspector/network/resources/fetch-worker.js');
-
-        worker.onmessage = event => {
-          resolve(event.data);
-        };
-
-        worker.postMessage({
-          url: url,
-          init: requestInitializer
-        });
+      worker.postMessage({
+        url: url,
+        init: requestInitializer
       });
-    }
-  `);
-});
+    });
+  }
+`);

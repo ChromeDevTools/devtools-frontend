@@ -133,224 +133,222 @@ ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName,
       'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
 };
 
-TestRunner.initAsync(async function() {
-  await TestRunner.evaluateInPagePromise(`
-    function dispatchCallback(callbackId) {
-      console.log(callbackId);
+TestRunner.initAsync(`
+  function dispatchCallback(callbackId) {
+    console.log(callbackId);
+  }
+
+  function onIndexedDBError(e) {
+    console.error('IndexedDB error: ' + e);
+  }
+
+  function onIndexedDBBlocked(e) {
+    console.error('IndexedDB blocked: ' + e);
+  }
+
+  function doWithDatabase(databaseName, callback) {
+    function innerCallback() {
+      var db = request.result;
+      callback(db);
     }
 
-    function onIndexedDBError(e) {
-      console.error('IndexedDB error: ' + e);
-    }
+    var request = indexedDB.open(databaseName);
+    request.onblocked = onIndexedDBBlocked;
+    request.onerror = onIndexedDBError;
+    request.onsuccess = innerCallback;
+  }
 
-    function onIndexedDBBlocked(e) {
-      console.error('IndexedDB blocked: ' + e);
-    }
+  function doWithVersionTransaction(databaseName, callback, commitCallback) {
+    doWithDatabase(databaseName, step2);
 
-    function doWithDatabase(databaseName, callback) {
-      function innerCallback() {
-        var db = request.result;
-        callback(db);
+    function step2(db) {
+      var version = db.version;
+      db.close();
+      request = indexedDB.open(databaseName, version + 1);
+      request.onerror = onIndexedDBError;
+      request.onupgradeneeded = onUpgradeNeeded;
+      request.onsuccess = onOpened;
+
+      function onUpgradeNeeded(e) {
+        var db = e.target.result;
+        var trans = e.target.transaction;
+        callback(db, trans);
       }
 
-      var request = indexedDB.open(databaseName);
-      request.onblocked = onIndexedDBBlocked;
-      request.onerror = onIndexedDBError;
-      request.onsuccess = innerCallback;
-    }
-
-    function doWithVersionTransaction(databaseName, callback, commitCallback) {
-      doWithDatabase(databaseName, step2);
-
-      function step2(db) {
-        var version = db.version;
+      function onOpened(e) {
+        var db = e.target.result;
         db.close();
-        request = indexedDB.open(databaseName, version + 1);
-        request.onerror = onIndexedDBError;
-        request.onupgradeneeded = onUpgradeNeeded;
-        request.onsuccess = onOpened;
-
-        function onUpgradeNeeded(e) {
-          var db = e.target.result;
-          var trans = e.target.transaction;
-          callback(db, trans);
-        }
-
-        function onOpened(e) {
-          var db = e.target.result;
-          db.close();
-          commitCallback();
-        }
+        commitCallback();
       }
     }
+  }
 
-    function doWithReadWriteTransaction(databaseName, objectStoreName, callback, commitCallback) {
-      doWithDatabase(databaseName, step2);
+  function doWithReadWriteTransaction(databaseName, objectStoreName, callback, commitCallback) {
+    doWithDatabase(databaseName, step2);
 
-      function step2(db) {
-        var transaction = db.transaction([objectStoreName], 'readwrite');
-        var objectStore = transaction.objectStore(objectStoreName);
-        callback(objectStore, innerCommitCallback);
+    function step2(db) {
+      var transaction = db.transaction([objectStoreName], 'readwrite');
+      var objectStore = transaction.objectStore(objectStoreName);
+      callback(objectStore, innerCommitCallback);
 
-        function innerCommitCallback() {
-          db.close();
-          commitCallback();
-        }
-      }
-    }
-
-    function createDatabase(callback, databaseName) {
-      var request = indexedDB.open(databaseName);
-      request.onerror = onIndexedDBError;
-      request.onsuccess = closeDatabase;
-
-      function closeDatabase() {
-        request.result.close();
-        callback();
-      }
-    }
-
-    function deleteDatabase(callback, databaseName) {
-      var request = indexedDB.deleteDatabase(databaseName);
-      request.onerror = onIndexedDBError;
-      request.onsuccess = callback;
-    }
-
-    function createObjectStore(callback, databaseName, objectStoreName, keyPath, autoIncrement) {
-      doWithVersionTransaction(databaseName, withTransactionCallback, callback);
-
-      function withTransactionCallback(db, transaction) {
-        var store = db.createObjectStore(objectStoreName, {
-          keyPath: keyPath,
-          autoIncrement: autoIncrement
-        });
-      }
-    }
-
-    function deleteObjectStore(callback, databaseName, objectStoreName) {
-      doWithVersionTransaction(databaseName, withTransactionCallback, callback);
-
-      function withTransactionCallback(db, transaction) {
-        var store = db.deleteObjectStore(objectStoreName);
-      }
-    }
-
-    function createObjectStoreIndex(callback, databaseName, objectStoreName, objectStoreIndexName, keyPath, unique, multiEntry) {
-      doWithVersionTransaction(databaseName, withTransactionCallback, callback);
-
-      function withTransactionCallback(db, transaction) {
-        var objectStore = transaction.objectStore(objectStoreName);
-
-        objectStore.createIndex(objectStoreIndexName, keyPath, {
-          unique: unique,
-          multiEntry: multiEntry
-        });
-      }
-    }
-
-    function deleteObjectStoreIndex(callback, databaseName, objectStoreName, objectStoreIndexName) {
-      doWithVersionTransaction(databaseName, withTransactionCallback, callback);
-
-      function withTransactionCallback(db, transaction) {
-        var objectStore = transaction.objectStore(objectStoreName);
-        objectStore.deleteIndex(objectStoreIndexName);
-      }
-    }
-
-    function addIDBValue(callback, databaseName, objectStoreName, value, key) {
-      doWithReadWriteTransaction(databaseName, objectStoreName, withTransactionCallback, callback);
-
-      function withTransactionCallback(objectStore, commitCallback) {
-        var request;
-
-        if (key)
-          request = objectStore.add(value, key);
-        else
-          request = objectStore.add(value);
-
-        request.onerror = onIndexedDBError;
-        request.onsuccess = commitCallback;
-      }
-    }
-
-    function createDatabaseAsync(databaseName) {
-      var callback;
-      var promise = new Promise(fulfill => callback = fulfill);
-      var request = indexedDB.open(databaseName);
-      request.onerror = onIndexedDBError;
-
-      request.onsuccess = function(event) {
-        request.result.close();
-        callback();
-      };
-
-      return promise;
-    }
-
-    function createObjectStoreAsync(databaseName, objectStoreName, indexName, keyPath) {
-      var callback;
-      var promise = new Promise(fulfill => callback = fulfill);
-      var request = indexedDB.open(databaseName);
-      request.onerror = onIndexedDBError;
-
-      request.onsuccess = function(event) {
-        var db = request.result;
-        var version = db.version;
+      function innerCommitCallback() {
         db.close();
-        var upgradeRequest = indexedDB.open(databaseName, version + 1);
-        upgradeRequest.onerror = onIndexedDBError;
-
-        upgradeRequest.onupgradeneeded = function(e) {
-          var upgradeDb = e.target.result;
-
-          var store = upgradeDb.createObjectStore(objectStoreName, {
-            keyPath: 'test',
-            autoIncrement: false
-          });
-
-          store.createIndex(indexName, 'test', {
-            unique: false,
-            multiEntry: false
-          });
-
-          callback();
-        };
-
-        upgradeRequest.onsuccess = function(e) {
-          var upgradeDb = e.target.result;
-          upgradeDb.close();
-          callback();
-        };
-      };
-
-      return promise;
+        commitCallback();
+      }
     }
+  }
 
-    function addIDBValueAsync(databaseName, objectStoreName, key, value) {
-      var callback;
-      var promise = new Promise(fulfill => callback = fulfill);
-      var request = indexedDB.open(databaseName);
+  function createDatabase(callback, databaseName) {
+    var request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
+    request.onsuccess = closeDatabase;
+
+    function closeDatabase() {
+      request.result.close();
+      callback();
+    }
+  }
+
+  function deleteDatabase(callback, databaseName) {
+    var request = indexedDB.deleteDatabase(databaseName);
+    request.onerror = onIndexedDBError;
+    request.onsuccess = callback;
+  }
+
+  function createObjectStore(callback, databaseName, objectStoreName, keyPath, autoIncrement) {
+    doWithVersionTransaction(databaseName, withTransactionCallback, callback);
+
+    function withTransactionCallback(db, transaction) {
+      var store = db.createObjectStore(objectStoreName, {
+        keyPath: keyPath,
+        autoIncrement: autoIncrement
+      });
+    }
+  }
+
+  function deleteObjectStore(callback, databaseName, objectStoreName) {
+    doWithVersionTransaction(databaseName, withTransactionCallback, callback);
+
+    function withTransactionCallback(db, transaction) {
+      var store = db.deleteObjectStore(objectStoreName);
+    }
+  }
+
+  function createObjectStoreIndex(callback, databaseName, objectStoreName, objectStoreIndexName, keyPath, unique, multiEntry) {
+    doWithVersionTransaction(databaseName, withTransactionCallback, callback);
+
+    function withTransactionCallback(db, transaction) {
+      var objectStore = transaction.objectStore(objectStoreName);
+
+      objectStore.createIndex(objectStoreIndexName, keyPath, {
+        unique: unique,
+        multiEntry: multiEntry
+      });
+    }
+  }
+
+  function deleteObjectStoreIndex(callback, databaseName, objectStoreName, objectStoreIndexName) {
+    doWithVersionTransaction(databaseName, withTransactionCallback, callback);
+
+    function withTransactionCallback(db, transaction) {
+      var objectStore = transaction.objectStore(objectStoreName);
+      objectStore.deleteIndex(objectStoreIndexName);
+    }
+  }
+
+  function addIDBValue(callback, databaseName, objectStoreName, value, key) {
+    doWithReadWriteTransaction(databaseName, objectStoreName, withTransactionCallback, callback);
+
+    function withTransactionCallback(objectStore, commitCallback) {
+      var request;
+
+      if (key)
+        request = objectStore.add(value, key);
+      else
+        request = objectStore.add(value);
+
       request.onerror = onIndexedDBError;
+      request.onsuccess = commitCallback;
+    }
+  }
 
-      request.onsuccess = function(event) {
-        var db = request.result;
-        var transaction = db.transaction(objectStoreName, 'readwrite');
-        var store = transaction.objectStore(objectStoreName);
+  function createDatabaseAsync(databaseName) {
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
+    var request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
 
-        store.put({
-          test: key,
-          testValue: value
+    request.onsuccess = function(event) {
+      request.result.close();
+      callback();
+    };
+
+    return promise;
+  }
+
+  function createObjectStoreAsync(databaseName, objectStoreName, indexName, keyPath) {
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
+    var request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
+
+    request.onsuccess = function(event) {
+      var db = request.result;
+      var version = db.version;
+      db.close();
+      var upgradeRequest = indexedDB.open(databaseName, version + 1);
+      upgradeRequest.onerror = onIndexedDBError;
+
+      upgradeRequest.onupgradeneeded = function(e) {
+        var upgradeDb = e.target.result;
+
+        var store = upgradeDb.createObjectStore(objectStoreName, {
+          keyPath: 'test',
+          autoIncrement: false
         });
 
-        transaction.onerror = onIndexedDBError;
+        store.createIndex(indexName, 'test', {
+          unique: false,
+          multiEntry: false
+        });
 
-        transaction.oncomplete = function() {
-          db.close();
-          callback();
-        };
+        callback();
       };
 
-      return promise;
-    }
-  `);
-});
+      upgradeRequest.onsuccess = function(e) {
+        var upgradeDb = e.target.result;
+        upgradeDb.close();
+        callback();
+      };
+    };
+
+    return promise;
+  }
+
+  function addIDBValueAsync(databaseName, objectStoreName, key, value) {
+    var callback;
+    var promise = new Promise(fulfill => callback = fulfill);
+    var request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
+
+    request.onsuccess = function(event) {
+      var db = request.result;
+      var transaction = db.transaction(objectStoreName, 'readwrite');
+      var store = transaction.objectStore(objectStoreName);
+
+      store.put({
+        test: key,
+        testValue: value
+      });
+
+      transaction.onerror = onIndexedDBError;
+
+      transaction.oncomplete = function() {
+        db.close();
+        callback();
+      };
+    };
+
+    return promise;
+  }
+`);

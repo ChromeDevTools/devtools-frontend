@@ -57,48 +57,46 @@ ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestIni
   TestRunner.callFunctionInPageAsync('makeFetchInServiceWorker', [scope, url, requestInitializer]).then(callback);
 };
 
-TestRunner.initAsync(async function() {
-  await TestRunner.evaluateInPagePromise(`
-    var registrations = {};
+TestRunner.initAsync(`
+  var registrations = {};
 
-    function registerServiceWorker(script, scope) {
-      return navigator.serviceWorker.register(script, {
-        scope: scope
-      }).then(reg => registrations[scope] = reg);
-    }
+  function registerServiceWorker(script, scope) {
+    return navigator.serviceWorker.register(script, {
+      scope: scope
+    }).then(reg => registrations[scope] = reg);
+  }
 
-    function postToServiceWorker(scope, message) {
-      registrations[scope].active.postMessage(message);
-    }
+  function postToServiceWorker(scope, message) {
+    registrations[scope].active.postMessage(message);
+  }
 
-    function unregisterServiceWorker(scope) {
-      var registration = registrations[scope];
+  function unregisterServiceWorker(scope) {
+    var registration = registrations[scope];
 
-      if (!registration)
-        return Promise.reject('ServiceWorker for ' + scope + ' is not registered');
+    if (!registration)
+      return Promise.reject('ServiceWorker for ' + scope + ' is not registered');
 
-      return registration.unregister().then(() => delete registrations[scope]);
-    }
+    return registration.unregister().then(() => delete registrations[scope]);
+  }
 
-    function makeFetchInServiceWorker(scope, url, requestInitializer) {
-      let script = 'resources/network-fetch-worker.js';
+  function makeFetchInServiceWorker(scope, url, requestInitializer) {
+    let script = 'resources/network-fetch-worker.js';
 
-      return navigator.serviceWorker.register(script, {
-        scope: scope
-      }).then(registration => {
-        let worker = registration.installing;
+    return navigator.serviceWorker.register(script, {
+      scope: scope
+    }).then(registration => {
+      let worker = registration.installing;
 
-        return new Promise(resolve => {
-          navigator.serviceWorker.onmessage = e => {
-            resolve(e.data);
-          };
+      return new Promise(resolve => {
+        navigator.serviceWorker.onmessage = e => {
+          resolve(e.data);
+        };
 
-          worker.postMessage({
-            url: url,
-            init: requestInitializer
-          });
+        worker.postMessage({
+          url: url,
+          init: requestInitializer
         });
       });
-    }
-  `);
-});
+    });
+  }
+`);

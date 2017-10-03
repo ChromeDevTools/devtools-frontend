@@ -40,6 +40,9 @@ var Audits2Service = class {
    * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   start(params) {
+    if (Runtime.queryParam('isUnderTest'))
+      this._disableLoggingForTest();
+
     self.listenForStatus(message => {
       this.statusUpdate(message[1]);
     });
@@ -115,10 +118,15 @@ var Audits2Service = class {
     if (eventName === 'close')
       this._onClose = cb;
   }
+
+  _disableLoggingForTest() {
+    console.log = () => undefined;  // eslint-disable-line no-console
+  }
 };
 
 // Make lighthouse and traceviewer happy.
 global = self;
+global.Runtime = global._Runtime;
 global.isVinn = true;
 global.document = {};
 global.document.documentElement = {};

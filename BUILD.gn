@@ -63,6 +63,8 @@ all_devtools_files = [
   "front_end/audits2/lighthouse/renderer/report-renderer.js",
   "front_end/audits2/lighthouse/renderer/util.js",
   "front_end/audits2/module.json",
+  "front_end/audits2_test_runner/Audits2TestRunner.js",
+  "front_end/audits2_test_runner/module.json",
   "front_end/audits_test_runner/AuditsTestRunner.js",
   "front_end/audits_test_runner/module.json",
   "front_end/bindings/BlackboxManager.js",

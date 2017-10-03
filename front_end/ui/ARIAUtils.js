@@ -7,8 +7,22 @@ UI.ARIAUtils = {};
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsButton = function(element) {
+  element.setAttribute('role', 'button');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsGroup = function(element) {
   element.setAttribute('role', 'group');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsLink = function(element) {
+  element.setAttribute('role', 'link');
 };
 
 /**
@@ -37,6 +51,22 @@ UI.ARIAUtils.markAsTreeitem = function(element) {
  */
 UI.ARIAUtils.markAsPresentation = function(element) {
   element.setAttribute('role', 'presentation');
+};
+
+/**
+ * @param {!Element} element
+ * @param {?Element} controlledElement
+ */
+UI.ARIAUtils.setControls = function(element, controlledElement) {
+  if (!controlledElement) {
+    element.removeAttribute('aria-controls');
+    return;
+  }
+
+  if (controlledElement.id === '')
+    throw new Error('Controlled element must have ID');
+
+  element.setAttribute('aria-controls', controlledElement.id);
 };
 
 /**

@@ -97,6 +97,7 @@
     bottom: 10px;
     color: white;
     border-radius: 2px;
+    border: 0;
     padding: 3px 3px 2px;
     background-color: rgba(255, 255, 255, 0.2);
     align-items: center;
@@ -624,10 +625,6 @@ button.background-color-picker {
     top: 7px;
 }
 
-button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask {
+button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask{
     background-color: hsl(218, 81%, 59%);
-}
-
-button.background-color-picker:hover [is=ui-icon].largeicon-eyedropper.icon-mask {
-    background-color: #333;
 }

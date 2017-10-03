@@ -47,7 +47,7 @@
 }
 
 :focus {
-    outline: none;
+    outline-width: 0;
 }
 
 img {

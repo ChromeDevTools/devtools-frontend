@@ -1031,6 +1031,9 @@ HeapSnapshotWorker.HeapSnapshot = class {
     throw new Error('Not implemented');
   }
 
+  /**
+   * @return {!HeapSnapshotWorker.HeapSnapshotNodeIterator}
+   */
   _allNodes() {
     return new HeapSnapshotWorker.HeapSnapshotNodeIterator(this.rootNode());
   }
@@ -1042,14 +1045,24 @@ HeapSnapshotWorker.HeapSnapshot = class {
     return this.createNode(this._rootNodeIndex);
   }
 
+  /**
+   * @return {number}
+   */
   get rootNodeIndex() {
     return this._rootNodeIndex;
   }
 
+  /**
+   * @return {number}
+   */
   get totalSize() {
     return this.rootNode().retainedSize();
   }
 
+  /**
+   * @param {number} nodeIndex
+   * @return {number}
+   */
   _getDominatedIndex(nodeIndex) {
     if (nodeIndex % this._nodeFieldCount)
       throw new Error('Invalid nodeIndex: ' + nodeIndex);
@@ -1351,14 +1364,16 @@ HeapSnapshotWorker.HeapSnapshot = class {
     }
   }
 
+  /**
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   * @return {!{aggregatesByClassName: !Object<string, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>,
+   *     aggregatesByClassIndex: !Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>}}
+   */
   _buildAggregates(filter) {
     var aggregates = {};
     var aggregatesByClassName = {};
     var classIndexes = [];
     var nodes = this.nodes;
-    var mapAndFlag = this.userObjectsMapAndFlag();
-    var flags = mapAndFlag ? mapAndFlag.map : null;
-    var flag = mapAndFlag ? mapAndFlag.flag : 0;
     var nodesLength = nodes.length;
     var nodeNativeType = this._nodeNativeType;
     var nodeFieldCount = this._nodeFieldCount;
@@ -1368,9 +1383,6 @@ HeapSnapshotWorker.HeapSnapshot = class {
     var nodeDistances = this._nodeDistances;
 
     for (var nodeIndex = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount) {
-      var nodeOrdinal = nodeIndex / nodeFieldCount;
-      if (flags && !(flags[nodeOrdinal] & flag))
-        continue;
       node.nodeIndex = nodeIndex;
       if (filter && !filter(node))
         continue;
@@ -1378,12 +1390,14 @@ HeapSnapshotWorker.HeapSnapshot = class {
       if (!selfSize && nodes[nodeIndex + nodeTypeOffset] !== nodeNativeType)
         continue;
       var classIndex = node.classIndex();
+      var nodeOrdinal = nodeIndex / nodeFieldCount;
+      var distance = nodeDistances[nodeOrdinal];
       if (!(classIndex in aggregates)) {
         var nodeType = node.type();
         var nameMatters = nodeType === 'object' || nodeType === 'native';
         var value = {
           count: 1,
-          distance: nodeDistances[nodeOrdinal],
+          distance: distance,
           self: selfSize,
           maxRet: 0,
           type: nodeType,
@@ -1395,7 +1409,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
         aggregatesByClassName[node.className()] = value;
       } else {
         var clss = aggregates[classIndex];
-        clss.distance = Math.min(clss.distance, nodeDistances[nodeOrdinal]);
+        clss.distance = Math.min(clss.distance, distance);
         ++clss.count;
         clss.self += selfSize;
         clss.idxs.push(nodeIndex);
@@ -1410,6 +1424,10 @@ HeapSnapshotWorker.HeapSnapshot = class {
     return {aggregatesByClassName: aggregatesByClassName, aggregatesByClassIndex: aggregates};
   }
 
+  /**
+   * @param {!Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>} aggregates
+   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode):boolean=} filter
+   */
   _calculateClassesRetainedSize(aggregates, filter) {
     var rootNodeIndex = this._rootNodeIndex;
     var node = this.createNode(rootNodeIndex);
@@ -1422,9 +1440,6 @@ HeapSnapshotWorker.HeapSnapshot = class {
     var nodeNativeType = this._nodeNativeType;
     var dominatedNodes = this._dominatedNodes;
     var nodes = this.nodes;
-    var mapAndFlag = this.userObjectsMapAndFlag();
-    var flags = mapAndFlag ? mapAndFlag.map : null;
-    var flag = mapAndFlag ? mapAndFlag.flag : 0;
     var firstDominatedNodeIndex = this._firstDominatedNodeIndex;
 
     while (list.length) {
@@ -1436,7 +1451,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
       var dominatedIndexFrom = firstDominatedNodeIndex[nodeOrdinal];
       var dominatedIndexTo = firstDominatedNodeIndex[nodeOrdinal + 1];
 
-      if (!seen && (!flags || (flags[nodeOrdinal] & flag)) && (!filter || filter(node)) &&
+      if (!seen && (!filter || filter(node)) &&
           (node.selfSize() || nodes[nodeIndex + nodeTypeOffset] === nodeNativeType)) {
         aggregates[classIndex].maxRet += node.retainedSize();
         if (dominatedIndexFrom !== dominatedIndexTo) {
@@ -1457,11 +1472,14 @@ HeapSnapshotWorker.HeapSnapshot = class {
     }
   }
 
+  /**
+   * @param {!{aggregatesByClassName: !Object<string, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>, aggregatesByClassIndex: !Object<number, !HeapSnapshotWorker.HeapSnapshot.AggregatedInfo>}} aggregates
+   */
   _sortAggregateIndexes(aggregates) {
     var nodeA = this.createNode();
     var nodeB = this.createNode();
     for (var clss in aggregates) {
-      aggregates[clss].idxs.sort(function(idxA, idxB) {
+      aggregates[clss].idxs.sort((idxA, idxB) => {
         nodeA.nodeIndex = idxA;
         nodeB.nodeIndex = idxB;
         return nodeA.id() < nodeB.id() ? -1 : 1;
@@ -1746,6 +1764,9 @@ HeapSnapshotWorker.HeapSnapshot = class {
     return dominatorsTree;
   }
 
+  /**
+   * @param {!Array<number>} postOrderIndex2NodeOrdinal
+   */
   _calculateRetainedSizes(postOrderIndex2NodeOrdinal) {
     var nodeCount = this.nodeCount;
     var nodes = this.nodes;
@@ -2044,7 +2065,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
   createAddedNodesProvider(baseSnapshotId, className) {
     var snapshotDiff = this._snapshotDiffs[baseSnapshotId];
     var diffForClass = snapshotDiff[className];
-    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, null, diffForClass.addedIndexes);
+    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, diffForClass.addedIndexes);
   }
 
   /**
@@ -2052,14 +2073,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
    * @return {!HeapSnapshotWorker.HeapSnapshotNodesProvider}
    */
   createDeletedNodesProvider(nodeIndexes) {
-    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, null, nodeIndexes);
-  }
-
-  /**
-   * @return {?function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
-   */
-  classNodesFilter() {
-    return null;
+    return new HeapSnapshotWorker.HeapSnapshotNodesProvider(this, nodeIndexes);
   }
 
   /**
@@ -2069,7 +2083,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
    */
   createNodesProviderForClass(className, nodeFilter) {
     return new HeapSnapshotWorker.HeapSnapshotNodesProvider(
-        this, this.classNodesFilter(), this.aggregatesWithFilter(nodeFilter)[className].idxs);
+        this, this.aggregatesWithFilter(nodeFilter)[className].idxs);
   }
 
   /**
@@ -2098,6 +2112,18 @@ HeapSnapshotWorker.HeapSnapshot = class {
     return new HeapSnapshotModel.StaticData(this.nodeCount, this._rootNodeIndex, this.totalSize, this._maxJsNodeId());
   }
 };
+
+/**
+ * @typedef {!{
+ *   count: number,
+ *   distance: number,
+ *   self: number,
+ *   maxRet: number,
+ *   name: ?string,
+ *   idxs: !Array<number>
+ * }}
+ */
+HeapSnapshotWorker.HeapSnapshot.AggregatedInfo;
 
 /**
  * @unrestricted
@@ -2307,17 +2333,11 @@ HeapSnapshotWorker.HeapSnapshotEdgesProvider = class extends HeapSnapshotWorker.
 HeapSnapshotWorker.HeapSnapshotNodesProvider = class extends HeapSnapshotWorker.HeapSnapshotItemProvider {
   /**
    * @param {!HeapSnapshotWorker.HeapSnapshot} snapshot
-   * @param {?function(!HeapSnapshotWorker.HeapSnapshotNode):boolean} filter
-   * @param {(!Array.<number>|!Uint32Array)} nodeIndexes
+   * @param {!Array<number>|!Uint32Array} nodeIndexes
    */
-  constructor(snapshot, filter, nodeIndexes) {
+  constructor(snapshot, nodeIndexes) {
     var indexProvider = new HeapSnapshotWorker.HeapSnapshotNodeIndexProvider(snapshot);
     var it = new HeapSnapshotWorker.HeapSnapshotIndexRangeIterator(indexProvider, nodeIndexes);
-
-    if (filter) {
-      it = new HeapSnapshotWorker.HeapSnapshotFilteredIterator(
-          it, /** @type {function(!HeapSnapshotWorker.HeapSnapshotItem):boolean} */ (filter));
-    }
     super(it, indexProvider);
     this.snapshot = snapshot;
   }
@@ -2443,26 +2463,6 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
    */
   createRetainingEdge(retainerIndex) {
     return new HeapSnapshotWorker.JSHeapSnapshotRetainerEdge(this, retainerIndex);
-  }
-
-  /**
-   * @override
-   * @return {?function(!HeapSnapshotWorker.HeapSnapshotNode):boolean}
-   */
-  classNodesFilter() {
-    var mapAndFlag = this.userObjectsMapAndFlag();
-    if (!mapAndFlag)
-      return null;
-    var map = mapAndFlag.map;
-    var flag = mapAndFlag.flag;
-    /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
-     * @return {boolean}
-     */
-    function filter(node) {
-      return !!(map[node.ordinal()] & flag);
-    }
-    return filter;
   }
 
   /**

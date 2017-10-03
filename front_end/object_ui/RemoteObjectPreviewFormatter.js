@@ -51,8 +51,8 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
       if (isArrayOrTypedArray) {
         var arrayLength = SDK.RemoteObject.arrayLength(preview);
         var arrayLengthText = arrayLength > 1 ? ('(' + arrayLength + ')') : '';
-        var arrayName = preview.subtype === 'typedarray' ? SDK.RemoteObject.arrayNameFromDescription(description) : '';
-        text = arrayName + arrayLengthText;
+        var arrayName = SDK.RemoteObject.arrayNameFromDescription(description);
+        text = arrayName === 'Array' ? arrayLengthText : (arrayName + arrayLengthText);
       } else {
         var hideDescription = previewExperimentEnabled && description === 'Object';
         text = hideDescription ? '' : description;

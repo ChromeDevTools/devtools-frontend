@@ -43,6 +43,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
       preset.setting.addChangeListener(this._updateStartButtonEnabled.bind(this));
     this._showLandingPage();
     SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.InspectedURLChanged, this._updateStartButtonEnabled, this);
   }
 
   /**
@@ -85,7 +87,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
     if (!this._manager)
       return false;
 
-    var inspectedURL = SDK.targetManager.mainTarget().inspectedURL().asParsedURL();
+    var mainTarget = SDK.targetManager.mainTarget();
+    if (!mainTarget)
+      return false;
+
+    var inspectedURL = mainTarget.inspectedURL().asParsedURL();
     var inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
     for (var registration of this._manager.registrations().values()) {
       if (registration.securityOrigin !== inspectedOrigin)
@@ -114,14 +120,18 @@ Audits2.Audits2Panel = class extends UI.Panel {
     if (!this._manager)
       return null;
 
-    var inspectedURL = SDK.targetManager.mainTarget().inspectedURL();
-    if (!/^(http|chrome-extension)/.test(inspectedURL)) {
+    var mainTarget = SDK.targetManager.mainTarget();
+    var inspectedURL = mainTarget && mainTarget.inspectedURL();
+    if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
       return Common.UIString(
           'Can only audit HTTP/HTTPS pages and Chrome extensions. ' +
           'Navigate to a different page to start an audit.');
     }
 
-    if (!Runtime.queryParam('can_dock'))
+    // Audits don't work on most undockable targets (extension popup pages, remote debugging, etc).
+    // However, the tests run in a content shell which is not dockable yet audits just fine,
+    // so disable this check when under test.
+    if (!Host.isUnderTest() && !Runtime.queryParam('can_dock'))
       return Common.UIString('Can only audit tabs. Navigate to this page in a separate tab to start an audit.');
 
     return null;

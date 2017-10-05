@@ -299,8 +299,10 @@ ConsoleTestRunner.dumpConsoleClassesBrief = function() {
     TestRunner.addResult(messageViews[i].toMessageElement().className);
 };
 
-ConsoleTestRunner.dumpConsoleCounters = function() {
+ConsoleTestRunner.dumpConsoleCounters = async function() {
   var counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
+  if (counter._updatingForTest)
+    await TestRunner.addSnifferPromise(counter, '_updatedForTest');
   for (var index = 0; index < counter._titles.length; ++index)
     TestRunner.addResult(counter._titles[index]);
   ConsoleTestRunner.dumpConsoleClassesBrief();

@@ -18,11 +18,18 @@ ConsoleCounters.WarningErrorCounter = class {
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
+    this._errorCount = 0;
+    this._warningCount = 0;
+    this._throttler = new Common.Throttler(100);
 
     ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.ConsoleCleared, this._update, this);
     ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, this._update, this);
     ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageUpdated, this._update, this);
     this._update();
+  }
+
+  _updatedForTest() {
+    // Sniffed in tests.
   }
 
   /**
@@ -54,8 +61,20 @@ ConsoleCounters.WarningErrorCounter = class {
   }
 
   _update() {
+    this._updatingForTest = true;
+    this._throttler.schedule(this._updateThrottled.bind(this));
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  _updateThrottled() {
     var errors = ConsoleModel.consoleModel.errors();
     var warnings = ConsoleModel.consoleModel.warnings();
+    if (errors === this._errorCount && warnings === this._warningCount)
+      return Promise.resolve();
+    this._errorCount = errors;
+    this._warningCount = warnings;
 
     this._titles = [];
     this._toolbarItem.setVisible(!!(errors || warnings));
@@ -64,6 +83,9 @@ ConsoleCounters.WarningErrorCounter = class {
         this._warnings, warnings, !errors, Common.UIString(warnings === 1 ? '%d warning' : '%d warnings', warnings));
     this._counter.title = this._titles.join(', ');
     UI.inspectorView.toolbarItemResized();
+    this._updatingForTest = false;
+    this._updatedForTest();
+    return Promise.resolve();
   }
 
   /**

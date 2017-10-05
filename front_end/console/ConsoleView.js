@@ -400,10 +400,13 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _updateFilterStatus() {
+    if (this._hiddenByFilterCount === this._lastShownHiddenByFilterCount)
+      return;
     this._filterStatusText.setText(Common.UIString(
         this._hiddenByFilterCount === 1 ? '1 item hidden by filters' :
                                           this._hiddenByFilterCount + ' items hidden by filters'));
     this._filterStatusText.setVisible(!!this._hiddenByFilterCount);
+    this._lastShownHiddenByFilterCount = this._hiddenByFilterCount;
   }
 
   /**
@@ -423,10 +426,18 @@ Console.ConsoleView = class extends UI.VBox {
     if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
         message.type === ConsoleModel.ConsoleMessage.MessageType.Result) {
       var lastMessage = this._consoleMessages.peekLast();
-      viewMessage[Console.ConsoleView._messageSortingTimeSymbol] = lastMessage ? timeForSorting(lastMessage) : 0;
+      viewMessage[Console.ConsoleView._messageSortingTimeSymbol] =
+          lastMessage ? lastMessage[Console.ConsoleView._messageSortingTimeSymbol] : 0;
+    } else {
+      viewMessage[Console.ConsoleView._messageSortingTimeSymbol] = viewMessage.consoleMessage().timestamp;
     }
-    var insertAt = this._consoleMessages.upperBound(
-        viewMessage, (viewMessage1, viewMessage2) => timeForSorting(viewMessage1) - timeForSorting(viewMessage2));
+
+    var insertAt;
+    if (!this._consoleMessages.length ||
+        timeComparator(viewMessage, this._consoleMessages[this._consoleMessages.length - 1]) > 0)
+      insertAt = this._consoleMessages.length;
+    else
+      insertAt = this._consoleMessages.upperBound(viewMessage, timeComparator);
     var insertedInMiddle = insertAt < this._consoleMessages.length;
     this._consoleMessages.splice(insertAt, 0, viewMessage);
 
@@ -448,12 +459,12 @@ Console.ConsoleView = class extends UI.VBox {
     this._consoleMessageAddedForTest(viewMessage);
 
     /**
-     * @param {!Console.ConsoleViewMessage} viewMessage
-     * @return {number}
+     * @param {!Console.ConsoleViewMessage} viewMessage1
+     * @param {!Console.ConsoleViewMessage} viewMessage2
      */
-    function timeForSorting(viewMessage) {
-      var adjustedTime = viewMessage[Console.ConsoleView._messageSortingTimeSymbol];
-      return typeof adjustedTime === 'undefined' ? viewMessage.consoleMessage().timestamp : adjustedTime;
+    function timeComparator(viewMessage1, viewMessage2) {
+      return viewMessage1[Console.ConsoleView._messageSortingTimeSymbol] -
+          viewMessage2[Console.ConsoleView._messageSortingTimeSymbol];
     }
   }
 

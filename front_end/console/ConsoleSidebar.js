@@ -28,6 +28,8 @@ Console.ConsoleSidebar = class extends UI.VBox {
     /** @type {!Set<!Console.ConsoleFilter>} */
     this._pendingFiltersToAdd = new Set();
     this._pendingClear = false;
+
+    this._enabled = Runtime.experiments.isEnabled('logManagement');
   }
 
   /**
@@ -49,7 +51,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
    * @param {!ConsoleModel.ConsoleMessage} message
    */
   onMessageAdded(message) {
-    if (!Runtime.experiments.isEnabled('logManagement'))
+    if (!this._enabled)
       return;
     this._allFilter[Console.ConsoleSidebar._filterIsDirtySymbol] = true;
 
@@ -68,7 +70,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
   }
 
   clear() {
-    if (!Runtime.experiments.isEnabled('logManagement'))
+    if (!this._enabled)
       return;
     this._contextFilters.clear();
     this._pendingFiltersToAdd.clear();
@@ -99,7 +101,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
   }
 
   refresh() {
-    if (!Runtime.experiments.isEnabled('logManagement'))
+    if (!this._enabled)
       return;
     if (this._pendingClear) {
       this._filters.replaceAll([this._allFilter]);

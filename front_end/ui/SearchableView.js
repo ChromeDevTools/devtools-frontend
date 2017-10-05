@@ -208,6 +208,8 @@ UI.SearchableView = class extends UI.VBox {
    * @param {number} matches
    */
   updateSearchMatchesCount(matches) {
+    if (this._searchProvider.currentSearchMatches === matches)
+      return;
     this._searchProvider.currentSearchMatches = matches;
     this._updateSearchMatchesCountAndCurrentMatchIndex(this._searchProvider.currentQuery ? matches : 0, -1);
   }

@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "test_runner",
-    "integration_test_runner",
     "profiler",
     "data_grid",
     "heap_snapshot_worker"

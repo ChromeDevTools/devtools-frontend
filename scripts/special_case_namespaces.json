@@ -5,5 +5,6 @@
   "perf_ui": "PerfUI",
   "css_tracker": "CSSTracker",
   "har_importer": "HARImporter",
-  "sass_test_runner": "SASSTestRunner"
+  "sass_test_runner": "SASSTestRunner",
+  "sdk_test_runner": "SDKTestRunner"
 }

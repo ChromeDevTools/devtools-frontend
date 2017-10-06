@@ -111,7 +111,6 @@ application_descriptors = [
     'inspector.json',
     'toolbox.json',
     'integration_test_runner.json',
-    'unit_test_runner.json',
     'formatter_worker.json',
     'heap_snapshot_worker.json',
 ]

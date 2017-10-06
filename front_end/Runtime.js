@@ -739,6 +739,7 @@ Runtime.Module = class {
       'perf_ui': 'PerfUI',
       'har_importer': 'HARImporter',
       'sass_test_runner': 'SASSTestRunner',
+      'sdk_test_runner': 'SDKTestRunner'
     };
     var namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};

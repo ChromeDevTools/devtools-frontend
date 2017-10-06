@@ -13,7 +13,7 @@ function nextId(prefix) {
   return (prefix || '') + ++id;
 }
 
-TestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
+SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
   var mockTarget = SDK.targetManager.createTarget(
       nextId('mock-target-'), targetName, pageMock.capabilities(), params => pageMock.createConnection(params));
 
@@ -25,7 +25,7 @@ TestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
   return mockTarget;
 };
 
-TestRunner.PageMock = class {
+SDKTestRunner.PageMock = class {
   constructor(url) {
     this._url = url;
     this._capabilities = SDK.Target.Capability.DOM | SDK.Target.Capability.JS | SDK.Target.Capability.Browser;

@@ -333,10 +333,6 @@ all_devtools_files = [
   "front_end/inspector.json",
   "front_end/integration_test_runner.js",
   "front_end/integration_test_runner.json",
-  "front_end/integration_test_runner/IntegrationTestRunner.js",
-  "front_end/integration_test_runner/module.json",
-  "front_end/integration_test_runner/PageMockTestRunner.js",
-  "front_end/integration_test_runner/SyntaxHighlightTestRunner.js",
   "front_end/layer_viewer/layerDetailsView.css",
   "front_end/layer_viewer/LayerDetailsView.js",
   "front_end/layer_viewer/layers3DView.css",
@@ -582,6 +578,8 @@ all_devtools_files = [
   "front_end/sdk/TargetManager.js",
   "front_end/sdk/TracingManager.js",
   "front_end/sdk/TracingModel.js",
+  "front_end/sdk_test_runner/module.json",
+  "front_end/sdk_test_runner/PageMockTestRunner.js",
   "front_end/security/lockIcon.css",
   "front_end/security/mainView.css",
   "front_end/security/module.json",
@@ -597,8 +595,6 @@ all_devtools_files = [
   "front_end/settings/module.json",
   "front_end/settings/settingsScreen.css",
   "front_end/settings/SettingsScreen.js",
-  "front_end/shell/module.json",
-  "front_end/shell/TestShell.js",
   "front_end/snippets/module.json",
   "front_end/snippets/ScriptSnippetModel.js",
   "front_end/snippets/SnippetsQuickOpen.js",
@@ -818,8 +814,6 @@ all_devtools_files = [
   "front_end/ui/viewContainers.css",
   "front_end/ui/Widget.js",
   "front_end/ui/ZoomManager.js",
-  "front_end/unit_test_runner.js",
-  "front_end/unit_test_runner.json",
   "front_end/worker_service/ServiceDispatcher.js",
   "front_end/workspace/FileManager.js",
   "front_end/workspace/module.json",
@@ -1012,7 +1006,6 @@ devtools_applications = [
   "inspector",
   "toolbox",
   "integration_test_runner",
-  "unit_test_runner",
   "formatter_worker",
   "audits2_worker",
   "heap_snapshot_worker",
@@ -1164,7 +1157,6 @@ action("build_release_devtools") {
              "front_end/inspector.html",
              "front_end/toolbox.html",
              "front_end/integration_test_runner.html",
-             "front_end/unit_test_runner.html",
            ]
 
   outputs = generated_resources + generated_remote_modules
@@ -1191,14 +1183,12 @@ if (debug_devtools) {
                "front_end/inspector.html",
                "front_end/toolbox.html",
                "front_end/integration_test_runner.html",
-               "front_end/unit_test_runner.html",
              ]
 
     outputs = [
       "$resources_out_debug_dir/inspector.html",
       "$resources_out_debug_dir/toolbox.html",
       "$resources_out_debug_dir/integration_test_runner.html",
-      "$resources_out_debug_dir/unit_test_runner.html",
     ]
 
     args = devtools_applications + [

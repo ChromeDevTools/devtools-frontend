@@ -1,7 +1,6 @@
 {
   "dependencies": [
     "test_runner",
-    "integration_test_runner",
     "workspace",
     "diff",
     "bindings",

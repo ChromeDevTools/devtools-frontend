@@ -104,7 +104,7 @@ NetworkTestRunner.makeXHR = function(
   }
 
   ConsoleTestRunner.addConsoleSniffer(innerCallback);
-  TestRunner.evaluateInPage('makeXHRForJSONArguments("' + jsonArgs + '")');
+  TestRunner.evaluateInPageAnonymously('makeXHRForJSONArguments("' + jsonArgs + '")');
 };
 
 NetworkTestRunner.makeFetch = function(url, requestInitializer, callback) {

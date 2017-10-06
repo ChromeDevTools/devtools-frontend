@@ -75,7 +75,7 @@ SourcesTestRunner.runDebuggerTestSuite = function(testSuite) {
 };
 
 SourcesTestRunner.runTestFunction = function() {
-  TestRunner.evaluateInPage('scheduleTestFunction()');
+  TestRunner.evaluateInPageAnonymously('scheduleTestFunction()');
   TestRunner.addResult('Set timer for test function.');
 };
 

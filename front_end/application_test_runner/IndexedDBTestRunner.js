@@ -56,7 +56,7 @@ ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, param
     parametersString += ', ' + JSON.stringify(parameters[i]);
 
   var requestString = methodName + '(' + parametersString + ')';
-  TestRunner.evaluateInPage(requestString);
+  TestRunner.evaluateInPageAnonymously(requestString);
 };
 
 ApplicationTestRunner._installIndexedDBSniffer = function() {

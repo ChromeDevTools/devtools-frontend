@@ -9,7 +9,7 @@
 
 ApplicationTestRunner.createAndNavigateIFrame = function(url, callback) {
   TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameNavigated', frameNavigated);
-  TestRunner.evaluateInPage('createAndNavigateIFrame(unescape(\'' + escape(url) + '\'))');
+  TestRunner.evaluateInPageAnonymously('createAndNavigateIFrame(unescape(\'' + escape(url) + '\'))');
 
   function frameNavigated(frame) {
     callback(frame.id);
@@ -18,7 +18,7 @@ ApplicationTestRunner.createAndNavigateIFrame = function(url, callback) {
 
 ApplicationTestRunner.navigateIFrame = function(frameId, url, callback) {
   var frame = TestRunner.resourceTreeModel.frameForId(frameId);
-  TestRunner.evaluateInPage(
+  TestRunner.evaluateInPageAnonymously(
       'navigateIFrame(unescape(\'' + escape(frame.name) + '\'), unescape(\'' + escape(url) + '\'))');
   TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameNavigated', frameNavigated);
 
@@ -29,7 +29,7 @@ ApplicationTestRunner.navigateIFrame = function(frameId, url, callback) {
 
 ApplicationTestRunner.removeIFrame = function(frameId, callback) {
   var frame = TestRunner.resourceTreeModel.frameForId(frameId);
-  TestRunner.evaluateInPage('removeIFrame(unescape(\'' + escape(frame.name) + '\'))');
+  TestRunner.evaluateInPageAnonymously('removeIFrame(unescape(\'' + escape(frame.name) + '\'))');
   TestRunner.addSniffer(SDK.ResourceTreeModel.prototype, '_frameDetached', frameDetached);
 
   function frameDetached(frame) {
@@ -39,7 +39,7 @@ ApplicationTestRunner.removeIFrame = function(frameId, callback) {
 
 ApplicationTestRunner.swapFrameCache = function(frameId) {
   var frame = TestRunner.resourceTreeModel.frameForId(frameId);
-  TestRunner.evaluateInPage('swapFrameCache(unescape(\'' + escape(frame.name) + '\'))');
+  TestRunner.evaluateInPageAnonymously('swapFrameCache(unescape(\'' + escape(frame.name) + '\'))');
 };
 
 ApplicationTestRunner.dumpApplicationCache = function() {

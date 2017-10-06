@@ -84,7 +84,7 @@ SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript
   content += '\n//# sourceURL=' + url;
   if (isContentScript)
     content = `testRunner.evaluateScriptInIsolatedWorld(${worldId}, \`${content}\`)`;
-  TestRunner.evaluateInPagePromise(content);
+  TestRunner.evaluateInPageAnonymously(content);
   return TestRunner.waitForUISourceCode(url);
 };
 

@@ -61,15 +61,14 @@ LayersTestRunner.dumpLayers3DView = function(prefix, root) {
     LayersTestRunner.dumpLayers3DView(prefix + '    ', element);
 };
 
-LayersTestRunner.evaluateAndRunWhenTreeChanges = function(expression, callback) {
+LayersTestRunner.evaluateAndRunWhenTreeChanges = async function(expression, callback) {
   function eventHandler() {
     LayersTestRunner.layerTreeModel().removeEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, eventHandler);
     callback();
   }
 
-  TestRunner.evaluateInPage(expression, function() {
-    LayersTestRunner.layerTreeModel().addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, eventHandler);
-  });
+  await TestRunner.evaluateInPageAnonymously(expression);
+  LayersTestRunner.layerTreeModel().addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, eventHandler);
 };
 
 LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {

@@ -317,6 +317,9 @@ TestRunner._setupTestHelpers = function(target) {
   TestRunner.mainTarget = target;
 };
 
+/** @type {number} */
+TestRunner._evaluateInPageCounter = 0;
+
 /**
  * @param {string|!Function} code
  * @param {!Function} callback
@@ -331,15 +334,32 @@ TestRunner.evaluateInPage = async function(code, callback) {
   var components = functionLine.trim().split('/');
   var source = components[components.length - 1].slice(0, -1).split(':');
   var fileName = source[0];
+  var sourceURL = `test://evaluations/${TestRunner._evaluateInPageCounter++}/` + fileName;
   var lineOffset = parseInt(source[1], 10);
   code = '\n'.repeat(lineOffset - 1) + code;
   if (code.indexOf('sourceURL=') === -1)
-    code += `//# sourceURL=${fileName}`;
+    code += `//# sourceURL=${sourceURL}`;
   var response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   if (!response[Protocol.Error]) {
     TestRunner.safeWrap(callback)(
         TestRunner.runtimeModel.createRemoteObject(response.result), response.exceptionDetails);
   }
+};
+
+/**
+ * Doesn't append sourceURL to snippets evaluated in inspected page
+ * to avoid churning test expectations
+ * @param {string} code
+ * @return {!Promise<undefined>}
+ */
+TestRunner.evaluateInPageAnonymously = async function(code) {
+  var response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
+  if (!response[Protocol.Error])
+    return Promise.resolve();
+  TestRunner.addResult(
+      'Error: ' +
+      (response.exceptionDetails && response.exceptionDetails.text || 'exception from evaluateInPageAnonymously.'));
+  TestRunner.completeTest();
 };
 
 /**
@@ -382,7 +402,7 @@ TestRunner.callFunctionInPageAsync = function(name, args) {
  */
 TestRunner.evaluateInPageWithTimeout = function(code) {
   // FIXME: we need a better way of waiting for chromium events to happen
-  TestRunner.evaluateInPagePromise('setTimeout(unescape(\'' + escape(code) + '\'), 1)');
+  TestRunner.evaluateInPageAnonymously('setTimeout(unescape(\'' + escape(code) + '\'), 1)');
 };
 
 /**
@@ -426,11 +446,11 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
 
 /**
  * @param {string} html
- * @return {!Promise<!SDK.RemoteObject>}
+ * @return {!Promise<undefined>}
  */
 TestRunner.loadHTML = function(html) {
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
-  return TestRunner.evaluateInPagePromise(`document.write('${html}');document.close();`);
+  return TestRunner.evaluateInPageAnonymously(`document.write('${html}');document.close();`);
 };
 
 /**
@@ -799,7 +819,7 @@ TestRunner.assertGreaterOrEqual = function(a, b, message) {
  */
 TestRunner.navigate = function(url, callback) {
   TestRunner._pageLoadedCallback = TestRunner.safeWrap(callback);
-  TestRunner.evaluateInPagePromise('window.location.replace(\'' + url + '\')');
+  TestRunner.evaluateInPageAnonymously('window.location.replace(\'' + url + '\')');
 };
 
 /**

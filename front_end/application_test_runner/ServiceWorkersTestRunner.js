@@ -16,7 +16,7 @@ ApplicationTestRunner.unregisterServiceWorker = function(scope) {
 };
 
 ApplicationTestRunner.postToServiceWorker = function(scope, message) {
-  return TestRunner.evaluateInPagePromise('postToServiceWorker("' + scope + '","' + message + '")');
+  return TestRunner.evaluateInPageAnonymously('postToServiceWorker("' + scope + '","' + message + '")');
 };
 
 ApplicationTestRunner.waitForServiceWorker = function(callback) {

@@ -85,7 +85,7 @@ BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
 
-  return TestRunner.evaluateInPagePromise(evalSource);
+  return TestRunner.evaluateInPageAnonymously(evalSource);
 
   function detachFrame(frameId) {
     var frame = document.getElementById(frameId);
@@ -114,7 +114,7 @@ BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceUR
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
 
-  return TestRunner.evaluateInPagePromise(evalSource);
+  return TestRunner.evaluateInPageAnonymously(evalSource);
 
   function createShadowDOM(id, templateSelector) {
     var shadowHost = document.createElement('div');
@@ -135,7 +135,7 @@ BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
 
-  return TestRunner.evaluateInPagePromise(evalSource);
+  return TestRunner.evaluateInPageAnonymously(evalSource);
 
   function removeShadowDOM(id) {
     document.querySelector('#' + id).remove();

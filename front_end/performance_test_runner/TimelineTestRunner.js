@@ -149,11 +149,8 @@ PerformanceTestRunner.stopTimeline = function(callback) {
 PerformanceTestRunner.evaluateWithTimeline = function(actions, doneCallback) {
   PerformanceTestRunner.startTimeline(step1);
 
-  function step1() {
-    TestRunner.evaluateInPage(actions, step2);
-  }
-
-  function step2() {
+  async function step1() {
+    await TestRunner.evaluateInPageAnonymously(actions);
     PerformanceTestRunner.stopTimeline(doneCallback);
   }
 };

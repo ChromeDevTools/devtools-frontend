@@ -210,7 +210,7 @@ class CategoryRenderer {
    */
   _renderAuditGroup(group, opts) {
     const expandable = opts.expandable;
-    const element = this._dom.createElement(expandable ? 'details' :'div', 'lh-audit-group');
+    const element = this._dom.createElement(expandable ? 'details' : 'div', 'lh-audit-group');
     const summmaryEl = this._dom.createChildOf(element, 'summary', 'lh-audit-group__summary');
     const headerEl = this._dom.createChildOf(summmaryEl, 'div', 'lh-audit-group__header');
     this._dom.createChildOf(summmaryEl, 'div',
@@ -338,7 +338,7 @@ class CategoryRenderer {
     const nonPassedAudits = nonManualAudits.filter(audit => !passedAudits.includes(audit));
 
     const nonPassedElem = this._renderAuditGroup({
-      title: `${nonPassedAudits.length} failed audits`,
+      title: `${nonPassedAudits.length} Failed Audits`,
     }, {expandable: false});
     nonPassedElem.classList.add('lh-failed-audits');
     nonPassedAudits.forEach(audit => nonPassedElem.appendChild(this._renderAudit(audit)));

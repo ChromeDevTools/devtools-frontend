@@ -95,7 +95,7 @@ class DOM {
     const element = this.createElement('span');
 
     // Split on markdown links (e.g. [some link](https://...)).
-    const parts = text.split(/\[(.*?)\]\((https?:\/\/.*?)\)/g);
+    const parts = text.split(/\[([^\]]*?)\]\((https?:\/\/.*?)\)/g);
 
     while (parts.length) {
       // Pop off the same number of elements as there are capture groups.

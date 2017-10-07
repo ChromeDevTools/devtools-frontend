@@ -126,7 +126,6 @@ var Audits2Service = class {
 
 // Make lighthouse and traceviewer happy.
 global = self;
-global.Runtime = global._Runtime;
 global.isVinn = true;
 global.document = {};
 global.document.documentElement = {};

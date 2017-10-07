@@ -33,6 +33,7 @@
   --warning-color: #ffab00; /* md amber a700 */
   --report-border-color: #ccc;
   --report-secondary-border-color: #ebebeb;
+  --metric-timeline-rule-color: #b3b3b3;
   --report-width: calc(60 * var(--body-font-size));
   --report-menu-width: calc(20 * var(--body-font-size));
   --report-content-width: calc(var(--report-width) + var(--report-menu-width));
@@ -84,6 +85,11 @@
   --lh-audit-hgap: 12px;
   --lh-audit-group-vpadding: 8px;
   --lh-section-vpadding: 8px;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0;}
+  100% { opacity: 0.6;}
 }
 
 .lh-root * {
@@ -368,6 +374,7 @@ span.lh-node:hover {
   margin-left: calc(0px - var(--expandable-indent));
 }
 
+.lh-audit-group[open] > .lh-audit-group__summary > .lh-toggle-arrow,
 .lh-expandable-details[open] > .lh-expandable-details__summary > .lh-toggle-arrow {
   background-image: var(--expanded-icon-url);
 }
@@ -383,10 +390,15 @@ span.lh-node:hover {
 
 /* Perf Timeline */
 
+.lh-timeline-container {
+  overflow: hidden;
+  border-top: 1px solid var(--metric-timeline-rule-color);
+}
+
 .lh-timeline {
   padding: 0;
   padding-bottom: 0;
-  min-width: calc(var(--lh-filmstrip-thumbnail-width) * 10 + var(--default-padding) * 2);
+  width: calc(var(--lh-filmstrip-thumbnail-width) * 10 + var(--default-padding) * 2);
 }
 
 .lh-narrow .lh-timeline-container {
@@ -574,13 +586,26 @@ span.lh-node:hover {
 }
 
 .lh-filmstrip__frame {
-  text-align: center;
+  text-align: right;
+  position: relative;
 }
 
 .lh-filmstrip__timestamp {
   margin-bottom: calc(0.5 * var(--caption-line-height));
   font-size: var(--caption-font-size);
   line-height: var(--caption-line-height);
+  padding-top: 1px;
+  padding-right: 6px;
+}
+
+.lh-filmstrip__timestamp::before {
+  content: '';
+  height: 7px;
+  width: 2px;
+  background: var(--metric-timeline-rule-color);
+  position: absolute;
+  right: 0;
+  top: -2px;
 }
 
 .lh-filmstrip__thumbnail {
@@ -604,6 +629,21 @@ span.lh-node:hover {
   background: var(--warning-color);
   height: 100%;
   float: right;
+  position: relative;
+}
+
+/* correlate metric end location with sparkline */
+.lh-timeline-metric:hover .lh-sparkline__bar::after {
+  content: '';
+  height: 100vh;
+  width: 2px;
+  background: inherit;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  animation: fadeIn 150ms;
+  animation-fill-mode: forwards;
 }
 
 /* Audit */

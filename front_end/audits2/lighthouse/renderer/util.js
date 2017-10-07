@@ -13,7 +13,7 @@ const NBSP = '\xa0';
 const RATINGS = {
   PASS: {label: 'pass', minScore: 75},
   AVERAGE: {label: 'average', minScore: 45},
-  FAIL: {label: 'fail'}
+  FAIL: {label: 'fail'},
 };
 
 class Util {
@@ -70,7 +70,7 @@ class Util {
   static formatDateTime(date) {
     const options = {
       month: 'short', day: 'numeric', year: 'numeric',
-      hour: 'numeric', minute: 'numeric', timeZoneName: 'short'
+      hour: 'numeric', minute: 'numeric', timeZoneName: 'short',
     };
     let formatter = new Intl.DateTimeFormat('en-US', options);
 

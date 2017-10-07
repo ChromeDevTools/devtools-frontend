@@ -62,7 +62,7 @@ class CriticalRequestChainRenderer {
       hasChildren,
       startTime,
       transferSize: transferSize + node.request.transferSize,
-      treeMarkers: newTreeMarkers
+      treeMarkers: newTreeMarkers,
     };
   }
 

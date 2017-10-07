@@ -155,8 +155,8 @@ Main.Main = class {
     }
 
     Runtime.experiments.setDefaultExperiments([
-      'continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews', 'networkGroupingRequests',
-      'timelineColorByProduct'
+      'continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews', 'persistence2',
+      'networkGroupingRequests', 'timelineColorByProduct'
     ]);
   }
 

@@ -18,9 +18,14 @@ TestRunner.executeTestScript = function() {
       .then(data => data.text())
       .then(testScript => {
         if (!self.testRunner || Runtime.queryParam('debugFrontend')) {
-          self.eval(`function test(){${testScript}}\n//# sourceURL=${testScriptURL}`);
           TestRunner.addResult = console.log;
           TestRunner.completeTest = () => console.log('Test completed');
+
+          // Auto-start unit tests
+          if (!self.testRunner)
+            eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`);
+          else
+            self.eval(`function test(){${testScript}}\n//# sourceURL=${testScriptURL}`);
           return;
         }
         eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`);

@@ -253,8 +253,20 @@ function runTests(buildDirectoryPath, useDebugDevtools) {
     testArgs.push('--additional-driver-flag=--remote-debugging-port=9222');
     testArgs.push('--time-out-ms=6000000');
     console.log('\n=============================================');
-    console.log('Go to: http://localhost:9222/');
-    console.log('Click on link and in console execute: test()');
+    var unitTest = testArgs.find(arg => arg.includes('http/tests/devtools/unit/'));
+    if (unitTest) {
+      var unitTestPath = `http://localhost:8080/${unitTest.slice('http/tests/'.length)}`;
+      var link =
+          `http://localhost:8080/inspector-sources/debug/integration_test_runner.html?experiments=true&test=${
+                                                                                                              unitTestPath
+                                                                                                            }`;
+      console.log('1) Go to: ', link);
+      console.log('2) Go to: http://localhost:9222/, click on "inspected-page.html", and copy the ws query parameter');
+      console.log('3) Open DevTools on DevTools and you can refresh to re-run the test')
+    } else {
+      console.log('Go to: http://localhost:9222/');
+      console.log('Click on link and in console execute: test()');
+    }
     console.log('=============================================\n');
   }
   var args = [BLINK_TEST_PATH].concat(testArgs).concat(getTestFlags());

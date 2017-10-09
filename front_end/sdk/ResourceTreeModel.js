@@ -771,10 +771,11 @@ SDK.PageDispatcher = class {
 
   /**
    * @override
+   * @param {!Protocol.Page.FrameId} frameId
    * @param {string} name
    * @param {number} time
    */
-  lifecycleEvent(name, time) {
+  lifecycleEvent(frameId, name, time) {
   }
 
   /**

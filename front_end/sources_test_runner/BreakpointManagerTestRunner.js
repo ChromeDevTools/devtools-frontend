@@ -7,6 +7,8 @@
  * @suppress {accessControls}
  */
 
+SourcesTestRunner.BreakpointManager = {};
+
 SourcesTestRunner.createWorkspace = function() {
   SourcesTestRunner.testTargetManager = new SDK.TargetManager();
   SourcesTestRunner.testWorkspace = new Workspace.Workspace();
@@ -323,7 +325,7 @@ SourcesTestRunner.createBreakpointManager = function(targetManager, debuggerWork
   return breakpointManager;
 };
 
-SourcesTestRunner.setBreakpoint = function(
+SourcesTestRunner.BreakpointManager.setBreakpoint = function(
     breakpointManager, uiSourceCode, lineNumber, columnNumber, condition, enabled, setBreakpointCallback) {
   TestRunner.addResult(
       '  Setting breakpoint at ' + uiSourceCode.url() + ':' + lineNumber + ':' + columnNumber + ' enabled:' + enabled +
@@ -331,11 +333,11 @@ SourcesTestRunner.setBreakpoint = function(
 
   if (setBreakpointCallback)
     window.setBreakpointCallback = setBreakpointCallback;
-
   return breakpointManager.setBreakpoint(uiSourceCode, lineNumber, columnNumber, condition, enabled);
 };
 
-SourcesTestRunner.removeBreakpoint = function(breakpointManager, uiSourceCode, lineNumber, columnNumber) {
+SourcesTestRunner.BreakpointManager.removeBreakpoint = function(
+    breakpointManager, uiSourceCode, lineNumber, columnNumber) {
   TestRunner.addResult('  Removing breakpoint at ' + uiSourceCode.url() + ':' + lineNumber + ':' + columnNumber);
   breakpointManager.findBreakpoint(uiSourceCode, lineNumber, columnNumber).remove();
 };

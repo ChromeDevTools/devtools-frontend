@@ -17,7 +17,8 @@ SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
     if (column === -1)
       continue;
 
-    range = new TextUtils.TextRange(i, column, i, column + string.length);
+    var range = new TextUtils.TextRange(i, column, i, column + string.length);
+    sourceFrame._textEditor.editRange(range, replacement);
     break;
   }
 };

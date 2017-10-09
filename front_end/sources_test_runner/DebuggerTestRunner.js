@@ -665,9 +665,7 @@ SourcesTestRunner.selectThread = function(target) {
 };
 
 SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
-  return new Promise(
-      succ => TestRunner.debuggerModel.evaluateOnSelectedCallFrame(
-          code, 'console', false, true, false, false, TestRunner.safeWrap(succ)));
+  return TestRunner.debuggerModel.evaluateOnSelectedCallFrame({expression: code, objectGroup: 'console'});
 };
 
 SourcesTestRunner.waitJavaScriptSourceFrameBreakpoints = function(sourceFrame, inline) {

@@ -28,7 +28,7 @@ function mapTestFilename(filename) {
                             .join('');
   let filenamePrefix = namespacePrefix;
   if (namespacePrefix === 'PageMock')
-    namespacePrefix = '';
+    namespacePrefix = 'SDK';
   if (namespacePrefix === 'SyntaxHighlight')
     namespacePrefix = '';
   if (namespacePrefix === 'Datagrid') {

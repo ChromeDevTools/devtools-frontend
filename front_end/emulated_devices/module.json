@@ -40,7 +40,7 @@
             "type": "emulated-device",
             "order": 40,
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "iPhone 5",
                 "screen": {
                     "horizontal": {
@@ -85,7 +85,7 @@
             "type": "emulated-device",
             "order": 50,
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "iPhone 6",
                 "screen": {
                     "horizontal": {
@@ -130,7 +130,7 @@
             "type": "emulated-device",
             "order": 60,
             "device": {
-                "show-by-default": true,
+                "show-by-default": false,
                 "title": "iPhone 6 Plus",
                 "screen": {
                     "horizontal": {
@@ -156,6 +156,223 @@
                     "mobile"
                 ],
                 "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "order": 61,
+            "device": {
+                "show-by-default": true,
+                "title": "iPhone 7",
+                "screen": {
+                    "horizontal": {
+                        "outline" : {
+                            "image": "@url(iPhone6-landscape.svg)",
+                            "insets" : { "left": 106, "top": 28, "right": 106, "bottom": 28 }
+                        },
+                        "width": 667,
+                        "height": 375
+                    },
+                    "device-pixel-ratio": 2,
+                    "vertical": {
+                        "outline" : {
+                            "image": "@url(iPhone6-portrait.svg)",
+                            "insets" : { "left": 28, "top": 105, "right": 28, "bottom": 105 }
+                        },
+                        "width": 375,
+                        "height": 667
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "order": 62,
+            "device": {
+                "show-by-default": true,
+                "title": "iPhone 7 Plus",
+                "screen": {
+                    "horizontal": {
+                        "outline" : {
+                            "image": "@url(iPhone6Plus-landscape.svg)",
+                            "insets" : { "left": 109, "top": 29, "right": 109, "bottom": 27 }
+                        },
+                        "width": 736,
+                        "height": 414
+                    },
+                    "device-pixel-ratio": 3,
+                    "vertical": {
+                        "outline" : {
+                            "image": "@url(iPhone6Plus-portrait.svg)",
+                            "insets" : { "left": 26, "top": 107, "right": 30, "bottom": 111 }
+                        },
+                        "width": 414,
+                        "height": 736
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "order": 63,
+            "device": {
+                "show-by-default": true,
+                "title": "iPhone 8",
+                "screen": {
+                    "horizontal": {
+                        "outline" : {
+                            "image": "@url(iPhone6-landscape.svg)",
+                            "insets" : { "left": 106, "top": 28, "right": 106, "bottom": 28 }
+                        },
+                        "width": 667,
+                        "height": 375
+                    },
+                    "device-pixel-ratio": 2,
+                    "vertical": {
+                        "outline" : {
+                            "image": "@url(iPhone6-portrait.svg)",
+                            "insets" : { "left": 28, "top": 105, "right": 28, "bottom": 105 }
+                        },
+                        "width": 375,
+                        "height": 667
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "order": 64,
+            "device": {
+                "show-by-default": true,
+                "title": "iPhone 8 Plus",
+                "screen": {
+                    "horizontal": {
+                        "outline" : {
+                            "image": "@url(iPhone6Plus-landscape.svg)",
+                            "insets" : { "left": 109, "top": 29, "right": 109, "bottom": 27 }
+                        },
+                        "width": 736,
+                        "height": 414
+                    },
+                    "device-pixel-ratio": 3,
+                    "vertical": {
+                        "outline" : {
+                            "image": "@url(iPhone6Plus-portrait.svg)",
+                            "insets" : { "left": 26, "top": 107, "right": 30, "bottom": 111 }
+                        },
+                        "width": 414,
+                        "height": 736
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
+            "order": 65,
+            "device": {
+                "show-by-default": true,
+                "title": "iPhone X",
+                "screen": {
+                    "horizontal": {
+                        "width": 812,
+                        "height": 375
+                    },
+                    "device-pixel-ratio": 3,
+                    "vertical": {
+                        "width": 375,
+                        "height": 812
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1",
                 "type": "phone",
                 "modes": [
                     {

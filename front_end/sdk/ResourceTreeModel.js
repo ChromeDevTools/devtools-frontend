@@ -889,4 +889,14 @@ SDK.PageDispatcher = class {
     this._resourceTreeModel._isInterstitialShowing = false;
     this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.InterstitialHidden);
   }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} windowName
+   * @param {string} windowFeatures
+   * @param {boolean} userGesture
+   */
+  windowOpen(url, windowName, windowFeatures, userGesture) {
+  }
 };

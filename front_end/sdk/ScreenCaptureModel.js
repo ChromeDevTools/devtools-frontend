@@ -196,6 +196,16 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   interstitialHidden() {
   }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} windowName
+   * @param {string} windowFeatures
+   * @param {boolean} userGesture
+   */
+  windowOpen(url, windowName, windowFeatures, userGesture) {
+  }
 };
 
 SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

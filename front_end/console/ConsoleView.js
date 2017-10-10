@@ -686,7 +686,10 @@ Console.ConsoleView = class extends UI.VBox {
       var clickedOutsideMessageList = event.target === this._messagesElement;
       if (clickedOutsideMessageList)
         this._prompt.moveCaretToEndOfPrompt();
+      // Prevent scrolling when expanding objects in console, but focus the prompt anyway.
+      var oldScrollTop = this._viewport.element.scrollTop;
       this.focus();
+      this._viewport.element.scrollTop = oldScrollTop;
     }
     var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
     if (!groupMessage)

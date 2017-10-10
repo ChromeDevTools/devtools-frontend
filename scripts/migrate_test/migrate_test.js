@@ -302,9 +302,6 @@ function formatNonTestCode(ast, onloadFunctionName) {
       .map(line => '    ' + line)
       .join('\n')
       .replace(/\\n/g, '\\\\n')
-      .replace(/new Worker\("(.*)"\)/g, 'new Worker(relativeToTest("$1"))')
-      .replace(/\.src = "(.*)"/, `.src = relativeToTest("$1")`)
-      .replace(/\.src = '(.*)'/, `.src = relativeToTest('$1')`)
       .replace(RUN_TEST_REGEX, '');
 }
 

@@ -450,10 +450,16 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
 };
 
 /**
+ * This ensures a base tag is set so all DOM references
+ * are relative to the test file and not the inspected page
+ * (i.e. http/tests/devtools/resources/inspected-page.html).
  * @param {string} html
  * @return {!Promise<undefined>}
  */
 TestRunner.loadHTML = function(html) {
+  var testPath = TestRunner.url('');
+  if (!html.includes('<base'))
+    html = `<base href="${testPath}">` + html;
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
   return TestRunner.evaluateInPageAnonymously(`document.write('${html}');document.close();`);
 };
@@ -466,7 +472,7 @@ TestRunner.addScriptTag = function(path) {
   return TestRunner.evaluateInPageAsync(`
     (function(){
       var script = document.createElement('script');
-      script.src = '${TestRunner.url(path)}';
+      script.src = '${path}';
       document.head.append(script);
       return new Promise(f => script.onload = f);
     })();
@@ -483,7 +489,7 @@ TestRunner.addStylesheetTag = function(path) {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.type = 'text/css';
-      link.href = '${TestRunner.url(path)}';
+      link.href = '${path}';
       link.onload = onload;
       document.head.append(link);
       var resolve;
@@ -506,7 +512,7 @@ TestRunner.addIframe = function(path) {
   return TestRunner.evaluateInPageAsync(`
     (function(){
       var iframe = document.createElement('iframe');
-      iframe.src = '${TestRunner.url(path)}';
+      iframe.src = '${path}';
       document.body.appendChild(iframe);
       return new Promise(f => iframe.onload = f);
     })();
@@ -1191,13 +1197,14 @@ TestRunner.TestObserver = class {
 };
 
 TestRunner.runTest = async function() {
-  var basePath = TestRunner.url('');
-  var code = `
-    function relativeToTest(relativePath) {
-      return '${basePath}' + relativePath;
-    }
-  `;
-  await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
+  var testPath = TestRunner.url('');
+  await TestRunner.loadHTML(`
+    <head>
+      <base href="${testPath}">
+    </head>
+    <body>
+    </body>
+  `);
   TestRunner.executeTestScript();
 };
 

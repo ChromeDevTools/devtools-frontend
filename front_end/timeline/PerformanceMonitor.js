@@ -359,7 +359,7 @@ Timeline.PerformanceMonitor.ControlPane = class {
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
     this._enabledChartsSetting =
-        Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'NodeCount']);
+        Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
     var format = Timeline.PerformanceMonitor.Format;
@@ -381,10 +381,10 @@ Timeline.PerformanceMonitor.ControlPane = class {
         metrics: [{name: 'JSHeapUsedSize', color: 'blue'}, {name: 'JSHeapTotalSize', color: '#99f'}],
         format: format.Bytes,
       },
-      {title: Common.UIString('DOM Nodes'), metrics: [{name: 'NodeCount', color: 'green'}]},
-      {title: Common.UIString('JS event listeners'), metrics: [{name: 'JSEventListenerCount', color: 'yellowgreen'}]},
-      {title: Common.UIString('Documents'), metrics: [{name: 'DocumentCount', color: 'darkblue'}]},
-      {title: Common.UIString('Frames'), metrics: [{name: 'FrameCount', color: 'darkcyan'}]},
+      {title: Common.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]},
+      {title: Common.UIString('JS event listeners'), metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]},
+      {title: Common.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
+      {title: Common.UIString('Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
       {title: Common.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
       {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];

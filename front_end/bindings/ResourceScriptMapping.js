@@ -74,6 +74,8 @@ Bindings.ResourceScriptMapping = class {
     if (scriptFile &&
         ((scriptFile.hasDivergedFromVM() && !scriptFile.isMergingToVM()) || scriptFile.isDivergingFromVM()))
       return null;
+    if (scriptFile && !scriptFile._hasScripts([rawLocation.script()]))
+      return null;
     var lineNumber = debuggerModelLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
     var columnNumber = debuggerModelLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)

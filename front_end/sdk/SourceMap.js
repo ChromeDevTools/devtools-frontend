@@ -330,14 +330,21 @@ SDK.TextSourceMap = class {
   /**
    * @param {string} sourceURL
    * @param {number} lineNumber
+   * @param {number} columnNumber
    * @return {?SDK.SourceMapEntry}
    */
-  firstSourceLineMapping(sourceURL, lineNumber) {
+  sourceLineMapping(sourceURL, lineNumber, columnNumber) {
     var mappings = this._reversedMappings(sourceURL);
-    var index = mappings.lowerBound(lineNumber, lineComparator);
-    if (index >= mappings.length || mappings[index].sourceLineNumber !== lineNumber)
+    var first = mappings.lowerBound(lineNumber, lineComparator);
+    var last = mappings.upperBound(lineNumber, lineComparator);
+    if (first >= mappings.length || mappings[first].sourceLineNumber !== lineNumber)
       return null;
-    return mappings[index];
+    var columnMappings = mappings.slice(first, last);
+    var index =
+        columnMappings.lowerBound(columnNumber, (columnNumber, mapping) => columnNumber - mapping.sourceColumnNumber);
+    if (index >= columnMappings.length)
+      return null;
+    return columnMappings[index];
 
     /**
      * @param {number} lineNumber

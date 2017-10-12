@@ -168,7 +168,7 @@ Bindings.CompilerScriptMapping = class {
     var script = scripts.length ? scripts[0] : null;
     if (!script)
       return null;
-    var entry = sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
+    var entry = sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, columnNumber);
     if (!entry)
       return null;
     return this._debuggerModel.createRawLocation(script, entry.lineNumber, entry.columnNumber);
@@ -290,7 +290,7 @@ Bindings.CompilerScriptMapping = class {
     var sourceMap = uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol];
     if (!sourceMap)
       return true;
-    return !!sourceMap.firstSourceLineMapping(uiSourceCode.url(), lineNumber);
+    return !!sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, 0);
   }
 
   dispose() {

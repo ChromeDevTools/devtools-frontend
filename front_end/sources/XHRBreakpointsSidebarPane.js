@@ -81,7 +81,7 @@ Sources.XHRBreakpointsSidebarPane = class extends UI.VBox {
     element._url = url;
     element.addEventListener('contextmenu', this._contextMenu.bind(this, url), true);
 
-    var title = url ? Common.UIString('URL contains "%s"', url) : Common.UIString('Any XHR');
+    var title = url ? Common.UIString('URL contains "%s"', url) : Common.UIString('Any XHR or fetch');
     var label = UI.CheckboxLabel.create(title, enabled);
     element.appendChild(label);
     label.checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, url), false);

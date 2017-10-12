@@ -44,7 +44,7 @@ Sources.DebuggerPausedMessage = class {
       }
       messageWrapper = buildWrapper(Common.UIString('Paused on event listener'), eventNameForUI);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.XHR) {
-      messageWrapper = buildWrapper(Common.UIString('Paused on XMLHttpRequest'), details.auxData['url'] || '');
+      messageWrapper = buildWrapper(Common.UIString('Paused on XHR or fetch'), details.auxData['url'] || '');
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Exception) {
       var description = details.auxData['description'] || details.auxData['value'] || '';
       var descriptionFirstLine = description.split('\n', 1)[0];

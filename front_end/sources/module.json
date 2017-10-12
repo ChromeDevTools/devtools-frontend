@@ -524,7 +524,7 @@
             "type": "view",
             "location": "sources-sidebar",
             "id": "sources.xhrBreakpoints",
-            "title": "XHR Breakpoints",
+            "title": "XHR/fetch Breakpoints",
             "order": 5,
             "hasToolbar": true,
             "persistence": "permanent",

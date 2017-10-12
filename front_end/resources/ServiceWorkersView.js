@@ -237,16 +237,13 @@ Resources.ServiceWorkersView.Section = class {
         {lineNumbers: false, lineWrapping: true, autoHeight: true, padBottom: false, mimeType: 'application/json'};
     var editor = new TextEditor.CodeMirrorTextEditor(editorOptions);
     editor.setText(this._pushNotificationDataSetting.get());
-    editor.addEventListener(UI.TextEditor.Events.TextChanged, () => button.disabled = !editor.text());
     editor.element.addEventListener('keydown', e => {
       if (e.key === 'Tab')
         e.consume(false);
     }, true);
     editor.show(editorContainer);
     form.addEventListener('submit', e => {
-      var payload = editor.text();
-      if (payload)
-        this._push(payload);
+      this._push(editor.text() || '');
       e.consume(true);
     });
   }
@@ -261,11 +258,9 @@ Resources.ServiceWorkersView.Section = class {
 
     editor.value = this._syncTagNameSetting.get();
     editor.placeholder = Common.UIString('Sync tag');
-    editor.addEventListener('input', () => button.disabled = !editor.value);
 
     form.addEventListener('submit', e => {
-      if (editor.value)
-        this._sync(true, editor.value);
+      this._sync(true, editor.value || '');
       e.consume(true);
     });
   }

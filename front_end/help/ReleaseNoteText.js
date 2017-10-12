@@ -12,6 +12,39 @@ var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shif
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 6,
+    header: 'Highlights from the Chrome 63 update',
+    highlights: [
+      {
+        title: 'Multi-client remote debugging',
+        subtitle: 'Use DevTools while debugging your app from an IDE or testing framework.',
+        link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes#multi-client',
+      },
+      {
+        title: 'Workspaces 2.0',
+        subtitle: 'Save changes made in DevTools to disk, now with more helpful UI and better auto-mapping.',
+        link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes#workspaces',
+      },
+      {
+        title: 'Four new audits',
+        subtitle:
+            'Including "Appropriate aspect ratios for images", "Avoid JS libraries with known vulnerabilities", and more.',
+        link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes#audits',
+      },
+      {
+        title: 'Custom push notifications',
+        subtitle: 'Simulate push notifications with custom data.',
+        link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes#push',
+      },
+      {
+        title: 'Custom background sync events',
+        subtitle: 'Trigger background sync events with custom tags.',
+        link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes#sync',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2017/10/devtools-release-notes',
+  },
+  {
     version: 5,
     header: 'Highlights from the Chrome 62 update',
     highlights: [

@@ -89,6 +89,7 @@ Bindings.CompilerScriptMapping = class {
     var uiSourceCode = this._stubUISourceCodes.get(script);
     this._stubUISourceCodes.delete(script);
     this._stubProject.removeFile(uiSourceCode.url());
+    this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**

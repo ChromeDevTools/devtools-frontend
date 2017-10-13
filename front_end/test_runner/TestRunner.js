@@ -571,6 +571,16 @@ TestRunner.formatters.formatAsTypeName = function(value) {
 
 /**
  * @param {*} value
+ * @return {string}
+ */
+TestRunner.formatters.formatAsTypeNameOrNull = function(value) {
+  if (value === null)
+    return 'null';
+  return TestRunner.formatters.formatAsTypeName(value);
+};
+
+/**
+ * @param {*} value
  * @return {string|!Date}
  */
 TestRunner.formatters.formatAsRecentTime = function(value) {
@@ -1045,7 +1055,8 @@ TestRunner.MockSetting = class {
  * @return {!Array<!Runtime.Module>}
  */
 TestRunner.loadedModules = function() {
-  return self.runtime._modules.filter(module => module._loadedForTest);
+  return self.runtime._modules.filter(module => module._loadedForTest)
+      .filter(module => module.name().indexOf('test_runner') === -1);
 };
 
 /**
@@ -1208,7 +1219,9 @@ TestRunner.runTest = async function() {
   TestRunner.executeTestScript();
 };
 
-SDK.targetManager.observeTargets(new TestRunner.TestObserver());
+// Old-style tests start test using inspector-test.js
+if (Runtime.queryParam('test'))
+  SDK.targetManager.observeTargets(new TestRunner.TestObserver());
 
 (function() {
 /**

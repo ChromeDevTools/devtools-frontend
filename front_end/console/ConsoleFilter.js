@@ -6,11 +6,13 @@ Console.ConsoleFilter = class {
   /**
    * @param {string} name
    * @param {!Array<!TextUtils.FilterParser.ParsedFilter>} parsedFilters
+   * @param {?SDK.ExecutionContext} executionContext
    * @param {!Object<string, boolean>=} levelsMask
    */
-  constructor(name, parsedFilters, levelsMask) {
+  constructor(name, parsedFilters, executionContext, levelsMask) {
     this.name = name;
     this.parsedFilters = parsedFilters;
+    this.executionContext = executionContext;
     this.levelsMask = levelsMask || Console.ConsoleFilter.defaultLevelsFilterValue();
     this.infoCount = 0;
     this.warningCount = 0;
@@ -53,6 +55,15 @@ Console.ConsoleFilter = class {
    */
   _shouldBeVisible(viewMessage) {
     var message = viewMessage.consoleMessage();
+    if (this.executionContext &&
+        (this.executionContext.runtimeModel !== message.runtimeModel() ||
+         this.executionContext.id !== message.executionContextId))
+      return false;
+
+    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
+        message.type === ConsoleModel.ConsoleMessage.MessageType.Result || message.isGroupMessage())
+      return true;
+
     if (message.level && !this.levelsMask[/** @type {string} */ (message.level)])
       return false;
 

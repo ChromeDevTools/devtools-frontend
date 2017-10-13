@@ -133,7 +133,8 @@ Network.NetworkLogView = class extends UI.VBox {
     filterBar.addFilter(this._resourceCategoryFilterUI);
 
     this._filterParser = new TextUtils.FilterParser(Network.NetworkLogView._searchKeys);
-    this._suggestionBuilder = new Network.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys);
+    this._suggestionBuilder = new Network.FilterSuggestionBuilder(
+        Network.NetworkLogView._searchKeys, Network.NetworkLogView._sortSearchValues);
     this._resetSuggestionBuilder();
 
     this._dataGrid = this._columns.dataGrid();
@@ -160,6 +161,23 @@ Network.NetworkLogView = class extends UI.VBox {
   _updateGroupByFrame() {
     var value = Common.moduleSetting('network.group-by-frame').get();
     this._setGrouping(value ? 'Frame' : null);
+  }
+
+  /**
+   * @param {string} key
+   * @param {!Array<string>} values
+   */
+  static _sortSearchValues(key, values) {
+    if (key === Network.NetworkLogView.FilterType.Priority) {
+      var symbolToNumeric = NetworkPriorities.prioritySymbolToNumericMap();
+      values.sort((a, b) => {
+        var aPriority = /** @type {!Protocol.Network.ResourcePriority} */ (NetworkPriorities.uiLabelToPriority(a));
+        var bPriority = /** @type {!Protocol.Network.ResourcePriority} */ (NetworkPriorities.uiLabelToPriority(b));
+        return symbolToNumeric.get(aPriority) - symbolToNumeric.get(bPriority);
+      });
+    } else {
+      values.sort();
+    }
   }
 
   /**

@@ -30,12 +30,14 @@
 
 Network.FilterSuggestionBuilder = class {
   /**
-   * @param {!Array.<string>} keys
+   * @param {!Array<string>} keys
+   * @param {function(string, !Array<string>)=} valueSorter
    */
-  constructor(keys) {
+  constructor(keys, valueSorter) {
     this._keys = keys;
-    this._valueSets = {};
-    this._valueLists = {};
+    this._valueSorter = valueSorter || ((key, result) => result.sort());
+    /** @type {!Map<string, !Set<string>>} */
+    this._valuesMap = new Map();
   }
 
   /**
@@ -57,54 +59,22 @@ Network.FilterSuggestionBuilder = class {
     var suggestions = [];
     if (valueDelimiterIndex === -1) {
       var matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
-      for (var j = 0; j < this._keys.length; ++j) {
-        if (this._keys[j].match(matcher))
-          suggestions.push({text: modifier + this._keys[j] + ':'});
+      for (var key of this._keys) {
+        if (matcher.test(key))
+          suggestions.push({text: modifier + key + ':'});
       }
     } else {
       var key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
       var value = prefix.substring(valueDelimiterIndex + 1);
       var matcher = new RegExp('^' + value.escapeForRegExp(), 'i');
-      var items = this._values(key);
-      for (var i = 0; i < items.length; ++i) {
-        if (items[i].match(matcher) && (items[i] !== value))
-          suggestions.push({text: modifier + key + ':' + items[i]});
+      var values = Array.from(this._valuesMap.get(key) || new Set());
+      this._valueSorter(key, values);
+      for (var item of values) {
+        if (matcher.test(item) && (item !== value))
+          suggestions.push({text: modifier + key + ':' + item});
       }
     }
     return Promise.resolve(suggestions);
-  }
-
-  /**
-   * @param {string} key
-   * @return {!Array.<string>}
-   */
-  _values(key) {
-    var result = /** @type {!Array<string>} */ (this._valueLists[key]);
-
-    if (!result)
-      return [];
-
-    if (key === Network.NetworkLogView.FilterType.Priority) {
-      var resultSet = new Set(result);
-      result = [];
-      /** @type {!Map<number, !Protocol.Network.ResourcePriority>} */
-      var numericToPriorityMap = new Map();
-      NetworkPriorities.prioritySymbolToNumericMap().forEach((value, key) => numericToPriorityMap.set(value, key));
-      var sortedNumericPriorities = numericToPriorityMap.keysArray();
-      sortedNumericPriorities.sortNumbers();
-      var sortedPriorities = sortedNumericPriorities.map(value => numericToPriorityMap.get(value));
-      var sortedPriorityLabels = sortedPriorities.map(value => NetworkPriorities.uiLabelForPriority(value));
-
-      for (var value of sortedPriorityLabels) {
-        if (!resultSet.has(value))
-          continue;
-        result.push(value);
-      }
-    } else {
-      result.sort();
-    }
-
-    return result;
   }
 
   /**
@@ -115,19 +85,8 @@ Network.FilterSuggestionBuilder = class {
     if (!value)
       return;
 
-    var set = this._valueSets[key];
-    var list = this._valueLists[key];
-    if (!set) {
-      set = {};
-      this._valueSets[key] = set;
-      list = [];
-      this._valueLists[key] = list;
-    }
-
-    if (set[value])
-      return;
-
-    set[value] = true;
-    list.push(value);
+    if (!this._valuesMap.get(key))
+      this._valuesMap.set(key, /** @type {!Set<string>} */ (new Set()));
+    this._valuesMap.get(key).add(value);
   }
 };

@@ -907,15 +907,22 @@ TestRunner.runWhenPageLoads = function(callback) {
 /**
  * @param {!Array<function(function():void)>} testSuite
  */
-TestRunner.runTestSuite = async function(testSuite) {
-  for (var test of testSuite) {
+TestRunner.runTestSuite = function(testSuite) {
+  var testSuiteTests = testSuite.slice();
+
+  function runner() {
+    if (!testSuiteTests.length) {
+      TestRunner.completeTest();
+      return;
+    }
+    var nextTest = testSuiteTests.shift();
     TestRunner.addResult('');
     TestRunner.addResult(
         'Running: ' +
-        /function\s([^(]*)/.exec(test)[1]);
-    await new Promise(fulfill => TestRunner.safeWrap(test)(fulfill));
+        /function\s([^(]*)/.exec(nextTest)[1]);
+    TestRunner.safeWrap(nextTest)(runner);
   }
-  TestRunner.completeTest();
+  runner();
 };
 
 /**

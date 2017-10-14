@@ -7,8 +7,6 @@
  * @suppress {accessControls}
  */
 
-Runtime.experiments.enableForTest('persistenceValidation');
-
 Persistence.PersistenceBinding.prototype.toString = function() {
   var lines = [
     '{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(),
@@ -37,7 +35,7 @@ BindingsTestRunner.waitForBinding = function(fileName) {
 };
 
 BindingsTestRunner.addFooJSFile = function(fs) {
-  return fs.root.mkdir('inspector')
+  return fs.root.mkdir('devtools')
       .mkdir('persistence')
       .mkdir('resources')
       .addFile('foo.js', '\n\nwindow.foo = ()=>\'foo\';');

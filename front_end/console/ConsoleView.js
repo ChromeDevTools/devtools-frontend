@@ -445,6 +445,7 @@ Console.ConsoleView = class extends UI.VBox {
     else
       this._urlToMessageCount[message.url] = 1;
 
+    this._filter.onMessageAdded(message);
     this._sidebar.onMessageAdded(message);
     if (!insertedInMiddle) {
       this._appendMessageToEnd(viewMessage);
@@ -551,6 +552,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._viewport.setStickToBottom(true);
     this._linkifier.reset();
     this._badgePool.reset();
+    this._filter.clear();
   }
 
   _handleContextMenuEvent(event) {
@@ -1028,10 +1030,13 @@ Console.ConsoleViewFilter = class {
     this._filterByConsoleAPISetting.addChangeListener(this._onFilterChanged.bind(this));
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._onFilterChanged, this);
 
-    this._textFilterUI =
-        new UI.ToolbarInput(Common.UIString('Filter'), 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'));
+    var filterKeys = Object.values(Console.ConsoleFilter.FilterType);
+    this._suggestionBuilder = new UI.FilterSuggestionBuilder(filterKeys);
+    this._textFilterUI = new UI.ToolbarInput(
+        Common.UIString('Filter'), 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
+        this._suggestionBuilder.completions.bind(this._suggestionBuilder));
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
-    this._filterParser = new TextUtils.FilterParser(Object.values(Console.ConsoleFilter.FilterType));
+    this._filterParser = new TextUtils.FilterParser(filterKeys);
     this._currentFilter = new Console.ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
     this._updateCurrentFilter();
 
@@ -1048,6 +1053,21 @@ Console.ConsoleViewFilter = class {
 
     this._updateLevelMenuButtonText();
     this._messageLevelFiltersSetting.addChangeListener(this._updateLevelMenuButtonText.bind(this));
+  }
+
+  /**
+   * @param {!ConsoleModel.ConsoleMessage} message
+   */
+  onMessageAdded(message) {
+    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
+        message.type === ConsoleModel.ConsoleMessage.MessageType.Result || message.isGroupMessage())
+      return;
+    if (message.context)
+      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Context, message.context);
+    if (message.source)
+      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Source, message.source);
+    if (message.url)
+      this._suggestionBuilder.addItem(Console.ConsoleFilter.FilterType.Url, message.url);
   }
 
   /**
@@ -1174,6 +1194,10 @@ Console.ConsoleViewFilter = class {
    */
   shouldBeVisible(viewMessage) {
     return this._currentFilter.applyFilter(viewMessage);
+  }
+
+  clear() {
+    this._suggestionBuilder.clear();
   }
 
   reset() {

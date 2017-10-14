@@ -133,8 +133,8 @@ Network.NetworkLogView = class extends UI.VBox {
     filterBar.addFilter(this._resourceCategoryFilterUI);
 
     this._filterParser = new TextUtils.FilterParser(Network.NetworkLogView._searchKeys);
-    this._suggestionBuilder = new Network.FilterSuggestionBuilder(
-        Network.NetworkLogView._searchKeys, Network.NetworkLogView._sortSearchValues);
+    this._suggestionBuilder =
+        new UI.FilterSuggestionBuilder(Network.NetworkLogView._searchKeys, Network.NetworkLogView._sortSearchValues);
     this._resetSuggestionBuilder();
 
     this._dataGrid = this._columns.dataGrid();
@@ -571,6 +571,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _resetSuggestionBuilder() {
+    this._suggestionBuilder.clear();
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.Running);
     this._suggestionBuilder.addItem(
         Network.NetworkLogView.FilterType.Is, Network.NetworkLogView.IsFilterType.FromCache);

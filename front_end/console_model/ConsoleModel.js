@@ -679,6 +679,7 @@ ConsoleModel.ConsoleMessage.MessageSourceDisplayName = new Map([
   [ConsoleModel.ConsoleMessage.MessageSource.Worker, 'worker'],
   [ConsoleModel.ConsoleMessage.MessageSource.Violation, 'violation'],
   [ConsoleModel.ConsoleMessage.MessageSource.Intervention, 'intervention'],
+  [ConsoleModel.ConsoleMessage.MessageSource.Recommendation, 'recommendation'],
   [ConsoleModel.ConsoleMessage.MessageSource.Other, 'other']
 ]);
 

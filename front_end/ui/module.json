@@ -20,6 +20,7 @@
         "DropTarget.js",
         "EmptyWidget.js",
         "FilterBar.js",
+        "FilterSuggestionBuilder.js",
         "ForwardedInputEventHandler.js",
         "HistoryInput.js",
         "Icon.js",

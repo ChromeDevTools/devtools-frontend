@@ -576,8 +576,9 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @param {number=} growFactor
    * @param {number=} shrinkFactor
    * @param {string=} tooltip
+   * @param {(function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>)=} completions
    */
-  constructor(placeholder, growFactor, shrinkFactor, tooltip) {
+  constructor(placeholder, growFactor, shrinkFactor, tooltip, completions) {
     super(createElementWithClass('div', 'toolbar-input'));
 
     var internalPromptElement = this.element.createChild('div', 'toolbar-input-prompt');
@@ -588,7 +589,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     this._proxyElement = this._prompt.attach(internalPromptElement);
     this._proxyElement.classList.add('toolbar-prompt-proxy');
     this._proxyElement.addEventListener('keydown', event => this._onKeydownCallback(event));
-    this._prompt.initialize(() => Promise.resolve([]));
+    this._prompt.initialize(completions || (() => Promise.resolve([])), ' ');
     if (tooltip)
       this._prompt.setTitle(tooltip);
     this._prompt.setPlaceholder(placeholder);
@@ -636,7 +637,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
    * @return {string}
    */
   value() {
-    return this._prompt.text();
+    return this._prompt.textWithCurrentSuggestion();
   }
 
   /**

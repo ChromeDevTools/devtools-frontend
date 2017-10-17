@@ -148,9 +148,9 @@ Workspace.Project.prototype = {
    * @param {string} path
    * @param {?string} name
    * @param {string} content
-   * @param {function(?Workspace.UISourceCode)} callback
+   * @return {!Promise<?Workspace.UISourceCode>}
    */
-  createFile(path, name, content, callback) {},
+  createFile(path, name, content) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode

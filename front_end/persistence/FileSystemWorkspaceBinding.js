@@ -501,35 +501,15 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {string} path
    * @param {?string} name
    * @param {string} content
-   * @param {function(?Workspace.UISourceCode)} callback
+   * @return {!Promise<?Workspace.UISourceCode>}
    */
-  createFile(path, name, content, callback) {
-    this._fileSystem.createFile(path, name, innerCallback.bind(this));
-    var createFilePath;
-
-    /**
-     * @param {?string} filePath
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
-     */
-    function innerCallback(filePath) {
-      if (!filePath) {
-        callback(null);
-        return;
-      }
-      createFilePath = filePath;
-      if (!content) {
-        contentSet.call(this);
-        return;
-      }
-      this._fileSystem.setFileContent(filePath, content, contentSet.bind(this));
-    }
-
-    /**
-     * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
-     */
-    function contentSet() {
-      callback(this._addFile(createFilePath));
-    }
+  async createFile(path, name, content) {
+    var filePath = await new Promise(resolve => this._fileSystem.createFile(path, name, resolve));
+    if (!filePath)
+      return null;
+    if (content)
+      await new Promise(resolve => this._fileSystem.setFileContent(filePath, content, resolve));
+    return this._addFile(filePath);
   }
 
   /**

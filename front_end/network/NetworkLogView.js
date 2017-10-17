@@ -603,6 +603,14 @@ Network.NetworkLogView = class extends UI.VBox {
       hintText.createChild('br');
       hintText.appendChild(
           UI.formatLocalized('Perform a request or hit %s to record the reload.', [reloadShortcutNode]));
+
+      // TODO(lukasza): https://crbug.com/750901: Remove the hint below once
+      // the --site-per-process trial is over (i.e. on or after 2017-10-23).
+      hintText.createChild('br');
+      hintText.appendChild(UI.formatLocalized(
+          'Note: some network activity from out-of-process iframes might be missing. ' +
+              'See http://crbug.com/750901#c4 for more details.',
+          []));
     } else {
       var recordNode = hintText.createChild('b');
       recordNode.textContent = UI.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');

@@ -18,8 +18,8 @@ ConsoleCounters.WarningErrorCounter = class {
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
     this._titles = [];
-    this._errorCount = 0;
-    this._warningCount = 0;
+    this._errorCount = -1;
+    this._warningCount = -1;
     this._throttler = new Common.Throttler(100);
 
     ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.ConsoleCleared, this._update, this);

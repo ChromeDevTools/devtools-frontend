@@ -372,7 +372,7 @@ PerformanceTestRunner.loadTimeline = function(timelineData) {
 TestRunner.initAsync(`
   function wrapCallFunctionForTimeline(f) {
     var script = document.createElement('script');
-    script.textContent = '(' + f.toString() + ')()\n//# sourceURL=wrapCallFunctionForTimeline.js';
+    script.textContent = '(' + f.toString() + ')()\\n//# sourceURL=wrapCallFunctionForTimeline.js';
     document.body.appendChild(script);
   }
 

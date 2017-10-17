@@ -20,6 +20,7 @@
     { "name": "sources_test_runner" },
     { "name": "data_grid_test_runner" },
     { "name": "sdk_test_runner" },
+    { "name": "heap_snapshot_test_runner" },
 
 
 

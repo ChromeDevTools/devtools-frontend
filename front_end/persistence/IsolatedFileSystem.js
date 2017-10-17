@@ -175,58 +175,75 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @param {string} folderPath
+   * @return {!Promise<?DirectoryEntry>}
+   */
+  async _createFoldersIfNotExist(folderPath) {
+    // Fast-path. If parent directory already exists we return it immidiatly.
+    var dirEntry = await new Promise(
+        resolve => this._domFileSystem.root.getDirectory(folderPath, undefined, resolve, () => resolve(null)));
+    if (dirEntry)
+      return dirEntry;
+    var paths = folderPath.split('/');
+    var activePath = '';
+    for (var path of paths) {
+      activePath = activePath + '/' + path;
+      dirEntry = await this._innerCreateFolderIfNeeded(activePath);
+      if (!dirEntry)
+        return null;
+    }
+    return dirEntry;
+  }
+
+  /**
+   * @param {string} path
+   * @return {!Promise<?DirectoryEntry>}
+   */
+  _innerCreateFolderIfNeeded(path) {
+    return new Promise(resolve => {
+      this._domFileSystem.root.getDirectory(path, {create: true}, dirEntry => resolve(dirEntry), error => {
+        var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
+        console.error(errorMessage + ' trying to create directory \'' + path + '\'');
+        resolve(null);
+      });
+    });
+  }
+
+  /**
    * @param {string} path
    * @param {?string} name
-   * @param {function(?string)} callback
+   * @return {!Promise<?string>}
    */
-  createFile(path, name, callback) {
-    var newFileIndex = 1;
-    if (!name)
-      name = 'NewFile';
-    var nameCandidate;
-
-    this._domFileSystem.root.getDirectory(path, undefined, dirEntryLoaded.bind(this), errorHandler.bind(this));
-
-    /**
-     * @param {!DirectoryEntry} dirEntry
-     * @this {Persistence.IsolatedFileSystem}
-     */
-    function dirEntryLoaded(dirEntry) {
-      var nameCandidate = name;
-      if (newFileIndex > 1)
-        nameCandidate += newFileIndex;
-      ++newFileIndex;
-      dirEntry.getFile(nameCandidate, {create: true, exclusive: true}, fileCreated, fileCreationError.bind(this));
-
-      function fileCreated(entry) {
-        callback(entry.fullPath.substr(1));
-      }
-
-      /**
-       * @this {Persistence.IsolatedFileSystem}
-       */
-      function fileCreationError(error) {
-        if (error.name === 'InvalidModificationError') {
-          dirEntryLoaded.call(this, dirEntry);
-          return;
-        }
-        var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-        console.error(
-            errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) + '\'');
-        callback(null);
-      }
-    }
+  async createFile(path, name) {
+    var dirEntry = await this._createFoldersIfNotExist(path);
+    if (!dirEntry)
+      return null;
+    var fileEntry = await createFileCandidate.call(this, name || 'NewFile');
+    if (!fileEntry)
+      return null;
+    return fileEntry.fullPath.substr(1);
 
     /**
+     * @param {string} name
+     * @param {number=} newFileIndex
+     * @return {!Promise<?FileEntry>}
      * @this {Persistence.IsolatedFileSystem}
      */
-    function errorHandler(error) {
-      var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-      var filePath = this._path + '/' + path;
-      if (nameCandidate)
-        filePath += '/' + nameCandidate;
-      console.error(errorMessage + ' when getting content for file \'' + (filePath) + '\'');
-      callback(null);
+    function createFileCandidate(name, newFileIndex) {
+      return new Promise(resolve => {
+        var nameCandidate = name + (newFileIndex || '');
+        dirEntry.getFile(nameCandidate, {create: true, exclusive: true}, resolve, error => {
+          if (error.name === 'InvalidModificationError') {
+            resolve(createFileCandidate.call(this, name, (newFileIndex ? newFileIndex + 1 : 1)));
+            return;
+          }
+          var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
+          console.error(
+              errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) +
+              '\'');
+          resolve(null);
+        });
+      });
     }
   }
 

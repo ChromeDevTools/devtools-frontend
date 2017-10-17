@@ -226,7 +226,11 @@ Sources.NavigatorView = class extends UI.VBox {
     this._workspace = workspace;
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this);
     this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this);
+    this._workspace.addEventListener(
+        Workspace.Workspace.Events.ProjectAdded,
+        event => this._projectAdded(/** @type {!Workspace.Project} */ (event.data)), this);
     this._workspace.addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._projectRemoved.bind(this), this);
+    this._workspace.projects().forEach(this._projectAdded.bind(this));
   }
 
   /**
@@ -238,11 +242,11 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    return !uiSourceCode.project().isServiceProject();
+  acceptProject(project) {
+    return !project.isServiceProject();
   }
 
   /**
@@ -276,7 +280,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {boolean}
    */
   _acceptsUISourceCode(uiSourceCode) {
-    if (!this.accept(uiSourceCode))
+    if (!this.acceptProject(uiSourceCode.project()))
       return false;
 
     var binding = Persistence.persistence.binding(uiSourceCode);
@@ -346,6 +350,17 @@ Sources.NavigatorView = class extends UI.VBox {
   }
 
   /**
+   * @param {!Workspace.Project} project
+   */
+  _projectAdded(project) {
+    if (!this.acceptProject(project) || project.type() !== Workspace.projectTypes.FileSystem)
+      return;
+    var fileSystemNode = new Sources.NavigatorGroupTreeNode(
+        this, project, project.id(), Sources.NavigatorView.Types.FileSystem, project.displayName());
+    this._rootNode.appendChild(fileSystemNode);
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _projectRemoved(event) {
@@ -354,6 +369,12 @@ Sources.NavigatorView = class extends UI.VBox {
     var uiSourceCodes = project.uiSourceCodes();
     for (var i = 0; i < uiSourceCodes.length; ++i)
       this._removeUISourceCode(uiSourceCodes[i]);
+    if (project.type() !== Workspace.projectTypes.FileSystem)
+      return;
+    var fileSystemNode = this._rootNode.child(project.id());
+    if (!fileSystemNode)
+      return;
+    this._rootNode.removeChild(fileSystemNode);
   }
 
   /**
@@ -397,13 +418,7 @@ Sources.NavigatorView = class extends UI.VBox {
     if (!path.length) {
       if (target)
         return this._domainNode(uiSourceCode, project, target, frame, projectOrigin);
-      var fileSystemNode = this._rootNode.child(project.id());
-      if (!fileSystemNode) {
-        fileSystemNode = new Sources.NavigatorGroupTreeNode(
-            this, project, project.id(), Sources.NavigatorView.Types.FileSystem, project.displayName());
-        this._rootNode.appendChild(fileSystemNode);
-      }
-      return fileSystemNode;
+      return /** @type {!Sources.NavigatorTreeNode} */ (this._rootNode.child(project.id()));
     }
 
     var parentNode =
@@ -585,6 +600,8 @@ Sources.NavigatorView = class extends UI.VBox {
     while (node) {
       parentNode = node.parent;
       if (!parentNode || !node.isEmpty())
+        break;
+      if (parentNode === this._rootNode && project.type() === Workspace.projectTypes.FileSystem)
         break;
       if (!(node instanceof Sources.NavigatorGroupTreeNode || node instanceof Sources.NavigatorFolderTreeNode))
         break;

@@ -390,7 +390,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       for (var i = 0; i < objects.length; ++i) {
         var navigatorView = /** @type {!Sources.NavigatorView} */ (objects[i]);
         var viewId = extensions[i].descriptor()['viewId'];
-        if (navigatorView.accept(uiSourceCode)) {
+        if (navigatorView.acceptProject(uiSourceCode.project())) {
           navigatorView.revealUISourceCode(uiSourceCode, true);
           if (skipReveal)
             this._navigatorTabbedLocation.tabbedPane().selectTab(viewId);

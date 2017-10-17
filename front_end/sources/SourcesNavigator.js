@@ -37,14 +37,14 @@ Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    if (!super.accept(uiSourceCode))
+  acceptProject(project) {
+    if (!super.acceptProject(project))
       return false;
-    return uiSourceCode.project().type() !== Workspace.projectTypes.ContentScripts &&
-        uiSourceCode.project().type() !== Workspace.projectTypes.Snippets;
+    return project.type() !== Workspace.projectTypes.ContentScripts &&
+        project.type() !== Workspace.projectTypes.Snippets;
   }
 
   /**
@@ -58,7 +58,7 @@ Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
     if (!inspectedURL)
       return;
     for (var uiSourceCode of this.workspace().uiSourceCodes()) {
-      if (this.accept(uiSourceCode) && uiSourceCode.url() === inspectedURL)
+      if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
     }
   }
@@ -98,11 +98,11 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.Network;
+  acceptProject(project) {
+    return project.type() === Workspace.projectTypes.Network;
   }
 
   /**
@@ -116,7 +116,7 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
     if (!inspectedURL)
       return;
     for (var uiSourceCode of this.workspace().uiSourceCodes()) {
-      if (this.accept(uiSourceCode) && uiSourceCode.url() === inspectedURL)
+      if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
     }
   }
@@ -152,11 +152,11 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.FileSystem;
+  acceptProject(project) {
+    return project.type() === Workspace.projectTypes.FileSystem;
   }
 
   /**
@@ -180,11 +180,11 @@ Sources.ContentScriptsNavigatorView = class extends Sources.NavigatorView {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.ContentScripts;
+  acceptProject(project) {
+    return project.type() === Workspace.projectTypes.ContentScripts;
   }
 };
 
@@ -203,11 +203,11 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
 
   /**
    * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Workspace.Project} project
    * @return {boolean}
    */
-  accept(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.Snippets;
+  acceptProject(project) {
+    return project.type() === Workspace.projectTypes.Snippets;
   }
 
   /**

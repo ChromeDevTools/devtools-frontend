@@ -198,6 +198,14 @@ TextUtils.FilterParser = class {
   }
 
   /**
+   * @param {!TextUtils.FilterParser.ParsedFilter} filter
+   * @return {!TextUtils.FilterParser.ParsedFilter}
+   */
+  static cloneFilter(filter) {
+    return {key: filter.key, text: filter.text, regex: filter.regex, negative: filter.negative};
+  }
+
+  /**
    * @param {string} query
    * @return {!Array<!TextUtils.FilterParser.ParsedFilter>}
    */
@@ -231,7 +239,7 @@ TextUtils.FilterParser = class {
   }
 };
 
-/** @typedef {{key:(string|undefined), text:(string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
+/** @typedef {{key:(string|undefined), text:(?string|undefined), regex:(!RegExp|undefined), negative:boolean}} */
 TextUtils.FilterParser.ParsedFilter;
 
 TextUtils.TextUtils._keyValueFilterRegex = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;

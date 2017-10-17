@@ -2,181 +2,74 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @implements {UI.ListDelegate<!Console.ConsoleFilter>}
- */
 Console.ConsoleSidebar = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('console/consoleSidebar.css');
-    this.setMinimumSize(50, 0);
-
-    /** @type {!UI.ListModel<!Console.ConsoleFilter>} */
-    this._filters = new UI.ListModel();
-    /** @type {!UI.ListControl<!Console.ConsoleFilter>} */
-    this._list = new UI.ListControl(this._filters, this, UI.ListMode.EqualHeightItems);
-    this._list.element.classList.add('list');
-    this.contentElement.appendChild(this._list.element);
-
-    this._allFilter =
-        new Console.ConsoleFilter(Common.UIString('All'), [], null, Console.ConsoleFilter.allLevelsFilterValue());
-    this._filters.replaceAll([this._allFilter]);
-    this._list.selectItem(this._filters.at(0));
-    this._lastSelectedItem = this._list.selectedItem();
-
-    /** @type {!Map<string, !Console.ConsoleFilter>} */
-    this._contextFilters = new Map();
-    /** @type {!Set<!Console.ConsoleFilter>} */
-    this._pendingFiltersToAdd = new Set();
-    this._pendingClear = false;
-
+    this.setMinimumSize(125, 0);
     this._enabled = Runtime.experiments.isEnabled('logManagement');
-  }
 
-  /**
-   * @override
-   */
-  wasShown() {
-    // ListControl's viewport does not update when hidden.
-    this._list.viewportResized();
-  }
+    this._tree = new UI.TreeOutlineInShadow();
+    this._tree.registerRequiredCSS('console/consoleSidebar.css');
+    this._tree.addEventListener(UI.TreeOutline.Events.ElementSelected, this._selectionChanged.bind(this));
+    this.contentElement.appendChild(this._tree.element);
+    /** @type {?UI.TreeElement} */
+    this._selectedTreeElement = null;
 
-  /**
-   * @override
-   */
-  onResize() {
-    this._list.viewportResized();
-  }
-
-  /**
-   * @param {!ConsoleModel.ConsoleMessage} message
-   */
-  onMessageAdded(message) {
-    if (!this._enabled)
-      return;
-    this._allFilter[Console.ConsoleSidebar._filterIsDirtySymbol] = true;
-
-    var context = message.context;
-    if (context) {
-      var filter = this._contextFilters.get(context);
-      if (!filter) {
-        var parsedFilter = {key: Console.ConsoleFilter.FilterType.Context, text: context, negative: false};
-        filter = new Console.ConsoleFilter(context, [parsedFilter], null);
-        this._contextFilters.set(context, filter);
-        this._pendingFiltersToAdd.add(filter);
-      } else {
-        filter[Console.ConsoleSidebar._filterIsDirtySymbol] = true;
-      }
+    var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
+    var filters = [
+      new Console.ConsoleFilter(Common.UIString('message'), [], null, Console.ConsoleFilter.allLevelsFilterValue()),
+      new Console.ConsoleFilter(
+          Common.UIString('error'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Error)),
+      new Console.ConsoleFilter(
+          Common.UIString('warning'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Warning)),
+      new Console.ConsoleFilter(Common.UIString('info'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Info)),
+      new Console.ConsoleFilter(
+          Common.UIString('verbose'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Verbose))
+    ];
+    /** @type {!Array<!Console.ConsoleSidebar.FilterTreeElement>} */
+    this._treeElements = [];
+    for (var filter of filters) {
+      var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter);
+      this._tree.appendChild(treeElement);
+      this._treeElements.push(treeElement);
     }
+    this._treeElements[0].expand();
+    this._treeElements[0].select();
   }
 
   clear() {
     if (!this._enabled)
       return;
-    this._contextFilters.clear();
-    this._pendingFiltersToAdd.clear();
-    this._pendingClear = true;
+    for (var treeElement of this._treeElements)
+      treeElement.clear();
+  }
+
+  /**
+   * @param {!Console.ConsoleViewMessage} viewMessage
+   */
+  onMessageAdded(viewMessage) {
+    if (!this._enabled)
+      return;
+    for (var treeElement of this._treeElements)
+      treeElement.onMessageAdded(viewMessage);
   }
 
   /**
    * @param {!Console.ConsoleViewMessage} viewMessage
    * @return {boolean}
    */
-  applyFilters(viewMessage) {
-    var passed = true;
-    for (var filter of this._filters) {
-      var passedFilter = filter.applyFilter(viewMessage);
-      if (filter === this._list.selectedItem())
-        passed = passedFilter;
-    }
-    for (var filter of this._pendingFiltersToAdd)
-      filter.applyFilter(viewMessage);
-    return passed;
-  }
-
-  resetItemCounters() {
-    for (var filter of this._filters) {
-      filter.resetCounters();
-      filter[Console.ConsoleSidebar._filterIsDirtySymbol] = true;
-    }
-  }
-
-  refresh() {
-    if (!this._enabled)
-      return;
-    if (this._pendingClear) {
-      this._filters.replaceAll([this._allFilter]);
-      this._list.selectItem(this._filters.at(0));
-      this._pendingClear = false;
-    }
-    // Refresh counters for stale groups.
-    for (var filter of this._filters) {
-      if (filter[Console.ConsoleSidebar._filterIsDirtySymbol]) {
-        this._list.refreshItem(filter);
-        delete filter[Console.ConsoleSidebar._filterIsDirtySymbol];
-      }
-    }
-
-    // Add new groups.
-    if (this._pendingFiltersToAdd.size > 0) {
-      this._filters.replaceRange(this._filters.length, this._filters.length, Array.from(this._pendingFiltersToAdd));
-      this._pendingFiltersToAdd.clear();
-    }
+  shouldBeVisible(viewMessage) {
+    if (!this._enabled || !this._selectedTreeElement)
+      return true;
+    return this._selectedTreeElement._filter.shouldBeVisible(viewMessage);
   }
 
   /**
-   * @override
-   * @param {!Console.ConsoleFilter} item
-   * @return {!Element}
+   * @param {!Common.Event} event
    */
-  createElementForItem(item) {
-    var element = createElementWithClass('div', 'context-item');
-    element.createChild('div', 'name').textContent = item.name;
-    element.title = item.name;
-    var counters = element.createChild('div', 'counters');
-    if (item.errorCount)
-      counters.createChild('span', 'error-count').textContent = item.errorCount > 99 ? '99+' : item.errorCount;
-    if (item.warningCount)
-      counters.createChild('span', 'warning-count').textContent = item.warningCount > 99 ? '99+' : item.warningCount;
-    if (item.infoCount)
-      counters.createChild('span', 'info-count').textContent = item.infoCount > 99 ? '99+' : item.infoCount;
-    return element;
-  }
-
-  /**
-   * @override
-   * @param {!Console.ConsoleFilter} item
-   * @return {number}
-   */
-  heightForItem(item) {
-    return 28;
-  }
-
-  /**
-   * @override
-   * @param {!Console.ConsoleFilter} item
-   * @return {boolean}
-   */
-  isItemSelectable(item) {
-    return true;
-  }
-
-  /**
-   * @override
-   * @param {?Console.ConsoleFilter} from
-   * @param {?Console.ConsoleFilter} to
-   * @param {?Element} fromElement
-   * @param {?Element} toElement
-   */
-  selectedItemChanged(from, to, fromElement, toElement) {
-    if (fromElement)
-      fromElement.classList.remove('selected');
-    if (toElement)
-      toElement.classList.add('selected');
-    var shouldNotify = this._lastSelectedItem !== to;
-    this._lastSelectedItem = to;
-    if (shouldNotify)
-      this.dispatchEventToListeners(Console.ConsoleSidebar.Events.FilterSelected, to);
+  _selectionChanged(event) {
+    this._selectedTreeElement = /** @type {!UI.TreeElement} */ (event.data);
+    this.dispatchEventToListeners(Console.ConsoleSidebar.Events.FilterSelected);
   }
 };
 
@@ -185,5 +78,57 @@ Console.ConsoleSidebar.Events = {
   FilterSelected: Symbol('FilterSelected')
 };
 
-/** @type {symbol} */
-Console.ConsoleSidebar._filterIsDirtySymbol = Symbol('filterIsDirty');
+Console.ConsoleSidebar.URLGroupTreeElement = class extends UI.TreeElement {
+  /**
+   * @param {!Console.ConsoleFilter} filter
+   */
+  constructor(filter) {
+    super(filter.name);
+    this._filter = filter;
+  }
+};
+
+Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
+  /**
+   * @param {!Console.ConsoleFilter} filter
+   */
+  constructor(filter) {
+    super(filter.name);
+    this._filter = filter;
+    this.setExpandable(true);
+    /** @type {!Map<?string, !Console.ConsoleSidebar.URLGroupTreeElement>} */
+    this._urlTreeElements = new Map();
+  }
+
+  clear() {
+    this._urlTreeElements.clear();
+    this.removeChildren();
+  }
+
+  /**
+   * @param {!Console.ConsoleViewMessage} viewMessage
+   */
+  onMessageAdded(viewMessage) {
+    if (!this._filter.shouldBeVisible(viewMessage))
+      return;
+    var url = viewMessage.consoleMessage().url || null;
+    this._filter.incrementCounters(viewMessage.consoleMessage());
+
+    var child = this._urlTreeElements.get(url);
+    if (!child) {
+      var filter = this._filter.clone();
+      var parsedURL = url ? url.asParsedURL() : null;
+      if (url)
+        filter.name = parsedURL ? parsedURL.displayName : url;
+      else
+        filter.name = Common.UIString('<other>');
+      filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: url, negative: false});
+      child = new Console.ConsoleSidebar.URLGroupTreeElement(filter);
+      if (url)
+        child.tooltip = url;
+      this._urlTreeElements.set(url, child);
+      this.appendChild(child);
+    }
+    child._filter.incrementCounters(viewMessage.consoleMessage());
+  }
+};

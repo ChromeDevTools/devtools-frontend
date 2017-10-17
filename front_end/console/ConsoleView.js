@@ -44,7 +44,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._updateMessageList.bind(this));
 
     var toolbar = new UI.Toolbar('', this.element);
-    if (Runtime.experiments.isEnabled('logManagement')) {
+    var isLogManagementEnabled = Runtime.experiments.isEnabled('logManagement');
+    if (isLogManagementEnabled) {
       this._splitWidget =
           new UI.SplitWidget(true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
       this._splitWidget.setMainWidget(this._searchableView);
@@ -84,8 +85,10 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
-    toolbar.appendToolbarItem(this._filter._levelMenuButton);
-    toolbar.appendToolbarItem(this._filter._levelMenuButtonArrow);
+    if (!isLogManagementEnabled) {
+      toolbar.appendToolbarItem(this._filter._levelMenuButton);
+      toolbar.appendToolbarItem(this._filter._levelMenuButtonArrow);
+    }
     toolbar.appendToolbarItem(this._progressToolbarItem);
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this._filterStatusText);
@@ -368,7 +371,6 @@ Console.ConsoleView = class extends UI.VBox {
       this._updateMessageList();
       delete this._needsFullUpdate;
     } else {
-      this._sidebar.refresh();
       this._viewport.invalidate();
     }
     return Promise.resolve();
@@ -446,7 +448,7 @@ Console.ConsoleView = class extends UI.VBox {
       this._urlToMessageCount[message.url] = 1;
 
     this._filter.onMessageAdded(message);
-    this._sidebar.onMessageAdded(message);
+    this._sidebar.onMessageAdded(viewMessage);
     if (!insertedInMiddle) {
       this._appendMessageToEnd(viewMessage);
       this._updateFilterStatus();
@@ -490,7 +492,7 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Console.ConsoleViewMessage} viewMessage
    */
   _appendMessageToEnd(viewMessage) {
-    if (!this._filter.shouldBeVisible(viewMessage) || !this._sidebar.applyFilters(viewMessage)) {
+    if (!this._filter.shouldBeVisible(viewMessage) || !this._sidebar.shouldBeVisible(viewMessage)) {
       this._hiddenByFilterCount++;
       return;
     }
@@ -664,7 +666,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._currentGroup = this._topGroup;
     this._regexMatchRanges = [];
     this._hiddenByFilterCount = 0;
-    this._sidebar.resetItemCounters();
     for (var i = 0; i < this._visibleViewMessages.length; ++i) {
       this._visibleViewMessages[i].resetCloseGroupDecorationCount();
       this._visibleViewMessages[i].resetIncrementRepeatCount();
@@ -674,7 +675,6 @@ Console.ConsoleView = class extends UI.VBox {
       this._appendMessageToEnd(this._consoleMessages[i]);
     this._updateFilterStatus();
     this._searchableView.updateSearchMatchesCount(this._regexMatchRanges.length);
-    this._sidebar.refresh();
     this._viewport.invalidate();
   }
 
@@ -1037,7 +1037,10 @@ Console.ConsoleViewFilter = class {
         this._suggestionBuilder.completions.bind(this._suggestionBuilder));
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
     this._filterParser = new TextUtils.FilterParser(filterKeys);
-    this._currentFilter = new Console.ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
+    this._isLogManagementEnabled = Runtime.experiments.isEnabled('logManagement');
+    var initialLevelsMask = this._isLogManagementEnabled ? Console.ConsoleFilter.allLevelsFilterValue() :
+                                                           this._messageLevelFiltersSetting.get();
+    this._currentFilter = new Console.ConsoleFilter('', [], null, initialLevelsMask);
     this._updateCurrentFilter();
 
     this._levelLabels = {};
@@ -1103,7 +1106,8 @@ Console.ConsoleViewFilter = class {
     this._currentFilter.executionContext =
         this._filterByExecutionContextSetting.get() ? UI.context.flavor(SDK.ExecutionContext) : null;
     this._currentFilter.parsedFilters = parsedFilters;
-    this._currentFilter.levelsMask = this._messageLevelFiltersSetting.get();
+    if (!this._isLogManagementEnabled)
+      this._currentFilter.levelsMask = this._messageLevelFiltersSetting.get();
   }
 
   _onFilterChanged() {
@@ -1193,7 +1197,7 @@ Console.ConsoleViewFilter = class {
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
-    return this._currentFilter.applyFilter(viewMessage);
+    return this._currentFilter.shouldBeVisible(viewMessage);
   }
 
   clear() {

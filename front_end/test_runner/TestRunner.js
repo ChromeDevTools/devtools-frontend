@@ -503,16 +503,18 @@ TestRunner.addStylesheetTag = function(path) {
     })();
   `);
 };
-
 /**
  * @param {string} path
+ * @param {!Object|undefined} options
  * @return {!Promise<!SDK.RemoteObject|undefined>}
  */
-TestRunner.addIframe = function(path) {
+TestRunner.addIframe = function(path, options = {}) {
+  options.id = options.id || '';
   return TestRunner.evaluateInPageAsync(`
     (function(){
       var iframe = document.createElement('iframe');
       iframe.src = '${path}';
+      iframe.id = '${options.id}';
       document.body.appendChild(iframe);
       return new Promise(f => iframe.onload = f);
     })();

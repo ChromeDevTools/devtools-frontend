@@ -11,6 +11,10 @@ ApplicationTestRunner.registerServiceWorker = function(script, scope) {
   return TestRunner.callFunctionInPageAsync('registerServiceWorker', [script, scope]);
 };
 
+ApplicationTestRunner.waitForActivated = function(scope) {
+  return TestRunner.callFunctionInPageAsync('waitForActivated', [scope]);
+};
+
 ApplicationTestRunner.unregisterServiceWorker = function(scope) {
   return TestRunner.callFunctionInPageAsync('unregisterServiceWorker', [scope]);
 };
@@ -64,6 +68,23 @@ TestRunner.initAsync(`
     return navigator.serviceWorker.register(script, {
       scope: scope
     }).then(reg => registrations[scope] = reg);
+  }
+
+  function waitForActivated(scope) {
+    let reg = registrations[scope];
+    if (!reg)
+      return Promise.reject(new Error('The registration'));
+    let worker = reg.installing || reg.waiting || reg.active;
+    if (worker.state === 'activated')
+      return Promise.resolve();
+    if (worker.state === 'redundant')
+      return Promise.reject(new Error('The worker is redundant'));
+    return new Promise(resolve => {
+        worker.addEventListener('statechange', () => {
+            if (worker.state === 'activated')
+              resolve();
+          });
+      });
   }
 
   function postToServiceWorker(scope, message) {

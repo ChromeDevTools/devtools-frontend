@@ -22,6 +22,8 @@ Persistence.Automapping = class {
 
     /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._fileSystemUISourceCodes = new Map();
+    /** @type {!Set<!Workspace.Project>} */
+    this._ignoredProjects = new Set();
     this._sweepThrottler = new Common.Throttler(100);
 
     var pathEncoder = new Persistence.Automapping.PathEncoder();
@@ -50,6 +52,24 @@ Persistence.Automapping = class {
       this._onProjectAdded(fileSystem);
     for (var uiSourceCode of workspace.uiSourceCodes())
       this._onUISourceCodeAdded(uiSourceCode);
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.Project} project
+   */
+  ignoreProject(project) {
+    this._ignoredProjects.add(project);
+    this._scheduleRemap();
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.Project} project
+   */
+  removeIgnoredProject(project) {
+    this._ignoredProjects.delete(project);
+    this._scheduleRemap();
   }
 
   _scheduleRemap() {
@@ -160,7 +180,7 @@ Persistence.Automapping = class {
    */
   _bindNetwork(networkSourceCode) {
     if (networkSourceCode[Persistence.Automapping._processingPromise] ||
-        networkSourceCode[Persistence.Automapping._binding])
+        networkSourceCode[Persistence.Automapping._binding] || this._ignoredProjects.has(networkSourceCode.project()))
       return;
     var createBindingPromise = this._createBinding(networkSourceCode).then(onBinding.bind(this));
     networkSourceCode[Persistence.Automapping._processingPromise] = createBindingPromise;

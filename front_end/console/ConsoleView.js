@@ -40,7 +40,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.setPlaceholder(Common.UIString('Find string in logs'));
     this._searchableView.setMinimalSearchQuerySize(0);
-    this._sidebar = new Console.ConsoleSidebar();
+    this._badgePool = new ProductRegistry.BadgePool();
+    this._sidebar = new Console.ConsoleSidebar(this._badgePool);
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._updateMessageList.bind(this));
 
     var toolbar = new UI.Toolbar('', this.element);
@@ -161,7 +162,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._messagesElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), false);
 
     this._linkifier = new Components.Linkifier(Console.ConsoleViewMessage.MaxLengthForLinks);
-    this._badgePool = new ProductRegistry.BadgePool();
 
     /** @type {!Array.<!Console.ConsoleViewMessage>} */
     this._consoleMessages = [];

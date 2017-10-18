@@ -14,9 +14,6 @@ Console.ConsoleFilter = class {
     this.parsedFilters = parsedFilters;
     this.executionContext = executionContext;
     this.levelsMask = levelsMask || Console.ConsoleFilter.defaultLevelsFilterValue();
-    this.infoCount = 0;
-    this.warningCount = 0;
-    this.errorCount = 0;
   }
 
   /**
@@ -123,29 +120,6 @@ Console.ConsoleFilter = class {
         return false;
       return true;
     }
-  }
-
-  /**
-   * @param {!ConsoleModel.ConsoleMessage} message
-   */
-  incrementCounters(message) {
-    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
-        message.type === ConsoleModel.ConsoleMessage.MessageType.Result || message.isGroupMessage())
-      return;
-    var level = message.level;
-    if (level === ConsoleModel.ConsoleMessage.MessageLevel.Info ||
-        level === ConsoleModel.ConsoleMessage.MessageLevel.Verbose)
-      this.infoCount++;
-    else if (level === ConsoleModel.ConsoleMessage.MessageLevel.Warning)
-      this.warningCount++;
-    else if (level === ConsoleModel.ConsoleMessage.MessageLevel.Error)
-      this.errorCount++;
-  }
-
-  resetCounters() {
-    this.infoCount = 0;
-    this.warningCount = 0;
-    this.errorCount = 0;
   }
 };
 

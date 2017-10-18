@@ -3,7 +3,10 @@
 // found in the LICENSE file.
 
 Console.ConsoleSidebar = class extends UI.VBox {
-  constructor() {
+  /**
+   * @param {!ProductRegistry.BadgePool} badgePool
+   */
+  constructor(badgePool) {
     super(true);
     this.setMinimumSize(125, 0);
     this._enabled = Runtime.experiments.isEnabled('logManagement');
@@ -14,27 +17,40 @@ Console.ConsoleSidebar = class extends UI.VBox {
     this.contentElement.appendChild(this._tree.element);
     /** @type {?UI.TreeElement} */
     this._selectedTreeElement = null;
-
-    var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
-    var filters = [
-      new Console.ConsoleFilter(Common.UIString('message'), [], null, Console.ConsoleFilter.allLevelsFilterValue()),
-      new Console.ConsoleFilter(
-          Common.UIString('error'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Error)),
-      new Console.ConsoleFilter(
-          Common.UIString('warning'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Warning)),
-      new Console.ConsoleFilter(Common.UIString('info'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Info)),
-      new Console.ConsoleFilter(
-          Common.UIString('verbose'), [], null, Console.ConsoleFilter.singleLevelMask(Levels.Verbose))
-    ];
     /** @type {!Array<!Console.ConsoleSidebar.FilterTreeElement>} */
     this._treeElements = [];
-    for (var filter of filters) {
-      var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter);
-      this._tree.appendChild(treeElement);
-      this._treeElements.push(treeElement);
-    }
+
+    var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.All, Console.ConsoleFilter.allLevelsFilterValue(),
+        UI.Icon.create('largeicon-navigator-folder'), badgePool);
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.Error, Console.ConsoleFilter.singleLevelMask(Levels.Error),
+        UI.Icon.create('smallicon-clear-error'), badgePool);
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.Warning, Console.ConsoleFilter.singleLevelMask(Levels.Warning),
+        UI.Icon.create('smallicon-clear-warning', 'icon-warning'), badgePool);
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.Info, Console.ConsoleFilter.singleLevelMask(Levels.Info),
+        UI.Icon.create('smallicon-clear-info'), badgePool);
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.Verbose, Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
+        UI.Icon.create('smallicon-clear-warning'), badgePool);
     this._treeElements[0].expand();
     this._treeElements[0].select();
+  }
+
+  /**
+   * @param {string} name
+   * @param {!Object<string, boolean>} levelsMask
+   * @param {!Element} icon
+   * @param {!ProductRegistry.BadgePool} badgePool
+   */
+  _appendGroup(name, levelsMask, icon, badgePool) {
+    var filter = new Console.ConsoleFilter(name, [], null, levelsMask);
+    var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, badgePool);
+    this._tree.appendChild(treeElement);
+    this._treeElements.push(treeElement);
   }
 
   clear() {
@@ -81,54 +97,112 @@ Console.ConsoleSidebar.Events = {
 Console.ConsoleSidebar.URLGroupTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
+   * @param {?Element} badge
    */
-  constructor(filter) {
+  constructor(filter, badge) {
     super(filter.name);
     this._filter = filter;
+    this._countElement = this.listItemElement.createChild('span', 'count');
+    var leadingIcons = [UI.Icon.create('largeicon-navigator-file')];
+    if (badge)
+      leadingIcons.push(badge);
+    this.setLeadingIcons(leadingIcons);
+    this._messageCount = 0;
+  }
+
+  incrementAndUpdateCounter() {
+    this._messageCount++;
+    this._countElement.textContent = this._messageCount;
   }
 };
 
 Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Console.ConsoleFilter} filter
+   * @param {!Element} icon
+   * @param {!ProductRegistry.BadgePool} badgePool
    */
-  constructor(filter) {
-    super(filter.name);
+  constructor(filter, icon, badgePool) {
+    super(filter.name, true /* expandable */);
     this._filter = filter;
-    this.setExpandable(true);
+    this._badgePool = badgePool;
     /** @type {!Map<?string, !Console.ConsoleSidebar.URLGroupTreeElement>} */
     this._urlTreeElements = new Map();
+    this.setLeadingIcons([icon]);
+    this._messageCount = 0;
+    this._updateCounter();
   }
 
   clear() {
     this._urlTreeElements.clear();
     this.removeChildren();
+    this._messageCount = 0;
+    this._updateCounter();
+  }
+
+  _updateCounter() {
+    var prefix = this._messageCount ? this._messageCount : Common.UIString('No');
+    var pluralizedName = this._messageCount === 1 ? this._filter.name :
+                                                    Console.ConsoleSidebar._groupPluralNameMap.get(this._filter.name);
+    this.title = `${prefix} ${pluralizedName}`;
   }
 
   /**
    * @param {!Console.ConsoleViewMessage} viewMessage
    */
   onMessageAdded(viewMessage) {
-    if (!this._filter.shouldBeVisible(viewMessage))
+    var message = viewMessage.consoleMessage();
+    var shouldIncrementCounter = message.type !== ConsoleModel.ConsoleMessage.MessageType.Command &&
+        message.type !== ConsoleModel.ConsoleMessage.MessageType.Result && !message.isGroupMessage();
+    if (!this._filter.shouldBeVisible(viewMessage) || !shouldIncrementCounter)
       return;
-    var url = viewMessage.consoleMessage().url || null;
-    this._filter.incrementCounters(viewMessage.consoleMessage());
+    var child = this._childElement(message.url);
+    child.incrementAndUpdateCounter();
+    this._messageCount++;
+    this._updateCounter();
+  }
 
-    var child = this._urlTreeElements.get(url);
-    if (!child) {
-      var filter = this._filter.clone();
-      var parsedURL = url ? url.asParsedURL() : null;
-      if (url)
-        filter.name = parsedURL ? parsedURL.displayName : url;
-      else
-        filter.name = Common.UIString('<other>');
-      filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: url, negative: false});
-      child = new Console.ConsoleSidebar.URLGroupTreeElement(filter);
-      if (url)
-        child.tooltip = url;
-      this._urlTreeElements.set(url, child);
-      this.appendChild(child);
-    }
-    child._filter.incrementCounters(viewMessage.consoleMessage());
+  /**
+   * @param {string=} url
+   * @return {!Console.ConsoleSidebar.URLGroupTreeElement}
+   */
+  _childElement(url) {
+    var urlValue = url || null;
+    var child = this._urlTreeElements.get(urlValue);
+    if (child)
+      return child;
+
+    var filter = this._filter.clone();
+    var parsedURL = urlValue ? urlValue.asParsedURL() : null;
+    if (urlValue)
+      filter.name = parsedURL ? parsedURL.displayName : urlValue;
+    else
+      filter.name = Common.UIString('<other>');
+    filter.parsedFilters.push({key: Console.ConsoleFilter.FilterType.Url, text: urlValue, negative: false});
+    var badge = parsedURL ? this._badgePool.badgeForURL(parsedURL) : null;
+    child = new Console.ConsoleSidebar.URLGroupTreeElement(filter, badge);
+    if (urlValue)
+      child.tooltip = urlValue;
+    this._urlTreeElements.set(urlValue, child);
+    this.appendChild(child);
+    return child;
   }
 };
+
+/** @enum {string} */
+Console.ConsoleSidebar._groupSingularName = {
+  All: Common.UIString('message'),
+  Error: Common.UIString('error'),
+  Warning: Common.UIString('warning'),
+  Info: Common.UIString('info'),
+  Verbose: Common.UIString('verbose')
+};
+
+/** @const {!Map<string, string>} */
+Console.ConsoleSidebar._groupPluralNameMap = new Map([
+  [Console.ConsoleSidebar._groupSingularName.All, Common.UIString('messages')],
+  [Console.ConsoleSidebar._groupSingularName.Error, Common.UIString('errors')],
+  [Console.ConsoleSidebar._groupSingularName.Warning, Common.UIString('warnings')],
+  [Console.ConsoleSidebar._groupSingularName.Info, Common.UIString('info')],
+  [Console.ConsoleSidebar._groupSingularName.Verbose, Common.UIString('verbose')]
+]);

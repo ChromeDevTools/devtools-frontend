@@ -146,6 +146,9 @@ UI.Icon.Descriptors = {
   'smallicon-user-command': {position: 'c1', spritesheet: 'smallicons'},
   'smallicon-warning': {position: 'd1', spritesheet: 'smallicons'},
   'smallicon-network-product': {position: 'e1', spritesheet: 'smallicons'},
+  'smallicon-clear-warning': {position: 'f1', spritesheet: 'smallicons', isMask: true},
+  'smallicon-clear-info': {position: 'f2', spritesheet: 'smallicons'},
+  'smallicon-clear-error': {position: 'f3', spritesheet: 'smallicons'},
 
   'mediumicon-clear-storage': {position: 'a4', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-cookie': {position: 'b4', spritesheet: 'mediumicons', isMask: true},

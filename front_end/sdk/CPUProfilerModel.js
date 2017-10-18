@@ -113,11 +113,14 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
     return this._isRecording;
   }
 
+  /**
+   * @return {!Promise}
+   */
   startRecording() {
     this._isRecording = true;
     var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this._profilerAgent.setSamplingInterval(intervalUs);
-    this._profilerAgent.start();
+    return this._profilerAgent.start();
   }
 
   /**

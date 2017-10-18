@@ -38,6 +38,6 @@ ExtensionsTestRunner.dumpAuditProgress = function() {
 
 TestRunner.initAsync(`
   function extension_runAudits(callback) {
-    evaluateOnFrontend('InspectorTest.startExtensionAudits(reply);', callback);
+    evaluateOnFrontend('ExtensionsTestRunner.startExtensionAudits(reply);', callback);
   }
 `);

@@ -730,6 +730,14 @@ SDK.ExecutionContext = class {
   }
 
   /**
+   * @return {!Promise<?Array<string>>}
+   */
+  async globalLexicalScopeNames() {
+    var response = await this.runtimeModel._agent.invoke_globalLexicalScopeNames({executionContextId: this.id});
+    return response[Protocol.Error] ? [] : response.names;
+  }
+
+  /**
    * @return {string}
    */
   label() {

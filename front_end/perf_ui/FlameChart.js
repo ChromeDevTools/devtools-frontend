@@ -185,10 +185,12 @@ PerfUI.FlameChart = class extends UI.VBox {
 
   _resetCanvas() {
     var ratio = window.devicePixelRatio;
-    this._canvas.width = this._offsetWidth * ratio;
-    this._canvas.height = this._offsetHeight * ratio;
-    this._canvas.style.width = this._offsetWidth + 'px';
-    this._canvas.style.height = this._offsetHeight + 'px';
+    var width = Math.round(this._offsetWidth * ratio);
+    var height = Math.round(this._offsetHeight * ratio);
+    this._canvas.width = width;
+    this._canvas.height = height;
+    this._canvas.style.width = `${width / ratio}px`;
+    this._canvas.style.height = `${height / ratio}px`;
   }
 
   /**

@@ -316,7 +316,7 @@ Common.ResourceType._mimeTypeByExtension = new Map([
   ['jsx', 'text/jsx'],
 
   // Image
-  ['jpeg', 'image/jpeg'], ['jpg', 'image/jpeg'], ['svg', 'image/svg'], ['gif', 'image/gif'], ['webp', 'image/webp'],
+  ['jpeg', 'image/jpeg'], ['jpg', 'image/jpeg'], ['svg', 'image/svg+xml'], ['gif', 'image/gif'], ['webp', 'image/webp'],
   ['png', 'image/png'], ['ico', 'image/ico'], ['tiff', 'image/tiff'], ['tif', 'image/tif'], ['bmp', 'image/bmp'],
 
   // Font

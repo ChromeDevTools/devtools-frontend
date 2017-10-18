@@ -726,8 +726,32 @@ Sources.NavigatorView = class extends UI.VBox {
 
     contextMenu.appendSeparator();
     Sources.NavigatorView.appendAddFolderItem(contextMenu);
-    if (node instanceof Sources.NavigatorGroupTreeNode)
+    if (node instanceof Sources.NavigatorGroupTreeNode) {
+      if (Runtime.experiments.isEnabled('networkPersistence')) {
+        var hasMapping = Persistence.networkPersistenceManager.projects().has(project);
+        if (hasMapping) {
+          var domainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
+          contextMenu.appendItem(
+              Common.UIString('Stop serving folder for \'' + domainPath + '\''),
+              () => Persistence.networkPersistenceManager.removeFileSystemProject(project));
+        } else {
+          var parsedURL = new Common.ParsedURL(SDK.targetManager.mainTarget().inspectedURL());
+          var canServeDomain = parsedURL.isValid && (parsedURL.scheme === 'http' || parsedURL.scheme === 'https');
+          for (var activeProject of Persistence.networkPersistenceManager.projects()) {
+            if (Persistence.networkPersistenceManager.domainPathForProject(activeProject) !== parsedURL.domain() + '/')
+              continue;
+            canServeDomain = false;
+            break;
+          }
+          if (canServeDomain) {
+            contextMenu.appendItem(
+                Common.UIString('Start serving folder for \'' + parsedURL.domain() + '\''),
+                () => Persistence.networkPersistenceManager.addFileSystemProject(parsedURL.domain() + '/', project));
+          }
+        }
+      }
       contextMenu.appendItem(Common.UIString('Remove folder from workspace'), removeFolder);
+    }
 
     contextMenu.show();
   }
@@ -966,6 +990,9 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
       var container = createElementWithClass('span', 'icon-stack');
       var icon = UI.Icon.create('largeicon-navigator-file-sync', 'icon');
       var badge = UI.Icon.create('badge-navigator-file-sync', 'icon-badge');
+      // TODO(allada) This does not play well with dark theme. Add an actual icon and use it.
+      if (Persistence.networkPersistenceManager.projects().has(binding.fileSystem.project()))
+        badge.style.filter = 'hue-rotate(160deg)';
       container.appendChild(icon);
       container.appendChild(badge);
       container.title = Persistence.PersistenceUtils.tooltipForUISourceCode(this._uiSourceCode);

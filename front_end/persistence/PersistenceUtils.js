@@ -29,6 +29,9 @@ Persistence.PersistenceUtils = class {
     if (binding) {
       var icon = UI.Icon.create('mediumicon-file-sync');
       icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
+      // TODO(allada) This will not work properly with dark theme.
+      if (Persistence.networkPersistenceManager.projects().has(binding.fileSystem.project()))
+        icon.style.filter = 'hue-rotate(160deg)';
       return icon;
     }
     if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)

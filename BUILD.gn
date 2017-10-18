@@ -448,6 +448,7 @@ all_devtools_files = [
   "front_end/persistence/FileSystemWorkspaceBinding.js",
   "front_end/persistence/IsolatedFileSystem.js",
   "front_end/persistence/IsolatedFileSystemManager.js",
+  "front_end/persistence/NetworkPersistenceManager.js",
   "front_end/persistence/Persistence.js",
   "front_end/persistence/PersistenceUtils.js",
   "front_end/platform/module.json",

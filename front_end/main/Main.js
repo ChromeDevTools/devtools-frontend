@@ -121,6 +121,7 @@ Main.Main = class {
     Runtime.experiments.register('logManagement', 'Log management', true);
     Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('networkGroupingRequests', 'Network request groups support', true);
+    Runtime.experiments.register('networkPersistence', 'Override requests with workspace project');
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
     Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
@@ -218,6 +219,7 @@ Main.Main = class {
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, Workspace.workspace);
     Persistence.persistence =
         new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager, Persistence.fileSystemMapping);
+    Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(Workspace.workspace);
 
     new Main.ExecutionContextSelector(SDK.targetManager, UI.context);
     Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);

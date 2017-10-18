@@ -72,6 +72,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorFocused,
         () => UI.context.setFlavor(SourceFrame.UISourceCodeFrame, this));
+    Persistence.networkPersistenceManager.addEventListener(
+        Persistence.NetworkPersistenceManager.Events.EnabledChanged, this._onNetworkPersistenceChanged, this);
 
     this._updateStyle();
     this._updateDiffUISourceCode();
@@ -133,6 +135,7 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     super.wasShown();
     // We need CodeMirrorTextEditor to be initialized prior to this call as it calls |cursorPositionToCoordinates| internally. @see crbug.com/506566
     setImmediate(this._updateBucketDecorations.bind(this));
+    this.setEditable(this._canEditSource());
   }
 
   /**
@@ -154,7 +157,20 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       return true;
     if (this._uiSourceCode.project().isServiceProject())
       return false;
+    if (Persistence.networkPersistenceManager.enabled()) {
+      var networkPersistenceProjects = Persistence.networkPersistenceManager.projects();
+      for (var project of networkPersistenceProjects) {
+        var projectDomainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
+        var urlDomainPath = this._uiSourceCode.url().replace(/^https?:\/\//, '');
+        if (projectDomainPath && urlDomainPath.startsWith(projectDomainPath))
+          return true;
+      }
+    }
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
+  }
+
+  _onNetworkPersistenceChanged() {
+    this.setEditable(this._canEditSource());
   }
 
   commitEditing() {
@@ -340,6 +356,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.textEditor.dispose();
     Common.moduleSetting('textEditorAutocompletion').removeChangeListener(this._updateAutocomplete, this);
     this.detach();
+    Persistence.networkPersistenceManager.removeEventListener(
+        Persistence.NetworkPersistenceManager.Events.EnabledChanged, this._onNetworkPersistenceChanged, this);
   }
 
   /**

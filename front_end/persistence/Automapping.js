@@ -103,6 +103,7 @@ Persistence.Automapping = class {
    * @param {!Workspace.Project} project
    */
   _onProjectRemoved(project) {
+    this._ignoredProjects.delete(project);
     for (var uiSourceCode of project.uiSourceCodes())
       this._onUISourceCodeRemoved(uiSourceCode);
     if (project.type() !== Workspace.projectTypes.FileSystem)
@@ -118,12 +119,13 @@ Persistence.Automapping = class {
    * @param {!Workspace.Project} project
    */
   _onProjectAdded(project) {
-    if (project.type() !== Workspace.projectTypes.FileSystem)
+    if (project.type() !== Workspace.projectTypes.FileSystem || this._ignoredProjects.has(project))
       return;
     var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
     for (var gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
+    project.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
     this._scheduleRemap();
   }
 
@@ -131,6 +133,8 @@ Persistence.Automapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _onUISourceCodeAdded(uiSourceCode) {
+    if (this._ignoredProjects.has(uiSourceCode.project()))
+      return;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       this._filesIndex.addPath(uiSourceCode.url());
       this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);

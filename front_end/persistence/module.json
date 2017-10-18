@@ -2,7 +2,8 @@
     "dependencies": [
         "bindings",
         "workspace",
-        "components"
+        "components",
+        "sdk"
     ],
     "extensions": [
         {
@@ -20,6 +21,7 @@
         "FileSystemWorkspaceBinding.js",
         "DefaultMapping.js",
         "Automapping.js",
+        "NetworkPersistenceManager.js",
         "Persistence.js",
         "PersistenceUtils.js",
         "FileSystemMapping.js",

@@ -22,7 +22,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._splitWidget.show(this.element);
 
     this._previewPanel = new UI.VBox();
-    var resizer = this._previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
+    var resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
     this._splitWidget.setMainWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 

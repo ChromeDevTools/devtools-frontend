@@ -134,8 +134,11 @@ Bindings.CompilerScriptMapping = class {
     if (!script)
       return null;
 
-    var lineNumber = rawLocation.lineNumber;
-    var columnNumber = rawLocation.columnNumber || 0;
+    var lineNumber = rawLocation.lineNumber - script.lineOffset;
+    var columnNumber = rawLocation.columnNumber;
+    if (!lineNumber)
+      columnNumber -= script.columnOffset;
+
     var stubUISourceCode = this._stubUISourceCodes.get(script);
     if (stubUISourceCode)
       return new Workspace.UILocation(stubUISourceCode, lineNumber, columnNumber);
@@ -172,7 +175,9 @@ Bindings.CompilerScriptMapping = class {
     var entry = sourceMap.sourceLineMapping(uiSourceCode.url(), lineNumber, columnNumber);
     if (!entry)
       return null;
-    return this._debuggerModel.createRawLocation(script, entry.lineNumber, entry.columnNumber);
+    return this._debuggerModel.createRawLocation(
+        script, entry.lineNumber + script.lineOffset,
+        !entry.lineNumber ? entry.columnNumber + script.columnOffset : entry.columnNumber);
   }
 
   /**

@@ -842,6 +842,9 @@ TestRunner.assertGreaterOrEqual = function(a, b, message) {
  */
 TestRunner.navigate = function(url, callback) {
   TestRunner._pageLoadedCallback = TestRunner.safeWrap(callback);
+  TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, TestRunner._pageNavigated);
+  // Note: injected <base> means that url is relative to test
+  // and not the inspected page
   TestRunner.evaluateInPageAnonymously('window.location.replace(\'' + url + '\')');
 };
 
@@ -850,6 +853,11 @@ TestRunner.navigate = function(url, callback) {
  */
 TestRunner.navigatePromise = function(url) {
   return new Promise(fulfill => TestRunner.navigate(url, fulfill));
+};
+
+TestRunner._pageNavigated = function() {
+  TestRunner.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, TestRunner._pageNavigated);
+  TestRunner._handlePageLoaded();
 };
 
 /**
@@ -886,6 +894,10 @@ TestRunner._innerReloadPage = function(hardReload, callback) {
 TestRunner.pageLoaded = function() {
   TestRunner.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, TestRunner.pageLoaded);
   TestRunner.addResult('Page reloaded.');
+  TestRunner._handlePageLoaded();
+};
+
+TestRunner._handlePageLoaded = function() {
   if (TestRunner._pageLoadedCallback) {
     var callback = TestRunner._pageLoadedCallback;
     delete TestRunner._pageLoadedCallback;

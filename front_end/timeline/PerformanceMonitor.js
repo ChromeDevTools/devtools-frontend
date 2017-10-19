@@ -17,9 +17,14 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._pixelsPerMs = 20 / 1000;
     /** @const */
     this._pollIntervalMs = 500;
+    /** @const */
+    this._scaleHeight = 16;
+    /** @const */
+    this._graphHeight = 90;
     this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
-    this._canvas = /** @type {!HTMLCanvasElement} */ (this.contentElement.createChild('canvas'));
+    var chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
+    this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
 
     var mode = Timeline.PerformanceMonitor.MetricMode;
     /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricMode>} */
@@ -30,6 +35,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ]);
     /** @type {!Map<string, !{lastValue: (number|undefined), lastTimestamp: (number|undefined)}>} */
     this._metricData = new Map();
+    this._controlPane.addEventListener(
+        Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged, () => this._recalcChartHeight());
   }
 
   /**
@@ -110,18 +117,17 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   _draw() {
-    var graphHeight = 90;
     var ctx = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     ctx.clearRect(0, 0, this._width, this._height);
     ctx.save();
-    ctx.translate(0, 16);  // Reserve space for the scale bar.
+    ctx.translate(0, this._scaleHeight);  // Reserve space for the scale bar.
     for (var chartInfo of this._controlPane.charts()) {
       if (!this._controlPane.isActive(chartInfo.metrics[0].name))
         continue;
-      this._drawChart(ctx, chartInfo, graphHeight);
-      ctx.translate(0, graphHeight);
+      this._drawChart(ctx, chartInfo, this._graphHeight);
+      ctx.translate(0, this._graphHeight);
     }
     ctx.restore();
     this._drawHorizontalGrid(ctx);
@@ -334,10 +340,19 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   onResize() {
     super.onResize();
     this._width = this._canvas.offsetWidth;
-    this._height = this._canvas.offsetHeight;
     this._canvas.width = Math.round(this._width * window.devicePixelRatio);
-    this._canvas.height = Math.round(this._height * window.devicePixelRatio);
-    this._draw();
+    this._recalcChartHeight();
+  }
+
+  _recalcChartHeight() {
+    var height = this._scaleHeight;
+    for (var chartInfo of this._controlPane.charts()) {
+      if (this._controlPane.isActive(chartInfo.metrics[0].name))
+        height += this._graphHeight;
+    }
+    this._height = Math.ceil(height * window.devicePixelRatio);
+    this._canvas.height = this._height;
+    this._canvas.style.height = `${this._height / window.devicePixelRatio}px`;
   }
 };
 
@@ -374,11 +389,12 @@ Timeline.PerformanceMonitor.ChartInfo;
  */
 Timeline.PerformanceMonitor.MetricInfo;
 
-Timeline.PerformanceMonitor.ControlPane = class {
+Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
   /**
    * @param {!Element} parent
    */
   constructor(parent) {
+    super();
     this.element = parent.createChild('div', 'perfmon-control-pane');
 
     this._enabledChartsSetting =
@@ -440,6 +456,7 @@ Timeline.PerformanceMonitor.ControlPane = class {
     else
       this._enabledCharts.delete(chartName);
     this._enabledChartsSetting.set(Array.from(this._enabledCharts));
+    this.dispatchEventToListeners(Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged);
   }
 
   /**
@@ -466,6 +483,11 @@ Timeline.PerformanceMonitor.ControlPane = class {
         this._indicators.get(name).setValue(metrics.get(name));
     }
   }
+};
+
+/** @enum {symbol} */
+Timeline.PerformanceMonitor.ControlPane.Events = {
+  MetricChanged: Symbol('MetricChanged')
 };
 
 Timeline.PerformanceMonitor.MetricIndicator = class {

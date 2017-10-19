@@ -16,6 +16,17 @@
   overflow-y: auto;
 }
 
+.perfmon-chart-container {
+  display: flex;
+  flex: 1 1;
+  border-left: 1px solid #ccc;
+  overflow-y:  auto;
+}
+
+.perfmon-chart-container canvas {
+  width: 100%;
+}
+
 .perfmon-indicator {
   padding: 6px 12px;
   margin: -1px 0;
@@ -69,10 +80,4 @@
 
 .perfmon-add-button:not(:hover) {
   color: #bbb;
-}
-
-.perfmon-pane canvas {
-  display: flex;
-  flex: 1 1;
-  border-left: 1px solid #ccc;
 }

@@ -120,6 +120,61 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   }
 
   /**
+   * @param {string} urlPath
+   * @return {string}
+   */
+  _encodeUrlPathToLocalPath(urlPath) {
+    var encodedParts = [];
+    for (var pathPart of fileNamePartsFromUrlPath(urlPath)) {
+      if (!pathPart)
+        continue;
+      // encodeURI() escapes all the unsafe filename characters except /:?*
+      var encodedName = encodeURI(pathPart).replace(/[\/:\?\*]/g, match => '%' + match[0].charCodeAt(0).toString(16));
+      // Windows does not allow a small set of filenames.
+      if (Persistence.NetworkPersistenceManager._reservedFileNames.has(encodedName.toLowerCase()))
+        encodedName = encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16)).join('');
+      // Windows does not allow the file to end in a space or dot (space should already be encoded).
+      var lastChar = encodedName.charAt(encodedName.length - 1);
+      if (lastChar === '.')
+        encodedName = encodedName.substr(0, encodedName.length - 1) + '%2e';
+      encodedParts.push(encodedName);
+    }
+    return encodedParts.join('/');
+
+    /**
+     * @param {string} urlPath
+     * @return {!Array<string>}
+     */
+    function fileNamePartsFromUrlPath(urlPath) {
+      var hashIndex = urlPath.indexOf('#');
+      if (hashIndex !== -1)
+        urlPath = urlPath.substr(0, hashIndex);
+      var queryIndex = urlPath.indexOf('?');
+      if (queryIndex === -1)
+        return urlPath.split(/[\/\\]/g);
+      if (queryIndex === 0)
+        return [urlPath];
+      var endSection = urlPath.substr(queryIndex);
+      var parts = urlPath.substr(0, urlPath.length - endSection.length).split(/[\/\\]/g);
+      parts[parts.length - 1] += endSection;
+      return parts;
+    }
+  }
+
+  /**
+   * @param {string} path
+   * @return {string}
+   */
+  _decodeLocalPathToUrlPath(path) {
+    try {
+      return unescape(path);
+    } catch (e) {
+      console.error(e);
+    }
+    return path;
+  }
+
+  /**
    * @param {!Workspace.UISourceCode} fileSystemUISourceCode
    * @return {?Workspace.UISourceCode}
    */
@@ -180,7 +235,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       var relativeFolderPath = relativeFilePath.substr(0, relativeFilePath.length - fileName.length);
       if (!fileName)
         fileName = 'index.html';
-      project.createFile(relativeFolderPath, fileName, content);
+      project.createFile(relativeFolderPath, this._encodeUrlPathToLocalPath(fileName), content);
     }
   }
 
@@ -191,7 +246,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   _urlsForFileSystemUISourceCode(uiSourceCode) {
     var domainPath = this.domainPathForProject(uiSourceCode.project());
     var directoryPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-    var relativePath = uiSourceCode.url().substr(directoryPath.length + 1);
+    var relativePath = this._decodeLocalPathToUrlPath(uiSourceCode.url().substr(directoryPath.length + 1));
     var completePath = domainPath + relativePath;
     var entries = ['http://' + completePath, 'https://' + completePath];
     var indexFileName = 'index.html';
@@ -294,6 +349,11 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     interceptedRequest.continueRequestWithContent(blob);
   }
 };
+
+Persistence.NetworkPersistenceManager._reservedFileNames = new Set([
+  'con',  'prn',  'aux',  'nul',  'com1', 'com2', 'com3', 'com4', 'com5', 'com6', 'com7',
+  'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5', 'lpt6', 'lpt7', 'lpt8', 'lpt9'
+]);
 
 Persistence.NetworkPersistenceManager.Events = {
   ProjectsChanged: Symbol('ProjectsChanged'),

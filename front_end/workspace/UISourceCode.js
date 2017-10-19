@@ -135,7 +135,10 @@ Workspace.UISourceCode = class extends Common.Object {
       return Common.UIString('(index)');
     var name = this._name;
     try {
-      name = decodeURI(name);
+      if (this.project().type() === Workspace.projectTypes.FileSystem)
+        name = unescape(name);
+      else
+        name = decodeURI(name);
     } catch (e) {
     }
     return skipTrim ? name : name.trimEnd(100);

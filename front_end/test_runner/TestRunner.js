@@ -457,7 +457,7 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
  * @return {!Promise<undefined>}
  */
 TestRunner.loadHTML = function(html) {
-  var testPath = TestRunner.url('');
+  var testPath = TestRunner.url();
   if (!html.includes('<base'))
     html = `<base href="${testPath}">` + html;
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
@@ -1155,12 +1155,18 @@ TestRunner.waitForUISourceCodeRemoved = function(callback) {
 };
 
 /**
- * @param {string} relativeURL
+ * @param {string=} url
  * @return {string}
  */
-TestRunner.url = function(relativeURL) {
-  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
-  return new URL(testScriptURL + '/../' + relativeURL).href;
+TestRunner.url = function(url = '') {
+  // TODO(chenwilliam): only new-style tests will have a test queryParam;
+  // remove inspectedURL() after all tests have been migrated to new test framework.
+  var testScriptURL =
+      /** @type {string} */ (Runtime.queryParam('test')) || SDK.targetManager.mainTarget().inspectedURL();
+
+  // This handles relative (e.g. "../file"), root (e.g. "/resource"),
+  // absolute (e.g. "http://", "data:") and empty (e.g. "") paths
+  return new URL(url, testScriptURL + '/../').href;
 };
 
 /**
@@ -1217,7 +1223,7 @@ TestRunner.TestObserver = class {
 };
 
 TestRunner.runTest = async function() {
-  var testPath = TestRunner.url('');
+  var testPath = TestRunner.url();
   await TestRunner.loadHTML(`
     <head>
       <base href="${testPath}">

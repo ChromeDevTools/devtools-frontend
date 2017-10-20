@@ -157,11 +157,18 @@
     font-weight: bold;
 }
 
+.console-group-title:not(.repeated-message) {
+    margin-left: 12px;
+}
+
 .expand-group-icon {
     -webkit-user-select: none;
-    position: absolute;
+    flex: none;
     background-color: rgb(110, 110, 110);
-    left: -14px;
+    position: relative;
+    left: 10px;
+    top: 5px;
+    margin-right: 2px;
 }
 
 .console-group {

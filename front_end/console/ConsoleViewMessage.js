@@ -1346,7 +1346,7 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
     if (!this._element) {
       super.toMessageElement();
       this._expandGroupIcon = UI.Icon.create('', 'expand-group-icon');
-      this._contentElement.insertBefore(this._expandGroupIcon, this._contentElement.firstChild);
+      this._element.insertBefore(this._expandGroupIcon, this._contentElement);
       this.setCollapsed(this._collapsed);
     }
     return this._element;

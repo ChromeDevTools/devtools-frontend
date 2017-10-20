@@ -39,29 +39,10 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
       {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
       {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, longText: true, weight: 50}
     ]);
-
     this._dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
-    this._dataGrid.addEventListener(
-        DataGrid.DataGrid.Events.SelectedNode, event => this._previewEntry(event.data.data), this);
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => this._previewEntry(null), this);
     this._dataGrid.setStriped(true);
     this._dataGrid.setName('DOMStorageItemsView');
-
-    this._splitWidget = new UI.SplitWidget(false, false);
-    this._splitWidget.show(this.element);
-    this._splitWidget.setSecondIsSidebar(true);
-
-    this._previewPanel = new UI.VBox();
-    var resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
-    this._splitWidget.setMainWidget(this._dataGrid.asWidget());
-    this._splitWidget.setSidebarWidget(this._previewPanel);
-    this._splitWidget.installResizer(resizer);
-
-    /** @type {?UI.Widget} */
-    this._preview = null;
-    /** @type {?string} */
-    this._previewValue = null;
-
+    this._dataGrid.asWidget().show(this.element);
     this._eventListeners = [];
     this.setStorage(domStorage);
   }
@@ -255,32 +236,5 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
 
     if (this._domStorage)
       this._domStorage.removeItem(node.data.key);
-  }
-
-  /**
-   * @param {?{value: string}} entry
-   */
-  async _previewEntry(entry) {
-    var value = entry && entry.value;
-    if (value === this._previewValue)
-      return;
-    if (this._preview)
-      this._preview.detach();
-    this._preview = null;
-    this._previewValue = value;
-    if (!value)
-      return;
-
-    var protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
-    var url = `${protocol}://${entry.key}`;
-    var provider =
-        Common.StaticContentProvider.fromString(url, Common.resourceTypes.XHR, /** @type {string} */ (value));
-    var preview = await SourceFrame.PreviewFactory.createPreview(provider, 'text/plain');
-
-    // Selection could've changed while the preview was loaded
-    if (this._preview || !preview || this._previewValue !== value)
-      return;
-    this._preview = preview;
-    this._preview.show(this._previewPanel.contentElement);
   }
 };

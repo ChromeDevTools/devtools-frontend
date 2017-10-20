@@ -1027,23 +1027,24 @@ Console.ConsoleViewMessage = class {
         this._updateMessageLevelIcon('smallicon-error');
         break;
     }
-
-    // Render verbose and info deprecations, interventions and violations with warning background.
-    if (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Verbose ||
-        this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Info) {
-      switch (this._message.source) {
-        case ConsoleModel.ConsoleMessage.MessageSource.Violation:
-        case ConsoleModel.ConsoleMessage.MessageSource.Deprecation:
-        case ConsoleModel.ConsoleMessage.MessageSource.Intervention:
-        case ConsoleModel.ConsoleMessage.MessageSource.Recommendation:
-          this._element.classList.add('console-warning-level');
-          break;
-      }
-    }
+    if (this._shouldRenderAsWarning())
+      this._element.classList.add('console-warning-level');
 
     this._element.appendChild(this.contentElement());
     if (this._repeatCount > 1)
       this._showRepeatCountElement();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _shouldRenderAsWarning() {
+    return (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Verbose ||
+            this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Info) &&
+        (this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Violation ||
+         this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Deprecation ||
+         this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Intervention ||
+         this._message.source === ConsoleModel.ConsoleMessage.MessageSource.Recommendation);
   }
 
   /**
@@ -1102,6 +1103,9 @@ Console.ConsoleViewMessage = class {
         default:
           this._repeatCountElement.type = 'info';
       }
+      if (this._shouldRenderAsWarning())
+        this._repeatCountElement.type = 'warning';
+
       this._element.insertBefore(this._repeatCountElement, this._contentElement);
       this._contentElement.classList.add('repeated-message');
     }

@@ -503,8 +503,9 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
     this._active = active;
     this._onToggle = onToggle;
     this.element = parent.createChild('div', 'perfmon-indicator');
-    this._swatchElement = this.element.createChild('div', 'perfmon-indicator-swatch');
-    this._swatchElement.style.borderColor = color;
+    this._swatchElement = UI.Icon.create('smallicon-checkmark-square', 'perfmon-indicator-swatch');
+    this._swatchElement.style.backgroundColor = color;
+    this.element.appendChild(this._swatchElement);
     this.element.createChild('div', 'perfmon-indicator-title').textContent = info.title;
     this._valueElement = this.element.createChild('div', 'perfmon-indicator-value');
     this._valueElement.style.color = color;

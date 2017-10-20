@@ -40,16 +40,11 @@
 }
 
 .perfmon-indicator-swatch {
-  flex: 0 0 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
   margin-right: 6px;
-  margin-top: 1px;
-  height: 10px;
 }
 
 .perfmon-indicator:not(.active) .perfmon-indicator-swatch {
-  border-color: #ccc !important;
+  background-color: #eee !important;
 }
 
 .perfmon-indicator-title {

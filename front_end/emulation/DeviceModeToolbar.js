@@ -83,6 +83,7 @@ Emulation.DeviceModeToolbar = class {
     this._deviceSelectItem = new UI.ToolbarMenuButton(this._appendDeviceMenuItems.bind(this));
     this._deviceSelectItem.setGlyph('');
     this._deviceSelectItem.turnIntoSelect(95);
+    this._deviceSelectItem.setDarkText();
     toolbar.appendToolbarItem(this._deviceSelectItem);
   }
 
@@ -147,6 +148,7 @@ Emulation.DeviceModeToolbar = class {
     this._scaleItem.setTitle(Common.UIString('Zoom'));
     this._scaleItem.setGlyph('');
     this._scaleItem.turnIntoSelect();
+    this._scaleItem.setDarkText();
     toolbar.appendToolbarItem(this._scaleItem);
 
     toolbar.appendToolbarItem(
@@ -156,6 +158,7 @@ Emulation.DeviceModeToolbar = class {
     this._deviceScaleItem.setTitle(Common.UIString('Device pixel ratio'));
     this._deviceScaleItem.setGlyph('');
     this._deviceScaleItem.turnIntoSelect();
+    this._deviceScaleItem.setDarkText();
     toolbar.appendToolbarItem(this._deviceScaleItem);
 
     toolbar.appendToolbarItem(
@@ -165,6 +168,7 @@ Emulation.DeviceModeToolbar = class {
     this._uaItem.setTitle(Common.UIString('Device type'));
     this._uaItem.setGlyph('');
     this._uaItem.turnIntoSelect();
+    this._uaItem.setDarkText();
     toolbar.appendToolbarItem(this._uaItem);
 
     this._throttlingConditionsItem = MobileThrottling.throttlingManager().createMobileThrottlingButton();

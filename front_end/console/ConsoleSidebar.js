@@ -21,33 +21,41 @@ Console.ConsoleSidebar = class extends UI.VBox {
     this._treeElements = [];
 
     var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
+    var consoleAPIParsedFilters = [{
+      key: Console.ConsoleFilter.FilterType.Source,
+      text: ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI,
+      negative: false
+    }];
     this._appendGroup(
-        Console.ConsoleSidebar._groupSingularName.All, Console.ConsoleFilter.allLevelsFilterValue(),
+        Console.ConsoleSidebar._groupSingularName.All, [], Console.ConsoleFilter.allLevelsFilterValue(),
         UI.Icon.create('largeicon-navigator-folder'), badgePool);
     this._appendGroup(
-        Console.ConsoleSidebar._groupSingularName.Error, Console.ConsoleFilter.singleLevelMask(Levels.Error),
+        Console.ConsoleSidebar._groupSingularName.ConsoleAPI, consoleAPIParsedFilters,
+        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('largeicon-navigator-folder'), badgePool);
+    this._appendGroup(
+        Console.ConsoleSidebar._groupSingularName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
         UI.Icon.create('smallicon-clear-error'), badgePool);
     this._appendGroup(
-        Console.ConsoleSidebar._groupSingularName.Warning, Console.ConsoleFilter.singleLevelMask(Levels.Warning),
+        Console.ConsoleSidebar._groupSingularName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
         UI.Icon.create('smallicon-clear-warning', 'icon-warning'), badgePool);
     this._appendGroup(
-        Console.ConsoleSidebar._groupSingularName.Info, Console.ConsoleFilter.singleLevelMask(Levels.Info),
+        Console.ConsoleSidebar._groupSingularName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
         UI.Icon.create('smallicon-clear-info'), badgePool);
     this._appendGroup(
-        Console.ConsoleSidebar._groupSingularName.Verbose, Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
+        Console.ConsoleSidebar._groupSingularName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
         UI.Icon.create('smallicon-clear-warning'), badgePool);
-    this._treeElements[0].expand();
     this._treeElements[0].select();
   }
 
   /**
    * @param {string} name
+   * @param {!Array<!TextUtils.FilterParser.ParsedFilter>} parsedFilters
    * @param {!Object<string, boolean>} levelsMask
    * @param {!Element} icon
    * @param {!ProductRegistry.BadgePool} badgePool
    */
-  _appendGroup(name, levelsMask, icon, badgePool) {
-    var filter = new Console.ConsoleFilter(name, [], null, levelsMask);
+  _appendGroup(name, parsedFilters, levelsMask, icon, badgePool) {
+    var filter = new Console.ConsoleFilter(name, parsedFilters, null, levelsMask);
     var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, badgePool);
     this._tree.appendChild(treeElement);
     this._treeElements.push(treeElement);
@@ -191,6 +199,7 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
 
 /** @enum {string} */
 Console.ConsoleSidebar._groupSingularName = {
+  ConsoleAPI: Common.UIString('user message'),
   All: Common.UIString('message'),
   Error: Common.UIString('error'),
   Warning: Common.UIString('warning'),
@@ -200,6 +209,7 @@ Console.ConsoleSidebar._groupSingularName = {
 
 /** @const {!Map<string, string>} */
 Console.ConsoleSidebar._groupPluralNameMap = new Map([
+  [Console.ConsoleSidebar._groupSingularName.ConsoleAPI, Common.UIString('user messages')],
   [Console.ConsoleSidebar._groupSingularName.All, Common.UIString('messages')],
   [Console.ConsoleSidebar._groupSingularName.Error, Common.UIString('errors')],
   [Console.ConsoleSidebar._groupSingularName.Warning, Common.UIString('warnings')],

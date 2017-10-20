@@ -179,7 +179,8 @@ function transformTestScript(
           path.parentPath.value.object.name === 'InspectorTest' && path.value.name !== 'InspectorTest') {
         const newParentIdentifier = identifierMap.get(path.value.name);
         if (!newParentIdentifier) {
-          throw new Error('Could not find identifier for: ' + path.value.name);
+          console.log('ERROR: Could not find identifier for: ' + path.value.name);
+          return false;
         }
         path.parentPath.value.object.name = newParentIdentifier;
         namespacesUsed.add(newParentIdentifier.split('.')[0]);

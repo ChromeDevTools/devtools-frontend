@@ -510,11 +510,13 @@ TestRunner.addStylesheetTag = function(path) {
  */
 TestRunner.addIframe = function(path, options = {}) {
   options.id = options.id || '';
+  options.name = options.name || '';
   return TestRunner.evaluateInPageAsync(`
     (function(){
       var iframe = document.createElement('iframe');
       iframe.src = '${path}';
       iframe.id = '${options.id}';
+      iframe.name = '${options.name}';
       document.body.appendChild(iframe);
       return new Promise(f => iframe.onload = f);
     })();
@@ -1205,6 +1207,24 @@ TestRunner.dumpSyntaxHighlight = function(str, mimeType) {
 
     TestRunner.addResult(str + ': ' + node_parts.join(', '));
   }
+};
+
+/**
+ * @param {string} messageType
+ */
+TestRunner._consoleOutputHook = function(messageType) {
+  TestRunner.addResult(messageType + ': ' + Array.prototype.slice.call(arguments, 1));
+};
+
+/**
+ * This monkey patches console functions in DevTools context so the console
+ * messages are shown in the right places, instead of having all of the console
+ * messages printed at the top of the test expectation file (default behavior).
+ */
+TestRunner.printDevToolsConsole = function() {
+  console.log = TestRunner._consoleOutputHook.bind(TestRunner, 'log');
+  console.error = TestRunner._consoleOutputHook.bind(TestRunner, 'error');
+  console.info = TestRunner._consoleOutputHook.bind(TestRunner, 'info');
 };
 
 /** @type {boolean} */

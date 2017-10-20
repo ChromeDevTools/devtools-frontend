@@ -43,8 +43,6 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     this._progresses = new Map();
 
     InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.FailedToAddFileSystem, this._onFailedToAddFilesystem, this);
-    InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.FileSystemRemoved, this._onFileSystemRemoved, this);
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.FileSystemAdded, this._onFileSystemAdded, this);
@@ -95,12 +93,11 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     }
   }
 
-  addFileSystem() {
-    InspectorFrontendHost.addFileSystem('');
-  }
-
-  _onFailedToAddFilesystem() {
-    // TODO(dgozman): use it.
+  /**
+   * @param {string=} type
+   */
+  addFileSystem(type) {
+    InspectorFrontendHost.addFileSystem(type || '');
   }
 
   /**
@@ -126,7 +123,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     var embedderPath = fileSystem.fileSystemPath;
     var fileSystemURL = Common.ParsedURL.platformPathToURL(fileSystem.fileSystemPath);
     var promise = Persistence.IsolatedFileSystem.create(
-        this, fileSystemURL, embedderPath, fileSystem.fileSystemName, fileSystem.rootURL);
+        this, fileSystemURL, embedderPath, fileSystem.type, fileSystem.fileSystemName, fileSystem.rootURL);
     return promise.then(storeFileSystem.bind(this));
 
     /**
@@ -150,7 +147,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     var errorMessage = /** @type {string} */ (event.data['errorMessage']);
     var fileSystem = /** @type {?Persistence.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
     if (errorMessage)
-      Common.console.error(errorMessage);
+      Common.console.error(Common.UIString('Unable to add filesystem: %s', errorMessage));
     else if (fileSystem)
       this._innerAddFileSystem(fileSystem, true);
   }
@@ -304,7 +301,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   }
 };
 
-/** @typedef {!{fileSystemName: string, rootURL: string, fileSystemPath: string}} */
+/** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 Persistence.IsolatedFileSystemManager.FileSystem;
 
 /** @typedef {!{changed:!Array<string>, added:!Array<string>, removed:!Array<string>}} */

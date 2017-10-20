@@ -37,12 +37,14 @@ Persistence.IsolatedFileSystem = class {
    * @param {string} path
    * @param {string} embedderPath
    * @param {!DOMFileSystem} domFileSystem
+   * @param {string} type
    */
-  constructor(manager, path, embedderPath, domFileSystem) {
+  constructor(manager, path, embedderPath, domFileSystem, type) {
     this._manager = manager;
     this._path = path;
     this._embedderPath = embedderPath;
     this._domFileSystem = domFileSystem;
+    this._type = type;
     this._excludedFoldersSetting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
@@ -57,16 +59,17 @@ Persistence.IsolatedFileSystem = class {
    * @param {!Persistence.IsolatedFileSystemManager} manager
    * @param {string} path
    * @param {string} embedderPath
+   * @param {string} type
    * @param {string} name
    * @param {string} rootURL
    * @return {!Promise<?Persistence.IsolatedFileSystem>}
    */
-  static create(manager, path, embedderPath, name, rootURL) {
+  static create(manager, path, embedderPath, type, name, rootURL) {
     var domFileSystem = InspectorFrontendHost.isolatedFileSystem(name, rootURL);
     if (!domFileSystem)
       return Promise.resolve(/** @type {?Persistence.IsolatedFileSystem} */ (null));
 
-    var fileSystem = new Persistence.IsolatedFileSystem(manager, path, embedderPath, domFileSystem);
+    var fileSystem = new Persistence.IsolatedFileSystem(manager, path, embedderPath, domFileSystem, type);
     return fileSystem._initializeFilePaths()
         .then(() => fileSystem)
         .catchException(/** @type {?Persistence.IsolatedFileSystem} */ (null));
@@ -133,6 +136,13 @@ Persistence.IsolatedFileSystem = class {
    */
   embedderPath() {
     return this._embedderPath;
+  }
+
+  /**
+   * @return {string}
+   */
+  type() {
+    return this._type;
   }
 
   /**

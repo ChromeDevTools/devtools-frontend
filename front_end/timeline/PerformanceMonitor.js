@@ -25,6 +25,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
     var chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
+    this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
+        Common.UIString('Paused');
 
     var mode = Timeline.PerformanceMonitor.MetricMode;
     /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricMode>} */
@@ -36,14 +38,38 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     /** @type {!Map<string, !{lastValue: (number|undefined), lastTimestamp: (number|undefined)}>} */
     this._metricData = new Map();
     this._controlPane.addEventListener(
-        Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged, () => this._recalcChartHeight());
+        Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
   }
 
   /**
    * @override
    */
   wasShown() {
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
+    this._suspendStateChanged();
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    SDK.targetManager.removeEventListener(
+        SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
+    this._stopPolling();
+    this._model.disable();
+  }
+
+  _suspendStateChanged() {
+    var suspended = SDK.targetManager.allTargetsSuspended();
+    if (suspended)
+      this._stopPolling();
+    else
+      this._startPolling();
+    this.contentElement.classList.toggle('suspended', suspended);
+  }
+
+  _startPolling() {
     this._startTimestamp = 0;
     this._pollTimer = setInterval(() => this._poll(), this._pollIntervalMs);
     this.onResize();
@@ -58,13 +84,9 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     }
   }
 
-  /**
-   * @override
-   */
-  willHide() {
+  _stopPolling() {
     clearInterval(this._pollTimer);
     this.contentElement.window().cancelAnimationFrame(this._animationId);
-    this._model.disable();
     this._metricsBuffer = [];
   }
 

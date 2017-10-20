@@ -223,12 +223,14 @@ WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff = class extends Common.Object {
     var current = this._uiSourceCode.workingCopy();
     if (!current && !this._uiSourceCode.contentLoaded())
       current = await this._uiSourceCode.requestContent();
-    // ------------ ASYNC ------------
+    if (current.length > 1024 * 1024)
+      return null;
     if (this._dispose)
       return null;
 
     var baseline = await this._uiSourceCode.requestOriginalContent();
-    // ------------ ASYNC ------------
+    if (baseline.length > 1024 * 1024)
+      return null;
     if (this._dispose)
       return null;
 

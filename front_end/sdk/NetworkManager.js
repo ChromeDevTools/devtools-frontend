@@ -801,8 +801,10 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
       networkAgent.setUserAgentOverride(this._currentUserAgent());
     if (this._effectiveBlockedURLs.length)
       networkAgent.setBlockedURLs(this._effectiveBlockedURLs);
-    if (this.isIntercepting())
-      networkAgent.setRequestInterceptionEnabled(true, this._requestInterceptorMap.keysArray());
+    if (this.isIntercepting()) {
+      networkAgent.setRequestInterception(
+          this._requestInterceptorMap.keysArray().map(pattern => ({urlPattern: pattern.replace(/([\\?*])/g, '\\$1')})));
+    }
     this._agents.add(networkAgent);
     if (this.isThrottling())
       this._updateNetworkConditions(networkAgent);
@@ -1014,8 +1016,9 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     var promises = /** @type {!Array<!Promise>} */ ([]);
     for (var agent of this._agents) {
       // We do not allow '?' as a single character wild card for now and do not support '*' either.
-      var patterns = this._requestInterceptorMap.keysArray().map(pattern => pattern.replace(/([\\?*])/g, '\\$1'));
-      promises.push(agent.setRequestInterceptionEnabled(this.isIntercepting(), patterns));
+      var patterns =
+          this._requestInterceptorMap.keysArray().map(pattern => ({urlPattern: pattern.replace(/([\\?*])/g, '\\$1')}));
+      promises.push(agent.setRequestInterception(this.isIntercepting() ? patterns : []));
     }
     this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.InterceptorsChanged);
     return Promise.all(promises);

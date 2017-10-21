@@ -8,3 +8,9 @@
     border-bottom: 1px solid #ccc;
     padding-left: 8px;
 }
+
+.navigator-domain-element {
+    font-size: 14px;
+    margin: 4px 11px;
+    font-weight: bold;
+}

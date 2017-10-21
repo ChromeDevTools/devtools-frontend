@@ -59,6 +59,8 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
     this._initExcludePatterSetting();
 
+    /** @type {?function(?Persistence.IsolatedFileSystem)} */
+    this._fileSystemRequestResolve = null;
     this._fileSystemsLoadedPromise = this._requestFileSystems();
   }
 
@@ -95,9 +97,13 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
   /**
    * @param {string=} type
+   * @return {!Promise<?Persistence.IsolatedFileSystem>}
    */
   addFileSystem(type) {
-    InspectorFrontendHost.addFileSystem(type || '');
+    return new Promise(resolve => {
+      this._fileSystemRequestResolve = resolve;
+      InspectorFrontendHost.addFileSystem(type || '');
+    });
   }
 
   /**
@@ -143,13 +149,22 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   /**
    * @param {!Common.Event} event
    */
-  _onFileSystemAdded(event) {
+  async _onFileSystemAdded(event) {
     var errorMessage = /** @type {string} */ (event.data['errorMessage']);
     var fileSystem = /** @type {?Persistence.IsolatedFileSystemManager.FileSystem} */ (event.data['fileSystem']);
-    if (errorMessage)
+    if (errorMessage) {
       Common.console.error(Common.UIString('Unable to add filesystem: %s', errorMessage));
-    else if (fileSystem)
-      this._innerAddFileSystem(fileSystem, true);
+      if (!this._fileSystemRequestResolve)
+        return;
+      this._fileSystemRequestResolve.call(null, null);
+      this._fileSystemRequestResolve = null;
+    } else if (fileSystem) {
+      fileSystem = await this._innerAddFileSystem(fileSystem, true);
+      if (this._fileSystemRequestResolve) {
+        this._fileSystemRequestResolve.call(null, fileSystem);
+        this._fileSystemRequestResolve = null;
+      }
+    }
   }
 
   /**

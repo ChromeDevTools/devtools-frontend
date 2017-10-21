@@ -72,8 +72,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.EditorFocused,
         () => UI.context.setFlavor(SourceFrame.UISourceCodeFrame, this));
-    Persistence.networkPersistenceManager.addEventListener(
-        Persistence.NetworkPersistenceManager.Events.EnabledChanged, this._onNetworkPersistenceChanged, this);
+    Common.settings.moduleSetting('persistenceNetworkOverridesEnabled')
+        .addChangeListener(this._onNetworkPersistenceChanged, this);
 
     this._updateStyle();
     this._updateDiffUISourceCode();
@@ -157,14 +157,12 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       return true;
     if (this._uiSourceCode.project().isServiceProject())
       return false;
-    if (Persistence.networkPersistenceManager.enabled()) {
-      var networkPersistenceProjects = Persistence.networkPersistenceManager.projects();
-      for (var project of networkPersistenceProjects) {
-        var projectDomainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
-        var urlDomainPath = this._uiSourceCode.url().replace(/^https?:\/\//, '');
-        if (projectDomainPath && urlDomainPath.startsWith(projectDomainPath))
-          return true;
-      }
+    var networkPersistenceProject = Persistence.networkPersistenceManager.activeProject();
+    if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network && networkPersistenceProject) {
+      var projectDomain = Persistence.networkPersistenceManager.domainForProject(networkPersistenceProject);
+      var urlDomainPath = this._uiSourceCode.url().replace(/^https?:\/\//, '');
+      if (projectDomain && urlDomainPath.startsWith(projectDomain + '/'))
+        return true;
     }
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
   }
@@ -356,8 +354,8 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this.textEditor.dispose();
     Common.moduleSetting('textEditorAutocompletion').removeChangeListener(this._updateAutocomplete, this);
     this.detach();
-    Persistence.networkPersistenceManager.removeEventListener(
-        Persistence.NetworkPersistenceManager.Events.EnabledChanged, this._onNetworkPersistenceChanged, this);
+    Common.settings.moduleSetting('persistenceNetworkOverridesEnabled')
+        .removeChangeListener(this._onNetworkPersistenceChanged, this);
   }
 
   /**

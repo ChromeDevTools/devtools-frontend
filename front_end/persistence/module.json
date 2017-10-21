@@ -13,6 +13,26 @@
             "title": "Workspace",
             "order": 1,
             "className": "Persistence.WorkspaceSettingsTab"
+        },
+        {
+            "type": "setting",
+            "category": "Persistence",
+            "title": "Enable Network Overrides",
+            "settingName": "persistenceNetworkOverridesEnabled",
+            "settingType": "boolean",
+            "storageType": "session",
+            "defaultValue": false,
+            "tags": "interception, override, network, rewrite, request",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable override network requests"
+                },
+                {
+                    "value": false,
+                    "title": "Disable override network requests"
+                }
+            ]
         }
     ],
     "scripts": [

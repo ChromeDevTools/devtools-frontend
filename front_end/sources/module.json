@@ -301,9 +301,19 @@
         {
             "type": "view",
             "location": "navigator-view",
+            "id": "navigator-overrides",
+            "title": "Overrides",
+            "order": 3,
+            "persistence": "permanent",
+            "className": "Sources.OverridesNavigatorView",
+            "experiment": "networkPersistence"
+        },
+        {
+            "type": "view",
+            "location": "navigator-view",
             "id": "navigator-files",
             "title": "Filesystem",
-            "order": 3,
+            "order": 4,
             "persistence": "permanent",
             "className": "Sources.FilesNavigatorView",
             "experiment": "persistence2"
@@ -313,7 +323,7 @@
             "location": "navigator-view",
             "id": "navigator-contentScripts",
             "title": "Content scripts",
-            "order": 4,
+            "order": 5,
             "persistence": "permanent",
             "className": "Sources.ContentScriptsNavigatorView"
         },
@@ -322,7 +332,7 @@
             "location": "navigator-view",
             "id": "navigator-snippets",
             "title": "Snippets",
-            "order": 5,
+            "order": 6,
             "persistence": "permanent",
             "className": "Sources.SnippetsNavigatorView"
         },
@@ -343,6 +353,12 @@
             "viewId": "navigator-files",
             "className": "Sources.FilesNavigatorView",
             "experiment": "persistence2"
+        },
+        {
+            "type": "@Sources.NavigatorView",
+            "viewId": "navigator-overrides",
+            "className": "Sources.OverridesNavigatorView",
+            "experiment": "networkPersistence"
         },
         {
             "type": "@Sources.NavigatorView",

@@ -33,17 +33,11 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {!Workspace.Project} project
+   * @param {boolean} enabled
    */
-  ignoreProject(project) {
-    this._mapping.ignoreProject(project);
-  }
-
-  /**
-   * @param {!Workspace.Project} project
-   */
-  removeIgnoredProject(project) {
-    this._mapping.removeIgnoredProject(project);
+  setAutomappingEnabled(enabled) {
+    if (this._mapping instanceof Persistence.Automapping)
+      this._mapping.setEnabled(enabled);
   }
 
   /**
@@ -432,17 +426,7 @@ Persistence.PersistenceBinding = class {
 Persistence.MappingSystem = function() {};
 
 Persistence.MappingSystem.prototype = {
-  dispose: function() {},
-
-  /**
-   * @param {!Workspace.Project} project
-   */
-  ignoreProject(project) {},
-
-  /**
-   * @param {!Workspace.Project} project
-   */
-  removeIgnoredProject(project) {}
+  dispose: function() {}
 };
 
 /** @type {!Persistence.Persistence} */

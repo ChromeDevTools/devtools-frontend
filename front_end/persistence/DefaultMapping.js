@@ -32,22 +32,6 @@ Persistence.DefaultMapping = class {
     this._remap();
   }
 
-  /**
-   * @override
-   * @param {!Workspace.Project} project
-   */
-  ignoreProject(project) {
-    // Not implemented. This interface is set to be removed when DefaultMapping is fully removed.
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.Project} project
-   */
-  removeIgnoredProject(project) {
-    // Not implemented. This interface is set to be removed when DefaultMapping is fully removed.
-  }
-
   _remap() {
     for (var binding of this._bindings.valuesArray())
       this._unbind(binding.network);

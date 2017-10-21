@@ -72,6 +72,16 @@ Persistence.FileSystemWorkspaceBinding = class {
 
   /**
    * @param {!Workspace.Project} project
+   * @return {string}
+   */
+  static fileSystemType(project) {
+    var fileSystem =
+        /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project)._fileSystem;
+    return fileSystem.type();
+  }
+
+  /**
+   * @param {!Workspace.Project} project
    * @param {string} relativePath
    * @return {string}
    */

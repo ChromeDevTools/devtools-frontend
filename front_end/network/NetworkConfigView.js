@@ -2,9 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @implements {UI.ListWidget.Delegate}
- */
 Network.NetworkConfigView = class extends UI.VBox {
   constructor() {
     super(true);
@@ -16,13 +13,6 @@ Network.NetworkConfigView = class extends UI.VBox {
     this._createNetworkThrottlingSection();
     this.contentElement.createChild('div').classList.add('panel-section-separator');
     this._createUserAgentSection();
-
-    if (Runtime.experiments.isEnabled('networkPersistence')) {
-      this.contentElement.createChild('div').classList.add('panel-section-separator');
-      this._mappingsList = new UI.ListWidget(this);
-      this._mappingEditor = this._createMappingEditor();
-      this._createNetworkPersistenceSection();
-    }
   }
 
   /**
@@ -149,133 +139,6 @@ Network.NetworkConfigView = class extends UI.VBox {
       var customUA = useCustomUA ? customUserAgentSetting.get() : '';
       SDK.multitargetNetworkManager.setCustomUserAgentOverride(customUA);
     }
-  }
-
-  _createNetworkPersistenceSection() {
-    var section = this._createSection(Common.UIString('Request override'), 'network-config-override');
-    this._mappingsList.element.classList.add('network-config-mappings-list');
-    this._mappingsList.registerRequiredCSS('network/networkConfigView.css');
-
-    var enableInterceptionCheckbox = new UI.ToolbarCheckbox(
-        Common.UIString('Enable request override from file system'), undefined,
-        () => Persistence.networkPersistenceManager.setEnableInterception(enableInterceptionCheckbox.checked()));
-    section.appendChild(enableInterceptionCheckbox.element);
-
-    var header = section.createChild('div', 'network-config-mapping-list-header');
-    header.createChild('div', 'network-config-mapping-list-header-domain-path').textContent = Common.UIString('URL');
-    header.createChild('div', 'network-config-mapping-list-header-local-path').textContent = Common.UIString('File');
-
-    var mappingsPlaceholder = createElementWithClass('div', 'network-config-mappings-list-empty');
-    mappingsPlaceholder.textContent = Common.UIString('None');
-    this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
-
-    this._refreshMappingsList();
-    this._mappingsList.show(section);
-
-    Persistence.networkPersistenceManager.addEventListener(
-        Persistence.NetworkPersistenceManager.Events.ProjectsChanged, this._refreshMappingsList, this);
-  }
-
-  /**
-   * @return {!UI.ListWidget.Editor}
-   */
-  _createMappingEditor() {
-    var editor = new UI.ListWidget.Editor();
-    var content = editor.contentElement();
-
-    var titles = content.createChild('div', 'network-config-file-system-mapping-edit-row');
-    titles.createChild('div', 'network-config-file-system-mapping-system-value').textContent =
-        Common.UIString('URL prefix');
-    titles.createChild('div', 'network-config-file-system-mapping-value').textContent = Common.UIString('URL');
-
-    var fields = content.createChild('div', 'network-config-file-system-mapping-edit-row');
-    fields.createChild('div', 'network-config-file-system-mapping-value')
-        .appendChild(editor.createInput('domainPath', 'text', 'localhost/path/', (item, index, input) => {
-          var project = /** @type {!Workspace.Project} */ (item);
-          var domainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
-          var newDomainPath = input.value;
-          if (!newDomainPath.endsWith('/'))
-            newDomainPath += '/';
-          if (domainPath === newDomainPath)
-            return true;
-          var parsedURL = new Common.ParsedURL('http://' + newDomainPath);
-          if (!newDomainPath || !parsedURL.isValid || /[\?#:@]/.test(newDomainPath))
-            return false;
-          for (var interceptionProject of Persistence.networkPersistenceManager.projects()) {
-            if (newDomainPath === Persistence.networkPersistenceManager.domainPathForProject(interceptionProject))
-              return false;
-          }
-          return true;
-        }));
-    fields.createChild('div', 'network-config-file-system-mapping-value').createTextChild('');
-
-    return editor;
-  }
-
-  _refreshMappingsList() {
-    this._mappingsList.clear();
-
-    for (var project of Persistence.networkPersistenceManager.projects())
-      this._mappingsList.appendItem(project, true);
-  }
-
-  /**
-   * @override
-   * @param {*} item
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(item, editable) {
-    var element = createElementWithClass('div', 'network-config-file-system-mapping-list-item');
-
-    var project = /** @type {!Workspace.Project} */ (item);
-    var domainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
-    var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(project.id());
-    var urlElement = element.createChild('div', 'network-config-file-system-mapping-domain-path');
-    urlElement.textContent = domainPath;
-    urlElement.title = domainPath;
-    var fileElement = element.createChild('div', 'network-config-file-system-mapping-local-path');
-    var localPath = fileSystemPath.replace(/^file:\/\//, '');
-    fileElement.textContent = localPath;
-    fileElement.title = localPath;
-
-    return element;
-  }
-
-  /**
-   * @override
-   * @param {*} item
-   * @param {number} index
-   */
-  removeItemRequested(item, index) {
-    Persistence.networkPersistenceManager.removeFileSystemProject(/** @type {!Workspace.Project} */ (item));
-  }
-
-  /**
-   * @override
-   * @param {*} item
-   * @param {!UI.ListWidget.Editor} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(item, editor, isNew) {
-    var project = /** @type {!Workspace.Project} */ (item);
-    var domainPath = editor.control('domainPath').value;
-    if (!domainPath.endsWith('/'))
-      domainPath += '/';
-    Persistence.networkPersistenceManager.removeFileSystemProject(project);
-    Persistence.networkPersistenceManager.addFileSystemProject(domainPath, project);
-  }
-
-  /**
-   * @override
-   * @param {*} item
-   * @return {!UI.ListWidget.Editor}
-   */
-  beginEdit(item) {
-    var project = /** @type {!Workspace.Project} */ (item);
-    var domainPath = Persistence.networkPersistenceManager.domainPathForProject(project);
-    this._mappingEditor.control('domainPath').value = domainPath;
-    return this._mappingEditor;
   }
 };
 

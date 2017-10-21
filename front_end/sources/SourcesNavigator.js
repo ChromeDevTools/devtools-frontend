@@ -156,7 +156,8 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
    * @return {boolean}
    */
   acceptProject(project) {
-    return project.type() === Workspace.projectTypes.FileSystem;
+    return project.type() === Workspace.projectTypes.FileSystem &&
+        Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides';
   }
 
   /**
@@ -167,6 +168,102 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
     var contextMenu = new UI.ContextMenu(event);
     Sources.NavigatorView.appendAddFolderItem(contextMenu);
     contextMenu.show();
+  }
+};
+
+Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
+  constructor() {
+    super();
+    this._toolbar = new UI.Toolbar('navigator-toolbar');
+
+    this.contentElement.insertBefore(this._toolbar.element, this.contentElement.lastChild);
+    this._domainElement = this.contentElement.insertBefore(
+        createElementWithClass('span', 'navigator-domain-element'), this.contentElement.lastChild);
+
+    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._updateProjectAndUI, this);
+    Persistence.networkPersistenceManager.addEventListener(
+        Persistence.NetworkPersistenceManager.Events.ProjectDomainChanged, this._updateProjectAndUI, this);
+    this.workspace().addEventListener(Workspace.Workspace.Events.ProjectAdded, this._onProjectAddOrRemoved, this);
+    this.workspace().addEventListener(Workspace.Workspace.Events.ProjectRemoved, this._onProjectAddOrRemoved, this);
+    this._updateProjectAndUI();
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onProjectAddOrRemoved(event) {
+    var project = /** @type {!Workspace.Project} */ (event.data);
+    if (project && project.type() === Workspace.projectTypes.FileSystem &&
+        Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides')
+      return;
+    this._updateUI();
+  }
+
+  _updateProjectAndUI() {
+    this.reset();
+    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
+    var project = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    if (project)
+      this.tryAddProject(project);
+    this._updateUI();
+  }
+
+  _updateUI() {
+    this._toolbar.removeToolbarItems();
+    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
+    var project = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    if (project) {
+      var title = Common.UIString('Enable Overrides');
+      var enableCheckbox =
+          new UI.ToolbarSettingCheckbox(Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
+      this._toolbar.appendToolbarItem(enableCheckbox);
+      this._domainElement.textContent =
+          Common.UIString(Persistence.networkPersistenceManager.domainForProject(project) || '');
+      this._domainElement.classList.remove('hidden');
+      return;
+    }
+    var title = Common.UIString('Setup Overrides');
+    var setupButton = new UI.ToolbarButton(title, 'largeicon-add', title);
+    if (!inspectedPageDomain)
+      setupButton.setEnabled(false);
+    setupButton.addEventListener(UI.ToolbarButton.Events.Click, this._setupNewWorkspace, this);
+    this._toolbar.appendToolbarItem(setupButton);
+    this._domainElement.classList.add('hidden');
+  }
+
+  async _setupNewWorkspace() {
+    var fileSystem = await Persistence.isolatedFileSystemManager.addFileSystem('overrides');
+    if (!fileSystem)
+      return;
+    var projectId = Persistence.FileSystemWorkspaceBinding.projectId(
+        Persistence.FileSystemWorkspaceBinding.projectId(fileSystem.path()));
+    var project = Workspace.workspace.project(projectId);
+    if (!project)
+      return;
+    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
+    if (!inspectedPageDomain) {
+      Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
+      return;
+    }
+    var existingProject = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    if (existingProject && existingProject !== project) {
+      Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
+      return;
+    }
+    Persistence.networkPersistenceManager.addFileSystemOverridesProject(
+        /** @type {string} */ (inspectedPageDomain), /** @type {!Workspace.Project} */ (project));
+    Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(true);
+  }
+
+  /**
+   * @override
+   * @param {!Workspace.Project} project
+   * @return {boolean}
+   */
+  acceptProject(project) {
+    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
+    var potentialActiveProject = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    return project.type() === Workspace.projectTypes.FileSystem && project === potentialActiveProject;
   }
 };
 

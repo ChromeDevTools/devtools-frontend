@@ -234,15 +234,14 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
         if (metrics.timestamp < startTime)
           break;
       }
-      max = Math.max(1, max);
     }
-    if (!isFinite(max))
-      return 1;
+    if (!this._metricsBuffer.length)
+      return 10;
 
     var base10 = Math.pow(10, Math.floor(Math.log10(max)));
     max = Math.ceil(max / base10 / 2) * base10 * 2;
 
-    var alpha = 0.1;
+    var alpha = 0.2;
     chartInfo.currentMax = max * alpha + (chartInfo.currentMax || max) * (1 - alpha);
     return chartInfo.currentMax;
   }

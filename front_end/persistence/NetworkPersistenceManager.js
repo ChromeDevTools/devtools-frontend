@@ -390,13 +390,14 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     var fileSystemUISourceCode = this._fileSystemUISourceCodeForUrlMap.get(interceptedRequest.request.url);
     if (!fileSystemUISourceCode)
       return;
-    var content = await fileSystemUISourceCode.requestContent();
-    var isImage = Persistence.IsolatedFileSystem.ImageExtensions.has(
-        Common.ParsedURL.extractExtension(fileSystemUISourceCode.url()));
-    var mimeType = fileSystemUISourceCode.mimeType();
-    var blob = isImage ? (await fetch('data:' + mimeType + ';base64,' + content).then(res => res.blob())) :
-                         new Blob([content], {type: mimeType});
-    interceptedRequest.continueRequestWithContent(blob);
+    if (interceptedRequest.request.method !== 'GET' && interceptedRequest.request.method !== 'POST')
+      return;
+    var project = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (fileSystemUISourceCode.project());
+    var resourceType = Common.resourceTypes[interceptedRequest.resourceType] || Common.resourceTypes.Other;
+    var isImage = resourceType === Common.resourceTypes.Image;
+    var mimeType = isImage ? 'image/png' : (resourceType.canonicalMimeType() || fileSystemUISourceCode.mimeType());
+    var blob = await project.requestFileBlob(fileSystemUISourceCode);
+    interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
   }
 };
 

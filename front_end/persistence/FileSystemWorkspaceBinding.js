@@ -303,6 +303,14 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   }
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {!Promise<?Blob>}
+   */
+  requestFileBlob(uiSourceCode) {
+    return this._fileSystem.requestFileBlob(this._filePathForUISourceCode(uiSourceCode));
+  }
+
+  /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {function(?string)} callback

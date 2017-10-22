@@ -12,7 +12,7 @@
    height="110"
    id="svg4185"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.0 r9654"
    sodipodi:docname="smallIcons.svg">
   <metadata
      id="metadata4459">
@@ -75,16 +75,17 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1272"
-     inkscape:window-height="1376"
+     inkscape:window-height="1006"
      id="namedview4455"
      showgrid="true"
      inkscape:zoom="7.4167645"
      inkscape:cx="64.063483"
-     inkscape:cy="56.846671"
-     inkscape:window-x="980"
+     inkscape:cy="73.026233"
+     inkscape:window-x="508"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg4185">
+     inkscape:current-layer="svg4185"
+     inkscape:snap-global="true">
     <inkscape:grid
        type="xygrid"
        id="grid4461"
@@ -885,14 +886,19 @@
        id="path4451-5"
        inkscape:connector-curvature="0"
        style="fill:#ad8601" />
-    <mask id="path4453-6-mask">
+    <mask
+       id="path4453-6-mask">
       <path
          transform="translate(-60,0)"
          d="m 64,3 h 2 V 5.25 L 65.5,7 h -1 L 64,5.25 V 3 m 0,5 h 2 v 1 h -2"
          id="path4453-6"
          inkscape:connector-curvature="0"
          style="fill:#000000" />
-      <rect width="10" height="10" style="fill:#ffffff" />
+      <rect
+         width="10"
+         height="10"
+         style="fill:#ffffff"
+         id="rect8990" />
     </mask>
   </g>
   <g
@@ -911,14 +917,19 @@
        id="path4285-9"
        inkscape:connector-curvature="0"
        style="fill:#2a53cd" />
-    <mask id="path4287-3-mask">
+    <mask
+       id="path4287-3-mask">
       <path
          transform="translate(-80,0)"
          d="m 83.93,2.14 c -0.03,-0.53 0.55,-0.97 1.06,-0.83 0.5,0.12 0.79,0.73 0.56,1.18 -0.2,0.44 -0.79,0.61 -1.2,0.36 C 84.09,2.71 83.93,2.43 83.93,2.14 z m 1.7,5.46 H 86.3 V 8.13 H 83.41 V 7.6 h 0.66 V 3.99 H 83.41 V 3.46 h 2.22 V 7.6 z"
          id="path4287-3"
          inkscape:connector-curvature="0"
          style="fill:#000000" />
-      <rect width="10" height="10" style="fill:#ffffff" />
+      <rect
+         width="10"
+         height="10"
+         style="fill:#ffffff"
+         id="rect8997" />
     </mask>
     <defs
        id="defs4289-6">
@@ -960,7 +971,8 @@
        id="path4227-7"
        inkscape:connector-curvature="0"
        style="fill:#eb3941" />
-    <mask id="path4229-9-path4231-2-mask">
+    <mask
+       id="path4229-9-path4231-2-mask">
       <path
          transform="translate(-20,0)"
          d="m 23,3 4,4"
@@ -973,7 +985,11 @@
          id="path4231-2"
          inkscape:connector-curvature="0"
          style="stroke:#000000" />
-      <rect width="10" height="10" style="fill:#ffffff" />
+      <rect
+         width="10"
+         height="10"
+         style="fill:#ffffff"
+         id="rect9010" />
     </mask>
     <defs
        id="defs4233-0">
@@ -995,5 +1011,19 @@
          gradientUnits="userSpaceOnUse"
          xlink:href="#sprite6_b-6" />
     </defs>
+  </g>
+  <g
+     style="fill:#000000"
+     id="g9271"
+     transform="matrix(0.48333333,0,0,0.48333333,99.3,39.3)">
+    <path
+       id="path9261"
+       d="M 12,2 C 6.48,2 2,6.48 2,12 2,17.52 6.48,22 12,22 17.52,22 22,17.52 22,12 22,6.48 17.52,2 12,2 z m 0,3 c 1.66,0 3,1.34 3,3 0,1.66 -1.34,3 -3,3 C 10.34,11 9,9.66 9,8 9,6.34 10.34,5 12,5 z m 0,14.2 c -2.5,0 -4.71,-1.28 -6,-3.22 0.03,-1.99 4,-3.08 6,-3.08 1.99,0 5.97,1.09 6,3.08 -1.29,1.94 -3.5,3.22 -6,3.22 z"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path9263"
+       d="M 0,0 H 24 V 24 H 0 z"
+       inkscape:connector-curvature="0"
+       style="fill:none" />
   </g>
 </svg>

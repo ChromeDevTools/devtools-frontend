@@ -28,22 +28,22 @@ Console.ConsoleSidebar = class extends UI.VBox {
     }];
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.All, [], Console.ConsoleFilter.allLevelsFilterValue(),
-        UI.Icon.create('largeicon-navigator-folder'), badgePool);
+        UI.Icon.create('mediumicon-list'), badgePool);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.ConsoleAPI, consoleAPIParsedFilters,
-        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('largeicon-navigator-folder'), badgePool);
+        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'), badgePool);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
-        UI.Icon.create('smallicon-clear-error'), badgePool);
+        UI.Icon.create('mediumicon-error-circle'), badgePool);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
-        UI.Icon.create('smallicon-clear-warning', 'icon-warning'), badgePool);
+        UI.Icon.create('mediumicon-warning-triangle'), badgePool);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
-        UI.Icon.create('smallicon-clear-info'), badgePool);
+        UI.Icon.create('mediumicon-info-circle'), badgePool);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
-        UI.Icon.create('smallicon-clear-warning'), badgePool);
+        UI.Icon.create('mediumicon-bug'), badgePool);
     this._treeElements[0].select();
   }
 

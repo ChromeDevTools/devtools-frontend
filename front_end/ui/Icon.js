@@ -149,6 +149,7 @@ UI.Icon.Descriptors = {
   'smallicon-clear-warning': {position: 'f1', spritesheet: 'smallicons', isMask: true},
   'smallicon-clear-info': {position: 'f2', spritesheet: 'smallicons'},
   'smallicon-clear-error': {position: 'f3', spritesheet: 'smallicons'},
+  'smallicon-account-circle': {position: 'f4', spritesheet: 'smallicons'},
 
   'mediumicon-clear-storage': {position: 'a4', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-cookie': {position: 'b4', spritesheet: 'mediumicons', isMask: true},
@@ -165,6 +166,12 @@ UI.Icon.Descriptors = {
   'mediumicon-red-cross-active': {position: 'd2', spritesheet: 'mediumicons'},
   'mediumicon-red-cross-hover': {position: 'a1', spritesheet: 'mediumicons'},
   'mediumicon-search': {position: 'b1', spritesheet: 'mediumicons'},
+  'mediumicon-account-circle': {position: 'e4', spritesheet: 'mediumicons'},
+  'mediumicon-warning-triangle': {position: 'e1', spritesheet: 'mediumicons'},
+  'mediumicon-error-circle': {position: 'e3', spritesheet: 'mediumicons'},
+  'mediumicon-info-circle': {position: 'e2', spritesheet: 'mediumicons'},
+  'mediumicon-bug': {position: 'd1', spritesheet: 'mediumicons'},
+  'mediumicon-list': {position: 'e5', spritesheet: 'mediumicons'},
 
   'badge-navigator-file-sync': {position: 'a9', spritesheet: 'largeicons'},
   'largeicon-activate-breakpoints': {position: 'b9', spritesheet: 'largeicons', isMask: true},

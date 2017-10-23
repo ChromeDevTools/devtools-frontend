@@ -42,9 +42,19 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     this._parsedURL = new Common.ParsedURL(this._url);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
+    this._uiSourceCode = contentProvider instanceof Workspace.UISourceCode ?
+        /** @type {!Workspace.UISourceCode} */ (contentProvider) :
+        null;
+    if (this._uiSourceCode) {
+      this._uiSourceCode.addEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    }
     this._sizeLabel = new UI.ToolbarText();
     this._dimensionsLabel = new UI.ToolbarText();
     this._mimeTypeLabel = new UI.ToolbarText(mimeType);
+    this._container = this.element.createChild('div', 'image');
+    this._imagePreviewElement = this._container.createChild('img', 'resource-image-view');
+    this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
   }
 
   /**
@@ -61,33 +71,36 @@ SourceFrame.ImageView = class extends UI.SimpleView {
    * @override
    */
   wasShown() {
-    this._createContentIfNeeded();
+    this._updateContentIfNeeded();
   }
 
-  _createContentIfNeeded() {
-    if (this._container)
+  /**
+   * @override
+   */
+  disposeView() {
+    if (this._uiSourceCode) {
+      this._uiSourceCode.removeEventListener(
+          Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+    }
+  }
+
+  _workingCopyCommitted() {
+    this._updateContentIfNeeded();
+  }
+
+  async _updateContentIfNeeded() {
+    var content = await this._contentProvider.requestContent();
+    if (this._cachedContent === content)
       return;
 
-    this._container = this.element.createChild('div', 'image');
-    var imagePreviewElement = this._container.createChild('img', 'resource-image-view');
-    imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
-
-    this._contentProvider.requestContent().then(onContentAvailable.bind(this));
-
-    /**
-     * @param {?string} content
-     * @this {SourceFrame.ImageView}
-     */
-    function onContentAvailable(content) {
-      var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
-      if (imageSrc === null)
-        imageSrc = this._url;
-      imagePreviewElement.src = imageSrc;
-      this._sizeLabel.setText(Number.bytesToString(this._base64ToSize(content)));
-      this._dimensionsLabel.setText(
-          Common.UIString('%d × %d', imagePreviewElement.naturalWidth, imagePreviewElement.naturalHeight));
-    }
-    this._imagePreviewElement = imagePreviewElement;
+    this._cachedContent = content;
+    var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+    if (imageSrc === null)
+      imageSrc = this._url;
+    this._imagePreviewElement.src = imageSrc;
+    this._sizeLabel.setText(Number.bytesToString(this._base64ToSize(content)));
+    this._dimensionsLabel.setText(
+        Common.UIString('%d × %d', this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
   }
 
   /**

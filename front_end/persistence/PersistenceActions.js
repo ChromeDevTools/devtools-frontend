@@ -17,13 +17,9 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
    */
   appendApplicableItems(event, contextMenu, target) {
     var contentProvider = /** @type {!Common.ContentProvider} */ (target);
-    var uiSourceCode = contentProvider instanceof Workspace.UISourceCode ?
-        /** @type {!Workspace.UISourceCode} */ (contentProvider) :
-        null;
-
     async function saveAs() {
-      if (uiSourceCode)
-        uiSourceCode.commitWorkingCopy();
+      if (contentProvider instanceof Workspace.UISourceCode)
+        /** @type {!Workspace.UISourceCode} */ (contentProvider).commitWorkingCopy();
       var content = await contentProvider.requestContent();
       var url = contentProvider.contentURL();
       Workspace.fileManager.save(url, /** @type {string} */ (content), true);
@@ -33,11 +29,15 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
     contextMenu.appendSeparator();
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
       contextMenu.appendItem(Common.UIString('Save as...'), saveAs);
+
+    // Retrieve uiSourceCode by URL to pick network resources everywhere.
+    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
       contextMenu.appendItem(Common.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
         Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
             /** @type {!Workspace.UISourceCode} */ (uiSourceCode));
+        Common.Revealer.reveal(uiSourceCode);
       });
     }
   }

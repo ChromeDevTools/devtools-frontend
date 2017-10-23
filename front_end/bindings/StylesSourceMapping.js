@@ -317,6 +317,14 @@ Bindings.StyleFile = class {
 
   /**
    * @override
+   * @return {!Promise<boolean>}
+   */
+  contentEncoded() {
+    return this._headers.firstValue().originalContentProvider().contentEncoded();
+  }
+
+  /**
+   * @override
    * @return {!Promise<?string>}
    */
   requestContent() {

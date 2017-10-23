@@ -264,6 +264,14 @@ Bindings.ResourceMapping.Binding = class {
 
   /**
    * @override
+   * @return {!Promise<boolean>}
+   */
+  contentEncoded() {
+    return this._resources.firstValue().contentEncoded();
+  }
+
+  /**
+   * @override
    * @return {!Promise<?string>}
    */
   requestContent() {

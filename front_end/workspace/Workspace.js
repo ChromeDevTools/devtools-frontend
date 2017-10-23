@@ -99,7 +99,7 @@ Workspace.Project.prototype = {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string)} callback
+   * @param {function(?string,boolean)} callback
    */
   requestFileContent(uiSourceCode, callback) {},
 

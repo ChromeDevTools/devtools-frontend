@@ -295,9 +295,8 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     if (!fileName)
       fileName = 'index.html';
     var content = await uiSourceCode.requestContent();
-    // TODO: bring contentEncoded back into the ContentProvider.
-    var isBase64 = uiSourceCode.contentType() === Common.resourceTypes.Image;
-    this._activeProject.createFile(relativeFolderPath, this._encodeUrlPathToLocalPath(fileName), content, isBase64);
+    var encoded = await uiSourceCode.contentEncoded();
+    this._activeProject.createFile(relativeFolderPath, this._encodeUrlPathToLocalPath(fileName), content, encoded);
   }
 
   /**
@@ -413,10 +412,12 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       return;
     if (interceptedRequest.request.method !== 'GET' && interceptedRequest.request.method !== 'POST')
       return;
+
+    var expectedResourceType = Common.resourceTypes[interceptedRequest.resourceType] || Common.resourceTypes.Other;
+    var mimeType = fileSystemUISourceCode.mimeType();
+    if (Common.ResourceType.fromMimeType(mimeType) !== expectedResourceType)
+      mimeType = expectedResourceType.canonicalMimeType();
     var project = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (fileSystemUISourceCode.project());
-    var resourceType = Common.resourceTypes[interceptedRequest.resourceType] || Common.resourceTypes.Other;
-    var isImage = resourceType === Common.resourceTypes.Image;
-    var mimeType = isImage ? 'image/png' : (resourceType.canonicalMimeType() || fileSystemUISourceCode.mimeType());
     var blob = await project.requestFileBlob(fileSystemUISourceCode);
     interceptedRequest.continueRequestWithContent(new Blob([blob], {type: mimeType}));
   }

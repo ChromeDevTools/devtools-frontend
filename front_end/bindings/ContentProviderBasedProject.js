@@ -51,11 +51,13 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string)} callback
+   * @param {function(?string,boolean)} callback
    */
   requestFileContent(uiSourceCode, callback) {
     var contentProvider = this._contentProviders[uiSourceCode.url()];
-    contentProvider.requestContent().then(callback);
+    (async () => {
+      callback(await contentProvider.requestContent(), await contentProvider.contentEncoded());
+    })();
   }
 
   /**

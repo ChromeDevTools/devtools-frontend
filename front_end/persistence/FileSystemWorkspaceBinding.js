@@ -199,17 +199,7 @@ Persistence.FileSystemWorkspaceBinding._scriptExtensions = new Set([
 
 Persistence.FileSystemWorkspaceBinding._imageExtensions = Persistence.IsolatedFileSystem.ImageExtensions;
 
-Persistence.FileSystemWorkspaceBinding._binaryExtensions = new Set([
-  // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
-  'cmd', 'com', 'exe',
-  // Archive extensions, roughly taken from https://en.wikipedia.org/wiki/List_of_archive_formats
-  'a', 'ar', 'iso', 'tar', 'bz2', 'gz', 'lz', 'lzma', 'z', '7z', 'apk', 'arc', 'cab', 'dmg', 'jar', 'pak', 'rar', 'zip',
-  // Audio file extensions, roughly taken from https://en.wikipedia.org/wiki/Audio_file_format#List_of_formats
-  '3gp', 'aac', 'aiff', 'flac', 'm4a', 'mmf', 'mp3', 'ogg', 'oga', 'raw', 'sln', 'wav', 'wma', 'webm',
-  // Video file extensions, roughly taken from https://en.wikipedia.org/wiki/Video_file_format
-  'mkv', 'flv', 'vob', 'ogv', 'gif', 'gifv', 'avi', 'mov', 'qt', 'mp4', 'm4p', 'm4v', 'mpg', 'mpeg'
-]);
-
+Persistence.FileSystemWorkspaceBinding._binaryExtensions = Persistence.IsolatedFileSystem.BinaryExtensions;
 
 /**
  * @implements {Workspace.Project}
@@ -313,26 +303,11 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   /**
    * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {function(?string)} callback
+   * @param {function(?string, boolean)} callback
    */
   requestFileContent(uiSourceCode, callback) {
     var filePath = this._filePathForUISourceCode(uiSourceCode);
-    var isImage =
-        Persistence.FileSystemWorkspaceBinding._imageExtensions.has(Common.ParsedURL.extractExtension(filePath));
-
-    this._fileSystem.requestFileContent(filePath, isImage ? base64CallbackWrapper : callback);
-
-    /**
-     * @param {?string} result
-     */
-    function base64CallbackWrapper(result) {
-      if (!result) {
-        callback(result);
-        return;
-      }
-      var index = result.indexOf(',');
-      callback(result.substring(index + 1));
-    }
+    this._fileSystem.requestFileContent(filePath, callback);
   }
 
   /**

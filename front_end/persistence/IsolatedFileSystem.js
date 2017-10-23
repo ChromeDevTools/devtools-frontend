@@ -314,41 +314,40 @@ Persistence.IsolatedFileSystem = class {
 
   /**
    * @param {string} path
-   * @return {!Promise<?string>}
+   * @param {function(?string,boolean)} callback
    */
-  async requestFileContentPromise(path) {
+  async requestFileContent(path, callback) {
     var blob = await this.requestFileBlob(path);
     if (!blob)
       return null;
 
     var reader = new FileReader();
-    var fileContentsLoadedPromise = new Promise(resolve => reader.onloadend = resolve);
-    if (Persistence.IsolatedFileSystem.ImageExtensions.has(Common.ParsedURL.extractExtension(path)))
-      reader.readAsDataURL(blob);
+    var extension = Common.ParsedURL.extractExtension(path);
+    var encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
+    reader.onloadend = content => {
+      if (reader.error) {
+        console.error('Can\'t read file: ' + path + ': ' + reader.error);
+        callback(null, false);
+        return;
+      }
+      var result;
+      try {
+        result = reader.result;
+      } catch (e) {
+        result = null;
+        console.error('Can\'t read file: ' + path + ': ' + e);
+      }
+      if (result === undefined || result === null) {
+        callback(null, false);
+        return;
+      }
+      callback(encoded ? btoa(result) : result, encoded);
+    };
+
+    if (encoded)
+      reader.readAsBinaryString(blob);
     else
       reader.readAsText(blob);
-    await fileContentsLoadedPromise;
-    if (reader.error) {
-      console.error('Can\'t read file: ' + path + ': ' + reader.error);
-      return null;
-    }
-    try {
-      var result = reader.result;
-    } catch (e) {
-      result = null;
-      console.error('Can\'t read file: ' + path + ': ' + e);
-    }
-    if (result === undefined)
-      return null;
-    return result;
-  }
-
-  /**
-   * @param {string} path
-   * @param {function(?string)} callback
-   */
-  requestFileContent(path, callback) {
-    this.requestFileContentPromise(path).then(callback);
   }
 
   /**
@@ -605,3 +604,16 @@ Persistence.IsolatedFileSystem = class {
 
 Persistence.IsolatedFileSystem.ImageExtensions =
     new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
+
+Persistence.IsolatedFileSystem.BinaryExtensions = new Set([
+  // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
+  'cmd', 'com', 'exe',
+  // Archive extensions, roughly taken from https://en.wikipedia.org/wiki/List_of_archive_formats
+  'a', 'ar', 'iso', 'tar', 'bz2', 'gz', 'lz', 'lzma', 'z', '7z', 'apk', 'arc', 'cab', 'dmg', 'jar', 'pak', 'rar', 'zip',
+  // Audio file extensions, roughly taken from https://en.wikipedia.org/wiki/Audio_file_format#List_of_formats
+  '3gp', 'aac', 'aiff', 'flac', 'm4a', 'mmf', 'mp3', 'ogg', 'oga', 'raw', 'sln', 'wav', 'wma', 'webm',
+  // Video file extensions, roughly taken from https://en.wikipedia.org/wiki/Video_file_format
+  'mkv', 'flv', 'vob', 'ogv', 'gifv', 'avi', 'mov', 'qt', 'mp4', 'm4p', 'm4v', 'mpg', 'mpeg',
+  // Image file extensions
+  'jpeg', 'jpg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp'
+]);

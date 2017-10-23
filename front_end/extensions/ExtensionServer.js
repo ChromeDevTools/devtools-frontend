@@ -499,19 +499,8 @@ Extensions.ExtensionServer = class extends Common.Object {
    * @param {!MessagePort} port
    */
   async _getResourceContent(contentProvider, message, port) {
-    var content = null;
-    var encoded = false;
-    if (contentProvider instanceof SDK.NetworkRequest) {
-      var contentData = await contentProvider.contentData();
-      content = contentData.content;
-      encoded = content && contentData.encoded;
-    } else {
-      content = await contentProvider.requestContent();
-    }
-
-    if (content && contentProvider instanceof SDK.Resource)
-      encoded = contentProvider.contentEncoded;
-
+    var content = await contentProvider.requestContent();
+    var encoded = await contentProvider.contentEncoded();
     this._dispatchCallback(message.requestId, port, {encoding: encoded ? 'base64' : '', content: content});
   }
 

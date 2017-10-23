@@ -46,6 +46,14 @@ Common.StaticContentProvider = class {
 
   /**
    * @override
+   * @return {!Promise<boolean>}
+   */
+  contentEncoded() {
+    return Promise.resolve(false);
+  }
+
+  /**
+   * @override
    * @return {!Promise<?string>}
    */
   requestContent() {

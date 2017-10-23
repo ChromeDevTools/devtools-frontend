@@ -930,6 +930,14 @@ SDK.NetworkRequest = class extends Common.Object {
 
   /**
    * @override
+   * @return {!Promise<boolean>}
+   */
+  async contentEncoded() {
+    return (await this.contentData()).encoded;
+  }
+
+  /**
+   * @override
    * @return {!Promise<?string>}
    */
   async requestContent() {

@@ -362,6 +362,8 @@ function print(ast) {
 function getPanel(inputPath) {
   const panelByFolder = {
     'animation': 'elements',
+    'appcache': 'resources',
+    'application-panel': 'resources',
     'audits': 'audits',
     'console': 'console',
     'elements': 'elements',

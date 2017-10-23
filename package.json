@@ -16,7 +16,8 @@
     "check-gn": "node scripts/check_gn.js",
     "check-json": "node scripts/json_validator/validate_module_json.js",
     "check-descriptors": "node scripts/check_application_descriptors.js",
-    "migrate": "node scripts/migrate_test/migrate_test.js"
+    "migrate": "node scripts/migrate_test/migrate_test.js",
+    "test-summary": "node scripts/migrate_test/test_summary.js"
   },
   "repository": {
     "type": "git",

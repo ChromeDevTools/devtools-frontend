@@ -148,7 +148,7 @@ Console.ConsoleViewport = class {
     var height = 0;
     this._cumulativeHeights = new Int32Array(this._itemCount);
     for (var i = 0; i < this._itemCount; ++i) {
-      if (firstActiveIndex <= i && i <= lastActiveIndex)
+      if (firstActiveIndex <= i && i - firstActiveIndex < this._renderedItems.length && i <= lastActiveIndex)
         height += this._renderedItems[i - firstActiveIndex].element().offsetHeight;
       else
         height += this._provider.fastHeight(i);

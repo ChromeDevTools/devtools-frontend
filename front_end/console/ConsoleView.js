@@ -71,7 +71,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._urlToMessageCount = {};
     this._hiddenByFilterCount = 0;
 
-    this._isLogGroupingEnabled = Runtime.experiments.isEnabled('groupConsoleLogs');
     /** @type {!Multimap<string, !Console.ConsoleViewMessage>} */
     this._groupableMessages = new Multimap();
     /** @type {!Map<string, !Console.ConsoleViewMessage>} */
@@ -91,6 +90,9 @@ Console.ConsoleView = class extends UI.VBox {
     this._showSettingsPaneButton = new UI.ToolbarSettingToggle(
         this._showSettingsPaneSetting, 'largeicon-settings-gear', Common.UIString('Console settings'));
     this._progressToolbarItem = new UI.ToolbarItem(createElement('div'));
+    this._groupSimilarSetting = Common.settings.moduleSetting('consoleGroupSimilar');
+    this._groupSimilarSetting.addChangeListener(() => this._updateMessageList());
+    var groupSimilarToggle = new UI.ToolbarSettingCheckbox(this._groupSimilarSetting, Common.UIString('Group similar'));
 
     toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.clear'))));
@@ -99,6 +101,7 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
+    toolbar.appendToolbarItem(groupSimilarToggle);
     toolbar.appendToolbarItem(this._progressToolbarItem);
     toolbar.appendSpacer();
     toolbar.appendToolbarItem(this._filterStatusText);
@@ -313,8 +316,9 @@ Console.ConsoleView = class extends UI.VBox {
     }
 
     var consoleMessage = new ConsoleModel.ConsoleMessage(
-        null, ConsoleModel.ConsoleMessage.MessageSource.Other, level, message.text, undefined, undefined, undefined,
-        undefined, undefined, undefined, undefined, message.timestamp);
+        null, ConsoleModel.ConsoleMessage.MessageSource.Other, level, message.text,
+        ConsoleModel.ConsoleMessage.MessageType.System, undefined, undefined, undefined, undefined, undefined,
+        undefined, message.timestamp);
     this._addConsoleMessage(consoleMessage);
   }
 
@@ -419,9 +423,7 @@ Console.ConsoleView = class extends UI.VBox {
   _updateFilterStatus() {
     if (this._hiddenByFilterCount === this._lastShownHiddenByFilterCount)
       return;
-    this._filterStatusText.setText(Common.UIString(
-        this._hiddenByFilterCount === 1 ? '1 item hidden by filters' :
-                                          this._hiddenByFilterCount + ' items hidden by filters'));
+    this._filterStatusText.setText(Common.UIString(this._hiddenByFilterCount + ' hidden'));
     this._filterStatusText.setVisible(!!this._hiddenByFilterCount);
     this._lastShownHiddenByFilterCount = this._hiddenByFilterCount;
   }
@@ -468,9 +470,10 @@ Console.ConsoleView = class extends UI.VBox {
 
     // If we already have similar messages, go slow path.
     var shouldGoIntoGroup = false;
-    if (this._isLogGroupingEnabled && message.isGroupable()) {
-      shouldGoIntoGroup = !!this._groupableMessages.get(message.messageText).size;
-      this._groupableMessages.set(message.messageText, viewMessage);
+    if (this._groupSimilarSetting.get() && message.isGroupable()) {
+      var groupKey = viewMessage.groupKey();
+      shouldGoIntoGroup = this._groupableMessages.has(groupKey);
+      this._groupableMessages.set(groupKey, viewMessage);
     }
 
     if (!shouldGoIntoGroup && !insertedInMiddle) {
@@ -681,15 +684,17 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Console.ConsoleViewMessage} lastMessage
-   * @param {?Console.ConsoleViewMessage=} viewMessage
+   * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {!Console.ConsoleViewMessage=} lastMessage
    * @return {boolean}
    */
-  _tryToCollapseMessages(lastMessage, viewMessage) {
+  _tryToCollapseMessages(viewMessage, lastMessage) {
     var timestampsShown = this._timestampsSetting.get();
-    if (!timestampsShown && viewMessage && !lastMessage.consoleMessage().isGroupMessage() &&
-        lastMessage.consoleMessage().isEqual(viewMessage.consoleMessage())) {
-      viewMessage.incrementRepeatCount();
+    if (!timestampsShown && lastMessage && !viewMessage.consoleMessage().isGroupMessage() &&
+        viewMessage.consoleMessage().isEqual(lastMessage.consoleMessage())) {
+      lastMessage.incrementRepeatCount();
+      if (viewMessage.isLastInSimilarGroup())
+        lastMessage.setInSimilarGroup(true, true);
       return true;
     }
 
@@ -706,11 +711,13 @@ Console.ConsoleView = class extends UI.VBox {
       this._visibleViewMessages[i].resetIncrementRepeatCount();
     }
     this._visibleViewMessages = [];
-    if (this._isLogGroupingEnabled) {
+    if (this._groupSimilarSetting.get()) {
       this._addGroupableMessagesToEnd();
     } else {
-      for (var i = 0; i < this._consoleMessages.length; ++i)
+      for (var i = 0; i < this._consoleMessages.length; ++i) {
+        this._consoleMessages[i].setInSimilarGroup(false);
         this._appendMessageToEnd(this._consoleMessages[i]);
+      }
     }
     this._updateFilterStatus();
     this._searchableView.updateSearchMatchesCount(this._regexMatchRanges.length);
@@ -726,34 +733,32 @@ Console.ConsoleView = class extends UI.VBox {
       if (alreadyAdded.has(message))
         continue;
 
-      var key = message.messageText;
+      var key = viewMessage.groupKey();
       var viewMessagesInGroup = this._groupableMessages.get(key);
       if (viewMessagesInGroup.size <= 1) {
+        viewMessage.setInSimilarGroup(false);
         this._appendMessageToEnd(viewMessage);
         continue;
       }
 
-      var groupHasVisibleChildren = false;
-      for (var viewMessageInGroup of viewMessagesInGroup) {
-        if (this._shouldMessageBeVisible(viewMessageInGroup)) {
-          groupHasVisibleChildren = true;
-          break;
-        }
-      }
-      if (!groupHasVisibleChildren)
+      var viewMessagesInGroupArray = Array.from(viewMessagesInGroup);
+      if (!viewMessagesInGroupArray.find(x => this._shouldMessageBeVisible(x)))
         continue;
 
       // Create artificial group start and end messages.
       var startGroupViewMessage = this._groupableMessageTitle.get(key);
       if (!startGroupViewMessage) {
         var startGroupMessage = new ConsoleModel.ConsoleMessage(
-            null, message.source, message.level, key, ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed);
+            null, message.source, message.level, viewMessage.groupTitle(),
+            ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed);
         startGroupViewMessage = this._createViewMessage(startGroupMessage);
         this._groupableMessageTitle.set(key, startGroupViewMessage);
       }
+      startGroupViewMessage.setRepeatCount(viewMessagesInGroupArray.length);
       this._appendMessageToEnd(startGroupViewMessage);
 
-      for (var viewMessageInGroup of viewMessagesInGroup) {
+      for (var viewMessageInGroup of viewMessagesInGroupArray) {
+        viewMessageInGroup.setInSimilarGroup(true, viewMessagesInGroupArray.peekLast() === viewMessageInGroup);
         this._appendMessageToEnd(viewMessageInGroup);
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }
@@ -778,7 +783,9 @@ Console.ConsoleView = class extends UI.VBox {
       this.focus();
       this._viewport.element.scrollTop = oldScrollTop;
     }
-    var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
+    // TODO: fix this.
+    var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title') ||
+        event.target.enclosingNodeOrSelfWithClass('expand-group-icon');
     if (!groupMessage)
       return;
     var consoleGroupViewMessage = groupMessage.parentElement.message;

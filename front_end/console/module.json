@@ -158,6 +158,24 @@
                     "title": "Do not autocomplete from history"
                 }
             ]
+        },
+        {
+            "type": "setting",
+            "category": "Console",
+            "title": "Group similar",
+            "settingName": "consoleGroupSimilar",
+            "settingType": "boolean",
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Group similar messages in console"
+                },
+                {
+                    "value": false,
+                    "title": "Do not group similar messages in console"
+                }
+            ]
         }
     ],
     "dependencies": [

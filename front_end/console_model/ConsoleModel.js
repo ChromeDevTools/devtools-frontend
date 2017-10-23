@@ -560,7 +560,8 @@ ConsoleModel.ConsoleMessage = class {
         this.source !== ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI &&
         this.level !== ConsoleModel.ConsoleMessage.MessageLevel.Error &&
         this.type !== ConsoleModel.ConsoleMessage.MessageType.Command &&
-        this.type !== ConsoleModel.ConsoleMessage.MessageType.Result);
+        this.type !== ConsoleModel.ConsoleMessage.MessageType.Result &&
+        this.type !== ConsoleModel.ConsoleMessage.MessageType.System);
   }
 
   /**
@@ -663,7 +664,8 @@ ConsoleModel.ConsoleMessage.MessageType = {
   Result: 'result',
   Profile: 'profile',
   ProfileEnd: 'profileEnd',
-  Command: 'command'
+  Command: 'command',
+  System: 'system'
 };
 
 /**

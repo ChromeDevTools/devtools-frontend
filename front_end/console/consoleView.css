@@ -171,6 +171,10 @@
     margin-right: 2px;
 }
 
+.console-group-title .message-level-icon {
+    display: none;
+}
+
 .console-group {
     position: relative;
 }

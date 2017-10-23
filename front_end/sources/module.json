@@ -301,22 +301,22 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "navigator-overrides",
-            "title": "Overrides",
+            "id": "navigator-files",
+            "title": "Filesystem",
             "order": 3,
             "persistence": "permanent",
-            "className": "Sources.OverridesNavigatorView",
-            "experiment": "networkPersistence"
+            "className": "Sources.FilesNavigatorView",
+            "experiment": "persistence2"
         },
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "navigator-files",
-            "title": "Filesystem",
+            "id": "navigator-overrides",
+            "title": "Overrides",
             "order": 4,
             "persistence": "permanent",
-            "className": "Sources.FilesNavigatorView",
-            "experiment": "persistence2"
+            "className": "Sources.OverridesNavigatorView",
+            "experiment": "networkPersistence"
         },
         {
             "type": "view",

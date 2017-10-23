@@ -295,8 +295,6 @@ Persistence.Persistence = class extends Common.Object {
   hasUnsavedCommittedChanges(uiSourceCode) {
     if (this._workspace.hasResourceContentTrackingExtensions())
       return false;
-    if (uiSourceCode.url() && Workspace.fileManager.isURLSaved(uiSourceCode.url()))
-      return false;
     if (uiSourceCode.project().canSetFileContent())
       return false;
     if (uiSourceCode[Persistence.Persistence._binding])

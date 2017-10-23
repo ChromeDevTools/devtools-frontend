@@ -201,8 +201,7 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
 
   _updateProjectAndUI() {
     this.reset();
-    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
-    var project = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    var project = Persistence.networkPersistenceManager.projectForActiveDomain();
     if (project)
       this.tryAddProject(project);
     this._updateUI();
@@ -261,8 +260,7 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
    * @return {boolean}
    */
   acceptProject(project) {
-    var inspectedPageDomain = Persistence.NetworkPersistenceManager.inspectedPageDomain();
-    var potentialActiveProject = Persistence.networkPersistenceManager.projectForDomain(inspectedPageDomain);
+    var potentialActiveProject = Persistence.networkPersistenceManager.projectForActiveDomain();
     return project.type() === Workspace.projectTypes.FileSystem && project === potentialActiveProject;
   }
 };
@@ -348,10 +346,14 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
-  _handleSaveAs(uiSourceCode) {
+  async _handleSaveAs(uiSourceCode) {
     if (uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
       return;
-    uiSourceCode.saveAs();
+
+    uiSourceCode.commitWorkingCopy();
+    var content = await uiSourceCode.requestContent();
+    Workspace.fileManager.save(uiSourceCode.url(), content, true);
+    Workspace.fileManager.close(uiSourceCode.url());
   }
 
   /**

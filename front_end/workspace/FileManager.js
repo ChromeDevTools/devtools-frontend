@@ -34,7 +34,6 @@
 Workspace.FileManager = class extends Common.Object {
   constructor() {
     super();
-    this._savedURLsSetting = Common.settings.createLocalSetting('savedURLs', {});
     /** @type {!Map<string, function(?{fileSystemPath: (string|undefined)})>} */
     this._saveCallbacks = new Map();
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.SavedURL, this._savedURL, this);
@@ -52,9 +51,6 @@ Workspace.FileManager = class extends Common.Object {
    */
   save(url, content, forceSaveAs) {
     // Remove this url from the saved URLs while it is being saved.
-    var savedURLs = this._savedURLsSetting.get();
-    delete savedURLs[url];
-    this._savedURLsSetting.set(savedURLs);
     InspectorFrontendHost.save(url, content, forceSaveAs);
     return new Promise(resolve => this._saveCallbacks.set(url, resolve));
   }
@@ -68,9 +64,6 @@ Workspace.FileManager = class extends Common.Object {
     this._saveCallbacks.delete(url);
     if (callback)
       callback({fileSystemPath: /** @type {string} */ (event.data.fileSystemPath)});
-    var savedURLs = this._savedURLsSetting.get();
-    savedURLs[url] = true;
-    this._savedURLsSetting.set(savedURLs);
   }
 
   /**
@@ -82,15 +75,6 @@ Workspace.FileManager = class extends Common.Object {
     this._saveCallbacks.delete(url);
     if (callback)
       callback(null);
-  }
-
-  /**
-   * @param {string} url
-   * @return {boolean}
-   */
-  isURLSaved(url) {
-    var savedURLs = this._savedURLsSetting.get();
-    return savedURLs[url];
   }
 
   /**

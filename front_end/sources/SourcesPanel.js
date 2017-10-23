@@ -770,8 +770,6 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _appendUISourceCodeMappingItems(contextMenu, uiSourceCode) {
-    Sources.NavigatorView.appendAddFolderItem(contextMenu);
-
     if (Runtime.experiments.isEnabled('persistence2'))
       return;
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
@@ -820,10 +818,6 @@ Sources.SourcesPanel = class extends UI.Panel {
       contextMenu.appendSeparator();
     }
     this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
-    if (!uiSourceCode.project().canSetFileContent()) {
-      contextMenu.appendItem(
-          Common.UIString('Local modifications\u2026'), this._showLocalHistory.bind(this, uiSourceCode));
-    }
   }
 
   /**

@@ -307,12 +307,8 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {string} content
    */
   _commitContent(content) {
-    if (this._project.canSetFileContent()) {
-      this._project.setFileContent(this, content, function() {});
-    } else if (this._url && Workspace.fileManager.isURLSaved(this._url)) {
-      Workspace.fileManager.save(this._url, content, false);
-      Workspace.fileManager.close(this._url);
-    }
+    if (this._project.canSetFileContent())
+      this._project.setFileContent(this, content, false, function() {});
     this._contentCommitted(content, true);
   }
 
@@ -345,17 +341,6 @@ Workspace.UISourceCode = class extends Common.Object {
       this._project.workspace().dispatchEventToListeners(
           Workspace.Workspace.Events.WorkingCopyCommittedByUser, {uiSourceCode: this, content: content});
     }
-  }
-
-  async saveAs() {
-    // Because workingCopy() might return an empty string if the content has not been loaded yet, we load it first.
-    var content = this.isDirty() ? this.workingCopy() : await this.requestContent();
-    Workspace.fileManager.save(this._url, content, true).then(saveResponse => {
-      if (!saveResponse)
-        return;
-      this._contentCommitted(this.workingCopy(), true);
-    });
-    Workspace.fileManager.close(this._url);
   }
 
   /**

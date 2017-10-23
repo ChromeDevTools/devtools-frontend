@@ -354,9 +354,10 @@ Persistence.IsolatedFileSystem = class {
   /**
    * @param {string} path
    * @param {string} content
+   * @param {boolean} isBase64
    * @param {function()} callback
    */
-  setFileContent(path, content, callback) {
+  setFileContent(path, content, isBase64, callback) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
     this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
 
@@ -372,10 +373,14 @@ Persistence.IsolatedFileSystem = class {
      * @param {!FileWriter} fileWriter
      * @this {Persistence.IsolatedFileSystem}
      */
-    function fileWriterCreated(fileWriter) {
+    async function fileWriterCreated(fileWriter) {
       fileWriter.onerror = errorHandler.bind(this);
       fileWriter.onwriteend = fileWritten;
-      var blob = new Blob([content], {type: 'text/plain'});
+      var blob;
+      if (isBase64)
+        blob = await(await fetch(`data:application/octet-stream;base64,${content}`)).blob();
+      else
+        blob = new Blob([content], {type: 'text/plain'});
       fileWriter.write(blob);
 
       function fileWritten() {

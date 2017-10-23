@@ -742,41 +742,5 @@ Components.Linkifier.ContentProviderContextMenuProvider = class {
 
     contextMenu.appendItem(
         UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(contentProvider.contentURL()));
-    if (!contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
-      return;
-
-    /**
-     * @param {boolean} forceSaveAs
-     * @param {?string} content
-     */
-    function doSave(forceSaveAs, content) {
-      var url = contentProvider.contentURL();
-      Workspace.fileManager.save(url, /** @type {string} */ (content), forceSaveAs);
-      Workspace.fileManager.close(url);
-    }
-
-    /**
-     * @param {boolean} forceSaveAs
-     */
-    function save(forceSaveAs) {
-      if (contentProvider instanceof Workspace.UISourceCode) {
-        var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
-        if (forceSaveAs)
-          uiSourceCode.saveAs();
-        else
-          uiSourceCode.commitWorkingCopy();
-        return;
-      }
-      contentProvider.requestContent().then(doSave.bind(null, forceSaveAs));
-    }
-
-    contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString('Save'), save.bind(null, false));
-
-    if (contentProvider instanceof Workspace.UISourceCode) {
-      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (contentProvider);
-      if (!uiSourceCode.project().canSetFileContent())
-        contextMenu.appendItem(Common.UIString('Save as...'), save.bind(null, true));
-    }
   }
 };

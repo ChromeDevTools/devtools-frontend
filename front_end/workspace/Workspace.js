@@ -111,9 +111,10 @@ Workspace.Project.prototype = {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
+   * @param {boolean} isBase64
    * @param {function(?string)} callback
    */
-  setFileContent(uiSourceCode, newContent, callback) {},
+  setFileContent(uiSourceCode, newContent, isBase64, callback) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -148,9 +149,10 @@ Workspace.Project.prototype = {
    * @param {string} path
    * @param {?string} name
    * @param {string} content
+   * @param {boolean=} isBase64
    * @return {!Promise<?Workspace.UISourceCode>}
    */
-  createFile(path, name, content) {},
+  createFile(path, name, content, isBase64) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode

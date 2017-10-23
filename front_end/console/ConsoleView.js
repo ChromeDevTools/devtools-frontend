@@ -470,9 +470,9 @@ Console.ConsoleView = class extends UI.VBox {
 
     // If we already have similar messages, go slow path.
     var shouldGoIntoGroup = false;
-    if (this._groupSimilarSetting.get() && message.isGroupable()) {
+    if (message.isGroupable()) {
       var groupKey = viewMessage.groupKey();
-      shouldGoIntoGroup = this._groupableMessages.has(groupKey);
+      shouldGoIntoGroup = this._groupSimilarSetting.get() && this._groupableMessages.has(groupKey);
       this._groupableMessages.set(groupKey, viewMessage);
     }
 
@@ -526,14 +526,15 @@ Console.ConsoleView = class extends UI.VBox {
 
   /**
    * @param {!Console.ConsoleViewMessage} viewMessage
+   * @param {boolean=} preventCollapse
    */
-  _appendMessageToEnd(viewMessage) {
+  _appendMessageToEnd(viewMessage, preventCollapse) {
     if (!this._shouldMessageBeVisible(viewMessage)) {
       this._hiddenByFilterCount++;
       return;
     }
 
-    if (this._tryToCollapseMessages(viewMessage, this._visibleViewMessages.peekLast()))
+    if (!preventCollapse && this._tryToCollapseMessages(viewMessage, this._visibleViewMessages.peekLast()))
       return;
 
     var lastMessage = this._visibleViewMessages.peekLast();
@@ -733,11 +734,18 @@ Console.ConsoleView = class extends UI.VBox {
       if (alreadyAdded.has(message))
         continue;
 
+      if (!message.isGroupable()) {
+        this._appendMessageToEnd(viewMessage);
+        alreadyAdded.add(message);
+        continue;
+      }
+
       var key = viewMessage.groupKey();
       var viewMessagesInGroup = this._groupableMessages.get(key);
       if (viewMessagesInGroup.size <= 1) {
         viewMessage.setInSimilarGroup(false);
         this._appendMessageToEnd(viewMessage);
+        alreadyAdded.add(message);
         continue;
       }
 
@@ -759,7 +767,7 @@ Console.ConsoleView = class extends UI.VBox {
 
       for (var viewMessageInGroup of viewMessagesInGroupArray) {
         viewMessageInGroup.setInSimilarGroup(true, viewMessagesInGroupArray.peekLast() === viewMessageInGroup);
-        this._appendMessageToEnd(viewMessageInGroup);
+        this._appendMessageToEnd(viewMessageInGroup, true);
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }
 

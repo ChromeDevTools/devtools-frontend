@@ -3209,3 +3209,10 @@ HeapSnapshotWorker.JSHeapSnapshotRetainerEdge = class extends HeapSnapshotWorker
     return this._edge().isWeak();
   }
 };
+
+(function disableLoggingForTest() {
+  // Runtime doesn't exist because this file is loaded as a one-off
+  // file in some inspector-protocol tests.
+  if (self.Runtime && Runtime.queryParam('test'))
+    console.warn = () => undefined;
+})();

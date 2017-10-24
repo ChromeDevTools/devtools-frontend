@@ -95,8 +95,6 @@ function mapTestFilename(filename) {
     namespacePrefix = 'Elements';
     filenamePrefix = 'SetOuterHTML';
   }
-  if (namespacePrefix === 'HeapSnapshot')
-    namespacePrefix = 'Profiler';
   if (namespacePrefix === 'Sass') {
     namespacePrefix = 'SASS';
     filenamePrefix = 'SASS';

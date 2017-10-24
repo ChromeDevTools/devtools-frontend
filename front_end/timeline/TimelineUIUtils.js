@@ -838,6 +838,29 @@ Timeline.TimelineUIUtils = class {
         }
         break;
       case recordTypes.CompileScript:
+        url = eventData && eventData['url'];
+        if (url) {
+          contentHelper.appendLocationRow(
+              Common.UIString('Script'), url, eventData['lineNumber'], eventData['columnNumber']);
+        }
+        contentHelper.appendTextRow(Common.UIString('Streamed'), Common.UIString('%s', eventData['streamed']));
+        var cacheProduceOptions = eventData && eventData['cacheProduceOptions'];
+        if (cacheProduceOptions) {
+          contentHelper.appendTextRow(
+              Common.UIString('Cache Produce Options'), Common.UIString('%s', cacheProduceOptions));
+          contentHelper.appendTextRow(
+              Common.UIString('Produced Cache Size'), Common.UIString('%d', eventData['producedCacheSize']));
+        }
+        var cacheConsumeOptions = eventData && eventData['cacheConsumeOptions'];
+        if (cacheConsumeOptions) {
+          contentHelper.appendTextRow(
+              Common.UIString('Cache Consume Options'), Common.UIString('%s', cacheConsumeOptions));
+          contentHelper.appendTextRow(
+              Common.UIString('Consumed Cache Size'), Common.UIString('%d', eventData['consumedCacheSize']));
+          contentHelper.appendTextRow(
+              Common.UIString('Cache Rejected'), Common.UIString('%s', eventData['cacheRejected']));
+        }
+        break;
       case recordTypes.EvaluateScript:
         url = eventData && eventData['url'];
         if (url) {

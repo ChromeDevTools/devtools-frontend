@@ -39,7 +39,10 @@ PerformanceTestRunner.timelinePropertyFormatters = {
   allottedMilliseconds: 'formatAsTypeName',
   timedOut: 'formatAsTypeName',
   networkTime: 'formatAsTypeName',
-  timing: 'formatAsTypeName'
+  timing: 'formatAsTypeName',
+  streamed: 'formatAsTypeName',
+  producedCacheSize: 'formatAsTypeName',
+  consumedCacheSize: 'formatAsTypeName'
 };
 
 PerformanceTestRunner.InvalidationFormatters = {

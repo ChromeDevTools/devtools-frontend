@@ -792,11 +792,10 @@ Console.ConsoleView = class extends UI.VBox {
       this._viewport.element.scrollTop = oldScrollTop;
     }
     // TODO: fix this.
-    var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title') ||
-        event.target.enclosingNodeOrSelfWithClass('expand-group-icon');
+    var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
     if (!groupMessage)
       return;
-    var consoleGroupViewMessage = groupMessage.parentElement.message;
+    var consoleGroupViewMessage = groupMessage.message;
     consoleGroupViewMessage.setCollapsed(!consoleGroupViewMessage.collapsed());
     this._updateMessageList();
   }

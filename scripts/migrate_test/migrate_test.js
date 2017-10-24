@@ -114,11 +114,15 @@ function migrateTest(inputPath, identifierMap) {
                          .replace(/<script.*?>([\S\s]*?)<\/script>/g, '')
                          .trim();
     const docType = htmlTestFile.match(/<!DOCTYPE.*>/) ? htmlTestFile.match(/<!DOCTYPE.*>/)[0] : '';
+    const inlineStylesheets =
+        $('style').toArray().map(n => n.children[0].data).map(text => `<style>${text}</style>`).join('\n');
+    if (inlineStylesheets)
+      domFixture = inlineStylesheets + (domFixture.length ? '\n' : '') + domFixture;
     if (docType)
       domFixture = docType + (domFixture.length ? '\n' : '') + domFixture;
     outputCode = transformTestScript(
-        inputCode, prologue, identifierMap, testHelpers, javascriptFixtures, getPanel(inputPath), domFixture,
-        onloadFunctionName, relativeResourcePaths, stylesheetPaths, inputFilename);
+        inputCode, prologue, identifierMap, testHelpers, javascriptFixtures, getPanels(inputPath, inputCode),
+        domFixture, onloadFunctionName, relativeResourcePaths, stylesheetPaths, inputFilename);
   } catch (err) {
     console.log('Unable to migrate: ', inputPath);
     console.log('ERROR: ', err);
@@ -139,7 +143,7 @@ function migrateTest(inputPath, identifierMap) {
 }
 
 function transformTestScript(
-    inputCode, prologue, identifierMap, explicitTestHelpers, javascriptFixtures, panel, domFixture, onloadFunctionName,
+    inputCode, prologue, identifierMap, explicitTestHelpers, javascriptFixtures, panels, domFixture, onloadFunctionName,
     relativeResourcePaths, stylesheetPaths, inputFilename) {
   const ast = recast.parse(inputCode);
 
@@ -228,7 +232,7 @@ function transformTestScript(
   for (const helper of allTestHelpers) {
     headerLines.push(createAwaitExpressionNode(`await TestRunner.loadModule('${helper}');`));
   }
-  if (panel)
+  for (const panel of panels)
     headerLines.push(createAwaitExpressionNode(`await TestRunner.showPanel('${panel}');`));
 
   if (domFixture) {
@@ -359,7 +363,10 @@ function print(ast) {
   return copyrightedCode;
 }
 
-function getPanel(inputPath) {
+function getPanels(inputPath, inputCode) {
+  const panels = new Set();
+  if (inputCode.includes('SourcesTestRunner.waitForScriptSource'))
+    panels.add('sources');
   const panelByFolder = {
     'animation': 'elements',
     'appcache': 'resources',
@@ -384,7 +391,8 @@ function getPanel(inputPath) {
   const folder = inputPath.indexOf('LayoutTests/inspector') === -1 ? components[4] : components[2];
   if (folder.endsWith('.html'))
     return;
-  return panelByFolder[folder];
+  panels.add(panelByFolder[folder]);
+  return Array.from(panels);
 }
 
 function mapTestHelpers(testHelpers, includeConsole) {

@@ -82,7 +82,7 @@ function migrateTest(inputPath, identifierMap) {
   const helperScripts = [];
   const resourceScripts = [];
   $('script[src]').toArray().map((n) => n.attribs.src).forEach(src => {
-    if (src.indexOf('resources/') !== -1) {
+    if (src.indexOf('resources/') !== -1 && src.indexOf('-test.js') === -1) {
       resourceScripts.push(src);
       return;
     }

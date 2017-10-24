@@ -1241,6 +1241,14 @@ TestRunner.printDevToolsConsole = function() {
   console.info = TestRunner._consoleOutputHook.bind(TestRunner, 'info');
 };
 
+/**
+ * @param {string} querySelector
+ */
+TestRunner.dumpInspectedPageElementText = async function(querySelector) {
+  var remoteObject = await TestRunner.evaluateInPageAsync(`document.querySelector('${querySelector}').innerText`);
+  TestRunner.addResult(remoteObject.value);
+};
+
 /** @type {boolean} */
 TestRunner._startedTest = false;
 

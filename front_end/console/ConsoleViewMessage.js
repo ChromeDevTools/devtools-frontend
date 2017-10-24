@@ -1367,8 +1367,7 @@ Console.ConsoleViewMessage = class {
    */
   groupKey() {
     if (!this._groupKey)
-      this._groupKey = [this._message.source, this._message.level, this._message.type, this.groupTitle()].join(':');
-
+      this._groupKey = this._message.groupCategoryKey() + ':' + this.groupTitle();
     return this._groupKey;
   }
 

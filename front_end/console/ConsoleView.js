@@ -71,8 +71,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._urlToMessageCount = {};
     this._hiddenByFilterCount = 0;
 
-    /** @type {!Multimap<string, !Console.ConsoleViewMessage>} */
-    this._groupableMessages = new Multimap();
+    /** @type {!Map<string, !Array<!Console.ConsoleViewMessage>>} */
+    this._groupableMessages = new Map();
     /** @type {!Map<string, !Console.ConsoleViewMessage>} */
     this._groupableMessageTitle = new Map();
 
@@ -325,6 +325,7 @@ Console.ConsoleView = class extends UI.VBox {
   _consoleTimestampsSettingChanged() {
     this._updateMessageList();
     this._consoleMessages.forEach(viewMessage => viewMessage.updateTimestamp());
+    this._groupableMessageTitle.forEach(viewMessage => viewMessage.updateTimestamp());
   }
 
   _executionContextChanged() {
@@ -473,7 +474,12 @@ Console.ConsoleView = class extends UI.VBox {
     if (message.isGroupable()) {
       var groupKey = viewMessage.groupKey();
       shouldGoIntoGroup = this._groupSimilarSetting.get() && this._groupableMessages.has(groupKey);
-      this._groupableMessages.set(groupKey, viewMessage);
+      var list = this._groupableMessages.get(groupKey);
+      if (!list) {
+        list = [];
+        this._groupableMessages.set(groupKey, list);
+      }
+      list.push(viewMessage);
     }
 
     if (!shouldGoIntoGroup && !insertedInMiddle) {
@@ -742,16 +748,18 @@ Console.ConsoleView = class extends UI.VBox {
 
       var key = viewMessage.groupKey();
       var viewMessagesInGroup = this._groupableMessages.get(key);
-      if (viewMessagesInGroup.size <= 1) {
+      if (!viewMessagesInGroup || viewMessagesInGroup.length < 5) {
         viewMessage.setInSimilarGroup(false);
         this._appendMessageToEnd(viewMessage);
         alreadyAdded.add(message);
         continue;
       }
 
-      var viewMessagesInGroupArray = Array.from(viewMessagesInGroup);
-      if (!viewMessagesInGroupArray.find(x => this._shouldMessageBeVisible(x)))
+      if (!viewMessagesInGroup.find(x => this._shouldMessageBeVisible(x))) {
+        // Optimize for speed.
+        alreadyAdded.addAll(viewMessagesInGroup);
         continue;
+      }
 
       // Create artificial group start and end messages.
       var startGroupViewMessage = this._groupableMessageTitle.get(key);
@@ -762,11 +770,11 @@ Console.ConsoleView = class extends UI.VBox {
         startGroupViewMessage = this._createViewMessage(startGroupMessage);
         this._groupableMessageTitle.set(key, startGroupViewMessage);
       }
-      startGroupViewMessage.setRepeatCount(viewMessagesInGroupArray.length);
+      startGroupViewMessage.setRepeatCount(viewMessagesInGroup.length);
       this._appendMessageToEnd(startGroupViewMessage);
 
-      for (var viewMessageInGroup of viewMessagesInGroupArray) {
-        viewMessageInGroup.setInSimilarGroup(true, viewMessagesInGroupArray.peekLast() === viewMessageInGroup);
+      for (var viewMessageInGroup of viewMessagesInGroup) {
+        viewMessageInGroup.setInSimilarGroup(true, viewMessagesInGroup.peekLast() === viewMessageInGroup);
         this._appendMessageToEnd(viewMessageInGroup, true);
         alreadyAdded.add(viewMessageInGroup.consoleMessage());
       }

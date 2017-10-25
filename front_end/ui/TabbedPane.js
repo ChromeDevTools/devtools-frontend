@@ -782,8 +782,10 @@ UI.TabbedPane = class extends UI.VBox {
     if (!this._currentTab || !this._sliderEnabled)
       return;
     var left = 0;
-    for (var i = 0; i < this._tabs.length && this._currentTab !== this._tabs[i] && this._tabs[i]._shown; i++)
-      left += this._tabs[i]._measuredWidth;
+    for (var i = 0; i < this._tabs.length && this._currentTab !== this._tabs[i]; i++) {
+      if (this._tabs[i]._shown)
+        left += this._tabs[i]._measuredWidth;
+    }
     var sliderWidth = this._currentTab._shown ? this._currentTab._measuredWidth : this._dropDownButton.offsetWidth;
     var scaleFactor = window.devicePixelRatio >= 1.5 ? ' scaleY(0.75)' : '';
     this._tabSlider.style.transform = 'translateX(' + left + 'px)' + scaleFactor;

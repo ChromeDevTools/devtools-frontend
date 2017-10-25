@@ -35,12 +35,14 @@
         {
             "type": "context-menu-item",
             "location": "timelineMenu/open",
-            "actionId": "timeline.load-from-file"
+            "actionId": "timeline.load-from-file",
+            "order": 10
         },
         {
             "type": "context-menu-item",
             "location": "timelineMenu/open",
-            "actionId": "timeline.save-to-file"
+            "actionId": "timeline.save-to-file",
+            "order": 15
         },
         {
             "type": "@UI.ActionDelegate",
@@ -121,7 +123,6 @@
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
-            "order": 10,
             "className": "Timeline.TimelinePanel.ActionDelegate",
             "title": "Load profile\u2026",
             "bindings": [

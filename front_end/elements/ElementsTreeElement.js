@@ -102,15 +102,16 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @param {!UI.ContextSubMenuItem} subMenu
+   * @param {!UI.ContextMenu} contextMenu
    * @param {!SDK.DOMNode} node
    */
-  static populateForcedPseudoStateItems(subMenu, node) {
+  static populateForcedPseudoStateItems(contextMenu, node) {
     const pseudoClasses = ['active', 'hover', 'focus', 'visited'];
     var forcedPseudoState = node.domModel().cssModel().pseudoState(node);
+    var section = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Force state'));
     for (var i = 0; i < pseudoClasses.length; ++i) {
       var pseudoClassForced = forcedPseudoState.indexOf(pseudoClasses[i]) >= 0;
-      subMenu.appendCheckboxItem(
+      section.appendCheckboxItem(
           ':' + pseudoClasses[i], setPseudoStateCallback.bind(null, pseudoClasses[i], !pseudoClassForced),
           pseudoClassForced, false);
     }
@@ -460,17 +461,17 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   populateTagContextMenu(contextMenu, event) {
     // Add attribute-related actions.
     var treeElement = this._elementCloseTag ? this.treeOutline.findTreeElement(this._node) : this;
-    contextMenu.appendItem(Common.UIString('Add attribute'), treeElement._addNewAttribute.bind(treeElement));
+    contextMenu.editSection().appendItem(
+        Common.UIString('Add attribute'), treeElement._addNewAttribute.bind(treeElement));
 
     var attribute = event.target.enclosingNodeOrSelfWithClass('webkit-html-attribute');
     var newAttribute = event.target.enclosingNodeOrSelfWithClass('add-attribute');
     if (attribute && !newAttribute) {
-      contextMenu.appendItem(
+      contextMenu.editSection().appendItem(
           Common.UIString('Edit attribute'), this._startEditingAttribute.bind(this, attribute, event.target));
     }
     this.populateNodeContextMenu(contextMenu);
     Elements.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
-    contextMenu.appendSeparator();
     this.populateScrollIntoView(contextMenu);
   }
 
@@ -478,12 +479,14 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    * @param {!UI.ContextMenu} contextMenu
    */
   populateScrollIntoView(contextMenu) {
-    contextMenu.appendItem(Common.UIString('Scroll into view'), () => this._node.scrollIntoView());
+    contextMenu.viewSection().appendItem(Common.UIString('Scroll into view'), () => this._node.scrollIntoView());
   }
 
   populateTextContextMenu(contextMenu, textNode) {
-    if (!this._editing)
-      contextMenu.appendItem(Common.UIString('Edit text'), this._startEditingTextNode.bind(this, textNode));
+    if (!this._editing) {
+      contextMenu.editSection().appendItem(
+          Common.UIString('Edit text'), this._startEditingTextNode.bind(this, textNode));
+    }
     this.populateNodeContextMenu(contextMenu);
   }
 
@@ -491,51 +494,49 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     // Add free-form node-related actions.
     var isEditable = this.hasEditableNode();
     if (isEditable && !this._editing)
-      contextMenu.appendItem(Common.UIString('Edit as HTML'), this._editAsHTML.bind(this));
+      contextMenu.editSection().appendItem(Common.UIString('Edit as HTML'), this._editAsHTML.bind(this));
     var isShadowRoot = this._node.isShadowRoot();
 
     // Place it here so that all "Copy"-ing items stick together.
-    var copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
+    var copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString('Copy'));
     var createShortcut = UI.KeyboardShortcut.shortcutToString;
     var modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta;
     var treeOutline = this.treeOutline;
     var menuItem;
     if (!isShadowRoot) {
-      menuItem = copyMenu.appendItem(
+      var section = copyMenu.section();
+      menuItem = section.appendItem(
           Common.UIString('Copy outerHTML'), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
       menuItem.setShortcut(createShortcut('V', modifier));
     }
     if (this._node.nodeType() === Node.ELEMENT_NODE)
-      copyMenu.appendItem(Common.UIString('Copy selector'), this._copyCSSPath.bind(this));
+      section.appendItem(Common.UIString('Copy selector'), this._copyCSSPath.bind(this));
     if (!isShadowRoot)
-      copyMenu.appendItem(Common.UIString('Copy XPath'), this._copyXPath.bind(this));
+      section.appendItem(Common.UIString('Copy XPath'), this._copyXPath.bind(this));
     if (!isShadowRoot) {
-      menuItem = copyMenu.appendItem(
+      menuItem = copyMenu.clipboardSection().appendItem(
           Common.UIString('Cut element'), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node),
           !this.hasEditableNode());
       menuItem.setShortcut(createShortcut('X', modifier));
-      menuItem = copyMenu.appendItem(
+      menuItem = copyMenu.clipboardSection().appendItem(
           Common.UIString('Copy element'), treeOutline.performCopyOrCut.bind(treeOutline, false, this._node));
       menuItem.setShortcut(createShortcut('C', modifier));
-      menuItem = copyMenu.appendItem(
+      menuItem = copyMenu.clipboardSection().appendItem(
           Common.UIString('Paste element'), treeOutline.pasteNode.bind(treeOutline, this._node),
           !treeOutline.canPaste(this._node));
       menuItem.setShortcut(createShortcut('V', modifier));
     }
 
-    contextMenu.appendSeparator();
-    menuItem = contextMenu.appendCheckboxItem(
+    menuItem = contextMenu.debugSection().appendCheckboxItem(
         Common.UIString('Hide element'), treeOutline.toggleHideElement.bind(treeOutline, this._node),
         treeOutline.isToggledToHidden(this._node));
     menuItem.setShortcut(UI.shortcutRegistry.shortcutTitleForAction('elements.hide-element'));
 
     if (isEditable)
-      contextMenu.appendItem(Common.UIString('Delete element'), this.remove.bind(this));
-    contextMenu.appendSeparator();
+      contextMenu.editSection().appendItem(Common.UIString('Delete element'), this.remove.bind(this));
 
-    contextMenu.appendItem(Common.UIString('Expand all'), this.expandRecursively.bind(this));
-    contextMenu.appendItem(Common.UIString('Collapse all'), this.collapseRecursively.bind(this));
-    contextMenu.appendSeparator();
+    contextMenu.viewSection().appendItem(Common.UIString('Expand all'), this.expandRecursively.bind(this));
+    contextMenu.viewSection().appendItem(Common.UIString('Collapse all'), this.collapseRecursively.bind(this));
   }
 
   _startEditing() {

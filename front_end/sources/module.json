@@ -234,12 +234,12 @@
         },
         {
             "type": "context-menu-item",
-            "location": "mainMenu/navigate",
+            "location": "mainMenu/default",
             "actionId": "sources.search.toggle"
         },
         {
             "type": "context-menu-item",
-            "location": "navigatorMenu/navigate",
+            "location": "navigatorMenu/default",
             "actionId": "quickOpen.show"
         },
         {

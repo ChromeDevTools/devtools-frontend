@@ -407,8 +407,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   _populateNavigatorMenu(contextMenu) {
     var groupByFolderSetting = Common.moduleSetting('navigatorGroupByFolder');
     contextMenu.appendItemsAtLocation('navigatorMenu');
-    contextMenu.appendSeparator();
-    contextMenu.appendCheckboxItem(
+    contextMenu.viewSection().appendCheckboxItem(
         Common.UIString('Group by folder'), () => groupByFolderSetting.set(!groupByFolderSetting.get()),
         groupByFolderSetting.get());
   }
@@ -813,9 +812,8 @@ Sources.SourcesPanel = class extends UI.Panel {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
     if (!uiSourceCode.project().isServiceProject() &&
         !event.target.isSelfOrDescendant(this._navigatorTabbedLocation.widget().element)) {
-      contextMenu.appendItem(
+      contextMenu.revealSection().appendItem(
           Common.UIString('Reveal in navigator'), this._handleContextMenuReveal.bind(this, uiSourceCode));
-      contextMenu.appendSeparator();
     }
     this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
   }
@@ -888,7 +886,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!uiSourceCode)
       return;
     var openText = Common.UIString('Open in Sources panel');
-    contextMenu.appendItem(openText, this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0)));
+    contextMenu.revealSection().appendItem(openText, this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0)));
   }
 
   /**

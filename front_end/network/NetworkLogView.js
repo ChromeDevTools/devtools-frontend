@@ -1180,12 +1180,11 @@ Network.NetworkLogView = class extends UI.VBox {
     }
     copyMenu.appendItem(Common.UIString('Copy all as HAR'), this._copyAll.bind(this));
 
-    contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString('Save as HAR with content'), this._exportAll.bind(this));
+    contextMenu.saveSection().appendItem(Common.UIString('Save as HAR with content'), this._exportAll.bind(this));
 
-    contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString('Clear browser cache'), this._clearBrowserCache.bind(this));
-    contextMenu.appendItem(Common.UIString('Clear browser cookies'), this._clearBrowserCookies.bind(this));
+    contextMenu.editSection().appendItem(Common.UIString('Clear browser cache'), this._clearBrowserCache.bind(this));
+    contextMenu.editSection().appendItem(
+        Common.UIString('Clear browser cookies'), this._clearBrowserCookies.bind(this));
 
     if (request) {
       contextMenu.appendSeparator();

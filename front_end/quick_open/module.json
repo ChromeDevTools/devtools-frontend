@@ -45,7 +45,7 @@
         },
         {
             "type": "context-menu-item",
-            "location": "mainMenu/navigate",
+            "location": "mainMenu/default",
             "actionId": "quickOpen.show"
         }
     ],

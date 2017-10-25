@@ -26,14 +26,13 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
       Workspace.fileManager.close(url);
     }
 
-    contextMenu.appendSeparator();
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
-      contextMenu.appendItem(Common.UIString('Save as...'), saveAs);
+      contextMenu.saveSection().appendItem(Common.UIString('Save as...'), saveAs);
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
-      contextMenu.appendItem(Common.UIString('Save for overrides'), () => {
+      contextMenu.saveSection().appendItem(Common.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
         Persistence.networkPersistenceManager.saveUISourceCodeForOverrides(
             /** @type {!Workspace.UISourceCode} */ (uiSourceCode));

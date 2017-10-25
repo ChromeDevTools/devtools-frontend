@@ -698,10 +698,12 @@ Sources.NavigatorView = class extends UI.VBox {
 
     var project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      contextMenu.appendItem(Common.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, node));
-      contextMenu.appendItem(
+      contextMenu.editSection().appendItem(
+          Common.UIString('Rename\u2026'), this._handleContextMenuRename.bind(this, node));
+      contextMenu.editSection().appendItem(
           Common.UIString('Make a copy\u2026'), this._handleContextMenuCreate.bind(this, project, '', uiSourceCode));
-      contextMenu.appendItem(Common.UIString('Delete'), this._handleContextMenuDelete.bind(this, uiSourceCode));
+      contextMenu.editSection().appendItem(
+          Common.UIString('Delete'), this._handleContextMenuDelete.bind(this, uiSourceCode));
       contextMenu.appendSeparator();
     }
 

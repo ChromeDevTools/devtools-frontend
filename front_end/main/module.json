@@ -369,7 +369,7 @@
         },
         {
             "type": "context-menu-item",
-            "location": "mainMenu/navigate",
+            "location": "mainMenu/default",
             "title": "More tools",
             "subMenuId": "mainMenuMoreTools",
             "order": 80

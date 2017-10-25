@@ -273,7 +273,7 @@ Components.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
         domDebuggerModel.setDOMBreakpoint(node, type);
     }
 
-    var breakpointsMenu = contextMenu.appendSubMenuItem(Common.UIString('Break on...'));
+    var breakpointsMenu = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Break on'));
     for (var key in SDK.DOMDebuggerModel.DOMBreakpoint.Type) {
       var type = SDK.DOMDebuggerModel.DOMBreakpoint.Type[key];
       var label = Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns.get(type);

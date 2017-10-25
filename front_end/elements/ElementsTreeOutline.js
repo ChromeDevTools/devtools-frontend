@@ -766,18 +766,14 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (textNode && textNode.classList.contains('bogus'))
       textNode = null;
     var commentNode = event.target.enclosingNodeOrSelfWithClass('webkit-html-comment');
-    if (textNode) {
-      contextMenu.appendSeparator();
+    if (textNode)
       treeElement.populateTextContextMenu(contextMenu, textNode);
-    } else if (isTag) {
-      contextMenu.appendSeparator();
+    else if (isTag)
       treeElement.populateTagContextMenu(contextMenu, event);
-    } else if (commentNode) {
-      contextMenu.appendSeparator();
+    else if (commentNode)
       treeElement.populateNodeContextMenu(contextMenu);
-    } else if (isPseudoElement) {
+    else if (isPseudoElement)
       treeElement.populateScrollIntoView(contextMenu);
-    }
 
     contextMenu.appendApplicableItems(treeElement.node());
     contextMenu.show();

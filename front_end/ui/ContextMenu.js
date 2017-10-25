@@ -33,20 +33,20 @@
  */
 UI.ContextMenuItem = class {
   /**
-   * @param {?UI.ContextMenu} topLevelMenu
+   * @param {?UI.ContextMenu} contextMenu
    * @param {string} type
    * @param {string=} label
    * @param {boolean=} disabled
    * @param {boolean=} checked
    */
-  constructor(topLevelMenu, type, label, disabled, checked) {
+  constructor(contextMenu, type, label, disabled, checked) {
     this._type = type;
     this._label = label;
     this._disabled = disabled;
     this._checked = checked;
-    this._contextMenu = topLevelMenu;
+    this._contextMenu = contextMenu;
     if (type === 'item' || type === 'checkbox')
-      this._id = topLevelMenu ? topLevelMenu._nextId() : 0;
+      this._id = contextMenu ? contextMenu._nextId() : 0;
   }
 
   /**
@@ -108,16 +108,27 @@ UI.ContextMenuItem = class {
 /**
  * @unrestricted
  */
-UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
+UI.ContextMenuSection = class extends UI.ContextMenuItem {
   /**
-   * @param {?UI.ContextMenu} topLevelMenu
+   * @param {?UI.ContextMenu} contextMenu
+   * @param {boolean} isSubMenu
    * @param {string=} label
    * @param {boolean=} disabled
    */
-  constructor(topLevelMenu, label, disabled) {
-    super(topLevelMenu, 'subMenu', label, disabled);
-    /** @type {!Array.<!UI.ContextMenuItem>} */
+  constructor(contextMenu, isSubMenu, label, disabled) {
+    super(contextMenu, isSubMenu ? 'subMenu' : 'section', label, disabled);
+    this._isSubMenu = isSubMenu;
+    /** @type {!Array<!UI.ContextMenuItem>} */
     this._items = [];
+    /** @type {!Map<string, !UI.ContextMenuSection>} */
+    this._sections = new Map();
+  }
+
+  _init() {
+    if (this._isSubMenu) {
+      // Proactively order sections.
+      UI.ContextMenu._groupWeights.forEach(name => this.section(name));
+    }
   }
 
   /**
@@ -164,14 +175,88 @@ UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
    * @param {string} label
    * @param {boolean=} disabled
    * @param {string=} subMenuId
-   * @return {!UI.ContextSubMenuItem}
+   * @return {!UI.ContextMenuSection}
    */
   appendSubMenuItem(label, disabled, subMenuId) {
-    var item = new UI.ContextSubMenuItem(this._contextMenu, label, disabled);
+    var item = new UI.ContextMenuSection(this._contextMenu, true, label, disabled);
+    item._init();
     if (subMenuId)
       this._contextMenu._namedSubMenus.set(subMenuId, item);
     this._pushItem(item);
     return item;
+  }
+
+  /**
+   * @param {string=} name
+   * @return {!UI.ContextMenuSection}
+   */
+  section(name) {
+    if (!name)
+      return this.section('default').section(String(++UI.ContextMenuItem._uniqueSectionName));
+    var section = this._sections.get(name);
+    if (!section) {
+      section = new UI.ContextMenuSection(this._contextMenu, false, '', false);
+      section._init();
+      this._sections.set(name, section);
+      this._pushItem(section);
+    }
+    return section;
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  newSection() {
+    return this.section('new');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  revealSection() {
+    return this.section('reveal');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  clipboardSection() {
+    return this.section('clipboard');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  editSection() {
+    return this.section('edit');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  debugSection() {
+    return this.section('debug');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  viewSection() {
+    return this.section('view');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  defaultSection() {
+    return this.section('default');
+  }
+
+  /**
+   * @return {!UI.ContextMenuSection}
+   */
+  saveSection() {
+    return this.section('save');
   }
 
   /**
@@ -189,18 +274,13 @@ UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
   }
 
   appendSeparator() {
-    if (this._items.length)
-      this._pendingSeparator = true;
+    this._items.push(new UI.ContextMenuItem(this._contextMenu, 'separator'));
   }
 
   /**
    * @param {!UI.ContextMenuItem} item
    */
   _pushItem(item) {
-    if (this._pendingSeparator) {
-      this._items.push(new UI.ContextMenuItem(this._contextMenu, 'separator'));
-      delete this._pendingSeparator;
-    }
     this._items.push(item);
   }
 
@@ -216,9 +296,33 @@ UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
    * @return {!InspectorFrontendHostAPI.ContextMenuDescriptor}
    */
   _buildDescriptor() {
+    /** @type {!InspectorFrontendHostAPI.ContextMenuDescriptor} */
     var result = {type: 'subMenu', label: this._label, enabled: !this._disabled, subItems: []};
-    for (var i = 0; i < this._items.length; ++i)
-      result.subItems.push(this._items[i]._buildDescriptor());
+    /** @type {!Array<!InspectorFrontendHostAPI.ContextMenuDescriptor>} */
+    var allItems = [];
+    for (var item of this._items) {
+      if (item instanceof UI.ContextMenuSection && !item._isSubMenu) {
+        allItems.push({type: 'separator'});
+        allItems.push(.../** @type {!Array<!InspectorFrontendHostAPI.ContextMenuDescriptor>} */ (
+            item._buildDescriptor().subItems));
+        allItems.push({type: 'separator'});
+      } else {
+        allItems.push(item._buildDescriptor());
+      }
+    }
+    var pendingSeparator = false;
+    var hadItems = false;
+    for (var item of allItems) {
+      if (item.type === 'separator') {
+        pendingSeparator = hadItems;
+        continue;
+      }
+      if (pendingSeparator)
+        result.subItems.push({type: 'separator'});
+      hadItems = true;
+      pendingSeparator = false;
+      result.subItems.push(item);
+    }
     return result;
   }
 
@@ -226,57 +330,33 @@ UI.ContextSubMenuItem = class extends UI.ContextMenuItem {
    * @param {string} location
    */
   appendItemsAtLocation(location) {
-    /**
-     * @param {!UI.ContextSubMenuItem} menu
-     * @param {!Runtime.Extension} extension
-     */
-    function appendExtension(menu, extension) {
-      var subMenuId = extension.descriptor()['subMenuId'];
-      if (subMenuId) {
-        var subMenuItem = menu.appendSubMenuItem(extension.title(), false, subMenuId);
-        subMenuItem.appendItemsAtLocation(subMenuId);
-      } else {
-        menu.appendAction(extension.descriptor()['actionId']);
-      }
-    }
-
-    // Hard-coded named groups for elements to maintain generic order.
-    var groupWeights = ['new', 'open', 'clipboard', 'navigate', 'footer'];
-
-    /** @type {!Map.<string, !Array.<!Runtime.Extension>>} */
-    var groups = new Map();
-    var extensions = self.runtime.extensions('context-menu-item');
-    for (var extension of extensions) {
+    for (var extension of self.runtime.extensions('context-menu-item')) {
       var itemLocation = extension.descriptor()['location'] || '';
       if (!itemLocation.startsWith(location + '/'))
         continue;
 
-      var itemGroup = itemLocation.substr(location.length + 1);
-      if (!itemGroup || itemGroup.includes('/'))
+      var section = itemLocation.substr(location.length + 1);
+      if (!section || section.includes('/'))
         continue;
-      var group = groups.get(itemGroup);
-      if (!group) {
-        group = [];
-        groups.set(itemGroup, group);
-        if (groupWeights.indexOf(itemGroup) === -1)
-          groupWeights.splice(4, 0, itemGroup);
+
+      var subMenuId = extension.descriptor()['subMenuId'];
+      if (subMenuId) {
+        var subMenuItem = this.section(section).appendSubMenuItem(extension.title(), false, subMenuId);
+        subMenuItem.appendItemsAtLocation(subMenuId);
+      } else {
+        this.section(section).appendAction(extension.descriptor()['actionId']);
       }
-      group.push(extension);
     }
-    for (var groupName of groupWeights) {
-      var group = groups.get(groupName);
-      if (!group)
-        continue;
-      group.forEach(appendExtension.bind(null, this));
-      this.appendSeparator();
-    }
+    this.appendSeparator();
   }
 };
+
+UI.ContextMenuItem._uniqueSectionName = 0;
 
 /**
  * @unrestricted
  */
-UI.ContextMenu = class extends UI.ContextSubMenuItem {
+UI.ContextMenu = class extends UI.ContextMenuSection {
   /**
    * @param {!Event} event
    * @param {boolean=} useSoftMenu
@@ -284,8 +364,10 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
    * @param {number=} y
    */
   constructor(event, useSoftMenu, x, y) {
-    super(null, '');
+    super(null, true, '');
     this._contextMenu = this;
+    super._init();
+    this._defaultSection = this.defaultSection();
     /** @type {!Array.<!Promise.<!Array.<!UI.ContextMenu.Provider>>>} */
     this._pendingPromises = [];
     /** @type {!Array<!Object>} */
@@ -296,7 +378,7 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
     this._y = y === undefined ? event.y : y;
     this._handlers = {};
     this._id = 0;
-    /** @type {!Map<string, !UI.ContextSubMenuItem>} */
+    /** @type {!Map<string, !UI.ContextMenuSection>} */
     this._namedSubMenus = new Map();
 
     var target = event.deepElementFromPoint();
@@ -386,7 +468,7 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
       delete this._beforeShow;
     }
 
-    var menuObject = this._buildDescriptors();
+    var menuObject = this._buildMenuDescriptors();
     if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
       this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
@@ -421,11 +503,8 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
   /**
    * @return {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>}
    */
-  _buildDescriptors() {
-    var result = [];
-    for (var i = 0; i < this._items.length; ++i)
-      result.push(this._items[i]._buildDescriptor());
-    return result;
+  _buildMenuDescriptors() {
+    return /** @type {!Array.<!InspectorFrontendHostAPI.ContextMenuDescriptor>} */ (super._buildDescriptor().subItems);
   }
 
   /**
@@ -461,13 +540,94 @@ UI.ContextMenu = class extends UI.ContextSubMenuItem {
 
   /**
    * @param {string} name
-   * @return {?UI.ContextSubMenuItem}
+   * @return {?UI.ContextMenuSection}
    */
   namedSubMenu(name) {
     return this._namedSubMenus.get(name) || null;
   }
+
+  /**
+   * @override
+   * @param {string} label
+   * @param {function(?)} handler
+   * @param {boolean=} disabled
+   * @return {!UI.ContextMenuItem}
+   */
+  appendItem(label, handler, disabled) {
+    return this._defaultSection.appendItem(label, handler, disabled);
+  }
+
+  /**
+   * @override
+   * @param {!Element} element
+   * @return {!UI.ContextMenuItem}
+   */
+  appendCustomItem(element) {
+    return this._defaultSection.appendCustomItem(element);
+  }
+
+  /**
+   * @override
+   * @param {string} actionId
+   * @param {string=} label
+   * @return {!UI.ContextMenuItem}
+   */
+  appendAction(actionId, label) {
+    return this._defaultSection.appendAction(actionId, label);
+  }
+
+  /**
+   * @override
+   * @param {string} label
+   * @param {boolean=} disabled
+   * @param {string=} subMenuId
+   * @return {!UI.ContextMenuSection}
+   */
+  appendSubMenuItem(label, disabled, subMenuId) {
+    return this._defaultSection.appendSubMenuItem(label, disabled, subMenuId);
+  }
+
+  /**
+   * @override
+   * @param {string} label
+   * @param {function()} handler
+   * @param {boolean=} checked
+   * @param {boolean=} disabled
+   * @return {!UI.ContextMenuItem}
+   */
+  appendCheckboxItem(label, handler, checked, disabled) {
+    return this._defaultSection.appendCheckboxItem(label, handler, checked, disabled);
+  }
+
+  /**
+   * @override
+   */
+  appendSeparator() {
+    return this._defaultSection.appendSeparator();
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isEmpty() {
+    for (var section of this._sections.values()) {
+      if (!section.isEmpty())
+        return false;
+    }
+    return true;
+  }
+
+  /**
+   * @override
+   * @param {string} location
+   */
+  appendItemsAtLocation(location) {
+    return this.section('default').appendItemsAtLocation(location);
+  }
 };
 
+UI.ContextMenu._groupWeights = ['new', 'reveal', 'edit', 'clipboard', 'debug', 'view', 'default', 'save', 'footer'];
 
 /**
  * @interface

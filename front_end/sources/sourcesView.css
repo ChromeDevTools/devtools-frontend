@@ -59,10 +59,6 @@
     background-color: #444;
 }
 
-.source-frame-unsaved-committed-changes {
-    background-color: rgba(255, 225, 205, 0.40);
-}
-
 .source-frame-breakpoint-condition {
     z-index: 30;
     padding: 4px;

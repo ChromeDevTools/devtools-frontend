@@ -283,7 +283,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
   _titleForFile(uiSourceCode) {
     var maxDisplayNameLength = 30;
     var title = uiSourceCode.displayName(true).trimMiddle(maxDisplayNameLength);
-    if (uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(uiSourceCode))
+    if (uiSourceCode.isDirty())
       title += '*';
     return title;
   }

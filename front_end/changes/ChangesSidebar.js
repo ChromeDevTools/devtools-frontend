@@ -108,7 +108,7 @@ Changes.ChangesSidebar.UISourceCodeTreeElement = class extends UI.TreeElement {
 
   _updateTitle() {
     var titleText = this.uiSourceCode.displayName();
-    if (this.uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(this.uiSourceCode))
+    if (this.uiSourceCode.isDirty())
       titleText = '*' + titleText;
     this.title = titleText;
 

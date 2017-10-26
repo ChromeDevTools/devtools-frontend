@@ -280,9 +280,6 @@ SourceFrame.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _updateStyle() {
-    this.element.classList.toggle(
-        'source-frame-unsaved-committed-changes',
-        Persistence.persistence.hasUnsavedCommittedChanges(this._uiSourceCode));
     this.setEditable(this._canEditSource());
   }
 

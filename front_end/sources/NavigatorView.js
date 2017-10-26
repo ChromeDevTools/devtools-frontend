@@ -1319,8 +1319,7 @@ Sources.NavigatorUISourceCodeTreeNode = class extends Sources.NavigatorTreeNode 
       return;
 
     var titleText = this._uiSourceCode.displayName();
-    if (!ignoreIsDirty &&
-        (this._uiSourceCode.isDirty() || Persistence.persistence.hasUnsavedCommittedChanges(this._uiSourceCode)))
+    if (!ignoreIsDirty && this._uiSourceCode.isDirty())
       titleText = '*' + titleText;
 
     this._treeElement.title = titleText;

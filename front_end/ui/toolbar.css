@@ -110,7 +110,7 @@
     cursor: pointer;
 }
 
-:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu).hover {
+:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
     background-color: #f3f3f3;
 }
 
@@ -129,16 +129,16 @@
     color: #333 !important;
 }
 
-:not(.toolbar-render-as-links) .toolbar-button:enabled.hover:not(:active) .toolbar-glyph {
+:not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-glyph {
     background-color: #333;
 }
 
-:not(.toolbar-render-as-links) .toolbar-button:enabled.hover:not(:active) .toolbar-text {
+:not(.toolbar-render-as-links) .toolbar-button:enabled:hover:not(:active) .toolbar-text {
     color: #333;
 }
 
 .toolbar-button.toolbar-state-on .toolbar-glyph,
-.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled.hover:not(:active),
+.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active),
 .-theme-selection-color {
     background-color: hsl(218, 81%, 59%);
 }
@@ -148,21 +148,21 @@
     color: hsl(218, 81%, 59%);
 }
 
-.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled.hover .toolbar-glyph {
+.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
     background-color: white;
 }
 
-.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled.hover .toolbar-text {
+.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-text {
     color: white;
 }
 
-.toolbar-button.toolbar-state-on:enabled.hover:not(:active) .toolbar-glyph,
-.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active.hover,
+.toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph,
+.toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover,
 .-theme-selection-color {
     background-color: hsl(218, 96%, 54%);
 }
 
-.toolbar-button.toolbar-state-on:enabled.hover:not(:active) .toolbar-text,
+.toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text,
 .-theme-selection-color {
     color: hsl(218, 96%, 54%);
 }
@@ -188,7 +188,7 @@
     padding: 0 5px 0 2px;
 }
 
-.toolbar-item.checkbox.hover {
+.toolbar-item.checkbox:hover {
     color: #333;
 }
 
@@ -236,7 +236,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 }
 
 .toolbar-input.focused,
-.toolbar-input.hover {
+.toolbar-input:hover {
     border: solid 1px rgb(202, 202, 202);
 }
 

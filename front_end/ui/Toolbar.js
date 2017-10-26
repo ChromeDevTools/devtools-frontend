@@ -383,8 +383,6 @@ UI.ToolbarItem = class extends Common.Object {
     this.element.classList.add('toolbar-item');
     this._visible = true;
     this._enabled = true;
-    this.element.addEventListener('mouseenter', this._mouseEnter.bind(this), false);
-    this.element.addEventListener('mouseleave', this._mouseLeave.bind(this), false);
   }
 
   /**
@@ -395,14 +393,6 @@ UI.ToolbarItem = class extends Common.Object {
       return;
     this._title = title;
     UI.Tooltip.install(this.element, title);
-  }
-
-  _mouseEnter() {
-    this.element.classList.add('hover');
-  }
-
-  _mouseLeave() {
-    this.element.classList.remove('hover');
   }
 
   /**

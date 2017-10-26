@@ -7,7 +7,7 @@ const TESTS_PATH = path.resolve(__dirname, '..', '..', '..', '..', 'LayoutTests'
 
 function main() {
   const groups = {};
-  groups['/'] = {html: 0, js: 0};
+  groups['<root>'] = {html: 0, js: 0};
   const total = {html: 0, js: 0};
   const filenames = fs.readdirSync(TESTS_PATH);
   for (const filename of filenames) {
@@ -17,10 +17,10 @@ function main() {
     } else {
       const extension = path.extname(filePath);
       if (extension === '.js') {
-        groups['/'].js++;
+        groups['<root>'].js++;
       }
       if (extension === '.html') {
-        groups['/'].html++;
+        groups['<root>'].html++;
       }
     }
   }

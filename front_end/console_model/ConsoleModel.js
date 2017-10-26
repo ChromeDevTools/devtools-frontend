@@ -249,8 +249,10 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
         call.type === ConsoleModel.ConsoleMessage.MessageType.Log)
       level = ConsoleModel.ConsoleMessage.MessageLevel.Info;
     var message = '';
-    if (call.args.length && typeof call.args[0].value === 'string')
-      message = call.args[0].value;
+    if (call.args.length && call.args[0].unserializableValue)
+      message = call.args[0].unserializableValue;
+    else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null))
+      message = call.args[0].value + '';
     else if (call.args.length && call.args[0].description)
       message = call.args[0].description;
     var callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;

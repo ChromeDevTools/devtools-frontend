@@ -438,6 +438,8 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       this._preview = preview;
     } else {
       this._description = description;
+      if (!this.description && unserializableValue)
+        this._description = unserializableValue;
       if (!this._description && (typeof value !== 'object' || value === null))
         this._description = value + '';
       this._hasChildren = false;

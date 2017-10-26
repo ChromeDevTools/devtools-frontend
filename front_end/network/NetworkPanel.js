@@ -519,7 +519,7 @@ Network.NetworkPanel = class extends UI.Panel {
      * @this {Network.NetworkPanel}
      */
     function appendRevealItem(request) {
-      contextMenu.appendItem(Common.UIString('Reveal in Network panel'), reveal.bind(this, request));
+      contextMenu.revealSection().appendItem(Common.UIString('Reveal in Network panel'), reveal.bind(this, request));
     }
 
     if (event.target.isSelfOrDescendant(this.element))

@@ -156,10 +156,12 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
       isEditing |= watchExpression.isEditing();
 
     if (!isEditing)
-      contextMenu.appendItem(Common.UIString('Add watch expression'), this._addButtonClicked.bind(this));
+      contextMenu.debugSection().appendItem(Common.UIString('Add watch expression'), this._addButtonClicked.bind(this));
 
-    if (this._watchExpressions.length > 1)
-      contextMenu.appendItem(Common.UIString('Delete all watch expressions'), this._deleteAllButtonClicked.bind(this));
+    if (this._watchExpressions.length > 1) {
+      contextMenu.debugSection().appendItem(
+          Common.UIString('Delete all watch expressions'), this._deleteAllButtonClicked.bind(this));
+    }
 
 
     var target = event.deepElementFromPoint();
@@ -206,7 +208,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     if (!frame || frame.textEditor.selection().isEmpty())
       return;
 
-    contextMenu.appendAction('sources.add-to-watch');
+    contextMenu.debugSection().appendAction('sources.add-to-watch');
   }
 };
 
@@ -414,12 +416,14 @@ Sources.WatchExpression = class extends Common.Object {
    * @param {!Event} event
    */
   _populateContextMenu(contextMenu, event) {
-    if (!this.isEditing())
-      contextMenu.appendItem(Common.UIString('Delete watch expression'), this._updateExpression.bind(this, null));
+    if (!this.isEditing()) {
+      contextMenu.editSection().appendItem(
+          Common.UIString('Delete watch expression'), this._updateExpression.bind(this, null));
+    }
 
 
     if (!this.isEditing() && this._result && (this._result.type === 'number' || this._result.type === 'string'))
-      contextMenu.appendItem(Common.UIString('Copy value'), this._copyValueButtonClicked.bind(this));
+      contextMenu.clipboardSection().appendItem(Common.UIString('Copy value'), this._copyValueButtonClicked.bind(this));
 
     var target = event.deepElementFromPoint();
     if (target && this._valueElement.isSelfOrAncestor(target))

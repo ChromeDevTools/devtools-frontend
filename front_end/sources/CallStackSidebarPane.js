@@ -271,8 +271,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       return;
     var contextMenu = new UI.ContextMenu(event);
     if (item.debuggerCallFrame)
-      contextMenu.appendItem(Common.UIString('Restart frame'), () => item.debuggerCallFrame.restart());
-    contextMenu.appendItem(Common.UIString('Copy stack trace'), this._copyStackTrace.bind(this));
+      contextMenu.defaultSection().appendItem(Common.UIString('Restart frame'), () => item.debuggerCallFrame.restart());
+    contextMenu.defaultSection().appendItem(Common.UIString('Copy stack trace'), this._copyStackTrace.bind(this));
     var location = this._itemLocation(item);
     var uiLocation = location ? Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location) : null;
     if (uiLocation)
@@ -321,19 +321,19 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     var manager = Bindings.blackboxManager;
     if (canBlackbox) {
       if (isBlackboxed) {
-        contextMenu.appendItem(
+        contextMenu.defaultSection().appendItem(
             Common.UIString('Stop blackboxing'), manager.unblackboxUISourceCode.bind(manager, uiSourceCode));
       } else {
-        contextMenu.appendItem(
+        contextMenu.defaultSection().appendItem(
             Common.UIString('Blackbox script'), manager.blackboxUISourceCode.bind(manager, uiSourceCode));
       }
     }
     if (isContentScript) {
       if (isBlackboxed) {
-        contextMenu.appendItem(
+        contextMenu.defaultSection().appendItem(
             Common.UIString('Stop blackboxing all content scripts'), manager.blackboxContentScripts.bind(manager));
       } else {
-        contextMenu.appendItem(
+        contextMenu.defaultSection().appendItem(
             Common.UIString('Blackbox all content scripts'), manager.unblackboxContentScripts.bind(manager));
       }
     }

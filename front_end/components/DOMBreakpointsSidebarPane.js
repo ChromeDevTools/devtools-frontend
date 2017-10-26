@@ -174,10 +174,10 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
    */
   _contextMenu(breakpoint, event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Remove breakpoint'), () => {
+    contextMenu.defaultSection().appendItem(Common.UIString('Remove breakpoint'), () => {
       breakpoint.domDebuggerModel.removeDOMBreakpoint(breakpoint.node, breakpoint.type);
     });
-    contextMenu.appendItem(Common.UIString('Remove all DOM breakpoints'), () => {
+    contextMenu.defaultSection().appendItem(Common.UIString('Remove all DOM breakpoints'), () => {
       breakpoint.domDebuggerModel.removeAllDOMBreakpoints();
     });
     contextMenu.show();
@@ -277,7 +277,7 @@ Components.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
     for (var key in SDK.DOMDebuggerModel.DOMBreakpoint.Type) {
       var type = SDK.DOMDebuggerModel.DOMBreakpoint.Type[key];
       var label = Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns.get(type);
-      breakpointsMenu.appendCheckboxItem(
+      breakpointsMenu.defaultSection().appendCheckboxItem(
           label, toggleBreakpoint.bind(null, type), domDebuggerModel.hasDOMBreakpoint(node, type));
     }
   }

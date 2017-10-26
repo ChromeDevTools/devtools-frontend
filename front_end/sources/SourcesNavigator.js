@@ -311,7 +311,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    */
   handleContextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));
+    contextMenu.headerSection().appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));
     contextMenu.show();
   }
 
@@ -323,13 +323,13 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
   handleFileContextMenu(event, node) {
     var uiSourceCode = node.uiSourceCode();
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Run'), this._handleEvaluateSnippet.bind(this, uiSourceCode));
-    contextMenu.appendItem(Common.UIString('Rename'), this.rename.bind(this, node));
-    contextMenu.appendItem(Common.UIString('Remove'), this._handleRemoveSnippet.bind(this, uiSourceCode));
-    contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));
-    contextMenu.appendSeparator();
-    contextMenu.appendItem(Common.UIString('Save as...'), this._handleSaveAs.bind(this, uiSourceCode));
+
+    contextMenu.headerSection().appendItem(
+        Common.UIString('Run'), this._handleEvaluateSnippet.bind(this, uiSourceCode));
+    contextMenu.newSection().appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));
+    contextMenu.editSection().appendItem(Common.UIString('Rename'), this.rename.bind(this, node));
+    contextMenu.editSection().appendItem(Common.UIString('Remove'), this._handleRemoveSnippet.bind(this, uiSourceCode));
+    contextMenu.saveSection().appendItem(Common.UIString('Save as...'), this._handleSaveAs.bind(this, uiSourceCode));
     contextMenu.show();
   }
 

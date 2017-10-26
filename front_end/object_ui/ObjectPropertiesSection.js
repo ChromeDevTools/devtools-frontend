@@ -814,9 +814,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (property.value)
       contextMenu.appendApplicableItems(property.value);
     var copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
-    contextMenu.beforeShow(() => {
-      contextMenu.appendItem(Common.UIString('Copy property path'), copyPathHandler);
-    });
+    contextMenu.clipboardSection().appendItem(Common.UIString('Copy property path'), copyPathHandler);
     contextMenu.show();
   }
 

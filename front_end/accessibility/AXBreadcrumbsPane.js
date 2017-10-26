@@ -271,7 +271,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
       return;
 
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Scroll into view'), () => {
+    contextMenu.viewSection().appendItem(Common.UIString('Scroll into view'), () => {
       axNode.deferredDOMNode().resolvePromise().then(domNode => {
         if (!domNode)
           return;

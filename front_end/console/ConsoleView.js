@@ -609,32 +609,24 @@ Console.ConsoleView = class extends UI.VBox {
       return;
     }
 
-    function monitoringXHRItemAction() {
-      Common.moduleSetting('monitoringXHREnabled').set(!Common.moduleSetting('monitoringXHREnabled').get());
-    }
-    contextMenu.appendCheckboxItem(
-        Common.UIString('Log XMLHttpRequests'), monitoringXHRItemAction,
-        Common.moduleSetting('monitoringXHREnabled').get());
-
     var sourceElement = event.target.enclosingNodeOrSelfWithClass('console-message-wrapper');
     var consoleMessage = sourceElement ? sourceElement.message.consoleMessage() : null;
 
-    var filterSubMenu = contextMenu.appendSubMenuItem(Common.UIString('Filter'));
+    var filterSubMenu = contextMenu.headerSection().appendSubMenuItem(Common.UIString('Filter'));
 
     if (consoleMessage && consoleMessage.url) {
       var menuTitle = Common.UIString('Hide messages from %s', new Common.ParsedURL(consoleMessage.url).displayName);
-      filterSubMenu.appendItem(menuTitle, this._filter.addMessageURLFilter.bind(this._filter, consoleMessage.url));
+      filterSubMenu.headerSection().appendItem(
+          menuTitle, this._filter.addMessageURLFilter.bind(this._filter, consoleMessage.url));
     }
 
-    filterSubMenu.appendSeparator();
-    var unhideAll =
-        filterSubMenu.appendItem(Common.UIString('Unhide all'), this._filter.removeMessageURLFilter.bind(this._filter));
-    filterSubMenu.appendSeparator();
+    var unhideAll = filterSubMenu.footerSection().appendItem(
+        Common.UIString('Unhide all'), this._filter.removeMessageURLFilter.bind(this._filter));
 
     var hasFilters = false;
 
     for (var url in this._filter.messageURLFilters()) {
-      filterSubMenu.appendCheckboxItem(
+      filterSubMenu.defaultSection().appendCheckboxItem(
           String.sprintf('%s (%d)', new Common.ParsedURL(url).displayName, this._urlToMessageCount[url]),
           this._filter.removeMessageURLFilter.bind(this._filter, url), true);
       hasFilters = true;
@@ -643,15 +635,14 @@ Console.ConsoleView = class extends UI.VBox {
     filterSubMenu.setEnabled(hasFilters || (consoleMessage && consoleMessage.url));
     unhideAll.setEnabled(hasFilters);
 
-    contextMenu.appendSeparator();
-    contextMenu.appendAction('console.clear');
-    contextMenu.appendAction('console.clear.history');
-    contextMenu.appendItem(Common.UIString('Save as...'), this._saveConsole.bind(this));
+    contextMenu.defaultSection().appendAction('console.clear');
+    contextMenu.defaultSection().appendAction('console.clear.history');
+    contextMenu.saveSection().appendItem(Common.UIString('Save as...'), this._saveConsole.bind(this));
 
     var request = consoleMessage ? consoleMessage.request : null;
     if (request && SDK.NetworkManager.canReplayRequest(request)) {
-      contextMenu.appendSeparator();
-      contextMenu.appendItem(Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
+      contextMenu.debugSection().appendItem(
+          Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
     }
 
     contextMenu.show();
@@ -1250,11 +1241,12 @@ Console.ConsoleViewFilter = class {
     var levels = setting.get();
 
     var contextMenu = new UI.ContextMenu(mouseEvent, true);
-    contextMenu.appendItem(
+    contextMenu.headerSection().appendItem(
         Common.UIString('Default'), () => setting.set(Console.ConsoleFilter.defaultLevelsFilterValue()));
-    contextMenu.appendSeparator();
-    for (var level in this._levelLabels)
-      contextMenu.appendCheckboxItem(this._levelLabels[level], toggleShowLevel.bind(null, level), levels[level]);
+    for (var level in this._levelLabels) {
+      contextMenu.defaultSection().appendCheckboxItem(
+          this._levelLabels[level], toggleShowLevel.bind(null, level), levels[level]);
+    }
     contextMenu.show();
 
     /**

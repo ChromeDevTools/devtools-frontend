@@ -802,9 +802,9 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
      * @param {!UI.ContextMenu} contextMenu
      */
     function appendActions(contextMenu) {
-      contextMenu.appendItem(Common.UIString('Reload'), doAction.bind(null, 'reload'));
-      contextMenu.appendItem(Common.UIString('Focus'), doAction.bind(null, 'activate'));
-      contextMenu.appendItem(Common.UIString('Close'), doAction.bind(null, 'close'));
+      contextMenu.defaultSection().appendItem(Common.UIString('Reload'), doAction.bind(null, 'reload'));
+      contextMenu.defaultSection().appendItem(Common.UIString('Focus'), doAction.bind(null, 'activate'));
+      contextMenu.defaultSection().appendItem(Common.UIString('Close'), doAction.bind(null, 'close'));
     }
 
     /**

@@ -227,7 +227,7 @@ LayerViewer.LayerViewHost = class {
    * @param {?LayerViewer.LayerView.Selection} selection
    */
   showContextMenu(contextMenu, selection) {
-    contextMenu.appendCheckboxItem(
+    contextMenu.defaultSection().appendCheckboxItem(
         Common.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
     var node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();

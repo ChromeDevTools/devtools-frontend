@@ -644,8 +644,7 @@ Main.Main.MainMenuItem = class {
       dockItemToolbar.appendToolbarItem(left);
       dockItemToolbar.appendToolbarItem(bottom);
       dockItemToolbar.appendToolbarItem(right);
-      contextMenu.appendCustomItem(dockItemElement);
-      contextMenu.appendSeparator();
+      contextMenu.headerSection().appendCustomItem(dockItemElement);
     }
 
     /**
@@ -656,11 +655,12 @@ Main.Main.MainMenuItem = class {
       contextMenu.discard();
     }
 
-    contextMenu.appendAction(
-        'main.toggle-drawer', UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :
-                                                                 Common.UIString('Show console drawer'));
+    contextMenu.defaultSection().appendAction(
+        'main.toggle-drawer',
+        UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :
+                                           Common.UIString('Show console drawer'));
     contextMenu.appendItemsAtLocation('mainMenu');
-    var moreTools = contextMenu.namedSubMenu('mainMenuMoreTools');
+    var moreTools = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('More tools'));
     var extensions = self.runtime.extensions('view', undefined, true);
     for (var extension of extensions) {
       var descriptor = extension.descriptor();
@@ -668,12 +668,14 @@ Main.Main.MainMenuItem = class {
         continue;
       if (descriptor['location'] !== 'drawer-view' && descriptor['location'] !== 'panel')
         continue;
-      moreTools.appendItem(extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
+      moreTools.defaultSection().appendItem(
+          extension.title(), UI.viewManager.showView.bind(UI.viewManager, descriptor['id']));
     }
 
-    var helpSubMenu = contextMenu.namedSubMenu('mainMenuHelp');
-    helpSubMenu.appendAction('settings.documentation');
-    helpSubMenu.appendItem('Release Notes', () => InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link));
+    var helpSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Help'));
+    helpSubMenu.defaultSection().appendAction('settings.documentation');
+    helpSubMenu.defaultSection().appendItem(
+        'Release Notes', () => InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link));
   }
 };
 

@@ -1027,22 +1027,22 @@ DataGrid.DataGrid = class extends Common.Object {
 
     var gridNode = this.dataGridNodeFromNode(target);
     if (this._refreshCallback && (!gridNode || gridNode !== this.creationNode))
-      contextMenu.appendItem(Common.UIString('Refresh'), this._refreshCallback.bind(this));
+      contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this._refreshCallback.bind(this));
 
     if (gridNode && gridNode.selectable && !gridNode.isEventWithinDisclosureTriangle(event)) {
       if (this._editCallback) {
         if (gridNode === this.creationNode) {
-          contextMenu.appendItem(Common.UIString('Add new'), this._startEditing.bind(this, target));
+          contextMenu.defaultSection().appendItem(Common.UIString('Add new'), this._startEditing.bind(this, target));
         } else {
           var columnId = this.columnIdFromNode(target);
           if (columnId && this._columns[columnId].editable) {
-            contextMenu.appendItem(
+            contextMenu.defaultSection().appendItem(
                 Common.UIString('Edit "%s"', this._columns[columnId].title), this._startEditing.bind(this, target));
           }
         }
       }
       if (this._deleteCallback && gridNode !== this.creationNode)
-        contextMenu.appendItem(Common.UIString('Delete'), this._deleteCallback.bind(this, gridNode));
+        contextMenu.defaultSection().appendItem(Common.UIString('Delete'), this._deleteCallback.bind(this, gridNode));
       if (this._rowContextMenuCallback)
         this._rowContextMenuCallback(contextMenu, gridNode);
     }

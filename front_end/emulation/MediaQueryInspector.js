@@ -115,10 +115,10 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
 
     var contextMenuItems = uiLocations.keysArray().sort();
     var contextMenu = new UI.ContextMenu(event);
-    var subMenuItem = contextMenu.appendSubMenuItem(Common.UIString('Reveal in source code'));
+    var subMenuItem = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('Reveal in source code'));
     for (var i = 0; i < contextMenuItems.length; ++i) {
       var title = contextMenuItems[i];
-      subMenuItem.appendItem(
+      subMenuItem.defaultSection().appendItem(
           title, this._revealSourceLocation.bind(this, /** @type {!Workspace.UILocation} */ (uiLocations.get(title))));
     }
     contextMenu.show();

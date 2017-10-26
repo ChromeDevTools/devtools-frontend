@@ -125,12 +125,14 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   _contextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
     if (!this._parsedURL.isDataURL())
-      contextMenu.appendItem(Common.UIString('Copy image URL'), this._copyImageURL.bind(this));
-    if (this._imagePreviewElement.src)
-      contextMenu.appendItem(Common.UIString('Copy image as data URI'), this._copyImageAsDataURL.bind(this));
+      contextMenu.clipboardSection().appendItem(Common.UIString('Copy image URL'), this._copyImageURL.bind(this));
+    if (this._imagePreviewElement.src) {
+      contextMenu.clipboardSection().appendItem(
+          Common.UIString('Copy image as data URI'), this._copyImageAsDataURL.bind(this));
+    }
 
-    contextMenu.appendItem(Common.UIString('Open image in new tab'), this._openInNewTab.bind(this));
-    contextMenu.appendItem(Common.UIString('Save\u2026'), this._saveImage.bind(this));
+    contextMenu.clipboardSection().appendItem(Common.UIString('Open image in new tab'), this._openInNewTab.bind(this));
+    contextMenu.clipboardSection().appendItem(Common.UIString('Save\u2026'), this._saveImage.bind(this));
     contextMenu.show();
   }
 

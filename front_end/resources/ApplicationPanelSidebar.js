@@ -782,7 +782,7 @@ Resources.ServiceWorkerCacheTreeElement = class extends Resources.StorageCategor
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Refresh Caches'), this._refreshCaches.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Refresh Caches'), this._refreshCaches.bind(this));
     contextMenu.show();
   }
 
@@ -876,7 +876,7 @@ Resources.SWCacheTreeElement = class extends Resources.BaseStorageTreeElement {
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Delete'), this._clearCache.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Delete'), this._clearCache.bind(this));
     contextMenu.show();
   }
 
@@ -1046,7 +1046,7 @@ Resources.IndexedDBTreeElement = class extends Resources.StorageCategoryTreeElem
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Refresh IndexedDB'), this.refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Refresh IndexedDB'), this.refreshIndexedDB.bind(this));
     contextMenu.show();
   }
 
@@ -1159,7 +1159,7 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Refresh IndexedDB'), this._refreshIndexedDB.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Refresh IndexedDB'), this._refreshIndexedDB.bind(this));
     contextMenu.show();
   }
 
@@ -1262,7 +1262,7 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Clear'), this._clearObjectStore.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Clear'), this._clearObjectStore.bind(this));
     contextMenu.show();
   }
 
@@ -1454,7 +1454,7 @@ Resources.DOMStorageTreeElement = class extends Resources.BaseStorageTreeElement
 
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Clear'), () => this._domStorage.clear());
+    contextMenu.defaultSection().appendItem(Common.UIString('Clear'), () => this._domStorage.clear());
     contextMenu.show();
   }
 };
@@ -1490,7 +1490,7 @@ Resources.CookieTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   _handleContextMenuEvent(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(
+    contextMenu.defaultSection().appendItem(
         Common.UIString('Clear'), () => this._storagePanel.clearCookies(this._target, this._cookieDomain));
     contextMenu.show();
   }

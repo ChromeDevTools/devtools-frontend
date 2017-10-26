@@ -181,31 +181,30 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     var contextMenu = new UI.ContextMenu(event);
     var removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
                                                     Common.UIString('Remove breakpoint');
-    contextMenu.appendItem(removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove()));
+    contextMenu.defaultSection().appendItem(removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove()));
 
-    contextMenu.appendSeparator();
     var breakpointActive = this._breakpointManager.breakpointsActive();
     var breakpointActiveTitle =
         breakpointActive ? Common.UIString('Deactivate breakpoints') : Common.UIString('Activate breakpoints');
-    contextMenu.appendItem(
+    contextMenu.defaultSection().appendItem(
         breakpointActiveTitle,
         this._breakpointManager.setBreakpointsActive.bind(this._breakpointManager, !breakpointActive));
 
-    contextMenu.appendSeparator();
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
       var enableTitle = Common.UIString('Enable all breakpoints');
-      contextMenu.appendItem(
+      contextMenu.defaultSection().appendItem(
           enableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, true));
     }
     if (breakpoints.some(breakpoint => breakpoint.enabled())) {
       var disableTitle = Common.UIString('Disable all breakpoints');
-      contextMenu.appendItem(
+      contextMenu.defaultSection().appendItem(
           disableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, false));
     }
     var removeAllTitle = Common.UIString('Remove all breakpoints');
-    contextMenu.appendItem(removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
+    contextMenu.defaultSection().appendItem(
+        removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
     var removeOtherTitle = Common.UIString('Remove other breakpoints');
-    contextMenu.appendItem(
+    contextMenu.defaultSection().appendItem(
         removeOtherTitle,
         this._breakpointManager.removeOtherBreakpoints.bind(this._breakpointManager, new Set(breakpoints)));
     contextMenu.show();

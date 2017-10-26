@@ -46,7 +46,7 @@ Resources.StorageItemsView = class extends UI.VBox {
    */
   _showContextMenu(event) {
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.appendItem(Common.UIString('Refresh'), this.refreshItems.bind(this));
+    contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this.refreshItems.bind(this));
     contextMenu.show();
   }
 

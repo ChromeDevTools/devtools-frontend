@@ -245,11 +245,10 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     var contextMenu = new UI.ContextMenu(event);
     for (var i = 0; i < contextMenuDescriptors.length; ++i) {
       var descriptor = contextMenuDescriptors[i];
-      contextMenu.appendItem(descriptor.text, descriptor.handler);
+      contextMenu.defaultSection().appendItem(descriptor.text, descriptor.handler);
     }
-    if (!contextMenu.isEmpty())
-      contextMenu.appendSeparator();
-    contextMenu.appendItem('inspector-stylesheet', this._createNewRuleInViaInspectorStyleSheet.bind(this));
+    contextMenu.footerSection().appendItem(
+        'inspector-stylesheet', this._createNewRuleInViaInspectorStyleSheet.bind(this));
     contextMenu.show();
 
     /**

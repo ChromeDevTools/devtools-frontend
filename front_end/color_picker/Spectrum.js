@@ -534,11 +534,13 @@ ColorPicker.Spectrum = class extends UI.VBox {
       return;
     var contextMenu = new UI.ContextMenu(event);
     if (colorIndex !== -1) {
-      contextMenu.appendItem(Common.UIString('Remove color'), this._deletePaletteColors.bind(this, colorIndex, false));
-      contextMenu.appendItem(
+      contextMenu.defaultSection().appendItem(
+          Common.UIString('Remove color'), this._deletePaletteColors.bind(this, colorIndex, false));
+      contextMenu.defaultSection().appendItem(
           Common.UIString('Remove all to the right'), this._deletePaletteColors.bind(this, colorIndex, true));
     }
-    contextMenu.appendItem(Common.UIString('Clear palette'), this._deletePaletteColors.bind(this, -1, true));
+    contextMenu.defaultSection().appendItem(
+        Common.UIString('Clear palette'), this._deletePaletteColors.bind(this, -1, true));
     contextMenu.show();
   }
 

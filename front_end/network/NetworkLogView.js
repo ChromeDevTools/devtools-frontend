@@ -1147,38 +1147,42 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   handleContextMenuForRequest(contextMenu, request) {
     contextMenu.appendApplicableItems(request);
-    var copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
+    var copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString('Copy'));
+    var footerSection = copyMenu.footerSection();
     if (request) {
-      copyMenu.appendItem(
+      copyMenu.defaultSection().appendItem(
           UI.copyLinkAddressLabel(), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, request.contentURL()));
-      copyMenu.appendSeparator();
-
       if (request.requestHeadersText()) {
-        copyMenu.appendItem(
+        copyMenu.defaultSection().appendItem(
             Common.UIString('Copy request headers'), Network.NetworkLogView._copyRequestHeaders.bind(null, request));
       }
 
       if (request.responseHeadersText) {
-        copyMenu.appendItem(
+        copyMenu.defaultSection().appendItem(
             Common.UIString('Copy response headers'), Network.NetworkLogView._copyResponseHeaders.bind(null, request));
       }
 
-      if (request.finished)
-        copyMenu.appendItem(Common.UIString('Copy response'), Network.NetworkLogView._copyResponse.bind(null, request));
+      if (request.finished) {
+        copyMenu.defaultSection().appendItem(
+            Common.UIString('Copy response'), Network.NetworkLogView._copyResponse.bind(null, request));
+      }
 
       if (Host.isWin()) {
-        copyMenu.appendItem(Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
-        copyMenu.appendItem(Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
-        copyMenu.appendItem(Common.UIString('Copy All as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
-        copyMenu.appendItem(Common.UIString('Copy All as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
+        footerSection.appendItem(
+            Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
+        footerSection.appendItem(
+            Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
+        footerSection.appendItem(Common.UIString('Copy All as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
+        footerSection.appendItem(
+            Common.UIString('Copy All as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
       } else {
-        copyMenu.appendItem(Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
-        copyMenu.appendItem(Common.UIString('Copy All as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
+        footerSection.appendItem(Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
+        footerSection.appendItem(Common.UIString('Copy All as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
     } else {
-      copyMenu = contextMenu.appendSubMenuItem(Common.UIString('Copy'));
+      copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString('Copy'));
     }
-    copyMenu.appendItem(Common.UIString('Copy all as HAR'), this._copyAll.bind(this));
+    footerSection.appendItem(Common.UIString('Copy all as HAR'), this._copyAll.bind(this));
 
     contextMenu.saveSection().appendItem(Common.UIString('Save as HAR with content'), this._exportAll.bind(this));
 
@@ -1187,33 +1191,33 @@ Network.NetworkLogView = class extends UI.VBox {
         Common.UIString('Clear browser cookies'), this._clearBrowserCookies.bind(this));
 
     if (request) {
-      contextMenu.appendSeparator();
-
       const maxBlockedURLLength = 20;
       var manager = SDK.multitargetNetworkManager;
       var patterns = manager.blockedPatterns();
 
       var urlWithoutScheme = request.parsedURL.urlWithoutScheme();
       if (urlWithoutScheme && !patterns.find(pattern => pattern.url === urlWithoutScheme)) {
-        contextMenu.appendItem(Common.UIString('Block request URL'), addBlockedURL.bind(null, urlWithoutScheme));
+        contextMenu.debugSection().appendItem(
+            Common.UIString('Block request URL'), addBlockedURL.bind(null, urlWithoutScheme));
       } else if (urlWithoutScheme) {
         const croppedURL = urlWithoutScheme.trimMiddle(maxBlockedURLLength);
-        contextMenu.appendItem(
+        contextMenu.debugSection().appendItem(
             Common.UIString('Unblock %s', croppedURL), removeBlockedURL.bind(null, urlWithoutScheme));
       }
 
       var domain = request.parsedURL.domain();
       if (domain && !patterns.find(pattern => pattern.url === domain)) {
-        contextMenu.appendItem(Common.UIString('Block request domain'), addBlockedURL.bind(null, domain));
+        contextMenu.debugSection().appendItem(
+            Common.UIString('Block request domain'), addBlockedURL.bind(null, domain));
       } else if (domain) {
         const croppedDomain = domain.trimMiddle(maxBlockedURLLength);
-        contextMenu.appendItem(Common.UIString('Unblock %s', croppedDomain), removeBlockedURL.bind(null, domain));
+        contextMenu.debugSection().appendItem(
+            Common.UIString('Unblock %s', croppedDomain), removeBlockedURL.bind(null, domain));
       }
 
       if (SDK.NetworkManager.canReplayRequest(request)) {
-        contextMenu.appendSeparator();
-        contextMenu.appendItem(Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
-        contextMenu.appendSeparator();
+        contextMenu.debugSection().appendItem(
+            Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
       }
 
       /**

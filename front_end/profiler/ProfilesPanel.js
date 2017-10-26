@@ -300,7 +300,7 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
       this.visibleView.populateContextMenu(contextMenu, event);
 
     if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement)) {
-      contextMenu.appendItem(
+      contextMenu.defaultSection().appendItem(
           Common.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));
     }
     contextMenu.show();
@@ -709,12 +709,12 @@ Profiler.ProfileSidebarTreeElement = class extends UI.TreeElement {
     var profile = this.profile;
     var contextMenu = new UI.ContextMenu(event);
     // FIXME: use context menu provider
-    contextMenu.appendItem(
+    contextMenu.headerSection().appendItem(
         Common.UIString('Load\u2026'),
         Profiler.ProfilesPanel._fileSelectorElement.click.bind(Profiler.ProfilesPanel._fileSelectorElement));
     if (profile.canSaveToFile())
-      contextMenu.appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
-    contextMenu.appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
+      contextMenu.saveSection().appendItem(Common.UIString('Save\u2026'), profile.saveToFile.bind(profile));
+    contextMenu.footerSection().appendItem(Common.UIString('Delete'), this.ondelete.bind(this));
     contextMenu.show();
   }
 

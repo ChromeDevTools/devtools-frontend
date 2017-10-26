@@ -13,6 +13,9 @@ Console.ConsoleContextSelector = class {
     this._dropDown = new UI.SoftDropDown(this._items, this);
     this._dropDown.setRowHeight(36);
     this._toolbarItem = new UI.ToolbarItem(this._dropDown.element);
+    this._toolbarItem.setEnabled(false);
+    this._items.addEventListener(
+        UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(!!this._items.length));
 
     /** @type {!Map<!SDK.ExecutionContext, !ProductRegistry.BadgePool>} */
     this._badgePoolForExecutionContext = new Map();

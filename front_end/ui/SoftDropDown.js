@@ -37,7 +37,7 @@ UI.SoftDropDown = class {
     this.element.addEventListener('mousedown', event => {
       if (this._listWasShowing200msAgo)
         this._hide(event);
-      else
+      else if (!this.element.disabled)
         this._show(event);
     }, false);
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);

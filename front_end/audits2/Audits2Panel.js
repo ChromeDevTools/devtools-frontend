@@ -36,7 +36,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
     this._dropTarget = new UI.DropTarget(
-        this.contentElement, [UI.DropTarget.Types.Files], Common.UIString('Drop audit file here'),
+        this.contentElement, [UI.DropTarget.Type.File], Common.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
     for (var preset of Audits2.Audits2Panel.Presets)

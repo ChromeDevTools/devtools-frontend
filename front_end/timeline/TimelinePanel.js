@@ -40,7 +40,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this.registerRequiredCSS('timeline/timelinePanel.css');
     this.element.addEventListener('contextmenu', this._contextMenu.bind(this), false);
     this._dropTarget = new UI.DropTarget(
-        this.element, [UI.DropTarget.Types.Files, UI.DropTarget.Types.URIList],
+        this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI],
         Common.UIString('Drop timeline file or URL here'), this._handleDrop.bind(this));
 
     /** @type {!Array<!UI.ToolbarItem>} */

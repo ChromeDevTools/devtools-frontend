@@ -48,6 +48,9 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     if (this._uiSourceCode) {
       this._uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyCommitted, this._workingCopyCommitted, this);
+      new UI.DropTarget(
+          this.element, [UI.DropTarget.Type.ImageFile, UI.DropTarget.Type.URI], Common.UIString('Drop image file here'),
+          this._handleDrop.bind(this));
     }
     this._sizeLabel = new UI.ToolbarText();
     this._dimensionsLabel = new UI.ToolbarText();
@@ -93,8 +96,9 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     if (this._cachedContent === content)
       return;
 
+    var contentEncoded = await this._contentProvider.contentEncoded();
     this._cachedContent = content;
-    var imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
+    var imageSrc = 'data:' + this._mimeType + (contentEncoded ? ';base64,' : ',') + content;
     if (imageSrc === null)
       imageSrc = this._url;
     this._imagePreviewElement.src = imageSrc;
@@ -147,5 +151,36 @@ SourceFrame.ImageView = class extends UI.SimpleView {
 
   _openInNewTab() {
     InspectorFrontendHost.openInNewTab(this._url);
+  }
+
+  /**
+   * @param {!DataTransfer} dataTransfer
+   */
+  async _handleDrop(dataTransfer) {
+    var items = dataTransfer.items;
+    if (!items.length || items[0].kind !== 'file')
+      return;
+
+    var entry = items[0].webkitGetAsEntry();
+    var encoded = !entry.name.endsWith('.svg');
+    entry.file(file => {
+      var reader = new FileReader();
+      reader.onloadend = () => {
+        var result;
+        try {
+          result = /** @type {?string} */ (reader.result);
+        } catch (e) {
+          result = null;
+          console.error('Can\'t read file: ' + e);
+        }
+        if (typeof result !== 'string')
+          return;
+        this._uiSourceCode.setContent(encoded ? btoa(result) : result, encoded);
+      };
+      if (encoded)
+        reader.readAsBinaryString(file);
+      else
+        reader.readAsText(file);
+    });
   }
 };

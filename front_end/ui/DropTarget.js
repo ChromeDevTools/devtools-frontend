@@ -7,7 +7,7 @@
 UI.DropTarget = class {
   /**
    * @param {!Element} element
-   * @param {!Array.<string>} transferTypes
+   * @param {!Array<{kind: string, type: !RegExp}>} transferTypes
    * @param {string} messageText
    * @param {function(!DataTransfer)} handleDrop
    */
@@ -41,8 +41,11 @@ UI.DropTarget = class {
    * @return {boolean}
    */
   _hasMatchingType(event) {
-    for (var type of this._transferTypes) {
-      if (event.dataTransfer.types.indexOf(type) !== -1)
+    for (var transferType of this._transferTypes) {
+      var found = Array.from(event.dataTransfer.items).find(item => {
+        return transferType.kind === item.kind && !!transferType.type.exec(item.type);
+      });
+      if (found)
         return true;
     }
     return false;
@@ -89,7 +92,10 @@ UI.DropTarget = class {
   }
 };
 
-UI.DropTarget.Types = {
-  Files: 'Files',
-  URIList: 'text/uri-list'
+UI.DropTarget.Type = {
+  URI: {kind: 'string', type: /text\/uri-list/},
+  Folder: {kind: 'file', type: /$^/},
+  File: {kind: 'file', type: /.*/},
+  WebFile: {kind: 'file', type: /[\w]+/},
+  ImageFile: {kind: 'file', type: /image\/.*/},
 };

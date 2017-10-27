@@ -501,9 +501,10 @@ Timeline.TimelineUIUtils = class {
         detailsText = Common.UIString('%s collected', Number.bytesToString(delta));
         break;
       case recordType.FunctionCall:
-        // Omit internally generated script names.
-        if (eventData)
-          detailsText = linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], 0);
+        if (eventData) {
+          detailsText =
+              linkifyLocationAsText(eventData['scriptId'], eventData['lineNumber'], eventData['columnNumber']);
+        }
         break;
       case recordType.JSFrame:
         detailsText = Timeline.TimelineUIUtils.frameDisplayName(eventData);

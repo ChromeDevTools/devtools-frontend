@@ -1240,7 +1240,9 @@ Console.ConsoleViewFilter = class {
     var setting = this._messageLevelFiltersSetting;
     var levels = setting.get();
 
-    var contextMenu = new UI.ContextMenu(mouseEvent, true);
+    var contextMenu = new UI.ContextMenu(
+        mouseEvent, true /* useSoftMenu */, this._levelMenuButton.element.totalOffsetLeft(),
+        this._levelMenuButton.element.totalOffsetTop() + this._levelMenuButton.element.offsetHeight);
     contextMenu.headerSection().appendItem(
         Common.UIString('Default'), () => setting.set(Console.ConsoleFilter.defaultLevelsFilterValue()));
     for (var level in this._levelLabels) {

@@ -51,6 +51,10 @@
     pointer-events: none;
 }
 
+.devices-list-checkbox:focus {
+    outline: auto 5px -webkit-focus-ring-color;
+}
+
 .devices-list-title {
     overflow: hidden;
     white-space: nowrap;

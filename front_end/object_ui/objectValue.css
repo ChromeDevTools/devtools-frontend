@@ -19,7 +19,7 @@
     display: flex !important;
 }
 
-.object-value-node:hover {
+.value.object-value-node:hover {
     background-color: rgba(56, 121, 217, 0.1);
 }
 

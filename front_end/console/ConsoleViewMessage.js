@@ -1385,7 +1385,7 @@ Console.ConsoleViewMessage = class {
       else if (token.type === 'event')
         text = Common.UIString('<some> event');
       else if (token.type === 'milestone')
-        text = Common.UIString('M<XX>');
+        text = Common.UIString(' M<XX>');
       else if (token.type === 'autofill')
         text = Common.UIString('<attribute>');
       return acc + text;

@@ -561,11 +561,13 @@ ConsoleModel.ConsoleMessage = class {
    * @return {boolean}
    */
   isGroupable() {
+    var isJSError = this.source === ConsoleModel.ConsoleMessage.MessageSource.JS &&
+        this.level === ConsoleModel.ConsoleMessage.MessageLevel.Error;
     return (
         this.source !== ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI &&
         this.type !== ConsoleModel.ConsoleMessage.MessageType.Command &&
         this.type !== ConsoleModel.ConsoleMessage.MessageType.Result &&
-        this.type !== ConsoleModel.ConsoleMessage.MessageType.System);
+        this.type !== ConsoleModel.ConsoleMessage.MessageType.System && !isJSError);
   }
 
   /**

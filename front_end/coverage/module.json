@@ -10,7 +10,7 @@
             "order": 100
         },
         {
-            "type": "@SourceFrame.UISourceCodeFrame.LineDecorator",
+            "type": "@SourceFrame.LineDecorator",
             "className": "Coverage.CoverageView.LineDecorator",
             "decoratorType": "coverage"
         },

@@ -824,7 +824,7 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {!Object} target
    */
   _appendUISourceCodeFrameItems(event, contextMenu, target) {
-    if (!(target instanceof SourceFrame.UISourceCodeFrame))
+    if (!(target instanceof Sources.UISourceCodeFrame))
       return;
     contextMenu.debugSection().appendAction('debugger.evaluate-selection');
   }
@@ -1240,7 +1240,7 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
         panel._toggleBreakpointsActive();
         return true;
       case 'debugger.evaluate-selection':
-        var frame = UI.context.flavor(SourceFrame.UISourceCodeFrame);
+        var frame = UI.context.flavor(Sources.UISourceCodeFrame);
         if (frame) {
           var text = frame.textEditor.text(frame.textEditor.selection());
           var executionContext = UI.context.flavor(SDK.ExecutionContext);

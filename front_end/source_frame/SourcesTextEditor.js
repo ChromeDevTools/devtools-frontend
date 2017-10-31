@@ -51,6 +51,11 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     Common.moduleSetting('textEditorAutoDetectIndent').addChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('showWhitespacesInEditor').addChangeListener(this._updateWhitespace, this);
 
+    /** @type {?UI.AutocompleteConfig} */
+    this._autocompleteConfig = {isWordChar: TextUtils.TextUtils.isWordChar};
+    Common.moduleSetting('textEditorAutocompletion').addChangeListener(this._updateAutocomplete, this);
+    this._updateAutocomplete();
+
     this._onUpdateEditorIndentation();
     this._setupWhitespaceHighlight();
   }
@@ -568,6 +573,20 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     var style = doc.createElement('style');
     style.textContent = rules;
     doc.head.appendChild(style);
+  }
+
+  /**
+   * @override
+   * @param {?UI.AutocompleteConfig} config
+   */
+  configureAutocomplete(config) {
+    this._autocompleteConfig = config;
+    this._updateAutocomplete();
+  }
+
+  _updateAutocomplete() {
+    super.configureAutocomplete(
+        Common.moduleSetting('textEditorAutocompletion').get() ? this._autocompleteConfig : null);
   }
 };
 

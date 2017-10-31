@@ -62,9 +62,6 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     /** @type {boolean} */
     this._muteChangeEventsForSetContent = false;
 
-    this._shortcuts = {};
-    this.element.addEventListener('keydown', this._handleKeyDown.bind(this), false);
-
     this._sourcePosition = new UI.ToolbarText();
 
     /**
@@ -91,14 +88,6 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._editable = editable;
     if (this._loaded)
       this._textEditor.setReadOnly(!editable);
-  }
-
-  /**
-   * @param {number} key
-   * @param {function():boolean} handler
-   */
-  addShortcut(key, handler) {
-    this._shortcuts[key] = handler;
   }
 
   /**
@@ -563,11 +552,17 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
           '%d lines, %d characters selected', textRange.endLine - textRange.startLine + 1, selectedText.length));
     }
   }
+};
 
-  _handleKeyDown(e) {
-    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(e);
-    var handler = this._shortcuts[shortcutKey];
-    if (handler && handler())
-      e.consume(true);
-  }
+/**
+ * @interface
+ */
+SourceFrame.LineDecorator = function() {};
+
+SourceFrame.LineDecorator.prototype = {
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   */
+  decorate(uiSourceCode, textEditor) {}
 };

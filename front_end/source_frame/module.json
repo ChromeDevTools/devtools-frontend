@@ -46,7 +46,6 @@
         "ImageView.js",
         "SourceFrame.js",
         "ResourceSourceFrame.js",
-        "UISourceCodeFrame.js",
         "JSONView.js",
         "XMLView.js",
         "PreviewFactory.js",

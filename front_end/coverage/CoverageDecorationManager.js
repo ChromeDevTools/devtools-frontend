@@ -263,7 +263,7 @@ Coverage.CoverageDecorationManager = class {
 Coverage.CoverageDecorationManager._decoratorType = 'coverage';
 
 /**
- * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
+ * @implements {SourceFrame.LineDecorator}
  */
 Coverage.CoverageView.LineDecorator = class {
   /**

@@ -120,7 +120,7 @@ PerfUI.LineLevelProfile.Presentation = class {
 };
 
 /**
- * @implements {SourceFrame.UISourceCodeFrame.LineDecorator}
+ * @implements {SourceFrame.LineDecorator}
  * @unrestricted
  */
 PerfUI.LineLevelProfile.LineDecorator = class {

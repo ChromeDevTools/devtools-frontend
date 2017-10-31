@@ -237,13 +237,13 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @return {?SourceFrame.UISourceCodeFrame}
+   * @return {?Sources.UISourceCodeFrame}
    */
   currentSourceFrame() {
     var view = this.visibleView();
-    if (!(view instanceof SourceFrame.UISourceCodeFrame))
+    if (!(view instanceof Sources.UISourceCodeFrame))
       return null;
-    return /** @type {!SourceFrame.UISourceCodeFrame} */ (view);
+    return /** @type {!Sources.UISourceCodeFrame} */ (view);
   }
 
   /**
@@ -357,14 +357,12 @@ Sources.SourcesView = class extends UI.VBox {
 
     if (contentType.hasScripts())
       sourceFrame = new Sources.JavaScriptSourceFrame(uiSourceCode);
-    else if (contentType.isStyleSheet())
-      sourceFrame = new Sources.CSSSourceFrame(uiSourceCode);
     else if (contentType === Common.resourceTypes.Image)
       sourceView = new SourceFrame.ImageView(uiSourceCode.mimeType(), uiSourceCode);
     else if (contentType === Common.resourceTypes.Font)
       sourceView = new SourceFrame.FontView(uiSourceCode.mimeType(), uiSourceCode);
     else
-      sourceFrame = new SourceFrame.UISourceCodeFrame(uiSourceCode);
+      sourceFrame = new Sources.UISourceCodeFrame(uiSourceCode);
 
     if (sourceFrame) {
       sourceFrame.setHighlighterType(uiSourceCode.mimeType());
@@ -385,15 +383,13 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
+   * @param {!Sources.UISourceCodeFrame} sourceFrame
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {boolean}
    */
   _sourceFrameMatchesUISourceCode(sourceFrame, uiSourceCode) {
     if (uiSourceCode.contentType().hasScripts())
       return sourceFrame instanceof Sources.JavaScriptSourceFrame;
-    if (uiSourceCode.contentType().isStyleSheet())
-      return sourceFrame instanceof Sources.CSSSourceFrame;
     return !(sourceFrame instanceof Sources.JavaScriptSourceFrame);
   }
 
@@ -402,9 +398,9 @@ Sources.SourcesView = class extends UI.VBox {
    */
   _recreateSourceFrameIfNeeded(uiSourceCode) {
     var oldSourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
-    if (!oldSourceView || !(oldSourceView instanceof SourceFrame.UISourceCodeFrame))
+    if (!oldSourceView || !(oldSourceView instanceof Sources.UISourceCodeFrame))
       return;
-    var oldSourceFrame = /** @type {!SourceFrame.UISourceCodeFrame} */ (oldSourceView);
+    var oldSourceFrame = /** @type {!Sources.UISourceCodeFrame} */ (oldSourceView);
     if (this._sourceFrameMatchesUISourceCode(oldSourceFrame, uiSourceCode)) {
       oldSourceFrame.setHighlighterType(uiSourceCode.mimeType());
     } else {
@@ -429,8 +425,8 @@ Sources.SourcesView = class extends UI.VBox {
     var sourceView = this._sourceViewByUISourceCode.get(uiSourceCode);
     this._sourceViewByUISourceCode.remove(uiSourceCode);
     uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
-    if (sourceView && sourceView instanceof SourceFrame.UISourceCodeFrame)
-      /** @type {!SourceFrame.UISourceCodeFrame} */ (sourceView).dispose();
+    if (sourceView && sourceView instanceof Sources.UISourceCodeFrame)
+      /** @type {!Sources.UISourceCodeFrame} */ (sourceView).dispose();
   }
 
   _onBindingChanged() {
@@ -456,7 +452,7 @@ Sources.SourcesView = class extends UI.VBox {
     var binding = Persistence.persistence.binding(uiLocation.uiSourceCode);
     var uiSourceCode = binding ? binding.fileSystem : uiLocation.uiSourceCode;
     var sourceView = this._getOrCreateSourceView(uiSourceCode);
-    if (!(sourceView instanceof SourceFrame.UISourceCodeFrame))
+    if (!(sourceView instanceof Sources.UISourceCodeFrame))
       return;
     Persistence.persistence.subscribeForBindingEvent(uiLocation.uiSourceCode, this._bindingChangeBound);
     var sourceFrame = /** @type {!Sources.JavaScriptSourceFrame} */ (sourceView);
@@ -492,11 +488,11 @@ Sources.SourcesView = class extends UI.VBox {
    */
   _editorSelected(event) {
     var previousSourceFrame =
-        event.data.previousView instanceof SourceFrame.UISourceCodeFrame ? event.data.previousView : null;
+        event.data.previousView instanceof Sources.UISourceCodeFrame ? event.data.previousView : null;
     if (previousSourceFrame)
       previousSourceFrame.setSearchableView(null);
     var currentSourceFrame =
-        event.data.currentView instanceof SourceFrame.UISourceCodeFrame ? event.data.currentView : null;
+        event.data.currentView instanceof Sources.UISourceCodeFrame ? event.data.currentView : null;
     if (currentSourceFrame)
       currentSourceFrame.setSearchableView(this._searchableView);
 
@@ -657,9 +653,9 @@ Sources.SourcesView = class extends UI.VBox {
    * @param {?UI.Widget} sourceFrame
    */
   _saveSourceFrame(sourceFrame) {
-    if (!(sourceFrame instanceof SourceFrame.UISourceCodeFrame))
+    if (!(sourceFrame instanceof Sources.UISourceCodeFrame))
       return;
-    var uiSourceCodeFrame = /** @type {!SourceFrame.UISourceCodeFrame} */ (sourceFrame);
+    var uiSourceCodeFrame = /** @type {!Sources.UISourceCodeFrame} */ (sourceFrame);
     uiSourceCodeFrame.commitEditing();
   }
 

@@ -34,7 +34,7 @@
 Sources.EditingLocationHistoryManager = class {
   /**
    * @param {!Sources.SourcesView} sourcesView
-   * @param {function():?SourceFrame.UISourceCodeFrame} currentSourceFrameCallback
+   * @param {function():?Sources.UISourceCodeFrame} currentSourceFrameCallback
    */
   constructor(sourcesView, currentSourceFrameCallback) {
     this._sourcesView = sourcesView;
@@ -43,7 +43,7 @@ Sources.EditingLocationHistoryManager = class {
   }
 
   /**
-   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
+   * @param {!Sources.UISourceCodeFrame} sourceFrame
    */
   trackSourceFrameCursorJumps(sourceFrame) {
     sourceFrame.textEditor.addEventListener(
@@ -129,7 +129,7 @@ Sources.EditingLocationHistoryEntry = class {
   /**
    * @param {!Sources.SourcesView} sourcesView
    * @param {!Sources.EditingLocationHistoryManager} editingLocationManager
-   * @param {!SourceFrame.UISourceCodeFrame} sourceFrame
+   * @param {!Sources.UISourceCodeFrame} sourceFrame
    * @param {!TextUtils.TextRange} selection
    */
   constructor(sourcesView, editingLocationManager, sourceFrame, selection) {

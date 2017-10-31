@@ -186,7 +186,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var frame = UI.context.flavor(SourceFrame.UISourceCodeFrame);
+    var frame = UI.context.flavor(Sources.UISourceCodeFrame);
     if (!frame)
       return false;
     var text = frame.textEditor.text(frame.textEditor.selection());
@@ -204,7 +204,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    var frame = UI.context.flavor(SourceFrame.UISourceCodeFrame);
+    var frame = UI.context.flavor(Sources.UISourceCodeFrame);
     if (!frame || frame.textEditor.selection().isEmpty())
       return;
 

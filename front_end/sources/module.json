@@ -15,7 +15,7 @@
                 "Workspace.UILocation",
                 "SDK.RemoteObject",
                 "SDK.NetworkRequest",
-                "SourceFrame.UISourceCodeFrame"
+                "Sources.UISourceCodeFrame"
             ],
             "className": "Sources.SourcesPanel"
         },
@@ -185,7 +185,7 @@
             "className": "Sources.WatchExpressionsSidebarPane",
             "title": "Add selected text to watches",
             "contextTypes": [
-                "SourceFrame.UISourceCodeFrame"
+                "Sources.UISourceCodeFrame"
             ],
             "bindings": [
                 {
@@ -206,7 +206,7 @@
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Evaluate in console",
             "contextTypes": [
-                "SourceFrame.UISourceCodeFrame"
+                "Sources.UISourceCodeFrame"
             ],
             "bindings": [
                 {
@@ -648,8 +648,9 @@
         "GoToLineQuickOpen.js",
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
+        "UISourceCodeFrame.js",
         "JavaScriptSourceFrame.js",
-        "CSSSourceFrame.js",
+        "CSSPlugin.js",
         "NavigatorView.js",
         "RevisionHistoryView.js",
         "ScopeChainSidebarPane.js",

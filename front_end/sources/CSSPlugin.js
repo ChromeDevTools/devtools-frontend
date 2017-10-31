@@ -29,35 +29,55 @@
  */
 
 /**
+ * @implements {Sources.UISourceCodeFrame.Plugin}
  * @unrestricted
  */
-Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
+Sources.CSSPlugin = class {
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!SourceFrame.SourcesTextEditor} textEditor
    */
-  constructor(uiSourceCode) {
-    super(uiSourceCode);
-    this._registerShortcuts();
+  constructor(textEditor) {
+    this._textEditor = textEditor;
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._muteSwatchProcessing = false;
-    this.configureAutocomplete(
+    this._textEditor.configureAutocomplete(
         {suggestionsCallback: this._cssSuggestions.bind(this), isWordChar: this._isWordChar.bind(this)});
-    this.textEditor.addEventListener(SourceFrame.SourcesTextEditor.Events.ScrollChanged, () => {
-      if (this._swatchPopoverHelper.isShowing())
-        this._swatchPopoverHelper.hide(true);
-    });
+    this._textEditor.addEventListener(
+        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
+    this._textEditor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
+    this._updateSwatches(0, this._textEditor.linesCount - 1);
+
+    this._shortcuts = {};
+    this._registerShortcuts();
+    this._boundHandleKeyDown = this._handleKeyDown.bind(this);
+    this._textEditor.element.addEventListener('keydown', this._boundHandleKeyDown, false);
   }
 
   _registerShortcuts() {
     var shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
-    for (var i = 0; i < shortcutKeys.IncreaseCSSUnitByOne.length; ++i)
-      this.addShortcut(shortcutKeys.IncreaseCSSUnitByOne[i].key, this._handleUnitModification.bind(this, 1));
-    for (var i = 0; i < shortcutKeys.DecreaseCSSUnitByOne.length; ++i)
-      this.addShortcut(shortcutKeys.DecreaseCSSUnitByOne[i].key, this._handleUnitModification.bind(this, -1));
-    for (var i = 0; i < shortcutKeys.IncreaseCSSUnitByTen.length; ++i)
-      this.addShortcut(shortcutKeys.IncreaseCSSUnitByTen[i].key, this._handleUnitModification.bind(this, 10));
-    for (var i = 0; i < shortcutKeys.DecreaseCSSUnitByTen.length; ++i)
-      this.addShortcut(shortcutKeys.DecreaseCSSUnitByTen[i].key, this._handleUnitModification.bind(this, -10));
+    for (var descriptor of shortcutKeys.IncreaseCSSUnitByOne)
+      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 1);
+    for (var descriptor of shortcutKeys.DecreaseCSSUnitByOne)
+      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -1);
+    for (var descriptor of shortcutKeys.IncreaseCSSUnitByTen)
+      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 10);
+    for (var descriptor of shortcutKeys.DecreaseCSSUnitByTen)
+      this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -10);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handleKeyDown(event) {
+    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
+    var handler = this._shortcuts[shortcutKey];
+    if (handler && handler())
+      event.consume(true);
+  }
+
+  _textEditorScrolled() {
+    if (this._swatchPopoverHelper.isShowing())
+      this._swatchPopoverHelper.hide(true);
   }
 
   /**
@@ -78,11 +98,11 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @return {boolean}
    */
   _handleUnitModification(change) {
-    var selection = this.textEditor.selection().normalize();
-    var token = this.textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
+    var selection = this._textEditor.selection().normalize();
+    var token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
     if (!token) {
       if (selection.startColumn > 0)
-        token = this.textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn - 1);
+        token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn - 1);
       if (!token)
         return false;
     }
@@ -91,14 +111,14 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
 
     var cssUnitRange =
         new TextUtils.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
-    var cssUnitText = this.textEditor.text(cssUnitRange);
+    var cssUnitText = this._textEditor.text(cssUnitRange);
     var newUnitText = this._modifyUnit(cssUnitText, change);
     if (!newUnitText)
       return false;
-    this.textEditor.editRange(cssUnitRange, newUnitText);
+    this._textEditor.editRange(cssUnitRange, newUnitText);
     selection.startColumn = token.startColumn;
     selection.endColumn = selection.startColumn + newUnitText.length;
-    this.textEditor.setSelection(selection);
+    this._textEditor.setSelection(selection);
     return true;
   }
 
@@ -117,7 +137,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     handlers.set(UI.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
 
     for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-      var line = this.textEditor.line(lineNumber).substring(0, Sources.CSSSourceFrame.maxSwatchProcessingLength);
+      var line = this._textEditor.line(lineNumber).substring(0, Sources.CSSPlugin.maxSwatchProcessingLength);
       var results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
       for (var i = 0; i < results.length; i++) {
         var result = results[i];
@@ -136,21 +156,21 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
         swatchPositions.push(TextUtils.TextRange.createFromLocation(lineNumber, result.position));
       }
     }
-    this.textEditor.operation(putSwatchesInline.bind(this));
+    this._textEditor.operation(putSwatchesInline.bind(this));
 
     /**
-     * @this {Sources.CSSSourceFrame}
+     * @this {Sources.CSSPlugin}
      */
     function putSwatchesInline() {
-      var clearRange = new TextUtils.TextRange(startLine, 0, endLine, this.textEditor.line(endLine).length);
-      this.textEditor.bookmarks(clearRange, Sources.CSSSourceFrame.SwatchBookmark).forEach(marker => marker.clear());
+      var clearRange = new TextUtils.TextRange(startLine, 0, endLine, this._textEditor.line(endLine).length);
+      this._textEditor.bookmarks(clearRange, Sources.CSSPlugin.SwatchBookmark).forEach(marker => marker.clear());
 
       for (var i = 0; i < swatches.length; i++) {
         var swatch = swatches[i];
         var swatchPosition = swatchPositions[i];
-        var bookmark = this.textEditor.addBookmark(
-            swatchPosition.startLine, swatchPosition.startColumn, swatch, Sources.CSSSourceFrame.SwatchBookmark);
-        swatch[Sources.CSSSourceFrame.SwatchBookmark] = bookmark;
+        var bookmark = this._textEditor.addBookmark(
+            swatchPosition.startLine, swatchPosition.startColumn, swatch, Sources.CSSPlugin.SwatchBookmark);
+        swatch[Sources.CSSPlugin.SwatchBookmark] = bookmark;
       }
     }
   }
@@ -194,8 +214,8 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     event.consume(true);
     this._hadSwatchChange = false;
     this._muteSwatchProcessing = true;
-    var swatchPosition = swatch[Sources.CSSSourceFrame.SwatchBookmark].position();
-    this.textEditor.setSelection(swatchPosition);
+    var swatchPosition = swatch[Sources.CSSPlugin.SwatchBookmark].position();
+    this._textEditor.setSelection(swatchPosition);
     this._editedSwatchTextRange = swatchPosition.clone();
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
     this._currentSwatch = swatch;
@@ -269,7 +289,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    */
   _changeSwatchText(text) {
     this._hadSwatchChange = true;
-    this.textEditor.editRange(this._editedSwatchTextRange, text, '*swatch-text-changed');
+    this._textEditor.editRange(this._editedSwatchTextRange, text, '*swatch-text-changed');
     this._editedSwatchTextRange.endColumn = this._editedSwatchTextRange.startColumn + text.length;
   }
 
@@ -279,27 +299,15 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   _swatchPopoverHidden(commitEdit) {
     this._muteSwatchProcessing = false;
     if (!commitEdit && this._hadSwatchChange)
-      this.textEditor.undo();
+      this._textEditor.undo();
   }
 
   /**
-   * @override
+   * @param {!Common.Event} event
    */
-  onTextEditorContentSet() {
-    super.onTextEditorContentSet();
+  _onTextChanged(event) {
     if (!this._muteSwatchProcessing)
-      this._updateSwatches(0, this.textEditor.linesCount - 1);
-  }
-
-  /**
-   * @override
-   * @param {!TextUtils.TextRange} oldRange
-   * @param {!TextUtils.TextRange} newRange
-   */
-  onTextChanged(oldRange, newRange) {
-    super.onTextChanged(oldRange, newRange);
-    if (!this._muteSwatchProcessing)
-      this._updateSwatches(newRange.startLine, newRange.endLine);
+      this._updateSwatches(event.data.newRange.startLine, event.data.newRange.endLine);
   }
 
   /**
@@ -316,7 +324,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
    * @return {?Promise.<!UI.SuggestBox.Suggestions>}
    */
   _cssSuggestions(prefixRange, substituteRange) {
-    var prefix = this.textEditor.text(prefixRange);
+    var prefix = this._textEditor.text(prefixRange);
     if (prefix.startsWith('$'))
       return null;
 
@@ -324,7 +332,7 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     if (!propertyToken)
       return null;
 
-    var line = this.textEditor.line(prefixRange.startLine);
+    var line = this._textEditor.line(prefixRange.startLine);
     var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
     var propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
     return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({text: value})));
@@ -338,11 +346,11 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
   _backtrackPropertyToken(lineNumber, columnNumber) {
     var backtrackDepth = 10;
     var tokenPosition = columnNumber;
-    var line = this.textEditor.line(lineNumber);
+    var line = this._textEditor.line(lineNumber);
     var seenColon = false;
 
     for (var i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
-      var token = this.textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
+      var token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
       if (!token)
         return null;
       if (token.type === 'css-property')
@@ -360,9 +368,23 @@ Sources.CSSSourceFrame = class extends SourceFrame.UISourceCodeFrame {
     }
     return null;
   }
+
+  /**
+   * @override
+   */
+  dispose() {
+    if (this._swatchPopoverHelper.isShowing())
+      this._swatchPopoverHelper.hide(true);
+    this._textEditor.removeEventListener(
+        SourceFrame.SourcesTextEditor.Events.ScrollChanged, this._textEditorScrolled, this);
+    this._textEditor.removeEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
+    this._textEditor.bookmarks(this._textEditor.fullRange(), Sources.CSSPlugin.SwatchBookmark)
+        .forEach(marker => marker.clear());
+    this._textEditor.element.removeEventListener('keydown', this._boundHandleKeyDown, false);
+  }
 };
 
 /** @type {number} */
-Sources.CSSSourceFrame.maxSwatchProcessingLength = 300;
+Sources.CSSPlugin.maxSwatchProcessingLength = 300;
 /** @type {symbol} */
-Sources.CSSSourceFrame.SwatchBookmark = Symbol('swatch');
+Sources.CSSPlugin.SwatchBookmark = Symbol('swatch');

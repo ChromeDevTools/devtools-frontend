@@ -2,6 +2,7 @@
     line-height: 1.2em !important;
     background-color: transparent !important;
     color: #222;
+    height: 300px;
 }
 
 .CodeMirror-linewidget {
@@ -90,17 +91,18 @@
     display: none;
 }
 
-.CodeMirror .CodeMirror-gutters {
+.CodeMirror-gutters {
     border-right: 1px solid rgb(187, 187, 187);
     background-color: #eee;
-}
-
-.CodeMirror .CodeMirror-linenumber {
-    color: rgb(128, 128, 128);
+    white-space: nowrap;
 }
 
 .CodeMirror-linenumber {
-    min-width: 22px !important;
+    color: rgb(128, 128, 128);
+    padding: 0 3px 0 5px;
+    min-width: 22px;
+    text-align: right;
+    white-space: nowrap;
 }
 
 .cm-highlight {
@@ -222,13 +224,11 @@
 div.CodeMirror span.CodeMirror-matchingbracket {
     background-color: rgba(0, 0, 0, 0.07);
     border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-    color: unset;
 }
 
 div.CodeMirror span.CodeMirror-nonmatchingbracket {
     background-color: rgba(255, 0, 0, 0.07);
     border-bottom: 1px solid rgba(255, 0, 0, 0.5);
-    color: unset;
 }
 
 .-theme-with-dark-background div.CodeMirror span.CodeMirror-matchingbracket {
@@ -248,6 +248,8 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .cm-tab {
+    display: inline-block;
+    text-decoration: inherit;
     position: relative;
 }
 
@@ -463,10 +465,6 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     transform: translateZ(0);
 }
 
-.CodeMirror .CodeMirror-activeline-background {
-    background-color: transparent;
-}
-
 .cm-trailing-whitespace {
     background-color: rgba(255, 0, 0, 0.05);
 }
@@ -487,4 +485,31 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 .CodeMirror textarea {
     resize: none;
     overflow: hidden;
+}
+
+.CodeMirror-lines {
+    padding: 4px 0; /* Vertical padding around content */
+}
+
+.CodeMirror pre {
+    padding: 0 4px; /* Horizontal padding of content */
+}
+
+.CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+    background-color: white; /* The little square between H and V scrollbars */
+}
+
+.CodeMirror-cursor {
+    border-left: 1px solid black;
+    border-right: none;
+    width: 0;
+}
+
+/* Shown when moving in bi-directional text */
+.CodeMirror div.CodeMirror-secondarycursor {
+    border-left: 1px solid silver;
+}
+
+.CodeMirror-composing {
+    border-bottom: 2px solid;
 }

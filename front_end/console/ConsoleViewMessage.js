@@ -595,10 +595,15 @@ Console.ConsoleViewMessage = class {
     note.classList.add('info-note');
     note.title = Common.UIString('Value below was evaluated just now.');
 
-    var section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
+    var section = new ObjectUI.ObjectPropertiesSection(
+        obj, titleElement, this._linkifier, undefined, undefined, undefined, this._onObjectChange.bind(this));
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
     return section.element;
+  }
+
+  _onObjectChange() {
+    // This method is sniffed in tests.
   }
 
   /**

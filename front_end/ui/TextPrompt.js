@@ -210,6 +210,7 @@ UI.TextPrompt = class extends Common.Object {
       this._element.setAttribute('contenteditable', 'plaintext-only');
     else
       this._element.removeAttribute('contenteditable');
+    this._element.classList.toggle('disabled', !enabled);
   }
 
   _removeFromElement() {

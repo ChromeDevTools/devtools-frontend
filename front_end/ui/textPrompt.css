@@ -46,6 +46,15 @@
     display: block;
 }
 
+::content .text-prompt {
+    cursor: text;
+}
+
+::content .text-prompt.disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
 .text-prompt-editing ::content br {
     display: none;
 }

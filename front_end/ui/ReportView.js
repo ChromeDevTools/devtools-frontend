@@ -6,7 +6,7 @@
  */
 UI.ReportView = class extends UI.VBox {
   /**
-   * @param {string} title
+   * @param {string=} title
    */
   constructor(title) {
     super(true);
@@ -84,6 +84,13 @@ UI.ReportView = class extends UI.VBox {
     sections.sort(comparator);
     for (var section of sections)
       section.show(this._sectionList);
+  }
+
+  /**
+   * @param {boolean} visible
+   */
+  setHeaderVisible(visible) {
+    this._headerElement.classList.toggle('hidden', !visible);
   }
 };
 

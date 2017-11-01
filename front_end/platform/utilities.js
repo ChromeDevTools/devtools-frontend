@@ -126,6 +126,24 @@ String.prototype.escapeForRegExp = function() {
 };
 
 /**
+ * @param {string} query
+ * @return {!RegExp}
+ */
+String.filterRegex = function(query) {
+  const toEscape = String.regexSpecialCharacters();
+  var regexString = '';
+  for (var i = 0; i < query.length; ++i) {
+    var c = query.charAt(i);
+    if (toEscape.indexOf(c) !== -1)
+      c = '\\' + c;
+    if (i)
+      regexString += '[^\\0' + c + ']*';
+    regexString += c;
+  }
+  return new RegExp(regexString, 'i');
+};
+
+/**
  * @return {string}
  */
 String.prototype.escapeHTML = function() {

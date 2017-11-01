@@ -7,11 +7,14 @@
 Resources.ServiceWorkersView = class extends UI.VBox {
   constructor() {
     super(true);
+    this.registerRequiredCSS('resources/serviceWorkersView.css');
 
-    this._reportView = new UI.ReportView(Common.UIString('Service Workers'));
-    this._reportView.show(this.contentElement);
+    this._currentWorkersView = new UI.ReportView(Common.UIString('Service Workers'));
+    this.contentElement.classList.add('service-worker-list');
+    this._currentWorkersView.show(this.contentElement);
+    this._currentWorkersView.element.classList.add('service-workers-this-origin');
 
-    this._toolbar = this._reportView.createToolbar();
+    this._toolbar = this._currentWorkersView.createToolbar();
     this._toolbar.makeWrappable(false, true);
 
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
@@ -21,6 +24,29 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._manager = null;
     /** @type {?SDK.SecurityOriginManager} */
     this._securityOriginManager = null;
+
+    this._filterThrottler = new Common.Throttler(300);
+
+    this._otherWorkers = this.contentElement.createChild('div', 'service-workers-other-origin');
+    var filterElement = this._otherWorkers.createChild('div', 'service-worker-filter');
+    this._checkboxElement = filterElement.createChild('input', 'service-worker-filter-show-all-checkbox');
+    this._checkboxElement.type = 'checkbox';
+    this._checkboxElement.setAttribute('id', 'expand-all');
+    this._textElement = filterElement.createChild('label', 'service-worker-filter-label');
+    this._textElement.textContent = Common.UIString('Service workers from other domains');
+    this._textElement.setAttribute('for', 'expand-all');
+    this._checkboxElement.addEventListener('change', () => this._filterChanged());
+
+    var toolbar = new UI.Toolbar('service-worker-filter-toolbar', filterElement);
+    this._filter = new UI.ToolbarInput('Filter', 1);
+    this._filter.addEventListener(UI.ToolbarInput.Event.TextChanged, () => this._filterChanged());
+    toolbar.appendToolbarItem(this._filter);
+
+    this._otherWorkersView = new UI.ReportView();
+    this._otherWorkersView.show(this._otherWorkers);
+    this._otherWorkersView.element.classList.add('service-workers-for-other-origins');
+
+    this._updateCollapsedStyle();
 
     this._toolbar.appendToolbarItem(MobileThrottling.throttlingManager().createOfflineToolbarCheckbox());
     var updateOnReloadSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
@@ -33,11 +59,6 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     var fallbackToNetwork = new UI.ToolbarSettingCheckbox(
         bypassServiceWorkerSetting, Common.UIString('Bypass Service Worker and load resources from the network'));
     this._toolbar.appendToolbarItem(fallbackToNetwork);
-    this._showAllCheckbox = new UI.ToolbarCheckbox(
-        Common.UIString('Show all'), Common.UIString('Show all Service Workers regardless of the origin'));
-    this._showAllCheckbox.setRightAligned(true);
-    this._showAllCheckbox.inputElement.addEventListener('change', this._updateSectionVisibility.bind(this), false);
-    this._toolbar.appendToolbarItem(this._showAllCheckbox);
 
     /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
@@ -84,27 +105,37 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   }
 
   _updateSectionVisibility() {
-    var securityOrigins = new Set(this._securityOriginManager.securityOrigins());
-    var matchingSections = new Set();
+    var hasOthers = false;
+    var hasThis = false;
+    var movedSections = [];
     for (var section of this._sections.values()) {
-      if (securityOrigins.has(section._registration.securityOrigin))
-        matchingSections.add(section._section);
+      var expectedView = this._getReportViewForOrigin(section._registration.securityOrigin);
+      hasOthers |= expectedView === this._otherWorkersView;
+      hasThis |= expectedView === this._currentWorkersView;
+      if (section._section.parentWidget() !== expectedView)
+        movedSections.push(section);
     }
 
-    this._reportView.sortSections((a, b) => {
-      var aMatching = matchingSections.has(a);
-      var bMatching = matchingSections.has(b);
-      if (aMatching === bMatching)
-        return a.title().localeCompare(b.title());
-      return aMatching ? -1 : 1;
-    });
+    for (var section of movedSections) {
+      var registration = section._registration;
+      this._removeRegistrationFromList(registration);
+      this._updateRegistration(registration, true);
+    }
 
+    var scorer = new Sources.FilePathScoreFunction(this._filter.value());
+    this._otherWorkersView.sortSections((a, b) => {
+      var cmp = scorer.score(b.title(), null) - scorer.score(a.title(), null);
+      return cmp === 0 ? a.title().localeCompare(b.title()) : cmp;
+    });
     for (var section of this._sections.values()) {
-      if (this._showAllCheckbox.checked() || securityOrigins.has(section._registration.securityOrigin))
+      if (section._section.parentWidget() === this._currentWorkersView ||
+          this._isRegistrationVisible(section._registration))
         section._section.showWidget();
       else
         section._section.hideWidget();
     }
+    this.contentElement.classList.toggle('service-worker-has-current', hasThis);
+    this._otherWorkers.classList.toggle('hidden', !hasOthers);
   }
 
   /**
@@ -120,8 +151,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     var hasNonDeletedRegistrations = false;
     var securityOrigins = new Set(this._securityOriginManager.securityOrigins());
     for (var registration of this._manager.registrations().values()) {
-      var visible = this._showAllCheckbox.checked() || securityOrigins.has(registration.securityOrigin);
-      if (!visible)
+      if (!securityOrigins.has(registration.securityOrigin) && !this._isRegistrationVisible(registration))
         continue;
       if (!registration.canBeRemoved()) {
         hasNonDeletedRegistrations = true;
@@ -133,24 +163,38 @@ Resources.ServiceWorkersView = class extends UI.VBox {
       return;
 
     for (var registration of this._manager.registrations().values()) {
-      var visible = this._showAllCheckbox.checked() || securityOrigins.has(registration.securityOrigin);
-      if (visible && registration.canBeRemoved())
+      var visible = securityOrigins.has(registration.securityOrigin) || this._isRegistrationVisible(registration);
+      if (!visible && registration.canBeRemoved())
         this._removeRegistrationFromList(registration);
     }
   }
 
   /**
-   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {string} origin
+   * @return {!UI.ReportView}
    */
-  _updateRegistration(registration) {
+  _getReportViewForOrigin(origin) {
+    if (this._securityOriginManager.securityOrigins().includes(origin))
+      return this._currentWorkersView;
+    else
+      return this._otherWorkersView;
+  }
+
+  /**
+   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @param {boolean=} skipUpdate
+   */
+  _updateRegistration(registration, skipUpdate) {
     var section = this._sections.get(registration);
     if (!section) {
+      var title = Resources.ServiceWorkersView._displayScopeURL(registration.scopeURL);
       section = new Resources.ServiceWorkersView.Section(
           /** @type {!SDK.ServiceWorkerManager} */ (this._manager),
-          this._reportView.appendSection(Resources.ServiceWorkersView._displayScopeURL(registration.scopeURL)),
-          registration);
+          this._getReportViewForOrigin(registration.securityOrigin).appendSection(title), registration);
       this._sections.set(registration, section);
     }
+    if (skipUpdate)
+      return;
     this._updateSectionVisibility();
     section._scheduleUpdate();
   }
@@ -171,6 +215,35 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     if (section)
       section._section.detach();
     this._sections.delete(registration);
+    this._updateSectionVisibility();
+  }
+
+  /**
+   * @param {!SDK.ServiceWorkerRegistration} registration
+   * @return {boolean}
+   */
+  _isRegistrationVisible(registration) {
+    var filterString = this._filter.value();
+    if (!filterString || !registration.scopeURL)
+      return true;
+
+    var regex = String.filterRegex(filterString);
+    return registration.scopeURL.match(regex);
+  }
+
+  _filterChanged() {
+    this._updateCollapsedStyle();
+    this._filterThrottler.schedule(() => Promise.resolve(this._updateSectionVisibility()));
+  }
+
+  _updateCollapsedStyle() {
+    var collapsed = !this._checkboxElement.checked;
+    this._otherWorkers.classList.toggle('service-worker-filter-collapsed', collapsed);
+    if (collapsed)
+      this._otherWorkersView.hideWidget();
+    else
+      this._otherWorkersView.showWidget();
+    this._otherWorkersView.setHeaderVisible(false);
   }
 
   /**

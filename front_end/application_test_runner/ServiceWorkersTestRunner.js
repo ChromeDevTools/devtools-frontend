@@ -43,7 +43,8 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
 ApplicationTestRunner.dumpServiceWorkersView = function() {
   var swView = UI.panels.resources.visibleView;
 
-  return swView._reportView._sectionList.childTextNodes()
+  return swView._currentWorkersView._sectionList.childTextNodes()
+      .concat(swView._otherWorkersView._sectionList.childTextNodes())
       .map(function(node) {
         return node.textContent.replace(/Received.*/, 'Received').replace(/#\d+/, '#N');
       })

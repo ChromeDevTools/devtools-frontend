@@ -25,7 +25,8 @@
         "object_ui",
         "perf_ui",
         "mobile_throttling",
-        "network"
+        "network",
+        "sources"
     ],
     "scripts": [
         "ApplicationCacheModel.js",

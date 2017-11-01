@@ -54,24 +54,6 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   }
 
   /**
-   * @param {string} query
-   * @return {!RegExp}
-   */
-  static filterRegex(query) {
-    const toEscape = String.regexSpecialCharacters();
-    var regexString = '';
-    for (var i = 0; i < query.length; ++i) {
-      var c = query.charAt(i);
-      if (toEscape.indexOf(c) !== -1)
-        c = '\\' + c;
-      if (i)
-        regexString += '[^\\0' + c + ']*';
-      regexString += c;
-    }
-    return new RegExp(regexString, 'i');
-  }
-
-  /**
    * @param {!Element} element
    * @param {string} query
    * @param {boolean=} caseInsensitive
@@ -346,7 +328,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     var query = this._provider.rewriteQuery(this._cleanValue());
     this._query = query;
 
-    var filterRegex = query ? QuickOpen.FilteredListWidget.filterRegex(query) : null;
+    var filterRegex = query ? String.filterRegex(query) : null;
 
     var filteredItems = [];
 

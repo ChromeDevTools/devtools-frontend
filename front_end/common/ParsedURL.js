@@ -158,7 +158,9 @@ Common.ParsedURL = class {
    */
   static extractName(url) {
     var index = url.lastIndexOf('/');
-    return index !== -1 ? url.substr(index + 1) : url;
+    var pathAndQuery = index !== -1 ? url.substr(index + 1) : url;
+    index = pathAndQuery.indexOf('?');
+    return index < 0 ? pathAndQuery : pathAndQuery.substr(0, index);
   }
 
   /**

@@ -114,13 +114,13 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
     this.element.classList.add('indexed-db-data-view');
 
-    this._createEditorToolbar();
-
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear object store'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearButtonClicked, this);
+
+    this._createEditorToolbar();
 
     this._pageSize = 50;
     this._skipCount = 0;
@@ -196,6 +196,11 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
   _createEditorToolbar() {
     var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
+
+    editorToolbar.appendToolbarItem(this._refreshButton);
+    editorToolbar.appendToolbarItem(this._clearButton);
+
+    editorToolbar.appendToolbarItem(new UI.ToolbarSeparator());
 
     this._pageBackButton = new UI.ToolbarButton(Common.UIString('Show previous page'), 'largeicon-play-back');
     this._pageBackButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageBackButtonClicked, this);
@@ -341,14 +346,6 @@ Resources.IDBDataView = class extends UI.SimpleView {
     await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
     this._clearButton.setEnabled(true);
     this._updateData(true);
-  }
-
-  /**
-   * @override
-   * @return {!Array.<!UI.ToolbarItem>}
-   */
-  syncToolbarItems() {
-    return [this._refreshButton, this._clearButton];
   }
 
   clear() {

@@ -895,7 +895,7 @@ SDK.PageDispatcher = class {
    * @override
    * @param {string} url
    * @param {string} windowName
-   * @param {string} windowFeatures
+   * @param {!Array<string>} windowFeatures
    * @param {boolean} userGesture
    */
   windowOpen(url, windowName, windowFeatures, userGesture) {

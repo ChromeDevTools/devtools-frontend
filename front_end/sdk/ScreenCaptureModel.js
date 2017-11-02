@@ -104,10 +104,11 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   /**
    * @override
    * @param {!Protocol.Page.FrameId} frameId
+   * @param {!Protocol.Network.LoaderId} loaderId
    * @param {string} name
    * @param {number} time
    */
-  lifecycleEvent(frameId, name, time) {
+  lifecycleEvent(frameId, loaderId, name, time) {
   }
 
   /**

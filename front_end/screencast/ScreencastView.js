@@ -353,8 +353,8 @@ Screencast.ScreencastView = class extends UI.VBox {
      */
     function scaleQuad(quad) {
       for (var i = 0; i < quad.length; i += 2) {
-        quad[i] = quad[i] * this._screenZoom;
-        quad[i + 1] = (quad[i + 1] + this._screenOffsetTop) * this._screenZoom;
+        quad[i] = quad[i] * this._pageScaleFactor * this._screenZoom;
+        quad[i + 1] = (quad[i + 1] * this._pageScaleFactor + this._screenOffsetTop) * this._screenZoom;
       }
     }
 

@@ -493,28 +493,19 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     var styleSheetHeader = await cssModel.requestViaInspectorStylesheet(/** @type {!SDK.DOMNode} */ (node));
 
     this._userOperation = false;
-    this._createNewRuleInStyleSheet(styleSheetHeader);
+    await this._createNewRuleInStyleSheet(styleSheetHeader);
   }
 
   /**
    * @param {?SDK.CSSStyleSheetHeader} styleSheetHeader
    */
-  _createNewRuleInStyleSheet(styleSheetHeader) {
+  async _createNewRuleInStyleSheet(styleSheetHeader) {
     if (!styleSheetHeader)
       return;
-    styleSheetHeader.requestContent().then(onStyleSheetContent.bind(this, styleSheetHeader.id));
-
-    /**
-     * @param {string} styleSheetId
-     * @param {?string} text
-     * @this {Elements.StylesSidebarPane}
-     */
-    function onStyleSheetContent(styleSheetId, text) {
-      text = text || '';
-      var lines = text.split('\n');
-      var range = TextUtils.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
-      this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetId, range);
-    }
+    var text = await styleSheetHeader.requestContent() || '';
+    var lines = text.split('\n');
+    var range = TextUtils.TextRange.createFromLocation(lines.length - 1, lines[lines.length - 1].length);
+    this._addBlankSection(this._sectionBlocks[0].sections[0], styleSheetHeader.id, range);
   }
 
   /**
@@ -1866,11 +1857,11 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
         this.propertiesTreeOutline.element.classList.add('no-affect');
 
       this._updateRuleOrigin();
-      if (this.element.parentElement)  // Might have been detached already.
-        this._moveEditorFromSelector(moveDirection);
 
       this._parentPane._userOperation = false;
       this._editingSelectorEnded();
+      if (this.element.parentElement)  // Might have been detached already.
+        this._moveEditorFromSelector(moveDirection);
       this._markSelectorMatches();
 
       this._editingSelectorCommittedForTest();

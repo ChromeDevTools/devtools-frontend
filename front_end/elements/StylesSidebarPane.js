@@ -48,6 +48,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._toolbarPaneElement = this._createStylesSidebarToolbar();
 
     this._sectionsContainer = this.contentElement.createChild('div');
+    UI.ARIAUtils.markAsTree(this._sectionsContainer);
     this._sectionsContainer.addEventListener('keydown', this._sectionsContainerKeyDown.bind(this), false);
     this._sectionsContainer.addEventListener('focusin', this._sectionsContainerFocusChanged.bind(this), false);
     this._sectionsContainer.addEventListener('focusout', this._sectionsContainerFocusChanged.bind(this), false);
@@ -751,6 +752,7 @@ Elements.StylePropertiesSection = class {
     var rule = style.parentRule;
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
     this.element.tabIndex = -1;
+    UI.ARIAUtils.markAsTreeitem(this.element);
     this._editing = false;
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this.element._section = this;
@@ -966,6 +968,7 @@ Elements.StylePropertiesSection = class {
     setItemsVisibility.call(this, items, false);
     sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(this, items, true));
     sectionToolbar.element.addEventListener('mouseleave', setItemsVisibility.bind(this, items, false));
+    UI.ARIAUtils.markAsHidden(sectionToolbar.element);
 
     /**
      * @param {!Array<!UI.ToolbarButton>} items

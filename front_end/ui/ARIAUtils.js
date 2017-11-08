@@ -49,6 +49,20 @@ UI.ARIAUtils.markAsTreeitem = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsTextBox = function(element) {
+  element.setAttribute('role', 'textbox');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsHidden = function(element) {
+  element.setAttribute('aria-hidden', 'true');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsPresentation = function(element) {
   element.setAttribute('role', 'presentation');
 };

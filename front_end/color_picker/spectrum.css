@@ -491,6 +491,10 @@
     visibility: hidden;
 }
 
+.palette-panel-showing > .controls-container {
+    visibility: hidden;
+}
+
 .palette-panel-showing > .palette-panel {
     transform: translateY(calc(-100% + 117px));
     transition-delay: 0s;

@@ -58,7 +58,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         text = hideDescription ? '' : description;
       }
       if (text.length > 0)
-        parentElement.createChild('span', 'object-description').textContent = text + ' ';
+        parentElement.createChild('span', 'object-description').textContent = text + '\u00a0';
     }
 
     var propertiesElement = parentElement.createChild('span', 'object-properties-preview source-code');

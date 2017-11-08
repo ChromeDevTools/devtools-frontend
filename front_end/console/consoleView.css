@@ -326,6 +326,7 @@
 
 .console-message-text .object-value-string {
     white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .console-message-formatted-table {

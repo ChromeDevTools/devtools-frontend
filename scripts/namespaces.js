@@ -103,7 +103,7 @@ function walkSync(currentDirPath, process, json) {
       if (filePath.includes('externs.js'))
         return;
       if (filePath.includes('eslint') || filePath.includes('lighthouse-background.js') || filePath.includes('/cm/') ||
-          filePath.includes('/xterm.js/') || filePath.includes('/acorn/') || filePath.includes('/gonzales-scss'))
+          filePath.includes('/xterm.js/') || filePath.includes('/acorn/'))
         return;
       if (filePath.includes('/cm_modes/') && !filePath.includes('DefaultCodeMirror') &&
           !filePath.includes('module.json'))

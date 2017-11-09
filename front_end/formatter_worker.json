@@ -3,8 +3,7 @@
         { "name": "platform", "type": "autostart" },
         { "name": "text_utils", "type": "autostart" },
         { "name": "cm_headless", "type": "autostart" },
-        { "name": "formatter_worker", "type": "autostart" },
-        { "name": "gonzales", "type": "remote" }
+        { "name": "formatter_worker", "type": "autostart" }
     ],
 
     "has_html": false

@@ -8,7 +8,6 @@ front_end/cm_modes/*
 front_end/cm_web_modes/*
 front_end/diff/diff_match_patch.js
 front_end/formatter_worker/acorn/*
-front_end/gonzales/gonzales-scss.js
 front_end/terminal/xterm.js/**
 front_end/protocol_externs.js
 scripts/*

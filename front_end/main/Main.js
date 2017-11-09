@@ -119,7 +119,6 @@ Main.Main = class {
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('logManagement', 'Log management', true);
-    Runtime.experiments.register('liveSASS', 'Live SASS');
     Runtime.experiments.register('networkGroupingRequests', 'Network request groups support', true);
     Runtime.experiments.register('networkPersistence', 'Override requests with workspace project');
     Runtime.experiments.register('objectPreviews', 'Object previews', true);
@@ -153,8 +152,6 @@ Main.Main = class {
         Runtime.experiments.enableForTest('changesDrawer');
       if (testPath.indexOf('console-sidebar/') !== -1)
         Runtime.experiments.enableForTest('logManagement');
-      if (testPath.indexOf('sass/') !== -1)
-        Runtime.experiments.enableForTest('liveSASS');
     }
 
     Runtime.experiments.setDefaultExperiments([

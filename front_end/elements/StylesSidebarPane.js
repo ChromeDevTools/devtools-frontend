@@ -286,11 +286,10 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     if (!node)
       return;
 
-    var fullRefresh = Runtime.experiments.isEnabled('liveSASS');
     for (var section of this.allSections()) {
       if (section.isBlank)
         continue;
-      section.update(fullRefresh || section === editedSection);
+      section.update(section === editedSection);
     }
 
     if (this._filterRegex)

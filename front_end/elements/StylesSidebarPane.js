@@ -214,6 +214,14 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
         sectionToFocus.element.focus();
         event.consume(true);
         break;
+      case 'Home':
+        section.firstSibling().element.focus();
+        event.consume(true);
+        break;
+      case 'End':
+        section.lastSibling().element.focus();
+        event.consume(true);
+        break;
     }
   }
 

@@ -79,6 +79,16 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
+   * @return {?UI.TreeElement}
+   */
+  _lastDescendent() {
+    var last = this._rootElement.lastChild();
+    while (last.expanded && last.childCount())
+      last = last.lastChild();
+    return last;
+  }
+
+  /**
    * @param {!UI.TreeElement} child
    */
   appendChild(child) {
@@ -208,6 +218,32 @@ UI.TreeOutline = class extends Common.Object {
   }
 
   /**
+   * @return {boolean}
+   */
+  _selectFirst() {
+    var first = this.firstChild();
+    while (first && !first.selectable)
+      first = first.traverseNextTreeElement(true);
+    if (!first)
+      return false;
+    first.select(false, true);
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _selectLast() {
+    var last = this._lastDescendent();
+    while (last && !last.selectable)
+      last = last.traversePreviousTreeElement(true);
+    if (!last)
+      return false;
+    last.select(false, true);
+    return true;
+  }
+
+  /**
    * @param {number} paddingSize
    */
   setPaddingSize(paddingSize) {
@@ -242,6 +278,10 @@ UI.TreeOutline = class extends Common.Object {
       handled = this.selectedTreeElement.onenter();
     } else if (event.keyCode === UI.KeyboardShortcut.Keys.Space.code) {
       handled = this.selectedTreeElement.onspace();
+    } else if (event.key === 'Home') {
+      handled = this._selectFirst();
+    } else if (event.key === 'End') {
+      handled = this._selectLast();
     }
 
     if (handled)

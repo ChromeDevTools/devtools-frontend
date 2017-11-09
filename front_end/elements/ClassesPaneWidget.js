@@ -14,7 +14,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     this.setDefaultFocusedElement(this._input);
     this._classesContainer = this.contentElement.createChild('div', 'source-code');
     this._classesContainer.classList.add('styles-element-classes-container');
-    this._prompt = new Elements.ClassesPaneWidget.ClassNamePrompt();
+    this._prompt = new Elements.ClassesPaneWidget.ClassNamePrompt(this._nodeClasses.bind(this));
     this._prompt.setAutocompletionTimeout(0);
     this._prompt.renderAsBlock();
 
@@ -262,8 +262,12 @@ Elements.ClassesPaneWidget.ButtonProvider = class {
  * @unrestricted
  */
 Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
-  constructor() {
+  /**
+   * @param {function(!SDK.DOMNode):!Map<string, boolean>} nodeClasses
+   */
+  constructor(nodeClasses) {
     super();
+    this._nodeClasses = nodeClasses;
     this.initialize(this._buildClassNameCompletions.bind(this), ' ');
     this.disableDefaultSuggestionForEmptyInput();
     this._selectedFrameId = '';
@@ -313,9 +317,12 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
       this._classNamesPromise = this._getClassNames(selectedNode);
 
     return this._classNamesPromise.then(completions => {
+      var classesMap = this._nodeClasses(/** @type {!SDK.DOMNode} */ (selectedNode));
+      completions = completions.filter(value => !classesMap.get(value));
+
       if (prefix[0] === '.')
         completions = completions.map(value => '.' + value);
-      return completions.filter(value => value.startsWith(prefix)).map(completion => ({text: completion}));
+      return completions.filter(value => value.startsWith(prefix)).sort().map(completion => ({text: completion}));
     });
   }
 };

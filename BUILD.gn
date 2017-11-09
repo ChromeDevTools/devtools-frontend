@@ -90,6 +90,7 @@ all_devtools_files = [
   "front_end/bindings_test_runner/IsolatedFilesystemTestRunner.js",
   "front_end/bindings_test_runner/module.json",
   "front_end/bindings_test_runner/PersistenceTestRunner.js",
+  "front_end/bindings_test_runner/OverridesTestRunner.js",
   "front_end/changes/ChangesHighlighter.js",
   "front_end/changes/changesView.css",
   "front_end/changes/ChangesView.js",

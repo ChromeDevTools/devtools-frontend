@@ -10,12 +10,14 @@
     "BindingsTestRunner.js",
     "IsolatedFilesystemTestRunner.js",
     "AutomappingTestRunner.js",
-    "PersistenceTestRunner.js"
+    "PersistenceTestRunner.js",
+    "OverridesTestRunner.js"
   ],
   "skip_compilation": [
     "BindingsTestRunner.js",
     "IsolatedFilesystemTestRunner.js",
     "AutomappingTestRunner.js",
-    "PersistenceTestRunner.js"
+    "PersistenceTestRunner.js",
+    "OverridesTestRunner.js"
   ]
 }

@@ -162,6 +162,10 @@ SourcesTestRunner.waitUntilResumed = function(callback) {
     SourcesTestRunner._waitUntilResumedCallback = callback;
 };
 
+SourcesTestRunner.waitUntilResumedPromise = function() {
+  return new Promise(resolve => SourcesTestRunner.waitUntilResumed(resolve));
+};
+
 SourcesTestRunner.resumeExecution = function(callback) {
   if (UI.panels.sources.paused())
     UI.panels.sources._togglePause();
@@ -412,6 +416,10 @@ SourcesTestRunner.showScriptSource = function(scriptName, callback) {
   function onScriptSource(uiSourceCode) {
     SourcesTestRunner.showUISourceCode(uiSourceCode, callback);
   }
+};
+
+SourcesTestRunner.showScriptSourcePromise = function(scriptName) {
+  return new Promise(resolve => SourcesTestRunner.showScriptSource(scriptName, resolve));
 };
 
 SourcesTestRunner.waitForScriptSource = function(scriptName, callback) {

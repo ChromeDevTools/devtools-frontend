@@ -128,6 +128,17 @@ SDK.NetworkManager = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Object} headers
+   * @return {!Object<string, string>}
+   */
+  static _lowercaseHeaders(headers) {
+    var newHeaders = {};
+    for (var headerName in headers)
+      newHeaders[headerName.toLowerCase()] = headers[headerName];
+    return newHeaders;
+  }
+
+  /**
    * @param {string} url
    * @return {!SDK.NetworkRequest}
    */
@@ -421,6 +432,7 @@ SDK.NetworkDispatcher = class {
    */
   responseReceived(requestId, loaderId, time, resourceType, response, frameId) {
     var networkRequest = this._inflightRequestsById[requestId];
+    var lowercaseHeaders = SDK.NetworkManager._lowercaseHeaders(response.headers);
     if (!networkRequest) {
       // We missed the requestWillBeSent.
       var eventData = {};
@@ -429,7 +441,7 @@ SDK.NetworkDispatcher = class {
       eventData.loaderId = loaderId;
       eventData.resourceType = resourceType;
       eventData.mimeType = response.mimeType;
-      var lastModifiedHeader = response.headers['last-modified'];
+      var lastModifiedHeader = lowercaseHeaders['last-modified'];
       eventData.lastModified = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
       this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdateDropped, eventData);
       return;
@@ -439,7 +451,7 @@ SDK.NetworkDispatcher = class {
     networkRequest.setResourceType(Common.resourceTypes[resourceType]);
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
-    if ('Set-Cookie' in response.headers && response.headers['Set-Cookie'].length > 4096) {
+    if ('set-cookie' in lowercaseHeaders && lowercaseHeaders['set-cookie'].length > 4096) {
       var message = Common.UIString(
           'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
           response.url);

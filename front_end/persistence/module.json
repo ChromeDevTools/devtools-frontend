@@ -17,7 +17,7 @@
         {
             "type": "setting",
             "category": "Persistence",
-            "title": "Enable Network Overrides",
+            "title": "Enable Local Overrides",
             "settingName": "persistenceNetworkOverridesEnabled",
             "settingType": "boolean",
             "storageType": "session",

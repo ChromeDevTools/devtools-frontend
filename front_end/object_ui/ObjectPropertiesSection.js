@@ -835,7 +835,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (this._prompt || !this.treeOutline._editable || this._readOnly)
       return;
 
-    this._editableDiv = this.listItemElement.createChild('span');
+    this._editableDiv = this.listItemElement.createChild('span', 'editable-div');
 
     var text = this.property.value.description;
     if (this.property.value.type === 'string' && typeof text === 'string')

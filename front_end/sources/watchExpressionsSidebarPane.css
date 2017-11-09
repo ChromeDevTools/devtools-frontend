@@ -45,7 +45,7 @@
 
 .watch-expression {
     position: relative;
-    padding: 1px 0px 1px 6px;
+    padding: 1px 6px 1px 6px;
     flex: none;
     min-height: 20px;
 }

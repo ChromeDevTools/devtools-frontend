@@ -29,7 +29,7 @@
 }
 
 .object-properties-section li.editing-sub-part {
-    padding: 3px 6px 8px;
+    padding: 3px 12px 8px 6px;
     margin: -1px -6px -8px -6px;
     text-overflow: clip;
 }
@@ -50,4 +50,8 @@
 .object-properties-section-root-element {
     display: flex;
     flex-direction: row;
+}
+
+.object-properties-section .editable-div {
+    overflow: hidden;
 }

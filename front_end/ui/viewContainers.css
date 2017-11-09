@@ -62,6 +62,10 @@
     margin-bottom: -2px;
 }
 
+.expandable-view-title[data-keyboard-focus="true"]:focus {
+    background-color: #e0e0e0;
+}
+
 .expandable-view-title > .toolbar {
     position: absolute;
     right: 0;

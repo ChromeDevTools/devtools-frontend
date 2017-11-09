@@ -546,8 +546,16 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
    * @param {!Event} event
    */
   _onTitleKeyDown(event) {
-    if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
+    if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code) {
       this._toggleExpanded();
+    } else if (event.key === 'ArrowLeft') {
+      this._collapse();
+    } else if (event.key === 'ArrowRight') {
+      if (!this._titleElement.classList.contains('expanded'))
+        this._expand();
+      else if (this._widget)
+        this._widget.focus();
+    }
   }
 };
 

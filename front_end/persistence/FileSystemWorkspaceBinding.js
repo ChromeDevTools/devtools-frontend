@@ -173,7 +173,8 @@ Persistence.FileSystemWorkspaceBinding = class {
     function forEachFile(filePaths, callback) {
       for (var filePath of filePaths) {
         for (var fileSystemPath of this._boundFileSystems.keys()) {
-          if (!filePath.startsWith(fileSystemPath))
+          var pathPrefix = fileSystemPath.endsWith('/') ? fileSystemPath : fileSystemPath + '/';
+          if (!filePath.startsWith(pathPrefix))
             continue;
           callback(filePath, this._boundFileSystems.get(fileSystemPath));
         }

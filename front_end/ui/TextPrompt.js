@@ -265,16 +265,24 @@ UI.TextPrompt = class extends Common.Object {
    */
   onKeyDown(event) {
     var handled = false;
+    if (this._isSuggestBoxVisible() && this._suggestBox.keyPressed(event)) {
+      event.consume(true);
+      return;
+    }
 
     switch (event.key) {
       case 'Tab':
         handled = this.tabKeyPressed(event);
         break;
       case 'ArrowLeft':
+      case 'ArrowUp':
+      case 'PageUp':
       case 'Home':
         this.clearAutocomplete();
         break;
+      case 'PageDown':
       case 'ArrowRight':
+      case 'ArrowDown':
       case 'End':
         if (this._isCaretAtEndOfPrompt())
           handled = this.acceptAutoComplete();
@@ -293,17 +301,9 @@ UI.TextPrompt = class extends Common.Object {
           handled = true;
         }
         break;
-      case 'Alt':
-      case 'Meta':
-      case 'Shift':
-      case 'Control':
-        break;
     }
     if (isEnterKey(event))
       event.preventDefault();
-
-    if (!handled && this._isSuggestBoxVisible())
-      handled = this._suggestBox.keyPressed(event);
 
     if (handled)
       event.consume(true);

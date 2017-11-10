@@ -1025,6 +1025,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @return {!Promise}
    */
   _updateInterceptionPatterns() {
+    if (!Common.moduleSetting('cacheDisabled').get())
+      Common.moduleSetting('cacheDisabled').set(true);
     this._updatingInterceptionPatternsPromise = null;
     var promises = /** @type {!Array<!Promise>} */ ([]);
     for (var agent of this._agents) {

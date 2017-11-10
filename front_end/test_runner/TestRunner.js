@@ -471,11 +471,17 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
  * @return {!Promise<undefined>}
  */
 TestRunner.loadHTML = function(html) {
-  var testPath = TestRunner.url();
-  if (!html.includes('<base'))
-    html = `<base href="${testPath}">` + html;
+  if (!html.includes('<base')) {
+    // <!DOCTYPE...> tag needs to be first
+    var doctypeRegex = /(<!DOCTYPE.*?>)/;
+    var baseTag = `<base href="${TestRunner.url()}">`;
+    if (html.match(doctypeRegex))
+      html = html.replace(doctypeRegex, '$1' + baseTag);
+    else
+      html = baseTag + html;
+  }
   html = html.replace(/'/g, '\\\'').replace(/\n/g, '\\n');
-  return TestRunner.evaluateInPageAnonymously(`document.write('${html}');document.close();`);
+  return TestRunner.evaluateInPageAnonymously(`document.write(\`${html}\`);document.close();`);
 };
 
 /**

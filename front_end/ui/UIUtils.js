@@ -1936,6 +1936,7 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
 
   var a = createElementWithClass('span', className);
   UI.ARIAUtils.markAsLink(a);
+  a.tabIndex = 0;
 
   var href = url;
   if (url.trim().toLowerCase().startsWith('javascript:'))
@@ -1947,6 +1948,12 @@ UI.createExternalLink = function(url, linkText, className, preventClick) {
     a.classList.add('devtools-link');
     if (!preventClick) {
       a.addEventListener('click', event => {
+        event.consume(true);
+        InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
+      }, false);
+      a.addEventListener('keydown', event => {
+        if (event.key !== ' ' && !isEnterKey(event))
+          return;
         event.consume(true);
         InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
       }, false);

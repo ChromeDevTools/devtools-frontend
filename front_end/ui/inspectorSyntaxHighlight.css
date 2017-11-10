@@ -116,6 +116,10 @@
     vertical-align: middle;
 }
 
+.devtools-link[data-keyboard-focus="true"]:focus {
+    outline-width: unset;
+}
+
 .devtools-link:not(.devtools-link-prevent-click) {
     cursor: pointer;
 }

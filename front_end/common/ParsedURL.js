@@ -144,12 +144,24 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static extractExtension(url) {
-    var lastIndexOfDot = url.lastIndexOf('.');
-    var extension = lastIndexOfDot !== -1 ? url.substr(lastIndexOfDot + 1) : '';
-    var indexOfQuestionMark = extension.indexOf('?');
+    var indexOfHash = url.indexOf('#');
+    if (indexOfHash !== -1)
+      url = url.substr(0, indexOfHash);
+    var indexOfQuestionMark = url.indexOf('?');
     if (indexOfQuestionMark !== -1)
-      extension = extension.substr(0, indexOfQuestionMark);
-    return extension;
+      url = url.substr(0, indexOfQuestionMark);
+    var lastIndexOfSlash = url.lastIndexOf('/');
+    if (lastIndexOfSlash !== -1)
+      url = url.substr(lastIndexOfSlash + 1);
+    var lastIndexOfDot = url.lastIndexOf('.');
+    if (lastIndexOfDot !== -1) {
+      url = url.substr(lastIndexOfDot + 1);
+      var lastIndexOfPercent = url.indexOf('%');
+      if (lastIndexOfPercent !== -1)
+        return url.substr(0, lastIndexOfPercent);
+      return url;
+    }
+    return '';
   }
 
   /**

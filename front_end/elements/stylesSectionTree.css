@@ -72,6 +72,10 @@
     padding-left: 8px;
 }
 
+.tree-outline > li.child-editing .text-prompt {
+    white-space: pre-wrap;
+}
+
 .tree-outline > li.child-editing .webkit-css-property {
     margin-left: 0;
 }

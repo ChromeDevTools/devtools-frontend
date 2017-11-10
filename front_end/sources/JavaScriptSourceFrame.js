@@ -1096,7 +1096,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       for (var lineNumber of lineNumbers) {
         var decorations = this._lineBreakpointDecorations(lineNumber);
         updateGutter.call(this, lineNumber, decorations);
-        if (this._possibleBreakpointsRequested.has(location.lineNumber)) {
+        if (this._possibleBreakpointsRequested.has(lineNumber)) {
           waitingForInlineDecorations = true;
           continue;
         }

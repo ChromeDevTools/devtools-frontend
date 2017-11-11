@@ -42,7 +42,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._searchableView.setMinimalSearchQuerySize(0);
     this._badgePool = new ProductRegistry.BadgePool();
     this._sidebar = new Console.ConsoleSidebar(this._badgePool);
-    this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._updateMessageList.bind(this));
+    this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
 
     var toolbar = new UI.Toolbar('', this.element);

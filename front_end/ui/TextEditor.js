@@ -94,7 +94,8 @@ UI.TextEditor.Events = {
  *  mimeType: (string|undefined),
  *  autoHeight: (boolean|undefined),
  *  padBottom: (boolean|undefined),
- *  maxHighlightLength: (number|undefined)
+ *  maxHighlightLength: (number|undefined),
+ *  placeholder: (string|undefined)
  * }}
  */
 UI.TextEditor.Options;

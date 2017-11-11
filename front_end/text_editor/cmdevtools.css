@@ -481,6 +481,11 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     color: rgb(128,128,128);
 }
 
+.CodeMirror .placeholder-text {
+    height: 0;
+    color: rgb(128,128,128);
+}
+
 /** Prevent the codemirror textarea from stealing PageUp events **/
 .CodeMirror textarea {
     resize: none;

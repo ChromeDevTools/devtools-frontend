@@ -183,6 +183,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       this.setMimeType(options.mimeType);
     if (options.autoHeight)
       this._codeMirror.setSize(null, 'auto');
+
+    this._placeholderElement = null;
+    if (options.placeholder) {
+      this._placeholderElement = createElement('pre');
+      this._placeholderElement.classList.add('placeholder-text');
+      this._placeholderElement.textContent = options.placeholder;
+      this._updatePlaceholder();
+    }
   }
 
   /**
@@ -1058,6 +1066,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   _changes(codeMirror, changes) {
     if (!changes.length)
       return;
+
+    this._updatePlaceholder();
+
     // We do not show "scroll beyond end of file" span for one line documents, so we need to check if "document has one line" changed.
     var hasOneLine = this._codeMirror.lineCount() === 1;
     if (hasOneLine !== this._hasOneLine)
@@ -1274,6 +1285,18 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   textEditorPositionHandle(lineNumber, columnNumber) {
     return new TextEditor.CodeMirrorPositionHandle(this._codeMirror, new CodeMirror.Pos(lineNumber, columnNumber));
+  }
+
+  _updatePlaceholder() {
+    if (!this._placeholderElement)
+      return;
+
+    this._placeholderElement.remove();
+
+    if (this.linesCount === 1 && !this.line(0)) {
+      this._codeMirror.display.lineSpace.insertBefore(
+          this._placeholderElement, this._codeMirror.display.lineSpace.firstChild);
+    }
   }
 };
 

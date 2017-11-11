@@ -742,10 +742,10 @@ Sources.NavigatorView = class extends UI.VBox {
 
   /**
    * @param {!Sources.NavigatorUISourceCodeTreeNode} node
-   * @param {boolean} deleteIfCanceled
+   * @param {boolean} creatingNewUISourceCode
    * @protected
    */
-  rename(node, deleteIfCanceled) {
+  rename(node, creatingNewUISourceCode) {
     var uiSourceCode = node.uiSourceCode();
     node.rename(callback.bind(this));
 
@@ -754,13 +754,12 @@ Sources.NavigatorView = class extends UI.VBox {
      * @param {boolean} committed
      */
     function callback(committed) {
-      if (!committed) {
-        if (deleteIfCanceled)
-          uiSourceCode.remove();
+      if (!creatingNewUISourceCode)
         return;
-      }
-
-      this._sourceSelected(uiSourceCode, true);
+      if (!committed)
+        uiSourceCode.remove();
+      else
+        this._sourceSelected(uiSourceCode, true);
     }
   }
 

@@ -101,7 +101,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
      */
     function applySize(width, e) {
       this._model.emulate(Emulation.DeviceModeModel.Type.Responsive, null, null);
-      this._model.setSizeAndScaleToFit(width, 0);
+      this._model.setWidthAndScaleToFit(width);
       e.consume();
     }
   }

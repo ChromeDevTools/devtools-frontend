@@ -530,6 +530,7 @@ Emulation.DeviceModeModel = class extends Common.Object {
   setSizeAndScaleToFit(width, height) {
     this._scaleSetting.set(this._calculateFitScale(width, height));
     this.setWidth(width);
+    this.setHeight(height);
   }
 
   /**

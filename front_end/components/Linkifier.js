@@ -490,7 +490,7 @@ Components.Linkifier = class {
   static _handleClick(event) {
     var link = /** @type {!Element} */ (event.currentTarget);
     event.consume(true);
-    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)))
+    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection())
       return;
     var actions = Components.Linkifier._linkActions(link);
     if (actions.length)

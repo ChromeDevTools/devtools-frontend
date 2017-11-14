@@ -120,10 +120,6 @@ function migrateTest(inputPath, identifierMap) {
       domFixture = inlineStylesheets + (domFixture.length ? '\n' : '') + domFixture;
     if (docType)
       domFixture = docType + (domFixture.length ? '\n' : '') + domFixture;
-    const inlineStylesheets =
-        $('style').toArray().map(n => n.children[0].data).map(text => `<style>${text}</style>`).join('\n');
-    if (inlineStylesheets)
-      domFixture = inlineStylesheets + (domFixture.length ? '\n' : '') + domFixture;
     outputCode = transformTestScript(
         inputCode, prologue, identifierMap, testHelpers, javascriptFixtures, getPanels(inputPath, inputCode),
         domFixture, onloadFunctionName, relativeResourcePaths, stylesheetPaths, inputFilename);

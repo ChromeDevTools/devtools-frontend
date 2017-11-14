@@ -69,11 +69,3 @@ ProfilerTestRunner._profileViewRefresh = function() {
     callback.callback(this);
   }
 };
-
-ProfilerTestRunner.startSamplingHeapProfiler = function() {
-  Profiler.SamplingHeapProfileType.instance.startRecordingProfile();
-};
-
-ProfilerTestRunner.stopSamplingHeapProfiler = function() {
-  Profiler.SamplingHeapProfileType.instance.stopRecordingProfile();
-};

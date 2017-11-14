@@ -318,6 +318,8 @@ HeapSnapshotTestRunner.createHeapSnapshotMockFactories();
 HeapSnapshotTestRunner.startProfilerTest = function(callback) {
   TestRunner.addResult('Profiler was enabled.');
   HeapSnapshotTestRunner._panelReset = TestRunner.override(UI.panels.heap_profiler, '_reset', function() {}, true);
+  TestRunner.addSniffer(UI.panels.heap_profiler, '_addProfileHeader', HeapSnapshotTestRunner._profileHeaderAdded, true);
+  TestRunner.addSniffer(Profiler.ProfileView.prototype, 'refresh', HeapSnapshotTestRunner._profileViewRefresh, true);
   TestRunner.addSniffer(Profiler.HeapSnapshotView.prototype, 'show', HeapSnapshotTestRunner._snapshotViewShown, true);
 
   Profiler.HeapSnapshotContainmentDataGrid.prototype.defaultPopulateCount = function() {
@@ -639,4 +641,43 @@ HeapSnapshotTestRunner._snapshotViewShown = function() {
 
     dataGrid.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, sortingComplete, null);
   }
+};
+
+HeapSnapshotTestRunner.showProfileWhenAdded = function(title) {
+  HeapSnapshotTestRunner._showProfileWhenAdded = title;
+  return new Promise(resolve => HeapSnapshotTestRunner._waitUntilProfileViewIsShown(title, resolve));
+};
+
+HeapSnapshotTestRunner._profileHeaderAdded = function(profile) {
+  if (HeapSnapshotTestRunner._showProfileWhenAdded === profile.title)
+    UI.panels.heap_profiler.showProfile(profile);
+};
+
+HeapSnapshotTestRunner._waitUntilProfileViewIsShown = function(title, callback) {
+  callback = TestRunner.safeWrap(callback);
+  var profilesPanel = UI.panels.heap_profiler;
+
+  if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
+      profilesPanel.visibleView._profileHeader.title === title)
+    callback(profilesPanel.visibleView);
+  else
+    HeapSnapshotTestRunner._waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
+
+};
+
+HeapSnapshotTestRunner._profileViewRefresh = function() {
+  if (HeapSnapshotTestRunner._waitUntilProfileViewIsShownCallback &&
+      HeapSnapshotTestRunner._waitUntilProfileViewIsShownCallback.title === this._profileHeader.title) {
+    var callback = HeapSnapshotTestRunner._waitUntilProfileViewIsShownCallback;
+    delete HeapSnapshotTestRunner._waitUntilProfileViewIsShownCallback;
+    callback.callback(this);
+  }
+};
+
+HeapSnapshotTestRunner.startSamplingHeapProfiler = function() {
+  Profiler.SamplingHeapProfileType.instance.startRecordingProfile();
+};
+
+HeapSnapshotTestRunner.stopSamplingHeapProfiler = function() {
+  Profiler.SamplingHeapProfileType.instance.stopRecordingProfile();
 };

@@ -669,17 +669,18 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Page.ResourceType} resourceType
    * @param {boolean} isNavigationRequest
-   * @param {!Protocol.Network.Headers=} redirectHeaders
-   * @param {number=} redirectStatusCode
    * @param {string=} redirectUrl
    * @param {!Protocol.Network.AuthChallenge=} authChallenge
+   * @param {!Protocol.Network.ErrorReason=} responseErrorReason
+   * @param {number=} responseStatusCode
+   * @param {!Protocol.Network.Headers=} responseHeaders
    */
   requestIntercepted(
-      interceptionId, request, frameId, resourceType, isNavigationRequest, redirectHeaders, redirectStatusCode,
-      redirectUrl, authChallenge) {
+      interceptionId, request, frameId, resourceType, isNavigationRequest, redirectUrl, authChallenge,
+      responseErrorReason, responseStatusCode, responseHeaders) {
     SDK.multitargetNetworkManager._requestIntercepted(new SDK.MultitargetNetworkManager.InterceptedRequest(
         this._manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
-        redirectHeaders, redirectStatusCode, redirectUrl, authChallenge));
+        redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders));
   }
 
   /**
@@ -1112,14 +1113,15 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
    * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Page.ResourceType} resourceType
    * @param {boolean} isNavigationRequest
-   * @param {!Protocol.Network.Headers=} redirectHeaders
-   * @param {number=} redirectStatusCode
    * @param {string=} redirectUrl
    * @param {!Protocol.Network.AuthChallenge=} authChallenge
+   * @param {!Protocol.Network.ErrorReason=} responseErrorReason
+   * @param {number=} responseStatusCode
+   * @param {!Protocol.Network.Headers=} responseHeaders
    */
   constructor(
-      networkAgent, interceptionId, request, frameId, resourceType, isNavigationRequest, redirectHeaders,
-      redirectStatusCode, redirectUrl, authChallenge) {
+      networkAgent, interceptionId, request, frameId, resourceType, isNavigationRequest, redirectUrl, authChallenge,
+      responseErrorReason, responseStatusCode, responseHeaders) {
     this._networkAgent = networkAgent;
     this._interceptionId = interceptionId;
     this._hasResponded = false;
@@ -1127,10 +1129,11 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
     this.frameId = frameId;
     this.resourceType = resourceType;
     this.isNavigationRequest = isNavigationRequest;
-    this.redirectHeaders = redirectHeaders;
-    this.redirectStatusCode = redirectStatusCode;
     this.redirectUrl = redirectUrl;
     this.authChallenge = authChallenge;
+    this.responseErrorReason = responseErrorReason;
+    this.responseStatusCode = responseStatusCode;
+    this.responseHeaders = responseHeaders;
   }
 
   /**

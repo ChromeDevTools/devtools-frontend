@@ -48,6 +48,9 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
     tr.appendChild(createCheckbox.call(null, 'focus'));
     tr.appendChild(createCheckbox.call(null, 'visited'));
 
+    tr = table.createChild('tr');
+    tr.appendChild(createCheckbox.call(null, 'focus-within'));
+
     this.contentElement.appendChild(table);
     UI.context.addFlavorChangeListener(SDK.DOMNode, this._update, this);
   }

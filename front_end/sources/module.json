@@ -395,7 +395,17 @@
             "title": "Search in anonymous and content scripts",
             "settingName": "searchInAnonymousAndContentScripts",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Search in anonymous and content scripts"
+                },
+                {
+                    "value": false,
+                    "title": "Do not search in anonymous and content scripts"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -403,7 +413,17 @@
             "title": "Automatically reveal files in navigator",
             "settingName": "autoRevealInNavigator",
             "settingType": "boolean",
-            "defaultValue": false
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Automatically reveal files in navigator"
+                },
+                {
+                    "value": false,
+                    "title": "Do not automatically reveal files in navigator"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -411,7 +431,17 @@
             "title": "Enable JavaScript source maps",
             "settingName": "jsSourceMapsEnabled",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable JavaScript source maps"
+                },
+                {
+                    "value": false,
+                    "title": "Disable JavaScript source maps"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -419,7 +449,17 @@
             "title": "Detect indentation",
             "settingName": "textEditorAutoDetectIndent",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Detect indentation"
+                },
+                {
+                    "value": false,
+                    "title": "Do not detect indentation"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -427,7 +467,17 @@
             "title": "Autocompletion",
             "settingName": "textEditorAutocompletion",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable autocompletion"
+                },
+                {
+                    "value": false,
+                    "title": "Disable autocompletion"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -435,7 +485,17 @@
             "title": "Bracket matching",
             "settingName": "textEditorBracketMatching",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable bracket matching"
+                },
+                {
+                    "value": false,
+                    "title": "Disable bracket matching"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -468,7 +528,17 @@
             "title": "Display variable values inline while debugging",
             "settingName": "inlineVariableValues",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Display variable values inline while debugging"
+                },
+                {
+                    "value": false,
+                    "title": "Do not display variable values inline while debugging"
+                }
+            ]
         },
         {
             "type": "setting",
@@ -476,7 +546,17 @@
             "title": "Enable CSS source maps",
             "settingName": "cssSourceMapsEnabled",
             "settingType": "boolean",
-            "defaultValue": true
+            "defaultValue": true,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable CSS source maps"
+                },
+                {
+                    "value": false,
+                    "title": "Disable CSS source maps"
+                }
+            ]
         },
         {
             "type": "view",

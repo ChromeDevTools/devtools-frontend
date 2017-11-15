@@ -56,6 +56,19 @@ function getPrologue(inputExpectationsPath, bodyText) {
   return '';
 }
 
+function appendBugLink(prologue, text) {
+  var match;
+  if (match = text.match(/crbug.com\/\d+/)) {
+    if (!prologue.includes(match[0]))
+      return prologue + ' ' + match[0];
+  }
+  if (match = text.match(/https:\/\/bugs.webkit.org\/show_bug.cgi\?id=\d+/)) {
+    if (!prologue.includes(match[0]))
+      return prologue + ' ' + match[0];
+  }
+  return prologue;
+}
+
 function escapeRegExp(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }
@@ -69,7 +82,8 @@ function migrateTest(inputPath, identifierMap) {
   const inputFilename = path.basename(inputPath);
   const inputExpectationsPath = inputPath.replace('.js', '-expected.txt').replace('.html', '-expected.txt');
   const bodyText = $('body').text().trim();
-  const prologue = getPrologue(inputExpectationsPath, bodyText);
+
+  const prologue = appendBugLink(getPrologue(inputExpectationsPath, bodyText), htmlTestFile);
 
   const stylesheetPaths = $('link').toArray().filter(l => l.attribs.rel === 'stylesheet').map(l => l.attribs.href);
   const onloadFunctionName = $('body')[0].attribs.onload ? $('body')[0].attribs.onload.slice(0, -2) : '';

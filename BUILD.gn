@@ -623,7 +623,7 @@ all_devtools_files = [
   "front_end/sources/InplaceFormatterEditorAction.js",
   "front_end/sources/javaScriptBreakpointsSidebarPane.css",
   "front_end/sources/JavaScriptBreakpointsSidebarPane.js",
-  "front_end/sources/JavaScriptCompiler.js",
+  "front_end/sources/JavaScriptCompilerPlugin.js",
   "front_end/sources/JavaScriptSourceFrame.js",
   "front_end/sources/module.json",
   "front_end/sources/navigatorTree.css",

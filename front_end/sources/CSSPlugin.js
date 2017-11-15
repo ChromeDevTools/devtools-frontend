@@ -53,6 +53,15 @@ Sources.CSSPlugin = class {
     this._textEditor.element.addEventListener('keydown', this._boundHandleKeyDown, false);
   }
 
+  /**
+   * @override
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {boolean}
+   */
+  static accepts(uiSourceCode) {
+    return uiSourceCode.contentType().isStyleSheet();
+  }
+
   _registerShortcuts() {
     var shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
     for (var descriptor of shortcutKeys.IncreaseCSSUnitByOne)

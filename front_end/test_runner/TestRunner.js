@@ -38,7 +38,7 @@ TestRunner.executeTestScript = function() {
 
 /**
  * Note: This is only needed to debug a test in release DevTools.
- * Usage: wrap the entire test with debugTest() and use dtrun test --debug-release
+ * Usage: wrap the entire test with debugReleaseTest() and use dtrun test --debug-release
  * @param {!Function} testFunction
  * @return {!Function}
  */

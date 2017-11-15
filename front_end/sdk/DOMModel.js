@@ -481,7 +481,7 @@ SDK.DOMNode = class {
    * @return {!Promise<?Array<!SDK.DOMNode>>}
    */
   async getSubtree(depth) {
-    var response = await this._agent.invoke_requestChildNodes({id: this.id, depth});
+    var response = await this._agent.invoke_requestChildNodes({nodeId: this.id, depth});
     return response[Protocol.Error] ? null : this._children;
   }
 

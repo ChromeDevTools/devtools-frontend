@@ -53,6 +53,7 @@ function getPrologue(inputExpectationsPath, bodyText) {
       return line;
     }
   }
+  return '';
 }
 
 function escapeRegExp(str) {

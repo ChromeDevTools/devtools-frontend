@@ -29,7 +29,7 @@ const APPLICATION_DESCRIPTORS = [
  * If the transformation removes all the files of a module:
  * ['text_editor']
  */
-const MODULES_TO_REMOVE = [];
+const MODULES_TO_REMOVE = ['profiler_test_runner', 'heap_snapshot_test_runner'];
 
 /**
  * If moving to a new module:
@@ -39,7 +39,8 @@ const MODULES_TO_REMOVE = [];
  * {file: 'ui/SomeFile.js', existing: 'common'}
  */
 const JS_FILES_MAPPING = [
-  {file: 'profiler_test_runner/HeapSnapshotTestRunner.js', new: 'heap_snapshot_test_runner'},
+  {file: 'heap_snapshot_test_runner/HeapSnapshotTestRunner.js', new: 'heap_profiler_test_runner'},
+  {file: 'profiler_test_runner/ProfilerTestRunner.js', new: 'cpu_profiler_test_runner'},
 ];
 
 /**
@@ -52,8 +53,14 @@ const JS_FILES_MAPPING = [
  * }
  */
 const MODULE_MAPPING = {
-  heap_snapshot_test_runner: {
+  heap_profiler_test_runner: {
     dependencies: ['heap_snapshot_worker', 'test_runner'],
+    dependents: [],
+    applications: ['integration_test_runner.json'],
+    autostart: false,
+  },
+  cpu_profiler_test_runner: {
+    dependencies: ['profiler', 'test_runner'],
     dependents: [],
     applications: ['integration_test_runner.json'],
     autostart: false,

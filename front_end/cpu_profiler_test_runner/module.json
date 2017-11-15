@@ -1,7 +1,7 @@
 {
     "dependencies": [
-        "test_runner",
-        "profiler"
+        "profiler",
+        "test_runner"
     ],
     "scripts": [
         "ProfilerTestRunner.js"

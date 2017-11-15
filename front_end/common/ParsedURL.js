@@ -93,6 +93,17 @@ Common.ParsedURL = class {
   }
 
   /**
+   * @param {string} url
+   * @return {string}
+   */
+  static urlWithoutHash(url) {
+    var hashIndex = url.indexOf('#');
+    if (hashIndex !== -1)
+      return url.substr(0, hashIndex);
+    return url;
+  }
+
+  /**
    * @return {!RegExp}
    */
   static _urlRegex() {
@@ -144,9 +155,7 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static extractExtension(url) {
-    var indexOfHash = url.indexOf('#');
-    if (indexOfHash !== -1)
-      url = url.substr(0, indexOfHash);
+    url = Common.ParsedURL.urlWithoutHash(url);
     var indexOfQuestionMark = url.indexOf('?');
     if (indexOfQuestionMark !== -1)
       url = url.substr(0, indexOfQuestionMark);

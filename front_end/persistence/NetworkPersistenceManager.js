@@ -23,6 +23,8 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
 
     /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._fileSystemUISourceCodeForUrlMap = new Map();
+    /** @type {!Map<string, !Workspace.UISourceCode>} */
+    this._networkUISourceCodeWithoutHashForUrlMap = new Map();
     this._interceptionHandlerBound = this._interceptionHandler.bind(this);
 
     /** @type {?Workspace.Project} */
@@ -137,9 +139,13 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
             event => this._onUISourceCodeWorkingCopyCommitted(
                 /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode)))
       ];
+      var networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
+      for (var networkProject of networkProjects)
+        networkProject.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
       this._updateActiveProject();
     } else {
       Common.EventTarget.removeEventListeners(this._eventDescriptors);
+      this._networkUISourceCodeWithoutHashForUrlMap.clear();
       this._updateActiveProject();
     }
   }
@@ -195,9 +201,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
      * @return {!Array<string>}
      */
     function fileNamePartsFromUrlPath(urlPath) {
-      var hashIndex = urlPath.indexOf('#');
-      if (hashIndex !== -1)
-        urlPath = urlPath.substr(0, hashIndex);
+      urlPath = Common.ParsedURL.urlWithoutHash(urlPath);
       var queryIndex = urlPath.indexOf('?');
       if (queryIndex === -1)
         return urlPath.split(/[\/\\]/g);
@@ -230,15 +234,11 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   _networkUISourceCode(fileSystemUISourceCode) {
     if (fileSystemUISourceCode.project() !== this._activeProject)
       return null;
-    var networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
     var urls = this._urlsForFileSystemUISourceCode(fileSystemUISourceCode);
-    for (var networkProject of networkProjects) {
-      for (var url of urls) {
-        var networkUISourceCode = networkProject.uiSourceCodeForURL(url);
-        if (!networkUISourceCode)
-          continue;
+    for (var url of urls) {
+      var networkUISourceCode = this._networkUISourceCodeWithoutHashForUrlMap.get(url);
+      if (networkUISourceCode)
         return networkUISourceCode;
-      }
     }
     return null;
   }
@@ -292,11 +292,23 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     var urlDomain = uiSourceCode.url().replace(/^https?:\/\//, '');
     var fileName = urlDomain.substr(urlDomain.lastIndexOf('/') + 1);
     var relativeFolderPath = urlDomain.substr(0, urlDomain.length - fileName.length);
+    if (relativeFolderPath.endsWith('/'))
+      relativeFolderPath = relativeFolderPath.substr(0, relativeFolderPath.length - 1);
     if (!fileName)
       fileName = 'index.html';
     var content = await uiSourceCode.requestContent();
     var encoded = await uiSourceCode.contentEncoded();
-    this._activeProject.createFile(relativeFolderPath, this._encodeUrlPathToLocalPath(fileName), content, encoded);
+    var encodedPath = this._encodeUrlPathToLocalPath(relativeFolderPath);
+    var encodedFileName = this._encodeUrlPathToLocalPath(fileName);
+    this._activeProject.createFile(encodedPath, encodedFileName, content, encoded);
+    this._fileCreatedForTest(encodedPath, encodedFileName);
+  }
+
+  /**
+   * @param {string} path
+   * @param {string} fileName
+   */
+  _fileCreatedForTest(path, fileName) {
   }
 
   /**
@@ -320,6 +332,9 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    */
   _onUISourceCodeAdded(uiSourceCode) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
+      var url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
+      if (!this._networkUISourceCodeWithoutHashForUrlMap.has(url))
+        this._networkUISourceCodeWithoutHashForUrlMap.set(url, uiSourceCode);
       if (uiSourceCode[this._bindingSymbol])
         return;
       var fileSystemUISourceCode = this._fileSystemUISourceCodeForUrlMap.get(uiSourceCode.url());
@@ -362,6 +377,10 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    */
   _onUISourceCodeRemoved(uiSourceCode) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
+      var url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
+      var networkUISourceCode = this._networkUISourceCodeWithoutHashForUrlMap.get(url);
+      if (networkUISourceCode === uiSourceCode)
+        this._networkUISourceCodeWithoutHashForUrlMap.delete(url);
       this._unbind(uiSourceCode);
       return;
     }

@@ -217,12 +217,6 @@
     min-height: 100%;
 }
 
-.timeline-toolbar-resizer {
-    background-image: url(Images/toolbarResizerVertical.png);
-    background-repeat: no-repeat;
-    background-position: right center, center;
-}
-
 .memory-graph-label {
     position: absolute;
     right: 0;
@@ -253,11 +247,24 @@
     margin-top: -2px;
 }
 
-#memory-graphs-container .memory-counter-selector-swatches {
-    flex: 0 0 24px;
-    padding: 5px 0;
+#memory-graphs-container .timeline-memory-header {
+    flex: 0 0 26px;
     background-color: #eee;
     border-bottom: 1px solid #ddd;
+    justify-content: space-between;
+}
+
+#memory-graphs-container .timeline-memory-header::after {
+    content: "";
+    background-image: url(Images/toolbarResizerVertical.png);
+    background-repeat: no-repeat;
+    background-position: right center, center;
+    flex: 20px 0 0;
+    margin: 0 4px;
+}
+
+.timeline-memory-toolbar {
+    flex-shrink: 1;
 }
 
 .memory-counter-selector-info {

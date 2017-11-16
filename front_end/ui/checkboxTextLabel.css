@@ -24,12 +24,10 @@ input:focus {
 
 input.dt-checkbox-themed {
     -webkit-appearance: none;
-    margin: 0 5px auto 2px;
+    margin: auto 5px auto 2px;
     border: 1px solid rgb(45, 45, 45);
     border-radius: 3px;
     background-color: rgb(102, 102, 102);
-    position: relative;
-    top: 1px;
 }
 
 input.dt-checkbox-themed:after {

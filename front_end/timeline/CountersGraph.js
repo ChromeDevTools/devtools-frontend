@@ -43,9 +43,11 @@ Timeline.CountersGraph = class extends UI.VBox {
     this._calculator = new Timeline.CountersGraph.Calculator();
 
     // Create selectors
-    this._infoWidget = new UI.HBox();
-    this._infoWidget.element.classList.add('memory-counter-selector-swatches', 'timeline-toolbar-resizer');
-    this._infoWidget.show(this.element);
+    this._header = new UI.HBox();
+    this._header.element.classList.add('timeline-memory-header');
+    this._header.show(this.element);
+    this._toolbar = new UI.Toolbar('timeline-memory-toolbar');
+    this._header.element.appendChild(this._toolbar.element);
 
     this._graphsContainer = new UI.VBox();
     this._graphsContainer.show(this.element);
@@ -150,7 +152,7 @@ Timeline.CountersGraph = class extends UI.VBox {
    * @return {?Element}
    */
   resizerElement() {
-    return this._infoWidget.element;
+    return this._header.element;
   }
 
   _resize() {
@@ -367,7 +369,6 @@ Timeline.CountersGraph.CounterUI = class {
     this._countersPane = countersPane;
     this.counter = counter;
     this._formatter = formatter || Number.withThousandsSeparator;
-    var container = countersPane._infoWidget.element.createChild('div', 'memory-counter-selector-info');
 
     this._setting = Common.settings.createSetting('timelineCountersGraph-' + title, true);
     this._setting.setTitle(title);
@@ -379,7 +380,7 @@ Timeline.CountersGraph.CounterUI = class {
       this._filter.element.borderColor = 'transparent';
     }
     this._filter.inputElement.addEventListener('click', this._toggleCounterGraph.bind(this));
-    container.appendChild(this._filter.element);
+    countersPane._toolbar.appendToolbarItem(this._filter);
     this._range = this._filter.element.createChild('span', 'range');
 
     this._value = countersPane._currentValuesBar.createChild('span', 'memory-counter-value');

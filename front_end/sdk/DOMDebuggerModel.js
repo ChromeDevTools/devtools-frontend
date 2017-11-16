@@ -613,7 +613,9 @@ SDK.DOMDebuggerManager = class {
         ],
         ['*']);
     this._createEventListenerBreakpoints(
-        Common.UIString('Drag / drop'), ['dragenter', 'dragover', 'dragleave', 'drop'], ['*']);
+        Common.UIString('Drag / drop'), ['drag', 'dragstart', 'dragend', 'dragenter', 'dragover', 'dragleave', 'drop'],
+        ['*']);
+
     this._createEventListenerBreakpoints(Common.UIString('Keyboard'), ['keydown', 'keyup', 'keypress', 'input'], ['*']);
     this._createEventListenerBreakpoints(
         Common.UIString('Load'), ['load', 'beforeunload', 'unload', 'abort', 'error', 'hashchange', 'popstate'], ['*']);
@@ -633,6 +635,7 @@ SDK.DOMDebuggerManager = class {
         ['*']);
     this._createEventListenerBreakpoints(
         Common.UIString('Touch'), ['touchstart', 'touchmove', 'touchend', 'touchcancel'], ['*']);
+    this._createEventListenerBreakpoints(Common.UIString('Worker'), ['message', 'messageerror'], ['*']);
     this._createEventListenerBreakpoints(
         Common.UIString('XHR'),
         ['readystatechange', 'load', 'loadstart', 'loadend', 'abort', 'error', 'progress', 'timeout'],

@@ -473,6 +473,9 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     this.populateNodeContextMenu(contextMenu);
     Elements.ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, treeElement.node());
     this.populateScrollIntoView(contextMenu);
+    contextMenu.viewSection().appendItem(Common.UIString('Focus'), async () => {
+      await this._node.focus();
+    });
   }
 
   /**

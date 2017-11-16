@@ -907,9 +907,10 @@ SDK.DOMNode = class {
 
   async scrollIntoView() {
     var node = this.enclosingElementOrSelf();
-    var object = await node.resolveToObject('');
-    if (object)
-      object.callFunction(scrollIntoView);
+    var object = await node.resolveToObject();
+    if (!object)
+      return;
+    object.callFunction(scrollIntoView);
     object.release();
     node.highlightForTwoSeconds();
 
@@ -919,6 +920,25 @@ SDK.DOMNode = class {
      */
     function scrollIntoView() {
       this.scrollIntoViewIfNeeded(true);
+    }
+  }
+
+  async focus() {
+    var node = this.enclosingElementOrSelf();
+    var object = await node.resolveToObject();
+    if (!object)
+      return;
+    await object.callFunctionPromise(focusInPage);
+    object.release();
+    node.highlightForTwoSeconds();
+    this._domModel.target().pageAgent().bringToFront();
+
+    /**
+     * @suppressReceiverCheck
+     * @this {!Element}
+     */
+    function focusInPage() {
+      this.focus();
     }
   }
 };

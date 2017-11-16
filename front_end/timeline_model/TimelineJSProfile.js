@@ -67,6 +67,7 @@ TimelineModel.TimelineJSProfileProcessor = class {
         case TimelineModel.TimelineModel.RecordType.RunMicrotasks:
         case TimelineModel.TimelineModel.RecordType.FunctionCall:
         case TimelineModel.TimelineModel.RecordType.EvaluateScript:
+        case TimelineModel.TimelineModel.RecordType.EvaluateModule:
         case TimelineModel.TimelineModel.RecordType.EventDispatch:
           return true;
       }

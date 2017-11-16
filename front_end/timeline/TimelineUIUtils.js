@@ -103,6 +103,10 @@ Timeline.TimelineUIUtils = class {
         new Timeline.TimelineRecordStyle(Common.UIString('Compile Script'), categories['scripting']);
     eventStyles[recordTypes.EvaluateScript] =
         new Timeline.TimelineRecordStyle(Common.UIString('Evaluate Script'), categories['scripting']);
+    eventStyles[recordTypes.CompileModule] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Compile Module'), categories['scripting']);
+    eventStyles[recordTypes.EvaluateModule] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Evaluate Module'), categories['scripting']);
     eventStyles[recordTypes.ParseScriptOnBackground] =
         new Timeline.TimelineRecordStyle(Common.UIString('Parse Script'), categories['scripting']);
     eventStyles[recordTypes.MarkLoad] =
@@ -524,7 +528,9 @@ Timeline.TimelineUIUtils = class {
         detailsText = Common.UIString(
             '%s [%s\u2026%s]', url, event.args['beginData']['startLine'] + 1, endLine >= 0 ? endLine + 1 : '');
         break;
-
+      case recordType.CompileModule:
+        detailsText = Bindings.displayNameForURL(event.args['fileName']);
+        break;
       case recordType.CompileScript:
       case recordType.EvaluateScript:
         var url = eventData && eventData['url'];
@@ -680,6 +686,9 @@ Timeline.TimelineUIUtils = class {
           details.createTextChild(' @ ');
           details.appendChild(location);
         }
+        break;
+      case recordType.CompileModule:
+        details = linkifyLocation('', event.args['fileName'], 0, 0);
         break;
       case recordType.CompileScript:
       case recordType.EvaluateScript:
@@ -837,6 +846,9 @@ Timeline.TimelineUIUtils = class {
           contentHelper.appendTextRow(
               Common.UIString('Decoded Body'), Common.UIString('%d Bytes', eventData['decodedBodyLength']));
         }
+        break;
+      case recordTypes.CompileModule:
+        contentHelper.appendLocationRow(Common.UIString('Module'), event.args['fileName'], 0);
         break;
       case recordTypes.CompileScript:
         url = eventData && eventData['url'];

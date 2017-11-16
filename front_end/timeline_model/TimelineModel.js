@@ -1095,6 +1095,8 @@ TimelineModel.TimelineModel.RecordType = {
   XHRLoad: 'XHRLoad',
   CompileScript: 'v8.compile',
   EvaluateScript: 'EvaluateScript',
+  CompileModule: 'v8.compileModule',
+  EvaluateModule: 'v8.evaluateModule',
 
   CommitLoad: 'CommitLoad',
   MarkLoad: 'MarkLoad',

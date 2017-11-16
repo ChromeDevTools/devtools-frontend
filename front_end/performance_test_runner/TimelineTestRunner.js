@@ -14,6 +14,7 @@ PerformanceTestRunner.timelinePropertyFormatters = {
   startTime: 'formatAsTypeName',
   stackTrace: 'formatAsTypeName',
   url: 'formatAsURL',
+  fileName: 'formatAsURL',
   scriptName: 'formatAsTypeName',
   scriptId: 'formatAsTypeName',
   usedHeapSizeDelta: 'skip',

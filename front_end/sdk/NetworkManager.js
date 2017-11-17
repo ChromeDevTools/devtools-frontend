@@ -86,6 +86,22 @@ SDK.NetworkManager = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.NetworkRequest} request
+   * @param {string} query
+   * @param {boolean} caseSensitive
+   * @param {boolean} isRegex
+   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
+   */
+  static async searchInRequest(request, query, caseSensitive, isRegex) {
+    var manager = SDK.NetworkManager.forRequest(request);
+    if (!manager)
+      return [];
+    var response = await manager._networkAgent.invoke_searchInResponseBody(
+        {requestId: request.requestId(), query: query, caseSensitive: caseSensitive, isRegex: isRegex});
+    return response.result || [];
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   static async requestContentData(request) {

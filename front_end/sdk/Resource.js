@@ -219,6 +219,8 @@ SDK.Resource = class {
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.frameId)
       return [];
+    if (this.request)
+      return this.request.searchInContent(query, caseSensitive, isRegex);
     var result = await this._resourceTreeModel.target().pageAgent().searchInResource(
         this.frameId, this.url, query, caseSensitive, isRegex);
     return result || [];

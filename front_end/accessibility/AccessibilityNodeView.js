@@ -87,22 +87,8 @@ Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
 
     var roleProperty = /** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'role', value: axNode.role()});
     addProperty(roleProperty);
-
-    var propertyMap = {};
-    var propertiesArray = /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties());
-    for (var property of propertiesArray)
-      propertyMap[property.name] = property;
-
-    for (var propertySet
-             of [Protocol.Accessibility.AXWidgetAttributes, Protocol.Accessibility.AXWidgetStates,
-                 Protocol.Accessibility.AXGlobalStates, Protocol.Accessibility.AXLiveRegionAttributes,
-                 Protocol.Accessibility.AXRelationshipAttributes]) {
-      for (var propertyKey in propertySet) {
-        var property = propertySet[propertyKey];
-        if (property in propertyMap)
-          addProperty(propertyMap[property]);
-      }
-    }
+    for (var property of /** @type {!Array.<!Protocol.Accessibility.AXProperty>} */ (axNode.properties()))
+      addProperty(property);
   }
 
   /**

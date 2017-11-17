@@ -28,7 +28,22 @@ TestRunner.executeTestScript = function() {
             self.eval(`function test(){${testScript}}\n//# sourceURL=${testScriptURL}`);
           return;
         }
-        eval(`(function test(){${testScript}})()\n//# sourceURL=${testScriptURL}`);
+
+        // Convert the test script into an expression (if needed)
+        testScript = testScript.trimRight();
+        if (testScript.endsWith(';'))
+          testScript = testScript.slice(0, testScript.length - 1);
+
+        (async function() {
+          try {
+            await eval(testScript + `\n//# sourceURL=${testScriptURL}`);
+          } catch (err) {
+            TestRunner.addResult('TEST ENDED EARLY DUE TO UNCAUGHT ERROR:');
+            TestRunner.addResult(err && err.stack || err);
+            TestRunner.addResult('=== DO NOT COMMIT THIS INTO -expected.txt ===');
+            TestRunner.completeTest();
+          }
+        })();
       })
       .catch(error => {
         TestRunner.addResult(`Unable to execute test script because of error: ${error}`);

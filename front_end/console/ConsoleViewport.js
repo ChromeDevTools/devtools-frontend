@@ -63,6 +63,7 @@ Console.ConsoleViewport = class {
     this._headSelection = null;
     this._itemCount = 0;
     this._cumulativeHeights = new Int32Array(0);
+    this._muteCopyHandler = false;
 
     // Listen for any changes to descendants and trigger a refresh. This ensures
     // that items updated asynchronously will not break stick-to-bottom behavior
@@ -89,10 +90,18 @@ Console.ConsoleViewport = class {
       this._observer.disconnect();
   }
 
+  copyWithStyles() {
+    this._muteCopyHandler = true;
+    this.element.ownerDocument.execCommand('copy');
+    this._muteCopyHandler = false;
+  }
+
   /**
    * @param {!Event} event
    */
   _onCopy(event) {
+    if (this._muteCopyHandler)
+      return;
     var text = this._selectedText();
     if (!text)
       return;

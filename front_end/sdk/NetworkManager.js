@@ -798,8 +798,6 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 
-    /** @type {!Multimap<string, !SDK.MultitargetNetworkManager.RequestInterceptor>} */
-    this._requestInterceptorMap = new Multimap();
     /** @type {!Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, string>} */
     this._urlsForRequestInterceptor = new Multimap();
 
@@ -833,7 +831,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
       networkAgent.setBlockedURLs(this._effectiveBlockedURLs);
     if (this.isIntercepting()) {
       networkAgent.setRequestInterception(
-          this._requestInterceptorMap.keysArray().map(pattern => ({urlPattern: pattern.replace(/([\\?*])/g, '\\$1')})));
+          this._urlsForRequestInterceptor.valuesArray().map(pattern => ({urlPattern: pattern})));
     }
     this._agents.add(networkAgent);
     if (this.isThrottling())
@@ -1005,7 +1003,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @return {boolean}
    */
   isIntercepting() {
-    return !!this._requestInterceptorMap.size;
+    return !!this._urlsForRequestInterceptor.size;
   }
 
   /**
@@ -1014,17 +1012,10 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @return {!Promise}
    */
   setInterceptionHandlerForPatterns(patterns, requestInterceptor) {
-    var oldPatterns = this._urlsForRequestInterceptor.get(requestInterceptor);
-    if (oldPatterns) {
-      for (var oldPattern of oldPatterns)
-        this._requestInterceptorMap.delete(oldPattern, requestInterceptor);
-    }
-
+    // Note: requestInterceptors may recieve interception requests for patterns they did not subscribe to.
     this._urlsForRequestInterceptor.deleteAll(requestInterceptor);
-    for (var newPattern of patterns) {
+    for (var newPattern of patterns)
       this._urlsForRequestInterceptor.set(requestInterceptor, newPattern);
-      this._requestInterceptorMap.set(newPattern, requestInterceptor);
-    }
     return this._updateInterceptionPatternsOnNextTick();
   }
 
@@ -1048,8 +1039,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     var promises = /** @type {!Array<!Promise>} */ ([]);
     for (var agent of this._agents) {
       // We do not allow '?' as a single character wild card for now and do not support '*' either.
-      var patterns =
-          this._requestInterceptorMap.keysArray().map(pattern => ({urlPattern: pattern.replace(/([\\?*])/g, '\\$1')}));
+      var patterns = this._urlsForRequestInterceptor.valuesArray().map(pattern => ({urlPattern: pattern}));
       promises.push(agent.setRequestInterception(this.isIntercepting() ? patterns : []));
     }
     this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.InterceptorsChanged);
@@ -1060,14 +1050,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {!SDK.MultitargetNetworkManager.InterceptedRequest} interceptedRequest
    */
   async _requestIntercepted(interceptedRequest) {
-    var url = interceptedRequest.request.url;
-    var requestInterceptors = this._requestInterceptorMap.get(url);
-    if (!requestInterceptors)
-      return;
-    for (var requestInterceptor of requestInterceptors) {
-      // This might be a bit racy because we are awaiting, so we check again if it still exists in the map.
-      if (!this._requestInterceptorMap.hasValue(url, requestInterceptor))
-        continue;
+    for (var requestInterceptor of this._urlsForRequestInterceptor.keysArray()) {
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded())
         return;

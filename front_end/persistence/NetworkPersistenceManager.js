@@ -9,7 +9,6 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   constructor(workspace) {
     super();
     this._bindingSymbol = Symbol('NetworkPersistenceBinding');
-    this._boundInterceptingURLs = Symbol('BoundInterceptingURLs');
 
     this._enabledSetting = Common.settings.moduleSetting('persistenceNetworkOverridesEnabled');
     this._enabledSetting.addChangeListener(this._enabledChanged, this);
@@ -22,10 +21,9 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     this._fileSystemForDomain = new Map(this._domainForFileSystemPathSetting.get().map(value => [value[1], value[0]]));
 
     /** @type {!Map<string, !Workspace.UISourceCode>} */
-    this._fileSystemUISourceCodeForUrlMap = new Map();
-    /** @type {!Map<string, !Workspace.UISourceCode>} */
-    this._networkUISourceCodeWithoutHashForUrlMap = new Map();
+    this._networkUISourceCodeForEncodedPath = new Map();
     this._interceptionHandlerBound = this._interceptionHandler.bind(this);
+    this._updateInterceptionThrottler = new Common.Throttler(50);
 
     /** @type {?Workspace.Project} */
     this._activeProject = null;
@@ -140,12 +138,12 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
                 /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode)))
       ];
       var networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
+      this._updateActiveProject();
       for (var networkProject of networkProjects)
         networkProject.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
-      this._updateActiveProject();
     } else {
       Common.EventTarget.removeEventListeners(this._eventDescriptors);
-      this._networkUISourceCodeWithoutHashForUrlMap.clear();
+      this._networkUISourceCodeForEncodedPath.clear();
       this._updateActiveProject();
     }
   }
@@ -175,26 +173,51 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   }
 
   /**
-   * @param {string} urlPath
+   * @param {string} url
    * @return {string}
    */
-  _encodeUrlPathToLocalPath(urlPath) {
-    var encodedParts = [];
-    for (var pathPart of fileNamePartsFromUrlPath(urlPath)) {
-      if (!pathPart)
-        continue;
-      // encodeURI() escapes all the unsafe filename characters except /:?*
-      var encodedName = encodeURI(pathPart).replace(/[\/:\?\*]/g, match => '%' + match[0].charCodeAt(0).toString(16));
-      // Windows does not allow a small set of filenames.
-      if (Persistence.NetworkPersistenceManager._reservedFileNames.has(encodedName.toLowerCase()))
-        encodedName = encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16)).join('');
-      // Windows does not allow the file to end in a space or dot (space should already be encoded).
-      var lastChar = encodedName.charAt(encodedName.length - 1);
-      if (lastChar === '.')
-        encodedName = encodedName.substr(0, encodedName.length - 1) + '%2e';
-      encodedParts.push(encodedName);
+  _encodedPathFromUrl(url) {
+    if (!this._activeProject)
+      return '';
+    var urlPath = Common.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
+    if (urlPath.endsWith('/') && urlPath.indexOf('?') === -1)
+      urlPath = urlPath + 'index.html';
+    var encodedPathParts = encodeUrlPathToLocalPathParts(urlPath);
+    var projectPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._activeProject.id());
+    var encodedPath = encodedPathParts.join('/');
+    if (projectPath.length + encodedPath.length > 200) {
+      var domain = encodedPathParts[0];
+      var encodedFileName = encodedPathParts[encodedPathParts.length - 1];
+      var shortFileName = encodedFileName ? encodedFileName.substr(0, 10) + '-' : '';
+      var extension = Common.ParsedURL.extractExtension(urlPath);
+      var extensionPart = extension ? '.' + extension.substr(0, 10) : '';
+      encodedPathParts =
+          [domain, 'longurls', shortFileName + String.hashCode(encodedPath).toString(16) + extensionPart];
     }
-    return encodedParts.join('/');
+    return encodedPathParts.join('/');
+
+    /**
+     * @param {string} urlPath
+     * @return {!Array<string>}
+     */
+    function encodeUrlPathToLocalPathParts(urlPath) {
+      var encodedParts = [];
+      for (var pathPart of fileNamePartsFromUrlPath(urlPath)) {
+        if (!pathPart)
+          continue;
+        // encodeURI() escapes all the unsafe filename characters except /:?*
+        var encodedName = encodeURI(pathPart).replace(/[\/:\?\*]/g, match => '%' + match[0].charCodeAt(0).toString(16));
+        // Windows does not allow a small set of filenames.
+        if (Persistence.NetworkPersistenceManager._reservedFileNames.has(encodedName.toLowerCase()))
+          encodedName = encodedName.split('').map(char => '%' + char.charCodeAt(0).toString(16)).join('');
+        // Windows does not allow the file to end in a space or dot (space should already be encoded).
+        var lastChar = encodedName.charAt(encodedName.length - 1);
+        if (lastChar === '.')
+          encodedName = encodedName.substr(0, encodedName.length - 1) + '%2e';
+        encodedParts.push(encodedName);
+      }
+      return encodedParts;
+    }
 
     /**
      * @param {string} urlPath
@@ -204,11 +227,11 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       urlPath = Common.ParsedURL.urlWithoutHash(urlPath);
       var queryIndex = urlPath.indexOf('?');
       if (queryIndex === -1)
-        return urlPath.split(/[\/\\]/g);
+        return urlPath.split('/');
       if (queryIndex === 0)
         return [urlPath];
       var endSection = urlPath.substr(queryIndex);
-      var parts = urlPath.substr(0, urlPath.length - endSection.length).split(/[\/\\]/g);
+      var parts = urlPath.substr(0, urlPath.length - endSection.length).split('/');
       parts[parts.length - 1] += endSection;
       return parts;
     }
@@ -225,22 +248,6 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       console.error(e);
     }
     return path;
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} fileSystemUISourceCode
-   * @return {?Workspace.UISourceCode}
-   */
-  _networkUISourceCode(fileSystemUISourceCode) {
-    if (fileSystemUISourceCode.project() !== this._activeProject)
-      return null;
-    var urls = this._urlsForFileSystemUISourceCode(fileSystemUISourceCode);
-    for (var url of urls) {
-      var networkUISourceCode = this._networkUISourceCodeWithoutHashForUrlMap.get(url);
-      if (networkUISourceCode)
-        return networkUISourceCode;
-    }
-    return null;
   }
 
   /**
@@ -289,17 +296,12 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   async saveUISourceCodeForOverrides(uiSourceCode) {
     if (!this.canSaveUISourceCodeForOverrides(uiSourceCode))
       return;
-    var urlDomain = uiSourceCode.url().replace(/^https?:\/\//, '');
-    var fileName = urlDomain.substr(urlDomain.lastIndexOf('/') + 1);
-    var relativeFolderPath = urlDomain.substr(0, urlDomain.length - fileName.length);
-    if (relativeFolderPath.endsWith('/'))
-      relativeFolderPath = relativeFolderPath.substr(0, relativeFolderPath.length - 1);
-    if (!fileName)
-      fileName = 'index.html';
+    var encodedPath = this._encodedPathFromUrl(uiSourceCode.url());
     var content = await uiSourceCode.requestContent();
     var encoded = await uiSourceCode.contentEncoded();
-    var encodedPath = this._encodeUrlPathToLocalPath(relativeFolderPath);
-    var encodedFileName = this._encodeUrlPathToLocalPath(fileName);
+    var lastIndexOfSlash = encodedPath.lastIndexOf('/');
+    var encodedFileName = encodedPath.substr(lastIndexOfSlash + 1);
+    encodedPath = encodedPath.substr(0, lastIndexOfSlash);
     this._activeProject.createFile(encodedPath, encodedFileName, content, encoded);
     this._fileCreatedForTest(encodedPath, encodedFileName);
   }
@@ -313,31 +315,29 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Array<string>}
+   * @return {string}
    */
-  _urlsForFileSystemUISourceCode(uiSourceCode) {
-    var directoryPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-    var domainPath = this._decodeLocalPathToUrlPath(uiSourceCode.url().substr(directoryPath.length + 1));
-    var entries = ['http://' + domainPath, 'https://' + domainPath];
-    var indexFileName = 'index.html';
-    if (domainPath.endsWith(indexFileName)) {
-      domainPath = domainPath.substr(0, domainPath.length - indexFileName.length);
-      entries.push('http://' + domainPath, 'https://' + domainPath);
-    }
-    return entries;
+  _patternForFileSystemUISourceCode(uiSourceCode) {
+    var relativePathParts = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+    if (relativePathParts.length < 2)
+      return '';
+    if (relativePathParts[1] === 'longurls' && relativePathParts.length !== 2)
+      return 'http?://' + relativePathParts[0] + '/*';
+    return 'http?://' + this._decodeLocalPathToUrlPath(relativePathParts.join('/'));
   }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _onUISourceCodeAdded(uiSourceCode) {
+    if (!this._activeProject)
+      return;
     if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
       var url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
-      if (!this._networkUISourceCodeWithoutHashForUrlMap.has(url))
-        this._networkUISourceCodeWithoutHashForUrlMap.set(url, uiSourceCode);
-      if (uiSourceCode[this._bindingSymbol])
-        return;
-      var fileSystemUISourceCode = this._fileSystemUISourceCodeForUrlMap.get(uiSourceCode.url());
+      this._networkUISourceCodeForEncodedPath.set(this._encodedPathFromUrl(url), uiSourceCode);
+
+      var fileSystemUISourceCode = this._activeProject.uiSourceCodeForURL(
+          this._activeProject.fileSystemPath() + '/' + this._encodedPathFromUrl(url));
       if (!fileSystemUISourceCode)
         return;
       this._bind(uiSourceCode, fileSystemUISourceCode);
@@ -346,18 +346,36 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     if (uiSourceCode.project() !== this._activeProject)
       return;
 
-    var urls = this._urlsForFileSystemUISourceCode(uiSourceCode);
-    uiSourceCode[this._boundInterceptingURLs] = [];
-    for (var url of urls) {
-      uiSourceCode[this._boundInterceptingURLs].push(url);
-      this._fileSystemUISourceCodeForUrlMap.set(url, uiSourceCode);
-    }
-    SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns(
-        Array.from(this._fileSystemUISourceCodeForUrlMap.keys()), this._interceptionHandlerBound);
+    this._updateInterceptionPatterns();
 
-    var networkUISourceCode = this._networkUISourceCode(uiSourceCode);
+    var relativePath = Persistence.FileSystemWorkspaceBinding.relativePath(uiSourceCode);
+    var networkUISourceCode = this._networkUISourceCodeForEncodedPath.get(relativePath.join('/'));
     if (networkUISourceCode)
       this._bind(networkUISourceCode, uiSourceCode);
+  }
+
+  _updateInterceptionPatterns() {
+    this._updateInterceptionThrottler.schedule(innerUpdateInterceptionPatterns.bind(this));
+
+    /**
+     * @this {Persistence.NetworkPersistenceManager}
+     * @return {!Promise}
+     */
+    function innerUpdateInterceptionPatterns() {
+      if (!this._activeProject)
+        return SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns([], this._interceptionHandlerBound);
+      var patterns = new Set();
+      var indexFileName = 'index.html';
+      for (var uiSourceCode of this._activeProject.uiSourceCodes()) {
+        var pattern = this._patternForFileSystemUISourceCode(uiSourceCode);
+        patterns.add(pattern);
+        if (pattern.endsWith('/' + indexFileName))
+          patterns.add(pattern.substr(0, pattern.length - indexFileName.length));
+      }
+
+      return SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns(
+          Array.from(patterns), this._interceptionHandlerBound);
+    }
   }
 
   /**
@@ -377,22 +395,11 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    */
   _onUISourceCodeRemoved(uiSourceCode) {
     if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
-      var url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
-      var networkUISourceCode = this._networkUISourceCodeWithoutHashForUrlMap.get(url);
-      if (networkUISourceCode === uiSourceCode)
-        this._networkUISourceCodeWithoutHashForUrlMap.delete(url);
       this._unbind(uiSourceCode);
+      this._networkUISourceCodeForEncodedPath.delete(this._encodedPathFromUrl(uiSourceCode.url()));
       return;
     }
-
-    var boundURLs = uiSourceCode[this._boundInterceptingURLs];
-    if (boundURLs) {
-      for (var url of boundURLs)
-        this._fileSystemUISourceCodeForUrlMap.delete(url);
-      delete uiSourceCode[this._boundInterceptingURLs];
-      SDK.multitargetNetworkManager.setInterceptionHandlerForPatterns(
-          Array.from(this._fileSystemUISourceCodeForUrlMap.keys()), this._interceptionHandlerBound);
-    }
+    this._updateInterceptionPatterns();
     this._unbind(uiSourceCode);
   }
 
@@ -426,10 +433,12 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    * @return {!Promise}
    */
   async _interceptionHandler(interceptedRequest) {
-    var fileSystemUISourceCode = this._fileSystemUISourceCodeForUrlMap.get(interceptedRequest.request.url);
-    if (!fileSystemUISourceCode)
+    var method = interceptedRequest.request.method;
+    if (!this._activeProject || (method !== 'GET' && method !== 'POST'))
       return;
-    if (interceptedRequest.request.method !== 'GET' && interceptedRequest.request.method !== 'POST')
+    var path = this._activeProject.fileSystemPath() + '/' + this._encodedPathFromUrl(interceptedRequest.request.url);
+    var fileSystemUISourceCode = this._activeProject.uiSourceCodeForURL(path);
+    if (!fileSystemUISourceCode)
       return;
 
     var expectedResourceType = Common.resourceTypes[interceptedRequest.resourceType] || Common.resourceTypes.Other;

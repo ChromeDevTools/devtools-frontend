@@ -133,6 +133,10 @@
     border-top: 1px solid rgb(230, 230, 230)
 }
 
+.service-worker-list-empty .service-workers-other-origin {
+    display: none;
+}
+
 .service-worker-filter{
     padding: 16px 20px 12px 12px;
     flex-grow: 0;

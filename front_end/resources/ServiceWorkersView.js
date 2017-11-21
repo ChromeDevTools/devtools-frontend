@@ -63,6 +63,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/
     this._eventListeners = new Map();
     SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
+    this._updateListVisibility();
   }
 
   /**
@@ -136,6 +137,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     }
     this.contentElement.classList.toggle('service-worker-has-current', hasThis);
     this._otherWorkers.classList.toggle('hidden', !hasOthers);
+    this._updateListVisibility();
   }
 
   /**
@@ -256,6 +258,10 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     if (path.endsWith('/'))
       path = path.substring(0, path.length - 1);
     return parsedURL.host + path;
+  }
+
+  _updateListVisibility() {
+    this.contentElement.classList.toggle('service-worker-list-empty', this._sections.size === 0);
   }
 };
 

@@ -36,7 +36,7 @@ ExtensionsTestRunner.dumpAuditProgress = function() {
   TestRunner.addResult('Progress: ' + Math.round(100 * progress.value / progress.max) + '%');
 };
 
-TestRunner.initAsync(`
+TestRunner.deprecatedInitAsync(`
   function extension_runAudits(callback) {
     evaluateOnFrontend('ExtensionsTestRunner.startExtensionAudits(reply);', callback);
   }

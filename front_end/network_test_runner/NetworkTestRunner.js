@@ -145,7 +145,7 @@ NetworkTestRunner.HARPropertyFormatters = {
 NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(NetworkTestRunner.HARPropertyFormatters));
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
-TestRunner.initAsync(`
+TestRunner.deprecatedInitAsync(`
   var lastXHRIndex = 0;
 
   function xhrLoadedCallback() {

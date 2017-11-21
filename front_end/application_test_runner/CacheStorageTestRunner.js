@@ -135,7 +135,7 @@ ApplicationTestRunner.clearAllCaches = function() {
   return TestRunner.callFunctionInPageAsync('clearAllCaches');
 };
 
-TestRunner.initAsync(`
+TestRunner.deprecatedInitAsync(`
   function onCacheStorageError(e) {
     console.error('CacheStorage error: ' + e);
   }

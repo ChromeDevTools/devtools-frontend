@@ -12,7 +12,7 @@
 /** @type {!{logToStderr: function(), notifyDone: function()}|undefined} */
 self.testRunner;
 
-TestRunner.executeTestScript = function() {
+TestRunner._executeTestScript = function() {
   var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
   fetch(testScriptURL)
       .then(data => data.text())
@@ -562,9 +562,20 @@ TestRunner.addIframe = function(path, options = {}) {
 TestRunner._pendingInits = 0;
 
 /**
+ * The old test framework executed certain snippets in the inspected page
+ * context as part of loading a test helper file.
+ *
+ * This is deprecated because:
+ * 1) it makes the testing API less intuitive (need to read the various *TestRunner.js
+ * files to know which helper functions are available in the inspected page).
+ * 2) it complicates the test framework's module loading process.
+ *
+ * In most cases, this is used to set up inspected page functions (e.g. makeSimpleXHR)
+ * which should become a *TestRunner method (e.g. NetworkTestRunner.makeSimpleXHR)
+ * that calls evaluateInPageAnonymously(...).
  * @param {string} code
  */
-TestRunner.initAsync = async function(code) {
+TestRunner.deprecatedInitAsync = async function(code) {
   TestRunner._pendingInits++;
   await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   TestRunner._pendingInits--;
@@ -1276,7 +1287,7 @@ TestRunner._startedTest = false;
 /**
  * @implements {SDK.TargetManager.Observer}
  */
-TestRunner.TestObserver = class {
+TestRunner._TestObserver = class {
   /**
    * @param {!SDK.Target} target
    * @override
@@ -1286,7 +1297,7 @@ TestRunner.TestObserver = class {
       return;
     TestRunner._startedTest = true;
     TestRunner._setupTestHelpers(target);
-    TestRunner.runTest();
+    TestRunner._runTest();
   }
 
   /**
@@ -1297,7 +1308,7 @@ TestRunner.TestObserver = class {
   }
 };
 
-TestRunner.runTest = async function() {
+TestRunner._runTest = async function() {
   var testPath = TestRunner.url();
   await TestRunner.loadHTML(`
     <head>
@@ -1306,12 +1317,12 @@ TestRunner.runTest = async function() {
     <body>
     </body>
   `);
-  TestRunner.executeTestScript();
+  TestRunner._executeTestScript();
 };
 
 // Old-style tests start test using inspector-test.js
 if (Runtime.queryParam('test'))
-  SDK.targetManager.observeTargets(new TestRunner.TestObserver());
+  SDK.targetManager.observeTargets(new TestRunner._TestObserver());
 
 (function() {
 /**

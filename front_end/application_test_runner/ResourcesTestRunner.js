@@ -100,7 +100,7 @@ ApplicationTestRunner.indexedDBModel = function() {
   return TestRunner.mainTarget.model(Resources.IndexedDBModel);
 };
 
-TestRunner.initAsync(`
+TestRunner.deprecatedInitAsync(`
   function _openWebSQLDatabase(name) {
     return new Promise(resolve => openDatabase(name, '1.0', '', 1024 * 1024, resolve));
   }

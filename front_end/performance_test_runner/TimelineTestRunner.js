@@ -369,7 +369,7 @@ PerformanceTestRunner.loadTimeline = function(timelineData) {
   return promise;
 };
 
-TestRunner.initAsync(`
+TestRunner.deprecatedInitAsync(`
   function wrapCallFunctionForTimeline(f) {
     var script = document.createElement('script');
     script.textContent = '(' + f.toString() + ')()\\n//# sourceURL=wrapCallFunctionForTimeline.js';

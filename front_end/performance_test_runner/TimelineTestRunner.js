@@ -183,14 +183,14 @@ PerformanceTestRunner.performActionsAndPrint = function(actions, typeName, inclu
 };
 
 PerformanceTestRunner.printTimelineRecords = function(name) {
-  for (let event of PerformanceTestRunner.timelineModel().mainThreadEvents()) {
+  for (let event of PerformanceTestRunner.timelineModel().inspectedTargetEvents()) {
     if (event.name === name)
       PerformanceTestRunner.printTraceEventProperties(event);
   }
 };
 
 PerformanceTestRunner.printTimelineRecordsWithDetails = function(name) {
-  for (let event of PerformanceTestRunner.timelineModel().mainThreadEvents()) {
+  for (let event of PerformanceTestRunner.timelineModel().inspectedTargetEvents()) {
     if (name === event.name)
       PerformanceTestRunner.printTraceEventPropertiesWithDetails(event);
   }

@@ -324,6 +324,7 @@ Network.NetworkLogViewColumns = class {
     }
     this._networkLogView.element.classList.toggle('brief-mode', !gridMode);
     this._updateColumns();
+    this._updateRowsSize();
   }
 
   /**

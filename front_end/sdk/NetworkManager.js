@@ -147,7 +147,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @param {!Object} headers
    * @return {!Object<string, string>}
    */
-  static _lowercaseHeaders(headers) {
+  static lowercaseHeaders(headers) {
     var newHeaders = {};
     for (var headerName in headers)
       newHeaders[headerName.toLowerCase()] = headers[headerName];
@@ -448,7 +448,7 @@ SDK.NetworkDispatcher = class {
    */
   responseReceived(requestId, loaderId, time, resourceType, response, frameId) {
     var networkRequest = this._inflightRequestsById[requestId];
-    var lowercaseHeaders = SDK.NetworkManager._lowercaseHeaders(response.headers);
+    var lowercaseHeaders = SDK.NetworkManager.lowercaseHeaders(response.headers);
     if (!networkRequest) {
       // We missed the requestWillBeSent.
       var eventData = {};
@@ -798,7 +798,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     this._effectiveBlockedURLs = [];
     this._updateBlockedPatterns();
 
-    /** @type {!Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, string>} */
+    /** @type {!Multimap<!SDK.MultitargetNetworkManager.RequestInterceptor, !SDK.MultitargetNetworkManager.InterceptionPattern>} */
     this._urlsForRequestInterceptor = new Multimap();
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Network);
@@ -829,10 +829,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
       networkAgent.setUserAgentOverride(this._currentUserAgent());
     if (this._effectiveBlockedURLs.length)
       networkAgent.setBlockedURLs(this._effectiveBlockedURLs);
-    if (this.isIntercepting()) {
-      networkAgent.setRequestInterception(
-          this._urlsForRequestInterceptor.valuesArray().map(pattern => ({urlPattern: pattern})));
-    }
+    if (this.isIntercepting())
+      networkAgent.setRequestInterception(this._urlsForRequestInterceptor.valuesArray());
     this._agents.add(networkAgent);
     if (this.isThrottling())
       this._updateNetworkConditions(networkAgent);
@@ -1007,7 +1005,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   }
 
   /**
-   * @param {!Array<string>} patterns
+   * @param {!Array<!SDK.MultitargetNetworkManager.InterceptionPattern>} patterns
    * @param {!SDK.MultitargetNetworkManager.RequestInterceptor} requestInterceptor
    * @return {!Promise}
    */
@@ -1037,11 +1035,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
       Common.moduleSetting('cacheDisabled').set(true);
     this._updatingInterceptionPatternsPromise = null;
     var promises = /** @type {!Array<!Promise>} */ ([]);
-    for (var agent of this._agents) {
-      // We do not allow '?' as a single character wild card for now and do not support '*' either.
-      var patterns = this._urlsForRequestInterceptor.valuesArray().map(pattern => ({urlPattern: pattern}));
-      promises.push(agent.setRequestInterception(this.isIntercepting() ? patterns : []));
-    }
+    for (var agent of this._agents)
+      promises.push(agent.setRequestInterception(this._urlsForRequestInterceptor.valuesArray()));
     this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.InterceptorsChanged);
     return Promise.all(promises);
   }
@@ -1195,6 +1190,9 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
     this._networkAgent.continueInterceptedRequest(this._interceptionId, errorReason);
   }
 };
+
+/** @typedef {!{urlPattern: string, interceptionStage: !Protocol.Network.InterceptionStage}} */
+SDK.MultitargetNetworkManager.InterceptionPattern;
 
 /** @typedef {!function(!SDK.MultitargetNetworkManager.InterceptedRequest):!Promise} */
 SDK.MultitargetNetworkManager.RequestInterceptor;

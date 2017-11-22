@@ -15,6 +15,14 @@
             "className": "Persistence.WorkspaceSettingsTab"
         },
         {
+            "type": "view",
+            "location": "settings-view",
+            "id": "overrides",
+            "title": "Overrides",
+            "order": 2,
+            "className": "Persistence.OverridesSettingsTab"
+        },
+        {
             "type": "setting",
             "category": "Persistence",
             "title": "Enable Local Overrides",
@@ -56,10 +64,12 @@
         "PersistenceUtils.js",
         "FileSystemMapping.js",
         "EditFileSystemView.js",
-        "WorkspaceSettingsTab.js"
+        "WorkspaceSettingsTab.js",
+        "OverridesSettingsTab.js"
     ],
     "resources": [
         "editFileSystemView.css",
-        "workspaceSettingsTab.css"
+        "workspaceSettingsTab.css",
+        "overridesSettingsTab.css"
     ]
 }

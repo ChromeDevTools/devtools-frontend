@@ -56,7 +56,7 @@
             "location": "settings-view",
             "id": "experiments",
             "title": "Experiments",
-            "order": 2,
+            "order": 3,
             "experiment": "*",
             "className": "Settings.ExperimentsSettingsTab"
         },
@@ -65,7 +65,7 @@
             "location": "settings-view",
             "id": "blackbox",
             "title": "Blackboxing",
-            "order": 3,
+            "order": 4,
             "className": "Settings.FrameworkBlackboxSettingsTab"
         },
         {

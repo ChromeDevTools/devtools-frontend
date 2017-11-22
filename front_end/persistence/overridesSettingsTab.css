@@ -1,0 +1,77 @@
+/*
+ * Copyright 2015 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.overrides-info-message {
+    background-color: #eee;
+    padding: 10px;
+}
+
+.overrides-list {
+    margin-top: 10px;
+    max-width: 500px;
+    flex: 0 1 auto;
+    min-height: 30px;
+}
+
+.overrides-list-empty {
+    flex: auto;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.overrides-list-item {
+    padding: 3px 5px 3px 5px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: auto 1 1;
+}
+
+ .overrides-path,
+ .overrides-domain {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-user-select: none;
+    color: #222;
+    overflow: hidden;
+    flex: auto;
+}
+
+.overrides-list-item .overrides-domain {
+    flex: 0 0 150px;
+}
+
+.overrides-separator {
+    flex: 0 0 1px;
+    background-color: rgb(231, 231, 231);
+    height: 30px;
+    margin: 0 4px;
+}
+
+.overrides-edit-row {
+    flex: none;
+    display: flex;
+    flex-direction: row;
+    margin: 5px 5px;
+    align-items: center;
+}
+
+.overrides-edit-row input {
+    width: 100%;
+    text-align: inherit;
+}
+
+.overrides-domain-label {
+    padding-right: 20px;
+}
+
+.overrides-filesystem-path {
+    padding: 3px 0px 3px 0px;
+    min-height: 30px;
+}

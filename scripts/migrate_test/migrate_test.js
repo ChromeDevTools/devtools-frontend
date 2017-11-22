@@ -406,7 +406,7 @@ function getPanels(inputPath, inputCode) {
   const components = inputPath.slice(inputPath.indexOf('LayoutTests/')).split('/');
   const folder = inputPath.indexOf('LayoutTests/inspector') === -1 ? components[4] : components[2];
   if (folder.endsWith('.html'))
-    return;
+    return [];
   const panel = panelByFolder[folder];
   if (panel)
     panels.add(panel);

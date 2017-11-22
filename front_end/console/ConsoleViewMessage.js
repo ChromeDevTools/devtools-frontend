@@ -1340,7 +1340,7 @@ Console.ConsoleViewMessage = class {
 
   /**
    * @param {string} string
-   * @return {!Array<{type: string, text: string}>}
+   * @return {!Array<{type: string, text: (string|undefined)}>}
    */
   static _tokenizeMessageText(string) {
     if (!Console.ConsoleViewMessage._tokenizerRegexes) {
@@ -1361,7 +1361,8 @@ Console.ConsoleViewMessage = class {
       Console.ConsoleViewMessage._tokenizerRegexes = Array.from(handlers.keys());
       Console.ConsoleViewMessage._tokenizerTypes = Array.from(handlers.values());
     }
-
+    if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
+      return [{text: string, type: undefined}];
     var results = TextUtils.TextUtils.splitStringByRegexes(string, Console.ConsoleViewMessage._tokenizerRegexes);
     return results.map(
         result => ({text: result.value, type: Console.ConsoleViewMessage._tokenizerTypes[result.regexIndex]}));
@@ -1465,3 +1466,5 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
  * @type {number}
  */
 Console.ConsoleViewMessage.MaxLengthForLinks = 40;
+
+Console.ConsoleViewMessage._MaxTokenizableStringLength = 10000;

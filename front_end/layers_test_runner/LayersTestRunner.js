@@ -61,14 +61,9 @@ LayersTestRunner.dumpLayers3DView = function(prefix, root) {
     LayersTestRunner.dumpLayers3DView(prefix + '    ', element);
 };
 
-LayersTestRunner.evaluateAndRunWhenTreeChanges = async function(expression, callback) {
-  function eventHandler() {
-    LayersTestRunner.layerTreeModel().removeEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, eventHandler);
-    callback();
-  }
-
+LayersTestRunner.evaluateAndWaitForTreeChange = async function(expression) {
   await TestRunner.evaluateInPageAnonymously(expression);
-  LayersTestRunner.layerTreeModel().addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, eventHandler);
+  return LayersTestRunner.layerTreeModel().once(Layers.LayerTreeModel.Events.LayerTreeChanged);
 };
 
 LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {
@@ -95,40 +90,9 @@ LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {
   return result;
 };
 
-LayersTestRunner.requestLayers = function(callback) {
-  LayersTestRunner.layerTreeModel().addEventListener(Layers.LayerTreeModel.Events.LayerTreeChanged, onLayerTreeChanged);
+LayersTestRunner.requestLayers = function() {
   LayersTestRunner.layerTreeModel().enable();
-
-  function onLayerTreeChanged() {
-    LayersTestRunner.layerTreeModel().removeEventListener(
-        Layers.LayerTreeModel.Events.LayerTreeChanged, onLayerTreeChanged);
-    callback();
-  }
-};
-
-LayersTestRunner.dumpModelScrollRects = function() {
-  function dumpScrollRectsForLayer(layer) {
-    if (layer._scrollRects.length > 0)
-      TestRunner.addObject(layer._scrollRects);
-  }
-
-  TestRunner.addResult('Model elements dump');
-  LayersTestRunner.layerTreeModel().layerTree().forEachLayer(dumpScrollRectsForLayer.bind(this));
-};
-
-LayersTestRunner.dumpModelStickyPositionConstraint = function() {
-  function dumpModelStickyPositionConstraintForLayer(layer) {
-    var stickyFormatters = {
-      '_nearestLayerShiftingContainingBlock': 'formatAsTypeNameOrNull',
-      '_nearestLayerShiftingStickyBox': 'formatAsTypeNameOrNull'
-    };
-
-    if (layer._stickyPositionConstraint)
-      TestRunner.addObject(layer._stickyPositionConstraint, stickyFormatters);
-  }
-
-  TestRunner.addResult('Model elements dump');
-  LayersTestRunner.layerTreeModel().layerTree().forEachLayer(dumpModelStickyPositionConstraintForLayer.bind(this));
+  return LayersTestRunner.layerTreeModel().once(Layers.LayerTreeModel.Events.LayerTreeChanged);
 };
 
 LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offsetX, offsetY) {
@@ -153,4 +117,26 @@ LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offse
   }
 
   element.dispatchEvent(new MouseEvent(eventType, eventArguments));
+};
+
+LayersTestRunner.findLayerTreeElement = function(layer) {
+  var element = layer[LayerViewer.LayerTreeElement._symbol];
+  element.reveal();
+  return element.listItemElement;
+};
+
+LayersTestRunner.dispatchMouseEventToLayerTree = function(eventType, button, layer) {
+  var element = LayersTestRunner.findLayerTreeElement(layer);
+  TestRunner.assertTrue(!!element);
+  LayersTestRunner.dispatchMouseEvent(eventType, button, element, element.clientWidth >> 1, element.clientHeight >> 1);
+};
+
+LayersTestRunner.dumpSelectedStyles = function(message, element) {
+  var classes = [];
+  if (element.classList.contains('selected'))
+    classes.push('selected');
+  if (element.classList.contains('hovered'))
+    classes.push('hovered');
+
+  TestRunner.addResult(message + ': ' + classes.join(', '));
 };

@@ -1061,7 +1061,8 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
 
-    this._agent.enable();
+    if (!target.suspended())
+      this._agent.enable();
   }
 
   /**

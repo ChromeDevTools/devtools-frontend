@@ -58,6 +58,8 @@ SDK.OverlayModel = class extends SDK.SDKModel {
         () => this._overlayAgent.setShowScrollBottleneckRects(this._showScrollBottleneckRectsSetting.get()));
     if (this._showScrollBottleneckRectsSetting.get())
       this._overlayAgent.setShowScrollBottleneckRects(true);
+    if (target.suspended())
+      this._overlayAgent.setSuspended(true);
   }
 
   /**

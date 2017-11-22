@@ -15,8 +15,9 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {number} capabilitiesMask
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
+   * @param {boolean} suspended
    */
-  constructor(targetManager, id, name, capabilitiesMask, connectionFactory, parentTarget) {
+  constructor(targetManager, id, name, capabilitiesMask, connectionFactory, parentTarget, suspended) {
     super(connectionFactory);
     this._targetManager = targetManager;
     this._name = name;
@@ -25,6 +26,7 @@ SDK.Target = class extends Protocol.TargetBase {
     this._parentTarget = parentTarget;
     this._id = id;
     this._modelByConstructor = new Map();
+    this._isSuspended = suspended;
   }
 
   createModels(required) {
@@ -193,6 +195,41 @@ SDK.Target = class extends Protocol.TargetBase {
     this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.InspectedURLChanged, this);
     if (!this._name)
       this._targetManager.dispatchEventToListeners(SDK.TargetManager.Events.NameChanged, this);
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  suspend() {
+    if (this._isSuspended)
+      return Promise.resolve();
+    this._isSuspended = true;
+
+    var promises = [];
+    for (var model of this.models().values())
+      promises.push(model.suspendModel());
+    return Promise.all(promises);
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  resume() {
+    if (!this._isSuspended)
+      return Promise.resolve();
+    this._isSuspended = false;
+
+    var promises = [];
+    for (var model of this.models().values())
+      promises.push(model.resumeModel());
+    return Promise.all(promises);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  suspended() {
+    return this._isSuspended;
   }
 };
 

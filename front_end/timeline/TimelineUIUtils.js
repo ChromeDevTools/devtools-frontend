@@ -182,6 +182,27 @@ Timeline.TimelineUIUtils = class {
     eventStyles[recordTypes.GCCollectGarbage] =
         new Timeline.TimelineRecordStyle(Common.UIString('DOM GC'), categories['scripting']);
 
+    eventStyles[recordTypes.CryptoDoEncrypt] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Encrypt'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoEncryptReply] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Encrypt Reply'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoDecrypt] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Decrypt'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoDecryptReply] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Decrypt Reply'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoDigest] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Digest'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoDigestReply] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Digest Reply'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoSign] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Sign'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoSignReply] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Sign Reply'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoVerify] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Verify'), categories['scripting']);
+    eventStyles[recordTypes.CryptoDoVerifyReply] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Verify Reply'), categories['scripting']);
+
     eventStyles[recordTypes.AsyncTask] =
         new Timeline.TimelineRecordStyle(Common.UIString('Async Task'), categories['async']);
 

@@ -297,13 +297,16 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
 
   /**
    * @param {!SDK.DebuggerModel.Location} startLocation
-   * @param {!SDK.DebuggerModel.Location} endLocation
+   * @param {?SDK.DebuggerModel.Location} endLocation
    * @param {boolean} restrictToFunction
    * @return {!Promise<!Array<!SDK.DebuggerModel.BreakLocation>>}
    */
   async getPossibleBreakpoints(startLocation, endLocation, restrictToFunction) {
-    var response = await this._agent.invoke_getPossibleBreakpoints(
-        {start: startLocation.payload(), end: endLocation.payload(), restrictToFunction: restrictToFunction});
+    var response = await this._agent.invoke_getPossibleBreakpoints({
+      start: startLocation.payload(),
+      end: endLocation ? endLocation.payload() : undefined,
+      restrictToFunction: restrictToFunction
+    });
     if (response[Protocol.Error] || !response.locations)
       return [];
     return response.locations.map(location => SDK.DebuggerModel.BreakLocation.fromPayload(this, location));

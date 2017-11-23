@@ -692,19 +692,9 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
     if (!callFrame)
       return;
-    var localScope = callFrame.localScope();
-    if (!localScope) {
-      this._clearContinueToLocationsNoRestore();
-      return;
-    }
-    var start = localScope.startLocation();
-    var end = localScope.endLocation();
-    if (!start || !end) {
-      this._clearContinueToLocationsNoRestore();
-      return;
-    }
+    var start = callFrame.functionLocation() || callFrame.location();
     var debuggerModel = callFrame.debuggerModel;
-    debuggerModel.getPossibleBreakpoints(start, end, true)
+    debuggerModel.getPossibleBreakpoints(start, null, true)
         .then(locations => this.textEditor.operation(renderLocations.bind(this, locations)));
 
     /**

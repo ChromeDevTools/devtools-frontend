@@ -16,6 +16,17 @@
     margin-left: 5px;
 }
 
+.show-more-message {
+    text-align: center;
+    font-style: italic;
+    padding: 4px;
+    border-top: 1px solid #d8d8d8;
+}
+
+.show-more-message > .link {
+    margin-left: 5px;
+}
+
 .call-frame-item {
     padding: 3px 8px 3px 20px;
     position: relative;

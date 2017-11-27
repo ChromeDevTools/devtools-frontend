@@ -17,7 +17,7 @@ TestRunner._executeTestScript = function() {
   fetch(testScriptURL)
       .then(data => data.text())
       .then(testScript => {
-        if (!self.testRunner || Runtime.queryParam('debugFrontend')) {
+        if (TestRunner._isDebugTest()) {
           TestRunner.addResult = console.log;
           TestRunner.completeTest = () => console.log('Test completed');
 
@@ -1268,6 +1268,8 @@ TestRunner._consoleOutputHook = function(messageType) {
  * messages printed at the top of the test expectation file (default behavior).
  */
 TestRunner._printDevToolsConsole = function() {
+  if (TestRunner._isDebugTest())
+    return;
   console.log = TestRunner._consoleOutputHook.bind(TestRunner, 'log');
   console.error = TestRunner._consoleOutputHook.bind(TestRunner, 'error');
   console.info = TestRunner._consoleOutputHook.bind(TestRunner, 'info');
@@ -1319,6 +1321,13 @@ TestRunner._runTest = async function() {
     </body>
   `);
   TestRunner._executeTestScript();
+};
+
+/**
+ * @return {boolean}
+ */
+TestRunner._isDebugTest = function() {
+  return !self.testRunner || !!Runtime.queryParam('debugFrontend');
 };
 
 // Old-style tests start test using inspector-test.js

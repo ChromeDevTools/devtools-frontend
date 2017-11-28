@@ -113,6 +113,7 @@ fieldset {
 .settings-tab label {
     padding-right: 4px;
     display: inline-flex;
+    flex-shrink: 0;
 }
 
 #general-tab-content .help-block fieldset legend {

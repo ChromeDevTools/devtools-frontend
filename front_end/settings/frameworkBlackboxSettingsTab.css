@@ -61,6 +61,7 @@
 
 .blackbox-pattern {
     flex: auto;
+    min-width: 100px;
 }
 
 .blackbox-list-item.blackbox-disabled .blackbox-pattern {

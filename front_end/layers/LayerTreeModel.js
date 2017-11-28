@@ -44,6 +44,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
     }
     /** @type {?SDK.LayerTreeBase} */
     this._layerTree = null;
+    this._throttler = new Common.Throttler(20);
   }
 
   disable() {
@@ -80,6 +81,13 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
   async _layerTreeChanged(layers) {
     if (!this._enabled)
       return;
+    this._throttler.schedule(this._innerSetLayers.bind(this, layers));
+  }
+
+  /**
+   * @param {?Array.<!Protocol.LayerTree.Layer>} layers
+   */
+  async _innerSetLayers(layers) {
     var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
 
     await layerTree.setLayers(layers);

@@ -114,18 +114,12 @@
 
 .service-worker-list {
     background-color: #f9f9f9;
+    overflow: auto;
 }
 
 .service-workers-this-origin {
     flex-shrink: 0;
     flex-grow: 0;
-}
-
-.service-workers-other-origin {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    flex-shrink: 1;
 }
 
 .service-worker-has-current .service-workers-other-origin {
@@ -135,6 +129,12 @@
 
 .service-worker-list-empty .service-workers-other-origin {
     display: none;
+}
+
+.service-workers-this-origin,
+.service-worker-filter,
+.service-workers-other-origin {
+    min-width: 400px;
 }
 
 .service-worker-filter{

@@ -12,12 +12,12 @@ UI.ReportView = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('ui/reportView.css');
 
-    var contentBox = this.contentElement.createChild('div', 'report-content-box');
-    this._headerElement = contentBox.createChild('div', 'report-header vbox');
+    this._contentBox = this.contentElement.createChild('div', 'report-content-box');
+    this._headerElement = this._contentBox.createChild('div', 'report-header vbox');
     this._titleElement = this._headerElement.createChild('div', 'report-title');
     this._titleElement.textContent = title;
 
-    this._sectionList = contentBox.createChild('div', 'vbox');
+    this._sectionList = this._contentBox.createChild('div', 'vbox');
   }
 
   /**
@@ -91,6 +91,14 @@ UI.ReportView = class extends UI.VBox {
    */
   setHeaderVisible(visible) {
     this._headerElement.classList.toggle('hidden', !visible);
+  }
+
+
+  /**
+   * @param {boolean} scrollable
+   */
+  setBodyScrollable(scrollable) {
+    this._contentBox.classList.toggle('no-scroll', !scrollable);
   }
 };
 

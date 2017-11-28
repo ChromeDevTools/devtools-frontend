@@ -258,7 +258,7 @@ Common.ResourceType._resourceTypeByExtension = new Map([
 Common.ResourceType._mimeTypeByExtension = new Map([
   // Web extensions
   ['js', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'], ['htm', 'text/html'],
-  ['xml', 'application/xml'], ['xsl', 'application/xml'],
+  ['mjs', 'text/javascript'], ['xml', 'application/xml'], ['xsl', 'application/xml'],
 
   // HTML Embedded Scripts, ASP], JSP
   ['asp', 'application/x-aspx'], ['aspx', 'application/x-aspx'], ['jsp', 'application/x-jsp'],

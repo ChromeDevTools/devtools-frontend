@@ -4,17 +4,16 @@
 
 /**
  * @param {string} folderPath
- * @return {!Workspace.Project}
+ * @return {!{isolatedFileSystem: !Persistence.IsolatedFileSystem, project: !Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}}
  */
 BindingsTestRunner.createOverrideProject = async function(folderPath) {
-  var testFilesystem = new BindingsTestRunner.TestFileSystem(folderPath);
-  await testFilesystem.reportCreatedPromise();
-  var isolatedFileSystem = Persistence.isolatedFileSystemManager.fileSystem(testFilesystem.fileSystemPath);
+  var testFileSystem = new BindingsTestRunner.TestFileSystem(folderPath);
+  var isolatedFileSystem = await testFileSystem.reportCreatedPromise();
   isolatedFileSystem._type = 'overrides';
   var project =
       Workspace.workspace.project(Persistence.FileSystemWorkspaceBinding.projectId(isolatedFileSystem.path()));
   console.assert(project);
-  return project;
+  return {isolatedFileSystem, project, testFileSystem};
 };
 
 /**

@@ -175,7 +175,7 @@ SDK.EmulationModel.Geolocation = class {
         var splitPosition = splitError[0].split('@');
         if (splitPosition.length === 2) {
           return new SDK.EmulationModel.Geolocation(
-              parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), splitError[1]);
+              parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), !!splitError[1]);
         }
       }
     }
@@ -225,9 +225,7 @@ SDK.EmulationModel.Geolocation = class {
    * @return {string}
    */
   toSetting() {
-    return (typeof this.latitude === 'number' && typeof this.longitude === 'number' && typeof this.error === 'string') ?
-        this.latitude + '@' + this.longitude + ':' + this.error :
-        '';
+    return this.latitude + '@' + this.longitude + ':' + (this.error || '');
   }
 };
 

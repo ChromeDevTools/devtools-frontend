@@ -220,7 +220,8 @@ PerfUI.FilmStripView.Dialog = class extends UI.VBox {
     this._index = filmStripFrame.index;
     this._zeroTime = zeroTime || filmStripFrame.model().zeroTime();
 
-    this._imageElement = this.contentElement.createChild('img');
+    var imageScrollElement = this.contentElement.createChild('div', 'filmstrip-dialog-image-scroll');
+    this._imageElement = imageScrollElement.createChild('img');
     var footerElement = this.contentElement.createChild('div', 'filmstrip-dialog-footer');
     footerElement.createChild('div', 'flex-auto');
     var prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));

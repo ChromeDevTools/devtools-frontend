@@ -12,7 +12,8 @@
     margin: 12px;
 }
 
-.filmstrip-dialog > img {
+.filmstrip-dialog-image-scroll {
+    overflow: auto;
     border: 1px solid #ddd;
     max-height: 80vh;
     max-width: 80vw;

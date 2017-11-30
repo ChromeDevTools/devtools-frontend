@@ -1189,6 +1189,16 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
     this._hasResponded = true;
     this._networkAgent.continueInterceptedRequest(this._interceptionId, errorReason);
   }
+
+  /**
+   * @return {!Promise<!SDK.NetworkRequest.ContentData>}
+   */
+  async responseBody() {
+    var response =
+        await this._networkAgent.invoke_getResponseBodyForInterception({interceptionId: this._interceptionId});
+    var error = response[Protocol.Error] || null;
+    return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
+  }
 };
 
 /** @typedef {!{urlPattern: string, interceptionStage: !Protocol.Network.InterceptionStage}} */

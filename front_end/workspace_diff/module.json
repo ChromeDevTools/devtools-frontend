@@ -1,7 +1,8 @@
 {
   "dependencies": [
       "workspace",
-      "diff"
+      "diff",
+      "persistence"
   ],
   "scripts": [
       "WorkspaceDiff.js"

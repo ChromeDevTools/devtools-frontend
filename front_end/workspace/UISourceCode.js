@@ -247,9 +247,11 @@ Workspace.UISourceCode = class extends Common.Object {
       var fulfill;
       this._requestContentPromise = new Promise(x => fulfill = x);
       this._project.requestFileContent(this, (content, encoded) => {
-        this._contentLoaded = true;
-        this._content = content;
-        this._contentEncoded = encoded;
+        if (!this._contentLoaded) {
+          this._contentLoaded = true;
+          this._content = content;
+          this._contentEncoded = encoded;
+        }
         fulfill(content);
       });
     }
@@ -303,15 +305,6 @@ Workspace.UISourceCode = class extends Common.Object {
 
   forceLoadOnCheckContent() {
     this._forceLoadOnCheckContent = true;
-  }
-
-  /**
-   * @return {!Promise<?string>}
-   */
-  requestOriginalContent() {
-    return new Promise(fulfill => {
-      this._project.requestFileContent(this, (content, encoded) => fulfill(content));
-    });
   }
 
   /**

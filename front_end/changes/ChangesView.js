@@ -58,7 +58,7 @@ Changes.ChangesView = class extends UI.VBox {
     var uiSourceCode = this._selectedUISourceCode;
     if (!uiSourceCode)
       return;
-    uiSourceCode.requestOriginalContent().then(original => uiSourceCode.addRevision(original || ''));
+    this._workspaceDiff.revertToOriginal(uiSourceCode);
   }
 
   /**

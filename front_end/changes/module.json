@@ -6,8 +6,7 @@
             "id": "changes.changes",
             "title": "Changes",
             "persistence": "closeable",
-            "className": "Changes.ChangesView",
-            "experiment": "changesDrawer"
+            "className": "Changes.ChangesView"
         }
     ],
     "dependencies": [

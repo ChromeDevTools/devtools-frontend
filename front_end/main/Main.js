@@ -113,7 +113,6 @@ Main.Main = class {
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('autoAttachToCrossProcessSubframes', 'Auto-attach to cross-process subframes', true);
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
-    Runtime.experiments.register('changesDrawer', 'Changes drawer', true);
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('continueToLocationMarkers', 'Continue to location markers', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
@@ -149,8 +148,6 @@ Main.Main = class {
       // Enable experiments for testing.
       if (testPath.indexOf('accessibility/') !== -1)
         Runtime.experiments.enableForTest('accessibilityInspection');
-      if (testPath.indexOf('changes/') !== -1)
-        Runtime.experiments.enableForTest('changesDrawer');
       if (testPath.indexOf('console-sidebar/') !== -1)
         Runtime.experiments.enableForTest('logManagement');
     }

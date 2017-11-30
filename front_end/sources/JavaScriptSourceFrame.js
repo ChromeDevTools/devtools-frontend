@@ -1507,55 +1507,27 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    * @param {string} condition
    * @param {boolean} enabled
    */
-  _createNewBreakpoint(lineNumber, condition, enabled) {
-    findPossibleBreakpoints.call(this, lineNumber)
-        .then(checkNextLineIfNeeded.bind(this, lineNumber, 4))
-        .then(setBreakpoint.bind(this, condition, enabled));
+  async _createNewBreakpoint(lineNumber, condition, enabled) {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
 
-    /**
-     * @this {!Sources.JavaScriptSourceFrame}
-     * @param {number} lineNumber
-     * @return {!Promise<?Array<!Workspace.UILocation>>}
-     */
-    function findPossibleBreakpoints(lineNumber) {
-      const maxLengthToCheck = 1024;
-      if (lineNumber >= this.textEditor.linesCount)
-        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
+    var originLineNumber = lineNumber;
+    const maxLengthToCheck = 1024;
+    var linesToCheck = 5;
+    for (; lineNumber < this.textEditor.linesCount && linesToCheck > 0; ++lineNumber) {
       var lineLength = this.textEditor.line(lineNumber).length;
-      if (lineLength >= maxLengthToCheck)
-        return Promise.resolve(/** @type {?Array<!Workspace.UILocation>} */ ([]));
-      return this._breakpointManager
-          .possibleBreakpoints(this._debuggerSourceCode, new TextUtils.TextRange(lineNumber, 0, lineNumber, lineLength))
-          .then(locations => locations.length ? locations : null);
-    }
-
-    /**
-     * @this {!Sources.JavaScriptSourceFrame}
-     * @param {number} currentLineNumber
-     * @param {number} linesToCheck
-     * @param {?Array<!Workspace.UILocation>} locations
-     * @return {!Promise<?Array<!Workspace.UILocation>>}
-     */
-    function checkNextLineIfNeeded(currentLineNumber, linesToCheck, locations) {
-      if (locations || linesToCheck <= 0)
-        return Promise.resolve(locations);
-      return findPossibleBreakpoints.call(this, currentLineNumber + 1)
-          .then(checkNextLineIfNeeded.bind(this, currentLineNumber + 1, linesToCheck - 1));
-    }
-
-    /**
-     * @this {!Sources.JavaScriptSourceFrame}
-     * @param {string} condition
-     * @param {boolean} enabled
-     * @param {?Array<!Workspace.UILocation>} locations
-     */
-    function setBreakpoint(condition, enabled, locations) {
-      if (!locations || !locations.length)
-        this._setBreakpoint(lineNumber, 0, condition, enabled);
-      else
+      if (lineLength > maxLengthToCheck)
+        break;
+      if (lineLength === 0)
+        continue;
+      --linesToCheck;
+      var locations = await this._breakpointManager.possibleBreakpoints(
+          this._debuggerSourceCode, new TextUtils.TextRange(lineNumber, 0, lineNumber, lineLength));
+      if (locations && locations.length) {
         this._setBreakpoint(locations[0].lineNumber, locations[0].columnNumber, condition, enabled);
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
+        return;
+      }
     }
+    this._setBreakpoint(originLineNumber, 0, condition, enabled);
   }
 
   /**

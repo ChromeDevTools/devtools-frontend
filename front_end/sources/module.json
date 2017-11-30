@@ -93,6 +93,21 @@
         },
         {
             "type": "@UI.ActionDelegate",
+            "actionId": "debugger.step-into-async",
+            "className": "Sources.SourcesPanel.DebuggingActionDelegate",
+            "title": "Step into async function call",
+            "iconClass": "largeicon-step-into-async",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "F9"
+                }
+            ]
+        },
+        {
+            "type": "@UI.ActionDelegate",
             "actionId": "debugger.step-out",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",

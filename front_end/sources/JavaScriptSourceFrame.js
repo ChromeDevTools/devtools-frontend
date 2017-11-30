@@ -844,7 +844,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
 
     function asyncStepIn() {
       location.debuggerModel.scheduleStepIntoAsync();
-      location.debuggerModel.stepInto();
     }
   }
 

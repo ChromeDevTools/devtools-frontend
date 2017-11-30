@@ -60,8 +60,7 @@ Workspace.UISourceCode = class extends Common.Object {
     this._requestContentPromise = null;
     /** @type {?Multimap<string, !Workspace.UISourceCode.LineMarker>} */
     this._decorations = null;
-    /** @type {?Array.<!Workspace.Revision>} */
-    this._history = null;
+    this._hasCommits = false;
     /** @type {?Set<!Workspace.UISourceCode.Message>} */
     this._messages = null;
     this._contentLoaded = false;
@@ -334,15 +333,7 @@ Workspace.UISourceCode = class extends Common.Object {
     this._contentLoaded = true;
     this._requestContentPromise = null;
 
-
-    if (!this._history)
-      this._history = [];
-
-    var lastRevision = this._history.length ? this._history[this._history.length - 1] : null;
-    if (!lastRevision || lastRevision._content !== this._content) {
-      var revision = new Workspace.Revision(this, this._content, new Date());
-      this._history.push(revision);
-    }
+    this._hasCommits = true;
 
     this._innerResetWorkingCopy();
     this.dispatchEventToListeners(
@@ -363,52 +354,10 @@ Workspace.UISourceCode = class extends Common.Object {
   }
 
   /**
-   * @return {!Promise}
+   * @return {boolean}
    */
-  revertToOriginal() {
-    /**
-     * @this {Workspace.UISourceCode}
-     * @param {?string} content
-     */
-    function callback(content) {
-      if (typeof content !== 'string')
-        return;
-
-      this.addRevision(content);
-    }
-
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.RevisionApplied);
-    return this.requestOriginalContent().then(callback.bind(this));
-  }
-
-  /**
-   * @param {function(!Workspace.UISourceCode)} callback
-   */
-  revertAndClearHistory(callback) {
-    /**
-     * @this {Workspace.UISourceCode}
-     * @param {?string} content
-     */
-    function revert(content) {
-      if (typeof content !== 'string')
-        return;
-
-      this.addRevision(content);
-      this._history = null;
-      callback(this);
-    }
-
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.RevisionApplied);
-    this.requestOriginalContent().then(revert.bind(this));
-  }
-
-  /**
-   * @return {!Array<!Workspace.Revision>}
-   */
-  history() {
-    if (!this._history)
-      this._history = [];
-    return this._history;
+  hasCommits() {
+    return this._hasCommits;
   }
 
   /**
@@ -714,103 +663,6 @@ Workspace.UILocation = class {
     if (this.lineNumber !== other.lineNumber)
       return this.lineNumber - other.lineNumber;
     return this.columnNumber - other.columnNumber;
-  }
-};
-
-/**
- * @implements {Common.ContentProvider}
- * @unrestricted
- */
-Workspace.Revision = class {
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {?string|undefined} content
-   * @param {!Date} timestamp
-   */
-  constructor(uiSourceCode, content, timestamp) {
-    this._uiSourceCode = uiSourceCode;
-    this._content = content;
-    this._timestamp = timestamp;
-  }
-
-  /**
-   * @return {!Workspace.UISourceCode}
-   */
-  get uiSourceCode() {
-    return this._uiSourceCode;
-  }
-
-  /**
-   * @return {!Date}
-   */
-  get timestamp() {
-    return this._timestamp;
-  }
-
-  /**
-   * @return {?string}
-   */
-  get content() {
-    return this._content || null;
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  revertToThis() {
-    /**
-     * @param {?string} content
-     * @this {Workspace.Revision}
-     */
-    function revert(content) {
-      if (content && this._uiSourceCode._content !== content)
-        this._uiSourceCode.addRevision(content);
-    }
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.RevisionApplied);
-    return this.requestContent().then(revert.bind(this));
-  }
-
-  /**
-   * @override
-   * @return {string}
-   */
-  contentURL() {
-    return this._uiSourceCode.url();
-  }
-
-  /**
-   * @override
-   * @return {!Common.ResourceType}
-   */
-  contentType() {
-    return this._uiSourceCode.contentType();
-  }
-
-  /**
-   * @override
-   * @return {!Promise<boolean>}
-   */
-  contentEncoded() {
-    return Promise.resolve(false);
-  }
-
-  /**
-   * @override
-   * @return {!Promise<?string>}
-   */
-  requestContent() {
-    return Promise.resolve(/** @type {?string} */ (this._content || ''));
-  }
-
-  /**
-   * @override
-   * @param {string} query
-   * @param {boolean} caseSensitive
-   * @param {boolean} isRegex
-   * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
-   */
-  searchInContent(query, caseSensitive, isRegex) {
-    return Promise.resolve([]);
   }
 };
 

@@ -299,7 +299,7 @@ Persistence.Persistence = class extends Common.Object {
       return false;
     if (uiSourceCode[Persistence.Persistence._binding])
       return false;
-    return !!uiSourceCode.history().length;
+    return !!uiSourceCode.hasCommits();
   }
 
   /**

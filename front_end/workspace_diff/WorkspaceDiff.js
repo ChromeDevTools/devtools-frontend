@@ -149,7 +149,7 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
       this._markAsModified(uiSourceCode);
       return;
     }
-    if (!uiSourceCode.history().length) {
+    if (!uiSourceCode.hasCommits()) {
       this._markAsUnmodified(uiSourceCode);
       return;
     }

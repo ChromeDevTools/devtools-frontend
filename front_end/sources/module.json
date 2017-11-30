@@ -585,14 +585,6 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "id": "sources.history",
-            "title": "History",
-            "persistence": "transient",
-            "className": "Sources.RevisionHistoryView"
-        },
-        {
-            "type": "view",
-            "location": "drawer-view",
             "id": "sources.quick",
             "title": "Quick source",
             "persistence": "closeable",
@@ -747,7 +739,6 @@
         "JavaScriptSourceFrame.js",
         "CSSPlugin.js",
         "NavigatorView.js",
-        "RevisionHistoryView.js",
         "ScopeChainSidebarPane.js",
         "SourcesNavigator.js",
         "OutlineQuickOpen.js",

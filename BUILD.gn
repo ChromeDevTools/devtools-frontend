@@ -637,7 +637,6 @@ all_devtools_files = [
   "front_end/sources/OpenFileQuickOpen.js",
   "front_end/sources/OutlineQuickOpen.js",
   "front_end/sources/revisionHistory.css",
-  "front_end/sources/RevisionHistoryView.js",
   "front_end/sources/scopeChainSidebarPane.css",
   "front_end/sources/ScopeChainSidebarPane.js",
   "front_end/sources/ScriptFormatterEditorAction.js",

@@ -164,7 +164,7 @@ Persistence.IsolatedFileSystem = class {
       for (var i = 0; i < entries.length; ++i) {
         var entry = entries[i];
         if (!entry.isDirectory) {
-          if (this._isFileExcluded(entry.fullPath))
+          if (this.isFileExcluded(entry.fullPath))
             continue;
           this._initialFilePaths.add(entry.fullPath.substr(1));
         } else {
@@ -173,7 +173,7 @@ Persistence.IsolatedFileSystem = class {
             var parentFolder = entry.fullPath.substring(1, lastSlash);
             this._initialGitFolders.add(parentFolder);
           }
-          if (this._isFileExcluded(entry.fullPath + '/'))
+          if (this.isFileExcluded(entry.fullPath + '/'))
             continue;
           ++pendingRequests;
           this._requestEntries(entry.fullPath, boundInnerCallback);
@@ -558,7 +558,7 @@ Persistence.IsolatedFileSystem = class {
    * @param {string} folderPath
    * @return {boolean}
    */
-  _isFileExcluded(folderPath) {
+  isFileExcluded(folderPath) {
     if (this._excludedFolders.has(folderPath))
       return true;
     var regex = this._manager.workspaceFolderExcludePatternSetting().asRegExp();

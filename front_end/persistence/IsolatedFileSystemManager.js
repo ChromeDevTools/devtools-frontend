@@ -185,12 +185,34 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onFileSystemFilesChanged(event) {
-    var paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
-    var urlPaths = {};
-    urlPaths.changed = paths.changed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
-    urlPaths.added = paths.added.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
-    urlPaths.removed = paths.removed.map(embedderPath => Common.ParsedURL.platformPathToURL(embedderPath));
+    var urlPaths = {
+      changed: groupFilePathsIntoFileSystemPaths.call(this, event.data.changed),
+      added: groupFilePathsIntoFileSystemPaths.call(this, event.data.added),
+      removed: groupFilePathsIntoFileSystemPaths.call(this, event.data.removed)
+    };
+
     this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemFilesChanged, urlPaths);
+
+    /**
+     * @param {!Array<string>} embedderPaths
+     * @return {!Multimap<string, string>}
+     * @this {Persistence.IsolatedFileSystemManager}
+     */
+    function groupFilePathsIntoFileSystemPaths(embedderPaths) {
+      var paths = new Multimap();
+      for (var embedderPath of embedderPaths) {
+        var filePath = Common.ParsedURL.platformPathToURL(embedderPath);
+        for (var fileSystemPath of this._fileSystems.keys()) {
+          if (this._fileSystems.get(fileSystemPath).isFileExcluded(embedderPath))
+            continue;
+          var pathPrefix = fileSystemPath.endsWith('/') ? fileSystemPath : fileSystemPath + '/';
+          if (!filePath.startsWith(pathPrefix))
+            continue;
+          paths.set(fileSystemPath, filePath);
+        }
+      }
+      return paths;
+    }
   }
 
   /**
@@ -319,7 +341,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 /** @typedef {!{type: string, fileSystemName: string, rootURL: string, fileSystemPath: string}} */
 Persistence.IsolatedFileSystemManager.FileSystem;
 
-/** @typedef {!{changed:!Array<string>, added:!Array<string>, removed:!Array<string>}} */
+/** @typedef {!{changed:!Multimap<string, string>, added:!Multimap<string, string>, removed:!Multimap<string, string>}} */
 Persistence.IsolatedFileSystemManager.FilesChangedData;
 
 /** @enum {symbol} */

@@ -12,7 +12,7 @@
    height="110"
    id="svg4185"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="smallIcons.svg">
   <metadata
      id="metadata4459">
@@ -78,14 +78,13 @@
      inkscape:window-height="1006"
      id="namedview4455"
      showgrid="true"
-     inkscape:zoom="7.4167645"
-     inkscape:cx="64.063483"
-     inkscape:cy="73.026233"
-     inkscape:window-x="508"
+     inkscape:zoom="3.7083823"
+     inkscape:cx="29.009401"
+     inkscape:cy="135.34201"
+     inkscape:window-x="980"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg4185"
-     inkscape:snap-global="true">
+     inkscape:current-layer="svg4185">
     <inkscape:grid
        type="xygrid"
        id="grid4461"
@@ -1026,4 +1025,19 @@
        inkscape:connector-curvature="0"
        style="fill:none" />
   </g>
+  <path
+     style="fill:#000000"
+     inkscape:connector-curvature="0"
+     d="M 105,22.528009 101,26.958771 101.94,28 105,24.617852 108.06,28 109,26.958771 z"
+     id="path3942" />
+  <path
+     style="fill:none"
+     inkscape:connector-curvature="0"
+     d="M 76.448271,14.990123 H 93.976446 V 34.405914 H 76.448271 z"
+     id="path3944" />
+  <path
+     style="fill:#000000"
+     inkscape:connector-curvature="0"
+     d="M 88.06,3.059999 85,6.113332 81.94,3.059999 l -0.94,0.94 4,4 4,-4 z"
+     id="path3974" />
 </svg>

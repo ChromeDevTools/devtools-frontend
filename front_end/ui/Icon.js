@@ -126,6 +126,8 @@ UI.Icon.Descriptors = {
   'smallicon-cross': {position: 'b4', spritesheet: 'smallicons'},
   'smallicon-device': {position: 'c5', spritesheet: 'smallicons'},
   'smallicon-error': {position: 'c4', spritesheet: 'smallicons'},
+  'smallicon-expand-less': {position: 'f5', spritesheet: 'smallicons', isMask: true},
+  'smallicon-expand-more': {position: 'e6', spritesheet: 'smallicons', isMask: true},
   'smallicon-green-arrow': {position: 'a3', spritesheet: 'smallicons'},
   'smallicon-green-ball': {position: 'b3', spritesheet: 'smallicons'},
   'smallicon-info': {position: 'c3', spritesheet: 'smallicons'},
@@ -172,6 +174,7 @@ UI.Icon.Descriptors = {
   'mediumicon-info-circle': {position: 'e2', spritesheet: 'mediumicons'},
   'mediumicon-bug': {position: 'd1', spritesheet: 'mediumicons'},
   'mediumicon-list': {position: 'e5', spritesheet: 'mediumicons'},
+  'mediumicon-warning': {position: 'd5', spritesheet: 'mediumicons', isMask: true},
 
   'badge-navigator-file-sync': {position: 'a9', spritesheet: 'largeicons'},
   'largeicon-activate-breakpoints': {position: 'b9', spritesheet: 'largeicons', isMask: true},

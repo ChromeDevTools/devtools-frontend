@@ -190,7 +190,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
           originState.originView.setSecurityState(securityState);
       }
     } else {
-      // TODO(lgarron): Store a (deduplicated) list of different security details we have seen. https://crbug.com/503170
+      // This stores the first security details we see for an origin, but we should
+      // eventually store a (deduplicated) list of all the different security
+      // details we have seen. https://crbug.com/503170
       var originState = {};
       originState.securityState = securityState;
 

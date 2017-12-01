@@ -282,12 +282,6 @@ DevToolsHost.upgradeDraggedFileSystemPermissions = function(fileSystem) {};
 /** Extensions API */
 
 /** @constructor */
-function AuditCategory() {
-}
-/** @constructor */
-function AuditResult() {
-}
-/** @constructor */
 function EventSink() {
 }
 /** @constructor */

@@ -5,12 +5,10 @@
   ],
   "scripts": [
     "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js",
-    "ExtensionsAuditsTestRunner.js"
+    "ExtensionsTestRunner.js"
   ],
   "skip_compilation": [
     "ExtensionsNetworkTestRunner.js",
-    "ExtensionsTestRunner.js",
-    "ExtensionsAuditsTestRunner.js"
+    "ExtensionsTestRunner.js"
   ]
 }

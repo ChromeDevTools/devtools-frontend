@@ -31,10 +31,6 @@
 /* eslint-disable indent */
 
 function defineCommonExtensionSymbols(apiPrivate) {
-  if (!apiPrivate.audits)
-    apiPrivate.audits = {};
-  apiPrivate.audits.Severity = {Info: 'info', Warning: 'warning', Severe: 'severe'};
-
   if (!apiPrivate.panels)
     apiPrivate.panels = {};
   apiPrivate.panels.SearchAction = {
@@ -46,7 +42,6 @@ function defineCommonExtensionSymbols(apiPrivate) {
 
   /** @enum {string} */
   apiPrivate.Events = {
-    AuditStarted: 'audit-started-',
     ButtonClicked: 'button-clicked-',
     PanelObjectSelected: 'panel-objectSelected-',
     NetworkRequestFinished: 'network-request-finished',
@@ -62,8 +57,6 @@ function defineCommonExtensionSymbols(apiPrivate) {
 
   /** @enum {string} */
   apiPrivate.Commands = {
-    AddAuditCategory: 'addAuditCategory',
-    AddAuditResult: 'addAuditResult',
     AddRequestHeaders: 'addRequestHeaders',
     AddTraceProvider: 'addTraceProvider',
     ApplyStyleSheet: 'applyStyleSheet',
@@ -87,9 +80,7 @@ function defineCommonExtensionSymbols(apiPrivate) {
     SetSidebarHeight: 'setSidebarHeight',
     SetSidebarPage: 'setSidebarPage',
     ShowPanel: 'showPanel',
-    StopAuditCategoryRun: 'stopAuditCategoryRun',
     Unsubscribe: 'unsubscribe',
-    UpdateAuditProgress: 'updateAuditProgress',
     UpdateButton: 'updateButton'
   };
 }
@@ -170,7 +161,6 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
    * @constructor
    */
   function InspectorExtensionAPI() {
-    this.audits = new Audits();
     this.inspectedWindow = new InspectedWindow();
     this.panels = new Panels();
     this.network = new Network();
@@ -360,8 +350,6 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
     return typeof lastArgument === 'function' ? lastArgument : undefined;
   }
 
-  var AuditCategory = declareInterfaceClass(AuditCategoryImpl);
-  var AuditResult = declareInterfaceClass(AuditResultImpl);
   var Button = declareInterfaceClass(ButtonImpl);
   var EventSink = declareInterfaceClass(EventSinkImpl);
   var ExtensionPanel = declareInterfaceClass(ExtensionPanelImpl);
@@ -539,135 +527,6 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
     this.onRecordingStarted = new EventSink(events.RecordingStarted + id, dispatchRecordingStarted);
     this.onRecordingStopped = new EventSink(events.RecordingStopped + id);
   }
-
-  /**
-   * @constructor
-   */
-  function Audits() {}
-
-  Audits.prototype = {
-    /**
-     * @return {!AuditCategory}
-     */
-    addCategory: function(displayName, resultCount) {
-      var id = 'extension-audit-category-' + extensionServer.nextObjectId();
-      if (typeof resultCount !== 'undefined') {
-        console.warn(
-            'Passing resultCount to audits.addCategory() is deprecated. Use AuditResult.updateProgress() instead.');
-      }
-      extensionServer.sendRequest(
-          {command: commands.AddAuditCategory, id: id, displayName: displayName, resultCount: resultCount});
-      return new AuditCategory(id);
-    }
-  };
-
-  /**
-   * @constructor
-   */
-  function AuditCategoryImpl(id) {
-    /**
-     * @this {EventSinkImpl}
-     */
-    function dispatchAuditEvent(request) {
-      var auditResult = new AuditResult(request.arguments[0]);
-      try {
-        this._fire(auditResult);
-      } catch (e) {
-        console.error('Uncaught exception in extension audit event handler: ' + e);
-        auditResult.done();
-      }
-    }
-    this._id = id;
-    this.onAuditStarted = new EventSink(events.AuditStarted + id, dispatchAuditEvent);
-  }
-
-  /**
-   * @constructor
-   */
-  function AuditResultImpl(id) {
-    this._id = id;
-
-    this.createURL = this._nodeFactory.bind(this, 'url');
-    this.createSnippet = this._nodeFactory.bind(this, 'snippet');
-    this.createText = this._nodeFactory.bind(this, 'text');
-    this.createObject = this._nodeFactory.bind(this, 'object');
-    this.createNode = this._nodeFactory.bind(this, 'node');
-  }
-
-  AuditResultImpl.prototype = {
-    addResult: function(displayName, description, severity, details) {
-      // shorthand for specifying details directly in addResult().
-      if (details && !(details instanceof AuditResultNode))
-        details = new AuditResultNode(Array.isArray(details) ? details : [details]);
-
-      var request = {
-        command: commands.AddAuditResult,
-        resultId: this._id,
-        displayName: displayName,
-        description: description,
-        severity: severity,
-        details: details
-      };
-      extensionServer.sendRequest(request);
-    },
-
-    /**
-     * @return {!Object}
-     */
-    createResult: function() {
-      return new AuditResultNode(Array.prototype.slice.call(arguments));
-    },
-
-    updateProgress: function(worked, totalWork) {
-      extensionServer.sendRequest(
-          {command: commands.UpdateAuditProgress, resultId: this._id, progress: worked / totalWork});
-    },
-
-    done: function() {
-      extensionServer.sendRequest({command: commands.StopAuditCategoryRun, resultId: this._id});
-    },
-
-    /**
-     * @type {!Object.<string, string>}
-     */
-    get Severity() {
-      return apiPrivate.audits.Severity;
-    },
-
-    /**
-     * @return {!{type: string, arguments: !Array.<string|number>}}
-     */
-    createResourceLink: function(url, lineNumber) {
-      return {type: 'resourceLink', arguments: [url, lineNumber && lineNumber - 1]};
-    },
-
-    /**
-     * @return {!{type: string, arguments: !Array.<string|number>}}
-     */
-    _nodeFactory: function(type) {
-      return {type: type, arguments: Array.prototype.slice.call(arguments, 1)};
-    }
-  };
-
-  /**
-   * @constructor
-   */
-  function AuditResultNode(contents) {
-    this.contents = contents;
-    this.children = [];
-    this.expanded = false;
-  }
-
-  AuditResultNode.prototype = {
-    /**
-     * @return {!Object}
-     */
-    addChild: function() {
-      var node = new AuditResultNode(Array.prototype.slice.call(arguments));
-      this.children.push(node);
-      return node;
-    }
-  };
 
   /**
    * @constructor

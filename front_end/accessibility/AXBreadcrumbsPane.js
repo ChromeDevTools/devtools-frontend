@@ -7,7 +7,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Accessibility.AccessibilitySidebarView} axSidebarView
    */
   constructor(axSidebarView) {
-    super(Common.UIString('Accessibility Tree'));
+    super(ls`Accessibility Tree`);
 
     this.element.classList.add('ax-subpane');
     UI.ARIAUtils.markAsTree(this.element);
@@ -271,7 +271,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
       return;
 
     var contextMenu = new UI.ContextMenu(event);
-    contextMenu.viewSection().appendItem(Common.UIString('Scroll into view'), () => {
+    contextMenu.viewSection().appendItem(ls`Scroll into view`, () => {
       axNode.deferredDOMNode().resolvePromise().then(domNode => {
         if (!domNode)
           return;
@@ -485,7 +485,7 @@ Accessibility.AXBreadcrumb = class {
 
   _appendIgnoredNodeElement() {
     var ignoredNodeElement = createElementWithClass('span', 'monospace');
-    ignoredNodeElement.textContent = Common.UIString('Ignored');
+    ignoredNodeElement.textContent = ls`Ignored`;
     ignoredNodeElement.classList.add('ax-breadcrumbs-ignored-node');
     this._nodeWrapper.appendChild(ignoredNodeElement);
   }

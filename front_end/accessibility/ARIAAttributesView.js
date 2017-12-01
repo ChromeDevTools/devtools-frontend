@@ -6,9 +6,9 @@
  */
 Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubPane {
   constructor() {
-    super(Common.UIString('ARIA Attributes'));
+    super(ls`ARIA Attributes`);
 
-    this._noPropertiesInfo = this.createInfo(Common.UIString('No ARIA attributes'));
+    this._noPropertiesInfo = this.createInfo(ls`No ARIA attributes`);
     this._treeOutline = this.createTreeOutline();
   }
 

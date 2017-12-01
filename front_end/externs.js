@@ -789,3 +789,11 @@ Terminal.prototype = {
  * @return {!Console}
  */
 Console.prototype.context = function(context) {};
+
+
+/**
+ * @param {!Array<string>|string} strings
+ * @param {...*} vararg
+ * @return {string}
+ */
+var ls = function(strings, vararg) {};

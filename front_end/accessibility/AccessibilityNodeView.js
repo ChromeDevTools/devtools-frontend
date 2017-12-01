@@ -6,12 +6,12 @@
  */
 Accessibility.AXNodeSubPane = class extends Accessibility.AccessibilitySubPane {
   constructor() {
-    super(Common.UIString('Computed Properties'));
+    super(ls`Computed Properties`);
 
     this.contentElement.classList.add('ax-subpane');
 
-    this._noNodeInfo = this.createInfo(Common.UIString('No accessibility node'));
-    this._ignoredInfo = this.createInfo(Common.UIString('Accessibility node not exposed'), 'ax-ignored-info hidden');
+    this._noNodeInfo = this.createInfo(ls`No accessibility node`);
+    this._ignoredInfo = this.createInfo(ls`Accessibility node not exposed`, 'ax-ignored-info hidden');
 
     this._treeOutline = this.createTreeOutline();
     this._ignoredReasonsTree = this.createTreeOutline();
@@ -164,7 +164,7 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
     var nameElement = createElement('span');
     var AXAttributes = Accessibility.AccessibilityStrings.AXAttributes;
     if (name in AXAttributes) {
-      nameElement.textContent = Common.UIString(AXAttributes[name].name);
+      nameElement.textContent = ls(AXAttributes[name].name);
       nameElement.title = AXAttributes[name].description;
       nameElement.classList.add('ax-readable-name');
     } else {
@@ -392,8 +392,8 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
         if (source.nativeSource) {
           var AXNativeSourceTypes = Accessibility.AccessibilityStrings.AXNativeSourceTypes;
           var nativeSource = source.nativeSource;
-          nameElement.textContent = Common.UIString(AXNativeSourceTypes[nativeSource].name);
-          nameElement.title = Common.UIString(AXNativeSourceTypes[nativeSource].description);
+          nameElement.textContent = ls(AXNativeSourceTypes[nativeSource].name);
+          nameElement.title = ls(AXNativeSourceTypes[nativeSource].description);
           nameElement.classList.add('ax-readable-name');
           break;
         }
@@ -404,12 +404,12 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
       default:
         var AXSourceTypes = Accessibility.AccessibilityStrings.AXSourceTypes;
         if (type in AXSourceTypes) {
-          nameElement.textContent = Common.UIString(AXSourceTypes[type].name);
-          nameElement.title = Common.UIString(AXSourceTypes[type].description);
+          nameElement.textContent = ls(AXSourceTypes[type].name);
+          nameElement.title = ls(AXSourceTypes[type].description);
           nameElement.classList.add('ax-readable-name');
         } else {
           console.warn(type, 'not in AXSourceTypes');
-          nameElement.textContent = Common.UIString(type);
+          nameElement.textContent = ls(type);
         }
     }
     this.listItemElement.appendChild(nameElement);
@@ -419,8 +419,7 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
     this.listItemElement.removeChildren();
 
     if (this._source.invalid) {
-      var exclamationMark =
-          Accessibility.AXNodePropertyTreeElement.createExclamationMark(Common.UIString('Invalid source.'));
+      var exclamationMark = Accessibility.AXNodePropertyTreeElement.createExclamationMark(ls`Invalid source.`);
       this.listItemElement.appendChild(exclamationMark);
       this.listItemElement.classList.add('ax-value-source-invalid');
     } else if (this._source.superseded) {
@@ -443,7 +442,7 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
       this.appendValueElement(this._source.value);
     } else {
       var valueElement = Accessibility.AXNodePropertyTreeElement.createSimpleValueElement(
-          Protocol.Accessibility.AXValueType.ValueUndefined, Common.UIString('Not specified'));
+          Protocol.Accessibility.AXValueType.ValueUndefined, ls`Not specified`);
       this.listItemElement.appendChild(valueElement);
       this.listItemElement.classList.add('ax-value-source-unused');
     }
@@ -519,8 +518,7 @@ Accessibility.AXRelatedNodeElement = class {
       this._deferredNode.resolve(onNodeResolved.bind(this));
     } else if (this._idref) {
       element.classList.add('invalid');
-      valueElement =
-          Accessibility.AXNodePropertyTreeElement.createExclamationMark(Common.UIString('No node with this ID.'));
+      valueElement = Accessibility.AXNodePropertyTreeElement.createExclamationMark(ls`No node with this ID.`);
       valueElement.createTextChild(this._idref);
       element.appendChild(valueElement);
     }

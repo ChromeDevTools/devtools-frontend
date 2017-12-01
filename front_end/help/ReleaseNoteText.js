@@ -16,11 +16,6 @@ Help.releaseNoteText = [
     header: 'Highlights from the Chrome 64 update',
     highlights: [
       {
-        title: 'Local overrides',
-        subtitle: 'Persist your HTML, CSS, and JS changes across page loads.',
-        link: 'https://developers.google.com/web/updates/2017/11/devtools-release-notes#overrides',
-      },
-      {
         title: 'Performance monitor',
         subtitle: 'Get a real-time view of various performance metrics.',
         link: 'https://developers.google.com/web/updates/2017/11/devtools-release-notes#perf-monitor',

@@ -1169,15 +1169,18 @@ Network.NetworkLogView = class extends UI.VBox {
 
       if (Host.isWin()) {
         footerSection.appendItem(
+            Common.UIString('Copy as PowerShell'), this._copyPowerShellCommand.bind(this, request));
+        footerSection.appendItem(
             Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
         footerSection.appendItem(
             Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
-        footerSection.appendItem(Common.UIString('Copy All as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
+        footerSection.appendItem(Common.UIString('Copy all as PowerShell'), this._copyAllPowerShellCommand.bind(this));
+        footerSection.appendItem(Common.UIString('Copy all as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
         footerSection.appendItem(
-            Common.UIString('Copy All as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
+            Common.UIString('Copy all as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
       } else {
         footerSection.appendItem(Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
-        footerSection.appendItem(Common.UIString('Copy All as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
+        footerSection.appendItem(Common.UIString('Copy all as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
     } else {
       copyMenu = contextMenu.clipboardSection().appendSubMenuItem(Common.UIString('Copy'));
@@ -1271,6 +1274,19 @@ Network.NetworkLogView = class extends UI.VBox {
       InspectorFrontendHost.copyText(commands.join(' &\r\n'));
     else
       InspectorFrontendHost.copyText(commands.join(' ;\n'));
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  _copyPowerShellCommand(request) {
+    InspectorFrontendHost.copyText(this._generatePowerShellCommand(request));
+  }
+
+  _copyAllPowerShellCommand() {
+    var requests = NetworkLog.networkLog.requests();
+    var commands = requests.map(this._generatePowerShellCommand.bind(this));
+    InspectorFrontendHost.copyText(commands.join(';\r\n'));
   }
 
   async _exportAll() {
@@ -1737,6 +1753,56 @@ Network.NetworkLogView = class extends UI.VBox {
 
     if (request.securityState() === Protocol.Security.SecurityState.Insecure)
       command.push('--insecure');
+    return command.join(' ');
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {string}
+   */
+  _generatePowerShellCommand(request) {
+    var command = ['Invoke-WebRequest'];
+    var ignoredHeaders = new Set(['host', 'connection', 'proxy-connection', 'content-length', 'expect', 'range']);
+
+    /**
+     * @param {string} str
+     * @return {string}
+     */
+    function escapeString(str) {
+      return '"' +
+          str.replace(/[`\$"]/g, '`$&').replace(/[^\x20-\x7E]/g, char => '$([char]' + char.charCodeAt(0) + ')') + '"';
+    }
+
+    command.push('-Uri');
+    command.push(escapeString(request.url()));
+
+    if (request.requestMethod !== 'GET') {
+      command.push('-Method');
+      command.push(escapeString(request.requestMethod));
+    }
+
+    var requestHeaders = request.requestHeaders();
+    var headerNameValuePairs = [];
+    for (var header of requestHeaders) {
+      var name = header.name.replace(/^:/, '');  // Translate h2 headers to HTTP headers.
+      if (ignoredHeaders.has(name.toLowerCase()))
+        continue;
+      headerNameValuePairs.push(escapeString(name) + '=' + escapeString(header.value));
+    }
+    if (headerNameValuePairs.length) {
+      command.push('-Headers');
+      command.push('@{' + headerNameValuePairs.join('; ') + '}');
+    }
+
+    if (request.requestFormData) {
+      command.push('-Body');
+      var body = escapeString(request.requestFormData);
+      if (/[^\x20-\x7E]/.test(request.requestFormData))
+        command.push('([System.Text.Encoding]::UTF8.GetBytes(' + body + '))');
+      else
+        command.push(body);
+    }
+
     return command.join(' ');
   }
 };

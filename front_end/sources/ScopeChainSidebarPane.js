@@ -92,7 +92,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
             if (returnValue) {
               extraProperties.push(new SDK.RemoteObjectProperty(
                   Common.UIString('Return value'), returnValue, undefined, undefined, undefined, undefined, undefined,
-                  true));
+                  true, callFrame.setReturnValue.bind(callFrame)));
             }
           }
           break;

@@ -895,6 +895,21 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
   async _applyExpression(expression) {
     var property = SDK.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
     expression = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(expression.trim());
+
+    if (this.property.synthetic) {
+      var invalidate = false;
+      if (expression)
+        invalidate = await this.property.setSyntheticValue(expression);
+      if (invalidate) {
+        var parent = this.parent;
+        parent.invalidateChildren();
+        parent.onpopulate();
+      } else {
+        this.update();
+      }
+      return;
+    }
+
     var errorPromise = expression ? this.property.parentObject.setPropertyValue(property, expression) :
                                     this.property.parentObject.deleteProperty(property);
     var error = await errorPromise;

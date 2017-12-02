@@ -888,20 +888,37 @@ SDK.RemoteObjectProperty = class {
    * @param {boolean=} writable
    * @param {boolean=} isOwn
    * @param {boolean=} wasThrown
-   * @param {boolean=} synthetic
    * @param {?SDK.RemoteObject=} symbol
+   * @param {boolean=} synthetic
+   * @param {function(string):!Promise<?SDK.RemoteObject>=} syntheticSetter
    */
-  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic) {
+  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic, syntheticSetter) {
     this.name = name;
     if (value !== null)
       this.value = value;
     this.enumerable = typeof enumerable !== 'undefined' ? enumerable : true;
-    this.writable = typeof writable !== 'undefined' ? writable : true;
+    var isNonSyntheticOrSyntheticWritable = !synthetic || !!syntheticSetter;
+    this.writable = typeof writable !== 'undefined' ? writable : isNonSyntheticOrSyntheticWritable;
     this.isOwn = !!isOwn;
     this.wasThrown = !!wasThrown;
     if (symbol)
       this.symbol = symbol;
     this.synthetic = !!synthetic;
+    if (syntheticSetter)
+      this.syntheticSetter = syntheticSetter;
+  }
+
+  /**
+   * @param {string} expression
+   * @return {!Promise<boolean>}
+   */
+  async setSyntheticValue(expression) {
+    if (!this.syntheticSetter)
+      return false;
+    var result = await this.syntheticSetter(expression);
+    if (result)
+      this.value = result;
+    return !!result;
   }
 
   /**

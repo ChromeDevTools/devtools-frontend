@@ -93,9 +93,14 @@ Main.Main = class {
       storagePrefix = '__custom__';
     else if (!Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend') && !Host.isUnderTest(prefs))
       storagePrefix = '__bundled__';
-    var clearLocalStorage = window.localStorage ? window.localStorage.clear.bind(window.localStorage) : undefined;
-    var localStorage =
-        new Common.SettingsStorage(window.localStorage || {}, undefined, undefined, clearLocalStorage, storagePrefix);
+
+    var localStorage;
+    if (!Host.isUnderTest(prefs) && window.localStorage) {
+      localStorage = new Common.SettingsStorage(
+          window.localStorage, undefined, undefined, () => window.localStorage.clear(), storagePrefix);
+    } else {
+      localStorage = new Common.SettingsStorage({}, undefined, undefined, undefined, storagePrefix);
+    }
     var globalStorage = new Common.SettingsStorage(
         prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
         InspectorFrontendHost.clearPreferences, storagePrefix);

@@ -129,7 +129,8 @@ Main.Main = class {
     Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('sourceDiff', 'Source diff');
-    Runtime.experiments.register('stepIntoAsync', 'Step into async action');
+    Runtime.experiments.register(
+        'stepIntoAsync', 'Introduce separate step action, stepInto becomes powerful enough to go inside async call');
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
 
     // Timeline
@@ -162,7 +163,7 @@ Main.Main = class {
     Runtime.experiments.setDefaultExperiments([
       'continueToLocationMarkers', 'autoAttachToCrossProcessSubframes', 'objectPreviews', 'persistence2',
       'networkGroupingRequests', 'timelineColorByProduct', 'accessibilityInspection', 'logManagement',
-      'performanceMonitor'
+      'performanceMonitor', 'stepIntoAsync'
     ]);
   }
 

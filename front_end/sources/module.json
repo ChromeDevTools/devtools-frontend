@@ -76,7 +76,7 @@
             "actionId": "debugger.step-into",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
-            "iconClass": "largeicon-step-in",
+            "iconClass": "largeicon-step-into",
             "contextTypes": [
                 "Sources.SourcesPanel"
             ],
@@ -93,10 +93,10 @@
         },
         {
             "type": "@UI.ActionDelegate",
-            "actionId": "debugger.step-into-async",
+            "actionId": "debugger.step",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
-            "title": "Step into async function call",
-            "iconClass": "largeicon-step-into-async",
+            "title": "Step",
+            "iconClass": "largeicon-step",
             "contextTypes": [
                 "Sources.SourcesPanel"
             ],

@@ -47,8 +47,8 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._stepIntoAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-into'));
     this._stepOutAction = /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-out'));
-    this._stepIntoAsyncAction =
-        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step-into-async'));
+    this._stepAction =
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.step'));
     this._toggleBreakpointsActiveAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('debugger.toggle-breakpoints-active'));
 
@@ -474,21 +474,21 @@ Sources.SourcesPanel = class extends UI.Panel {
       this._stepOverAction.setEnabled(false);
       this._stepIntoAction.setEnabled(false);
       this._stepOutAction.setEnabled(false);
-      this._stepIntoAsyncAction.setEnabled(false);
+      this._stepAction.setEnabled(false);
     } else if (this._paused) {
       this._togglePauseAction.setToggled(true);
       this._togglePauseAction.setEnabled(true);
       this._stepOverAction.setEnabled(true);
       this._stepIntoAction.setEnabled(true);
       this._stepOutAction.setEnabled(true);
-      this._stepIntoAsyncAction.setEnabled(true);
+      this._stepAction.setEnabled(true);
     } else {
       this._togglePauseAction.setToggled(false);
       this._togglePauseAction.setEnabled(!currentDebuggerModel.isPausing());
       this._stepOverAction.setEnabled(false);
       this._stepIntoAction.setEnabled(false);
       this._stepOutAction.setEnabled(false);
-      this._stepIntoAsyncAction.setEnabled(false);
+      this._stepAction.setEnabled(false);
     }
 
     var details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
@@ -690,11 +690,17 @@ Sources.SourcesPanel = class extends UI.Panel {
     longResumeButton.addEventListener(UI.ToolbarButton.Events.Click, this._longResume, this);
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
 
-    debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
-    debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAction));
-    debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOutAction));
-    if (Runtime.experiments.isEnabled('stepIntoAsync'))
-      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAsyncAction));
+    if (Runtime.experiments.isEnabled('stepIntoAsync')) {
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOutAction));
+    } else {
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOutAction));
+    }
+
     debugToolbar.appendSeparator();
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleBreakpointsActiveAction));
 
@@ -1239,10 +1245,10 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
         panel._stepOver();
         return true;
       case 'debugger.step-into':
-        panel._stepInto();
-        return true;
-      case 'debugger.step-into-async':
         panel._stepIntoAsync();
+        return true;
+      case 'debugger.step':
+        panel._stepInto();
         return true;
       case 'debugger.step-out':
         panel._stepOut();

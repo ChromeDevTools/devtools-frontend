@@ -168,6 +168,7 @@ UI.Icon.Descriptors = {
   'mediumicon-red-cross-active': {position: 'd2', spritesheet: 'mediumicons'},
   'mediumicon-red-cross-hover': {position: 'a1', spritesheet: 'mediumicons'},
   'mediumicon-search': {position: 'b1', spritesheet: 'mediumicons'},
+  'mediumicon-replace': {position: 'c5', spritesheet: 'mediumicons', isMask: true},
   'mediumicon-account-circle': {position: 'e4', spritesheet: 'mediumicons'},
   'mediumicon-warning-triangle': {position: 'e1', spritesheet: 'mediumicons'},
   'mediumicon-error-circle': {position: 'e3', spritesheet: 'mediumicons'},

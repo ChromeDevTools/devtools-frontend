@@ -29,12 +29,6 @@
     outline: none;
 }
 
-.toolbar-replace-checkbox {
-    margin-top: 4px;
-    margin-right: 2px;
-    display: block;
-}
-
 .toolbar-search {
     display: flex;
     width: 100%;
@@ -81,7 +75,8 @@
 }
 
 .toolbar-search-buttons {
-    flex-basis: 182px;
+    display: flex;
+    flex-direction: column;
 }
 
 .toolbar-replace-control,
@@ -131,4 +126,13 @@
     padding: 0 4px;
     color: rgb(165, 165, 165);
     align-self: center;
+}
+
+.first-row-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.toolbar-search > .replace-toggle-toolbar {
+    margin: 0 -3px 0 0;
 }

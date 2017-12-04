@@ -100,8 +100,8 @@
      id="namedview4913"
      showgrid="true"
      inkscape:zoom="5.2149126"
-     inkscape:cx="27.187925"
-     inkscape:cy="37.929068"
+     inkscape:cx="-5.9228807"
+     inkscape:cy="72.509528"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="0"
@@ -732,4 +732,33 @@
        id="path6344"
        d="m 0.5,14 15,0 L 8,1 0.5,14 l 0,0 z m 8.5,-2 -2,0 0,-2 2,0 0,2 0,0 z M 9,9 7,9 7,6 9,6 9,9 9,9 z" />
   </g>
+  <text
+     xml:space="preserve"
+     style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     x="32.469646"
+     y="7.902472"
+     id="text3111"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3113"
+       x="32.469646"
+       y="7.902472"
+       style="font-size:10px;font-weight:bold">A</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+     x="40.362782"
+     y="15.525424"
+     id="text3115"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3117"
+       x="40.362782"
+       y="15.525424"
+       style="font-size:10px;font-weight:bold">B</tspan></text>
+  <path
+     d="m 37.955041,13.088794 c -1.914609,-0.291809 -2.119489,-0.899233 -2.237,-4.129445 l -1.219783,0 c 0.04662,3.855641 0.06137,5.297137 5.735435,5.257508 l 0.316769,-0.01434 -2.595652,-2.995518 c -0.01446,0.611794 -0.01486,1.270551 2.31e-4,1.881795 z"
+     id="path448"
+     inkscape:connector-curvature="0"
+     sodipodi:nodetypes="ccccccc" />
 </svg>

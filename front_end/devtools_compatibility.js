@@ -347,6 +347,22 @@
      * @override
      * @return {string}
      */
+    getInactiveSelectionBackgroundColor() {
+      return DevToolsHost.getInactiveSelectionBackgroundColor();
+    }
+
+    /**
+     * @override
+     * @return {string}
+     */
+    getInactiveSelectionForegroundColor() {
+      return DevToolsHost.getInactiveSelectionForegroundColor();
+    }
+
+    /**
+     * @override
+     * @return {string}
+     */
     platform() {
       return DevToolsHost.platform();
     }

@@ -94,22 +94,36 @@ TextEditor.CodeMirrorUtils.pullLines = function(codeMirror, linesCount) {
 TextEditor.CodeMirrorUtils.appendThemeStyle = function(element) {
   if (UI.themeSupport.hasTheme())
     return;
-  var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
-  var backgroundColorRule =
-      backgroundColor ? '.CodeMirror .CodeMirror-selected { background-color: ' + backgroundColor + ';}' : '';
-  var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
-  var foregroundColorRule = foregroundColor ?
-      '.CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) { color: ' + foregroundColor +
-          '!important;}' :
-      '';
 
-  var selectionRule = (foregroundColor && backgroundColor) ?
-      '.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: ' +
-          backgroundColor + '; color: ' + foregroundColor + ' !important }' :
-      '';
+  var backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
+  var foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
+  var inactiveBackgroundColor = InspectorFrontendHost.getInactiveSelectionBackgroundColor();
+  var inactiveForegroundColor = InspectorFrontendHost.getInactiveSelectionForegroundColor();
   var style = createElement('style');
-  if (foregroundColorRule || backgroundColorRule)
-    style.textContent = backgroundColorRule + foregroundColorRule + selectionRule;
+  style.textContent = `
+    .CodeMirror .CodeMirror-selected {
+      background-color: ${inactiveBackgroundColor};
+    }
+
+    .CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
+      color: ${inactiveForegroundColor} !important;
+    }
+
+    .CodeMirror-focused .CodeMirror-selected {
+      background-color: ${backgroundColor};
+    }
+
+    .CodeMirror-focused .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
+      color: ${foregroundColor} !important;
+    }
+
+    .CodeMirror .CodeMirror-line::selection,
+    .CodeMirror .CodeMirror-line > span::selection,
+    .CodeMirror .CodeMirror-line > span > span::selection {
+      background: ${backgroundColor};
+      color: ${foregroundColor} !important;
+    }
+  `;
   element.appendChild(style);
 };
 

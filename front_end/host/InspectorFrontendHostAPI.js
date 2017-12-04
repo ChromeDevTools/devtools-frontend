@@ -127,6 +127,16 @@ InspectorFrontendHostAPI.prototype = {
   getSelectionForegroundColor() {},
 
   /**
+   * @return {string}
+   */
+  getInactiveSelectionBackgroundColor() {},
+
+  /**
+   * @return {string}
+   */
+  getInactiveSelectionForegroundColor() {},
+
+  /**
    * Requests inspected page to be placed atop of the inspector frontend with specified bounds.
    * @param {{x: number, y: number, width: number, height: number}} bounds
    */

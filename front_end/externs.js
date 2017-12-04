@@ -258,6 +258,16 @@ DevToolsHost.getSelectionBackgroundColor = function() {};
 DevToolsHost.getSelectionForegroundColor = function() {};
 
 /**
+ * @return {string}
+ */
+DevToolsHost.getInactiveSelectionBackgroundColor = function() {};
+
+/**
+ * @return {string}
+ */
+DevToolsHost.getInactiveSelectionForegroundColor = function() {};
+
+/**
  * @return {boolean}
  */
 DevToolsHost.isUnderTest = function() {};

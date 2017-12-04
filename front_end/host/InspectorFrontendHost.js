@@ -68,6 +68,22 @@ Host.InspectorFrontendHostStub = class {
    * @override
    * @return {string}
    */
+  getInactiveSelectionBackgroundColor() {
+    return '#c9c8c8';
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  getInactiveSelectionForegroundColor() {
+    return '#323232';
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
   platform() {
     var match = navigator.userAgent.match(/Windows NT/);
     if (match)

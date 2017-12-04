@@ -560,6 +560,24 @@ TestRunner.addStylesheetTag = function(path) {
     })();
   `);
 };
+
+/**
+ * @param {string} path
+ * @return {!Promise<*>}
+ */
+TestRunner.addHTMLImport = function(path) {
+  return TestRunner.evaluateInPageAsync(`
+    (function(){
+      var link = document.createElement('link');
+      link.rel = 'import';
+      link.href = '${path}';
+      var promise = new Promise(r => link.onload = r);
+      document.body.append(link);
+      return promise;
+    })();
+  `);
+};
+
 /**
  * @param {string} path
  * @param {!Object|undefined} options

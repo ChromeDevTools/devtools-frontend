@@ -136,35 +136,39 @@ PerformanceTestRunner.runWhenTimelineIsReady = function(callback) {
 };
 
 PerformanceTestRunner.startTimeline = function(callback) {
-  var panel = UI.panels.timeline;
-  TestRunner.addSniffer(panel, '_recordingStarted', callback);
-  panel._toggleRecording();
+  return new Promise(resolve => {
+    var panel = UI.panels.timeline;
+    TestRunner.addSniffer(panel, '_recordingStarted', () => {
+      resolve();
+      if (callback)
+        callback();
+    });
+    panel._toggleRecording();
+  });
 };
 
 PerformanceTestRunner.stopTimeline = function(callback) {
-  PerformanceTestRunner.runWhenTimelineIsReady(callback);
-  UI.panels.timeline._toggleRecording();
+  return new Promise(resolve => {
+    PerformanceTestRunner.runWhenTimelineIsReady(() => {
+      resolve();
+      if (callback)
+        callback();
+    });
+    UI.panels.timeline._toggleRecording();
+  });
 };
 
-PerformanceTestRunner.evaluateWithTimeline = function(actions, doneCallback) {
-  PerformanceTestRunner.startTimeline(step1);
-
-  async function step1() {
-    await TestRunner.evaluateInPageAnonymously(actions);
-    PerformanceTestRunner.stopTimeline(doneCallback);
-  }
+// TODO(alph): Replace callback with promise in all the tests.
+PerformanceTestRunner.evaluateWithTimeline = async function(actions, doneCallback) {
+  await PerformanceTestRunner.startTimeline();
+  await TestRunner.evaluateInPageAnonymously(actions);
+  await PerformanceTestRunner.stopTimeline(doneCallback);
 };
 
-PerformanceTestRunner.invokeAsyncWithTimeline = function(functionName, doneCallback) {
-  PerformanceTestRunner.startTimeline(step1);
-
-  function step1() {
-    TestRunner.callFunctionInPageAsync(functionName).then(step2);
-  }
-
-  function step2() {
-    PerformanceTestRunner.stopTimeline(TestRunner.safeWrap(doneCallback));
-  }
+PerformanceTestRunner.invokeAsyncWithTimeline = async function(functionName, doneCallback) {
+  await PerformanceTestRunner.startTimeline();
+  await TestRunner.callFunctionInPageAsync(functionName);
+  await PerformanceTestRunner.stopTimeline(doneCallback);
 };
 
 PerformanceTestRunner.performActionsAndPrint = function(actions, typeName, includeTimeStamps) {

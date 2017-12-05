@@ -19,6 +19,14 @@ Sources.DebuggerPausedMessage = class {
   }
 
   /**
+   * @param {string} description
+   */
+  static _descriptionWithoutStack(description) {
+    var firstCallFrame = /^\s+at\s/m.exec(description);
+    return firstCallFrame ? description.substring(0, firstCallFrame.index) : description;
+  }
+
+  /**
    * @param {?SDK.DebuggerPausedDetails} details
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    * @param {!Bindings.BreakpointManager} breakpointManager
@@ -47,12 +55,13 @@ Sources.DebuggerPausedMessage = class {
       messageWrapper = buildWrapper(Common.UIString('Paused on XHR or fetch'), details.auxData['url'] || '');
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Exception) {
       var description = details.auxData['description'] || details.auxData['value'] || '';
-      var descriptionFirstLine = description.split('\n', 1)[0];
-      messageWrapper = buildWrapper(Common.UIString('Paused on exception'), descriptionFirstLine, description);
+      var descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
+      messageWrapper = buildWrapper(Common.UIString('Paused on exception'), descriptionWithoutStack, description);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection) {
       var description = details.auxData['description'] || details.auxData['value'] || '';
-      var descriptionFirstLine = description.split('\n', 1)[0];
-      messageWrapper = buildWrapper(Common.UIString('Paused on promise rejection'), descriptionFirstLine, description);
+      var descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
+      messageWrapper =
+          buildWrapper(Common.UIString('Paused on promise rejection'), descriptionWithoutStack, description);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Assert) {
       messageWrapper = buildWrapper(Common.UIString('Paused on assertion'));
     } else if (details.reason === SDK.DebuggerModel.BreakReason.DebugCommand) {

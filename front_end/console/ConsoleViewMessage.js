@@ -1300,6 +1300,8 @@ Console.ConsoleViewMessage = class {
    * @return {!DocumentFragment}
    */
   static _linkifyWithCustomLinkifier(string, linkifier) {
+    if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
+      return createExpandableFragment(string);
     var container = createDocumentFragment();
     var tokens = this._tokenizeMessageText(string);
     for (var token of tokens) {
@@ -1321,6 +1323,31 @@ Console.ConsoleViewMessage = class {
       }
     }
     return container;
+
+    /**
+     * @param {string} text
+     * @return {!DocumentFragment}
+     */
+    function createExpandableFragment(text) {
+      var fragment = createDocumentFragment();
+      fragment.textContent = text.slice(0, Console.ConsoleViewMessage._LongStringVisibleLength);
+      var hiddenText = text.slice(Console.ConsoleViewMessage._LongStringVisibleLength);
+
+      var expandButton = fragment.createChild('span', 'console-inline-button');
+      expandButton.setAttribute('data-text', ls`Show ${Number.withThousandsSeparator(hiddenText.length)} more`);
+      expandButton.addEventListener('click', () => {
+        if (expandButton.parentElement)
+          expandButton.parentElement.insertBefore(createTextNode(hiddenText), expandButton);
+        expandButton.remove();
+      });
+
+      var copyButton = fragment.createChild('span', 'console-inline-button');
+      copyButton.setAttribute('data-text', ls`Copy`);
+      copyButton.addEventListener('click', () => {
+        InspectorFrontendHost.copyText(text);
+      });
+      return fragment;
+    }
   }
 
   /**
@@ -1463,3 +1490,5 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
 Console.ConsoleViewMessage.MaxLengthForLinks = 40;
 
 Console.ConsoleViewMessage._MaxTokenizableStringLength = 10000;
+
+Console.ConsoleViewMessage._LongStringVisibleLength = 5000;

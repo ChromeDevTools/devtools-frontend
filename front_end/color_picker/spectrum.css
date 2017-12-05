@@ -10,12 +10,25 @@
     height: 319px;
 }
 
+:selection {
+    background-color: blue;
+    color: white;
+}
+
 .spectrum-color {
     position: relative;
     width: 232px;
     height: 124px;
     border-radius: 2px 2px 0 0;
     overflow: hidden;
+    flex: none;
+}
+
+.spectrum-tools {
+    position: relative;
+    height: 111px;
+    width: 100%;
+    flex: none;
 }
 
 .spectrum-display-value {
@@ -25,11 +38,11 @@
 }
 
 .spectrum-hue {
-    top: 140px;
+    top: 16px;
 }
 
 .spectrum-alpha {
-    top: 159px;
+    top: 35px;
     background-image: url(Images/checker.png);
     background-size: 12px 11px;
 }
@@ -90,91 +103,77 @@
     box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
 }
 
-.spectrum-contrast-info {
-    position: absolute;
-    right: 10px;
-    left: auto;
-    bottom: 10px;
-    color: white;
-    border-radius: 2px;
-    border: 0;
-    padding: 3px 3px 2px;
-    background-color: rgba(255, 255, 255, 0.2);
-    align-items: center;
-    transition: right .05s ease-out, left .05s ease-out, bottom .05s ease-out, top .05s ease-out;
-    cursor: pointer;
-}
-
-.spectrum-contrast-info.contrast-unknown .value {
-    display: none;
-}
-
-.spectrum-contrast-info .low-contrast {
-    display: none;
-    margin-right: 3px;
-}
-
-.spectrum-contrast-info.contrast-fail .low-contrast {
-    display: initial;
-}
-
-.spectrum-contrast-info.contrast-info-left {
-    left: 10px;
-    right: auto;
-}
-
-.spectrum-contrast-info.contrast-info-top {
-    top: 10px;
-    bottom: auto;
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
-.spectrum-contrast-info.contrast-fail {
-    background-color: #b40202;
-}
-
-.spectrum-contrast-info .value {
-    margin-right: 4px;
-}
-
 .spectrum-contrast-details {
-    position: absolute;
+    position: relative;
     background-color: white;
     width: 100%;
     height: 111px;
-    top: 124px;
-    z-index: 13;
+    top: 0;
     font-size: 13px;
     color: #333;
-    display: none;
+    border-top: 1px solid #dadada;
     line-height: initial;
+    overflow: hidden;
+    flex: none;
 }
 
-.spectrum-contrast-details div.toolbar {
+.spectrum-contrast-details {
+    height: 84px;
+    flex: none;
+}
+
+.spectrum-contrast-details.collapsed {
+    height: 42px;
+    flex: none;
+}
+
+.spectrum-contrast-details div.toolbar.expand {
     position: absolute;
     right: 6px;
     top: 6px;
     margin: 0;
 }
 
-.spectrum-contrast-details div.toolbar [is=ui-icon] {
-    position: absolute;
-    right: 6px;
-    top: 6px;
-    margin: 0;
-    background: transparent;
+.spectrum-contrast-details .toolbar-state-on [is=ui-icon] {
+    background-color: rgb(110, 110, 110);
 }
 
 .spectrum-contrast-details.visible {
     display: initial;
 }
 
-.spectrum-contrast-details div {
-    margin: 12px;
+.spectrum-contrast-details div.container {
+    margin: 13px 16px;
+}
+
+.spectrum-contrast-details.collapsed .expanded-details {
+    display: none;
+}
+
+.spectrum-contrast-details .expanded-details {
+    display: flex;
 }
 
 .contrast-pass-fail {
     margin-left: 0.5em;
+}
+
+.spectrum-contrast-details .contrast-choose-bg-color,
+.spectrum-contrast-details .contrast-thresholds {
+    width: 145px;
+}
+
+.spectrum-contrast-details .background-color {
+    position: absolute;
+    flex: none;
+    right: 12px;
+}
+
+.spectrum-contrast-details .spectrum-eye-dropper {
+    top: 2px;
+    right: 34px;
+    position: absolute;
+    left: auto;
 }
 
 .contrast-threshold .smallicon-checkmark-square,
@@ -195,9 +194,6 @@
 .contrast-threshold-value {
     font-weight: bold;
 }
-.spectrum-contrast-details .contrast-thresholds div {
-    margin: 0;
-}
 
 .contrast-link {
     margin-left: 0.5em;
@@ -208,18 +204,39 @@
     background-color: #333;
 }
 
+.spectrum-contrast-details.contrast-fail .contrast-link .mediumicon-info {
+    display: none;
+}
+
+.contrast-link .mediumicon-warning {
+    margin-top: -3px;
+    background-color: #C63626;
+    display: none;
+}
+
+.spectrum-contrast-details.contrast-fail .contrast-link .mediumicon-warning {
+    display: inline-block;
+}
+
 .contrast-details-value {
-    color: white;
+    color: #333;
+    border: 1px solid #333;
     border-radius: 2px;
     margin-left: 0.5em;
     padding: 1px 3px;
     align-items:  baseline;
-    position: absolute;
-    margin-top: -2px;
-    border: 1px solid transparent;
+    cursor: pointer;
+    user-select: text;
+    background-color: white;
 }
 
-.contrast-details-value.contrast-unknown {
+.contrast-details-value [is=ui-icon] {
+    display: none;
+    margin-left: 0.5em;
+    background-color: #333;
+}
+
+.spectrum-contrast-details .contrast-details-value.contrast-unknown {
     background-color: white;
     color: #333;
     border: 1px solid #ddd;
@@ -227,33 +244,11 @@
     text-align: center;
 }
 
-.contrast-details-value.contrast-color-white {
-    border-color: #ddd;
-}
-
-.contrast-details-value.contrast-fail.hover {
-    color: #333 !important;
-    background-color: white !important;
-}
-
-.contrast-details-value.contrast-fail.hover [is=ui-icon] {
-    background-color: black !important;
-}
-
-.contrast-details-value [is=ui-icon] {
-    display: none;
-    margin-left: 0.5em;
-}
-
 .contrast-details-value .smallicon-checkmark-behind {
     margin-left: -6px;
 }
 
-.contrast-details-value.contrast-fail .smallicon-no {
-    display: inline-block;
-}
-
-.contrast-details-value.contrast-fail .smallicon-no {
+.spectrum-contrast-details.contrast-fail .contrast-details-value .smallicon-no {
     display: inline-block;
 }
 
@@ -270,7 +265,7 @@
     height: 32px;
     margin: 0;
     position: absolute;
-    top: 139px;
+    top: 15px;
     left: 44px;
     background-image: url(Images/checker.png);
     border-radius: 16px;
@@ -310,7 +305,7 @@
 
 .spectrum-text {
     position: absolute;
-    top: 184px;
+    top: 60px;
     left: 16px;
 }
 
@@ -332,7 +327,7 @@
     letter-spacing: 39.5px;
     margin-top: 8px;
     display: block;
-    color: #969696;
+    color: #deb7b7;
     margin-left: 16px;
     width: 174px;
 }
@@ -369,7 +364,7 @@
 }
 
 .spectrum-display-switcher {
-    top: 196px;
+    top: 72px;
     position: absolute;
     right: 10px;
 }
@@ -381,20 +376,25 @@
 .spectrum-eye-dropper {
     width: 32px;
     height: 24px;
-    position: absolute;
+    position: relative;
     left: 8px;
-    top: 141px;
+    top: 17px;
     cursor: pointer;
 }
 
 .spectrum-palette {
     border-top: 1px solid #dadada;
-    position: absolute;
-    top: 235px;
+    position: relative;
     width: 100%;
     padding: 6px 24px 6px 6px;
     display: flex;
     flex-wrap: wrap;
+}
+
+.spectrum-palette-colors {
+    display: flex;
+    flex-wrap: wrap;
+    width: 193px;;
 }
 
 .spectrum-palette-color {
@@ -472,7 +472,7 @@
 
 .spectrum-palette-switcher {
     right: 10px;
-    top: 235px;
+    bottom: 9px;
     margin-top: 9px;
     position: absolute;
 }
@@ -488,10 +488,6 @@
     z-index: 14;
     transition: transform 200ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 200ms;
     border-top: 1px solid #dadada;
-    visibility: hidden;
-}
-
-.palette-panel-showing > .controls-container {
     visibility: hidden;
 }
 
@@ -600,19 +596,28 @@ div.palette-preview {
 }
 
 .swatch.contrast {
-    width: 20px;
-    height: 20px;
-    margin: -10px;
-    position: relative;
-    top: -5px;
-    left: 17px;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    left: auto;
     background-image: url(Images/checker.png);
-    border-radius: 10px;
-    display: inline-block;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .swatch.contrast .swatch-overlay {
     padding: 0;
+}
+
+.background-color .text-preview {
+    color: black;
+    font-size: 16px;
+    position: relative;
+    padding-bottom: 2px;
 }
 
 .swatch.contrast [is=ui-icon] {
@@ -624,11 +629,13 @@ button.background-color-picker {
     padding:  0;
     background: none;
     position: relative;
-    margin-top: -12px;
-    left: 26px;
-    top: 7px;
+    margin: 0;
 }
 
-button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask{
+button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask {
     background-color: hsl(218, 81%, 59%);
+}
+
+button.background-color-picker:hover [is=ui-icon].largeicon-eyedropper.icon-mask {
+    background-color: #333;
 }

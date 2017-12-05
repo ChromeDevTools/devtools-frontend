@@ -120,6 +120,10 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear object store'), 'largeicon-clear');
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearButtonClicked, this);
 
+    this._needsRefresh = new UI.ToolbarItem(UI.createLabel(Common.UIString('Data may be stale'), 'smallicon-warning'));
+    this._needsRefresh.setVisible(false);
+    this._needsRefresh.setTitle(Common.UIString('Some entries may have been modified'));
+
     this._createEditorToolbar();
 
     this._pageSize = 50;
@@ -211,13 +215,15 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._pageForwardButton.addEventListener(UI.ToolbarButton.Events.Click, this._pageForwardButtonClicked, this);
     editorToolbar.appendToolbarItem(this._pageForwardButton);
 
-    this._keyInputElement = UI.createInput('key-input');
-    editorToolbar.element.appendChild(this._keyInputElement);
+    this._keyInputElement = UI.createInput('toolbar-input');
+    editorToolbar.appendToolbarItem(new UI.ToolbarItem(this._keyInputElement));
     this._keyInputElement.placeholder = Common.UIString('Start from key');
     this._keyInputElement.addEventListener('paste', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('cut', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('keypress', this._keyInputChanged.bind(this), false);
     this._keyInputElement.addEventListener('keydown', this._keyInputChanged.bind(this), false);
+
+    editorToolbar.appendToolbarItem(this._needsRefresh);
   }
 
   /**
@@ -313,6 +319,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
       this._pageBackButton.setEnabled(!!skipCount);
       this._pageForwardButton.setEnabled(hasMore);
+      this._needsRefresh.setVisible(false);
       this._updatedDataForTests();
     }
 
@@ -346,6 +353,10 @@ Resources.IDBDataView = class extends UI.SimpleView {
     await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
     this._clearButton.setEnabled(true);
     this._updateData(true);
+  }
+
+  markNeedsRefresh() {
+    this._needsRefresh.setVisible(true);
   }
 
   clear() {

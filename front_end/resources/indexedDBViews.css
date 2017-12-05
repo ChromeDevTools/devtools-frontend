@@ -39,11 +39,6 @@
     border-bottom: 1px solid #ccc;
 }
 
-.indexed-db-data-view .data-view-toolbar .key-input {
-    margin: auto 0;
-    width: 200px;
-}
-
 .indexed-db-data-view .data-grid {
     flex: auto;
 }
@@ -82,4 +77,8 @@
     color: rgb(196, 26, 22);
     white-space: pre-wrap;
     unicode-bidi: -webkit-isolate;
+}
+
+.resources-toolbar {
+    padding-right: 10px;
 }

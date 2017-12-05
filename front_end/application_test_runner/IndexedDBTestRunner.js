@@ -42,6 +42,30 @@ ApplicationTestRunner.dumpIndexedDBTree = function() {
   }
 };
 
+ApplicationTestRunner.dumpObjectStores = function() {
+  TestRunner.addResult('Dumping ObjectStore data:');
+  let idbDatabaseTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement._idbDatabaseTreeElements[0];
+  for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
+    let objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
+    objectStoreTreeElement.onselect(false);
+    TestRunner.addResult('    Object store: ' + objectStoreTreeElement.title);
+    let entries = objectStoreTreeElement._view._entries;
+    TestRunner.addResult('            Number of entries: ' + entries.length);
+    for (let j = 0; j < entries.length; ++j)
+      TestRunner.addResult('            Key = ' + entries[j].key._value + ', value = ' + entries[j].value);
+
+    for (let k = 0; k < objectStoreTreeElement.childCount(); ++k) {
+      let indexTreeElement = objectStoreTreeElement.childAt(k);
+      TestRunner.addResult('            Index: ' + indexTreeElement.title);
+      indexTreeElement.onselect(false);
+      let entries = indexTreeElement._view._entries;
+      TestRunner.addResult('                Number of entries: ' + entries.length);
+      for (let j = 0; j < entries.length; ++j)
+        TestRunner.addResult('                Key = ' + entries[j].primaryKey._value + ', value = ' + entries[j].value);
+    }
+  }
+};
+
 var lastCallbackId = 0;
 var callbacks = {};
 var callbackIdPrefix = 'InspectorTest.IndexedDB_callback';
@@ -122,15 +146,43 @@ ApplicationTestRunner.createDatabaseAsync = function(databaseName) {
   return TestRunner.evaluateInPageAsync('createDatabaseAsync(\'' + databaseName + '\')');
 };
 
-ApplicationTestRunner.createObjectStoreAsync = function(databaseName, objectStoreName, indexName, keyPath) {
+ApplicationTestRunner.deleteDatabaseAsync = function(databaseName) {
+  return TestRunner.evaluateInPageAsync('deleteDatabaseAsync(\'' + databaseName + '\')');
+};
+
+ApplicationTestRunner.createObjectStoreAsync = function(databaseName, objectStoreName, indexName) {
   return TestRunner.evaluateInPageAsync(
-      'createObjectStoreAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\', \'' +
-      keyPath + '\')');
+      'createObjectStoreAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
+};
+
+ApplicationTestRunner.deleteObjectStoreAsync = function(databaseName, objectStoreName) {
+  return TestRunner.evaluateInPageAsync(
+      'deleteObjectStoreAsync(\'' + databaseName + '\', \'' + objectStoreName + '\')');
+};
+
+ApplicationTestRunner.createObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
+  return TestRunner.evaluateInPageAsync(
+      'createObjectStoreIndexAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
+};
+
+ApplicationTestRunner.deleteObjectStoreIndexAsync = function(databaseName, objectStoreName, indexName) {
+  return TestRunner.evaluateInPageAsync(
+      'deleteObjectStoreIndexAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + indexName + '\')');
 };
 
 ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName, key, value) {
   return TestRunner.evaluateInPageAsync(
       'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
+};
+
+ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName, key, value) {
+  return TestRunner.evaluateInPageAsync(
+      'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
+};
+
+ApplicationTestRunner.deleteIDBValueAsync = function(databaseName, objectStoreName, key) {
+  return TestRunner.evaluateInPageAsync(
+      'deleteIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\')');
 };
 
 TestRunner.deprecatedInitAsync(`
@@ -286,42 +338,80 @@ TestRunner.deprecatedInitAsync(`
     return promise;
   }
 
-  function createObjectStoreAsync(databaseName, objectStoreName, indexName, keyPath) {
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
+  function upgradeRequestAsync(databaseName, onUpgradeNeeded, callback) {
     var request = indexedDB.open(databaseName);
     request.onerror = onIndexedDBError;
-
     request.onsuccess = function(event) {
       var db = request.result;
       var version = db.version;
       db.close();
+
       var upgradeRequest = indexedDB.open(databaseName, version + 1);
       upgradeRequest.onerror = onIndexedDBError;
-
       upgradeRequest.onupgradeneeded = function(e) {
-        var upgradeDb = e.target.result;
-
-        var store = upgradeDb.createObjectStore(objectStoreName, {
-          keyPath: 'test',
-          autoIncrement: false
-        });
-
-        store.createIndex(indexName, 'test', {
-          unique: false,
-          multiEntry: false
-        });
-
-        callback();
-      };
-
+        onUpgradeNeeded(e.target.result, e.target.transaction, callback);
+      }
       upgradeRequest.onsuccess = function(e) {
         var upgradeDb = e.target.result;
         upgradeDb.close();
         callback();
-      };
-    };
+      }
+    }
+  }
 
+  function deleteDatabaseAsync(databaseName) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var request = indexedDB.deleteDatabase(databaseName);
+    request.onerror = onIndexedDBError;
+    request.onsuccess = callback;
+    return promise;
+  }
+
+  function createObjectStoreAsync(databaseName, objectStoreName, indexName) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      var store = upgradeDb.createObjectStore(objectStoreName, { keyPath: "test", autoIncrement: false });
+      store.createIndex(indexName, "test", { unique: false, multiEntry: false });
+      callback();
+    }
+    upgradeRequestAsync(databaseName, onUpgradeNeeded, callback)
+    return promise;
+  }
+
+  function deleteObjectStoreAsync(databaseName, objectStoreName) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      upgradeDb.deleteObjectStore(objectStoreName);
+      callback();
+    }
+    upgradeRequestAsync(databaseName, onUpgradeNeeded, callback)
+    return promise;
+  }
+
+  function createObjectStoreIndexAsync(databaseName, objectStoreName, indexName) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      var store = transaction.objectStore(objectStoreName);
+      store.createIndex(indexName, "test", { unique: false, multiEntry: false });
+      callback();
+    }
+    upgradeRequestAsync(databaseName, onUpgradeNeeded, callback)
+    return promise;
+  }
+
+  function deleteObjectStoreIndexAsync(databaseName, objectStoreName, indexName) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      var store = transaction.objectStore(objectStoreName);
+      store.deleteIndex(indexName);
+      callback();
+    }
+    upgradeRequestAsync(databaseName, onUpgradeNeeded, callback)
     return promise;
   }
 
@@ -349,6 +439,26 @@ TestRunner.deprecatedInitAsync(`
       };
     };
 
+    return promise;
+  }
+
+  function deleteIDBValueAsync(databaseName, objectStoreName, key) {
+    var callback;
+    var promise = new Promise((fulfill) => callback = fulfill);
+    var request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
+    request.onsuccess = function(event) {
+      var db = request.result;
+      var transaction = db.transaction(objectStoreName, "readwrite");
+      var store = transaction.objectStore(objectStoreName);
+      store.delete(key);
+
+      transaction.onerror = onIndexedDBError;
+      transaction.oncomplete = function() {
+        db.close();
+        callback();
+      };
+    }
     return promise;
   }
 `);

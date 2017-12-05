@@ -591,8 +591,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
    * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
    */
   setContrastInfo(contrastInfo) {
-    if (this._contrastInfo)
-      this._contrastInfo.update(contrastInfo);
+    if (!this._contrastInfo)
+      return;
+
+    this._contrastInfo.update(contrastInfo);
 
     // Contrast info may cause contrast details to become visible.
     if (this._contrastDetails.visible())

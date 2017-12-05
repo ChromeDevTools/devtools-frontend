@@ -9,11 +9,17 @@
     font-size: 10px;
     text-align: center;
     white-space: nowrap;
-    min-height: 190px;
+    min-height: var(--metrics-height);
     display: flex;
     flex-direction: column;
     -webkit-align-items: center;
     -webkit-justify-content: center;
+}
+
+:host {
+    --metrics-height: 190px;
+    height: var(--metrics-height);
+    contain: strict;
 }
 
 :host-context(.-theme-with-dark-background) .metrics {

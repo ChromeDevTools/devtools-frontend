@@ -137,18 +137,12 @@
     min-width: 400px;
 }
 
-.service-worker-filter{
+.service-worker-filter {
     padding: 16px 20px 12px 12px;
     flex-grow: 0;
     flex-shrink: 0;
     background-color: white;
     border-bottom: solid 1px rgb(230, 230, 230);
-}
-
-.service-worker-filter-show-all-checkbox {
-    height: 1px;
-    width: 1px;
-    margin: 0;
 }
 
 .service-worker-filter-label {
@@ -173,7 +167,7 @@
 }
 } /* media */
 
-.service-worker-filter-show-all-checkbox:checked + .service-worker-filter-label::before {
+.service-worker-filter[aria-checked="true"] .service-worker-filter-label::before {
     -webkit-mask-position: -16px 0;
 }
 

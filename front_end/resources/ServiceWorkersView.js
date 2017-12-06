@@ -29,16 +29,20 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._filterThrottler = new Common.Throttler(300);
 
     this._otherWorkers = this.contentElement.createChild('div', 'service-workers-other-origin');
-    var filterElement = this._otherWorkers.createChild('div', 'service-worker-filter');
-    this._checkboxElement = filterElement.createChild('input', 'service-worker-filter-show-all-checkbox');
-    this._checkboxElement.type = 'checkbox';
-    this._checkboxElement.setAttribute('id', 'expand-all');
-    this._textElement = filterElement.createChild('label', 'service-worker-filter-label');
-    this._textElement.textContent = Common.UIString('Service workers from other domains');
-    this._textElement.setAttribute('for', 'expand-all');
-    this._checkboxElement.addEventListener('change', () => this._filterChanged());
+    this._otherSWFilter = this._otherWorkers.createChild('div', 'service-worker-filter');
+    this._otherSWFilter.setAttribute('tabindex', 0);
+    this._otherSWFilter.setAttribute('role', 'switch');
+    this._otherSWFilter.setAttribute('aria-checked', false);
+    this._otherSWFilter.addEventListener('click', () => this._toggleFilter());
+    this._otherSWFilter.addEventListener('keydown', event => {
+      if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
+        this._toggleFilter();
+    });
+    var filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
+    filterLabel.textContent = Common.UIString('Service workers from other domains');
+    filterLabel.setAttribute('for', 'expand-all');
 
-    var toolbar = new UI.Toolbar('service-worker-filter-toolbar', filterElement);
+    var toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
     this._filter = new UI.ToolbarInput('Filter', 1);
     this._filter.addEventListener(UI.ToolbarInput.Event.TextChanged, () => this._filterChanged());
     toolbar.appendToolbarItem(this._filter);
@@ -241,12 +245,12 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   }
 
   _updateCollapsedStyle() {
-    var collapsed = !this._checkboxElement.checked;
-    this._otherWorkers.classList.toggle('service-worker-filter-collapsed', collapsed);
-    if (collapsed)
-      this._otherWorkersView.hideWidget();
-    else
+    var expanded = this._otherSWFilter.getAttribute('aria-checked') === 'true';
+    this._otherWorkers.classList.toggle('service-worker-filter-collapsed', !expanded);
+    if (expanded)
       this._otherWorkersView.showWidget();
+    else
+      this._otherWorkersView.hideWidget();
     this._otherWorkersView.setHeaderVisible(false);
   }
 
@@ -264,6 +268,12 @@ Resources.ServiceWorkersView = class extends UI.VBox {
 
   _updateListVisibility() {
     this.contentElement.classList.toggle('service-worker-list-empty', this._sections.size === 0);
+  }
+
+  _toggleFilter() {
+    var expanded = this._otherSWFilter.getAttribute('aria-checked') === 'true';
+    this._otherSWFilter.setAttribute('aria-checked', !expanded);
+    this._filterChanged();
   }
 };
 

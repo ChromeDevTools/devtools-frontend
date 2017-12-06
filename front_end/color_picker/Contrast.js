@@ -569,6 +569,13 @@ ColorPicker.ContrastDetails = class {
   }
 
   /**
+   * @return {!Element}
+   */
+  element() {
+    return this._element;
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _expandButtonClicked(event) {

@@ -394,7 +394,7 @@
 .spectrum-palette-colors {
     display: flex;
     flex-wrap: wrap;
-    width: 193px;;
+    width: 198px;
 }
 
 .spectrum-palette-color {
@@ -407,6 +407,7 @@
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background-position: -1px !important;
+    z-index: 14;
 }
 
 .spectrum-palette-color:hover:not(.spectrum-shades-shown) > .spectrum-palette-color-shadow {
@@ -436,11 +437,11 @@
     z-index: 14;
     border-radius: 2px;
     transform-origin: 0px 228px;
-    margin-top: -208px;
+    margin-top: 16px;
     margin-left: -8px;
 }
 
-.spectrum-palette > .spectrum-palette-color.spectrum-shades-shown {
+.spectrum-palette-colors > .spectrum-palette-color.spectrum-shades-shown {
     z-index: 15;
 }
 

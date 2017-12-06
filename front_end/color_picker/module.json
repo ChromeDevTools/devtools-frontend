@@ -4,7 +4,9 @@
         "sdk"
     ],
     "scripts": [
-        "Contrast.js",
+        "ContrastInfo.js",
+        "ContrastOverlay.js",
+        "ContrastDetails.js",
         "Spectrum.js"
     ],
     "resources": [

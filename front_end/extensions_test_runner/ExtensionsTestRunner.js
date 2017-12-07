@@ -42,16 +42,19 @@ ExtensionsTestRunner.showPanel = function(panelId) {
   return UI.inspectorView.showPanel(panelId);
 };
 
-ExtensionsTestRunner.runExtensionTests = async function() {
+ExtensionsTestRunner.evaluateInExtension = function(code) {
+  ExtensionsTestRunner._codeToEvaluateBeforeTests = code;
+};
+
+ExtensionsTestRunner.runExtensionTests = async function(tests) {
   var result = await TestRunner.RuntimeAgent.evaluate('location.href', 'console', false);
 
   if (!result)
     return;
 
+  ExtensionsTestRunner._pendingTests = (ExtensionsTestRunner._codeToEvaluateBeforeTests || '') + tests.join('\n');
   var pageURL = result.value;
-  var extensionURL = ((/^https?:/.test(pageURL) ? pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') :
-                                                  pageURL.replace(/\/devtools\/extensions\/[^\/]*$/, '/http/tests'))) +
-      'devtools/resources/extension-main.html';
+  var extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
   extensionURL = extensionURL.replace('127.0.0.1', extensionsHost);
 
   InspectorFrontendAPI.addExtensions(

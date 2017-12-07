@@ -124,14 +124,15 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
     this._palettePanelShowing = false;
-    this._paletteContainer = this.contentElement.createChild('div', 'spectrum-palette');
+    this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
+    this._paletteContainer = this._paletteSectionContainer.createChild('div', 'spectrum-palette');
     this._paletteContainer.addEventListener('contextmenu', this._showPaletteColorContextMenu.bind(this, -1));
-    this._paletteColorsContainer = this._paletteContainer.createChild('div', 'spectrum-palette-colors');
     this._shadesContainer = this.contentElement.createChild('div', 'palette-color-shades hidden');
     UI.installDragHandle(
-        this._paletteColorsContainer, this._paletteDragStart.bind(this), this._paletteDrag.bind(this),
+        this._paletteContainer, this._paletteDragStart.bind(this), this._paletteDrag.bind(this),
         this._paletteDragEnd.bind(this), 'default');
-    var paletteSwitcher = this._paletteContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
+    var paletteSwitcher =
+        this._paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     appendSwitcherIcon(paletteSwitcher);
     paletteSwitcher.addEventListener('click', this._togglePalettePanel.bind(this, true));
 
@@ -258,7 +259,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
    */
   _showPalette(palette, animate, event) {
     this._resizeForSelectedPalette();
-    this._paletteColorsContainer.removeChildren();
+    this._paletteContainer.removeChildren();
     for (var i = 0; i < palette.colors.length; i++) {
       var animationDelay = animate ? i * 100 / palette.colors.length : 0;
       var colorElement = this._createPaletteColor(palette.colors[i], animationDelay);
@@ -277,13 +278,13 @@ ColorPicker.Spectrum = class extends UI.VBox {
         colorElement.title = Common.UIString(palette.colors[i] + '. Long-click to show alternate shades.');
         new UI.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
-      this._paletteColorsContainer.appendChild(colorElement);
+      this._paletteContainer.appendChild(colorElement);
     }
     this._paletteContainerMutable = palette.mutable;
 
     if (palette.mutable) {
-      this._paletteColorsContainer.appendChild(this._addColorToolbar.element);
-      this._paletteColorsContainer.appendChild(this._deleteIconToolbar.element);
+      this._paletteContainer.appendChild(this._addColorToolbar.element);
+      this._paletteContainer.appendChild(this._deleteIconToolbar.element);
     } else {
       this._addColorToolbar.element.remove();
       this._deleteIconToolbar.element.remove();
@@ -318,8 +319,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._shadesContainer.animate(
         [{transform: 'scaleY(0)', opacity: '0'}, {transform: 'scaleY(1)', opacity: '1'}],
         {duration: 200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)'});
-    var shadesTop =
-        this._paletteColorsContainer.offsetTop + colorElement.offsetTop + colorElement.parentElement.offsetTop;
+    var shadesTop = this._paletteContainer.offsetTop + colorElement.offsetTop + colorElement.parentElement.offsetTop;
     if (this._contrastDetails && this._contrastDetails.visible())
       shadesTop += this._contrastDetails.element().offsetHeight;
     this._shadesContainer.style.top = shadesTop + 'px';

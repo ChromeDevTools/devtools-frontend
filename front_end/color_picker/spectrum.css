@@ -382,7 +382,7 @@
     cursor: pointer;
 }
 
-.spectrum-palette {
+.spectrum-palette-container {
     border-top: 1px solid #dadada;
     position: relative;
     width: 100%;
@@ -391,7 +391,7 @@
     flex-wrap: wrap;
 }
 
-.spectrum-palette-colors {
+.spectrum-palette {
     display: flex;
     flex-wrap: wrap;
     width: 198px;
@@ -441,7 +441,7 @@
     margin-left: -8px;
 }
 
-.spectrum-palette-colors > .spectrum-palette-color.spectrum-shades-shown {
+.spectrum-palette > .spectrum-palette-color.spectrum-shades-shown {
     z-index: 15;
 }
 

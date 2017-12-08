@@ -189,10 +189,8 @@ Network.NetworkPanel = class extends UI.Panel {
         Common.UIString('Hide overview'));
     this._panelToolbar.appendToolbarItem(showOverviewButton);
 
-    if (Runtime.experiments.isEnabled('networkGroupingRequests')) {
-      this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
-          Common.moduleSetting('network.group-by-frame'), '', Common.UIString('Group by frame')));
-    }
+    this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
+        Common.moduleSetting('network.group-by-frame'), '', Common.UIString('Group by frame')));
 
     this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(

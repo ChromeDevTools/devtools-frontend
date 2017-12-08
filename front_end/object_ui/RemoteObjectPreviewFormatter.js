@@ -37,11 +37,9 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
    * @param {boolean} isEntry
    */
   appendObjectPreview(parentElement, preview, isEntry) {
-    const previewExperimentEnabled = Runtime.experiments.isEnabled('objectPreviews');
     var description = preview.description;
     var subTypesWithoutValuePreview = new Set(['null', 'regexp', 'error', 'internal#entry']);
-    if (preview.type !== 'object' || subTypesWithoutValuePreview.has(preview.subtype) ||
-        (previewExperimentEnabled && isEntry)) {
+    if (preview.type !== 'object' || subTypesWithoutValuePreview.has(preview.subtype) || isEntry) {
       parentElement.appendChild(this.renderPropertyPreview(preview.type, preview.subtype, description));
       return;
     }
@@ -54,7 +52,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         var arrayName = SDK.RemoteObject.arrayNameFromDescription(description);
         text = arrayName === 'Array' ? arrayLengthText : (arrayName + arrayLengthText);
       } else {
-        var hideDescription = previewExperimentEnabled && description === 'Object';
+        var hideDescription = description === 'Object';
         text = hideDescription ? '' : description;
       }
       if (text.length > 0)

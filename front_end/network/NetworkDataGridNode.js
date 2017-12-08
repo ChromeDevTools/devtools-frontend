@@ -301,8 +301,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     this._isOnInitiatorPath = false;
     this._isOnInitiatedPath = false;
     this._isFromFrame = false;
-    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
-      return;
     var frame = SDK.ResourceTreeModel.frameForRequest(request);
     this._isFromFrame = frame ? !frame.isMainFrame() : false;
   }
@@ -705,8 +703,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     element.classList.toggle('network-navigation-row', this._isNavigationRequest);
     super.createCells(element);
     this._updateBackgroundColor();
-    if (!Runtime.experiments.isEnabled('networkGroupingRequests'))
-      return;
     ProductRegistry.instance().then(productRegistry => {
       if (productRegistry.entryForUrl(this._request.parsedURL)) {
         this._isProduct = true;

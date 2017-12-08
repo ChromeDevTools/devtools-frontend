@@ -261,7 +261,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     } else {
       valueElement = createElementWithClass('span', 'object-value-' + (subtype || type));
       valueElement.title = description || '';
-      if (Runtime.experiments.isEnabled('objectPreviews') && value.preview && showPreview) {
+      if (value.preview && showPreview) {
         var previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
       } else {
@@ -525,11 +525,10 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
           treeElement, properties, internalProperties, skipProto, targetValue || value, linkifier, emptyPlaceholder);
     }
 
-    var generatePreview = Runtime.experiments.isEnabled('objectPreviews');
     if (flattenProtoChain)
-      value.getAllProperties(false, generatePreview, callback);
+      value.getAllProperties(false /* accessorPropertiesOnly */, true /* generatePreview */, callback);
     else
-      SDK.RemoteObject.loadFromObjectPerProto(value, generatePreview, callback);
+      SDK.RemoteObject.loadFromObjectPerProto(value, true /* generatePreview */, callback);
   }
 
   /**
@@ -1157,7 +1156,7 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
       if (!arrayFragment || wasThrown)
         return;
       arrayFragment.getAllProperties(
-          false, Runtime.experiments.isEnabled('objectPreviews'), processProperties.bind(this));
+          false /* accessorPropertiesOnly */, true /* generatePreview */, processProperties.bind(this));
     }
 
     /** @this {ObjectUI.ArrayGroupingTreeElement} */
@@ -1215,7 +1214,7 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
     function processObjectFragment(arrayFragment, wasThrown) {
       if (!arrayFragment || wasThrown)
         return;
-      arrayFragment.getOwnProperties(Runtime.experiments.isEnabled('objectPreviews'), processProperties.bind(this));
+      arrayFragment.getOwnProperties(true /* generatePreview */, processProperties.bind(this));
     }
 
     /**

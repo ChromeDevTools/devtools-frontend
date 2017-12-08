@@ -56,12 +56,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     this.textEditor.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this.textEditor.element.addEventListener('mousedown', this._onMouseDown.bind(this), true);
     this.textEditor.element.addEventListener('focusout', this._onBlur.bind(this), false);
-    if (Runtime.experiments.isEnabled('continueToLocationMarkers')) {
-      this.textEditor.element.addEventListener('wheel', event => {
-        if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
-          event.preventDefault();
-      }, true);
-    }
+    this.textEditor.element.addEventListener('wheel', event => {
+      if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
+        event.preventDefault();
+    }, true);
 
     this.textEditor.addEventListener(
         SourceFrame.SourcesTextEditor.Events.GutterClick, this._handleGutterClick.bind(this), this);
@@ -649,12 +647,10 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     if (this.isShowing()) {
       // We need SourcesTextEditor to be initialized prior to this call. @see crbug.com/506566
       setImmediate(() => {
-        if (this._controlDown) {
-          if (Runtime.experiments.isEnabled('continueToLocationMarkers'))
-            this._showContinueToLocations();
-        } else {
+        if (this._controlDown)
+          this._showContinueToLocations();
+        else
           this._generateValuesInSource();
-        }
       });
     }
   }
@@ -683,8 +679,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   }
 
   _showContinueToLocations() {
-    if (!Runtime.experiments.isEnabled('continueToLocationMarkers'))
-      return;
     this._popoverHelper.hidePopover();
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext)

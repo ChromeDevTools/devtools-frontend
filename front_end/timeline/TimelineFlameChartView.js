@@ -81,8 +81,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._boundRefresh = this._refresh.bind(this);
 
     this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
-    if (!Runtime.experiments.isEnabled('timelineColorByProduct'))
-      return;
     this._groupBySetting =
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this._updateColorMapper, this);
@@ -95,8 +93,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._urlToColorCache = new Map();
     if (!this._model)
       return;
-    var colorByProduct = Runtime.experiments.isEnabled('timelineColorByProduct') &&
-        this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
+    var colorByProduct = this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
     this._mainDataProvider.setEventColorMapping(
         colorByProduct ? this._colorByProductForEvent.bind(this) : Timeline.TimelineUIUtils.eventColor);
     this._mainFlameChart.update();

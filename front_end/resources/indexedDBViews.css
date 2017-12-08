@@ -55,6 +55,11 @@
     border-bottom: 1px solid #aaa;
 }
 
+.indexed-db-data-view .data-grid:focus .data-container tr.selected {
+    background-color: #cdddf5;
+    color: inherit;
+}
+
 .indexed-db-data-view .section,
 .indexed-db-data-view .section > .header,
 .indexed-db-data-view .section > .header .title {

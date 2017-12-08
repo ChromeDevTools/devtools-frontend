@@ -96,14 +96,10 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {?IDBKeyRange=} idbKeyRange
-   * @return {?Protocol.IndexedDB.KeyRange}
-   * eturn {?{lower: ?Object, upper: ?Object, lowerOpen: *, upperOpen: *}}
+   * @param {!IDBKeyRange} idbKeyRange
+   * @return {!Protocol.IndexedDB.KeyRange}
    */
-  static keyRangeFromIDBKeyRange(idbKeyRange) {
-    if (typeof idbKeyRange === 'undefined' || idbKeyRange === null)
-      return null;
-
+  static _keyRangeFromIDBKeyRange(idbKeyRange) {
     var keyRange = {};
     keyRange.lower = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.lower);
     keyRange.upper = Resources.IndexedDBModel.keyFromIDBKey(idbKeyRange.upper);
@@ -201,6 +197,18 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    */
   clearObjectStore(databaseId, objectStoreName) {
     return this._indexedDBAgent.clearObjectStore(databaseId.securityOrigin, databaseId.name, objectStoreName);
+  }
+
+  /**
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {string} objectStoreName
+   * @param {!IDBKeyRange} idbKeyRange
+   * @return {!Promise}
+   */
+  deleteEntries(databaseId, objectStoreName, idbKeyRange) {
+    var keyRange = Resources.IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange);
+    return this._indexedDBAgent.deleteObjectStoreEntries(
+        databaseId.securityOrigin, databaseId.name, objectStoreName, keyRange);
   }
 
   /**
@@ -388,7 +396,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {function(!Array.<!Resources.IndexedDBModel.Entry>, boolean)} callback
    */
   async _requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
-    var keyRange = Resources.IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange) || undefined;
+    var keyRange = idbKeyRange ? Resources.IndexedDBModel._keyRangeFromIDBKeyRange(idbKeyRange) : undefined;
 
     var response = await this._indexedDBAgent.invoke_requestData({
       securityOrigin: databaseId.securityOrigin,

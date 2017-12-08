@@ -325,17 +325,9 @@ TestRunner.deprecatedInitAsync(`
   }
 
   function createDatabaseAsync(databaseName) {
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
-    var request = indexedDB.open(databaseName);
-    request.onerror = onIndexedDBError;
-
-    request.onsuccess = function(event) {
-      request.result.close();
-      callback();
-    };
-
-    return promise;
+    return new Promise((resolve) => {
+      createDatabase(resolve, databaseName);
+    });
   }
 
   function upgradeRequestAsync(databaseName, onUpgradeNeeded, callback) {

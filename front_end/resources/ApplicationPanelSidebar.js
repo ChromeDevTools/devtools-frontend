@@ -1299,6 +1299,13 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
     contextMenu.show();
   }
 
+  _refreshObjectStore() {
+    if (this._view)
+      this._view.refreshData();
+    for (var indexName in this._idbIndexTreeElements)
+      this._idbIndexTreeElements[indexName].refreshIndex();
+  }
+
   async _clearObjectStore() {
     await this._model.clearObjectStore(this._databaseId, this._objectStore.name);
     this.update(this._objectStore, true);
@@ -1317,7 +1324,8 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
       indexNames[index.name] = true;
       if (!this._idbIndexTreeElements[index.name]) {
         var idbIndexTreeElement = new Resources.IDBIndexTreeElement(
-            this._storagePanel, this._model, this._databaseId, this._objectStore, index);
+            this._storagePanel, this._model, this._databaseId, this._objectStore, index,
+            this._refreshObjectStore.bind(this));
         this._idbIndexTreeElements[index.name] = idbIndexTreeElement;
         this.appendChild(idbIndexTreeElement);
       }
@@ -1357,8 +1365,10 @@ Resources.IDBObjectStoreTreeElement = class extends Resources.BaseStorageTreeEle
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    if (!this._view)
-      this._view = new Resources.IDBDataView(this._model, this._databaseId, this._objectStore, null);
+    if (!this._view) {
+      this._view = new Resources.IDBDataView(
+          this._model, this._databaseId, this._objectStore, null, this._refreshObjectStore.bind(this));
+    }
 
     this.showView(this._view);
     return false;
@@ -1392,13 +1402,15 @@ Resources.IDBIndexTreeElement = class extends Resources.BaseStorageTreeElement {
    * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
    * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
    * @param {!Resources.IndexedDBModel.Index} index
+   * @param {function()} refreshObjectStore
    */
-  constructor(storagePanel, model, databaseId, objectStore, index) {
+  constructor(storagePanel, model, databaseId, objectStore, index, refreshObjectStore) {
     super(storagePanel, index.name, false);
     this._model = model;
     this._databaseId = databaseId;
     this._objectStore = objectStore;
     this._index = index;
+    this._refreshObjectStore = refreshObjectStore;
   }
 
   get itemURL() {
@@ -1409,6 +1421,11 @@ Resources.IDBIndexTreeElement = class extends Resources.BaseStorageTreeElement {
   markNeedsRefresh() {
     if (this._view)
       this._view.markNeedsRefresh();
+  }
+
+  refreshIndex() {
+    if (this._view)
+      this._view.refreshData();
   }
 
   /**
@@ -1443,8 +1460,10 @@ Resources.IDBIndexTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    if (!this._view)
-      this._view = new Resources.IDBDataView(this._model, this._databaseId, this._objectStore, this._index);
+    if (!this._view) {
+      this._view = new Resources.IDBDataView(
+          this._model, this._databaseId, this._objectStore, this._index, this._refreshObjectStore);
+    }
 
     this.showView(this._view);
     return false;

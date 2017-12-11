@@ -68,3 +68,16 @@
     -webkit-mask-position: -64px -16px;
     background-color: rgba(0, 0, 0, 0.5);
 }
+
+.url-scheme-secure {
+    color: #0b8043;
+}
+
+.url-scheme-neutral,
+.url-scheme-insecure {
+    color: #cb3626;
+}
+
+.url-scheme-separator {
+    color: #8a8a8a;
+}

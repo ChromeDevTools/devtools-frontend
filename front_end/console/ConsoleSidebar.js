@@ -19,6 +19,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
     this._selectedTreeElement = null;
     /** @type {!Array<!Console.ConsoleSidebar.FilterTreeElement>} */
     this._treeElements = [];
+    var selectedFilterSetting = Common.settings.createSetting('console.sidebarSelectedFilter', null);
 
     var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
     var consoleAPIParsedFilters = [{
@@ -28,23 +29,27 @@ Console.ConsoleSidebar = class extends UI.VBox {
     }];
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.All, [], Console.ConsoleFilter.allLevelsFilterValue(),
-        UI.Icon.create('mediumicon-list'), badgePool);
+        UI.Icon.create('mediumicon-list'), badgePool, selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.ConsoleAPI, consoleAPIParsedFilters,
-        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'), badgePool);
+        Console.ConsoleFilter.allLevelsFilterValue(), UI.Icon.create('mediumicon-account-circle'), badgePool,
+        selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Error, [], Console.ConsoleFilter.singleLevelMask(Levels.Error),
-        UI.Icon.create('mediumicon-error-circle'), badgePool);
+        UI.Icon.create('mediumicon-error-circle'), badgePool, selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Warning, [], Console.ConsoleFilter.singleLevelMask(Levels.Warning),
-        UI.Icon.create('mediumicon-warning-triangle'), badgePool);
+        UI.Icon.create('mediumicon-warning-triangle'), badgePool, selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Info, [], Console.ConsoleFilter.singleLevelMask(Levels.Info),
-        UI.Icon.create('mediumicon-info-circle'), badgePool);
+        UI.Icon.create('mediumicon-info-circle'), badgePool, selectedFilterSetting);
     this._appendGroup(
         Console.ConsoleSidebar._groupSingularName.Verbose, [], Console.ConsoleFilter.singleLevelMask(Levels.Verbose),
-        UI.Icon.create('mediumicon-bug'), badgePool);
-    this._treeElements[0].select();
+        UI.Icon.create('mediumicon-bug'), badgePool, selectedFilterSetting);
+    var selectedTreeElementName = selectedFilterSetting.get();
+    var defaultTreeElement =
+        this._treeElements.find(x => x.name() === selectedTreeElementName) || this._treeElements[0];
+    defaultTreeElement.select();
   }
 
   /**
@@ -53,10 +58,11 @@ Console.ConsoleSidebar = class extends UI.VBox {
    * @param {!Object<string, boolean>} levelsMask
    * @param {!Element} icon
    * @param {!ProductRegistry.BadgePool} badgePool
+   * @param {!Common.Setting} selectedFilterSetting
    */
-  _appendGroup(name, parsedFilters, levelsMask, icon, badgePool) {
+  _appendGroup(name, parsedFilters, levelsMask, icon, badgePool, selectedFilterSetting) {
     var filter = new Console.ConsoleFilter(name, parsedFilters, null, levelsMask);
-    var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, badgePool);
+    var treeElement = new Console.ConsoleSidebar.FilterTreeElement(filter, icon, badgePool, selectedFilterSetting);
     this._tree.appendChild(treeElement);
     this._treeElements.push(treeElement);
   }
@@ -129,11 +135,13 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
    * @param {!Console.ConsoleFilter} filter
    * @param {!Element} icon
    * @param {!ProductRegistry.BadgePool} badgePool
+   * @param {!Common.Setting} selectedFilterSetting
    */
-  constructor(filter, icon, badgePool) {
+  constructor(filter, icon, badgePool, selectedFilterSetting) {
     super(filter.name, true /* expandable */);
     this._filter = filter;
     this._badgePool = badgePool;
+    this._selectedFilterSetting = selectedFilterSetting;
     /** @type {!Map<?string, !Console.ConsoleSidebar.URLGroupTreeElement>} */
     this._urlTreeElements = new Map();
     this.setLeadingIcons([icon]);
@@ -146,6 +154,23 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
     this.removeChildren();
     this._messageCount = 0;
     this._updateCounter();
+  }
+
+  /**
+   * @return {string}
+   */
+  name() {
+    return this._filter.name;
+  }
+
+  /**
+   * @param {boolean=} selectedByUser
+   * @return {boolean}
+   * @override
+   */
+  onselect(selectedByUser) {
+    this._selectedFilterSetting.set(this._filter.name);
+    return super.onselect(selectedByUser);
   }
 
   _updateCounter() {

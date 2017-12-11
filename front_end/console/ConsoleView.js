@@ -44,6 +44,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._sidebar = new Console.ConsoleSidebar(this._badgePool);
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
+    this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
 
     var toolbar = new UI.Toolbar('', this.element);
     var isLogManagementEnabled = Runtime.experiments.isEnabled('logManagement');
@@ -52,8 +53,11 @@ Console.ConsoleView = class extends UI.VBox {
           new UI.SplitWidget(true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
       this._splitWidget.setMainWidget(this._searchableView);
       this._splitWidget.setSidebarWidget(this._sidebar);
-      this._splitWidget.hideSidebar();
       this._splitWidget.show(this.element);
+      this._splitWidget.enableShowModeSaving();
+      this._isSidebarOpen = this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
+      if (this._isSidebarOpen)
+        this._filter._levelMenuButton.setEnabled(false);
       toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton('console sidebar'));
       this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, event => {
         this._isSidebarOpen = event.data === UI.SplitWidget.ShowMode.Both;
@@ -82,7 +86,6 @@ Console.ConsoleView = class extends UI.VBox {
      * @type {!Array.<!Console.ConsoleView.RegexMatchRange>}
      */
     this._regexMatchRanges = [];
-    this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
 
     this._consoleContextSelector = new Console.ConsoleContextSelector();
 
@@ -1191,7 +1194,13 @@ Console.ConsoleViewFilter = class {
     this._textFilterUI = new UI.ToolbarInput(
         Common.UIString('Filter'), 0.2, 1, Common.UIString('e.g. /event\\d/ -cdn url:a.com'),
         this._suggestionBuilder.completions.bind(this._suggestionBuilder));
-    this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, this._onFilterChanged, this);
+    this._textFilterSetting = Common.settings.createSetting('console.textFilter', '');
+    if (this._textFilterSetting.get())
+      this._textFilterUI.setValue(this._textFilterSetting.get());
+    this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, () => {
+      this._textFilterSetting.set(this._textFilterUI.value());
+      this._onFilterChanged();
+    });
     this._filterParser = new TextUtils.FilterParser(filterKeys);
     this._currentFilter = new Console.ConsoleFilter('', [], null, this._messageLevelFiltersSetting.get());
     this._updateCurrentFilter();

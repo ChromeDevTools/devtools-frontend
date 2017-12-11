@@ -157,7 +157,7 @@ Main.Main = class {
 
     Runtime.experiments.setDefaultExperiments([
       'accessibilityInspection', 'colorContrastRatio', 'logManagement', 'performanceMonitor', 'persistence2',
-      'stepIntoAsync'
+      'stepIntoAsync', 'timelineKeepHistory'
     ]);
   }
 

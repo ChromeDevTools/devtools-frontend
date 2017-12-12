@@ -260,7 +260,7 @@ ObjectUI.JavaScriptAutocomplete.completionsForExpression = async function(expres
       var result = [];
       try {
         for (var o = object; o; o = Object.getPrototypeOf(o)) {
-          if ((type === 'array' || type === 'typedarray') && o === object && ArrayBuffer.isView(o) && o.length > 9999)
+          if ((type === 'array' || type === 'typedarray') && o === object && o.length > 9999)
             continue;
 
           var group = {items: [], __proto__: null};

@@ -228,9 +228,9 @@ Common.resourceTypes = {
   TextTrack: new Common.ResourceType('texttrack', 'TextTrack', Common.resourceCategories.Other, true),
   WebSocket: new Common.ResourceType('websocket', 'WebSocket', Common.resourceCategories.WebSocket, false),
   Other: new Common.ResourceType('other', 'Other', Common.resourceCategories.Other, false),
-  SourceMapScript: new Common.ResourceType('sm-script', 'Script', Common.resourceCategories.Script, false),
+  SourceMapScript: new Common.ResourceType('sm-script', 'Script', Common.resourceCategories.Script, true),
   SourceMapStyleSheet:
-      new Common.ResourceType('sm-stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, false),
+      new Common.ResourceType('sm-stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
   Manifest: new Common.ResourceType('manifest', 'Manifest', Common.resourceCategories.Manifest, true),
 };
 

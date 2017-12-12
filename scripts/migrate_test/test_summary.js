@@ -52,8 +52,8 @@ function summarizeRecursive(dirPath) {
       const extension = path.extname(filePath);
       if (extension === '.js') {
         aggregatedStat.js++;
-      }
-      if (extension === '.html') {
+      } else if (extension !== '.txt') {
+        console.log('Legacy test:', filePath);
         aggregatedStat.html++;
       }
     }

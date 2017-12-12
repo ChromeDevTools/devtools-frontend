@@ -1634,6 +1634,8 @@ Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
     if (wasActive === isActive)
       return;
     this._treeElement.listItemElement.classList.toggle('has-mapped-files', isActive);
+    if (this._treeElement.childrenListElement.hasFocus())
+      return;
     if (isActive)
       this._treeElement.expand();
     else

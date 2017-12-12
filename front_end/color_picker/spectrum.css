@@ -473,7 +473,7 @@
 
 .spectrum-palette-switcher {
     right: 10px;
-    bottom: 9px;
+    top: 0;
     margin-top: 9px;
     position: absolute;
 }

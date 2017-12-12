@@ -54,6 +54,7 @@ Console.ConsoleView = class extends UI.VBox {
       this._splitWidget.setMainWidget(this._searchableView);
       this._splitWidget.setSidebarWidget(this._sidebar);
       this._splitWidget.show(this.element);
+      this._splitWidget.hideSidebar();
       this._splitWidget.enableShowModeSaving();
       this._isSidebarOpen = this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
       if (this._isSidebarOpen)

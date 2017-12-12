@@ -724,8 +724,11 @@ Sources.NavigatorView = class extends UI.VBox {
 
     contextMenu.defaultSection().appendItem(
         Common.UIString('New file'), this._handleContextMenuCreate.bind(this, project, path));
-    contextMenu.defaultSection().appendItem(
-        Common.UIString('Exclude folder'), this._handleContextMenuExclude.bind(this, project, path));
+
+    if (!(node instanceof Sources.NavigatorGroupTreeNode)) {
+      contextMenu.defaultSection().appendItem(
+          Common.UIString('Exclude folder'), this._handleContextMenuExclude.bind(this, project, path));
+    }
 
     function removeFolder() {
       var shouldRemove = window.confirm(Common.UIString('Are you sure you want to remove this folder?'));

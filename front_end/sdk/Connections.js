@@ -18,8 +18,6 @@ SDK.MainConnection = class {
           InspectorFrontendHostAPI.Events.DispatchMessage, this._dispatchMessage, this),
       InspectorFrontendHost.events.addEventListener(
           InspectorFrontendHostAPI.Events.DispatchMessageChunk, this._dispatchMessageChunk, this),
-      InspectorFrontendHost.events.addEventListener(
-          InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, this._evaluateForTestInFrontend, this),
     ];
   }
 
@@ -55,31 +53,6 @@ SDK.MainConnection = class {
       this._messageBuffer = '';
       this._messageSize = 0;
     }
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _evaluateForTestInFrontend(event) {
-    if (!Host.isUnderTest())
-      return;
-
-    var callId = /** @type {number} */ (event.data['callId']);
-    var script = /** @type {number} */ (event.data['script']);
-
-    /**
-     * @suppressGlobalPropertiesCheck
-     */
-    function invokeMethod() {
-      try {
-        script = script + '//# sourceURL=evaluateInWebInspector' + callId + '.js';
-        window.eval(script);
-      } catch (e) {
-        console.error(e.stack);
-      }
-    }
-
-    Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches(invokeMethod);
   }
 
   /**

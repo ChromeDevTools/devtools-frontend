@@ -62,3 +62,8 @@ ExtensionsTestRunner.runExtensionTests = async function(tests) {
 
   Extensions.extensionServer.initializeExtensions();
 };
+
+(function disableLogging() {
+  // Suppress console warnings from ExtensionServer.js
+  console.warn = () => undefined;
+})();

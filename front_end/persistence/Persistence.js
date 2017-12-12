@@ -404,6 +404,32 @@ Persistence.Persistence.Events = {
 /**
  * @unrestricted
  */
+Persistence.PathEncoder = class {
+  constructor() {
+    /** @type {!Common.CharacterIdMap<string>} */
+    this._encoder = new Common.CharacterIdMap();
+  }
+
+  /**
+   * @param {string} path
+   * @return {string}
+   */
+  encode(path) {
+    return path.split('/').map(token => this._encoder.toChar(token)).join('');
+  }
+
+  /**
+   * @param {string} path
+   * @return {string}
+   */
+  decode(path) {
+    return path.split('').map(token => this._encoder.fromChar(token)).join('/');
+  }
+};
+
+/**
+ * @unrestricted
+ */
 Persistence.PersistenceBinding = class {
   /**
    * @param {!Workspace.UISourceCode} network

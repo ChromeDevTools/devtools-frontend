@@ -728,6 +728,7 @@ all_devtools_files = [
   "front_end/ui/FilterBar.js",
   "front_end/ui/FilterSuggestionBuilder.js",
   "front_end/ui/ForwardedInputEventHandler.js",
+  "front_end/ui/Fragment.js",
   "front_end/ui/Geometry.js",
   "front_end/ui/glassPane.css",
   "front_end/ui/GlassPane.js",

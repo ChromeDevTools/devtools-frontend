@@ -232,6 +232,8 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithi
  * @return {?Element}
  */
 Node.prototype.parentElementOrShadowHost = function() {
+  if (this.nodeType === Node.DOCUMENT_FRAGMENT_NODE && this.host)
+    return /** @type {!Element} */ (this.host);
   var node = this.parentNode;
   if (!node)
     return null;

@@ -219,10 +219,18 @@ Persistence.Persistence = class extends Common.Object {
    */
   _onWorkingCopyCommitted(event) {
     var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    var newContent = /** @type {string} */ (event.data.content);
+    this.syncContent(uiSourceCode, newContent);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {string} newContent
+   */
+  syncContent(uiSourceCode, newContent) {
     var binding = uiSourceCode[Persistence.Persistence._binding];
     if (!binding || binding[Persistence.Persistence._muteCommit])
       return;
-    var newContent = /** @type {string} */ (event.data.content);
     var other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.isNodeJS()) {

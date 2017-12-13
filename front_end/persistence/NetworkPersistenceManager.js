@@ -310,7 +310,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     fileSystemUISourceCode[this._bindingSymbol] = binding;
     Persistence.persistence.addBinding(binding);
     var content = await fileSystemUISourceCode.requestContent();
-    networkUISourceCode.addRevision(content);
+    Persistence.persistence.syncContent(fileSystemUISourceCode, content);
   }
 
   /**

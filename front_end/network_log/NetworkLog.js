@@ -276,7 +276,7 @@ NetworkLog.NetworkLog = class extends Common.Object {
   _onMainFrameNavigated(event) {
     var mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     var manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager);
-    if (!manager)
+    if (!manager || mainFrame.resourceTreeModel().target().parentTarget())
       return;
 
     var oldManagerRequests = this._requests.filter(request => SDK.NetworkManager.forRequest(request) === manager);

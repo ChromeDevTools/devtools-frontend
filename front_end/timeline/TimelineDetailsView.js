@@ -34,19 +34,17 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     /** @type Map<string, Timeline.TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
-    if (!Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
-      const bottomUpView = new Timeline.BottomUpTimelineTreeView(filters);
-      this._appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
-      this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
+    const bottomUpView = new Timeline.BottomUpTimelineTreeView(filters);
+    this._appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
+    this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
-      const callTreeView = new Timeline.CallTreeTimelineTreeView(filters);
-      this._appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
-      this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
+    const callTreeView = new Timeline.CallTreeTimelineTreeView(filters);
+    this._appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
+    this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
-      const eventsView = new Timeline.EventsTimelineTreeView(filters, delegate);
-      this._appendTab(tabIds.EventLog, Common.UIString('Event Log'), eventsView);
-      this._rangeDetailViews.set(tabIds.EventLog, eventsView);
-    }
+    const eventsView = new Timeline.EventsTimelineTreeView(filters, delegate);
+    this._appendTab(tabIds.EventLog, Common.UIString('Event Log'), eventsView);
+    this._rangeDetailViews.set(tabIds.EventLog, eventsView);
 
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
   }

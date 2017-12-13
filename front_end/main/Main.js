@@ -134,7 +134,6 @@ Main.Main = class {
     Runtime.experiments.register('timelineFlowEvents', 'Timeline: flow events', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
     Runtime.experiments.register('timelineKeepHistory', 'Timeline: keep recording history');
-    Runtime.experiments.register('timelineMultipleMainViews', 'Timeline: multiple main views');
     Runtime.experiments.register('timelinePaintTimingMarkers', 'Timeline: paint timing markers', true);
     Runtime.experiments.register('timelinePerFrameTrack', 'Timeline: per-frame tracks', true);
     Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);

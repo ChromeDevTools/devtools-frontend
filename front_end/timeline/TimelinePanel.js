@@ -115,16 +115,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
     SDK.targetManager.addModelListener(
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
 
-    if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
-      var viewMode = Timeline.TimelinePanel.ViewMode;
-      this._tabbedPane = new UI.TabbedPane();
-      this._tabbedPane.appendTab(viewMode.FlameChart, Common.UIString('Flame Chart'), new UI.VBox());
-      this._tabbedPane.appendTab(viewMode.BottomUp, Common.UIString('Bottom-Up'), new UI.VBox());
-      this._tabbedPane.appendTab(viewMode.CallTree, Common.UIString('Call Tree'), new UI.VBox());
-      this._tabbedPane.appendTab(viewMode.EventLog, Common.UIString('Event Log'), new UI.VBox());
-      this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._onMainViewChanged.bind(this));
-      this._tabbedPane.selectTab(this._viewModeSetting.get());
-    }
+    this._flameChart = new Timeline.TimelineFlameChartView(this, this._filters);
+    this._searchableView = new UI.SearchableView(this._flameChart);
+    this._searchableView.setMinimumSize(0, 100);
+    this._searchableView.element.classList.add('searchable-view');
+    this._searchableView.show(this._timelinePane.element);
+    this._flameChart.show(this._searchableView.element);
+    this._flameChart.setSearchableView(this._searchableView);
 
     this._onModeChanged();
     this._populateToolbar();
@@ -177,14 +174,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     selectionData.windowStartTime = event.data.startTime;
     selectionData.windowEndTime = event.data.endTime;
 
-    this._currentView.setWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
+    this._flameChart.setWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
     if (selectionData.selection.type() === Timeline.TimelineSelection.Type.Range)
       this.select(null);
-  }
-
-  _onMainViewChanged() {
-    this._viewModeSetting.set(this._tabbedPane.selectedTabId);
-    this._onModeChanged();
   }
 
   /**
@@ -444,57 +436,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   _onModeChanged() {
     this._updateOverviewControls();
-
-    // Set up main view.
-    if (this._currentView)
-      this._currentView.detach();
-    var viewMode = Runtime.experiments.isEnabled('timelineMultipleMainViews')
-        ? this._tabbedPane.selectedTabId
-        : Timeline.TimelinePanel.ViewMode.FlameChart;
-    this._flameChart = null;
-    var mainView;
-    if (viewMode === Timeline.TimelinePanel.ViewMode.FlameChart) {
-      this._flameChart = new Timeline.TimelineFlameChartView(this, this._filters);
-      mainView = this._flameChart;
-      this._currentView = this._flameChart;
-    } else {
-      switch (viewMode) {
-        case Timeline.TimelinePanel.ViewMode.CallTree:
-          mainView = new Timeline.CallTreeTimelineTreeView(this._filters);
-          break;
-        case Timeline.TimelinePanel.ViewMode.EventLog:
-          mainView = new Timeline.EventsTimelineTreeView(this._filters, this);
-          break;
-        default:
-          mainView = new Timeline.BottomUpTimelineTreeView(this._filters);
-          break;
-      }
-      var treeView = new Timeline.TimelineTreeModeView(this, mainView);
-      this._currentView = treeView;
-    }
-    this._currentView.setModel(this._performanceModel);
-    var selectionData = this._currentModelSelectionData();
-    if (selectionData)
-      this._currentView.setWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
-    if (this._searchableView)
-      this._searchableView.detach();
-    this._searchableView = new UI.SearchableView(mainView);
-    this._searchableView.setMinimumSize(0, 100);
-    this._searchableView.element.classList.add('searchable-view');
-    this._searchableView.show(this._timelinePane.element);
-
-    if (Runtime.experiments.isEnabled('timelineMultipleMainViews')) {
-      this._tabbedPane.show(this._searchableView.element);
-      this._currentView.show(this._tabbedPane.visibleView.element);
-    } else {
-      this._currentView.show(this._searchableView.element);
-    }
-    mainView.setSearchableView(this._searchableView);
-    if (this._lastViewMode !== viewMode) {
-      this._lastViewMode = viewMode;
-      this._searchableView.cancelSearch();
-    }
-
     this.doResize();
     this.select(null);
   }
@@ -638,7 +579,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (this._performanceModel && !this._historyManager)
       this._performanceModel.dispose();
     this._performanceModel = model;
-    this._currentView.setModel(model);
+    this._flameChart.setModel(model);
 
     this._overviewPane.reset();
     if (model) {
@@ -663,7 +604,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._setMarkers(model.timelineModel());
       var selectionData = this._currentModelSelectionData();
       this.requestWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
-      this._currentView.setSelection(selectionData.selection);
+      this._flameChart.setSelection(selectionData.selection);
     } else {
       this.requestWindowTimes(0, Infinity);
     }
@@ -924,7 +865,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     if (!selection)
       selection = Timeline.TimelineSelection.fromRange(selectionData.windowStartTime, selectionData.windowEndTime);
     selectionData.selection = selection;
-    this._currentView.setSelection(selection);
+    this._flameChart.setSelection(selection);
   }
 
   /**
@@ -952,7 +893,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {
-    this._currentView.highlightEvent(event);
+    this._flameChart.highlightEvent(event);
   }
 
   /**

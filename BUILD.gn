@@ -795,6 +795,7 @@ all_devtools_files = [
   "front_end/ui/View.js",
   "front_end/ui/viewContainers.css",
   "front_end/ui/Widget.js",
+  "front_end/ui/XElement.js",
   "front_end/ui/ZoomManager.js",
   "front_end/worker_service/ServiceDispatcher.js",
   "front_end/workspace/FileManager.js",

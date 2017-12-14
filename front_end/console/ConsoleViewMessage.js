@@ -577,7 +577,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsObject(obj, includePreview) {
-    var titleElement = createElement('span');
+    var titleElement = createElementWithClass('span', 'console-object');
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
       this._previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);

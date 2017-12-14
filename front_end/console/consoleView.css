@@ -324,7 +324,9 @@
     flex-shrink: 0;
 }
 
-.console-message-text .object-value-string {
+.console-message-text .object-value-string,
+.console-message-text .object-value-regexp,
+.console-message-text .object-value-symbol {
     white-space: pre-wrap;
     word-break: break-all;
 }
@@ -385,6 +387,13 @@
     vertical-align: baseline;
     color: inherit;
     display: inline-block;
+    overflow-wrap: break-word;
+    max-width: 100%;
+}
+
+.console-object {
+    white-space: pre-wrap;
+    word-break: break-all;
 }
 
 .console-message-stack-trace-toggle {

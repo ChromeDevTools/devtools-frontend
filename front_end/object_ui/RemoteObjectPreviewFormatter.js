@@ -59,7 +59,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
         parentElement.createChild('span', 'object-description').textContent = text + '\u00a0';
     }
 
-    var propertiesElement = parentElement.createChild('span', 'object-properties-preview source-code');
+    var propertiesElement = parentElement.createChild('span', 'object-properties-preview');
     propertiesElement.createTextChild(isArrayOrTypedArray ? '[' : '{');
     if (preview.entries)
       this._appendEntriesPreview(propertiesElement, preview);

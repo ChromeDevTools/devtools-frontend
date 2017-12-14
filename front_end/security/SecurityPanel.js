@@ -597,7 +597,8 @@ Security.SecurityMainView = class extends UI.VBox {
     this._summarySection = this.contentElement.createChild('div', 'security-summary');
 
     // Info explanations should appear after all others.
-    this._securityExplanationsMain = this.contentElement.createChild('div', 'security-explanation-list');
+    this._securityExplanationsMain =
+        this.contentElement.createChild('div', 'security-explanation-list security-explanations-main');
     this._securityExplanationsExtra =
         this.contentElement.createChild('div', 'security-explanation-list security-explanations-extra');
 
@@ -629,7 +630,17 @@ Security.SecurityMainView = class extends UI.VBox {
     explanationSection.createChild('div', 'security-property')
         .classList.add('security-property-' + explanation.securityState);
     var text = explanationSection.createChild('div', 'security-explanation-text');
-    text.createChild('div', 'security-explanation-title').textContent = explanation.summary;
+
+    var explanationHeader = text.createChild('div', 'security-explanation-title');
+
+    if (explanation.title) {
+      explanationHeader.createChild('span').textContent = explanation.title + ' - ';
+      explanationHeader.createChild('span', 'security-explanation-title-' + explanation.securityState).textContent =
+          explanation.summary;
+    } else {
+      explanationHeader.textContent = explanation.summary;
+    }
+
     text.createChild('div').textContent = explanation.description;
 
     if (explanation.certificate.length) {

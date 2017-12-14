@@ -211,8 +211,10 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    * @param {!Workspace.UISourceCode} fileSystemUISourceCode
    */
   async _bind(networkUISourceCode, fileSystemUISourceCode) {
-    if (networkUISourceCode[this._bindingSymbol] || fileSystemUISourceCode[this._bindingSymbol])
-      return;
+    if (networkUISourceCode[this._bindingSymbol])
+      this._unbind(networkUISourceCode);
+    if (fileSystemUISourceCode[this._bindingSymbol])
+      this._unbind(fileSystemUISourceCode);
     var binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode, true);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;

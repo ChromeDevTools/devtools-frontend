@@ -35,7 +35,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    line-height: 16px;
+    line-height: 20px;
     margin-left: 11px;
 }
 
@@ -45,7 +45,7 @@
 
 .watch-expression {
     position: relative;
-    padding: 1px 6px 1px 6px;
+    padding: 0 6px;
     flex: none;
     min-height: 20px;
 }

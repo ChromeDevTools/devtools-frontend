@@ -447,7 +447,7 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
       {title: Common.UIString('DOM Nodes'), metrics: [{name: 'Nodes', color: 'green'}]},
       {title: Common.UIString('JS event listeners'), metrics: [{name: 'JSEventListeners', color: 'yellowgreen'}]},
       {title: Common.UIString('Documents'), metrics: [{name: 'Documents', color: 'darkblue'}]},
-      {title: Common.UIString('Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
+      {title: Common.UIString('Document Frames'), metrics: [{name: 'Frames', color: 'darkcyan'}]},
       {title: Common.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
       {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];

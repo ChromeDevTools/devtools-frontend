@@ -18,7 +18,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
     var timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
-    timelineHint.textContent = Common.UIString('Select an effect above to inspect and modify.');
+    timelineHint.textContent = ls`Select an effect above to inspect and modify.`;
 
     /** @const */ this._defaultDuration = 100;
     this._duration = this._defaultDuration;
@@ -109,12 +109,12 @@ Animation.AnimationTimeline = class extends UI.VBox {
   _createHeader() {
     var toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
     var topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
+    var clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
 
-    this._pauseButton = new UI.ToolbarToggle(Common.UIString('Pause all'), 'largeicon-pause', 'largeicon-resume');
+    this._pauseButton = new UI.ToolbarToggle(ls`Pause all`, 'largeicon-pause', 'largeicon-resume');
     this._pauseButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
@@ -122,10 +122,10 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._playbackRateButtons = [];
     for (var playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
       var button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
-      button.textContent = playbackRate ? Common.UIString(playbackRate * 100 + '%') : Common.UIString('Pause');
+      button.textContent = playbackRate ? ls`${playbackRate * 100}%` : ls`Pause`;
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
-      button.title = Common.UIString('Set speed to ') + button.textContent;
+      button.title = ls`Set speed to ${button.textContent}`;
       this._playbackRateButtons.push(button);
     }
     this._updatePlaybackControls();
@@ -135,13 +135,13 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
     var emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
-    emptyBufferHint.textContent = Common.UIString('Listening for animations...');
+    emptyBufferHint.textContent = ls`Listening for animations...`;
     var container = this.contentElement.createChild('div', 'animation-timeline-header');
     var controls = container.createChild('div', 'animation-controls');
     this._currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
     var toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
-    this._controlButton = new UI.ToolbarToggle(Common.UIString('Replay timeline'), 'largeicon-replay-animation');
+    this._controlButton = new UI.ToolbarToggle(ls`Replay timeline`, 'largeicon-replay-animation');
     this._controlState = Animation.AnimationTimeline._ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener(UI.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
@@ -205,7 +205,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._allPaused = !this._allPaused;
     this._pauseButton.setToggled(this._allPaused);
     this._setPlaybackRate(this._playbackRate);
-    this._pauseButton.setTitle(this._allPaused ? Common.UIString('Resume all') : Common.UIString('Pause all'));
+    this._pauseButton.setTitle(this._allPaused ? ls`Resume all` : ls`Pause all`);
   }
 
   /**
@@ -243,17 +243,17 @@ Animation.AnimationTimeline = class extends UI.VBox {
     if (this._selectedGroup && this._selectedGroup.paused()) {
       this._controlState = Animation.AnimationTimeline._ControlState.Play;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(Common.UIString('Play timeline'));
+      this._controlButton.setTitle(ls`Play timeline`);
       this._controlButton.setGlyph('largeicon-play-animation');
     } else if (!this._scrubberPlayer || this._scrubberPlayer.currentTime >= this.duration()) {
       this._controlState = Animation.AnimationTimeline._ControlState.Replay;
       this._controlButton.setToggled(true);
-      this._controlButton.setTitle(Common.UIString('Replay timeline'));
+      this._controlButton.setTitle(ls`Replay timeline`);
       this._controlButton.setGlyph('largeicon-replay-animation');
     } else {
       this._controlState = Animation.AnimationTimeline._ControlState.Pause;
       this._controlButton.setToggled(false);
-      this._controlButton.setTitle(Common.UIString('Pause timeline'));
+      this._controlButton.setTitle(ls`Pause timeline`);
       this._controlButton.setGlyph('largeicon-pause-animation');
     }
   }
@@ -481,7 +481,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
         var label = this._grid.createSVGChild('text', 'animation-timeline-grid-label');
-        label.textContent = Common.UIString(Number.millisToString(time));
+        label.textContent = Number.millisToString(time);
         label.setAttribute('x', gridWidth + 10);
         label.setAttribute('y', 16);
       }
@@ -584,7 +584,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
   _updateScrubber(timestamp) {
     if (!this._scrubberPlayer)
       return;
-    this._currentTime.textContent = Common.UIString(Number.millisToString(this._scrubberPlayer.currentTime));
+    this._currentTime.textContent = Number.millisToString(this._scrubberPlayer.currentTime);
     if (this._scrubberPlayer.playState === 'pending' || this._scrubberPlayer.playState === 'running')
       this.element.window().requestAnimationFrame(this._updateScrubber.bind(this));
     else if (this._scrubberPlayer.playState === 'finished')
@@ -637,7 +637,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     var delta = event.x - this._originalMousePosition;
     var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration()));
     this._scrubberPlayer.currentTime = currentTime;
-    this._currentTime.textContent = Common.UIString(Number.millisToString(Math.round(currentTime)));
+    this._currentTime.textContent = Number.millisToString(Math.round(currentTime));
     this._selectedGroup.seekTo(currentTime);
   }
 
@@ -679,7 +679,7 @@ Animation.AnimationTimeline.NodeUI = class {
    */
   nodeResolved(node) {
     if (!node) {
-      this._description.createTextChild(Common.UIString('<node>'));
+      this._description.createTextChild('<node>');
       return;
     }
     this._node = node;

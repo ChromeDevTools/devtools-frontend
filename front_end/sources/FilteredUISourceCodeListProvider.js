@@ -109,8 +109,13 @@ Sources.FilteredUISourceCodeListProvider = class extends QuickOpen.FilteredListW
       this._scorer = new Sources.FilePathScoreFunction(query);
     }
 
+    var multiplier = 10;
+    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem &&
+        !Persistence.persistence.binding(uiSourceCode))
+      multiplier = 5;
+
     var fullDisplayName = uiSourceCode.fullDisplayName();
-    return score + 10 * this._scorer.score(fullDisplayName, null);
+    return score + multiplier * this._scorer.score(fullDisplayName, null);
   }
 
   /**

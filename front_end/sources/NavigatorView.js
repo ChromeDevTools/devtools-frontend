@@ -1010,7 +1010,7 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
       var icon = UI.Icon.create('largeicon-navigator-file-sync', 'icon');
       var badge = UI.Icon.create('badge-navigator-file-sync', 'icon-badge');
       // TODO(allada) This does not play well with dark theme. Add an actual icon and use it.
-      if (Persistence.networkPersistenceManager.activeProject() === binding.fileSystem.project())
+      if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project())
         badge.style.filter = 'hue-rotate(160deg)';
       container.appendChild(icon);
       container.appendChild(badge);

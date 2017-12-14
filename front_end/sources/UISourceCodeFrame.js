@@ -165,12 +165,9 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       return true;
     if (this._uiSourceCode.project().isServiceProject())
       return false;
-    var networkPersistenceProject = Persistence.networkPersistenceManager.activeProject();
-    if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network && networkPersistenceProject) {
-      var projectDomain = Persistence.networkPersistenceManager.domainForProject(networkPersistenceProject);
-      if (projectDomain)
-        return true;
-    }
+    if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network &&
+        Persistence.networkPersistenceManager.active())
+      return true;
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
   }
 

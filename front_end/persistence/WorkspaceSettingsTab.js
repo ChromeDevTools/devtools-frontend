@@ -19,11 +19,6 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     Persistence.isolatedFileSystemManager.addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved,
         event => this._fileSystemRemoved(/** @type {!Persistence.IsolatedFileSystem} */ (event.data)), this);
-    Persistence.networkPersistenceManager.addEventListener(
-        Persistence.NetworkPersistenceManager.Events.ProjectDomainChanged,
-        event => this._overridesProjectChanged(
-            /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (event.data)),
-        this);
 
     var folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -89,7 +84,9 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _addItem(fileSystem) {
-    if (Persistence.networkPersistenceManager.projectForFileSystem(fileSystem))
+    var networkPersistenceProject = Persistence.networkPersistenceManager.project();
+    if (networkPersistenceProject &&
+        Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem)
       return;
     var element = this._renderFileSystem(fileSystem);
     this._elementByPath.set(fileSystem.path(), element);
@@ -161,16 +158,5 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
       this._elementByPath.delete(fileSystem.path());
       element.remove();
     }
-  }
-
-  /**
-   * @param {!Persistence.FileSystemWorkspaceBinding.FileSystem} project
-   */
-  _overridesProjectChanged(project) {
-    var fileSystem = Persistence.isolatedFileSystemManager.fileSystem(project.fileSystemPath());
-    if (!fileSystem)
-      return;
-    this._fileSystemRemoved(fileSystem);
-    this._fileSystemAdded(fileSystem);
   }
 };

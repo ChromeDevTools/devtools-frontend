@@ -161,6 +161,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._messagesElement.id = 'console-messages';
     this._messagesElement.classList.add('monospace');
     this._messagesElement.addEventListener('click', this._messagesClicked.bind(this), true);
+    this._messagesElement.addEventListener('paste', this._messagesPasted.bind(this), true);
 
     this._viewportThrottler = new Common.Throttler(50);
 
@@ -858,6 +859,15 @@ Console.ConsoleView = class extends UI.VBox {
     var consoleGroupViewMessage = groupMessage.message;
     consoleGroupViewMessage.setCollapsed(!consoleGroupViewMessage.collapsed());
     this._updateMessageList();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _messagesPasted(event) {
+    if (UI.isEditing())
+      return;
+    this._prompt.focus();
   }
 
   _registerShortcuts() {

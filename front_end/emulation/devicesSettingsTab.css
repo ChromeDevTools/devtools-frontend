@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.devices-settings-tab .settings-tab.help-content {
+.devices-settings-tab .settings-tab.settings-content {
     display: flex;
     flex-direction: column;
     align-items: flex-start;

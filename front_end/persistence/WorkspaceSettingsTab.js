@@ -10,8 +10,8 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     var header = this.element.createChild('header');
     header.createChild('h3').createTextChild(Common.UIString('Workspace'));
 
-    this.containerElement = this.element.createChild('div', 'help-container-wrapper')
-                                .createChild('div', 'settings-tab help-content help-container');
+    this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
+                                .createChild('div', 'settings-tab settings-content settings-container');
 
     Persistence.isolatedFileSystemManager.addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemAdded,

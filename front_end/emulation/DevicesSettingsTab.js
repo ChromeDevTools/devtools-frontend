@@ -14,8 +14,8 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
 
     var header = this.element.createChild('header');
     header.createChild('h3').createTextChild(Common.UIString('Emulated Devices'));
-    this.containerElement = this.element.createChild('div', 'help-container-wrapper')
-                                .createChild('div', 'settings-tab help-content help-container');
+    this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
+                                .createChild('div', 'settings-tab settings-content settings-container');
 
     var buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =

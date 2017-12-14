@@ -16,7 +16,7 @@ header > h3 {
     padding-bottom: 3px;
 }
 
-.help-content {
+.settings-content {
     overflow-y: auto;
     overflow-x: hidden;
     margin: 8px 8px 8px 0;
@@ -24,14 +24,13 @@ header > h3 {
     flex: auto;
 }
 
-.help-container {
+.settings-container {
     width: 100%;
-    -webkit-user-select: auto;
     -webkit-column-width: 288px;
 }
 
 
-.settings-tab.help-container {
+.settings-tab.settings-container {
     -webkit-column-width: 308px;
 }
 
@@ -40,7 +39,7 @@ header > h3 {
     display: inline-flex;
 }
 
-.help-container-wrapper {
+.settings-container-wrapper {
     position: absolute;
     top: 31px;
     left: 0px;
@@ -50,7 +49,7 @@ header > h3 {
     padding-top: 9px;
 }
 
-.settings-tab.help-content {
+.settings-tab.settings-content {
     margin: 0;
     padding: 0;
 }
@@ -103,7 +102,7 @@ p.folder-exclude-pattern > input {
     margin: 20px 0;
 }
 
-.settings-tab.help-content.help-container {
+.settings-tab.settings-content.settings-container {
     -webkit-column-width: initial;
     overflow: hidden;
     padding-right: 10px;

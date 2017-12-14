@@ -37,7 +37,7 @@ Settings.SettingsScreen = class extends UI.VBox {
     this.registerRequiredCSS('settings/settingsScreen.css');
 
     this.contentElement.tabIndex = 0;
-    this.contentElement.classList.add('help-window-main');
+    this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
     var settingsLabelElement = createElement('div');
@@ -118,8 +118,8 @@ Settings.SettingsTab = class extends UI.VBox {
       this.element.id = id;
     var header = this.element.createChild('header');
     header.createChild('h3').createTextChild(name);
-    this.containerElement = this.element.createChild('div', 'help-container-wrapper')
-                                .createChild('div', 'settings-tab help-content help-container');
+    this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
+                                .createChild('div', 'settings-tab settings-content settings-container');
   }
 
   /**
@@ -127,9 +127,9 @@ Settings.SettingsTab = class extends UI.VBox {
    *  @return {!Element}
    */
   _appendSection(name) {
-    var block = this.containerElement.createChild('div', 'help-block');
+    var block = this.containerElement.createChild('div', 'settings-block');
     if (name)
-      block.createChild('div', 'help-section-title').textContent = name;
+      block.createChild('div', 'settings-section-title').textContent = name;
     return block;
   }
 };

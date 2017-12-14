@@ -220,13 +220,13 @@ UI.ShortcutsScreen = class {
 
     widget.element.className = 'settings-tab-container';  // Override
     widget.element.createChild('header').createChild('h3').createTextChild(Common.UIString('Shortcuts'));
-    var scrollPane = widget.element.createChild('div', 'help-container-wrapper');
+    var scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
     var container = scrollPane.createChild('div');
-    container.className = 'help-content help-container';
+    container.className = 'settings-content settings-container';
     for (var i = 0; i < orderedSections.length; ++i)
       orderedSections[i].renderSection(container);
 
-    var note = scrollPane.createChild('p', 'help-footnote');
+    var note = scrollPane.createChild('p', 'settings-footnote');
     note.appendChild(UI.createDocumentationLink(
         'iterate/inspect-styles/shortcuts', Common.UIString('Full list of DevTools keyboard shortcuts and gestures')));
 
@@ -289,18 +289,18 @@ UI.ShortcutsSection = class {
    * @param {!Element} container
    */
   renderSection(container) {
-    var parent = container.createChild('div', 'help-block');
+    var parent = container.createChild('div', 'settings-block');
 
-    var headLine = parent.createChild('div', 'help-line');
-    headLine.createChild('div', 'help-key-cell');
-    headLine.createChild('div', 'help-section-title help-cell').textContent = this.name;
+    var headLine = parent.createChild('div', 'settings-line');
+    headLine.createChild('div', 'settings-key-cell');
+    headLine.createChild('div', 'settings-section-title settings-cell').textContent = this.name;
 
     for (var i = 0; i < this._lines.length; ++i) {
-      var line = parent.createChild('div', 'help-line');
-      var keyCell = line.createChild('div', 'help-key-cell');
+      var line = parent.createChild('div', 'settings-line');
+      var keyCell = line.createChild('div', 'settings-key-cell');
       keyCell.appendChild(this._lines[i].key);
-      keyCell.appendChild(this._createSpan('help-key-delimiter', ':'));
-      line.createChild('div', 'help-cell').textContent = this._lines[i].text;
+      keyCell.appendChild(this._createSpan('settings-key-delimiter', ':'));
+      line.createChild('div', 'settings-cell').textContent = this._lines[i].text;
     }
   }
 
@@ -310,7 +310,7 @@ UI.ShortcutsSection = class {
    * @return {!Node}
    */
   _renderSequence(sequence, delimiter) {
-    var delimiterSpan = this._createSpan('help-key-delimiter', delimiter);
+    var delimiterSpan = this._createSpan('settings-key-delimiter', delimiter);
     return this._joinNodes(sequence.map(this._renderKey.bind(this)), delimiterSpan);
   }
 
@@ -320,8 +320,8 @@ UI.ShortcutsSection = class {
    */
   _renderKey(key) {
     var keyName = key.name;
-    var plus = this._createSpan('help-combine-keys', '+');
-    return this._joinNodes(keyName.split(' + ').map(this._createSpan.bind(this, 'help-key')), plus);
+    var plus = this._createSpan('settings-combine-keys', '+');
+    return this._joinNodes(keyName.split(' + ').map(this._createSpan.bind(this, 'settings-key')), plus);
   }
 
   /**

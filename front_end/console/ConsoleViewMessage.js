@@ -1227,6 +1227,7 @@ Console.ConsoleViewMessage = class {
     if (!this._message.runtimeModel() || !errorPrefixes.some(startsWith))
       return null;
     var debuggerModel = this._message.runtimeModel().debuggerModel();
+    var baseURL = this._message.runtimeModel().target().inspectedURL();
 
     var lines = string.split('\n');
     var links = [];
@@ -1255,15 +1256,12 @@ Console.ConsoleViewMessage = class {
       if (!splitResult)
         return null;
 
-      var parsed = splitResult.url.asParsedURL();
-      var url;
-      if (parsed)
-        url = parsed.url;
-      else if (debuggerModel.scriptsForSourceURL(splitResult.url).length)
-        url = splitResult.url;
-      else if (splitResult.url === '<anonymous>')
+      if (splitResult.url === '<anonymous>')
         continue;
-      else
+      var url = parseOrScriptMatch(splitResult.url);
+      if (!url && Common.ParsedURL.isRelativeURL(splitResult.url))
+        url = parseOrScriptMatch(Common.ParsedURL.completeURL(baseURL, splitResult.url));
+      if (!url)
         return null;
 
       links.push({
@@ -1292,6 +1290,21 @@ Console.ConsoleViewMessage = class {
       formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start)));
 
     return formattedResult;
+
+    /**
+     * @param {?string} url
+     * @return {?string}
+     */
+    function parseOrScriptMatch(url) {
+      if (!url)
+        return null;
+      var parsedURL = url.asParsedURL();
+      if (parsedURL)
+        return parsedURL.url;
+      if (debuggerModel.scriptsForSourceURL(url).length)
+        return url;
+      return null;
+    }
   }
 
   /**

@@ -69,3 +69,20 @@
 .webkit-css-property{color: rgb(53, 212, 199);}
 .webkit-css-string{color:rgb(231, 194, 111);}
 .webkit-css-url{color:rgb(231, 194, 111);}
+
+.cm-def{color:rgb(93, 176, 215);}
+.cm-header{color:rgb(93, 176, 215);}
+.cm-variable-2{color:rgb(217, 217, 217);}
+
+.cm-variable-2 {color: #05a;}
+.cm-variable-3, .cm-type {color: rgb(93, 176, 215);}
+.cm-string {color: rgb(242, 139, 84);}
+.cm-meta {color: #555;}
+.cm-meta {color:rgb(221, 251, 85);}
+.cm-qualifier{color:rgb(255, 163, 79);}
+.cm-builtin{color:rgb(159, 180, 214);}
+.cm-bracket {color: #997;}
+.cm-tag{color:rgb(93, 176, 215);}
+.cm-attribute{color:rgb(97, 148, 198);}
+.cm-hr {color: #999;}
+.cm-link{color:rgb(159, 180, 214);}

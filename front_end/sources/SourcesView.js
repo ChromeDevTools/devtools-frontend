@@ -52,6 +52,9 @@ Sources.SourcesView = class extends UI.VBox {
     this._bottomToolbar = new UI.Toolbar('', this._toolbarContainerElement);
     this._bindingChangeBound = this._onBindingChanged.bind(this);
 
+    /** @type {?Common.EventTarget.EventDescriptor} */
+    this._toolbarChangedListener = null;
+
     UI.startBatchUpdate();
     workspace.uiSourceCodes().forEach(this._addUISourceCode.bind(this));
     UI.endBatchUpdate();
@@ -474,6 +477,7 @@ Sources.SourcesView = class extends UI.VBox {
       wasSelected = true;
 
     // SourcesNavigator does not need to update on EditorClosed.
+    this._removeToolbarChangedListener();
     this._updateScriptViewToolbarItems();
     this._searchableView.resetSearch();
 
@@ -498,9 +502,25 @@ Sources.SourcesView = class extends UI.VBox {
 
     this._searchableView.setReplaceable(!!currentSourceFrame && currentSourceFrame.canEditSource());
     this._searchableView.refreshSearch();
+    this._updateToolbarChangedListener();
     this._updateScriptViewToolbarItems();
 
     this.dispatchEventToListeners(Sources.SourcesView.Events.EditorSelected, this._editorContainer.currentFile());
+  }
+
+  _removeToolbarChangedListener() {
+    if (this._toolbarChangedListener)
+      Common.EventTarget.removeEventListeners([this._toolbarChangedListener]);
+    this._toolbarChangedListener = null;
+  }
+
+  _updateToolbarChangedListener() {
+    this._removeToolbarChangedListener();
+    var sourceFrame = this.currentSourceFrame();
+    if (!sourceFrame)
+      return;
+    this._toolbarChangedListener = sourceFrame.addEventListener(
+        Sources.UISourceCodeFrame.Events.ToolbarItemsChanged, this._updateScriptViewToolbarItems, this);
   }
 
   /**

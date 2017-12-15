@@ -380,6 +380,22 @@ Sources.CSSPlugin = class {
 
   /**
    * @override
+   * @return {!Array<!UI.ToolbarItem>}
+   */
+  rightToolbarItems() {
+    return [];
+  }
+
+  /**
+   * @override
+   * @return {!Array<!UI.ToolbarItem>}
+   */
+  leftToolbarItems() {
+    return [];
+  }
+
+  /**
+   * @override
    */
   dispose() {
     if (this._swatchPopoverHelper.isShowing())

@@ -109,13 +109,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
         result.push(new UI.ToolbarText(Common.UIString('(source mapped from %s)', parsedURL.displayName)));
     }
 
-    if (this.uiSourceCode().project().type() === Workspace.projectTypes.Snippets) {
-      result.push(new UI.ToolbarSeparator(true));
-      var runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
-      runSnippet.setText(Host.isMac() ? Common.UIString('\u2318+Enter') : Common.UIString('Ctrl+Enter'));
-      result.push(runSnippet);
-    }
-
     return result;
   }
 

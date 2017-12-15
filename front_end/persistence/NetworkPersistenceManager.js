@@ -351,7 +351,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _networkUISourceCodeRemoved(uiSourceCode) {
-    if (uiSourceCode.project().type() === Workspace.projectTypes.Network)
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.Network)
       return;
     this._unbind(uiSourceCode);
     this._networkUISourceCodeForEncodedPath.delete(this._encodedPathFromUrl(uiSourceCode.url()));

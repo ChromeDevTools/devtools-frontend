@@ -624,7 +624,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     var fragment = this.contentElement.ownerDocument.createDocumentFragment();
     fragment.createChild('div').textContent = Common.UIString('Can\'t display layers,');
     fragment.createChild('div').textContent = Common.UIString('WebGL support is disabled in your browser.');
-    fragment.appendChild(UI.formatLocalized('Check %s for possible reasons.', [UI.createExternalLink('about:gpu')]));
+    fragment.appendChild(UI.formatLocalized('Check %s for possible reasons.', [UI.XLink.create('about:gpu')]));
     return fragment;
   }
 

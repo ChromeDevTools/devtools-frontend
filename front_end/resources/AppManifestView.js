@@ -12,7 +12,8 @@ Resources.AppManifestView = class extends UI.VBox {
 
     this._emptyView = new UI.EmptyWidget(Common.UIString('No manifest detected'));
     var p = this._emptyView.appendParagraph();
-    var linkElement = UI.createExternalLink('https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/?utm_source=devtools',
+    var linkElement = UI.XLink.create(
+        'https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/?utm_source=devtools',
         Common.UIString('Read more about the web manifest'));
     p.appendChild(UI.formatLocalized('A web manifest allows you to control how your app behaves when launched and displayed to the user. %s', [linkElement]));
 

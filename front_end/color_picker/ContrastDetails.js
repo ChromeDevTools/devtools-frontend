@@ -42,7 +42,7 @@ ColorPicker.ContrastDetails = class {
     contrastValueRowContents.createTextChild(Common.UIString('Contrast Ratio'));
 
     /** @type {!Element} */
-    this._contrastLink = /** @type {!Element} */ (contrastValueRowContents.appendChild(UI.createExternalLink(
+    this._contrastLink = /** @type {!Element} */ (contrastValueRowContents.appendChild(UI.XLink.create(
         'https://developers.google.com/web/fundamentals/accessibility/accessible-styles#color_and_contrast',
         'Color and contrast on Web Fundamentals', 'contrast-link')));
     this._contrastLink.textContent = '';

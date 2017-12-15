@@ -19,7 +19,7 @@
             "contextTypes": [
                 "Node"
             ],
-            "className": "UI.ExternaLinkContextMenuProvider"
+            "className": "UI.XLink.ContextMenuProvider"
         },
         {
             "type": "@UI.ContextMenu.Provider",

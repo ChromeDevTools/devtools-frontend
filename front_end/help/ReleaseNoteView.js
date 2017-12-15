@@ -22,10 +22,10 @@ Help.ReleaseNoteView = class extends UI.VBox {
     var contentContainer = container.createChild('ul');
     for (var highlight of releaseNote.highlights) {
       var listItem = contentContainer.createChild('li');
-      var title = UI.createExternalLink(highlight.link, highlight.title + ' ', 'release-note-title');
+      var title = UI.XLink.create(highlight.link, highlight.title + ' ', 'release-note-title');
       title.title = '';
       listItem.appendChild(title);
-      var subtitle = UI.createExternalLink(highlight.link, highlight.subtitle + ' ', 'release-note-subtitle');
+      var subtitle = UI.XLink.create(highlight.link, highlight.subtitle + ' ', 'release-note-subtitle');
       subtitle.title = '';
       listItem.appendChild(subtitle);
     }
@@ -40,7 +40,7 @@ Help.ReleaseNoteView = class extends UI.VBox {
       UI.inspectorView.closeDrawerTab(Help.releaseNoteViewId, true);
     }, 'close-release-note'));
 
-    var imageLink = UI.createExternalLink(releaseNote.link, ' ');
+    var imageLink = UI.XLink.create(releaseNote.link, ' ');
     imageLink.classList.add('release-note-image');
     imageLink.title = '';
     hbox.appendChild(imageLink);

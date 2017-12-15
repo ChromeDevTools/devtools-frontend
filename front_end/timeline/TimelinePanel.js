@@ -653,10 +653,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
       return e;
     }
 
-    var learnMoreNode = UI.createExternalLink(
+    var learnMoreNode = UI.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
         Common.UIString('Learn\xa0more'));
-    var learnMoreMigrationNode = UI.createExternalLink(
+    var learnMoreMigrationNode = UI.XLink.create(
         'https://developers.google.com/web/updates/2016/12/devtools-javascript-cpu-profile-migration',
         Common.UIString('Learn\xa0more'));
 

@@ -1277,7 +1277,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       if (value.startsWith('data:'))
         value = value.trimMiddle(60);
       var link = node.nodeName().toLowerCase() === 'a' ?
-          UI.createExternalLink(rewrittenHref, value, '', true) :
+          UI.XLink.create(rewrittenHref, value, '', true /* preventClick */) :
           Components.Linkifier.linkifyURL(rewrittenHref, {text: value, preventClick: true});
       link[Elements.ElementsTreeElement.HrefSymbol] = rewrittenHref;
       return link;

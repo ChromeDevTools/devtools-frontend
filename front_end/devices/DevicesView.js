@@ -36,7 +36,7 @@ Devices.DevicesView = class extends UI.VBox {
     var discoveryFooter = this.contentElement.createChild('div', 'devices-footer');
     this._deviceCountSpan = discoveryFooter.createChild('span');
     discoveryFooter.createChild('span').textContent = Common.UIString(' Read ');
-    discoveryFooter.appendChild(UI.createExternalLink(
+    discoveryFooter.appendChild(UI.XLink.create(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
         Common.UIString('remote debugging documentation')));
     discoveryFooter.createChild('span').textContent = Common.UIString(' for more information.');
@@ -222,7 +222,7 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
 
     var help = this.element.createChild('div', 'discovery-help');
     help.createChild('span').textContent = Common.UIString('Need help? Read Chrome ');
-    help.appendChild(UI.createExternalLink(
+    help.appendChild(UI.XLink.create(
         'https://developers.google.com/chrome-developer-tools/docs/remote-debugging',
         Common.UIString('remote debugging documentation.')));
 
@@ -279,7 +279,7 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     var portForwardingFooter = this.element.createChild('div', 'port-forwarding-footer');
     portForwardingFooter.createChild('span').textContent = Common.UIString(
         'Define the listening port on your device that maps to a port accessible from your development machine. ');
-    portForwardingFooter.appendChild(UI.createExternalLink(
+    portForwardingFooter.appendChild(UI.XLink.create(
         'https://developer.chrome.com/devtools/docs/remote-debugging#port-forwarding', Common.UIString('Learn more')));
 
     /** @type {!UI.ListWidget<!Adb.PortForwardingRule>} */
@@ -827,7 +827,7 @@ Devices.DevicesView.DeviceView = class extends UI.VBox {
     }
     if (!section.page || section.page.url !== page.url) {
       section.url.textContent = '';
-      section.url.appendChild(UI.createExternalLink(page.url));
+      section.url.appendChild(UI.XLink.create(page.url));
     }
     section.inspect.disabled = page.attached;
 

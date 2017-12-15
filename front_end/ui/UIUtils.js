@@ -1924,86 +1924,12 @@ UI.ThemeSupport.ColorUsage = {
 };
 
 /**
- * @param {string} url
- * @param {string=} linkText
- * @param {string=} className
- * @param {boolean=} preventClick
- * @return {!Element}
- */
-UI.createExternalLink = function(url, linkText, className, preventClick) {
-  if (!linkText)
-    linkText = url;
-
-  var a = createElementWithClass('span', className);
-  UI.ARIAUtils.markAsLink(a);
-  a.tabIndex = 0;
-
-  var href = url;
-  if (url.trim().toLowerCase().startsWith('javascript:'))
-    href = null;
-  if (Common.ParsedURL.isRelativeURL(url))
-    href = null;
-  if (href !== null) {
-    a.href = href;
-    a.classList.add('devtools-link');
-    if (!preventClick) {
-      a.addEventListener('click', event => {
-        event.consume(true);
-        InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
-      }, false);
-      a.addEventListener('keydown', event => {
-        if (event.key !== ' ' && !isEnterKey(event))
-          return;
-        event.consume(true);
-        InspectorFrontendHost.openInNewTab(/** @type {string} */ (href));
-      }, false);
-    } else {
-      a.classList.add('devtools-link-prevent-click');
-    }
-    a[UI._externalLinkSymbol] = true;
-  }
-  if (linkText !== url)
-    a.title = url;
-  a.textContent = linkText.trimMiddle(UI.MaxLengthForDisplayedURLs);
-  a.setAttribute('target', '_blank');
-
-  return a;
-};
-
-UI._externalLinkSymbol = Symbol('UI._externalLink');
-
-/**
- * @implements {UI.ContextMenu.Provider}
- * @unrestricted
- */
-UI.ExternaLinkContextMenuProvider = class {
-  /**
-   * @override
-   * @param {!Event} event
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!Object} target
-   */
-  appendApplicableItems(event, contextMenu, target) {
-    var targetNode = /** @type {!Node} */ (target);
-    while (targetNode && !targetNode[UI._externalLinkSymbol])
-      targetNode = targetNode.parentNodeOrShadowHost();
-    if (!targetNode || !targetNode.href)
-      return;
-    contextMenu.revealSection().appendItem(
-        UI.openLinkExternallyLabel(), () => InspectorFrontendHost.openInNewTab(targetNode.href));
-    contextMenu.revealSection().appendItem(
-        UI.copyLinkAddressLabel(), () => InspectorFrontendHost.copyText(targetNode.href));
-  }
-};
-
-
-/**
  * @param {string} article
  * @param {string} title
  * @return {!Element}
  */
 UI.createDocumentationLink = function(article, title) {
-  return UI.createExternalLink('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
+  return UI.XLink.create('https://developers.google.com/web/tools/chrome-devtools/' + article, title);
 };
 
 /**

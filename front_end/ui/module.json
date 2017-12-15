@@ -54,7 +54,8 @@
         "ARIAUtils.js",
         "ZoomManager.js",
         "ShortcutsScreen.js",
-        "Geometry.js"
+        "Geometry.js",
+        "XLink.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

@@ -1688,7 +1688,7 @@ Timeline.TimelineUIUtils = class {
     if (!frame.hasWarnings())
       return element;
     element.createTextChild(Common.UIString('. Long frame times are an indication of '));
-    element.appendChild(UI.createExternalLink(
+    element.appendChild(UI.XLink.create(
         'https://developers.google.com/web/fundamentals/performance/rendering/', Common.UIString('jank')));
     element.createTextChild('.');
     return element;
@@ -1872,7 +1872,7 @@ Timeline.TimelineUIUtils = class {
         span.textContent = Common.UIString('Recurring handler took %s', Number.millisToString(event.duration, true));
         break;
       case warnings.V8Deopt:
-        span.appendChild(UI.createExternalLink(
+        span.appendChild(UI.XLink.create(
             'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString('Not optimized')));
         span.createTextChild(Common.UIString(': %s', eventData['deoptReason']));
         break;

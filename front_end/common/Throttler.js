@@ -18,7 +18,7 @@ Common.Throttler = class {
   }
 
   _processCompleted() {
-    this._lastCompleteTime = window.performance.now();
+    this._lastCompleteTime = this._getTime();
     this._isRunningProcess = false;
     if (this._process)
       this._innerSchedule(false);
@@ -48,7 +48,7 @@ Common.Throttler = class {
 
     // Run the first scheduled task instantly.
     var hasScheduledTasks = !!this._processTimeout || this._isRunningProcess;
-    var okToFire = window.performance.now() - this._lastCompleteTime > this._timeout;
+    var okToFire = this._getTime() - this._lastCompleteTime > this._timeout;
     asSoonAsPossible = !!asSoonAsPossible || (!hasScheduledTasks && okToFire);
 
     var forceTimerUpdate = asSoonAsPossible && !this._asSoonAsPossible;
@@ -86,6 +86,13 @@ Common.Throttler = class {
    */
   _setTimeout(operation, timeout) {
     return setTimeout(operation, timeout);
+  }
+
+  /**
+   * @return {number}
+   */
+  _getTime() {
+    return window.performance.now();
   }
 };
 

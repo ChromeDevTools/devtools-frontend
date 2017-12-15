@@ -331,10 +331,10 @@ NetworkLog.HARLog = class {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
-   * @return {!Date}
+   * @return {string}
    */
   static pseudoWallTime(request, monotonicTime) {
-    return new Date(request.pseudoWallTime(monotonicTime) * 1000);
+    return new Date(request.pseudoWallTime(monotonicTime) * 1000).toJSON();
   }
 
   /**

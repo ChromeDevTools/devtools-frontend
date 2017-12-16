@@ -141,8 +141,6 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._codeMirror.setOption('keyMap', Host.isMac() ? 'devtools-mac' : 'devtools-pc');
 
-    this._codeMirror.addKeyMap({'\'': 'maybeAvoidSmartSingleQuotes', '\'"\'': 'maybeAvoidSmartDoubleQuotes'});
-
     this._codeMirror.setOption('flattenSpans', false);
 
     var maxHighlightLength = options.maxHighlightLength;
@@ -230,30 +228,6 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   static moveCamelRightCommand(shift, codeMirror) {
     codeMirror._codeMirrorTextEditor._doCamelCaseMovement(1, shift);
-  }
-
-  /**
-   * @param {string} quoteCharacter
-   * @param {!CodeMirror} codeMirror
-   * @return {*}
-   */
-  static _maybeAvoidSmartQuotes(quoteCharacter, codeMirror) {
-    var textEditor = codeMirror._codeMirrorTextEditor;
-    if (!codeMirror.getOption('autoCloseBrackets'))
-      return CodeMirror.Pass;
-    var selections = textEditor.selections();
-    if (selections.length !== 1 || !selections[0].isEmpty())
-      return CodeMirror.Pass;
-
-    var selection = selections[0];
-    var token = textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
-    if (!token || !token.type || token.type.indexOf('string') === -1)
-      return CodeMirror.Pass;
-    var line = textEditor.line(selection.startLine);
-    var tokenValue = line.substring(token.startColumn, token.endColumn);
-    if (tokenValue[0] === tokenValue[tokenValue.length - 1] && (tokenValue[0] === '\'' || tokenValue[0] === '"'))
-      return CodeMirror.Pass;
-    codeMirror.replaceSelection(quoteCharacter);
   }
 
   /**
@@ -1400,12 +1374,6 @@ CodeMirror.commands.goSmartPageDown = function(codemirror) {
     return CodeMirror.Pass;
   codemirror.execCommand('goPageDown');
 };
-
-
-CodeMirror.commands.maybeAvoidSmartSingleQuotes =
-    TextEditor.CodeMirrorTextEditor._maybeAvoidSmartQuotes.bind(null, '\'');
-CodeMirror.commands.maybeAvoidSmartDoubleQuotes =
-    TextEditor.CodeMirrorTextEditor._maybeAvoidSmartQuotes.bind(null, '"');
 
 TextEditor.CodeMirrorTextEditor.LongLineModeLineLengthThreshold = 2000;
 TextEditor.CodeMirrorTextEditor.MaxEditableTextSize = 1024 * 1024 * 10;

@@ -21,6 +21,13 @@
     flex: none;
     background-color:  #3367d6;
     box-shadow: 0 2px 4px rgba(0,0,0,.28);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+:host-context(.-theme-with-dark-background) .release-note-top-section {
+    color: white;
 }
 
 .release-note-container {

@@ -25,18 +25,23 @@ Help.releaseNoteVersionSetting = function() {
 };
 
 Help.showReleaseNoteIfNeeded = function() {
-  Help._showReleaseNoteIfNeeded(Help.releaseNoteVersionSetting().get(), Help.latestReleaseNote().version);
+  Help._showReleaseNoteIfNeeded(
+      Help.releaseNoteVersionSetting().get(), Help.latestReleaseNote().version,
+      Common.settings.moduleSetting('help.show-release-note').get());
 };
 
 /**
  * @param {number} lastSeenVersion
  * @param {number} latestVersion
+ * @param {boolean} showReleaseNote
  */
-Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion) {
+Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion, showReleaseNote) {
   if (!lastSeenVersion) {
     Help.releaseNoteVersionSetting().set(latestVersion);
     return;
   }
+  if (!showReleaseNote)
+    return;
   if (lastSeenVersion >= latestVersion)
     return;
   Help.releaseNoteVersionSetting().set(latestVersion);

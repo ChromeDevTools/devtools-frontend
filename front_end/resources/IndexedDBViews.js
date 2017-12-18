@@ -114,7 +114,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._isIndex = !!index;
     this._refreshObjectStoreCallback = refreshObjectStoreCallback;
 
-    this.element.classList.add('indexed-db-data-view');
+    this.element.classList.add('indexed-db-data-view', 'storage-view');
 
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     this._refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._refreshButtonClicked, this);

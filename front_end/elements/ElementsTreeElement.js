@@ -289,7 +289,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    * @override
    */
   expandRecursively() {
-    this._node.getSubtree(-1).then(UI.TreeElement.prototype.expandRecursively.bind(this, Number.MAX_VALUE));
+    this._node.getSubtree(-1, true).then(UI.TreeElement.prototype.expandRecursively.bind(this, Number.MAX_VALUE));
   }
 
   /**
@@ -538,8 +538,8 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     if (isEditable)
       contextMenu.editSection().appendItem(Common.UIString('Delete element'), this.remove.bind(this));
 
-    contextMenu.viewSection().appendItem(Common.UIString('Expand all'), this.expandRecursively.bind(this));
-    contextMenu.viewSection().appendItem(Common.UIString('Collapse all'), this.collapseRecursively.bind(this));
+    contextMenu.viewSection().appendItem(ls`Expand recursively`, this.expandRecursively.bind(this));
+    contextMenu.viewSection().appendItem(ls`Collapse children`, this.collapseChildren.bind(this));
   }
 
   _startEditing() {

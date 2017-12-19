@@ -387,6 +387,13 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   _contextMenuEventFired(event) {
     var contextMenu = new UI.ContextMenu(event);
     contextMenu.appendApplicableItems(this._object);
+    if (this._object instanceof SDK.LocalJSONObject) {
+      contextMenu.viewSection().appendItem(
+          ls`Expand recursively`,
+          this._objectTreeElement.expandRecursively.bind(this._objectTreeElement, Number.MAX_VALUE));
+      contextMenu.viewSection().appendItem(
+          ls`Collapse children`, this._objectTreeElement.collapseChildren.bind(this._objectTreeElement));
+    }
     contextMenu.show();
   }
 
@@ -481,6 +488,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     /** @type {!Array.<!Object>} */
     this._highlightChanges = [];
     this._linkifier = linkifier;
+    this.listItemElement.addEventListener('contextmenu', this._contextMenuFired.bind(this), false);
   }
 
   /**
@@ -759,7 +767,6 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       this.nameElement.classList.add('synthetic-property');
 
     this._updatePropertyPath();
-    this.nameElement.addEventListener('contextmenu', this._contextMenuFired.bind(this, this.property), false);
 
     var separatorElement = createElementWithClass('span', 'object-properties-section-separator');
     separatorElement.textContent = ': ';
@@ -768,7 +775,6 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       var showPreview = this.property.name !== '__proto__';
       this.valueElement = ObjectUI.ObjectPropertiesSection.createValueElementWithCustomSupport(
           this.property.value, this.property.wasThrown, showPreview, this.listItemElement, this._linkifier);
-      this.valueElement.addEventListener('contextmenu', this._contextMenuFired.bind(this, this.property), false);
     } else if (this.property.getter) {
       this.valueElement = ObjectUI.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
           this.property.parentObject, [this.property.name], this._onInvokeGetterClick.bind(this));
@@ -803,17 +809,22 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @param {!SDK.RemoteObjectProperty} property
    * @param {!Event} event
    */
-  _contextMenuFired(property, event) {
+  _contextMenuFired(event) {
     var contextMenu = new UI.ContextMenu(event);
-    if (property.symbol)
-      contextMenu.appendApplicableItems(property.symbol);
-    if (property.value)
-      contextMenu.appendApplicableItems(property.value);
-    var copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
-    contextMenu.clipboardSection().appendItem(Common.UIString('Copy property path'), copyPathHandler);
+    if (this.property.symbol)
+      contextMenu.appendApplicableItems(this.property.symbol);
+    if (this.property.value)
+      contextMenu.appendApplicableItems(this.property.value);
+    if (this.nameElement && this.nameElement.title) {
+      var copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
+      contextMenu.clipboardSection().appendItem(ls`Copy property path`, copyPathHandler);
+    }
+    if (this.property.parentObject instanceof SDK.LocalJSONObject) {
+      contextMenu.viewSection().appendItem(ls`Expand recursively`, this.expandRecursively.bind(this, Number.MAX_VALUE));
+      contextMenu.viewSection().appendItem(ls`Collapse children`, this.collapseChildren.bind(this));
+    }
     contextMenu.show();
   }
 

@@ -897,6 +897,13 @@ UI.TreeElement = class {
     }
   }
 
+  collapseChildren() {
+    if (!this._children)
+      return;
+    for (var child of this._children)
+      child.collapseRecursively();
+  }
+
   expand() {
     if (!this._expandable || (this.expanded && this._children))
       return;

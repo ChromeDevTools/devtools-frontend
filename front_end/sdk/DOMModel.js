@@ -478,10 +478,11 @@ SDK.DOMNode = class {
 
   /**
    * @param {number} depth
+   * @param {boolean} pierce
    * @return {!Promise<?Array<!SDK.DOMNode>>}
    */
-  async getSubtree(depth) {
-    var response = await this._agent.invoke_requestChildNodes({nodeId: this.id, depth});
+  async getSubtree(depth, pierce) {
+    var response = await this._agent.invoke_requestChildNodes({nodeId: this.id, depth: depth, pierce: pierce});
     return response[Protocol.Error] ? null : this._children;
   }
 

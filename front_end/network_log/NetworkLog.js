@@ -243,6 +243,12 @@ NetworkLog.NetworkLog = class extends Common.Object {
 
     var checkRequest = request;
     do {
+      if (checkRequest[NetworkLog.NetworkLog._initiatorDataSymbol].chain) {
+        initiatorChainCache.addAll(checkRequest[NetworkLog.NetworkLog._initiatorDataSymbol].chain);
+        break;
+      }
+      if (initiatorChainCache.has(checkRequest))
+        break;
       initiatorChainCache.add(checkRequest);
       checkRequest = this._initiatorRequest(checkRequest);
     } while (checkRequest);

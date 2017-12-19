@@ -92,7 +92,8 @@ Host.UserMetrics.Action = {
   StyleRuleCopied: 27,
   CoverageStarted: 28,
   Audits2Started: 29,
-  Audits2Finished: 30
+  Audits2Finished: 30,
+  ShowedThirdPartyBadges: 31,
 };
 
 Host.UserMetrics._PanelCodes = {

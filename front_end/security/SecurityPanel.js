@@ -47,7 +47,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       e.consume();
       var names = await SDK.multitargetNetworkManager.getCertificate(origin);
       InspectorFrontendHost.showCertificateViewer(names);
-    }, 'security-certificate-button');
+    }, 'origin-button');
   }
 
   /**
@@ -781,21 +781,23 @@ Security.SecurityOriginView = class extends UI.VBox {
     this.registerRequiredCSS('security/lockIcon.css');
 
     var titleSection = this.element.createChild('div', 'title-section');
+    titleSection.createChild('div', 'title-section-header').textContent = ls`Origin`;
+
     var originDisplay = titleSection.createChild('div', 'origin-display');
     this._originLockIcon = originDisplay.createChild('span', 'security-property');
     this._originLockIcon.classList.add('security-property-' + originState.securityState);
-    // TODO(lgarron): Highlight the origin scheme. https://crbug.com/523589
-    originDisplay.createChild('span', 'origin').textContent = origin;
-    var originNetworkLink = titleSection.createChild('div', 'link');
-    originNetworkLink.textContent = Common.UIString('View requests in Network Panel');
-    function showOriginRequestsInNetworkPanel() {
+
+    originDisplay.appendChild(Security.SecurityPanel.createHighlightedUrl(origin, originState.securityState));
+
+    var originNetworkButton = titleSection.createChild('div', 'view-network-button');
+    originNetworkButton.appendChild(UI.createTextButton('View requests in Network Panel', e => {
+      e.consume();
       var parsedURL = new Common.ParsedURL(origin);
       Network.NetworkPanel.revealAndFilter([
         {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
       ]);
-    }
-    originNetworkLink.addEventListener('click', showOriginRequestsInNetworkPanel, false);
+    }, 'origin-button'));
 
     if (originState.securityDetails) {
       var connectionSection = this.element.createChild('div', 'origin-view-section');
@@ -886,8 +888,7 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
       toggleSctsDetailsLink.addEventListener('click', toggleSctDetailsDisplay, false);
 
-      var noteSection = this.element.createChild('div', 'origin-view-section');
-      // TODO(lgarron): Fix the issue and then remove this section. See comment in SecurityPanel._processRequest().
+      var noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
       noteSection.createChild('div').textContent =
           Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {

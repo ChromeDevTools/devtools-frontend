@@ -286,7 +286,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       if (excludedTokens.has(token.type))
         return Promise.resolve(historyWords);
     }
-    return ObjectUI.JavaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
+    return ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
         .then(words => words.concat(historyWords));
   }
 

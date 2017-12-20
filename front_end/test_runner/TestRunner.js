@@ -493,7 +493,7 @@ TestRunner.evaluateInPageWithTimeout = function(code) {
  * @param {function(*):void} callback
  */
 TestRunner.evaluateFunctionInOverlay = function(func, callback) {
-  var expression = 'testRunner.evaluateInWebInspectorOverlay("(" + ' + func + ' + ")()")';
+  var expression = 'internals.evaluateInInspectorOverlay("(" + ' + func + ' + ")()")';
   var mainContext = TestRunner.runtimeModel.executionContexts()[0];
   mainContext
       .evaluate(

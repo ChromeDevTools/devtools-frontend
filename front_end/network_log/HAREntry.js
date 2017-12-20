@@ -62,8 +62,10 @@ NetworkLog.HAREntry = class {
       ipAddress = ipAddress.substr(0, portPositionInString);
 
     var timings = this._buildTimings();
+    var time = 0;
     // "ssl" is included in the connect field, so do not double count it.
-    var time = timings.blocked + timings.dns + timings.connect + timings.send + timings.wait + timings.receive;
+    for (var t of [timings.blocked, timings.dns, timings.connect, timings.send, timings.wait, timings.receive])
+      time += Math.max(t, 0);
 
     var entry = {
       startedDateTime: NetworkLog.HARLog.pseudoWallTime(this._request, this._request.issueTime()),
@@ -153,7 +155,7 @@ NetworkLog.HAREntry = class {
     var issueTime = this._request.issueTime();
     var startTime = this._request.startTime;
 
-    var result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: -1, _blocked_queueing: -1};
+    var result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
 
     var queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = queuedTime;

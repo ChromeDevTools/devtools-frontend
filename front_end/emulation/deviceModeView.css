@@ -30,6 +30,12 @@
     flex: 0 1 auto;
 }
 
+.device-mode-toolbar-options.toolbar {
+    position: sticky;
+    right: 0;
+    flex: none;
+}
+
 .device-mode-toolbar-spacer {
     flex: 1 1 0;
     display: flex;

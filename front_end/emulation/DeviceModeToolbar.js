@@ -48,7 +48,7 @@ Emulation.DeviceModeToolbar = class {
     modeToolbar.makeWrappable();
     this._fillModeToolbar(modeToolbar);
     rightContainer.createChild('div', 'device-mode-toolbar-spacer');
-    var optionsToolbar = new UI.Toolbar('', rightContainer);
+    var optionsToolbar = new UI.Toolbar('device-mode-toolbar-options', rightContainer);
     optionsToolbar.makeWrappable(true);
     this._fillOptionsToolbar(optionsToolbar);
 

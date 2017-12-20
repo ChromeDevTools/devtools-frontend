@@ -368,8 +368,11 @@ Console.ConsoleView = class extends UI.VBox {
    * @override
    */
   focus() {
-    if (!this._prompt.hasFocus())
+    if (!this._prompt.hasFocus()) {
+      var oldScrollTop = this._viewport.element.scrollTop;
       this._prompt.focus();
+      this._viewport.element.scrollTop = oldScrollTop;
+    }
   }
 
   /**
@@ -847,10 +850,7 @@ Console.ConsoleView = class extends UI.VBox {
       var clickedOutsideMessageList = event.target === this._messagesElement;
       if (clickedOutsideMessageList)
         this._prompt.moveCaretToEndOfPrompt();
-      // Prevent scrolling when expanding objects in console, but focus the prompt anyway.
-      var oldScrollTop = this._viewport.element.scrollTop;
       this.focus();
-      this._viewport.element.scrollTop = oldScrollTop;
     }
     // TODO: fix this.
     var groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
@@ -1146,7 +1146,8 @@ Console.ConsoleView = class extends UI.VBox {
      */
     function updateViewportState() {
       this._muteViewportUpdates = false;
-      this._viewport.setStickToBottom(this._messagesElement.isScrolledToBottom());
+      if (this.isShowing())
+        this._viewport.setStickToBottom(this._messagesElement.isScrolledToBottom());
       if (this._maybeDirtyWhileMuted) {
         this._scheduleViewportRefresh();
         delete this._maybeDirtyWhileMuted;

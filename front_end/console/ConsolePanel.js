@@ -58,9 +58,11 @@ Console.ConsolePanel = class extends UI.Panel {
    */
   willHide() {
     super.willHide();
+    // The minimized drawer has 0 height, and showing Console inside may set
+    // Console's scrollTop to 0. Unminimize before calling show to avoid this.
+    UI.inspectorView.setDrawerMinimized(false);
     if (Console.ConsolePanel.WrapperView._instance)
       Console.ConsolePanel.WrapperView._instance._showViewInWrapper();
-    UI.inspectorView.setDrawerMinimized(false);
   }
 
   /**

@@ -87,15 +87,15 @@ Main.Main = class {
    * Note: this function is called from testSettings in Tests.js.
    */
   _createSettings(prefs) {
-    this._initializeExperiments(prefs);
+    this._initializeExperiments();
     var storagePrefix = '';
     if (Host.isCustomDevtoolsFrontend())
       storagePrefix = '__custom__';
-    else if (!Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend') && !Host.isUnderTest(prefs))
+    else if (!Runtime.queryParam('can_dock') && !!Runtime.queryParam('debugFrontend') && !Host.isUnderTest())
       storagePrefix = '__bundled__';
 
     var localStorage;
-    if (!Host.isUnderTest(prefs) && window.localStorage) {
+    if (!Host.isUnderTest() && window.localStorage) {
       localStorage = new Common.SettingsStorage(
           window.localStorage, undefined, undefined, () => window.localStorage.clear(), storagePrefix);
     } else {
@@ -105,14 +105,11 @@ Main.Main = class {
         prefs, InspectorFrontendHost.setPreference, InspectorFrontendHost.removePreference,
         InspectorFrontendHost.clearPreferences, storagePrefix);
     Common.settings = new Common.Settings(globalStorage, localStorage);
-    if (!Host.isUnderTest(prefs))
+    if (!Host.isUnderTest())
       new Common.VersionController().updateVersion();
   }
 
-  /**
-   * @param {!Object<string, string>} prefs
-   */
-  _initializeExperiments(prefs) {
+  _initializeExperiments() {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('accessibilityInspection', 'Accessibility Inspection');
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
@@ -143,8 +140,8 @@ Main.Main = class {
 
     Runtime.experiments.cleanUpStaleExperiments();
 
-    if (Host.isUnderTest(prefs)) {
-      var testPath = Runtime.queryParam('test') || JSON.parse(prefs['testPath'] || '""');
+    if (Host.isUnderTest()) {
+      var testPath = Runtime.queryParam('test');
       // Enable experiments for testing.
       if (testPath.indexOf('accessibility/') !== -1)
         Runtime.experiments.enableForTest('accessibilityInspection');

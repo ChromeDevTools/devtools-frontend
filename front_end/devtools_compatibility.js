@@ -659,14 +659,6 @@
 
     /**
      * @override
-     * @return {boolean}
-     */
-    isUnderTest() {
-      return DevToolsHost.isUnderTest();
-    }
-
-    /**
-     * @override
      * @param {function()} callback
      */
     reattach(callback) {

@@ -1307,10 +1307,7 @@ TestRunner.waitForUISourceCodeRemoved = function(callback) {
  * @return {string}
  */
 TestRunner.url = function(url = '') {
-  // TODO(chenwilliam): only new-style tests will have a test queryParam;
-  // remove inspectedURL() after all tests have been migrated to new test framework.
-  var testScriptURL =
-      /** @type {string} */ (Runtime.queryParam('test')) || SDK.targetManager.mainTarget().inspectedURL();
+  var testScriptURL = /** @type {string} */ (Runtime.queryParam('test'));
 
   // This handles relative (e.g. "../file"), root (e.g. "/resource"),
   // absolute (e.g. "http://", "data:") and empty (e.g. "") paths
@@ -1414,10 +1411,6 @@ TestRunner._isDebugTest = function() {
   return !self.testRunner || !!Runtime.queryParam('debugFrontend');
 };
 
-// Old-style tests start test using inspector-test.js
-if (Runtime.queryParam('test'))
-  SDK.targetManager.observeTargets(new TestRunner._TestObserver());
-
 (function() {
 /**
    * @param {string|!Event} message
@@ -1434,10 +1427,8 @@ function completeTestOnError(message, source, lineno, colno, error) {
 self['onerror'] = completeTestOnError;
 InspectorFrontendHost.events.addEventListener(
     InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, TestRunner._evaluateForTestInFrontend, TestRunner);
-// TODO(chenwilliam): remove check for legacy test when test migration is done.
-if (!Runtime.queryParam('test'))
-  return;
 TestRunner._printDevToolsConsole();
 if (Host.isStartupTest())
   TestRunner._executeTestScript();
+SDK.targetManager.observeTargets(new TestRunner._TestObserver());
 })();

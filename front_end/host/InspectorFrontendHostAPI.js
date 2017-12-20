@@ -316,11 +316,6 @@ InspectorFrontendHostAPI.prototype = {
    */
   reattach(callback) {},
 
-  /**
-   * @return {boolean}
-   */
-  isUnderTest() {},
-
   readyForTest() {},
 
   /**

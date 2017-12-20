@@ -270,11 +270,6 @@ DevToolsHost.getInactiveSelectionForegroundColor = function() {};
 /**
  * @return {boolean}
  */
-DevToolsHost.isUnderTest = function() {};
-
-/**
- * @return {boolean}
- */
 DevToolsHost.isHostedMode = function() {};
 
 /**

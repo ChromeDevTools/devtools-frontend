@@ -81,3 +81,14 @@
 .tree-outline .empty-request-header {
     color: rgba(33%, 33%, 33%, 0.5);
 }
+
+.request-headers-show-more-button {
+    border: none;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 12px;
+    font-family: sans-serif;
+    cursor: pointer;
+    margin: 0 4px;
+    padding: 2px 4px;
+}

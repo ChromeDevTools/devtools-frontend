@@ -186,13 +186,27 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @param {?string} sourceText
    */
   _populateTreeElementWithSourceText(treeElement, sourceText) {
+    var max_len = 3000;
+    var text = (sourceText || '').trim();
+    var trim = text.length > max_len;
+
     var sourceTextElement = createElementWithClass('span', 'header-value source-code');
-    sourceTextElement.textContent = String(sourceText || '').trim();
+    sourceTextElement.textContent = trim ? text.substr(0, max_len) : text;
 
     var sourceTreeElement = new UI.TreeElement(sourceTextElement);
     sourceTreeElement.selectable = false;
     treeElement.removeChildren();
     treeElement.appendChild(sourceTreeElement);
+    if (!trim)
+      return;
+
+    var showMoreButton = createElementWithClass('button', 'request-headers-show-more-button');
+    showMoreButton.textContent = Common.UIString('Show more');
+    showMoreButton.addEventListener('click', () => {
+      showMoreButton.remove();
+      sourceTextElement.textContent = text;
+    });
+    sourceTextElement.appendChild(showMoreButton);
   }
 
   /**

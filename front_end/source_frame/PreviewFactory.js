@@ -13,6 +13,17 @@ SourceFrame.PreviewFactory = class {
     if (!content)
       return new UI.EmptyWidget(Common.UIString('Nothing to preview'));
 
+    var resourceType = Common.ResourceType.fromMimeType(mimeType);
+    if (resourceType === Common.resourceTypes.Other)
+      resourceType = provider.contentType();
+
+    switch (resourceType) {
+      case Common.resourceTypes.Image:
+        return new SourceFrame.ImageView(mimeType, provider);
+      case Common.resourceTypes.Font:
+        return new SourceFrame.FontView(mimeType, provider);
+    }
+
     var parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
     if (parsedXML)
       return SourceFrame.XMLView.createSearchableView(parsedXML);
@@ -22,19 +33,11 @@ SourceFrame.PreviewFactory = class {
     if (parsedJSON && typeof parsedJSON.data === 'object')
       return SourceFrame.JSONView.createSearchableView(/** @type {!SourceFrame.ParsedJSON} */ (parsedJSON));
 
-    var resourceType = provider.contentType() || Common.resourceTypes.Other;
-
     if (resourceType.isTextType()) {
       var highlighterType = mimeType.replace(/;.*/, '');  // remove charset
       return SourceFrame.ResourceSourceFrame.createSearchableView(provider, highlighterType);
     }
 
-    switch (resourceType) {
-      case Common.resourceTypes.Image:
-        return new SourceFrame.ImageView(mimeType, provider);
-      case Common.resourceTypes.Font:
-        return new SourceFrame.FontView(mimeType, provider);
-    }
     return null;
   }
 };

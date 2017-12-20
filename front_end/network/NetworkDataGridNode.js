@@ -489,7 +489,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var aPriority = aRequest.initialPriority();
     var aScore = aPriority ? priorityMap.get(aPriority) : 0;
     aScore = aScore || 0;
-    var bPriority = aRequest.initialPriority();
+    var bPriority = bRequest.initialPriority();
     var bScore = bPriority ? priorityMap.get(bPriority) : 0;
     bScore = bScore || 0;
 

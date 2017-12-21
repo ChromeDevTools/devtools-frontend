@@ -34,16 +34,6 @@ for more details about the presubmit API built into gcl.
 import sys
 
 
-def _CheckNodeAndNPMModules(input_api, output_api):
-    node_script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "install_node_deps.py")
-    process = input_api.subprocess.Popen(
-        [input_api.python_executable, node_script_path], stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)
-    out, _ = process.communicate()
-    if process.returncode != 0:
-        return [output_api.PresubmitError(out)]
-    return [output_api.PresubmitNotifyResult(out)]
-
-
 def _CheckBuildGN(input_api, output_api):
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_gn.js")
     return _checkWithNodeScript(input_api, output_api, script_path)
@@ -65,11 +55,9 @@ def _CheckFormat(input_api, output_api):
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
-        import install_node_deps
+        import local_node
     finally:
         sys.path = original_sys_path
-
-    node_path, _ = install_node_deps.resolve_node_paths()
 
     check_formatting_process = popen(['git', 'cl', 'format', '--js', '--dry-run', input_api.PresubmitLocalPath()])
     check_formatting_process.communicate()
@@ -82,10 +70,11 @@ def _CheckFormat(input_api, output_api):
     if format_process.returncode != 0:
         return [output_api.PresubmitError(format_out)]
 
-    # Use eslint to autofix the braces
-    eslint_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "node_modules", ".bin", "eslint")
+    # Use eslint to autofix the braces.
+    # Also fix semicolon to avoid confusing clang-format.
     eslint_process = popen([
-        node_path, eslint_path, '--no-eslintrc', '--fix', '--env=es6', '--rule={"curly": [2, "multi-or-nest", "consistent"]}'
+        local_node.node_path(), local_node.eslint_path(),
+        '--no-eslintrc', '--fix', '--env=es6', '--rule={"curly": [2, "multi-or-nest", "consistent"], "semi": 2}'
     ] + affected_files)
     eslint_process.communicate()
 
@@ -194,7 +183,6 @@ def _CheckCSSViolations(input_api, output_api):
 
 def CheckChangeOnUpload(input_api, output_api):
     results = []
-    results.extend(_CheckNodeAndNPMModules(input_api, output_api))
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckApplicationDescriptors(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
@@ -236,11 +224,11 @@ def _checkWithNodeScript(input_api, output_api, script_path):
     original_sys_path = sys.path
     try:
         sys.path = sys.path + [input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts")]
-        import install_node_deps
+        import local_node
     finally:
         sys.path = original_sys_path
 
-    node_path, _ = install_node_deps.resolve_node_paths()
+    node_path = local_node.node_path()
 
     process = input_api.subprocess.Popen(
         [node_path, script_path], stdout=input_api.subprocess.PIPE, stderr=input_api.subprocess.STDOUT)

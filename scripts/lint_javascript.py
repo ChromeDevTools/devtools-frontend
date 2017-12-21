@@ -9,7 +9,7 @@ import re
 import subprocess
 import sys
 
-import install_node_deps
+import local_node
 
 files_to_lint = None
 
@@ -49,17 +49,12 @@ def to_platform_path_exact(filepath):
 scripts_path = path.dirname(path.abspath(__file__))
 devtools_path = path.dirname(scripts_path)
 devtools_frontend_path = path.join(devtools_path, "front_end")
-eslint_path = path.join(devtools_path, "node_modules", "eslint", "bin", "eslint.js")
 
 print("Linting JavaScript with eslint...\n")
 
 
 def js_lint(files_list=None):
     eslint_errors_found = False
-    if not path.isfile(eslint_path):
-        print("Failed to run eslint, run ./scripts/install_node_deps.py to install eslint")
-        eslint_errors_found = True
-        return eslint_errors_found
 
     if files_list is None:
         files_list = [devtools_frontend_path]
@@ -67,10 +62,9 @@ def js_lint(files_list=None):
 
     eslintconfig_path = path.join(devtools_path, ".eslintrc.js")
     eslintignore_path = path.join(devtools_path, ".eslintignore")
-    (node_path, _) = install_node_deps.resolve_node_paths()
     exec_command = [
-        node_path,
-        eslint_path,
+        local_node.node_path(),
+        local_node.eslint_path(),
         "--config",
         to_platform_path_exact(eslintconfig_path),
         "--ignore-path",

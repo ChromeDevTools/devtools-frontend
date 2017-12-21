@@ -1211,17 +1211,21 @@ group("devtools_closure_compile") {
   ]
 }
 
-group("devtools_eslint") {
-  data = [
-    # Needed for isolate script to execute.
-    ".eslintignore",
-    ".eslintrc.js",
-    "front_end/",
-    "scripts/buildbot/run_eslint.py",
-    "scripts/local_node/",
-    "//testing/scripts/common.py",
-    "//testing/scripts/run_devtools_check.py",
-    "//testing/xvfb.py",
-    "//third_party/devtools-node-modules/",
-  ]
+if (is_linux && !is_chromeos) {
+  group("devtools_eslint") {
+    data = [
+      # Needed for isolate script to execute.
+      ".eslintignore",
+      ".eslintrc.js",
+      "front_end/",
+      "scripts/lint_javascript.py",
+      "scripts/local_node.py",
+      "//testing/scripts/common.py",
+      "//testing/scripts/run_devtools_check.py",
+      "//testing/xvfb.py",
+      "//third_party/devtools-node-modules/",
+      "//third_party/node/node.py",
+      "//third_party/node/linux/node-linux-x64/",
+    ]
+  }
 }

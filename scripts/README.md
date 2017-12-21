@@ -22,7 +22,6 @@ The newer scripts such as for testing and hosted mode are written in Node.js, wh
 - convert_svg_images_to_png.py - manually run when adding svg images
 - compile_frontend.py - runs closure compiler to do static type analysis
     - Note: the compiled outputs are not actually used to run DevTools
-- install_node_deps.py - installs node.js & npm modules
 - lint_javascript.py - run eslint
 - optimize_png_images.py - manually run when adding png images
 

@@ -493,7 +493,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {number}
    */
   _computeRowHeight() {
-    return Math.floor(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
+    return Math.round(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
   }
 
   /**

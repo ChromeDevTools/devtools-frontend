@@ -256,7 +256,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
   }
 
   _updateRowHeight() {
-    this._rowHeight = Math.floor(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
+    this._rowHeight = Math.round(this._rawRowHeight * window.devicePixelRatio) / window.devicePixelRatio;
   }
 
   /**

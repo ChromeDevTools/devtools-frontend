@@ -58,6 +58,12 @@ span.ax-value-undefined {
     align-items: baseline;
 }
 
+.tree-outline li::before {
+    content: "";
+    width: 14px;
+    display: inline-block;
+}
+
 .tree-outline li.property {
     color: rgb(33, 33, 33);
 }

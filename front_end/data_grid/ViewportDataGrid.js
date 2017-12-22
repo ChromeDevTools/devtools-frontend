@@ -206,7 +206,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       var nodes = this.rootNode().flatChildren();
       var index = nodes.indexOf(visibleNodes[0]);
       this._updateStripesClass(!!(index % 2));
-      if (index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
+      if (this._stickToBottom && index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
         offset += 1;
     }
 

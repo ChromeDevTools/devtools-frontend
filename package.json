@@ -8,7 +8,6 @@
     "test": "node scripts/npm_test.js",
     "debug-test": "node scripts/npm_test.js --debug-devtools",
     "lint": "eslint front_end",
-    "format": "git cl format --js .",
     "closure": "python scripts/compile_frontend.py",
     "setup-dtrun": "cd scripts/devtools_run && npm link",
     "format-py": "yapf --exclude scripts/build/rjsmin.py -i --recursive scripts PRESUBMIT.py",

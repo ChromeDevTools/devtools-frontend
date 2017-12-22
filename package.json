@@ -36,7 +36,6 @@
   },
   "homepage": "https://devtools.chrome.com",
   "devDependencies": {
-    "ajv": "^5.1.5",
-    "eslint": "3.10.0"
+    "ajv": "^5.1.5"
   }
 }

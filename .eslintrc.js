@@ -76,7 +76,11 @@ module.exports = {
         // spacing details
         "space-infix-ops": 2,
         "space-in-parens": [2, "never"],
-        "space-before-function-paren": [2, "never"],
+        "space-before-function-paren": [2, {
+            "anonymous": "never",
+            "named": "never",
+            "asyncArrow": "always"
+        }],
         "no-whitespace-before-property": 2,
         "keyword-spacing": [2, {
             "overrides": {

@@ -147,14 +147,6 @@
     }
 
     /**
-     * @param {number} callId
-     * @param {string} script
-     */
-    evaluateForTestInFrontend(callId, script) {
-      this._dispatchOnInspectorFrontendAPI('evaluateForTestInFrontend', [callId, script]);
-    }
-
-    /**
      * @param {!{r: number, g: number, b: number, a: number}} color
      */
     eyeDropperPickedColor(color) {

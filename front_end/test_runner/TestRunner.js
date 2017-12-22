@@ -23,34 +23,10 @@ TestRunner.setupStartupTest = function(path) {
   var absoluteURL = TestRunner.url(path);
   self.testRunner.navigateSecondaryWindow(absoluteURL);
   return new Promise(f => TestRunner._startupTestSetupFinished = () => {
-    Main.Main._instanceForTest._initializeTarget();
+    TestRunner._initializeTargetForStartupTest();
     delete TestRunner._startupTestSetupFinished;
     f();
   });
-};
-
-/**
- * @param {!Common.Event} event
- */
-TestRunner._evaluateForTestInFrontend = function(event) {
-  var callId = /** @type {number} */ (event.data['callId']);
-  var script = /** @type {number} */ (event.data['script']);
-
-  function invokeMethod() {
-    try {
-      script = script + '//# sourceURL=TestRunner' + callId + '.js';
-      self.eval(script);
-    } catch (e) {
-      console.error(e.stack);
-    }
-  }
-
-  // For startup tests, the first evaluateForTestInFrontend is called
-  // before target has been initialized.
-  if (Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches)
-    Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches(invokeMethod);
-  else
-    invokeMethod();
 };
 
 TestRunner._executeTestScript = function() {
@@ -1384,7 +1360,7 @@ TestRunner._TestObserver = class {
       return;
     TestRunner._startedTest = true;
     TestRunner._setupTestHelpers(target);
-    if (Host.isStartupTest())
+    if (TestRunner._isStartupTest())
       return;
     TestRunner
         .loadHTML(`
@@ -1411,24 +1387,42 @@ TestRunner._isDebugTest = function() {
   return !self.testRunner || !!Runtime.queryParam('debugFrontend');
 };
 
-(function() {
 /**
+ * @return {boolean}
+ */
+TestRunner._isStartupTest = function() {
+  return Runtime.queryParam('test').includes('/startup/');
+};
+
+(async function() {
+  /**
    * @param {string|!Event} message
    * @param {string} source
    * @param {number} lineno
    * @param {number} colno
    * @param {!Error} error
    */
-function completeTestOnError(message, source, lineno, colno, error) {
-  TestRunner.addResult('TEST ENDED IN ERROR: ' + error.stack);
-  TestRunner.completeTest();
-}
+  function completeTestOnError(message, source, lineno, colno, error) {
+    TestRunner.addResult('TEST ENDED IN ERROR: ' + error.stack);
+    TestRunner.completeTest();
+  }
 
-self['onerror'] = completeTestOnError;
-InspectorFrontendHost.events.addEventListener(
-    InspectorFrontendHostAPI.Events.EvaluateForTestInFrontend, TestRunner._evaluateForTestInFrontend, TestRunner);
-TestRunner._printDevToolsConsole();
-if (Host.isStartupTest())
+  self['onerror'] = completeTestOnError;
+  TestRunner._printDevToolsConsole();
+  SDK.targetManager.observeTargets(new TestRunner._TestObserver());
+  if (!TestRunner._isStartupTest())
+    return;
+  /**
+   * Startup test initialization:
+   * 1. Wait for DevTools app UI to load
+   * 2. Execute test script, the first line will be TestRunner.setupStartupTest(...) which:
+   *    A. Navigate secondary window
+   *    B. After preconditions occur, secondary window calls testRunner.inspectSecondaryWindow()
+   * 3. Backend executes TestRunner._startupTestSetupFinished() which calls _initializeTarget()
+   */
+  TestRunner._initializeTargetForStartupTest =
+      TestRunner.override(Main.Main._instanceForTest, '_initializeTarget', () => undefined)
+          .bind(Main.Main._instanceForTest);
+  await TestRunner.addSnifferPromise(Main.Main._instanceForTest, '_showAppUI');
   TestRunner._executeTestScript();
-SDK.targetManager.observeTargets(new TestRunner._TestObserver());
 })();

@@ -6,7 +6,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const inspectorManifest = require('../front_end/inspector.json');
+const FRONTEND_PATH = path.resolve(__dirname, '..', 'front_end');
+const inspectorManifest = require(path.resolve(FRONTEND_PATH, 'inspector.json'));
 const utils = require('./utils');
 
 const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');
@@ -16,6 +17,7 @@ const gnLines = gnFile.split('\n');
 function main() {
   let errors = [];
   errors = errors.concat(checkNonAutostartNonRemoteModules());
+  errors = errors.concat(checkAllDevToolsFiles());
   if (errors.length) {
     console.log('DevTools BUILD.gn checker detected errors!');
     console.log(`There's an issue with: ${gnPath}`);
@@ -51,6 +53,43 @@ function checkNonAutostartNonRemoteModules() {
   if (extraneousModules.length)
     errors.push(`Found extraneous modules [${extraneousModules.join(', ')}] in: ` + gnVariable);
 
+  return errors;
+}
+
+function checkAllDevToolsFiles() {
+  const errors = [];
+  const excludedFiles = ['InspectorBackendCommands.js', 'SupportedCSSProperties.js'];
+  const gnVariable = 'all_devtools_files';
+  const lines = selectGNLines(`${gnVariable} = [`, ']');
+  if (!lines.length) {
+    return [
+      'Could not identify all_devtools_files list in gn file',
+      'Please look at: ' + __filename,
+    ];
+  }
+  const gnFiles = new Set(lines);
+  var moduleFiles = [];
+  fs.readdirSync(FRONTEND_PATH).forEach(function(moduleName) {
+    const moduleJSONPath = path.join(FRONTEND_PATH, moduleName, 'module.json');
+    if (utils.isFile(moduleJSONPath)) {
+      const moduleJSON = require(moduleJSONPath);
+      const scripts = moduleJSON.scripts || [];
+      const resources = moduleJSON.resources || [];
+      const files = scripts.concat(resources)
+                        .map(relativePathFromBuildGN)
+                        .filter(file => excludedFiles.every(excludedFile => !file.includes(excludedFile)));
+      moduleFiles = moduleFiles.concat(files);
+
+      function relativePathFromBuildGN(filename) {
+        const relativePath = path.normalize(`front_end/${moduleName}/${filename}`);
+        return `"${relativePath}",`;
+      }
+    }
+  });
+  for (const file of moduleFiles) {
+    if (!gnFiles.has(file))
+      errors.push(`Missing file in BUILD.gn for ${gnVariable}: ` + file);
+  }
   return errors;
 }
 

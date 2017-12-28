@@ -316,6 +316,13 @@ InspectorFrontendHostAPI.prototype = {
 
   readyForTest() {},
 
+  connectionReady() {},
+
+  /**
+   * @param {boolean} value
+   */
+  setOpenNewWindowForPopups(value) {},
+
   /**
    * @return {boolean}
    */

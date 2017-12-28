@@ -284,6 +284,7 @@ Main.Main = class {
   _initializeTarget() {
     Main.Main.time('Main._initializeTarget');
     SDK.targetManager.connectToMainTarget(webSocketConnectionLost);
+    InspectorFrontendHost.connectionReady();
 
     // Used for browser tests.
     InspectorFrontendHost.readyForTest();
@@ -893,7 +894,8 @@ Main.TargetCrashedScreen = class extends UI.VBox {
 Main.BackendSettingsSync = class {
   constructor() {
     this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
-    this._autoAttachSetting.addChangeListener(this._update, this);
+    this._autoAttachSetting.addChangeListener(this._updateAutoAttach, this);
+    this._updateAutoAttach();
 
     this._adBlockEnabledSetting = Common.settings.moduleSetting('network.adBlockingEnabled');
     this._adBlockEnabledSetting.addChangeListener(this._update, this);
@@ -905,8 +907,11 @@ Main.BackendSettingsSync = class {
    * @param {!SDK.Target} target
    */
   _updateTarget(target) {
-    target.pageAgent().setAutoAttachToCreatedPages(this._autoAttachSetting.get());
     target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
+  }
+
+  _updateAutoAttach() {
+    InspectorFrontendHost.setOpenNewWindowForPopups(this._autoAttachSetting.get());
   }
 
   _update() {

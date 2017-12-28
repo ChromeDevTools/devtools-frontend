@@ -383,6 +383,19 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
+   */
+  connectionReady() {
+  }
+
+  /**
+   * @override
+   * @param {boolean} value
+   */
+  setOpenNewWindowForPopups(value) {
+  }
+
+  /**
+   * @override
    * @param {!Adb.Config} config
    */
   setDevicesDiscoveryConfig(config) {

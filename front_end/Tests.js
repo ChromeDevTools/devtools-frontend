@@ -592,10 +592,6 @@
     deviceModeModel._applyTouch(true, true);
   };
 
-  TestSuite.prototype.enableAutoAttachToCreatedPages = function() {
-    Common.settingForTest('autoAttachToCreatedPages').set(true);
-  };
-
   TestSuite.prototype.waitForDebuggerPaused = function() {
     var debuggerModel = SDK.targetManager.mainTarget().model(SDK.DebuggerModel);
     if (debuggerModel.debuggerPausedDetails)

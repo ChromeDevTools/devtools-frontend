@@ -666,6 +666,21 @@
 
     /**
      * @override
+     */
+    connectionReady() {
+      DevToolsAPI.sendMessageToEmbedder('connectionReady', [], null);
+    }
+
+    /**
+     * @override
+     * @param {boolean} value
+     */
+    setOpenNewWindowForPopups(value) {
+      DevToolsAPI.sendMessageToEmbedder('setOpenNewWindowForPopups', [value], null);
+    }
+
+    /**
+     * @override
      * @param {!Adb.Config} config
      */
     setDevicesDiscoveryConfig(config) {

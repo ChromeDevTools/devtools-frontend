@@ -25,36 +25,164 @@ SDK.ServerTiming = class {
     if (!rawServerTimingHeaders.length)
       return null;
 
-    /**
-     * @param {?string} valueString
-     * @return {?Array<!SDK.ServerTiming>}
-     */
-    function createFromHeaderValue(valueString) {
-      // https://www.w3.org/TR/server-timing/
-      var serverTimingMetricRegExp =
-          /[ \t]*([\!\#\$\%\&\'\*\+\-\.\^\_\`\|\~0-9A-Za-z]+)[ \t]*(?:=[ \t]*(\d+(?:\.\d+)?))?[ \t]*(?:;[ \t]*(?:"([^"]+)"|([\!\#\$\%\&\'\*\+\-\.\^\_\`\|\~0-9A-Za-z]+)))?[ \t]*(?:,(.*))?/;
-      var metricMatch;
-      var result = [];
-      while (valueString && (metricMatch = serverTimingMetricRegExp.exec(valueString))) {
-        var metric = metricMatch[1];
-        var value = metricMatch[2];
-        var description = metricMatch[3] || metricMatch[4];
-        if (value !== undefined)
-          value = Math.abs(parseFloat(metricMatch[2]));
-        valueString = metricMatch[5];  // comma delimited headers
-        if (value === undefined || isNaN(value))
-          value = null;
-        result.push(new SDK.ServerTiming(metric, value, description));
-      }
-      return result;
-    }
-
     var serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
-      var timing = createFromHeaderValue(header.value);
-      Array.prototype.push.apply(memo, timing);
+      var timing = this.createFromHeaderValue(header.value);
+      memo.pushAll(timing.map(function(entry) {
+        return new SDK.ServerTiming(
+            entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
+      }));
       return memo;
     }, []);
     serverTimings.sort((a, b) => a.metric.toLowerCase().compareTo(b.metric.toLowerCase()));
     return serverTimings;
+  }
+
+  /**
+   * @param {string} valueString
+   * @return {?Array<!Object>}
+   */
+  static createFromHeaderValue(valueString) {
+    function trimLeadingWhiteSpace() {
+      valueString = valueString.replace(/^\s*/, '');
+    }
+    function consumeDelimiter(char) {
+      console.assert(char.length === 1);
+      trimLeadingWhiteSpace();
+      if (valueString.charAt(0) !== char)
+        return false;
+
+      valueString = valueString.substring(1);
+      return true;
+    }
+    function consumeToken() {
+      // https://tools.ietf.org/html/rfc7230#appendix-B
+      var result = /^(?:\s*)([\w!#$%&'*+\-.^`|~]+)(?:\s*)(.*)/.exec(valueString);
+      if (!result)
+        return null;
+
+      valueString = result[2];
+      return result[1];
+    }
+    function consumeTokenOrQuotedString() {
+      trimLeadingWhiteSpace();
+      if (valueString.charAt(0) === '"')
+        return consumeQuotedString();
+
+      return consumeToken();
+    }
+    function consumeQuotedString() {
+      console.assert(valueString.charAt(0) === '"');
+      valueString = valueString.substring(1);  // remove leading DQUOTE
+
+      var value = '';
+      while (valueString.length) {
+        // split into two parts:
+        //  -everything before the first " or \
+        //  -everything else
+        var result = /^([^"\\]*)(.*)/.exec(valueString);
+        value += result[1];
+        if (result[2].charAt(0) === '"') {
+          // we have found our closing "
+          valueString = result[2].substring(1);  // strip off everything after the closing "
+          return value;                          // we are done here
+        }
+
+        console.assert(result[2].charAt(0) === '\\');
+        // special rules for \ found in quoted-string (https://tools.ietf.org/html/rfc7230#section-3.2.6)
+        value += result[2].charAt(1);          // grab the character AFTER the \ (if there was one)
+        valueString = result[2].substring(2);  // strip off \ and next character
+      }
+
+      return null;  // not a valid quoted-string
+    }
+    function consumeExtraneous() {
+      var result = /([,;].*)/.exec(valueString);
+      if (result)
+        valueString = result[1];
+    }
+
+    var result = [];
+    var name;
+    while ((name = consumeToken()) !== null) {
+      var entry = {name};
+
+      if (valueString.charAt(0) === '=')
+        this.showWarning(ls`Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>`);
+
+      while (consumeDelimiter(';')) {
+        var paramName;
+        if ((paramName = consumeToken()) === null)
+          continue;
+
+        paramName = paramName.toLowerCase();
+        var parseParameter = this.getParserForParameter(paramName);
+        var paramValue = null;
+        if (consumeDelimiter('=')) {
+          // always parse the value, even if we don't recognize the parameter name
+          paramValue = consumeTokenOrQuotedString();
+          consumeExtraneous();
+        }
+
+        if (parseParameter) {
+          // paramName is valid
+          if (entry.hasOwnProperty(paramName)) {
+            this.showWarning(ls`Duplicate parameter \"${paramName}\" ignored.`);
+            continue;
+          }
+
+          if (paramValue === null)
+            this.showWarning(ls`No value found for parameter \"${paramName}\".`);
+
+          parseParameter.call(this, entry, paramValue);
+        } else {
+          // paramName is not valid
+          this.showWarning(ls`Unrecognized parameter \"${paramName}\".`);
+        }
+      }
+
+      result.push(entry);
+      if (!consumeDelimiter(','))
+        break;
+    }
+
+    if (valueString.length)
+      this.showWarning(ls`Extraneous trailing characters.`);
+    return result;
+  }
+
+  /**
+   * @param {string} paramName
+   * @return {?function(!Object, string)}
+   */
+  static getParserForParameter(paramName) {
+    switch (paramName) {
+      case 'dur':
+        return function(entry, paramValue) {
+          entry.dur = 0;
+          if (paramValue !== null) {
+            var duration = parseFloat(paramValue);
+            if (isNaN(duration)) {
+              this.showWarning(ls`Unable to parse \"${paramName}\" value \"${paramValue}\".`);
+              return;
+            }
+            entry.dur = duration;
+          }
+        };
+
+      case 'desc':
+        return function(entry, paramValue) {
+          entry.desc = paramValue || '';
+        };
+
+      default:
+        return null;
+    }
+  }
+
+  /**
+   * @param {string} msg
+   */
+  static showWarning(msg) {
+    Common.console.warn(Common.UIString(`ServerTiming: ${msg}`));
   }
 };

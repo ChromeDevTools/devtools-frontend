@@ -175,11 +175,6 @@ ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName,
       'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
 };
 
-ApplicationTestRunner.addIDBValueAsync = function(databaseName, objectStoreName, key, value) {
-  return TestRunner.evaluateInPageAsync(
-      'addIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\', \'' + value + '\')');
-};
-
 ApplicationTestRunner.deleteIDBValueAsync = function(databaseName, objectStoreName, key) {
   return TestRunner.evaluateInPageAsync(
       'deleteIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\')');

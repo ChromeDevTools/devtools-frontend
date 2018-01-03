@@ -201,47 +201,47 @@ PerfUI.FilmStripView.Modes = {
   FrameBased: 'FrameBased'
 };
 
-
-/**
- * @unrestricted
- */
-PerfUI.FilmStripView.Dialog = class extends UI.VBox {
+PerfUI.FilmStripView.Dialog = class {
   /**
    * @param {!SDK.FilmStripModel.Frame} filmStripFrame
    * @param {number=} zeroTime
    */
   constructor(filmStripFrame, zeroTime) {
-    super(true);
-    this.registerRequiredCSS('perf_ui/filmStripDialog.css');
-    this.contentElement.classList.add('filmstrip-dialog');
-    this.contentElement.tabIndex = 0;
+    var prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));
+    prevButton.title = Common.UIString('Previous frame');
+    var nextButton = UI.createTextButton('\u25B6', this._onNextFrame.bind(this));
+    nextButton.title = Common.UIString('Next frame');
+
+    this._fragment = UI.Fragment.build`
+      <x-widget flex=none margin=12px>
+        <x-hbox overflow=auto border='1px solid #ddd' max-height=80vh max-width=80vw>
+          <img $=image></img>
+        </x-hbox>
+        <x-hbox x-center justify-content=center margin-top=10px>
+          ${prevButton}
+          <x-hbox $=time margin=8px></x-hbox>
+          ${nextButton}
+        </x-hbox>
+      </x-widget>
+    `;
+
+    this._widget = /** @type {!UI.XWidget} */ (this._fragment.element());
+    this._widget.tabIndex = 0;
+    this._widget.addEventListener('keydown', this._keyDown.bind(this), false);
 
     this._frames = filmStripFrame.model().frames();
     this._index = filmStripFrame.index;
     this._zeroTime = zeroTime || filmStripFrame.model().zeroTime();
-
-    var imageScrollElement = this.contentElement.createChild('div', 'filmstrip-dialog-image-scroll');
-    this._imageElement = imageScrollElement.createChild('img');
-    var footerElement = this.contentElement.createChild('div', 'filmstrip-dialog-footer');
-    footerElement.createChild('div', 'flex-auto');
-    var prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));
-    prevButton.title = Common.UIString('Previous frame');
-    footerElement.appendChild(prevButton);
-    this._timeLabel = footerElement.createChild('div', 'filmstrip-dialog-label');
-    var nextButton = UI.createTextButton('\u25B6', this._onNextFrame.bind(this));
-    nextButton.title = Common.UIString('Next frame');
-    footerElement.appendChild(nextButton);
-    footerElement.createChild('div', 'flex-auto');
-
-    this.contentElement.addEventListener('keydown', this._keyDown.bind(this), false);
-    this.setDefaultFocusedElement(this.contentElement);
+    /** @type {?UI.Dialog} */
+    this._dialog = null;
     this._render();
   }
 
   _resize() {
     if (!this._dialog) {
       this._dialog = new UI.Dialog();
-      this.show(this._dialog.contentElement);
+      this._dialog.contentElement.appendChild(this._widget);
+      this._dialog.setDefaultFocusedElement(this._widget);
       this._dialog.show();
     }
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
@@ -303,9 +303,9 @@ PerfUI.FilmStripView.Dialog = class extends UI.VBox {
    */
   _render() {
     var frame = this._frames[this._index];
-    this._timeLabel.textContent = Number.millisToString(frame.timestamp - this._zeroTime);
+    this._fragment.$('time').textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
-        .then(PerfUI.FilmStripView._setImageData.bind(null, this._imageElement))
+        .then(PerfUI.FilmStripView._setImageData.bind(null, this._fragment.$('image')))
         .then(this._resize.bind(this));
   }
 };

@@ -55,7 +55,8 @@
         "ZoomManager.js",
         "ShortcutsScreen.js",
         "Geometry.js",
-        "XLink.js"
+        "XLink.js",
+        "XWidget.js"
     ],
     "resources": [
         "checkboxTextLabel.css",

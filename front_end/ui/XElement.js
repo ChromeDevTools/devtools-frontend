@@ -8,10 +8,11 @@
 UI.XElement = class extends HTMLElement {
   static get observedAttributes() {
     return [
-      'flex',       'padding',    'padding-top',   'padding-bottom', 'padding-left', 'padding-right',
-      'margin',     'margin-top', 'margin-bottom', 'margin-left',    'margin-right', 'overflow',
-      'overflow-x', 'overflow-y', 'font-size',     'color',          'background',   'background-color',
-      'border',     'border-top', 'border-bottom', 'border-left',    'border-right'
+      'flex',          'padding',     'padding-top',      'padding-bottom', 'padding-left',
+      'padding-right', 'margin',      'margin-top',       'margin-bottom',  'margin-left',
+      'margin-right',  'overflow',    'overflow-x',       'overflow-y',     'font-size',
+      'color',         'background',  'background-color', 'border',         'border-top',
+      'border-bottom', 'border-left', 'border-right',     'max-width',      'max-height'
     ];
   }
 
@@ -62,7 +63,7 @@ UI._XBox = class extends UI.XElement {
 
   static get observedAttributes() {
     // TODO(dgozman): should be super.observedAttributes, but does not compile.
-    return UI.XElement.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline']);
+    return UI.XElement.observedAttributes.concat(['x-start', 'x-center', 'x-stretch', 'x-baseline', 'justify-content']);
   }
 
   /**

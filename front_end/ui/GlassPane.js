@@ -45,6 +45,13 @@ UI.GlassPane = class {
   }
 
   /**
+   * @param {?Element} element
+   */
+  setDefaultFocusedElement(element) {
+    this._widget.setDefaultFocusedElement(element);
+  }
+
+  /**
    * @param {boolean} dimmed
    */
   setDimmed(dimmed) {

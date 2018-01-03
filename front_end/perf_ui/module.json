@@ -46,7 +46,6 @@
     "resources": [
         "chartViewport.css",
         "filmStripView.css",
-        "filmStripDialog.css",
         "flameChart.css",
         "overviewGrid.css",
         "pieChart.css",

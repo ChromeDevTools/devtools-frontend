@@ -744,6 +744,7 @@ UI._focusChanged = function(event) {
   var document = event.target && event.target.ownerDocument;
   var element = document ? document.deepActiveElement() : null;
   UI.Widget.focusWidgetForNode(element);
+  UI.XWidget.focusWidgetForNode(element);
   if (!UI._keyboardFocus)
     return;
   element.setAttribute('data-keyboard-focus', 'true');

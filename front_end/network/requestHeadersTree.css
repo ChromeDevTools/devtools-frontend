@@ -64,10 +64,14 @@
 .tree-outline .header-name {
     color: rgb(33%, 33%, 33%);
     display: inline-block;
-    margin-right: 0.5em;
+    margin-right: 0.25em;
     font-weight: bold;
     vertical-align: top;
     white-space: pre-wrap;
+}
+
+.tree-outline .header-separator {
+    user-select: none;
 }
 
 .tree-outline .header-value {

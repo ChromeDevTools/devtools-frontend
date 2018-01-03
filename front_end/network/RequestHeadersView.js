@@ -109,7 +109,8 @@ Network.RequestHeadersView = class extends UI.VBox {
    */
   _formatHeader(name, value) {
     var fragment = createDocumentFragment();
-    fragment.createChild('div', 'header-name').textContent = name + ':';
+    fragment.createChild('div', 'header-name').textContent = name + ': ';
+    fragment.createChild('span', 'header-separator');
     fragment.createChild('div', 'header-value source-code').textContent = value;
 
     return fragment;
@@ -253,9 +254,10 @@ Network.RequestHeadersView = class extends UI.VBox {
     for (var i = 0; i < params.length; ++i) {
       var paramNameValue = createDocumentFragment();
       if (params[i].name !== '') {
-        var name = this._formatParameter(params[i].name + ':', 'header-name', this._decodeRequestParameters);
+        var name = this._formatParameter(params[i].name + ': ', 'header-name', this._decodeRequestParameters);
         var value = this._formatParameter(params[i].value, 'header-value source-code', this._decodeRequestParameters);
         paramNameValue.appendChild(name);
+        paramNameValue.createChild('span', 'header-separator');
         paramNameValue.appendChild(value);
       } else {
         paramNameValue.appendChild(
@@ -373,7 +375,8 @@ Network.RequestHeadersView = class extends UI.VBox {
 
     if (this._request.statusCode) {
       var statusCodeFragment = createDocumentFragment();
-      statusCodeFragment.createChild('div', 'header-name').textContent = Common.UIString('Status Code') + ':';
+      statusCodeFragment.createChild('div', 'header-name').textContent = Common.UIString('Status Code') + ': ';
+      statusCodeFragment.createChild('span', 'header-separator');
 
       var statusCodeImage = statusCodeFragment.createChild('label', 'resource-status-image', 'dt-icon-label');
       statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;

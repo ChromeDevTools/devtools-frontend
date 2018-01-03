@@ -902,11 +902,22 @@
   };
 
   TestSuite.prototype.testWindowInitializedOnNavigateBack = function() {
+    var test = this;
+    test.takeControl();
     var messages = ConsoleModel.consoleModel.messages();
-    this.assertEquals(1, messages.length);
-    var text = messages[0].messageText;
-    if (text.indexOf('Uncaught') !== -1)
-      this.fail(text);
+    if (messages.length === 1) {
+      checkMessages();
+    } else {
+      ConsoleModel.consoleModel.addEventListener(
+          ConsoleModel.ConsoleModel.Events.MessageAdded, checkMessages.bind(this), this);
+    }
+
+    function checkMessages() {
+      var messages = ConsoleModel.consoleModel.messages();
+      test.assertEquals(1, messages.length);
+      test.assertTrue(messages[0].messageText.indexOf('Uncaught') === -1);
+      test.releaseControl();
+    }
   };
 
   TestSuite.prototype.testConsoleContextNames = function() {

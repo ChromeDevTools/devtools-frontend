@@ -94,6 +94,11 @@ function defineCommonExtensionSymbols(apiPrivate) {
  * @suppressGlobalPropertiesCheck
  */
 function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook, injectedScriptId) {
+  var chrome = window.chrome || {};
+  var devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
+  if (devtools_descriptor)
+    return;
+
   var apiPrivate = {};
 
   defineCommonExtensionSymbols(apiPrivate);
@@ -757,13 +762,7 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
   var extensionServer = new ExtensionServerClient();
   var coreAPI = new InspectorExtensionAPI();
 
-  var chrome = window.chrome || {};
-  // Override chrome.devtools as a workaround for a error-throwing getter being exposed
-  // in extension pages loaded into a non-extension process (only happens for remote client
-  // extensions)
-  var devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
-  if (!devtools_descriptor || devtools_descriptor.get)
-    Object.defineProperty(chrome, 'devtools', {value: {}, enumerable: true});
+  Object.defineProperty(chrome, 'devtools', {value: {}, enumerable: true});
 
   // Only expose tabId on chrome.devtools.inspectedWindow, not webInspector.inspectedWindow.
   chrome.devtools.inspectedWindow = {};

@@ -2341,6 +2341,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   _updateExpandElement() {
+    if (!this._expandElement)
+      return;
     if (this.expanded)
       this._expandElement.setIconType('smallicon-triangle-down');
     else
@@ -2349,7 +2351,10 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
   updateTitle() {
     this._updateState();
-    this._expandElement = UI.Icon.create('smallicon-triangle-right', 'expand-icon');
+    if (this.isExpandable())
+      this._expandElement = UI.Icon.create('smallicon-triangle-right', 'expand-icon');
+    else
+      this._expandElement = null;
 
     var propertyRenderer =
         new Elements.StylesSidebarPropertyRenderer(this._style.parentRule, this.node(), this.name, this.value);
@@ -2370,7 +2375,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
         .createTextChild(indent + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);
     this.listItemElement.createTextChild(': ');
-    this.listItemElement.appendChild(this._expandElement);
+    if (this._expandElement)
+      this.listItemElement.appendChild(this._expandElement);
     this.listItemElement.appendChild(this.valueElement);
     this.listItemElement.createTextChild(';');
     if (this.property.disabled)
@@ -2447,7 +2453,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (this.parent.isShorthand)
       return;
 
-    if (selectElement === this._expandElement)
+    if (this._expandElement && selectElement === this._expandElement)
       return;
 
     var section = this.section();

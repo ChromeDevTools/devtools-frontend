@@ -585,6 +585,11 @@ Audits2.Audits2Panel.StatusView = class {
    */
   renderBugReport(err, inspectedURL) {
     console.error(err);
+    clearTimeout(this._scheduledFastFactTimeout);
+    clearTimeout(this._scheduledTextChangeTimeout);
+    this._resetProgressBarClasses();
+    this._progressBar.classList.add('errored');
+
     this._commitTextChange('');
     this._statusText.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
     this._statusText.createChild('em').createTextChild(err.message);

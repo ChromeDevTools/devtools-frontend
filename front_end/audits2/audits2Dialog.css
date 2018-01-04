@@ -68,6 +68,11 @@ header {
     --progress-bar-auditing-percent: 95%;
 }
 
+.audits2-progress-bar.errored {
+    width: 100%;
+    background: #E50303;
+}
+
 .audits2-progress-bar.loading {
     animation-duration: var(--progress-bar-loading-duration);
     animation-name: progressBarLoading;

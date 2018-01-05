@@ -41,7 +41,7 @@
             "order": 30,
             "device": {
                 "show-by-default": true,
-                "title": "iPhone 5",
+                "title": "iPhone 5/SE",
                 "screen": {
                     "horizontal": {
                         "outline" : {

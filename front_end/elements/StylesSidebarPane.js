@@ -62,11 +62,6 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     /** @type {?RegExp} */
     this._filterRegex = null;
 
-    /** @type {?Elements.StylePropertyTreeElement} */
-    this._mouseDownTreeElement = null;
-    this._mouseDownTreeElementIsName = false;
-    this._mouseDownTreeElementIsValue = false;
-
     this.contentElement.classList.add('styles-pane');
 
     /** @type {!Array<!Elements.SectionBlock>} */
@@ -1462,7 +1457,11 @@ Elements.StylePropertiesSection = class {
       event.consume();
       return;
     }
-    this.addNewBlankProperty().startEditing();
+    var deepTarget = event.deepElementFromPoint();
+    if (deepTarget.treeElement)
+      this.addNewBlankProperty(deepTarget.treeElement.property.index + 1).startEditing();
+    else
+      this.addNewBlankProperty().startEditing();
     event.consume(true);
   }
 
@@ -2300,30 +2299,15 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   onattach() {
     this.updateTitle();
 
-    this.listItemElement.addEventListener('mousedown', this._mouseDown.bind(this));
-    this.listItemElement.addEventListener('mouseup', this._resetMouseDownElement.bind(this));
-    this.listItemElement.addEventListener('click', this._mouseClick.bind(this));
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _mouseDown(event) {
-    if (this._parentPane) {
-      this._parentPane._mouseDownTreeElement = this;
-      this._parentPane._mouseDownTreeElementIsName =
-          this.nameElement && this.nameElement.isSelfOrAncestor(event.target);
-      this._parentPane._mouseDownTreeElementIsValue =
-          this.valueElement && this.valueElement.isSelfOrAncestor(event.target);
-    }
-  }
-
-  _resetMouseDownElement() {
-    if (this._parentPane) {
-      this._parentPane._mouseDownTreeElement = null;
-      this._parentPane._mouseDownTreeElementIsName = false;
-      this._parentPane._mouseDownTreeElementIsValue = false;
-    }
+    this.listItemElement.addEventListener('mousedown', event => {
+      if (event.which === 1)
+        this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol] = this;
+    }, false);
+    this.listItemElement.addEventListener('mouseup', this._mouseUp.bind(this));
+    this.listItemElement.addEventListener('click', event => {
+      if (!event.target.hasSelection() && event.target !== this.listItemElement)
+        event.consume(true);
+    });
   }
 
   /**
@@ -2399,6 +2383,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       enabledCheckboxElement.className = 'enabled-button';
       enabledCheckboxElement.type = 'checkbox';
       enabledCheckboxElement.checked = !this.property.disabled;
+      enabledCheckboxElement.addEventListener('mousedown', event => event.consume(), false);
       enabledCheckboxElement.addEventListener('click', this._toggleEnabled.bind(this), false);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
@@ -2407,22 +2392,20 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Event} event
    */
-  _mouseClick(event) {
-    if (event.target.hasSelection())
+  _mouseUp(event) {
+    var activeTreeElement = this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol];
+    this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol] = null;
+    if (activeTreeElement !== this)
+      return;
+    if (this.listItemElement.hasSelection())
+      return;
+    if (UI.isBeingEdited(/** @type {!Node} */ (event.target)))
       return;
 
     event.consume(true);
 
-    if (event.target === this.listItemElement) {
-      var section = this.section();
-      if (!section || !section.editable)
-        return;
-
-      if (section._checkWillCancelEditing())
-        return;
-      section.addNewBlankProperty(this.property.index + 1).startEditing();
+    if (event.target === this.listItemElement)
       return;
-    }
 
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */ (event)) && this.section().navigable) {
       this._navigateToSource(/** @type {!Element} */ (event.target));
@@ -2545,18 +2528,10 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function blurListener(context, event) {
-      var treeElement = this._parentPane._mouseDownTreeElement;
-      var moveDirection = '';
-      if (treeElement === this) {
-        if (isEditingName && this._parentPane._mouseDownTreeElementIsValue)
-          moveDirection = 'forward';
-        if (!isEditingName && this._parentPane._mouseDownTreeElementIsName)
-          moveDirection = 'backward';
-      }
       var text = event.target.textContent;
       if (!context.isEditingName)
         text = this.value || text;
-      this._editingCommitted(text, context, moveDirection);
+      this._editingCommitted(text, context, '');
     }
 
     this._originalPropertyText = this.property.propertyText;
@@ -2690,8 +2665,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Elements.StylePropertyTreeElement.Context} context
    */
   editingEnded(context) {
-    this._resetMouseDownElement();
-
     this.setExpandable(context.hasChildren);
     if (context.expanded)
       this.expand();
@@ -2969,6 +2942,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
 /** @typedef {{expanded: boolean, hasChildren: boolean, isEditingName: boolean, previousContent: string}} */
 Elements.StylePropertyTreeElement.Context;
+Elements.StylePropertyTreeElement.ActiveSymbol = Symbol('ActiveSymbol');
 
 Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   /**

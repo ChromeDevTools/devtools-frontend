@@ -1379,8 +1379,11 @@ Console.ConsoleViewMessage = class {
    */
   static _tokenizeMessageText(string) {
     if (!Console.ConsoleViewMessage._tokenizerRegexes) {
-      var linkStringRegex =
-          /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/|data:|www\.)[\w$\-_+*'=\|\/\\(){}[\]^%@&#~,:;.!?]{2,}[\w$\-_+*=\|\/\\({^%@&#~]/;
+      var controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
+      var linkStringRegex = new RegExp(
+          '(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + controlCodes + '"]{2,}[^\\s' + controlCodes +
+              '"\')}\\],:;.!?]',
+          'u');
       var pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
       var timeRegex = /took [\d]+ms/;
       var eventRegex = /'\w+' event/;

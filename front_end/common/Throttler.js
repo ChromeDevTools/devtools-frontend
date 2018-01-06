@@ -15,6 +15,10 @@ Common.Throttler = class {
     /** @type {?function():(!Promise.<?>)} */
     this._process = null;
     this._lastCompleteTime = 0;
+
+    this._schedulePromise = new Promise(fulfill => {
+      this._scheduleResolve = fulfill;
+    });
   }
 
   _processCompleted() {
@@ -34,13 +38,21 @@ Common.Throttler = class {
     this._asSoonAsPossible = false;
     this._isRunningProcess = true;
 
-    Promise.resolve().then(this._process).catch(console.error.bind(console)).then(this._processCompleted.bind(this));
+    Promise.resolve()
+        .then(this._process)
+        .catch(console.error.bind(console))
+        .then(this._processCompleted.bind(this))
+        .then(this._scheduleResolve);
+    this._schedulePromise = new Promise(fulfill => {
+      this._scheduleResolve = fulfill;
+    });
     this._process = null;
   }
 
   /**
    * @param {function():(!Promise.<?>)} process
    * @param {boolean=} asSoonAsPossible
+   * @return {!Promise}
    */
   schedule(process, asSoonAsPossible) {
     // Deliberately skip previous process.
@@ -55,6 +67,8 @@ Common.Throttler = class {
     this._asSoonAsPossible = this._asSoonAsPossible || asSoonAsPossible;
 
     this._innerSchedule(forceTimerUpdate);
+
+    return this._schedulePromise;
   }
 
   /**

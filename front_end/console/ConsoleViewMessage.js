@@ -367,7 +367,7 @@ Console.ConsoleViewMessage = class {
 
     var messageElement = this._buildMessage();
     var icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
-    var clickableElement = contentElement.createChild('div');
+    var clickableElement = contentElement.createChild('div', 'console-message-stack-trace-message');
     clickableElement.appendChild(icon);
 
     clickableElement.appendChild(messageElement);
@@ -808,6 +808,7 @@ Console.ConsoleViewMessage = class {
     }
 
     function isWhitelistedProperty(property) {
+      // Make sure that allowed properties do not interfere with link visibility.
       var prefixes = [
         'background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text', '-webkit-background',
         '-webkit-border', '-webkit-font', '-webkit-margin', '-webkit-padding', '-webkit-text'
@@ -835,6 +836,11 @@ Console.ConsoleViewMessage = class {
 
     formatters._ = bypassFormatter;
 
+    /**
+     * @param {!Element} a
+     * @param {*} b
+     * @this {!Console.ConsoleViewMessage}
+     */
     function append(a, b) {
       if (b instanceof Node) {
         a.appendChild(b);
@@ -844,8 +850,12 @@ Console.ConsoleViewMessage = class {
           var wrapper = createElement('span');
           wrapper.appendChild(toAppend);
           applyCurrentStyle(wrapper);
-          for (var i = 0; i < wrapper.children.length; ++i)
-            applyCurrentStyle(wrapper.children[i]);
+          for (var child of wrapper.children) {
+            if (child.classList.contains('devtools-link'))
+              this._applyForcedVisibleStyle(child);
+            else
+              applyCurrentStyle(child);
+          }
           toAppend = wrapper;
         }
         a.appendChild(toAppend);
@@ -862,7 +872,26 @@ Console.ConsoleViewMessage = class {
     }
 
     // String.format does treat formattedResult like a Builder, result is an object.
-    return String.format(format, parameters, formatters, formattedResult, append);
+    return String.format(format, parameters, formatters, formattedResult, append.bind(this));
+  }
+
+  /**
+   * @param {!Element} element
+   */
+  _applyForcedVisibleStyle(element) {
+    element.style.setProperty('-webkit-text-stroke', '0', 'important');
+    element.style.setProperty('text-decoration', 'underline', 'important');
+
+    var themedColor = UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.ThemeSupport.ColorUsage.Foreground);
+    element.style.setProperty('color', themedColor, 'important');
+
+    var backgroundColor = 'hsl(0, 0%, 100%)';
+    if (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error)
+      backgroundColor = 'hsl(0, 100%, 97%)';
+    else if (this._message.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning || this._shouldRenderAsWarning())
+      backgroundColor = 'hsl(50, 100%, 95%)';
+    var themedBackgroundColor = UI.themeSupport.patchColorText(backgroundColor, UI.ThemeSupport.ColorUsage.Background);
+    element.style.setProperty('background-color', themedBackgroundColor, 'important');
   }
 
   /**

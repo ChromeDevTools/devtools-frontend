@@ -754,6 +754,20 @@ span.lh-node:hover {
   margin-top: 0;
 }
 
+.lh-run-warnings {
+  font-size: var(--body-font-size);
+  margin: var(--section-padding);
+  padding: var(--section-padding);
+  background-color: hsla(40, 100%, 91%, 1);
+  color: var(--secondary-text-color);
+}
+.lh-run-warnings li {
+  margin-bottom: calc(var(--header-line-height) / 2);
+}
+.lh-run-warnings::before {
+  display: inline-block;
+}
+
 .lh-scores-header {
   display: flex;
   justify-content: center;

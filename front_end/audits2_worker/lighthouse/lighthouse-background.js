@@ -1,4 +1,4 @@
-// lighthouse, browserified. 2.5.1 (fb286c3d49fa03e9ce4235f47d06208af9317cfc)
+// lighthouse, browserified. 2.7.0 (c206e0a5a8852bd337253f5b4870458eb05e8ec3)
 require=function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f;}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e);},l,l.exports,e,t,n,r);}return n[o].exports;}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s;}({"../audits/accessibility/accesskeys":[function(require,module,exports){
 
 
@@ -20,7 +20,6 @@ class Accesskeys extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'accesskeys',
 description:'`[accesskey]` values are unique.',
 failureDescription:'`[accesskey]` values are not unique.',
@@ -55,7 +54,6 @@ class ARIAAllowedAttr extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-allowed-attr',
 description:'`[aria-*]` attributes match their roles.',
 failureDescription:'`[aria-*]` attributes do not match their roles.',
@@ -90,7 +88,6 @@ class ARIARequiredAttr extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-required-attr',
 description:'`[role]`s have all required `[aria-*]` attributes.',
 failureDescription:'`[role]`s do not have all required `[aria-*]` attributes.',
@@ -125,7 +122,6 @@ class AriaRequiredChildren extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-required-children',
 description:'Elements with `[role]` that require specific children `[role]`s, are present.',
 failureDescription:'Elements with `[role]` that require specific children `[role]`s, '+
@@ -162,7 +158,6 @@ class AriaRequiredParent extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-required-parent',
 description:'`[role]`s are contained by their required parent element.',
 failureDescription:'`[role]`s are not contained by their required parent element.',
@@ -197,7 +192,6 @@ class AriaRoles extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-roles',
 description:'`[role]` values are valid.',
 failureDescription:'`[role]` values are not valid.',
@@ -232,7 +226,6 @@ class ARIAValidAttr extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-valid-attr-value',
 description:'`[aria-*]` attributes have valid values.',
 failureDescription:'`[aria-*]` attributes do not have valid values.',
@@ -267,7 +260,6 @@ class ARIAValidAttr extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'aria-valid-attr',
 description:'`[aria-*]` attributes are valid and not misspelled.',
 failureDescription:'`[aria-*]` attributes are not valid or misspelled.',
@@ -302,7 +294,6 @@ class AudioCaption extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'audio-caption',
 description:'`<audio>` elements contain a `<track>` element with `[kind="captions"]`.',
 failureDescription:'`<audio>` elements are missing a `<track>` element with '+
@@ -339,7 +330,6 @@ class ButtonName extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'button-name',
 description:'Buttons have an accessible name.',
 failureDescription:'Buttons do not have an accessible name.',
@@ -375,7 +365,6 @@ class Bypass extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'bypass',
 description:'The page contains a heading, skip link, or landmark region.',
 failureDescription:'The page does not contain a heading, skip link, or landmark region.',
@@ -411,7 +400,6 @@ class ColorContrast extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'color-contrast',
 description:'Background and foreground colors have a sufficient contrast ratio.',
 failureDescription:'Background and foreground colors do not have a '+
@@ -446,7 +434,6 @@ class DefinitionList extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'definition-list',
 description:'`<dl>`\'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>` '+
 'or `<template>` elements.',
@@ -483,7 +470,6 @@ class DLItem extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'dlitem',
 description:'Definition list items are wrapped in `<dl>` elements.',
 failureDescription:'Definition list items are not wrapped in `<dl>` elements.',
@@ -518,7 +504,6 @@ class DocumentTitle extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'document-title',
 description:'Document has a `<title>` element.',
 failureDescription:'Document does not have a `<title>` element.',
@@ -553,7 +538,6 @@ class DuplicateId extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'duplicate-id',
 description:'`[id]` attributes on the page are unique.',
 failureDescription:'`[id]` attributes on the page are not unique.',
@@ -588,7 +572,6 @@ class FrameTitle extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'frame-title',
 description:'`<frame>` or `<iframe>` elements have a title.',
 failureDescription:'`<frame>` or `<iframe>` elements do not have a title.',
@@ -622,7 +605,6 @@ class HTMLHasLang extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'html-has-lang',
 description:'`<html>` element has a `[lang]` attribute.',
 failureDescription:'`<html>` element does not have a `[lang]` attribute.',
@@ -659,7 +641,6 @@ class HTMLLangValid extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'html-lang-valid',
 description:'`<html>` element has a valid value for its `[lang]` attribute.',
 failureDescription:'`<html>` element does not have a valid value for '+
@@ -695,7 +676,6 @@ class ImageAlt extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'image-alt',
 description:'Image elements have `[alt]` attributes.',
 failureDescription:'Image elements do not have `[alt]` attributes.',
@@ -730,7 +710,6 @@ class InputImageAlt extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'input-image-alt',
 description:'`<input type="image">` elements have `[alt]` text.',
 failureDescription:'`<input type="image">` elements do not have `[alt]` text.',
@@ -765,7 +744,6 @@ class Label extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'label',
 description:'Form elements have associated labels.',
 failureDescription:'Form elements do not have associated labels.',
@@ -801,7 +779,6 @@ class LayoutTable extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'layout-table',
 description:'Presentational `<table>` elements avoid using `<th>`, `<caption>` or the '+
 '`[summary]` attribute.',
@@ -839,7 +816,6 @@ class LinkName extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'link-name',
 description:'Links have a discernible name.',
 failureDescription:'Links do not have a discernable name.',
@@ -875,7 +851,6 @@ class ListItem extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'listitem',
 description:'List items (`<li>`) are contained within `<ul>` or `<ol>` parent elements.',
 failureDescription:'List items (`<li>`) are not contained within `<ul>` '+
@@ -911,7 +886,6 @@ class List extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'list',
 description:'Lists contain only `<li>` elements and script supporting elements '+
 '(`<script>` and `<template>`).',
@@ -927,7 +901,308 @@ requiredArtifacts:['Accessibility']};
 
 module.exports=List;
 
-},{"./axe-audit":1}],"../audits/accessibility/meta-refresh":[function(require,module,exports){
+},{"./axe-audit":1}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class CustomControlsLabels extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'custom-controls-labels',
+helpText:'Custom interactive controls have associated labels, provided by aria-label or aria-labelledby. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+description:'Custom controls have associated labels'},
+super.meta);
+}}
+
+
+module.exports=CustomControlsLabels;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/custom-controls-roles":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class CustomControlsRoles extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'custom-controls-roles',
+helpText:'Custom interactive controls have appropriate ARIA roles. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+description:'Custom controls have ARIA roles'},
+super.meta);
+}}
+
+
+module.exports=CustomControlsRoles;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/focus-traps":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class FocusTraps extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'focus-traps',
+helpText:'A user can tab into and out of any control or region without accidentally trapping their focus. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+description:'User focus is not accidentally trapped in a region'},
+super.meta);
+}}
+
+
+module.exports=FocusTraps;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/focusable-controls":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class FocusableControls extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'focusable-controls',
+helpText:'Custom interactive controls are keyboard focusable and display a focus indicator. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+description:'Interactive controls are keyboard focusable'},
+super.meta);
+}}
+
+
+module.exports=FocusableControls;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/heading-levels":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class HeadingLevels extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'heading-levels',
+helpText:'Headings are used to create an outline for the page and heading levels are not skipped. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
+description:'Headings don\'t skip levels'},
+super.meta);
+}}
+
+
+module.exports=HeadingLevels;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/logical-tab-order":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class LogicalTabOrder extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'logical-tab-order',
+helpText:'Tabbing through the page follows the visual layout. Users cannot focus elements that are offscreen. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+description:'The page has a logical tab order'},
+super.meta);
+}}
+
+
+module.exports=LogicalTabOrder;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/managed-focus":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class ManagedFocus extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'managed-focus',
+helpText:'If new content, such as a dialog, is added to the page, the user\'s focus is directed to it. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+description:'The user\'s focus is directed to new content added to the page'},
+super.meta);
+}}
+
+
+module.exports=ManagedFocus;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/offscreen-content-hidden":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+
+class OffscreenContentHidden extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'offscreen-content-hidden',
+helpText:'Offscreen content is hidden with display: none or aria-hidden=true. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+description:'Offscreen content is hidden from assistive technology'},
+super.meta);
+}}
+
+
+module.exports=OffscreenContentHidden;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/use-landmarks":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class UseLandmarks extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'use-landmarks',
+helpText:'Landmark elements (<main>, <nav>, etc.) are used to improve the keyboard navigation of the page for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
+description:'HTML5 landmark elements are used to improve navigation'},
+super.meta);
+}}
+
+
+module.exports=UseLandmarks;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/manual/visual-order-follows-dom":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const ManualAudit=require('../../manual/manual-audit');
+
+
+
+
+
+class VisualOrderFollowsDOM extends ManualAudit{
+
+
+
+static get meta(){
+return Object.assign({
+name:'visual-order-follows-dom',
+helpText:'DOM order matches the visual order, improving navigation for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+description:'Visual order on the page follows DOM order'},
+super.meta);
+}}
+
+
+module.exports=VisualOrderFollowsDOM;
+
+},{"../../manual/manual-audit":4}],"../audits/accessibility/meta-refresh":[function(require,module,exports){
 
 
 
@@ -948,7 +1223,6 @@ class MetaRefresh extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'meta-refresh',
 description:'The document does not use `<meta http-equiv="refresh">`.',
 failureDescription:'The document uses `<meta http-equiv="refresh">`.',
@@ -984,7 +1258,6 @@ class MetaViewport extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'meta-viewport',
 description:'`[user-scalable="no"]` is not used in the `<meta name="viewport">` '+
 'element and the `[maximum-scale]` attribute is not less than 5.',
@@ -1021,7 +1294,6 @@ class ObjectAlt extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'object-alt',
 description:'`<object>` elements have `[alt]` text.',
 failureDescription:'`<object>` elements do not have `[alt]` text.',
@@ -1056,7 +1328,6 @@ class TabIndex extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'tabindex',
 description:'No element has a `[tabindex]` value greater than 0.',
 failureDescription:'Some elements have a `[tabindex]` value greater than 0.',
@@ -1092,7 +1363,6 @@ class TDHeadersAttr extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'td-headers-attr',
 description:'Cells in a `<table>` element that use the `[headers]` attribute only refer '+
 'to other cells of that same table.',
@@ -1130,7 +1400,6 @@ class THHasDataCells extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'th-has-data-cells',
 description:'`<th>` elements and elements with `[role="columnheader"/"rowheader"]` have '+
 'data cells they describe.',
@@ -1168,7 +1437,6 @@ class ValidLang extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'valid-lang',
 description:'`[lang]` attributes have a valid value.',
 failureDescription:'`[lang]` attributes do not have a valid value.',
@@ -1203,7 +1471,6 @@ class VideoCaption extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'video-caption',
 description:'`<video>` elements contain a `<track>` element with `[kind="captions"]`.',
 failureDescription:'`<video>` elements do not contain a `<track>` element '+
@@ -1239,7 +1506,6 @@ class VideoDescription extends AxeAudit{
 
 static get meta(){
 return{
-category:'Accessibility',
 name:'video-description',
 description:'`<video>` elements contain a `<track>` element with `[kind="description"]`.',
 failureDescription:'`<video>` elements do not contain a `<track>` element with '+
@@ -1254,7 +1520,117 @@ requiredArtifacts:['Accessibility']};
 
 module.exports=VideoDescription;
 
-},{"./axe-audit":1}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"./axe-audit":1}],"../audits/bootup-time":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const WebInspector=require('../lib/web-inspector');
+const Util=require('../report/v2/renderer/util');
+const{groupIdToName,taskToGroup}=require('../lib/task-groups');
+
+class BootupTime extends Audit{
+
+
+
+static get meta(){
+return{
+category:'Performance',
+name:'bootup-time',
+description:'JavaScript boot-up time',
+failureDescription:'JavaScript boot-up time is too high',
+helpText:'Consider reducing the time spent parsing, compiling and executing JS. '+
+'You may find delivering smaller JS payloads helps with this.',
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+
+static getExecutionTimingsByURL(timelineModel){
+const bottomUpByURL=timelineModel.bottomUpGroupBy('URL');
+const result=new Map();
+
+bottomUpByURL.children.forEach((perUrlNode,url)=>{
+
+if(!url||url==='about:blank'){
+return;
+}
+
+const taskGroups={};
+perUrlNode.children.forEach(perTaskPerUrlNode=>{
+
+const task=WebInspector.TimelineUIUtils.eventStyle(perTaskPerUrlNode.event);
+
+const groupName=taskToGroup[task.title]||groupIdToName.other;
+const groupTotal=taskGroups[groupName]||0;
+taskGroups[groupName]=groupTotal+(perTaskPerUrlNode.selfTime||0);
+});
+result.set(url,taskGroups);
+});
+
+return result;
+}
+
+
+
+
+
+static audit(artifacts){
+const trace=artifacts.traces[BootupTime.DEFAULT_PASS];
+return artifacts.requestDevtoolsTimelineModel(trace).then(devtoolsTimelineModel=>{
+const executionTimings=BootupTime.getExecutionTimingsByURL(devtoolsTimelineModel);
+let totalBootupTime=0;
+const extendedInfo={};
+
+const headings=[
+{key:'url',itemType:'url',text:'URL'},
+{key:'scripting',itemType:'text',text:groupIdToName.scripting},
+{key:'scriptParseCompile',itemType:'text',text:groupIdToName.scriptParseCompile}];
+
+
+
+const results=Array.from(executionTimings).map(([url,groups])=>{
+
+totalBootupTime+=Object.keys(groups).reduce((sum,name)=>sum+=groups[name],0);
+extendedInfo[url]=groups;
+
+const scriptingTotal=groups[groupIdToName.scripting]||0;
+const parseCompileTotal=groups[groupIdToName.scriptParseCompile]||0;
+return{
+url:url,
+sum:scriptingTotal+parseCompileTotal,
+
+
+scripting:Util.formatMilliseconds(scriptingTotal,1),
+scriptParseCompile:Util.formatMilliseconds(parseCompileTotal,1)};
+
+}).sort((a,b)=>b.sum-a.sum);
+
+const tableDetails=BootupTime.makeTableDetails(headings,results);
+
+return{
+score:totalBootupTime<2000,
+rawValue:totalBootupTime,
+displayValue:Util.formatMilliseconds(totalBootupTime),
+details:tableDetails,
+extendedInfo:{
+value:extendedInfo}};
+
+
+});
+}}
+
+
+module.exports=BootupTime;
+
+},{"../lib/task-groups":35,"../lib/web-inspector":41,"../report/v2/renderer/util":42,"./audit":2}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 
 
 
@@ -1267,6 +1643,7 @@ module.exports=VideoDescription;
 'use strict';
 
 const ByteEfficiencyAudit=require('./byte-efficiency-audit');
+const Sentry=require('../../lib/sentry');
 const URL=require('../../lib/url-shim');
 
 const ALLOWABLE_OFFSCREEN_X=100;
@@ -1281,7 +1658,6 @@ class OffscreenImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Images',
 name:'offscreen-images',
 description:'Offscreen images',
 informative:true,
@@ -1359,6 +1735,7 @@ return results;
 const processed=OffscreenImages.computeWaste(image,viewportDimensions);
 if(processed instanceof Error){
 debugString=processed.message;
+Sentry.captureException(processed,{tags:{audit:this.meta.name},level:'warning'});
 return results;
 }
 
@@ -1398,10 +1775,7 @@ headings};
 
 module.exports=OffscreenImages;
 
-},{"../../lib/url-shim":35,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
-
-
-
+},{"../../lib/sentry":32,"../../lib/url-shim":40,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 
 
 
@@ -1413,7 +1787,6 @@ const ByteEfficiencyAudit=require('./byte-efficiency-audit');
 
 
 
-const OPTIMAL_VALUE=1600*1024;
 const SCORING_POINT_OF_DIMINISHING_RETURNS=2500*1024;
 const SCORING_MEDIAN=4000*1024;
 
@@ -1423,9 +1796,7 @@ class TotalByteWeight extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Network',
 name:'total-byte-weight',
-optimalValue:`< ${this.bytesToKbString(OPTIMAL_VALUE)}`,
 description:'Avoids enormous network payloads',
 failureDescription:'Has enormous network payloads',
 helpText:
@@ -1489,7 +1860,6 @@ const tableDetails=ByteEfficiencyAudit.makeTableDetails(headings,results);
 return{
 score,
 rawValue:totalBytes,
-optimalValue:this.meta.optimalValue,
 displayValue:`Total size was ${ByteEfficiencyAudit.bytesToKbString(totalBytes)}`,
 extendedInfo:{
 value:{
@@ -1523,7 +1893,6 @@ class UnusedCSSRules extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'CSS',
 name:'unused-css-rules',
 description:'Unused CSS rules',
 informative:true,
@@ -1706,7 +2075,6 @@ class UnusedJavaScript extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'unused-javascript',
 description:'Unused JavaScript',
 informative:true,
@@ -1812,7 +2180,256 @@ headings:[
 
 module.exports=UnusedJavaScript;
 
-},{"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const assert=require('assert');
+const parseCacheControl=require('parse-cache-control');
+const ByteEfficiencyAudit=require('./byte-efficiency-audit');
+const formatDuration=require('../../report/v2/renderer/util.js').formatDuration;
+const WebInspector=require('../../lib/web-inspector');
+const URL=require('../../lib/url-shim');
+
+
+const IGNORE_THRESHOLD_IN_PERCENT=0.925;
+
+
+const SCORING_POINT_OF_DIMINISHING_RETURNS=4;
+const SCORING_MEDIAN=768;
+
+class CacheHeaders extends ByteEfficiencyAudit{
+
+
+
+static get meta(){
+return{
+category:'Caching',
+name:'uses-long-cache-ttl',
+description:'Uses efficient cache policy on static assets',
+failureDescription:'Uses inefficient cache policy on static assets',
+helpText:
+'A long cache lifetime can speed up repeat visits to your page. '+
+'[Learn more](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#cache-control).',
+scoringMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+
+
+
+
+static linearInterpolation(x0,y0,x1,y1,x){
+const slope=(y1-y0)/(x1-x0);
+return y0+(x-x0)*slope;
+}
+
+
+
+
+
+
+
+static getCacheHitProbability(maxAgeInSeconds){
+
+
+
+
+
+const RESOURCE_AGE_IN_HOURS_DECILES=[0,0.2,1,3,8,12,24,48,72,168,8760,Infinity];
+assert.ok(RESOURCE_AGE_IN_HOURS_DECILES.length===12,'deciles 0-10 and 1 for overflow');
+
+const maxAgeInHours=maxAgeInSeconds/3600;
+const upperDecileIndex=RESOURCE_AGE_IN_HOURS_DECILES.findIndex(
+decile=>decile>=maxAgeInHours);
+
+
+
+if(upperDecileIndex===RESOURCE_AGE_IN_HOURS_DECILES.length-1)return 1;
+if(upperDecileIndex===0)return 0;
+
+
+const upperDecileValue=RESOURCE_AGE_IN_HOURS_DECILES[upperDecileIndex];
+const lowerDecileValue=RESOURCE_AGE_IN_HOURS_DECILES[upperDecileIndex-1];
+const upperDecile=upperDecileIndex/10;
+const lowerDecile=(upperDecileIndex-1)/10;
+
+
+return CacheHeaders.linearInterpolation(
+lowerDecileValue,
+lowerDecile,
+upperDecileValue,
+upperDecile,
+maxAgeInHours);
+
+}
+
+
+
+
+
+
+
+
+
+static computeCacheLifetimeInSeconds(headers,cacheControl){
+if(cacheControl){
+
+if(cacheControl['no-cache']||cacheControl['no-store'])return 0;
+if(Number.isFinite(cacheControl['max-age']))return Math.max(cacheControl['max-age'],0);
+}else if((headers.get('pragma')||'').includes('no-cache')){
+
+return 0;
+}
+
+if(headers.has('expires')){
+const expires=new Date(headers.get('expires')).getTime();
+
+if(!expires)return 0;
+return Math.max(0,Math.ceil((expires-Date.now())/1000));
+}
+
+return null;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static isCacheableAsset(record){
+const CACHEABLE_STATUS_CODES=new Set([200,203,206]);
+
+const STATIC_RESOURCE_TYPES=new Set([
+WebInspector.resourceTypes.Font,
+WebInspector.resourceTypes.Image,
+WebInspector.resourceTypes.Media,
+WebInspector.resourceTypes.Script,
+WebInspector.resourceTypes.Stylesheet]);
+
+
+const resourceUrl=record._url;
+return(
+CACHEABLE_STATUS_CODES.has(record.statusCode)&&
+STATIC_RESOURCE_TYPES.has(record._resourceType)&&
+!resourceUrl.includes('data:'));
+
+}
+
+
+
+
+
+static audit(artifacts){
+const devtoolsLogs=artifacts.devtoolsLogs[ByteEfficiencyAudit.DEFAULT_PASS];
+return artifacts.requestNetworkRecords(devtoolsLogs).then(records=>{
+const results=[];
+let queryStringCount=0;
+let totalWastedBytes=0;
+
+for(const record of records){
+if(!CacheHeaders.isCacheableAsset(record))continue;
+
+const headers=new Map();
+for(const header of record._responseHeaders){
+headers.set(header.name.toLowerCase(),header.value);
+}
+
+const cacheControl=parseCacheControl(headers.get('cache-control'));
+let cacheLifetimeInSeconds=CacheHeaders.computeCacheLifetimeInSeconds(
+headers,
+cacheControl);
+
+
+
+if(cacheLifetimeInSeconds===0)continue;
+cacheLifetimeInSeconds=cacheLifetimeInSeconds||0;
+
+const cacheHitProbability=CacheHeaders.getCacheHitProbability(cacheLifetimeInSeconds);
+if(cacheHitProbability>IGNORE_THRESHOLD_IN_PERCENT)continue;
+
+const url=URL.elideDataURI(record._url);
+const totalBytes=record._transferSize;
+const totalKb=ByteEfficiencyAudit.bytesToKbString(totalBytes);
+const wastedBytes=(1-cacheHitProbability)*totalBytes;
+const cacheLifetimeDisplay=formatDuration(cacheLifetimeInSeconds);
+
+totalWastedBytes+=wastedBytes;
+if(url.includes('?'))queryStringCount++;
+
+results.push({
+url,
+cacheControl,
+cacheLifetimeInSeconds,
+cacheLifetimeDisplay,
+cacheHitProbability,
+totalKb,
+totalBytes,
+wastedBytes});
+
+}
+
+results.sort(
+(a,b)=>a.cacheLifetimeInSeconds-b.cacheLifetimeInSeconds||b.totalBytes-a.totalBytes);
+
+
+
+
+
+
+const score=ByteEfficiencyAudit.computeLogNormalScore(
+totalWastedBytes/1024,
+SCORING_POINT_OF_DIMINISHING_RETURNS,
+SCORING_MEDIAN);
+
+
+const headings=[
+{key:'url',itemType:'url',text:'URL'},
+{key:'cacheLifetimeDisplay',itemType:'text',text:'Cache TTL'},
+{key:'totalKb',itemType:'text',text:'Size (KB)'}];
+
+
+const tableDetails=ByteEfficiencyAudit.makeTableDetails(headings,results);
+
+return{
+score,
+rawValue:totalWastedBytes,
+displayValue:`${results.length} asset${results.length!==1?'s':''} found`,
+extendedInfo:{
+value:{
+results,
+queryStringCount}},
+
+
+details:tableDetails};
+
+});
+}}
+
+
+module.exports=CacheHeaders;
+
+},{"../../lib/url-shim":40,"../../lib/web-inspector":41,"../../report/v2/renderer/util.js":42,"./byte-efficiency-audit":3,"assert":46,"parse-cache-control":141}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 
 
 
@@ -1835,7 +2452,6 @@ class UsesOptimizedImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Images',
 name:'uses-optimized-images',
 description:'Optimize images',
 informative:true,
@@ -1910,7 +2526,7 @@ headings};
 
 module.exports=UsesOptimizedImages;
 
-},{"../../lib/url-shim":35,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-request-compression":[function(require,module,exports){
+},{"../../lib/url-shim":40,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-request-compression":[function(require,module,exports){
 
 
 
@@ -1934,7 +2550,6 @@ class ResponsesAreCompressed extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'uses-request-compression',
 informative:true,
 description:'Enable text compression',
@@ -1961,9 +2576,9 @@ const gzipSavings=originalSize-gzipSize;
 
 
 
-if(
-1-gzipSize/originalSize<IGNORE_THRESHOLD_IN_PERCENT||
-gzipSavings<IGNORE_THRESHOLD_IN_BYTES)
+if(1-gzipSize/originalSize<IGNORE_THRESHOLD_IN_PERCENT||
+gzipSavings<IGNORE_THRESHOLD_IN_BYTES||
+record.transferSize<gzipSize)
 {
 return;
 }
@@ -1998,7 +2613,7 @@ headings};
 
 module.exports=ResponsesAreCompressed;
 
-},{"../../lib/url-shim":35,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
+},{"../../lib/url-shim":40,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
 
 
 
@@ -2015,6 +2630,7 @@ module.exports=ResponsesAreCompressed;
 'use strict';
 
 const ByteEfficiencyAudit=require('./byte-efficiency-audit');
+const Sentry=require('../../lib/sentry');
 const URL=require('../../lib/url-shim');
 
 const IGNORE_THRESHOLD_IN_BYTES=2048;
@@ -2026,7 +2642,6 @@ class UsesResponsiveImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Images',
 name:'uses-responsive-images',
 description:'Properly size images',
 informative:true,
@@ -2088,6 +2703,7 @@ return;
 const processed=UsesResponsiveImages.computeWaste(image,DPR);
 if(processed instanceof Error){
 debugString=processed.message;
+Sentry.captureException(processed,{tags:{audit:this.meta.name},level:'warning'});
 return;
 }
 
@@ -2118,7 +2734,7 @@ headings};
 
 module.exports=UsesResponsiveImages;
 
-},{"../../lib/url-shim":35,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
+},{"../../lib/sentry":32,"../../lib/url-shim":40,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
 
 
 
@@ -2141,12 +2757,11 @@ class UsesWebPImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-category:'Images',
 name:'uses-webp-images',
-description:'Serve images as WebP',
+description:'Serve images in next-gen formats',
 informative:true,
-helpText:'WebP provides better lossy and lossless compression than PNG or JPEG, '+
-'which means faster downloads and less data consumption. '+
+helpText:'Image formats like JPEG 2000, JPEG XR, and WebP often provide better '+
+'compression than PNG or JPEG, which means faster downloads and less data consumption. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/webp).',
 requiredArtifacts:['OptimizedImages','devtoolsLogs']};
 
@@ -2205,7 +2820,7 @@ headings};
 
 module.exports=UsesWebPImages;
 
-},{"../../lib/url-shim":35,"./byte-efficiency-audit":3,"./uses-optimized-images":"../audits/byte-efficiency/uses-optimized-images"}],"../audits/cache-start-url":[function(require,module,exports){
+},{"../../lib/url-shim":40,"./byte-efficiency-audit":3,"./uses-optimized-images":"../audits/byte-efficiency/uses-optimized-images"}],"../audits/cache-start-url":[function(require,module,exports){
 
 
 
@@ -2221,7 +2836,6 @@ class CacheStartUrl extends Audit{
 
 static get meta(){
 return{
-category:'Manifest',
 name:'cache-start-url',
 description:'Cache contains start_url from manifest (alpha)',
 failureDescription:'Cache does not contain start_url from manifest (alpha)',
@@ -2307,7 +2921,6 @@ class ConsistentlyInteractiveMetric extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'consistently-interactive',
 description:'Consistently Interactive (beta)',
 helpText:'Consistently Interactive marks the time at which the page is '+
@@ -2514,7 +3127,6 @@ SCORING_MEDIAN),
 
 rawValue:timeInMs,
 displayValue:Util.formatMilliseconds(timeInMs),
-optimalValue:this.meta.optimalValue,
 extendedInfo:{
 value:extendedInfo}};
 
@@ -2533,7 +3145,7 @@ module.exports=ConsistentlyInteractiveMetric;
 
 let TimePeriod;
 
-},{"../lib/traces/tracing-processor":34,"../report/v2/renderer/util.js":37,"./audit":2}],"../audits/content-width":[function(require,module,exports){
+},{"../lib/traces/tracing-processor":39,"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/content-width":[function(require,module,exports){
 
 
 
@@ -2549,7 +3161,6 @@ class ContentWidth extends Audit{
 
 static get meta(){
 return{
-category:'Mobile Friendly',
 name:'content-width',
 description:'Content is sized correctly for the viewport',
 failureDescription:'Content is not sized correctly for the viewport',
@@ -2604,15 +3215,13 @@ class CriticalRequestChains extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'critical-request-chains',
 description:'Critical Request Chains',
 informative:true,
-optimalValue:0,
 helpText:'The Critical Request Chains below show you what resources are '+
-'required for first render of this page. Improve page load by reducing '+
+'issued with a high priority. Consider reducing '+
 'the length of chains, reducing the download size of resources, or '+
-'deferring the download of unnecessary resources. '+
+'deferring the download of unnecessary resources to improve page load. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/critical-request-chains).',
 requiredArtifacts:['devtoolsLogs']};
 
@@ -2704,9 +3313,8 @@ walk(initialNavChildren,0);
 const longestChain=CriticalRequestChains._getLongestChain(chains);
 
 return{
-rawValue:chainCount<=this.meta.optimalValue,
+rawValue:chainCount===0,
 displayValue:Util.formatNumber(chainCount),
-optimalValue:this.meta.optimalValue,
 extendedInfo:{
 value:{
 chains,
@@ -2726,7 +3334,7 @@ longestChain}};
 
 module.exports=CriticalRequestChains;
 
-},{"../report/v2/renderer/util":37,"./audit":2}],"../audits/deprecations":[function(require,module,exports){
+},{"../report/v2/renderer/util":42,"./audit":2}],"../audits/deprecations":[function(require,module,exports){
 
 
 
@@ -2749,7 +3357,6 @@ class Deprecations extends Audit{
 
 static get meta(){
 return{
-category:'Deprecations',
 name:'deprecations',
 description:'Avoids deprecated APIs',
 failureDescription:'Uses deprecated API\'s',
@@ -2803,7 +3410,7 @@ details};
 
 module.exports=Deprecations;
 
-},{"../report/v2/renderer/util":37,"./audit":2}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
+},{"../report/v2/renderer/util":42,"./audit":2}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
 
 
 
@@ -2822,10 +3429,8 @@ class AppCacheManifestAttr extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Offline',
 name:'appcache-manifest',
 description:'Avoids Application Cache',
 failureDescription:'Uses Application Cache',
@@ -2889,11 +3494,9 @@ return MAX_DOM_NODES;
 
 static get meta(){
 return{
-category:'Performance',
 name:'dom-size',
 description:'Avoids an excessive DOM size',
 failureDescription:'Uses an excessive DOM size',
-optimalValue:`< ${DOMSize.MAX_DOM_NODES.toLocaleString()} nodes`,
 helpText:'Browser engineers recommend pages contain fewer than '+
 `~${Util.formatNumber(DOMSize.MAX_DOM_NODES)} DOM nodes. The sweet spot is a tree `+
 `depth < ${MAX_DOM_TREE_DEPTH} elements and fewer than ${MAX_DOM_TREE_WIDTH} `+
@@ -2953,7 +3556,6 @@ target:`< ${Util.formatNumber(MAX_DOM_TREE_WIDTH)} nodes`}];
 return{
 score,
 rawValue:stats.totalDOMNodes,
-optimalValue:this.meta.optimalValue,
 displayValue:`${Util.formatNumber(stats.totalDOMNodes)} nodes`,
 extendedInfo:{
 value:cards},
@@ -2967,10 +3569,9 @@ items:cards}};
 }}
 
 
-
 module.exports=DOMSize;
 
-},{"../../report/v2/renderer/util.js":37,"../audit":2}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
+},{"../../report/v2/renderer/util.js":42,"../audit":2}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
 
 
 
@@ -2987,7 +3588,6 @@ class ExternalAnchorsUseRelNoopenerAudit extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'external-anchors-use-rel-noopener',
 description:'Opens external anchors using `rel="noopener"`',
 failureDescription:'Does not open external anchors using `rel="noopener"`',
@@ -3019,6 +3619,9 @@ debugString='Lighthouse was unable to determine the destination '+
 'consider removing the _blank target.';
 return true;
 }
+}).
+filter(anchor=>{
+return!anchor.href||anchor.href.toLowerCase().startsWith('http');
 }).
 map(anchor=>{
 return{
@@ -3053,7 +3656,7 @@ debugString};
 
 module.exports=ExternalAnchorsUseRelNoopenerAudit;
 
-},{"../../lib/url-shim":35,"../audit":2}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
+},{"../../lib/url-shim":40,"../audit":2}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
 
 
 
@@ -3075,7 +3678,6 @@ class GeolocationOnStart extends ViolationAudit{
 
 static get meta(){
 return{
-category:'UX',
 name:'geolocation-on-start',
 description:'Avoids requesting the geolocation permission on page load',
 failureDescription:'Requests the geolocation permission on page load',
@@ -3091,6 +3693,7 @@ requiredArtifacts:['ChromeConsoleMessages']};
 
 
 static audit(artifacts){
+
 const results=ViolationAudit.getViolationResults(artifacts,/geolocation/);
 
 const headings=[
@@ -3107,7 +3710,6 @@ value:results},
 details};
 
 }}
-
 
 
 module.exports=GeolocationOnStart;
@@ -3139,16 +3741,14 @@ class LinkBlockingFirstPaintAudit extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Performance',
 name:'link-blocking-first-paint',
 description:'Reduce render-blocking stylesheets',
 informative:true,
-helpText:'Link elements are blocking the first paint of your page. Consider '+
-'inlining critical links and deferring non-critical ones. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources).',
+helpText:'External stylesheets are blocking the first paint of your page. Consider '+
+'delivering critical CSS via `<style>` tags and deferring non-critical '+
+'styles. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources).',
 requiredArtifacts:['TagsBlockingFirstPaint','traces']};
 
 }
@@ -3232,7 +3832,7 @@ return this.computeAuditResultForTags(artifacts,'LINK',fcpTsInMs,LOAD_THRESHOLD_
 
 module.exports=LinkBlockingFirstPaintAudit;
 
-},{"../../report/v2/renderer/util.js":37,"../audit":2,"../byte-efficiency/byte-efficiency-audit":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
+},{"../../report/v2/renderer/util.js":42,"../audit":2,"../byte-efficiency/byte-efficiency-audit":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
 
 
 
@@ -3251,10 +3851,8 @@ class NoDocWriteAudit extends ViolationAudit{
 
 
 
-
 static get meta(){
 return{
-category:'Performance',
 name:'no-document-write',
 description:'Avoids `document.write()`',
 failureDescription:'Uses `document.write()`',
@@ -3309,7 +3907,6 @@ const Audit=require('../audit');
 const EventHelpers=require('../../lib/event-helpers');
 
 class NoMutationEventsAudit extends Audit{
-
 static get MUTATION_EVENTS(){
 return[
 'DOMAttrModified',
@@ -3329,7 +3926,6 @@ return[
 
 static get meta(){
 return{
-category:'JavaScript',
 name:'no-mutation-events',
 description:'Avoids Mutation Events in its own scripts',
 failureDescription:'Uses Mutation Events in its own scripts',
@@ -3385,7 +3981,7 @@ debugString};
 
 module.exports=NoMutationEventsAudit;
 
-},{"../../lib/event-helpers":26,"../../lib/url-shim":35,"../audit":2}],"../audits/dobetterweb/no-old-flexbox":[function(require,module,exports){
+},{"../../lib/event-helpers":28,"../../lib/url-shim":40,"../audit":2}],"../audits/dobetterweb/no-old-flexbox":[function(require,module,exports){
 
 
 
@@ -3407,10 +4003,8 @@ class NoOldFlexboxAudit extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'CSS',
 name:'no-old-flexbox',
 description:'Avoids old CSS flexbox',
 failureDescription:'Uses old CSS flexbox',
@@ -3473,7 +4067,7 @@ pre:'Snippet'}}}};
 
 module.exports=NoOldFlexboxAudit;
 
-},{"../../lib/styles-helpers":31,"../../lib/url-shim":35,"../audit":2}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
+},{"../../lib/styles-helpers":34,"../../lib/url-shim":40,"../audit":2}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
 
 
 
@@ -3489,17 +4083,18 @@ module.exports=NoOldFlexboxAudit;
 'use strict';
 
 const Audit=require('../audit');
+const Sentry=require('../../lib/sentry');
 const semver=require('semver');
 const snykDatabase=require('../../../third-party/snyk/snapshot.json');
+
+const SEMVER_REGEX=/^(\d+\.\d+\.\d+)[^-0-9]+/;
 
 class NoVulnerableLibrariesAudit extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Security',
 name:'no-vulnerable-libraries',
 description:'Avoids front-end JavaScript libraries'+
 ' with known security vulnerabilities',
@@ -3534,14 +4129,39 @@ low:1};
 
 
 
+static normalizeVersion(version){
+if(!version)return version;
+if(semver.valid(version))return version;
+
+
+if(/^\d+\.\d+$/.test(version))return`${version}.0`;
+
+if(SEMVER_REGEX.test(version))return version.match(SEMVER_REGEX)[1];
+
+return version;
+}
+
+
+
+
+
+
 static getVulns(lib,snykDB){
 const vulns=[];
 if(!snykDB.npm[lib.npmPkgName]){
 return vulns;
 }
 
-lib.pkgLink='https://snyk.io/vuln/npm:'+lib.npmPkgName+
-'#lh@'+lib.version;
+try{
+semver.satisfies(lib.version,'*');
+}catch(err){
+err.pkgName=lib.npmPkgName;
+
+Sentry.captureException(err,{level:'warning'});
+return vulns;
+}
+
+lib.pkgLink=`https://snyk.io/vuln/npm:${lib.npmPkgName}#lh@${lib.version}`;
 const snykInfo=snykDB.npm[lib.npmPkgName];
 snykInfo.forEach(vuln=>{
 if(semver.satisfies(lib.version,vuln.semver.vulnerable[0])){
@@ -3581,6 +4201,7 @@ rawValue:true};
 
 let totalVulns=0;
 const finalVulns=libraries.map(lib=>{
+lib.version=this.normalizeVersion(lib.version);
 lib.vulns=this.getVulns(lib,this.snykDB);
 if(lib.vulns.length>0){
 lib.vulnCount=lib.vulns.length;
@@ -3623,10 +4244,9 @@ details};
 }}
 
 
-
 module.exports=NoVulnerableLibrariesAudit;
 
-},{"../../../third-party/snyk/snapshot.json":122,"../audit":2,"semver":117}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":147,"../../lib/sentry":32,"../audit":2,"semver":142}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
 
 
 
@@ -3646,10 +4266,8 @@ class NoWebSQLAudit extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Offline',
 name:'no-websql',
 description:'Avoids WebSQL DB',
 failureDescription:'Uses WebSQL DB',
@@ -3699,7 +4317,6 @@ class NotificationOnStart extends ViolationAudit{
 
 static get meta(){
 return{
-category:'UX',
 name:'notification-on-start',
 description:'Avoids requesting the notification permission on page load',
 failureDescription:'Requests the notification permission on page load',
@@ -3733,7 +4350,6 @@ details};
 }}
 
 
-
 module.exports=NotificationOnStart;
 
 },{"../violation-audit":6}],"../audits/dobetterweb/password-inputs-can-be-pasted-into":[function(require,module,exports){
@@ -3752,7 +4368,6 @@ class PasswordInputsCanBePastedIntoAudit extends Audit{
 
 static get meta(){
 return{
-category:'UX',
 name:'password-inputs-can-be-pasted-into',
 description:'Allows users to paste into password fields',
 failureDescription:'Prevents users to paste into password fields',
@@ -3811,10 +4426,8 @@ class ScriptBlockingFirstPaint extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Performance',
 name:'script-blocking-first-paint',
 description:'Reduce render-blocking scripts',
 informative:true,
@@ -3862,10 +4475,8 @@ class UsesHTTP2Audit extends Audit{
 
 
 
-
 static get meta(){
 return{
-category:'Performance',
 name:'uses-http2',
 description:'Uses HTTP/2 for its own resources',
 failureDescription:'Does not use HTTP/2 for all of its resources',
@@ -3887,7 +4498,7 @@ const finalHost=new URL(artifacts.URL.finalUrl).host;
 
 const resources=networkRecords.filter(record=>{
 
-const isOldHttp=/HTTP\/[01][\.\d]?/i.test(record.protocol);
+const isOldHttp=/HTTP\/[01][.\d]?/i.test(record.protocol);
 if(!isOldHttp)return false;
 const requestHost=new URL(record._url).host;
 return requestHost===finalHost;
@@ -3928,7 +4539,7 @@ details};
 
 module.exports=UsesHTTP2Audit;
 
-},{"../../lib/url-shim":35,"../../report/v2/renderer/util.js":37,"../audit":2}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
+},{"../../lib/url-shim":40,"../../report/v2/renderer/util.js":42,"../audit":2}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
 
 
 
@@ -3950,7 +4561,6 @@ class PassiveEventsAudit extends ViolationAudit{
 
 static get meta(){
 return{
-category:'JavaScript',
 name:'uses-passive-event-listeners',
 description:'Uses passive listeners to improve scrolling performance',
 failureDescription:'Does not use passive listeners to improve scrolling performance',
@@ -4007,13 +4617,12 @@ class ErrorLogs extends Audit{
 
 static get meta(){
 return{
-category:'ErrorLogs',
 name:'errors-in-console',
 description:'No browser errors logged to the console',
 helpText:'Errors logged to the console indicate unresolved problems. '+
 'They can come from network request failures and other browser concerns.',
 failureDescription:'Browser errors were logged to the console',
-requiredArtifacts:['ChromeConsoleMessages']};
+requiredArtifacts:['ChromeConsoleMessages','RuntimeExceptions']};
 
 }
 
@@ -4022,14 +4631,29 @@ requiredArtifacts:['ChromeConsoleMessages']};
 
 
 static audit(artifacts){
-const entries=artifacts.ChromeConsoleMessages;
-const tableRows=entries.filter(log=>log.entry.level==='error').map(item=>{
+const consoleEntries=artifacts.ChromeConsoleMessages;
+const runtimeExceptions=artifacts.RuntimeExceptions;
+const consoleRows=
+consoleEntries.filter(log=>log.entry&&log.entry.level==='error').
+map(item=>{
 return{
 source:item.entry.source,
 description:item.entry.text,
 url:item.entry.url};
 
 });
+
+const runtimeExRows=
+runtimeExceptions.filter(entry=>entry.exceptionDetails!==undefined).
+map(entry=>{
+return{
+source:'Runtime.exception',
+description:entry.exceptionDetails.exception.description,
+url:entry.exceptionDetails.url};
+
+});
+
+const tableRows=consoleRows.concat(runtimeExRows);
 
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
@@ -4072,15 +4696,13 @@ class EstimatedInputLatency extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'estimated-input-latency',
 description:'Estimated Input Latency',
-optimalValue:`< ${Util.formatMilliseconds(SCORING_POINT_OF_DIMINISHING_RETURNS,1)}`,
 helpText:'The score above is an estimate of how long your app takes to respond to user '+
 'input, in milliseconds. There is a 90% probability that a user encounters this amount '+
 'of latency, or less. 10% of the time a user can expect additional latency. If your '+
-'score is higher than Lighthouse\'s target score, users may perceive your app as '+
-'laggy. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency).',
+'latency is higher than 50 ms, users may perceive your app as laggy. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency).',
 scoringMode:Audit.SCORING_MODES.NUMERIC,
 requiredArtifacts:['traces']};
 
@@ -4110,7 +4732,6 @@ SCORING_MEDIAN);
 
 return{
 score,
-optimalValue:EstimatedInputLatency.meta.optimalValue,
 rawValue,
 displayValue:Util.formatMilliseconds(rawValue,1),
 extendedInfo:{
@@ -4135,7 +4756,7 @@ then(EstimatedInputLatency.calculate);
 
 module.exports=EstimatedInputLatency;
 
-},{"../lib/traces/tracing-processor":34,"../report/v2/renderer/util.js":37,"./audit":2}],"../audits/first-interactive":[function(require,module,exports){
+},{"../lib/traces/tracing-processor":39,"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/first-interactive":[function(require,module,exports){
 
 
 
@@ -4157,7 +4778,6 @@ class FirstInteractiveMetric extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'first-interactive',
 description:'First Interactive (beta)',
 helpText:'First Interactive marks the time at which the page is '+
@@ -4197,7 +4817,7 @@ value:firstInteractive}};
 
 module.exports=FirstInteractiveMetric;
 
-},{"../report/v2/renderer/util.js":37,"./audit":2}],"../audits/first-meaningful-paint":[function(require,module,exports){
+},{"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/first-meaningful-paint":[function(require,module,exports){
 
 
 
@@ -4220,10 +4840,8 @@ class FirstMeaningfulPaint extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'first-meaningful-paint',
 description:'First meaningful paint',
-optimalValue:`< ${Util.formatMilliseconds(SCORING_POINT_OF_DIMINISHING_RETURNS,1)}`,
 helpText:'First meaningful paint measures when the primary content of a page is visible. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint).',
 scoringMode:Audit.SCORING_MODES.NUMERIC,
@@ -4258,7 +4876,6 @@ score:result.score,
 rawValue:parseFloat(result.duration),
 displayValue:Util.formatMilliseconds(result.duration),
 debugString:result.debugString,
-optimalValue:this.meta.optimalValue,
 extendedInfo:{
 value:result.extendedInfo}};
 
@@ -4318,7 +4935,7 @@ extendedInfo};
 
 module.exports=FirstMeaningfulPaint;
 
-},{"../report/v2/renderer/util.js":37,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
 
 
 
@@ -4343,11 +4960,10 @@ class ImageAspectRatio extends Audit{
 
 static get meta(){
 return{
-category:'Images',
 name:'image-aspect-ratio',
-description:'Uses Images with appropriate aspect ratio',
-failureDescription:'Does not uses Images with appropriate aspect ratio',
-helpText:'Image displayed sizes should match their natural aspect ratio.',
+description:'Displays images with correct aspect ratio',
+failureDescription:'Displays images with incorrect aspect ratio',
+helpText:'Image display dimensions should match natural aspect ratio.',
 requiredArtifacts:['ImageUsage']};
 
 }
@@ -4394,7 +5010,9 @@ const results=[];
 images.filter(image=>{
 
 
+
 return image.networkRecord&&
+image.networkRecord.mimeType!=='image/svg+xml'&&
 image.width&&
 image.height&&
 !image.usesObjectFit;
@@ -4416,7 +5034,7 @@ const headings=[
 
 
 return{
-rawValue:results.length,
+rawValue:results.length===0,
 debugString,
 details:Audit.makeTableDetails(headings,results)};
 
@@ -4425,7 +5043,7 @@ details:Audit.makeTableDetails(headings,results)};
 
 module.exports=ImageAspectRatio;
 
-},{"../lib/url-shim":35,"./audit":2}],"../audits/is-on-https":[function(require,module,exports){
+},{"../lib/url-shim":40,"./audit":2}],"../audits/is-on-https":[function(require,module,exports){
 
 
 
@@ -4446,7 +5064,6 @@ class HTTPS extends Audit{
 
 static get meta(){
 return{
-category:'Security',
 name:'is-on-https',
 description:'Uses HTTPS',
 failureDescription:'Does not use HTTPS',
@@ -4505,7 +5122,7 @@ items:insecureRecords.map(record=>({type:'url',text:record.url}))}};
 
 module.exports=HTTPS;
 
-},{"../lib/url-shim":35,"../report/v2/renderer/util":37,"./audit":2}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
+},{"../lib/url-shim":40,"../report/v2/renderer/util":42,"./audit":2}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
 
 
 
@@ -4522,6 +5139,7 @@ module.exports=HTTPS;
 const Audit=require('./audit');
 const URL=require('../lib/url-shim');
 const Emulation=require('../lib/emulation');
+const Sentry=require('../lib/sentry');
 const Util=require('../report/v2/renderer/util.js');
 
 
@@ -4536,7 +5154,6 @@ class LoadFastEnough4Pwa extends Audit{
 
 static get meta(){
 return{
-category:'PWA',
 name:'load-fast-enough-for-pwa',
 description:'Page load is fast enough on 3G',
 failureDescription:'Page load is not fast enough on 3G',
@@ -4619,10 +5236,26 @@ extendedInfo};
 }
 
 if(!areLatenciesAll3G){
+const sentryContext=Sentry.getContext();
+const hadThrottlingEnabled=sentryContext&&sentryContext.extra&&
+sentryContext.extra.networkThrottling;
+
+if(hadThrottlingEnabled){
+
+
+const violatingLatency=firstRequestLatencies.
+find(item=>Number(item.latency)<latency3gMin);
+Sentry.captureMessage('Network request latencies were not realistic',{
+tags:{audit:this.meta.name},
+extra:{violatingLatency},
+level:'warning'});
+
+}
+
 return{
 rawValue:true,
 
-debugString:`First Interactive was found at ${Util.formatMilliseconds(timeToFirstInteractive)}, however, the network request latencies were not sufficiently realistic, so the performance measurements cannot be trusted.`,
+debugString:`First Interactive was found at ${Util.formatMilliseconds(timeToFirstInteractive)}; however, the network request latencies were not sufficiently realistic, so the performance measurements cannot be trusted.`,
 extendedInfo,
 details};
 
@@ -4639,7 +5272,109 @@ extendedInfo};
 
 module.exports=LoadFastEnough4Pwa;
 
-},{"../lib/emulation":25,"../lib/url-shim":35,"../report/v2/renderer/util.js":37,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
+},{"../lib/emulation":27,"../lib/sentry":32,"../lib/url-shim":40,"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const Util=require('../report/v2/renderer/util');
+
+const{taskToGroup}=require('../lib/task-groups');
+
+class PageExecutionTimings extends Audit{
+
+
+
+static get meta(){
+return{
+category:'Performance',
+name:'mainthread-work-breakdown',
+description:'Main thread work breakdown',
+informative:true,
+helpText:'Consider reducing the time spent parsing, compiling and executing JS.'+
+'You may find delivering smaller JS payloads helps with this.',
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+
+static getExecutionTimingsByCategory(timelineModel){
+const bottomUpByName=timelineModel.bottomUpGroupBy('EventName');
+
+const result=new Map();
+bottomUpByName.children.forEach((event,eventName)=>
+result.set(eventName,event.selfTime));
+
+return result;
+}
+
+
+
+
+
+static audit(artifacts){
+const trace=artifacts.traces[PageExecutionTimings.DEFAULT_PASS];
+
+return artifacts.requestDevtoolsTimelineModel(trace).
+then(devtoolsTimelineModel=>{
+const executionTimings=PageExecutionTimings.getExecutionTimingsByCategory(
+devtoolsTimelineModel);
+
+let totalExecutionTime=0;
+
+const extendedInfo={};
+const categoryTotals={};
+const results=Array.from(executionTimings).map(([eventName,duration])=>{
+totalExecutionTime+=duration;
+extendedInfo[eventName]=duration;
+const groupName=taskToGroup[eventName];
+
+const categoryTotal=categoryTotals[groupName]||0;
+categoryTotals[groupName]=categoryTotal+duration;
+
+return{
+category:eventName,
+group:groupName,
+duration:Util.formatMilliseconds(duration,1)};
+
+});
+
+const headings=[
+{key:'group',itemType:'text',text:'Category'},
+{key:'category',itemType:'text',text:'Work'},
+{key:'duration',itemType:'text',text:'Time spent'}];
+
+results.stableSort((a,b)=>categoryTotals[b.group]-categoryTotals[a.group]);
+const tableDetails=PageExecutionTimings.makeTableDetails(headings,results);
+
+return{
+score:totalExecutionTime<3000,
+rawValue:totalExecutionTime,
+displayValue:Util.formatMilliseconds(totalExecutionTime),
+details:tableDetails,
+extendedInfo:{
+value:extendedInfo}};
+
+
+});
+}}
+
+
+module.exports=PageExecutionTimings;
+
+},{"../lib/task-groups":35,"../report/v2/renderer/util":42,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
 
 
 
@@ -4655,7 +5390,6 @@ class ManifestShortNameLength extends Audit{
 
 static get meta(){
 return{
-category:'Manifest',
 name:'manifest-short-name-length',
 description:'Manifest\'s `short_name` won\'t be truncated when displayed on homescreen',
 failureDescription:'Manifest\'s `short_name` will be truncated when displayed '+
@@ -4716,10 +5450,8 @@ class PWACrossBrowser extends ManualAudit{
 
 
 
-
 static get meta(){
 return Object.assign({
-category:'PWA',
 name:'pwa-cross-browser',
 helpText:'To reach the most number of users, sites should work across '+
 'every major browser. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser).',
@@ -4748,10 +5480,8 @@ class PWAEachPageHasURL extends ManualAudit{
 
 
 
-
 static get meta(){
 return Object.assign({
-category:'PWA',
 name:'pwa-each-page-has-url',
 helpText:'Ensure individual pages are deep linkable via the URLs and that URLs are '+
 'unique for the purpose of shareability on social media. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url).',
@@ -4780,10 +5510,8 @@ class PWAPageTransitions extends ManualAudit{
 
 
 
-
 static get meta(){
 return Object.assign({
-category:'PWA',
 name:'pwa-page-transitions',
 helpText:'Transitions should feel snappy as you tap around, even on a slow network, a key '+
 'to perceived performance. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network).',
@@ -4804,8 +5532,9 @@ module.exports=PWAPageTransitions;
 
 const Audit=require('./audit');
 const Util=require('../report/v2/renderer/util.js');
-const PageDependencyGraph=require('../gather/computed/page-dependency-graph.js');
-const Node=require('../gather/computed/dependency-graph/node.js');
+const LoadSimulator=require('../lib/dependency-graph/simulator/simulator.js');
+const Node=require('../lib/dependency-graph/node.js');
+const WebInspector=require('../lib/web-inspector');
 
 
 
@@ -4815,16 +5544,34 @@ const SCORING_MEDIAN=10000;
 
 const CRITICAL_LONG_TASK_THRESHOLD=20;
 
+const COEFFICIENTS={
+FCP:{
+intercept:1440,
+optimistic:-1.75,
+pessimistic:2.73},
+
+FMP:{
+intercept:1532,
+optimistic:-.30,
+pessimistic:1.33},
+
+TTCI:{
+intercept:1582,
+optimistic:.97,
+pessimistic:.49}};
+
+
+
 class PredictivePerf extends Audit{
 
 
 
 static get meta(){
 return{
-category:'Performance',
 name:'predictive-perf',
 description:'Predicted Performance (beta)',
-helpText:'Predicted performance evaluates how your site will perform under '+
+helpText:
+'Predicted performance evaluates how your site will perform under '+
 'a 3G connection on a mobile device.',
 scoringMode:Audit.SCORING_MODES.NUMERIC,
 requiredArtifacts:['traces','devtoolsLogs']};
@@ -4836,10 +5583,78 @@ requiredArtifacts:['traces','devtoolsLogs']};
 
 
 
+static getScriptUrls(dependencyGraph,condition){
+const scriptUrls=new Set();
+
+dependencyGraph.traverse(node=>{
+if(node.type===Node.TYPES.CPU)return;
+if(node.record._resourceType!==WebInspector.resourceTypes.Script)return;
+if(condition&&!condition(node))return;
+scriptUrls.add(node.record.url);
+});
+
+return scriptUrls;
+}
+
+
+
+
+
+
+static getOptimisticFCPGraph(dependencyGraph,traceOfTab){
+const fcp=traceOfTab.timestamps.firstContentfulPaint;
+const blockingScriptUrls=PredictivePerf.getScriptUrls(dependencyGraph,node=>{
+return(
+node.endTime<=fcp&&node.hasRenderBlockingPriority()&&node.initiatorType!=='script');
+
+});
+
+return dependencyGraph.cloneWithRelationships(node=>{
+if(node.endTime>fcp)return false;
+
+if(node.type===Node.TYPES.CPU)return node.isEvaluateScriptFor(blockingScriptUrls);
+
+return node.hasRenderBlockingPriority()&&node.initiatorType!=='script';
+});
+}
+
+
+
+
+
+
+static getPessimisticFCPGraph(dependencyGraph,traceOfTab){
+const fcp=traceOfTab.timestamps.firstContentfulPaint;
+const blockingScriptUrls=PredictivePerf.getScriptUrls(dependencyGraph,node=>{
+return node.endTime<=fcp&&node.hasRenderBlockingPriority();
+});
+
+return dependencyGraph.cloneWithRelationships(node=>{
+if(node.endTime>fcp)return false;
+
+if(node.type===Node.TYPES.CPU)return node.isEvaluateScriptFor(blockingScriptUrls);
+
+return node.hasRenderBlockingPriority();
+});
+}
+
+
+
+
+
+
 static getOptimisticFMPGraph(dependencyGraph,traceOfTab){
 const fmp=traceOfTab.timestamps.firstMeaningfulPaint;
+const requiredScriptUrls=PredictivePerf.getScriptUrls(dependencyGraph,node=>{
+return(
+node.endTime<=fmp&&node.hasRenderBlockingPriority()&&node.initiatorType!=='script');
+
+});
+
 return dependencyGraph.cloneWithRelationships(node=>{
-if(node.endTime>fmp||node.type===Node.TYPES.CPU)return false;
+if(node.endTime>fmp)return false;
+
+if(node.type===Node.TYPES.CPU)return node.isEvaluateScriptFor(requiredScriptUrls);
 
 return node.hasRenderBlockingPriority()&&node.initiatorType!=='script';
 });
@@ -4852,10 +5667,18 @@ return node.hasRenderBlockingPriority()&&node.initiatorType!=='script';
 
 static getPessimisticFMPGraph(dependencyGraph,traceOfTab){
 const fmp=traceOfTab.timestamps.firstMeaningfulPaint;
+const requiredScriptUrls=PredictivePerf.getScriptUrls(dependencyGraph,node=>{
+return node.endTime<=fmp&&node.hasRenderBlockingPriority();
+});
+
 return dependencyGraph.cloneWithRelationships(node=>{
 if(node.endTime>fmp)return false;
 
-if(node.type===Node.TYPES.CPU)return node.didPerformLayout();
+
+if(node.type===Node.TYPES.CPU){
+return node.didPerformLayout()||node.isEvaluateScriptFor(requiredScriptUrls);
+}
+
 
 return node.hasRenderBlockingPriority();
 });
@@ -4873,7 +5696,9 @@ return dependencyGraph.cloneWithRelationships(node=>{
 
 if(node.type===Node.TYPES.CPU)return node.event.dur>minimumCpuTaskDuration;
 
-return node.resourceType!=='image'&&(node.resourceType==='script'||
+const isImage=node.record._resourceType===WebInspector.resourceTypes.Image;
+const isScript=node.record._resourceType===WebInspector.resourceTypes.Script;
+return!isImage&&(isScript||
 node.record.priority()==='High'||
 node.record.priority()==='VeryHigh');
 });
@@ -4911,19 +5736,22 @@ artifacts.requestPageDependencyGraph(trace,devtoolsLogs),
 artifacts.requestTraceOfTab(trace)]).
 then(([graph,traceOfTab])=>{
 const graphs={
+optimisticFCP:PredictivePerf.getOptimisticFCPGraph(graph,traceOfTab),
+pessimisticFCP:PredictivePerf.getPessimisticFCPGraph(graph,traceOfTab),
 optimisticFMP:PredictivePerf.getOptimisticFMPGraph(graph,traceOfTab),
 pessimisticFMP:PredictivePerf.getPessimisticFMPGraph(graph,traceOfTab),
 optimisticTTCI:PredictivePerf.getOptimisticTTCIGraph(graph,traceOfTab),
 pessimisticTTCI:PredictivePerf.getPessimisticTTCIGraph(graph,traceOfTab)};
 
 
-let sum=0;
 const values={};
 Object.keys(graphs).forEach(key=>{
-const estimate=PageDependencyGraph.estimateGraph(graphs[key]);
+const estimate=new LoadSimulator(graphs[key]).simulate();
 const lastLongTaskEnd=PredictivePerf.getLastLongTaskEndTime(estimate.nodeTiming);
 
 switch(key){
+case'optimisticFCP':
+case'pessimisticFCP':
 case'optimisticFMP':
 case'pessimisticFMP':
 values[key]=estimate.timeInMs;
@@ -4935,21 +5763,33 @@ case'pessimisticTTCI':
 values[key]=Math.max(values.pessimisticFMP,lastLongTaskEnd);
 break;}
 
-
-sum+=values[key];
 });
 
-const meanDuration=sum/Object.keys(values).length;
+values.roughEstimateOfFCP=COEFFICIENTS.FCP.intercept+
+COEFFICIENTS.FCP.optimistic*values.optimisticFCP+
+COEFFICIENTS.FCP.pessimistic*values.pessimisticFCP;
+values.roughEstimateOfFMP=COEFFICIENTS.FMP.intercept+
+COEFFICIENTS.FMP.optimistic*values.optimisticFMP+
+COEFFICIENTS.FMP.pessimistic*values.pessimisticFMP;
+values.roughEstimateOfTTCI=COEFFICIENTS.TTCI.intercept+
+COEFFICIENTS.TTCI.optimistic*values.optimisticTTCI+
+COEFFICIENTS.TTCI.pessimistic*values.pessimisticTTCI;
+
+
+
+values.roughEstimateOfFMP=Math.max(values.roughEstimateOfFCP,values.roughEstimateOfFMP);
+values.roughEstimateOfTTCI=Math.max(values.roughEstimateOfFMP,values.roughEstimateOfTTCI);
+
 const score=Audit.computeLogNormalScore(
-meanDuration,
+values.roughEstimateOfTTCI,
 SCORING_POINT_OF_DIMINISHING_RETURNS,
 SCORING_MEDIAN);
 
 
 return{
 score,
-rawValue:meanDuration,
-displayValue:Util.formatMilliseconds(meanDuration),
+rawValue:values.roughEstimateOfTTCI,
+displayValue:Util.formatMilliseconds(values.roughEstimateOfTTCI),
 extendedInfo:{value:values}};
 
 });
@@ -4958,7 +5798,7 @@ extendedInfo:{value:values}};
 
 module.exports=PredictivePerf;
 
-},{"../gather/computed/dependency-graph/node.js":14,"../gather/computed/page-dependency-graph.js":"./gather/computed/page-dependency-graph","../report/v2/renderer/util.js":37,"./audit":2}],"../audits/redirects-http":[function(require,module,exports){
+},{"../lib/dependency-graph/node.js":22,"../lib/dependency-graph/simulator/simulator.js":23,"../lib/web-inspector":41,"../report/v2/renderer/util.js":42,"./audit":2}],"../audits/redirects-http":[function(require,module,exports){
 
 
 
@@ -4974,7 +5814,6 @@ class RedirectsHTTP extends Audit{
 
 static get meta(){
 return{
-category:'Security',
 name:'redirects-http',
 description:'Redirects HTTP traffic to HTTPS',
 failureDescription:'Does not redirect HTTP traffic to HTTPS',
@@ -4998,7 +5837,94 @@ debugString:artifacts.HTTPRedirect.debugString};
 
 module.exports=RedirectsHTTP;
 
-},{"./audit":2}],"../audits/screenshot-thumbnails":[function(require,module,exports){
+},{"./audit":2}],"../audits/redirects":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const Util=require('../report/v2/renderer/util');
+const UnusedBytes=require('./byte-efficiency/byte-efficiency-audit');
+
+class Redirects extends Audit{
+
+
+
+static get meta(){
+return{
+name:'redirects',
+description:'Avoids page redirects',
+failureDescription:'Has multiple page redirects',
+helpText:'Redirects introduce additional delays before the page can be loaded. [Learn more](https://developers.google.com/speed/docs/insights/AvoidRedirects).',
+requiredArtifacts:['URL','devtoolsLogs']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+return artifacts.requestMainResource(artifacts.devtoolsLogs[Audit.DEFAULT_PASS]).
+then(mainResource=>{
+
+const redirectRequests=Array.from(mainResource.redirects||[]);
+
+
+redirectRequests.push(mainResource);
+
+let totalWastedMs=0;
+const pageRedirects=[];
+
+
+if(redirectRequests.length>1){
+pageRedirects.push({
+url:`(Initial: ${redirectRequests[0].url})`,
+wastedMs:'n/a'});
+
+}
+
+for(let i=1;i<redirectRequests.length;i++){
+const initialRequest=redirectRequests[i-1];
+const redirectedRequest=redirectRequests[i];
+
+const wastedMs=(redirectedRequest.startTime-initialRequest.startTime)*1000;
+totalWastedMs+=wastedMs;
+
+pageRedirects.push({
+url:redirectedRequest.url,
+wastedMs:Util.formatMilliseconds(wastedMs,1)});
+
+}
+
+const headings=[
+{key:'url',itemType:'text',text:'Redirected URL'},
+{key:'wastedMs',itemType:'text',text:'Time for Redirect'}];
+
+const details=Audit.makeTableDetails(headings,pageRedirects);
+
+return{
+
+score:redirectRequests.length<=2?100:UnusedBytes.scoreForWastedMs(totalWastedMs),
+rawValue:totalWastedMs,
+displayValue:Util.formatMilliseconds(totalWastedMs,1),
+extendedInfo:{
+value:{
+wastedMs:totalWastedMs}},
+
+
+details};
+
+});
+}}
+
+
+module.exports=Redirects;
+
+},{"../report/v2/renderer/util":42,"./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
 
 
 
@@ -5020,7 +5946,6 @@ class ScreenshotThumbnails extends Audit{
 
 static get meta(){
 return{
-category:'Images',
 name:'screenshot-thumbnails',
 informative:true,
 description:'Screenshot Thumbnails',
@@ -5126,7 +6051,413 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"./audit":2,"./consistently-interactive":"../audits/consistently-interactive","./first-interactive":"../audits/first-interactive","jpeg-js":111}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"./audit":2,"./consistently-interactive":"../audits/consistently-interactive","./first-interactive":"../audits/first-interactive","jpeg-js":136}],"../audits/seo/font-size":[function(require,module,exports){
+(function(global){
+
+
+
+
+
+'use strict';
+
+const URL=require('../../lib/url-shim');
+const Audit=require('../audit');
+const ViewportAudit=require('../viewport');
+const CSSStyleDeclaration=require('../../lib/web-inspector').CSSStyleDeclaration;
+const MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT=75;
+
+
+
+
+
+function getUniqueFailingRules(fontSizeArtifact){
+const failingRules=new Map();
+
+fontSizeArtifact.forEach(({cssRule,fontSize,textLength,node})=>{
+const artifactId=getFontArtifactId(cssRule,node);
+const failingRule=failingRules.get(artifactId);
+
+if(!failingRule){
+failingRules.set(artifactId,{
+node,
+cssRule,
+fontSize,
+textLength});
+
+}else{
+failingRule.textLength+=textLength;
+}
+});
+
+return failingRules.valuesArray();
+}
+
+
+
+
+
+function getAttributeMap(attributes){
+const map=new Map();
+
+for(let i=0;i<attributes.length;i+=2){
+const name=attributes[i].toLowerCase();
+const value=attributes[i+1].trim();
+
+if(value){
+map.set(name,value);
+}
+}
+
+return map;
+}
+
+
+
+
+
+
+function getSelector(node){
+const attributeMap=getAttributeMap(node.attributes);
+
+if(attributeMap.has('id')){
+return'#'+attributeMap.get('id');
+}else if(attributeMap.has('class')){
+return'.'+attributeMap.get('class').split(/\s+/).join('.');
+}
+
+return node.localName.toLowerCase();
+}
+
+
+
+
+
+function nodeToTableNode(node){
+const attributesString=node.attributes.map((value,idx)=>
+idx%2===0?` ${value}`:`="${value}"`).
+join('');
+
+return{
+type:'node',
+selector:node.parentNode?getSelector(node.parentNode):'',
+snippet:`<${node.localName}${attributesString}>`};
+
+}
+
+
+
+
+
+
+
+function findStyleRuleSource(baseURL,styleDeclaration,node){
+if(
+!styleDeclaration||
+styleDeclaration.type===CSSStyleDeclaration.Type.Attributes||
+styleDeclaration.type===CSSStyleDeclaration.Type.Inline)
+{
+return{
+source:baseURL,
+selector:nodeToTableNode(node)};
+
+}
+
+if(styleDeclaration.parentRule&&
+styleDeclaration.parentRule.origin===global.CSSAgent.StyleSheetOrigin.USER_AGENT){
+return{
+selector:styleDeclaration.parentRule.selectors.map(item=>item.text).join(', '),
+source:'User Agent Stylesheet'};
+
+}
+
+if(styleDeclaration.type===CSSStyleDeclaration.Type.Regular&&styleDeclaration.parentRule){
+const rule=styleDeclaration.parentRule;
+const stylesheet=styleDeclaration.stylesheet;
+
+if(stylesheet){
+let source;
+const selector=rule.selectors.map(item=>item.text).join(', ');
+
+if(stylesheet.sourceURL){
+const url=new URL(stylesheet.sourceURL,baseURL);
+const range=styleDeclaration.range;
+source=`${url.href}`;
+
+if(range){
+
+
+const absoluteStartLine=range.startLine+stylesheet.startLine+1;
+const absoluteStartColumn=range.startColumn+stylesheet.startColumn+1;
+
+source+=`:${absoluteStartLine}:${absoluteStartColumn}`;
+}
+}else{
+
+source='dynamic';
+}
+
+return{
+selector,
+source};
+
+}
+}
+
+return{
+source:'Unknown'};
+
+}
+
+
+
+
+
+
+function getFontArtifactId(styleDeclaration,node){
+if(styleDeclaration&&styleDeclaration.type===CSSStyleDeclaration.Type.Regular){
+const startLine=styleDeclaration.range?styleDeclaration.range.startLine:0;
+const startColumn=styleDeclaration.range?styleDeclaration.range.startColumn:0;
+return`${styleDeclaration.styleSheetId}@${startLine}:${startColumn}`;
+}else{
+return`node_${node.nodeId}`;
+}
+}
+
+class FontSize extends Audit{
+
+
+
+static get meta(){
+return{
+name:'font-size',
+description:'Document uses legible font sizes.',
+failureDescription:'Document doesn\'t use legible font sizes.',
+helpText:'Font sizes less than 16px are too small to be legible and require mobile '+
+'visitors to “pinch to zoom” in order to read. Strive to have >75% of page text ≥16px. '+
+'[Learn more](https://developers.google.com/speed/docs/insights/UseLegibleFontSizes).',
+requiredArtifacts:['FontSize','URL','Viewport']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const hasViewportSet=ViewportAudit.audit(artifacts).rawValue;
+if(!hasViewportSet){
+return{
+rawValue:false,
+debugString:'Text is illegible because of a missing viewport config'};
+
+}
+
+const{
+analyzedFailingNodesData,
+analyzedFailingTextLength,
+failingTextLength,
+visitedTextLength,
+totalTextLength}=
+artifacts.FontSize;
+
+if(totalTextLength===0){
+return{
+rawValue:true};
+
+}
+
+const failingRules=getUniqueFailingRules(analyzedFailingNodesData);
+const percentageOfPassingText=
+(visitedTextLength-failingTextLength)/visitedTextLength*100;
+const pageUrl=artifacts.URL.finalUrl;
+
+const headings=[
+{key:'source',itemType:'url',text:'Source'},
+{key:'selector',itemType:'code',text:'Selector'},
+{key:'coverage',itemType:'text',text:'% of Page Text'},
+{key:'fontSize',itemType:'text',text:'Font Size'}];
+
+
+const tableData=failingRules.sort((a,b)=>b.textLength-a.textLength).
+map(({cssRule,textLength,fontSize,node})=>{
+const percentageOfAffectedText=textLength/visitedTextLength*100;
+const origin=findStyleRuleSource(pageUrl,cssRule,node);
+
+return{
+source:origin.source,
+selector:origin.selector,
+coverage:`${percentageOfAffectedText.toFixed(2)}%`,
+fontSize:`${fontSize}px`};
+
+});
+
+
+if(analyzedFailingTextLength<failingTextLength){
+const percentageOfUnanalyzedFailingText=
+(failingTextLength-analyzedFailingTextLength)/visitedTextLength*100;
+
+tableData.push({
+source:'Add\'l illegible text',
+selector:null,
+coverage:`${percentageOfUnanalyzedFailingText.toFixed(2)}%`,
+fontSize:'< 16px'});
+
+}
+
+if(percentageOfPassingText>0){
+tableData.push({
+source:'Legible text',
+selector:null,
+coverage:`${percentageOfPassingText.toFixed(2)}%`,
+fontSize:'≥ 16px'});
+
+}
+
+const details=Audit.makeTableDetails(headings,tableData);
+const passed=percentageOfPassingText>=MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT;
+let debugString=null;
+
+if(!passed){
+const percentageOfFailingText=parseFloat((100-percentageOfPassingText).toFixed(2));
+let disclaimer='';
+
+
+if(visitedTextLength<totalTextLength){
+const percentageOfVisitedText=visitedTextLength/totalTextLength*100;
+disclaimer=` (based on ${percentageOfVisitedText.toFixed()}% sample)`;
+}
+
+debugString=`${percentageOfFailingText}% of text is too small${disclaimer}.`;
+}
+
+return{
+rawValue:passed,
+details,
+debugString};
+
+}}
+
+
+module.exports=FontSize;
+
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"../../lib/url-shim":40,"../../lib/web-inspector":41,"../audit":2,"../viewport":"../audits/viewport"}],"../audits/seo/hreflang":[function(require,module,exports){
+(function(global){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const LinkHeader=require('http-link-header');
+const VALID_LANGS=importValidLangs();
+const LINK_HEADER='link';
+const NO_LANGUAGE='x-default';
+
+
+
+
+
+
+function importValidLangs(){
+const axeCache=global.axe;
+global.axe={utils:{}};
+require('axe-core/lib/commons/utils/valid-langs.js');
+const validLangs=global.axe.utils.validLangs();
+global.axe=axeCache;
+
+return validLangs;
+}
+
+
+
+
+
+function isValidHreflang(hreflang){
+if(hreflang.toLowerCase()===NO_LANGUAGE){
+return true;
+}
+
+
+const[lang]=hreflang.split('-');
+return VALID_LANGS.includes(lang.toLowerCase());
+}
+
+
+
+
+
+function headerHasValidHreflangs(headerValue){
+const linkHeader=LinkHeader.parse(headerValue);
+
+return linkHeader.get('rel','alternate').
+every(link=>link.hreflang&&isValidHreflang(link.hreflang));
+}
+
+class Hreflang extends Audit{
+
+
+
+static get meta(){
+return{
+name:'hreflang',
+description:'Document has a valid `hreflang`',
+failureDescription:'Document doesn\'t have a valid `hreflang`',
+helpText:'hreflang allows crawlers to discover alternate translations of the '+
+'page content. [Learn more]'+
+'(https://support.google.com/webmasters/answer/189077).',
+requiredArtifacts:['Hreflang']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+
+return artifacts.requestMainResource(devtoolsLogs).
+then(mainResource=>{
+
+const invalidHreflangs=[];
+
+if(artifacts.Hreflang){
+artifacts.Hreflang.forEach(({href,hreflang})=>{
+if(!isValidHreflang(hreflang)){
+invalidHreflangs.push({
+source:{
+type:'node',
+snippet:`<link name="alternate" hreflang="${hreflang}" href="${href}" />`}});
+
+
+}
+});
+}
+
+mainResource.responseHeaders.
+filter(h=>h.name.toLowerCase()===LINK_HEADER&&!headerHasValidHreflangs(h.value)).
+forEach(h=>invalidHreflangs.push({source:`${h.name}: ${h.value}`}));
+
+const headings=[
+{key:'source',itemType:'code',text:'Source'}];
+
+const details=Audit.makeTableDetails(headings,invalidHreflangs);
+
+return{
+rawValue:invalidHreflangs.length===0,
+details};
+
+});
+}}
+
+
+module.exports=Hreflang;
+
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"../audit":2,"axe-core/lib/commons/utils/valid-langs.js":95,"http-link-header":133}],"../audits/seo/http-status-code":[function(require,module,exports){
 
 
 
@@ -5144,13 +6475,12 @@ class HTTPStatusCode extends Audit{
 
 static get meta(){
 return{
-category:'Crawling and Indexing',
 name:'http-status-code',
 description:'Page has successful HTTP status code.',
 failureDescription:'Page has unsuccessful HTTP status code',
 helpText:'Pages with unsuccessful HTTP status codes may not be indexed properly. '+
 '[Learn more]'+
-'(https://developers.goole.com/web/tools/lighthouse/audits/successful-http-code).',
+'(https://developers.google.com/web/tools/lighthouse/audits/successful-http-code).',
 requiredArtifacts:['devtoolsLogs']};
 
 }
@@ -5183,7 +6513,199 @@ rawValue:true};
 
 module.exports=HTTPStatusCode;
 
-},{"../audit":2}],"../audits/seo/meta-description":[function(require,module,exports){
+},{"../audit":2}],"../audits/seo/is-crawlable":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const BLOCKLIST=new Set([
+'noindex',
+'none']);
+
+const ROBOTS_HEADER='x-robots-tag';
+const UNAVAILABLE_AFTER='unavailable_after';
+
+
+
+
+
+
+function isUnavailable(directive){
+const parts=directive.split(':');
+
+if(parts.length<=1||parts[0]!==UNAVAILABLE_AFTER){
+return false;
+}
+
+const date=Date.parse(parts.slice(1).join(':'));
+
+return!isNaN(date)&&date<Date.now();
+}
+
+
+
+
+
+
+function hasBlockingDirective(directives){
+return directives.split(',').
+map(d=>d.toLowerCase().trim()).
+some(d=>BLOCKLIST.has(d)||isUnavailable(d));
+}
+
+
+
+
+
+
+function hasUserAgent(directives){
+const parts=directives.match(/^([^,:]+):/);
+
+
+
+return!!parts&&parts[1].toLowerCase()!==UNAVAILABLE_AFTER;
+}
+
+class IsCrawlable extends Audit{
+
+
+
+static get meta(){
+return{
+name:'is-crawlable',
+description:'Page isn’t blocked from indexing',
+failureDescription:'Page is blocked from indexing',
+helpText:'The "Robots" directives tell crawlers how your content should be indexed. '+
+'[Learn more](https://developers.google.com/search/reference/robots_meta_tag).',
+requiredArtifacts:['MetaRobots']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+return artifacts.requestMainResource(artifacts.devtoolsLogs[Audit.DEFAULT_PASS]).
+then(mainResource=>{
+const blockingDirectives=[];
+
+if(artifacts.MetaRobots){
+const isBlocking=hasBlockingDirective(artifacts.MetaRobots);
+
+if(isBlocking){
+blockingDirectives.push({
+source:{
+type:'node',
+snippet:`<meta name="robots" content="${artifacts.MetaRobots}" />`}});
+
+
+}
+}
+
+mainResource.responseHeaders.
+filter(h=>h.name.toLowerCase()===ROBOTS_HEADER&&!hasUserAgent(h.value)&&
+hasBlockingDirective(h.value)).
+forEach(h=>blockingDirectives.push({source:`${h.name}: ${h.value}`}));
+
+const headings=[
+{key:'source',itemType:'code',text:'Source'}];
+
+const details=Audit.makeTableDetails(headings,blockingDirectives);
+
+return{
+rawValue:blockingDirectives.length===0,
+details};
+
+});
+}}
+
+
+module.exports=IsCrawlable;
+
+},{"../audit":2}],"../audits/seo/link-text":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const URL=require('../../lib/url-shim');
+const BLOCKLIST=new Set([
+'click here',
+'click this',
+'go',
+'here',
+'this',
+'start',
+'right here',
+'more',
+'learn more']);
+
+
+class LinkText extends Audit{
+
+
+
+static get meta(){
+return{
+category:'Content Best Practices',
+name:'link-text',
+description:'Links have descriptive text.',
+failureDescription:'Links do not have descriptive text',
+helpText:'Descriptive link text helps search engines understand your content. '+
+'[Learn more](https://webmasters.googleblog.com/2008/10/importance-of-link-architecture.html)',
+requiredArtifacts:['URL','CrawlableLinks']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const failingLinks=artifacts.CrawlableLinks.
+filter(link=>{
+if(
+link.href.toLowerCase().startsWith('javascript:')||
+URL.equalWithExcludedFragments(link.href,artifacts.URL.finalUrl))
+{
+return false;
+}
+
+return BLOCKLIST.has(link.text.trim().toLowerCase());
+});
+
+const headings=[
+{key:'href',itemType:'url',text:'Link destination'},
+{key:'text',itemType:'text',text:'Link Text'}];
+
+
+const details=Audit.makeTableDetails(headings,failingLinks);
+let displayValue;
+
+if(failingLinks.length){
+displayValue=failingLinks.length>1?
+`${failingLinks.length} links found`:'1 link found';
+}
+
+return{
+rawValue:failingLinks.length===0,
+details,
+displayValue};
+
+}}
+
+
+module.exports=LinkText;
+
+},{"../../lib/url-shim":40,"../audit":2}],"../audits/seo/meta-description":[function(require,module,exports){
 
 
 
@@ -5199,13 +6721,12 @@ class Description extends Audit{
 
 static get meta(){
 return{
-category:'Content Best Practices',
 name:'meta-description',
 description:'Document has a meta description',
 failureDescription:'Document does not have a meta description',
 helpText:'Meta descriptions may be included in search results to concisely summarize '+
-'page content. Read more in the '+
-'[Search Console Help page](https://support.google.com/webmasters/answer/35624?hl=en#1).',
+'page content. '+
+'[Learn more](https://support.google.com/webmasters/answer/35624?hl=en#1).',
 requiredArtifacts:['MetaDescription']};
 
 }
@@ -5253,7 +6774,6 @@ class ServiceWorker extends Audit{
 
 static get meta(){
 return{
-category:'Offline',
 name:'service-worker',
 description:'Registers a service worker',
 failureDescription:'Does not register a service worker',
@@ -5286,7 +6806,7 @@ rawValue:!!matchingSW};
 
 module.exports=ServiceWorker;
 
-},{"../lib/url-shim":35,"./audit":2}],"../audits/speed-index-metric":[function(require,module,exports){
+},{"../lib/url-shim":40,"./audit":2}],"../audits/speed-index-metric":[function(require,module,exports){
 
 
 
@@ -5308,12 +6828,10 @@ class SpeedIndexMetric extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'speed-index-metric',
 description:'Perceptual Speed Index',
 helpText:'Speed Index shows how quickly the contents of a page are visibly populated. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/speed-index).',
-optimalValue:`< ${Util.formatNumber(SCORING_POINT_OF_DIMINISHING_RETURNS)}`,
 scoringMode:Audit.SCORING_MODES.NUMERIC,
 requiredArtifacts:['traces']};
 
@@ -5334,7 +6852,7 @@ if(speedline.frames.length===0){
 throw new Error('Trace unable to find visual progress frames.');
 }
 
-if(speedline.speedIndex===0){
+if(speedline.perceptualSpeedIndex===0){
 throw new Error('Error in Speedline calculating Speed Index (speedIndex of 0).');
 }
 
@@ -5362,14 +6880,12 @@ timings:{
 firstVisualChange:speedline.first,
 visuallyReady:visuallyReadyInMs,
 visuallyComplete:speedline.complete,
-speedIndex:speedline.speedIndex,
 perceptualSpeedIndex:speedline.perceptualSpeedIndex},
 
 timestamps:{
 firstVisualChange:(speedline.first+speedline.beginning)*1000,
 visuallyReady:(visuallyReadyInMs+speedline.beginning)*1000,
 visuallyComplete:(speedline.complete+speedline.beginning)*1000,
-speedIndex:(speedline.speedIndex+speedline.beginning)*1000,
 perceptualSpeedIndex:(speedline.perceptualSpeedIndex+speedline.beginning)*1000},
 
 frames:speedline.frames.map(frame=>{
@@ -5386,7 +6902,6 @@ return{
 score,
 rawValue,
 displayValue:Util.formatNumber(rawValue),
-optimalValue:this.meta.optimalValue,
 extendedInfo:{
 value:extendedInfo}};
 
@@ -5397,7 +6912,7 @@ value:extendedInfo}};
 
 module.exports=SpeedIndexMetric;
 
-},{"../report/v2/renderer/util":37,"./audit":2}],"../audits/splash-screen":[function(require,module,exports){
+},{"../report/v2/renderer/util":42,"./audit":2}],"../audits/splash-screen":[function(require,module,exports){
 
 
 
@@ -5424,10 +6939,8 @@ class SplashScreen extends MultiCheckAudit{
 
 
 
-
 static get meta(){
 return{
-category:'PWA',
 name:'splash-screen',
 description:'Configured for a custom splash screen',
 failureDescription:'Is not configured for a custom splash screen',
@@ -5500,10 +7013,8 @@ class ThemedOmnibox extends MultiCheckAudit{
 
 
 
-
 static get meta(){
 return{
-category:'PWA',
 name:'themed-omnibox',
 description:'Address bar matches brand colors',
 failureDescription:'Address bar does not match brand colors',
@@ -5551,7 +7062,7 @@ themeColor:artifacts.ThemeColor};
 
 module.exports=ThemedOmnibox;
 
-},{"../lib/web-inspector":36,"./multi-check-audit":5}],"../audits/time-to-first-byte":[function(require,module,exports){
+},{"../lib/web-inspector":41,"./multi-check-audit":5}],"../audits/time-to-first-byte":[function(require,module,exports){
 
 
 
@@ -5570,7 +7081,6 @@ class TTFBMetric extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'time-to-first-byte',
 description:'Keep server response times low (TTFB)',
 informative:true,
@@ -5624,7 +7134,7 @@ debugString};
 
 module.exports=TTFBMetric;
 
-},{"../report/v2/renderer/util":37,"./audit":2}],"../audits/user-timings":[function(require,module,exports){
+},{"../report/v2/renderer/util":42,"./audit":2}],"../audits/user-timings":[function(require,module,exports){
 
 
 
@@ -5641,7 +7151,6 @@ class UserTimings extends Audit{
 
 static get meta(){
 return{
-category:'Performance',
 name:'user-timings',
 description:'User Timing marks and measures',
 helpText:'Consider instrumenting your app with the User Timing API to create custom, '+
@@ -5781,7 +7290,7 @@ details};
 
 module.exports=UserTimings;
 
-},{"../report/v2/renderer/util":37,"./audit":2}],"../audits/viewport":[function(require,module,exports){
+},{"../report/v2/renderer/util":42,"./audit":2}],"../audits/viewport":[function(require,module,exports){
 
 
 
@@ -5798,7 +7307,6 @@ class Viewport extends Audit{
 
 static get meta(){
 return{
-category:'Mobile Friendly',
 name:'viewport',
 description:'Has a `<meta name="viewport">` tag with `width` or `initial-scale`',
 failureDescription:'Does not have a `<meta name="viewport">` tag with `width` '+
@@ -5844,7 +7352,7 @@ debugString};
 
 module.exports=Viewport;
 
-},{"./audit":2,"metaviewport-parser":115}],"../audits/webapp-install-banner":[function(require,module,exports){
+},{"./audit":2,"metaviewport-parser":140}],"../audits/webapp-install-banner":[function(require,module,exports){
 
 
 
@@ -5879,10 +7387,8 @@ class WebappInstallBanner extends MultiCheckAudit{
 
 
 
-
 static get meta(){
 return{
-category:'PWA',
 name:'webapp-install-banner',
 description:'User can be prompted to Install the Web App',
 failureDescription:'User will not be prompted to Install the Web App',
@@ -5969,7 +7475,6 @@ class WithoutJavaScript extends Audit{
 
 static get meta(){
 return{
-category:'JavaScript',
 name:'without-javascript',
 description:'Contains some content when JavaScript is not available',
 failureDescription:'Does not provide fallback content when JavaScript is not available',
@@ -6019,7 +7524,6 @@ class WorksOffline extends Audit{
 
 static get meta(){
 return{
-category:'Offline',
 name:'works-offline',
 description:'Responds with a 200 when offline',
 failureDescription:'Does not respond with a 200 when offline',
@@ -6053,7 +7557,7 @@ debugString};
 
 module.exports=WorksOffline;
 
-},{"../lib/url-shim":35,"./audit":2}],"./gather/computed/computed-artifact":[function(require,module,exports){
+},{"../lib/url-shim":40,"./audit":2}],"./gather/computed/computed-artifact":[function(require,module,exports){
 
 
 
@@ -6205,9 +7709,9 @@ module.exports=ComputedArtifact;
 
 const ComputedArtifact=require('./computed-artifact');
 const WebInspector=require('../../lib/web-inspector');
+const assert=require('assert');
 
 class CriticalRequestChains extends ComputedArtifact{
-
 get name(){
 return'CriticalRequestChains';
 }
@@ -6218,9 +7722,14 @@ return'CriticalRequestChains';
 
 
 
-static isCritical(request){
+
+static isCritical(request,mainResource){
+assert.ok(mainResource,'mainResource not provided');
 const resourceTypeCategory=request._resourceType&&request._resourceType._category;
 
+
+const isIframe=request._resourceType===WebInspector.resourceTypes.Document&&
+request.frameId!==mainResource.frameId;
 
 
 
@@ -6229,6 +7738,7 @@ WebInspector.resourceTypes.Image._category,
 WebInspector.resourceTypes.XHR._category];
 
 if(nonCriticalResourceTypes.includes(resourceTypeCategory)||
+isIframe||
 request.mimeType&&request.mimeType.startsWith('image/')){
 return false;
 }
@@ -6236,7 +7746,7 @@ return false;
 return['VeryHigh','High','Medium'].includes(request.priority());
 }
 
-static extractChain(networkRecords){
+static extractChain([networkRecords,mainResource]){
 networkRecords=networkRecords.filter(req=>req.finished);
 
 
@@ -6247,7 +7757,8 @@ requestIdToRequests.set(request.requestId,request);
 
 
 
-const criticalRequests=networkRecords.filter(CriticalRequestChains.isCritical);
+const criticalRequests=networkRecords.filter(request=>
+CriticalRequestChains.isCritical(request,mainResource));
 
 const flattenRequest=request=>{
 return{
@@ -6269,7 +7780,7 @@ const ancestors=[];
 let ancestorRequest=request.initiatorRequest();
 let node=criticalRequestChains;
 while(ancestorRequest){
-const ancestorIsCritical=CriticalRequestChains.isCritical(ancestorRequest);
+const ancestorIsCritical=CriticalRequestChains.isCritical(ancestorRequest,mainResource);
 
 
 
@@ -6329,14 +7840,44 @@ return criticalRequestChains;
 
 
 compute_(devtoolsLog,artifacts){
-return artifacts.requestNetworkRecords(devtoolsLog).
+return Promise.all([
+artifacts.requestNetworkRecords(devtoolsLog),
+artifacts.requestMainResource(devtoolsLog)]).
+
 then(CriticalRequestChains.extractChain);
 }}
 
 
 module.exports=CriticalRequestChains;
 
-},{"../../lib/web-inspector":36,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/first-interactive":[function(require,module,exports){
+},{"../../lib/web-inspector":41,"./computed-artifact":"./gather/computed/computed-artifact","assert":46}],"./gather/computed/dtm-model":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const ComputedArtifact=require('./computed-artifact');
+const DTM=require('../../lib/traces/devtools-timeline-model');
+
+class DevtoolsTimelineModel extends ComputedArtifact{
+get name(){
+return'DevtoolsTimelineModel';
+}
+
+
+
+
+
+compute_(trace){
+return Promise.resolve(new DTM(trace));
+}}
+
+
+module.exports=DevtoolsTimelineModel;
+
+},{"../../lib/traces/devtools-timeline-model":36,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/first-interactive":[function(require,module,exports){
 
 
 
@@ -6545,7 +8086,7 @@ return this.computeWithArtifacts(traceOfTab);
 
 module.exports=FirstInteractive;
 
-},{"../../lib/traces/tracing-processor":34,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/main-resource":[function(require,module,exports){
+},{"../../lib/traces/tracing-processor":39,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/main-resource":[function(require,module,exports){
 
 
 
@@ -6614,7 +8155,6 @@ const PWA_DISPLAY_VALUES=['minimal-ui','fullscreen','standalone'];
 const SUGGESTED_SHORTNAME_LENGTH=12;
 
 class ManifestValues extends ComputedArtifact{
-
 get name(){
 return'ManifestValues';
 }
@@ -6713,10 +8253,9 @@ allChecks:remainingChecks};
 }}
 
 
-
 module.exports=ManifestValues;
 
-},{"../../lib/icons":27,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-records":[function(require,module,exports){
+},{"../../lib/icons":29,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-records":[function(require,module,exports){
 
 
 
@@ -6743,7 +8282,7 @@ return NetworkRecorder.recordsFromLogs(devtoolsLog);
 
 module.exports=NetworkRecords;
 
-},{"../../lib/network-recorder":29,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-throughput":[function(require,module,exports){
+},{"../../lib/network-recorder":31,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-throughput":[function(require,module,exports){
 
 
 
@@ -6827,10 +8366,10 @@ module.exports=NetworkThroughput;
 'use strict';
 
 const ComputedArtifact=require('./computed-artifact');
-const NetworkNode=require('./dependency-graph/network-node');
-const CPUNode=require('./dependency-graph/cpu-node');
-const GraphEstimator=require('./dependency-graph/estimator/estimator');
+const NetworkNode=require('../../lib/dependency-graph/network-node');
+const CPUNode=require('../../lib/dependency-graph/cpu-node');
 const TracingProcessor=require('../../lib/traces/tracing-processor');
+const WebInspector=require('../../lib/web-inspector');
 
 
 const MINIMUM_TASK_DURATION_OF_INTEREST=10;
@@ -6942,6 +8481,15 @@ node.addDependency(parent);
 }else if(node!==rootNode){
 rootNode.addDependent(node);
 }
+
+const redirects=Array.from(node.record.redirects||[]);
+redirects.push(node.record);
+
+for(let i=1;i<redirects.length;i++){
+const redirectNode=networkNodeOutput.idToNodeMap.get(redirects[i-1].requestId);
+const actualNode=networkNodeOutput.idToNodeMap.get(redirects[i].requestId);
+actualNode.addDependency(redirectNode);
+}
 });
 }
 
@@ -6953,7 +8501,8 @@ rootNode.addDependent(node);
 static linkCPUNodes(rootNode,networkNodeOutput,cpuNodes){
 function addDependentNetworkRequest(cpuNode,reqId){
 const networkNode=networkNodeOutput.idToNodeMap.get(reqId);
-if(!networkNode||networkNode.resourceType!=='xhr')return;
+if(!networkNode||
+networkNode.record._resourceType!==WebInspector.resourceTypes.XHR)return;
 cpuNode.addDependent(networkNode);
 }
 
@@ -7051,16 +8600,11 @@ const rootNode=networkNodeOutput.idToNodeMap.get(rootRequest.requestId);
 PageDependencyGraphArtifact.linkNetworkNodes(rootNode,networkNodeOutput,networkRecords);
 PageDependencyGraphArtifact.linkCPUNodes(rootNode,networkNodeOutput,cpuNodes);
 
-return rootNode;
+if(NetworkNode.hasCycle(rootNode)){
+throw new Error('Invalid dependency graph created, cycle detected');
 }
 
-
-
-
-
-
-static estimateGraph(rootNode){
-return new GraphEstimator(rootNode).estimateWithDetails();
+return rootNode;
 }
 
 
@@ -7121,7 +8665,7 @@ module.exports=PageDependencyGraphArtifact;
 
 PageDependencyGraphArtifact.NetworkNodeOutput;
 
-},{"../../lib/traces/tracing-processor":34,"./computed-artifact":"./gather/computed/computed-artifact","./dependency-graph/cpu-node":10,"./dependency-graph/estimator/estimator":11,"./dependency-graph/network-node":13}],"./gather/computed/pushed-requests":[function(require,module,exports){
+},{"../../lib/dependency-graph/cpu-node":20,"../../lib/dependency-graph/network-node":21,"../../lib/traces/tracing-processor":39,"../../lib/web-inspector":41,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/pushed-requests":[function(require,module,exports){
 
 
 
@@ -7132,7 +8676,6 @@ PageDependencyGraphArtifact.NetworkNodeOutput;
 const ComputedArtifact=require('./computed-artifact');
 
 class PushedRequests extends ComputedArtifact{
-
 get name(){
 return'PushedRequests';
 }
@@ -7162,10 +8705,8 @@ module.exports=PushedRequests;
 'use strict';
 
 const ComputedArtifact=require('./computed-artifact');
-const DevtoolsTimelineModel=require('../../lib/traces/devtools-timeline-model');
 
 class ScreenshotFilmstrip extends ComputedArtifact{
-
 get name(){
 return'Screenshots';
 }
@@ -7180,11 +8721,12 @@ then(data=>'data:image/jpg;base64,'+data);
 
 
 
-compute_(trace){
-const model=new DevtoolsTimelineModel(trace.traceEvents);
-const filmStripFrames=model.filmStripModel().frames();
 
+compute_(trace,artifacts){
+return artifacts.requestDevtoolsTimelineModel(trace).then(model=>{
+const filmStripFrames=model.filmStripModel().frames();
 const frameFetches=filmStripFrames.map(frame=>this.fetchScreenshot(frame));
+
 return Promise.all(frameFetches).then(images=>{
 const result=filmStripFrames.map((frame,i)=>({
 timestamp:frame.timestamp,
@@ -7192,12 +8734,13 @@ datauri:images[i]}));
 
 return result;
 });
+});
 }}
 
 
 module.exports=ScreenshotFilmstrip;
 
-},{"../../lib/traces/devtools-timeline-model":32,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/speedline":[function(require,module,exports){
+},{"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/speedline":[function(require,module,exports){
 
 
 
@@ -7209,7 +8752,6 @@ const ComputedArtifact=require('./computed-artifact');
 const speedline=require('speedline');
 
 class Speedline extends ComputedArtifact{
-
 get name(){
 return'Speedline';
 }
@@ -7229,7 +8771,8 @@ const traceEvents=trace.traceEvents.slice();
 const navStart=traceOfTab.timestamps.navigationStart;
 return speedline(traceEvents,{
 timeOrigin:navStart,
-fastMode:true});
+fastMode:true,
+include:'perceptualSpeedIndex'});
 
 });
 }}
@@ -7237,7 +8780,7 @@ fastMode:true});
 
 module.exports=Speedline;
 
-},{"./computed-artifact":"./gather/computed/computed-artifact","speedline":119}],"./gather/computed/trace-of-tab":[function(require,module,exports){
+},{"./computed-artifact":"./gather/computed/computed-artifact","speedline":144}],"./gather/computed/trace-of-tab":[function(require,module,exports){
 
 
 
@@ -7258,6 +8801,7 @@ module.exports=Speedline;
 
 const ComputedArtifact=require('./computed-artifact');
 const log=require('lighthouse-logger');
+const Sentry=require('../../lib/sentry');
 
 
 
@@ -7316,6 +8860,9 @@ let fmpFellBack=false;
 
 
 if(!firstMeaningfulPaint){
+
+Sentry.captureMessage('No firstMeaningfulPaint found, using fallback',{level:'warning'});
+
 const fmpCand='firstMeaningfulPaintCandidate';
 fmpFellBack=true;
 log.verbose('trace-of-tab',`No firstMeaningfulPaint found, falling back to last ${fmpCand}`);
@@ -7380,7 +8927,7 @@ fmpFellBack};
 
 module.exports=TraceOfTab;
 
-},{"../../lib/web-inspector":36,"./computed-artifact":"./gather/computed/computed-artifact","lighthouse-logger":114}],"./gatherers/accessibility":[function(require,module,exports){
+},{"../../lib/sentry":32,"../../lib/web-inspector":41,"./computed-artifact":"./gather/computed/computed-artifact","lighthouse-logger":91}],"./gatherers/accessibility":[function(require,module,exports){
 
 
 
@@ -7461,7 +9008,7 @@ return path.join(',');
 
 
 function getOuterHTMLSnippet(node){
-const reOpeningTag=/^.*?\>/;
+const reOpeningTag=/^.*?>/;
 const match=node.outerHTML.match(reOpeningTag);
 return match&&match[0];
 }
@@ -7479,7 +9026,7 @@ const expression=`(function () {
       return (${runA11yChecks.toString()}());
     })()`;
 
-return driver.evaluateAsync(expression).then(returnedValue=>{
+return driver.evaluateAsync(expression,{useIsolation:true}).then(returnedValue=>{
 if(!returnedValue){
 throw new Error('No axe-core results returned');
 }
@@ -7493,7 +9040,7 @@ return returnedValue;
 
 module.exports=Accessibility;
 
-},{"./gatherer":21}],"./gatherers/cache-contents":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/cache-contents":[function(require,module,exports){
 
 
 
@@ -7551,7 +9098,7 @@ return returnedValue;
 
 module.exports=CacheContents;
 
-},{"./gatherer":21}],"./gatherers/chrome-console-messages":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/chrome-console-messages":[function(require,module,exports){
 
 
 
@@ -7567,7 +9114,6 @@ module.exports=CacheContents;
 const Gatherer=require('./gatherer');
 
 class ChromeConsoleMessages extends Gatherer{
-
 constructor(){
 super();
 this._logEntries=[];
@@ -7598,7 +9144,7 @@ then(_=>this._logEntries);
 
 module.exports=ChromeConsoleMessages;
 
-},{"./gatherer":21}],"./gatherers/css-usage":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/css-usage":[function(require,module,exports){
 
 
 
@@ -7631,7 +9177,7 @@ then(_=>results.ruleUsage);
 
 module.exports=CSSUsage;
 
-},{"./gatherer":21}],"./gatherers/dobetterweb/all-event-listeners":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/dobetterweb/all-event-listeners":[function(require,module,exports){
 
 
 
@@ -7647,7 +9193,6 @@ module.exports=CSSUsage;
 const Gatherer=require('../gatherer');
 
 class EventListeners extends Gatherer{
-
 listenForScriptParsedEvents(){
 this._listener=script=>{
 this._parsedScripts.set(script.scriptId,script);
@@ -7764,7 +9309,7 @@ then(()=>listeners);
 
 module.exports=EventListeners;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/anchors-with-no-rel-noopener":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/anchors-with-no-rel-noopener":[function(require,module,exports){
 
 
 
@@ -7798,7 +9343,7 @@ return options.driver.evaluateAsync(expression);
 
 module.exports=AnchorsWithNoRelNoopener;
 
-},{"../../../lib/dom-helpers.js":23,"../gatherer":21}],"./gatherers/dobetterweb/appcache":[function(require,module,exports){
+},{"../../../lib/dom-helpers.js":25,"../gatherer":17}],"./gatherers/dobetterweb/appcache":[function(require,module,exports){
 
 
 
@@ -7825,7 +9370,7 @@ then(node=>node&&node.getAttribute('manifest'));
 
 module.exports=AppCacheManifest;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/domstats":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/domstats":[function(require,module,exports){
 
 
 
@@ -7976,7 +9521,7 @@ return options.driver.sendCommand('DOM.disable').then(()=>results);
 
 module.exports=DOMStats;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/js-libraries":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/js-libraries":[function(require,module,exports){
 
 
 
@@ -7994,7 +9539,7 @@ module.exports=DOMStats;
 
 const Gatherer=require('../gatherer');
 
-const libDetectorSource="var UNKNOWN_VERSION = null;\nvar d41d8cd98f00b204e9800998ecf8427e_LibraryDetectorTests = {\n\n    'GWT': {\n        icon: 'gwt',\n        url: 'http://www.gwtproject.org/',\n        test: function(win) {\n            // pretty complicated, many possible tell tales\n            var doc = win.document,\n                hasHistFrame = doc.getElementById('__gwt_historyFrame'),\n                hasGwtUid = doc.gwt_uid,\n                hasBodyListener = doc.body.__listener,\n                hasBodyEventBits = doc.body.__eventBits,\n                hasModules = win.__gwt_activeModules,\n                hasJsonP = win.__gwt_jsonp__,\n                hasRootWinApp = win.__gwt_scriptsLoaded || win.__gwt_stylesLoaded || win.__gwt_activeModules;\n\n            // use the many possible indicators\n            if(hasHistFrame || hasGwtUid || hasBodyListener || hasBodyEventBits || hasModules || hasJsonP || hasRootWinApp) {\n\n                // carefully look at frames, but only if certain is GWT frame\n                var frames = doc.getElementsByTagName('iframe'),\n                    gwtVersion = UNKNOWN_VERSION;\n                for(var n=0; n<frames.length; n++) {\n                    // catch security access errors\n                    try {\n                        var hasNegativeTabIndex = frames[n].tabIndex < 0; // on for GWT\n                        if(hasNegativeTabIndex && frames[n].contentWindow && frames[n].contentWindow.$gwt_version) {\n                            gwtVersion = frames[n].contentWindow.$gwt_version;\n                            break;\n                        }\n                    }\n                    catch(e) {}\n                }\n\n                if(gwtVersion=='0.0.999') {\n                  gwtVersion = 'Google Internal';\n                }\n\n                return { version: gwtVersion };\n            }\n            return false;\n        }\n    },\n\n    'Ink': {\n        icon: 'ink',\n        url: 'http://ink.sapo.pt/',\n        test: function(win) {\n            if (win.Ink && win.Ink.createModule) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Vaadin': {\n        icon: 'vaadin',\n        url: 'http://vaadin.com/home',\n        test: function(win) {\n            if (win.vaadin && win.vaadin.registerWidgetset) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Bootstrap': {\n        icon: 'bootstrap',\n        url: 'http://getbootstrap.com/',\n        npm: 'bootstrap',\n        // look for a function Boostrap has added to jQuery - regex for BS 2 & 3\n        test: function(win) {\n            var jQueryAvailable = win.$ && win.$.fn,\n                RE_PREFIX_V2 = '\\\\$this\\\\.data\\\\((?:\\'|\")',\n                RE_PREFIX_V3 = '\\\\$this\\\\.data\\\\((?:\\'|\")(?:bs\\\\.){1}',\n                bootstrapComponents = [\n                    'affix', 'alert', 'button', 'carousel', 'collapse', 'dropdown',\n                    'modal', 'popover', 'scrollspy', 'tab', 'tooltip'\n                ];\n\n            if(jQueryAvailable) {\n                var bootstrapVersion;\n\n                bootstrapComponents.some(function(component) {\n                    if(win.$.fn[component]) {\n                        // Bootstrap >= 3.2.0 detection\n                        if(win.$.fn[component].Constructor && win.$.fn[component].Constructor.VERSION) {\n                            bootstrapVersion = win.$.fn[component].Constructor.VERSION;\n                            return true;\n                        // Bootstrap >= 2.0.0 and <= 3.1.0 detection\n                        } else if(new RegExp(RE_PREFIX_V3 + component).test(win.$.fn[component].toString())) {\n                            bootstrapVersion = '>= 3.0.0 & <= 3.1.1';\n                            return true;\n                        // Bootstrap < 3.1.0 detection\n                        } else if(new RegExp(RE_PREFIX_V2 + component).test(win.$.fn[component].toString())) {\n                            bootstrapVersion = '>= 2.0.0 & <= 2.3.2';\n                            return true;\n                        }\n                    }\n\n                    return false;\n                });\n\n                if (bootstrapVersion) {\n                    return { version: bootstrapVersion };\n                }\n            }\n\n            return false;\n        }\n    },\n\n    'Zurb': {\n        icon: 'zurb',\n        url: 'http://foundation.zurb.com/',\n        npm: 'foundation-sites',\n        test: function(win) {\n            if(win.Foundation && win.Foundation.Toggler) {\n                return { version: win.Foundation.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Polymer': {\n        icon: 'polymer',\n        url: 'http://www.polymer-project.org/',\n        npm: '@polymer/polymer',\n        test: function(win) {\n            if(win.Polymer && win.Polymer.Annotations) {\n                return { version: win.Polymer.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Highcharts': {\n        icon: 'highcharts',\n        url: 'http://www.highcharts.com',\n        npm: 'highcharts',\n        test: function(win) {\n            if(win.Highcharts && win.Highcharts.Point) {\n                return { version: win.Highcharts.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'InfoVis': {\n        icon: 'jit',\n        url: 'http://philogb.github.com/jit/',\n        test: function test(win) {\n            if(win.$jit && win.$jit.PieChart) {\n                return { version: win.$jit.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'FlotCharts': {\n        icon: 'icon_48',\n        url: 'http://www.flotcharts.org/',\n        npm: 'flot',\n        test: function(win) {\n            if(win.$ && win.$.plot) {\n                return { version: win.$.plot.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Blackbird': {\n        icon: 'blackbird',\n        url: 'http://www.gscottolson.com/blackbirdjs/',\n        test: function(win) {\n            if(win.log && win.log.warn) {\n                return { version: UNKNOWN_VERSION}; // no version info\n            }\n            return false;\n        }\n    },\n\n    'CreateJS': {\n        icon: 'createjs',\n        url: 'http://createjs.com/#!/CreateJS',\n        npm: 'createjs',\n        test: function(win) {\n            if(win.createjs && win.createjs.promote) {\n                return { version: UNKNOWN_VERSION}; // no version info available\n            }\n            return false;\n        }\n    },\n\n    'Google Maps': {\n        icon: 'gmaps',\n        url: 'https://developers.google.com/maps/',\n        test: function(win) {\n            if (win.google && win.google.maps) {\n                return { version: win.google.maps.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'jQuery': {\n        icon: 'jquery',\n        url: 'http://jquery.com',\n        npm: 'jquery',\n        test: function(win) {\n            var jq = win.jQuery || win.$;\n            if (jq && jq.fn) {\n                return { version: jq.fn.jquery || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'jQuery UI': {\n        icon: 'jquery_ui',\n        url: 'http://jqueryui.com',\n        npm: 'jquery-ui',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if(jq && jq.fn && jq.fn.jquery && jq.ui) {\n                var plugins = 'accordion,datepicker,dialog,draggable,droppable,progressbar,resizable,selectable,slider,menu,grid,tabs'.split(','), concat = [];\n                for (var i=0; i < plugins.length; i++) { if(jq.ui[plugins[i]]) concat.push(plugins[i].substr(0,1).toUpperCase() + plugins[i].substr(1)); }\n                return { version: jq.ui.version || UNKNOWN_VERSION, details: concat.length ? 'Plugins used: '+concat.join(',') : '' };\n            }\n            return false;\n        }\n    },\n\n    'Dojo': {\n        icon: 'dojo',\n        url: 'http://dojotoolkit.org',\n        npm: 'dojo',\n        test: function(win) {\n            if(win.dojo && win.dojo.delegate) {\n                var version = win.dojo.version ? win.dojo.version.toString() : UNKNOWN_VERSION;\n                return { version: version, details: 'Details: '+(win.dijit ? 'Uses Dijit' : 'none') };\n            }\n            return false;\n        }\n    },\n\n    'Prototype': {\n        icon: 'prototype',\n        url: 'http://prototypejs.org',\n        test: function(win) {\n            if(win.Prototype && win.Prototype.BrowserFeatures) {\n                return { version: win.Prototype.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Scriptaculous': {\n        icon: 'scriptaculous',\n        url: 'http://script.aculo.us',\n        test: function(win) {\n            if(win.Scriptaculous && win.Scriptaculous.load) {\n                return { version: win.Scriptaculous.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'MooTools': {\n        icon: 'mootools',\n        url: 'http://mootools.net',\n        test: function(win) {\n            if(win.MooTools && win.MooTools.build) {\n                return { version: win.MooTools.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Spry': {\n        icon: 'spry',\n        url: 'http://labs.adobe.com/technologies/spry',\n        test: function(win) {\n            if (win.Spry && win.Spry.Data) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'YUI 2': {\n        icon: 'yui',\n        url: 'http://developer.yahoo.com/yui/2/',\n        test: function(win) {\n            if (win.YAHOO && win.YAHOO.util) {\n                return { version: win.YAHOO.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'YUI 3': {\n        icon: 'yui3',\n        url: 'http://yuilibrary.com/',\n        npm: 'yui',\n        test: function(win) {\n            if (win.YUI && win.YUI.Env) {\n                return { version: win.YUI.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Qooxdoo': {\n        icon: 'qooxdoo',\n        url: 'http://qooxdoo.org',\n        npm: 'qooxdoo',\n        test: function(win) {\n            if(win.qx && win.qx.Bootstrap) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Ext JS': {\n        icon: 'extjs',\n        url: 'http://www.sencha.com/products/extjs',\n        test: function(win) {\n            if (win.Ext && win.Ext.versions) {\n                return { version: win.Ext.versions.core.version };\n            }\n            else if(win.Ext) {\n                return { version: win.Ext.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'base2': {\n        icon: 'base2',\n        url: 'http://code.google.com/p/base2',\n        test: function(win) {\n            if(win.base2 && win.base2.dom) {\n                return { version: win.base2.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Closure Library': {\n        icon: 'closure',\n        url: 'https://developers.google.com/closure/library',\n        npm: 'google-closure-library',\n        test: function(win) {\n            if(win.goog && win.goog.provide) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Rapha&euml;l': {\n        icon: 'raphael',\n        url: 'http://dmitrybaranovskiy.github.io/raphael',\n        test: function(win) {\n            if (win.Raphael && win.Raphael.circle) {\n                return { version: win.Raphael.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'React': {\n        icon: 'react',\n        url: 'https://facebook.github.io/react/',\n        npm: 'react',\n        test: function(win) {\n            var reactRoot = document.getElementById('react-root');\n            if (reactRoot && reactRoot.innerText.length > 0 || win.React && win.React.Component) {\n                return { version: win.React && win.React.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Modernizr': {\n        icon: 'modernizr',\n        url: 'http://www.modernizr.com',\n        npm: 'modernizr',\n        test: function(win) {\n            if (win.Modernizr && win.Modernizr.addTest) {\n                return { version: win.Modernizr._version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Processing.js': {\n        icon: 'processingjs',\n        url: 'http://processingjs.org',\n        npm: 'processing-js',\n        test: function(win) {\n            if(win.Processing && win.Processing.box) {\n                return { version: Processing.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Backbone': {\n        icon: 'backbone',\n        url: 'http://backbonejs.org/',\n        npm: 'backbone',\n        test: function(win) {\n            if (win.Backbone && win.Backbone.Model.extend) {\n                return {version: win.Backbone.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Leaflet': {\n        icon: 'leaflet',\n        url: 'http://leafletjs.com',\n        npm: 'leaflet',\n        test: function(win) {\n            // Leaflet 3.1 uses L.Marker and L.VERSION; later versions use L.marker and L.version\n            if (win.L && win.L.GeoJSON && (win.L.marker || win.L.Marker)) {\n                return { version: win.L.version || win.L.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Mapbox': {\n        icon: 'mapbox',\n        url: 'http://mapbox.com',\n        npm: 'mapbox-gl',\n        test: function(win) {\n            if (win.L && win.L.mapbox && win.L.mapbox.geocoder) {\n                return { version: win.L.mapbox.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Lo-Dash': {\n        icon: 'lodash',\n        url: 'http://lodash.com/',\n        npm: 'lodash',\n        test: function(win) {\n            var _ = typeof (_ = win._) == 'function' && _,\n                chain = typeof (chain = _ && _.chain) == 'function' && chain,\n                wrapper = (chain || _ || function() { return {}; })(1);\n\n            if (_ && wrapper.__wrapped__) {\n                return { version: _.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Underscore': {\n        icon: 'underscore',\n        url: 'http://underscorejs.org/',\n        npm: 'underscore',\n        test: function(win) {\n            if (win._ && typeof win._.tap === 'function' &&\n                !d41d8cd98f00b204e9800998ecf8427e_LibraryDetectorTests['Lo-Dash'].test(win)) {\n                return {version: win._.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Sammy': {\n        icon: 'sammy',\n        url: 'http://sammyjs.org',\n        test: function(win) {\n            if (win.Sammy && win.Sammy.Application.curry) {\n                return {version: win.Sammy.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Rico': {\n        icon: 'rico',\n        url: 'http://openrico.sourceforge.net/examples/index.html',\n        test:  function(win) {\n            if (win.Rico && window.Rico.checkIfComplete) {\n                return {version: win.Rico.Version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'MochiKit': {\n        icon: 'mochikit',\n        url: 'https://mochi.github.io/mochikit/',\n        test: function(win) {\n            if (win.MochiKit && win.MochiKit.Base.module) {\n                return {version: MochiKit.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'gRapha&euml;l': {\n        icon: 'graphael',\n        url: 'http://g.raphaeljs.com',\n        test: function(win) {\n            if (win.Raphael && win.Raphael.fn.g) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Glow': {\n        icon: 'glow',\n        url: 'http://www.bbc.co.uk/glow',\n        test: function(win) {\n            if (win.gloader && win.gloader.getRequests) {\n                return {version: UNKNOWN_VERSION};\n            }\n            else if (win.glow && win.glow.dom) {\n                return {version: win.glow.VERSION || UNKNOWN_VERSION};\n            }\n            else if (win.Glow) {\n                return {version: win.Glow.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Socket.IO': {\n        icon: 'socketio', // currently has no icon\n        url: 'http://socket.io',\n        npm: 'socket.io',\n        test: function(win) {\n            // version 0.6.2 uses only io.Socket; more recent versions also have io.sockets\n            if (win.io && (win.io.sockets || win.io.Socket)) {\n                return {version: win.io.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Mustache': {\n        icon: 'mustache',\n        url: 'http://mustache.github.com',\n        npm: 'mustache',\n        test: function(win) {\n            if (win.Mustache && win.Mustache.to_html) {\n                return {version: win.Mustache.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Fabric.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'http://fabricjs.com/',\n        npm: 'fabric',\n        test: function(win) {\n            if (win.fabric && win.fabric.util) {\n                return {version: win.fabric.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'FuseJS': {\n        icon: 'fusejs',\n        url: 'http://fusejs.io/',\n        npm: 'fuse.js',\n        test: function(win) {\n            if (win.Fuse) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Tween.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://github.com/sole/tween.js',\n        npm: 'tween.js',\n        test: function(win) {\n            if (win.TWEEN && win.TWEEN.Easing) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'SproutCore': {\n       icon: 'sproutcore',\n       url: 'http://www.sproutcore.com',\n       test: function(win) {\n           if (win.SC && win.SC.Application) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'Zepto.js': {\n       icon: 'zepto',\n       url: 'http://zeptojs.com',\n       npm: 'zepto',\n       test: function(win) {\n           if (win.Zepto && win.Zepto.fn) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'three.js': {\n       icon: 'icon_48', // currently has no icon\n       url: 'http://threejs.org/',\n       npm: 'three',\n       test: function(win) {\n           if (win.THREE && win.THREE.REVISION) {\n               return {version: 'r' + win.THREE.REVISION};\n           }\n           else if (win.THREE) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'PhiloGL': {\n       icon: 'philogl',\n       url: 'http://www.senchalabs.org/philogl/',\n       npm: 'philogl',\n       test: function(win) {\n           if (win.PhiloGL && win.PhiloGL.Camera) {\n               return {version: win.PhiloGL.version || UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'CamanJS': {\n        icon: 'camanjs',\n        url: 'http://camanjs.com/',\n        npm: 'caman',\n        test: function(win) {\n            if (win.Caman && win.Caman.version) {\n                return {version: win.Caman.version.release};\n            }\n            else if (win.Caman) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'yepnope': {\n        icon: 'yepnope',\n        url: 'http://yepnopejs.com/',\n        test: function(win) {\n            if (win.yepnope && win.yepnope.injectJs) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'LABjs': {\n        icon: 'icon_48',\n        url: 'http://labjs.com/',\n        test: function(win) {\n            if (win.$LAB && win.$LAB.setOptions) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Head JS': {\n        icon: 'headjs',\n        url: 'http://headjs.com/',\n        npm: 'headjs',\n        test: function(win) {\n            if (win.head && win.head.js) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'ControlJS': {\n        icon: 'icon_48',\n        url: 'http://stevesouders.com/controljs/',\n        test: function(win) {\n            if (win.CJS && win.CJS.start) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'RequireJS': {\n        icon: 'requirejs',\n        url: 'http://requirejs.org/',\n        npm: 'requirejs',\n        test: function(win) {\n            var req = win.require || win.requirejs;\n            if (req && (req.load || (req.s && req.s.contexts && req.s.contexts._ && (req.s.contexts._.loaded || req.s.contexts._.load)))) {\n                return { version: req.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'RightJS': {\n        icon: 'rightjs',\n        url: 'http://rightjs.org/',\n        test: function(win) {\n            if (win.RightJS && win.RightJS.isNode) {\n                return {version: win.RightJS.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'jQuery Tools': {\n       icon: 'jquerytools',\n       url: 'http://jquerytools.github.io/',\n       test: function(win) {\n            var jq = win.jQuery || win.$;\n            if(jq && jq.tools) {\n               return { version: jq.tools.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Pusher': {\n       icon: 'pusher',\n       url: 'http://pusher.com/docs/pusher_js/',\n       npm: 'pusher-js',\n       test: function(win) {\n            if(win.Pusher && win.Pusher.Channel) {\n               return { version: win.Pusher.VERSION || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Paper.js': {\n       icon: 'paperjs',\n       url: 'http://paperjs.org/',\n       npm: 'paper',\n       test: function(win) {\n            if(win.paper && win.paper.Point) {\n               return { version: win.paper.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Swiffy': {\n       icon: 'icon_48',\n       url: 'http://www.google.com/doubleclick/studio/swiffy/',\n       test: function(win) {\n            if(win.swiffy && win.swiffy.Stage) {\n               return { version: UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Move': {\n       icon: 'move',\n       url: 'https://github.com/rsms/move',\n       npm: 'move',\n       test: function(win) {\n            if(win.move && win.move.compile) {\n               return { version: win.move.version() || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'AmplifyJS': {\n       icon: 'amplifyjs',\n       url: 'http://amplifyjs.com/',\n       npm: 'amplifyjs',\n       test: function(win) {\n            if(win.amplify && win.amplify.publish) {\n               return { version: UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Popcorn.js': {\n       icon: 'popcornjs',\n       url: 'http://popcornjs.org/',\n       test: function(win) {\n            if (win.Popcorn && win.Popcorn.Events) {\n               return { version: win.Popcorn.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'D3': {\n        icon: 'd3',\n        url: 'http://d3js.org',\n        npm: 'd3',\n        test: function(win) {\n            if (win.d3 && win.d3.select) {\n                return { version: win.d3.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Handlebars': {\n        icon: 'handlebars',\n        url: 'http://handlebarsjs.com/',\n        npm: 'handlebars',\n        test: function(win) {\n            if(win.Handlebars && win.Handlebars.compile) {\n                return { version: win.Handlebars.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Knockout': {\n        icon: 'knockout',\n        url: 'http://knockoutjs.com/',\n        npm: 'knockout',\n        test: function(win) {\n            if (win.ko && win.ko.applyBindings) {\n                return { version: win.ko.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Spine': {\n        icon: 'icon_48',\n        url: 'http://spinejs.com/',\n        test: function(win) {\n            if (win.Spine && win.Spine.Controller) {\n                return {version: win.Spine.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'jQuery Mobile': {\n        icon: 'jquery_mobile',\n        url: 'http://jquerymobile.com/',\n        npm: 'jquery-mobile',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if(jq && jq.fn && jq.fn.jquery && jq.mobile) {\n                return { version: jq.mobile.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'WebFont Loader': {\n        icon: 'icon_48',\n        url: 'https://github.com/typekit/webfontloader',\n        npm: 'webfontloader',\n        test: function(win) {\n            if(win.WebFont && win.WebFont.load) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Angular': {\n        icon: 'angular',\n        url: 'https://angular.io/',\n        npm: '@angular/core',\n        test: function(win) {\n            var ng = win.document.querySelector('[ng-version]');\n            if (ng) {\n                return { version: ng.getAttribute('ng-version') || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'AngularJS': {\n        icon: 'angularjs',\n        url: 'http://angularjs.org',\n        npm: 'angular',\n        test: function(win) {\n            var ng = win.angular;\n            if(ng && ng.version && ng.version.full) {\n                return { version: ng.version.full };\n            }\n            else if (ng) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Ember.js': {\n        icon: 'emberjs',\n        url: 'http://emberjs.com/',\n        npm: 'ember-source',\n        test: function(win) {\n            var ember = win.Ember || win.Em;\n            if (ember && ember.propertyDidChange) {\n                return { version: ember.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Hammer.js': {\n        icon: 'hammerjs',\n        url: 'http://eightmedia.github.io/hammer.js/',\n        npm: 'hammerjs',\n        test: function(win) {\n            if(win.Hammer && win.Hammer.Pinch) {\n                // Hammer.VERSION available in 1.0.10+\n                return { version: win.Hammer.VERSION || \"&lt; 1.0.10\" };\n            }\n            return false;\n        }\n    },\n\n    'Visibility.js': {\n        icon: 'icon_48',\n        url: 'https://github.com/ai/visibilityjs',\n        npm: 'visibilityjs',\n        test: function(win) {\n            if(win.Visibility && win.Visibility.every) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Velocity.js': {\n        icon: 'icon_48',\n        url: 'http://velocityjs.org/',\n        npm: 'velocity-animate',\n        test: function(win) {\n            var jq = win.jQuery || win.$,\n                velocity = jq ? jq.Velocity : win.Velocity;\n\n            if(velocity && velocity.RegisterEffect && velocity.version) {\n                return {\n                    version:\n                        velocity.version.major + \".\" +\n                        velocity.version.minor + \".\" +\n                        velocity.version.patch\n                };\n            }\n            else if (velocity && velocity.RegisterEffect) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'IfVisible.js': {\n        icon: 'icon_48',\n        url: 'http://serkanyersen.github.io/ifvisible.js/',\n        npm: 'ifvisible.js',\n        test: function(win) {\n            var iv = win.ifvisible;\n            if(iv && iv.__ceGUID === \"ifvisible.object.event.identifier\") {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Pixi.js': {\n        icon: 'pixi',\n        url: 'https://github.com/GoodBoyDigital/pixi.js',\n        npm: 'pixi.js',\n        test: function(win) {\n            var px = win.PIXI;\n            if(px && px.WebGLRenderer && px.VERSION) {\n                // version 4.4.3 returns simply \"4.4.3\"; version 1.5.2 returns \"v1.5.2\"\n                return { version: px.VERSION.replace('v', '') || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'DC.js': {\n        icon: 'icon_48',\n        url: 'http://dc-js.github.io/dc.js/',\n        npm: 'dc',\n        test: function(win) {\n            var dc = win.dc;\n            if(dc && dc.registerChart) {\n                return { version: dc.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'GreenSock JS': {\n        icon: 'greensock',\n        url: 'https://github.com/greensock/GreenSock-JS',\n        npm: 'gsap',\n        test: function(win) {\n            if (win.TweenMax && win.TweenMax.pauseAll) {\n                return { version: win.TweenMax.version || UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'FastClick': {\n        icon: 'fastclick',\n        url: 'https://github.com/ftlabs/fastclick',\n        npm: 'fastclick',\n        test: function(win) {\n            if(win.FastClick && win.FastClick.notNeeded) {\n                return { version: UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'Isotope': {\n        icon: 'isotope',\n        url: 'http://isotope.metafizzy.co/',\n        npm: 'isotope-layout',\n        test: function(win) {\n            if(win.Isotope || (win.$ != null && win.$.Isotope)) {\n                return { version: UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'Marionette': {\n        icon: 'marionette',\n        url: 'http://marionettejs.com/',\n        npm: 'backbone.marionette',\n        test: function(win) {\n            if(win.Marionette && win.Marionette.Application) {\n                return { version: win.Marionette.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Can': {\n        icon: 'icon_48',\n        url: 'http://canjs.com/',\n        npm: 'can',\n        test: function (win) {\n            if (win.can && win.can.Construct) {\n                return { version: win.can.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Vue': {\n        icon: 'vue',\n        url: 'http://vuejs.org/',\n        npm: 'vue',\n        test: function(win) {\n            if (win.Vue && win.Vue.nextTick) {\n                return { version: win.Vue.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Two': {\n        icon: 'two',\n        url: 'https://jonobr1.github.io/two.js',\n        npm: 'two.js',\n        test: function(win) {\n            if (win.Two && win.Two.Utils) {\n                return { version: win.Two.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Brewser': {\n        icon: 'brewser',\n        url: 'http://handcraftedldn.github.io/brewser/',\n        npm: 'brewser',\n        test: function(win) {\n            if(win.BREWSER && win.BREWSER.ua) {\n                return { version: BREWSER.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Material Design Lite': {\n    \ticon: 'mdl',\n    \turl: 'http://www.getmdl.io/',\n        npm: 'material-design-lite',\n    \ttest: function(win) {\n    \t\tif(win.componentHandler && win.componentHandler.upgradeElement) {\n    \t\t\treturn { version: UNKNOWN_VERSION};\n    \t\t}\n    \t\treturn false;\n    \t}\n    },\n    'Kendo UI': {\n        icon: 'kendoui',\n        url: 'https://github.com/telerik/kendo-ui-core',\n        npm: 'kendo-ui-core',\n        test: function(win) {\n            if (win.kendo && win.kendo.View && win.kendo.View.extend) {\n                return {version: win.kendo.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'Matter.js': {\n        icon: 'matter-js',\n        url: 'http://brm.io/matter-js/',\n        npm: 'matter-js',\n        test: function(win) {\n            if (win.Matter && win.Matter.Engine) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'Riot': {\n        icon: 'riot',\n        url: 'http://riotjs.com/',\n        npm: 'riot',\n        test: function(win) {\n            if (win.riot && win.riot.mixin) {\n                return { version: win.riot.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Sea.js': {\n        icon: 'icon_48',\n        url: 'http://seajs.org/',\n        npm: 'seajs',\n        test: function(win) {\n            if(win.seajs && win.seajs.use) {\n                return { version: win.seajs.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Moment.js': {\n        icon: 'momentjs',\n        url: 'http://momentjs.com/',\n        npm: 'moment',\n        test: function(win) {\n            if(win.moment && (win.moment.isMoment || win.moment.lang)) {\n                // version 1.0.0 has neither \"isMoment\" nor \"version\"\n                return { version: win.moment.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Moment Timezone': {\n        icon: 'momentjs',\n        url: 'http://momentjs.com/timezone/',\n        npm: 'moment-timezone',\n        test: function(win) {\n            if (win.moment && win.moment.tz) {\n                return { version: win.moment.tz.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'ScrollMagic': {\n        icon: 'scrollmagic',\n        url: 'http://scrollmagic.io/',\n        npm: 'scrollmagic',\n        test: function(win) {\n            if (win.ScrollMagic && win.ScrollMagic.Controller) {\n                return {version: ScrollMagic.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'SWFObject': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://github.com/swfobject/swfobject',\n        test: function(win) {\n            if (win.swfobject && win.swfobject.embedSWF) {\n                // 2.x - exact version only for 2.3\n                return { version: win.swfobject.version || UNKNOWN_VERSION };\n            } else if(win.deconcept && win.deconcept.SWFObject) {\n                // 1.x\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'FlexSlider': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://woocommerce.com/flexslider/',\n        npm: 'flexslider',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if (jq && jq.fn && jq.fn.jquery && jq.flexslider){\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'SPF': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://youtube.github.io/spfjs/',\n        npm: 'spf',\n        test: function(win) {\n            if (win.spf && win.spf.init) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Numeral.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'http://numeraljs.com/',\n        npm: 'numeraljs',\n        test: function(win) {\n            if (win.numeral && win.isNumeral) {\n                return { version: win.numeral.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'boomerang.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://soasta.github.io/boomerang/doc/',\n        npm: 'boomerangjs',\n        test: function(win) {\n            if (win.BOOMR && win.BOOMR.utils && win.BOOMR.init) {\n                return { version: win.BOOMR.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Framer': {\n        icon: 'framer',\n        url: 'https://framer.com/',\n        npm: 'framerjs',\n        test: function(win) {\n            if (win.Framer && win.Framer.Layer) {\n                return { version: win.Framer.Version.build || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    }\n};\n";
+const libDetectorSource="var UNKNOWN_VERSION = null;\nvar d41d8cd98f00b204e9800998ecf8427e_LibraryDetectorTests = {\n\n    'GWT': {\n        icon: 'gwt',\n        url: 'http://www.gwtproject.org/',\n        test: function(win) {\n            // pretty complicated, many possible tell tales\n            var doc = win.document,\n                hasHistFrame = doc.getElementById('__gwt_historyFrame'),\n                hasGwtUid = doc.gwt_uid,\n                hasBodyListener = doc.body.__listener,\n                hasBodyEventBits = doc.body.__eventBits,\n                hasModules = win.__gwt_activeModules,\n                hasJsonP = win.__gwt_jsonp__,\n                hasRootWinApp = win.__gwt_scriptsLoaded || win.__gwt_stylesLoaded || win.__gwt_activeModules;\n\n            // use the many possible indicators\n            if(hasHistFrame || hasGwtUid || hasBodyListener || hasBodyEventBits || hasModules || hasJsonP || hasRootWinApp) {\n\n                // carefully look at frames, but only if certain is GWT frame\n                var frames = doc.getElementsByTagName('iframe'),\n                    gwtVersion = UNKNOWN_VERSION;\n                for(var n=0; n<frames.length; n++) {\n                    // catch security access errors\n                    try {\n                        var hasNegativeTabIndex = frames[n].tabIndex < 0; // on for GWT\n                        if(hasNegativeTabIndex && frames[n].contentWindow && frames[n].contentWindow.$gwt_version) {\n                            gwtVersion = frames[n].contentWindow.$gwt_version;\n                            break;\n                        }\n                    }\n                    catch(e) {}\n                }\n\n                if(gwtVersion=='0.0.999') {\n                  gwtVersion = 'Google Internal';\n                }\n\n                return { version: gwtVersion };\n            }\n            return false;\n        }\n    },\n\n    'Ink': {\n        icon: 'ink',\n        url: 'http://ink.sapo.pt/',\n        test: function(win) {\n            if (win.Ink && win.Ink.createModule) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Vaadin': {\n        icon: 'vaadin',\n        url: 'http://vaadin.com/home',\n        test: function(win) {\n            if (win.vaadin && win.vaadin.registerWidgetset) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Bootstrap': {\n        icon: 'bootstrap',\n        url: 'http://getbootstrap.com/',\n        npm: 'bootstrap',\n        // look for a function Boostrap has added to jQuery - regex for BS 2 & 3\n        test: function(win) {\n            var jQueryAvailable = win.$ && win.$.fn,\n                RE_PREFIX_V2 = '\\\\$this\\\\.data\\\\((?:\\'|\")',\n                RE_PREFIX_V3 = '\\\\$this\\\\.data\\\\((?:\\'|\")(?:bs\\\\.){1}',\n                bootstrapComponents = [\n                    'affix', 'alert', 'button', 'carousel', 'collapse', 'dropdown',\n                    'modal', 'popover', 'scrollspy', 'tab', 'tooltip'\n                ];\n\n            if(jQueryAvailable) {\n                var bootstrapVersion;\n\n                bootstrapComponents.some(function(component) {\n                    if(win.$.fn[component]) {\n                        // Bootstrap >= 3.2.0 detection\n                        if(win.$.fn[component].Constructor && win.$.fn[component].Constructor.VERSION) {\n                            bootstrapVersion = win.$.fn[component].Constructor.VERSION;\n                            return true;\n                        // Bootstrap >= 2.0.0 and <= 3.1.0 detection\n                        } else if(new RegExp(RE_PREFIX_V3 + component).test(win.$.fn[component].toString())) {\n                            bootstrapVersion = '>= 3.0.0 & <= 3.1.1';\n                            return true;\n                        // Bootstrap < 3.1.0 detection\n                        } else if(new RegExp(RE_PREFIX_V2 + component).test(win.$.fn[component].toString())) {\n                            bootstrapVersion = '>= 2.0.0 & <= 2.3.2';\n                            return true;\n                        }\n                    }\n\n                    return false;\n                });\n\n                if (bootstrapVersion) {\n                    return { version: bootstrapVersion };\n                }\n            }\n\n            return false;\n        }\n    },\n\n    'Zurb': {\n        icon: 'zurb',\n        url: 'http://foundation.zurb.com/',\n        npm: 'foundation-sites',\n        test: function(win) {\n            if(win.Foundation && win.Foundation.Toggler) {\n                return { version: win.Foundation.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Polymer': {\n        icon: 'polymer',\n        url: 'http://www.polymer-project.org/',\n        npm: '@polymer/polymer',\n        test: function(win) {\n            if(win.Polymer && win.Polymer.dom) {\n                return { version: win.Polymer.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Highcharts': {\n        icon: 'highcharts',\n        url: 'http://www.highcharts.com',\n        npm: 'highcharts',\n        test: function(win) {\n            if(win.Highcharts && win.Highcharts.Point) {\n                return { version: win.Highcharts.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'InfoVis': {\n        icon: 'jit',\n        url: 'http://philogb.github.com/jit/',\n        test: function test(win) {\n            if(win.$jit && win.$jit.PieChart) {\n                return { version: win.$jit.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'FlotCharts': {\n        icon: 'icon_48',\n        url: 'http://www.flotcharts.org/',\n        npm: 'flot',\n        test: function(win) {\n            if(win.$ && win.$.plot) {\n                return { version: win.$.plot.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Blackbird': {\n        icon: 'blackbird',\n        url: 'http://www.gscottolson.com/blackbirdjs/',\n        test: function(win) {\n            if(win.log && win.log.warn) {\n                return { version: UNKNOWN_VERSION}; // no version info\n            }\n            return false;\n        }\n    },\n\n    'CreateJS': {\n        icon: 'createjs',\n        url: 'http://createjs.com/#!/CreateJS',\n        npm: 'createjs',\n        test: function(win) {\n            if(win.createjs && win.createjs.promote) {\n                return { version: UNKNOWN_VERSION}; // no version info available\n            }\n            return false;\n        }\n    },\n\n    'Google Maps': {\n        icon: 'gmaps',\n        url: 'https://developers.google.com/maps/',\n        test: function(win) {\n            if (win.google && win.google.maps) {\n                return { version: win.google.maps.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'jQuery': {\n        icon: 'jquery',\n        url: 'http://jquery.com',\n        npm: 'jquery',\n        test: function(win) {\n            var jq = win.jQuery || win.$;\n            if (jq && jq.fn) {\n                return { version: jq.fn.jquery.replace(/[^\\d+\\.+]/g, '') || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'jQuery UI': {\n        icon: 'jquery_ui',\n        url: 'http://jqueryui.com',\n        npm: 'jquery-ui',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if(jq && jq.fn && jq.fn.jquery && jq.ui) {\n                var plugins = 'accordion,datepicker,dialog,draggable,droppable,progressbar,resizable,selectable,slider,menu,grid,tabs'.split(','), concat = [];\n                for (var i=0; i < plugins.length; i++) { if(jq.ui[plugins[i]]) concat.push(plugins[i].substr(0,1).toUpperCase() + plugins[i].substr(1)); }\n                return { version: jq.ui.version || UNKNOWN_VERSION, details: concat.length ? 'Plugins used: '+concat.join(',') : '' };\n            }\n            return false;\n        }\n    },\n\n    'Dojo': {\n        icon: 'dojo',\n        url: 'http://dojotoolkit.org',\n        npm: 'dojo',\n        test: function(win) {\n            if(win.dojo && win.dojo.delegate) {\n                var version = win.dojo.version ? win.dojo.version.toString() : UNKNOWN_VERSION;\n                return { version: version, details: 'Details: '+(win.dijit ? 'Uses Dijit' : 'none') };\n            }\n            return false;\n        }\n    },\n\n    'Prototype': {\n        icon: 'prototype',\n        url: 'http://prototypejs.org',\n        test: function(win) {\n            if(win.Prototype && win.Prototype.BrowserFeatures) {\n                return { version: win.Prototype.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Scriptaculous': {\n        icon: 'scriptaculous',\n        url: 'http://script.aculo.us',\n        test: function(win) {\n            if(win.Scriptaculous && win.Scriptaculous.load) {\n                return { version: win.Scriptaculous.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'MooTools': {\n        icon: 'mootools',\n        url: 'http://mootools.net',\n        test: function(win) {\n            if(win.MooTools && win.MooTools.build) {\n                return { version: win.MooTools.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Spry': {\n        icon: 'spry',\n        url: 'http://labs.adobe.com/technologies/spry',\n        test: function(win) {\n            if (win.Spry && win.Spry.Data) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'YUI 2': {\n        icon: 'yui',\n        url: 'http://developer.yahoo.com/yui/2/',\n        test: function(win) {\n            if (win.YAHOO && win.YAHOO.util) {\n                return { version: win.YAHOO.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'YUI 3': {\n        icon: 'yui3',\n        url: 'http://yuilibrary.com/',\n        npm: 'yui',\n        test: function(win) {\n            if (win.YUI && win.YUI.Env) {\n                return { version: win.YUI.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Qooxdoo': {\n        icon: 'qooxdoo',\n        url: 'http://qooxdoo.org',\n        npm: 'qooxdoo',\n        test: function(win) {\n            if(win.qx && win.qx.Bootstrap) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Ext JS': {\n        icon: 'extjs',\n        url: 'http://www.sencha.com/products/extjs',\n        test: function(win) {\n            if (win.Ext && win.Ext.versions) {\n                return { version: win.Ext.versions.core.version };\n            }\n            else if(win.Ext) {\n                return { version: win.Ext.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'base2': {\n        icon: 'base2',\n        url: 'http://code.google.com/p/base2',\n        test: function(win) {\n            if(win.base2 && win.base2.dom) {\n                return { version: win.base2.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Closure Library': {\n        icon: 'closure',\n        url: 'https://developers.google.com/closure/library',\n        npm: 'google-closure-library',\n        test: function(win) {\n            if(win.goog && win.goog.provide) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Rapha&euml;l': {\n        icon: 'raphael',\n        url: 'http://dmitrybaranovskiy.github.io/raphael',\n        test: function(win) {\n            if (win.Raphael && win.Raphael.circle) {\n                return { version: win.Raphael.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'React': {\n        icon: 'react',\n        url: 'https://facebook.github.io/react/',\n        npm: 'react',\n        test: function(win) {\n            var reactRoot = document.getElementById('react-root');\n            var altHasReact = document.querySelector('*[data-reactroot]');\n            if (reactRoot && reactRoot.innerText.length > 0 || altHasReact || win.React && win.React.Component) {\n                return { version: win.React && win.React.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Modernizr': {\n        icon: 'modernizr',\n        url: 'http://www.modernizr.com',\n        npm: 'modernizr',\n        test: function(win) {\n            if (win.Modernizr && win.Modernizr.addTest) {\n                return { version: win.Modernizr._version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Processing.js': {\n        icon: 'processingjs',\n        url: 'http://processingjs.org',\n        npm: 'processing-js',\n        test: function(win) {\n            if(win.Processing && win.Processing.box) {\n                return { version: Processing.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Backbone': {\n        icon: 'backbone',\n        url: 'http://backbonejs.org/',\n        npm: 'backbone',\n        test: function(win) {\n            if (win.Backbone && win.Backbone.Model.extend) {\n                return {version: win.Backbone.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Leaflet': {\n        icon: 'leaflet',\n        url: 'http://leafletjs.com',\n        npm: 'leaflet',\n        test: function(win) {\n            // Leaflet 3.1 uses L.Marker and L.VERSION; later versions use L.marker and L.version\n            if (win.L && win.L.GeoJSON && (win.L.marker || win.L.Marker)) {\n                return { version: win.L.version || win.L.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Mapbox': {\n        icon: 'mapbox',\n        url: 'http://mapbox.com',\n        npm: 'mapbox-gl',\n        test: function(win) {\n            if (win.L && win.L.mapbox && win.L.mapbox.geocoder) {\n                return { version: win.L.mapbox.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Lo-Dash': {\n        icon: 'lodash',\n        url: 'http://lodash.com/',\n        npm: 'lodash',\n        test: function(win) {\n            var _ = typeof (_ = win._) == 'function' && _,\n                chain = typeof (chain = _ && _.chain) == 'function' && chain,\n                wrapper = (chain || _ || function() { return {}; })(1);\n\n            if (_ && wrapper.__wrapped__) {\n                return { version: _.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Underscore': {\n        icon: 'underscore',\n        url: 'http://underscorejs.org/',\n        npm: 'underscore',\n        test: function(win) {\n            if (win._ && typeof win._.tap === 'function' &&\n                !d41d8cd98f00b204e9800998ecf8427e_LibraryDetectorTests['Lo-Dash'].test(win)) {\n                return {version: win._.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Sammy': {\n        icon: 'sammy',\n        url: 'http://sammyjs.org',\n        test: function(win) {\n            if (win.Sammy && win.Sammy.Application.curry) {\n                return {version: win.Sammy.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Rico': {\n        icon: 'rico',\n        url: 'http://openrico.sourceforge.net/examples/index.html',\n        test:  function(win) {\n            if (win.Rico && window.Rico.checkIfComplete) {\n                return {version: win.Rico.Version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'MochiKit': {\n        icon: 'mochikit',\n        url: 'https://mochi.github.io/mochikit/',\n        test: function(win) {\n            if (win.MochiKit && win.MochiKit.Base.module) {\n                return {version: MochiKit.VERSION || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'gRapha&euml;l': {\n        icon: 'graphael',\n        url: 'http://g.raphaeljs.com',\n        test: function(win) {\n            if (win.Raphael && win.Raphael.fn.g) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Glow': {\n        icon: 'glow',\n        url: 'http://www.bbc.co.uk/glow',\n        test: function(win) {\n            if (win.gloader && win.gloader.getRequests) {\n                return {version: UNKNOWN_VERSION};\n            }\n            else if (win.glow && win.glow.dom) {\n                return {version: win.glow.VERSION || UNKNOWN_VERSION};\n            }\n            else if (win.Glow) {\n                return {version: win.Glow.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Socket.IO': {\n        icon: 'socketio', // currently has no icon\n        url: 'http://socket.io',\n        npm: 'socket.io',\n        test: function(win) {\n            // version 0.6.2 uses only io.Socket; more recent versions also have io.sockets\n            if (win.io && (win.io.sockets || win.io.Socket)) {\n                return {version: win.io.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Mustache': {\n        icon: 'mustache',\n        url: 'http://mustache.github.com',\n        npm: 'mustache',\n        test: function(win) {\n            if (win.Mustache && win.Mustache.to_html) {\n                return {version: win.Mustache.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Fabric.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'http://fabricjs.com/',\n        npm: 'fabric',\n        test: function(win) {\n            if (win.fabric && win.fabric.util) {\n                return {version: win.fabric.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'FuseJS': {\n        icon: 'fusejs',\n        url: 'http://fusejs.io/',\n        npm: 'fuse.js',\n        test: function(win) {\n            if (win.Fuse) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Tween.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://github.com/sole/tween.js',\n        npm: 'tween.js',\n        test: function(win) {\n            if (win.TWEEN && win.TWEEN.Easing) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'SproutCore': {\n       icon: 'sproutcore',\n       url: 'http://www.sproutcore.com',\n       test: function(win) {\n           if (win.SC && win.SC.Application) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'Zepto.js': {\n       icon: 'zepto',\n       url: 'http://zeptojs.com',\n       npm: 'zepto',\n       test: function(win) {\n           if (win.Zepto && win.Zepto.fn) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'three.js': {\n       icon: 'icon_48', // currently has no icon\n       url: 'http://threejs.org/',\n       npm: 'three',\n       test: function(win) {\n           if (win.THREE && win.THREE.REVISION) {\n               return {version: 'r' + win.THREE.REVISION};\n           }\n           else if (win.THREE) {\n               return {version: UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'PhiloGL': {\n       icon: 'philogl',\n       url: 'http://www.senchalabs.org/philogl/',\n       npm: 'philogl',\n       test: function(win) {\n           if (win.PhiloGL && win.PhiloGL.Camera) {\n               return {version: win.PhiloGL.version || UNKNOWN_VERSION};\n           }\n           return false;\n       }\n    },\n\n    'CamanJS': {\n        icon: 'camanjs',\n        url: 'http://camanjs.com/',\n        npm: 'caman',\n        test: function(win) {\n            if (win.Caman && win.Caman.version) {\n                return {version: win.Caman.version.release};\n            }\n            else if (win.Caman) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'yepnope': {\n        icon: 'yepnope',\n        url: 'http://yepnopejs.com/',\n        test: function(win) {\n            if (win.yepnope && win.yepnope.injectJs) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'LABjs': {\n        icon: 'icon_48',\n        url: 'http://labjs.com/',\n        test: function(win) {\n            if (win.$LAB && win.$LAB.setOptions) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'Head JS': {\n        icon: 'headjs',\n        url: 'http://headjs.com/',\n        npm: 'headjs',\n        test: function(win) {\n            if (win.head && win.head.js) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'ControlJS': {\n        icon: 'icon_48',\n        url: 'http://stevesouders.com/controljs/',\n        test: function(win) {\n            if (win.CJS && win.CJS.start) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'RequireJS': {\n        icon: 'requirejs',\n        url: 'http://requirejs.org/',\n        npm: 'requirejs',\n        test: function(win) {\n            var req = win.require || win.requirejs;\n            if (req && (req.load || (req.s && req.s.contexts && req.s.contexts._ && (req.s.contexts._.loaded || req.s.contexts._.load)))) {\n                return { version: req.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'RightJS': {\n        icon: 'rightjs',\n        url: 'http://rightjs.org/',\n        test: function(win) {\n            if (win.RightJS && win.RightJS.isNode) {\n                return { version: win.RightJS.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'jQuery Tools': {\n       icon: 'jquerytools',\n       url: 'http://jquerytools.github.io/',\n       test: function(win) {\n            var jq = win.jQuery || win.$;\n            if(jq && jq.tools) {\n               return { version: jq.tools.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Pusher': {\n       icon: 'pusher',\n       url: 'http://pusher.com/docs/pusher_js/',\n       npm: 'pusher-js',\n       test: function(win) {\n            if(win.Pusher && win.Pusher.Channel) {\n               return { version: win.Pusher.VERSION || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Paper.js': {\n       icon: 'paperjs',\n       url: 'http://paperjs.org/',\n       npm: 'paper',\n       test: function(win) {\n            if(win.paper && win.paper.Point) {\n               return { version: win.paper.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Swiffy': {\n       icon: 'icon_48',\n       url: 'http://www.google.com/doubleclick/studio/swiffy/',\n       test: function(win) {\n            if(win.swiffy && win.swiffy.Stage) {\n               return { version: UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Move': {\n       icon: 'move',\n       url: 'https://github.com/rsms/move',\n       npm: 'move',\n       test: function(win) {\n            if(win.move && win.move.compile) {\n               return { version: win.move.version() || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'AmplifyJS': {\n       icon: 'amplifyjs',\n       url: 'http://amplifyjs.com/',\n       npm: 'amplifyjs',\n       test: function(win) {\n            if(win.amplify && win.amplify.publish) {\n               return { version: UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'Popcorn.js': {\n       icon: 'popcornjs',\n       url: 'http://popcornjs.org/',\n       test: function(win) {\n            if (win.Popcorn && win.Popcorn.Events) {\n               return { version: win.Popcorn.version || UNKNOWN_VERSION };\n           }\n           return false;\n       }\n    },\n\n    'D3': {\n        icon: 'd3',\n        url: 'http://d3js.org',\n        npm: 'd3',\n        test: function(win) {\n            if (win.d3 && win.d3.select) {\n                return { version: win.d3.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Handlebars': {\n        icon: 'handlebars',\n        url: 'http://handlebarsjs.com/',\n        npm: 'handlebars',\n        test: function(win) {\n            if(win.Handlebars && win.Handlebars.compile) {\n                return { version: win.Handlebars.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Knockout': {\n        icon: 'knockout',\n        url: 'http://knockoutjs.com/',\n        npm: 'knockout',\n        test: function(win) {\n            if (win.ko && win.ko.applyBindings) {\n                return { version: win.ko.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Spine': {\n        icon: 'icon_48',\n        url: 'http://spinejs.com/',\n        test: function(win) {\n            if (win.Spine && win.Spine.Controller) {\n                return {version: win.Spine.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n\n    'jQuery Mobile': {\n        icon: 'jquery_mobile',\n        url: 'http://jquerymobile.com/',\n        npm: 'jquery-mobile',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if(jq && jq.fn && jq.fn.jquery && jq.mobile) {\n                return { version: jq.mobile.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'WebFont Loader': {\n        icon: 'icon_48',\n        url: 'https://github.com/typekit/webfontloader',\n        npm: 'webfontloader',\n        test: function(win) {\n            if(win.WebFont && win.WebFont.load) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Angular': {\n        icon: 'angular',\n        url: 'https://angular.io/',\n        npm: '@angular/core',\n        test: function(win) {\n            var ng = win.document.querySelector('[ng-version]');\n            if (ng) {\n                return { version: ng.getAttribute('ng-version') || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'AngularJS': {\n        icon: 'angularjs',\n        url: 'http://angularjs.org',\n        npm: 'angular',\n        test: function(win) {\n            var ng = win.angular;\n            if(ng && ng.version && ng.version.full) {\n                return { version: ng.version.full };\n            }\n            else if (ng) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Ember.js': {\n        icon: 'emberjs',\n        url: 'http://emberjs.com/',\n        npm: 'ember-source',\n        test: function(win) {\n            var ember = win.Ember || win.Em;\n            if (ember && ember.propertyDidChange) {\n                return { version: ember.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Hammer.js': {\n        icon: 'hammerjs',\n        url: 'http://eightmedia.github.io/hammer.js/',\n        npm: 'hammerjs',\n        test: function(win) {\n            if(win.Hammer && win.Hammer.Pinch) {\n                // Hammer.VERSION available in 1.0.10+\n                return { version: win.Hammer.VERSION || \"&lt; 1.0.10\" };\n            }\n            return false;\n        }\n    },\n\n    'Visibility.js': {\n        icon: 'icon_48',\n        url: 'https://github.com/ai/visibilityjs',\n        npm: 'visibilityjs',\n        test: function(win) {\n            if(win.Visibility && win.Visibility.every) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'Velocity.js': {\n        icon: 'icon_48',\n        url: 'http://velocityjs.org/',\n        npm: 'velocity-animate',\n        test: function(win) {\n            var jq = win.jQuery || win.$,\n                velocity = jq ? jq.Velocity : win.Velocity;\n\n            if(velocity && velocity.RegisterEffect && velocity.version) {\n                return {\n                    version:\n                        velocity.version.major + \".\" +\n                        velocity.version.minor + \".\" +\n                        velocity.version.patch\n                };\n            }\n            else if (velocity && velocity.RegisterEffect) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n\n    'IfVisible.js': {\n        icon: 'icon_48',\n        url: 'http://serkanyersen.github.io/ifvisible.js/',\n        npm: 'ifvisible.js',\n        test: function(win) {\n            var iv = win.ifvisible;\n            if(iv && iv.__ceGUID === \"ifvisible.object.event.identifier\") {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Pixi.js': {\n        icon: 'pixi',\n        url: 'https://github.com/GoodBoyDigital/pixi.js',\n        npm: 'pixi.js',\n        test: function(win) {\n            var px = win.PIXI;\n            if(px && px.WebGLRenderer && px.VERSION) {\n                // version 4.4.3 returns simply \"4.4.3\"; version 1.5.2 returns \"v1.5.2\"\n                return { version: px.VERSION.replace('v', '') || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'DC.js': {\n        icon: 'icon_48',\n        url: 'http://dc-js.github.io/dc.js/',\n        npm: 'dc',\n        test: function(win) {\n            var dc = win.dc;\n            if(dc && dc.registerChart) {\n                return { version: dc.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'GreenSock JS': {\n        icon: 'greensock',\n        url: 'https://github.com/greensock/GreenSock-JS',\n        npm: 'gsap',\n        test: function(win) {\n            if (win.TweenMax && win.TweenMax.pauseAll) {\n                return { version: win.TweenMax.version || UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'FastClick': {\n        icon: 'fastclick',\n        url: 'https://github.com/ftlabs/fastclick',\n        npm: 'fastclick',\n        test: function(win) {\n            if(win.FastClick && win.FastClick.notNeeded) {\n                return { version: UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'Isotope': {\n        icon: 'isotope',\n        url: 'http://isotope.metafizzy.co/',\n        npm: 'isotope-layout',\n        test: function(win) {\n            if(win.Isotope || (win.$ != null && win.$.Isotope)) {\n                return { version: UNKNOWN_VERSION }\n            }\n            return false;\n        }\n    },\n    'Marionette': {\n        icon: 'marionette',\n        url: 'http://marionettejs.com/',\n        npm: 'backbone.marionette',\n        test: function(win) {\n            if(win.Marionette && win.Marionette.Application) {\n                return { version: win.Marionette.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Can': {\n        icon: 'icon_48',\n        url: 'http://canjs.com/',\n        npm: 'can',\n        test: function (win) {\n            if (win.can && win.can.Construct) {\n                return { version: win.can.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Vue': {\n        icon: 'vue',\n        url: 'http://vuejs.org/',\n        npm: 'vue',\n        test: function(win) {\n            if (win.Vue && win.Vue.nextTick) {\n                return { version: win.Vue.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Two': {\n        icon: 'two',\n        url: 'https://jonobr1.github.io/two.js',\n        npm: 'two.js',\n        test: function(win) {\n            if (win.Two && win.Two.Utils) {\n                return { version: win.Two.Version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Brewser': {\n        icon: 'brewser',\n        url: 'http://handcraftedldn.github.io/brewser/',\n        npm: 'brewser',\n        test: function(win) {\n            if(win.BREWSER && win.BREWSER.ua) {\n                return { version: BREWSER.VERSION || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Material Design Lite': {\n    \ticon: 'mdl',\n    \turl: 'http://www.getmdl.io/',\n        npm: 'material-design-lite',\n    \ttest: function(win) {\n    \t\tif(win.componentHandler && win.componentHandler.upgradeElement) {\n    \t\t\treturn { version: UNKNOWN_VERSION};\n    \t\t}\n    \t\treturn false;\n    \t}\n    },\n    'Kendo UI': {\n        icon: 'kendoui',\n        url: 'https://github.com/telerik/kendo-ui-core',\n        npm: 'kendo-ui-core',\n        test: function(win) {\n            if (win.kendo && win.kendo.View && win.kendo.View.extend) {\n                return {version: win.kendo.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'Matter.js': {\n        icon: 'matter-js',\n        url: 'http://brm.io/matter-js/',\n        npm: 'matter-js',\n        test: function(win) {\n            if (win.Matter && win.Matter.Engine) {\n                return {version: UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'Riot': {\n        icon: 'riot',\n        url: 'http://riotjs.com/',\n        npm: 'riot',\n        test: function(win) {\n            if (win.riot && win.riot.mixin) {\n                return { version: win.riot.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Sea.js': {\n        icon: 'icon_48',\n        url: 'http://seajs.org/',\n        npm: 'seajs',\n        test: function(win) {\n            if(win.seajs && win.seajs.use) {\n                return { version: win.seajs.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Moment.js': {\n        icon: 'momentjs',\n        url: 'http://momentjs.com/',\n        npm: 'moment',\n        test: function(win) {\n            if(win.moment && (win.moment.isMoment || win.moment.lang)) {\n                // version 1.0.0 has neither \"isMoment\" nor \"version\"\n                return { version: win.moment.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Moment Timezone': {\n        icon: 'momentjs',\n        url: 'http://momentjs.com/timezone/',\n        npm: 'moment-timezone',\n        test: function(win) {\n            if (win.moment && win.moment.tz) {\n                return { version: win.moment.tz.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'ScrollMagic': {\n        icon: 'scrollmagic',\n        url: 'http://scrollmagic.io/',\n        npm: 'scrollmagic',\n        test: function(win) {\n            if (win.ScrollMagic && win.ScrollMagic.Controller) {\n                return {version: ScrollMagic.version || UNKNOWN_VERSION};\n            }\n            return false;\n        }\n    },\n    'SWFObject': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://github.com/swfobject/swfobject',\n        test: function(win) {\n            if (win.swfobject && win.swfobject.embedSWF) {\n                // 2.x - exact version only for 2.3\n                return { version: win.swfobject.version || UNKNOWN_VERSION };\n            } else if(win.deconcept && win.deconcept.SWFObject) {\n                // 1.x\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'FlexSlider': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://woocommerce.com/flexslider/',\n        npm: 'flexslider',\n        test: function(win) {\n            var jq = win.jQuery || win.$ || win.$jq || win.$j;\n            if (jq && jq.fn && jq.fn.jquery && jq.flexslider){\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'SPF': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://youtube.github.io/spfjs/',\n        npm: 'spf',\n        test: function(win) {\n            if (win.spf && win.spf.init) {\n                return { version: UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Numeral.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'http://numeraljs.com/',\n        npm: 'numeraljs',\n        test: function(win) {\n            if (win.numeral && win.isNumeral) {\n                return { version: win.numeral.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'boomerang.js': {\n        icon: 'icon_48', // currently has no icon\n        url: 'https://soasta.github.io/boomerang/doc/',\n        npm: 'boomerangjs',\n        test: function(win) {\n            if (win.BOOMR && win.BOOMR.utils && win.BOOMR.init) {\n                return { version: win.BOOMR.version || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    },\n    'Framer': {\n        icon: 'framer',\n        url: 'https://framer.com/',\n        npm: 'framerjs',\n        test: function(win) {\n            if (win.Framer && win.Framer.Layer) {\n                return { version: win.Framer.Version.build || UNKNOWN_VERSION };\n            }\n            return false;\n        }\n    }\n};\n";
 
 
 
@@ -8041,7 +9586,7 @@ return options.driver.evaluateAsync(expression);
 
 module.exports=JSLibraries;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/optimized-images":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/optimized-images":[function(require,module,exports){
 
 
 
@@ -8056,6 +9601,7 @@ module.exports=JSLibraries;
 
 const Gatherer=require('../gatherer');
 const URL=require('../../../lib/url-shim');
+const Sentry=require('../../../lib/sentry');
 
 const JPEG_QUALITY=0.92;
 const WEBP_QUALITY=0.85;
@@ -8116,7 +9662,9 @@ return prev;
 }
 
 seenUrls.add(record._url);
-const isOptimizableImage=/image\/(png|bmp|jpeg)/.test(record._mimeType);
+const isOptimizableImage=record._resourceType&&
+record._resourceType._name==='image'&&
+/image\/(png|bmp|jpeg)/.test(record._mimeType);
 const isSameOrigin=URL.originsMatch(pageUrl,record._url);
 const isBase64DataUri=/^data:.{2,40}base64\s*,/.test(record._url);
 
@@ -8205,7 +9753,16 @@ computeOptimizedImages(driver,imageRecords){
 return imageRecords.reduce((promise,record)=>{
 return promise.then(results=>{
 return this.calculateImageStats(driver,record).
-catch(err=>({failed:true,err})).
+catch(err=>{
+
+
+Sentry.captureException(err,{
+tags:{gatherer:'OptimizedImages'},
+extra:{imageUrl:URL.elideDataURI(record.url)},
+level:'warning'});
+
+return{failed:true,err};
+}).
 then(stats=>{
 if(!stats){
 return results;
@@ -8241,7 +9798,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/url-shim":35,"../gatherer":21}],"./gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/sentry":32,"../../../lib/url-shim":40,"../gatherer":17}],"./gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -8262,7 +9819,7 @@ function findPasswordInputsWithPreventedPaste(){
 
 
 function getOuterHTMLSnippet(node){
-const reOpeningTag=/^.*?\>/;
+const reOpeningTag=/^.*?>/;
 const match=node.outerHTML.match(reOpeningTag);
 return match&&match[0];
 }
@@ -8294,7 +9851,7 @@ return driver.evaluateAsync(
 
 module.exports=PasswordInputsWithPreventedPaste;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/response-compression":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/response-compression":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -8327,7 +9884,7 @@ const isTextBasedResource=record.resourceType()&&record.resourceType().isTextTyp
 const isChromeExtensionResource=record.url.startsWith(CHROME_EXTENSION_PROTOCOL);
 
 if(!isTextBasedResource||!record.resourceSize||!record.finished||
-isChromeExtensionResource){
+isChromeExtensionResource||!record.transferSize||record.statusCode===304){
 return;
 }
 
@@ -8341,6 +9898,7 @@ unoptimizedResponses.push({
 requestId:record.requestId,
 url:record.url,
 mimeType:record.mimeType,
+transferSize:record.transferSize,
 resourceSize:record.resourceSize});
 
 }
@@ -8355,7 +9913,9 @@ const textRecords=ResponseCompression.filterUnoptimizedResponses(networkRecords)
 
 const driver=options.driver;
 return Promise.all(textRecords.map(record=>{
-return driver.getRequestContent(record.requestId).then(content=>{
+const contentPromise=driver.getRequestContent(record.requestId);
+const timeoutPromise=new Promise(resolve=>setTimeout(resolve,3000));
+return Promise.race([contentPromise,timeoutPromise]).then(content=>{
 
 if(!content){
 record.gzipSize=0;
@@ -8383,7 +9943,7 @@ resolve(record);
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../gatherer":21,"buffer":48,"zlib":45}],"./gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../gatherer":17,"buffer":53,"zlib":50}],"./gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -8418,7 +9978,8 @@ filter(tag=>{
 if(tag.tagName==='SCRIPT'){
 return!tag.hasAttribute('async')&&
 !tag.hasAttribute('defer')&&
-!/^data:/.test(tag.src);
+!/^data:/.test(tag.src)&&
+tag.getAttribute('type')!=='module';
 }
 
 
@@ -8518,7 +10079,7 @@ return TagsBlockingFirstPaint.findBlockingTags(options.driver,tracingData.networ
 
 module.exports=TagsBlockingFirstPaint;
 
-},{"../gatherer":21}],"./gatherers/dobetterweb/websql":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/dobetterweb/websql":[function(require,module,exports){
 
 
 
@@ -8531,7 +10092,6 @@ const Gatherer=require('../gatherer');
 const MAX_WAIT_TIMEOUT=500;
 
 class WebSQL extends Gatherer{
-
 listenForDatabaseEvents(driver){
 let timeout;
 
@@ -8567,7 +10127,7 @@ return result&&result.database;
 
 module.exports=WebSQL;
 
-},{"../gatherer":21}],"./gatherers/html-without-javascript":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -8615,7 +10175,7 @@ value:result};
 
 module.exports=HTMLWithoutJavaScript;
 
-},{"./gatherer":21}],"./gatherers/http-redirect":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/http-redirect":[function(require,module,exports){
 
 
 
@@ -8631,7 +10191,6 @@ const Gatherer=require('./gatherer');
 
 
 class HTTPRedirect extends Gatherer{
-
 constructor(){
 super();
 this._preRedirectURL=undefined;
@@ -8681,7 +10240,7 @@ throw err;
 
 module.exports=HTTPRedirect;
 
-},{"./gatherer":21}],"./gatherers/image-usage":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/image-usage":[function(require,module,exports){
 
 
 
@@ -8729,7 +10288,7 @@ clientRect:getClientRect(element),
 naturalWidth:element.naturalWidth,
 naturalHeight:element.naturalHeight,
 isCss:false,
-isPicture:element.parentElement.tagName==='PICTURE',
+isPicture:!!element.parentElement&&element.parentElement.tagName==='PICTURE',
 usesObjectFit:computedStyle.getPropertyValue('object-fit')==='cover'||
 computedStyle.getPropertyValue('object-fit')==='contain'};
 
@@ -8797,7 +10356,6 @@ class ImageUsage extends Gatherer{
 
 
 
-
 fetchElementWithSizeInformation(element){
 const url=JSON.stringify(element.src);
 return this.driver.evaluateAsync(`(${determineNaturalSize.toString()})(${url})`).
@@ -8854,7 +10412,7 @@ return collector;
 
 module.exports=ImageUsage;
 
-},{"../../lib/dom-helpers.js":23,"./gatherer":21}],"./gatherers/js-usage":[function(require,module,exports){
+},{"../../lib/dom-helpers.js":25,"./gatherer":17}],"./gatherers/js-usage":[function(require,module,exports){
 
 
 
@@ -8893,7 +10451,7 @@ module.exports=JsUsage;
 
 JsUsage.JsUsageArtifact;
 
-},{"./gatherer":21}],"./gatherers/manifest":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/manifest":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -8922,7 +10480,9 @@ class Manifest extends Gatherer{
 
 
 afterPass(options){
-return options.driver.getAppManifest().
+const manifestPromise=options.driver.getAppManifest();
+const timeoutPromise=new Promise(resolve=>setTimeout(resolve,3000));
+return Promise.race([manifestPromise,timeoutPromise]).
 then(response=>{
 if(!response){
 return null;
@@ -8941,7 +10501,7 @@ return manifestParser(response.data,response.url,options.url);
 module.exports=Manifest;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/manifest-parser":28,"./gatherer":21,"buffer":48}],"./gatherers/offline":[function(require,module,exports){
+},{"../../lib/manifest-parser":30,"./gatherer":17,"buffer":53}],"./gatherers/offline":[function(require,module,exports){
 
 
 
@@ -8970,7 +10530,344 @@ then(_=>navigationRecord?navigationRecord.statusCode:-1);
 
 module.exports=Offline;
 
-},{"../../lib/url-shim":35,"./gatherer":21}],"./gatherers/seo/meta-description":[function(require,module,exports){
+},{"../../lib/url-shim":40,"./gatherer":17}],"./gatherers/runtime-exceptions":[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer');
+
+class RuntimeExceptions extends Gatherer{
+constructor(){
+super();
+this._exceptions=[];
+this._onRuntimeExceptionThrown=this.onRuntimeExceptionThrown.bind(this);
+}
+
+onRuntimeExceptionThrown(entry){
+this._exceptions.push(entry);
+}
+
+beforePass(options){
+const driver=options.driver;
+driver.on('Runtime.exceptionThrown',this._onRuntimeExceptionThrown);
+}
+
+afterPass(options){
+return Promise.resolve().
+then(_=>options.driver.off('Runtime.exceptionThrown',this._onRuntimeExceptionThrown)).
+then(_=>this._exceptions);
+}}
+
+
+module.exports=RuntimeExceptions;
+
+},{"./gatherer":17}],"./gatherers/seo/crawlable-links":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('../gatherer');
+const DOMHelpers=require('../../../lib/dom-helpers.js');
+
+class CrawlableLinks extends Gatherer{
+
+
+
+
+afterPass(options){
+const expression=`(function() {
+      ${DOMHelpers.getElementsInDocumentFnString}; // define function on page
+      const selector = 'a[href]:not([rel~="nofollow"])';
+      const elements = getElementsInDocument(selector);
+      return elements
+        .map(node => ({
+          href: node.href,
+          text: node.innerText
+        }));
+    })()`;
+
+return options.driver.evaluateAsync(expression);
+}}
+
+
+module.exports=CrawlableLinks;
+
+
+},{"../../../lib/dom-helpers.js":25,"../gatherer":17}],"./gatherers/seo/font-size":[function(require,module,exports){
+(function(global){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+
+
+
+
+const CSSMatchedStyles=require('../../../lib/web-inspector').CSSMatchedStyles;
+const Gatherer=require('../gatherer');
+const FONT_SIZE_PROPERTY_NAME='font-size';
+const TEXT_NODE_BLOCK_LIST=new Set(['SCRIPT','STYLE','NOSCRIPT']);
+
+const MINIMAL_LEGIBLE_FONT_SIZE_PX=16;
+
+const MAX_NODES_VISITED=500;
+const MAX_NODES_ANALYZED=50;
+
+
+
+
+
+function nodeInBody(node){
+if(!node){
+return false;
+}
+if(node.nodeName==='BODY'){
+return true;
+}
+return nodeInBody(node.parentNode);
+}
+
+
+
+
+
+
+
+function getAllNodesFromBody(driver){
+return driver.getNodesInDocument().
+then(nodes=>{
+const nodeMap=new Map();
+nodes.forEach(node=>nodeMap.set(node.nodeId,node));
+nodes.forEach(node=>node.parentNode=nodeMap.get(node.parentId));
+return nodes.filter(nodeInBody);
+});
+}
+
+
+
+
+
+
+
+
+
+function getEffectiveRule(property,node,{
+inlineStyle,
+attributesStyle,
+matchedCSSRules,
+inherited})
+{
+const cssModel={
+styleSheetHeaderForId:id=>({id})};
+
+
+const nodeType=node.nodeType;
+node.nodeType=()=>nodeType;
+const matchedStyles=new CSSMatchedStyles(
+cssModel,
+node,
+inlineStyle,
+attributesStyle,
+matchedCSSRules,
+null,
+inherited,
+null);
+
+
+const nodeStyles=matchedStyles.nodeStyles();
+const matchingRule=nodeStyles.
+find(style=>
+
+style.allProperties.some(item=>item.name===property&&
+matchedStyles.propertyState(item)!==CSSMatchedStyles.PropertyState.Overloaded));
+
+
+return matchingRule;
+}
+
+
+
+
+
+function getNodeTextLength(node){
+return!node.nodeValue?0:node.nodeValue.trim().length;
+}
+
+
+
+
+
+
+function getFontSizeSourceRule(driver,node){
+return driver.sendCommand('CSS.getMatchedStylesForNode',{nodeId:node.nodeId}).
+then(matchedRules=>getEffectiveRule(FONT_SIZE_PROPERTY_NAME,node,matchedRules));
+}
+
+
+
+
+
+
+function getFontSizeInformation(driver,node){
+return driver.sendCommand('CSS.getComputedStyleForNode',{nodeId:node.parentId}).
+then(result=>{
+const{computedStyle}=result;
+const fontSizeProperty=computedStyle.find(({name})=>name===FONT_SIZE_PROPERTY_NAME);
+
+return{
+fontSize:parseInt(fontSizeProperty.value,10),
+textLength:getNodeTextLength(node),
+node:node.parentNode};
+
+}).
+catch(err=>{
+require('../../../lib/sentry.js').captureException(err);
+return null;
+});
+}
+
+
+
+
+
+function isNonEmptyTextNode(node){
+return node.nodeType===global.Node.TEXT_NODE&&
+!TEXT_NODE_BLOCK_LIST.has(node.parentNode.nodeName)&&
+getNodeTextLength(node)>0;
+}
+
+class FontSize extends Gatherer{
+
+
+
+
+afterPass(options){
+const stylesheets=new Map();
+const onStylesheetAdd=sheet=>stylesheets.set(sheet.header.styleSheetId,sheet.header);
+options.driver.on('CSS.styleSheetAdded',onStylesheetAdd);
+
+const enableDOM=options.driver.sendCommand('DOM.enable');
+const enableCSS=options.driver.sendCommand('CSS.enable');
+
+let failingTextLength=0;
+let visitedTextLength=0;
+let totalTextLength=0;
+
+return Promise.all([enableDOM,enableCSS]).
+then(()=>getAllNodesFromBody(options.driver)).
+then(nodes=>{
+const textNodes=nodes.filter(isNonEmptyTextNode);
+totalTextLength=textNodes.reduce((sum,node)=>sum+=getNodeTextLength(node),0);
+const nodesToVisit=textNodes.
+sort((a,b)=>getNodeTextLength(b)-getNodeTextLength(a)).
+slice(0,MAX_NODES_VISITED);
+
+return nodesToVisit;
+}).
+then(textNodes=>
+Promise.all(textNodes.map(node=>getFontSizeInformation(options.driver,node)))).
+then(fontSizeInfo=>{
+const visitedNodes=fontSizeInfo.filter(Boolean);
+visitedTextLength=visitedNodes.reduce((sum,{textLength})=>sum+=textLength,0);
+const failingNodes=visitedNodes.
+filter(({fontSize})=>fontSize<MINIMAL_LEGIBLE_FONT_SIZE_PX);
+failingTextLength=failingNodes.reduce((sum,{textLength})=>sum+=textLength,0);
+
+return Promise.all(failingNodes.
+sort((a,b)=>b.textLength-a.textLength).
+slice(0,MAX_NODES_ANALYZED).
+map(info=>
+getFontSizeSourceRule(options.driver,info.node).
+then(sourceRule=>{
+info.cssRule=sourceRule;
+return info;
+})));
+
+
+}).
+then(analyzedFailingNodesData=>{
+options.driver.off('CSS.styleSheetAdded',onStylesheetAdd);
+
+const analyzedFailingTextLength=analyzedFailingNodesData.
+reduce((sum,{textLength})=>sum+=textLength,0);
+
+analyzedFailingNodesData.
+filter(data=>data.cssRule&&data.cssRule.styleSheetId).
+forEach(data=>data.cssRule.stylesheet=stylesheets.get(data.cssRule.styleSheetId));
+
+return Promise.all([
+options.driver.sendCommand('DOM.disable'),
+options.driver.sendCommand('CSS.disable')]).
+then(_=>({
+analyzedFailingNodesData,
+analyzedFailingTextLength,
+failingTextLength,
+visitedTextLength,
+totalTextLength}));
+
+});
+}}
+
+
+module.exports=FontSize;
+
+
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"../../../lib/sentry.js":32,"../../../lib/web-inspector":41,"../gatherer":17}],"./gatherers/seo/hreflang":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('../gatherer');
+
+class Hreflang extends Gatherer{
+
+
+
+
+afterPass(options){
+const driver=options.driver;
+
+return driver.querySelectorAll('head link[rel="alternate" i][hreflang]').
+then(nodes=>Promise.all(nodes.map(node=>
+Promise.all([node.getAttribute('href'),node.getAttribute('hreflang')])))).
+
+then(attributeValues=>attributeValues&&
+attributeValues.map(values=>{
+const[href,hreflang]=values;
+return{href,hreflang};
+}));
+
+}}
+
+
+module.exports=Hreflang;
+
+
+},{"../gatherer":17}],"./gatherers/seo/meta-description":[function(require,module,exports){
 
 
 
@@ -8985,11 +10882,10 @@ class MetaDescription extends Gatherer{
 
 
 
-
 afterPass(options){
 const driver=options.driver;
 
-return driver.querySelector('head meta[name="description"]').
+return driver.querySelector('head meta[name="description" i]').
 then(node=>node&&node.getAttribute('content'));
 }}
 
@@ -8997,7 +10893,32 @@ then(node=>node&&node.getAttribute('content'));
 module.exports=MetaDescription;
 
 
-},{"../gatherer":21}],"./gatherers/service-worker":[function(require,module,exports){
+},{"../gatherer":17}],"./gatherers/seo/meta-robots":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('../gatherer');
+
+class MetaRobots extends Gatherer{
+
+
+
+
+afterPass(options){
+const driver=options.driver;
+
+return driver.querySelector('head meta[name="robots" i]').
+then(node=>node&&node.getAttribute('content'));
+}}
+
+
+module.exports=MetaRobots;
+
+},{"../gatherer":17}],"./gatherers/service-worker":[function(require,module,exports){
 
 
 
@@ -9022,7 +10943,7 @@ versions:data.versions};
 
 module.exports=ServiceWorker;
 
-},{"./gatherer":21}],"./gatherers/start-url":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/start-url":[function(require,module,exports){
 
 
 
@@ -9127,7 +11048,7 @@ debugString:this.debugString};
 
 module.exports=StartUrl;
 
-},{"../../lib/manifest-parser":28,"../../lib/url-shim":35,"./gatherer":21}],"./gatherers/styles":[function(require,module,exports){
+},{"../../lib/manifest-parser":30,"../../lib/url-shim":40,"./gatherer":17}],"./gatherers/styles":[function(require,module,exports){
 
 
 
@@ -9172,7 +11093,6 @@ return results;
 }
 
 class Styles extends Gatherer{
-
 constructor(){
 super();
 this._activeStyleSheetIds=[];
@@ -9273,7 +11193,7 @@ return stylesheet;
 
 module.exports=Styles;
 
-},{"../../lib/web-inspector":36,"./gatherer":21,"lighthouse-logger":114}],"./gatherers/theme-color":[function(require,module,exports){
+},{"../../lib/web-inspector":41,"./gatherer":17,"lighthouse-logger":91}],"./gatherers/theme-color":[function(require,module,exports){
 
 
 
@@ -9288,18 +11208,17 @@ class ThemeColor extends Gatherer{
 
 
 
-
 afterPass(options){
 const driver=options.driver;
 
-return driver.querySelector('head meta[name="theme-color"]').
+return driver.querySelector('head meta[name="theme-color" i]').
 then(node=>node&&node.getAttribute('content'));
 }}
 
 
 module.exports=ThemeColor;
 
-},{"./gatherer":21}],"./gatherers/url":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/url":[function(require,module,exports){
 
 
 
@@ -9310,7 +11229,6 @@ module.exports=ThemeColor;
 const Gatherer=require('./gatherer');
 
 class URL extends Gatherer{
-
 afterPass(options){
 
 
@@ -9325,7 +11243,7 @@ finalUrl:options.url};
 
 module.exports=URL;
 
-},{"./gatherer":21}],"./gatherers/viewport-dimensions":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/viewport-dimensions":[function(require,module,exports){
 
 
 
@@ -9356,7 +11274,6 @@ class ViewportDimensions extends Gatherer{
 
 
 
-
 afterPass(options){
 const driver=options.driver;
 
@@ -9376,7 +11293,7 @@ return dimensions;
 
 module.exports=ViewportDimensions;
 
-},{"./gatherer":21}],"./gatherers/viewport":[function(require,module,exports){
+},{"./gatherer":17}],"./gatherers/viewport":[function(require,module,exports){
 
 
 
@@ -9391,18 +11308,17 @@ class Viewport extends Gatherer{
 
 
 
-
 afterPass(options){
 const driver=options.driver;
 
-return driver.querySelector('head meta[name="viewport"]').
+return driver.querySelector('head meta[name="viewport" i]').
 then(node=>node&&node.getAttribute('content'));
 }}
 
 
 module.exports=Viewport;
 
-},{"./gatherer":21}],1:[function(require,module,exports){
+},{"./gatherer":17}],1:[function(require,module,exports){
 
 
 
@@ -9457,6 +11373,7 @@ items:nodeDetails}};
 module.exports=AxeAudit;
 
 },{"../audit":2}],2:[function(require,module,exports){
+
 
 
 
@@ -9610,13 +11527,11 @@ displayValue:`${displayValue}`,
 rawValue:result.rawValue,
 error:result.error,
 debugString:result.debugString,
-optimalValue:result.optimalValue,
 extendedInfo:result.extendedInfo,
 scoringMode:audit.meta.scoringMode||Audit.SCORING_MODES.BINARY,
 informative:audit.meta.informative,
 manual:audit.meta.manual,
 name:audit.meta.name,
-category:audit.meta.category,
 description:auditDescription,
 helpText:audit.meta.helpText,
 details:result.details};
@@ -9633,7 +11548,6 @@ module.exports=Audit;
 
 
 
-Audit.Headings;
 
 
 
@@ -9642,9 +11556,11 @@ Audit.Headings;
 
 
 
-Audit.HeadingsResult;
 
-},{"../lib/statistics":30}],3:[function(require,module,exports){
+
+
+
+},{"../lib/statistics":33}],3:[function(require,module,exports){
 
 
 
@@ -9808,7 +11724,7 @@ throw new Error('audit_ unimplemented');
 
 module.exports=UnusedBytes;
 
-},{"../../report/v2/renderer/util":37,"../audit":2}],4:[function(require,module,exports){
+},{"../../report/v2/renderer/util":42,"../audit":2}],4:[function(require,module,exports){
 
 
 
@@ -9824,7 +11740,6 @@ module.exports=UnusedBytes;
 const Audit=require('../audit');
 
 class ManualAudit extends Audit{
-
 
 
 
@@ -9941,6 +11856,7 @@ module.exports=ViolationAudit;
 
 },{"./audit":2}],7:[function(require,module,exports){
 (function(__dirname){
+
 
 
 
@@ -10120,10 +12036,6 @@ throw new Error(`${auditName} has no audit() method.`);
 
 if(typeof auditDefinition.meta.name!=='string'){
 throw new Error(`${auditName} has no meta.name property, or the property is not a string.`);
-}
-
-if(typeof auditDefinition.meta.category!=='string'){
-throw new Error(`${auditName} has no meta.category property, or the property is not a string.`);
 }
 
 if(typeof auditDefinition.meta.description!=='string'){
@@ -10569,7 +12481,7 @@ return this._groups;
 module.exports=Config;
 
 }).call(this,"/../lighthouse-core/config");
-},{"../audits/audit":2,"../gather/gather-runner":20,"../runner":39,"./default.js":8,"./full-config.js":9,"lighthouse-logger":114,"path":63}],8:[function(require,module,exports){
+},{"../audits/audit":2,"../gather/gather-runner":16,"../runner":44,"./default.js":8,"./full-config.js":10,"lighthouse-logger":91,"path":68}],8:[function(require,module,exports){
 
 
 
@@ -10594,6 +12506,7 @@ gatherers:[
 'viewport-dimensions',
 'theme-color',
 'manifest',
+'runtime-exceptions',
 'chrome-console-messages',
 'image-usage',
 'accessibility',
@@ -10606,7 +12519,12 @@ gatherers:[
 'dobetterweb/password-inputs-with-prevented-paste',
 'dobetterweb/response-compression',
 'dobetterweb/tags-blocking-first-paint',
-'dobetterweb/websql']},
+'dobetterweb/websql',
+'seo/meta-description',
+'seo/font-size',
+'seo/crawlable-links',
+'seo/meta-robots',
+'seo/hreflang']},
 
 
 {
@@ -10650,6 +12568,7 @@ audits:[
 'consistently-interactive',
 'user-timings',
 'critical-request-chains',
+'redirects',
 'webapp-install-banner',
 'splash-screen',
 'themed-omnibox',
@@ -10657,6 +12576,8 @@ audits:[
 'content-width',
 'image-aspect-ratio',
 'deprecations',
+'mainthread-work-breakdown',
+'bootup-time',
 'manual/pwa-cross-browser',
 'manual/pwa-page-transitions',
 'manual/pwa-each-page-has-url',
@@ -10695,6 +12616,17 @@ audits:[
 'accessibility/valid-lang',
 'accessibility/video-caption',
 'accessibility/video-description',
+'accessibility/manual/custom-controls-labels',
+'accessibility/manual/custom-controls-roles',
+'accessibility/manual/focus-traps',
+'accessibility/manual/focusable-controls',
+'accessibility/manual/heading-levels',
+'accessibility/manual/logical-tab-order',
+'accessibility/manual/managed-focus',
+'accessibility/manual/offscreen-content-hidden',
+'accessibility/manual/use-landmarks',
+'accessibility/manual/visual-order-follows-dom',
+'byte-efficiency/uses-long-cache-ttl',
 'byte-efficiency/total-byte-weight',
 'byte-efficiency/offscreen-images',
 'byte-efficiency/uses-webp-images',
@@ -10714,7 +12646,13 @@ audits:[
 'dobetterweb/password-inputs-can-be-pasted-into',
 'dobetterweb/script-blocking-first-paint',
 'dobetterweb/uses-http2',
-'dobetterweb/uses-passive-event-listeners'],
+'dobetterweb/uses-passive-event-listeners',
+'seo/meta-description',
+'seo/http-status-code',
+'seo/font-size',
+'seo/link-text',
+'seo/is-crawlable',
+'seo/hreflang'],
 
 
 groups:{
@@ -10762,14 +12700,59 @@ description:'These are opportunities to improve the interpretation of your conte
 title:'Meta Tags Used Properly',
 description:'These are opportunities to improve the user experience of your site.'},
 
+'manual-a11y-checks':{
+title:'Additional items to manually check',
+description:'These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review).'},
+
 'manual-pwa-checks':{
-title:'Manual checks to verify',
+title:'Additional items to manually check',
 description:'These checks are required by the baseline '+
 '[PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist) but are '+
-'not automatically checked by Lighthouse. They do not affect your score but it\'s important that you verify them manually.'}},
+'not automatically checked by Lighthouse. They do not affect your score but it\'s important that you verify them manually.'},
+
+'seo-mobile':{
+title:'Mobile Friendly',
+description:'Make sure your pages are mobile friendly so users don’t have to pinch or zoom '+
+'in order to read the content pages. [Learn more](https://developers.google.com/search/mobile-sites/).'},
+
+'seo-content':{
+title:'Content Best Practices',
+description:'Format your HTML in a way that enables crawlers to better understand your app’s content.'},
+
+'seo-crawl':{
+title:'Crawling and Indexing',
+description:'To appear in search results, crawlers need access to your app.'}},
 
 
 categories:{
+'performance':{
+name:'Performance',
+description:'These encapsulate your app\'s current performance and opportunities to improve it.',
+audits:[
+{id:'first-meaningful-paint',weight:5,group:'perf-metric'},
+{id:'first-interactive',weight:5,group:'perf-metric'},
+{id:'consistently-interactive',weight:5,group:'perf-metric'},
+{id:'speed-index-metric',weight:1,group:'perf-metric'},
+{id:'estimated-input-latency',weight:1,group:'perf-metric'},
+{id:'link-blocking-first-paint',weight:0,group:'perf-hint'},
+{id:'script-blocking-first-paint',weight:0,group:'perf-hint'},
+{id:'uses-responsive-images',weight:0,group:'perf-hint'},
+{id:'offscreen-images',weight:0,group:'perf-hint'},
+{id:'uses-optimized-images',weight:0,group:'perf-hint'},
+{id:'uses-webp-images',weight:0,group:'perf-hint'},
+{id:'uses-request-compression',weight:0,group:'perf-hint'},
+{id:'time-to-first-byte',weight:0,group:'perf-hint'},
+{id:'redirects',weight:0,group:'perf-hint'},
+{id:'total-byte-weight',weight:0,group:'perf-info'},
+{id:'uses-long-cache-ttl',weight:0,group:'perf-info'},
+{id:'dom-size',weight:0,group:'perf-info'},
+{id:'critical-request-chains',weight:0,group:'perf-info'},
+{id:'user-timings',weight:0,group:'perf-info'},
+{id:'bootup-time',weight:0,group:'perf-info'},
+{id:'screenshot-thumbnails',weight:0},
+{id:'mainthread-work-breakdown',weight:0,group:'perf-info'}]},
+
+
 'pwa':{
 name:'Progressive Web App',
 weight:1,
@@ -10791,69 +12774,55 @@ audits:[
 {id:'pwa-each-page-has-url',weight:0,group:'manual-pwa-checks'}]},
 
 
-'performance':{
-name:'Performance',
-description:'These encapsulate your app\'s current performance and opportunities to improve it.',
-audits:[
-{id:'first-meaningful-paint',weight:5,group:'perf-metric'},
-{id:'first-interactive',weight:5,group:'perf-metric'},
-{id:'consistently-interactive',weight:5,group:'perf-metric'},
-{id:'speed-index-metric',weight:1,group:'perf-metric'},
-{id:'estimated-input-latency',weight:1,group:'perf-metric'},
-{id:'link-blocking-first-paint',weight:0,group:'perf-hint'},
-{id:'script-blocking-first-paint',weight:0,group:'perf-hint'},
-{id:'uses-responsive-images',weight:0,group:'perf-hint'},
-{id:'offscreen-images',weight:0,group:'perf-hint'},
-{id:'uses-optimized-images',weight:0,group:'perf-hint'},
-{id:'uses-webp-images',weight:0,group:'perf-hint'},
-{id:'uses-request-compression',weight:0,group:'perf-hint'},
-{id:'time-to-first-byte',weight:0,group:'perf-hint'},
-{id:'total-byte-weight',weight:0,group:'perf-info'},
-{id:'dom-size',weight:0,group:'perf-info'},
-{id:'critical-request-chains',weight:0,group:'perf-info'},
-{id:'user-timings',weight:0,group:'perf-info'},
-{id:'screenshot-thumbnails',weight:0}]},
-
-
 'accessibility':{
 name:'Accessibility',
-description:'These checks highlight opportunities to [improve the accessibility of your app](https://developers.google.com/web/fundamentals/accessibility).',
+description:'These checks highlight opportunities to [improve the accessibility of your app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.',
 audits:[
 {id:'accesskeys',weight:1,group:'a11y-correct-attributes'},
-{id:'aria-allowed-attr',weight:1,group:'a11y-aria'},
-{id:'aria-required-attr',weight:1,group:'a11y-aria'},
-{id:'aria-required-children',weight:1,group:'a11y-aria'},
-{id:'aria-required-parent',weight:1,group:'a11y-aria'},
-{id:'aria-roles',weight:1,group:'a11y-aria'},
-{id:'aria-valid-attr-value',weight:1,group:'a11y-aria'},
-{id:'aria-valid-attr',weight:1,group:'a11y-aria'},
-{id:'audio-caption',weight:1,group:'a11y-correct-attributes'},
-{id:'button-name',weight:1,group:'a11y-element-names'},
-{id:'bypass',weight:1,group:'a11y-describe-contents'},
-{id:'color-contrast',weight:1,group:'a11y-color-contrast'},
+{id:'aria-allowed-attr',weight:3,group:'a11y-aria'},
+{id:'aria-required-attr',weight:2,group:'a11y-aria'},
+{id:'aria-required-children',weight:5,group:'a11y-aria'},
+{id:'aria-required-parent',weight:2,group:'a11y-aria'},
+{id:'aria-roles',weight:3,group:'a11y-aria'},
+{id:'aria-valid-attr-value',weight:2,group:'a11y-aria'},
+{id:'aria-valid-attr',weight:5,group:'a11y-aria'},
+{id:'audio-caption',weight:4,group:'a11y-correct-attributes'},
+{id:'button-name',weight:10,group:'a11y-element-names'},
+{id:'bypass',weight:10,group:'a11y-describe-contents'},
+{id:'color-contrast',weight:6,group:'a11y-color-contrast'},
 {id:'definition-list',weight:1,group:'a11y-well-structured'},
 {id:'dlitem',weight:1,group:'a11y-well-structured'},
-{id:'document-title',weight:1,group:'a11y-describe-contents'},
-{id:'duplicate-id',weight:1,group:'a11y-well-structured'},
-{id:'frame-title',weight:1,group:'a11y-describe-contents'},
-{id:'html-has-lang',weight:1,group:'a11y-language'},
+{id:'document-title',weight:2,group:'a11y-describe-contents'},
+{id:'duplicate-id',weight:5,group:'a11y-well-structured'},
+{id:'frame-title',weight:5,group:'a11y-describe-contents'},
+{id:'html-has-lang',weight:4,group:'a11y-language'},
 {id:'html-lang-valid',weight:1,group:'a11y-language'},
-{id:'image-alt',weight:1,group:'a11y-correct-attributes'},
+{id:'image-alt',weight:8,group:'a11y-correct-attributes'},
 {id:'input-image-alt',weight:1,group:'a11y-correct-attributes'},
-{id:'label',weight:1,group:'a11y-describe-contents'},
+{id:'label',weight:10,group:'a11y-describe-contents'},
 {id:'layout-table',weight:1,group:'a11y-describe-contents'},
-{id:'link-name',weight:1,group:'a11y-element-names'},
-{id:'list',weight:1,group:'a11y-well-structured'},
-{id:'listitem',weight:1,group:'a11y-well-structured'},
+{id:'link-name',weight:9,group:'a11y-element-names'},
+{id:'list',weight:5,group:'a11y-well-structured'},
+{id:'listitem',weight:4,group:'a11y-well-structured'},
 {id:'meta-refresh',weight:1,group:'a11y-meta'},
-{id:'meta-viewport',weight:1,group:'a11y-meta'},
-{id:'object-alt',weight:1,group:'a11y-describe-contents'},
-{id:'tabindex',weight:1,group:'a11y-correct-attributes'},
+{id:'meta-viewport',weight:3,group:'a11y-meta'},
+{id:'object-alt',weight:4,group:'a11y-describe-contents'},
+{id:'tabindex',weight:4,group:'a11y-correct-attributes'},
 {id:'td-headers-attr',weight:1,group:'a11y-correct-attributes'},
 {id:'th-has-data-cells',weight:1,group:'a11y-correct-attributes'},
 {id:'valid-lang',weight:1,group:'a11y-language'},
-{id:'video-caption',weight:1,group:'a11y-describe-contents'},
-{id:'video-description',weight:1,group:'a11y-describe-contents'}]},
+{id:'video-caption',weight:4,group:'a11y-describe-contents'},
+{id:'video-description',weight:3,group:'a11y-describe-contents'},
+{id:'logical-tab-order',weight:0,group:'manual-a11y-checks'},
+{id:'focusable-controls',weight:0,group:'manual-a11y-checks'},
+{id:'managed-focus',weight:0,group:'manual-a11y-checks'},
+{id:'focus-traps',weight:0,group:'manual-a11y-checks'},
+{id:'custom-controls-labels',weight:0,group:'manual-a11y-checks'},
+{id:'custom-controls-roles',weight:0,group:'manual-a11y-checks'},
+{id:'visual-order-follows-dom',weight:0,group:'manual-a11y-checks'},
+{id:'offscreen-content-hidden',weight:0,group:'manual-a11y-checks'},
+{id:'heading-levels',weight:0,group:'manual-a11y-checks'},
+{id:'use-landmarks',weight:0,group:'manual-a11y-checks'}]},
 
 
 'best-practices':{
@@ -10875,13 +12844,81 @@ audits:[
 {id:'manifest-short-name-length',weight:1},
 {id:'password-inputs-can-be-pasted-into',weight:1},
 {id:'errors-in-console',weight:1},
-{id:'image-aspect-ratio',weight:1}]}}};
+{id:'image-aspect-ratio',weight:1}]},
+
+
+'seo':{
+name:'SEO',
+description:'These checks ensure that your page is optimized for search engine results ranking. '+
+'There are additional factors Lighthouse does not check that may affect your search ranking. '+
+'[Learn more](https://support.google.com/webmasters/answer/35769).',
+audits:[
+{id:'viewport',weight:1,group:'seo-mobile'},
+{id:'document-title',weight:1,group:'seo-content'},
+{id:'meta-description',weight:1,group:'seo-content'},
+{id:'http-status-code',weight:1,group:'seo-crawl'},
+{id:'link-text',weight:1,group:'seo-content'},
+{id:'is-crawlable',weight:1,group:'seo-crawl'},
+{id:'hreflang',weight:1,group:'seo-content'},
+{id:'font-size',weight:1,group:'seo-mobile'}]}}};
 
 
 
 
 
 },{}],9:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+module.exports={
+extends:'lighthouse:default',
+settings:{
+skipAudits:[
+
+'no-mutation-events',
+'screenshot-thumbnails',
+
+
+'first-meaningful-paint',
+'first-interactive',
+'consistently-interactive',
+'estimated-input-latency',
+'speed-index-metric',
+'offscreen-images',
+'load-fast-enough-for-pwa'],
+
+
+onlyCategories:['performance','pwa','best-practices']},
+
+passes:[
+{
+passName:'defaultPass',
+
+useThrottling:false,
+pauseAfterLoadMs:0,
+networkQuietThresholdMs:500,
+cpuQuietThresholdMs:500,
+
+gatherers:[]}],
+
+
+audits:[
+'predictive-perf'],
+
+categories:{
+performance:{
+audits:[
+{id:'predictive-perf',weight:5,group:'perf-metric'}]}}};
+
+
+
+
+
+},{}],10:[function(require,module,exports){
 
 
 
@@ -10921,964 +12958,8 @@ audits:[
 
 
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 
-
-
-
-
-'use strict';
-
-const Node=require('./node');
-
-class CPUNode extends Node{
-
-
-
-
-constructor(parentEvent,childEvents=[]){
-const nodeId=`${parentEvent.tid}.${parentEvent.ts}`;
-super(nodeId);
-
-this._event=parentEvent;
-this._childEvents=childEvents;
-}
-
-
-
-
-get type(){
-return Node.TYPES.CPU;
-}
-
-
-
-
-get startTime(){
-return this._event.ts;
-}
-
-
-
-
-get endTime(){
-return this._event.ts+this._event.dur;
-}
-
-
-
-
-get event(){
-return this._event;
-}
-
-
-
-
-get childEvents(){
-return this._childEvents;
-}
-
-
-
-
-didPerformLayout(){
-return this._childEvents.some(evt=>evt.name==='Layout');
-}
-
-
-
-
-cloneWithoutRelationships(){
-return new CPUNode(this._event,this._childEvents);
-}}
-
-
-module.exports=CPUNode;
-
-},{"./node":14}],11:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Node=require('../node');
-const TcpConnection=require('./tcp-connection');
-const emulation=require('../../../../lib/emulation').settings;
-
-
-const DEFAULT_MAXIMUM_CONCURRENT_REQUESTS=10;
-
-
-const DEFAULT_FALLBACK_TTFB=30;
-const DEFAULT_RTT=emulation.TYPICAL_MOBILE_THROTTLING_METRICS.targetLatency;
-const DEFAULT_THROUGHPUT=emulation.TYPICAL_MOBILE_THROTTLING_METRICS.targetDownloadThroughput*8;
-
-
-const DEFAULT_CPU_TASK_MULTIPLIER=emulation.CPU_THROTTLE_METRICS.rate;
-
-const DEFAULT_LAYOUT_TASK_MULTIPLIER=DEFAULT_CPU_TASK_MULTIPLIER/2;
-
-const DEFAULT_MAXIMUM_CPU_TASK_DURATION=10000;
-
-const TLS_SCHEMES=['https','wss'];
-
-function groupBy(items,keyFunc){
-const grouped=new Map();
-items.forEach(item=>{
-const key=keyFunc(item);
-const group=grouped.get(key)||[];
-group.push(item);
-grouped.set(key,group);
-});
-
-return grouped;
-}
-
-class Estimator{
-
-
-
-
-
-constructor(graph,options){
-this._graph=graph;
-this._options=Object.assign(
-{
-rtt:DEFAULT_RTT,
-throughput:DEFAULT_THROUGHPUT,
-fallbackTTFB:DEFAULT_FALLBACK_TTFB,
-maximumConcurrentRequests:DEFAULT_MAXIMUM_CONCURRENT_REQUESTS,
-cpuTaskMultiplier:DEFAULT_CPU_TASK_MULTIPLIER,
-layoutTaskMultiplier:DEFAULT_LAYOUT_TASK_MULTIPLIER},
-
-options);
-
-
-this._rtt=this._options.rtt;
-this._throughput=this._options.throughput;
-this._fallbackTTFB=this._options.fallbackTTFB;
-this._maximumConcurrentRequests=Math.min(
-TcpConnection.maximumSaturatedConnections(this._rtt,this._throughput),
-this._options.maximumConcurrentRequests);
-
-this._cpuTaskMultiplier=this._options.cpuTaskMultiplier;
-this._layoutTaskMultiplier=this._options.layoutTaskMultiplier;
-}
-
-
-
-
-
-
-static getTTFB(record){
-const timing=record._timing;
-return timing&&timing.receiveHeadersEnd-timing.sendEnd||Infinity;
-}
-
-
-
-
-_initializeNetworkRecords(){
-this._networkRecords=[];
-
-this._graph.getRootNode().traverse(node=>{
-if(node.type===Node.TYPES.NETWORK){
-this._networkRecords.push(node.record);
-}
-});
-}
-
-
-
-
-_initializeNetworkConnections(){
-const connections=new Map();
-const recordsByConnection=groupBy(this._networkRecords,record=>record.connectionId);
-
-for(const[connectionId,records]of recordsByConnection.entries()){
-const isTLS=TLS_SCHEMES.includes(records[0].parsedURL.scheme);
-const isH2=records[0].protocol==='h2';
-
-
-
-
-
-
-
-let estimatedResponseTime=Math.min(...records.map(Estimator.getTTFB));
-
-
-if(!Number.isFinite(estimatedResponseTime)){
-estimatedResponseTime=this._fallbackTTFB;
-}
-
-const connection=new TcpConnection(
-this._rtt,
-this._throughput,
-estimatedResponseTime,
-isTLS,
-isH2);
-
-
-connections.set(connectionId,connection);
-}
-
-this._connections=connections;
-return connections;
-}
-
-
-
-
-_initializeAuxiliaryData(){
-this._nodeTiming=new Map();
-this._nodesUnprocessed=new Set();
-this._nodesCompleted=new Set();
-this._nodesInProgress=new Set();
-this._nodesInQueue=new Set();
-this._connectionsInUse=new Set();
-this._numberInProgressByType=new Map();
-}
-
-
-
-
-
-_numberInProgress(type){
-return this._numberInProgressByType.get(type)||0;
-}
-
-
-
-
-
-_setTimingData(node,values){
-const timingData=this._nodeTiming.get(node)||{};
-Object.assign(timingData,values);
-this._nodeTiming.set(node,timingData);
-}
-
-
-
-
-
-_markNodeAsInQueue(node,queuedTime){
-this._nodesInQueue.add(node);
-this._nodesUnprocessed.delete(node);
-this._setTimingData(node,{queuedTime});
-}
-
-
-
-
-
-_markNodeAsInProgress(node,startTime){
-this._nodesInQueue.delete(node);
-this._nodesInProgress.add(node);
-this._numberInProgressByType.set(node.type,this._numberInProgress(node.type)+1);
-this._setTimingData(node,{startTime});
-}
-
-
-
-
-
-_markNodeAsComplete(node,endTime){
-this._nodesCompleted.add(node);
-this._nodesInProgress.delete(node);
-this._numberInProgressByType.set(node.type,this._numberInProgress(node.type)-1);
-this._setTimingData(node,{endTime});
-
-
-for(const dependent of node.getDependents()){
-
-const dependencies=dependent.getDependencies();
-if(dependencies.some(dependency=>!this._nodesCompleted.has(dependency)))continue;
-
-
-this._markNodeAsInQueue(dependent,endTime);
-}
-}
-
-
-
-
-
-_startNodeIfPossible(node,totalElapsedTime){
-if(node.type===Node.TYPES.CPU){
-
-if(this._numberInProgress(node.type)===0){
-this._markNodeAsInProgress(node,totalElapsedTime);
-this._setTimingData(node,{timeElapsed:0});
-}
-
-return;
-}
-
-if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
-
-const connection=this._connections.get(node.record.connectionId);
-const numberOfActiveRequests=this._numberInProgress(node.type);
-
-
-if(
-numberOfActiveRequests>=this._maximumConcurrentRequests||
-this._connectionsInUse.has(connection))
-{
-return;
-}
-
-this._markNodeAsInProgress(node,totalElapsedTime);
-this._setTimingData(node,{
-timeElapsed:0,
-timeElapsedOvershoot:0,
-bytesDownloaded:0});
-
-
-this._connectionsInUse.add(connection);
-}
-
-
-
-
-
-_updateNetworkCapacity(){
-for(const connection of this._connectionsInUse){
-connection.setThroughput(this._throughput/this._nodesInProgress.size);
-}
-}
-
-
-
-
-
-
-_estimateTimeRemaining(node){
-if(node.type===Node.TYPES.CPU){
-const timingData=this._nodeTiming.get(node);
-const multiplier=node.didPerformLayout()?
-this._layoutTaskMultiplier:
-this._cpuTaskMultiplier;
-const totalDuration=Math.min(
-Math.round(node.event.dur/1000*multiplier),
-DEFAULT_MAXIMUM_CPU_TASK_DURATION);
-
-const estimatedTimeElapsed=totalDuration-timingData.timeElapsed;
-this._setTimingData(node,{estimatedTimeElapsed});
-return estimatedTimeElapsed;
-}
-
-if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
-
-const timingData=this._nodeTiming.get(node);
-const connection=this._connections.get(node.record.connectionId);
-const calculation=connection.simulateDownloadUntil(
-node.record.transferSize-timingData.bytesDownloaded,
-timingData.timeElapsed);
-
-
-const estimatedTimeElapsed=calculation.timeElapsed+timingData.timeElapsedOvershoot;
-this._setTimingData(node,{estimatedTimeElapsed});
-return estimatedTimeElapsed;
-}
-
-
-
-
-
-_findNextNodeCompletionTime(){
-let minimumTime=Infinity;
-for(const node of this._nodesInProgress){
-minimumTime=Math.min(minimumTime,this._estimateTimeRemaining(node));
-}
-
-return minimumTime;
-}
-
-
-
-
-
-
-
-_updateProgressMadeInTimePeriod(node,timePeriodLength,totalElapsedTime){
-const timingData=this._nodeTiming.get(node);
-const isFinished=timingData.estimatedTimeElapsed===timePeriodLength;
-
-if(node.type===Node.TYPES.CPU){
-return isFinished?
-this._markNodeAsComplete(node,totalElapsedTime):
-timingData.timeElapsed+=timePeriodLength;
-}
-
-if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
-
-const connection=this._connections.get(node.record.connectionId);
-const calculation=connection.simulateDownloadUntil(
-node.record.transferSize-timingData.bytesDownloaded,
-timingData.timeElapsed,
-timePeriodLength-timingData.timeElapsedOvershoot);
-
-
-connection.setCongestionWindow(calculation.congestionWindow);
-connection.setH2OverflowBytesDownloaded(calculation.extraBytesDownloaded);
-
-if(isFinished){
-connection.setWarmed(true);
-this._connectionsInUse.delete(connection);
-this._markNodeAsComplete(node,totalElapsedTime);
-}else{
-timingData.timeElapsed+=calculation.timeElapsed;
-timingData.timeElapsedOvershoot+=calculation.timeElapsed-timePeriodLength;
-timingData.bytesDownloaded+=calculation.bytesDownloaded;
-}
-}
-
-
-
-
-
-estimateWithDetails(){
-
-this._initializeNetworkRecords();
-this._initializeNetworkConnections();
-this._initializeAuxiliaryData();
-
-const nodesUnprocessed=this._nodesUnprocessed;
-const nodesInQueue=this._nodesInQueue;
-const nodesInProgress=this._nodesInProgress;
-
-const rootNode=this._graph.getRootNode();
-rootNode.traverse(node=>nodesUnprocessed.add(node));
-
-let depth=0;
-let totalElapsedTime=0;
-
-
-this._markNodeAsInQueue(rootNode,totalElapsedTime);
-
-
-while(nodesInQueue.size||nodesInProgress.size){
-depth++;
-
-
-for(const node of nodesInQueue){
-this._startNodeIfPossible(node,totalElapsedTime);
-}
-
-
-this._updateNetworkCapacity();
-
-
-const minimumTime=this._findNextNodeCompletionTime();
-totalElapsedTime+=minimumTime;
-
-
-for(const node of nodesInProgress){
-this._updateProgressMadeInTimePeriod(node,minimumTime,totalElapsedTime);
-}
-
-if(depth>10000){
-throw new Error('Maximum depth exceeded: estimate');
-}
-}
-
-if(nodesUnprocessed.size!==0){
-throw new Error(`Cycle detected: ${nodesUnprocessed.size} unused nodes`);
-}
-
-return{
-timeInMs:totalElapsedTime,
-nodeTiming:this._nodeTiming};
-
-}
-
-
-
-
-estimate(){
-return this.estimateWithDetails().timeInMs;
-}}
-
-
-module.exports=Estimator;
-
-
-
-
-
-
-
-
-
-Estimator.NodeTimingData;
-
-},{"../../../../lib/emulation":25,"../node":14,"./tcp-connection":12}],12:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const INITIAL_CONGESTION_WINDOW=10;
-const TCP_SEGMENT_SIZE=1460;
-
-class TcpConnection{
-
-
-
-
-
-
-
-constructor(rtt,throughput,serverLatency=0,ssl=true,h2=false){
-this._warmed=false;
-this._ssl=ssl;
-this._h2=h2;
-this._rtt=rtt;
-this._throughput=throughput;
-this._serverLatency=serverLatency;
-this._congestionWindow=INITIAL_CONGESTION_WINDOW;
-this._h2OverflowBytesDownloaded=0;
-}
-
-
-
-
-
-
-static maximumSaturatedConnections(rtt,availableThroughput){
-const roundTripsPerSecond=1000/rtt;
-const bytesPerRoundTrip=TCP_SEGMENT_SIZE;
-const bytesPerSecond=roundTripsPerSecond*bytesPerRoundTrip;
-const minimumThroughputRequiredPerRequest=bytesPerSecond*8;
-return Math.floor(availableThroughput/minimumThroughputRequiredPerRequest);
-}
-
-
-
-
-_computeMaximumCongestionWindowInSegments(){
-const bytesPerSecond=this._throughput/8;
-const secondsPerRoundTrip=this._rtt/1000;
-const bytesPerRoundTrip=bytesPerSecond*secondsPerRoundTrip;
-return Math.floor(bytesPerRoundTrip/TCP_SEGMENT_SIZE);
-}
-
-
-
-
-setThroughput(throughput){
-this._throughput=throughput;
-}
-
-
-
-
-setCongestionWindow(congestion){
-this._congestionWindow=congestion;
-}
-
-
-
-
-setWarmed(warmed){
-this._warmed=warmed;
-}
-
-
-
-
-
-
-setH2OverflowBytesDownloaded(bytes){
-if(!this._h2)return;
-this._h2OverflowBytesDownloaded=bytes;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-simulateDownloadUntil(bytesToDownload,timeAlreadyElapsed=0,maximumTimeToElapse=Infinity){
-if(this._warmed&&this._h2){
-bytesToDownload-=this._h2OverflowBytesDownloaded;
-}
-const twoWayLatency=this._rtt;
-const oneWayLatency=twoWayLatency/2;
-const maximumCongestionWindow=this._computeMaximumCongestionWindowInSegments();
-
-let handshakeAndRequest=oneWayLatency;
-if(!this._warmed){
-handshakeAndRequest=
-
-oneWayLatency+
-
-oneWayLatency+
-
-oneWayLatency+(
-
-this._ssl?twoWayLatency:0);
-}
-
-let roundTrips=Math.ceil(handshakeAndRequest/twoWayLatency);
-let timeToFirstByte=handshakeAndRequest+this._serverLatency+oneWayLatency;
-if(this._warmed&&this._h2)timeToFirstByte=0;
-
-const timeElapsedForTTFB=Math.max(timeToFirstByte-timeAlreadyElapsed,0);
-const maximumDownloadTimeToElapse=maximumTimeToElapse-timeElapsedForTTFB;
-
-let congestionWindow=Math.min(this._congestionWindow,maximumCongestionWindow);
-let totalBytesDownloaded=0;
-if(timeElapsedForTTFB>0){
-totalBytesDownloaded=congestionWindow*TCP_SEGMENT_SIZE;
-}else{
-roundTrips=0;
-}
-
-let downloadTimeElapsed=0;
-let bytesRemaining=bytesToDownload-totalBytesDownloaded;
-while(bytesRemaining>0&&downloadTimeElapsed<=maximumDownloadTimeToElapse){
-roundTrips++;
-downloadTimeElapsed+=twoWayLatency;
-congestionWindow=Math.max(Math.min(maximumCongestionWindow,congestionWindow*2),1);
-
-const bytesDownloadedInWindow=congestionWindow*TCP_SEGMENT_SIZE;
-totalBytesDownloaded+=bytesDownloadedInWindow;
-bytesRemaining-=bytesDownloadedInWindow;
-}
-
-const timeElapsed=timeElapsedForTTFB+downloadTimeElapsed;
-const extraBytesDownloaded=this._h2?Math.max(totalBytesDownloaded-bytesToDownload,0):0;
-const bytesDownloaded=Math.max(Math.min(totalBytesDownloaded,bytesToDownload),0);
-
-return{
-roundTrips,
-timeElapsed,
-bytesDownloaded,
-extraBytesDownloaded,
-congestionWindow};
-
-}}
-
-
-module.exports=TcpConnection;
-
-},{}],13:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Node=require('./node');
-
-class NetworkNode extends Node{
-
-
-
-constructor(networkRecord){
-super(networkRecord.requestId);
-this._record=networkRecord;
-}
-
-
-
-
-get type(){
-return Node.TYPES.NETWORK;
-}
-
-
-
-
-get startTime(){
-return this._record.startTime*1000*1000;
-}
-
-
-
-
-get endTime(){
-return this._record.endTime*1000*1000;
-}
-
-
-
-
-get record(){
-return this._record;
-}
-
-
-
-
-get resourceType(){
-return this._record._resourceType&&this._record._resourceType._name;
-}
-
-
-
-
-get initiatorType(){
-return this._record._initiator&&this._record._initiator.type;
-}
-
-
-
-
-hasRenderBlockingPriority(){
-const priority=this._record.priority();
-return priority==='VeryHigh'||priority==='High'&&this.resourceType==='script';
-}
-
-
-
-
-cloneWithoutRelationships(){
-return new NetworkNode(this._record);
-}}
-
-
-module.exports=NetworkNode;
-
-},{"./node":14}],14:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Node{
-
-
-
-constructor(id){
-this._id=id;
-this._dependents=[];
-this._dependencies=[];
-}
-
-
-
-
-get id(){
-return this._id;
-}
-
-
-
-
-get type(){
-throw new Error('Unimplemented');
-}
-
-
-
-
-get startTime(){
-throw new Error('Unimplemented');
-}
-
-
-
-
-get endTime(){
-throw new Error('Unimplemented');
-}
-
-
-
-
-getDependents(){
-return this._dependents.slice();
-}
-
-
-
-
-getDependencies(){
-return this._dependencies.slice();
-}
-
-
-
-
-getNumberOfDependencies(){
-return this._dependencies.length;
-}
-
-
-
-
-getRootNode(){
-let rootNode=this;
-let maxDepth=1000;
-while(rootNode._dependencies.length&&maxDepth){
-rootNode=rootNode._dependencies[0];
-maxDepth--;
-}
-
-if(!maxDepth){
-throw new Error('Maximum depth exceeded: getRootNode');
-}
-
-return rootNode;
-}
-
-
-
-
-addDependent(node){
-node.addDependency(this);
-}
-
-
-
-
-addDependency(node){
-if(this._dependencies.includes(node)){
-return;
-}
-
-node._dependents.push(this);
-this._dependencies.push(node);
-}
-
-
-
-
-
-cloneWithoutRelationships(){
-return new Node(this.id);
-}
-
-
-
-
-
-
-
-
-
-cloneWithRelationships(predicate){
-const rootNode=this.getRootNode();
-
-let shouldIncludeNode=()=>true;
-if(predicate){
-const idsToInclude=new Set();
-rootNode.traverse(node=>{
-if(predicate(node)){
-node.traverse(
-node=>idsToInclude.add(node.id),
-node=>node._dependencies.filter(parent=>!idsToInclude.has(parent)));
-
-}
-});
-
-shouldIncludeNode=node=>idsToInclude.has(node.id);
-}
-
-const idToNodeMap=new Map();
-rootNode.traverse(originalNode=>{
-if(!shouldIncludeNode(originalNode))return;
-const clonedNode=originalNode.cloneWithoutRelationships();
-idToNodeMap.set(clonedNode.id,clonedNode);
-});
-
-rootNode.traverse(originalNode=>{
-if(!shouldIncludeNode(originalNode))return;
-const clonedNode=idToNodeMap.get(originalNode.id);
-
-for(const dependency of originalNode._dependencies){
-const clonedDependency=idToNodeMap.get(dependency.id);
-clonedNode.addDependency(clonedDependency);
-}
-});
-
-return idToNodeMap.get(this.id);
-}
-
-
-
-
-
-
-
-_traversePaths(iterator,getNext){
-const stack=[[this]];
-while(stack.length){
-const path=stack.shift();
-const node=path[0];
-iterator(node,path);
-
-const nodesToAdd=getNext(node);
-for(const nextNode of nodesToAdd){
-stack.push([nextNode].concat(path));
-}
-}
-}
-
-
-
-
-
-
-
-traverse(iterator,getNext){
-if(!getNext){
-getNext=node=>node.getDependents();
-}
-
-const visited=new Set();
-const originalGetNext=getNext;
-
-getNext=node=>{
-visited.add(node.id);
-const allNodesToVisit=originalGetNext(node);
-const nodesToVisit=allNodesToVisit.filter(nextNode=>!visited.has(nextNode.id));
-nodesToVisit.forEach(nextNode=>visited.add(nextNode.id));
-return nodesToVisit;
-};
-
-this._traversePaths(iterator,getNext);
-}}
-
-
-Node.TYPES={
-NETWORK:'network',
-CPU:'cpu'};
-
-
-module.exports=Node;
-
-},{}],15:[function(require,module,exports){
 
 
 
@@ -11890,7 +12971,6 @@ const EventEmitter=require('events').EventEmitter;
 const log=require('lighthouse-logger');
 
 class Connection{
-
 constructor(){
 this._lastCommandId=0;
 
@@ -11911,6 +12991,15 @@ return Promise.reject(new Error('Not implemented'));
 disconnect(){
 return Promise.reject(new Error('Not implemented'));
 }
+
+
+
+
+
+wsEndpoint(){
+return Promise.reject(new Error('Not implemented'));
+}
+
 
 
 
@@ -11973,7 +13062,10 @@ const logLevel=callback.options&&callback.options.silent?'verbose':'error';
 log.formatProtocol('method <= browser ERR',{method:callback.method},logLevel);
 let errMsg=`(${callback.method}): ${object.error.message}`;
 if(object.error.data)errMsg+=` (${object.error.data})`;
-throw new Error(`Protocol error ${errMsg}`);
+const error=new Error(`Protocol error ${errMsg}`);
+error.protocolMethod=callback.method;
+error.protocolError=object.error.message;
+throw error;
 }
 
 log.formatProtocol('method <= browser OK',
@@ -12013,7 +13105,7 @@ this._eventEmitter=null;
 
 module.exports=Connection;
 
-},{"events":50,"lighthouse-logger":114}],16:[function(require,module,exports){
+},{"events":55,"lighthouse-logger":91}],12:[function(require,module,exports){
 
 
 
@@ -12027,7 +13119,6 @@ const log=require('lighthouse-logger');
 
 
 class ExtensionConnection extends Connection{
-
 constructor(){
 super();
 this._tabId=null;
@@ -12175,7 +13266,7 @@ return tab.url;
 
 module.exports=ExtensionConnection;
 
-},{"./connection.js":15,"lighthouse-logger":114}],17:[function(require,module,exports){
+},{"./connection.js":11,"lighthouse-logger":91}],13:[function(require,module,exports){
 
 
 
@@ -12242,7 +13333,7 @@ this._port.send(message);
 
 module.exports=RawConnection;
 
-},{"./connection.js":15}],18:[function(require,module,exports){
+},{"./connection.js":11}],14:[function(require,module,exports){
 
 
 
@@ -12261,6 +13352,8 @@ class DevtoolsLog{
 
 constructor(regexFilter){
 this._filter=regexFilter;
+
+
 this._messages=[];
 this._isRecording=false;
 }
@@ -12297,7 +13390,8 @@ this._messages.push(message);
 
 module.exports=DevtoolsLog;
 
-},{}],19:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
+
 
 
 
@@ -12326,7 +13420,7 @@ const _uniq=arr=>Array.from(new Set(arr));
 
 class Driver{
 static get MAX_WAIT_FOR_FULLY_LOADED(){
-return 30*1000;
+return 45*1000;
 }
 
 
@@ -12341,6 +13435,7 @@ this._connection=connection;
 this._devtoolsLog=new DevtoolsLog(/^(Page|Network)\./);
 this.online=true;
 this._domainEnabledCounts=new Map();
+this._isolatedExecutionContextId=undefined;
 
 
 
@@ -12401,6 +13496,15 @@ return this._connection.connect();
 
 disconnect(){
 return this._connection.disconnect();
+}
+
+
+
+
+
+
+wsEndpoint(){
+return this._connection.wsEndpoint();
 }
 
 
@@ -12521,7 +13625,24 @@ scriptSource});
 
 
 
-evaluateAsync(expression){
+
+
+
+evaluateAsync(expression,options={}){
+const contextIdPromise=options.useIsolation?
+this._getOrCreateIsolatedContextId():
+Promise.resolve(undefined);
+return contextIdPromise.then(contextId=>this._evaluateInContext(expression,contextId));
+}
+
+
+
+
+
+
+
+
+_evaluateInContext(expression,contextId){
 return new Promise((resolve,reject)=>{
 
 const asyncTimeout=setTimeout(
@@ -12529,7 +13650,7 @@ _=>reject(new Error('The asynchronous expression exceeded the allotted time of 6
 60000);
 
 
-this.sendCommand('Runtime.evaluate',{
+const evaluationParams={
 
 
 
@@ -12546,8 +13667,11 @@ expression:`(function wrapInNativePromise() {
         }())`,
 includeCommandLineAPI:true,
 awaitPromise:true,
-returnByValue:true}).
-then(result=>{
+returnByValue:true,
+contextId};
+
+
+this.sendCommand('Runtime.evaluate',evaluationParams).then(result=>{
 clearTimeout(asyncTimeout);
 const value=result.result.value;
 
@@ -12731,10 +13855,12 @@ cancel:()=>undefined};
 
 let lastTimeout;
 let cancelled=false;
+
+const checkForQuietExpression=`(${checkTimeSinceLastLongTask.toString()})()`;
 function checkForQuiet(driver,resolve){
 if(cancelled)return;
 
-return driver.evaluateAsync(`(${checkTimeSinceLastLongTask.toString()})()`).
+return driver.evaluateAsync(checkForQuietExpression).
 then(timeSinceLongTask=>{
 if(cancelled)return;
 
@@ -12901,6 +14027,32 @@ return finalUrl;
 
 
 
+_getOrCreateIsolatedContextId(){
+if(typeof this._isolatedExecutionContextId==='number'){
+return Promise.resolve(this._isolatedExecutionContextId);
+}
+
+return this.sendCommand('Page.getResourceTree').
+then(data=>{
+const mainFrameId=data.frameTree.frame.id;
+return this.sendCommand('Page.createIsolatedWorld',{
+frameId:mainFrameId,
+worldName:'lighthouse_isolated_context'});
+
+}).
+then(data=>this._isolatedExecutionContextId=data.executionContextId);
+}
+
+_clearIsolatedContextId(){
+this._isolatedExecutionContextId=undefined;
+}
+
+
+
+
+
+
+
 
 
 
@@ -12923,6 +14075,7 @@ if(typeof maxWaitMs!=='number')maxWaitMs=Driver.MAX_WAIT_FOR_FULLY_LOADED;
 
 
 return this._beginNetworkStatusMonitoring(url).
+then(_=>this._clearIsolatedContextId()).
 then(_=>{
 
 
@@ -13037,11 +14190,22 @@ return elementList;
 
 
 getElementsInDocument(pierce=true){
+return this.getNodesInDocument(pierce).
+then(nodes=>nodes.
+filter(node=>node.nodeType===1).
+map(node=>new Element({nodeId:node.nodeId},this)));
+
+}
+
+
+
+
+
+
+
+getNodesInDocument(pierce=true){
 return this.sendCommand('DOM.getFlattenedDocument',{depth:-1,pierce}).
-then(result=>{
-const elements=result.nodes.filter(node=>node.nodeType===1);
-return elements.map(node=>new Element({nodeId:node.nodeId},this));
-});
+then(result=>result.nodes?result.nodes:[]);
 }
 
 
@@ -13249,7 +14413,7 @@ captureFunctionCallSites(funcName){
 const globalVarToPopulate=`window['__${funcName}StackTraces']`;
 const collectUsage=()=>{
 return this.evaluateAsync(
-`Promise.resolve(Array.from(${globalVarToPopulate}).map(item => JSON.parse(item)))`).
+`Array.from(${globalVarToPopulate}).map(item => JSON.parse(item))`).
 then(result=>{
 if(!Array.isArray(result)){
 throw new Error(
@@ -13436,7 +14600,8 @@ resolve(timeSinceLongTask);
 
 module.exports=Driver;
 
-},{"../lib/element":24,"../lib/emulation":25,"../lib/network-recorder":29,"../lib/traces/trace-parser":33,"../lib/url-shim":35,"./devtools-log":18,"events":50,"lighthouse-logger":114}],20:[function(require,module,exports){
+},{"../lib/element":26,"../lib/emulation":27,"../lib/network-recorder":31,"../lib/traces/trace-parser":38,"../lib/url-shim":40,"./devtools-log":14,"events":55,"lighthouse-logger":91}],16:[function(require,module,exports){
+
 
 
 
@@ -13452,7 +14617,6 @@ const NetworkRecorder=require('../lib/network-recorder.js');
 
 
 
-let GathererResults;
 
 
 
@@ -13538,7 +14702,11 @@ log.log('status','Initializing…');
 const resetStorage=!options.flags.disableStorageReset;
 
 return driver.assertNoSameOriginServiceWorkerClients(options.url).
-then(_=>gathererResults.UserAgent=[driver.getUserAgent()]).
+then(_=>driver.getUserAgent()).
+then(userAgent=>{
+gathererResults.UserAgent=[userAgent];
+GatherRunner.warnOnHeadless(userAgent,gathererResults);
+}).
 then(_=>driver.beginEmulation(options.flags)).
 then(_=>driver.enableRuntimeEvents()).
 then(_=>driver.cacheNatives()).
@@ -13578,9 +14746,7 @@ throw err;
 
 
 
-static assertPageLoaded(url,driver,networkRecords){
-if(!driver.online)return;
-
+static getPageLoadError(url,networkRecords){
 const mainRecord=networkRecords.find(record=>{
 
 return URL.equalWithExcludedFragments(record.url,url);
@@ -13597,7 +14763,25 @@ if(errorMessage){
 log.error('GatherRunner',errorMessage,url);
 const error=new Error(`Unable to load page: ${errorMessage}`);
 error.code='PAGE_LOAD_ERROR';
-throw error;
+return error;
+}
+}
+
+
+
+
+
+
+static warnOnHeadless(userAgent,gathererResults){
+const chromeVersion=userAgent.split(/HeadlessChrome\/(.*) /)[1];
+
+
+const minVersion='63.0.3239.0';
+if(chromeVersion&&chromeVersion<minVersion){
+gathererResults.LighthouseRunWarnings.push('Your site\'s mobile performance may be '+
+'worse than the numbers presented in this report. Lighthouse could not test on a '+
+'mobile connection because Headless Chrome does not support network throttling '+
+'prior to version '+minVersion+'. The version used was '+chromeVersion);
 }
 }
 
@@ -13682,6 +14866,7 @@ const gatherers=config.gatherers;
 const passData={};
 
 let pass=Promise.resolve();
+let pageLoadError;
 
 if(config.recordTrace){
 pass=pass.then(_=>{
@@ -13702,8 +14887,17 @@ const status='Retrieving devtoolsLog and network records';
 log.log('status',status);
 const devtoolsLog=driver.endDevtoolsLog();
 const networkRecords=NetworkRecorder.recordsFromLogs(devtoolsLog);
-GatherRunner.assertPageLoaded(options.url,driver,networkRecords);
 log.verbose('statusEnd',status);
+
+pageLoadError=GatherRunner.getPageLoadError(options.url,networkRecords);
+
+if(!driver.online)pageLoadError=null;
+
+if(pageLoadError){
+gathererResults.LighthouseRunWarnings.push('Lighthouse was unable to reliably load the '+
+'page you requested. Make sure you are testing the correct URL and that the server is '+
+'properly responding to all requests.');
+}
 
 
 passData.devtoolsLog=devtoolsLog;
@@ -13717,7 +14911,9 @@ pass=gatherers.reduce((chain,gatherer)=>{
 const status=`Retrieving: ${gatherer.name}`;
 return chain.then(_=>{
 log.log('status',status);
-const artifactPromise=Promise.resolve().then(_=>gatherer.afterPass(options,passData));
+const artifactPromise=pageLoadError?
+Promise.reject(pageLoadError):
+Promise.resolve().then(_=>gatherer.afterPass(options,passData));
 gathererResults[gatherer.name].push(artifactPromise);
 return GatherRunner.recoverOrThrow(artifactPromise);
 }).then(_=>{
@@ -13740,6 +14936,11 @@ return pass.then(_=>passData);
 static collectArtifacts(gathererResults){
 const artifacts={};
 
+
+const uniqueWarnings=Array.from(new Set(gathererResults.LighthouseRunWarnings));
+gathererResults.LighthouseRunWarnings=[uniqueWarnings];
+
+const pageLoadFailures=[];
 return Object.keys(gathererResults).reduce((chain,gathererName)=>{
 return chain.then(_=>{
 const phaseResultsPromises=gathererResults[gathererName];
@@ -13755,9 +14956,16 @@ artifacts[gathererName]=artifact;
 
 
 artifacts[gathererName]=err;
+
+if(err.code==='PAGE_LOAD_ERROR')pageLoadFailures.push(err);
 });
 });
 },Promise.resolve()).then(_=>{
+
+if(pageLoadFailures.length>Object.keys(artifacts).length*.5){
+throw pageLoadFailures[0];
+}
+
 return artifacts;
 });
 }
@@ -13788,7 +14996,9 @@ options.flags.disableCpuThrottling=false;
 
 passes=this.instantiateGatherers(passes,options.config.configDir);
 
-const gathererResults={};
+const gathererResults={
+LighthouseRunWarnings:[]};
+
 
 return driver.connect().
 then(_=>GatherRunner.loadBlank(driver)).
@@ -13901,7 +15111,7 @@ return pass;
 
 module.exports=GatherRunner;
 
-},{"../audits/audit":2,"../lib/network-recorder.js":29,"../lib/url-shim":35,"../runner":39,"lighthouse-logger":114}],21:[function(require,module,exports){
+},{"../audits/audit":2,"../lib/network-recorder.js":31,"../lib/url-shim":40,"../runner":44,"lighthouse-logger":91}],17:[function(require,module,exports){
 
 
 
@@ -13956,10 +15166,239 @@ afterPass(options,loadData){}}
 
 
 
-
 module.exports=Gatherer;
 
-},{}],22:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+
+const log=require('lighthouse-logger');
+const stream=require('stream');
+const stringifySafe=require('json-stringify-safe');
+const Metrics=require('./traces/pwmetrics-events');
+
+
+
+
+
+
+function screenshotDump(screenshots){
+return`
+  <!doctype html>
+  <meta charset="utf-8">
+  <title>screenshots</title>
+  <style>
+html {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    height: 100%;
+    background-image: linear-gradient(to left, #4ca1af , #c4e0e5);
+    background-attachment: fixed;
+    padding: 10px;
+}
+body {
+    white-space: nowrap;
+    background-image: linear-gradient(to left, #4ca1af , #c4e0e5);
+    width: 100%;
+    margin: 0;
+}
+img {
+    margin: 4px;
+}
+</style>
+  <body>
+    <script>
+      var shots = ${JSON.stringify(screenshots)};
+
+  shots.forEach(s => {
+    var i = document.createElement('img');
+    i.src = s.datauri;
+    i.title = s.timestamp;
+    document.body.appendChild(i);
+  });
+  </script>
+  `;
+}
+
+
+
+
+
+
+
+
+
+function saveArtifacts(artifacts,pathWithBasename){
+const fullPath=`${pathWithBasename}.artifacts.log`;
+
+fs.writeFileSync(fullPath,stringifySafe(artifacts));
+log.log('artifacts file saved to disk',fullPath);
+}
+
+
+
+
+
+
+
+function prepareAssets(artifacts,audits){
+const passNames=Object.keys(artifacts.traces);
+const assets=[];
+
+return passNames.reduce((chain,passName)=>{
+const trace=artifacts.traces[passName];
+const devtoolsLog=artifacts.devtoolsLogs[passName];
+
+return chain.then(_=>artifacts.requestScreenshots(trace)).
+then(screenshots=>{
+const traceData=Object.assign({},trace);
+const screenshotsHTML=screenshotDump(screenshots);
+
+if(audits){
+const evts=new Metrics(traceData.traceEvents,audits).generateFakeEvents();
+traceData.traceEvents=traceData.traceEvents.concat(evts);
+}
+
+assets.push({
+passName,
+traceData,
+devtoolsLog,
+screenshotsHTML,
+screenshots});
+
+});
+},Promise.resolve()).
+then(_=>assets);
+}
+
+
+
+
+
+
+
+function*traceJsonGenerator(traceData){
+const keys=Object.keys(traceData);
+
+yield'{\n';
+
+
+yield'"traceEvents": [\n';
+if(traceData.traceEvents.length>0){
+const eventsIterator=traceData.traceEvents[Symbol.iterator]();
+
+const firstEvent=eventsIterator.next().value;
+yield`  ${JSON.stringify(firstEvent)}`;
+for(const event of eventsIterator){
+yield`,\n  ${JSON.stringify(event)}`;
+}
+}
+yield'\n]';
+
+
+if(keys.length>1){
+for(const key of keys){
+if(key==='traceEvents')continue;
+
+yield`,\n"${key}": ${JSON.stringify(traceData[key],null,2)}`;
+}
+}
+
+yield'}\n';
+}
+
+
+
+
+
+
+
+function saveTrace(traceData,traceFilename){
+return new Promise((resolve,reject)=>{
+const traceIter=traceJsonGenerator(traceData);
+
+
+const traceStream=new stream.Readable({
+read(){
+const next=traceIter.next();
+this.push(next.done?null:next.value);
+}});
+
+
+const writeStream=fs.createWriteStream(traceFilename);
+writeStream.on('finish',resolve);
+writeStream.on('error',reject);
+
+traceStream.pipe(writeStream);
+});
+}
+
+
+
+
+
+
+
+
+function saveAssets(artifacts,audits,pathWithBasename){
+return prepareAssets(artifacts,audits).then(assets=>{
+return Promise.all(assets.map((data,index)=>{
+const devtoolsLogFilename=`${pathWithBasename}-${index}.devtoolslog.json`;
+fs.writeFileSync(devtoolsLogFilename,JSON.stringify(data.devtoolsLog,null,2));
+log.log('saveAssets','devtools log saved to disk: '+devtoolsLogFilename);
+
+const screenshotsHTMLFilename=`${pathWithBasename}-${index}.screenshots.html`;
+fs.writeFileSync(screenshotsHTMLFilename,data.screenshotsHTML);
+log.log('saveAssets','screenshots saved to disk: '+screenshotsHTMLFilename);
+
+const screenshotsJSONFilename=`${pathWithBasename}-${index}.screenshots.json`;
+fs.writeFileSync(screenshotsJSONFilename,JSON.stringify(data.screenshots,null,2));
+log.log('saveAssets','screenshots saved to disk: '+screenshotsJSONFilename);
+
+const streamTraceFilename=`${pathWithBasename}-${index}.trace.json`;
+log.log('saveAssets','streaming trace file to disk: '+streamTraceFilename);
+return saveTrace(data.traceData,streamTraceFilename).then(_=>{
+log.log('saveAssets','trace file streamed to disk: '+streamTraceFilename);
+});
+}));
+});
+}
+
+
+
+
+
+
+
+function logAssets(artifacts,audits){
+return prepareAssets(artifacts,audits).then(assets=>{
+assets.map(data=>{
+log.log(`devtoolslog-${data.passName}.json`,data.devtoolsLog);
+const traceIter=traceJsonGenerator(data.traceData);
+let traceJson='';
+for(const trace of traceIter){
+traceJson+=trace;
+}
+log.log(`trace-${data.passName}.json`,traceJson);
+});
+});
+}
+
+module.exports={
+saveArtifacts,
+saveAssets,
+prepareAssets,
+saveTrace,
+logAssets};
+
+
+},{"./traces/pwmetrics-events":37,"json-stringify-safe":139,"lighthouse-logger":91,"stream":85}],19:[function(require,module,exports){
 
 
 
@@ -13972,7 +15411,6 @@ module.exports=Gatherer;
 const log=require('lighthouse-logger');
 
 class ConsoleQuieter{
-
 static mute(opts){
 ConsoleQuieter._logs=ConsoleQuieter._logs||[];
 
@@ -14005,7 +15443,999 @@ ConsoleQuieter._consoleerror=console.error.bind(console);
 
 module.exports=ConsoleQuieter;
 
-},{"lighthouse-logger":114}],23:[function(require,module,exports){
+},{"lighthouse-logger":91}],20:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Node=require('./node');
+
+class CPUNode extends Node{
+
+
+
+
+constructor(parentEvent,childEvents=[]){
+const nodeId=`${parentEvent.tid}.${parentEvent.ts}`;
+super(nodeId);
+
+this._event=parentEvent;
+this._childEvents=childEvents;
+}
+
+
+
+
+get type(){
+return Node.TYPES.CPU;
+}
+
+
+
+
+get startTime(){
+return this._event.ts;
+}
+
+
+
+
+get endTime(){
+return this._event.ts+this._event.dur;
+}
+
+
+
+
+get event(){
+return this._event;
+}
+
+
+
+
+get childEvents(){
+return this._childEvents;
+}
+
+
+
+
+
+didPerformLayout(){
+return this._childEvents.some(evt=>evt.name==='Layout');
+}
+
+
+
+
+
+
+isEvaluateScriptFor(urls){
+return this._childEvents.some(evt=>{
+return evt.name==='EvaluateScript'&&
+evt.args.data&&
+urls.has(evt.args.data.url);
+});
+}
+
+
+
+
+cloneWithoutRelationships(){
+return new CPUNode(this._event,this._childEvents);
+}}
+
+
+module.exports=CPUNode;
+
+},{"./node":22}],21:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Node=require('./node');
+const WebInspector=require('../web-inspector');
+
+class NetworkNode extends Node{
+
+
+
+constructor(networkRecord){
+super(networkRecord.requestId);
+this._record=networkRecord;
+}
+
+
+
+
+get type(){
+return Node.TYPES.NETWORK;
+}
+
+
+
+
+get startTime(){
+return this._record.startTime*1000*1000;
+}
+
+
+
+
+get endTime(){
+return this._record.endTime*1000*1000;
+}
+
+
+
+
+get record(){
+return this._record;
+}
+
+
+
+
+get initiatorType(){
+return this._record._initiator&&this._record._initiator.type;
+}
+
+
+
+
+hasRenderBlockingPriority(){
+const priority=this._record.priority();
+const isScript=this._record._resourceType===WebInspector.resourceTypes.Script;
+return priority==='VeryHigh'||priority==='High'&&isScript;
+}
+
+
+
+
+cloneWithoutRelationships(){
+return new NetworkNode(this._record);
+}}
+
+
+module.exports=NetworkNode;
+
+},{"../web-inspector":41,"./node":22}],22:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+
+
+
+
+
+
+
+class Node{
+
+
+
+constructor(id){
+this._id=id;
+this._dependents=[];
+this._dependencies=[];
+}
+
+
+
+
+get id(){
+return this._id;
+}
+
+
+
+
+get type(){
+throw new Error('Unimplemented');
+}
+
+
+
+
+get startTime(){
+throw new Error('Unimplemented');
+}
+
+
+
+
+get endTime(){
+throw new Error('Unimplemented');
+}
+
+
+
+
+getDependents(){
+return this._dependents.slice();
+}
+
+
+
+
+getDependencies(){
+return this._dependencies.slice();
+}
+
+
+
+
+getNumberOfDependencies(){
+return this._dependencies.length;
+}
+
+
+
+
+getRootNode(){
+let rootNode=this;
+while(rootNode._dependencies.length){
+rootNode=rootNode._dependencies[0];
+}
+
+return rootNode;
+}
+
+
+
+
+addDependent(node){
+node.addDependency(this);
+}
+
+
+
+
+addDependency(node){
+if(this._dependencies.includes(node)){
+return;
+}
+
+node._dependents.push(this);
+this._dependencies.push(node);
+}
+
+
+
+
+
+cloneWithoutRelationships(){
+return new Node(this.id);
+}
+
+
+
+
+
+
+
+
+
+cloneWithRelationships(predicate){
+const rootNode=this.getRootNode();
+
+let shouldIncludeNode=()=>true;
+if(predicate){
+const idsToInclude=new Set();
+rootNode.traverse(node=>{
+if(predicate(node)){
+node.traverse(
+node=>idsToInclude.add(node.id),
+node=>node._dependencies.filter(parent=>!idsToInclude.has(parent)));
+
+}
+});
+
+shouldIncludeNode=node=>idsToInclude.has(node.id);
+}
+
+const idToNodeMap=new Map();
+rootNode.traverse(originalNode=>{
+if(!shouldIncludeNode(originalNode))return;
+const clonedNode=originalNode.cloneWithoutRelationships();
+idToNodeMap.set(clonedNode.id,clonedNode);
+});
+
+rootNode.traverse(originalNode=>{
+if(!shouldIncludeNode(originalNode))return;
+const clonedNode=idToNodeMap.get(originalNode.id);
+
+for(const dependency of originalNode._dependencies){
+const clonedDependency=idToNodeMap.get(dependency.id);
+clonedNode.addDependency(clonedDependency);
+}
+});
+
+return idToNodeMap.get(this.id);
+}
+
+
+
+
+
+
+
+_traversePaths(iterator,getNext){
+const stack=[[this]];
+while(stack.length){
+const path=stack.shift();
+const node=path[0];
+iterator(node,path);
+
+const nodesToAdd=getNext(node);
+for(const nextNode of nodesToAdd){
+stack.push([nextNode].concat(path));
+}
+}
+}
+
+
+
+
+
+
+
+traverse(iterator,getNext){
+if(!getNext){
+getNext=node=>node.getDependents();
+}
+
+const visited=new Set();
+const originalGetNext=getNext;
+
+getNext=node=>{
+visited.add(node.id);
+const allNodesToVisit=originalGetNext(node);
+const nodesToVisit=allNodesToVisit.filter(nextNode=>!visited.has(nextNode.id));
+nodesToVisit.forEach(nextNode=>visited.add(nextNode.id));
+return nodesToVisit;
+};
+
+this._traversePaths(iterator,getNext);
+}
+
+
+
+
+
+
+static hasCycle(node){
+const visited=new Set();
+const currentPath=[];
+const toVisit=[node];
+const depthAdded=new Map([[node,0]]);
+
+
+while(toVisit.length){
+
+const currentNode=toVisit.pop();
+
+
+if(currentPath.includes(currentNode))return true;
+
+if(visited.has(currentNode))continue;
+
+
+while(currentPath.length>depthAdded.get(currentNode))currentPath.pop();
+
+
+visited.add(currentNode);
+currentPath.push(currentNode);
+
+
+for(const dependent of currentNode._dependents){
+if(toVisit.includes(dependent))continue;
+toVisit.push(dependent);
+depthAdded.set(dependent,currentPath.length);
+}
+}
+
+return false;
+}}
+
+
+Node.TYPES={
+NETWORK:'network',
+CPU:'cpu'};
+
+
+module.exports=Node;
+
+},{}],23:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Node=require('../node');
+const TcpConnection=require('./tcp-connection');
+const emulation=require('../../emulation').settings;
+
+
+const DEFAULT_MAXIMUM_CONCURRENT_REQUESTS=10;
+
+
+const DEFAULT_FALLBACK_TTFB=30;
+const DEFAULT_RTT=emulation.TYPICAL_MOBILE_THROTTLING_METRICS.targetLatency;
+const DEFAULT_THROUGHPUT=emulation.TYPICAL_MOBILE_THROTTLING_METRICS.targetDownloadThroughput*8;
+
+
+const DEFAULT_CPU_TASK_MULTIPLIER=emulation.CPU_THROTTLE_METRICS.rate;
+
+const DEFAULT_LAYOUT_TASK_MULTIPLIER=DEFAULT_CPU_TASK_MULTIPLIER/2;
+
+const DEFAULT_MAXIMUM_CPU_TASK_DURATION=10000;
+
+const TLS_SCHEMES=['https','wss'];
+
+function groupBy(items,keyFunc){
+const grouped=new Map();
+items.forEach(item=>{
+const key=keyFunc(item);
+const group=grouped.get(key)||[];
+group.push(item);
+grouped.set(key,group);
+});
+
+return grouped;
+}
+
+const NodeState={
+NotReadyToStart:0,
+ReadyToStart:1,
+InProgress:2,
+Complete:3};
+
+
+class Simulator{
+
+
+
+
+
+constructor(graph,options){
+this._graph=graph;
+this._options=Object.assign(
+{
+rtt:DEFAULT_RTT,
+throughput:DEFAULT_THROUGHPUT,
+fallbackTTFB:DEFAULT_FALLBACK_TTFB,
+maximumConcurrentRequests:DEFAULT_MAXIMUM_CONCURRENT_REQUESTS,
+cpuTaskMultiplier:DEFAULT_CPU_TASK_MULTIPLIER,
+layoutTaskMultiplier:DEFAULT_LAYOUT_TASK_MULTIPLIER},
+
+options);
+
+
+this._rtt=this._options.rtt;
+this._throughput=this._options.throughput;
+this._fallbackTTFB=this._options.fallbackTTFB;
+this._maximumConcurrentRequests=Math.min(
+TcpConnection.maximumSaturatedConnections(this._rtt,this._throughput),
+this._options.maximumConcurrentRequests);
+
+this._cpuTaskMultiplier=this._options.cpuTaskMultiplier;
+this._layoutTaskMultiplier=this._options.layoutTaskMultiplier;
+}
+
+
+
+
+
+
+static getTTFB(record){
+const timing=record._timing;
+return timing&&timing.receiveHeadersEnd-timing.sendEnd||Infinity;
+}
+
+
+
+
+_initializeNetworkRecords(){
+this._networkRecords=[];
+
+this._graph.getRootNode().traverse(node=>{
+if(node.type===Node.TYPES.NETWORK){
+this._networkRecords.push(node.record);
+}
+});
+}
+
+
+
+
+_initializeNetworkConnections(){
+const connections=new Map();
+const recordsByConnection=groupBy(this._networkRecords,record=>record.connectionId);
+
+for(const[connectionId,records]of recordsByConnection.entries()){
+const isTLS=TLS_SCHEMES.includes(records[0].parsedURL.scheme);
+const isH2=records[0].protocol==='h2';
+
+
+
+
+
+
+
+let estimatedResponseTime=Math.min(...records.map(Simulator.getTTFB));
+
+
+if(!Number.isFinite(estimatedResponseTime)){
+estimatedResponseTime=this._fallbackTTFB;
+}
+
+const connection=new TcpConnection(
+this._rtt,
+this._throughput,
+estimatedResponseTime,
+isTLS,
+isH2);
+
+
+connections.set(connectionId,connection);
+}
+
+this._connections=connections;
+return connections;
+}
+
+
+
+
+_initializeAuxiliaryData(){
+this._nodeTiming=new Map();
+this._connectionsInUse=new Set();
+this._numberInProgressByType=new Map();
+
+this._nodes=[];
+for(const key of Object.keys(NodeState)){
+this._nodes[NodeState[key]]=new Set();
+}
+}
+
+
+
+
+
+_numberInProgress(type){
+return this._numberInProgressByType.get(type)||0;
+}
+
+
+
+
+
+_setTimingData(node,values){
+const timingData=this._nodeTiming.get(node)||{};
+Object.assign(timingData,values);
+this._nodeTiming.set(node,timingData);
+}
+
+
+
+
+
+_markNodeAsReadyToStart(node,queuedTime){
+this._nodes[NodeState.ReadyToStart].add(node);
+this._nodes[NodeState.NotReadyToStart].delete(node);
+this._setTimingData(node,{queuedTime});
+}
+
+
+
+
+
+_markNodeAsInProgress(node,startTime){
+this._nodes[NodeState.InProgress].add(node);
+this._nodes[NodeState.ReadyToStart].delete(node);
+this._numberInProgressByType.set(node.type,this._numberInProgress(node.type)+1);
+this._setTimingData(node,{startTime});
+}
+
+
+
+
+
+_markNodeAsComplete(node,endTime){
+this._nodes[NodeState.Complete].add(node);
+this._nodes[NodeState.InProgress].delete(node);
+this._numberInProgressByType.set(node.type,this._numberInProgress(node.type)-1);
+this._setTimingData(node,{endTime});
+
+
+for(const dependent of node.getDependents()){
+
+const dependencies=dependent.getDependencies();
+if(dependencies.some(dep=>!this._nodes[NodeState.Complete].has(dep)))continue;
+
+
+this._markNodeAsReadyToStart(dependent,endTime);
+}
+}
+
+
+
+
+
+_startNodeIfPossible(node,totalElapsedTime){
+if(node.type===Node.TYPES.CPU){
+
+if(this._numberInProgress(node.type)===0){
+this._markNodeAsInProgress(node,totalElapsedTime);
+this._setTimingData(node,{timeElapsed:0});
+}
+
+return;
+}
+
+if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
+
+const connection=this._connections.get(node.record.connectionId);
+const numberOfActiveRequests=this._numberInProgress(node.type);
+
+
+if(
+numberOfActiveRequests>=this._maximumConcurrentRequests||
+this._connectionsInUse.has(connection))
+{
+return;
+}
+
+this._markNodeAsInProgress(node,totalElapsedTime);
+this._setTimingData(node,{
+timeElapsed:0,
+timeElapsedOvershoot:0,
+bytesDownloaded:0});
+
+
+this._connectionsInUse.add(connection);
+}
+
+
+
+
+
+_updateNetworkCapacity(){
+for(const connection of this._connectionsInUse){
+connection.setThroughput(this._throughput/this._nodes[NodeState.InProgress].size);
+}
+}
+
+
+
+
+
+
+_estimateTimeRemaining(node){
+if(node.type===Node.TYPES.CPU){
+const timingData=this._nodeTiming.get(node);
+const multiplier=node.didPerformLayout()?
+this._layoutTaskMultiplier:
+this._cpuTaskMultiplier;
+const totalDuration=Math.min(
+Math.round(node.event.dur/1000*multiplier),
+DEFAULT_MAXIMUM_CPU_TASK_DURATION);
+
+const estimatedTimeElapsed=totalDuration-timingData.timeElapsed;
+this._setTimingData(node,{estimatedTimeElapsed});
+return estimatedTimeElapsed;
+}
+
+if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
+
+const timingData=this._nodeTiming.get(node);
+const connection=this._connections.get(node.record.connectionId);
+const calculation=connection.simulateDownloadUntil(
+node.record.transferSize-timingData.bytesDownloaded,
+{timeAlreadyElapsed:timingData.timeElapsed});
+
+
+const estimatedTimeElapsed=calculation.timeElapsed+timingData.timeElapsedOvershoot;
+this._setTimingData(node,{estimatedTimeElapsed});
+return estimatedTimeElapsed;
+}
+
+
+
+
+
+_findNextNodeCompletionTime(){
+let minimumTime=Infinity;
+for(const node of this._nodes[NodeState.InProgress]){
+minimumTime=Math.min(minimumTime,this._estimateTimeRemaining(node));
+}
+
+return minimumTime;
+}
+
+
+
+
+
+
+
+_updateProgressMadeInTimePeriod(node,timePeriodLength,totalElapsedTime){
+const timingData=this._nodeTiming.get(node);
+const isFinished=timingData.estimatedTimeElapsed===timePeriodLength;
+
+if(node.type===Node.TYPES.CPU){
+return isFinished?
+this._markNodeAsComplete(node,totalElapsedTime):
+timingData.timeElapsed+=timePeriodLength;
+}
+
+if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
+
+const connection=this._connections.get(node.record.connectionId);
+const calculation=connection.simulateDownloadUntil(
+node.record.transferSize-timingData.bytesDownloaded,
+{
+timeAlreadyElapsed:timingData.timeElapsed,
+maximumTimeToElapse:timePeriodLength-timingData.timeElapsedOvershoot});
+
+
+
+connection.setCongestionWindow(calculation.congestionWindow);
+connection.setH2OverflowBytesDownloaded(calculation.extraBytesDownloaded);
+
+if(isFinished){
+connection.setWarmed(true);
+this._connectionsInUse.delete(connection);
+this._markNodeAsComplete(node,totalElapsedTime);
+}else{
+timingData.timeElapsed+=calculation.timeElapsed;
+timingData.timeElapsedOvershoot+=calculation.timeElapsed-timePeriodLength;
+timingData.bytesDownloaded+=calculation.bytesDownloaded;
+}
+}
+
+
+
+
+
+simulate(){
+
+this._initializeNetworkRecords();
+this._initializeNetworkConnections();
+this._initializeAuxiliaryData();
+
+const nodesNotReadyToStart=this._nodes[NodeState.NotReadyToStart];
+const nodesReadyToStart=this._nodes[NodeState.ReadyToStart];
+const nodesInProgress=this._nodes[NodeState.InProgress];
+
+const rootNode=this._graph.getRootNode();
+rootNode.traverse(node=>nodesNotReadyToStart.add(node));
+
+let totalElapsedTime=0;
+
+
+this._markNodeAsReadyToStart(rootNode,totalElapsedTime);
+
+
+while(nodesReadyToStart.size||nodesInProgress.size){
+
+for(const node of nodesReadyToStart){
+this._startNodeIfPossible(node,totalElapsedTime);
+}
+
+
+this._updateNetworkCapacity();
+
+
+const minimumTime=this._findNextNodeCompletionTime();
+totalElapsedTime+=minimumTime;
+
+
+for(const node of nodesInProgress){
+this._updateProgressMadeInTimePeriod(node,minimumTime,totalElapsedTime);
+}
+}
+
+return{
+timeInMs:totalElapsedTime,
+nodeTiming:this._nodeTiming};
+
+}}
+
+
+module.exports=Simulator;
+
+
+
+
+
+
+
+
+
+Simulator.NodeTimingData;
+
+},{"../../emulation":27,"../node":22,"./tcp-connection":24}],24:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const INITIAL_CONGESTION_WINDOW=10;
+const TCP_SEGMENT_SIZE=1460;
+
+class TcpConnection{
+
+
+
+
+
+
+
+constructor(rtt,throughput,serverLatency=0,ssl=true,h2=false){
+this._warmed=false;
+this._ssl=ssl;
+this._h2=h2;
+this._rtt=rtt;
+this._throughput=throughput;
+this._serverLatency=serverLatency;
+this._congestionWindow=INITIAL_CONGESTION_WINDOW;
+this._h2OverflowBytesDownloaded=0;
+}
+
+
+
+
+
+
+static maximumSaturatedConnections(rtt,availableThroughput){
+const roundTripsPerSecond=1000/rtt;
+const bytesPerRoundTrip=TCP_SEGMENT_SIZE;
+const bytesPerSecond=roundTripsPerSecond*bytesPerRoundTrip;
+const minimumThroughputRequiredPerRequest=bytesPerSecond*8;
+return Math.floor(availableThroughput/minimumThroughputRequiredPerRequest);
+}
+
+
+
+
+_computeMaximumCongestionWindowInSegments(){
+const bytesPerSecond=this._throughput/8;
+const secondsPerRoundTrip=this._rtt/1000;
+const bytesPerRoundTrip=bytesPerSecond*secondsPerRoundTrip;
+return Math.floor(bytesPerRoundTrip/TCP_SEGMENT_SIZE);
+}
+
+
+
+
+setThroughput(throughput){
+this._throughput=throughput;
+}
+
+
+
+
+setCongestionWindow(congestion){
+this._congestionWindow=congestion;
+}
+
+
+
+
+setWarmed(warmed){
+this._warmed=warmed;
+}
+
+
+
+
+
+
+setH2OverflowBytesDownloaded(bytes){
+if(!this._h2)return;
+this._h2OverflowBytesDownloaded=bytes;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+simulateDownloadUntil(bytesToDownload,options){
+const{timeAlreadyElapsed=0,maximumTimeToElapse=Infinity}=options||{};
+
+if(this._warmed&&this._h2){
+bytesToDownload-=this._h2OverflowBytesDownloaded;
+}
+const twoWayLatency=this._rtt;
+const oneWayLatency=twoWayLatency/2;
+const maximumCongestionWindow=this._computeMaximumCongestionWindowInSegments();
+
+let handshakeAndRequest=oneWayLatency;
+if(!this._warmed){
+handshakeAndRequest=
+
+oneWayLatency+
+
+oneWayLatency+
+
+oneWayLatency+(
+
+this._ssl?twoWayLatency:0);
+}
+
+let roundTrips=Math.ceil(handshakeAndRequest/twoWayLatency);
+let timeToFirstByte=handshakeAndRequest+this._serverLatency+oneWayLatency;
+if(this._warmed&&this._h2)timeToFirstByte=0;
+
+const timeElapsedForTTFB=Math.max(timeToFirstByte-timeAlreadyElapsed,0);
+const maximumDownloadTimeToElapse=maximumTimeToElapse-timeElapsedForTTFB;
+
+let congestionWindow=Math.min(this._congestionWindow,maximumCongestionWindow);
+let totalBytesDownloaded=0;
+if(timeElapsedForTTFB>0){
+totalBytesDownloaded=congestionWindow*TCP_SEGMENT_SIZE;
+}else{
+roundTrips=0;
+}
+
+let downloadTimeElapsed=0;
+let bytesRemaining=bytesToDownload-totalBytesDownloaded;
+while(bytesRemaining>0&&downloadTimeElapsed<=maximumDownloadTimeToElapse){
+roundTrips++;
+downloadTimeElapsed+=twoWayLatency;
+congestionWindow=Math.max(Math.min(maximumCongestionWindow,congestionWindow*2),1);
+
+const bytesDownloadedInWindow=congestionWindow*TCP_SEGMENT_SIZE;
+totalBytesDownloaded+=bytesDownloadedInWindow;
+bytesRemaining-=bytesDownloadedInWindow;
+}
+
+const timeElapsed=timeElapsedForTTFB+downloadTimeElapsed;
+const extraBytesDownloaded=this._h2?Math.max(totalBytesDownloaded-bytesToDownload,0):0;
+const bytesDownloaded=Math.max(Math.min(totalBytesDownloaded,bytesToDownload),0);
+
+return{
+roundTrips,
+timeElapsed,
+bytesDownloaded,
+extraBytesDownloaded,
+congestionWindow};
+
+}}
+
+
+module.exports=TcpConnection;
+
+},{}],25:[function(require,module,exports){
 
 
 
@@ -14048,7 +16478,8 @@ module.exports={
 getElementsInDocumentFnString:getElementsInDocument.toString()};
 
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
+
 
 
 
@@ -14057,7 +16488,6 @@ getElementsInDocumentFnString:getElementsInDocument.toString()};
 'use strict';
 
 class Element{
-
 constructor(element,driver){
 if(!element||!driver){
 throw Error('Driver and element required to create Element');
@@ -14105,7 +16535,8 @@ return this.driver.getObjectProperty(resp.object.objectId,propName);
 
 module.exports=Element;
 
-},{}],25:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
+
 
 
 
@@ -14213,11 +16644,6 @@ value:null,writable:true,configurable:true,enumerable:true});
 return Promise.all([
 driver.sendCommand('Emulation.setDeviceMetricsOverride',NEXUS5X_EMULATION_METRICS),
 
-driver.sendCommand('Emulation.setVisibleSize',{
-width:NEXUS5X_EMULATION_METRICS.screenWidth,
-height:NEXUS5X_EMULATION_METRICS.screenHeight}),
-
-
 driver.sendCommand('Network.enable'),
 driver.sendCommand('Network.setUserAgentOverride',NEXUS5X_USERAGENT),
 driver.sendCommand('Emulation.setTouchEmulationEnabled',{
@@ -14280,7 +16706,7 @@ CPU_THROTTLE_METRICS}};
 
 
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 
 
 
@@ -14355,7 +16781,7 @@ addFormattedCodeSnippet,
 groupCodeSnippetsByLocation};
 
 
-},{}],27:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 
 
 
@@ -14412,7 +16838,7 @@ doExist,
 sizeAtLeast};
 
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 
 
@@ -14802,7 +17228,8 @@ debugString:undefined};
 
 module.exports=parse;
 
-},{"./url-shim":35,"./web-inspector":36}],29:[function(require,module,exports){
+},{"./url-shim":40,"./web-inspector":41}],31:[function(require,module,exports){
+
 
 
 
@@ -14986,7 +17413,100 @@ return records;
 
 module.exports=NetworkRecorder;
 
-},{"./web-inspector":36,"events":50,"lighthouse-logger":114}],30:[function(require,module,exports){
+},{"./web-inspector":41,"events":55,"lighthouse-logger":91}],32:[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const log=require('lighthouse-logger');
+
+
+const SENTRY_URL='https://a6bb0da87ee048cc9ae2a345fc09ab2e:63a7029f46f74265981b7e005e0f69f8@sentry.io/174697';
+
+const noop=()=>Promise.resolve();
+const sentryApi={
+captureMessage:noop,
+captureException:noop,
+captureBreadcrumb:noop,
+mergeContext:noop,
+getContext:noop};
+
+
+const SAMPLED_ERRORS=[
+{pattern:/Unable to load/,rate:0.1},
+{pattern:/Failed to decode/,rate:0.1},
+{pattern:/No resource with given id/,rate:0.01},
+{pattern:/No node with given id/,rate:0.01}];
+
+
+
+
+
+
+const sentryDelegate=Object.assign({},sentryApi);
+sentryDelegate.init=function init(opts){
+if(!opts.flags.enableErrorReporting){
+
+return;
+}
+
+const environmentData=opts.environmentData||{};
+const sentryConfig=Object.assign({},environmentData,{captureUnhandledRejections:true});
+
+try{
+const Sentry=require('raven');
+Sentry.config(SENTRY_URL,sentryConfig).install();
+Object.keys(sentryApi).forEach(functionName=>{
+
+sentryDelegate[functionName]=(...args)=>Sentry[functionName](...args);
+});
+
+
+sentryDelegate.captureException=(err,opts)=>{
+opts=opts||{};
+
+const empty=Promise.resolve();
+
+if(!err)return empty;
+
+if(err.expected)return empty;
+
+const sampledErrorMatch=SAMPLED_ERRORS.find(sample=>sample.pattern.test(err.message));
+if(sampledErrorMatch&&sampledErrorMatch.rate<=Math.random())return empty;
+
+if(err.protocolMethod){
+opts.fingerprint=['{{ default }}',err.protocolMethod,err.protocolError];
+}
+
+return new Promise(resolve=>{
+Sentry.captureException(err,opts,()=>resolve());
+});
+};
+}catch(e){
+log.warn(
+'sentry',
+'Could not load raven library, errors will not be reported.');
+
+}
+
+const context={
+url:opts.url,
+deviceEmulation:!opts.flags.disableDeviceEmulation,
+networkThrottling:!opts.flags.disableNetworkThrottling,
+cpuThrottling:!opts.flags.disableCpuThrottling};
+
+
+sentryDelegate.mergeContext({extra:Object.assign({},environmentData.extra,context)});
+return context;
+};
+
+module.exports=sentryDelegate;
+
+},{"lighthouse-logger":91,"raven":51}],33:[function(require,module,exports){
 
 
 
@@ -15052,7 +17572,7 @@ module.exports={
 getLogNormalDistribution};
 
 
-},{}],31:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 
 
 
@@ -15175,7 +17695,103 @@ getFormattedStyleRule,
 addVendorPrefixes};
 
 
-},{}],32:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const groupIdToName={
+loading:'Network request loading',
+parseHTML:'Parsing HTML & CSS',
+styleLayout:'Style & Layout',
+compositing:'Compositing',
+painting:'Paint',
+gpu:'GPU',
+scripting:'Script Evaluation',
+scriptParseCompile:'Script Parsing & Compile',
+scriptGC:'Garbage collection',
+other:'Other',
+images:'Images'};
+
+
+const taskToGroup={
+'Animation':groupIdToName.painting,
+'Async Task':groupIdToName.other,
+'Frame Start':groupIdToName.painting,
+'Frame Start (main thread)':groupIdToName.painting,
+'Cancel Animation Frame':groupIdToName.scripting,
+'Cancel Idle Callback':groupIdToName.scripting,
+'Compile Script':groupIdToName.scriptParseCompile,
+'Composite Layers':groupIdToName.compositing,
+'Console Time':groupIdToName.scripting,
+'Image Decode':groupIdToName.images,
+'Draw Frame':groupIdToName.painting,
+'Embedder Callback':groupIdToName.scripting,
+'Evaluate Script':groupIdToName.scripting,
+'Event':groupIdToName.scripting,
+'Animation Frame Fired':groupIdToName.scripting,
+'Fire Idle Callback':groupIdToName.scripting,
+'Function Call':groupIdToName.scripting,
+'DOM GC':groupIdToName.scriptGC,
+'GC Event':groupIdToName.scriptGC,
+'GPU':groupIdToName.gpu,
+'Hit Test':groupIdToName.compositing,
+'Invalidate Layout':groupIdToName.styleLayout,
+'JS Frame':groupIdToName.scripting,
+'Input Latency':groupIdToName.scripting,
+'Layout':groupIdToName.styleLayout,
+'Major GC':groupIdToName.scriptGC,
+'DOMContentLoaded event':groupIdToName.scripting,
+'First paint':groupIdToName.painting,
+'FMP':groupIdToName.painting,
+'FMP candidate':groupIdToName.painting,
+'Load event':groupIdToName.scripting,
+'Minor GC':groupIdToName.scriptGC,
+'Paint':groupIdToName.painting,
+'Paint Image':groupIdToName.images,
+'Paint Setup':groupIdToName.painting,
+'Parse Stylesheet':groupIdToName.parseHTML,
+'Parse HTML':groupIdToName.parseHTML,
+'Parse Script':groupIdToName.scriptParseCompile,
+'Other':groupIdToName.other,
+'Rasterize Paint':groupIdToName.painting,
+'Recalculate Style':groupIdToName.styleLayout,
+'Request Animation Frame':groupIdToName.scripting,
+'Request Idle Callback':groupIdToName.scripting,
+'Request Main Thread Frame':groupIdToName.painting,
+'Image Resize':groupIdToName.images,
+'Finish Loading':groupIdToName.loading,
+'Receive Data':groupIdToName.loading,
+'Receive Response':groupIdToName.loading,
+'Send Request':groupIdToName.loading,
+'Run Microtasks':groupIdToName.scripting,
+'Schedule Style Recalculation':groupIdToName.styleLayout,
+'Scroll':groupIdToName.compositing,
+'Task':groupIdToName.other,
+'Timer Fired':groupIdToName.scripting,
+'Install Timer':groupIdToName.scripting,
+'Remove Timer':groupIdToName.scripting,
+'Timestamp':groupIdToName.scripting,
+'Update Layer':groupIdToName.compositing,
+'Update Layer Tree':groupIdToName.compositing,
+'User Timing':groupIdToName.scripting,
+'Create WebSocket':groupIdToName.scripting,
+'Destroy WebSocket':groupIdToName.scripting,
+'Receive WebSocket Handshake':groupIdToName.scripting,
+'Send WebSocket Handshake':groupIdToName.scripting,
+'XHR Load':groupIdToName.scripting,
+'XHR Ready State Change':groupIdToName.scripting};
+
+
+module.exports={
+groupIdToName,
+taskToGroup};
+
+
+},{}],36:[function(require,module,exports){
 
 
 
@@ -15191,7 +17807,6 @@ const TimelineModelTreeView=
 require('devtools-timeline-model/lib/timeline-model-treeview.js')(WebInspector);
 
 class TimelineModel{
-
 constructor(events){
 this.init(events);
 }
@@ -15214,11 +17829,14 @@ events=events.traceEvents;
 
 this._tracingModel.reset();
 
+try{
 ConsoleQuieter.mute({prefix:'timelineModel'});
 this._tracingModel.addEvents(events);
 this._tracingModel.tracingComplete();
 this._timelineModel.setEvents(this._tracingModel);
+}finally{
 ConsoleQuieter.unmuteAndFlush();
+}
 
 return this;
 }
@@ -15297,10 +17915,281 @@ return irModel;
 }}
 
 
-
 module.exports=TimelineModel;
 
-},{"../console-quieter":22,"../web-inspector":36,"devtools-timeline-model/lib/timeline-model-treeview.js":109}],33:[function(require,module,exports){
+},{"../console-quieter":19,"../web-inspector":41,"devtools-timeline-model/lib/timeline-model-treeview.js":132}],37:[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const log=require('lighthouse-logger');
+
+
+
+
+
+
+function safeGet(object,path){
+const components=path.split('.');
+for(const component of components){
+if(!object){
+return null;
+}
+object=object[component];
+}
+return object;
+}
+
+class Metrics{
+constructor(traceEvents,auditResults){
+this._traceEvents=traceEvents;
+this._auditResults=auditResults;
+}
+
+
+
+
+
+static get metricsDefinitions(){
+return[
+{
+name:'Navigation Start',
+id:'navstart',
+getTs:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timestamps.navStart');
+},
+getTiming:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timings.navStart');
+}},
+
+{
+name:'First Contentful Paint',
+id:'ttfcp',
+getTs:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timestamps.fCP');
+},
+getTiming:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timings.fCP');
+}},
+
+{
+name:'First Meaningful Paint',
+id:'ttfmp',
+getTs:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timestamps.fMP');
+},
+getTiming:auditResults=>{
+const fmpExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(fmpExt,'value.timings.fMP');
+}},
+
+{
+name:'Perceptual Speed Index',
+id:'psi',
+getTs:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timestamps.perceptualSpeedIndex');
+},
+getTiming:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timings.perceptualSpeedIndex');
+}},
+
+{
+name:'First Visual Change',
+id:'fv',
+getTs:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timestamps.firstVisualChange');
+},
+getTiming:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timings.firstVisualChange');
+}},
+
+{
+name:'Visually Complete 85%',
+id:'vc85',
+getTs:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timestamps.visuallyReady');
+},
+getTiming:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timings.visuallyReady');
+}},
+
+{
+name:'Visually Complete 100%',
+id:'vc100',
+getTs:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timestamps.visuallyComplete');
+},
+getTiming:auditResults=>{
+const siExt=auditResults['speed-index-metric'].extendedInfo;
+return safeGet(siExt,'value.timings.visuallyComplete');
+}},
+
+{
+name:'First Interactive (vBeta)',
+id:'ttfi',
+getTs:auditResults=>{
+const ttfiExt=auditResults['first-interactive'].extendedInfo;
+return safeGet(ttfiExt,'value.timestamp');
+},
+getTiming:auditResults=>{
+const ttfiExt=auditResults['first-interactive'].extendedInfo;
+return safeGet(ttfiExt,'value.timeInMs');
+}},
+
+{
+name:'Time to Consistently Interactive (vBeta)',
+id:'ttci',
+getTs:auditResults=>{
+const ttiExt=auditResults['consistently-interactive'].extendedInfo;
+return safeGet(ttiExt,'value.timestamp');
+},
+getTiming:auditResults=>{
+const ttiExt=auditResults['consistently-interactive'].extendedInfo;
+return safeGet(ttiExt,'value.timeInMs');
+}},
+
+{
+name:'End of Trace',
+id:'eot',
+getTs:auditResults=>{
+const ttiExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(ttiExt,'value.timestamps.endOfTrace');
+},
+getTiming:auditResults=>{
+const ttiExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(ttiExt,'value.timings.endOfTrace');
+}},
+
+{
+name:'On Load',
+id:'onload',
+getTs:auditResults=>{
+const ttiExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(ttiExt,'value.timestamps.onLoad');
+},
+getTiming:auditResults=>{
+const ttiExt=auditResults['first-meaningful-paint'].extendedInfo;
+return safeGet(ttiExt,'value.timings.onLoad');
+}}];
+
+
+}
+
+
+
+
+
+gatherMetrics(){
+const metricDfns=Metrics.metricsDefinitions;
+const resolvedMetrics=[];
+metricDfns.forEach(metric=>{
+
+try{
+resolvedMetrics.push({
+id:metric.id,
+name:metric.name,
+ts:metric.getTs(this._auditResults)});
+
+}catch(e){
+log.error('pwmetrics-events',`${metric.name} timestamp not found: ${e.message}`);
+}
+});
+return resolvedMetrics;
+}
+
+
+
+
+
+identifyNavigationStartEvt(metrics){
+const navStartMetric=metrics.find(e=>e.id==='navstart');
+if(!navStartMetric)return;
+this._navigationStartEvt=this._traceEvents.find(
+e=>e.name==='navigationStart'&&e.ts===navStartMetric.ts);
+
+}
+
+
+
+
+
+
+
+
+synthesizeEventPair(metric){
+
+const eventBase={
+pid:this._navigationStartEvt.pid,
+tid:this._navigationStartEvt.tid,
+cat:'blink.user_timing',
+name:metric.name,
+args:{},
+
+id:`0x${(Math.random()*1000000|0).toString(16)}`};
+
+const fakeMeasureStartEvent=Object.assign({},eventBase,{
+ts:this._navigationStartEvt.ts,
+ph:'b'});
+
+const fakeMeasureEndEvent=Object.assign({},eventBase,{
+ts:metric.ts,
+ph:'e'});
+
+return[fakeMeasureStartEvent,fakeMeasureEndEvent];
+}
+
+
+
+
+generateFakeEvents(){
+const fakeEvents=[];
+const metrics=this.gatherMetrics();
+if(metrics.length===0){
+log.error('metrics-events','Metrics collection had errors, not synthetizing trace events');
+return[];
+}
+
+this.identifyNavigationStartEvt(metrics);
+if(!this._navigationStartEvt){
+log.error('pwmetrics-events','Reference navigationStart not found');
+return[];
+}
+
+metrics.forEach(metric=>{
+if(metric.id==='navstart'){
+return;
+}
+if(!metric.ts){
+log.error('pwmetrics-events',`(${metric.name}) missing timestamp. Skipping…`);
+return;
+}
+log.verbose('pwmetrics-events',`Sythesizing trace events for ${metric.name}`);
+fakeEvents.push(...this.synthesizeEventPair(metric));
+});
+return fakeEvents;
+}}
+
+
+module.exports=Metrics;
+
+},{"lighthouse-logger":91}],38:[function(require,module,exports){
+
 
 
 
@@ -15372,7 +18261,7 @@ traceEvents:this.traceEvents};
 
 module.exports=TraceParser;
 
-},{"../web-inspector":36}],34:[function(require,module,exports){
+},{"../web-inspector":41}],39:[function(require,module,exports){
 
 
 
@@ -15548,11 +18437,7 @@ TraceProcessor.SCHEDULABLE_TASK_TITLE=SCHEDULABLE_TASK_TITLE;
 
 module.exports=TraceProcessor;
 
-},{}],35:[function(require,module,exports){
-
-
-
-
+},{}],40:[function(require,module,exports){
 
 
 
@@ -15563,11 +18448,18 @@ module.exports=TraceProcessor;
 
 
 
+
+
+
+
 const Util=require('../report/v2/renderer/util.js');
 
 
 
 const URL=typeof self!=='undefined'&&self.URL||require('whatwg-url').URL;
+
+URL.URLSearchParams=typeof self!=='undefined'&&self.URLSearchParams||
+require('whatwg-url').URLSearchParams;
 
 URL.INVALID_URL_DEBUG_STRING=
 'Lighthouse was unable to determine the URL of some script executions. '+
@@ -15655,6 +18547,9 @@ return url;
 
 function rewriteChromeInternalUrl(url){
 if(!url||!url.startsWith('chrome://'))return url;
+
+
+if(url.endsWith('/'))url=url.replace(/\/$/,'');
 return url.replace(/^chrome:\/\/chrome\//,'chrome://');
 }
 
@@ -15681,8 +18576,9 @@ return false;
 
 module.exports=URL;
 
-},{"../report/v2/renderer/util.js":37,"whatwg-url":46}],36:[function(require,module,exports){
+},{"../report/v2/renderer/util.js":42,"whatwg-url":51}],41:[function(require,module,exports){
 (function(global){
+
 
 
 
@@ -15709,7 +18605,31 @@ if(typeof global.window==='undefined'){
 global.window=global;
 }
 
+global.Node={
+ELEMENT_NODE:1,
+TEXT_NODE:3};
+
+
+global.CSSAgent={};
+global.CSSAgent.StyleSheetOrigin={
+INJECTED:'injected',
+USER_AGENT:'user-agent',
+INSPECTOR:'inspector',
+REGULAR:'regular'};
+
+
+global.CSS={};
+global.CSS.supports=()=>true;
+
+
+
+const _setImmediate=global.setImmediate;
+
 global.Runtime=global.Runtime||{};
+global.Runtime.experiments=global.Runtime.experiments||{};
+
+
+global.Runtime.experiments.isEnabled=_=>false;
 
 const _queryParam=global.Runtime.queryParam;
 global.Runtime.queryParam=function(arg){
@@ -15985,11 +18905,29 @@ WebInspector.SCSSParser.extractNodes(ast,blocks,rootBlock);
 return ast;
 };
 
+
+require('chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js');
+require('chrome-devtools-frontend/front_end/sdk/CSSMedia.js');
+require('chrome-devtools-frontend/front_end/sdk/CSSMetadata.js');
+require('chrome-devtools-frontend/front_end/sdk/CSSProperty.js');
+require('chrome-devtools-frontend/front_end/sdk/CSSRule.js');
+require('chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js');
+
+WebInspector.CSSMetadata._generatedProperties=[
+{
+name:'font-size',
+inherited:true}];
+
+
+
+
+global.setImmediate=_setImmediate;
+
 return WebInspector;
 }();
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"chrome-devtools-frontend/front_end/bindings/TempFile.js":77,"chrome-devtools-frontend/front_end/common/Color.js":78,"chrome-devtools-frontend/front_end/common/Object.js":79,"chrome-devtools-frontend/front_end/common/ParsedURL.js":80,"chrome-devtools-frontend/front_end/common/ResourceType.js":81,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":82,"chrome-devtools-frontend/front_end/common/TextRange.js":83,"chrome-devtools-frontend/front_end/common/TextUtils.js":84,"chrome-devtools-frontend/front_end/common/UIString.js":85,"chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js":86,"chrome-devtools-frontend/front_end/gonzales/SCSSParser.js":87,"chrome-devtools-frontend/front_end/gonzales/gonzales-scss.js":88,"chrome-devtools-frontend/front_end/platform/utilities.js":89,"chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js":90,"chrome-devtools-frontend/front_end/sdk/NetworkManager.js":91,"chrome-devtools-frontend/front_end/sdk/NetworkRequest.js":92,"chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js":93,"chrome-devtools-frontend/front_end/sdk/Target.js":94,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":95,"chrome-devtools-frontend/front_end/sdk/TracingModel.js":96,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":97,"chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js":98,"chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js":99,"chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js":100,"chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js":101,"chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js":102,"chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js":103,"chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js":104,"chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js":105,"chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js":106}],37:[function(require,module,exports){
+},{"chrome-devtools-frontend/front_end/bindings/TempFile.js":96,"chrome-devtools-frontend/front_end/common/Color.js":97,"chrome-devtools-frontend/front_end/common/Object.js":98,"chrome-devtools-frontend/front_end/common/ParsedURL.js":99,"chrome-devtools-frontend/front_end/common/ResourceType.js":100,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":101,"chrome-devtools-frontend/front_end/common/TextRange.js":102,"chrome-devtools-frontend/front_end/common/TextUtils.js":103,"chrome-devtools-frontend/front_end/common/UIString.js":104,"chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js":105,"chrome-devtools-frontend/front_end/gonzales/SCSSParser.js":106,"chrome-devtools-frontend/front_end/gonzales/gonzales-scss.js":107,"chrome-devtools-frontend/front_end/platform/utilities.js":108,"chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js":109,"chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js":110,"chrome-devtools-frontend/front_end/sdk/CSSMedia.js":111,"chrome-devtools-frontend/front_end/sdk/CSSMetadata.js":112,"chrome-devtools-frontend/front_end/sdk/CSSProperty.js":113,"chrome-devtools-frontend/front_end/sdk/CSSRule.js":114,"chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js":115,"chrome-devtools-frontend/front_end/sdk/NetworkManager.js":116,"chrome-devtools-frontend/front_end/sdk/NetworkRequest.js":117,"chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js":118,"chrome-devtools-frontend/front_end/sdk/Target.js":119,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":120,"chrome-devtools-frontend/front_end/sdk/TracingModel.js":121,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":122,"chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js":123,"chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js":124,"chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js":125,"chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js":126,"chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js":127,"chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js":128,"chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js":129,"chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js":130,"chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js":131}],42:[function(require,module,exports){
 
 
 
@@ -16081,7 +19019,39 @@ return formatter.format(new Date(date));
 
 
 
-static getURLDisplayName(parsedUrl,options={}){
+static formatDuration(timeInSeconds,zeroLabel='None'){
+if(timeInSeconds===0){
+return zeroLabel;
+}
+
+
+const parts=[];
+const unitLabels={
+d:60*60*24,
+h:60*60,
+m:60,
+s:1};
+
+
+Object.keys(unitLabels).forEach(label=>{
+const unit=unitLabels[label];
+const numberOfUnits=Math.floor(timeInSeconds/unit);
+if(numberOfUnits>0){
+timeInSeconds-=numberOfUnits*unit;
+parts.push(`${numberOfUnits}\xa0${label}`);
+}
+});
+
+return parts.join(' ');
+}
+
+
+
+
+
+
+static getURLDisplayName(parsedUrl,options){
+options=options||{};
 const numPathParts=options.numPathParts!==undefined?options.numPathParts:2;
 const preserveQuery=options.preserveQuery!==undefined?options.preserveQuery:true;
 const preserveHost=options.preserveHost||false;
@@ -16159,10 +19129,11 @@ return Util.formatNumber((endTime-startTime)*1000);
 if(typeof module!=='undefined'&&module.exports){
 module.exports=Util;
 }else{
+
 self.Util=Util;
 }
 
-},{}],38:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 
 
 
@@ -16174,18 +19145,18 @@ self.Util=Util;
 
 const REPORT_TEMPLATE="<!--\nCopyright 2017 Google Inc. All Rights Reserved.\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n-->\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, minimum-scale=1\">\n  <link rel=\"icon\" href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAADjklEQVR4AWI08P/HQEvAQrxSQKvlECfLFYXx75xCY2qmh89GbNvOMjb3v9jOOlxnFWxj206ebQ3b7q6q+z1rNagu8/zvPSZACAABpeUAA0miMgU7SA7JjCraFGwZwECOwvL75dWjsKgWBKtx0jvWo+vkBAFbACCkByMP6nMn48+AVgXB2fzSCwsv22/lMGlUhmJ0AE7BH8dyUUDbUEgN6RzJRSeaPxhdRYR0Inel+7Hd5lBiFpkMAxACc0394//9C4voFHDiAAGLpuOXebdfdHfctgwJKaZRLRKy6ItrSis6RBnVBgGtbHyKTEmJHQoEXoBCE5BCrDeA2ogMUIGDAKEBDEhUqwgMqBYDjW4DQzmuffVdqff42/ZQYYqVcMXGZsMPyCsH3lyJSetxvEaxAQXdjR1HjfwCdIS7lo2DZke26Qe+MXO12OWkGT0O6oE7vMGkMnkYw4aN1KQgMKExhXqswfiov4+a7MQ11XPnbr/5qpKlgACAAQj94Lu271bN9DUecQasIZlNzG72llRAAKJiAi+/BSHrSFjRvQhg3DEKEqJh08tsmLTx597+f6enr4cc2Zpk57pihfX24dW7RHcOLLUbJYhJSl0ErQCI9BVXH/XrO97QasuvQQSiECa0BrQCIIJp6X9T/r8QG6L71WYSqCoIIGo2BZDUBnS/D9EA9Nun1iYvbM0MFExIDQRoKFatc1Z6zrm5uWeObJotq0BGV9FuQBWq5a4Fw3PPz848rZHstZSuA5FWAFSMP2nOppOOGpl6qh9PCSg0IFyHKjSQyDNQHTru2t75NOEe0fsf246oAmFkI6vCdnWvbQFQFCKx8vCswV8TrDLiDLgH4Nr7RAtNsrC9d8sfk7b8ls4igdNy8CQKAISlsB0FjZfd3Lfp155tf8fKI4BxZZIj/oTdVEAIAcJFOCmzauHG71I7/rdreUAgAqpDP05fDARCAQQARwEIBQSVxq0FyaLvZZtevpHa8WHw8cft6cpxlq8eAJtIhnSbWDf951yx3y13OqUuu5qyGgkxCgGFh9cDihDGbTa6BqvT1lWmrav3bmt2ZMJ4mU6TGgIC4DBzcv/JqAau1WhzSt3x9Ixk/4Jk/8J4ZrrViFMA4W6A7+WK8xcVjvyrOmVD0FbAXokcT48r+xVqLKvuJYbmpNadnlp3mpufJHOe/GXktM+r09bT8kEdq9BRYAbGSgzP7ll82U71Mc+ZFooXgwAAAABJRU5ErkJggg==\">\n  <title>Lighthouse Report</title>\n  <style>/*%%LIGHTHOUSE_CSS%%*/</style>\n</head>\n<body class=\"lh-root lh-vars\">\n  <noscript>Lighthouse report requires JavaScript. Please enable.</noscript>\n  <div hidden>%%LIGHTHOUSE_TEMPLATES%%</div>\n\n  <main><!-- report populated here --></main>\n\n  <div id=\"lh-log\"></div>\n\n  <script>%%LIGHTHOUSE_JAVASCRIPT%%</script>\n  <script>window.__LIGHTHOUSE_JSON__ = %%LIGHTHOUSE_JSON%%;</script>\n  <script>\n    window.addEventListener('DOMContentLoaded', _ => {\n      const dom = new DOM(document);\n      const detailsRenderer = new DetailsRenderer(dom);\n      const categoryRenderer = new CategoryRenderer(dom, detailsRenderer);\n      const renderer = new ReportRenderer(dom, categoryRenderer);\n\n      const container = document.querySelector('main');\n      renderer.renderReport(window.__LIGHTHOUSE_JSON__, container);\n\n      // Hook in JS features and page-level event listeners after the report\n      // is in the document.\n      const features = new ReportUIFeatures(dom);\n      features.initFeatures(window.__LIGHTHOUSE_JSON__);\n    });\n\n    document.addEventListener('lh-analytics', e => {\n      if (window.ga) {\n        ga(e.detail.cmd, e.detail.fields);\n      }\n    });\n\n    document.addEventListener('lh-log', e => {\n      const logger = new Logger(document.querySelector('#lh-log'));\n\n      switch (e.detail.cmd) {\n        case 'log':\n          logger.log(e.detail.msg);\n          break;\n        case 'warn':\n          logger.warn(e.detail.msg);\n          break;\n        case 'error':\n          logger.error(e.detail.msg);\n          break;\n        case 'hide':\n          logger.hide();\n          break;\n      }\n    });\n  </script>\n</body>\n</html>\n";
 const REPORT_JAVASCRIPT=[
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self URL */\n\nconst ELLIPSIS = '\\u2026';\nconst NBSP = '\\xa0';\n\nconst RATINGS = {\n  PASS: {label: 'pass', minScore: 75},\n  AVERAGE: {label: 'average', minScore: 45},\n  FAIL: {label: 'fail'},\n};\n\nclass Util {\n  /**\n   * Convert a score to a rating label.\n   * @param {number} score\n   * @return {string}\n   */\n  static calculateRating(score) {\n    let rating = RATINGS.FAIL.label;\n    if (score >= RATINGS.PASS.minScore) {\n      rating = RATINGS.PASS.label;\n    } else if (score >= RATINGS.AVERAGE.minScore) {\n      rating = RATINGS.AVERAGE.label;\n    }\n    return rating;\n  }\n\n  /**\n   * Format number.\n   * @param {number} number\n   * @param {number=} decimalPlaces Number of decimal places to include. Defaults to 1.\n   * @return {string}\n   */\n  static formatNumber(number, decimalPlaces = 1) {\n    return number.toLocaleString(undefined, {maximumFractionDigits: decimalPlaces});\n  }\n\n  /**\n   * @param {number} size\n   * @param {number=} decimalPlaces Number of decimal places to include. Defaults to 2.\n   * @return {string}\n   */\n  static formatBytesToKB(size, decimalPlaces = 2) {\n    const kbs = (size / 1024).toLocaleString(undefined, {maximumFractionDigits: decimalPlaces});\n    return `${kbs}${NBSP}KB`;\n  }\n\n  /**\n   * @param {number} ms\n   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 10\n   * @return {string}\n   */\n  static formatMilliseconds(ms, granularity = 10) {\n    const coarseTime = Math.round(ms / granularity) * granularity;\n    return `${coarseTime.toLocaleString()}${NBSP}ms`;\n  }\n\n  /**\n   * Format time.\n   * @param {string} date\n   * @return {string}\n   */\n  static formatDateTime(date) {\n    const options = {\n      month: 'short', day: 'numeric', year: 'numeric',\n      hour: 'numeric', minute: 'numeric', timeZoneName: 'short',\n    };\n    let formatter = new Intl.DateTimeFormat('en-US', options);\n\n    // Force UTC if runtime timezone could not be detected.\n    // See https://github.com/GoogleChrome/lighthouse/issues/1056\n    const tz = formatter.resolvedOptions().timeZone;\n    if (!tz || tz.toLowerCase() === 'etc/unknown') {\n      options.timeZone = 'UTC';\n      formatter = new Intl.DateTimeFormat('en-US', options);\n    }\n    return formatter.format(new Date(date));\n  }\n\n  /**\n   * @param {!URL} parsedUrl\n   * @param {{numPathParts: (number|undefined), preserveQuery: (boolean|undefined), preserveHost: (boolean|undefined)}=} options\n   * @return {string}\n   */\n  static getURLDisplayName(parsedUrl, options = {}) {\n    const numPathParts = options.numPathParts !== undefined ? options.numPathParts : 2;\n    const preserveQuery = options.preserveQuery !== undefined ? options.preserveQuery : true;\n    const preserveHost = options.preserveHost || false;\n\n    let name;\n\n    if (parsedUrl.protocol === 'about:' || parsedUrl.protocol === 'data:') {\n      // Handle 'about:*' and 'data:*' URLs specially since they have no path.\n      name = parsedUrl.href;\n    } else {\n      name = parsedUrl.pathname;\n      const parts = name.split('/').filter(part => part.length);\n      if (numPathParts && parts.length > numPathParts) {\n        name = ELLIPSIS + parts.slice(-1 * numPathParts).join('/');\n      }\n\n      if (preserveHost) {\n        name = `${parsedUrl.host}/${name.replace(/^\\//, '')}`;\n      }\n      if (preserveQuery) {\n        name = `${name}${parsedUrl.search}`;\n      }\n    }\n\n    const MAX_LENGTH = 64;\n    // Always elide hash\n    name = name.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${ELLIPSIS}`);\n\n    // Elide query params first\n    if (name.length > MAX_LENGTH && name.includes('?')) {\n      // Try to leave the first query parameter intact\n      name = name.replace(/\\?([^=]*)(=)?.*/, `?$1$2${ELLIPSIS}`);\n\n      // Remove it all if it's still too long\n      if (name.length > MAX_LENGTH) {\n        name = name.replace(/\\?.*/, `?${ELLIPSIS}`);\n      }\n    }\n\n    // Elide too long names next\n    if (name.length > MAX_LENGTH) {\n      const dotIndex = name.lastIndexOf('.');\n      if (dotIndex >= 0) {\n        name = name.slice(0, MAX_LENGTH - 1 - (name.length - dotIndex)) +\n            // Show file extension\n            `${ELLIPSIS}${name.slice(dotIndex)}`;\n      } else {\n        name = name.slice(0, MAX_LENGTH - 1) + ELLIPSIS;\n      }\n    }\n\n    return name;\n  }\n\n  /**\n   * Split a URL into a file and hostname for easy display.\n   * @param {string} url\n   * @return {{file: string, hostname: string}}\n   */\n  static parseURL(url) {\n    const parsedUrl = new URL(url);\n    return {file: Util.getURLDisplayName(parsedUrl), hostname: parsedUrl.hostname};\n  }\n\n  /**\n   * @param {number} startTime\n   * @param {number} endTime\n   * @return {string}\n   */\n  static chainDuration(startTime, endTime) {\n    return Util.formatNumber((endTime - startTime) * 1000);\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = Util;\n} else {\n  self.Util = Util;\n}\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals URL self */\n\nclass DOM {\n  /**\n   * @param {!Document} document\n   */\n  constructor(document) {\n    /** @private {!Document} */\n    this._document = document;\n  }\n\n  /**\n   * @param {string} name\n   * @param {string=} className\n   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.\n   *     Note: if an attribute key has an undefined value, this method does not\n   *     set the attribute on the node.\n   * @return {!Element}\n   */\n  createElement(name, className, attrs = {}) {\n    const element = this._document.createElement(name);\n    if (className) {\n      element.className = className;\n    }\n    Object.keys(attrs).forEach(key => {\n      const value = attrs[key];\n      if (typeof value !== 'undefined') {\n        element.setAttribute(key, value);\n      }\n    });\n    return element;\n  }\n\n  /**\n   * @param {!Element} parentElem\n   * @param {string} elementName\n   * @param {string=} className\n   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.\n   *     Note: if an attribute key has an undefined value, this method does not\n   *     set the attribute on the node.\n   * @return {!Element}\n   */\n  createChildOf(parentElem, elementName, className, attrs) {\n    const element = this.createElement(elementName, className, attrs);\n    parentElem.appendChild(element);\n    return element;\n  }\n\n  /**\n   * @param {string} selector\n   * @param {!Node} context\n   * @return {!DocumentFragment} A clone of the template content.\n   * @throws {Error}\n   */\n  cloneTemplate(selector, context) {\n    const template = /** @type {?HTMLTemplateElement} */ (context.querySelector(selector));\n    if (!template) {\n      throw new Error(`Template not found: template${selector}`);\n    }\n\n    const clone = /** @type {!DocumentFragment} */ (\n        this._document.importNode(template.content, true));\n\n    // Prevent duplicate styles in the DOM. After a template has been stamped\n    // for the first time, remove the clone's styles so they're not re-added.\n    if (template.hasAttribute('data-stamped')) {\n      this.findAll('style', clone).forEach(style => style.remove());\n    }\n    template.setAttribute('data-stamped', true);\n\n    return clone;\n  }\n\n  /**\n   * Resets the \"stamped\" state of the templates.\n   */\n  resetTemplates() {\n    this.findAll('template[data-stamped]', this._document).forEach(t => {\n      t.removeAttribute('data-stamped');\n    });\n  }\n\n  /**\n   * @param {string} text\n   * @return {!Element}\n   */\n  convertMarkdownLinkSnippets(text) {\n    const element = this.createElement('span');\n\n    // Split on markdown links (e.g. [some link](https://...)).\n    const parts = text.split(/\\[([^\\]]*?)\\]\\((https?:\\/\\/.*?)\\)/g);\n\n    while (parts.length) {\n      // Pop off the same number of elements as there are capture groups.\n      const [preambleText, linkText, linkHref] = parts.splice(0, 3);\n      element.appendChild(this._document.createTextNode(preambleText));\n\n      // Append link if there are any.\n      if (linkText && linkHref) {\n        const a = /** @type {!HTMLAnchorElement} */ (this.createElement('a'));\n        a.rel = 'noopener';\n        a.target = '_blank';\n        a.textContent = linkText;\n        a.href = (new URL(linkHref)).href;\n        element.appendChild(a);\n      }\n    }\n\n    return element;\n  }\n\n  /**\n   * @param {string} text\n   * @return {!Element}\n   */\n  convertMarkdownCodeSnippets(text) {\n    const element = this.createElement('span');\n\n    const parts = text.split(/`(.*?)`/g); // Split on markdown code slashes\n    while (parts.length) {\n      // Pop off the same number of elements as there are capture groups.\n      const [preambleText, codeText] = parts.splice(0, 2);\n      element.appendChild(this._document.createTextNode(preambleText));\n      if (codeText) {\n        const pre = /** @type {!HTMLPreElement} */ (this.createElement('code'));\n        pre.textContent = codeText;\n        element.appendChild(pre);\n      }\n    }\n\n    return element;\n  }\n\n  /**\n   * @return {!Document}\n   */\n  document() {\n    return this._document;\n  }\n\n  /**\n   * Guaranteed context.querySelector. Always returns an element or throws if\n   * nothing matches query.\n   * @param {string} query\n   * @param {!Node} context\n   * @return {!Element}\n   */\n  find(query, context) {\n    const result = context.querySelector(query);\n    if (result === null) {\n      throw new Error(`query ${query} not found`);\n    }\n    return result;\n  }\n\n  /**\n   * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.\n   * @param {string} query\n   * @param {!Node} context\n   * @return {!Array<!Element>}\n   */\n  findAll(query, context) {\n    return Array.from(context.querySelectorAll(query));\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = DOM;\n} else {\n  self.DOM = DOM;\n}\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self CriticalRequestChainRenderer Util URL */\n\nclass DetailsRenderer {\n  /**\n   * @param {!DOM} dom\n   */\n  constructor(dom) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!Document|!Element} */\n    this._templateContext; // eslint-disable-line no-unused-expressions\n  }\n\n  /**\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} details\n   * @return {!Node}\n   */\n  render(details) {\n    switch (details.type) {\n      case 'text':\n        return this._renderText(details);\n      case 'url':\n        return this._renderTextURL(details);\n      case 'link':\n        return this._renderLink(/** @type {!DetailsRenderer.LinkDetailsJSON} */ (details));\n      case 'thumbnail':\n        return this._renderThumbnail(/** @type {!DetailsRenderer.ThumbnailDetails} */ (details));\n      case 'filmstrip':\n        return this._renderFilmstrip(/** @type {!DetailsRenderer.FilmstripDetails} */ (details));\n      case 'cards':\n        return this._renderCards(/** @type {!DetailsRenderer.CardsDetailsJSON} */ (details));\n      case 'table':\n        return this._renderTable(/** @type {!DetailsRenderer.TableDetailsJSON} */ (details));\n      case 'code':\n        return this._renderCode(details);\n      case 'node':\n        return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */(details));\n      case 'criticalrequestchain':\n        return CriticalRequestChainRenderer.render(this._dom, this._templateContext,\n            /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));\n      case 'list':\n        return this._renderList(/** @type {!DetailsRenderer.ListDetailsJSON} */ (details));\n      default:\n        throw new Error(`Unknown type: ${details.type}`);\n    }\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} text\n   * @return {!Element}\n   */\n  _renderTextURL(text) {\n    const url = text.text || '';\n\n    let displayedURL;\n    let title;\n    try {\n      displayedURL = Util.parseURL(url).file;\n      title = url;\n    } catch (/** @type {!Error} */ e) {\n      if (!(e instanceof TypeError)) {\n        throw e;\n      }\n      displayedURL = url;\n    }\n\n    const element = this._renderText({\n      type: 'url',\n      text: displayedURL,\n    });\n    element.classList.add('lh-text__url');\n\n    if (title) {\n      element.title = url;\n    }\n\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.LinkDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderLink(details) {\n    const allowedProtocols = ['https:', 'http:'];\n    const url = new URL(details.url);\n    if (!allowedProtocols.includes(url.protocol)) {\n      // Fall back to text if protocol not allowed.\n      return this._renderText(details);\n    }\n\n    const a = /** @type {!HTMLAnchorElement} */ (this._dom.createElement('a'));\n    a.rel = 'noopener';\n    a.target = '_blank';\n    a.textContent = details.text;\n    a.href = url.href;\n\n    return a;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} text\n   * @return {!Element}\n   */\n  _renderText(text) {\n    const element = this._dom.createElement('div', 'lh-text');\n    element.textContent = text.text;\n    return element;\n  }\n\n  /**\n   * Create small thumbnail with scaled down image asset.\n   * If the supplied details doesn't have an image/* mimeType, then an empty span is returned.\n   * @param {!DetailsRenderer.ThumbnailDetails} value\n   * @return {!Element}\n   */\n  _renderThumbnail(value) {\n    if (/^image/.test(value.mimeType) === false) {\n      return this._dom.createElement('span');\n    }\n\n    const element = this._dom.createElement('img', 'lh-thumbnail');\n    element.src = value.url;\n    element.alt = '';\n    element.title = value.url;\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.ListDetailsJSON} list\n   * @return {!Element}\n   */\n  _renderList(list) {\n    if (!list.items.length) return this._dom.createElement('span');\n\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (list.header) {\n      const summary = this._dom.createElement('summary', 'lh-list__header');\n      summary.textContent = list.header.text;\n      element.appendChild(summary);\n    }\n\n    const itemsElem = this._dom.createChildOf(element, 'div', 'lh-list__items');\n    for (const item of list.items) {\n      const itemElem = this._dom.createChildOf(itemsElem, 'span', 'lh-list__item');\n      itemElem.appendChild(this.render(item));\n    }\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.TableDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderTable(details) {\n    if (!details.items.length) return this._dom.createElement('span');\n\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (details.header) {\n      element.appendChild(this._dom.createElement('summary')).textContent = details.header;\n    }\n\n    const tableElem = this._dom.createChildOf(element, 'table', 'lh-table');\n    const theadElem = this._dom.createChildOf(tableElem, 'thead');\n    const theadTrElem = this._dom.createChildOf(theadElem, 'tr');\n\n    for (const heading of details.itemHeaders) {\n      const itemType = heading.itemType || 'text';\n      const classes = `lh-table-column--${itemType}`;\n      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(this.render(heading));\n    }\n\n    const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');\n    for (const row of details.items) {\n      const rowElem = this._dom.createChildOf(tbodyElem, 'tr');\n      for (const columnItem of row) {\n        const classes = `lh-table-column--${columnItem.type}`;\n        this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(columnItem));\n      }\n    }\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.NodeDetailsJSON} item\n   * @return {!Element}\n   * @protected\n   */\n  renderNode(item) {\n    const element = this._dom.createElement('span', 'lh-node');\n    element.textContent = item.snippet;\n    element.title = item.selector;\n    if (item.text) element.setAttribute('data-text', item.text);\n    if (item.path) element.setAttribute('data-path', item.path);\n    if (item.selector) element.setAttribute('data-selector', item.selector);\n    if (item.snippet) element.setAttribute('data-snippet', item.snippet);\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.CardsDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderCards(details) {\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (details.header) {\n      element.appendChild(this._dom.createElement('summary')).textContent = details.header.text;\n    }\n\n    const cardsParent = this._dom.createElement('div', 'lh-scorecards');\n    for (const item of details.items) {\n      const card = cardsParent.appendChild(\n          this._dom.createElement('div', 'lh-scorecard', {title: item.snippet}));\n      const titleEl = this._dom.createElement('div', 'lh-scorecard__title');\n      const valueEl = this._dom.createElement('div', 'lh-scorecard__value');\n      const targetEl = this._dom.createElement('div', 'lh-scorecard__target');\n\n      card.appendChild(titleEl).textContent = item.title;\n      card.appendChild(valueEl).textContent = item.value;\n\n      if (item.target) {\n        card.appendChild(targetEl).textContent = `target: ${item.target}`;\n      }\n    }\n\n    element.appendChild(cardsParent);\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.FilmstripDetails} details\n   * @return {!Element}\n   */\n  _renderFilmstrip(details) {\n    const filmstripEl = this._dom.createElement('div', 'lh-filmstrip');\n\n    for (const thumbnail of details.items) {\n      const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');\n\n      let timing = Util.formatMilliseconds(thumbnail.timing, 1);\n      if (thumbnail.timing > 1000) {\n        timing = Util.formatNumber(thumbnail.timing / 1000) + ' s';\n      }\n\n      const timingEl = this._dom.createChildOf(frameEl, 'div', 'lh-filmstrip__timestamp');\n      timingEl.textContent = timing;\n\n      const base64data = thumbnail.data;\n      this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {\n        src: `data:image/jpeg;base64,${base64data}`,\n        alt: `Screenshot at ${timing}`,\n      });\n    }\n\n    return filmstripEl;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} details\n   * @return {!Element}\n   */\n  _renderCode(details) {\n    const pre = this._dom.createElement('pre', 'lh-code');\n    pre.textContent = details.text;\n    return pre;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = DetailsRenderer;\n} else {\n  self.DetailsRenderer = DetailsRenderer;\n}\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined)\n * }}\n */\nDetailsRenderer.DetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<{type: string, text: (string|undefined)}>\n * }}\n */\nDetailsRenderer.ListDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined),\n *     path: (string|undefined),\n *     selector: (string|undefined),\n *     snippet:(string|undefined)\n * }}\n */\nDetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<{title: string, value: string, snippet: (string|undefined), target: string}>\n * }}\n */\nDetailsRenderer.CardsDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     itemType: (string|undefined),\n *     text: (string|undefined)\n * }}\n */\nDetailsRenderer.TableHeaderJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined),\n *     path: (string|undefined),\n *     selector: (string|undefined),\n *     snippet:(string|undefined)\n * }}\n */\nDetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<!Array<!DetailsRenderer.DetailsJSON>>,\n *     itemHeaders: !Array<!DetailsRenderer.TableHeaderJSON>\n * }}\n */\nDetailsRenderer.TableDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     url: ({text: string}|undefined),\n *     mimeType: ({text: string}|undefined)\n * }}\n */\nDetailsRenderer.ThumbnailDetails; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     url: string,\n *     text: string\n * }}\n */\nDetailsRenderer.LinkDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     scale: number,\n *     items: !Array<{timing: number, timestamp: number, data: string}>,\n * }}\n */\nDetailsRenderer.FilmstripDetails; // eslint-disable-line no-unused-expressions\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self URL */\n\nconst ELLIPSIS = '\\u2026';\nconst NBSP = '\\xa0';\n\nconst RATINGS = {\n  PASS: {label: 'pass', minScore: 75},\n  AVERAGE: {label: 'average', minScore: 45},\n  FAIL: {label: 'fail'},\n};\n\nclass Util {\n  /**\n   * Convert a score to a rating label.\n   * @param {number} score\n   * @return {string}\n   */\n  static calculateRating(score) {\n    let rating = RATINGS.FAIL.label;\n    if (score >= RATINGS.PASS.minScore) {\n      rating = RATINGS.PASS.label;\n    } else if (score >= RATINGS.AVERAGE.minScore) {\n      rating = RATINGS.AVERAGE.label;\n    }\n    return rating;\n  }\n\n  /**\n   * Format number.\n   * @param {number} number\n   * @param {number=} decimalPlaces Number of decimal places to include. Defaults to 1.\n   * @return {string}\n   */\n  static formatNumber(number, decimalPlaces = 1) {\n    return number.toLocaleString(undefined, {maximumFractionDigits: decimalPlaces});\n  }\n\n  /**\n   * @param {number} size\n   * @param {number=} decimalPlaces Number of decimal places to include. Defaults to 2.\n   * @return {string}\n   */\n  static formatBytesToKB(size, decimalPlaces = 2) {\n    const kbs = (size / 1024).toLocaleString(undefined, {maximumFractionDigits: decimalPlaces});\n    return `${kbs}${NBSP}KB`;\n  }\n\n  /**\n   * @param {number} ms\n   * @param {number=} granularity Controls how coarse the displayed value is, defaults to 10\n   * @return {string}\n   */\n  static formatMilliseconds(ms, granularity = 10) {\n    const coarseTime = Math.round(ms / granularity) * granularity;\n    return `${coarseTime.toLocaleString()}${NBSP}ms`;\n  }\n\n  /**\n   * Format time.\n   * @param {string} date\n   * @return {string}\n   */\n  static formatDateTime(date) {\n    const options = {\n      month: 'short', day: 'numeric', year: 'numeric',\n      hour: 'numeric', minute: 'numeric', timeZoneName: 'short',\n    };\n    let formatter = new Intl.DateTimeFormat('en-US', options);\n\n    // Force UTC if runtime timezone could not be detected.\n    // See https://github.com/GoogleChrome/lighthouse/issues/1056\n    const tz = formatter.resolvedOptions().timeZone;\n    if (!tz || tz.toLowerCase() === 'etc/unknown') {\n      options.timeZone = 'UTC';\n      formatter = new Intl.DateTimeFormat('en-US', options);\n    }\n    return formatter.format(new Date(date));\n  }\n  /**\n   * Converts a time in seconds into a duration string, i.e. `1d 2h 13m 52s`\n   * @param {number} timeInSeconds\n   * @param {string=} zeroLabel\n   * @return {string}\n   */\n  static formatDuration(timeInSeconds, zeroLabel = 'None') {\n    if (timeInSeconds === 0) {\n      return zeroLabel;\n    }\n\n    /** @type {!Array<string>} */\n    const parts = [];\n    const unitLabels = /** @type {!Object<string, number>} */ ({\n      d: 60 * 60 * 24,\n      h: 60 * 60,\n      m: 60,\n      s: 1,\n    });\n\n    Object.keys(unitLabels).forEach(label => {\n      const unit = unitLabels[label];\n      const numberOfUnits = Math.floor(timeInSeconds / unit);\n      if (numberOfUnits > 0) {\n        timeInSeconds -= numberOfUnits * unit;\n        parts.push(`${numberOfUnits}\\xa0${label}`);\n      }\n    });\n\n    return parts.join(' ');\n  }\n\n  /**\n   * @param {!URL} parsedUrl\n   * @param {{numPathParts: (number|undefined), preserveQuery: (boolean|undefined), preserveHost: (boolean|undefined)}=} options\n   * @return {string}\n   */\n  static getURLDisplayName(parsedUrl, options) {\n    options = options || {};\n    const numPathParts = options.numPathParts !== undefined ? options.numPathParts : 2;\n    const preserveQuery = options.preserveQuery !== undefined ? options.preserveQuery : true;\n    const preserveHost = options.preserveHost || false;\n\n    let name;\n\n    if (parsedUrl.protocol === 'about:' || parsedUrl.protocol === 'data:') {\n      // Handle 'about:*' and 'data:*' URLs specially since they have no path.\n      name = parsedUrl.href;\n    } else {\n      name = parsedUrl.pathname;\n      const parts = name.split('/').filter(part => part.length);\n      if (numPathParts && parts.length > numPathParts) {\n        name = ELLIPSIS + parts.slice(-1 * numPathParts).join('/');\n      }\n\n      if (preserveHost) {\n        name = `${parsedUrl.host}/${name.replace(/^\\//, '')}`;\n      }\n      if (preserveQuery) {\n        name = `${name}${parsedUrl.search}`;\n      }\n    }\n\n    const MAX_LENGTH = 64;\n    // Always elide hash\n    name = name.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${ELLIPSIS}`);\n\n    // Elide query params first\n    if (name.length > MAX_LENGTH && name.includes('?')) {\n      // Try to leave the first query parameter intact\n      name = name.replace(/\\?([^=]*)(=)?.*/, `?$1$2${ELLIPSIS}`);\n\n      // Remove it all if it's still too long\n      if (name.length > MAX_LENGTH) {\n        name = name.replace(/\\?.*/, `?${ELLIPSIS}`);\n      }\n    }\n\n    // Elide too long names next\n    if (name.length > MAX_LENGTH) {\n      const dotIndex = name.lastIndexOf('.');\n      if (dotIndex >= 0) {\n        name = name.slice(0, MAX_LENGTH - 1 - (name.length - dotIndex)) +\n            // Show file extension\n            `${ELLIPSIS}${name.slice(dotIndex)}`;\n      } else {\n        name = name.slice(0, MAX_LENGTH - 1) + ELLIPSIS;\n      }\n    }\n\n    return name;\n  }\n\n  /**\n   * Split a URL into a file and hostname for easy display.\n   * @param {string} url\n   * @return {{file: string, hostname: string}}\n   */\n  static parseURL(url) {\n    const parsedUrl = new URL(url);\n    return {file: Util.getURLDisplayName(parsedUrl), hostname: parsedUrl.hostname};\n  }\n\n  /**\n   * @param {number} startTime\n   * @param {number} endTime\n   * @return {string}\n   */\n  static chainDuration(startTime, endTime) {\n    return Util.formatNumber((endTime - startTime) * 1000);\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = Util;\n} else {\n  // @ts-ignore\n  self.Util = Util;\n}\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals URL self */\n\nclass DOM {\n  /**\n   * @param {!Document} document\n   */\n  constructor(document) {\n    /** @private {!Document} */\n    this._document = document;\n  }\n\n  /**\n   * @param {string} name\n   * @param {string=} className\n   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.\n   *     Note: if an attribute key has an undefined value, this method does not\n   *     set the attribute on the node.\n   * @return {!Element}\n   */\n  createElement(name, className, attrs = {}) {\n    const element = this._document.createElement(name);\n    if (className) {\n      element.className = className;\n    }\n    Object.keys(attrs).forEach(key => {\n      const value = attrs[key];\n      if (typeof value !== 'undefined') {\n        element.setAttribute(key, value);\n      }\n    });\n    return element;\n  }\n\n  /**\n   * @param {!Element} parentElem\n   * @param {string} elementName\n   * @param {string=} className\n   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.\n   *     Note: if an attribute key has an undefined value, this method does not\n   *     set the attribute on the node.\n   * @return {!Element}\n   */\n  createChildOf(parentElem, elementName, className, attrs) {\n    const element = this.createElement(elementName, className, attrs);\n    parentElem.appendChild(element);\n    return element;\n  }\n\n  /**\n   * @param {string} selector\n   * @param {!Node} context\n   * @return {!DocumentFragment} A clone of the template content.\n   * @throws {Error}\n   */\n  cloneTemplate(selector, context) {\n    const template = /** @type {?HTMLTemplateElement} */ (context.querySelector(selector));\n    if (!template) {\n      throw new Error(`Template not found: template${selector}`);\n    }\n\n    const clone = /** @type {!DocumentFragment} */ (this._document.importNode(\n        template.content, true));\n\n    // Prevent duplicate styles in the DOM. After a template has been stamped\n    // for the first time, remove the clone's styles so they're not re-added.\n    if (template.hasAttribute('data-stamped')) {\n      this.findAll('style', clone).forEach(style => style.remove());\n    }\n    template.setAttribute('data-stamped', true);\n\n    return clone;\n  }\n\n  /**\n   * Resets the \"stamped\" state of the templates.\n   */\n  resetTemplates() {\n    this.findAll('template[data-stamped]', this._document).forEach(t => {\n      t.removeAttribute('data-stamped');\n    });\n  }\n\n  /**\n   * @param {string} text\n   * @return {!Element}\n   */\n  convertMarkdownLinkSnippets(text) {\n    const element = this.createElement('span');\n\n    // Split on markdown links (e.g. [some link](https://...)).\n    const parts = text.split(/\\[([^\\]]*?)\\]\\((https?:\\/\\/.*?)\\)/g);\n\n    while (parts.length) {\n      // Pop off the same number of elements as there are capture groups.\n      const [preambleText, linkText, linkHref] = parts.splice(0, 3);\n      element.appendChild(this._document.createTextNode(preambleText));\n\n      // Append link if there are any.\n      if (linkText && linkHref) {\n        const a = /** @type {!HTMLAnchorElement} */ (this.createElement('a'));\n        a.rel = 'noopener';\n        a.target = '_blank';\n        a.textContent = linkText;\n        a.href = (new URL(linkHref)).href;\n        element.appendChild(a);\n      }\n    }\n\n    return element;\n  }\n\n  /**\n   * @param {string} text\n   * @return {!Element}\n   */\n  convertMarkdownCodeSnippets(text) {\n    const element = this.createElement('span');\n\n    const parts = text.split(/`(.*?)`/g); // Split on markdown code slashes\n    while (parts.length) {\n      // Pop off the same number of elements as there are capture groups.\n      const [preambleText, codeText] = parts.splice(0, 2);\n      element.appendChild(this._document.createTextNode(preambleText));\n      if (codeText) {\n        const pre = /** @type {!HTMLPreElement} */ (this.createElement('code'));\n        pre.textContent = codeText;\n        element.appendChild(pre);\n      }\n    }\n\n    return element;\n  }\n\n  /**\n   * @return {!Document}\n   */\n  document() {\n    return this._document;\n  }\n\n  /**\n   * Guaranteed context.querySelector. Always returns an element or throws if\n   * nothing matches query.\n   * @param {string} query\n   * @param {!Node} context\n   * @return {!Element}\n   */\n  find(query, context) {\n    const result = context.querySelector(query);\n    if (result === null) {\n      throw new Error(`query ${query} not found`);\n    }\n    return result;\n  }\n\n  /**\n   * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.\n   * @param {string} query\n   * @param {!Node} context\n   * @return {!Array<!Element>}\n   */\n  findAll(query, context) {\n    return Array.from(context.querySelectorAll(query));\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = DOM;\n} else {\n  self.DOM = DOM;\n}\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self CriticalRequestChainRenderer Util URL */\n\nclass DetailsRenderer {\n  /**\n   * @param {!DOM} dom\n   */\n  constructor(dom) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!Document|!Element} */\n    this._templateContext; // eslint-disable-line no-unused-expressions\n  }\n\n  /**\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} details\n   * @return {!Node}\n   */\n  render(details) {\n    switch (details.type) {\n      case 'text':\n        return this._renderText(details);\n      case 'url':\n        return this._renderTextURL(details);\n      case 'link':\n        return this._renderLink(/** @type {!DetailsRenderer.LinkDetailsJSON} */ (details));\n      case 'thumbnail':\n        return this._renderThumbnail(/** @type {!DetailsRenderer.ThumbnailDetails} */ (details));\n      case 'filmstrip':\n        return this._renderFilmstrip(/** @type {!DetailsRenderer.FilmstripDetails} */ (details));\n      case 'cards':\n        return this._renderCards(/** @type {!DetailsRenderer.CardsDetailsJSON} */ (details));\n      case 'table':\n        return this._renderTable(/** @type {!DetailsRenderer.TableDetailsJSON} */ (details));\n      case 'code':\n        return this._renderCode(details);\n      case 'node':\n        return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */(details));\n      case 'criticalrequestchain':\n        return CriticalRequestChainRenderer.render(this._dom, this._templateContext,\n          /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));\n      case 'list':\n        return this._renderList(/** @type {!DetailsRenderer.ListDetailsJSON} */ (details));\n      default:\n        throw new Error(`Unknown type: ${details.type}`);\n    }\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} text\n   * @return {!Element}\n   */\n  _renderTextURL(text) {\n    const url = text.text || '';\n\n    let displayedURL;\n    let title;\n    try {\n      displayedURL = Util.parseURL(url).file;\n      title = url;\n    } catch (/** @type {!Error} */ e) {\n      if (!(e instanceof TypeError)) {\n        throw e;\n      }\n      displayedURL = url;\n    }\n\n    const element = this._renderText({\n      type: 'url',\n      text: displayedURL,\n    });\n    element.classList.add('lh-text__url');\n\n    if (title) {\n      element.title = url;\n    }\n\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.LinkDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderLink(details) {\n    const allowedProtocols = ['https:', 'http:'];\n    const url = new URL(details.url);\n    if (!allowedProtocols.includes(url.protocol)) {\n      // Fall back to text if protocol not allowed.\n      return this._renderText(details);\n    }\n\n    const a = /** @type {!HTMLAnchorElement} */ (this._dom.createElement('a'));\n    a.rel = 'noopener';\n    a.target = '_blank';\n    a.textContent = details.text;\n    a.href = url.href;\n\n    return a;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} text\n   * @return {!Element}\n   */\n  _renderText(text) {\n    const element = this._dom.createElement('div', 'lh-text');\n    element.textContent = text.text;\n    return element;\n  }\n\n  /**\n   * Create small thumbnail with scaled down image asset.\n   * If the supplied details doesn't have an image/* mimeType, then an empty span is returned.\n   * @param {!DetailsRenderer.ThumbnailDetails} value\n   * @return {!Element}\n   */\n  _renderThumbnail(value) {\n    if (/^image/.test(value.mimeType) === false) {\n      return this._dom.createElement('span');\n    }\n\n    const element = this._dom.createElement('img', 'lh-thumbnail');\n    element.src = value.url;\n    element.alt = '';\n    element.title = value.url;\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.ListDetailsJSON} list\n   * @return {!Element}\n   */\n  _renderList(list) {\n    if (!list.items.length) return this._dom.createElement('span');\n\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (list.header) {\n      const summary = this._dom.createElement('summary', 'lh-list__header');\n      summary.textContent = list.header.text;\n      element.appendChild(summary);\n    }\n\n    const itemsElem = this._dom.createChildOf(element, 'div', 'lh-list__items');\n    for (const item of list.items) {\n      const itemElem = this._dom.createChildOf(itemsElem, 'span', 'lh-list__item');\n      itemElem.appendChild(this.render(item));\n    }\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.TableDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderTable(details) {\n    if (!details.items.length) return this._dom.createElement('span');\n\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (details.header) {\n      element.appendChild(this._dom.createElement('summary')).textContent = details.header;\n    }\n\n    const tableElem = this._dom.createChildOf(element, 'table', 'lh-table');\n    const theadElem = this._dom.createChildOf(tableElem, 'thead');\n    const theadTrElem = this._dom.createChildOf(theadElem, 'tr');\n\n    for (const heading of details.itemHeaders) {\n      const itemType = heading.itemType || 'text';\n      const classes = `lh-table-column--${itemType}`;\n      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(this.render(heading));\n    }\n\n    const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');\n    for (const row of details.items) {\n      const rowElem = this._dom.createChildOf(tbodyElem, 'tr');\n      for (const columnItem of row) {\n        const classes = `lh-table-column--${columnItem.type}`;\n        this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(columnItem));\n      }\n    }\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.NodeDetailsJSON} item\n   * @return {!Element}\n   * @protected\n   */\n  renderNode(item) {\n    const element = this._dom.createElement('span', 'lh-node');\n    element.textContent = item.snippet;\n    element.title = item.selector;\n    if (item.text) element.setAttribute('data-text', item.text);\n    if (item.path) element.setAttribute('data-path', item.path);\n    if (item.selector) element.setAttribute('data-selector', item.selector);\n    if (item.snippet) element.setAttribute('data-snippet', item.snippet);\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.CardsDetailsJSON} details\n   * @return {!Element}\n   */\n  _renderCards(details) {\n    const element = this._dom.createElement('details', 'lh-details');\n    element.open = true;\n    if (details.header) {\n      element.appendChild(this._dom.createElement('summary')).textContent = details.header.text;\n    }\n\n    const cardsParent = this._dom.createElement('div', 'lh-scorecards');\n    for (const item of details.items) {\n      const card = cardsParent.appendChild(\n          this._dom.createElement('div', 'lh-scorecard', {title: item.snippet}));\n      const titleEl = this._dom.createElement('div', 'lh-scorecard__title');\n      const valueEl = this._dom.createElement('div', 'lh-scorecard__value');\n      const targetEl = this._dom.createElement('div', 'lh-scorecard__target');\n\n      card.appendChild(titleEl).textContent = item.title;\n      card.appendChild(valueEl).textContent = item.value;\n\n      if (item.target) {\n        card.appendChild(targetEl).textContent = `target: ${item.target}`;\n      }\n    }\n\n    element.appendChild(cardsParent);\n    return element;\n  }\n\n  /**\n   * @param {!DetailsRenderer.FilmstripDetails} details\n   * @return {!Element}\n   */\n  _renderFilmstrip(details) {\n    const filmstripEl = this._dom.createElement('div', 'lh-filmstrip');\n\n    for (const thumbnail of details.items) {\n      const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');\n\n      let timing = Util.formatMilliseconds(thumbnail.timing, 1);\n      if (thumbnail.timing > 1000) {\n        timing = Util.formatNumber(thumbnail.timing / 1000) + ' s';\n      }\n\n      const timingEl = this._dom.createChildOf(frameEl, 'div', 'lh-filmstrip__timestamp');\n      timingEl.textContent = timing;\n\n      const base64data = thumbnail.data;\n      this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {\n        src: `data:image/jpeg;base64,${base64data}`,\n        alt: `Screenshot at ${timing}`,\n      });\n    }\n\n    return filmstripEl;\n  }\n\n  /**\n   * @param {!DetailsRenderer.DetailsJSON} details\n   * @return {!Element}\n   */\n  _renderCode(details) {\n    const pre = this._dom.createElement('pre', 'lh-code');\n    pre.textContent = details.text;\n    return pre;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = DetailsRenderer;\n} else {\n  self.DetailsRenderer = DetailsRenderer;\n}\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined)\n * }}\n */\nDetailsRenderer.DetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<{type: string, text: (string|undefined)}>\n * }}\n */\nDetailsRenderer.ListDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined),\n *     path: (string|undefined),\n *     selector: (string|undefined),\n *     snippet:(string|undefined)\n * }}\n */\nDetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<{title: string, value: string, snippet: (string|undefined), target: string}>\n * }}\n */\nDetailsRenderer.CardsDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     itemType: (string|undefined),\n *     text: (string|undefined)\n * }}\n */\nDetailsRenderer.TableHeaderJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     type: string,\n *     text: (string|undefined),\n *     path: (string|undefined),\n *     selector: (string|undefined),\n *     snippet:(string|undefined)\n * }}\n */\nDetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     header: ({text: string}|undefined),\n *     items: !Array<!Array<!DetailsRenderer.DetailsJSON>>,\n *     itemHeaders: !Array<!DetailsRenderer.TableHeaderJSON>\n * }}\n */\nDetailsRenderer.TableDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     url: ({text: string}|undefined),\n *     mimeType: ({text: string}|undefined)\n * }}\n */\nDetailsRenderer.ThumbnailDetails; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     url: string,\n *     text: string\n * }}\n */\nDetailsRenderer.LinkDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     type: string,\n *     scale: number,\n *     items: !Array<{timing: number, timestamp: number, data: string}>,\n * }}\n */\nDetailsRenderer.FilmstripDetails; // eslint-disable-line no-unused-expressions\n",
 "/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * @fileoverview This file contains helpers for constructing and rendering the\n * critical request chains network tree.\n */\n\n/* globals self Util */\n\nclass CriticalRequestChainRenderer {\n  /**\n   * Create render context for critical-request-chain tree display.\n   * @param {!Object<string, !CriticalRequestChainRenderer.CRCNode>} tree\n   * @return {{tree: !Object<string, !CriticalRequestChainRenderer.CRCNode>, startTime: number, transferSize: number}}\n   */\n  static initTree(tree) {\n    let startTime = 0;\n    const rootNodes = Object.keys(tree);\n    if (rootNodes.length > 0) {\n      const node = tree[rootNodes[0]];\n      startTime = node.request.startTime;\n    }\n\n    return {tree, startTime, transferSize: 0};\n  }\n\n  /**\n   * Helper to create context for each critical-request-chain node based on its\n   * parent. Calculates if this node is the last child, whether it has any\n   * children itself and what the tree looks like all the way back up to the root,\n   * so the tree markers can be drawn correctly.\n   * @param {!Object<string, !CriticalRequestChainRenderer.CRCNode>} parent\n   * @param {string} id\n   * @param {number} startTime\n   * @param {number} transferSize\n   * @param {!Array<boolean>=} treeMarkers\n   * @param {boolean=} parentIsLastChild\n   * @return {!CriticalRequestChainRenderer.CRCSegment}\n   */\n  static createSegment(parent, id, startTime, transferSize, treeMarkers, parentIsLastChild) {\n    const node = parent[id];\n    const siblings = Object.keys(parent);\n    const isLastChild = siblings.indexOf(id) === (siblings.length - 1);\n    const hasChildren = Object.keys(node.children).length > 0;\n\n    // Copy the tree markers so that we don't change by reference.\n    const newTreeMarkers = Array.isArray(treeMarkers) ? treeMarkers.slice(0) : [];\n\n    // Add on the new entry.\n    if (typeof parentIsLastChild !== 'undefined') {\n      newTreeMarkers.push(!parentIsLastChild);\n    }\n\n    return {\n      node,\n      isLastChild,\n      hasChildren,\n      startTime,\n      transferSize: transferSize + node.request.transferSize,\n      treeMarkers: newTreeMarkers,\n    };\n  }\n\n  /**\n   * Creates the DOM for a tree segment.\n   * @param {!DOM} dom\n   * @param {!DocumentFragment} tmpl\n   * @param {!CriticalRequestChainRenderer.CRCSegment} segment\n   * @return {!Node}\n   */\n  static createChainNode(dom, tmpl, segment) {\n    const chainsEl = dom.cloneTemplate('#tmpl-lh-crc__chains', tmpl);\n\n    // Hovering over request shows full URL.\n    dom.find('.crc-node', chainsEl).setAttribute('title', segment.node.request.url);\n\n    const treeMarkeEl = dom.find('.crc-node__tree-marker', chainsEl);\n\n    // Construct lines and add spacers for sub requests.\n    segment.treeMarkers.forEach(separator => {\n      if (separator) {\n        treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker vert'));\n        treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker'));\n      } else {\n        treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker'));\n        treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker'));\n      }\n    });\n\n    if (segment.isLastChild) {\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker up-right'));\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker right'));\n    } else {\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker vert-right'));\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker right'));\n    }\n\n    if (segment.hasChildren) {\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker horiz-down'));\n    } else {\n      treeMarkeEl.appendChild(dom.createElement('span', 'tree-marker right'));\n    }\n\n    // Fill in url, host, and request size information.\n    const {file, hostname} = Util.parseURL(segment.node.request.url);\n    const treevalEl = dom.find('.crc-node__tree-value', chainsEl);\n    dom.find('.crc-node__tree-file', treevalEl).textContent = `${file}`;\n    dom.find('.crc-node__tree-hostname', treevalEl).textContent = `(${hostname})`;\n\n    if (!segment.hasChildren) {\n      const span = dom.createElement('span', 'crc-node__chain-duration');\n      span.textContent = ' - ' + Util.chainDuration(\n          segment.node.request.startTime, segment.node.request.endTime) + 'ms, ';\n      const span2 = dom.createElement('span', 'crc-node__chain-duration');\n      span2.textContent = Util.formatBytesToKB(segment.node.request.transferSize);\n\n      treevalEl.appendChild(span);\n      treevalEl.appendChild(span2);\n    }\n\n    return chainsEl;\n  }\n\n  /**\n   * Recursively builds a tree from segments.\n   * @param {!DOM} dom\n   * @param {!DocumentFragment} tmpl\n   * @param {!CriticalRequestChainRenderer.CRCSegment} segment\n   * @param {!Element} detailsEl Parent details element.\n   * @param {!CriticalRequestChainRenderer.CRCDetailsJSON} details\n   */\n  static buildTree(dom, tmpl, segment, detailsEl, details) {\n    detailsEl.appendChild(CriticalRequestChainRenderer.createChainNode(dom, tmpl, segment));\n\n    for (const key of Object.keys(segment.node.children)) {\n      const childSegment = CriticalRequestChainRenderer.createSegment(segment.node.children, key,\n         segment.startTime, segment.transferSize, segment.treeMarkers, segment.isLastChild);\n      CriticalRequestChainRenderer.buildTree(dom, tmpl, childSegment, detailsEl, details);\n    }\n  }\n\n  /**\n   * @param {!DOM} dom\n   * @param {!Node} templateContext\n   * @param {!CriticalRequestChainRenderer.CRCDetailsJSON} details\n   * @return {!Node}\n   */\n  static render(dom, templateContext, details) {\n    const tmpl = dom.cloneTemplate('#tmpl-lh-crc', templateContext);\n\n    // Fill in top summary.\n    dom.find('.lh-crc__longest_duration', tmpl).textContent =\n        Util.formatNumber(details.longestChain.duration) + 'ms';\n    dom.find('.lh-crc__longest_length', tmpl).textContent = details.longestChain.length;\n    dom.find('.lh-crc__longest_transfersize', tmpl).textContent =\n        Util.formatBytesToKB(details.longestChain.transferSize);\n\n    const detailsEl = dom.find('.lh-details', tmpl);\n    detailsEl.open = true;\n\n    dom.find('.lh-details > summary', tmpl).textContent = details.header.text;\n\n    // Construct visual tree.\n    const root = CriticalRequestChainRenderer.initTree(details.chains);\n    for (const key of Object.keys(root.tree)) {\n      const segment = CriticalRequestChainRenderer.createSegment(root.tree, key,\n          root.startTime, root.transferSize);\n      CriticalRequestChainRenderer.buildTree(dom, tmpl, segment, detailsEl, details);\n    }\n\n    return tmpl;\n  }\n}\n\n// Allow Node require()'ing.\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = CriticalRequestChainRenderer;\n} else {\n  self.CriticalRequestChainRenderer = CriticalRequestChainRenderer;\n}\n\n/** @typedef {{\n *     type: string,\n *     header: {text: string},\n *     longestChain: {duration: number, length: number, transferSize: number},\n *     chains: !Object<string, !CriticalRequestChainRenderer.CRCNode>\n * }}\n */\nCriticalRequestChainRenderer.CRCDetailsJSON; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     endTime: number,\n *     responseReceivedTime: number,\n *     startTime: number,\n *     transferSize: number,\n *     url: string\n * }}\n */\nCriticalRequestChainRenderer.CRCRequest; // eslint-disable-line no-unused-expressions\n\n/**\n * Record type so children can circularly have CRCNode values.\n * @struct\n * @record\n */\nCriticalRequestChainRenderer.CRCNode = function() {};\n\n/** @type {!Object<string, !CriticalRequestChainRenderer.CRCNode>} */\nCriticalRequestChainRenderer.CRCNode.prototype.children; // eslint-disable-line no-unused-expressions\n\n/** @type {!CriticalRequestChainRenderer.CRCRequest} */\nCriticalRequestChainRenderer.CRCNode.prototype.request; // eslint-disable-line no-unused-expressions\n\n/** @typedef {{\n *     node: !CriticalRequestChainRenderer.CRCNode,\n *     isLastChild: boolean,\n *     hasChildren: boolean,\n *     startTime: number,\n *     transferSize: number,\n *     treeMarkers: !Array<boolean>\n * }}\n */\nCriticalRequestChainRenderer.CRCSegment; // eslint-disable-line no-unused-expressions\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* global URL */\n\n/**\n * Generate a filenamePrefix of hostname_YYYY-MM-DD_HH-MM-SS\n * Date/time uses the local timezone, however Node has unreliable ICU\n * support, so we must construct a YYYY-MM-DD date format manually. :/\n * @param {{url: string, generatedTime: string}} results\n * @return {string}\n */\nfunction getFilenamePrefix(results) {\n  const hostname = new (URLConstructor || URL)(results.url).hostname;\n  const date = (results.generatedTime && new Date(results.generatedTime)) || new Date();\n\n  const timeStr = date.toLocaleTimeString('en-US', {hour12: false});\n  const dateParts = date.toLocaleDateString('en-US', {\n    year: 'numeric', month: '2-digit', day: '2-digit',\n  }).split('/');\n  dateParts.unshift(dateParts.pop());\n  const dateStr = dateParts.join('-');\n\n  const filenamePrefix = `${hostname}_${dateStr}_${timeStr}`;\n  // replace characters that are unfriendly to filenames\n  return filenamePrefix.replace(/[\\/\\?<>\\\\:\\*\\|\":]/g, '-');\n}\n\nlet URLConstructor;\nif (typeof module !== 'undefined' && module.exports) {\n  URLConstructor = require('./url-shim');\n\n  module.exports = {getFilenamePrefix};\n}\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n// @ts-nocheck\n'use strict';\n\n/* global URL */\n\n/**\n * Generate a filenamePrefix of hostname_YYYY-MM-DD_HH-MM-SS\n * Date/time uses the local timezone, however Node has unreliable ICU\n * support, so we must construct a YYYY-MM-DD date format manually. :/\n * @param {{url: string, generatedTime: string}} results\n * @return {string}\n */\nfunction getFilenamePrefix(results) {\n  const hostname = new (URLConstructor || URL)(results.url).hostname;\n  const date = (results.generatedTime && new Date(results.generatedTime)) || new Date();\n\n  const timeStr = date.toLocaleTimeString('en-US', {hour12: false});\n  const dateParts = date.toLocaleDateString('en-US', {\n    year: 'numeric', month: '2-digit', day: '2-digit',\n  }).split('/');\n  dateParts.unshift(dateParts.pop());\n  const dateStr = dateParts.join('-');\n\n  const filenamePrefix = `${hostname}_${dateStr}_${timeStr}`;\n  // replace characters that are unfriendly to filenames\n  return filenamePrefix.replace(/[/?<>\\\\:*|\":]/g, '-');\n}\n\nlet URLConstructor;\nif (typeof module !== 'undefined' && module.exports) {\n  URLConstructor = require('./url-shim');\n\n  module.exports = {getFilenamePrefix};\n}\n",
 "/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * Logs messages via a UI butter.\n */\nclass Logger {\n  /**\n   * @param {!Element} element\n   */\n  constructor(element) {\n    /** @type {!Element} */\n    this.el = element;\n    /** @private {?number} */\n    this._id = null;\n  }\n\n  /**\n   * Shows a butter bar.\n   * @param {!string} msg The message to show.\n   * @param {boolean=} autoHide True to hide the message after a duration.\n   *     Default is true.\n   */\n  log(msg, autoHide = true) {\n    clearTimeout(this._id);\n\n    this.el.textContent = msg;\n    this.el.classList.add('show');\n    if (autoHide) {\n      this._id = setTimeout(_ => {\n        this.el.classList.remove('show');\n      }, 7000);\n    }\n  }\n\n  /**\n   * @param {string} msg\n   */\n  warn(msg) {\n    this.log('Warning: ' + msg);\n  }\n\n  /**\n   * @param {string} msg\n   */\n  error(msg) {\n    this.log(msg);\n  }\n\n  /**\n   * Explicitly hides the butter bar.\n   */\n  hide() {\n    clearTimeout(this._id);\n    this.el.classList.remove('show');\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = Logger;\n}\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * @fileoverview Adds export button, print, and other dynamic functionality to\n * the report.\n */\n\n/* globals self URL Blob CustomEvent getFilenamePrefix window */\n\nclass ReportUIFeatures {\n\n  /**\n   * @param {!DOM} dom\n   */\n  constructor(dom) {\n    /** @type {!ReportRenderer.ReportJSON} */\n    this.json; // eslint-disable-line no-unused-expressions\n    /** @protected {!DOM} */\n    this._dom = dom;\n    /** @protected {!Document} */\n    this._document = this._dom.document();\n    /** @private {boolean} */\n    this._copyAttempt = false;\n    /** @type {!Element} **/\n    this.exportButton; // eslint-disable-line no-unused-expressions\n\n    this.onMediaQueryChange = this.onMediaQueryChange.bind(this);\n    this.onCopy = this.onCopy.bind(this);\n    this.onExportButtonClick = this.onExportButtonClick.bind(this);\n    this.onExport = this.onExport.bind(this);\n    this.onKeyDown = this.onKeyDown.bind(this);\n    this.printShortCutDetect = this.printShortCutDetect.bind(this);\n  }\n\n  /**\n   * Adds export button, print, and other functionality to the report. The method\n   * should be called whenever the report needs to be re-rendered.\n   * @param {!ReportRenderer.ReportJSON} report\n   */\n  initFeatures(report) {\n    this.json = report;\n    this._setupMediaQueryListeners();\n    this._setupExportButton();\n    this._setUpCollapseDetailsAfterPrinting();\n    this._resetUIState();\n    this._document.addEventListener('keydown', this.printShortCutDetect);\n    this._document.addEventListener('copy', this.onCopy);\n  }\n\n  /**\n   * Fires a custom DOM event on target.\n   * @param {string} name Name of the event.\n   * @param {!Node=} target DOM node to fire the event on.\n   * @param {*=} detail Custom data to include.\n   */\n  _fireEventOn(name, target = this._document, detail) {\n    const event = new CustomEvent(name, detail ? {detail} : null);\n    this._document.dispatchEvent(event);\n  }\n\n  _setupMediaQueryListeners() {\n    const mediaQuery = self.matchMedia('(max-width: 600px)');\n    mediaQuery.addListener(this.onMediaQueryChange);\n    // Ensure the handler is called on init\n    this.onMediaQueryChange(mediaQuery);\n  }\n\n  /**\n   * Handle media query change events.\n   * @param {!MediaQueryList} mql\n   */\n  onMediaQueryChange(mql) {\n    const root = this._dom.find('.lh-root', this._document);\n    root.classList.toggle('lh-narrow', mql.matches);\n  }\n\n  _setupExportButton() {\n    this.exportButton = this._dom.find('.lh-export__button', this._document);\n    this.exportButton.addEventListener('click', this.onExportButtonClick);\n\n    const dropdown = this._dom.find('.lh-export__dropdown', this._document);\n    dropdown.addEventListener('click', this.onExport);\n  }\n\n  /**\n   * Handle copy events.\n   * @param {!Event} e\n   */\n  onCopy(e) {\n    // Only handle copy button presses (e.g. ignore the user copying page text).\n    if (this._copyAttempt) {\n      // We want to write our own data to the clipboard, not the user's text selection.\n      e.preventDefault();\n      e.clipboardData.setData('text/plain', JSON.stringify(this.json, null, 2));\n\n      this._fireEventOn('lh-log', this._document, {\n        cmd: 'log', msg: 'Report JSON copied to clipboard',\n      });\n    }\n\n    this._copyAttempt = false;\n  }\n\n  /**\n   * Copies the report JSON to the clipboard (if supported by the browser).\n   * @suppress {reportUnknownTypes}\n   */\n  onCopyButtonClick() {\n    this._fireEventOn('lh-analytics', this._document, {\n      cmd: 'send',\n      fields: {hitType: 'event', eventCategory: 'report', eventAction: 'copy'},\n    });\n\n    try {\n      if (this._document.queryCommandSupported('copy')) {\n        this._copyAttempt = true;\n\n        // Note: In Safari 10.0.1, execCommand('copy') returns true if there's\n        // a valid text selection on the page. See http://caniuse.com/#feat=clipboard.\n        if (!this._document.execCommand('copy')) {\n          this._copyAttempt = false; // Prevent event handler from seeing this as a copy attempt.\n\n          this._fireEventOn('lh-log', this._document, {\n            cmd: 'warn', msg: 'Your browser does not support copy to clipboard.',\n          });\n        }\n      }\n    } catch (/** @type {!Error} */ e) {\n      this._copyAttempt = false;\n      this._fireEventOn('lh-log', this._document, {cmd: 'log', msg: e.message});\n    }\n  }\n\n  closeExportDropdown() {\n    this.exportButton.classList.remove('active');\n  }\n\n  /**\n   * Click handler for export button.\n   * @param {!Event} e\n   */\n  onExportButtonClick(e) {\n    e.preventDefault();\n    const el = /** @type {!Element} */ (e.target);\n    el.classList.toggle('active');\n    this._document.addEventListener('keydown', this.onKeyDown);\n  }\n\n  /**\n   * Resets the state of page before capturing the page for export.\n   * When the user opens the exported HTML page, certain UI elements should\n   * be in their closed state (not opened) and the templates should be unstamped.\n   */\n  _resetUIState() {\n    this.closeExportDropdown();\n    this._dom.resetTemplates();\n  }\n\n  /**\n   * Handler for \"export as\" button.\n   * @param {!Event} e\n   */\n  onExport(e) {\n    e.preventDefault();\n\n    const el = /** @type {!Element} */ (e.target);\n\n    if (!el.hasAttribute('data-action')) {\n      return;\n    }\n\n    switch (el.getAttribute('data-action')) {\n      case 'copy':\n        this.onCopyButtonClick();\n        break;\n      case 'print':\n        this.expandAllDetails();\n        this.closeExportDropdown();\n        self.print();\n        break;\n      case 'save-json': {\n        const jsonStr = JSON.stringify(this.json, null, 2);\n        this._saveFile(new Blob([jsonStr], {type: 'application/json'}));\n        break;\n      }\n      case 'save-html': {\n        const htmlStr = this.getReportHtml();\n        try {\n          this._saveFile(new Blob([htmlStr], {type: 'text/html'}));\n        } catch (/** @type {!Error} */ e) {\n          this._fireEventOn('lh-log', this._document, {\n            cmd: 'error', msg: 'Could not export as HTML. ' + e.message,\n          });\n        }\n        break;\n      }\n      case 'open-viewer': {\n        this.sendJsonReport();\n        break;\n      }\n      case 'save-gist': {\n        this.saveAsGist();\n        break;\n      }\n    }\n\n    this.closeExportDropdown();\n    this._document.removeEventListener('keydown', this.onKeyDown);\n  }\n\n  /**\n   * Keydown handler for the document.\n   * @param {!Event} e\n   */\n  onKeyDown(e) {\n    if (e.keyCode === 27) { // ESC\n      this.closeExportDropdown();\n    }\n  }\n\n  /**\n   * Opens a new tab to the online viewer and sends the local page's JSON results\n   * to the online viewer using postMessage.\n   * @protected\n   */\n  sendJsonReport() {\n    const VIEWER_ORIGIN = 'https://googlechrome.github.io';\n    const VIEWER_URL = `${VIEWER_ORIGIN}/lighthouse/viewer/`;\n\n    // Chrome doesn't allow us to immediately postMessage to a popup right\n    // after it's created. Normally, we could also listen for the popup window's\n    // load event, however it is cross-domain and won't fire. Instead, listen\n    // for a message from the target app saying \"I'm open\".\n    const json = this.json;\n    window.addEventListener('message', function msgHandler(/** @type {!Event} */ e) {\n      const messageEvent = /** @type {!MessageEvent<{opened: boolean}>} */ (e);\n      if (messageEvent.origin !== VIEWER_ORIGIN) {\n        return;\n      }\n\n      if (messageEvent.data.opened) {\n        popup.postMessage({lhresults: json}, VIEWER_ORIGIN);\n        window.removeEventListener('message', msgHandler);\n      }\n    });\n\n    const popup = /** @type {!Window} */ (window.open(VIEWER_URL, '_blank'));\n  }\n\n  /**\n   * Expands audit details when user prints via keyboard shortcut.\n   * @param {!Event} e\n   */\n  printShortCutDetect(e) {\n    if ((e.ctrlKey || e.metaKey) && e.keyCode === 80) { // Ctrl+P\n      this.expandAllDetails();\n      this.closeExportDropdown();\n    }\n  }\n\n  /**\n   * Expands all audit `<details>`.\n   * Ideally, a print stylesheet could take care of this, but CSS has no way to\n   * open a `<details>` element.\n   */\n  expandAllDetails() {\n    const details = this._dom.findAll('.lh-categories details', this._document);\n    details.map(detail => detail.open = true);\n  }\n\n  /**\n   * Collapses all audit `<details>`.\n   * open a `<details>` element.\n   */\n  collapseAllDetails() {\n    const details = this._dom.findAll('.lh-categories details', this._document);\n    details.map(detail => detail.open = false);\n  }\n\n  /**\n   * Sets up listeners to collapse audit `<details>` when the user closes the\n   * print dialog, all `<details>` are collapsed.\n   */\n  _setUpCollapseDetailsAfterPrinting() {\n    // FF and IE implement these old events.\n    if ('onbeforeprint' in self) {\n      self.addEventListener('afterprint', this.collapseAllDetails);\n    } else {\n      // Note: FF implements both window.onbeforeprint and media listeners. However,\n      // it doesn't matchMedia doesn't fire when matching 'print'.\n      self.matchMedia('print').addListener(mql => {\n        if (mql.matches) {\n          this.expandAllDetails();\n        } else {\n          this.collapseAllDetails();\n        }\n      });\n    }\n  }\n\n  /**\n   * Returns the html that recreates this report.\n   * @return {string}\n   * @protected\n   */\n  getReportHtml() {\n    this._resetUIState();\n    return this._document.documentElement.outerHTML;\n  }\n\n  /**\n   * Save json as a gist. Unimplemented in base UI features.\n   * @protected\n   */\n  saveAsGist() {\n    throw new Error('Cannot save as gist from base report');\n  }\n\n  /**\n   * Downloads a file (blob) using a[download].\n   * @param {!Blob|!File} blob The file to save.\n   * @private\n   */\n  _saveFile(blob) {\n    const filename = getFilenamePrefix({\n      url: this.json.url,\n      generatedTime: this.json.generatedTime,\n    });\n\n    const ext = blob.type.match('json') ? '.json' : '.html';\n    const href = URL.createObjectURL(blob);\n\n    const a = /** @type {!HTMLAnchorElement} */ (this._dom.createElement('a'));\n    a.download = `${filename}${ext}`;\n    a.href = href;\n    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.\n    a.click();\n\n    // cleanup.\n    this._document.body.removeChild(a);\n    setTimeout(_ => URL.revokeObjectURL(href), 500);\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = ReportUIFeatures;\n} else {\n  self.ReportUIFeatures = ReportUIFeatures;\n}\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self, Util */\n\nclass CategoryRenderer {\n  /**\n   * @param {!DOM} dom\n   * @param {!DetailsRenderer} detailsRenderer\n   */\n  constructor(dom, detailsRenderer) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!DetailsRenderer} */\n    this._detailsRenderer = detailsRenderer;\n    /** @private {!Document|!Element} */\n    this._templateContext = this._dom.document();\n\n    this._detailsRenderer.setTemplateContext(this._templateContext);\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @return {!Element}\n   */\n  _renderAuditScore(audit) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-audit-score', this._templateContext);\n\n    const scoringMode = audit.result.scoringMode;\n    const description = audit.result.helpText;\n    let title = audit.result.description;\n\n    if (audit.result.displayValue) {\n      title += `:  ${audit.result.displayValue}`;\n    }\n    if (audit.result.optimalValue) {\n      title += ` (target: ${audit.result.optimalValue})`;\n    }\n\n    if (audit.result.debugString) {\n      const debugStrEl = tmpl.appendChild(this._dom.createElement('div', 'lh-debug'));\n      debugStrEl.textContent = audit.result.debugString;\n    }\n\n    // Append audit details to header section so the entire audit is within a <details>.\n    const header = /** @type {!HTMLDetailsElement} */ (this._dom.find('.lh-score__header', tmpl));\n    if (audit.result.details) {\n      header.appendChild(this._detailsRenderer.render(audit.result.details));\n    }\n\n    const scoreEl = this._dom.find('.lh-score', tmpl);\n    if (audit.result.informative) {\n      scoreEl.classList.add('lh-score--informative');\n    }\n    if (audit.result.manual) {\n      scoreEl.classList.add('lh-score--manual');\n    }\n\n    return this._populateScore(tmpl, audit.score, scoringMode, title, description);\n  }\n\n  /**\n   * @param {!DocumentFragment|!Element} element DOM node to populate with values.\n   * @param {number} score\n   * @param {string} scoringMode\n   * @param {string} title\n   * @param {string} description\n   * @return {!Element}\n   */\n  _populateScore(element, score, scoringMode, title, description) {\n    // Fill in the blanks.\n    const valueEl = this._dom.find('.lh-score__value', element);\n    valueEl.textContent = Util.formatNumber(score);\n    valueEl.classList.add(`lh-score__value--${Util.calculateRating(score)}`,\n        `lh-score__value--${scoringMode}`);\n\n    this._dom.find('.lh-score__title', element).appendChild(\n        this._dom.convertMarkdownCodeSnippets(title));\n    this._dom.find('.lh-score__description', element)\n        .appendChild(this._dom.convertMarkdownLinkSnippets(description));\n\n    return /** @type {!Element} **/ (element);\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @return {!Element}\n   */\n  _renderCategoryScore(category) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-category-score', this._templateContext);\n    const score = Math.round(category.score);\n\n    const gaugeContainerEl = this._dom.find('.lh-score__gauge', tmpl);\n    const gaugeEl = this.renderScoreGauge(category);\n    gaugeContainerEl.appendChild(gaugeEl);\n\n    return this._populateScore(tmpl, score, 'numeric', category.name, category.description);\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @return {!Element}\n   */\n  _renderAudit(audit) {\n    const element = this._dom.createElement('div', 'lh-audit');\n    element.appendChild(this._renderAuditScore(audit));\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @param {number} scale\n   * @return {!Element}\n   */\n  _renderTimelineMetricAudit(audit, scale) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-timeline-metric', this._templateContext);\n    const element = this._dom.find('.lh-timeline-metric', tmpl);\n    element.classList.add(`lh-timeline-metric--${Util.calculateRating(audit.score)}`);\n\n    const titleEl = this._dom.find('.lh-timeline-metric__title', tmpl);\n    titleEl.textContent = audit.result.description;\n\n    const valueEl = this._dom.find('.lh-timeline-metric__value', tmpl);\n    valueEl.textContent = audit.result.displayValue;\n\n    const descriptionEl = this._dom.find('.lh-timeline-metric__description', tmpl);\n    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));\n\n    if (typeof audit.result.rawValue !== 'number') {\n      const debugStrEl = this._dom.createChildOf(element, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString || 'Report error: no metric information';\n      return element;\n    }\n\n    const sparklineBarEl = this._dom.find('.lh-sparkline__bar', tmpl);\n    sparklineBarEl.style.width = `${audit.result.rawValue / scale * 100}%`;\n\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @param {number} scale\n   * @return {!Element}\n   */\n  _renderPerfHintAudit(audit, scale) {\n    const extendedInfo = /** @type {!CategoryRenderer.PerfHintExtendedInfo}\n        */ (audit.result.extendedInfo);\n    const tooltipAttrs = {title: audit.result.displayValue};\n\n    const element = this._dom.createElement('details', [\n      'lh-perf-hint',\n      `lh-perf-hint--${Util.calculateRating(audit.score)}`,\n      'lh-expandable-details',\n    ].join(' '));\n\n    const summary = this._dom.createChildOf(element, 'summary', 'lh-perf-hint__summary ' +\n        'lh-expandable-details__summary');\n    const titleEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__title');\n    titleEl.textContent = audit.result.description;\n\n    this._dom.createChildOf(summary, 'div', 'lh-toggle-arrow', {title: 'See resources'});\n\n    if (!extendedInfo || typeof audit.result.rawValue !== 'number') {\n      const debugStrEl = this._dom.createChildOf(summary, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString || 'Report error: no extended information';\n      return element;\n    }\n\n    const sparklineContainerEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__sparkline',\n        tooltipAttrs);\n    const sparklineEl = this._dom.createChildOf(sparklineContainerEl, 'div', 'lh-sparkline');\n    const sparklineBarEl = this._dom.createChildOf(sparklineEl, 'div', 'lh-sparkline__bar');\n    sparklineBarEl.style.width = audit.result.rawValue / scale * 100 + '%';\n\n    const statsEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__stats', tooltipAttrs);\n    const statsMsEl = this._dom.createChildOf(statsEl, 'div', 'lh-perf-hint__primary-stat');\n    statsMsEl.textContent = Util.formatMilliseconds(audit.result.rawValue);\n\n    if (extendedInfo.value.wastedKb) {\n      const statsKbEl = this._dom.createChildOf(statsEl, 'div', 'lh-perf-hint__secondary-stat');\n      statsKbEl.textContent = Util.formatNumber(extendedInfo.value.wastedKb) + ' KB';\n    }\n\n    const descriptionEl = this._dom.createChildOf(element, 'div', 'lh-perf-hint__description');\n    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));\n\n    if (audit.result.debugString) {\n      const debugStrEl = this._dom.createChildOf(summary, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString;\n    }\n\n    if (audit.result.details) {\n      element.appendChild(this._detailsRenderer.render(audit.result.details));\n    }\n\n    return element;\n  }\n\n  /**\n   * Renders the group container for a group of audits. Individual audit elements can be added\n   * directly to the returned element.\n   * @param {!ReportRenderer.GroupJSON} group\n   * @param {{expandable: boolean}} opts\n   * @return {!Element}\n   */\n  _renderAuditGroup(group, opts) {\n    const expandable = opts.expandable;\n    const element = this._dom.createElement(expandable ? 'details' : 'div', 'lh-audit-group');\n    const summmaryEl = this._dom.createChildOf(element, 'summary', 'lh-audit-group__summary');\n    const headerEl = this._dom.createChildOf(summmaryEl, 'div', 'lh-audit-group__header');\n    this._dom.createChildOf(summmaryEl, 'div',\n      `lh-toggle-arrow  ${expandable ? '' : ' lh-toggle-arrow-unexpandable'}`, {\n        title: 'See audits',\n      });\n\n    if (group.description) {\n      const auditGroupDescription = this._dom.createElement('div', 'lh-audit-group__description');\n      auditGroupDescription.appendChild(this._dom.convertMarkdownLinkSnippets(group.description));\n      element.appendChild(auditGroupDescription);\n    }\n    headerEl.textContent = group.title;\n\n    return element;\n  }\n\n  /**\n   * @param {!Array<!Element>} elements\n   * @return {!Element}\n   */\n  _renderPassedAuditsSection(elements) {\n    const passedElem = this._renderAuditGroup({\n      title: `${elements.length} Passed Audits`,\n    }, {expandable: true});\n    passedElem.classList.add('lh-passed-audits');\n    elements.forEach(elem => passedElem.appendChild(elem));\n    return passedElem;\n  }\n\n  /**\n   * @param {!Array<!ReportRenderer.AuditJSON>} manualAudits\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @param {!Element} element Parent container to add the manual audits to.\n   */\n  _renderManualAudits(manualAudits, groupDefinitions, element) {\n    const auditsGroupedByGroup = /** @type {!Object<string,\n        !Array<!ReportRenderer.AuditJSON>>} */ ({});\n    manualAudits.forEach(audit => {\n      const group = auditsGroupedByGroup[audit.group] || [];\n      group.push(audit);\n      auditsGroupedByGroup[audit.group] = group;\n    });\n\n    Object.keys(auditsGroupedByGroup).forEach(groupId => {\n      const group = groupDefinitions[groupId];\n      const auditGroupElem = this._renderAuditGroup(group, {expandable: true});\n      auditGroupElem.classList.add('lh-audit-group--manual');\n\n      auditsGroupedByGroup[groupId].forEach(audit => {\n        auditGroupElem.appendChild(this._renderAudit(audit));\n      });\n\n      element.appendChild(auditGroupElem);\n    });\n  }\n\n  /**\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n    this._detailsRenderer.setTemplateContext(context);\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @return {!DocumentFragment}\n   */\n  renderScoreGauge(category) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-gauge', this._templateContext);\n    this._dom.find('.lh-gauge__wrapper', tmpl).href = `#${category.id}`;\n    this._dom.find('.lh-gauge__label', tmpl).textContent = category.name;\n\n    const score = Math.round(category.score);\n    const fillRotation = Math.floor((score / 100) * 180);\n\n    const gauge = this._dom.find('.lh-gauge', tmpl);\n    gauge.setAttribute('data-progress', score); // .dataset not supported in jsdom.\n    gauge.classList.add(`lh-gauge--${Util.calculateRating(score)}`);\n\n    this._dom.findAll('.lh-gauge__fill', gauge).forEach(el => {\n      el.style.transform = `rotate(${fillRotation}deg)`;\n    });\n\n    this._dom.find('.lh-gauge__mask--full', gauge).style.transform =\n        `rotate(${fillRotation}deg)`;\n    this._dom.find('.lh-gauge__fill--fix', gauge).style.transform =\n        `rotate(${fillRotation * 2}deg)`;\n    this._dom.find('.lh-gauge__percentage', gauge).textContent = score;\n\n    return tmpl;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups\n   * @return {!Element}\n   */\n  render(category, groups) {\n    switch (category.id) {\n      case 'performance':\n        return this._renderPerformanceCategory(category, groups);\n      case 'accessibility':\n        return this._renderAccessibilityCategory(category, groups);\n      default:\n        return this._renderDefaultCategory(category, groups);\n    }\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @return {!Element}\n   */\n  _renderDefaultCategory(category, groupDefinitions) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const manualAudits = category.audits.filter(audit => audit.result.manual);\n    const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));\n    const passedAudits = nonManualAudits.filter(audit => audit.score === 100 &&\n        !audit.result.debugString);\n    const nonPassedAudits = nonManualAudits.filter(audit => !passedAudits.includes(audit));\n\n    const nonPassedElem = this._renderAuditGroup({\n      title: `${nonPassedAudits.length} Failed Audits`,\n    }, {expandable: false});\n    nonPassedElem.classList.add('lh-failed-audits');\n    nonPassedAudits.forEach(audit => nonPassedElem.appendChild(this._renderAudit(audit)));\n    element.appendChild(nonPassedElem);\n\n    // Create a passed section if there are passing audits.\n    if (passedAudits.length) {\n      const passedElem = this._renderPassedAuditsSection(\n        passedAudits.map(audit => this._renderAudit(audit))\n      );\n      element.appendChild(passedElem);\n    }\n\n    // Render manual audits after passing.\n    this._renderManualAudits(manualAudits, groupDefinitions, element);\n\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups\n   * @return {!Element}\n   */\n  _renderPerformanceCategory(category, groups) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const metricAudits = category.audits.filter(audit => audit.group === 'perf-metric');\n    const metricAuditsEl = this._renderAuditGroup(groups['perf-metric'], {expandable: false});\n    const timelineContainerEl = this._dom.createChildOf(metricAuditsEl, 'div',\n        'lh-timeline-container');\n    const timelineEl = this._dom.createChildOf(timelineContainerEl, 'div', 'lh-timeline');\n\n    let perfTimelineScale = 0;\n    metricAudits.forEach(audit => {\n      if (typeof audit.result.rawValue === 'number' && audit.result.rawValue) {\n        perfTimelineScale = Math.max(perfTimelineScale, audit.result.rawValue);\n      }\n    });\n\n    const thumbnailAudit = category.audits.find(audit => audit.id === 'screenshot-thumbnails');\n    const thumbnailResult = thumbnailAudit && thumbnailAudit.result;\n    if (thumbnailResult && thumbnailResult.details) {\n      const thumbnailDetails = /** @type {!DetailsRenderer.FilmstripDetails} */\n          (thumbnailResult.details);\n      perfTimelineScale = Math.max(perfTimelineScale, thumbnailDetails.scale);\n      const filmstripEl = this._detailsRenderer.render(thumbnailDetails);\n      timelineEl.appendChild(filmstripEl);\n    }\n\n    metricAudits.forEach(item => {\n      if (item.id === 'speed-index-metric' || item.id === 'estimated-input-latency') {\n        return metricAuditsEl.appendChild(this._renderAudit(item));\n      }\n\n      timelineEl.appendChild(this._renderTimelineMetricAudit(item, perfTimelineScale));\n    });\n\n    metricAuditsEl.open = true;\n    element.appendChild(metricAuditsEl);\n\n    const hintAudits = category.audits\n        .filter(audit => audit.group === 'perf-hint' && audit.score < 100)\n        .sort((auditA, auditB) => auditB.result.rawValue - auditA.result.rawValue);\n    if (hintAudits.length) {\n      const maxWaste = Math.max(...hintAudits.map(audit => audit.result.rawValue));\n      const scale = Math.ceil(maxWaste / 1000) * 1000;\n      const hintAuditsEl = this._renderAuditGroup(groups['perf-hint'], {expandable: false});\n      hintAudits.forEach(item => hintAuditsEl.appendChild(this._renderPerfHintAudit(item, scale)));\n      hintAuditsEl.open = true;\n      element.appendChild(hintAuditsEl);\n    }\n\n    const infoAudits = category.audits\n        .filter(audit => audit.group === 'perf-info' && audit.score < 100);\n    if (infoAudits.length) {\n      const infoAuditsEl = this._renderAuditGroup(groups['perf-info'], {expandable: false});\n      infoAudits.forEach(item => infoAuditsEl.appendChild(this._renderAudit(item)));\n      infoAuditsEl.open = true;\n      element.appendChild(infoAuditsEl);\n    }\n\n    const passedElements = category.audits\n        .filter(audit => (audit.group === 'perf-hint' || audit.group === 'perf-info') &&\n            audit.score === 100)\n        .map(audit => this._renderAudit(audit));\n\n    if (!passedElements.length) return element;\n\n    const passedElem = this._renderPassedAuditsSection(passedElements);\n    element.appendChild(passedElem);\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @return {!Element}\n   */\n  _renderAccessibilityCategory(category, groupDefinitions) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const auditsGroupedByGroup = /** @type {!Object<string,\n        {passed: !Array<!ReportRenderer.AuditJSON>,\n        failed: !Array<!ReportRenderer.AuditJSON>}>} */ ({});\n    category.audits.forEach(audit => {\n      const groupId = audit.group;\n      const groups = auditsGroupedByGroup[groupId] || {passed: [], failed: []};\n\n      if (audit.score === 100) {\n        groups.passed.push(audit);\n      } else {\n        groups.failed.push(audit);\n      }\n\n      auditsGroupedByGroup[groupId] = groups;\n    });\n\n    const passedElements = /** @type {!Array<!Element>} */ ([]);\n    Object.keys(auditsGroupedByGroup).forEach(groupId => {\n      const group = groupDefinitions[groupId];\n      const groups = auditsGroupedByGroup[groupId];\n      if (groups.failed.length) {\n        const auditGroupElem = this._renderAuditGroup(group, {expandable: false});\n        groups.failed.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));\n        auditGroupElem.open = true;\n        element.appendChild(auditGroupElem);\n      }\n\n      if (groups.passed.length) {\n        const auditGroupElem = this._renderAuditGroup(group, {expandable: true});\n        groups.passed.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));\n        passedElements.push(auditGroupElem);\n      }\n    });\n\n    // don't create a passed section if there are no passed\n    if (!passedElements.length) return element;\n\n    const passedElem = this._renderPassedAuditsSection(passedElements);\n    element.appendChild(passedElem);\n    return element;\n  }\n\n  /**\n   * Create a non-semantic span used for hash navigation of categories\n   * @param {!Element} element\n   * @param {string} id\n   */\n  _createPermalinkSpan(element, id) {\n    const permalinkEl = this._dom.createChildOf(element, 'span', 'lh-permalink');\n    permalinkEl.id = id;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = CategoryRenderer;\n} else {\n  self.CategoryRenderer = CategoryRenderer;\n}\n\n\n/**\n * @typedef {{\n *     value: {\n *       wastedMs: (number|undefined),\n *       wastedKb: (number|undefined),\n *     }\n * }}\n */\nCategoryRenderer.PerfHintExtendedInfo; // eslint-disable-line no-unused-expressions\n",
-"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * @fileoverview The entry point for rendering the Lighthouse report based on the JSON output.\n *    This file is injected into the report HTML along with the JSON report.\n *\n * Dummy text for ensuring report robustness: </script> pre$`post %%LIGHTHOUSE_JSON%%\n */\n\n/* globals self, Util */\n\nclass ReportRenderer {\n  /**\n   * @param {!DOM} dom\n   * @param {!CategoryRenderer} categoryRenderer\n   */\n  constructor(dom, categoryRenderer) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!CategoryRenderer} */\n    this._categoryRenderer = categoryRenderer;\n    /** @private {!Document|!Element} */\n    this._templateContext = this._dom.document();\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @param {!Element} container Parent element to render the report into.\n   */\n  renderReport(report, container) {\n    container.textContent = ''; // Remove previous report.\n    const element = container.appendChild(this._renderReport(report));\n\n    return /** @type {!Element} **/ (element);\n  }\n\n  /**\n   * Define a custom element for <templates> to be extracted from. For example:\n   *     this.setTemplateContext(new DOMParser().parseFromString(htmlStr, 'text/html'))\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n    this._categoryRenderer.setTemplateContext(context);\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportHeader(report) {\n    const header = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);\n    this._dom.find('.lh-config__timestamp', header).textContent =\n        Util.formatDateTime(report.generatedTime);\n    const url = this._dom.find('.lh-metadata__url', header);\n    url.href = report.url;\n    url.textContent = report.url;\n\n    this._dom.find('.lh-env__item__ua', header).textContent = report.userAgent;\n\n    const env = this._dom.find('.lh-env__items', header);\n    report.runtimeConfig.environment.forEach(runtime => {\n      const item = this._dom.cloneTemplate('#tmpl-lh-env__items', env);\n      this._dom.find('.lh-env__name', item).textContent = runtime.name;\n      this._dom.find('.lh-env__description', item).textContent = runtime.description;\n      this._dom.find('.lh-env__enabled', item).textContent =\n          runtime.enabled ? 'Enabled' : 'Disabled';\n      env.appendChild(item);\n    });\n\n    return header;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportFooter(report) {\n    const footer = this._dom.cloneTemplate('#tmpl-lh-footer', this._templateContext);\n    this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;\n    this._dom.find('.lh-footer__timestamp', footer).textContent =\n        Util.formatDateTime(report.generatedTime);\n    return footer;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportNav(report) {\n    const leftNav = this._dom.cloneTemplate('#tmpl-lh-leftnav', this._templateContext);\n\n    this._dom.find('.leftnav__header__version', leftNav).textContent =\n        `Version: ${report.lighthouseVersion}`;\n\n    const nav = this._dom.find('.lh-leftnav', leftNav);\n    for (const category of report.reportCategories) {\n      const itemsTmpl = this._dom.cloneTemplate('#tmpl-lh-leftnav__items', leftNav);\n\n      const navItem = this._dom.find('.lh-leftnav__item', itemsTmpl);\n      navItem.href = `#${category.id}`;\n\n      this._dom.find('.leftnav-item__category', navItem).textContent = category.name;\n      const score = this._dom.find('.leftnav-item__score', navItem);\n      score.classList.add(`lh-score__value--${Util.calculateRating(category.score)}`);\n      score.textContent = Math.round(category.score);\n      nav.appendChild(navItem);\n    }\n    return leftNav;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!Element}\n   */\n  _renderReport(report) {\n    const container = this._dom.createElement('div', 'lh-container');\n    container.appendChild(this._renderReportHeader(report)); // sticky header goes at the top.\n    container.appendChild(this._renderReportNav(report));\n    const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));\n\n    let scoreHeader;\n    const isSoloCategory = report.reportCategories.length === 1;\n    if (!isSoloCategory) {\n      scoreHeader = reportSection.appendChild(this._dom.createElement('div', 'lh-scores-header'));\n    }\n\n    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));\n    for (const category of report.reportCategories) {\n      if (scoreHeader) {\n        scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));\n      }\n      categories.appendChild(this._categoryRenderer.render(category, report.reportGroups));\n    }\n\n    reportSection.appendChild(this._renderReportFooter(report));\n\n    return container;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = ReportRenderer;\n} else {\n  self.ReportRenderer = ReportRenderer;\n}\n\n/**\n * @typedef {{\n *     id: string,\n *     weight: number,\n *     score: number,\n *     group: string,\n *     result: {\n *       rawValue: (number|undefined),\n *       description: string,\n *       informative: boolean,\n *       manual: boolean,\n *       debugString: string,\n *       displayValue: string,\n *       helpText: string,\n *       score: (number|boolean),\n *       scoringMode: string,\n *       optimalValue: number,\n *       extendedInfo: Object,\n *       details: (!DetailsRenderer.DetailsJSON|undefined)\n *     }\n * }}\n */\nReportRenderer.AuditJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     name: string,\n *     id: string,\n *     weight: number,\n *     score: number,\n *     description: string,\n *     audits: !Array<!ReportRenderer.AuditJSON>\n * }}\n */\nReportRenderer.CategoryJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     title: string,\n *     description: (string|undefined),\n * }}\n */\nReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     lighthouseVersion: string,\n *     userAgent: string,\n *     generatedTime: string,\n *     timing: {total: number},\n *     initialUrl: string,\n *     url: string,\n *     artifacts: {traces: !Object},\n *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,\n *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,\n *     runtimeConfig: {\n *       blockedUrlPatterns: !Array<string>,\n *       environment: !Array<{description: string, enabled: boolean, name: string}>\n *     }\n * }}\n */\nReportRenderer.ReportJSON; // eslint-disable-line no-unused-expressions\n"].
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * @fileoverview Adds export button, print, and other dynamic functionality to\n * the report.\n */\n\n/* globals self URL Blob CustomEvent getFilenamePrefix window */\n\nclass ReportUIFeatures {\n  /**\n   * @param {!DOM} dom\n   */\n  constructor(dom) {\n    /** @type {!ReportRenderer.ReportJSON} */\n    this.json; // eslint-disable-line no-unused-expressions\n    /** @protected {!DOM} */\n    this._dom = dom;\n    /** @protected {!Document} */\n    this._document = this._dom.document();\n    /** @private {boolean} */\n    this._copyAttempt = false;\n    /** @type {!Element} **/\n    this.exportButton; // eslint-disable-line no-unused-expressions\n\n    this.onMediaQueryChange = this.onMediaQueryChange.bind(this);\n    this.onCopy = this.onCopy.bind(this);\n    this.onExportButtonClick = this.onExportButtonClick.bind(this);\n    this.onExport = this.onExport.bind(this);\n    this.onKeyDown = this.onKeyDown.bind(this);\n    this.printShortCutDetect = this.printShortCutDetect.bind(this);\n  }\n\n  /**\n   * Adds export button, print, and other functionality to the report. The method\n   * should be called whenever the report needs to be re-rendered.\n   * @param {!ReportRenderer.ReportJSON} report\n   */\n  initFeatures(report) {\n    this.json = report;\n    this._setupMediaQueryListeners();\n    this._setupExportButton();\n    this._setUpCollapseDetailsAfterPrinting();\n    this._resetUIState();\n    this._document.addEventListener('keydown', this.printShortCutDetect);\n    this._document.addEventListener('copy', this.onCopy);\n  }\n\n  /**\n   * Fires a custom DOM event on target.\n   * @param {string} name Name of the event.\n   * @param {!Node=} target DOM node to fire the event on.\n   * @param {*=} detail Custom data to include.\n   */\n  _fireEventOn(name, target = this._document, detail) {\n    const event = new CustomEvent(name, detail ? {detail} : null);\n    target.dispatchEvent(event);\n  }\n\n  _setupMediaQueryListeners() {\n    const mediaQuery = self.matchMedia('(max-width: 600px)');\n    mediaQuery.addListener(this.onMediaQueryChange);\n    // Ensure the handler is called on init\n    this.onMediaQueryChange(mediaQuery);\n  }\n\n  /**\n   * Handle media query change events.\n   * @param {!MediaQueryList} mql\n   */\n  onMediaQueryChange(mql) {\n    const root = this._dom.find('.lh-root', this._document);\n    root.classList.toggle('lh-narrow', mql.matches);\n  }\n\n  _setupExportButton() {\n    this.exportButton = this._dom.find('.lh-export__button', this._document);\n    this.exportButton.addEventListener('click', this.onExportButtonClick);\n\n    const dropdown = this._dom.find('.lh-export__dropdown', this._document);\n    dropdown.addEventListener('click', this.onExport);\n  }\n\n  /**\n   * Handle copy events.\n   * @param {!Event} e\n   */\n  onCopy(e) {\n    // Only handle copy button presses (e.g. ignore the user copying page text).\n    if (this._copyAttempt) {\n      // We want to write our own data to the clipboard, not the user's text selection.\n      e.preventDefault();\n      e.clipboardData.setData('text/plain', JSON.stringify(this.json, null, 2));\n\n      this._fireEventOn('lh-log', this._document, {\n        cmd: 'log', msg: 'Report JSON copied to clipboard',\n      });\n    }\n\n    this._copyAttempt = false;\n  }\n\n  /**\n   * Copies the report JSON to the clipboard (if supported by the browser).\n   * @suppress {reportUnknownTypes}\n   */\n  onCopyButtonClick() {\n    this._fireEventOn('lh-analytics', this._document, {\n      cmd: 'send',\n      fields: {hitType: 'event', eventCategory: 'report', eventAction: 'copy'},\n    });\n\n    try {\n      if (this._document.queryCommandSupported('copy')) {\n        this._copyAttempt = true;\n\n        // Note: In Safari 10.0.1, execCommand('copy') returns true if there's\n        // a valid text selection on the page. See http://caniuse.com/#feat=clipboard.\n        if (!this._document.execCommand('copy')) {\n          this._copyAttempt = false; // Prevent event handler from seeing this as a copy attempt.\n\n          this._fireEventOn('lh-log', this._document, {\n            cmd: 'warn', msg: 'Your browser does not support copy to clipboard.',\n          });\n        }\n      }\n    } catch (/** @type {!Error} */ e) {\n      this._copyAttempt = false;\n      this._fireEventOn('lh-log', this._document, {cmd: 'log', msg: e.message});\n    }\n  }\n\n  closeExportDropdown() {\n    this.exportButton.classList.remove('active');\n  }\n\n  /**\n   * Click handler for export button.\n   * @param {!Event} e\n   */\n  onExportButtonClick(e) {\n    e.preventDefault();\n    const el = /** @type {!Element} */ (e.target);\n    el.classList.toggle('active');\n    this._document.addEventListener('keydown', this.onKeyDown);\n  }\n\n  /**\n   * Resets the state of page before capturing the page for export.\n   * When the user opens the exported HTML page, certain UI elements should\n   * be in their closed state (not opened) and the templates should be unstamped.\n   */\n  _resetUIState() {\n    this.closeExportDropdown();\n    this._dom.resetTemplates();\n  }\n\n  /**\n   * Handler for \"export as\" button.\n   * @param {!Event} e\n   */\n  onExport(e) {\n    e.preventDefault();\n\n    const el = /** @type {!Element} */ (e.target);\n\n    if (!el.hasAttribute('data-action')) {\n      return;\n    }\n\n    switch (el.getAttribute('data-action')) {\n      case 'copy':\n        this.onCopyButtonClick();\n        break;\n      case 'print-summary':\n        this.collapseAllDetails();\n        this.closeExportDropdown();\n        self.print();\n        break;\n      case 'print-expanded':\n        this.expandAllDetails();\n        this.closeExportDropdown();\n        self.print();\n        break;\n      case 'save-json': {\n        const jsonStr = JSON.stringify(this.json, null, 2);\n        this._saveFile(new Blob([jsonStr], {type: 'application/json'}));\n        break;\n      }\n      case 'save-html': {\n        const htmlStr = this.getReportHtml();\n        try {\n          this._saveFile(new Blob([htmlStr], {type: 'text/html'}));\n        } catch (/** @type {!Error} */ e) {\n          this._fireEventOn('lh-log', this._document, {\n            cmd: 'error', msg: 'Could not export as HTML. ' + e.message,\n          });\n        }\n        break;\n      }\n      case 'open-viewer': {\n        this.sendJsonReport();\n        break;\n      }\n      case 'save-gist': {\n        this.saveAsGist();\n        break;\n      }\n    }\n\n    this.closeExportDropdown();\n    this._document.removeEventListener('keydown', this.onKeyDown);\n  }\n\n  /**\n   * Keydown handler for the document.\n   * @param {!Event} e\n   */\n  onKeyDown(e) {\n    if (e.keyCode === 27) { // ESC\n      this.closeExportDropdown();\n    }\n  }\n\n  /**\n   * Opens a new tab to the online viewer and sends the local page's JSON results\n   * to the online viewer using postMessage.\n   * @protected\n   */\n  sendJsonReport() {\n    const VIEWER_ORIGIN = 'https://googlechrome.github.io';\n    const VIEWER_URL = `${VIEWER_ORIGIN}/lighthouse/viewer/`;\n\n    // Chrome doesn't allow us to immediately postMessage to a popup right\n    // after it's created. Normally, we could also listen for the popup window's\n    // load event, however it is cross-domain and won't fire. Instead, listen\n    // for a message from the target app saying \"I'm open\".\n    const json = this.json;\n    window.addEventListener('message', function msgHandler(/** @type {!Event} */ e) {\n      const messageEvent = /** @type {!MessageEvent<{opened: boolean}>} */ (e);\n      if (messageEvent.origin !== VIEWER_ORIGIN) {\n        return;\n      }\n\n      if (messageEvent.data.opened) {\n        popup.postMessage({lhresults: json}, VIEWER_ORIGIN);\n        window.removeEventListener('message', msgHandler);\n      }\n    });\n\n    const popup = /** @type {!Window} */ (window.open(VIEWER_URL, '_blank'));\n  }\n\n  /**\n   * Expands audit details when user prints via keyboard shortcut.\n   * @param {!Event} e\n   */\n  printShortCutDetect(e) {\n    if ((e.ctrlKey || e.metaKey) && e.keyCode === 80) { // Ctrl+P\n      this.closeExportDropdown();\n    }\n  }\n\n  /**\n   * Expands all audit `<details>`.\n   * Ideally, a print stylesheet could take care of this, but CSS has no way to\n   * open a `<details>` element.\n   */\n  expandAllDetails() {\n    const details = this._dom.findAll('.lh-categories details', this._document);\n    details.map(detail => detail.open = true);\n  }\n\n  /**\n   * Collapses all audit `<details>`.\n   * open a `<details>` element.\n   */\n  collapseAllDetails() {\n    const details = this._dom.findAll('.lh-categories details', this._document);\n    details.map(detail => detail.open = false);\n  }\n\n  /**\n   * Sets up listeners to collapse audit `<details>` when the user closes the\n   * print dialog, all `<details>` are collapsed.\n   */\n  _setUpCollapseDetailsAfterPrinting() {\n    // FF and IE implement these old events.\n    if ('onbeforeprint' in self) {\n      self.addEventListener('afterprint', this.collapseAllDetails);\n    } else {\n      // Note: FF implements both window.onbeforeprint and media listeners. However,\n      // it doesn't matchMedia doesn't fire when matching 'print'.\n      self.matchMedia('print').addListener(mql => {\n        if (mql.matches) {\n          this.expandAllDetails();\n        } else {\n          this.collapseAllDetails();\n        }\n      });\n    }\n  }\n\n  /**\n   * Returns the html that recreates this report.\n   * @return {string}\n   * @protected\n   */\n  getReportHtml() {\n    this._resetUIState();\n    return this._document.documentElement.outerHTML;\n  }\n\n  /**\n   * Save json as a gist. Unimplemented in base UI features.\n   * @protected\n   */\n  saveAsGist() {\n    throw new Error('Cannot save as gist from base report');\n  }\n\n  /**\n   * Downloads a file (blob) using a[download].\n   * @param {!Blob|!File} blob The file to save.\n   * @private\n   */\n  _saveFile(blob) {\n    const filename = getFilenamePrefix({\n      url: this.json.url,\n      generatedTime: this.json.generatedTime,\n    });\n\n    const ext = blob.type.match('json') ? '.json' : '.html';\n    const href = URL.createObjectURL(blob);\n\n    const a = /** @type {!HTMLAnchorElement} */ (this._dom.createElement('a'));\n    a.download = `${filename}${ext}`;\n    a.href = href;\n    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.\n    a.click();\n\n    // cleanup.\n    this._document.body.removeChild(a);\n    setTimeout(_ => URL.revokeObjectURL(href), 500);\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = ReportUIFeatures;\n} else {\n  self.ReportUIFeatures = ReportUIFeatures;\n}\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/* globals self, Util */\n\nclass CategoryRenderer {\n  /**\n   * @param {!DOM} dom\n   * @param {!DetailsRenderer} detailsRenderer\n   */\n  constructor(dom, detailsRenderer) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!DetailsRenderer} */\n    this._detailsRenderer = detailsRenderer;\n    /** @private {!Document|!Element} */\n    this._templateContext = this._dom.document();\n\n    this._detailsRenderer.setTemplateContext(this._templateContext);\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @return {!Element}\n   */\n  _renderAuditScore(audit) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-audit-score', this._templateContext);\n\n    const scoringMode = audit.result.scoringMode;\n    const description = audit.result.helpText;\n    let title = audit.result.description;\n\n    if (audit.result.displayValue) {\n      title += `:  ${audit.result.displayValue}`;\n    }\n\n    if (audit.result.debugString) {\n      const debugStrEl = tmpl.appendChild(this._dom.createElement('div', 'lh-debug'));\n      debugStrEl.textContent = audit.result.debugString;\n    }\n\n    // Append audit details to header section so the entire audit is within a <details>.\n    const header = /** @type {!HTMLDetailsElement} */ (this._dom.find('.lh-score__header', tmpl));\n    if (audit.result.details) {\n      header.appendChild(this._detailsRenderer.render(audit.result.details));\n    }\n\n    const scoreEl = this._dom.find('.lh-score', tmpl);\n    if (audit.result.informative) {\n      scoreEl.classList.add('lh-score--informative');\n    }\n    if (audit.result.manual) {\n      scoreEl.classList.add('lh-score--manual');\n    }\n\n    return this._populateScore(tmpl, audit.score, scoringMode, title, description);\n  }\n\n  /**\n   * @param {!DocumentFragment|!Element} element DOM node to populate with values.\n   * @param {number} score\n   * @param {string} scoringMode\n   * @param {string} title\n   * @param {string} description\n   * @return {!Element}\n   */\n  _populateScore(element, score, scoringMode, title, description) {\n    // Fill in the blanks.\n    const valueEl = this._dom.find('.lh-score__value', element);\n    valueEl.textContent = Util.formatNumber(score);\n    valueEl.classList.add(`lh-score__value--${Util.calculateRating(score)}`,\n        `lh-score__value--${scoringMode}`);\n\n    this._dom.find('.lh-score__title', element).appendChild(\n        this._dom.convertMarkdownCodeSnippets(title));\n    this._dom.find('.lh-score__description', element)\n        .appendChild(this._dom.convertMarkdownLinkSnippets(description));\n\n    return /** @type {!Element} **/ (element);\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @return {!Element}\n   */\n  _renderCategoryScore(category) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-category-score', this._templateContext);\n    const score = Math.round(category.score);\n\n    const gaugeContainerEl = this._dom.find('.lh-score__gauge', tmpl);\n    const gaugeEl = this.renderScoreGauge(category);\n    gaugeContainerEl.appendChild(gaugeEl);\n\n    return this._populateScore(tmpl, score, 'numeric', category.name, category.description);\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @return {!Element}\n   */\n  _renderAudit(audit) {\n    const element = this._dom.createElement('div', 'lh-audit');\n    element.appendChild(this._renderAuditScore(audit));\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @param {number} scale\n   * @return {!Element}\n   */\n  _renderTimelineMetricAudit(audit, scale) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-timeline-metric', this._templateContext);\n    const element = this._dom.find('.lh-timeline-metric', tmpl);\n    element.classList.add(`lh-timeline-metric--${Util.calculateRating(audit.score)}`);\n\n    const titleEl = this._dom.find('.lh-timeline-metric__title', tmpl);\n    titleEl.textContent = audit.result.description;\n\n    const valueEl = this._dom.find('.lh-timeline-metric__value', tmpl);\n    valueEl.textContent = audit.result.displayValue;\n\n    const descriptionEl = this._dom.find('.lh-timeline-metric__description', tmpl);\n    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));\n\n    if (typeof audit.result.rawValue !== 'number') {\n      const debugStrEl = this._dom.createChildOf(element, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString || 'Report error: no metric information';\n      return element;\n    }\n\n    const sparklineBarEl = this._dom.find('.lh-sparkline__bar', tmpl);\n    sparklineBarEl.style.width = `${audit.result.rawValue / scale * 100}%`;\n\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.AuditJSON} audit\n   * @param {number} scale\n   * @return {!Element}\n   */\n  _renderPerfHintAudit(audit, scale) {\n    const extendedInfo = /** @type {!CategoryRenderer.PerfHintExtendedInfo}\n        */ (audit.result.extendedInfo);\n    const tooltipAttrs = {title: audit.result.displayValue};\n\n    const element = this._dom.createElement('details', [\n      'lh-perf-hint',\n      `lh-perf-hint--${Util.calculateRating(audit.score)}`,\n      'lh-expandable-details',\n    ].join(' '));\n\n    const summary = this._dom.createChildOf(element, 'summary', 'lh-perf-hint__summary ' +\n        'lh-expandable-details__summary');\n    const titleEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__title');\n    titleEl.textContent = audit.result.description;\n\n    this._dom.createChildOf(summary, 'div', 'lh-toggle-arrow', {title: 'See resources'});\n\n    if (!extendedInfo || typeof audit.result.rawValue !== 'number') {\n      const debugStrEl = this._dom.createChildOf(summary, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString || 'Report error: no extended information';\n      return element;\n    }\n\n    const sparklineContainerEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__sparkline',\n        tooltipAttrs);\n    const sparklineEl = this._dom.createChildOf(sparklineContainerEl, 'div', 'lh-sparkline');\n    const sparklineBarEl = this._dom.createChildOf(sparklineEl, 'div', 'lh-sparkline__bar');\n    sparklineBarEl.style.width = audit.result.rawValue / scale * 100 + '%';\n\n    const statsEl = this._dom.createChildOf(summary, 'div', 'lh-perf-hint__stats', tooltipAttrs);\n    const statsMsEl = this._dom.createChildOf(statsEl, 'div', 'lh-perf-hint__primary-stat');\n    statsMsEl.textContent = Util.formatMilliseconds(audit.result.rawValue);\n\n    if (extendedInfo.value.wastedKb) {\n      const statsKbEl = this._dom.createChildOf(statsEl, 'div', 'lh-perf-hint__secondary-stat');\n      statsKbEl.textContent = Util.formatNumber(extendedInfo.value.wastedKb) + ' KB';\n    }\n\n    const descriptionEl = this._dom.createChildOf(element, 'div', 'lh-perf-hint__description');\n    descriptionEl.appendChild(this._dom.convertMarkdownLinkSnippets(audit.result.helpText));\n\n    if (audit.result.debugString) {\n      const debugStrEl = this._dom.createChildOf(summary, 'div', 'lh-debug');\n      debugStrEl.textContent = audit.result.debugString;\n    }\n\n    if (audit.result.details) {\n      element.appendChild(this._detailsRenderer.render(audit.result.details));\n    }\n\n    return element;\n  }\n\n  /**\n   * Renders the group container for a group of audits. Individual audit elements can be added\n   * directly to the returned element.\n   * @param {!ReportRenderer.GroupJSON} group\n   * @param {{expandable: boolean}} opts\n   * @return {!Element}\n   */\n  _renderAuditGroup(group, opts) {\n    const expandable = opts.expandable;\n    const element = this._dom.createElement(expandable ? 'details' : 'div', 'lh-audit-group');\n    const summmaryEl = this._dom.createChildOf(element, 'summary', 'lh-audit-group__summary');\n    const headerEl = this._dom.createChildOf(summmaryEl, 'div', 'lh-audit-group__header');\n    this._dom.createChildOf(summmaryEl, 'div',\n      `lh-toggle-arrow  ${expandable ? '' : ' lh-toggle-arrow-unexpandable'}`, {\n        title: 'See audits',\n      });\n\n    if (group.description) {\n      const auditGroupDescription = this._dom.createElement('div', 'lh-audit-group__description');\n      auditGroupDescription.appendChild(this._dom.convertMarkdownLinkSnippets(group.description));\n      element.appendChild(auditGroupDescription);\n    }\n    headerEl.textContent = group.title;\n\n    return element;\n  }\n\n  /**\n   * @param {!Array<!Element>} elements\n   * @return {!Element}\n   */\n  _renderPassedAuditsSection(elements) {\n    const passedElem = this._renderAuditGroup({\n      title: `${elements.length} Passed Audits`,\n    }, {expandable: true});\n    passedElem.classList.add('lh-passed-audits');\n    elements.forEach(elem => passedElem.appendChild(elem));\n    return passedElem;\n  }\n\n  /**\n   * @param {!Array<!ReportRenderer.AuditJSON>} manualAudits\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @param {!Element} element Parent container to add the manual audits to.\n   */\n  _renderManualAudits(manualAudits, groupDefinitions, element) {\n    const auditsGroupedByGroup = /** @type {!Object<string,\n        !Array<!ReportRenderer.AuditJSON>>} */ ({});\n    manualAudits.forEach(audit => {\n      const group = auditsGroupedByGroup[audit.group] || [];\n      group.push(audit);\n      auditsGroupedByGroup[audit.group] = group;\n    });\n\n    Object.keys(auditsGroupedByGroup).forEach(groupId => {\n      const group = groupDefinitions[groupId];\n      const auditGroupElem = this._renderAuditGroup(group, {expandable: true});\n      auditGroupElem.classList.add('lh-audit-group--manual');\n\n      auditsGroupedByGroup[groupId].forEach(audit => {\n        auditGroupElem.appendChild(this._renderAudit(audit));\n      });\n\n      element.appendChild(auditGroupElem);\n    });\n  }\n\n  /**\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n    this._detailsRenderer.setTemplateContext(context);\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @return {!DocumentFragment}\n   */\n  renderScoreGauge(category) {\n    const tmpl = this._dom.cloneTemplate('#tmpl-lh-gauge', this._templateContext);\n    this._dom.find('.lh-gauge__wrapper', tmpl).href = `#${category.id}`;\n    this._dom.find('.lh-gauge__label', tmpl).textContent = category.name;\n\n    const score = Math.round(category.score);\n    const fillRotation = Math.floor((score / 100) * 180);\n\n    const gauge = this._dom.find('.lh-gauge', tmpl);\n    gauge.setAttribute('data-progress', score); // .dataset not supported in jsdom.\n    gauge.classList.add(`lh-gauge--${Util.calculateRating(score)}`);\n\n    this._dom.findAll('.lh-gauge__fill', gauge).forEach(el => {\n      el.style.transform = `rotate(${fillRotation}deg)`;\n    });\n\n    this._dom.find('.lh-gauge__mask--full', gauge).style.transform =\n        `rotate(${fillRotation}deg)`;\n    this._dom.find('.lh-gauge__fill--fix', gauge).style.transform =\n        `rotate(${fillRotation * 2}deg)`;\n    this._dom.find('.lh-gauge__percentage', gauge).textContent = score;\n\n    return tmpl;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups\n   * @return {!Element}\n   */\n  render(category, groups) {\n    switch (category.id) {\n      case 'performance':\n        return this._renderPerformanceCategory(category, groups);\n      case 'accessibility':\n        return this._renderAccessibilityCategory(category, groups);\n      default:\n        return this._renderDefaultCategory(category, groups);\n    }\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @return {!Element}\n   */\n  _renderDefaultCategory(category, groupDefinitions) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const manualAudits = category.audits.filter(audit => audit.result.manual);\n    const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));\n    const passedAudits = nonManualAudits.filter(audit => audit.score === 100 &&\n        !audit.result.debugString);\n    const nonPassedAudits = nonManualAudits.filter(audit => !passedAudits.includes(audit));\n\n    const nonPassedElem = this._renderAuditGroup({\n      title: `${nonPassedAudits.length} Failed Audits`,\n    }, {expandable: false});\n    nonPassedElem.classList.add('lh-failed-audits');\n    nonPassedAudits.forEach(audit => nonPassedElem.appendChild(this._renderAudit(audit)));\n    element.appendChild(nonPassedElem);\n\n    // Create a passed section if there are passing audits.\n    if (passedAudits.length) {\n      const passedElem = this._renderPassedAuditsSection(\n        passedAudits.map(audit => this._renderAudit(audit))\n      );\n      element.appendChild(passedElem);\n    }\n\n    // Render manual audits after passing.\n    this._renderManualAudits(manualAudits, groupDefinitions, element);\n\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups\n   * @return {!Element}\n   */\n  _renderPerformanceCategory(category, groups) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const metricAudits = category.audits.filter(audit => audit.group === 'perf-metric');\n    const metricAuditsEl = this._renderAuditGroup(groups['perf-metric'], {expandable: false});\n    const timelineContainerEl = this._dom.createChildOf(metricAuditsEl, 'div',\n        'lh-timeline-container');\n    const timelineEl = this._dom.createChildOf(timelineContainerEl, 'div', 'lh-timeline');\n\n    let perfTimelineScale = 0;\n    metricAudits.forEach(audit => {\n      if (typeof audit.result.rawValue === 'number' && audit.result.rawValue) {\n        perfTimelineScale = Math.max(perfTimelineScale, audit.result.rawValue);\n      }\n    });\n\n    const thumbnailAudit = category.audits.find(audit => audit.id === 'screenshot-thumbnails');\n    const thumbnailResult = thumbnailAudit && thumbnailAudit.result;\n    if (thumbnailResult && thumbnailResult.details) {\n      const thumbnailDetails = /** @type {!DetailsRenderer.FilmstripDetails} */\n          (thumbnailResult.details);\n      perfTimelineScale = Math.max(perfTimelineScale, thumbnailDetails.scale);\n      const filmstripEl = this._detailsRenderer.render(thumbnailDetails);\n      timelineEl.appendChild(filmstripEl);\n    }\n\n    metricAudits.forEach(item => {\n      if (item.id === 'speed-index-metric' || item.id === 'estimated-input-latency') {\n        return metricAuditsEl.appendChild(this._renderAudit(item));\n      }\n\n      timelineEl.appendChild(this._renderTimelineMetricAudit(item, perfTimelineScale));\n    });\n\n    metricAuditsEl.open = true;\n    element.appendChild(metricAuditsEl);\n\n    const hintAudits = category.audits\n        .filter(audit => audit.group === 'perf-hint' && audit.score < 100)\n        .sort((auditA, auditB) => auditB.result.rawValue - auditA.result.rawValue);\n    if (hintAudits.length) {\n      const maxWaste = Math.max(...hintAudits.map(audit => audit.result.rawValue));\n      const scale = Math.ceil(maxWaste / 1000) * 1000;\n      const hintAuditsEl = this._renderAuditGroup(groups['perf-hint'], {expandable: false});\n      hintAudits.forEach(item => hintAuditsEl.appendChild(this._renderPerfHintAudit(item, scale)));\n      hintAuditsEl.open = true;\n      element.appendChild(hintAuditsEl);\n    }\n\n    const infoAudits = category.audits\n        .filter(audit => audit.group === 'perf-info' && audit.score < 100);\n    if (infoAudits.length) {\n      const infoAuditsEl = this._renderAuditGroup(groups['perf-info'], {expandable: false});\n      infoAudits.forEach(item => infoAuditsEl.appendChild(this._renderAudit(item)));\n      infoAuditsEl.open = true;\n      element.appendChild(infoAuditsEl);\n    }\n\n    const passedElements = category.audits\n        .filter(audit => (audit.group === 'perf-hint' || audit.group === 'perf-info') &&\n            audit.score === 100)\n        .map(audit => this._renderAudit(audit));\n\n    if (!passedElements.length) return element;\n\n    const passedElem = this._renderPassedAuditsSection(passedElements);\n    element.appendChild(passedElem);\n    return element;\n  }\n\n  /**\n   * @param {!ReportRenderer.CategoryJSON} category\n   * @param {!Object<string, !ReportRenderer.GroupJSON>} groupDefinitions\n   * @return {!Element}\n   */\n  _renderAccessibilityCategory(category, groupDefinitions) {\n    const element = this._dom.createElement('div', 'lh-category');\n    this._createPermalinkSpan(element, category.id);\n    element.appendChild(this._renderCategoryScore(category));\n\n    const manualAudits = category.audits.filter(audit => audit.result.manual);\n    const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));\n    const auditsGroupedByGroup = /** @type {!Object<string,\n        {passed: !Array<!ReportRenderer.AuditJSON>,\n        failed: !Array<!ReportRenderer.AuditJSON>}>} */ ({});\n    nonManualAudits.forEach(audit => {\n      const groupId = audit.group;\n      const groups = auditsGroupedByGroup[groupId] || {passed: [], failed: []};\n\n      if (audit.score === 100) {\n        groups.passed.push(audit);\n      } else {\n        groups.failed.push(audit);\n      }\n\n      auditsGroupedByGroup[groupId] = groups;\n    });\n\n    const passedElements = /** @type {!Array<!Element>} */ ([]);\n    Object.keys(auditsGroupedByGroup).forEach(groupId => {\n      const group = groupDefinitions[groupId];\n      const groups = auditsGroupedByGroup[groupId];\n      if (groups.failed.length) {\n        const auditGroupElem = this._renderAuditGroup(group, {expandable: false});\n        groups.failed.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));\n        auditGroupElem.open = true;\n        element.appendChild(auditGroupElem);\n      }\n\n      if (groups.passed.length) {\n        const auditGroupElem = this._renderAuditGroup(group, {expandable: true});\n        groups.passed.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));\n        passedElements.push(auditGroupElem);\n      }\n    });\n\n    // don't create a passed section if there are no passed\n    if (!passedElements.length) return element;\n\n    const passedElem = this._renderPassedAuditsSection(passedElements);\n    element.appendChild(passedElem);\n\n    // Render manual audits after passing.\n    this._renderManualAudits(manualAudits, groupDefinitions, element);\n\n    return element;\n  }\n\n  /**\n   * Create a non-semantic span used for hash navigation of categories\n   * @param {!Element} element\n   * @param {string} id\n   */\n  _createPermalinkSpan(element, id) {\n    const permalinkEl = this._dom.createChildOf(element, 'span', 'lh-permalink');\n    permalinkEl.id = id;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = CategoryRenderer;\n} else {\n  self.CategoryRenderer = CategoryRenderer;\n}\n\n\n/**\n * @typedef {{\n *     value: {\n *       wastedMs: (number|undefined),\n *       wastedKb: (number|undefined),\n *     }\n * }}\n */\nCategoryRenderer.PerfHintExtendedInfo; // eslint-disable-line no-unused-expressions\n",
+"/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n'use strict';\n\n/**\n * @fileoverview The entry point for rendering the Lighthouse report based on the JSON output.\n *    This file is injected into the report HTML along with the JSON report.\n *\n * Dummy text for ensuring report robustness: </script> pre$`post %%LIGHTHOUSE_JSON%%\n */\n\n/* globals self, Util */\n\nclass ReportRenderer {\n  /**\n   * @param {!DOM} dom\n   * @param {!CategoryRenderer} categoryRenderer\n   */\n  constructor(dom, categoryRenderer) {\n    /** @private {!DOM} */\n    this._dom = dom;\n    /** @private {!CategoryRenderer} */\n    this._categoryRenderer = categoryRenderer;\n    /** @private {!Document|!Element} */\n    this._templateContext = this._dom.document();\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @param {!Element} container Parent element to render the report into.\n   */\n  renderReport(report, container) {\n    container.textContent = ''; // Remove previous report.\n    const element = container.appendChild(this._renderReport(report));\n\n    return /** @type {!Element} **/ (element);\n  }\n\n  /**\n   * Define a custom element for <templates> to be extracted from. For example:\n   *     this.setTemplateContext(new DOMParser().parseFromString(htmlStr, 'text/html'))\n   * @param {!Document|!Element} context\n   */\n  setTemplateContext(context) {\n    this._templateContext = context;\n    this._categoryRenderer.setTemplateContext(context);\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportHeader(report) {\n    const header = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);\n    this._dom.find('.lh-config__timestamp', header).textContent =\n        Util.formatDateTime(report.generatedTime);\n    const url = this._dom.find('.lh-metadata__url', header);\n    url.href = report.url;\n    url.textContent = report.url;\n\n    this._dom.find('.lh-env__item__ua', header).textContent = report.userAgent;\n\n    const env = this._dom.find('.lh-env__items', header);\n    report.runtimeConfig.environment.forEach(runtime => {\n      const item = this._dom.cloneTemplate('#tmpl-lh-env__items', env);\n      this._dom.find('.lh-env__name', item).textContent = runtime.name;\n      this._dom.find('.lh-env__description', item).textContent = runtime.description;\n      this._dom.find('.lh-env__enabled', item).textContent =\n          runtime.enabled ? 'Enabled' : 'Disabled';\n      env.appendChild(item);\n    });\n\n    return header;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportFooter(report) {\n    const footer = this._dom.cloneTemplate('#tmpl-lh-footer', this._templateContext);\n    this._dom.find('.lh-footer__version', footer).textContent = report.lighthouseVersion;\n    this._dom.find('.lh-footer__timestamp', footer).textContent =\n        Util.formatDateTime(report.generatedTime);\n    return footer;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!DocumentFragment}\n   */\n  _renderReportNav(report) {\n    const leftNav = this._dom.cloneTemplate('#tmpl-lh-leftnav', this._templateContext);\n\n    this._dom.find('.leftnav__header__version', leftNav).textContent =\n        `Version: ${report.lighthouseVersion}`;\n\n    const nav = this._dom.find('.lh-leftnav', leftNav);\n    for (const category of report.reportCategories) {\n      const itemsTmpl = this._dom.cloneTemplate('#tmpl-lh-leftnav__items', leftNav);\n\n      const navItem = this._dom.find('.lh-leftnav__item', itemsTmpl);\n      navItem.href = `#${category.id}`;\n\n      this._dom.find('.leftnav-item__category', navItem).textContent = category.name;\n      const score = this._dom.find('.leftnav-item__score', navItem);\n      score.classList.add(`lh-score__value--${Util.calculateRating(category.score)}`);\n      score.textContent = Math.round(category.score);\n      nav.appendChild(navItem);\n    }\n    return leftNav;\n  }\n\n  /**\n   * Returns a div with a list of top-level warnings, or an empty div if no warnings.\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!Node}\n   */\n  _renderReportWarnings(report) {\n    if (!report.runWarnings || report.runWarnings.length === 0) {\n      return this._dom.createElement('div');\n    }\n\n    const container = this._dom.cloneTemplate('#tmpl-lh-run-warnings', this._templateContext);\n    const warnings = this._dom.find('ul', container);\n    for (const warningString of report.runWarnings) {\n      const warning = warnings.appendChild(this._dom.createElement('li'));\n      warning.textContent = warningString;\n    }\n\n    return container;\n  }\n\n  /**\n   * @param {!ReportRenderer.ReportJSON} report\n   * @return {!Element}\n   */\n  _renderReport(report) {\n    const container = this._dom.createElement('div', 'lh-container');\n    container.appendChild(this._renderReportHeader(report)); // sticky header goes at the top.\n    container.appendChild(this._renderReportNav(report));\n    const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));\n\n    reportSection.appendChild(this._renderReportWarnings(report));\n\n    let scoreHeader;\n    const isSoloCategory = report.reportCategories.length === 1;\n    if (!isSoloCategory) {\n      scoreHeader = reportSection.appendChild(this._dom.createElement('div', 'lh-scores-header'));\n    }\n\n    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));\n    for (const category of report.reportCategories) {\n      if (scoreHeader) {\n        scoreHeader.appendChild(this._categoryRenderer.renderScoreGauge(category));\n      }\n      categories.appendChild(this._categoryRenderer.render(category, report.reportGroups));\n    }\n\n    reportSection.appendChild(this._renderReportFooter(report));\n\n    return container;\n  }\n}\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = ReportRenderer;\n} else {\n  self.ReportRenderer = ReportRenderer;\n}\n\n/**\n * @typedef {{\n *     id: string,\n *     weight: number,\n *     score: number,\n *     group: string,\n *     result: {\n *       rawValue: (number|undefined),\n *       description: string,\n *       informative: boolean,\n *       manual: boolean,\n *       debugString: string,\n *       displayValue: string,\n *       helpText: string,\n *       score: (number|boolean),\n *       scoringMode: string,\n *       extendedInfo: Object,\n *       details: (!DetailsRenderer.DetailsJSON|undefined)\n *     }\n * }}\n */\nReportRenderer.AuditJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     name: string,\n *     id: string,\n *     weight: number,\n *     score: number,\n *     description: string,\n *     audits: !Array<!ReportRenderer.AuditJSON>\n * }}\n */\nReportRenderer.CategoryJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     title: string,\n *     description: (string|undefined),\n * }}\n */\nReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions\n\n/**\n * @typedef {{\n *     lighthouseVersion: string,\n *     userAgent: string,\n *     generatedTime: string,\n *     timing: {total: number},\n *     initialUrl: string,\n *     url: string,\n *     runWarnings: (!Array<string>|undefined),\n *     artifacts: {traces: !Object},\n *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,\n *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,\n *     runtimeConfig: {\n *       blockedUrlPatterns: !Array<string>,\n *       environment: !Array<{description: string, enabled: boolean, name: string}>\n *     }\n * }}\n */\nReportRenderer.ReportJSON; // eslint-disable-line no-unused-expressions\n"].
 join(';\n');
-const REPORT_CSS="/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n\n.lh-vars {\n  --text-font-family: Roboto, Helvetica, Arial, sans-serif;\n  --monospace-font-family: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --body-font-size: 14px;\n  --body-line-height: 18px;\n  --subheader-font-size: 16px;\n  --subheader-line-height: 20px;\n  --header-font-size: 20px;\n  --header-line-height: 24px;\n  --title-font-size: 24px;\n  --title-line-height: 28px;\n  --caption-font-size: 12px;\n  --caption-line-height: 16px;\n  --default-padding: 12px;\n  --section-padding: 20px;\n  --section-indent: 16px;\n  --audit-group-indent: 16px;\n  --audit-indent: 16px;\n  --expandable-indent: 20px;\n  --secondary-text-color: #565656;\n  /*--accent-color: #3879d9;*/\n  --fail-color: #df332f;\n  --pass-color: #2b882f;\n  --informative-color: #0c50c7;\n  --manual-color: #757575;\n  --average-color: #ef6c00; /* md orange 800 */\n  --warning-color: #ffab00; /* md amber a700 */\n  --report-border-color: #ccc;\n  --report-secondary-border-color: #ebebeb;\n  --metric-timeline-rule-color: #b3b3b3;\n  --report-width: calc(60 * var(--body-font-size));\n  --report-menu-width: calc(20 * var(--body-font-size));\n  --report-content-width: calc(var(--report-width) + var(--report-menu-width));\n  --navitem-font-size: var(--body-font-size);\n  --navitem-line-height: var(--body-line-height);\n  --navitem-hpadding: var(--body-font-size);\n  --navitem-vpadding: calc(var(--navitem-line-height) / 2);\n  --lh-score-highlight-bg: #fafafa;\n  --lh-score-icon-background-size: 24px;\n  --lh-score-margin: 12px;\n  --lh-table-header-bg: #ccc;\n  --lh-table-higlight-bg: #fafafa;\n  --lh-sparkline-height: 5px;\n  --lh-sparkline-thin-height: 3px;\n  --lh-filmstrip-thumbnail-width: 60px;\n  --lh-audit-score-width: calc(5 * var(--body-font-size));\n  --lh-category-score-width: calc(5 * var(--body-font-size));\n  --lh-audit-vpadding: 8px;\n  --lh-audit-hgap: 12px;\n  --lh-audit-group-vpadding: 12px;\n  --lh-section-vpadding: 12px;\n  --pass-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke=\"#007F04\" stroke-width=\"1.5\" d=\"M1 5.75l3.5 3.5 6.5-6.5\" fill=\"none\" fill-rule=\"evenodd\"/></svg>');\n  --fail-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g stroke=\"#EE1D0A\" stroke-width=\"1.5\" fill=\"none\" fill-rule=\"evenodd\"><path d=\"M2 10l8-8M10 10L2 2\"/></g></svg>');\n  --collapsed-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><path fill=\"none\" d=\"M0 0h12v12H0z\"/><path fill=\"hsl(0, 0%, 60%)\" d=\"M3 2l6 4-6 4z\"/></g></svg>');\n  --expanded-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><path fill=\"none\" d=\"M0 0h12v12H0z\"/><path fill=\"hsl(0, 0%, 60%)\" d=\"M10 3L6 9 2 3z\"/></g></svg>');\n}\n\n.lh-vars.lh-devtools {\n  --text-font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;\n  --monospace-font-family: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --body-font-size: 12px;\n  --body-line-height: 16px;\n  --subheader-font-size: 14px;\n  --subheader-line-height: 18px;\n  --header-font-size: 16px;\n  --header-line-height: 20px;\n  --title-font-size: 20px;\n  --title-line-height: 24px;\n  --caption-font-size: 11px;\n  --caption-line-height: 14px;\n  --default-padding: 12px;\n  --section-padding: 16px;\n  --section-indent: 16px;\n  --audit-group-indent: 16px;\n  --audit-indent: 16px;\n  --expandable-indent: 16px;\n\n  --lh-audit-vpadding: 4px;\n  --lh-audit-hgap: 12px;\n  --lh-audit-group-vpadding: 8px;\n  --lh-section-vpadding: 8px;\n}\n\n@keyframes fadeIn {\n  0% { opacity: 0;}\n  100% { opacity: 0.6;}\n}\n\n.lh-root * {\n  box-sizing: border-box;\n}\n\n.lh-root {\n  font-family: var(--text-font-family);\n  font-size: var(--body-font-size);\n  margin: 0;\n  line-height: var(--body-line-height);\n  background: #f5f5f5;\n  scroll-behavior: smooth;\n}\n\n.lh-root :focus {\n    outline: -webkit-focus-ring-color auto 3px;\n}\n\n.lh-root [hidden] {\n  display: none !important;\n}\n\na {\n  color: #0c50c7;\n}\n\nsummary {\n  cursor: pointer;\n}\n\n.lh-details {\n  font-size: var(--body-font-size);\n  margin-top: var(--default-padding);\n}\n\n.lh-details[open] summary {\n  margin-bottom: var(--default-padding);\n}\n\n.lh-details summary::-webkit-details-marker {\n  color: #9e9e9e;\n}\n\n.lh-details.flex .lh-code {\n  max-width: 70%;\n}\n\n/* Report header */\n\n.report-icon {\n  opacity: 0.7;\n}\n.report-icon:hover {\n  opacity: 1;\n}\n.report-icon[disabled] {\n  opacity: 0.3;\n  pointer-events: none;\n}\n\n.report-icon--share {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"none\" d=\"M0 0h24v24H0z\"/><path d=\"M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z\"/></svg>');\n}\n.report-icon--print {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z\"/><path fill=\"none\" d=\"M0 0h24v24H0z\"/></svg>');\n}\n.report-icon--copy {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z\"/></svg>');\n}\n.report-icon--open {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z\"/></svg>');\n}\n.report-icon--download {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>');\n}\n\n/* List */\n.lh-list {\n  font-size: smaller;\n  margin-top: var(--default-padding);\n}\n\n.lh-list__items {\n  padding-left: var(--default-padding);\n}\n\n.lh-list__item {\n  margin-bottom: 2px;\n}\n\n/* Node */\n.lh-node {\n  display: block;\n  font-family: var(--monospace-font-family);\n  word-break: break-word;\n  color: hsl(174, 100%, 27%);\n}\nspan.lh-node:hover {\n    background: hsl(0, 0%, 98%);\n    border-radius: 2px;\n}\n\n/* Card */\n.lh-scorecards {\n  display: flex;\n  flex-wrap: wrap;\n}\n.lh-scorecard {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 calc(12 * var(--body-font-size));\n  flex-direction: column;\n  padding: var(--default-padding);\n  padding-top: calc(32px + var(--default-padding));\n  border-radius: 3px;\n  margin-right: var(--default-padding);\n  position: relative;\n  line-height: inherit;\n  border: 1px solid #ebebeb;\n}\n.lh-scorecard__title {\n  background-color: #eee;\n  position: absolute;\n  top: 0;\n  right: 0;\n  left: 0;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  padding: calc(var(--default-padding) / 2);\n}\n.lh-scorecard__value {\n  font-size: calc(1.6 * var(--body-font-size));\n}\n.lh-scorecard__target {\n  margin-top: calc(var(--default-padding) / 2);\n}\n\n/* Score */\n\n.lh-score {\n  display: flex;\n  align-items: flex-start;\n}\n\n.lh-score__value {\n  flex: none;\n  margin-left: var(--lh-score-margin);\n  width: calc(var(--lh-audit-score-width) - var(--lh-score-margin));\n  position: relative;\n  font-weight: bold;\n  top: 1px;\n  text-align: right;\n}\n\n.lh-score__value::after {\n  content: '';\n  position: absolute;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  border-radius: inherit;\n  width: 16px;\n}\n\n.lh-score--informative .lh-score__value {\n  color: var(--informative-color);\n  border-radius: 50%;\n  top: 3px;\n}\n\n.lh-score--informative .lh-score__value::after {\n  display: none;\n  background: url('data:image/svg+xml;utf8,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>info</title><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z\" fill=\"hsl(218, 89%, 41%)\"/></svg>') no-repeat 50% 50%;\n  background-size: var(--lh-score-icon-background-size);\n}\n\n.lh-score--manual .lh-score__value::after {\n  background: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><title>manual</title><path d=\"M2 5h8v2H2z\" fill=\"hsl(0, 0%, 100%)\" fill-rule=\"evenodd\"/></svg>') no-repeat 50% 50%;\n  background-size: 18px;\n  background-color: var(--manual-color);\n  width: 20px;\n  height:  20px;\n  position: relative;\n}\n\n.lh-score__value--binary {\n  color: transparent !important;\n}\n\n/* No icon for audits with number scores. */\n.lh-score__value:not(.lh-score__value--binary)::after {\n  content: none;\n}\n\n.lh-score__value--pass {\n  color: var(--pass-color);\n}\n\n.lh-score__value--pass::after {\n  background: var(--pass-icon-url) no-repeat center center / 12px 12px;\n}\n\n.lh-score__value--average {\n  color: var(--average-color);\n}\n\n.lh-score__value--average::after {\n  background: none;\n  content: '!';\n  color: var(--average-color);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-weight: 500;\n  font-size: 15px;\n}\n\n.lh-score__value--fail {\n  color: var(--fail-color);\n}\n\n.lh-score__value--fail::after {\n  background: var(--fail-icon-url) no-repeat center center / 12px 12px;\n}\n\n.lh-score__description {\n  font-size: var(--body-font-size);\n  color: var(--secondary-text-color);\n  line-height: var(--body-line-height);\n}\n\n.lh-score__snippet {\n  align-items: center;\n  justify-content: space-between;\n  /*outline: none;*/\n}\n\n.lh-score__snippet::-moz-list-bullet {\n  display: none;\n}\n\n.lh-score__title {\n  flex: 1;\n}\n\n.lh-toggle-arrow {\n  background: var(--collapsed-icon-url) no-repeat center center / 12px 12px;\n  background-color: transparent;\n  width: 12px;\n  height: 12px;\n  flex: none;\n  transition: transform 150ms ease-in-out;\n  cursor: pointer;\n  border: none;\n  order: -1;\n  margin-right: calc(var(--expandable-indent) - 12px);\n  align-self: flex-start;\n}\n\n.lh-toggle-arrow-unexpandable {\n  visibility: hidden;\n}\n\n/* Expandable Details (Audit Groups, Audits) */\n\n.lh-score__header {\n  order: -1;\n  flex: 1;\n}\n\n.lh-expandable-details {\n  padding-left: var(--expandable-indent);\n}\n\n.lh-expandable-details__summary {\n  display: flex;\n  align-items: center;\n  cursor: pointer;\n  margin-left: calc(0px - var(--expandable-indent));\n}\n\n.lh-audit-group[open] > .lh-audit-group__summary > .lh-toggle-arrow,\n.lh-expandable-details[open] > .lh-expandable-details__summary > .lh-toggle-arrow {\n  background-image: var(--expanded-icon-url);\n}\n\n.lh-audit-group__summary::-webkit-details-marker,\n.lh-expandable-details__summary::-webkit-details-marker {\n  display: none;\n}\n\n.lh-score__snippet .lh-toggle-arrow {\n  margin-top: calc((var(--body-line-height) - 12px) / 2);\n}\n\n/* Perf Timeline */\n\n.lh-timeline-container {\n  overflow: hidden;\n  border-top: 1px solid var(--metric-timeline-rule-color);\n}\n\n.lh-timeline {\n  padding: 0;\n  padding-bottom: 0;\n  width: calc(var(--lh-filmstrip-thumbnail-width) * 10 + var(--default-padding) * 2);\n}\n\n.lh-narrow .lh-timeline-container {\n  width: calc(100vw - var(--section-padding) * 2);\n  overflow-x: scroll;\n}\n\n.lh-devtools .lh-timeline-container {\n  width: 100%;\n  overflow-x: scroll;\n}\n\n/* Perf Timeline Metric */\n\n.lh-timeline-metric {\n  position: relative;\n  margin-bottom: calc(2 * var(--lh-audit-vpadding));\n  padding-top: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-timeline-metric__header {\n  display: flex;\n}\n\n.lh-timeline-metric__details {\n  order: -1;\n}\n\n.lh-timeline-metric__title {\n  font-size: var(--body-font-size);\n  line-height: var(--body-line-height);\n  display: flex;\n}\n\n.lh-timeline-metric__name {\n  flex: 1;\n}\n\n.lh-timeline-metric__description {\n  color: var(--secondary-text-color);\n}\n\n.lh-timeline-metric__value {\n  width: var(--lh-audit-score-width);\n  text-align: right;\n}\n\n.lh-timeline-metric--pass .lh-timeline-metric__value {\n  color: var(--pass-color);\n}\n\n.lh-timeline-metric--average .lh-timeline-metric__value {\n  color: var(--average-color);\n}\n\n.lh-timeline-metric--fail .lh-timeline-metric__value {\n  color: var(--fail-color);\n}\n\n.lh-timeline-metric__sparkline {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: -1px;\n  height: 3px;\n  width: 100%;\n}\n\n.lh-timeline-metric__sparkline .lh-sparkline__bar {\n  float: none;\n}\n\n.lh-timeline-metric--pass .lh-sparkline__bar {\n  background: var(--pass-color);\n}\n\n.lh-timeline-metric--average .lh-sparkline__bar {\n  background: var(--average-color);\n}\n\n.lh-timeline-metric--fail .lh-sparkline__bar {\n  background: var(--fail-color);\n}\n\n.lh-timeline-metric .lh-debug {\n  margin-left: var(--expandable-indent);\n}\n\n/* Perf Hint */\n\n.lh-perf-hint {\n  padding-top: var(--lh-audit-vpadding);\n  padding-bottom: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-perf-hint:last-of-type {\n  border-bottom: none;\n}\n\n.lh-perf-hint__summary {\n  display: flex;\n  align-items: flex-start;\n  flex-wrap: wrap;\n  min-height: calc(var(--body-line-height) + var(--caption-line-height));\n}\n\n.lh-perf-hint__summary .lh-toggle-arrow {\n  margin-top: calc((var(--subheader-line-height) - 12px) / 2);\n}\n\n.lh-perf-hint__summary .lh-debug {\n  width: calc(100% - var(--expandable-indent));\n  margin: 0 var(--expandable-indent);\n}\n\n.lh-perf-hint__title {\n  font-size: var(--body-font-size);\n  flex: 10;\n}\n\n.lh-perf-hint__sparkline {\n  flex: 0 0 50%;\n  margin-top: calc((var(--body-line-height) - var(--lh-sparkline-height)) / 2);\n}\n\n.lh-perf-hint__sparkline .lh-sparkline {\n  width: 100%;\n  float: right;\n  margin: 0;\n}\n\n.lh-perf-hint__stats {\n  text-align: right;\n  flex: 0 0 var(--lh-audit-score-width);\n}\n\n.lh-perf-hint__primary-stat {\n  font-size: var(--body-font-size);\n  line-height: var(--body-line-height);\n}\n\n.lh-perf-hint__secondary-stat {\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n}\n\n.lh-perf-hint__description {\n  color: var(--secondary-text-color);\n  margin-top: calc(var(--default-padding) / 2);\n}\n\n.lh-perf-hint--pass .lh-perf-hint__stats {\n  color: var(--pass-color);\n}\n\n.lh-perf-hint--pass .lh-sparkline__bar {\n  background: var(--pass-color);\n}\n\n.lh-perf-hint--average .lh-sparkline__bar {\n  background: var(--average-color);\n}\n\n.lh-perf-hint--average .lh-perf-hint__stats {\n  color: var(--average-color);\n}\n\n.lh-perf-hint--fail .lh-sparkline__bar {\n  background: var(--fail-color);\n}\n\n.lh-perf-hint--fail .lh-perf-hint__stats {\n  color: var(--fail-color);\n}\n\n/* Filmstrip */\n\n.lh-filmstrip {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding-bottom: var(--default-padding);\n}\n\n.lh-filmstrip__frame {\n  text-align: right;\n  position: relative;\n}\n\n.lh-filmstrip__timestamp {\n  margin-bottom: calc(0.5 * var(--caption-line-height));\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n  padding-top: 1px;\n  padding-right: 6px;\n}\n\n.lh-filmstrip__timestamp::before {\n  content: '';\n  height: 7px;\n  width: 2px;\n  background: var(--metric-timeline-rule-color);\n  position: absolute;\n  right: 0;\n  top: -2px;\n}\n\n.lh-filmstrip__thumbnail {\n  border: 1px solid var(--report-secondary-border-color);\n  max-height: 100px;\n}\n\n/* Sparkline */\n\n.lh-sparkline {\n  margin: 5px;\n  height: var(--lh-sparkline-height);\n  width: 100%;\n}\n\n.lh-sparkline--thin {\n  height: calc(var(--lh-sparkline-height) / 2);\n}\n\n.lh-sparkline__bar {\n  background: var(--warning-color);\n  height: 100%;\n  float: right;\n  position: relative;\n}\n\n/* correlate metric end location with sparkline */\n.lh-timeline-metric:hover .lh-sparkline__bar::after {\n  content: '';\n  height: 100vh;\n  width: 2px;\n  background: inherit;\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  opacity: 0;\n  animation: fadeIn 150ms;\n  animation-fill-mode: forwards;\n}\n\n/* Audit */\n\n.lh-audit {\n  margin-bottom: var(--lh-audit-vpadding);\n  padding-top: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-audit:last-of-type {\n  border-bottom: none;\n}\n\n.lh-audit > .lh-score {\n  font-size: var(--body-font-size);\n}\n\n.lh-audit .lh-debug {\n  margin-left: var(--expandable-indent);\n  margin-right: var(--lh-audit-score-width);\n}\n\n/* Audit Group */\n\n.lh-audit-group {\n  padding-top: var(--lh-audit-group-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n  padding-left: var(--expandable-indent);\n}\n\n.lh-audit-group__header {\n  font-size: var(--subheader-font-size);\n  line-height: var(--subheader-line-height);\n}\n\n.lh-audit-group__summary {\n  display: flex;\n  align-items: center;\n  margin-bottom: var(--lh-audit-group-vpadding);\n  margin-left: calc(0px - var(--expandable-indent));\n}\n\n.lh-audit-group__summary .lh-toggle-arrow {\n  margin-top: calc((var(--subheader-line-height) - 12px) / 2);\n}\n\n.lh-audit-group__description {\n  font-size: var(--body-font-size);\n  color: var(--secondary-text-color);\n  margin-top: calc(0px - var(--lh-audit-group-vpadding));\n  margin-bottom: var(--lh-audit-group-vpadding);\n  line-height: var(--body-line-height);\n}\n\n\n.lh-debug {\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n  color: var(--fail-color);\n  margin-top: 3px;\n}\n\n.lh-debug::before {\n  display: none;\n  content: '';\n  background: url('data:image/svg+xml;utf8,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>warn</title><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z\" fill=\"hsl(40, 100%, 50%)\"/></svg>') no-repeat 50% 50%;\n  background-size: contain;\n  width: 20px;\n  height: 20px;\n  position: relative;\n  margin-right: calc(var(--default-padding) / 2);\n  top: 5px;\n}\n\n\n/* Report */\n\n.lh-container {\n  display: flex;\n  max-width: var(--report-content-width);\n  word-wrap: break-word;\n  margin: 0 auto;\n}\n\n.lh-report {\n  margin-left: var(--report-menu-width);\n  background-color: #fff;\n  padding-top: var(--report-header-height);\n}\n@media screen {\n  .lh-report {\n    width: var(--report-width);\n  }\n}\n\n.lh-exception {\n  font-size: large;\n}\n\n.lh-text__url {\n  white-space: nowrap;\n}\n\n.lh-code {\n  text-overflow: ellipsis;\n  white-space: pre-line;\n  margin-top: 0;\n}\n\n.lh-scores-header {\n  display: flex;\n  justify-content: center;\n  overflow-x: hidden;\n  padding: var(--section-padding);\n  border-bottom: 1px solid var(--report-border-color);\n}\n.lh-scores-header__solo {\n  padding: 0;\n  border: 0;\n}\n\n.lh-categories {\n  width: 100%;\n  overflow: hidden;\n}\n\n.lh-category {\n  padding: var(--section-padding);\n  border-top: 1px solid var(--report-border-color);\n}\n\n/* section hash link jump should preserve fixed header\n   https://css-tricks.com/hash-tag-links-padding/\n*/\n.lh-category > .lh-permalink {\n  margin-top: calc((var(--report-header-height) + var(--default-padding)) * -1);\n  padding-bottom: calc(var(--report-header-height) + var(--default-padding));\n  display: block;\n  visibility: hidden;\n}\n\n.lh-category:first-of-type {\n  border: none;\n}\n\n.lh-category > .lh-score {\n  font-size: var(--header-font-size);\n  padding-bottom: var(--lh-section-vpadding);\n}\n\n.lh-category > .lh-score .lh-score__value,\n.lh-category > .lh-score .lh-score__gauge .lh-gauge__label {\n  display: none;\n}\n\n.lh-category .lh-score__gauge {\n  margin-left: var(--section-indent);\n  flex-basis: var(--circle-size);\n  flex-shrink: 0;\n}\n\n.lh-category .lh-score__gauge .lh-gauge {\n  --circle-size: calc(2.5 * var(--header-font-size));\n}\n\n/* Category snippet shouldnt have pointer cursor. */\n.lh-category > .lh-score .lh-score__snippet {\n  cursor: initial;\n}\n\n.lh-category > .lh-score .lh-score__title {\n  font-size: var(--header-font-size);\n  line-height: var(--header-line-height);\n}\n\n.lh-passed-audits[open] summary.lh-passed-audits-summary {\n  margin-bottom: calc(var(--default-padding) * 2);\n}\n\nsummary.lh-passed-audits-summary {\n  margin: calc(var(--default-padding) * 2) var(--default-padding);\n  margin-left: var(--default-padding);\n  margin-bottom: 0;\n  font-size: 15px;\n  display: flex;\n  align-items: center;\n}\n\n#lh-log {\n  position: fixed;\n  background-color: #323232;\n  color: #fff;\n  min-height: 48px;\n  min-width: 288px;\n  padding: 16px 24px;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 2px;\n  margin: 12px;\n  font-size: 14px;\n  cursor: default;\n  transition: transform 0.3s, opacity 0.3s;\n  transform: translateY(100px);\n  opacity: 0;\n  -webkit-font-smoothing: antialiased;\n  bottom: 0;\n  left: 0;\n  z-index: 3;\n}\n\n#lh-log.show {\n  opacity: 1;\n  transform: translateY(0);\n}\n\n/* 964 fits the min-width of the filmstrip */\n@media screen and (max-width: 964px) {\n  .lh-report {\n    margin-left: 0;\n    width: 100%;\n    min-width: 400px;\n  }\n}\n\n@media print {\n  body {\n    -webkit-print-color-adjust: exact; /* print background colors */\n  }\n  .lh-container {\n    display: block;\n  }\n  .lh-report {\n    margin-left: 0;\n    padding-top: 0;\n  }\n  .lh-categories {\n    margin-top: 0;\n  }\n}\n\n.lh-table {\n  --image-preview-size: 24px;\n  border: 1px solid var(--report-secondary-border-color);\n  border-collapse: collapse;\n  table-layout: fixed;\n  width: 100%;\n}\n\n.lh-table thead {\n  background: var(--lh-table-header-bg);\n}\n\n.lh-table tbody tr:nth-child(even) {\n  background-color: var(--lh-table-higlight-bg);\n}\n\n.lh-table th,\n.lh-table td {\n  padding: 10px;\n  overflow: auto;\n}\n\n.lh-table-column--text {\n  text-align: right;\n}\n\n.lh-table-column--thumbnail {\n  width: calc(var(--image-preview-size) * 2);\n}\n\n.lh-table-column--url {\n  text-align: left;\n  min-width: 250px;\n  white-space: nowrap;\n}\n\n.lh-thumbnail {\n  height: var(--image-preview-size);\n  width: var(--image-preview-size);\n  object-fit: contain;\n}\n\n/*# sourceURL=report.styles.css */\n";
-const REPORT_TEMPLATES="<!-- Lighthouse category score -->\n<template id=\"tmpl-lh-category-score\">\n  <div class=\"lh-score\">\n    <div class=\"lh-score__value\"><!-- fill me --></div>\n    <div class=\"lh-score__gauge\"></div>\n    <div class=\"lh-score__header\">\n      <div class=\"lh-score__snippet\">\n        <span class=\"lh-score__title\"><!-- fill me --></span>\n      </div>\n      <div class=\"lh-score__description\"><!-- fill me --></div>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse audit score -->\n<template id=\"tmpl-lh-audit-score\">\n  <div class=\"lh-score\">\n    <div class=\"lh-score__value\"><!-- fill me --></div>\n    <details class=\"lh-score__header lh-expandable-details\">\n      <summary class=\"lh-score__snippet lh-expandable-details__summary\">\n        <span class=\"lh-score__title\"><!-- fill me --></span>\n        <div class=\"lh-toggle-arrow\" title=\"See audits\"></div>\n      </summary>\n      <div class=\"lh-score__description\"><!-- fill me --></div>\n    </details>\n  </div>\n</template>\n\n<!-- Lighthouse timeline metric -->\n<template id=\"tmpl-lh-timeline-metric\">\n  <div class=\"lh-timeline-metric\">\n    <div class=\"lh-timeline-metric__sparkline\">\n      <div class=\"lh-sparkline__bar\"></div>\n    </div>\n    <div class=\"lh-timeline-metric__header\">\n      <div class=\"lh-timeline-metric__value\"><!-- fill me --></div>\n      <details class=\"lh-timeline-metric__details lh-expandable-details\">\n        <summary class=\"lh-timeline-metric__summary lh-expandable-details__summary\">\n          <span class=\"lh-timeline-metric__title\"><!-- fill me --></span>\n          <div class=\"lh-toggle-arrow\" title=\"See audits\"></div>\n        </summary>\n        <div class=\"lh-timeline-metric__description\"><!-- fill me --></div>\n      </details>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse left nav -->\n<template id=\"tmpl-lh-leftnav\">\n  <style>\n    .lh-leftnav {\n      width: var(--report-menu-width);\n      border-right: 1px solid var(--report-border-color);\n      position: fixed;\n      height: 100%;\n      background: #fff;\n      will-change: transform; /* prevent excessive paints */\n      z-index: 2;\n    }\n    .lh-leftnav__item {\n      padding: var(--navitem-vpadding) var(--navitem-hpadding);\n      color: var(--secondary-text-color);\n      font-size: var(--navitem-font-size);\n      line-height: var(--navitem-line-height);\n      display: flex;\n      justify-content: space-between;\n      text-decoration: none;\n      color: inherit;\n    }\n    .leftnav-item__score {\n      background: transparent;\n    }\n    .leftnav-item__score::after {\n      content: '';\n    }\n    .leftnav-item__score.lh-score__value--pass {\n      color: var(--pass-color);\n    }\n    .leftnav-item__score.lh-score__value--average {\n      color: var(--average-color);\n    }\n    .leftnav-item__score.lh-score__value--fail {\n      color: var(--fail-color);\n    }\n    .leftnav__header {\n      padding: 0 20px;\n      margin-bottom: var(--navitem-vpadding);\n      height: 115px;\n      font-size: 18px;\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      background: url(data:image/png;base64,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) no-repeat 150% 100%;\n      background-color: #2238b3;\n      background-size: 205px;\n      background-blend-mode: luminosity;\n    }\n    .leftnav__header__title {\n      font-family: var(--text-font-family);\n      font-size: var(--title-font-size);\n      line-height: var(--title-line-height);\n      font-weight: 300;\n      color: #fff;\n      margin: 0;\n      padding: 0;\n    }\n    .leftnav__header__version {\n      color: #aab3ed;\n      font-family: var(--text-font-family);\n      font-size: var(--body-font-size);\n      line-height: var(--body-line-height);\n    }\n    @media screen and (max-width: 964px) {\n      .lh-leftnav {\n        display: none;\n      }\n    }\n    @media print {\n      .lh-leftnav {\n        display: none;\n      }\n    }\n  </style>\n  <nav class=\"lh-leftnav\">\n    <div class=\"leftnav__header\">\n      <h1 class=\"leftnav__header__title\">Lighthouse</h1>\n      <div class=\"leftnav__header__version\"><!-- fill me --></div>\n    </div>\n    <template id=\"tmpl-lh-leftnav__items\">\n      <a href=\"#\" class=\"lh-leftnav__item\">\n        <span class=\"leftnav-item__category\"><!-- fill me --></span>\n        <span class=\"leftnav-item__score\"><!-- fill me --></span>\n      </a>\n    </template>\n  </nav>\n</template>\n\n<!-- Lighthouse header -->\n<template id=\"tmpl-lh-heading\">\n  <style>\n    :root {\n      --report-header-height: 58px;\n      --report-header-bg-color: #fafafa;\n    }\n    .lh-header {\n      display: flex;\n      height: var(--report-header-height);\n      left: 0;\n      right: 0;\n      max-width: 100%; /* support text-overflow on url */\n      border-bottom: 1px solid var(--report-secondary-border-color);\n      position: fixed;\n      z-index: 1;\n      will-change: transform;\n      background-color: var(--report-header-bg-color);\n      margin-left: var(--report-menu-width);\n      align-items: center;\n      padding: 0 calc(var(--default-padding) * 2);\n    }\n    .lh-metadata {\n      flex: 1 1 0;\n      padding-right: calc(var(--default-padding) / 2);\n      line-height: 20px;\n      color: var(--secondary-text-color);\n      overflow-x: hidden;\n    }\n    .lh-metadata__results {\n      overflow: hidden;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n    }\n    .lh-metadata__url {\n      color: currentColor;\n    }\n    .lh-export {\n      position: relative;\n    }\n    .lh-export__button {\n      background-color: #fff;\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      cursor: pointer;\n      outline: none;\n      height: 32px;\n      width: 48px;\n      background-repeat: no-repeat;\n      background-size: 20px;\n      background-position: 50% 50%;\n    }\n    .lh-export__button:focus,\n    .lh-export__button.active {\n      box-shadow: 1px 1px 3px #ccc;\n    }\n    .lh-export__button.active + .lh-export__dropdown {\n      opacity: 1;\n      clip: rect(0, 164px, 200px, 0);\n    }\n    .lh-export__dropdown {\n      position: absolute;\n      background-color: #fff;\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-export__dropdown a {\n      display: block;\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 12px;\n      line-height: 2;\n    }\n    .lh-export__dropdown a:hover,\n    .lh-export__dropdown a:focus {\n      background-color: #efefef;\n      outline: none;\n    }\n    .lh-export__dropdown .report-icon {\n      cursor: pointer;\n      background-repeat: no-repeat;\n      background-position: 8px 50%;\n      background-size: 18px;\n      background-color: transparent;\n      text-indent: 18px;\n    }\n    /* copy icon needs slight adjustments to look great */\n    .lh-export__dropdown .report-icon--copy {\n      background-size: 16px;\n      background-position: 9px 50%;\n    }\n    /* save-as-gist option hidden in report */\n    .lh-export__dropdown .lh-export--gist {\n      display: none;\n    }\n    .lh-config {\n      display: flex;\n    }\n    .lh-env {\n      padding: var(--default-padding) 0 var(--default-padding) calc(var(--default-padding) * 2);\n      left: 0;\n      top: 100%;\n      position: absolute;\n      width: 100%;\n      background-color: var(--report-header-bg-color);\n      border-top: 1px solid var(--report-secondary-border-color);\n      border-bottom: 1px solid var(--report-secondary-border-color);\n    }\n    .lh-env__title {\n      font-size: var(--header-font-size);\n    }\n    .lh-env__items {\n      margin: var(--default-padding) 0 0 0;\n    }\n    .lh-config__timestamp {\n      margin-right: 6px;\n    }\n    .lh-config__settings-toggle {\n      margin-left: 6px;\n    }\n    .lh-config__timestamp,\n    .lh-config__settings-toggle summary {\n      color: var(--secondary-text-color);\n    }\n    .lh-config__settings-toggle summary {\n      display: flex;\n      align-items: center;\n    }\n    .lh-config__settings-toggle .lh-toggle-arrow {\n      width: 16px;\n      height: 16px;\n      margin-left: 2px;\n    }\n    .lh-config__settings-toggle[open] .lh-toggle-arrow {\n      transform: rotateZ(90deg);\n    }\n    .lh-config__settings-toggle summary::-moz-list-bullet {\n      display: none;\n    }\n    .lh-config__settings-toggle summary::-webkit-details-marker {\n      display: none;\n    }\n    @media screen and (min-width: 965px) {\n      .lh-header {\n        width: var(--report-width);\n        right: initial;\n        left: initial;\n      }\n    }\n    @media screen and (max-width: 964px) {\n      .lh-export__dropdown {\n        right: 0;\n        left: initial;\n      }\n      .lh-header {\n        padding: 0 var(--default-padding);\n        margin-left: 0;\n      }\n    }\n    @media print {\n      .lh-header {\n        position: static;\n        margin-left: 0;\n      }\n    }\n  </style>\n  <div class=\"lh-header\">\n    <div class=\"lh-metadata\">\n      <div class=\"lh-metadata__results\">Results for: <a href=\"\" class=\"lh-metadata__url\" target=\"_blank\" rel=\"noopener\"><!-- fill me --></a></div>\n      <div class=\"lh-config\">\n        <span class=\"lh-config__timestamp\"><!-- fill me --></span> &bullet;\n        <details class=\"lh-config__settings-toggle\">\n          <summary>\n            <span>Runtime settings</span>\n            <span class=\"lh-toggle-arrow\" title=\"See report's runtime settings\"></span>\n          </summary>\n          <div class=\"lh-env\">\n            <div class=\"lh-env__title\">Runtime environment</div>\n            <ul class=\"lh-env__items\">\n              <li class=\"lh-env__item\">\n                <span class=\"lh-env__name\">User agent:</span>\n                <b class=\"lh-env__item__ua\"><!-- fill me --></b>\n              </li>\n              <template id=\"tmpl-lh-env__items\">\n                <li class=\"lh-env__item\">\n                  <span class=\"lh-env__name\"><!-- fill me --></span>\n                  <span class=\"lh-env__description\"><!-- fill me --></span>:\n                  <b class=\"lh-env__enabled\"><!-- fill me --></b>\n                </li>\n              </template>\n            </ul>\n          </div>\n        </details>\n      </div>\n    </div>\n    <div class=\"lh-export\">\n      <button class=\"report-icon report-icon--share lh-export__button\" title=\"Export report\"></button>\n      <div class=\"lh-export__dropdown\">\n        <a href=\"#\" class=\"report-icon report-icon--print\" data-action=\"print\">Print...</a>\n        <a href=\"#\" class=\"report-icon report-icon--copy\" data-action=\"copy\">Copy JSON</a>\n        <a href=\"#\" class=\"report-icon report-icon--download\" data-action=\"save-html\">Save as HTML</a>\n        <a href=\"#\" class=\"report-icon report-icon--download\" data-action=\"save-json\">Save as JSON</a>\n        <a href=\"#\" class=\"report-icon report-icon--open lh-export--viewer\" data-action=\"open-viewer\">Open in Viewer</a>\n        <a href=\"#\" class=\"report-icon report-icon--open lh-export--gist\" data-action=\"save-gist\">Save as Gist</a>\n      </div>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse footer -->\n<template id=\"tmpl-lh-footer\">\n  <style>\n    .lh-footer {\n      min-height: 90px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background-color: var(--report-header-bg-color);\n      border-top: 1px solid var(--report-secondary-border-color);\n    }\n\n    .lh-footer span {\n      text-align: center;\n    }\n  </style>\n  <footer class=\"lh-footer\">\n    <span>\n      Generated by <b>Lighthouse</b> <span class=\"lh-footer__version\"><!-- fill me --></span> on\n      <span class=\"lh-footer__timestamp\"><!-- fill me --></span> |\n      <a href=\"https://github.com/GoogleChrome/Lighthouse/issues\" target=\"_blank\" rel=\"noopener\">File an issue</a>\n    </span>\n  </footer>\n</template>\n\n<!-- Lighthouse score gauge -->\n<template id=\"tmpl-lh-gauge\">\n  <style>\n    .lh-gauge {\n      --circle-size: calc(2.5 * var(--header-font-size));\n      --circle-size-half: calc(var(--circle-size) / 2);\n      --circle-background: #ccc;\n      --circle-border-width: 2px;\n      --inset-size: calc(var(--circle-size) - 2 * var(--circle-border-width));\n      --inset-color: #fff;\n      --transition-length: 1s;\n      width: var(--circle-size);\n      height: var(--circle-size);\n      background-color: var(--circle-background);\n      border-radius: 50%;\n    }\n    .lh-gauge--pass {\n      --circle-color: var(--pass-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge--average {\n      --circle-color: var(--average-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge--fail {\n      --circle-color: var(--fail-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge__mask,\n    .lh-gauge__fill {\n      width: var(--circle-size);\n      height: var(--circle-size);\n      position: absolute;\n      transition: transform var(--transition-length);\n      border-radius: 50%;\n    }\n    .lh-gauge__mask {\n      clip: rect(0px, var(--circle-size), var(--circle-size), var(--circle-size-half));\n    }\n    .lh-gauge__mask .lh-gauge__fill {\n      clip: rect(0px, var(--circle-size-half), var(--circle-size), 0px);\n      background-color: var(--circle-color);\n      backface-visibility: hidden;\n    }\n    .lh-gauge__percentage {\n      --spacer: calc((var(--circle-size) - var(--inset-size)) / 2);\n      width: var(--inset-size);\n      height: var(--inset-size);\n      position: absolute;\n      margin-left: var(--spacer);\n      margin-top: var(--spacer);\n      background-color: var(--inset-color);\n      border-radius: inherit;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: var(--header-font-size);\n    }\n    .lh-gauge__wrapper {\n      display: inline-flex;\n      align-items: center;\n      flex-direction: column;\n      text-decoration: none;\n      color: inherit;\n      flex: 1;\n      min-width: auto;\n      position: relative;\n    }\n    .lh-scores-header .lh-gauge__wrapper {\n      width: calc(10.5 * var(--body-font-size));\n    }\n    .lh-gauge__label {\n      font-size: var(--body-font-size);\n      line-height: var(--body-line-height);\n      margin-top: calc(0.5 * var(--body-line-height));\n      text-align: center;\n    }\n  </style>\n  <a href=\"#\" class=\"lh-gauge__wrapper\">\n    <div class=\"lh-gauge\" data-progress=\"0\">\n      <div class=\"lh-gauge__circle\">\n        <div class=\"lh-gauge__mask lh-gauge__mask--full\">\n          <div class=\"lh-gauge__fill\"></div>\n        </div>\n        <div class=\"lh-gauge__mask lh-gauge__mask--half\">\n          <div class=\"lh-gauge__fill\"></div>\n          <div class=\"lh-gauge__fill lh-gauge__fill--fix\"></div>\n        </div>\n      </div>\n      <div class=\"lh-gauge__percentage\"></div>\n    </div>\n    <div class=\"lh-gauge__label\"><!-- fill me --></div>\n  </a>\n</template>\n\n<!-- Lighthouse crtiical request chains component -->\n<template id=\"tmpl-lh-crc\">\n  <style>\n    .lh-crc .tree-marker {\n      width: 12px;\n      height: 26px;\n      display: block;\n      float: left;\n      background-position: top left;\n    }\n    .lh-crc .horiz-down {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"#D8D8D8\" fill-rule=\"evenodd\"><path d=\"M16 12v2H-2v-2z\"/><path d=\"M9 12v14H7V12z\"/></g></svg>');\n    }\n    .lh-crc .right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 12v2H0v-2z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .up-right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v14H7zm2 12h7v2H9z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .vert-right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v27H7zm2 12h7v2H9z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .vert {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v26H7z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .crc-tree {\n      font-size: 14px;\n      width: 100%;\n      overflow-x: auto;\n    }\n    .lh-crc .crc-node {\n      height: 26px;\n      line-height: 26px;\n      white-space: nowrap;\n    }\n    .lh-crc .crc-node__tree-value {\n      margin-left: 10px;\n    }\n    .lh-crc .crc-node__chain-duration {\n      font-weight: 700;\n    }\n    .lh-crc .crc-node__tree-hostname {\n      color: #595959;\n    }\n    .lh-crc .crc-initial-nav {\n      color: #595959;\n      font-style: italic;\n    }\n  </style>\n  <div class=\"lh-score__description\">\n    Longest chain: <b class=\"lh-crc__longest_duration\"><!-- fill me: longestChain.duration --></b>\n    over <b class=\"lh-crc__longest_length\"><!-- fill me: longestChain.length --></b> requests, totalling\n    <b class=\"lh-crc__longest_transfersize\"><!-- fill me: longestChain.length --></b>\n  </div>\n  <div class=\"lh-crc\">\n    <details class=\"lh-details\">\n      <summary><!-- fill me --></summary>\n      <div class=\"crc-initial-nav\">Initial Navigation</div>\n      <!-- stamp for each chain -->\n      <template id=\"tmpl-lh-crc__chains\">\n        <div class=\"crc-node\">\n          <span class=\"crc-node__tree-marker\">\n            <!-- fill me -->\n          </span>\n          <span class=\"crc-node__tree-value\">\n            <span class=\"crc-node__tree-file\"><!-- fill me: node.request.url.file --></span>\n            <span class=\"crc-node__tree-hostname\">(<!-- fill me: node.request.url.host -->)</span>\n            <!-- fill me -->\n          </span>\n        </div>\n      </template>\n    </details>\n  </div>\n</template>\n";
+const REPORT_CSS="/**\n * @license Copyright 2017 Google Inc. All Rights Reserved.\n * Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0\n * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.\n */\n\n.lh-vars {\n  --text-font-family: Roboto, Helvetica, Arial, sans-serif;\n  --monospace-font-family: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --body-font-size: 14px;\n  --body-line-height: 18px;\n  --subheader-font-size: 16px;\n  --subheader-line-height: 20px;\n  --header-font-size: 20px;\n  --header-line-height: 24px;\n  --title-font-size: 24px;\n  --title-line-height: 28px;\n  --caption-font-size: 12px;\n  --caption-line-height: 16px;\n  --default-padding: 12px;\n  --section-padding: 20px;\n  --section-indent: 16px;\n  --audit-group-indent: 16px;\n  --audit-indent: 16px;\n  --expandable-indent: 20px;\n  --secondary-text-color: #565656;\n  /*--accent-color: #3879d9;*/\n  --fail-color: #df332f;\n  --pass-color: #2b882f;\n  --informative-color: #0c50c7;\n  --manual-color: #757575;\n  --average-color: #ef6c00; /* md orange 800 */\n  --warning-color: #ffab00; /* md amber a700 */\n  --report-border-color: #ccc;\n  --report-secondary-border-color: #ebebeb;\n  --metric-timeline-rule-color: #b3b3b3;\n  --report-width: calc(60 * var(--body-font-size));\n  --report-menu-width: calc(20 * var(--body-font-size));\n  --report-content-width: calc(var(--report-width) + var(--report-menu-width));\n  --navitem-font-size: var(--body-font-size);\n  --navitem-line-height: var(--body-line-height);\n  --navitem-hpadding: var(--body-font-size);\n  --navitem-vpadding: calc(var(--navitem-line-height) / 2);\n  --lh-score-highlight-bg: #fafafa;\n  --lh-score-icon-background-size: 24px;\n  --lh-score-margin: 12px;\n  --lh-table-header-bg: #ccc;\n  --lh-table-higlight-bg: #fafafa;\n  --lh-sparkline-height: 5px;\n  --lh-sparkline-thin-height: 3px;\n  --lh-filmstrip-thumbnail-width: 60px;\n  --lh-audit-score-width: calc(5 * var(--body-font-size));\n  --lh-category-score-width: calc(5 * var(--body-font-size));\n  --lh-audit-vpadding: 8px;\n  --lh-audit-hgap: 12px;\n  --lh-audit-group-vpadding: 12px;\n  --lh-section-vpadding: 12px;\n  --pass-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><path stroke=\"#007F04\" stroke-width=\"1.5\" d=\"M1 5.75l3.5 3.5 6.5-6.5\" fill=\"none\" fill-rule=\"evenodd\"/></svg>');\n  --fail-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g stroke=\"#EE1D0A\" stroke-width=\"1.5\" fill=\"none\" fill-rule=\"evenodd\"><path d=\"M2 10l8-8M10 10L2 2\"/></g></svg>');\n  --collapsed-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><path fill=\"none\" d=\"M0 0h12v12H0z\"/><path fill=\"hsl(0, 0%, 60%)\" d=\"M3 2l6 4-6 4z\"/></g></svg>');\n  --expanded-icon-url: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"none\" fill-rule=\"evenodd\"><path fill=\"none\" d=\"M0 0h12v12H0z\"/><path fill=\"hsl(0, 0%, 60%)\" d=\"M10 3L6 9 2 3z\"/></g></svg>');\n}\n\n.lh-vars.lh-devtools {\n  --text-font-family: '.SFNSDisplay-Regular', 'Helvetica Neue', 'Lucida Grande', sans-serif;\n  --monospace-font-family: 'Menlo', 'dejavu sans mono', 'Consolas', 'Lucida Console', monospace;\n  --body-font-size: 12px;\n  --body-line-height: 16px;\n  --subheader-font-size: 14px;\n  --subheader-line-height: 18px;\n  --header-font-size: 16px;\n  --header-line-height: 20px;\n  --title-font-size: 20px;\n  --title-line-height: 24px;\n  --caption-font-size: 11px;\n  --caption-line-height: 14px;\n  --default-padding: 12px;\n  --section-padding: 16px;\n  --section-indent: 16px;\n  --audit-group-indent: 16px;\n  --audit-indent: 16px;\n  --expandable-indent: 16px;\n\n  --lh-audit-vpadding: 4px;\n  --lh-audit-hgap: 12px;\n  --lh-audit-group-vpadding: 8px;\n  --lh-section-vpadding: 8px;\n}\n\n@keyframes fadeIn {\n  0% { opacity: 0;}\n  100% { opacity: 0.6;}\n}\n\n.lh-root * {\n  box-sizing: border-box;\n}\n\n.lh-root {\n  font-family: var(--text-font-family);\n  font-size: var(--body-font-size);\n  margin: 0;\n  line-height: var(--body-line-height);\n  background: #f5f5f5;\n  scroll-behavior: smooth;\n}\n\n.lh-root :focus {\n    outline: -webkit-focus-ring-color auto 3px;\n}\n\n.lh-root [hidden] {\n  display: none !important;\n}\n\na {\n  color: #0c50c7;\n}\n\nsummary {\n  cursor: pointer;\n}\n\n.lh-details {\n  font-size: var(--body-font-size);\n  margin-top: var(--default-padding);\n}\n\n.lh-details[open] summary {\n  margin-bottom: var(--default-padding);\n}\n\n.lh-details summary::-webkit-details-marker {\n  color: #9e9e9e;\n}\n\n.lh-details.flex .lh-code {\n  max-width: 70%;\n}\n\n/* Report header */\n\n.report-icon {\n  opacity: 0.7;\n}\n.report-icon:hover {\n  opacity: 1;\n}\n.report-icon[disabled] {\n  opacity: 0.3;\n  pointer-events: none;\n}\n\n.report-icon--share {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path fill=\"none\" d=\"M0 0h24v24H0z\"/><path d=\"M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z\"/></svg>');\n}\n.report-icon--print {\n  background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"><path d=\"M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z\"/><path fill=\"none\" d=\"M0 0h24v24H0z\"/></svg>');\n}\n.report-icon--copy {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z\"/></svg>');\n}\n.report-icon--open {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M19 4H5c-1.11 0-2 .9-2 2v12c0 1.1.89 2 2 2h4v-2H5V8h14v10h-4v2h4c1.1 0 2-.9 2-2V6c0-1.1-.89-2-2-2zm-7 6l-4 4h3v6h2v-6h3l-4-4z\"/></svg>');\n}\n.report-icon--download {\n  background-image: url('data:image/svg+xml;utf8,<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z\"/><path d=\"M0 0h24v24H0z\" fill=\"none\"/></svg>');\n}\n\n/* List */\n.lh-list {\n  font-size: smaller;\n  margin-top: var(--default-padding);\n}\n\n.lh-list__items {\n  padding-left: var(--default-padding);\n}\n\n.lh-list__item {\n  margin-bottom: 2px;\n}\n\n/* Node */\n.lh-node {\n  display: block;\n  font-family: var(--monospace-font-family);\n  word-break: break-word;\n  color: hsl(174, 100%, 27%);\n}\nspan.lh-node:hover {\n    background: hsl(0, 0%, 98%);\n    border-radius: 2px;\n}\n\n/* Card */\n.lh-scorecards {\n  display: flex;\n  flex-wrap: wrap;\n}\n.lh-scorecard {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex: 0 0 calc(12 * var(--body-font-size));\n  flex-direction: column;\n  padding: var(--default-padding);\n  padding-top: calc(32px + var(--default-padding));\n  border-radius: 3px;\n  margin-right: var(--default-padding);\n  position: relative;\n  line-height: inherit;\n  border: 1px solid #ebebeb;\n}\n.lh-scorecard__title {\n  background-color: #eee;\n  position: absolute;\n  top: 0;\n  right: 0;\n  left: 0;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  padding: calc(var(--default-padding) / 2);\n}\n.lh-scorecard__value {\n  font-size: calc(1.6 * var(--body-font-size));\n}\n.lh-scorecard__target {\n  margin-top: calc(var(--default-padding) / 2);\n}\n\n/* Score */\n\n.lh-score {\n  display: flex;\n  align-items: flex-start;\n}\n\n.lh-score__value {\n  flex: none;\n  margin-left: var(--lh-score-margin);\n  width: calc(var(--lh-audit-score-width) - var(--lh-score-margin));\n  position: relative;\n  font-weight: bold;\n  top: 1px;\n  text-align: right;\n}\n\n.lh-score__value::after {\n  content: '';\n  position: absolute;\n  right: 0;\n  top: 0;\n  bottom: 0;\n  border-radius: inherit;\n  width: 16px;\n}\n\n.lh-score--informative .lh-score__value {\n  color: var(--informative-color);\n  border-radius: 50%;\n  top: 3px;\n}\n\n.lh-score--informative .lh-score__value::after {\n  display: none;\n  background: url('data:image/svg+xml;utf8,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>info</title><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z\" fill=\"hsl(218, 89%, 41%)\"/></svg>') no-repeat 50% 50%;\n  background-size: var(--lh-score-icon-background-size);\n}\n\n.lh-score--manual .lh-score__value::after {\n  background: url('data:image/svg+xml;utf8,<svg width=\"12\" height=\"12\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\"><title>manual</title><path d=\"M2 5h8v2H2z\" fill=\"hsl(0, 0%, 100%)\" fill-rule=\"evenodd\"/></svg>') no-repeat 50% 50%;\n  background-size: 18px;\n  background-color: var(--manual-color);\n  width: 20px;\n  height:  20px;\n  position: relative;\n}\n\n.lh-score__value--binary {\n  color: transparent !important;\n}\n\n/* No icon for audits with number scores. */\n.lh-score__value:not(.lh-score__value--binary)::after {\n  content: none;\n}\n\n.lh-score__value--pass {\n  color: var(--pass-color);\n}\n\n.lh-score__value--pass::after {\n  background: var(--pass-icon-url) no-repeat center center / 12px 12px;\n}\n\n.lh-score__value--average {\n  color: var(--average-color);\n}\n\n.lh-score__value--average::after {\n  background: none;\n  content: '!';\n  color: var(--average-color);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-weight: 500;\n  font-size: 15px;\n}\n\n.lh-score__value--fail {\n  color: var(--fail-color);\n}\n\n.lh-score__value--fail::after {\n  background: var(--fail-icon-url) no-repeat center center / 12px 12px;\n}\n\n.lh-score__description {\n  font-size: var(--body-font-size);\n  color: var(--secondary-text-color);\n  line-height: var(--body-line-height);\n}\n\n.lh-score__snippet {\n  align-items: center;\n  justify-content: space-between;\n  /*outline: none;*/\n}\n\n.lh-score__snippet::-moz-list-bullet {\n  display: none;\n}\n\n.lh-score__title {\n  flex: 1;\n}\n\n.lh-toggle-arrow {\n  background: var(--collapsed-icon-url) no-repeat center center / 12px 12px;\n  background-color: transparent;\n  width: 12px;\n  height: 12px;\n  flex: none;\n  transition: transform 150ms ease-in-out;\n  cursor: pointer;\n  border: none;\n  order: -1;\n  margin-right: calc(var(--expandable-indent) - 12px);\n  align-self: flex-start;\n}\n\n.lh-toggle-arrow-unexpandable {\n  visibility: hidden;\n}\n\n/* Expandable Details (Audit Groups, Audits) */\n\n.lh-score__header {\n  order: -1;\n  flex: 1;\n}\n\n.lh-expandable-details {\n  padding-left: var(--expandable-indent);\n}\n\n.lh-expandable-details__summary {\n  display: flex;\n  align-items: center;\n  cursor: pointer;\n  margin-left: calc(0px - var(--expandable-indent));\n}\n\n.lh-audit-group[open] > .lh-audit-group__summary > .lh-toggle-arrow,\n.lh-expandable-details[open] > .lh-expandable-details__summary > .lh-toggle-arrow {\n  background-image: var(--expanded-icon-url);\n}\n\n.lh-audit-group__summary::-webkit-details-marker,\n.lh-expandable-details__summary::-webkit-details-marker {\n  display: none;\n}\n\n.lh-score__snippet .lh-toggle-arrow {\n  margin-top: calc((var(--body-line-height) - 12px) / 2);\n}\n\n/* Perf Timeline */\n\n.lh-timeline-container {\n  overflow: hidden;\n  border-top: 1px solid var(--metric-timeline-rule-color);\n}\n\n.lh-timeline {\n  padding: 0;\n  padding-bottom: 0;\n  width: calc(var(--lh-filmstrip-thumbnail-width) * 10 + var(--default-padding) * 2);\n}\n\n.lh-narrow .lh-timeline-container {\n  width: calc(100vw - var(--section-padding) * 2);\n  overflow-x: scroll;\n}\n\n.lh-devtools .lh-timeline-container {\n  width: 100%;\n  overflow-x: scroll;\n}\n\n/* Perf Timeline Metric */\n\n.lh-timeline-metric {\n  position: relative;\n  margin-bottom: calc(2 * var(--lh-audit-vpadding));\n  padding-top: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-timeline-metric__header {\n  display: flex;\n}\n\n.lh-timeline-metric__details {\n  order: -1;\n}\n\n.lh-timeline-metric__title {\n  font-size: var(--body-font-size);\n  line-height: var(--body-line-height);\n  display: flex;\n}\n\n.lh-timeline-metric__name {\n  flex: 1;\n}\n\n.lh-timeline-metric__description {\n  color: var(--secondary-text-color);\n}\n\n.lh-timeline-metric__value {\n  width: var(--lh-audit-score-width);\n  text-align: right;\n}\n\n.lh-timeline-metric--pass .lh-timeline-metric__value {\n  color: var(--pass-color);\n}\n\n.lh-timeline-metric--average .lh-timeline-metric__value {\n  color: var(--average-color);\n}\n\n.lh-timeline-metric--fail .lh-timeline-metric__value {\n  color: var(--fail-color);\n}\n\n.lh-timeline-metric__sparkline {\n  position: absolute;\n  left: 0;\n  right: 0;\n  top: -1px;\n  height: 3px;\n  width: 100%;\n}\n\n.lh-timeline-metric__sparkline .lh-sparkline__bar {\n  float: none;\n}\n\n.lh-timeline-metric--pass .lh-sparkline__bar {\n  background: var(--pass-color);\n}\n\n.lh-timeline-metric--average .lh-sparkline__bar {\n  background: var(--average-color);\n}\n\n.lh-timeline-metric--fail .lh-sparkline__bar {\n  background: var(--fail-color);\n}\n\n.lh-timeline-metric .lh-debug {\n  margin-left: var(--expandable-indent);\n}\n\n/* Perf Hint */\n\n.lh-perf-hint {\n  padding-top: var(--lh-audit-vpadding);\n  padding-bottom: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-perf-hint:last-of-type {\n  border-bottom: none;\n}\n\n.lh-perf-hint__summary {\n  display: flex;\n  align-items: flex-start;\n  flex-wrap: wrap;\n  min-height: calc(var(--body-line-height) + var(--caption-line-height));\n}\n\n.lh-perf-hint__summary .lh-toggle-arrow {\n  margin-top: calc((var(--subheader-line-height) - 12px) / 2);\n}\n\n.lh-perf-hint__summary .lh-debug {\n  width: calc(100% - var(--expandable-indent));\n  margin: 0 var(--expandable-indent);\n}\n\n.lh-perf-hint__title {\n  font-size: var(--body-font-size);\n  flex: 10;\n}\n\n.lh-perf-hint__sparkline {\n  flex: 0 0 50%;\n  margin-top: calc((var(--body-line-height) - var(--lh-sparkline-height)) / 2);\n}\n\n.lh-perf-hint__sparkline .lh-sparkline {\n  width: 100%;\n  float: right;\n  margin: 0;\n}\n\n.lh-perf-hint__stats {\n  text-align: right;\n  flex: 0 0 var(--lh-audit-score-width);\n}\n\n.lh-perf-hint__primary-stat {\n  font-size: var(--body-font-size);\n  line-height: var(--body-line-height);\n}\n\n.lh-perf-hint__secondary-stat {\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n}\n\n.lh-perf-hint__description {\n  color: var(--secondary-text-color);\n  margin-top: calc(var(--default-padding) / 2);\n}\n\n.lh-perf-hint--pass .lh-perf-hint__stats {\n  color: var(--pass-color);\n}\n\n.lh-perf-hint--pass .lh-sparkline__bar {\n  background: var(--pass-color);\n}\n\n.lh-perf-hint--average .lh-sparkline__bar {\n  background: var(--average-color);\n}\n\n.lh-perf-hint--average .lh-perf-hint__stats {\n  color: var(--average-color);\n}\n\n.lh-perf-hint--fail .lh-sparkline__bar {\n  background: var(--fail-color);\n}\n\n.lh-perf-hint--fail .lh-perf-hint__stats {\n  color: var(--fail-color);\n}\n\n/* Filmstrip */\n\n.lh-filmstrip {\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  padding-bottom: var(--default-padding);\n}\n\n.lh-filmstrip__frame {\n  text-align: right;\n  position: relative;\n}\n\n.lh-filmstrip__timestamp {\n  margin-bottom: calc(0.5 * var(--caption-line-height));\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n  padding-top: 1px;\n  padding-right: 6px;\n}\n\n.lh-filmstrip__timestamp::before {\n  content: '';\n  height: 7px;\n  width: 2px;\n  background: var(--metric-timeline-rule-color);\n  position: absolute;\n  right: 0;\n  top: -2px;\n}\n\n.lh-filmstrip__thumbnail {\n  border: 1px solid var(--report-secondary-border-color);\n  max-height: 100px;\n}\n\n/* Sparkline */\n\n.lh-sparkline {\n  margin: 5px;\n  height: var(--lh-sparkline-height);\n  width: 100%;\n}\n\n.lh-sparkline--thin {\n  height: calc(var(--lh-sparkline-height) / 2);\n}\n\n.lh-sparkline__bar {\n  background: var(--warning-color);\n  height: 100%;\n  float: right;\n  position: relative;\n}\n\n/* correlate metric end location with sparkline */\n.lh-timeline-metric:hover .lh-sparkline__bar::after {\n  content: '';\n  height: 100vh;\n  width: 2px;\n  background: inherit;\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  opacity: 0;\n  animation: fadeIn 150ms;\n  animation-fill-mode: forwards;\n}\n\n/* Audit */\n\n.lh-audit {\n  margin-bottom: var(--lh-audit-vpadding);\n  padding-top: var(--lh-audit-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n}\n\n.lh-audit:last-of-type {\n  border-bottom: none;\n}\n\n.lh-audit > .lh-score {\n  font-size: var(--body-font-size);\n}\n\n.lh-audit .lh-debug {\n  margin-left: var(--expandable-indent);\n  margin-right: var(--lh-audit-score-width);\n}\n\n/* Audit Group */\n\n.lh-audit-group {\n  padding-top: var(--lh-audit-group-vpadding);\n  border-top: 1px solid var(--report-secondary-border-color);\n  padding-left: var(--expandable-indent);\n}\n\n.lh-audit-group__header {\n  font-size: var(--subheader-font-size);\n  line-height: var(--subheader-line-height);\n}\n\n.lh-audit-group__summary {\n  display: flex;\n  align-items: center;\n  margin-bottom: var(--lh-audit-group-vpadding);\n  margin-left: calc(0px - var(--expandable-indent));\n}\n\n.lh-audit-group__summary .lh-toggle-arrow {\n  margin-top: calc((var(--subheader-line-height) - 12px) / 2);\n}\n\n.lh-audit-group__description {\n  font-size: var(--body-font-size);\n  color: var(--secondary-text-color);\n  margin-top: calc(0px - var(--lh-audit-group-vpadding));\n  margin-bottom: var(--lh-audit-group-vpadding);\n  line-height: var(--body-line-height);\n}\n\n\n.lh-debug {\n  font-size: var(--caption-font-size);\n  line-height: var(--caption-line-height);\n  color: var(--fail-color);\n  margin-top: 3px;\n}\n\n.lh-debug::before {\n  display: none;\n  content: '';\n  background: url('data:image/svg+xml;utf8,<svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><title>warn</title><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z\" fill=\"hsl(40, 100%, 50%)\"/></svg>') no-repeat 50% 50%;\n  background-size: contain;\n  width: 20px;\n  height: 20px;\n  position: relative;\n  margin-right: calc(var(--default-padding) / 2);\n  top: 5px;\n}\n\n\n/* Report */\n\n.lh-container {\n  display: flex;\n  max-width: var(--report-content-width);\n  word-wrap: break-word;\n  margin: 0 auto;\n}\n\n.lh-report {\n  margin-left: var(--report-menu-width);\n  background-color: #fff;\n  padding-top: var(--report-header-height);\n}\n@media screen {\n  .lh-report {\n    width: var(--report-width);\n  }\n}\n\n.lh-exception {\n  font-size: large;\n}\n\n.lh-text__url {\n  white-space: nowrap;\n}\n\n.lh-code {\n  text-overflow: ellipsis;\n  white-space: pre-line;\n  margin-top: 0;\n}\n\n.lh-run-warnings {\n  font-size: var(--body-font-size);\n  margin: var(--section-padding);\n  padding: var(--section-padding);\n  background-color: hsla(40, 100%, 91%, 1);\n  color: var(--secondary-text-color);\n}\n.lh-run-warnings li {\n  margin-bottom: calc(var(--header-line-height) / 2);\n}\n.lh-run-warnings::before {\n  display: inline-block;\n}\n\n.lh-scores-header {\n  display: flex;\n  justify-content: center;\n  overflow-x: hidden;\n  padding: var(--section-padding);\n  border-bottom: 1px solid var(--report-border-color);\n}\n.lh-scores-header__solo {\n  padding: 0;\n  border: 0;\n}\n\n.lh-categories {\n  width: 100%;\n  overflow: hidden;\n}\n\n.lh-category {\n  padding: var(--section-padding);\n  border-top: 1px solid var(--report-border-color);\n}\n\n/* section hash link jump should preserve fixed header\n   https://css-tricks.com/hash-tag-links-padding/\n*/\n.lh-category > .lh-permalink {\n  margin-top: calc((var(--report-header-height) + var(--default-padding)) * -1);\n  padding-bottom: calc(var(--report-header-height) + var(--default-padding));\n  display: block;\n  visibility: hidden;\n}\n\n.lh-category:first-of-type {\n  border: none;\n}\n\n.lh-category > .lh-score {\n  font-size: var(--header-font-size);\n  padding-bottom: var(--lh-section-vpadding);\n}\n\n.lh-category > .lh-score .lh-score__value,\n.lh-category > .lh-score .lh-score__gauge .lh-gauge__label {\n  display: none;\n}\n\n.lh-category .lh-score__gauge {\n  margin-left: var(--section-indent);\n  flex-basis: var(--circle-size);\n  flex-shrink: 0;\n}\n\n.lh-category .lh-score__gauge .lh-gauge {\n  --circle-size: calc(2.5 * var(--header-font-size));\n}\n\n/* Category snippet shouldnt have pointer cursor. */\n.lh-category > .lh-score .lh-score__snippet {\n  cursor: initial;\n}\n\n.lh-category > .lh-score .lh-score__title {\n  font-size: var(--header-font-size);\n  line-height: var(--header-line-height);\n}\n\n.lh-passed-audits[open] summary.lh-passed-audits-summary {\n  margin-bottom: calc(var(--default-padding) * 2);\n}\n\nsummary.lh-passed-audits-summary {\n  margin: calc(var(--default-padding) * 2) var(--default-padding);\n  margin-left: var(--default-padding);\n  margin-bottom: 0;\n  font-size: 15px;\n  display: flex;\n  align-items: center;\n}\n\n#lh-log {\n  position: fixed;\n  background-color: #323232;\n  color: #fff;\n  min-height: 48px;\n  min-width: 288px;\n  padding: 16px 24px;\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\n  border-radius: 2px;\n  margin: 12px;\n  font-size: 14px;\n  cursor: default;\n  transition: transform 0.3s, opacity 0.3s;\n  transform: translateY(100px);\n  opacity: 0;\n  -webkit-font-smoothing: antialiased;\n  bottom: 0;\n  left: 0;\n  z-index: 3;\n}\n\n#lh-log.show {\n  opacity: 1;\n  transform: translateY(0);\n}\n\n/* 964 fits the min-width of the filmstrip */\n@media screen and (max-width: 964px) {\n  .lh-report {\n    margin-left: 0;\n    width: 100%;\n    min-width: 400px;\n  }\n}\n\n@media print {\n  body {\n    -webkit-print-color-adjust: exact; /* print background colors */\n  }\n  .lh-container {\n    display: block;\n  }\n  .lh-report {\n    margin-left: 0;\n    padding-top: 0;\n  }\n  .lh-categories {\n    margin-top: 0;\n  }\n}\n\n.lh-table {\n  --image-preview-size: 24px;\n  border: 1px solid var(--report-secondary-border-color);\n  border-collapse: collapse;\n  table-layout: fixed;\n  width: 100%;\n}\n\n.lh-table thead {\n  background: var(--lh-table-header-bg);\n}\n\n.lh-table tbody tr:nth-child(even) {\n  background-color: var(--lh-table-higlight-bg);\n}\n\n.lh-table th,\n.lh-table td {\n  padding: 10px;\n  overflow: auto;\n}\n\n.lh-table-column--text {\n  text-align: right;\n}\n\n.lh-table-column--thumbnail {\n  width: calc(var(--image-preview-size) * 2);\n}\n\n.lh-table-column--url {\n  text-align: left;\n  min-width: 250px;\n  white-space: nowrap;\n}\n\n.lh-thumbnail {\n  height: var(--image-preview-size);\n  width: var(--image-preview-size);\n  object-fit: contain;\n}\n\n/*# sourceURL=report.styles.css */\n";
+const REPORT_TEMPLATES="<!-- Lighthouse run warnings -->\n<template id=\"tmpl-lh-run-warnings\">\n  <div class=\"lh-run-warnings lh-debug\">\n    <strong>There were issues affecting this run of Lighthouse:</strong>\n    <ul></ul>\n  </div>\n</template>\n\n<!-- Lighthouse category score -->\n<template id=\"tmpl-lh-category-score\">\n  <div class=\"lh-score\">\n    <div class=\"lh-score__value\"><!-- fill me --></div>\n    <div class=\"lh-score__gauge\"></div>\n    <div class=\"lh-score__header\">\n      <div class=\"lh-score__snippet\">\n        <span class=\"lh-score__title\"><!-- fill me --></span>\n      </div>\n      <div class=\"lh-score__description\"><!-- fill me --></div>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse audit score -->\n<template id=\"tmpl-lh-audit-score\">\n  <div class=\"lh-score\">\n    <div class=\"lh-score__value\"><!-- fill me --></div>\n    <details class=\"lh-score__header lh-expandable-details\">\n      <summary class=\"lh-score__snippet lh-expandable-details__summary\">\n        <span class=\"lh-score__title\"><!-- fill me --></span>\n        <div class=\"lh-toggle-arrow\" title=\"See audits\"></div>\n      </summary>\n      <div class=\"lh-score__description\"><!-- fill me --></div>\n    </details>\n  </div>\n</template>\n\n<!-- Lighthouse timeline metric -->\n<template id=\"tmpl-lh-timeline-metric\">\n  <div class=\"lh-timeline-metric\">\n    <div class=\"lh-timeline-metric__sparkline\">\n      <div class=\"lh-sparkline__bar\"></div>\n    </div>\n    <div class=\"lh-timeline-metric__header\">\n      <div class=\"lh-timeline-metric__value\"><!-- fill me --></div>\n      <details class=\"lh-timeline-metric__details lh-expandable-details\">\n        <summary class=\"lh-timeline-metric__summary lh-expandable-details__summary\">\n          <span class=\"lh-timeline-metric__title\"><!-- fill me --></span>\n          <div class=\"lh-toggle-arrow\" title=\"See audits\"></div>\n        </summary>\n        <div class=\"lh-timeline-metric__description\"><!-- fill me --></div>\n      </details>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse left nav -->\n<template id=\"tmpl-lh-leftnav\">\n  <style>\n    .lh-leftnav {\n      width: var(--report-menu-width);\n      border-right: 1px solid var(--report-border-color);\n      position: fixed;\n      height: 100%;\n      background: #fff;\n      will-change: transform; /* prevent excessive paints */\n      z-index: 2;\n    }\n    .lh-leftnav__item {\n      padding: var(--navitem-vpadding) var(--navitem-hpadding);\n      color: var(--secondary-text-color);\n      font-size: var(--navitem-font-size);\n      line-height: var(--navitem-line-height);\n      display: flex;\n      justify-content: space-between;\n      text-decoration: none;\n      color: inherit;\n    }\n    .leftnav-item__score {\n      background: transparent;\n    }\n    .leftnav-item__score::after {\n      content: '';\n    }\n    .leftnav-item__score.lh-score__value--pass {\n      color: var(--pass-color);\n    }\n    .leftnav-item__score.lh-score__value--average {\n      color: var(--average-color);\n    }\n    .leftnav-item__score.lh-score__value--fail {\n      color: var(--fail-color);\n    }\n    .leftnav__header {\n      padding: 0 20px;\n      margin-bottom: var(--navitem-vpadding);\n      height: 115px;\n      font-size: 18px;\n      display: flex;\n      flex-direction: column;\n      justify-content: center;\n      background: url(data:image/png;base64,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) no-repeat 150% 100%;\n      background-color: #2238b3;\n      background-size: 205px;\n      background-blend-mode: luminosity;\n    }\n    .leftnav__header__title {\n      font-family: var(--text-font-family);\n      font-size: var(--title-font-size);\n      line-height: var(--title-line-height);\n      font-weight: 300;\n      color: #fff;\n      margin: 0;\n      padding: 0;\n    }\n    .leftnav__header__version {\n      color: #aab3ed;\n      font-family: var(--text-font-family);\n      font-size: var(--body-font-size);\n      line-height: var(--body-line-height);\n    }\n    @media screen and (max-width: 964px) {\n      .lh-leftnav {\n        display: none;\n      }\n    }\n    @media print {\n      .lh-leftnav {\n        display: none;\n      }\n    }\n  </style>\n  <nav class=\"lh-leftnav\">\n    <div class=\"leftnav__header\">\n      <h1 class=\"leftnav__header__title\">Lighthouse</h1>\n      <div class=\"leftnav__header__version\"><!-- fill me --></div>\n    </div>\n    <template id=\"tmpl-lh-leftnav__items\">\n      <a href=\"#\" class=\"lh-leftnav__item\">\n        <span class=\"leftnav-item__category\"><!-- fill me --></span>\n        <span class=\"leftnav-item__score\"><!-- fill me --></span>\n      </a>\n    </template>\n  </nav>\n</template>\n\n<!-- Lighthouse header -->\n<template id=\"tmpl-lh-heading\">\n  <style>\n    :root {\n      --report-header-height: 58px;\n      --report-header-bg-color: #fafafa;\n    }\n    .lh-header {\n      display: flex;\n      height: var(--report-header-height);\n      left: 0;\n      right: 0;\n      max-width: 100%; /* support text-overflow on url */\n      border-bottom: 1px solid var(--report-secondary-border-color);\n      position: fixed;\n      z-index: 1;\n      will-change: transform;\n      background-color: var(--report-header-bg-color);\n      margin-left: var(--report-menu-width);\n      align-items: center;\n      padding: 0 calc(var(--default-padding) * 2);\n    }\n    .lh-metadata {\n      flex: 1 1 0;\n      padding-right: calc(var(--default-padding) / 2);\n      line-height: 20px;\n      color: var(--secondary-text-color);\n      overflow-x: hidden;\n    }\n    .lh-metadata__results {\n      overflow: hidden;\n      text-overflow: ellipsis;\n      white-space: nowrap;\n    }\n    .lh-metadata__url {\n      color: currentColor;\n    }\n    .lh-export {\n      position: relative;\n    }\n    .lh-export__button {\n      background-color: #fff;\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      cursor: pointer;\n      outline: none;\n      height: 32px;\n      width: 48px;\n      background-repeat: no-repeat;\n      background-size: 20px;\n      background-position: 50% 50%;\n    }\n    .lh-export__button:focus,\n    .lh-export__button.active {\n      box-shadow: 1px 1px 3px #ccc;\n    }\n    .lh-export__button.active + .lh-export__dropdown {\n      opacity: 1;\n      clip: rect(0, 164px, 200px, 0);\n    }\n    .lh-export__dropdown {\n      position: absolute;\n      background-color: #fff;\n      border: 1px solid var(--report-border-color);\n      border-radius: 3px;\n      padding: calc(var(--default-padding) / 2) 0;\n      cursor: pointer;\n      top: 36px;\n      right: 0;\n      box-shadow: 1px 1px 3px #ccc;\n      min-width: 125px;\n      clip: rect(0, 164px, 0, 0);\n      opacity: 0;\n      transition: all 200ms cubic-bezier(0,0,0.2,1);\n    }\n    .lh-export__dropdown a {\n      display: block;\n      color: currentColor;\n      text-decoration: none;\n      white-space: nowrap;\n      padding: 0 12px;\n      line-height: 2;\n    }\n    .lh-export__dropdown a:hover,\n    .lh-export__dropdown a:focus {\n      background-color: #efefef;\n      outline: none;\n    }\n    .lh-export__dropdown .report-icon {\n      cursor: pointer;\n      background-repeat: no-repeat;\n      background-position: 8px 50%;\n      background-size: 18px;\n      background-color: transparent;\n      text-indent: 18px;\n    }\n    /* copy icon needs slight adjustments to look great */\n    .lh-export__dropdown .report-icon--copy {\n      background-size: 16px;\n      background-position: 9px 50%;\n    }\n    /* save-as-gist option hidden in report */\n    .lh-export__dropdown .lh-export--gist {\n      display: none;\n    }\n    .lh-config {\n      display: flex;\n    }\n    .lh-env {\n      padding: var(--default-padding) 0 var(--default-padding) calc(var(--default-padding) * 2);\n      left: 0;\n      top: 100%;\n      position: absolute;\n      width: 100%;\n      background-color: var(--report-header-bg-color);\n      border-top: 1px solid var(--report-secondary-border-color);\n      border-bottom: 1px solid var(--report-secondary-border-color);\n    }\n    .lh-env__title {\n      font-size: var(--header-font-size);\n    }\n    .lh-env__items {\n      margin: var(--default-padding) 0 0 0;\n    }\n    .lh-config__timestamp {\n      margin-right: 6px;\n    }\n    .lh-config__settings-toggle {\n      margin-left: 6px;\n    }\n    .lh-config__timestamp,\n    .lh-config__settings-toggle summary {\n      color: var(--secondary-text-color);\n    }\n    .lh-config__settings-toggle summary {\n      display: flex;\n      align-items: center;\n    }\n    .lh-config__settings-toggle .lh-toggle-arrow {\n      width: 16px;\n      height: 16px;\n      margin-left: 2px;\n    }\n    .lh-config__settings-toggle[open] .lh-toggle-arrow {\n      transform: rotateZ(90deg);\n    }\n    .lh-config__settings-toggle summary::-moz-list-bullet {\n      display: none;\n    }\n    .lh-config__settings-toggle summary::-webkit-details-marker {\n      display: none;\n    }\n    @media screen and (min-width: 965px) {\n      .lh-header {\n        width: var(--report-width);\n        right: initial;\n        left: initial;\n      }\n    }\n    @media screen and (max-width: 964px) {\n      .lh-export__dropdown {\n        right: 0;\n        left: initial;\n      }\n      .lh-header {\n        padding: 0 var(--default-padding);\n        margin-left: 0;\n      }\n    }\n    @media print {\n      .lh-header {\n        position: static;\n        margin-left: 0;\n      }\n    }\n  </style>\n  <div class=\"lh-header\">\n    <div class=\"lh-metadata\">\n      <div class=\"lh-metadata__results\">Results for: <a href=\"\" class=\"lh-metadata__url\" target=\"_blank\" rel=\"noopener\"><!-- fill me --></a></div>\n      <div class=\"lh-config\">\n        <span class=\"lh-config__timestamp\"><!-- fill me --></span> &bullet;\n        <details class=\"lh-config__settings-toggle\">\n          <summary>\n            <span>Runtime settings</span>\n            <span class=\"lh-toggle-arrow\" title=\"See report's runtime settings\"></span>\n          </summary>\n          <div class=\"lh-env\">\n            <div class=\"lh-env__title\">Runtime environment</div>\n            <ul class=\"lh-env__items\">\n              <li class=\"lh-env__item\">\n                <span class=\"lh-env__name\">User agent:</span>\n                <b class=\"lh-env__item__ua\"><!-- fill me --></b>\n              </li>\n              <template id=\"tmpl-lh-env__items\">\n                <li class=\"lh-env__item\">\n                  <span class=\"lh-env__name\"><!-- fill me --></span>\n                  <span class=\"lh-env__description\"><!-- fill me --></span>:\n                  <b class=\"lh-env__enabled\"><!-- fill me --></b>\n                </li>\n              </template>\n            </ul>\n          </div>\n        </details>\n      </div>\n    </div>\n    <div class=\"lh-export\">\n      <button class=\"report-icon report-icon--share lh-export__button\" title=\"Export report\"></button>\n      <div class=\"lh-export__dropdown\">\n        <a href=\"#\" class=\"report-icon report-icon--print\" data-action=\"print-summary\">Print Summary</a>\n        <a href=\"#\" class=\"report-icon report-icon--print\" data-action=\"print-expanded\">Print Expanded</a>\n        <a href=\"#\" class=\"report-icon report-icon--copy\" data-action=\"copy\">Copy JSON</a>\n        <a href=\"#\" class=\"report-icon report-icon--download\" data-action=\"save-html\">Save as HTML</a>\n        <a href=\"#\" class=\"report-icon report-icon--download\" data-action=\"save-json\">Save as JSON</a>\n        <a href=\"#\" class=\"report-icon report-icon--open lh-export--viewer\" data-action=\"open-viewer\">Open in Viewer</a>\n        <a href=\"#\" class=\"report-icon report-icon--open lh-export--gist\" data-action=\"save-gist\">Save as Gist</a>\n      </div>\n    </div>\n  </div>\n</template>\n\n<!-- Lighthouse footer -->\n<template id=\"tmpl-lh-footer\">\n  <style>\n    .lh-footer {\n      min-height: 90px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      background-color: var(--report-header-bg-color);\n      border-top: 1px solid var(--report-secondary-border-color);\n    }\n\n    .lh-footer span {\n      text-align: center;\n    }\n  </style>\n  <footer class=\"lh-footer\">\n    <span>\n      Generated by <b>Lighthouse</b> <span class=\"lh-footer__version\"><!-- fill me --></span> on\n      <span class=\"lh-footer__timestamp\"><!-- fill me --></span> |\n      <a href=\"https://github.com/GoogleChrome/Lighthouse/issues\" target=\"_blank\" rel=\"noopener\">File an issue</a>\n    </span>\n  </footer>\n</template>\n\n<!-- Lighthouse score gauge -->\n<template id=\"tmpl-lh-gauge\">\n  <style>\n    .lh-gauge {\n      --circle-size: calc(2.5 * var(--header-font-size));\n      --circle-size-half: calc(var(--circle-size) / 2);\n      --circle-background: #ccc;\n      --circle-border-width: 2px;\n      --inset-size: calc(var(--circle-size) - 2 * var(--circle-border-width));\n      --inset-color: #fff;\n      --transition-length: 1s;\n      width: var(--circle-size);\n      height: var(--circle-size);\n      background-color: var(--circle-background);\n      border-radius: 50%;\n    }\n    .lh-gauge--pass {\n      --circle-color: var(--pass-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge--average {\n      --circle-color: var(--average-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge--fail {\n      --circle-color: var(--fail-color);\n      color: var(--circle-color);\n    }\n    .lh-gauge__mask,\n    .lh-gauge__fill {\n      width: var(--circle-size);\n      height: var(--circle-size);\n      position: absolute;\n      transition: transform var(--transition-length);\n      border-radius: 50%;\n    }\n    .lh-gauge__mask {\n      clip: rect(0px, var(--circle-size), var(--circle-size), var(--circle-size-half));\n    }\n    .lh-gauge__mask .lh-gauge__fill {\n      clip: rect(0px, var(--circle-size-half), var(--circle-size), 0px);\n      background-color: var(--circle-color);\n      backface-visibility: hidden;\n    }\n    .lh-gauge__percentage {\n      --spacer: calc((var(--circle-size) - var(--inset-size)) / 2);\n      width: var(--inset-size);\n      height: var(--inset-size);\n      position: absolute;\n      margin-left: var(--spacer);\n      margin-top: var(--spacer);\n      background-color: var(--inset-color);\n      border-radius: inherit;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      font-size: var(--header-font-size);\n    }\n    .lh-gauge__wrapper {\n      display: inline-flex;\n      align-items: center;\n      flex-direction: column;\n      text-decoration: none;\n      color: inherit;\n      flex: 1;\n      min-width: auto;\n      position: relative;\n    }\n    .lh-scores-header .lh-gauge__wrapper {\n      width: calc(10.5 * var(--body-font-size));\n    }\n    .lh-gauge__label {\n      font-size: var(--body-font-size);\n      line-height: var(--body-line-height);\n      margin-top: calc(0.5 * var(--body-line-height));\n      text-align: center;\n    }\n  </style>\n  <a href=\"#\" class=\"lh-gauge__wrapper\">\n    <div class=\"lh-gauge\" data-progress=\"0\">\n      <div class=\"lh-gauge__circle\">\n        <div class=\"lh-gauge__mask lh-gauge__mask--full\">\n          <div class=\"lh-gauge__fill\"></div>\n        </div>\n        <div class=\"lh-gauge__mask lh-gauge__mask--half\">\n          <div class=\"lh-gauge__fill\"></div>\n          <div class=\"lh-gauge__fill lh-gauge__fill--fix\"></div>\n        </div>\n      </div>\n      <div class=\"lh-gauge__percentage\"></div>\n    </div>\n    <div class=\"lh-gauge__label\"><!-- fill me --></div>\n  </a>\n</template>\n\n<!-- Lighthouse crtiical request chains component -->\n<template id=\"tmpl-lh-crc\">\n  <style>\n    .lh-crc .tree-marker {\n      width: 12px;\n      height: 26px;\n      display: block;\n      float: left;\n      background-position: top left;\n    }\n    .lh-crc .horiz-down {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><g fill=\"#D8D8D8\" fill-rule=\"evenodd\"><path d=\"M16 12v2H-2v-2z\"/><path d=\"M9 12v14H7V12z\"/></g></svg>');\n    }\n    .lh-crc .right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M16 12v2H0v-2z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .up-right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v14H7zm2 12h7v2H9z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .vert-right {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v27H7zm2 12h7v2H9z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .vert {\n      background: url('data:image/svg+xml;utf8,<svg width=\"16\" height=\"26\" viewBox=\"0 0 16 26\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0h2v26H7z\" fill=\"#D8D8D8\" fill-rule=\"evenodd\"/></svg>');\n    }\n    .lh-crc .crc-tree {\n      font-size: 14px;\n      width: 100%;\n      overflow-x: auto;\n    }\n    .lh-crc .crc-node {\n      height: 26px;\n      line-height: 26px;\n      white-space: nowrap;\n    }\n    .lh-crc .crc-node__tree-value {\n      margin-left: 10px;\n    }\n    .lh-crc .crc-node__chain-duration {\n      font-weight: 700;\n    }\n    .lh-crc .crc-node__tree-hostname {\n      color: #595959;\n    }\n    .lh-crc .crc-initial-nav {\n      color: #595959;\n      font-style: italic;\n    }\n  </style>\n  <div class=\"lh-score__description\">\n    Longest chain: <b class=\"lh-crc__longest_duration\"><!-- fill me: longestChain.duration --></b>\n    over <b class=\"lh-crc__longest_length\"><!-- fill me: longestChain.length --></b> requests, totalling\n    <b class=\"lh-crc__longest_transfersize\"><!-- fill me: longestChain.length --></b>\n  </div>\n  <div class=\"lh-crc\">\n    <details class=\"lh-details\">\n      <summary><!-- fill me --></summary>\n      <div class=\"crc-initial-nav\">Initial Navigation</div>\n      <!-- stamp for each chain -->\n      <template id=\"tmpl-lh-crc__chains\">\n        <div class=\"crc-node\">\n          <span class=\"crc-node__tree-marker\">\n            <!-- fill me -->\n          </span>\n          <span class=\"crc-node__tree-value\">\n            <span class=\"crc-node__tree-file\"><!-- fill me: node.request.url.file --></span>\n            <span class=\"crc-node__tree-hostname\">(<!-- fill me: node.request.url.host -->)</span>\n            <!-- fill me -->\n          </span>\n        </div>\n      </template>\n    </details>\n  </div>\n</template>\n";
 
 class ReportGeneratorV2{
 
@@ -16226,6 +19197,7 @@ sum:result.sum+score*weight};
 
 return results.sum/results.weight||0;
 }
+
 
 
 
@@ -16298,8 +19270,9 @@ return ReportGeneratorV2.replaceStrings(REPORT_TEMPLATE,[
 
 module.exports=ReportGeneratorV2;
 
-},{}],39:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function(process,__dirname){
+
 
 
 
@@ -16316,6 +19289,7 @@ const log=require('lighthouse-logger');
 
 const path=require('path');
 const URL=require('./lib/url-shim');
+const Sentry=require('./lib/sentry');
 
 class Runner{
 static run(connection,opts){
@@ -16323,6 +19297,9 @@ static run(connection,opts){
 opts.flags=opts.flags||{};
 
 const config=opts.config;
+
+
+const lighthouseRunWarnings=[];
 
 
 opts.initialUrl=opts.url;
@@ -16337,6 +19314,13 @@ parsedURL=new URL(opts.url);
 const err=new Error('The url provided should have a proper protocol and hostname.');
 return Promise.reject(err);
 }
+
+const sentryContext=Sentry.getContext();
+Sentry.captureBreadcrumb({
+message:'Run started',
+category:'lifecycle',
+data:sentryContext&&sentryContext.extra});
+
 
 
 if(parsedURL.protocol!=='https:'&&parsedURL.hostname!=='localhost'){
@@ -16367,8 +19351,13 @@ run=run.then(_=>GatherRunner.run(config.passes,opts));
 run=run.then(_=>config.artifacts);
 }
 
-
 run=run.then(artifacts=>{
+
+if(artifacts.LighthouseRunWarnings){
+lighthouseRunWarnings.push(...artifacts.LighthouseRunWarnings);
+}
+
+
 return Object.assign({},artifacts,Runner.instantiateComputedArtifacts());
 });
 
@@ -16383,7 +19372,6 @@ throw new Error(passName+' trace was invalid. `traceEvents` was not an array.');
 
 return artifacts;
 });
-
 
 run=run.then(artifacts=>{
 log.log('status','Analyzing and running audits...');
@@ -16444,6 +19432,7 @@ lighthouseVersion:require('../package').version,
 generatedTime:new Date().toJSON(),
 initialUrl:opts.initialUrl,
 url:opts.url,
+runWarnings:lighthouseRunWarnings,
 audits:resultsById,
 artifacts:runResults.artifacts,
 runtimeConfig:Runner.getRuntimeConfig(opts.flags),
@@ -16451,6 +19440,11 @@ score,
 reportCategories,
 reportGroups:config.groups};
 
+}).
+catch(err=>{
+return Sentry.captureException(err,{level:'fatal'}).then(()=>{
+throw err;
+});
 });
 
 return run;
@@ -16488,10 +19482,19 @@ throw new Error(`Required ${artifactName} gatherer did not run.`);
 
 if(artifacts[artifactName]instanceof Error){
 const artifactError=artifacts[artifactName];
+Sentry.captureException(artifactError,{
+tags:{gatherer:artifactName},
+level:'error'});
+
+
 log.warn('Runner',`${artifactName} gatherer, required by audit ${audit.meta.name},`+
 ` encountered an error: ${artifactError.message}`);
-throw new Error(
+
+
+const error=new Error(
 `Required ${artifactName} gatherer encountered an error: ${artifactError.message}`);
+error.expected=true;
+throw error;
 }
 }
 
@@ -16504,6 +19507,7 @@ if(err.fatal){
 throw err;
 }
 
+Sentry.captureException(err,{tags:{audit:audit.meta.name},level:'error'});
 
 return Audit.generateErrorAuditResult(audit,'Audit error: '+err.message);
 }).then(result=>{
@@ -16527,12 +19531,14 @@ const ignoredFiles=[
 
 
 const fileList=[
-...["accessibility","audit.js","byte-efficiency","cache-start-url.js","consistently-interactive.js","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","estimated-input-latency.js","first-interactive.js","first-meaningful-paint.js","image-aspect-ratio.js","is-on-https.js","load-fast-enough-for-pwa.js","manifest-short-name-length.js","manual","multi-check-audit.js","predictive-perf.js","redirects-http.js","screenshot-thumbnails.js","seo","service-worker.js","speed-index-metric.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
+...["accessibility","audit.js","bootup-time.js","byte-efficiency","cache-start-url.js","consistently-interactive.js","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","estimated-input-latency.js","first-interactive.js","first-meaningful-paint.js","image-aspect-ratio.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manifest-short-name-length.js","manual","multi-check-audit.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","speed-index-metric.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
 ...["appcache-manifest.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","link-blocking-first-paint.js","no-document-write.js","no-mutation-events.js","no-old-flexbox.js","no-vulnerable-libraries.js","no-websql.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","script-blocking-first-paint.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
-...["http-status-code.js","meta-description.js"].map(f=>`seo/${f}`),
-...["accesskeys.js","aria-allowed-attr.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-valid-attr-value.js","aria-valid-attr.js","audio-caption.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id.js","frame-title.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
+...["font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","meta-description.js"].map(f=>`seo/${f}`),
+...["accesskeys.js","aria-allowed-attr.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-valid-attr-value.js","aria-valid-attr.js","audio-caption.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id.js","frame-title.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","manual","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
 map(f=>`accessibility/${f}`),
-...["byte-efficiency-audit.js","offscreen-images.js","total-byte-weight.js","unused-css-rules.js","unused-javascript.js","uses-optimized-images.js","uses-request-compression.js","uses-responsive-images.js","uses-webp-images.js"].
+...["custom-controls-labels.js","custom-controls-roles.js","focus-traps.js","focusable-controls.js","heading-levels.js","logical-tab-order.js","managed-focus.js","offscreen-content-hidden.js","use-landmarks.js","visual-order-follows-dom.js"].
+map(f=>`accessibility/manual/${f}`),
+...["byte-efficiency-audit.js","offscreen-images.js","total-byte-weight.js","unused-css-rules.js","unused-javascript.js","uses-long-cache-ttl.js","uses-optimized-images.js","uses-request-compression.js","uses-responsive-images.js","uses-webp-images.js"].
 map(f=>`byte-efficiency/${f}`),
 ...["manual-audit.js","pwa-cross-browser.js","pwa-each-page-has-url.js","pwa-page-transitions.js"].map(f=>`manual/${f}`)];
 
@@ -16547,8 +19553,8 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 
 static getGathererList(){
 const fileList=[
-...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-usage.js","js-usage.js","manifest.js","offline.js","seo","service-worker.js","start-url.js","styles.js","theme-color.js","url.js","viewport-dimensions.js","viewport.js"],
-...["meta-description.js"].map(f=>`seo/${f}`),
+...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-usage.js","js-usage.js","manifest.js","offline.js","runtime-exceptions.js","seo","service-worker.js","start-url.js","styles.js","theme-color.js","url.js","viewport-dimensions.js","viewport.js"],
+...["crawlable-links.js","font-size.js","hreflang.js","meta-description.js","meta-robots.js"].map(f=>`seo/${f}`),
 ...["all-event-listeners.js","anchors-with-no-rel-noopener.js","appcache.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js","websql.js"].
 map(f=>`dobetterweb/${f}`)];
 
@@ -16561,11 +19567,10 @@ return fileList.filter(f=>/\.js$/.test(f)&&f!=='gatherer.js').sort();
 static instantiateComputedArtifacts(){
 const computedArtifacts={};
 const filenamesToSkip=[
-'computed-artifact.js',
-'dependency-graph'];
+'computed-artifact.js'];
 
 
-["computed-artifact.js","critical-request-chains.js","dependency-graph","first-interactive.js","main-resource.js","manifest-values.js","network-records.js","network-throughput.js","page-dependency-graph.js","pushed-requests.js","screenshots.js","speedline.js","trace-of-tab.js"].forEach(function(filename){
+["computed-artifact.js","critical-request-chains.js","dtm-model.js","first-interactive.js","main-resource.js","manifest-values.js","network-records.js","network-throughput.js","page-dependency-graph.js","pushed-requests.js","screenshots.js","speedline.js","trace-of-tab.js"].forEach(function(filename){
 if(filenamesToSkip.includes(filename))return;
 
 
@@ -16656,7 +19661,7 @@ return{environment,blockedUrlPatterns:flags.blockedUrlPatterns||[]};
 module.exports=Runner;
 
 }).call(this,require('_process'),"/../lighthouse-core");
-},{"../package":121,"./audits/audit":2,"./gather/driver.js":19,"./gather/gather-runner":20,"./lib/emulation":25,"./lib/url-shim":35,"./report/v2/report-generator":38,"_process":65,"lighthouse-logger":114,"path":63}],40:[function(require,module,exports){
+},{"../package":146,"./audits/audit":2,"./gather/driver.js":15,"./gather/gather-runner":16,"./lib/emulation":27,"./lib/sentry":32,"./lib/url-shim":40,"./report/v2/report-generator":43,"_process":70,"lighthouse-logger":91,"path":68}],45:[function(require,module,exports){
 
 
 
@@ -16669,7 +19674,9 @@ const RawProtocol=require('../../../lighthouse-core/gather/connections/raw');
 const Runner=require('../../../lighthouse-core/runner');
 const Config=require('../../../lighthouse-core/config/config');
 const defaultConfig=require('../../../lighthouse-core/config/default.js');
+const fastConfig=require('../../../lighthouse-core/config/fast-config.js');
 const log=require('lighthouse-logger');
+const assetSaver=require('../../../lighthouse-core/lib/asset-saver.js');
 
 const ReportGeneratorV2=require('../../../lighthouse-core/report/v2/report-generator');
 
@@ -16747,7 +19754,7 @@ result.artifacts=undefined;
 
 
 window.runLighthouseForConnection=function(connection,url,options,categoryIDs){
-const config=new Config({
+const config=options&&options.fastMode?new Config(fastConfig):new Config({
 extends:'lighthouse:default',
 settings:{onlyCategories:categoryIDs}});
 
@@ -16794,6 +19801,34 @@ chrome.windows.create({url:blobURL});
 
 throw err;
 
+});
+};
+
+
+
+
+
+
+
+
+
+
+window.runLighthouseAsInCLI=function(connection,url,options,categoryIDs){
+log.setLevel('info');
+const startTime=Date.now();
+return window.runLighthouseForConnection(connection,url,options,categoryIDs).
+then(results=>{
+const endTime=Date.now();
+results.timing={total:endTime-startTime};
+let promise=Promise.resolve();
+if(options&&options.logAssets){
+promise=promise.then(_=>assetSaver.logAssets(results.artifacts,results.audits));
+}
+return promise.then(_=>{
+filterOutArtifacts(results);
+const json=options&&options.outputFormat==='json';
+return json?JSON.stringify(results):new ReportGeneratorV2().generateReportHtml(results);
+});
 });
 };
 
@@ -16930,7 +19965,7 @@ console.log('previousVersion',details.previousVersion);
 });
 }
 
-},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default.js":8,"../../../lighthouse-core/gather/connections/extension":16,"../../../lighthouse-core/gather/connections/raw":17,"../../../lighthouse-core/report/v2/report-generator":38,"../../../lighthouse-core/runner":39,"lighthouse-logger":114}],41:[function(require,module,exports){
+},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default.js":8,"../../../lighthouse-core/config/fast-config.js":9,"../../../lighthouse-core/gather/connections/extension":12,"../../../lighthouse-core/gather/connections/raw":13,"../../../lighthouse-core/lib/asset-saver.js":18,"../../../lighthouse-core/report/v2/report-generator":43,"../../../lighthouse-core/runner":44,"lighthouse-logger":91}],46:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -17424,7 +20459,7 @@ return keys;
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"util/":76}],42:[function(require,module,exports){
+},{"util/":90}],47:[function(require,module,exports){
 'use strict';
 
 exports.byteLength=byteLength;
@@ -17540,9 +20575,9 @@ parts.push(output);
 return parts.join('');
 }
 
-},{}],43:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 
-},{}],44:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 (function(process,Buffer){
 var msg=require('pako/lib/zlib/messages');
 var zstream=require('pako/lib/zlib/zstream');
@@ -17782,7 +20817,7 @@ this.close();
 exports.Zlib=Zlib;
 
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"_process":65,"buffer":48,"pako/lib/zlib/constants":57,"pako/lib/zlib/deflate.js":59,"pako/lib/zlib/inflate.js":46,"pako/lib/zlib/messages":60,"pako/lib/zlib/zstream":62}],45:[function(require,module,exports){
+},{"_process":70,"buffer":53,"pako/lib/zlib/constants":62,"pako/lib/zlib/deflate.js":64,"pako/lib/zlib/inflate.js":51,"pako/lib/zlib/messages":65,"pako/lib/zlib/zstream":67}],50:[function(require,module,exports){
 (function(process,Buffer){
 
 
@@ -18396,9 +21431,9 @@ util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"./binding":44,"_process":65,"_stream_transform":71,"assert":41,"buffer":48,"util":76}],46:[function(require,module,exports){
-arguments[4][43][0].apply(exports,arguments);
-},{"dup":43}],47:[function(require,module,exports){
+},{"./binding":49,"_process":70,"_stream_transform":83,"assert":46,"buffer":53,"util":90}],51:[function(require,module,exports){
+arguments[4][48][0].apply(exports,arguments);
+},{"dup":48}],52:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -18510,7 +21545,7 @@ return new SlowBuffer(size);
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"buffer":48}],48:[function(require,module,exports){
+},{"buffer":53}],53:[function(require,module,exports){
 (function(global){
 
 
@@ -20303,7 +23338,7 @@ return val!==val;
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"base64-js":42,"ieee754":51,"isarray":54}],49:[function(require,module,exports){
+},{"base64-js":47,"ieee754":56,"isarray":59}],54:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -20414,7 +23449,7 @@ return Object.prototype.toString.call(o);
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")});
-},{"../../is-buffer/index.js":53}],50:[function(require,module,exports){
+},{"../../is-buffer/index.js":58}],55:[function(require,module,exports){
 
 
 
@@ -20718,7 +23753,7 @@ function isUndefined(arg){
 return arg===void 0;
 }
 
-},{}],51:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 exports.read=function(buffer,offset,isLE,mLen,nBytes){
 var e,m;
 var eLen=nBytes*8-mLen-1;
@@ -20804,7 +23839,7 @@ for(;eLen>0;buffer[offset+i]=e&0xff,i+=d,e/=256,eLen-=8){}
 buffer[offset+i-d]|=s*128;
 };
 
-},{}],52:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 if(typeof Object.create==='function'){
 
 module.exports=function inherits(ctor,superCtor){
@@ -20829,7 +23864,7 @@ ctor.prototype.constructor=ctor;
 };
 }
 
-},{}],53:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 
 
 
@@ -20852,14 +23887,14 @@ function isSlowBuffer(obj){
 return typeof obj.readFloatLE==='function'&&typeof obj.slice==='function'&&isBuffer(obj.slice(0,0));
 }
 
-},{}],54:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var toString={}.toString;
 
 module.exports=Array.isArray||function(arr){
 return toString.call(arr)=='[object Array]';
 };
 
-},{}],55:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 'use strict';
 
 
@@ -20963,7 +23998,7 @@ exports.assign(exports,fnUntyped);
 
 exports.setTyped(TYPED_OK);
 
-},{}],56:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 
@@ -20997,7 +24032,7 @@ return s1|s2<<16|0;
 
 module.exports=adler32;
 
-},{}],57:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 
@@ -21049,7 +24084,7 @@ Z_DEFLATED:8};
 
 
 
-},{}],58:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 
@@ -21092,7 +24127,7 @@ return crc^-1;
 
 module.exports=crc32;
 
-},{}],59:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 var utils=require('../utils/common');
@@ -22949,7 +25984,7 @@ exports.deflateInfo='pako deflate (from Nodeca project)';
 
 
 
-},{"../utils/common":55,"./adler32":56,"./crc32":58,"./messages":60,"./trees":61}],60:[function(require,module,exports){
+},{"../utils/common":60,"./adler32":61,"./crc32":63,"./messages":65,"./trees":66}],65:[function(require,module,exports){
 'use strict';
 
 module.exports={
@@ -22964,7 +25999,7 @@ module.exports={
 '-6':'incompatible version'};
 
 
-},{}],61:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 'use strict';
 
 
@@ -24168,7 +27203,7 @@ exports._tr_flush_block=_tr_flush_block;
 exports._tr_tally=_tr_tally;
 exports._tr_align=_tr_align;
 
-},{"../utils/common":55}],62:[function(require,module,exports){
+},{"../utils/common":60}],67:[function(require,module,exports){
 'use strict';
 
 
@@ -24199,7 +27234,7 @@ this.adler=0;
 
 module.exports=ZStream;
 
-},{}],63:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function(process){
 
 
@@ -24427,7 +27462,7 @@ return str.substr(start,len);
 
 
 }).call(this,require('_process'));
-},{"_process":65}],64:[function(require,module,exports){
+},{"_process":70}],69:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -24474,7 +27509,7 @@ fn.apply(null,args);
 }
 
 }).call(this,require('_process'));
-},{"_process":65}],65:[function(require,module,exports){
+},{"_process":70}],70:[function(require,module,exports){
 
 var process=module.exports={};
 
@@ -24656,7 +27691,189 @@ throw new Error('process.chdir is not supported');
 };
 process.umask=function(){return 0;};
 
-},{}],66:[function(require,module,exports){
+},{}],71:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+
+function hasOwnProperty(obj,prop){
+return Object.prototype.hasOwnProperty.call(obj,prop);
+}
+
+module.exports=function(qs,sep,eq,options){
+sep=sep||'&';
+eq=eq||'=';
+var obj={};
+
+if(typeof qs!=='string'||qs.length===0){
+return obj;
+}
+
+var regexp=/\+/g;
+qs=qs.split(sep);
+
+var maxKeys=1000;
+if(options&&typeof options.maxKeys==='number'){
+maxKeys=options.maxKeys;
+}
+
+var len=qs.length;
+
+if(maxKeys>0&&len>maxKeys){
+len=maxKeys;
+}
+
+for(var i=0;i<len;++i){
+var x=qs[i].replace(regexp,'%20'),
+idx=x.indexOf(eq),
+kstr,vstr,k,v;
+
+if(idx>=0){
+kstr=x.substr(0,idx);
+vstr=x.substr(idx+1);
+}else{
+kstr=x;
+vstr='';
+}
+
+k=decodeURIComponent(kstr);
+v=decodeURIComponent(vstr);
+
+if(!hasOwnProperty(obj,k)){
+obj[k]=v;
+}else if(isArray(obj[k])){
+obj[k].push(v);
+}else{
+obj[k]=[obj[k],v];
+}
+}
+
+return obj;
+};
+
+var isArray=Array.isArray||function(xs){
+return Object.prototype.toString.call(xs)==='[object Array]';
+};
+
+},{}],72:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+var stringifyPrimitive=function(v){
+switch(typeof v){
+case'string':
+return v;
+
+case'boolean':
+return v?'true':'false';
+
+case'number':
+return isFinite(v)?v:'';
+
+default:
+return'';}
+
+};
+
+module.exports=function(obj,sep,eq,name){
+sep=sep||'&';
+eq=eq||'=';
+if(obj===null){
+obj=undefined;
+}
+
+if(typeof obj==='object'){
+return map(objectKeys(obj),function(k){
+var ks=encodeURIComponent(stringifyPrimitive(k))+eq;
+if(isArray(obj[k])){
+return map(obj[k],function(v){
+return ks+encodeURIComponent(stringifyPrimitive(v));
+}).join(sep);
+}else{
+return ks+encodeURIComponent(stringifyPrimitive(obj[k]));
+}
+}).join(sep);
+
+}
+
+if(!name)return'';
+return encodeURIComponent(stringifyPrimitive(name))+eq+
+encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray=Array.isArray||function(xs){
+return Object.prototype.toString.call(xs)==='[object Array]';
+};
+
+function map(xs,f){
+if(xs.map)return xs.map(f);
+var res=[];
+for(var i=0;i<xs.length;i++){
+res.push(f(xs[i],i));
+}
+return res;
+}
+
+var objectKeys=Object.keys||function(obj){
+var res=[];
+for(var key in obj){
+if(Object.prototype.hasOwnProperty.call(obj,key))res.push(key);
+}
+return res;
+};
+
+},{}],73:[function(require,module,exports){
+'use strict';
+
+exports.decode=exports.parse=require('./decode');
+exports.encode=exports.stringify=require('./encode');
+
+},{"./decode":71,"./encode":72}],74:[function(require,module,exports){
+module.exports=require("./lib/_stream_duplex.js");
+
+},{"./lib/_stream_duplex.js":75}],75:[function(require,module,exports){
 
 
 
@@ -24732,7 +27949,34 @@ for(var i=0,l=xs.length;i<l;i++){
 f(xs[i],i);
 }
 }
-},{"./_stream_readable":67,"./_stream_writable":69,"core-util-is":49,"inherits":52,"process-nextick-args":64}],67:[function(require,module,exports){
+},{"./_stream_readable":77,"./_stream_writable":79,"core-util-is":54,"inherits":57,"process-nextick-args":69}],76:[function(require,module,exports){
+
+
+
+
+'use strict';
+
+module.exports=PassThrough;
+
+var Transform=require('./_stream_transform');
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+util.inherits(PassThrough,Transform);
+
+function PassThrough(options){
+if(!(this instanceof PassThrough))return new PassThrough(options);
+
+Transform.call(this,options);
+}
+
+PassThrough.prototype._transform=function(chunk,encoding,cb){
+cb(null,chunk);
+};
+},{"./_stream_transform":78,"core-util-is":54,"inherits":57}],77:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -25676,7 +28920,7 @@ if(xs[i]===x)return i;
 return-1;
 }
 }).call(this,require('_process'));
-},{"./_stream_duplex":66,"./internal/streams/BufferList":70,"_process":65,"buffer":48,"buffer-shims":47,"core-util-is":49,"events":50,"inherits":52,"isarray":54,"process-nextick-args":64,"string_decoder/":72,"util":43}],68:[function(require,module,exports){
+},{"./_stream_duplex":75,"./internal/streams/BufferList":80,"_process":70,"buffer":53,"buffer-shims":52,"core-util-is":54,"events":55,"inherits":57,"isarray":59,"process-nextick-args":69,"string_decoder/":86,"util":48}],78:[function(require,module,exports){
 
 
 
@@ -25859,7 +29103,7 @@ if(ts.transforming)throw new Error('Calling transform done when still transformi
 
 return stream.push(null);
 }
-},{"./_stream_duplex":66,"core-util-is":49,"inherits":52}],69:[function(require,module,exports){
+},{"./_stream_duplex":75,"core-util-is":54,"inherits":57}],79:[function(require,module,exports){
 (function(process){
 
 
@@ -26416,7 +29660,7 @@ state.corkedRequestsFree=_this;
 };
 }
 }).call(this,require('_process'));
-},{"./_stream_duplex":66,"_process":65,"buffer":48,"buffer-shims":47,"core-util-is":49,"events":50,"inherits":52,"process-nextick-args":64,"util-deprecate":73}],70:[function(require,module,exports){
+},{"./_stream_duplex":75,"_process":70,"buffer":53,"buffer-shims":52,"core-util-is":54,"events":55,"inherits":57,"process-nextick-args":69,"util-deprecate":87}],80:[function(require,module,exports){
 'use strict';
 
 var Buffer=require('buffer').Buffer;
@@ -26481,10 +29725,165 @@ p=p.next;
 }
 return ret;
 };
-},{"buffer":48,"buffer-shims":47}],71:[function(require,module,exports){
+},{"buffer":53,"buffer-shims":52}],81:[function(require,module,exports){
+module.exports=require("./lib/_stream_passthrough.js");
+
+},{"./lib/_stream_passthrough.js":76}],82:[function(require,module,exports){
+(function(process){
+var Stream=function(){
+try{
+return require('st'+'ream');
+}catch(_){}
+}();
+exports=module.exports=require('./lib/_stream_readable.js');
+exports.Stream=Stream||exports;
+exports.Readable=exports;
+exports.Writable=require('./lib/_stream_writable.js');
+exports.Duplex=require('./lib/_stream_duplex.js');
+exports.Transform=require('./lib/_stream_transform.js');
+exports.PassThrough=require('./lib/_stream_passthrough.js');
+
+if(!process.browser&&process.env.READABLE_STREAM==='disable'&&Stream){
+module.exports=Stream;
+}
+
+}).call(this,require('_process'));
+},{"./lib/_stream_duplex.js":75,"./lib/_stream_passthrough.js":76,"./lib/_stream_readable.js":77,"./lib/_stream_transform.js":78,"./lib/_stream_writable.js":79,"_process":70}],83:[function(require,module,exports){
 module.exports=require("./lib/_stream_transform.js");
 
-},{"./lib/_stream_transform.js":68}],72:[function(require,module,exports){
+},{"./lib/_stream_transform.js":78}],84:[function(require,module,exports){
+module.exports=require("./lib/_stream_writable.js");
+
+},{"./lib/_stream_writable.js":79}],85:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports=Stream;
+
+var EE=require('events').EventEmitter;
+var inherits=require('inherits');
+
+inherits(Stream,EE);
+Stream.Readable=require('readable-stream/readable.js');
+Stream.Writable=require('readable-stream/writable.js');
+Stream.Duplex=require('readable-stream/duplex.js');
+Stream.Transform=require('readable-stream/transform.js');
+Stream.PassThrough=require('readable-stream/passthrough.js');
+
+
+Stream.Stream=Stream;
+
+
+
+
+
+
+function Stream(){
+EE.call(this);
+}
+
+Stream.prototype.pipe=function(dest,options){
+var source=this;
+
+function ondata(chunk){
+if(dest.writable){
+if(false===dest.write(chunk)&&source.pause){
+source.pause();
+}
+}
+}
+
+source.on('data',ondata);
+
+function ondrain(){
+if(source.readable&&source.resume){
+source.resume();
+}
+}
+
+dest.on('drain',ondrain);
+
+
+
+if(!dest._isStdio&&(!options||options.end!==false)){
+source.on('end',onend);
+source.on('close',onclose);
+}
+
+var didOnEnd=false;
+function onend(){
+if(didOnEnd)return;
+didOnEnd=true;
+
+dest.end();
+}
+
+
+function onclose(){
+if(didOnEnd)return;
+didOnEnd=true;
+
+if(typeof dest.destroy==='function')dest.destroy();
+}
+
+
+function onerror(er){
+cleanup();
+if(EE.listenerCount(this,'error')===0){
+throw er;
+}
+}
+
+source.on('error',onerror);
+dest.on('error',onerror);
+
+
+function cleanup(){
+source.removeListener('data',ondata);
+dest.removeListener('drain',ondrain);
+
+source.removeListener('end',onend);
+source.removeListener('close',onclose);
+
+source.removeListener('error',onerror);
+dest.removeListener('error',onerror);
+
+source.removeListener('end',cleanup);
+source.removeListener('close',cleanup);
+
+dest.removeListener('close',cleanup);
+}
+
+source.on('end',cleanup);
+source.on('close',cleanup);
+
+dest.on('close',cleanup);
+
+dest.emit('pipe',source);
+
+
+return dest;
+};
+
+},{"events":55,"inherits":57,"readable-stream/duplex.js":74,"readable-stream/passthrough.js":81,"readable-stream/readable.js":82,"readable-stream/transform.js":83,"readable-stream/writable.js":84}],86:[function(require,module,exports){
 
 
 
@@ -26707,7 +30106,7 @@ this.charReceived=buffer.length%3;
 this.charLength=this.charReceived?3:0;
 }
 
-},{"buffer":48}],73:[function(require,module,exports){
+},{"buffer":53}],87:[function(require,module,exports){
 (function(global){
 
 
@@ -26778,16 +30177,16 @@ return String(val).toLowerCase()==='true';
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],74:[function(require,module,exports){
-arguments[4][52][0].apply(exports,arguments);
-},{"dup":52}],75:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
+arguments[4][57][0].apply(exports,arguments);
+},{"dup":57}],89:[function(require,module,exports){
 module.exports=function isBuffer(arg){
 return arg&&typeof arg==='object'&&
 typeof arg.copy==='function'&&
 typeof arg.fill==='function'&&
 typeof arg.readUInt8==='function';
 };
-},{}],76:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 (function(process,global){
 
 
@@ -27377,7 +30776,8904 @@ return Object.prototype.hasOwnProperty.call(obj,prop);
 }
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./support/isBuffer":75,"_process":65,"inherits":74}],77:[function(require,module,exports){
+},{"./support/isBuffer":89,"_process":70,"inherits":88}],91:[function(require,module,exports){
+(function(process){
+
+
+
+
+
+'use strict';
+
+const debug=require('debug');
+const EventEmitter=require('events').EventEmitter;
+const isWindows=process.platform==='win32';
+
+
+const isBrowser=process.browser;
+
+const colors={
+red:isBrowser?'crimson':1,
+yellow:isBrowser?'gold':3,
+cyan:isBrowser?'darkturquoise':6,
+green:isBrowser?'forestgreen':2,
+blue:isBrowser?'steelblue':4,
+magenta:isBrowser?'palevioletred':5};
+
+
+
+debug.colors=[colors.cyan,colors.green,colors.blue,colors.magenta];
+
+class Emitter extends EventEmitter{
+
+
+
+
+
+
+issueStatus(title,argsArray){
+if(title==='status'||title==='statusEnd'){
+this.emit(title,[title,...argsArray]);
+}
+}
+
+
+
+
+
+
+
+issueWarning(title,argsArray){
+this.emit('warning',[title,...argsArray]);
+}}
+
+
+const loggersByTitle={};
+const loggingBufferColumns=25;
+
+class Log{
+static _logToStdErr(title,argsArray){
+const log=Log.loggerfn(title);
+log(...argsArray);
+}
+
+static loggerfn(title){
+let log=loggersByTitle[title];
+if(!log){
+log=debug(title);
+loggersByTitle[title]=log;
+
+if(title.endsWith('error')){
+log.color=colors.red;
+}else if(title.endsWith('warn')){
+log.color=colors.yellow;
+}
+}
+return log;
+}
+
+static setLevel(level){
+switch(level){
+case'silent':
+debug.enable('-*');
+break;
+case'verbose':
+debug.enable('*');
+break;
+case'error':
+debug.enable('-*, *:error');
+break;
+default:
+debug.enable('*, -*:verbose');}
+
+}
+
+
+
+
+
+
+
+static formatProtocol(prefix,data,level){
+const columns=!process||process.browser?Infinity:process.stdout.columns;
+const method=data.method||'?????';
+const maxLength=columns-method.length-prefix.length-loggingBufferColumns;
+
+const snippet=data.params&&method!=='IO.read'?
+JSON.stringify(data.params).substr(0,maxLength):'';
+Log._logToStdErr(`${prefix}:${level||''}`,[method,snippet]);
+}
+
+static log(title,...args){
+Log.events.issueStatus(title,args);
+return Log._logToStdErr(title,args);
+}
+
+static warn(title,...args){
+Log.events.issueWarning(title,args);
+return Log._logToStdErr(`${title}:warn`,args);
+}
+
+static error(title,...args){
+return Log._logToStdErr(`${title}:error`,args);
+}
+
+static verbose(title,...args){
+Log.events.issueStatus(title,args);
+return Log._logToStdErr(`${title}:verbose`,args);
+}
+
+
+
+
+
+
+static greenify(str){
+return`${Log.green}${str}${Log.reset}`;
+}
+
+
+
+
+
+
+static redify(str){
+return`${Log.red}${str}${Log.reset}`;
+}
+
+static get green(){
+return'\x1B[32m';
+}
+
+static get red(){
+return'\x1B[31m';
+}
+
+static get yellow(){
+return'\x1b[33m';
+}
+
+static get purple(){
+return'\x1b[95m';
+}
+
+static get reset(){
+return'\x1B[0m';
+}
+
+static get bold(){
+return'\x1b[1m';
+}
+
+static get dim(){
+return'\x1b[2m';
+}
+
+static get tick(){
+return isWindows?'\u221A':'✓';
+}
+
+static get cross(){
+return isWindows?'\u00D7':'✘';
+}
+
+static get whiteSmallSquare(){
+return isWindows?'\u0387':'▫';
+}
+
+static get heavyHorizontal(){
+return isWindows?'\u2500':'━';
+}
+
+static get heavyVertical(){
+return isWindows?'\u2502 ':'┃ ';
+}
+
+static get heavyUpAndRight(){
+return isWindows?'\u2514':'┗';
+}
+
+static get heavyVerticalAndRight(){
+return isWindows?'\u251C':'┣';
+}
+
+static get heavyDownAndHorizontal(){
+return isWindows?'\u252C':'┳';
+}
+
+static get doubleLightHorizontal(){
+return'──';
+}}
+
+
+Log.events=new Emitter();
+
+module.exports=Log;
+
+}).call(this,require('_process'));
+},{"_process":70,"debug":92,"events":55}],92:[function(require,module,exports){
+(function(process){
+
+
+
+
+
+
+exports=module.exports=require('./debug');
+exports.log=log;
+exports.formatArgs=formatArgs;
+exports.save=save;
+exports.load=load;
+exports.useColors=useColors;
+exports.storage='undefined'!=typeof chrome&&
+'undefined'!=typeof chrome.storage?
+chrome.storage.local:
+localstorage();
+
+
+
+
+
+exports.colors=[
+'lightseagreen',
+'forestgreen',
+'goldenrod',
+'dodgerblue',
+'darkorchid',
+'crimson'];
+
+
+
+
+
+
+
+
+
+
+function useColors(){
+
+
+
+if(typeof window!=='undefined'&&window.process&&window.process.type==='renderer'){
+return true;
+}
+
+
+
+return typeof document!=='undefined'&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||
+
+typeof window!=='undefined'&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||
+
+
+typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||
+
+typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+}
+
+
+
+
+
+exports.formatters.j=function(v){
+try{
+return JSON.stringify(v);
+}catch(err){
+return'[UnexpectedJSONParseError]: '+err.message;
+}
+};
+
+
+
+
+
+
+
+
+function formatArgs(args){
+var useColors=this.useColors;
+
+args[0]=(useColors?'%c':'')+
+this.namespace+(
+useColors?' %c':' ')+
+args[0]+(
+useColors?'%c ':' ')+
+'+'+exports.humanize(this.diff);
+
+if(!useColors)return;
+
+var c='color: '+this.color;
+args.splice(1,0,c,'color: inherit');
+
+
+
+
+var index=0;
+var lastC=0;
+args[0].replace(/%[a-zA-Z%]/g,function(match){
+if('%%'===match)return;
+index++;
+if('%c'===match){
+
+
+lastC=index;
+}
+});
+
+args.splice(lastC,0,c);
+}
+
+
+
+
+
+
+
+
+function log(){
+
+
+return'object'===typeof console&&
+console.log&&
+Function.prototype.apply.call(console.log,console,arguments);
+}
+
+
+
+
+
+
+
+
+function save(namespaces){
+try{
+if(null==namespaces){
+exports.storage.removeItem('debug');
+}else{
+exports.storage.debug=namespaces;
+}
+}catch(e){}
+}
+
+
+
+
+
+
+
+
+function load(){
+var r;
+try{
+r=exports.storage.debug;
+}catch(e){}
+
+
+if(!r&&typeof process!=='undefined'&&'env'in process){
+r=process.env.DEBUG;
+}
+
+return r;
+}
+
+
+
+
+
+exports.enable(load());
+
+
+
+
+
+
+
+
+
+
+
+
+function localstorage(){
+try{
+return window.localStorage;
+}catch(e){}
+}
+
+}).call(this,require('_process'));
+},{"./debug":93,"_process":70}],93:[function(require,module,exports){
+
+
+
+
+
+
+
+
+exports=module.exports=createDebug.debug=createDebug['default']=createDebug;
+exports.coerce=coerce;
+exports.disable=disable;
+exports.enable=enable;
+exports.enabled=enabled;
+exports.humanize=require('ms');
+
+
+
+
+
+exports.names=[];
+exports.skips=[];
+
+
+
+
+
+
+
+exports.formatters={};
+
+
+
+
+
+var prevTime;
+
+
+
+
+
+
+
+
+function selectColor(namespace){
+var hash=0,i;
+
+for(i in namespace){
+hash=(hash<<5)-hash+namespace.charCodeAt(i);
+hash|=0;
+}
+
+return exports.colors[Math.abs(hash)%exports.colors.length];
+}
+
+
+
+
+
+
+
+
+
+function createDebug(namespace){
+
+function debug(){
+
+if(!debug.enabled)return;
+
+var self=debug;
+
+
+var curr=+new Date();
+var ms=curr-(prevTime||curr);
+self.diff=ms;
+self.prev=prevTime;
+self.curr=curr;
+prevTime=curr;
+
+
+var args=new Array(arguments.length);
+for(var i=0;i<args.length;i++){
+args[i]=arguments[i];
+}
+
+args[0]=exports.coerce(args[0]);
+
+if('string'!==typeof args[0]){
+
+args.unshift('%O');
+}
+
+
+var index=0;
+args[0]=args[0].replace(/%([a-zA-Z%])/g,function(match,format){
+
+if(match==='%%')return match;
+index++;
+var formatter=exports.formatters[format];
+if('function'===typeof formatter){
+var val=args[index];
+match=formatter.call(self,val);
+
+
+args.splice(index,1);
+index--;
+}
+return match;
+});
+
+
+exports.formatArgs.call(self,args);
+
+var logFn=debug.log||exports.log||console.log.bind(console);
+logFn.apply(self,args);
+}
+
+debug.namespace=namespace;
+debug.enabled=exports.enabled(namespace);
+debug.useColors=exports.useColors();
+debug.color=selectColor(namespace);
+
+
+if('function'===typeof exports.init){
+exports.init(debug);
+}
+
+return debug;
+}
+
+
+
+
+
+
+
+
+
+function enable(namespaces){
+exports.save(namespaces);
+
+exports.names=[];
+exports.skips=[];
+
+var split=(typeof namespaces==='string'?namespaces:'').split(/[\s,]+/);
+var len=split.length;
+
+for(var i=0;i<len;i++){
+if(!split[i])continue;
+namespaces=split[i].replace(/\*/g,'.*?');
+if(namespaces[0]==='-'){
+exports.skips.push(new RegExp('^'+namespaces.substr(1)+'$'));
+}else{
+exports.names.push(new RegExp('^'+namespaces+'$'));
+}
+}
+}
+
+
+
+
+
+
+
+function disable(){
+exports.enable('');
+}
+
+
+
+
+
+
+
+
+
+function enabled(name){
+var i,len;
+for(i=0,len=exports.skips.length;i<len;i++){
+if(exports.skips[i].test(name)){
+return false;
+}
+}
+for(i=0,len=exports.names.length;i<len;i++){
+if(exports.names[i].test(name)){
+return true;
+}
+}
+return false;
+}
+
+
+
+
+
+
+
+
+
+function coerce(val){
+if(val instanceof Error)return val.stack||val.message;
+return val;
+}
+
+},{"ms":94}],94:[function(require,module,exports){
+
+
+
+
+var s=1000;
+var m=s*60;
+var h=m*60;
+var d=h*24;
+var y=d*365.25;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports=function(val,options){
+options=options||{};
+var type=typeof val;
+if(type==='string'&&val.length>0){
+return parse(val);
+}else if(type==='number'&&isNaN(val)===false){
+return options.long?fmtLong(val):fmtShort(val);
+}
+throw new Error(
+'val is not a non-empty string or a valid number. val='+
+JSON.stringify(val));
+
+};
+
+
+
+
+
+
+
+
+
+function parse(str){
+str=String(str);
+if(str.length>100){
+return;
+}
+var match=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+str);
+
+if(!match){
+return;
+}
+var n=parseFloat(match[1]);
+var type=(match[2]||'ms').toLowerCase();
+switch(type){
+case'years':
+case'year':
+case'yrs':
+case'yr':
+case'y':
+return n*y;
+case'days':
+case'day':
+case'd':
+return n*d;
+case'hours':
+case'hour':
+case'hrs':
+case'hr':
+case'h':
+return n*h;
+case'minutes':
+case'minute':
+case'mins':
+case'min':
+case'm':
+return n*m;
+case'seconds':
+case'second':
+case'secs':
+case'sec':
+case's':
+return n*s;
+case'milliseconds':
+case'millisecond':
+case'msecs':
+case'msec':
+case'ms':
+return n;
+default:
+return undefined;}
+
+}
+
+
+
+
+
+
+
+
+
+function fmtShort(ms){
+if(ms>=d){
+return Math.round(ms/d)+'d';
+}
+if(ms>=h){
+return Math.round(ms/h)+'h';
+}
+if(ms>=m){
+return Math.round(ms/m)+'m';
+}
+if(ms>=s){
+return Math.round(ms/s)+'s';
+}
+return ms+'ms';
+}
+
+
+
+
+
+
+
+
+
+function fmtLong(ms){
+return plural(ms,d,'day')||
+plural(ms,h,'hour')||
+plural(ms,m,'minute')||
+plural(ms,s,'second')||
+ms+' ms';
+}
+
+
+
+
+
+function plural(ms,n,name){
+if(ms<n){
+return;
+}
+if(ms<n*1.5){
+return Math.floor(ms/n)+' '+name;
+}
+return Math.ceil(ms/n)+' '+name+'s';
+}
+
+},{}],95:[function(require,module,exports){
+
+
+var langs=[
+"aa",
+"ab",
+"ae",
+"af",
+"ak",
+"am",
+"an",
+"ar",
+"as",
+"av",
+"ay",
+"az",
+"ba",
+"be",
+"bg",
+"bh",
+"bi",
+"bm",
+"bn",
+"bo",
+"br",
+"bs",
+"ca",
+"ce",
+"ch",
+"co",
+"cr",
+"cs",
+"cu",
+"cv",
+"cy",
+"da",
+"de",
+"dv",
+"dz",
+"ee",
+"el",
+"en",
+"eo",
+"es",
+"et",
+"eu",
+"fa",
+"ff",
+"fi",
+"fj",
+"fo",
+"fr",
+"fy",
+"ga",
+"gd",
+"gl",
+"gn",
+"gu",
+"gv",
+"ha",
+"he",
+"hi",
+"ho",
+"hr",
+"ht",
+"hu",
+"hy",
+"hz",
+"ia",
+"id",
+"ie",
+"ig",
+"ii",
+"ik",
+"in",
+"io",
+"is",
+"it",
+"iu",
+"iw",
+"ja",
+"ji",
+"jv",
+"jw",
+"ka",
+"kg",
+"ki",
+"kj",
+"kk",
+"kl",
+"km",
+"kn",
+"ko",
+"kr",
+"ks",
+"ku",
+"kv",
+"kw",
+"ky",
+"la",
+"lb",
+"lg",
+"li",
+"ln",
+"lo",
+"lt",
+"lu",
+"lv",
+"mg",
+"mh",
+"mi",
+"mk",
+"ml",
+"mn",
+"mo",
+"mr",
+"ms",
+"mt",
+"my",
+"na",
+"nb",
+"nd",
+"ne",
+"ng",
+"nl",
+"nn",
+"no",
+"nr",
+"nv",
+"ny",
+"oc",
+"oj",
+"om",
+"or",
+"os",
+"pa",
+"pi",
+"pl",
+"ps",
+"pt",
+"qu",
+"rm",
+"rn",
+"ro",
+"ru",
+"rw",
+"sa",
+"sc",
+"sd",
+"se",
+"sg",
+"sh",
+"si",
+"sk",
+"sl",
+"sm",
+"sn",
+"so",
+"sq",
+"sr",
+"ss",
+"st",
+"su",
+"sv",
+"sw",
+"ta",
+"te",
+"tg",
+"th",
+"ti",
+"tk",
+"tl",
+"tn",
+"to",
+"tr",
+"ts",
+"tt",
+"tw",
+"ty",
+"ug",
+"uk",
+"ur",
+"uz",
+"ve",
+"vi",
+"vo",
+"wa",
+"wo",
+"xh",
+"yi",
+"yo",
+"za",
+"zh",
+"zu",
+"aaa",
+"aab",
+"aac",
+"aad",
+"aae",
+"aaf",
+"aag",
+"aah",
+"aai",
+"aak",
+"aal",
+"aam",
+"aan",
+"aao",
+"aap",
+"aaq",
+"aas",
+"aat",
+"aau",
+"aav",
+"aaw",
+"aax",
+"aaz",
+"aba",
+"abb",
+"abc",
+"abd",
+"abe",
+"abf",
+"abg",
+"abh",
+"abi",
+"abj",
+"abl",
+"abm",
+"abn",
+"abo",
+"abp",
+"abq",
+"abr",
+"abs",
+"abt",
+"abu",
+"abv",
+"abw",
+"abx",
+"aby",
+"abz",
+"aca",
+"acb",
+"acd",
+"ace",
+"acf",
+"ach",
+"aci",
+"ack",
+"acl",
+"acm",
+"acn",
+"acp",
+"acq",
+"acr",
+"acs",
+"act",
+"acu",
+"acv",
+"acw",
+"acx",
+"acy",
+"acz",
+"ada",
+"adb",
+"add",
+"ade",
+"adf",
+"adg",
+"adh",
+"adi",
+"adj",
+"adl",
+"adn",
+"ado",
+"adp",
+"adq",
+"adr",
+"ads",
+"adt",
+"adu",
+"adw",
+"adx",
+"ady",
+"adz",
+"aea",
+"aeb",
+"aec",
+"aed",
+"aee",
+"aek",
+"ael",
+"aem",
+"aen",
+"aeq",
+"aer",
+"aes",
+"aeu",
+"aew",
+"aey",
+"aez",
+"afa",
+"afb",
+"afd",
+"afe",
+"afg",
+"afh",
+"afi",
+"afk",
+"afn",
+"afo",
+"afp",
+"afs",
+"aft",
+"afu",
+"afz",
+"aga",
+"agb",
+"agc",
+"agd",
+"age",
+"agf",
+"agg",
+"agh",
+"agi",
+"agj",
+"agk",
+"agl",
+"agm",
+"agn",
+"ago",
+"agp",
+"agq",
+"agr",
+"ags",
+"agt",
+"agu",
+"agv",
+"agw",
+"agx",
+"agy",
+"agz",
+"aha",
+"ahb",
+"ahg",
+"ahh",
+"ahi",
+"ahk",
+"ahl",
+"ahm",
+"ahn",
+"aho",
+"ahp",
+"ahr",
+"ahs",
+"aht",
+"aia",
+"aib",
+"aic",
+"aid",
+"aie",
+"aif",
+"aig",
+"aih",
+"aii",
+"aij",
+"aik",
+"ail",
+"aim",
+"ain",
+"aio",
+"aip",
+"aiq",
+"air",
+"ais",
+"ait",
+"aiw",
+"aix",
+"aiy",
+"aja",
+"ajg",
+"aji",
+"ajn",
+"ajp",
+"ajt",
+"aju",
+"ajw",
+"ajz",
+"akb",
+"akc",
+"akd",
+"ake",
+"akf",
+"akg",
+"akh",
+"aki",
+"akj",
+"akk",
+"akl",
+"akm",
+"ako",
+"akp",
+"akq",
+"akr",
+"aks",
+"akt",
+"aku",
+"akv",
+"akw",
+"akx",
+"aky",
+"akz",
+"ala",
+"alc",
+"ald",
+"ale",
+"alf",
+"alg",
+"alh",
+"ali",
+"alj",
+"alk",
+"all",
+"alm",
+"aln",
+"alo",
+"alp",
+"alq",
+"alr",
+"als",
+"alt",
+"alu",
+"alv",
+"alw",
+"alx",
+"aly",
+"alz",
+"ama",
+"amb",
+"amc",
+"ame",
+"amf",
+"amg",
+"ami",
+"amj",
+"amk",
+"aml",
+"amm",
+"amn",
+"amo",
+"amp",
+"amq",
+"amr",
+"ams",
+"amt",
+"amu",
+"amv",
+"amw",
+"amx",
+"amy",
+"amz",
+"ana",
+"anb",
+"anc",
+"and",
+"ane",
+"anf",
+"ang",
+"anh",
+"ani",
+"anj",
+"ank",
+"anl",
+"anm",
+"ann",
+"ano",
+"anp",
+"anq",
+"anr",
+"ans",
+"ant",
+"anu",
+"anv",
+"anw",
+"anx",
+"any",
+"anz",
+"aoa",
+"aob",
+"aoc",
+"aod",
+"aoe",
+"aof",
+"aog",
+"aoh",
+"aoi",
+"aoj",
+"aok",
+"aol",
+"aom",
+"aon",
+"aor",
+"aos",
+"aot",
+"aou",
+"aox",
+"aoz",
+"apa",
+"apb",
+"apc",
+"apd",
+"ape",
+"apf",
+"apg",
+"aph",
+"api",
+"apj",
+"apk",
+"apl",
+"apm",
+"apn",
+"apo",
+"app",
+"apq",
+"apr",
+"aps",
+"apt",
+"apu",
+"apv",
+"apw",
+"apx",
+"apy",
+"apz",
+"aqa",
+"aqc",
+"aqd",
+"aqg",
+"aql",
+"aqm",
+"aqn",
+"aqp",
+"aqr",
+"aqt",
+"aqz",
+"arb",
+"arc",
+"ard",
+"are",
+"arh",
+"ari",
+"arj",
+"ark",
+"arl",
+"arn",
+"aro",
+"arp",
+"arq",
+"arr",
+"ars",
+"art",
+"aru",
+"arv",
+"arw",
+"arx",
+"ary",
+"arz",
+"asa",
+"asb",
+"asc",
+"asd",
+"ase",
+"asf",
+"asg",
+"ash",
+"asi",
+"asj",
+"ask",
+"asl",
+"asn",
+"aso",
+"asp",
+"asq",
+"asr",
+"ass",
+"ast",
+"asu",
+"asv",
+"asw",
+"asx",
+"asy",
+"asz",
+"ata",
+"atb",
+"atc",
+"atd",
+"ate",
+"atg",
+"ath",
+"ati",
+"atj",
+"atk",
+"atl",
+"atm",
+"atn",
+"ato",
+"atp",
+"atq",
+"atr",
+"ats",
+"att",
+"atu",
+"atv",
+"atw",
+"atx",
+"aty",
+"atz",
+"aua",
+"aub",
+"auc",
+"aud",
+"aue",
+"auf",
+"aug",
+"auh",
+"aui",
+"auj",
+"auk",
+"aul",
+"aum",
+"aun",
+"auo",
+"aup",
+"auq",
+"aur",
+"aus",
+"aut",
+"auu",
+"auw",
+"aux",
+"auy",
+"auz",
+"avb",
+"avd",
+"avi",
+"avk",
+"avl",
+"avm",
+"avn",
+"avo",
+"avs",
+"avt",
+"avu",
+"avv",
+"awa",
+"awb",
+"awc",
+"awd",
+"awe",
+"awg",
+"awh",
+"awi",
+"awk",
+"awm",
+"awn",
+"awo",
+"awr",
+"aws",
+"awt",
+"awu",
+"awv",
+"aww",
+"awx",
+"awy",
+"axb",
+"axe",
+"axg",
+"axk",
+"axl",
+"axm",
+"axx",
+"aya",
+"ayb",
+"ayc",
+"ayd",
+"aye",
+"ayg",
+"ayh",
+"ayi",
+"ayk",
+"ayl",
+"ayn",
+"ayo",
+"ayp",
+"ayq",
+"ayr",
+"ays",
+"ayt",
+"ayu",
+"ayx",
+"ayy",
+"ayz",
+"aza",
+"azb",
+"azc",
+"azd",
+"azg",
+"azj",
+"azm",
+"azn",
+"azo",
+"azt",
+"azz",
+"baa",
+"bab",
+"bac",
+"bad",
+"bae",
+"baf",
+"bag",
+"bah",
+"bai",
+"baj",
+"bal",
+"ban",
+"bao",
+"bap",
+"bar",
+"bas",
+"bat",
+"bau",
+"bav",
+"baw",
+"bax",
+"bay",
+"baz",
+"bba",
+"bbb",
+"bbc",
+"bbd",
+"bbe",
+"bbf",
+"bbg",
+"bbh",
+"bbi",
+"bbj",
+"bbk",
+"bbl",
+"bbm",
+"bbn",
+"bbo",
+"bbp",
+"bbq",
+"bbr",
+"bbs",
+"bbt",
+"bbu",
+"bbv",
+"bbw",
+"bbx",
+"bby",
+"bbz",
+"bca",
+"bcb",
+"bcc",
+"bcd",
+"bce",
+"bcf",
+"bcg",
+"bch",
+"bci",
+"bcj",
+"bck",
+"bcl",
+"bcm",
+"bcn",
+"bco",
+"bcp",
+"bcq",
+"bcr",
+"bcs",
+"bct",
+"bcu",
+"bcv",
+"bcw",
+"bcy",
+"bcz",
+"bda",
+"bdb",
+"bdc",
+"bdd",
+"bde",
+"bdf",
+"bdg",
+"bdh",
+"bdi",
+"bdj",
+"bdk",
+"bdl",
+"bdm",
+"bdn",
+"bdo",
+"bdp",
+"bdq",
+"bdr",
+"bds",
+"bdt",
+"bdu",
+"bdv",
+"bdw",
+"bdx",
+"bdy",
+"bdz",
+"bea",
+"beb",
+"bec",
+"bed",
+"bee",
+"bef",
+"beg",
+"beh",
+"bei",
+"bej",
+"bek",
+"bem",
+"beo",
+"bep",
+"beq",
+"ber",
+"bes",
+"bet",
+"beu",
+"bev",
+"bew",
+"bex",
+"bey",
+"bez",
+"bfa",
+"bfb",
+"bfc",
+"bfd",
+"bfe",
+"bff",
+"bfg",
+"bfh",
+"bfi",
+"bfj",
+"bfk",
+"bfl",
+"bfm",
+"bfn",
+"bfo",
+"bfp",
+"bfq",
+"bfr",
+"bfs",
+"bft",
+"bfu",
+"bfw",
+"bfx",
+"bfy",
+"bfz",
+"bga",
+"bgb",
+"bgc",
+"bgd",
+"bge",
+"bgf",
+"bgg",
+"bgi",
+"bgj",
+"bgk",
+"bgl",
+"bgm",
+"bgn",
+"bgo",
+"bgp",
+"bgq",
+"bgr",
+"bgs",
+"bgt",
+"bgu",
+"bgv",
+"bgw",
+"bgx",
+"bgy",
+"bgz",
+"bha",
+"bhb",
+"bhc",
+"bhd",
+"bhe",
+"bhf",
+"bhg",
+"bhh",
+"bhi",
+"bhj",
+"bhk",
+"bhl",
+"bhm",
+"bhn",
+"bho",
+"bhp",
+"bhq",
+"bhr",
+"bhs",
+"bht",
+"bhu",
+"bhv",
+"bhw",
+"bhx",
+"bhy",
+"bhz",
+"bia",
+"bib",
+"bic",
+"bid",
+"bie",
+"bif",
+"big",
+"bij",
+"bik",
+"bil",
+"bim",
+"bin",
+"bio",
+"bip",
+"biq",
+"bir",
+"bit",
+"biu",
+"biv",
+"biw",
+"bix",
+"biy",
+"biz",
+"bja",
+"bjb",
+"bjc",
+"bjd",
+"bje",
+"bjf",
+"bjg",
+"bjh",
+"bji",
+"bjj",
+"bjk",
+"bjl",
+"bjm",
+"bjn",
+"bjo",
+"bjp",
+"bjq",
+"bjr",
+"bjs",
+"bjt",
+"bju",
+"bjv",
+"bjw",
+"bjx",
+"bjy",
+"bjz",
+"bka",
+"bkb",
+"bkc",
+"bkd",
+"bkf",
+"bkg",
+"bkh",
+"bki",
+"bkj",
+"bkk",
+"bkl",
+"bkm",
+"bkn",
+"bko",
+"bkp",
+"bkq",
+"bkr",
+"bks",
+"bkt",
+"bku",
+"bkv",
+"bkw",
+"bkx",
+"bky",
+"bkz",
+"bla",
+"blb",
+"blc",
+"bld",
+"ble",
+"blf",
+"blg",
+"blh",
+"bli",
+"blj",
+"blk",
+"bll",
+"blm",
+"bln",
+"blo",
+"blp",
+"blq",
+"blr",
+"bls",
+"blt",
+"blv",
+"blw",
+"blx",
+"bly",
+"blz",
+"bma",
+"bmb",
+"bmc",
+"bmd",
+"bme",
+"bmf",
+"bmg",
+"bmh",
+"bmi",
+"bmj",
+"bmk",
+"bml",
+"bmm",
+"bmn",
+"bmo",
+"bmp",
+"bmq",
+"bmr",
+"bms",
+"bmt",
+"bmu",
+"bmv",
+"bmw",
+"bmx",
+"bmy",
+"bmz",
+"bna",
+"bnb",
+"bnc",
+"bnd",
+"bne",
+"bnf",
+"bng",
+"bni",
+"bnj",
+"bnk",
+"bnl",
+"bnm",
+"bnn",
+"bno",
+"bnp",
+"bnq",
+"bnr",
+"bns",
+"bnt",
+"bnu",
+"bnv",
+"bnw",
+"bnx",
+"bny",
+"bnz",
+"boa",
+"bob",
+"boe",
+"bof",
+"bog",
+"boh",
+"boi",
+"boj",
+"bok",
+"bol",
+"bom",
+"bon",
+"boo",
+"bop",
+"boq",
+"bor",
+"bot",
+"bou",
+"bov",
+"bow",
+"box",
+"boy",
+"boz",
+"bpa",
+"bpb",
+"bpd",
+"bpg",
+"bph",
+"bpi",
+"bpj",
+"bpk",
+"bpl",
+"bpm",
+"bpn",
+"bpo",
+"bpp",
+"bpq",
+"bpr",
+"bps",
+"bpt",
+"bpu",
+"bpv",
+"bpw",
+"bpx",
+"bpy",
+"bpz",
+"bqa",
+"bqb",
+"bqc",
+"bqd",
+"bqf",
+"bqg",
+"bqh",
+"bqi",
+"bqj",
+"bqk",
+"bql",
+"bqm",
+"bqn",
+"bqo",
+"bqp",
+"bqq",
+"bqr",
+"bqs",
+"bqt",
+"bqu",
+"bqv",
+"bqw",
+"bqx",
+"bqy",
+"bqz",
+"bra",
+"brb",
+"brc",
+"brd",
+"brf",
+"brg",
+"brh",
+"bri",
+"brj",
+"brk",
+"brl",
+"brm",
+"brn",
+"bro",
+"brp",
+"brq",
+"brr",
+"brs",
+"brt",
+"bru",
+"brv",
+"brw",
+"brx",
+"bry",
+"brz",
+"bsa",
+"bsb",
+"bsc",
+"bse",
+"bsf",
+"bsg",
+"bsh",
+"bsi",
+"bsj",
+"bsk",
+"bsl",
+"bsm",
+"bsn",
+"bso",
+"bsp",
+"bsq",
+"bsr",
+"bss",
+"bst",
+"bsu",
+"bsv",
+"bsw",
+"bsx",
+"bsy",
+"bta",
+"btb",
+"btc",
+"btd",
+"bte",
+"btf",
+"btg",
+"bth",
+"bti",
+"btj",
+"btk",
+"btl",
+"btm",
+"btn",
+"bto",
+"btp",
+"btq",
+"btr",
+"bts",
+"btt",
+"btu",
+"btv",
+"btw",
+"btx",
+"bty",
+"btz",
+"bua",
+"bub",
+"buc",
+"bud",
+"bue",
+"buf",
+"bug",
+"buh",
+"bui",
+"buj",
+"buk",
+"bum",
+"bun",
+"buo",
+"bup",
+"buq",
+"bus",
+"but",
+"buu",
+"buv",
+"buw",
+"bux",
+"buy",
+"buz",
+"bva",
+"bvb",
+"bvc",
+"bvd",
+"bve",
+"bvf",
+"bvg",
+"bvh",
+"bvi",
+"bvj",
+"bvk",
+"bvl",
+"bvm",
+"bvn",
+"bvo",
+"bvp",
+"bvq",
+"bvr",
+"bvt",
+"bvu",
+"bvv",
+"bvw",
+"bvx",
+"bvy",
+"bvz",
+"bwa",
+"bwb",
+"bwc",
+"bwd",
+"bwe",
+"bwf",
+"bwg",
+"bwh",
+"bwi",
+"bwj",
+"bwk",
+"bwl",
+"bwm",
+"bwn",
+"bwo",
+"bwp",
+"bwq",
+"bwr",
+"bws",
+"bwt",
+"bwu",
+"bww",
+"bwx",
+"bwy",
+"bwz",
+"bxa",
+"bxb",
+"bxc",
+"bxd",
+"bxe",
+"bxf",
+"bxg",
+"bxh",
+"bxi",
+"bxj",
+"bxk",
+"bxl",
+"bxm",
+"bxn",
+"bxo",
+"bxp",
+"bxq",
+"bxr",
+"bxs",
+"bxu",
+"bxv",
+"bxw",
+"bxx",
+"bxz",
+"bya",
+"byb",
+"byc",
+"byd",
+"bye",
+"byf",
+"byg",
+"byh",
+"byi",
+"byj",
+"byk",
+"byl",
+"bym",
+"byn",
+"byo",
+"byp",
+"byq",
+"byr",
+"bys",
+"byt",
+"byv",
+"byw",
+"byx",
+"byy",
+"byz",
+"bza",
+"bzb",
+"bzc",
+"bzd",
+"bze",
+"bzf",
+"bzg",
+"bzh",
+"bzi",
+"bzj",
+"bzk",
+"bzl",
+"bzm",
+"bzn",
+"bzo",
+"bzp",
+"bzq",
+"bzr",
+"bzs",
+"bzt",
+"bzu",
+"bzv",
+"bzw",
+"bzx",
+"bzy",
+"bzz",
+"caa",
+"cab",
+"cac",
+"cad",
+"cae",
+"caf",
+"cag",
+"cah",
+"cai",
+"caj",
+"cak",
+"cal",
+"cam",
+"can",
+"cao",
+"cap",
+"caq",
+"car",
+"cas",
+"cau",
+"cav",
+"caw",
+"cax",
+"cay",
+"caz",
+"cba",
+"cbb",
+"cbc",
+"cbd",
+"cbe",
+"cbg",
+"cbh",
+"cbi",
+"cbj",
+"cbk",
+"cbl",
+"cbn",
+"cbo",
+"cbq",
+"cbr",
+"cbs",
+"cbt",
+"cbu",
+"cbv",
+"cbw",
+"cby",
+"cca",
+"ccc",
+"ccd",
+"cce",
+"ccg",
+"cch",
+"ccj",
+"ccl",
+"ccm",
+"ccn",
+"cco",
+"ccp",
+"ccq",
+"ccr",
+"ccs",
+"cda",
+"cdc",
+"cdd",
+"cde",
+"cdf",
+"cdg",
+"cdh",
+"cdi",
+"cdj",
+"cdm",
+"cdn",
+"cdo",
+"cdr",
+"cds",
+"cdy",
+"cdz",
+"cea",
+"ceb",
+"ceg",
+"cek",
+"cel",
+"cen",
+"cet",
+"cfa",
+"cfd",
+"cfg",
+"cfm",
+"cga",
+"cgc",
+"cgg",
+"cgk",
+"chb",
+"chc",
+"chd",
+"chf",
+"chg",
+"chh",
+"chj",
+"chk",
+"chl",
+"chm",
+"chn",
+"cho",
+"chp",
+"chq",
+"chr",
+"cht",
+"chw",
+"chx",
+"chy",
+"chz",
+"cia",
+"cib",
+"cic",
+"cid",
+"cie",
+"cih",
+"cik",
+"cim",
+"cin",
+"cip",
+"cir",
+"ciw",
+"ciy",
+"cja",
+"cje",
+"cjh",
+"cji",
+"cjk",
+"cjm",
+"cjn",
+"cjo",
+"cjp",
+"cjr",
+"cjs",
+"cjv",
+"cjy",
+"cka",
+"ckb",
+"ckh",
+"ckl",
+"ckn",
+"cko",
+"ckq",
+"ckr",
+"cks",
+"ckt",
+"cku",
+"ckv",
+"ckx",
+"cky",
+"ckz",
+"cla",
+"clc",
+"cld",
+"cle",
+"clh",
+"cli",
+"clj",
+"clk",
+"cll",
+"clm",
+"clo",
+"clt",
+"clu",
+"clw",
+"cly",
+"cma",
+"cmc",
+"cme",
+"cmg",
+"cmi",
+"cmk",
+"cml",
+"cmm",
+"cmn",
+"cmo",
+"cmr",
+"cms",
+"cmt",
+"cna",
+"cnb",
+"cnc",
+"cng",
+"cnh",
+"cni",
+"cnk",
+"cnl",
+"cno",
+"cns",
+"cnt",
+"cnu",
+"cnw",
+"cnx",
+"coa",
+"cob",
+"coc",
+"cod",
+"coe",
+"cof",
+"cog",
+"coh",
+"coj",
+"cok",
+"col",
+"com",
+"con",
+"coo",
+"cop",
+"coq",
+"cot",
+"cou",
+"cov",
+"cow",
+"cox",
+"coy",
+"coz",
+"cpa",
+"cpb",
+"cpc",
+"cpe",
+"cpf",
+"cpg",
+"cpi",
+"cpn",
+"cpo",
+"cpp",
+"cps",
+"cpu",
+"cpx",
+"cpy",
+"cqd",
+"cqu",
+"cra",
+"crb",
+"crc",
+"crd",
+"crf",
+"crg",
+"crh",
+"cri",
+"crj",
+"crk",
+"crl",
+"crm",
+"crn",
+"cro",
+"crp",
+"crq",
+"crr",
+"crs",
+"crt",
+"crv",
+"crw",
+"crx",
+"cry",
+"crz",
+"csa",
+"csb",
+"csc",
+"csd",
+"cse",
+"csf",
+"csg",
+"csh",
+"csi",
+"csj",
+"csk",
+"csl",
+"csm",
+"csn",
+"cso",
+"csq",
+"csr",
+"css",
+"cst",
+"csu",
+"csv",
+"csw",
+"csy",
+"csz",
+"cta",
+"ctc",
+"ctd",
+"cte",
+"ctg",
+"cth",
+"ctl",
+"ctm",
+"ctn",
+"cto",
+"ctp",
+"cts",
+"ctt",
+"ctu",
+"ctz",
+"cua",
+"cub",
+"cuc",
+"cug",
+"cuh",
+"cui",
+"cuj",
+"cuk",
+"cul",
+"cum",
+"cuo",
+"cup",
+"cuq",
+"cur",
+"cus",
+"cut",
+"cuu",
+"cuv",
+"cuw",
+"cux",
+"cvg",
+"cvn",
+"cwa",
+"cwb",
+"cwd",
+"cwe",
+"cwg",
+"cwt",
+"cya",
+"cyb",
+"cyo",
+"czh",
+"czk",
+"czn",
+"czo",
+"czt",
+"daa",
+"dac",
+"dad",
+"dae",
+"daf",
+"dag",
+"dah",
+"dai",
+"daj",
+"dak",
+"dal",
+"dam",
+"dao",
+"dap",
+"daq",
+"dar",
+"das",
+"dau",
+"dav",
+"daw",
+"dax",
+"day",
+"daz",
+"dba",
+"dbb",
+"dbd",
+"dbe",
+"dbf",
+"dbg",
+"dbi",
+"dbj",
+"dbl",
+"dbm",
+"dbn",
+"dbo",
+"dbp",
+"dbq",
+"dbr",
+"dbt",
+"dbu",
+"dbv",
+"dbw",
+"dby",
+"dcc",
+"dcr",
+"dda",
+"ddd",
+"dde",
+"ddg",
+"ddi",
+"ddj",
+"ddn",
+"ddo",
+"ddr",
+"dds",
+"ddw",
+"dec",
+"ded",
+"dee",
+"def",
+"deg",
+"deh",
+"dei",
+"dek",
+"del",
+"dem",
+"den",
+"dep",
+"deq",
+"der",
+"des",
+"dev",
+"dez",
+"dga",
+"dgb",
+"dgc",
+"dgd",
+"dge",
+"dgg",
+"dgh",
+"dgi",
+"dgk",
+"dgl",
+"dgn",
+"dgo",
+"dgr",
+"dgs",
+"dgt",
+"dgu",
+"dgw",
+"dgx",
+"dgz",
+"dha",
+"dhd",
+"dhg",
+"dhi",
+"dhl",
+"dhm",
+"dhn",
+"dho",
+"dhr",
+"dhs",
+"dhu",
+"dhv",
+"dhw",
+"dhx",
+"dia",
+"dib",
+"dic",
+"did",
+"dif",
+"dig",
+"dih",
+"dii",
+"dij",
+"dik",
+"dil",
+"dim",
+"din",
+"dio",
+"dip",
+"diq",
+"dir",
+"dis",
+"dit",
+"diu",
+"diw",
+"dix",
+"diy",
+"diz",
+"dja",
+"djb",
+"djc",
+"djd",
+"dje",
+"djf",
+"dji",
+"djj",
+"djk",
+"djl",
+"djm",
+"djn",
+"djo",
+"djr",
+"dju",
+"djw",
+"dka",
+"dkk",
+"dkl",
+"dkr",
+"dks",
+"dkx",
+"dlg",
+"dlk",
+"dlm",
+"dln",
+"dma",
+"dmb",
+"dmc",
+"dmd",
+"dme",
+"dmg",
+"dmk",
+"dml",
+"dmm",
+"dmn",
+"dmo",
+"dmr",
+"dms",
+"dmu",
+"dmv",
+"dmw",
+"dmx",
+"dmy",
+"dna",
+"dnd",
+"dne",
+"dng",
+"dni",
+"dnj",
+"dnk",
+"dnn",
+"dnr",
+"dnt",
+"dnu",
+"dnv",
+"dnw",
+"dny",
+"doa",
+"dob",
+"doc",
+"doe",
+"dof",
+"doh",
+"doi",
+"dok",
+"dol",
+"don",
+"doo",
+"dop",
+"doq",
+"dor",
+"dos",
+"dot",
+"dov",
+"dow",
+"dox",
+"doy",
+"doz",
+"dpp",
+"dra",
+"drb",
+"drc",
+"drd",
+"dre",
+"drg",
+"drh",
+"dri",
+"drl",
+"drn",
+"dro",
+"drq",
+"drr",
+"drs",
+"drt",
+"dru",
+"drw",
+"dry",
+"dsb",
+"dse",
+"dsh",
+"dsi",
+"dsl",
+"dsn",
+"dso",
+"dsq",
+"dta",
+"dtb",
+"dtd",
+"dth",
+"dti",
+"dtk",
+"dtm",
+"dtn",
+"dto",
+"dtp",
+"dtr",
+"dts",
+"dtt",
+"dtu",
+"dty",
+"dua",
+"dub",
+"duc",
+"dud",
+"due",
+"duf",
+"dug",
+"duh",
+"dui",
+"duj",
+"duk",
+"dul",
+"dum",
+"dun",
+"duo",
+"dup",
+"duq",
+"dur",
+"dus",
+"duu",
+"duv",
+"duw",
+"dux",
+"duy",
+"duz",
+"dva",
+"dwa",
+"dwl",
+"dwr",
+"dws",
+"dwu",
+"dww",
+"dwy",
+"dya",
+"dyb",
+"dyd",
+"dyg",
+"dyi",
+"dym",
+"dyn",
+"dyo",
+"dyu",
+"dyy",
+"dza",
+"dzd",
+"dze",
+"dzg",
+"dzl",
+"dzn",
+"eaa",
+"ebg",
+"ebk",
+"ebo",
+"ebr",
+"ebu",
+"ecr",
+"ecs",
+"ecy",
+"eee",
+"efa",
+"efe",
+"efi",
+"ega",
+"egl",
+"ego",
+"egx",
+"egy",
+"ehu",
+"eip",
+"eit",
+"eiv",
+"eja",
+"eka",
+"ekc",
+"eke",
+"ekg",
+"eki",
+"ekk",
+"ekl",
+"ekm",
+"eko",
+"ekp",
+"ekr",
+"eky",
+"ele",
+"elh",
+"eli",
+"elk",
+"elm",
+"elo",
+"elp",
+"elu",
+"elx",
+"ema",
+"emb",
+"eme",
+"emg",
+"emi",
+"emk",
+"emm",
+"emn",
+"emo",
+"emp",
+"ems",
+"emu",
+"emw",
+"emx",
+"emy",
+"ena",
+"enb",
+"enc",
+"end",
+"enf",
+"enh",
+"enl",
+"enm",
+"enn",
+"eno",
+"enq",
+"enr",
+"enu",
+"env",
+"enw",
+"enx",
+"eot",
+"epi",
+"era",
+"erg",
+"erh",
+"eri",
+"erk",
+"ero",
+"err",
+"ers",
+"ert",
+"erw",
+"ese",
+"esg",
+"esh",
+"esi",
+"esk",
+"esl",
+"esm",
+"esn",
+"eso",
+"esq",
+"ess",
+"esu",
+"esx",
+"esy",
+"etb",
+"etc",
+"eth",
+"etn",
+"eto",
+"etr",
+"ets",
+"ett",
+"etu",
+"etx",
+"etz",
+"euq",
+"eve",
+"evh",
+"evn",
+"ewo",
+"ext",
+"eya",
+"eyo",
+"eza",
+"eze",
+"faa",
+"fab",
+"fad",
+"faf",
+"fag",
+"fah",
+"fai",
+"faj",
+"fak",
+"fal",
+"fam",
+"fan",
+"fap",
+"far",
+"fat",
+"fau",
+"fax",
+"fay",
+"faz",
+"fbl",
+"fcs",
+"fer",
+"ffi",
+"ffm",
+"fgr",
+"fia",
+"fie",
+"fil",
+"fip",
+"fir",
+"fit",
+"fiu",
+"fiw",
+"fkk",
+"fkv",
+"fla",
+"flh",
+"fli",
+"fll",
+"fln",
+"flr",
+"fly",
+"fmp",
+"fmu",
+"fnb",
+"fng",
+"fni",
+"fod",
+"foi",
+"fom",
+"fon",
+"for",
+"fos",
+"fox",
+"fpe",
+"fqs",
+"frc",
+"frd",
+"frk",
+"frm",
+"fro",
+"frp",
+"frq",
+"frr",
+"frs",
+"frt",
+"fse",
+"fsl",
+"fss",
+"fub",
+"fuc",
+"fud",
+"fue",
+"fuf",
+"fuh",
+"fui",
+"fuj",
+"fum",
+"fun",
+"fuq",
+"fur",
+"fut",
+"fuu",
+"fuv",
+"fuy",
+"fvr",
+"fwa",
+"fwe",
+"gaa",
+"gab",
+"gac",
+"gad",
+"gae",
+"gaf",
+"gag",
+"gah",
+"gai",
+"gaj",
+"gak",
+"gal",
+"gam",
+"gan",
+"gao",
+"gap",
+"gaq",
+"gar",
+"gas",
+"gat",
+"gau",
+"gav",
+"gaw",
+"gax",
+"gay",
+"gaz",
+"gba",
+"gbb",
+"gbc",
+"gbd",
+"gbe",
+"gbf",
+"gbg",
+"gbh",
+"gbi",
+"gbj",
+"gbk",
+"gbl",
+"gbm",
+"gbn",
+"gbo",
+"gbp",
+"gbq",
+"gbr",
+"gbs",
+"gbu",
+"gbv",
+"gbw",
+"gbx",
+"gby",
+"gbz",
+"gcc",
+"gcd",
+"gce",
+"gcf",
+"gcl",
+"gcn",
+"gcr",
+"gct",
+"gda",
+"gdb",
+"gdc",
+"gdd",
+"gde",
+"gdf",
+"gdg",
+"gdh",
+"gdi",
+"gdj",
+"gdk",
+"gdl",
+"gdm",
+"gdn",
+"gdo",
+"gdq",
+"gdr",
+"gds",
+"gdt",
+"gdu",
+"gdx",
+"gea",
+"geb",
+"gec",
+"ged",
+"geg",
+"geh",
+"gei",
+"gej",
+"gek",
+"gel",
+"gem",
+"geq",
+"ges",
+"gev",
+"gew",
+"gex",
+"gey",
+"gez",
+"gfk",
+"gft",
+"gfx",
+"gga",
+"ggb",
+"ggd",
+"gge",
+"ggg",
+"ggk",
+"ggl",
+"ggn",
+"ggo",
+"ggr",
+"ggt",
+"ggu",
+"ggw",
+"gha",
+"ghc",
+"ghe",
+"ghh",
+"ghk",
+"ghl",
+"ghn",
+"gho",
+"ghr",
+"ghs",
+"ght",
+"gia",
+"gib",
+"gic",
+"gid",
+"gie",
+"gig",
+"gih",
+"gil",
+"gim",
+"gin",
+"gio",
+"gip",
+"giq",
+"gir",
+"gis",
+"git",
+"giu",
+"giw",
+"gix",
+"giy",
+"giz",
+"gji",
+"gjk",
+"gjm",
+"gjn",
+"gjr",
+"gju",
+"gka",
+"gke",
+"gkn",
+"gko",
+"gkp",
+"gku",
+"glc",
+"gld",
+"glh",
+"gli",
+"glj",
+"glk",
+"gll",
+"glo",
+"glr",
+"glu",
+"glw",
+"gly",
+"gma",
+"gmb",
+"gmd",
+"gme",
+"gmg",
+"gmh",
+"gml",
+"gmm",
+"gmn",
+"gmq",
+"gmu",
+"gmv",
+"gmw",
+"gmx",
+"gmy",
+"gmz",
+"gna",
+"gnb",
+"gnc",
+"gnd",
+"gne",
+"gng",
+"gnh",
+"gni",
+"gnk",
+"gnl",
+"gnm",
+"gnn",
+"gno",
+"gnq",
+"gnr",
+"gnt",
+"gnu",
+"gnw",
+"gnz",
+"goa",
+"gob",
+"goc",
+"god",
+"goe",
+"gof",
+"gog",
+"goh",
+"goi",
+"goj",
+"gok",
+"gol",
+"gom",
+"gon",
+"goo",
+"gop",
+"goq",
+"gor",
+"gos",
+"got",
+"gou",
+"gow",
+"gox",
+"goy",
+"goz",
+"gpa",
+"gpe",
+"gpn",
+"gqa",
+"gqi",
+"gqn",
+"gqr",
+"gqu",
+"gra",
+"grb",
+"grc",
+"grd",
+"grg",
+"grh",
+"gri",
+"grj",
+"grk",
+"grm",
+"gro",
+"grq",
+"grr",
+"grs",
+"grt",
+"gru",
+"grv",
+"grw",
+"grx",
+"gry",
+"grz",
+"gse",
+"gsg",
+"gsl",
+"gsm",
+"gsn",
+"gso",
+"gsp",
+"gss",
+"gsw",
+"gta",
+"gti",
+"gtu",
+"gua",
+"gub",
+"guc",
+"gud",
+"gue",
+"guf",
+"gug",
+"guh",
+"gui",
+"guk",
+"gul",
+"gum",
+"gun",
+"guo",
+"gup",
+"guq",
+"gur",
+"gus",
+"gut",
+"guu",
+"guv",
+"guw",
+"gux",
+"guz",
+"gva",
+"gvc",
+"gve",
+"gvf",
+"gvj",
+"gvl",
+"gvm",
+"gvn",
+"gvo",
+"gvp",
+"gvr",
+"gvs",
+"gvy",
+"gwa",
+"gwb",
+"gwc",
+"gwd",
+"gwe",
+"gwf",
+"gwg",
+"gwi",
+"gwj",
+"gwm",
+"gwn",
+"gwr",
+"gwt",
+"gwu",
+"gww",
+"gwx",
+"gxx",
+"gya",
+"gyb",
+"gyd",
+"gye",
+"gyf",
+"gyg",
+"gyi",
+"gyl",
+"gym",
+"gyn",
+"gyr",
+"gyy",
+"gza",
+"gzi",
+"gzn",
+"haa",
+"hab",
+"hac",
+"had",
+"hae",
+"haf",
+"hag",
+"hah",
+"hai",
+"haj",
+"hak",
+"hal",
+"ham",
+"han",
+"hao",
+"hap",
+"haq",
+"har",
+"has",
+"hav",
+"haw",
+"hax",
+"hay",
+"haz",
+"hba",
+"hbb",
+"hbn",
+"hbo",
+"hbu",
+"hca",
+"hch",
+"hdn",
+"hds",
+"hdy",
+"hea",
+"hed",
+"heg",
+"heh",
+"hei",
+"hem",
+"hgm",
+"hgw",
+"hhi",
+"hhr",
+"hhy",
+"hia",
+"hib",
+"hid",
+"hif",
+"hig",
+"hih",
+"hii",
+"hij",
+"hik",
+"hil",
+"him",
+"hio",
+"hir",
+"hit",
+"hiw",
+"hix",
+"hji",
+"hka",
+"hke",
+"hkk",
+"hks",
+"hla",
+"hlb",
+"hld",
+"hle",
+"hlt",
+"hlu",
+"hma",
+"hmb",
+"hmc",
+"hmd",
+"hme",
+"hmf",
+"hmg",
+"hmh",
+"hmi",
+"hmj",
+"hmk",
+"hml",
+"hmm",
+"hmn",
+"hmp",
+"hmq",
+"hmr",
+"hms",
+"hmt",
+"hmu",
+"hmv",
+"hmw",
+"hmx",
+"hmy",
+"hmz",
+"hna",
+"hnd",
+"hne",
+"hnh",
+"hni",
+"hnj",
+"hnn",
+"hno",
+"hns",
+"hnu",
+"hoa",
+"hob",
+"hoc",
+"hod",
+"hoe",
+"hoh",
+"hoi",
+"hoj",
+"hok",
+"hol",
+"hom",
+"hoo",
+"hop",
+"hor",
+"hos",
+"hot",
+"hov",
+"how",
+"hoy",
+"hoz",
+"hpo",
+"hps",
+"hra",
+"hrc",
+"hre",
+"hrk",
+"hrm",
+"hro",
+"hrp",
+"hrr",
+"hrt",
+"hru",
+"hrw",
+"hrx",
+"hrz",
+"hsb",
+"hsh",
+"hsl",
+"hsn",
+"hss",
+"hti",
+"hto",
+"hts",
+"htu",
+"htx",
+"hub",
+"huc",
+"hud",
+"hue",
+"huf",
+"hug",
+"huh",
+"hui",
+"huj",
+"huk",
+"hul",
+"hum",
+"huo",
+"hup",
+"huq",
+"hur",
+"hus",
+"hut",
+"huu",
+"huv",
+"huw",
+"hux",
+"huy",
+"huz",
+"hvc",
+"hve",
+"hvk",
+"hvn",
+"hvv",
+"hwa",
+"hwc",
+"hwo",
+"hya",
+"hyx",
+"iai",
+"ian",
+"iap",
+"iar",
+"iba",
+"ibb",
+"ibd",
+"ibe",
+"ibg",
+"ibh",
+"ibi",
+"ibl",
+"ibm",
+"ibn",
+"ibr",
+"ibu",
+"iby",
+"ica",
+"ich",
+"icl",
+"icr",
+"ida",
+"idb",
+"idc",
+"idd",
+"ide",
+"idi",
+"idr",
+"ids",
+"idt",
+"idu",
+"ifa",
+"ifb",
+"ife",
+"iff",
+"ifk",
+"ifm",
+"ifu",
+"ify",
+"igb",
+"ige",
+"igg",
+"igl",
+"igm",
+"ign",
+"igo",
+"igs",
+"igw",
+"ihb",
+"ihi",
+"ihp",
+"ihw",
+"iin",
+"iir",
+"ijc",
+"ije",
+"ijj",
+"ijn",
+"ijo",
+"ijs",
+"ike",
+"iki",
+"ikk",
+"ikl",
+"iko",
+"ikp",
+"ikr",
+"iks",
+"ikt",
+"ikv",
+"ikw",
+"ikx",
+"ikz",
+"ila",
+"ilb",
+"ilg",
+"ili",
+"ilk",
+"ill",
+"ilm",
+"ilo",
+"ilp",
+"ils",
+"ilu",
+"ilv",
+"ilw",
+"ima",
+"ime",
+"imi",
+"iml",
+"imn",
+"imo",
+"imr",
+"ims",
+"imy",
+"inb",
+"inc",
+"ine",
+"ing",
+"inh",
+"inj",
+"inl",
+"inm",
+"inn",
+"ino",
+"inp",
+"ins",
+"int",
+"inz",
+"ior",
+"iou",
+"iow",
+"ipi",
+"ipo",
+"iqu",
+"iqw",
+"ira",
+"ire",
+"irh",
+"iri",
+"irk",
+"irn",
+"iro",
+"irr",
+"iru",
+"irx",
+"iry",
+"isa",
+"isc",
+"isd",
+"ise",
+"isg",
+"ish",
+"isi",
+"isk",
+"ism",
+"isn",
+"iso",
+"isr",
+"ist",
+"isu",
+"itb",
+"itc",
+"itd",
+"ite",
+"iti",
+"itk",
+"itl",
+"itm",
+"ito",
+"itr",
+"its",
+"itt",
+"itv",
+"itw",
+"itx",
+"ity",
+"itz",
+"ium",
+"ivb",
+"ivv",
+"iwk",
+"iwm",
+"iwo",
+"iws",
+"ixc",
+"ixl",
+"iya",
+"iyo",
+"iyx",
+"izh",
+"izi",
+"izr",
+"izz",
+"jaa",
+"jab",
+"jac",
+"jad",
+"jae",
+"jaf",
+"jah",
+"jaj",
+"jak",
+"jal",
+"jam",
+"jan",
+"jao",
+"jaq",
+"jar",
+"jas",
+"jat",
+"jau",
+"jax",
+"jay",
+"jaz",
+"jbe",
+"jbi",
+"jbj",
+"jbk",
+"jbn",
+"jbo",
+"jbr",
+"jbt",
+"jbu",
+"jbw",
+"jcs",
+"jct",
+"jda",
+"jdg",
+"jdt",
+"jeb",
+"jee",
+"jeg",
+"jeh",
+"jei",
+"jek",
+"jel",
+"jen",
+"jer",
+"jet",
+"jeu",
+"jgb",
+"jge",
+"jgk",
+"jgo",
+"jhi",
+"jhs",
+"jia",
+"jib",
+"jic",
+"jid",
+"jie",
+"jig",
+"jih",
+"jii",
+"jil",
+"jim",
+"jio",
+"jiq",
+"jit",
+"jiu",
+"jiv",
+"jiy",
+"jje",
+"jjr",
+"jka",
+"jkm",
+"jko",
+"jkp",
+"jkr",
+"jku",
+"jle",
+"jls",
+"jma",
+"jmb",
+"jmc",
+"jmd",
+"jmi",
+"jml",
+"jmn",
+"jmr",
+"jms",
+"jmw",
+"jmx",
+"jna",
+"jnd",
+"jng",
+"jni",
+"jnj",
+"jnl",
+"jns",
+"job",
+"jod",
+"jog",
+"jor",
+"jos",
+"jow",
+"jpa",
+"jpr",
+"jpx",
+"jqr",
+"jra",
+"jrb",
+"jrr",
+"jrt",
+"jru",
+"jsl",
+"jua",
+"jub",
+"juc",
+"jud",
+"juh",
+"jui",
+"juk",
+"jul",
+"jum",
+"jun",
+"juo",
+"jup",
+"jur",
+"jus",
+"jut",
+"juu",
+"juw",
+"juy",
+"jvd",
+"jvn",
+"jwi",
+"jya",
+"jye",
+"jyy",
+"kaa",
+"kab",
+"kac",
+"kad",
+"kae",
+"kaf",
+"kag",
+"kah",
+"kai",
+"kaj",
+"kak",
+"kam",
+"kao",
+"kap",
+"kaq",
+"kar",
+"kav",
+"kaw",
+"kax",
+"kay",
+"kba",
+"kbb",
+"kbc",
+"kbd",
+"kbe",
+"kbf",
+"kbg",
+"kbh",
+"kbi",
+"kbj",
+"kbk",
+"kbl",
+"kbm",
+"kbn",
+"kbo",
+"kbp",
+"kbq",
+"kbr",
+"kbs",
+"kbt",
+"kbu",
+"kbv",
+"kbw",
+"kbx",
+"kby",
+"kbz",
+"kca",
+"kcb",
+"kcc",
+"kcd",
+"kce",
+"kcf",
+"kcg",
+"kch",
+"kci",
+"kcj",
+"kck",
+"kcl",
+"kcm",
+"kcn",
+"kco",
+"kcp",
+"kcq",
+"kcr",
+"kcs",
+"kct",
+"kcu",
+"kcv",
+"kcw",
+"kcx",
+"kcy",
+"kcz",
+"kda",
+"kdc",
+"kdd",
+"kde",
+"kdf",
+"kdg",
+"kdh",
+"kdi",
+"kdj",
+"kdk",
+"kdl",
+"kdm",
+"kdn",
+"kdo",
+"kdp",
+"kdq",
+"kdr",
+"kdt",
+"kdu",
+"kdv",
+"kdw",
+"kdx",
+"kdy",
+"kdz",
+"kea",
+"keb",
+"kec",
+"ked",
+"kee",
+"kef",
+"keg",
+"keh",
+"kei",
+"kej",
+"kek",
+"kel",
+"kem",
+"ken",
+"keo",
+"kep",
+"keq",
+"ker",
+"kes",
+"ket",
+"keu",
+"kev",
+"kew",
+"kex",
+"key",
+"kez",
+"kfa",
+"kfb",
+"kfc",
+"kfd",
+"kfe",
+"kff",
+"kfg",
+"kfh",
+"kfi",
+"kfj",
+"kfk",
+"kfl",
+"kfm",
+"kfn",
+"kfo",
+"kfp",
+"kfq",
+"kfr",
+"kfs",
+"kft",
+"kfu",
+"kfv",
+"kfw",
+"kfx",
+"kfy",
+"kfz",
+"kga",
+"kgb",
+"kgc",
+"kgd",
+"kge",
+"kgf",
+"kgg",
+"kgh",
+"kgi",
+"kgj",
+"kgk",
+"kgl",
+"kgm",
+"kgn",
+"kgo",
+"kgp",
+"kgq",
+"kgr",
+"kgs",
+"kgt",
+"kgu",
+"kgv",
+"kgw",
+"kgx",
+"kgy",
+"kha",
+"khb",
+"khc",
+"khd",
+"khe",
+"khf",
+"khg",
+"khh",
+"khi",
+"khj",
+"khk",
+"khl",
+"khn",
+"kho",
+"khp",
+"khq",
+"khr",
+"khs",
+"kht",
+"khu",
+"khv",
+"khw",
+"khx",
+"khy",
+"khz",
+"kia",
+"kib",
+"kic",
+"kid",
+"kie",
+"kif",
+"kig",
+"kih",
+"kii",
+"kij",
+"kil",
+"kim",
+"kio",
+"kip",
+"kiq",
+"kis",
+"kit",
+"kiu",
+"kiv",
+"kiw",
+"kix",
+"kiy",
+"kiz",
+"kja",
+"kjb",
+"kjc",
+"kjd",
+"kje",
+"kjf",
+"kjg",
+"kjh",
+"kji",
+"kjj",
+"kjk",
+"kjl",
+"kjm",
+"kjn",
+"kjo",
+"kjp",
+"kjq",
+"kjr",
+"kjs",
+"kjt",
+"kju",
+"kjv",
+"kjx",
+"kjy",
+"kjz",
+"kka",
+"kkb",
+"kkc",
+"kkd",
+"kke",
+"kkf",
+"kkg",
+"kkh",
+"kki",
+"kkj",
+"kkk",
+"kkl",
+"kkm",
+"kkn",
+"kko",
+"kkp",
+"kkq",
+"kkr",
+"kks",
+"kkt",
+"kku",
+"kkv",
+"kkw",
+"kkx",
+"kky",
+"kkz",
+"kla",
+"klb",
+"klc",
+"kld",
+"kle",
+"klf",
+"klg",
+"klh",
+"kli",
+"klj",
+"klk",
+"kll",
+"klm",
+"kln",
+"klo",
+"klp",
+"klq",
+"klr",
+"kls",
+"klt",
+"klu",
+"klv",
+"klw",
+"klx",
+"kly",
+"klz",
+"kma",
+"kmb",
+"kmc",
+"kmd",
+"kme",
+"kmf",
+"kmg",
+"kmh",
+"kmi",
+"kmj",
+"kmk",
+"kml",
+"kmm",
+"kmn",
+"kmo",
+"kmp",
+"kmq",
+"kmr",
+"kms",
+"kmt",
+"kmu",
+"kmv",
+"kmw",
+"kmx",
+"kmy",
+"kmz",
+"kna",
+"knb",
+"knc",
+"knd",
+"kne",
+"knf",
+"kng",
+"kni",
+"knj",
+"knk",
+"knl",
+"knm",
+"knn",
+"kno",
+"knp",
+"knq",
+"knr",
+"kns",
+"knt",
+"knu",
+"knv",
+"knw",
+"knx",
+"kny",
+"knz",
+"koa",
+"koc",
+"kod",
+"koe",
+"kof",
+"kog",
+"koh",
+"koi",
+"koj",
+"kok",
+"kol",
+"koo",
+"kop",
+"koq",
+"kos",
+"kot",
+"kou",
+"kov",
+"kow",
+"kox",
+"koy",
+"koz",
+"kpa",
+"kpb",
+"kpc",
+"kpd",
+"kpe",
+"kpf",
+"kpg",
+"kph",
+"kpi",
+"kpj",
+"kpk",
+"kpl",
+"kpm",
+"kpn",
+"kpo",
+"kpp",
+"kpq",
+"kpr",
+"kps",
+"kpt",
+"kpu",
+"kpv",
+"kpw",
+"kpx",
+"kpy",
+"kpz",
+"kqa",
+"kqb",
+"kqc",
+"kqd",
+"kqe",
+"kqf",
+"kqg",
+"kqh",
+"kqi",
+"kqj",
+"kqk",
+"kql",
+"kqm",
+"kqn",
+"kqo",
+"kqp",
+"kqq",
+"kqr",
+"kqs",
+"kqt",
+"kqu",
+"kqv",
+"kqw",
+"kqx",
+"kqy",
+"kqz",
+"kra",
+"krb",
+"krc",
+"krd",
+"kre",
+"krf",
+"krh",
+"kri",
+"krj",
+"krk",
+"krl",
+"krm",
+"krn",
+"kro",
+"krp",
+"krr",
+"krs",
+"krt",
+"kru",
+"krv",
+"krw",
+"krx",
+"kry",
+"krz",
+"ksa",
+"ksb",
+"ksc",
+"ksd",
+"kse",
+"ksf",
+"ksg",
+"ksh",
+"ksi",
+"ksj",
+"ksk",
+"ksl",
+"ksm",
+"ksn",
+"kso",
+"ksp",
+"ksq",
+"ksr",
+"kss",
+"kst",
+"ksu",
+"ksv",
+"ksw",
+"ksx",
+"ksy",
+"ksz",
+"kta",
+"ktb",
+"ktc",
+"ktd",
+"kte",
+"ktf",
+"ktg",
+"kth",
+"kti",
+"ktj",
+"ktk",
+"ktl",
+"ktm",
+"ktn",
+"kto",
+"ktp",
+"ktq",
+"ktr",
+"kts",
+"ktt",
+"ktu",
+"ktv",
+"ktw",
+"ktx",
+"kty",
+"ktz",
+"kub",
+"kuc",
+"kud",
+"kue",
+"kuf",
+"kug",
+"kuh",
+"kui",
+"kuj",
+"kuk",
+"kul",
+"kum",
+"kun",
+"kuo",
+"kup",
+"kuq",
+"kus",
+"kut",
+"kuu",
+"kuv",
+"kuw",
+"kux",
+"kuy",
+"kuz",
+"kva",
+"kvb",
+"kvc",
+"kvd",
+"kve",
+"kvf",
+"kvg",
+"kvh",
+"kvi",
+"kvj",
+"kvk",
+"kvl",
+"kvm",
+"kvn",
+"kvo",
+"kvp",
+"kvq",
+"kvr",
+"kvs",
+"kvt",
+"kvu",
+"kvv",
+"kvw",
+"kvx",
+"kvy",
+"kvz",
+"kwa",
+"kwb",
+"kwc",
+"kwd",
+"kwe",
+"kwf",
+"kwg",
+"kwh",
+"kwi",
+"kwj",
+"kwk",
+"kwl",
+"kwm",
+"kwn",
+"kwo",
+"kwp",
+"kwq",
+"kwr",
+"kws",
+"kwt",
+"kwu",
+"kwv",
+"kww",
+"kwx",
+"kwy",
+"kwz",
+"kxa",
+"kxb",
+"kxc",
+"kxd",
+"kxe",
+"kxf",
+"kxh",
+"kxi",
+"kxj",
+"kxk",
+"kxl",
+"kxm",
+"kxn",
+"kxo",
+"kxp",
+"kxq",
+"kxr",
+"kxs",
+"kxt",
+"kxu",
+"kxv",
+"kxw",
+"kxx",
+"kxy",
+"kxz",
+"kya",
+"kyb",
+"kyc",
+"kyd",
+"kye",
+"kyf",
+"kyg",
+"kyh",
+"kyi",
+"kyj",
+"kyk",
+"kyl",
+"kym",
+"kyn",
+"kyo",
+"kyp",
+"kyq",
+"kyr",
+"kys",
+"kyt",
+"kyu",
+"kyv",
+"kyw",
+"kyx",
+"kyy",
+"kyz",
+"kza",
+"kzb",
+"kzc",
+"kzd",
+"kze",
+"kzf",
+"kzg",
+"kzh",
+"kzi",
+"kzj",
+"kzk",
+"kzl",
+"kzm",
+"kzn",
+"kzo",
+"kzp",
+"kzq",
+"kzr",
+"kzs",
+"kzt",
+"kzu",
+"kzv",
+"kzw",
+"kzx",
+"kzy",
+"kzz",
+"laa",
+"lab",
+"lac",
+"lad",
+"lae",
+"laf",
+"lag",
+"lah",
+"lai",
+"laj",
+"lak",
+"lal",
+"lam",
+"lan",
+"lap",
+"laq",
+"lar",
+"las",
+"lau",
+"law",
+"lax",
+"lay",
+"laz",
+"lba",
+"lbb",
+"lbc",
+"lbe",
+"lbf",
+"lbg",
+"lbi",
+"lbj",
+"lbk",
+"lbl",
+"lbm",
+"lbn",
+"lbo",
+"lbq",
+"lbr",
+"lbs",
+"lbt",
+"lbu",
+"lbv",
+"lbw",
+"lbx",
+"lby",
+"lbz",
+"lcc",
+"lcd",
+"lce",
+"lcf",
+"lch",
+"lcl",
+"lcm",
+"lcp",
+"lcq",
+"lcs",
+"lda",
+"ldb",
+"ldd",
+"ldg",
+"ldh",
+"ldi",
+"ldj",
+"ldk",
+"ldl",
+"ldm",
+"ldn",
+"ldo",
+"ldp",
+"ldq",
+"lea",
+"leb",
+"lec",
+"led",
+"lee",
+"lef",
+"leg",
+"leh",
+"lei",
+"lej",
+"lek",
+"lel",
+"lem",
+"len",
+"leo",
+"lep",
+"leq",
+"ler",
+"les",
+"let",
+"leu",
+"lev",
+"lew",
+"lex",
+"ley",
+"lez",
+"lfa",
+"lfn",
+"lga",
+"lgb",
+"lgg",
+"lgh",
+"lgi",
+"lgk",
+"lgl",
+"lgm",
+"lgn",
+"lgq",
+"lgr",
+"lgt",
+"lgu",
+"lgz",
+"lha",
+"lhh",
+"lhi",
+"lhl",
+"lhm",
+"lhn",
+"lhp",
+"lhs",
+"lht",
+"lhu",
+"lia",
+"lib",
+"lic",
+"lid",
+"lie",
+"lif",
+"lig",
+"lih",
+"lii",
+"lij",
+"lik",
+"lil",
+"lio",
+"lip",
+"liq",
+"lir",
+"lis",
+"liu",
+"liv",
+"liw",
+"lix",
+"liy",
+"liz",
+"lja",
+"lje",
+"lji",
+"ljl",
+"ljp",
+"ljw",
+"ljx",
+"lka",
+"lkb",
+"lkc",
+"lkd",
+"lke",
+"lkh",
+"lki",
+"lkj",
+"lkl",
+"lkm",
+"lkn",
+"lko",
+"lkr",
+"lks",
+"lkt",
+"lku",
+"lky",
+"lla",
+"llb",
+"llc",
+"lld",
+"lle",
+"llf",
+"llg",
+"llh",
+"lli",
+"llj",
+"llk",
+"lll",
+"llm",
+"lln",
+"llo",
+"llp",
+"llq",
+"lls",
+"llu",
+"llx",
+"lma",
+"lmb",
+"lmc",
+"lmd",
+"lme",
+"lmf",
+"lmg",
+"lmh",
+"lmi",
+"lmj",
+"lmk",
+"lml",
+"lmm",
+"lmn",
+"lmo",
+"lmp",
+"lmq",
+"lmr",
+"lmu",
+"lmv",
+"lmw",
+"lmx",
+"lmy",
+"lmz",
+"lna",
+"lnb",
+"lnd",
+"lng",
+"lnh",
+"lni",
+"lnj",
+"lnl",
+"lnm",
+"lnn",
+"lno",
+"lns",
+"lnu",
+"lnw",
+"lnz",
+"loa",
+"lob",
+"loc",
+"loe",
+"lof",
+"log",
+"loh",
+"loi",
+"loj",
+"lok",
+"lol",
+"lom",
+"lon",
+"loo",
+"lop",
+"loq",
+"lor",
+"los",
+"lot",
+"lou",
+"lov",
+"low",
+"lox",
+"loy",
+"loz",
+"lpa",
+"lpe",
+"lpn",
+"lpo",
+"lpx",
+"lra",
+"lrc",
+"lre",
+"lrg",
+"lri",
+"lrk",
+"lrl",
+"lrm",
+"lrn",
+"lro",
+"lrr",
+"lrt",
+"lrv",
+"lrz",
+"lsa",
+"lsd",
+"lse",
+"lsg",
+"lsh",
+"lsi",
+"lsl",
+"lsm",
+"lso",
+"lsp",
+"lsr",
+"lss",
+"lst",
+"lsy",
+"ltc",
+"ltg",
+"lth",
+"lti",
+"ltn",
+"lto",
+"lts",
+"ltu",
+"lua",
+"luc",
+"lud",
+"lue",
+"luf",
+"lui",
+"luj",
+"luk",
+"lul",
+"lum",
+"lun",
+"luo",
+"lup",
+"luq",
+"lur",
+"lus",
+"lut",
+"luu",
+"luv",
+"luw",
+"luy",
+"luz",
+"lva",
+"lvk",
+"lvs",
+"lvu",
+"lwa",
+"lwe",
+"lwg",
+"lwh",
+"lwl",
+"lwm",
+"lwo",
+"lwt",
+"lwu",
+"lww",
+"lya",
+"lyg",
+"lyn",
+"lzh",
+"lzl",
+"lzn",
+"lzz",
+"maa",
+"mab",
+"mad",
+"mae",
+"maf",
+"mag",
+"mai",
+"maj",
+"mak",
+"mam",
+"man",
+"map",
+"maq",
+"mas",
+"mat",
+"mau",
+"mav",
+"maw",
+"max",
+"maz",
+"mba",
+"mbb",
+"mbc",
+"mbd",
+"mbe",
+"mbf",
+"mbh",
+"mbi",
+"mbj",
+"mbk",
+"mbl",
+"mbm",
+"mbn",
+"mbo",
+"mbp",
+"mbq",
+"mbr",
+"mbs",
+"mbt",
+"mbu",
+"mbv",
+"mbw",
+"mbx",
+"mby",
+"mbz",
+"mca",
+"mcb",
+"mcc",
+"mcd",
+"mce",
+"mcf",
+"mcg",
+"mch",
+"mci",
+"mcj",
+"mck",
+"mcl",
+"mcm",
+"mcn",
+"mco",
+"mcp",
+"mcq",
+"mcr",
+"mcs",
+"mct",
+"mcu",
+"mcv",
+"mcw",
+"mcx",
+"mcy",
+"mcz",
+"mda",
+"mdb",
+"mdc",
+"mdd",
+"mde",
+"mdf",
+"mdg",
+"mdh",
+"mdi",
+"mdj",
+"mdk",
+"mdl",
+"mdm",
+"mdn",
+"mdp",
+"mdq",
+"mdr",
+"mds",
+"mdt",
+"mdu",
+"mdv",
+"mdw",
+"mdx",
+"mdy",
+"mdz",
+"mea",
+"meb",
+"mec",
+"med",
+"mee",
+"mef",
+"meg",
+"meh",
+"mei",
+"mej",
+"mek",
+"mel",
+"mem",
+"men",
+"meo",
+"mep",
+"meq",
+"mer",
+"mes",
+"met",
+"meu",
+"mev",
+"mew",
+"mey",
+"mez",
+"mfa",
+"mfb",
+"mfc",
+"mfd",
+"mfe",
+"mff",
+"mfg",
+"mfh",
+"mfi",
+"mfj",
+"mfk",
+"mfl",
+"mfm",
+"mfn",
+"mfo",
+"mfp",
+"mfq",
+"mfr",
+"mfs",
+"mft",
+"mfu",
+"mfv",
+"mfw",
+"mfx",
+"mfy",
+"mfz",
+"mga",
+"mgb",
+"mgc",
+"mgd",
+"mge",
+"mgf",
+"mgg",
+"mgh",
+"mgi",
+"mgj",
+"mgk",
+"mgl",
+"mgm",
+"mgn",
+"mgo",
+"mgp",
+"mgq",
+"mgr",
+"mgs",
+"mgt",
+"mgu",
+"mgv",
+"mgw",
+"mgx",
+"mgy",
+"mgz",
+"mha",
+"mhb",
+"mhc",
+"mhd",
+"mhe",
+"mhf",
+"mhg",
+"mhh",
+"mhi",
+"mhj",
+"mhk",
+"mhl",
+"mhm",
+"mhn",
+"mho",
+"mhp",
+"mhq",
+"mhr",
+"mhs",
+"mht",
+"mhu",
+"mhw",
+"mhx",
+"mhy",
+"mhz",
+"mia",
+"mib",
+"mic",
+"mid",
+"mie",
+"mif",
+"mig",
+"mih",
+"mii",
+"mij",
+"mik",
+"mil",
+"mim",
+"min",
+"mio",
+"mip",
+"miq",
+"mir",
+"mis",
+"mit",
+"miu",
+"miw",
+"mix",
+"miy",
+"miz",
+"mja",
+"mjb",
+"mjc",
+"mjd",
+"mje",
+"mjg",
+"mjh",
+"mji",
+"mjj",
+"mjk",
+"mjl",
+"mjm",
+"mjn",
+"mjo",
+"mjp",
+"mjq",
+"mjr",
+"mjs",
+"mjt",
+"mju",
+"mjv",
+"mjw",
+"mjx",
+"mjy",
+"mjz",
+"mka",
+"mkb",
+"mkc",
+"mke",
+"mkf",
+"mkg",
+"mkh",
+"mki",
+"mkj",
+"mkk",
+"mkl",
+"mkm",
+"mkn",
+"mko",
+"mkp",
+"mkq",
+"mkr",
+"mks",
+"mkt",
+"mku",
+"mkv",
+"mkw",
+"mkx",
+"mky",
+"mkz",
+"mla",
+"mlb",
+"mlc",
+"mld",
+"mle",
+"mlf",
+"mlh",
+"mli",
+"mlj",
+"mlk",
+"mll",
+"mlm",
+"mln",
+"mlo",
+"mlp",
+"mlq",
+"mlr",
+"mls",
+"mlu",
+"mlv",
+"mlw",
+"mlx",
+"mlz",
+"mma",
+"mmb",
+"mmc",
+"mmd",
+"mme",
+"mmf",
+"mmg",
+"mmh",
+"mmi",
+"mmj",
+"mmk",
+"mml",
+"mmm",
+"mmn",
+"mmo",
+"mmp",
+"mmq",
+"mmr",
+"mmt",
+"mmu",
+"mmv",
+"mmw",
+"mmx",
+"mmy",
+"mmz",
+"mna",
+"mnb",
+"mnc",
+"mnd",
+"mne",
+"mnf",
+"mng",
+"mnh",
+"mni",
+"mnj",
+"mnk",
+"mnl",
+"mnm",
+"mnn",
+"mno",
+"mnp",
+"mnq",
+"mnr",
+"mns",
+"mnt",
+"mnu",
+"mnv",
+"mnw",
+"mnx",
+"mny",
+"mnz",
+"moa",
+"moc",
+"mod",
+"moe",
+"mof",
+"mog",
+"moh",
+"moi",
+"moj",
+"mok",
+"mom",
+"moo",
+"mop",
+"moq",
+"mor",
+"mos",
+"mot",
+"mou",
+"mov",
+"mow",
+"mox",
+"moy",
+"moz",
+"mpa",
+"mpb",
+"mpc",
+"mpd",
+"mpe",
+"mpg",
+"mph",
+"mpi",
+"mpj",
+"mpk",
+"mpl",
+"mpm",
+"mpn",
+"mpo",
+"mpp",
+"mpq",
+"mpr",
+"mps",
+"mpt",
+"mpu",
+"mpv",
+"mpw",
+"mpx",
+"mpy",
+"mpz",
+"mqa",
+"mqb",
+"mqc",
+"mqe",
+"mqf",
+"mqg",
+"mqh",
+"mqi",
+"mqj",
+"mqk",
+"mql",
+"mqm",
+"mqn",
+"mqo",
+"mqp",
+"mqq",
+"mqr",
+"mqs",
+"mqt",
+"mqu",
+"mqv",
+"mqw",
+"mqx",
+"mqy",
+"mqz",
+"mra",
+"mrb",
+"mrc",
+"mrd",
+"mre",
+"mrf",
+"mrg",
+"mrh",
+"mrj",
+"mrk",
+"mrl",
+"mrm",
+"mrn",
+"mro",
+"mrp",
+"mrq",
+"mrr",
+"mrs",
+"mrt",
+"mru",
+"mrv",
+"mrw",
+"mrx",
+"mry",
+"mrz",
+"msb",
+"msc",
+"msd",
+"mse",
+"msf",
+"msg",
+"msh",
+"msi",
+"msj",
+"msk",
+"msl",
+"msm",
+"msn",
+"mso",
+"msp",
+"msq",
+"msr",
+"mss",
+"mst",
+"msu",
+"msv",
+"msw",
+"msx",
+"msy",
+"msz",
+"mta",
+"mtb",
+"mtc",
+"mtd",
+"mte",
+"mtf",
+"mtg",
+"mth",
+"mti",
+"mtj",
+"mtk",
+"mtl",
+"mtm",
+"mtn",
+"mto",
+"mtp",
+"mtq",
+"mtr",
+"mts",
+"mtt",
+"mtu",
+"mtv",
+"mtw",
+"mtx",
+"mty",
+"mua",
+"mub",
+"muc",
+"mud",
+"mue",
+"mug",
+"muh",
+"mui",
+"muj",
+"muk",
+"mul",
+"mum",
+"mun",
+"muo",
+"mup",
+"muq",
+"mur",
+"mus",
+"mut",
+"muu",
+"muv",
+"mux",
+"muy",
+"muz",
+"mva",
+"mvb",
+"mvd",
+"mve",
+"mvf",
+"mvg",
+"mvh",
+"mvi",
+"mvk",
+"mvl",
+"mvm",
+"mvn",
+"mvo",
+"mvp",
+"mvq",
+"mvr",
+"mvs",
+"mvt",
+"mvu",
+"mvv",
+"mvw",
+"mvx",
+"mvy",
+"mvz",
+"mwa",
+"mwb",
+"mwc",
+"mwd",
+"mwe",
+"mwf",
+"mwg",
+"mwh",
+"mwi",
+"mwj",
+"mwk",
+"mwl",
+"mwm",
+"mwn",
+"mwo",
+"mwp",
+"mwq",
+"mwr",
+"mws",
+"mwt",
+"mwu",
+"mwv",
+"mww",
+"mwx",
+"mwy",
+"mwz",
+"mxa",
+"mxb",
+"mxc",
+"mxd",
+"mxe",
+"mxf",
+"mxg",
+"mxh",
+"mxi",
+"mxj",
+"mxk",
+"mxl",
+"mxm",
+"mxn",
+"mxo",
+"mxp",
+"mxq",
+"mxr",
+"mxs",
+"mxt",
+"mxu",
+"mxv",
+"mxw",
+"mxx",
+"mxy",
+"mxz",
+"myb",
+"myc",
+"myd",
+"mye",
+"myf",
+"myg",
+"myh",
+"myi",
+"myj",
+"myk",
+"myl",
+"mym",
+"myn",
+"myo",
+"myp",
+"myq",
+"myr",
+"mys",
+"myt",
+"myu",
+"myv",
+"myw",
+"myx",
+"myy",
+"myz",
+"mza",
+"mzb",
+"mzc",
+"mzd",
+"mze",
+"mzg",
+"mzh",
+"mzi",
+"mzj",
+"mzk",
+"mzl",
+"mzm",
+"mzn",
+"mzo",
+"mzp",
+"mzq",
+"mzr",
+"mzs",
+"mzt",
+"mzu",
+"mzv",
+"mzw",
+"mzx",
+"mzy",
+"mzz",
+"naa",
+"nab",
+"nac",
+"nad",
+"nae",
+"naf",
+"nag",
+"nah",
+"nai",
+"naj",
+"nak",
+"nal",
+"nam",
+"nan",
+"nao",
+"nap",
+"naq",
+"nar",
+"nas",
+"nat",
+"naw",
+"nax",
+"nay",
+"naz",
+"nba",
+"nbb",
+"nbc",
+"nbd",
+"nbe",
+"nbf",
+"nbg",
+"nbh",
+"nbi",
+"nbj",
+"nbk",
+"nbm",
+"nbn",
+"nbo",
+"nbp",
+"nbq",
+"nbr",
+"nbs",
+"nbt",
+"nbu",
+"nbv",
+"nbw",
+"nbx",
+"nby",
+"nca",
+"ncb",
+"ncc",
+"ncd",
+"nce",
+"ncf",
+"ncg",
+"nch",
+"nci",
+"ncj",
+"nck",
+"ncl",
+"ncm",
+"ncn",
+"nco",
+"ncp",
+"ncq",
+"ncr",
+"ncs",
+"nct",
+"ncu",
+"ncx",
+"ncz",
+"nda",
+"ndb",
+"ndc",
+"ndd",
+"ndf",
+"ndg",
+"ndh",
+"ndi",
+"ndj",
+"ndk",
+"ndl",
+"ndm",
+"ndn",
+"ndp",
+"ndq",
+"ndr",
+"nds",
+"ndt",
+"ndu",
+"ndv",
+"ndw",
+"ndx",
+"ndy",
+"ndz",
+"nea",
+"neb",
+"nec",
+"ned",
+"nee",
+"nef",
+"neg",
+"neh",
+"nei",
+"nej",
+"nek",
+"nem",
+"nen",
+"neo",
+"neq",
+"ner",
+"nes",
+"net",
+"neu",
+"nev",
+"new",
+"nex",
+"ney",
+"nez",
+"nfa",
+"nfd",
+"nfl",
+"nfr",
+"nfu",
+"nga",
+"ngb",
+"ngc",
+"ngd",
+"nge",
+"ngf",
+"ngg",
+"ngh",
+"ngi",
+"ngj",
+"ngk",
+"ngl",
+"ngm",
+"ngn",
+"ngo",
+"ngp",
+"ngq",
+"ngr",
+"ngs",
+"ngt",
+"ngu",
+"ngv",
+"ngw",
+"ngx",
+"ngy",
+"ngz",
+"nha",
+"nhb",
+"nhc",
+"nhd",
+"nhe",
+"nhf",
+"nhg",
+"nhh",
+"nhi",
+"nhk",
+"nhm",
+"nhn",
+"nho",
+"nhp",
+"nhq",
+"nhr",
+"nht",
+"nhu",
+"nhv",
+"nhw",
+"nhx",
+"nhy",
+"nhz",
+"nia",
+"nib",
+"nic",
+"nid",
+"nie",
+"nif",
+"nig",
+"nih",
+"nii",
+"nij",
+"nik",
+"nil",
+"nim",
+"nin",
+"nio",
+"niq",
+"nir",
+"nis",
+"nit",
+"niu",
+"niv",
+"niw",
+"nix",
+"niy",
+"niz",
+"nja",
+"njb",
+"njd",
+"njh",
+"nji",
+"njj",
+"njl",
+"njm",
+"njn",
+"njo",
+"njr",
+"njs",
+"njt",
+"nju",
+"njx",
+"njy",
+"njz",
+"nka",
+"nkb",
+"nkc",
+"nkd",
+"nke",
+"nkf",
+"nkg",
+"nkh",
+"nki",
+"nkj",
+"nkk",
+"nkm",
+"nkn",
+"nko",
+"nkp",
+"nkq",
+"nkr",
+"nks",
+"nkt",
+"nku",
+"nkv",
+"nkw",
+"nkx",
+"nkz",
+"nla",
+"nlc",
+"nle",
+"nlg",
+"nli",
+"nlj",
+"nlk",
+"nll",
+"nln",
+"nlo",
+"nlq",
+"nlr",
+"nlu",
+"nlv",
+"nlw",
+"nlx",
+"nly",
+"nlz",
+"nma",
+"nmb",
+"nmc",
+"nmd",
+"nme",
+"nmf",
+"nmg",
+"nmh",
+"nmi",
+"nmj",
+"nmk",
+"nml",
+"nmm",
+"nmn",
+"nmo",
+"nmp",
+"nmq",
+"nmr",
+"nms",
+"nmt",
+"nmu",
+"nmv",
+"nmw",
+"nmx",
+"nmy",
+"nmz",
+"nna",
+"nnb",
+"nnc",
+"nnd",
+"nne",
+"nnf",
+"nng",
+"nnh",
+"nni",
+"nnj",
+"nnk",
+"nnl",
+"nnm",
+"nnn",
+"nnp",
+"nnq",
+"nnr",
+"nns",
+"nnt",
+"nnu",
+"nnv",
+"nnw",
+"nnx",
+"nny",
+"nnz",
+"noa",
+"noc",
+"nod",
+"noe",
+"nof",
+"nog",
+"noh",
+"noi",
+"noj",
+"nok",
+"nol",
+"nom",
+"non",
+"noo",
+"nop",
+"noq",
+"nos",
+"not",
+"nou",
+"nov",
+"now",
+"noy",
+"noz",
+"npa",
+"npb",
+"npg",
+"nph",
+"npi",
+"npl",
+"npn",
+"npo",
+"nps",
+"npu",
+"npx",
+"npy",
+"nqg",
+"nqk",
+"nql",
+"nqm",
+"nqn",
+"nqo",
+"nqq",
+"nqy",
+"nra",
+"nrb",
+"nrc",
+"nre",
+"nrf",
+"nrg",
+"nri",
+"nrk",
+"nrl",
+"nrm",
+"nrn",
+"nrp",
+"nrr",
+"nrt",
+"nru",
+"nrx",
+"nrz",
+"nsa",
+"nsc",
+"nsd",
+"nse",
+"nsf",
+"nsg",
+"nsh",
+"nsi",
+"nsk",
+"nsl",
+"nsm",
+"nsn",
+"nso",
+"nsp",
+"nsq",
+"nsr",
+"nss",
+"nst",
+"nsu",
+"nsv",
+"nsw",
+"nsx",
+"nsy",
+"nsz",
+"ntd",
+"nte",
+"ntg",
+"nti",
+"ntj",
+"ntk",
+"ntm",
+"nto",
+"ntp",
+"ntr",
+"nts",
+"ntu",
+"ntw",
+"ntx",
+"nty",
+"ntz",
+"nua",
+"nub",
+"nuc",
+"nud",
+"nue",
+"nuf",
+"nug",
+"nuh",
+"nui",
+"nuj",
+"nuk",
+"nul",
+"num",
+"nun",
+"nuo",
+"nup",
+"nuq",
+"nur",
+"nus",
+"nut",
+"nuu",
+"nuv",
+"nuw",
+"nux",
+"nuy",
+"nuz",
+"nvh",
+"nvm",
+"nvo",
+"nwa",
+"nwb",
+"nwc",
+"nwe",
+"nwg",
+"nwi",
+"nwm",
+"nwo",
+"nwr",
+"nwx",
+"nwy",
+"nxa",
+"nxd",
+"nxe",
+"nxg",
+"nxi",
+"nxk",
+"nxl",
+"nxm",
+"nxn",
+"nxo",
+"nxq",
+"nxr",
+"nxu",
+"nxx",
+"nyb",
+"nyc",
+"nyd",
+"nye",
+"nyf",
+"nyg",
+"nyh",
+"nyi",
+"nyj",
+"nyk",
+"nyl",
+"nym",
+"nyn",
+"nyo",
+"nyp",
+"nyq",
+"nyr",
+"nys",
+"nyt",
+"nyu",
+"nyv",
+"nyw",
+"nyx",
+"nyy",
+"nza",
+"nzb",
+"nzi",
+"nzk",
+"nzm",
+"nzs",
+"nzu",
+"nzy",
+"nzz",
+"oaa",
+"oac",
+"oar",
+"oav",
+"obi",
+"obk",
+"obl",
+"obm",
+"obo",
+"obr",
+"obt",
+"obu",
+"oca",
+"och",
+"oco",
+"ocu",
+"oda",
+"odk",
+"odt",
+"odu",
+"ofo",
+"ofs",
+"ofu",
+"ogb",
+"ogc",
+"oge",
+"ogg",
+"ogo",
+"ogu",
+"oht",
+"ohu",
+"oia",
+"oin",
+"ojb",
+"ojc",
+"ojg",
+"ojp",
+"ojs",
+"ojv",
+"ojw",
+"oka",
+"okb",
+"okd",
+"oke",
+"okg",
+"okh",
+"oki",
+"okj",
+"okk",
+"okl",
+"okm",
+"okn",
+"oko",
+"okr",
+"oks",
+"oku",
+"okv",
+"okx",
+"ola",
+"old",
+"ole",
+"olk",
+"olm",
+"olo",
+"olr",
+"olt",
+"olu",
+"oma",
+"omb",
+"omc",
+"ome",
+"omg",
+"omi",
+"omk",
+"oml",
+"omn",
+"omo",
+"omp",
+"omq",
+"omr",
+"omt",
+"omu",
+"omv",
+"omw",
+"omx",
+"ona",
+"onb",
+"one",
+"ong",
+"oni",
+"onj",
+"onk",
+"onn",
+"ono",
+"onp",
+"onr",
+"ons",
+"ont",
+"onu",
+"onw",
+"onx",
+"ood",
+"oog",
+"oon",
+"oor",
+"oos",
+"opa",
+"opk",
+"opm",
+"opo",
+"opt",
+"opy",
+"ora",
+"orc",
+"ore",
+"org",
+"orh",
+"orn",
+"oro",
+"orr",
+"ors",
+"ort",
+"oru",
+"orv",
+"orw",
+"orx",
+"ory",
+"orz",
+"osa",
+"osc",
+"osi",
+"oso",
+"osp",
+"ost",
+"osu",
+"osx",
+"ota",
+"otb",
+"otd",
+"ote",
+"oti",
+"otk",
+"otl",
+"otm",
+"otn",
+"oto",
+"otq",
+"otr",
+"ots",
+"ott",
+"otu",
+"otw",
+"otx",
+"oty",
+"otz",
+"oua",
+"oub",
+"oue",
+"oui",
+"oum",
+"oun",
+"ovd",
+"owi",
+"owl",
+"oyb",
+"oyd",
+"oym",
+"oyy",
+"ozm",
+"paa",
+"pab",
+"pac",
+"pad",
+"pae",
+"paf",
+"pag",
+"pah",
+"pai",
+"pak",
+"pal",
+"pam",
+"pao",
+"pap",
+"paq",
+"par",
+"pas",
+"pat",
+"pau",
+"pav",
+"paw",
+"pax",
+"pay",
+"paz",
+"pbb",
+"pbc",
+"pbe",
+"pbf",
+"pbg",
+"pbh",
+"pbi",
+"pbl",
+"pbn",
+"pbo",
+"pbp",
+"pbr",
+"pbs",
+"pbt",
+"pbu",
+"pbv",
+"pby",
+"pbz",
+"pca",
+"pcb",
+"pcc",
+"pcd",
+"pce",
+"pcf",
+"pcg",
+"pch",
+"pci",
+"pcj",
+"pck",
+"pcl",
+"pcm",
+"pcn",
+"pcp",
+"pcr",
+"pcw",
+"pda",
+"pdc",
+"pdi",
+"pdn",
+"pdo",
+"pdt",
+"pdu",
+"pea",
+"peb",
+"ped",
+"pee",
+"pef",
+"peg",
+"peh",
+"pei",
+"pej",
+"pek",
+"pel",
+"pem",
+"peo",
+"pep",
+"peq",
+"pes",
+"pev",
+"pex",
+"pey",
+"pez",
+"pfa",
+"pfe",
+"pfl",
+"pga",
+"pgd",
+"pgg",
+"pgi",
+"pgk",
+"pgl",
+"pgn",
+"pgs",
+"pgu",
+"pgy",
+"pgz",
+"pha",
+"phd",
+"phg",
+"phh",
+"phi",
+"phk",
+"phl",
+"phm",
+"phn",
+"pho",
+"phq",
+"phr",
+"pht",
+"phu",
+"phv",
+"phw",
+"pia",
+"pib",
+"pic",
+"pid",
+"pie",
+"pif",
+"pig",
+"pih",
+"pii",
+"pij",
+"pil",
+"pim",
+"pin",
+"pio",
+"pip",
+"pir",
+"pis",
+"pit",
+"piu",
+"piv",
+"piw",
+"pix",
+"piy",
+"piz",
+"pjt",
+"pka",
+"pkb",
+"pkc",
+"pkg",
+"pkh",
+"pkn",
+"pko",
+"pkp",
+"pkr",
+"pks",
+"pkt",
+"pku",
+"pla",
+"plb",
+"plc",
+"pld",
+"ple",
+"plf",
+"plg",
+"plh",
+"plj",
+"plk",
+"pll",
+"pln",
+"plo",
+"plp",
+"plq",
+"plr",
+"pls",
+"plt",
+"plu",
+"plv",
+"plw",
+"ply",
+"plz",
+"pma",
+"pmb",
+"pmc",
+"pmd",
+"pme",
+"pmf",
+"pmh",
+"pmi",
+"pmj",
+"pmk",
+"pml",
+"pmm",
+"pmn",
+"pmo",
+"pmq",
+"pmr",
+"pms",
+"pmt",
+"pmu",
+"pmw",
+"pmx",
+"pmy",
+"pmz",
+"pna",
+"pnb",
+"pnc",
+"pne",
+"png",
+"pnh",
+"pni",
+"pnj",
+"pnk",
+"pnl",
+"pnm",
+"pnn",
+"pno",
+"pnp",
+"pnq",
+"pnr",
+"pns",
+"pnt",
+"pnu",
+"pnv",
+"pnw",
+"pnx",
+"pny",
+"pnz",
+"poc",
+"pod",
+"poe",
+"pof",
+"pog",
+"poh",
+"poi",
+"pok",
+"pom",
+"pon",
+"poo",
+"pop",
+"poq",
+"pos",
+"pot",
+"pov",
+"pow",
+"pox",
+"poy",
+"poz",
+"ppa",
+"ppe",
+"ppi",
+"ppk",
+"ppl",
+"ppm",
+"ppn",
+"ppo",
+"ppp",
+"ppq",
+"ppr",
+"pps",
+"ppt",
+"ppu",
+"pqa",
+"pqe",
+"pqm",
+"pqw",
+"pra",
+"prb",
+"prc",
+"prd",
+"pre",
+"prf",
+"prg",
+"prh",
+"pri",
+"prk",
+"prl",
+"prm",
+"prn",
+"pro",
+"prp",
+"prq",
+"prr",
+"prs",
+"prt",
+"pru",
+"prw",
+"prx",
+"pry",
+"prz",
+"psa",
+"psc",
+"psd",
+"pse",
+"psg",
+"psh",
+"psi",
+"psl",
+"psm",
+"psn",
+"pso",
+"psp",
+"psq",
+"psr",
+"pss",
+"pst",
+"psu",
+"psw",
+"psy",
+"pta",
+"pth",
+"pti",
+"ptn",
+"pto",
+"ptp",
+"ptq",
+"ptr",
+"ptt",
+"ptu",
+"ptv",
+"ptw",
+"pty",
+"pua",
+"pub",
+"puc",
+"pud",
+"pue",
+"puf",
+"pug",
+"pui",
+"puj",
+"puk",
+"pum",
+"puo",
+"pup",
+"puq",
+"pur",
+"put",
+"puu",
+"puw",
+"pux",
+"puy",
+"puz",
+"pwa",
+"pwb",
+"pwg",
+"pwi",
+"pwm",
+"pwn",
+"pwo",
+"pwr",
+"pww",
+"pxm",
+"pye",
+"pym",
+"pyn",
+"pys",
+"pyu",
+"pyx",
+"pyy",
+"pzn",
+"qaa..qtz",
+"qua",
+"qub",
+"quc",
+"qud",
+"quf",
+"qug",
+"quh",
+"qui",
+"quk",
+"qul",
+"qum",
+"qun",
+"qup",
+"quq",
+"qur",
+"qus",
+"quv",
+"quw",
+"qux",
+"quy",
+"quz",
+"qva",
+"qvc",
+"qve",
+"qvh",
+"qvi",
+"qvj",
+"qvl",
+"qvm",
+"qvn",
+"qvo",
+"qvp",
+"qvs",
+"qvw",
+"qvy",
+"qvz",
+"qwa",
+"qwc",
+"qwe",
+"qwh",
+"qwm",
+"qws",
+"qwt",
+"qxa",
+"qxc",
+"qxh",
+"qxl",
+"qxn",
+"qxo",
+"qxp",
+"qxq",
+"qxr",
+"qxs",
+"qxt",
+"qxu",
+"qxw",
+"qya",
+"qyp",
+"raa",
+"rab",
+"rac",
+"rad",
+"raf",
+"rag",
+"rah",
+"rai",
+"raj",
+"rak",
+"ral",
+"ram",
+"ran",
+"rao",
+"rap",
+"raq",
+"rar",
+"ras",
+"rat",
+"rau",
+"rav",
+"raw",
+"rax",
+"ray",
+"raz",
+"rbb",
+"rbk",
+"rbl",
+"rbp",
+"rcf",
+"rdb",
+"rea",
+"reb",
+"ree",
+"reg",
+"rei",
+"rej",
+"rel",
+"rem",
+"ren",
+"rer",
+"res",
+"ret",
+"rey",
+"rga",
+"rge",
+"rgk",
+"rgn",
+"rgr",
+"rgs",
+"rgu",
+"rhg",
+"rhp",
+"ria",
+"rie",
+"rif",
+"ril",
+"rim",
+"rin",
+"rir",
+"rit",
+"riu",
+"rjg",
+"rji",
+"rjs",
+"rka",
+"rkb",
+"rkh",
+"rki",
+"rkm",
+"rkt",
+"rkw",
+"rma",
+"rmb",
+"rmc",
+"rmd",
+"rme",
+"rmf",
+"rmg",
+"rmh",
+"rmi",
+"rmk",
+"rml",
+"rmm",
+"rmn",
+"rmo",
+"rmp",
+"rmq",
+"rmr",
+"rms",
+"rmt",
+"rmu",
+"rmv",
+"rmw",
+"rmx",
+"rmy",
+"rmz",
+"rna",
+"rnd",
+"rng",
+"rnl",
+"rnn",
+"rnp",
+"rnr",
+"rnw",
+"roa",
+"rob",
+"roc",
+"rod",
+"roe",
+"rof",
+"rog",
+"rol",
+"rom",
+"roo",
+"rop",
+"ror",
+"rou",
+"row",
+"rpn",
+"rpt",
+"rri",
+"rro",
+"rrt",
+"rsb",
+"rsi",
+"rsl",
+"rsm",
+"rtc",
+"rth",
+"rtm",
+"rts",
+"rtw",
+"rub",
+"ruc",
+"rue",
+"ruf",
+"rug",
+"ruh",
+"rui",
+"ruk",
+"ruo",
+"rup",
+"ruq",
+"rut",
+"ruu",
+"ruy",
+"ruz",
+"rwa",
+"rwk",
+"rwm",
+"rwo",
+"rwr",
+"rxd",
+"rxw",
+"ryn",
+"rys",
+"ryu",
+"rzh",
+"saa",
+"sab",
+"sac",
+"sad",
+"sae",
+"saf",
+"sah",
+"sai",
+"saj",
+"sak",
+"sal",
+"sam",
+"sao",
+"sap",
+"saq",
+"sar",
+"sas",
+"sat",
+"sau",
+"sav",
+"saw",
+"sax",
+"say",
+"saz",
+"sba",
+"sbb",
+"sbc",
+"sbd",
+"sbe",
+"sbf",
+"sbg",
+"sbh",
+"sbi",
+"sbj",
+"sbk",
+"sbl",
+"sbm",
+"sbn",
+"sbo",
+"sbp",
+"sbq",
+"sbr",
+"sbs",
+"sbt",
+"sbu",
+"sbv",
+"sbw",
+"sbx",
+"sby",
+"sbz",
+"sca",
+"scb",
+"sce",
+"scf",
+"scg",
+"sch",
+"sci",
+"sck",
+"scl",
+"scn",
+"sco",
+"scp",
+"scq",
+"scs",
+"sct",
+"scu",
+"scv",
+"scw",
+"scx",
+"sda",
+"sdb",
+"sdc",
+"sde",
+"sdf",
+"sdg",
+"sdh",
+"sdj",
+"sdk",
+"sdl",
+"sdm",
+"sdn",
+"sdo",
+"sdp",
+"sdr",
+"sds",
+"sdt",
+"sdu",
+"sdv",
+"sdx",
+"sdz",
+"sea",
+"seb",
+"sec",
+"sed",
+"see",
+"sef",
+"seg",
+"seh",
+"sei",
+"sej",
+"sek",
+"sel",
+"sem",
+"sen",
+"seo",
+"sep",
+"seq",
+"ser",
+"ses",
+"set",
+"seu",
+"sev",
+"sew",
+"sey",
+"sez",
+"sfb",
+"sfe",
+"sfm",
+"sfs",
+"sfw",
+"sga",
+"sgb",
+"sgc",
+"sgd",
+"sge",
+"sgg",
+"sgh",
+"sgi",
+"sgj",
+"sgk",
+"sgl",
+"sgm",
+"sgn",
+"sgo",
+"sgp",
+"sgr",
+"sgs",
+"sgt",
+"sgu",
+"sgw",
+"sgx",
+"sgy",
+"sgz",
+"sha",
+"shb",
+"shc",
+"shd",
+"she",
+"shg",
+"shh",
+"shi",
+"shj",
+"shk",
+"shl",
+"shm",
+"shn",
+"sho",
+"shp",
+"shq",
+"shr",
+"shs",
+"sht",
+"shu",
+"shv",
+"shw",
+"shx",
+"shy",
+"shz",
+"sia",
+"sib",
+"sid",
+"sie",
+"sif",
+"sig",
+"sih",
+"sii",
+"sij",
+"sik",
+"sil",
+"sim",
+"sio",
+"sip",
+"siq",
+"sir",
+"sis",
+"sit",
+"siu",
+"siv",
+"siw",
+"six",
+"siy",
+"siz",
+"sja",
+"sjb",
+"sjd",
+"sje",
+"sjg",
+"sjk",
+"sjl",
+"sjm",
+"sjn",
+"sjo",
+"sjp",
+"sjr",
+"sjs",
+"sjt",
+"sju",
+"sjw",
+"ska",
+"skb",
+"skc",
+"skd",
+"ske",
+"skf",
+"skg",
+"skh",
+"ski",
+"skj",
+"skk",
+"skm",
+"skn",
+"sko",
+"skp",
+"skq",
+"skr",
+"sks",
+"skt",
+"sku",
+"skv",
+"skw",
+"skx",
+"sky",
+"skz",
+"sla",
+"slc",
+"sld",
+"sle",
+"slf",
+"slg",
+"slh",
+"sli",
+"slj",
+"sll",
+"slm",
+"sln",
+"slp",
+"slq",
+"slr",
+"sls",
+"slt",
+"slu",
+"slw",
+"slx",
+"sly",
+"slz",
+"sma",
+"smb",
+"smc",
+"smd",
+"smf",
+"smg",
+"smh",
+"smi",
+"smj",
+"smk",
+"sml",
+"smm",
+"smn",
+"smp",
+"smq",
+"smr",
+"sms",
+"smt",
+"smu",
+"smv",
+"smw",
+"smx",
+"smy",
+"smz",
+"snb",
+"snc",
+"sne",
+"snf",
+"sng",
+"snh",
+"sni",
+"snj",
+"snk",
+"snl",
+"snm",
+"snn",
+"sno",
+"snp",
+"snq",
+"snr",
+"sns",
+"snu",
+"snv",
+"snw",
+"snx",
+"sny",
+"snz",
+"soa",
+"sob",
+"soc",
+"sod",
+"soe",
+"sog",
+"soh",
+"soi",
+"soj",
+"sok",
+"sol",
+"son",
+"soo",
+"sop",
+"soq",
+"sor",
+"sos",
+"sou",
+"sov",
+"sow",
+"sox",
+"soy",
+"soz",
+"spb",
+"spc",
+"spd",
+"spe",
+"spg",
+"spi",
+"spk",
+"spl",
+"spm",
+"spn",
+"spo",
+"spp",
+"spq",
+"spr",
+"sps",
+"spt",
+"spu",
+"spv",
+"spx",
+"spy",
+"sqa",
+"sqh",
+"sqj",
+"sqk",
+"sqm",
+"sqn",
+"sqo",
+"sqq",
+"sqr",
+"sqs",
+"sqt",
+"squ",
+"sra",
+"srb",
+"src",
+"sre",
+"srf",
+"srg",
+"srh",
+"sri",
+"srk",
+"srl",
+"srm",
+"srn",
+"sro",
+"srq",
+"srr",
+"srs",
+"srt",
+"sru",
+"srv",
+"srw",
+"srx",
+"sry",
+"srz",
+"ssa",
+"ssb",
+"ssc",
+"ssd",
+"sse",
+"ssf",
+"ssg",
+"ssh",
+"ssi",
+"ssj",
+"ssk",
+"ssl",
+"ssm",
+"ssn",
+"sso",
+"ssp",
+"ssq",
+"ssr",
+"sss",
+"sst",
+"ssu",
+"ssv",
+"ssx",
+"ssy",
+"ssz",
+"sta",
+"stb",
+"std",
+"ste",
+"stf",
+"stg",
+"sth",
+"sti",
+"stj",
+"stk",
+"stl",
+"stm",
+"stn",
+"sto",
+"stp",
+"stq",
+"str",
+"sts",
+"stt",
+"stu",
+"stv",
+"stw",
+"sty",
+"sua",
+"sub",
+"suc",
+"sue",
+"sug",
+"sui",
+"suj",
+"suk",
+"sul",
+"sum",
+"suq",
+"sur",
+"sus",
+"sut",
+"suv",
+"suw",
+"sux",
+"suy",
+"suz",
+"sva",
+"svb",
+"svc",
+"sve",
+"svk",
+"svm",
+"svr",
+"svs",
+"svx",
+"swb",
+"swc",
+"swf",
+"swg",
+"swh",
+"swi",
+"swj",
+"swk",
+"swl",
+"swm",
+"swn",
+"swo",
+"swp",
+"swq",
+"swr",
+"sws",
+"swt",
+"swu",
+"swv",
+"sww",
+"swx",
+"swy",
+"sxb",
+"sxc",
+"sxe",
+"sxg",
+"sxk",
+"sxl",
+"sxm",
+"sxn",
+"sxo",
+"sxr",
+"sxs",
+"sxu",
+"sxw",
+"sya",
+"syb",
+"syc",
+"syd",
+"syi",
+"syk",
+"syl",
+"sym",
+"syn",
+"syo",
+"syr",
+"sys",
+"syw",
+"syx",
+"syy",
+"sza",
+"szb",
+"szc",
+"szd",
+"sze",
+"szg",
+"szl",
+"szn",
+"szp",
+"szs",
+"szv",
+"szw",
+"taa",
+"tab",
+"tac",
+"tad",
+"tae",
+"taf",
+"tag",
+"tai",
+"taj",
+"tak",
+"tal",
+"tan",
+"tao",
+"tap",
+"taq",
+"tar",
+"tas",
+"tau",
+"tav",
+"taw",
+"tax",
+"tay",
+"taz",
+"tba",
+"tbb",
+"tbc",
+"tbd",
+"tbe",
+"tbf",
+"tbg",
+"tbh",
+"tbi",
+"tbj",
+"tbk",
+"tbl",
+"tbm",
+"tbn",
+"tbo",
+"tbp",
+"tbq",
+"tbr",
+"tbs",
+"tbt",
+"tbu",
+"tbv",
+"tbw",
+"tbx",
+"tby",
+"tbz",
+"tca",
+"tcb",
+"tcc",
+"tcd",
+"tce",
+"tcf",
+"tcg",
+"tch",
+"tci",
+"tck",
+"tcl",
+"tcm",
+"tcn",
+"tco",
+"tcp",
+"tcq",
+"tcs",
+"tct",
+"tcu",
+"tcw",
+"tcx",
+"tcy",
+"tcz",
+"tda",
+"tdb",
+"tdc",
+"tdd",
+"tde",
+"tdf",
+"tdg",
+"tdh",
+"tdi",
+"tdj",
+"tdk",
+"tdl",
+"tdm",
+"tdn",
+"tdo",
+"tdq",
+"tdr",
+"tds",
+"tdt",
+"tdu",
+"tdv",
+"tdx",
+"tdy",
+"tea",
+"teb",
+"tec",
+"ted",
+"tee",
+"tef",
+"teg",
+"teh",
+"tei",
+"tek",
+"tem",
+"ten",
+"teo",
+"tep",
+"teq",
+"ter",
+"tes",
+"tet",
+"teu",
+"tev",
+"tew",
+"tex",
+"tey",
+"tfi",
+"tfn",
+"tfo",
+"tfr",
+"tft",
+"tga",
+"tgb",
+"tgc",
+"tgd",
+"tge",
+"tgf",
+"tgg",
+"tgh",
+"tgi",
+"tgj",
+"tgn",
+"tgo",
+"tgp",
+"tgq",
+"tgr",
+"tgs",
+"tgt",
+"tgu",
+"tgv",
+"tgw",
+"tgx",
+"tgy",
+"tgz",
+"thc",
+"thd",
+"the",
+"thf",
+"thh",
+"thi",
+"thk",
+"thl",
+"thm",
+"thn",
+"thp",
+"thq",
+"thr",
+"ths",
+"tht",
+"thu",
+"thv",
+"thw",
+"thx",
+"thy",
+"thz",
+"tia",
+"tic",
+"tid",
+"tie",
+"tif",
+"tig",
+"tih",
+"tii",
+"tij",
+"tik",
+"til",
+"tim",
+"tin",
+"tio",
+"tip",
+"tiq",
+"tis",
+"tit",
+"tiu",
+"tiv",
+"tiw",
+"tix",
+"tiy",
+"tiz",
+"tja",
+"tjg",
+"tji",
+"tjl",
+"tjm",
+"tjn",
+"tjo",
+"tjs",
+"tju",
+"tjw",
+"tka",
+"tkb",
+"tkd",
+"tke",
+"tkf",
+"tkg",
+"tkk",
+"tkl",
+"tkm",
+"tkn",
+"tkp",
+"tkq",
+"tkr",
+"tks",
+"tkt",
+"tku",
+"tkv",
+"tkw",
+"tkx",
+"tkz",
+"tla",
+"tlb",
+"tlc",
+"tld",
+"tlf",
+"tlg",
+"tlh",
+"tli",
+"tlj",
+"tlk",
+"tll",
+"tlm",
+"tln",
+"tlo",
+"tlp",
+"tlq",
+"tlr",
+"tls",
+"tlt",
+"tlu",
+"tlv",
+"tlw",
+"tlx",
+"tly",
+"tma",
+"tmb",
+"tmc",
+"tmd",
+"tme",
+"tmf",
+"tmg",
+"tmh",
+"tmi",
+"tmj",
+"tmk",
+"tml",
+"tmm",
+"tmn",
+"tmo",
+"tmp",
+"tmq",
+"tmr",
+"tms",
+"tmt",
+"tmu",
+"tmv",
+"tmw",
+"tmy",
+"tmz",
+"tna",
+"tnb",
+"tnc",
+"tnd",
+"tne",
+"tnf",
+"tng",
+"tnh",
+"tni",
+"tnk",
+"tnl",
+"tnm",
+"tnn",
+"tno",
+"tnp",
+"tnq",
+"tnr",
+"tns",
+"tnt",
+"tnu",
+"tnv",
+"tnw",
+"tnx",
+"tny",
+"tnz",
+"tob",
+"toc",
+"tod",
+"toe",
+"tof",
+"tog",
+"toh",
+"toi",
+"toj",
+"tol",
+"tom",
+"too",
+"top",
+"toq",
+"tor",
+"tos",
+"tou",
+"tov",
+"tow",
+"tox",
+"toy",
+"toz",
+"tpa",
+"tpc",
+"tpe",
+"tpf",
+"tpg",
+"tpi",
+"tpj",
+"tpk",
+"tpl",
+"tpm",
+"tpn",
+"tpo",
+"tpp",
+"tpq",
+"tpr",
+"tpt",
+"tpu",
+"tpv",
+"tpw",
+"tpx",
+"tpy",
+"tpz",
+"tqb",
+"tql",
+"tqm",
+"tqn",
+"tqo",
+"tqp",
+"tqq",
+"tqr",
+"tqt",
+"tqu",
+"tqw",
+"tra",
+"trb",
+"trc",
+"trd",
+"tre",
+"trf",
+"trg",
+"trh",
+"tri",
+"trj",
+"trk",
+"trl",
+"trm",
+"trn",
+"tro",
+"trp",
+"trq",
+"trr",
+"trs",
+"trt",
+"tru",
+"trv",
+"trw",
+"trx",
+"try",
+"trz",
+"tsa",
+"tsb",
+"tsc",
+"tsd",
+"tse",
+"tsf",
+"tsg",
+"tsh",
+"tsi",
+"tsj",
+"tsk",
+"tsl",
+"tsm",
+"tsp",
+"tsq",
+"tsr",
+"tss",
+"tst",
+"tsu",
+"tsv",
+"tsw",
+"tsx",
+"tsy",
+"tsz",
+"tta",
+"ttb",
+"ttc",
+"ttd",
+"tte",
+"ttf",
+"ttg",
+"tth",
+"tti",
+"ttj",
+"ttk",
+"ttl",
+"ttm",
+"ttn",
+"tto",
+"ttp",
+"ttq",
+"ttr",
+"tts",
+"ttt",
+"ttu",
+"ttv",
+"ttw",
+"tty",
+"ttz",
+"tua",
+"tub",
+"tuc",
+"tud",
+"tue",
+"tuf",
+"tug",
+"tuh",
+"tui",
+"tuj",
+"tul",
+"tum",
+"tun",
+"tuo",
+"tup",
+"tuq",
+"tus",
+"tut",
+"tuu",
+"tuv",
+"tuw",
+"tux",
+"tuy",
+"tuz",
+"tva",
+"tvd",
+"tve",
+"tvk",
+"tvl",
+"tvm",
+"tvn",
+"tvo",
+"tvs",
+"tvt",
+"tvu",
+"tvw",
+"tvy",
+"twa",
+"twb",
+"twc",
+"twd",
+"twe",
+"twf",
+"twg",
+"twh",
+"twl",
+"twm",
+"twn",
+"two",
+"twp",
+"twq",
+"twr",
+"twt",
+"twu",
+"tww",
+"twx",
+"twy",
+"txa",
+"txb",
+"txc",
+"txe",
+"txg",
+"txh",
+"txi",
+"txj",
+"txm",
+"txn",
+"txo",
+"txq",
+"txr",
+"txs",
+"txt",
+"txu",
+"txx",
+"txy",
+"tya",
+"tye",
+"tyh",
+"tyi",
+"tyj",
+"tyl",
+"tyn",
+"typ",
+"tyr",
+"tys",
+"tyt",
+"tyu",
+"tyv",
+"tyx",
+"tyz",
+"tza",
+"tzh",
+"tzj",
+"tzl",
+"tzm",
+"tzn",
+"tzo",
+"tzx",
+"uam",
+"uan",
+"uar",
+"uba",
+"ubi",
+"ubl",
+"ubr",
+"ubu",
+"uby",
+"uda",
+"ude",
+"udg",
+"udi",
+"udj",
+"udl",
+"udm",
+"udu",
+"ues",
+"ufi",
+"uga",
+"ugb",
+"uge",
+"ugn",
+"ugo",
+"ugy",
+"uha",
+"uhn",
+"uis",
+"uiv",
+"uji",
+"uka",
+"ukg",
+"ukh",
+"ukk",
+"ukl",
+"ukp",
+"ukq",
+"uks",
+"uku",
+"ukw",
+"uky",
+"ula",
+"ulb",
+"ulc",
+"ule",
+"ulf",
+"uli",
+"ulk",
+"ull",
+"ulm",
+"uln",
+"ulu",
+"ulw",
+"uma",
+"umb",
+"umc",
+"umd",
+"umg",
+"umi",
+"umm",
+"umn",
+"umo",
+"ump",
+"umr",
+"ums",
+"umu",
+"una",
+"und",
+"une",
+"ung",
+"unk",
+"unm",
+"unn",
+"unp",
+"unr",
+"unu",
+"unx",
+"unz",
+"uok",
+"upi",
+"upv",
+"ura",
+"urb",
+"urc",
+"ure",
+"urf",
+"urg",
+"urh",
+"uri",
+"urj",
+"urk",
+"url",
+"urm",
+"urn",
+"uro",
+"urp",
+"urr",
+"urt",
+"uru",
+"urv",
+"urw",
+"urx",
+"ury",
+"urz",
+"usa",
+"ush",
+"usi",
+"usk",
+"usp",
+"usu",
+"uta",
+"ute",
+"utp",
+"utr",
+"utu",
+"uum",
+"uun",
+"uur",
+"uuu",
+"uve",
+"uvh",
+"uvl",
+"uwa",
+"uya",
+"uzn",
+"uzs",
+"vaa",
+"vae",
+"vaf",
+"vag",
+"vah",
+"vai",
+"vaj",
+"val",
+"vam",
+"van",
+"vao",
+"vap",
+"var",
+"vas",
+"vau",
+"vav",
+"vay",
+"vbb",
+"vbk",
+"vec",
+"ved",
+"vel",
+"vem",
+"veo",
+"vep",
+"ver",
+"vgr",
+"vgt",
+"vic",
+"vid",
+"vif",
+"vig",
+"vil",
+"vin",
+"vis",
+"vit",
+"viv",
+"vka",
+"vki",
+"vkj",
+"vkk",
+"vkl",
+"vkm",
+"vko",
+"vkp",
+"vkt",
+"vku",
+"vlp",
+"vls",
+"vma",
+"vmb",
+"vmc",
+"vmd",
+"vme",
+"vmf",
+"vmg",
+"vmh",
+"vmi",
+"vmj",
+"vmk",
+"vml",
+"vmm",
+"vmp",
+"vmq",
+"vmr",
+"vms",
+"vmu",
+"vmv",
+"vmw",
+"vmx",
+"vmy",
+"vmz",
+"vnk",
+"vnm",
+"vnp",
+"vor",
+"vot",
+"vra",
+"vro",
+"vrs",
+"vrt",
+"vsi",
+"vsl",
+"vsv",
+"vto",
+"vum",
+"vun",
+"vut",
+"vwa",
+"waa",
+"wab",
+"wac",
+"wad",
+"wae",
+"waf",
+"wag",
+"wah",
+"wai",
+"waj",
+"wak",
+"wal",
+"wam",
+"wan",
+"wao",
+"wap",
+"waq",
+"war",
+"was",
+"wat",
+"wau",
+"wav",
+"waw",
+"wax",
+"way",
+"waz",
+"wba",
+"wbb",
+"wbe",
+"wbf",
+"wbh",
+"wbi",
+"wbj",
+"wbk",
+"wbl",
+"wbm",
+"wbp",
+"wbq",
+"wbr",
+"wbs",
+"wbt",
+"wbv",
+"wbw",
+"wca",
+"wci",
+"wdd",
+"wdg",
+"wdj",
+"wdk",
+"wdu",
+"wdy",
+"wea",
+"wec",
+"wed",
+"weg",
+"weh",
+"wei",
+"wem",
+"wen",
+"weo",
+"wep",
+"wer",
+"wes",
+"wet",
+"weu",
+"wew",
+"wfg",
+"wga",
+"wgb",
+"wgg",
+"wgi",
+"wgo",
+"wgu",
+"wgw",
+"wgy",
+"wha",
+"whg",
+"whk",
+"whu",
+"wib",
+"wic",
+"wie",
+"wif",
+"wig",
+"wih",
+"wii",
+"wij",
+"wik",
+"wil",
+"wim",
+"win",
+"wir",
+"wit",
+"wiu",
+"wiv",
+"wiw",
+"wiy",
+"wja",
+"wji",
+"wka",
+"wkb",
+"wkd",
+"wkl",
+"wku",
+"wkw",
+"wky",
+"wla",
+"wlc",
+"wle",
+"wlg",
+"wli",
+"wlk",
+"wll",
+"wlm",
+"wlo",
+"wlr",
+"wls",
+"wlu",
+"wlv",
+"wlw",
+"wlx",
+"wly",
+"wma",
+"wmb",
+"wmc",
+"wmd",
+"wme",
+"wmh",
+"wmi",
+"wmm",
+"wmn",
+"wmo",
+"wms",
+"wmt",
+"wmw",
+"wmx",
+"wnb",
+"wnc",
+"wnd",
+"wne",
+"wng",
+"wni",
+"wnk",
+"wnm",
+"wnn",
+"wno",
+"wnp",
+"wnu",
+"wnw",
+"wny",
+"woa",
+"wob",
+"woc",
+"wod",
+"woe",
+"wof",
+"wog",
+"woi",
+"wok",
+"wom",
+"won",
+"woo",
+"wor",
+"wos",
+"wow",
+"woy",
+"wpc",
+"wra",
+"wrb",
+"wrd",
+"wrg",
+"wrh",
+"wri",
+"wrk",
+"wrl",
+"wrm",
+"wrn",
+"wro",
+"wrp",
+"wrr",
+"wrs",
+"wru",
+"wrv",
+"wrw",
+"wrx",
+"wry",
+"wrz",
+"wsa",
+"wsg",
+"wsi",
+"wsk",
+"wsr",
+"wss",
+"wsu",
+"wsv",
+"wtf",
+"wth",
+"wti",
+"wtk",
+"wtm",
+"wtw",
+"wua",
+"wub",
+"wud",
+"wuh",
+"wul",
+"wum",
+"wun",
+"wur",
+"wut",
+"wuu",
+"wuv",
+"wux",
+"wuy",
+"wwa",
+"wwb",
+"wwo",
+"wwr",
+"www",
+"wxa",
+"wxw",
+"wya",
+"wyb",
+"wyi",
+"wym",
+"wyr",
+"wyy",
+"xaa",
+"xab",
+"xac",
+"xad",
+"xae",
+"xag",
+"xai",
+"xaj",
+"xak",
+"xal",
+"xam",
+"xan",
+"xao",
+"xap",
+"xaq",
+"xar",
+"xas",
+"xat",
+"xau",
+"xav",
+"xaw",
+"xay",
+"xba",
+"xbb",
+"xbc",
+"xbd",
+"xbe",
+"xbg",
+"xbi",
+"xbj",
+"xbm",
+"xbn",
+"xbo",
+"xbp",
+"xbr",
+"xbw",
+"xbx",
+"xby",
+"xcb",
+"xcc",
+"xce",
+"xcg",
+"xch",
+"xcl",
+"xcm",
+"xcn",
+"xco",
+"xcr",
+"xct",
+"xcu",
+"xcv",
+"xcw",
+"xcy",
+"xda",
+"xdc",
+"xdk",
+"xdm",
+"xdo",
+"xdy",
+"xeb",
+"xed",
+"xeg",
+"xel",
+"xem",
+"xep",
+"xer",
+"xes",
+"xet",
+"xeu",
+"xfa",
+"xga",
+"xgb",
+"xgd",
+"xgf",
+"xgg",
+"xgi",
+"xgl",
+"xgm",
+"xgn",
+"xgr",
+"xgu",
+"xgw",
+"xha",
+"xhc",
+"xhd",
+"xhe",
+"xhr",
+"xht",
+"xhu",
+"xhv",
+"xia",
+"xib",
+"xii",
+"xil",
+"xin",
+"xip",
+"xir",
+"xis",
+"xiv",
+"xiy",
+"xjb",
+"xjt",
+"xka",
+"xkb",
+"xkc",
+"xkd",
+"xke",
+"xkf",
+"xkg",
+"xkh",
+"xki",
+"xkj",
+"xkk",
+"xkl",
+"xkn",
+"xko",
+"xkp",
+"xkq",
+"xkr",
+"xks",
+"xkt",
+"xku",
+"xkv",
+"xkw",
+"xkx",
+"xky",
+"xkz",
+"xla",
+"xlb",
+"xlc",
+"xld",
+"xle",
+"xlg",
+"xli",
+"xln",
+"xlo",
+"xlp",
+"xls",
+"xlu",
+"xly",
+"xma",
+"xmb",
+"xmc",
+"xmd",
+"xme",
+"xmf",
+"xmg",
+"xmh",
+"xmj",
+"xmk",
+"xml",
+"xmm",
+"xmn",
+"xmo",
+"xmp",
+"xmq",
+"xmr",
+"xms",
+"xmt",
+"xmu",
+"xmv",
+"xmw",
+"xmx",
+"xmy",
+"xmz",
+"xna",
+"xnb",
+"xnd",
+"xng",
+"xnh",
+"xni",
+"xnk",
+"xnn",
+"xno",
+"xnr",
+"xns",
+"xnt",
+"xnu",
+"xny",
+"xnz",
+"xoc",
+"xod",
+"xog",
+"xoi",
+"xok",
+"xom",
+"xon",
+"xoo",
+"xop",
+"xor",
+"xow",
+"xpa",
+"xpc",
+"xpe",
+"xpg",
+"xpi",
+"xpj",
+"xpk",
+"xpm",
+"xpn",
+"xpo",
+"xpp",
+"xpq",
+"xpr",
+"xps",
+"xpt",
+"xpu",
+"xpy",
+"xqa",
+"xqt",
+"xra",
+"xrb",
+"xrd",
+"xre",
+"xrg",
+"xri",
+"xrm",
+"xrn",
+"xrq",
+"xrr",
+"xrt",
+"xru",
+"xrw",
+"xsa",
+"xsb",
+"xsc",
+"xsd",
+"xse",
+"xsh",
+"xsi",
+"xsj",
+"xsl",
+"xsm",
+"xsn",
+"xso",
+"xsp",
+"xsq",
+"xsr",
+"xss",
+"xsu",
+"xsv",
+"xsy",
+"xta",
+"xtb",
+"xtc",
+"xtd",
+"xte",
+"xtg",
+"xth",
+"xti",
+"xtj",
+"xtl",
+"xtm",
+"xtn",
+"xto",
+"xtp",
+"xtq",
+"xtr",
+"xts",
+"xtt",
+"xtu",
+"xtv",
+"xtw",
+"xty",
+"xtz",
+"xua",
+"xub",
+"xud",
+"xug",
+"xuj",
+"xul",
+"xum",
+"xun",
+"xuo",
+"xup",
+"xur",
+"xut",
+"xuu",
+"xve",
+"xvi",
+"xvn",
+"xvo",
+"xvs",
+"xwa",
+"xwc",
+"xwd",
+"xwe",
+"xwg",
+"xwj",
+"xwk",
+"xwl",
+"xwo",
+"xwr",
+"xwt",
+"xww",
+"xxb",
+"xxk",
+"xxm",
+"xxr",
+"xxt",
+"xya",
+"xyb",
+"xyj",
+"xyk",
+"xyl",
+"xyt",
+"xyy",
+"xzh",
+"xzm",
+"xzp",
+"yaa",
+"yab",
+"yac",
+"yad",
+"yae",
+"yaf",
+"yag",
+"yah",
+"yai",
+"yaj",
+"yak",
+"yal",
+"yam",
+"yan",
+"yao",
+"yap",
+"yaq",
+"yar",
+"yas",
+"yat",
+"yau",
+"yav",
+"yaw",
+"yax",
+"yay",
+"yaz",
+"yba",
+"ybb",
+"ybd",
+"ybe",
+"ybh",
+"ybi",
+"ybj",
+"ybk",
+"ybl",
+"ybm",
+"ybn",
+"ybo",
+"ybx",
+"yby",
+"ych",
+"ycl",
+"ycn",
+"ycp",
+"yda",
+"ydd",
+"yde",
+"ydg",
+"ydk",
+"yds",
+"yea",
+"yec",
+"yee",
+"yei",
+"yej",
+"yel",
+"yen",
+"yer",
+"yes",
+"yet",
+"yeu",
+"yev",
+"yey",
+"yga",
+"ygi",
+"ygl",
+"ygm",
+"ygp",
+"ygr",
+"ygs",
+"ygu",
+"ygw",
+"yha",
+"yhd",
+"yhl",
+"yhs",
+"yia",
+"yif",
+"yig",
+"yih",
+"yii",
+"yij",
+"yik",
+"yil",
+"yim",
+"yin",
+"yip",
+"yiq",
+"yir",
+"yis",
+"yit",
+"yiu",
+"yiv",
+"yix",
+"yiy",
+"yiz",
+"yka",
+"ykg",
+"yki",
+"ykk",
+"ykl",
+"ykm",
+"ykn",
+"yko",
+"ykr",
+"ykt",
+"yku",
+"yky",
+"yla",
+"ylb",
+"yle",
+"ylg",
+"yli",
+"yll",
+"ylm",
+"yln",
+"ylo",
+"ylr",
+"ylu",
+"yly",
+"yma",
+"ymb",
+"ymc",
+"ymd",
+"yme",
+"ymg",
+"ymh",
+"ymi",
+"ymk",
+"yml",
+"ymm",
+"ymn",
+"ymo",
+"ymp",
+"ymq",
+"ymr",
+"yms",
+"ymt",
+"ymx",
+"ymz",
+"yna",
+"ynd",
+"yne",
+"yng",
+"ynh",
+"ynk",
+"ynl",
+"ynn",
+"yno",
+"ynq",
+"yns",
+"ynu",
+"yob",
+"yog",
+"yoi",
+"yok",
+"yol",
+"yom",
+"yon",
+"yos",
+"yot",
+"yox",
+"yoy",
+"ypa",
+"ypb",
+"ypg",
+"yph",
+"ypk",
+"ypm",
+"ypn",
+"ypo",
+"ypp",
+"ypz",
+"yra",
+"yrb",
+"yre",
+"yri",
+"yrk",
+"yrl",
+"yrm",
+"yrn",
+"yro",
+"yrs",
+"yrw",
+"yry",
+"ysc",
+"ysd",
+"ysg",
+"ysl",
+"ysn",
+"yso",
+"ysp",
+"ysr",
+"yss",
+"ysy",
+"yta",
+"ytl",
+"ytp",
+"ytw",
+"yty",
+"yua",
+"yub",
+"yuc",
+"yud",
+"yue",
+"yuf",
+"yug",
+"yui",
+"yuj",
+"yuk",
+"yul",
+"yum",
+"yun",
+"yup",
+"yuq",
+"yur",
+"yut",
+"yuu",
+"yuw",
+"yux",
+"yuy",
+"yuz",
+"yva",
+"yvt",
+"ywa",
+"ywg",
+"ywl",
+"ywn",
+"ywq",
+"ywr",
+"ywt",
+"ywu",
+"yww",
+"yxa",
+"yxg",
+"yxl",
+"yxm",
+"yxu",
+"yxy",
+"yyr",
+"yyu",
+"yyz",
+"yzg",
+"yzk",
+"zaa",
+"zab",
+"zac",
+"zad",
+"zae",
+"zaf",
+"zag",
+"zah",
+"zai",
+"zaj",
+"zak",
+"zal",
+"zam",
+"zao",
+"zap",
+"zaq",
+"zar",
+"zas",
+"zat",
+"zau",
+"zav",
+"zaw",
+"zax",
+"zay",
+"zaz",
+"zbc",
+"zbe",
+"zbl",
+"zbt",
+"zbw",
+"zca",
+"zch",
+"zdj",
+"zea",
+"zeg",
+"zeh",
+"zen",
+"zga",
+"zgb",
+"zgh",
+"zgm",
+"zgn",
+"zgr",
+"zhb",
+"zhd",
+"zhi",
+"zhn",
+"zhw",
+"zhx",
+"zia",
+"zib",
+"zik",
+"zil",
+"zim",
+"zin",
+"zir",
+"ziw",
+"ziz",
+"zka",
+"zkb",
+"zkd",
+"zkg",
+"zkh",
+"zkk",
+"zkn",
+"zko",
+"zkp",
+"zkr",
+"zkt",
+"zku",
+"zkv",
+"zkz",
+"zle",
+"zlj",
+"zlm",
+"zln",
+"zlq",
+"zls",
+"zlw",
+"zma",
+"zmb",
+"zmc",
+"zmd",
+"zme",
+"zmf",
+"zmg",
+"zmh",
+"zmi",
+"zmj",
+"zmk",
+"zml",
+"zmm",
+"zmn",
+"zmo",
+"zmp",
+"zmq",
+"zmr",
+"zms",
+"zmt",
+"zmu",
+"zmv",
+"zmw",
+"zmx",
+"zmy",
+"zmz",
+"zna",
+"znd",
+"zne",
+"zng",
+"znk",
+"zns",
+"zoc",
+"zoh",
+"zom",
+"zoo",
+"zoq",
+"zor",
+"zos",
+"zpa",
+"zpb",
+"zpc",
+"zpd",
+"zpe",
+"zpf",
+"zpg",
+"zph",
+"zpi",
+"zpj",
+"zpk",
+"zpl",
+"zpm",
+"zpn",
+"zpo",
+"zpp",
+"zpq",
+"zpr",
+"zps",
+"zpt",
+"zpu",
+"zpv",
+"zpw",
+"zpx",
+"zpy",
+"zpz",
+"zqe",
+"zra",
+"zrg",
+"zrn",
+"zro",
+"zrp",
+"zrs",
+"zsa",
+"zsk",
+"zsl",
+"zsm",
+"zsr",
+"zsu",
+"zte",
+"ztg",
+"ztl",
+"ztm",
+"ztn",
+"ztp",
+"ztq",
+"zts",
+"ztt",
+"ztu",
+"ztx",
+"zty",
+"zua",
+"zuh",
+"zum",
+"zun",
+"zuy",
+"zwa",
+"zxx",
+"zyb",
+"zyg",
+"zyj",
+"zyn",
+"zyp",
+"zza",
+"zzj"];
+
+axe.utils.validLangs=function(){
+'use strict';
+return langs;
+};
+},{}],96:[function(require,module,exports){
 
 
 
@@ -27971,7 +40267,7 @@ this._file.copyToOutputStream(outputStream,delegate);
 }};
 
 
-},{}],78:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 
 
 
@@ -28798,7 +41094,7 @@ format=cf.RGBA;
 return format;
 };
 
-},{}],79:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 
 
 
@@ -29019,7 +41315,7 @@ this.receiver=receiver;
 this.method=method;
 };
 
-},{}],80:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 
 
 
@@ -29382,7 +41678,7 @@ return parsedURL;
 return null;
 };
 
-},{}],81:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 
 
@@ -29692,7 +41988,7 @@ WebInspector.ResourceType._mimeTypeByExtension=new Map([
 ["woff","application/font-woff"]]);
 
 
-},{}],82:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 
 
 
@@ -29806,7 +42102,7 @@ return merged;
 }};
 
 
-},{}],83:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 
 
@@ -30153,7 +42449,7 @@ WebInspector.SourceEdit.comparator=function(edit1,edit2)
 return WebInspector.TextRange.comparator(edit1.oldRange,edit2.oldRange);
 };
 
-},{}],84:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 
 
 
@@ -30463,7 +42759,7 @@ WebInspector.TokenizerFactory.prototype={
 createTokenizer:function(mimeType){}};
 
 
-},{}],85:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 
 
 
@@ -30575,7 +42871,7 @@ String.standardFormatters,"",WebInspector.UIStringFormat._append,this._tokenized
 }};
 
 
-},{}],86:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 
 
@@ -30731,7 +43027,7 @@ return this._snapshot.objectPromise();
 }};
 
 
-},{}],87:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 
 
 
@@ -30968,7 +43264,7 @@ lastDeclaration.declarationRange.endColumn=node.end.column-1;
 }
 };
 
-},{}],88:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root,factory){
 if(typeof exports==='object'&&typeof module==='object')
 module.exports=factory();else
@@ -33160,7 +45456,7 @@ end:[0,0]});
 
 });
 ;
-},{}],89:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 
 
 
@@ -34702,7 +46998,7 @@ equal:equal};
 
 };
 
-},{}],90:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 
 
@@ -35081,7 +47377,2621 @@ return this._idToNode.get(this.samples[index])||null;
 __proto__:WebInspector.ProfileTreeModel.prototype};
 
 
-},{}],91:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WebInspector.CSSMatchedStyles=function(cssModel,node,inlinePayload,attributesPayload,matchedPayload,pseudoPayload,inheritedPayload,animationsPayload)
+{
+this._cssModel=cssModel;
+this._node=node;
+this._nodeStyles=[];
+this._nodeForStyle=new Map();
+this._inheritedStyles=new Set();
+this._keyframes=[];
+
+this._matchingSelectors=new Map();
+
+
+
+
+function addAttributesStyle()
+{
+if(!attributesPayload)
+return;
+var style=new WebInspector.CSSStyleDeclaration(cssModel,null,attributesPayload,WebInspector.CSSStyleDeclaration.Type.Attributes);
+this._nodeForStyle.set(style,this._node);
+this._nodeStyles.push(style);
+}
+
+
+if(inlinePayload&&this._node.nodeType()===Node.ELEMENT_NODE){
+var style=new WebInspector.CSSStyleDeclaration(cssModel,null,inlinePayload,WebInspector.CSSStyleDeclaration.Type.Inline);
+this._nodeForStyle.set(style,this._node);
+this._nodeStyles.push(style);
+}
+
+
+var addedAttributesStyle;
+for(var i=matchedPayload.length-1;i>=0;--i){
+var rule=new WebInspector.CSSStyleRule(cssModel,matchedPayload[i].rule);
+if((rule.isInjected()||rule.isUserAgent())&&!addedAttributesStyle){
+
+addedAttributesStyle=true;
+addAttributesStyle.call(this);
+}
+this._nodeForStyle.set(rule.style,this._node);
+this._nodeStyles.push(rule.style);
+addMatchingSelectors.call(this,this._node,rule,matchedPayload[i].matchingSelectors);
+}
+
+if(!addedAttributesStyle)
+addAttributesStyle.call(this);
+
+
+var parentNode=this._node.parentNode;
+for(var i=0;parentNode&&inheritedPayload&&i<inheritedPayload.length;++i){
+var entryPayload=inheritedPayload[i];
+var inheritedInlineStyle=entryPayload.inlineStyle?new WebInspector.CSSStyleDeclaration(cssModel,null,entryPayload.inlineStyle,WebInspector.CSSStyleDeclaration.Type.Inline):null;
+if(inheritedInlineStyle&&this._containsInherited(inheritedInlineStyle)){
+this._nodeForStyle.set(inheritedInlineStyle,parentNode);
+this._nodeStyles.push(inheritedInlineStyle);
+this._inheritedStyles.add(inheritedInlineStyle);
+}
+
+var inheritedMatchedCSSRules=entryPayload.matchedCSSRules||[];
+for(var j=inheritedMatchedCSSRules.length-1;j>=0;--j){
+var inheritedRule=new WebInspector.CSSStyleRule(cssModel,inheritedMatchedCSSRules[j].rule);
+addMatchingSelectors.call(this,parentNode,inheritedRule,inheritedMatchedCSSRules[j].matchingSelectors);
+if(!this._containsInherited(inheritedRule.style))
+continue;
+this._nodeForStyle.set(inheritedRule.style,parentNode);
+this._nodeStyles.push(inheritedRule.style);
+this._inheritedStyles.add(inheritedRule.style);
+}
+parentNode=parentNode.parentNode;
+}
+
+
+this._pseudoStyles=new Map();
+if(pseudoPayload){
+for(var i=0;i<pseudoPayload.length;++i){
+var entryPayload=pseudoPayload[i];
+
+var pseudoElement=this._node.pseudoElements().get(entryPayload.pseudoType)||null;
+var pseudoStyles=[];
+var rules=entryPayload.matches||[];
+for(var j=rules.length-1;j>=0;--j){
+var pseudoRule=new WebInspector.CSSStyleRule(cssModel,rules[j].rule);
+pseudoStyles.push(pseudoRule.style);
+this._nodeForStyle.set(pseudoRule.style,pseudoElement);
+if(pseudoElement)
+addMatchingSelectors.call(this,pseudoElement,pseudoRule,rules[j].matchingSelectors);
+}
+this._pseudoStyles.set(entryPayload.pseudoType,pseudoStyles);
+}
+}
+
+if(animationsPayload)
+this._keyframes=animationsPayload.map(rule=>new WebInspector.CSSKeyframesRule(cssModel,rule));
+
+this.resetActiveProperties();
+
+
+
+
+
+
+
+function addMatchingSelectors(node,rule,matchingSelectorIndices)
+{
+for(var matchingSelectorIndex of matchingSelectorIndices){
+var selector=rule.selectors[matchingSelectorIndex];
+this._setSelectorMatches(node,selector.text,true);
+}
+}
+};
+
+WebInspector.CSSMatchedStyles.prototype={
+
+
+
+node:function()
+{
+return this._node;
+},
+
+
+
+
+cssModel:function()
+{
+return this._cssModel;
+},
+
+
+
+
+
+hasMatchingSelectors:function(rule)
+{
+var matchingSelectors=this.matchingSelectors(rule);
+return matchingSelectors.length>0&&this.mediaMatches(rule.style);
+},
+
+
+
+
+
+matchingSelectors:function(rule)
+{
+var node=this.nodeForStyle(rule.style);
+if(!node)
+return[];
+var map=this._matchingSelectors.get(node.id);
+if(!map)
+return[];
+var result=[];
+for(var i=0;i<rule.selectors.length;++i){
+if(map.get(rule.selectors[i].text))
+result.push(i);
+}
+return result;
+},
+
+
+
+
+
+recomputeMatchingSelectors:function(rule)
+{
+var node=this.nodeForStyle(rule.style);
+if(!node)
+return Promise.resolve();
+var promises=[];
+for(var selector of rule.selectors)
+promises.push(querySelector.call(this,node,selector.text));
+return Promise.all(promises);
+
+
+
+
+
+
+
+function querySelector(node,selectorText)
+{
+var ownerDocument=node.ownerDocument||null;
+
+
+var map=this._matchingSelectors.get(node.id);
+if(map&&map.has(selectorText)||!ownerDocument)
+return Promise.resolve();
+
+var resolve;
+var promise=new Promise(fulfill=>resolve=fulfill);
+this._node.domModel().querySelectorAll(ownerDocument.id,selectorText,onQueryComplete.bind(this,node,selectorText,resolve));
+return promise;
+}
+
+
+
+
+
+
+
+
+function onQueryComplete(node,selectorText,callback,matchingNodeIds)
+{
+if(matchingNodeIds)
+this._setSelectorMatches(node,selectorText,matchingNodeIds.indexOf(node.id)!==-1);
+callback();
+}
+},
+
+
+
+
+
+
+addNewRule:function(rule,node)
+{
+this._nodeForStyle.set(rule.style,node);
+return this.recomputeMatchingSelectors(rule);
+},
+
+
+
+
+
+
+_setSelectorMatches:function(node,selectorText,value)
+{
+var map=this._matchingSelectors.get(node.id);
+if(!map){
+map=new Map();
+this._matchingSelectors.set(node.id,map);
+}
+map.set(selectorText,value);
+},
+
+
+
+
+
+mediaMatches:function(style)
+{
+var media=style.parentRule?style.parentRule.media:[];
+for(var i=0;media&&i<media.length;++i){
+if(!media[i].active())
+return false;
+}
+return true;
+},
+
+
+
+
+nodeStyles:function()
+{
+return this._nodeStyles;
+},
+
+
+
+
+keyframes:function()
+{
+return this._keyframes;
+},
+
+
+
+
+pseudoStyles:function()
+{
+return this._pseudoStyles;
+},
+
+
+
+
+
+_containsInherited:function(style)
+{
+var properties=style.allProperties;
+for(var i=0;i<properties.length;++i){
+var property=properties[i];
+
+if(property.activeInStyle()&&WebInspector.cssMetadata().isPropertyInherited(property.name))
+return true;
+}
+return false;
+},
+
+
+
+
+
+nodeForStyle:function(style)
+{
+return this._nodeForStyle.get(style)||null;
+},
+
+
+
+
+
+isInherited:function(style)
+{
+return this._inheritedStyles.has(style);
+},
+
+
+
+
+
+propertyState:function(property)
+{
+if(this._propertiesState.size===0){
+this._computeActiveProperties(this._nodeStyles,this._propertiesState);
+for(var pseudoElementStyles of this._pseudoStyles.valuesArray())
+this._computeActiveProperties(pseudoElementStyles,this._propertiesState);
+}
+return this._propertiesState.get(property)||null;
+},
+
+resetActiveProperties:function()
+{
+
+this._propertiesState=new Map();
+},
+
+
+
+
+
+_computeActiveProperties:function(styles,result)
+{
+
+var foundImportantProperties=new Set();
+
+var propertyToEffectiveRule=new Map();
+
+var inheritedPropertyToNode=new Map();
+
+var allUsedProperties=new Set();
+for(var i=0;i<styles.length;++i){
+var style=styles[i];
+var rule=style.parentRule;
+
+if(rule&&!(rule instanceof WebInspector.CSSStyleRule))
+continue;
+if(rule&&!this.hasMatchingSelectors(rule))
+continue;
+
+
+var styleActiveProperties=new Map();
+var allProperties=style.allProperties;
+for(var j=0;j<allProperties.length;++j){
+var property=allProperties[j];
+
+
+var inherited=this.isInherited(style);
+if(inherited&&!WebInspector.cssMetadata().isPropertyInherited(property.name))
+continue;
+
+if(!property.activeInStyle()){
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+continue;
+}
+
+var canonicalName=WebInspector.cssMetadata().canonicalPropertyName(property.name);
+if(foundImportantProperties.has(canonicalName)){
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+continue;
+}
+
+if(!property.important&&allUsedProperties.has(canonicalName)){
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+continue;
+}
+
+var isKnownProperty=propertyToEffectiveRule.has(canonicalName);
+var inheritedFromNode=inherited?this.nodeForStyle(style):null;
+if(!isKnownProperty&&inheritedFromNode&&!inheritedPropertyToNode.has(canonicalName))
+inheritedPropertyToNode.set(canonicalName,inheritedFromNode);
+
+if(property.important){
+if(inherited&&isKnownProperty&&inheritedFromNode!==inheritedPropertyToNode.get(canonicalName)){
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+continue;
+}
+
+foundImportantProperties.add(canonicalName);
+if(isKnownProperty){
+var overloaded=propertyToEffectiveRule.get(canonicalName).get(canonicalName);
+result.set(overloaded,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+propertyToEffectiveRule.get(canonicalName).delete(canonicalName);
+}
+}
+
+styleActiveProperties.set(canonicalName,property);
+allUsedProperties.add(canonicalName);
+propertyToEffectiveRule.set(canonicalName,styleActiveProperties);
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Active);
+}
+
+
+for(var property of style.leadingProperties()){
+var canonicalName=WebInspector.cssMetadata().canonicalPropertyName(property.name);
+if(!styleActiveProperties.has(canonicalName))
+continue;
+var longhands=style.longhandProperties(property.name);
+if(!longhands.length)
+continue;
+var notUsed=true;
+for(var longhand of longhands){
+var longhandCanonicalName=WebInspector.cssMetadata().canonicalPropertyName(longhand.name);
+notUsed=notUsed&&!styleActiveProperties.has(longhandCanonicalName);
+}
+if(!notUsed)
+continue;
+styleActiveProperties.delete(canonicalName);
+allUsedProperties.delete(canonicalName);
+result.set(property,WebInspector.CSSMatchedStyles.PropertyState.Overloaded);
+}
+}
+}};
+
+
+
+WebInspector.CSSMatchedStyles.PropertyState={
+Active:"Active",
+Overloaded:"Overloaded"};
+
+
+},{}],111:[function(require,module,exports){
+
+
+
+
+
+
+
+
+WebInspector.CSSMediaQuery=function(payload)
+{
+this._active=payload.active;
+this._expressions=[];
+for(var j=0;j<payload.expressions.length;++j)
+this._expressions.push(WebInspector.CSSMediaQueryExpression.parsePayload(payload.expressions[j]));
+};
+
+
+
+
+
+WebInspector.CSSMediaQuery.parsePayload=function(payload)
+{
+return new WebInspector.CSSMediaQuery(payload);
+};
+
+WebInspector.CSSMediaQuery.prototype={
+
+
+
+active:function()
+{
+return this._active;
+},
+
+
+
+
+expressions:function()
+{
+return this._expressions;
+}};
+
+
+
+
+
+
+WebInspector.CSSMediaQueryExpression=function(payload)
+{
+this._value=payload.value;
+this._unit=payload.unit;
+this._feature=payload.feature;
+this._valueRange=payload.valueRange?WebInspector.TextRange.fromObject(payload.valueRange):null;
+this._computedLength=payload.computedLength||null;
+};
+
+
+
+
+
+WebInspector.CSSMediaQueryExpression.parsePayload=function(payload)
+{
+return new WebInspector.CSSMediaQueryExpression(payload);
+};
+
+WebInspector.CSSMediaQueryExpression.prototype={
+
+
+
+value:function()
+{
+return this._value;
+},
+
+
+
+
+unit:function()
+{
+return this._unit;
+},
+
+
+
+
+feature:function()
+{
+return this._feature;
+},
+
+
+
+
+valueRange:function()
+{
+return this._valueRange;
+},
+
+
+
+
+computedLength:function()
+{
+return this._computedLength;
+}};
+
+
+
+
+
+
+
+
+WebInspector.CSSMedia=function(cssModel,payload)
+{
+this._cssModel=cssModel;
+this._reinitialize(payload);
+};
+
+WebInspector.CSSMedia.Source={
+LINKED_SHEET:"linkedSheet",
+INLINE_SHEET:"inlineSheet",
+MEDIA_RULE:"mediaRule",
+IMPORT_RULE:"importRule"};
+
+
+
+
+
+
+
+WebInspector.CSSMedia.parsePayload=function(cssModel,payload)
+{
+return new WebInspector.CSSMedia(cssModel,payload);
+};
+
+
+
+
+
+
+WebInspector.CSSMedia.parseMediaArrayPayload=function(cssModel,payload)
+{
+var result=[];
+for(var i=0;i<payload.length;++i)
+result.push(WebInspector.CSSMedia.parsePayload(cssModel,payload[i]));
+return result;
+};
+
+WebInspector.CSSMedia.prototype={
+
+
+
+_reinitialize:function(payload)
+{
+this.text=payload.text;
+this.source=payload.source;
+this.sourceURL=payload.sourceURL||"";
+this.range=payload.range?WebInspector.TextRange.fromObject(payload.range):null;
+this.styleSheetId=payload.styleSheetId;
+this.mediaList=null;
+if(payload.mediaList){
+this.mediaList=[];
+for(var i=0;i<payload.mediaList.length;++i)
+this.mediaList.push(WebInspector.CSSMediaQuery.parsePayload(payload.mediaList[i]));
+}
+},
+
+
+
+
+rebase:function(edit)
+{
+if(this.styleSheetId!==edit.styleSheetId||!this.range)
+return;
+if(edit.oldRange.equal(this.range))
+this._reinitialize(edit.payload);else
+
+this.range=this.range.rebaseAfterTextEdit(edit.oldRange,edit.newRange);
+},
+
+
+
+
+
+equal:function(other)
+{
+if(!this.styleSheetId||!this.range||!other.range)
+return false;
+return this.styleSheetId===other.styleSheetId&&this.range.equal(other.range);
+},
+
+
+
+
+active:function()
+{
+if(!this.mediaList)
+return true;
+for(var i=0;i<this.mediaList.length;++i){
+if(this.mediaList[i].active())
+return true;
+}
+return false;
+},
+
+
+
+
+lineNumberInSource:function()
+{
+if(!this.range)
+return undefined;
+var header=this.header();
+if(!header)
+return undefined;
+return header.lineNumberInSource(this.range.startLine);
+},
+
+
+
+
+columnNumberInSource:function()
+{
+if(!this.range)
+return undefined;
+var header=this.header();
+if(!header)
+return undefined;
+return header.columnNumberInSource(this.range.startLine,this.range.startColumn);
+},
+
+
+
+
+header:function()
+{
+return this.styleSheetId?this._cssModel.styleSheetHeaderForId(this.styleSheetId):null;
+},
+
+
+
+
+rawLocation:function()
+{
+var header=this.header();
+if(!header||this.lineNumberInSource()===undefined)
+return null;
+var lineNumber=Number(this.lineNumberInSource());
+return new WebInspector.CSSLocation(header,lineNumber,this.columnNumberInSource());
+}};
+
+
+},{}],112:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WebInspector.CSSMetadata=function(properties)
+{
+this._values=[];
+
+this._longhands=new Map();
+
+this._shorthands=new Map();
+
+this._inherited=new Set();
+for(var i=0;i<properties.length;++i){
+var property=properties[i];
+var propertyName=property.name;
+if(!CSS.supports(propertyName,"initial"))
+continue;
+this._values.push(propertyName);
+
+if(property.inherited)
+this._inherited.add(propertyName);
+
+var longhands=properties[i].longhands;
+if(longhands){
+this._longhands.set(propertyName,longhands);
+for(var j=0;j<longhands.length;++j){
+var longhandName=longhands[j];
+var shorthands=this._shorthands.get(longhandName);
+if(!shorthands){
+shorthands=[];
+this._shorthands.set(longhandName,shorthands);
+}
+shorthands.push(propertyName);
+}
+}
+}
+this._values.sort();
+this._valuesSet=new Set(this._values);
+};
+
+WebInspector.CSSMetadata.VariableRegex=/(var\(--.*?\))/g;
+WebInspector.CSSMetadata.URLRegex=/url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+
+WebInspector.CSSMetadata.prototype={
+
+
+
+allProperties:function()
+{
+return this._values;
+},
+
+
+
+
+
+longhands:function(shorthand)
+{
+return this._longhands.get(shorthand)||null;
+},
+
+
+
+
+
+shorthands:function(longhand)
+{
+return this._shorthands.get(longhand)||null;
+},
+
+
+
+
+
+isColorAwareProperty:function(propertyName)
+{
+return!!WebInspector.CSSMetadata._colorAwareProperties.has(propertyName.toLowerCase())||this.isCustomProperty(propertyName.toLowerCase());
+},
+
+
+
+
+
+isLengthProperty:function(propertyName)
+{
+propertyName=propertyName.toLowerCase();
+if(propertyName==="line-height")
+return false;
+return WebInspector.CSSMetadata._distanceProperties.has(propertyName)||propertyName.startsWith("margin")||propertyName.startsWith("padding")||propertyName.indexOf("width")!==-1||propertyName.indexOf("height")!==-1;
+},
+
+
+
+
+
+isBezierAwareProperty:function(propertyName)
+{
+propertyName=propertyName.toLowerCase();
+return!!WebInspector.CSSMetadata._bezierAwareProperties.has(propertyName)||this.isCustomProperty(propertyName);
+},
+
+
+
+
+
+isCustomProperty:function(propertyName)
+{
+return propertyName.startsWith("--");
+},
+
+
+
+
+
+canonicalPropertyName:function(name)
+{
+name=name.toLowerCase();
+if(!name||name.length<9||name.charAt(0)!=="-")
+return name;
+var match=name.match(/(?:-webkit-)(.+)/);
+if(!match||!this._valuesSet.has(match[1]))
+return name;
+return match[1];
+},
+
+
+
+
+
+isCSSPropertyName:function(propertyName)
+{
+propertyName=propertyName.toLowerCase();
+if(propertyName.startsWith("-moz-")||propertyName.startsWith("-o-")||propertyName.startsWith("-webkit-")||propertyName.startsWith("-ms-"))
+return true;
+return this._valuesSet.has(propertyName);
+},
+
+
+
+
+
+isPropertyInherited:function(propertyName)
+{
+propertyName=propertyName.toLowerCase();
+return this._inherited.has(this.canonicalPropertyName(propertyName))||this._inherited.has(propertyName);
+},
+
+
+
+
+
+propertyValues:function(propertyName)
+{
+var acceptedKeywords=["inherit","initial"];
+propertyName=propertyName.toLowerCase();
+var unprefixedName=propertyName.replace(/^-webkit-/,"");
+var entry=WebInspector.CSSMetadata._propertyDataMap[propertyName]||WebInspector.CSSMetadata._propertyDataMap[unprefixedName];
+if(entry&&entry.values)
+acceptedKeywords.pushAll(entry.values);
+if(this.isColorAwareProperty(propertyName)){
+acceptedKeywords.push("currentColor");
+for(var color in WebInspector.Color.Nicknames)
+acceptedKeywords.push(color);
+}
+return acceptedKeywords.sort();
+},
+
+
+
+
+
+mostUsedProperty:function(properties)
+{
+var maxWeight=0;
+var index=0;
+for(var i=0;i<properties.length;i++){
+var weight=WebInspector.CSSMetadata.Weight[properties[i]];
+if(!weight)
+weight=WebInspector.CSSMetadata.Weight[this.canonicalPropertyName(properties[i])];
+if(weight>maxWeight){
+maxWeight=weight;
+index=i;
+}
+}
+return index;
+}};
+
+
+
+
+
+WebInspector.cssMetadata=function()
+{
+if(!WebInspector.CSSMetadata._instance)
+WebInspector.CSSMetadata._instance=new WebInspector.CSSMetadata(WebInspector.CSSMetadata._generatedProperties||[]);
+return WebInspector.CSSMetadata._instance;
+};
+
+WebInspector.CSSMetadata._distanceProperties=new Set([
+"background-position","border-spacing","bottom","font-size","height","left","letter-spacing","max-height","max-width","min-height",
+"min-width","right","text-indent","top","width","word-spacing"]);
+
+
+WebInspector.CSSMetadata._bezierAwareProperties=new Set([
+"animation","animation-timing-function","transition","transition-timing-function","-webkit-animation","-webkit-animation-timing-function",
+"-webkit-transition","-webkit-transition-timing-function"]);
+
+
+WebInspector.CSSMetadata._colorAwareProperties=new Set([
+"backdrop-filter","background","background-color","background-image","border","border-color","border-image",
+"border-image-source","border-bottom","border-bottom-color","border-left","border-left-color","border-right",
+"border-right-color","border-top","border-top-color","box-shadow","color","column-rule","column-rule-color","fill",
+"list-style","list-style-image","outline","outline-color","stroke","text-decoration-color","text-shadow",
+"-webkit-border-after","-webkit-border-after-color","-webkit-border-before","-webkit-border-before-color","-webkit-border-end",
+"-webkit-border-end-color","-webkit-border-start","-webkit-border-start-color","-webkit-box-reflect","-webkit-box-shadow",
+"-webkit-column-rule-color","-webkit-filter","-webkit-mask","-webkit-mask-box-image","-webkit-mask-box-image-source",
+"-webkit-mask-image","-webkit-tap-highlight-color","-webkit-text-decoration-color","-webkit-text-emphasis",
+"-webkit-text-emphasis-color","-webkit-text-fill-color","-webkit-text-stroke","-webkit-text-stroke-color"]);
+
+
+WebInspector.CSSMetadata._propertyDataMap={
+"table-layout":{values:[
+"auto","fixed"]},
+
+"visibility":{values:[
+"hidden","visible","collapse"]},
+
+"background-repeat":{values:[
+"repeat","repeat-x","repeat-y","no-repeat","space","round"]},
+
+"content":{values:[
+"list-item","close-quote","no-close-quote","no-open-quote","open-quote"]},
+
+"list-style-image":{values:[
+"none"]},
+
+"clear":{values:[
+"none","left","right","both"]},
+
+"overflow-x":{values:[
+"hidden","auto","visible","overlay","scroll"]},
+
+"stroke-linejoin":{values:[
+"round","miter","bevel"]},
+
+"baseline-shift":{values:[
+"baseline","sub","super"]},
+
+"border-bottom-width":{values:[
+"medium","thick","thin"]},
+
+"margin-top-collapse":{values:[
+"collapse","separate","discard"]},
+
+"max-height":{values:[
+"none"]},
+
+"box-orient":{values:[
+"horizontal","vertical","inline-axis","block-axis"]},
+
+"font-stretch":{values:[
+"normal","wider","narrower","ultra-condensed","extra-condensed","condensed","semi-condensed",
+"semi-expanded","expanded","extra-expanded","ultra-expanded"]},
+
+"border-left-width":{values:[
+"medium","thick","thin"]},
+
+"box-shadow":{values:[
+"inset","none"]},
+
+"writing-mode":{values:[
+"horizontal-tb","vertical-rl","vertical-lr"]},
+
+"-webkit-writing-mode":{values:[
+"lr","rl","tb","lr-tb","rl-tb","tb-rl","horizontal-tb","vertical-rl","vertical-lr"]},
+
+"border-collapse":{values:[
+"collapse","separate"]},
+
+"page-break-inside":{values:[
+"auto","avoid"]},
+
+"border-top-width":{values:[
+"medium","thick","thin"]},
+
+"outline-color":{values:[
+"invert"]},
+
+"outline-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"cursor":{values:[
+"none","copy","auto","crosshair","default","pointer","move","vertical-text","cell","context-menu",
+"alias","progress","no-drop","not-allowed","-webkit-zoom-in","-webkit-zoom-out","e-resize","ne-resize",
+"nw-resize","n-resize","se-resize","sw-resize","s-resize","w-resize","ew-resize","ns-resize",
+"nesw-resize","nwse-resize","col-resize","row-resize","text","wait","help","all-scroll","-webkit-grab",
+"-webkit-grabbing"]},
+
+"border-width":{values:[
+"medium","thick","thin"]},
+
+"border-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"size":{values:[
+"a3","a4","a5","b4","b5","landscape","ledger","legal","letter","portrait"]},
+
+"background-size":{values:[
+"contain","cover"]},
+
+"direction":{values:[
+"ltr","rtl"]},
+
+"enable-background":{values:[
+"accumulate","new"]},
+
+"float":{values:[
+"none","left","right"]},
+
+"overflow-y":{values:[
+"hidden","auto","visible","overlay","scroll"]},
+
+"margin-bottom-collapse":{values:[
+"collapse","separate","discard"]},
+
+"box-reflect":{values:[
+"left","right","above","below"]},
+
+"overflow":{values:[
+"hidden","auto","visible","overlay","scroll"]},
+
+"contain":{values:[
+"none","strict","content","size","layout","style","paint"]},
+
+"text-rendering":{values:[
+"auto","optimizeSpeed","optimizeLegibility","geometricPrecision"]},
+
+"text-align":{values:[
+"-webkit-auto","start","end","left","right","center","justify","-webkit-left","-webkit-right","-webkit-center"]},
+
+"list-style-position":{values:[
+"outside","inside","hanging"]},
+
+"margin-bottom":{values:[
+"auto"]},
+
+"color-interpolation":{values:[
+"linearrgb"]},
+
+"background-origin":{values:[
+"border-box","content-box","padding-box"]},
+
+"word-wrap":{values:[
+"normal","break-word"]},
+
+"font-weight":{values:[
+"normal","bold","bolder","lighter","100","200","300","400","500","600","700","800","900"]},
+
+"margin-before-collapse":{values:[
+"collapse","separate","discard"]},
+
+"text-transform":{values:[
+"none","capitalize","uppercase","lowercase"]},
+
+"border-right-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"border-left-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"-webkit-text-emphasis":{values:[
+"circle","filled","open","dot","double-circle","triangle","sesame"]},
+
+"font-style":{values:[
+"italic","oblique","normal"]},
+
+"speak":{values:[
+"none","normal","spell-out","digits","literal-punctuation","no-punctuation"]},
+
+"color-rendering":{values:[
+"auto","optimizeSpeed","optimizeQuality"]},
+
+"list-style-type":{values:[
+"none","inline","disc","circle","square","decimal","decimal-leading-zero","arabic-indic","binary","bengali",
+"cambodian","khmer","devanagari","gujarati","gurmukhi","kannada","lower-hexadecimal","lao","malayalam",
+"mongolian","myanmar","octal","oriya","persian","urdu","telugu","tibetan","thai","upper-hexadecimal",
+"lower-roman","upper-roman","lower-greek","lower-alpha","lower-latin","upper-alpha","upper-latin","afar",
+"ethiopic-halehame-aa-et","ethiopic-halehame-aa-er","amharic","ethiopic-halehame-am-et","amharic-abegede",
+"ethiopic-abegede-am-et","cjk-earthly-branch","cjk-heavenly-stem","ethiopic","ethiopic-halehame-gez",
+"ethiopic-abegede","ethiopic-abegede-gez","hangul-consonant","hangul","lower-norwegian","oromo",
+"ethiopic-halehame-om-et","sidama","ethiopic-halehame-sid-et","somali","ethiopic-halehame-so-et","tigre",
+"ethiopic-halehame-tig","tigrinya-er","ethiopic-halehame-ti-er","tigrinya-er-abegede",
+"ethiopic-abegede-ti-er","tigrinya-et","ethiopic-halehame-ti-et","tigrinya-et-abegede",
+"ethiopic-abegede-ti-et","upper-greek","upper-norwegian","asterisks","footnotes","hebrew","armenian",
+"lower-armenian","upper-armenian","georgian","cjk-ideographic","hiragana","katakana","hiragana-iroha",
+"katakana-iroha"]},
+
+"text-combine-upright":{values:[
+"none","all"]},
+
+"-webkit-text-combine":{values:[
+"none","horizontal"]},
+
+"text-orientation":{values:[
+"mixed","upright","sideways"]},
+
+"outline":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"font":{values:[
+"caption","icon","menu","message-box","small-caption","-webkit-mini-control","-webkit-small-control",
+"-webkit-control","status-bar","italic","oblique","small-caps","normal","bold","bolder","lighter",
+"100","200","300","400","500","600","700","800","900","xx-small","x-small","small","medium",
+"large","x-large","xx-large","-webkit-xxx-large","smaller","larger","serif","sans-serif","cursive",
+"fantasy","monospace","-webkit-body","-webkit-pictograph"]},
+
+"dominant-baseline":{values:[
+"middle","auto","central","text-before-edge","text-after-edge","ideographic","alphabetic","hanging",
+"mathematical","use-script","no-change","reset-size"]},
+
+"display":{values:[
+"none","inline","block","list-item","run-in","inline-block","table","inline-table",
+"table-row-group","table-header-group","table-footer-group","table-row","table-column-group",
+"table-column","table-cell","table-caption","-webkit-box","-webkit-inline-box",
+"flex","inline-flex","grid","inline-grid"]},
+
+"-webkit-text-emphasis-position":{values:[
+"over","under"]},
+
+"image-rendering":{values:[
+"auto","optimizeSpeed","optimizeQuality","pixelated"]},
+
+"alignment-baseline":{values:[
+"baseline","middle","auto","before-edge","after-edge","central","text-before-edge","text-after-edge",
+"ideographic","alphabetic","hanging","mathematical"]},
+
+"outline-width":{values:[
+"medium","thick","thin"]},
+
+"box-align":{values:[
+"baseline","center","stretch","start","end"]},
+
+"border-right-width":{values:[
+"medium","thick","thin"]},
+
+"border-top-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"line-height":{values:[
+"normal"]},
+
+"text-overflow":{values:[
+"clip","ellipsis"]},
+
+"overflow-wrap":{values:[
+"normal","break-word"]},
+
+"box-direction":{values:[
+"normal","reverse"]},
+
+"margin-after-collapse":{values:[
+"collapse","separate","discard"]},
+
+"page-break-before":{values:[
+"left","right","auto","always","avoid"]},
+
+"border-image":{values:[
+"repeat","stretch"]},
+
+"text-decoration":{values:[
+"none","blink","line-through","overline","underline"]},
+
+"position":{values:[
+"absolute","fixed","relative","static"]},
+
+"font-family":{values:[
+"serif","sans-serif","cursive","fantasy","monospace","-webkit-body","-webkit-pictograph"]},
+
+"text-overflow-mode":{values:[
+"clip","ellipsis"]},
+
+"border-bottom-style":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"unicode-bidi":{values:[
+"normal","bidi-override","embed","isolate","isolate-override","plaintext"]},
+
+"clip-rule":{values:[
+"nonzero","evenodd"]},
+
+"margin-left":{values:[
+"auto"]},
+
+"margin-top":{values:[
+"auto"]},
+
+"zoom":{values:[
+"normal","document","reset"]},
+
+"max-width":{values:[
+"none"]},
+
+"caption-side":{values:[
+"top","bottom"]},
+
+"empty-cells":{values:[
+"hide","show"]},
+
+"pointer-events":{values:[
+"none","all","auto","visible","visiblepainted","visiblefill","visiblestroke","painted","fill","stroke","bounding-box"]},
+
+"letter-spacing":{values:[
+"normal"]},
+
+"background-clip":{values:[
+"border-box","content-box","padding-box"]},
+
+"-webkit-font-smoothing":{values:[
+"none","auto","antialiased","subpixel-antialiased"]},
+
+"border":{values:[
+"none","hidden","inset","groove","ridge","outset","dotted","dashed","solid","double"]},
+
+"font-size":{values:[
+"xx-small","x-small","small","medium","large","x-large","xx-large","-webkit-xxx-large","smaller",
+"larger"]},
+
+"font-variant":{values:[
+"small-caps","normal"]},
+
+"vertical-align":{values:[
+"baseline","middle","sub","super","text-top","text-bottom","top","bottom","-webkit-baseline-middle"]},
+
+"white-space":{values:[
+"normal","nowrap","pre","pre-line","pre-wrap"]},
+
+"box-lines":{values:[
+"single","multiple"]},
+
+"page-break-after":{values:[
+"left","right","auto","always","avoid"]},
+
+"clip-path":{values:[
+"none"]},
+
+"margin":{values:[
+"auto"]},
+
+"margin-right":{values:[
+"auto"]},
+
+"word-break":{values:[
+"normal","break-all","break-word"]},
+
+"word-spacing":{values:[
+"normal"]},
+
+"-webkit-text-emphasis-style":{values:[
+"circle","filled","open","dot","double-circle","triangle","sesame"]},
+
+"transform":{values:[
+"scale","scaleX","scaleY","scale3d","rotate","rotateX","rotateY","rotateZ","rotate3d","skew","skewX","skewY",
+"translate","translateX","translateY","translateZ","translate3d","matrix","matrix3d","perspective"]},
+
+"image-resolution":{values:[
+"from-image","snap"]},
+
+"box-sizing":{values:[
+"content-box","border-box"]},
+
+"clip":{values:[
+"auto"]},
+
+"resize":{values:[
+"none","both","horizontal","vertical"]},
+
+"align-content":{values:[
+"flex-start","flex-end","center","space-between","space-around","stretch"]},
+
+"align-items":{values:[
+"flex-start","flex-end","center","baseline","stretch"]},
+
+"align-self":{values:[
+"auto","flex-start","flex-end","center","baseline","stretch"]},
+
+"flex-direction":{values:[
+"row","row-reverse","column","column-reverse"]},
+
+"justify-content":{values:[
+"flex-start","flex-end","center","space-between","space-around"]},
+
+"flex-wrap":{values:[
+"nowrap","wrap","wrap-reverse"]},
+
+"perspective":{values:[
+"none"]},
+
+"perspective-origin":{values:[
+"left","center","right","top","bottom"]},
+
+"transform-origin":{values:[
+"left","center","right","top","bottom"]},
+
+"transform-style":{values:[
+"flat","preserve-3d"]},
+
+"transition-timing-function":{values:[
+"ease","linear","ease-in","ease-out","ease-in-out","step-start","step-end","steps","cubic-bezier"]},
+
+"animation-timing-function":{values:[
+"ease","linear","ease-in","ease-out","ease-in-out","step-start","step-end","steps","cubic-bezier"]},
+
+"animation-direction":{values:[
+"normal","reverse","alternate","alternate-reverse"]},
+
+"animation-play-state":{values:[
+"running","paused"]},
+
+"animation-fill-mode":{values:[
+"none","forwards","backwards","both"]},
+
+"-webkit-backface-visibility":{values:[
+"visible","hidden"]},
+
+"-webkit-box-decoration-break":{values:[
+"slice","clone"]},
+
+"-webkit-column-break-after":{values:[
+"auto","always","avoid","left","right","page","column","avoid-page","avoid-column"]},
+
+"-webkit-column-break-before":{values:[
+"auto","always","avoid","left","right","page","column","avoid-page","avoid-column"]},
+
+"-webkit-column-break-inside":{values:[
+"auto","avoid","avoid-page","avoid-column"]},
+
+"-webkit-column-span":{values:[
+"none","all"]},
+
+"-webkit-column-count":{values:[
+"auto"]},
+
+"-webkit-column-gap":{values:[
+"normal"]},
+
+"-webkit-filter":{values:[
+"url","blur","brightness","contrast","drop-shadow","grayscale","hue-rotate","invert","opacity","saturate","sepia"]},
+
+"-webkit-line-break":{values:[
+"auto","loose","normal","strict"]},
+
+"-webkit-user-select":{values:[
+"none","text","all"]},
+
+"-webkit-user-modify":{values:[
+"read-only","read-write","read-write-plaintext-only"]},
+
+"text-align-last":{values:[
+"auto","start","end","left","right","center","justify"]},
+
+"-webkit-text-decoration-line":{values:[
+"none","underline","overline","line-through","blink"]},
+
+"-webkit-text-decoration-style":{values:[
+"solid","double","dotted","dashed","wavy"]},
+
+"-webkit-text-decoration-skip":{values:[
+"none","objects","spaces","ink","edges","box-decoration"]},
+
+"mix-blend-mode":{values:[
+"normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light",
+"difference","exclusion","hue","saturation","color","luminosity","unset"]},
+
+"background-blend-mode":{values:[
+"normal","multiply","screen","overlay","darken","lighten","color-dodge","color-burn","hard-light","soft-light",
+"difference","exclusion","hue","saturation","color","luminosity","unset"]}};
+
+
+
+
+WebInspector.CSSMetadata.Weight={
+"align-content":57,
+"align-items":129,
+"align-self":55,
+"animation":175,
+"animation-delay":114,
+"animation-direction":113,
+"animation-duration":137,
+"animation-fill-mode":132,
+"animation-iteration-count":124,
+"animation-name":139,
+"animation-play-state":104,
+"animation-timing-function":141,
+"backface-visibility":123,
+"background":260,
+"background-attachment":119,
+"background-clip":165,
+"background-color":259,
+"background-image":246,
+"background-origin":107,
+"background-position":237,
+"background-position-x":108,
+"background-position-y":93,
+"background-repeat":234,
+"background-size":203,
+"border":263,
+"border-bottom":233,
+"border-bottom-color":190,
+"border-bottom-left-radius":186,
+"border-bottom-right-radius":185,
+"border-bottom-style":150,
+"border-bottom-width":179,
+"border-collapse":209,
+"border-color":226,
+"border-image":89,
+"border-image-outset":50,
+"border-image-repeat":49,
+"border-image-slice":58,
+"border-image-source":32,
+"border-image-width":52,
+"border-left":221,
+"border-left-color":174,
+"border-left-style":142,
+"border-left-width":172,
+"border-radius":224,
+"border-right":223,
+"border-right-color":182,
+"border-right-style":130,
+"border-right-width":178,
+"border-spacing":198,
+"border-style":206,
+"border-top":231,
+"border-top-color":192,
+"border-top-left-radius":187,
+"border-top-right-radius":189,
+"border-top-style":152,
+"border-top-width":180,
+"border-width":214,
+"bottom":227,
+"box-shadow":213,
+"box-sizing":216,
+"caption-side":96,
+"clear":229,
+"clip":173,
+"clip-rule":5,
+"color":256,
+"content":219,
+"counter-increment":111,
+"counter-reset":110,
+"cursor":250,
+"direction":176,
+"display":262,
+"empty-cells":99,
+"fill":140,
+"fill-opacity":82,
+"fill-rule":22,
+"filter":160,
+"flex":133,
+"flex-basis":66,
+"flex-direction":85,
+"flex-flow":94,
+"flex-grow":112,
+"flex-shrink":61,
+"flex-wrap":68,
+"float":252,
+"font":211,
+"font-family":254,
+"font-kerning":18,
+"font-size":264,
+"font-stretch":77,
+"font-style":220,
+"font-variant":161,
+"font-weight":257,
+"height":266,
+"image-rendering":90,
+"justify-content":127,
+"left":248,
+"letter-spacing":188,
+"line-height":244,
+"list-style":215,
+"list-style-image":145,
+"list-style-position":149,
+"list-style-type":199,
+"margin":267,
+"margin-bottom":241,
+"margin-left":243,
+"margin-right":238,
+"margin-top":253,
+"mask":20,
+"max-height":205,
+"max-width":225,
+"min-height":217,
+"min-width":218,
+"object-fit":33,
+"opacity":251,
+"order":117,
+"orphans":146,
+"outline":222,
+"outline-color":153,
+"outline-offset":147,
+"outline-style":151,
+"outline-width":148,
+"overflow":255,
+"overflow-wrap":105,
+"overflow-x":184,
+"overflow-y":196,
+"padding":265,
+"padding-bottom":230,
+"padding-left":235,
+"padding-right":232,
+"padding-top":240,
+"page":8,
+"page-break-after":120,
+"page-break-before":69,
+"page-break-inside":121,
+"perspective":92,
+"perspective-origin":103,
+"pointer-events":183,
+"position":261,
+"quotes":158,
+"resize":168,
+"right":245,
+"shape-rendering":38,
+"size":64,
+"speak":118,
+"src":170,
+"stop-color":42,
+"stop-opacity":31,
+"stroke":98,
+"stroke-dasharray":36,
+"stroke-dashoffset":3,
+"stroke-linecap":30,
+"stroke-linejoin":21,
+"stroke-miterlimit":12,
+"stroke-opacity":34,
+"stroke-width":87,
+"table-layout":171,
+"tab-size":46,
+"text-align":260,
+"text-anchor":35,
+"text-decoration":247,
+"text-indent":207,
+"text-overflow":204,
+"text-rendering":155,
+"text-shadow":208,
+"text-transform":202,
+"top":258,
+"touch-action":80,
+"transform":181,
+"transform-origin":162,
+"transform-style":86,
+"transition":193,
+"transition-delay":134,
+"transition-duration":135,
+"transition-property":131,
+"transition-timing-function":122,
+"unicode-bidi":156,
+"unicode-range":136,
+"vertical-align":236,
+"visibility":242,
+"-webkit-appearance":191,
+"-webkit-backface-visibility":154,
+"-webkit-background-clip":164,
+"-webkit-background-origin":40,
+"-webkit-background-size":163,
+"-webkit-border-end":9,
+"-webkit-border-horizontal-spacing":81,
+"-webkit-border-image":75,
+"-webkit-border-radius":212,
+"-webkit-border-start":10,
+"-webkit-border-start-color":16,
+"-webkit-border-start-width":13,
+"-webkit-border-vertical-spacing":43,
+"-webkit-box-align":101,
+"-webkit-box-direction":51,
+"-webkit-box-flex":128,
+"-webkit-box-lines":2,
+"-webkit-box-ordinal-group":91,
+"-webkit-box-orient":144,
+"-webkit-box-pack":106,
+"-webkit-box-reflect":39,
+"-webkit-box-shadow":210,
+"-webkit-column-break-inside":60,
+"-webkit-column-count":84,
+"-webkit-column-gap":76,
+"-webkit-column-rule":25,
+"-webkit-column-rule-color":23,
+"-webkit-columns":44,
+"-webkit-column-span":29,
+"-webkit-column-width":47,
+"-webkit-filter":159,
+"-webkit-font-feature-settings":59,
+"-webkit-font-smoothing":177,
+"-webkit-highlight":1,
+"-webkit-line-break":45,
+"-webkit-line-clamp":126,
+"-webkit-margin-after":67,
+"-webkit-margin-before":70,
+"-webkit-margin-collapse":14,
+"-webkit-margin-end":65,
+"-webkit-margin-start":100,
+"-webkit-margin-top-collapse":78,
+"-webkit-mask":19,
+"-webkit-mask-box-image":72,
+"-webkit-mask-image":88,
+"-webkit-mask-position":54,
+"-webkit-mask-repeat":63,
+"-webkit-mask-size":79,
+"-webkit-padding-after":15,
+"-webkit-padding-before":28,
+"-webkit-padding-end":48,
+"-webkit-padding-start":73,
+"-webkit-print-color-adjust":83,
+"-webkit-rtl-ordering":7,
+"-webkit-tap-highlight-color":169,
+"-webkit-text-emphasis-color":11,
+"-webkit-text-fill-color":71,
+"-webkit-text-security":17,
+"-webkit-text-stroke":56,
+"-webkit-text-stroke-color":37,
+"-webkit-text-stroke-width":53,
+"-webkit-user-drag":95,
+"-webkit-user-modify":62,
+"-webkit-user-select":194,
+"-webkit-writing-mode":4,
+"white-space":228,
+"widows":115,
+"width":268,
+"will-change":74,
+"word-break":166,
+"word-spacing":157,
+"word-wrap":197,
+"writing-mode":41,
+"z-index":239,
+"zoom":200};
+
+
+},{}],113:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+WebInspector.CSSProperty=function(ownerStyle,index,name,value,important,disabled,parsedOk,implicit,text,range)
+{
+this.ownerStyle=ownerStyle;
+this.index=index;
+this.name=name;
+this.value=value;
+this.important=important;
+this.disabled=disabled;
+this.parsedOk=parsedOk;
+this.implicit=implicit;
+this.text=text;
+this.range=range?WebInspector.TextRange.fromObject(range):null;
+this._active=true;
+this._nameRange=null;
+this._valueRange=null;
+};
+
+
+
+
+
+
+
+WebInspector.CSSProperty.parsePayload=function(ownerStyle,index,payload)
+{
+
+
+
+
+
+var result=new WebInspector.CSSProperty(
+ownerStyle,index,payload.name,payload.value,payload.important||false,payload.disabled||false,"parsedOk"in payload?!!payload.parsedOk:true,!!payload.implicit,payload.text,payload.range);
+return result;
+};
+
+WebInspector.CSSProperty.prototype={
+_ensureRanges:function()
+{
+if(this._nameRange&&this._valueRange)
+return;
+var range=this.range;
+var text=this.text?new WebInspector.Text(this.text):null;
+if(!range||!text)
+return;
+
+var nameIndex=text.value().indexOf(this.name);
+var valueIndex=text.value().lastIndexOf(this.value);
+if(nameIndex===-1||valueIndex===-1||nameIndex>valueIndex)
+return;
+
+var nameSourceRange=new WebInspector.SourceRange(nameIndex,this.name.length);
+var valueSourceRange=new WebInspector.SourceRange(valueIndex,this.value.length);
+
+this._nameRange=rebase(text.toTextRange(nameSourceRange),range.startLine,range.startColumn);
+this._valueRange=rebase(text.toTextRange(valueSourceRange),range.startLine,range.startColumn);
+
+
+
+
+
+
+
+function rebase(oneLineRange,lineOffset,columnOffset)
+{
+if(oneLineRange.startLine===0){
+oneLineRange.startColumn+=columnOffset;
+oneLineRange.endColumn+=columnOffset;
+}
+oneLineRange.startLine+=lineOffset;
+oneLineRange.endLine+=lineOffset;
+return oneLineRange;
+}
+},
+
+
+
+
+nameRange:function()
+{
+this._ensureRanges();
+return this._nameRange;
+},
+
+
+
+
+valueRange:function()
+{
+this._ensureRanges();
+return this._valueRange;
+},
+
+
+
+
+rebase:function(edit)
+{
+if(this.ownerStyle.styleSheetId!==edit.styleSheetId)
+return;
+if(this.range)
+this.range=this.range.rebaseAfterTextEdit(edit.oldRange,edit.newRange);
+},
+
+
+
+
+_setActive:function(active)
+{
+this._active=active;
+},
+
+get propertyText()
+{
+if(this.text!==undefined)
+return this.text;
+
+if(this.name==="")
+return"";
+return this.name+": "+this.value+(this.important?" !important":"")+";";
+},
+
+
+
+
+activeInStyle:function()
+{
+return this._active;
+},
+
+
+
+
+
+
+
+setText:function(propertyText,majorChange,overwrite)
+{
+if(!this.ownerStyle)
+return Promise.reject(new Error("No ownerStyle for property"));
+
+if(!this.ownerStyle.styleSheetId)
+return Promise.reject(new Error("No owner style id"));
+
+if(!this.range||!this.ownerStyle.range)
+return Promise.reject(new Error("Style not editable"));
+
+if(majorChange)
+WebInspector.userMetrics.actionTaken(WebInspector.UserMetrics.Action.StyleRuleEdited);
+
+if(overwrite&&propertyText===this.propertyText){
+if(majorChange)
+this.ownerStyle.cssModel().domModel().markUndoableState();
+return Promise.resolve(true);
+}
+
+var range=this.range.relativeTo(this.ownerStyle.range.startLine,this.ownerStyle.range.startColumn);
+var indentation=this.ownerStyle.cssText?this._detectIndentation(this.ownerStyle.cssText):WebInspector.moduleSetting("textEditorIndent").get();
+var endIndentation=this.ownerStyle.cssText?indentation.substring(0,this.ownerStyle.range.endColumn):"";
+var text=new WebInspector.Text(this.ownerStyle.cssText||"");
+var newStyleText=text.replaceRange(range,String.sprintf(";%s;",propertyText));
+
+return self.runtime.extension(WebInspector.TokenizerFactory).instance().
+then(this._formatStyle.bind(this,newStyleText,indentation,endIndentation)).
+then(setStyleText.bind(this));
+
+
+
+
+
+
+function setStyleText(styleText)
+{
+return this.ownerStyle.setText(styleText,majorChange);
+}
+},
+
+
+
+
+
+
+
+
+_formatStyle:function(styleText,indentation,endIndentation,tokenizerFactory)
+{
+if(indentation)
+indentation="\n"+indentation;
+var result="";
+var propertyText;
+var insideProperty=false;
+var tokenize=tokenizerFactory.createTokenizer("text/css");
+
+tokenize("*{"+styleText+"}",processToken);
+if(insideProperty)
+result+=propertyText;
+result=result.substring(2,result.length-1).trimRight();
+return result+(indentation?"\n"+endIndentation:"");
+
+
+
+
+
+
+
+function processToken(token,tokenType,column,newColumn)
+{
+if(!insideProperty){
+var disabledProperty=tokenType&&tokenType.includes("css-comment")&&isDisabledProperty(token);
+var isPropertyStart=tokenType&&(tokenType.includes("css-string")||tokenType.includes("css-meta")||tokenType.includes("css-property")||tokenType.includes("css-variable-2"));
+if(disabledProperty){
+result=result.trimRight()+indentation+token;
+}else if(isPropertyStart){
+insideProperty=true;
+propertyText=token;
+}else if(token!==";"){
+result+=token;
+}
+return;
+}
+
+if(token==="}"||token===";"){
+result=result.trimRight()+indentation+propertyText.trim()+";";
+insideProperty=false;
+if(token==="}")
+result+="}";
+}else{
+propertyText+=token;
+}
+}
+
+
+
+
+
+function isDisabledProperty(text)
+{
+var colon=text.indexOf(":");
+if(colon===-1)
+return false;
+var propertyName=text.substring(2,colon).trim();
+return WebInspector.cssMetadata().isCSSPropertyName(propertyName);
+}
+},
+
+
+
+
+
+_detectIndentation:function(text)
+{
+var lines=text.split("\n");
+if(lines.length<2)
+return"";
+return WebInspector.TextUtils.lineIndent(lines[1]);
+},
+
+
+
+
+
+
+
+setValue:function(newValue,majorChange,overwrite,userCallback)
+{
+var text=this.name+": "+newValue+(this.important?" !important":"")+";";
+this.setText(text,majorChange,overwrite).then(userCallback);
+},
+
+
+
+
+
+setDisabled:function(disabled)
+{
+if(!this.ownerStyle)
+return Promise.resolve(false);
+if(disabled===this.disabled)
+return Promise.resolve(true);
+var propertyText=this.text.trim();
+var text=disabled?"/* "+propertyText+" */":this.text.substring(2,propertyText.length-2).trim();
+return this.setText(text,true,true);
+}};
+
+
+},{}],114:[function(require,module,exports){
+
+
+
+
+
+
+
+
+WebInspector.CSSValue=function(payload)
+{
+this.text=payload.text;
+if(payload.range)
+this.range=WebInspector.TextRange.fromObject(payload.range);
+};
+
+WebInspector.CSSValue.prototype={
+
+
+
+rebase:function(edit)
+{
+if(!this.range)
+return;
+this.range=this.range.rebaseAfterTextEdit(edit.oldRange,edit.newRange);
+}};
+
+
+
+
+
+
+
+WebInspector.CSSRule=function(cssModel,payload)
+{
+this._cssModel=cssModel;
+this.styleSheetId=payload.styleSheetId;
+
+if(this.styleSheetId){
+var styleSheetHeader=cssModel.styleSheetHeaderForId(this.styleSheetId);
+this.sourceURL=styleSheetHeader.sourceURL;
+}
+this.origin=payload.origin;
+this.style=new WebInspector.CSSStyleDeclaration(this._cssModel,this,payload.style,WebInspector.CSSStyleDeclaration.Type.Regular);
+};
+
+WebInspector.CSSRule.prototype={
+
+
+
+rebase:function(edit)
+{
+if(this.styleSheetId!==edit.styleSheetId)
+return;
+this.style.rebase(edit);
+},
+
+
+
+
+resourceURL:function()
+{
+if(!this.styleSheetId)
+return"";
+var styleSheetHeader=this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+return styleSheetHeader.resourceURL();
+},
+
+
+
+
+isUserAgent:function()
+{
+return this.origin===CSSAgent.StyleSheetOrigin.UserAgent;
+},
+
+
+
+
+isInjected:function()
+{
+return this.origin===CSSAgent.StyleSheetOrigin.Injected;
+},
+
+
+
+
+isViaInspector:function()
+{
+return this.origin===CSSAgent.StyleSheetOrigin.Inspector;
+},
+
+
+
+
+isRegular:function()
+{
+return this.origin===CSSAgent.StyleSheetOrigin.Regular;
+}};
+
+
+
+
+
+
+
+
+WebInspector.CSSStyleRule=function(cssModel,payload)
+{
+WebInspector.CSSRule.call(this,cssModel,payload);
+
+this._reinitializeSelectors(payload.selectorList);
+this.media=payload.media?WebInspector.CSSMedia.parseMediaArrayPayload(cssModel,payload.media):[];
+};
+
+
+
+
+
+
+WebInspector.CSSStyleRule.createDummyRule=function(cssModel,selectorText)
+{
+var dummyPayload={
+selectorList:{
+selectors:[{text:selectorText}]},
+
+style:{
+styleSheetId:"0",
+range:new WebInspector.TextRange(0,0,0,0),
+shorthandEntries:[],
+cssProperties:[]}};
+
+
+return new WebInspector.CSSStyleRule(cssModel,dummyPayload);
+};
+
+WebInspector.CSSStyleRule.prototype={
+
+
+
+_reinitializeSelectors:function(selectorList)
+{
+
+this.selectors=[];
+for(var i=0;i<selectorList.selectors.length;++i)
+this.selectors.push(new WebInspector.CSSValue(selectorList.selectors[i]));
+},
+
+
+
+
+
+setSelectorText:function(newSelector)
+{
+var styleSheetId=this.styleSheetId;
+if(!styleSheetId)
+throw"No rule stylesheet id";
+var range=this.selectorRange();
+if(!range)
+throw"Rule selector is not editable";
+return this._cssModel.setSelectorText(styleSheetId,range,newSelector);
+},
+
+
+
+
+selectorText:function()
+{
+return this.selectors.select("text").join(", ");
+},
+
+
+
+
+selectorRange:function()
+{
+var firstRange=this.selectors[0].range;
+if(!firstRange)
+return null;
+var lastRange=this.selectors.peekLast().range;
+return new WebInspector.TextRange(firstRange.startLine,firstRange.startColumn,lastRange.endLine,lastRange.endColumn);
+},
+
+
+
+
+
+lineNumberInSource:function(selectorIndex)
+{
+var selector=this.selectors[selectorIndex];
+if(!selector||!selector.range||!this.styleSheetId)
+return 0;
+var styleSheetHeader=this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+return styleSheetHeader.lineNumberInSource(selector.range.startLine);
+},
+
+
+
+
+
+columnNumberInSource:function(selectorIndex)
+{
+var selector=this.selectors[selectorIndex];
+if(!selector||!selector.range||!this.styleSheetId)
+return undefined;
+var styleSheetHeader=this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+console.assert(styleSheetHeader);
+return styleSheetHeader.columnNumberInSource(selector.range.startLine,selector.range.startColumn);
+},
+
+
+
+
+
+rebase:function(edit)
+{
+if(this.styleSheetId!==edit.styleSheetId)
+return;
+if(this.selectorRange().equal(edit.oldRange)){
+this._reinitializeSelectors(edit.payload);
+}else{
+for(var i=0;i<this.selectors.length;++i)
+this.selectors[i].rebase(edit);
+}
+for(var media of this.media)
+media.rebase(edit);
+
+WebInspector.CSSRule.prototype.rebase.call(this,edit);
+},
+
+__proto__:WebInspector.CSSRule.prototype};
+
+
+
+
+
+
+
+WebInspector.CSSKeyframesRule=function(cssModel,payload)
+{
+this._cssModel=cssModel;
+this._animationName=new WebInspector.CSSValue(payload.animationName);
+this._keyframes=payload.keyframes.map(keyframeRule=>new WebInspector.CSSKeyframeRule(cssModel,keyframeRule));
+};
+
+WebInspector.CSSKeyframesRule.prototype={
+
+
+
+name:function()
+{
+return this._animationName;
+},
+
+
+
+
+keyframes:function()
+{
+return this._keyframes;
+}};
+
+
+
+
+
+
+
+
+WebInspector.CSSKeyframeRule=function(cssModel,payload)
+{
+WebInspector.CSSRule.call(this,cssModel,payload);
+this._reinitializeKey(payload.keyText);
+};
+
+WebInspector.CSSKeyframeRule.prototype={
+
+
+
+key:function()
+{
+return this._keyText;
+},
+
+
+
+
+_reinitializeKey:function(payload)
+{
+this._keyText=new WebInspector.CSSValue(payload);
+},
+
+
+
+
+
+rebase:function(edit)
+{
+if(this.styleSheetId!==edit.styleSheetId||!this._keyText.range)
+return;
+if(edit.oldRange.equal(this._keyText.range))
+this._reinitializeKey(edit.payload);else
+
+this._keyText.rebase(edit);
+
+WebInspector.CSSRule.prototype.rebase.call(this,edit);
+},
+
+
+
+
+
+setKeyText:function(newKeyText)
+{
+var styleSheetId=this.styleSheetId;
+if(!styleSheetId)
+throw"No rule stylesheet id";
+var range=this._keyText.range;
+if(!range)
+throw"Keyframe key is not editable";
+return this._cssModel.setKeyframeKey(styleSheetId,range,newKeyText);
+},
+
+__proto__:WebInspector.CSSRule.prototype};
+
+
+},{}],115:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+WebInspector.CSSStyleDeclaration=function(cssModel,parentRule,payload,type)
+{
+this._cssModel=cssModel;
+this.parentRule=parentRule;
+this._reinitialize(payload);
+this.type=type;
+};
+
+
+WebInspector.CSSStyleDeclaration.Type={
+Regular:"Regular",
+Inline:"Inline",
+Attributes:"Attributes"};
+
+
+WebInspector.CSSStyleDeclaration.prototype={
+
+
+
+rebase:function(edit)
+{
+if(this.styleSheetId!==edit.styleSheetId||!this.range)
+return;
+if(edit.oldRange.equal(this.range)){
+this._reinitialize(edit.payload);
+}else{
+this.range=this.range.rebaseAfterTextEdit(edit.oldRange,edit.newRange);
+for(var i=0;i<this._allProperties.length;++i)
+this._allProperties[i].rebase(edit);
+}
+},
+
+
+
+
+_reinitialize:function(payload)
+{
+this.styleSheetId=payload.styleSheetId;
+this.range=payload.range?WebInspector.TextRange.fromObject(payload.range):null;
+
+var shorthandEntries=payload.shorthandEntries;
+
+this._shorthandValues=new Map();
+
+this._shorthandIsImportant=new Set();
+for(var i=0;i<shorthandEntries.length;++i){
+this._shorthandValues.set(shorthandEntries[i].name,shorthandEntries[i].value);
+if(shorthandEntries[i].important)
+this._shorthandIsImportant.add(shorthandEntries[i].name);
+}
+
+this._allProperties=[];
+for(var i=0;i<payload.cssProperties.length;++i){
+var property=WebInspector.CSSProperty.parsePayload(this,i,payload.cssProperties[i]);
+this._allProperties.push(property);
+}
+
+this._generateSyntheticPropertiesIfNeeded();
+this._computeInactiveProperties();
+
+this._activePropertyMap=new Map();
+for(var property of this._allProperties){
+if(!property.activeInStyle())
+continue;
+this._activePropertyMap.set(property.name,property);
+}
+
+this.cssText=payload.cssText;
+this._leadingProperties=null;
+},
+
+_generateSyntheticPropertiesIfNeeded:function()
+{
+if(this.range)
+return;
+
+if(!this._shorthandValues.size)
+return;
+
+var propertiesSet=new Set();
+for(var property of this._allProperties)
+propertiesSet.add(property.name);
+
+var generatedProperties=[];
+
+for(var property of this._allProperties){
+
+var shorthands=WebInspector.cssMetadata().shorthands(property.name)||[];
+for(var shorthand of shorthands){
+if(propertiesSet.has(shorthand))
+continue;
+var shorthandValue=this._shorthandValues.get(shorthand);
+if(!shorthandValue)
+continue;
+
+
+var shorthandImportance=!!this._shorthandIsImportant.has(shorthand);
+var shorthandProperty=new WebInspector.CSSProperty(this,this.allProperties.length,shorthand,shorthandValue,shorthandImportance,false,true,false);
+generatedProperties.push(shorthandProperty);
+propertiesSet.add(shorthand);
+}
+}
+this._allProperties=this._allProperties.concat(generatedProperties);
+},
+
+
+
+
+_computeLeadingProperties:function()
+{
+
+
+
+
+function propertyHasRange(property)
+{
+return!!property.range;
+}
+
+if(this.range)
+return this._allProperties.filter(propertyHasRange);
+
+var leadingProperties=[];
+for(var property of this._allProperties){
+var shorthands=WebInspector.cssMetadata().shorthands(property.name)||[];
+var belongToAnyShorthand=false;
+for(var shorthand of shorthands){
+if(this._shorthandValues.get(shorthand)){
+belongToAnyShorthand=true;
+break;
+}
+}
+if(!belongToAnyShorthand)
+leadingProperties.push(property);
+}
+
+return leadingProperties;
+},
+
+
+
+
+leadingProperties:function()
+{
+if(!this._leadingProperties)
+this._leadingProperties=this._computeLeadingProperties();
+return this._leadingProperties;
+},
+
+
+
+
+target:function()
+{
+return this._cssModel.target();
+},
+
+
+
+
+cssModel:function()
+{
+return this._cssModel;
+},
+
+_computeInactiveProperties:function()
+{
+var activeProperties={};
+for(var i=0;i<this._allProperties.length;++i){
+var property=this._allProperties[i];
+if(property.disabled||!property.parsedOk){
+property._setActive(false);
+continue;
+}
+var canonicalName=WebInspector.cssMetadata().canonicalPropertyName(property.name);
+var activeProperty=activeProperties[canonicalName];
+if(!activeProperty){
+activeProperties[canonicalName]=property;
+}else if(!activeProperty.important||property.important){
+activeProperty._setActive(false);
+activeProperties[canonicalName]=property;
+}else{
+property._setActive(false);
+}
+}
+},
+
+get allProperties()
+{
+return this._allProperties;
+},
+
+
+
+
+
+getPropertyValue:function(name)
+{
+var property=this._activePropertyMap.get(name);
+return property?property.value:"";
+},
+
+
+
+
+
+isPropertyImplicit:function(name)
+{
+var property=this._activePropertyMap.get(name);
+return property?property.implicit:"";
+},
+
+
+
+
+
+longhandProperties:function(name)
+{
+var longhands=WebInspector.cssMetadata().longhands(name);
+var result=[];
+for(var i=0;longhands&&i<longhands.length;++i){
+var property=this._activePropertyMap.get(longhands[i]);
+if(property)
+result.push(property);
+}
+return result;
+},
+
+
+
+
+
+propertyAt:function(index)
+{
+return index<this.allProperties.length?this.allProperties[index]:null;
+},
+
+
+
+
+pastLastSourcePropertyIndex:function()
+{
+for(var i=this.allProperties.length-1;i>=0;--i){
+if(this.allProperties[i].range)
+return i+1;
+}
+return 0;
+},
+
+
+
+
+
+_insertionRange:function(index)
+{
+var property=this.propertyAt(index);
+return property&&property.range?property.range.collapseToStart():this.range.collapseToEnd();
+},
+
+
+
+
+
+newBlankProperty:function(index)
+{
+index=typeof index==="undefined"?this.pastLastSourcePropertyIndex():index;
+var property=new WebInspector.CSSProperty(this,index,"","",false,false,true,false,"",this._insertionRange(index));
+return property;
+},
+
+
+
+
+
+
+setText:function(text,majorChange)
+{
+return this._cssModel.setStyleText(this.styleSheetId,this.range,text,majorChange);
+},
+
+
+
+
+
+
+
+insertPropertyAt:function(index,name,value,userCallback)
+{
+this.newBlankProperty(index).setText(name+": "+value+";",false,true).
+then(userCallback);
+},
+
+
+
+
+
+
+appendProperty:function(name,value,userCallback)
+{
+this.insertPropertyAt(this.allProperties.length,name,value,userCallback);
+}};
+
+
+},{}],116:[function(require,module,exports){
 
 
 
@@ -36019,7 +50929,7 @@ __proto__:WebInspector.Object.prototype};
 
 WebInspector.multitargetNetworkManager;
 
-},{}],92:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 
 
 
@@ -37284,7 +52194,7 @@ return this._networkManager;
 __proto__:WebInspector.SDKObject.prototype};
 
 
-},{}],93:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 
 
 
@@ -37411,7 +52321,7 @@ return root.total;
 }};
 
 
-},{}],94:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 
 
 
@@ -37704,7 +52614,7 @@ WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events
 __proto__:WebInspector.SDKObject.prototype};
 
 
-},{}],95:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 
 
 
@@ -38095,7 +53005,7 @@ targetRemoved:function(target){}};
 
 WebInspector.targetManager=new WebInspector.TargetManager();
 
-},{}],96:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 
 
 
@@ -39082,7 +53992,7 @@ return this._asyncEvents;
 __proto__:WebInspector.TracingModel.NamedObject.prototype};
 
 
-},{}],97:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 
 
 
@@ -39363,7 +54273,7 @@ WebInspector.console.error(WebInspector.UIString("Failed to save timeline: %s (%
 }};
 
 
-},{}],98:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 
 
 
@@ -40253,7 +55163,7 @@ this.dispatchEventToListeners(WebInspector.TimelineStackView.Events.SelectionCha
 __proto__:WebInspector.VBox.prototype};
 
 
-},{}],99:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 
 
 
@@ -42409,7 +57319,7 @@ console.assert(false,"Unhandled TimelineModel.WarningType");}
 return span;
 };
 
-},{}],100:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 
 
 
@@ -43721,7 +58631,7 @@ model=new WebInspector.LayerTreeModel(target);
 return model;
 };
 
-},{}],101:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 
 
 
@@ -44382,7 +59292,7 @@ this.mainFrameId=undefined;
 this.triggerTime=triggerTime;
 };
 
-},{}],102:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 
 
 
@@ -44717,7 +59627,7 @@ return eventName.substr(prefix.length);
 
 
 
-},{}],103:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 
 
 
@@ -45217,7 +60127,7 @@ break;}
 return samples;
 };
 
-},{}],104:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 
 
 
@@ -47016,7 +61926,7 @@ event.initiator=initiatorMap.get(id)||null;
 }};
 
 
-},{}],105:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 
 
 
@@ -47397,7 +62307,7 @@ return this._groupNodes.get(id)||this._buildGroupNode(id,node.event);
 }};
 
 
-},{}],106:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 
 
 
@@ -47586,400 +62496,7 @@ child._sortChildren();
 __proto__:WebInspector.ViewportDataGridNode.prototype};
 
 
-},{}],107:[function(require,module,exports){
-(function(process){
-
-
-
-
-
-
-exports=module.exports=require('./debug');
-exports.log=log;
-exports.formatArgs=formatArgs;
-exports.save=save;
-exports.load=load;
-exports.useColors=useColors;
-exports.storage='undefined'!=typeof chrome&&
-'undefined'!=typeof chrome.storage?
-chrome.storage.local:
-localstorage();
-
-
-
-
-
-exports.colors=[
-'lightseagreen',
-'forestgreen',
-'goldenrod',
-'dodgerblue',
-'darkorchid',
-'crimson'];
-
-
-
-
-
-
-
-
-
-
-function useColors(){
-
-
-
-if(typeof window!=='undefined'&&window.process&&window.process.type==='renderer'){
-return true;
-}
-
-
-
-return typeof document!=='undefined'&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||
-
-typeof window!=='undefined'&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||
-
-
-typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||
-
-typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
-}
-
-
-
-
-
-exports.formatters.j=function(v){
-try{
-return JSON.stringify(v);
-}catch(err){
-return'[UnexpectedJSONParseError]: '+err.message;
-}
-};
-
-
-
-
-
-
-
-
-function formatArgs(args){
-var useColors=this.useColors;
-
-args[0]=(useColors?'%c':'')+
-this.namespace+(
-useColors?' %c':' ')+
-args[0]+(
-useColors?'%c ':' ')+
-'+'+exports.humanize(this.diff);
-
-if(!useColors)return;
-
-var c='color: '+this.color;
-args.splice(1,0,c,'color: inherit');
-
-
-
-
-var index=0;
-var lastC=0;
-args[0].replace(/%[a-zA-Z%]/g,function(match){
-if('%%'===match)return;
-index++;
-if('%c'===match){
-
-
-lastC=index;
-}
-});
-
-args.splice(lastC,0,c);
-}
-
-
-
-
-
-
-
-
-function log(){
-
-
-return'object'===typeof console&&
-console.log&&
-Function.prototype.apply.call(console.log,console,arguments);
-}
-
-
-
-
-
-
-
-
-function save(namespaces){
-try{
-if(null==namespaces){
-exports.storage.removeItem('debug');
-}else{
-exports.storage.debug=namespaces;
-}
-}catch(e){}
-}
-
-
-
-
-
-
-
-
-function load(){
-var r;
-try{
-r=exports.storage.debug;
-}catch(e){}
-
-
-if(!r&&typeof process!=='undefined'&&'env'in process){
-r=process.env.DEBUG;
-}
-
-return r;
-}
-
-
-
-
-
-exports.enable(load());
-
-
-
-
-
-
-
-
-
-
-
-
-function localstorage(){
-try{
-return window.localStorage;
-}catch(e){}
-}
-
-}).call(this,require('_process'));
-},{"./debug":108,"_process":65}],108:[function(require,module,exports){
-
-
-
-
-
-
-
-
-exports=module.exports=createDebug.debug=createDebug['default']=createDebug;
-exports.coerce=coerce;
-exports.disable=disable;
-exports.enable=enable;
-exports.enabled=enabled;
-exports.humanize=require('ms');
-
-
-
-
-
-exports.names=[];
-exports.skips=[];
-
-
-
-
-
-
-
-exports.formatters={};
-
-
-
-
-
-var prevTime;
-
-
-
-
-
-
-
-
-function selectColor(namespace){
-var hash=0,i;
-
-for(i in namespace){
-hash=(hash<<5)-hash+namespace.charCodeAt(i);
-hash|=0;
-}
-
-return exports.colors[Math.abs(hash)%exports.colors.length];
-}
-
-
-
-
-
-
-
-
-
-function createDebug(namespace){
-
-function debug(){
-
-if(!debug.enabled)return;
-
-var self=debug;
-
-
-var curr=+new Date();
-var ms=curr-(prevTime||curr);
-self.diff=ms;
-self.prev=prevTime;
-self.curr=curr;
-prevTime=curr;
-
-
-var args=new Array(arguments.length);
-for(var i=0;i<args.length;i++){
-args[i]=arguments[i];
-}
-
-args[0]=exports.coerce(args[0]);
-
-if('string'!==typeof args[0]){
-
-args.unshift('%O');
-}
-
-
-var index=0;
-args[0]=args[0].replace(/%([a-zA-Z%])/g,function(match,format){
-
-if(match==='%%')return match;
-index++;
-var formatter=exports.formatters[format];
-if('function'===typeof formatter){
-var val=args[index];
-match=formatter.call(self,val);
-
-
-args.splice(index,1);
-index--;
-}
-return match;
-});
-
-
-exports.formatArgs.call(self,args);
-
-var logFn=debug.log||exports.log||console.log.bind(console);
-logFn.apply(self,args);
-}
-
-debug.namespace=namespace;
-debug.enabled=exports.enabled(namespace);
-debug.useColors=exports.useColors();
-debug.color=selectColor(namespace);
-
-
-if('function'===typeof exports.init){
-exports.init(debug);
-}
-
-return debug;
-}
-
-
-
-
-
-
-
-
-
-function enable(namespaces){
-exports.save(namespaces);
-
-exports.names=[];
-exports.skips=[];
-
-var split=(typeof namespaces==='string'?namespaces:'').split(/[\s,]+/);
-var len=split.length;
-
-for(var i=0;i<len;i++){
-if(!split[i])continue;
-namespaces=split[i].replace(/\*/g,'.*?');
-if(namespaces[0]==='-'){
-exports.skips.push(new RegExp('^'+namespaces.substr(1)+'$'));
-}else{
-exports.names.push(new RegExp('^'+namespaces+'$'));
-}
-}
-}
-
-
-
-
-
-
-
-function disable(){
-exports.enable('');
-}
-
-
-
-
-
-
-
-
-
-function enabled(name){
-var i,len;
-for(i=0,len=exports.skips.length;i<len;i++){
-if(exports.skips[i].test(name)){
-return false;
-}
-}
-for(i=0,len=exports.names.length;i<len;i++){
-if(exports.names[i].test(name)){
-return true;
-}
-}
-return false;
-}
-
-
-
-
-
-
-
-
-
-function coerce(val){
-if(val instanceof Error)return val.stack||val.message;
-return val;
-}
-
-},{"ms":116}],109:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 
 
 
@@ -48076,7 +62593,319 @@ return TimelineModelTreeView;
 
 };
 
-},{}],110:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
+(function(Buffer){
+var querystring=require('querystring');
+var trim=require('./trim');
+
+
+
+
+
+
+function Link(value){
+
+if(!(this instanceof Link)){
+return new Link(value);
+}
+
+
+this.refs=[];
+
+}
+
+
+
+
+
+Link.pattern=/(?:\<([^\>]+)\>)((\s*;\s*([a-z\*]+)=(("[^"]+")|('[^']+')|([^\,\;]+)))*)(\s*,\s*|$)/gi;
+
+
+
+
+
+Link.attrPattern=/([a-z\*]+)=(?:(?:"([^"]+)")|(?:'([^']+)')|([^\,\;]+))/gi;
+
+
+
+
+
+
+
+Link.isCompatibleEncoding=function(value){
+return /^utf-?8|ascii|utf-?16-?le|ucs-?2|base-?64|latin-?1$/i.test(value);
+};
+
+
+
+
+
+
+
+Link.formatExtendedAttribute=function(attr,data){
+
+var encoding=(data.encoding||'utf-8').toUpperCase();
+var language=data.language||'en';
+
+var encodedValue='';
+
+if(Buffer.isBuffer(data.value)&&Link.isCompatibleEncoding(encoding)){
+encodedValue=data.value.toString(encoding);
+}else if(Buffer.isBuffer(data.value)){
+encodedValue=data.value.toString('hex').
+replace(/[0-9a-f]{2}/gi,'%$1');
+}else{
+encodedValue=querystring.escape(data.value);
+}
+
+return attr+'='+encoding+'\''+
+language+'\''+encodedValue;
+
+};
+
+
+
+
+
+
+
+Link.formatAttribute=function(attr,value){
+
+
+if(/\*$/.test(attr)||typeof value!=='string')
+return Link.formatExtendedAttribute(attr,value);
+
+
+
+var needsQuotes=/[^a-z]/i.test(value);
+
+if(needsQuotes){
+
+value=querystring.escape(value).
+replace(/%20/g,' ').
+replace(/%2C/g,',').
+replace(/%3B/g,';');
+
+value='"'+value+'"';
+}
+
+return attr+'='+value;
+
+};
+
+
+
+
+
+
+
+Link.parseExtendedValue=function(value){
+var parts=/([^']+)?(?:'([^']+)')?(.+)/.exec(value);
+return{
+language:parts[2].toLowerCase(),
+encoding:Link.isCompatibleEncoding(parts[1])?
+null:parts[1].toLowerCase(),
+value:Link.isCompatibleEncoding(parts[1])?
+querystring.unescape(parts[3]):parts[3]};
+
+};
+
+
+
+
+
+
+
+Link.setAttr=function(link,attr,value){
+
+
+
+if(attr==='rel'&&link[attr]!=null)
+return link;
+
+if(Array.isArray(link[attr])){
+link[attr].push(value);
+}else if(link[attr]!=null){
+link[attr]=[link[attr],value];
+}else{
+link[attr]=value;
+}
+
+return link;
+
+};
+
+
+
+
+Link.parseParams=function(link,uri){
+
+var kvs={};
+var params=/(.+)\?(.+)/gi.exec(uri);
+
+if(!params){
+return link;
+}
+
+params=params[2].split('&');
+
+for(var i=0;i<params.length;i++){
+var param=params[i].split('=');
+kvs[param[0]]=param[1];
+}
+
+Link.setAttr(link,'params',kvs);
+
+return link;
+
+};
+
+
+
+
+
+
+
+
+Link.parseAttrs=function(link,parts){
+
+var match=null;
+var attr='';
+var value='';
+var attrs='';
+
+var uriAttrs=/<(.*)>;\s*(.*)/gi.exec(parts);
+if(uriAttrs){
+attrs=uriAttrs[2];
+link=Link.parseParams(link,uriAttrs[1]);
+}
+
+while(match=Link.attrPattern.exec(attrs)){
+attr=match[1].toLowerCase();
+value=match[4]||match[3]||match[2];
+if(/\*$/.test(attr)){
+Link.setAttr(link,attr,Link.parseExtendedValue(value));
+}else if(/%/.test(value)){
+Link.setAttr(link,attr,querystring.unescape(value));
+}else{
+Link.setAttr(link,attr,value);
+}
+}
+
+return link;
+
+};
+
+Link.parse=function(value){
+return new Link().parse(value);
+};
+
+
+
+
+
+Link.prototype={
+
+constructor:Link,
+
+
+
+
+
+
+rel:function(value){
+
+var links=[];
+
+for(var i=0;i<this.refs.length;i++){
+if(this.refs[i].rel===value){
+links.push(this.refs[i]);
+}
+}
+
+return links;
+
+},
+
+
+
+
+
+
+
+get:function(attr,value){
+
+attr=attr.toLowerCase();
+
+var links=[];
+
+for(var i=0;i<this.refs.length;i++){
+if(this.refs[i][attr]===value){
+links.push(this.refs[i]);
+}
+}
+
+return links;
+
+},
+
+set:function(link){
+this.refs.push(link);
+return this;
+},
+
+has:function(attr,value){
+return this.get(attr,value)!=null;
+},
+
+parse:function(value){
+
+
+value=trim(value).
+replace(/\r?\n[\x20\x09]+/g,'');
+
+var match=null;
+
+while(match=Link.pattern.exec(value)){
+var link=Link.parseAttrs({uri:match[1]},match[0]);
+this.refs.push(link);
+}
+
+return this;
+
+},
+
+toString:function(){
+
+var refs=[];
+var link='';
+var ref=null;
+
+for(var i=0;i<this.refs.length;i++){
+ref=this.refs[i];
+link=Object.keys(this.refs[i]).reduce(function(link,attr){
+if(attr==='uri')return link;
+return link+'; '+Link.formatAttribute(attr,ref[attr]);
+},'<'+ref.uri+'>');
+refs.push(link);
+}
+
+return refs.join(', ');
+
+}};
+
+
+
+
+module.exports=Link;
+
+}).call(this,{"isBuffer":require("../../../lighthouse-extension/node_modules/is-buffer/index.js")});
+},{"../../../lighthouse-extension/node_modules/is-buffer/index.js":58,"./trim":134,"querystring":73}],134:[function(require,module,exports){
+module.exports=function trim(value){
+return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
+};
+
+},{}],135:[function(require,module,exports){
 
 
 
@@ -48221,7 +63050,7 @@ return sumLuma/lumaValues.length;
 })(ImageSSIM||(ImageSSIM={}));
 module.exports=ImageSSIM;
 
-},{}],111:[function(require,module,exports){
+},{}],136:[function(require,module,exports){
 var encode=require('./lib/encoder'),
 decode=require('./lib/decoder');
 
@@ -48230,7 +63059,7 @@ encode:encode,
 decode:decode};
 
 
-},{"./lib/decoder":112,"./lib/encoder":113}],112:[function(require,module,exports){
+},{"./lib/decoder":137,"./lib/encoder":138}],137:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -49220,7 +64049,7 @@ return image;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":48}],113:[function(require,module,exports){
+},{"buffer":53}],138:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -49990,223 +64819,36 @@ return ctx.getImageData(0,0,cvs.width,cvs.height);
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":48}],114:[function(require,module,exports){
-(function(process){
+},{"buffer":53}],139:[function(require,module,exports){
+exports=module.exports=stringify;
+exports.getSerialize=serializer;
 
-
-
-
-
-'use strict';
-
-const debug=require('debug');
-const EventEmitter=require('events').EventEmitter;
-const isWindows=process.platform==='win32';
-
-
-const isBrowser=process.browser;
-
-const colors={
-red:isBrowser?'crimson':1,
-yellow:isBrowser?'gold':3,
-cyan:isBrowser?'darkturquoise':6,
-green:isBrowser?'forestgreen':2,
-blue:isBrowser?'steelblue':4,
-magenta:isBrowser?'palevioletred':5};
-
-
-
-debug.colors=[colors.cyan,colors.green,colors.blue,colors.magenta];
-
-class Emitter extends EventEmitter{
-
-
-
-
-
-
-issueStatus(title,argsArray){
-if(title==='status'||title==='statusEnd'){
-this.emit(title,[title,...argsArray]);
-}
+function stringify(obj,replacer,spaces,cycleReplacer){
+return JSON.stringify(obj,serializer(replacer,cycleReplacer),spaces);
 }
 
+function serializer(replacer,cycleReplacer){
+var stack=[],keys=[];
 
+if(cycleReplacer==null)cycleReplacer=function(key,value){
+if(stack[0]===value)return"[Circular ~]";
+return"[Circular ~."+keys.slice(0,stack.indexOf(value)).join(".")+"]";
+};
 
+return function(key,value){
+if(stack.length>0){
+var thisPos=stack.indexOf(this);
+~thisPos?stack.splice(thisPos+1):stack.push(this);
+~thisPos?keys.splice(thisPos,Infinity,key):keys.push(key);
+if(~stack.indexOf(value))value=cycleReplacer.call(this,key,value);
+}else
+stack.push(value);
 
-
-
-
-issueWarning(title,argsArray){
-this.emit('warning',[title,...argsArray]);
-}}
-
-
-const loggersByTitle={};
-const loggingBufferColumns=25;
-
-class Log{
-
-static _logToStdErr(title,argsArray){
-const log=Log.loggerfn(title);
-log(...argsArray);
+return replacer==null?value:replacer.call(this,key,value);
+};
 }
 
-static loggerfn(title){
-let log=loggersByTitle[title];
-if(!log){
-log=debug(title);
-loggersByTitle[title]=log;
-
-if(title.endsWith('error')){
-log.color=colors.red;
-}else if(title.endsWith('warn')){
-log.color=colors.yellow;
-}
-}
-return log;
-}
-
-static setLevel(level){
-switch(level){
-case'silent':
-debug.enable('-*');
-break;
-case'verbose':
-debug.enable('*');
-break;
-case'error':
-debug.enable('-*, *:error');
-break;
-default:
-debug.enable('*, -*:verbose');}
-
-}
-
-
-
-
-
-
-
-static formatProtocol(prefix,data,level){
-const columns=!process||process.browser?Infinity:process.stdout.columns;
-const method=data.method||'?????';
-const maxLength=columns-method.length-prefix.length-loggingBufferColumns;
-
-const snippet=data.params&&method!=='IO.read'?
-JSON.stringify(data.params).substr(0,maxLength):'';
-Log._logToStdErr(`${prefix}:${level||''}`,[method,snippet]);
-}
-
-static log(title,...args){
-Log.events.issueStatus(title,args);
-return Log._logToStdErr(title,args);
-}
-
-static warn(title,...args){
-Log.events.issueWarning(title,args);
-return Log._logToStdErr(`${title}:warn`,args);
-}
-
-static error(title,...args){
-return Log._logToStdErr(`${title}:error`,args);
-}
-
-static verbose(title,...args){
-Log.events.issueStatus(title,args);
-return Log._logToStdErr(`${title}:verbose`,args);
-}
-
-
-
-
-
-
-static greenify(str){
-return`${Log.green}${str}${Log.reset}`;
-}
-
-
-
-
-
-
-static redify(str){
-return`${Log.red}${str}${Log.reset}`;
-}
-
-static get green(){
-return'\x1B[32m';
-}
-
-static get red(){
-return'\x1B[31m';
-}
-
-static get yellow(){
-return'\x1b[33m';
-}
-
-static get purple(){
-return'\x1b[95m';
-}
-
-static get reset(){
-return'\x1B[0m';
-}
-
-static get bold(){
-return'\x1b[1m';
-}
-
-static get dim(){
-return'\x1b[2m';
-}
-
-static get tick(){
-return isWindows?'\u221A':'✓';
-}
-
-static get cross(){
-return isWindows?'\u00D7':'✘';
-}
-
-static get whiteSmallSquare(){
-return isWindows?'\u0387':'▫';
-}
-
-static get heavyHorizontal(){
-return isWindows?'\u2500':'━';
-}
-
-static get heavyVertical(){
-return isWindows?'\u2502 ':'┃ ';
-}
-
-static get heavyUpAndRight(){
-return isWindows?'\u2514':'┗';
-}
-
-static get heavyVerticalAndRight(){
-return isWindows?'\u251C':'┣';
-}
-
-static get heavyDownAndHorizontal(){
-return isWindows?'\u252C':'┳';
-}
-
-static get doubleLightHorizontal(){
-return'──';
-}}
-
-
-Log.events=new Emitter();
-
-module.exports=Log;
-
-}).call(this,require('_process'));
-},{"_process":65,"debug":107,"events":50}],115:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -50541,161 +65183,46 @@ exports.expectedValues={
 "shrink-to-fit":["yes","no"]};
 
 
-},{}],116:[function(require,module,exports){
+},{}],141:[function(require,module,exports){
+module.exports=function parseCacheControl(field){
 
-
-
-
-var s=1000;
-var m=s*60;
-var h=m*60;
-var d=h*24;
-var y=d*365.25;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports=function(val,options){
-options=options||{};
-var type=typeof val;
-if(type==='string'&&val.length>0){
-return parse(val);
-}else if(type==='number'&&isNaN(val)===false){
-return options.long?fmtLong(val):fmtShort(val);
+if(typeof field!=='string'){
+return null;
 }
-throw new Error(
-'val is not a non-empty string or a valid number. val='+
-JSON.stringify(val));
 
+
+
+
+
+
+
+
+
+var regex=/(?:^|(?:\s*\,\s*))([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)(?:\=(?:([^\x00-\x20\(\)<>@\,;\:\\"\/\[\]\?\=\{\}\x7F]+)|(?:\"((?:[^"\\]|\\.)*)\")))?/g;
+
+var header={};
+var err=field.replace(regex,function($0,$1,$2,$3){
+var value=$2||$3;
+header[$1]=value?value.toLowerCase():true;
+return'';
+});
+
+if(header['max-age']){
+try{
+var maxAge=parseInt(header['max-age'],10);
+if(isNaN(maxAge)){
+return null;
+}
+
+header['max-age']=maxAge;
+}
+catch(err){}
+}
+
+return err?null:header;
 };
 
-
-
-
-
-
-
-
-
-function parse(str){
-str=String(str);
-if(str.length>100){
-return;
-}
-var match=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
-str);
-
-if(!match){
-return;
-}
-var n=parseFloat(match[1]);
-var type=(match[2]||'ms').toLowerCase();
-switch(type){
-case'years':
-case'year':
-case'yrs':
-case'yr':
-case'y':
-return n*y;
-case'days':
-case'day':
-case'd':
-return n*d;
-case'hours':
-case'hour':
-case'hrs':
-case'hr':
-case'h':
-return n*h;
-case'minutes':
-case'minute':
-case'mins':
-case'min':
-case'm':
-return n*m;
-case'seconds':
-case'second':
-case'secs':
-case'sec':
-case's':
-return n*s;
-case'milliseconds':
-case'millisecond':
-case'msecs':
-case'msec':
-case'ms':
-return n;
-default:
-return undefined;}
-
-}
-
-
-
-
-
-
-
-
-
-function fmtShort(ms){
-if(ms>=d){
-return Math.round(ms/d)+'d';
-}
-if(ms>=h){
-return Math.round(ms/h)+'h';
-}
-if(ms>=m){
-return Math.round(ms/m)+'m';
-}
-if(ms>=s){
-return Math.round(ms/s)+'s';
-}
-return ms+'ms';
-}
-
-
-
-
-
-
-
-
-
-function fmtLong(ms){
-return plural(ms,d,'day')||
-plural(ms,h,'hour')||
-plural(ms,m,'minute')||
-plural(ms,s,'second')||
-ms+' ms';
-}
-
-
-
-
-
-function plural(ms,n,name){
-if(ms<n){
-return;
-}
-if(ms<n*1.5){
-return Math.floor(ms/n)+' '+name;
-}
-return Math.ceil(ms/n)+' '+name+'s';
-}
-
-},{}],117:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -51902,7 +66429,7 @@ return parsed&&parsed.prerelease.length?parsed.prerelease:null;
 }
 
 }).call(this,require('_process'));
-},{"_process":65}],118:[function(require,module,exports){
+},{"_process":70}],143:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -51911,6 +66438,12 @@ const jpeg=require('jpeg-js');
 
 function getPixel(x,y,channel,width,buff){
 return buff[(x+y*width)*4+channel];
+}
+
+function isWhitePixel(i,j,img){
+return getPixel(i,j,0,img.width,img.data)>=249&&
+getPixel(i,j,1,img.width,img.data)>=249&&
+getPixel(i,j,2,img.width,img.data)>=249;
 }
 
 function convertPixelsToHistogram(img){
@@ -51931,17 +66464,16 @@ createHistogramArray(),
 createHistogramArray()];
 
 
-for(let channel=0;channel<histograms.length;channel++){
-for(let i=0;i<width;i++){
 for(let j=0;j<height;j++){
-const pixelValue=getPixel(i,j,channel,width,img.data);
+for(let i=0;i<width;i++){
 
-
-if(getPixel(i,j,0,width,img.data)<249&&
-getPixel(i,j,1,width,img.data)<249&&
-getPixel(i,j,2,width,img.data)<249){
-histograms[channel][pixelValue]++;
+if(isWhitePixel(i,j,img)){
+continue;
 }
+
+for(let channel=0;channel<histograms.length;channel++){
+const pixelValue=getPixel(i,j,channel,width,img.data);
+histograms[channel][pixelValue]++;
 }
 }
 }
@@ -51987,26 +66519,32 @@ events=events.sort((a,b)=>a.ts-b.ts).filter(e=>e.ts!==0);
 const startTs=(opts.timeOrigin||events[0].ts)/1000;
 const endTs=events[events.length-1].ts/1000;
 
+let lastFrame=null;
 const rawScreenshots=events.filter(e=>e.cat.includes(screenshotTraceCategory)&&e.ts>=startTs*1000);
-const frames=rawScreenshots.map(function(evt){
+const uniqueFrames=rawScreenshots.map(function(evt){
 const base64img=evt.args&&evt.args.snapshot;
 const timestamp=evt.ts/1000;
 
+if(base64img===lastFrame){
+return null;
+}
+
+lastFrame=base64img;
 const imgBuff=new Buffer(base64img,'base64');
 return frame(imgBuff,timestamp);
-});
+}).filter(Boolean);
 
-if(frames.length===0){
+if(uniqueFrames.length===0){
 return Promise.reject(new Error('No screenshots found in trace'));
 }
 
-const fakeWhiteFrame=frame(synthesizeWhiteFrame(frames),startTs);
-frames.unshift(fakeWhiteFrame);
+const fakeWhiteFrame=frame(synthesizeWhiteFrame(uniqueFrames),startTs);
+uniqueFrames.unshift(fakeWhiteFrame);
 
 const data={
 startTs,
 endTs,
-frames:frames};
+frames:uniqueFrames};
 
 return Promise.resolve(data);
 }
@@ -52079,7 +66617,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":48,"jpeg-js":111}],119:[function(require,module,exports){
+},{"buffer":53,"jpeg-js":136}],144:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -52103,6 +66641,12 @@ perceptualSpeedIndex:indexes.perceptualSpeedIndex};
 
 }
 
+const Include={
+All:'all',
+pSI:'perceptualSpeedIndex',
+SI:'speedIndex'};
+
+
 
 
 
@@ -52110,15 +66654,28 @@ perceptualSpeedIndex:indexes.perceptualSpeedIndex};
 
 
 module.exports=function(timeline,opts){
+const include=opts&&opts.include||Include.All;
+
+if(!Object.keys(Include).some(key=>Include[key]===include)){
+throw new Error(`Unrecognized include option: ${include}`);
+}
+
 return frame.extractFramesFromTimeline(timeline,opts).then(function(data){
 const frames=data.frames;
+
+if(include===Include.All||include===Include.SI){
 speedIndex.calculateVisualProgress(frames,opts);
+}
+
+if(include===Include.All||include===Include.pSI){
 speedIndex.calculatePerceptualProgress(frames,opts);
+}
+
 return calculateValues(frames,data);
 });
 };
 
-},{"./frame":118,"./speed-index":120}],120:[function(require,module,exports){
+},{"./frame":143,"./speed-index":145}],145:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -52126,7 +66683,7 @@ const imageSSIM=require('image-ssim');
 
 const fastModeAllowableChangeMax=5;
 const fastModeAllowableChangeMedian=3;
-const fastModeAllowableChangeMin=1;
+const fastModeAllowableChangeMin=-1;
 
 const fastModeConstant=fastModeAllowableChangeMin;
 const fastModeMultiplier=fastModeAllowableChangeMax-fastModeConstant;
@@ -52279,20 +66836,23 @@ return frames;
 }
 
 function calculateSpeedIndexes(frames,data){
+const hasVisualProgress=typeof frames[0].getProgress()==='number';
+const hasPerceptualProgress=typeof frames[0].getPerceptualProgress()==='number';
+const progressToUse=hasVisualProgress?'getProgress':'getPerceptualProgress';
 const startTs=data.startTs;
 let visuallyCompleteTs;
 let firstPaintTs;
 
 
 for(let i=0;i<frames.length&&!firstPaintTs;i++){
-if(frames[i].getProgress()>0){
+if(frames[i][progressToUse]()>0){
 firstPaintTs=frames[i].getTimeStamp();
 }
 }
 
 
 for(let i=0;i<frames.length&&!visuallyCompleteTs;i++){
-if(frames[i].getProgress()>=100){
+if(frames[i][progressToUse]()>=100){
 visuallyCompleteTs=frames[i].getTimeStamp();
 }
 }
@@ -52319,6 +66879,9 @@ prevProgress=frame.getProgress()/100;
 prevPerceptualProgress=frame.getPerceptualProgress()/100;
 });
 
+speedIndex=hasVisualProgress?speedIndex:undefined;
+perceptualSpeedIndex=hasPerceptualProgress?perceptualSpeedIndex:undefined;
+
 return{
 firstPaintTs,
 visuallyCompleteTs,
@@ -52335,11 +66898,11 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":110}],121:[function(require,module,exports){
+},{"image-ssim":135}],146:[function(require,module,exports){
 module.exports={
-"version":"2.5.1"};
+"version":"2.7.0"};
 
-},{}],122:[function(require,module,exports){
+},{}],147:[function(require,module,exports){
 module.exports={"npm":{"angular":[{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10170"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<=1.1.5"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2013-06-20T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:00:00.000Z","modificationTime":"2016-11-01T14:08:59.890Z","creationTime":"2016-11-01T14:08:59.890Z","id":"npm:angular:20130621","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10170"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10179"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0 >=1.0.0"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-21T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:10:00.000Z","modificationTime":"2016-11-01T15:35:22.355Z","creationTime":"2016-11-01T15:35:22.355Z","id":"npm:angular:20130622","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10179"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10140"]},"severity":"high","semver":{"unaffected":[">=1.1.5"],"vulnerable":["<1.1.5"]},"credit":["Chirayu Krishnappa","Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H","disclosureTime":"2013-06-24T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:20:00.000Z","modificationTime":"2016-11-01T12:48:50.251Z","creationTime":"2016-11-01T12:48:50.251Z","id":"npm:angular:20130625","packageName":"angular","cvssScore":8.1,"alternativeIds":["SNYK-JS-ANGULAR-10140"]},{"title":"Protection Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10200"]},"severity":"high","semver":{"unaffected":[">=1.2.2"],"vulnerable":["<1.2.2"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2013-11-12T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:30:00.000Z","modificationTime":"2016-11-09T12:07:09.956Z","creationTime":"2016-11-09T12:07:09.956Z","id":"npm:angular:20131113","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10200"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10201"]},"severity":"low","semver":{"unaffected":[">=1.3.0"],"vulnerable":["<1.3.0"]},"credit":["Jann Horn"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N","disclosureTime":"2014-06-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:40:00.000Z","modificationTime":"2016-11-09T12:23:07.035Z","creationTime":"2016-11-09T12:23:07.035Z","id":"npm:angular:20140608","packageName":"angular","cvssScore":3.7,"alternativeIds":["SNYK-JS-ANGULAR-10201"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10191"]},"severity":"medium","semver":{"unaffected":[">=1.3.0-rc.4"],"vulnerable":["<1.3.0-rc.4"]},"credit":["Laurent Trillaud"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2014-09-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:50:00.000Z","modificationTime":"2016-11-07T09:46:43.092Z","creationTime":"2016-11-07T09:46:43.092Z","id":"npm:angular:20140908","packageName":"angular","cvssScore":5.3,"alternativeIds":["SNYK-JS-ANGULAR-10191"]},{"title":"Unsafe Object Deserialization","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10141"]},"severity":"high","semver":{"unaffected":[">=1.2.24"],"vulnerable":["<1.2.24 >=1.2.19"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2014-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:00:00.000Z","modificationTime":"2016-11-01T13:57:31.962Z","creationTime":"2016-11-01T13:57:31.962Z","id":"npm:angular:20140909","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10141"]},{"title":"Arbitrary Command Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10173"]},"severity":"medium","semver":{"unaffected":[">=1.3.2"],"vulnerable":["<1.3.2"]},"credit":["Sebastian Lekies","Jann Horn","Gábor Molnár"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:L","disclosureTime":"2014-11-03T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:10:00.000Z","modificationTime":"2016-11-01T12:33:38.496Z","creationTime":"2016-11-01T12:33:38.496Z","id":"npm:angular:20141104","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10173"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10174"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Rodric Haddad"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2015-03-09T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:20:00.000Z","modificationTime":"2017-02-13T14:24:12.988Z","creationTime":"2016-11-01T14:24:12.988Z","id":"npm:angular:20150310","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10174"]},{"title":"JSONP Callback Attack","moduleName":"angular","packageName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10175"]},"severity":"medium","semver":{"vulnerable":["<1.6.1"],"unaffected":[">=1.6.1"]},"credit":["Pete Bacon Darwin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-03-14T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T18:30:00.000Z","modificationTime":"2017-02-13T14:36:18.735Z","creationTime":"2016-11-01T14:36:18.735Z","id":"npm:angular:20150315","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10175"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10176"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.0.0"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:40:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10176"]},{"title":"Clickjacking","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-693"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10177"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.3.1"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:50:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807-1","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10177"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10182"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:00:00.000Z","modificationTime":"2016-11-02T08:40:11.750Z","creationTime":"2016-11-02T08:40:11.750Z","id":"npm:angular:20150909","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10182"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10180"]},"severity":"medium","semver":{"unaffected":[">=1.4.10"],"vulnerable":["<1.4.10"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-11-29T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:10:00.000Z","modificationTime":"2016-11-02T08:16:55.157Z","creationTime":"2016-11-02T08:16:55.157Z","id":"npm:angular:20151130","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10180"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10181"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.0"],"vulnerable":["<1.5.0-rc.0"]},"credit":["Pete Bacon Darwin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2015-12-04T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:20:00.000Z","modificationTime":"2016-11-02T08:26:38.753Z","creationTime":"2016-11-02T08:26:38.753Z","id":"npm:angular:20151205","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10181"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10202"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.2"],"vulnerable":["<1.5.0-rc.2 >=1.3.0"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2016-01-21T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:30:00.000Z","modificationTime":"2016-11-09T12:45:57.682Z","creationTime":"2016-11-09T12:45:57.682Z","id":"npm:angular:20160122","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10202"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10203"]},"severity":"medium","semver":{"unaffected":[">=1.2.30"],"vulnerable":["<1.2.30 >=1.0.0"]},"credit":["Raphaël Jamet"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2016-05-26T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:40:00.000Z","modificationTime":"2016-11-09T13:00:18.135Z","creationTime":"2016-11-09T13:00:18.135Z","id":"npm:angular:20160527","packageName":"angular","cvssScore":4.8,"alternativeIds":["SNYK-JS-ANGULAR-10203"]},{"title":"Content Security Policy (CSP) Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10190"]},"severity":"medium","semver":{"unaffected":[">=1.5.9"],"vulnerable":["<1.5.9 >=1.5.0"]},"credit":["Martin Probst"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N","disclosureTime":"2016-10-31T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:50:00.000Z","modificationTime":"2017-01-24T09:16:32.893Z","creationTime":"2016-11-07T09:16:32.893Z","id":"npm:angular:20161101","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10190"]}],"backbone":[{"title":"Cross Site Scripting","credit":[],"language":"js","packageManager":"npm","packageName":"backbone","moduleName":"backbone","semver":{"vulnerable":["<0.5.0"],"unaffected":[">=0.5.0"]},"identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-BACKBONE-10054"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/backbone/20110701/backbone_20110701_0_0_0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"version":"<0.5.0 >=0.3.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/jashkenas/backbone/commit/0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"id":"patch:npm:backbone:20110701:0"}],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","id":"npm:backbone:20110701","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10054"]},{"title":"Cross Site Scripting","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T17:50:20.000Z","disclosureTime":"2016-05-23T17:50:20.000Z","semver":{"vulnerable":["<= 0.3.3"],"unaffected":[">= 0.5.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":108,"ALTERNATIVE":["SNYK-JS-BACKBONE-10110"]},"patches":[],"moduleName":"backbone","language":"js","packageManager":"npm","id":"npm:backbone:20160523","packageName":"backbone","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10110"]}],"bootstrap":[{"title":"Cross-site Scripting (XSS)","credit":["Peter Corsaro"],"packageName":"bootstrap","moduleName":"bootstrap","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-BOOTSTRAP-10433"]},"semver":{"unaffected":[">=2.1.0"],"vulnerable":["<2.1.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2012-05-09T21:00:00.000Z","publicationTime":"2017-04-10T09:39:59.975Z","modificationTime":"2017-02-27T10:05:00.075Z","creationTime":"2017-02-27T10:05:00.075Z","id":"npm:bootstrap:20120510","cvssScore":6.5,"alternativeIds":["SNYK-JS-BOOTSTRAP-10433"]}],"dojo":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.1"],"unaffected":[">=1.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"ALTERNATIVE":["SNYK-JS-DOJO-10051"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20090409","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10051"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":[">=0.4 <0.4.4 || >=1.0 <1.0.3 || >=1.1 <1.1.2 || >=1.2 <1.2.4 || >=1.3 <1.3.3 || >=1.4 <1.4.2"],"unaffected":["<0.4 >=0.4.4 || <1.0 >=1.0.3 || <1.1 >=1.1.2 || <1.2 >=1.2.4 || <1.3 >=1.3.3 || <1.4 >=1.4.2"]},"CVSSv2":"CVSS:2.0/AV:N/AC:L/Au:N/C:C/I:C/A:C","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H","severity":"high","identifiers":{"CWE":["CWE-16"],"CVE":["CVE-2010-2276","CVE-2010-2272"],"ALTERNATIVE":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614","packageName":"dojo","cvssScore":10,"alternativeIds":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.4.2"],"unaffected":[">=1.4.2"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-2275"],"ALTERNATIVE":["SNYK-JS-DOJO-10053"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614-6","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10053"]},{"title":"Cross Site Scripting","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T00:00:00.000Z","disclosureTime":"2016-05-23T16:48:27.000Z","semver":{"vulnerable":["<= 1.0.0"],"unaffected":[">= 1.1.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"NSP":107,"ALTERNATIVE":["SNYK-JS-DOJO-10108"]},"patches":[],"moduleName":"dojo","language":"js","packageManager":"npm","id":"npm:dojo:20160523","packageName":"dojo","cvssScore":4.3,"alternativeIds":["SNYK-JS-DOJO-10108"]}],"foundation-sites":[{"title":"Cross-site Scripting (XSS)","credit":["Mathieu Amiot"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10413"]},"semver":{"unaffected":[">=3.0.6"],"vulnerable":["<3.0.6 >=3.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2012-07-16T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.155Z","modificationTime":"2017-03-06T12:29:55.952Z","creationTime":"2017-03-06T12:29:55.952Z","id":"npm:foundation-sites:20120717","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10413"]},{"title":"Cross-site Scripting (XSS)","credit":["Maya Kokits"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10414"]},"semver":{"unaffected":[">=5.5.3"],"vulnerable":["<5.5.3"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-18T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.227Z","modificationTime":"2017-03-06T12:57:37.670Z","creationTime":"2017-03-06T12:57:37.670Z","id":"npm:foundation-sites:20150619","cvssScore":6.5,"alternativeIds":["SNYK-JS-FOUNDATIONSITES-10414"]},{"title":"Cross-site Scripting (XSS)","credit":["Nathaniel Paulus"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10743"]},"semver":{"vulnerable":["<6.0.0"],"unaffected":[">=6.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2017-08-01T21:00:00.000Z","publicationTime":"2017-08-02T13:09:44.451Z","modificationTime":"2017-08-02T10:42:11.945Z","creationTime":"2017-08-02T10:42:11.945Z","id":"npm:foundation-sites:20170802","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10743"]}],"handlebars":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<=1.0.0-beta.3"],"unaffected":[">1.0.0-beta.3"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10047"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20110425/handlebars_20110425_0_0_b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"version":"<=1.0.0-beta.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/rgrove/handlebars.js/commit/b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"id":"patch:npm:handlebars:20110425:0"}],"moduleName":"handlebars","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:handlebars:20110425","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10047"]},{"title":"Content Injection (XSS)","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<4.0.0"],"unaffected":[">=4.0.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":61,"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10068"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20151207/handlebars_0.patch"],"version":"<4.0.0 >=3.0.2","modificationTime":"2015-12-14T23:52:16.811Z","comments":["https://github.com/wycats/handlebars.js/commit/83b8e846a3569bd366cf0b6bdc1e4604d1a2077e"],"id":"patch:npm:handlebars:20151207:0"}],"moduleName":"handlebars","creationTime":"2015-12-14T23:52:16.811Z","modificationTime":"2015-12-14T23:52:16.811Z","publicationTime":"2015-12-14T23:52:16.811Z","disclosureTime":"2015-12-07T16:52:07.962Z","language":"js","packageManager":"npm","id":"npm:handlebars:20151207","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10068"]}],"jquery":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2011-4969"],"ALTERNATIVE":["SNYK-JS-JQUERY-10183"]},"severity":"medium","semver":{"unaffected":[">=1.6.3"],"vulnerable":["<1.6.3"]},"credit":["Dave Methvin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2011-06-05T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-11-06T15:25:26.117Z","creationTime":"2016-11-06T15:25:26.117Z","id":"npm:jquery:20110606","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10183"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"NSP":329,"ALTERNATIVE":["SNYK-JS-JQUERY-10184"]},"severity":"medium","semver":{"unaffected":[">=1.9.0"],"vulnerable":["<1.9.0 >=1.7.1"]},"credit":["Richard Gibson"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-06-19T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2017-03-12T14:17:57.686Z","creationTime":"2016-11-06T13:53:57.686Z","id":"npm:jquery:20120206","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10184"]},{"title":"DOM Based Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2014-6071"],"ALTERNATIVE":["SNYK-JS-JQUERY-10185"]},"severity":"medium","semver":{"unaffected":[">=1.6.2"],"vulnerable":["<=1.5.1 >=1.4.2"]},"credit":["Mauro Risonho de Paula Assumpção"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2014-09-01T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-10-06T14:16:53.138Z","creationTime":"2016-11-06T14:16:53.138Z","id":"npm:jquery:20140902","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10185"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":328,"ALTERNATIVE":["SNYK-JS-JQUERY-10186"]},"severity":"medium","semver":{"unaffected":[">=3.0.0-beta1 || >=1.12.0 <1.12.3"],"vulnerable":["<3.0.0-beta1 >1.12.3 || <1.12.0 >=1.4.0"]},"credit":["Egor Homakov"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-26T21:00:00.000Z","patches":[],"publicationTime":"2016-11-27T00:00:00.000Z","modificationTime":"2017-03-27T15:12:44.538Z","creationTime":"2016-11-06T15:12:44.538Z","id":"npm:jquery:20150627","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10186"]},{"title":"Denial of Service (DoS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"NSP":330,"ALTERNATIVE":["SNYK-JS-JQUERY-10187"]},"severity":"low","semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-beta1"]},"credit":["Michał Gołębiowski"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L","disclosureTime":"2016-05-28T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:37:35.224Z","modificationTime":"2016-12-26T15:37:35.224Z","creationTime":"2016-11-06T15:37:35.224Z","id":"npm:jquery:20160529","packageName":"jquery","cvssScore":3.7,"alternativeIds":["SNYK-JS-JQUERY-10187"]}],"jquery-mobile":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-mobile","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-JQUERYMOBILE-10199"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0"]},"credit":["Masato Kinugawa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2012-08-01T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T11:28:34.624Z","modificationTime":"2016-12-26T11:28:34.624Z","creationTime":"2016-11-09T11:28:34.624Z","id":"npm:jquery-mobile:20120802","packageName":"jquery-mobile","cvssScore":6.5,"alternativeIds":["SNYK-JS-JQUERYMOBILE-10199"]}],"jquery-ui":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-ui","packageName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-5312"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10188"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["shadowman131"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2010-09-02T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T14:37:13.516Z","modificationTime":"2017-02-13T14:37:13.516Z","creationTime":"2016-12-26T14:37:13.516Z","id":"npm:jquery-ui:20100903","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10188"]},{"title":"Cross-site Scripting (XSS) via Tooltip","moduleName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-6662"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10189"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["Scott González"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2012-11-26T22:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:04:27.065Z","modificationTime":"2016-12-26T15:04:27.065Z","creationTime":"2016-11-06T15:04:27.065Z","id":"npm:jquery-ui:20121127","packageName":"jquery-ui","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10189"]},{"title":"XSS in dialog closeText","credit":["Phat Ly"],"creationTime":"2016-07-22T00:00:02.715Z","modificationTime":"2016-07-22T00:00:02.715Z","publicationTime":"2016-07-21T22:21:41.000Z","disclosureTime":"2016-07-21T22:21:41.000Z","semver":{"vulnerable":["<=1.11.4"],"unaffected":[">=1.12.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N","severity":"high","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":127,"ALTERNATIVE":["SNYK-JS-JQUERYUI-10118"]},"patches":[],"moduleName":"jquery-ui","language":"js","packageManager":"npm","id":"npm:jquery-ui:20160721","packageName":"jquery-ui","cvssScore":7.3,"alternativeIds":["SNYK-JS-JQUERYUI-10118"]}],"knockout":[{"title":"Cross-site Scripting (XSS)","credit":["Steven Sanderson"],"moduleName":"knockout","packageName":"knockout","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-KNOCKOUT-10415"]},"semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-pre"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-30T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.295Z","modificationTime":"2017-03-01T12:39:34.669Z","creationTime":"2017-03-01T12:39:34.669Z","id":"npm:knockout:20130701","cvssScore":5.4,"alternativeIds":["SNYK-JS-KNOCKOUT-10415"]}],"moment":[{"title":"Regular Expression Denial of Service (DoS)","credit":["Adam Baldwin"],"creationTime":"2016-02-01T19:00:03.862Z","modificationTime":"2016-09-28T19:00:03.862Z","publicationTime":"2016-02-01T19:00:03.862Z","semver":{"vulnerable":["<=2.11.1"],"unaffected":[">2.11.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L","severity":"low","identifiers":{"CWE":["CWE-400"],"CVE":[],"NSP":55,"ALTERNATIVE":["SNYK-JS-MOMENT-10084"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_0_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.11.1 >2.10.6","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_1_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.10.6 >2.9.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:1"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_2_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.9.0 >2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:2"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_3_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"=2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:3"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_4_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<2.2.1 >2.0.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:4"}],"moduleName":"moment","disclosureTime":"2016-01-26T20:04:21.225Z","language":"js","packageManager":"npm","id":"npm:moment:20160126","packageName":"moment","cvssScore":5.3,"alternativeIds":["SNYK-JS-MOMENT-10084"]},{"title":"Regular Expression Denial of Service (DoS)","moduleName":"moment","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-400"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MOMENT-10164"]},"semver":{"vulnerable":["<2.15.2"],"unaffected":[">=2.15.2"]},"credit":["Snyk Security Research Team"],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H","disclosureTime":"2016-10-18T21:00:00.000Z","patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_1.patch"],"version":"<2.15.2 >=2.14.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_0.patch"],"version":"<2.14.0 >=2.12.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:1"}],"publicationTime":"2016-10-24T06:57:59.675Z","modificationTime":"2016-10-23T06:57:59.675Z","creationTime":"2016-10-23T06:57:59.675Z","id":"npm:moment:20161019","packageName":"moment","cvssScore":5.9,"alternativeIds":["SNYK-JS-MOMENT-10164"]}],"mustache":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["< 0.3.1"],"unaffected":[">= 0.3.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MUSTACHE-10046"]},"patches":[],"moduleName":"mustache","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:mustache:20110814","packageName":"mustache","cvssScore":5.4,"alternativeIds":["SNYK-JS-MUSTACHE-10046"]},{"title":"Content Injection due to quoteless attributes","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<2.2.1"],"unaffected":[">=2.2.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":62,"ALTERNATIVE":["SNYK-JS-MUSTACHE-10067"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/mustache/20151207/mustache_0.patch"],"version":"<2.2.1 >=2.1.0","modificationTime":"2015-12-14T23:52:16.806Z","comments":["https://github.com/janl/mustache.js/commit/378bcca8a5cfe4058f294a3dbb78e8755e8e0da5"],"id":"patch:npm:mustache:20151207:0"}],"moduleName":"mustache","creationTime":"2015-12-14T23:52:16.806Z","modificationTime":"2015-12-14T23:52:16.806Z","publicationTime":"2015-12-14T23:52:16.806Z","disclosureTime":"2015-12-07T17:13:57.565Z","language":"js","packageManager":"npm","id":"npm:mustache:20151207","packageName":"mustache","cvssScore":5.3,"alternativeIds":["SNYK-JS-MUSTACHE-10067"]}],"react":[{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-7035"],"ALTERNATIVE":["SNYK-JS-REACT-10192"]},"severity":"medium","semver":{"unaffected":[">=0.5.2 || <=0.3.x || =0.4.2"],"vulnerable":[">=0.5.0 <0.5.2 || >=0.4.0 <0.4.2"]},"credit":["Paul O’Shannessy","Thomas Aylott"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2013-12-16T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:21.094Z","modificationTime":"2016-11-08T08:23:21.094Z","creationTime":"2016-11-08T08:23:21.094Z","id":"npm:react:20131217","packageName":"react","cvssScore":6.5,"alternativeIds":["SNYK-JS-REACT-10192"]},{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-REACT-10193"]},"severity":"high","semver":{"unaffected":[">=0.14.0"],"vulnerable":["<0.14.0"]},"credit":["Daniel LeCheminant"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-03-17T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:38.403Z","modificationTime":"2016-11-08T09:59:38.403Z","creationTime":"2016-11-08T09:59:38.403Z","id":"npm:react:20150318","packageName":"react","cvssScore":7.1,"alternativeIds":["SNYK-JS-REACT-10193"]}],"riot":[{"title":"Cross-site Scripting (XSS)","credit":["crazy2be"],"moduleName":"riot","packageName":"riot","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-RIOT-10447"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2013-11-13T22:00:00.000Z","publicationTime":"2017-05-08T12:34:46.386Z","modificationTime":"2017-03-20T14:44:23.092Z","creationTime":"2017-03-20T14:44:23.092Z","id":"npm:riot:20131114","cvssScore":6.5,"alternativeIds":["SNYK-JS-RIOT-10447"]}],"socket.io":[{"title":"Insecure Randomness","credit":["Martin Thomson"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-330"],"CVE":[],"NSP":321,"ALTERNATIVE":["SNYK-JS-SOCKETIO-10397"]},"semver":{"unaffected":[">=0.9.7"],"vulnerable":["<0.9.7"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2012-03-22T22:00:00.000Z","publicationTime":"2017-02-13T13:46:59.513Z","modificationTime":"2017-02-13T13:46:59.513Z","creationTime":"2017-02-01T13:46:59.513Z","id":"npm:socket.io:20120323","cvssScore":5.3,"alternativeIds":["SNYK-JS-SOCKETIO-10397"]},{"title":"Cross-site Scripting (XSS)","credit":["Almog Melamed"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-SOCKETIO-10398"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-16T21:00:00.000Z","publicationTime":"2017-02-13T13:28:52.754Z","modificationTime":"2017-02-13T13:28:52.754Z","creationTime":"2017-02-01T13:28:52.754Z","id":"npm:socket.io:20120417","cvssScore":5.4,"alternativeIds":["SNYK-JS-SOCKETIO-10398"]}],"yui":[{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-4207"],"ALTERNATIVE":["SNYK-JS-YUI-10383"]},"severity":"medium","semver":{"unaffected":[">=2.8.2 || <2.4.0"],"vulnerable":["<2.8.2 >=2.4.0"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2010-10-24T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:24:55.944Z","modificationTime":"2017-01-22T09:24:55.944Z","creationTime":"2017-01-22T09:24:55.944Z","id":"npm:yui:20101025","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10383"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-YUI-10384"]},"severity":"medium","semver":{"unaffected":[">=3.5.1 || <3.5.0-PR1"],"vulnerable":["<3.5.1 >=3.5.0-PR1"]},"credit":["Ryan Grove"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-27T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:12:40.841Z","modificationTime":"2017-02-13T09:12:40.841Z","creationTime":"2017-01-22T09:12:40.841Z","id":"npm:yui:20120428","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10384"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-5881","CVE-2012-5882","CVE-2012-5883"],"ALTERNATIVE":["SNYK-JS-YUI-10385"]},"severity":"medium","semver":{"unaffected":[">=3.0.0 || <2.4.0"],"vulnerable":["<3.0.0 >=2.4.0"]},"credit":["Unknwon"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-10-29T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:20:03.679Z","modificationTime":"2017-02-13T09:20:03.679Z","creationTime":"2017-01-22T09:20:03.679Z","id":"npm:yui:20121030","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10385"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4941"],"NSP":332,"ALTERNATIVE":["SNYK-JS-YUI-10386"]},"severity":"medium","semver":{"unaffected":[">=3.10.0 || <3.0.0"],"vulnerable":["<3.10.0 >=3.0.0"]},"credit":["Aleksandr Dobkin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-05-14T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T08:54:05.822Z","modificationTime":"2017-02-13T08:54:05.822Z","creationTime":"2017-01-22T08:54:05.822Z","id":"npm:yui:20130515","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10386"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4940"],"ALTERNATIVE":["SNYK-JS-YUI-10387"]},"severity":"medium","semver":{"unaffected":[">=3.10.3 <3.10.2"],"vulnerable":["=3.10.2"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-03T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:01:24.863Z","modificationTime":"2017-02-13T09:01:24.863Z","creationTime":"2017-01-22T09:01:24.863Z","id":"npm:yui:20130604","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10387"]}]}};
 
-},{}]},{},[40]);
+},{}]},{},[45]);

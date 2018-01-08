@@ -1,3 +1,11 @@
+<!-- Lighthouse run warnings -->
+<template id="tmpl-lh-run-warnings">
+  <div class="lh-run-warnings lh-debug">
+    <strong>There were issues affecting this run of Lighthouse:</strong>
+    <ul></ul>
+  </div>
+</template>
+
 <!-- Lighthouse category score -->
 <template id="tmpl-lh-category-score">
   <div class="lh-score">
@@ -343,7 +351,8 @@
     <div class="lh-export">
       <button class="report-icon report-icon--share lh-export__button" title="Export report"></button>
       <div class="lh-export__dropdown">
-        <a href="#" class="report-icon report-icon--print" data-action="print">Print...</a>
+        <a href="#" class="report-icon report-icon--print" data-action="print-summary">Print Summary</a>
+        <a href="#" class="report-icon report-icon--print" data-action="print-expanded">Print Expanded</a>
         <a href="#" class="report-icon report-icon--copy" data-action="copy">Copy JSON</a>
         <a href="#" class="report-icon report-icon--download" data-action="save-html">Save as HTML</a>
         <a href="#" class="report-icon report-icon--download" data-action="save-json">Save as JSON</a>

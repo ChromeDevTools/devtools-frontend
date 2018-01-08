@@ -51,7 +51,7 @@ class DetailsRenderer {
         return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */(details));
       case 'criticalrequestchain':
         return CriticalRequestChainRenderer.render(this._dom, this._templateContext,
-            /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));
+          /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));
       case 'list':
         return this._renderList(/** @type {!DetailsRenderer.ListDetailsJSON} */ (details));
       default:

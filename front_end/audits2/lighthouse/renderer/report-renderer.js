@@ -115,6 +115,26 @@ class ReportRenderer {
   }
 
   /**
+   * Returns a div with a list of top-level warnings, or an empty div if no warnings.
+   * @param {!ReportRenderer.ReportJSON} report
+   * @return {!Node}
+   */
+  _renderReportWarnings(report) {
+    if (!report.runWarnings || report.runWarnings.length === 0) {
+      return this._dom.createElement('div');
+    }
+
+    const container = this._dom.cloneTemplate('#tmpl-lh-run-warnings', this._templateContext);
+    const warnings = this._dom.find('ul', container);
+    for (const warningString of report.runWarnings) {
+      const warning = warnings.appendChild(this._dom.createElement('li'));
+      warning.textContent = warningString;
+    }
+
+    return container;
+  }
+
+  /**
    * @param {!ReportRenderer.ReportJSON} report
    * @return {!Element}
    */
@@ -123,6 +143,8 @@ class ReportRenderer {
     container.appendChild(this._renderReportHeader(report)); // sticky header goes at the top.
     container.appendChild(this._renderReportNav(report));
     const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));
+
+    reportSection.appendChild(this._renderReportWarnings(report));
 
     let scoreHeader;
     const isSoloCategory = report.reportCategories.length === 1;
@@ -166,7 +188,6 @@ if (typeof module !== 'undefined' && module.exports) {
  *       helpText: string,
  *       score: (number|boolean),
  *       scoringMode: string,
- *       optimalValue: number,
  *       extendedInfo: Object,
  *       details: (!DetailsRenderer.DetailsJSON|undefined)
  *     }
@@ -202,6 +223,7 @@ ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
  *     timing: {total: number},
  *     initialUrl: string,
  *     url: string,
+ *     runWarnings: (!Array<string>|undefined),
  *     artifacts: {traces: !Object},
  *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,
  *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,

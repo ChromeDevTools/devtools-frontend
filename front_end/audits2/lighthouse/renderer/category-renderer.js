@@ -37,9 +37,6 @@ class CategoryRenderer {
     if (audit.result.displayValue) {
       title += `:  ${audit.result.displayValue}`;
     }
-    if (audit.result.optimalValue) {
-      title += ` (target: ${audit.result.optimalValue})`;
-    }
 
     if (audit.result.debugString) {
       const debugStrEl = tmpl.appendChild(this._dom.createElement('div', 'lh-debug'));
@@ -445,10 +442,12 @@ class CategoryRenderer {
     this._createPermalinkSpan(element, category.id);
     element.appendChild(this._renderCategoryScore(category));
 
+    const manualAudits = category.audits.filter(audit => audit.result.manual);
+    const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));
     const auditsGroupedByGroup = /** @type {!Object<string,
         {passed: !Array<!ReportRenderer.AuditJSON>,
         failed: !Array<!ReportRenderer.AuditJSON>}>} */ ({});
-    category.audits.forEach(audit => {
+    nonManualAudits.forEach(audit => {
       const groupId = audit.group;
       const groups = auditsGroupedByGroup[groupId] || {passed: [], failed: []};
 
@@ -484,6 +483,10 @@ class CategoryRenderer {
 
     const passedElem = this._renderPassedAuditsSection(passedElements);
     element.appendChild(passedElem);
+
+    // Render manual audits after passing.
+    this._renderManualAudits(manualAudits, groupDefinitions, element);
+
     return element;
   }
 

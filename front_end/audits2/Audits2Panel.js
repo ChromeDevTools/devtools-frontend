@@ -719,16 +719,16 @@ Audits2.Audits2Panel.Preset;
 Audits2.Audits2Panel.Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
-    setting: Common.settings.createSetting('audits2.cat_pwa', true),
-    configID: 'pwa',
-    title: 'Progressive Web App',
-    description: 'Does this page meet the standard of a Progressive Web App'
-  },
-  {
     setting: Common.settings.createSetting('audits2.cat_perf', true),
     configID: 'performance',
     title: 'Performance',
     description: 'How long does this app take to show content and become usable'
+  },
+  {
+    setting: Common.settings.createSetting('audits2.cat_pwa', true),
+    configID: 'pwa',
+    title: 'Progressive Web App',
+    description: 'Does this page meet the standard of a Progressive Web App'
   },
   {
     setting: Common.settings.createSetting('audits2.cat_best_practices', true),
@@ -741,6 +741,12 @@ Audits2.Audits2Panel.Presets = [
     configID: 'accessibility',
     title: 'Accessibility',
     description: 'Is this page usable by people with disabilities or impairments'
+  },
+  {
+    setting: Common.settings.createSetting('audits2.cat_seo', true),
+    configID: 'seo',
+    title: 'SEO',
+    description: 'Is this page optimized for search engine results ranking'
   },
 ];
 

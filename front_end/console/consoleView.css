@@ -189,7 +189,6 @@
 .console-message-wrapper {
     display: flex;
     border-bottom: 1px solid rgb(240, 240, 240);
-    overflow-y: hidden;
 }
 
 .console-message-wrapper.console-adjacent-user-command-result {
@@ -412,10 +411,6 @@
 
 .console-message-stack-trace-wrapper > * {
     flex: none;
-}
-
-.console-message-stack-trace-message {
-    overflow-y: hidden;
 }
 
 .console-message-expand-icon {

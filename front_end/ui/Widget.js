@@ -707,7 +707,7 @@ UI.WidgetFocusRestorer = class {
 /**
  * @override
  * @param {?Node} child
- * @return {?Node}
+ * @return {!Node}
  * @suppress {duplicate}
  */
 Element.prototype.appendChild = function(child) {

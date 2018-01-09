@@ -244,7 +244,7 @@ common_closure_args = [
     'SIMPLE_OPTIMIZATIONS',
     '--warning_level',
     'VERBOSE',
-    '--language_in=ECMASCRIPT_NEXT',
+    '--language_in=ECMASCRIPT_2017',
     '--language_out=ES5_STRICT',
     '--extra_annotation_name',
     'suppressReceiverCheck',

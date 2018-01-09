@@ -41,7 +41,7 @@ public class FileCheckerCallable implements Callable<ValidatorContext> {
             ValidatorContext context = new ValidatorContext(readScriptText(), fileName);
             ValidationCheckDispatcher dispatcher = new ValidationCheckDispatcher(context);
             dispatcher.registerCheck(new ContextTrackingValidationCheck());
-            NodeTraversal.traverse(new Compiler(), parseScript(context), dispatcher);
+            NodeTraversal.traverseEs6ScopeRoots(new Compiler(), parseScript(context), null, dispatcher, true);
             return context;
         } catch (FileNotFoundException e) {
             logError("File not found: " + fileName);

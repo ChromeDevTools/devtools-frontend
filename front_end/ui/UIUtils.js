@@ -1150,7 +1150,7 @@ UI.initializeUIUtils = function(document, themeSetting) {
   document.addEventListener('focus', UI._focusChanged.bind(UI), true);
   document.addEventListener('keydown', event => {
     UI._keyboardFocus = true;
-    document.defaultView.requestAnimationFrame(() => UI._keyboardFocus = false);
+    document.defaultView.requestAnimationFrame(() => void(UI._keyboardFocus = false));
   }, true);
 
   if (!UI.themeSupport)

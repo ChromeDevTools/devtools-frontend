@@ -172,6 +172,14 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
+   * @param {string} fileSystemPath
+   */
+  showItemInFolder(fileSystemPath) {
+    Common.console.error('Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect');
+  }
+
+  /**
+   * @override
    * @param {string} url
    * @param {string} content
    * @param {boolean} forceSaveAs

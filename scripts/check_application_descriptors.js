@@ -4,6 +4,11 @@
 
 'use strict';
 
+/**
+ * This is used by PRESUBMIT.py to ensure that integration_test_runner.json
+ * is a superset of inspector.json.
+ */
+
 const inspectorManifest = require('../front_end/inspector.json');
 const testManifest = require('../front_end/integration_test_runner.json');
 

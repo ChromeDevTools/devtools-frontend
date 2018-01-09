@@ -12,6 +12,11 @@ const BUILD_GN_PATH = path.resolve(__dirname, '..', '..', 'BUILD.gn');
 const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'special_case_namespaces.json');
 
 /*
+ * This is used to extract a new module from an existing module by:
+ * - Moving selected files into new modules (including relevant
+ * css files)
+ * - Renaming all identifiers to the new namespace
+ * - Updating the BUILD.gn and module.json files (including extensions)
  * ==========================================
  * START EDITING HERE - TRANSFORMATION INPUTS
  * ==========================================

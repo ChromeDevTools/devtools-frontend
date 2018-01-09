@@ -29,6 +29,11 @@ function main() {
 
 main();
 
+/**
+ * Ensures that generated module files are in the right list in BUILD.gn.
+ * This is primarily to avoid remote modules from accidentally getting
+ * bundled with the main Chrome binary.
+ */
 function checkNonAutostartNonRemoteModules() {
   const errors = [];
   const gnVariable = 'generated_non_autostart_non_remote_modules';
@@ -56,6 +61,10 @@ function checkNonAutostartNonRemoteModules() {
   return errors;
 }
 
+/**
+ * Ensures that all source files (according to the various module.json files) are
+ * listed in BUILD.gn.
+ */
 function checkAllDevToolsFiles() {
   const errors = [];
   const excludedFiles = ['InspectorBackendCommands.js', 'SupportedCSSProperties.js'];

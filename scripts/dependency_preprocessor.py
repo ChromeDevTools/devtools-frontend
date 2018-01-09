@@ -2,6 +2,17 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+"""
+This ensures that each front-end module does not accidentally rely on a module
+that isn't listed as a transitive dependency in the module.json.
+
+How this works:
+1. Renames any potential undeclared namespace usage across the entire front-end code
+(e.g. identifiers, strings) into e.g. "$$UndeclaredDependency_SDK$$.Foo".
+2. Closure Compiler catches any illegal usage and safely ignores coincidental
+usages (e.g. "Console.Foo" in a string).
+"""
+
 import codecs
 import multiprocessing
 from os import path

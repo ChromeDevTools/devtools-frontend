@@ -25,6 +25,9 @@
 
 .tree-outline li:not(.parent) {
     margin-left: 10px;
+    margin-right: 10px;
+    padding-left: .5em;
+    text-indent: -.5em;
 }
 
 .tree-outline li:not(.parent)::before {

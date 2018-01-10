@@ -106,7 +106,7 @@ Host.UserMetrics._PanelCodes = {
   audits: 7,
   console: 8,
   layers: 9,
-  'drawer-console': 10,
+  'drawer-console-view': 10,
   'drawer-animations': 11,
   'drawer-network.config': 12,
   'drawer-rendering': 13,

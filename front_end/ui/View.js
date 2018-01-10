@@ -357,8 +357,6 @@ UI.ViewManager = class {
     }
 
     var locationName = this._locationNameByViewId.get(viewId);
-    if (locationName === 'drawer-view')
-      Host.userMetrics.drawerShown(viewId);
 
     var location = view[UI.ViewManager._Location.symbol];
     if (location) {

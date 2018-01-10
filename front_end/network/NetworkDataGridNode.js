@@ -410,35 +410,11 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     var bRequest = b.requestOrFirstKnownChildRequest();
     if (!aRequest || !bRequest)
       return !aRequest ? -1 : 1;
-    var aInitiator = NetworkLog.networkLog.initiatorInfoForRequest(aRequest);
-    var bInitiator = NetworkLog.networkLog.initiatorInfoForRequest(bRequest);
-
-    if (aInitiator.type < bInitiator.type)
-      return -1;
-    if (aInitiator.type > bInitiator.type)
-      return 1;
-
-    if (typeof aInitiator.__source === 'undefined')
-      aInitiator.__source = Bindings.displayNameForURL(aInitiator.url);
-    if (typeof bInitiator.__source === 'undefined')
-      bInitiator.__source = Bindings.displayNameForURL(bInitiator.url);
-
-    if (aInitiator.__source < bInitiator.__source)
-      return -1;
-    if (aInitiator.__source > bInitiator.__source)
-      return 1;
-
-    if (aInitiator.lineNumber < bInitiator.lineNumber)
-      return -1;
-    if (aInitiator.lineNumber > bInitiator.lineNumber)
-      return 1;
-
-    if (aInitiator.columnNumber < bInitiator.columnNumber)
-      return -1;
-    if (aInitiator.columnNumber > bInitiator.columnNumber)
-      return 1;
-
-    return aRequest.indentityCompare(bRequest);
+    if (!a._initiatorCell || !b._initiatorCell)
+      return !a._initiatorCell ? -1 : 1;
+    var aText = a._linkifiedInitiatorAnchor ? a._linkifiedInitiatorAnchor.textContent : a._initiatorCell.title;
+    var bText = b._linkifiedInitiatorAnchor ? b._linkifiedInitiatorAnchor.textContent : b._initiatorCell.title;
+    return aText.localeCompare(bText);
   }
 
   /**
@@ -948,9 +924,14 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
 
       case SDK.NetworkRequest.InitiatorType.Script:
         var networkManager = SDK.NetworkManager.forRequest(request);
-        this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
-            networkManager ? networkManager.target() : null, initiator.scriptId, initiator.url, initiator.lineNumber,
-            initiator.columnNumber);
+        if (initiator.stack) {
+          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyStackTraceTopFrame(
+              networkManager ? networkManager.target() : null, initiator.stack);
+        } else {
+          this._linkifiedInitiatorAnchor = this.parentView().linkifier.linkifyScriptLocation(
+              networkManager ? networkManager.target() : null, initiator.scriptId, initiator.url, initiator.lineNumber,
+              initiator.columnNumber);
+        }
         this._linkifiedInitiatorAnchor.title = '';
         cell.appendChild(this._linkifiedInitiatorAnchor);
         this._appendSubtitle(cell, Common.UIString('Script'));

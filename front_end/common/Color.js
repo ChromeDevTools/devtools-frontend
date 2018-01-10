@@ -61,10 +61,10 @@ Common.Color = class {
    * @return {?Common.Color}
    */
   static parse(text) {
-    // Simple - #hex, rgb(), nickname, hsl()
+    // Simple - #hex, nickname
     var value = text.toLowerCase().replace(/\s+/g, '');
     var simple =
-        /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|rgb\(((?:-?\d+%?,){2}-?\d+%?)\)|(\w+)|hsl\((-?\d+\.?\d*(?:,-?\d+\.?\d*%){2})\))$/i;
+        /^(?:#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})|(\w+))$/i;
     var match = value.match(simple);
     if (match) {
       if (match[1]) {  // hex
@@ -91,17 +91,8 @@ Common.Color = class {
         return new Common.Color([r / 255, g / 255, b / 255, a], format, text);
       }
 
-      if (match[2]) {  // rgb
-        var rgbString = match[2].split(/\s*,\s*/);
-        var rgba = [
-          Common.Color._parseRgbNumeric(rgbString[0]), Common.Color._parseRgbNumeric(rgbString[1]),
-          Common.Color._parseRgbNumeric(rgbString[2]), 1
-        ];
-        return new Common.Color(rgba, Common.Color.Format.RGB, text);
-      }
-
-      if (match[3]) {  // nickname
-        var nickname = match[3].toLowerCase();
+      if (match[2]) {  // nickname
+        var nickname = match[2].toLowerCase();
         if (nickname in Common.Color.Nicknames) {
           var rgba = Common.Color.Nicknames[nickname];
           var color = Common.Color.fromRGBA(rgba);
@@ -112,43 +103,52 @@ Common.Color = class {
         return null;
       }
 
-      if (match[4]) {  // hsl
-        var hslString = match[4].replace(/%/g, '').split(/\s*,\s*/);
-        var hsla = [
-          Common.Color._parseHueNumeric(hslString[0]), Common.Color._parseSatLightNumeric(hslString[1]),
-          Common.Color._parseSatLightNumeric(hslString[2]), 1
-        ];
-        var rgba = [];
-        Common.Color.hsl2rgb(hsla, rgba);
-        return new Common.Color(rgba, Common.Color.Format.HSL, text);
-      }
-
       return null;
     }
 
-    // Advanced - rgba(), hsla()
-    var advanced =
-        /^(?:rgba\(((?:-?\d+%?,){3}-?(?:\d+|\d*\.\d+))\)|hsla\((-?(?:\d+|\d*\.\d+)(?:,-?(?:\d+|\d*\.\d+)*%){2},-?(?:\d+|\d*\.\d+))\))$/;
-    match = value.match(advanced);
+    // rgb/rgba(), hsl/hsla()
+    match = text.toLowerCase().match(/^\s*(?:(rgba?)|(hsla?))\((.*)\)\s*$/);
+
     if (match) {
-      if (match[1]) {  // rgba
-        var rgbaString = match[1].split(/\s*,\s*/);
+      var components = match[3].trim();
+      var values = components.split(/\s*,\s*/);
+      if (values.length === 1) {
+        values = components.split(/\s+/);
+        if (values[3] === '/') {
+          values.splice(3, 1);
+          if (values.length !== 4)
+            return null;
+        } else if ((values.length > 2 && values[2].indexOf('/') !== -1) || (values.length > 3 && values[3].indexOf('/') !== -1)) {
+          var alpha = values.slice(2, 4).join('');
+          values = values.slice(0, 2).concat(alpha.split(/\//)).concat(values.slice(4));
+        } else if (values.length >= 4) {
+          return null;
+        }
+      }
+      if (values.length !== 3 && values.length !== 4 || values.indexOf('') > -1)
+        return null;
+      var hasAlpha = (values[3] !== undefined);
+
+      if (match[1]) {  // rgb/rgba
         var rgba = [
-          Common.Color._parseRgbNumeric(rgbaString[0]), Common.Color._parseRgbNumeric(rgbaString[1]),
-          Common.Color._parseRgbNumeric(rgbaString[2]), Common.Color._parseAlphaNumeric(rgbaString[3])
+          Common.Color._parseRgbNumeric(values[0]), Common.Color._parseRgbNumeric(values[1]),
+          Common.Color._parseRgbNumeric(values[2]), hasAlpha ? Common.Color._parseAlphaNumeric(values[3]) : 1
         ];
-        return new Common.Color(rgba, Common.Color.Format.RGBA, text);
+        if (rgba.indexOf(null) > -1)
+          return null;
+        return new Common.Color(rgba, hasAlpha ? Common.Color.Format.RGBA : Common.Color.Format.RGB, text);
       }
 
-      if (match[2]) {  // hsla
-        var hslaString = match[2].replace(/%/g, '').split(/\s*,\s*/);
+      if (match[2]) {  // hsl/hsla
         var hsla = [
-          Common.Color._parseHueNumeric(hslaString[0]), Common.Color._parseSatLightNumeric(hslaString[1]),
-          Common.Color._parseSatLightNumeric(hslaString[2]), Common.Color._parseAlphaNumeric(hslaString[3])
+          Common.Color._parseHueNumeric(values[0]), Common.Color._parseSatLightNumeric(values[1]),
+          Common.Color._parseSatLightNumeric(values[2]), hasAlpha ? Common.Color._parseAlphaNumeric(values[3]) : 1
         ];
+        if (hsla.indexOf(null) > -1)
+          return null;
         var rgba = [];
         Common.Color.hsl2rgb(hsla, rgba);
-        return new Common.Color(rgba, Common.Color.Format.HSLA, text);
+        return new Common.Color(rgba, hasAlpha ? Common.Color.Format.HSLA : Common.Color.Format.HSL, text);
       }
     }
 
@@ -175,14 +175,21 @@ Common.Color = class {
 
   /**
    * @param {string} value
+   * @param {boolean} onlyInteger
    * return {number}
    */
-  static _parseRgbNumeric(value) {
-    var parsed = parseInt(value, 10);
-    if (value.indexOf('%') !== -1)
-      parsed /= 100;
-    else
-      parsed /= 255;
+  static _parsePercentOrNumber(value, onlyInteger) {
+    if (isNaN(value.replace('%', '')))
+      return null;
+    var parsed = parseFloat(value);
+    if (onlyInteger && (value.indexOf('.') !== -1 || !Number.isInteger(parsed)))
+      return null;
+
+    if (value.indexOf('%') !== -1) {
+      if (value.indexOf('%') !== value.length - 1)
+        return null;
+      return parsed / 100;
+    }
     return parsed;
   }
 
@@ -190,8 +197,34 @@ Common.Color = class {
    * @param {string} value
    * return {number}
    */
+  static _parseRgbNumeric(value) {
+    // Only integers are accepted for channels currently.
+    var parsed = Common.Color._parsePercentOrNumber(value, true);
+    if (parsed === null)
+      return null;
+
+    if (value.indexOf('%') !== -1)
+      return parsed;
+    return parsed / 255;
+  }
+
+  /**
+   * @param {string} value
+   * return {number}
+   */
   static _parseHueNumeric(value) {
-    return isNaN(value) ? 0 : (parseFloat(value) / 360) % 1;
+    var angle = value.replace(/(deg|g?rad|turn)$/, '');
+    if (isNaN(angle) || value.match(/\s+(deg|g?rad|turn)/))
+      return null;
+    var number = parseFloat(angle);
+
+    if (value.indexOf('turn') !== -1)
+      return number % 1;
+    else if (value.indexOf('grad') !== -1)
+      return (number / 400) % 1;
+    else if (value.indexOf('rad') !== -1)
+      return (number / (2 * Math.PI)) % 1;
+    return (number / 360) % 1;
   }
 
   /**
@@ -199,7 +232,10 @@ Common.Color = class {
    * return {number}
    */
   static _parseSatLightNumeric(value) {
-    return Math.min(1, parseFloat(value) / 100);
+    if (value.indexOf('%') !== value.length - 1 || isNaN(value.replace('%', '')))
+      return null;
+    var parsed = parseFloat(value);
+    return Math.min(1, parsed / 100);
   }
 
   /**
@@ -207,7 +243,7 @@ Common.Color = class {
    * return {number}
    */
   static _parseAlphaNumeric(value) {
-    return isNaN(value) ? 0 : parseFloat(value);
+    return Common.Color._parsePercentOrNumber(value, false);
   }
 
   /**

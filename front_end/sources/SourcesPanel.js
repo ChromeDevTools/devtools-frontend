@@ -692,9 +692,9 @@ Sources.SourcesPanel = class extends UI.Panel {
 
     if (Runtime.experiments.isEnabled('stepIntoAsync')) {
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
-      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepAction));
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAction));
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOutAction));
+      debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepAction));
     } else {
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepAction));

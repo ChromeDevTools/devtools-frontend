@@ -17,10 +17,6 @@ var Flags = {
   TARGET: '--target',                // build sub-directory (e.g. Release, Default)
 };
 
-var COMPAT_URL_MAPPING = {
-  '1.2': 'https://storage.googleapis.com/content-shell-devtools-compat/content_shell_417361.zip',
-};
-
 var IS_DEBUG_ENABLED =
     utils.includes(process.argv, Flags.DEBUG_DEVTOOLS) || utils.includes(process.argv, Flags.DEBUG_DEVTOOLS_SHORTHAND);
 var CUSTOM_CHROMIUM_PATH = utils.parseArgs(process.argv)[Flags.CHROMIUM_PATH];
@@ -92,15 +88,6 @@ function onUploadedCommitPosition(commitPosition) {
       .then(extractContentShell)
       .then(() => copyFrontend(contentShellResourcesPath))
       .then(() => runTests(contentShellPath, true));
-}
-
-function copyFrontendToCompatBuildPath(compatBuildPath, latestBuildPath) {
-  var customDevtoolsResourcesPath = path.resolve(compatBuildPath, 'resources');
-  var latestDevtoolsInspectorPath = path.resolve(latestBuildPath, 'resources', 'inspector');
-  var copiedFrontendPath = path.resolve(customDevtoolsResourcesPath, 'inspector');
-  if (utils.isDir(copiedFrontendPath))
-    utils.removeRecursive(copiedFrontendPath);
-  utils.copyRecursive(latestDevtoolsInspectorPath, customDevtoolsResourcesPath);
 }
 
 function copyFrontend(contentShellResourcesPath) {

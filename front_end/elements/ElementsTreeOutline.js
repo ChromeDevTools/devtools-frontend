@@ -1204,6 +1204,10 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   _visibleChildren(node) {
     var visibleChildren = Elements.ElementsTreeElement.visibleShadowRoots(node);
 
+    var contentDocument = node.contentDocument();
+    if (contentDocument)
+      visibleChildren.push(contentDocument);
+
     var importedDocument = node.importedDocument();
     if (importedDocument)
       visibleChildren.push(importedDocument);
@@ -1235,6 +1239,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    * @return {boolean}
    */
   _hasVisibleChildren(node) {
+    if (node.contentDocument())
+      return true;
     if (node.importedDocument())
       return true;
     if (node.templateContent())
@@ -1300,6 +1306,14 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     }
 
     console.assert(!treeElement.isClosingTag());
+
+    // When revealing element, stack of ancestors needs to be unwrapped
+    // synchronously. It is essential that we perform update right away in case
+    // we have children in hand.
+    if (treeElement.node().children()) {
+      this._innerUpdateChildren(treeElement);
+      return;
+    }
 
     treeElement.node().getChildNodes(children => {
       // FIXME: sort this out, it should not happen.

@@ -87,7 +87,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    * @return {boolean}
    */
   static canShowInlineText(node) {
-    if (node.importedDocument() || node.templateContent() ||
+    if (node.contentDocument() || node.importedDocument() || node.templateContent() ||
         Elements.ElementsTreeElement.visibleShadowRoots(node).length || node.hasPseudoElements())
       return false;
     if (node.nodeType() !== Node.ELEMENT_NODE)

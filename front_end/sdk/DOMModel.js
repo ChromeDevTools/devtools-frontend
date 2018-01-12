@@ -108,11 +108,19 @@ SDK.DOMNode = class {
     if (payload.templateContent) {
       this._templateContent = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.templateContent);
       this._templateContent.parentNode = this;
+      this._children = [];
+    }
+
+    if (payload.contentDocument) {
+      this._contentDocument = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.contentDocument);
+      this._contentDocument.parentNode = this;
+      this._children = [];
     }
 
     if (payload.importedDocument) {
       this._importedDocument = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.importedDocument);
       this._importedDocument.parentNode = this;
+      this._children = [];
     }
 
     if (payload.distributedNodes)
@@ -122,12 +130,6 @@ SDK.DOMNode = class {
       this._setChildrenPayload(payload.children);
 
     this._setPseudoElements(payload.pseudoElements);
-
-    if (payload.contentDocument) {
-      this._contentDocument = new SDK.DOMDocument(this._domModel, payload.contentDocument);
-      this._children = [this._contentDocument];
-      this._renumber();
-    }
 
     if (this._nodeType === Node.ELEMENT_NODE) {
       // HTML and BODY from internal iframes should not overwrite top-level ones.
@@ -206,6 +208,13 @@ SDK.DOMNode = class {
    */
   templateContent() {
     return this._templateContent || null;
+  }
+
+  /**
+   * @return {?SDK.DOMNode}
+   */
+  contentDocument() {
+    return this._contentDocument || null;
   }
 
   /**
@@ -650,10 +659,6 @@ SDK.DOMNode = class {
    * @param {!Array.<!Protocol.DOM.Node>} payloads
    */
   _setChildrenPayload(payloads) {
-    // We set children in the constructor.
-    if (this._contentDocument)
-      return;
-
     this._children = [];
     for (var i = 0; i < payloads.length; ++i) {
       var payload = payloads[i];

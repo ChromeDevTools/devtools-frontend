@@ -226,16 +226,49 @@ class CategoryRenderer {
   }
 
   /**
+   * Find the total number of audits contained within a section.
+   * Accounts for nested subsections like Accessibility.
+   * @param {!Array<!Element>} elements
+   * @return {number}
+   */
+  _getTotalAuditsLength(elements) {
+    // Create a scratch element to append sections to so we can reuse querySelectorAll().
+    const scratch = this._dom.createElement('div');
+    elements.forEach(function(element) {
+      scratch.appendChild(element);
+    });
+    const subAudits = scratch.querySelectorAll('.lh-audit');
+    if (subAudits.length) {
+      return subAudits.length;
+    } else {
+      return elements.length;
+    }
+  }
+
+  /**
    * @param {!Array<!Element>} elements
    * @return {!Element}
    */
   _renderPassedAuditsSection(elements) {
     const passedElem = this._renderAuditGroup({
-      title: `${elements.length} Passed Audits`,
+      title: `${this._getTotalAuditsLength(elements)} Passed Audits`,
     }, {expandable: true});
     passedElem.classList.add('lh-passed-audits');
     elements.forEach(elem => passedElem.appendChild(elem));
     return passedElem;
+  }
+
+  /**
+   * @param {!Array<!Element>} elements
+   * @return {!Element}
+   */
+  _renderNotApplicableAuditsSection(elements) {
+    const notApplicableElem = this._renderAuditGroup({
+      title: `${this._getTotalAuditsLength(elements)} Not Applicable Audits`,
+    }, {expandable: true});
+    notApplicableElem.classList.add('lh-audit-group--notapplicable');
+    elements.forEach(elem => notApplicableElem.appendChild(elem));
+    return notApplicableElem;
   }
 
   /**
@@ -446,12 +479,15 @@ class CategoryRenderer {
     const nonManualAudits = category.audits.filter(audit => !manualAudits.includes(audit));
     const auditsGroupedByGroup = /** @type {!Object<string,
         {passed: !Array<!ReportRenderer.AuditJSON>,
-        failed: !Array<!ReportRenderer.AuditJSON>}>} */ ({});
+        failed: !Array<!ReportRenderer.AuditJSON>,
+        notApplicable: !Array<!ReportRenderer.AuditJSON>}>} */ ({});
     nonManualAudits.forEach(audit => {
       const groupId = audit.group;
-      const groups = auditsGroupedByGroup[groupId] || {passed: [], failed: []};
+      const groups = auditsGroupedByGroup[groupId] || {passed: [], failed: [], notApplicable: []};
 
-      if (audit.score === 100) {
+      if (audit.result.notApplicable) {
+        groups.notApplicable.push(audit);
+      } else if (audit.score === 100) {
         groups.passed.push(audit);
       } else {
         groups.failed.push(audit);
@@ -461,6 +497,7 @@ class CategoryRenderer {
     });
 
     const passedElements = /** @type {!Array<!Element>} */ ([]);
+    const notApplicableElements = /** @type {!Array<!Element>} */ ([]);
     Object.keys(auditsGroupedByGroup).forEach(groupId => {
       const group = groupDefinitions[groupId];
       const groups = auditsGroupedByGroup[groupId];
@@ -476,13 +513,23 @@ class CategoryRenderer {
         groups.passed.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));
         passedElements.push(auditGroupElem);
       }
+
+      if (groups.notApplicable.length) {
+        const auditGroupElem = this._renderAuditGroup(group, {expandable: true});
+        groups.notApplicable.forEach(item => auditGroupElem.appendChild(this._renderAudit(item)));
+        notApplicableElements.push(auditGroupElem);
+      }
     });
 
-    // don't create a passed section if there are no passed
-    if (!passedElements.length) return element;
+    if (passedElements.length) {
+      const passedElem = this._renderPassedAuditsSection(passedElements);
+      element.appendChild(passedElem);
+    }
 
-    const passedElem = this._renderPassedAuditsSection(passedElements);
-    element.appendChild(passedElem);
+    if (notApplicableElements.length) {
+      const notApplicableElem = this._renderNotApplicableAuditsSection(notApplicableElements);
+      element.appendChild(notApplicableElem);
+    }
 
     // Render manual audits after passing.
     this._renderManualAudits(manualAudits, groupDefinitions, element);

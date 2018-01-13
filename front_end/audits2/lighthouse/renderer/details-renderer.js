@@ -66,28 +66,37 @@ class DetailsRenderer {
   _renderTextURL(text) {
     const url = text.text || '';
 
-    let displayedURL;
+    let displayedPath;
+    let displayedHost;
     let title;
     try {
-      displayedURL = Util.parseURL(url).file;
+      const parsed = Util.parseURL(url);
+      displayedPath = parsed.file;
+      displayedHost = `(${parsed.hostname})`;
       title = url;
     } catch (/** @type {!Error} */ e) {
       if (!(e instanceof TypeError)) {
         throw e;
       }
-      displayedURL = url;
+      displayedPath = url;
     }
 
-    const element = this._renderText({
-      type: 'url',
-      text: displayedURL,
-    });
-    element.classList.add('lh-text__url');
+    const element = this._dom.createElement('div', 'lh-text__url');
+    element.appendChild(this._renderText({
+      text: displayedPath,
+      type: 'text',
+    }));
 
-    if (title) {
-      element.title = url;
+    if (displayedHost) {
+      const hostElem = this._renderText({
+        text: displayedHost,
+        type: 'text',
+      });
+      hostElem.classList.add('lh-text__url-host');
+      element.appendChild(hostElem);
     }
 
+    if (title) element.title = url;
     return element;
   }
 

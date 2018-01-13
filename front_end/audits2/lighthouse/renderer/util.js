@@ -147,8 +147,15 @@ class Util {
     }
 
     const MAX_LENGTH = 64;
-    // Always elide hash
+    // Always elide hexadecimal hash
     name = name.replace(/([a-f0-9]{7})[a-f0-9]{13}[a-f0-9]*/g, `$1${ELLIPSIS}`);
+    // Also elide other hash-like mixed-case strings
+    name = name.replace(/([a-zA-Z0-9-_]{9})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9-_]{10,}/g,
+        `$1${ELLIPSIS}`);
+    // Also elide long number sequences
+    name = name.replace(/(\d{3})\d{6,}/g, `$1${ELLIPSIS}`);
+    // Merge any adjacent ellipses
+    name = name.replace(/\u2026+/g, ELLIPSIS);
 
     // Elide query params first
     if (name.length > MAX_LENGTH && name.includes('?')) {

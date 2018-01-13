@@ -41,11 +41,11 @@
   --navitem-line-height: var(--body-line-height);
   --navitem-hpadding: var(--body-font-size);
   --navitem-vpadding: calc(var(--navitem-line-height) / 2);
-  --lh-score-highlight-bg: #fafafa;
+  --lh-score-highlight-bg: hsla(0, 0%, 90%, 0.2);
   --lh-score-icon-background-size: 24px;
   --lh-score-margin: 12px;
-  --lh-table-header-bg: #ccc;
-  --lh-table-higlight-bg: #fafafa;
+  --lh-table-header-bg: hsla(0, 0%, 50%, 0.4);
+  --lh-table-higlight-bg: hsla(0, 0%, 75%, 0.1);
   --lh-sparkline-height: 5px;
   --lh-sparkline-thin-height: 3px;
   --lh-filmstrip-thumbnail-width: 60px;
@@ -744,13 +744,12 @@ span.lh-node:hover {
   font-size: large;
 }
 
-.lh-text__url {
+.lh-text {
   white-space: nowrap;
 }
 
 .lh-code {
-  text-overflow: ellipsis;
-  white-space: pre-line;
+  white-space: normal;
   margin-top: 0;
 }
 
@@ -902,8 +901,9 @@ summary.lh-passed-audits-summary {
   --image-preview-size: 24px;
   border: 1px solid var(--report-secondary-border-color);
   border-collapse: collapse;
-  table-layout: fixed;
   width: 100%;
+
+  --url-col-max-width: 450px;
 }
 
 .lh-table thead {
@@ -916,8 +916,7 @@ summary.lh-passed-audits-summary {
 
 .lh-table th,
 .lh-table td {
-  padding: 10px;
-  overflow: auto;
+  padding: 8px 6px;
 }
 
 .lh-table-column--text {
@@ -932,6 +931,31 @@ summary.lh-passed-audits-summary {
   text-align: left;
   min-width: 250px;
   white-space: nowrap;
+  max-width: var(--url-col-max-width);
+}
+
+.lh-table-column--code {
+  max-width: var(--url-col-max-width);
+}
+
+.lh-text__url {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lh-text__url:hover {
+  text-decoration: underline dotted #999;
+  text-decoration-skip-ink: auto;
+}
+
+.lh-text__url > .lh-text, .lh-text__url-host {
+  display: inline;
+}
+
+.lh-text__url-host {
+  margin-left: calc(var(--body-font-size) / 2);
+  opacity: 0.6;
+  font-size: 90%
 }
 
 .lh-thumbnail {

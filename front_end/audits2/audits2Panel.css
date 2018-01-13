@@ -49,11 +49,27 @@
 .lh-root {
   --report-menu-width: 0;
   user-select: initial;
-  background: #fff;
+  --lh-bg-color: #fff;
+  background-color: var(--lh-bg-color);
+}
+
+.-theme-with-dark-background .lh-root {
+  --lh-bg-color: hsl(0, 0%, 14%);
+  --secondary-text-color: hsl(0, 0%, 66%);
+  --report-secondary-border-color: hsl(0, 0%, 8%);
+}
+
+.-theme-with-dark-background .lh-root .lh-gauge {
+  --circle-background: hsl(0, 0%, 27%);
+  --inset-color: var(--lh-bg-color);
 }
 
 .lh-root .lh-container {
   word-wrap: normal;
+}
+
+.lh-root pre {
+  word-wrap: break-word;
 }
 
 .audits2-landing-center button {

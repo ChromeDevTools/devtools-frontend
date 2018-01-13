@@ -66,6 +66,8 @@ def _CheckFormat(input_api, output_api):
             ignore_files.append(line.strip())
     formattable_files = [affected_file for affected_file in affected_files
                          if all(ignore_file not in affected_file for ignore_file in ignore_files)]
+    if len(formattable_files) == 0:
+        return []
 
     check_formatting_process = popen(['git', 'cl', 'format', '--js', '--dry-run'] + formattable_files)
     check_formatting_process.communicate()

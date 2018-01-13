@@ -330,8 +330,7 @@
             "title": "Overrides",
             "order": 4,
             "persistence": "permanent",
-            "className": "Sources.OverridesNavigatorView",
-            "experiment": "networkPersistence"
+            "className": "Sources.OverridesNavigatorView"
         },
         {
             "type": "view",
@@ -372,8 +371,7 @@
         {
             "type": "@Sources.NavigatorView",
             "viewId": "navigator-overrides",
-            "className": "Sources.OverridesNavigatorView",
-            "experiment": "networkPersistence"
+            "className": "Sources.OverridesNavigatorView"
         },
         {
             "type": "@Sources.NavigatorView",

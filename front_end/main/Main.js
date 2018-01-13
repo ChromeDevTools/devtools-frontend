@@ -118,7 +118,6 @@ Main.Main = class {
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('logManagement', 'Log management', true);
-    Runtime.experiments.register('networkPersistence', 'Override requests with workspace project');
     Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
     Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('sourceDiff', 'Source diff');
@@ -147,8 +146,6 @@ Main.Main = class {
         Runtime.experiments.enableForTest('accessibilityInspection');
       if (testPath.indexOf('console-sidebar/') !== -1)
         Runtime.experiments.enableForTest('logManagement');
-      if (testPath.indexOf('overrides/') !== -1)
-        Runtime.experiments.enableForTest('networkPersistence');
     }
 
     Runtime.experiments.setDefaultExperiments([

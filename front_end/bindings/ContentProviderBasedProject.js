@@ -165,12 +165,29 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
   /**
    * @override
    * @param {string} path
+   * @return {boolean}
+   */
+  canExcludeFolder(path) {
+    return false;
+  }
+
+  /**
+   * @override
+   * @param {string} path
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64
    * @return {!Promise<?Workspace.UISourceCode>}
    */
   createFile(path, name, content, isBase64) {
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  canCreateFile() {
+    return false;
   }
 
   /**

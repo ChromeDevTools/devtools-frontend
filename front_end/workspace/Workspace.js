@@ -147,12 +147,23 @@ Workspace.Project.prototype = {
 
   /**
    * @param {string} path
+   * @return {boolean}
+   */
+  canExcludeFolder(path) {},
+
+  /**
+   * @param {string} path
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64
    * @return {!Promise<?Workspace.UISourceCode>}
    */
   createFile(path, name, content, isBase64) {},
+
+  /**
+   * @return {boolean}
+   */
+  canCreateFile() {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode

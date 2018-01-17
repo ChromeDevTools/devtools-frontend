@@ -494,6 +494,23 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   /**
    * @override
    * @param {string} path
+   * @return {boolean}
+   */
+  canExcludeFolder(path) {
+    return !!path && Persistence.FileSystemWorkspaceBinding.fileSystemType(this) !== 'overrides';
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  canCreateFile() {
+    return true;
+  }
+
+  /**
+   * @override
+   * @param {string} path
    * @param {?string} name
    * @param {string} content
    * @param {boolean=} isBase64

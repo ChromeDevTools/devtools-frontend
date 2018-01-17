@@ -233,12 +233,34 @@ Components.DOMPresentationUtils.buildStackTracePreviewContents = function(target
       row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
       var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
+      link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
       if (link) {
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
       }
       contentElement.appendChild(row);
     }
+  }
+
+  /**
+   * @param {!Element} link
+   * @param {!Event} event
+   */
+  function populateContextMenu(link, event) {
+    var contextMenu = new UI.ContextMenu(event);
+    event.consume(true);
+    var uiLocation = Components.Linkifier.uiLocation(link);
+    if (uiLocation && Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
+      if (Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+        contextMenu.debugSection().appendItem(
+            ls`Stop blackboxing`, () => Bindings.blackboxManager.unblackboxUISourceCode(uiLocation.uiSourceCode));
+      } else {
+        contextMenu.debugSection().appendItem(
+            ls`Blackbox script`, () => Bindings.blackboxManager.blackboxUISourceCode(uiLocation.uiSourceCode));
+      }
+    }
+    contextMenu.appendApplicableItems(event);
+    contextMenu.show();
   }
 
   if (!stackTrace)

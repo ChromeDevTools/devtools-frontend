@@ -526,6 +526,15 @@ Components.Linkifier = class {
   }
 
   /**
+   * @param {!Element} link
+   * @return {?Workspace.UILocation}
+   */
+  static uiLocation(link) {
+    var info = Components.Linkifier._linkInfo(link);
+    return info ? info.uiLocation : null;
+  }
+
+  /**
    * @param {?Element} link
    * @return {!Array<{title: string, handler: function()}>}
    */

@@ -706,8 +706,10 @@ class ReportUIFeatures {
 
 /** @type {!Array.<!RegExp>} */
 Audits2.Audits2Panel.KnownBugPatterns = [
-  /Tracing already started/,
-  /^Unable to load the page/,
+  /Parsing problem/,
+  /Read failed/,
+  /Tracing.*already started/,
+  /^Unable to load.*page/,
   /^You must provide a url to the runner/,
   /^You probably have multiple tabs open/,
 ];

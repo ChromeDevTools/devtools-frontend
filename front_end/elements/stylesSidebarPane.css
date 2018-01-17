@@ -217,3 +217,10 @@
 .styles-pane:not(.is-editing-style) .styles-section.matched-styles:not(.read-only):hover .sidebar-pane-section-toolbar {
     visibility: visible;
 }
+
+.styles-show-all {
+    margin-left: 16px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: -webkit-fill-available;
+}

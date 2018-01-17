@@ -431,6 +431,8 @@ function printStyleSection(section, omitLonghands, includeSelectorGroupMarks) {
 
   TestRunner.addResult(selectorText);
   ElementsTestRunner.dumpStyleTreeOutline(section.propertiesTreeOutline, (omitLonghands ? 1 : 2));
+  if (!section._showAllButton.classList.contains('hidden'))
+    TestRunner.addResult(section._showAllButton.textContent);
   TestRunner.addResult('');
 }
 

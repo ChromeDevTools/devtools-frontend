@@ -716,7 +716,7 @@ Network.NetworkLogView = class extends UI.VBox {
       // TODO(allada) inspectedURL should be stored in PageLoad used instead of target so HAR requests can have an
       // inspected url.
       if (networkManager && request.url() === networkManager.target().inspectedURL() &&
-          request.resourceType() === Common.resourceTypes.Document)
+          request.resourceType() === Common.resourceTypes.Document && !networkManager.target().parentTarget())
         baseTime = request.startTime;
       if (request.endTime > maxTime)
         maxTime = request.endTime;

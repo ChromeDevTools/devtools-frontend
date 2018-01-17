@@ -38,6 +38,7 @@ Console.ConsoleView = class extends UI.VBox {
     this.registerRequiredCSS('console/consoleView.css');
 
     this._searchableView = new UI.SearchableView(this);
+    this._searchableView.element.classList.add('console-searchable-view');
     this._searchableView.setPlaceholder(Common.UIString('Find string in logs'));
     this._searchableView.setMinimalSearchQuerySize(0);
     this._badgePool = new ProductRegistry.BadgePool();

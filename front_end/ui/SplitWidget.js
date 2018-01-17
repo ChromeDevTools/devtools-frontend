@@ -328,6 +328,7 @@ UI.SplitWidget = class extends UI.Widget {
       shadowToHide.classList.remove('maximized');
       this._removeAllLayoutProperties();
       this.doResize();
+      this._showFinishedForTest();
     }
 
     if (animate)
@@ -337,6 +338,10 @@ UI.SplitWidget = class extends UI.Widget {
 
     this._sidebarSizeDIP = -1;
     this.setResizable(false);
+  }
+
+  _showFinishedForTest() {
+    // This method is sniffed in tests.
   }
 
   _removeAllLayoutProperties() {

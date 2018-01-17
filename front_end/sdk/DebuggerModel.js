@@ -1482,7 +1482,7 @@ SDK.DebuggerPausedDetails = class {
     while (stack) {
       if (stack.description === 'async function' && stack.callFrames.length)
         stack.callFrames.shift();
-      if (previous && (!stack.callFrames.length && !stack.promiseCreationFrame))
+      if (previous && !stack.callFrames.length)
         previous.parent = stack.parent;
       else
         previous = stack;

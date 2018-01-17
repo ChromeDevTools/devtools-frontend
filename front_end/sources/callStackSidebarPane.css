@@ -36,12 +36,6 @@
     flex-wrap: wrap;
 }
 
-.call-frame-chained-arrow {
-    transform: rotate(180deg);
-    margin-right: 3px;
-    flex-shrink: 0;
-}
-
 .call-frame-title-text {
     text-overflow: ellipsis;
     overflow: hidden;

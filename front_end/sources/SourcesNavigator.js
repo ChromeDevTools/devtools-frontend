@@ -212,9 +212,16 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
       var enableCheckbox =
           new UI.ToolbarSettingCheckbox(Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
       this._toolbar.appendToolbarItem(enableCheckbox);
+
+      this._toolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
+      var clearButton = new UI.ToolbarButton(Common.UIString('Clear configuration'), 'largeicon-clear');
+      clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => {
+        project.remove();
+      });
+      this._toolbar.appendToolbarItem(clearButton);
       return;
     }
-    var title = Common.UIString('Setup Overrides');
+    var title = Common.UIString('Select folder for overrides');
     var setupButton = new UI.ToolbarButton(title, 'largeicon-add', title);
     setupButton.addEventListener(UI.ToolbarButton.Events.Click, this._setupNewWorkspace, this);
     this._toolbar.appendToolbarItem(setupButton);

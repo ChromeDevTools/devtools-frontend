@@ -676,7 +676,7 @@ SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
   return TestRunner.debuggerModel.evaluateOnSelectedCallFrame({expression: code, objectGroup: 'console'});
 };
 
-SourcesTestRunner.waitJavaScriptSourceFrameBreakpoints = function(sourceFrame, inline) {
+SourcesTestRunner.waitJavaScriptSourceFrameBreakpoints = function(sourceFrame) {
   return waitUpdate().then(checkIfReady);
 
   function waitUpdate() {

@@ -1239,7 +1239,7 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
     }
     this._decorationByBreakpoint.set(breakpoint, decoration);
     this._updateBreakpointDecoration(decoration);
-    if (!lineDecorations.length) {
+    if (breakpoint.enabled() && !lineDecorations.length) {
       this._possibleBreakpointsRequested.add(uiLocation.lineNumber);
       this._breakpointManager
           .possibleBreakpoints(

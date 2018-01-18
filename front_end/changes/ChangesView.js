@@ -11,7 +11,7 @@ Changes.ChangesView = class extends UI.VBox {
     splitWidget.setMainWidget(mainWidget);
     splitWidget.show(this.contentElement);
 
-    this._emptyWidget = new UI.EmptyWidget(Common.UIString('No changes'));
+    this._emptyWidget = new UI.EmptyWidget('');
     this._emptyWidget.show(mainWidget.element);
 
     this._workspaceDiff = WorkspaceDiff.workspaceDiff();
@@ -47,6 +47,7 @@ Changes.ChangesView = class extends UI.VBox {
     this._toolbar.appendToolbarItem(this._diffStats);
     this._toolbar.setEnabled(false);
 
+    this._hideDiff(ls`No changes`);
     this._selectedUISourceCodeChanged();
   }
 
@@ -106,11 +107,26 @@ Changes.ChangesView = class extends UI.VBox {
       return;
     }
     var uiSourceCode = this._selectedUISourceCode;
+    if (!uiSourceCode.contentType().isTextType()) {
+      this._hideDiff(ls`Binary data`);
+      return;
+    }
     this._workspaceDiff.requestDiff(uiSourceCode).then(diff => {
       if (this._selectedUISourceCode !== uiSourceCode)
         return;
       this._renderDiffRows(diff);
     });
+  }
+
+  /**
+   * @param {string} message
+   */
+  _hideDiff(message) {
+    this._diffStats.setText('');
+    this._toolbar.setEnabled(false);
+    this._editor.hideWidget();
+    this._emptyWidget.text = message;
+    this._emptyWidget.showWidget();
   }
 
   /**
@@ -120,10 +136,7 @@ Changes.ChangesView = class extends UI.VBox {
     this._diffRows = [];
 
     if (!diff || (diff.length === 1 && diff[0][0] === Diff.Diff.Operation.Equal)) {
-      this._diffStats.setText('');
-      this._toolbar.setEnabled(false);
-      this._editor.hideWidget();
-      this._emptyWidget.showWidget();
+      this._hideDiff(ls`No changes`);
       return;
     }
 

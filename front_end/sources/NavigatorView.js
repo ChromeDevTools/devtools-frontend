@@ -755,7 +755,7 @@ Sources.NavigatorView = class extends UI.VBox {
 
     var folderPath = Common.ParsedURL.urlToPlatformPath(
         Persistence.FileSystemWorkspaceBinding.completeURL(project, path), Host.isWin());
-    contextMenu.saveSection().appendItem(
+    contextMenu.revealSection().appendItem(
         Common.UIString('Open folder'), () => InspectorFrontendHost.showItemInFolder(folderPath));
     if (project.canCreateFile()) {
       contextMenu.defaultSection().appendItem(

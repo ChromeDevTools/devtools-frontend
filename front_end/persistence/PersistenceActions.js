@@ -29,10 +29,6 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
     if (contentProvider.contentType().isDocumentOrScriptOrStyleSheet())
       contextMenu.saveSection().appendItem(Common.UIString('Save as...'), saveAs);
 
-    var path = Common.ParsedURL.urlToPlatformPath(contentProvider.contentURL(), Host.isWin());
-    contextMenu.saveSection().appendItem(
-        Common.UIString('Open in containing folder'), () => InspectorFrontendHost.showItemInFolder(path));
-
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
     var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
@@ -42,6 +38,14 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
             /** @type {!Workspace.UISourceCode} */ (uiSourceCode));
         Common.Revealer.reveal(uiSourceCode);
       });
+    }
+
+    var binding = uiSourceCode && Persistence.persistence.binding(uiSourceCode);
+    var fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
+    if (fileURL.startsWith('file://')) {
+      var path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());
+      contextMenu.revealSection().appendItem(
+          Common.UIString('Open in containing folder'), () => InspectorFrontendHost.showItemInFolder(path));
     }
   }
 };

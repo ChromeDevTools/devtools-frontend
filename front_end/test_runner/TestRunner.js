@@ -998,7 +998,8 @@ TestRunner.pageLoaded = function() {
   TestRunner._handlePageLoaded();
 };
 
-TestRunner._handlePageLoaded = function() {
+TestRunner._handlePageLoaded = async function() {
+  await TestRunner.waitForExecutionContext(/** @type {!SDK.RuntimeModel} */ (TestRunner.runtimeModel));
   if (TestRunner._pageLoadedCallback) {
     var callback = TestRunner._pageLoadedCallback;
     delete TestRunner._pageLoadedCallback;

@@ -655,7 +655,6 @@ all_devtools_files = [
   "front_end/sources/xhrBreakpointsSidebarPane.css",
   "front_end/sources/XHRBreakpointsSidebarPane.js",
   "front_end/sources_test_runner/AutocompleteTestRunner.js",
-  "front_end/sources_test_runner/BreakpointManagerTestRunner.js",
   "front_end/sources_test_runner/DebuggerTestRunner.js",
   "front_end/sources_test_runner/EditorTestRunner.js",
   "front_end/sources_test_runner/LiveEditTestRunner.js",

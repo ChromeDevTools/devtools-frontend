@@ -116,13 +116,6 @@ Bindings.BreakpointManager = class extends Common.Object {
     }
   }
 
-  removeProvisionalBreakpointsForTest() {
-    var breakpoints = this._provisionalBreakpoints.valuesArray();
-    for (var i = 0; i < breakpoints.length; ++i)
-      breakpoints[i].remove();
-    this._provisionalBreakpoints.clear();
-  }
-
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */

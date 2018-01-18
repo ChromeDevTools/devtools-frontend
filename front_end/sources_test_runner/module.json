@@ -12,8 +12,7 @@
     "LiveEditTestRunner.js",
     "SearchTestRunner.js",
     "EditorTestRunner.js",
-    "AutocompleteTestRunner.js",
-    "BreakpointManagerTestRunner.js"
+    "AutocompleteTestRunner.js"
   ],
   "skip_compilation": [
     "DebuggerTestRunner.js",
@@ -21,7 +20,6 @@
     "SearchTestRunner.js",
     "SourcesTestRunner.js",
     "EditorTestRunner.js",
-    "AutocompleteTestRunner.js",
-    "BreakpointManagerTestRunner.js"
+    "AutocompleteTestRunner.js"
   ]
 }

@@ -33,14 +33,12 @@
  */
 Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   /**
-   * @param {!SDK.DOMModel} domModel
    * @param {boolean=} omitRootDOMNode
    * @param {boolean=} selectEnabled
    */
-  constructor(domModel, omitRootDOMNode, selectEnabled) {
+  constructor(omitRootDOMNode, selectEnabled) {
     super();
 
-    this._domModel = domModel;
     this._treeElementSymbol = Symbol('treeElement');
     var shadowContainer = createElement('div');
     this._shadowRoot = UI.createShadowRootWithCoreStyles(shadowContainer, 'elements/elementsTreeOutline.css');
@@ -84,7 +82,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     /** @type {!Set<!Elements.ElementsTreeElement>} */
     this._treeElementsBeingUpdated = new Set();
 
-    this._domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this._markersChanged, this);
     this._showHTMLCommentsSetting = Common.moduleSetting('showHTMLComments');
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
   }
@@ -117,13 +114,6 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    */
   setWordWrap(wrap) {
     this._element.classList.toggle('elements-tree-nowrap', !wrap);
-  }
-
-  /**
-   * @return {!SDK.DOMModel}
-   */
-  domModel() {
-    return this._domModel;
   }
 
   /**
@@ -284,7 +274,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     function expandCallback(error, nodeId) {
       if (error)
         return;
-      var pastedNode = this._domModel.nodeForId(nodeId);
+      var pastedNode = targetNode.domModel().nodeForId(nodeId);
       if (!pastedNode)
         return;
       this.selectDOMNode(pastedNode);
@@ -614,13 +604,13 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this.setHoverEffect(element);
 
     if (element instanceof Elements.ElementsTreeElement) {
-      this._domModel.overlayModel().highlightDOMNodeWithConfig(
+      element.node().domModel().overlayModel().highlightDOMNodeWithConfig(
           element.node().id, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)});
       return;
     }
 
     if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement) {
-      this._domModel.overlayModel().highlightDOMNodeWithConfig(
+      element.domModel().overlayModel().highlightDOMNodeWithConfig(
           undefined, {mode: 'all', showInfo: !UI.KeyboardShortcut.eventHasCtrlOrMeta(event)}, element.backendNodeId());
     }
   }
@@ -855,17 +845,16 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   /**
    * @param {boolean} wasExpanded
    * @param {?Protocol.Error} error
-   * @param {!Protocol.DOM.NodeId=} nodeId
+   * @param {?SDK.DOMNode} newNode
    * @return {?Elements.ElementsTreeElement} nodeId
    */
-  selectNodeAfterEdit(wasExpanded, error, nodeId) {
+  selectNodeAfterEdit(wasExpanded, error, newNode) {
     if (error)
       return null;
 
     // Select it and expand if necessary. We force tree update so that it processes dom events and is up to date.
     this.runPendingUpdates();
 
-    var newNode = nodeId ? this._domModel.nodeForId(nodeId) : null;
     if (!newNode)
       return null;
 
@@ -962,29 +951,36 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this._updateRecords.clear();
   }
 
-  wireToDOMModel() {
-    this._domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] = this;
-    this._domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
-    this._domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+  /**
+   * @param {!SDK.DOMModel} domModel
+   */
+  wireToDOMModel(domModel) {
+    domModel[Elements.ElementsTreeOutline._treeOutlineSymbol] = this;
+    domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this._markersChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
+    domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
+    domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
   }
 
-  unwireFromDOMModel() {
-    this._domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
-    this._domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
-    this._domModel.removeEventListener(
-        SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
-    delete this._domModel[Elements.ElementsTreeOutline._treeOutlineSymbol];
+  /**
+   * @param {!SDK.DOMModel} domModel
+   */
+  unwireFromDOMModel(domModel) {
+    domModel.removeEventListener(SDK.DOMModel.Events.MarkersChanged, this._markersChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this._nodeInserted, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this._nodeRemoved, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this._attributeModified, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this._attributeRemoved, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this._characterDataModified, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this._documentUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this._childNodeCountUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this._distributedNodesChanged, this);
+    delete domModel[Elements.ElementsTreeOutline._treeOutlineSymbol];
   }
 
   /**
@@ -1593,7 +1589,7 @@ Elements.ElementsTreeOutline.Renderer = class {
           reject(new Error('Could not resolve node.'));
           return;
         }
-        var treeOutline = new Elements.ElementsTreeOutline(node.domModel(), false, false);
+        var treeOutline = new Elements.ElementsTreeOutline(false, false);
         treeOutline.rootDOMNode = node;
         if (!treeOutline.firstChild().isExpandable())
           treeOutline._element.classList.add('single-node');
@@ -1651,6 +1647,13 @@ Elements.ElementsTreeOutline.ShortcutTreeElement = class extends UI.TreeElement 
    */
   backendNodeId() {
     return this._nodeShortcut.deferredNode.backendNodeId();
+  }
+
+  /**
+   * @return {!SDK.DOMModel}
+   */
+  domModel() {
+    return this._nodeShortcut.deferredNode.domModel();
   }
 
   /**

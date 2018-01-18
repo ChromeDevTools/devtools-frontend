@@ -964,15 +964,14 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     var treeOutline = this.treeOutline;
     var wasExpanded = this.expanded;
 
-    function changeTagNameCallback(error, nodeId) {
-      if (error || !nodeId) {
+    this._node.setNodeName(newText, (error, newNode) => {
+      if (error || !newNode) {
         cancel();
         return;
       }
-      var newTreeItem = treeOutline.selectNodeAfterEdit(wasExpanded, error, nodeId);
+      var newTreeItem = treeOutline.selectNodeAfterEdit(wasExpanded, error, newNode);
       moveToNextAttributeIfNeeded.call(newTreeItem);
-    }
-    this._node.setNodeName(newText, changeTagNameCallback);
+    });
   }
 
   /**

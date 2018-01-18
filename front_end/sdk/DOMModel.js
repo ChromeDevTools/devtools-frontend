@@ -366,14 +366,14 @@ SDK.DOMNode = class {
 
   /**
    * @param {string} name
-   * @param {function(?Protocol.Error, number)=} callback
+   * @param {function(?Protocol.Error, ?SDK.DOMNode)=} callback
    */
   setNodeName(name, callback) {
     this._agent.invoke_setNodeName({nodeId: this.id, name}).then(response => {
       if (!response[Protocol.Error])
         this._domModel.markUndoableState();
       if (callback)
-        callback(response[Protocol.Error] || null, response.nodeId);
+        callback(response[Protocol.Error] || null, this._domModel.nodeForId(response.nodeId));
     });
   }
 
@@ -765,7 +765,7 @@ SDK.DOMNode = class {
   /**
    * @param {!SDK.DOMNode} targetNode
    * @param {?SDK.DOMNode} anchorNode
-   * @param {function(?Protocol.Error, !Protocol.DOM.NodeId=)=} callback
+   * @param {function(?Protocol.Error, ?SDK.DOMNode)=} callback
    */
   moveTo(targetNode, anchorNode, callback) {
     this._agent
@@ -775,7 +775,7 @@ SDK.DOMNode = class {
           if (!response[Protocol.Error])
             this._domModel.markUndoableState();
           if (callback)
-            callback(response[Protocol.Error] || null, response.nodeId);
+            callback(response[Protocol.Error] || null, this._domModel.nodeForId(response.nodeId));
         });
   }
 
@@ -978,7 +978,7 @@ SDK.DeferredDOMNode = class {
    * @param {number} backendNodeId
    */
   constructor(target, backendNodeId) {
-    this._domModel = target.model(SDK.DOMModel);
+    this._domModel = /** @type {!SDK.DOMModel} */ (target.model(SDK.DOMModel));
     this._backendNodeId = backendNodeId;
   }
 
@@ -993,8 +993,6 @@ SDK.DeferredDOMNode = class {
    * @return {!Promise<?SDK.DOMNode>}
    */
   async resolvePromise() {
-    if (!this._domModel)
-      return null;
     var nodeIds = await this._domModel.pushNodesByBackendIdsToFrontend(new Set([this._backendNodeId]));
     return nodeIds && nodeIds.get(this._backendNodeId) || null;
   }
@@ -1006,9 +1004,15 @@ SDK.DeferredDOMNode = class {
     return this._backendNodeId;
   }
 
+  /**
+   * @return {!SDK.DOMModel}
+   */
+  domModel() {
+    return this._domModel;
+  }
+
   highlight() {
-    if (this._domModel)
-      this._domModel.overlayModel().highlightDOMNode(undefined, undefined, this._backendNodeId);
+    this._domModel.overlayModel().highlightDOMNode(undefined, undefined, this._backendNodeId);
   }
 };
 

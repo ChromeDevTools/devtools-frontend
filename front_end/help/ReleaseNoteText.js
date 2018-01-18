@@ -12,6 +12,43 @@ var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shif
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 8,
+    header: 'Highlights from the Chrome 65 update',
+    highlights: [
+      {
+        title: 'Local overrides',
+        subtitle: 'Override network requests and serve local resources instead.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#overrides',
+      },
+      {
+        title: 'Changes tab',
+        subtitle: 'Track changes that you make locally in DevTools via the Changes tab.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#changes',
+      },
+      {
+        title: 'New accessibility tools',
+        subtitle: 'Inspect the accessibility properties and contrast ratio of elements.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#a11y',
+      },
+      {
+        title: 'New audits',
+        subtitle: 'New performance audits, a whole new category of SEO audits, and more.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#audits',
+      },
+      {
+        title: 'Code stepping updates',
+        subtitle: 'Reliably step into web worker and asynchronous code.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#stepping',
+      },
+      {
+        title: 'Multiple recordings in the Performance panel',
+        subtitle: 'Temporarily save up to 5 recordings.',
+        link: 'https://developers.google.com/web/updates/2018/01/devtools#recordings',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2018/01/devtools',
+  },
+  {
     version: 7,
     header: 'Highlights from the Chrome 64 update',
     highlights: [

@@ -156,8 +156,7 @@ SDK.CSSProperty = class {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.StyleRuleEdited);
 
     if (overwrite && propertyText === this.propertyText) {
-      if (majorChange)
-        this.ownerStyle.cssModel().domModel().markUndoableState();
+      this.ownerStyle.cssModel().domModel().markUndoableState(!majorChange);
       return Promise.resolve(true);
     }
 

@@ -1301,6 +1301,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
       this._document = new SDK.DOMDocument(this, payload);
     else
       this._document = null;
+    SDK.domModelUndoStack._dispose(this);
     this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this);
   }
 
@@ -1518,22 +1519,11 @@ SDK.DOMModel = class extends SDK.SDKModel {
     return this._agent.querySelectorAll(nodeId, selectors);
   }
 
-  markUndoableState() {
-    this._agent.markUndoableState();
-  }
-
   /**
-   * @return {!Promise}
+   * @param {boolean=} minorChange
    */
-  undo() {
-    return this._agent.undo();
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  redo() {
-    return this._agent.redo();
+  markUndoableState(minorChange) {
+    SDK.domModelUndoStack._markUndoableState(this, minorChange || false);
   }
 
   /**
@@ -1569,6 +1559,13 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   resumeModel() {
     return this._agent.enable();
+  }
+
+  /**
+   * @override
+   */
+  dispose() {
+    SDK.domModelUndoStack._dispose(this);
   }
 };
 
@@ -1726,3 +1723,82 @@ SDK.DOMDispatcher = class {
     this._domModel._distributedNodesUpdated(insertionPointId, distributedNodes);
   }
 };
+
+SDK.DOMModelUndoStack = class {
+  constructor() {
+    /** @type {!Array<!SDK.DOMModel>} */
+    this._stack = [];
+    this._index = 0;
+    /** @type {?SDK.DOMModel} */
+    this._lastModelWithMinorChange = null;
+  }
+
+  /**
+   * @param {!SDK.DOMModel} model
+   * @param {boolean} minorChange
+   */
+  _markUndoableState(model, minorChange) {
+    // Both minor and major changes get into the stack, but minor updates are coalesced.
+    // Commit major undoable state in the old model upon model switch.
+    if (this._lastModelWithMinorChange && model !== this._lastModelWithMinorChange) {
+      this._lastModelWithMinorChange.markUndoableState();
+      this._lastModelWithMinorChange = null;
+    }
+
+    // Previous minor change is already in the stack.
+    if (minorChange && this._lastModelWithMinorChange === model)
+      return;
+
+    this._stack = this._stack.slice(0, this._index);
+    this._stack.push(model);
+    this._index = this._stack.length;
+
+    // Delay marking as major undoable states in case of minor operations until the
+    // major or model switch.
+    if (minorChange) {
+      this._lastModelWithMinorChange = model;
+    } else {
+      model._agent.markUndoableState();
+      this._lastModelWithMinorChange = null;
+    }
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  undo() {
+    if (this._index === 0)
+      return Promise.resolve();
+    --this._index;
+    this._lastModelWithMinorChange = null;
+    return this._stack[this._index]._agent.undo();
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  redo() {
+    if (this._index >= this._stack.length)
+      return Promise.resolve();
+    ++this._index;
+    this._lastModelWithMinorChange = null;
+    return this._stack[this._index - 1]._agent.redo();
+  }
+
+  /**
+   * @param {!SDK.DOMModel} model
+   */
+  _dispose(model) {
+    var shift = 0;
+    for (var i = 0; i < this._index; ++i) {
+      if (this._stack[i] === model)
+        ++shift;
+    }
+    this._stack.remove(model);
+    this._index -= shift;
+    if (this._lastModelWithMinorChange === model)
+      this._lastModelWithMinorChange = null;
+  }
+};
+
+SDK.domModelUndoStack = new SDK.DOMModelUndoStack();

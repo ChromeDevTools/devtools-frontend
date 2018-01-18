@@ -78,13 +78,14 @@ ElementsTestRunner.setOuterHTMLUseUndo = function(newText, next) {
 
   async function bringBack() {
     TestRunner.addResult('\nBringing things back\n');
-    await TestRunner.domModel.undo();
+    await SDK.domModelUndoStack.undo();
     ElementsTestRunner._dumpOuterHTML(true, next);
   }
 };
 
 ElementsTestRunner.innerSetOuterHTML = async function(newText, last, next) {
   await TestRunner.DOMAgent.setOuterHTML(ElementsTestRunner.containerId, newText);
+  TestRunner.domModel.markUndoableState();
   ElementsTestRunner._dumpOuterHTML(last, next);
 };
 

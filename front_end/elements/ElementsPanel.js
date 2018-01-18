@@ -619,43 +619,30 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!KeyboardEvent} event
    */
   handleShortcut(event) {
-    /**
-     * @param {!Elements.ElementsTreeOutline} treeOutline
-     */
-    function handleUndoRedo(treeOutline) {
-      if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && !event.shiftKey &&
-          (event.key === 'Z' || event.key === 'z')) {  // Z key
-        treeOutline.domModel().undo();
-        event.handled = true;
-        return;
-      }
-
-      var isRedoKey = Host.isMac() ?
-          event.metaKey && event.shiftKey && (event.key === 'Z' || event.key === 'z') :  // Z key
-          event.ctrlKey && (event.key === 'Y' || event.key === 'y');                     // Y key
-      if (isRedoKey) {
-        treeOutline.domModel().redo();
-        event.handled = true;
-      }
-    }
-
-    if (UI.isEditing() && event.keyCode !== UI.KeyboardShortcut.Keys.F2.code)
+    if (this._treeOutlines.find(to => to.editing()))
       return;
 
-    var treeOutline = null;
-    for (var i = 0; i < this._treeOutlines.length; ++i) {
-      if (this._treeOutlines[i].selectedDOMNode())
-        treeOutline = this._treeOutlines[i];
-    }
+    var treeOutline = this._treeOutlines.find(to => !!to.selectedDOMNode());
     if (!treeOutline)
       return;
 
-    if (!treeOutline.editing()) {
-      handleUndoRedo.call(null, treeOutline);
-      if (event.handled) {
-        this._stylesWidget.forceUpdate();
-        return;
-      }
+    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && !event.shiftKey &&
+        (event.key === 'Z' || event.key === 'z')) {  // Z key
+      SDK.domModelUndoStack.undo();
+      event.handled = true;
+    }
+
+    var isRedoKey = Host.isMac() ?
+        event.metaKey && event.shiftKey && (event.key === 'Z' || event.key === 'z') :  // Z key
+        event.ctrlKey && (event.key === 'Y' || event.key === 'y');                     // Y key
+    if (isRedoKey) {
+      SDK.domModelUndoStack.redo();
+      event.handled = true;
+    }
+
+    if (event.handled) {
+      this._stylesWidget.forceUpdate();
+      return;
     }
 
     treeOutline.handleShortcut(event);

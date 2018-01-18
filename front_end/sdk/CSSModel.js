@@ -223,8 +223,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
       if (!stylePayloads || stylePayloads.length !== ranges.length)
         return false;
 
-      if (majorChange)
-        this._domModel.markUndoableState();
+      this._domModel.markUndoableState(!majorChange);
       for (var i = 0; i < ranges.length; ++i) {
         var edit = new SDK.CSSModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
         this._fireStyleSheetChanged(styleSheetIds[i], edit);
@@ -666,8 +665,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
     this._sourceMapManager.attachSourceMap(header, header.sourceURL, header.sourceMapURL);
     if (sourceMapURL === null)
       return 'Error in CSS.setStyleSheetText';
-    if (majorChange)
-      this._domModel.markUndoableState();
+    this._domModel.markUndoableState(!majorChange);
     this._fireStyleSheetChanged(styleSheetId);
     return null;
   }

@@ -285,7 +285,8 @@ UI.markBeingEdited = function(element, value) {
   return true;
 };
 
-UI.CSSNumberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
+// Avoids Infinity, NaN, and scientific notation (e.g. 1e20), see crbug.com/81165.
+UI._numberRegex = /^(-?(?:\d+(?:\.\d+)?|\.\d+))$/;
 
 UI.StyleValueDelimiters = ' \xA0\t\n"\':;,/()';
 
@@ -364,9 +365,10 @@ UI._modifiedHexValue = function(hexString, event) {
 /**
  * @param {number} number
  * @param {!Event} event
+ * @param {number=} modifierMultiplier
  * @return {?number}
  */
-UI._modifiedFloatNumber = function(number, event) {
+UI._modifiedFloatNumber = function(number, event, modifierMultiplier) {
   var direction = UI._valueModificationDirection(event);
   if (!direction)
     return null;
@@ -388,13 +390,14 @@ UI._modifiedFloatNumber = function(number, event) {
 
   if (direction === 'Down')
     delta *= -1;
+  if (modifierMultiplier)
+    delta *= modifierMultiplier;
 
   // Make the new number and constrain it to a precision of 6, this matches numbers the engine returns.
   // Use the Number constructor to forget the fixed precision, so 1.100000 will print as 1.1.
   var result = Number((number + delta).toFixed(6));
-  if (!String(result).match(UI.CSSNumberRegex))
+  if (!String(result).match(UI._numberRegex))
     return null;
-
   return result;
 };
 
@@ -1510,9 +1513,10 @@ UI.CheckboxLabel = class extends HTMLLabelElement {
  * @param {function(string)} apply
  * @param {function(string):boolean} validate
  * @param {boolean} numeric
+ * @param {number=} modifierMultiplier
  * @return {function(string)}
  */
-UI.bindInput = function(input, apply, validate, numeric) {
+UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
   input.addEventListener('change', onChange, false);
   input.addEventListener('input', onInput, false);
   input.addEventListener('keydown', onKeyDown, false);
@@ -1543,17 +1547,7 @@ UI.bindInput = function(input, apply, validate, numeric) {
     if (!numeric)
       return;
 
-    var increment = event.key === 'ArrowUp' ? 1 : event.key === 'ArrowDown' ? -1 : 0;
-    if (!increment)
-      return;
-    if (event.shiftKey)
-      increment *= 10;
-
-    var value = input.value;
-    if (!validate(value) || !value)
-      return;
-
-    value = (value ? Number(value) : 0) + increment;
+    var value = UI._modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
     var stringValue = value ? String(value) : '';
     if (!validate(stringValue) || !value)
       return;

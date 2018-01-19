@@ -82,7 +82,7 @@ Emulation.SensorsView = class extends UI.VBox {
     this._latitudeInput.value = 0;
     this._latitudeSetter = UI.bindInput(
         this._latitudeInput, this._applyGeolocationUserInput.bind(this),
-        SDK.EmulationModel.Geolocation.latitudeValidator, true);
+        SDK.EmulationModel.Geolocation.latitudeValidator, true, 0.1);
     this._latitudeSetter(String(geolocation.latitude));
 
     this._longitudeInput = UI.createInput('', 'number');
@@ -91,8 +91,13 @@ Emulation.SensorsView = class extends UI.VBox {
     this._longitudeInput.value = 0;
     this._longitudeSetter = UI.bindInput(
         this._longitudeInput, this._applyGeolocationUserInput.bind(this),
-        SDK.EmulationModel.Geolocation.longitudeValidator, true);
+        SDK.EmulationModel.Geolocation.longitudeValidator, true, 0.1);
     this._longitudeSetter(String(geolocation.longitude));
+
+    var cmdOrCtrl = Host.isMac() ? '\u2318' : 'Ctrl';
+    var modifierKeyMessage = ls`Adjust with mousewheel or up/down keys. ${cmdOrCtrl}: ±10, Shift: ±1, Alt: ±0.01`;
+    this._latitudeInput.title = modifierKeyMessage;
+    this._longitudeInput.title = modifierKeyMessage;
 
     latitudeGroup.createChild('div', 'latlong-title').textContent = Common.UIString('Latitude');
     longitudeGroup.createChild('div', 'latlong-title').textContent = Common.UIString('Longitude');

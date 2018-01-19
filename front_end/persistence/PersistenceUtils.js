@@ -23,8 +23,6 @@ Persistence.PersistenceUtils = class {
    * @return {?UI.Icon}
    */
   static iconForUISourceCode(uiSourceCode) {
-    if (!Runtime.experiments.isEnabled('persistence2'))
-      return null;
     var binding = Persistence.persistence.binding(uiSourceCode);
     if (binding) {
       var icon = UI.Icon.create('mediumicon-file-sync');

@@ -41,30 +41,11 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     this._fileSystemPath = fileSystemPath;
 
     this._eventListeners = [
-      Persistence.fileSystemMapping.addEventListener(
-          Persistence.FileSystemMapping.Events.FileMappingAdded, this._update, this),
-      Persistence.fileSystemMapping.addEventListener(
-          Persistence.FileSystemMapping.Events.FileMappingRemoved, this._update, this),
       Persistence.isolatedFileSystemManager.addEventListener(
           Persistence.IsolatedFileSystemManager.Events.ExcludedFolderAdded, this._update, this),
       Persistence.isolatedFileSystemManager.addEventListener(
           Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
     ];
-
-
-    if (!Runtime.experiments.isEnabled('persistence2')) {
-      this._mappingsList = new UI.ListWidget(this);
-      this._mappingsList.element.classList.add('file-system-list');
-      this._mappingsList.registerRequiredCSS('persistence/editFileSystemView.css');
-      var mappingsPlaceholder = createElementWithClass('div', 'file-system-list-empty');
-      var mappingsHeader = this.contentElement.createChild('div', 'file-system-header');
-      mappingsHeader.createChild('div', 'file-system-header-text').textContent = Common.UIString('Mappings');
-      mappingsPlaceholder.textContent = Common.UIString('None');
-      mappingsHeader.appendChild(
-          UI.createTextButton(Common.UIString('Add'), this._addMappingButtonClicked.bind(this), 'add-button'));
-      this._mappingsList.setEmptyPlaceholder(mappingsPlaceholder);
-      this._mappingsList.show(this.contentElement);
-    }
 
     var excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
@@ -91,8 +72,6 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     if (this._muteUpdate)
       return;
 
-    this._mappings = [];
-
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
     for (var folder of Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
@@ -101,21 +80,6 @@ Persistence.EditFileSystemView = class extends UI.VBox {
       this._excludedFolders.push(folder);
       this._excludedFoldersList.appendItem(folder, true);
     }
-
-    if (Runtime.experiments.isEnabled('persistence2'))
-      return;
-
-    this._mappingsList.clear();
-    var mappings = Persistence.fileSystemMapping.mappingEntries(this._fileSystemPath);
-    for (var entry of mappings) {
-      this._mappingsList.appendItem(entry, true);
-      this._mappings.push(entry);
-    }
-  }
-
-  _addMappingButtonClicked() {
-    var entry = new Persistence.FileSystemMapping.Entry(this._fileSystemPath, '', '');
-    this._mappingsList.addNewItem(0, entry);
   }
 
   _addExcludedFolderButtonClicked() {
@@ -130,21 +94,10 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    */
   renderItem(item, editable) {
     var element = createElementWithClass('div', 'file-system-list-item');
-    if (item instanceof Persistence.FileSystemMapping.Entry) {
-      var entry = /** @type {!Persistence.FileSystemMapping.Entry} */ (item);
-      var urlPrefixElement = element.createChild('div', 'file-system-value');
-      urlPrefixElement.textContent = entry.urlPrefix;
-      urlPrefixElement.title = entry.urlPrefix;
-      element.createChild('div', 'file-system-separator');
-      var pathPrefixElement = element.createChild('div', 'file-system-value');
-      pathPrefixElement.textContent = entry.pathPrefix;
-      pathPrefixElement.title = entry.pathPrefix;
-    } else {
-      var pathPrefix = /** @type {string} */ (editable ? item : Common.UIString('%s (via .devtools)', item));
-      var pathPrefixElement = element.createChild('div', 'file-system-value');
-      pathPrefixElement.textContent = pathPrefix;
-      pathPrefixElement.title = pathPrefix;
-    }
+    var pathPrefix = /** @type {string} */ (editable ? item : Common.UIString('%s (via .devtools)', item));
+    var pathPrefixElement = element.createChild('div', 'file-system-value');
+    pathPrefixElement.textContent = pathPrefix;
+    pathPrefixElement.title = pathPrefix;
     return element;
   }
 
@@ -154,13 +107,8 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @param {number} index
    */
   removeItemRequested(item, index) {
-    if (item instanceof Persistence.FileSystemMapping.Entry) {
-      var entry = this._mappings[index];
-      Persistence.fileSystemMapping.removeFileMapping(entry.fileSystemPath, entry.urlPrefix, entry.pathPrefix);
-    } else {
-      Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
-          .removeExcludedFolder(this._excludedFolders[index]);
-    }
+    Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+        .removeExcludedFolder(this._excludedFolders[index]);
   }
 
   /**
@@ -171,21 +119,12 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    */
   commitEdit(item, editor, isNew) {
     this._muteUpdate = true;
-    if (item instanceof Persistence.FileSystemMapping.Entry) {
-      var entry = /** @type {!Persistence.FileSystemMapping.Entry} */ (item);
-      if (!isNew)
-        Persistence.fileSystemMapping.removeFileMapping(this._fileSystemPath, entry.urlPrefix, entry.pathPrefix);
-      Persistence.fileSystemMapping.addFileMapping(
-          this._fileSystemPath, this._normalizePrefix(editor.control('urlPrefix').value),
-          this._normalizePrefix(editor.control('pathPrefix').value));
-    } else {
-      if (!isNew) {
-        Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
-            .removeExcludedFolder(/** @type {string} */ (item));
-      }
+    if (!isNew) {
       Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
-          .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
+          .removeExcludedFolder(/** @type {string} */ (item));
     }
+    Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+        .addExcludedFolder(this._normalizePrefix(editor.control('pathPrefix').value));
     this._muteUpdate = false;
     this._update();
   }
@@ -196,76 +135,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    if (item instanceof Persistence.FileSystemMapping.Entry) {
-      var entry = /** @type {!Persistence.FileSystemMapping.Entry} */ (item);
-      var editor = this._createMappingEditor();
-      editor.control('urlPrefix').value = entry.urlPrefix;
-      editor.control('pathPrefix').value = entry.pathPrefix;
-      return editor;
-    } else {
-      var editor = this._createExcludedFolderEditor();
-      editor.control('pathPrefix').value = item;
-      return editor;
-    }
-  }
-
-  /**
-   * @return {!UI.ListWidget.Editor}
-   */
-  _createMappingEditor() {
-    if (this._mappingEditor)
-      return this._mappingEditor;
-
-    var editor = new UI.ListWidget.Editor();
-    this._mappingEditor = editor;
-    var content = editor.contentElement();
-
-    var titles = content.createChild('div', 'file-system-edit-row');
-    titles.createChild('div', 'file-system-value').textContent = Common.UIString('URL prefix');
-    titles.createChild('div', 'file-system-separator file-system-separator-invisible');
-    titles.createChild('div', 'file-system-value').textContent = Common.UIString('Folder path');
-
-    var fields = content.createChild('div', 'file-system-edit-row');
-    fields.createChild('div', 'file-system-value')
-        .appendChild(
-            editor.createInput('urlPrefix', 'text', 'http://localhost:8000/url', urlPrefixValidator.bind(this)));
-    fields.createChild('div', 'file-system-separator file-system-separator-invisible');
-    fields.createChild('div', 'file-system-value')
-        .appendChild(editor.createInput('pathPrefix', 'text', '/path/to/folder/', pathPrefixValidator.bind(this)));
-
+    var editor = this._createExcludedFolderEditor();
+    editor.control('pathPrefix').value = item;
     return editor;
-
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
-     * @this {Persistence.EditFileSystemView}
-     */
-    function urlPrefixValidator(item, index, input) {
-      var prefix = this._normalizePrefix(input.value);
-      for (var i = 0; i < this._mappings.length; ++i) {
-        if (i !== index && this._mappings[i].urlPrefix === prefix)
-          return false;
-      }
-      return !!prefix;
-    }
-
-    /**
-     * @param {*} item
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
-     * @this {Persistence.EditFileSystemView}
-     */
-    function pathPrefixValidator(item, index, input) {
-      var prefix = this._normalizePrefix(input.value);
-      for (var i = 0; i < this._mappings.length; ++i) {
-        if (i !== index && this._mappings[i].pathPrefix === prefix)
-          return false;
-      }
-      return !!prefix;
-    }
   }
 
   /**

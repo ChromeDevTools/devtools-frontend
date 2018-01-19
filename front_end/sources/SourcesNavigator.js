@@ -29,67 +29,6 @@
 /**
  * @unrestricted
  */
-Sources.SourcesNavigatorView = class extends Sources.NavigatorView {
-  constructor() {
-    super();
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.Project} project
-   * @return {boolean}
-   */
-  acceptProject(project) {
-    if (!super.acceptProject(project))
-      return false;
-    return project.type() !== Workspace.projectTypes.ContentScripts &&
-        project.type() !== Workspace.projectTypes.Snippets;
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _inspectedURLChanged(event) {
-    var mainTarget = SDK.targetManager.mainTarget();
-    if (event.data !== mainTarget)
-      return;
-    var inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (!inspectedURL)
-      return;
-    for (var uiSourceCode of this.workspace().uiSourceCodes()) {
-      if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL)
-        this.revealUISourceCode(uiSourceCode, true);
-    }
-  }
-
-  /**
-   * @override
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  uiSourceCodeAdded(uiSourceCode) {
-    var mainTarget = SDK.targetManager.mainTarget();
-    var inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (!inspectedURL)
-      return;
-    if (uiSourceCode.url() === inspectedURL)
-      this.revealUISourceCode(uiSourceCode, true);
-  }
-
-  /**
-   * @override
-   * @param {!Event} event
-   */
-  handleContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
-    Sources.NavigatorView.appendAddFolderItem(contextMenu);
-    contextMenu.show();
-  }
-};
-
-/**
- * @unrestricted
- */
 Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
@@ -359,7 +298,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
 /**
  * @implements {UI.ActionDelegate}
  */
-Sources.SourcesNavigatorView.CreatingActionDelegate = class {
+Sources.SnippetsNavigatorView.CreatingActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context

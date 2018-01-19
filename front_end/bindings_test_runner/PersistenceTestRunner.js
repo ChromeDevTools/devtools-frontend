@@ -41,13 +41,6 @@ BindingsTestRunner.addFooJSFile = function(fs) {
       .addFile('foo.js', '\n\nwindow.foo = ()=>\'foo\';');
 };
 
-BindingsTestRunner.forceUseDefaultMapping = function() {
-  Persistence.persistence._setMappingForTest((bindingCreated, bindingRemoved) => {
-    return new Persistence.DefaultMapping(
-        Workspace.workspace, Persistence.fileSystemMapping, bindingCreated, bindingRemoved);
-  });
-};
-
 BindingsTestRunner.initializeTestMapping = function() {
   var testMapping;
 

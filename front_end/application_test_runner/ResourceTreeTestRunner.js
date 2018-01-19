@@ -69,7 +69,7 @@ ApplicationTestRunner.dumpResourcesTree = function() {
   dump(UI.panels.resources._sidebar._resourcesSection._treeElement, '');
 
   if (!ApplicationTestRunner._testSourceNavigator) {
-    ApplicationTestRunner._testSourceNavigator = new Sources.SourcesNavigatorView();
+    ApplicationTestRunner._testSourceNavigator = new Sources.NetworkNavigatorView();
     ApplicationTestRunner._testSourceNavigator.show(UI.inspectorView.element);
   }
 

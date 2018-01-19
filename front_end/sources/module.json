@@ -296,22 +296,11 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "navigator-sources",
-            "title": "Sources",
-            "order": 1,
-            "persistence": "permanent",
-            "className": "Sources.SourcesNavigatorView",
-            "experiment": "!persistence2"
-        },
-        {
-            "type": "view",
-            "location": "navigator-view",
             "id": "navigator-network",
             "title": "Network",
             "order": 2,
             "persistence": "permanent",
-            "className": "Sources.NetworkNavigatorView",
-            "experiment": "persistence2"
+            "className": "Sources.NetworkNavigatorView"
         },
         {
             "type": "view",
@@ -320,8 +309,7 @@
             "title": "Filesystem",
             "order": 3,
             "persistence": "permanent",
-            "className": "Sources.FilesNavigatorView",
-            "experiment": "persistence2"
+            "className": "Sources.FilesNavigatorView"
         },
         {
             "type": "view",
@@ -352,21 +340,13 @@
         },
         {
             "type": "@Sources.NavigatorView",
-            "viewId": "navigator-sources",
-            "className": "Sources.SourcesNavigatorView",
-            "experiment": "!persistence2"
-        },
-        {
-            "type": "@Sources.NavigatorView",
             "viewId": "navigator-network",
-            "className": "Sources.NetworkNavigatorView",
-            "experiment": "persistence2"
+            "className": "Sources.NetworkNavigatorView"
         },
         {
             "type": "@Sources.NavigatorView",
             "viewId": "navigator-files",
-            "className": "Sources.FilesNavigatorView",
-            "experiment": "persistence2"
+            "className": "Sources.FilesNavigatorView"
         },
         {
             "type": "@Sources.NavigatorView",
@@ -600,14 +580,14 @@
             "type": "@UI.ActionDelegate",
             "category": "Sources",
             "actionId": "sources.create-snippet",
-            "className": "Sources.SourcesNavigatorView.CreatingActionDelegate",
+            "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",
             "title": "Create new snippet"
         },
         {
             "type": "@UI.ActionDelegate",
             "category": "Sources",
             "actionId": "sources.add-folder-to-workspace",
-            "className": "Sources.SourcesNavigatorView.CreatingActionDelegate",
+            "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",
             "title": "Add folder to workspace"
         },
         {
@@ -752,7 +732,6 @@
         "FileBasedSearchResultsPane.js",
         "SourcesSearchScope.js",
         "SourcesPanel.js",
-        "WorkspaceMappingTip.js",
         "XHRBreakpointsSidebarPane.js",
         "JavaScriptCompilerPlugin.js",
         "SnippetsPlugin.js",

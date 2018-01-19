@@ -67,14 +67,6 @@ BindingsTestRunner.TestFileSystem.prototype = {
         InspectorFrontendHostAPI.Events.FileSystemRemoved, this.fileSystemPath);
   },
 
-  addFileMapping: function(urlPrefix, pathPrefix) {
-    var fileSystemMapping = new Persistence.FileSystemMapping(Persistence.isolatedFileSystemManager);
-    fileSystemMapping._addFileSystemPath(this.fileSystemPath);
-    fileSystemMapping.addFileMapping(this.fileSystemPath, urlPrefix, pathPrefix);
-    fileSystemMapping.dispose();
-    Persistence.fileSystemMapping._loadFromSettings();
-  },
-
   addFile: function(path, content, lastModified) {
     var pathTokens = path.split('/');
     var node = this.root;

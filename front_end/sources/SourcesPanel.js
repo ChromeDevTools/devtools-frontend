@@ -118,7 +118,6 @@ Sources.SourcesPanel = class extends UI.Panel {
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
     SDK.targetManager.addEventListener(
         SDK.TargetManager.Events.AvailableNodeTargetsChanged, this._availableNodeTargetsChanged, this);
-    new Sources.WorkspaceMappingTip(this, this._workspace);
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     SDK.targetManager.observeTargets(this);
@@ -736,88 +735,6 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  mapFileSystemToNetwork(uiSourceCode) {
-    Sources.SelectUISourceCodeForProjectTypesDialog.show(
-        uiSourceCode.name(), [Workspace.projectTypes.Network, Workspace.projectTypes.ContentScripts],
-        mapFileSystemToNetwork);
-
-    /**
-     * @param {?Workspace.UISourceCode} networkUISourceCode
-     */
-    function mapFileSystemToNetwork(networkUISourceCode) {
-      if (!networkUISourceCode)
-        return;
-      var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-      Persistence.fileSystemMapping.addMappingForResource(
-          networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
-    }
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} networkUISourceCode
-   */
-  mapNetworkToFileSystem(networkUISourceCode) {
-    Sources.SelectUISourceCodeForProjectTypesDialog.show(
-        networkUISourceCode.name(), [Workspace.projectTypes.FileSystem], mapNetworkToFileSystem);
-
-    /**
-     * @param {?Workspace.UISourceCode} uiSourceCode
-     */
-    function mapNetworkToFileSystem(uiSourceCode) {
-      if (!uiSourceCode)
-        return;
-      var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(uiSourceCode.project().id());
-      Persistence.fileSystemMapping.addMappingForResource(
-          networkUISourceCode.url(), fileSystemPath, uiSourceCode.url());
-    }
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  _removeNetworkMapping(uiSourceCode) {
-    Persistence.fileSystemMapping.removeMappingForURL(uiSourceCode.url());
-  }
-
-  /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  _appendUISourceCodeMappingItems(contextMenu, uiSourceCode) {
-    if (Runtime.experiments.isEnabled('persistence2'))
-      return;
-    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
-      var binding = Persistence.persistence.binding(uiSourceCode);
-      if (!binding) {
-        contextMenu.debugSection().appendItem(
-            Common.UIString('Map to network resource\u2026'), this.mapFileSystemToNetwork.bind(this, uiSourceCode));
-      } else {
-        contextMenu.debugSection().appendItem(
-            Common.UIString('Remove network mapping'), this._removeNetworkMapping.bind(this, binding.network));
-      }
-    }
-
-    /**
-     * @param {!Workspace.Project} project
-     */
-    function filterProject(project) {
-      return project.type() === Workspace.projectTypes.FileSystem;
-    }
-
-    if (uiSourceCode.project().type() === Workspace.projectTypes.Network ||
-        uiSourceCode.project().type() === Workspace.projectTypes.ContentScripts) {
-      if (!this._workspace.projects().filter(filterProject).length)
-        return;
-      if (this._workspace.uiSourceCodeForURL(uiSourceCode.url()) === uiSourceCode) {
-        contextMenu.debugSection().appendItem(
-            Common.UIString('Map to file system resource\u2026'), this.mapNetworkToFileSystem.bind(this, uiSourceCode));
-      }
-    }
-  }
-
-  /**
    * @param {!Event} event
    * @param {!UI.ContextMenu} contextMenu
    * @param {!Object} target
@@ -832,7 +749,6 @@ Sources.SourcesPanel = class extends UI.Panel {
       contextMenu.revealSection().appendItem(
           Common.UIString('Reveal in navigator'), this._handleContextMenuReveal.bind(this, uiSourceCode));
     }
-    this._appendUISourceCodeMappingItems(contextMenu, uiSourceCode);
   }
 
   /**

@@ -9,9 +9,8 @@ Persistence.Persistence = class extends Common.Object {
   /**
    * @param {!Workspace.Workspace} workspace
    * @param {!Bindings.BreakpointManager} breakpointManager
-   * @param {!Persistence.FileSystemMapping} fileSystemMapping
    */
-  constructor(workspace, breakpointManager, fileSystemMapping) {
+  constructor(workspace, breakpointManager) {
     super();
     this._workspace = workspace;
     this._breakpointManager = breakpointManager;
@@ -21,23 +20,17 @@ Persistence.Persistence = class extends Common.Object {
     /** @type {!Multimap<!Workspace.UISourceCode, function()>} */
     this._subscribedBindingEventListeners = new Multimap();
 
-    if (Runtime.experiments.isEnabled('persistence2')) {
-      var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
-      Components.Linkifier.setLinkDecorator(linkDecorator);
-      this._mapping =
-          new Persistence.Automapping(workspace, this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
-    } else {
-      this._mapping = new Persistence.DefaultMapping(
-          workspace, fileSystemMapping, this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
-    }
+    var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
+    Components.Linkifier.setLinkDecorator(linkDecorator);
+    this._mapping =
+        new Persistence.Automapping(workspace, this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
   }
 
   /**
    * @param {boolean} enabled
    */
   setAutomappingEnabled(enabled) {
-    if (this._mapping instanceof Persistence.Automapping)
-      this._mapping.setEnabled(enabled);
+    this._mapping.setEnabled(enabled);
   }
 
   /**
@@ -66,8 +59,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.PersistenceBinding} binding
    */
   _validateBinding(binding) {
-    if (!Runtime.experiments.isEnabled('persistence2') || binding.network.contentType().isFromSourceMap() ||
-        !binding.fileSystem.contentType().isTextType()) {
+    if (binding.network.contentType().isFromSourceMap() || !binding.fileSystem.contentType().isTextType()) {
       this._establishBinding(binding);
       return;
     }

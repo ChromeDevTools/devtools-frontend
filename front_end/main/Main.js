@@ -119,7 +119,6 @@ Main.Main = class {
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('logManagement', 'Log management', true);
     Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
-    Runtime.experiments.register('persistence2', 'Persistence 2.0');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register(
         'stepIntoAsync', 'Introduce separate step action, stepInto becomes powerful enough to go inside async call');
@@ -149,8 +148,8 @@ Main.Main = class {
     }
 
     Runtime.experiments.setDefaultExperiments([
-      'accessibilityInspection', 'colorContrastRatio', 'logManagement', 'performanceMonitor', 'persistence2',
-      'stepIntoAsync', 'timelineKeepHistory'
+      'accessibilityInspection', 'colorContrastRatio', 'logManagement', 'performanceMonitor', 'stepIntoAsync',
+      'timelineKeepHistory'
     ]);
   }
 
@@ -196,7 +195,6 @@ Main.Main = class {
 
     Workspace.fileManager = new Workspace.FileManager();
     Workspace.workspace = new Workspace.Workspace();
-    Persistence.fileSystemMapping = new Persistence.FileSystemMapping(Persistence.isolatedFileSystemManager);
 
     Bindings.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
     Bindings.resourceMapping = new Bindings.ResourceMapping(SDK.targetManager, Workspace.workspace);
@@ -208,8 +206,7 @@ Main.Main = class {
     Extensions.extensionServer = new Extensions.ExtensionServer();
 
     new Persistence.FileSystemWorkspaceBinding(Persistence.isolatedFileSystemManager, Workspace.workspace);
-    Persistence.persistence =
-        new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager, Persistence.fileSystemMapping);
+    Persistence.persistence = new Persistence.Persistence(Workspace.workspace, Bindings.breakpointManager);
     Persistence.networkPersistenceManager = new Persistence.NetworkPersistenceManager(Workspace.workspace);
 
     new Main.ExecutionContextSelector(SDK.targetManager, UI.context);

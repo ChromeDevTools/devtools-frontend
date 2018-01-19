@@ -58,17 +58,10 @@ Sources.NavigatorView = class extends UI.VBox {
 
     this._initGrouping();
 
-    if (Runtime.experiments.isEnabled('persistence2')) {
-      Persistence.persistence.addEventListener(
-          Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
-      Persistence.persistence.addEventListener(
-          Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
-    } else {
-      Persistence.persistence.addEventListener(
-          Persistence.Persistence.Events.BindingCreated, this._onBindingCreated, this);
-      Persistence.persistence.addEventListener(
-          Persistence.Persistence.Events.BindingRemoved, this._onBindingRemoved, this);
-    }
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingCreated, this._onBindingChanged, this);
+    Persistence.persistence.addEventListener(
+        Persistence.Persistence.Events.BindingRemoved, this._onBindingChanged, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetNameChanged, this);
 
     SDK.targetManager.observeTargets(this);
@@ -161,22 +154,6 @@ Sources.NavigatorView = class extends UI.VBox {
     if (typeWeight1 < typeWeight2)
       return -1;
     return treeElement1.titleAsText().compareTo(treeElement2.titleAsText());
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _onBindingCreated(event) {
-    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
-    this._removeUISourceCode(binding.network);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _onBindingRemoved(event) {
-    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
-    this._addUISourceCode(binding.network);
   }
 
   /**
@@ -289,13 +266,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {boolean}
    */
   _acceptsUISourceCode(uiSourceCode) {
-    if (!this.acceptProject(uiSourceCode.project()))
-      return false;
-
-    var binding = Persistence.persistence.binding(uiSourceCode);
-    if (!Runtime.experiments.isEnabled('persistence2') && binding && binding.network === uiSourceCode)
-      return false;
-    return true;
+    return this.acceptProject(uiSourceCode.project());
   }
 
   /**
@@ -1011,7 +982,7 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
 
   updateIcon() {
     var binding = Persistence.persistence.binding(this._uiSourceCode);
-    if (binding && Runtime.experiments.isEnabled('persistence2')) {
+    if (binding) {
       var container = createElementWithClass('span', 'icon-stack');
       var icon = UI.Icon.create('largeicon-navigator-file-sync', 'icon');
       var badge = UI.Icon.create('badge-navigator-file-sync', 'icon-badge');
@@ -1491,9 +1462,7 @@ Sources.NavigatorFolderTreeNode = class extends Sources.NavigatorTreeNode {
       return;
     var absoluteFileSystemPath =
         Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id()) + '/' + this._folderPath;
-    var hasMappedFiles = Runtime.experiments.isEnabled('persistence2') ?
-        Persistence.persistence.filePathHasBindings(absoluteFileSystemPath) :
-        true;
+    var hasMappedFiles = Persistence.persistence.filePathHasBindings(absoluteFileSystemPath);
     this._treeElement.listItemElement.classList.toggle('has-mapped-files', hasMappedFiles);
   }
 
@@ -1666,10 +1635,6 @@ Sources.NavigatorGroupTreeNode = class extends Sources.NavigatorTreeNode {
   updateTitle() {
     if (!this._treeElement || this._project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    if (!Runtime.experiments.isEnabled('persistence2')) {
-      this._treeElement.listItemElement.classList.add('has-mapped-files');
-      return;
-    }
     var fileSystemPath = Persistence.FileSystemWorkspaceBinding.fileSystemPath(this._project.id());
     var wasActive = this._treeElement.listItemElement.classList.contains('has-mapped-files');
     var isActive = Persistence.persistence.filePathHasBindings(fileSystemPath);

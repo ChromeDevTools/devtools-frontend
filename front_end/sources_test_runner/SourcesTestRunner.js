@@ -64,7 +64,7 @@ SourcesTestRunner.dumpNavigatorViewInAllModes = function(view) {
  * @param {string} mode
  */
 SourcesTestRunner.dumpNavigatorViewInMode = function(view, mode) {
-  TestRunner.addResult(view instanceof Sources.SourcesNavigatorView ? 'Sources:' : 'Content Scripts:');
+  TestRunner.addResult(view instanceof Sources.NetworkNavigatorView ? 'Sources:' : 'Content Scripts:');
   view._groupByFrame = mode.includes('frame');
   view._groupByDomain = mode.includes('domain');
   view._groupByFolder = mode.includes('folder');

@@ -674,23 +674,26 @@ UI.installComponentRootStyles = function(element) {
   UI.themeSupport.injectCustomStyleSheets(element);
   element.classList.add('platform-' + Host.platform());
 
-  /**
-   * Detect overlay scrollbar enable by checking clientWidth and offsetWidth of
-   * overflow: scroll div.
-   * @param {?Document=} document
-   * @return {boolean}
-   */
-  function overlayScrollbarEnabled(document) {
-    var scrollDiv = document.createElement('div');
-    scrollDiv.setAttribute('style', 'width: 100px; height: 100px; overflow: scroll;');
-    document.body.appendChild(scrollDiv);
-    var scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
-    document.body.removeChild(scrollDiv);
-    return scrollbarWidth === 0;
-  }
-
-  if (!Host.isMac() && overlayScrollbarEnabled(element.ownerDocument))
+  // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
+  if (!Host.isMac() && UI.measuredScrollbarWidth(element.ownerDocument) === 0)
     element.classList.add('overlay-scrollbar-enabled');
+};
+
+/**
+ * @param {?Document} document
+ * @return {number}
+ */
+UI.measuredScrollbarWidth = function(document) {
+  if (typeof UI._measuredScrollbarWidth === 'number')
+    return UI._measuredScrollbarWidth;
+  if (!document)
+    return 16;
+  var scrollDiv = document.createElement('div');
+  scrollDiv.setAttribute('style', 'width: 100px; height: 100px; overflow: scroll;');
+  document.body.appendChild(scrollDiv);
+  UI._measuredScrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+  document.body.removeChild(scrollDiv);
+  return UI._measuredScrollbarWidth;
 };
 
 /**

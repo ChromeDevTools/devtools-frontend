@@ -767,19 +767,26 @@
     function step1() {
       testPreset(
           MobileThrottling.networkPresets[2],
-          ['offline event: online = false', 'connection change event: type = none; downlinkMax = 0'], step2);
+          [
+            'offline event: online = false', 'connection change event: type = none; downlinkMax = 0; effectiveType = 4g'
+          ],
+          step2);
     }
 
     function step2() {
       testPreset(
           MobileThrottling.networkPresets[1],
-          ['online event: online = true', 'connection change event: type = cellular; downlinkMax = 0.390625'], step3);
+          [
+            'online event: online = true',
+            'connection change event: type = cellular; downlinkMax = 0.390625; effectiveType = 2g'
+          ],
+          step3);
     }
 
     function step3() {
       testPreset(
           MobileThrottling.networkPresets[0],
-          ['connection change event: type = cellular; downlinkMax = 1.4400000000000002'],
+          ['connection change event: type = cellular; downlinkMax = 1.4400000000000002; effectiveType = 3g'],
           test.releaseControl.bind(test));
     }
   };

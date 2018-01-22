@@ -756,6 +756,14 @@
     // Backward-compatible methods below this line --------------------------------------------
 
     /**
+     * Support for legacy front-ends (<M65).
+     * @return {boolean}
+     */
+    isUnderTest() {
+      return false;
+    }
+
+    /**
      * Support for legacy front-ends (<M50).
      * @param {string} message
      */

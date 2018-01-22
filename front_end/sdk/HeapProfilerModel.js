@@ -10,6 +10,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
     target.registerHeapProfilerDispatcher(new SDK.HeapProfilerDispatcher(this));
     this._enabled = false;
     this._heapProfilerAgent = target.heapProfilerAgent();
+    this._memoryAgent = target.memoryAgent();
     this._runtimeModel = /** @type {!SDK.RuntimeModel} */ (target.model(SDK.RuntimeModel));
   }
 
@@ -46,6 +47,52 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   stopSampling() {
     this._isRecording = false;
     return this._heapProfilerAgent.stopSampling();
+  }
+
+  startNativeSampling() {
+    var defaultSamplingIntervalInBytes = 16384;
+    this._memoryAgent.startSampling(defaultSamplingIntervalInBytes);
+  }
+
+  /**
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  async stopNativeSampling() {
+    var rawProfile = await this._memoryAgent.getSamplingProfile();
+    this._memoryAgent.stopSampling();
+    return this._convertNativeProfile(rawProfile);
+  }
+
+  /**
+   * @param {!Protocol.Memory.SamplingProfile} rawProfile
+   * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
+   */
+  _convertNativeProfile(rawProfile) {
+    var head = {children: new Map(), selfSize: 0, callFrame: {functionName: '(root)', url: ''}};
+    for (var sample of rawProfile.samples) {
+      var node = sample.stack.reverse().reduce((node, name) => {
+        var child = node.children.get(name);
+        if (child)
+          return child;
+        var namespace = /^([^:]*)::/.exec(name);
+        child = {
+          children: new Map(),
+          callFrame: {functionName: name, url: namespace && namespace[1] || ''},
+          selfSize: 0
+        };
+        node.children.set(name, child);
+        return child;
+      }, head);
+      node.selfSize += sample.count * sample.size;
+    }
+
+    function convertChildren(node) {
+      node.children = Array.from(node.children.values());
+      node.children.forEach(convertChildren);
+    }
+    convertChildren(head);
+
+    return /** @type {!Protocol.HeapProfiler.SamplingHeapProfile} */ ({head});
   }
 
   /**

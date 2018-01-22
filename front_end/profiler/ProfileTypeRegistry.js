@@ -9,6 +9,7 @@ Profiler.ProfileTypeRegistry = class {
     this.cpuProfileType = new Profiler.CPUProfileType();
     this.heapSnapshotProfileType = new Profiler.HeapSnapshotProfileType();
     this.samplingHeapProfileType = new Profiler.SamplingHeapProfileType();
+    this.samplingNativeHeapProfileType = new Profiler.SamplingNativeHeapProfileType();
     this.trackingHeapSnapshotProfileType = new Profiler.TrackingHeapSnapshotProfileType();
   }
 };

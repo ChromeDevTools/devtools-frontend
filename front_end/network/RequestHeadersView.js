@@ -159,15 +159,15 @@ Network.RequestHeadersView = class extends UI.VBox {
     }
   }
 
-  _refreshFormData() {
+  async _refreshFormData() {
     this._formDataCategory.hidden = true;
     this._requestPayloadCategory.hidden = true;
 
-    var formData = this._request.requestFormData;
+    var formData = await this._request.requestFormData();
     if (!formData)
       return;
 
-    var formParameters = this._request.formParameters;
+    var formParameters = await this._request.formParameters();
     if (formParameters) {
       this._formDataCategory.hidden = false;
       this._refreshParams(Common.UIString('Form Data'), formParameters, formData, this._formDataCategory);

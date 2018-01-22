@@ -45,9 +45,9 @@ SDK.NetworkManager = class extends SDK.SDKModel {
 
     // Limit buffer when talking to a remote device.
     if (Runtime.queryParam('remoteFrontend') || Runtime.queryParam('ws'))
-      this._networkAgent.enable(10000000, 5000000);
+      this._networkAgent.enable(10000000, 5000000, SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH);
     else
-      this._networkAgent.enable();
+      this._networkAgent.enable(undefined, undefined, SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH);
 
     this._bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get())
@@ -115,6 +115,19 @@ SDK.NetworkManager = class extends SDK.SDKModel {
     var response = await manager._networkAgent.invoke_getResponseBody({requestId: request.requestId()});
     var error = response[Protocol.Error] || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
+  }
+
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {!Promise<?string>}
+   */
+  static requestPostData(request) {
+    var manager = SDK.NetworkManager.forRequest(request);
+    if (manager)
+      return manager._networkAgent.getRequestPostData(request.backendRequestId());
+    console.error('No network manager for request');
+    return /** @type {!Promise<?string>} */ (Promise.resolve(null));
   }
 
   /**
@@ -256,6 +269,8 @@ SDK.NetworkManager.BlockedPattern;
 
 SDK.NetworkManager._networkManagerForRequestSymbol = Symbol('NetworkManager');
 
+SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH = 64 * 1024;  // bytes
+
 /**
  * @implements {Protocol.NetworkDispatcher}
  * @unrestricted
@@ -293,7 +308,7 @@ SDK.NetworkDispatcher = class {
   _updateNetworkRequestWithRequest(networkRequest, request) {
     networkRequest.requestMethod = request.method;
     networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
-    networkRequest.requestFormData = request.postData;
+    networkRequest.setRequestFormData(!!request.hasPostData, request.postData || null);
     networkRequest.setInitialPriority(request.initialPriority);
     networkRequest.mixedContentType = request.mixedContentType || Protocol.Security.MixedContentType.None;
     networkRequest.setReferrerPolicy(request.referrerPolicy);
@@ -716,7 +731,7 @@ SDK.NetworkDispatcher = class {
     for (var redirect = originalNetworkRequest.redirectSource(); redirect; redirect = redirect.redirectSource())
       redirectCount++;
 
-    originalNetworkRequest.setRequestId(requestId + ':redirected.' + redirectCount);
+    originalNetworkRequest.markAsRedirect(redirectCount);
     this._finishNetworkRequest(originalNetworkRequest, time, -1);
     var newNetworkRequest = this._createNetworkRequest(
         requestId, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, redirectURL,

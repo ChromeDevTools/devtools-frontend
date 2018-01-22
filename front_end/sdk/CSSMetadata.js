@@ -984,6 +984,18 @@ SDK.CSSMetadata._propertyDataMap = {
   'ry': {values: ['auto']},
   'scale': {values: ['none']},
   'scroll-behavior': {values: ['auto', 'smooth']},
+  'scroll-customization': {
+    values: [
+      'none',
+      'auto',
+      'pan-x',
+      'pan-y',
+      'pan-left',
+      'pan-right',
+      'pan-up',
+      'pan-down',
+    ]
+  },
   'shape-outside': {values: ['none', 'border-box', 'content-box', 'padding-box', 'margin-box']},
   'shape-rendering': {values: ['auto', 'optimizespeed', 'geometricprecision', 'crispedges']},
   'stroke': {values: ['none']},

@@ -52,6 +52,11 @@ Bindings.CompilerScriptMapping = class {
     Bindings.NetworkProject.setTargetForProject(this._regularProject, target);
     Bindings.NetworkProject.setTargetForProject(this._contentScriptsProject, target);
 
+    /** @type {!Map<string, !Bindings.CompilerScriptMapping.Binding>} */
+    this._regularBindings = new Map();
+    /** @type {!Map<string, !Bindings.CompilerScriptMapping.Binding>} */
+    this._contentScriptsBindings = new Map();
+
     /** @type {!Map<!SDK.Script, !Workspace.UISourceCode>} */
     this._stubUISourceCodes = new Map();
 
@@ -221,15 +226,12 @@ Bindings.CompilerScriptMapping = class {
     var script = /** @type {!SDK.Script} */ (event.data.client);
     var frameId = script[Bindings.CompilerScriptMapping._frameIdSymbol];
     var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
-    var scripts = this._sourceMapManager.clientsForSourceMap(sourceMap);
-    var hasOtherScripts = scripts.some(someScript => someScript.isContentScript() === script.isContentScript());
-    var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
+    var bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (var sourceURL of sourceMap.sourceURLs()) {
-      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(sourceURL));
-      if (hasOtherScripts)
-        Bindings.NetworkProject.removeFrameAttribution(uiSourceCode, frameId);
-      else
-        project.removeFile(sourceURL);
+      var binding = bindings.get(sourceURL);
+      binding.removeSourceMap(sourceMap, frameId);
+      if (!binding._uiSourceCode)
+        bindings.delete(sourceURL);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
@@ -266,22 +268,14 @@ Bindings.CompilerScriptMapping = class {
     var frameId = Bindings.frameIdForScript(script);
     script[Bindings.CompilerScriptMapping._frameIdSymbol] = frameId;
     var project = script.isContentScript() ? this._contentScriptsProject : this._regularProject;
+    var bindings = script.isContentScript() ? this._contentScriptsBindings : this._regularBindings;
     for (var sourceURL of sourceMap.sourceURLs()) {
-      var uiSourceCode = project.uiSourceCodeForURL(sourceURL);
-      if (uiSourceCode) {
-        Bindings.NetworkProject.addFrameAttribution(uiSourceCode, frameId);
-        continue;
+      var binding = bindings.get(sourceURL);
+      if (!binding) {
+        binding = new Bindings.CompilerScriptMapping.Binding(project, sourceURL);
+        bindings.set(sourceURL, binding);
       }
-
-      var contentProvider = sourceMap.sourceContentProvider(sourceURL, Common.resourceTypes.SourceMapScript);
-      var mimeType = Common.ResourceType.mimeFromURL(sourceURL) || contentProvider.contentType().canonicalMimeType();
-      var embeddedContent = sourceMap.embeddedContentByURL(sourceURL);
-      var metadata =
-          typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
-      uiSourceCode = project.createUISourceCode(sourceURL, contentProvider.contentType());
-      uiSourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
-      Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
-      project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, metadata, mimeType);
+      binding.addSourceMap(sourceMap, frameId);
     }
     this._debuggerWorkspaceBinding.updateLocations(script);
   }
@@ -309,3 +303,76 @@ Bindings.CompilerScriptMapping = class {
 
 Bindings.CompilerScriptMapping._frameIdSymbol = Symbol('Bindings.CompilerScriptMapping._frameIdSymbol');
 Bindings.CompilerScriptMapping._sourceMapSymbol = Symbol('Bindings.CompilerScriptMapping._sourceMapSymbol');
+
+
+Bindings.CompilerScriptMapping.Binding = class {
+  /**
+   * @param {!Bindings.ContentProviderBasedProject} project
+   * @param {string} url
+   */
+  constructor(project, url) {
+    this._project = project;
+    this._url = url;
+
+    /** @type {!Array<!SDK.SourceMap>} */
+    this._referringSourceMaps = [];
+    this._activeSourceMap = null;
+    this._uiSourceCode = null;
+  }
+
+  /**
+   * @param {string} frameId
+   */
+  _recreateUISourceCodeIfNeeded(frameId) {
+    var sourceMap = this._referringSourceMaps.peekLast();
+    if (this._activeSourceMap === sourceMap)
+      return;
+    this._activeSourceMap = sourceMap;
+
+    var newUISourceCode = this._project.createUISourceCode(this._url, Common.resourceTypes.SourceMapScript);
+    newUISourceCode[Bindings.CompilerScriptMapping._sourceMapSymbol] = sourceMap;
+    var contentProvider = sourceMap.sourceContentProvider(this._url, Common.resourceTypes.SourceMapScript);
+    var mimeType = Common.ResourceType.mimeFromURL(this._url) || 'text/javascript';
+    var embeddedContent = sourceMap.embeddedContentByURL(this._url);
+    var metadata =
+        typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
+
+    if (this._uiSourceCode) {
+      Bindings.NetworkProject.cloneInitialFrameAttribution(this._uiSourceCode, newUISourceCode);
+      this._project.removeFile(this._uiSourceCode.url());
+    } else {
+      Bindings.NetworkProject.setInitialFrameAttribution(newUISourceCode, frameId);
+    }
+    this._uiSourceCode = newUISourceCode;
+    this._project.addUISourceCodeWithProvider(this._uiSourceCode, contentProvider, metadata, mimeType);
+  }
+
+  /**
+   * @param {!SDK.SourceMap} sourceMap
+   * @param {string} frameId
+   */
+  addSourceMap(sourceMap, frameId) {
+    if (this._uiSourceCode)
+      Bindings.NetworkProject.addFrameAttribution(this._uiSourceCode, frameId);
+    this._referringSourceMaps.push(sourceMap);
+    this._recreateUISourceCodeIfNeeded(frameId);
+  }
+
+  /**
+   * @param {!SDK.SourceMap} sourceMap
+   * @param {string} frameId
+   */
+  removeSourceMap(sourceMap, frameId) {
+    Bindings.NetworkProject.removeFrameAttribution(
+        /** @type {!Workspace.UISourceCode} */ (this._uiSourceCode), frameId);
+    var lastIndex = this._referringSourceMaps.lastIndexOf(sourceMap);
+    if (lastIndex !== -1)
+      this._referringSourceMaps.splice(lastIndex, 1);
+    if (!this._referringSourceMaps.length) {
+      this._project.removeFile(this._uiSourceCode.url());
+      this._uiSourceCode = null;
+    } else {
+      this._recreateUISourceCodeIfNeeded(frameId);
+    }
+  }
+};

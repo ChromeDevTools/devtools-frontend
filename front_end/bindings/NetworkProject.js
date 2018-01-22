@@ -134,9 +134,27 @@ Bindings.NetworkProject = class {
     var frame = Bindings.NetworkProject._resolveFrame(uiSourceCode, frameId);
     if (!frame)
       return;
+    /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
     var attribution = new Map();
     attribution.set(frameId, {frame: frame, count: 1});
     uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol] = attribution;
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} fromUISourceCode
+   * @param {!Workspace.UISourceCode} toUISourceCode
+   */
+  static cloneInitialFrameAttribution(fromUISourceCode, toUISourceCode) {
+    var fromAttribution = fromUISourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    if (!fromAttribution)
+      return;
+    /** @type {!Map<string, !{frame: !SDK.ResourceTreeFrame, count: number}>} */
+    var toAttribution = new Map();
+    toUISourceCode[Bindings.NetworkProject._frameAttributionSymbol] = toAttribution;
+    for (var frameId of fromAttribution.keys()) {
+      var value = fromAttribution.get(frameId);
+      toAttribution.set(frameId, {frame: value.frame, count: value.count});
+    }
   }
 
   /**

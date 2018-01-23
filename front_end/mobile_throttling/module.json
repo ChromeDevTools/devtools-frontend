@@ -7,7 +7,7 @@
             "defaultValue": []
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "network-conditions.network-offline",
             "category": "Network",
             "title": "Go offline",
@@ -15,7 +15,7 @@
             "tags": "device"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "network-conditions.network-online",
             "category": "Network",
             "title": "Go online",

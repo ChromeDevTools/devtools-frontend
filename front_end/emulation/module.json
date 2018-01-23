@@ -7,7 +7,7 @@
             "order": 0
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Mobile",
             "actionId": "emulation.toggle-device-mode",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
@@ -26,7 +26,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "emulation.capture-screenshot",
             "category": "Mobile",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
@@ -47,7 +47,7 @@
             "order": 1
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "emulation.capture-full-height-screenshot",
             "category": "Mobile",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
@@ -55,7 +55,7 @@
             "tags": "device"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "emulation.capture-node-screenshot",
             "category": "Mobile",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
@@ -135,7 +135,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "emulation.show-sensors",
             "title": "Sensors",
             "condition": "!v8only",

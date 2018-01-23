@@ -74,6 +74,17 @@ UI.ShortcutRegistry = class {
   }
 
   /**
+   * @param {!KeyboardEvent} event
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  eventMatchesAction(event, actionId) {
+    console.assert(this._defaultActionToShortcut.has(actionId), 'Unknown action ' + actionId);
+    var key = UI.KeyboardShortcut.makeKeyFromEvent(event);
+    return this._defaultActionToShortcut.get(actionId).valuesArray().some(descriptor => descriptor.key === key);
+  }
+
+  /**
    * @param {number} key
    * @param {string} domKey
    * @param {!KeyboardEvent=} event
@@ -160,7 +171,7 @@ UI.ShortcutRegistry = class {
    */
   _registerBindings(document) {
     document.addEventListener('input', this.dismissPendingShortcutAction.bind(this), true);
-    var extensions = self.runtime.extensions(UI.ActionDelegate);
+    var extensions = self.runtime.extensions('action');
     extensions.forEach(registerExtension, this);
 
     /**

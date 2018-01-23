@@ -12,13 +12,15 @@ UI.ActionRegistry = class {
   }
 
   _registerActions() {
-    self.runtime.extensions(UI.ActionDelegate).forEach(registerExtension, this);
+    self.runtime.extensions('action').forEach(registerExtension, this);
 
     /**
      * @param {!Runtime.Extension} extension
      * @this {UI.ActionRegistry}
      */
     function registerExtension(extension) {
+      if (!extension.canInstantiate())
+        return;
       var actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));

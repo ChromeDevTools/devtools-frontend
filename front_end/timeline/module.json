@@ -45,7 +45,7 @@
             "order": 15
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "timeline.toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
@@ -76,7 +76,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "timeline.record-reload",
             "iconClass": "largeicon-refresh",
             "contextTypes": [
@@ -97,7 +97,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Timeline",
             "actionId": "timeline.save-to-file",
             "contextTypes": [
@@ -117,7 +117,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Timeline",
             "actionId": "timeline.load-from-file",
             "contextTypes": [
@@ -137,7 +137,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "timeline.jump-to-previous-frame",
             "contextTypes": [
                 "Timeline.TimelinePanel"
@@ -150,7 +150,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "timeline.jump-to-next-frame",
             "contextTypes": [
                 "Timeline.TimelinePanel"
@@ -163,7 +163,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "timeline.show-history",
             "className": "Timeline.TimelinePanel.ActionDelegate",
             "category": "Performance",

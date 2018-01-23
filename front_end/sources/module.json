@@ -20,7 +20,7 @@
             "className": "Sources.SourcesPanel"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Debugger",
             "actionId": "debugger.toggle-pause",
             "iconClass": "largeicon-pause",
@@ -52,7 +52,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.step-over",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step over next function call",
@@ -72,7 +72,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.step-into",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
@@ -92,7 +92,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.step",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step",
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.step-out",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
@@ -127,7 +127,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.run-snippet",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Run snippet",
@@ -147,7 +147,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "sources.search.toggle",
             "title": "Search all files",
             "className": "Sources.AdvancedSearchView.ActionDelegate",
@@ -164,7 +164,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
             "iconClass": "largeicon-deactivate-breakpoints",
@@ -195,7 +195,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "sources.add-to-watch",
             "className": "Sources.WatchExpressionsSidebarPane",
             "title": "Add selected text to watches",
@@ -216,7 +216,7 @@
             "className": "Sources.WatchExpressionsSidebarPane"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "debugger.evaluate-selection",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Evaluate in console",
@@ -364,7 +364,7 @@
             "className": "Sources.SnippetsNavigatorView"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "sources.switch-file",
             "className": "Sources.SourcesView.SwitchFileActionDelegate",
             "contextTypes": [
@@ -570,21 +570,21 @@
             "className": "Sources.SourcesPanel.WrapperView"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Sources",
             "actionId": "sources.close-all",
             "className": "Sources.SourcesView.CloseAllActionDelegate",
             "title": "Close All"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Sources",
             "actionId": "sources.create-snippet",
             "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",
             "title": "Create new snippet"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Sources",
             "actionId": "sources.add-folder-to-workspace",
             "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",

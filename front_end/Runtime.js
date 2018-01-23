@@ -845,6 +845,13 @@ Runtime.Extension = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  canInstantiate() {
+    return !!(this._className || this._factoryName);
+  }
+
+  /**
    * @return {!Object}
    */
   _createInstance() {

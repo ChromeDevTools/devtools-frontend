@@ -156,7 +156,7 @@
             "location": "styles-sidebarpane-toolbar"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "elements.hide-element",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -169,7 +169,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "elements.edit-as-html",
             "contextTypes": [
                 "Elements.ElementsPanel"
@@ -194,7 +194,7 @@
             "color": "#555"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "elements.toggle-element-search",
             "className": "Elements.InspectElementModeController.ToggleSearchActionDelegate",
             "title": "Select an element in the page to inspect it",

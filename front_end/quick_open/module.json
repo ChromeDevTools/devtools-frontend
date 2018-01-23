@@ -12,7 +12,7 @@
             "className": "QuickOpen.HelpQuickOpen"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "commandMenu.show",
             "className": "QuickOpen.CommandMenu.ShowActionDelegate",
             "bindings": [
@@ -27,7 +27,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "quickOpen.show",
             "title": "Open file",
             "className": "QuickOpen.QuickOpen.ShowActionDelegate",

@@ -25,7 +25,7 @@
             "className": "Console.ConsolePanel.ConsoleRevealer"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "console.show",
             "className": "Console.ConsoleView.ActionDelegate",
             "bindings": [
@@ -35,7 +35,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Console",
             "actionId": "console.clear",
             "title": "Clear console",
@@ -53,7 +53,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Console",
             "actionId": "console.clear.history",
             "title": "Clear console history",

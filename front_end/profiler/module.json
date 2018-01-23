@@ -59,7 +59,7 @@
             "defaultValue": true
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "profiler.heap-toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",
@@ -80,7 +80,7 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "actionId": "profiler.js-toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",

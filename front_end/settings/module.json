@@ -1,7 +1,7 @@
 {
     "extensions": [
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Settings",
             "actionId": "settings.show",
             "title": "Settings",
@@ -13,14 +13,14 @@
             ]
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Settings",
             "actionId": "settings.documentation",
             "title": "Documentation",
             "className": "Settings.SettingsScreen.ActionDelegate"
         },
         {
-            "type": "@UI.ActionDelegate",
+            "type": "action",
             "category": "Settings",
             "actionId": "settings.shortcuts",
             "title": "Shortcuts",

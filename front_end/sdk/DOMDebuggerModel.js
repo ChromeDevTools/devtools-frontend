@@ -54,7 +54,7 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
   }
 
   retrieveDOMBreakpoints() {
-    this._domModel.requestDocumentPromise();
+    this._domModel.requestDocument();
   }
 
   /**

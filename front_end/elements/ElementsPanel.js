@@ -237,9 +237,9 @@ Elements.ElementsPanel = class extends UI.Panel {
 
       if (!treeOutline.rootDOMNode) {
         if (domModel.existingDocument())
-          this._documentUpdated(domModel, domModel.existingDocument());
+          this._documentUpdated(domModel);
         else
-          domModel.requestDocumentPromise();
+          domModel.requestDocument();
       }
     }
   }
@@ -315,23 +315,19 @@ Elements.ElementsPanel = class extends UI.Panel {
    */
   _documentUpdatedEvent(event) {
     var domModel = /** @type {!SDK.DOMModel} */ (event.data);
-    this._documentUpdated(domModel, domModel.existingDocument());
+    this._documentUpdated(domModel);
   }
 
   /**
    * @param {!SDK.DOMModel} domModel
-   * @param {?SDK.DOMDocument} inspectedRootDocument
    */
-  _documentUpdated(domModel, inspectedRootDocument) {
+  _documentUpdated(domModel) {
     this._reset();
     this.searchCanceled();
 
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
-    treeOutline.rootDOMNode = inspectedRootDocument;
-
-    if (!inspectedRootDocument) {
+    if (!domModel.existingDocument()) {
       if (this.isShowing())
-        domModel.requestDocumentPromise();
+        domModel.requestDocument();
       return;
     }
 

@@ -1011,14 +1011,9 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    */
   _documentUpdated(event) {
     var domModel = /** @type {!SDK.DOMModel} */ (event.data);
-    var inspectedRootDocument = domModel.existingDocument();
-
     this._reset();
-
-    if (!inspectedRootDocument)
-      return;
-
-    this.rootDOMNode = inspectedRootDocument;
+    if (domModel.existingDocument())
+      this.rootDOMNode = domModel.existingDocument();
   }
 
   /**
@@ -1156,8 +1151,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   populateTreeElement(treeElement) {
     if (treeElement.childCount() || !treeElement.isExpandable())
       return;
-
-    this._updateModifiedParentNode(treeElement.node());
+    treeElement.node().getChildNodes(() => this._updateModifiedParentNode(treeElement.node()));
   }
 
   /**
@@ -1303,20 +1297,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     console.assert(!treeElement.isClosingTag());
 
-    // When revealing element, stack of ancestors needs to be unwrapped
-    // synchronously. It is essential that we perform update right away in case
-    // we have children in hand.
-    if (treeElement.node().children()) {
-      this._innerUpdateChildren(treeElement);
-      return;
-    }
-
-    treeElement.node().getChildNodes(children => {
-      // FIXME: sort this out, it should not happen.
-      if (!children)
-        return;
-      this._innerUpdateChildren(treeElement);
-    });
+    this._innerUpdateChildren(treeElement);
   }
 
   /**

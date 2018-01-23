@@ -1805,7 +1805,7 @@ Elements.StylePropertiesSection = class {
     this.element.style.removeProperty('contain');
     this.element.removeEventListener('input', this._scheduleHeightUpdate, true);
     this._editing = false;
-    if (this._parentPane.element.hasFocus())
+    if (this._parentPane.element === this._parentPane.element.ownerDocument.deepActiveElement())
       this.element.focus();
   }
 };
@@ -2751,6 +2751,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {string} moveDirection
    */
   _editingCommitted(userInput, context, moveDirection) {
+    var hadFocus = this._parentPane.element.hasFocus();
     this._removePrompt();
     this.editingEnded(context);
     var isEditingName = context.isEditingName;
@@ -2782,7 +2783,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
         (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput));
     var section = /** @type {!Elements.StylePropertiesSection} */ (this.section());
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
-      this._parentPane.element.focus();
+      if (hadFocus)
+        this._parentPane.element.focus();
       section._afterUpdate = moveToNextCallback.bind(this, this._newProperty, !blankInput, section);
       var propertyText;
       if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {

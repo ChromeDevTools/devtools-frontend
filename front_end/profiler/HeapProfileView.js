@@ -112,6 +112,7 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
     if (!this.profileBeingRecorded() || !this.profileBeingRecorded()._heapProfilerModel)
       return;
 
+    this.profileBeingRecorded().updateStatus(Common.UIString('Stopping\u2026'));
     var profile = await this._stopSampling();
     var recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {

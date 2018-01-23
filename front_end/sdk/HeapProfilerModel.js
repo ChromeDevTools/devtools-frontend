@@ -50,7 +50,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   startNativeSampling() {
-    var defaultSamplingIntervalInBytes = 16384;
+    var defaultSamplingIntervalInBytes = 65536;
     this._memoryAgent.startSampling(defaultSamplingIntervalInBytes);
   }
 

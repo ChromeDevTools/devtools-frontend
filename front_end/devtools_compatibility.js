@@ -1211,25 +1211,6 @@
     if (window.location.search.indexOf('remoteFrontend') === -1)
       return;
 
-    // Support for legacy (<M65) frontends.
-    /** @type {(!function(number, number):Element|undefined)} */
-    ShadowRoot.prototype.__originalShadowRootElementFromPoint;
-
-    if (!ShadowRoot.prototype.__originalShadowRootElementFromPoint) {
-      ShadowRoot.prototype.__originalShadowRootElementFromPoint = ShadowRoot.prototype.elementFromPoint;
-      /**
-       *  @param {number} x
-       *  @param {number} y
-       *  @return {Element}
-       */
-      ShadowRoot.prototype.elementFromPoint = function(x, y) {
-        var originalResult = ShadowRoot.prototype.__originalShadowRootElementFromPoint.apply(this, arguments);
-        if (this.host && originalResult === this.host)
-          return null;
-        return originalResult;
-      };
-    }
-
     // Support for legacy (<M53) frontends.
     if (!window.KeyboardEvent.prototype.hasOwnProperty('keyIdentifier')) {
       Object.defineProperty(window.KeyboardEvent.prototype, 'keyIdentifier', {

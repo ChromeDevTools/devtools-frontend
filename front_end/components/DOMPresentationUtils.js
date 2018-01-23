@@ -216,30 +216,47 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
  * @param {?SDK.Target} target
  * @param {!Components.Linkifier} linkifier
  * @param {!Protocol.Runtime.StackTrace=} stackTrace
+ * @param {function()=} contentUpdated
  * @return {!Element}
  */
-Components.DOMPresentationUtils.buildStackTracePreviewContents = function(target, linkifier, stackTrace) {
+Components.DOMPresentationUtils.buildStackTracePreviewContents = function(
+    target, linkifier, stackTrace, contentUpdated) {
   var element = createElement('span');
   element.style.display = 'inline-block';
   var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/domUtils.css');
   var contentElement = shadowRoot.createChild('table', 'stack-preview-container');
+  var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
+  var totalHiddenCallFramesCount = 0;
 
   /**
    * @param {!Protocol.Runtime.StackTrace} stackTrace
+   * @return {boolean}
    */
   function appendStackTrace(stackTrace) {
+    var hiddenCallFrames = 0;
     for (var stackFrame of stackTrace.callFrames) {
       var row = createElement('tr');
       row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
       var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
-      link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
       if (link) {
+        link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
+        if (debuggerModel) {
+          var location = debuggerModel.createRawLocationByScriptId(
+              stackFrame.scriptId, stackFrame.lineNumber, stackFrame.columnNumber);
+          if (location && Bindings.blackboxManager.isBlackboxedRawLocation(location)) {
+            row.classList.add('blackboxed');
+            ++hiddenCallFrames;
+          }
+        }
+
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
       }
       contentElement.appendChild(row);
     }
+    totalHiddenCallFramesCount += hiddenCallFrames;
+    return stackTrace.callFrames.length === hiddenCallFrames;
   }
 
   /**
@@ -280,8 +297,26 @@ Components.DOMPresentationUtils.buildStackTracePreviewContents = function(target
         UI.asyncStackTraceLabel(asyncStackTrace.description);
     row.createChild('td');
     row.createChild('td');
-    appendStackTrace(asyncStackTrace);
+    if (appendStackTrace(asyncStackTrace))
+      row.classList.add('blackboxed');
     asyncStackTrace = asyncStackTrace.parent;
+  }
+
+  if (totalHiddenCallFramesCount) {
+    var row = contentElement.createChild('tr', 'show-blackboxed-link');
+    row.createChild('td').textContent = '\n';
+    var cell = row.createChild('td');
+    cell.colSpan = 4;
+    var showAllLink = cell.createChild('span', 'link');
+    if (totalHiddenCallFramesCount === 1)
+      showAllLink.textContent = ls`Show 1 more blackboxed frame`;
+    else
+      showAllLink.textContent = ls`Show ${totalHiddenCallFramesCount} more blackboxed frames`;
+    showAllLink.addEventListener('click', () => {
+      contentElement.classList.add('show-blackboxed');
+      if (contentUpdated)
+        contentUpdated();
+    }, false);
   }
 
   return element;

@@ -38,6 +38,18 @@
     max-width: 80em;
 }
 
+.stack-preview-container:not(.show-blackboxed) > tr.blackboxed {
+    display: none;
+}
+
+.stack-preview-container.show-blackboxed > tr.show-blackboxed-link {
+    display: none;
+}
+
+.stack-preview-container > tr.show-blackboxed-link {
+    font-style: italic;
+}
+
 .node-label-name {
     color: rgb(136, 18, 128);
 }

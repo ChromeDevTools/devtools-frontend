@@ -22,11 +22,10 @@ Emulation.DeviceModeToolbar = class {
     this._showUserAgentTypeSetting = Common.settings.createSetting('emulation.showUserAgentType', false);
     this._showUserAgentTypeSetting.addChangeListener(this._updateUserAgentTypeVisibility, this);
 
+    this._autoAdjustScaleSetting = Common.settings.createSetting('emulation.autoAdjustScale', true);
+
     /** @type {!Map<!Emulation.EmulatedDevice, !Emulation.EmulatedDevice.Mode>} */
     this._lastMode = new Map();
-
-    /** @type {!Map<!Emulation.EmulatedDevice, number>} */
-    this._lastScale = new Map();
 
     this._element = createElementWithClass('div', 'device-mode-toolbar');
 
@@ -203,10 +202,12 @@ Emulation.DeviceModeToolbar = class {
    */
   _appendScaleMenuItems(contextMenu) {
     if (this._model.type() === Emulation.DeviceModeModel.Type.Device) {
-      contextMenu.headerSection().appendItem(
+      contextMenu.footerSection().appendItem(
           Common.UIString('Fit to window (%.0f%%)', this._model.fitScale() * 100),
           this._onScaleMenuChanged.bind(this, this._model.fitScale()), false);
     }
+    contextMenu.footerSection().appendCheckboxItem(
+        ls`Auto-adjust zoom`, this._onAutoAdjustScaleChanged.bind(this), this._autoAdjustScaleSetting.get());
     var boundAppendScaleItem = appendScaleItem.bind(this);
     boundAppendScaleItem(Common.UIString('50%'), 0.5);
     boundAppendScaleItem(Common.UIString('75%'), 0.75);
@@ -229,10 +230,11 @@ Emulation.DeviceModeToolbar = class {
    * @param {number} value
    */
   _onScaleMenuChanged(value) {
-    var device = this._model.device();
-    if (device)
-      this._lastScale.set(device, value);
     this._model.scaleSetting().set(value);
+  }
+
+  _onAutoAdjustScaleChanged() {
+    this._autoAdjustScaleSetting.set(!this._autoAdjustScaleSetting.get());
   }
 
   /**
@@ -342,9 +344,9 @@ Emulation.DeviceModeToolbar = class {
    * @param {!Emulation.EmulatedDevice} device
    */
   _emulateDevice(device) {
+    var scale = this._autoAdjustScaleSetting.get() ? undefined : this._model.scaleSetting().get();
     this._model.emulate(
-        Emulation.DeviceModeModel.Type.Device, device, this._lastMode.get(device) || device.modes[0],
-        this._lastScale.get(device));
+        Emulation.DeviceModeModel.Type.Device, device, this._lastMode.get(device) || device.modes[0], scale);
   }
 
   _switchToResponsive() {
@@ -443,15 +445,23 @@ Emulation.DeviceModeToolbar = class {
   _modeMenuClicked(event) {
     var device = this._model.device();
     var model = this._model;
+    var autoAdjustScaleSetting = this._autoAdjustScaleSetting;
 
     if (model.type() === Emulation.DeviceModeModel.Type.Responsive) {
       var appliedSize = model.appliedDeviceSize();
-      model.setSizeAndScaleToFit(appliedSize.height, appliedSize.width);
+      if (autoAdjustScaleSetting.get()) {
+        model.setSizeAndScaleToFit(appliedSize.height, appliedSize.width);
+      } else {
+        model.setWidth(appliedSize.height);
+        model.setHeight(appliedSize.width);
+      }
       return;
     }
 
     if (device.modes.length === 2 && device.modes[0].orientation !== device.modes[1].orientation) {
-      model.emulate(model.type(), model.device(), model.mode() === device.modes[0] ? device.modes[1] : device.modes[0]);
+      var scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
+      model.emulate(
+          model.type(), model.device(), model.mode() === device.modes[0] ? device.modes[1] : device.modes[0], scale);
       return;
     }
 
@@ -490,7 +500,8 @@ Emulation.DeviceModeToolbar = class {
      * @param {!Emulation.EmulatedDevice.Mode} mode
      */
     function applyMode(mode) {
-      model.emulate(model.type(), model.device(), mode);
+      var scale = autoAdjustScaleSetting.get() ? undefined : model.scaleSetting().get();
+      model.emulate(model.type(), model.device(), mode, scale);
     }
   }
 

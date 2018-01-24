@@ -178,8 +178,44 @@ Persistence.Automapping = class {
     if (networkSourceCode[Persistence.Automapping._processingPromise] ||
         networkSourceCode[Persistence.Automapping._binding] || !this._enabled)
       return;
-    var createBindingPromise = this._createBinding(networkSourceCode).then(onBinding.bind(this));
+    var createBindingPromise =
+        this._createBinding(networkSourceCode).then(validateBinding.bind(this)).then(onBinding.bind(this));
     networkSourceCode[Persistence.Automapping._processingPromise] = createBindingPromise;
+
+    /**
+     * @param {?Persistence.PersistenceBinding} binding
+     * @return {!Promise<?Persistence.PersistenceBinding>}
+     * @this {Persistence.Automapping}
+     */
+    async function validateBinding(binding) {
+      if (!binding)
+        return null;
+      if (binding.network.contentType().isFromSourceMap() || !binding.fileSystem.contentType().isTextType())
+        return binding;
+
+      await Promise.all([binding.network.requestContent(), binding.fileSystem.requestContent()]);
+
+      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
+        return null;
+
+      var fileSystemContent = binding.fileSystem.workingCopy();
+      var networkContent = binding.network.workingCopy();
+      var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
+      var isValid = false;
+      if (target && target.isNodeJS()) {
+        var rewrappedNetworkContent =
+            Persistence.Persistence.rewrapNodeJSContent(binding, binding.fileSystem, fileSystemContent, networkContent);
+        isValid = fileSystemContent === rewrappedNetworkContent;
+      } else {
+        // Trim trailing whitespaces because V8 adds trailing newline.
+        isValid = fileSystemContent.trimRight() === networkContent.trimRight();
+      }
+      if (!isValid) {
+        this._prevalidationFailedForTest(binding);
+        return null;
+      }
+      return binding;
+    }
 
     /**
      * @param {?Persistence.PersistenceBinding} binding
@@ -208,6 +244,12 @@ Persistence.Automapping = class {
       }
       this._onBindingCreated.call(null, binding);
     }
+  }
+
+  /**
+   * @param {!Persistence.PersistenceBinding} binding
+   */
+  _prevalidationFailedForTest(binding) {
   }
 
   _onBindingFailedForTest() {

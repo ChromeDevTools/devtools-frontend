@@ -23,7 +23,7 @@ Persistence.Persistence = class extends Common.Object {
     var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
     Components.Linkifier.setLinkDecorator(linkDecorator);
     this._mapping =
-        new Persistence.Automapping(workspace, this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
+        new Persistence.Automapping(workspace, this._establishBinding.bind(this), this._onBindingRemoved.bind(this));
   }
 
   /**
@@ -52,51 +52,7 @@ Persistence.Persistence = class extends Common.Object {
    */
   _setMappingForTest(mappingFactory) {
     this._mapping.dispose();
-    this._mapping = mappingFactory(this._validateBinding.bind(this), this._onBindingRemoved.bind(this));
-  }
-
-  /**
-   * @param {!Persistence.PersistenceBinding} binding
-   */
-  _validateBinding(binding) {
-    if (binding.network.contentType().isFromSourceMap() || !binding.fileSystem.contentType().isTextType()) {
-      this._establishBinding(binding);
-      return;
-    }
-
-    Promise.all([binding.network.requestContent(), binding.fileSystem.requestContent()]).then(onContents.bind(this));
-
-    /**
-     * @this {Persistence.Persistence}
-     */
-    function onContents() {
-      if (binding._removed)
-        return;
-
-      var fileSystemContent = binding.fileSystem.workingCopy();
-      var networkContent = binding.network.workingCopy();
-      var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
-      var isValid = false;
-      if (target.isNodeJS()) {
-        var rewrappedNetworkContent = Persistence.Persistence._rewrapNodeJSContent(
-            binding, binding.fileSystem, fileSystemContent, networkContent);
-        isValid = (fileSystemContent === rewrappedNetworkContent);
-      } else {
-        // Trim trailing whitespaces because V8 adds trailing newline.
-        isValid = (fileSystemContent.trimRight() === networkContent.trimRight());
-      }
-
-      if (isValid)
-        this._establishBinding(binding);
-      else
-        this._prevalidationFailedForTest(binding);
-    }
-  }
-
-  /**
-   * @param {!Persistence.PersistenceBinding} binding
-   */
-  _prevalidationFailedForTest(binding) {
+    this._mapping = mappingFactory(this._establishBinding.bind(this), this._onBindingRemoved.bind(this));
   }
 
   /**
@@ -186,7 +142,7 @@ Persistence.Persistence = class extends Common.Object {
       var newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
         var nodeJSContent =
-            Persistence.Persistence._rewrapNodeJSContent(binding, other, other.workingCopy(), newContent);
+            Persistence.Persistence.rewrapNodeJSContent(binding, other, other.workingCopy(), newContent);
         setWorkingCopy.call(this, () => nodeJSContent);
       });
       return;
@@ -227,7 +183,7 @@ Persistence.Persistence = class extends Common.Object {
     var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.isNodeJS()) {
       other.requestContent().then(currentContent => {
-        var nodeJSContent = Persistence.Persistence._rewrapNodeJSContent(binding, other, currentContent, newContent);
+        var nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(binding, other, currentContent, newContent);
         setContent.call(this, nodeJSContent);
       });
       return;
@@ -253,7 +209,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {string} newContent
    * @return {string}
    */
-  static _rewrapNodeJSContent(binding, uiSourceCode, currentContent, newContent) {
+  static rewrapNodeJSContent(binding, uiSourceCode, currentContent, newContent) {
     if (uiSourceCode === binding.fileSystem) {
       if (newContent.startsWith(Persistence.Persistence._NodePrefix) &&
           newContent.endsWith(Persistence.Persistence._NodeSuffix)) {

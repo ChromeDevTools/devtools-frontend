@@ -38,7 +38,7 @@ BindingsTestRunner.addFooJSFile = function(fs) {
   return fs.root.mkdir('devtools')
       .mkdir('persistence')
       .mkdir('resources')
-      .addFile('foo.js', '\n\nwindow.foo = ()=>\'foo\';');
+      .addFile('foo.js', '\n\nwindow.foo = ()=>\'foo\';\n');
 };
 
 BindingsTestRunner.initializeTestMapping = function() {

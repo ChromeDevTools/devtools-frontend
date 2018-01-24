@@ -548,19 +548,19 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    * @param {*|undefined} executionContextAuxData
    * @param {boolean} isLiveEdit
    * @param {string|undefined} sourceMapURL
-   * @param {boolean} hasSourceURL
+   * @param {boolean} hasSourceURLComment
    * @param {boolean} hasSyntaxError
    * @param {number} length
    * @return {!SDK.Script}
    */
   _parsedScriptSource(
       scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
-      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURL, hasSyntaxError, length) {
+      executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length) {
     var isContentScript = false;
     if (executionContextAuxData && ('isDefault' in executionContextAuxData))
       isContentScript = !executionContextAuxData['isDefault'];
     // Support file URL for node.js.
-    if (this.target().isNodeJS() && sourceURL && sourceURL.startsWith('/')) {
+    if (this.target().isNodeJS() && sourceURL && !hasSourceURLComment) {
       var nodeJSPath = sourceURL;
       sourceURL = Common.ParsedURL.platformPathToURL(nodeJSPath);
       sourceURL = this._internString(sourceURL);
@@ -570,7 +570,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     }
     var script = new SDK.Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
-        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURL, length);
+        this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length);
     this._registerScript(script);
     if (!hasSyntaxError)
       this.dispatchEventToListeners(SDK.DebuggerModel.Events.ParsedScriptSource, script);

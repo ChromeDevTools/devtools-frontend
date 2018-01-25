@@ -727,11 +727,7 @@ Network.NetworkLogViewColumns._defaultColumns = [
     align: DataGrid.DataGrid.Align.Right,
     sortingFunction: Network.NetworkRequestNode.RequestPropertyComparator.bind(null, 'duration')
   },
-  {
-    id: 'priority',
-    title: Common.UIString('Priority'),
-    sortingFunction: Network.NetworkRequestNode.InitialPriorityComparator
-  },
+  {id: 'priority', title: Common.UIString('Priority'), sortingFunction: Network.NetworkRequestNode.PriorityComparator},
   {
     id: 'connectionid',
     title: Common.UIString('Connection ID'),

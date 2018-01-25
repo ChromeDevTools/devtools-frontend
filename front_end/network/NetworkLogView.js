@@ -280,7 +280,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @return {boolean}
    */
   static _requestPriorityFilter(value, request) {
-    return request.initialPriority() === value;
+    return request.priority() === value;
   }
 
   /**
@@ -1090,7 +1090,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.Scheme, '' + request.scheme);
     this._suggestionBuilder.addItem(Network.NetworkLogView.FilterType.StatusCode, '' + request.statusCode);
 
-    var priority = request.initialPriority();
+    var priority = request.priority();
     if (priority) {
       this._suggestionBuilder.addItem(
           Network.NetworkLogView.FilterType.Priority, NetworkPriorities.uiLabelForPriority(priority));

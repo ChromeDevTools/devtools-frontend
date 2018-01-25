@@ -23,7 +23,7 @@ Persistence.Persistence = class extends Common.Object {
     var linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
     Components.Linkifier.setLinkDecorator(linkDecorator);
     this._mapping =
-        new Persistence.Automapping(workspace, this._establishBinding.bind(this), this._onBindingRemoved.bind(this));
+        new Persistence.Automapping(workspace, this._onBindingAdded.bind(this), this._onBindingRemoved.bind(this));
   }
 
   /**
@@ -37,7 +37,7 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.PersistenceBinding} binding
    */
   addBinding(binding) {
-    this._establishBinding(binding);
+    this._innerAddBinding(binding);
   }
 
   /**
@@ -48,17 +48,17 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {function(function(!Persistence.PersistenceBinding), function(!Persistence.PersistenceBinding)):!Persistence.MappingSystem} mappingFactory
+   * @param {function(function(!Persistence.AutomappingBinding), function(!Persistence.AutomappingBinding)):!Persistence.MappingSystem} mappingFactory
    */
   _setMappingForTest(mappingFactory) {
     this._mapping.dispose();
-    this._mapping = mappingFactory(this._establishBinding.bind(this), this._onBindingRemoved.bind(this));
+    this._mapping = mappingFactory(this._onBindingAdded.bind(this), this._onBindingRemoved.bind(this));
   }
 
   /**
    * @param {!Persistence.PersistenceBinding} binding
    */
-  _establishBinding(binding) {
+  _innerAddBinding(binding) {
     binding.network[Persistence.Persistence._binding] = binding;
     binding.fileSystem[Persistence.Persistence._binding] = binding;
 
@@ -86,7 +86,6 @@ Persistence.Persistence = class extends Common.Object {
    * @param {!Persistence.PersistenceBinding} binding
    */
   _innerRemoveBinding(binding) {
-    binding._removed = true;
     if (binding.network[Persistence.Persistence._binding] !== binding)
       return;
     console.assert(
@@ -114,9 +113,19 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
+   * @param {!Persistence.AutomappingBinding} automappingBinding
    */
-  _onBindingRemoved(binding) {
+  _onBindingAdded(automappingBinding) {
+    var binding = new Persistence.PersistenceBinding(automappingBinding.network, automappingBinding.fileSystem);
+    automappingBinding[Persistence.Persistence._binding] = binding;
+    this._innerAddBinding(binding);
+  }
+
+  /**
+   * @param {!Persistence.AutomappingBinding} automappingBinding
+   */
+  _onBindingRemoved(automappingBinding) {
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (automappingBinding[Persistence.Persistence._binding]);
     this._innerRemoveBinding(binding);
   }
 
@@ -141,8 +150,7 @@ Persistence.Persistence = class extends Common.Object {
     if (target.isNodeJS()) {
       var newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
-        var nodeJSContent =
-            Persistence.Persistence.rewrapNodeJSContent(binding, other, other.workingCopy(), newContent);
+        var nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, other.workingCopy(), newContent);
         setWorkingCopy.call(this, () => nodeJSContent);
       });
       return;
@@ -183,7 +191,7 @@ Persistence.Persistence = class extends Common.Object {
     var target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
     if (target.isNodeJS()) {
       other.requestContent().then(currentContent => {
-        var nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(binding, other, currentContent, newContent);
+        var nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, currentContent, newContent);
         setContent.call(this, nodeJSContent);
       });
       return;
@@ -203,14 +211,13 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.PersistenceBinding} binding
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} currentContent
    * @param {string} newContent
    * @return {string}
    */
-  static rewrapNodeJSContent(binding, uiSourceCode, currentContent, newContent) {
-    if (uiSourceCode === binding.fileSystem) {
+  static rewrapNodeJSContent(uiSourceCode, currentContent, newContent) {
+    if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       if (newContent.startsWith(Persistence.Persistence._NodePrefix) &&
           newContent.endsWith(Persistence.Persistence._NodeSuffix)) {
         newContent = newContent.substring(
@@ -390,13 +397,10 @@ Persistence.PersistenceBinding = class {
   /**
    * @param {!Workspace.UISourceCode} network
    * @param {!Workspace.UISourceCode} fileSystem
-   * @param {boolean} exactMatch
    */
-  constructor(network, fileSystem, exactMatch) {
+  constructor(network, fileSystem) {
     this.network = network;
     this.fileSystem = fileSystem;
-    this.exactMatch = exactMatch;
-    this._removed = false;
   }
 };
 

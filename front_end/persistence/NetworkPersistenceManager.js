@@ -216,7 +216,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       this._unbind(networkUISourceCode);
     if (fileSystemUISourceCode[this._bindingSymbol])
       this._unbind(fileSystemUISourceCode);
-    var binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode, true);
+    var binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     networkUISourceCode[this._bindingSymbol] = binding;
     fileSystemUISourceCode[this._bindingSymbol] = binding;
     Persistence.persistence.addBinding(binding);

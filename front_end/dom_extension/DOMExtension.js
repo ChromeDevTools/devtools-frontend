@@ -755,7 +755,7 @@ Document.prototype.deepElementFromPoint = function(x, y) {
   var node = null;
   while (container) {
     var innerNode = container.elementFromPoint(x, y);
-    if (!innerNode)
+    if (!innerNode || node === innerNode)
       break;
     node = innerNode;
     container = node.shadowRoot;

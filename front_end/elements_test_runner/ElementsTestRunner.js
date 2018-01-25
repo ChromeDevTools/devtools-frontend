@@ -244,6 +244,12 @@ ElementsTestRunner.waitForStyles = function(idValue, callback, requireRebuild) {
   waitForStylesRebuild(nodeWithId, callback, requireRebuild);
 };
 
+ElementsTestRunner.waitForStyleCommitted = function(next) {
+  TestRunner.addSniffer(Elements.StylePropertyTreeElement.prototype, '_editingCommitted', (...args) => {
+    Promise.all(args).then(next);
+  });
+};
+
 ElementsTestRunner.waitForStylesForClass = function(classValue, callback, requireRebuild) {
   callback = TestRunner.safeWrap(callback);
 

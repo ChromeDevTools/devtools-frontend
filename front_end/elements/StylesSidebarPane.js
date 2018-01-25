@@ -73,6 +73,20 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   /**
+   * @return {!InlineEditor.SwatchPopoverHelper}
+   */
+  swatchPopoverHelper() {
+    return this._swatchPopoverHelper;
+  }
+
+  /**
+   * @param {boolean} userOperation
+   */
+  setUserOperation(userOperation) {
+    this._userOperation = userOperation;
+  }
+
+  /**
    * @param {!SDK.CSSProperty} property
    * @return {!Element}
    */
@@ -285,6 +299,8 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @param {!Elements.StylePropertiesSection=} editedSection
    */
   _refreshUpdate(editedSection) {
+    if (this._isEditingStyle)
+      return;
     var node = this.node();
     if (!node)
       return;
@@ -491,11 +507,11 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     var node = this.node();
     if (!cssModel || !node)
       return;
-    this._userOperation = true;
+    this.setUserOperation(true);
 
     var styleSheetHeader = await cssModel.requestViaInspectorStylesheet(/** @type {!SDK.DOMNode} */ (node));
 
-    this._userOperation = false;
+    this.setUserOperation(false);
     await this._createNewRuleInStyleSheet(styleSheetHeader);
   }
 
@@ -747,8 +763,6 @@ Elements.StylePropertiesSection = class {
     this.editable = !!(style.styleSheetId && style.range);
     /** @type {?number} */
     this._hoverTimer = null;
-    /** @type {?function(!Elements.StylePropertiesSection)} */
-    this._afterUpdate = null;
     this._willCauseCancelEditing = false;
     this._forceShowAll = false;
     this._originalPropertiesCount = style.leadingProperties().length;
@@ -1259,6 +1273,10 @@ Elements.StylePropertiesSection = class {
     return (curSection && curSection.editable) ? curSection : null;
   }
 
+  refreshUpdate() {
+    this._parentPane._refreshUpdate(this);
+  }
+
   /**
    * @param {boolean} full
    */
@@ -1274,18 +1292,6 @@ Elements.StylePropertiesSection = class {
         child = child.traverseNextTreeElement(false, null, true);
       }
     }
-    this.afterUpdate();
-  }
-
-  afterUpdate() {
-    if (this._afterUpdate) {
-      this._afterUpdate(this);
-      this._afterUpdate = null;
-      this._afterUpdateFinishedForTest();
-    }
-  }
-
-  _afterUpdateFinishedForTest() {
   }
 
   /**
@@ -1316,7 +1322,7 @@ Elements.StylePropertiesSection = class {
       var inherited = this.isPropertyInherited(property.name);
       var overloaded = this._isPropertyOverloaded(property);
       var item = new Elements.StylePropertyTreeElement(
-          this._parentPane, this._matchedStyles, property, isShorthand, inherited, overloaded);
+          this._parentPane, this._matchedStyles, property, isShorthand, inherited, overloaded, false);
       this.propertiesTreeOutline.appendChild(item);
     }
 
@@ -1464,13 +1470,9 @@ Elements.StylePropertiesSection = class {
    */
   addNewBlankProperty(index = this.propertiesTreeOutline.rootElement().childCount()) {
     var property = this._style.newBlankProperty(index);
-    var item =
-        new Elements.StylePropertyTreeElement(this._parentPane, this._matchedStyles, property, false, false, false);
-    index = property.index;
-    this.propertiesTreeOutline.insertChild(item, index);
-    item.listItemElement.textContent = '';
-    item._newProperty = true;
-    item.updateTitle();
+    var item = new Elements.StylePropertyTreeElement(
+        this._parentPane, this._matchedStyles, property, false, false, false, true);
+    this.propertiesTreeOutline.insertChild(item, property.index);
     return item;
   }
 
@@ -1527,7 +1529,7 @@ Elements.StylePropertiesSection = class {
         this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined,
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.startEditing(element, config);
-    this._startEditing();
+    this.startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1544,7 +1546,7 @@ Elements.StylePropertiesSection = class {
     this._parentPane.setEditingStyle(false);
     var parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
     parentMediaElement.classList.remove('editing-media');
-    this._stopEditing();
+    this.stopEditing();
   }
 
   /**
@@ -1591,12 +1593,12 @@ Elements.StylePropertiesSection = class {
         this._matchedStyles.resetActiveProperties();
         this._parentPane._refreshUpdate(this);
       }
-      this._parentPane._userOperation = false;
+      this._parentPane.setUserOperation(false);
       this._editingMediaTextCommittedForTest();
     }
 
     // This gets deleted in finishOperation(), which is called both on success and failure.
-    this._parentPane._userOperation = true;
+    this._parentPane.setUserOperation(true);
     this._parentPane.cssModel().setMediaText(media.styleSheetId, media.range, newContent).then(userCallback.bind(this));
   }
 
@@ -1638,7 +1640,7 @@ Elements.StylePropertiesSection = class {
       return;
 
     if (!this._style.parentRule) {
-      this._moveEditorFromSelector('forward');
+      this.moveEditorFromSelector('forward');
       return;
     }
 
@@ -1657,7 +1659,7 @@ Elements.StylePropertiesSection = class {
     var config =
         new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
     UI.InplaceEditor.startEditing(this._selectorElement, config);
-    this._startEditing();
+    this.startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1668,7 +1670,7 @@ Elements.StylePropertiesSection = class {
   /**
    * @param {string} moveDirection
    */
-  _moveEditorFromSelector(moveDirection) {
+  moveEditorFromSelector(moveDirection) {
     this._markSelectorMatches();
 
     if (!moveDirection)
@@ -1705,7 +1707,7 @@ Elements.StylePropertiesSection = class {
     if (newContent === oldContent) {
       // Revert to a trimmed version of the selector if need be.
       this._selectorElement.textContent = newContent;
-      this._moveEditorFromSelector(moveDirection);
+      this.moveEditorFromSelector(moveDirection);
       return;
     }
     var rule = this._style.parentRule;
@@ -1716,13 +1718,13 @@ Elements.StylePropertiesSection = class {
      * @this {Elements.StylePropertiesSection}
      */
     function headerTextCommitted() {
-      this._parentPane._userOperation = false;
-      this._moveEditorFromSelector(moveDirection);
+      this._parentPane.setUserOperation(false);
+      this.moveEditorFromSelector(moveDirection);
       this._editingSelectorCommittedForTest();
     }
 
     // This gets deleted in finishOperationAndMoveEditor(), which is called both on success and failure.
-    this._parentPane._userOperation = true;
+    this._parentPane.setUserOperation(true);
     this._setHeaderText(rule, newContent).then(headerTextCommitted.bind(this));
   }
 
@@ -1774,7 +1776,7 @@ Elements.StylePropertiesSection = class {
 
   _editingSelectorEnded() {
     this._parentPane.setEditingStyle(false);
-    this._stopEditing();
+    this.stopEditing();
   }
 
   editingSelectorCancelled() {
@@ -1785,7 +1787,7 @@ Elements.StylePropertiesSection = class {
     this._markSelectorMatches();
   }
 
-  _startEditing() {
+  startEditing() {
     this._manuallySetHeight();
     this.element.addEventListener('input', this._scheduleHeightUpdate, true);
     this._editing = true;
@@ -1800,7 +1802,7 @@ Elements.StylePropertiesSection = class {
     return Promise.resolve();
   }
 
-  _stopEditing() {
+  stopEditing() {
     this.element.style.removeProperty('height');
     this.element.style.removeProperty('contain');
     this.element.removeEventListener('input', this._scheduleHeightUpdate, true);
@@ -1900,10 +1902,10 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
 
       this._updateRuleOrigin();
 
-      this._parentPane._userOperation = false;
+      this._parentPane.setUserOperation(false);
       this._editingSelectorEnded();
       if (this.element.parentElement)  // Might have been detached already.
-        this._moveEditorFromSelector(moveDirection);
+        this.moveEditorFromSelector(moveDirection);
       this._markSelectorMatches();
 
       this._editingSelectorCommittedForTest();
@@ -1911,7 +1913,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
 
     if (newContent)
       newContent = newContent.trim();
-    this._parentPane._userOperation = true;
+    this._parentPane.setUserOperation(true);
 
     var cssModel = this._parentPane.cssModel();
     var ruleText = this._rulePrefix() + newContent + ' {}';
@@ -1922,7 +1924,7 @@ Elements.BlankStylePropertiesSection = class extends Elements.StylePropertiesSec
    * @override
    */
   editingSelectorCancelled() {
-    this._parentPane._userOperation = false;
+    this._parentPane.setUserOperation(false);
     if (!this.isBlank) {
       super.editingSelectorCancelled();
       return;
@@ -2033,8 +2035,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {boolean} isShorthand
    * @param {boolean} inherited
    * @param {boolean} overloaded
+   * @param {boolean} newProperty
    */
-  constructor(stylesPane, matchedStyles, property, isShorthand, inherited, overloaded) {
+  constructor(stylesPane, matchedStyles, property, isShorthand, inherited, overloaded, newProperty) {
     // Pass an empty title, the title gets made later in onattach.
     super('', isShorthand);
     this._style = property.ownerStyle;
@@ -2046,7 +2049,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._parentPane = stylesPane;
     this.isShorthand = isShorthand;
     this._applyStyleThrottler = new Common.Throttler(0);
-    this._newProperty = false;
+    this._newProperty = newProperty;
+    if (this._newProperty)
+      this.listItemElement.textContent = '';
     this._expandedDueToFilter = false;
     this.valueElement = null;
     this.nameElement = null;
@@ -2138,7 +2143,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return swatch;
     }
 
-    var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
     var swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
@@ -2174,7 +2179,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _processBezier(text) {
     if (!this._editable() || !UI.Geometry.CubicBezier.parse(text))
       return createTextNode(text);
-    var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
     var swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     new Elements.BezierPopoverIcon(this, swatchPopoverHelper, swatch);
@@ -2197,7 +2202,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!shadows.length)
       return createTextNode(propertyValue);
     var container = createDocumentFragment();
-    var swatchPopoverHelper = this._parentPane._swatchPopoverHelper;
+    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
     for (var i = 0; i < shadows.length; i++) {
       if (i !== 0)
         container.appendChild(createTextNode(', '));  // Add back commas and spaces between each shadow.
@@ -2268,8 +2273,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
   _updatePane() {
     var section = this.section();
-    if (section && section._parentPane)
-      section._parentPane._refreshUpdate(section);
+    if (section)
+      section.refreshUpdate();
   }
 
   /**
@@ -2286,7 +2291,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function callback(success) {
-      this._parentPane._userOperation = false;
+      this._parentPane.setUserOperation(false);
 
       if (!success)
         return;
@@ -2296,7 +2301,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
 
     event.consume();
-    this._parentPane._userOperation = true;
+    this._parentPane.setUserOperation(true);
     this.property.setDisabled(disabled).then(callback.bind(this));
   }
 
@@ -2322,7 +2327,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       }
 
       var item = new Elements.StylePropertyTreeElement(
-          this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded);
+          this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded, false);
       this.appendChild(item);
     }
   }
@@ -2587,7 +2592,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
     if (section)
-      section._startEditing();
+      section.startEditing();
 
     // Do not live-edit "content" property of pseudo elements. crbug.com/433889
     if (!isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
@@ -2685,14 +2690,20 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
   }
 
-  _applyFreeFlowStyleTextEdit() {
+  /**
+   * @return {!Promise}
+   */
+  async _applyFreeFlowStyleTextEdit() {
     var valueText = this._prompt.textWithCurrentSuggestion();
     if (valueText.indexOf(';') === -1)
-      this.applyStyleText(this.nameElement.textContent + ': ' + valueText, false);
+      await this.applyStyleText(this.nameElement.textContent + ': ' + valueText, false);
   }
 
+  /**
+   * @return {!Promise}
+   */
   kickFreeFlowStyleEditForTest() {
-    this._applyFreeFlowStyleTextEdit();
+    return this._applyFreeFlowStyleTextEdit();
   }
 
   /**
@@ -2750,7 +2761,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Elements.StylePropertyTreeElement.Context} context
    * @param {string} moveDirection
    */
-  _editingCommitted(userInput, context, moveDirection) {
+  async _editingCommitted(userInput, context, moveDirection) {
     var hadFocus = this._parentPane.element.hasFocus();
     this._removePrompt();
     this.editingEnded(context);
@@ -2785,7 +2796,6 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
       if (hadFocus)
         this._parentPane.element.focus();
-      section._afterUpdate = moveToNextCallback.bind(this, this._newProperty, !blankInput, section);
       var propertyText;
       if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {
         propertyText = '';
@@ -2795,7 +2805,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
         else
           propertyText = this.property.name + ': ' + userInput;
       }
-      this.applyStyleText(propertyText, true);
+      await this.applyStyleText(propertyText, true);
+      moveToNextCallback.call(this, this._newProperty, !blankInput, section);
     } else {
       if (isEditingName)
         this.property.name = userInput;
@@ -2862,7 +2873,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
           if (sectionToEdit.style().parentRule)
             sectionToEdit.startEditingSelector();
           else
-            sectionToEdit._moveEditorFromSelector(moveDirection);
+            sectionToEdit.moveEditorFromSelector(moveDirection);
         }
         return;
       }
@@ -2871,7 +2882,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
         if (section.style().parentRule)
           section.startEditingSelector();
         else
-          section._moveEditorFromSelector(moveDirection);
+          section.moveEditorFromSelector(moveDirection);
       }
     }
   }
@@ -2884,7 +2895,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
     var section = this.section();
     if (section)
-      section._stopEditing();
+      section.stopEditing();
   }
 
   styleTextAppliedForTest() {
@@ -2893,69 +2904,68 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   /**
    * @param {string} styleText
    * @param {boolean} majorChange
+   * @return {!Promise}
    */
   applyStyleText(styleText, majorChange) {
-    this._applyStyleThrottler.schedule(this._innerApplyStyleText.bind(this, styleText, majorChange));
+    return this._applyStyleThrottler.schedule(this._innerApplyStyleText.bind(this, styleText, majorChange));
   }
 
   /**
    * @param {string} styleText
    * @param {boolean} majorChange
-   * @return {!Promise.<undefined>}
+   * @return {!Promise}
    */
-  _innerApplyStyleText(styleText, majorChange) {
+  async _innerApplyStyleText(styleText, majorChange) {
     if (!this.treeOutline)
-      return Promise.resolve();
+      return;
 
     var oldStyleRange = this._style.range;
     if (!oldStyleRange)
-      return Promise.resolve();
+      return;
 
     styleText = styleText.replace(/\s/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this._newProperty && !this._propertyHasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
-      var section = this.section();
       this.parent.removeChild(this);
-      section.afterUpdate();
-      return Promise.resolve();
+      return;
     }
 
     var currentNode = this._parentPane.node();
-    this._parentPane._userOperation = true;
-
-    /**
-     * @param {boolean} success
-     * @this {Elements.StylePropertyTreeElement}
-     */
-    function callback(success) {
-      this._parentPane._userOperation = false;
-
-      if (!success) {
-        if (majorChange) {
-          // It did not apply, cancel editing.
-          this._revertStyleUponEditingCanceled();
-        }
-        this.styleTextAppliedForTest();
-        return;
-      }
-
-      this._matchedStyles.resetActiveProperties();
-      this._propertyHasBeenEditedIncrementally = true;
-      this.property = this._style.propertyAt(this.property.index);
-
-      // We are happy to update UI if user is not editing.
-      if (!this._parentPane._isEditingStyle && currentNode === this.node())
-        this._updatePane();
-
-      this.styleTextAppliedForTest();
-    }
+    this._parentPane.setUserOperation(true);
 
     // Append a ";" if the new text does not end in ";".
     // FIXME: this does not handle trailing comments.
     if (styleText.length && !/;\s*$/.test(styleText))
       styleText += ';';
     var overwriteProperty = !this._newProperty || this._propertyHasBeenEditedIncrementally;
-    return this.property.setText(styleText, majorChange, overwriteProperty).then(callback.bind(this));
+    var success = await this.property.setText(styleText, majorChange, overwriteProperty);
+    // Revert to the original text if applying the new text failed
+    if (this._propertyHasBeenEditedIncrementally && majorChange && !success) {
+      majorChange = false;
+      success = await this.property.setText(this._originalPropertyText, majorChange, overwriteProperty);
+    }
+    this._parentPane.setUserOperation(false);
+
+    if (!success) {
+      if (majorChange) {
+        // It did not apply, cancel editing.
+        if (this._newProperty)
+          this.treeOutline.removeChild(this);
+        else
+          this.updateTitle();
+      }
+      this.styleTextAppliedForTest();
+      return;
+    }
+
+    this._matchedStyles.resetActiveProperties();
+    this._propertyHasBeenEditedIncrementally = true;
+    this.property = this._style.propertyAt(this.property.index);
+
+    if (currentNode === this.node())
+      this._updatePane();
+
+    this.styleTextAppliedForTest();
   }
 
   /**

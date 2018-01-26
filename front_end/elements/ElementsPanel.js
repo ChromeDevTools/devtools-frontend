@@ -236,10 +236,12 @@ Elements.ElementsPanel = class extends UI.Panel {
       treeOutline.setVisible(true);
 
       if (!treeOutline.rootDOMNode) {
-        if (domModel.existingDocument())
+        if (domModel.existingDocument()) {
+          treeOutline.rootDOMNode = domModel.existingDocument();
           this._documentUpdated(domModel);
-        else
+        } else {
           domModel.requestDocument();
+        }
       }
     }
   }

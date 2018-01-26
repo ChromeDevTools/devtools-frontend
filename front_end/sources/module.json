@@ -377,6 +377,20 @@
             ]
         },
         {
+            "type": "action",
+            "actionId": "sources.rename",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "F2"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Enter"
+                }
+            ]
+        },
+        {
             "type": "setting",
             "settingName": "navigatorGroupByFolder",
             "settingType": "boolean",

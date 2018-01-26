@@ -85,6 +85,21 @@ UI.ShortcutRegistry = class {
   }
 
   /**
+   * @param {!Element} element
+   * @param {string} actionId
+   * @param {function():boolean} listener
+   * @param {boolean=} capture
+   */
+  addShortcutListener(element, actionId, listener, capture) {
+    console.assert(this._defaultActionToShortcut.has(actionId), 'Unknown action ' + actionId);
+    element.addEventListener('keydown', event => {
+      if (!this.eventMatchesAction(/** @type {!KeyboardEvent} */ (event), actionId) || !listener.call(null))
+        return;
+      event.consume(true);
+    }, capture);
+  }
+
+  /**
    * @param {number} key
    * @param {string} domKey
    * @param {!KeyboardEvent=} event

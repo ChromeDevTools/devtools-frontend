@@ -52,6 +52,8 @@ Sources.NavigatorView = class extends UI.VBox {
     this._frameNodes = new Map();
 
     this.contentElement.addEventListener('contextmenu', this.handleContextMenu.bind(this), false);
+    UI.shortcutRegistry.addShortcutListener(
+        this.contentElement, 'sources.rename', this._renameShortcut.bind(this), true);
 
     this._navigatorGroupByFolderSetting = Common.moduleSetting('navigatorGroupByFolder');
     this._navigatorGroupByFolderSetting.addChangeListener(this._groupingChanged.bind(this));
@@ -645,6 +647,17 @@ Sources.NavigatorView = class extends UI.VBox {
    * @param {!Event} event
    */
   handleContextMenu(event) {
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _renameShortcut() {
+    var node = this._scriptsTree.selectedTreeElement && this._scriptsTree.selectedTreeElement._node;
+    if (!node || !node._uiSourceCode || !node._uiSourceCode.canRename())
+      return false;
+    this.rename(node, false);
+    return true;
   }
 
   /**

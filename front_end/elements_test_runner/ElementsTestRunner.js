@@ -791,6 +791,17 @@ ElementsTestRunner.expandElementsTree = function(callback) {
   }, onAllNodesAvailable);
 };
 
+ElementsTestRunner.expandAndDump = function() {
+  TestRunner.addResult('\nDump tree');
+  let callback;
+  let result = new Promise(f => callback = f);
+  ElementsTestRunner.expandElementsTree(() => {
+    ElementsTestRunner.dumpElementsTree();
+    callback();
+  });
+  return result;
+};
+
 ElementsTestRunner.dumpDOMAgentTree = function(node) {
   if (!TestRunner.domModel._document)
     return;

@@ -115,6 +115,11 @@ SDK.DOMNode = class {
       this._contentDocument = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.contentDocument);
       this._contentDocument.parentNode = this;
       this._children = [];
+    } else if (payload.nodeName === 'IFRAME' && payload.frameId && Runtime.experiments.isEnabled('oopifInlineDOM')) {
+      var childTarget = SDK.targetManager.targetById(payload.frameId);
+      var childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
+      if (childModel)
+        childModel.requestDocument();
     }
 
     if (payload.importedDocument) {
@@ -215,6 +220,13 @@ SDK.DOMNode = class {
    */
   contentDocument() {
     return this._contentDocument || null;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isIframe() {
+    return this._nodeName === 'IFRAME';
   }
 
   /**
@@ -1142,12 +1154,31 @@ SDK.DOMModel = class extends SDK.SDKModel {
     var documentPayload = await this._agent.getDocument();
     delete this._pendingDocumentRequestPromise;
 
-    // Code below needs to be sync.
     if (documentPayload)
       this._setDocument(documentPayload);
     if (!this._document) {
       console.error('No document');
       return null;
+    }
+
+    var parentModel = this.parentModel();
+    if (parentModel && !this._frameOwnerNode) {
+      var response = await parentModel._agent.invoke_getFrameOwner({frameId: this.target().id()});
+      if (!response[Protocol.Error])
+        this._frameOwnerNode = parentModel.nodeForId(response.nodeId);
+    }
+
+    // Document could have been cleared by now.
+    if (this._frameOwnerNode) {
+      var oldDocument = this._frameOwnerNode._contentDocument;
+      this._frameOwnerNode._contentDocument = this._document;
+      if (this._document) {
+        this._document.parentNode = this._frameOwnerNode;
+        this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, this._document);
+      } else if (oldDocument) {
+        this.dispatchEventToListeners(
+            SDK.DOMModel.Events.NodeRemoved, {node: oldDocument, parent: this._frameOwnerNode});
+      }
     }
     return this._document;
   }
@@ -1292,8 +1323,10 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
   _documentUpdated() {
     // If we have this._pendingDocumentRequestPromise in flight,
-    // if it hits backend post document update, it will contain proper result.
+    // if it hits backend post document update, it will contain most recent result.
     this._setDocument(null);
+    if (this.parentModel())
+      this.requestDocument();
   }
 
   /**
@@ -1306,7 +1339,9 @@ SDK.DOMModel = class extends SDK.SDKModel {
     else
       this._document = null;
     SDK.domModelUndoStack._dispose(this);
-    this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this);
+
+    if (!this.parentModel())
+      this.dispatchEventToListeners(SDK.DOMModel.Events.DocumentUpdated, this);
   }
 
   /**
@@ -1570,6 +1605,16 @@ SDK.DOMModel = class extends SDK.SDKModel {
    */
   dispose() {
     SDK.domModelUndoStack._dispose(this);
+  }
+
+  /**
+   * @return {?SDK.DOMModel}
+   */
+  parentModel() {
+    if (!Runtime.experiments.isEnabled('oopifInlineDOM'))
+      return null;
+    var parentTarget = this.target().parentTarget();
+    return parentTarget ? parentTarget.model(SDK.DOMModel) : null;
   }
 };
 

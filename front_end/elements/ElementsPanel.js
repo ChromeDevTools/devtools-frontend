@@ -130,19 +130,23 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.DOMModel} domModel
    */
   modelAdded(domModel) {
-    var treeOutline = new Elements.ElementsTreeOutline(true, true);
-    treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
-    treeOutline.wireToDOMModel(domModel);
-    treeOutline.addEventListener(
-        Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
-    treeOutline.addEventListener(
-        Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
-    new Elements.ElementsTreeElementHighlighter(treeOutline);
-    this._treeOutlines.push(treeOutline);
-    if (domModel.target().parentTarget()) {
-      this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
-      this._targetNameChanged(domModel.target());
+    var parentModel = domModel.parentModel();
+    var treeOutline = parentModel ? Elements.ElementsTreeOutline.forDOMModel(parentModel) : null;
+    if (!treeOutline) {
+      treeOutline = new Elements.ElementsTreeOutline(true, true);
+      treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
+      treeOutline.addEventListener(
+          Elements.ElementsTreeOutline.Events.SelectedNodeChanged, this._selectedNodeChanged, this);
+      treeOutline.addEventListener(
+          Elements.ElementsTreeOutline.Events.ElementsTreeUpdated, this._updateBreadcrumbIfNeeded, this);
+      new Elements.ElementsTreeElementHighlighter(treeOutline);
+      this._treeOutlines.push(treeOutline);
+      if (domModel.target().parentTarget()) {
+        this._treeOutlineHeaders.set(treeOutline, createElementWithClass('div', 'elements-tree-header'));
+        this._targetNameChanged(domModel.target());
+      }
     }
+    treeOutline.wireToDOMModel(domModel);
 
     // Perform attach if necessary.
     if (this.isShowing())
@@ -156,6 +160,8 @@ Elements.ElementsPanel = class extends UI.Panel {
   modelRemoved(domModel) {
     var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
     treeOutline.unwireFromDOMModel(domModel);
+    if (domModel.parentModel())
+      return;
     this._treeOutlines.remove(treeOutline);
     var header = this._treeOutlineHeaders.get(treeOutline);
     if (header)
@@ -232,6 +238,8 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     var domModels = SDK.targetManager.models(SDK.DOMModel);
     for (var domModel of domModels) {
+      if (domModel.parentModel())
+        continue;
       var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
       treeOutline.setVisible(true);
 

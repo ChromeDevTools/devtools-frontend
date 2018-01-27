@@ -483,6 +483,7 @@ SDK.ResourceTreeModel.Events = {
   WillLoadCachedResources: Symbol('WillLoadCachedResources'),
   CachedResourcesLoaded: Symbol('CachedResourcesLoaded'),
   DOMContentLoaded: Symbol('DOMContentLoaded'),
+  LifecycleEvent: Symbol('LifecycleEvent'),
   Load: Symbol('Load'),
   PageReloadRequested: Symbol('PageReloadRequested'),
   WillReloadPage: Symbol('WillReloadPage'),
@@ -777,6 +778,7 @@ SDK.PageDispatcher = class {
    * @param {number} time
    */
   lifecycleEvent(frameId, loaderId, name, time) {
+    this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.LifecycleEvent, {frameId, name});
   }
 
   /**

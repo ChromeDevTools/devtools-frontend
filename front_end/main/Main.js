@@ -117,6 +117,7 @@ Main.Main = class {
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
+    Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
     Runtime.experiments.register('logManagement', 'Log management', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
     Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
@@ -146,11 +147,13 @@ Main.Main = class {
         Runtime.experiments.enableForTest('accessibilityInspection');
       if (testPath.indexOf('console-sidebar/') !== -1)
         Runtime.experiments.enableForTest('logManagement');
+      if (testPath.indexOf('oopif/') !== -1)
+        Runtime.experiments.enableForTest('oopifInlineDOM');
     }
 
     Runtime.experiments.setDefaultExperiments([
       'accessibilityInspection', 'colorContrastRatio', 'logManagement', 'performanceMonitor', 'stepIntoAsync',
-      'timelineKeepHistory'
+      'timelineKeepHistory', 'oopifInlineDOM'
     ]);
   }
 

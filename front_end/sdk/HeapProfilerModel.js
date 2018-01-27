@@ -64,6 +64,14 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  async takeNativeSnapshot() {
+    var rawProfile = await this._memoryAgent.getAllTimeSamplingProfile();
+    return this._convertNativeProfile(rawProfile);
+  }
+
+  /**
    * @param {!Protocol.Memory.SamplingProfile} rawProfile
    * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
    */

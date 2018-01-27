@@ -223,7 +223,75 @@ Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProf
   }
 };
 
-Profiler.SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeap';
+Profiler.SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeapRecording';
+
+/**
+ * @unrestricted
+ */
+Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapProfileTypeBase {
+  constructor() {
+    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, Common.UIString('Take native memory allocations snapshot'));
+    Profiler.SamplingNativeHeapSnapshotType.instance = this;
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  isInstantProfile() {
+    return true;
+  }
+
+  get treeItemTitle() {
+    return Common.UIString('NATIVE SNAPSHOTS');
+  }
+
+  get description() {
+    return Common.UIString(
+        'Native memory snapshots show sampled native allocations in the renderer process since start up. ' +
+        'Chrome has to be started with --sampling-heap-profiler flag. ' +
+        'Check flags at chrome://flags');
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  buttonClicked() {
+    this._takeSnapshot();
+    return false;
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  async _takeSnapshot() {
+    if (this.profileBeingRecorded())
+      return;
+    var heapProfilerModel = UI.context.flavor(SDK.HeapProfilerModel);
+    if (!heapProfilerModel)
+      return;
+
+    var profile = new Profiler.SamplingHeapProfileHeader(
+        heapProfilerModel, this, Common.UIString('Snapshot %d', this.nextProfileUid()));
+    this.setProfileBeingRecorded(profile);
+    this.addProfile(profile);
+    profile.updateStatus(Common.UIString('Snapshotting\u2026'));
+
+    var protocolProfile = await heapProfilerModel.takeNativeSnapshot();
+    var recordedProfile = this.profileBeingRecorded();
+    if (recordedProfile) {
+      console.assert(protocolProfile);
+      recordedProfile.setProtocolProfile(protocolProfile);
+      recordedProfile.updateStatus('');
+      this.setProfileBeingRecorded(null);
+    }
+
+    this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
+  }
+};
+
+Profiler.SamplingNativeHeapSnapshotType.TypeId = 'SamplingNativeHeapSnapshot';
 
 /**
  * @unrestricted

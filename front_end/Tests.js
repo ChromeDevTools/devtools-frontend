@@ -1106,6 +1106,15 @@
       throw 'Some expected events are not found: ' + Array.from(expectedEvents.keys()).join(',');
   };
 
+  TestSuite.prototype.testInspectedElementIs = async function(nodeName) {
+    this.takeControl();
+    await self.runtime.loadModulePromise('elements');
+    if (!Elements.ElementsPanel._firstInspectElementNodeNameForTest)
+      await new Promise(f => this.addSniffer(Elements.ElementsPanel, '_firstInspectElementCompletedForTest', f));
+    this.assertEquals(nodeName, Elements.ElementsPanel._firstInspectElementNodeNameForTest);
+    this.releaseControl();
+  };
+
   /**
    * Serializes array of uiSourceCodes to string.
    * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes

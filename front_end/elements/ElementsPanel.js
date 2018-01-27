@@ -707,8 +707,11 @@ Elements.ElementsPanel = class extends UI.Panel {
       this.selectDOMNode(node, focus);
       delete this._omitDefaultSelection;
 
-      if (!this._notFirstInspectElement)
+      if (!this._notFirstInspectElement) {
+        Elements.ElementsPanel._firstInspectElementNodeNameForTest = node.nodeName();
+        Elements.ElementsPanel._firstInspectElementCompletedForTest();
         InspectorFrontendHost.inspectElementCompleted();
+      }
       this._notFirstInspectElement = true;
     });
   }
@@ -849,6 +852,9 @@ Elements.ElementsPanel._splitMode = {
   Horizontal: Symbol('Horizontal'),
   Slim: Symbol('Slim'),
 };
+
+// Sniffed in tests.
+Elements.ElementsPanel._firstInspectElementCompletedForTest = function() {};
 
 /**
  * @implements {UI.ContextMenu.Provider}

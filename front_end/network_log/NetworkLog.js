@@ -489,4 +489,4 @@ NetworkLog.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
 NetworkLog.NetworkLog._events = Symbol('NetworkLog.NetworkLog.events');
 
 /** @type {!NetworkLog.NetworkLog} */
-NetworkLog.networkLog;
+NetworkLog.networkLog = new NetworkLog.NetworkLog();

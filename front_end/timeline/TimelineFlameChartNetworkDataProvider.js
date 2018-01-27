@@ -310,7 +310,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     if (typeof request.priority === 'string') {
       var div = contents.createChild('span');
       div.textContent =
-          NetworkPriorities.uiLabelForPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
+          PerfUI.uiLabelForNetworkPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
     }
     contents.createChild('span').textContent = request.url.trimMiddle(maxURLChars);

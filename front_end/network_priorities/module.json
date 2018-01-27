@@ -1,9 +1,0 @@
-{
-    "dependencies": [
-        "common",
-        "protocol"
-    ],
-    "scripts": [
-        "NetworkPriorities.js"
-    ]
-}

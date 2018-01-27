@@ -38,6 +38,7 @@
         "FilmStripView.js",
         "ChartViewport.js",
         "FlameChart.js",
+        "NetworkPriorities.js",
         "OverviewGrid.js",
         "PieChart.js",
         "TimelineGrid.js",

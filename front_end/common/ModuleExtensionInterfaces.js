@@ -118,3 +118,12 @@ Common.QueryParamHandler.prototype = {
    */
   handleQueryParam(value) {}
 };
+
+/**
+ * @interface
+ */
+Common.Runnable = function() {};
+
+Common.Runnable.prototype = {
+  run() {}
+};

@@ -192,8 +192,7 @@
         "extensions",
         "data_grid",
         "product_registry",
-        "mobile_throttling",
-        "network_priorities"
+        "mobile_throttling"
     ],
     "scripts": [
         "PerformanceMonitor.js",

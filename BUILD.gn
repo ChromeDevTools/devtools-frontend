@@ -361,6 +361,7 @@ all_devtools_files = [
   "front_end/mobile_throttling/ThrottlingPresets.js",
   "front_end/mobile_throttling/throttlingSettingsTab.css",
   "front_end/mobile_throttling/ThrottlingSettingsTab.js",
+  "front_end/ndb.json",
   "front_end/network/blockedURLsPane.css",
   "front_end/network/BlockedURLsPane.js",
   "front_end/network/eventSourceMessagesView.css",
@@ -398,8 +399,6 @@ all_devtools_files = [
   "front_end/network_log/HAREntry.js",
   "front_end/network_log/module.json",
   "front_end/network_log/NetworkLog.js",
-  "front_end/network_priorities/module.json",
-  "front_end/network_priorities/NetworkPriorities.js",
   "front_end/network_test_runner/module.json",
   "front_end/network_test_runner/NetworkTestRunner.js",
   "front_end/network_test_runner/ProductRegistryTestRunner.js",
@@ -413,22 +412,23 @@ all_devtools_files = [
   "front_end/object_ui/ObjectPropertiesSection.js",
   "front_end/object_ui/objectValue.css",
   "front_end/object_ui/RemoteObjectPreviewFormatter.js",
-  "front_end/perf_ui/chartViewport.css",
   "front_end/perf_ui/ChartViewport.js",
-  "front_end/perf_ui/filmStripView.css",
   "front_end/perf_ui/FilmStripView.js",
-  "front_end/perf_ui/flameChart.css",
   "front_end/perf_ui/FlameChart.js",
   "front_end/perf_ui/LineLevelProfile.js",
+  "front_end/perf_ui/NetworkPriorities.js",
+  "front_end/perf_ui/OverviewGrid.js",
+  "front_end/perf_ui/PieChart.js",
+  "front_end/perf_ui/TimelineGrid.js",
+  "front_end/perf_ui/TimelineOverviewPane.js",
+  "front_end/perf_ui/chartViewport.css",
+  "front_end/perf_ui/filmStripView.css",
+  "front_end/perf_ui/flameChart.css",
   "front_end/perf_ui/module.json",
   "front_end/perf_ui/overviewGrid.css",
-  "front_end/perf_ui/OverviewGrid.js",
   "front_end/perf_ui/pieChart.css",
-  "front_end/perf_ui/PieChart.js",
   "front_end/perf_ui/timelineGrid.css",
-  "front_end/perf_ui/TimelineGrid.js",
   "front_end/perf_ui/timelineOverviewInfo.css",
-  "front_end/perf_ui/TimelineOverviewPane.js",
   "front_end/performance_test_runner/module.json",
   "front_end/performance_test_runner/TimelineDataTestRunner.js",
   "front_end/performance_test_runner/TimelineTestRunner.js",
@@ -957,11 +957,11 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/formatter/formatter_module.js",
   "$resources_out_dir/har_importer/har_importer_module.js",
   "$resources_out_dir/heap_snapshot_model/heap_snapshot_model_module.js",
+  "$resources_out_dir/help/help_module.js",
   "$resources_out_dir/inline_editor/inline_editor_module.js",
   "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/layers/layers_module.js",
   "$resources_out_dir/network/network_module.js",
-  "$resources_out_dir/network_priorities/network_priorities_module.js",
   "$resources_out_dir/object_ui/object_ui_module.js",
   "$resources_out_dir/perf_ui/perf_ui_module.js",
   "$resources_out_dir/profiler/profiler_module.js",
@@ -997,6 +997,7 @@ devtools_applications = [
   "formatter_worker",
   "audits2_worker",
   "heap_snapshot_worker",
+  "ndb",
 ]
 
 #-------------------------------------------------------------------------------
@@ -1049,16 +1050,10 @@ action("generate_devtools_grd") {
   deps = [
     ":devtools_frontend_resources",
   ]
-  inputs = devtools_image_files + all_devtools_files
-  inputs += devtools_embedder_scripts
 
-  generated_files =
-      generated_resources + [ "$resources_out_dir/devtools_extension_api.js" ]
-
-  images_path = "front_end/Images"
-
-  inputs += generated_files
-
+  grd_files = generated_resources + devtools_embedder_scripts +
+              [ "$resources_out_dir/devtools_extension_api.js" ]
+  inputs = grd_files + devtools_image_files
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [
     outfile,
@@ -1069,14 +1064,11 @@ action("generate_devtools_grd") {
     "front_end",
   ]
 
-  args = rebase_path(generated_files, root_build_dir) +
-         rebase_path(generated_files, root_build_dir) +
-         rebase_path(devtools_embedder_scripts, root_build_dir) +
-         [ "--relative_path_dirs" ] +
+  args = rebase_path(grd_files, root_build_dir) + [ "--relative_path_dirs" ] +
          rebase_path(relative_path_dirs, root_build_dir) +
          [
            "--images",
-           rebase_path(images_path, root_build_dir),
+           rebase_path("front_end/Images", root_build_dir),
            "--output",
            rebase_path(outfile, root_build_dir),
          ]
@@ -1144,6 +1136,7 @@ action("build_release_devtools") {
   inputs = helper_scripts + all_devtools_files + generated_scripts + [
              "front_end/inspector.html",
              "front_end/toolbox.html",
+             "front_end/ndb.html",
              "front_end/integration_test_runner.html",
            ]
 
@@ -1170,12 +1163,14 @@ if (debug_devtools) {
     inputs = all_devtools_files + [
                "front_end/inspector.html",
                "front_end/toolbox.html",
+               "front_end/ndb.html",
                "front_end/integration_test_runner.html",
              ]
 
     outputs = [
       "$resources_out_debug_dir/inspector.html",
       "$resources_out_debug_dir/toolbox.html",
+      "$resources_out_debug_dir/ndb.html",
       "$resources_out_debug_dir/integration_test_runner.html",
     ]
 

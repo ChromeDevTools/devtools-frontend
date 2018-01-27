@@ -13,20 +13,9 @@ Help.latestReleaseNote = function() {
   return Help._latestReleaseNote;
 };
 
-/**
- * @return {!Common.Setting}
- */
-Help.releaseNoteVersionSetting = function() {
-  if (!Help._releaseNoteVersionSetting) {
-    /** @type {!Common.Setting} */
-    Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);
-  }
-  return Help._releaseNoteVersionSetting;
-};
-
-Help.showReleaseNoteIfNeeded = function() {
-  Help._showReleaseNoteIfNeeded(
-      Help.releaseNoteVersionSetting().get(), Help.latestReleaseNote().version,
+Help._showReleaseNoteIfNeeded = function() {
+  Help._innerShowReleaseNoteIfNeeded(
+      Help._releaseNoteVersionSetting.get(), Help.latestReleaseNote().version,
       Common.settings.moduleSetting('help.show-release-note').get());
 };
 
@@ -35,16 +24,16 @@ Help.showReleaseNoteIfNeeded = function() {
  * @param {number} latestVersion
  * @param {boolean} showReleaseNote
  */
-Help._showReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion, showReleaseNote) {
+Help._innerShowReleaseNoteIfNeeded = function(lastSeenVersion, latestVersion, showReleaseNote) {
   if (!lastSeenVersion) {
-    Help.releaseNoteVersionSetting().set(latestVersion);
+    Help._releaseNoteVersionSetting.set(latestVersion);
     return;
   }
   if (!showReleaseNote)
     return;
   if (lastSeenVersion >= latestVersion)
     return;
-  Help.releaseNoteVersionSetting().set(latestVersion);
+  Help._releaseNoteVersionSetting.set(latestVersion);
   UI.viewManager.showView(Help.releaseNoteViewId, true);
 };
 
@@ -62,3 +51,34 @@ Help.ReleaseNoteHighlight;
  *    link: string}}
  */
 Help.ReleaseNote;
+
+/**
+ * @implements {Common.Runnable}
+ */
+Help.HelpLateInitialization = class {
+  /**
+   * @override
+   */
+  run() {
+    Help._showReleaseNoteIfNeeded();
+  }
+};
+
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Help.ReleaseNotesActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    InspectorFrontendHost.openInNewTab(Help.latestReleaseNote().link);
+    return true;
+  }
+};
+
+/** @type {!Common.Setting} */
+Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);

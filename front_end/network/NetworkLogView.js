@@ -169,11 +169,10 @@ Network.NetworkLogView = class extends UI.VBox {
    */
   static _sortSearchValues(key, values) {
     if (key === Network.NetworkLogView.FilterType.Priority) {
-      var symbolToNumeric = NetworkPriorities.prioritySymbolToNumericMap();
       values.sort((a, b) => {
-        var aPriority = /** @type {!Protocol.Network.ResourcePriority} */ (NetworkPriorities.uiLabelToPriority(a));
-        var bPriority = /** @type {!Protocol.Network.ResourcePriority} */ (NetworkPriorities.uiLabelToPriority(b));
-        return symbolToNumeric.get(aPriority) - symbolToNumeric.get(bPriority);
+        var aPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(a));
+        var bPriority = /** @type {!Protocol.Network.ResourcePriority} */ (PerfUI.uiLabelToNetworkPriority(b));
+        return PerfUI.networkPriorityWeight(aPriority) - PerfUI.networkPriorityWeight(bPriority);
       });
     } else {
       values.sort();
@@ -1093,7 +1092,7 @@ Network.NetworkLogView = class extends UI.VBox {
     var priority = request.priority();
     if (priority) {
       this._suggestionBuilder.addItem(
-          Network.NetworkLogView.FilterType.Priority, NetworkPriorities.uiLabelForPriority(priority));
+          Network.NetworkLogView.FilterType.Priority, PerfUI.uiLabelForNetworkPriority(priority));
     }
 
     if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
@@ -1541,7 +1540,7 @@ Network.NetworkLogView = class extends UI.VBox {
         return Network.NetworkLogView._requestSetCookieValueFilter.bind(null, value);
 
       case Network.NetworkLogView.FilterType.Priority:
-        return Network.NetworkLogView._requestPriorityFilter.bind(null, NetworkPriorities.uiLabelToPriority(value));
+        return Network.NetworkLogView._requestPriorityFilter.bind(null, PerfUI.uiLabelToNetworkPriority(value));
 
       case Network.NetworkLogView.FilterType.StatusCode:
         return Network.NetworkLogView._statusCodeFilter.bind(null, value);

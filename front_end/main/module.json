@@ -434,10 +434,7 @@
         "platform",
         "sdk",
         "persistence",
-        "help",
-        "console_model",
-        "network_log",
-        "console_counters"
+        "console_model"
     ],
     "scripts": [
         "RenderingOptions.js",

@@ -311,6 +311,23 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
     }
     return result;
   }
+
+  /**
+   * @param {string} location
+   */
+  appendItemsAtLocation(location) {
+    for (var extension of self.runtime.extensions('context-menu-item')) {
+      var itemLocation = extension.descriptor()['location'] || '';
+      if (!itemLocation.startsWith(location + '/'))
+        continue;
+
+      var section = itemLocation.substr(location.length + 1);
+      if (!section || section.includes('/'))
+        continue;
+
+      this.section(section).appendAction(extension.descriptor()['actionId']);
+    }
+  }
 };
 
 UI.ContextMenuItem._uniqueSectionName = 0;
@@ -482,23 +499,6 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   appendApplicableItems(target) {
     this._pendingPromises.push(self.runtime.allInstances(UI.ContextMenu.Provider, target));
     this._pendingTargets.push(target);
-  }
-
-  /**
-   * @param {string} location
-   */
-  appendItemsAtLocation(location) {
-    for (var extension of self.runtime.extensions('context-menu-item')) {
-      var itemLocation = extension.descriptor()['location'] || '';
-      if (!itemLocation.startsWith(location + '/'))
-        continue;
-
-      var section = itemLocation.substr(location.length + 1);
-      if (!section || section.includes('/'))
-        continue;
-
-      this.section(section).appendAction(extension.descriptor()['actionId']);
-    }
   }
 };
 

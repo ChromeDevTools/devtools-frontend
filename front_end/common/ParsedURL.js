@@ -132,7 +132,7 @@ Common.ParsedURL = class {
     // 8 - ?fragment
     var schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
     var userRegex = /(?:([A-Za-z0-9\-._~%!$&'()*+,;=:]*)@)?/;
-    var hostRegex = /([^\s\/:]*)/;
+    var hostRegex = /((?:\[::\d?\])|(?:[^\s\/:]*))/;
     var portRegex = /(?::([\d]+))?/;
     var pathRegex = /(\/[^#?]*)?/;
     var queryRegex = /(?:\?([^#]*))?/;

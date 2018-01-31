@@ -405,8 +405,6 @@ SDK.ChildTargetManager = class {
 
     parentTarget.registerTargetDispatcher(this);
     this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true});
-    // TODO(dgozman): remove the protocol method and make it default.
-    this._targetAgent.setAttachToFrames(true);
 
     if (!parentTarget.parentTarget()) {
       this._targetAgent.setDiscoverTargets(true);

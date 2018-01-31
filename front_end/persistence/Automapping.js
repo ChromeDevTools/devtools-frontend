@@ -20,7 +20,6 @@ Persistence.Automapping = class {
     /** @type {!Set<!Persistence.AutomappingBinding>} */
     this._bindings = new Set();
 
-    this._enabled = true;
     /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._fileSystemUISourceCodes = new Map();
     this._sweepThrottler = new Common.Throttler(100);
@@ -51,16 +50,6 @@ Persistence.Automapping = class {
       this._onProjectAdded(fileSystem);
     for (var uiSourceCode of workspace.uiSourceCodes())
       this._onUISourceCodeAdded(uiSourceCode);
-  }
-
-  /**
-   * @param {boolean} enabled
-   */
-  setEnabled(enabled) {
-    if (this._enabled === enabled)
-      return;
-    this._enabled = enabled;
-    this._scheduleRemap();
   }
 
   _scheduleRemap() {
@@ -176,7 +165,7 @@ Persistence.Automapping = class {
    */
   _bindNetwork(networkSourceCode) {
     if (networkSourceCode[Persistence.Automapping._processingPromise] ||
-        networkSourceCode[Persistence.Automapping._binding] || !this._enabled)
+        networkSourceCode[Persistence.Automapping._binding])
       return;
     var createBindingPromise =
         this._createBinding(networkSourceCode).then(validateBinding.bind(this)).then(onBinding.bind(this));

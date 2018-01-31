@@ -49,20 +49,13 @@ BindingsTestRunner.addFooJSFile = function(fs) {
 };
 
 BindingsTestRunner.initializeTestMapping = function() {
-  var testMapping;
-
-  Persistence.persistence._setMappingForTest((bindingCreated, bindingRemoved) => {
-    testMapping = new TestMapping(bindingCreated, bindingRemoved);
-    return testMapping;
-  });
-
-  return testMapping;
+  return new TestMapping(Persistence.persistence);
 };
 
 class TestMapping {
-  constructor(onBindingAdded, onBindingRemoved) {
-    this._onBindingAdded = onBindingAdded;
-    this._onBindingRemoved = onBindingRemoved;
+  constructor(persistence) {
+    this._persistence = persistence;
+    persistence.setAutomappingEnabled(false);
     this._bindings = new Set();
   }
 
@@ -75,9 +68,9 @@ class TestMapping {
 
     var networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
     var fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
-    var binding = new Persistence.AutomappingBinding(networkUISourceCode, fileSystemUISourceCode, false);
+    var binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this._bindings.add(binding);
-    this._onBindingAdded.call(null, binding);
+    this._persistence.addBindingForTest(binding);
   }
 
   _findBinding(urlSuffix) {
@@ -99,12 +92,12 @@ class TestMapping {
     }
 
     this._bindings.delete(binding);
-    this._onBindingRemoved.call(null, binding);
+    this._persistence.removeBindingForTest(binding);
   }
 
   dispose() {
     for (var binding of this._bindings)
-      this._onBindingRemoved.call(null, binding);
+      this._persistence.removeBindingForTest(binding);
 
     this._bindings.clear();
   }

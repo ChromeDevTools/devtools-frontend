@@ -211,7 +211,8 @@ ObjectUI.JavaScriptAutocomplete = class {
       this._expressionCache.set(expressionString, cache);
       completionGroups = await cache.value;
     }
-    return this._receivedPropertyNames(completionGroups, dotNotation, bracketNotation, expressionString, query);
+    return this._receivedPropertyNames(
+        completionGroups.slice(0), dotNotation, bracketNotation, expressionString, query);
 
     /**
      * @this {ObjectUI.JavaScriptAutocomplete}

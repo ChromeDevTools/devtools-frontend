@@ -42,6 +42,19 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
     this._lazyContent = lazyContent;
 
+    this._pretty = false;
+    this._rawContent = '';
+    /** @type {?Promise<string>} */
+    this._formattedContentPromise = null;
+    /** @type {?Formatter.FormatterSourceMapping} */
+    this._formattedMap = null;
+    this._prettyToggle = new UI.ToolbarToggle(ls`Pretty print`, 'largeicon-pretty-print');
+    this._prettyToggle.addEventListener(UI.ToolbarButton.Events.Click, () => {
+      this._setPretty(!this._prettyToggle.toggled());
+    });
+    this._shouldAutoPrettyPrint = false;
+    this._prettyToggle.setVisible(false);
+
     this._textEditor = new SourceFrame.SourcesTextEditor(this);
     this._textEditor.show(this.element);
 
@@ -81,6 +94,71 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
+   * @param {boolean} canPrettyPrint
+   * @param {boolean=} autoPrettyPrint
+   */
+  setCanPrettyPrint(canPrettyPrint, autoPrettyPrint) {
+    this._shouldAutoPrettyPrint = canPrettyPrint && !!autoPrettyPrint;
+    this._prettyToggle.setVisible(canPrettyPrint);
+  }
+
+  /**
+   * @param {boolean} value
+   */
+  async _setPretty(value) {
+    this._pretty = value;
+    this._prettyToggle.setToggled(value);
+    this._prettyToggle.setEnabled(false);
+
+    var selection = this.selection();
+    if (this._pretty && this._rawContent) {
+      this.setContent(await this._requestFormattedContent());
+      var start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
+      var end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
+      this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
+      this._textEditor.setLineNumberFormatter(lineNumber => {
+        var line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
+        if (lineNumber === 1)
+          return String(line);
+        if (line !== this._prettyToRawLocation(lineNumber - 2, 0)[0] + 1)
+          return String(line);
+        return '-';
+      });
+    } else {
+      this._textEditor.setLineNumberFormatter(lineNumber => {
+        return String(lineNumber);
+      });
+      this.setContent(this._rawContent);
+      var start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
+      var end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
+      this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
+    }
+    this._prettyToggle.setEnabled(true);
+  }
+
+  /**
+   * @param {number} line
+   * @param {number} column
+   * @return {!Array<number>}
+   */
+  _prettyToRawLocation(line, column) {
+    if (!this._formattedMap)
+      return [line, column];
+    return this._formattedMap.formattedToOriginal(line, column);
+  }
+
+  /**
+   * @param {number} line
+   * @param {number} column
+   * @return {!Array<number>}
+   */
+  _rawToPrettyLocation(line, column) {
+    if (!this._formattedMap)
+      return [line, column];
+    return this._formattedMap.originalToFormatted(line, column);
+  }
+
+  /**
    * @param {boolean} editable
    * @protected
    */
@@ -112,7 +190,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @return {!Array<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
-    return [this._sourcePosition];
+    return [this._prettyToggle, this._sourcePosition];
   }
 
   get loaded() {
@@ -123,11 +201,33 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     return this._textEditor;
   }
 
-  _ensureContentLoaded() {
+  async _ensureContentLoaded() {
     if (!this._contentRequested) {
       this._contentRequested = true;
-      this._lazyContent().then(this.setContent.bind(this));
+      var content = await this._lazyContent();
+      this._rawContent = content || '';
+      this._formattedContentPromise = null;
+      this._formattedMap = null;
+      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(this._rawContent))
+        await this._setPretty(true);
+      else
+        this.setContent(this._rawContent);
     }
+  }
+
+  /**
+   * @return {!Promise<string>}
+   */
+  _requestFormattedContent() {
+    if (this._formattedContentPromise)
+      return this._formattedContentPromise;
+    var fulfill;
+    this._formattedContentPromise = new Promise(x => fulfill = x);
+    new Formatter.ScriptFormatter(this._highlighterType, this._rawContent, (data, map) => {
+      this._formattedMap = map;
+      fulfill(data);
+    });
+    return this._formattedContentPromise;
   }
 
   /**
@@ -538,8 +638,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     }
     var textRange = selections[0];
     if (textRange.isEmpty()) {
-      this._sourcePosition.setText(
-          Common.UIString('Line %d, Column %d', textRange.endLine + 1, textRange.endColumn + 1));
+      var location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
+      this._sourcePosition.setText(`Line ${location[0] + 1}, Column ${location[1] + 1}`);
       return;
     }
     textRange = textRange.normalize();

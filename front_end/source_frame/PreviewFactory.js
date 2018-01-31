@@ -34,8 +34,10 @@ SourceFrame.PreviewFactory = class {
       return SourceFrame.JSONView.createSearchableView(/** @type {!SourceFrame.ParsedJSON} */ (parsedJSON));
 
     if (resourceType.isTextType()) {
-      var highlighterType = mimeType.replace(/;.*/, '');  // remove charset
-      return SourceFrame.ResourceSourceFrame.createSearchableView(provider, highlighterType);
+      var highlighterType =
+          provider.contentType().canonicalMimeType() || mimeType.replace(/;.*/, '');  // remove charset
+      return SourceFrame.ResourceSourceFrame.createSearchableView(
+          provider, highlighterType, true /* autoPrettyPrint */);
     }
 
     return null;

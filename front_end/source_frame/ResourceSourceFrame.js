@@ -33,25 +33,22 @@
 SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   /**
    * @param {!Common.ContentProvider} resource
+   * @param {boolean=} autoPrettyPrint
    */
-  constructor(resource) {
+  constructor(resource, autoPrettyPrint) {
     super(resource.requestContent.bind(resource));
     this._resource = resource;
+    this.setCanPrettyPrint(this._resource.contentType().isDocumentOrScriptOrStyleSheet(), autoPrettyPrint);
   }
 
   /**
    * @param {!Common.ContentProvider} resource
    * @param {string} highlighterType
-   * @return {!UI.SearchableView}
+   * @param {boolean=} autoPrettyPrint
+   * @return {!UI.Widget}
    */
-  static createSearchableView(resource, highlighterType) {
-    var sourceFrame = new SourceFrame.ResourceSourceFrame(resource);
-    sourceFrame.setHighlighterType(highlighterType);
-    var searchableView = new UI.SearchableView(sourceFrame);
-    searchableView.setPlaceholder(Common.UIString('Find'));
-    sourceFrame.show(searchableView.element);
-    sourceFrame.setSearchableView(searchableView);
-    return searchableView;
+  static createSearchableView(resource, highlighterType, autoPrettyPrint) {
+    return new SourceFrame.ResourceSourceFrame._SearchableContainer(resource, highlighterType, autoPrettyPrint);
   }
 
   get resource() {
@@ -68,5 +65,30 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
     contextMenu.appendApplicableItems(this._resource);
     return Promise.resolve();
+  }
+};
+
+SourceFrame.ResourceSourceFrame._SearchableContainer = class extends UI.VBox {
+  /**
+   * @param {!Common.ContentProvider} resource
+   * @param {string} highlighterType
+   * @param {boolean=} autoPrettyPrint
+   * @return {!UI.Widget}
+   */
+  constructor(resource, highlighterType, autoPrettyPrint) {
+    super(true);
+    this.registerRequiredCSS('source_frame/resourceSourceFrame.css');
+    var sourceFrame = new SourceFrame.ResourceSourceFrame(resource, autoPrettyPrint);
+    sourceFrame.setHighlighterType(highlighterType);
+    var searchableView = new UI.SearchableView(sourceFrame);
+    searchableView.element.classList.add('searchable-view');
+    searchableView.setPlaceholder(ls`Find`);
+    sourceFrame.show(searchableView.element);
+    sourceFrame.setSearchableView(searchableView);
+    searchableView.show(this.contentElement);
+
+    var toolbar = new UI.Toolbar('toolbar', this.contentElement);
+    for (var item of sourceFrame.syncToolbarItems())
+      toolbar.appendToolbarItem(item);
   }
 };

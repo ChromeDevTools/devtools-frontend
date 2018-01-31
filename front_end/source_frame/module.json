@@ -57,6 +57,7 @@
         "jsonView.css",
         "messagesPopover.css",
         "xmlTree.css",
-        "xmlView.css"
+        "xmlView.css",
+        "resourceSourceFrame.css"
     ]
 }

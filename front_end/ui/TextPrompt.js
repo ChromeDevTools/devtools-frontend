@@ -49,7 +49,7 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   /**
-   * @param {(function(string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>)} completions
+   * @param {(function(this:null, string, string, boolean=):!Promise<!UI.SuggestBox.Suggestions>)} completions
    * @param {string=} stopCharacters
    */
   initialize(completions, stopCharacters) {

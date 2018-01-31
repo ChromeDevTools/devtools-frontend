@@ -111,16 +111,13 @@ Main.Main = class {
 
   _initializeExperiments() {
     // Keep this sorted alphabetically: both keys and values.
-    Runtime.experiments.register('accessibilityInspection', 'Accessibility Inspection');
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
-    Runtime.experiments.register('logManagement', 'Log management', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
-    Runtime.experiments.register('performanceMonitor', 'Performance Monitor', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register(
         'stepIntoAsync', 'Introduce separate step action, stepInto becomes powerful enough to go inside async call');
@@ -143,18 +140,12 @@ Main.Main = class {
     if (Host.isUnderTest()) {
       var testPath = Runtime.queryParam('test');
       // Enable experiments for testing.
-      if (testPath.indexOf('accessibility/') !== -1)
-        Runtime.experiments.enableForTest('accessibilityInspection');
-      if (testPath.indexOf('console-sidebar/') !== -1)
-        Runtime.experiments.enableForTest('logManagement');
       if (testPath.indexOf('oopif/') !== -1)
         Runtime.experiments.enableForTest('oopifInlineDOM');
     }
 
-    Runtime.experiments.setDefaultExperiments([
-      'accessibilityInspection', 'colorContrastRatio', 'logManagement', 'performanceMonitor', 'stepIntoAsync',
-      'timelineKeepHistory', 'oopifInlineDOM'
-    ]);
+    Runtime.experiments.setDefaultExperiments(
+        ['colorContrastRatio', 'stepIntoAsync', 'timelineKeepHistory', 'oopifInlineDOM']);
   }
 
   /**

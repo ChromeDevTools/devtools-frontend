@@ -16,7 +16,6 @@
             "persistence": "closeable",
             "order": 100,
             "className": "Timeline.PerformanceMonitor",
-            "experiment": "performanceMonitor",
             "tags": "performance, system monitor, monitor, activity, metrics"
         },
         {

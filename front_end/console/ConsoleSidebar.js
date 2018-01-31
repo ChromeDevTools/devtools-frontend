@@ -9,7 +9,6 @@ Console.ConsoleSidebar = class extends UI.VBox {
   constructor(badgePool) {
     super(true);
     this.setMinimumSize(125, 0);
-    this._enabled = Runtime.experiments.isEnabled('logManagement');
 
     this._tree = new UI.TreeOutlineInShadow();
     this._tree.registerRequiredCSS('console/consoleSidebar.css');
@@ -68,8 +67,6 @@ Console.ConsoleSidebar = class extends UI.VBox {
   }
 
   clear() {
-    if (!this._enabled)
-      return;
     for (var treeElement of this._treeElements)
       treeElement.clear();
   }
@@ -78,8 +75,6 @@ Console.ConsoleSidebar = class extends UI.VBox {
    * @param {!Console.ConsoleViewMessage} viewMessage
    */
   onMessageAdded(viewMessage) {
-    if (!this._enabled)
-      return;
     for (var treeElement of this._treeElements)
       treeElement.onMessageAdded(viewMessage);
   }
@@ -89,7 +84,7 @@ Console.ConsoleSidebar = class extends UI.VBox {
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
-    if (!this._enabled || !this._selectedTreeElement)
+    if (!this._selectedTreeElement)
       return true;
     return this._selectedTreeElement._filter.shouldBeVisible(viewMessage);
   }

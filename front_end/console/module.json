@@ -99,25 +99,6 @@
         {
             "type": "setting",
             "category": "Console",
-            "title": "User messages only",
-            "settingName": "consoleAPIFilterEnabled",
-            "settingType": "boolean",
-            "storageType": "session",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Only show messages from console API methods"
-                },
-                {
-                    "value": false,
-                    "title": "Show messages from all sources"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Console",
             "title": "Log XMLHttpRequests",
             "settingName": "monitoringXHREnabled",
             "settingType": "boolean",

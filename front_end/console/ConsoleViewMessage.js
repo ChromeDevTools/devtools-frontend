@@ -577,7 +577,8 @@ Console.ConsoleViewMessage = class {
       titleElement.classList.add('console-object-preview');
       this._previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
     } else if (obj.type === 'function') {
-      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, titleElement, false);
+      var functionElement = titleElement.createChild('span');
+      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add('object-value-function');
     } else {
       titleElement.createTextChild(obj.description || '');

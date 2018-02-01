@@ -28,10 +28,9 @@ SourceFrame.PreviewFactory = class {
     if (parsedXML)
       return SourceFrame.XMLView.createSearchableView(parsedXML);
 
-    // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
-    var parsedJSON = await SourceFrame.JSONView.parseJSON(content);
-    if (parsedJSON && typeof parsedJSON.data === 'object')
-      return SourceFrame.JSONView.createSearchableView(/** @type {!SourceFrame.ParsedJSON} */ (parsedJSON));
+    var jsonView = await SourceFrame.JSONView.createView(content);
+    if (jsonView)
+      return jsonView;
 
     if (resourceType.isTextType()) {
       var highlighterType =

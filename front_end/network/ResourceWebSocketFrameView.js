@@ -169,11 +169,11 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._currentSelectedNode = selectedNode;
     var contentProvider = selectedNode.contentProvider();
     var content = await contentProvider.requestContent();
-    var parsedJSON = await SourceFrame.JSONView.parseJSON(content);
+    var jsonView = await SourceFrame.JSONView.createView(content);
     if (this._currentSelectedNode !== selectedNode)
       return;
-    if (parsedJSON)
-      this._splitWidget.setSidebarWidget(SourceFrame.JSONView.createSearchableView(parsedJSON));
+    if (jsonView)
+      this._splitWidget.setSidebarWidget(jsonView);
     else
       this._splitWidget.setSidebarWidget(new SourceFrame.ResourceSourceFrame(contentProvider));
   }

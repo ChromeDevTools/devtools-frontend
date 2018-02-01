@@ -54,22 +54,22 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
   /**
    * @return {!Promise<?UI.Widget>}
    */
-  async _htmlErrorPreview() {
+  async _htmlPreview() {
     var contentData = await this.request.contentData();
     if (contentData.error)
       return new UI.EmptyWidget(Common.UIString('Failed to load response data'));
-
-    // We can assume the status code has been set already because fetching contentData should wait for request to be
-    // finished.
-    if (!this.request.hasErrorStatusCode())
-      return null;
 
     var whitelist = new Set(['text/html', 'text/plain', 'application/xhtml+xml']);
     if (!whitelist.has(this.request.mimeType))
       return null;
 
-    var encodedContent = contentData.encoded ? contentData.content : btoa(contentData.content);
-    var dataURL = Common.ContentProvider.contentAsDataURL(encodedContent, this.request.mimeType, true, 'utf-8');
+    // http://crbug.com/767393 - DevTools should recognize JSON regardless of the content type
+    var jsonView = await SourceFrame.JSONView.createView(contentData.content);
+    if (jsonView)
+      return jsonView;
+
+    var dataURL = Common.ContentProvider.contentAsDataURL(
+        contentData.content, this.request.mimeType, contentData.encoded, contentData.encoded ? 'utf-8' : null);
     return dataURL ? new Network.RequestHTMLView(dataURL) : null;
   }
 
@@ -78,7 +78,7 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
    * @return {!Promise<!UI.Widget>}
    */
   async createPreview() {
-    var htmlErrorPreview = await this._htmlErrorPreview();
+    var htmlErrorPreview = await this._htmlPreview();
     if (htmlErrorPreview)
       return htmlErrorPreview;
 

@@ -33,7 +33,6 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.setAttribute('tabindex', 0);
     this._otherSWFilter.setAttribute('role', 'switch');
     this._otherSWFilter.setAttribute('aria-checked', false);
-    this._otherSWFilter.addEventListener('click', () => this._toggleFilter());
     this._otherSWFilter.addEventListener('keydown', event => {
       if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
         this._toggleFilter();
@@ -41,6 +40,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     var filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
     filterLabel.textContent = Common.UIString('Service workers from other domains');
     filterLabel.setAttribute('for', 'expand-all');
+    filterLabel.addEventListener('click', () => this._toggleFilter());
 
     var toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
     this._filter = new UI.ToolbarInput('Filter', 1);

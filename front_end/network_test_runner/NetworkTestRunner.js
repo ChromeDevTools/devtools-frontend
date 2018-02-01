@@ -161,7 +161,7 @@ TestRunner.deprecatedInitAsync(`
   }
 
   function makeSimpleXHRWithPayload(method, url, async, payload, callback) {
-    makeXHR(method, url, async, undefined, undefined, [], false, payload, callback);
+    makeXHR(method, url, async, undefined, undefined, [], false, payload, undefined, callback);
   }
 
   function makeXHR(method, url, async, user, password, headers, withCredentials, payload, type, callback) {
@@ -185,7 +185,7 @@ TestRunner.deprecatedInitAsync(`
     for (var i = 0; i < headers.length; ++i)
       xhr.setRequestHeader(headers[i][0], headers[i][1]);
 
-    xhr.send(payload);
+    try { xhr.send(payload); } catch (e) {}
   }
 
   function makeXHRForJSONArguments(jsonArgs) {

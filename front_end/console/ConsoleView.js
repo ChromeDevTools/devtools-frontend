@@ -36,6 +36,7 @@ Console.ConsoleView = class extends UI.VBox {
     super();
     this.setMinimumSize(0, 35);
     this.registerRequiredCSS('console/consoleView.css');
+    this.registerRequiredCSS('object_ui/objectValue.css');
 
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.element.classList.add('console-searchable-view');

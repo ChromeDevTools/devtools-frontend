@@ -114,9 +114,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _buildTableMessage() {
-    var formattedMessage = createElement('span');
-    UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
-    formattedMessage.className = 'source-code';
+    var formattedMessage = createElementWithClass('span', 'source-code');
     var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
@@ -271,10 +269,7 @@ Console.ConsoleViewMessage = class {
     }
     messageElement.classList.add('console-message-text');
 
-    var formattedMessage = createElement('span');
-    UI.appendStyle(formattedMessage, 'object_ui/objectValue.css');
-    formattedMessage.className = 'source-code';
-
+    var formattedMessage = createElementWithClass('span', 'source-code');
     var anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);

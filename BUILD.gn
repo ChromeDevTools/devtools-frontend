@@ -512,6 +512,7 @@ all_devtools_files = [
   "front_end/resources/ServiceWorkersView.js",
   "front_end/resources/StorageItemsView.js",
   "front_end/Runtime.js",
+  "front_end/shell.json",
   "front_end/screencast/InputModel.js",
   "front_end/screencast/module.json",
   "front_end/screencast/ScreencastApp.js",
@@ -932,6 +933,7 @@ generated_scripts = [
 ]
 
 generated_applications = [
+  "$resources_out_dir/shell.js",
   "$resources_out_dir/inspector.html",
   "$resources_out_dir/inspector.js",
   "$resources_out_dir/toolbox.html",
@@ -992,6 +994,7 @@ generated_remote_modules = [
 ]
 
 devtools_applications = [
+  "shell",
   "inspector",
   "toolbox",
   "integration_test_runner",

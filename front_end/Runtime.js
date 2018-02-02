@@ -215,7 +215,7 @@ var Runtime = class {
    * @param {string} appName
    * @return {!Promise.<undefined>}
    */
-  static startApplication(appName) {
+  static async startApplication(appName) {
     console.timeStamp('Runtime.startApplication');
 
     var allDescriptorsByName = {};
@@ -224,52 +224,42 @@ var Runtime = class {
       allDescriptorsByName[d['name']] = d;
     }
 
-    var applicationPromise;
-    if (applicationDescriptor)
-      applicationPromise = Promise.resolve(applicationDescriptor);
-    else
-      applicationPromise = Runtime.loadResourcePromise(appName + '.json').then(JSON.parse.bind(JSON));
-
-    return applicationPromise.then(parseModuleDescriptors);
-
-    /**
-     * @param {!{modules: !Array.<!Object>, has_html: boolean}} appDescriptor
-     * @return {!Promise.<undefined>}
-     */
-    function parseModuleDescriptors(appDescriptor) {
-      var configuration = appDescriptor.modules;
-      var moduleJSONPromises = [];
-      var coreModuleNames = [];
-      for (var i = 0; i < configuration.length; ++i) {
-        var descriptor = configuration[i];
-        var name = descriptor['name'];
-        var moduleJSON = allDescriptorsByName[name];
-        if (moduleJSON)
-          moduleJSONPromises.push(Promise.resolve(moduleJSON));
-        else
-          moduleJSONPromises.push(Runtime.loadResourcePromise(name + '/module.json').then(JSON.parse.bind(JSON)));
-        if (descriptor['type'] === 'autostart')
-          coreModuleNames.push(name);
-      }
-
-      return Promise.all(moduleJSONPromises).then(instantiateRuntime);
-
-      /**
-       * @param {!Array.<!Object>} moduleDescriptors
-       * @return {!Promise.<undefined>}
-       */
-      function instantiateRuntime(moduleDescriptors) {
-        for (var i = 0; i < moduleDescriptors.length; ++i) {
-          moduleDescriptors[i].name = configuration[i]['name'];
-          moduleDescriptors[i].condition = configuration[i]['condition'];
-          moduleDescriptors[i].remote = configuration[i]['type'] === 'remote';
-        }
-        self.runtime = new Runtime(moduleDescriptors);
-        if (coreModuleNames)
-          return /** @type {!Promise<undefined>} */ (self.runtime._loadAutoStartModules(coreModuleNames));
-        return Promise.resolve();
+    if (!applicationDescriptor) {
+      var data = await Runtime.loadResourcePromise(appName + '.json');
+      applicationDescriptor = JSON.parse(data);
+      var descriptor = applicationDescriptor;
+      while (descriptor.extends) {
+        data = await Runtime.loadResourcePromise(descriptor.extends + '.json');
+        descriptor = JSON.parse(data);
+        applicationDescriptor.modules = descriptor.modules.concat(applicationDescriptor.modules);
       }
     }
+
+    var configuration = applicationDescriptor.modules;
+    var moduleJSONPromises = [];
+    var coreModuleNames = [];
+    for (var i = 0; i < configuration.length; ++i) {
+      var descriptor = configuration[i];
+      var name = descriptor['name'];
+      var moduleJSON = allDescriptorsByName[name];
+      if (moduleJSON)
+        moduleJSONPromises.push(Promise.resolve(moduleJSON));
+      else
+        moduleJSONPromises.push(Runtime.loadResourcePromise(name + '/module.json').then(JSON.parse.bind(JSON)));
+      if (descriptor['type'] === 'autostart')
+        coreModuleNames.push(name);
+    }
+
+    var moduleDescriptors = await Promise.all(moduleJSONPromises);
+
+    for (var i = 0; i < moduleDescriptors.length; ++i) {
+      moduleDescriptors[i].name = configuration[i]['name'];
+      moduleDescriptors[i].condition = configuration[i]['condition'];
+      moduleDescriptors[i].remote = configuration[i]['type'] === 'remote';
+    }
+    self.runtime = new Runtime(moduleDescriptors);
+    if (coreModuleNames)
+      return /** @type {!Promise<undefined>} */ (self.runtime._loadAutoStartModules(coreModuleNames));
   }
 
   /**

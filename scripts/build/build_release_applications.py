@@ -45,7 +45,7 @@ def main(argv):
 
     loader = modular_build.DescriptorLoader(input_path)
     for app in application_names:
-        descriptors = loader.load_application(app + '.json')
+        descriptors = loader.load_application(app)
         builder = ReleaseBuilder(app, descriptors, input_path, output_path)
         builder.build_app()
 
@@ -101,7 +101,7 @@ class ReleaseBuilder(object):
     def app_file(self, extension):
         return self.application_name + '.' + extension
 
-    def core_resource_names(self):
+    def autorun_resource_names(self):
         result = []
         for module in self.descriptors.sorted_modules():
             if self.descriptors.application[module].get('type') != 'autostart':
@@ -122,6 +122,12 @@ class ReleaseBuilder(object):
                              self.descriptors.application.values()):
             self._concatenate_dynamic_module(module['name'])
 
+    def _write_include_tags(self, descriptors, output):
+        if descriptors.extends:
+            self._write_include_tags(descriptors.extends, output)
+        output.write(self._generate_include_tag(descriptors.application_name + '.js'))
+
+
     def _build_html(self):
         html_name = self.app_file('html')
         output = StringIO()
@@ -130,7 +136,10 @@ class ReleaseBuilder(object):
                 if '<script ' in line or '<link ' in line:
                     continue
                 if '</head>' in line:
-                    output.write(self._generate_include_tag(self.app_file('js')))
+                    self._write_include_tags(self.descriptors, output)
+                    js_file = join(self.application_dir, self.app_file('js'))
+                    if path.exists(js_file):
+                        output.write('    <script>%s</script>\n' % minify_js(read_file(js_file)))
                 output.write(line)
 
         write_file(join(self.output_dir, html_name), output.getvalue())
@@ -207,21 +216,31 @@ class ReleaseBuilder(object):
         return self._special_case_namespaces.get(module, camel_case_namespace)
 
     def _concatenate_application_script(self, output):
-        runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
-        runtime_contents = re.sub('var allDescriptors = \[\];',
-                                  'var allDescriptors = %s;' % self._release_module_descriptors().replace('\\', '\\\\'),
-                                  runtime_contents, 1)
-        output.write('/* Runtime.js */\n')
-        output.write(runtime_contents)
+        if not self.descriptors.extends:
+            runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
+            runtime_contents = re.sub('var allDescriptors = \[\];',
+                                      'var allDescriptors = %s;' % self._release_module_descriptors().replace('\\', '\\\\'),
+                                      runtime_contents, 1)
+            output.write('/* Runtime.js */\n')
+            output.write(runtime_contents)
+            output.write('/* Application descriptor %s */\n' % self.app_file('json'))
+            output.write('applicationDescriptor = ')
+            output.write(self.descriptors.application_json())
+        else:
+            output.write('/* Additional descriptors */\n')
+            output.write('allDescriptors.push(...%s);' % self._release_module_descriptors())
+            output.write('/* Additional descriptors %s */\n' % self.app_file('json'))
+            output.write('applicationDescriptor.modules.push(...%s)' % json.dumps(self.descriptors.application.values()))
+
         output.write('\n/* Autostart modules */\n')
         self._concatenate_autostart_modules(output)
-        output.write('/* Application descriptor %s */\n' % self.app_file('json'))
-        output.write('applicationDescriptor = ')
-        output.write(self.descriptors.application_json())
-        output.write(';\n/* Core resources */\n')
-        self._write_module_resources(self.core_resource_names(), output)
-        output.write('\n/* Application loader */\n')
-        output.write(read_file(join(self.application_dir, self.app_file('js'))))
+        output.write(';\n/* Autostart resources */\n')
+        self._write_module_resources(self.autorun_resource_names(), output)
+        if not self.descriptors.has_html:
+            js_file = join(self.application_dir, self.app_file('js'))
+            if path.exists(js_file):
+                output.write(';\n/* Autostart script for worker */\n')
+                output.write(read_file(js_file))
 
     def _concatenate_dynamic_module(self, module_name):
         module = self.descriptors.modules[module_name]

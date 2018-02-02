@@ -56,11 +56,13 @@ def concatenate_scripts(file_names, module_dir, output_dir, output):
 
 class Descriptors:
 
-    def __init__(self, application_dir, application_descriptor, module_descriptors, has_html):
+    def __init__(self, application_name, application_dir, application_descriptor, module_descriptors, extends, has_html):
+        self.application_name = application_name
         self.application_dir = application_dir
         self.application = application_descriptor
-        self.modules = module_descriptors
         self._cached_sorted_modules = None
+        self.modules = module_descriptors
+        self.extends = extends
         self.has_html = has_html
 
     def application_json(self):
@@ -152,37 +154,46 @@ class DescriptorLoader:
         self.application_dir = application_dir
 
     def load_application(self, application_descriptor_name):
-        return self.load_applications([application_descriptor_name])
+        all_module_descriptors = {}
+        result = self._load_application(application_descriptor_name, all_module_descriptors)
+        return result
 
     def load_applications(self, application_descriptor_names):
-        merged_application_descriptor = {}
         all_module_descriptors = {}
-        has_html = False
+        all_application_descriptors = {}
         for application_descriptor_name in application_descriptor_names:
-            module_descriptors = {}
-            application_descriptor_filename = path.join(self.application_dir, application_descriptor_name)
-            descriptor_json = load_and_parse_json(application_descriptor_filename)
-            application_descriptor = {desc['name']: desc for desc in descriptor_json['modules']}
-            has_html = descriptor_json['has_html']
+            descriptors = {}
+            result = self._load_application(application_descriptor_name, descriptors)
+            for name in descriptors:
+                all_module_descriptors[name] = descriptors[name]
+            for name in result.application:
+                all_application_descriptors[name] = result.application[name]
+        return Descriptors('all', self.application_dir, all_application_descriptors, all_module_descriptors, None, False)
 
-            for name in application_descriptor:
-                merged_application_descriptor[name] = application_descriptor[name]
+    def _load_application(self, application_descriptor_name, all_module_descriptors):
+        module_descriptors = {}
+        application_descriptor_filename = path.join(self.application_dir, application_descriptor_name + '.json')
+        descriptor_json = load_and_parse_json(application_descriptor_filename)
+        application_descriptor = {desc['name']: desc for desc in descriptor_json['modules']}
+        extends = descriptor_json['extends'] if 'extends' in descriptor_json else None
+        if extends:
+            extends = self._load_application(extends, all_module_descriptors)
+        has_html = True if 'has_html' in descriptor_json and descriptor_json['has_html'] else False
 
-            for (module_name, module) in application_descriptor.items():
-                if module_descriptors.get(module_name):
-                    bail_error('Duplicate definition of module "%s" in %s' % (module_name, application_descriptor_filename))
-                if not all_module_descriptors.get(module_name):
-                    module_descriptors[module_name] = self._read_module_descriptor(module_name, application_descriptor_filename)
-                    all_module_descriptors[module_name] = module_descriptors[module_name]
+        for (module_name, module) in application_descriptor.items():
+            if all_module_descriptors.get(module_name):
+                bail_error('Duplicate definition of module "%s" in %s' % (module_name, application_descriptor_filename))
+            module_descriptors[module_name] = self._read_module_descriptor(module_name, application_descriptor_filename)
+            all_module_descriptors[module_name] = module_descriptors[module_name]
 
-            for module in module_descriptors.values():
-                deps = module.get('dependencies', [])
-                for dep in deps:
-                    if dep not in application_descriptor:
-                        bail_error('Module "%s" (dependency of "%s") not listed in application descriptor %s' %
-                                   (dep, module['name'], application_descriptor_filename))
+        for module in module_descriptors.values():
+            for dep in module.get('dependencies', []):
+                if dep not in all_module_descriptors:
+                    bail_error('Module "%s" (dependency of "%s") not listed in application descriptor %s' %
+                               (dep, module['name'], application_descriptor_filename))
 
-        return Descriptors(self.application_dir, merged_application_descriptor, all_module_descriptors, has_html)
+        return Descriptors(
+            application_descriptor_name, self.application_dir, application_descriptor, module_descriptors, extends, has_html)
 
     def _read_module_descriptor(self, module_name, application_descriptor_filename):
         json_filename = path.join(self.application_dir, module_name, 'module.json')

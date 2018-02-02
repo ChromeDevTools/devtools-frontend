@@ -32,7 +32,7 @@ def main(argv):
 
     loader = modular_build.DescriptorLoader(input_path)
     for app in application_names:
-        descriptors = loader.load_application(app + '.json')
+        descriptors = loader.load_application(app)
         builder = DebugBuilder(app, descriptors, input_path, output_path)
         builder.build_app()
 

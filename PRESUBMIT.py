@@ -39,11 +39,6 @@ def _CheckBuildGN(input_api, output_api):
     return _checkWithNodeScript(input_api, output_api, script_path)
 
 
-def _CheckApplicationDescriptors(input_api, output_api):
-    script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_application_descriptors.js")
-    return _checkWithNodeScript(input_api, output_api, script_path)
-
-
 def _CheckFormat(input_api, output_api):
 
     def popen(args):
@@ -194,7 +189,6 @@ def _CheckCSSViolations(input_api, output_api):
 def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CheckBuildGN(input_api, output_api))
-    results.extend(_CheckApplicationDescriptors(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))

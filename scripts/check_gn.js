@@ -8,6 +8,7 @@ const path = require('path');
 
 const FRONTEND_PATH = path.resolve(__dirname, '..', 'front_end');
 const inspectorManifest = require(path.resolve(FRONTEND_PATH, 'inspector.json'));
+const shellManifest = require(path.resolve(FRONTEND_PATH, 'shell.json'));
 const utils = require('./utils');
 
 const gnPath = path.resolve(__dirname, '..', 'BUILD.gn');
@@ -45,7 +46,7 @@ function checkNonAutostartNonRemoteModules() {
     ];
   }
   const text = lines.join('\n');
-  const modules = inspectorManifest.modules.filter(m => m.type !== 'autostart' && m.type !== 'remote').map(m => m.name);
+  const modules = inspectorManifest.modules.concat(shellManifest.modules).filter(m => m.type !== 'autostart' && m.type !== 'remote').map(m => m.name);
 
   const missingModules = modules.filter(m => !utils.includes(text, `${m}/${m}_module.js`));
   if (missingModules.length)

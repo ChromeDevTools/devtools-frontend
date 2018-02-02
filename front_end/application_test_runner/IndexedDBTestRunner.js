@@ -180,7 +180,7 @@ ApplicationTestRunner.deleteIDBValueAsync = function(databaseName, objectStoreNa
       'deleteIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\')');
 };
 
-TestRunner.deprecatedInitAsync(`
+var __indexedDBHelpers = `
   function dispatchCallback(callbackId) {
     console.log(callbackId);
   }
@@ -448,4 +448,10 @@ TestRunner.deprecatedInitAsync(`
     }
     return promise;
   }
-`);
+`;
+
+ApplicationTestRunner.setupIndexedDBHelpers = function() {
+  return TestRunner.evaluateInPagePromise(__indexedDBHelpers);
+};
+
+TestRunner.deprecatedInitAsync(__indexedDBHelpers);

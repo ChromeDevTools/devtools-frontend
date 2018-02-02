@@ -418,7 +418,7 @@ Console.ConsoleView = class extends UI.VBox {
     } else {
       this._scheduleViewportRefreshForTest(false);
     }
-    this._viewportThrottler.schedule(this._invalidateViewport.bind(this));
+    this._scheduledRefreshPromiseForTest = this._viewportThrottler.schedule(this._invalidateViewport.bind(this));
   }
 
   /**

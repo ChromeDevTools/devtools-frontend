@@ -191,6 +191,11 @@ ConsoleTestRunner.addConsoleViewSniffer = function(override, opt_sticky) {
   TestRunner.addSniffer(Console.ConsoleView.prototype, '_consoleMessageAddedForTest', override, opt_sticky);
 };
 
+ConsoleTestRunner.waitForPendingViewportUpdates = async function() {
+  var refreshPromise = Console.ConsoleView.instance()._scheduledRefreshPromiseForTest || Promise.resolve();
+  await refreshPromise;
+};
+
 /**
  * @param {string} code
  * @param {!Function=} callback

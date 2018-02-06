@@ -116,8 +116,6 @@ Sources.SourcesPanel = class extends UI.Panel {
     SDK.targetManager.addModelListener(
         SDK.DebuggerModel, SDK.DebuggerModel.Events.GlobalObjectCleared,
         event => this._debuggerResumed(/** @type {!SDK.DebuggerModel} */ (event.data)));
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.AvailableNodeTargetsChanged, this._availableNodeTargetsChanged, this);
     Extensions.extensionServer.addEventListener(
         Extensions.ExtensionServer.Events.SidebarPaneAdded, this._extensionSidebarPaneAdded, this);
     SDK.targetManager.observeTargets(this);
@@ -166,10 +164,6 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-  }
-
-  _availableNodeTargetsChanged() {
-    this._showThreadsIfNeeded();
   }
 
   _showThreadsIfNeeded() {

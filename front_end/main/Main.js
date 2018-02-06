@@ -689,14 +689,20 @@ Main.Main.NodeIndicator = class {
     element.addEventListener('click', () => InspectorFrontendHost.openNodeFrontend(), false);
     this._button = new UI.ToolbarItem(element);
     this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.AvailableNodeTargetsChanged, this._update, this);
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.AvailableTargetsChanged,
+        event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
-    this._update();
+    this._update([]);
   }
 
-  _update() {
-    this._element.classList.toggle('inactive', !SDK.targetManager.availableNodeTargetsCount());
-    if (SDK.targetManager.availableNodeTargetsCount())
+  /**
+   * @param {!Array<!Protocol.Target.TargetInfo>} targetInfos
+   */
+  _update(targetInfos) {
+    var hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
+    this._element.classList.toggle('inactive', !hasNode);
+    if (hasNode)
       this._button.setVisible(true);
   }
 

@@ -204,3 +204,36 @@ SDK.StubConnection = class {
     return Promise.resolve();
   }
 };
+
+/**
+ * @implements {Protocol.InspectorBackend.Connection}
+ */
+SDK.ChildConnection = class {
+  /**
+   * @param {!Protocol.TargetAgent} agent
+   * @param {string} sessionId
+   * @param {!Protocol.InspectorBackend.Connection.Params} params
+   */
+  constructor(agent, sessionId, params) {
+    this._agent = agent;
+    this._sessionId = sessionId;
+    this.onMessage = params.onMessage;
+    this.onDisconnect = params.onDisconnect;
+  }
+
+  /**
+   * @override
+   * @param {string} message
+   */
+  sendMessage(message) {
+    this._agent.sendMessageToTarget(message, this._sessionId);
+  }
+
+  /**
+   * @override
+   * @return {!Promise}
+   */
+  disconnect() {
+    throw 'Not implemented';
+  }
+};

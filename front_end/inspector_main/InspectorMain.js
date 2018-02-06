@@ -25,17 +25,13 @@ InspectorMain.InspectorMain = class extends Common.Object {
   }
 
   _connectAndCreateMainTarget() {
-    if (Runtime.queryParam('nodeFrontend'))
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
-    else if (Runtime.queryParam('v8only'))
+    if (Runtime.queryParam('v8only'))
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
 
     var target = SDK.targetManager.createTarget(
         'main', Common.UIString('Main'), this._capabilitiesForMainTarget(), this._createMainConnection.bind(this),
         null);
 
-    if (Runtime.queryParam('nodeFrontend'))
-      target.setInspectedURL('Node.js');
     if (target.hasJSCapability())
       target.runtimeAgent().runIfWaitingForDebugger();
   }
@@ -44,9 +40,6 @@ InspectorMain.InspectorMain = class extends Common.Object {
    * @return {number}
    */
   _capabilitiesForMainTarget() {
-    if (Runtime.queryParam('nodeFrontend'))
-      return SDK.Target.Capability.Target;
-
     if (Runtime.queryParam('isSharedWorker')) {
       return SDK.Target.Capability.Browser | SDK.Target.Capability.Inspector | SDK.Target.Capability.Log |
           SDK.Target.Capability.Network | SDK.Target.Capability.Target;
@@ -292,130 +285,7 @@ InspectorMain.BrowserChildTargetManager = class extends SDK.SDKModel {
 
 InspectorMain.BrowserChildTargetManager._lastAnonymousTargetId = 0;
 
-/**
- * @implements {Protocol.TargetDispatcher}
- */
-InspectorMain.NodeChildTargetManager = class extends SDK.SDKModel {
-  /**
-   * @param {!SDK.Target} parentTarget
-   */
-  constructor(parentTarget) {
-    super(parentTarget);
-    this._targetManager = parentTarget.targetManager();
-    this._parentTarget = parentTarget;
-    this._targetAgent = parentTarget.targetAgent();
-    /** @type {!Map<string, !SDK.ChildConnection>} */
-    this._childConnections = new Map();
-
-    parentTarget.registerTargetDispatcher(this);
-    this._targetAgent.setDiscoverTargets(true);
-
-    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
-    InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _devicesDiscoveryConfigChanged(event) {
-    var config = /** @type {!Adb.Config} */ (event.data);
-    var locations = [];
-    for (var address of config.networkDiscoveryConfig) {
-      var parts = address.split(':');
-      var port = parseInt(parts[1], 10);
-      if (parts[0] && port)
-        locations.push({host: parts[0], port: port});
-    }
-    this._targetAgent.setRemoteLocations(locations);
-  }
-
-  /**
-   * @override
-   */
-  dispose() {
-    InspectorFrontendHost.events.removeEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
-
-    for (var sessionId of this._childConnections.keys())
-      this.detachedFromTarget(sessionId, undefined);
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  targetCreated(targetInfo) {
-    if (targetInfo.type === 'node' && !targetInfo.attached)
-      this._targetAgent.attachToTarget(targetInfo.targetId);
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  targetInfoChanged(targetInfo) {
-  }
-
-  /**
-   * @override
-   * @param {string} targetId
-   */
-  targetDestroyed(targetId) {
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} waitingForDebugger
-   */
-  attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
-    var target = this._targetManager.createTarget(
-        targetInfo.targetId, Common.UIString('Node.js: %s', targetInfo.url), SDK.Target.Capability.JS,
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
-    target.runtimeAgent().runIfWaitingForDebugger();
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {string=} childTargetId
-   */
-  detachedFromTarget(sessionId, childTargetId) {
-    this._childConnections.get(sessionId).onDisconnect.call(null, 'target terminated');
-    this._childConnections.delete(sessionId);
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {string} message
-   * @param {string=} childTargetId
-   */
-  receivedMessageFromTarget(sessionId, message, childTargetId) {
-    var connection = this._childConnections.get(sessionId);
-    if (connection)
-      connection.onMessage.call(null, message);
-  }
-
-  /**
-   * @param {!Protocol.TargetAgent} agent
-   * @param {string} sessionId
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createChildConnection(agent, sessionId, params) {
-    var connection = new SDK.ChildConnection(agent, sessionId, params);
-    this._childConnections.set(sessionId, connection);
-    return connection;
-  }
-};
-
-if (Runtime.queryParam('nodeFrontend'))
-  SDK.SDKModel.register(InspectorMain.NodeChildTargetManager, SDK.Target.Capability.Target, true);
-else
-  SDK.SDKModel.register(InspectorMain.BrowserChildTargetManager, SDK.Target.Capability.Target, true);
+SDK.SDKModel.register(InspectorMain.BrowserChildTargetManager, SDK.Target.Capability.Target, true);
 
 /**
  * @implements {Protocol.InspectorDispatcher}

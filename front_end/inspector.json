@@ -15,7 +15,6 @@
     { "name": "layers", "condition": "!v8only" },
     { "name": "layer_viewer", "condition": "!v8only" },
     { "name": "network", "condition": "!v8only" },
-    { "name": "node_main", "condition": "nodeFrontend" },
     { "name": "product_registry_impl", "condition": "!v8only", "type": "remote" },
     { "name": "resources", "condition": "!v8only" },
     { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },

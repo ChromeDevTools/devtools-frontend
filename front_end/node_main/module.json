@@ -1,6 +1,10 @@
 {
     "extensions": [
         {
+            "type": "early-initialization",
+            "className": "NodeMain.NodeMain"
+        },
+        {
             "type": "view",
             "location": "panel",
             "id": "node-connection",

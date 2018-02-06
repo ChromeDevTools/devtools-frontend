@@ -1,0 +1,7 @@
+{
+  "modules" : [
+     { "name": "node_main", "type": "autostart" }
+ ],
+  "extends": "shell",
+  "has_html": true
+}

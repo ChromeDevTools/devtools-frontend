@@ -47,8 +47,7 @@
             "type": "@UI.ToolbarItem.Provider",
             "className": "InspectorMain.NodeIndicator",
             "order": 2,
-            "location": "main-toolbar-left",
-            "condition": "!nodeFrontend"
+            "location": "main-toolbar-left"
         },
         {
             "type": "setting",

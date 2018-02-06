@@ -1,0 +1,20 @@
+{
+    "extensions": [
+        {
+            "type": "view",
+            "location": "panel",
+            "id": "node-connection",
+            "title": "Connection",
+            "order": 0,
+            "className": "NodeMain.NodeConnectionsPanel",
+            "tags": "node"
+        }
+    ],
+    "dependencies": ["platform", "ui", "host", "components"],
+    "scripts": [
+        "NodeConnectionsPanel.js"
+    ],
+    "resources": [
+        "nodeConnectionsPanel.css"
+    ]
+}

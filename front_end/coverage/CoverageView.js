@@ -25,7 +25,8 @@ Coverage.CoverageView = class extends UI.VBox {
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    if (!Runtime.queryParam('nodeFrontend')) {
+    var mainTarget = SDK.targetManager.mainTarget();
+    if (mainTarget && mainTarget.model(SDK.ResourceTreeModel)) {
       var startWithReloadAction =
           /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.start-with-reload'));
       this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);

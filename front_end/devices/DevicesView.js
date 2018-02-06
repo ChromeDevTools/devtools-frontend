@@ -186,9 +186,6 @@ Devices.DevicesView = class extends UI.VBox {
    */
   wasShown() {
     super.wasShown();
-    // Retrigger notification first time.
-    if (Runtime.queryParam('nodeFrontend'))
-      InspectorFrontendHost.setDevicesUpdatesEnabled(false);
     InspectorFrontendHost.setDevicesUpdatesEnabled(true);
   }
 
@@ -196,9 +193,8 @@ Devices.DevicesView = class extends UI.VBox {
    * @override
    */
   willHide() {
-    super.wasShown();
-    if (!Runtime.queryParam('nodeFrontend'))
-      InspectorFrontendHost.setDevicesUpdatesEnabled(false);
+    super.willHide();
+    InspectorFrontendHost.setDevicesUpdatesEnabled(false);
   }
 };
 
@@ -237,13 +233,6 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
       InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
     });
     this._portForwardingView.show(this.element);
-
-    this._networkDiscoveryView = new Devices.DevicesView.NetworkDiscoveryView(false, (enabled, config) => {
-      this._config.networkDiscoveryEnabled = enabled;
-      this._config.networkDiscoveryConfig = config;
-      InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
-    });
-    this._networkDiscoveryView.show(this.element);
   }
 
   /**
@@ -253,7 +242,6 @@ Devices.DevicesView.DiscoveryView = class extends UI.VBox {
     this._config = config;
     this._discoverUsbDevicesCheckbox.checked = config.discoverUsbDevices;
     this._portForwardingView.discoveryConfigChanged(config.portForwardingEnabled, config.portForwardingConfig);
-    this._networkDiscoveryView.discoveryConfigChanged(config.networkDiscoveryEnabled, config.networkDiscoveryConfig);
   }
 };
 
@@ -415,178 +403,6 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
       }
       return true;
     }
-
-    /**
-     * @param {!Adb.PortForwardingRule} rule
-     * @param {number} index
-     * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
-     */
-    function addressValidator(rule, index, input) {
-      var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
-      if (!match)
-        return false;
-      var port = parseInt(match[2], 10);
-      return port <= 65535;
-    }
-  }
-};
-
-/**
- * @implements {UI.ListWidget.Delegate<Adb.PortForwardingRule>}
- */
-Devices.DevicesView.NetworkDiscoveryView = class extends UI.VBox {
-  /**
-   * @param {boolean} nodeFrontend
-   * @param {function(boolean, !Adb.NetworkDiscoveryConfig)} callback
-   */
-  constructor(nodeFrontend, callback) {
-    super();
-    this._nodeFrontend = nodeFrontend;
-    this._callback = callback;
-    this.element.classList.add('network-discovery-view');
-
-    var networkDiscoveryHeader = this.element.createChild('div', 'network-discovery-header');
-    var networkDiscoveryEnabledCheckbox = UI.CheckboxLabel.create(Common.UIString('Network targets'));
-    networkDiscoveryEnabledCheckbox.classList.add('network-discovery-checkbox');
-    networkDiscoveryHeader.appendChild(networkDiscoveryEnabledCheckbox);
-    this._networkDiscoveryEnabledCheckbox = networkDiscoveryEnabledCheckbox.checkboxElement;
-    this._networkDiscoveryEnabledCheckbox.disabled = !!Runtime.queryParam('nodeFrontend');
-    this._networkDiscoveryEnabledCheckbox.checked = !!Runtime.queryParam('nodeFrontend');
-    this._networkDiscoveryEnabledCheckbox.addEventListener('click', this._enabledCheckboxClicked.bind(this), false);
-
-    var networkDiscoveryFooter = this.element.createChild('div', 'network-discovery-footer');
-    if (nodeFrontend) {
-      networkDiscoveryFooter.createChild('span').textContent =
-          Common.UIString('Specify network endpoint and DevTools will connect to it automatically. ');
-      var link = networkDiscoveryFooter.createChild('span', 'link');
-      link.textContent = Common.UIString('Learn more');
-      link.addEventListener('click', () => InspectorFrontendHost.openInNewTab('https://nodejs.org/en/docs/inspector/'));
-    } else {
-      networkDiscoveryFooter.createChild('span').textContent = Common.UIString('Define the target connection address');
-    }
-
-    /** @type {!UI.ListWidget<!Adb.PortForwardingRule>} */
-    this._list = new UI.ListWidget(this);
-    this._list.registerRequiredCSS('devices/devicesView.css');
-    this._list.element.classList.add('network-discovery-list');
-    var placeholder = createElementWithClass('div', 'network-discovery-list-empty');
-    placeholder.textContent =
-        nodeFrontend ? Common.UIString('No connections specified') : Common.UIString('No addresses defined');
-    this._list.setEmptyPlaceholder(placeholder);
-    this._list.show(this.element);
-    /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
-    this._editor = null;
-
-    var addButton = UI.createTextButton(
-        nodeFrontend ? Common.UIString('Add connection') : Common.UIString('Add address'),
-        this._addNetworkTargetButtonClicked.bind(this), 'add-network-target-button', true /* primary */);
-    this.element.appendChild(addButton);
-
-    /** @type {!Array<{address: string}>} */
-    this._networkDiscoveryConfig = [];
-    this._networkDiscoveryEnabled = false;
-
-    if (nodeFrontend) {
-      this.element.classList.add('node-frontend');
-      this._list.element.classList.add('node-frontend');
-    }
-  }
-
-  _update() {
-    var config = this._networkDiscoveryConfig.map(item => item.address);
-    this._callback.call(null, this._networkDiscoveryEnabled, config);
-  }
-
-  _addNetworkTargetButtonClicked() {
-    this._list.addNewItem(this._networkDiscoveryConfig.length, {address: '', port: ''});
-  }
-
-  /**
-   * @param {boolean} networkDiscoveryEnabled
-   * @param {!Adb.NetworkDiscoveryConfig} networkDiscoveryConfig
-   */
-  discoveryConfigChanged(networkDiscoveryEnabled, networkDiscoveryConfig) {
-    this._networkDiscoveryEnabled = networkDiscoveryEnabled;
-    if (!Runtime.queryParam('nodeFrontend'))
-      this._networkDiscoveryEnabledCheckbox.checked = networkDiscoveryEnabled;
-    this._networkDiscoveryConfig = [];
-    this._list.clear();
-    for (var address of networkDiscoveryConfig) {
-      var item = {address: address, port: ''};
-      this._networkDiscoveryConfig.push(item);
-      this._list.appendItem(item, true);
-    }
-  }
-
-  _enabledCheckboxClicked() {
-    if (!Runtime.queryParam('nodeFrontend')) {
-      this._networkDiscoveryEnabled = this._networkDiscoveryEnabledCheckbox.checked;
-      this._update();
-    }
-  }
-
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {boolean} editable
-   * @return {!Element}
-   */
-  renderItem(rule, editable) {
-    var element = createElementWithClass('div', 'network-discovery-list-item');
-    element.createChild('div', 'network-discovery-value network-discovery-address').textContent = rule.address;
-    return element;
-  }
-
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {number} index
-   */
-  removeItemRequested(rule, index) {
-    this._networkDiscoveryConfig.splice(index, 1);
-    this._list.removeItem(index);
-    this._update();
-  }
-
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @param {!UI.ListWidget.Editor} editor
-   * @param {boolean} isNew
-   */
-  commitEdit(rule, editor, isNew) {
-    rule.address = editor.control('address').value.trim();
-    if (isNew)
-      this._networkDiscoveryConfig.push(rule);
-    this._update();
-  }
-
-  /**
-   * @override
-   * @param {!Adb.PortForwardingRule} rule
-   * @return {!UI.ListWidget.Editor}
-   */
-  beginEdit(rule) {
-    var editor = this._createEditor();
-    editor.control('address').value = rule.address;
-    return editor;
-  }
-
-  /**
-   * @return {!UI.ListWidget.Editor<!Adb.PortForwardingRule>}
-   */
-  _createEditor() {
-    if (this._editor)
-      return this._editor;
-
-    var editor = new UI.ListWidget.Editor();
-    this._editor = editor;
-    var content = editor.contentElement();
-    var fields = content.createChild('div', 'network-discovery-edit-row');
-    var input = editor.createInput('address', 'text', 'Network address (e.g. localhost:9229)', addressValidator);
-    fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
-    return editor;
 
     /**
      * @param {!Adb.PortForwardingRule} rule
@@ -892,46 +708,3 @@ Devices.DevicesView.BrowserSection;
 
 /** @typedef {!{page: ?Adb.Page, element: !Element, title: !Element, url: !Element, inspect: !Element}} */
 Devices.DevicesView.PageSection;
-
-
-Devices.DevicesView.Panel = class extends UI.Panel {
-  constructor() {
-    super('node-connection');
-    this.registerRequiredCSS('devices/devicesView.css');
-    this.contentElement.classList.add('devices-view-panel');
-
-    var container = this.contentElement.createChild('div', 'devices-view-panel-center');
-
-    var image = container.createChild('img', 'devices-view-panel-logo');
-    image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png';
-
-    InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
-
-    /** @type {!Adb.Config} */
-    this._config;
-
-    this.contentElement.tabIndex = 0;
-    this.setDefaultFocusedElement(this.contentElement);
-
-    // Trigger notification once.
-    InspectorFrontendHost.setDevicesUpdatesEnabled(false);
-    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
-
-    this._networkDiscoveryView = new Devices.DevicesView.NetworkDiscoveryView(true, (enabled, config) => {
-      this._config.networkDiscoveryEnabled = enabled;
-      this._config.networkDiscoveryConfig = config;
-      InspectorFrontendHost.setDevicesDiscoveryConfig(this._config);
-    });
-    this._networkDiscoveryView.show(container);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _devicesDiscoveryConfigChanged(event) {
-    this._config = /** @type {!Adb.Config} */ (event.data);
-    this._networkDiscoveryView.discoveryConfigChanged(
-        this._config.networkDiscoveryEnabled, this._config.networkDiscoveryConfig);
-  }
-};

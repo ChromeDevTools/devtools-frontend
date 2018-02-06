@@ -19,7 +19,7 @@ Audits2.ProtocolService = class extends Common.Object {
    * @return {!Promise<undefined>}
    */
   attach() {
-    return SDK.targetManager.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
+    return InspectorMain.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
       this._rawConnection = rawConnection;
     });
   }

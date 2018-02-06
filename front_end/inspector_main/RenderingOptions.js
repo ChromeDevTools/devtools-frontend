@@ -28,10 +28,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-Main.RenderingOptionsView = class extends UI.VBox {
+InspectorMain.RenderingOptionsView = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('main/renderingOptions.css');
+    this.registerRequiredCSS('inspector_main/renderingOptions.css');
 
     this._appendCheckbox(
         Common.UIString('Paint flashing'),

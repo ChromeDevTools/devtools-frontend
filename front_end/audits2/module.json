@@ -12,6 +12,7 @@
     "dependencies": [
         "components",
         "emulation",
+        "inspector_main",
         "sdk",
         "services",
         "ui"

@@ -337,7 +337,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._filmStripView.reset();
     this._filmStripView.setStatusText(Common.UIString(
         'Hit %s to reload and capture filmstrip.',
-        UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0].name));
   }
 
   /**

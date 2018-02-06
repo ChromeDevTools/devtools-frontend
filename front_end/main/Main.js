@@ -41,13 +41,6 @@ Main.Main = class {
   }
 
   /**
-   * @param {boolean} hard
-   */
-  static _reloadPage(hard) {
-    SDK.ResourceTreeModel.reloadAllPages(hard);
-  }
-
-  /**
    * @param {string} label
    */
   static time(label) {
@@ -207,10 +200,6 @@ Main.Main = class {
     Bindings.blackboxManager = new Bindings.BlackboxManager(Bindings.debuggerWorkspaceBinding);
 
     new Main.Main.PauseListener();
-    new Main.Main.InspectedNodeRevealer();
-    new Main.NetworkPanelIndicator();
-    new Main.SourcesPanelIndicator();
-    new Main.BackendSettingsSync();
 
     UI.actionRegistry = new UI.ActionRegistry();
     UI.shortcutRegistry = new UI.ShortcutRegistry(UI.actionRegistry, document);
@@ -246,9 +235,6 @@ Main.Main = class {
     UI.inspectorView.createToolbars();
     InspectorFrontendHost.loadCompleted();
 
-    InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
-
     var extensions = self.runtime.extensions(Common.QueryParamHandler);
     for (var extension of extensions) {
       var value = Runtime.queryParam(extension.descriptor()['name']);
@@ -269,32 +255,28 @@ Main.Main = class {
     Main.Main.timeEnd('Main._showAppUI');
   }
 
-  _initializeTarget() {
+  async _initializeTarget() {
     Main.Main.time('Main._initializeTarget');
-    SDK.targetManager.connectToMainTarget(webSocketConnectionLost);
-    InspectorFrontendHost.connectionReady();
-
+    var instances =
+        await Promise.all(self.runtime.extensions('early-initialization').map(extension => extension.instance()));
+    for (var instance of instances)
+      /** @type {!Common.Runnable} */ (instance).run();
     // Used for browser tests.
     InspectorFrontendHost.readyForTest();
-
     // Asynchronously run the extensions.
     setTimeout(this._lateInitialization.bind(this), 100);
     Main.Main.timeEnd('Main._initializeTarget');
-
-    function webSocketConnectionLost() {
-      if (!Main._disconnectedScreenWithReasonWasShown)
-        Main.RemoteDebuggingTerminatedScreen.show('WebSocket disconnected');
-    }
   }
 
   _lateInitialization() {
-    console.timeStamp('Main._lateInitialization');
+    Main.Main.time('Main._lateInitialization');
     this._registerShortcuts();
     Extensions.extensionServer.initializeExtensions();
-    if (Host.isUnderTest())
-      return;
-    for (var extension of self.runtime.extensions('late-initialization'))
-      extension.instance().then(instance => (/** @type {!Common.Runnable} */ (instance)).run());
+    if (!Host.isUnderTest()) {
+      for (var extension of self.runtime.extensions('late-initialization'))
+        extension.instance().then(instance => (/** @type {!Common.Runnable} */ (instance)).run());
+    }
+    Main.Main.timeEnd('Main._lateInitialization');
   }
 
   _registerForwardedShortcuts() {
@@ -439,93 +421,9 @@ Main.Main = class {
     document.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), true);
   }
 
-  /**
-   * @param {!Common.Event} event
-   */
-  _reloadInspectedPage(event) {
-    var hard = /** @type {boolean} */ (event.data);
-    Main.Main._reloadPage(hard);
-  }
-
   _onSuspendStateChanged() {
     var suspended = SDK.targetManager.allTargetsSuspended();
     UI.inspectorView.onSuspendStateChanged(suspended);
-  }
-};
-
-/**
- * @implements {Protocol.InspectorDispatcher}
- */
-Main.Main.InspectorModel = class extends SDK.SDKModel {
-  /**
-   * @param {!SDK.Target} target
-   */
-  constructor(target) {
-    super(target);
-    target.registerInspectorDispatcher(this);
-    target.inspectorAgent().enable();
-    this._hideCrashedDialog = null;
-  }
-
-  /**
-   * @override
-   * @param {string} reason
-   */
-  detached(reason) {
-    Main._disconnectedScreenWithReasonWasShown = true;
-    Main.RemoteDebuggingTerminatedScreen.show(reason);
-  }
-
-  /**
-   * @override
-   */
-  targetCrashed() {
-    var dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.addCloseButton();
-    dialog.setDimmed(true);
-    this._hideCrashedDialog = dialog.hide.bind(dialog);
-    new Main.TargetCrashedScreen(() => this._hideCrashedDialog = null).show(dialog.contentElement);
-    dialog.show();
-  }
-
-  /**
-   * @override;
-   */
-  targetReloadedAfterCrash() {
-    if (this._hideCrashedDialog) {
-      this._hideCrashedDialog.call(null);
-      this._hideCrashedDialog = null;
-    }
-  }
-};
-
-SDK.SDKModel.register(Main.Main.InspectorModel, SDK.Target.Capability.Inspector, true);
-
-/**
- * @implements {UI.ActionDelegate}
- * @unrestricted
- */
-Main.Main.ReloadActionDelegate = class {
-  /**
-   * @override
-   * @param {!UI.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
-    switch (actionId) {
-      case 'main.reload':
-        Main.Main._reloadPage(false);
-        return true;
-      case 'main.hard-reload':
-        Main.Main._reloadPage(true);
-        return true;
-      case 'main.debug-reload':
-        Components.reload();
-        return true;
-    }
-    return false;
   }
 };
 
@@ -679,91 +577,6 @@ Main.Main.MainMenuItem = class {
 };
 
 /**
- * @implements {UI.ToolbarItem.Provider}
- */
-Main.Main.NodeIndicator = class {
-  constructor() {
-    var element = createElement('div');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'main/nodeIcon.css');
-    this._element = shadowRoot.createChild('div', 'node-icon');
-    element.addEventListener('click', () => InspectorFrontendHost.openNodeFrontend(), false);
-    this._button = new UI.ToolbarItem(element);
-    this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
-    SDK.targetManager.addEventListener(
-        SDK.TargetManager.Events.AvailableTargetsChanged,
-        event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
-    this._button.setVisible(false);
-    this._update([]);
-  }
-
-  /**
-   * @param {!Array<!Protocol.Target.TargetInfo>} targetInfos
-   */
-  _update(targetInfos) {
-    var hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
-    this._element.classList.toggle('inactive', !hasNode);
-    if (hasNode)
-      this._button.setVisible(true);
-  }
-
-  /**
-   * @override
-   * @return {?UI.ToolbarItem}
-   */
-  item() {
-    return this._button;
-  }
-};
-
-Main.NetworkPanelIndicator = class {
-  constructor() {
-    // TODO: we should not access network from other modules.
-    if (!UI.inspectorView.hasPanel('network'))
-      return;
-    var manager = SDK.multitargetNetworkManager;
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
-    updateVisibility();
-
-    function updateVisibility() {
-      var icon = null;
-      if (manager.isThrottling()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Network throttling is enabled');
-      } else if (SDK.multitargetNetworkManager.isIntercepting()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Requests may be rewritten');
-      } else if (manager.isBlocking()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Requests may be blocked');
-      }
-      UI.inspectorView.setPanelIcon('network', icon);
-    }
-  }
-};
-
-/**
- * @unrestricted
- */
-Main.SourcesPanelIndicator = class {
-  constructor() {
-    Common.moduleSetting('javaScriptDisabled').addChangeListener(javaScriptDisabledChanged);
-    javaScriptDisabledChanged();
-
-    function javaScriptDisabledChanged() {
-      var icon = null;
-      var javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
-      if (javaScriptDisabled) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('JavaScript is disabled');
-      }
-      UI.inspectorView.setPanelIcon('sources', icon);
-    }
-  }
-};
-
-/**
  * @unrestricted
  */
 Main.Main.PauseListener = class {
@@ -786,24 +599,6 @@ Main.Main.PauseListener = class {
 };
 
 /**
- * @unrestricted
- */
-Main.Main.InspectedNodeRevealer = class {
-  constructor() {
-    SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.InspectNodeRequested, this._inspectNode, this);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _inspectNode(event) {
-    var deferredNode = /** @type {!SDK.DeferredDOMNode} */ (event.data);
-    Common.Revealer.reveal(deferredNode);
-  }
-};
-
-/**
  * @param {string} method
  * @param {?Object} params
  * @return {!Promise}
@@ -819,123 +614,23 @@ Main.sendOverProtocol = function(method, params) {
 };
 
 /**
+ * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Main.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
-  /**
-   * @param {string} reason
-   */
-  constructor(reason) {
-    super(true);
-    this.registerRequiredCSS('main/remoteDebuggingTerminatedScreen.css');
-    var message = this.contentElement.createChild('div', 'message');
-    message.createChild('span').textContent = Common.UIString('Debugging connection was closed. Reason: ');
-    message.createChild('span', 'reason').textContent = reason;
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('Reconnect when ready by reopening DevTools.');
-    var button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
-    this.contentElement.createChild('div', 'button').appendChild(button);
-  }
-
-  /**
-   * @param {string} reason
-   */
-  static show(reason) {
-    var dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.addCloseButton();
-    dialog.setDimmed(true);
-    new Main.RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
-    dialog.show();
-  }
-};
-
-
-/**
- * @unrestricted
- */
-Main.TargetCrashedScreen = class extends UI.VBox {
-  /**
-   * @param {function()} hideCallback
-   */
-  constructor(hideCallback) {
-    super(true);
-    this.registerRequiredCSS('main/targetCrashedScreen.css');
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('DevTools was disconnected from the page.');
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('Once page is reloaded, DevTools will automatically reconnect.');
-    this._hideCallback = hideCallback;
-  }
-
+Main.ReloadActionDelegate = class {
   /**
    * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
    */
-  willHide() {
-    this._hideCallback.call(null);
-  }
-};
-
-
-/**
- * @implements {SDK.TargetManager.Observer}
- * @unrestricted
- */
-Main.BackendSettingsSync = class {
-  constructor() {
-    this._autoAttachSetting = Common.settings.moduleSetting('autoAttachToCreatedPages');
-    this._autoAttachSetting.addChangeListener(this._updateAutoAttach, this);
-    this._updateAutoAttach();
-
-    this._adBlockEnabledSetting = Common.settings.moduleSetting('network.adBlockingEnabled');
-    this._adBlockEnabledSetting.addChangeListener(this._update, this);
-
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   */
-  _updateTarget(target) {
-    target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
-  }
-
-  _updateAutoAttach() {
-    InspectorFrontendHost.setOpenNewWindowForPopups(this._autoAttachSetting.get());
-  }
-
-  _update() {
-    SDK.targetManager.targets(SDK.Target.Capability.Browser).forEach(this._updateTarget, this);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @override
-   */
-  targetAdded(target) {
-    this._updateTarget(target);
-  }
-
-  /**
-   * @param {!SDK.Target} target
-   * @override
-   */
-  targetRemoved(target) {
-  }
-};
-
-/**
- * @implements {UI.SettingUI}
- * @unrestricted
- */
-Main.ShowMetricsRulersSettingUI = class {
-  /**
-   * @override
-   * @return {?Element}
-   */
-  settingElement() {
-    return UI.SettingsUI.createSettingCheckbox(
-        Common.UIString('Show rulers'), Common.moduleSetting('showMetricsRulers'));
+  handleAction(context, actionId) {
+    switch (actionId) {
+      case 'main.debug-reload':
+        Components.reload();
+        return true;
+    }
+    return false;
   }
 };
 

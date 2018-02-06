@@ -594,7 +594,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._recordingHint = this.element.createChild('div', 'network-status-pane fill');
     var hintText = this._recordingHint.createChild('div', 'recording-hint');
     var reloadShortcutNode = this._recordingHint.createChild('b');
-    reloadShortcutNode.textContent = UI.shortcutRegistry.shortcutDescriptorsForAction('main.reload')[0].name;
+    reloadShortcutNode.textContent = UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0].name;
 
     if (this._recording) {
       var recordingText = hintText.createChild('span');

@@ -24,6 +24,13 @@
                     "value": "zoom"
                 }
             ]
+        },
+        {
+            "type": "action",
+            "actionId": "components.collect-garbage",
+            "title": "Collect garbage",
+            "iconClass": "largeicon-trash-bin",
+            "className": "PerfUI.GCActionDelegate"
         }
     ],
     "dependencies": [
@@ -34,10 +41,11 @@
         "text_editor"
     ],
     "scripts": [
-        "LineLevelProfile.js",
-        "FilmStripView.js",
         "ChartViewport.js",
+        "FilmStripView.js",
         "FlameChart.js",
+        "GCActionDelegate.js",
+        "LineLevelProfile.js",
         "NetworkPriorities.js",
         "OverviewGrid.js",
         "PieChart.js",

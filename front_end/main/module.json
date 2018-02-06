@@ -30,41 +30,6 @@
         },
         {
             "type": "action",
-            "category": "Navigation",
-            "actionId": "main.reload",
-            "className": "Main.Main.ReloadActionDelegate",
-            "iconClass": "largeicon-refresh",
-            "title": "Reload page",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "F5 Ctrl+R"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+R"
-                }
-            ]
-        },
-        {
-            "type": "action",
-            "category": "Navigation",
-            "actionId": "main.hard-reload",
-            "className": "Main.Main.ReloadActionDelegate",
-            "title": "Hard reload page",
-            "bindings": [
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Shift+F5 Ctrl+F5 Ctrl+Shift+F5 Shift+Ctrl+R"
-                },
-                {
-                    "platform": "mac",
-                    "shortcut": "Shift+Meta+R"
-                }
-            ]
-        },
-        {
-            "type": "action",
             "category": "Drawer",
             "actionId": "main.toggle-drawer",
             "className": "UI.InspectorView.DrawerToggleActionDelegate",
@@ -79,7 +44,7 @@
         {
             "type": "action",
             "actionId": "main.debug-reload",
-            "className": "Main.Main.ReloadActionDelegate",
+            "className": "Main.ReloadActionDelegate",
             "bindings": [
                 {
                     "shortcut": "Alt+R"
@@ -204,13 +169,6 @@
         },
         {
             "type": "@UI.ToolbarItem.Provider",
-            "className": "Main.Main.NodeIndicator",
-            "order": 2,
-            "location": "main-toolbar-left",
-            "condition": "!nodeFrontend"
-        },
-        {
-            "type": "@UI.ToolbarItem.Provider",
             "separator": true,
             "order": 98,
             "location": "main-toolbar-right"
@@ -226,64 +184,6 @@
             "className": "Components.DockController.CloseButtonProvider",
             "order": 100,
             "location": "main-toolbar-right"
-        },
-        {
-            "type": "setting",
-            "category": "Network",
-            "title": "Disable cache (while DevTools is open)",
-            "settingName": "cacheDisabled",
-            "settingType": "boolean",
-            "order": 0,
-            "defaultValue": false,
-            "userActionCondition": "hasOtherClients",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Disable cache (while DevTools is open)"
-                },
-                {
-                    "value": false,
-                    "title": "Enable cache"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "Network",
-            "title": "Force ad blocking on this site",
-            "settingName": "network.adBlockingEnabled",
-            "settingType": "boolean",
-            "storageType": "session",
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Block ads on this site"
-                },
-                {
-                    "value": false,
-                    "title": "Show ads on this site, if allowed"
-                }
-            ]
-        },
-        {
-            "type": "setting",
-            "category": "DevTools",
-            "title": "Auto-open DevTools for popups",
-            "settingName": "autoAttachToCreatedPages",
-            "settingType": "boolean",
-            "order": 2,
-            "defaultValue": false,
-            "options": [
-                {
-                    "value": true,
-                    "title": "Auto-open DevTools for popups"
-                },
-                {
-                    "value": false,
-                    "title": "Do not auto-open DevTools for popups"
-                }
-            ]
         },
         {
             "type": "setting",
@@ -341,41 +241,9 @@
             "defaultValue": false
         },
         {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Don't show Chrome Data Saver warning",
-            "settingName": "disableDataSaverInfobar",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Appearance",
-            "title": "Disable paused state overlay",
-            "settingName": "disablePausedStateOverlay",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
             "type": "@UI.SettingUI",
             "category": "Extensions",
             "className": "Components.Linkifier.LinkHandlerSettingUI"
-        },
-        {
-            "type": "@UI.SettingUI",
-            "category": "Elements",
-            "order": 3,
-            "className": "Main.ShowMetricsRulersSettingUI"
-        },
-        {
-            "type": "view",
-            "location": "drawer-view",
-            "id": "rendering",
-            "title": "Rendering",
-            "persistence": "closeable",
-            "order": 50,
-            "condition": "!v8only",
-            "className": "Main.RenderingOptionsView"
         },
         {
             "type": "setting",
@@ -412,20 +280,6 @@
             "name": "panel",
             "category": "Panel",
             "className": "UI.InspectorView"
-        },
-        {
-            "type": "action",
-            "actionId": "components.collect-garbage",
-            "title": "Collect garbage",
-            "iconClass": "largeicon-trash-bin",
-            "className": "Main.GCActionDelegate"
-        },
-        {
-            "type": "action",
-            "category": "Mobile",
-            "actionId": "components.request-app-banner",
-            "className": "Main.RequestAppBannerActionDelegate",
-            "title": "Add to homescreen"
         }
     ],
     "dependencies": [
@@ -437,17 +291,8 @@
         "console_model"
     ],
     "scripts": [
-        "RenderingOptions.js",
         "SimpleApp.js",
-        "GCActionDelegate.js",
-        "RequestAppBannerActionDelegate.js",
         "ExecutionContextSelector.js",
         "Main.js"
-    ],
-    "resources": [
-        "nodeIcon.css",
-        "remoteDebuggingTerminatedScreen.css",
-        "renderingOptions.css",
-        "targetCrashedScreen.css"
     ]
 }

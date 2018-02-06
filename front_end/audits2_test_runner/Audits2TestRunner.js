@@ -25,7 +25,7 @@ Audits2TestRunner.getResultsElement = function() {
  * @return {?Element}
  */
 Audits2TestRunner.getDialogElement = function() {
-  return Audits2TestRunner._panel()._dialog.contentElement.shadowRoot.querySelector('.audits2-view');
+  return Audits2TestRunner._panel()._dialog._dialog.contentElement.shadowRoot.querySelector('.audits2-view');
 };
 
 /**
@@ -53,7 +53,7 @@ Audits2TestRunner.openDialog = function() {
  * @param {function(string)} onMessage
  */
 Audits2TestRunner.addStatusListener = function(onMessage) {
-  TestRunner.addSniffer(Audits2.Audits2Panel.prototype, '_updateStatus', onMessage, true);
+  TestRunner.addSniffer(Audits2.Audits2Dialog.prototype, '_updateStatus', onMessage, true);
 };
 
 /**
@@ -93,7 +93,7 @@ Audits2TestRunner._buttonStateLabel = function(button) {
 
 Audits2TestRunner.dumpDialogState = function() {
   TestRunner.addResult('\n========== Audits2 Dialog State ==========');
-  var dialog = Audits2TestRunner._panel()._dialog;
+  var dialog = Audits2TestRunner._panel()._dialog && Audits2TestRunner._panel()._dialog._dialog;
   TestRunner.addResult(dialog ? 'Dialog is visible\n' : 'No dialog');
   if (!dialog)
     return;

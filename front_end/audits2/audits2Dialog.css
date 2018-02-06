@@ -32,7 +32,7 @@ header {
 
 .audits2-form {
   flex: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .audits2-form label {

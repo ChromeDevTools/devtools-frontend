@@ -23,7 +23,10 @@
         "lighthouse/renderer/details-renderer.js",
         "lighthouse/renderer/crc-details-renderer.js",
         "lighthouse/renderer/report-renderer.js",
-        "Audits2Panel.js"
+        "Audits2Panel.js",
+        "Audits2Dialog.js",
+        "Audits2StatusView.js",
+        "Audits2ProtocolService.js"
     ],
     "resources": [
         "audits2Dialog.css",

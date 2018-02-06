@@ -943,7 +943,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
    * @param {string=} title
    */
   constructor(id, title) {
-    super(id || Profiler.HeapSnapshotProfileType.TypeId, title || Common.UIString('Take heap snapshot'));
+    super(id || Profiler.HeapSnapshotProfileType.TypeId, title || ls`Heap snapshot`);
     SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
     SDK.targetManager.addModelListener(
         SDK.HeapProfilerModel, SDK.HeapProfilerModel.Events.ResetProfiles, this._resetProfiles, this);
@@ -1095,7 +1095,7 @@ Profiler.HeapSnapshotProfileType.SnapshotReceived = 'SnapshotReceived';
  */
 Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotProfileType {
   constructor() {
-    super(Profiler.TrackingHeapSnapshotProfileType.TypeId, Common.UIString('Record allocation timeline'));
+    super(Profiler.TrackingHeapSnapshotProfileType.TypeId, ls`Allocation instrumentation on timeline`);
   }
 
   /**
@@ -1165,8 +1165,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
   }
 
   get buttonTooltip() {
-    return this._recording ? Common.UIString('Stop recording heap profile') :
-                             Common.UIString('Start recording heap profile');
+    return this._recording ? ls`Stop recording heap profile` : ls`Start recording heap profile`;
   }
 
   /**
@@ -1245,12 +1244,15 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
   }
 
   get treeItemTitle() {
-    return Common.UIString('ALLOCATION TIMELINES');
+    return ls`ALLOCATION TIMELINES`;
   }
 
   get description() {
-    return Common.UIString(
-        'Allocation timelines show memory allocations from your heap over time. Use this profile type to isolate memory leaks.');
+    return ls`
+        Allocation timelines show instrumented JavaScript memory allocations over time.
+        Once profile is recorded you can select a time interval to see objects that
+        were allocated within it and still alive by the end of recording.
+        Use this profile type to isolate memory leaks.`;
   }
 
   /**

@@ -160,16 +160,18 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
  */
 Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTypeBase {
   constructor() {
-    super(Profiler.SamplingHeapProfileType.TypeId, Common.UIString('Record allocation profile'));
+    super(Profiler.SamplingHeapProfileType.TypeId, ls`Allocation sampling`);
     Profiler.SamplingHeapProfileType.instance = this;
   }
 
   get treeItemTitle() {
-    return Common.UIString('ALLOCATION PROFILES');
+    return ls`SAMPLING PROFILES`;
   }
 
   get description() {
-    return Common.UIString('Allocation profiles show memory allocations from your JavaScript functions.');
+    return ls`Record memory allocations using sampling method.
+              This profile type has minimal performance overhead and can be used for long running operations.
+              It provides good approximation of allocations broken down by JavaScript execution stack.`;
   }
 
   /**
@@ -195,16 +197,16 @@ Profiler.SamplingHeapProfileType.TypeId = 'SamplingHeap';
  */
 Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProfileTypeBase {
   constructor() {
-    super(Profiler.SamplingNativeHeapProfileType.TypeId, Common.UIString('Record native memory allocation profile'));
+    super(Profiler.SamplingNativeHeapProfileType.TypeId, ls`Native memory allocation sampling`);
     Profiler.SamplingNativeHeapProfileType.instance = this;
   }
 
   get treeItemTitle() {
-    return Common.UIString('NATIVE ALLOCATION PROFILES');
+    return ls`NATIVE SAMPLING PROFILES`;
   }
 
   get description() {
-    return Common.UIString('Allocation profiles show sampled native memory allocations from the renderer process.');
+    return ls`Allocation profiles show sampled native memory allocations from the renderer process.`;
   }
 
   /**
@@ -230,7 +232,7 @@ Profiler.SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeapRecording';
  */
 Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapProfileTypeBase {
   constructor() {
-    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, Common.UIString('Take native memory allocations snapshot'));
+    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, ls`Native memory allocation snapshot`);
     Profiler.SamplingNativeHeapSnapshotType.instance = this;
   }
 
@@ -243,14 +245,13 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
   }
 
   get treeItemTitle() {
-    return Common.UIString('NATIVE SNAPSHOTS');
+    return ls`NATIVE SNAPSHOTS`;
   }
 
   get description() {
-    return Common.UIString(
-        'Native memory snapshots show sampled native allocations in the renderer process since start up. ' +
-        'Chrome has to be started with --sampling-heap-profiler flag. ' +
-        'Check flags at chrome://flags');
+    return ls`Native memory snapshots show sampled native allocations in the renderer process since start up.
+              Chrome has to be started with --sampling-heap-profiler flag.
+              Check flags at chrome://flags`;
   }
 
   /**

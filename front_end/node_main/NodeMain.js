@@ -6,9 +6,6 @@
  * @implements {Common.Runnable}
  */
 NodeMain.NodeMain = class extends Common.Object {
-  constructor() {
-  }
-
   /**
    * @override
    */

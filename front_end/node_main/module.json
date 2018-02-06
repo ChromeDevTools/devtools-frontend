@@ -16,7 +16,8 @@
     ],
     "dependencies": ["platform", "ui", "host", "components"],
     "scripts": [
-        "NodeConnectionsPanel.js"
+        "NodeConnectionsPanel.js",
+        "NodeMain.js"
     ],
     "resources": [
         "nodeConnectionsPanel.css"

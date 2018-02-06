@@ -106,6 +106,7 @@ TimelineModel.TimelineModel = class {
     switch (event.name) {
       case recordTypes.TimeStamp:
       case recordTypes.MarkFirstPaint:
+      case recordTypes.MarkFCP:
       case recordTypes.MarkFMP:
       case recordTypes.MarkFMPCandidate:
         return true;
@@ -1102,6 +1103,7 @@ TimelineModel.TimelineModel.RecordType = {
   MarkLoad: 'MarkLoad',
   MarkDOMContent: 'MarkDOMContent',
   MarkFirstPaint: 'MarkFirstPaint',
+  MarkFCP: 'firstContentfulPaint',
   MarkFMP: 'firstMeaningfulPaint',
   MarkFMPCandidate: 'firstMeaningfulPaintCandidate',
 

@@ -115,10 +115,12 @@ Timeline.TimelineUIUtils = class {
         new Timeline.TimelineRecordStyle(Common.UIString('DOMContentLoaded event'), categories['scripting'], true);
     eventStyles[recordTypes.MarkFirstPaint] =
         new Timeline.TimelineRecordStyle(Common.UIString('First paint'), categories['painting'], true);
+    eventStyles[recordTypes.MarkFCP] =
+        new Timeline.TimelineRecordStyle(Common.UIString('First contentful paint'), categories['rendering'], true);
     eventStyles[recordTypes.MarkFMP] =
-        new Timeline.TimelineRecordStyle(Common.UIString('FMP'), categories['rendering'], true);
+        new Timeline.TimelineRecordStyle(Common.UIString('First meaningful paint'), categories['rendering'], true);
     eventStyles[recordTypes.MarkFMPCandidate] =
-        new Timeline.TimelineRecordStyle(Common.UIString('FMP candidate'), categories['rendering'], true);
+        new Timeline.TimelineRecordStyle(Common.UIString('Meaningful paint candidate'), categories['rendering'], true);
     eventStyles[recordTypes.TimeStamp] =
         new Timeline.TimelineRecordStyle(Common.UIString('Timestamp'), categories['scripting']);
     eventStyles[recordTypes.ConsoleTime] =
@@ -1530,7 +1532,7 @@ Timeline.TimelineUIUtils = class {
     var recordTypes = TimelineModel.TimelineModel.RecordType;
     return new TimelineModel.TimelineInvisibleEventsFilter(
         !Runtime.experiments.isEnabled('timelinePaintTimingMarkers') ?
-            [recordTypes.MarkFMP, recordTypes.MarkFMPCandidate] :
+            [recordTypes.MarkFCP, recordTypes.MarkFMP, recordTypes.MarkFMPCandidate] :
             []);
   }
 
@@ -1786,15 +1788,19 @@ Timeline.TimelineUIUtils = class {
         tall = true;
         break;
       case recordTypes.MarkFirstPaint:
-        color = 'green';
+        color = 'hsl(180, 45%, 79%)';
         tall = true;
         break;
-      case recordTypes.MarkFMP:
-        color = 'orange';
+      case recordTypes.MarkFCP:
+        color = 'hsl(160, 43%, 58%)';
         tall = true;
         break;
       case recordTypes.MarkFMPCandidate:
-        color = 'orange';
+        color = 'hsl(146, 57%, 40%)';
+        tall = true;
+        break;
+      case recordTypes.MarkFMP:
+        color = 'hsl(144, 100%, 21%)';
         tall = true;
         break;
       case recordTypes.TimeStamp:

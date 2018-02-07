@@ -413,6 +413,14 @@ UI.ViewManager = class {
 
   /**
    * @param {string} location
+   * @return {boolean}
+   */
+  hasViewsForLocation(location) {
+    return !!this._viewsForLocation(location).length;
+  }
+
+  /**
+   * @param {string} location
    * @return {!Array<!UI.View>}
    */
   _viewsForLocation(location) {

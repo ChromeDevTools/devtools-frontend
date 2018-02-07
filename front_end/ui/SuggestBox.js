@@ -168,6 +168,7 @@ UI.SuggestBox = class {
    */
   _applySuggestion(isIntermediateSuggestion) {
     if (this._onlyCompletion) {
+      UI.ARIAUtils.alert(ls`${this._onlyCompletion}, suggestion`, this._element);
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
     }
@@ -179,6 +180,7 @@ UI.SuggestBox = class {
     if (!suggestion)
       return false;
 
+    UI.ARIAUtils.alert(ls`${suggestion}, suggestion`, this._element);
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
     return true;
   }

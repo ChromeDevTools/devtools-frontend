@@ -251,8 +251,10 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
   selectedItemChanged(from, to, fromElement, toElement) {
     if (fromElement)
       fromElement.classList.remove('selected');
-    if (toElement)
+    if (toElement) {
       toElement.classList.add('selected');
+      UI.ARIAUtils.alert(toElement.textContent, toElement);
+    }
   }
 
   /**

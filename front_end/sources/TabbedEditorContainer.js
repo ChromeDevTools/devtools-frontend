@@ -346,6 +346,11 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   addUISourceCode(uiSourceCode) {
+    var binding = Persistence.persistence.binding(uiSourceCode);
+    uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
+    if (this._currentFile === uiSourceCode)
+      return;
+
     var uri = uiSourceCode.url();
     var index = this._history.index(uri);
     if (index === -1)

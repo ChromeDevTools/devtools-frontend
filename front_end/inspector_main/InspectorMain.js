@@ -361,6 +361,23 @@ InspectorMain.ReloadActionDelegate = class {
 };
 
 /**
+ * @implements {UI.ActionDelegate}
+ * @unrestricted
+ */
+InspectorMain.FocusDebuggeeActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    SDK.targetManager.mainTarget().pageAgent().bringToFront();
+    return true;
+  }
+};
+
+/**
  * @implements {UI.ToolbarItem.Provider}
  */
 InspectorMain.NodeIndicator = class {

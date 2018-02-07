@@ -554,6 +554,10 @@ Main.Main.MainMenuItem = class {
       contextMenu.discard();
     }
 
+    if (Components.dockController.dockSide() === Components.DockController.State.Undocked &&
+        SDK.targetManager.mainTarget() && SDK.targetManager.mainTarget().hasBrowserCapability())
+      contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', Common.UIString('Focus debuggee'));
+
     contextMenu.defaultSection().appendAction(
         'main.toggle-drawer',
         UI.inspectorView.drawerVisible() ? Common.UIString('Hide console drawer') :

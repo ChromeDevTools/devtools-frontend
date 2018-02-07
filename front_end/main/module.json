@@ -31,9 +31,22 @@
         {
             "type": "action",
             "category": "Drawer",
+            "actionId": "inspector_main.focus-debuggee",
+            "className": "InspectorMain.FocusDebuggeeActionDelegate",
+            "order": 100,
+            "title": "Focus debuggee",
+            "bindings": [
+                {
+                    "shortcut": "F12"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "category": "Drawer",
             "actionId": "main.toggle-drawer",
             "className": "UI.InspectorView.DrawerToggleActionDelegate",
-            "order": 100,
+            "order": 101,
             "title": "Toggle drawer",
             "bindings": [
                 {

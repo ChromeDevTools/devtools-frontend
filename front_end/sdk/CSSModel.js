@@ -784,6 +784,7 @@ SDK.CSSModel.Edit = class {
     this.styleSheetId = styleSheetId;
     this.oldRange = oldRange;
     this.newRange = TextUtils.TextRange.fromEdit(oldRange, newText);
+    this.newText = newText;
     this.payload = payload;
   }
 };

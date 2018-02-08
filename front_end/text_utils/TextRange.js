@@ -232,6 +232,24 @@ TextUtils.TextRange = class {
   }
 
   /**
+   * @param {number} line
+   * @param {number} column
+   * @return {!TextUtils.TextRange}
+   */
+  relativeFrom(line, column) {
+    var relative = this.clone();
+
+    if (this.startLine === 0)
+      relative.startColumn += column;
+    if (this.endLine === 0)
+      relative.endColumn += column;
+
+    relative.startLine += line;
+    relative.endLine += line;
+    return relative;
+  }
+
+  /**
    * @param {!TextUtils.TextRange} originalRange
    * @param {!TextUtils.TextRange} editedRange
    * @return {!TextUtils.TextRange}

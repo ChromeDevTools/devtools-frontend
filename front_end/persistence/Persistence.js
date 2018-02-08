@@ -259,7 +259,7 @@ Persistence.Persistence = class extends Common.Object {
   _moveBreakpoints(from, to) {
     var breakpoints = this._breakpointManager.breakpointsForUISourceCode(from);
     for (var breakpoint of breakpoints) {
-      breakpoint.remove();
+      breakpoint.remove(true /* keepInStorage */);
       this._breakpointManager.setBreakpoint(
           to, breakpoint.lineNumber(), breakpoint.columnNumber(), breakpoint.condition(), breakpoint.enabled());
     }

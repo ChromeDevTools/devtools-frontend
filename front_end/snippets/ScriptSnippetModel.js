@@ -305,7 +305,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
   _removeBreakpoints(uiSourceCode) {
     var breakpointLocations = Bindings.breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
     for (var i = 0; i < breakpointLocations.length; ++i)
-      breakpointLocations[i].breakpoint.remove();
+      breakpointLocations[i].breakpoint.remove(false /* keepInStorage */);
     return breakpointLocations;
   }
 

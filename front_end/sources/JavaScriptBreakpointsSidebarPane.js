@@ -181,7 +181,8 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     var contextMenu = new UI.ContextMenu(event);
     var removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
                                                     Common.UIString('Remove breakpoint');
-    contextMenu.defaultSection().appendItem(removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove()));
+    contextMenu.defaultSection().appendItem(
+        removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false /* keepInStorage */)));
 
     var breakpointActive = this._breakpointManager.breakpointsActive();
     var breakpointActiveTitle =

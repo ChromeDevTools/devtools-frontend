@@ -112,7 +112,7 @@ Bindings.BreakpointManager = class extends Common.Object {
     if (fromURL === toSourceCode.url()) {
       var provisionalBreakpoints = this._provisionalBreakpointsForURL(fromURL);
       for (var breakpoint of provisionalBreakpoints.values())
-        breakpoint.remove();
+        breakpoint.remove(true /* keepInStorage */);
     }
   }
 
@@ -358,7 +358,7 @@ Bindings.BreakpointManager = class extends Common.Object {
   removeAllBreakpoints() {
     var breakpoints = this._allBreakpoints();
     for (var i = 0; i < breakpoints.length; ++i)
-      breakpoints[i].remove();
+      breakpoints[i].remove(false /* keepInStorage */);
   }
 
   /**
@@ -368,7 +368,7 @@ Bindings.BreakpointManager = class extends Common.Object {
     var allBreakpoints = this._allBreakpoints();
     allBreakpoints.forEach(breakpoint => {
       if (!selectedBreakpoints.has(breakpoint))
-        breakpoint.remove();
+        breakpoint.remove(false /* keepInStorage */);
     });
   }
 
@@ -651,7 +651,7 @@ Bindings.BreakpointManager.Breakpoint = class {
   }
 
   /**
-   * @param {boolean=} keepInStorage
+   * @param {boolean} keepInStorage
    */
   remove(keepInStorage) {
     this._isRemoved = true;
@@ -926,7 +926,7 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
         uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
     if (breakpoint && breakpoint !== this._breakpoint) {
       // location clash
-      this._breakpoint.remove();
+      this._breakpoint.remove(false /* keepInStorage */);
       return false;
     }
     this._debuggerWorkspaceBinding.createLiveLocation(

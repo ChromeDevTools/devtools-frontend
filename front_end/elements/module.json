@@ -263,6 +263,7 @@
         "PropertiesWidget.js",
         "StylePropertyHighlighter.js",
         "StylesSidebarPane.js",
+        "StylePropertyTreeElement.js",
         "ComputedStyleWidget.js",
         "ElementsPanel.js",
         "ClassesPaneWidget.js",

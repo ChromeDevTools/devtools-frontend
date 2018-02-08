@@ -1159,10 +1159,7 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _promptTextChanged() {
-    // Scroll to the bottom, except when the prompt is the only visible item.
-    if (this.itemCount() !== 0 && this._viewport.firstVisibleIndex() !== this.itemCount())
-      this._immediatelyScrollToBottom();
-
+    this._viewport.setStickToBottom(this._messagesElement.isScrolledToBottom());
     this._promptTextChangedForTest();
   }
 

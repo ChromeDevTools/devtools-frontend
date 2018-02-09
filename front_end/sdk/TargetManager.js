@@ -285,6 +285,7 @@ SDK.TargetManager = class extends Common.Object {
 
 /** @enum {symbol} */
 SDK.TargetManager.Events = {
+  AvailableTargetsChanged: Symbol('AvailableTargetsChanged'),
   InspectedURLChanged: Symbol('InspectedURLChanged'),
   NameChanged: Symbol('NameChanged'),
   SuspendStateChanged: Symbol('SuspendStateChanged')

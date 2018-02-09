@@ -23,6 +23,6 @@
     { "name": "security_test_runner" },
     { "name": "sources_test_runner" }
   ],
-  "extends": "inspector",
+  "extends": "devtools_app",
   "has_html": true
 }

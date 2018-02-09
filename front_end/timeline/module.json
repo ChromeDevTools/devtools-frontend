@@ -181,6 +181,15 @@
                     "shortcut": "Meta+Y"
                 }
             ]
+        },
+        {
+            "type": "view",
+            "location": "panel",
+            "id": "js_profiler",
+            "title": "JavaScript Profiler",
+            "persistence": "closeable",
+            "order": 65,
+            "className": "Profiler.JSProfilerPanel"
         }
     ],
     "dependencies": [
@@ -191,6 +200,7 @@
         "extensions",
         "data_grid",
         "product_registry",
+        "profiler",
         "mobile_throttling"
     ],
     "scripts": [

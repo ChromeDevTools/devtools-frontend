@@ -230,6 +230,26 @@
                     "title": "Disable request blocking"
                 }
             ]
+        },
+        {
+            "type": "setting",
+            "category": "Network",
+            "title": "Disable cache (while DevTools is open)",
+            "settingName": "cacheDisabled",
+            "settingType": "boolean",
+            "order": 0,
+            "defaultValue": false,
+            "userActionCondition": "hasOtherClients",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Disable cache (while DevTools is open)"
+                },
+                {
+                    "value": false,
+                    "title": "Enable cache"
+                }
+            ]
         }
     ],
     "scripts": [
@@ -251,6 +271,7 @@
         "CSSRule.js",
         "CSSStyleDeclaration.js",
         "CSSStyleSheetHeader.js",
+        "ChildTargetManager.js",
         "DOMDebuggerModel.js",
         "DOMModel.js",
         "DebuggerModel.js",

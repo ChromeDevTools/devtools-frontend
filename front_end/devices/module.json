@@ -8,7 +8,6 @@
             "persistence": "closeable",
             "order": 50,
             "className": "Devices.DevicesView",
-            "condition": "!v8only",
             "tags": "usb, android, mobile"
         }
     ],

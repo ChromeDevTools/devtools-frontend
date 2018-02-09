@@ -144,7 +144,7 @@ Main.Main = class {
   /**
    * @suppressGlobalPropertiesCheck
    */
-  _createAppUI() {
+  async _createAppUI() {
     Main.Main.time('Main._createAppUI');
 
     UI.viewManager = new UI.ViewManager();
@@ -207,7 +207,18 @@ Main.Main = class {
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();
 
-    self.runtime.extension(Common.AppProvider).instance().then(this._showAppUI.bind(this));
+    // Pick first app we could instantiate (for test harness).
+    for (var extension of self.runtime.extensions(Common.AppProvider)) {
+      try {
+        var instance = await extension.instance();
+        if (instance) {
+          this._showAppUI(instance);
+          break;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
     Main.Main.timeEnd('Main._createAppUI');
   }
 

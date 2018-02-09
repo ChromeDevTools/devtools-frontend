@@ -62,7 +62,7 @@ Emulation.AdvancedApp = class {
     if (this._toolboxWindow)
       return;
 
-    var url = window.location.href.replace('inspector.html', 'toolbox.html');
+    var url = window.location.href.replace('devtools_app.html', 'toolbox.html');
     this._toolboxWindow = window.open(url, undefined);
   }
 

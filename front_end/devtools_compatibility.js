@@ -1208,7 +1208,7 @@
   }
 
   function installBackwardsCompatibility() {
-    if (window.location.search.indexOf('remoteFrontend') === -1)
+    if (window.location.href.indexOf('/remote/') === -1)
       return;
 
     // Support for legacy (<M65) frontends.

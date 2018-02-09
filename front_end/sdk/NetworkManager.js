@@ -43,11 +43,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
     if (Common.moduleSetting('cacheDisabled').get())
       this._networkAgent.setCacheDisabled(true);
 
-    // Limit buffer when talking to a remote device.
-    if (Runtime.queryParam('remoteFrontend') || Runtime.queryParam('ws'))
-      this._networkAgent.enable(10000000, 5000000, SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH);
-    else
-      this._networkAgent.enable(undefined, undefined, SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH);
+    this._networkAgent.enable(undefined, undefined, SDK.NetworkManager.MAX_EAGER_POST_REQUEST_BODY_LENGTH);
 
     this._bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
     if (this._bypassServiceWorkerSetting.get())

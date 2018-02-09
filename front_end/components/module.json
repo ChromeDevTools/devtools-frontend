@@ -51,7 +51,8 @@
         "DOMPresentationUtils.js",
         "DockController.js",
         "Linkifier.js",
-        "Reload.js"
+        "Reload.js",
+        "TargetDetachedDialog.js"
     ],
     "resources": [
         "domBreakpointsSidebarPane.css",

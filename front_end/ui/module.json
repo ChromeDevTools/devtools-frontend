@@ -37,6 +37,7 @@
         "Popover.js",
         "ProgressIndicator.js",
         "ResizerWidget.js",
+        "RemoteDebuggingTerminatedScreen.js",
         "ReportView.js",
         "RootView.js",
         "SearchableView.js",
@@ -44,6 +45,7 @@
         "SoftContextMenu.js",
         "SoftDropDown.js",
         "SplitWidget.js",
+        "TargetCrashedScreen.js",
         "TextPrompt.js",
         "ThrottledWidget.js",
         "Toolbar.js",
@@ -79,10 +81,10 @@
         "popover.css",
         "progressIndicator.css",
         "radioButton.css",
+        "remoteDebuggingTerminatedScreen.css",
         "reportView.css",
         "rootView.css",
         "searchableView.css",
-        "viewContainers.css",
         "slider.css",
         "smallBubble.css",
         "softContextMenu.css",
@@ -92,9 +94,11 @@
         "toolbar.css",
         "suggestBox.css",
         "tabbedPane.css",
+        "targetCrashedScreen.css",
         "textButton.css",
         "textPrompt.css",
         "tooltip.css",
-        "treeoutline.css"
+        "treeoutline.css",
+        "viewContainers.css"
     ]
 }

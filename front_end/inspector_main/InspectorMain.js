@@ -18,41 +18,33 @@ InspectorMain.InspectorMain = class extends Common.Object {
   run() {
     this._connectAndCreateMainTarget();
     InspectorFrontendHost.connectionReady();
+
     new InspectorMain.InspectedNodeRevealer();
-    new InspectorMain.NetworkPanelIndicator();
     new InspectorMain.SourcesPanelIndicator();
     new InspectorMain.BackendSettingsSync();
+    new MobileThrottling.NetworkPanelIndicator();
+
+    InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
+      var hard = /** @type {boolean} */ (event.data);
+      SDK.ResourceTreeModel.reloadAllPages(hard);
+    });
   }
 
   _connectAndCreateMainTarget() {
-    if (Runtime.queryParam('v8only'))
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
-
     var target = SDK.targetManager.createTarget(
         'main', Common.UIString('Main'), this._capabilitiesForMainTarget(), this._createMainConnection.bind(this),
         null);
-
-    if (target.hasJSCapability())
-      target.runtimeAgent().runIfWaitingForDebugger();
+    target.runtimeAgent().runIfWaitingForDebugger();
   }
 
   /**
    * @return {number}
    */
   _capabilitiesForMainTarget() {
-    if (Runtime.queryParam('isSharedWorker')) {
-      return SDK.Target.Capability.Browser | SDK.Target.Capability.Inspector | SDK.Target.Capability.Log |
-          SDK.Target.Capability.Network | SDK.Target.Capability.Target;
-    }
-
-    if (Runtime.queryParam('v8only'))
-      return SDK.Target.Capability.JS;
-
     return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.DeviceEmulation |
-        SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.Inspector |
-        SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-        SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Security | SDK.Target.Capability.Target |
-        SDK.Target.Capability.Tracing;
+        SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.JS |
+        SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.ScreenCapture |
+        SDK.Target.Capability.Security | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing;
   }
 
   /**
@@ -60,16 +52,8 @@ InspectorMain.InspectorMain = class extends Common.Object {
    * @return {!Protocol.InspectorBackend.Connection}
    */
   _createMainConnection(params) {
-    var wsParam = Runtime.queryParam('ws');
-    var wssParam = Runtime.queryParam('wss');
-    if (wsParam || wssParam) {
-      var ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
-      this._mainConnection = new SDK.WebSocketConnection(ws, () => this._webSocketConnectionLost(), params);
-    } else if (InspectorFrontendHost.isHostedMode()) {
-      this._mainConnection = new SDK.StubConnection(params);
-    } else {
-      this._mainConnection = new SDK.MainConnection(params);
-    }
+    this._mainConnection =
+        SDK.createMainConnection(params, () => Components.TargetDetachedDialog.webSocketConnectionLost());
     return this._mainConnection;
   }
 
@@ -81,15 +65,6 @@ InspectorMain.InspectorMain = class extends Common.Object {
     var params = {onMessage: onMessage, onDisconnect: this._connectAndCreateMainTarget.bind(this)};
     return this._mainConnection.disconnect().then(this._createMainConnection.bind(this, params));
   }
-
-  _webSocketConnectionLost() {
-    if (!InspectorMain._disconnectedScreenWithReasonWasShown)
-      InspectorMain.RemoteDebuggingTerminatedScreen.show('WebSocket disconnected');
-  }
-};
-
-InspectorMain.InspectorMain.Events = {
-  AvailableTargetsChanged: Symbol('AvailableTargetsChanged')
 };
 
 /**
@@ -99,242 +74,6 @@ InspectorMain.InspectorMain.Events = {
 InspectorMain.interceptMainConnection = function(onMessage) {
   return self.runtime.sharedInstance(InspectorMain.InspectorMain)._interceptMainConnection(onMessage);
 };
-
-/**
- * @implements {Common.Runnable}
- */
-InspectorMain.InspectorMainLate = class {
-  /**
-   * @override
-   */
-  run() {
-    InspectorFrontendHost.events.addEventListener(
-        InspectorFrontendHostAPI.Events.ReloadInspectedPage, this._reloadInspectedPage, this);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _reloadInspectedPage(event) {
-    var hard = /** @type {boolean} */ (event.data);
-    SDK.ResourceTreeModel.reloadAllPages(hard);
-  }
-};
-
-/**
- * @implements {Protocol.TargetDispatcher}
- */
-InspectorMain.BrowserChildTargetManager = class extends SDK.SDKModel {
-  /**
-   * @param {!SDK.Target} parentTarget
-   */
-  constructor(parentTarget) {
-    super(parentTarget);
-    this._targetManager = parentTarget.targetManager();
-    this._parentTarget = parentTarget;
-    this._targetAgent = parentTarget.targetAgent();
-    /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
-    this._targetInfos = new Map();
-
-    /** @type {!Map<string, !SDK.ChildConnection>} */
-    this._childConnections = new Map();
-
-    parentTarget.registerTargetDispatcher(this);
-    this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true});
-
-    if (!parentTarget.parentTarget()) {
-      this._targetAgent.setDiscoverTargets(true);
-      this._targetAgent.setRemoteLocations([{host: 'localhost', port: 9229}]);
-    }
-  }
-
-  /**
-   * @override
-   * @return {!Promise}
-   */
-  suspendModel() {
-    return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: false});
-  }
-
-  /**
-   * @override
-   * @return {!Promise}
-   */
-  resumeModel() {
-    return this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true});
-  }
-
-  /**
-   * @override
-   */
-  dispose() {
-    for (var sessionId of this._childConnections.keys())
-      this.detachedFromTarget(sessionId, undefined);
-  }
-
-  /**
-   * @param {string} type
-   * @return {number}
-   */
-  _capabilitiesForType(type) {
-    if (type === 'worker')
-      return SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network;
-    if (type === 'service_worker')
-      return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
-    if (type === 'iframe') {
-      return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
-          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-          SDK.Target.Capability.Tracing | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input;
-    }
-    return 0;
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  targetCreated(targetInfo) {
-    this._targetInfos.set(targetInfo.targetId, targetInfo);
-    this._fireAvailableTargetsChanged();
-  }
-
-  /**
-   * @override
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   */
-  targetInfoChanged(targetInfo) {
-    this._targetInfos.set(targetInfo.targetId, targetInfo);
-    this._fireAvailableTargetsChanged();
-  }
-
-  /**
-   * @override
-   * @param {string} targetId
-   */
-  targetDestroyed(targetId) {
-    this._targetInfos.delete(targetId);
-    this._fireAvailableTargetsChanged();
-  }
-
-  _fireAvailableTargetsChanged() {
-    self.runtime.sharedInstance(InspectorMain.InspectorMain)
-        .dispatchEventToListeners(
-            InspectorMain.InspectorMain.Events.AvailableTargetsChanged, this._targetInfos.valuesArray());
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {!Protocol.Target.TargetInfo} targetInfo
-   * @param {boolean} waitingForDebugger
-   */
-  attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
-    var targetName = '';
-    if (targetInfo.type !== 'iframe') {
-      var parsedURL = targetInfo.url.asParsedURL();
-      targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() :
-                               '#' + (++InspectorMain.BrowserChildTargetManager._lastAnonymousTargetId);
-    }
-    var target = this._targetManager.createTarget(
-        targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
-
-    // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
-    if (!this._parentTarget.parentTarget() && Runtime.queryParam('isSharedWorker') && waitingForDebugger) {
-      var debuggerModel = target.model(SDK.DebuggerModel);
-      if (debuggerModel)
-        debuggerModel.pause();
-    }
-    target.runtimeAgent().runIfWaitingForDebugger();
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {string=} childTargetId
-   */
-  detachedFromTarget(sessionId, childTargetId) {
-    this._childConnections.get(sessionId).onDisconnect.call(null, 'target terminated');
-    this._childConnections.delete(sessionId);
-  }
-
-  /**
-   * @override
-   * @param {string} sessionId
-   * @param {string} message
-   * @param {string=} childTargetId
-   */
-  receivedMessageFromTarget(sessionId, message, childTargetId) {
-    var connection = this._childConnections.get(sessionId);
-    if (connection)
-      connection.onMessage.call(null, message);
-  }
-
-  /**
-   * @param {!Protocol.TargetAgent} agent
-   * @param {string} sessionId
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createChildConnection(agent, sessionId, params) {
-    var connection = new SDK.ChildConnection(agent, sessionId, params);
-    this._childConnections.set(sessionId, connection);
-    return connection;
-  }
-};
-
-InspectorMain.BrowserChildTargetManager._lastAnonymousTargetId = 0;
-
-SDK.SDKModel.register(InspectorMain.BrowserChildTargetManager, SDK.Target.Capability.Target, true);
-
-/**
- * @implements {Protocol.InspectorDispatcher}
- */
-InspectorMain.InspectorModel = class extends SDK.SDKModel {
-  /**
-   * @param {!SDK.Target} target
-   */
-  constructor(target) {
-    super(target);
-    target.registerInspectorDispatcher(this);
-    target.inspectorAgent().enable();
-    this._hideCrashedDialog = null;
-  }
-
-  /**
-   * @override
-   * @param {string} reason
-   */
-  detached(reason) {
-    InspectorMain._disconnectedScreenWithReasonWasShown = true;
-    InspectorMain.RemoteDebuggingTerminatedScreen.show(reason);
-  }
-
-  /**
-   * @override
-   */
-  targetCrashed() {
-    var dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.addCloseButton();
-    dialog.setDimmed(true);
-    this._hideCrashedDialog = dialog.hide.bind(dialog);
-    new InspectorMain.TargetCrashedScreen(() => this._hideCrashedDialog = null).show(dialog.contentElement);
-    dialog.show();
-  }
-
-  /**
-   * @override;
-   */
-  targetReloadedAfterCrash() {
-    if (this._hideCrashedDialog) {
-      this._hideCrashedDialog.call(null);
-      this._hideCrashedDialog = null;
-    }
-  }
-};
-
-SDK.SDKModel.register(InspectorMain.InspectorModel, SDK.Target.Capability.Inspector, true);
 
 /**
  * @implements {UI.ActionDelegate}
@@ -390,7 +129,7 @@ InspectorMain.NodeIndicator = class {
     this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
     self.runtime.sharedInstance(InspectorMain.InspectorMain)
         .addEventListener(
-            InspectorMain.InspectorMain.Events.AvailableTargetsChanged,
+            SDK.TargetManager.Events.AvailableTargetsChanged,
             event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
     this._update([]);
@@ -412,34 +151,6 @@ InspectorMain.NodeIndicator = class {
    */
   item() {
     return this._button;
-  }
-};
-
-InspectorMain.NetworkPanelIndicator = class {
-  constructor() {
-    // TODO: we should not access network from other modules.
-    if (!UI.inspectorView.hasPanel('network'))
-      return;
-    var manager = SDK.multitargetNetworkManager;
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
-    manager.addEventListener(SDK.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
-    updateVisibility();
-
-    function updateVisibility() {
-      var icon = null;
-      if (manager.isThrottling()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Network throttling is enabled');
-      } else if (SDK.multitargetNetworkManager.isIntercepting()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Requests may be rewritten');
-      } else if (manager.isBlocking()) {
-        icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Requests may be blocked');
-      }
-      UI.inspectorView.setPanelIcon('network', icon);
-    }
   }
 };
 
@@ -480,64 +191,6 @@ InspectorMain.InspectedNodeRevealer = class {
     Common.Revealer.reveal(deferredNode);
   }
 };
-
-/**
- * @unrestricted
- */
-InspectorMain.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
-  /**
-   * @param {string} reason
-   */
-  constructor(reason) {
-    super(true);
-    this.registerRequiredCSS('inspector_main/remoteDebuggingTerminatedScreen.css');
-    var message = this.contentElement.createChild('div', 'message');
-    message.createChild('span').textContent = Common.UIString('Debugging connection was closed. Reason: ');
-    message.createChild('span', 'reason').textContent = reason;
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('Reconnect when ready by reopening DevTools.');
-    var button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
-    this.contentElement.createChild('div', 'button').appendChild(button);
-  }
-
-  /**
-   * @param {string} reason
-   */
-  static show(reason) {
-    var dialog = new UI.Dialog();
-    dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
-    dialog.addCloseButton();
-    dialog.setDimmed(true);
-    new InspectorMain.RemoteDebuggingTerminatedScreen(reason).show(dialog.contentElement);
-    dialog.show();
-  }
-};
-
-/**
- * @unrestricted
- */
-InspectorMain.TargetCrashedScreen = class extends UI.VBox {
-  /**
-   * @param {function()} hideCallback
-   */
-  constructor(hideCallback) {
-    super(true);
-    this.registerRequiredCSS('inspector_main/targetCrashedScreen.css');
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('DevTools was disconnected from the page.');
-    this.contentElement.createChild('div', 'message').textContent =
-        Common.UIString('Once page is reloaded, DevTools will automatically reconnect.');
-    this._hideCallback = hideCallback;
-  }
-
-  /**
-   * @override
-   */
-  willHide() {
-    this._hideCallback.call(null);
-  }
-};
-
 
 /**
  * @implements {SDK.TargetManager.Observer}
@@ -585,3 +238,5 @@ InspectorMain.BackendSettingsSync = class {
   targetRemoved(target) {
   }
 };
+
+SDK.ChildTargetManager.install();

@@ -9,25 +9,6 @@
             "className": "Profiler.HeapProfilerPanel"
         },
         {
-            "type": "view",
-            "location": "panel",
-            "id": "js_profiler",
-            "title": "Profiler",
-            "order": 65,
-            "className": "Profiler.JSProfilerPanel",
-            "condition": "v8only"
-        },
-        {
-            "type": "view",
-            "location": "panel",
-            "id": "js_profiler",
-            "title": "JavaScript Profiler",
-            "persistence": "closeable",
-            "order": 65,
-            "className": "Profiler.JSProfilerPanel",
-            "condition": "!v8only"
-        },
-        {
             "type": "@UI.ContextMenu.Provider",
             "contextTypes": [
                 "SDK.RemoteObject"

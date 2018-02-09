@@ -43,6 +43,7 @@
     "scripts": [
         "ThrottlingPresets.js",
         "MobileThrottlingSelector.js",
+        "NetworkPanelIndicator.js",
         "NetworkThrottlingSelector.js",
         "ThrottlingSettingsTab.js",
         "ThrottlingManager.js"

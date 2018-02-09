@@ -145,11 +145,12 @@ all_devtools_files = [
   "front_end/components/domBreakpointsSidebarPane.css",
   "front_end/components/DOMBreakpointsSidebarPane.js",
   "front_end/components/DOMPresentationUtils.js",
+  "front_end/components/Linkifier.js",
+  "front_end/components/TargetDetachedDialog.js",
+  "front_end/components/Reload.js",
   "front_end/components/domUtils.css",
   "front_end/components/imagePreview.css",
-  "front_end/components/Linkifier.js",
   "front_end/components/module.json",
-  "front_end/components/Reload.js",
   "front_end/console/ConsoleContextSelector.js",
   "front_end/console/ConsoleFilter.js",
   "front_end/console/ConsoleSidebar.js",
@@ -332,13 +333,14 @@ all_devtools_files = [
   "front_end/inspector_main/InspectorMain.js",
   "front_end/inspector_main/module.json",
   "front_end/inspector_main/nodeIcon.css",
-  "front_end/inspector_main/remoteDebuggingTerminatedScreen.css",
   "front_end/inspector_main/renderingOptions.css",
   "front_end/inspector_main/RenderingOptions.js",
   "front_end/inspector_main/RequestAppBannerActionDelegate.js",
-  "front_end/inspector_main/targetCrashedScreen.css",
   "front_end/integration_test_runner.js",
   "front_end/integration_test_runner.json",
+  "front_end/js_main/JsMain.js",
+  "front_end/js_main/module.json",
+  "front_end/js_profiler/module.json",
   "front_end/layer_viewer/layerDetailsView.css",
   "front_end/layer_viewer/LayerDetailsView.js",
   "front_end/layer_viewer/layers3DView.css",
@@ -361,12 +363,13 @@ all_devtools_files = [
   "front_end/main/SimpleApp.js",
   "front_end/mobile_throttling/MobileThrottlingSelector.js",
   "front_end/mobile_throttling/module.json",
+  "front_end/mobile_throttling/NetworkPanelIndicator.js",
   "front_end/mobile_throttling/NetworkThrottlingSelector.js",
   "front_end/mobile_throttling/ThrottlingManager.js",
   "front_end/mobile_throttling/ThrottlingPresets.js",
   "front_end/mobile_throttling/throttlingSettingsTab.css",
   "front_end/mobile_throttling/ThrottlingSettingsTab.js",
-  "front_end/ndb.json",
+  "front_end/ndb_app.json",
   "front_end/network/blockedURLsPane.css",
   "front_end/network/BlockedURLsPane.js",
   "front_end/network/eventSourceMessagesView.css",
@@ -528,6 +531,7 @@ all_devtools_files = [
   "front_end/screencast/ScreencastApp.js",
   "front_end/screencast/screencastView.css",
   "front_end/screencast/ScreencastView.js",
+  "front_end/sdk/ChildTargetManager.js",
   "front_end/sdk/Connections.js",
   "front_end/sdk/ContentProviders.js",
   "front_end/sdk/CookieModel.js",
@@ -777,6 +781,8 @@ all_devtools_files = [
   "front_end/ui/reportView.css",
   "front_end/ui/ReportView.js",
   "front_end/ui/ResizerWidget.js",
+  "front_end/ui/RemoteDebuggingTerminatedScreen.js",
+  "front_end/ui/remoteDebuggingTerminatedScreen.css",
   "front_end/ui/rootView.css",
   "front_end/ui/RootView.js",
   "front_end/ui/searchableView.css",
@@ -797,6 +803,8 @@ all_devtools_files = [
   "front_end/ui/SuggestBox.js",
   "front_end/ui/tabbedPane.css",
   "front_end/ui/TabbedPane.js",
+  "front_end/ui/TargetCrashedScreen.js",
+  "front_end/ui/targetCrashedScreen.css",
   "front_end/ui/textButton.css",
   "front_end/ui/TextEditor.js",
   "front_end/ui/textPrompt.css",
@@ -816,6 +824,8 @@ all_devtools_files = [
   "front_end/ui/XLink.js",
   "front_end/ui/XWidget.js",
   "front_end/ui/ZoomManager.js",
+  "front_end/worker_main/WorkerMain.js",
+  "front_end/worker_main/module.json",
   "front_end/worker_service/ServiceDispatcher.js",
   "front_end/workspace/FileManager.js",
   "front_end/workspace/module.json",
@@ -942,17 +952,34 @@ generated_scripts = [
   "$resources_out_dir/SupportedCSSProperties.js",
 ]
 
+application_templates = [
+  "front_end/devtools_app.html",
+  "front_end/inspector.html",
+  "front_end/integration_test_runner.html",
+  "front_end/js_app.html",
+  "front_end/ndb_app.html",
+  "front_end/node_app.html",
+  "front_end/toolbox.html",
+  "front_end/worker_app.html",
+]
+
 generated_applications = [
   "$resources_out_dir/audits2_worker.js",
+  "$resources_out_dir/devtools_app.html",
+  "$resources_out_dir/devtools_app.js",
   "$resources_out_dir/formatter_worker.js",
   "$resources_out_dir/heap_snapshot_worker.js",
   "$resources_out_dir/inspector.html",
   "$resources_out_dir/inspector.js",
+  "$resources_out_dir/js_app.html",
+  "$resources_out_dir/js_app.js",
   "$resources_out_dir/node_app.html",
   "$resources_out_dir/node_app.js",
   "$resources_out_dir/shell.js",
   "$resources_out_dir/toolbox.html",
   "$resources_out_dir/toolbox.js",
+  "$resources_out_dir/worker_app.html",
+  "$resources_out_dir/worker_app.js",
 ]
 
 generated_non_autostart_non_remote_modules = [
@@ -974,6 +1001,7 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/heap_snapshot_model/heap_snapshot_model_module.js",
   "$resources_out_dir/help/help_module.js",
   "$resources_out_dir/inline_editor/inline_editor_module.js",
+  "$resources_out_dir/js_profiler/js_profiler_module.js",
   "$resources_out_dir/layer_viewer/layer_viewer_module.js",
   "$resources_out_dir/layers/layers_module.js",
   "$resources_out_dir/network/network_module.js",
@@ -1006,15 +1034,18 @@ generated_remote_modules = [
 ]
 
 devtools_applications = [
-  "shell",
-  "inspector",
-  "toolbox",
-  "integration_test_runner",
-  "formatter_worker",
   "audits2_worker",
+  "devtools_app",
+  "formatter_worker",
   "heap_snapshot_worker",
-  "ndb",
+  "inspector",
+  "integration_test_runner",
+  "js_app",
+  "ndb_app",
   "node_app",
+  "shell",
+  "toolbox",
+  "worker_app",
 ]
 
 #-------------------------------------------------------------------------------
@@ -1150,14 +1181,8 @@ action("build_release_devtools") {
     "scripts/build/rjsmin.py",
   ]
 
-  inputs = helper_scripts + all_devtools_files + generated_scripts + [
-             "front_end/inspector.html",
-             "front_end/integration_test_runner.html",
-             "front_end/node_app.html",
-             "front_end/ndb.html",
-             "front_end/toolbox.html",
-           ]
-
+  inputs = helper_scripts + all_devtools_files + generated_scripts +
+           application_templates
   outputs = generated_resources + generated_remote_modules
 
   args = devtools_applications + [
@@ -1178,20 +1203,16 @@ if (debug_devtools) {
       ":copy_generated_scripts",
     ]
 
-    inputs = all_devtools_files + [
-               "front_end/inspector.html",
-               "front_end/integration_test_runner.html",
-               "front_end/ndb.html",
-               "front_end/node_app.html",
-               "front_end/toolbox.html",
-             ]
-
+    inputs = all_devtools_files + application_templates
     outputs = [
+      "$resources_out_debug_dir/devtools_app.html",
       "$resources_out_debug_dir/inspector.html",
       "$resources_out_debug_dir/integration_test_runner.html",
-      "$resources_out_debug_dir/ndb.html",
+      "$resources_out_debug_dir/js_app.html",
+      "$resources_out_debug_dir/ndb_app.html",
       "$resources_out_debug_dir/node_app.html",
       "$resources_out_debug_dir/toolbox.html",
+      "$resources_out_debug_dir/worker_app.html",
     ]
 
     args = devtools_applications + [

@@ -5,10 +5,6 @@
             "className": "InspectorMain.InspectorMain"
         },
         {
-            "type": "late-initialization",
-            "className": "InspectorMain.InspectorMainLate"
-        },
-        {
             "type": "action",
             "category": "Navigation",
             "actionId": "inspector_main.reload",
@@ -48,26 +44,6 @@
             "className": "InspectorMain.NodeIndicator",
             "order": 2,
             "location": "main-toolbar-left"
-        },
-        {
-            "type": "setting",
-            "category": "Network",
-            "title": "Disable cache (while DevTools is open)",
-            "settingName": "cacheDisabled",
-            "settingType": "boolean",
-            "order": 0,
-            "defaultValue": false,
-            "userActionCondition": "hasOtherClients",
-            "options": [
-                {
-                    "value": true,
-                    "title": "Disable cache (while DevTools is open)"
-                },
-                {
-                    "value": false,
-                    "title": "Enable cache"
-                }
-            ]
         },
         {
             "type": "setting",
@@ -130,7 +106,6 @@
             "title": "Rendering",
             "persistence": "closeable",
             "order": 50,
-            "condition": "!v8only",
             "className": "InspectorMain.RenderingOptionsView"
         },
         {
@@ -142,7 +117,8 @@
         }
     ],
     "dependencies": [
-        "components"
+        "components",
+        "mobile_throttling"
     ],
     "scripts": [
         "RenderingOptions.js",
@@ -151,8 +127,6 @@
     ],
     "resources": [
         "nodeIcon.css",
-        "remoteDebuggingTerminatedScreen.css",
-        "renderingOptions.css",
-        "targetCrashedScreen.css"
+        "renderingOptions.css"
     ]
 }

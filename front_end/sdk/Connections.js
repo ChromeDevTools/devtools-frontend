@@ -237,3 +237,22 @@ SDK.ChildConnection = class {
     throw 'Not implemented';
   }
 };
+
+/**
+ * @param {!Protocol.InspectorBackend.Connection.Params} params
+ * @param {function()} connectionLostCallback
+ * @return {!Protocol.InspectorBackend.Connection}
+ */
+SDK.createMainConnection = function(params, connectionLostCallback) {
+  var wsParam = Runtime.queryParam('ws');
+  var wssParam = Runtime.queryParam('wss');
+
+  if (wsParam || wssParam) {
+    var ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
+    return new SDK.WebSocketConnection(ws, connectionLostCallback, params);
+  }
+
+  if (InspectorFrontendHost.isHostedMode())
+    return new SDK.StubConnection(params);
+  return new SDK.MainConnection(params);
+};

@@ -1,27 +1,7 @@
 {
   "modules" : [
-    { "name": "emulation", "type": "autostart" },
-    { "name": "mobile_throttling", "type": "autostart" },
-    { "name": "accessibility", "condition": "!v8only", "type": "remote" },
-    { "name": "animation", "condition": "!v8only" },
-    { "name": "audits2", "condition": "!v8only" },
-    { "name": "cookie_table" },
-    { "name": "devices" },
-    { "name": "elements", "condition": "!v8only" },
-    { "name": "emulated_devices", "condition": "!v8only" , "type": "remote" },
-    { "name": "har_importer", "condition": "!v8only" },
-    { "name": "help" },
-    { "name": "inspector_main", "type": "autostart" },
-    { "name": "layers", "condition": "!v8only" },
-    { "name": "layer_viewer", "condition": "!v8only" },
-    { "name": "network", "condition": "!v8only" },
-    { "name": "product_registry_impl", "condition": "!v8only", "type": "remote" },
-    { "name": "resources", "condition": "!v8only" },
-    { "name": "screencast", "condition": "remoteFrontend", "type": "remote" },
-    { "name": "security", "condition": "!v8only" },
-    { "name": "timeline", "condition": "!v8only" },
-    { "name": "timeline_model", "condition": "!v8only" }
+    { "name": "screencast", "type": "remote" }
   ],
-  "extends": "shell",
+  "extends": "devtools_app",
   "has_html": true
 }

@@ -83,7 +83,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     }
 
     var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    if (resourceTreeModel) {
+    if (resourceTreeModel && !target.parentTarget()) {
       eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this));
     }
@@ -96,8 +96,10 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
           SDK.RuntimeModel.Events.ExceptionRevoked, this._exceptionRevoked.bind(this, runtimeModel)));
       eventListeners.push(runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ConsoleAPICalled, this._consoleAPICalled.bind(this, runtimeModel)));
-      eventListeners.push(runtimeModel.debuggerModel().addEventListener(
-          SDK.DebuggerModel.Events.GlobalObjectCleared, this._clearIfNecessary, this));
+      if (!target.parentTarget()) {
+        eventListeners.push(runtimeModel.debuggerModel().addEventListener(
+            SDK.DebuggerModel.Events.GlobalObjectCleared, this._clearIfNecessary, this));
+      }
       eventListeners.push(runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.QueryObjectRequested, this._queryObjectRequested.bind(this, runtimeModel)));
     }

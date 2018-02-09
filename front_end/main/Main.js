@@ -185,7 +185,7 @@ Main.Main = class {
 
     Bindings.networkProjectManager = new Bindings.NetworkProjectManager(SDK.targetManager, Workspace.workspace);
     Bindings.resourceMapping = new Bindings.ResourceMapping(SDK.targetManager, Workspace.workspace);
-    Bindings.presentationConsoleMessageHelper = new Bindings.PresentationConsoleMessageHelper(Workspace.workspace);
+    new Bindings.PresentationConsoleMessageManager();
     Bindings.cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding(SDK.targetManager, Workspace.workspace);
     Bindings.debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding(SDK.targetManager, Workspace.workspace);
     Bindings.breakpointManager =

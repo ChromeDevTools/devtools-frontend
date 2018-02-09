@@ -1163,6 +1163,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
     var parentModel = this.parentModel();
     if (parentModel && !this._frameOwnerNode) {
+      await parentModel.requestDocument();
       var response = await parentModel._agent.invoke_getFrameOwner({frameId: this.target().id()});
       if (!response[Protocol.Error])
         this._frameOwnerNode = parentModel.nodeForId(response.nodeId);

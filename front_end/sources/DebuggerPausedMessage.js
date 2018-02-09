@@ -28,6 +28,41 @@ Sources.DebuggerPausedMessage = class {
   }
 
   /**
+   * @param {!SDK.DebuggerPausedDetails} details
+   * @return {!Element}
+   */
+  static _createDOMBreakpointHitMessage(details) {
+    var messageWrapper = createElement('span');
+    var domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
+    if (!details.auxData || !domDebuggerModel)
+      return messageWrapper;
+    var data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
+    if (!data)
+      return messageWrapper;
+
+    var mainElement = messageWrapper.createChild('div', 'status-main');
+    mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
+    mainElement.appendChild(createTextNode(
+        String.sprintf('Paused on %s', Components.DOMPresentationUtils.BreakpointTypeNouns.get(data.type))));
+
+    var subElement = messageWrapper.createChild('div', 'status-sub monospace');
+    var linkifiedNode = Components.DOMPresentationUtils.linkifyNodeReference(data.node);
+    subElement.appendChild(linkifiedNode);
+
+    if (data.targetNode) {
+      var targetNodeLink = Components.DOMPresentationUtils.linkifyNodeReference(data.targetNode);
+      var message;
+      if (data.insertion)
+        message = data.targetNode === data.node ? 'Child %s added' : 'Descendant %s added';
+      else
+        message = 'Descendant %s removed';
+      subElement.appendChild(createElement('br'));
+      subElement.appendChild(UI.formatLocalized(message, [targetNodeLink]));
+    }
+    return messageWrapper;
+  }
+
+  /**
    * @param {?SDK.DebuggerPausedDetails} details
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    * @param {!Bindings.BreakpointManager} breakpointManager
@@ -44,7 +79,7 @@ Sources.DebuggerPausedMessage = class {
         details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
     var messageWrapper;
     if (details.reason === SDK.DebuggerModel.BreakReason.DOM) {
-      messageWrapper = Components.DOMBreakpointsSidebarPane.createBreakpointHitMessage(details);
+      messageWrapper = Sources.DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.EventListener) {
       var eventNameForUI = '';
       if (details.auxData) {

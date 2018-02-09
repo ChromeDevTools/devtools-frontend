@@ -702,3 +702,9 @@ Components.DOMPresentationUtils.GenericDecorator = class {
     return {title: this._title, color: this._color};
   }
 };
+
+Components.DOMPresentationUtils.BreakpointTypeNouns = new Map([
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('subtree modifications')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('attribute modifications')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('node removal')],
+]);

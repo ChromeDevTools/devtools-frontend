@@ -4,6 +4,7 @@
     { "name": "worker_main", "type": "autostart" },
 
     { "name": "cookie_table" },
+    { "name": "dom_debugger" },
     { "name": "har_importer" },
     { "name": "help" },
     { "name": "layer_viewer" },

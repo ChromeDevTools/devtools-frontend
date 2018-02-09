@@ -4,15 +4,15 @@
 /**
  * @unrestricted
  */
-Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
+DOMDebugger.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
     this._categoriesTreeOutline = new UI.TreeOutlineInShadow();
     this._categoriesTreeOutline.element.tabIndex = 0;
-    this._categoriesTreeOutline.registerRequiredCSS('sources/eventListenerBreakpoints.css');
+    this._categoriesTreeOutline.registerRequiredCSS('dom_debugger/eventListenerBreakpoints.css');
     this.contentElement.appendChild(this._categoriesTreeOutline.element);
 
-    /** @type {!Map<string, !Sources.EventListenerBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<string, !DOMDebugger.EventListenerBreakpointsSidebarPane.Item>} */
     this._categories = new Map();
     var categories = SDK.domDebuggerManager.eventListenerBreakpoints().map(breakpoint => breakpoint.category());
     categories.sort();
@@ -21,7 +21,7 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
         this._createCategory(category);
     }
 
-    /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !Sources.EventListenerBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<!SDK.DOMDebuggerModel.EventListenerBreakpoint, !DOMDebugger.EventListenerBreakpointsSidebarPane.Item>} */
     this._breakpoints = new Map();
     for (var breakpoint of SDK.domDebuggerManager.eventListenerBreakpoints())
       this._createBreakpoint(breakpoint);
@@ -123,4 +123,4 @@ Sources.EventListenerBreakpointsSidebarPane = class extends UI.VBox {
 };
 
 /** @typedef {!{element: !UI.TreeElement, checkbox: !Element}} */
-Sources.EventListenerBreakpointsSidebarPane.Item;
+DOMDebugger.EventListenerBreakpointsSidebarPane.Item;

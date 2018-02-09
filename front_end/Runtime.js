@@ -728,9 +728,9 @@ Runtime.Module = class {
       'object_ui': 'ObjectUI',
       'perf_ui': 'PerfUI',
       'har_importer': 'HARImporter',
-      'sass_test_runner': 'SASSTestRunner',
       'sdk_test_runner': 'SDKTestRunner',
-      'cpu_profiler_test_runner': 'CPUProfilerTestRunner'
+      'cpu_profiler_test_runner': 'CPUProfilerTestRunner',
+      'dom_debugger': 'DOMDebugger',
     };
     var namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};

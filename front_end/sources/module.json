@@ -617,35 +617,6 @@
         },
         {
             "type": "view",
-            "location": "sources-sidebar",
-            "id": "sources.xhrBreakpoints",
-            "title": "XHR/fetch Breakpoints",
-            "order": 5,
-            "hasToolbar": true,
-            "persistence": "permanent",
-            "className": "Sources.XHRBreakpointsSidebarPane"
-        },
-        {
-            "type": "view",
-            "location": "sources-sidebar",
-            "id": "sources.globalListeners",
-            "title": "Global Listeners",
-            "order": 8,
-            "hasToolbar": true,
-            "persistence": "permanent",
-            "className": "Sources.ObjectEventListenersSidebarPane"
-        },
-        {
-            "type": "view",
-            "location": "sources-sidebar",
-            "id": "sources.eventListenerBreakpoints",
-            "title": "Event Listener Breakpoints",
-            "order": 9,
-            "persistence": "permanent",
-            "className": "Sources.EventListenerBreakpointsSidebarPane"
-        },
-        {
-            "type": "view",
             "id": "sources.threads",
             "title": "Threads",
             "persistence": "permanent",
@@ -685,13 +656,6 @@
             "contextTypes": [
                 "SDK.DebuggerPausedDetails"
             ],
-            "className": "Sources.XHRBreakpointsSidebarPane"
-        },
-        {
-            "type": "@UI.ContextFlavorListener",
-            "contextTypes": [
-                "SDK.DebuggerPausedDetails"
-            ],
             "className": "Sources.CallStackSidebarPane"
         },
         {
@@ -721,7 +685,6 @@
         "DebuggerPausedMessage.js",
         "SimpleHistoryManager.js",
         "EditingLocationHistoryManager.js",
-        "EventListenerBreakpointsSidebarPane.js",
         "FilePathScoreFunction.js",
         "FilteredUISourceCodeListProvider.js",
         "GoToLineQuickOpen.js",
@@ -746,15 +709,12 @@
         "FileBasedSearchResultsPane.js",
         "SourcesSearchScope.js",
         "SourcesPanel.js",
-        "XHRBreakpointsSidebarPane.js",
         "JavaScriptCompilerPlugin.js",
-        "SnippetsPlugin.js",
-        "ObjectEventListenersSidebarPane.js"
+        "SnippetsPlugin.js"
     ],
     "resources": [
         "callStackSidebarPane.css",
         "debuggerPausedMessage.css",
-        "eventListenerBreakpoints.css",
         "fileBasedSearchResultsPane.css",
         "javaScriptBreakpointsSidebarPane.css",
         "navigatorTree.css",
@@ -767,7 +727,6 @@
         "sourcesView.css",
         "threadsSidebarPane.css",
         "watchExpressionsSidebarPane.css",
-        "xhrBreakpointsSidebarPane.css",
         "dialog.css"
     ]
 }

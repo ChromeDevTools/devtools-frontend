@@ -9,6 +9,7 @@
     { "name": "audits2" },
     { "name": "cookie_table" },
     { "name": "devices" },
+    { "name": "dom_debugger" },
     { "name": "elements" },
     { "name": "emulated_devices" , "type": "remote" },
     { "name": "har_importer" },

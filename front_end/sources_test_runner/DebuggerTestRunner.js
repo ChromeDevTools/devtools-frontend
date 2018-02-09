@@ -740,7 +740,7 @@ SourcesTestRunner.clickJavaScriptSourceFrameBreakpoint = function(sourceFrame, l
 };
 
 SourcesTestRunner.setEventListenerBreakpoint = function(id, enabled, targetName) {
-  var pane = self.runtime.sharedInstance(Sources.EventListenerBreakpointsSidebarPane);
+  var pane = self.runtime.sharedInstance(DOMDebugger.EventListenerBreakpointsSidebarPane);
 
   var auxData = {'eventName': id};
 

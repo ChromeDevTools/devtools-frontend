@@ -1,44 +1,5 @@
 {
     "extensions": [
-        {
-            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
-            "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
-            "marker": "breakpoint-marker",
-            "title": "DOM Breakpoint",
-            "color": "rgb(105, 140, 254)"
-        },
-        {
-            "type": "@UI.ContextMenu.Provider",
-            "contextTypes": [
-                "SDK.DOMNode"
-            ],
-            "className": "Components.DOMBreakpointsSidebarPane.ContextMenuProvider"
-        },
-        {
-            "type": "@UI.ContextFlavorListener",
-            "contextTypes": [
-                "SDK.DebuggerPausedDetails"
-            ],
-            "className": "Components.DOMBreakpointsSidebarPane"
-        },
-        {
-            "type": "view",
-            "location": "sources-sidebar",
-            "id": "sources.domBreakpoints",
-            "title": "DOM Breakpoints",
-            "order": 7,
-            "persistence": "permanent",
-            "factoryName": "Components.DOMBreakpointsSidebarPane"
-        },
-        {
-            "type": "view",
-            "location": "elements-sidebar",
-            "id": "elements.domBreakpoints",
-            "title": "DOM Breakpoints",
-            "order": 6,
-            "persistence": "permanent",
-            "factoryName": "Components.DOMBreakpointsSidebarPane"
-        }
     ],
     "dependencies": [
         "bindings",
@@ -47,7 +8,6 @@
         "network_log"
     ],
     "scripts": [
-        "DOMBreakpointsSidebarPane.js",
         "DOMPresentationUtils.js",
         "DockController.js",
         "Linkifier.js",
@@ -55,7 +15,6 @@
         "TargetDetachedDialog.js"
     ],
     "resources": [
-        "domBreakpointsSidebarPane.css",
         "domUtils.css",
         "imagePreview.css"
     ]

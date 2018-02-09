@@ -31,16 +31,16 @@
 /**
  * @implements {UI.ContextFlavorListener}
  */
-Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
+DOMDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('components/domBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('dom_debugger/domBreakpointsSidebarPane.css');
 
     this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this._emptyElement.textContent = Common.UIString('No breakpoints');
 
-    /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !Components.DOMBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !DOMDebugger.DOMBreakpointsSidebarPane.Item>} */
     this._items = new Map();
     SDK.targetManager.addModelListener(
         SDK.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, this._breakpointAdded, this);
@@ -57,41 +57,6 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
 
     this._highlightedElement = null;
     this._update();
-  }
-
-  /**
-   * @param {!SDK.DebuggerPausedDetails} details
-   * @return {!Element}
-   */
-  static createBreakpointHitMessage(details) {
-    var messageWrapper = createElement('span');
-    var domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
-    if (!details.auxData || !domDebuggerModel)
-      return messageWrapper;
-    var data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
-    if (!data)
-      return messageWrapper;
-
-    var mainElement = messageWrapper.createChild('div', 'status-main');
-    mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
-    mainElement.appendChild(createTextNode(
-        String.sprintf('Paused on %s', Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns.get(data.type))));
-
-    var subElement = messageWrapper.createChild('div', 'status-sub monospace');
-    var linkifiedNode = Components.DOMPresentationUtils.linkifyNodeReference(data.node);
-    subElement.appendChild(linkifiedNode);
-
-    if (data.targetNode) {
-      var targetNodeLink = Components.DOMPresentationUtils.linkifyNodeReference(data.targetNode);
-      var message;
-      if (data.insertion)
-        message = data.targetNode === data.node ? 'Child %s added' : 'Descendant %s added';
-      else
-        message = 'Descendant %s removed';
-      subElement.appendChild(createElement('br'));
-      subElement.appendChild(UI.formatLocalized(message, [targetNodeLink]));
-    }
-    return messageWrapper;
   }
 
   /**
@@ -150,7 +115,7 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
     labelElement.appendChild(linkifiedNode);
 
     var description = createElement('div');
-    description.textContent = Components.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
+    description.textContent = DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
     labelElement.appendChild(description);
 
     var item = {breakpoint: breakpoint, element: element, checkbox: checkboxElement};
@@ -231,24 +196,18 @@ Components.DOMBreakpointsSidebarPane = class extends UI.VBox {
 };
 
 /** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
-Components.DOMBreakpointsSidebarPane.Item;
+DOMDebugger.DOMBreakpointsSidebarPane.Item;
 
-Components.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
+DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('Subtree modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('Attribute modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('Node removed')],
 ]);
 
-Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns = new Map([
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('subtree modifications')],
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('attribute modifications')],
-  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('node removal')],
-]);
-
 /**
  * @implements {UI.ContextMenu.Provider}
  */
-Components.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
+DOMDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
   /**
    * @override
    * @param {!Event} event
@@ -276,7 +235,7 @@ Components.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
     var breakpointsMenu = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Break on'));
     for (var key in SDK.DOMDebuggerModel.DOMBreakpoint.Type) {
       var type = SDK.DOMDebuggerModel.DOMBreakpoint.Type[key];
-      var label = Components.DOMBreakpointsSidebarPane.BreakpointTypeNouns.get(type);
+      var label = Components.DOMPresentationUtils.BreakpointTypeNouns.get(type);
       breakpointsMenu.defaultSection().appendCheckboxItem(
           label, toggleBreakpoint.bind(null, type), domDebuggerModel.hasDOMBreakpoint(node, type));
     }

@@ -1,0 +1,93 @@
+{
+    "extensions": [
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.eventListenerBreakpoints",
+            "title": "Event Listener Breakpoints",
+            "order": 9,
+            "persistence": "permanent",
+            "className": "DOMDebugger.EventListenerBreakpointsSidebarPane"
+        },
+        {
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
+            "className": "DOMDebugger.XHRBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.xhrBreakpoints",
+            "title": "XHR/fetch Breakpoints",
+            "order": 5,
+            "hasToolbar": true,
+            "persistence": "permanent",
+            "className": "DOMDebugger.XHRBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.domBreakpoints",
+            "title": "DOM Breakpoints",
+            "order": 7,
+            "persistence": "permanent",
+            "factoryName": "DOMDebugger.DOMBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "elements-sidebar",
+            "id": "elements.domBreakpoints",
+            "title": "DOM Breakpoints",
+            "order": 6,
+            "persistence": "permanent",
+            "factoryName": "DOMDebugger.DOMBreakpointsSidebarPane"
+        },
+        {
+            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
+            "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
+            "marker": "breakpoint-marker",
+            "title": "DOM Breakpoint",
+            "color": "rgb(105, 140, 254)"
+        },
+        {
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": [
+                "SDK.DOMNode"
+            ],
+            "className": "DOMDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider"
+        },
+        {
+            "type": "@UI.ContextFlavorListener",
+            "contextTypes": [
+                "SDK.DebuggerPausedDetails"
+            ],
+            "className": "DOMDebugger.DOMBreakpointsSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "sources-sidebar",
+            "id": "sources.globalListeners",
+            "title": "Global Listeners",
+            "order": 8,
+            "hasToolbar": true,
+            "persistence": "permanent",
+            "className": "DOMDebugger.ObjectEventListenersSidebarPane"
+        }
+    ],
+    "dependencies": [
+        "sources"
+    ],
+    "scripts": [
+        "DOMBreakpointsSidebarPane.js",
+        "EventListenerBreakpointsSidebarPane.js",
+        "ObjectEventListenersSidebarPane.js",
+        "XHRBreakpointsSidebarPane.js"
+    ],
+    "resources": [
+        "domBreakpointsSidebarPane.css",
+        "eventListenerBreakpoints.css",
+        "xhrBreakpointsSidebarPane.css"
+    ]
+}

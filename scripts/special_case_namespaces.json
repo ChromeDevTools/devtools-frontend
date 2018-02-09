@@ -3,9 +3,8 @@
   "ui": "UI",
   "object_ui": "ObjectUI",
   "perf_ui": "PerfUI",
-  "css_tracker": "CSSTracker",
   "har_importer": "HARImporter",
-  "sass_test_runner": "SASSTestRunner",
   "sdk_test_runner": "SDKTestRunner",
-  "cpu_profiler_test_runner": "CPUProfilerTestRunner"
+  "cpu_profiler_test_runner": "CPUProfilerTestRunner",
+  "dom_debugger": "DOMDebugger"
 }

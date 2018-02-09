@@ -22,7 +22,7 @@ Network.NetworkFrameGrouper = class {
    */
   groupNodeForRequest(request) {
     var frame = SDK.ResourceTreeModel.frameForRequest(request);
-    if (!frame || frame.isMainFrame())
+    if (!frame || frame.isTopFrame())
       return null;
     var groupNode = this._activeGroups.get(frame);
     if (groupNode)
@@ -50,14 +50,6 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
     this._frame = frame;
     /** @type {?Element} */
     this._productBadge = null;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isFromFrame() {
-    return true;
   }
 
   /**

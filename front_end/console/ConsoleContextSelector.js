@@ -215,7 +215,7 @@ Console.ConsoleContextSelector = class {
     var frame = executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame)
       return false;
-    return frame.isMainFrame();
+    return frame.isTopFrame();
   }
 
   /**

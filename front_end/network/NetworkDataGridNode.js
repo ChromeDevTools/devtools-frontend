@@ -69,13 +69,6 @@ Network.NetworkNode = class extends DataGrid.SortableDataGridNode {
   }
 
   /**
-   * @return {boolean}
-   */
-  isFromFrame() {
-    return false;
-  }
-
-  /**
    * @override
    * @param {string} columnId
    * @return {!Element}
@@ -300,9 +293,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     this.selectable = true;
     this._isOnInitiatorPath = false;
     this._isOnInitiatedPath = false;
-    this._isFromFrame = false;
-    var frame = SDK.ResourceTreeModel.frameForRequest(request);
-    this._isFromFrame = frame ? !frame.isMainFrame() : false;
   }
 
 
@@ -609,14 +599,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    */
   isOnInitiatedPath() {
     return this._isOnInitiatedPath;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  isFromFrame() {
-    return this._isFromFrame;
   }
 
   /**

@@ -611,6 +611,10 @@ SDK.ResourceTreeFrame = class {
     return !this._parentFrame;
   }
 
+  isTopFrame() {
+    return !this._parentFrame && !this._model.target().parentTarget();
+  }
+
   /**
    * @param {!Protocol.Page.Frame} framePayload
    */
@@ -728,7 +732,7 @@ SDK.ResourceTreeFrame = class {
    * @return {string}
    */
   displayName() {
-    if (!this._parentFrame && !this._model.target().parentTarget())
+    if (this.isTopFrame())
       return Common.UIString('top');
     var subtitle = new Common.ParsedURL(this._url).displayName;
     if (subtitle) {

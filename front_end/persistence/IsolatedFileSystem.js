@@ -259,9 +259,13 @@ Persistence.IsolatedFileSystem = class {
 
   /**
    * @param {string} path
+   * @return {!Promise<boolean>}
    */
   deleteFile(path) {
+    var resolveCallback;
+    var promise = new Promise(resolve => resolveCallback = resolve);
     this._domFileSystem.root.getFile(path, undefined, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    return promise;
 
     /**
      * @param {!FileEntry} fileEntry
@@ -272,6 +276,7 @@ Persistence.IsolatedFileSystem = class {
     }
 
     function fileEntryRemoved() {
+      resolveCallback(true);
     }
 
     /**
@@ -283,6 +288,7 @@ Persistence.IsolatedFileSystem = class {
     function errorHandler(error) {
       var errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
       console.error(errorMessage + ' when deleting file \'' + (this._path + '/' + path) + '\'');
+      resolveCallback(false);
     }
   }
 

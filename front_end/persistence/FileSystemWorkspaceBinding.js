@@ -534,8 +534,10 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    */
   deleteFile(uiSourceCode) {
     var relativePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.deleteFile(relativePath);
-    this.removeUISourceCode(uiSourceCode.url());
+    this._fileSystem.deleteFile(relativePath).then(success => {
+      if (success)
+        this.removeUISourceCode(uiSourceCode.url());
+    });
   }
 
   /**

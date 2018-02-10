@@ -134,41 +134,6 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @param {function(!Array.<!UI.KeyboardShortcut.Descriptor>, function(!Event=):boolean)} registerShortcutDelegate
-   */
-  registerShortcuts(registerShortcutDelegate) {
-    /**
-     * @this {Sources.SourcesView}
-     * @param {!Array.<!UI.KeyboardShortcut.Descriptor>} shortcuts
-     * @param {function(!Event=):boolean} handler
-     */
-    function registerShortcut(shortcuts, handler) {
-      registerShortcutDelegate(shortcuts, handler);
-      this._registerShortcuts(shortcuts, handler);
-    }
-
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.JumpToPreviousLocation,
-        this._onJumpToPreviousLocation.bind(this));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.JumpToNextLocation, this._onJumpToNextLocation.bind(this));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.CloseEditorTab, this._onCloseEditorTab.bind(this));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToLine, this._showGoToLineQuickOpen.bind(this));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.GoToMember, this._showOutlineQuickOpen.bind(this));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpoint,
-        this._toggleBreakpoint.bind(this, false /* onlyDisable */));
-    registerShortcut.call(
-        this, UI.ShortcutsScreen.SourcesPanelShortcuts.ToggleBreakpointEnabled,
-        this._toggleBreakpoint.bind(this, true /* onlyDisable */));
-    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.Save, this._save.bind(this));
-    registerShortcut.call(this, UI.ShortcutsScreen.SourcesPanelShortcuts.SaveAll, this._saveAll.bind(this));
-  }
-
-  /**
    * @return {!UI.Toolbar}
    */
   leftToolbar() {
@@ -260,9 +225,9 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Event=} event
+   * @return {boolean}
    */
-  _onCloseEditorTab(event) {
+  _onCloseEditorTab() {
     var uiSourceCode = this._editorContainer.currentFile();
     if (!uiSourceCode)
       return false;
@@ -270,20 +235,12 @@ Sources.SourcesView = class extends UI.VBox {
     return true;
   }
 
-  /**
-   * @param {!Event=} event
-   */
-  _onJumpToPreviousLocation(event) {
+  _onJumpToPreviousLocation() {
     this._historyManager.rollback();
-    return true;
   }
 
-  /**
-   * @param {!Event=} event
-   */
-  _onJumpToNextLocation(event) {
+  _onJumpToNextLocation() {
     this._historyManager.rollover();
-    return true;
   }
 
   /**
@@ -640,39 +597,22 @@ Sources.SourcesView = class extends UI.VBox {
     sourceFrame.replaceAllWith(searchConfig, replacement);
   }
 
-  /**
-   * @param {!Event=} event
-   */
-  _showOutlineQuickOpen(event) {
+  _showOutlineQuickOpen() {
     QuickOpen.QuickOpen.show('@');
-    return true;
   }
 
-  /**
-   * @param {!Event=} event
-   * @return {boolean}
-   */
-  _showGoToLineQuickOpen(event) {
+  _showGoToLineQuickOpen() {
     if (this._editorContainer.currentFile())
       QuickOpen.QuickOpen.show(':');
-    return true;
   }
 
-  /**
-   * @return {boolean}
-   */
   _save() {
     this._saveSourceFrame(this.currentSourceFrame());
-    return true;
   }
 
-  /**
-   * @return {boolean}
-   */
   _saveAll() {
     var sourceFrames = this._editorContainer.fileViews();
     sourceFrames.forEach(this._saveSourceFrame.bind(this));
-    return true;
   }
 
   /**
@@ -792,7 +732,7 @@ Sources.SourcesView.SwitchFileActionDelegate = class {
  * @implements {UI.ActionDelegate}
  * @unrestricted
  */
-Sources.SourcesView.CloseAllActionDelegate = class {
+Sources.SourcesView.ActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -803,7 +743,37 @@ Sources.SourcesView.CloseAllActionDelegate = class {
     var sourcesView = UI.context.flavor(Sources.SourcesView);
     if (!sourcesView)
       return false;
-    sourcesView._editorContainer.closeAllFiles();
-    return true;
+
+    switch (actionId) {
+      case 'sources.close-all':
+        sourcesView._editorContainer.closeAllFiles();
+        return true;
+      case 'sources.jump-to-previous-location':
+        sourcesView._onJumpToPreviousLocation();
+        return true;
+      case 'sources.jump-to-next-location':
+        sourcesView._onJumpToNextLocation();
+        return true;
+      case 'sources.close-editor-tab':
+        return sourcesView._onCloseEditorTab();
+      case 'sources.go-to-line':
+        sourcesView._showGoToLineQuickOpen();
+        return true;
+      case 'sources.go-to-member':
+        sourcesView._showOutlineQuickOpen();
+        return true;
+      case 'debugger.toggle-breakpoint':
+        return sourcesView._toggleBreakpoint(false /* onlyDisable */);
+      case 'debugger.toggle-breakpoint-enabled':
+        return sourcesView._toggleBreakpoint(true /* onlyDisable */);
+      case 'sources.save':
+        sourcesView._save();
+        return true;
+      case 'sources.save-all':
+        sourcesView._saveAll();
+        return true;
+    }
+
+    return false;
   }
 };

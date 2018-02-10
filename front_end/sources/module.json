@@ -587,8 +587,150 @@
             "type": "action",
             "category": "Sources",
             "actionId": "sources.close-all",
-            "className": "Sources.SourcesView.CloseAllActionDelegate",
+            "className": "Sources.SourcesView.ActionDelegate",
             "title": "Close All"
+        },
+        {
+            "type": "action",
+            "actionId": "sources.jump-to-previous-location",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Alt+Minus"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.jump-to-next-location",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Alt+Plus"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.close-editor-tab",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Alt+w"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.go-to-line",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Ctrl+g"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.go-to-member",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "platform":"windows,linux",
+                    "shortcut": "Ctrl+Shift+o"
+                },
+                {
+                    "platform":"mac",
+                    "shortcut": "Meta+Shift+o"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "debugger.toggle-breakpoint",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "platform":"windows,linux",
+                    "shortcut": "Ctrl+b"
+                },
+                {
+                    "platform":"mac",
+                    "shortcut": "Meta+b"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "debugger.toggle-breakpoint-enabled",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "platform":"windows,linux",
+                    "shortcut": "Ctrl+Shift+b"
+                },
+                {
+                    "platform":"mac",
+                    "shortcut": "Meta+Shift+b"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.save",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "platform":"windows,linux",
+                    "shortcut": "Ctrl+s"
+                },
+                {
+                    "platform":"mac",
+                    "shortcut": "Meta+s"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "sources.save-all",
+            "className": "Sources.SourcesView.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "platform":"windows,linux",
+                    "shortcut": "Ctrl+Shift+s"
+                },
+                {
+                    "platform":"mac",
+                    "shortcut": "Meta+Alt+s"
+                }
+            ]
         },
         {
             "type": "action",
@@ -664,6 +806,34 @@
                 "SDK.DebuggerModel.CallFrame"
             ],
             "className": "Sources.ScopeChainSidebarPane"
+        },
+        {
+            "type": "action",
+            "category": "Debugger",
+            "actionId": "debugger.previous-call-frame",
+            "className": "Sources.CallStackSidebarPane.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Ctrl+,"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "category": "Debugger",
+            "actionId": "debugger.next-call-frame",
+            "className": "Sources.CallStackSidebarPane.ActionDelegate",
+            "contextTypes": [
+                "Sources.SourcesPanel"
+            ],
+            "bindings": [
+                {
+                    "shortcut": "Ctrl+."
+                }
+            ]
         }
     ],
     "dependencies": [

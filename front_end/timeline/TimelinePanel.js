@@ -53,15 +53,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._recordReloadAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.record-reload'));
 
-    if (!Runtime.experiments.isEnabled('timelineKeepHistory')) {
+    if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
       this._historyManager = null;
-    } else {
+    else
       this._historyManager = new Timeline.TimelineHistoryManager();
-      this.registerShortcuts(
-          UI.ShortcutsScreen.PerformancePanelShortcuts.PreviousRecording, () => this._navigateHistory(1));
-      this.registerShortcuts(
-          UI.ShortcutsScreen.PerformancePanelShortcuts.NextRecording, () => this._navigateHistory(-1));
-    }
 
     /** @type {!Array<!TimelineModel.TimelineModelFilter>} */
     this._filters = [];
@@ -1328,6 +1323,16 @@ Timeline.TimelinePanel.ActionDelegate = class {
         return true;
       case 'timeline.show-history':
         panel._showHistory();
+        return true;
+      case 'timeline.previous-recording':
+        if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
+          return false;
+        panel._navigateHistory(1);
+        return true;
+      case 'timeline.next-recording':
+        if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
+          return false;
+        panel._navigateHistory(-1);
         return true;
     }
     return false;

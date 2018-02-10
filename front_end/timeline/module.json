@@ -190,6 +190,44 @@
             "persistence": "closeable",
             "order": 65,
             "className": "Profiler.JSProfilerPanel"
+        },
+        {
+            "type": "action",
+            "actionId": "timeline.previous-recording",
+            "className": "Timeline.TimelinePanel.ActionDelegate",
+            "experiment": "timelineKeepHistory",
+            "contextTypes": [
+                "Timeline.TimelinePanel"
+            ],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Alt+Left"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Left"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "timeline.next-recording",
+            "className": "Timeline.TimelinePanel.ActionDelegate",
+            "experiment": "timelineKeepHistory",
+            "contextTypes": [
+                "Timeline.TimelinePanel"
+            ],
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Alt+Right"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Right"
+                }
+            ]
         }
     ],
     "dependencies": [

@@ -410,16 +410,6 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
     }
     InspectorFrontendHost.copyText(text.join('\n'));
   }
-
-  /**
-   * @param {function(!Array.<!UI.KeyboardShortcut.Descriptor>, function(!Event=):boolean)} registerShortcutDelegate
-   */
-  registerShortcuts(registerShortcutDelegate) {
-    registerShortcutDelegate(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.NextCallFrame, this._selectNextCallFrameOnStack.bind(this));
-    registerShortcutDelegate(
-        UI.ShortcutsScreen.SourcesPanelShortcuts.PrevCallFrame, this._selectPreviousCallFrameOnStack.bind(this));
-  }
 };
 
 Sources.CallStackSidebarPane._defaultMaxAsyncStackChainDepth = 32;
@@ -433,3 +423,27 @@ Sources.CallStackSidebarPane._defaultMaxAsyncStackChainDepth = 32;
  * }}
  */
 Sources.CallStackSidebarPane.Item;
+
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Sources.CallStackSidebarPane.ActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    var callStackSidebarPane = self.runtime.sharedInstance(Sources.CallStackSidebarPane);
+    switch (actionId) {
+      case 'debugger.next-call-frame':
+        callStackSidebarPane._selectNextCallFrameOnStack();
+        return true;
+      case 'debugger.previous-call-frame':
+        callStackSidebarPane._selectPreviousCallFrameOnStack();
+        return true;
+    }
+    return false;
+  }
+};

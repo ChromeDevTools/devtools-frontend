@@ -76,15 +76,6 @@ UI.Panel = class extends UI.VBox {
   }
 
   /**
-   * @param {!Array.<!UI.KeyboardShortcut.Descriptor>} keys
-   * @param {function(!Event=):boolean} handler
-   */
-  registerShortcuts(keys, handler) {
-    for (var i = 0; i < keys.length; ++i)
-      this._shortcuts[keys[i].key] = handler;
-  }
-
-  /**
    * @param {!UI.Infobar} infobar
    */
   showInfobar(infobar) {

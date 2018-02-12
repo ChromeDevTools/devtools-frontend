@@ -305,7 +305,7 @@ ObjectUI.JavaScriptAutocomplete = class {
             result[result.length] = group;
             var names = Object.getOwnPropertyNames(o);
             var isArray = Array.isArray(o);
-            for (var i = 0; i < names.length; ++i) {
+            for (var i = 0; i < names.length && group.items.length < 10000; ++i) {
               // Skip array elements indexes.
               if (isArray && /^[0-9]/.test(names[i]))
                 continue;

@@ -514,23 +514,19 @@
   TestSuite.prototype.testConsoleOnNavigateBack = function() {
 
     function filteredMessages() {
-      return ConsoleModel.consoleModel.messages().filter(
-          a => a.source !== ConsoleModel.ConsoleMessage.MessageSource.Violation);
+      return SDK.consoleModel.messages().filter(a => a.source !== SDK.ConsoleMessage.MessageSource.Violation);
     }
 
-    if (filteredMessages().length === 1) {
+    if (filteredMessages().length === 1)
       firstConsoleMessageReceived.call(this, null);
-    } else {
-      ConsoleModel.consoleModel.addEventListener(
-          ConsoleModel.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
-    }
+    else
+      SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
 
 
     function firstConsoleMessageReceived(event) {
-      if (event && event.data.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
+      if (event && event.data.source === SDK.ConsoleMessage.MessageSource.Violation)
         return;
-      ConsoleModel.consoleModel.removeEventListener(
-          ConsoleModel.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
+      SDK.consoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, firstConsoleMessageReceived, this);
       this.evaluateInConsole_('clickLink();', didClickLink.bind(this));
     }
 
@@ -703,9 +699,9 @@
 
     // It is possible for the ready console messagage to be already received but not handled
     // or received later. This ensures we can catch both cases.
-    ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
 
-    var messages = ConsoleModel.consoleModel.messages();
+    var messages = SDK.consoleModel.messages();
     if (messages.length) {
       var text = messages[0].messageText;
       this.assertEquals('ready', text);
@@ -751,13 +747,12 @@
 
         messages.splice(index, 1);
         if (!messages.length) {
-          ConsoleModel.consoleModel.removeEventListener(
-              ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+          SDK.consoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
           next();
         }
       }
 
-      ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+      SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
       SDK.multitargetNetworkManager.setNetworkConditions(preset);
     }
 
@@ -911,16 +906,14 @@
   TestSuite.prototype.testWindowInitializedOnNavigateBack = function() {
     var test = this;
     test.takeControl();
-    var messages = ConsoleModel.consoleModel.messages();
-    if (messages.length === 1) {
+    var messages = SDK.consoleModel.messages();
+    if (messages.length === 1)
       checkMessages();
-    } else {
-      ConsoleModel.consoleModel.addEventListener(
-          ConsoleModel.ConsoleModel.Events.MessageAdded, checkMessages.bind(this), this);
-    }
+    else
+      SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, checkMessages.bind(this), this);
 
     function checkMessages() {
-      var messages = ConsoleModel.consoleModel.messages();
+      var messages = SDK.consoleModel.messages();
       test.assertEquals(1, messages.length);
       test.assertTrue(messages[0].messageText.indexOf('Uncaught') === -1);
       test.releaseControl();
@@ -989,14 +982,14 @@
   };
 
   TestSuite.prototype.testDOMWarnings = function() {
-    var messages = ConsoleModel.consoleModel.messages();
+    var messages = SDK.consoleModel.messages();
     this.assertEquals(1, messages.length);
     var expectedPrefix = '[DOM] Found 2 elements with non-unique id #dup:';
     this.assertTrue(messages[0].messageText.startsWith(expectedPrefix));
   };
 
   TestSuite.prototype.waitForTestResultsInConsole = function() {
-    var messages = ConsoleModel.consoleModel.messages();
+    var messages = SDK.consoleModel.messages();
     for (var i = 0; i < messages.length; ++i) {
       var text = messages[i].messageText;
       if (text === 'PASS')
@@ -1013,7 +1006,7 @@
         this.fail(text);
     }
 
-    ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage, this);
     this.takeControl();
   };
 
@@ -1057,12 +1050,12 @@
         Array.prototype.slice.call(arguments, 1, -1).map(arg => JSON.stringify(arg)).join(',') + ',';
     this.evaluateInConsole_(
         `${functionName}(${argsString} function() { console.log('${doneMessage}'); });`, function() {});
-    ConsoleModel.consoleModel.addEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
 
     function onConsoleMessage(event) {
       var text = event.data.messageText;
       if (text === doneMessage) {
-        ConsoleModel.consoleModel.removeEventListener(ConsoleModel.ConsoleModel.Events.MessageAdded, onConsoleMessage);
+        SDK.consoleModel.removeEventListener(SDK.ConsoleModel.Events.MessageAdded, onConsoleMessage);
         callback();
       }
     }

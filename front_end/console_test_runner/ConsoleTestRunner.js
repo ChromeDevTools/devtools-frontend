@@ -7,7 +7,7 @@
  * @suppress {accessControls}
  */
 
-/** @typedef {function(!Element, !ConsoleModel.ConsoleMessage=):string} */
+/** @typedef {function(!Element, !SDK.ConsoleMessage=):string} */
 ConsoleTestRunner.Formatter;
 
 /**
@@ -251,7 +251,7 @@ ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, nod
 
 /**
  * @param {!Element} element
- * @param {!ConsoleModel.ConsoleMessage} message
+ * @param {!SDK.ConsoleMessage} message
  * @return {string}
  */
 ConsoleTestRunner.simpleFormatter = function(element, message) {
@@ -432,7 +432,7 @@ ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitUntilMessageReceived = function(callback) {
-  TestRunner.addSniffer(ConsoleModel.consoleModel, 'addMessage', callback, false);
+  TestRunner.addSniffer(SDK.consoleModel, 'addMessage', callback, false);
 };
 
 /**
@@ -451,9 +451,9 @@ ConsoleTestRunner.waitUntilNthMessageReceived = function(count, callback) {
     if (--count === 0)
       TestRunner.safeWrap(callback)();
     else
-      TestRunner.addSniffer(ConsoleModel.consoleModel, 'addMessage', override, false);
+      TestRunner.addSniffer(SDK.consoleModel, 'addMessage', override, false);
   }
-  TestRunner.addSniffer(ConsoleModel.consoleModel, 'addMessage', override, false);
+  TestRunner.addSniffer(SDK.consoleModel, 'addMessage', override, false);
 };
 
 /**
@@ -546,7 +546,7 @@ ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, 
  * @param {boolean=} opt_sticky
  */
 ConsoleTestRunner.addConsoleSniffer = function(override, opt_sticky) {
-  TestRunner.addSniffer(ConsoleModel.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
+  TestRunner.addSniffer(SDK.ConsoleModel.prototype, 'addMessage', override, opt_sticky);
 };
 
 /**

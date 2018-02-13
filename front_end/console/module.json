@@ -163,7 +163,7 @@
         "components",
         "data_grid",
         "object_ui",
-        "console_model",
+        "sdk_browser",
         "product_registry",
         "formatter"
     ],

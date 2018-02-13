@@ -20,10 +20,10 @@ Console.ConsoleSidebar = class extends UI.VBox {
     this._treeElements = [];
     var selectedFilterSetting = Common.settings.createSetting('console.sidebarSelectedFilter', null);
 
-    var Levels = ConsoleModel.ConsoleMessage.MessageLevel;
+    var Levels = SDK.ConsoleMessage.MessageLevel;
     var consoleAPIParsedFilters = [{
       key: Console.ConsoleFilter.FilterType.Source,
-      text: ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI,
+      text: SDK.ConsoleMessage.MessageSource.ConsoleAPI,
       negative: false
     }];
     this._appendGroup(
@@ -180,8 +180,8 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
    */
   onMessageAdded(viewMessage) {
     var message = viewMessage.consoleMessage();
-    var shouldIncrementCounter = message.type !== ConsoleModel.ConsoleMessage.MessageType.Command &&
-        message.type !== ConsoleModel.ConsoleMessage.MessageType.Result && !message.isGroupMessage();
+    var shouldIncrementCounter = message.type !== SDK.ConsoleMessage.MessageType.Command &&
+        message.type !== SDK.ConsoleMessage.MessageType.Result && !message.isGroupMessage();
     if (!this._filter.shouldBeVisible(viewMessage) || !shouldIncrementCounter)
       return;
     var child = this._childElement(message.url);

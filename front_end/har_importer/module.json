@@ -1,8 +1,7 @@
 {
     "dependencies": [
         "common",
-        "network_log",
-        "sdk"
+        "sdk_browser"
     ],
     "scripts": [
         "HARFormat.js",

@@ -54,7 +54,7 @@ NetworkTestRunner.networkWaterfallColumn = function() {
 };
 
 NetworkTestRunner.networkRequests = function() {
-  return Array.from(NetworkLog.networkLog.requests());
+  return Array.from(SDKBrowser.networkLog.requests());
 };
 
 NetworkTestRunner.dumpNetworkRequests = function() {

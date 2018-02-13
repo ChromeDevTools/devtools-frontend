@@ -298,7 +298,8 @@
         "HeapProfilerModel.js",
         "PerformanceMetricsModel.js",
         "../SupportedCSSProperties.js",
-        "FilmStripModel.js"
+        "FilmStripModel.js",
+        "ConsoleModel.js"
     ],
     "skip_compilation": [
         "../SupportedCSSProperties.js"

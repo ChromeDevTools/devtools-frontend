@@ -193,7 +193,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext) {
       var executionContext = currentExecutionContext;
-      var message = ConsoleModel.consoleModel.addCommandMessage(executionContext, text);
+      var message = SDK.consoleModel.addCommandMessage(executionContext, text);
       text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
       var preprocessed = false;
       if (text.indexOf('await') !== -1) {
@@ -201,7 +201,7 @@ Console.ConsolePrompt = class extends UI.Widget {
         preprocessed = !!preprocessedText;
         text = preprocessedText || text;
       }
-      ConsoleModel.consoleModel.evaluateCommandInConsole(
+      SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, text, useCommandLineAPI, /* awaitPromise */ preprocessed);
       if (Console.ConsolePanel.instance().isShowing())
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);

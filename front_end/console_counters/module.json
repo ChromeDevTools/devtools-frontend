@@ -10,7 +10,7 @@
   "dependencies": [
     "common",
     "ui",
-    "console_model"
+    "sdk"
   ],
   "scripts": [
     "WarningErrorCounter.js"

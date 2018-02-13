@@ -150,9 +150,9 @@ Network.NetworkLogView = class extends UI.VBox {
         .addChangeListener(this._invalidateAllItems.bind(this, false), this);
 
     SDK.targetManager.observeModels(SDK.NetworkManager, this);
-    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
-    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
-    NetworkLog.networkLog.addEventListener(NetworkLog.NetworkLog.Events.Reset, this._reset, this);
+    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.RequestAdded, this._onRequestUpdated, this);
+    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.RequestUpdated, this._onRequestUpdated, this);
+    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.Reset, this._reset, this);
 
     this._updateGroupByFrame();
     Common.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
@@ -467,7 +467,7 @@ Network.NetworkLogView = class extends UI.VBox {
       this._harLoadFailed(e);
       return;
     }
-    NetworkLog.networkLog.importRequests(HARImporter.Importer.requestsFromHARLog(harRoot.log));
+    SDKBrowser.networkLog.importRequests(HARImporter.Importer.requestsFromHARLog(harRoot.log));
   }
 
   /**
@@ -692,7 +692,7 @@ Network.NetworkLogView = class extends UI.VBox {
     var maxTime = -1;
 
     var nodeCount = 0;
-    for (var request of NetworkLog.networkLog.requests()) {
+    for (var request of SDKBrowser.networkLog.requests()) {
       var node = request[Network.NetworkLogView._networkNodeSymbol];
       if (!node)
         continue;
@@ -798,7 +798,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {boolean=} deferUpdate
    */
   _invalidateAllItems(deferUpdate) {
-    this._staleRequests = new Set(NetworkLog.networkLog.requests());
+    this._staleRequests = new Set(SDKBrowser.networkLog.requests());
     if (deferUpdate)
       this.scheduleRefresh();
     else
@@ -1236,12 +1236,12 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _harRequests() {
-    var httpRequests = NetworkLog.networkLog.requests().filter(Network.NetworkLogView.HTTPRequestsFilter);
+    var httpRequests = SDKBrowser.networkLog.requests().filter(Network.NetworkLogView.HTTPRequestsFilter);
     return httpRequests.filter(Network.NetworkLogView.FinishedRequestsFilter);
   }
 
   async _copyAll() {
-    var harArchive = {log: await NetworkLog.HARLog.build(this._harRequests())};
+    var harArchive = {log: await SDKBrowser.HARLog.build(this._harRequests())};
     InspectorFrontendHost.copyText(JSON.stringify(harArchive, null, 2));
   }
 
@@ -1258,7 +1258,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {string} platform
    */
   async _copyAllCurlCommand(platform) {
-    var requests = NetworkLog.networkLog.requests();
+    var requests = SDKBrowser.networkLog.requests();
     var commands = await Promise.all(requests.map(request => this._generateCurlCommand(request, platform)));
     if (platform === 'win')
       InspectorFrontendHost.copyText(commands.join(' &\r\n'));
@@ -1275,7 +1275,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   async _copyAllPowerShellCommand() {
-    var requests = NetworkLog.networkLog.requests();
+    var requests = SDKBrowser.networkLog.requests();
     var commands = await Promise.all(requests.map(request => this._generatePowerShellCommand(request)));
     InspectorFrontendHost.copyText(commands.join(';\r\n'));
   }

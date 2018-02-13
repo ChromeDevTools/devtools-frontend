@@ -31,13 +31,13 @@
 /**
  * @implements {SDK.TargetManager.Observer}
  */
-ConsoleModel.ConsoleModel = class extends Common.Object {
+SDK.ConsoleModel = class extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!Array.<!ConsoleModel.ConsoleMessage>} */
+    /** @type {!Array.<!SDK.ConsoleMessage>} */
     this._messages = [];
-    /** @type {!Map<!SDK.RuntimeModel, !Map<number, !ConsoleModel.ConsoleMessage>>} */
+    /** @type {!Map<!SDK.RuntimeModel, !Map<number, !SDK.ConsoleMessage>>} */
     this._messageByExceptionId = new Map();
     this._warnings = 0;
     this._errors = 0;
@@ -68,10 +68,6 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    */
   _initTarget(target) {
     var eventListeners = [];
-
-    var logModel = target.model(SDK.LogModel);
-    if (logModel)
-      eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
 
     var cpuProfilerModel = target.model(SDK.CPUProfilerModel);
     if (cpuProfilerModel) {
@@ -104,13 +100,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
           SDK.RuntimeModel.Events.QueryObjectRequested, this._queryObjectRequested.bind(this, runtimeModel)));
     }
 
-    var networkManager = target.model(SDK.NetworkManager);
-    if (networkManager) {
-      eventListeners.push(networkManager.addEventListener(
-          SDK.NetworkManager.Events.MessageGenerated, this._networkMessageGenerated.bind(this, networkManager)));
-    }
-
-    target[ConsoleModel.ConsoleModel._events] = eventListeners;
+    target[SDK.ConsoleModel._events] = eventListeners;
   }
 
   /**
@@ -121,12 +111,12 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     var runtimeModel = target.model(SDK.RuntimeModel);
     if (runtimeModel)
       this._messageByExceptionId.delete(runtimeModel);
-    Common.EventTarget.removeEventListeners(target[ConsoleModel.ConsoleModel._events] || []);
+    Common.EventTarget.removeEventListeners(target[SDK.ConsoleModel._events] || []);
   }
 
   /**
    * @param {!SDK.ExecutionContext} executionContext
-   * @param {!ConsoleModel.ConsoleMessage} originatingMessage
+   * @param {!SDK.ConsoleMessage} originatingMessage
    * @param {string} expression
    * @param {boolean} useCommandLineAPI
    * @param {boolean} awaitPromise
@@ -147,34 +137,33 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
       return;
     await Common.console.showPromise();
     this.dispatchEventToListeners(
-        ConsoleModel.ConsoleModel.Events.CommandEvaluated,
+        SDK.ConsoleModel.Events.CommandEvaluated,
         {result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails});
   }
 
   /**
    * @param {!SDK.ExecutionContext} executionContext
    * @param {string} text
-   * @return {!ConsoleModel.ConsoleMessage}
+   * @return {!SDK.ConsoleMessage}
    */
   addCommandMessage(executionContext, text) {
-    var commandMessage = new ConsoleModel.ConsoleMessage(
-        executionContext.runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, null, text,
-        ConsoleModel.ConsoleMessage.MessageType.Command);
+    var commandMessage = new SDK.ConsoleMessage(
+        executionContext.runtimeModel, SDK.ConsoleMessage.MessageSource.JS, null, text,
+        SDK.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
     return commandMessage;
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} msg
+   * @param {!SDK.ConsoleMessage} msg
    */
   addMessage(msg) {
-    if (msg.source === ConsoleModel.ConsoleMessage.MessageSource.Worker && SDK.targetManager.targetById(msg.workerId))
+    if (msg.source === SDK.ConsoleMessage.MessageSource.Worker && SDK.targetManager.targetById(msg.workerId))
       return;
 
     msg._pageLoadSequenceNumber = this._pageLoadSequenceNumber;
-    if (msg.source === ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI &&
-        msg.type === ConsoleModel.ConsoleMessage.MessageType.Clear)
+    if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === SDK.ConsoleMessage.MessageType.Clear)
       this._clearIfNecessary();
 
     this._messages.push(msg);
@@ -188,20 +177,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
       modelMap.set(msg._exceptionId, msg);
     }
     this._incrementErrorWarningCount(msg);
-    this.dispatchEventToListeners(ConsoleModel.ConsoleModel.Events.MessageAdded, msg);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _logEntryAdded(event) {
-    var data = /** @type {{logModel: !SDK.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);
-    var consoleMessage = new ConsoleModel.ConsoleMessage(
-        data.logModel.target().model(SDK.RuntimeModel), data.entry.source, data.entry.level, data.entry.text, undefined,
-        data.entry.url, data.entry.lineNumber, undefined, data.entry.networkRequestId,
-        [data.entry.text, ...(data.entry.args || [])], data.entry.stackTrace, data.entry.timestamp, undefined,
-        undefined, data.entry.workerId);
-    this.addMessage(consoleMessage);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageAdded, msg);
   }
 
   /**
@@ -210,7 +186,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    */
   _exceptionThrown(runtimeModel, event) {
     var exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
-    var consoleMessage = ConsoleModel.ConsoleMessage.fromException(
+    var consoleMessage = SDK.ConsoleMessage.fromException(
         runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
@@ -227,8 +203,8 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     if (!exceptionMessage)
       return;
     this._errors--;
-    exceptionMessage.level = ConsoleModel.ConsoleMessage.MessageLevel.Info;
-    this.dispatchEventToListeners(ConsoleModel.ConsoleModel.Events.MessageUpdated, exceptionMessage);
+    exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Info;
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
   }
 
   /**
@@ -237,19 +213,15 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    */
   _consoleAPICalled(runtimeModel, event) {
     var call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
-    var level = ConsoleModel.ConsoleMessage.MessageLevel.Info;
-    if (call.type === ConsoleModel.ConsoleMessage.MessageType.Debug)
-      level = ConsoleModel.ConsoleMessage.MessageLevel.Verbose;
-    else if (
-        call.type === ConsoleModel.ConsoleMessage.MessageType.Error ||
-        call.type === ConsoleModel.ConsoleMessage.MessageType.Assert)
-      level = ConsoleModel.ConsoleMessage.MessageLevel.Error;
-    else if (call.type === ConsoleModel.ConsoleMessage.MessageType.Warning)
-      level = ConsoleModel.ConsoleMessage.MessageLevel.Warning;
-    else if (
-        call.type === ConsoleModel.ConsoleMessage.MessageType.Info ||
-        call.type === ConsoleModel.ConsoleMessage.MessageType.Log)
-      level = ConsoleModel.ConsoleMessage.MessageLevel.Info;
+    var level = SDK.ConsoleMessage.MessageLevel.Info;
+    if (call.type === SDK.ConsoleMessage.MessageType.Debug)
+      level = SDK.ConsoleMessage.MessageLevel.Verbose;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Error || call.type === SDK.ConsoleMessage.MessageType.Assert)
+      level = SDK.ConsoleMessage.MessageLevel.Error;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Warning)
+      level = SDK.ConsoleMessage.MessageLevel.Warning;
+    else if (call.type === SDK.ConsoleMessage.MessageType.Info || call.type === SDK.ConsoleMessage.MessageType.Log)
+      level = SDK.ConsoleMessage.MessageLevel.Info;
     var message = '';
     if (call.args.length && call.args[0].unserializableValue)
       message = call.args[0].unserializableValue;
@@ -258,11 +230,11 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     else if (call.args.length && call.args[0].description)
       message = call.args[0].description;
     var callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
-    var consoleMessage = new ConsoleModel.ConsoleMessage(
-        runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI, level,
+    var consoleMessage = new SDK.ConsoleMessage(
+        runtimeModel, SDK.ConsoleMessage.MessageSource.ConsoleAPI, level,
         /** @type {string} */ (message), call.type, callFrame ? callFrame.url : undefined,
-        callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, undefined,
-        call.args, call.stackTrace, call.timestamp, call.executionContextId, undefined, undefined, call.context);
+        callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, call.args,
+        call.stackTrace, call.timestamp, call.executionContextId, undefined, undefined, call.context);
     this.addMessage(consoleMessage);
   }
 
@@ -271,10 +243,9 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _queryObjectRequested(runtimeModel, event) {
-    var consoleMessage = new ConsoleModel.ConsoleMessage(
-        runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI,
-        ConsoleModel.ConsoleMessage.MessageLevel.Info, '', undefined, undefined, undefined, undefined, undefined,
-        [event.data.objects], undefined, undefined, undefined, undefined, undefined, undefined);
+    var consoleMessage = new SDK.ConsoleMessage(
+        runtimeModel, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Info, '', undefined,
+        undefined, undefined, undefined, [event.data.objects]);
     this.addMessage(consoleMessage);
   }
 
@@ -299,7 +270,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
   _consoleProfileStarted(cpuProfilerModel, event) {
     var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
-        cpuProfilerModel, ConsoleModel.ConsoleMessage.MessageType.Profile, data.scriptLocation,
+        cpuProfilerModel, SDK.ConsoleMessage.MessageType.Profile, data.scriptLocation,
         Common.UIString('Profile \'%s\' started.', data.title));
   }
 
@@ -310,7 +281,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
   _consoleProfileFinished(cpuProfilerModel, event) {
     var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
-        cpuProfilerModel, ConsoleModel.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
+        cpuProfilerModel, SDK.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
         Common.UIString('Profile \'%s\' finished.', data.title));
   }
 
@@ -328,43 +299,29 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
       lineNumber: scriptLocation.lineNumber,
       columnNumber: scriptLocation.columnNumber || 0
     }];
-    this.addMessage(new ConsoleModel.ConsoleMessage(
-        cpuProfilerModel.runtimeModel(), ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI,
-        ConsoleModel.ConsoleMessage.MessageLevel.Info, messageText, type, undefined, undefined, undefined, undefined,
-        stackTrace));
+    this.addMessage(new SDK.ConsoleMessage(
+        cpuProfilerModel.runtimeModel(), SDK.ConsoleMessage.MessageSource.ConsoleAPI,
+        SDK.ConsoleMessage.MessageLevel.Info, messageText, type, undefined, undefined, undefined, stackTrace));
   }
 
   /**
-   * @param {!SDK.NetworkManager} networkManager
-   * @param {!Common.Event} event
-   */
-  _networkMessageGenerated(networkManager, event) {
-    var message = /** @type {!SDK.NetworkManager.Message} */ (event.data);
-    this.addMessage(new ConsoleModel.ConsoleMessage(
-        networkManager.target().model(SDK.RuntimeModel), ConsoleModel.ConsoleMessage.MessageSource.Network,
-        message.warning ? ConsoleModel.ConsoleMessage.MessageLevel.Warning :
-                          ConsoleModel.ConsoleMessage.MessageLevel.Info,
-        message.message, undefined, undefined, undefined, undefined, message.requestId));
-  }
-
-  /**
-   * @param {!ConsoleModel.ConsoleMessage} msg
+   * @param {!SDK.ConsoleMessage} msg
    */
   _incrementErrorWarningCount(msg) {
-    if (msg.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
+    if (msg.source === SDK.ConsoleMessage.MessageSource.Violation)
       return;
     switch (msg.level) {
-      case ConsoleModel.ConsoleMessage.MessageLevel.Warning:
+      case SDK.ConsoleMessage.MessageLevel.Warning:
         this._warnings++;
         break;
-      case ConsoleModel.ConsoleMessage.MessageLevel.Error:
+      case SDK.ConsoleMessage.MessageLevel.Error:
         this._errors++;
         break;
     }
   }
 
   /**
-   * @return {!Array.<!ConsoleModel.ConsoleMessage>}
+   * @return {!Array.<!SDK.ConsoleMessage>}
    */
   messages() {
     return this._messages;
@@ -383,7 +340,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
     this._messageByExceptionId.clear();
     this._errors = 0;
     this._warnings = 0;
-    this.dispatchEventToListeners(ConsoleModel.ConsoleModel.Events.ConsoleCleared);
+    this.dispatchEventToListeners(SDK.ConsoleModel.Events.ConsoleCleared);
   }
 
   /**
@@ -402,7 +359,7 @@ ConsoleModel.ConsoleModel = class extends Common.Object {
 };
 
 /** @enum {symbol} */
-ConsoleModel.ConsoleModel.Events = {
+SDK.ConsoleModel.Events = {
   ConsoleCleared: Symbol('ConsoleCleared'),
   MessageAdded: Symbol('MessageAdded'),
   MessageUpdated: Symbol('MessageUpdated'),
@@ -413,7 +370,7 @@ ConsoleModel.ConsoleModel.Events = {
 /**
  * @unrestricted
  */
-ConsoleModel.ConsoleMessage = class {
+SDK.ConsoleMessage = class {
   /**
    * @param {?SDK.RuntimeModel} runtimeModel
    * @param {string} source
@@ -423,7 +380,6 @@ ConsoleModel.ConsoleMessage = class {
    * @param {?string=} url
    * @param {number=} line
    * @param {number=} column
-   * @param {!Protocol.Network.RequestId=} requestId
    * @param {!Array.<!Protocol.Runtime.RemoteObject>=} parameters
    * @param {!Protocol.Runtime.StackTrace=} stackTrace
    * @param {number=} timestamp
@@ -433,13 +389,13 @@ ConsoleModel.ConsoleMessage = class {
    * @param {string=} context
    */
   constructor(
-      runtimeModel, source, level, messageText, type, url, line, column, requestId, parameters, stackTrace, timestamp,
+      runtimeModel, source, level, messageText, type, url, line, column, parameters, stackTrace, timestamp,
       executionContextId, scriptId, workerId, context) {
     this._runtimeModel = runtimeModel;
     this.source = source;
-    this.level = /** @type {?ConsoleModel.ConsoleMessage.MessageLevel} */ (level);
+    this.level = /** @type {?SDK.ConsoleMessage.MessageLevel} */ (level);
     this.messageText = messageText;
-    this.type = type || ConsoleModel.ConsoleMessage.MessageType.Log;
+    this.type = type || SDK.ConsoleMessage.MessageType.Log;
     /** @type {string|undefined} */
     this.url = url || undefined;
     /** @type {number} */
@@ -454,19 +410,6 @@ ConsoleModel.ConsoleMessage = class {
     this.scriptId = scriptId || null;
     this.workerId = workerId || null;
 
-    var manager = runtimeModel ? runtimeModel.target().model(SDK.NetworkManager) : null;
-    this.request = (manager && requestId) ? NetworkLog.networkLog.requestByManagerAndId(manager, requestId) : null;
-
-    if (this.request) {
-      var initiator = this.request.initiator();
-      if (initiator) {
-        this.stackTrace = initiator.stack || undefined;
-        if (initiator.url) {
-          this.url = initiator.url;
-          this.line = initiator.lineNumber || 0;
-        }
-      }
-    }
     if (!this.executionContextId && this._runtimeModel) {
       if (this.scriptId)
         this.executionContextId = this._runtimeModel.executionContextIdForScriptId(this.scriptId);
@@ -484,13 +427,13 @@ ConsoleModel.ConsoleMessage = class {
    * @param {string=} messageType
    * @param {number=} timestamp
    * @param {string=} forceUrl
-   * @return {!ConsoleModel.ConsoleMessage}
+   * @return {!SDK.ConsoleMessage}
    */
   static fromException(runtimeModel, exceptionDetails, messageType, timestamp, forceUrl) {
-    return new ConsoleModel.ConsoleMessage(
-        runtimeModel, ConsoleModel.ConsoleMessage.MessageSource.JS, ConsoleModel.ConsoleMessage.MessageLevel.Error,
+    return new SDK.ConsoleMessage(
+        runtimeModel, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Error,
         SDK.RuntimeModel.simpleTextFromException(exceptionDetails), messageType, forceUrl || exceptionDetails.url,
-        exceptionDetails.lineNumber, exceptionDetails.columnNumber, undefined,
+        exceptionDetails.lineNumber, exceptionDetails.columnNumber,
         exceptionDetails.exception ?
             [SDK.RemoteObject.fromLocalObject(exceptionDetails.text), exceptionDetails.exception] :
             undefined,
@@ -505,7 +448,14 @@ ConsoleModel.ConsoleMessage = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} originatingMessage
+   * @return {?SDK.Target}
+   */
+  target() {
+    return this._runtimeModel ? this._runtimeModel.target() : null;
+  }
+
+  /**
+   * @param {!SDK.ConsoleMessage} originatingMessage
    */
   setOriginatingMessage(originatingMessage) {
     this._originatingConsoleMessage = originatingMessage;
@@ -527,7 +477,7 @@ ConsoleModel.ConsoleMessage = class {
   }
 
   /**
-   * @return {?ConsoleModel.ConsoleMessage}
+   * @return {?SDK.ConsoleMessage}
    */
   originatingMessage() {
     return this._originatingConsoleMessage;
@@ -537,17 +487,17 @@ ConsoleModel.ConsoleMessage = class {
    * @return {boolean}
    */
   isGroupMessage() {
-    return this.type === ConsoleModel.ConsoleMessage.MessageType.StartGroup ||
-        this.type === ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed ||
-        this.type === ConsoleModel.ConsoleMessage.MessageType.EndGroup;
+    return this.type === SDK.ConsoleMessage.MessageType.StartGroup ||
+        this.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed ||
+        this.type === SDK.ConsoleMessage.MessageType.EndGroup;
   }
 
   /**
    * @return {boolean}
    */
   isGroupStartMessage() {
-    return this.type === ConsoleModel.ConsoleMessage.MessageType.StartGroup ||
-        this.type === ConsoleModel.ConsoleMessage.MessageType.StartGroupCollapsed;
+    return this.type === SDK.ConsoleMessage.MessageType.StartGroup ||
+        this.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
   }
 
   /**
@@ -555,22 +505,20 @@ ConsoleModel.ConsoleMessage = class {
    */
   isErrorOrWarning() {
     return (
-        this.level === ConsoleModel.ConsoleMessage.MessageLevel.Warning ||
-        this.level === ConsoleModel.ConsoleMessage.MessageLevel.Error);
+        this.level === SDK.ConsoleMessage.MessageLevel.Warning || this.level === SDK.ConsoleMessage.MessageLevel.Error);
   }
 
   /**
    * @return {boolean}
    */
   isGroupable() {
-    var isUngroupableError = this.level === ConsoleModel.ConsoleMessage.MessageLevel.Error &&
-        (this.source === ConsoleModel.ConsoleMessage.MessageSource.JS ||
-         this.source === ConsoleModel.ConsoleMessage.MessageSource.Network);
+    var isUngroupableError = this.level === SDK.ConsoleMessage.MessageLevel.Error &&
+        (this.source === SDK.ConsoleMessage.MessageSource.JS ||
+         this.source === SDK.ConsoleMessage.MessageSource.Network);
     return (
-        this.source !== ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI &&
-        this.type !== ConsoleModel.ConsoleMessage.MessageType.Command &&
-        this.type !== ConsoleModel.ConsoleMessage.MessageType.Result &&
-        this.type !== ConsoleModel.ConsoleMessage.MessageType.System && !isUngroupableError);
+        this.source !== SDK.ConsoleMessage.MessageSource.ConsoleAPI &&
+        this.type !== SDK.ConsoleMessage.MessageType.Command && this.type !== SDK.ConsoleMessage.MessageType.Result &&
+        this.type !== SDK.ConsoleMessage.MessageType.System && !isUngroupableError);
   }
 
   /**
@@ -581,7 +529,7 @@ ConsoleModel.ConsoleMessage = class {
   }
 
   /**
-   * @param {?ConsoleModel.ConsoleMessage} msg
+   * @param {?SDK.ConsoleMessage} msg
    * @return {boolean}
    */
   isEqual(msg) {
@@ -641,7 +589,7 @@ ConsoleModel.ConsoleMessage = class {
 /**
  * @enum {string}
  */
-ConsoleModel.ConsoleMessage.MessageSource = {
+SDK.ConsoleMessage.MessageSource = {
   XML: 'xml',
   JS: 'javascript',
   Network: 'network',
@@ -662,7 +610,7 @@ ConsoleModel.ConsoleMessage.MessageSource = {
 /**
  * @enum {string}
  */
-ConsoleModel.ConsoleMessage.MessageType = {
+SDK.ConsoleMessage.MessageType = {
   Log: 'log',
   Debug: 'debug',
   Info: 'info',
@@ -687,34 +635,30 @@ ConsoleModel.ConsoleMessage.MessageType = {
 /**
  * @enum {string}
  */
-ConsoleModel.ConsoleMessage.MessageLevel = {
+SDK.ConsoleMessage.MessageLevel = {
   Verbose: 'verbose',
   Info: 'info',
   Warning: 'warning',
   Error: 'error'
 };
 
-/** @type {!Map<!ConsoleModel.ConsoleMessage.MessageSource, string>} */
-ConsoleModel.ConsoleMessage.MessageSourceDisplayName = new Map([
-  [ConsoleModel.ConsoleMessage.MessageSource.XML, 'xml'], [ConsoleModel.ConsoleMessage.MessageSource.JS, 'javascript'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Network, 'network'],
-  [ConsoleModel.ConsoleMessage.MessageSource.ConsoleAPI, 'console-api'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Storage, 'storage'],
-  [ConsoleModel.ConsoleMessage.MessageSource.AppCache, 'appcache'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Rendering, 'rendering'],
-  [ConsoleModel.ConsoleMessage.MessageSource.CSS, 'css'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Security, 'security'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Deprecation, 'deprecation'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Worker, 'worker'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Violation, 'violation'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Intervention, 'intervention'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Recommendation, 'recommendation'],
-  [ConsoleModel.ConsoleMessage.MessageSource.Other, 'other']
+/** @type {!Map<!SDK.ConsoleMessage.MessageSource, string>} */
+SDK.ConsoleMessage.MessageSourceDisplayName = new Map([
+  [SDK.ConsoleMessage.MessageSource.XML, 'xml'], [SDK.ConsoleMessage.MessageSource.JS, 'javascript'],
+  [SDK.ConsoleMessage.MessageSource.Network, 'network'], [SDK.ConsoleMessage.MessageSource.ConsoleAPI, 'console-api'],
+  [SDK.ConsoleMessage.MessageSource.Storage, 'storage'], [SDK.ConsoleMessage.MessageSource.AppCache, 'appcache'],
+  [SDK.ConsoleMessage.MessageSource.Rendering, 'rendering'], [SDK.ConsoleMessage.MessageSource.CSS, 'css'],
+  [SDK.ConsoleMessage.MessageSource.Security, 'security'],
+  [SDK.ConsoleMessage.MessageSource.Deprecation, 'deprecation'], [SDK.ConsoleMessage.MessageSource.Worker, 'worker'],
+  [SDK.ConsoleMessage.MessageSource.Violation, 'violation'],
+  [SDK.ConsoleMessage.MessageSource.Intervention, 'intervention'],
+  [SDK.ConsoleMessage.MessageSource.Recommendation, 'recommendation'],
+  [SDK.ConsoleMessage.MessageSource.Other, 'other']
 ]);
 
-ConsoleModel.ConsoleModel._events = Symbol('ConsoleModel.ConsoleModel.events');
+SDK.ConsoleModel._events = Symbol('SDK.ConsoleModel.events');
 
 /**
- * @type {!ConsoleModel.ConsoleModel}
+ * @type {!SDK.ConsoleModel}
  */
-ConsoleModel.consoleModel;
+SDK.consoleModel;

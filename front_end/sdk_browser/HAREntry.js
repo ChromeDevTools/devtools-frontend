@@ -36,7 +36,7 @@
 /**
  * @unrestricted
  */
-NetworkLog.HAREntry = class {
+SDKBrowser.HAREntry = class {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -57,7 +57,7 @@ NetworkLog.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   static async build(request) {
-    var harEntry = new NetworkLog.HAREntry(request);
+    var harEntry = new SDKBrowser.HAREntry(request);
     var ipAddress = harEntry._request.remoteAddress();
     var portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1)
@@ -70,7 +70,7 @@ NetworkLog.HAREntry = class {
       time += Math.max(t, 0);
 
     var entry = {
-      startedDateTime: NetworkLog.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
+      startedDateTime: SDKBrowser.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
       time: time,
       request: await harEntry._buildRequest(),
       response: harEntry._buildResponse(),
@@ -86,7 +86,7 @@ NetworkLog.HAREntry = class {
 
     if (harEntry._request.connectionId !== '0')
       entry.connection = harEntry._request.connectionId;
-    var page = NetworkLog.PageLoad.forRequest(harEntry._request);
+    var page = SDKBrowser.PageLoad.forRequest(harEntry._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -150,7 +150,7 @@ NetworkLog.HAREntry = class {
   }
 
   /**
-   * @return {!NetworkLog.HAREntry.Timing}
+   * @return {!SDKBrowser.HAREntry.Timing}
    */
   _buildTimings() {
     // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
@@ -162,7 +162,7 @@ NetworkLog.HAREntry = class {
 
     var queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = queuedTime;
-    result._blocked_queueing = NetworkLog.HAREntry._toMilliseconds(queuedTime);
+    result._blocked_queueing = SDKBrowser.HAREntry._toMilliseconds(queuedTime);
 
     var highestTime = 0;
     if (timing) {
@@ -207,11 +207,11 @@ NetworkLog.HAREntry = class {
 
     var requestTime = timing ? timing.requestTime : startTime;
     var waitStart = highestTime;
-    var waitEnd = NetworkLog.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    var waitEnd = SDKBrowser.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
     var receiveStart = waitEnd;
-    var receiveEnd = NetworkLog.HAREntry._toMilliseconds(this._request.endTime - issueTime);
+    var receiveEnd = SDKBrowser.HAREntry._toMilliseconds(this._request.endTime - issueTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -273,7 +273,7 @@ NetworkLog.HAREntry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(NetworkLog.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(SDKBrowser.HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -323,13 +323,13 @@ NetworkLog.HAREntry = class {
   _blocked_queueing: number,
   _blocked_proxy: (number|undefined)
 }} */
-NetworkLog.HAREntry.Timing;
+SDKBrowser.HAREntry.Timing;
 
 
 /**
  * @unrestricted
  */
-NetworkLog.HARLog = class {
+SDKBrowser.HARLog = class {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
@@ -344,10 +344,10 @@ NetworkLog.HARLog = class {
    * @return {!Promise<!Object>}
    */
   static async build(requests) {
-    var log = new NetworkLog.HARLog();
+    var log = new SDKBrowser.HARLog();
     var entryPromises = [];
     for (var request of requests)
-      entryPromises.push(NetworkLog.HAREntry.build(request));
+      entryPromises.push(SDKBrowser.HAREntry.build(request));
     var entries = await Promise.all(entryPromises);
     return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
   }
@@ -367,7 +367,7 @@ NetworkLog.HARLog = class {
     var pages = [];
     for (var i = 0; i < requests.length; ++i) {
       var request = requests[i];
-      var page = NetworkLog.PageLoad.forRequest(request);
+      var page = SDKBrowser.PageLoad.forRequest(request);
       if (!page || seenIdentifiers[page.id])
         continue;
       seenIdentifiers[page.id] = true;
@@ -377,13 +377,13 @@ NetworkLog.HARLog = class {
   }
 
   /**
-   * @param {!NetworkLog.PageLoad} page
+   * @param {!SDKBrowser.PageLoad} page
    * @param {!SDK.NetworkRequest} request
    * @return {!Object}
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: NetworkLog.HARLog.pseudoWallTime(request, page.startTime),
+      startedDateTime: SDKBrowser.HARLog.pseudoWallTime(request, page.startTime),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {
@@ -394,7 +394,7 @@ NetworkLog.HARLog = class {
   }
 
   /**
-   * @param {!NetworkLog.PageLoad} page
+   * @param {!SDKBrowser.PageLoad} page
    * @param {number} time
    * @return {number}
    */
@@ -402,6 +402,6 @@ NetworkLog.HARLog = class {
     var startTime = page.startTime;
     if (time === -1 || startTime === -1)
       return -1;
-    return NetworkLog.HAREntry._toMilliseconds(time - startTime);
+    return SDKBrowser.HAREntry._toMilliseconds(time - startTime);
   }
 };

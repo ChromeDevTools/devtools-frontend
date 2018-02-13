@@ -1,9 +1,0 @@
-{
-    "dependencies": [
-        "sdk",
-        "network_log"
-    ],
-    "scripts": [
-        "ConsoleModel.js"
-    ]
-}

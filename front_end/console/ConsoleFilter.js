@@ -21,7 +21,7 @@ Console.ConsoleFilter = class {
    */
   static allLevelsFilterValue() {
     var result = {};
-    for (var name of Object.values(ConsoleModel.ConsoleMessage.MessageLevel))
+    for (var name of Object.values(SDK.ConsoleMessage.MessageLevel))
       result[name] = true;
     return result;
   }
@@ -31,7 +31,7 @@ Console.ConsoleFilter = class {
    */
   static defaultLevelsFilterValue() {
     var result = Console.ConsoleFilter.allLevelsFilterValue();
-    result[ConsoleModel.ConsoleMessage.MessageLevel.Verbose] = false;
+    result[SDK.ConsoleMessage.MessageLevel.Verbose] = false;
     return result;
   }
 
@@ -65,8 +65,8 @@ Console.ConsoleFilter = class {
          this.executionContext.id !== message.executionContextId))
       return false;
 
-    if (message.type === ConsoleModel.ConsoleMessage.MessageType.Command ||
-        message.type === ConsoleModel.ConsoleMessage.MessageType.Result || message.isGroupMessage())
+    if (message.type === SDK.ConsoleMessage.MessageType.Command ||
+        message.type === SDK.ConsoleMessage.MessageType.Result || message.isGroupMessage())
       return true;
 
     if (message.level && !this.levelsMask[/** @type {string} */ (message.level)])
@@ -86,8 +86,8 @@ Console.ConsoleFilter = class {
             break;
           case Console.ConsoleFilter.FilterType.Source:
             var sourceNameForMessage = message.source ?
-                ConsoleModel.ConsoleMessage.MessageSourceDisplayName.get(
-                    /** @type {!ConsoleModel.ConsoleMessage.MessageSource} */ (message.source)) :
+                SDK.ConsoleMessage.MessageSourceDisplayName.get(
+                    /** @type {!SDK.ConsoleMessage.MessageSource} */ (message.source)) :
                 message.source;
             if (!passesFilter(filter, sourceNameForMessage, true /* exactMatch */))
               return false;

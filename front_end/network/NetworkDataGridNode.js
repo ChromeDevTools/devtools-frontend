@@ -546,7 +546,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   showingInitiatorChainChanged() {
     var showInitiatorChain = this.showingInitiatorChain();
 
-    var initiatorGraph = NetworkLog.networkLog.initiatorGraphForRequest(this._request);
+    var initiatorGraph = SDKBrowser.networkLog.initiatorGraphForRequest(this._request);
     for (var request of initiatorGraph.initiators) {
       if (request === this._request)
         continue;
@@ -636,7 +636,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @return {boolean}
    */
   isNavigationRequest() {
-    var pageLoad = NetworkLog.PageLoad.forRequest(this._request);
+    var pageLoad = SDKBrowser.PageLoad.forRequest(this._request);
     return pageLoad ? pageLoad.mainRequest === this._request : false;
   }
 
@@ -873,7 +873,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
   _renderInitiatorCell(cell) {
     this._initiatorCell = cell;
     var request = this._request;
-    var initiator = NetworkLog.networkLog.initiatorInfoForRequest(request);
+    var initiator = SDKBrowser.networkLog.initiatorInfoForRequest(request);
 
     var timing = request.timing;
     if (timing && timing.pushStart)

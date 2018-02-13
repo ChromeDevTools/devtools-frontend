@@ -851,9 +851,9 @@ Sources.SourcesPanel = class extends UI.Panel {
     } else {
       var executionContext = /** @type {!SDK.ExecutionContext} */ (currentExecutionContext);
       var text = /** @type {string} */ (callFunctionResult.object.value);
-      var message = ConsoleModel.consoleModel.addCommandMessage(executionContext, text);
+      var message = SDK.consoleModel.addCommandMessage(executionContext, text);
       text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
-      ConsoleModel.consoleModel.evaluateCommandInConsole(
+      SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, text,
           /* useCommandLineAPI */ false, /* awaitPromise */ false);
     }
@@ -1185,9 +1185,9 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
           var text = frame.textEditor.text(frame.textEditor.selection());
           var executionContext = UI.context.flavor(SDK.ExecutionContext);
           if (executionContext) {
-            var message = ConsoleModel.consoleModel.addCommandMessage(executionContext, text);
+            var message = SDK.consoleModel.addCommandMessage(executionContext, text);
             text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
-            ConsoleModel.consoleModel.evaluateCommandInConsole(
+            SDK.consoleModel.evaluateCommandInConsole(
                 executionContext, message, text, /* useCommandLineAPI */ true, /* awaitPromise */ false);
           }
         }

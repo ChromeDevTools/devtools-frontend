@@ -300,8 +300,7 @@
         "host",
         "platform",
         "sdk",
-        "persistence",
-        "console_model"
+        "persistence"
     ],
     "scripts": [
         "SimpleApp.js",

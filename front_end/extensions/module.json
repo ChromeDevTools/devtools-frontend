@@ -1,7 +1,7 @@
 {
     "dependencies": [
         "components",
-        "network_log",
+        "sdk_browser",
         "common"
     ],
     "scripts": [

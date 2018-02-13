@@ -35,12 +35,11 @@ Bindings.PresentationConsoleMessageManager = class {
   constructor() {
     SDK.targetManager.observeModels(SDK.DebuggerModel, this);
 
-    ConsoleModel.consoleModel.addEventListener(
-        ConsoleModel.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
-    ConsoleModel.consoleModel.addEventListener(
-        ConsoleModel.ConsoleModel.Events.MessageAdded,
-        event => this._consoleMessageAdded(/** @type {!ConsoleModel.ConsoleMessage} */ (event.data)));
-    ConsoleModel.consoleModel.messages().forEach(this._consoleMessageAdded, this);
+    SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
+    SDK.consoleModel.addEventListener(
+        SDK.ConsoleModel.Events.MessageAdded,
+        event => this._consoleMessageAdded(/** @type {!SDK.ConsoleMessage} */ (event.data)));
+    SDK.consoleModel.messages().forEach(this._consoleMessageAdded, this);
   }
 
   /**
@@ -61,11 +60,11 @@ Bindings.PresentationConsoleMessageManager = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
-        message.source === ConsoleModel.ConsoleMessage.MessageSource.Violation)
+        message.source === SDK.ConsoleMessage.MessageSource.Violation)
       return;
     var debuggerModel = message.runtimeModel().debuggerModel();
     debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleMessageAdded(message);
@@ -86,7 +85,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   constructor(debuggerModel) {
     this._debuggerModel = debuggerModel;
 
-    /** @type {!Object.<string, !Array.<!ConsoleModel.ConsoleMessage>>} */
+    /** @type {!Object.<string, !Array.<!SDK.ConsoleMessage>>} */
     this._pendingConsoleMessages = {};
 
     /** @type {!Array.<!Bindings.PresentationConsoleMessage>} */
@@ -104,7 +103,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
     var rawLocation = this._rawLocation(message);
@@ -115,7 +114,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    * @return {?SDK.DebuggerModel.Location}
    */
   _rawLocation(message) {
@@ -132,7 +131,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
    */
   _addConsoleMessageToScript(message, rawLocation) {
@@ -141,7 +140,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    */
   _addPendingConsoleMessage(message) {
     if (!message.url)
@@ -197,13 +196,13 @@ Bindings.PresentationConsoleMessageHelper = class {
  */
 Bindings.PresentationConsoleMessage = class {
   /**
-   * @param {!ConsoleModel.ConsoleMessage} message
+   * @param {!SDK.ConsoleMessage} message
    * @param {!SDK.DebuggerModel.Location} rawLocation
    * @param {!Bindings.LiveLocationPool} locationPool
    */
   constructor(message, rawLocation, locationPool) {
     this._text = message.messageText;
-    this._level = message.level === ConsoleModel.ConsoleMessage.MessageLevel.Error ?
+    this._level = message.level === SDK.ConsoleMessage.MessageLevel.Error ?
         Workspace.UISourceCode.Message.Level.Error :
         Workspace.UISourceCode.Message.Level.Warning;
     Bindings.debuggerWorkspaceBinding.createLiveLocation(rawLocation, this._updateLocation.bind(this), locationPool);

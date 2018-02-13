@@ -724,6 +724,8 @@ Runtime.Module = class {
     // clang-format off
     const specialCases = {
       'sdk': 'SDK',
+      'sdk_js': 'SDKJS',
+      'sdk_browser': 'SDKBrowser',
       'ui': 'UI',
       'object_ui': 'ObjectUI',
       'perf_ui': 'PerfUI',

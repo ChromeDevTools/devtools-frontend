@@ -23,6 +23,10 @@ const SPECIAL_CASE_NAMESPACES_PATH = path.resolve(__dirname, '..', 'special_case
  */
 
 const APPLICATION_DESCRIPTORS = [
+  'devtools_app.json',
+  'js_app.json',
+  'shell.json',
+  'worker_app.json',
   'inspector.json',
   'toolbox.json',
   'integration_test_runner.json',
@@ -44,8 +48,9 @@ const MODULES_TO_REMOVE = ['profiler_test_runner', 'heap_snapshot_test_runner'];
  * {file: 'ui/SomeFile.js', existing: 'common'}
  */
 const JS_FILES_MAPPING = [
-  {file: 'heap_snapshot_test_runner/HeapSnapshotTestRunner.js', new: 'heap_profiler_test_runner'},
-  {file: 'profiler_test_runner/ProfilerTestRunner.js', new: 'cpu_profiler_test_runner'},
+  // {file: 'heap_snapshot_test_runner/HeapSnapshotTestRunner.js', new: 'heap_profiler_test_runner'},
+  // {file: 'profiler_test_runner/ProfilerTestRunner.js', new: 'cpu_profiler_test_runner'},
+  {file: 'network_log/HAREntry.js', existing: 'sdk_browser'},
 ];
 
 /**
@@ -58,18 +63,18 @@ const JS_FILES_MAPPING = [
  * }
  */
 const MODULE_MAPPING = {
-  heap_profiler_test_runner: {
-    dependencies: ['heap_snapshot_worker', 'test_runner'],
-    dependents: [],
-    applications: ['integration_test_runner.json'],
-    autostart: false,
-  },
-  cpu_profiler_test_runner: {
-    dependencies: ['profiler', 'test_runner'],
-    dependents: [],
-    applications: ['integration_test_runner.json'],
-    autostart: false,
-  },
+  // heap_profiler_test_runner: {
+  //   dependencies: ['heap_snapshot_worker', 'test_runner'],
+  //   dependents: [],
+  //   applications: ['integration_test_runner.json'],
+  //   autostart: false,
+  // },
+  // cpu_profiler_test_runner: {
+  //   dependencies: ['profiler', 'test_runner'],
+  //   dependents: [],
+  //   applications: ['integration_test_runner.json'],
+  //   autostart: false,
+  // },
 };
 
 /**

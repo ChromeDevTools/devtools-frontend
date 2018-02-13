@@ -251,8 +251,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    */
   async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
     // Convert file url to node-js path.
-    if (this.target().isNodeJS() && SDK.DebuggerModel._fileURLToNodeJSPath.has(url))
-      url = SDK.DebuggerModel._fileURLToNodeJSPath.get(url);
+    if (this.target().isNodeJS())
+      url = Common.ParsedURL.urlToPlatformPath(url, Host.isWin());
     // Adjust column if needed.
     var minColumnNumber = 0;
     var scripts = this._scriptsBySourceURL.get(url) || [];
@@ -564,7 +564,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       var nodeJSPath = sourceURL;
       sourceURL = Common.ParsedURL.platformPathToURL(nodeJSPath);
       sourceURL = this._internString(sourceURL);
-      SDK.DebuggerModel._fileURLToNodeJSPath.set(sourceURL, nodeJSPath);
     } else {
       sourceURL = this._internString(sourceURL);
     }
@@ -898,9 +897,6 @@ SDK.DebuggerModel._debuggerIdToModel = new Map();
 
 /** @type {?Protocol.Runtime.StackTraceId} */
 SDK.DebuggerModel._scheduledPauseOnAsyncCall = null;
-
-/** @type {!Map<string, string>} */
-SDK.DebuggerModel._fileURLToNodeJSPath = new Map();
 
 SDK.SDKModel.register(SDK.DebuggerModel, SDK.Target.Capability.JS, true);
 

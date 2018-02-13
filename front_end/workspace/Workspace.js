@@ -282,17 +282,12 @@ Workspace.ProjectStore = class {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {boolean=} replace
    * @return {boolean}
    */
-  addUISourceCode(uiSourceCode, replace) {
+  addUISourceCode(uiSourceCode) {
     var url = uiSourceCode.url();
-    if (this.uiSourceCodeForURL(url)) {
-      if (replace)
-        this.removeUISourceCode(url);
-      else
-        return false;
-    }
+    if (this.uiSourceCodeForURL(url))
+      return false;
     this._uiSourceCodesMap.set(url, {uiSourceCode: uiSourceCode, index: this._uiSourceCodesList.length});
     this._uiSourceCodesList.push(uiSourceCode);
     this._workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCode);

@@ -41,20 +41,44 @@ Bindings.ResourceScriptMapping = class {
     this._debuggerModel = debuggerModel;
     this._workspace = workspace;
     this._debuggerWorkspaceBinding = debuggerWorkspaceBinding;
-    /** @type {!Set<!Workspace.UISourceCode>} */
-    this._boundUISourceCodes = new Set();
-
     /** @type {!Map.<!Workspace.UISourceCode, !Bindings.ResourceScriptFile>} */
     this._uiSourceCodeToScriptFile = new Map();
 
+    /** @type {!Map<string, !Bindings.ContentProviderBasedProject>} */
+    this._projects = new Map();
+
+    /** @type {!Set<!SDK.Script>} */
+    this._acceptedScripts = new Set();
+    var runtimeModel = debuggerModel.runtimeModel();
     this._eventListeners = [
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.GlobalObjectCleared, this._debuggerReset, this),
-      debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
-      debuggerModel.addEventListener(
+      this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
+      this._debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
-      workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._uiSourceCodeAdded, this),
-      workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this._uiSourceCodeRemoved, this)
+      this._debuggerModel.addEventListener(
+          SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this),
+      runtimeModel.addEventListener(
+          SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this),
     ];
+  }
+
+  /**
+   * @param {!SDK.Script} script
+   * @return {!Bindings.ContentProviderBasedProject}
+   */
+  _project(script) {
+    var frameId = script[Bindings.ResourceScriptMapping._frameIdSymbol];
+    var prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
+    var projectId = prefix + this._debuggerModel.target().id() + ':' + frameId;
+    var project = this._projects.get(projectId);
+    if (!project) {
+      var projectType =
+          script.isContentScript() ? Workspace.projectTypes.ContentScripts : Workspace.projectTypes.Network;
+      project = new Bindings.ContentProviderBasedProject(
+          this._workspace, projectId, projectType, '' /* displayName */, false /* isServiceProject */);
+      Bindings.NetworkProject.setTargetForProject(project, this._debuggerModel.target());
+      this._projects.set(projectId, project);
+    }
+    return project;
   }
 
   /**
@@ -63,21 +87,22 @@ Bindings.ResourceScriptMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
-    var script = debuggerModelLocation.script();
+    var script = rawLocation.script();
     if (!script)
       return null;
-    var uiSourceCode = this._workspaceUISourceCodeForScript(script);
+    var project = this._project(script);
+    var uiSourceCode = project.uiSourceCodeForURL(script.sourceURL);
     if (!uiSourceCode)
       return null;
-    var scriptFile = this.scriptFile(uiSourceCode);
-    if (scriptFile &&
-        ((scriptFile.hasDivergedFromVM() && !scriptFile.isMergingToVM()) || scriptFile.isDivergingFromVM()))
+    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    if (!scriptFile)
       return null;
-    if (scriptFile && !scriptFile._hasScripts([rawLocation.script()]))
+    if ((scriptFile.hasDivergedFromVM() && !scriptFile.isMergingToVM()) || scriptFile.isDivergingFromVM())
       return null;
-    var lineNumber = debuggerModelLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-    var columnNumber = debuggerModelLocation.columnNumber || 0;
+    if (!scriptFile._hasScripts([script]))
+      return null;
+    var lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    var columnNumber = rawLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
       columnNumber -= script.columnOffset;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
@@ -91,16 +116,31 @@ Bindings.ResourceScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var scripts = this._scriptsForUISourceCode(uiSourceCode);
-    if (!scripts.length)
+    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    if (!scriptFile)
       return null;
-    var script = scripts[scripts.length - 1];
+    var script = scriptFile._script;
     if (script.isInlineScriptWithSourceURL()) {
-      return this._debuggerModel.createRawLocationByURL(
-          script.sourceURL, lineNumber + script.lineOffset,
-          lineNumber ? columnNumber : columnNumber + script.columnOffset);
+      return this._debuggerModel.createRawLocation(
+          script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
     }
-    return this._debuggerModel.createRawLocationByURL(script.sourceURL, lineNumber, columnNumber);
+    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
+  }
+
+  /**
+   * @param {!SDK.Script} script
+   * @return {boolean}
+   */
+  _acceptsScript(script) {
+    if (!script.sourceURL || script.isLiveEdit() || (script.isInlineScript() && !script.hasSourceURL))
+      return false;
+    // Filter out embedder injected content scripts.
+    if (script.isContentScript() && !script.hasSourceURL) {
+      var parsedURL = new Common.ParsedURL(script.sourceURL);
+      if (!parsedURL.isValid)
+        return false;
+    }
+    return true;
   }
 
   /**
@@ -108,14 +148,34 @@ Bindings.ResourceScriptMapping = class {
    */
   _parsedScriptSource(event) {
     var script = /** @type {!SDK.Script} */ (event.data);
-    if (script.isAnonymousScript())
+    if (!this._acceptsScript(script))
       return;
+    this._acceptedScripts.add(script);
+    var originalContentProvider = script.originalContentProvider();
+    var frameId = Bindings.frameIdForScript(script);
+    script[Bindings.ResourceScriptMapping._frameIdSymbol] = frameId;
 
-    var uiSourceCode = this._workspaceUISourceCodeForScript(script);
-    if (!uiSourceCode)
-      return;
+    var url = script.sourceURL;
+    var project = this._project(script);
 
-    this._bindUISourceCodeToScripts(uiSourceCode, [script]);
+    // Remove previous UISourceCode, if any
+    var oldUISourceCode = project.uiSourceCodeForURL(url);
+    if (oldUISourceCode) {
+      var scriptFile = this._uiSourceCodeToScriptFile.get(oldUISourceCode);
+      this._removeScript(scriptFile._script);
+    }
+
+    // Create UISourceCode.
+    var uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
+    Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
+    var metadata = Bindings.metadataForURL(this._debuggerModel.target(), frameId, url);
+
+    // Bind UISourceCode to scripts.
+    var scriptFile = new Bindings.ResourceScriptFile(this, uiSourceCode, [script]);
+    this._uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
+
+    project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
+    this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**
@@ -127,116 +187,54 @@ Bindings.ResourceScriptMapping = class {
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {?Bindings.ResourceScriptFile} scriptFile
-   */
-  _setScriptFile(uiSourceCode, scriptFile) {
-    if (scriptFile)
-      this._uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
-    else
-      this._uiSourceCodeToScriptFile.remove(uiSourceCode);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _uiSourceCodeAdded(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    if (uiSourceCode.project().isServiceProject())
-      return;
-    var scripts = this._scriptsForUISourceCode(uiSourceCode);
-    if (!scripts.length)
-      return;
-
-    this._bindUISourceCodeToScripts(uiSourceCode, scripts);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _uiSourceCodeRemoved(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    if (uiSourceCode.project().isServiceProject() || !this._boundUISourceCodes.has(uiSourceCode))
-      return;
-
-    this._unbindUISourceCode(uiSourceCode);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  _updateLocations(uiSourceCode) {
-    var scripts = this._scriptsForUISourceCode(uiSourceCode);
-    if (!scripts.length)
-      return;
-    for (var i = 0; i < scripts.length; ++i)
-      this._debuggerWorkspaceBinding.updateLocations(scripts[i]);
-  }
-
-  /**
    * @param {!SDK.Script} script
-   * @return {?Workspace.UISourceCode}
    */
-  _workspaceUISourceCodeForScript(script) {
-    if (script.isAnonymousScript())
-      return null;
-    return Bindings.NetworkProject.uiSourceCodeForScriptURL(this._workspace, script.sourceURL, script);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @return {!Array.<!SDK.Script>}
-   */
-  _scriptsForUISourceCode(uiSourceCode) {
-    var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-    if (target !== this._debuggerModel.target())
-      return [];
-    return this._debuggerModel.scriptsForSourceURL(uiSourceCode.url());
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Array.<!SDK.Script>} scripts
-   */
-  _bindUISourceCodeToScripts(uiSourceCode, scripts) {
-    console.assert(scripts.length);
-    // Due to different listeners order, a script file could be created just before uiSourceCode
-    // for the corresponding script was created. Check that we don't create scriptFile twice.
-    var boundScriptFile = this.scriptFile(uiSourceCode);
-    if (boundScriptFile && boundScriptFile._hasScripts(scripts))
+  _removeScript(script) {
+    if (!this._acceptedScripts.has(script))
       return;
-
-    var scriptFile = new Bindings.ResourceScriptFile(this, uiSourceCode, scripts);
-    this._setScriptFile(uiSourceCode, scriptFile);
-    for (var i = 0; i < scripts.length; ++i)
-      this._debuggerWorkspaceBinding.updateLocations(scripts[i]);
-    this._boundUISourceCodes.add(uiSourceCode);
+    this._acceptedScripts.delete(script);
+    var project = this._project(script);
+    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(script.sourceURL));
+    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    scriptFile.dispose();
+    this._uiSourceCodeToScriptFile.delete(uiSourceCode);
+    project.removeFile(script.sourceURL);
+    this._debuggerWorkspaceBinding.updateLocations(script);
   }
 
   /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Common.Event} event
    */
-  _unbindUISourceCode(uiSourceCode) {
-    var scriptFile = this.scriptFile(uiSourceCode);
-    if (scriptFile) {
-      scriptFile.dispose();
-      this._setScriptFile(uiSourceCode, null);
-    }
-    this._boundUISourceCodes.delete(uiSourceCode);
-    if (scriptFile._script)
-      this._debuggerWorkspaceBinding.updateLocations(scriptFile._script);
+  _executionContextDestroyed(event) {
+    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    var scripts = this._debuggerModel.scriptsForExecutionContext(executionContext);
+    for (var script of scripts)
+      this._removeScript(script);
   }
 
-  _debuggerReset() {
-    for (var uiSourceCode of this._boundUISourceCodes.valuesArray())
-      this._unbindUISourceCode(uiSourceCode);
-    this._boundUISourceCodes.clear();
-    console.assert(!this._uiSourceCodeToScriptFile.size);
+  /**
+   * @param {!Common.Event} event
+   */
+  _globalObjectCleared(event) {
+    var scripts = Array.from(this._acceptedScripts);
+    for (var script of scripts)
+      this._removeScript(script);
+  }
+
+  resetForTest() {
+    var scripts = Array.from(this._acceptedScripts);
+    for (var script of scripts)
+      this._removeScript(script);
   }
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    this._debuggerReset();
+    var scripts = Array.from(this._acceptedScripts);
+    for (var script of scripts)
+      this._removeScript(script);
+    for (var project of this._projects.values())
+      project.removeProject();
+    this._projects.clear();
   }
 };
 
@@ -345,7 +343,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
 
   _divergeFromVM() {
     this._isDivergingFromVM = true;
-    this._resourceScriptMapping._updateLocations(this._uiSourceCode);
+    this._resourceScriptMapping._debuggerWorkspaceBinding.updateLocations(this._script);
     delete this._isDivergingFromVM;
     this._hasDivergedFromVM = true;
     this.dispatchEventToListeners(Bindings.ResourceScriptFile.Events.DidDivergeFromVM, this._uiSourceCode);
@@ -354,7 +352,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
   _mergeToVM() {
     delete this._hasDivergedFromVM;
     this._isMergingToVM = true;
-    this._resourceScriptMapping._updateLocations(this._uiSourceCode);
+    this._resourceScriptMapping._debuggerWorkspaceBinding.updateLocations(this._script);
     delete this._isMergingToVM;
     this.dispatchEventToListeners(Bindings.ResourceScriptFile.Events.DidMergeToVM, this._uiSourceCode);
   }
@@ -424,6 +422,8 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     return this._script && !!this._script.sourceMapURL;
   }
 };
+
+Bindings.ResourceScriptMapping._frameIdSymbol = Symbol('frameid');
 
 /** @enum {symbol} */
 Bindings.ResourceScriptFile.Events = {

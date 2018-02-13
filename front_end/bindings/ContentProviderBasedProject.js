@@ -277,7 +277,7 @@ Bindings.ContentProviderBasedProject = class extends Workspace.ProjectStore {
     uiSourceCode[Bindings.ContentProviderBasedProject._mimeType] = mimeType;
     this._contentProviders[uiSourceCode.url()] = contentProvider;
     uiSourceCode[Bindings.ContentProviderBasedProject._metadata] = metadata;
-    this.addUISourceCode(uiSourceCode, true);
+    this.addUISourceCode(uiSourceCode);
   }
 
   /**

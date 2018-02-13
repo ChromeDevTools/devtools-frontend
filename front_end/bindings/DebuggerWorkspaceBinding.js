@@ -209,6 +209,15 @@ Bindings.DebuggerWorkspaceBinding = class {
   }
 
   /**
+   * @param {!SDK.Target} target
+   */
+  _resetForTest(target) {
+    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (target.model(SDK.DebuggerModel));
+    var modelData = this._debuggerModelToData.get(debuggerModel);
+    modelData._resourceMapping.resetForTest();
+  }
+
+  /**
    * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Bindings.DebuggerWorkspaceBinding.Location} location
    */

@@ -331,7 +331,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     }
 
     if (object.isNode()) {
-      Common.Revealer.revealPromise(object).then(object.release.bind(object));
+      Common.Revealer.reveal(object).then(object.release.bind(object));
       return;
     }
 

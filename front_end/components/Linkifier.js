@@ -556,39 +556,17 @@ Components.Linkifier = class {
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
     var resource = url ? Bindings.resourceForURL(url) : null;
-    var request = url ? NetworkLog.networkLog.requestForURL(url) : null;
     var contentProvider = uiLocation ? uiLocation.uiSourceCode : resource;
 
-    if (info.revealable) {
+    var revealable = info.revealable || uiLocation || resource;
+    if (revealable) {
+      var destination = Common.Revealer.revealDestination(revealable);
       result.push({
         section: 'reveal',
-        title: Common.UIString('Reveal'),
-        handler: () => Common.Revealer.reveal(info.revealable)
+        title: destination ? ls`Reveal in ${destination}` : ls`Reveal`,
+        handler: () => Common.Revealer.reveal(revealable)
       });
     }
-    if (uiLocation) {
-      result.push({
-        section: 'reveal',
-        title: Common.UIString('Open in Sources panel'),
-        handler: () => Common.Revealer.reveal(uiLocation)
-      });
-    }
-
-    if (resource) {
-      result.push({
-        section: 'reveal',
-        title: Common.UIString('Open in Application panel'),
-        handler: () => Common.Revealer.reveal(resource)
-      });
-    }
-    if (request) {
-      result.push({
-        section: 'reveal',
-        title: Common.UIString('Open in Network panel'),
-        handler: () => Common.Revealer.reveal(request)
-      });
-    }
-
     if (contentProvider) {
       var lineNumber = uiLocation ? uiLocation.lineNumber : info.lineNumber || 0;
       for (var title of Components.Linkifier._linkHandlers.keys()) {

@@ -32,6 +32,7 @@
                 "SDK.DeferredDOMNode",
                 "SDK.RemoteObject"
             ],
+            "destination": "Elements panel",
             "className": "Elements.ElementsPanel.DOMNodeRevealer"
         },
         {
@@ -39,6 +40,7 @@
             "contextTypes": [
                 "SDK.CSSProperty"
             ],
+            "destination": "styles sidebar",
             "className": "Elements.ElementsPanel.CSSPropertyRevealer"
         },
         {

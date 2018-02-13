@@ -59,7 +59,7 @@ Common.Console = class extends Common.Object {
    * @return {!Promise.<undefined>}
    */
   showPromise() {
-    return Common.Revealer.revealPromise(this);
+    return Common.Revealer.reveal(this);
   }
 };
 

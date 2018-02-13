@@ -22,6 +22,7 @@
             "contextTypes": [
                 "SDK.NetworkRequest"
             ],
+            "destination": "Network panel",
             "className": "Network.NetworkPanel.RequestRevealer"
         },
         {

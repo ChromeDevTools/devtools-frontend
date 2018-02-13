@@ -13,6 +13,7 @@
             "contextTypes": [
                 "SDK.Resource"
             ],
+            "destination": "Application panel",
             "className": "Resources.ResourcesPanel.ResourceRevealer"
         }
     ],

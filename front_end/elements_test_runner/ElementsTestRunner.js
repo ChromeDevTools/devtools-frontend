@@ -24,7 +24,7 @@ ElementsTestRunner.selectNodeWithId = function(idValue, callback) {
  * @return {!Promise.<undefined>}
  */
 ElementsTestRunner.selectNode = function(node) {
-  return Common.Revealer.revealPromise(node);
+  return Common.Revealer.reveal(node);
 };
 
 /**

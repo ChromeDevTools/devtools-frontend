@@ -117,7 +117,7 @@ Components.DOMPresentationUtils.linkifyNodeReference = function(node, idref, too
   else
     Components.DOMPresentationUtils.decorateNodeLabel(node, link, tooltipContent);
 
-  link.addEventListener('click', Common.Revealer.reveal.bind(Common.Revealer, node, undefined), false);
+  link.addEventListener('click', () => Common.Revealer.reveal(node, false) && false, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined, undefined), false);
   link.addEventListener('mouseleave', () => SDK.OverlayModel.hideDOMNodeHighlight(), false);
 

@@ -1631,7 +1631,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   }
 
   _editAsHTML() {
-    var promise = Common.Revealer.revealPromise(this.node());
+    var promise = Common.Revealer.reveal(this.node());
     promise.then(() => UI.actionRegistry.action('elements.edit-as-html').execute());
   }
 };

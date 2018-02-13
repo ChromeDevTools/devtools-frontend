@@ -47,17 +47,9 @@ Common.Revealer = function() {};
 /**
  * @param {?Object} revealable
  * @param {boolean=} omitFocus
- */
-Common.Revealer.reveal = function(revealable, omitFocus) {
-  Common.Revealer.revealPromise(revealable, omitFocus);
-};
-
-/**
- * @param {?Object} revealable
- * @param {boolean=} omitFocus
  * @return {!Promise.<undefined>}
  */
-Common.Revealer.revealPromise = function(revealable, omitFocus) {
+Common.Revealer.reveal = function(revealable, omitFocus) {
   if (!revealable)
     return Promise.reject(new Error('Can\'t reveal ' + revealable));
   return self.runtime.allInstances(Common.Revealer, revealable).then(reveal);
@@ -72,6 +64,17 @@ Common.Revealer.revealPromise = function(revealable, omitFocus) {
       promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), omitFocus));
     return Promise.race(promises);
   }
+};
+
+/**
+ * @param {?Object} revealable
+ * @return {?string}
+ */
+Common.Revealer.revealDestination = function(revealable) {
+  var extension = self.runtime.extension(Common.Revealer, revealable);
+  if (!extension)
+    return null;
+  return extension.descriptor()['destination'];
 };
 
 Common.Revealer.prototype = {

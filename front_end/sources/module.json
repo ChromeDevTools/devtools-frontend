@@ -262,6 +262,7 @@
             "contextTypes": [
                 "Workspace.UILocation"
             ],
+            "destination": "Sources panel",
             "className": "Sources.SourcesPanel.UILocationRevealer"
         },
         {
@@ -269,6 +270,7 @@
             "contextTypes": [
                 "SDK.DebuggerModel.Location"
             ],
+            "destination": "Sources panel",
             "className": "Sources.SourcesPanel.DebuggerLocationRevealer"
         },
         {
@@ -276,6 +278,7 @@
             "contextTypes": [
                 "Workspace.UISourceCode"
             ],
+            "destination": "Sources panel",
             "className": "Sources.SourcesPanel.UISourceCodeRevealer"
         },
         {
@@ -283,6 +286,7 @@
             "contextTypes": [
                 "SDK.DebuggerPausedDetails"
             ],
+            "destination": "Sources panel",
             "className": "Sources.SourcesPanel.DebuggerPausedDetailsRevealer"
         },
         {

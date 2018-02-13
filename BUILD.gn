@@ -106,6 +106,7 @@ all_devtools_files = [
   "front_end/cm_modes/DefaultCodeMirrorMimeMode.js",
   "front_end/cm_modes/jsx.js",
   "front_end/cm_modes/livescript.js",
+  "front_end/cm_modes/markdown.js",
   "front_end/cm_modes/module.json",
   "front_end/cm_modes/php.js",
   "front_end/cm_modes/python.js",

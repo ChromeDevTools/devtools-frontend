@@ -306,6 +306,9 @@ Common.ResourceType._mimeTypeByExtension = new Map([
   // LiveScript
   ['ls', 'text/x-livescript'],
 
+  // Markdown
+  ['md', 'text/markdown'],
+
   // ClojureScript
   ['cljs', 'text/x-clojure'], ['cljc', 'text/x-clojure'], ['cljx', 'text/x-clojure'],
 

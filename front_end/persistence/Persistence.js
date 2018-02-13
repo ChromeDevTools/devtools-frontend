@@ -37,7 +37,7 @@ Persistence.Persistence = class extends Common.Object {
       this._mapping = null;
     } else {
       this._mapping = new Persistence.Automapping(
-          this._workspace, this._onBindingAdded.bind(this), this._onBindingRemoved.bind(this));
+          this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
     }
   }
 
@@ -127,19 +127,19 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.AutomappingBinding} automappingBinding
+   * @param {!Persistence.AutomappingStatus} status
    */
-  _onBindingAdded(automappingBinding) {
-    var binding = new Persistence.PersistenceBinding(automappingBinding.network, automappingBinding.fileSystem);
-    automappingBinding[Persistence.Persistence._binding] = binding;
+  _onStatusAdded(status) {
+    var binding = new Persistence.PersistenceBinding(status.network, status.fileSystem);
+    status[Persistence.Persistence._binding] = binding;
     this._innerAddBinding(binding);
   }
 
   /**
-   * @param {!Persistence.AutomappingBinding} automappingBinding
+   * @param {!Persistence.AutomappingStatus} status
    */
-  _onBindingRemoved(automappingBinding) {
-    var binding = /** @type {!Persistence.PersistenceBinding} */ (automappingBinding[Persistence.Persistence._binding]);
+  _onStatusRemoved(status) {
+    var binding = /** @type {!Persistence.PersistenceBinding} */ (status[Persistence.Persistence._binding]);
     this._innerRemoveBinding(binding);
   }
 

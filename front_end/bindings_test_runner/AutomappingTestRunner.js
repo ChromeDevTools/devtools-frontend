@@ -53,7 +53,7 @@ BindingsTestRunner.AutomappingTest = function(workspace) {
 
   this._failedBindingsCount = 0;
   this._automapping =
-      new Persistence.Automapping(this._workspace, this._onBindingAdded.bind(this), this._onBindingRemoved.bind(this));
+      new Persistence.Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
   TestRunner.addSniffer(this._automapping, '_onBindingFailedForTest', this._onBindingFailed.bind(this), true);
   TestRunner.addSniffer(this._automapping, '_onSweepHappenedForTest', this._onSweepHappened.bind(this), true);
 };
@@ -89,8 +89,13 @@ BindingsTestRunner.AutomappingTest.prototype = {
     this._checkStabilized();
   },
 
-  _onBindingAdded: function(binding) {
-    TestRunner.addResult('Binding created: ' + binding);
+  _onStatusRemoved: function(status) {
+    TestRunner.addResult('Binding removed: ' + status);
+    this._checkStabilized();
+  },
+
+  _onStatusAdded: function(status) {
+    TestRunner.addResult('Binding created: ' + status);
     this._checkStabilized();
   },
 
@@ -99,17 +104,12 @@ BindingsTestRunner.AutomappingTest.prototype = {
     this._checkStabilized();
   },
 
-  _onBindingRemoved: function(binding) {
-    TestRunner.addResult('Binding removed: ' + binding);
-    this._checkStabilized();
-  },
-
   _checkStabilized: function() {
     if (!this._stabilizedCallback || this._automapping._sweepThrottler._process)
       return;
 
     var networkUISourceCodes = this._workspace.uiSourceCodesForProjectType(Workspace.projectTypes.Network);
-    var stabilized = this._failedBindingsCount + this._automapping._bindings.size === networkUISourceCodes.length;
+    var stabilized = this._failedBindingsCount + this._automapping._statuses.size === networkUISourceCodes.length;
 
     if (stabilized) {
       TestRunner.addResult('Mapping has stabilized.');

@@ -13,7 +13,7 @@ Persistence.PersistenceBinding.prototype.toString = function() {
   return lines.join('\n');
 };
 
-Persistence.AutomappingBinding.prototype.toString = function() {
+Persistence.AutomappingStatus.prototype.toString = function() {
   var lines = [
     '{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(),
     '    exactMatch: ' + this.exactMatch, '}'

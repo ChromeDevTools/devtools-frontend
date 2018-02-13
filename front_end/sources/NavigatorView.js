@@ -484,9 +484,6 @@ Sources.NavigatorView = class extends UI.VBox {
     if (!this._groupByFrame || !frame)
       return this._targetNode(project, target);
 
-    if (!frame.parentFrame && target.parentTarget())
-      return this._targetNode(project, target);
-
     var frameNode = this._frameNodes.get(frame);
     if (frameNode)
       return frameNode;
@@ -495,8 +492,11 @@ Sources.NavigatorView = class extends UI.VBox {
         this, project, target.id() + ':' + frame.id, Sources.NavigatorView.Types.Frame, frame.displayName());
     frameNode.setHoverCallback(hoverCallback);
     this._frameNodes.set(frame, frameNode);
-    this._frameNode(project, target, frame.parentFrame).appendChild(frameNode);
-    if (!frame.parentFrame)
+
+    var parentFrame = frame.parentFrame || frame.crossTargetParentFrame();
+    this._frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame)
+        .appendChild(frameNode);
+    if (!parentFrame)
       frameNode.treeNode()._boostOrder = true;
 
     /**

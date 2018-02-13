@@ -164,14 +164,16 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @return {?SDK.ResourceTreeFrame}
    */
   _frameAttached(frameId, parentFrameId, stackTrace) {
+    var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && parentFrameId)
+    if (!this._cachedResourcesProcessed && parentFrame)
       return null;
     if (this._frames.has(frameId))
       return null;
 
-    var parentFrame = parentFrameId ? (this._frames.get(parentFrameId) || null) : null;
     var frame = new SDK.ResourceTreeFrame(this, parentFrame, frameId, null, stackTrace || null);
+    if (parentFrameId && !parentFrame)
+      frame._crossTargetParentFrameId = parentFrameId;
     if (frame.isMainFrame() && this.mainFrame) {
       // Navigation to the new backend process.
       this._frameDetached(this.mainFrame.id);
@@ -184,13 +186,13 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
    * @param {!Protocol.Page.Frame} framePayload
    */
   _frameNavigated(framePayload) {
+    var parentFrame = framePayload.parentId ? (this._frames.get(framePayload.parentId) || null) : null;
     // Do nothing unless cached resource tree is processed - it will overwrite everything.
-    if (!this._cachedResourcesProcessed && framePayload.parentId)
+    if (!this._cachedResourcesProcessed && parentFrame)
       return;
     var frame = this._frames.get(framePayload.id);
     if (!frame) {
       // Simulate missed "frameAttached" for a main frame navigation to the new backend process.
-      console.assert(!framePayload.parentId, 'Main frame shouldn\'t have parent frame id.');
       frame = this._frameAttached(framePayload.id, framePayload.parentId || '');
       console.assert(frame);
     }
@@ -310,6 +312,8 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _addFramesRecursively(parentFrame, frameTreePayload) {
     var framePayload = frameTreePayload.frame;
     var frame = new SDK.ResourceTreeFrame(this, parentFrame, framePayload.id, framePayload, null);
+    if (!parentFrame && framePayload.parentId)
+      frame._crossTargetParentFrameId = framePayload.parentId;
     this._addFrame(frame);
 
     for (var i = 0; frameTreePayload.childFrames && i < frameTreePayload.childFrames.length; ++i)
@@ -508,6 +512,7 @@ SDK.ResourceTreeFrame = class {
     this._parentFrame = parentFrame;
     this._id = frameId;
     this._url = '';
+    this._crossTargetParentFrameId = null;
 
     if (payload) {
       this._loaderId = payload.loaderId;
@@ -590,6 +595,26 @@ SDK.ResourceTreeFrame = class {
   }
 
   /**
+   * @return {?SDK.ResourceTreeFrame}
+   */
+  crossTargetParentFrame() {
+    if (!this._crossTargetParentFrameId)
+      return null;
+    if (!this._model.target().parentTarget())
+      return null;
+    var parentModel = this._model.target().parentTarget().model(SDK.ResourceTreeModel);
+    if (!parentModel)
+      return null;
+    // Note that parent model has already processed cached resources:
+    // - when parent target was created, we issued getResourceTree call;
+    // - strictly after we issued setAutoAttach call;
+    // - both of them were handled in renderer in the same order;
+    // - cached resource tree got processed on parent model;
+    // - child target was created as a result of setAutoAttach call.
+    return parentModel._frames.get(this._crossTargetParentFrameId) || null;
+  }
+
+  /**
    * @param {function(!Protocol.Runtime.CallFrame):boolean} searchFn
    * @return {?Protocol.Runtime.CallFrame}
    */
@@ -612,7 +637,7 @@ SDK.ResourceTreeFrame = class {
   }
 
   isTopFrame() {
-    return !this._parentFrame && !this._model.target().parentTarget();
+    return !this._parentFrame && !this._crossTargetParentFrameId;
   }
 
   /**

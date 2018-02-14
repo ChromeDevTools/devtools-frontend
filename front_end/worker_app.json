@@ -5,6 +5,7 @@
 
     { "name": "cookie_table" },
     { "name": "dom_debugger" },
+    { "name": "elements" },
     { "name": "har_importer" },
     { "name": "help" },
     { "name": "layer_viewer" },

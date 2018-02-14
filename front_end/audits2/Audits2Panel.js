@@ -486,7 +486,8 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
     if (!node)
       return;
 
-    var element = Components.DOMPresentationUtils.linkifyNodeReference(node, undefined, detailsItem.snippet);
+    var element =
+        await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));
     origElement.title = '';
     origElement.textContent = '';
     origElement.appendChild(element);

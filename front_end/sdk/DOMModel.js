@@ -959,6 +959,25 @@ SDK.DOMNode = class {
       this.focus();
     }
   }
+
+  /**
+   * @return {string}
+   */
+  simpleSelector() {
+    var lowerCaseName = this.localName() || this.nodeName().toLowerCase();
+    if (this.nodeType() !== Node.ELEMENT_NODE)
+      return lowerCaseName;
+    if (lowerCaseName === 'input' && this.getAttribute('type') && !this.getAttribute('id') &&
+        !this.getAttribute('class'))
+      return lowerCaseName + '[type="' + this.getAttribute('type') + '"]';
+    if (this.getAttribute('id'))
+      return lowerCaseName + '#' + this.getAttribute('id');
+    if (this.getAttribute('class')) {
+      return (lowerCaseName === 'div' ? '' : lowerCaseName) + '.' +
+          this.getAttribute('class').trim().replace(/\s+/g, '.');
+    }
+    return lowerCaseName;
+  }
 };
 
 /**

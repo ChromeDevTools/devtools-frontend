@@ -278,7 +278,7 @@ Extensions.ExtensionSidebarPane = class extends UI.SimpleView {
     }
     this._objectPropertiesView.element.removeChildren();
     Common.Renderer
-        .renderPromise(object, {
+        .render(object, {
           title: title,
           expanded: true,
           editable: false,

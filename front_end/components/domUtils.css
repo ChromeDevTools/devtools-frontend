@@ -8,12 +8,6 @@
   display: inline;
 }
 
-.node-link {
-    cursor: pointer;
-    display: inline;
-    pointer-events: auto;
-}
-
 .stack-preview-async-description {
     padding: 3px 0 1px;
     font-style: italic;
@@ -48,16 +42,4 @@
 
 .stack-preview-container > tr.show-blackboxed-link {
     font-style: italic;
-}
-
-.node-label-name {
-    color: rgb(136, 18, 128);
-}
-
-.node-label-id {
-    color: rgb(26, 26, 166);
-}
-
-.node-label-class, .node-label-pseudo {
-    color: rgb(153, 69, 0);
 }

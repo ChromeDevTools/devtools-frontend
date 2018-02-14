@@ -1600,7 +1600,7 @@ Elements.ElementsTreeOutline.ShortcutTreeElement = class extends UI.TreeElement 
       text = '<' + text + '>';
     title.textContent = '\u21AA ' + text;
 
-    var link = Components.DOMPresentationUtils.linkifyDeferredNodeReference(nodeShortcut.deferredNode);
+    var link = Elements.DOMLinkifier.linkifyDeferredNodeReference(nodeShortcut.deferredNode);
     this.listItemElement.createTextChild(' ');
     link.classList.add('elements-tree-shortcut-link');
     link.textContent = Common.UIString('reveal');

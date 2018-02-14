@@ -504,18 +504,10 @@ Accessibility.AXRelatedNodeElement = class {
     var element = createElement('span');
     var valueElement;
 
-    /**
-     * @param {?SDK.DOMNode} node
-     * @this {!Accessibility.AXRelatedNodeElement}
-     */
-    function onNodeResolved(node) {
-      valueElement.appendChild(Components.DOMPresentationUtils.linkifyNodeReference(node, this._idref));
-    }
-
     if (this._deferredNode) {
       valueElement = createElement('span');
       element.appendChild(valueElement);
-      this._deferredNode.resolve(onNodeResolved.bind(this));
+      Common.Linkifier.linkify(this._deferredNode).then(linkfied => valueElement.appendChild(linkfied));
     } else if (this._idref) {
       element.classList.add('invalid');
       valueElement = Accessibility.AXNodePropertyTreeElement.createExclamationMark(ls`No node with this ID.`);

@@ -45,8 +45,8 @@
             "factoryName": "DOMDebugger.DOMBreakpointsSidebarPane"
         },
         {
-            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
-            "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
+            "type": "@Elements.MarkerDecorator",
+            "factoryName": "Elements.GenericDecorator",
             "marker": "breakpoint-marker",
             "title": "DOM Breakpoint",
             "color": "rgb(105, 140, 254)"
@@ -77,6 +77,7 @@
         }
     ],
     "dependencies": [
+        "elements",
         "sources"
     ],
     "scripts": [

@@ -662,7 +662,7 @@ Console.ConsoleViewMessage = class {
         result.appendChild(this._formatParameterAsObject(remoteObject, false));
         return;
       }
-      Common.Renderer.renderPromise(node).then(rendererElement => {
+      Common.Renderer.render(node).then(rendererElement => {
         result.appendChild(rendererElement);
         this._formattedParameterAsNodeForTest();
       });

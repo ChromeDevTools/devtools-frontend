@@ -160,7 +160,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
         crumb.appendChild(nameElement);
         crumb.title = crumbTitle;
       } else {
-        Components.DOMPresentationUtils.decorateNodeLabel(current, crumb);
+        Elements.DOMLinkifier.decorateNodeLabel(current, crumb);
       }
 
       if (current === currentDOMNode)

@@ -982,7 +982,7 @@ Elements.ElementsActionDelegate = class {
 };
 
 /**
- * @implements {Components.DOMPresentationUtils.MarkerDecorator}
+ * @implements {Elements.MarkerDecorator}
  * @unrestricted
  */
 Elements.ElementsPanel.PseudoStateMarkerDecorator = class {

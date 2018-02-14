@@ -175,7 +175,7 @@ SourcesTestRunner.resumeExecution = function(callback) {
 
 SourcesTestRunner.waitUntilPausedAndDumpStackAndResume = function(callback, options) {
   SourcesTestRunner.waitUntilPaused(paused);
-  TestRunner.addSniffer(Sources.SourcesPanel.prototype, '_updateDebuggerButtonsAndStatus', setStatus);
+  TestRunner.addSniffer(Sources.SourcesPanel.prototype, '_updateDebuggerButtonsAndStatusForTest', setStatus);
   var caption;
   var callFrames;
   var asyncStackTrace;

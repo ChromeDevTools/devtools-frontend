@@ -109,10 +109,10 @@ DOMDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
     var labelElement = createElementWithClass('div', 'dom-breakpoint');
     element.appendChild(labelElement);
 
-    var linkifiedNode = Components.DOMPresentationUtils.linkifyNodeReference(breakpoint.node);
-    linkifiedNode.classList.add('monospace');
+    var linkifiedNode = createElementWithClass('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);
+    Common.Linkifier.linkify(breakpoint.node).then(linkified => linkifiedNode.appendChild(linkified));
 
     var description = createElement('div');
     description.textContent = DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
@@ -235,7 +235,7 @@ DOMDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
     var breakpointsMenu = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Break on'));
     for (var key in SDK.DOMDebuggerModel.DOMBreakpoint.Type) {
       var type = SDK.DOMDebuggerModel.DOMBreakpoint.Type[key];
-      var label = Components.DOMPresentationUtils.BreakpointTypeNouns.get(type);
+      var label = Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(type);
       breakpointsMenu.defaultSection().appendCheckboxItem(
           label, toggleBreakpoint.bind(null, type), domDebuggerModel.hasDOMBreakpoint(node, type));
     }

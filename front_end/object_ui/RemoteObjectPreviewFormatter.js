@@ -263,7 +263,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
     }
 
     if (type === 'object' && subtype === 'node' && description) {
-      Components.DOMPresentationUtils.createSpansForNodeTitle(span, description);
+      ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle(span, description);
       return span;
     }
 
@@ -292,4 +292,17 @@ ObjectUI.RemoteObjectPreviewFormatter._internalName = {
   PrimitiveValue: '[[PrimitiveValue]]',
   PromiseStatus: '[[PromiseStatus]]',
   PromiseValue: '[[PromiseValue]]'
+};
+
+/**
+ * @param {!Element} container
+ * @param {string} nodeTitle
+ */
+ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle = function(container, nodeTitle) {
+  var match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
+  container.createChild('span', 'webkit-html-tag-name').textContent = match[1];
+  if (match[2])
+    container.createChild('span', 'webkit-html-attribute-value').textContent = match[2];
+  if (match[3])
+    container.createChild('span', 'webkit-html-attribute-name').textContent = match[3];
 };

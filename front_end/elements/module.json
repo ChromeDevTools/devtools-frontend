@@ -36,6 +36,14 @@
             "className": "Elements.ElementsPanel.DOMNodeRevealer"
         },
         {
+            "type": "@Common.Linkifier",
+            "contextTypes": [
+                "SDK.DOMNode",
+                "SDK.DeferredDOMNode"
+            ],
+            "className": "Elements.DOMLinkifier.Linkifier"
+        },
+        {
             "type": "@Common.Revealer",
             "contextTypes": [
                 "SDK.CSSProperty"
@@ -184,13 +192,13 @@
             ]
         },
         {
-            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
+            "type": "@Elements.MarkerDecorator",
             "className": "Elements.ElementsPanel.PseudoStateMarkerDecorator",
             "marker": "pseudo-state-marker"
         },
         {
-            "type": "@Components.DOMPresentationUtils.MarkerDecorator",
-            "factoryName": "Components.DOMPresentationUtils.GenericDecorator",
+            "type": "@Elements.MarkerDecorator",
+            "factoryName": "Elements.GenericDecorator",
             "marker": "hidden-marker",
             "title": "Element is hidden",
             "color": "#555"
@@ -255,11 +263,14 @@
         "InspectElementModeController.js",
         "ColorSwatchPopoverIcon.js",
         "ComputedStyleModel.js",
+        "DOMLinkifier.js",
+        "DOMPath.js",
         "ElementsBreadcrumbs.js",
         "ElementsSidebarPane.js",
         "ElementsTreeElement.js",
         "ElementsTreeOutline.js",
         "EventListenersWidget.js",
+        "MarkerDecorator.js",
         "MetricsSidebarPane.js",
         "PlatformFontsWidget.js",
         "PropertiesWidget.js",
@@ -277,6 +288,7 @@
         "classesPaneWidget.css",
         "computedStyleSidebarPane.css",
         "computedStyleWidgetTree.css",
+        "domLinkifier.css",
         "elementsPanel.css",
         "elementStatePaneWidget.css",
         "elementsTreeOutline.css",

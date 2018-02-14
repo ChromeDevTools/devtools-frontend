@@ -1,6 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @interface
  */
@@ -16,23 +17,16 @@ Common.Renderer.prototype = {
 };
 
 /**
- * @param {!Object} object
+ * @param {?Object} object
  * @param {!Common.Renderer.Options=} options
  * @return {!Promise.<!Element>}
  */
-Common.Renderer.renderPromise = function(object, options) {
+Common.Renderer.render = function(object, options) {
   if (!object)
     return Promise.reject(new Error('Can\'t render ' + object));
-
-  return self.runtime.extension(Common.Renderer, object).instance().then(render);
-
-  /**
-   * @param {!Common.Renderer} renderer
-   * @return {!Promise.<!Element>}
-   */
-  function render(renderer) {
-    return renderer.render(object, options || {});
-  }
+  return self.runtime.extension(Common.Renderer, object)
+      .instance()
+      .then(renderer => renderer.render(object, options || {}));
 };
 
 /** @typedef {!{title: (string|!Element|undefined), expanded: (boolean|undefined),
@@ -130,3 +124,33 @@ Common.Runnable = function() {};
 Common.Runnable.prototype = {
   run() {}
 };
+
+/**
+ * @interface
+ */
+Common.Linkifier = function() {};
+
+Common.Linkifier.prototype = {
+  /**
+   * @param {!Object} object
+   * @param {!Common.Linkifier.Options=} options
+   * @return {!Node}
+   */
+  linkify(object, options) {}
+};
+
+/**
+ * @param {?Object} object
+ * @param {!Common.Linkifier.Options=} options
+ * @return {!Promise<!Node>}
+ */
+Common.Linkifier.linkify = function(object, options) {
+  if (!object)
+    return Promise.reject(new Error('Can\'t linkify ' + object));
+  return self.runtime.extension(Common.Linkifier, object)
+      .instance()
+      .then(linkifier => linkifier.linkify(object, options));
+};
+
+/** @typedef {{tooltip: string}} */
+Common.Linkifier.Options;

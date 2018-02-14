@@ -726,7 +726,7 @@ ElementsTestRunner.dumpDOMUpdateHighlights = function(rootNode, callback, depth)
 
   function print(treeItem, prefix, depth) {
     if (!treeItem.root) {
-      var elementXPath = Components.DOMPresentationUtils.xPath(treeItem.node(), true);
+      var elementXPath = Elements.DOMPath.xPath(treeItem.node(), true);
       var highlightedElements = treeItem.listItemElement.querySelectorAll('.dom-update-highlight');
 
       for (var i = 0; i < highlightedElements.length; ++i) {

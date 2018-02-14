@@ -29,9 +29,9 @@ Sources.DebuggerPausedMessage = class {
 
   /**
    * @param {!SDK.DebuggerPausedDetails} details
-   * @return {!Element}
+   * @return {!Promise<!Element>}
    */
-  static _createDOMBreakpointHitMessage(details) {
+  static async _createDOMBreakpointHitMessage(details) {
     var messageWrapper = createElement('span');
     var domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
     if (!details.auxData || !domDebuggerModel)
@@ -43,14 +43,14 @@ Sources.DebuggerPausedMessage = class {
     var mainElement = messageWrapper.createChild('div', 'status-main');
     mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
     mainElement.appendChild(createTextNode(
-        String.sprintf('Paused on %s', Components.DOMPresentationUtils.BreakpointTypeNouns.get(data.type))));
+        String.sprintf('Paused on %s', Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(data.type))));
 
     var subElement = messageWrapper.createChild('div', 'status-sub monospace');
-    var linkifiedNode = Components.DOMPresentationUtils.linkifyNodeReference(data.node);
+    var linkifiedNode = await Common.Linkifier.linkify(data.node);
     subElement.appendChild(linkifiedNode);
 
     if (data.targetNode) {
-      var targetNodeLink = Components.DOMPresentationUtils.linkifyNodeReference(data.targetNode);
+      var targetNodeLink = await Common.Linkifier.linkify(data.targetNode);
       var message;
       if (data.insertion)
         message = data.targetNode === data.node ? 'Child %s added' : 'Descendant %s added';
@@ -66,20 +66,22 @@ Sources.DebuggerPausedMessage = class {
    * @param {?SDK.DebuggerPausedDetails} details
    * @param {!Bindings.DebuggerWorkspaceBinding} debuggerWorkspaceBinding
    * @param {!Bindings.BreakpointManager} breakpointManager
+   * @return {!Promise}
    */
-  render(details, debuggerWorkspaceBinding, breakpointManager) {
-    var status = this._contentElement;
-    status.hidden = !details;
-    status.removeChildren();
+  async render(details, debuggerWorkspaceBinding, breakpointManager) {
+    this._contentElement.removeChildren();
+    this._contentElement.hidden = !details;
     if (!details)
       return;
+
+    var status = this._contentElement.createChild('div', 'flex-auto');
 
     var errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
         details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
         details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
     var messageWrapper;
     if (details.reason === SDK.DebuggerModel.BreakReason.DOM) {
-      messageWrapper = Sources.DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
+      messageWrapper = await Sources.DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.EventListener) {
       var eventNameForUI = '';
       if (details.auxData) {
@@ -141,3 +143,9 @@ Sources.DebuggerPausedMessage = class {
     }
   }
 };
+
+Sources.DebuggerPausedMessage.BreakpointTypeNouns = new Map([
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('subtree modifications')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('attribute modifications')],
+  [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('node removal')],
+]);

@@ -306,7 +306,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
      */
     function createNodeElement() {
       var valueElement = createElementWithClass('span', 'object-value-node');
-      Components.DOMPresentationUtils.createSpansForNodeTitle(valueElement, /** @type {string} */ (description));
+      ObjectUI.RemoteObjectPreviewFormatter.createSpansForNodeTitle(valueElement, /** @type {string} */ (description));
       valueElement.addEventListener('click', event => {
         Common.Revealer.reveal(value);
         event.consume(true);

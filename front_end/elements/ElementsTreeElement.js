@@ -1105,7 +1105,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     if (!this.treeOutline._decoratorExtensions)
       /** @type {!Array.<!Runtime.Extension>} */
-      this.treeOutline._decoratorExtensions = runtime.extensions(Components.DOMPresentationUtils.MarkerDecorator);
+      this.treeOutline._decoratorExtensions = runtime.extensions(Elements.MarkerDecorator);
 
     var markerToExtension = new Map();
     for (var i = 0; i < this.treeOutline._decoratorExtensions.length; ++i) {
@@ -1131,7 +1131,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
     /**
      * @param {!SDK.DOMNode} n
-     * @param {!Components.DOMPresentationUtils.MarkerDecorator} decorator
+     * @param {!Elements.MarkerDecorator} decorator
      */
     function collectDecoration(n, decorator) {
       var decoration = decorator.decorate(n);
@@ -1600,11 +1600,11 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   }
 
   _copyCSSPath() {
-    InspectorFrontendHost.copyText(Components.DOMPresentationUtils.cssPath(this._node, true));
+    InspectorFrontendHost.copyText(Elements.DOMPath.cssPath(this._node, true));
   }
 
   _copyXPath() {
-    InspectorFrontendHost.copyText(Components.DOMPresentationUtils.xPath(this._node, true));
+    InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, true));
   }
 
   _highlightSearchResults() {

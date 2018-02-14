@@ -467,7 +467,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._debugToolbarDrawer.classList.toggle('expanded', enabled);
   }
 
-  _updateDebuggerButtonsAndStatus() {
+  async _updateDebuggerButtonsAndStatus() {
     var currentTarget = UI.context.flavor(SDK.Target);
     var currentDebuggerModel = currentTarget ? currentTarget.model(SDK.DebuggerModel) : null;
     if (!currentDebuggerModel) {
@@ -493,7 +493,12 @@ Sources.SourcesPanel = class extends UI.Panel {
     }
 
     var details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
-    this._debuggerPausedMessage.render(details, Bindings.debuggerWorkspaceBinding, Bindings.breakpointManager);
+    await this._debuggerPausedMessage.render(details, Bindings.debuggerWorkspaceBinding, Bindings.breakpointManager);
+    if (details)
+      this._updateDebuggerButtonsAndStatusForTest();
+  }
+
+  _updateDebuggerButtonsAndStatusForTest() {
   }
 
   _clearInterface() {

@@ -117,7 +117,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
       return '';
 
     var node = layer.nodeForSelfOrAncestor();
-    var name = node ? Components.DOMPresentationUtils.simpleSelector(node) : Common.UIString('<unnamed>');
+    var name = node ? node.simpleSelector() : Common.UIString('<unnamed>');
     return Common.UIString('%s: %s (%s)', title, name, layer.id());
   }
 

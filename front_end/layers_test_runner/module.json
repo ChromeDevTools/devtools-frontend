@@ -2,6 +2,7 @@
   "dependencies": [
     "test_runner",
     "layers",
+    "elements",
     "components"
   ],
   "scripts": [

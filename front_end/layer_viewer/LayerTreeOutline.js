@@ -219,7 +219,7 @@ LayerViewer.LayerTreeElement = class extends UI.TreeElement {
   _update() {
     var node = this._layer.nodeForSelfOrAncestor();
     var title = createDocumentFragment();
-    title.createTextChild(node ? Components.DOMPresentationUtils.simpleSelector(node) : '#' + this._layer.id());
+    title.createTextChild(node ? node.simpleSelector() : '#' + this._layer.id());
     var details = title.createChild('span', 'dimmed');
     details.textContent = Common.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
     this.title = title;

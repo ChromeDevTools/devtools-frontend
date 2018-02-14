@@ -411,8 +411,9 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
   /**
    * @param {?SDK.CSSMatchedStyles} matchedStyles
+   * @return {!Promise}
    */
-  _innerRebuildUpdate(matchedStyles) {
+  async _innerRebuildUpdate(matchedStyles) {
     var focusedIndex = this._focusedSectionIndex();
 
     this._linkifier.reset();
@@ -423,7 +424,8 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     if (!matchedStyles || !node)
       return;
 
-    this._sectionBlocks = this._rebuildSectionsForMatchedStyleRules(matchedStyles);
+    this._sectionBlocks =
+        await this._rebuildSectionsForMatchedStyleRules(/** @type {!SDK.CSSMatchedStyles} */ (matchedStyles));
     var pseudoTypes = [];
     var keys = new Set(matchedStyles.pseudoStyles().keys());
     if (keys.delete(Protocol.DOM.PseudoType.Before))
@@ -466,7 +468,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     if (this._filterRegex)
       this._updateFilter();
 
-    this._nodeStylesUpdatedForTest(node, true);
+    this._nodeStylesUpdatedForTest(/** @type {!SDK.DOMNode} */ (node), true);
     if (this._decorator) {
       this._decorator.perform();
       this._decorator = null;
@@ -483,19 +485,18 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
   /**
    * @param {!SDK.CSSMatchedStyles} matchedStyles
-   * @return {!Array.<!Elements.SectionBlock>}
+   * @return {!Promise<!Array.<!Elements.SectionBlock>>}
    */
-  _rebuildSectionsForMatchedStyleRules(matchedStyles) {
+  async _rebuildSectionsForMatchedStyleRules(matchedStyles) {
     var blocks = [new Elements.SectionBlock(null)];
     var lastParentNode = null;
     for (var style of matchedStyles.nodeStyles()) {
       var parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
-        var block = Elements.SectionBlock.createInheritedNodeBlock(lastParentNode);
+        var block = await Elements.SectionBlock._createInheritedNodeBlock(lastParentNode);
         blocks.push(block);
       }
-
       var section = new Elements.StylePropertiesSection(this, matchedStyles, style);
       blocks.peekLast().sections.push(section);
     }
@@ -535,8 +536,8 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   _addBlankSection(insertAfterSection, styleSheetId, ruleLocation) {
     var node = this.node();
     var blankSection = new Elements.BlankStylePropertiesSection(
-        this, insertAfterSection._matchedStyles, node ? Components.DOMPresentationUtils.simpleSelector(node) : '',
-        styleSheetId, ruleLocation, insertAfterSection._style);
+        this, insertAfterSection._matchedStyles, node ? node.simpleSelector() : '', styleSheetId, ruleLocation,
+        insertAfterSection._style);
 
     this._sectionsContainer.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
 
@@ -723,13 +724,13 @@ Elements.SectionBlock = class {
 
   /**
    * @param {!SDK.DOMNode} node
-   * @return {!Elements.SectionBlock}
+   * @return {!Promise<!Elements.SectionBlock>}
    */
-  static createInheritedNodeBlock(node) {
+  static async _createInheritedNodeBlock(node) {
     var separatorElement = createElement('div');
     separatorElement.className = 'sidebar-separator';
-    var link = Components.DOMPresentationUtils.linkifyNodeReference(node);
     separatorElement.createTextChild(Common.UIString('Inherited from') + ' ');
+    var link = await Common.Linkifier.linkify(node);
     separatorElement.appendChild(link);
     return new Elements.SectionBlock(separatorElement);
   }
@@ -878,7 +879,7 @@ Elements.StylePropertiesSection = class {
       return createTextNode(Common.UIString('via inspector'));
 
     if (header && header.ownerNode) {
-      var link = Components.DOMPresentationUtils.linkifyDeferredNodeReference(header.ownerNode);
+      var link = Elements.DOMLinkifier.linkifyDeferredNodeReference(header.ownerNode);
       link.textContent = '<style>…</style>';
       return link;
     }

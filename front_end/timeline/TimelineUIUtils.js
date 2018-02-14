@@ -1007,9 +1007,8 @@ Timeline.TimelineUIUtils = class {
 
     var relatedNode = relatedNodesMap && relatedNodesMap.get(timelineData.backendNodeId);
     if (relatedNode) {
-      contentHelper.appendElementRow(
-          relatedNodeLabel || Common.UIString('Related Node'),
-          Components.DOMPresentationUtils.linkifyNodeReference(relatedNode));
+      var nodeSpan = await Common.Linkifier.linkify(relatedNode);
+      contentHelper.appendElementRow(relatedNodeLabel || Common.UIString('Related Node'), nodeSpan);
     }
 
     if (event[Timeline.TimelineUIUtils._previewElementSymbol]) {
@@ -2072,8 +2071,11 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
    */
   _createInvalidationNode(invalidation, showUnknownNodes) {
     var node = (invalidation.nodeId && this._relatedNodesMap) ? this._relatedNodesMap.get(invalidation.nodeId) : null;
-    if (node)
-      return Components.DOMPresentationUtils.linkifyNodeReference(node);
+    if (node) {
+      var nodeSpan = createElement('span');
+      Common.Linkifier.linkify(node).then(link => nodeSpan.appendChild(link));
+      return nodeSpan;
+    }
     if (invalidation.nodeName) {
       var nodeSpan = createElement('span');
       nodeSpan.textContent = Common.UIString('[ %s ]', invalidation.nodeName);

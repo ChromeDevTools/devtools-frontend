@@ -677,14 +677,14 @@ Animation.AnimationTimeline.NodeUI = class {
   /**
    * @param {?SDK.DOMNode} node
    */
-  nodeResolved(node) {
+  async nodeResolved(node) {
     if (!node) {
       this._description.createTextChild('<node>');
       return;
     }
     this._node = node;
     this._nodeChanged();
-    this._description.appendChild(Components.DOMPresentationUtils.linkifyNodeReference(node));
+    Common.Linkifier.linkify(node).then(link => this._description.appendChild(link));
     if (!node.ownerDocument)
       this.nodeRemoved();
   }

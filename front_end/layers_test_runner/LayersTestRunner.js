@@ -16,7 +16,7 @@ LayersTestRunner.layerTreeModel = function() {
 
 LayersTestRunner.labelForLayer = function(layer) {
   var node = layer.nodeForSelfOrAncestor();
-  var label = (node ? Components.DOMPresentationUtils.fullQualifiedSelector(node, false) : '<invalid node id>');
+  var label = (node ? Elements.DOMPath.fullQualifiedSelector(node, false) : '<invalid node id>');
   var height = layer.height();
   var width = layer.width();
 

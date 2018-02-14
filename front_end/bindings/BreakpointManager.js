@@ -954,7 +954,7 @@ Bindings.BreakpointManager.Storage = class {
     for (var item of items) {
       item.columnNumber = item.columnNumber || 0;
       this._breakpoints.set(
-          Bindings.BreakpointManager._breakpointStorageId(item.url, item.columnNumber, item.lineNumber), item);
+          Bindings.BreakpointManager._breakpointStorageId(item.url, item.lineNumber, item.columnNumber), item);
     }
     /** @type {boolean|undefined} */ this._muted;
   }

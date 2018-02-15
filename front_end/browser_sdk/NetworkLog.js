@@ -31,14 +31,14 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
  */
-SDKBrowser.NetworkLog = class extends Common.Object {
+BrowserSDK.NetworkLog = class extends Common.Object {
   constructor() {
     super();
     /** @type {!Array<!SDK.NetworkRequest>} */
     this._requests = [];
     /** @type {!Set<!SDK.NetworkRequest>} */
     this._requestsSet = new Set();
-    /** @type {!Map<!SDK.NetworkManager, !SDKBrowser.PageLoad>} */
+    /** @type {!Map<!SDK.NetworkManager, !BrowserSDK.PageLoad>} */
     this._pageLoadForManager = new Map();
     this._isRecording = true;
     SDK.targetManager.observeModels(SDK.NetworkManager, this);
@@ -72,7 +72,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
           SDK.ResourceTreeModel.Events.DOMContentLoaded, this._onDOMContentLoaded.bind(this, resourceTreeModel)));
     }
 
-    networkManager[SDKBrowser.NetworkLog._events] = eventListeners;
+    networkManager[BrowserSDK.NetworkLog._events] = eventListeners;
   }
 
   /**
@@ -87,7 +87,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    * @param {!SDK.NetworkManager} networkManager
    */
   _removeNetworkManagerListeners(networkManager) {
-    Common.EventTarget.removeEventListeners(networkManager[SDKBrowser.NetworkLog._events]);
+    Common.EventTarget.removeEventListeners(networkManager[BrowserSDK.NetworkLog._events]);
   }
 
   /**
@@ -152,9 +152,9 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    * @param {!SDK.NetworkRequest} request
    */
   _initializeInitiatorSymbolIfNeeded(request) {
-    if (!request[SDKBrowser.NetworkLog._initiatorDataSymbol]) {
-      /** @type {!{info: ?SDKBrowser.NetworkLog._InitiatorInfo, chain: !Set<!SDK.NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
-      request[SDKBrowser.NetworkLog._initiatorDataSymbol] = {
+    if (!request[BrowserSDK.NetworkLog._initiatorDataSymbol]) {
+      /** @type {!{info: ?BrowserSDK.NetworkLog._InitiatorInfo, chain: !Set<!SDK.NetworkRequest>, request: (?SDK.NetworkRequest|undefined)}} */
+      request[BrowserSDK.NetworkLog._initiatorDataSymbol] = {
         info: null,
         chain: null,
         request: undefined,
@@ -164,12 +164,12 @@ SDKBrowser.NetworkLog = class extends Common.Object {
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {!SDKBrowser.NetworkLog._InitiatorInfo}
+   * @return {!BrowserSDK.NetworkLog._InitiatorInfo}
    */
   initiatorInfoForRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
-    if (request[SDKBrowser.NetworkLog._initiatorDataSymbol].info)
-      return request[SDKBrowser.NetworkLog._initiatorDataSymbol].info;
+    if (request[BrowserSDK.NetworkLog._initiatorDataSymbol].info)
+      return request[BrowserSDK.NetworkLog._initiatorDataSymbol].info;
 
     var type = SDK.NetworkRequest.InitiatorType.Other;
     var url = '';
@@ -212,7 +212,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
       }
     }
 
-    request[SDKBrowser.NetworkLog._initiatorDataSymbol].info = {
+    request[BrowserSDK.NetworkLog._initiatorDataSymbol].info = {
       type: type,
       url: url,
       lineNumber: lineNumber,
@@ -220,12 +220,12 @@ SDKBrowser.NetworkLog = class extends Common.Object {
       scriptId: scriptId,
       stack: initiatorStack
     };
-    return request[SDKBrowser.NetworkLog._initiatorDataSymbol].info;
+    return request[BrowserSDK.NetworkLog._initiatorDataSymbol].info;
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {!SDKBrowser.NetworkLog.InitiatorGraph}
+   * @return {!BrowserSDK.NetworkLog.InitiatorGraph}
    */
   initiatorGraphForRequest(request) {
     /** @type {!Set<!SDK.NetworkRequest>} */
@@ -246,7 +246,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
   _initiatorChain(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
     var initiatorChainCache =
-        /** @type {?Set<!SDK.NetworkRequest>} */ (request[SDKBrowser.NetworkLog._initiatorDataSymbol].chain);
+        /** @type {?Set<!SDK.NetworkRequest>} */ (request[BrowserSDK.NetworkLog._initiatorDataSymbol].chain);
     if (initiatorChainCache)
       return initiatorChainCache;
 
@@ -254,8 +254,8 @@ SDKBrowser.NetworkLog = class extends Common.Object {
 
     var checkRequest = request;
     do {
-      if (checkRequest[SDKBrowser.NetworkLog._initiatorDataSymbol].chain) {
-        initiatorChainCache.addAll(checkRequest[SDKBrowser.NetworkLog._initiatorDataSymbol].chain);
+      if (checkRequest[BrowserSDK.NetworkLog._initiatorDataSymbol].chain) {
+        initiatorChainCache.addAll(checkRequest[BrowserSDK.NetworkLog._initiatorDataSymbol].chain);
         break;
       }
       if (initiatorChainCache.has(checkRequest))
@@ -263,7 +263,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
       initiatorChainCache.add(checkRequest);
       checkRequest = this._initiatorRequest(checkRequest);
     } while (checkRequest);
-    request[SDKBrowser.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
+    request[BrowserSDK.NetworkLog._initiatorDataSymbol].chain = initiatorChainCache;
     return initiatorChainCache;
   }
 
@@ -273,13 +273,13 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    */
   _initiatorRequest(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
-    if (request[SDKBrowser.NetworkLog._initiatorDataSymbol].request !== undefined)
-      return request[SDKBrowser.NetworkLog._initiatorDataSymbol].request;
+    if (request[BrowserSDK.NetworkLog._initiatorDataSymbol].request !== undefined)
+      return request[BrowserSDK.NetworkLog._initiatorDataSymbol].request;
     var url = this.initiatorInfoForRequest(request).url;
     var networkManager = SDK.NetworkManager.forRequest(request);
-    request[SDKBrowser.NetworkLog._initiatorDataSymbol].request =
+    request[BrowserSDK.NetworkLog._initiatorDataSymbol].request =
         networkManager ? this._requestByManagerAndURL(networkManager, url) : null;
-    return request[SDKBrowser.NetworkLog._initiatorDataSymbol].request;
+    return request[BrowserSDK.NetworkLog._initiatorDataSymbol].request;
   }
 
   _willReloadPage() {
@@ -300,7 +300,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
     var oldRequestsSet = this._requestsSet;
     this._requests = [];
     this._requestsSet = new Set();
-    this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.Reset);
+    this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.Reset);
 
     // Preserve requests from the new session.
     var currentPageLoad = null;
@@ -309,7 +309,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
       if (request.loaderId !== mainFrame.loaderId)
         continue;
       if (!currentPageLoad) {
-        currentPageLoad = new SDKBrowser.PageLoad(request);
+        currentPageLoad = new BrowserSDK.PageLoad(request);
         var redirectSource = request.redirectSource();
         while (redirectSource) {
           requestsToAdd.push(redirectSource);
@@ -324,14 +324,14 @@ SDKBrowser.NetworkLog = class extends Common.Object {
       this._requests.push(request);
       this._requestsSet.add(request);
       currentPageLoad.bindRequest(request);
-      this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.RequestAdded, request);
+      this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
     }
 
     if (Common.moduleSetting('network_log.preserve-log').get()) {
       for (var request of oldRequestsSet) {
         this._requests.push(request);
         this._requestsSet.add(request);
-        this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.RequestAdded, request);
+        this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
       }
     }
 
@@ -349,7 +349,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
     for (var request of requests) {
       this._requests.push(request);
       this._requestsSet.add(request);
-      this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.RequestAdded, request);
+      this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
     }
   }
 
@@ -364,7 +364,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
     var pageLoad = manager ? this._pageLoadForManager.get(manager) : null;
     if (pageLoad)
       pageLoad.bindRequest(request);
-    this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.RequestAdded, request);
+    this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
   }
 
   /**
@@ -374,7 +374,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (!this._requestsSet.has(request))
       return;
-    this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.RequestUpdated, request);
+    this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestUpdated, request);
   }
 
   /**
@@ -382,7 +382,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    */
   _onRequestRedirect(event) {
     var request = /** @type {!SDK.NetworkRequest} */ (event.data);
-    delete request[SDKBrowser.NetworkLog._initiatorDataSymbol];
+    delete request[BrowserSDK.NetworkLog._initiatorDataSymbol];
   }
 
   /**
@@ -415,7 +415,7 @@ SDKBrowser.NetworkLog = class extends Common.Object {
         this._pageLoadForManager.delete(manager);
     }
 
-    this.dispatchEventToListeners(SDKBrowser.NetworkLog.Events.Reset);
+    this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.Reset);
   }
 
   /**
@@ -437,13 +437,14 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    * @param {!Protocol.Network.RequestId} requestId
    */
   associateConsoleMessageWithRequest(consoleMessage, requestId) {
-    var networkManager = consoleMessage.target().model(SDK.NetworkManager);
+    var target = consoleMessage.target();
+    var networkManager = target ? target.model(SDK.NetworkManager) : null;
     if (!networkManager)
       return;
     var request = this.requestByManagerAndId(networkManager, requestId);
     if (!request)
       return;
-    consoleMessage[SDKBrowser.NetworkLog._requestSymbol] = request;
+    consoleMessage[BrowserSDK.NetworkLog._requestSymbol] = request;
     var initiator = request.initiator();
     if (initiator) {
       consoleMessage.stackTrace = initiator.stack || undefined;
@@ -459,16 +460,16 @@ SDKBrowser.NetworkLog = class extends Common.Object {
    * @return {?SDK.NetworkRequest}
    */
   static requestForConsoleMessage(consoleMessage) {
-    return consoleMessage[SDKBrowser.NetworkLog._requestSymbol] || null;
+    return consoleMessage[BrowserSDK.NetworkLog._requestSymbol] || null;
   }
 };
 
-SDKBrowser.PageLoad = class {
+BrowserSDK.PageLoad = class {
   /**
    * @param {!SDK.NetworkRequest} mainRequest
    */
   constructor(mainRequest) {
-    this.id = ++SDKBrowser.PageLoad._lastIdentifier;
+    this.id = ++BrowserSDK.PageLoad._lastIdentifier;
     this.url = mainRequest.url();
     this.startTime = mainRequest.startTime;
     /** @type {number} */
@@ -487,53 +488,53 @@ SDKBrowser.PageLoad = class {
     if (!this.mainRequest.finished)
       await this.mainRequest.once(SDK.NetworkRequest.Events.FinishedLoading);
     var saveDataHeader = this.mainRequest.requestHeaderValue('Save-Data');
-    if (!SDKBrowser.PageLoad._dataSaverMessageWasShown && saveDataHeader && saveDataHeader === 'on') {
+    if (!BrowserSDK.PageLoad._dataSaverMessageWasShown && saveDataHeader && saveDataHeader === 'on') {
       var message = Common.UIString(
           'Consider disabling %s while debugging. For more info see: %s', Common.UIString('Chrome Data Saver'),
           'https://support.google.com/chrome/?p=datasaver');
       manager.dispatchEventToListeners(
           SDK.NetworkManager.Events.MessageGenerated,
           {message: message, requestId: this.mainRequest.requestId(), warning: true});
-      SDKBrowser.PageLoad._dataSaverMessageWasShown = true;
+      BrowserSDK.PageLoad._dataSaverMessageWasShown = true;
     }
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
-   * @return {?SDKBrowser.PageLoad}
+   * @return {?BrowserSDK.PageLoad}
    */
   static forRequest(request) {
-    return request[SDKBrowser.PageLoad._pageLoadForRequestSymbol] || null;
+    return request[BrowserSDK.PageLoad._pageLoadForRequestSymbol] || null;
   }
 
   /**
    * @param {!SDK.NetworkRequest} request
    */
   bindRequest(request) {
-    request[SDKBrowser.PageLoad._pageLoadForRequestSymbol] = this;
+    request[BrowserSDK.PageLoad._pageLoadForRequestSymbol] = this;
   }
 };
 
-SDKBrowser.PageLoad._lastIdentifier = 0;
-SDKBrowser.PageLoad._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
-SDKBrowser.NetworkLog._requestSymbol = Symbol('_request');
+BrowserSDK.PageLoad._lastIdentifier = 0;
+BrowserSDK.PageLoad._pageLoadForRequestSymbol = Symbol('PageLoadForRequest');
+BrowserSDK.NetworkLog._requestSymbol = Symbol('_request');
 
-SDKBrowser.PageLoad._dataSaverMessageWasShown = false;
+BrowserSDK.PageLoad._dataSaverMessageWasShown = false;
 
 /** @typedef {!{initiators: !Set<!SDK.NetworkRequest>, initiated: !Set<!SDK.NetworkRequest>}} */
-SDKBrowser.NetworkLog.InitiatorGraph;
+BrowserSDK.NetworkLog.InitiatorGraph;
 
-SDKBrowser.NetworkLog.Events = {
+BrowserSDK.NetworkLog.Events = {
   Reset: Symbol('Reset'),
   RequestAdded: Symbol('RequestAdded'),
   RequestUpdated: Symbol('RequestUpdated')
 };
 
 /** @typedef {!{type: !SDK.NetworkRequest.InitiatorType, url: string, lineNumber: number, columnNumber: number, scriptId: ?string, stack: ?Protocol.Runtime.StackTrace}} */
-SDKBrowser.NetworkLog._InitiatorInfo;
+BrowserSDK.NetworkLog._InitiatorInfo;
 
-SDKBrowser.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
-SDKBrowser.NetworkLog._events = Symbol('SDKBrowser.NetworkLog.events');
+BrowserSDK.NetworkLog._initiatorDataSymbol = Symbol('InitiatorData');
+BrowserSDK.NetworkLog._events = Symbol('BrowserSDK.NetworkLog.events');
 
-/** @type {!SDKBrowser.NetworkLog} */
-SDKBrowser.networkLog = new SDKBrowser.NetworkLog();
+/** @type {!BrowserSDK.NetworkLog} */
+BrowserSDK.networkLog = new BrowserSDK.NetworkLog();

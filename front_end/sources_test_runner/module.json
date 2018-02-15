@@ -5,7 +5,7 @@
     "workspace",
     "source_frame",
     "text_utils",
-    "dom_debugger"
+    "browser_debugger"
   ],
   "scripts": [
     "SourcesTestRunner.js",

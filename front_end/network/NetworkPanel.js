@@ -116,9 +116,9 @@ Network.NetworkPanel = class extends UI.Panel {
         Network.NetworkLogView.Events.SearchCountUpdated, this._onSearchCountUpdated, this);
     this._networkLogView.addEventListener(
         Network.NetworkLogView.Events.SearchIndexUpdated, this._onSearchIndexUpdated, this);
-    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
-    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
-    SDKBrowser.networkLog.addEventListener(SDKBrowser.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
+    BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
+    BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
+    BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
   }
 
   /**
@@ -167,7 +167,7 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
 
     var clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDKBrowser.networkLog.reset(), this);
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => BrowserSDK.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
     var recordFilmStripButton = new UI.ToolbarSettingToggle(
@@ -221,7 +221,7 @@ Network.NetworkPanel = class extends UI.Panel {
 
   _toggleRecording() {
     if (!this._preserveLogSetting.get() && !this._toggleRecordAction.toggled())
-      SDKBrowser.networkLog.reset();
+      BrowserSDK.networkLog.reset();
     this._toggleRecord(!this._toggleRecordAction.toggled());
   }
 
@@ -235,7 +235,7 @@ Network.NetworkPanel = class extends UI.Panel {
       this._filmStripRecorder.stopRecording(this._filmStripAvailable.bind(this));
     // TODO(einbinder) This should be moved to a setting/action that NetworkLog owns but NetworkPanel controls, but
     // always be present in the command menu.
-    SDKBrowser.networkLog.setIsRecording(toggled);
+    BrowserSDK.networkLog.setIsRecording(toggled);
   }
 
   /**

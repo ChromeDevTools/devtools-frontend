@@ -1,0 +1,26 @@
+{
+    "extensions": [
+        {
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": [
+                "SDK.ConsoleMessage"
+            ],
+            "className": "BrowserConsole.BrowserConsole"
+        },
+        {
+            "type": "@Common.Renderer",
+            "contextTypes": [
+                "SDK.ConsoleMessage"
+            ],
+            "source": "network",
+            "className": "BrowserConsole.BrowserConsole"
+        }
+    ],
+    "dependencies": [
+        "browser_sdk",
+        "console"
+    ],
+    "scripts": [
+        "BrowserConsole.js"
+    ]
+}

@@ -120,7 +120,7 @@
         "perf_ui",
         "cookie_table",
         "data_grid",
-        "sdk_browser",
+        "browser_sdk",
         "product_registry",
         "mobile_throttling",
         "har_importer",

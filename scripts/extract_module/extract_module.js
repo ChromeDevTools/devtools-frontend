@@ -50,7 +50,7 @@ const MODULES_TO_REMOVE = ['profiler_test_runner', 'heap_snapshot_test_runner'];
 const JS_FILES_MAPPING = [
   // {file: 'heap_snapshot_test_runner/HeapSnapshotTestRunner.js', new: 'heap_profiler_test_runner'},
   // {file: 'profiler_test_runner/ProfilerTestRunner.js', new: 'cpu_profiler_test_runner'},
-  {file: 'network_log/HAREntry.js', existing: 'sdk_browser'},
+  {file: 'network_log/HAREntry.js', existing: 'browser_sdk'},
 ];
 
 /**

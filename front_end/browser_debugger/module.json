@@ -7,14 +7,14 @@
             "title": "Event Listener Breakpoints",
             "order": 9,
             "persistence": "permanent",
-            "className": "DOMDebugger.EventListenerBreakpointsSidebarPane"
+            "className": "BrowserDebugger.EventListenerBreakpointsSidebarPane"
         },
         {
             "type": "@UI.ContextFlavorListener",
             "contextTypes": [
                 "SDK.DebuggerPausedDetails"
             ],
-            "className": "DOMDebugger.XHRBreakpointsSidebarPane"
+            "className": "BrowserDebugger.XHRBreakpointsSidebarPane"
         },
         {
             "type": "view",
@@ -24,7 +24,7 @@
             "order": 5,
             "hasToolbar": true,
             "persistence": "permanent",
-            "className": "DOMDebugger.XHRBreakpointsSidebarPane"
+            "className": "BrowserDebugger.XHRBreakpointsSidebarPane"
         },
         {
             "type": "view",
@@ -33,7 +33,7 @@
             "title": "DOM Breakpoints",
             "order": 7,
             "persistence": "permanent",
-            "factoryName": "DOMDebugger.DOMBreakpointsSidebarPane"
+            "factoryName": "BrowserDebugger.DOMBreakpointsSidebarPane"
         },
         {
             "type": "view",
@@ -42,7 +42,7 @@
             "title": "DOM Breakpoints",
             "order": 6,
             "persistence": "permanent",
-            "factoryName": "DOMDebugger.DOMBreakpointsSidebarPane"
+            "factoryName": "BrowserDebugger.DOMBreakpointsSidebarPane"
         },
         {
             "type": "@Elements.MarkerDecorator",
@@ -56,14 +56,14 @@
             "contextTypes": [
                 "SDK.DOMNode"
             ],
-            "className": "DOMDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider"
+            "className": "BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider"
         },
         {
             "type": "@UI.ContextFlavorListener",
             "contextTypes": [
                 "SDK.DebuggerPausedDetails"
             ],
-            "className": "DOMDebugger.DOMBreakpointsSidebarPane"
+            "className": "BrowserDebugger.DOMBreakpointsSidebarPane"
         },
         {
             "type": "view",
@@ -73,12 +73,13 @@
             "order": 8,
             "hasToolbar": true,
             "persistence": "permanent",
-            "className": "DOMDebugger.ObjectEventListenersSidebarPane"
+            "className": "BrowserDebugger.ObjectEventListenersSidebarPane"
         }
     ],
     "dependencies": [
         "elements",
-        "sources"
+        "sources",
+        "console"
     ],
     "scripts": [
         "DOMBreakpointsSidebarPane.js",

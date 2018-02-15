@@ -11,7 +11,7 @@ Common.Renderer.prototype = {
   /**
    * @param {!Object} object
    * @param {!Common.Renderer.Options} options
-   * @return {!Promise.<!Element>}
+   * @return {!Promise.<?Node>}
    */
   render(object, options) {}
 };
@@ -19,7 +19,7 @@ Common.Renderer.prototype = {
 /**
  * @param {?Object} object
  * @param {!Common.Renderer.Options=} options
- * @return {!Promise.<!Element>}
+ * @return {!Promise.<?Node>}
  */
 Common.Renderer.render = function(object, options) {
   if (!object)
@@ -30,7 +30,7 @@ Common.Renderer.render = function(object, options) {
 };
 
 /** @typedef {!{title: (string|!Element|undefined), expanded: (boolean|undefined),
- *    editable: (boolean|undefined)}} */
+ *    editable: (boolean|undefined) }} */
 Common.Renderer.Options;
 
 /**

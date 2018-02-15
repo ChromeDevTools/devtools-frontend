@@ -5,7 +5,7 @@
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-DOMDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
+BrowserDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
   constructor() {
     super();
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
@@ -27,7 +27,7 @@ DOMDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
   update() {
     if (this._lastRequestedContext) {
       this._lastRequestedContext.runtimeModel.releaseObjectGroup(
-          DOMDebugger.ObjectEventListenersSidebarPane._objectGroupName);
+          BrowserDebugger.ObjectEventListenersSidebarPane._objectGroupName);
       delete this._lastRequestedContext;
     }
     var executionContext = UI.context.flavor(SDK.ExecutionContext);
@@ -69,7 +69,7 @@ DOMDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
         .evaluate(
             {
               expression: 'self',
-              objectGroup: DOMDebugger.ObjectEventListenersSidebarPane._objectGroupName,
+              objectGroup: BrowserDebugger.ObjectEventListenersSidebarPane._objectGroupName,
               includeCommandLineAPI: false,
               silent: true,
               returnByValue: false,
@@ -89,4 +89,4 @@ DOMDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
   }
 };
 
-DOMDebugger.ObjectEventListenersSidebarPane._objectGroupName = 'object-event-listeners-sidebar-pane';
+BrowserDebugger.ObjectEventListenersSidebarPane._objectGroupName = 'object-event-listeners-sidebar-pane';

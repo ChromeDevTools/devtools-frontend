@@ -28,73 +28,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-Components.DOMPresentationUtils = {};
-
-/**
- * @param {!SDK.Target} target
- * @param {string} originalImageURL
- * @param {boolean} showDimensions
- * @param {!Object=} precomputedFeatures
- * @return {!Promise<?Element>}
- */
-Components.DOMPresentationUtils.buildImagePreviewContents = function(
-    target, originalImageURL, showDimensions, precomputedFeatures) {
-  var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-  if (!resourceTreeModel)
-    return Promise.resolve(/** @type {?Element} */ (null));
-  var resource = resourceTreeModel.resourceForURL(originalImageURL);
-  var imageURL = originalImageURL;
-  if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
-    imageURL = precomputedFeatures.currentSrc;
-    resource = resourceTreeModel.resourceForURL(imageURL);
-  }
-  if (!isImageResource(resource))
-    return Promise.resolve(/** @type {?Element} */ (null));
-
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
-  var imageElement = createElement('img');
-  imageElement.addEventListener('load', buildContent, false);
-  imageElement.addEventListener('error', () => fulfill(null), false);
-  resource.populateImageSource(imageElement);
-  return promise;
-
-  /**
-   * @param {?SDK.Resource} resource
-   * @return {boolean}
-   */
-  function isImageResource(resource) {
-    return !!resource && resource.resourceType() === Common.resourceTypes.Image;
-  }
-
-  function buildContent() {
-    var container = createElement('table');
-    UI.appendStyle(container, 'components/imagePreview.css');
-    container.className = 'image-preview-container';
-    var naturalWidth = precomputedFeatures ? precomputedFeatures.naturalWidth : imageElement.naturalWidth;
-    var naturalHeight = precomputedFeatures ? precomputedFeatures.naturalHeight : imageElement.naturalHeight;
-    var offsetWidth = precomputedFeatures ? precomputedFeatures.offsetWidth : naturalWidth;
-    var offsetHeight = precomputedFeatures ? precomputedFeatures.offsetHeight : naturalHeight;
-    var description;
-    if (showDimensions) {
-      if (offsetHeight === naturalHeight && offsetWidth === naturalWidth) {
-        description = Common.UIString('%d \xd7 %d pixels', offsetWidth, offsetHeight);
-      } else {
-        description = Common.UIString(
-            '%d \xd7 %d pixels (Natural: %d \xd7 %d pixels)', offsetWidth, offsetHeight, naturalWidth, naturalHeight);
-      }
-    }
-
-    container.createChild('tr').createChild('td', 'image-container').appendChild(imageElement);
-    if (description)
-      container.createChild('tr').createChild('td').createChild('span', 'description').textContent = description;
-    if (imageURL !== originalImageURL) {
-      container.createChild('tr').createChild('td').createChild('span', 'description').textContent =
-          String.sprintf('currentSrc: %s', imageURL.trimMiddle(100));
-    }
-    fulfill(container);
-  }
-};
+Components.JSPresentationUtils = {};
 
 /**
  * @param {?SDK.Target} target
@@ -103,11 +37,11 @@ Components.DOMPresentationUtils.buildImagePreviewContents = function(
  * @param {function()=} contentUpdated
  * @return {!Element}
  */
-Components.DOMPresentationUtils.buildStackTracePreviewContents = function(
+Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     target, linkifier, stackTrace, contentUpdated) {
   var element = createElement('span');
   element.style.display = 'inline-block';
-  var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/domUtils.css');
+  var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   var contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
   var totalHiddenCallFramesCount = 0;

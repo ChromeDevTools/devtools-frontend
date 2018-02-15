@@ -15,7 +15,7 @@ HARImporter.Importer = class {
 
     log.entries.sort((a, b) => a.startedDateTime - b.startedDateTime);
 
-    /** @type {!Map<string, !SDKBrowser.PageLoad>} */
+    /** @type {!Map<string, !BrowserSDK.PageLoad>} */
     var pageLoads = new Map();
     /** @type {!Array<!SDK.NetworkRequest>} */
     var requests = [];
@@ -39,10 +39,10 @@ HARImporter.Importer = class {
   /**
    * @param {!HARImporter.HARPage} page
    * @param {!SDK.NetworkRequest} mainRequest
-   * @return {!SDKBrowser.PageLoad}
+   * @return {!BrowserSDK.PageLoad}
    */
   static _buildPageLoad(page, mainRequest) {
-    var pageLoad = new SDKBrowser.PageLoad(mainRequest);
+    var pageLoad = new BrowserSDK.PageLoad(mainRequest);
     pageLoad.startTime = page.startedDateTime;
     pageLoad.contentLoadTime = page.pageTimings.onContentLoad * 1000;
     pageLoad.loadTime = page.pageTimings.onLoad * 1000;
@@ -52,7 +52,7 @@ HARImporter.Importer = class {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {!HARImporter.HAREntry} entry
-   * @param {?SDKBrowser.PageLoad} pageLoad
+   * @param {?BrowserSDK.PageLoad} pageLoad
    */
   static _fillRequestFromHAREntry(request, entry, pageLoad) {
     // Request data.

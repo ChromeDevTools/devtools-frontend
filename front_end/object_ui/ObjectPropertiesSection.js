@@ -1383,7 +1383,7 @@ ObjectUI.ObjectPropertiesSection.Renderer = class {
    * @override
    * @param {!Object} object
    * @param {!Common.Renderer.Options=} options
-   * @return {!Promise<!Element>}
+   * @return {!Promise<?Node>}
    */
   render(object, options) {
     if (!(object instanceof SDK.RemoteObject))

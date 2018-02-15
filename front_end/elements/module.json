@@ -253,7 +253,7 @@
         }
     ],
     "dependencies": [
-        "components",
+        "browser_components",
         "extensions",
         "inline_editor",
         "color_picker",

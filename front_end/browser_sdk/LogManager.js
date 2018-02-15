@@ -5,7 +5,7 @@
 /**
  * @implements {SDK.SDKModelObserver<!SDK.LogModel>}
  */
-SDKBrowser.LogManager = class {
+BrowserSDK.LogManager = class {
   constructor() {
     SDK.targetManager.observeModels(SDK.LogModel, this);
   }
@@ -17,7 +17,7 @@ SDKBrowser.LogManager = class {
   modelAdded(logModel) {
     var eventListeners = [];
     eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
-    logModel[SDKBrowser.LogManager._events] = eventListeners;
+    logModel[BrowserSDK.LogManager._events] = eventListeners;
   }
 
   /**
@@ -25,7 +25,7 @@ SDKBrowser.LogManager = class {
    * @param {!SDK.LogModel} logModel
    */
   modelRemoved(logModel) {
-    Common.EventTarget.removeEventListeners(logModel[SDKBrowser.LogManager._events]);
+    Common.EventTarget.removeEventListeners(logModel[BrowserSDK.LogManager._events]);
   }
 
   /**
@@ -41,11 +41,11 @@ SDKBrowser.LogManager = class {
         data.entry.timestamp, undefined, undefined, data.entry.workerId);
 
     if (data.entry.networkRequestId)
-      SDKBrowser.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
+      BrowserSDK.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
     SDK.consoleModel.addMessage(consoleMessage);
   }
 };
 
-SDKBrowser.LogManager._events = Symbol('_events');
+BrowserSDK.LogManager._events = Symbol('_events');
 
-new SDKBrowser.LogManager();
+new BrowserSDK.LogManager();

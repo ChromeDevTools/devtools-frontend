@@ -527,7 +527,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
         var listItem = link.enclosingNodeOrSelfWithNodeName('li');
         var node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
         var precomputedFeatures = await this._loadDimensionsForNode(node);
-        var preview = await Components.DOMPresentationUtils.buildImagePreviewContents(
+        var preview = await BrowserComponents.ImagePreview.build(
             node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true, precomputedFeatures);
         if (preview)
           popover.contentElement.appendChild(preview);
@@ -1546,7 +1546,7 @@ Elements.ElementsTreeOutline.Renderer = class {
   /**
    * @override
    * @param {!Object} object
-   * @return {!Promise.<!Element>}
+   * @return {!Promise.<?Node>}
    */
   render(object) {
     return new Promise(renderPromise);

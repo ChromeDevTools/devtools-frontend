@@ -774,7 +774,7 @@ Timeline.TimelineUIUtils = class {
         var previewElement = null;
         var url = TimelineModel.TimelineData.forEvent(event).url;
         if (url)
-          previewElement = await Components.DOMPresentationUtils.buildImagePreviewContents(target, url, false);
+          previewElement = await BrowserComponents.ImagePreview.build(target, url, false);
         else if (TimelineModel.TimelineData.forEvent(event).picture)
           previewElement = await Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target);
         event[Timeline.TimelineUIUtils._previewElementSymbol] = previewElement;
@@ -1234,10 +1234,8 @@ Timeline.TimelineUIUtils = class {
       }
     }
 
-    if (!request.previewElement && request.url && target) {
-      request.previewElement =
-          await Components.DOMPresentationUtils.buildImagePreviewContents(target, request.url, false);
-    }
+    if (!request.previewElement && request.url && target)
+      request.previewElement = await BrowserComponents.ImagePreview.build(target, request.url, false);
     if (request.previewElement)
       contentHelper.appendElementRow(Common.UIString('Preview'), request.previewElement);
     return contentHelper.fragment;
@@ -1477,7 +1475,7 @@ Timeline.TimelineUIUtils = class {
     if (!imageURL)
       return null;
     var container = createElement('div');
-    UI.appendStyle(container, 'components/imagePreview.css');
+    UI.appendStyle(container, 'browser_components/imagePreview.css');
     container.classList.add('image-preview-container', 'vbox', 'link');
     var img = container.createChild('img');
     img.src = imageURL;
@@ -2367,7 +2365,7 @@ Timeline.TimelineDetailsContentHelper = class {
     var stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
     var callFrameElem =
-        Components.DOMPresentationUtils.buildStackTracePreviewContents(this._target, this._linkifier, stackTrace);
+        Components.JSPresentationUtils.buildStackTracePreviewContents(this._target, this._linkifier, stackTrace);
     stackTraceElement.appendChild(callFrameElem);
   }
 

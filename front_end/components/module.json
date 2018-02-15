@@ -5,14 +5,13 @@
         "ui"
     ],
     "scripts": [
-        "DOMPresentationUtils.js",
+        "JSPresentationUtils.js",
         "DockController.js",
         "Linkifier.js",
         "Reload.js",
         "TargetDetachedDialog.js"
     ],
     "resources": [
-        "domUtils.css",
-        "imagePreview.css"
+        "jsUtils.css"
     ]
 }

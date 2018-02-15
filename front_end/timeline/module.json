@@ -231,7 +231,7 @@
         }
     ],
     "dependencies": [
-        "components",
+        "browser_components",
         "layer_viewer",
         "timeline_model",
         "perf_ui",

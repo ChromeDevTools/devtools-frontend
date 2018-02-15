@@ -31,16 +31,16 @@
 /**
  * @implements {UI.ContextFlavorListener}
  */
-DOMDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
+BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('dom_debugger/domBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('browser_debugger/domBreakpointsSidebarPane.css');
 
     this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this._emptyElement.textContent = Common.UIString('No breakpoints');
 
-    /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !DOMDebugger.DOMBreakpointsSidebarPane.Item>} */
+    /** @type {!Map<!SDK.DOMDebuggerModel.DOMBreakpoint, !BrowserDebugger.DOMBreakpointsSidebarPane.Item>} */
     this._items = new Map();
     SDK.targetManager.addModelListener(
         SDK.DOMDebuggerModel, SDK.DOMDebuggerModel.Events.DOMBreakpointAdded, this._breakpointAdded, this);
@@ -115,7 +115,7 @@ DOMDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
     Common.Linkifier.linkify(breakpoint.node).then(linkified => linkifiedNode.appendChild(linkified));
 
     var description = createElement('div');
-    description.textContent = DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
+    description.textContent = BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
     labelElement.appendChild(description);
 
     var item = {breakpoint: breakpoint, element: element, checkbox: checkboxElement};
@@ -196,9 +196,9 @@ DOMDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
 };
 
 /** @typedef {!{element: !Element, checkbox: !Element, breakpoint: !SDK.DOMDebuggerModel.DOMBreakpoint}} */
-DOMDebugger.DOMBreakpointsSidebarPane.Item;
+BrowserDebugger.DOMBreakpointsSidebarPane.Item;
 
-DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
+BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified, Common.UIString('Subtree modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.AttributeModified, Common.UIString('Attribute modified')],
   [SDK.DOMDebuggerModel.DOMBreakpoint.Type.NodeRemoved, Common.UIString('Node removed')],
@@ -207,7 +207,7 @@ DOMDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels = new Map([
 /**
  * @implements {UI.ContextMenu.Provider}
  */
-DOMDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
+BrowserDebugger.DOMBreakpointsSidebarPane.ContextMenuProvider = class {
   /**
    * @override
    * @param {!Event} event

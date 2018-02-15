@@ -6,10 +6,10 @@
  * @implements {UI.ToolbarItem.ItemsProvider}
  * @unrestricted
  */
-DOMDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
+BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('dom_debugger/xhrBreakpointsSidebarPane.css');
+    this.registerRequiredCSS('browser_debugger/xhrBreakpointsSidebarPane.css');
 
     this._listElement = this.contentElement.createChild('div', 'breakpoint-list hidden');
     this._emptyElement = this.contentElement.createChild('div', 'gray-info-message');
@@ -53,7 +53,7 @@ DOMDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {DOMDebugger.XHRBreakpointsSidebarPane}
+     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElementContainer);
@@ -137,7 +137,7 @@ DOMDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
     var contextMenu = new UI.ContextMenu(event);
 
     /**
-     * @this {DOMDebugger.XHRBreakpointsSidebarPane}
+     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
      */
     function removeBreakpoint() {
       SDK.domDebuggerManager.removeXHRBreakpoint(url);
@@ -145,7 +145,7 @@ DOMDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
     }
 
     /**
-     * @this {DOMDebugger.XHRBreakpointsSidebarPane}
+     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
      */
     function removeAllBreakpoints() {
       for (var url of this._breakpointElements.keys()) {
@@ -176,7 +176,7 @@ DOMDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
      * @param {boolean} accept
      * @param {!Element} e
      * @param {string} text
-     * @this {DOMDebugger.XHRBreakpointsSidebarPane}
+     * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
      */
     function finishEditing(accept, e, text) {
       this._removeListElement(inputElement);

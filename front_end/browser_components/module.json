@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "browser_sdk",
+        "components"
+    ],
+    "scripts": [
+        "ImagePreview.js"
+    ],
+    "resources": [
+        "imagePreview.css"
+    ]
+}

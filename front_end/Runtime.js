@@ -724,15 +724,14 @@ Runtime.Module = class {
     // clang-format off
     const specialCases = {
       'sdk': 'SDK',
-      'sdk_js': 'SDKJS',
-      'sdk_browser': 'SDKBrowser',
+      'js_sdk': 'JSSDK',
+      'browser_sdk': 'BrowserSDK',
       'ui': 'UI',
       'object_ui': 'ObjectUI',
       'perf_ui': 'PerfUI',
       'har_importer': 'HARImporter',
       'sdk_test_runner': 'SDKTestRunner',
-      'cpu_profiler_test_runner': 'CPUProfilerTestRunner',
-      'dom_debugger': 'DOMDebugger',
+      'cpu_profiler_test_runner': 'CPUProfilerTestRunner'
     };
     var namespace = specialCases[this._name] || this._name.split('_').map(a => a.substring(0, 1).toUpperCase() + a.substring(1)).join('');
     self[namespace] = self[namespace] || {};

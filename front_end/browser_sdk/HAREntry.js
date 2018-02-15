@@ -36,7 +36,7 @@
 /**
  * @unrestricted
  */
-SDKBrowser.HAREntry = class {
+BrowserSDK.HAREntry = class {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -57,7 +57,7 @@ SDKBrowser.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   static async build(request) {
-    var harEntry = new SDKBrowser.HAREntry(request);
+    var harEntry = new BrowserSDK.HAREntry(request);
     var ipAddress = harEntry._request.remoteAddress();
     var portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1)
@@ -70,7 +70,7 @@ SDKBrowser.HAREntry = class {
       time += Math.max(t, 0);
 
     var entry = {
-      startedDateTime: SDKBrowser.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
+      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
       time: time,
       request: await harEntry._buildRequest(),
       response: harEntry._buildResponse(),
@@ -86,7 +86,7 @@ SDKBrowser.HAREntry = class {
 
     if (harEntry._request.connectionId !== '0')
       entry.connection = harEntry._request.connectionId;
-    var page = SDKBrowser.PageLoad.forRequest(harEntry._request);
+    var page = BrowserSDK.PageLoad.forRequest(harEntry._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -150,7 +150,7 @@ SDKBrowser.HAREntry = class {
   }
 
   /**
-   * @return {!SDKBrowser.HAREntry.Timing}
+   * @return {!BrowserSDK.HAREntry.Timing}
    */
   _buildTimings() {
     // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
@@ -162,7 +162,7 @@ SDKBrowser.HAREntry = class {
 
     var queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = queuedTime;
-    result._blocked_queueing = SDKBrowser.HAREntry._toMilliseconds(queuedTime);
+    result._blocked_queueing = BrowserSDK.HAREntry._toMilliseconds(queuedTime);
 
     var highestTime = 0;
     if (timing) {
@@ -207,11 +207,11 @@ SDKBrowser.HAREntry = class {
 
     var requestTime = timing ? timing.requestTime : startTime;
     var waitStart = highestTime;
-    var waitEnd = SDKBrowser.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    var waitEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
     var receiveStart = waitEnd;
-    var receiveEnd = SDKBrowser.HAREntry._toMilliseconds(this._request.endTime - issueTime);
+    var receiveEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.endTime - issueTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -273,7 +273,7 @@ SDKBrowser.HAREntry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(SDKBrowser.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(BrowserSDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -323,13 +323,13 @@ SDKBrowser.HAREntry = class {
   _blocked_queueing: number,
   _blocked_proxy: (number|undefined)
 }} */
-SDKBrowser.HAREntry.Timing;
+BrowserSDK.HAREntry.Timing;
 
 
 /**
  * @unrestricted
  */
-SDKBrowser.HARLog = class {
+BrowserSDK.HARLog = class {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
@@ -344,10 +344,10 @@ SDKBrowser.HARLog = class {
    * @return {!Promise<!Object>}
    */
   static async build(requests) {
-    var log = new SDKBrowser.HARLog();
+    var log = new BrowserSDK.HARLog();
     var entryPromises = [];
     for (var request of requests)
-      entryPromises.push(SDKBrowser.HAREntry.build(request));
+      entryPromises.push(BrowserSDK.HAREntry.build(request));
     var entries = await Promise.all(entryPromises);
     return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
   }
@@ -367,7 +367,7 @@ SDKBrowser.HARLog = class {
     var pages = [];
     for (var i = 0; i < requests.length; ++i) {
       var request = requests[i];
-      var page = SDKBrowser.PageLoad.forRequest(request);
+      var page = BrowserSDK.PageLoad.forRequest(request);
       if (!page || seenIdentifiers[page.id])
         continue;
       seenIdentifiers[page.id] = true;
@@ -377,13 +377,13 @@ SDKBrowser.HARLog = class {
   }
 
   /**
-   * @param {!SDKBrowser.PageLoad} page
+   * @param {!BrowserSDK.PageLoad} page
    * @param {!SDK.NetworkRequest} request
    * @return {!Object}
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: SDKBrowser.HARLog.pseudoWallTime(request, page.startTime),
+      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(request, page.startTime),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {
@@ -394,7 +394,7 @@ SDKBrowser.HARLog = class {
   }
 
   /**
-   * @param {!SDKBrowser.PageLoad} page
+   * @param {!BrowserSDK.PageLoad} page
    * @param {number} time
    * @return {number}
    */
@@ -402,6 +402,6 @@ SDKBrowser.HARLog = class {
     var startTime = page.startTime;
     if (time === -1 || startTime === -1)
       return -1;
-    return SDKBrowser.HAREntry._toMilliseconds(time - startTime);
+    return BrowserSDK.HAREntry._toMilliseconds(time - startTime);
   }
 };

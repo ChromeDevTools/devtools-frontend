@@ -200,6 +200,10 @@ SDK.Script = class {
     }
 
     await this.requestContent();
+    if (this._source === newSource) {
+      callback(null);
+      return;
+    }
     var response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
 

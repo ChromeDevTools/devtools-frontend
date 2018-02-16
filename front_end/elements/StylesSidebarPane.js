@@ -1052,6 +1052,8 @@ Elements.StylePropertiesSection = class {
   _highlight() {
     SDK.OverlayModel.hideDOMNodeHighlight();
     var node = this._parentPane.node();
+    if (!node)
+      return;
     var selectors = this._style.parentRule ? this._style.parentRule.selectorText() : undefined;
     node.domModel().overlayModel().highlightDOMNodeWithConfig(
         node.id, {mode: 'all', showInfo: undefined, selectors: selectors});

@@ -663,7 +663,8 @@ Console.ConsoleView = class extends UI.VBox {
           Common.UIString('Copy visible styled selection'), this._viewport.copyWithStyles.bind(this._viewport));
     }
 
-    contextMenu.appendApplicableItems(consoleMessage);
+    if (consoleMessage)
+      contextMenu.appendApplicableItems(consoleMessage);
 
     contextMenu.show();
   }

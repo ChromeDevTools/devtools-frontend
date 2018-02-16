@@ -383,7 +383,7 @@ TestRunner.deprecatedInitAsync(`
     var promise = new Promise(fulfill => callback = fulfill);
 
     if (window.testRunner)
-      testRunner.capturePixelsAsyncThen(() => window.requestAnimationFrame(callback));
+      testRunner.capturePixelsAsyncThen(callback);
     else
       window.requestAnimationFrame(callback);
 

@@ -53,12 +53,13 @@
         },
         {
             "type": "action",
+            "category": "Debugger",
             "actionId": "debugger.step-over",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step over next function call",
             "iconClass": "largeicon-step-over",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {
@@ -73,12 +74,13 @@
         },
         {
             "type": "action",
+            "category": "Debugger",
             "actionId": "debugger.step-into",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step into next function call",
             "iconClass": "largeicon-step-into",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {
@@ -93,12 +95,13 @@
         },
         {
             "type": "action",
+            "category": "Debugger",
             "actionId": "debugger.step",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step",
             "iconClass": "largeicon-step",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {
@@ -108,12 +111,13 @@
         },
         {
             "type": "action",
+            "category": "Debugger",
             "actionId": "debugger.step-out",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "title": "Step out of current function",
             "iconClass": "largeicon-step-out",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {
@@ -816,8 +820,9 @@
             "category": "Debugger",
             "actionId": "debugger.previous-call-frame",
             "className": "Sources.CallStackSidebarPane.ActionDelegate",
+            "title": "Previous call frame",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {
@@ -830,8 +835,9 @@
             "category": "Debugger",
             "actionId": "debugger.next-call-frame",
             "className": "Sources.CallStackSidebarPane.ActionDelegate",
+            "title": "Next call frame",
             "contextTypes": [
-                "Sources.SourcesPanel"
+                "SDK.DebuggerPausedDetails"
             ],
             "bindings": [
                 {

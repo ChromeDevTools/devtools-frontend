@@ -24,7 +24,12 @@ UI.ActionRegistry = class {
       var actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));
-      this._actionsById.set(actionId, new UI.Action(extension));
+
+      var action = new UI.Action(extension);
+      if (!action.category() || action.title())
+        this._actionsById.set(actionId, action);
+      else
+        console.error(`Category actions require a title for command menu: ${actionId}`);
     }
   }
 

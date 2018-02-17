@@ -37,7 +37,7 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
     this._layerTreeAgent = target.layerTreeAgent();
     target.registerLayerTreeDispatcher(new Layers.LayerTreeDispatcher(this));
     this._paintProfilerModel = /** @type {!SDK.PaintProfilerModel} */ (target.model(SDK.PaintProfilerModel));
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
@@ -88,13 +88,13 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
    * @param {?Array.<!Protocol.LayerTree.Layer>} layers
    */
   async _innerSetLayers(layers) {
-    var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
+    const layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
 
     await layerTree.setLayers(layers);
 
-    for (var layerId in this._lastPaintRectByLayerId) {
-      var lastPaintRect = this._lastPaintRectByLayerId[layerId];
-      var layer = layerTree.layerById(layerId);
+    for (const layerId in this._lastPaintRectByLayerId) {
+      const lastPaintRect = this._lastPaintRectByLayerId[layerId];
+      const layer = layerTree.layerById(layerId);
       if (layer)
         layer._lastPaintRect = lastPaintRect;
     }
@@ -110,8 +110,8 @@ Layers.LayerTreeModel = class extends SDK.SDKModel {
   _layerPainted(layerId, clipRect) {
     if (!this._enabled)
       return;
-    var layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
-    var layer = layerTree.layerById(layerId);
+    const layerTree = /** @type {!Layers.AgentLayerTree} */ (this._layerTree);
+    const layer = layerTree.layerById(layerId);
     if (!layer) {
       this._lastPaintRectByLayerId[layerId] = clipRect;
       return;
@@ -156,9 +156,9 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
       this._innerSetLayers(payload);
       return;
     }
-    var idsToResolve = new Set();
-    for (var i = 0; i < payload.length; ++i) {
-      var backendNodeId = payload[i].backendNodeId;
+    const idsToResolve = new Set();
+    for (let i = 0; i < payload.length; ++i) {
+      const backendNodeId = payload[i].backendNodeId;
       if (!backendNodeId || this.backendNodeIdToNode().has(backendNodeId))
         continue;
       idsToResolve.add(backendNodeId);
@@ -176,25 +176,25 @@ Layers.AgentLayerTree = class extends SDK.LayerTreeBase {
     // Payload will be null when not in the composited mode.
     if (!layers)
       return;
-    var root;
-    var oldLayersById = this._layersById;
+    let root;
+    const oldLayersById = this._layersById;
     this._layersById = {};
-    for (var i = 0; i < layers.length; ++i) {
-      var layerId = layers[i].layerId;
-      var layer = oldLayersById[layerId];
+    for (let i = 0; i < layers.length; ++i) {
+      const layerId = layers[i].layerId;
+      let layer = oldLayersById[layerId];
       if (layer)
         layer._reset(layers[i]);
       else
         layer = new Layers.AgentLayer(this._layerTreeModel, layers[i]);
       this._layersById[layerId] = layer;
-      var backendNodeId = layers[i].backendNodeId;
+      const backendNodeId = layers[i].backendNodeId;
       if (backendNodeId)
         layer._setNode(this.backendNodeIdToNode().get(backendNodeId));
       if (!this.contentRoot() && layer.drawsContent())
         this.setContentRoot(layer);
-      var parentId = layer.parentId();
+      const parentId = layer.parentId();
       if (parentId) {
-        var parent = this._layersById[parentId];
+        const parent = this._layersById[parentId];
         if (!parent)
           console.assert(parent, 'missing parent ' + parentId + ' for layer ' + layerId);
         parent.addChild(layer);
@@ -296,7 +296,7 @@ Layers.AgentLayer = class {
    * @return {?SDK.DOMNode}
    */
   nodeForSelfOrAncestor() {
-    for (var layer = this; layer; layer = layer._parent) {
+    for (let layer = this; layer; layer = layer._parent) {
       if (layer._node)
         return layer._node;
     }
@@ -408,7 +408,7 @@ Layers.AgentLayer = class {
    * @return {!Promise<!Array<string>>}
    */
   async requestCompositingReasons() {
-    var reasons = await this._layerTreeModel._layerTreeAgent.compositingReasons(this.id());
+    const reasons = await this._layerTreeModel._layerTreeAgent.compositingReasons(this.id());
     return reasons || [];
   }
 
@@ -428,7 +428,7 @@ Layers.AgentLayer = class {
     /**
      * @const
      */
-    var bytesPerPixel = 4;
+    const bytesPerPixel = 4;
     return this.drawsContent() ? this.width() * this.height() * bytesPerPixel : 0;
   }
 
@@ -437,7 +437,7 @@ Layers.AgentLayer = class {
    * @return {!Array<!Promise<?SDK.SnapshotWithRect>>}
    */
   snapshots() {
-    var promise = this._layerTreeModel._paintProfilerModel.makeSnapshot(this.id()).then(snapshot => {
+    const promise = this._layerTreeModel._paintProfilerModel.makeSnapshot(this.id()).then(snapshot => {
       if (!snapshot)
         return null;
       return {rect: {x: 0, y: 0, width: this.width(), height: this.height()}, snapshot: snapshot};
@@ -488,16 +488,16 @@ Layers.AgentLayer = class {
    * @return {!CSSMatrix}
    */
   _calculateTransformToViewport(parentTransform) {
-    var offsetMatrix = new WebKitCSSMatrix().translate(this._layerPayload.offsetX, this._layerPayload.offsetY);
-    var matrix = offsetMatrix;
+    const offsetMatrix = new WebKitCSSMatrix().translate(this._layerPayload.offsetX, this._layerPayload.offsetY);
+    let matrix = offsetMatrix;
 
     if (this._layerPayload.transform) {
-      var transformMatrix = this._matrixFromArray(this._layerPayload.transform);
-      var anchorVector = new UI.Geometry.Vector(
+      const transformMatrix = this._matrixFromArray(this._layerPayload.transform);
+      const anchorVector = new UI.Geometry.Vector(
           this._layerPayload.width * this.anchorPoint()[0], this._layerPayload.height * this.anchorPoint()[1],
           this.anchorPoint()[2]);
-      var anchorPoint = UI.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
-      var anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
+      const anchorPoint = UI.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector, matrix);
+      const anchorMatrix = new WebKitCSSMatrix().translate(-anchorPoint.x, -anchorPoint.y, -anchorPoint.z);
       matrix = anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
     }
 
@@ -518,11 +518,11 @@ Layers.AgentLayer = class {
    * @param {!CSSMatrix} parentTransform
    */
   _calculateQuad(parentTransform) {
-    var matrix = this._calculateTransformToViewport(parentTransform);
+    const matrix = this._calculateTransformToViewport(parentTransform);
     this._quad = [];
-    var vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
-    for (var i = 0; i < 4; ++i) {
-      var point = UI.Geometry.multiplyVectorByMatrixAndNormalize(
+    const vertices = this._createVertexArrayForRect(this._layerPayload.width, this._layerPayload.height);
+    for (let i = 0; i < 4; ++i) {
+      const point = UI.Geometry.multiplyVectorByMatrixAndNormalize(
           new UI.Geometry.Vector(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]), matrix);
       this._quad.push(point.x, point.y);
     }

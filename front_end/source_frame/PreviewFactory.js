@@ -9,11 +9,11 @@ SourceFrame.PreviewFactory = class {
    * @returns {!Promise<?UI.Widget>}
    */
   static async createPreview(provider, mimeType) {
-    var content = await provider.requestContent();
+    const content = await provider.requestContent();
     if (!content)
       return new UI.EmptyWidget(Common.UIString('Nothing to preview'));
 
-    var resourceType = Common.ResourceType.fromMimeType(mimeType);
+    let resourceType = Common.ResourceType.fromMimeType(mimeType);
     if (resourceType === Common.resourceTypes.Other)
       resourceType = provider.contentType();
 
@@ -24,16 +24,16 @@ SourceFrame.PreviewFactory = class {
         return new SourceFrame.FontView(mimeType, provider);
     }
 
-    var parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
+    const parsedXML = SourceFrame.XMLView.parseXML(content, mimeType);
     if (parsedXML)
       return SourceFrame.XMLView.createSearchableView(parsedXML);
 
-    var jsonView = await SourceFrame.JSONView.createView(content);
+    const jsonView = await SourceFrame.JSONView.createView(content);
     if (jsonView)
       return jsonView;
 
     if (resourceType.isTextType()) {
-      var highlighterType =
+      const highlighterType =
           provider.contentType().canonicalMimeType() || mimeType.replace(/;.*/, '');  // remove charset
       return SourceFrame.ResourceSourceFrame.createSearchableView(
           provider, highlighterType, true /* autoPrettyPrint */);

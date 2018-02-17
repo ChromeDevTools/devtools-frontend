@@ -7,7 +7,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     super();
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
 
-    var header = this.element.createChild('header');
+    const header = this.element.createChild('header');
     header.createChild('h3').createTextChild(Common.UIString('Workspace'));
 
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
@@ -20,11 +20,11 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
         Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved,
         event => this._fileSystemRemoved(/** @type {!Persistence.IsolatedFileSystem} */ (event.data)), this);
 
-    var folderExcludePatternInput = this._createFolderExcludePatternInput();
+    const folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
     this.containerElement.appendChild(folderExcludePatternInput);
 
-    var div = this.containerElement.createChild('div', 'settings-info-message');
+    const div = this.containerElement.createChild('div', 'settings-info-message');
     div.createTextChild(Common.UIString('Mappings are inferred automatically. Please '));
     div.appendChild(UI.XLink.create(
         'https://bugs.chromium.org/p/chromium/issues/entry?template=Defect%20report%20from%20user&components=Platform%3EDevTools%3EAuthoring&comment=DevTools%20failed%20to%20link%20network%20resource%20to%20filesystem.%0A%0APlatform%3A%20%3CLinux%2FWin%2FMac%3E%0AChrome%20version%3A%20%3Cyour%20chrome%20version%3E%0A%0AWhat%20are%20the%20details%20of%20your%20project%3F%0A-%20Source%20code%20(if%20any)%3A%20http%3A%2F%2Fgithub.com%2Fexample%2Fexample%0A-%20Build%20System%3A%20gulp%2Fgrunt%2Fwebpack%2Frollup%2F...%0A-%20HTTP%20server%3A%20node%20HTTP%2Fnginx%2Fapache...%0A%0AAssets%20failed%20to%20link%20(or%20incorrectly%20linked)%3A%0A1.%0A2.%0A3.%0A%0AIf%20possible%2C%20please%20attach%20a%20screenshot%20of%20network%20sources%20navigator%20which%20should%0Ashow%20which%20resources%20failed%20to%20map',
@@ -42,8 +42,8 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     /** @type {!Map<string, !Persistence.EditFileSystemView>} */
     this._mappingViewByPath = new Map();
 
-    var fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
-    for (var i = 0; i < fileSystems.length; ++i)
+    const fileSystems = Persistence.isolatedFileSystemManager.fileSystems();
+    for (let i = 0; i < fileSystems.length; ++i)
       this._addItem(fileSystems[i]);
   }
 
@@ -51,14 +51,14 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @return {!Element}
    */
   _createFolderExcludePatternInput() {
-    var p = createElement('p');
-    var labelElement = p.createChild('label');
+    const p = createElement('p');
+    const labelElement = p.createChild('label');
     labelElement.textContent = Common.UIString('Folder exclude pattern');
-    var inputElement = UI.createInput('', 'text');
+    const inputElement = UI.createInput('', 'text');
     p.appendChild(inputElement);
     inputElement.style.width = '270px';
-    var folderExcludeSetting = Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
-    var setValue =
+    const folderExcludeSetting = Persistence.isolatedFileSystemManager.workspaceFolderExcludePatternSetting();
+    const setValue =
         UI.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
     setValue(folderExcludeSetting.get());
@@ -69,7 +69,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
      * @return {boolean}
      */
     function regexValidator(value) {
-      var regex;
+      let regex;
       try {
         regex = new RegExp(value);
       } catch (e) {
@@ -82,16 +82,16 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _addItem(fileSystem) {
-    var networkPersistenceProject = Persistence.networkPersistenceManager.project();
+    const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
         Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem)
       return;
-    var element = this._renderFileSystem(fileSystem);
+    const element = this._renderFileSystem(fileSystem);
     this._elementByPath.set(fileSystem.path(), element);
 
     this._fileSystemsListContainer.appendChild(element);
 
-    var mappingView = new Persistence.EditFileSystemView(fileSystem.path());
+    const mappingView = new Persistence.EditFileSystemView(fileSystem.path());
     this._mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
     mappingView.show(element);
@@ -102,20 +102,20 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @return {!Element}
    */
   _renderFileSystem(fileSystem) {
-    var fileSystemPath = fileSystem.path();
-    var lastIndexOfSlash = fileSystemPath.lastIndexOf(Host.isWin() ? '\\' : '/');
-    var folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
+    const fileSystemPath = fileSystem.path();
+    const lastIndexOfSlash = fileSystemPath.lastIndexOf(Host.isWin() ? '\\' : '/');
+    const folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
 
-    var element = createElementWithClass('div', 'file-system-container');
-    var header = element.createChild('div', 'file-system-header');
+    const element = createElementWithClass('div', 'file-system-container');
+    const header = element.createChild('div', 'file-system-header');
 
     header.createChild('div', 'file-system-name').textContent = folderName;
-    var path = header.createChild('div', 'file-system-path');
+    const path = header.createChild('div', 'file-system-path');
     path.textContent = fileSystemPath;
     path.title = fileSystemPath;
 
-    var toolbar = new UI.Toolbar('');
-    var button = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-delete');
+    const toolbar = new UI.Toolbar('');
+    const button = new UI.ToolbarButton(Common.UIString('Remove'), 'largeicon-delete');
     button.addEventListener(UI.ToolbarButton.Events.Click, this._removeFileSystemClicked.bind(this, fileSystem));
     toolbar.appendToolbarItem(button);
     header.appendChild(toolbar.element);
@@ -145,13 +145,13 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _fileSystemRemoved(fileSystem) {
-    var mappingView = this._mappingViewByPath.get(fileSystem.path());
+    const mappingView = this._mappingViewByPath.get(fileSystem.path());
     if (mappingView) {
       mappingView.dispose();
       this._mappingViewByPath.delete(fileSystem.path());
     }
 
-    var element = this._elementByPath.get(fileSystem.path());
+    const element = this._elementByPath.get(fileSystem.path());
     if (element) {
       this._elementByPath.delete(fileSystem.path());
       element.remove();

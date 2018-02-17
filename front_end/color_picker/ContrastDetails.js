@@ -36,9 +36,9 @@ ColorPicker.ContrastDetails = class {
     /** @type {boolean} */
     this._visible = false;
 
-    var contrastValueRow = this._element.createChild('div');
+    const contrastValueRow = this._element.createChild('div');
     contrastValueRow.addEventListener('click', this._topRowClicked.bind(this));
-    var contrastValueRowContents = contrastValueRow.createChild('div', 'container');
+    const contrastValueRowContents = contrastValueRow.createChild('div', 'container');
     contrastValueRowContents.createTextChild(Common.UIString('Contrast ratio'));
 
     this._contrastValueBubble = contrastValueRowContents.createChild('span', 'contrast-details-value');
@@ -54,7 +54,7 @@ ColorPicker.ContrastDetails = class {
       event.consume(false);
     }));
 
-    var expandToolbar = new UI.Toolbar('expand', contrastValueRowContents);
+    const expandToolbar = new UI.Toolbar('expand', contrastValueRowContents);
     this._expandButton = new UI.ToolbarButton(Common.UIString('Show more'), 'smallicon-expand-more');
     this._expandButton.addEventListener(UI.ToolbarButton.Events.Click, this._expandButtonClicked.bind(this));
     UI.ARIAUtils.setExpanded(this._expandButton.element, false);
@@ -75,9 +75,9 @@ ColorPicker.ContrastDetails = class {
     this._chooseBgColor = this._expandedDetails.createChild('div', 'contrast-choose-bg-color');
     this._chooseBgColor.textContent = Common.UIString('Pick background color');
 
-    var bgColorContainer = this._expandedDetails.createChild('div', 'background-color');
+    const bgColorContainer = this._expandedDetails.createChild('div', 'background-color');
 
-    var pickerToolbar = new UI.Toolbar('spectrum-eye-dropper', bgColorContainer);
+    const pickerToolbar = new UI.Toolbar('spectrum-eye-dropper', bgColorContainer);
     this._bgColorPickerButton =
         new UI.ToolbarToggle(Common.UIString('Toggle background color picker'), 'largeicon-eyedropper');
     this._bgColorPickerButton.addEventListener(
@@ -98,8 +98,8 @@ ColorPicker.ContrastDetails = class {
 
     this.setVisible(true);
 
-    var contrastRatio = this._contrastInfo.contrastRatio();
-    var bgColor = this._contrastInfo.bgColor();
+    const contrastRatio = this._contrastInfo.contrastRatio();
+    const bgColor = this._contrastInfo.bgColor();
     if (!contrastRatio || !bgColor) {
       this._contrastUnknown = true;
       this._contrastValue.textContent = '';
@@ -118,10 +118,10 @@ ColorPicker.ContrastDetails = class {
     this._bgColorSwatch.setBackgroundColor(bgColor);
     this._bgColorSwatch.setTextColor(this._contrastInfo.colorString());
 
-    var aa = this._contrastInfo.contrastRatioThreshold('aa');
+    const aa = this._contrastInfo.contrastRatioThreshold('aa');
     this._passesAA = this._contrastInfo.contrastRatio() >= aa;
     this._contrastPassFailAA.removeChildren();
-    var labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
+    const labelAA = this._contrastPassFailAA.createChild('span', 'contrast-link-label');
     labelAA.textContent = Common.UIString('AA');
     this._contrastPassFailAA.createChild('span').textContent = Common.UIString(': %s', aa.toFixed(1));
     if (this._passesAA)
@@ -129,10 +129,10 @@ ColorPicker.ContrastDetails = class {
     else
       this._contrastPassFailAA.appendChild(UI.Icon.create('smallicon-no'));
 
-    var aaa = this._contrastInfo.contrastRatioThreshold('aaa');
-    var passesAAA = this._contrastInfo.contrastRatio() >= aaa;
+    const aaa = this._contrastInfo.contrastRatioThreshold('aaa');
+    const passesAAA = this._contrastInfo.contrastRatio() >= aaa;
     this._contrastPassFailAAA.removeChildren();
-    var labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
+    const labelAAA = this._contrastPassFailAAA.createChild('span', 'contrast-link-label');
     labelAAA.textContent = Common.UIString('AAA');
     this._contrastPassFailAAA.createChild('span').textContent = Common.UIString(': %s', aaa.toFixed(1));
     if (passesAAA)
@@ -243,9 +243,9 @@ ColorPicker.ContrastDetails = class {
    * @param {!Common.Event} event
    */
   _bgColorPicked(event) {
-    var rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
-    var rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
-    var color = Common.Color.fromRGBA(rgba);
+    const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
+    const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
+    const color = Common.Color.fromRGBA(rgba);
     this._contrastInfo.setBgColor(color);
     this._toggleBackgroundColorPicker(false);
     InspectorFrontendHost.bringToFront();

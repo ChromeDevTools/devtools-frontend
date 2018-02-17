@@ -17,17 +17,17 @@ Coverage.CoverageView = class extends UI.VBox {
 
     this.registerRequiredCSS('coverage/coverageView.css');
 
-    var toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
-    var toolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
+    const toolbarContainer = this.contentElement.createChild('div', 'coverage-toolbar-container');
+    const toolbar = new UI.Toolbar('coverage-toolbar', toolbarContainer);
 
     this._toggleRecordAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.toggle-recording'));
     this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
     toolbar.appendToolbarItem(this._toggleRecordButton);
 
-    var mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = SDK.targetManager.mainTarget();
     if (mainTarget && mainTarget.model(SDK.ResourceTreeModel)) {
-      var startWithReloadAction =
+      const startWithReloadAction =
           /** @type {!UI.Action }*/ (UI.actionRegistry.action('coverage.start-with-reload'));
       this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
       toolbar.appendToolbarItem(this._startWithReloadButton);
@@ -48,7 +48,7 @@ Coverage.CoverageView = class extends UI.VBox {
     toolbar.appendSeparator();
     this._showContentScriptsSetting = Common.settings.createSetting('showContentScripts', false);
     this._showContentScriptsSetting.addChangeListener(this._onFilterChanged, this);
-    var contentScriptsCheckbox = new UI.ToolbarSettingCheckbox(
+    const contentScriptsCheckbox = new UI.ToolbarSettingCheckbox(
         this._showContentScriptsSetting, Common.UIString('Include extension content scripts'),
         Common.UIString('Content scripts'));
     toolbar.appendToolbarItem(contentScriptsCheckbox);
@@ -66,11 +66,11 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {!UI.VBox}
    */
   _buildLandingPage() {
-    var recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
-    var widget = new UI.VBox();
-    var message;
+    const recordButton = UI.createInlineButton(UI.Toolbar.createActionButton(this._toggleRecordAction));
+    const widget = new UI.VBox();
+    let message;
     if (this._startWithReloadButton) {
-      var reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('coverage.start-with-reload'));
+      const reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('coverage.start-with-reload'));
       message = UI.formatLocalized(
           'Click the record button %s to start capturing coverage.\n' +
               'Click the reload button %s to reload and start capturing coverage.',
@@ -102,7 +102,7 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   _toggleRecording() {
-    var enable = !this._toggleRecordAction.toggled();
+    const enable = !this._toggleRecordAction.toggled();
 
     if (enable)
       this._startRecording(false);
@@ -115,7 +115,7 @@ Coverage.CoverageView = class extends UI.VBox {
    */
   _startRecording(reload) {
     this._reset();
-    var mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = SDK.targetManager.mainTarget();
     if (!mainTarget)
       return;
     if (!this._model || reload)
@@ -145,7 +145,7 @@ Coverage.CoverageView = class extends UI.VBox {
 
   async _poll() {
     delete this._pollTimer;
-    var updates = await this._model.poll();
+    const updates = await this._model.poll();
     this._updateViews(updates);
     this._pollTimer = setTimeout(() => this._poll(), 700);
   }
@@ -160,7 +160,7 @@ Coverage.CoverageView = class extends UI.VBox {
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._onMainFrameNavigated, this);
       this._resourceTreeModel = null;
     }
-    var updatedEntries = await this._model.stop();
+    const updatedEntries = await this._model.stop();
     this._updateViews(updatedEntries);
     this._toggleRecordAction.setToggled(false);
     if (this._startWithReloadButton)
@@ -185,16 +185,16 @@ Coverage.CoverageView = class extends UI.VBox {
   }
 
   _updateStats() {
-    var total = 0;
-    var unused = 0;
-    for (var info of this._model.entries()) {
+    let total = 0;
+    let unused = 0;
+    for (const info of this._model.entries()) {
       if (!this._isVisible(true, info))
         continue;
       total += info.size();
       unused += info.unusedSize();
     }
 
-    var percentUnused = total ? Math.round(100 * unused / total) : 0;
+    const percentUnused = total ? Math.round(100 * unused / total) : 0;
     this._statusMessageElement.textContent = Common.UIString(
         '%s of %s bytes are not used. (%d%%)', Number.bytesToString(unused), Number.bytesToString(total),
         percentUnused);
@@ -203,7 +203,7 @@ Coverage.CoverageView = class extends UI.VBox {
   _onFilterChanged() {
     if (!this._listView)
       return;
-    var text = this._filterInput.value();
+    const text = this._filterInput.value();
     this._textFilterRegExp = text ? createPlainTextSearchRegex(text, 'i') : null;
     this._listView.updateFilterAndHighlight(this._textFilterRegExp);
     this._updateStats();
@@ -215,7 +215,7 @@ Coverage.CoverageView = class extends UI.VBox {
    * @return {boolean}
    */
   _isVisible(ignoreTextFilter, coverageInfo) {
-    var url = coverageInfo.url();
+    const url = coverageInfo.url();
     if (url.startsWith(Coverage.CoverageView._extensionBindingsURLPrefix))
       return false;
     if (coverageInfo.isContentScript() && !this._showContentScriptsSetting.get())
@@ -237,7 +237,7 @@ Coverage.CoverageView.ActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var coverageViewId = 'coverage';
+    const coverageViewId = 'coverage';
     UI.viewManager.showView(coverageViewId)
         .then(() => UI.viewManager.view(coverageViewId).widget())
         .then(widget => this._innerHandleAction(/** @type !Coverage.CoverageView} */ (widget), actionId));

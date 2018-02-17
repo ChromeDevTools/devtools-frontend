@@ -7,14 +7,14 @@
  * @suppress {accessControls}
  */
 
-var id = 0;
+let id = 0;
 
 function nextId(prefix) {
   return (prefix || '') + ++id;
 }
 
 SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
-  var mockTarget = SDK.targetManager.createTarget(
+  const mockTarget = SDK.targetManager.createTarget(
       nextId('mock-target-'), targetName, pageMock.capabilities(), params => pageMock.createConnection(params));
 
   if (makeMainTarget) {
@@ -64,10 +64,10 @@ SDKTestRunner.PageMock = class {
   }
 
   evalScript(url, content, isContentScript) {
-    var id = nextId();
+    const id = nextId();
     content += '\n//# sourceURL=' + url;
     this._scriptContents.set(id, content);
-    var context = this._executionContexts.find(context => context.auxData.isDefault !== isContentScript);
+    let context = this._executionContexts.find(context => context.auxData.isDefault !== isContentScript);
 
     if (!context) {
       context = this._createExecutionContext(this._mainFrame, isContentScript);
@@ -75,9 +75,9 @@ SDKTestRunner.PageMock = class {
       this._fireEvent('Runtime.executionContextCreated', {context: context});
     }
 
-    var text = new TextUtils.Text(content);
+    const text = new TextUtils.Text(content);
 
-    var script = {
+    const script = {
       scriptId: id,
       url: url,
       startLine: 0,
@@ -101,7 +101,7 @@ SDKTestRunner.PageMock = class {
   reload() {
     this._fireEvent('Page.frameStartedLoading', {frameId: this._mainFrame.id});
 
-    for (var context of this._executionContexts)
+    for (const context of this._executionContexts)
       this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: context.id});
 
 
@@ -111,7 +111,7 @@ SDKTestRunner.PageMock = class {
     this._fireEvent('Runtime.executionContextsCleared', {});
     this._executionContexts.push(this._createExecutionContext(this._mainFrame, false));
 
-    for (var context of this._executionContexts)
+    for (const context of this._executionContexts)
       this._fireEvent('Runtime.executionContextCreated', {context: context});
 
 
@@ -146,7 +146,7 @@ SDKTestRunner.PageMock = class {
     this._enabledDomains.add('Debugger');
     this._sendResponse(id, {});
 
-    for (var script of this._scripts)
+    for (const script of this._scripts)
       this._fireEvent('Debugger.scriptParsed', script);
   }
 
@@ -157,7 +157,7 @@ SDKTestRunner.PageMock = class {
       return;
     }
 
-    var result = {scriptSource: this._scriptContents.get(params.scriptId)};
+    const result = {scriptSource: this._scriptContents.get(params.scriptId)};
 
     this._sendResponse(id, result);
   }
@@ -166,7 +166,7 @@ SDKTestRunner.PageMock = class {
     this._enabledDomains.add('Runtime');
     this._sendResponse(id, {});
 
-    for (var context of this._executionContexts)
+    for (const context of this._executionContexts)
       this._fireEvent('Runtime.executionContextCreated', {context: context});
   }
 
@@ -176,13 +176,13 @@ SDKTestRunner.PageMock = class {
   }
 
   _pageGetResourceTree(id, params) {
-    var result = {frameTree: {frame: this._mainFrame, resources: []}};
+    const result = {frameTree: {frame: this._mainFrame, resources: []}};
 
     this._sendResponse(id, result);
   }
 
   _isSupportedDomain(methodName) {
-    var domain = methodName.split('.')[0];
+    const domain = methodName.split('.')[0];
 
     if (domain === 'Page')
       return !!(this._capabilities & SDK.Target.Capability.DOM);
@@ -191,7 +191,7 @@ SDKTestRunner.PageMock = class {
   }
 
   _dispatch(id, methodName, params, message) {
-    var handler = (this._isSupportedDomain(methodName) ? this._dispatchMap[methodName] : null);
+    const handler = (this._isSupportedDomain(methodName) ? this._dispatchMap[methodName] : null);
 
     if (handler)
       return handler.call(this, id, params);
@@ -202,24 +202,24 @@ SDKTestRunner.PageMock = class {
   }
 
   _sendResponse(id, result, error) {
-    var message = {id: id, result: result, error: error};
+    const message = {id: id, result: result, error: error};
 
     this._connection.sendMessageToDevTools(message);
   }
 
   _fireEvent(methodName, params) {
-    var domain = methodName.split('.')[0];
+    const domain = methodName.split('.')[0];
 
     if (!this._enabledDomains.has(domain))
       return;
 
-    var message = {method: methodName, params: params};
+    const message = {method: methodName, params: params};
 
     this._connection.sendMessageToDevTools(message);
   }
 };
 
-var MockPageConnection = class {
+MockPageConnection = class {
   constructor(page, params) {
     this._page = page;
     this._onMessage = params.onMessage;
@@ -231,7 +231,7 @@ var MockPageConnection = class {
   }
 
   sendMessage(message) {
-    var json = JSON.parse(message);
+    const json = JSON.parse(message);
     this._page._dispatch(json.id, json.method, json.params, message);
   }
 

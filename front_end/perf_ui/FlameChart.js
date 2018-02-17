@@ -184,9 +184,9 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _resetCanvas() {
-    var ratio = window.devicePixelRatio;
-    var width = Math.round(this._offsetWidth * ratio);
-    var height = Math.round(this._offsetHeight * ratio);
+    const ratio = window.devicePixelRatio;
+    const width = Math.round(this._offsetWidth * ratio);
+    const height = Math.round(this._offsetHeight * ratio);
     this._canvas.width = width;
     this._canvas.height = height;
     this._canvas.style.width = `${width / ratio}px`;
@@ -236,8 +236,8 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {!MouseEvent} event
    */
   _dragging(event) {
-    var dx = event.pageX - this._dragStartX;
-    var dy = event.pageY - this._dragStartY;
+    const dx = event.pageX - this._dragStartX;
+    const dy = event.pageY - this._dragStartY;
     this._maxDragOffset = Math.max(this._maxDragOffset, Math.sqrt(dx * dx + dy * dy));
   }
 
@@ -254,7 +254,7 @@ PerfUI.FlameChart = class extends UI.VBox {
   _timelineData() {
     if (!this._dataProvider)
       return null;
-    var timelineData = this._dataProvider.timelineData();
+    const timelineData = this._dataProvider.timelineData();
     if (timelineData !== this._rawTimelineData || timelineData.entryStartTimes.length !== this._rawTimelineDataLength)
       this._processTimelineData(timelineData);
     return this._rawTimelineData;
@@ -264,27 +264,27 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} entryIndex
    */
   _revealEntry(entryIndex) {
-    var timelineData = this._timelineData();
+    const timelineData = this._timelineData();
     if (!timelineData)
       return;
-    var timeLeft = this._timeWindowLeft;
-    var timeRight = this._timeWindowRight;
-    var entryStartTime = timelineData.entryStartTimes[entryIndex];
-    var entryTotalTime = timelineData.entryTotalTimes[entryIndex];
-    var entryEndTime = entryStartTime + entryTotalTime;
-    var minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
+    const timeLeft = this._timeWindowLeft;
+    const timeRight = this._timeWindowRight;
+    const entryStartTime = timelineData.entryStartTimes[entryIndex];
+    const entryTotalTime = timelineData.entryTotalTimes[entryIndex];
+    const entryEndTime = entryStartTime + entryTotalTime;
+    let minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
 
-    var level = timelineData.entryLevels[entryIndex];
+    const level = timelineData.entryLevels[entryIndex];
     this._chartViewport.setScrollOffset(this._levelToOffset(level), this._levelHeight(level));
 
-    var minVisibleWidthPx = 30;
-    var futurePixelToTime = (timeRight - timeLeft) / this._offsetWidth;
+    const minVisibleWidthPx = 30;
+    const futurePixelToTime = (timeRight - timeLeft) / this._offsetWidth;
     minEntryTimeWindow = Math.max(minEntryTimeWindow, futurePixelToTime * minVisibleWidthPx);
     if (timeLeft > entryEndTime) {
-      var delta = timeLeft - entryEndTime + minEntryTimeWindow;
+      const delta = timeLeft - entryEndTime + minEntryTimeWindow;
       this.requestWindowTimes(timeLeft - delta, timeRight - delta);
     } else if (timeRight < entryStartTime) {
-      var delta = entryStartTime - timeRight + minEntryTimeWindow;
+      const delta = entryStartTime - timeRight + minEntryTimeWindow;
       this.requestWindowTimes(timeLeft + delta, timeRight + delta);
     }
   }
@@ -319,11 +319,11 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _updateHighlight() {
-    var inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
+    const inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
     this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
     this._updateMarkerHighlight();
 
-    var entryIndex = this._highlightedMarkerIndex === -1 ?
+    const entryIndex = this._highlightedMarkerIndex === -1 ?
         this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) :
         -1;
     if (entryIndex === -1) {
@@ -352,7 +352,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       return;
     }
     this._entryInfo.removeChildren();
-    var popoverElement = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
+    const popoverElement = this._dataProvider.prepareHighlightedEntryInfo(entryIndex);
     if (popoverElement) {
       this._entryInfo.appendChild(popoverElement);
       this._updatePopoverOffset();
@@ -360,19 +360,19 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _updatePopoverOffset() {
-    var mouseX = this._lastMouseOffsetX;
-    var mouseY = this._lastMouseOffsetY;
-    var parentWidth = this._entryInfo.parentElement.clientWidth;
-    var parentHeight = this._entryInfo.parentElement.clientHeight;
-    var infoWidth = this._entryInfo.clientWidth;
-    var infoHeight = this._entryInfo.clientHeight;
-    var /** @const */ offsetX = 10;
-    var /** @const */ offsetY = 6;
-    var x;
-    var y;
-    for (var quadrant = 0; quadrant < 4; ++quadrant) {
-      var dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
-      var dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
+    const mouseX = this._lastMouseOffsetX;
+    const mouseY = this._lastMouseOffsetY;
+    const parentWidth = this._entryInfo.parentElement.clientWidth;
+    const parentHeight = this._entryInfo.parentElement.clientHeight;
+    const infoWidth = this._entryInfo.clientWidth;
+    const infoHeight = this._entryInfo.clientHeight;
+    const /** @const */ offsetX = 10;
+    const /** @const */ offsetY = 6;
+    let x;
+    let y;
+    for (let quadrant = 0; quadrant < 4; ++quadrant) {
+      const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
+      const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
       x = Number.constrain(mouseX + dx, 0, parentWidth - infoWidth);
       y = Number.constrain(mouseY + dy, 0, parentHeight - infoHeight);
       if (x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight)
@@ -390,10 +390,10 @@ PerfUI.FlameChart = class extends UI.VBox {
     // onClick comes after dragStart and dragEnd events.
     // So if there was drag (mouse move) in the middle of that events
     // we skip the click. Otherwise we jump to the sources.
-    var /** @const */ clickThreshold = 5;
+    const /** @const */ clickThreshold = 5;
     if (this._maxDragOffset > clickThreshold)
       return;
-    var groupIndex = this._coordinatesToGroupIndex(event.offsetX, event.offsetY);
+    const groupIndex = this._coordinatesToGroupIndex(event.offsetX, event.offsetY);
     if (groupIndex >= 0) {
       this._toggleGroupVisibility(groupIndex);
       return;
@@ -408,8 +408,8 @@ PerfUI.FlameChart = class extends UI.VBox {
   _toggleGroupVisibility(groupIndex) {
     if (!this._isGroupCollapsible(groupIndex))
       return;
-    var groups = this._rawTimelineData.groups;
-    var group = groups[groupIndex];
+    const groups = this._rawTimelineData.groups;
+    const group = groups[groupIndex];
     group.expanded = !group.expanded;
     this._groupExpansionState[group.name] = group.expanded;
     if (this._groupExpansionSetting)
@@ -418,8 +418,8 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     this._updateHighlight();
     if (!group.expanded) {
-      var timelineData = this._timelineData();
-      var level = timelineData.entryLevels[this._selectedEntryIndex];
+      const timelineData = this._timelineData();
+      const level = timelineData.entryLevels[this._selectedEntryIndex];
       if (this._selectedEntryIndex >= 0 && level >= group.startLevel &&
           (groupIndex >= groups.length - 1 || groups[groupIndex + 1].startLevel > level))
         this._selectedEntryIndex = -1;
@@ -445,7 +445,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       return;
     if (this._selectedEntryIndex === -1)
       return;
-    var timelineData = this._timelineData();
+    const timelineData = this._timelineData();
     if (!timelineData)
       return;
 
@@ -464,18 +464,18 @@ PerfUI.FlameChart = class extends UI.VBox {
      * @return {boolean}
      */
     function entriesIntersect(entry1, entry2) {
-      var start1 = timelineData.entryStartTimes[entry1];
-      var start2 = timelineData.entryStartTimes[entry2];
-      var end1 = start1 + timelineData.entryTotalTimes[entry1];
-      var end2 = start2 + timelineData.entryTotalTimes[entry2];
+      const start1 = timelineData.entryStartTimes[entry1];
+      const start2 = timelineData.entryStartTimes[entry2];
+      const end1 = start1 + timelineData.entryTotalTimes[entry1];
+      const end2 = start2 + timelineData.entryTotalTimes[entry2];
       return start1 < end2 && start2 < end1;
     }
 
-    var keys = UI.KeyboardShortcut.Keys;
+    const keys = UI.KeyboardShortcut.Keys;
     if (e.keyCode === keys.Left.code || e.keyCode === keys.Right.code) {
-      var level = timelineData.entryLevels[this._selectedEntryIndex];
-      var levelIndexes = this._timelineLevels[level];
-      var indexOnLevel = levelIndexes.lowerBound(this._selectedEntryIndex);
+      const level = timelineData.entryLevels[this._selectedEntryIndex];
+      const levelIndexes = this._timelineLevels[level];
+      let indexOnLevel = levelIndexes.lowerBound(this._selectedEntryIndex);
       indexOnLevel += e.keyCode === keys.Left.code ? -1 : 1;
       e.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length)
@@ -484,14 +484,14 @@ PerfUI.FlameChart = class extends UI.VBox {
     }
     if (e.keyCode === keys.Up.code || e.keyCode === keys.Down.code) {
       e.consume(true);
-      var level = timelineData.entryLevels[this._selectedEntryIndex];
+      let level = timelineData.entryLevels[this._selectedEntryIndex];
       level += e.keyCode === keys.Up.code ? -1 : 1;
       if (level < 0 || level >= this._timelineLevels.length)
         return;
-      var entryTime = timelineData.entryStartTimes[this._selectedEntryIndex] +
+      const entryTime = timelineData.entryStartTimes[this._selectedEntryIndex] +
           timelineData.entryTotalTimes[this._selectedEntryIndex] / 2;
-      var levelIndexes = this._timelineLevels[level];
-      var indexOnLevel = levelIndexes.upperBound(entryTime, timeComparator) - 1;
+      const levelIndexes = this._timelineLevels[level];
+      let indexOnLevel = levelIndexes.upperBound(entryTime, timeComparator) - 1;
       if (!entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
         ++indexOnLevel;
         if (indexOnLevel >= levelIndexes.length ||
@@ -510,19 +510,19 @@ PerfUI.FlameChart = class extends UI.VBox {
   _coordinatesToEntryIndex(x, y) {
     if (x < 0 || y < 0)
       return -1;
-    var timelineData = this._timelineData();
+    const timelineData = this._timelineData();
     if (!timelineData)
       return -1;
     y += this._chartViewport.scrollOffset();
-    var cursorLevel = this._visibleLevelOffsets.upperBound(y) - 1;
+    const cursorLevel = this._visibleLevelOffsets.upperBound(y) - 1;
     if (cursorLevel < 0 || !this._visibleLevels[cursorLevel])
       return -1;
-    var offsetFromLevel = y - this._visibleLevelOffsets[cursorLevel];
+    const offsetFromLevel = y - this._visibleLevelOffsets[cursorLevel];
     if (offsetFromLevel > this._levelHeight(cursorLevel))
       return -1;
-    var entryStartTimes = timelineData.entryStartTimes;
-    var entryTotalTimes = timelineData.entryTotalTimes;
-    var entryIndexes = this._timelineLevels[cursorLevel];
+    const entryStartTimes = timelineData.entryStartTimes;
+    const entryTotalTimes = timelineData.entryTotalTimes;
+    const entryIndexes = this._timelineLevels[cursorLevel];
     if (!entryIndexes || !entryIndexes.length)
       return -1;
 
@@ -534,8 +534,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     function comparator(time, entryIndex) {
       return time - entryStartTimes[entryIndex];
     }
-    var cursorTime = this._chartViewport.pixelToTime(x);
-    var indexOnLevel = Math.max(entryIndexes.upperBound(cursorTime, comparator) - 1, 0);
+    const cursorTime = this._chartViewport.pixelToTime(x);
+    const indexOnLevel = Math.max(entryIndexes.upperBound(cursorTime, comparator) - 1, 0);
 
     /**
      * @this {PerfUI.FlameChart}
@@ -545,20 +545,20 @@ PerfUI.FlameChart = class extends UI.VBox {
     function checkEntryHit(entryIndex) {
       if (entryIndex === undefined)
         return false;
-      var startTime = entryStartTimes[entryIndex];
-      var startX = this._chartViewport.timeToPosition(startTime);
-      var duration = entryTotalTimes[entryIndex];
+      const startTime = entryStartTimes[entryIndex];
+      const startX = this._chartViewport.timeToPosition(startTime);
+      const duration = entryTotalTimes[entryIndex];
       if (isNaN(duration)) {
-        var dx = startX - x;
-        var dy = this._levelHeight(cursorLevel) / 2 - offsetFromLevel;
+        const dx = startX - x;
+        const dy = this._levelHeight(cursorLevel) / 2 - offsetFromLevel;
         return dx * dx + dy * dy < this._markerRadius * this._markerRadius;
       }
-      var endX = this._chartViewport.timeToPosition(startTime + duration);
-      var /** @const */ barThresholdPx = 3;
+      const endX = this._chartViewport.timeToPosition(startTime + duration);
+      const /** @const */ barThresholdPx = 3;
       return startX - barThresholdPx < x && x < endX + barThresholdPx;
     }
 
-    var entryIndex = entryIndexes[indexOnLevel];
+    let entryIndex = entryIndexes[indexOnLevel];
     if (checkEntryHit.call(this, entryIndex))
       return entryIndex;
     entryIndex = entryIndexes[indexOnLevel + 1];
@@ -576,15 +576,15 @@ PerfUI.FlameChart = class extends UI.VBox {
     if (x < 0 || y < 0)
       return -1;
     y += this._chartViewport.scrollOffset();
-    var groups = this._rawTimelineData.groups || [];
-    var group = this._groupOffsets.upperBound(y) - 1;
+    const groups = this._rawTimelineData.groups || [];
+    const group = this._groupOffsets.upperBound(y) - 1;
 
     if (group < 0 || group >= groups.length || y - this._groupOffsets[group] >= groups[group].style.height)
       return -1;
-    var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     context.save();
     context.font = groups[group].style.font;
-    var right = this._headerLeftPadding + this._labelWidthForGroup(context, groups[group]);
+    const right = this._headerLeftPadding + this._labelWidthForGroup(context, groups[group]);
     context.restore();
     if (x > right)
       return -1;
@@ -597,18 +597,18 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @return {number}
    */
   _markerIndexAtPosition(x) {
-    var markers = this._timelineData().markers;
+    const markers = this._timelineData().markers;
     if (!markers)
       return -1;
-    var /** @const */ accurracyOffsetPx = 4;
-    var time = this._chartViewport.pixelToTime(x);
-    var leftTime = this._chartViewport.pixelToTime(x - accurracyOffsetPx);
-    var rightTime = this._chartViewport.pixelToTime(x + accurracyOffsetPx);
-    var left = this._markerIndexBeforeTime(leftTime);
-    var markerIndex = -1;
-    var distance = Infinity;
-    for (var i = left; i < markers.length && markers[i].startTime() < rightTime; i++) {
-      var nextDistance = Math.abs(markers[i].startTime() - time);
+    const /** @const */ accurracyOffsetPx = 4;
+    const time = this._chartViewport.pixelToTime(x);
+    const leftTime = this._chartViewport.pixelToTime(x - accurracyOffsetPx);
+    const rightTime = this._chartViewport.pixelToTime(x + accurracyOffsetPx);
+    const left = this._markerIndexBeforeTime(leftTime);
+    let markerIndex = -1;
+    let distance = Infinity;
+    for (let i = left; i < markers.length && markers[i].startTime() < rightTime; i++) {
+      const nextDistance = Math.abs(markers[i].startTime() - time);
       if (nextDistance < distance) {
         markerIndex = i;
         distance = nextDistance;
@@ -631,58 +631,58 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} width
    */
   _draw(width, height) {
-    var timelineData = this._timelineData();
+    const timelineData = this._timelineData();
     if (!timelineData)
       return;
 
-    var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     context.save();
-    var ratio = window.devicePixelRatio;
-    var top = this._chartViewport.scrollOffset();
+    const ratio = window.devicePixelRatio;
+    const top = this._chartViewport.scrollOffset();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    var defaultFont = '11px ' + Host.fontFamily();
+    const defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
 
-    var entryTotalTimes = timelineData.entryTotalTimes;
-    var entryStartTimes = timelineData.entryStartTimes;
-    var entryLevels = timelineData.entryLevels;
-    var timeToPixel = this._chartViewport.timeToPixel();
+    const entryTotalTimes = timelineData.entryTotalTimes;
+    const entryStartTimes = timelineData.entryStartTimes;
+    const entryLevels = timelineData.entryLevels;
+    const timeToPixel = this._chartViewport.timeToPixel();
 
-    var titleIndices = [];
-    var markerIndices = [];
-    var textPadding = this._textPadding;
-    var minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
-    var minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
+    const titleIndices = [];
+    const markerIndices = [];
+    const textPadding = this._textPadding;
+    const minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
+    const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
 
     /** @type {!Map<string, !Array<number>>} */
-    var colorBuckets = new Map();
-    for (var level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
+    const colorBuckets = new Map();
+    for (let level = minVisibleBarLevel; level < this._dataProvider.maxStackDepth(); ++level) {
       if (this._levelToOffset(level) > top + height)
         break;
       if (!this._visibleLevels[level])
         continue;
 
       // Entries are ordered by start time within a level, so find the last visible entry.
-      var levelIndexes = this._timelineLevels[level];
-      var rightIndexOnLevel =
+      const levelIndexes = this._timelineLevels[level];
+      const rightIndexOnLevel =
           levelIndexes.lowerBound(this._timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1;
-      var lastDrawOffset = Infinity;
-      for (var entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
-        var entryIndex = levelIndexes[entryIndexOnLevel];
-        var entryStartTime = entryStartTimes[entryIndex];
-        var entryOffsetRight = entryStartTime + (entryTotalTimes[entryIndex] || 0);
+      let lastDrawOffset = Infinity;
+      for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
+        const entryIndex = levelIndexes[entryIndexOnLevel];
+        const entryStartTime = entryStartTimes[entryIndex];
+        const entryOffsetRight = entryStartTime + (entryTotalTimes[entryIndex] || 0);
         if (entryOffsetRight <= this._timeWindowLeft)
           break;
 
-        var barX = this._timeToPositionClipped(entryStartTime);
+        const barX = this._timeToPositionClipped(entryStartTime);
         // Check if the entry entirely fits into an already drawn pixel, we can just skip drawing it.
         if (barX >= lastDrawOffset)
           continue;
         lastDrawOffset = barX;
 
-        var color = this._dataProvider.entryColor(entryIndex);
-        var bucket = colorBuckets.get(color);
+        const color = this._dataProvider.entryColor(entryIndex);
+        let bucket = colorBuckets.get(color);
         if (!bucket) {
           bucket = [];
           colorBuckets.set(color, bucket);
@@ -691,28 +691,28 @@ PerfUI.FlameChart = class extends UI.VBox {
       }
     }
 
-    var colors = colorBuckets.keysArray();
+    const colors = colorBuckets.keysArray();
     // We don't use for-of here because it's slow.
-    for (var c = 0; c < colors.length; ++c) {
-      var color = colors[c];
-      var indexes = colorBuckets.get(color);
+    for (let c = 0; c < colors.length; ++c) {
+      const color = colors[c];
+      const indexes = colorBuckets.get(color);
       context.beginPath();
-      for (var i = 0; i < indexes.length; ++i) {
-        var entryIndex = indexes[i];
-        var entryStartTime = entryStartTimes[entryIndex];
-        var barX = this._timeToPositionClipped(entryStartTime);
-        var duration = entryTotalTimes[entryIndex];
-        var barLevel = entryLevels[entryIndex];
-        var barHeight = this._levelHeight(barLevel);
-        var barY = this._levelToOffset(barLevel);
+      for (let i = 0; i < indexes.length; ++i) {
+        const entryIndex = indexes[i];
+        const entryStartTime = entryStartTimes[entryIndex];
+        const barX = this._timeToPositionClipped(entryStartTime);
+        const duration = entryTotalTimes[entryIndex];
+        const barLevel = entryLevels[entryIndex];
+        const barHeight = this._levelHeight(barLevel);
+        const barY = this._levelToOffset(barLevel);
         if (isNaN(duration)) {
           context.moveTo(barX + this._markerRadius, barY + barHeight / 2);
           context.arc(barX, barY + barHeight / 2, this._markerRadius, 0, Math.PI * 2);
           markerIndices.push(entryIndex);
           continue;
         }
-        var barRight = this._timeToPositionClipped(entryStartTime + duration);
-        var barWidth = Math.max(barRight - barX, 1);
+        const barRight = this._timeToPositionClipped(entryStartTime + duration);
+        const barWidth = Math.max(barRight - barX, 1);
         if (color)
           context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
         if (barWidth > minTextWidth || this._dataProvider.forceDecoration(entryIndex))
@@ -725,12 +725,12 @@ PerfUI.FlameChart = class extends UI.VBox {
     }
 
     context.beginPath();
-    for (var m = 0; m < markerIndices.length; ++m) {
-      var entryIndex = markerIndices[m];
-      var entryStartTime = entryStartTimes[entryIndex];
-      var barX = this._timeToPositionClipped(entryStartTime);
-      var barLevel = entryLevels[entryIndex];
-      var y = this._levelToOffset(barLevel) + this._levelHeight(barLevel) / 2;
+    for (let m = 0; m < markerIndices.length; ++m) {
+      const entryIndex = markerIndices[m];
+      const entryStartTime = entryStartTimes[entryIndex];
+      const barX = this._timeToPositionClipped(entryStartTime);
+      const barLevel = entryLevels[entryIndex];
+      const y = this._levelToOffset(barLevel) + this._levelHeight(barLevel) / 2;
       context.moveTo(barX + this._markerRadius, y);
       context.arc(barX, y, this._markerRadius, 0, Math.PI * 2);
     }
@@ -738,21 +738,21 @@ PerfUI.FlameChart = class extends UI.VBox {
     context.stroke();
 
     context.textBaseline = 'alphabetic';
-    for (var i = 0; i < titleIndices.length; ++i) {
-      var entryIndex = titleIndices[i];
-      var entryStartTime = entryStartTimes[entryIndex];
-      var barX = this._timeToPositionClipped(entryStartTime);
-      var barRight = Math.min(this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
-      var barWidth = barRight - barX;
-      var barLevel = entryLevels[entryIndex];
-      var barY = this._levelToOffset(barLevel);
-      var text = this._dataProvider.entryTitle(entryIndex);
+    for (let i = 0; i < titleIndices.length; ++i) {
+      const entryIndex = titleIndices[i];
+      const entryStartTime = entryStartTimes[entryIndex];
+      const barX = this._timeToPositionClipped(entryStartTime);
+      const barRight = Math.min(this._timeToPositionClipped(entryStartTime + entryTotalTimes[entryIndex]), width) + 1;
+      const barWidth = barRight - barX;
+      const barLevel = entryLevels[entryIndex];
+      const barY = this._levelToOffset(barLevel);
+      let text = this._dataProvider.entryTitle(entryIndex);
       if (text && text.length) {
         context.font = this._dataProvider.entryFont(entryIndex) || defaultFont;
         text = UI.trimTextMiddle(context, text, barWidth - 2 * textPadding);
       }
-      var unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
-      var barHeight = this._levelHeight(barLevel);
+      const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
+      const barHeight = this._levelHeight(barLevel);
       if (this._dataProvider.decorateEntry(
               entryIndex, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixel))
         continue;
@@ -767,7 +767,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._drawGroupHeaders(width, height);
     this._drawFlowEvents(context, width, height);
     this._drawMarkers();
-    var dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(this._calculator);
+    const dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(this._calculator);
     PerfUI.TimelineGrid.drawCanvasGrid(context, dividersData);
     if (this._rulerEnabled) {
       PerfUI.TimelineGrid.drawCanvasHeaders(
@@ -785,26 +785,26 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} height
    */
   _drawGroupHeaders(width, height) {
-    var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
-    var top = this._chartViewport.scrollOffset();
-    var ratio = window.devicePixelRatio;
-    var groups = this._rawTimelineData.groups || [];
+    const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const top = this._chartViewport.scrollOffset();
+    const ratio = window.devicePixelRatio;
+    const groups = this._rawTimelineData.groups || [];
     if (!groups.length)
       return;
 
-    var groupOffsets = this._groupOffsets;
-    var lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
-    var colorUsage = UI.ThemeSupport.ColorUsage;
+    const groupOffsets = this._groupOffsets;
+    const lastGroupOffset = Array.prototype.peekLast.call(groupOffsets);
+    const colorUsage = UI.ThemeSupport.ColorUsage;
 
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    var defaultFont = '11px ' + Host.fontFamily();
+    const defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
 
     context.fillStyle = UI.themeSupport.patchColorText('#fff', colorUsage.Background);
     forEachGroup.call(this, (offset, index, group) => {
-      var paddingHeight = group.style.padding;
+      const paddingHeight = group.style.padding;
       if (paddingHeight < 5)
         return;
       context.fillRect(0, offset - paddingHeight + 2, width, paddingHeight - 4);
@@ -832,10 +832,10 @@ PerfUI.FlameChart = class extends UI.VBox {
         }
         return;
       }
-      var nextGroup = index + 1;
+      let nextGroup = index + 1;
       while (nextGroup < groups.length && groups[nextGroup].style.nestingLevel > group.style.nestingLevel)
         nextGroup++;
-      var endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this._dataProvider.maxStackDepth();
+      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this._dataProvider.maxStackDepth();
       this._drawCollapsedOverviewForGroup(group, offset + 1, endLevel);
     });
 
@@ -843,7 +843,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     forEachGroup.call(this, (offset, index, group) => {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
-        var width = this._labelWidthForGroup(context, group) + 2;
+        const width = this._labelWidthForGroup(context, group) + 2;
         context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
         context.fillRect(
             this._headerLeftPadding - this._headerLabelXPadding, offset + this._headerLabelYPadding, width,
@@ -888,8 +888,8 @@ PerfUI.FlameChart = class extends UI.VBox {
      * @this {PerfUI.FlameChart}
      */
     function drawExpansionArrow(x, y, expanded) {
-      var arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
-      var arrowCenterOffset = Math.round(arrowHeight / 2);
+      const arrowHeight = this._arrowSide * Math.sqrt(3) / 2;
+      const arrowCenterOffset = Math.round(arrowHeight / 2);
       context.save();
       context.translate(x, y);
       context.rotate(expanded ? Math.PI / 2 : 0);
@@ -905,19 +905,19 @@ PerfUI.FlameChart = class extends UI.VBox {
      */
     function forEachGroup(callback) {
       /** @type !Array<{nestingLevel: number, visible: boolean}> */
-      var groupStack = [{nestingLevel: -1, visible: true}];
-      for (var i = 0; i < groups.length; ++i) {
-        var groupTop = groupOffsets[i];
-        var group = groups[i];
+      const groupStack = [{nestingLevel: -1, visible: true}];
+      for (let i = 0; i < groups.length; ++i) {
+        const groupTop = groupOffsets[i];
+        const group = groups[i];
         if (groupTop - group.style.padding > top + height)
           break;
-        var firstGroup = true;
+        let firstGroup = true;
         while (groupStack.peekLast().nestingLevel >= group.style.nestingLevel) {
           groupStack.pop();
           firstGroup = false;
         }
-        var parentGroupVisible = groupStack.peekLast().visible;
-        var thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
+        const parentGroupVisible = groupStack.peekLast().visible;
+        const thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
         groupStack.push({nestingLevel: group.style.nestingLevel, visible: thisGroupVisible});
         if (!parentGroupVisible || groupTop + group.style.height < top)
           continue;
@@ -942,36 +942,36 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} endLevel
    */
   _drawCollapsedOverviewForGroup(group, y, endLevel) {
-    var range = new Common.SegmentedRange(mergeCallback);
-    var timeWindowRight = this._timeWindowRight;
-    var timeWindowLeft = this._timeWindowLeft;
-    var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
-    var barHeight = group.style.height;
-    var entryStartTimes = this._rawTimelineData.entryStartTimes;
-    var entryTotalTimes = this._rawTimelineData.entryTotalTimes;
-    var timeToPixel = this._chartViewport.timeToPixel();
+    const range = new Common.SegmentedRange(mergeCallback);
+    const timeWindowRight = this._timeWindowRight;
+    const timeWindowLeft = this._timeWindowLeft;
+    const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const barHeight = group.style.height;
+    const entryStartTimes = this._rawTimelineData.entryStartTimes;
+    const entryTotalTimes = this._rawTimelineData.entryTotalTimes;
+    const timeToPixel = this._chartViewport.timeToPixel();
 
-    for (var level = group.startLevel; level < endLevel; ++level) {
-      var levelIndexes = this._timelineLevels[level];
-      var rightIndexOnLevel =
+    for (let level = group.startLevel; level < endLevel; ++level) {
+      const levelIndexes = this._timelineLevels[level];
+      const rightIndexOnLevel =
           levelIndexes.lowerBound(timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1;
-      var lastDrawOffset = Infinity;
+      let lastDrawOffset = Infinity;
 
-      for (var entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
-        var entryIndex = levelIndexes[entryIndexOnLevel];
-        var entryStartTime = entryStartTimes[entryIndex];
-        var barX = this._timeToPositionClipped(entryStartTime);
-        var entryEndTime = entryStartTime + entryTotalTimes[entryIndex];
+      for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
+        const entryIndex = levelIndexes[entryIndexOnLevel];
+        const entryStartTime = entryStartTimes[entryIndex];
+        const barX = this._timeToPositionClipped(entryStartTime);
+        const entryEndTime = entryStartTime + entryTotalTimes[entryIndex];
         if (isNaN(entryEndTime) || barX >= lastDrawOffset)
           continue;
         if (entryEndTime <= timeWindowLeft)
           break;
         lastDrawOffset = barX;
-        var color = this._dataProvider.entryColor(entryIndex);
-        var endBarX = this._timeToPositionClipped(entryEndTime);
+        const color = this._dataProvider.entryColor(entryIndex);
+        const endBarX = this._timeToPositionClipped(entryEndTime);
         if (group.style.useDecoratorsForOverview && this._dataProvider.forceDecoration(entryIndex)) {
-          var unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
-          var barWidth = endBarX - barX;
+          const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
+          const barWidth = endBarX - barX;
           context.beginPath();
           context.fillStyle = color;
           context.fillRect(barX, y, barWidth, barHeight - 1);
@@ -983,11 +983,11 @@ PerfUI.FlameChart = class extends UI.VBox {
       }
     }
 
-    var segments = range.segments().slice().sort((a, b) => a.data.localeCompare(b.data));
-    var lastColor;
+    const segments = range.segments().slice().sort((a, b) => a.data.localeCompare(b.data));
+    let lastColor;
     context.beginPath();
-    for (var i = 0; i < segments.length; ++i) {
-      var segment = segments[i];
+    for (let i = 0; i < segments.length; ++i) {
+      const segment = segments[i];
       if (lastColor !== segments[i].data) {
         context.fill();
         context.beginPath();
@@ -1015,36 +1015,36 @@ PerfUI.FlameChart = class extends UI.VBox {
    */
   _drawFlowEvents(context, width, height) {
     context.save();
-    var ratio = window.devicePixelRatio;
-    var top = this._chartViewport.scrollOffset();
-    var arrowWidth = 6;
+    const ratio = window.devicePixelRatio;
+    const top = this._chartViewport.scrollOffset();
+    const arrowWidth = 6;
     context.scale(ratio, ratio);
     context.translate(0, -top);
 
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
-    var td = this._timelineData();
-    var endIndex = td.flowStartTimes.lowerBound(this._timeWindowRight);
+    const td = this._timelineData();
+    const endIndex = td.flowStartTimes.lowerBound(this._timeWindowRight);
 
     context.lineWidth = 0.5;
-    for (var i = 0; i < endIndex; ++i) {
+    for (let i = 0; i < endIndex; ++i) {
       if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._timeWindowLeft)
         continue;
-      var startX = this._chartViewport.timeToPosition(td.flowStartTimes[i]);
-      var endX = this._chartViewport.timeToPosition(td.flowEndTimes[i]);
-      var startLevel = td.flowStartLevels[i];
-      var endLevel = td.flowEndLevels[i];
-      var startY = this._levelToOffset(startLevel) + this._levelHeight(startLevel) / 2;
-      var endY = this._levelToOffset(endLevel) + this._levelHeight(endLevel) / 2;
+      const startX = this._chartViewport.timeToPosition(td.flowStartTimes[i]);
+      const endX = this._chartViewport.timeToPosition(td.flowEndTimes[i]);
+      const startLevel = td.flowStartLevels[i];
+      const endLevel = td.flowEndLevels[i];
+      const startY = this._levelToOffset(startLevel) + this._levelHeight(startLevel) / 2;
+      const endY = this._levelToOffset(endLevel) + this._levelHeight(endLevel) / 2;
 
 
-      var segment = Math.min((endX - startX) / 4, 40);
-      var distanceTime = td.flowEndTimes[i] - td.flowStartTimes[i];
-      var distanceY = (endY - startY) / 10;
-      var spread = 30;
-      var lineY = distanceTime < 1 ? startY : spread + Math.max(0, startY + distanceY * (i % spread));
+      const segment = Math.min((endX - startX) / 4, 40);
+      const distanceTime = td.flowEndTimes[i] - td.flowStartTimes[i];
+      const distanceY = (endY - startY) / 10;
+      const spread = 30;
+      const lineY = distanceTime < 1 ? startY : spread + Math.max(0, startY + distanceY * (i % spread));
 
-      var p = [];
+      const p = [];
       p.push({x: startX, y: startY});
       p.push({x: startX + arrowWidth, y: startY});
       p.push({x: startX + segment + 2 * arrowWidth, y: startY});
@@ -1077,19 +1077,19 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _drawMarkers() {
-    var markers = this._timelineData().markers;
-    var left = this._markerIndexBeforeTime(this._calculator.minimumBoundary());
-    var rightBoundary = this._calculator.maximumBoundary();
-    var timeToPixel = this._chartViewport.timeToPixel();
+    const markers = this._timelineData().markers;
+    const left = this._markerIndexBeforeTime(this._calculator.minimumBoundary());
+    const rightBoundary = this._calculator.maximumBoundary();
+    const timeToPixel = this._chartViewport.timeToPixel();
 
-    var context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     context.save();
-    var ratio = window.devicePixelRatio;
+    const ratio = window.devicePixelRatio;
     context.scale(ratio, ratio);
     context.translate(0, 3);
-    var height = PerfUI.FlameChart.HeaderHeight - 1;
-    for (var i = left; i < markers.length; i++) {
-      var timestamp = markers[i].startTime();
+    const height = PerfUI.FlameChart.HeaderHeight - 1;
+    for (let i = left; i < markers.length; i++) {
+      const timestamp = markers[i].startTime();
       if (timestamp > rightBoundary)
         break;
       markers[i].draw(context, this._calculator.computePosition(timestamp), height, timeToPixel);
@@ -1098,16 +1098,16 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _updateMarkerHighlight() {
-    var element = this._markerHighlighElement;
+    const element = this._markerHighlighElement;
     if (element.parentElement)
       element.remove();
-    var markerIndex = this._highlightedMarkerIndex;
+    const markerIndex = this._highlightedMarkerIndex;
     if (markerIndex === -1)
       return;
-    var marker = this._timelineData().markers[markerIndex];
-    var barX = this._timeToPositionClipped(marker.startTime());
+    const marker = this._timelineData().markers[markerIndex];
+    const barX = this._timeToPositionClipped(marker.startTime());
     element.title = marker.title();
-    var style = element.style;
+    const style = element.style;
     style.left = barX + 'px';
     style.backgroundColor = marker.color();
     this._viewportElement.appendChild(element);
@@ -1130,22 +1130,22 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._rawTimelineData = timelineData;
     this._rawTimelineDataLength = timelineData.entryStartTimes.length;
 
-    var entryCounters = new Uint32Array(this._dataProvider.maxStackDepth() + 1);
-    for (var i = 0; i < timelineData.entryLevels.length; ++i)
+    const entryCounters = new Uint32Array(this._dataProvider.maxStackDepth() + 1);
+    for (let i = 0; i < timelineData.entryLevels.length; ++i)
       ++entryCounters[timelineData.entryLevels[i]];
-    var levelIndexes = new Array(entryCounters.length);
-    for (var i = 0; i < levelIndexes.length; ++i) {
+    const levelIndexes = new Array(entryCounters.length);
+    for (let i = 0; i < levelIndexes.length; ++i) {
       levelIndexes[i] = new Uint32Array(entryCounters[i]);
       entryCounters[i] = 0;
     }
-    for (var i = 0; i < timelineData.entryLevels.length; ++i) {
-      var level = timelineData.entryLevels[i];
+    for (let i = 0; i < timelineData.entryLevels.length; ++i) {
+      const level = timelineData.entryLevels[i];
       levelIndexes[level][entryCounters[level]++] = i;
     }
     this._timelineLevels = levelIndexes;
-    var groups = this._rawTimelineData.groups || [];
-    for (var i = 0; i < groups.length; ++i) {
-      var expanded = this._groupExpansionState[groups[i].name];
+    const groups = this._rawTimelineData.groups || [];
+    for (let i = 0; i < groups.length; ++i) {
+      const expanded = this._groupExpansionState[groups[i].name];
       if (expanded !== undefined)
         groups[i].expanded = expanded;
     }
@@ -1154,30 +1154,32 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _updateLevelPositions() {
-    var levelCount = this._dataProvider.maxStackDepth();
-    var groups = this._rawTimelineData.groups || [];
+    const levelCount = this._dataProvider.maxStackDepth();
+    const groups = this._rawTimelineData.groups || [];
     this._visibleLevelOffsets = new Uint32Array(levelCount + 1);
     this._visibleLevelHeights = new Uint32Array(levelCount);
     this._visibleLevels = new Uint16Array(levelCount);
     this._groupOffsets = new Uint32Array(groups.length + 1);
 
-    var groupIndex = -1;
-    var currentOffset = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 2;
-    var visible = true;
+    let groupIndex = -1;
+    let currentOffset = this._rulerEnabled ? PerfUI.FlameChart.HeaderHeight : 2;
+    let visible = true;
     /** @type !Array<{nestingLevel: number, visible: boolean}> */
-    var groupStack = [{nestingLevel: -1, visible: true}];
-    var lastGroupLevel = Math.max(levelCount, groups.length ? groups.peekLast().startLevel + 1 : 0);
-    for (var level = 0; level < lastGroupLevel; ++level) {
-      var parentGroupIsVisible = true;
+    const groupStack = [{nestingLevel: -1, visible: true}];
+    const lastGroupLevel = Math.max(levelCount, groups.length ? groups.peekLast().startLevel + 1 : 0);
+    let level;
+    for (level = 0; level < lastGroupLevel; ++level) {
+      let parentGroupIsVisible = true;
+      let style;
       while (groupIndex < groups.length - 1 && level === groups[groupIndex + 1].startLevel) {
         ++groupIndex;
-        var style = groups[groupIndex].style;
-        var nextLevel = true;
+        style = groups[groupIndex].style;
+        let nextLevel = true;
         while (groupStack.peekLast().nestingLevel >= style.nestingLevel) {
           groupStack.pop();
           nextLevel = false;
         }
-        var thisGroupIsVisible =
+        const thisGroupIsVisible =
             groupIndex >= 0 && this._isGroupCollapsible(groupIndex) ? groups[groupIndex].expanded : true;
         parentGroupIsVisible = groupStack.peekLast().visible;
         visible = thisGroupIsVisible && parentGroupIsVisible;
@@ -1188,17 +1190,17 @@ PerfUI.FlameChart = class extends UI.VBox {
         if (parentGroupIsVisible && !style.shareHeaderLine)
           currentOffset += style.height;
       }
-      var isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
-      var thisLevelIsVisible =
+      const isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
+      const thisLevelIsVisible =
           parentGroupIsVisible && (visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview);
       if (level < levelCount) {
-        var height;
+        let height;
         if (groupIndex >= 0) {
-          var group = groups[groupIndex];
-          var style = group.style;
-          height = isFirstOnLevel && !style.shareHeaderLine || (style.collapsible && !group.expanded) ?
-              style.height :
-              (style.itemsHeight || this._barHeight);
+          const group = groups[groupIndex];
+          const styleB = group.style;
+          height = isFirstOnLevel && !styleB.shareHeaderLine || (styleB.collapsible && !group.expanded) ?
+              styleB.height :
+              (styleB.itemsHeight || this._barHeight);
         } else {
           height = this._barHeight;
         }
@@ -1206,7 +1208,7 @@ PerfUI.FlameChart = class extends UI.VBox {
         this._visibleLevelOffsets[level] = currentOffset;
         this._visibleLevelHeights[level] = height;
       }
-      if (thisLevelIsVisible || (parentGroupIsVisible && style.shareHeaderLine && isFirstOnLevel))
+      if (thisLevelIsVisible || (parentGroupIsVisible && style && style.shareHeaderLine && isFirstOnLevel))
         currentOffset += this._visibleLevelHeights[level];
     }
     if (groupIndex >= 0)
@@ -1218,14 +1220,14 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} index
    */
   _isGroupCollapsible(index) {
-    var groups = this._rawTimelineData.groups || [];
-    var style = groups[index].style;
+    const groups = this._rawTimelineData.groups || [];
+    const style = groups[index].style;
     if (!style.shareHeaderLine || !style.collapsible)
       return !!style.collapsible;
-    var isLastGroup = index + 1 >= groups.length;
+    const isLastGroup = index + 1 >= groups.length;
     if (!isLastGroup && groups[index + 1].style.nestingLevel > style.nestingLevel)
       return true;
-    var nextGroupLevel = isLastGroup ? this._dataProvider.maxStackDepth() : groups[index + 1].startLevel;
+    const nextGroupLevel = isLastGroup ? this._dataProvider.maxStackDepth() : groups[index + 1].startLevel;
     if (nextGroupLevel !== groups[index].startLevel + 1)
       return true;
     // For groups that only have one line and share header line, pretend these are not collapsible
@@ -1251,26 +1253,26 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} entryIndex
    */
   _updateElementPosition(element, entryIndex) {
-    var /** @const */ elementMinWidthPx = 2;
+    const /** @const */ elementMinWidthPx = 2;
     if (element.parentElement)
       element.remove();
     if (entryIndex === -1)
       return;
-    var timelineData = this._timelineData();
-    var startTime = timelineData.entryStartTimes[entryIndex];
-    var endTime = startTime + (timelineData.entryTotalTimes[entryIndex] || 0);
-    var barX = this._timeToPositionClipped(startTime);
-    var barRight = this._timeToPositionClipped(endTime);
+    const timelineData = this._timelineData();
+    const startTime = timelineData.entryStartTimes[entryIndex];
+    const endTime = startTime + (timelineData.entryTotalTimes[entryIndex] || 0);
+    let barX = this._timeToPositionClipped(startTime);
+    const barRight = this._timeToPositionClipped(endTime);
     if (barRight === 0 || barX === this._offsetWidth)
       return;
-    var barWidth = barRight - barX;
-    var barCenter = barX + barWidth / 2;
+    let barWidth = barRight - barX;
+    const barCenter = barX + barWidth / 2;
     barWidth = Math.max(barWidth, elementMinWidthPx);
     barX = barCenter - barWidth / 2;
-    var entryLevel = timelineData.entryLevels[entryIndex];
-    var barY = this._levelToOffset(entryLevel) - this._chartViewport.scrollOffset();
-    var barHeight = this._levelHeight(entryLevel);
-    var style = element.style;
+    const entryLevel = timelineData.entryLevels[entryIndex];
+    const barY = this._levelToOffset(entryLevel) - this._chartViewport.scrollOffset();
+    const barHeight = this._levelHeight(entryLevel);
+    const style = element.style;
     style.left = barX + 'px';
     style.top = barY + 'px';
     style.width = barWidth + 'px';
@@ -1306,7 +1308,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._totalTime = this._dataProvider.totalTime();
     this._minimumBoundary = this._dataProvider.minimumBoundary();
 
-    var windowWidth = 1;
+    let windowWidth = 1;
     if (this._timeWindowRight !== Infinity) {
       this._windowLeft = (this._timeWindowLeft - this._minimumBoundary) / this._totalTime;
       this._windowRight = (this._timeWindowRight - this._minimumBoundary) / this._totalTime;
@@ -1319,14 +1321,14 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._windowRight = 1;
     }
 
-    var totalPixels = Math.floor(this._offsetWidth / windowWidth);
+    const totalPixels = Math.floor(this._offsetWidth / windowWidth);
     this._pixelWindowLeft = Math.floor(totalPixels * this._windowLeft);
 
     this._chartViewport.setBoundaries(this._minimumBoundary, this._totalTime);
   }
 
   _updateHeight() {
-    var height = this._levelToOffset(this._dataProvider.maxStackDepth());
+    const height = this._levelToOffset(this._dataProvider.maxStackDepth());
     this._chartViewport.setContentHeight(height);
   }
 

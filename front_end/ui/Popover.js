@@ -201,11 +201,11 @@ UI.PopoverHelper = class {
    * @param {!Document} document
    */
   _showPopover(document) {
-    var popover = new UI.GlassPane();
+    const popover = new UI.GlassPane();
     popover.registerRequiredCSS('ui/popover.css');
     popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     popover.setMarginBehavior(UI.GlassPane.MarginBehavior.Arrow);
-    var request = this._scheduledRequest;
+    const request = this._scheduledRequest;
     request.show.call(null, popover).then(success => {
       if (!success)
         return;

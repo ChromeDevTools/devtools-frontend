@@ -33,12 +33,12 @@ MobileThrottling.NetworkThrottlingSelector = class {
   }
 
   _populateOptions() {
-    var disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
-    var presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.networkPresets};
-    var customGroup = {title: Common.UIString('Custom'), items: this._customNetworkConditionsSetting.get()};
+    const disabledGroup = {title: Common.UIString('Disabled'), items: [SDK.NetworkManager.NoThrottlingConditions]};
+    const presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.networkPresets};
+    const customGroup = {title: Common.UIString('Custom'), items: this._customNetworkConditionsSetting.get()};
     this._options = this._populateCallback([disabledGroup, presetsGroup, customGroup]);
     if (!this._networkConditionsChanged()) {
-      for (var i = this._options.length - 1; i >= 0; i--) {
+      for (let i = this._options.length - 1; i >= 0; i--) {
         if (this._options[i]) {
           this.optionSelected(/** @type {!SDK.NetworkManager.Conditions} */ (this._options[i]));
           break;
@@ -51,9 +51,9 @@ MobileThrottling.NetworkThrottlingSelector = class {
    * @return {boolean} returns false if selected condition no longer exists
    */
   _networkConditionsChanged() {
-    var value = SDK.multitargetNetworkManager.networkConditions();
-    for (var index = 0; index < this._options.length; ++index) {
-      var option = this._options[index];
+    const value = SDK.multitargetNetworkManager.networkConditions();
+    for (let index = 0; index < this._options.length; ++index) {
+      const option = this._options[index];
       if (option && option.download === value.download && option.upload === value.upload &&
           option.latency === value.latency && option.title === value.title) {
         this._selectCallback(index);

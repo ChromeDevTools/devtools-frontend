@@ -22,8 +22,8 @@ Resources.StorageItemsView = class extends UI.VBox {
     this._filterItem = new UI.ToolbarInput(Common.UIString('Filter'), 0.4);
     this._filterItem.addEventListener(UI.ToolbarInput.Event.TextChanged, this._filterChanged, this);
 
-    var toolbarItems = [this._refreshButton, this._deleteAllButton, this._deleteSelectedButton, this._filterItem];
-    for (var item of toolbarItems)
+    const toolbarItems = [this._refreshButton, this._deleteAllButton, this._deleteSelectedButton, this._filterItem];
+    for (const item of toolbarItems)
       this._mainToolbar.appendToolbarItem(item);
 
     this.element.addEventListener('contextmenu', this._showContextMenu.bind(this), true);
@@ -36,7 +36,7 @@ Resources.StorageItemsView = class extends UI.VBox {
    * @return {!UI.ToolbarButton}
    */
   _addButton(label, glyph, callback) {
-    var button = new UI.ToolbarButton(label, glyph);
+    const button = new UI.ToolbarButton(label, glyph);
     button.addEventListener(UI.ToolbarButton.Events.Click, callback, this);
     return button;
   }
@@ -45,7 +45,7 @@ Resources.StorageItemsView = class extends UI.VBox {
    * @param {!Event} event
    */
   _showContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this.refreshItems.bind(this));
     contextMenu.show();
   }
@@ -54,7 +54,7 @@ Resources.StorageItemsView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _filterChanged(event) {
-    var text = /** @type {?string} */ (event.data);
+    const text = /** @type {?string} */ (event.data);
     this._filterRegex = text ? new RegExp(text.escapeForRegExp(), 'i') : null;
     this.refreshItems();
   }

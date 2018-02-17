@@ -19,25 +19,25 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
    * @param {!UI.TreeElement} treeElement
    */
   function dumpNavigatorTreeElement(prefix, treeElement) {
-    var titleText = '';
+    let titleText = '';
     if (treeElement._leadingIconsElement && dumpIcons) {
-      var icons = treeElement._leadingIconsElement.querySelectorAll('[is=ui-icon]');
+      let icons = treeElement._leadingIconsElement.querySelectorAll('[is=ui-icon]');
       icons = Array.prototype.slice.call(icons);
-      var iconTypes = icons.map(icon => icon._iconType);
+      const iconTypes = icons.map(icon => icon._iconType);
       if (iconTypes.length)
         titleText = titleText + '[' + iconTypes.join(', ') + '] ';
     }
     titleText += treeElement.title;
     if (treeElement._nodeType === Sources.NavigatorView.Types.FileSystem ||
         treeElement._nodeType === Sources.NavigatorView.Types.FileSystemFolder) {
-      var hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');
+      const hasMappedFiles = treeElement.listItemElement.classList.contains('has-mapped-files');
       if (!hasMappedFiles)
         titleText += ' [dimmed]';
     }
     TestRunner.addResult(prefix + titleText);
     treeElement.expand();
-    var children = treeElement.children();
-    for (var i = 0; i < children.length; ++i)
+    const children = treeElement.children();
+    for (let i = 0; i < children.length; ++i)
       dumpNavigatorTreeElement(prefix + '  ', children[i]);
   }
 
@@ -45,8 +45,8 @@ SourcesTestRunner.dumpNavigatorView = function(navigatorView, dumpIcons) {
    * @param {!UI.TreeOutline} treeOutline
    */
   function dumpNavigatorTreeOutline(treeOutline) {
-    var children = treeOutline.rootElement().children();
-    for (var i = 0; i < children.length; ++i)
+    const children = treeOutline.rootElement().children();
+    for (let i = 0; i < children.length; ++i)
       dumpNavigatorTreeElement('', children[i]);
   }
 };
@@ -89,13 +89,13 @@ SourcesTestRunner.addScriptUISourceCode = function(url, content, isContentScript
 };
 
 function testSourceMapping(text1, text2, mapping, testToken) {
-  var originalPosition = text1.indexOf(testToken);
+  const originalPosition = text1.indexOf(testToken);
   TestRunner.assertTrue(originalPosition !== -1);
-  var originalLocation = Formatter.Formatter.positionToLocation(text1.computeLineEndings(), originalPosition);
-  var formattedLocation = mapping.originalToFormatted(originalLocation[0], originalLocation[1]);
-  var formattedPosition =
+  const originalLocation = Formatter.Formatter.positionToLocation(text1.computeLineEndings(), originalPosition);
+  const formattedLocation = mapping.originalToFormatted(originalLocation[0], originalLocation[1]);
+  const formattedPosition =
       Formatter.Formatter.locationToPosition(text2.computeLineEndings(), formattedLocation[0], formattedLocation[1]);
-  var expectedFormattedPosition = text2.indexOf(testToken);
+  const expectedFormattedPosition = text2.indexOf(testToken);
 
   if (expectedFormattedPosition === formattedPosition)
     TestRunner.addResult(String.sprintf('Correct mapping for <%s>', testToken));
@@ -119,10 +119,10 @@ SourcesTestRunner.testPrettyPrint = function(mimeType, text, mappingQueries, nex
 };
 
 SourcesTestRunner.testJavascriptOutline = function(text) {
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
+  let fulfill;
+  const promise = new Promise(x => fulfill = x);
   Formatter.formatterWorkerPool().javaScriptOutline(text, onChunk);
-  var items = [];
+  const items = [];
   return promise;
 
   function onChunk(isLastChunk, outlineItems) {
@@ -135,7 +135,7 @@ SourcesTestRunner.testJavascriptOutline = function(text) {
     TestRunner.addResult(text.split('\n').map(line => '    ' + line).join('\n'));
     TestRunner.addResult('Outline:');
 
-    for (var item of items)
+    for (const item of items)
       TestRunner.addResult('    ' + item.name + (item.arguments || '') + ':' + item.line + ':' + item.column);
 
     fulfill();
@@ -143,12 +143,12 @@ SourcesTestRunner.testJavascriptOutline = function(text) {
 };
 
 SourcesTestRunner.dumpSwatchPositions = function(sourceFrame, bookmarkType) {
-  var textEditor = sourceFrame.textEditor;
-  var markers = textEditor.bookmarks(textEditor.fullRange(), bookmarkType);
+  const textEditor = sourceFrame.textEditor;
+  const markers = textEditor.bookmarks(textEditor.fullRange(), bookmarkType);
 
-  for (var i = 0; i < markers.length; i++) {
-    var position = markers[i].position();
-    var text = markers[i]._marker.widgetNode.firstChild.textContent;
+  for (let i = 0; i < markers.length; i++) {
+    const position = markers[i].position();
+    const text = markers[i]._marker.widgetNode.firstChild.textContent;
     TestRunner.addResult('Line ' + position.startLine + ', Column ' + position.startColumn + ': ' + text);
   }
 };

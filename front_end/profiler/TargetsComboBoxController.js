@@ -28,7 +28,7 @@ Profiler.TargetsComboBoxController = class {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var option = this._selectElement.createChild('option');
+    const option = this._selectElement.createChild('option');
     option.text = target.name();
     option.__target = target;
     this._targetToOption.set(target, option);
@@ -46,7 +46,7 @@ Profiler.TargetsComboBoxController = class {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var option = this._targetToOption.remove(target);
+    const option = this._targetToOption.remove(target);
     this._selectElement.removeChild(option);
     this._updateVisibility();
   }
@@ -55,13 +55,13 @@ Profiler.TargetsComboBoxController = class {
    * @param {!Common.Event} event
    */
   _targetNameChanged(event) {
-    var target = /** @type {!SDK.Target} */ (event.data);
-    var option = this._targetToOption.get(target);
+    const target = /** @type {!SDK.Target} */ (event.data);
+    const option = this._targetToOption.get(target);
     option.text = target.name();
   }
 
   _onComboBoxSelectionChange() {
-    var selectedOption = this._selectElement[this._selectElement.selectedIndex];
+    const selectedOption = this._selectElement[this._selectElement.selectedIndex];
     if (!selectedOption)
       return;
 
@@ -71,7 +71,7 @@ Profiler.TargetsComboBoxController = class {
   }
 
   _updateVisibility() {
-    var hidden = this._selectElement.childElementCount === 1;
+    const hidden = this._selectElement.childElementCount === 1;
     this._elementToHide.classList.toggle('hidden', hidden);
   }
 
@@ -79,10 +79,10 @@ Profiler.TargetsComboBoxController = class {
    * @param {!Common.Event} event
    */
   _targetChangedExternally(event) {
-    var target = /** @type {?SDK.Target} */ (event.data);
+    const target = /** @type {?SDK.Target} */ (event.data);
     if (!target)
       return;
-    var option = this._targetToOption.get(target);
+    const option = this._targetToOption.get(target);
     if (!option)
       return;
     this._select(option);

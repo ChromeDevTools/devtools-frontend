@@ -69,8 +69,8 @@ UI.Panel = class extends UI.VBox {
    * @param {!KeyboardEvent} event
    */
   handleShortcut(event) {
-    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(event);
-    var handler = this._shortcuts[shortcutKey];
+    const shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(event);
+    const handler = this._shortcuts[shortcutKey];
     if (handler && handler(event))
       event.handled = true;
   }

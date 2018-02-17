@@ -74,7 +74,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @param {!SDK.NetworkRequest} request
    */
   static replayRequest(request) {
-    var manager = request[SDK.NetworkManager._networkManagerForRequestSymbol];
+    const manager = request[SDK.NetworkManager._networkManagerForRequestSymbol];
     if (!manager)
       return;
     manager._networkAgent.replayXHR(request.requestId());
@@ -88,10 +88,10 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   static async searchInRequest(request, query, caseSensitive, isRegex) {
-    var manager = SDK.NetworkManager.forRequest(request);
+    const manager = SDK.NetworkManager.forRequest(request);
     if (!manager)
       return [];
-    var response = await manager._networkAgent.invoke_searchInResponseBody(
+    const response = await manager._networkAgent.invoke_searchInResponseBody(
         {requestId: request.requestId(), query: query, caseSensitive: caseSensitive, isRegex: isRegex});
     return response.result || [];
   }
@@ -105,11 +105,11 @@ SDK.NetworkManager = class extends SDK.SDKModel {
       return {error: 'Content for WebSockets is currently not supported', content: null, encoded: false};
     if (!request.finished)
       await request.once(SDK.NetworkRequest.Events.FinishedLoading);
-    var manager = SDK.NetworkManager.forRequest(request);
+    const manager = SDK.NetworkManager.forRequest(request);
     if (!manager)
       return {error: 'No network manager for request', content: null, encoded: false};
-    var response = await manager._networkAgent.invoke_getResponseBody({requestId: request.requestId()});
-    var error = response[Protocol.Error] || null;
+    const response = await manager._networkAgent.invoke_getResponseBody({requestId: request.requestId()});
+    const error = response[Protocol.Error] || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
 
@@ -119,7 +119,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @return {!Promise<?string>}
    */
   static requestPostData(request) {
-    var manager = SDK.NetworkManager.forRequest(request);
+    const manager = SDK.NetworkManager.forRequest(request);
     if (manager)
       return manager._networkAgent.getRequestPostData(request.backendRequestId());
     console.error('No network manager for request');
@@ -134,7 +134,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
   static _connectionType(conditions) {
     if (!conditions.download && !conditions.upload)
       return Protocol.Network.ConnectionType.None;
-    var types = SDK.NetworkManager._connectionTypes;
+    let types = SDK.NetworkManager._connectionTypes;
     if (!types) {
       SDK.NetworkManager._connectionTypes = [];
       types = SDK.NetworkManager._connectionTypes;
@@ -145,7 +145,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
       types.push(['wifi', Protocol.Network.ConnectionType.Wifi]);
       types.push(['wimax', Protocol.Network.ConnectionType.Wimax]);
     }
-    for (var type of types) {
+    for (const type of types) {
       if (conditions.title.toLowerCase().indexOf(type[0]) !== -1)
         return type[1];
     }
@@ -157,8 +157,8 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @return {!Object<string, string>}
    */
   static lowercaseHeaders(headers) {
-    var newHeaders = {};
-    for (var headerName in headers)
+    const newHeaders = {};
+    for (const headerName in headers)
       newHeaders[headerName.toLowerCase()] = headers[headerName];
     return newHeaders;
   }
@@ -175,7 +175,7 @@ SDK.NetworkManager = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _cacheDisabledSettingChanged(event) {
-    var enabled = /** @type {boolean} */ (event.data);
+    const enabled = /** @type {boolean} */ (event.data);
     this._networkAgent.setCacheDisabled(enabled);
   }
 
@@ -288,10 +288,10 @@ SDK.NetworkDispatcher = class {
    * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   _headersMapToHeadersArray(headersMap) {
-    var result = [];
-    for (var name in headersMap) {
-      var values = headersMap[name].split('\n');
-      for (var i = 0; i < values.length; ++i)
+    const result = [];
+    for (const name in headersMap) {
+      const values = headersMap[name].split('\n');
+      for (let i = 0; i < values.length; ++i)
         result.push({name: name, value: values[i]});
     }
     return result;
@@ -347,7 +347,7 @@ SDK.NetworkDispatcher = class {
     networkRequest.setSecurityState(response.securityState);
 
     if (!this._mimeTypeIsConsistentWithType(networkRequest)) {
-      var message = Common.UIString(
+      const message = Common.UIString(
           'Resource interpreted as %s but transferred with MIME type %s: "%s".', networkRequest.resourceType().title(),
           networkRequest.mimeType, networkRequest.url());
       this._manager.dispatchEventToListeners(
@@ -373,7 +373,7 @@ SDK.NetworkDispatcher = class {
     if (networkRequest.hasErrorStatusCode() || networkRequest.statusCode === 304 || networkRequest.statusCode === 204)
       return true;
 
-    var resourceType = networkRequest.resourceType();
+    const resourceType = networkRequest.resourceType();
     if (resourceType !== Common.resourceTypes.Stylesheet && resourceType !== Common.resourceTypes.Document &&
         resourceType !== Common.resourceTypes.TextTrack)
       return true;
@@ -395,7 +395,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.MonotonicTime} timestamp
    */
   resourceChangedPriority(requestId, newPriority, timestamp) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (networkRequest)
       networkRequest.setPriority(newPriority);
   }
@@ -415,7 +415,7 @@ SDK.NetworkDispatcher = class {
    */
   requestWillBeSent(
       requestId, loaderId, documentURL, request, time, wallTime, initiator, redirectResponse, resourceType, frameId) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById[requestId];
     if (networkRequest) {
       // FIXME: move this check to the backend.
       if (!redirectResponse)
@@ -441,7 +441,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.RequestId} requestId
    */
   requestServedFromCache(requestId) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -458,17 +458,17 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Page.FrameId=} frameId
    */
   responseReceived(requestId, loaderId, time, resourceType, response, frameId) {
-    var networkRequest = this._inflightRequestsById[requestId];
-    var lowercaseHeaders = SDK.NetworkManager.lowercaseHeaders(response.headers);
+    const networkRequest = this._inflightRequestsById[requestId];
+    const lowercaseHeaders = SDK.NetworkManager.lowercaseHeaders(response.headers);
     if (!networkRequest) {
       // We missed the requestWillBeSent.
-      var eventData = {};
+      const eventData = {};
       eventData.url = response.url;
       eventData.frameId = frameId || '';
       eventData.loaderId = loaderId;
       eventData.resourceType = resourceType;
       eventData.mimeType = response.mimeType;
-      var lastModifiedHeader = lowercaseHeaders['last-modified'];
+      const lastModifiedHeader = lowercaseHeaders['last-modified'];
       eventData.lastModified = lastModifiedHeader ? new Date(lastModifiedHeader) : null;
       this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestUpdateDropped, eventData);
       return;
@@ -479,7 +479,7 @@ SDK.NetworkDispatcher = class {
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
     if ('set-cookie' in lowercaseHeaders && lowercaseHeaders['set-cookie'].length > 4096) {
-      var message = Common.UIString(
+      const message = Common.UIString(
           'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
           response.url);
       this._manager.dispatchEventToListeners(
@@ -500,7 +500,7 @@ SDK.NetworkDispatcher = class {
    * @param {number} encodedDataLength
    */
   dataReceived(requestId, time, dataLength, encodedDataLength) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     if (!networkRequest)
@@ -522,7 +522,7 @@ SDK.NetworkDispatcher = class {
    * @param {boolean=} blockedCrossSiteDocument
    */
   loadingFinished(requestId, finishTime, encodedDataLength, blockedCrossSiteDocument) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    let networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     if (!networkRequest)
@@ -540,7 +540,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.BlockedReason=} blockedReason
    */
   loadingFailed(requestId, time, resourceType, localizedDescription, canceled, blockedReason) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -550,7 +550,7 @@ SDK.NetworkDispatcher = class {
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
-        var message = Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url());
+        const message = Common.UIString('Request was blocked by DevTools: "%s".', networkRequest.url());
         this._manager.dispatchEventToListeners(
             SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
       }
@@ -566,7 +566,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.Initiator=} initiator
    */
   webSocketCreated(requestId, requestURL, initiator) {
-    var networkRequest = new SDK.NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
+    const networkRequest = new SDK.NetworkRequest(requestId, requestURL, '', '', '', initiator || null);
     networkRequest[SDK.NetworkManager._networkManagerForRequestSymbol] = this._manager;
     networkRequest.setResourceType(Common.resourceTypes.WebSocket);
     this._startNetworkRequest(networkRequest);
@@ -580,7 +580,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.WebSocketRequest} request
    */
   webSocketWillSendHandshakeRequest(requestId, time, wallTime, request) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -598,7 +598,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.WebSocketResponse} response
    */
   webSocketHandshakeResponseReceived(requestId, time, response) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -623,7 +623,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameReceived(requestId, time, response) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -640,7 +640,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.WebSocketFrame} response
    */
   webSocketFrameSent(requestId, time, response) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -657,7 +657,7 @@ SDK.NetworkDispatcher = class {
    * @param {string} errorMessage
    */
   webSocketFrameError(requestId, time, errorMessage) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
 
@@ -673,7 +673,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.MonotonicTime} time
    */
   webSocketClosed(requestId, time) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
     this._finishNetworkRequest(networkRequest, time, -1);
@@ -688,7 +688,7 @@ SDK.NetworkDispatcher = class {
    * @param {string} data
    */
   eventSourceMessageReceived(requestId, time, eventName, eventId, data) {
-    var networkRequest = this._inflightRequestsById[requestId];
+    const networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       return;
     networkRequest.addEventSourceMessage(time, eventName, eventId, data);
@@ -722,14 +722,14 @@ SDK.NetworkDispatcher = class {
    * @return {!SDK.NetworkRequest}
    */
   _appendRedirect(requestId, time, redirectURL) {
-    var originalNetworkRequest = this._inflightRequestsById[requestId];
-    var redirectCount = 0;
-    for (var redirect = originalNetworkRequest.redirectSource(); redirect; redirect = redirect.redirectSource())
+    const originalNetworkRequest = this._inflightRequestsById[requestId];
+    let redirectCount = 0;
+    for (let redirect = originalNetworkRequest.redirectSource(); redirect; redirect = redirect.redirectSource())
       redirectCount++;
 
     originalNetworkRequest.markAsRedirect(redirectCount);
     this._finishNetworkRequest(originalNetworkRequest, time, -1);
-    var newNetworkRequest = this._createNetworkRequest(
+    const newNetworkRequest = this._createNetworkRequest(
         requestId, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, redirectURL,
         originalNetworkRequest.documentURL, originalNetworkRequest.initiator());
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
@@ -741,10 +741,10 @@ SDK.NetworkDispatcher = class {
    * @return {?SDK.NetworkRequest}
    */
   _maybeAdoptMainResourceRequest(requestId) {
-    var request = SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
+    const request = SDK.multitargetNetworkManager._inflightMainResourceRequests.get(requestId);
     if (!request)
       return null;
-    var oldDispatcher = SDK.NetworkManager.forRequest(request)._dispatcher;
+    const oldDispatcher = SDK.NetworkManager.forRequest(request)._dispatcher;
     delete oldDispatcher._inflightRequestsById[requestId];
     delete oldDispatcher._inflightRequestsByURL[request.url()];
     this._inflightRequestsById[requestId] = request;
@@ -791,7 +791,7 @@ SDK.NetworkDispatcher = class {
     SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
 
     if (blockedCrossSiteDocument) {
-      var message = Common.UIString(
+      const message = Common.UIString(
           `Blocked current origin from receiving cross-site document at %s with MIME type %s.`, networkRequest.url(),
           networkRequest.mimeType);
       this._manager.dispatchEventToListeners(
@@ -801,7 +801,7 @@ SDK.NetworkDispatcher = class {
 
     if (Common.moduleSetting('monitoringXHREnabled').get() &&
         networkRequest.resourceType().category() === Common.resourceCategories.XHR) {
-      var message = Common.UIString(
+      const message = Common.UIString(
           (networkRequest.failed || networkRequest.hasErrorStatusCode()) ? '%s failed loading: %s "%s".' :
                                                                            '%s finished loading: %s "%s".',
           networkRequest.resourceType().title(), networkRequest.requestMethod, networkRequest.url());
@@ -820,7 +820,7 @@ SDK.NetworkDispatcher = class {
    * @param {?Protocol.Network.Initiator} initiator
    */
   _createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    var request = new SDK.NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
+    const request = new SDK.NetworkRequest(requestId, url, documentURL, frameId, loaderId, initiator);
     request[SDK.NetworkManager._networkManagerForRequestSymbol] = this._manager;
     return request;
   }
@@ -861,8 +861,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    */
   static patchUserAgentWithChromeVersion(uaString) {
     // Patches Chrome/CriOS version from user agent ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
-    var chromeRegex = new RegExp('(?:^|\\W)Chrome/(\\S+)');
-    var chromeMatch = navigator.userAgent.match(chromeRegex);
+    const chromeRegex = new RegExp('(?:^|\\W)Chrome/(\\S+)');
+    const chromeMatch = navigator.userAgent.match(chromeRegex);
     if (chromeMatch && chromeMatch.length > 1)
       return String.sprintf(uaString, chromeMatch[1]);
     return uaString;
@@ -873,7 +873,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var networkAgent = target.networkAgent();
+    const networkAgent = target.networkAgent();
     if (this._extraHeaders)
       networkAgent.setExtraHTTPHeaders(this._extraHeaders);
     if (this._currentUserAgent())
@@ -892,8 +892,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    for (var entry of this._inflightMainResourceRequests) {
-      var manager = SDK.NetworkManager.forRequest(/** @type {!SDK.NetworkRequest} */ (entry[1]));
+    for (const entry of this._inflightMainResourceRequests) {
+      const manager = SDK.NetworkManager.forRequest(/** @type {!SDK.NetworkRequest} */ (entry[1]));
       if (manager.target() !== target)
         continue;
       this._inflightMainResourceRequests.delete(/** @type {string} */ (entry[0]));
@@ -921,7 +921,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    */
   setNetworkConditions(conditions) {
     this._networkConditions = conditions;
-    for (var agent of this._agents)
+    for (const agent of this._agents)
       this._updateNetworkConditions(agent);
     this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.ConditionsChanged);
   }
@@ -937,7 +937,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {!Protocol.NetworkAgent} networkAgent
    */
   _updateNetworkConditions(networkAgent) {
-    var conditions = this._networkConditions;
+    const conditions = this._networkConditions;
     if (!this.isThrottling()) {
       networkAgent.emulateNetworkConditions(false, 0, 0, 0);
     } else {
@@ -952,7 +952,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    */
   setExtraHTTPHeaders(headers) {
     this._extraHeaders = headers;
-    for (var agent of this._agents)
+    for (const agent of this._agents)
       agent.setExtraHTTPHeaders(this._extraHeaders);
   }
 
@@ -964,8 +964,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   }
 
   _updateUserAgentOverride() {
-    var userAgent = this._currentUserAgent();
-    for (var agent of this._agents)
+    const userAgent = this._currentUserAgent();
+    for (const agent of this._agents)
       agent.setUserAgentOverride(userAgent);
   }
 
@@ -1039,9 +1039,9 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   }
 
   _updateBlockedPatterns() {
-    var urls = [];
+    const urls = [];
     if (this._blockingEnabledSetting.get()) {
-      for (var pattern of this._blockedPatternsSetting.get()) {
+      for (const pattern of this._blockedPatternsSetting.get()) {
         if (pattern.enabled)
           urls.push(pattern.url);
       }
@@ -1050,7 +1050,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     if (!urls.length && !this._effectiveBlockedURLs.length)
       return;
     this._effectiveBlockedURLs = urls;
-    for (var agent of this._agents)
+    for (const agent of this._agents)
       agent.setBlockedURLs(this._effectiveBlockedURLs);
   }
 
@@ -1069,7 +1069,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   setInterceptionHandlerForPatterns(patterns, requestInterceptor) {
     // Note: requestInterceptors may recieve interception requests for patterns they did not subscribe to.
     this._urlsForRequestInterceptor.deleteAll(requestInterceptor);
-    for (var newPattern of patterns)
+    for (const newPattern of patterns)
       this._urlsForRequestInterceptor.set(requestInterceptor, newPattern);
     return this._updateInterceptionPatternsOnNextTick();
   }
@@ -1091,8 +1091,8 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
     if (!Common.moduleSetting('cacheDisabled').get())
       Common.moduleSetting('cacheDisabled').set(true);
     this._updatingInterceptionPatternsPromise = null;
-    var promises = /** @type {!Array<!Promise>} */ ([]);
-    for (var agent of this._agents)
+    const promises = /** @type {!Array<!Promise>} */ ([]);
+    for (const agent of this._agents)
       promises.push(agent.setRequestInterception(this._urlsForRequestInterceptor.valuesArray()));
     this.dispatchEventToListeners(SDK.MultitargetNetworkManager.Events.InterceptorsChanged);
     return Promise.all(promises);
@@ -1102,7 +1102,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {!SDK.MultitargetNetworkManager.InterceptedRequest} interceptedRequest
    */
   async _requestIntercepted(interceptedRequest) {
-    for (var requestInterceptor of this._urlsForRequestInterceptor.keysArray()) {
+    for (const requestInterceptor of this._urlsForRequestInterceptor.keysArray()) {
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded())
         return;
@@ -1112,12 +1112,12 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
   }
 
   clearBrowserCache() {
-    for (var agent of this._agents)
+    for (const agent of this._agents)
       agent.clearBrowserCache();
   }
 
   clearBrowserCookies() {
-    for (var agent of this._agents)
+    for (const agent of this._agents)
       agent.clearBrowserCookies();
   }
 
@@ -1126,7 +1126,7 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @return {!Promise<!Array<string>>}
    */
   getCertificate(origin) {
-    var target = SDK.targetManager.mainTarget();
+    const target = SDK.targetManager.mainTarget();
     return target.networkAgent().getCertificate(origin).then(certificate => certificate || []);
   }
 
@@ -1135,9 +1135,9 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    * @param {function(number, !Object.<string, string>, string)} callback
    */
   loadResource(url, callback) {
-    var headers = {};
+    const headers = {};
 
-    var currentUserAgent = this._currentUserAgent();
+    const currentUserAgent = this._currentUserAgent();
     if (currentUserAgent)
       headers['User-Agent'] = currentUserAgent;
 
@@ -1199,7 +1199,7 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
    */
   async continueRequestWithContent(contentBlob) {
     this._hasResponded = true;
-    var headers = [
+    const headers = [
       'HTTP/1.1 200 OK',
       'Date: ' + (new Date()).toUTCString(),
       'Server: Chrome Devtools Request Interceptor',
@@ -1207,7 +1207,7 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
       'Content-Length: ' + contentBlob.size,
       'Content-Type: ' + contentBlob.type || 'text/x-unknown',
     ];
-    var encodedResponse = await blobToBase64(new Blob([headers.join('\r\n'), '\r\n\r\n', contentBlob]));
+    const encodedResponse = await blobToBase64(new Blob([headers.join('\r\n'), '\r\n\r\n', contentBlob]));
     this._networkAgent.continueInterceptedRequest(this._interceptionId, undefined, encodedResponse);
 
     /**
@@ -1215,15 +1215,15 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
      * @return {!Promise<string>}
      */
     async function blobToBase64(blob) {
-      var reader = new FileReader();
-      var fileContentsLoadedPromise = new Promise(resolve => reader.onloadend = resolve);
+      const reader = new FileReader();
+      const fileContentsLoadedPromise = new Promise(resolve => reader.onloadend = resolve);
       reader.readAsDataURL(blob);
       await fileContentsLoadedPromise;
       if (reader.error) {
         console.error('Could not convert blob to base64.', reader.error);
         return '';
       }
-      var result = reader.result;
+      const result = reader.result;
       if (result === undefined) {
         console.error('Could not convert blob to base64.');
         return '';
@@ -1251,9 +1251,9 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   async responseBody() {
-    var response =
+    const response =
         await this._networkAgent.invoke_getResponseBodyForInterception({interceptionId: this._interceptionId});
-    var error = response[Protocol.Error] || null;
+    const error = response[Protocol.Error] || null;
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
 };

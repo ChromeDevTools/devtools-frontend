@@ -52,8 +52,8 @@ QuickOpen.HelpQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-    var provider = this._providers[itemIndex];
-    var prefixElement = titleElement.createChild('span', 'monospace');
+    const provider = this._providers[itemIndex];
+    const prefixElement = titleElement.createChild('span', 'monospace');
     prefixElement.textContent = (provider.prefix || '\u2026') + ' ';
     titleElement.createTextChild(provider.title);
   }

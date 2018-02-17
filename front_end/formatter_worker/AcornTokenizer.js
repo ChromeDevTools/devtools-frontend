@@ -35,8 +35,8 @@ FormatterWorker.AcornTokenizer = class {
    * @return {boolean}
    */
   static keyword(token, keyword) {
-    return !!token.type.keyword && token.type !== acorn.tokTypes._true && token.type !== acorn.tokTypes._false &&
-        token.type !== acorn.tokTypes._null && (!keyword || token.type.keyword === keyword);
+    return !!token.type.keyword && token.type !== acorn.tokTypes['_true'] && token.type !== acorn.tokTypes['_false'] &&
+        token.type !== acorn.tokTypes['_null'] && (!keyword || token.type.keyword === keyword);
   }
 
   /**
@@ -70,7 +70,7 @@ FormatterWorker.AcornTokenizer = class {
   _nextTokenInternal() {
     if (this._comments.length)
       return this._comments.shift();
-    var token = this._bufferedToken;
+    const token = this._bufferedToken;
 
     this._bufferedToken = this._tokenizer.getToken();
     return token;
@@ -80,7 +80,7 @@ FormatterWorker.AcornTokenizer = class {
    * @return {?Acorn.TokenOrComment}
    */
   nextToken() {
-    var token = this._nextTokenInternal();
+    const token = this._nextTokenInternal();
     if (token.type === acorn.tokTypes.eof)
       return null;
 

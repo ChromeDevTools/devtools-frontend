@@ -59,19 +59,19 @@ Workspace.SearchConfig = class {
 
   _parse() {
     // Inside double quotes: any symbol except double quote and backslash or any symbol escaped with a backslash.
-    var quotedPattern = /"([^\\"]|\\.)+"/;
+    const quotedPattern = /"([^\\"]|\\.)+"/;
     // A word is a sequence of any symbols except space and backslash or any symbols escaped with a backslash, that does not start with file:.
-    var unquotedWordPattern = /(\s*(?!-?f(ile)?:)[^\\ ]|\\.)+/;
-    var unquotedPattern = unquotedWordPattern.source + '(\\s+' + unquotedWordPattern.source + ')*';
+    const unquotedWordPattern = /(\s*(?!-?f(ile)?:)[^\\ ]|\\.)+/;
+    const unquotedPattern = unquotedWordPattern.source + '(\\s+' + unquotedWordPattern.source + ')*';
 
 
-    var pattern = [
+    const pattern = [
       '(\\s*' + Workspace.SearchConfig.FilePatternRegex.source + '\\s*)',
       '(' + quotedPattern.source + ')',
       '(' + unquotedPattern + ')',
     ].join('|');
-    var regexp = new RegExp(pattern, 'g');
-    var queryParts = this._query.match(regexp) || [];
+    const regexp = new RegExp(pattern, 'g');
+    const queryParts = this._query.match(regexp) || [];
     /**
      * @type {!Array.<!Workspace.SearchConfig.QueryTerm>}
      */
@@ -82,11 +82,11 @@ Workspace.SearchConfig = class {
      */
     this._queries = [];
 
-    for (var i = 0; i < queryParts.length; ++i) {
-      var queryPart = queryParts[i];
+    for (let i = 0; i < queryParts.length; ++i) {
+      const queryPart = queryParts[i];
       if (!queryPart)
         continue;
-      var fileQuery = this._parseFileQuery(queryPart);
+      const fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
         /** @type {!Array.<!Workspace.SearchConfig.RegexQuery>} */
@@ -117,7 +117,7 @@ Workspace.SearchConfig = class {
   filePathMatchesFileQuery(filePath) {
     if (!this._fileRegexQueries)
       return true;
-    for (var i = 0; i < this._fileRegexQueries.length; ++i) {
+    for (let i = 0; i < this._fileRegexQueries.length; ++i) {
       if (!!filePath.match(this._fileRegexQueries[i].regex) === this._fileRegexQueries[i].isNegative)
         return false;
     }
@@ -145,19 +145,19 @@ Workspace.SearchConfig = class {
    * @return {?Workspace.SearchConfig.QueryTerm}
    */
   _parseFileQuery(query) {
-    var match = query.match(Workspace.SearchConfig.FilePatternRegex);
+    const match = query.match(Workspace.SearchConfig.FilePatternRegex);
     if (!match)
       return null;
-    var isNegative = !!match[1];
+    const isNegative = !!match[1];
     query = match[3];
-    var result = '';
-    for (var i = 0; i < query.length; ++i) {
-      var char = query[i];
+    let result = '';
+    for (let i = 0; i < query.length; ++i) {
+      const char = query[i];
       if (char === '*') {
         result += '.*';
       } else if (char === '\\') {
         ++i;
-        var nextChar = query[i];
+        const nextChar = query[i];
         if (nextChar === ' ')
           result += ' ';
       } else {

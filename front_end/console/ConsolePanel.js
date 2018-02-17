@@ -47,7 +47,7 @@ Console.ConsolePanel = class extends UI.Panel {
    */
   wasShown() {
     super.wasShown();
-    var wrapper = Console.ConsolePanel.WrapperView._instance;
+    const wrapper = Console.ConsolePanel.WrapperView._instance;
     if (wrapper && wrapper.isShowing())
       UI.inspectorView.setDrawerMinimized(true);
     this._view.show(this.element);
@@ -120,7 +120,7 @@ Console.ConsolePanel.ConsoleRevealer = class {
    * @return {!Promise}
    */
   reveal(object) {
-    var consoleView = Console.ConsoleView.instance();
+    const consoleView = Console.ConsoleView.instance();
     if (consoleView.isShowing()) {
       consoleView.focus();
       return Promise.resolve();

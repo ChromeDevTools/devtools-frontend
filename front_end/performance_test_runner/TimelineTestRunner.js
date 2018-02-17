@@ -60,7 +60,7 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
   if (!cause)
     return '<undefined>';
 
-  var stackTrace;
+  let stackTrace;
 
   if (cause.stackTrace && cause.stackTrace.length) {
     stackTrace =
@@ -71,7 +71,7 @@ TestRunner.formatters.formatAsInvalidationCause = function(cause) {
 };
 
 PerformanceTestRunner.createTracingModel = function(events) {
-  var model = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
+  const model = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
   model.addEvents(events);
   model.tracingComplete();
   return model;
@@ -82,14 +82,14 @@ PerformanceTestRunner.tracingModel = function() {
 };
 
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
-  var categories =
+  let categories =
       '-*,disabled-by-default-devtools.timeline*,devtools.timeline,' + SDK.TracingModel.TopLevelEventCategory;
 
   if (additionalCategories)
     categories += ',' + additionalCategories;
 
-  var timelinePanel = UI.panels.timeline;
-  var timelineController = PerformanceTestRunner.timelineController();
+  const timelinePanel = UI.panels.timeline;
+  const timelineController = PerformanceTestRunner.timelineController();
   timelinePanel._timelineController = timelineController;
   timelineController._startRecordingWithCategories(categories, enableJSSampling).then(tracingStarted);
 
@@ -117,16 +117,16 @@ PerformanceTestRunner.timelineFrameModel = function() {
 };
 
 PerformanceTestRunner.createPerformanceModelWithEvents = function(events) {
-  var tracingModel = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
+  const tracingModel = new SDK.TracingModel(new Bindings.TempFileBackingStorage('tracing'));
   tracingModel.addEvents(events);
   tracingModel.tracingComplete();
-  var performanceModel = new Timeline.PerformanceModel();
+  const performanceModel = new Timeline.PerformanceModel();
   performanceModel.setTracingModel(tracingModel);
   return performanceModel;
 };
 
 PerformanceTestRunner.timelineController = function() {
-  var performanceModel = new Timeline.PerformanceModel();
+  const performanceModel = new Timeline.PerformanceModel();
   UI.panels.timeline._pendingPerformanceModel = performanceModel;
   return new Timeline.TimelineController(TestRunner.tracingManager, performanceModel, UI.panels.timeline);
 };
@@ -185,38 +185,38 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = function(name) {
 };
 
 PerformanceTestRunner.walkTimelineEventTree = function(callback) {
-  var performanceModel = PerformanceTestRunner.performanceModel();
-  var view = new Timeline.EventsTimelineTreeView(UI.panels.timeline._filters, null);
+  const performanceModel = PerformanceTestRunner.performanceModel();
+  const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline._filters, null);
   view.setModel(performanceModel);
-  var selection = Timeline.TimelineSelection.fromRange(
+  const selection = Timeline.TimelineSelection.fromRange(
       performanceModel.timelineModel().minimumRecordTime(), performanceModel.timelineModel().maximumRecordTime());
   view.updateContents(selection);
   PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, view._currentTree, 0);
 };
 
 PerformanceTestRunner.walkTimelineEventTreeUnderNode = function(callback, root, level) {
-  var event = root.event;
+  const event = root.event;
 
   if (event)
     callback(event, level);
 
-  for (var child of root.children().values())
+  for (const child of root.children().values())
     PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, child, (level || 0) + 1);
 };
 
 PerformanceTestRunner.printTimestampRecords = function(typeName) {
-  var dividers = PerformanceTestRunner.timelineModel().eventDividers();
+  const dividers = PerformanceTestRunner.timelineModel().eventDividers();
 
-  for (var event of dividers) {
+  for (const event of dividers) {
     if (event.name === typeName)
       PerformanceTestRunner.printTraceEventProperties(event);
   }
 };
 
 PerformanceTestRunner.forAllEvents = function(events, callback) {
-  let eventStack = [];
+  const eventStack = [];
 
-  for (let event of events) {
+  for (const event of events) {
     while (eventStack.length && eventStack.peekLast().endTime <= event.startTime)
       eventStack.pop();
 
@@ -229,10 +229,10 @@ PerformanceTestRunner.forAllEvents = function(events, callback) {
 
 PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
   TestRunner.addResult(traceEvent.name + ' Properties:');
-  var data = traceEvent.args['beginData'] || traceEvent.args['data'];
-  var frameId = data && data['frame'];
+  const data = traceEvent.args['beginData'] || traceEvent.args['data'];
+  const frameId = data && data['frame'];
 
-  var object = {
+  const object = {
     data: traceEvent.args['data'] || traceEvent.args,
     endTime: traceEvent.endTime || traceEvent.startTime,
     frameId: frameId,
@@ -241,7 +241,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
     type: traceEvent.name
   };
 
-  for (var field in object) {
+  for (const field in object) {
     if (object[field] === null || object[field] === undefined)
       delete object[field];
   }
@@ -264,9 +264,9 @@ PerformanceTestRunner.findTimelineEvent = function(name, index) {
 };
 
 PerformanceTestRunner.findChildEvent = function(events, parentIndex, name) {
-  var endTime = events[parentIndex].endTime;
+  const endTime = events[parentIndex].endTime;
 
-  for (var i = parentIndex + 1; i < events.length && (!events[i].endTime || events[i].endTime <= endTime); ++i) {
+  for (let i = parentIndex + 1; i < events.length && (!events[i].endTime || events[i].endTime <= endTime); ++i) {
     if (events[i].name === name)
       return events[i];
   }
@@ -275,19 +275,19 @@ PerformanceTestRunner.findChildEvent = function(events, parentIndex, name) {
 };
 
 PerformanceTestRunner.dumpFrame = function(frame) {
-  var fieldsToDump = [
+  const fieldsToDump = [
     'cpuTime', 'duration', 'startTime', 'endTime', 'id', 'mainThreadFrameId', 'timeByCategory', 'other', 'scripting',
     'painting', 'rendering', 'committedFrom', 'idle'
   ];
 
   function formatFields(object) {
-    var result = {};
+    const result = {};
 
-    for (var key in object) {
+    for (const key in object) {
       if (fieldsToDump.indexOf(key) < 0)
         continue;
 
-      var value = object[key];
+      let value = object[key];
 
       if (typeof value === 'number')
         value = Number(value.toFixed(7));
@@ -304,7 +304,7 @@ PerformanceTestRunner.dumpFrame = function(frame) {
 };
 
 PerformanceTestRunner.dumpInvalidations = function(recordType, index, comment) {
-  var event = PerformanceTestRunner.findTimelineEvent(recordType, index || 0);
+  const event = PerformanceTestRunner.findTimelineEvent(recordType, index || 0);
 
   TestRunner.addArray(
       TimelineModel.InvalidationTracker.invalidationEventsFor(event), PerformanceTestRunner.InvalidationFormatters, '',
@@ -312,10 +312,10 @@ PerformanceTestRunner.dumpInvalidations = function(recordType, index, comment) {
 };
 
 PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups) {
-  var includeGroupsSet = includeGroups && new Set(includeGroups);
-  var timelineData = provider.timelineData();
-  var stackDepth = provider.maxStackDepth();
-  var entriesByLevel = new Multimap();
+  const includeGroupsSet = includeGroups && new Set(includeGroups);
+  const timelineData = provider.timelineData();
+  const stackDepth = provider.maxStackDepth();
+  const entriesByLevel = new Multimap();
 
   for (let i = 0; i < timelineData.entryLevels.length; ++i)
     entriesByLevel.set(timelineData.entryLevels[i], i);
@@ -326,13 +326,13 @@ PerformanceTestRunner.dumpFlameChartProvider = function(provider, includeGroups)
     if (includeGroupsSet && !includeGroupsSet.has(group.name))
       continue;
 
-    var maxLevel =
+    const maxLevel =
         (groupIndex + 1 < timelineData.groups.length ? timelineData.groups[groupIndex + 1].firstLevel : stackDepth);
     TestRunner.addResult(`Group: ${group.name}`);
 
     for (let level = group.startLevel; level < maxLevel; ++level) {
       TestRunner.addResult(`Level ${level - group.startLevel}`);
-      var entries = entriesByLevel.get(level);
+      const entries = entriesByLevel.get(level);
 
       for (const index of entries) {
         const title = provider.entryTitle(index);
@@ -350,7 +350,7 @@ PerformanceTestRunner.dumpTimelineFlameChart = function(includeGroups) {
 };
 
 PerformanceTestRunner.loadTimeline = function(timelineData) {
-  var promise = new Promise(fulfill => PerformanceTestRunner.runWhenTimelineIsReady(fulfill));
+  const promise = new Promise(fulfill => PerformanceTestRunner.runWhenTimelineIsReady(fulfill));
 
   UI.panels.timeline._loadFromFile(new Blob([timelineData], {type: 'text/plain'}));
 
@@ -359,13 +359,13 @@ PerformanceTestRunner.loadTimeline = function(timelineData) {
 
 TestRunner.deprecatedInitAsync(`
   function wrapCallFunctionForTimeline(f) {
-    var script = document.createElement('script');
+    let script = document.createElement('script');
     script.textContent = '(' + f.toString() + ')()\\n//# sourceURL=wrapCallFunctionForTimeline.js';
     document.body.appendChild(script);
   }
 
   function generateFrames(count) {
-    var promise = Promise.resolve();
+    let promise = Promise.resolve();
 
     for (let i = count; i > 0; --i)
       promise = promise.then(changeBackgroundAndWaitForFrame.bind(null, i));
@@ -379,8 +379,8 @@ TestRunner.deprecatedInitAsync(`
   }
 
   function waitForFrame() {
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
+    let callback;
+    let promise = new Promise(fulfill => callback = fulfill);
 
     if (window.testRunner)
       testRunner.capturePixelsAsyncThen(callback);

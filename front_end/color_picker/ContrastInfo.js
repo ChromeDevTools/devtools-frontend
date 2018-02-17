@@ -39,7 +39,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
 
     if (contrastInfo.computedFontSize && contrastInfo.computedFontWeight && contrastInfo.computedBodyFontSize) {
       this._isNull = false;
-      var isLargeFont = ColorPicker.ContrastInfo.computeIsLargeFont(
+      const isLargeFont = ColorPicker.ContrastInfo.computeIsLargeFont(
           contrastInfo.computedFontSize, contrastInfo.computedFontWeight, contrastInfo.computedBodyFontSize);
 
       this._contrastRatioThresholds =
@@ -47,8 +47,8 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     }
 
     if (contrastInfo.backgroundColors && contrastInfo.backgroundColors.length === 1) {
-      var bgColorText = contrastInfo.backgroundColors[0];
-      var bgColor = Common.Color.parse(bgColorText);
+      const bgColorText = contrastInfo.backgroundColors[0];
+      const bgColor = Common.Color.parse(bgColorText);
       if (bgColor)
         this._setBgColorInternal(bgColor);
     }
@@ -113,13 +113,13 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     if (!this._fgColor)
       return;
 
-    var fgRGBA = this._fgColor.rgba();
+    const fgRGBA = this._fgColor.rgba();
 
     // If we have a semi-transparent background color over an unknown
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
     if (bgColor.hasAlpha) {
-      var blendedRGBA = [];
+      const blendedRGBA = [];
       Common.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
       this._bgColor = new Common.Color(blendedRGBA, Common.Color.Format.RGBA);
     }
@@ -159,11 +159,11 @@ ColorPicker.ContrastInfo = class extends Common.Object {
   static computeIsLargeFont(fontSize, fontWeight, bodyFontSize) {
     const boldWeights = ['bold', 'bolder', '600', '700', '800', '900'];
 
-    var fontSizePx = parseFloat(fontSize.replace('px', ''));
-    var isBold = (boldWeights.indexOf(fontWeight) !== -1);
+    const fontSizePx = parseFloat(fontSize.replace('px', ''));
+    const isBold = (boldWeights.indexOf(fontWeight) !== -1);
 
     if (bodyFontSize) {
-      var bodyFontSizePx = parseFloat(bodyFontSize.replace('px', ''));
+      const bodyFontSizePx = parseFloat(bodyFontSize.replace('px', ''));
       if (isBold) {
         if (fontSizePx >= (bodyFontSizePx * 1.2))
           return true;
@@ -173,7 +173,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
       return false;
     }
 
-    var fontSizePt = Math.ceil(fontSizePx * 72 / 96);
+    const fontSizePt = Math.ceil(fontSizePx * 72 / 96);
     if (isBold)
       return fontSizePt >= 14;
     else

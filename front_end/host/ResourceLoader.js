@@ -38,7 +38,7 @@ Host.ResourceLoader.streamWrite = function(id, chunk) {
  * @param {function(number, !Object.<string, string>, string)} callback
  */
 Host.ResourceLoader.load = function(url, headers, callback) {
-  var stream = new Common.StringOutputStream();
+  const stream = new Common.StringOutputStream();
   Host.ResourceLoader.loadAsStream(url, headers, stream, mycallback);
 
   /**
@@ -57,16 +57,16 @@ Host.ResourceLoader.load = function(url, headers, callback) {
  * @param {function(number, !Object.<string, string>)=} callback
  */
 Host.ResourceLoader.loadAsStream = function(url, headers, stream, callback) {
-  var streamId = Host.ResourceLoader._bindOutputStream(stream);
-  var parsedURL = new Common.ParsedURL(url);
+  const streamId = Host.ResourceLoader._bindOutputStream(stream);
+  const parsedURL = new Common.ParsedURL(url);
   if (parsedURL.isDataURL()) {
     loadXHR(url).then(dataURLDecodeSuccessful).catch(dataURLDecodeFailed);
     return;
   }
 
-  var rawHeaders = [];
+  const rawHeaders = [];
   if (headers) {
-    for (var key in headers)
+    for (const key in headers)
       rawHeaders.push(key + ': ' + headers[key]);
   }
   InspectorFrontendHost.loadNetworkResource(url, rawHeaders.join('\r\n'), streamId, finishedCallback);

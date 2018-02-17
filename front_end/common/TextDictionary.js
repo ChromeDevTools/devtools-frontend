@@ -42,7 +42,7 @@ Common.TextDictionary = class {
    * @param {string} word
    */
   addWord(word) {
-    var count = this._words.get(word) || 0;
+    let count = this._words.get(word) || 0;
     ++count;
     this._words.set(word, count);
     this._index.add(word);
@@ -52,7 +52,7 @@ Common.TextDictionary = class {
    * @param {string} word
    */
   removeWord(word) {
-    var count = this._words.get(word) || 0;
+    let count = this._words.get(word) || 0;
     if (!count)
       return;
     if (count === 1) {

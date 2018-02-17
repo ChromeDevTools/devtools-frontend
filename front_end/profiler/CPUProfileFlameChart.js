@@ -43,7 +43,7 @@ Profiler.ProfileFlameChartDataProvider = class {
    */
   static colorGenerator() {
     if (!Profiler.ProfileFlameChartDataProvider._colorGenerator) {
-      var colorGenerator =
+      const colorGenerator =
           new Common.Color.Generator({min: 30, max: 330}, {min: 50, max: 80, count: 5}, {min: 80, max: 90, count: 3});
 
       colorGenerator.setColorForID('(idle)', 'hsl(0, 0%, 94%)');
@@ -127,7 +127,7 @@ Profiler.ProfileFlameChartDataProvider = class {
    * @return {string}
    */
   entryTitle(entryIndex) {
-    var node = this._entryNodes[entryIndex];
+    const node = this._entryNodes[entryIndex];
     return UI.beautifyFunctionName(node.functionName);
   }
 
@@ -151,7 +151,7 @@ Profiler.ProfileFlameChartDataProvider = class {
    * @return {string}
    */
   entryColor(entryIndex) {
-    var node = this._entryNodes[entryIndex];
+    const node = this._entryNodes[entryIndex];
     // For idle and program, we want different 'shades of gray', so we fallback to functionName as scriptId = 0
     // For rest of nodes e.g eval scripts, if url is empty then scriptId will be guaranteed to be non-zero
     return this._colorGenerator.colorForID(node.url || (node.scriptId !== '0' ? node.scriptId : node.functionName));
@@ -231,8 +231,8 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
-    var windowLeft = event.data.windowTimeLeft;
-    var windowRight = event.data.windowTimeRight;
+    const windowLeft = event.data.windowTimeLeft;
+    const windowRight = event.data.windowTimeRight;
     this._mainPane.setWindowTimes(windowLeft, windowRight);
   }
 
@@ -263,12 +263,12 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var matcher = createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? '' : 'i');
+    const matcher = createPlainTextSearchRegex(searchConfig.query, searchConfig.caseSensitive ? '' : 'i');
 
-    var selectedEntryIndex = this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
+    const selectedEntryIndex = this._searchResultIndex !== -1 ? this._searchResults[this._searchResultIndex] : -1;
     this._searchResults = [];
-    var entriesCount = this._dataProvider._entryNodes.length;
-    for (var index = 0; index < entriesCount; ++index) {
+    const entriesCount = this._dataProvider._entryNodes.length;
+    for (let index = 0; index < entriesCount; ++index) {
       if (this._dataProvider.entryTitle(index).match(matcher))
         this._searchResults.push(index);
     }
@@ -343,7 +343,7 @@ Profiler.CPUProfileFlameChart.OverviewCalculator = class {
    */
   _updateBoundaries(overviewPane) {
     this._minimumBoundaries = overviewPane._dataProvider.minimumBoundary();
-    var totalTime = overviewPane._dataProvider.totalTime();
+    const totalTime = overviewPane._dataProvider.totalTime();
     this._maximumBoundaries = this._minimumBoundaries + totalTime;
     this._xScaleFactor = overviewPane._overviewContainer.clientWidth / totalTime;
   }
@@ -443,8 +443,8 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @param {number} timeRight
    */
   _selectRange(timeLeft, timeRight) {
-    var startTime = this._dataProvider.minimumBoundary();
-    var totalTime = this._dataProvider.totalTime();
+    const startTime = this._dataProvider.minimumBoundary();
+    const totalTime = this._dataProvider.totalTime();
     this._overviewGrid.setWindow((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
   }
 
@@ -452,9 +452,9 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
-    var startTime = this._dataProvider.minimumBoundary();
-    var totalTime = this._dataProvider.totalTime();
-    var data = {
+    const startTime = this._dataProvider.minimumBoundary();
+    const totalTime = this._dataProvider.totalTime();
+    const data = {
       windowTimeLeft: startTime + this._overviewGrid.windowLeft() * totalTime,
       windowTimeRight: startTime + this._overviewGrid.windowRight() * totalTime
     };
@@ -483,7 +483,7 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
 
   update() {
     this._updateTimerId = 0;
-    var timelineData = this._timelineData();
+    const timelineData = this._timelineData();
     if (!timelineData)
       return;
     this._resetCanvas(
@@ -494,22 +494,22 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
   }
 
   _drawOverviewCanvas() {
-    var canvasWidth = this._overviewCanvas.width;
-    var canvasHeight = this._overviewCanvas.height;
-    var drawData = this._calculateDrawData(canvasWidth);
-    var context = this._overviewCanvas.getContext('2d');
-    var ratio = window.devicePixelRatio;
-    var offsetFromBottom = ratio;
-    var lineWidth = 1;
-    var yScaleFactor = canvasHeight / (this._dataProvider.maxStackDepth() * 1.1);
+    const canvasWidth = this._overviewCanvas.width;
+    const canvasHeight = this._overviewCanvas.height;
+    const drawData = this._calculateDrawData(canvasWidth);
+    const context = this._overviewCanvas.getContext('2d');
+    const ratio = window.devicePixelRatio;
+    const offsetFromBottom = ratio;
+    const lineWidth = 1;
+    const yScaleFactor = canvasHeight / (this._dataProvider.maxStackDepth() * 1.1);
     context.lineWidth = lineWidth;
     context.translate(0.5, 0.5);
     context.strokeStyle = 'rgba(20,0,0,0.4)';
     context.fillStyle = 'rgba(214,225,254,0.8)';
     context.moveTo(-lineWidth, canvasHeight + lineWidth);
     context.lineTo(-lineWidth, Math.round(canvasHeight - drawData[0] * yScaleFactor - offsetFromBottom));
-    var value;
-    for (var x = 0; x < canvasWidth; ++x) {
+    let value;
+    for (let x = 0; x < canvasWidth; ++x) {
       value = Math.round(canvasHeight - drawData[x] * yScaleFactor - offsetFromBottom);
       context.lineTo(x, value);
     }
@@ -525,22 +525,22 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @return {!Uint8Array}
    */
   _calculateDrawData(width) {
-    var dataProvider = this._dataProvider;
-    var timelineData = this._timelineData();
-    var entryStartTimes = timelineData.entryStartTimes;
-    var entryTotalTimes = timelineData.entryTotalTimes;
-    var entryLevels = timelineData.entryLevels;
-    var length = entryStartTimes.length;
-    var minimumBoundary = this._dataProvider.minimumBoundary();
+    const dataProvider = this._dataProvider;
+    const timelineData = this._timelineData();
+    const entryStartTimes = timelineData.entryStartTimes;
+    const entryTotalTimes = timelineData.entryTotalTimes;
+    const entryLevels = timelineData.entryLevels;
+    const length = entryStartTimes.length;
+    const minimumBoundary = this._dataProvider.minimumBoundary();
 
-    var drawData = new Uint8Array(width);
-    var scaleFactor = width / dataProvider.totalTime();
+    const drawData = new Uint8Array(width);
+    const scaleFactor = width / dataProvider.totalTime();
 
-    for (var entryIndex = 0; entryIndex < length; ++entryIndex) {
-      var start = Math.floor((entryStartTimes[entryIndex] - minimumBoundary) * scaleFactor);
-      var finish =
+    for (let entryIndex = 0; entryIndex < length; ++entryIndex) {
+      const start = Math.floor((entryStartTimes[entryIndex] - minimumBoundary) * scaleFactor);
+      const finish =
           Math.floor((entryStartTimes[entryIndex] - minimumBoundary + entryTotalTimes[entryIndex]) * scaleFactor);
-      for (var x = start; x <= finish; ++x)
+      for (let x = start; x <= finish; ++x)
         drawData[x] = Math.max(drawData[x], entryLevels[entryIndex] + 1);
     }
     return drawData;
@@ -551,7 +551,7 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @param {number} height
    */
   _resetCanvas(width, height) {
-    var ratio = window.devicePixelRatio;
+    const ratio = window.devicePixelRatio;
     this._overviewCanvas.width = width * ratio;
     this._overviewCanvas.height = height * ratio;
     this._overviewCanvas.style.width = width + 'px';

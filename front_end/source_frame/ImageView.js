@@ -92,13 +92,13 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   }
 
   async _updateContentIfNeeded() {
-    var content = await this._contentProvider.requestContent();
+    const content = await this._contentProvider.requestContent();
     if (this._cachedContent === content)
       return;
 
-    var contentEncoded = await this._contentProvider.contentEncoded();
+    const contentEncoded = await this._contentProvider.contentEncoded();
     this._cachedContent = content;
-    var imageSrc = 'data:' + this._mimeType + (contentEncoded ? ';base64,' : ',') + content;
+    let imageSrc = 'data:' + this._mimeType + (contentEncoded ? ';base64,' : ',') + content;
     if (imageSrc === null)
       imageSrc = this._url;
     this._imagePreviewElement.src = imageSrc;
@@ -114,7 +114,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   _base64ToSize(content) {
     if (!content || !content.length)
       return 0;
-    var size = (content.length || 0) * 3 / 4;
+    let size = (content.length || 0) * 3 / 4;
     if (content.length > 0 && content[content.length - 1] === '=')
       size--;
     if (content.length > 1 && content[content.length - 2] === '=')
@@ -123,7 +123,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   }
 
   _contextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     if (!this._parsedURL.isDataURL())
       contextMenu.clipboardSection().appendItem(Common.UIString('Copy image URL'), this._copyImageURL.bind(this));
     if (this._imagePreviewElement.src) {
@@ -145,7 +145,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   }
 
   _saveImage() {
-    var link = createElement('a');
+    const link = createElement('a');
     link.download = this._parsedURL.displayName;
     link.href = this._url;
     link.click();
@@ -159,16 +159,16 @@ SourceFrame.ImageView = class extends UI.SimpleView {
    * @param {!DataTransfer} dataTransfer
    */
   async _handleDrop(dataTransfer) {
-    var items = dataTransfer.items;
+    const items = dataTransfer.items;
     if (!items.length || items[0].kind !== 'file')
       return;
 
-    var entry = items[0].webkitGetAsEntry();
-    var encoded = !entry.name.endsWith('.svg');
+    const entry = items[0].webkitGetAsEntry();
+    const encoded = !entry.name.endsWith('.svg');
     entry.file(file => {
-      var reader = new FileReader();
+      const reader = new FileReader();
       reader.onloadend = () => {
-        var result;
+        let result;
         try {
           result = /** @type {?string} */ (reader.result);
         } catch (e) {

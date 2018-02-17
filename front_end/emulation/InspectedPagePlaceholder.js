@@ -31,14 +31,14 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
   }
 
   _dipPageRect() {
-    var zoomFactor = UI.zoomManager.zoomFactor();
-    var rect = this.element.getBoundingClientRect();
-    var bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
+    const zoomFactor = UI.zoomManager.zoomFactor();
+    const rect = this.element.getBoundingClientRect();
+    const bodyRect = this.element.ownerDocument.body.getBoundingClientRect();
 
-    var left = Math.max(rect.left * zoomFactor, bodyRect.left * zoomFactor);
-    var top = Math.max(rect.top * zoomFactor, bodyRect.top * zoomFactor);
-    var bottom = Math.min(rect.bottom * zoomFactor, bodyRect.bottom * zoomFactor);
-    var right = Math.min(rect.right * zoomFactor, bodyRect.right * zoomFactor);
+    const left = Math.max(rect.left * zoomFactor, bodyRect.left * zoomFactor);
+    const top = Math.max(rect.top * zoomFactor, bodyRect.top * zoomFactor);
+    const bottom = Math.min(rect.bottom * zoomFactor, bodyRect.bottom * zoomFactor);
+    const right = Math.min(rect.right * zoomFactor, bodyRect.right * zoomFactor);
 
     return {x: left, y: top, width: right - left, height: bottom - top};
   }
@@ -48,8 +48,8 @@ Emulation.InspectedPagePlaceholder = class extends UI.Widget {
    */
   update(force) {
     delete this._updateId;
-    var rect = this._dipPageRect();
-    var bounds = {
+    const rect = this._dipPageRect();
+    const bounds = {
       x: Math.round(rect.x),
       y: Math.round(rect.y),
       height: Math.max(1, Math.round(rect.height)),

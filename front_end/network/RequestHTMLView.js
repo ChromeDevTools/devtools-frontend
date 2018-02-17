@@ -60,7 +60,7 @@ Network.RequestHTMLView = class extends UI.VBox {
     // We need to create iframe again each time because contentDocument
     // is deleted when iframe is removed from its parent.
     this.contentElement.removeChildren();
-    var iframe = createElement('iframe');
+    const iframe = createElement('iframe');
     iframe.className = 'html-preview-frame';
     iframe.setAttribute('sandbox', '');  // Forbid to run JavaScript and set unique origin.
     iframe.setAttribute('src', this._dataURL);

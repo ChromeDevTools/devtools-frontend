@@ -55,7 +55,7 @@ Console.ConsoleContextSelector = class {
   highlightedItemChanged(from, to, fromElement, toElement) {
     SDK.OverlayModel.hideDOMNodeHighlight();
     if (to && to.frameId) {
-      var overlayModel = to.target().model(SDK.OverlayModel);
+      const overlayModel = to.target().model(SDK.OverlayModel);
       if (overlayModel)
         overlayModel.highlightFrame(to.frameId);
     }
@@ -71,11 +71,11 @@ Console.ConsoleContextSelector = class {
    * @return {string}
    */
   titleFor(executionContext) {
-    var target = executionContext.target();
-    var label = executionContext.label() ? target.decorateLabel(executionContext.label()) : '';
+    const target = executionContext.target();
+    let label = executionContext.label() ? target.decorateLabel(executionContext.label()) : '';
     if (executionContext.frameId) {
-      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-      var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+      const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
       if (frame)
         label = label || frame.displayName();
     }
@@ -89,19 +89,19 @@ Console.ConsoleContextSelector = class {
    * @return {number}
    */
   _depthFor(executionContext) {
-    var target = executionContext.target();
-    var depth = 0;
+    let target = executionContext.target();
+    let depth = 0;
     if (!executionContext.isDefault)
       depth++;
     if (executionContext.frameId) {
-      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-      var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+      let frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
       while (frame && frame.parentFrame) {
         depth++;
         frame = frame.parentFrame;
       }
     }
-    var targetDepth = 0;
+    let targetDepth = 0;
     while (target.parentTarget()) {
       if (target.parentTarget().hasJSCapability()) {
         targetDepth++;
@@ -123,11 +123,11 @@ Console.ConsoleContextSelector = class {
   _badgeFor(executionContext) {
     if (!executionContext.frameId || !executionContext.isDefault)
       return null;
-    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
-    var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame)
       return null;
-    var badgePool = new ProductRegistry.BadgePool();
+    const badgePool = new ProductRegistry.BadgePool();
     this._badgePoolForExecutionContext.set(executionContext, badgePool);
     return badgePool.badgeForFrame(frame);
   }
@@ -136,7 +136,7 @@ Console.ConsoleContextSelector = class {
    * @param {!SDK.ExecutionContext} executionContext
    */
   _disposeExecutionContextBadge(executionContext) {
-    var badgePool = this._badgePoolForExecutionContext.get(executionContext);
+    const badgePool = this._badgePoolForExecutionContext.get(executionContext);
     if (!badgePool)
       return;
     badgePool.reset();
@@ -162,7 +162,7 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _onExecutionContextCreated(event) {
-    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextCreated(executionContext);
   }
 
@@ -170,7 +170,7 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _onExecutionContextChanged(event) {
-    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     if (this._items.indexOf(executionContext) === -1)
       return;
     this._executionContextDestroyed(executionContext);
@@ -181,7 +181,7 @@ Console.ConsoleContextSelector = class {
    * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextDestroyed(executionContext) {
-    var index = this._items.indexOf(executionContext);
+    const index = this._items.indexOf(executionContext);
     if (index === -1)
       return;
     this._disposeExecutionContextBadge(executionContext);
@@ -192,7 +192,7 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _onExecutionContextDestroyed(event) {
-    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
     this._executionContextDestroyed(executionContext);
   }
 
@@ -200,7 +200,7 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _executionContextChangedExternally(event) {
-    var executionContext = /** @type {?SDK.ExecutionContext} */ (event.data);
+    const executionContext = /** @type {?SDK.ExecutionContext} */ (event.data);
     this._dropDown.selectItem(executionContext);
   }
 
@@ -211,8 +211,9 @@ Console.ConsoleContextSelector = class {
   _isTopContext(executionContext) {
     if (!executionContext || !executionContext.isDefault)
       return false;
-    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
-    var frame = executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    const frame =
+        executionContext.frameId && resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame)
       return false;
     return frame.isTopFrame();
@@ -238,7 +239,7 @@ Console.ConsoleContextSelector = class {
    * @param {!SDK.RuntimeModel} runtimeModel
    */
   modelRemoved(runtimeModel) {
-    for (var i = 0; i < this._items.length; i++) {
+    for (let i = 0; i < this._items.length; i++) {
       if (this._items.at(i).runtimeModel === runtimeModel)
         this._executionContextDestroyed(this._items.at(i));
     }
@@ -250,12 +251,12 @@ Console.ConsoleContextSelector = class {
    * @return {!Element}
    */
   createElementForItem(item) {
-    var element = createElementWithClass('div');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'console/consoleContextSelector.css');
-    var title = shadowRoot.createChild('div', 'title');
+    const element = createElementWithClass('div');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'console/consoleContextSelector.css');
+    const title = shadowRoot.createChild('div', 'title');
     title.createTextChild(this.titleFor(item).trimEnd(100));
-    var subTitle = shadowRoot.createChild('div', 'subtitle');
-    var badgeElement = this._badgeFor(item);
+    const subTitle = shadowRoot.createChild('div', 'subtitle');
+    const badgeElement = this._badgeFor(item);
     if (badgeElement) {
       badgeElement.classList.add('badge');
       subTitle.appendChild(badgeElement);
@@ -270,21 +271,22 @@ Console.ConsoleContextSelector = class {
    * @return {string}
    */
   _subtitleFor(executionContext) {
-    var target = executionContext.target();
+    const target = executionContext.target();
+    let frame;
     if (executionContext.frameId) {
-      var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-      var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+      const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+      frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     }
     if (executionContext.origin.startsWith('chrome-extension://'))
       return Common.UIString('Extension');
     if (!frame || !frame.parentFrame || frame.parentFrame.securityOrigin !== executionContext.origin) {
-      var url = executionContext.origin.asParsedURL();
+      const url = executionContext.origin.asParsedURL();
       if (url)
         return url.domain();
     }
 
     if (frame) {
-      var callFrame = frame.findCreationCallFrame(callFrame => !!callFrame.url);
+      const callFrame = frame.findCreationCallFrame(callFrame => !!callFrame.url);
       if (callFrame)
         return new Common.ParsedURL(callFrame.url).domain();
       return Common.UIString('IFrame');
@@ -298,8 +300,8 @@ Console.ConsoleContextSelector = class {
    * @return {boolean}
    */
   isItemSelectable(item) {
-    var callFrame = item.debuggerModel.selectedCallFrame();
-    var callFrameContext = callFrame && callFrame.script.executionContext();
+    const callFrame = item.debuggerModel.selectedCallFrame();
+    const callFrameContext = callFrame && callFrame.script.executionContext();
     return !callFrameContext || item === callFrameContext;
   }
 
@@ -313,8 +315,8 @@ Console.ConsoleContextSelector = class {
   }
 
   _callFrameSelectedInUI() {
-    var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    var callFrameContext = callFrame && callFrame.script.executionContext();
+    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const callFrameContext = callFrame && callFrame.script.executionContext();
     if (callFrameContext)
       UI.context.setFlavor(SDK.ExecutionContext, callFrameContext);
   }
@@ -323,8 +325,8 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _callFrameSelectedInModel(event) {
-    var debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
-    for (var executionContext of this._items) {
+    const debuggerModel = /** @type {!SDK.DebuggerModel} */ (event.data);
+    for (const executionContext of this._items) {
       if (executionContext.debuggerModel === debuggerModel) {
         this._disposeExecutionContextBadge(executionContext);
         this._dropDown.refreshItem(executionContext);
@@ -336,11 +338,11 @@ Console.ConsoleContextSelector = class {
    * @param {!Common.Event} event
    */
   _frameNavigated(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    var runtimeModel = frame.resourceTreeModel().target().model(SDK.RuntimeModel);
+    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const runtimeModel = frame.resourceTreeModel().target().model(SDK.RuntimeModel);
     if (!runtimeModel)
       return;
-    for (var executionContext of runtimeModel.executionContexts()) {
+    for (const executionContext of runtimeModel.executionContexts()) {
       if (frame.id === executionContext.frameId) {
         this._disposeExecutionContextBadge(executionContext);
         this._dropDown.refreshItem(executionContext);

@@ -49,7 +49,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!SDK.NetworkManager} networkManager
    */
   modelAdded(networkManager) {
-    var eventListeners = [];
+    const eventListeners = [];
     eventListeners.push(
         networkManager.addEventListener(SDK.NetworkManager.Events.RequestStarted, this._onRequestStarted, this));
     eventListeners.push(
@@ -61,7 +61,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
     eventListeners.push(networkManager.addEventListener(
         SDK.NetworkManager.Events.MessageGenerated, this._networkMessageGenerated.bind(this, networkManager)));
 
-    var resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel);
+    const resourceTreeModel = networkManager.target().model(SDK.ResourceTreeModel);
     if (resourceTreeModel) {
       eventListeners.push(
           resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this));
@@ -127,8 +127,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    */
   requestByManagerAndId(networkManager, requestId) {
     // We itterate backwards because the last item will likely be the one needed for console network request lookups.
-    for (var i = this._requests.length - 1; i >= 0; i--) {
-      var request = this._requests[i];
+    for (let i = this._requests.length - 1; i >= 0; i--) {
+      const request = this._requests[i];
       if (requestId === request.requestId() && networkManager === SDK.NetworkManager.forRequest(request))
         return request;
     }
@@ -141,7 +141,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @return {?SDK.NetworkRequest}
    */
   _requestByManagerAndURL(networkManager, url) {
-    for (var request of this._requests) {
+    for (const request of this._requests) {
       if (url === request.url() && networkManager === SDK.NetworkManager.forRequest(request))
         return request;
     }
@@ -171,15 +171,15 @@ BrowserSDK.NetworkLog = class extends Common.Object {
     if (request[BrowserSDK.NetworkLog._initiatorDataSymbol].info)
       return request[BrowserSDK.NetworkLog._initiatorDataSymbol].info;
 
-    var type = SDK.NetworkRequest.InitiatorType.Other;
-    var url = '';
-    var lineNumber = -Infinity;
-    var columnNumber = -Infinity;
-    var scriptId = null;
-    var initiatorStack = null;
-    var initiator = request.initiator();
+    let type = SDK.NetworkRequest.InitiatorType.Other;
+    let url = '';
+    let lineNumber = -Infinity;
+    let columnNumber = -Infinity;
+    let scriptId = null;
+    let initiatorStack = null;
+    const initiator = request.initiator();
 
-    var redirectSource = request.redirectSource();
+    const redirectSource = request.redirectSource();
     if (redirectSource) {
       type = SDK.NetworkRequest.InitiatorType.Redirect;
       url = redirectSource.url();
@@ -189,8 +189,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
         url = initiator.url ? initiator.url : url;
         lineNumber = initiator.lineNumber ? initiator.lineNumber : lineNumber;
       } else if (initiator.type === Protocol.Network.InitiatorType.Script) {
-        for (var stack = initiator.stack; stack; stack = stack.parent) {
-          var topFrame = stack.callFrames.length ? stack.callFrames[0] : null;
+        for (let stack = initiator.stack; stack; stack = stack.parent) {
+          const topFrame = stack.callFrames.length ? stack.callFrames[0] : null;
           if (!topFrame)
             continue;
           type = SDK.NetworkRequest.InitiatorType.Script;
@@ -229,10 +229,10 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    */
   initiatorGraphForRequest(request) {
     /** @type {!Set<!SDK.NetworkRequest>} */
-    var initiated = new Set();
-    var networkManager = SDK.NetworkManager.forRequest(request);
-    for (var otherRequest of this._requests) {
-      var otherRequestManager = SDK.NetworkManager.forRequest(request);
+    const initiated = new Set();
+    const networkManager = SDK.NetworkManager.forRequest(request);
+    for (const otherRequest of this._requests) {
+      const otherRequestManager = SDK.NetworkManager.forRequest(request);
       if (networkManager === otherRequestManager && this._initiatorChain(otherRequest).has(request))
         initiated.add(otherRequest);
     }
@@ -245,14 +245,14 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    */
   _initiatorChain(request) {
     this._initializeInitiatorSymbolIfNeeded(request);
-    var initiatorChainCache =
+    let initiatorChainCache =
         /** @type {?Set<!SDK.NetworkRequest>} */ (request[BrowserSDK.NetworkLog._initiatorDataSymbol].chain);
     if (initiatorChainCache)
       return initiatorChainCache;
 
     initiatorChainCache = new Set();
 
-    var checkRequest = request;
+    let checkRequest = request;
     do {
       if (checkRequest[BrowserSDK.NetworkLog._initiatorDataSymbol].chain) {
         initiatorChainCache.addAll(checkRequest[BrowserSDK.NetworkLog._initiatorDataSymbol].chain);
@@ -275,8 +275,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
     this._initializeInitiatorSymbolIfNeeded(request);
     if (request[BrowserSDK.NetworkLog._initiatorDataSymbol].request !== undefined)
       return request[BrowserSDK.NetworkLog._initiatorDataSymbol].request;
-    var url = this.initiatorInfoForRequest(request).url;
-    var networkManager = SDK.NetworkManager.forRequest(request);
+    const url = this.initiatorInfoForRequest(request).url;
+    const networkManager = SDK.NetworkManager.forRequest(request);
     request[BrowserSDK.NetworkLog._initiatorDataSymbol].request =
         networkManager ? this._requestByManagerAndURL(networkManager, url) : null;
     return request[BrowserSDK.NetworkLog._initiatorDataSymbol].request;
@@ -291,26 +291,26 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onMainFrameNavigated(event) {
-    var mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
-    var manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager);
+    const mainFrame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const manager = mainFrame.resourceTreeModel().target().model(SDK.NetworkManager);
     if (!manager || mainFrame.resourceTreeModel().target().parentTarget())
       return;
 
-    var oldManagerRequests = this._requests.filter(request => SDK.NetworkManager.forRequest(request) === manager);
-    var oldRequestsSet = this._requestsSet;
+    const oldManagerRequests = this._requests.filter(request => SDK.NetworkManager.forRequest(request) === manager);
+    const oldRequestsSet = this._requestsSet;
     this._requests = [];
     this._requestsSet = new Set();
     this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.Reset);
 
     // Preserve requests from the new session.
-    var currentPageLoad = null;
-    var requestsToAdd = [];
-    for (var request of oldManagerRequests) {
+    let currentPageLoad = null;
+    const requestsToAdd = [];
+    for (const request of oldManagerRequests) {
       if (request.loaderId !== mainFrame.loaderId)
         continue;
       if (!currentPageLoad) {
         currentPageLoad = new BrowserSDK.PageLoad(request);
-        var redirectSource = request.redirectSource();
+        let redirectSource = request.redirectSource();
         while (redirectSource) {
           requestsToAdd.push(redirectSource);
           redirectSource = redirectSource.redirectSource();
@@ -319,7 +319,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
       requestsToAdd.push(request);
     }
 
-    for (var request of requestsToAdd) {
+    for (const request of requestsToAdd) {
       oldRequestsSet.delete(request);
       this._requests.push(request);
       this._requestsSet.add(request);
@@ -328,7 +328,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
     }
 
     if (Common.moduleSetting('network_log.preserve-log').get()) {
-      for (var request of oldRequestsSet) {
+      for (const request of oldRequestsSet) {
         this._requests.push(request);
         this._requestsSet.add(request);
         this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
@@ -346,7 +346,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
     this.reset();
     this._requests = [];
     this._requestsSet.clear();
-    for (var request of requests) {
+    for (const request of requests) {
       this._requests.push(request);
       this._requestsSet.add(request);
       this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
@@ -357,11 +357,11 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onRequestStarted(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._requests.push(request);
     this._requestsSet.add(request);
-    var manager = SDK.NetworkManager.forRequest(request);
-    var pageLoad = manager ? this._pageLoadForManager.get(manager) : null;
+    const manager = SDK.NetworkManager.forRequest(request);
+    const pageLoad = manager ? this._pageLoadForManager.get(manager) : null;
     if (pageLoad)
       pageLoad.bindRequest(request);
     this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestAdded, request);
@@ -371,7 +371,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onRequestUpdated(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (!this._requestsSet.has(request))
       return;
     this.dispatchEventToListeners(BrowserSDK.NetworkLog.Events.RequestUpdated, request);
@@ -381,7 +381,7 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onRequestRedirect(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     delete request[BrowserSDK.NetworkLog._initiatorDataSymbol];
   }
 
@@ -390,8 +390,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onDOMContentLoaded(resourceTreeModel, event) {
-    var networkManager = resourceTreeModel.target().model(SDK.NetworkManager);
-    var pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
+    const networkManager = resourceTreeModel.target().model(SDK.NetworkManager);
+    const pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
     if (pageLoad)
       pageLoad.contentLoadTime = /** @type {number} */ (event.data);
   }
@@ -400,8 +400,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _onLoad(event) {
-    var networkManager = event.data.resourceTreeModel.target().model(SDK.NetworkManager);
-    var pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
+    const networkManager = event.data.resourceTreeModel.target().model(SDK.NetworkManager);
+    const pageLoad = networkManager ? this._pageLoadForManager.get(networkManager) : null;
     if (pageLoad)
       pageLoad.loadTime = /** @type {number} */ (event.data.loadTime);
   }
@@ -409,8 +409,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
   reset() {
     this._requests = [];
     this._requestsSet.clear();
-    var managers = new Set(SDK.targetManager.models(SDK.NetworkManager));
-    for (var manager of this._pageLoadForManager.keys()) {
+    const managers = new Set(SDK.targetManager.models(SDK.NetworkManager));
+    for (const manager of this._pageLoadForManager.keys()) {
       if (!managers.has(manager))
         this._pageLoadForManager.delete(manager);
     }
@@ -423,8 +423,8 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _networkMessageGenerated(networkManager, event) {
-    var message = /** @type {!SDK.NetworkManager.Message} */ (event.data);
-    var consoleMessage = new SDK.ConsoleMessage(
+    const message = /** @type {!SDK.NetworkManager.Message} */ (event.data);
+    const consoleMessage = new SDK.ConsoleMessage(
         networkManager.target().model(SDK.RuntimeModel), SDK.ConsoleMessage.MessageSource.Network,
         message.warning ? SDK.ConsoleMessage.MessageLevel.Warning : SDK.ConsoleMessage.MessageLevel.Info,
         message.message);
@@ -437,15 +437,15 @@ BrowserSDK.NetworkLog = class extends Common.Object {
    * @param {!Protocol.Network.RequestId} requestId
    */
   associateConsoleMessageWithRequest(consoleMessage, requestId) {
-    var target = consoleMessage.target();
-    var networkManager = target ? target.model(SDK.NetworkManager) : null;
+    const target = consoleMessage.target();
+    const networkManager = target ? target.model(SDK.NetworkManager) : null;
     if (!networkManager)
       return;
-    var request = this.requestByManagerAndId(networkManager, requestId);
+    const request = this.requestByManagerAndId(networkManager, requestId);
     if (!request)
       return;
     consoleMessage[BrowserSDK.NetworkLog._requestSymbol] = request;
-    var initiator = request.initiator();
+    const initiator = request.initiator();
     if (initiator) {
       consoleMessage.stackTrace = initiator.stack || undefined;
       if (initiator.url) {
@@ -482,14 +482,14 @@ BrowserSDK.PageLoad = class {
   }
 
   async _showDataSaverWarningIfNeeded() {
-    var manager = SDK.NetworkManager.forRequest(this.mainRequest);
+    const manager = SDK.NetworkManager.forRequest(this.mainRequest);
     if (!manager)
       return;
     if (!this.mainRequest.finished)
       await this.mainRequest.once(SDK.NetworkRequest.Events.FinishedLoading);
-    var saveDataHeader = this.mainRequest.requestHeaderValue('Save-Data');
+    const saveDataHeader = this.mainRequest.requestHeaderValue('Save-Data');
     if (!BrowserSDK.PageLoad._dataSaverMessageWasShown && saveDataHeader && saveDataHeader === 'on') {
-      var message = Common.UIString(
+      const message = Common.UIString(
           'Consider disabling %s while debugging. For more info see: %s', Common.UIString('Chrome Data Saver'),
           'https://support.google.com/chrome/?p=datasaver');
       manager.dispatchEventToListeners(

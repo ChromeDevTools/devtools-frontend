@@ -84,12 +84,12 @@ Common.ContentProvider.SearchMatch = class {
  * @return {!Array.<!Common.ContentProvider.SearchMatch>}
  */
 Common.ContentProvider.performSearchInContent = function(content, query, caseSensitive, isRegex) {
-  var regex = createSearchRegex(query, caseSensitive, isRegex);
+  const regex = createSearchRegex(query, caseSensitive, isRegex);
 
-  var text = new TextUtils.Text(content);
-  var result = [];
-  for (var i = 0; i < text.lineCount(); ++i) {
-    var lineContent = text.lineAt(i);
+  const text = new TextUtils.Text(content);
+  const result = [];
+  for (let i = 0; i < text.lineCount(); ++i) {
+    const lineContent = text.lineAt(i);
     regex.lastIndex = 0;
     if (regex.exec(lineContent))
       result.push(new Common.ContentProvider.SearchMatch(i, lineContent));

@@ -14,7 +14,7 @@ Animation.AnimationScreenshotPopover = class extends UI.VBox {
     this.registerRequiredCSS('animation/animationScreenshotPopover.css');
     this.contentElement.classList.add('animation-screenshot-popover');
     this._frames = images;
-    for (var image of images) {
+    for (const image of images) {
       this.contentElement.appendChild(image);
       image.style.display = 'none';
     }
@@ -49,7 +49,7 @@ Animation.AnimationScreenshotPopover = class extends UI.VBox {
     if (!this._showFrame)
       return;
 
-    var numFrames = this._frames.length;
+    const numFrames = this._frames.length;
     this._frames[this._currentFrame % numFrames].style.display = 'none';
     this._currentFrame++;
     this._frames[(this._currentFrame) % numFrames].style.display = 'block';

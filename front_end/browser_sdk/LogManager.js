@@ -15,9 +15,9 @@ BrowserSDK.LogManager = class {
    * @param {!SDK.LogModel} logModel
    */
   modelAdded(logModel) {
-    var eventListeners = [];
+    const eventListeners = [];
     eventListeners.push(logModel.addEventListener(SDK.LogModel.Events.EntryAdded, this._logEntryAdded, this));
-    logModel[BrowserSDK.LogManager._events] = eventListeners;
+    logModel[BrowserSDK.LogManager._eventSymbol] = eventListeners;
   }
 
   /**
@@ -25,17 +25,17 @@ BrowserSDK.LogManager = class {
    * @param {!SDK.LogModel} logModel
    */
   modelRemoved(logModel) {
-    Common.EventTarget.removeEventListeners(logModel[BrowserSDK.LogManager._events]);
+    Common.EventTarget.removeEventListeners(logModel[BrowserSDK.LogManager._eventSymbol]);
   }
 
   /**
    * @param {!Common.Event} event
    */
   _logEntryAdded(event) {
-    var data = /** @type {{logModel: !SDK.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);
-    var target = data.logModel.target();
+    const data = /** @type {{logModel: !SDK.LogModel, entry: !Protocol.Log.LogEntry}} */ (event.data);
+    const target = data.logModel.target();
 
-    var consoleMessage = new SDK.ConsoleMessage(
+    const consoleMessage = new SDK.ConsoleMessage(
         target.model(SDK.RuntimeModel), data.entry.source, data.entry.level, data.entry.text, undefined, data.entry.url,
         data.entry.lineNumber, undefined, [data.entry.text, ...(data.entry.args || [])], data.entry.stackTrace,
         data.entry.timestamp, undefined, undefined, data.entry.workerId);
@@ -46,6 +46,6 @@ BrowserSDK.LogManager = class {
   }
 };
 
-BrowserSDK.LogManager._events = Symbol('_events');
+BrowserSDK.LogManager._eventSymbol = Symbol('_events');
 
 new BrowserSDK.LogManager();

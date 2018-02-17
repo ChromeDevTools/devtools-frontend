@@ -8,12 +8,13 @@
  */
 
 SourcesTestRunner.dumpSuggestions = function(textEditor, lines) {
-  var resolve;
-  var promise = new Promise(fulfill => resolve = fulfill);
-  var lineNumber = -1, columnNumber;
+  let resolve;
+  const promise = new Promise(fulfill => resolve = fulfill);
+  let lineNumber = -1;
+  let columnNumber;
 
-  for (var i = 0; i < lines.length; ++i) {
-    var columnNumber = lines[i].indexOf('|');
+  for (let i = 0; i < lines.length; ++i) {
+    columnNumber = lines[i].indexOf('|');
 
     if (columnNumber !== -1) {
       lineNumber = i;

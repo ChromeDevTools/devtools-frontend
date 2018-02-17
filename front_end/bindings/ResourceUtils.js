@@ -32,8 +32,8 @@
  * @return {?SDK.Resource}
  */
 Bindings.resourceForURL = function(url) {
-  for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
-    var resource = resourceTreeModel.resourceForURL(url);
+  for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel)) {
+    const resource = resourceTreeModel.resourceForURL(url);
     if (resource)
       return resource;
   }
@@ -44,7 +44,7 @@ Bindings.resourceForURL = function(url) {
  * @param {function(!SDK.Resource)} callback
  */
 Bindings.forAllResources = function(callback) {
-  for (var resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel))
+  for (const resourceTreeModel of SDK.targetManager.models(SDK.ResourceTreeModel))
     resourceTreeModel.forAllResources(callback);
 };
 
@@ -56,24 +56,24 @@ Bindings.displayNameForURL = function(url) {
   if (!url)
     return '';
 
-  var resource = Bindings.resourceForURL(url);
+  const resource = Bindings.resourceForURL(url);
   if (resource)
     return resource.displayName;
 
-  var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+  const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
   if (uiSourceCode)
     return uiSourceCode.displayName();
 
-  var mainTarget = SDK.targetManager.mainTarget();
-  var inspectedURL = mainTarget && mainTarget.inspectedURL();
+  const mainTarget = SDK.targetManager.mainTarget();
+  const inspectedURL = mainTarget && mainTarget.inspectedURL();
   if (!inspectedURL)
     return url.trimURL('');
 
-  var parsedURL = inspectedURL.asParsedURL();
-  var lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
-  var index = inspectedURL.indexOf(lastPathComponent);
+  const parsedURL = inspectedURL.asParsedURL();
+  const lastPathComponent = parsedURL ? parsedURL.lastPathComponent : parsedURL;
+  const index = inspectedURL.indexOf(lastPathComponent);
   if (index !== -1 && index + lastPathComponent.length === inspectedURL.length) {
-    var baseURL = inspectedURL.substring(0, index);
+    const baseURL = inspectedURL.substring(0, index);
     if (url.startsWith(baseURL))
       return url.substring(index);
   }
@@ -81,7 +81,7 @@ Bindings.displayNameForURL = function(url) {
   if (!parsedURL)
     return url;
 
-  var displayName = url.trimURL(parsedURL.host);
+  const displayName = url.trimURL(parsedURL.host);
   return displayName === '/' ? parsedURL.host + '/' : displayName;
 };
 
@@ -92,10 +92,10 @@ Bindings.displayNameForURL = function(url) {
  * @return {?Workspace.UISourceCodeMetadata}
  */
 Bindings.metadataForURL = function(target, frameId, url) {
-  var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK.ResourceTreeModel);
   if (!resourceTreeModel)
     return null;
-  var frame = resourceTreeModel.frameForId(frameId);
+  const frame = resourceTreeModel.frameForId(frameId);
   if (!frame)
     return null;
   return Bindings.resourceMetadata(frame.resourceForURL(url));
@@ -116,11 +116,11 @@ Bindings.resourceMetadata = function(resource) {
  * @return {string}
  */
 Bindings.frameIdForScript = function(script) {
-  var executionContext = script.executionContext();
+  const executionContext = script.executionContext();
   if (executionContext)
     return executionContext.frameId || '';
   // This is to overcome compilation cache which doesn't get reset.
-  var resourceTreeModel = script.debuggerModel.target().model(SDK.ResourceTreeModel);
+  const resourceTreeModel = script.debuggerModel.target().model(SDK.ResourceTreeModel);
   if (!resourceTreeModel || !resourceTreeModel.mainFrame)
     return '';
   return resourceTreeModel.mainFrame.id;

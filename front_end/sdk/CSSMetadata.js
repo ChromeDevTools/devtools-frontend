@@ -47,9 +47,9 @@ SDK.CSSMetadata = class {
     this._inherited = new Set();
     /** @type {!Set<string>} */
     this._svgProperties = new Set();
-    for (var i = 0; i < properties.length; ++i) {
-      var property = properties[i];
-      var propertyName = property.name;
+    for (let i = 0; i < properties.length; ++i) {
+      const property = properties[i];
+      const propertyName = property.name;
       if (!CSS.supports(propertyName, 'initial'))
         continue;
       this._values.push(propertyName);
@@ -59,12 +59,12 @@ SDK.CSSMetadata = class {
       if (property.svg)
         this._svgProperties.add(propertyName);
 
-      var longhands = properties[i].longhands;
+      const longhands = properties[i].longhands;
       if (longhands) {
         this._longhands.set(propertyName, longhands);
-        for (var j = 0; j < longhands.length; ++j) {
-          var longhandName = longhands[j];
-          var shorthands = this._shorthands.get(longhandName);
+        for (let j = 0; j < longhands.length; ++j) {
+          const longhandName = longhands[j];
+          let shorthands = this._shorthands.get(longhandName);
           if (!shorthands) {
             shorthands = [];
             this._shorthands.set(longhandName, shorthands);
@@ -156,7 +156,7 @@ SDK.CSSMetadata = class {
     name = name.toLowerCase();
     if (!name || name.length < 9 || name.charAt(0) !== '-')
       return name;
-    var match = name.match(/(?:-webkit-)(.+)/);
+    const match = name.match(/(?:-webkit-)(.+)/);
     if (!match || !this._valuesSet.has(match[1]))
       return name;
     return match[1];
@@ -189,15 +189,15 @@ SDK.CSSMetadata = class {
    * @return {!Array<string>}
    */
   propertyValues(propertyName) {
-    var acceptedKeywords = ['inherit', 'initial', 'unset'];
+    const acceptedKeywords = ['inherit', 'initial', 'unset'];
     propertyName = propertyName.toLowerCase();
-    var unprefixedName = propertyName.replace(/^-webkit-/, '');
-    var entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
+    const unprefixedName = propertyName.replace(/^-webkit-/, '');
+    const entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
     if (entry && entry.values)
       acceptedKeywords.pushAll(entry.values);
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
-      for (var color in Common.Color.Nicknames)
+      for (const color in Common.Color.Nicknames)
         acceptedKeywords.push(color);
     }
     return acceptedKeywords.sort();

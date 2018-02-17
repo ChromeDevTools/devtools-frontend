@@ -51,8 +51,8 @@ FormatterWorker.JavaScriptFormatter = class {
     this._content = text.substring(this._fromOffset, this._toOffset);
     this._lastLineNumber = 0;
     this._tokenizer = new FormatterWorker.AcornTokenizer(this._content);
-    var ast = acorn.parse(this._content, {ranges: false, ecmaVersion: 8, preserveParens: true});
-    var walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
+    const ast = acorn.parse(this._content, {ranges: false, ecmaVersion: 8, preserveParens: true});
+    const walker = new FormatterWorker.ESTreeWalker(this._beforeVisit.bind(this), this._afterVisit.bind(this));
     walker.walk(ast);
   }
 
@@ -61,7 +61,7 @@ FormatterWorker.JavaScriptFormatter = class {
    * @param {string} format
    */
   _push(token, format) {
-    for (var i = 0; i < format.length; ++i) {
+    for (let i = 0; i < format.length; ++i) {
       if (format[i] === 's') {
         this._builder.addSoftSpace();
       } else if (format[i] === 'S') {
@@ -88,8 +88,8 @@ FormatterWorker.JavaScriptFormatter = class {
     if (!node.parent)
       return;
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.start) {
-      var token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
-      var format = this._formatToken(node.parent, token);
+      const token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const format = this._formatToken(node.parent, token);
       this._push(token, format);
     }
   }
@@ -99,8 +99,8 @@ FormatterWorker.JavaScriptFormatter = class {
    */
   _afterVisit(node) {
     while (this._tokenizer.peekToken() && this._tokenizer.peekToken().start < node.end) {
-      var token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
-      var format = this._formatToken(node, token);
+      const token = /** @type {!Acorn.TokenOrComment} */ (this._tokenizer.nextToken());
+      const format = this._formatToken(node, token);
       this._push(token, format);
     }
     this._push(null, this._finishNode(node));
@@ -111,7 +111,7 @@ FormatterWorker.JavaScriptFormatter = class {
    * @return {boolean}
    */
   _inForLoopHeader(node) {
-    var parent = node.parent;
+    const parent = node.parent;
     if (!parent)
       return false;
     if (parent.type === 'ForStatement')
@@ -127,7 +127,7 @@ FormatterWorker.JavaScriptFormatter = class {
    * @return {string}
    */
   _formatToken(node, token) {
-    var AT = FormatterWorker.AcornTokenizer;
+    const AT = FormatterWorker.AcornTokenizer;
     if (AT.lineComment(token))
       return 'tn';
     if (AT.blockComment(token))
@@ -193,9 +193,9 @@ FormatterWorker.JavaScriptFormatter = class {
         return 'tn>';
     } else if (node.type === 'VariableDeclaration') {
       if (AT.punctuator(token, ',')) {
-        var allVariablesInitialized = true;
-        var declarations = /** @type {!Array.<!ESTree.Node>} */ (node.declarations);
-        for (var i = 0; i < declarations.length; ++i)
+        let allVariablesInitialized = true;
+        const declarations = /** @type {!Array.<!ESTree.Node>} */ (node.declarations);
+        for (let i = 0; i < declarations.length; ++i)
           allVariablesInitialized = allVariablesInitialized && !!declarations[i].init;
         return !this._inForLoopHeader(node) && allVariablesInitialized ? 'nSSts' : 'ts';
       }
@@ -221,8 +221,8 @@ FormatterWorker.JavaScriptFormatter = class {
         return node.consequent && node.consequent.type === 'BlockStatement' ? 'ts' : 'tn>';
 
       if (AT.keyword(token, 'else')) {
-        var preFormat = node.consequent && node.consequent.type === 'BlockStatement' ? 'st' : 'n<t';
-        var postFormat = 'n>';
+        const preFormat = node.consequent && node.consequent.type === 'BlockStatement' ? 'st' : 'n<t';
+        let postFormat = 'n>';
         if (node.alternate && (node.alternate.type === 'BlockStatement' || node.alternate.type === 'IfStatement'))
           postFormat = 's';
         return preFormat + postFormat;
@@ -244,7 +244,7 @@ FormatterWorker.JavaScriptFormatter = class {
       if (AT.punctuator(token, ')'))
         return node.body && node.body.type === 'BlockStatement' ? 'ts' : 'tn>';
     } else if (node.type === 'DoWhileStatement') {
-      var blockBody = node.body && node.body.type === 'BlockStatement';
+      const blockBody = node.body && node.body.type === 'BlockStatement';
       if (AT.keyword(token, 'do'))
         return blockBody ? 'ts' : 'tn>';
       if (AT.keyword(token, 'while'))

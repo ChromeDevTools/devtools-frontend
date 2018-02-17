@@ -51,10 +51,10 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
         Common.moduleSetting('showScrollBottleneckRects'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    var mediaSetting = Common.moduleSetting('emulatedCSSMedia');
-    var mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
+    const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
+    const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
     if (mediaSelect) {
-      var mediaRow = this.contentElement.createChild('span', 'media-row');
+      const mediaRow = this.contentElement.createChild('span', 'media-row');
       mediaRow.createChild('label').textContent = Common.UIString('Emulate CSS media');
       mediaRow.createChild('p').textContent = Common.UIString('Forces media type for testing print and screen styles');
       mediaRow.appendChild(mediaSelect);
@@ -67,7 +67,7 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
    * @param {!Common.Setting} setting
    */
   _appendCheckbox(label, subtitle, setting) {
-    var checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
+    const checkboxLabel = UI.CheckboxLabel.create(label, false, subtitle);
     UI.SettingsUI.bindCheckbox(checkboxLabel.checkboxElement, setting);
     this.contentElement.appendChild(checkboxLabel);
   }

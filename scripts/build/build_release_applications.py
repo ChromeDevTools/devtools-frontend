@@ -218,11 +218,9 @@ class ReleaseBuilder(object):
     def _concatenate_application_script(self, output):
         if not self.descriptors.extends:
             runtime_contents = read_file(join(self.application_dir, 'Runtime.js'))
-            runtime_contents = re.sub('var allDescriptors = \[\];',
-                                      'var allDescriptors = %s;' % self._release_module_descriptors().replace('\\', '\\\\'),
-                                      runtime_contents, 1)
             output.write('/* Runtime.js */\n')
             output.write(runtime_contents)
+            output.write('allDescriptors.push(...%s);' % self._release_module_descriptors())
             output.write('/* Application descriptor %s */\n' % self.app_file('json'))
             output.write('applicationDescriptor = ')
             output.write(self.descriptors.application_json())

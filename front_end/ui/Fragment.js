@@ -36,16 +36,16 @@ UI.Fragment = class {
    * @param {boolean} toggled
    */
   setState(name, toggled) {
-    var list = this._states.get(name);
+    const list = this._states.get(name);
     if (list === undefined) {
       console.error('Unknown state ' + name);
       return;
     }
-    for (var state of list) {
+    for (const state of list) {
       if (state.toggled === toggled)
         continue;
       state.toggled = toggled;
-      var value = state.attributeValue;
+      const value = state.attributeValue;
       state.attributeValue = state.element.getAttribute(state.attributeName);
       if (value === null)
         state.element.removeAttribute(state.attributeName);
@@ -60,7 +60,7 @@ UI.Fragment = class {
    * @return {!UI.Fragment}
    */
   static build(strings, vararg) {
-    var values = Array.prototype.slice.call(arguments, 1);
+    const values = Array.prototype.slice.call(arguments, 1);
     return UI.Fragment._render(UI.Fragment._template(strings), values);
   }
 
@@ -70,8 +70,8 @@ UI.Fragment = class {
    * @return {!UI.Fragment}
    */
   static cached(strings, vararg) {
-    var values = Array.prototype.slice.call(arguments, 1);
-    var template = UI.Fragment._templateCache.get(strings);
+    const values = Array.prototype.slice.call(arguments, 1);
+    let template = UI.Fragment._templateCache.get(strings);
     if (!template) {
       template = UI.Fragment._template(strings);
       UI.Fragment._templateCache.set(strings, template);
@@ -85,11 +85,11 @@ UI.Fragment = class {
    * @suppressGlobalPropertiesCheck
    */
   static _template(strings) {
-    var html = '';
-    var insideText = false;
-    for (var i = 0; i < strings.length - 1; i++) {
+    let html = '';
+    let insideText = false;
+    for (let i = 0; i < strings.length - 1; i++) {
       html += strings[i];
-      var close = strings[i].lastIndexOf('>');
+      const close = strings[i].lastIndexOf('>');
       if (close !== -1) {
         if (strings[i].indexOf('<', close + 1) === -1)
           insideText = true;
@@ -100,16 +100,16 @@ UI.Fragment = class {
     }
     html += strings[strings.length - 1];
 
-    var template = window.document.createElement('template');
+    const template = window.document.createElement('template');
     template.innerHTML = html;
-    var walker = template.ownerDocument.createTreeWalker(
+    const walker = template.ownerDocument.createTreeWalker(
         template.content, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, null, false);
-    var valueIndex = 0;
-    var emptyTextNodes = [];
-    var binds = [];
-    var nodesToMark = [];
+    let valueIndex = 0;
+    const emptyTextNodes = [];
+    const binds = [];
+    const nodesToMark = [];
     while (walker.nextNode()) {
-      var node = walker.currentNode;
+      const node = walker.currentNode;
       if (node.nodeType === Node.ELEMENT_NODE && node.hasAttributes()) {
         if (node.hasAttribute('$')) {
           nodesToMark.push(node);
@@ -117,15 +117,15 @@ UI.Fragment = class {
           node.removeAttribute('$');
         }
 
-        var attributesToRemove = [];
-        for (var i = 0; i < node.attributes.length; i++) {
-          var name = node.attributes[i].name;
+        const attributesToRemove = [];
+        for (let i = 0; i < node.attributes.length; i++) {
+          let name = node.attributes[i].name;
 
           if (name.startsWith('s-')) {
             attributesToRemove.push(name);
             name = name.substring(2);
-            var state = name.substring(0, name.indexOf('-'));
-            var attr = name.substring(state.length + 1);
+            const state = name.substring(0, name.indexOf('-'));
+            const attr = name.substring(state.length + 1);
             nodesToMark.push(node);
             binds.push({state: {name: state, attribute: attr, value: node.attributes[i].value}});
             continue;
@@ -137,24 +137,24 @@ UI.Fragment = class {
 
           attributesToRemove.push(name);
           nodesToMark.push(node);
-          var bind = {attr: {index: valueIndex}};
+          const bind = {attr: {index: valueIndex}};
           bind.attr.names = name.split(UI.Fragment._attributeMarkerRegex);
           valueIndex += bind.attr.names.length - 1;
           bind.attr.values = node.attributes[i].value.split(UI.Fragment._attributeMarkerRegex);
           valueIndex += bind.attr.values.length - 1;
           binds.push(bind);
         }
-        for (var i = 0; i < attributesToRemove.length; i++)
+        for (let i = 0; i < attributesToRemove.length; i++)
           node.removeAttribute(attributesToRemove[i]);
       }
 
       if (node.nodeType === Node.TEXT_NODE && node.data.indexOf(UI.Fragment._textMarker) !== -1) {
-        var texts = node.data.split(UI.Fragment._textMarkerRegex);
+        const texts = node.data.split(UI.Fragment._textMarkerRegex);
         node.data = texts[texts.length - 1];
-        for (var i = 0; i < texts.length - 1; i++) {
+        for (let i = 0; i < texts.length - 1; i++) {
           if (texts[i])
             node.parentNode.insertBefore(createTextNode(texts[i]), node);
-          var nodeToReplace = createElement('span');
+          const nodeToReplace = createElement('span');
           nodesToMark.push(nodeToReplace);
           binds.push({replaceNodeIndex: valueIndex++});
           node.parentNode.insertBefore(nodeToReplace, node);
@@ -167,10 +167,10 @@ UI.Fragment = class {
         emptyTextNodes.push(node);
     }
 
-    for (var i = 0; i < nodesToMark.length; i++)
+    for (let i = 0; i < nodesToMark.length; i++)
       nodesToMark[i].classList.add(UI.Fragment._class(i));
 
-    for (var emptyTextNode of emptyTextNodes)
+    for (const emptyTextNode of emptyTextNodes)
       emptyTextNode.remove();
     return {template: template, binds: binds};
   }
@@ -181,29 +181,29 @@ UI.Fragment = class {
    * @return {!UI.Fragment}
    */
   static _render(template, values) {
-    var content = template.template.ownerDocument.importNode(template.template.content, true);
-    var resultElement =
+    const content = template.template.ownerDocument.importNode(template.template.content, true);
+    const resultElement =
         /** @type {!Element} */ (content.firstChild === content.lastChild ? content.firstChild : content);
-    var result = new UI.Fragment(resultElement);
+    const result = new UI.Fragment(resultElement);
 
-    var idByElement = new Map();
-    var boundElements = [];
-    for (var i = 0; i < template.binds.length; i++) {
-      var className = UI.Fragment._class(i);
-      var element = /** @type {!Element} */ (content.querySelector('.' + className));
+    const idByElement = new Map();
+    const boundElements = [];
+    for (let i = 0; i < template.binds.length; i++) {
+      const className = UI.Fragment._class(i);
+      const element = /** @type {!Element} */ (content.querySelector('.' + className));
       element.classList.remove(className);
       boundElements.push(element);
     }
 
-    for (var bindIndex = 0; bindIndex < template.binds.length; bindIndex++) {
-      var bind = template.binds[bindIndex];
-      var element = boundElements[bindIndex];
+    for (let bindIndex = 0; bindIndex < template.binds.length; bindIndex++) {
+      const bind = template.binds[bindIndex];
+      const element = boundElements[bindIndex];
       if ('elementId' in bind) {
         result._elementsById.set(/** @type {string} */ (bind.elementId), element);
         idByElement.set(element, bind.elementId);
       } else if ('replaceNodeIndex' in bind) {
-        var value = values[/** @type {number} */ (bind.replaceNodeIndex)];
-        var node = null;
+        const value = values[/** @type {number} */ (bind.replaceNodeIndex)];
+        let node = null;
         if (value instanceof Node)
           node = value;
         else if (value instanceof UI.Fragment)
@@ -214,7 +214,7 @@ UI.Fragment = class {
         element.parentNode.insertBefore(node, element);
         element.remove();
       } else if ('state' in bind) {
-        var list = result._states.get(bind.state.name) || [];
+        const list = result._states.get(bind.state.name) || [];
         list.push(
             {attributeName: bind.state.attribute, attributeValue: bind.state.value, element: element, toggled: false});
         result._states.set(bind.state.name, list);
@@ -223,14 +223,14 @@ UI.Fragment = class {
             typeof values[bind.attr.index] === 'function') {
           values[bind.attr.index].call(null, element);
         } else {
-          var name = bind.attr.names[0];
-          for (var i = 1; i < bind.attr.names.length; i++) {
+          let name = bind.attr.names[0];
+          for (let i = 1; i < bind.attr.names.length; i++) {
             name += values[bind.attr.index + i - 1];
             name += bind.attr.names[i];
           }
           if (name) {
-            var value = bind.attr.values[0];
-            for (var i = 1; i < bind.attr.values.length; i++) {
+            let value = bind.attr.values[0];
+            for (let i = 1; i < bind.attr.values.length; i++) {
               value += values[bind.attr.index + bind.attr.names.length - 1 + i - 1];
               value += bind.attr.values[i];
             }
@@ -243,21 +243,21 @@ UI.Fragment = class {
     }
 
     // We do this after binds so that querySelector works.
-    var shadows = result._element.querySelectorAll('x-shadow');
-    for (var shadow of shadows) {
+    const shadows = result._element.querySelectorAll('x-shadow');
+    for (const shadow of shadows) {
       if (!shadow.parentElement)
         throw 'There must be a parent element here';
-      var shadowRoot = UI.createShadowRootWithCoreStyles(shadow.parentElement);
+      const shadowRoot = UI.createShadowRootWithCoreStyles(shadow.parentElement);
       if (shadow.parentElement.tagName === 'X-WIDGET')
         shadow.parentElement._shadowRoot = shadowRoot;
-      var children = [];
+      const children = [];
       while (shadow.lastChild) {
         children.push(shadow.lastChild);
         shadow.lastChild.remove();
       }
-      for (var i = children.length - 1; i >= 0; i--)
+      for (let i = children.length - 1; i >= 0; i--)
         shadowRoot.appendChild(children[i]);
-      var id = idByElement.get(shadow);
+      const id = idByElement.get(shadow);
       if (id)
         result._elementsById.set(id, /** @type {!Element} */ (/** @type {!Node} */ (shadowRoot)));
       shadow.remove();

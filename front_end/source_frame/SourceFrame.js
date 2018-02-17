@@ -110,14 +110,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._prettyToggle.setToggled(value);
     this._prettyToggle.setEnabled(false);
 
-    var selection = this.selection();
+    const selection = this.selection();
     if (this._pretty && this._rawContent) {
       this.setContent(await this._requestFormattedContent());
-      var start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
-      var end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
+      const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
+      const end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
       this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
       this._textEditor.setLineNumberFormatter(lineNumber => {
-        var line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
+        const line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
         if (lineNumber === 1)
           return String(line);
         if (line !== this._prettyToRawLocation(lineNumber - 2, 0)[0] + 1)
@@ -129,8 +129,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
         return String(lineNumber);
       });
       this.setContent(this._rawContent);
-      var start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
-      var end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
+      const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
+      const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
       this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
     }
     this._prettyToggle.setEnabled(true);
@@ -204,7 +204,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   async _ensureContentLoaded() {
     if (!this._contentRequested) {
       this._contentRequested = true;
-      var content = await this._lazyContent();
+      const content = await this._lazyContent();
       this._rawContent = content || '';
       this._formattedContentPromise = null;
       this._formattedMap = null;
@@ -221,7 +221,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   _requestFormattedContent() {
     if (this._formattedContentPromise)
       return this._formattedContentPromise;
-    var fulfill;
+    let fulfill;
     this._formattedContentPromise = new Promise(x => fulfill = x);
     new Formatter.ScriptFormatter(this._highlighterType, this._rawContent, (data, map) => {
       this._formattedMap = map;
@@ -356,8 +356,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._textEditor.markClean();
       this._textEditor.setReadOnly(!this._editable);
     } else {
-      var scrollTop = this._textEditor.scrollTop();
-      var selection = this._textEditor.selection();
+      const scrollTop = this._textEditor.scrollTop();
+      const selection = this._textEditor.selection();
       this._textEditor.setText(content || '');
       this._textEditor.setScrollTop(scrollTop);
       this._textEditor.setSelection(selection);
@@ -393,7 +393,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._currentSearchResultIndex = -1;
     this._searchResults = [];
 
-    var regex = searchConfig.toSearchRegex();
+    const regex = searchConfig.toSearchRegex();
     this._searchRegex = regex;
     this._searchResults = this._collectRegexMatches(regex);
 
@@ -451,7 +451,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @override
    */
   searchCanceled() {
-    var range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
+    const range = this._currentSearchResultIndex !== -1 ? this._searchResults[this._currentSearchResultIndex] : null;
     this._resetSearch();
     if (!this.loaded)
       return;
@@ -475,8 +475,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @override
    */
   jumpToNextSearchResult() {
-    var currentIndex = this._searchResultIndexForCurrentSelection();
-    var nextIndex = this._currentSearchResultIndex === -1 ? currentIndex : currentIndex + 1;
+    const currentIndex = this._searchResultIndexForCurrentSelection();
+    const nextIndex = this._currentSearchResultIndex === -1 ? currentIndex : currentIndex + 1;
     this.jumpToSearchResult(nextIndex);
   }
 
@@ -484,7 +484,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @override
    */
   jumpToPreviousSearchResult() {
-    var currentIndex = this._searchResultIndexForCurrentSelection();
+    const currentIndex = this._searchResultIndexForCurrentSelection();
     this.jumpToSearchResult(currentIndex - 1);
   }
 
@@ -524,14 +524,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @param {string} replacement
    */
   replaceSelectionWith(searchConfig, replacement) {
-    var range = this._searchResults[this._currentSearchResultIndex];
+    const range = this._searchResults[this._currentSearchResultIndex];
     if (!range)
       return;
     this._textEditor.highlightSearchResults(/** @type {!RegExp} */ (this._searchRegex), null);
 
-    var oldText = this._textEditor.text(range);
-    var regex = searchConfig.toSearchRegex();
-    var text;
+    const oldText = this._textEditor.text(range);
+    const regex = searchConfig.toSearchRegex();
+    let text;
     if (regex.__fromRegExpQuery) {
       text = oldText.replace(regex, replacement);
     } else {
@@ -540,7 +540,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       });
     }
 
-    var newRange = this._textEditor.editRange(range, text);
+    const newRange = this._textEditor.editRange(range, text);
     this._textEditor.setSelection(newRange.collapseToEnd());
   }
 
@@ -552,10 +552,10 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   replaceAllWith(searchConfig, replacement) {
     this._resetCurrentSearchResultIndex();
 
-    var text = this._textEditor.text();
-    var range = this._textEditor.fullRange();
+    let text = this._textEditor.text();
+    const range = this._textEditor.fullRange();
 
-    var regex = searchConfig.toSearchRegex(true);
+    const regex = searchConfig.toSearchRegex(true);
     if (regex.__fromRegExpQuery) {
       text = text.replace(regex, replacement);
     } else {
@@ -564,18 +564,18 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       });
     }
 
-    var ranges = this._collectRegexMatches(regex);
+    const ranges = this._collectRegexMatches(regex);
     if (!ranges.length)
       return;
 
     // Calculate the position of the end of the last range to be edited.
-    var currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.comparator);
-    var lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
-    var lastRange = ranges[lastRangeIndex];
-    var replacementLineEndings = replacement.computeLineEndings();
-    var replacementLineCount = replacementLineEndings.length;
-    var lastLineNumber = lastRange.startLine + replacementLineEndings.length - 1;
-    var lastColumnNumber = lastRange.startColumn;
+    const currentRangeIndex = ranges.lowerBound(this._textEditor.selection(), TextUtils.TextRange.comparator);
+    const lastRangeIndex = mod(currentRangeIndex - 1, ranges.length);
+    const lastRange = ranges[lastRangeIndex];
+    const replacementLineEndings = replacement.computeLineEndings();
+    const replacementLineCount = replacementLineEndings.length;
+    const lastLineNumber = lastRange.startLine + replacementLineEndings.length - 1;
+    let lastColumnNumber = lastRange.startColumn;
     if (replacementLineEndings.length > 1) {
       lastColumnNumber =
           replacementLineEndings[replacementLineCount - 1] - replacementLineEndings[replacementLineCount - 2] - 1;
@@ -587,14 +587,15 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   _collectRegexMatches(regexObject) {
-    var ranges = [];
-    for (var i = 0; i < this._textEditor.linesCount; ++i) {
-      var line = this._textEditor.line(i);
-      var offset = 0;
+    const ranges = [];
+    for (let i = 0; i < this._textEditor.linesCount; ++i) {
+      let line = this._textEditor.line(i);
+      let offset = 0;
+      let match;
       do {
-        var match = regexObject.exec(line);
+        match = regexObject.exec(line);
         if (match) {
-          var matchEndIndex = match.index + Math.max(match[0].length, 1);
+          const matchEndIndex = match.index + Math.max(match[0].length, 1);
           if (match[0].length)
             ranges.push(new TextUtils.TextRange(i, offset + match.index, i, offset + matchEndIndex));
           offset += matchEndIndex;
@@ -629,22 +630,22 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   _updateSourcePosition() {
-    var selections = this._textEditor.selections();
+    const selections = this._textEditor.selections();
     if (!selections.length)
       return;
     if (selections.length > 1) {
       this._sourcePosition.setText(Common.UIString('%d selection regions', selections.length));
       return;
     }
-    var textRange = selections[0];
+    let textRange = selections[0];
     if (textRange.isEmpty()) {
-      var location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
+      const location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
       this._sourcePosition.setText(`Line ${location[0] + 1}, Column ${location[1] + 1}`);
       return;
     }
     textRange = textRange.normalize();
 
-    var selectedText = this._textEditor.text(textRange);
+    const selectedText = this._textEditor.text(textRange);
     if (textRange.startLine === textRange.endLine) {
       this._sourcePosition.setText(Common.UIString('%d characters selected', selectedText.length));
     } else {

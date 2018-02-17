@@ -89,7 +89,7 @@ Network.RequestTimingView = class extends UI.VBox {
    * @return {!Array.<!Network.RequestTimeRange>}
    */
   static calculateRequestTimeRanges(request, navigationStart) {
-    var result = [];
+    const result = [];
     /**
      * @param {!Network.RequestTimeRangeNames} name
      * @param {number} start
@@ -105,7 +105,7 @@ Network.RequestTimingView = class extends UI.VBox {
      * @return {number|undefined}
      */
     function firstPositive(numbers) {
-      for (var i = 0; i < numbers.length; ++i) {
+      for (let i = 0; i < numbers.length; ++i) {
         if (numbers[i] > 0)
           return numbers[i];
       }
@@ -122,24 +122,24 @@ Network.RequestTimingView = class extends UI.VBox {
         addRange(name, startTime + (start / 1000), startTime + (end / 1000));
     }
 
-    var timing = request.timing;
+    const timing = request.timing;
     if (!timing) {
-      var start = request.issueTime() !== -1 ? request.issueTime() : request.startTime !== -1 ? request.startTime : 0;
-      var middle = (request.responseReceivedTime === -1) ? Number.MAX_VALUE : request.responseReceivedTime;
-      var end = (request.endTime === -1) ? Number.MAX_VALUE : request.endTime;
+      const start = request.issueTime() !== -1 ? request.issueTime() : request.startTime !== -1 ? request.startTime : 0;
+      const middle = (request.responseReceivedTime === -1) ? Number.MAX_VALUE : request.responseReceivedTime;
+      const end = (request.endTime === -1) ? Number.MAX_VALUE : request.endTime;
       addRange(Network.RequestTimeRangeNames.Total, start, end);
       addRange(Network.RequestTimeRangeNames.Blocking, start, middle);
       addRange(Network.RequestTimeRangeNames.Receiving, middle, end);
       return result;
     }
 
-    var issueTime = request.issueTime();
-    var startTime = timing.requestTime;
-    var endTime = firstPositive([request.endTime, request.responseReceivedTime]) || startTime;
+    const issueTime = request.issueTime();
+    const startTime = timing.requestTime;
+    const endTime = firstPositive([request.endTime, request.responseReceivedTime]) || startTime;
 
     addRange(Network.RequestTimeRangeNames.Total, issueTime < startTime ? issueTime : startTime, endTime);
     if (timing.pushStart) {
-      var pushEnd = timing.pushEnd || endTime;
+      const pushEnd = timing.pushEnd || endTime;
       // Only show the part of push that happened after the navigation/reload.
       // Pushes that happened on the same connection before we started main request will not be shown.
       if (pushEnd > navigationStart)
@@ -148,14 +148,15 @@ Network.RequestTimingView = class extends UI.VBox {
     if (issueTime < startTime)
       addRange(Network.RequestTimeRangeNames.Queueing, issueTime, startTime);
 
-    var responseReceived = (request.responseReceivedTime - startTime) * 1000;
+    const responseReceived = (request.responseReceivedTime - startTime) * 1000;
     if (request.fetchedViaServiceWorker) {
       addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, timing.workerStart);
       addOffsetRange(Network.RequestTimeRangeNames.ServiceWorkerPreparation, timing.workerStart, timing.workerReady);
       addOffsetRange(Network.RequestTimeRangeNames.ServiceWorker, timing.workerReady, timing.sendEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Waiting, timing.sendEnd, responseReceived);
     } else if (!timing.pushStart) {
-      var blockingEnd = firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart, responseReceived]) || 0;
+      const blockingEnd =
+          firstPositive([timing.dnsStart, timing.connectStart, timing.sendStart, responseReceived]) || 0;
       addOffsetRange(Network.RequestTimeRangeNames.Blocking, 0, blockingEnd);
       addOffsetRange(Network.RequestTimeRangeNames.Proxy, timing.proxyStart, timing.proxyEnd);
       addOffsetRange(Network.RequestTimeRangeNames.DNS, timing.dnsStart, timing.dnsEnd);
@@ -182,33 +183,34 @@ Network.RequestTimingView = class extends UI.VBox {
    * @return {!Element}
    */
   static createTimingTable(request, calculator) {
-    var tableElement = createElementWithClass('table', 'network-timing-table');
+    const tableElement = createElementWithClass('table', 'network-timing-table');
     UI.appendStyle(tableElement, 'network/networkTimingTable.css');
-    var colgroup = tableElement.createChild('colgroup');
+    const colgroup = tableElement.createChild('colgroup');
     colgroup.createChild('col', 'labels');
     colgroup.createChild('col', 'bars');
     colgroup.createChild('col', 'duration');
 
-    var timeRanges = Network.RequestTimingView.calculateRequestTimeRanges(request, calculator.minimumBoundary());
-    var startTime = timeRanges.map(r => r.start).reduce((a, b) => Math.min(a, b));
-    var endTime = timeRanges.map(r => r.end).reduce((a, b) => Math.max(a, b));
-    var scale = 100 / (endTime - startTime);
+    const timeRanges = Network.RequestTimingView.calculateRequestTimeRanges(request, calculator.minimumBoundary());
+    const startTime = timeRanges.map(r => r.start).reduce((a, b) => Math.min(a, b));
+    const endTime = timeRanges.map(r => r.end).reduce((a, b) => Math.max(a, b));
+    const scale = 100 / (endTime - startTime);
 
-    var connectionHeader;
-    var dataHeader;
-    var queueingHeader;
-    var totalDuration = 0;
+    let connectionHeader;
+    let dataHeader;
+    let queueingHeader;
+    let totalDuration = 0;
 
-    var startTimeHeader = tableElement.createChild('thead', 'network-timing-start');
-    var queuedCell = startTimeHeader.createChild('tr').createChild('td');
-    var startedCell = startTimeHeader.createChild('tr').createChild('td');
+    const startTimeHeader = tableElement.createChild('thead', 'network-timing-start');
+    const queuedCell = startTimeHeader.createChild('tr').createChild('td');
+    const startedCell = startTimeHeader.createChild('tr').createChild('td');
     queuedCell.colSpan = startedCell.colSpan = 2;
     queuedCell.createTextChild(Common.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
     startedCell.createTextChild(Common.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
 
-    for (var i = 0; i < timeRanges.length; ++i) {
-      var range = timeRanges[i];
-      var rangeName = range.name;
+    let right;
+    for (let i = 0; i < timeRanges.length; ++i) {
+      const range = timeRanges[i];
+      const rangeName = range.name;
       if (rangeName === Network.RequestTimeRangeNames.Total) {
         totalDuration = range.end - range.start;
         continue;
@@ -228,47 +230,47 @@ Network.RequestTimingView = class extends UI.VBox {
           dataHeader = createHeader(Common.UIString('Request/Response'));
       }
 
-      var left = (scale * (range.start - startTime));
-      var right = (scale * (endTime - range.end));
-      var duration = range.end - range.start;
+      const left = (scale * (range.start - startTime));
+      right = (scale * (endTime - range.end));
+      const duration = range.end - range.start;
 
-      var tr = tableElement.createChild('tr');
+      const tr = tableElement.createChild('tr');
       tr.createChild('td').createTextChild(Network.RequestTimingView._timeRangeTitle(rangeName));
 
-      var row = tr.createChild('td').createChild('div', 'network-timing-row');
-      var bar = row.createChild('span', 'network-timing-bar ' + rangeName);
+      const row = tr.createChild('td').createChild('div', 'network-timing-row');
+      const bar = row.createChild('span', 'network-timing-bar ' + rangeName);
       bar.style.left = left + '%';
       bar.style.right = right + '%';
       bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
-      var label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
+      const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
       label.textContent = Number.secondsToString(duration, true);
     }
 
     if (!request.finished) {
-      var cell = tableElement.createChild('tr').createChild('td', 'caution');
+      const cell = tableElement.createChild('tr').createChild('td', 'caution');
       cell.colSpan = 3;
       cell.createTextChild(Common.UIString('CAUTION: request is not finished yet!'));
     }
 
-    var footer = tableElement.createChild('tr', 'network-timing-footer');
-    var note = footer.createChild('td');
+    const footer = tableElement.createChild('tr', 'network-timing-footer');
+    const note = footer.createChild('td');
     note.colSpan = 1;
     note.appendChild(
         UI.createDocumentationLink('network-performance/reference#timing-explanation', Common.UIString('Explanation')));
     footer.createChild('td');
     footer.createChild('td').createTextChild(Number.secondsToString(totalDuration, true));
 
-    var serverTimings = request.serverTimings;
+    const serverTimings = request.serverTimings;
     if (!serverTimings)
       return tableElement;
 
-    var lastTimingRightEdge = right === undefined ? 100 : right;
+    const lastTimingRightEdge = right === undefined ? 100 : right;
 
-    var breakElement = tableElement.createChild('tr', 'network-timing-table-header').createChild('td');
+    const breakElement = tableElement.createChild('tr', 'network-timing-table-header').createChild('td');
     breakElement.colSpan = 3;
     breakElement.createChild('hr', 'break');
 
-    var serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
+    const serverHeader = tableElement.createChild('tr', 'network-timing-table-header');
     serverHeader.createChild('td').createTextChild(Common.UIString('Server Timing'));
     serverHeader.createChild('td');
     serverHeader.createChild('td').createTextChild(Common.UIString('TIME'));
@@ -285,25 +287,25 @@ Network.RequestTimingView = class extends UI.VBox {
      * @param {number} right
      */
     function addTiming(serverTiming, right) {
-      var colorGenerator = new Common.Color.Generator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
-      var isTotal = serverTiming.metric.toLowerCase() === 'total';
-      var tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
-      var metric = tr.createChild('td', 'network-timing-metric');
+      const colorGenerator = new Common.Color.Generator({min: 0, max: 360, count: 36}, {min: 50, max: 80}, 80);
+      const isTotal = serverTiming.metric.toLowerCase() === 'total';
+      const tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
+      const metric = tr.createChild('td', 'network-timing-metric');
       metric.createTextChild(serverTiming.description || serverTiming.metric);
-      var row = tr.createChild('td').createChild('div', 'network-timing-row');
+      const row = tr.createChild('td').createChild('div', 'network-timing-row');
 
       if (serverTiming.value === null)
         return;
-      var left = scale * (endTime - startTime - (serverTiming.value / 1000));
+      const left = scale * (endTime - startTime - (serverTiming.value / 1000));
       if (left >= 0) {  // don't chart values too big or too small
-        var bar = row.createChild('span', 'network-timing-bar server-timing');
+        const bar = row.createChild('span', 'network-timing-bar server-timing');
         bar.style.left = left + '%';
         bar.style.right = right + '%';
         bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
         if (!isTotal)
           bar.style.backgroundColor = colorGenerator.colorForID(serverTiming.metric);
       }
-      var label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
+      const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
       label.textContent = Number.millisToString(serverTiming.value, true);
     }
 
@@ -312,7 +314,7 @@ Network.RequestTimingView = class extends UI.VBox {
      * @return {!Element}
      */
     function createHeader(title) {
-      var dataHeader = tableElement.createChild('tr', 'network-timing-table-header');
+      const dataHeader = tableElement.createChild('tr', 'network-timing-table-header');
       dataHeader.createChild('td').createTextChild(title);
       dataHeader.createChild('td').createTextChild('');
       dataHeader.createChild('td').createTextChild(Common.UIString('TIME'));

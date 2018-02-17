@@ -76,7 +76,7 @@ Elements.InspectElementModeController = class {
     if (SDK.targetManager.allTargetsSuspended())
       return;
 
-    var mode;
+    let mode;
     if (this.isInInspectElementMode()) {
       mode = Protocol.Overlay.InspectMode.None;
     } else {
@@ -92,7 +92,7 @@ Elements.InspectElementModeController = class {
    */
   _setMode(mode) {
     this._mode = mode;
-    for (var overlayModel of SDK.targetManager.models(SDK.OverlayModel))
+    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
       overlayModel.setInspectMode(mode);
     this._toggleSearchAction.setToggled(this.isInInspectElementMode());
   }

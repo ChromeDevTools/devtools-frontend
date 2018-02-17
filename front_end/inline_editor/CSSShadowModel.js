@@ -41,28 +41,28 @@ InlineEditor.CSSShadowModel = class {
    * @return {!Array<!InlineEditor.CSSShadowModel>}
    */
   static _parseShadow(text, isBoxShadow) {
-    var shadowTexts = [];
+    const shadowTexts = [];
     // Split by commas that aren't inside of color values to get the individual shadow values.
-    var splits = TextUtils.TextUtils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
-    var currentIndex = 0;
-    for (var i = 0; i < splits.length; i++) {
+    const splits = TextUtils.TextUtils.splitStringByRegexes(text, [Common.Color.Regex, /,/g]);
+    let currentIndex = 0;
+    for (let i = 0; i < splits.length; i++) {
       if (splits[i].regexIndex === 1) {
-        var comma = splits[i];
+        const comma = splits[i];
         shadowTexts.push(text.substring(currentIndex, comma.position));
         currentIndex = comma.position + 1;
       }
     }
     shadowTexts.push(text.substring(currentIndex, text.length));
 
-    var shadows = [];
-    for (var i = 0; i < shadowTexts.length; i++) {
-      var shadow = new InlineEditor.CSSShadowModel(isBoxShadow);
+    const shadows = [];
+    for (let i = 0; i < shadowTexts.length; i++) {
+      const shadow = new InlineEditor.CSSShadowModel(isBoxShadow);
       shadow._format = [];
-      var nextPartAllowed = true;
-      var regexes = [/inset/gi, Common.Color.Regex, InlineEditor.CSSLength.Regex];
-      var results = TextUtils.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
-      for (var j = 0; j < results.length; j++) {
-        var result = results[j];
+      let nextPartAllowed = true;
+      const regexes = [/inset/gi, Common.Color.Regex, InlineEditor.CSSLength.Regex];
+      const results = TextUtils.TextUtils.splitStringByRegexes(shadowTexts[i], regexes);
+      for (let j = 0; j < results.length; j++) {
+        const result = results[j];
         if (result.regexIndex === -1) {
           // Don't allow anything other than inset, color, length values, and whitespace.
           if (/\S/.test(result.value))
@@ -78,16 +78,16 @@ InlineEditor.CSSShadowModel = class {
             shadow._inset = true;
             shadow._format.push(InlineEditor.CSSShadowModel._Part.Inset);
           } else if (result.regexIndex === 1) {
-            var color = Common.Color.parse(result.value);
+            const color = Common.Color.parse(result.value);
             if (!color)
               return [];
             shadow._color = color;
             shadow._format.push(InlineEditor.CSSShadowModel._Part.Color);
           } else if (result.regexIndex === 2) {
-            var length = InlineEditor.CSSLength.parse(result.value);
+            const length = InlineEditor.CSSLength.parse(result.value);
             if (!length)
               return [];
-            var previousPart = shadow._format.length > 0 ? shadow._format[shadow._format.length - 1] : '';
+            const previousPart = shadow._format.length > 0 ? shadow._format[shadow._format.length - 1] : '';
             if (previousPart === InlineEditor.CSSShadowModel._Part.OffsetX) {
               shadow._offsetY = length;
               shadow._format.push(InlineEditor.CSSShadowModel._Part.OffsetY);
@@ -104,26 +104,27 @@ InlineEditor.CSSShadowModel = class {
           }
         }
       }
-      if (invalidCount(InlineEditor.CSSShadowModel._Part.OffsetX, 1, 1) ||
-          invalidCount(InlineEditor.CSSShadowModel._Part.OffsetY, 1, 1) ||
-          invalidCount(InlineEditor.CSSShadowModel._Part.Color, 0, 1) ||
-          invalidCount(InlineEditor.CSSShadowModel._Part.BlurRadius, 0, 1) ||
-          invalidCount(InlineEditor.CSSShadowModel._Part.Inset, 0, isBoxShadow ? 1 : 0) ||
-          invalidCount(InlineEditor.CSSShadowModel._Part.SpreadRadius, 0, isBoxShadow ? 1 : 0))
+      if (invalidCount(shadow, InlineEditor.CSSShadowModel._Part.OffsetX, 1, 1) ||
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.OffsetY, 1, 1) ||
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Color, 0, 1) ||
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.BlurRadius, 0, 1) ||
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.Inset, 0, isBoxShadow ? 1 : 0) ||
+          invalidCount(shadow, InlineEditor.CSSShadowModel._Part.SpreadRadius, 0, isBoxShadow ? 1 : 0))
         return [];
       shadows.push(shadow);
     }
     return shadows;
 
     /**
+     * @param {!InlineEditor.CSSShadowModel} shadow
      * @param {string} part
      * @param {number} min
      * @param {number} max
      * @return {boolean}
      */
-    function invalidCount(part, min, max) {
-      var count = 0;
-      for (var i = 0; i < shadow._format.length; i++) {
+    function invalidCount(shadow, part, min, max) {
+      let count = 0;
+      for (let i = 0; i < shadow._format.length; i++) {
         if (shadow._format[i] === part)
           count++;
       }
@@ -160,7 +161,7 @@ InlineEditor.CSSShadowModel = class {
   setBlurRadius(blurRadius) {
     this._blurRadius = blurRadius;
     if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.BlurRadius) === -1) {
-      var yIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.OffsetY);
+      const yIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.OffsetY);
       this._format.splice(yIndex + 1, 0, InlineEditor.CSSShadowModel._Part.BlurRadius);
     }
   }
@@ -172,7 +173,7 @@ InlineEditor.CSSShadowModel = class {
     this._spreadRadius = spreadRadius;
     if (this._format.indexOf(InlineEditor.CSSShadowModel._Part.SpreadRadius) === -1) {
       this.setBlurRadius(this._blurRadius);
-      var blurIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.BlurRadius);
+      const blurIndex = this._format.indexOf(InlineEditor.CSSShadowModel._Part.BlurRadius);
       this._format.splice(blurIndex + 1, 0, InlineEditor.CSSShadowModel._Part.SpreadRadius);
     }
   }
@@ -239,9 +240,9 @@ InlineEditor.CSSShadowModel = class {
    * @return {string}
    */
   asCSSText() {
-    var parts = [];
-    for (var i = 0; i < this._format.length; i++) {
-      var part = this._format[i];
+    const parts = [];
+    for (let i = 0; i < this._format.length; i++) {
+      const part = this._format[i];
       if (part === InlineEditor.CSSShadowModel._Part.Inset && this._inset)
         parts.push('inset');
       else if (part === InlineEditor.CSSShadowModel._Part.OffsetX)
@@ -290,8 +291,8 @@ InlineEditor.CSSLength = class {
    * @return {?InlineEditor.CSSLength}
    */
   static parse(text) {
-    var lengthRegex = new RegExp('^(?:' + InlineEditor.CSSLength.Regex.source + ')$', 'i');
-    var match = text.match(lengthRegex);
+    const lengthRegex = new RegExp('^(?:' + InlineEditor.CSSLength.Regex.source + ')$', 'i');
+    const match = text.match(lengthRegex);
     if (!match)
       return null;
     if (match.length > 2 && match[2])
@@ -316,8 +317,8 @@ InlineEditor.CSSLength = class {
 
 /** @type {!RegExp} */
 InlineEditor.CSSLength.Regex = (function() {
-  var number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
-  var unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
-  var zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
+  const number = '([+-]?(?:[0-9]*[.])?[0-9]+(?:[eE][+-]?[0-9]+)?)';
+  const unit = '(ch|cm|em|ex|in|mm|pc|pt|px|rem|vh|vmax|vmin|vw)';
+  const zero = '[+-]?(?:0*[.])?0+(?:[eE][+-]?[0-9]+)?';
   return new RegExp(number + unit + '|' + zero, 'gi');
 })();

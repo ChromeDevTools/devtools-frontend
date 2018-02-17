@@ -13,7 +13,7 @@ InspectorMain.RequestAppBannerActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var target = SDK.targetManager.mainTarget();
+    const target = SDK.targetManager.mainTarget();
     if (target && target.hasBrowserCapability()) {
       target.pageAgent().requestAppBanner();
       Common.console.show();

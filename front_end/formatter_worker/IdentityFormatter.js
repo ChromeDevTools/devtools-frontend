@@ -19,7 +19,7 @@ FormatterWorker.IdentityFormatter = class {
    * @param {number} toOffset
    */
   format(text, lineEndings, fromOffset, toOffset) {
-    var content = text.substring(fromOffset, toOffset);
+    const content = text.substring(fromOffset, toOffset);
     this._builder.addToken(content, fromOffset);
   }
 };

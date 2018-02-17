@@ -36,7 +36,7 @@ Common.Worker = class {
    * @param {string} appName
    */
   constructor(appName) {
-    var url = appName + '.js';
+    let url = appName + '.js';
     url += Runtime.queryParamsString();
 
     /** @type {!Promise<!Worker>} */

@@ -16,7 +16,7 @@ Sources.ScriptFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _editorSelected(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateButton(uiSourceCode);
 
     if (this._isFormatableScript(uiSourceCode) && this._pathsToFormatOnLoad.has(uiSourceCode.url()) &&
@@ -28,12 +28,12 @@ Sources.ScriptFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _editorClosed(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
-    var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
 
     if (wasSelected)
       this._updateButton(null);
-    var original = Sources.sourceFormatter.discardFormattedUISourceCode(uiSourceCode);
+    const original = Sources.sourceFormatter.discardFormattedUISourceCode(uiSourceCode);
     if (original)
       this._pathsToFormatOnLoad.delete(original.url());
   }
@@ -85,7 +85,7 @@ Sources.ScriptFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _toggleFormatScriptSource(event) {
-    var uiSourceCode = this._sourcesView.currentUISourceCode();
+    const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!this._isFormatableScript(uiSourceCode))
       return;
     this._pathsToFormatOnLoad.add(uiSourceCode.url());
@@ -96,13 +96,13 @@ Sources.ScriptFormatterEditorAction = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   async _showFormatted(uiSourceCode) {
-    var formatData = await Sources.sourceFormatter.format(uiSourceCode);
+    const formatData = await Sources.sourceFormatter.format(uiSourceCode);
     if (uiSourceCode !== this._sourcesView.currentUISourceCode())
       return;
-    var sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
-    var start = [0, 0];
+    const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+    let start = [0, 0];
     if (sourceFrame) {
-      var selection = sourceFrame.selection();
+      const selection = sourceFrame.selection();
       start = formatData.mapping.originalToFormatted(selection.startLine, selection.startColumn);
     }
     this._sourcesView.showSourceLocation(formatData.formattedSourceCode, start[0], start[1]);

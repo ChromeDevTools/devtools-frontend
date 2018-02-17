@@ -38,7 +38,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-    for (var securityOrigin of this._securityOriginManager.securityOrigins())
+    for (const securityOrigin of this._securityOriginManager.securityOrigins())
       this._addOrigin(securityOrigin);
     this._enabled = true;
   }
@@ -52,11 +52,11 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
   }
 
   refreshCacheNames() {
-    for (var cache of this._caches.values())
+    for (const cache of this._caches.values())
       this._cacheRemoved(cache);
     this._caches.clear();
-    var securityOrigins = this._securityOriginManager.securityOrigins();
-    for (var securityOrigin of securityOrigins)
+    const securityOrigins = this._securityOriginManager.securityOrigins();
+    for (const securityOrigin of securityOrigins)
       this._loadCacheNames(securityOrigin);
   }
 
@@ -64,7 +64,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!SDK.ServiceWorkerCacheModel.Cache} cache
    */
   async deleteCache(cache) {
-    var response = await this._cacheAgent.invoke_deleteCache({cacheId: cache.cacheId});
+    const response = await this._cacheAgent.invoke_deleteCache({cacheId: cache.cacheId});
     if (response[Protocol.Error]) {
       console.error(`ServiceWorkerCacheAgent error deleting cache ${cache.toString()}: ${response[Protocol.Error]}`);
       return;
@@ -79,7 +79,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   async deleteCacheEntry(cache, request) {
-    var response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
+    const response = await this._cacheAgent.invoke_deleteEntry({cacheId: cache.cacheId, request});
     if (!response[Protocol.Error])
       return;
     Common.console.error(Common.UIString(
@@ -101,8 +101,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @return {!Array.<!SDK.ServiceWorkerCacheModel.Cache>}
    */
   caches() {
-    var caches = new Array();
-    for (var cache of this._caches.values())
+    const caches = new Array();
+    for (const cache of this._caches.values())
       caches.push(cache);
     return caches;
   }
@@ -111,7 +111,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @override
    */
   dispose() {
-    for (var cache of this._caches.values())
+    for (const cache of this._caches.values())
       this._cacheRemoved(cache);
     this._caches.clear();
     if (this._enabled) {
@@ -132,8 +132,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _removeOrigin(securityOrigin) {
-    for (var opaqueId of this._caches.keys()) {
-      var cache = this._caches.get(opaqueId);
+    for (const opaqueId of this._caches.keys()) {
+      const cache = this._caches.get(opaqueId);
       if (cache.securityOrigin === securityOrigin) {
         this._caches.delete(opaqueId);
         this._cacheRemoved(cache);
@@ -148,7 +148,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   _isValidSecurityOrigin(securityOrigin) {
-    var parsedURL = securityOrigin.asParsedURL();
+    const parsedURL = securityOrigin.asParsedURL();
     return !!parsedURL && parsedURL.scheme.startsWith('http');
   }
 
@@ -156,7 +156,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   async _loadCacheNames(securityOrigin) {
-    var caches = await this._cacheAgent.requestCacheNames(securityOrigin);
+    const caches = await this._cacheAgent.requestCacheNames(securityOrigin);
     if (!caches)
       return;
     this._updateCacheNames(securityOrigin, caches);
@@ -179,14 +179,14 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     }
 
     /** @type {!Set<string>} */
-    var updatingCachesIds = new Set();
+    const updatingCachesIds = new Set();
     /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
-    var newCaches = new Map();
+    const newCaches = new Map();
     /** @type {!Map<string, !SDK.ServiceWorkerCacheModel.Cache>} */
-    var oldCaches = new Map();
+    const oldCaches = new Map();
 
-    for (var cacheJson of cachesJson) {
-      var cache =
+    for (const cacheJson of cachesJson) {
+      const cache =
           new SDK.ServiceWorkerCacheModel.Cache(this, cacheJson.securityOrigin, cacheJson.cacheName, cacheJson.cacheId);
       updatingCachesIds.add(cache.cacheId);
       if (this._caches.has(cache.cacheId))
@@ -203,7 +203,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _securityOriginAdded(event) {
-    var securityOrigin = /** @type {string} */ (event.data);
+    const securityOrigin = /** @type {string} */ (event.data);
     this._addOrigin(securityOrigin);
   }
 
@@ -211,7 +211,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _securityOriginRemoved(event) {
-    var securityOrigin = /** @type {string} */ (event.data);
+    const securityOrigin = /** @type {string} */ (event.data);
     this._removeOrigin(securityOrigin);
   }
 
@@ -236,7 +236,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
    * @param {function(!Array<!Protocol.CacheStorage.DataEntry>, boolean)} callback
    */
   async _requestEntries(cache, skipCount, pageSize, callback) {
-    var response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize});
+    const response = await this._cacheAgent.invoke_requestEntries({cacheId: cache.cacheId, skipCount, pageSize});
     if (response[Protocol.Error]) {
       console.error('ServiceWorkerCacheAgent error while requesting entries: ', response[Protocol.Error]);
       return;
@@ -252,7 +252,7 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     this._originsUpdated.add(origin);
 
     this._throttler.schedule(() => {
-      var promises = Array.from(this._originsUpdated, origin => this._loadCacheNames(origin));
+      const promises = Array.from(this._originsUpdated, origin => this._loadCacheNames(origin));
       this._originsUpdated.clear();
       return Promise.all(promises);
     });

@@ -51,13 +51,13 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetAdded(target) {
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (!resourceTreeModel || resourceTreeModel.cachedResourcesLoaded()) {
       this._initTarget(target);
       return;
     }
 
-    var eventListener = resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, () => {
+    const eventListener = resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.CachedResourcesLoaded, () => {
       Common.EventTarget.removeEventListeners([eventListener]);
       this._initTarget(target);
     });
@@ -67,9 +67,9 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   _initTarget(target) {
-    var eventListeners = [];
+    const eventListeners = [];
 
-    var cpuProfilerModel = target.model(SDK.CPUProfilerModel);
+    const cpuProfilerModel = target.model(SDK.CPUProfilerModel);
     if (cpuProfilerModel) {
       eventListeners.push(cpuProfilerModel.addEventListener(
           SDK.CPUProfilerModel.Events.ConsoleProfileStarted, this._consoleProfileStarted.bind(this, cpuProfilerModel)));
@@ -78,13 +78,13 @@ SDK.ConsoleModel = class extends Common.Object {
           this._consoleProfileFinished.bind(this, cpuProfilerModel)));
     }
 
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel && !target.parentTarget()) {
       eventListeners.push(resourceTreeModel.addEventListener(
           SDK.ResourceTreeModel.Events.MainFrameNavigated, this._mainFrameNavigated, this));
     }
 
-    var runtimeModel = target.model(SDK.RuntimeModel);
+    const runtimeModel = target.model(SDK.RuntimeModel);
     if (runtimeModel) {
       eventListeners.push(runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExceptionThrown, this._exceptionThrown.bind(this, runtimeModel)));
@@ -108,7 +108,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var runtimeModel = target.model(SDK.RuntimeModel);
+    const runtimeModel = target.model(SDK.RuntimeModel);
     if (runtimeModel)
       this._messageByExceptionId.delete(runtimeModel);
     Common.EventTarget.removeEventListeners(target[SDK.ConsoleModel._events] || []);
@@ -122,7 +122,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {boolean} awaitPromise
    */
   async evaluateCommandInConsole(executionContext, originatingMessage, expression, useCommandLineAPI, awaitPromise) {
-    var result = await executionContext.evaluate(
+    const result = await executionContext.evaluate(
         {
           expression: expression,
           objectGroup: 'console',
@@ -147,7 +147,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @return {!SDK.ConsoleMessage}
    */
   addCommandMessage(executionContext, text) {
-    var commandMessage = new SDK.ConsoleMessage(
+    const commandMessage = new SDK.ConsoleMessage(
         executionContext.runtimeModel, SDK.ConsoleMessage.MessageSource.JS, null, text,
         SDK.ConsoleMessage.MessageType.Command);
     commandMessage.setExecutionContextId(executionContext.id);
@@ -167,9 +167,9 @@ SDK.ConsoleModel = class extends Common.Object {
       this._clearIfNecessary();
 
     this._messages.push(msg);
-    var runtimeModel = msg.runtimeModel();
+    const runtimeModel = msg.runtimeModel();
     if (msg._exceptionId && runtimeModel) {
-      var modelMap = this._messageByExceptionId.get(runtimeModel);
+      let modelMap = this._messageByExceptionId.get(runtimeModel);
       if (!modelMap) {
         modelMap = new Map();
         this._messageByExceptionId.set(runtimeModel, modelMap);
@@ -185,8 +185,8 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _exceptionThrown(runtimeModel, event) {
-    var exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
-    var consoleMessage = SDK.ConsoleMessage.fromException(
+    const exceptionWithTimestamp = /** @type {!SDK.RuntimeModel.ExceptionWithTimestamp} */ (event.data);
+    const consoleMessage = SDK.ConsoleMessage.fromException(
         runtimeModel, exceptionWithTimestamp.details, undefined, exceptionWithTimestamp.timestamp, undefined);
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
@@ -197,9 +197,9 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _exceptionRevoked(runtimeModel, event) {
-    var exceptionId = /** @type {number} */ (event.data);
-    var modelMap = this._messageByExceptionId.get(runtimeModel);
-    var exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
+    const exceptionId = /** @type {number} */ (event.data);
+    const modelMap = this._messageByExceptionId.get(runtimeModel);
+    const exceptionMessage = modelMap ? modelMap.get(exceptionId) : null;
     if (!exceptionMessage)
       return;
     this._errors--;
@@ -212,8 +212,8 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _consoleAPICalled(runtimeModel, event) {
-    var call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
-    var level = SDK.ConsoleMessage.MessageLevel.Info;
+    const call = /** @type {!SDK.RuntimeModel.ConsoleAPICall} */ (event.data);
+    let level = SDK.ConsoleMessage.MessageLevel.Info;
     if (call.type === SDK.ConsoleMessage.MessageType.Debug)
       level = SDK.ConsoleMessage.MessageLevel.Verbose;
     else if (call.type === SDK.ConsoleMessage.MessageType.Error || call.type === SDK.ConsoleMessage.MessageType.Assert)
@@ -222,15 +222,15 @@ SDK.ConsoleModel = class extends Common.Object {
       level = SDK.ConsoleMessage.MessageLevel.Warning;
     else if (call.type === SDK.ConsoleMessage.MessageType.Info || call.type === SDK.ConsoleMessage.MessageType.Log)
       level = SDK.ConsoleMessage.MessageLevel.Info;
-    var message = '';
+    let message = '';
     if (call.args.length && call.args[0].unserializableValue)
       message = call.args[0].unserializableValue;
     else if (call.args.length && (typeof call.args[0].value !== 'object' || call.args[0].value === null))
       message = call.args[0].value + '';
     else if (call.args.length && call.args[0].description)
       message = call.args[0].description;
-    var callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
-    var consoleMessage = new SDK.ConsoleMessage(
+    const callFrame = call.stackTrace && call.stackTrace.callFrames.length ? call.stackTrace.callFrames[0] : null;
+    const consoleMessage = new SDK.ConsoleMessage(
         runtimeModel, SDK.ConsoleMessage.MessageSource.ConsoleAPI, level,
         /** @type {string} */ (message), call.type, callFrame ? callFrame.url : undefined,
         callFrame ? callFrame.lineNumber : undefined, callFrame ? callFrame.columnNumber : undefined, call.args,
@@ -243,7 +243,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _queryObjectRequested(runtimeModel, event) {
-    var consoleMessage = new SDK.ConsoleMessage(
+    const consoleMessage = new SDK.ConsoleMessage(
         runtimeModel, SDK.ConsoleMessage.MessageSource.ConsoleAPI, SDK.ConsoleMessage.MessageLevel.Info, '', undefined,
         undefined, undefined, undefined, [event.data.objects]);
     this.addMessage(consoleMessage);
@@ -268,7 +268,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _consoleProfileStarted(cpuProfilerModel, event) {
-    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, SDK.ConsoleMessage.MessageType.Profile, data.scriptLocation,
         Common.UIString('Profile \'%s\' started.', data.title));
@@ -279,7 +279,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _consoleProfileFinished(cpuProfilerModel, event) {
-    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
     this._addConsoleProfileMessage(
         cpuProfilerModel, SDK.ConsoleMessage.MessageType.ProfileEnd, data.scriptLocation,
         Common.UIString('Profile \'%s\' finished.', data.title));
@@ -292,7 +292,7 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {string} messageText
    */
   _addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
-    var stackTrace = [{
+    const stackTrace = [{
       functionName: '',
       scriptId: scriptLocation.scriptId,
       url: scriptLocation.script() ? scriptLocation.script().contentURL() : '',
@@ -328,9 +328,9 @@ SDK.ConsoleModel = class extends Common.Object {
   }
 
   requestClearMessages() {
-    for (var logModel of SDK.targetManager.models(SDK.LogModel))
+    for (const logModel of SDK.targetManager.models(SDK.LogModel))
       logModel.requestClear();
-    for (var runtimeModel of SDK.targetManager.models(SDK.RuntimeModel))
+    for (const runtimeModel of SDK.targetManager.models(SDK.RuntimeModel))
       runtimeModel.discardConsoleEntries();
     this._clear();
   }
@@ -512,7 +512,7 @@ SDK.ConsoleMessage = class {
    * @return {boolean}
    */
   isGroupable() {
-    var isUngroupableError = this.level === SDK.ConsoleMessage.MessageLevel.Error &&
+    const isUngroupableError = this.level === SDK.ConsoleMessage.MessageLevel.Error &&
         (this.source === SDK.ConsoleMessage.MessageSource.JS ||
          this.source === SDK.ConsoleMessage.MessageSource.Network);
     return (
@@ -543,7 +543,7 @@ SDK.ConsoleMessage = class {
       if (!msg.parameters || this.parameters.length !== msg.parameters.length)
         return false;
 
-      for (var i = 0; i < msg.parameters.length; ++i) {
+      for (let i = 0; i < msg.parameters.length; ++i) {
         // Never treat objects as equal - their properties might change over time. Errors can be treated as equal
         // since they are always formatted as strings.
         if (msg.parameters[i].type === 'object' && msg.parameters[i].subtype !== 'error')
@@ -571,11 +571,11 @@ SDK.ConsoleMessage = class {
       return false;
     if (!stackTrace1)
       return true;
-    var callFrames1 = stackTrace1.callFrames;
-    var callFrames2 = stackTrace2.callFrames;
+    const callFrames1 = stackTrace1.callFrames;
+    const callFrames2 = stackTrace2.callFrames;
     if (callFrames1.length !== callFrames2.length)
       return false;
-    for (var i = 0, n = callFrames1.length; i < n; ++i) {
+    for (let i = 0, n = callFrames1.length; i < n; ++i) {
       if (callFrames1[i].url !== callFrames2[i].url || callFrames1[i].functionName !== callFrames2[i].functionName ||
           callFrames1[i].lineNumber !== callFrames2[i].lineNumber ||
           callFrames1[i].columnNumber !== callFrames2[i].columnNumber)

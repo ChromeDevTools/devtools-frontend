@@ -93,11 +93,11 @@ Common.UIStringFormat = class {
 self.ls = function(strings, vararg) {
   if (typeof strings === 'string')
     return strings;
-  var values = Array.prototype.slice.call(arguments, 1);
+  const values = Array.prototype.slice.call(arguments, 1);
   if (!values.length)
     return strings[0];
-  var result = '';
-  for (var i = 0; i < values.length; i++) {
+  let result = '';
+  for (let i = 0; i < values.length; i++) {
     result += strings[i];
     result += '' + values[i];
   }

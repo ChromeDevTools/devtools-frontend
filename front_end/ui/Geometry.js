@@ -57,7 +57,7 @@ UI.Geometry.Vector = class {
   }
 
   normalize() {
-    var length = this.length();
+    const length = this.length();
     if (length <= UI.Geometry._Eps)
       return;
 
@@ -132,15 +132,15 @@ UI.Geometry.CubicBezier = class {
    * @return {?UI.Geometry.CubicBezier}
    */
   static parse(text) {
-    var keywordValues = UI.Geometry.CubicBezier.KeywordValues;
-    var value = text.toLowerCase().replace(/\s+/g, '');
+    const keywordValues = UI.Geometry.CubicBezier.KeywordValues;
+    const value = text.toLowerCase().replace(/\s+/g, '');
     if (Object.keys(keywordValues).indexOf(value) !== -1)
       return UI.Geometry.CubicBezier.parse(keywordValues[value]);
-    var bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
-    var match = value.match(bezierRegex);
+    const bezierRegex = /^cubic-bezier\(([^,]+),([^,]+),([^,]+),([^,]+)\)$/;
+    const match = value.match(bezierRegex);
     if (match) {
-      var control1 = new UI.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
-      var control2 = new UI.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
+      const control1 = new UI.Geometry.Point(parseFloat(match[1]), parseFloat(match[2]));
+      const control2 = new UI.Geometry.Point(parseFloat(match[3]), parseFloat(match[4]));
       return new UI.Geometry.CubicBezier(control1, control2);
     }
     return null;
@@ -160,8 +160,8 @@ UI.Geometry.CubicBezier = class {
       return 3 * (1 - t) * (1 - t) * t * v1 + 3 * (1 - t) * t * t * v2 + Math.pow(t, 3);
     }
 
-    var x = evaluate(this.controlPoints[0].x, this.controlPoints[1].x, t);
-    var y = evaluate(this.controlPoints[0].y, this.controlPoints[1].y, t);
+    const x = evaluate(this.controlPoints[0].x, this.controlPoints[1].x, t);
+    const y = evaluate(this.controlPoints[0].y, this.controlPoints[1].y, t);
     return new UI.Geometry.Point(x, y);
   }
 
@@ -169,9 +169,9 @@ UI.Geometry.CubicBezier = class {
    * @return {string}
    */
   asCSSText() {
-    var raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
-    var keywordValues = UI.Geometry.CubicBezier.KeywordValues;
-    for (var keyword in keywordValues) {
+    const raw = 'cubic-bezier(' + this.controlPoints.join(', ') + ')';
+    const keywordValues = UI.Geometry.CubicBezier.KeywordValues;
+    for (const keyword in keywordValues) {
       if (raw === keywordValues[keyword])
         return keyword;
     }
@@ -211,11 +211,11 @@ UI.Geometry.EulerAngles = class {
    * @return {!UI.Geometry.EulerAngles}
    */
   static fromRotationMatrix(rotationMatrix) {
-    var beta = Math.atan2(rotationMatrix.m23, rotationMatrix.m33);
-    var gamma = Math.atan2(
+    const beta = Math.atan2(rotationMatrix.m23, rotationMatrix.m33);
+    const gamma = Math.atan2(
         -rotationMatrix.m13,
         Math.sqrt(rotationMatrix.m11 * rotationMatrix.m11 + rotationMatrix.m12 * rotationMatrix.m12));
-    var alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
+    const alpha = Math.atan2(rotationMatrix.m12, rotationMatrix.m11);
     return new UI.Geometry.EulerAngles(
         UI.Geometry.radiansToDegrees(alpha), UI.Geometry.radiansToDegrees(beta), UI.Geometry.radiansToDegrees(gamma));
   }
@@ -224,9 +224,9 @@ UI.Geometry.EulerAngles = class {
    * @return {string}
    */
   toRotate3DString() {
-    var gammaAxisY = -Math.sin(UI.Geometry.degreesToRadians(this.beta));
-    var gammaAxisZ = Math.cos(UI.Geometry.degreesToRadians(this.beta));
-    var axis = {alpha: [0, 1, 0], beta: [-1, 0, 0], gamma: [0, gammaAxisY, gammaAxisZ]};
+    const gammaAxisY = -Math.sin(UI.Geometry.degreesToRadians(this.beta));
+    const gammaAxisZ = Math.cos(UI.Geometry.degreesToRadians(this.beta));
+    const axis = {alpha: [0, 1, 0], beta: [-1, 0, 0], gamma: [0, gammaAxisY, gammaAxisZ]};
     return 'rotate3d(' + axis.alpha.join(',') + ',' + this.alpha + 'deg) ' +
         'rotate3d(' + axis.beta.join(',') + ',' + this.beta + 'deg) ' +
         'rotate3d(' + axis.gamma.join(',') + ',' + this.gamma + 'deg)';
@@ -249,9 +249,9 @@ UI.Geometry.scalarProduct = function(u, v) {
  * @return {!UI.Geometry.Vector}
  */
 UI.Geometry.crossProduct = function(u, v) {
-  var x = u.y * v.z - u.z * v.y;
-  var y = u.z * v.x - u.x * v.z;
-  var z = u.x * v.y - u.y * v.x;
+  const x = u.y * v.z - u.z * v.y;
+  const y = u.z * v.x - u.x * v.z;
+  const z = u.x * v.y - u.y * v.x;
   return new UI.Geometry.Vector(x, y, z);
 };
 
@@ -261,9 +261,9 @@ UI.Geometry.crossProduct = function(u, v) {
  * @return {!UI.Geometry.Vector}
  */
 UI.Geometry.subtract = function(u, v) {
-  var x = u.x - v.x;
-  var y = u.y - v.y;
-  var z = u.z - v.z;
+  const x = u.x - v.x;
+  const y = u.y - v.y;
+  const z = u.z - v.z;
   return new UI.Geometry.Vector(x, y, z);
 };
 
@@ -273,10 +273,10 @@ UI.Geometry.subtract = function(u, v) {
  * @return {!UI.Geometry.Vector}
  */
 UI.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
-  var t = v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44;
-  var x = (v.x * m.m11 + v.y * m.m21 + v.z * m.m31 + m.m41) / t;
-  var y = (v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42) / t;
-  var z = (v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43) / t;
+  const t = v.x * m.m14 + v.y * m.m24 + v.z * m.m34 + m.m44;
+  const x = (v.x * m.m11 + v.y * m.m21 + v.z * m.m31 + m.m41) / t;
+  const y = (v.x * m.m12 + v.y * m.m22 + v.z * m.m32 + m.m42) / t;
+  const z = (v.x * m.m13 + v.y * m.m23 + v.z * m.m33 + m.m43) / t;
   return new UI.Geometry.Vector(x, y, z);
 };
 
@@ -286,11 +286,11 @@ UI.Geometry.multiplyVectorByMatrixAndNormalize = function(v, m) {
  * @return {number}
  */
 UI.Geometry.calculateAngle = function(u, v) {
-  var uLength = u.length();
-  var vLength = v.length();
+  const uLength = u.length();
+  const vLength = v.length();
   if (uLength <= UI.Geometry._Eps || vLength <= UI.Geometry._Eps)
     return 0;
-  var cos = UI.Geometry.scalarProduct(u, v) / uLength / vLength;
+  const cos = UI.Geometry.scalarProduct(u, v) / uLength / vLength;
   if (Math.abs(cos) > 1)
     return 0;
   return UI.Geometry.radiansToDegrees(Math.acos(cos));
@@ -323,8 +323,8 @@ UI.Geometry.boundsForTransformedPoints = function(matrix, points, aggregateBound
     aggregateBounds = {minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity};
   if (points.length % 3)
     console.assert('Invalid size of points array');
-  for (var p = 0; p < points.length; p += 3) {
-    var vector = new UI.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
+  for (let p = 0; p < points.length; p += 3) {
+    let vector = new UI.Geometry.Vector(points[p], points[p + 1], points[p + 2]);
     vector = UI.Geometry.multiplyVectorByMatrixAndNormalize(vector, matrix);
     aggregateBounds.minX = Math.min(aggregateBounds.minX, vector.x);
     aggregateBounds.maxX = Math.max(aggregateBounds.maxX, vector.x);

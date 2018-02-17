@@ -133,9 +133,9 @@ UI.ARIAUtils.setAccessibleName = function(element, name) {
  * @param {!Element} element
  */
 UI.ARIAUtils.alert = function(message, element) {
-  var document = element.ownerDocument;
+  const document = element.ownerDocument;
   if (!document[UI.ARIAUtils.AlertElementSymbol]) {
-    var alertElement = document.body.createChild('div');
+    const alertElement = document.body.createChild('div');
     alertElement.style.position = 'absolute';
     alertElement.style.left = '-999em';
     alertElement.setAttribute('role', 'alert');

@@ -21,7 +21,7 @@ CPUProfilerTestRunner.completeProfilerTest = function() {
 };
 
 CPUProfilerTestRunner.runProfilerTestSuite = function(testSuite) {
-  var testSuiteTests = testSuite.slice();
+  const testSuiteTests = testSuite.slice();
 
   function runner() {
     if (!testSuiteTests.length) {
@@ -29,7 +29,7 @@ CPUProfilerTestRunner.runProfilerTestSuite = function(testSuite) {
       return;
     }
 
-    var nextTest = testSuiteTests.shift();
+    const nextTest = testSuiteTests.shift();
     TestRunner.addResult('');
     TestRunner.addResult(
         'Running: ' +
@@ -51,7 +51,7 @@ CPUProfilerTestRunner._profileHeaderAdded = function(profile) {
 
 CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
   callback = TestRunner.safeWrap(callback);
-  var profilesPanel = UI.panels.js_profiler;
+  const profilesPanel = UI.panels.js_profiler;
 
   if (profilesPanel.visibleView && profilesPanel.visibleView.profile &&
       profilesPanel.visibleView._profileHeader.title === title)
@@ -64,7 +64,7 @@ CPUProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
 CPUProfilerTestRunner._profileViewRefresh = function() {
   if (CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback &&
       CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback.title === this._profileHeader.title) {
-    var callback = CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
+    const callback = CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
     delete CPUProfilerTestRunner._waitUntilProfileViewIsShownCallback;
     callback.callback(this);
   }

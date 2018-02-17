@@ -49,7 +49,7 @@ Bindings.ResourceScriptMapping = class {
 
     /** @type {!Set<!SDK.Script>} */
     this._acceptedScripts = new Set();
-    var runtimeModel = debuggerModel.runtimeModel();
+    const runtimeModel = debuggerModel.runtimeModel();
     this._eventListeners = [
       this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       this._debuggerModel.addEventListener(
@@ -66,12 +66,12 @@ Bindings.ResourceScriptMapping = class {
    * @return {!Bindings.ContentProviderBasedProject}
    */
   _project(script) {
-    var frameId = script[Bindings.ResourceScriptMapping._frameIdSymbol];
-    var prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
-    var projectId = prefix + this._debuggerModel.target().id() + ':' + frameId;
-    var project = this._projects.get(projectId);
+    const frameId = script[Bindings.ResourceScriptMapping._frameIdSymbol];
+    const prefix = script.isContentScript() ? 'js:extensions:' : 'js::';
+    const projectId = prefix + this._debuggerModel.target().id() + ':' + frameId;
+    let project = this._projects.get(projectId);
     if (!project) {
-      var projectType =
+      const projectType =
           script.isContentScript() ? Workspace.projectTypes.ContentScripts : Workspace.projectTypes.Network;
       project = new Bindings.ContentProviderBasedProject(
           this._workspace, projectId, projectType, '' /* displayName */, false /* isServiceProject */);
@@ -87,22 +87,22 @@ Bindings.ResourceScriptMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var script = rawLocation.script();
+    const script = rawLocation.script();
     if (!script)
       return null;
-    var project = this._project(script);
-    var uiSourceCode = project.uiSourceCodeForURL(script.sourceURL);
+    const project = this._project(script);
+    const uiSourceCode = project.uiSourceCodeForURL(script.sourceURL);
     if (!uiSourceCode)
       return null;
-    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    const scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
     if (!scriptFile)
       return null;
     if ((scriptFile.hasDivergedFromVM() && !scriptFile.isMergingToVM()) || scriptFile.isDivergingFromVM())
       return null;
     if (!scriptFile._hasScripts([script]))
       return null;
-    var lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-    var columnNumber = rawLocation.columnNumber || 0;
+    const lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    let columnNumber = rawLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
       columnNumber -= script.columnOffset;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
@@ -116,10 +116,10 @@ Bindings.ResourceScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    const scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
     if (!scriptFile)
       return null;
-    var script = scriptFile._script;
+    const script = scriptFile._script;
     if (script.isInlineScriptWithSourceURL()) {
       return this._debuggerModel.createRawLocation(
           script, lineNumber + script.lineOffset, lineNumber ? columnNumber : columnNumber + script.columnOffset);
@@ -136,7 +136,7 @@ Bindings.ResourceScriptMapping = class {
       return false;
     // Filter out embedder injected content scripts.
     if (script.isContentScript() && !script.hasSourceURL) {
-      var parsedURL = new Common.ParsedURL(script.sourceURL);
+      const parsedURL = new Common.ParsedURL(script.sourceURL);
       if (!parsedURL.isValid)
         return false;
     }
@@ -147,31 +147,31 @@ Bindings.ResourceScriptMapping = class {
    * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
+    const script = /** @type {!SDK.Script} */ (event.data);
     if (!this._acceptsScript(script))
       return;
     this._acceptedScripts.add(script);
-    var originalContentProvider = script.originalContentProvider();
-    var frameId = Bindings.frameIdForScript(script);
+    const originalContentProvider = script.originalContentProvider();
+    const frameId = Bindings.frameIdForScript(script);
     script[Bindings.ResourceScriptMapping._frameIdSymbol] = frameId;
 
-    var url = script.sourceURL;
-    var project = this._project(script);
+    const url = script.sourceURL;
+    const project = this._project(script);
 
     // Remove previous UISourceCode, if any
-    var oldUISourceCode = project.uiSourceCodeForURL(url);
+    const oldUISourceCode = project.uiSourceCodeForURL(url);
     if (oldUISourceCode) {
-      var scriptFile = this._uiSourceCodeToScriptFile.get(oldUISourceCode);
+      const scriptFile = this._uiSourceCodeToScriptFile.get(oldUISourceCode);
       this._removeScript(scriptFile._script);
     }
 
     // Create UISourceCode.
-    var uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
+    const uiSourceCode = project.createUISourceCode(url, originalContentProvider.contentType());
     Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, frameId);
-    var metadata = Bindings.metadataForURL(this._debuggerModel.target(), frameId, url);
+    const metadata = Bindings.metadataForURL(this._debuggerModel.target(), frameId, url);
 
     // Bind UISourceCode to scripts.
-    var scriptFile = new Bindings.ResourceScriptFile(this, uiSourceCode, [script]);
+    const scriptFile = new Bindings.ResourceScriptFile(this, uiSourceCode, [script]);
     this._uiSourceCodeToScriptFile.set(uiSourceCode, scriptFile);
 
     project.addUISourceCodeWithProvider(uiSourceCode, originalContentProvider, metadata, 'text/javascript');
@@ -193,9 +193,9 @@ Bindings.ResourceScriptMapping = class {
     if (!this._acceptedScripts.has(script))
       return;
     this._acceptedScripts.delete(script);
-    var project = this._project(script);
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(script.sourceURL));
-    var scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
+    const project = this._project(script);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (project.uiSourceCodeForURL(script.sourceURL));
+    const scriptFile = this._uiSourceCodeToScriptFile.get(uiSourceCode);
     scriptFile.dispose();
     this._uiSourceCodeToScriptFile.delete(uiSourceCode);
     project.removeFile(script.sourceURL);
@@ -206,9 +206,9 @@ Bindings.ResourceScriptMapping = class {
    * @param {!Common.Event} event
    */
   _executionContextDestroyed(event) {
-    var executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
-    var scripts = this._debuggerModel.scriptsForExecutionContext(executionContext);
-    for (var script of scripts)
+    const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
+    const scripts = this._debuggerModel.scriptsForExecutionContext(executionContext);
+    for (const script of scripts)
       this._removeScript(script);
   }
 
@@ -216,23 +216,23 @@ Bindings.ResourceScriptMapping = class {
    * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
-    var scripts = Array.from(this._acceptedScripts);
-    for (var script of scripts)
+    const scripts = Array.from(this._acceptedScripts);
+    for (const script of scripts)
       this._removeScript(script);
   }
 
   resetForTest() {
-    var scripts = Array.from(this._acceptedScripts);
-    for (var script of scripts)
+    const scripts = Array.from(this._acceptedScripts);
+    for (const script of scripts)
       this._removeScript(script);
   }
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    var scripts = Array.from(this._acceptedScripts);
-    for (var script of scripts)
+    const scripts = Array.from(this._acceptedScripts);
+    for (const script of scripts)
       this._removeScript(script);
-    for (var project of this._projects.values())
+    for (const project of this._projects.values())
       project.removeProject();
     this._projects.clear();
   }
@@ -281,14 +281,14 @@ Bindings.ResourceScriptFile = class extends Common.Object {
       return false;
     if (typeof this._scriptSource === 'undefined')
       return false;
-    var workingCopy = this._uiSourceCode.workingCopy();
+    const workingCopy = this._uiSourceCode.workingCopy();
     if (!workingCopy)
       return false;
 
     // Match ignoring sourceURL.
     if (!workingCopy.startsWith(this._scriptSource.trimRight()))
       return true;
-    var suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
+    const suffix = this._uiSourceCode.workingCopy().substr(this._scriptSource.length);
     return !!suffix.length && !suffix.match(SDK.Script.sourceURLRegex);
   }
 
@@ -307,8 +307,8 @@ Bindings.ResourceScriptFile = class extends Common.Object {
       return;
     if (!this._script)
       return;
-    var debuggerModel = this._resourceScriptMapping._debuggerModel;
-    var source = this._uiSourceCode.workingCopy();
+    const debuggerModel = this._resourceScriptMapping._debuggerModel;
+    const source = this._uiSourceCode.workingCopy();
     debuggerModel.setScriptSource(this._script.scriptId, source, scriptSourceWasSet.bind(this));
 
     /**
@@ -327,7 +327,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
         Common.console.addMessage(Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
         return;
       }
-      var messageText = Common.UIString('LiveEdit compile failed: %s', exceptionDetails.text);
+      const messageText = Common.UIString('LiveEdit compile failed: %s', exceptionDetails.text);
       this._uiSourceCode.addLineMessage(
           Workspace.UISourceCode.Message.Level.Error, messageText, exceptionDetails.lineNumber,
           exceptionDetails.columnNumber);

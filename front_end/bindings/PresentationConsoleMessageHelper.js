@@ -66,12 +66,12 @@ Bindings.PresentationConsoleMessageManager = class {
     if (!message.isErrorOrWarning() || !message.runtimeModel() ||
         message.source === SDK.ConsoleMessage.MessageSource.Violation)
       return;
-    var debuggerModel = message.runtimeModel().debuggerModel();
+    const debuggerModel = message.runtimeModel().debuggerModel();
     debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleMessageAdded(message);
   }
 
   _consoleCleared() {
-    for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel))
+    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel))
       debuggerModel[Bindings.PresentationConsoleMessageManager._symbol]._consoleCleared();
   }
 };
@@ -106,7 +106,7 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @param {!SDK.ConsoleMessage} message
    */
   _consoleMessageAdded(message) {
-    var rawLocation = this._rawLocation(message);
+    const rawLocation = this._rawLocation(message);
     if (rawLocation)
       this._addConsoleMessageToScript(message, rawLocation);
     else
@@ -120,7 +120,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   _rawLocation(message) {
     if (message.scriptId)
       return this._debuggerModel.createRawLocationByScriptId(message.scriptId, message.line, message.column);
-    var callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
+    const callFrame = message.stackTrace && message.stackTrace.callFrames ? message.stackTrace.callFrames[0] : null;
     if (callFrame) {
       return this._debuggerModel.createRawLocationByScriptId(
           callFrame.scriptId, callFrame.lineNumber, callFrame.columnNumber);
@@ -154,16 +154,16 @@ Bindings.PresentationConsoleMessageHelper = class {
    * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
+    const script = /** @type {!SDK.Script} */ (event.data);
 
-    var messages = this._pendingConsoleMessages[script.sourceURL];
+    const messages = this._pendingConsoleMessages[script.sourceURL];
     if (!messages)
       return;
 
-    var pendingMessages = [];
-    for (var i = 0; i < messages.length; i++) {
-      var message = messages[i];
-      var rawLocation = this._rawLocation(message);
+    const pendingMessages = [];
+    for (let i = 0; i < messages.length; i++) {
+      const message = messages[i];
+      const rawLocation = this._rawLocation(message);
       if (!rawLocation)
         continue;
       if (script.scriptId === rawLocation.scriptId)
@@ -184,7 +184,7 @@ Bindings.PresentationConsoleMessageHelper = class {
   }
 
   _debuggerReset() {
-    for (var message of this._presentationConsoleMessages)
+    for (const message of this._presentationConsoleMessages)
       message.dispose();
     this._presentationConsoleMessages = [];
     this._locationPool.disposeAll();
@@ -214,7 +214,7 @@ Bindings.PresentationConsoleMessage = class {
   _updateLocation(liveLocation) {
     if (this._uiMessage)
       this._uiMessage.remove();
-    var uiLocation = liveLocation.uiLocation();
+    const uiLocation = liveLocation.uiLocation();
     if (!uiLocation)
       return;
     this._uiMessage =

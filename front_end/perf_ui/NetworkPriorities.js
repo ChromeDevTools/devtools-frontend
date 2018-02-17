@@ -31,7 +31,7 @@ PerfUI._priorityUILabelMap = function() {
     return PerfUI._priorityUILabelMapInstance;
 
   /** @type {!Map<!Protocol.Network.ResourcePriority, string>} */
-  var map = new Map();
+  const map = new Map();
   map.set(Protocol.Network.ResourcePriority.VeryLow, Common.UIString('Lowest'));
   map.set(Protocol.Network.ResourcePriority.Low, Common.UIString('Low'));
   map.set(Protocol.Network.ResourcePriority.Medium, Common.UIString('Medium'));
@@ -48,7 +48,7 @@ PerfUI._priorityUILabelMap = function() {
 PerfUI.networkPriorityWeight = function(priority) {
   if (!PerfUI._networkPriorityWeights) {
     /** @type {!Map<!Protocol.Network.ResourcePriority, number>} */
-    var priorityMap = new Map();
+    const priorityMap = new Map();
     priorityMap.set(Protocol.Network.ResourcePriority.VeryLow, 1);
     priorityMap.set(Protocol.Network.ResourcePriority.Low, 2);
     priorityMap.set(Protocol.Network.ResourcePriority.Medium, 3);

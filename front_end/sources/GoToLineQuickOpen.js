@@ -9,10 +9,10 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
    * @param {string} promptValue
    */
   selectItem(itemIndex, promptValue) {
-    var uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this._currentUISourceCode();
     if (!uiSourceCode)
       return;
-    var position = this._parsePosition(promptValue);
+    const position = this._parsePosition(promptValue);
     if (!position)
       return;
     Common.Revealer.reveal(uiSourceCode.uiLocation(position.line - 1, position.column - 1));
@@ -26,10 +26,10 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
   notFoundText(query) {
     if (!this._currentUISourceCode())
       return Common.UIString('No file selected.');
-    var position = this._parsePosition(query);
+    const position = this._parsePosition(query);
     if (!position)
       return Common.UIString('Type a number to go to that line.');
-    var text = Common.UIString('Go to line ') + position.line;
+    let text = Common.UIString('Go to line ') + position.line;
     if (position.column && position.column > 1)
       text += Common.UIString(' and column ') + position.column;
     text += '.';
@@ -41,11 +41,11 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
    * @return {?{line: number, column: number}}
    */
   _parsePosition(query) {
-    var parts = query.match(/([0-9]+)(\:[0-9]*)?/);
+    const parts = query.match(/([0-9]+)(\:[0-9]*)?/);
     if (!parts || !parts[0] || parts[0].length !== query.length)
       return null;
-    var line = parseInt(parts[1], 10);
-    var column;
+    const line = parseInt(parts[1], 10);
+    let column;
     if (parts[2])
       column = parseInt(parts[2].substring(1), 10);
     return {line: Math.max(line | 0, 1), column: Math.max(column | 0, 1)};
@@ -55,7 +55,7 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
    * @return {?Workspace.UISourceCode}
    */
   _currentUISourceCode() {
-    var sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(Sources.SourcesView);
     if (!sourcesView)
       return null;
     return sourcesView.currentUISourceCode();

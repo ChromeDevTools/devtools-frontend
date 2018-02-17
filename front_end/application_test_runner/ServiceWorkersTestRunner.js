@@ -41,7 +41,7 @@ ApplicationTestRunner.waitForServiceWorker = function(callback) {
 };
 
 ApplicationTestRunner.dumpServiceWorkersView = function() {
-  var swView = UI.panels.resources.visibleView;
+  const swView = UI.panels.resources.visibleView;
 
   return swView._currentWorkersView._sectionList.childTextNodes()
       .concat(swView._otherWorkersView._sectionList.childTextNodes())
@@ -63,7 +63,7 @@ ApplicationTestRunner.makeFetchInServiceWorker = function(scope, url, requestIni
 };
 
 TestRunner.deprecatedInitAsync(`
-  var registrations = {};
+  let registrations = {};
 
   function registerServiceWorker(script, scope) {
     return navigator.serviceWorker.register(script, {
@@ -98,7 +98,7 @@ TestRunner.deprecatedInitAsync(`
   }
 
   function unregisterServiceWorker(scope) {
-    var registration = registrations[scope];
+    let registration = registrations[scope];
 
     if (!registration)
       return Promise.reject('ServiceWorker for ' + scope + ' is not registered');

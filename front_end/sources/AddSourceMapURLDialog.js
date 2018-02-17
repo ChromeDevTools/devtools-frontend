@@ -18,7 +18,7 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
     this._input.setAttribute('type', 'text');
     this._input.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
-    var addButton = this.contentElement.createChild('button');
+    const addButton = this.contentElement.createChild('button');
     addButton.textContent = Common.UIString('Add');
     addButton.addEventListener('click', this._apply.bind(this), false);
 
@@ -31,8 +31,8 @@ Sources.AddSourceMapURLDialog = class extends UI.HBox {
    * @param {function(string)} callback
    */
   static show(callback) {
-    var dialog = new UI.Dialog();
-    var addSourceMapURLDialog = new Sources.AddSourceMapURLDialog(done);
+    const dialog = new UI.Dialog();
+    const addSourceMapURLDialog = new Sources.AddSourceMapURLDialog(done);
     addSourceMapURLDialog.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.show();

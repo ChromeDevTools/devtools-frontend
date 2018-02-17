@@ -24,28 +24,29 @@ FormatterWorker.RelaxedJSONParser.Keywords = {
  * @return {*}
  */
 FormatterWorker.RelaxedJSONParser.parse = function(content) {
-  var Keywords = FormatterWorker.RelaxedJSONParser.Keywords;
-  var States = FormatterWorker.RelaxedJSONParser.States;
+  const Keywords = FormatterWorker.RelaxedJSONParser.Keywords;
+  const States = FormatterWorker.RelaxedJSONParser.States;
   content = '(' + content + ')';
 
+  let root;
   try {
-    var root = acorn.parse(content, {});
+    root = acorn.parse(content, {});
   } catch (e) {
     return null;
   }
 
-  var walker = new FormatterWorker.ESTreeWalker(beforeVisit, afterVisit);
+  const walker = new FormatterWorker.ESTreeWalker(beforeVisit, afterVisit);
 
-  var rootTip = [];
+  const rootTip = [];
 
   /** @type {!Array.<!FormatterWorker.RelaxedJSONParser.Context>} */
-  var stack = [];
+  const stack = [];
 
-  var stackData = /** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
+  let stackData = /** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
       {key: 0, tip: rootTip, state: States.ExpectValue, parentIsArray: true});
 
   walker.setWalkNulls(true);
-  var hasExpression = false;
+  let hasExpression = false;
 
   walker.walk(root);
 
@@ -82,20 +83,22 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
    */
   function beforeVisit(node) {
     switch (node.type) {
-      case 'ObjectExpression':
-        var newTip = {};
+      case 'ObjectExpression': {
+        const newTip = {};
         applyValue(newTip);
 
         pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
             {key: null, tip: newTip, state: null, parentIsArray: false}));
         break;
-      case 'ArrayExpression':
-        var newTip = [];
+      }
+      case 'ArrayExpression': {
+        const newTip = [];
         applyValue(newTip);
 
         pushStack(/** @type {!FormatterWorker.RelaxedJSONParser.Context} */ (
             {key: 0, tip: newTip, state: States.ExpectValue, parentIsArray: true}));
         break;
+      }
       case 'Property':
         stackData.state = States.ExpectKey;
         break;
@@ -146,9 +149,9 @@ FormatterWorker.RelaxedJSONParser.parse = function(content) {
    * @return {*}
    */
   function extractValue(node) {
-    var isNegative = false;
-    var originalNode = node;
-    var value;
+    let isNegative = false;
+    const originalNode = node;
+    let value;
     if (node.type === 'UnaryExpression' && (node.operator === '-' || node.operator === '+')) {
       if (node.operator === '-')
         isNegative = true;

@@ -21,7 +21,7 @@ QuickOpen.CommandMenu = class {
    */
   static createCommand(category, keys, title, shortcut, executeHandler, availableHandler) {
     // Separate keys by null character, to prevent fuzzy matching from matching across them.
-    var key = keys.replace(/,/g, '\0');
+    const key = keys.replace(/,/g, '\0');
     return new QuickOpen.CommandMenu.Command(category, title, key, shortcut, executeHandler, availableHandler);
   }
 
@@ -33,9 +33,9 @@ QuickOpen.CommandMenu = class {
    * @template V
    */
   static createSettingCommand(extension, title, value) {
-    var category = extension.descriptor()['category'] || '';
-    var tags = extension.descriptor()['tags'] || '';
-    var setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
+    const category = extension.descriptor()['category'] || '';
+    const tags = extension.descriptor()['tags'] || '';
+    const setting = Common.settings.moduleSetting(extension.descriptor()['settingName']);
     return QuickOpen.CommandMenu.createCommand(
         category, tags, title, '', setting.set.bind(setting, value), availableHandler);
 
@@ -52,7 +52,7 @@ QuickOpen.CommandMenu = class {
    * @return {!QuickOpen.CommandMenu.Command}
    */
   static createActionCommand(action) {
-    var shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
+    const shortcut = UI.shortcutRegistry.shortcutTitleForAction(action.id()) || '';
     return QuickOpen.CommandMenu.createCommand(
         action.category(), action.tags(), action.title(), shortcut, action.execute.bind(action));
   }
@@ -63,35 +63,35 @@ QuickOpen.CommandMenu = class {
    * @return {!QuickOpen.CommandMenu.Command}
    */
   static createRevealViewCommand(extension, category) {
-    var viewId = extension.descriptor()['id'];
-    var executeHandler = UI.viewManager.showView.bind(UI.viewManager, viewId);
-    var tags = extension.descriptor()['tags'] || '';
+    const viewId = extension.descriptor()['id'];
+    const executeHandler = UI.viewManager.showView.bind(UI.viewManager, viewId);
+    const tags = extension.descriptor()['tags'] || '';
     return QuickOpen.CommandMenu.createCommand(
         category, tags, Common.UIString('Show %s', extension.title()), '', executeHandler);
   }
 
   _loadCommands() {
-    var locations = new Map();
+    const locations = new Map();
     self.runtime.extensions(UI.ViewLocationResolver).forEach(extension => {
-      var category = extension.descriptor()['category'];
-      var name = extension.descriptor()['name'];
+      const category = extension.descriptor()['category'];
+      const name = extension.descriptor()['name'];
       if (category && name)
         locations.set(name, category);
     });
-    var viewExtensions = self.runtime.extensions('view');
-    for (var extension of viewExtensions) {
-      var category = locations.get(extension.descriptor()['location']);
+    const viewExtensions = self.runtime.extensions('view');
+    for (const extension of viewExtensions) {
+      const category = locations.get(extension.descriptor()['location']);
       if (category)
         this._commands.push(QuickOpen.CommandMenu.createRevealViewCommand(extension, category));
     }
 
     // Populate whitelisted settings.
-    var settingExtensions = self.runtime.extensions('setting');
-    for (var extension of settingExtensions) {
-      var options = extension.descriptor()['options'];
+    const settingExtensions = self.runtime.extensions('setting');
+    for (const extension of settingExtensions) {
+      const options = extension.descriptor()['options'];
       if (!options || !extension.descriptor()['category'])
         continue;
-      for (var pair of options)
+      for (const pair of options)
         this._commands.push(QuickOpen.CommandMenu.createSettingCommand(extension, pair['title'], pair['value']));
     }
   }
@@ -114,16 +114,16 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
    * @override
    */
   attach() {
-    var allCommands = QuickOpen.commandMenu.commands();
+    const allCommands = QuickOpen.commandMenu.commands();
 
     // Populate whitelisted actions.
-    var actions = UI.actionRegistry.availableActions();
-    for (var action of actions) {
+    const actions = UI.actionRegistry.availableActions();
+    for (const action of actions) {
       if (action.category())
         this._commands.push(QuickOpen.CommandMenu.createActionCommand(action));
     }
 
-    for (var command of allCommands) {
+    for (const command of allCommands) {
       if (command.available())
         this._commands.push(command);
     }
@@ -136,7 +136,7 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
      * @return {number}
      */
     function commandComparator(left, right) {
-      var cats = left.category().compareTo(right.category());
+      const cats = left.category().compareTo(right.category());
       return cats ? cats : left.title().compareTo(right.title());
     }
   }
@@ -172,11 +172,11 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
    * @return {number}
    */
   itemScoreAt(itemIndex, query) {
-    var command = this._commands[itemIndex];
-    var opcodes = Diff.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
-    var score = 0;
+    const command = this._commands[itemIndex];
+    const opcodes = Diff.Diff.charDiff(query.toLowerCase(), command.title().toLowerCase());
+    let score = 0;
     // Score longer sequences higher.
-    for (var i = 0; i < opcodes.length; ++i) {
+    for (let i = 0; i < opcodes.length; ++i) {
       if (opcodes[i][0] === Diff.Diff.Operation.Equal)
         score += opcodes[i][1].length * opcodes[i][1].length;
     }
@@ -198,10 +198,10 @@ QuickOpen.CommandMenuProvider = class extends QuickOpen.FilteredListWidget.Provi
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-    var command = this._commands[itemIndex];
+    const command = this._commands[itemIndex];
     titleElement.removeChildren();
-    var tagElement = titleElement.createChild('span', 'tag');
-    var index = String.hashCode(command.category()) % QuickOpen.CommandMenuProvider.MaterialPaletteColors.length;
+    const tagElement = titleElement.createChild('span', 'tag');
+    const index = String.hashCode(command.category()) % QuickOpen.CommandMenuProvider.MaterialPaletteColors.length;
     tagElement.style.backgroundColor = QuickOpen.CommandMenuProvider.MaterialPaletteColors[index];
     tagElement.textContent = command.category();
     titleElement.createTextChild(command.title());

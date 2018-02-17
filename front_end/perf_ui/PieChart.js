@@ -40,12 +40,12 @@ PerfUI.PieChart = class {
   constructor(size, formatter, showTotal) {
     this.element = createElement('div');
     this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'perf_ui/pieChart.css');
-    var root = this._shadowRoot.createChild('div', 'root');
-    var svg = this._createSVGChild(root, 'svg');
+    const root = this._shadowRoot.createChild('div', 'root');
+    const svg = this._createSVGChild(root, 'svg');
     this._group = this._createSVGChild(svg, 'g');
     this._innerR = 0.618;
-    var strokeWidth = 1 / size;
-    var circle = this._createSVGChild(this._group, 'circle');
+    const strokeWidth = 1 / size;
+    let circle = this._createSVGChild(this._group, 'circle');
     circle.setAttribute('r', 1);
     circle.setAttribute('stroke', 'hsl(0, 0%, 80%)');
     circle.setAttribute('fill', 'transparent');
@@ -68,12 +68,12 @@ PerfUI.PieChart = class {
    * @param {number} totalValue
    */
   setTotal(totalValue) {
-    for (var i = 0; i < this._slices.length; ++i)
+    for (let i = 0; i < this._slices.length; ++i)
       this._slices[i].remove();
     this._slices = [];
     this._totalValue = totalValue;
     this._lastAngle = -Math.PI / 2;
-    var totalString;
+    let totalString;
     if (totalValue)
       totalString = this._formatter ? this._formatter(totalValue) : totalValue;
     else
@@ -87,7 +87,7 @@ PerfUI.PieChart = class {
    */
   _setSize(value) {
     this._group.setAttribute('transform', 'scale(' + (value / 2) + ') translate(1, 1) scale(0.99, 0.99)');
-    var size = value + 'px';
+    const size = value + 'px';
     this.element.style.width = size;
     this.element.style.height = size;
   }
@@ -97,22 +97,22 @@ PerfUI.PieChart = class {
    * @param {string} color
    */
   addSlice(value, color) {
-    var sliceAngle = value / this._totalValue * 2 * Math.PI;
+    let sliceAngle = value / this._totalValue * 2 * Math.PI;
     if (!isFinite(sliceAngle))
       return;
     sliceAngle = Math.min(sliceAngle, 2 * Math.PI * 0.9999);
-    var path = this._createSVGChild(this._group, 'path');
-    var x1 = Math.cos(this._lastAngle);
-    var y1 = Math.sin(this._lastAngle);
+    const path = this._createSVGChild(this._group, 'path');
+    const x1 = Math.cos(this._lastAngle);
+    const y1 = Math.sin(this._lastAngle);
     this._lastAngle += sliceAngle;
-    var x2 = Math.cos(this._lastAngle);
-    var y2 = Math.sin(this._lastAngle);
-    var r2 = this._innerR;
-    var x3 = x2 * r2;
-    var y3 = y2 * r2;
-    var x4 = x1 * r2;
-    var y4 = y1 * r2;
-    var largeArc = sliceAngle > Math.PI ? 1 : 0;
+    const x2 = Math.cos(this._lastAngle);
+    const y2 = Math.sin(this._lastAngle);
+    const r2 = this._innerR;
+    const x3 = x2 * r2;
+    const y3 = y2 * r2;
+    const x4 = x1 * r2;
+    const y4 = y1 * r2;
+    const largeArc = sliceAngle > Math.PI ? 1 : 0;
     path.setAttribute('d',
         `M${x1},${y1} A1,1,0,${largeArc},1,${x2},${y2} L${x3},${y3} A${r2},${r2},0,${largeArc},0,${x4},${y4} Z`);
     path.setAttribute('fill', color);
@@ -125,7 +125,7 @@ PerfUI.PieChart = class {
    * @return {!Element}
    */
   _createSVGChild(parent, childType) {
-    var child = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', childType);
+    const child = parent.ownerDocument.createElementNS('http://www.w3.org/2000/svg', childType);
     parent.appendChild(child);
     return child;
   }

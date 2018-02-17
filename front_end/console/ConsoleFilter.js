@@ -20,8 +20,8 @@ Console.ConsoleFilter = class {
    * @return {!Object<string, boolean>}
    */
   static allLevelsFilterValue() {
-    var result = {};
-    for (var name of Object.values(SDK.ConsoleMessage.MessageLevel))
+    const result = {};
+    for (const name of Object.values(SDK.ConsoleMessage.MessageLevel))
       result[name] = true;
     return result;
   }
@@ -30,7 +30,7 @@ Console.ConsoleFilter = class {
    * @return {!Object<string, boolean>}
    */
   static defaultLevelsFilterValue() {
-    var result = Console.ConsoleFilter.allLevelsFilterValue();
+    const result = Console.ConsoleFilter.allLevelsFilterValue();
     result[SDK.ConsoleMessage.MessageLevel.Verbose] = false;
     return result;
   }
@@ -40,7 +40,7 @@ Console.ConsoleFilter = class {
    * @return {!Object<string, boolean>}
    */
   static singleLevelMask(level) {
-    var result = {};
+    const result = {};
     result[level] = true;
     return result;
   }
@@ -49,8 +49,8 @@ Console.ConsoleFilter = class {
    * @return {!Console.ConsoleFilter}
    */
   clone() {
-    var parsedFilters = this.parsedFilters.map(TextUtils.FilterParser.cloneFilter);
-    var levelsMask = Object.assign({}, this.levelsMask);
+    const parsedFilters = this.parsedFilters.map(TextUtils.FilterParser.cloneFilter);
+    const levelsMask = Object.assign({}, this.levelsMask);
     return new Console.ConsoleFilter(this.name, parsedFilters, this.executionContext, levelsMask);
   }
 
@@ -59,7 +59,7 @@ Console.ConsoleFilter = class {
    * @return {boolean}
    */
   shouldBeVisible(viewMessage) {
-    var message = viewMessage.consoleMessage();
+    const message = viewMessage.consoleMessage();
     if (this.executionContext &&
         (this.executionContext.runtimeModel !== message.runtimeModel() ||
          this.executionContext.id !== message.executionContextId))
@@ -72,7 +72,7 @@ Console.ConsoleFilter = class {
     if (message.level && !this.levelsMask[/** @type {string} */ (message.level)])
       return false;
 
-    for (var filter of this.parsedFilters) {
+    for (const filter of this.parsedFilters) {
       if (!filter.key) {
         if (filter.regex && viewMessage.matchesFilterRegex(filter.regex) === filter.negative)
           return false;
@@ -85,7 +85,7 @@ Console.ConsoleFilter = class {
               return false;
             break;
           case Console.ConsoleFilter.FilterType.Source:
-            var sourceNameForMessage = message.source ?
+            const sourceNameForMessage = message.source ?
                 SDK.ConsoleMessage.MessageSourceDisplayName.get(
                     /** @type {!SDK.ConsoleMessage.MessageSource} */ (message.source)) :
                 message.source;
@@ -112,8 +112,8 @@ Console.ConsoleFilter = class {
         return !!value === filter.negative;
       if (!value)
         return !filter.text === !filter.negative;
-      var filterText = /** @type {string} */ (filter.text).toLowerCase();
-      var lowerCaseValue = value.toLowerCase();
+      const filterText = /** @type {string} */ (filter.text).toLowerCase();
+      const lowerCaseValue = value.toLowerCase();
       if (exactMatch && (lowerCaseValue === filterText) === filter.negative)
         return false;
       if (!exactMatch && lowerCaseValue.includes(filterText) === filter.negative)

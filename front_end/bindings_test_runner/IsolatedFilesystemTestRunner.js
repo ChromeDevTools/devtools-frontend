@@ -20,16 +20,16 @@ BindingsTestRunner.TestFileSystem._instances = {};
 
 BindingsTestRunner.TestFileSystem.prototype = {
   dumpAsText: function() {
-    var result = [];
+    const result = [];
     dfs(this.root, '');
     result[0] = this.fileSystemPath;
     return result.join('\n');
 
     function dfs(node, indent) {
       result.push(indent + node.name);
-      var newIndent = indent + '    ';
+      const newIndent = indent + '    ';
 
-      for (var child of node._children)
+      for (const child of node._children)
         dfs(child, newIndent);
     }
   },
@@ -39,7 +39,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
   },
 
   reportCreated: function(callback, type) {
-    var fileSystemPath = this.fileSystemPath;
+    const fileSystemPath = this.fileSystemPath;
     BindingsTestRunner.TestFileSystem._instances[this.fileSystemPath] = this;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
@@ -50,7 +50,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
         Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, created);
 
     function created(event) {
-      var fileSystem = event.data;
+      const fileSystem = event.data;
 
       if (fileSystem.path() !== fileSystemPath)
         return;
@@ -68,13 +68,13 @@ BindingsTestRunner.TestFileSystem.prototype = {
   },
 
   addFile: function(path, content, lastModified) {
-    var pathTokens = path.split('/');
-    var node = this.root;
-    var folders = pathTokens.slice(0, pathTokens.length - 1);
-    var fileName = pathTokens.peekLast();
+    const pathTokens = path.split('/');
+    let node = this.root;
+    const folders = pathTokens.slice(0, pathTokens.length - 1);
+    const fileName = pathTokens.peekLast();
 
-    for (var folder of folders) {
-      var dir = node._childrenMap[folder];
+    for (const folder of folders) {
+      let dir = node._childrenMap[folder];
 
       if (!dir)
         dir = node.mkdir(folder);
@@ -82,7 +82,7 @@ BindingsTestRunner.TestFileSystem.prototype = {
       node = dir;
     }
 
-    var file = node.addFile(fileName, content);
+    const file = node.addFile(fileName, content);
 
     if (lastModified)
       file._timestamp = lastModified;
@@ -111,14 +111,14 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   _removeChild: function(child, success, failure) {
-    var index = this._children.indexOf(child);
+    const index = this._children.indexOf(child);
 
     if (index === -1) {
       failure('Failed to remove file: file not found.');
       return;
     }
 
-    var fullPath = this._fileSystem.fileSystemPath + child.fullPath;
+    const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
     this._children.splice(index, 1);
     delete this._childrenMap[child.name];
     child.parent = null;
@@ -131,7 +131,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   mkdir: function(name) {
-    var child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, true, this);
+    const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, true, this);
     this._childrenMap[name] = child;
     this._children.push(child);
     child.parent = this;
@@ -139,14 +139,14 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   addFile: function(name, content) {
-    var child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, false, this);
+    const child = new BindingsTestRunner.TestFileSystem.Entry(this._fileSystem, name, false, this);
     this._childrenMap[name] = child;
     this._children.push(child);
     child.parent = this;
 
     child.content = new Blob([content], {type: 'text/plain'});
 
-    var fullPath = this._fileSystem.fileSystemPath + child.fullPath;
+    const fullPath = this._fileSystem.fileSystemPath + child.fullPath;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
         InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -159,7 +159,7 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
     this.content = new Blob([content], {type: 'text/plain'});
 
     this._timestamp += 1000;
-    var fullPath = this._fileSystem.fileSystemPath + this.fullPath;
+    const fullPath = this._fileSystem.fileSystemPath + this.fullPath;
 
     InspectorFrontendHost.events.dispatchEventToListeners(
         InspectorFrontendHostAPI.Events.FileSystemFilesChangedAddedRemoved,
@@ -187,14 +187,14 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
   },
 
   _createEntry: function(path, options, callback, errorCallback) {
-    var tokens = path.split('/');
-    var name = tokens.pop();
-    var parentEntry = this;
+    const tokens = path.split('/');
+    const name = tokens.pop();
+    let parentEntry = this;
 
-    for (var token of tokens)
+    for (const token of tokens)
       parentEntry = parentEntry._childrenMap[token];
 
-    var entry = parentEntry._childrenMap[name];
+    let entry = parentEntry._childrenMap[name];
 
     if (entry && options.exclusive) {
       errorCallback(new DOMException('File exists: ' + path, 'InvalidModificationError'));
@@ -221,9 +221,9 @@ BindingsTestRunner.TestFileSystem.Entry.prototype = {
       return;
     }
 
-    var entry = this;
+    let entry = this;
 
-    for (var token of path.split('/')) {
+    for (const token of path.split('/')) {
       entry = entry._childrenMap[token];
       if (!entry)
         break;
@@ -257,7 +257,7 @@ BindingsTestRunner.TestFileSystem.Reader = function(children) {
 
 BindingsTestRunner.TestFileSystem.Reader.prototype = {
   readEntries: function(callback) {
-    var children = this._children;
+    const children = this._children;
     this._children = [];
     callback(children);
   }

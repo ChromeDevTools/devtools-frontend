@@ -33,7 +33,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
     // * nickname (if the color has a nickname)
     // * shorthex (if has short hex)
     // * hex
-    var cf = Common.Color.Format;
+    const cf = Common.Color.Format;
 
     switch (curFormat) {
       case cf.Original:
@@ -80,7 +80,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
   setColor(color) {
     this._color = color;
     this._format = this._color.format();
-    var colorString = this._color.asString(this._format);
+    const colorString = this._color.asString(this._format);
     this._colorValueElement.textContent = colorString;
     this._swatchInner.style.backgroundColor = colorString;
   }
@@ -108,9 +108,10 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
   }
 
   toggleNextFormat() {
+    let currentValue;
     do {
       this._format = InlineEditor.ColorSwatch._nextColorFormat(this._color, this._format);
-      var currentValue = this._color.asString(this._format);
+      currentValue = this._color.asString(this._format);
     } while (currentValue === this._colorValueElement.textContent);
     this._colorValueElement.textContent = currentValue;
   }
@@ -126,7 +127,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/colorSwatch.css');
+    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/colorSwatch.css');
 
     this._iconElement = root.createChild('span', 'color-swatch');
     this._iconElement.title = Common.UIString('Shift-click to change color format');
@@ -203,7 +204,7 @@ InlineEditor.BezierSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/bezierSwatch.css');
+    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/bezierSwatch.css');
     this._iconElement = UI.Icon.create('smallicon-bezier', 'bezier-swatch-icon');
     root.appendChild(this._iconElement);
     this._textElement = this.createChild('span');
@@ -245,9 +246,9 @@ InlineEditor.CSSShadowSwatch = class extends HTMLSpanElement {
   setCSSShadow(model) {
     this._model = model;
     this._contentElement.removeChildren();
-    var results = TextUtils.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
-    for (var i = 0; i < results.length; i++) {
-      var result = results[i];
+    const results = TextUtils.TextUtils.splitStringByRegexes(model.asCSSText(), [/inset/g, Common.Color.Regex]);
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
       if (result.regexIndex === 1) {
         if (!this._colorSwatch)
           this._colorSwatch = InlineEditor.ColorSwatch.create();
@@ -284,7 +285,7 @@ InlineEditor.CSSShadowSwatch = class extends HTMLSpanElement {
    * @override
    */
   createdCallback() {
-    var root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/cssShadowSwatch.css');
+    const root = UI.createShadowRootWithCoreStyles(this, 'inline_editor/cssShadowSwatch.css');
     this._iconElement = UI.Icon.create('smallicon-shadow', 'shadow-swatch-icon');
     root.appendChild(this._iconElement);
     root.createChild('content');

@@ -77,10 +77,10 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @return {!Promise<!DocumentFragment>}
    */
   async _buildOverviewInfo() {
-    var document = this.element.ownerDocument;
-    var x = this._cursorPosition;
-    var elements = await Promise.all(this._overviewControls.map(control => control.overviewInfoPromise(x)));
-    var fragment = document.createDocumentFragment();
+    const document = this.element.ownerDocument;
+    const x = this._cursorPosition;
+    const elements = await Promise.all(this._overviewControls.map(control => control.overviewInfoPromise(x)));
+    const fragment = document.createDocumentFragment();
     elements.remove(null);
     fragment.appendChildren.apply(fragment, elements);
     return fragment;
@@ -109,7 +109,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @override
    */
   onResize() {
-    var width = this.element.offsetWidth;
+    const width = this.element.offsetWidth;
     if (width === this._lastWidth)
       return;
     this._lastWidth = width;
@@ -120,10 +120,10 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {!Array.<!PerfUI.TimelineOverview>} overviewControls
    */
   setOverviewControls(overviewControls) {
-    for (var i = 0; i < this._overviewControls.length; ++i)
+    for (let i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].dispose();
 
-    for (var i = 0; i < overviewControls.length; ++i) {
+    for (let i = 0; i < overviewControls.length; ++i) {
       overviewControls[i].setCalculator(this._overviewCalculator);
       overviewControls[i].show(this._overviewGrid.element);
     }
@@ -157,7 +157,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     if (!this.isShowing())
       return;
     this._overviewCalculator.setDisplayWidth(this._overviewGrid.clientWidth());
-    for (var i = 0; i < this._overviewControls.length; ++i)
+    for (let i = 0; i < this._overviewControls.length; ++i)
       this._overviewControls[i].update();
     this._overviewGrid.updateDividers(this._overviewCalculator);
     this._updateMarkers();
@@ -172,10 +172,10 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   }
 
   _updateMarkers() {
-    var filteredMarkers = new Map();
-    for (var time of this._markers.keys()) {
-      var marker = this._markers.get(time);
-      var position = Math.round(this._overviewCalculator.computePosition(time));
+    const filteredMarkers = new Map();
+    for (const time of this._markers.keys()) {
+      const marker = this._markers.get(time);
+      const position = Math.round(this._overviewCalculator.computePosition(time));
       // Limit the number of markers to one per pixel.
       if (filteredMarkers.has(position))
         continue;
@@ -195,7 +195,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     this._cursorEnabled = false;
     this._hideCursor();
     this._markers = new Map();
-    for (var control of this._overviewControls)
+    for (const control of this._overviewControls)
       control.reset();
     this._overviewInfo.hide();
     this.scheduleUpdate();
@@ -219,9 +219,9 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
     if (!this._overviewControls.length)
       return;
 
-    var absoluteMin = this._overviewCalculator.minimumBoundary();
-    var timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
-    var windowTimes = {
+    const absoluteMin = this._overviewCalculator.minimumBoundary();
+    const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
+    const windowTimes = {
       startTime: absoluteMin + timeSpan * this._overviewGrid.windowLeft(),
       endTime: absoluteMin + timeSpan * this._overviewGrid.windowRight()
     };
@@ -247,11 +247,12 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
   _updateWindow() {
     if (!this._overviewControls.length)
       return;
-    var absoluteMin = this._overviewCalculator.minimumBoundary();
-    var timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
-    var haveRecords = absoluteMin > 0;
-    var left = haveRecords && this._windowStartTime ? Math.min((this._windowStartTime - absoluteMin) / timeSpan, 1) : 0;
-    var right = haveRecords && this._windowEndTime < Infinity ? (this._windowEndTime - absoluteMin) / timeSpan : 1;
+    const absoluteMin = this._overviewCalculator.minimumBoundary();
+    const timeSpan = this._overviewCalculator.maximumBoundary() - absoluteMin;
+    const haveRecords = absoluteMin > 0;
+    const left =
+        haveRecords && this._windowStartTime ? Math.min((this._windowStartTime - absoluteMin) / timeSpan, 1) : 0;
+    const right = haveRecords && this._windowEndTime < Infinity ? (this._windowEndTime - absoluteMin) / timeSpan : 1;
     this._muteOnWindowChanged = true;
     this._overviewGrid.setWindow(left, right);
     this._muteOnWindowChanged = false;
@@ -500,7 +501,7 @@ PerfUI.TimelineOverviewPane.OverviewInfo = class {
    */
   async setContent(contentPromise) {
     this._visible = true;
-    var content = await contentPromise;
+    const content = await contentPromise;
     if (!this._visible)
       return;
     this._element.removeChildren();

@@ -22,7 +22,7 @@ Service.prototype = {
 /**
  * @unrestricted
  */
-var ServiceDispatcher = class {
+ServiceDispatcher = class {
   /**
    * @param {!ServicePort} port
    */
@@ -39,7 +39,7 @@ var ServiceDispatcher = class {
    */
   _dispatchMessageWrapped(data) {
     try {
-      var message = JSON.parse(data);
+      const message = JSON.parse(data);
       if (!(message instanceof Object)) {
         this._sendErrorResponse(message['id'], 'Malformed message');
         return;
@@ -54,25 +54,25 @@ var ServiceDispatcher = class {
    * @param {!Object} message
    */
   _dispatchMessage(message) {
-    var domainAndMethod = message['method'].split('.');
-    var serviceName = domainAndMethod[0];
-    var method = domainAndMethod[1];
+    const domainAndMethod = message['method'].split('.');
+    const serviceName = domainAndMethod[0];
+    const method = domainAndMethod[1];
 
     if (method === 'create') {
-      var extensions =
+      const extensions =
           self.runtime.extensions(Service).filter(extension => extension.descriptor()['name'] === serviceName);
       if (!extensions.length) {
         this._sendErrorResponse(message['id'], 'Could not resolve service \'' + serviceName + '\'');
         return;
       }
       extensions[0].instance().then(object => {
-        var id = String(this._lastObjectId++);
+        const id = String(this._lastObjectId++);
         object.setNotify(this._notify.bind(this, id, serviceName));
         this._objects.set(id, object);
         this._sendResponse(message['id'], {id: id});
       });
     } else if (method === 'dispose') {
-      var object = this._objects.get(message['params']['id']);
+      const object = this._objects.get(message['params']['id']);
       if (!object) {
         console.error('Could not look up object with id for ' + JSON.stringify(message));
         return;
@@ -84,12 +84,12 @@ var ServiceDispatcher = class {
         console.error('No params in the message: ' + JSON.stringify(message));
         return;
       }
-      var object = this._objects.get(message['params']['id']);
+      const object = this._objects.get(message['params']['id']);
       if (!object) {
         console.error('Could not look up object with id for ' + JSON.stringify(message));
         return;
       }
-      var handler = object[method];
+      const handler = object[method];
       if (!(handler instanceof Function)) {
         console.error('Handler for \'' + method + '\' is missing.');
         return;
@@ -99,7 +99,7 @@ var ServiceDispatcher = class {
   }
 
   _connectionClosed() {
-    for (var object of this._objects.values())
+    for (const object of this._objects.values())
       object.dispose();
     this._objects.clear();
   }
@@ -112,7 +112,7 @@ var ServiceDispatcher = class {
    */
   _notify(objectId, serviceName, method, params) {
     params['id'] = objectId;
-    var message = {method: serviceName + '.' + method, params: params};
+    const message = {method: serviceName + '.' + method, params: params};
     this._port.send(JSON.stringify(message));
   }
 
@@ -121,7 +121,7 @@ var ServiceDispatcher = class {
    * @param {!Object} result
    */
   _sendResponse(messageId, result) {
-    var message = {id: messageId, result: result};
+    const message = {id: messageId, result: result};
     this._port.send(JSON.stringify(message));
   }
 
@@ -130,7 +130,7 @@ var ServiceDispatcher = class {
    * @param {string} error
    */
   _sendErrorResponse(messageId, error) {
-    var message = {id: messageId, error: error};
+    const message = {id: messageId, error: error};
     this._port.send(JSON.stringify(message));
   }
 };
@@ -139,7 +139,7 @@ var ServiceDispatcher = class {
  * @implements {ServicePort}
  * @unrestricted
  */
-var WorkerServicePort = class {
+WorkerServicePort = class {
   /**
    * @param {!Port|!Worker} port
    */
@@ -185,8 +185,8 @@ var WorkerServicePort = class {
   }
 };
 
-var dispatchers = [];
+const dispatchers = [];
 
-var worker = /** @type {!Object} */ (self);
-var servicePort = new WorkerServicePort(/** @type {!Worker} */ (worker));
+const worker = /** @type {!Object} */ (self);
+const servicePort = new WorkerServicePort(/** @type {!Worker} */ (worker));
 dispatchers.push(new ServiceDispatcher(servicePort));

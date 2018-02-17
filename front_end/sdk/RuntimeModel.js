@@ -60,13 +60,13 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     if (!(/^\s*\{/.test(code) && /\}\s*$/.test(code)))
       return code;
 
-    var parse = (async () => 0).constructor;
+    const parse = (async () => 0).constructor;
     try {
       // Check if the code can be interpreted as an expression.
       parse('return ' + code + ';');
 
       // No syntax error! Does it work parenthesized?
-      var wrappedCode = '(' + code + ')';
+      const wrappedCode = '(' + code + ')';
       parse(wrappedCode);
 
       return wrappedCode;
@@ -114,7 +114,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {?SDK.ExecutionContext}
    */
   defaultExecutionContext() {
-    for (var context of this.executionContexts()) {
+    for (const context of this.executionContexts()) {
       if (context.isDefault)
         return context;
     }
@@ -133,8 +133,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!Protocol.Runtime.ExecutionContextDescription} context
    */
   _executionContextCreated(context) {
-    var data = context.auxData || {isDefault: true};
-    var executionContext =
+    const data = context.auxData || {isDefault: true};
+    const executionContext =
         new SDK.ExecutionContext(this, context.id, context.name, context.origin, data['isDefault'], data['frameId']);
     this._executionContextById.set(executionContext.id, executionContext);
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextCreated, executionContext);
@@ -144,7 +144,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {number} executionContextId
    */
   _executionContextDestroyed(executionContextId) {
-    var executionContext = this._executionContextById.get(executionContextId);
+    const executionContext = this._executionContextById.get(executionContextId);
     if (!executionContext)
       return;
     this.debuggerModel().executionContextDestroyed(executionContext);
@@ -158,9 +158,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
 
   _executionContextsCleared() {
     this.debuggerModel().globalObjectCleared();
-    var contexts = this.executionContexts();
+    const contexts = this.executionContexts();
     this._executionContextById.clear();
-    for (var i = 0; i < contexts.length; ++i)
+    for (let i = 0; i < contexts.length; ++i)
       this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExecutionContextDestroyed, contexts[i]);
   }
 
@@ -191,10 +191,10 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {!SDK.RemoteObject}
    */
   createRemoteObjectFromPrimitiveValue(value) {
-    var type = typeof value;
-    var unserializableValue = undefined;
+    const type = typeof value;
+    let unserializableValue = undefined;
     if (typeof value === 'number') {
-      var description = String(value);
+      const description = String(value);
       if (value === 0 && 1 / value < 0)
         unserializableValue = Protocol.Runtime.UnserializableValue.Negative0;
       if (description === 'NaN')
@@ -237,7 +237,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _customFormattersStateChanged(event) {
-    var enabled = /** @type {boolean} */ (event.data);
+    const enabled = /** @type {boolean} */ (event.data);
     this._agent.setCustomObjectFormatterEnabled(enabled);
   }
 
@@ -249,7 +249,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {?Promise<!SDK.RuntimeModel.CompileScriptResult>}
    */
   async compileScript(expression, sourceURL, persistScript, executionContextId) {
-    var response = await this._agent.invoke_compileScript({
+    const response = await this._agent.invoke_compileScript({
       expression: expression,
       sourceURL: sourceURL,
       persistScript: persistScript,
@@ -277,7 +277,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   async runScript(
       scriptId, executionContextId, objectGroup, silent, includeCommandLineAPI, returnByValue, generatePreview,
       awaitPromise) {
-    var response = await this._agent.invoke_runScript({
+    const response = await this._agent.invoke_runScript({
       scriptId,
       executionContextId,
       objectGroup,
@@ -288,7 +288,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
       awaitPromise
     });
 
-    var error = response[Protocol.Error];
+    const error = response[Protocol.Error];
     if (error) {
       console.error(error);
       return {error: error};
@@ -303,9 +303,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   async queryObjects(prototype) {
     if (!prototype.objectId)
       return {error: 'Prototype should be an Object.'};
-    var response =
+    const response =
         await this._agent.invoke_queryObjects({prototypeObjectId: /** @type {string} */ (prototype.objectId)});
-    var error = response[Protocol.Error];
+    const error = response[Protocol.Error];
     if (error) {
       console.error(error);
       return {error: error};
@@ -318,7 +318,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!Object=} hints
    */
   _inspectRequested(payload, hints) {
-    var object = this.createRemoteObject(payload);
+    const object = this.createRemoteObject(payload);
 
     if (hints.copyToClipboard) {
       this._copyRequested(object);
@@ -385,7 +385,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!SDK.RemoteObject} object
    */
   async _queryObjectsRequested(object) {
-    var result = await this.queryObjects(object);
+    const result = await this.queryObjects(object);
     object.release();
     if (result.error) {
       Common.console.error(result.error);
@@ -399,9 +399,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {string}
    */
   static simpleTextFromException(exceptionDetails) {
-    var text = exceptionDetails.text;
+    let text = exceptionDetails.text;
     if (exceptionDetails.exception && exceptionDetails.exception.description) {
-      var description = exceptionDetails.exception.description;
+      let description = exceptionDetails.exception.description;
       if (description.indexOf('\n') !== -1)
         description = description.substring(0, description.indexOf('\n'));
       text += ' ' + description;
@@ -414,7 +414,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {!Protocol.Runtime.ExceptionDetails} exceptionDetails
    */
   exceptionThrown(timestamp, exceptionDetails) {
-    var exceptionWithTimestamp = {timestamp: timestamp, details: exceptionDetails};
+    const exceptionWithTimestamp = {timestamp: timestamp, details: exceptionDetails};
     this.dispatchEventToListeners(SDK.RuntimeModel.Events.ExceptionThrown, exceptionWithTimestamp);
   }
 
@@ -434,7 +434,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @param {string=} context
    */
   _consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
-    var consoleAPICall = {
+    const consoleAPICall = {
       type: type,
       args: args,
       executionContextId: executionContextId,
@@ -450,7 +450,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    * @return {number}
    */
   executionContextIdForScriptId(scriptId) {
-    var script = this.debuggerModel().scriptForId(scriptId);
+    const script = this.debuggerModel().scriptForId(scriptId);
     return script ? script.executionContextId : 0;
   }
 
@@ -654,7 +654,7 @@ SDK.ExecutionContext = class {
       return 1;
     }
 
-    var weightDiff = targetWeight(a.target()) - targetWeight(b.target());
+    const weightDiff = targetWeight(a.target()) - targetWeight(b.target());
     if (weightDiff)
       return -weightDiff;
 
@@ -709,7 +709,7 @@ SDK.ExecutionContext = class {
       options.expression = 'this';
     }
 
-    var response = await this.runtimeModel._agent.invoke_evaluate({
+    const response = await this.runtimeModel._agent.invoke_evaluate({
       expression: options.expression,
       objectGroup: options.objectGroup,
       includeCommandLineAPI: options.includeCommandLineAPI,
@@ -721,7 +721,7 @@ SDK.ExecutionContext = class {
       awaitPromise: awaitPromise
     });
 
-    var error = response[Protocol.Error];
+    const error = response[Protocol.Error];
     if (error) {
       console.error(error);
       return {error: error};
@@ -733,7 +733,7 @@ SDK.ExecutionContext = class {
    * @return {!Promise<?Array<string>>}
    */
   async globalLexicalScopeNames() {
-    var response = await this.runtimeModel._agent.invoke_globalLexicalScopeNames({executionContextId: this.id});
+    const response = await this.runtimeModel._agent.invoke_globalLexicalScopeNames({executionContextId: this.id});
     return response[Protocol.Error] ? [] : response.names;
   }
 
@@ -764,7 +764,7 @@ SDK.ExecutionContext = class {
       this._label = this.name;
       return;
     }
-    var parsedUrl = this.origin.asParsedURL();
+    const parsedUrl = this.origin.asParsedURL();
     this._label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : '';
   }
 };

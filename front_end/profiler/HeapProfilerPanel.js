@@ -8,8 +8,8 @@
  */
 Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
   constructor() {
-    var registry = Profiler.ProfileTypeRegistry.instance;
-    var profileTypes =
+    const registry = Profiler.ProfileTypeRegistry.instance;
+    const profileTypes =
         [registry.heapSnapshotProfileType, registry.samplingHeapProfileType, registry.trackingHeapSnapshotProfileType];
     if (Runtime.experiments.isEnabled('nativeHeapProfiler'))
       profileTypes.push(registry.samplingNativeHeapProfileType, registry.samplingNativeHeapSnapshotType);
@@ -29,16 +29,16 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
     if (!this.isShowing())
       return;
 
-    var object = /** @type {!SDK.RemoteObject} */ (target);
+    const object = /** @type {!SDK.RemoteObject} */ (target);
     if (!object.objectId)
       return;
-    var objectId = /** @type {string} */ (object.objectId);
+    const objectId = /** @type {string} */ (object.objectId);
 
-    var heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
+    const heapProfiles = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType.getProfiles();
     if (!heapProfiles.length)
       return;
 
-    var heapProfilerModel = object.runtimeModel().heapProfilerModel();
+    const heapProfilerModel = object.runtimeModel().heapProfilerModel();
     if (!heapProfilerModel)
       return;
 
@@ -64,7 +64,7 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var panel = UI.context.flavor(Profiler.HeapProfilerPanel);
+    const panel = UI.context.flavor(Profiler.HeapProfilerPanel);
     console.assert(panel && panel instanceof Profiler.HeapProfilerPanel);
     panel.toggleRecord();
     return true;
@@ -90,14 +90,14 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
    * @param {string} perspectiveName
    */
   showObject(snapshotObjectId, perspectiveName) {
-    var registry = Profiler.ProfileTypeRegistry.instance;
-    var heapProfiles = registry.heapSnapshotProfileType.getProfiles();
-    for (var i = 0; i < heapProfiles.length; i++) {
-      var profile = heapProfiles[i];
+    const registry = Profiler.ProfileTypeRegistry.instance;
+    const heapProfiles = registry.heapSnapshotProfileType.getProfiles();
+    for (let i = 0; i < heapProfiles.length; i++) {
+      const profile = heapProfiles[i];
       // FIXME: allow to choose snapshot if there are several options.
       if (profile.maxJSObjectId >= snapshotObjectId) {
         this.showProfile(profile);
-        var view = this.viewForProfile(profile);
+        const view = this.viewForProfile(profile);
         view.selectLiveObject(perspectiveName, snapshotObjectId);
         break;
       }

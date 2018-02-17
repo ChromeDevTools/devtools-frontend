@@ -7,14 +7,14 @@ MobileThrottling.NetworkPanelIndicator = class {
     // TODO: we should not access network from other modules.
     if (!UI.inspectorView.hasPanel('network'))
       return;
-    var manager = SDK.multitargetNetworkManager;
+    const manager = SDK.multitargetNetworkManager;
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.ConditionsChanged, updateVisibility);
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.BlockedPatternsChanged, updateVisibility);
     manager.addEventListener(SDK.MultitargetNetworkManager.Events.InterceptorsChanged, updateVisibility);
     updateVisibility();
 
     function updateVisibility() {
-      var icon = null;
+      let icon = null;
       if (manager.isThrottling()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Network throttling is enabled');

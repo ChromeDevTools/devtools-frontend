@@ -90,7 +90,7 @@ Bindings.LiveLocationPool = class {
   }
 
   disposeAll() {
-    for (var location of this._locations)
+    for (const location of this._locations)
       location.dispose();
   }
 };

@@ -8,13 +8,13 @@
  */
 
 Persistence.PersistenceBinding.prototype.toString = function() {
-  var lines = ['{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(), '}'];
+  const lines = ['{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(), '}'];
 
   return lines.join('\n');
 };
 
 Persistence.AutomappingStatus.prototype.toString = function() {
-  var lines = [
+  const lines = [
     '{', '       network: ' + this.network.url(), '    fileSystem: ' + this.fileSystem.url(),
     '    exactMatch: ' + this.exactMatch, '}'
   ];
@@ -24,10 +24,10 @@ Persistence.AutomappingStatus.prototype.toString = function() {
 
 
 BindingsTestRunner.waitForBinding = function(fileName) {
-  var uiSourceCodes = Workspace.workspace.uiSourceCodes();
+  const uiSourceCodes = Workspace.workspace.uiSourceCodes();
 
-  for (var uiSourceCode of uiSourceCodes) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
+  for (const uiSourceCode of uiSourceCodes) {
+    const binding = Persistence.persistence.binding(uiSourceCode);
 
     if (!binding)
       continue;
@@ -66,15 +66,15 @@ class TestMapping {
       return;
     }
 
-    var networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
-    var fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
-    var binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
+    const networkUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.Network);
+    const fileSystemUISourceCode = await TestRunner.waitForUISourceCode(urlSuffix, Workspace.projectTypes.FileSystem);
+    const binding = new Persistence.PersistenceBinding(networkUISourceCode, fileSystemUISourceCode);
     this._bindings.add(binding);
     this._persistence.addBindingForTest(binding);
   }
 
   _findBinding(urlSuffix) {
-    for (var binding of this._bindings) {
+    for (const binding of this._bindings) {
       if (binding.network.url().endsWith(urlSuffix))
         return binding;
     }
@@ -83,7 +83,7 @@ class TestMapping {
   }
 
   async removeBinding(urlSuffix) {
-    var binding = this._findBinding(urlSuffix);
+    const binding = this._findBinding(urlSuffix);
 
     if (!binding) {
       TestRunner.addResult(`FAILED TO REMOVE BINDING: binding does not exist for ${urlSuffix}`);
@@ -96,7 +96,7 @@ class TestMapping {
   }
 
   dispose() {
-    for (var binding of this._bindings)
+    for (const binding of this._bindings)
       this._persistence.removeBindingForTest(binding);
 
     this._bindings.clear();

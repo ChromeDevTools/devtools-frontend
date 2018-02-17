@@ -22,7 +22,7 @@ Bindings.ResourceMapping = class {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   modelAdded(resourceTreeModel) {
-    var info = new Bindings.ResourceMapping.ModelInfo(this._workspace, resourceTreeModel);
+    const info = new Bindings.ResourceMapping.ModelInfo(this._workspace, resourceTreeModel);
     this._modelToInfo.set(resourceTreeModel, info);
   }
 
@@ -31,7 +31,7 @@ Bindings.ResourceMapping = class {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   modelRemoved(resourceTreeModel) {
-    var info = this._modelToInfo.get(resourceTreeModel);
+    const info = this._modelToInfo.get(resourceTreeModel);
     info.dispose();
     this._modelToInfo.delete(resourceTreeModel);
   }
@@ -41,7 +41,7 @@ Bindings.ResourceMapping = class {
    * @return {?Bindings.ResourceMapping.ModelInfo}
    */
   _infoForTarget(target) {
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     return resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
   }
 
@@ -50,19 +50,19 @@ Bindings.ResourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   cssLocationToUILocation(cssLocation) {
-    var header = cssLocation.header();
+    const header = cssLocation.header();
     if (!header)
       return null;
-    var info = this._infoForTarget(cssLocation.cssModel().target());
+    const info = this._infoForTarget(cssLocation.cssModel().target());
     if (!info)
       return null;
-    var uiSourceCode = info._project.uiSourceCodeForURL(cssLocation.url);
+    const uiSourceCode = info._project.uiSourceCodeForURL(cssLocation.url);
     if (!uiSourceCode)
       return null;
-    var offset = header[Bindings.ResourceMapping._offsetSymbol] ||
+    const offset = header[Bindings.ResourceMapping._offsetSymbol] ||
         TextUtils.TextRange.createFromLocation(header.startLine, header.startColumn);
-    var lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
-    var columnNumber = cssLocation.columnNumber;
+    const lineNumber = cssLocation.lineNumber + offset.startLine - header.startLine;
+    let columnNumber = cssLocation.columnNumber;
     if (cssLocation.lineNumber === header.startLine)
       columnNumber += offset.startColumn - header.startColumn;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
@@ -73,19 +73,19 @@ Bindings.ResourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   jsLocationToUILocation(jsLocation) {
-    var script = jsLocation.script();
+    const script = jsLocation.script();
     if (!script)
       return null;
-    var info = this._infoForTarget(jsLocation.debuggerModel.target());
+    const info = this._infoForTarget(jsLocation.debuggerModel.target());
     if (!info)
       return null;
-    var uiSourceCode = info._project.uiSourceCodeForURL(script.sourceURL);
+    const uiSourceCode = info._project.uiSourceCodeForURL(script.sourceURL);
     if (!uiSourceCode)
       return null;
-    var offset = script[Bindings.ResourceMapping._offsetSymbol] ||
+    const offset = script[Bindings.ResourceMapping._offsetSymbol] ||
         TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
-    var lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
-    var columnNumber = jsLocation.columnNumber;
+    const lineNumber = jsLocation.lineNumber + offset.startLine - script.lineOffset;
+    let columnNumber = jsLocation.columnNumber;
     if (jsLocation.lineNumber === script.lineOffset)
       columnNumber += offset.startColumn - script.columnOffset;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
@@ -100,10 +100,10 @@ Bindings.ResourceMapping = class {
   uiLocationToJSLocation(uiSourceCode, lineNumber, columnNumber) {
     if (!uiSourceCode[Bindings.ResourceMapping._symbol])
       return null;
-    var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+    const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
     if (!target)
       return null;
-    var debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return null;
     return debuggerModel.createRawLocationByURL(uiSourceCode.url(), lineNumber, columnNumber);
@@ -113,8 +113,8 @@ Bindings.ResourceMapping = class {
    * @param {!SDK.Target} target
    */
   _resetForTest(target) {
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
-    var info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const info = resourceTreeModel ? this._modelToInfo.get(resourceTreeModel) : null;
     if (info)
       info._resetForTest();
   }
@@ -126,7 +126,7 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!SDK.ResourceTreeModel} resourceTreeModel
    */
   constructor(workspace, resourceTreeModel) {
-    var target = resourceTreeModel.target();
+    const target = resourceTreeModel.target();
     this._project = new Bindings.ContentProviderBasedProject(
         workspace, 'resources:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
     Bindings.NetworkProject.setTargetForProject(this._project, target);
@@ -134,7 +134,7 @@ Bindings.ResourceMapping.ModelInfo = class {
     /** @type {!Map<string, !Bindings.ResourceMapping.Binding>} */
     this._bindings = new Map();
 
-    var cssModel = target.model(SDK.CSSModel);
+    const cssModel = target.model(SDK.CSSModel);
     this._cssModel = cssModel;
     this._eventListeners = [
       resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this),
@@ -148,10 +148,10 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _styleSheetChanged(event) {
-    var header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
+    const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !header.isInline)
       return;
-    var binding = this._bindings.get(header.resourceURL());
+    const binding = this._bindings.get(header.resourceURL());
     if (!binding)
       return;
     binding._styleSheetChanged(header, event.data.edit);
@@ -161,7 +161,7 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!SDK.Resource} resource
    */
   _acceptsResource(resource) {
-    var resourceType = resource.resourceType();
+    const resourceType = resource.resourceType();
     // Only load selected resource types from resources.
     if (resourceType !== Common.resourceTypes.Image && resourceType !== Common.resourceTypes.Font &&
         resourceType !== Common.resourceTypes.Document && resourceType !== Common.resourceTypes.Manifest)
@@ -182,11 +182,11 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _resourceAdded(event) {
-    var resource = /** @type {!SDK.Resource} */ (event.data);
+    const resource = /** @type {!SDK.Resource} */ (event.data);
     if (!this._acceptsResource(resource))
       return;
 
-    var binding = this._bindings.get(resource.url);
+    let binding = this._bindings.get(resource.url);
     if (!binding) {
       binding = new Bindings.ResourceMapping.Binding(this._project, resource);
       this._bindings.set(resource.url, binding);
@@ -199,10 +199,10 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _removeFrameResources(frame) {
-    for (var resource of frame.resources()) {
+    for (const resource of frame.resources()) {
       if (!this._acceptsResource(resource))
         continue;
-      var binding = this._bindings.get(resource.url);
+      const binding = this._bindings.get(resource.url);
       if (binding._resources.size === 1) {
         binding.dispose();
         this._bindings.delete(resource.url);
@@ -216,7 +216,7 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _frameWillNavigate(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     this._removeFrameResources(frame);
   }
 
@@ -224,19 +224,19 @@ Bindings.ResourceMapping.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _frameDetached(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     this._removeFrameResources(frame);
   }
 
   _resetForTest() {
-    for (var binding of this._bindings.valuesArray())
+    for (const binding of this._bindings.valuesArray())
       binding.dispose();
     this._bindings.clear();
   }
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (var binding of this._bindings.valuesArray())
+    for (const binding of this._bindings.valuesArray())
       binding.dispose();
     this._bindings.clear();
     this._project.removeProject();
@@ -267,12 +267,12 @@ Bindings.ResourceMapping.Binding = class {
    * @return {!Array<!SDK.CSSStyleSheetHeader>}
    */
   _inlineStyles() {
-    var target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
-    var cssModel = target.model(SDK.CSSModel);
-    var stylesheets = [];
+    const target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
+    const cssModel = target.model(SDK.CSSModel);
+    const stylesheets = [];
     if (cssModel) {
-      for (var headerId of cssModel.styleSheetIdsForURL(this._uiSourceCode.url())) {
-        var header = cssModel.styleSheetHeaderForId(headerId);
+      for (const headerId of cssModel.styleSheetIdsForURL(this._uiSourceCode.url())) {
+        const header = cssModel.styleSheetHeaderForId(headerId);
         if (header)
           stylesheets.push(header);
       }
@@ -284,8 +284,8 @@ Bindings.ResourceMapping.Binding = class {
    * @return {!Array<!SDK.Script>}
    */
   _inlineScripts() {
-    var target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
-    var debuggerModel = target.model(SDK.DebuggerModel);
+    const target = Bindings.NetworkProject.targetForUISourceCode(this._uiSourceCode);
+    const debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
       return [];
     return debuggerModel.scriptsForSourceURL(this._uiSourceCode.url());
@@ -300,7 +300,7 @@ Bindings.ResourceMapping.Binding = class {
     if (this._edits.length > 1)
       return;  // There is already a _styleSheetChanged loop running
 
-    var content = await this._uiSourceCode.requestContent();
+    const content = await this._uiSourceCode.requestContent();
     if (content !== null)
       this._innerStyleSheetChanged(content);
     this._edits = [];
@@ -310,28 +310,28 @@ Bindings.ResourceMapping.Binding = class {
    * @param {string} content
    */
   _innerStyleSheetChanged(content) {
-    var scripts = this._inlineScripts();
-    var styles = this._inlineStyles();
-    var text = new TextUtils.Text(content);
-    for (var data of this._edits) {
-      var edit = data.edit;
-      var stylesheet = data.stylesheet;
-      var startLocation = stylesheet[Bindings.ResourceMapping._offsetSymbol] ||
+    const scripts = this._inlineScripts();
+    const styles = this._inlineStyles();
+    let text = new TextUtils.Text(content);
+    for (const data of this._edits) {
+      const edit = data.edit;
+      const stylesheet = data.stylesheet;
+      const startLocation = stylesheet[Bindings.ResourceMapping._offsetSymbol] ||
           TextUtils.TextRange.createFromLocation(stylesheet.startLine, stylesheet.startColumn);
 
-      var oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
-      var newRange = edit.newRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
+      const oldRange = edit.oldRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
+      const newRange = edit.newRange.relativeFrom(startLocation.startLine, startLocation.startColumn);
       text = new TextUtils.Text(text.replaceRange(oldRange, edit.newText));
-      for (var script of scripts) {
-        var scriptOffset = script[Bindings.ResourceMapping._offsetSymbol] ||
+      for (const script of scripts) {
+        const scriptOffset = script[Bindings.ResourceMapping._offsetSymbol] ||
             TextUtils.TextRange.createFromLocation(script.lineOffset, script.columnOffset);
         if (!scriptOffset.follows(oldRange))
           continue;
         script[Bindings.ResourceMapping._offsetSymbol] = scriptOffset.rebaseAfterTextEdit(oldRange, newRange);
         Bindings.debuggerWorkspaceBinding.updateLocations(script);
       }
-      for (var style of styles) {
-        var styleOffset = style[Bindings.ResourceMapping._offsetSymbol] ||
+      for (const style of styles) {
+        const styleOffset = style[Bindings.ResourceMapping._offsetSymbol] ||
             TextUtils.TextRange.createFromLocation(style.startLine, style.startColumn);
         if (!styleOffset.follows(oldRange))
           continue;

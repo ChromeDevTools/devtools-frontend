@@ -23,12 +23,12 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._graphHeight = 90;
     this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
     this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
-    var chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
+    const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
 
-    var mode = Timeline.PerformanceMonitor.MetricMode;
+    const mode = Timeline.PerformanceMonitor.MetricMode;
     /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricMode>} */
     this._metricModes = new Map([
       ['TaskDuration', mode.CumulativeTime], ['ScriptDuration', mode.CumulativeTime],
@@ -61,7 +61,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   _suspendStateChanged() {
-    var suspended = SDK.targetManager.allTargetsSuspended();
+    const suspended = SDK.targetManager.allTargetsSuspended();
     if (suspended)
       this._stopPolling();
     else
@@ -91,7 +91,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   async _poll() {
-    var metrics = await this._model.requestMetrics();
+    const metrics = await this._model.requestMetrics();
     this._processMetrics(metrics);
   }
 
@@ -99,15 +99,15 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!Array<!Protocol.Performance.Metric>} rawMetrics
    */
   _processMetrics(rawMetrics) {
-    var metrics = new Map();
-    var timestamp = performance.now();
-    for (var metric of rawMetrics) {
-      var data = this._metricData.get(metric.name);
+    const metrics = new Map();
+    const timestamp = performance.now();
+    for (const metric of rawMetrics) {
+      let data = this._metricData.get(metric.name);
       if (!data) {
         data = {};
         this._metricData.set(metric.name, data);
       }
-      var value;
+      let value;
       switch (this._metricModes.get(metric.name)) {
         case Timeline.PerformanceMonitor.MetricMode.CumulativeTime:
           value = data.lastTimestamp ?
@@ -130,22 +130,22 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       metrics.set(metric.name, value);
     }
     this._metricsBuffer.push({timestamp, metrics: metrics});
-    var millisPerWidth = this._width / this._pixelsPerMs;
+    const millisPerWidth = this._width / this._pixelsPerMs;
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
-    var maxCount = Math.ceil(millisPerWidth / this._pollIntervalMs * 2);
+    const maxCount = Math.ceil(millisPerWidth / this._pollIntervalMs * 2);
     if (this._metricsBuffer.length > maxCount * 2)  // Multiply by 2 to have a hysteresis.
       this._metricsBuffer.splice(0, this._metricsBuffer.length - maxCount);
     this._controlPane.updateMetrics(metrics);
   }
 
   _draw() {
-    var ctx = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
+    const ctx = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     ctx.save();
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     ctx.clearRect(0, 0, this._width, this._height);
     ctx.save();
     ctx.translate(0, this._scaleHeight);  // Reserve space for the scale bar.
-    for (var chartInfo of this._controlPane.charts()) {
+    for (const chartInfo of this._controlPane.charts()) {
       if (!this._controlPane.isActive(chartInfo.metrics[0].name))
         continue;
       this._drawChart(ctx, chartInfo, this._graphHeight);
@@ -160,12 +160,12 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    */
   _drawHorizontalGrid(ctx) {
-    var lightGray = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.ThemeSupport.ColorUsage.Foreground);
+    const lightGray = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.ThemeSupport.ColorUsage.Foreground);
     ctx.font = '9px ' + Host.fontFamily();
     ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
-    var currentTime = Date.now() / 1000;
-    for (var sec = Math.ceil(currentTime);; --sec) {
-      var x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
+    const currentTime = Date.now() / 1000;
+    for (let sec = Math.ceil(currentTime);; --sec) {
+      const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
       if (x < -50)
         break;
       ctx.beginPath();
@@ -187,23 +187,23 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ctx.save();
     ctx.rect(0, 0, this._width, height);
     ctx.clip();
-    var bottomPadding = 8;
-    var extraSpace = 1.05;
-    var max = this._calcMax(chartInfo) * extraSpace;
-    var stackedChartBaseLandscape = chartInfo.stacked ? new Map() : null;
-    var paths = [];
-    for (var i = chartInfo.metrics.length - 1; i >= 0; --i) {
-      var metricInfo = chartInfo.metrics[i];
+    const bottomPadding = 8;
+    const extraSpace = 1.05;
+    const max = this._calcMax(chartInfo) * extraSpace;
+    const stackedChartBaseLandscape = chartInfo.stacked ? new Map() : null;
+    const paths = [];
+    for (let i = chartInfo.metrics.length - 1; i >= 0; --i) {
+      const metricInfo = chartInfo.metrics[i];
       paths.push({
         path: this._buildMetricPath(
             chartInfo, metricInfo, height - bottomPadding, max, i ? stackedChartBaseLandscape : null),
         color: metricInfo.color
       });
     }
-    var backgroundColor =
+    const backgroundColor =
         Common.Color.parse(UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background));
-    for (var path of paths.reverse()) {
-      var color = path.color;
+    for (const path of paths.reverse()) {
+      const color = path.color;
       ctx.save();
       ctx.fillStyle = backgroundColor.blendWith(Common.Color.parse(color).setAlpha(0.2)).asString(null);
       ctx.fill(path.path);
@@ -223,13 +223,13 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   _calcMax(chartInfo) {
     if (chartInfo.max)
       return chartInfo.max;
-    var width = this._width;
-    var startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
-    var max = -Infinity;
-    for (var metricInfo of chartInfo.metrics) {
-      for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
-        var metrics = this._metricsBuffer[i];
-        var value = metrics.metrics.get(metricInfo.name);
+    const width = this._width;
+    const startTime = performance.now() - this._pollIntervalMs - width / this._pixelsPerMs;
+    let max = -Infinity;
+    for (const metricInfo of chartInfo.metrics) {
+      for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
+        const metrics = this._metricsBuffer[i];
+        const value = metrics.metrics.get(metricInfo.name);
         max = Math.max(max, value);
         if (metrics.timestamp < startTime)
           break;
@@ -238,10 +238,10 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     if (!this._metricsBuffer.length)
       return 10;
 
-    var base10 = Math.pow(10, Math.floor(Math.log10(max)));
+    const base10 = Math.pow(10, Math.floor(Math.log10(max)));
     max = Math.ceil(max / base10 / 2) * base10 * 2;
 
-    var alpha = 0.2;
+    const alpha = 0.2;
     chartInfo.currentMax = max * alpha + (chartInfo.currentMax || max) * (1 - alpha);
     return chartInfo.currentMax;
   }
@@ -253,21 +253,21 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!Timeline.PerformanceMonitor.ChartInfo} info
    */
   _drawVerticalGrid(ctx, height, max, info) {
-    var base = Math.pow(10, Math.floor(Math.log10(max)));
-    var firstDigit = Math.floor(max / base);
+    let base = Math.pow(10, Math.floor(Math.log10(max)));
+    const firstDigit = Math.floor(max / base);
     if (firstDigit !== 1 && firstDigit % 2 === 1)
       base *= 2;
-    var scaleValue = Math.floor(max / base) * base;
+    let scaleValue = Math.floor(max / base) * base;
 
-    var span = max;
-    var topPadding = 5;
-    var visibleHeight = height - topPadding;
+    const span = max;
+    const topPadding = 5;
+    const visibleHeight = height - topPadding;
     ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
     ctx.strokeStyle = this._gridColor;
     ctx.beginPath();
-    for (var i = 0; i < 2; ++i) {
-      var y = calcY(scaleValue);
-      var labelText = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
+    for (let i = 0; i < 2; ++i) {
+      const y = calcY(scaleValue);
+      const labelText = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
@@ -299,20 +299,20 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @return {!Path2D}
    */
   _buildMetricPath(chartInfo, metricInfo, height, scaleMax, stackedChartBaseLandscape) {
-    var path = new Path2D();
-    var topPadding = 5;
-    var visibleHeight = height - topPadding;
+    const path = new Path2D();
+    const topPadding = 5;
+    const visibleHeight = height - topPadding;
     if (visibleHeight < 1)
       return path;
-    var span = scaleMax;
-    var metricName = metricInfo.name;
-    var pixelsPerMs = this._pixelsPerMs;
-    var startTime = performance.now() - this._pollIntervalMs - this._width / pixelsPerMs;
-    var smooth = chartInfo.smooth;
+    const span = scaleMax;
+    const metricName = metricInfo.name;
+    const pixelsPerMs = this._pixelsPerMs;
+    const startTime = performance.now() - this._pollIntervalMs - this._width / pixelsPerMs;
+    const smooth = chartInfo.smooth;
 
-    var x = 0;
-    var lastY = 0;
-    var lastX = 0;
+    let x = 0;
+    let lastY = 0;
+    let lastX = 0;
     if (this._metricsBuffer.length) {
       x = (this._metricsBuffer[0].timestamp - startTime) * pixelsPerMs;
       path.moveTo(x, calcY(0));
@@ -321,19 +321,19 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
       lastX = this._width + 5;
       path.lineTo(lastX, lastY);
     }
-    for (var i = this._metricsBuffer.length - 1; i >= 0; --i) {
-      var metrics = this._metricsBuffer[i];
-      var timestamp = metrics.timestamp;
-      var value = metrics.metrics.get(metricName);
+    for (let i = this._metricsBuffer.length - 1; i >= 0; --i) {
+      const metrics = this._metricsBuffer[i];
+      const timestamp = metrics.timestamp;
+      let value = metrics.metrics.get(metricName);
       if (stackedChartBaseLandscape) {
         value += stackedChartBaseLandscape.get(timestamp) || 0;
         value = Number.constrain(value, 0, 1);
         stackedChartBaseLandscape.set(timestamp, value);
       }
-      var y = calcY(value);
+      const y = calcY(value);
       x = (timestamp - startTime) * pixelsPerMs;
       if (smooth) {
-        var midX = (lastX + x) / 2;
+        const midX = (lastX + x) / 2;
         path.bezierCurveTo(midX, lastY, midX, y, x, y);
       } else {
         path.lineTo(x, lastY);
@@ -366,8 +366,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   _recalcChartHeight() {
-    var height = this._scaleHeight;
-    for (var chartInfo of this._controlPane.charts()) {
+    let height = this._scaleHeight;
+    for (const chartInfo of this._controlPane.charts()) {
       if (this._controlPane.isActive(chartInfo.metrics[0].name))
         height += this._graphHeight;
     }
@@ -422,7 +422,7 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
         Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
-    var format = Timeline.PerformanceMonitor.Format;
+    const format = Timeline.PerformanceMonitor.Format;
 
     /** @type {!Array<!Timeline.PerformanceMonitor.ChartInfo>} */
     this._chartsInfo = [
@@ -451,17 +451,17 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
       {title: Common.UIString('Layouts / sec'), metrics: [{name: 'LayoutCount', color: 'hotpink'}]},
       {title: Common.UIString('Style recalcs / sec'), metrics: [{name: 'RecalcStyleCount', color: 'deeppink'}]}
     ];
-    for (var info of this._chartsInfo) {
-      for (var metric of info.metrics)
+    for (const info of this._chartsInfo) {
+      for (const metric of info.metrics)
         metric.color = UI.themeSupport.patchColorText(metric.color, UI.ThemeSupport.ColorUsage.Foreground);
     }
 
     /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricIndicator>} */
     this._indicators = new Map();
-    for (var chartInfo of this._chartsInfo) {
-      var chartName = chartInfo.metrics[0].name;
-      var active = this._enabledCharts.has(chartName);
-      var indicator = new Timeline.PerformanceMonitor.MetricIndicator(
+    for (const chartInfo of this._chartsInfo) {
+      const chartName = chartInfo.metrics[0].name;
+      const active = this._enabledCharts.has(chartName);
+      const indicator = new Timeline.PerformanceMonitor.MetricIndicator(
           this.element, chartInfo, active, this._onToggle.bind(this, chartName));
       this._indicators.set(chartName, indicator);
     }
@@ -499,7 +499,7 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
    * @param {!Map<string, number>} metrics
    */
   updateMetrics(metrics) {
-    for (var name of this._indicators.keys()) {
+    for (const name of this._indicators.keys()) {
       if (metrics.has(name))
         this._indicators.get(name).setValue(metrics.get(name));
     }
@@ -519,7 +519,7 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
    * @param {function(boolean)} onToggle
    */
   constructor(parent, info, active, onToggle) {
-    var color = info.color || info.metrics[0].color;
+    const color = info.color || info.metrics[0].color;
     this._info = info;
     this._active = active;
     this._onToggle = onToggle;

@@ -76,9 +76,9 @@ Sources.SimpleHistoryManager = class {
   filterOut(filterOutCallback) {
     if (this.readOnly())
       return;
-    var filteredEntries = [];
-    var removedBeforeActiveEntry = 0;
-    for (var i = 0; i < this._entries.length; ++i) {
+    const filteredEntries = [];
+    let removedBeforeActiveEntry = 0;
+    for (let i = 0; i < this._entries.length; ++i) {
       if (!filterOutCallback(this._entries[i]))
         filteredEntries.push(this._entries[i]);
       else if (i <= this._activeEntryIndex)
@@ -123,7 +123,7 @@ Sources.SimpleHistoryManager = class {
     if (this.empty())
       return false;
 
-    var revealIndex = this._activeEntryIndex - 1;
+    let revealIndex = this._activeEntryIndex - 1;
     while (revealIndex >= 0 && !this._entries[revealIndex].valid())
       --revealIndex;
     if (revealIndex < 0)
@@ -141,7 +141,7 @@ Sources.SimpleHistoryManager = class {
    * @return {boolean}
    */
   rollover() {
-    var revealIndex = this._activeEntryIndex + 1;
+    let revealIndex = this._activeEntryIndex + 1;
 
     while (revealIndex < this._entries.length && !this._entries[revealIndex].valid())
       ++revealIndex;

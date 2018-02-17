@@ -129,7 +129,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.SecurityOriginRemoved, this._securityOriginRemoved, this);
 
-    for (var securityOrigin of this._securityOriginManager.securityOrigins())
+    for (const securityOrigin of this._securityOriginManager.securityOrigins())
       this._addOrigin(securityOrigin);
     this._agent.enable();
 
@@ -142,9 +142,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   clearForOrigin(origin) {
     if (!this._enabled)
       return;
-    for (var isLocal of [true, false]) {
-      var key = this._storageKey(origin, isLocal);
-      var storage = this._storages[key];
+    for (const isLocal of [true, false]) {
+      const key = this._storageKey(origin, isLocal);
+      const storage = this._storages[key];
       storage.clear();
     }
     this._removeOrigin(origin);
@@ -162,10 +162,10 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _addOrigin(securityOrigin) {
-    for (var isLocal of [true, false]) {
-      var key = this._storageKey(securityOrigin, isLocal);
+    for (const isLocal of [true, false]) {
+      const key = this._storageKey(securityOrigin, isLocal);
       console.assert(!this._storages[key]);
-      var storage = new Resources.DOMStorage(this, securityOrigin, isLocal);
+      const storage = new Resources.DOMStorage(this, securityOrigin, isLocal);
       this._storages[key] = storage;
       this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageAdded, storage);
     }
@@ -182,9 +182,9 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _removeOrigin(securityOrigin) {
-    for (var isLocal of [true, false]) {
-      var key = this._storageKey(securityOrigin, isLocal);
-      var storage = this._storages[key];
+    for (const isLocal of [true, false]) {
+      const key = this._storageKey(securityOrigin, isLocal);
+      const storage = this._storages[key];
       console.assert(storage);
       delete this._storages[key];
       this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, storage);
@@ -204,11 +204,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {!Protocol.DOMStorage.StorageId} storageId
    */
   _domStorageItemsCleared(storageId) {
-    var domStorage = this.storageForId(storageId);
+    const domStorage = this.storageForId(storageId);
     if (!domStorage)
       return;
 
-    var eventData = {};
+    const eventData = {};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemsCleared, eventData);
   }
 
@@ -217,11 +217,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} key
    */
   _domStorageItemRemoved(storageId, key) {
-    var domStorage = this.storageForId(storageId);
+    const domStorage = this.storageForId(storageId);
     if (!domStorage)
       return;
 
-    var eventData = {key: key};
+    const eventData = {key: key};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemRemoved, eventData);
   }
 
@@ -231,11 +231,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} value
    */
   _domStorageItemAdded(storageId, key, value) {
-    var domStorage = this.storageForId(storageId);
+    const domStorage = this.storageForId(storageId);
     if (!domStorage)
       return;
 
-    var eventData = {key: key, value: value};
+    const eventData = {key: key, value: value};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemAdded, eventData);
   }
 
@@ -246,11 +246,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} value
    */
   _domStorageItemUpdated(storageId, key, oldValue, value) {
-    var domStorage = this.storageForId(storageId);
+    const domStorage = this.storageForId(storageId);
     if (!domStorage)
       return;
 
-    var eventData = {key: key, oldValue: oldValue, value: value};
+    const eventData = {key: key, oldValue: oldValue, value: value};
     domStorage.dispatchEventToListeners(Resources.DOMStorage.Events.DOMStorageItemUpdated, eventData);
   }
 
@@ -266,8 +266,8 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @return {!Array.<!Resources.DOMStorage>}
    */
   storages() {
-    var result = [];
-    for (var id in this._storages)
+    const result = [];
+    for (const id in this._storages)
       result.push(this._storages[id]);
     return result;
   }

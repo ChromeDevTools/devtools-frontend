@@ -8,7 +8,7 @@
   function toolboxLoaded() {
     if (!window.opener)
       return;
-    var app = window.opener['Emulation']['AdvancedApp']['_instance']();
+    const app = window.opener['Emulation']['AdvancedApp']['_instance']();
     app['toolboxLoaded'](document);
   }
 

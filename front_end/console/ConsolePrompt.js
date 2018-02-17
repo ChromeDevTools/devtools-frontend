@@ -101,9 +101,9 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @param {!Event} event
    */
   _editorKeyDown(event) {
-    var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
-    var newText;
-    var isPrevious;
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    let newText;
+    let isPrevious;
 
     switch (keyboardEvent.keyCode) {
       case UI.KeyboardShortcut.Keys.Up.code:
@@ -160,19 +160,19 @@ Console.ConsolePrompt = class extends UI.Widget {
 
     this.clearAutocomplete();
 
-    var str = this.text();
+    const str = this.text();
     if (!str.length)
       return;
 
-    var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!this._isCaretAtEndOfPrompt() || !currentExecutionContext) {
       this._appendCommand(str, true);
       return;
     }
-    var result = await currentExecutionContext.runtimeModel.compileScript(str, '', false, currentExecutionContext.id);
+    const result = await currentExecutionContext.runtimeModel.compileScript(str, '', false, currentExecutionContext.id);
     if (str !== this.text())
       return;
-    var exceptionDetails = result.exceptionDetails;
+    const exceptionDetails = result.exceptionDetails;
     if (exceptionDetails &&
         (exceptionDetails.exception.description.startsWith('SyntaxError: Unexpected end of input') ||
          exceptionDetails.exception.description.startsWith('SyntaxError: Unterminated template literal'))) {
@@ -190,14 +190,14 @@ Console.ConsolePrompt = class extends UI.Widget {
    */
   async _appendCommand(text, useCommandLineAPI) {
     this.setText('');
-    var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext) {
-      var executionContext = currentExecutionContext;
-      var message = SDK.consoleModel.addCommandMessage(executionContext, text);
+      const executionContext = currentExecutionContext;
+      const message = SDK.consoleModel.addCommandMessage(executionContext, text);
       text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
-      var preprocessed = false;
+      let preprocessed = false;
       if (text.indexOf('await') !== -1) {
-        var preprocessedText = await Formatter.formatterWorkerPool().preprocessTopLevelAwaitExpressions(text);
+        const preprocessedText = await Formatter.formatterWorkerPool().preprocessTopLevelAwaitExpressions(text);
         preprocessed = !!preprocessedText;
         text = preprocessedText || text;
       }
@@ -219,12 +219,12 @@ Console.ConsolePrompt = class extends UI.Widget {
   _historyCompletions(prefix, force) {
     if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!prefix && !force))
       return [];
-    var result = [];
-    var text = this.text();
-    var set = new Set();
-    var data = this._history.historyData();
-    for (var i = data.length - 1; i >= 0 && result.length < 50; --i) {
-      var item = data[i];
+    const result = [];
+    const text = this.text();
+    const set = new Set();
+    const data = this._history.historyData();
+    for (let i = data.length - 1; i >= 0 && result.length < 50; --i) {
+      const item = data[i];
       if (!item.startsWith(text))
         continue;
       if (set.has(item))
@@ -252,12 +252,12 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @return {?TextUtils.TextRange}
    */
   _substituteRange(lineNumber, columnNumber) {
-    var token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
+    const token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
     if (token && token.type === 'js-string')
       return new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
 
-    var lineText = this._editor.line(lineNumber);
-    var index;
+    const lineText = this._editor.line(lineNumber);
+    let index;
     for (index = columnNumber - 1; index >= 0; index--) {
       if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
         break;
@@ -272,13 +272,13 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
   _wordsWithQuery(queryRange, substituteRange, force) {
-    var query = this._editor.text(queryRange);
-    var before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
-    var historyWords = this._historyCompletions(query, force);
-    var token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
+    const query = this._editor.text(queryRange);
+    const before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
+    const historyWords = this._historyCompletions(query, force);
+    const token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
     if (token) {
-      var excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
-      var trimmedBefore = before.trim();
+      const excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
+      const trimmedBefore = before.trim();
       if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
         excludedTokens.add('js-string');
       if (!trimmedBefore.endsWith('.'))

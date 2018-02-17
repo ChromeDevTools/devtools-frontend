@@ -108,7 +108,7 @@ UI.ListModel = class extends Common.Object {
    * @return {T}
    */
   remove(index) {
-    var result = this._items[index];
+    const result = this._items[index];
     this._items.splice(index, 1);
     this._replaced(index, [result], 0);
     return result;
@@ -120,7 +120,7 @@ UI.ListModel = class extends Common.Object {
    * @return {T}
    */
   replace(index, value) {
-    var oldValue = this._items[index];
+    const oldValue = this._items[index];
     this._items[index] = value;
     this._replaced(index, [oldValue], 1);
     return oldValue;
@@ -133,14 +133,14 @@ UI.ListModel = class extends Common.Object {
    * @return {!Array<T>} removed
    */
   replaceRange(from, to, items) {
-    var removed;
+    let removed;
     if (items.length < 10000) {
       removed = this._items.splice(from, to - from, ...items);
     } else {
       removed = this._items.slice(from, to);
       // Splice may fail with too many arguments.
-      var before = this._items.slice(0, from);
-      var after = this._items.slice(to);
+      const before = this._items.slice(0, from);
+      const after = this._items.slice(to);
       this._items = [].concat(before, items, after);
     }
     this._replaced(from, removed, items.length);
@@ -152,7 +152,7 @@ UI.ListModel = class extends Common.Object {
    * @return {!Array<T>}
    */
   replaceAll(items) {
-    var oldItems = this._items.slice();
+    const oldItems = this._items.slice();
     this._items = items;
     this._replaced(0, oldItems, items.length);
     return oldItems;

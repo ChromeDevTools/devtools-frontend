@@ -30,7 +30,7 @@ UI.XWidget = class extends UI.XElement {
 
     if (!UI.XWidget._observer) {
       UI.XWidget._observer = new ResizeObserver(entries => {
-        for (var entry of entries) {
+        for (const entry of entries) {
           if (entry.target._visible && entry.target._onResizedCallback)
             entry.target._onResizedCallback.call(null);
         }
@@ -46,7 +46,7 @@ UI.XWidget = class extends UI.XElement {
    */
   static focusWidgetForNode(node) {
     node = node && node.parentNodeOrShadowHost();
-    var widget = null;
+    let widget = null;
     while (node) {
       if (node instanceof UI.XWidget) {
         if (widget)
@@ -96,15 +96,15 @@ UI.XWidget = class extends UI.XElement {
    * @param {!Array<!Element>} elements
    */
   setElementsToRestoreScrollPositionsFor(elements) {
-    for (var element of this._elementsToRestoreScrollPositionsFor)
+    for (const element of this._elementsToRestoreScrollPositionsFor)
       element.removeEventListener('scroll', UI.XWidget._storeScrollPosition, {passive: true, capture: false});
     this._elementsToRestoreScrollPositionsFor = elements;
-    for (var element of this._elementsToRestoreScrollPositionsFor)
+    for (const element of this._elementsToRestoreScrollPositionsFor)
       element.addEventListener('scroll', UI.XWidget._storeScrollPosition, {passive: true, capture: false});
   }
 
   restoreScrollPositions() {
-    for (var element of this._elementsToRestoreScrollPositionsFor) {
+    for (const element of this._elementsToRestoreScrollPositionsFor) {
       if (element._scrollTop)
         element.scrollTop = element._scrollTop;
       if (element._scrollLeft)
@@ -116,7 +116,7 @@ UI.XWidget = class extends UI.XElement {
    * @param {!Event} event
    */
   static _storeScrollPosition(event) {
-    var element = event.currentTarget;
+    const element = event.currentTarget;
     element._scrollTop = element.scrollTop;
     element._scrollLeft = element.scrollLeft;
   }
@@ -137,13 +137,13 @@ UI.XWidget = class extends UI.XElement {
     if (!this._visible)
       return;
 
-    var element;
+    let element;
     if (this._defaultFocusedElement && this.isSelfOrAncestor(this._defaultFocusedElement)) {
       element = this._defaultFocusedElement;
     } else if (this.tabIndex !== -1) {
       element = this;
     } else {
-      var child = this.traverseNextNode(this);
+      let child = this.traverseNextNode(this);
       while (child) {
         if ((child instanceof UI.XWidget) && child._visible) {
           element = child;

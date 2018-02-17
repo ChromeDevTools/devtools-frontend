@@ -28,7 +28,7 @@ UI.Infobar = class {
     /** @type {?Common.Setting} */
     this._disableSetting = disableSetting || null;
     if (disableSetting) {
-      var disableButton = this._mainRow.createChild('div', 'infobar-toggle');
+      const disableButton = this._mainRow.createChild('div', 'infobar-toggle');
       disableButton.textContent = Common.UIString('never show');
       disableButton.addEventListener('click', this._onDisable.bind(this), false);
     }
@@ -103,8 +103,8 @@ UI.Infobar = class {
    */
   createDetailsRowMessage(message) {
     this._toggleElement.classList.remove('hidden');
-    var infobarDetailsRow = this._detailsRows.createChild('div', 'infobar-details-row');
-    var detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
+    const infobarDetailsRow = this._detailsRows.createChild('div', 'infobar-details-row');
+    const detailsRowMessage = infobarDetailsRow.createChild('span', 'infobar-row-message');
     detailsRowMessage.textContent = message || '';
     return detailsRowMessage;
   }

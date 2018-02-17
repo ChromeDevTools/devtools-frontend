@@ -41,8 +41,8 @@ UI.DropTarget = class {
    * @return {boolean}
    */
   _hasMatchingType(event) {
-    for (var transferType of this._transferTypes) {
-      var found = Array.from(event.dataTransfer.items).find(item => {
+    for (const transferType of this._transferTypes) {
+      const found = Array.from(event.dataTransfer.items).find(item => {
         return transferType.kind === item.kind && !!transferType.type.exec(item.type);
       });
       if (found)
@@ -62,7 +62,7 @@ UI.DropTarget = class {
     if (this._dragMaskElement)
       return;
     this._dragMaskElement = this._element.createChild('div', '');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this._dragMaskElement, 'ui/dropTarget.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this._dragMaskElement, 'ui/dropTarget.css');
     shadowRoot.createChild('div', 'drop-target-message').textContent = this._messageText;
     this._dragMaskElement.addEventListener('drop', this._onDrop.bind(this), true);
     this._dragMaskElement.addEventListener('dragleave', this._onDragLeave.bind(this), true);

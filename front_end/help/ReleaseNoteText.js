@@ -6,8 +6,8 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
-var continueToHereShortcut = Host.isMac() ? 'Command' : 'Control';
-var commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
+const continueToHereShortcut = Host.isMac() ? 'Command' : 'Control';
+const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
 
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [

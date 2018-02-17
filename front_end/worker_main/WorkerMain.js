@@ -10,7 +10,7 @@ WorkerMain.WorkerMain = class extends Common.Object {
    * @override
    */
   run() {
-    var capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+    const capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
         SDK.Target.Capability.Target;
     SDK.targetManager.createTarget(
         'main', Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null);
@@ -28,10 +28,10 @@ WorkerMain.WorkerMain = class extends Common.Object {
 };
 
 SDK.ChildTargetManager.install(({target, waitingForDebugger}) => {
-  var parentTarget = target.parentTarget();
+  const parentTarget = target.parentTarget();
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
   if (!parentTarget.parentTarget() && waitingForDebugger) {
-    var debuggerModel = target.model(SDK.DebuggerModel);
+    const debuggerModel = target.model(SDK.DebuggerModel);
     if (debuggerModel)
       debuggerModel.pause();
   }

@@ -8,7 +8,7 @@
 Resources.ClearStorageView = class extends UI.ThrottledWidget {
   constructor() {
     super(true, 1000);
-    var types = Protocol.Storage.StorageType;
+    const types = Protocol.Storage.StorageType;
     this._pieColors = new Map([
       [types.Appcache, 'rgb(110, 161, 226)'],        // blue
       [types.Cache_storage, 'rgb(229, 113, 113)'],   // red
@@ -29,36 +29,36 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._securityOrigin = null;
 
     this._settings = new Map();
-    for (var type of
+    for (const type of
              [types.Appcache, types.Cache_storage, types.Cookies, types.Indexeddb, types.Local_storage,
               types.Service_workers, types.Websql])
       this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
 
-    var quota = this._reportView.appendSection(Common.UIString('Usage'));
+    const quota = this._reportView.appendSection(Common.UIString('Usage'));
     this._quotaRow = quota.appendRow();
     this._quotaUsage = null;
     this._pieChart = new PerfUI.PieChart(110, Number.bytesToString, true);
     this._pieChartLegend = createElement('div');
-    var usageBreakdownRow = quota.appendRow();
+    const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart.element);
     usageBreakdownRow.appendChild(this._pieChartLegend);
 
-    var application = this._reportView.appendSection(Common.UIString('Application'));
+    const application = this._reportView.appendSection(Common.UIString('Application'));
     this._appendItem(application, Common.UIString('Unregister service workers'), 'service_workers');
 
-    var storage = this._reportView.appendSection(Common.UIString('Storage'));
+    const storage = this._reportView.appendSection(Common.UIString('Storage'));
     this._appendItem(storage, Common.UIString('Local and session storage'), 'local_storage');
     this._appendItem(storage, Common.UIString('IndexedDB'), 'indexeddb');
     this._appendItem(storage, Common.UIString('Web SQL'), 'websql');
     this._appendItem(storage, Common.UIString('Cookies'), 'cookies');
 
-    var caches = this._reportView.appendSection(Common.UIString('Cache'));
+    const caches = this._reportView.appendSection(Common.UIString('Cache'));
     this._appendItem(caches, Common.UIString('Cache storage'), 'cache_storage');
     this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
-    var footer = this._reportView.appendSection('', 'clear-storage-button').appendRow();
+    const footer = this._reportView.appendSection('', 'clear-storage-button').appendRow();
     this._clearButton = UI.createTextButton(
         Common.UIString('Clear site data'), this._clear.bind(this), Common.UIString('Clear site data'));
     footer.appendChild(this._clearButton);
@@ -70,7 +70,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {string} settingName
    */
   _appendItem(section, title, settingName) {
-    var row = section.appendRow();
+    const row = section.appendRow();
     row.appendChild(UI.SettingsUI.createSettingCheckbox(title, this._settings.get(settingName), true));
   }
 
@@ -82,7 +82,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     if (this._target)
       return;
     this._target = target;
-    var securityOriginManager = target.model(SDK.SecurityOriginManager);
+    const securityOriginManager = target.model(SDK.SecurityOriginManager);
     this._updateOrigin(securityOriginManager.mainSecurityOrigin());
     securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
@@ -95,7 +95,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
   targetRemoved(target) {
     if (this._target !== target)
       return;
-    var securityOriginManager = target.model(SDK.SecurityOriginManager);
+    const securityOriginManager = target.model(SDK.SecurityOriginManager);
     securityOriginManager.removeEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
@@ -104,7 +104,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _originChanged(event) {
-    var origin = /** *@type {string} */ (event.data);
+    const origin = /** *@type {string} */ (event.data);
     this._updateOrigin(origin);
   }
 
@@ -120,38 +120,38 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
   _clear() {
     if (!this._securityOrigin)
       return;
-    var storageTypes = [];
-    for (var type of this._settings.keys()) {
+    const storageTypes = [];
+    for (const type of this._settings.keys()) {
       if (this._settings.get(type).get())
         storageTypes.push(type);
     }
 
     this._target.storageAgent().clearDataForOrigin(this._securityOrigin, storageTypes.join(','));
 
-    var set = new Set(storageTypes);
-    var hasAll = set.has(Protocol.Storage.StorageType.All);
+    const set = new Set(storageTypes);
+    const hasAll = set.has(Protocol.Storage.StorageType.All);
     if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
-      var cookieModel = this._target.model(SDK.CookieModel);
+      const cookieModel = this._target.model(SDK.CookieModel);
       if (cookieModel)
         cookieModel.clear();
     }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
-      for (var target of SDK.targetManager.targets()) {
-        var indexedDBModel = target.model(Resources.IndexedDBModel);
+      for (const target of SDK.targetManager.targets()) {
+        const indexedDBModel = target.model(Resources.IndexedDBModel);
         if (indexedDBModel)
           indexedDBModel.clearForOrigin(this._securityOrigin);
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
-      var storageModel = this._target.model(Resources.DOMStorageModel);
+      const storageModel = this._target.model(Resources.DOMStorageModel);
       if (storageModel)
         storageModel.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
-      var databaseModel = this._target.model(Resources.DatabaseModel);
+      const databaseModel = this._target.model(Resources.DatabaseModel);
       if (databaseModel) {
         databaseModel.disable();
         databaseModel.enable();
@@ -159,20 +159,20 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
-      var target = SDK.targetManager.mainTarget();
-      var model = target && target.model(SDK.ServiceWorkerCacheModel);
+      const target = SDK.targetManager.mainTarget();
+      const model = target && target.model(SDK.ServiceWorkerCacheModel);
       if (model)
         model.clearForOrigin(this._securityOrigin);
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
-      var appcacheModel = this._target.model(Resources.ApplicationCacheModel);
+      const appcacheModel = this._target.model(Resources.ApplicationCacheModel);
       if (appcacheModel)
         appcacheModel.reset();
     }
 
     this._clearButton.disabled = true;
-    var label = this._clearButton.textContent;
+    const label = this._clearButton.textContent;
     this._clearButton.textContent = Common.UIString('Clearing...');
     setTimeout(() => {
       this._clearButton.disabled = false;
@@ -188,8 +188,8 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     if (!this._securityOrigin)
       return;
 
-    var securityOrigin = /** @type {string} */ (this._securityOrigin);
-    var response = await this._target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
+    const securityOrigin = /** @type {string} */ (this._securityOrigin);
+    const response = await this._target.storageAgent().invoke_getUsageAndQuota({origin: securityOrigin});
     if (response[Protocol.Error]) {
       this._quotaRow.textContent = '';
       this._resetPieChart(0);
@@ -201,14 +201,14 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     if (!this._quotaUsage || this._quotaUsage !== response.usage) {
       this._quotaUsage = response.usage;
       this._resetPieChart(response.usage);
-      for (var usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
-        var value = usageForType.usage;
+      for (const usageForType of response.usageBreakdown.sort((a, b) => b.usage - a.usage)) {
+        const value = usageForType.usage;
         if (!value)
           continue;
-        var title = this._getStorageTypeName(usageForType.storageType);
-        var color = this._pieColors.get(usageForType.storageType) || '#ccc';
+        const title = this._getStorageTypeName(usageForType.storageType);
+        const color = this._pieColors.get(usageForType.storageType) || '#ccc';
         this._pieChart.addSlice(value, color);
-        var rowElement = this._pieChartLegend.createChild('div', 'usage-breakdown-legend-row');
+        const rowElement = this._pieChartLegend.createChild('div', 'usage-breakdown-legend-row');
         rowElement.createChild('span', 'usage-breakdown-legend-value').textContent = Number.bytesToString(value);
         rowElement.createChild('span', 'usage-breakdown-legend-swatch').style.backgroundColor = color;
         rowElement.createChild('span', 'usage-breakdown-legend-title').textContent = title;

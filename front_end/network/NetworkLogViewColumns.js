@@ -74,13 +74,13 @@ Network.NetworkLogViewColumns = class {
   }
 
   _setupDataGrid() {
-    var defaultColumns = Network.NetworkLogViewColumns._defaultColumns;
+    const defaultColumns = Network.NetworkLogViewColumns._defaultColumns;
 
-    var defaultColumnConfig = Network.NetworkLogViewColumns._defaultColumnConfig;
+    const defaultColumnConfig = Network.NetworkLogViewColumns._defaultColumnConfig;
 
     this._columns = /** @type {!Array<!Network.NetworkLogViewColumns.Descriptor>} */ ([]);
-    for (var currentConfigColumn of defaultColumns) {
-      var columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
+    for (const currentConfigColumn of defaultColumns) {
+      const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
           Object.assign({}, defaultColumnConfig, currentConfigColumn));
       columnConfig.id = columnConfig.id;
       if (columnConfig.subtitle)
@@ -112,7 +112,7 @@ Network.NetworkLogViewColumns = class {
         Network.NetworkLogViewColumns._initialSortColumn, DataGrid.DataGrid.Order.Ascending);
 
     this._splitWidget = new UI.SplitWidget(true, true, 'networkPanelSplitViewWaterfall', 200);
-    var widget = this._dataGrid.asWidget();
+    const widget = this._dataGrid.asWidget();
     widget.setMinimumSize(150, 0);
     this._splitWidget.setMainWidget(widget);
   }
@@ -147,13 +147,13 @@ Network.NetworkLogViewColumns = class {
      * @this {Network.NetworkLogViewColumns}
      */
     function handleContextMenu(event) {
-      var node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
+      const node = this._waterfallColumn.getNodeFromPoint(event.offsetX, event.offsetY);
       if (!node)
         return;
-      var request = node.request();
+      const request = node.request();
       if (!request)
         return;
-      var contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu(event);
       this._networkLogView.handleContextMenuForRequest(contextMenu, request);
       contextMenu.show();
     }
@@ -194,7 +194,7 @@ Network.NetworkLogViewColumns = class {
       return;
     }
     this._syncScrollers();
-    var nodes = this._networkLogView.flatNodesList();
+    const nodes = this._networkLogView.flatNodesList();
     this._waterfallColumn.update(this._activeScroller.scrollTop, this._eventDividers, nodes);
   }
 
@@ -203,7 +203,7 @@ Network.NetworkLogViewColumns = class {
     this._waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this._waterfallHeaderElement.addEventListener(
         'contextmenu', event => this._innerHeaderContextMenu(new UI.ContextMenu(event)));
-    var innerElement = this._waterfallHeaderElement.createChild('div');
+    const innerElement = this._waterfallHeaderElement.createChild('div');
     innerElement.textContent = Common.UIString('Waterfall');
     this._waterfallColumnSortIcon = UI.Icon.create('', 'sort-order-icon');
     this._waterfallHeaderElement.createChild('div', 'sort-order-icon-container')
@@ -213,8 +213,8 @@ Network.NetworkLogViewColumns = class {
      * @this {Network.NetworkLogViewColumns}
      */
     function waterfallHeaderClicked() {
-      var sortOrders = DataGrid.DataGrid.Order;
-      var sortOrder =
+      const sortOrders = DataGrid.DataGrid.Order;
+      const sortOrder =
           this._dataGrid.sortOrder() === sortOrders.Ascending ? sortOrders.Descending : sortOrders.Ascending;
       this._dataGrid.markColumnAsSortedBy('waterfall', sortOrder);
       this._sortHandler();
@@ -233,7 +233,7 @@ Network.NetworkLogViewColumns = class {
   }
 
   _updateRowsSize() {
-    var largeRows = !!this._networkLogLargeRowsSetting.get();
+    const largeRows = !!this._networkLogLargeRowsSetting.get();
 
     this._dataGrid.element.classList.toggle('small', !largeRows);
     this._dataGrid.scheduleUpdate();
@@ -264,7 +264,7 @@ Network.NetworkLogViewColumns = class {
   }
 
   _sortHandler() {
-    var columnId = this._dataGrid.sortColumnId();
+    const columnId = this._dataGrid.sortColumnId();
     this._networkLogView.removeAllNodeHighlights();
     this._waterfallRequestsAreStale = true;
     if (columnId === 'waterfall') {
@@ -273,14 +273,14 @@ Network.NetworkLogViewColumns = class {
       else
         this._waterfallColumnSortIcon.setIconType('smallicon-triangle-down');
 
-      var sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
+      const sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
       this._networkLogView.dataGridSorted();
       return;
     }
     this._waterfallColumnSortIcon.setIconType('');
 
-    var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
+    const columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
     if (!columnConfig || !columnConfig.sortingFunction)
       return;
 
@@ -291,9 +291,9 @@ Network.NetworkLogViewColumns = class {
   _updateColumns() {
     if (!this._dataGrid)
       return;
-    var visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
+    const visibleColumns = /** @type {!Object.<string, boolean>} */ ({});
     if (this._gridMode) {
-      for (var columnConfig of this._columns)
+      for (const columnConfig of this._columns)
         visibleColumns[columnConfig.id] = columnConfig.visible;
     } else {
       visibleColumns.name = true;
@@ -338,19 +338,19 @@ Network.NetworkLogViewColumns = class {
   }
 
   _saveColumnsSettings() {
-    var saveableSettings = {};
-    for (var columnConfig of this._columns)
+    const saveableSettings = {};
+    for (const columnConfig of this._columns)
       saveableSettings[columnConfig.id] = {visible: columnConfig.visible, title: columnConfig.title};
 
     this._persistantSettings.set(saveableSettings);
   }
 
   _loadCustomColumnsAndSettings() {
-    var savedSettings = this._persistantSettings.get();
-    var columnIds = Object.keys(savedSettings);
-    for (var columnId of columnIds) {
-      var setting = savedSettings[columnId];
-      var columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
+    const savedSettings = this._persistantSettings.get();
+    const columnIds = Object.keys(savedSettings);
+    for (const columnId of columnIds) {
+      const setting = savedSettings[columnId];
+      let columnConfig = this._columns.find(columnConfig => columnConfig.id === columnId);
       if (!columnConfig)
         columnConfig = this._addCustomHeader(setting.title, columnId);
       if (columnConfig.hideable && typeof setting.visible === 'boolean')
@@ -366,9 +366,9 @@ Network.NetworkLogViewColumns = class {
    * @return {!DocumentFragment}
    */
   _makeHeaderFragment(title, subtitle) {
-    var fragment = createDocumentFragment();
+    const fragment = createDocumentFragment();
     fragment.createTextChild(title);
-    var subtitleDiv = fragment.createChild('div', 'network-header-subtitle');
+    const subtitleDiv = fragment.createChild('div', 'network-header-subtitle');
     subtitleDiv.createTextChild(subtitle);
     return fragment;
   }
@@ -377,16 +377,16 @@ Network.NetworkLogViewColumns = class {
    * @param {!UI.ContextMenu} contextMenu
    */
   _innerHeaderContextMenu(contextMenu) {
-    var columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
-    var nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
-    for (var columnConfig of nonResponseHeaders) {
+    const columnConfigs = this._columns.filter(columnConfig => columnConfig.hideable);
+    const nonResponseHeaders = columnConfigs.filter(columnConfig => !columnConfig.isResponseHeader);
+    for (const columnConfig of nonResponseHeaders) {
       contextMenu.headerSection().appendCheckboxItem(
           columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
     }
 
-    var responseSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Response Headers'));
-    var responseHeaders = columnConfigs.filter(columnConfig => columnConfig.isResponseHeader);
-    for (var columnConfig of responseHeaders) {
+    const responseSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Response Headers'));
+    const responseHeaders = columnConfigs.filter(columnConfig => columnConfig.isResponseHeader);
+    for (const columnConfig of responseHeaders) {
       responseSubMenu.defaultSection().appendCheckboxItem(
           columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
     }
@@ -394,8 +394,8 @@ Network.NetworkLogViewColumns = class {
     responseSubMenu.footerSection().appendItem(
         Common.UIString('Manage Header Columns\u2026'), this._manageCustomHeaderDialog.bind(this));
 
-    var waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
-    var waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Waterfall'));
+    const waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
+    const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(Common.UIString('Waterfall'));
     waterfallSubMenu.defaultSection().appendCheckboxItem(
         Common.UIString('Start Time'), setWaterfallMode.bind(this, waterfallSortIds.StartTime),
         this._activeWaterfallSortId === waterfallSortIds.StartTime);
@@ -419,8 +419,8 @@ Network.NetworkLogViewColumns = class {
      * @this {Network.NetworkLogViewColumns}
      */
     function setWaterfallMode(sortId) {
-      var calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Time);
-      var waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
+      let calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Time);
+      const waterfallSortIds = Network.NetworkLogViewColumns.WaterfallSortIds;
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency)
         calculator = this._calculatorsMap.get(Network.NetworkLogViewColumns._calculatorTypes.Duration);
       this._networkLogView.setCalculator(calculator);
@@ -432,15 +432,15 @@ Network.NetworkLogViewColumns = class {
   }
 
   _manageCustomHeaderDialog() {
-    var customHeaders = [];
-    for (var columnConfig of this._columns) {
+    const customHeaders = [];
+    for (const columnConfig of this._columns) {
       if (columnConfig.isResponseHeader)
         customHeaders.push({title: columnConfig.title, editable: columnConfig.isCustomHeader});
     }
-    var manageCustomHeaders = new Network.NetworkManageCustomHeadersView(
+    const manageCustomHeaders = new Network.NetworkManageCustomHeadersView(
         customHeaders, headerTitle => !!this._addCustomHeader(headerTitle), this._changeCustomHeader.bind(this),
         this._removeCustomHeader.bind(this));
-    var dialog = new UI.Dialog();
+    const dialog = new UI.Dialog();
     manageCustomHeaders.show(dialog.contentElement);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.show(this._networkLogView.element);
@@ -452,7 +452,7 @@ Network.NetworkLogViewColumns = class {
    */
   _removeCustomHeader(headerId) {
     headerId = headerId.toLowerCase();
-    var index = this._columns.findIndex(columnConfig => columnConfig.id === headerId);
+    const index = this._columns.findIndex(columnConfig => columnConfig.id === headerId);
     if (index === -1)
       return false;
     this._columns.splice(index, 1);
@@ -474,11 +474,11 @@ Network.NetworkLogViewColumns = class {
     if (index === undefined)
       index = this._columns.length - 1;
 
-    var currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === headerId);
+    const currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === headerId);
     if (currentColumnConfig)
       return null;
 
-    var columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
+    const columnConfig = /** @type {!Network.NetworkLogViewColumns.Descriptor} */ (
         Object.assign({}, Network.NetworkLogViewColumns._defaultColumnConfig, {
           id: headerId,
           title: headerTitle,
@@ -506,9 +506,9 @@ Network.NetworkLogViewColumns = class {
       newHeaderId = newHeaderTitle.toLowerCase();
     oldHeaderId = oldHeaderId.toLowerCase();
 
-    var oldIndex = this._columns.findIndex(columnConfig => columnConfig.id === oldHeaderId);
-    var oldColumnConfig = this._columns[oldIndex];
-    var currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === newHeaderId);
+    const oldIndex = this._columns.findIndex(columnConfig => columnConfig.id === oldHeaderId);
+    const oldColumnConfig = this._columns[oldIndex];
+    const currentColumnConfig = this._columns.find(columnConfig => columnConfig.id === newHeaderId);
     if (!oldColumnConfig || (currentColumnConfig && oldHeaderId !== newHeaderId))
       return false;
 
@@ -524,22 +524,22 @@ Network.NetworkLogViewColumns = class {
   _getPopoverRequest(event) {
     if (!this._gridMode)
       return null;
-    var hoveredNode = this._networkLogView.hoveredNode();
+    const hoveredNode = this._networkLogView.hoveredNode();
     if (!hoveredNode)
       return null;
 
-    var anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
+    const anchor = event.target.enclosingNodeOrSelfWithClass('network-script-initiated');
     if (!anchor)
       return null;
-    var request = hoveredNode.request();
-    var initiator = request ? request.initiator() : null;
+    const request = hoveredNode.request();
+    const initiator = request ? request.initiator() : null;
     if (!initiator || !initiator.stack)
       return null;
     return {
       box: anchor.boxInWindow(),
       show: popover => {
-        var manager = anchor.request ? SDK.NetworkManager.forRequest(anchor.request) : null;
-        var content = Components.JSPresentationUtils.buildStackTracePreviewContents(
+        const manager = anchor.request ? SDK.NetworkManager.forRequest(anchor.request) : null;
+        const content = Components.JSPresentationUtils.buildStackTracePreviewContents(
             manager ? manager.target() : null, this._popupLinkifier, initiator.stack,
             () => popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent));
         popover.contentElement.appendChild(content);
@@ -555,7 +555,7 @@ Network.NetworkLogViewColumns = class {
    */
   addEventDividers(times, className) {
     // TODO(allada) Remove this and pass in the color.
-    var color = 'transparent';
+    let color = 'transparent';
     switch (className) {
       case 'network-blue-divider':
         color = 'hsla(240, 100%, 80%, 0.7)';
@@ -566,7 +566,7 @@ Network.NetworkLogViewColumns = class {
       default:
         return;
     }
-    var currentTimes = this._eventDividers.get(color) || [];
+    const currentTimes = this._eventDividers.get(color) || [];
     this._eventDividers.set(color, currentTimes.concat(times));
     this._networkLogView.scheduleRefresh();
   }

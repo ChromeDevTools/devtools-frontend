@@ -16,7 +16,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
     TestRunner.deprecatedRunAfterPendingDispatches(testContinuation);
 
     function testContinuation() {
-      var editorElement = UI.panels.elements._treeOutlines[0]._shadowRoot.getSelection().anchorNode.parentElement;
+      const editorElement = UI.panels.elements._treeOutlines[0]._shadowRoot.getSelection().anchorNode.parentElement;
       editorElement.textContent = attributeText;
       editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
       TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, '_updateModifiedNodes', done);
@@ -33,7 +33,7 @@ ElementsTestRunner.domActionTestForNodeId = function(testName, dataNodeId, testB
 };
 
 ElementsTestRunner.domActionTest = function(testName, dataNodeSelectionCallback, testBody, next) {
-  var testNode = ElementsTestRunner.expandedNodeWithId(testName);
+  const testNode = ElementsTestRunner.expandedNodeWithId(testName);
   TestRunner.addResult('==== before ====');
   ElementsTestRunner.dumpElementsTree(testNode);
   dataNodeSelectionCallback(testNode, step0);
@@ -54,8 +54,8 @@ ElementsTestRunner.domActionTest = function(testName, dataNodeSelectionCallback,
 };
 
 ElementsTestRunner.editNodePart = function(node, className) {
-  var treeElement = ElementsTestRunner.firstElementsTreeOutline().findTreeElement(node);
-  var textElement = treeElement.listItemElement.getElementsByClassName(className)[0];
+  const treeElement = ElementsTestRunner.firstElementsTreeOutline().findTreeElement(node);
+  let textElement = treeElement.listItemElement.getElementsByClassName(className)[0];
 
   if (!textElement && treeElement.childrenListElement)
     textElement = treeElement.childrenListElement.getElementsByClassName(className)[0];
@@ -65,7 +65,7 @@ ElementsTestRunner.editNodePart = function(node, className) {
 };
 
 ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step2, useSniffer) {
-  var editorElement = ElementsTestRunner.editNodePart(node, className);
+  const editorElement = ElementsTestRunner.editNodePart(node, className);
   editorElement.textContent = newValue;
   editorElement.dispatchEvent(TestRunner.createKeyEvent('Enter'));
 

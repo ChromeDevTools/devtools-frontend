@@ -10,7 +10,7 @@ Sources.InplaceFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _editorSelected(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._updateButton(uiSourceCode);
   }
 
@@ -18,7 +18,7 @@ Sources.InplaceFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _editorClosed(event) {
-    var wasSelected = /** @type {boolean} */ (event.data.wasSelected);
+    const wasSelected = /** @type {boolean} */ (event.data.wasSelected);
     if (wasSelected)
       this._updateButton(null);
   }
@@ -68,7 +68,7 @@ Sources.InplaceFormatterEditorAction = class {
    * @param {!Common.Event} event
    */
   _formatSourceInPlace(event) {
-    var uiSourceCode = this._sourcesView.currentUISourceCode();
+    const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!this._isFormattable(uiSourceCode))
       return;
 
@@ -82,7 +82,7 @@ Sources.InplaceFormatterEditorAction = class {
      * @param {?string} content
      */
     function contentLoaded(content) {
-      var highlighterType = uiSourceCode.mimeType();
+      const highlighterType = uiSourceCode.mimeType();
       Formatter.Formatter.format(uiSourceCode.contentType(), highlighterType, content || '', innerCallback.bind(this));
     }
 
@@ -94,10 +94,10 @@ Sources.InplaceFormatterEditorAction = class {
     function innerCallback(formattedContent, formatterMapping) {
       if (uiSourceCode.workingCopy() === formattedContent)
         return;
-      var sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
-      var start = [0, 0];
+      const sourceFrame = this._sourcesView.viewForFile(uiSourceCode);
+      let start = [0, 0];
       if (sourceFrame) {
-        var selection = sourceFrame.selection();
+        const selection = sourceFrame.selection();
         start = formatterMapping.originalToFormatted(selection.startLine, selection.startColumn);
       }
       uiSourceCode.setWorkingCopy(formattedContent);

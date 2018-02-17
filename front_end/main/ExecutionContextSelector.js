@@ -50,11 +50,11 @@ Main.ExecutionContextSelector = class {
    * @param {!SDK.Target} target
    */
   targetRemoved(target) {
-    var currentExecutionContext = this._context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = this._context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext && currentExecutionContext.target() === target)
       this._currentExecutionContextGone();
 
-    var targets = this._targetManager.targets(SDK.Target.Capability.JS);
+    const targets = this._targetManager.targets(SDK.Target.Capability.JS);
     if (this._context.flavor(SDK.Target) === target && targets.length)
       this._context.setFlavor(SDK.Target, targets[0]);
   }
@@ -63,7 +63,7 @@ Main.ExecutionContextSelector = class {
    * @param {!Common.Event} event
    */
   _executionContextChanged(event) {
-    var newContext = /** @type {?SDK.ExecutionContext} */ (event.data);
+    const newContext = /** @type {?SDK.ExecutionContext} */ (event.data);
     if (newContext) {
       this._context.setFlavor(SDK.Target, newContext.target());
       if (!this._ignoreContextChanged)
@@ -83,23 +83,23 @@ Main.ExecutionContextSelector = class {
    * @param {!Common.Event} event
    */
   _targetChanged(event) {
-    var newTarget = /** @type {?SDK.Target} */ (event.data);
-    var currentContext = this._context.flavor(SDK.ExecutionContext);
+    const newTarget = /** @type {?SDK.Target} */ (event.data);
+    const currentContext = this._context.flavor(SDK.ExecutionContext);
 
     if (!newTarget || (currentContext && currentContext.target() === newTarget))
       return;
 
-    var runtimeModel = newTarget.model(SDK.RuntimeModel);
-    var executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
+    const runtimeModel = newTarget.model(SDK.RuntimeModel);
+    const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     if (!executionContexts.length)
       return;
 
-    var newContext = null;
-    for (var i = 0; i < executionContexts.length && !newContext; ++i) {
+    let newContext = null;
+    for (let i = 0; i < executionContexts.length && !newContext; ++i) {
       if (this._shouldSwitchToContext(executionContexts[i]))
         newContext = executionContexts[i];
     }
-    for (var i = 0; i < executionContexts.length && !newContext; ++i) {
+    for (let i = 0; i < executionContexts.length && !newContext; ++i) {
       if (this._isDefaultContext(executionContexts[i]))
         newContext = executionContexts[i];
     }
@@ -129,8 +129,8 @@ Main.ExecutionContextSelector = class {
       return false;
     if (executionContext.target().parentTarget())
       return false;
-    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
-    var frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
+    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    const frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
     if (frame && frame.isTopFrame())
       return true;
     return false;
@@ -147,7 +147,7 @@ Main.ExecutionContextSelector = class {
    * @param {!Common.Event} event
    */
   _onExecutionContextDestroyed(event) {
-    var executionContext = /** @type {!SDK.ExecutionContext}*/ (event.data);
+    const executionContext = /** @type {!SDK.ExecutionContext}*/ (event.data);
     if (this._context.flavor(SDK.ExecutionContext) === executionContext)
       this._currentExecutionContextGone();
   }
@@ -156,9 +156,9 @@ Main.ExecutionContextSelector = class {
    * @param {!Common.Event} event
    */
   _onExecutionContextOrderChanged(event) {
-    var runtimeModel = /** @type {!SDK.RuntimeModel} */ (event.data);
-    var executionContexts = runtimeModel.executionContexts();
-    for (var i = 0; i < executionContexts.length; i++) {
+    const runtimeModel = /** @type {!SDK.RuntimeModel} */ (event.data);
+    const executionContexts = runtimeModel.executionContexts();
+    for (let i = 0; i < executionContexts.length; i++) {
       if (this._switchContextIfNecessary(executionContexts[i]))
         break;
     }
@@ -179,11 +179,11 @@ Main.ExecutionContextSelector = class {
   }
 
   _currentExecutionContextGone() {
-    var runtimeModels = this._targetManager.models(SDK.RuntimeModel);
-    var newContext = null;
-    for (var i = 0; i < runtimeModels.length && !newContext; ++i) {
-      var executionContexts = runtimeModels[i].executionContexts();
-      for (var executionContext of executionContexts) {
+    const runtimeModels = this._targetManager.models(SDK.RuntimeModel);
+    let newContext = null;
+    for (let i = 0; i < runtimeModels.length && !newContext; ++i) {
+      const executionContexts = runtimeModels[i].executionContexts();
+      for (const executionContext of executionContexts) {
         if (this._isDefaultContext(executionContext)) {
           newContext = executionContext;
           break;
@@ -191,8 +191,8 @@ Main.ExecutionContextSelector = class {
       }
     }
     if (!newContext) {
-      for (var i = 0; i < runtimeModels.length && !newContext; ++i) {
-        var executionContexts = runtimeModels[i].executionContexts();
+      for (let i = 0; i < runtimeModels.length && !newContext; ++i) {
+        const executionContexts = runtimeModels[i].executionContexts();
         if (executionContexts.length) {
           newContext = executionContexts[0];
           break;

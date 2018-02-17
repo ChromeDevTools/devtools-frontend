@@ -11,7 +11,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
     this._mainView = new Security.SecurityMainView(this);
 
-    var title = createElementWithClass('span', 'title');
+    const title = createElementWithClass('span', 'title');
     title.textContent = Common.UIString('Overview');
     this._sidebarMainViewElement = new Security.SecurityPanelSidebarTreeElement(
         title, this._setVisibleView.bind(this, this._mainView), 'security-main-view-sidebar-tree-item', 'lock-icon');
@@ -45,7 +45,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
   static createCertificateViewerButtonForOrigin(text, origin) {
     return UI.createTextButton(text, async e => {
       e.consume();
-      var names = await SDK.multitargetNetworkManager.getCertificate(origin);
+      const names = await SDK.multitargetNetworkManager.getCertificate(origin);
       InspectorFrontendHost.showCertificateViewer(names);
     }, 'origin-button');
   }
@@ -68,20 +68,20 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @return {!Element}
    */
   static createHighlightedUrl(url, securityState) {
-    var schemeSeparator = '://';
-    var index = url.indexOf(schemeSeparator);
+    const schemeSeparator = '://';
+    const index = url.indexOf(schemeSeparator);
 
     // If the separator is not found, just display the text without highlighting.
     if (index === -1) {
-      var text = createElement('span', '');
+      const text = createElement('span', '');
       text.textContent = url;
       return text;
     }
 
-    var highlightedUrl = createElement('span', 'url-text');
+    const highlightedUrl = createElement('span', 'url-text');
 
-    var scheme = url.substr(0, index);
-    var content = url.substr(index + schemeSeparator.length);
+    const scheme = url.substr(0, index);
+    const content = url.substr(index + schemeSeparator.length);
     highlightedUrl.createChild('span', 'url-scheme-' + securityState).textContent = scheme;
     highlightedUrl.createChild('span', 'url-scheme-separator').textContent = schemeSeparator;
     highlightedUrl.createChild('span').textContent = content;
@@ -121,12 +121,12 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onSecurityStateChanged(event) {
-    var data = /** @type {!Security.PageSecurityState} */ (event.data);
-    var securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
-    var schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
-    var explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
-    var insecureContentStatus = /** @type {?Protocol.Security.InsecureContentStatus} */ (data.insecureContentStatus);
-    var summary = /** @type {?string} */ (data.summary);
+    const data = /** @type {!Security.PageSecurityState} */ (event.data);
+    const securityState = /** @type {!Protocol.Security.SecurityState} */ (data.securityState);
+    const schemeIsCryptographic = /** @type {boolean} */ (data.schemeIsCryptographic);
+    const explanations = /** @type {!Array<!Protocol.Security.SecurityStateExplanation>} */ (data.explanations);
+    const insecureContentStatus = /** @type {?Protocol.Security.InsecureContentStatus} */ (data.insecureContentStatus);
+    const summary = /** @type {?string} */ (data.summary);
     this._updateSecurityState(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary);
   }
 
@@ -138,7 +138,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Security.SecurityPanel.Origin} origin
    */
   showOrigin(origin) {
-    var originState = this._origins.get(origin);
+    const originState = this._origins.get(origin);
     if (!originState.originView)
       originState.originView = new Security.SecurityOriginView(this, origin, originState);
 
@@ -181,7 +181,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onResponseReceived(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (request.resourceType() === Common.resourceTypes.Document)
       this._lastResponseReceivedForLoaderId.set(request.loaderId, request);
   }
@@ -190,14 +190,14 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!SDK.NetworkRequest} request
    */
   _processRequest(request) {
-    var origin = Common.ParsedURL.extractOrigin(request.url());
+    const origin = Common.ParsedURL.extractOrigin(request.url());
 
     if (!origin) {
       // We don't handle resources like data: URIs. Most of them don't affect the lock icon.
       return;
     }
 
-    var securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
+    let securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable && this._ranInsecureContentStyle)
       securityState = this._ranInsecureContentStyle;
@@ -207,11 +207,11 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       securityState = this._displayedInsecureContentStyle;
 
     if (this._origins.has(origin)) {
-      var originState = this._origins.get(origin);
-      var oldSecurityState = originState.securityState;
+      const originState = this._origins.get(origin);
+      const oldSecurityState = originState.securityState;
       originState.securityState = this._securityStateMin(oldSecurityState, securityState);
       if (oldSecurityState !== originState.securityState) {
-        let securityDetails = /** @type {?Protocol.Network.SecurityDetails} */ (request.securityDetails());
+        const securityDetails = /** @type {?Protocol.Network.SecurityDetails} */ (request.securityDetails());
         if (securityDetails)
           originState.securityDetails = securityDetails;
         this._sidebarTree.updateOrigin(origin, securityState);
@@ -222,10 +222,10 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       // This stores the first security details we see for an origin, but we should
       // eventually store a (deduplicated) list of all the different security
       // details we have seen. https://crbug.com/503170
-      var originState = {};
+      const originState = {};
       originState.securityState = securityState;
 
-      var securityDetails = request.securityDetails();
+      const securityDetails = request.securityDetails();
       if (securityDetails)
         originState.securityDetails = securityDetails;
 
@@ -242,7 +242,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._updateFilterRequestCounts(request);
     this._processRequest(request);
   }
@@ -255,7 +255,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       return;
 
     /** @type {!Network.NetworkLogView.MixedContentFilterValues} */
-    var filterKey = Network.NetworkLogView.MixedContentFilterValues.All;
+    let filterKey = Network.NetworkLogView.MixedContentFilterValues.All;
     if (request.wasBlocked())
       filterKey = Network.NetworkLogView.MixedContentFilterValues.Blocked;
     else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable)
@@ -297,8 +297,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       return;
 
     this._securityModel = securityModel;
-    var resourceTreeModel = securityModel.resourceTreeModel();
-    var networkManager = securityModel.networkManager();
+    const resourceTreeModel = securityModel.resourceTreeModel();
+    const networkManager = securityModel.networkManager();
     this._eventListeners = [
       securityModel.addEventListener(
           Security.SecurityModel.Events.SecurityStateChanged, this._onSecurityStateChanged, this),
@@ -332,8 +332,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onMainFrameNavigated(event) {
-    var frame = /** type {!Protocol.Page.Frame}*/ (event.data);
-    var request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
+    const frame = /** type {!Protocol.Page.Frame}*/ (event.data);
+    const request = this._lastResponseReceivedForLoaderId.get(frame.loaderId);
 
     this.selectAndSwitchToMainView();
     this._sidebarTree.clearOrigins();
@@ -347,7 +347,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     // If we could not find a matching request (as in the case of clicking
     // through an interstitial, see https://crbug.com/669309), set the origin
     // based upon the url data from the MainFrameNavigated event itself.
-    let origin = Common.ParsedURL.extractOrigin(request ? request.url() : frame.url);
+    const origin = Common.ParsedURL.extractOrigin(request ? request.url() : frame.url);
     this._sidebarTree.setMainOrigin(origin);
 
     if (request)
@@ -400,9 +400,9 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroupName, !UI.TreeElement>} */
     this._originGroups = new Map();
 
-    for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-      var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-      var originGroup = new UI.TreeElement(originGroupName, true);
+    for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
+      const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
+      const originGroup = new UI.TreeElement(originGroupName, true);
       originGroup.selectable = false;
       originGroup.setCollapsible(false);
       originGroup.expand();
@@ -413,7 +413,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     this._clearOriginGroups();
 
     // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
-    var mainViewReloadMessage = new UI.TreeElement(Common.UIString('Reload to view details'));
+    const mainViewReloadMessage = new UI.TreeElement(Common.UIString('Reload to view details'));
     mainViewReloadMessage.selectable = false;
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
     this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin)
@@ -427,9 +427,9 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
    * @param {boolean} hidden
    */
   toggleOriginsList(hidden) {
-    for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-      var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-      var group = this._originGroups.get(originGroupName);
+    for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
+      const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
+      const group = this._originGroups.get(originGroupName);
       if (group)
         group.hidden = hidden;
     }
@@ -440,7 +440,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
    * @param {!Protocol.Security.SecurityState} securityState
    */
   addOrigin(origin, securityState) {
-    var originElement = new Security.SecurityPanelSidebarTreeElement(
+    const originElement = new Security.SecurityPanelSidebarTreeElement(
         Security.SecurityPanel.createHighlightedUrl(origin, securityState), this._showOriginInPanel.bind(this, origin),
         'security-sidebar-tree-item', 'security-property');
     this._elementsByOrigin.set(origin, originElement);
@@ -459,11 +459,11 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
    * @param {!Protocol.Security.SecurityState} securityState
    */
   updateOrigin(origin, securityState) {
-    var originElement =
+    const originElement =
         /** @type {!Security.SecurityPanelSidebarTreeElement} */ (this._elementsByOrigin.get(origin));
     originElement.setSecurityState(securityState);
 
-    var newParent;
+    let newParent;
     if (origin === this._mainOrigin) {
       newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
     } else {
@@ -480,7 +480,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
       }
     }
 
-    var oldParent = originElement.parent;
+    const oldParent = originElement.parent;
     if (oldParent !== newParent) {
       if (oldParent) {
         oldParent.removeChild(originElement);
@@ -493,7 +493,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
   }
 
   _clearOriginGroups() {
-    for (var originGroup of this._originGroups.values()) {
+    for (const originGroup of this._originGroups.values()) {
       originGroup.removeChildren();
       originGroup.hidden = true;
     }
@@ -606,7 +606,7 @@ Security.SecurityMainView = class extends UI.VBox {
     this._summarySection.createChild('div', 'security-summary-section-title').textContent =
         Common.UIString('Security overview');
 
-    var lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
+    const lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-neutral').title = Common.UIString('Not secure');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-insecure').title = Common.UIString('Not secure (broken)');
@@ -624,14 +624,14 @@ Security.SecurityMainView = class extends UI.VBox {
    * @return {!Element}
    */
   _addExplanation(parent, explanation) {
-    var explanationSection = parent.createChild('div', 'security-explanation');
+    const explanationSection = parent.createChild('div', 'security-explanation');
     explanationSection.classList.add('security-explanation-' + explanation.securityState);
 
     explanationSection.createChild('div', 'security-property')
         .classList.add('security-property-' + explanation.securityState);
-    var text = explanationSection.createChild('div', 'security-explanation-text');
+    const text = explanationSection.createChild('div', 'security-explanation-text');
 
-    var explanationHeader = text.createChild('div', 'security-explanation-title');
+    const explanationHeader = text.createChild('div', 'security-explanation-title');
 
     if (explanation.title) {
       explanationHeader.createChild('span').textContent = explanation.title + ' - ';
@@ -665,7 +665,7 @@ Security.SecurityMainView = class extends UI.VBox {
     // Add new state.
     this._securityState = newSecurityState;
     this._summarySection.classList.add('security-summary-' + this._securityState);
-    var summaryExplanationStrings = {
+    const summaryExplanationStrings = {
       'unknown': Common.UIString('The security of this page is unknown.'),
       'insecure': Common.UIString('This page is not secure (broken HTTPS).'),
       'neutral': Common.UIString('This page is not secure.'),
@@ -687,7 +687,7 @@ Security.SecurityMainView = class extends UI.VBox {
   refreshExplanations() {
     this._securityExplanationsMain.removeChildren();
     this._securityExplanationsExtra.removeChildren();
-    for (var explanation of this._explanations) {
+    for (const explanation of this._explanations) {
       if (explanation.securityState === Protocol.Security.SecurityState.Info) {
         this._addExplanation(this._securityExplanationsExtra, explanation);
       } else {
@@ -709,7 +709,7 @@ Security.SecurityMainView = class extends UI.VBox {
     }
 
     if (this._panel.filterRequestCount(Network.NetworkLogView.MixedContentFilterValues.Blocked) > 0) {
-      var explanation = /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
+      const explanation = /** @type {!Protocol.Security.SecurityStateExplanation} */ ({
         securityState: Protocol.Security.SecurityState.Info,
         summary: Common.UIString('Blocked mixed content'),
         description: Common.UIString('Your page requested non-secure resources that were blocked.'),
@@ -727,21 +727,21 @@ Security.SecurityMainView = class extends UI.VBox {
    * @param {!Network.NetworkLogView.MixedContentFilterValues} filterKey
    */
   _addMixedContentExplanation(parent, explanation, filterKey) {
-    var element = this._addExplanation(parent, explanation);
+    const element = this._addExplanation(parent, explanation);
 
-    var filterRequestCount = this._panel.filterRequestCount(filterKey);
+    const filterRequestCount = this._panel.filterRequestCount(filterKey);
     if (!filterRequestCount) {
       // Network instrumentation might not have been enabled for the page
       // load, so the security panel does not necessarily know a count of
       // individual mixed requests at this point. Prompt them to refresh
       // instead of pointing them to the Network panel to get prompted
       // to refresh.
-      var refreshPrompt = element.createChild('div', 'security-mixed-content');
+      const refreshPrompt = element.createChild('div', 'security-mixed-content');
       refreshPrompt.textContent = Common.UIString('Reload the page to record requests for HTTP resources.');
       return;
     }
 
-    var requestsAnchor = element.createChild('div', 'security-mixed-content link');
+    const requestsAnchor = element.createChild('div', 'security-mixed-content link');
     if (filterRequestCount === 1)
       requestsAnchor.textContent = Common.UIString('View %d request in Network Panel', filterRequestCount);
     else
@@ -780,19 +780,19 @@ Security.SecurityOriginView = class extends UI.VBox {
     this.registerRequiredCSS('security/originView.css');
     this.registerRequiredCSS('security/lockIcon.css');
 
-    var titleSection = this.element.createChild('div', 'title-section');
+    const titleSection = this.element.createChild('div', 'title-section');
     titleSection.createChild('div', 'title-section-header').textContent = ls`Origin`;
 
-    var originDisplay = titleSection.createChild('div', 'origin-display');
+    const originDisplay = titleSection.createChild('div', 'origin-display');
     this._originLockIcon = originDisplay.createChild('span', 'security-property');
     this._originLockIcon.classList.add('security-property-' + originState.securityState);
 
     originDisplay.appendChild(Security.SecurityPanel.createHighlightedUrl(origin, originState.securityState));
 
-    var originNetworkButton = titleSection.createChild('div', 'view-network-button');
+    const originNetworkButton = titleSection.createChild('div', 'view-network-button');
     originNetworkButton.appendChild(UI.createTextButton('View requests in Network Panel', e => {
       e.consume();
-      var parsedURL = new Common.ParsedURL(origin);
+      const parsedURL = new Common.ParsedURL(origin);
       Network.NetworkPanel.revealAndFilter([
         {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
@@ -800,10 +800,10 @@ Security.SecurityOriginView = class extends UI.VBox {
     }, 'origin-button'));
 
     if (originState.securityDetails) {
-      var connectionSection = this.element.createChild('div', 'origin-view-section');
+      const connectionSection = this.element.createChild('div', 'origin-view-section');
       connectionSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Connection');
 
-      var table = new Security.SecurityDetailsTable();
+      let table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
       table.addRow(Common.UIString('Protocol'), originState.securityDetails.protocol);
       if (originState.securityDetails.keyExchange)
@@ -816,19 +816,20 @@ Security.SecurityOriginView = class extends UI.VBox {
               (originState.securityDetails.mac ? ' with ' + originState.securityDetails.mac : ''));
 
       // Create the certificate section outside the callback, so that it appears in the right place.
-      var certificateSection = this.element.createChild('div', 'origin-view-section');
+      const certificateSection = this.element.createChild('div', 'origin-view-section');
       certificateSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Certificate');
 
+      let sctSection;
       if (originState.securityDetails.signedCertificateTimestampList.length) {
         // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
-        var sctSection = this.element.createChild('div', 'origin-view-section');
+        sctSection = this.element.createChild('div', 'origin-view-section');
         sctSection.createChild('div', 'origin-view-section-title').textContent =
             Common.UIString('Certificate Transparency');
       }
 
-      var sanDiv = this._createSanDiv(originState.securityDetails.sanList);
-      var validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
-      var validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
+      const sanDiv = this._createSanDiv(originState.securityDetails.sanList);
+      const validFromString = new Date(1000 * originState.securityDetails.validFrom).toUTCString();
+      const validUntilString = new Date(1000 * originState.securityDetails.validTo).toUTCString();
 
       table = new Security.SecurityDetailsTable();
       certificateSection.appendChild(table.element());
@@ -843,26 +844,26 @@ Security.SecurityOriginView = class extends UI.VBox {
           Security.SecurityPanel.createCertificateViewerButtonForOrigin(
               Common.UIString('Open full certificate details'), origin));
 
-      if (!originState.securityDetails.signedCertificateTimestampList.length)
+      if (!sctSection)
         return;
 
       // Show summary of SCT(s) of Certificate Transparency.
-      var sctSummaryTable = new Security.SecurityDetailsTable();
+      const sctSummaryTable = new Security.SecurityDetailsTable();
       sctSummaryTable.element().classList.add('sct-summary');
       sctSection.appendChild(sctSummaryTable.element());
-      for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
-        var sct = originState.securityDetails.signedCertificateTimestampList[i];
+      for (let i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
+        const sct = originState.securityDetails.signedCertificateTimestampList[i];
         sctSummaryTable.addRow(
             Common.UIString('SCT'), sct.logDescription + ' (' + sct.origin + ', ' + sct.status + ')');
       }
 
       // Show detailed SCT(s) of Certificate Transparency.
-      var sctTableWrapper = sctSection.createChild('div', 'sct-details');
+      const sctTableWrapper = sctSection.createChild('div', 'sct-details');
       sctTableWrapper.classList.add('hidden');
-      for (var i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
-        var sctTable = new Security.SecurityDetailsTable();
+      for (let i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
+        const sctTable = new Security.SecurityDetailsTable();
         sctTableWrapper.appendChild(sctTable.element());
-        var sct = originState.securityDetails.signedCertificateTimestampList[i];
+        const sct = originState.securityDetails.signedCertificateTimestampList[i];
         sctTable.addRow(Common.UIString('Log name'), sct.logDescription);
         sctTable.addRow(Common.UIString('Log ID'), sct.logId.replace(/(.{2})/g, '$1 '));
         sctTable.addRow(Common.UIString('Validation status'), sct.status);
@@ -874,11 +875,11 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
 
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
-      var toggleSctsDetailsLink = sctSection.createChild('div', 'link');
+      const toggleSctsDetailsLink = sctSection.createChild('div', 'link');
       toggleSctsDetailsLink.classList.add('sct-toggle');
       toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
       function toggleSctDetailsDisplay() {
-        var isDetailsShown = !sctTableWrapper.classList.contains('hidden');
+        const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
         if (isDetailsShown)
           toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
         else
@@ -888,16 +889,16 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
       toggleSctsDetailsLink.addEventListener('click', toggleSctDetailsDisplay, false);
 
-      var noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
+      const noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
       noteSection.createChild('div').textContent =
           Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
-      var notSecureSection = this.element.createChild('div', 'origin-view-section');
+      const notSecureSection = this.element.createChild('div', 'origin-view-section');
       notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not secure');
       notSecureSection.createChild('div').textContent =
           Common.UIString('Your connection to this origin is not secure.');
     } else {
-      var noInfoSection = this.element.createChild('div', 'origin-view-section');
+      const noInfoSection = this.element.createChild('div', 'origin-view-section');
       noInfoSection.createChild('div', 'origin-view-section-title').textContent =
           Common.UIString('No security information');
       noInfoSection.createChild('div').textContent =
@@ -910,21 +911,21 @@ Security.SecurityOriginView = class extends UI.VBox {
    * *return {!Element}
    */
   _createSanDiv(sanList) {
-    var sanDiv = createElement('div');
+    const sanDiv = createElement('div');
     if (sanList.length === 0) {
       sanDiv.textContent = Common.UIString('(n/a)');
       sanDiv.classList.add('empty-san');
     } else {
-      var truncatedNumToShow = 2;
-      var listIsTruncated = sanList.length > truncatedNumToShow + 1;
-      for (var i = 0; i < sanList.length; i++) {
-        var span = sanDiv.createChild('span', 'san-entry');
+      const truncatedNumToShow = 2;
+      const listIsTruncated = sanList.length > truncatedNumToShow + 1;
+      for (let i = 0; i < sanList.length; i++) {
+        const span = sanDiv.createChild('span', 'san-entry');
         span.textContent = sanList[i];
         if (listIsTruncated && i >= truncatedNumToShow)
           span.classList.add('truncated-entry');
       }
       if (listIsTruncated) {
-        var truncatedSANToggle = sanDiv.createChild('div', 'link');
+        const truncatedSANToggle = sanDiv.createChild('div', 'link');
         truncatedSANToggle.href = '';
 
         function toggleSANTruncation() {
@@ -947,7 +948,7 @@ Security.SecurityOriginView = class extends UI.VBox {
    * @param {!Protocol.Security.SecurityState} newSecurityState
    */
   setSecurityState(newSecurityState) {
-    for (var className of Array.prototype.slice.call(this._originLockIcon.classList)) {
+    for (const className of Array.prototype.slice.call(this._originLockIcon.classList)) {
       if (className.startsWith('security-property-'))
         this._originLockIcon.classList.remove(className);
     }
@@ -977,10 +978,10 @@ Security.SecurityDetailsTable = class {
    * @param {string|!Node} value
    */
   addRow(key, value) {
-    var row = this._element.createChild('div', 'details-table-row');
+    const row = this._element.createChild('div', 'details-table-row');
     row.createChild('div').textContent = key;
 
-    var valueDiv = row.createChild('div');
+    const valueDiv = row.createChild('div');
     if (typeof value === 'string')
       valueDiv.textContent = value;
     else

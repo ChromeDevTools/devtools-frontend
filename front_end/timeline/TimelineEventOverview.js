@@ -61,9 +61,9 @@ Timeline.TimelineEventOverview = class extends PerfUI.TimelineOverviewBase {
    * @param {string} color
    */
   _renderBar(begin, end, position, height, color) {
-    var x = begin;
-    var width = end - begin;
-    var ctx = this.context();
+    const x = begin;
+    const width = end - begin;
+    const ctx = this.context();
     ctx.fillStyle = color;
     ctx.fillRect(x, position, width, height);
   }
@@ -84,35 +84,35 @@ Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOvervi
     super.update();
     if (!this._model)
       return;
-    var events = this._model.timelineModel().mainThreadEvents();
-    var height = this.height();
-    var descriptors = Timeline.TimelineUIUtils.eventDispatchDesciptors();
+    const events = this._model.timelineModel().mainThreadEvents();
+    const height = this.height();
+    const descriptors = Timeline.TimelineUIUtils.eventDispatchDesciptors();
     /** @type {!Map.<string,!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>} */
-    var descriptorsByType = new Map();
-    var maxPriority = -1;
-    for (var descriptor of descriptors) {
-      for (var type of descriptor.eventTypes)
+    const descriptorsByType = new Map();
+    let maxPriority = -1;
+    for (const descriptor of descriptors) {
+      for (const type of descriptor.eventTypes)
         descriptorsByType.set(type, descriptor);
       maxPriority = Math.max(maxPriority, descriptor.priority);
     }
 
-    var /** @const */ minWidth = 2 * window.devicePixelRatio;
-    var timeOffset = this._model.timelineModel().minimumRecordTime();
-    var timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
-    var canvasWidth = this.width();
-    var scale = canvasWidth / timeSpan;
+    const /** @const */ minWidth = 2 * window.devicePixelRatio;
+    const timeOffset = this._model.timelineModel().minimumRecordTime();
+    const timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
+    const canvasWidth = this.width();
+    const scale = canvasWidth / timeSpan;
 
-    for (var priority = 0; priority <= maxPriority; ++priority) {
-      for (var i = 0; i < events.length; ++i) {
-        var event = events[i];
+    for (let priority = 0; priority <= maxPriority; ++priority) {
+      for (let i = 0; i < events.length; ++i) {
+        const event = events[i];
         if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch)
           continue;
-        var descriptor = descriptorsByType.get(event.args['data']['type']);
+        const descriptor = descriptorsByType.get(event.args['data']['type']);
         if (!descriptor || descriptor.priority !== priority)
           continue;
-        var start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
-        var end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
-        var width = Math.max(end - start, minWidth);
+        const start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
+        const end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
+        const width = Math.max(end - start, minWidth);
         this._renderBar(start, start + width, 0, height, descriptor.color);
       }
     }
@@ -134,23 +134,23 @@ Timeline.TimelineEventOverviewNetwork = class extends Timeline.TimelineEventOver
     super.update();
     if (!this._model)
       return;
-    var timelineModel = this._model.timelineModel();
-    var bandHeight = this.height() / 2;
-    var timeOffset = timelineModel.minimumRecordTime();
-    var timeSpan = timelineModel.maximumRecordTime() - timeOffset;
-    var canvasWidth = this.width();
-    var scale = canvasWidth / timeSpan;
-    var highPath = new Path2D();
-    var lowPath = new Path2D();
-    var priorities = Protocol.Network.ResourcePriority;
-    var highPrioritySet = new Set([priorities.VeryHigh, priorities.High, priorities.Medium]);
-    for (var request of timelineModel.networkRequests()) {
-      var path = highPrioritySet.has(request.priority) ? highPath : lowPath;
-      var s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
-      var e = Math.min(Math.ceil((request.endTime - timeOffset) * scale + 1), canvasWidth);
+    const timelineModel = this._model.timelineModel();
+    const bandHeight = this.height() / 2;
+    const timeOffset = timelineModel.minimumRecordTime();
+    const timeSpan = timelineModel.maximumRecordTime() - timeOffset;
+    const canvasWidth = this.width();
+    const scale = canvasWidth / timeSpan;
+    const highPath = new Path2D();
+    const lowPath = new Path2D();
+    const priorities = Protocol.Network.ResourcePriority;
+    const highPrioritySet = new Set([priorities.VeryHigh, priorities.High, priorities.Medium]);
+    for (const request of timelineModel.networkRequests()) {
+      const path = highPrioritySet.has(request.priority) ? highPath : lowPath;
+      const s = Math.max(Math.floor((request.startTime - timeOffset) * scale), 0);
+      const e = Math.min(Math.ceil((request.endTime - timeOffset) * scale + 1), canvasWidth);
       path.rect(s, 0, e - s, bandHeight - 1);
     }
-    var ctx = this.context();
+    const ctx = this.context();
     ctx.save();
     ctx.fillStyle = 'hsl(214, 60%, 60%)';
     ctx.fill(/** @type {?} */ (highPath));
@@ -186,25 +186,25 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
     super.update();
     if (!this._model)
       return;
-    var timelineModel = this._model.timelineModel();
-    var /** @const */ quantSizePx = 4 * window.devicePixelRatio;
-    var width = this.width();
-    var height = this.height();
-    var baseLine = height;
-    var timeOffset = timelineModel.minimumRecordTime();
-    var timeSpan = timelineModel.maximumRecordTime() - timeOffset;
-    var scale = width / timeSpan;
-    var quantTime = quantSizePx / scale;
-    var categories = Timeline.TimelineUIUtils.categories();
-    var categoryOrder = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
-    var otherIndex = categoryOrder.indexOf('other');
-    var idleIndex = 0;
+    const timelineModel = this._model.timelineModel();
+    const /** @const */ quantSizePx = 4 * window.devicePixelRatio;
+    const width = this.width();
+    const height = this.height();
+    const baseLine = height;
+    const timeOffset = timelineModel.minimumRecordTime();
+    const timeSpan = timelineModel.maximumRecordTime() - timeOffset;
+    const scale = width / timeSpan;
+    const quantTime = quantSizePx / scale;
+    const categories = Timeline.TimelineUIUtils.categories();
+    const categoryOrder = ['idle', 'loading', 'painting', 'rendering', 'scripting', 'other'];
+    const otherIndex = categoryOrder.indexOf('other');
+    const idleIndex = 0;
     console.assert(idleIndex === categoryOrder.indexOf('idle'));
-    for (var i = idleIndex + 1; i < categoryOrder.length; ++i)
+    for (let i = idleIndex + 1; i < categoryOrder.length; ++i)
       categories[categoryOrder[i]]._overviewIndex = i;
 
-    var backgroundContext = this._backgroundCanvas.getContext('2d');
-    for (var thread of timelineModel.virtualThreads())
+    const backgroundContext = this._backgroundCanvas.getContext('2d');
+    for (const thread of timelineModel.virtualThreads())
       drawThreadEvents(backgroundContext, thread.events);
     applyPattern(backgroundContext);
     drawThreadEvents(this.context(), timelineModel.mainThreadEvents());
@@ -214,12 +214,12 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
      * @param {!Array<!SDK.TracingModel.Event>} events
      */
     function drawThreadEvents(ctx, events) {
-      var quantizer = new Timeline.Quantizer(timeOffset, quantTime, drawSample);
-      var x = 0;
-      var categoryIndexStack = [];
-      var paths = [];
-      var lastY = [];
-      for (var i = 0; i < categoryOrder.length; ++i) {
+      const quantizer = new Timeline.Quantizer(timeOffset, quantTime, drawSample);
+      let x = 0;
+      const categoryIndexStack = [];
+      const paths = [];
+      const lastY = [];
+      for (let i = 0; i < categoryOrder.length; ++i) {
         paths[i] = new Path2D();
         paths[i].moveTo(0, height);
         lastY[i] = height;
@@ -229,9 +229,9 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
        * @param {!Array<number>} counters
        */
       function drawSample(counters) {
-        var y = baseLine;
-        for (var i = idleIndex + 1; i < categoryOrder.length; ++i) {
-          var h = (counters[i] || 0) / quantTime * height;
+        let y = baseLine;
+        for (let i = idleIndex + 1; i < categoryOrder.length; ++i) {
+          const h = (counters[i] || 0) / quantTime * height;
           y -= h;
           paths[i].bezierCurveTo(x, lastY[i], x, y, x + quantSizePx / 2, y);
           lastY[i] = y;
@@ -243,7 +243,7 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
        * @param {!SDK.TracingModel.Event} e
        */
       function onEventStart(e) {
-        var index = categoryIndexStack.length ? categoryIndexStack.peekLast() : idleIndex;
+        const index = categoryIndexStack.length ? categoryIndexStack.peekLast() : idleIndex;
         quantizer.appendInterval(e.startTime, index);
         categoryIndexStack.push(Timeline.TimelineUIUtils.eventStyle(e).category._overviewIndex || otherIndex);
       }
@@ -257,7 +257,7 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
 
       TimelineModel.TimelineModel.forEachEvent(events, onEventStart, onEventEnd);
       quantizer.appendInterval(timeOffset + timeSpan + quantTime, idleIndex);  // Kick drawing the last bucket.
-      for (var i = categoryOrder.length - 1; i > 0; --i) {
+      for (let i = categoryOrder.length - 1; i > 0; --i) {
         paths[i].lineTo(width, height);
         ctx.fillStyle = categories[categoryOrder[i]].color;
         ctx.fill(paths[i]);
@@ -268,10 +268,10 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
      * @param {!CanvasRenderingContext2D} ctx
      */
     function applyPattern(ctx) {
-      var step = 4 * window.devicePixelRatio;
+      const step = 4 * window.devicePixelRatio;
       ctx.save();
       ctx.lineWidth = step / Math.sqrt(8);
-      for (var x = 0.5; x < width + height; x += step) {
+      for (let x = 0.5; x < width + height; x += step) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x - height, height);
       }
@@ -297,25 +297,25 @@ Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEv
     super.update();
     if (!this._model)
       return;
-    var height = this.height();
+    const height = this.height();
 
-    var timeOffset = this._model.timelineModel().minimumRecordTime();
-    var timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
-    var scale = this.width() / timeSpan;
-    var frames = this._model.frames();
+    const timeOffset = this._model.timelineModel().minimumRecordTime();
+    const timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
+    const scale = this.width() / timeSpan;
+    const frames = this._model.frames();
     // This is due to usage of new signatures of fill() and storke() that closure compiler does not recognize.
-    var ctx = /** @type {!Object} */ (this.context());
-    var fillPath = new Path2D();
-    var markersPath = new Path2D();
-    for (var i = 0; i < frames.length; ++i) {
-      var frame = frames[i];
+    const ctx = /** @type {!Object} */ (this.context());
+    const fillPath = new Path2D();
+    const markersPath = new Path2D();
+    for (let i = 0; i < frames.length; ++i) {
+      const frame = frames[i];
       if (!frame.hasWarnings())
         continue;
       paintWarningDecoration(frame.startTime, frame.duration);
     }
 
-    var events = this._model.timelineModel().mainThreadEvents();
-    for (var i = 0; i < events.length; ++i) {
+    const events = this._model.timelineModel().mainThreadEvents();
+    for (let i = 0; i < events.length; ++i) {
       if (!TimelineModel.TimelineData.forEvent(events[i]).warning)
         continue;
       paintWarningDecoration(events[i].startTime, events[i].duration);
@@ -332,8 +332,8 @@ Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEv
      * @param {number} duration
      */
     function paintWarningDecoration(time, duration) {
-      var x = Math.round(scale * (time - timeOffset));
-      var w = Math.round(scale * duration);
+      const x = Math.round(scale * (time - timeOffset));
+      const w = Math.round(scale * duration);
       fillPath.rect(x, 0, w, height);
       markersPath.moveTo(x + w, 0);
       markersPath.lineTo(x + w, height);
@@ -355,20 +355,20 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
    */
   update() {
     super.update();
-    var frames = this._model ? this._model.filmStripModel().frames() : [];
+    const frames = this._model ? this._model.filmStripModel().frames() : [];
     if (!frames.length)
       return;
 
-    var drawGeneration = Symbol('drawGeneration');
+    const drawGeneration = Symbol('drawGeneration');
     this._drawGeneration = drawGeneration;
     this._imageByFrame(frames[0]).then(image => {
       if (this._drawGeneration !== drawGeneration)
         return;
       if (!image || !image.naturalWidth || !image.naturalHeight)
         return;
-      var imageHeight = this.height() - 2 * Timeline.TimelineFilmStripOverview.Padding;
-      var imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
-      var popoverScale = Math.min(200 / image.naturalWidth, 1);
+      const imageHeight = this.height() - 2 * Timeline.TimelineFilmStripOverview.Padding;
+      const imageWidth = Math.ceil(imageHeight * image.naturalWidth / image.naturalHeight);
+      const popoverScale = Math.min(200 / image.naturalWidth, 1);
       this._emptyImage = new Image(image.naturalWidth * popoverScale, image.naturalHeight * popoverScale);
       this._drawFrames(imageWidth, imageHeight);
     });
@@ -379,7 +379,7 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
    * @return {!Promise<?HTMLImageElement>}
    */
   _imageByFrame(frame) {
-    var imagePromise = this._frameToImagePromise.get(frame);
+    let imagePromise = this._frameToImagePromise.get(frame);
     if (!imagePromise) {
       imagePromise = frame.imageDataPromise().then(data => UI.loadImageFromData(data));
       this._frameToImagePromise.set(frame, imagePromise);
@@ -394,21 +394,21 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
   _drawFrames(imageWidth, imageHeight) {
     if (!imageWidth || !this._model)
       return;
-    var filmStripModel = this._model.filmStripModel();
+    const filmStripModel = this._model.filmStripModel();
     if (!filmStripModel.frames().length)
       return;
-    var padding = Timeline.TimelineFilmStripOverview.Padding;
-    var width = this.width();
-    var zeroTime = filmStripModel.zeroTime();
-    var spanTime = filmStripModel.spanTime();
-    var scale = spanTime / width;
-    var context = this.context();
-    var drawGeneration = this._drawGeneration;
+    const padding = Timeline.TimelineFilmStripOverview.Padding;
+    const width = this.width();
+    const zeroTime = filmStripModel.zeroTime();
+    const spanTime = filmStripModel.spanTime();
+    const scale = spanTime / width;
+    const context = this.context();
+    const drawGeneration = this._drawGeneration;
 
     context.beginPath();
-    for (var x = padding; x < width; x += imageWidth + 2 * padding) {
-      var time = zeroTime + (x + imageWidth / 2) * scale;
-      var frame = filmStripModel.frameByTimestamp(time);
+    for (let x = padding; x < width; x += imageWidth + 2 * padding) {
+      const time = zeroTime + (x + imageWidth / 2) * scale;
+      const frame = filmStripModel.frameByTimestamp(time);
       if (!frame)
         continue;
       context.rect(x - 0.5, 0.5, imageWidth + 1, imageHeight + 1);
@@ -439,11 +439,11 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
     if (!this._model || !this._model.filmStripModel().frames().length)
       return Promise.resolve(/** @type {?Element} */ (null));
 
-    var time = this.calculator().positionToTime(x);
-    var frame = this._model.filmStripModel().frameByTimestamp(time);
+    const time = this.calculator().positionToTime(x);
+    const frame = this._model.filmStripModel().frameByTimestamp(time);
     if (frame === this._lastFrame)
       return Promise.resolve(this._lastElement);
-    var imagePromise = frame ? this._imageByFrame(frame) : Promise.resolve(this._emptyImage);
+    const imagePromise = frame ? this._imageByFrame(frame) : Promise.resolve(this._emptyImage);
     return imagePromise.then(createFrameElement.bind(this));
 
     /**
@@ -452,7 +452,7 @@ Timeline.TimelineFilmStripOverview = class extends Timeline.TimelineEventOvervie
      * @return {?Element}
      */
     function createFrameElement(image) {
-      var element = createElementWithClass('div', 'frame');
+      const element = createElementWithClass('div', 'frame');
       if (image)
         element.createChild('div', 'thumbnail').appendChild(image);
       this._lastFrame = frame;
@@ -490,29 +490,29 @@ Timeline.TimelineEventOverviewFrames = class extends Timeline.TimelineEventOverv
     super.update();
     if (!this._model)
       return;
-    var frames = this._model.frames();
+    const frames = this._model.frames();
     if (!frames.length)
       return;
-    var height = this.height();
-    var /** @const */ padding = 1 * window.devicePixelRatio;
-    var /** @const */ baseFrameDurationMs = 1e3 / 60;
-    var visualHeight = height - 2 * padding;
-    var timeOffset = this._model.timelineModel().minimumRecordTime();
-    var timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
-    var scale = this.width() / timeSpan;
-    var baseY = height - padding;
-    var ctx = this.context();
-    var bottomY = baseY + 10 * window.devicePixelRatio;
-    var x = 0;
-    var y = bottomY;
+    const height = this.height();
+    const /** @const */ padding = 1 * window.devicePixelRatio;
+    const /** @const */ baseFrameDurationMs = 1e3 / 60;
+    const visualHeight = height - 2 * padding;
+    const timeOffset = this._model.timelineModel().minimumRecordTime();
+    const timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
+    const scale = this.width() / timeSpan;
+    const baseY = height - padding;
+    const ctx = this.context();
+    const bottomY = baseY + 10 * window.devicePixelRatio;
+    let x = 0;
+    let y = bottomY;
 
-    var lineWidth = window.devicePixelRatio;
-    var offset = lineWidth & 1 ? 0.5 : 0;
-    var tickDepth = 1.5 * window.devicePixelRatio;
+    const lineWidth = window.devicePixelRatio;
+    const offset = lineWidth & 1 ? 0.5 : 0;
+    const tickDepth = 1.5 * window.devicePixelRatio;
     ctx.beginPath();
     ctx.moveTo(0, y);
-    for (var i = 0; i < frames.length; ++i) {
-      var frame = frames[i];
+    for (let i = 0; i < frames.length; ++i) {
+      const frame = frames[i];
       x = Math.round((frame.startTime - timeOffset) * scale) + offset;
       ctx.lineTo(x, y);
       ctx.lineTo(x, y + tickDepth);
@@ -521,7 +521,7 @@ Timeline.TimelineEventOverviewFrames = class extends Timeline.TimelineEventOverv
       ctx.lineTo(x, y + tickDepth);
       ctx.lineTo(x, y);
     }
-    var lastFrame = frames.peekLast();
+    const lastFrame = frames.peekLast();
     x = Math.round((lastFrame.startTime + lastFrame.duration - timeOffset) * scale) + offset;
     ctx.lineTo(x, y);
     ctx.lineTo(x, bottomY);
@@ -551,19 +551,19 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
    */
   update() {
     super.update();
-    var ratio = window.devicePixelRatio;
+    const ratio = window.devicePixelRatio;
 
-    var events = this._model ? this._model.timelineModel().mainThreadEvents() : [];
+    let events = this._model ? this._model.timelineModel().mainThreadEvents() : [];
     if (!events.length) {
       this.resetHeapSizeLabels();
       return;
     }
 
-    var lowerOffset = 3 * ratio;
-    var maxUsedHeapSize = 0;
-    var minUsedHeapSize = 100000000000;
-    var minTime = this._model.timelineModel().minimumRecordTime();
-    var maxTime = this._model.timelineModel().maximumRecordTime();
+    const lowerOffset = 3 * ratio;
+    let maxUsedHeapSize = 0;
+    let minUsedHeapSize = 100000000000;
+    const minTime = this._model.timelineModel().minimumRecordTime();
+    const maxTime = this._model.timelineModel().maximumRecordTime();
     /**
      * @param {!SDK.TracingModel.Event} event
      * @return {boolean}
@@ -576,7 +576,7 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
      * @param {!SDK.TracingModel.Event} event
      */
     function calculateMinMaxSizes(event) {
-      var counters = event.args.data;
+      const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed)
         return;
       maxUsedHeapSize = Math.max(maxUsedHeapSize, counters.jsHeapSizeUsed);
@@ -585,37 +585,37 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     events.forEach(calculateMinMaxSizes);
     minUsedHeapSize = Math.min(minUsedHeapSize, maxUsedHeapSize);
 
-    var lineWidth = 1;
-    var width = this.width();
-    var height = this.height() - lowerOffset;
-    var xFactor = width / (maxTime - minTime);
-    var yFactor = (height - lineWidth) / Math.max(maxUsedHeapSize - minUsedHeapSize, 1);
+    const lineWidth = 1;
+    const width = this.width();
+    const height = this.height() - lowerOffset;
+    const xFactor = width / (maxTime - minTime);
+    const yFactor = (height - lineWidth) / Math.max(maxUsedHeapSize - minUsedHeapSize, 1);
 
-    var histogram = new Array(width);
+    const histogram = new Array(width);
 
     /**
      * @param {!SDK.TracingModel.Event} event
      */
     function buildHistogram(event) {
-      var counters = event.args.data;
+      const counters = event.args.data;
       if (!counters || !counters.jsHeapSizeUsed)
         return;
-      var x = Math.round((event.startTime - minTime) * xFactor);
-      var y = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
+      const x = Math.round((event.startTime - minTime) * xFactor);
+      const y = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
       histogram[x] = Math.max(histogram[x] || 0, y);
     }
     events.forEach(buildHistogram);
 
-    var ctx = this.context();
-    var heightBeyondView = height + lowerOffset + lineWidth;
+    const ctx = this.context();
+    const heightBeyondView = height + lowerOffset + lineWidth;
 
     ctx.translate(0.5, 0.5);
     ctx.beginPath();
     ctx.moveTo(-lineWidth, heightBeyondView);
-    var y = 0;
-    var isFirstPoint = true;
-    var lastX = 0;
-    for (var x = 0; x < histogram.length; x++) {
+    let y = 0;
+    let isFirstPoint = true;
+    let lastX = 0;
+    for (let x = 0; x < histogram.length; x++) {
       if (typeof histogram[x] === 'undefined')
         continue;
       if (isFirstPoint) {
@@ -623,7 +623,7 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
         y = histogram[x];
         ctx.lineTo(-lineWidth, height - y);
       }
-      var nextY = histogram[x];
+      const nextY = histogram[x];
       if (Math.abs(nextY - y) > 2 && Math.abs(x - lastX) > 1)
         ctx.lineTo(x, height - y);
       y = nextY;
@@ -667,7 +667,7 @@ Timeline.Quantizer = class {
    * @param {number} group
    */
   appendInterval(time, group) {
-    var interval = time - this._lastTime;
+    let interval = time - this._lastTime;
     if (interval <= this._remainder) {
       this._counters[group] = (this._counters[group] || 0) + interval;
       this._remainder -= interval;
@@ -678,7 +678,7 @@ Timeline.Quantizer = class {
     this._callback(this._counters);
     interval -= this._remainder;
     while (interval >= this._quantDuration) {
-      var counters = [];
+      const counters = [];
       counters[group] = this._quantDuration;
       this._callback(counters);
       interval -= this._quantDuration;

@@ -39,7 +39,7 @@ SDK.CSSMatchedStyles = class {
     function addAttributesStyle() {
       if (!attributesPayload)
         return;
-      var style =
+      const style =
           new SDK.CSSStyleDeclaration(cssModel, null, attributesPayload, SDK.CSSStyleDeclaration.Type.Attributes);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
@@ -47,15 +47,15 @@ SDK.CSSMatchedStyles = class {
 
     // Inline style has the greatest specificity.
     if (inlinePayload && this._node.nodeType() === Node.ELEMENT_NODE) {
-      var style = new SDK.CSSStyleDeclaration(cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
+      const style = new SDK.CSSStyleDeclaration(cssModel, null, inlinePayload, SDK.CSSStyleDeclaration.Type.Inline);
       this._nodeForStyle.set(style, this._node);
       this._nodeStyles.push(style);
     }
 
     // Add rules in reverse order to match the cascade order.
-    var addedAttributesStyle;
-    for (var i = matchedPayload.length - 1; i >= 0; --i) {
-      var rule = new SDK.CSSStyleRule(cssModel, matchedPayload[i].rule);
+    let addedAttributesStyle;
+    for (let i = matchedPayload.length - 1; i >= 0; --i) {
+      const rule = new SDK.CSSStyleRule(cssModel, matchedPayload[i].rule);
       if ((rule.isInjected() || rule.isUserAgent()) && !addedAttributesStyle) {
         // Show element's Style Attributes after all author rules.
         addedAttributesStyle = true;
@@ -70,10 +70,10 @@ SDK.CSSMatchedStyles = class {
       addAttributesStyle.call(this);
 
     // Walk the node structure and identify styles with inherited properties.
-    var parentNode = this._node.parentNode;
-    for (var i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
-      var entryPayload = inheritedPayload[i];
-      var inheritedInlineStyle = entryPayload.inlineStyle ?
+    let parentNode = this._node.parentNode;
+    for (let i = 0; parentNode && inheritedPayload && i < inheritedPayload.length; ++i) {
+      const entryPayload = inheritedPayload[i];
+      const inheritedInlineStyle = entryPayload.inlineStyle ?
           new SDK.CSSStyleDeclaration(cssModel, null, entryPayload.inlineStyle, SDK.CSSStyleDeclaration.Type.Inline) :
           null;
       if (inheritedInlineStyle && this._containsInherited(inheritedInlineStyle)) {
@@ -82,9 +82,9 @@ SDK.CSSMatchedStyles = class {
         this._inheritedStyles.add(inheritedInlineStyle);
       }
 
-      var inheritedMatchedCSSRules = entryPayload.matchedCSSRules || [];
-      for (var j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
-        var inheritedRule = new SDK.CSSStyleRule(cssModel, inheritedMatchedCSSRules[j].rule);
+      const inheritedMatchedCSSRules = entryPayload.matchedCSSRules || [];
+      for (let j = inheritedMatchedCSSRules.length - 1; j >= 0; --j) {
+        const inheritedRule = new SDK.CSSStyleRule(cssModel, inheritedMatchedCSSRules[j].rule);
         addMatchingSelectors.call(this, parentNode, inheritedRule, inheritedMatchedCSSRules[j].matchingSelectors);
         if (!this._containsInherited(inheritedRule.style))
           continue;
@@ -98,14 +98,14 @@ SDK.CSSMatchedStyles = class {
     // Set up pseudo styles map.
     this._pseudoStyles = new Map();
     if (pseudoPayload) {
-      for (var i = 0; i < pseudoPayload.length; ++i) {
-        var entryPayload = pseudoPayload[i];
+      for (let i = 0; i < pseudoPayload.length; ++i) {
+        const entryPayload = pseudoPayload[i];
         // PseudoElement nodes are not created unless "content" css property is set.
-        var pseudoElement = this._node.pseudoElements().get(entryPayload.pseudoType) || null;
-        var pseudoStyles = [];
-        var rules = entryPayload.matches || [];
-        for (var j = rules.length - 1; j >= 0; --j) {
-          var pseudoRule = new SDK.CSSStyleRule(cssModel, rules[j].rule);
+        const pseudoElement = this._node.pseudoElements().get(entryPayload.pseudoType) || null;
+        const pseudoStyles = [];
+        const rules = entryPayload.matches || [];
+        for (let j = rules.length - 1; j >= 0; --j) {
+          const pseudoRule = new SDK.CSSStyleRule(cssModel, rules[j].rule);
           pseudoStyles.push(pseudoRule.style);
           this._nodeForStyle.set(pseudoRule.style, pseudoElement);
           if (pseudoElement)
@@ -127,8 +127,8 @@ SDK.CSSMatchedStyles = class {
      * @this {SDK.CSSMatchedStyles}
      */
     function addMatchingSelectors(node, rule, matchingSelectorIndices) {
-      for (var matchingSelectorIndex of matchingSelectorIndices) {
-        var selector = rule.selectors[matchingSelectorIndex];
+      for (const matchingSelectorIndex of matchingSelectorIndices) {
+        const selector = rule.selectors[matchingSelectorIndex];
         this._setSelectorMatches(node, selector.text, true);
       }
     }
@@ -153,7 +153,7 @@ SDK.CSSMatchedStyles = class {
    * @return {boolean}
    */
   hasMatchingSelectors(rule) {
-    var matchingSelectors = this.matchingSelectors(rule);
+    const matchingSelectors = this.matchingSelectors(rule);
     return matchingSelectors.length > 0 && this.mediaMatches(rule.style);
   }
 
@@ -162,14 +162,14 @@ SDK.CSSMatchedStyles = class {
    * @return {!Array<number>}
    */
   matchingSelectors(rule) {
-    var node = this.nodeForStyle(rule.style);
+    const node = this.nodeForStyle(rule.style);
     if (!node)
       return [];
-    var map = this._matchingSelectors.get(node.id);
+    const map = this._matchingSelectors.get(node.id);
     if (!map)
       return [];
-    var result = [];
-    for (var i = 0; i < rule.selectors.length; ++i) {
+    const result = [];
+    for (let i = 0; i < rule.selectors.length; ++i) {
       if (map.get(rule.selectors[i].text))
         result.push(i);
     }
@@ -181,11 +181,11 @@ SDK.CSSMatchedStyles = class {
    * @return {!Promise}
    */
   recomputeMatchingSelectors(rule) {
-    var node = this.nodeForStyle(rule.style);
+    const node = this.nodeForStyle(rule.style);
     if (!node)
       return Promise.resolve();
-    var promises = [];
-    for (var selector of rule.selectors)
+    const promises = [];
+    for (const selector of rule.selectors)
       promises.push(querySelector.call(this, node, selector.text));
     return Promise.all(promises);
 
@@ -195,14 +195,14 @@ SDK.CSSMatchedStyles = class {
      * @this {SDK.CSSMatchedStyles}
      */
     async function querySelector(node, selectorText) {
-      var ownerDocument = node.ownerDocument || null;
+      const ownerDocument = node.ownerDocument || null;
       // We assume that "matching" property does not ever change during the
       // MatchedStyleResult's lifetime.
-      var map = this._matchingSelectors.get(node.id);
+      const map = this._matchingSelectors.get(node.id);
       if ((map && map.has(selectorText)) || !ownerDocument)
         return;
 
-      var matchingNodeIds = await this._node.domModel().querySelectorAll(ownerDocument.id, selectorText);
+      const matchingNodeIds = await this._node.domModel().querySelectorAll(ownerDocument.id, selectorText);
 
       if (matchingNodeIds)
         this._setSelectorMatches(node, selectorText, matchingNodeIds.indexOf(node.id) !== -1);
@@ -225,7 +225,7 @@ SDK.CSSMatchedStyles = class {
    * @param {boolean} value
    */
   _setSelectorMatches(node, selectorText, value) {
-    var map = this._matchingSelectors.get(node.id);
+    let map = this._matchingSelectors.get(node.id);
     if (!map) {
       map = new Map();
       this._matchingSelectors.set(node.id, map);
@@ -238,8 +238,8 @@ SDK.CSSMatchedStyles = class {
    * @return {boolean}
    */
   mediaMatches(style) {
-    var media = style.parentRule ? style.parentRule.media : [];
-    for (var i = 0; media && i < media.length; ++i) {
+    const media = style.parentRule ? style.parentRule.media : [];
+    for (let i = 0; media && i < media.length; ++i) {
       if (!media[i].active())
         return false;
     }
@@ -272,9 +272,9 @@ SDK.CSSMatchedStyles = class {
    * @return {boolean}
    */
   _containsInherited(style) {
-    var properties = style.allProperties();
-    for (var i = 0; i < properties.length; ++i) {
-      var property = properties[i];
+    const properties = style.allProperties();
+    for (let i = 0; i < properties.length; ++i) {
+      const property = properties[i];
       // Does this style contain non-overridden inherited property?
       if (property.activeInStyle() && SDK.cssMetadata().isPropertyInherited(property.name))
         return true;
@@ -294,9 +294,9 @@ SDK.CSSMatchedStyles = class {
    * @return {!Array<string>}
    */
   cssVariables() {
-    var cssVariables = [];
-    for (var style of this.nodeStyles()) {
-      for (var property of style.allProperties()) {
+    const cssVariables = [];
+    for (const style of this.nodeStyles()) {
+      for (const property of style.allProperties()) {
         if (property.name.startsWith('--'))
           cssVariables.push(property.name);
       }
@@ -319,7 +319,7 @@ SDK.CSSMatchedStyles = class {
   propertyState(property) {
     if (this._propertiesState.size === 0) {
       this._computeActiveProperties(this._nodeStyles, this._propertiesState);
-      for (var pseudoElementStyles of this._pseudoStyles.valuesArray())
+      for (const pseudoElementStyles of this._pseudoStyles.valuesArray())
         this._computeActiveProperties(pseudoElementStyles, this._propertiesState);
     }
     return this._propertiesState.get(property) || null;
@@ -336,16 +336,16 @@ SDK.CSSMatchedStyles = class {
    */
   _computeActiveProperties(styles, result) {
     /** @type {!Set.<string>} */
-    var foundImportantProperties = new Set();
+    const foundImportantProperties = new Set();
     /** @type {!Map.<string, !Map<string, !SDK.CSSProperty>>} */
-    var propertyToEffectiveRule = new Map();
+    const propertyToEffectiveRule = new Map();
     /** @type {!Map.<string, !SDK.DOMNode>} */
-    var inheritedPropertyToNode = new Map();
+    const inheritedPropertyToNode = new Map();
     /** @type {!Set<string>} */
-    var allUsedProperties = new Set();
-    for (var i = 0; i < styles.length; ++i) {
-      var style = styles[i];
-      var rule = style.parentRule;
+    const allUsedProperties = new Set();
+    for (let i = 0; i < styles.length; ++i) {
+      const style = styles[i];
+      const rule = style.parentRule;
       // Compute cascade for CSSStyleRules only.
       if (rule && !(rule instanceof SDK.CSSStyleRule))
         continue;
@@ -353,13 +353,13 @@ SDK.CSSMatchedStyles = class {
         continue;
 
       /** @type {!Map<string, !SDK.CSSProperty>} */
-      var styleActiveProperties = new Map();
-      var allProperties = style.allProperties();
-      for (var j = 0; j < allProperties.length; ++j) {
-        var property = allProperties[j];
+      const styleActiveProperties = new Map();
+      const allProperties = style.allProperties();
+      for (let j = 0; j < allProperties.length; ++j) {
+        const property = allProperties[j];
 
         // Do not pick non-inherited properties from inherited styles.
-        var inherited = this.isInherited(style);
+        const inherited = this.isInherited(style);
         if (inherited && !SDK.cssMetadata().isPropertyInherited(property.name))
           continue;
 
@@ -368,7 +368,7 @@ SDK.CSSMatchedStyles = class {
           continue;
         }
 
-        var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+        const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         if (foundImportantProperties.has(canonicalName)) {
           result.set(property, SDK.CSSMatchedStyles.PropertyState.Overloaded);
           continue;
@@ -379,8 +379,8 @@ SDK.CSSMatchedStyles = class {
           continue;
         }
 
-        var isKnownProperty = propertyToEffectiveRule.has(canonicalName);
-        var inheritedFromNode = inherited ? this.nodeForStyle(style) : null;
+        const isKnownProperty = propertyToEffectiveRule.has(canonicalName);
+        const inheritedFromNode = inherited ? this.nodeForStyle(style) : null;
         if (!isKnownProperty && inheritedFromNode && !inheritedPropertyToNode.has(canonicalName))
           inheritedPropertyToNode.set(canonicalName, inheritedFromNode);
 
@@ -392,7 +392,7 @@ SDK.CSSMatchedStyles = class {
 
           foundImportantProperties.add(canonicalName);
           if (isKnownProperty) {
-            var overloaded =
+            const overloaded =
                 /** @type {!SDK.CSSProperty} */ (propertyToEffectiveRule.get(canonicalName).get(canonicalName));
             result.set(overloaded, SDK.CSSMatchedStyles.PropertyState.Overloaded);
             propertyToEffectiveRule.get(canonicalName).delete(canonicalName);
@@ -406,16 +406,16 @@ SDK.CSSMatchedStyles = class {
       }
 
       // If every longhand of the shorthand is not active, then the shorthand is not active too.
-      for (var property of style.leadingProperties()) {
-        var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+      for (const property of style.leadingProperties()) {
+        const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
         if (!styleActiveProperties.has(canonicalName))
           continue;
-        var longhands = style.longhandProperties(property.name);
+        const longhands = style.longhandProperties(property.name);
         if (!longhands.length)
           continue;
-        var notUsed = true;
-        for (var longhand of longhands) {
-          var longhandCanonicalName = SDK.cssMetadata().canonicalPropertyName(longhand.name);
+        let notUsed = true;
+        for (const longhand of longhands) {
+          const longhandCanonicalName = SDK.cssMetadata().canonicalPropertyName(longhand.name);
           notUsed = notUsed && !styleActiveProperties.has(longhandCanonicalName);
         }
         if (!notUsed)

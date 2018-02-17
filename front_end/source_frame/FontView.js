@@ -57,7 +57,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
    * @param {?string} content
    */
   _onFontContentLoaded(uniqueFontName, content) {
-    var url = content ? Common.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
+    const url = content ? Common.ContentProvider.contentAsDataURL(content, this._mimeType, true) : this._url;
     this.fontStyleElement.textContent =
         String.sprintf('@font-face { font-family: "%s"; src: url(%s); }', uniqueFontName, url);
   }
@@ -66,14 +66,14 @@ SourceFrame.FontView = class extends UI.SimpleView {
     if (this.fontPreviewElement)
       return;
 
-    var uniqueFontName = 'WebInspectorFontPreview' + (++SourceFrame.FontView._fontId);
+    const uniqueFontName = 'WebInspectorFontPreview' + (++SourceFrame.FontView._fontId);
 
     this.fontStyleElement = createElement('style');
     this._contentProvider.requestContent().then(this._onFontContentLoaded.bind(this, uniqueFontName));
     this.element.appendChild(this.fontStyleElement);
 
-    var fontPreview = createElement('div');
-    for (var i = 0; i < SourceFrame.FontView._fontPreviewLines.length; ++i) {
+    const fontPreview = createElement('div');
+    for (let i = 0; i < SourceFrame.FontView._fontPreviewLines.length; ++i) {
       if (i > 0)
         fontPreview.createChild('br');
       fontPreview.createTextChild(SourceFrame.FontView._fontPreviewLines[i]);
@@ -120,7 +120,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
 
   _measureElement() {
     this.element.appendChild(this._dummyElement);
-    var result = {width: this._dummyElement.offsetWidth, height: this._dummyElement.offsetHeight};
+    const result = {width: this._dummyElement.offsetWidth, height: this._dummyElement.offsetHeight};
     this.element.removeChild(this._dummyElement);
 
     return result;
@@ -131,7 +131,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
       return;
 
     this.fontPreviewElement.style.removeProperty('visibility');
-    var dimension = this._measureElement();
+    const dimension = this._measureElement();
 
     const height = dimension.height;
     const width = dimension.width;
@@ -145,9 +145,9 @@ SourceFrame.FontView = class extends UI.SimpleView {
       return;
     }
 
-    var widthRatio = containerWidth / width;
-    var heightRatio = containerHeight / height;
-    var finalFontSize = Math.floor(SourceFrame.FontView._measureFontSize * Math.min(widthRatio, heightRatio)) - 2;
+    const widthRatio = containerWidth / width;
+    const heightRatio = containerHeight / height;
+    const finalFontSize = Math.floor(SourceFrame.FontView._measureFontSize * Math.min(widthRatio, heightRatio)) - 2;
 
     this.fontPreviewElement.style.setProperty('font-size', finalFontSize + 'px', null);
   }

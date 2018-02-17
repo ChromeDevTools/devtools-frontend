@@ -48,8 +48,8 @@ Sources.SourceFormatter = class {
    * @param {!Common.Event} event
    */
   _onUISourceCodeRemoved(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
-    var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
     if (cacheEntry && cacheEntry.formatData)
       this._discardFormatData(cacheEntry.formatData);
     this._formattedSourceCodes.remove(uiSourceCode);
@@ -60,7 +60,7 @@ Sources.SourceFormatter = class {
    * @return {?Workspace.UISourceCode}
    */
   discardFormattedUISourceCode(formattedUISourceCode) {
-    var formatData = Sources.SourceFormatData._for(formattedUISourceCode);
+    const formatData = Sources.SourceFormatData._for(formattedUISourceCode);
     if (!formatData)
       return null;
     this._discardFormatData(formatData);
@@ -91,16 +91,16 @@ Sources.SourceFormatter = class {
    * @return {!Promise<!Sources.SourceFormatData>}
    */
   async format(uiSourceCode) {
-    var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+    const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
     if (cacheEntry)
       return cacheEntry.promise;
 
-    var fulfillFormatPromise;
-    var resultPromise = new Promise(fulfill => {
+    let fulfillFormatPromise;
+    const resultPromise = new Promise(fulfill => {
       fulfillFormatPromise = fulfill;
     });
     this._formattedSourceCodes.set(uiSourceCode, {promise: resultPromise, formatData: null});
-    var content = await uiSourceCode.requestContent();
+    const content = await uiSourceCode.requestContent();
     // ------------ ASYNC ------------
     Formatter.Formatter.format(
         uiSourceCode.contentType(), uiSourceCode.mimeType(), content || '', formatDone.bind(this));
@@ -112,30 +112,30 @@ Sources.SourceFormatter = class {
      * @param {!Formatter.FormatterSourceMapping} formatterMapping
      */
     function formatDone(formattedContent, formatterMapping) {
-      var cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
+      const cacheEntry = this._formattedSourceCodes.get(uiSourceCode);
       if (!cacheEntry || cacheEntry.promise !== resultPromise)
         return;
-      var formattedURL;
-      var count = 0;
-      var suffix = '';
+      let formattedURL;
+      let count = 0;
+      let suffix = '';
       do {
         formattedURL = `${uiSourceCode.url()}:formatted${suffix}`;
         suffix = `:${count++}`;
       } while (this._project.uiSourceCodeForURL(formattedURL));
-      var contentProvider =
+      const contentProvider =
           Common.StaticContentProvider.fromString(formattedURL, uiSourceCode.contentType(), formattedContent);
-      var formattedUISourceCode =
+      const formattedUISourceCode =
           this._project.addContentProvider(formattedURL, contentProvider, uiSourceCode.mimeType());
-      var formatData = new Sources.SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
+      const formatData = new Sources.SourceFormatData(uiSourceCode, formattedUISourceCode, formatterMapping);
       formattedUISourceCode[Sources.SourceFormatData._formatDataSymbol] = formatData;
       this._scriptMapping._setSourceMappingEnabled(formatData, true);
       this._styleMapping._setSourceMappingEnabled(formatData, true);
       cacheEntry.formatData = formatData;
 
-      for (var decoration of uiSourceCode.allDecorations()) {
-        var range = decoration.range();
-        var startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
-        var endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
+      for (const decoration of uiSourceCode.allDecorations()) {
+        const range = decoration.range();
+        const startLocation = formatterMapping.originalToFormatted(range.startLine, range.startColumn);
+        const endLocation = formatterMapping.originalToFormatted(range.endLine, range.endColumn);
 
         formattedUISourceCode.addDecoration(
             new TextUtils.TextRange(startLocation[0], startLocation[1], endLocation[0], endLocation[1]),
@@ -161,13 +161,13 @@ Sources.SourceFormatter.ScriptMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var script = rawLocation.script();
-    var formatData = script && Sources.SourceFormatData._for(script);
+    const script = rawLocation.script();
+    const formatData = script && Sources.SourceFormatData._for(script);
     if (!formatData)
       return null;
-    var lineNumber = rawLocation.lineNumber;
-    var columnNumber = rawLocation.columnNumber || 0;
-    var formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
+    const lineNumber = rawLocation.lineNumber;
+    const columnNumber = rawLocation.columnNumber || 0;
+    const formattedLocation = formatData.mapping.originalToFormatted(lineNumber, columnNumber);
     return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
   }
 
@@ -179,11 +179,11 @@ Sources.SourceFormatter.ScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var formatData = Sources.SourceFormatData._for(uiSourceCode);
+    const formatData = Sources.SourceFormatData._for(uiSourceCode);
     if (!formatData)
       return null;
-    var originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
-    var scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
+    const originalLocation = formatData.mapping.formattedToOriginal(lineNumber, columnNumber);
+    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
     if (!scripts.length)
       return null;
     return scripts[0].debuggerModel.createRawLocation(scripts[0], originalLocation[0], originalLocation[1]);
@@ -194,17 +194,17 @@ Sources.SourceFormatter.ScriptMapping = class {
    * @param {boolean} enabled
    */
   _setSourceMappingEnabled(formatData, enabled) {
-    var scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
+    const scripts = this._scriptsForUISourceCode(formatData.originalSourceCode);
     if (!scripts.length)
       return;
     if (enabled) {
-      for (var script of scripts)
+      for (const script of scripts)
         script[Sources.SourceFormatData._formatDataSymbol] = formatData;
     } else {
-      for (var script of scripts)
+      for (const script of scripts)
         delete script[Sources.SourceFormatData._formatDataSymbol];
     }
-    for (var script of scripts)
+    for (const script of scripts)
       Bindings.debuggerWorkspaceBinding.updateLocations(script);
   }
 
@@ -214,16 +214,16 @@ Sources.SourceFormatter.ScriptMapping = class {
    */
   _scriptsForUISourceCode(uiSourceCode) {
     if (uiSourceCode.contentType() === Common.resourceTypes.Document) {
-      var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
-      var debuggerModel = target && target.model(SDK.DebuggerModel);
+      const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
+      const debuggerModel = target && target.model(SDK.DebuggerModel);
       if (debuggerModel) {
-        var scripts = debuggerModel.scriptsForSourceURL(uiSourceCode.url())
-                          .filter(script => script.isInlineScript() && !script.hasSourceURL);
+        const scripts = debuggerModel.scriptsForSourceURL(uiSourceCode.url())
+                            .filter(script => script.isInlineScript() && !script.hasSourceURL);
         return scripts;
       }
     }
     if (uiSourceCode.contentType().isScript()) {
-      var rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
+      const rawLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, 0, 0);
       if (rawLocation)
         return [rawLocation.script()];
     }
@@ -246,11 +246,11 @@ Sources.SourceFormatter.StyleMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var styleHeader = rawLocation.header();
-    var formatData = styleHeader && Sources.SourceFormatData._for(styleHeader);
+    const styleHeader = rawLocation.header();
+    const formatData = styleHeader && Sources.SourceFormatData._for(styleHeader);
     if (!formatData)
       return null;
-    var formattedLocation =
+    const formattedLocation =
         formatData.mapping.originalToFormatted(rawLocation.lineNumber, rawLocation.columnNumber || 0);
     return formatData.formattedSourceCode.uiLocation(formattedLocation[0], formattedLocation[1]);
   }
@@ -261,11 +261,11 @@ Sources.SourceFormatter.StyleMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    var formatData = Sources.SourceFormatData._for(uiLocation.uiSourceCode);
+    const formatData = Sources.SourceFormatData._for(uiLocation.uiSourceCode);
     if (!formatData)
       return [];
-    var originalLocation = formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
-    var headers = formatData.originalSourceCode[this._headersSymbol];
+    const originalLocation = formatData.mapping.formattedToOriginal(uiLocation.lineNumber, uiLocation.columnNumber);
+    const headers = formatData.originalSourceCode[this._headersSymbol];
     return headers.map(header => new SDK.CSSLocation(header, originalLocation[0], originalLocation[1]));
   }
 
@@ -274,9 +274,9 @@ Sources.SourceFormatter.StyleMapping = class {
    * @param {boolean} enable
    */
   _setSourceMappingEnabled(formatData, enable) {
-    var original = formatData.originalSourceCode;
-    var rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(original.uiLocation(0, 0));
-    var headers = rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
+    const original = formatData.originalSourceCode;
+    const rawLocations = Bindings.cssWorkspaceBinding.uiLocationToRawLocations(original.uiLocation(0, 0));
+    const headers = rawLocations.map(rawLocation => rawLocation.header()).filter(header => !!header);
     if (!headers.length)
       return;
     if (enable) {

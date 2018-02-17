@@ -60,11 +60,11 @@ Protocol.InspectorBackend = class {
    * @param {string} domain
    */
   _addAgentGetterMethodToProtocolTargetPrototype(domain) {
-    var upperCaseLength = 0;
+    let upperCaseLength = 0;
     while (upperCaseLength < domain.length && domain[upperCaseLength].toLowerCase() !== domain[upperCaseLength])
       ++upperCaseLength;
 
-    var methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
+    const methodName = domain.substr(0, upperCaseLength).toLowerCase() + domain.slice(upperCaseLength) + 'Agent';
 
     /**
      * @this {Protocol.TargetBase}
@@ -115,7 +115,7 @@ Protocol.InspectorBackend = class {
    * @param {boolean} hasErrorData
    */
   registerCommand(method, signature, replyArgs, hasErrorData) {
-    var domainAndMethod = method.split('.');
+    const domainAndMethod = method.split('.');
     this._agentPrototype(domainAndMethod[0]).registerCommand(domainAndMethod[1], signature, replyArgs, hasErrorData);
     this._initialized = true;
   }
@@ -125,8 +125,8 @@ Protocol.InspectorBackend = class {
    * @param {!Object} values
    */
   registerEnum(type, values) {
-    var domainAndName = type.split('.');
-    var domain = domainAndName[0];
+    const domainAndName = type.split('.');
+    const domain = domainAndName[0];
     if (!Protocol[domain])
       Protocol[domain] = {};
 
@@ -139,7 +139,7 @@ Protocol.InspectorBackend = class {
    * @param {!Object} params
    */
   registerEvent(eventName, params) {
-    var domain = eventName.split('.')[0];
+    const domain = eventName.split('.')[0];
     this._dispatcherPrototype(domain).registerEvent(eventName, params);
     this._initialized = true;
   }
@@ -239,12 +239,12 @@ Protocol.TargetBase = class {
    * @param {!Object.<string, !Protocol.InspectorBackend._DispatcherPrototype>} dispatcherPrototypes
    */
   _initialize(agentPrototypes, dispatcherPrototypes) {
-    for (var domain in agentPrototypes) {
+    for (const domain in agentPrototypes) {
       this._agents[domain] = Object.create(agentPrototypes[domain]);
       this._agents[domain].setTarget(this);
     }
 
-    for (var domain in dispatcherPrototypes) {
+    for (const domain in dispatcherPrototypes) {
       this._dispatchers[domain] = Object.create(dispatcherPrototypes[domain]);
       this._dispatchers[domain].initialize();
     }
@@ -278,15 +278,15 @@ Protocol.TargetBase = class {
       return;
     }
 
-    var messageObject = {};
-    var messageId = this._nextMessageId();
+    const messageObject = {};
+    const messageId = this._nextMessageId();
     messageObject.id = messageId;
     messageObject.method = method;
     if (params)
       messageObject.params = params;
 
-    var wrappedCallback = this._wrap(callback, domain, method);
-    var message = JSON.stringify(messageObject);
+    const wrappedCallback = this._wrap(callback, domain, method);
+    const message = JSON.stringify(messageObject);
 
     if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
       this._dumpProtocolMessage('frontend: ' + message, '[FE] ' + domain);
@@ -320,7 +320,7 @@ Protocol.TargetBase = class {
    * @param {?function(...*)} callback
    */
   _sendRawMessageForTesting(method, params, callback) {
-    var domain = method.split('.')[0];
+    const domain = method.split('.')[0];
     this._wrapCallbackAndSendMessageObject(domain, method, params, callback);
   }
 
@@ -333,16 +333,16 @@ Protocol.TargetBase = class {
           'backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)), 'Backend');
     }
 
-    var messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
+    const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
     if ('id' in messageObject) {  // just a response for some request
-      var callback = this._callbacks[messageObject.id];
+      const callback = this._callbacks[messageObject.id];
       if (!callback) {
         Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         return;
       }
 
-      var timingLabel = 'time-stats: ' + callback.methodName;
+      const timingLabel = 'time-stats: ' + callback.methodName;
       if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
         Protocol.InspectorBackend._timeLogger.time(timingLabel);
 
@@ -361,8 +361,8 @@ Protocol.TargetBase = class {
         return;
       }
 
-      var method = messageObject.method.split('.');
-      var domainName = method[0];
+      const method = messageObject.method.split('.');
+      const domainName = method[0];
       if (!(domainName in this._dispatchers)) {
         Protocol.InspectorBackend.reportProtocolError(
             `Protocol Error: the message ${messageObject.method} is for non-existing domain '${domainName}'`,
@@ -406,9 +406,9 @@ Protocol.TargetBase = class {
 
   _executeAfterPendingDispatches() {
     if (!this._pendingResponsesCount) {
-      var scripts = this._scripts;
+      const scripts = this._scripts;
       this._scripts = [];
-      for (var id = 0; id < scripts.length; ++id)
+      for (let id = 0; id < scripts.length; ++id)
         scripts[id].call(this);
     }
   }
@@ -420,7 +420,7 @@ Protocol.TargetBase = class {
   _dumpProtocolMessage(message, context) {
     if (!this._domainToLogger.get(context))
       this._domainToLogger.set(context, console.context ? console.context(context) : console);
-    var logger = this._domainToLogger.get(context);
+    const logger = this._domainToLogger.get(context);
     logger.log(message);
   }
 
@@ -447,11 +447,11 @@ Protocol.TargetBase = class {
   }
 
   _runPendingCallbacks() {
-    var keys = Object.keys(this._callbacks).map(function(num) {
+    const keys = Object.keys(this._callbacks).map(function(num) {
       return parseInt(num, 10);
     });
-    for (var i = 0; i < keys.length; ++i) {
-      var callback = this._callbacks[keys[i]];
+    for (let i = 0; i < keys.length; ++i) {
+      const callback = this._callbacks[keys[i]];
       this._dispatchConnectionErrorResponse(callback.domain, callback.methodName, callback);
     }
     this._callbacks = {};
@@ -463,12 +463,12 @@ Protocol.TargetBase = class {
    * @param {function(*)} callback
    */
   _dispatchConnectionErrorResponse(domain, methodName, callback) {
-    var error = {
+    const error = {
       message: 'Connection is closed, can\'t dispatch pending ' + methodName,
       code: Protocol.InspectorBackend._ConnectionClosedErrorCode,
       data: null
     };
-    var messageObject = {error: error};
+    const messageObject = {error: error};
     setTimeout(
         Protocol.InspectorBackend._AgentPrototype.prototype.dispatchResponse.bind(
             this._agent(domain), messageObject, methodName, callback),
@@ -503,7 +503,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
    * @param {boolean} hasErrorData
    */
   registerCommand(methodName, signature, replyArgs, hasErrorData) {
-    var domainAndMethod = this._domain + '.' + methodName;
+    const domainAndMethod = this._domain + '.' + methodName;
 
     /**
      * @param {...*} vararg
@@ -511,7 +511,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
      * @return {!Promise.<*>}
      */
     function sendMessagePromise(vararg) {
-      var params = Array.prototype.slice.call(arguments);
+      const params = Array.prototype.slice.call(arguments);
       return Protocol.InspectorBackend._AgentPrototype.prototype._sendMessageToBackendPromise.call(
           this, domainAndMethod, signature, params);
     }
@@ -542,13 +542,13 @@ Protocol.InspectorBackend._AgentPrototype = class {
    * @return {?Object}
    */
   _prepareParameters(method, signature, args, errorCallback) {
-    var params = {};
-    var hasParams = false;
+    const params = {};
+    let hasParams = false;
 
-    for (var param of signature) {
-      var paramName = param['name'];
-      var typeName = param['type'];
-      var optionalFlag = param['optional'];
+    for (const param of signature) {
+      const paramName = param['name'];
+      const typeName = param['type'];
+      const optionalFlag = param['optional'];
 
       if (!args.length && !optionalFlag) {
         errorCallback(
@@ -557,7 +557,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
         return null;
       }
 
-      var value = args.shift();
+      const value = args.shift();
       if (optionalFlag && typeof value === 'undefined')
         continue;
 
@@ -587,7 +587,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
    * @return {!Promise<?>}
    */
   _sendMessageToBackendPromise(method, signature, args) {
-    var errorMessage;
+    let errorMessage;
     /**
      * @param {string} message
      */
@@ -595,7 +595,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
       console.error(message);
       errorMessage = message;
     }
-    var params = this._prepareParameters(method, signature, args, onError);
+    const params = this._prepareParameters(method, signature, args, onError);
     if (errorMessage)
       return Promise.resolve(null);
 
@@ -605,7 +605,7 @@ Protocol.InspectorBackend._AgentPrototype = class {
           resolve(null);
           return;
         }
-        var args = this._replyArgs[method];
+        const args = this._replyArgs[method];
         resolve(result && args.length ? result[args[0]] : undefined);
       });
     });
@@ -637,7 +637,8 @@ Protocol.InspectorBackend._AgentPrototype = class {
     if (messageObject.error && messageObject.error.code !== Protocol.InspectorBackend._ConnectionClosedErrorCode &&
         messageObject.error.code !== Protocol.InspectorBackend.DevToolsStubErrorCode &&
         !Protocol.InspectorBackend.Options.suppressRequestErrors) {
-      var id = Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
+      const id =
+          Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
       console.error('Request ' + methodName + id + ' failed. ' + JSON.stringify(messageObject.error));
     }
     callback(messageObject.error, messageObject.result);
@@ -685,19 +686,19 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
       return;
     }
 
-    var params = [];
+    const params = [];
     if (messageObject.params) {
-      var paramNames = this._eventArgs[messageObject.method];
-      for (var i = 0; i < paramNames.length; ++i)
+      const paramNames = this._eventArgs[messageObject.method];
+      for (let i = 0; i < paramNames.length; ++i)
         params.push(messageObject.params[paramNames[i]]);
     }
 
-    var timingLabel = 'time-stats: ' + messageObject.method;
+    const timingLabel = 'time-stats: ' + messageObject.method;
     if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
       Protocol.InspectorBackend._timeLogger.time(timingLabel);
 
-    for (var index = 0; index < this._dispatchers.length; ++index) {
-      var dispatcher = this._dispatchers[index];
+    for (let index = 0; index < this._dispatchers.length; ++index) {
+      const dispatcher = this._dispatchers[index];
       if (functionName in dispatcher)
         dispatcher[functionName].apply(dispatcher, params);
     }

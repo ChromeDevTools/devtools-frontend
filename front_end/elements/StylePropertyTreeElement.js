@@ -79,13 +79,13 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @return {boolean}
    */
   _updateFilter() {
-    var regex = this._parentPane.filterRegex();
-    var matches = !!regex && (regex.test(this.property.name) || regex.test(this.property.value));
+    const regex = this._parentPane.filterRegex();
+    const matches = !!regex && (regex.test(this.property.name) || regex.test(this.property.value));
     this.listItemElement.classList.toggle('filter-match', matches);
 
     this.onpopulate();
-    var hasMatchingChildren = false;
-    for (var i = 0; i < this.childCount(); ++i)
+    let hasMatchingChildren = false;
+    for (let i = 0; i < this.childCount(); ++i)
       hasMatchingChildren |= this.childAt(i)._updateFilter();
 
     if (!regex) {
@@ -108,21 +108,21 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    */
   _processColor(text) {
     // We can be called with valid non-color values of |text| (like 'none' from border style)
-    var color = Common.Color.parse(text);
+    const color = Common.Color.parse(text);
     if (!color)
       return createTextNode(text);
 
     if (!this._editable()) {
-      var swatch = InlineEditor.ColorSwatch.create();
+      const swatch = InlineEditor.ColorSwatch.create();
       swatch.setColor(color);
       return swatch;
     }
 
-    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
-    var swatch = InlineEditor.ColorSwatch.create();
+    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
+    const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
-    var swatchIcon = new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
+    const swatchIcon = new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
 
     /**
      * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
@@ -133,7 +133,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     if (Runtime.experiments.isEnabled('colorContrastRatio') && this.property.name === 'color' &&
         this._parentPane.cssModel() && this.node()) {
-      var cssModel = this._parentPane.cssModel();
+      const cssModel = this._parentPane.cssModel();
       cssModel.backgroundColorsPromise(this.node().id).then(computedCallback);
     }
 
@@ -154,8 +154,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _processBezier(text) {
     if (!this._editable() || !UI.Geometry.CubicBezier.parse(text))
       return createTextNode(text);
-    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
-    var swatch = InlineEditor.BezierSwatch.create();
+    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
+    const swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     new Elements.BezierPopoverIcon(this, swatchPopoverHelper, swatch);
     return swatch;
@@ -169,23 +169,23 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _processShadow(propertyValue, propertyName) {
     if (!this._editable())
       return createTextNode(propertyValue);
-    var shadows;
+    let shadows;
     if (propertyName === 'text-shadow')
       shadows = InlineEditor.CSSShadowModel.parseTextShadow(propertyValue);
     else
       shadows = InlineEditor.CSSShadowModel.parseBoxShadow(propertyValue);
     if (!shadows.length)
       return createTextNode(propertyValue);
-    var container = createDocumentFragment();
-    var swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
-    for (var i = 0; i < shadows.length; i++) {
+    const container = createDocumentFragment();
+    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
+    for (let i = 0; i < shadows.length; i++) {
       if (i !== 0)
         container.appendChild(createTextNode(', '));  // Add back commas and spaces between each shadow.
       // TODO(flandy): editing the property value should use the original value with all spaces.
-      var cssShadowSwatch = InlineEditor.CSSShadowSwatch.create();
+      const cssShadowSwatch = InlineEditor.CSSShadowSwatch.create();
       cssShadowSwatch.setCSSShadow(shadows[i]);
       new Elements.ShadowSwatchPopoverHelper(this, swatchPopoverHelper, cssShadowSwatch);
-      var colorSwatch = cssShadowSwatch.colorSwatch();
+      const colorSwatch = cssShadowSwatch.colorSwatch();
       if (colorSwatch)
         new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, colorSwatch);
       container.appendChild(cssShadowSwatch);
@@ -202,7 +202,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     else
       this.listItemElement.classList.remove('implicit');
 
-    var hasIgnorableError =
+    const hasIgnorableError =
         !this.property.parsedOk && Elements.StylesSidebarPane.ignoreErrorsForProperty(this.property);
     if (hasIgnorableError)
       this.listItemElement.classList.add('has-ignorable-error');
@@ -247,7 +247,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   _updatePane() {
-    var section = this.section();
+    const section = this.section();
     if (section)
       section.refreshUpdate();
   }
@@ -256,8 +256,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _toggleEnabled(event) {
-    var disabled = !event.target.checked;
-    var oldStyleRange = this._style.range;
+    const disabled = !event.target.checked;
+    const oldStyleRange = this._style.range;
     if (!oldStyleRange)
       return;
 
@@ -288,20 +288,20 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (this.childCount() || !this.isShorthand)
       return;
 
-    var longhandProperties = this._style.longhandProperties(this.name);
-    for (var i = 0; i < longhandProperties.length; ++i) {
-      var name = longhandProperties[i].name;
-      var inherited = false;
-      var overloaded = false;
+    const longhandProperties = this._style.longhandProperties(this.name);
+    for (let i = 0; i < longhandProperties.length; ++i) {
+      const name = longhandProperties[i].name;
+      let inherited = false;
+      let overloaded = false;
 
-      var section = this.section();
+      const section = this.section();
       if (section) {
         inherited = section.isPropertyInherited(name);
         overloaded =
             this._matchedStyles.propertyState(longhandProperties[i]) === SDK.CSSMatchedStyles.PropertyState.Overloaded;
       }
 
-      var item = new Elements.StylePropertyTreeElement(
+      const item = new Elements.StylePropertyTreeElement(
           this._parentPane, this._matchedStyles, longhandProperties[i], false, inherited, overloaded, false);
       this.appendChild(item);
     }
@@ -354,7 +354,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     else
       this._expandElement = null;
 
-    var propertyRenderer =
+    const propertyRenderer =
         new Elements.StylesSidebarPropertyRenderer(this._style.parentRule, this.node(), this.name, this.value);
     if (this.property.parsedOk) {
       propertyRenderer.setColorHandler(this._processColor.bind(this));
@@ -368,7 +368,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!this.treeOutline)
       return;
 
-    var indent = Common.moduleSetting('textEditorIndent').get();
+    const indent = Common.moduleSetting('textEditorIndent').get();
     this.listItemElement.createChild('span', 'styles-clipboard-only')
         .createTextChild(indent + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);
@@ -393,7 +393,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._updateFilter();
 
     if (this.property.parsedOk && this.section() && this.parent.root) {
-      var enabledCheckboxElement = createElement('input');
+      const enabledCheckboxElement = createElement('input');
       enabledCheckboxElement.className = 'enabled-button';
       enabledCheckboxElement.type = 'checkbox';
       enabledCheckboxElement.checked = !this.property.disabled;
@@ -407,7 +407,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {!Event} event
    */
   _mouseUp(event) {
-    var activeTreeElement = this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol];
+    const activeTreeElement = this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol];
     this._parentPane[Elements.StylePropertyTreeElement.ActiveSymbol] = null;
     if (activeTreeElement !== this)
       return;
@@ -436,8 +436,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _navigateToSource(element, omitFocus) {
     if (!this.section().navigable)
       return;
-    var propertyNameClicked = element === this.nameElement;
-    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this.property, propertyNameClicked);
+    const propertyNameClicked = element === this.nameElement;
+    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this.property, propertyNameClicked);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, omitFocus);
   }
@@ -453,7 +453,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (this._expandElement && selectElement === this._expandElement)
       return;
 
-    var section = this.section();
+    const section = this.section();
     if (section && !section.editable)
       return;
 
@@ -467,7 +467,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (UI.isBeingEdited(selectElement))
       return;
 
-    var isEditingName = selectElement === this.nameElement;
+    const isEditingName = selectElement === this.nameElement;
     if (!isEditingName)
       this.valueElement.textContent = restoreURLs(this.valueElement.textContent, this.value);
 
@@ -478,12 +478,12 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      */
     function restoreURLs(fieldValue, modelValue) {
       const urlRegex = /\b(url\([^)]*\))/g;
-      var splitFieldValue = fieldValue.split(urlRegex);
+      const splitFieldValue = fieldValue.split(urlRegex);
       if (splitFieldValue.length === 1)
         return fieldValue;
-      var modelUrlRegex = new RegExp(urlRegex);
-      for (var i = 1; i < splitFieldValue.length; i += 2) {
-        var match = modelUrlRegex.exec(modelValue);
+      const modelUrlRegex = new RegExp(urlRegex);
+      for (let i = 1; i < splitFieldValue.length; i += 2) {
+        const match = modelUrlRegex.exec(modelValue);
         if (match)
           splitFieldValue[i] = match[0];
       }
@@ -491,7 +491,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
 
     /** @type {!Elements.StylePropertyTreeElement.Context} */
-    var context = {
+    const context = {
       expanded: this.expanded,
       hasChildren: this.isExpandable(),
       isEditingName: isEditingName,
@@ -511,14 +511,14 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function pasteHandler(context, event) {
-      var data = event.clipboardData.getData('Text');
+      const data = event.clipboardData.getData('Text');
       if (!data)
         return;
-      var colonIdx = data.indexOf(':');
+      const colonIdx = data.indexOf(':');
       if (colonIdx < 0)
         return;
-      var name = data.substring(0, colonIdx).trim();
-      var value = data.substring(colonIdx + 1).trim();
+      const name = data.substring(0, colonIdx).trim();
+      const value = data.substring(colonIdx + 1).trim();
 
       event.preventDefault();
 
@@ -542,7 +542,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      * @this {Elements.StylePropertyTreeElement}
      */
     function blurListener(context, event) {
-      var text = event.target.textContent;
+      let text = event.target.textContent;
       if (!context.isEditingName)
         text = this.value || text;
       this._editingCommitted(text, context, '');
@@ -554,7 +554,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (selectElement.parentElement)
       selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
-    var cssCompletions = [];
+    let cssCompletions = [];
     if (isEditingName) {
       cssCompletions = SDK.cssMetadata().allProperties();
       if (!this.node().isSVGNode())
@@ -562,7 +562,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     } else {
       cssCompletions = SDK.cssMetadata().propertyValues(this.nameElement.textContent);
     }
-    var cssVariables = this._matchedStyles.cssVariables().sort(String.naturalOrderComparator);
+    const cssVariables = this._matchedStyles.cssVariables().sort(String.naturalOrderComparator);
 
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
@@ -573,7 +573,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!isEditingName && (!this._parentPane.node().pseudoType() || this.name !== 'content'))
       this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._applyFreeFlowStyleTextEdit.bind(this));
 
-    var proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
+    const proxyElement = this._prompt.attachAndStartEditing(selectElement, blurListener.bind(this, context));
     this._navigateToSource(selectElement, true);
 
     proxyElement.addEventListener('keydown', this._editingNameValueKeyDown.bind(this, context), false);
@@ -592,7 +592,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (event.handled)
       return;
 
-    var result;
+    let result;
 
     if (isEnterKey(event)) {
       result = 'forward';
@@ -601,7 +601,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     } else if (
         !context.isEditingName && this._newProperty && event.keyCode === UI.KeyboardShortcut.Keys.Backspace.code) {
       // For a new property, when Backspace is pressed at the beginning of new property value, move back to the property name.
-      var selection = event.target.getComponentSelection();
+      const selection = event.target.getComponentSelection();
       if (selection.isCollapsed && !selection.focusOffset) {
         event.preventDefault();
         result = 'backward';
@@ -639,9 +639,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
      */
     function shouldCommitValueSemicolon(text, cursorPosition) {
       // FIXME: should this account for semicolons inside comments?
-      var openQuote = '';
-      for (var i = 0; i < cursorPosition; ++i) {
-        var ch = text[i];
+      let openQuote = '';
+      for (let i = 0; i < cursorPosition; ++i) {
+        const ch = text[i];
         if (ch === '\\' && openQuote !== '')
           ++i;  // skip next character inside string
         else if (!openQuote && (ch === '"' || ch === '\''))
@@ -652,8 +652,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return !openQuote;
     }
 
-    var keyChar = String.fromCharCode(event.charCode);
-    var isFieldInputTerminated =
+    const keyChar = String.fromCharCode(event.charCode);
+    const isFieldInputTerminated =
         (context.isEditingName ? keyChar === ':' :
                                  keyChar === ';' &&
                  shouldCommitValueSemicolon(event.target.textContent, event.target.selectionLeftOffset()));
@@ -669,7 +669,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @return {!Promise}
    */
   async _applyFreeFlowStyleTextEdit() {
-    var valueText = this._prompt.textWithCurrentSuggestion();
+    const valueText = this._prompt.textWithCurrentSuggestion();
     if (valueText.indexOf(';') === -1)
       await this.applyStyleText(this.nameElement.textContent + ': ' + valueText, false);
   }
@@ -688,7 +688,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this.setExpandable(context.hasChildren);
     if (context.expanded)
       this.expand();
-    var editedElement = context.isEditingName ? this.nameElement : this.valueElement;
+    const editedElement = context.isEditingName ? this.nameElement : this.valueElement;
     // The proxyElement has been deleted, no need to remove listener.
     if (editedElement.parentElement)
       editedElement.parentElement.classList.remove('child-editing');
@@ -723,7 +723,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @return {?Elements.StylePropertyTreeElement}
    */
   _findSibling(moveDirection) {
-    var target = this;
+    let target = this;
     do
       target = (moveDirection === 'forward' ? target.nextSibling : target.previousSibling);
     while (target && target.inherited());
@@ -737,21 +737,22 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
    * @param {string} moveDirection
    */
   async _editingCommitted(userInput, context, moveDirection) {
-    var hadFocus = this._parentPane.element.hasFocus();
+    const hadFocus = this._parentPane.element.hasFocus();
     this._removePrompt();
     this.editingEnded(context);
-    var isEditingName = context.isEditingName;
+    const isEditingName = context.isEditingName;
 
     // Determine where to move to before making changes
-    var createNewProperty, moveToSelector;
-    var isDataPasted = 'originalName' in context;
-    var isDirtyViaPaste = isDataPasted &&
+    let createNewProperty, moveToSelector;
+    const isDataPasted = 'originalName' in context;
+    const isDirtyViaPaste = isDataPasted &&
         (this.nameElement.textContent !== context.originalName ||
          this.valueElement.textContent !== context.originalValue);
-    var isPropertySplitPaste = isDataPasted && isEditingName && this.valueElement.textContent !== context.originalValue;
-    var moveTo = this;
-    var moveToOther = (isEditingName ^ (moveDirection === 'forward'));
-    var abandonNewProperty = this._newProperty && !userInput && (moveToOther || isEditingName);
+    const isPropertySplitPaste =
+        isDataPasted && isEditingName && this.valueElement.textContent !== context.originalValue;
+    let moveTo = this;
+    const moveToOther = (isEditingName ^ (moveDirection === 'forward'));
+    const abandonNewProperty = this._newProperty && !userInput && (moveToOther || isEditingName);
     if (moveDirection === 'forward' && (!isEditingName || isPropertySplitPaste) ||
         moveDirection === 'backward' && isEditingName) {
       moveTo = moveTo._findSibling(moveDirection);
@@ -764,15 +765,15 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
 
     // Make the Changes and trigger the moveToNextCallback after updating.
-    var moveToIndex = moveTo && this.treeOutline ? this.treeOutline.rootElement().indexOfChild(moveTo) : -1;
-    var blankInput = userInput.isWhitespace();
-    var shouldCommitNewProperty = this._newProperty &&
+    let moveToIndex = moveTo && this.treeOutline ? this.treeOutline.rootElement().indexOfChild(moveTo) : -1;
+    const blankInput = userInput.isWhitespace();
+    const shouldCommitNewProperty = this._newProperty &&
         (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput));
-    var section = /** @type {!Elements.StylePropertiesSection} */ (this.section());
+    const section = /** @type {!Elements.StylePropertiesSection} */ (this.section());
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
       if (hadFocus)
         this._parentPane.element.focus();
-      var propertyText;
+      let propertyText;
       if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {
         propertyText = '';
       } else {
@@ -813,15 +814,15 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       // User has made a change then tabbed, wiping all the original treeElements.
       // Recalculate the new treeElement for the same property we were going to edit next.
       if (moveTo && !moveTo.parent) {
-        var rootElement = section.propertiesTreeOutline.rootElement();
+        const rootElement = section.propertiesTreeOutline.rootElement();
         if (moveDirection === 'forward' && blankInput && !isEditingName)
           --moveToIndex;
         if (moveToIndex >= rootElement.childCount() && !this._newProperty) {
           createNewProperty = true;
         } else {
-          var treeElement = moveToIndex >= 0 ? rootElement.childAt(moveToIndex) : null;
+          const treeElement = moveToIndex >= 0 ? rootElement.childAt(moveToIndex) : null;
           if (treeElement) {
-            var elementToEdit =
+            let elementToEdit =
                 !isEditingName || isPropertySplitPaste ? treeElement.nameElement : treeElement.valueElement;
             if (alreadyNew && blankInput)
               elementToEdit = moveDirection === 'forward' ? treeElement.nameElement : treeElement.valueElement;
@@ -844,7 +845,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
       if (abandonNewProperty) {
         moveTo = this._findSibling(moveDirection);
-        var sectionToEdit = (moveTo || moveDirection === 'backward') ? section : section.nextEditableSibling();
+        const sectionToEdit = (moveTo || moveDirection === 'backward') ? section : section.nextEditableSibling();
         if (sectionToEdit) {
           if (sectionToEdit.style().parentRule)
             sectionToEdit.startEditingSelector();
@@ -869,7 +870,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       this._prompt.detach();
       this._prompt = null;
     }
-    var section = this.section();
+    const section = this.section();
     if (section)
       section.stopEditing();
   }
@@ -895,7 +896,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!this.treeOutline)
       return;
 
-    var oldStyleRange = this._style.range;
+    const oldStyleRange = this._style.range;
     if (!oldStyleRange)
       return;
 
@@ -906,15 +907,15 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return;
     }
 
-    var currentNode = this._parentPane.node();
+    const currentNode = this._parentPane.node();
     this._parentPane.setUserOperation(true);
 
     // Append a ";" if the new text does not end in ";".
     // FIXME: this does not handle trailing comments.
     if (styleText.length && !/;\s*$/.test(styleText))
       styleText += ';';
-    var overwriteProperty = !this._newProperty || this._propertyHasBeenEditedIncrementally;
-    var success = await this.property.setText(styleText, majorChange, overwriteProperty);
+    const overwriteProperty = !this._newProperty || this._propertyHasBeenEditedIncrementally;
+    let success = await this.property.setText(styleText, majorChange, overwriteProperty);
     // Revert to the original text if applying the new text failed
     if (this._propertyHasBeenEditedIncrementally && majorChange && !success) {
       majorChange = false;

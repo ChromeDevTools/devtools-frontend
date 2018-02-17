@@ -66,7 +66,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Promise<!Element>}
    */
   async completeElementForTest() {
-    var element = this.toMessageElement();
+    const element = this.toMessageElement();
     if (this._completeElementForTestPromise)
       await this._completeElementForTestPromise;
     return element;
@@ -106,7 +106,7 @@ Console.ConsoleViewMessage = class {
     // 1px border of .console-message-wrapper. Keep in sync with consoleView.css.
     const defaultConsoleRowHeight = 19;
     if (this._message.type === SDK.ConsoleMessage.MessageType.Table) {
-      var table = this._message.parameters[0];
+      const table = this._message.parameters[0];
       if (table && table.preview)
         return defaultConsoleRowHeight * table.preview.properties.length;
     }
@@ -124,27 +124,27 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _buildTableMessage() {
-    var formattedMessage = createElementWithClass('span', 'source-code');
-    var anchorElement = this._buildMessageAnchor();
+    const formattedMessage = createElementWithClass('span', 'source-code');
+    const anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
-    var badgeElement = this._buildMessageBadge();
+    const badgeElement = this._buildMessageBadge();
     if (badgeElement)
       formattedMessage.appendChild(badgeElement);
 
-    var table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
+    let table = this._message.parameters && this._message.parameters.length ? this._message.parameters[0] : null;
     if (table)
       table = this._parameterToRemoteObject(table);
     if (!table || !table.preview)
       return formattedMessage;
 
-    var rawValueColumnSymbol = Symbol('rawValueColumn');
-    var columnNames = [];
-    var preview = table.preview;
-    var rows = [];
-    for (var i = 0; i < preview.properties.length; ++i) {
-      var rowProperty = preview.properties[i];
-      var rowSubProperties;
+    const rawValueColumnSymbol = Symbol('rawValueColumn');
+    const columnNames = [];
+    const preview = table.preview;
+    const rows = [];
+    for (let i = 0; i < preview.properties.length; ++i) {
+      const rowProperty = preview.properties[i];
+      let rowSubProperties;
       if (rowProperty.valuePreview)
         rowSubProperties = rowProperty.valuePreview.properties;
       else if (rowProperty.value)
@@ -152,11 +152,11 @@ Console.ConsoleViewMessage = class {
       else
         continue;
 
-      var rowValue = {};
+      const rowValue = {};
       const maxColumnsToRender = 20;
-      for (var j = 0; j < rowSubProperties.length; ++j) {
-        var cellProperty = rowSubProperties[j];
-        var columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
+      for (let j = 0; j < rowSubProperties.length; ++j) {
+        const cellProperty = rowSubProperties[j];
+        let columnRendered = columnNames.indexOf(cellProperty.name) !== -1;
         if (!columnRendered) {
           if (columnNames.length === maxColumnsToRender)
             continue;
@@ -165,7 +165,7 @@ Console.ConsoleViewMessage = class {
         }
 
         if (columnRendered) {
-          var cellElement = this._renderPropertyPreviewOrAccessor(table, [rowProperty, cellProperty]);
+          const cellElement = this._renderPropertyPreviewOrAccessor(table, [rowProperty, cellProperty]);
           cellElement.classList.add('console-message-nowrap-below');
           rowValue[cellProperty.name] = cellElement;
         }
@@ -173,24 +173,24 @@ Console.ConsoleViewMessage = class {
       rows.push([rowProperty.name, rowValue]);
     }
 
-    var flatValues = [];
-    for (var i = 0; i < rows.length; ++i) {
-      var rowName = rows[i][0];
-      var rowValue = rows[i][1];
+    const flatValues = [];
+    for (let i = 0; i < rows.length; ++i) {
+      const rowName = rows[i][0];
+      const rowValue = rows[i][1];
       flatValues.push(rowName);
-      for (var j = 0; j < columnNames.length; ++j)
+      for (let j = 0; j < columnNames.length; ++j)
         flatValues.push(rowValue[columnNames[j]]);
     }
     columnNames.unshift(Common.UIString('(index)'));
-    var columnDisplayNames = columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString('Value') : name);
+    const columnDisplayNames = columnNames.map(name => name === rawValueColumnSymbol ? Common.UIString('Value') : name);
 
     if (flatValues.length) {
       this._dataGrid = DataGrid.SortableDataGrid.create(columnDisplayNames, flatValues);
       this._dataGrid.setStriped(true);
 
-      var formattedResult = createElementWithClass('span', 'console-message-text');
-      var tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
-      var dataGridContainer = tableElement.createChild('span');
+      const formattedResult = createElementWithClass('span', 'console-message-text');
+      const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
+      const dataGridContainer = tableElement.createChild('span');
       tableElement.appendChild(this._formatParameter(table, true, false));
       dataGridContainer.appendChild(this._dataGrid.element);
       formattedMessage.appendChild(formattedResult);
@@ -203,8 +203,8 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _buildMessage() {
-    var messageElement;
-    var messageText = this._message.messageText;
+    let messageElement;
+    let messageText = this._message.messageText;
     if (this._message.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI) {
       switch (this._message.type) {
         case SDK.ConsoleMessage.MessageType.Trace:
@@ -219,35 +219,38 @@ Console.ConsoleViewMessage = class {
           messageElement.title =
               Common.UIString('Clear all messages with ' + UI.shortcutRegistry.shortcutTitleForAction('console.clear'));
           break;
-        case SDK.ConsoleMessage.MessageType.Assert:
-          var args = [Common.UIString('Assertion failed:')];
+        case SDK.ConsoleMessage.MessageType.Assert: {
+          let args = [Common.UIString('Assertion failed:')];
           if (this._message.parameters)
             args = args.concat(this._message.parameters);
           messageElement = this._format(args);
           break;
-        case SDK.ConsoleMessage.MessageType.Dir:
-          var obj = this._message.parameters ? this._message.parameters[0] : undefined;
-          var args = ['%O', obj];
+        }
+        case SDK.ConsoleMessage.MessageType.Dir: {
+          const obj = this._message.parameters ? this._message.parameters[0] : undefined;
+          const args = ['%O', obj];
           messageElement = this._format(args);
           break;
+        }
         case SDK.ConsoleMessage.MessageType.Profile:
         case SDK.ConsoleMessage.MessageType.ProfileEnd:
           messageElement = this._format([messageText]);
           break;
-        default:
+        default: {
           if (this._message.parameters && this._message.parameters.length === 1 &&
               this._message.parameters[0].type === 'string')
             messageElement = this._tryFormatAsError(/** @type {string} */ (this._message.parameters[0].value));
-          var args = this._message.parameters || [messageText];
+          const args = this._message.parameters || [messageText];
           messageElement = messageElement || this._format(args);
+        }
       }
     } else {
-      var rendered = false;
+      let rendered = false;
       this._completeElementForTestPromise = null;
-      for (var extension of self.runtime.extensions(Common.Renderer, this._message)) {
+      for (const extension of self.runtime.extensions(Common.Renderer, this._message)) {
         if (extension.descriptor()['source'] === this._message.source) {
           messageElement = createElement('span');
-          var callback;
+          let callback;
           this._completeElementForTestPromise = new Promise(fulfill => callback = fulfill);
           extension.instance().then(renderer => {
             renderer.render(this._message)
@@ -259,7 +262,7 @@ Console.ConsoleViewMessage = class {
         }
       }
       if (!rendered) {
-        var messageInParameters =
+        const messageInParameters =
             this._message.parameters && messageText === /** @type {string} */ (this._message.parameters[0]);
         if (this._message.source === SDK.ConsoleMessage.MessageSource.Violation)
           messageText = Common.UIString('[Violation] %s', messageText);
@@ -267,7 +270,7 @@ Console.ConsoleViewMessage = class {
           messageText = Common.UIString('[Intervention] %s', messageText);
         else if (this._message.source === SDK.ConsoleMessage.MessageSource.Deprecation)
           messageText = Common.UIString('[Deprecation] %s', messageText);
-        var args = this._message.parameters || [messageText];
+        const args = this._message.parameters || [messageText];
         if (messageInParameters)
           args[0] = messageText;
         messageElement = this._format(args);
@@ -275,11 +278,11 @@ Console.ConsoleViewMessage = class {
     }
     messageElement.classList.add('console-message-text');
 
-    var formattedMessage = createElementWithClass('span', 'source-code');
-    var anchorElement = this._buildMessageAnchor();
+    const formattedMessage = createElementWithClass('span', 'source-code');
+    const anchorElement = this._buildMessageAnchor();
     if (anchorElement)
       formattedMessage.appendChild(anchorElement);
-    var badgeElement = this._buildMessageBadge();
+    const badgeElement = this._buildMessageBadge();
     if (badgeElement)
       formattedMessage.appendChild(badgeElement);
     formattedMessage.appendChild(messageElement);
@@ -290,7 +293,7 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _buildMessageAnchor() {
-    var anchorElement = null;
+    let anchorElement = null;
     if (this._message.scriptId) {
       anchorElement = this._linkifyScriptId(
           this._message.scriptId, this._message.url || '', this._message.line, this._message.column);
@@ -302,7 +305,7 @@ Console.ConsoleViewMessage = class {
 
     // Append a space to prevent the anchor text from being glued to the console message when the user selects and copies the console messages.
     if (anchorElement) {
-      var anchorWrapperElement = createElementWithClass('span', 'console-message-anchor');
+      const anchorWrapperElement = createElementWithClass('span', 'console-message-anchor');
       anchorWrapperElement.appendChild(anchorElement);
       anchorWrapperElement.createTextChild(' ');
       return anchorWrapperElement;
@@ -314,7 +317,7 @@ Console.ConsoleViewMessage = class {
    * @return {?Element}
    */
   _buildMessageBadge() {
-    var badgeElement = this._badgeElement();
+    const badgeElement = this._badgeElement();
     if (!badgeElement)
       return null;
     badgeElement.classList.add('console-message-badge');
@@ -328,9 +331,9 @@ Console.ConsoleViewMessage = class {
     if (this._message._url)
       return this._badgePool.badgeForURL(new Common.ParsedURL(this._message._url));
     if (this._message.stackTrace) {
-      var stackTrace = this._message.stackTrace;
+      let stackTrace = this._message.stackTrace;
       while (stackTrace) {
-        for (var callFrame of this._message.stackTrace.callFrames) {
+        for (const callFrame of this._message.stackTrace.callFrames) {
           if (callFrame.url)
             return this._badgePool.badgeForURL(new Common.ParsedURL(callFrame.url));
         }
@@ -339,16 +342,16 @@ Console.ConsoleViewMessage = class {
     }
     if (!this._message.executionContextId)
       return null;
-    var runtimeModel = this._message.runtimeModel();
+    const runtimeModel = this._message.runtimeModel();
     if (!runtimeModel)
       return null;
-    var executionContext = runtimeModel.executionContext(this._message.executionContextId);
+    const executionContext = runtimeModel.executionContext(this._message.executionContextId);
     if (!executionContext || !executionContext.frameId)
       return null;
-    var resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
+    const resourceTreeModel = executionContext.target().model(SDK.ResourceTreeModel);
     if (!resourceTreeModel)
       return null;
-    var frame = resourceTreeModel.frameForId(executionContext.frameId);
+    const frame = resourceTreeModel.frameForId(executionContext.frameId);
     if (!frame || !frame.parentFrame)
       return null;
     return this._badgePool.badgeForFrame(frame);
@@ -358,17 +361,17 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _buildMessageWithStackTrace() {
-    var toggleElement = createElementWithClass('div', 'console-message-stack-trace-toggle');
-    var contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
+    const toggleElement = createElementWithClass('div', 'console-message-stack-trace-toggle');
+    const contentElement = toggleElement.createChild('div', 'console-message-stack-trace-wrapper');
 
-    var messageElement = this._buildMessage();
-    var icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
-    var clickableElement = contentElement.createChild('div');
+    const messageElement = this._buildMessage();
+    const icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
+    const clickableElement = contentElement.createChild('div');
     clickableElement.appendChild(icon);
 
     clickableElement.appendChild(messageElement);
-    var stackTraceElement = contentElement.createChild('div');
-    var stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
+    const stackTraceElement = contentElement.createChild('div');
+    const stackTracePreview = Components.JSPresentationUtils.buildStackTracePreviewContents(
         this._message.runtimeModel().target(), this._linkifier, this._message.stackTrace);
     stackTraceElement.appendChild(stackTracePreview);
     stackTraceElement.classList.add('hidden');
@@ -443,7 +446,7 @@ Console.ConsoleViewMessage = class {
   _parameterToRemoteObject(parameter) {
     if (parameter instanceof SDK.RemoteObject)
       return parameter;
-    var runtimeModel = this._message.runtimeModel();
+    const runtimeModel = this._message.runtimeModel();
     if (!runtimeModel)
       return SDK.RemoteObject.fromLocalObject(parameter);
     if (typeof parameter === 'object')
@@ -457,26 +460,26 @@ Console.ConsoleViewMessage = class {
    */
   _format(rawParameters) {
     // This node is used like a Builder. Values are continually appended onto it.
-    var formattedResult = createElement('span');
+    const formattedResult = createElement('span');
     if (!rawParameters.length)
       return formattedResult;
 
     // Formatting code below assumes that parameters are all wrappers whereas frontend console
     // API allows passing arbitrary values as messages (strings, numbers, etc.). Wrap them here.
     // FIXME: Only pass runtime wrappers here.
-    var parameters = [];
-    for (var i = 0; i < rawParameters.length; ++i)
+    let parameters = [];
+    for (let i = 0; i < rawParameters.length; ++i)
       parameters[i] = this._parameterToRemoteObject(rawParameters[i]);
 
     // There can be string log and string eval result. We distinguish between them based on message type.
-    var shouldFormatMessage =
+    const shouldFormatMessage =
         SDK.RemoteObject.type((/** @type {!Array.<!SDK.RemoteObject>} **/ (parameters))[0]) === 'string' &&
         (this._message.type !== SDK.ConsoleMessage.MessageType.Result ||
          this._message.level === SDK.ConsoleMessage.MessageLevel.Error);
 
     // Multiple parameters with the first being a format string. Save unused substitutions.
     if (shouldFormatMessage) {
-      var result = this._formatWithSubstitutionString(
+      const result = this._formatWithSubstitutionString(
           /** @type {string} **/ (parameters[0].description), parameters.slice(1), formattedResult);
       parameters = result.unusedSubstitutions;
       if (parameters.length)
@@ -484,7 +487,7 @@ Console.ConsoleViewMessage = class {
     }
 
     // Single parameter, or unused substitutions from above.
-    for (var i = 0; i < parameters.length; ++i) {
+    for (let i = 0; i < parameters.length; ++i) {
       // Inline strings when formatting.
       if (shouldFormatMessage && parameters[i].type === 'string')
         formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(parameters[i].description));
@@ -506,8 +509,8 @@ Console.ConsoleViewMessage = class {
     if (output.customPreview())
       return (new ObjectUI.CustomPreviewComponent(output)).element;
 
-    var type = forceObjectFormat ? 'object' : (output.subtype || output.type);
-    var element;
+    const type = forceObjectFormat ? 'object' : (output.subtype || output.type);
+    let element;
     switch (type) {
       case 'error':
         element = this._formatParameterAsError(output);
@@ -560,7 +563,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsValue(obj) {
-    var result = createElement('span');
+    const result = createElement('span');
     result.createTextChild(obj.description || '');
     if (obj.objectId)
       result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, obj), false);
@@ -573,12 +576,12 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsObject(obj, includePreview) {
-    var titleElement = createElementWithClass('span', 'console-object');
+    const titleElement = createElementWithClass('span', 'console-object');
     if (includePreview && obj.preview) {
       titleElement.classList.add('console-object-preview');
       this._previewFormatter.appendObjectPreview(titleElement, obj.preview, false /* isEntry */);
     } else if (obj.type === 'function') {
-      var functionElement = titleElement.createChild('span');
+      const functionElement = titleElement.createChild('span');
       ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(obj, functionElement, false);
       titleElement.classList.add('object-value-function');
     } else {
@@ -588,11 +591,11 @@ Console.ConsoleViewMessage = class {
     if (!obj.hasChildren || obj.customPreview())
       return titleElement;
 
-    var note = titleElement.createChild('span', 'object-state-note');
+    const note = titleElement.createChild('span', 'object-state-note');
     note.classList.add('info-note');
     note.title = Common.UIString('Value below was evaluated just now.');
 
-    var section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
+    const section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
     return section.element;
@@ -604,7 +607,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsFunction(func, includePreview) {
-    var result = createElement('span');
+    const result = createElement('span');
     SDK.RemoteFunction.objectAsFunction(func).targetFunction().then(formatTargetFunction.bind(this));
     return result;
 
@@ -613,11 +616,11 @@ Console.ConsoleViewMessage = class {
      * @this {Console.ConsoleViewMessage}
      */
     function formatTargetFunction(targetFunction) {
-      var functionElement = createElement('span');
+      const functionElement = createElement('span');
       ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
       if (targetFunction !== func) {
-        var note = result.createChild('span', 'object-info-state-note');
+        const note = result.createChild('span', 'object-info-state-note');
         note.title = Common.UIString('Function was resolved from bound function.');
       }
       result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, targetFunction), false);
@@ -629,7 +632,7 @@ Console.ConsoleViewMessage = class {
    * @param {!Event} event
    */
   _contextMenuEventFired(obj, event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.appendApplicableItems(obj);
     contextMenu.show();
   }
@@ -640,7 +643,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _renderPropertyPreviewOrAccessor(object, propertyPath) {
-    var property = propertyPath.peekLast();
+    const property = propertyPath.peekLast();
     if (property.type === 'accessor')
       return this._formatAsAccessorProperty(object, propertyPath.map(property => property.name), false);
     return this._previewFormatter.renderPropertyPreview(
@@ -652,9 +655,9 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsNode(remoteObject) {
-    var result = createElement('span');
+    const result = createElement('span');
 
-    var domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel);
+    const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel);
     if (!domModel)
       return result;
     domModel.pushObjectAsNodeToFrontend(remoteObject).then(node => {
@@ -682,10 +685,10 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsString(output) {
-    var span = createElement('span');
+    const span = createElement('span');
     span.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
 
-    var result = createElement('span');
+    const result = createElement('span');
     result.createChild('span', 'object-value-string-quote').textContent = '"';
     result.appendChild(span);
     result.createChild('span', 'object-value-string-quote').textContent = '"';
@@ -697,8 +700,8 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatParameterAsError(output) {
-    var result = createElement('span');
-    var errorSpan = this._tryFormatAsError(output.description || '');
+    const result = createElement('span');
+    const errorSpan = this._tryFormatAsError(output.description || '');
     result.appendChild(
         errorSpan ? errorSpan : Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
     return result;
@@ -719,7 +722,7 @@ Console.ConsoleViewMessage = class {
    * @return {!Element}
    */
   _formatAsAccessorProperty(object, propertyPath, isArrayEntry) {
-    var rootElement = ObjectUI.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
+    const rootElement = ObjectUI.ObjectPropertyTreeElement.createRemoteObjectAccessorPropertySpan(
         object, propertyPath, onInvokeGetterClick.bind(this));
 
     /**
@@ -732,7 +735,7 @@ Console.ConsoleViewMessage = class {
         return;
       rootElement.removeChildren();
       if (wasThrown) {
-        var element = rootElement.createChild('span');
+        const element = rootElement.createChild('span');
         element.textContent = Common.UIString('<exception>');
         element.title = /** @type {string} */ (result.description);
       } else if (isArrayEntry) {
@@ -740,9 +743,9 @@ Console.ConsoleViewMessage = class {
       } else {
         // Make a PropertyPreview from the RemoteObject similar to the backend logic.
         const maxLength = 100;
-        var type = result.type;
-        var subtype = result.subtype;
-        var description = '';
+        const type = result.type;
+        const subtype = result.subtype;
+        let description = '';
         if (type !== 'function' && result.description) {
           if (type === 'string' || subtype === 'regexp')
             description = result.description.trimMiddle(maxLength);
@@ -762,7 +765,7 @@ Console.ConsoleViewMessage = class {
    * @param {!Element} formattedResult
    */
   _formatWithSubstitutionString(format, parameters, formattedResult) {
-    var formatters = {};
+    const formatters = {};
 
     /**
      * @param {boolean} force
@@ -795,13 +798,13 @@ Console.ConsoleViewMessage = class {
       return (obj instanceof Node) ? obj : '';
     }
 
-    var currentStyle = null;
+    let currentStyle = null;
     function styleFormatter(obj) {
       currentStyle = {};
-      var buffer = createElement('span');
+      const buffer = createElement('span');
       buffer.setAttribute('style', obj.description);
-      for (var i = 0; i < buffer.style.length; i++) {
-        var property = buffer.style[i];
+      for (let i = 0; i < buffer.style.length; i++) {
+        const property = buffer.style[i];
         if (isWhitelistedProperty(property))
           currentStyle[property] = buffer.style[property];
       }
@@ -809,11 +812,11 @@ Console.ConsoleViewMessage = class {
 
     function isWhitelistedProperty(property) {
       // Make sure that allowed properties do not interfere with link visibility.
-      var prefixes = [
+      const prefixes = [
         'background', 'border', 'color', 'font', 'line', 'margin', 'padding', 'text', '-webkit-background',
         '-webkit-border', '-webkit-font', '-webkit-margin', '-webkit-padding', '-webkit-text'
       ];
-      for (var i = 0; i < prefixes.length; i++) {
+      for (let i = 0; i < prefixes.length; i++) {
         if (property.startsWith(prefixes[i]))
           return true;
       }
@@ -845,14 +848,14 @@ Console.ConsoleViewMessage = class {
       if (b instanceof Node) {
         a.appendChild(b);
       } else if (typeof b !== 'undefined') {
-        var toAppend = Console.ConsoleViewMessage._linkifyStringAsFragment(String(b));
+        let toAppend = Console.ConsoleViewMessage._linkifyStringAsFragment(String(b));
         if (currentStyle) {
-          var wrapper = createElement('span');
+          const wrapper = createElement('span');
           wrapper.style.setProperty('contain', 'paint');
           wrapper.style.setProperty('display', 'inline-block');
           wrapper.appendChild(toAppend);
           applyCurrentStyle(wrapper);
-          for (var child of wrapper.children) {
+          for (const child of wrapper.children) {
             if (child.classList.contains('devtools-link'))
               this._applyForcedVisibleStyle(child);
             else
@@ -869,7 +872,7 @@ Console.ConsoleViewMessage = class {
      * @param {!Element} element
      */
     function applyCurrentStyle(element) {
-      for (var key in currentStyle)
+      for (const key in currentStyle)
         element.style[key] = currentStyle[key];
     }
 
@@ -884,15 +887,16 @@ Console.ConsoleViewMessage = class {
     element.style.setProperty('-webkit-text-stroke', '0', 'important');
     element.style.setProperty('text-decoration', 'underline', 'important');
 
-    var themedColor = UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.ThemeSupport.ColorUsage.Foreground);
+    const themedColor = UI.themeSupport.patchColorText('rgb(33%, 33%, 33%)', UI.ThemeSupport.ColorUsage.Foreground);
     element.style.setProperty('color', themedColor, 'important');
 
-    var backgroundColor = 'hsl(0, 0%, 100%)';
+    let backgroundColor = 'hsl(0, 0%, 100%)';
     if (this._message.level === SDK.ConsoleMessage.MessageLevel.Error)
       backgroundColor = 'hsl(0, 100%, 97%)';
     else if (this._message.level === SDK.ConsoleMessage.MessageLevel.Warning || this._shouldRenderAsWarning())
       backgroundColor = 'hsl(50, 100%, 95%)';
-    var themedBackgroundColor = UI.themeSupport.patchColorText(backgroundColor, UI.ThemeSupport.ColorUsage.Background);
+    const themedBackgroundColor =
+        UI.themeSupport.patchColorText(backgroundColor, UI.ThemeSupport.ColorUsage.Background);
     element.style.setProperty('background-color', themedBackgroundColor, 'important');
   }
 
@@ -901,7 +905,7 @@ Console.ConsoleViewMessage = class {
    */
   matchesFilterRegex(regexObject) {
     regexObject.lastIndex = 0;
-    var text = this.contentElement().deepTextContent();
+    const text = this.contentElement().deepTextContent();
     return regexObject.test(text);
   }
 
@@ -910,7 +914,7 @@ Console.ConsoleViewMessage = class {
    * @return {boolean}
    */
   matchesFilterText(filter) {
-    var text = this.contentElement().deepTextContent();
+    const text = this.contentElement().deepTextContent();
     return text.toLowerCase().includes(filter.toLowerCase());
   }
 
@@ -935,9 +939,9 @@ Console.ConsoleViewMessage = class {
      * @return {string}
      */
     function formatTimestamp(timestamp, full) {
-      var date = new Date(timestamp);
-      var yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
-      var hhmmssfff = leadZero(date.getHours(), 2) + ':' + leadZero(date.getMinutes(), 2) + ':' +
+      const date = new Date(timestamp);
+      const yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
+      const hhmmssfff = leadZero(date.getHours(), 2) + ':' + leadZero(date.getMinutes(), 2) + ':' +
           leadZero(date.getSeconds(), 2) + '.' + leadZero(date.getMilliseconds(), 3);
       return full ? (yymmdd + ' ' + hhmmssfff) : hhmmssfff;
 
@@ -947,8 +951,8 @@ Console.ConsoleViewMessage = class {
        * @return {string}
        */
       function leadZero(value, length) {
-        var valueString = value.toString();
-        var padding = length - valueString.length;
+        const valueString = value.toString();
+        const padding = length - valueString.length;
         return padding <= 0 ? valueString : '0'.repeat(padding) + valueString;
       }
     }
@@ -1000,8 +1004,8 @@ Console.ConsoleViewMessage = class {
   _updateCloseGroupDecorations() {
     if (!this._nestingLevelMarkers)
       return;
-    for (var i = 0, n = this._nestingLevelMarkers.length; i < n; ++i) {
-      var marker = this._nestingLevelMarkers[i];
+    for (let i = 0, n = this._nestingLevelMarkers.length; i < n; ++i) {
+      const marker = this._nestingLevelMarkers[i];
       marker.classList.toggle('group-closed', n - i <= this._closeGroupDecorationCount);
     }
   }
@@ -1013,13 +1017,13 @@ Console.ConsoleViewMessage = class {
     if (this._contentElement)
       return this._contentElement;
 
-    var contentElement = createElementWithClass('div', 'console-message');
+    const contentElement = createElementWithClass('div', 'console-message');
     if (this._messageLevelIcon)
       contentElement.appendChild(this._messageLevelIcon);
     this._contentElement = contentElement;
 
-    var formattedMessage;
-    var shouldIncludeTrace = !!this._message.stackTrace &&
+    let formattedMessage;
+    const shouldIncludeTrace = !!this._message.stackTrace &&
         (this._message.source === SDK.ConsoleMessage.MessageSource.Network ||
          this._message.source === SDK.ConsoleMessage.MessageSource.Violation ||
          this._message.level === SDK.ConsoleMessage.MessageLevel.Error ||
@@ -1065,7 +1069,7 @@ Console.ConsoleViewMessage = class {
     }
 
     this._nestingLevelMarkers = [];
-    for (var i = 0; i < this._nestingLevel; ++i)
+    for (let i = 0; i < this._nestingLevel; ++i)
       this._nestingLevelMarkers.push(this._element.createChild('div', 'nesting-level-marker'));
     this._updateCloseGroupDecorations();
     this._element.message = this;
@@ -1188,10 +1192,10 @@ Console.ConsoleViewMessage = class {
    * @return {string}
    */
   toExportString() {
-    var lines = [];
-    var nodes = this.contentElement().childTextNodes();
-    var messageContent = nodes.map(Components.Linkifier.untruncatedNodeText).join('');
-    for (var i = 0; i < this.repeatCount(); ++i)
+    const lines = [];
+    const nodes = this.contentElement().childTextNodes();
+    const messageContent = nodes.map(Components.Linkifier.untruncatedNodeText).join('');
+    for (let i = 0; i < this.repeatCount(); ++i)
       lines.push(messageContent);
     return lines.join('\n');
   }
@@ -1208,10 +1212,10 @@ Console.ConsoleViewMessage = class {
     if (!this._searchRegex)
       return;
 
-    var text = this.contentElement().deepTextContent();
-    var match;
+    const text = this.contentElement().deepTextContent();
+    let match;
     this._searchRegex.lastIndex = 0;
-    var sourceRanges = [];
+    const sourceRanges = [];
     while ((match = this._searchRegex.exec(text)) && match[0])
       sourceRanges.push(new TextUtils.SourceRange(match.index, match[0].length));
 
@@ -1254,42 +1258,43 @@ Console.ConsoleViewMessage = class {
       return string.startsWith(prefix);
     }
 
-    var errorPrefixes = ['EvalError', 'ReferenceError', 'SyntaxError', 'TypeError', 'RangeError', 'Error', 'URIError'];
+    const errorPrefixes =
+        ['EvalError', 'ReferenceError', 'SyntaxError', 'TypeError', 'RangeError', 'Error', 'URIError'];
     if (!this._message.runtimeModel() || !errorPrefixes.some(startsWith))
       return null;
-    var debuggerModel = this._message.runtimeModel().debuggerModel();
-    var baseURL = this._message.runtimeModel().target().inspectedURL();
+    const debuggerModel = this._message.runtimeModel().debuggerModel();
+    const baseURL = this._message.runtimeModel().target().inspectedURL();
 
-    var lines = string.split('\n');
-    var links = [];
-    var position = 0;
-    for (var i = 0; i < lines.length; ++i) {
+    const lines = string.split('\n');
+    const links = [];
+    let position = 0;
+    for (let i = 0; i < lines.length; ++i) {
       position += i > 0 ? lines[i - 1].length + 1 : 0;
-      var isCallFrameLine = /^\s*at\s/.test(lines[i]);
+      const isCallFrameLine = /^\s*at\s/.test(lines[i]);
       if (!isCallFrameLine && links.length)
         return null;
 
       if (!isCallFrameLine)
         continue;
 
-      var openBracketIndex = -1;
-      var closeBracketIndex = -1;
-      var match = /\([^\)\(]+\)/.exec(lines[i]);
+      let openBracketIndex = -1;
+      let closeBracketIndex = -1;
+      const match = /\([^\)\(]+\)/.exec(lines[i]);
       if (match) {
         openBracketIndex = match.index;
         closeBracketIndex = match.index + match[0].length - 1;
       }
-      var hasOpenBracket = openBracketIndex !== -1;
-      var left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;
-      var right = hasOpenBracket ? closeBracketIndex : lines[i].length;
-      var linkCandidate = lines[i].substring(left, right);
-      var splitResult = Common.ParsedURL.splitLineAndColumn(linkCandidate);
+      const hasOpenBracket = openBracketIndex !== -1;
+      const left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;
+      const right = hasOpenBracket ? closeBracketIndex : lines[i].length;
+      const linkCandidate = lines[i].substring(left, right);
+      const splitResult = Common.ParsedURL.splitLineAndColumn(linkCandidate);
       if (!splitResult)
         return null;
 
       if (splitResult.url === '<anonymous>')
         continue;
-      var url = parseOrScriptMatch(splitResult.url);
+      let url = parseOrScriptMatch(splitResult.url);
       if (!url && Common.ParsedURL.isRelativeURL(splitResult.url))
         url = parseOrScriptMatch(Common.ParsedURL.completeURL(baseURL, splitResult.url));
       if (!url)
@@ -1307,9 +1312,9 @@ Console.ConsoleViewMessage = class {
     if (!links.length)
       return null;
 
-    var formattedResult = createElement('span');
-    var start = 0;
-    for (var i = 0; i < links.length; ++i) {
+    const formattedResult = createElement('span');
+    let start = 0;
+    for (let i = 0; i < links.length; ++i) {
       formattedResult.appendChild(
           Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
       formattedResult.appendChild(this._linkifier.linkifyScriptLocation(
@@ -1329,7 +1334,7 @@ Console.ConsoleViewMessage = class {
     function parseOrScriptMatch(url) {
       if (!url)
         return null;
-      var parsedURL = url.asParsedURL();
+      const parsedURL = url.asParsedURL();
       if (parsedURL)
         return parsedURL.url;
       if (debuggerModel.scriptsForSourceURL(url).length)
@@ -1346,14 +1351,14 @@ Console.ConsoleViewMessage = class {
   static linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
       return createExpandableFragment(string);
-    var container = createDocumentFragment();
-    var tokens = this._tokenizeMessageText(string);
-    for (var token of tokens) {
+    const container = createDocumentFragment();
+    const tokens = this._tokenizeMessageText(string);
+    for (const token of tokens) {
       switch (token.type) {
         case 'url': {
-          var realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
-          var splitResult = Common.ParsedURL.splitLineAndColumn(realURL);
-          var linkNode;
+          const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
+          const splitResult = Common.ParsedURL.splitLineAndColumn(realURL);
+          let linkNode;
           if (splitResult)
             linkNode = linkifier(token.text, splitResult.url, splitResult.lineNumber, splitResult.columnNumber);
           else
@@ -1373,11 +1378,11 @@ Console.ConsoleViewMessage = class {
      * @return {!DocumentFragment}
      */
     function createExpandableFragment(text) {
-      var fragment = createDocumentFragment();
+      const fragment = createDocumentFragment();
       fragment.textContent = text.slice(0, Console.ConsoleViewMessage._LongStringVisibleLength);
-      var hiddenText = text.slice(Console.ConsoleViewMessage._LongStringVisibleLength);
+      const hiddenText = text.slice(Console.ConsoleViewMessage._LongStringVisibleLength);
 
-      var expandButton = fragment.createChild('span', 'console-inline-button');
+      const expandButton = fragment.createChild('span', 'console-inline-button');
       expandButton.setAttribute('data-text', ls`Show ${Number.withThousandsSeparator(hiddenText.length)} more`);
       expandButton.addEventListener('click', () => {
         if (expandButton.parentElement)
@@ -1385,7 +1390,7 @@ Console.ConsoleViewMessage = class {
         expandButton.remove();
       });
 
-      var copyButton = fragment.createChild('span', 'console-inline-button');
+      const copyButton = fragment.createChild('span', 'console-inline-button');
       copyButton.setAttribute('data-text', ls`Copy`);
       copyButton.addEventListener('click', () => {
         InspectorFrontendHost.copyText(text);
@@ -1410,17 +1415,17 @@ Console.ConsoleViewMessage = class {
    */
   static _tokenizeMessageText(string) {
     if (!Console.ConsoleViewMessage._tokenizerRegexes) {
-      var controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
-      var linkStringRegex = new RegExp(
+      const controlCodes = '\\u0000-\\u0020\\u007f-\\u009f';
+      const linkStringRegex = new RegExp(
           '(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\\/\\/|data:|www\\.)[^\\s' + controlCodes + '"]{2,}[^\\s' + controlCodes +
               '"\')}\\],:;.!?]',
           'u');
-      var pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
-      var timeRegex = /took [\d]+ms/;
-      var eventRegex = /'\w+' event/;
-      var milestoneRegex = /\sM[6-7]\d/;
-      var autofillRegex = /\(suggested: \"[\w-]+\"\)/;
-      var handlers = new Map();
+      const pathLineRegex = /(?:\/[\w\.-]*)+\:[\d]+/;
+      const timeRegex = /took [\d]+ms/;
+      const eventRegex = /'\w+' event/;
+      const milestoneRegex = /\sM[6-7]\d/;
+      const autofillRegex = /\(suggested: \"[\w-]+\"\)/;
+      const handlers = new Map();
       handlers.set(linkStringRegex, 'url');
       handlers.set(pathLineRegex, 'url');
       handlers.set(timeRegex, 'time');
@@ -1432,7 +1437,7 @@ Console.ConsoleViewMessage = class {
     }
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
       return [{text: string, type: undefined}];
-    var results = TextUtils.TextUtils.splitStringByRegexes(string, Console.ConsoleViewMessage._tokenizerRegexes);
+    const results = TextUtils.TextUtils.splitStringByRegexes(string, Console.ConsoleViewMessage._tokenizerRegexes);
     return results.map(
         result => ({text: result.value, type: Console.ConsoleViewMessage._tokenizerTypes[result.regexIndex]}));
   }
@@ -1450,9 +1455,9 @@ Console.ConsoleViewMessage = class {
    * @return {string}
    */
   groupTitle() {
-    var tokens = Console.ConsoleViewMessage._tokenizeMessageText(this._message.messageText);
-    var result = tokens.reduce((acc, token) => {
-      var text = token.text;
+    const tokens = Console.ConsoleViewMessage._tokenizeMessageText(this._message.messageText);
+    const result = tokens.reduce((acc, token) => {
+      let text = token.text;
       if (token.type === 'url')
         text = Common.UIString('<URL>');
       else if (token.type === 'time')

@@ -13,7 +13,7 @@ ColorPicker.ContrastOverlay = class {
 
     this._visible = false;
 
-    var contrastRatioSVG = colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
+    const contrastRatioSVG = colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
     this._contrastRatioLine = contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line');
 
     this._width = 0;
@@ -56,7 +56,7 @@ ColorPicker.ContrastOverlay = class {
    * @return {!Promise}
    */
   _drawContrastRatioLine() {
-    var path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height);
+    const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height);
     if (path)
       this._contrastRatioLine.setAttribute('d', path);
     return Promise.resolve();
@@ -84,7 +84,7 @@ ColorPicker.ContrastRatioLineBuilder = class {
    * @return {?string}
    */
   drawContrastRatioLine(width, height) {
-    var requiredContrast = this._contrastInfo.contrastRatioThreshold('aa');
+    const requiredContrast = this._contrastInfo.contrastRatioThreshold('aa');
     if (!width || !height || !requiredContrast)
       return null;
 
@@ -95,33 +95,33 @@ ColorPicker.ContrastRatioLineBuilder = class {
     const V = 2;
     const A = 3;
 
-    var hsva = this._contrastInfo.hsva();
-    var bgColor = this._contrastInfo.bgColor();
+    const hsva = this._contrastInfo.hsva();
+    const bgColor = this._contrastInfo.bgColor();
     if (!hsva || !bgColor)
       return null;
 
-    var bgColorString = bgColor.asString(Common.Color.Format.RGBA);
+    const bgColorString = bgColor.asString(Common.Color.Format.RGBA);
 
     // Don't compute a new line if it would be identical to the previous line.
     if (hsva[H] === this._hueForPreviousLine && hsva[A] === this._alphaForPreviousLine &&
         bgColorString === this._bgColorForPreviousLine)
       return null;
 
-    var fgRGBA = [];
+    const fgRGBA = [];
     Common.Color.hsva2rgba(hsva, fgRGBA);
-    var bgRGBA = bgColor.rgba();
-    var bgLuminance = Common.Color.luminance(bgRGBA);
-    var blendedRGBA = [];
+    const bgRGBA = bgColor.rgba();
+    const bgLuminance = Common.Color.luminance(bgRGBA);
+    const blendedRGBA = [];
     Common.Color.blendColors(fgRGBA, bgRGBA, blendedRGBA);
-    var fgLuminance = Common.Color.luminance(blendedRGBA);
-    var fgIsLighter = fgLuminance > bgLuminance;
-    var desiredLuminance = Common.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
+    const fgLuminance = Common.Color.luminance(blendedRGBA);
+    const fgIsLighter = fgLuminance > bgLuminance;
+    const desiredLuminance = Common.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
-    var lastV = hsva[V];
-    var currentSlope = 0;
-    var candidateHSVA = [hsva[H], 0, 0, hsva[A]];
-    var pathBuilder = [];
-    var candidateRGBA = [];
+    let lastV = hsva[V];
+    let currentSlope = 0;
+    const candidateHSVA = [hsva[H], 0, 0, hsva[A]];
+    let pathBuilder = [];
+    const candidateRGBA = [];
     Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);
     Common.Color.blendColors(candidateRGBA, bgRGBA, blendedRGBA);
 
@@ -144,16 +144,16 @@ ColorPicker.ContrastRatioLineBuilder = class {
      *     no suitable value exists.
      */
     function approach(index) {
-      var x = candidateHSVA[index];
-      var multiplier = 1;
-      var dLuminance = updateCandidateAndComputeDelta(index, x);
-      var previousSign = Math.sign(dLuminance);
+      let x = candidateHSVA[index];
+      let multiplier = 1;
+      let dLuminance = updateCandidateAndComputeDelta(index, x);
+      let previousSign = Math.sign(dLuminance);
 
-      for (var guard = 100; guard; guard--) {
+      for (let guard = 100; guard; guard--) {
         if (Math.abs(dLuminance) < epsilon)
           return x;
 
-        var sign = Math.sign(dLuminance);
+        const sign = Math.sign(dLuminance);
         if (sign !== previousSign) {
           // If `x` overshoots the correct value, halve the step size.
           multiplier /= 2;
@@ -178,7 +178,8 @@ ColorPicker.ContrastRatioLineBuilder = class {
     // Plot V for values of S such that the computed luminance approximates
     // `desiredLuminance`, until no suitable value for V can be found, or the
     // current value of S goes of out bounds.
-    for (var s = 0; s < 1 + dS; s += dS) {
+    let s;
+    for (s = 0; s < 1 + dS; s += dS) {
       s = Math.min(1, s);
       candidateHSVA[S] = s;
 
@@ -186,7 +187,7 @@ ColorPicker.ContrastRatioLineBuilder = class {
       // gradient of the curve.
       candidateHSVA[V] = lastV + currentSlope * dS;
 
-      var v = approach(V);
+      const v = approach(V);
       if (v === null)
         break;
 

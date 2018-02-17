@@ -36,24 +36,24 @@ Security.SecurityModel = class extends SDK.SDKModel {
    * @return {number}
    */
   static SecurityStateComparator(a, b) {
-    var securityStateMap;
+    let securityStateMap;
     if (Security.SecurityModel._symbolicToNumericSecurityState) {
       securityStateMap = Security.SecurityModel._symbolicToNumericSecurityState;
     } else {
       securityStateMap = new Map();
-      var ordering = [
+      const ordering = [
         Protocol.Security.SecurityState.Info, Protocol.Security.SecurityState.Insecure,
         Protocol.Security.SecurityState.Neutral, Protocol.Security.SecurityState.Secure,
         // Unknown is max so that failed/cancelled requests don't overwrite the origin security state for successful requests,
         // and so that failed/cancelled requests appear at the bottom of the origins list.
         Protocol.Security.SecurityState.Unknown
       ];
-      for (var i = 0; i < ordering.length; i++)
+      for (let i = 0; i < ordering.length; i++)
         securityStateMap.set(ordering[i], i + 1);
       Security.SecurityModel._symbolicToNumericSecurityState = securityStateMap;
     }
-    var aScore = securityStateMap.get(a) || 0;
-    var bScore = securityStateMap.get(b) || 0;
+    const aScore = securityStateMap.get(a) || 0;
+    const bScore = securityStateMap.get(b) || 0;
 
     return aScore - bScore;
   }
@@ -105,7 +105,7 @@ Security.SecurityDispatcher = class {
    * @param {?string=} summary
    */
   securityStateChanged(securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary) {
-    var pageSecurityState = new Security.PageSecurityState(
+    const pageSecurityState = new Security.PageSecurityState(
         securityState, schemeIsCryptographic, explanations, insecureContentStatus, summary || null);
     this._model.dispatchEventToListeners(Security.SecurityModel.Events.SecurityStateChanged, pageSecurityState);
   }

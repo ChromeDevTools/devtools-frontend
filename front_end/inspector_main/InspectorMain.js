@@ -25,13 +25,13 @@ InspectorMain.InspectorMain = class extends Common.Object {
     new MobileThrottling.NetworkPanelIndicator();
 
     InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
-      var hard = /** @type {boolean} */ (event.data);
+      const hard = /** @type {boolean} */ (event.data);
       SDK.ResourceTreeModel.reloadAllPages(hard);
     });
   }
 
   _connectAndCreateMainTarget() {
-    var target = SDK.targetManager.createTarget(
+    const target = SDK.targetManager.createTarget(
         'main', Common.UIString('Main'), this._capabilitiesForMainTarget(), this._createMainConnection.bind(this),
         null);
     target.runtimeAgent().runIfWaitingForDebugger();
@@ -62,7 +62,7 @@ InspectorMain.InspectorMain = class extends Common.Object {
    * @return {!Promise<!Protocol.InspectorBackend.Connection>}
    */
   _interceptMainConnection(onMessage) {
-    var params = {onMessage: onMessage, onDisconnect: this._connectAndCreateMainTarget.bind(this)};
+    const params = {onMessage: onMessage, onDisconnect: this._connectAndCreateMainTarget.bind(this)};
     return this._mainConnection.disconnect().then(this._createMainConnection.bind(this, params));
   }
 };
@@ -121,8 +121,8 @@ InspectorMain.FocusDebuggeeActionDelegate = class {
  */
 InspectorMain.NodeIndicator = class {
   constructor() {
-    var element = createElement('div');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
+    const element = createElement('div');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'inspector_main/nodeIcon.css');
     this._element = shadowRoot.createChild('div', 'node-icon');
     element.addEventListener('click', () => InspectorFrontendHost.openNodeFrontend(), false);
     this._button = new UI.ToolbarItem(element);
@@ -139,7 +139,7 @@ InspectorMain.NodeIndicator = class {
    * @param {!Array<!Protocol.Target.TargetInfo>} targetInfos
    */
   _update(targetInfos) {
-    var hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
+    const hasNode = !!targetInfos.find(target => target.type === 'node' && !target.attached);
     this._element.classList.toggle('inactive', !hasNode);
     if (hasNode)
       this._button.setVisible(true);
@@ -163,8 +163,8 @@ InspectorMain.SourcesPanelIndicator = class {
     javaScriptDisabledChanged();
 
     function javaScriptDisabledChanged() {
-      var icon = null;
-      var javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
+      let icon = null;
+      const javaScriptDisabled = Common.moduleSetting('javaScriptDisabled').get();
       if (javaScriptDisabled) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('JavaScript is disabled');
@@ -187,7 +187,7 @@ InspectorMain.InspectedNodeRevealer = class {
    * @param {!Common.Event} event
    */
   _inspectNode(event) {
-    var deferredNode = /** @type {!SDK.DeferredDOMNode} */ (event.data);
+    const deferredNode = /** @type {!SDK.DeferredDOMNode} */ (event.data);
     Common.Revealer.reveal(deferredNode);
   }
 };

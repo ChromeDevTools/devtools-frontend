@@ -64,7 +64,7 @@ UI.SoftContextMenu = class {
     this._contextMenuElement.addEventListener('mouseup', e => e.consume(), false);
     this._contextMenuElement.addEventListener('keydown', this._menuKeyDown.bind(this), false);
 
-    for (var i = 0; i < this._items.length; ++i)
+    for (let i = 0; i < this._items.length; ++i)
       this._contextMenuElement.appendChild(this._createMenuItem(this._items[i]));
 
     this._glassPane.show(document);
@@ -103,14 +103,14 @@ UI.SoftContextMenu = class {
     if (item.type === 'subMenu')
       return this._createSubMenu(item);
 
-    var menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
-    var checkMarkElement = UI.Icon.create('smallicon-checkmark', 'checkmark');
+    const menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
+    const checkMarkElement = UI.Icon.create('smallicon-checkmark', 'checkmark');
     menuItemElement.appendChild(checkMarkElement);
     if (!item.checked)
       checkMarkElement.style.opacity = '0';
 
     if (item.element) {
-      var wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
+      const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
       wrapper.appendChild(item.element);
       menuItemElement._isCustom = true;
       return menuItemElement;
@@ -133,18 +133,18 @@ UI.SoftContextMenu = class {
   }
 
   _createSubMenu(item) {
-    var menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
+    const menuItemElement = createElementWithClass('div', 'soft-context-menu-item');
     menuItemElement._subItems = item.subItems;
 
     // Occupy the same space on the left in all items.
-    var checkMarkElement = UI.Icon.create('smallicon-checkmark', 'soft-context-menu-item-checkmark');
+    const checkMarkElement = UI.Icon.create('smallicon-checkmark', 'soft-context-menu-item-checkmark');
     checkMarkElement.classList.add('checkmark');
     menuItemElement.appendChild(checkMarkElement);
     checkMarkElement.style.opacity = '0';
 
     menuItemElement.createTextChild(item.label);
 
-    var subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
+    const subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
     subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
 
     menuItemElement.addEventListener('mousedown', this._menuItemMouseDown.bind(this), false);
@@ -158,7 +158,7 @@ UI.SoftContextMenu = class {
   }
 
   _createSeparator() {
-    var separatorElement = createElementWithClass('div', 'soft-context-menu-separator');
+    const separatorElement = createElementWithClass('div', 'soft-context-menu-separator');
     separatorElement._isSeparator = true;
     separatorElement.createChild('div', 'separator-line');
     return separatorElement;
@@ -178,7 +178,7 @@ UI.SoftContextMenu = class {
    * @return {!UI.SoftContextMenu}
    */
   _root() {
-    var root = this;
+    let root = this;
     while (root._parentMenu)
       root = root._parentMenu;
     return root;
@@ -208,7 +208,7 @@ UI.SoftContextMenu = class {
       return;
 
     this._subMenu = new UI.SoftContextMenu(menuItemElement._subItems, this._itemSelectedCallback, this);
-    var anchorBox = menuItemElement.boxInWindow();
+    const anchorBox = menuItemElement.boxInWindow();
     // Adjust for padding.
     anchorBox.y -= 5;
     anchorBox.x += 3;
@@ -227,7 +227,7 @@ UI.SoftContextMenu = class {
       return;
     }
 
-    var relatedTarget = event.relatedTarget;
+    const relatedTarget = event.relatedTarget;
     if (relatedTarget === this._contextMenuElement)
       this._highlightMenuItem(null, true);
   }
@@ -264,7 +264,7 @@ UI.SoftContextMenu = class {
   }
 
   _highlightPrevious() {
-    var menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.previousSibling :
+    let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.previousSibling :
                                                              this._contextMenuElement.lastChild;
     while (menuItemElement && (menuItemElement._isSeparator || menuItemElement._isCustom))
       menuItemElement = menuItemElement.previousSibling;
@@ -273,7 +273,7 @@ UI.SoftContextMenu = class {
   }
 
   _highlightNext() {
-    var menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.nextSibling :
+    let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.nextSibling :
                                                              this._contextMenuElement.firstChild;
     while (menuItemElement && (menuItemElement._isSeparator || menuItemElement._isCustom))
       menuItemElement = menuItemElement.nextSibling;

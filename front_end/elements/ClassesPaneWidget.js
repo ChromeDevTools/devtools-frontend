@@ -9,7 +9,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     super(true);
     this.registerRequiredCSS('elements/classesPaneWidget.css');
     this.contentElement.className = 'styles-element-classes-pane';
-    var container = this.contentElement.createChild('div', 'title-container');
+    const container = this.contentElement.createChild('div', 'title-container');
     this._input = container.createChild('div', 'new-class-input monospace');
     this.setDefaultFocusedElement(this._input);
     this._classesContainer = this.contentElement.createChild('div', 'source-code');
@@ -18,7 +18,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     this._prompt.setAutocompletionTimeout(0);
     this._prompt.renderAsBlock();
 
-    var proxyElement = this._prompt.attach(this._input);
+    const proxyElement = this._prompt.attach(this._input);
     this._prompt.setPlaceholder(Common.UIString('Add new class'));
     this._prompt.addEventListener(UI.TextPrompt.Events.TextChanged, this._onTextChanged, this);
     proxyElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
@@ -57,7 +57,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
         return;
     }
 
-    var text = event.target.textContent;
+    let text = event.target.textContent;
     if (isEscKey(event)) {
       if (!text.isWhitespace())
         event.consume(true);
@@ -67,19 +67,19 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     this._prompt.clearAutocomplete();
     event.target.textContent = '';
 
-    var node = UI.context.flavor(SDK.DOMNode);
+    const node = UI.context.flavor(SDK.DOMNode);
     if (!node)
       return;
 
-    var classNames = this._splitTextIntoClasses(text);
-    for (var className of classNames)
+    const classNames = this._splitTextIntoClasses(text);
+    for (const className of classNames)
       this._toggleClass(node, className, true);
     this._installNodeClasses(node);
     this._update();
   }
 
   _onTextChanged() {
-    var node = UI.context.flavor(SDK.DOMNode);
+    const node = UI.context.flavor(SDK.DOMNode);
     if (!node)
       return;
     this._installNodeClasses(node);
@@ -89,7 +89,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @param {!Common.Event} event
    */
   _onDOMMutated(event) {
-    var node = /** @type {!SDK.DOMNode} */ (event.data);
+    const node = /** @type {!SDK.DOMNode} */ (event.data);
     if (this._mutatingNodes.has(node))
       return;
     delete node[Elements.ClassesPaneWidget._classesSymbol];
@@ -119,7 +119,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     if (!this.isShowing())
       return;
 
-    var node = UI.context.flavor(SDK.DOMNode);
+    let node = UI.context.flavor(SDK.DOMNode);
     if (node)
       node = node.enclosingElementOrSelf();
 
@@ -129,12 +129,12 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
     if (!node)
       return;
 
-    var classes = this._nodeClasses(node);
-    var keys = classes.keysArray();
+    const classes = this._nodeClasses(node);
+    const keys = classes.keysArray();
     keys.sort(String.caseInsensetiveComparator);
-    for (var i = 0; i < keys.length; ++i) {
-      var className = keys[i];
-      var label = UI.CheckboxLabel.create(className, classes.get(className));
+    for (let i = 0; i < keys.length; ++i) {
+      const className = keys[i];
+      const label = UI.CheckboxLabel.create(className, classes.get(className));
       label.classList.add('monospace');
       label.checkboxElement.addEventListener('click', this._onClick.bind(this, className), false);
       this._classesContainer.appendChild(label);
@@ -146,10 +146,10 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @param {!Event} event
    */
   _onClick(className, event) {
-    var node = UI.context.flavor(SDK.DOMNode);
+    const node = UI.context.flavor(SDK.DOMNode);
     if (!node)
       return;
-    var enabled = event.target.checked;
+    const enabled = event.target.checked;
     this._toggleClass(node, className, enabled);
     this._installNodeClasses(node);
   }
@@ -159,13 +159,13 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @return {!Map<string, boolean>}
    */
   _nodeClasses(node) {
-    var result = node[Elements.ClassesPaneWidget._classesSymbol];
+    let result = node[Elements.ClassesPaneWidget._classesSymbol];
     if (!result) {
-      var classAttribute = node.getAttribute('class') || '';
-      var classes = classAttribute.split(/\s/);
+      const classAttribute = node.getAttribute('class') || '';
+      const classes = classAttribute.split(/\s/);
       result = new Map();
-      for (var i = 0; i < classes.length; ++i) {
-        var className = classes[i].trim();
+      for (let i = 0; i < classes.length; ++i) {
+        const className = classes[i].trim();
         if (!className.length)
           continue;
         result.set(className, true);
@@ -181,7 +181,7 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @param {boolean} enabled
    */
   _toggleClass(node, className, enabled) {
-    var classes = this._nodeClasses(node);
+    const classes = this._nodeClasses(node);
     classes.set(className, enabled);
   }
 
@@ -189,18 +189,18 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @param {!SDK.DOMNode} node
    */
   _installNodeClasses(node) {
-    var classes = this._nodeClasses(node);
-    var activeClasses = new Set();
-    for (var className of classes.keys()) {
+    const classes = this._nodeClasses(node);
+    const activeClasses = new Set();
+    for (const className of classes.keys()) {
       if (classes.get(className))
         activeClasses.add(className);
     }
 
-    var additionalClasses = this._splitTextIntoClasses(this._prompt.textWithCurrentSuggestion());
-    for (className of additionalClasses)
+    const additionalClasses = this._splitTextIntoClasses(this._prompt.textWithCurrentSuggestion());
+    for (const className of additionalClasses)
       activeClasses.add(className);
 
-    var newClasses = activeClasses.valuesArray();
+    const newClasses = activeClasses.valuesArray();
     newClasses.sort();
 
     this._pendingNodeClasses.set(node, newClasses.join(' '));
@@ -211,10 +211,11 @@ Elements.ClassesPaneWidget = class extends UI.Widget {
    * @return {!Promise}
    */
   _flushPendingClasses() {
-    var promises = [];
-    for (var node of this._pendingNodeClasses.keys()) {
+    const promises = [];
+    for (const node of this._pendingNodeClasses.keys()) {
       this._mutatingNodes.add(node);
-      var promise = node.setAttributeValuePromise('class', this._pendingNodeClasses.get(node)).then(onClassValueUpdated.bind(this, node));
+      const promise = node.setAttributeValuePromise('class', this._pendingNodeClasses.get(node))
+                          .then(onClassValueUpdated.bind(this, node));
       promises.push(promise);
     }
     this._pendingNodeClasses.clear();
@@ -279,22 +280,22 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
    * @return {!Promise.<!Array.<string>>}
    */
   _getClassNames(selectedNode) {
-    var promises = [];
-    var completions = new Set();
+    const promises = [];
+    const completions = new Set();
     this._selectedFrameId = selectedNode.frameId();
 
-    var cssModel = selectedNode.domModel().cssModel();
-    var allStyleSheets = cssModel.allStyleSheets();
-    for (var stylesheet of allStyleSheets) {
+    const cssModel = selectedNode.domModel().cssModel();
+    const allStyleSheets = cssModel.allStyleSheets();
+    for (const stylesheet of allStyleSheets) {
       if (stylesheet.frameId !== this._selectedFrameId)
         continue;
-      var cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => completions.addAll(classes));
+      const cssPromise = cssModel.classNamesPromise(stylesheet.id).then(classes => completions.addAll(classes));
       promises.push(cssPromise);
     }
 
-    var domPromise = selectedNode.domModel()
-                         .classNamesPromise(selectedNode.ownerDocument.id)
-                         .then(classes => completions.addAll(classes));
+    const domPromise = selectedNode.domModel()
+                           .classNamesPromise(selectedNode.ownerDocument.id)
+                           .then(classes => completions.addAll(classes));
     promises.push(domPromise);
     return Promise.all(promises).then(() => completions.valuesArray());
   }
@@ -309,7 +310,7 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
     if (!prefix || force)
       this._classNamesPromise = null;
 
-    var selectedNode = UI.context.flavor(SDK.DOMNode);
+    const selectedNode = UI.context.flavor(SDK.DOMNode);
     if (!selectedNode || (!prefix && !force && !expression.trim()))
       return Promise.resolve([]);
 
@@ -317,7 +318,7 @@ Elements.ClassesPaneWidget.ClassNamePrompt = class extends UI.TextPrompt {
       this._classNamesPromise = this._getClassNames(selectedNode);
 
     return this._classNamesPromise.then(completions => {
-      var classesMap = this._nodeClasses(/** @type {!SDK.DOMNode} */ (selectedNode));
+      const classesMap = this._nodeClasses(/** @type {!SDK.DOMNode} */ (selectedNode));
       completions = completions.filter(value => !classesMap.get(value));
 
       if (prefix[0] === '.')

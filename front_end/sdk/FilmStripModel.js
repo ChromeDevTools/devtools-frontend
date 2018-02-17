@@ -26,19 +26,19 @@ SDK.FilmStripModel = class {
 
     /** @type {!Array<!SDK.FilmStripModel.Frame>} */
     this._frames = [];
-    var browserMain = SDK.TracingModel.browserMainThread(tracingModel);
+    const browserMain = SDK.TracingModel.browserMainThread(tracingModel);
     if (!browserMain)
       return;
 
-    var events = browserMain.events();
-    for (var i = 0; i < events.length; ++i) {
-      var event = events[i];
+    const events = browserMain.events();
+    for (let i = 0; i < events.length; ++i) {
+      const event = events[i];
       if (event.startTime < this._zeroTime)
         continue;
       if (!event.hasCategory(SDK.FilmStripModel._category))
         continue;
       if (event.name === SDK.FilmStripModel.TraceEvents.CaptureFrame) {
-        var data = event.args['data'];
+        const data = event.args['data'];
         if (data)
           this._frames.push(SDK.FilmStripModel.Frame._fromEvent(this, event, this._frames.length));
       } else if (event.name === SDK.FilmStripModel.TraceEvents.Screenshot) {
@@ -74,7 +74,7 @@ SDK.FilmStripModel = class {
    * @return {?SDK.FilmStripModel.Frame}
    */
   frameByTimestamp(timestamp) {
-    var index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
+    const index = this._frames.upperBound(timestamp, (timestamp, frame) => timestamp - frame.timestamp) - 1;
     return index >= 0 ? this._frames[index] : null;
   }
 };
@@ -112,7 +112,7 @@ SDK.FilmStripModel.Frame = class {
    * @return {!SDK.FilmStripModel.Frame}
    */
   static _fromEvent(model, event, index) {
-    var frame = new SDK.FilmStripModel.Frame(model, event.startTime, index);
+    const frame = new SDK.FilmStripModel.Frame(model, event.startTime, index);
     frame._imageData = event.args['data'];
     return frame;
   }
@@ -124,7 +124,7 @@ SDK.FilmStripModel.Frame = class {
    * @return {!SDK.FilmStripModel.Frame}
    */
   static _fromSnapshot(model, snapshot, index) {
-    var frame = new SDK.FilmStripModel.Frame(model, snapshot.startTime, index);
+    const frame = new SDK.FilmStripModel.Frame(model, snapshot.startTime, index);
     frame._snapshot = snapshot;
     return frame;
   }

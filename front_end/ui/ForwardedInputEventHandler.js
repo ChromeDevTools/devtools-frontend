@@ -14,11 +14,11 @@ UI.ForwardedInputEventHandler = class {
    * @param {!Common.Event} event
    */
   _onKeyEventUnhandled(event) {
-    var data = event.data;
-    var type = /** @type {string} */ (data.type);
-    var key = /** @type {string} */ (data.key);
-    var keyCode = /** @type {number} */ (data.keyCode);
-    var modifiers = /** @type {number} */ (data.modifiers);
+    const data = event.data;
+    const type = /** @type {string} */ (data.type);
+    const key = /** @type {string} */ (data.key);
+    const keyCode = /** @type {number} */ (data.keyCode);
+    const modifiers = /** @type {number} */ (data.modifiers);
 
     if (type !== 'keydown')
       return;

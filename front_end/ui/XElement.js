@@ -36,8 +36,8 @@ UI.XElement = class extends HTMLElement {
       this.style.removeProperty(attr);
       if (attr.startsWith('padding-') || attr.startsWith('margin-') || attr.startsWith('border-') ||
           attr.startsWith('background-') || attr.startsWith('overflow-')) {
-        var shorthand = attr.substring(0, attr.indexOf('-'));
-        var shorthandValue = this.getAttribute(shorthand);
+        const shorthand = attr.substring(0, attr.indexOf('-'));
+        const shorthandValue = this.getAttribute(shorthand);
         if (shorthandValue !== null)
           this.style.setProperty(shorthand, shorthandValue);
       }

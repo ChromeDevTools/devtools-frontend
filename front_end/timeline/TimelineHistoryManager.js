@@ -35,7 +35,7 @@ Timeline.TimelineHistoryManager = class {
     this._updateState();
     if (this._recordings.length <= Timeline.TimelineHistoryManager._maxRecordings)
       return;
-    var lruModel = this._recordings.reduce((a, b) => lastUsedTime(a) < lastUsedTime(b) ? a : b);
+    const lruModel = this._recordings.reduce((a, b) => lastUsedTime(a) < lastUsedTime(b) ? a : b);
     this._recordings.splice(this._recordings.indexOf(lruModel), 1);
     lruModel.dispose();
 
@@ -76,11 +76,11 @@ Timeline.TimelineHistoryManager = class {
     if (this._recordings.length < 2 || !this._enabled)
       return null;
 
-    var model = await Timeline.TimelineHistoryManager.DropDown.show(
+    const model = await Timeline.TimelineHistoryManager.DropDown.show(
         this._recordings, /** @type {!Timeline.PerformanceModel} */ (this._lastActiveModel), this._button.element);
     if (!model)
       return null;
-    var index = this._recordings.indexOf(model);
+    const index = this._recordings.indexOf(model);
     if (index < 0) {
       console.assert(false, `selected recording not found`);
       return null;
@@ -100,11 +100,11 @@ Timeline.TimelineHistoryManager = class {
   navigate(direction) {
     if (!this._enabled || !this._lastActiveModel)
       return null;
-    var index = this._recordings.indexOf(this._lastActiveModel);
+    const index = this._recordings.indexOf(this._lastActiveModel);
     if (index < 0)
       return null;
-    var newIndex = Number.constrain(index + direction, 0, this._recordings.length - 1);
-    var model = this._recordings[newIndex];
+    const newIndex = Number.constrain(index + direction, 0, this._recordings.length - 1);
+    const model = this._recordings[newIndex];
     this._setCurrentModel(model);
     return model;
   }
@@ -127,8 +127,8 @@ Timeline.TimelineHistoryManager = class {
    * @return {!Element}
    */
   static _previewElement(performanceModel) {
-    var data = Timeline.TimelineHistoryManager._dataForModel(performanceModel);
-    var startedAt = performanceModel.recordStartTime();
+    const data = Timeline.TimelineHistoryManager._dataForModel(performanceModel);
+    const startedAt = performanceModel.recordStartTime();
     data.time.textContent =
         startedAt ? Common.UIString('(%s ago)', Timeline.TimelineHistoryManager._coarseAge(startedAt)) : '';
     return data.preview;
@@ -139,13 +139,13 @@ Timeline.TimelineHistoryManager = class {
    * @return {string}
    */
   static _coarseAge(time) {
-    var seconds = Math.round((Date.now() - time) / 1000);
+    const seconds = Math.round((Date.now() - time) / 1000);
     if (seconds < 50)
       return Common.UIString('moments');
-    var minutes = Math.round(seconds / 60);
+    const minutes = Math.round(seconds / 60);
     if (minutes < 50)
       return Common.UIString('%s m', minutes);
-    var hours = Math.round(minutes / 60);
+    const hours = Math.round(minutes / 60);
     return Common.UIString('%s h', hours);
   }
 
@@ -161,19 +161,19 @@ Timeline.TimelineHistoryManager = class {
    * @param {!Timeline.PerformanceModel} performanceModel
    */
   _buildPreview(performanceModel) {
-    var parsedURL = performanceModel.timelineModel().pageURL().asParsedURL();
-    var domain = parsedURL ? parsedURL.host : '';
-    var sequenceNumber = this._nextNumberByDomain.get(domain) || 1;
-    var title = Common.UIString('%s #%d', domain, sequenceNumber);
+    const parsedURL = performanceModel.timelineModel().pageURL().asParsedURL();
+    const domain = parsedURL ? parsedURL.host : '';
+    const sequenceNumber = this._nextNumberByDomain.get(domain) || 1;
+    const title = Common.UIString('%s #%d', domain, sequenceNumber);
     this._nextNumberByDomain.set(domain, sequenceNumber + 1);
-    var timeElement = createElement('span');
+    const timeElement = createElement('span');
 
-    var preview = createElementWithClass('div', 'preview-item vbox');
-    var data = {preview: preview, title: title, time: timeElement, lastUsed: Date.now()};
+    const preview = createElementWithClass('div', 'preview-item vbox');
+    const data = {preview: preview, title: title, time: timeElement, lastUsed: Date.now()};
     performanceModel[Timeline.TimelineHistoryManager._previewDataSymbol] = data;
 
     preview.appendChild(this._buildTextDetails(performanceModel, title, timeElement));
-    var screenshotAndOverview = preview.createChild('div', 'hbox');
+    const screenshotAndOverview = preview.createChild('div', 'hbox');
     screenshotAndOverview.appendChild(this._buildScreenshotThumbnail(performanceModel));
     screenshotAndOverview.appendChild(this._buildOverview(performanceModel));
     return data.preview;
@@ -186,11 +186,11 @@ Timeline.TimelineHistoryManager = class {
    * @return {!Element}
    */
   _buildTextDetails(performanceModel, title, timeElement) {
-    var container = createElementWithClass('div', 'text-details hbox');
+    const container = createElementWithClass('div', 'text-details hbox');
     container.createChild('span', 'name').textContent = title;
-    var tracingModel = performanceModel.tracingModel();
-    var duration = Number.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
-    var timeContainer = container.createChild('span', 'time');
+    const tracingModel = performanceModel.tracingModel();
+    const duration = Number.millisToString(tracingModel.maximumRecordTime() - tracingModel.minimumRecordTime(), false);
+    const timeContainer = container.createChild('span', 'time');
     timeContainer.appendChild(createTextNode(duration));
     timeContainer.appendChild(timeElement);
     return container;
@@ -201,12 +201,12 @@ Timeline.TimelineHistoryManager = class {
    * @return {!Element}
    */
   _buildScreenshotThumbnail(performanceModel) {
-    var container = createElementWithClass('div', 'screenshot-thumb');
-    var thumbnailAspectRatio = 3 / 2;
+    const container = createElementWithClass('div', 'screenshot-thumb');
+    const thumbnailAspectRatio = 3 / 2;
     container.style.width = this._totalHeight * thumbnailAspectRatio + 'px';
     container.style.height = this._totalHeight + 'px';
-    var filmStripModel = performanceModel.filmStripModel();
-    var lastFrame = filmStripModel.frames().peekLast();
+    const filmStripModel = performanceModel.filmStripModel();
+    const lastFrame = filmStripModel.frames().peekLast();
     if (!lastFrame)
       return container;
     lastFrame.imageDataPromise()
@@ -220,23 +220,23 @@ Timeline.TimelineHistoryManager = class {
    * @return {!Element}
    */
   _buildOverview(performanceModel) {
-    var container = createElement('div');
+    const container = createElement('div');
 
     container.style.width = Timeline.TimelineHistoryManager._previewWidth + 'px';
     container.style.height = this._totalHeight + 'px';
-    var canvas = container.createChild('canvas');
+    const canvas = container.createChild('canvas');
     canvas.width = window.devicePixelRatio * Timeline.TimelineHistoryManager._previewWidth;
     canvas.height = window.devicePixelRatio * this._totalHeight;
 
-    var ctx = canvas.getContext('2d');
-    var yOffset = 0;
-    for (var overview of this._allOverviews) {
-      var timelineOverview = new overview.constructor();
+    const ctx = canvas.getContext('2d');
+    let yOffset = 0;
+    for (const overview of this._allOverviews) {
+      const timelineOverview = new overview.constructor();
       timelineOverview.setCanvasSize(Timeline.TimelineHistoryManager._previewWidth, overview.height);
       timelineOverview.setModel(performanceModel);
       timelineOverview.update();
-      var sourceContext = timelineOverview.context();
-      var imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height);
+      const sourceContext = timelineOverview.context();
+      const imageData = sourceContext.getImageData(0, 0, sourceContext.canvas.width, sourceContext.canvas.height);
       ctx.putImageData(imageData, 0, yOffset);
       yOffset += overview.height * window.devicePixelRatio;
     }
@@ -273,11 +273,11 @@ Timeline.TimelineHistoryManager.DropDown = class {
     this._glassPane.setPointerEventsBehavior(UI.GlassPane.PointerEventsBehavior.BlockedByGlassPane);
     this._glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PreferBottom);
 
-    var shadowRoot =
+    const shadowRoot =
         UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'timeline/timelineHistoryManager.css');
-    var contentElement = shadowRoot.createChild('div', 'drop-down');
+    const contentElement = shadowRoot.createChild('div', 'drop-down');
 
-    var listModel = new UI.ListModel();
+    const listModel = new UI.ListModel();
     this._listControl = new UI.ListControl(listModel, this, UI.ListMode.NonViewport);
     this._listControl.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     listModel.replaceAll(models);
@@ -299,7 +299,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
   static show(models, currentModel, anchor) {
     if (Timeline.TimelineHistoryManager.DropDown._instance)
       return Promise.resolve(/** @type {?Timeline.PerformanceModel} */ (null));
-    var instance = new Timeline.TimelineHistoryManager.DropDown(models);
+    const instance = new Timeline.TimelineHistoryManager.DropDown(models);
     return instance._show(anchor, currentModel);
   }
 
@@ -328,8 +328,8 @@ Timeline.TimelineHistoryManager.DropDown = class {
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    var node = event.target.enclosingNodeOrSelfWithClass('preview-item');
-    var listItem = node && this._listControl.itemForNode(node);
+    const node = event.target.enclosingNodeOrSelfWithClass('preview-item');
+    const listItem = node && this._listControl.itemForNode(node);
     if (!listItem)
       return;
     this._listControl.selectItem(listItem);
@@ -376,7 +376,7 @@ Timeline.TimelineHistoryManager.DropDown = class {
    * @return {!Element}
    */
   createElementForItem(item) {
-    var element = Timeline.TimelineHistoryManager._previewElement(item);
+    const element = Timeline.TimelineHistoryManager._previewElement(item);
     element.classList.remove('selected');
     return element;
   }
@@ -427,10 +427,10 @@ Timeline.TimelineHistoryManager.ToolbarButton = class extends UI.ToolbarItem {
    */
   constructor(action) {
     super(createElementWithClass('button', 'dropdown-button'));
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'timeline/historyToolbarButton.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'timeline/historyToolbarButton.css');
 
     this._contentElement = shadowRoot.createChild('span', 'content');
-    var dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
+    const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
     shadowRoot.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());

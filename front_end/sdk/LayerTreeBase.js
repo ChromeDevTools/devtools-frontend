@@ -277,11 +277,11 @@ SDK.LayerTreeBase = class {
     if (!requestedNodeIds.size || !this._domModel)
       return;
 
-    var nodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds);
+    const nodesMap = await this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds);
 
     if (!nodesMap)
       return;
-    for (var nodeId of nodesMap.keysArray())
+    for (const nodeId of nodesMap.keysArray())
       this._backendNodeIdToNode.set(nodeId, nodesMap.get(nodeId) || null);
   }
 

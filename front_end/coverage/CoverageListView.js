@@ -14,7 +14,7 @@ Coverage.CoverageListView = class extends UI.VBox {
     /** @type {?RegExp} */
     this._highlightRegExp = null;
     this.registerRequiredCSS('coverage/coverageListView.css');
-    var columns = [
+    const columns = [
       {id: 'url', title: Common.UIString('URL'), width: '250px', fixedWidth: false, sortable: true},
       {id: 'type', title: Common.UIString('Type'), width: '45px', fixedWidth: true, sortable: true}, {
         id: 'size',
@@ -42,7 +42,7 @@ Coverage.CoverageListView = class extends UI.VBox {
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this._onOpenedNode, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
 
-    var dataGridWidget = this._dataGrid.asWidget();
+    const dataGridWidget = this._dataGrid.asWidget();
     dataGridWidget.show(this.contentElement);
   }
 
@@ -50,11 +50,11 @@ Coverage.CoverageListView = class extends UI.VBox {
    * @param {!Array<!Coverage.URLCoverageInfo>} coverageInfo
    */
   update(coverageInfo) {
-    var hadUpdates = false;
-    var maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
-    var rootNode = this._dataGrid.rootNode();
-    for (var entry of coverageInfo) {
-      var node = this._nodeForCoverageInfo.get(entry);
+    let hadUpdates = false;
+    const maxSize = coverageInfo.reduce((acc, entry) => Math.max(acc, entry.size()), 0);
+    const rootNode = this._dataGrid.rootNode();
+    for (const entry of coverageInfo) {
+      let node = this._nodeForCoverageInfo.get(entry);
       if (node) {
         if (this._filterCallback(node._coverageInfo))
           hadUpdates = node._refreshIfNeeded(maxSize) || hadUpdates;
@@ -81,10 +81,10 @@ Coverage.CoverageListView = class extends UI.VBox {
    */
   updateFilterAndHighlight(highlightRegExp) {
     this._highlightRegExp = highlightRegExp;
-    var hadTreeUpdates = false;
-    for (var node of this._nodeForCoverageInfo.values()) {
-      var shouldBeVisible = this._filterCallback(node._coverageInfo);
-      var isVisible = !!node.parent;
+    let hadTreeUpdates = false;
+    for (const node of this._nodeForCoverageInfo.values()) {
+      const shouldBeVisible = this._filterCallback(node._coverageInfo);
+      const isVisible = !!node.parent;
       if (shouldBeVisible)
         node._setHighlight(this._highlightRegExp);
       if (shouldBeVisible === isVisible)
@@ -114,16 +114,16 @@ Coverage.CoverageListView = class extends UI.VBox {
   }
 
   async _revealSourceForSelectedNode() {
-    var node = this._dataGrid.selectedNode;
+    const node = this._dataGrid.selectedNode;
     if (!node)
       return;
-    var coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
-    var sourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
+    const coverageInfo = /** @type {!Coverage.CoverageListView.GridNode} */ (node)._coverageInfo;
+    let sourceCode = Workspace.workspace.uiSourceCodeForURL(coverageInfo.url());
     if (!sourceCode)
       return;
-    var content = await sourceCode.requestContent();
+    const content = await sourceCode.requestContent();
     if (TextUtils.isMinified(content)) {
-      var formatData = await Sources.sourceFormatter.format(sourceCode);
+      const formatData = await Sources.sourceFormatter.format(sourceCode);
       // ------------ ASYNC ------------
       sourceCode = formatData.formattedSourceCode;
     }
@@ -133,10 +133,10 @@ Coverage.CoverageListView = class extends UI.VBox {
   }
 
   _sortingChanged() {
-    var columnId = this._dataGrid.sortColumnId();
+    const columnId = this._dataGrid.sortColumnId();
     if (!columnId)
       return;
-    var sortFunction;
+    let sortFunction;
     switch (columnId) {
       case 'url':
         sortFunction = compareURL;
@@ -164,8 +164,8 @@ Coverage.CoverageListView = class extends UI.VBox {
      * @return {number}
      */
     function compareURL(a, b) {
-      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
-      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
+      const nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      const nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
       return nodeA._url.localeCompare(nodeB._url);
     }
@@ -177,8 +177,8 @@ Coverage.CoverageListView = class extends UI.VBox {
      * @return {number}
      */
     function compareNumericField(fieldName, a, b) {
-      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
-      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
+      const nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      const nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
 
       return nodeA._coverageInfo[fieldName]() - nodeB._coverageInfo[fieldName]() || compareURL(a, b);
     }
@@ -189,10 +189,10 @@ Coverage.CoverageListView = class extends UI.VBox {
      * @return {number}
      */
     function compareType(a, b) {
-      var nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
-      var nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
-      var typeA = Coverage.CoverageListView._typeToString(nodeA._coverageInfo.type());
-      var typeB = Coverage.CoverageListView._typeToString(nodeB._coverageInfo.type());
+      const nodeA = /** @type {!Coverage.CoverageListView.GridNode} */ (a);
+      const nodeB = /** @type {!Coverage.CoverageListView.GridNode} */ (b);
+      const typeA = Coverage.CoverageListView._typeToString(nodeA._coverageInfo.type());
+      const typeB = Coverage.CoverageListView._typeToString(nodeB._coverageInfo.type());
       return typeA.localeCompare(typeB) || compareURL(a, b);
     }
   }
@@ -201,7 +201,7 @@ Coverage.CoverageListView = class extends UI.VBox {
    * @param {!Coverage.CoverageType} type
    */
   static _typeToString(type) {
-    var types = [];
+    const types = [];
     if (type & Coverage.CoverageType.CSS)
       types.push(Common.UIString('CSS'));
     if (type & Coverage.CoverageType.JavaScriptCoarse)
@@ -258,14 +258,14 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
    * @return {!Element}
    */
   createCell(columnId) {
-    var cell = this.createTD(columnId);
+    const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url':
         cell.title = this._url;
-        var outer = cell.createChild('div', 'url-outer');
-        var prefix = outer.createChild('div', 'url-prefix');
-        var suffix = outer.createChild('div', 'url-suffix');
-        var splitURL = /^(.*)(\/[^/]*)$/.exec(this._url);
+        const outer = cell.createChild('div', 'url-outer');
+        const prefix = outer.createChild('div', 'url-prefix');
+        const suffix = outer.createChild('div', 'url-suffix');
+        const splitURL = /^(.*)(\/[^/]*)$/.exec(this._url);
         prefix.textContent = splitURL ? splitURL[1] : this._url;
         suffix.textContent = splitURL ? splitURL[2] : '';
         if (this._highlightRegExp)
@@ -280,17 +280,17 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
         cell.textContent = Number.withThousandsSeparator(this._coverageInfo.size() || 0);
         break;
       case 'unusedSize':
-        var unusedSize = this._coverageInfo.unusedSize() || 0;
-        var unusedSizeSpan = cell.createChild('span');
-        var unusedPercentsSpan = cell.createChild('span', 'percent-value');
+        const unusedSize = this._coverageInfo.unusedSize() || 0;
+        const unusedSizeSpan = cell.createChild('span');
+        const unusedPercentsSpan = cell.createChild('span', 'percent-value');
         unusedSizeSpan.textContent = Number.withThousandsSeparator(unusedSize);
         unusedPercentsSpan.textContent = Common.UIString('%.1f\xa0%%', unusedSize / this._coverageInfo.size() * 100);
         break;
       case 'bars':
-        var barContainer = cell.createChild('div', 'bar-container');
-        var unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
+        const barContainer = cell.createChild('div', 'bar-container');
+        const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
         unusedSizeBar.style.width = (100 * this._coverageInfo.unusedSize() / this._maxSize).toFixed(4) + '%';
-        var usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
+        const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
         usedSizeBar.style.width = (100 * this._coverageInfo.usedSize() / this._maxSize).toFixed(4) + '%';
     }
     return cell;
@@ -301,10 +301,10 @@ Coverage.CoverageListView.GridNode = class extends DataGrid.SortableDataGridNode
    * @param {string} textContent
    */
   _highlight(element, textContent) {
-    var matches = this._highlightRegExp.exec(textContent);
+    const matches = this._highlightRegExp.exec(textContent);
     if (!matches || !matches.length)
       return;
-    var range = new TextUtils.SourceRange(matches.index, matches[0].length);
+    const range = new TextUtils.SourceRange(matches.index, matches[0].length);
     UI.highlightRangesWithStyleClass(element, [range], 'filter-highlight');
   }
 };

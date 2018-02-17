@@ -10,10 +10,10 @@
 DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
   if (!prefix)
     prefix = '';
-  var suffix = root.selected ? ' <- selected' : '';
-  var columnKeys = root.dataGrid._columnsArray.map(column => column.id);
-  var outputColumns = [];
-  for (var key of columnKeys) {
+  const suffix = root.selected ? ' <- selected' : '';
+  const columnKeys = root.dataGrid._columnsArray.map(column => column.id);
+  const outputColumns = [];
+  for (const key of columnKeys) {
     if (key in root.data)
       outputColumns.push(root.data[key]);
   }
@@ -22,15 +22,15 @@ DataGridTestRunner.dumpDataGrid = function(root, descentIntoCollapsed, prefix) {
 
   if (!descentIntoCollapsed && !root.expanded)
     return;
-  for (var child of root.children)
+  for (const child of root.children)
     DataGridTestRunner.dumpDataGrid(child, descentIntoCollapsed, prefix + ' ');
 };
 
 DataGridTestRunner.validateDataGrid = function(root) {
-  var children = root.children;
+  const children = root.children;
 
-  for (var i = 0; i < children.length; ++i) {
-    var child = children[i];
+  for (let i = 0; i < children.length; ++i) {
+    const child = children[i];
 
     if (child.parent !== root)
       throw 'Wrong parent for child ' + child.data.id + ' of ' + root.data.id;
@@ -47,13 +47,13 @@ DataGridTestRunner.validateDataGrid = function(root) {
     DataGridTestRunner.validateDataGrid(child);
   }
 
-  var selectedNode = root.dataGrid.selectedNode;
+  const selectedNode = root.dataGrid.selectedNode;
 
   if (!root.parent && selectedNode) {
     if (!selectedNode.selectable)
       throw 'Selected node is not selectable';
-
-    for (var node = selectedNode; node && node !== root; node = node.parent) {
+    let node = selectedNode;
+    for (; node && node !== root; node = node.parent) {
     }
 
     if (!node)

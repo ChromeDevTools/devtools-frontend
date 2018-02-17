@@ -20,9 +20,9 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this._insetButton.textContent = Common.UIString('Inset');
     this._insetButton.addEventListener('click', this._onButtonClick.bind(this), false);
 
-    var xField = this.contentElement.createChild('div', 'shadow-editor-field');
+    const xField = this.contentElement.createChild('div', 'shadow-editor-field');
     this._xInput = this._createTextInput(xField, Common.UIString('X offset'));
-    var yField = this.contentElement.createChild('div', 'shadow-editor-field');
+    const yField = this.contentElement.createChild('div', 'shadow-editor-field');
     this._yInput = this._createTextInput(yField, Common.UIString('Y offset'));
     this._xySlider = xField.createChild('canvas', 'shadow-editor-2D-slider');
     this._xySlider.width = InlineEditor.CSSShadowEditor.canvasSize;
@@ -34,7 +34,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this._xySlider.addEventListener('keydown', this._onCanvasArrowKey.bind(this), false);
     this._xySlider.addEventListener('blur', this._onCanvasBlur.bind(this), false);
 
-    var blurField =
+    const blurField =
         this.contentElement.createChild('div', 'shadow-editor-field shadow-editor-flex-field shadow-editor-blur-field');
     this._blurInput = this._createTextInput(blurField, Common.UIString('Blur'));
     this._blurSlider = this._createSlider(blurField);
@@ -50,10 +50,10 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @return {!Element}
    */
   _createTextInput(field, propertyName) {
-    var label = field.createChild('label', 'shadow-editor-label');
+    const label = field.createChild('label', 'shadow-editor-label');
     label.textContent = propertyName;
     label.setAttribute('for', propertyName);
-    var textInput = UI.createInput('shadow-editor-text-input', 'text');
+    const textInput = UI.createInput('shadow-editor-text-input', 'text');
     field.appendChild(textInput);
     textInput.id = propertyName;
     textInput.addEventListener('keydown', this._handleValueModification.bind(this), false);
@@ -68,7 +68,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @return {!Element}
    */
   _createSlider(field) {
-    var slider = UI.createSliderLabel(0, InlineEditor.CSSShadowEditor.maxRange, -1);
+    const slider = UI.createSliderLabel(0, InlineEditor.CSSShadowEditor.maxRange, -1);
     slider.addEventListener('input', this._onSliderInput.bind(this), false);
     field.appendChild(slider);
     return slider;
@@ -111,7 +111,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @param {boolean} drawFocus
    */
   _updateCanvas(drawFocus) {
-    var context = this._xySlider.getContext('2d');
+    const context = this._xySlider.getContext('2d');
     context.clearRect(0, 0, this._xySlider.width, this._xySlider.height);
 
     // Draw dashed axes.
@@ -126,7 +126,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     context.stroke();
     context.restore();
 
-    var thumbPoint = this._sliderThumbPosition();
+    const thumbPoint = this._sliderThumbPosition();
     // Draw 2D slider line.
     context.save();
     context.translate(this._halfCanvasSize, this._halfCanvasSize);
@@ -154,7 +154,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @param {!Event} event
    */
   _onButtonClick(event) {
-    var insetClicked = (event.currentTarget === this._insetButton);
+    const insetClicked = (event.currentTarget === this._insetButton);
     if (insetClicked && this._model.inset() || !insetClicked && !this._model.inset())
       return;
     this._model.setInset(insetClicked);
@@ -166,10 +166,10 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @param {!Event} event
    */
   _handleValueModification(event) {
-    var modifiedValue = UI.createReplacementString(event.currentTarget.value, event, customNumberHandler);
+    const modifiedValue = UI.createReplacementString(event.currentTarget.value, event, customNumberHandler);
     if (!modifiedValue)
       return;
-    var length = InlineEditor.CSSLength.parse(modifiedValue);
+    const length = InlineEditor.CSSLength.parse(modifiedValue);
     if (!length)
       return;
     if (event.currentTarget === this._blurInput && length.amount < 0)
@@ -199,7 +199,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
   _onTextInput(event) {
     this._changedElement = event.currentTarget;
     this._changedElement.classList.remove('invalid');
-    var length = InlineEditor.CSSLength.parse(event.currentTarget.value);
+    const length = InlineEditor.CSSLength.parse(event.currentTarget.value);
     if (!length || event.currentTarget === this._blurInput && length.amount < 0)
       return;
     if (event.currentTarget === this._xInput) {
@@ -221,7 +221,7 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
   _onTextBlur() {
     if (!this._changedElement)
       return;
-    var length = !this._changedElement.value.trim() ? InlineEditor.CSSLength.zero() :
+    let length = !this._changedElement.value.trim() ? InlineEditor.CSSLength.zero() :
                                                       InlineEditor.CSSLength.parse(this._changedElement.value);
     if (!length)
       length = InlineEditor.CSSLength.parse(this._changedElement.value + InlineEditor.CSSShadowEditor.defaultUnit);
@@ -281,8 +281,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     this._canvasOrigin = new UI.Geometry.Point(
         this._xySlider.totalOffsetLeft() + this._halfCanvasSize,
         this._xySlider.totalOffsetTop() + this._halfCanvasSize);
-    var clickedPoint = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
-    var thumbPoint = this._sliderThumbPosition();
+    const clickedPoint = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
+    const thumbPoint = this._sliderThumbPosition();
     if (clickedPoint.distanceTo(thumbPoint) >= InlineEditor.CSSShadowEditor.sliderThumbRadius)
       this._dragMove(event);
     return true;
@@ -292,12 +292,12 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @param {!MouseEvent} event
    */
   _dragMove(event) {
-    var point = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
+    let point = new UI.Geometry.Point(event.x - this._canvasOrigin.x, event.y - this._canvasOrigin.y);
     if (event.shiftKey)
       point = this._snapToClosestDirection(point);
-    var constrainedPoint = this._constrainPoint(point, this._innerCanvasSize);
-    var newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
-    var newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
+    const constrainedPoint = this._constrainPoint(point, this._innerCanvasSize);
+    const newX = Math.round((constrainedPoint.x / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
+    const newY = Math.round((constrainedPoint.y / this._innerCanvasSize) * InlineEditor.CSSShadowEditor.maxRange);
 
     if (event.shiftKey) {
       this._model.setOffsetX(
@@ -330,8 +330,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @param {!Event} event
    */
   _onCanvasArrowKey(event) {
-    var shiftX = 0;
-    var shiftY = 0;
+    let shiftX = 0;
+    let shiftY = 0;
     if (event.key === 'ArrowRight')
       shiftX = 1;
     else if (event.key === 'ArrowLeft')
@@ -346,8 +346,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
     event.consume(true);
 
     if (shiftX) {
-      var offsetX = this._model.offsetX();
-      var newAmount = Number.constrain(
+      const offsetX = this._model.offsetX();
+      const newAmount = Number.constrain(
           offsetX.amount + shiftX, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
       if (newAmount === offsetX.amount)
         return;
@@ -357,8 +357,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
       this._xInput.classList.remove('invalid');
     }
     if (shiftY) {
-      var offsetY = this._model.offsetY();
-      var newAmount = Number.constrain(
+      const offsetY = this._model.offsetY();
+      const newAmount = Number.constrain(
           offsetY.amount + shiftY, -InlineEditor.CSSShadowEditor.maxRange, InlineEditor.CSSShadowEditor.maxRange);
       if (newAmount === offsetY.amount)
         return;
@@ -387,19 +387,19 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @return {!UI.Geometry.Point}
    */
   _snapToClosestDirection(point) {
-    var minDistance = Number.MAX_VALUE;
-    var closestPoint = point;
+    let minDistance = Number.MAX_VALUE;
+    let closestPoint = point;
 
-    var directions = [
+    const directions = [
       new UI.Geometry.Point(0, -1),  // North
       new UI.Geometry.Point(1, -1),  // Northeast
       new UI.Geometry.Point(1, 0),   // East
       new UI.Geometry.Point(1, 1)    // Southeast
     ];
 
-    for (var direction of directions) {
-      var projection = point.projectOn(direction);
-      var distance = point.distanceTo(projection);
+    for (const direction of directions) {
+      const projection = point.projectOn(direction);
+      const distance = point.distanceTo(projection);
       if (distance < minDistance) {
         minDistance = distance;
         closestPoint = projection;
@@ -413,8 +413,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    * @return {!UI.Geometry.Point}
    */
   _sliderThumbPosition() {
-    var x = (this._model.offsetX().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
-    var y = (this._model.offsetY().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
+    const x = (this._model.offsetX().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
+    const y = (this._model.offsetY().amount / InlineEditor.CSSShadowEditor.maxRange) * this._innerCanvasSize;
     return this._constrainPoint(new UI.Geometry.Point(x, y), this._innerCanvasSize);
   }
 };

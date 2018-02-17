@@ -22,17 +22,17 @@ FormatterWorker.parseCSS = function(text) {
  * @param {function(*)} chunkCallback
  */
 FormatterWorker._innerParseCSS = function(text, chunkCallback) {
-  var chunkSize = 100000;  // characters per data chunk
-  var lines = text.split('\n');
-  var rules = [];
-  var processedChunkCharacters = 0;
+  const chunkSize = 100000;  // characters per data chunk
+  const lines = text.split('\n');
+  let rules = [];
+  let processedChunkCharacters = 0;
 
-  var state = FormatterWorker.CSSParserStates.Initial;
-  var rule;
-  var property;
-  var UndefTokenType = new Set();
+  let state = FormatterWorker.CSSParserStates.Initial;
+  let rule;
+  let property;
+  const UndefTokenType = new Set();
 
-  var disabledRules = [];
+  let disabledRules = [];
   function disabledRulesCallback(chunk) {
     disabledRules = disabledRules.concat(chunk.chunk);
   }
@@ -44,7 +44,7 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
    * @param {number} newColumn
    */
   function processToken(tokenValue, tokenTypes, column, newColumn) {
-    var tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
+    const tokenType = tokenTypes ? new Set(tokenTypes.split(' ')) : UndefTokenType;
     switch (state) {
       case FormatterWorker.CSSParserStates.Initial:
         if (tokenType.has('qualifier') || tokenType.has('builtin') || tokenType.has('tag')) {
@@ -101,17 +101,17 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
           // Support only a one-line comments.
           if (tokenValue.substring(0, 2) !== '/*' || tokenValue.substring(tokenValue.length - 2) !== '*/')
             break;
-          var uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
-          var fakeRule = 'a{\n' + uncommentedText + '}';
+          const uncommentedText = tokenValue.substring(2, tokenValue.length - 2);
+          const fakeRule = 'a{\n' + uncommentedText + '}';
           disabledRules = [];
           FormatterWorker._innerParseCSS(fakeRule, disabledRulesCallback);
           if (disabledRules.length === 1 && disabledRules[0].properties.length === 1) {
-            var disabledProperty = disabledRules[0].properties[0];
+            const disabledProperty = disabledRules[0].properties[0];
             disabledProperty.disabled = true;
             disabledProperty.range = createRange(lineNumber, column);
             disabledProperty.range.endColumn = newColumn;
-            var lineOffset = lineNumber - 1;
-            var columnOffset = column + 2;
+            const lineOffset = lineNumber - 1;
+            const columnOffset = column + 2;
             disabledProperty.nameRange.startLine += lineOffset;
             disabledProperty.nameRange.startColumn += columnOffset;
             disabledProperty.nameRange.endLine += lineOffset;
@@ -165,10 +165,10 @@ FormatterWorker._innerParseCSS = function(text, chunkCallback) {
       processedChunkCharacters = 0;
     }
   }
-  var tokenizer = FormatterWorker.createTokenizer('text/css');
-  var lineNumber;
+  const tokenizer = FormatterWorker.createTokenizer('text/css');
+  let lineNumber;
   for (lineNumber = 0; lineNumber < lines.length; ++lineNumber) {
-    var line = lines[lineNumber];
+    const line = lines[lineNumber];
     tokenizer(line, processToken);
     processToken('\n', null, line.length, line.length + 1);
   }

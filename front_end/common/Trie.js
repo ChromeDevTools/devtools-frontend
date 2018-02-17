@@ -13,11 +13,11 @@ Common.Trie = class {
    * @param {string} word
    */
   add(word) {
-    var node = this._root;
+    let node = this._root;
     ++this._wordsInSubtree[this._root];
-    for (var i = 0; i < word.length; ++i) {
-      var edge = word[i];
-      var next = this._edges[node][edge];
+    for (let i = 0; i < word.length; ++i) {
+      const edge = word[i];
+      let next = this._edges[node][edge];
       if (!next) {
         if (this._freeNodes.length) {
           // No need to reset any fields since they were properly cleaned up in remove().
@@ -43,11 +43,11 @@ Common.Trie = class {
   remove(word) {
     if (!this.has(word))
       return false;
-    var node = this._root;
+    let node = this._root;
     --this._wordsInSubtree[this._root];
-    for (var i = 0; i < word.length; ++i) {
-      var edge = word[i];
-      var next = this._edges[node][edge];
+    for (let i = 0; i < word.length; ++i) {
+      const edge = word[i];
+      const next = this._edges[node][edge];
       if (!--this._wordsInSubtree[next]) {
         delete this._edges[node][edge];
         this._freeNodes.push(next);
@@ -63,8 +63,8 @@ Common.Trie = class {
    * @return {boolean}
    */
   has(word) {
-    var node = this._root;
-    for (var i = 0; i < word.length; ++i) {
+    let node = this._root;
+    for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
       if (!node)
         return false;
@@ -78,13 +78,13 @@ Common.Trie = class {
    */
   words(prefix) {
     prefix = prefix || '';
-    var node = this._root;
-    for (var i = 0; i < prefix.length; ++i) {
+    let node = this._root;
+    for (let i = 0; i < prefix.length; ++i) {
       node = this._edges[node][prefix[i]];
       if (!node)
         return [];
     }
-    var results = [];
+    const results = [];
     this._dfs(node, prefix, results);
     return results;
   }
@@ -97,8 +97,8 @@ Common.Trie = class {
   _dfs(node, prefix, results) {
     if (this._isWord[node])
       results.push(prefix);
-    var edges = this._edges[node];
-    for (var edge in edges)
+    const edges = this._edges[node];
+    for (const edge in edges)
       this._dfs(edges[edge], prefix + edge, results);
   }
 
@@ -108,9 +108,9 @@ Common.Trie = class {
    * @return {string}
    */
   longestPrefix(word, fullWordOnly) {
-    var node = this._root;
-    var wordIndex = 0;
-    for (var i = 0; i < word.length; ++i) {
+    let node = this._root;
+    let wordIndex = 0;
+    for (let i = 0; i < word.length; ++i) {
       node = this._edges[node][word[i]];
       if (!node)
         break;

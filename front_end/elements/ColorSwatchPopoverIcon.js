@@ -34,7 +34,7 @@ Elements.BezierPopoverIcon = class {
     }
 
     this._bezierEditor = new InlineEditor.BezierEditor();
-    var cubicBezier = UI.Geometry.CubicBezier.parse(this._swatch.bezierText());
+    let cubicBezier = UI.Geometry.CubicBezier.parse(this._swatch.bezierText());
     if (!cubicBezier) {
       cubicBezier =
           /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
@@ -48,7 +48,7 @@ Elements.BezierPopoverIcon = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -78,7 +78,7 @@ Elements.BezierPopoverIcon = class {
     this._bezierEditor.removeEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._boundBezierChanged);
     delete this._bezierEditor;
 
-    var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
+    const propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
     this._treeElement.applyStyleText(propertyText, true);
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;
@@ -100,7 +100,7 @@ Elements.ColorSwatchPopoverIcon = class {
     this._swatchPopoverHelper = swatchPopoverHelper;
     this._swatch = swatch;
 
-    var shiftClickMessage = Common.UIString('Shift + Click to change color format.');
+    const shiftClickMessage = Common.UIString('Shift + Click to change color format.');
     this._swatch.iconElement().title = Common.UIString('Open color picker. %s', shiftClickMessage);
     this._swatch.iconElement().addEventListener('click', this._iconClick.bind(this));
     this._swatch.iconElement().addEventListener('mousedown', event => event.consume(), false);
@@ -141,8 +141,8 @@ Elements.ColorSwatchPopoverIcon = class {
       return;
     }
 
-    var color = this._swatch.color();
-    var format = this._swatch.format();
+    const color = this._swatch.color();
+    let format = this._swatch.format();
     if (format === Common.Color.Format.Original)
       format = color.format();
     this._spectrum = new ColorPicker.Spectrum();
@@ -159,7 +159,7 @@ Elements.ColorSwatchPopoverIcon = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -175,7 +175,7 @@ Elements.ColorSwatchPopoverIcon = class {
    * @param {!Common.Event} event
    */
   _spectrumChanged(event) {
-    var color = Common.Color.parse(/** @type {string} */ (event.data));
+    const color = Common.Color.parse(/** @type {string} */ (event.data));
     if (!color)
       return;
     this._swatch.setColor(color);
@@ -199,7 +199,7 @@ Elements.ColorSwatchPopoverIcon = class {
     this._spectrum.removeEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);
     delete this._spectrum;
 
-    var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
+    const propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
     this._treeElement.applyStyleText(propertyText, true);
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;
@@ -265,7 +265,7 @@ Elements.ShadowSwatchPopoverHelper = class {
 
     this._originalPropertyText = this._treeElement.property.propertyText;
     this._treeElement.parentPane().setEditingStyle(true);
-    var uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
+    const uiLocation = Bindings.cssWorkspaceBinding.propertyUILocation(this._treeElement.property, false /* forName */);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation, true /* omitFocus */);
   }
@@ -296,7 +296,7 @@ Elements.ShadowSwatchPopoverHelper = class {
         InlineEditor.CSSShadowEditor.Events.ShadowChanged, this._boundShadowChanged);
     delete this._cssShadowEditor;
 
-    var propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
+    const propertyText = commitEdit ? this._treeElement.renderedPropertyText() : this._originalPropertyText;
     this._treeElement.applyStyleText(propertyText, true);
     this._treeElement.parentPane().setEditingStyle(false);
     delete this._originalPropertyText;

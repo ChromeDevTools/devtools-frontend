@@ -32,7 +32,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._splitWidget = new UI.SplitWidget(false, true, 'resourceWebSocketFrameSplitViewState');
     this._splitWidget.show(this.element);
 
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'data', title: Common.UIString('Data'), sortable: false, weight: 88}, {
         id: 'length',
         title: Common.UIString('Length'),
@@ -65,20 +65,20 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._mainToolbar.appendToolbarItem(this._clearAllButton);
 
     this._filterTypeCombobox = new UI.ToolbarComboBox(this._updateFilterSetting.bind(this));
-    for (var filterItem of Network.ResourceWebSocketFrameView._filterTypes) {
-      var option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.label, filterItem.name);
+    for (const filterItem of Network.ResourceWebSocketFrameView._filterTypes) {
+      const option = this._filterTypeCombobox.createOption(filterItem.label, filterItem.label, filterItem.name);
       this._filterTypeCombobox.addOption(option);
     }
     this._mainToolbar.appendToolbarItem(this._filterTypeCombobox);
     this._filterType = null;
 
-    var placeholder = 'Enter regex, for example: (web)?socket';
+    const placeholder = 'Enter regex, for example: (web)?socket';
     this._filterTextInput = new UI.ToolbarInput(Common.UIString(placeholder), 0.4);
     this._filterTextInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateFilterSetting, this);
     this._mainToolbar.appendToolbarItem(this._filterTextInput);
     this._filterRegex = null;
 
-    var mainContainer = new UI.VBox();
+    const mainContainer = new UI.VBox();
     mainContainer.element.appendChild(this._mainToolbar.element);
     this._dataGrid.asWidget().show(mainContainer.element);
     this._splitWidget.setMainWidget(mainContainer);
@@ -107,8 +107,8 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    * @return {string}
    */
   static opCodeDescription(opCode, mask) {
-    var rawDescription = Network.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || '';
-    var localizedDescription = Common.UIString(rawDescription);
+    const rawDescription = Network.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || '';
+    const localizedDescription = Common.UIString(rawDescription);
     return Common.UIString('%s (Opcode %d%s)', localizedDescription, opCode, (mask ? ', mask' : ''));
   }
 
@@ -131,7 +131,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _frameAdded(event) {
-    var frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
+    const frame = /** @type {!SDK.NetworkRequest.WebSocketFrame} */ (event.data);
     if (!this._frameFilter(frame))
       return;
     this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(this._request.url(), frame));
@@ -154,8 +154,8 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
   }
 
   _updateFilterSetting() {
-    var text = this._filterTextInput.value();
-    var type = this._filterTypeCombobox.selectedOption().value;
+    const text = this._filterTextInput.value();
+    const type = this._filterTypeCombobox.selectedOption().value;
     this._filterRegex = text ? new RegExp(text, 'i') : null;
     this._filterType = type === 'all' ? null : type;
     this.refresh();
@@ -165,11 +165,11 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
   * @param {!Common.Event} event
    */
   async _onFrameSelected(event) {
-    var selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
+    const selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
     this._currentSelectedNode = selectedNode;
-    var contentProvider = selectedNode.contentProvider();
-    var content = await contentProvider.requestContent();
-    var jsonView = await SourceFrame.JSONView.createView(content);
+    const contentProvider = selectedNode.contentProvider();
+    const content = await contentProvider.requestContent();
+    const jsonView = await SourceFrame.JSONView.createView(content);
     if (this._currentSelectedNode !== selectedNode)
       return;
     if (jsonView)
@@ -189,9 +189,9 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
   refresh() {
     this._dataGrid.rootNode().removeChildren();
 
-    var url = this._request.url();
-    var frames = this._request.frames();
-    var offset = this._request[Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol] || 0;
+    const url = this._request.url();
+    let frames = this._request.frames();
+    const offset = this._request[Network.ResourceWebSocketFrameView._clearFrameOffsetSymbol] || 0;
     frames = frames.slice(offset);
     frames = frames.filter(this._frameFilter.bind(this));
     frames.forEach(frame => this._dataGrid.insertChild(new Network.ResourceWebSocketFrameNode(url, frame)));
@@ -214,8 +214,8 @@ Network.ResourceWebSocketFrameView.OpCodes = {
 
 /** @type {!Array.<string> } */
 Network.ResourceWebSocketFrameView.opCodeDescriptions = (function() {
-  var opCodes = Network.ResourceWebSocketFrameView.OpCodes;
-  var map = [];
+  const opCodes = Network.ResourceWebSocketFrameView.OpCodes;
+  const map = [];
   map[opCodes.ContinuationFrame] = 'Continuation Frame';
   map[opCodes.TextFrame] = 'Text Frame';
   map[opCodes.BinaryFrame] = 'Binary Frame';
@@ -241,16 +241,16 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
    * @param {!SDK.NetworkRequest.WebSocketFrame} frame
    */
   constructor(url, frame) {
-    var dataText = frame.text;
-    var length = frame.text.length;
-    var time = new Date(frame.time * 1000);
-    var timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
+    let dataText = frame.text;
+    const length = frame.text.length;
+    const time = new Date(frame.time * 1000);
+    const timeText = ('0' + time.getHours()).substr(-2) + ':' + ('0' + time.getMinutes()).substr(-2) + ':' +
         ('0' + time.getSeconds()).substr(-2) + '.' + ('00' + time.getMilliseconds()).substr(-3);
-    var timeNode = createElement('div');
+    const timeNode = createElement('div');
     timeNode.createTextChild(timeText);
     timeNode.title = time.toLocaleString();
 
-    var isTextFrame = frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.TextFrame;
+    const isTextFrame = frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.TextFrame;
     if (!isTextFrame)
       dataText = Network.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
 

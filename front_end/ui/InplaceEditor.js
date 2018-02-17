@@ -20,7 +20,7 @@ UI.InplaceEditor = class {
    * @return {string}
    */
   editorContent(editingContext) {
-    var element = editingContext.element;
+    const element = editingContext.element;
     if (element.tagName === 'INPUT' && element.type === 'text')
       return element.value;
 
@@ -28,11 +28,11 @@ UI.InplaceEditor = class {
   }
 
   setUpEditor(editingContext) {
-    var element = editingContext.element;
+    const element = editingContext.element;
     element.classList.add('editing');
     element.setAttribute('contenteditable', 'plaintext-only');
 
-    var oldTabIndex = element.getAttribute('tabIndex');
+    const oldTabIndex = element.getAttribute('tabIndex');
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0)
       element.tabIndex = 0;
     this._focusRestorer = new UI.ElementFocusRestorer(element);
@@ -40,7 +40,7 @@ UI.InplaceEditor = class {
   }
 
   closeEditor(editingContext) {
-    var element = editingContext.element;
+    const element = editingContext.element;
     element.classList.remove('editing');
     element.removeAttribute('contenteditable');
 
@@ -53,7 +53,7 @@ UI.InplaceEditor = class {
   }
 
   cancelEditing(editingContext) {
-    var element = editingContext.element;
+    const element = editingContext.element;
     if (element.tagName === 'INPUT' && element.type === 'text')
       element.value = editingContext.oldText;
     else
@@ -73,13 +73,13 @@ UI.InplaceEditor = class {
       return null;
 
     config = config || new UI.InplaceEditor.Config(function() {}, function() {});
-    var editingContext = {element: element, config: config};
-    var committedCallback = config.commitHandler;
-    var cancelledCallback = config.cancelHandler;
-    var pasteCallback = config.pasteHandler;
-    var context = config.context;
-    var moveDirection = '';
-    var self = this;
+    const editingContext = {element: element, config: config};
+    const committedCallback = config.commitHandler;
+    const cancelledCallback = config.cancelHandler;
+    const pasteCallback = config.pasteHandler;
+    const context = config.context;
+    let moveDirection = '';
+    const self = this;
 
     this.setUpEditor(editingContext);
 
@@ -154,7 +154,7 @@ UI.InplaceEditor = class {
      * @param {!Event} event
      */
     function pasteEventListener(event) {
-      var result = pasteCallback(event);
+      const result = pasteCallback(event);
       handleEditingResult(result, event);
     }
 
@@ -162,7 +162,7 @@ UI.InplaceEditor = class {
      * @param {!Event} event
      */
     function keyDownEventListener(event) {
-      var result = defaultFinishHandler(event);
+      let result = defaultFinishHandler(event);
       if (!result && config.postKeydownFinishHandler)
         result = config.postKeydownFinishHandler(event);
       handleEditingResult(result, event);
@@ -173,7 +173,7 @@ UI.InplaceEditor = class {
     if (pasteCallback)
       element.addEventListener('paste', pasteEventListener, true);
 
-    var handle = {cancel: editingCancelled.bind(element), commit: editingCommitted.bind(element)};
+    const handle = {cancel: editingCancelled.bind(element), commit: editingCommitted.bind(element)};
     this.augmentEditingHandle(editingContext, handle);
     return handle;
   }

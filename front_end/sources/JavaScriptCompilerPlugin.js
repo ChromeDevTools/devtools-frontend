@@ -35,7 +35,7 @@ Sources.JavaScriptCompilerPlugin = class {
       return true;
     if (uiSourceCode.project().type() === Workspace.projectTypes.Snippets)
       return true;
-    for (var debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
+    for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       if (Bindings.debuggerWorkspaceBinding.scriptFile(uiSourceCode, debuggerModel))
         return true;
     }
@@ -57,9 +57,9 @@ Sources.JavaScriptCompilerPlugin = class {
    */
   _findRuntimeModel() {
     // TODO(dgozman): grab correct runtime model from JavaScriptSourceFrame instead.
-    var debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
-    for (var i = 0; i < debuggerModels.length; ++i) {
-      var scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModels[i]);
+    const debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
+    for (let i = 0; i < debuggerModels.length; ++i) {
+      const scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModels[i]);
       if (scriptFile)
         return debuggerModels[i].runtimeModel();
     }
@@ -67,19 +67,19 @@ Sources.JavaScriptCompilerPlugin = class {
   }
 
   async _compile() {
-    var runtimeModel = this._findRuntimeModel();
+    const runtimeModel = this._findRuntimeModel();
     if (!runtimeModel)
       return;
-    var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!currentExecutionContext)
       return;
 
-    var code = this._textEditor.text();
+    const code = this._textEditor.text();
     if (code.length > 1024 * 100)
       return;
 
     this._compiling = true;
-    var result = await runtimeModel.compileScript(code, '', false, currentExecutionContext.id);
+    const result = await runtimeModel.compileScript(code, '', false, currentExecutionContext.id);
 
     this._compiling = false;
     if (this._recompileScheduled) {
@@ -92,8 +92,8 @@ Sources.JavaScriptCompilerPlugin = class {
     if (this._disposed || !result || !result.exceptionDetails)
       return;
 
-    var exceptionDetails = result.exceptionDetails;
-    var text = SDK.RuntimeModel.simpleTextFromException(exceptionDetails);
+    const exceptionDetails = result.exceptionDetails;
+    const text = SDK.RuntimeModel.simpleTextFromException(exceptionDetails);
     this._message = this._uiSourceCode.addLineMessage(
         Workspace.UISourceCode.Message.Level.Error, text, exceptionDetails.lineNumber, exceptionDetails.columnNumber);
     this._compilationFinishedForTest();

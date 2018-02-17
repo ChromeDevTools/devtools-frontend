@@ -93,8 +93,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
   _installMessageAndDecorationListeners() {
     if (this._persistenceBinding) {
-      var networkSourceCode = this._persistenceBinding.network;
-      var fileSystemSourceCode = this._persistenceBinding.fileSystem;
+      const networkSourceCode = this._persistenceBinding.network;
+      const fileSystemSourceCode = this._persistenceBinding.fileSystem;
       this._messageAndDecorationListeners = [
         networkSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageAdded, this._onMessageAdded, this),
         networkSourceCode.addEventListener(Workspace.UISourceCode.Events.MessageRemoved, this._onMessageRemoved, this),
@@ -189,7 +189,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   onTextEditorContentSet() {
     super.onTextEditorContentSet();
-    for (var message of this._allMessages())
+    for (const message of this._allMessages())
       this._addMessageToSource(message);
     this._decorateAllTypes();
     this._refreshPlugins();
@@ -200,7 +200,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   _allMessages() {
     if (this._persistenceBinding) {
-      var combinedSet = this._persistenceBinding.network.messages();
+      const combinedSet = this._persistenceBinding.network.messages();
       combinedSet.addAll(this._persistenceBinding.fileSystem.messages());
       return combinedSet;
     }
@@ -249,8 +249,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
   _refreshPlugins() {
     this._disposePlugins();
-    var binding = Persistence.persistence.binding(this._uiSourceCode);
-    var pluginUISourceCode = binding ? binding.network : this._uiSourceCode;
+    const binding = Persistence.persistence.binding(this._uiSourceCode);
+    const pluginUISourceCode = binding ? binding.network : this._uiSourceCode;
 
     // The order of these plugins matters for toolbar items
     if (Sources.CSSPlugin.accepts(pluginUISourceCode))
@@ -264,22 +264,22 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _disposePlugins() {
-    for (var plugin of this._plugins)
+    for (const plugin of this._plugins)
       plugin.dispose();
     this._plugins = [];
   }
 
   _onBindingChanged() {
-    var binding = Persistence.persistence.binding(this._uiSourceCode);
+    const binding = Persistence.persistence.binding(this._uiSourceCode);
     if (binding === this._persistenceBinding)
       return;
-    for (var message of this._allMessages())
+    for (const message of this._allMessages())
       this._removeMessageFromSource(message);
     Common.EventTarget.removeEventListeners(this._messageAndDecorationListeners);
 
     this._persistenceBinding = binding;
 
-    for (var message of this._allMessages())
+    for (const message of this._allMessages())
       this._addMessageToSource(message);
     this._installMessageAndDecorationListeners();
     this._updateStyle();
@@ -320,7 +320,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _innerSetContent(content) {
     this._isSettingContent = true;
     if (this._diff) {
-      var oldContent = this.textEditor.text();
+      const oldContent = this.textEditor.text();
       this.setContent(content);
       this._diff.highlightModifiedLines(oldContent, content);
     } else {
@@ -350,8 +350,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Array.<!UI.Infobar|undefined>} infobars
    */
   attachInfobars(infobars) {
-    for (var i = infobars.length - 1; i >= 0; --i) {
-      var infobar = infobars[i];
+    for (let i = infobars.length - 1; i >= 0; --i) {
+      const infobar = infobars[i];
       if (!infobar)
         continue;
       this.element.insertBefore(infobar.element, this.element.children[0]);
@@ -374,7 +374,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.Event} event
    */
   _onMessageAdded(event) {
-    var message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
+    const message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
     this._addMessageToSource(message);
   }
 
@@ -384,13 +384,13 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _addMessageToSource(message) {
     if (!this.loaded)
       return;
-    var lineNumber = message.lineNumber();
+    let lineNumber = message.lineNumber();
     if (lineNumber >= this.textEditor.linesCount)
       lineNumber = this.textEditor.linesCount - 1;
     if (lineNumber < 0)
       lineNumber = 0;
 
-    var messageBucket = this._rowMessageBuckets.get(lineNumber);
+    let messageBucket = this._rowMessageBuckets.get(lineNumber);
     if (!messageBucket) {
       messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, lineNumber);
       this._rowMessageBuckets.set(lineNumber, messageBucket);
@@ -402,7 +402,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.Event} event
    */
   _onMessageRemoved(event) {
-    var message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
+    const message = /** @type {!Workspace.UISourceCode.Message} */ (event.data);
     this._removeMessageFromSource(message);
   }
 
@@ -413,13 +413,13 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (!this.loaded)
       return;
 
-    var lineNumber = message.lineNumber();
+    let lineNumber = message.lineNumber();
     if (lineNumber >= this.textEditor.linesCount)
       lineNumber = this.textEditor.linesCount - 1;
     if (lineNumber < 0)
       lineNumber = 0;
 
-    var messageBucket = this._rowMessageBuckets.get(lineNumber);
+    const messageBucket = this._rowMessageBuckets.get(lineNumber);
     if (!messageBucket)
       return;
     messageBucket.removeMessage(message);
@@ -434,18 +434,18 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @return {?UI.PopoverRequest}
    */
   _getErrorPopoverContent(event) {
-    var element = event.target.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ||
+    const element = event.target.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ||
         event.target.enclosingNodeOrSelfWithClass('text-editor-line-decoration-wave');
     if (!element)
       return null;
-    var anchor = element.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ?
+    const anchor = element.enclosingNodeOrSelfWithClass('text-editor-line-decoration-icon') ?
         element.boxInWindow() :
         new AnchorBox(event.clientX, event.clientY, 1, 1);
     return {
       box: anchor,
       show: popover => {
-        var messageBucket = element.enclosingNodeOrSelfWithClass('text-editor-line-decoration')._messageBucket;
-        var messagesOutline = messageBucket.messagesDescription();
+        const messageBucket = element.enclosingNodeOrSelfWithClass('text-editor-line-decoration')._messageBucket;
+        const messagesOutline = messageBucket.messagesDescription();
         popover.contentElement.appendChild(messagesOutline);
         return Promise.resolve(true);
       }
@@ -453,7 +453,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _updateBucketDecorations() {
-    for (var bucket of this._rowMessageBuckets.values())
+    for (const bucket of this._rowMessageBuckets.values())
       bucket._updateDecoration();
   }
 
@@ -461,7 +461,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.Event} event
    */
   _onLineDecorationAdded(event) {
-    var marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);
+    const marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);
     this._decorateTypeThrottled(marker.type());
   }
 
@@ -469,7 +469,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!Common.Event} event
    */
   _onLineDecorationRemoved(event) {
-    var marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);
+    const marker = /** @type {!Workspace.UISourceCode.LineMarker} */ (event.data);
     this._decorateTypeThrottled(marker.type());
   }
 
@@ -493,8 +493,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _decorateAllTypes() {
-    for (var extension of self.runtime.extensions(SourceFrame.LineDecorator)) {
-      var type = extension.descriptor()['decoratorType'];
+    for (const extension of self.runtime.extensions(SourceFrame.LineDecorator)) {
+      const type = extension.descriptor()['decoratorType'];
       if (this._uiSourceCode.decorationsForType(type))
         this._decorateTypeThrottled(type);
     }
@@ -505,9 +505,9 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @return {!Array<!UI.ToolbarItem>}
    */
   syncToolbarItems() {
-    var leftToolbarItems = super.syncToolbarItems();
-    var rightToolbarItems = [];
-    for (var plugin of this._plugins) {
+    const leftToolbarItems = super.syncToolbarItems();
+    const rightToolbarItems = [];
+    for (const plugin of this._plugins) {
       leftToolbarItems.pushAll(plugin.leftToolbarItems());
       rightToolbarItems.pushAll(plugin.rightToolbarItems());
     }
@@ -549,10 +549,10 @@ Sources.UISourceCodeFrame.RowMessage = class {
     this._repeatCountElement =
         this.element.createChild('label', 'text-editor-row-message-repeat-count hidden', 'dt-small-bubble');
     this._repeatCountElement.type = Sources.UISourceCodeFrame._bubbleTypePerLevel[message.level()];
-    var linesContainer = this.element.createChild('div');
-    var lines = this._message.text().split('\n');
-    for (var i = 0; i < lines.length; ++i) {
-      var messageLine = linesContainer.createChild('div');
+    const linesContainer = this.element.createChild('div');
+    const lines = this._message.text().split('\n');
+    for (let i = 0; i < lines.length; ++i) {
+      const messageLine = linesContainer.createChild('div');
       messageLine.textContent = lines[i];
     }
   }
@@ -580,7 +580,7 @@ Sources.UISourceCodeFrame.RowMessage = class {
 
   _updateMessageRepeatCount() {
     this._repeatCountElement.textContent = this._repeatCount;
-    var showRepeatCount = this._repeatCount > 1;
+    const showRepeatCount = this._repeatCount > 1;
     this._repeatCountElement.classList.toggle('hidden', !showRepeatCount);
     this._icon.classList.toggle('hidden', showRepeatCount);
   }
@@ -619,10 +619,10 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    */
   _updateWavePosition(lineNumber, columnNumber) {
     lineNumber = Math.min(lineNumber, this.textEditor.linesCount - 1);
-    var lineText = this.textEditor.line(lineNumber);
+    const lineText = this.textEditor.line(lineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
-    var lineIndent = TextUtils.TextUtils.lineIndent(lineText).length;
-    var startColumn = Math.max(columnNumber - 1, lineIndent);
+    const lineIndent = TextUtils.TextUtils.lineIndent(lineText).length;
+    const startColumn = Math.max(columnNumber - 1, lineIndent);
     if (this._decorationStartColumn === startColumn)
       return;
     if (this._decorationStartColumn !== null)
@@ -637,17 +637,17 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
   messagesDescription() {
     this._messagesDescriptionElement.removeChildren();
     UI.appendStyle(this._messagesDescriptionElement, 'source_frame/messagesPopover.css');
-    for (var i = 0; i < this._messages.length; ++i)
+    for (let i = 0; i < this._messages.length; ++i)
       this._messagesDescriptionElement.appendChild(this._messages[i].element);
 
     return this._messagesDescriptionElement;
   }
 
   detachFromEditor() {
-    var position = this._lineHandle.resolve();
+    const position = this._lineHandle.resolve();
     if (!position)
       return;
-    var lineNumber = position.lineNumber;
+    const lineNumber = position.lineNumber;
     if (this._level)
       this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
     if (this._decorationStartColumn !== null) {
@@ -667,15 +667,15 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    * @param {!Workspace.UISourceCode.Message} message
    */
   addMessage(message) {
-    for (var i = 0; i < this._messages.length; ++i) {
-      var rowMessage = this._messages[i];
+    for (let i = 0; i < this._messages.length; ++i) {
+      const rowMessage = this._messages[i];
       if (rowMessage.message().isEqual(message)) {
         rowMessage.setRepeatCount(rowMessage.repeatCount() + 1);
         return;
       }
     }
 
-    var rowMessage = new Sources.UISourceCodeFrame.RowMessage(message);
+    const rowMessage = new Sources.UISourceCodeFrame.RowMessage(message);
     this._messages.push(rowMessage);
     this._updateDecoration();
   }
@@ -684,8 +684,8 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
    * @param {!Workspace.UISourceCode.Message} message
    */
   removeMessage(message) {
-    for (var i = 0; i < this._messages.length; ++i) {
-      var rowMessage = this._messages[i];
+    for (let i = 0; i < this._messages.length; ++i) {
+      const rowMessage = this._messages[i];
       if (!rowMessage.message().isEqual(message))
         continue;
       rowMessage.setRepeatCount(rowMessage.repeatCount() - 1);
@@ -701,15 +701,15 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
       return;
     if (!this._messages.length)
       return;
-    var position = this._lineHandle.resolve();
+    const position = this._lineHandle.resolve();
     if (!position)
       return;
 
-    var lineNumber = position.lineNumber;
-    var columnNumber = Number.MAX_VALUE;
-    var maxMessage = null;
-    for (var i = 0; i < this._messages.length; ++i) {
-      var message = this._messages[i].message();
+    const lineNumber = position.lineNumber;
+    let columnNumber = Number.MAX_VALUE;
+    let maxMessage = null;
+    for (let i = 0; i < this._messages.length; ++i) {
+      const message = this._messages[i].message();
       columnNumber = Math.min(columnNumber, message.columnNumber());
       if (!maxMessage || Workspace.UISourceCode.Message.messageLevelComparator(maxMessage, message) < 0)
         maxMessage = message;

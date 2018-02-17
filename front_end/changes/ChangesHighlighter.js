@@ -13,10 +13,10 @@
  * }}
  */
 Changes.ChangesHighlighter = function(config, parserConfig) {
-  var diffRows = parserConfig.diffRows;
-  var baselineLines = parserConfig.baselineLines;
-  var currentLines = parserConfig.currentLines;
-  var syntaxHighlightMode = CodeMirror.getMode({}, parserConfig.mimeType);
+  const diffRows = parserConfig.diffRows;
+  const baselineLines = parserConfig.baselineLines;
+  const currentLines = parserConfig.currentLines;
+  const syntaxHighlightMode = CodeMirror.getMode({}, parserConfig.mimeType);
 
   /**
    * @param {!Changes.ChangesHighlighter.DiffState} state
@@ -41,9 +41,9 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
    * @param {!Array<string>} lines
    */
   function fastForwardSyntaxHighlighter(syntaxState, from, to, lines) {
-    var lineNumber = from;
+    let lineNumber = from;
     while (lineNumber < to && lineNumber < lines.length) {
-      var stream = new CodeMirror.StringStream(lines[lineNumber]);
+      const stream = new CodeMirror.StringStream(lines[lineNumber]);
       if (stream.eol() && syntaxHighlightMode.blankLine)
         syntaxHighlightMode.blankLine(syntaxState);
       while (!stream.eol()) {
@@ -79,17 +79,17 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
      * @return {string}
      */
     token: function(stream, state) {
-      var diffRow = diffRows[state.rowNumber];
+      const diffRow = diffRows[state.rowNumber];
       if (!diffRow) {
         stream.next();
         return '';
       }
       fastForward(state, diffRow.baselineLineNumber - 1, diffRow.currentLineNumber - 1);
-      var classes = '';
+      let classes = '';
       if (stream.pos === 0)
         classes += ' line-background-' + diffRow.type + ' line-' + diffRow.type;
 
-      var syntaxHighlighterNeedsRefresh = state.diffPosition >= state.syntaxPosition;
+      const syntaxHighlighterNeedsRefresh = state.diffPosition >= state.syntaxPosition;
       if (state.diffPosition <= state.syntaxPosition) {
         state.diffPosition += diffRow.tokens[state.diffTokenIndex].text.length;
         state.diffStyle = diffRow.tokens[state.diffTokenIndex].className;
@@ -130,7 +130,7 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
      * @return {string}
      */
     blankLine: function(state) {
-      var diffRow = diffRows[state.rowNumber];
+      const diffRow = diffRows[state.rowNumber];
       state.rowNumber++;
       state.syntaxPosition = 0;
       state.diffPosition = 0;
@@ -138,7 +138,7 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
       if (!diffRow)
         return '';
 
-      var style = '';
+      let style = '';
       if (syntaxHighlightMode.blankLine) {
         if (diffRow.type === Changes.ChangesView.RowType.Equal || diffRow.type === Changes.ChangesView.RowType.Addition) {
           style = syntaxHighlightMode.blankLine(state.currentSyntaxState);
@@ -156,7 +156,7 @@ Changes.ChangesHighlighter = function(config, parserConfig) {
      * @return {!Changes.ChangesHighlighter.DiffState}
      */
     copyState: function(state) {
-      var newState = Object.assign({}, state);
+      const newState = Object.assign({}, state);
       newState.currentSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.currentSyntaxState);
       newState.baselineSyntaxState = CodeMirror.copyState(syntaxHighlightMode, state.baselineSyntaxState);
       return /** @type {!Changes.ChangesHighlighter.DiffState} */ (newState);

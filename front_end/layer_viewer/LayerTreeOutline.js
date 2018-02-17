@@ -61,8 +61,8 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
    */
   selectObject(selection) {
     this.hoverObject(null);
-    var layer = selection && selection.layer();
-    var node = layer && layer[LayerViewer.LayerTreeElement._symbol];
+    const layer = selection && selection.layer();
+    const node = layer && layer[LayerViewer.LayerTreeElement._symbol];
     if (node)
       node.revealAndSelect(true);
     else if (this._treeOutline.selectedTreeElement)
@@ -74,8 +74,8 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
    * @override
    */
   hoverObject(selection) {
-    var layer = selection && selection.layer();
-    var node = layer && layer[LayerViewer.LayerTreeElement._symbol];
+    const layer = selection && selection.layer();
+    const node = layer && layer[LayerViewer.LayerTreeElement._symbol];
     if (node === this._lastHoveredNode)
       return;
     if (this._lastHoveredNode)
@@ -95,9 +95,9 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
   }
 
   _update() {
-    var showInternalLayers = this._layerViewHost.showInternalLayersSetting().get();
-    var seenLayers = new Map();
-    var root = null;
+    const showInternalLayers = this._layerViewHost.showInternalLayersSetting().get();
+    const seenLayers = new Map();
+    let root = null;
     if (this._layerTree) {
       if (!showInternalLayers)
         root = this._layerTree.contentRoot();
@@ -115,12 +115,13 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
       if (seenLayers.get(layer))
         console.assert(false, 'Duplicate layer: ' + layer.id());
       seenLayers.set(layer, true);
-      var node = layer[LayerViewer.LayerTreeElement._symbol];
-      var parentLayer = layer.parent();
+      let node = layer[LayerViewer.LayerTreeElement._symbol];
+      let parentLayer = layer.parent();
       // Skip till nearest visible ancestor.
       while (parentLayer && parentLayer !== root && !parentLayer.drawsContent() && !showInternalLayers)
         parentLayer = parentLayer.parent();
-      var parent = layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
+      const parent =
+          layer === root ? this._treeOutline.rootElement() : parentLayer[LayerViewer.LayerTreeElement._symbol];
       if (!parent) {
         console.assert(false, 'Parent is not in the tree');
         return;
@@ -133,7 +134,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
           node.expand();
       } else {
         if (node.parent !== parent) {
-          var oldSelection = this._treeOutline.selectedTreeElement;
+          const oldSelection = this._treeOutline.selectedTreeElement;
           if (node.parent)
             node.parent.removeChild(node);
           parent.appendChild(node);
@@ -146,12 +147,12 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
     if (root)
       this._layerTree.forEachLayer(updateLayer.bind(this), root);
     // Cleanup layers that don't exist anymore from tree.
-    var rootElement = this._treeOutline.rootElement();
-    for (var node = rootElement.firstChild(); node && !node.root;) {
+    const rootElement = this._treeOutline.rootElement();
+    for (let node = rootElement.firstChild(); node && !node.root;) {
       if (seenLayers.get(node._layer)) {
         node = node.traverseNextTreeElement(false);
       } else {
-        var nextNode = node.nextSibling || node.parent;
+        const nextNode = node.nextSibling || node.parent;
         node.parent.removeChild(node);
         if (node === this._lastHoveredNode)
           this._lastHoveredNode = null;
@@ -159,7 +160,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
       }
     }
     if (!this._treeOutline.selectedTreeElement) {
-      var elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
+      const elementToSelect = this._layerTree.contentRoot() || this._layerTree.root();
       if (elementToSelect)
         elementToSelect[LayerViewer.LayerTreeElement._symbol].revealAndSelect(true);
     }
@@ -169,7 +170,7 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    var node = this._treeOutline.treeElementFromEvent(event);
+    const node = this._treeOutline.treeElementFromEvent(event);
     if (node === this._lastHoveredNode)
       return;
     this._layerViewHost.hoverObject(this._selectionForNode(node));
@@ -186,8 +187,8 @@ LayerViewer.LayerTreeOutline = class extends Common.Object {
    * @param {!Event} event
    */
   _onContextMenu(event) {
-    var selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event));
-    var contextMenu = new UI.ContextMenu(event);
+    const selection = this._selectionForNode(this._treeOutline.treeElementFromEvent(event));
+    const contextMenu = new UI.ContextMenu(event);
     this._layerViewHost.showContextMenu(contextMenu, selection);
   }
 
@@ -217,10 +218,10 @@ LayerViewer.LayerTreeElement = class extends UI.TreeElement {
   }
 
   _update() {
-    var node = this._layer.nodeForSelfOrAncestor();
-    var title = createDocumentFragment();
+    const node = this._layer.nodeForSelfOrAncestor();
+    const title = createDocumentFragment();
     title.createTextChild(node ? node.simpleSelector() : '#' + this._layer.id());
-    var details = title.createChild('span', 'dimmed');
+    const details = title.createChild('span', 'dimmed');
     details.textContent = Common.UIString(' (%d × %d)', this._layer.width(), this._layer.height());
     this.title = title;
   }

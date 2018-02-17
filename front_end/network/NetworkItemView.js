@@ -40,19 +40,19 @@ Network.NetworkItemView = class extends UI.TabbedPane {
 
     this._resourceViewTabSetting = Common.settings.createSetting('resourceViewTab', 'preview');
 
-    var headersView = new Network.RequestHeadersView(request);
+    const headersView = new Network.RequestHeadersView(request);
     this.appendTab('headers', Common.UIString('Headers'), headersView);
 
     this.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
 
     if (request.resourceType() === Common.resourceTypes.WebSocket) {
-      var frameView = new Network.ResourceWebSocketFrameView(request);
+      const frameView = new Network.ResourceWebSocketFrameView(request);
       this.appendTab('webSocketFrames', Common.UIString('Frames'), frameView);
     } else if (request.mimeType === 'text/event-stream') {
       this.appendTab('eventSource', Common.UIString('EventStream'), new Network.EventSourceMessagesView(request));
     } else {
-      var responseView = new Network.RequestResponseView(request);
-      var previewView = new Network.RequestPreviewView(request);
+      const responseView = new Network.RequestResponseView(request);
+      const previewView = new Network.RequestPreviewView(request);
       this.appendTab('preview', Common.UIString('Preview'), previewView);
       this.appendTab('response', Common.UIString('Response'), responseView);
     }

@@ -91,7 +91,7 @@ UI.TextPrompt = class extends Common.Object {
    * @return {!Element}
    */
   attachAndStartEditing(element, blurListener) {
-    var proxyElement = this._attachInternal(element);
+    const proxyElement = this._attachInternal(element);
     this._startEditing(blurListener);
     return proxyElement;
   }
@@ -110,7 +110,7 @@ UI.TextPrompt = class extends Common.Object {
     this._boundOnMouseWheel = this.onMouseWheel.bind(this);
     this._boundClearAutocomplete = this.clearAutocomplete.bind(this);
     this._proxyElement = element.ownerDocument.createElement('span');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this._proxyElement, 'ui/textPrompt.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this._proxyElement, 'ui/textPrompt.css');
     this._contentElement = shadowRoot.createChild('div', 'text-prompt-root');
     this._contentElement.createChild('content');
     this._proxyElement.style.display = this._proxyElementDisplay;
@@ -148,7 +148,7 @@ UI.TextPrompt = class extends Common.Object {
    * @return {string}
    */
   textWithCurrentSuggestion() {
-    var text = this.text();
+    const text = this.text();
     if (!this._queryRange)
       return text;
     return text.substring(0, this._queryRange.startColumn) + this._currentSuggestion +
@@ -159,9 +159,9 @@ UI.TextPrompt = class extends Common.Object {
    * @return {string}
    */
   text() {
-    var text = this._element.textContent;
+    let text = this._element.textContent;
     if (this._ghostTextElement.parentNode) {
-      var addition = this._ghostTextElement.textContent;
+      const addition = this._ghostTextElement.textContent;
       text = text.substring(0, text.length - addition.length);
     }
     return text;
@@ -265,7 +265,7 @@ UI.TextPrompt = class extends Common.Object {
    * @param {!Event} event
    */
   onKeyDown(event) {
-    var handled = false;
+    let handled = false;
     if (this._isSuggestBoxVisible() && this._suggestBox.keyPressed(event)) {
       event.consume(true);
       return;
@@ -314,8 +314,8 @@ UI.TextPrompt = class extends Common.Object {
    * @param {!Event} event
    */
   onInput(event) {
-    var text = this.text();
-    var hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
+    const text = this.text();
+    const hasCommonPrefix = text.startsWith(this._previousText) || this._previousText.startsWith(text);
     if (this._queryRange && hasCommonPrefix)
       this._queryRange.endColumn += text.length - this._previousText.length;
     this._refreshGhostText();
@@ -329,7 +329,7 @@ UI.TextPrompt = class extends Common.Object {
    * @return {boolean}
    */
   acceptAutoComplete() {
-    var result = false;
+    let result = false;
     if (this._isSuggestBoxVisible())
       result = this._suggestBox.acceptSuggestion();
     if (!result)
@@ -339,7 +339,7 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   clearAutocomplete() {
-    var beforeText = this.textWithCurrentSuggestion();
+    const beforeText = this.textWithCurrentSuggestion();
 
     if (this._isSuggestBoxVisible())
       this._suggestBox.hide();
@@ -374,7 +374,7 @@ UI.TextPrompt = class extends Common.Object {
    * @param {boolean=} force
    */
   autoCompleteSoon(force) {
-    var immediately = this._isSuggestBoxVisible() || force;
+    const immediately = this._isSuggestBoxVisible() || force;
     if (!this._completeTimeout) {
       this._completeTimeout =
           setTimeout(this.complete.bind(this, force), immediately ? 0 : this._autocompletionTimeout);
@@ -387,12 +387,12 @@ UI.TextPrompt = class extends Common.Object {
    */
   complete(force, reverse) {
     this._clearAutocompleteTimeout();
-    var selection = this._element.getComponentSelection();
-    var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+    const selection = this._element.getComponentSelection();
+    const selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
     if (!selectionRange)
       return;
 
-    var shouldExit;
+    let shouldExit;
 
     if (!force && !this._isCaretAtEndOfPrompt() && !this._isSuggestBoxVisible()) {
       shouldExit = true;
@@ -400,9 +400,9 @@ UI.TextPrompt = class extends Common.Object {
       shouldExit = true;
     } else if (!force) {
       // BUG72018: Do not show suggest box if caret is followed by a non-stop character.
-      var wordSuffixRange = selectionRange.startContainer.rangeOfWord(
+      const wordSuffixRange = selectionRange.startContainer.rangeOfWord(
           selectionRange.endOffset, this._completionStopCharacters, this._element, 'forward');
-      var autocompleteTextLength = this._ghostTextElement.parentNode ? this._ghostTextElement.textContent.length : 0;
+      const autocompleteTextLength = this._ghostTextElement.parentNode ? this._ghostTextElement.textContent.length : 0;
       if (wordSuffixRange.toString().length !== autocompleteTextLength)
         shouldExit = true;
     }
@@ -411,10 +411,10 @@ UI.TextPrompt = class extends Common.Object {
       return;
     }
 
-    var wordQueryRange = selectionRange.startContainer.rangeOfWord(
+    const wordQueryRange = selectionRange.startContainer.rangeOfWord(
         selectionRange.startOffset, this._completionStopCharacters, this._element, 'backward');
 
-    var expressionRange = wordQueryRange.cloneRange();
+    const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);
     expressionRange.setStartBefore(this._proxyElement);
     this._loadCompletions(expressionRange.toString(), wordQueryRange.toString(), !!force)
@@ -431,11 +431,11 @@ UI.TextPrompt = class extends Common.Object {
    * @param {!Range} textRange
    */
   _boxForAnchorAtStart(selection, textRange) {
-    var rangeCopy = selection.getRangeAt(0).cloneRange();
-    var anchorElement = createElement('span');
+    const rangeCopy = selection.getRangeAt(0).cloneRange();
+    const anchorElement = createElement('span');
     anchorElement.textContent = '\u200B';
     textRange.insertNode(anchorElement);
-    var box = anchorElement.boxInWindow(window);
+    const box = anchorElement.boxInWindow(window);
     anchorElement.remove();
     selection.removeAllRanges();
     selection.addRange(rangeCopy);
@@ -470,10 +470,10 @@ UI.TextPrompt = class extends Common.Object {
     if (this._completionRequestId !== completionRequestId)
       return;
 
-    var query = originalWordQueryRange.toString();
+    const query = originalWordQueryRange.toString();
 
     // Filter out dupes.
-    var store = new Set();
+    const store = new Set();
     completions = completions.filter(item => !store.has(item.text) && !!store.add(item.text));
 
     if (query || force) {
@@ -488,22 +488,22 @@ UI.TextPrompt = class extends Common.Object {
       return;
     }
 
-    var selectionRange = selection.getRangeAt(0);
+    const selectionRange = selection.getRangeAt(0);
 
-    var fullWordRange = this._createRange();
+    const fullWordRange = this._createRange();
     fullWordRange.setStart(originalWordQueryRange.startContainer, originalWordQueryRange.startOffset);
     fullWordRange.setEnd(selectionRange.endContainer, selectionRange.endOffset);
 
     if (query + selectionRange.toString() !== fullWordRange.toString())
       return;
 
-    var beforeRange = this._createRange();
+    const beforeRange = this._createRange();
     beforeRange.setStart(this._element, 0);
     beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
     this._queryRange = new TextUtils.TextRange(
         0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
 
-    var shouldSelect = !this._disableDefaultSuggestionForEmptyInput || !!this.text();
+    const shouldSelect = !this._disableDefaultSuggestionForEmptyInput || !!this.text();
     if (this._suggestBox) {
       this._suggestBox.updateSuggestions(
           this._boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this._isCaretAtEndOfPrompt(),
@@ -556,13 +556,13 @@ UI.TextPrompt = class extends Common.Object {
    */
   setDOMSelection(startColumn, endColumn) {
     this._element.normalize();
-    var node = this._element.childNodes[0];
+    const node = this._element.childNodes[0];
     if (!node || node === this._ghostTextElement)
       return;
-    var range = this._createRange();
+    const range = this._createRange();
     range.setStart(node, startColumn);
     range.setEnd(node, endColumn);
-    var selection = this._element.getComponentSelection();
+    const selection = this._element.getComponentSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }
@@ -578,9 +578,9 @@ UI.TextPrompt = class extends Common.Object {
    * @return {boolean}
    */
   isCaretInsidePrompt() {
-    var selection = this._element.getComponentSelection();
+    const selection = this._element.getComponentSelection();
     // @see crbug.com/602541
-    var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+    const selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
     if (!selectionRange || !selection.isCollapsed)
       return false;
     return selectionRange.startContainer.isSelfOrDescendant(this._element);
@@ -590,12 +590,12 @@ UI.TextPrompt = class extends Common.Object {
    * @return {boolean}
    */
   _isCaretAtEndOfPrompt() {
-    var selection = this._element.getComponentSelection();
-    var selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
+    const selection = this._element.getComponentSelection();
+    const selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
     if (!selectionRange || !selection.isCollapsed)
       return false;
 
-    var node = selectionRange.startContainer;
+    let node = selectionRange.startContainer;
     if (!node.isSelfOrDescendant(this._element))
       return false;
 
@@ -605,7 +605,7 @@ UI.TextPrompt = class extends Common.Object {
     if (node.nodeType === Node.TEXT_NODE && selectionRange.startOffset < node.nodeValue.length)
       return false;
 
-    var foundNextText = false;
+    let foundNextText = false;
     while (node) {
       if (node.nodeType === Node.TEXT_NODE && node.nodeValue.length) {
         if (foundNextText && !this._ghostTextElement.isAncestor(node))
@@ -620,13 +620,13 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   moveCaretToEndOfPrompt() {
-    var selection = this._element.getComponentSelection();
-    var selectionRange = this._createRange();
+    const selection = this._element.getComponentSelection();
+    const selectionRange = this._createRange();
 
-    var container = this._element;
+    let container = this._element;
     while (container.childNodes.length)
       container = container.lastChild;
-    var offset = container.nodeType === Node.TEXT_NODE ? container.textContent.length : 0;
+    const offset = container.nodeType === Node.TEXT_NODE ? container.textContent.length : 0;
     selectionRange.setStart(container, offset);
     selectionRange.setEnd(container, offset);
 

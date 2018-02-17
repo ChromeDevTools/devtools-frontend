@@ -233,7 +233,7 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
     if (!this._enabled)
       return false;
     this._offsetLeft = this._parentElement.totalOffsetLeft();
-    var position = event.x - this._offsetLeft;
+    const position = event.x - this._offsetLeft;
     this._overviewWindowSelector = new PerfUI.OverviewGrid.WindowSelector(this._parentElement, position);
     return true;
   }
@@ -250,13 +250,13 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
    * @param {!Event} event
    */
   _endWindowSelectorDragging(event) {
-    var window = this._overviewWindowSelector._close(event.x - this._offsetLeft);
+    const window = this._overviewWindowSelector._close(event.x - this._offsetLeft);
     delete this._overviewWindowSelector;
-    var clickThreshold = 3;
+    const clickThreshold = 3;
     if (window.end - window.start < clickThreshold) {
       if (this._clickHandler && this._clickHandler.call(null, event))
         return;
-      var middle = window.end;
+      const middle = window.end;
       window.start = Math.max(0, middle - PerfUI.OverviewGrid.MinSelectableSize / 2);
       window.end = Math.min(this._parentElement.clientWidth, middle + PerfUI.OverviewGrid.MinSelectableSize / 2);
     } else if (window.end - window.start < PerfUI.OverviewGrid.MinSelectableSize) {
@@ -285,7 +285,7 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
    */
   _windowDragging(event) {
     event.preventDefault();
-    var delta = (event.pageX - this._dragStartPoint) / this._parentElement.clientWidth;
+    let delta = (event.pageX - this._dragStartPoint) / this._parentElement.clientWidth;
     if (this._dragStartLeft + delta < 0)
       delta = -this._dragStartLeft;
 
@@ -335,15 +335,15 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
   }
 
   _updateCurtains() {
-    var left = this.windowLeft;
-    var right = this.windowRight;
-    var width = right - left;
+    let left = this.windowLeft;
+    let right = this.windowRight;
+    const width = right - left;
 
     // We allow actual time window to be arbitrarily small but don't want the UI window to be too small.
-    var widthInPixels = width * this._parentElement.clientWidth;
-    var minWidthInPixels = PerfUI.OverviewGrid.MinSelectableSize / 2;
+    const widthInPixels = width * this._parentElement.clientWidth;
+    const minWidthInPixels = PerfUI.OverviewGrid.MinSelectableSize / 2;
     if (widthInPixels < minWidthInPixels) {
-      var factor = minWidthInPixels / widthInPixels;
+      const factor = minWidthInPixels / widthInPixels;
       left = ((this.windowRight + this.windowLeft) - width * factor) / 2;
       right = ((this.windowRight + this.windowLeft) + width * factor) / 2;
     }
@@ -359,9 +359,9 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
    * @param {?number} end
    */
   _setWindowPosition(start, end) {
-    var clientWidth = this._parentElement.clientWidth;
-    var windowLeft = typeof start === 'number' ? start / clientWidth : this.windowLeft;
-    var windowRight = typeof end === 'number' ? end / clientWidth : this.windowRight;
+    const clientWidth = this._parentElement.clientWidth;
+    const windowLeft = typeof start === 'number' ? start / clientWidth : this.windowLeft;
+    const windowRight = typeof end === 'number' ? end / clientWidth : this.windowRight;
     this._setWindow(windowLeft, windowRight);
   }
 
@@ -375,13 +375,13 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
       const zoomFactor = 1.1;
       const mouseWheelZoomSpeed = 1 / 120;
 
-      var reference = event.offsetX / event.target.clientWidth;
+      const reference = event.offsetX / event.target.clientWidth;
       this._zoom(Math.pow(zoomFactor, -event.wheelDeltaY * mouseWheelZoomSpeed), reference);
     }
     if (typeof event.wheelDeltaX === 'number' && event.wheelDeltaX) {
-      var offset = Math.round(event.wheelDeltaX * PerfUI.OverviewGrid.WindowScrollSpeedFactor);
-      var windowLeft = this._leftResizeElement.offsetLeft + PerfUI.OverviewGrid.ResizerOffset;
-      var windowRight = this._rightResizeElement.offsetLeft + PerfUI.OverviewGrid.ResizerOffset;
+      let offset = Math.round(event.wheelDeltaX * PerfUI.OverviewGrid.WindowScrollSpeedFactor);
+      const windowLeft = this._leftResizeElement.offsetLeft + PerfUI.OverviewGrid.ResizerOffset;
+      const windowRight = this._rightResizeElement.offsetLeft + PerfUI.OverviewGrid.ResizerOffset;
 
       if (windowLeft - offset < 0)
         offset = windowLeft;
@@ -400,10 +400,10 @@ PerfUI.OverviewGrid.Window = class extends Common.Object {
    * @param {number} reference
    */
   _zoom(factor, reference) {
-    var left = this.windowLeft;
-    var right = this.windowRight;
-    var windowSize = right - left;
-    var newWindowSize = factor * windowSize;
+    let left = this.windowLeft;
+    let right = this.windowRight;
+    const windowSize = right - left;
+    let newWindowSize = factor * windowSize;
     if (newWindowSize > 1) {
       newWindowSize = 1;
       factor = newWindowSize / windowSize;

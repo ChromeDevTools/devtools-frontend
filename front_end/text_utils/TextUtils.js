@@ -58,7 +58,7 @@ TextUtils.TextUtils = {
    * @return {boolean}
    */
   isWord: function(word) {
-    for (var i = 0; i < word.length; ++i) {
+    for (let i = 0; i < word.length; ++i) {
       if (!TextUtils.TextUtils.isWordChar(word.charAt(i)))
         return false;
     }
@@ -95,8 +95,8 @@ TextUtils.TextUtils = {
    * @param {function(string)} wordCallback
    */
   textToWords: function(text, isWordChar, wordCallback) {
-    var startWord = -1;
-    for (var i = 0; i < text.length; ++i) {
+    let startWord = -1;
+    for (let i = 0; i < text.length; ++i) {
       if (!isWordChar(text.charAt(i))) {
         if (startWord !== -1)
           wordCallback(text.substring(startWord, i));
@@ -114,7 +114,7 @@ TextUtils.TextUtils = {
    * @return {string}
    */
   lineIndent: function(line) {
-    var indentation = 0;
+    let indentation = 0;
     while (indentation < line.length && TextUtils.TextUtils.isSpaceChar(line.charAt(indentation)))
       ++indentation;
     return line.substr(0, indentation);
@@ -142,10 +142,10 @@ TextUtils.TextUtils = {
    * @return {!Array<{value: string, position: number, regexIndex: number, captureGroups: !Array<string|undefined>}>}
    */
   splitStringByRegexes(text, regexes) {
-    var matches = [];
-    var globalRegexes = [];
-    for (var i = 0; i < regexes.length; i++) {
-      var regex = regexes[i];
+    const matches = [];
+    const globalRegexes = [];
+    for (let i = 0; i < regexes.length; i++) {
+      const regex = regexes[i];
       if (!regex.global)
         globalRegexes.push(new RegExp(regex.source, regex.flags ? regex.flags + 'g' : 'g'));
       else
@@ -165,15 +165,15 @@ TextUtils.TextUtils = {
         matches.push({value: text, position: startIndex, regexIndex: -1, captureGroups: []});
         return;
       }
-      var regex = globalRegexes[regexIndex];
-      var currentIndex = 0;
-      var result;
+      const regex = globalRegexes[regexIndex];
+      let currentIndex = 0;
+      let result;
       regex.lastIndex = 0;
       while ((result = regex.exec(text)) !== null) {
-        var stringBeforeMatch = text.substring(currentIndex, result.index);
+        const stringBeforeMatch = text.substring(currentIndex, result.index);
         if (stringBeforeMatch)
           doSplit(stringBeforeMatch, regexIndex + 1, startIndex + currentIndex);
-        var match = result[0];
+        const match = result[0];
         matches.push({
           value: match,
           position: startIndex + result.index,
@@ -182,7 +182,7 @@ TextUtils.TextUtils = {
         });
         currentIndex = result.index + match.length;
       }
-      var stringAfterMatches = text.substring(currentIndex);
+      const stringAfterMatches = text.substring(currentIndex);
       if (stringAfterMatches)
         doSplit(stringAfterMatches, regexIndex + 1, startIndex + currentIndex);
     }
@@ -210,16 +210,16 @@ TextUtils.FilterParser = class {
    * @return {!Array<!TextUtils.FilterParser.ParsedFilter>}
    */
   parse(query) {
-    var splitResult = TextUtils.TextUtils.splitStringByRegexes(query, [
+    const splitResult = TextUtils.TextUtils.splitStringByRegexes(query, [
       TextUtils.TextUtils._keyValueFilterRegex, TextUtils.TextUtils._regexFilterRegex,
       TextUtils.TextUtils._textFilterRegex
     ]);
-    var filters = [];
-    for (var i = 0; i < splitResult.length; i++) {
-      var regexIndex = splitResult[i].regexIndex;
+    const filters = [];
+    for (let i = 0; i < splitResult.length; i++) {
+      const regexIndex = splitResult[i].regexIndex;
       if (regexIndex === -1)
         continue;
-      var result = splitResult[i].captureGroups;
+      const result = splitResult[i].captureGroups;
       if (regexIndex === 0) {
         if (this._keys.indexOf(/** @type {string} */ (result[1])) !== -1)
           filters.push({key: result[1], text: result[2], negative: !!result[0]});
@@ -280,10 +280,11 @@ TextUtils.TextUtils.BalancedJSONTokenizer = class {
    */
   write(chunk) {
     this._buffer += chunk;
-    var lastIndex = this._buffer.length;
-    var buffer = this._buffer;
-    for (var index = this._index; index < lastIndex; ++index) {
-      var character = buffer[index];
+    const lastIndex = this._buffer.length;
+    const buffer = this._buffer;
+    let index;
+    for (index = this._index; index < lastIndex; ++index) {
+      const character = buffer[index];
       if (character === '"') {
         this._closingDoubleQuoteRegex.lastIndex = index;
         if (!this._closingDoubleQuoteRegex.test(buffer))
@@ -347,11 +348,11 @@ TextUtils.TokenizerFactory.prototype = {
  * @return {boolean}
  */
 TextUtils.isMinified = function(text) {
-  var kMaxNonMinifiedLength = 500;
-  var linesToCheck = 10;
-  var lastPosition = 0;
+  const kMaxNonMinifiedLength = 500;
+  let linesToCheck = 10;
+  let lastPosition = 0;
   do {
-    var eolIndex = text.indexOf('\n', lastPosition);
+    let eolIndex = text.indexOf('\n', lastPosition);
     if (eolIndex < 0)
       eolIndex = text.length;
     if (eolIndex - lastPosition > kMaxNonMinifiedLength && text.substr(lastPosition, 3) !== '//#')

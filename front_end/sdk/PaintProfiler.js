@@ -42,7 +42,7 @@ SDK.PaintProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.PaintProfilerSnapshot>}
    */
   async loadSnapshotFromFragments(fragments) {
-    var snapshotId = await this._layerTreeAgent.loadSnapshot(fragments);
+    const snapshotId = await this._layerTreeAgent.loadSnapshot(fragments);
     return snapshotId && new SDK.PaintProfilerSnapshot(this, snapshotId);
   }
 
@@ -51,7 +51,7 @@ SDK.PaintProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.PaintProfilerSnapshot>}
    */
   loadSnapshot(encodedPicture) {
-    var fragment = {x: 0, y: 0, picture: encodedPicture};
+    const fragment = {x: 0, y: 0, picture: encodedPicture};
     return this.loadSnapshotFromFragments([fragment]);
   }
 
@@ -60,7 +60,7 @@ SDK.PaintProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<?SDK.PaintProfilerSnapshot>}
    */
   async makeSnapshot(layerId) {
-    var snapshotId = await this._layerTreeAgent.makeSnapshot(layerId);
+    const snapshotId = await this._layerTreeAgent.makeSnapshot(layerId);
     return snapshotId && new SDK.PaintProfilerSnapshot(this, snapshotId);
   }
 };
@@ -116,7 +116,7 @@ SDK.PaintProfilerSnapshot = class {
    * @return {!Promise<?Array<!SDK.PaintProfilerLogItem>>}
    */
   async commandLog() {
-    var log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
+    const log = await this._paintProfilerModel._layerTreeAgent.snapshotCommandLog(this._id);
     return log && log.map((entry, index) => new SDK.PaintProfilerLogItem(entry, index));
   }
 };

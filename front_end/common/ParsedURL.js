@@ -46,7 +46,7 @@ Common.ParsedURL = class {
     this.folderPathComponents = '';
     this.lastPathComponent = '';
 
-    var match = url.match(Common.ParsedURL._urlRegex());
+    const match = url.match(Common.ParsedURL._urlRegex());
     if (match) {
       this.isValid = true;
       this.scheme = match[2].toLowerCase();
@@ -68,7 +68,7 @@ Common.ParsedURL = class {
       this.path = this.url;
     }
 
-    var lastSlashIndex = this.path.lastIndexOf('/');
+    const lastSlashIndex = this.path.lastIndexOf('/');
     if (lastSlashIndex !== -1) {
       this.folderPathComponents = this.path.substring(0, lastSlashIndex);
       this.lastPathComponent = this.path.substring(lastSlashIndex + 1);
@@ -109,7 +109,7 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static urlWithoutHash(url) {
-    var hashIndex = url.indexOf('#');
+    const hashIndex = url.indexOf('#');
     if (hashIndex !== -1)
       return url.substr(0, hashIndex);
     return url;
@@ -130,13 +130,13 @@ Common.ParsedURL = class {
     // 6 - ?path
     // 7 - ?query
     // 8 - ?fragment
-    var schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
-    var userRegex = /(?:([A-Za-z0-9\-._~%!$&'()*+,;=:]*)@)?/;
-    var hostRegex = /((?:\[::\d?\])|(?:[^\s\/:]*))/;
-    var portRegex = /(?::([\d]+))?/;
-    var pathRegex = /(\/[^#?]*)?/;
-    var queryRegex = /(?:\?([^#]*))?/;
-    var fragmentRegex = /(?:#(.*))?/;
+    const schemeRegex = /([A-Za-z][A-Za-z0-9+.-]*):\/\//;
+    const userRegex = /(?:([A-Za-z0-9\-._~%!$&'()*+,;=:]*)@)?/;
+    const hostRegex = /((?:\[::\d?\])|(?:[^\s\/:]*))/;
+    const portRegex = /(?::([\d]+))?/;
+    const pathRegex = /(\/[^#?]*)?/;
+    const queryRegex = /(?:\?([^#]*))?/;
+    const fragmentRegex = /(?:#(.*))?/;
 
     Common.ParsedURL._urlRegexInstance = new RegExp(
         '^(' + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ')' + pathRegex.source +
@@ -149,7 +149,7 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static extractPath(url) {
-    var parsedURL = url.asParsedURL();
+    const parsedURL = url.asParsedURL();
     return parsedURL ? parsedURL.path : '';
   }
 
@@ -158,7 +158,7 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static extractOrigin(url) {
-    var parsedURL = url.asParsedURL();
+    const parsedURL = url.asParsedURL();
     return parsedURL ? parsedURL.securityOrigin() : '';
   }
 
@@ -168,16 +168,16 @@ Common.ParsedURL = class {
    */
   static extractExtension(url) {
     url = Common.ParsedURL.urlWithoutHash(url);
-    var indexOfQuestionMark = url.indexOf('?');
+    const indexOfQuestionMark = url.indexOf('?');
     if (indexOfQuestionMark !== -1)
       url = url.substr(0, indexOfQuestionMark);
-    var lastIndexOfSlash = url.lastIndexOf('/');
+    const lastIndexOfSlash = url.lastIndexOf('/');
     if (lastIndexOfSlash !== -1)
       url = url.substr(lastIndexOfSlash + 1);
-    var lastIndexOfDot = url.lastIndexOf('.');
+    const lastIndexOfDot = url.lastIndexOf('.');
     if (lastIndexOfDot !== -1) {
       url = url.substr(lastIndexOfDot + 1);
-      var lastIndexOfPercent = url.indexOf('%');
+      const lastIndexOfPercent = url.indexOf('%');
       if (lastIndexOfPercent !== -1)
         return url.substr(0, lastIndexOfPercent);
       return url;
@@ -190,8 +190,8 @@ Common.ParsedURL = class {
    * @return {string}
    */
   static extractName(url) {
-    var index = url.lastIndexOf('/');
-    var pathAndQuery = index !== -1 ? url.substr(index + 1) : url;
+    let index = url.lastIndexOf('/');
+    const pathAndQuery = index !== -1 ? url.substr(index + 1) : url;
     index = pathAndQuery.indexOf('?');
     return index < 0 ? pathAndQuery : pathAndQuery.substr(0, index);
   }
@@ -203,16 +203,16 @@ Common.ParsedURL = class {
    */
   static completeURL(baseURL, href) {
     // Return special URLs as-is.
-    var trimmedHref = href.trim();
+    const trimmedHref = href.trim();
     if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:'))
       return href;
 
     // Return absolute URLs as-is.
-    var parsedHref = trimmedHref.asParsedURL();
+    const parsedHref = trimmedHref.asParsedURL();
     if (parsedHref && parsedHref.scheme)
       return trimmedHref;
 
-    var parsedURL = baseURL.asParsedURL();
+    const parsedURL = baseURL.asParsedURL();
     if (!parsedURL)
       return null;
 
@@ -224,9 +224,9 @@ Common.ParsedURL = class {
       return parsedURL.scheme + ':' + href;
     }
 
-    var securityOrigin = parsedURL.securityOrigin();
-    var pathText = parsedURL.path;
-    var queryText = parsedURL.queryParams ? '?' + parsedURL.queryParams : '';
+    const securityOrigin = parsedURL.securityOrigin();
+    const pathText = parsedURL.path;
+    const queryText = parsedURL.queryParams ? '?' + parsedURL.queryParams : '';
 
     // Empty href resolves to a URL without fragment.
     if (!href.length)
@@ -238,8 +238,8 @@ Common.ParsedURL = class {
     if (href.charAt(0) === '?')
       return securityOrigin + pathText + href;
 
-    var hrefPath = href.match(/^[^#?]*/)[0];
-    var hrefSuffix = href.substring(hrefPath.length);
+    let hrefPath = href.match(/^[^#?]*/)[0];
+    const hrefSuffix = href.substring(hrefPath.length);
     if (hrefPath.charAt(0) !== '/')
       hrefPath = parsedURL.folderPathComponents + '/' + hrefPath;
     return securityOrigin + Runtime.normalizePath(hrefPath) + hrefSuffix;
@@ -251,18 +251,18 @@ Common.ParsedURL = class {
    */
   static splitLineAndColumn(string) {
     // Only look for line and column numbers in the path to avoid matching port numbers.
-    var beforePathMatch = string.match(Common.ParsedURL._urlRegex());
-    var beforePath = '';
-    var pathAndAfter = string;
+    const beforePathMatch = string.match(Common.ParsedURL._urlRegex());
+    let beforePath = '';
+    let pathAndAfter = string;
     if (beforePathMatch) {
       beforePath = beforePathMatch[1];
       pathAndAfter = string.substring(beforePathMatch[1].length);
     }
 
-    var lineColumnRegEx = /(?::(\d+))?(?::(\d+))?$/;
-    var lineColumnMatch = lineColumnRegEx.exec(pathAndAfter);
-    var lineNumber;
-    var columnNumber;
+    const lineColumnRegEx = /(?::(\d+))?(?::(\d+))?$/;
+    const lineColumnMatch = lineColumnRegEx.exec(pathAndAfter);
+    let lineNumber;
+    let columnNumber;
     console.assert(lineColumnMatch);
 
     if (typeof(lineColumnMatch[1]) === 'string') {
@@ -373,7 +373,7 @@ Common.ParsedURL = class {
  * @return {?Common.ParsedURL}
  */
 String.prototype.asParsedURL = function() {
-  var parsedURL = new Common.ParsedURL(this.toString());
+  const parsedURL = new Common.ParsedURL(this.toString());
   if (parsedURL.isValid)
     return parsedURL;
   return null;

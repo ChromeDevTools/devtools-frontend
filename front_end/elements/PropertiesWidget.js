@@ -87,16 +87,16 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
        * @this {*}
        */
       function protoList() {
-        var proto = this;
-        var result = {__proto__: null};
-        var counter = 1;
+        let proto = this;
+        const result = {__proto__: null};
+        let counter = 1;
         while (proto) {
           result[counter++] = proto;
           proto = proto.__proto__;
         }
         return result;
       }
-      var promise = object.callFunctionPromise(protoList).then(nodePrototypesReady.bind(this));
+      const promise = object.callFunctionPromise(protoList).then(nodePrototypesReady.bind(this));
       object.release();
       return promise;
     }
@@ -109,7 +109,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
       if (!result.object || result.wasThrown)
         return;
 
-      var promise = result.object.getOwnPropertiesPromise(false /* generatePreview */).then(fillSection.bind(this));
+      const promise = result.object.getOwnPropertiesPromise(false /* generatePreview */).then(fillSection.bind(this));
       result.object.release();
       return promise;
     }
@@ -122,23 +122,23 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
       if (!result || !result.properties)
         return;
 
-      var properties = result.properties;
-      var expanded = [];
-      var sections = this.sections || [];
-      for (var i = 0; i < sections.length; ++i)
+      const properties = result.properties;
+      const expanded = [];
+      const sections = this.sections || [];
+      for (let i = 0; i < sections.length; ++i)
         expanded.push(sections[i].expanded);
 
       this.contentElement.removeChildren();
       this.sections = [];
 
       // Get array of property user-friendly names.
-      for (var i = 0; i < properties.length; ++i) {
+      for (let i = 0; i < properties.length; ++i) {
         if (!parseInt(properties[i].name, 10))
           continue;
-        var property = properties[i].value;
-        var title = property.description;
+        const property = properties[i].value;
+        let title = property.description;
         title = title.replace(/Prototype$/, '');
-        var section = new ObjectUI.ObjectPropertiesSection(property, title);
+        const section = new ObjectUI.ObjectPropertiesSection(property, title);
         section.element.classList.add('properties-widget-section');
         this.sections.push(section);
         this.contentElement.appendChild(section.element);
@@ -154,7 +154,7 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
    */
   _propertyExpanded(event) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.DOMPropertiesExpanded);
-    for (var section of this.sections)
+    for (const section of this.sections)
       section.removeEventListener(UI.TreeOutline.Events.ElementExpanded, this._propertyExpanded, this);
   }
 
@@ -164,8 +164,8 @@ Elements.PropertiesWidget = class extends UI.ThrottledWidget {
   _onNodeChange(event) {
     if (!this._node)
       return;
-    var data = event.data;
-    var node = /** @type {!SDK.DOMNode} */ (data instanceof SDK.DOMNode ? data : data.node);
+    const data = event.data;
+    const node = /** @type {!SDK.DOMNode} */ (data instanceof SDK.DOMNode ? data : data.node);
     if (this._node !== node)
       return;
     this.update();

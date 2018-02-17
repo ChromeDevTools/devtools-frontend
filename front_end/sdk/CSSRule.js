@@ -37,7 +37,7 @@ SDK.CSSRule = class {
     this.styleSheetId = payload.styleSheetId;
 
     if (this.styleSheetId) {
-      var styleSheetHeader = cssModel.styleSheetHeaderForId(this.styleSheetId);
+      const styleSheetHeader = cssModel.styleSheetHeaderForId(this.styleSheetId);
       this.sourceURL = styleSheetHeader.sourceURL;
     }
     this.origin = payload.origin;
@@ -59,7 +59,7 @@ SDK.CSSRule = class {
   resourceURL() {
     if (!this.styleSheetId)
       return '';
-    var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+    const styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
     return styleSheetHeader.resourceURL();
   }
 
@@ -122,7 +122,7 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
    * @return {!SDK.CSSStyleRule}
    */
   static createDummyRule(cssModel, selectorText) {
-    var dummyPayload = {
+    const dummyPayload = {
       selectorList: {
         selectors: [{text: selectorText}],
       },
@@ -137,7 +137,7 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
   _reinitializeSelectors(selectorList) {
     /** @type {!Array.<!SDK.CSSValue>} */
     this.selectors = [];
-    for (var i = 0; i < selectorList.selectors.length; ++i)
+    for (let i = 0; i < selectorList.selectors.length; ++i)
       this.selectors.push(new SDK.CSSValue(selectorList.selectors[i]));
   }
 
@@ -146,10 +146,10 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
    * @return {!Promise.<boolean>}
    */
   setSelectorText(newSelector) {
-    var styleSheetId = this.styleSheetId;
+    const styleSheetId = this.styleSheetId;
     if (!styleSheetId)
       throw 'No rule stylesheet id';
-    var range = this.selectorRange();
+    const range = this.selectorRange();
     if (!range)
       throw 'Rule selector is not editable';
     return this._cssModel.setSelectorText(styleSheetId, range, newSelector);
@@ -166,10 +166,10 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
    * @return {?TextUtils.TextRange}
    */
   selectorRange() {
-    var firstRange = this.selectors[0].range;
+    const firstRange = this.selectors[0].range;
     if (!firstRange)
       return null;
-    var lastRange = this.selectors.peekLast().range;
+    const lastRange = this.selectors.peekLast().range;
     return new TextUtils.TextRange(
         firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
   }
@@ -179,10 +179,10 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
    * @return {number}
    */
   lineNumberInSource(selectorIndex) {
-    var selector = this.selectors[selectorIndex];
+    const selector = this.selectors[selectorIndex];
     if (!selector || !selector.range || !this.styleSheetId)
       return 0;
-    var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+    const styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
     return styleSheetHeader.lineNumberInSource(selector.range.startLine);
   }
 
@@ -191,10 +191,10 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
    * @return {number|undefined}
    */
   columnNumberInSource(selectorIndex) {
-    var selector = this.selectors[selectorIndex];
+    const selector = this.selectors[selectorIndex];
     if (!selector || !selector.range || !this.styleSheetId)
       return undefined;
-    var styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
+    const styleSheetHeader = this._cssModel.styleSheetHeaderForId(this.styleSheetId);
     console.assert(styleSheetHeader);
     return styleSheetHeader.columnNumberInSource(selector.range.startLine, selector.range.startColumn);
   }
@@ -209,10 +209,10 @@ SDK.CSSStyleRule = class extends SDK.CSSRule {
     if (this.selectorRange().equal(edit.oldRange)) {
       this._reinitializeSelectors(/** @type {!Protocol.CSS.SelectorList} */ (edit.payload));
     } else {
-      for (var i = 0; i < this.selectors.length; ++i)
+      for (let i = 0; i < this.selectors.length; ++i)
         this.selectors[i].rebase(edit);
     }
-    for (var media of this.media)
+    for (const media of this.media)
       media.rebase(edit);
 
     super.rebase(edit);
@@ -296,10 +296,10 @@ SDK.CSSKeyframeRule = class extends SDK.CSSRule {
    * @return {!Promise.<boolean>}
    */
   setKeyText(newKeyText) {
-    var styleSheetId = this.styleSheetId;
+    const styleSheetId = this.styleSheetId;
     if (!styleSheetId)
       throw 'No rule stylesheet id';
-    var range = this._keyText.range;
+    const range = this._keyText.range;
     if (!range)
       throw 'Keyframe key is not editable';
     return this._cssModel.setKeyframeKey(styleSheetId, range, newKeyText);

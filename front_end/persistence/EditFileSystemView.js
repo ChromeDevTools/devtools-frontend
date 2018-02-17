@@ -47,7 +47,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
           Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, this._update, this)
     ];
 
-    var excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
+    const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
     excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
         Common.UIString('Excluded folders');
     excludedFoldersHeader.appendChild(
@@ -55,7 +55,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     this._excludedFoldersList = new UI.ListWidget(this);
     this._excludedFoldersList.element.classList.add('file-system-list');
     this._excludedFoldersList.registerRequiredCSS('persistence/editFileSystemView.css');
-    var excludedFoldersPlaceholder = createElementWithClass('div', 'file-system-list-empty');
+    const excludedFoldersPlaceholder = createElementWithClass('div', 'file-system-list-empty');
     excludedFoldersPlaceholder.textContent = Common.UIString('None');
     this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this._excludedFoldersList.show(this.contentElement);
@@ -74,7 +74,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
 
     this._excludedFoldersList.clear();
     this._excludedFolders = [];
-    for (var folder of Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
+    for (const folder of Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath)
              .excludedFolders()
              .values()) {
       this._excludedFolders.push(folder);
@@ -93,9 +93,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    var element = createElementWithClass('div', 'file-system-list-item');
-    var pathPrefix = /** @type {string} */ (editable ? item : Common.UIString('%s (via .devtools)', item));
-    var pathPrefixElement = element.createChild('div', 'file-system-value');
+    const element = createElementWithClass('div', 'file-system-list-item');
+    const pathPrefix = /** @type {string} */ (editable ? item : Common.UIString('%s (via .devtools)', item));
+    const pathPrefixElement = element.createChild('div', 'file-system-value');
     pathPrefixElement.textContent = pathPrefix;
     pathPrefixElement.title = pathPrefix;
     return element;
@@ -135,7 +135,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    var editor = this._createExcludedFolderEditor();
+    const editor = this._createExcludedFolderEditor();
     editor.control('pathPrefix').value = item;
     return editor;
   }
@@ -147,14 +147,14 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     if (this._excludedFolderEditor)
       return this._excludedFolderEditor;
 
-    var editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor();
     this._excludedFolderEditor = editor;
-    var content = editor.contentElement();
+    const content = editor.contentElement();
 
-    var titles = content.createChild('div', 'file-system-edit-row');
+    const titles = content.createChild('div', 'file-system-edit-row');
     titles.createChild('div', 'file-system-value').textContent = Common.UIString('Folder path');
 
-    var fields = content.createChild('div', 'file-system-edit-row');
+    const fields = content.createChild('div', 'file-system-edit-row');
     fields.createChild('div', 'file-system-value')
         .appendChild(editor.createInput('pathPrefix', 'text', '/path/to/folder/', pathPrefixValidator.bind(this)));
 
@@ -168,10 +168,10 @@ Persistence.EditFileSystemView = class extends UI.VBox {
      * @this {Persistence.EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
-      var prefix = this._normalizePrefix(input.value);
-      var configurableCount =
+      const prefix = this._normalizePrefix(input.value);
+      const configurableCount =
           Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
-      for (var i = 0; i < configurableCount; ++i) {
+      for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix)
           return false;
       }

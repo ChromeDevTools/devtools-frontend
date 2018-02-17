@@ -143,10 +143,10 @@ Bindings.ChunkedFileReader = class {
     if (event.target.readyState !== FileReader.DONE)
       return;
 
-    var buffer = event.target.result;
+    const buffer = event.target.result;
     this._loadedSize += buffer.byteLength;
-    var endOfFile = this._loadedSize === this._fileSize;
-    var decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
+    const endOfFile = this._loadedSize === this._fileSize;
+    const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});
     this._output.write(decodedString);
     if (this._isCanceled)
       return;
@@ -165,9 +165,9 @@ Bindings.ChunkedFileReader = class {
   }
 
   _loadChunk() {
-    var chunkStart = this._loadedSize;
-    var chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
-    var nextPart = this._file.slice(chunkStart, chunkEnd);
+    const chunkStart = this._loadedSize;
+    const chunkEnd = Math.min(this._fileSize, chunkStart + this._chunkSize);
+    const nextPart = this._file.slice(chunkStart, chunkEnd);
     this._reader.readAsArrayBuffer(nextPart);
   }
 
@@ -194,7 +194,7 @@ Bindings.FileOutputStream = class {
     /** @type {!Array<function()>} */
     this._writeCallbacks = [];
     this._fileName = fileName;
-    var saveResponse = await Workspace.fileManager.save(this._fileName, '', true);
+    const saveResponse = await Workspace.fileManager.save(this._fileName, '', true);
     if (saveResponse)
       Workspace.fileManager.addEventListener(Workspace.FileManager.Events.AppendedToURL, this._onAppendDone, this);
     return !!saveResponse;

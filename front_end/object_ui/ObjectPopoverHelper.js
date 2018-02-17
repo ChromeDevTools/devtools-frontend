@@ -51,8 +51,8 @@ ObjectUI.ObjectPopoverHelper = class {
    * @return {!Promise<?ObjectUI.ObjectPopoverHelper>}
    */
   static buildObjectPopover(result, popover) {
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
+    let fulfill;
+    const promise = new Promise(x => fulfill = x);
 
     /**
      * @param {!SDK.RemoteObject} funcObject
@@ -64,7 +64,7 @@ ObjectUI.ObjectPopoverHelper = class {
     function didGetFunctionProperties(
         funcObject, popoverContentElement, popoverValueElement, properties, internalProperties) {
       if (internalProperties) {
-        for (var i = 0; i < internalProperties.length; i++) {
+        for (let i = 0; i < internalProperties.length; i++) {
           if (internalProperties[i].name === '[[TargetFunction]]') {
             funcObject = internalProperties[i].value;
             break;
@@ -87,15 +87,15 @@ ObjectUI.ObjectPopoverHelper = class {
         return;
       }
 
-      var container = createElementWithClass('div', 'object-popover-container');
-      var title = container.createChild('div', 'function-popover-title source-code');
-      var functionName = title.createChild('span', 'function-name');
+      const container = createElementWithClass('div', 'object-popover-container');
+      const title = container.createChild('div', 'function-popover-title source-code');
+      const functionName = title.createChild('span', 'function-name');
       functionName.textContent = UI.beautifyFunctionName(response.functionName);
 
-      var rawLocation = response.location;
-      var linkContainer = title.createChild('div', 'function-title-link-container');
-      var sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
-      var linkifier = null;
+      const rawLocation = response.location;
+      const linkContainer = title.createChild('div', 'function-title-link-container');
+      const sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
+      let linkifier = null;
       if (rawLocation && sourceURL) {
         linkifier = new Components.Linkifier();
         linkContainer.appendChild(linkifier.linkifyRawLocation(rawLocation, sourceURL));
@@ -105,13 +105,13 @@ ObjectUI.ObjectPopoverHelper = class {
       fulfill(new ObjectUI.ObjectPopoverHelper(linkifier, false));
     }
 
-    var description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
-    var popoverContentElement = null;
+    const description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
+    let popoverContentElement = null;
     if (result.type !== 'object') {
       popoverContentElement = createElement('span');
       UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
       UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-      var valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
+      const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
       valueElement.style.whiteSpace = 'pre';
 
       if (result.type === 'string')
@@ -128,24 +128,24 @@ ObjectUI.ObjectPopoverHelper = class {
       popover.contentElement.appendChild(popoverContentElement);
       fulfill(new ObjectUI.ObjectPopoverHelper(null, false));
     } else {
-      var linkifier = null;
-      var resultHighlightedAsDOM = false;
+      let linkifier = null;
+      let resultHighlightedAsDOM = false;
       if (result.subtype === 'node') {
         SDK.OverlayModel.highlightObjectAsDOMNode(result);
         resultHighlightedAsDOM = true;
       }
 
       if (result.customPreview()) {
-        var customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
+        const customPreviewComponent = new ObjectUI.CustomPreviewComponent(result);
         customPreviewComponent.expandIfPossible();
         popoverContentElement = customPreviewComponent.element;
       } else {
         popoverContentElement = createElementWithClass('div', 'object-popover-content');
         UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-        var titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
+        const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
         linkifier = new Components.Linkifier();
-        var section = new ObjectUI.ObjectPropertiesSection(result, '', linkifier);
+        const section = new ObjectUI.ObjectPropertiesSection(result, '', linkifier);
         section.element.classList.add('object-popover-tree');
         section.titleLessMode();
         popoverContentElement.appendChild(section.element);

@@ -10,14 +10,14 @@
 SourcesTestRunner.replaceInSource = function(sourceFrame, string, replacement) {
   sourceFrame._textEditor.setReadOnly(false);
 
-  for (var i = 0; i < sourceFrame._textEditor.linesCount; ++i) {
-    var line = sourceFrame._textEditor.line(i);
-    var column = line.indexOf(string);
+  for (let i = 0; i < sourceFrame._textEditor.linesCount; ++i) {
+    const line = sourceFrame._textEditor.line(i);
+    const column = line.indexOf(string);
 
     if (column === -1)
       continue;
 
-    var range = new TextUtils.TextRange(i, column, i, column + string.length);
+    const range = new TextUtils.TextRange(i, column, i, column + string.length);
     sourceFrame._textEditor.editRange(range, replacement);
     break;
   }

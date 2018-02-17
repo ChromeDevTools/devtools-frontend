@@ -20,11 +20,11 @@ Accessibility.ARIAMetadata = class {
    * @param {!Object} config
    */
   _initialize(config) {
-    var attributes = config['attributes'];
+    const attributes = config['attributes'];
 
-    var booleanEnum = ['true', 'false'];
-    for (var name in attributes) {
-      var attributeConfig = attributes[name];
+    const booleanEnum = ['true', 'false'];
+    for (const name in attributes) {
+      const attributeConfig = attributes[name];
       if (attributeConfig.type === 'boolean')
         attributeConfig.enum = booleanEnum;
       this._attributes.set(name, new Accessibility.ARIAMetadata.Attribute(attributeConfig));

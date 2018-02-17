@@ -36,9 +36,9 @@ Network.HARWriter = class {
    * @return {!Promise}
    */
   static async write(stream, requests, progress) {
-    var compositeProgress = new Common.CompositeProgress(progress);
+    const compositeProgress = new Common.CompositeProgress(progress);
 
-    var content = await Network.HARWriter._harStringForRequests(requests, compositeProgress);
+    const content = await Network.HARWriter._harStringForRequests(requests, compositeProgress);
     if (progress.isCanceled())
       return Promise.resolve();
     return Network.HARWriter._writeToStream(stream, compositeProgress, content);
@@ -50,14 +50,14 @@ Network.HARWriter = class {
    * @return {!Promise<string>}
    */
   static async _harStringForRequests(requests, compositeProgress) {
-    var progress = compositeProgress.createSubProgress();
+    const progress = compositeProgress.createSubProgress();
     progress.setTitle(Common.UIString('Collecting content\u2026'));
     progress.setTotalWork(requests.length);
 
-    var harLog = await BrowserSDK.HARLog.build(requests);
-    var promises = [];
-    for (var i = 0; i < requests.length; i++) {
-      var promise = requests[i].contentData();
+    const harLog = await BrowserSDK.HARLog.build(requests);
+    const promises = [];
+    for (let i = 0; i < requests.length; i++) {
+      const promise = requests[i].contentData();
       promises.push(promise.then(contentLoaded.bind(null, harLog.entries[i])));
     }
 
@@ -88,11 +88,11 @@ Network.HARWriter = class {
    * @return {!Promise}
    */
   static async _writeToStream(stream, compositeProgress, fileContent) {
-    var progress = compositeProgress.createSubProgress();
+    const progress = compositeProgress.createSubProgress();
     progress.setTitle(Common.UIString('Writing file\u2026'));
     progress.setTotalWork(fileContent.length);
-    for (var i = 0; i < fileContent.length && !progress.isCanceled(); i += Network.HARWriter._chunkSize) {
-      var chunk = fileContent.substr(i, Network.HARWriter._chunkSize);
+    for (let i = 0; i < fileContent.length && !progress.isCanceled(); i += Network.HARWriter._chunkSize) {
+      const chunk = fileContent.substr(i, Network.HARWriter._chunkSize);
       await stream.write(chunk);
       progress.worked(chunk.length);
     }

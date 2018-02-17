@@ -34,7 +34,7 @@ FormatterWorker.FormattedContentBuilder = class {
    * @return {boolean}
    */
   setEnforceSpaceBetweenWords(value) {
-    var oldValue = this._enforceSpaceBetweenWords;
+    const oldValue = this._enforceSpaceBetweenWords;
     this._enforceSpaceBetweenWords = value;
     return oldValue;
   }
@@ -44,7 +44,7 @@ FormatterWorker.FormattedContentBuilder = class {
    * @param {number} offset
    */
   addToken(token, offset) {
-    var last = this._formattedContent.peekLast();
+    const last = this._formattedContent.peekLast();
     if (this._enforceSpaceBetweenWords && last && /\w/.test(last[last.length - 1]) && /\w/.test(token))
       this.addSoftSpace();
 
@@ -89,14 +89,14 @@ FormatterWorker.FormattedContentBuilder = class {
 
   _appendFormatting() {
     if (this._newLines) {
-      for (var i = 0; i < this._newLines; ++i)
+      for (let i = 0; i < this._newLines; ++i)
         this._addText('\n');
       this._addText(this._indent());
     } else if (this._softSpace) {
       this._addText(' ');
     }
     if (this._hardSpaces) {
-      for (var i = 0; i < this._hardSpaces; ++i)
+      for (let i = 0; i < this._hardSpaces; ++i)
         this._addText(' ');
     }
     this._newLines = 0;
@@ -122,12 +122,12 @@ FormatterWorker.FormattedContentBuilder = class {
    * @return {string}
    */
   _indent() {
-    var cachedValue = this._cachedIndents.get(this._nestingLevel);
+    const cachedValue = this._cachedIndents.get(this._nestingLevel);
     if (cachedValue)
       return cachedValue;
 
-    var fullIndent = '';
-    for (var i = 0; i < this._nestingLevel; ++i)
+    let fullIndent = '';
+    for (let i = 0; i < this._nestingLevel; ++i)
       fullIndent += this._indentString;
 
     // Cache a maximum of 20 nesting level indents.

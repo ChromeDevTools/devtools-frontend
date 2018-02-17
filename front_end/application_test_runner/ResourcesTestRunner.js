@@ -12,8 +12,8 @@
  * doesn't get reset between tests.
  */
 ApplicationTestRunner.resetState = async function() {
-  var securityOrigin = new Common.ParsedURL(TestRunner.url()).securityOrigin();
-  var storageTypes =
+  const securityOrigin = new Common.ParsedURL(TestRunner.url()).securityOrigin();
+  const storageTypes =
       ['appcache', 'cache_storage', 'cookies', 'indexeddb', 'local_storage', 'service_workers', 'websql'];
   await TestRunner.mainTarget.storageAgent().clearDataForOrigin(securityOrigin, storageTypes.join(','));
 };
@@ -34,11 +34,11 @@ ApplicationTestRunner.runAfterCachedResourcesProcessed = function(callback) {
 };
 
 ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, callback) {
-  var resourceURLsMap = new Set(resourceURLs);
+  const resourceURLsMap = new Set(resourceURLs);
 
   function checkResources() {
-    for (var url of resourceURLsMap) {
-      var resource = ApplicationTestRunner.resourceMatchingURL(url);
+    for (const url of resourceURLsMap) {
+      const resource = ApplicationTestRunner.resourceMatchingURL(url);
 
       if (resource)
         resourceURLsMap.delete(url);
@@ -57,7 +57,7 @@ ApplicationTestRunner.runAfterResourcesAreFinished = function(resourceURLs, call
 };
 
 ApplicationTestRunner.showResource = function(resourceURL, callback) {
-  var reported = false;
+  let reported = false;
 
   function callbackWrapper(sourceFrame) {
     if (reported)
@@ -68,13 +68,13 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
   }
 
   function showResourceCallback() {
-    var resource = ApplicationTestRunner.resourceMatchingURL(resourceURL);
+    const resource = ApplicationTestRunner.resourceMatchingURL(resourceURL);
 
     if (!resource)
       return;
 
     UI.panels.resources.showResource(resource, 1);
-    var sourceFrame = UI.panels.resources._resourceViewForResource(resource);
+    const sourceFrame = UI.panels.resources._resourceViewForResource(resource);
 
     if (sourceFrame.loaded)
       callbackWrapper(sourceFrame);
@@ -86,7 +86,7 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
 };
 
 ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
-  var result = null;
+  let result = null;
   TestRunner.resourceTreeModel.forAllResources(visit);
 
   function visit(resource) {

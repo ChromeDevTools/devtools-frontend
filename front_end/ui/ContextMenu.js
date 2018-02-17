@@ -83,7 +83,7 @@ UI.ContextMenuItem = class {
   _buildDescriptor() {
     switch (this._type) {
       case 'item':
-        var result = {type: 'item', id: this._id, label: this._label, enabled: !this._disabled};
+        const result = {type: 'item', id: this._id, label: this._label, enabled: !this._disabled};
         if (this._customElement)
           result.element = this._customElement;
         if (this._shortcut)
@@ -125,7 +125,7 @@ UI.ContextMenuSection = class {
    * @return {!UI.ContextMenuItem}
    */
   appendItem(label, handler, disabled) {
-    var item = new UI.ContextMenuItem(this._contextMenu, 'item', label, disabled);
+    const item = new UI.ContextMenuItem(this._contextMenu, 'item', label, disabled);
     this._items.push(item);
     this._contextMenu._setHandler(item.id(), handler);
     return item;
@@ -136,7 +136,7 @@ UI.ContextMenuSection = class {
    * @return {!UI.ContextMenuItem}
    */
   appendCustomItem(element) {
-    var item = new UI.ContextMenuItem(this._contextMenu, 'item', '<custom>');
+    const item = new UI.ContextMenuItem(this._contextMenu, 'item', '<custom>');
     item._customElement = element;
     this._items.push(item);
     return item;
@@ -148,11 +148,11 @@ UI.ContextMenuSection = class {
    * @return {!UI.ContextMenuItem}
    */
   appendAction(actionId, label) {
-    var action = UI.actionRegistry.action(actionId);
+    const action = UI.actionRegistry.action(actionId);
     if (!label)
       label = action.title();
-    var result = this.appendItem(label, action.execute.bind(action));
-    var shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
+    const result = this.appendItem(label, action.execute.bind(action));
+    const shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
     if (shortcut)
       result.setShortcut(shortcut);
     return result;
@@ -164,7 +164,7 @@ UI.ContextMenuSection = class {
    * @return {!UI.ContextSubMenu}
    */
   appendSubMenuItem(label, disabled) {
-    var item = new UI.ContextSubMenu(this._contextMenu, label, disabled);
+    const item = new UI.ContextSubMenu(this._contextMenu, label, disabled);
     item._init();
     this._items.push(item);
     return item;
@@ -178,7 +178,7 @@ UI.ContextMenuSection = class {
    * @return {!UI.ContextMenuItem}
    */
   appendCheckboxItem(label, handler, checked, disabled) {
-    var item = new UI.ContextMenuItem(this._contextMenu, 'checkbox', label, disabled, checked);
+    const item = new UI.ContextMenuItem(this._contextMenu, 'checkbox', label, disabled, checked);
     this._items.push(item);
     this._contextMenu._setHandler(item.id(), handler);
     return item;
@@ -211,7 +211,7 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
    * @return {!UI.ContextMenuSection}
    */
   section(name) {
-    var section = name ? this._sections.get(name) : null;
+    let section = name ? this._sections.get(name) : null;
     if (!section) {
       section = new UI.ContextMenuSection(this._contextMenu);
       if (name) {
@@ -300,11 +300,11 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
    */
   _buildDescriptor() {
     /** @type {!InspectorFrontendHostAPI.ContextMenuDescriptor} */
-    var result = {type: 'subMenu', label: this._label, enabled: !this._disabled, subItems: []};
+    const result = {type: 'subMenu', label: this._label, enabled: !this._disabled, subItems: []};
 
-    var nonEmptySections = this._sectionList.filter(section => !!section._items.length);
-    for (var section of nonEmptySections) {
-      for (var item of section._items)
+    const nonEmptySections = this._sectionList.filter(section => !!section._items.length);
+    for (const section of nonEmptySections) {
+      for (const item of section._items)
         result.subItems.push(item._buildDescriptor());
       if (section !== nonEmptySections.peekLast())
         result.subItems.push({type: 'separator'});
@@ -316,12 +316,12 @@ UI.ContextSubMenu = class extends UI.ContextMenuItem {
    * @param {string} location
    */
   appendItemsAtLocation(location) {
-    for (var extension of self.runtime.extensions('context-menu-item')) {
-      var itemLocation = extension.descriptor()['location'] || '';
+    for (const extension of self.runtime.extensions('context-menu-item')) {
+      const itemLocation = extension.descriptor()['location'] || '';
       if (!itemLocation.startsWith(location + '/'))
         continue;
 
-      var section = itemLocation.substr(location.length + 1);
+      const section = itemLocation.substr(location.length + 1);
       if (!section || section.includes('/'))
         continue;
 
@@ -358,7 +358,7 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
     this._handlers = {};
     this._id = 0;
 
-    var target = event.deepElementFromPoint();
+    const target = event.deepElementFromPoint();
     if (target)
       this.appendApplicableItems(/** @type {!Object} */ (target));
   }
@@ -383,7 +383,7 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
      * @param {!Event} event
      */
     function handler(event) {
-      var contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu(event);
       contextMenu.show();
     }
   }
@@ -408,12 +408,12 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
         return;
       delete UI.ContextMenu._pendingMenu;
 
-      for (var i = 0; i < appendCallResults.length; ++i) {
-        var providers = appendCallResults[i];
-        var target = this._pendingTargets[i];
+      for (let i = 0; i < appendCallResults.length; ++i) {
+        const providers = appendCallResults[i];
+        const target = this._pendingTargets[i];
 
-        for (var j = 0; j < providers.length; ++j) {
-          var provider = /** @type {!UI.ContextMenu.Provider} */ (providers[j]);
+        for (let j = 0; j < providers.length; ++j) {
+          const provider = /** @type {!UI.ContextMenu.Provider} */ (providers[j]);
           provider.appendApplicableItems(this._event, this, target);
         }
       }
@@ -431,7 +431,7 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
   }
 
   _innerShow() {
-    var menuObject = this._buildMenuDescriptors();
+    const menuObject = this._buildMenuDescriptors();
     if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
       this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));

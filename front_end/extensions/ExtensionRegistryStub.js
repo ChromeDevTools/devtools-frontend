@@ -36,5 +36,5 @@ if (!window.InspectorExtensionRegistry) {
     }
   };
 
-  var InspectorExtensionRegistry = new Extensions.InspectorExtensionRegistryStub();
+  self.InspectorExtensionRegistry = new Extensions.InspectorExtensionRegistryStub();
 }

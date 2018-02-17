@@ -12,12 +12,12 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     this.element.classList.add('devices-settings-tab');
     this.registerRequiredCSS('emulation/devicesSettingsTab.css');
 
-    var header = this.element.createChild('header');
+    const header = this.element.createChild('header');
     header.createChild('h3').createTextChild(Common.UIString('Emulated Devices'));
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
 
-    var buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
+    const buttonsRow = this.containerElement.createChild('div', 'devices-button-row');
     this._addCustomButton =
         UI.createTextButton(Common.UIString('Add custom device...'), this._addCustomDevice.bind(this));
     buttonsRow.appendChild(this._addCustomButton);
@@ -51,15 +51,15 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
 
     this._list.clear();
 
-    var devices = this._emulatedDevicesList.custom().slice();
-    for (var i = 0; i < devices.length; ++i)
+    let devices = this._emulatedDevicesList.custom().slice();
+    for (let i = 0; i < devices.length; ++i)
       this._list.appendItem(devices[i], true);
 
     this._list.appendSeparator();
 
     devices = this._emulatedDevicesList.standard().slice();
     devices.sort(Emulation.EmulatedDevice.deviceComparator);
-    for (var i = 0; i < devices.length; ++i)
+    for (let i = 0; i < devices.length; ++i)
       this._list.appendItem(devices[i], false);
   }
 
@@ -76,7 +76,7 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
   }
 
   _addCustomDevice() {
-    var device = new Emulation.EmulatedDevice();
+    const device = new Emulation.EmulatedDevice();
     device.deviceScaleFactor = 0;
     device.horizontal.width = 700;
     device.horizontal.height = 400;
@@ -100,9 +100,9 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
-    var element = createElementWithClass('div', 'devices-list-item');
-    var checkbox = element.createChild('input', 'devices-list-checkbox');
+    const device = /** @type {!Emulation.EmulatedDevice} */ (item);
+    const element = createElementWithClass('div', 'devices-list-item');
+    const checkbox = element.createChild('input', 'devices-list-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', event => event.consume(), false);
@@ -115,7 +115,7 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
      * @this {Emulation.DevicesSettingsTab}
      */
     function onItemClicked(event) {
-      var show = !checkbox.checked;
+      const show = !checkbox.checked;
       device.setShow(show);
       this._muteAndSaveDeviceList(editable);
       checkbox.checked = show;
@@ -139,7 +139,7 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
+    const device = /** @type {!Emulation.EmulatedDevice} */ (item);
     device.title = editor.control('title').value.trim();
     device.vertical.width = editor.control('width').value ? parseInt(editor.control('width').value, 10) : 0;
     device.vertical.height = editor.control('height').value ? parseInt(editor.control('height').value, 10) : 0;
@@ -153,7 +153,7 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     device.modes.push(
         {title: '', orientation: Emulation.EmulatedDevice.Horizontal, insets: new UI.Insets(0, 0, 0, 0), image: null});
     device.capabilities = [];
-    var uaType = editor.control('ua-type').value;
+    const uaType = editor.control('ua-type').value;
     if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.MobileNoTouch)
       device.capabilities.push(Emulation.EmulatedDevice.Capability.Mobile);
     if (uaType === Emulation.DeviceModeModel.UA.Mobile || uaType === Emulation.DeviceModeModel.UA.DesktopTouch)
@@ -172,14 +172,14 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    var device = /** @type {!Emulation.EmulatedDevice} */ (item);
-    var editor = this._createEditor();
+    const device = /** @type {!Emulation.EmulatedDevice} */ (item);
+    const editor = this._createEditor();
     editor.control('title').value = device.title;
     editor.control('width').value = this._toNumericInputValue(device.vertical.width);
     editor.control('height').value = this._toNumericInputValue(device.vertical.height);
     editor.control('scale').value = this._toNumericInputValue(device.deviceScaleFactor);
     editor.control('user-agent').value = device.userAgent;
-    var uaType;
+    let uaType;
     if (device.mobile())
       uaType = device.touch() ? Emulation.DeviceModeModel.UA.Mobile : Emulation.DeviceModeModel.UA.MobileNoTouch;
     else
@@ -195,22 +195,22 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     if (this._editor)
       return this._editor;
 
-    var editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor();
     this._editor = editor;
-    var content = editor.contentElement();
+    const content = editor.contentElement();
 
-    var fields = content.createChild('div', 'devices-edit-fields');
+    const fields = content.createChild('div', 'devices-edit-fields');
     fields.createChild('div', 'hbox')
         .appendChild(editor.createInput('title', 'text', Common.UIString('Device name'), titleValidator));
-    var screen = fields.createChild('div', 'hbox');
+    const screen = fields.createChild('div', 'hbox');
     screen.appendChild(editor.createInput('width', 'text', Common.UIString('Width'), sizeValidator));
     screen.appendChild(editor.createInput('height', 'text', Common.UIString('height'), sizeValidator));
-    var dpr = editor.createInput('scale', 'text', Common.UIString('Device pixel ratio'), scaleValidator);
+    const dpr = editor.createInput('scale', 'text', Common.UIString('Device pixel ratio'), scaleValidator);
     dpr.classList.add('device-edit-fixed');
     screen.appendChild(dpr);
-    var ua = fields.createChild('div', 'hbox');
+    const ua = fields.createChild('div', 'hbox');
     ua.appendChild(editor.createInput('user-agent', 'text', Common.UIString('User agent string'), () => true));
-    var uaType = editor.createSelect(
+    const uaType = editor.createSelect(
         'ua-type',
         [
           Emulation.DeviceModeModel.UA.Mobile, Emulation.DeviceModeModel.UA.MobileNoTouch,
@@ -229,7 +229,7 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
      * @return {boolean}
      */
     function titleValidator(item, index, input) {
-      var value = input.value.trim();
+      const value = input.value.trim();
       return value.length > 0 && value.length < 50;
     }
 

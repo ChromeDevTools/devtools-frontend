@@ -15,22 +15,22 @@ BindingsTestRunner.cleanupURL = function(url) {
 };
 
 BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
-  var uiSourceCodes = Workspace.workspace.uiSourceCodes().slice();
-  var urls = uiSourceCodes.map(code => code.url());
+  const uiSourceCodes = Workspace.workspace.uiSourceCodes().slice();
+  let urls = uiSourceCodes.map(code => code.url());
 
   urls = urls.map(BindingsTestRunner.cleanupURL);
 
   urls.sort(String.caseInsensetiveComparator);
-  var isAdded = new Array(urls.length).fill(false);
-  var removedLines = [];
+  const isAdded = new Array(urls.length).fill(false);
+  let removedLines = [];
 
   if (previousSnapshot) {
-    var diff = Diff.Diff.lineDiff(previousSnapshot, urls);
-    var removedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Delete).map(entry => entry[1]);
+    const diff = Diff.Diff.lineDiff(previousSnapshot, urls);
+    const removedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Delete).map(entry => entry[1]);
     removedLines = [].concat.apply([], removedEntries);
-    var index = 0;
+    let index = 0;
 
-    for (var entry of diff) {
+    for (const entry of diff) {
       if (entry[0] === Diff.Diff.Operation.Delete)
         continue;
 
@@ -40,24 +40,24 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
       }
 
       // eslint-disable-next-line no-unused-vars
-      for (var line of entry[1])
+      for (const line of entry[1])
         isAdded[index++] = true;
     }
 
-    var addedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Insert).map(entry => entry[1]);
+    const addedEntries = diff.filter(entry => entry[0] === Diff.Diff.Operation.Insert).map(entry => entry[1]);
     addedLines = [].concat.apply([], addedEntries);
   }
 
   TestRunner.addResult(`Removed: ${removedLines.length} uiSourceCodes`);
 
-  for (var url of removedLines)
+  for (const url of removedLines)
     TestRunner.addResult('[-] ' + url);
 
   TestRunner.addResult(`Workspace: ${urls.length} uiSourceCodes.`);
 
-  for (var i = 0; i < urls.length; ++i) {
-    var url = urls[i];
-    var prefix = (isAdded[i] ? '[+] ' : '    ');
+  for (let i = 0; i < urls.length; ++i) {
+    const url = urls[i];
+    const prefix = (isAdded[i] ? '[+] ' : '    ');
     TestRunner.addResult(prefix + url);
   }
 
@@ -65,7 +65,7 @@ BindingsTestRunner.dumpWorkspace = function(previousSnapshot) {
 };
 
 BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
-  var evalSource = `(${attachFrame.toString()})('${frameId}', '${url}')`;
+  let evalSource = `(${attachFrame.toString()})('${frameId}', '${url}')`;
 
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
@@ -73,7 +73,7 @@ BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
   return TestRunner.evaluateInPageAsync(evalSource);
 
   function attachFrame(frameId, url) {
-    var frame = document.createElement('iframe');
+    const frame = document.createElement('iframe');
     frame.src = url;
     frame.id = frameId;
     document.body.appendChild(frame);
@@ -82,7 +82,7 @@ BindingsTestRunner.attachFrame = function(frameId, url, evalSourceURL) {
 };
 
 BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
-  var evalSource = `(${detachFrame.toString()})('${frameId}')`;
+  let evalSource = `(${detachFrame.toString()})('${frameId}')`;
 
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
@@ -90,13 +90,13 @@ BindingsTestRunner.detachFrame = function(frameId, evalSourceURL) {
   return TestRunner.evaluateInPageAnonymously(evalSource);
 
   function detachFrame(frameId) {
-    var frame = document.getElementById(frameId);
+    const frame = document.getElementById(frameId);
     frame.remove();
   }
 };
 
 BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL) {
-  var evalSource = `(${navigateFrame.toString()})('${frameId}', '${navigateURL}')`;
+  let evalSource = `(${navigateFrame.toString()})('${frameId}', '${navigateURL}')`;
 
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
@@ -104,14 +104,14 @@ BindingsTestRunner.navigateFrame = function(frameId, navigateURL, evalSourceURL)
   return TestRunner.evaluateInPageAsync(evalSource);
 
   function navigateFrame(frameId, url) {
-    var frame = document.getElementById(frameId);
+    const frame = document.getElementById(frameId);
     frame.src = url;
     return new Promise(x => frame.onload = x);
   }
 };
 
 BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceURL) {
-  var evalSource = `(${createShadowDOM.toString()})('${id}', '${templateSelector}')`;
+  let evalSource = `(${createShadowDOM.toString()})('${id}', '${templateSelector}')`;
 
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
@@ -119,20 +119,20 @@ BindingsTestRunner.attachShadowDOM = function(id, templateSelector, evalSourceUR
   return TestRunner.evaluateInPageAnonymously(evalSource);
 
   function createShadowDOM(id, templateSelector) {
-    var shadowHost = document.createElement('div');
+    const shadowHost = document.createElement('div');
     shadowHost.setAttribute('id', id);
 
-    let shadowRoot = shadowHost.attachShadow({mode: 'open'});
+    const shadowRoot = shadowHost.attachShadow({mode: 'open'});
 
-    var t = document.querySelector(templateSelector);
-    var instance = t.content.cloneNode(true);
+    const t = document.querySelector(templateSelector);
+    const instance = t.content.cloneNode(true);
     shadowRoot.appendChild(instance);
     document.body.appendChild(shadowHost);
   }
 };
 
 BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
-  var evalSource = `(${removeShadowDOM.toString()})('${id}')`;
+  let evalSource = `(${removeShadowDOM.toString()})('${id}')`;
 
   if (evalSourceURL)
     evalSource += '//# sourceURL=' + evalSourceURL;
@@ -145,13 +145,13 @@ BindingsTestRunner.detachShadowDOM = function(id, evalSourceURL) {
 };
 
 BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
+  let fulfill;
+  const promise = new Promise(x => fulfill = x);
   TestRunner.cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetRemoved, onStyleSheetRemoved);
   return promise;
 
   function onStyleSheetRemoved(event) {
-    var styleSheetHeader = event.data;
+    const styleSheetHeader = event.data;
 
     if (!styleSheetHeader.resourceURL().endsWith(urlSuffix))
       return;
@@ -163,12 +163,12 @@ BindingsTestRunner.waitForStyleSheetRemoved = function(urlSuffix) {
 
 TestRunner.addSniffer(Bindings.CompilerScriptMapping.prototype, '_sourceMapAttachedForTest', onSourceMap, true);
 TestRunner.addSniffer(Bindings.SASSSourceMapping.prototype, '_sourceMapAttachedForTest', onSourceMap, true);
-var sourceMapCallbacks = new Map();
+const sourceMapCallbacks = new Map();
 
 function onSourceMap(sourceMap) {
-  for (var urlSuffix of sourceMapCallbacks.keys()) {
+  for (const urlSuffix of sourceMapCallbacks.keys()) {
     if (sourceMap.url().endsWith(urlSuffix)) {
-      var callback = sourceMapCallbacks.get(urlSuffix);
+      const callback = sourceMapCallbacks.get(urlSuffix);
       callback.call(null);
       sourceMapCallbacks.delete(urlSuffix);
     }
@@ -176,40 +176,40 @@ function onSourceMap(sourceMap) {
 }
 
 BindingsTestRunner.waitForSourceMap = function(sourceMapURLSuffix) {
-  var fulfill;
-  var promise = new Promise(x => fulfill = x);
+  let fulfill;
+  const promise = new Promise(x => fulfill = x);
   sourceMapCallbacks.set(sourceMapURLSuffix, fulfill);
   return promise;
 };
 
-var locationPool = new Bindings.LiveLocationPool();
-var nameSymbol = Symbol('LiveLocationNameForTest');
-var createdSymbol = Symbol('LiveLocationCreated');
+const locationPool = new Bindings.LiveLocationPool();
+const nameSymbol = Symbol('LiveLocationNameForTest');
+const createdSymbol = Symbol('LiveLocationCreated');
 
 BindingsTestRunner.createDebuggerLiveLocation = function(name, urlSuffix, lineNumber, columnNumber) {
-  var script = TestRunner.debuggerModel.scripts().find(script => script.sourceURL.endsWith(urlSuffix));
-  var rawLocation = TestRunner.debuggerModel.createRawLocation(script, lineNumber || 0, columnNumber || 0);
+  const script = TestRunner.debuggerModel.scripts().find(script => script.sourceURL.endsWith(urlSuffix));
+  const rawLocation = TestRunner.debuggerModel.createRawLocation(script, lineNumber || 0, columnNumber || 0);
   return Bindings.debuggerWorkspaceBinding.createLiveLocation(
       rawLocation, updateDelegate.bind(null, name), locationPool);
 };
 
 BindingsTestRunner.createCSSLiveLocation = function(name, urlSuffix, lineNumber, columnNumber) {
-  var header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
-  var rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
+  const header = TestRunner.cssModel.styleSheetHeaders().find(header => header.resourceURL().endsWith(urlSuffix));
+  const rawLocation = new SDK.CSSLocation(header, lineNumber || 0, columnNumber || 0);
   return Bindings.cssWorkspaceBinding.createLiveLocation(rawLocation, updateDelegate.bind(null, name), locationPool);
 };
 
 function updateDelegate(name, liveLocation) {
   liveLocation[nameSymbol] = name;
-  var hint = (liveLocation[createdSymbol] ? '[ UPDATE ]' : '[ CREATE ]');
+  const hint = (liveLocation[createdSymbol] ? '[ UPDATE ]' : '[ CREATE ]');
   liveLocation[createdSymbol] = true;
   BindingsTestRunner.dumpLocation(liveLocation, hint);
 }
 
 BindingsTestRunner.dumpLocation = function(liveLocation, hint) {
   hint = hint || '[  GET   ]';
-  var prefix = `${hint}  LiveLocation-${liveLocation[nameSymbol]}: `;
-  var uiLocation = liveLocation.uiLocation();
+  const prefix = `${hint}  LiveLocation-${liveLocation[nameSymbol]}: `;
+  const uiLocation = liveLocation.uiLocation();
 
   if (!uiLocation) {
     TestRunner.addResult(prefix + 'null');

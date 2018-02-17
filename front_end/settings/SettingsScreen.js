@@ -40,18 +40,18 @@ Settings.SettingsScreen = class extends UI.VBox {
     this.contentElement.classList.add('settings-window-main');
     this.contentElement.classList.add('vbox');
 
-    var settingsLabelElement = createElement('div');
+    const settingsLabelElement = createElement('div');
     UI.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
         .createChild('div', 'settings-window-title')
         .textContent = Common.UIString('Settings');
 
     this._tabbedLocation =
         UI.viewManager.createTabbedLocation(() => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
-    var tabbedPane = this._tabbedLocation.tabbedPane();
+    const tabbedPane = this._tabbedLocation.tabbedPane();
     tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.setVerticalTabLayout(true);
-    var shortcutsView = new UI.SimpleView(Common.UIString('Shortcuts'));
+    const shortcutsView = new UI.SimpleView(Common.UIString('Shortcuts'));
     UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
     this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);
@@ -65,11 +65,11 @@ Settings.SettingsScreen = class extends UI.VBox {
    * @param {string=} name
    */
   static _showSettingsScreen(name) {
-    var settingsScreen =
+    const settingsScreen =
         /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(Settings.SettingsScreen));
     if (settingsScreen.isShowing())
       return;
-    var dialog = new UI.Dialog();
+    const dialog = new UI.Dialog();
     dialog.addCloseButton();
     settingsScreen.show(dialog.contentElement);
     dialog.show();
@@ -96,7 +96,7 @@ Settings.SettingsScreen = class extends UI.VBox {
    * @param {!Event} event
    */
   _keyDown(event) {
-    var shiftKeyCode = 16;
+    const shiftKeyCode = 16;
     if (event.keyCode === shiftKeyCode && ++this._developerModeCounter > 5)
       this.contentElement.classList.add('settings-developer-mode');
   }
@@ -116,7 +116,7 @@ Settings.SettingsTab = class extends UI.VBox {
     this.element.classList.add('settings-tab-container');
     if (id)
       this.element.id = id;
-    var header = this.element.createChild('header');
+    const header = this.element.createChild('header');
     header.createChild('h3').createTextChild(name);
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
@@ -127,7 +127,7 @@ Settings.SettingsTab = class extends UI.VBox {
    *  @return {!Element}
    */
   _appendSection(name) {
-    var block = this.containerElement.createChild('div', 'settings-block');
+    const block = this.containerElement.createChild('div', 'settings-block');
     if (name)
       block.createChild('div', 'settings-section-title').textContent = name;
     return block;
@@ -142,11 +142,11 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
     super(Common.UIString('Preferences'), 'preferences-tab-content');
 
     /** @const */
-    var explicitSectionOrder =
+    const explicitSectionOrder =
         ['', 'Appearance', 'Sources', 'Elements', 'Network', 'Performance', 'Console', 'Extensions'];
     /** @type {!Map<string, !Element>} */
     this._nameToSection = new Map();
-    for (var sectionName of explicitSectionOrder)
+    for (const sectionName of explicitSectionOrder)
       this._sectionElement(sectionName);
     self.runtime.extensions('setting').forEach(this._addSetting.bind(this));
     self.runtime.extensions(UI.SettingUI).forEach(this._addSettingUI.bind(this));
@@ -165,7 +165,7 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    * @return {boolean}
    */
   static isSettingVisible(extension) {
-    var descriptor = extension.descriptor();
+    const descriptor = extension.descriptor();
     if (!('title' in descriptor))
       return false;
     if (!('category' in descriptor))
@@ -179,9 +179,9 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
   _addSetting(extension) {
     if (!Settings.GenericSettingsTab.isSettingVisible(extension))
       return;
-    var sectionElement = this._sectionElement(extension.descriptor()['category']);
-    var setting = Common.moduleSetting(extension.descriptor()['settingName']);
-    var settingControl = UI.SettingsUI.createControlForSetting(setting);
+    const sectionElement = this._sectionElement(extension.descriptor()['category']);
+    const setting = Common.moduleSetting(extension.descriptor()['settingName']);
+    const settingControl = UI.SettingsUI.createControlForSetting(setting);
     if (settingControl)
       sectionElement.appendChild(settingControl);
   }
@@ -190,8 +190,8 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    * @param {!Runtime.Extension} extension
    */
   _addSettingUI(extension) {
-    var descriptor = extension.descriptor();
-    var sectionName = descriptor['category'] || '';
+    const descriptor = extension.descriptor();
+    const sectionName = descriptor['category'] || '';
     extension.instance().then(appendCustomSetting.bind(this));
 
     /**
@@ -199,8 +199,8 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
      * @this {Settings.GenericSettingsTab}
      */
     function appendCustomSetting(object) {
-      var settingUI = /** @type {!UI.SettingUI} */ (object);
-      var element = settingUI.settingElement();
+      const settingUI = /** @type {!UI.SettingUI} */ (object);
+      const element = settingUI.settingElement();
       if (element)
         this._sectionElement(sectionName).appendChild(element);
     }
@@ -211,9 +211,9 @@ Settings.GenericSettingsTab = class extends Settings.SettingsTab {
    * @return {!Element}
    */
   _sectionElement(sectionName) {
-    var sectionElement = this._nameToSection.get(sectionName);
+    let sectionElement = this._nameToSection.get(sectionName);
     if (!sectionElement) {
-      var uiSectionName = sectionName && Common.UIString(sectionName);
+      const uiSectionName = sectionName && Common.UIString(sectionName);
       sectionElement = this._appendSection(uiSectionName);
       this._nameToSection.set(sectionName, sectionElement);
     }
@@ -228,11 +228,11 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
   constructor() {
     super(Common.UIString('Experiments'), 'experiments-tab-content');
 
-    var experiments = Runtime.experiments.allConfigurableExperiments();
+    const experiments = Runtime.experiments.allConfigurableExperiments();
     if (experiments.length) {
-      var experimentsSection = this._appendSection();
+      const experimentsSection = this._appendSection();
       experimentsSection.appendChild(this._createExperimentsWarningSubsection());
-      for (var i = 0; i < experiments.length; ++i)
+      for (let i = 0; i < experiments.length; ++i)
         experimentsSection.appendChild(this._createExperimentCheckbox(experiments[i]));
     }
   }
@@ -241,25 +241,25 @@ Settings.ExperimentsSettingsTab = class extends Settings.SettingsTab {
    * @return {!Element} element
    */
   _createExperimentsWarningSubsection() {
-    var subsection = createElement('div');
-    var warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
+    const subsection = createElement('div');
+    const warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
     warning.textContent = Common.UIString('WARNING:');
     subsection.createTextChild(' ');
-    var message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
+    const message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
     message.textContent = Common.UIString('These experiments could be dangerous and may require restart.');
     return subsection;
   }
 
   _createExperimentCheckbox(experiment) {
-    var label = UI.CheckboxLabel.create(Common.UIString(experiment.title), experiment.isEnabled());
-    var input = label.checkboxElement;
+    const label = UI.CheckboxLabel.create(Common.UIString(experiment.title), experiment.isEnabled());
+    const input = label.checkboxElement;
     input.name = experiment.name;
     function listener() {
       experiment.setEnabled(input.checked);
     }
     input.addEventListener('click', listener, false);
 
-    var p = createElement('p');
+    const p = createElement('p');
     p.className = experiment.hidden && !experiment.isEnabled() ? 'settings-experiment-hidden' : '';
     p.appendChild(label);
     return p;
@@ -305,8 +305,8 @@ Settings.SettingsScreen.Revealer = class {
    */
   reveal(object) {
     console.assert(object instanceof Common.Setting);
-    var setting = /** @type {!Common.Setting} */ (object);
-    var success = false;
+    const setting = /** @type {!Common.Setting} */ (object);
+    let success = false;
 
     self.runtime.extensions('setting').forEach(revealModuleSetting);
     self.runtime.extensions(UI.SettingUI).forEach(revealSettingUI);
@@ -331,7 +331,7 @@ Settings.SettingsScreen.Revealer = class {
      * @param {!Runtime.Extension} extension
      */
     function revealSettingUI(extension) {
-      var settings = extension.descriptor()['settings'];
+      const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen();
@@ -343,10 +343,10 @@ Settings.SettingsScreen.Revealer = class {
      * @param {!Runtime.Extension} extension
      */
     function revealSettingsView(extension) {
-      var location = extension.descriptor()['location'];
+      const location = extension.descriptor()['location'];
       if (location !== 'settings-view')
         return;
-      var settings = extension.descriptor()['settings'];
+      const settings = extension.descriptor()['settings'];
       if (settings && settings.indexOf(setting.name) !== -1) {
         InspectorFrontendHost.bringToFront();
         Settings.SettingsScreen._showSettingsScreen(extension.descriptor()['id']);

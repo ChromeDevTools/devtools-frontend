@@ -54,9 +54,9 @@ SDK.TargetManager = class extends Common.Object {
    * @template T
    */
   models(modelClass) {
-    var result = [];
-    for (var i = 0; i < this._targets.length; ++i) {
-      var model = this._targets[i].model(modelClass);
+    const result = [];
+    for (let i = 0; i < this._targets.length; ++i) {
+      const model = this._targets[i].model(modelClass);
       if (model)
         result.push(model);
     }
@@ -79,7 +79,7 @@ SDK.TargetManager = class extends Common.Object {
     if (!this._modelObservers.has(modelClass))
       this._modelObservers.set(modelClass, []);
     this._modelObservers.get(modelClass).push(observer);
-    for (var model of this.models(modelClass))
+    for (const model of this.models(modelClass))
       observer.modelAdded(model);
   }
 
@@ -91,7 +91,7 @@ SDK.TargetManager = class extends Common.Object {
   unobserveModels(modelClass, observer) {
     if (!this._modelObservers.has(modelClass))
       return;
-    var observers = this._modelObservers.get(modelClass);
+    const observers = this._modelObservers.get(modelClass);
     observers.remove(observer);
     if (!observers.length)
       this._modelObservers.delete(modelClass);
@@ -105,7 +105,7 @@ SDK.TargetManager = class extends Common.Object {
   modelAdded(target, modelClass, model) {
     if (!this._modelObservers.has(modelClass))
       return;
-    for (var observer of this._modelObservers.get(modelClass).slice())
+    for (const observer of this._modelObservers.get(modelClass).slice())
       observer.modelAdded(model);
   }
 
@@ -117,7 +117,7 @@ SDK.TargetManager = class extends Common.Object {
   _modelRemoved(target, modelClass, model) {
     if (!this._modelObservers.has(modelClass))
       return;
-    for (var observer of this._modelObservers.get(modelClass).slice())
+    for (const observer of this._modelObservers.get(modelClass).slice())
       observer.modelRemoved(model);
   }
 
@@ -128,8 +128,8 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!Object=} thisObject
    */
   addModelListener(modelClass, eventType, listener, thisObject) {
-    for (var i = 0; i < this._targets.length; ++i) {
-      var model = this._targets[i].model(modelClass);
+    for (let i = 0; i < this._targets.length; ++i) {
+      const model = this._targets[i].model(modelClass);
       if (model)
         model.addEventListener(eventType, listener, thisObject);
     }
@@ -148,14 +148,14 @@ SDK.TargetManager = class extends Common.Object {
     if (!this._modelListeners.has(eventType))
       return;
 
-    for (var i = 0; i < this._targets.length; ++i) {
-      var model = this._targets[i].model(modelClass);
+    for (let i = 0; i < this._targets.length; ++i) {
+      const model = this._targets[i].model(modelClass);
       if (model)
         model.removeEventListener(eventType, listener, thisObject);
     }
 
-    var listeners = this._modelListeners.get(eventType);
-    for (var i = 0; i < listeners.length; ++i) {
+    const listeners = this._modelListeners.get(eventType);
+    for (let i = 0; i < listeners.length; ++i) {
       if (listeners[i].modelClass === modelClass && listeners[i].listener === listener &&
           listeners[i].thisObject === thisObject)
         listeners.splice(i--, 1);
@@ -193,21 +193,21 @@ SDK.TargetManager = class extends Common.Object {
    * @return {!SDK.Target}
    */
   createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget) {
-    var target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget, this._isSuspended);
+    const target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget, this._isSuspended);
     target.createModels(new Set(this._modelObservers.keys()));
     this._targets.push(target);
 
-    var copy = this._observersForTarget(target);
-    for (var i = 0; i < copy.length; ++i)
+    const copy = this._observersForTarget(target);
+    for (let i = 0; i < copy.length; ++i)
       copy[i].targetAdded(target);
 
-    for (var modelClass of target.models().keys())
+    for (const modelClass of target.models().keys())
       this.modelAdded(target, modelClass, target.models().get(modelClass));
 
-    for (var pair of this._modelListeners) {
-      var listeners = pair[1];
-      for (var i = 0; i < listeners.length; ++i) {
-        var model = target.model(listeners[i].modelClass);
+    for (const pair of this._modelListeners) {
+      const listeners = pair[1];
+      for (let i = 0; i < listeners.length; ++i) {
+        const model = target.model(listeners[i].modelClass);
         if (model)
           model.addEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
       }
@@ -233,17 +233,17 @@ SDK.TargetManager = class extends Common.Object {
       return;
 
     this._targets.remove(target);
-    for (var modelClass of target.models().keys())
+    for (const modelClass of target.models().keys())
       this._modelRemoved(target, modelClass, target.models().get(modelClass));
 
-    var copy = this._observersForTarget(target);
-    for (var i = 0; i < copy.length; ++i)
+    const copy = this._observersForTarget(target);
+    for (let i = 0; i < copy.length; ++i)
       copy[i].targetRemoved(target);
 
-    for (var pair of this._modelListeners) {
-      var listeners = pair[1];
-      for (var i = 0; i < listeners.length; ++i) {
-        var model = target.model(listeners[i].modelClass);
+    for (const pair of this._modelListeners) {
+      const listeners = pair[1];
+      for (let i = 0; i < listeners.length; ++i) {
+        const model = target.model(listeners[i].modelClass);
         if (model)
           model.removeEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
       }
@@ -268,7 +268,7 @@ SDK.TargetManager = class extends Common.Object {
    */
   targetById(id) {
     // TODO(dgozman): add a map id -> target.
-    for (var i = 0; i < this._targets.length; ++i) {
+    for (let i = 0; i < this._targets.length; ++i) {
       if (this._targets[i].id() === id)
         return this._targets[i];
     }

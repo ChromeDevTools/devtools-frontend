@@ -51,7 +51,7 @@ Emulation.EmulatedDevice = class {
             return defaultValue;
           throw new Error('Emulated device is missing required property \'' + key + '\'');
         }
-        var value = object[key];
+        const value = object[key];
         if (typeof value !== type || value === null)
           throw new Error('Emulated device property \'' + key + '\' has wrong type \'' + typeof value + '\'');
         return value;
@@ -63,7 +63,7 @@ Emulation.EmulatedDevice = class {
        * @return {number}
        */
       function parseIntValue(object, key) {
-        var value = /** @type {number} */ (parseValue(object, key, 'number'));
+        const value = /** @type {number} */ (parseValue(object, key, 'number'));
         if (value !== Math.abs(value))
           throw new Error('Emulated device value \'' + key + '\' must be integer');
         return value;
@@ -84,7 +84,7 @@ Emulation.EmulatedDevice = class {
        * @return {!Emulation.EmulatedDevice.Orientation}
        */
       function parseOrientation(json) {
-        var result = {};
+        const result = {};
 
         result.width = parseIntValue(json, 'width');
         if (result.width < 0 || result.width > Emulation.DeviceModeModel.MaxDeviceSize ||
@@ -96,7 +96,7 @@ Emulation.EmulatedDevice = class {
             result.height < Emulation.DeviceModeModel.MinDeviceSize)
           throw new Error('Emulated device has wrong height: ' + result.height);
 
-        var outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
+        const outlineInsets = parseValue(json['outline'], 'insets', 'object', null);
         if (outlineInsets) {
           result.outlineInsets = parseInsets(outlineInsets);
           if (result.outlineInsets.left < 0 || result.outlineInsets.top < 0)
@@ -106,17 +106,17 @@ Emulation.EmulatedDevice = class {
         return /** @type {!Emulation.EmulatedDevice.Orientation} */ (result);
       }
 
-      var result = new Emulation.EmulatedDevice();
+      const result = new Emulation.EmulatedDevice();
       result.title = /** @type {string} */ (parseValue(json, 'title', 'string'));
       result.type = /** @type {string} */ (parseValue(json, 'type', 'string'));
-      var rawUserAgent = /** @type {string} */ (parseValue(json, 'user-agent', 'string'));
+      const rawUserAgent = /** @type {string} */ (parseValue(json, 'user-agent', 'string'));
       result.userAgent = SDK.MultitargetNetworkManager.patchUserAgentWithChromeVersion(rawUserAgent);
 
-      var capabilities = parseValue(json, 'capabilities', 'object', []);
+      const capabilities = parseValue(json, 'capabilities', 'object', []);
       if (!Array.isArray(capabilities))
         throw new Error('Emulated device capabilities must be an array');
       result.capabilities = [];
-      for (var i = 0; i < capabilities.length; ++i) {
+      for (let i = 0; i < capabilities.length; ++i) {
         if (typeof capabilities[i] !== 'string')
           throw new Error('Emulated device capability must be a string');
         result.capabilities.push(capabilities[i]);
@@ -129,18 +129,18 @@ Emulation.EmulatedDevice = class {
       result.vertical = parseOrientation(parseValue(json['screen'], 'vertical', 'object'));
       result.horizontal = parseOrientation(parseValue(json['screen'], 'horizontal', 'object'));
 
-      var modes = parseValue(json, 'modes', 'object', []);
+      const modes = parseValue(json, 'modes', 'object', []);
       if (!Array.isArray(modes))
         throw new Error('Emulated device modes must be an array');
       result.modes = [];
-      for (var i = 0; i < modes.length; ++i) {
-        var mode = {};
+      for (let i = 0; i < modes.length; ++i) {
+        const mode = {};
         mode.title = /** @type {string} */ (parseValue(modes[i], 'title', 'string'));
         mode.orientation = /** @type {string} */ (parseValue(modes[i], 'orientation', 'string'));
         if (mode.orientation !== Emulation.EmulatedDevice.Vertical &&
             mode.orientation !== Emulation.EmulatedDevice.Horizontal)
           throw new Error('Emulated device mode has wrong orientation \'' + mode.orientation + '\'');
-        var orientation = result.orientationByName(mode.orientation);
+        const orientation = result.orientationByName(mode.orientation);
         mode.insets = parseInsets(parseValue(modes[i], 'insets', 'object'));
         if (mode.insets.top < 0 || mode.insets.left < 0 || mode.insets.right < 0 || mode.insets.bottom < 0 ||
             mode.insets.top + mode.insets.bottom > orientation.height ||
@@ -167,8 +167,8 @@ Emulation.EmulatedDevice = class {
    * @return {number}
    */
   static deviceComparator(device1, device2) {
-    var order1 = (device1._extension && device1._extension.descriptor()['order']) || -1;
-    var order2 = (device2._extension && device2._extension.descriptor()['order']) || -1;
+    const order1 = (device1._extension && device1._extension.descriptor()['order']) || -1;
+    const order2 = (device2._extension && device2._extension.descriptor()['order']) || -1;
     if (order1 > order2)
       return 1;
     if (order2 > order1)
@@ -195,8 +195,8 @@ Emulation.EmulatedDevice = class {
    * @return {!Array.<!Emulation.EmulatedDevice.Mode>}
    */
   modesForOrientation(orientation) {
-    var result = [];
-    for (var index = 0; index < this.modes.length; index++) {
+    const result = [];
+    for (let index = 0; index < this.modes.length; index++) {
       if (this.modes[index].orientation === orientation)
         result.push(this.modes[index]);
     }
@@ -207,7 +207,7 @@ Emulation.EmulatedDevice = class {
    * @return {*}
    */
   _toJSON() {
-    var json = {};
+    const json = {};
     json['title'] = this.title;
     json['type'] = this.type;
     json['user-agent'] = this.userAgent;
@@ -219,8 +219,8 @@ Emulation.EmulatedDevice = class {
     json['screen']['horizontal'] = this._orientationToJSON(this.horizontal);
 
     json['modes'] = [];
-    for (var i = 0; i < this.modes.length; ++i) {
-      var mode = {};
+    for (let i = 0; i < this.modes.length; ++i) {
+      const mode = {};
       mode['title'] = this.modes[i].title;
       mode['orientation'] = this.modes[i].orientation;
       mode['insets'] = {};
@@ -244,7 +244,7 @@ Emulation.EmulatedDevice = class {
    * @return {*}
    */
   _orientationToJSON(orientation) {
-    var json = {};
+    const json = {};
     json['width'] = orientation.width;
     json['height'] = orientation.height;
     if (orientation.outlineInsets) {
@@ -276,7 +276,7 @@ Emulation.EmulatedDevice = class {
    * @return {string}
    */
   outlineImage(mode) {
-    var orientation = this.orientationByName(mode.orientation);
+    const orientation = this.orientationByName(mode.orientation);
     if (!orientation.outlineImage)
       return '';
     if (!this._extension)
@@ -391,10 +391,10 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
   }
 
   _updateStandardDevices() {
-    var devices = [];
-    var extensions = self.runtime.extensions('emulated-device');
-    for (var i = 0; i < extensions.length; ++i) {
-      var device = Emulation.EmulatedDevice.fromJSONV1(extensions[i].descriptor()['device']);
+    const devices = [];
+    const extensions = self.runtime.extensions('emulated-device');
+    for (let i = 0; i < extensions.length; ++i) {
+      const device = Emulation.EmulatedDevice.fromJSONV1(extensions[i].descriptor()['device']);
       device.setExtension(extensions[i]);
       devices.push(device);
     }
@@ -411,9 +411,9 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
   _listFromJSONV1(jsonArray, result) {
     if (!Array.isArray(jsonArray))
       return false;
-    var success = true;
-    for (var i = 0; i < jsonArray.length; ++i) {
-      var device = Emulation.EmulatedDevice.fromJSONV1(jsonArray[i]);
+    let success = true;
+    for (let i = 0; i < jsonArray.length; ++i) {
+      const device = Emulation.EmulatedDevice.fromJSONV1(jsonArray[i]);
       if (device) {
         result.push(device);
         if (!device.modes.length) {
@@ -472,7 +472,7 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
   }
 
   saveCustomDevices() {
-    var json = this._custom.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
+    const json = this._custom.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
       return device._toJSON();
     });
     this._customSetting.set(json);
@@ -480,7 +480,7 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
   }
 
   saveStandardDevices() {
-    var json = this._standard.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
+    const json = this._standard.map(/** @param {!Emulation.EmulatedDevice} device */ function(device) {
       return device._toJSON();
     });
     this._standardSetting.set(json);
@@ -492,12 +492,12 @@ Emulation.EmulatedDevicesList = class extends Common.Object {
    * @param {!Array.<!Emulation.EmulatedDevice>} to
    */
   _copyShowValues(from, to) {
-    var deviceById = new Map();
-    for (var i = 0; i < from.length; ++i)
+    const deviceById = new Map();
+    for (let i = 0; i < from.length; ++i)
       deviceById.set(from[i].title, from[i]);
 
-    for (var i = 0; i < to.length; ++i) {
-      var title = to[i].title;
+    for (let i = 0; i < to.length; ++i) {
+      const title = to[i].title;
       if (deviceById.has(title))
         to[i].copyShowFrom(/** @type {!Emulation.EmulatedDevice} */ (deviceById.get(title)));
     }

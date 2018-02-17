@@ -10,20 +10,20 @@ Elements.DOMLinkifier = {};
  * @param {string=} tooltipContent
  */
 Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipContent) {
-  var originalNode = node;
-  var isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
+  const originalNode = node;
+  const isPseudo = node.nodeType() === Node.ELEMENT_NODE && node.pseudoType();
   if (isPseudo && node.parentNode)
     node = node.parentNode;
 
-  var title = node.nodeNameInCorrectCase();
+  let title = node.nodeNameInCorrectCase();
 
-  var nameElement = parentElement.createChild('span', 'node-label-name');
+  const nameElement = parentElement.createChild('span', 'node-label-name');
   nameElement.textContent = title;
 
-  var idAttribute = node.getAttribute('id');
+  const idAttribute = node.getAttribute('id');
   if (idAttribute) {
-    var idElement = parentElement.createChild('span', 'node-label-id');
-    var part = '#' + idAttribute;
+    const idElement = parentElement.createChild('span', 'node-label-id');
+    const part = '#' + idAttribute;
     title += part;
     idElement.createTextChild(part);
 
@@ -31,17 +31,17 @@ Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipC
     nameElement.classList.add('extra');
   }
 
-  var classAttribute = node.getAttribute('class');
+  const classAttribute = node.getAttribute('class');
   if (classAttribute) {
-    var classes = classAttribute.split(/\s+/);
-    var foundClasses = {};
+    const classes = classAttribute.split(/\s+/);
+    const foundClasses = {};
 
     if (classes.length) {
-      var classesElement = parentElement.createChild('span', 'extra node-label-class');
-      for (var i = 0; i < classes.length; ++i) {
-        var className = classes[i];
+      const classesElement = parentElement.createChild('span', 'extra node-label-class');
+      for (let i = 0; i < classes.length; ++i) {
+        const className = classes[i];
         if (className && !(className in foundClasses)) {
-          var part = '.' + className;
+          const part = '.' + className;
           title += part;
           classesElement.createTextChild(part);
           foundClasses[className] = true;
@@ -51,8 +51,8 @@ Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipC
   }
 
   if (isPseudo) {
-    var pseudoElement = parentElement.createChild('span', 'extra node-label-pseudo');
-    var pseudoText = '::' + originalNode.pseudoType();
+    const pseudoElement = parentElement.createChild('span', 'extra node-label-pseudo');
+    const pseudoText = '::' + originalNode.pseudoType();
     pseudoElement.createTextChild(pseudoText);
     title += pseudoText;
   }
@@ -68,9 +68,9 @@ Elements.DOMLinkifier.linkifyNodeReference = function(node, tooltipContent) {
   if (!node)
     return createTextNode(Common.UIString('<node>'));
 
-  var root = createElementWithClass('span', 'monospace');
-  var shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
-  var link = shadowRoot.createChild('div', 'node-link');
+  const root = createElementWithClass('span', 'monospace');
+  const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
+  const link = shadowRoot.createChild('div', 'node-link');
 
   Elements.DOMLinkifier.decorateNodeLabel(node, link, tooltipContent);
 
@@ -86,9 +86,9 @@ Elements.DOMLinkifier.linkifyNodeReference = function(node, tooltipContent) {
  * @return {!Node}
  */
 Elements.DOMLinkifier.linkifyDeferredNodeReference = function(deferredNode) {
-  var root = createElement('div');
-  var shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
-  var link = shadowRoot.createChild('div', 'node-link');
+  const root = createElement('div');
+  const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
+  const link = shadowRoot.createChild('div', 'node-link');
   link.createChild('content');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
   link.addEventListener('mousedown', e => e.consume(), false);

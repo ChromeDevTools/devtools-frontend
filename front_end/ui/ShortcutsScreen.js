@@ -39,13 +39,13 @@ UI.ShortcutsScreen = class {
 
   static registerShortcuts() {
     // Elements panel
-    var elementsSection = UI.shortcutsScreen.section(Common.UIString('Elements Panel'));
+    const elementsSection = UI.shortcutsScreen.section(Common.UIString('Elements Panel'));
 
-    var navigate = UI.ShortcutsScreen.ElementsPanelShortcuts.NavigateUp.concat(
+    const navigate = UI.ShortcutsScreen.ElementsPanelShortcuts.NavigateUp.concat(
         UI.ShortcutsScreen.ElementsPanelShortcuts.NavigateDown);
     elementsSection.addRelatedKeys(navigate, Common.UIString('Navigate elements'));
 
-    var expandCollapse =
+    const expandCollapse =
         UI.ShortcutsScreen.ElementsPanelShortcuts.Expand.concat(UI.ShortcutsScreen.ElementsPanelShortcuts.Collapse);
     elementsSection.addRelatedKeys(expandCollapse, Common.UIString('Expand/collapse'));
 
@@ -56,9 +56,9 @@ UI.ShortcutsScreen = class {
     elementsSection.addAlternateKeys(
         UI.ShortcutsScreen.ElementsPanelShortcuts.ToggleEditAsHTML, Common.UIString('Toggle edit as HTML'));
 
-    var stylesPaneSection = UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
+    const stylesPaneSection = UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
 
-    var nextPreviousProperty = UI.ShortcutsScreen.ElementsPanelShortcuts.NextProperty.concat(
+    const nextPreviousProperty = UI.ShortcutsScreen.ElementsPanelShortcuts.NextProperty.concat(
         UI.ShortcutsScreen.ElementsPanelShortcuts.PreviousProperty);
     stylesPaneSection.addRelatedKeys(nextPreviousProperty, Common.UIString('Next/previous property'));
 
@@ -83,7 +83,7 @@ UI.ShortcutsScreen = class {
         UI.ShortcutsScreen.ElementsPanelShortcuts.DecrementBy01, Common.UIString('Decrement by %f', 0.1));
 
     // Debugger
-    var section = UI.shortcutsScreen.section(Common.UIString('Debugger'));
+    let section = UI.shortcutsScreen.section(Common.UIString('Debugger'));
 
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.toggle-pause'), Common.UIString('Pause/ Continue'));
@@ -94,7 +94,7 @@ UI.ShortcutsScreen = class {
     section.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.step-out'), Common.UIString('Step out'));
 
-    var nextAndPrevFrameKeys =
+    const nextAndPrevFrameKeys =
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.next-call-frame')
             .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.previous-call-frame'));
     section.addRelatedKeys(nextAndPrevFrameKeys, Common.UIString('Next/previous call frame'));
@@ -205,7 +205,7 @@ UI.ShortcutsScreen = class {
    * @return {!UI.ShortcutsSection}
    */
   section(name) {
-    var section = this._sections[name];
+    let section = this._sections[name];
     if (!section)
       this._sections[name] = section = new UI.ShortcutsSection(name);
     return section;
@@ -215,25 +215,25 @@ UI.ShortcutsScreen = class {
    * @return {!UI.Widget}
    */
   createShortcutsTabView() {
-    var orderedSections = [];
-    for (var section in this._sections)
+    const orderedSections = [];
+    for (const section in this._sections)
       orderedSections.push(this._sections[section]);
     function compareSections(a, b) {
       return a.order - b.order;
     }
     orderedSections.sort(compareSections);
 
-    var widget = new UI.Widget();
+    const widget = new UI.Widget();
 
     widget.element.className = 'settings-tab-container';  // Override
     widget.element.createChild('header').createChild('h3').createTextChild(Common.UIString('Shortcuts'));
-    var scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
-    var container = scrollPane.createChild('div');
+    const scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
+    const container = scrollPane.createChild('div');
     container.className = 'settings-content settings-container';
-    for (var i = 0; i < orderedSections.length; ++i)
+    for (let i = 0; i < orderedSections.length; ++i)
       orderedSections[i].renderSection(container);
 
-    var note = scrollPane.createChild('p', 'settings-footnote');
+    const note = scrollPane.createChild('p', 'settings-footnote');
     note.appendChild(UI.createDocumentationLink(
         'iterate/inspect-styles/shortcuts', Common.UIString('Full list of DevTools keyboard shortcuts and gestures')));
 
@@ -296,15 +296,15 @@ UI.ShortcutsSection = class {
    * @param {!Element} container
    */
   renderSection(container) {
-    var parent = container.createChild('div', 'settings-block');
+    const parent = container.createChild('div', 'settings-block');
 
-    var headLine = parent.createChild('div', 'settings-line');
+    const headLine = parent.createChild('div', 'settings-line');
     headLine.createChild('div', 'settings-key-cell');
     headLine.createChild('div', 'settings-section-title settings-cell').textContent = this.name;
 
-    for (var i = 0; i < this._lines.length; ++i) {
-      var line = parent.createChild('div', 'settings-line');
-      var keyCell = line.createChild('div', 'settings-key-cell');
+    for (let i = 0; i < this._lines.length; ++i) {
+      const line = parent.createChild('div', 'settings-line');
+      const keyCell = line.createChild('div', 'settings-key-cell');
       keyCell.appendChild(this._lines[i].key);
       keyCell.appendChild(this._createSpan('settings-key-delimiter', ':'));
       line.createChild('div', 'settings-cell').textContent = this._lines[i].text;
@@ -317,7 +317,7 @@ UI.ShortcutsSection = class {
    * @return {!Node}
    */
   _renderSequence(sequence, delimiter) {
-    var delimiterSpan = this._createSpan('settings-key-delimiter', delimiter);
+    const delimiterSpan = this._createSpan('settings-key-delimiter', delimiter);
     return this._joinNodes(sequence.map(this._renderKey.bind(this)), delimiterSpan);
   }
 
@@ -326,8 +326,8 @@ UI.ShortcutsSection = class {
    * @return {!Node}
    */
   _renderKey(key) {
-    var keyName = key.name;
-    var plus = this._createSpan('settings-combine-keys', '+');
+    const keyName = key.name;
+    const plus = this._createSpan('settings-combine-keys', '+');
     return this._joinNodes(keyName.split(' + ').map(this._createSpan.bind(this, 'settings-key')), plus);
   }
 
@@ -337,7 +337,7 @@ UI.ShortcutsSection = class {
    * @return {!Element}
    */
   _createSpan(className, textContent) {
-    var node = createElement('span');
+    const node = createElement('span');
     node.className = className;
     node.textContent = textContent;
     return node;
@@ -349,8 +349,8 @@ UI.ShortcutsSection = class {
    * @return {!Node}
    */
   _joinNodes(nodes, delimiter) {
-    var result = createDocumentFragment();
-    for (var i = 0; i < nodes.length; ++i) {
+    const result = createDocumentFragment();
+    for (let i = 0; i < nodes.length; ++i) {
       if (i > 0)
         result.appendChild(delimiter.cloneNode(true));
       result.appendChild(nodes[i]);

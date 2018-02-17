@@ -118,7 +118,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._isCasting = true;
 
     const maxImageDimension = 2048;
-    var dimensions = this._viewportDimensions();
+    const dimensions = this._viewportDimensions();
     if (dimensions.width < 0 || dimensions.height < 0) {
       this._isCasting = false;
       return;
@@ -130,7 +130,7 @@ Screencast.ScreencastView = class extends UI.VBox {
         'jpeg', 80, Math.floor(Math.min(maxImageDimension, dimensions.width)),
         Math.floor(Math.min(maxImageDimension, dimensions.height)), undefined, this._screencastFrame.bind(this),
         this._screencastVisibilityChanged.bind(this));
-    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
       emulationModel.overrideEmulateTouch(true);
     if (this._overlayModel)
       this._overlayModel.setHighlighter(this);
@@ -141,7 +141,7 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     this._isCasting = false;
     this._screenCaptureModel.stopScreencast();
-    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
       emulationModel.overrideEmulateTouch(false);
     if (this._overlayModel)
       this._overlayModel.setHighlighter(null);
@@ -158,14 +158,14 @@ Screencast.ScreencastView = class extends UI.VBox {
       this._scrollOffsetX = metadata.scrollOffsetX;
       this._scrollOffsetY = metadata.scrollOffsetY;
 
-      var deviceSizeRatio = metadata.deviceHeight / metadata.deviceWidth;
-      var dimensionsCSS = this._viewportDimensions();
+      const deviceSizeRatio = metadata.deviceHeight / metadata.deviceWidth;
+      const dimensionsCSS = this._viewportDimensions();
 
       this._imageZoom = Math.min(
           dimensionsCSS.width / this._imageElement.naturalWidth,
           dimensionsCSS.height / (this._imageElement.naturalWidth * deviceSizeRatio));
       this._viewportElement.classList.remove('hidden');
-      var bordersSize = Screencast.ScreencastView._bordersSize;
+      const bordersSize = Screencast.ScreencastView._bordersSize;
       if (this._imageZoom < 1.01 / window.devicePixelRatio)
         this._imageZoom = 1 / window.devicePixelRatio;
       this._screenZoom = this._imageElement.naturalWidth * this._imageZoom / metadata.deviceWidth;
@@ -233,9 +233,9 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     }
 
-    var position = this._convertIntoScreenSpace(event);
+    const position = this._convertIntoScreenSpace(event);
 
-    var node = await this._domModel.nodeForLocation(
+    const node = await this._domModel.nodeForLocation(
         Math.floor(position.x / this._pageScaleFactor + this._scrollOffsetX),
         Math.floor(position.y / this._pageScaleFactor + this._scrollOffsetY),
         Common.moduleSetting('showUAShadowDOM').get());
@@ -259,8 +259,8 @@ Screencast.ScreencastView = class extends UI.VBox {
       return;
     }
 
-    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-    var handler = this._shortcuts[shortcutKey];
+    const shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
+    const handler = this._shortcuts[shortcutKey];
     if (handler && handler(event)) {
       event.consume();
       return;
@@ -292,7 +292,7 @@ Screencast.ScreencastView = class extends UI.VBox {
    * @return {!{x: number, y: number}}
    */
   _convertIntoScreenSpace(event) {
-    var position = {};
+    const position = {};
     position.x = Math.round(event.offsetX / this._screenZoom);
     position.y = Math.round(event.offsetY / this._screenZoom - this._screenOffsetTop);
     return position;
@@ -352,7 +352,7 @@ Screencast.ScreencastView = class extends UI.VBox {
      * @this {Screencast.ScreencastView}
      */
     function scaleQuad(quad) {
-      for (var i = 0; i < quad.length; i += 2) {
+      for (let i = 0; i < quad.length; i += 2) {
         quad[i] = quad[i] * this._pageScaleFactor * this._screenZoom;
         quad[i + 1] = (quad[i + 1] * this._pageScaleFactor + this._screenOffsetTop) * this._screenZoom;
       }
@@ -366,11 +366,11 @@ Screencast.ScreencastView = class extends UI.VBox {
   }
 
   _repaint() {
-    var model = this._model;
-    var config = this._config;
+    const model = this._model;
+    const config = this._config;
 
-    var canvasWidth = this._canvasElement.getBoundingClientRect().width;
-    var canvasHeight = this._canvasElement.getBoundingClientRect().height;
+    const canvasWidth = this._canvasElement.getBoundingClientRect().width;
+    const canvasHeight = this._canvasElement.getBoundingClientRect().height;
     this._canvasElement.width = window.devicePixelRatio * canvasWidth;
     this._canvasElement.height = window.devicePixelRatio * canvasHeight;
 
@@ -389,7 +389,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     if (model && config) {
       this._context.save();
       const transparentColor = 'rgba(0, 0, 0, 0)';
-      var quads = [];
+      const quads = [];
       if (model.content && config.contentColor !== transparentColor)
         quads.push({quad: model.content, color: config.contentColor});
       if (model.padding && config.paddingColor !== transparentColor)
@@ -399,7 +399,7 @@ Screencast.ScreencastView = class extends UI.VBox {
       if (model.margin && config.marginColor !== transparentColor)
         quads.push({quad: model.margin, color: config.marginColor});
 
-      for (var i = quads.length - 1; i > 0; --i)
+      for (let i = quads.length - 1; i > 0; --i)
         this._drawOutlinedQuadWithClip(quads[i].quad, quads[i - 1].quad, quads[i].color);
       if (quads.length > 0)
         this._drawOutlinedQuad(quads[0].quad, quads[0].color);
@@ -473,14 +473,14 @@ Screencast.ScreencastView = class extends UI.VBox {
     if (!this._node)
       return;
 
-    var canvasWidth = this._canvasElement.getBoundingClientRect().width;
-    var canvasHeight = this._canvasElement.getBoundingClientRect().height;
+    const canvasWidth = this._canvasElement.getBoundingClientRect().width;
+    const canvasHeight = this._canvasElement.getBoundingClientRect().height;
 
-    var lowerCaseName = this._node.localName() || this._node.nodeName().toLowerCase();
+    const lowerCaseName = this._node.localName() || this._node.nodeName().toLowerCase();
     this._tagNameElement.textContent = lowerCaseName;
     this._nodeIdElement.textContent = this._node.getAttribute('id') ? '#' + this._node.getAttribute('id') : '';
     this._nodeIdElement.textContent = this._node.getAttribute('id') ? '#' + this._node.getAttribute('id') : '';
-    var className = this._node.getAttribute('class');
+    let className = this._node.getAttribute('class');
     if (className && className.length > 50)
       className = className.substring(0, 50) + '\u2026';
     this._classNameElement.textContent = className || '';
@@ -488,21 +488,21 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._nodeHeightElement.textContent = this._model.height;
 
     this._titleElement.classList.remove('hidden');
-    var titleWidth = this._titleElement.offsetWidth + 6;
-    var titleHeight = this._titleElement.offsetHeight + 4;
+    const titleWidth = this._titleElement.offsetWidth + 6;
+    const titleHeight = this._titleElement.offsetHeight + 4;
 
-    var anchorTop = this._model.margin[1];
-    var anchorBottom = this._model.margin[7];
+    const anchorTop = this._model.margin[1];
+    const anchorBottom = this._model.margin[7];
 
     const arrowHeight = 7;
-    var renderArrowUp = false;
-    var renderArrowDown = false;
+    let renderArrowUp = false;
+    let renderArrowDown = false;
 
-    var boxX = Math.max(2, this._model.margin[0]);
+    let boxX = Math.max(2, this._model.margin[0]);
     if (boxX + titleWidth > canvasWidth)
       boxX = canvasWidth - titleWidth - 2;
 
-    var boxY;
+    let boxY;
     if (anchorTop > canvasHeight) {
       boxY = canvasHeight - titleHeight - arrowHeight;
       renderArrowDown = true;
@@ -554,8 +554,8 @@ Screencast.ScreencastView = class extends UI.VBox {
   _viewportDimensions() {
     const gutterSize = 30;
     const bordersSize = Screencast.ScreencastView._bordersSize;
-    var width = this.element.offsetWidth - bordersSize - gutterSize;
-    var height = this.element.offsetHeight - bordersSize - gutterSize - Screencast.ScreencastView._navBarHeight;
+    const width = this.element.offsetWidth - bordersSize - gutterSize;
+    const height = this.element.offsetHeight - bordersSize - gutterSize - Screencast.ScreencastView._navBarHeight;
     return {width: width, height: height};
   }
 
@@ -581,11 +581,11 @@ Screencast.ScreencastView = class extends UI.VBox {
    * @param {!CanvasRenderingContext2D} context
    */
   _createCheckerboardPattern(context) {
-    var pattern = /** @type {!HTMLCanvasElement} */ (createElement('canvas'));
+    const pattern = /** @type {!HTMLCanvasElement} */ (createElement('canvas'));
     const size = 32;
     pattern.width = size * 2;
     pattern.height = size * 2;
-    var pctx = pattern.getContext('2d');
+    const pctx = pattern.getContext('2d');
 
     pctx.fillStyle = 'rgb(195, 195, 195)';
     pctx.fillRect(0, 0, size * 2, size * 2);
@@ -626,7 +626,7 @@ Screencast.ScreencastView = class extends UI.VBox {
    * @param {number} offset
    */
   _navigateToHistoryEntry(offset) {
-    var newIndex = this._historyIndex + offset;
+    const newIndex = this._historyIndex + offset;
     if (newIndex < 0 || newIndex >= this._historyEntries.length)
       return;
     this._resourceTreeModel.navigateToHistoryEntry(this._historyEntries[newIndex]);
@@ -643,7 +643,7 @@ Screencast.ScreencastView = class extends UI.VBox {
   _navigationUrlKeyUp(event) {
     if (event.key !== 'Enter')
       return;
-    var url = this._navigationUrl.value;
+    let url = this._navigationUrl.value;
     if (!url)
       return;
     if (!url.match(Screencast.ScreencastView._SchemeRegex))
@@ -653,7 +653,7 @@ Screencast.ScreencastView = class extends UI.VBox {
   }
 
   async _requestNavigationHistory() {
-    var history = await this._resourceTreeModel.navigationHistory();
+    const history = await this._resourceTreeModel.navigationHistory();
     if (!history)
       return;
 
@@ -663,8 +663,8 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._navigationBack.disabled = this._historyIndex === 0;
     this._navigationForward.disabled = this._historyIndex === (this._historyEntries.length - 1);
 
-    var url = this._historyEntries[this._historyIndex].url;
-    var match = url.match(Screencast.ScreencastView._HttpRegex);
+    let url = this._historyEntries[this._historyIndex].url;
+    const match = url.match(Screencast.ScreencastView._HttpRegex);
     if (match)
       url = match[1];
     InspectorFrontendHost.inspectedURLChanged(url);
@@ -732,7 +732,7 @@ Screencast.ScreencastView.ProgressTracker = class {
   _onRequestStarted(event) {
     if (!this._navigationProgressVisible())
       return;
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     // Ignore long-living WebSockets for the sake of progress indicator, as we won't be waiting them anyway.
     if (request.type === Common.resourceTypes.WebSocket)
       return;
@@ -743,7 +743,7 @@ Screencast.ScreencastView.ProgressTracker = class {
   _onRequestFinished(event) {
     if (!this._navigationProgressVisible())
       return;
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (!(request.requestId() in this._requestIds))
       return;
     ++this._finishedRequests;

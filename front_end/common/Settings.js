@@ -53,11 +53,11 @@ Common.Settings = class {
    * @param {!Runtime.Extension} extension
    */
   _registerModuleSetting(extension) {
-    var descriptor = extension.descriptor();
-    var settingName = descriptor['settingName'];
-    var isRegex = descriptor['settingType'] === 'regex';
-    var defaultValue = descriptor['defaultValue'];
-    var storageType;
+    const descriptor = extension.descriptor();
+    const settingName = descriptor['settingName'];
+    const isRegex = descriptor['settingType'] === 'regex';
+    const defaultValue = descriptor['defaultValue'];
+    let storageType;
     switch (descriptor['storageType']) {
       case ('local'):
         storageType = Common.SettingStorageType.Local;
@@ -71,8 +71,8 @@ Common.Settings = class {
       default:
         storageType = Common.SettingStorageType.Global;
     }
-    var setting = isRegex ? this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
-                            this.createSetting(settingName, defaultValue, storageType);
+    const setting = isRegex ? this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
+                              this.createSetting(settingName, defaultValue, storageType);
     if (descriptor['title'])
       setting.setTitle(descriptor['title']);
     if (descriptor['userActionCondition'])
@@ -86,7 +86,7 @@ Common.Settings = class {
    * @return {!Common.Setting}
    */
   moduleSetting(settingName) {
-    var setting = this._moduleSettings.get(settingName);
+    const setting = this._moduleSettings.get(settingName);
     if (!setting)
       throw new Error('No setting registered: ' + settingName);
     return setting;
@@ -97,7 +97,7 @@ Common.Settings = class {
    * @return {!Common.Setting}
    */
   settingForTest(settingName) {
-    var setting = this._registry.get(settingName);
+    const setting = this._registry.get(settingName);
     if (!setting)
       throw new Error('No setting registered: ' + settingName);
     return setting;
@@ -110,7 +110,7 @@ Common.Settings = class {
    * @return {!Common.Setting}
    */
   createSetting(key, defaultValue, storageType) {
-    var storage = this._storageFromType(storageType);
+    const storage = this._storageFromType(storageType);
     if (!this._registry.get(key))
       this._registry.set(key, new Common.Setting(this, key, defaultValue, this._eventSupport, storage));
     return /** @type {!Common.Setting} */ (this._registry.get(key));
@@ -145,7 +145,7 @@ Common.Settings = class {
   clearAll() {
     this._globalStorage.removeAll();
     this._localStorage.removeAll();
-    var versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
+    const versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
     versionSetting.set(Common.VersionController.currentVersion);
   }
 
@@ -230,10 +230,10 @@ Common.SettingsStorage = class {
   _dumpSizes() {
     Common.console.log('Ten largest settings: ');
 
-    var sizes = {__proto__: null};
-    for (var key in this._object)
+    const sizes = {__proto__: null};
+    for (const key in this._object)
       sizes[key] = this._object[key].length;
-    var keys = Object.keys(sizes);
+    const keys = Object.keys(sizes);
 
     function comparator(key1, key2) {
       return sizes[key2] - sizes[key1];
@@ -241,7 +241,7 @@ Common.SettingsStorage = class {
 
     keys.sort(comparator);
 
-    for (var i = 0; i < 10 && i < keys.length; ++i)
+    for (let i = 0; i < 10 && i < keys.length; ++i)
       Common.console.log('Setting: \'' + keys[i] + '\', size: ' + sizes[keys[i]]);
   }
 };
@@ -338,7 +338,7 @@ Common.Setting = class {
     this._hadUserAction = true;
     this._value = value;
     try {
-      var settingString = JSON.stringify(value);
+      const settingString = JSON.stringify(value);
       try {
         this._storage.set(this._name, settingString);
       } catch (e) {
@@ -369,7 +369,7 @@ Common.Setting = class {
    * @param {string} value
    */
   _printSettingsSavingError(message, name, value) {
-    var errorMessage =
+    const errorMessage =
         'Error saving setting with name: ' + this._name + ', value length: ' + value.length + '. Error: ' + message;
     console.error(errorMessage);
     Common.console.error(errorMessage);
@@ -399,10 +399,10 @@ Common.RegExpSetting = class extends Common.Setting {
    * @return {string}
    */
   get() {
-    var result = [];
-    var items = this.getAsArray();
-    for (var i = 0; i < items.length; ++i) {
-      var item = items[i];
+    const result = [];
+    const items = this.getAsArray();
+    for (let i = 0; i < items.length; ++i) {
+      const item = items[i];
       if (item.pattern && !item.disabled)
         result.push(item.pattern);
     }
@@ -440,7 +440,7 @@ Common.RegExpSetting = class extends Common.Setting {
       return this._regex;
     this._regex = null;
     try {
-      var pattern = this.get();
+      const pattern = this.get();
       if (pattern)
         this._regex = new RegExp(pattern, this._regexFlags || '');
     } catch (e) {
@@ -454,18 +454,18 @@ Common.RegExpSetting = class extends Common.Setting {
  */
 Common.VersionController = class {
   updateVersion() {
-    var localStorageVersion =
+    const localStorageVersion =
         window.localStorage ? window.localStorage[Common.VersionController._currentVersionName] : 0;
-    var versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
-    var currentVersion = Common.VersionController.currentVersion;
-    var oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
+    const versionSetting = Common.settings.createSetting(Common.VersionController._currentVersionName, 0);
+    const currentVersion = Common.VersionController.currentVersion;
+    const oldVersion = versionSetting.get() || parseInt(localStorageVersion || '0', 10);
     if (oldVersion === 0) {
       // First run, no need to do anything.
       versionSetting.set(currentVersion);
       return;
     }
-    var methodsToRun = this._methodsToRunToUpdateVersion(oldVersion, currentVersion);
-    for (var i = 0; i < methodsToRun.length; ++i)
+    const methodsToRun = this._methodsToRunToUpdateVersion(oldVersion, currentVersion);
+    for (let i = 0; i < methodsToRun.length; ++i)
       this[methodsToRun[i]].call(this);
     versionSetting.set(currentVersion);
   }
@@ -475,8 +475,8 @@ Common.VersionController = class {
    * @param {number} currentVersion
    */
   _methodsToRunToUpdateVersion(oldVersion, currentVersion) {
-    var result = [];
-    for (var i = oldVersion; i < currentVersion; ++i)
+    const result = [];
+    for (let i = oldVersion; i < currentVersion; ++i)
       result.push('_updateVersionFrom' + i + 'To' + (i + 1));
     return result;
   }
@@ -495,13 +495,13 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom3To4() {
-    var advancedMode = Common.settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
+    const advancedMode = Common.settings.createSetting('showHeaSnapshotObjectsHiddenProperties', false);
     Common.moduleSetting('showAdvancedHeapSnapshotProperties').set(advancedMode.get());
     advancedMode.remove();
   }
 
   _updateVersionFrom4To5() {
-    var settingNames = {
+    const settingNames = {
       'FileSystemViewSidebarWidth': 'fileSystemViewSplitViewState',
       'elementsSidebarWidth': 'elementsPanelSplitViewState',
       'StylesPaneSplitRatio': 'stylesPaneSplitViewState',
@@ -522,20 +522,20 @@ Common.VersionController = class {
       'profilesSidebarWidth': 'profilesPanelSplitViewState',
       'resourcesSidebarWidth': 'resourcesPanelSplitViewState'
     };
-    var empty = {};
-    for (var oldName in settingNames) {
-      var newName = settingNames[oldName];
-      var oldNameH = oldName + 'H';
+    const empty = {};
+    for (const oldName in settingNames) {
+      const newName = settingNames[oldName];
+      const oldNameH = oldName + 'H';
 
-      var newValue = null;
-      var oldSetting = Common.settings.createSetting(oldName, empty);
+      let newValue = null;
+      const oldSetting = Common.settings.createSetting(oldName, empty);
       if (oldSetting.get() !== empty) {
         newValue = newValue || {};
         newValue.vertical = {};
         newValue.vertical.size = oldSetting.get();
         oldSetting.remove();
       }
-      var oldSettingH = Common.settings.createSetting(oldNameH, empty);
+      const oldSettingH = Common.settings.createSetting(oldNameH, empty);
       if (oldSettingH.get() !== empty) {
         newValue = newValue || {};
         newValue.horizontal = {};
@@ -548,27 +548,27 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom5To6() {
-    var settingNames = {
+    const settingNames = {
       'debuggerSidebarHidden': 'sourcesPanelSplitViewState',
       'navigatorHidden': 'sourcesPanelNavigatorSplitViewState',
       'WebInspector.Drawer.showOnLoad': 'Inspector.drawerSplitViewState'
     };
 
-    for (var oldName in settingNames) {
-      var oldSetting = Common.settings.createSetting(oldName, null);
+    for (const oldName in settingNames) {
+      const oldSetting = Common.settings.createSetting(oldName, null);
       if (oldSetting.get() === null) {
         oldSetting.remove();
         continue;
       }
 
-      var newName = settingNames[oldName];
-      var invert = oldName === 'WebInspector.Drawer.showOnLoad';
-      var hidden = oldSetting.get() !== invert;
+      const newName = settingNames[oldName];
+      const invert = oldName === 'WebInspector.Drawer.showOnLoad';
+      const hidden = oldSetting.get() !== invert;
       oldSetting.remove();
-      var showMode = hidden ? 'OnlyMain' : 'Both';
+      const showMode = hidden ? 'OnlyMain' : 'Both';
 
-      var newSetting = Common.settings.createSetting(newName, {});
-      var newValue = newSetting.get() || {};
+      const newSetting = Common.settings.createSetting(newName, {});
+      const newValue = newSetting.get() || {};
       newValue.vertical = newValue.vertical || {};
       newValue.vertical.showMode = showMode;
       newValue.horizontal = newValue.horizontal || {};
@@ -578,17 +578,17 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom6To7() {
-    var settingNames = {
+    const settingNames = {
       'sourcesPanelNavigatorSplitViewState': 'sourcesPanelNavigatorSplitViewState',
       'elementsPanelSplitViewState': 'elementsPanelSplitViewState',
       'stylesPaneSplitViewState': 'stylesPaneSplitViewState',
       'sourcesPanelDebuggerSidebarSplitViewState': 'sourcesPanelDebuggerSidebarSplitViewState'
     };
 
-    var empty = {};
-    for (var name in settingNames) {
-      var setting = Common.settings.createSetting(name, empty);
-      var value = setting.get();
+    const empty = {};
+    for (const name in settingNames) {
+      const setting = Common.settings.createSetting(name, empty);
+      const value = setting.get();
       if (value === empty)
         continue;
       // Zero out saved percentage sizes, and they will be restored to defaults.
@@ -604,16 +604,16 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom8To9() {
-    var settingNames = ['skipStackFramesPattern', 'workspaceFolderExcludePattern'];
+    const settingNames = ['skipStackFramesPattern', 'workspaceFolderExcludePattern'];
 
-    for (var i = 0; i < settingNames.length; ++i) {
-      var setting = Common.settings.createSetting(settingNames[i], '');
-      var value = setting.get();
+    for (let i = 0; i < settingNames.length; ++i) {
+      const setting = Common.settings.createSetting(settingNames[i], '');
+      let value = setting.get();
       if (!value)
         return;
       if (typeof value === 'string')
         value = [value];
-      for (var j = 0; j < value.length; ++j) {
+      for (let j = 0; j < value.length; ++j) {
         if (typeof value[j] === 'string')
           value[j] = {pattern: value[j]};
       }
@@ -625,23 +625,23 @@ Common.VersionController = class {
     // This one is localStorage specific, which is fine.
     if (!window.localStorage)
       return;
-    for (var key in window.localStorage) {
+    for (const key in window.localStorage) {
       if (key.startsWith('revision-history'))
         window.localStorage.removeItem(key);
     }
   }
 
   _updateVersionFrom10To11() {
-    var oldSettingName = 'customDevicePresets';
-    var newSettingName = 'customEmulatedDeviceList';
-    var oldSetting = Common.settings.createSetting(oldSettingName, undefined);
-    var list = oldSetting.get();
+    const oldSettingName = 'customDevicePresets';
+    const newSettingName = 'customEmulatedDeviceList';
+    const oldSetting = Common.settings.createSetting(oldSettingName, undefined);
+    const list = oldSetting.get();
     if (!Array.isArray(list))
       return;
-    var newList = [];
-    for (var i = 0; i < list.length; ++i) {
-      var value = list[i];
-      var device = {};
+    const newList = [];
+    for (let i = 0; i < list.length; ++i) {
+      const value = list[i];
+      const device = {};
       device['title'] = value['title'];
       device['type'] = 'unknown';
       device['user-agent'] = value['userAgent'];
@@ -674,36 +674,36 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom13To14() {
-    var defaultValue = {'throughput': -1, 'latency': 0};
+    const defaultValue = {'throughput': -1, 'latency': 0};
     Common.settings.createSetting('networkConditions', defaultValue).set(defaultValue);
   }
 
   _updateVersionFrom14To15() {
-    var setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
-    var oldValue = setting.get();
-    var newValue = {};
-    for (var fileSystemPath in oldValue) {
+    const setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
+    const oldValue = setting.get();
+    const newValue = {};
+    for (const fileSystemPath in oldValue) {
       newValue[fileSystemPath] = [];
-      for (var entry of oldValue[fileSystemPath])
+      for (const entry of oldValue[fileSystemPath])
         newValue[fileSystemPath].push(entry.path);
     }
     setting.set(newValue);
   }
 
   _updateVersionFrom15To16() {
-    var setting = Common.settings.createSetting('InspectorView.panelOrder', {});
-    var tabOrders = setting.get();
-    for (var key of Object.keys(tabOrders))
+    const setting = Common.settings.createSetting('InspectorView.panelOrder', {});
+    const tabOrders = setting.get();
+    for (const key of Object.keys(tabOrders))
       tabOrders[key] = (tabOrders[key] + 1) * 10;
     setting.set(tabOrders);
   }
 
   _updateVersionFrom16To17() {
-    var setting = Common.settings.createSetting('networkConditionsCustomProfiles', []);
-    var oldValue = setting.get();
-    var newValue = [];
+    const setting = Common.settings.createSetting('networkConditionsCustomProfiles', []);
+    const oldValue = setting.get();
+    const newValue = [];
     if (Array.isArray(oldValue)) {
-      for (var preset of oldValue) {
+      for (const preset of oldValue) {
         if (typeof preset.title === 'string' && typeof preset.value === 'object' &&
             typeof preset.value.throughput === 'number' && typeof preset.value.latency === 'number') {
           newValue.push({
@@ -718,11 +718,11 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom17To18() {
-    var setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
-    var oldValue = setting.get();
-    var newValue = {};
-    for (var oldKey in oldValue) {
-      var newKey = oldKey.replace(/\\/g, '/');
+    const setting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
+    const oldValue = setting.get();
+    const newValue = {};
+    for (const oldKey in oldValue) {
+      let newKey = oldKey.replace(/\\/g, '/');
       if (!newKey.startsWith('file://')) {
         if (newKey.startsWith('/'))
           newKey = 'file://' + newKey;
@@ -735,42 +735,42 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom18To19() {
-    var defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
-    var visibleColumnSettings = Common.settings.createSetting('networkLogColumnsVisibility', defaultColumns);
-    var visibleColumns = visibleColumnSettings.get();
+    const defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
+    const visibleColumnSettings = Common.settings.createSetting('networkLogColumnsVisibility', defaultColumns);
+    const visibleColumns = visibleColumnSettings.get();
     visibleColumns.name = true;
     visibleColumns.timeline = true;
 
-    var configs = {};
-    for (var columnId in visibleColumns) {
+    const configs = {};
+    for (const columnId in visibleColumns) {
       if (!visibleColumns.hasOwnProperty(columnId))
         continue;
       configs[columnId.toLowerCase()] = {visible: visibleColumns[columnId]};
     }
-    var newSetting = Common.settings.createSetting('networkLogColumns', {});
+    const newSetting = Common.settings.createSetting('networkLogColumns', {});
     newSetting.set(configs);
     visibleColumnSettings.remove();
   }
 
   _updateVersionFrom19To20() {
-    var oldSetting = Common.settings.createSetting('InspectorView.panelOrder', {});
-    var newSetting = Common.settings.createSetting('panel-tabOrder', {});
+    const oldSetting = Common.settings.createSetting('InspectorView.panelOrder', {});
+    const newSetting = Common.settings.createSetting('panel-tabOrder', {});
     newSetting.set(oldSetting.get());
     oldSetting.remove();
   }
 
   _updateVersionFrom20To21() {
-    var networkColumns = Common.settings.createSetting('networkLogColumns', {});
-    var columns = /** @type {!Object} */ (networkColumns.get());
+    const networkColumns = Common.settings.createSetting('networkLogColumns', {});
+    const columns = /** @type {!Object} */ (networkColumns.get());
     delete columns['timeline'];
     delete columns['waterfall'];
     networkColumns.set(columns);
   }
 
   _updateVersionFrom21To22() {
-    var breakpointsSetting = Common.settings.createLocalSetting('breakpoints', []);
-    var breakpoints = breakpointsSetting.get();
-    for (var breakpoint of breakpoints) {
+    const breakpointsSetting = Common.settings.createLocalSetting('breakpoints', []);
+    const breakpoints = breakpointsSetting.get();
+    for (const breakpoint of breakpoints) {
       breakpoint['url'] = breakpoint['sourceFileId'];
       delete breakpoint['sourceFileId'];
     }
@@ -782,23 +782,23 @@ Common.VersionController = class {
   }
 
   _updateVersionFrom23To24() {
-    var oldSetting = Common.settings.createSetting('searchInContentScripts', false);
-    var newSetting = Common.settings.createSetting('searchInAnonymousAndContentScripts', false);
+    const oldSetting = Common.settings.createSetting('searchInContentScripts', false);
+    const newSetting = Common.settings.createSetting('searchInAnonymousAndContentScripts', false);
     newSetting.set(oldSetting.get());
     oldSetting.remove();
   }
 
   _updateVersionFrom24To25() {
-    var defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
-    var networkLogColumnsSetting = Common.settings.createSetting('networkLogColumns', defaultColumns);
-    var columns = networkLogColumnsSetting.get();
+    const defaultColumns = {status: true, type: true, initiator: true, size: true, time: true};
+    const networkLogColumnsSetting = Common.settings.createSetting('networkLogColumns', defaultColumns);
+    const columns = networkLogColumnsSetting.get();
     delete columns.product;
     networkLogColumnsSetting.set(columns);
   }
 
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
-    var localSettings = new Set([
+    const localSettings = new Set([
       'advancedSearchConfig', 'breakpoints', 'consoleHistory', 'domBreakpoints', 'eventListenerBreakpoints',
       'fileSystemMapping', 'lastSelectedSourcesSidebarPaneTab', 'previouslyViewedFiles', 'savedURLs',
       'watchExpressions', 'workspaceExcludedFolders', 'xhrBreakpoints'
@@ -806,10 +806,10 @@ Common.VersionController = class {
     if (!window.localStorage)
       return;
 
-    for (var key in window.localStorage) {
+    for (const key in window.localStorage) {
       if (localSettings.has(key))
         continue;
-      var value = window.localStorage[key];
+      const value = window.localStorage[key];
       window.localStorage.removeItem(key);
       Common.settings._globalStorage[key] = value;
     }

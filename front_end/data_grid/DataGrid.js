@@ -46,7 +46,7 @@ DataGrid.DataGrid = class extends Common.Object {
     this._deleteCallback = deleteCallback;
     this._refreshCallback = refreshCallback;
 
-    var headerContainer = this.element.createChild('div', 'header-container');
+    const headerContainer = this.element.createChild('div', 'header-container');
     /** @type {!Element} */
     this._headerTable = headerContainer.createChild('table', 'header');
     /** @type {!Object.<string, !Element>} */
@@ -160,7 +160,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {number=} position
    */
   _innerAddColumn(column, position) {
-    var columnId = column.id;
+    const columnId = column.id;
     if (columnId in this._columns)
       this._innerRemoveColumn(columnId);
 
@@ -172,12 +172,12 @@ DataGrid.DataGrid = class extends Common.Object {
     if (column.disclosure)
       this.disclosureColumnId = columnId;
 
-    var cell = createElement('th');
+    const cell = createElement('th');
     cell.className = columnId + '-column';
     cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
     this._headerTableHeaders[columnId] = cell;
 
-    var div = createElement('div');
+    const div = createElement('div');
     if (column.titleDOMFragment)
       div.appendChild(column.titleDOMFragment);
     else
@@ -192,7 +192,7 @@ DataGrid.DataGrid = class extends Common.Object {
     if (column.sortable) {
       cell.addEventListener('click', this._clickInHeaderCell.bind(this), false);
       cell.classList.add('sortable');
-      var icon = UI.Icon.create('', 'sort-order-icon');
+      const icon = UI.Icon.create('', 'sort-order-icon');
       cell.createChild('div', 'sort-order-icon-container').appendChild(icon);
       cell[DataGrid.DataGrid._sortIconSymbol] = icon;
     }
@@ -210,13 +210,13 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {string} columnId
    */
   _innerRemoveColumn(columnId) {
-    var column = this._columns[columnId];
+    const column = this._columns[columnId];
     if (!column)
       return;
     delete this._columns[columnId];
-    var index = this._columnsArray.findIndex(columnConfig => columnConfig.id === columnId);
+    const index = this._columnsArray.findIndex(columnConfig => columnConfig.id === columnId);
     this._columnsArray.splice(index, 1);
-    var cell = this._headerTableHeaders[columnId];
+    const cell = this._headerTableHeaders[columnId];
     if (cell.parentElement)
       cell.parentElement.removeChild(cell);
     delete this._headerTableHeaders[columnId];
@@ -243,11 +243,11 @@ DataGrid.DataGrid = class extends Common.Object {
     this._topFillerRow.removeChildren();
     this._bottomFillerRow.removeChildren();
 
-    for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
-      var column = this._visibleColumnsArray[i];
-      var columnId = column.id;
-      var headerColumn = this._headerTableColumnGroup.createChild('col');
-      var dataColumn = this._dataTableColumnGroup.createChild('col');
+    for (let i = 0; i < this._visibleColumnsArray.length; ++i) {
+      const column = this._visibleColumnsArray[i];
+      const columnId = column.id;
+      const headerColumn = this._headerTableColumnGroup.createChild('col');
+      const dataColumn = this._dataTableColumnGroup.createChild('col');
       if (column.width) {
         headerColumn.style.width = column.width;
         dataColumn.style.width = column.width;
@@ -270,8 +270,8 @@ DataGrid.DataGrid = class extends Common.Object {
    * @protected
    */
   setVerticalPadding(top, bottom) {
-    var topPx = top + 'px';
-    var bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
+    const topPx = top + 'px';
+    const bottomPx = (top || bottom) ? bottom + 'px' : 'auto';
     if (this._topFillerRow.style.height === topPx && this._bottomFillerRow.style.height === bottomPx)
       return;
     this._topFillerRow.style.height = topPx;
@@ -313,7 +313,7 @@ DataGrid.DataGrid = class extends Common.Object {
     if (this._editing || this._editingNode)
       return;
 
-    var columnId = this.columnIdFromNode(/** @type {!Node} */ (event.target));
+    const columnId = this.columnIdFromNode(/** @type {!Node} */ (event.target));
     if (!columnId || !this._columns[columnId].editable)
       return;
     this._startEditing(/** @type {!Node} */ (event.target));
@@ -329,7 +329,7 @@ DataGrid.DataGrid = class extends Common.Object {
     this._editingNode = node;
     this._editingNode.select();
 
-    var element = this._editingNode._element.children[cellIndex];
+    const element = this._editingNode._element.children[cellIndex];
     UI.InplaceEditor.startEditing(element, this._startEditingConfig(element));
     element.getComponentSelection().selectAllChildren(element);
   }
@@ -350,7 +350,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Node} target
    */
   _startEditing(target) {
-    var element = /** @type {?Element} */ (target.enclosingNodeOrSelfWithNodeName('td'));
+    const element = /** @type {?Element} */ (target.enclosingNodeOrSelfWithNodeName('td'));
     if (!element)
       return;
 
@@ -398,15 +398,15 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {string} moveDirection
    */
   _editingCommitted(element, newText, oldText, context, moveDirection) {
-    var columnId = this.columnIdFromNode(element);
+    const columnId = this.columnIdFromNode(element);
     if (!columnId) {
       this._editingCancelled(element);
       return;
     }
-    var column = this._columns[columnId];
-    var cellIndex = this._visibleColumnsArray.indexOf(column);
-    var textBeforeEditing = /** @type {string} */ (this._editingNode.data[columnId] || '');
-    var currentEditingNode = this._editingNode;
+    const column = this._columns[columnId];
+    const cellIndex = this._visibleColumnsArray.indexOf(column);
+    const textBeforeEditing = /** @type {string} */ (this._editingNode.data[columnId] || '');
+    const currentEditingNode = this._editingNode;
 
     /**
      * @param {boolean} wasChange
@@ -417,17 +417,17 @@ DataGrid.DataGrid = class extends Common.Object {
         return;
 
       if (moveDirection === 'forward') {
-        var firstEditableColumn = this._nextEditableColumn(-1);
+        const firstEditableColumn = this._nextEditableColumn(-1);
         if (currentEditingNode.isCreationNode && cellIndex === firstEditableColumn && !wasChange)
           return;
 
-        var nextEditableColumn = this._nextEditableColumn(cellIndex);
+        const nextEditableColumn = this._nextEditableColumn(cellIndex);
         if (nextEditableColumn !== -1) {
           this._startEditingColumnOfDataGridNode(currentEditingNode, nextEditableColumn);
           return;
         }
 
-        var nextDataGridNode = currentEditingNode.traverseNextNode(true, null, true);
+        const nextDataGridNode = currentEditingNode.traverseNextNode(true, null, true);
         if (nextDataGridNode) {
           this._startEditingColumnOfDataGridNode(nextDataGridNode, firstEditableColumn);
           return;
@@ -441,14 +441,14 @@ DataGrid.DataGrid = class extends Common.Object {
       }
 
       if (moveDirection === 'backward') {
-        var prevEditableColumn = this._nextEditableColumn(cellIndex, true);
+        const prevEditableColumn = this._nextEditableColumn(cellIndex, true);
         if (prevEditableColumn !== -1) {
           this._startEditingColumnOfDataGridNode(currentEditingNode, prevEditableColumn);
           return;
         }
 
-        var lastEditableColumn = this._nextEditableColumn(this._visibleColumnsArray.length, true);
-        var nextDataGridNode = currentEditingNode.traversePreviousNode(true, true);
+        const lastEditableColumn = this._nextEditableColumn(this._visibleColumnsArray.length, true);
+        const nextDataGridNode = currentEditingNode.traversePreviousNode(true, true);
         if (nextDataGridNode)
           this._startEditingColumnOfDataGridNode(nextDataGridNode, lastEditableColumn);
         return;
@@ -492,9 +492,9 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {number}
    */
   _nextEditableColumn(cellIndex, moveBackward) {
-    var increment = moveBackward ? -1 : 1;
-    var columns = this._visibleColumnsArray;
-    for (var i = cellIndex + increment; (i >= 0) && (i < columns.length); i += increment) {
+    const increment = moveBackward ? -1 : 1;
+    const columns = this._visibleColumnsArray;
+    for (let i = cellIndex + increment; (i >= 0) && (i < columns.length); i += increment) {
       if (columns[i].editable)
         return i;
     }
@@ -537,12 +537,12 @@ DataGrid.DataGrid = class extends Common.Object {
   _autoSizeWidths(widths, minPercent, maxPercent) {
     if (minPercent)
       minPercent = Math.min(minPercent, Math.floor(100 / widths.length));
-    var totalWidth = 0;
-    for (var i = 0; i < widths.length; ++i)
+    let totalWidth = 0;
+    for (let i = 0; i < widths.length; ++i)
       totalWidth += widths[i];
-    var totalPercentWidth = 0;
-    for (var i = 0; i < widths.length; ++i) {
-      var width = Math.round(100 * widths[i] / totalWidth);
+    let totalPercentWidth = 0;
+    for (let i = 0; i < widths.length; ++i) {
+      let width = Math.round(100 * widths[i] / totalWidth);
       if (minPercent && width < minPercent)
         width = minPercent;
       else if (maxPercent && width > maxPercent)
@@ -550,10 +550,10 @@ DataGrid.DataGrid = class extends Common.Object {
       totalPercentWidth += width;
       widths[i] = width;
     }
-    var recoupPercent = totalPercentWidth - 100;
+    let recoupPercent = totalPercentWidth - 100;
 
     while (minPercent && recoupPercent > 0) {
-      for (var i = 0; i < widths.length; ++i) {
+      for (let i = 0; i < widths.length; ++i) {
         if (widths[i] > minPercent) {
           --widths[i];
           --recoupPercent;
@@ -564,7 +564,7 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     while (maxPercent && recoupPercent < 0) {
-      for (var i = 0; i < widths.length; ++i) {
+      for (let i = 0; i < widths.length; ++i) {
         if (widths[i] < maxPercent) {
           ++widths[i];
           ++recoupPercent;
@@ -583,16 +583,16 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {number=} maxDescentLevel
    */
   autoSizeColumns(minPercent, maxPercent, maxDescentLevel) {
-    var widths = [];
-    for (var i = 0; i < this._columnsArray.length; ++i)
+    let widths = [];
+    for (let i = 0; i < this._columnsArray.length; ++i)
       widths.push((this._columnsArray[i].title || '').length);
 
     maxDescentLevel = maxDescentLevel || 0;
-    var children = this._enumerateChildren(this._rootNode, [], maxDescentLevel + 1);
-    for (var i = 0; i < children.length; ++i) {
-      var node = children[i];
-      for (var j = 0; j < this._columnsArray.length; ++j) {
-        var text = node.data[this._columnsArray[j].id];
+    const children = this._enumerateChildren(this._rootNode, [], maxDescentLevel + 1);
+    for (let i = 0; i < children.length; ++i) {
+      const node = children[i];
+      for (let j = 0; j < this._columnsArray.length; ++j) {
+        const text = node.data[this._columnsArray[j].id];
         if (text.length > widths[j])
           widths[j] = text.length;
       }
@@ -600,7 +600,7 @@ DataGrid.DataGrid = class extends Common.Object {
 
     widths = this._autoSizeWidths(widths, minPercent, maxPercent);
 
-    for (var i = 0; i < this._columnsArray.length; ++i)
+    for (let i = 0; i < this._columnsArray.length; ++i)
       this._columnsArray[i].weight = widths[i];
     this._columnWidthsInitialized = false;
     this.updateWidths();
@@ -617,7 +617,7 @@ DataGrid.DataGrid = class extends Common.Object {
       result.push(rootNode);
     if (!maxLevel)
       return [];
-    for (var i = 0; i < rootNode.children.length; ++i)
+    for (let i = 0; i < rootNode.children.length; ++i)
       this._enumerateChildren(rootNode.children[i], result, maxLevel - 1);
     return result;
   }
@@ -645,11 +645,11 @@ DataGrid.DataGrid = class extends Common.Object {
       // for their widths.
 
       // Use container size to avoid changes of table width caused by change of column widths.
-      var tableWidth = this.element.offsetWidth - this._cornerWidth;
-      var cells = this._headerTableBody.rows[0].cells;
-      var numColumns = cells.length - 1;  // Do not process corner column.
-      for (var i = 0; i < numColumns; i++) {
-        var column = this._visibleColumnsArray[i];
+      const tableWidth = this.element.offsetWidth - this._cornerWidth;
+      const cells = this._headerTableBody.rows[0].cells;
+      const numColumns = cells.length - 1;  // Do not process corner column.
+      for (let i = 0; i < numColumns; i++) {
+        const column = this._visibleColumnsArray[i];
         if (!column.weight)
           column.weight = 100 * cells[i].offsetWidth / tableWidth || 10;
       }
@@ -669,10 +669,10 @@ DataGrid.DataGrid = class extends Common.Object {
   _loadColumnWeights() {
     if (!this._columnWeightsSetting)
       return;
-    var weights = this._columnWeightsSetting.get();
-    for (var i = 0; i < this._columnsArray.length; ++i) {
-      var column = this._columnsArray[i];
-      var weight = weights[column.id];
+    const weights = this._columnWeightsSetting.get();
+    for (let i = 0; i < this._columnsArray.length; ++i) {
+      const column = this._columnsArray[i];
+      const weight = weights[column.id];
       if (weight)
         column.weight = weight;
     }
@@ -682,9 +682,9 @@ DataGrid.DataGrid = class extends Common.Object {
   _saveColumnWeights() {
     if (!this._columnWeightsSetting)
       return;
-    var weights = {};
-    for (var i = 0; i < this._columnsArray.length; ++i) {
-      var column = this._columnsArray[i];
+    const weights = {};
+    for (let i = 0; i < this._columnsArray.length; ++i) {
+      const column = this._columnsArray[i];
       weights[column.id] = column.weight;
     }
     this._columnWeightsSetting.set(weights);
@@ -698,16 +698,16 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   _applyColumnWeights() {
-    var tableWidth = this.element.offsetWidth - this._cornerWidth;
+    let tableWidth = this.element.offsetWidth - this._cornerWidth;
     if (tableWidth <= 0)
       return;
 
-    var sumOfWeights = 0.0;
-    var fixedColumnWidths = [];
-    for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
-      var column = this._visibleColumnsArray[i];
+    let sumOfWeights = 0.0;
+    const fixedColumnWidths = [];
+    for (let i = 0; i < this._visibleColumnsArray.length; ++i) {
+      const column = this._visibleColumnsArray[i];
       if (column.fixedWidth) {
-        var width = this._headerTableColumnGroup.children[i][DataGrid.DataGrid._preferredWidthSymbol] ||
+        const width = this._headerTableColumnGroup.children[i][DataGrid.DataGrid._preferredWidthSymbol] ||
             this._headerTableBody.rows[0].cells[i].offsetWidth;
         fixedColumnWidths[i] = width;
         tableWidth -= width;
@@ -715,17 +715,17 @@ DataGrid.DataGrid = class extends Common.Object {
         sumOfWeights += this._visibleColumnsArray[i].weight;
       }
     }
-    var sum = 0;
-    var lastOffset = 0;
+    let sum = 0;
+    let lastOffset = 0;
 
-    for (var i = 0; i < this._visibleColumnsArray.length; ++i) {
-      var column = this._visibleColumnsArray[i];
-      var width;
+    for (let i = 0; i < this._visibleColumnsArray.length; ++i) {
+      const column = this._visibleColumnsArray[i];
+      let width;
       if (column.fixedWidth) {
         width = fixedColumnWidths[i];
       } else {
         sum += column.weight;
-        var offset = (sum * tableWidth / sumOfWeights) | 0;
+        const offset = (sum * tableWidth / sumOfWeights) | 0;
         width = offset - lastOffset;
         lastOffset = offset;
       }
@@ -740,15 +740,15 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   setColumnsVisiblity(columnsVisibility) {
     this._visibleColumnsArray = [];
-    for (var i = 0; i < this._columnsArray.length; ++i) {
-      var column = this._columnsArray[i];
+    for (let i = 0; i < this._columnsArray.length; ++i) {
+      const column = this._columnsArray[i];
       if (columnsVisibility[column.id])
         this._visibleColumnsArray.push(column);
     }
     this._refreshHeader();
     this._applyColumnWeights();
-    var nodes = this._enumerateChildren(this.rootNode(), [], -1);
-    for (var i = 0; i < nodes.length; ++i)
+    const nodes = this._enumerateChildren(this.rootNode(), [], -1);
+    for (let i = 0; i < nodes.length; ++i)
       nodes[i].refresh();
   }
 
@@ -757,15 +757,15 @@ DataGrid.DataGrid = class extends Common.Object {
   }
 
   _positionResizers() {
-    var headerTableColumns = this._headerTableColumnGroup.children;
-    var numColumns = headerTableColumns.length - 1;  // Do not process corner column.
-    var left = [];
-    var resizers = this._resizers;
+    const headerTableColumns = this._headerTableColumnGroup.children;
+    const numColumns = headerTableColumns.length - 1;  // Do not process corner column.
+    const left = [];
+    const resizers = this._resizers;
 
     while (resizers.length > numColumns - 1)
       resizers.pop().remove();
 
-    for (var i = 0; i < numColumns - 1; i++) {
+    for (let i = 0; i < numColumns - 1; i++) {
       // Get the width of the cell in the first (and only) row of the
       // header table in order to determine the width of the column, since
       // it is not possible to query a column for its width.
@@ -773,8 +773,8 @@ DataGrid.DataGrid = class extends Common.Object {
     }
 
     // Make n - 1 resizers for n columns.
-    for (var i = 0; i < numColumns - 1; i++) {
-      var resizer = resizers[i];
+    for (let i = 0; i < numColumns - 1; i++) {
+      let resizer = resizers[i];
       if (!resizer) {
         // This is the first call to updateWidth, so the resizers need
         // to be created.
@@ -799,8 +799,8 @@ DataGrid.DataGrid = class extends Common.Object {
     if (this.creationNode)
       this.creationNode.makeNormal();
 
-    var emptyData = {};
-    for (var column in this._columns)
+    const emptyData = {};
+    for (const column in this._columns)
       emptyData[column] = null;
     this.creationNode = new DataGrid.CreationDataGridNode(emptyData, hasChildren);
     this.rootNode().appendChild(this.creationNode);
@@ -813,8 +813,8 @@ DataGrid.DataGrid = class extends Common.Object {
     if (!this.selectedNode || event.shiftKey || event.metaKey || event.ctrlKey || this._editing)
       return;
 
-    var handled = false;
-    var nextSelectedNode;
+    let handled = false;
+    let nextSelectedNode;
     if (event.key === 'ArrowUp' && !event.altKey) {
       nextSelectedNode = this.selectedNode.traversePreviousNode(true);
       while (nextSelectedNode && !nextSelectedNode.selectable)
@@ -884,14 +884,14 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {boolean} onlyAffectsSubtree
    */
   updateSelectionBeforeRemoval(root, onlyAffectsSubtree) {
-    var ancestor = this.selectedNode;
+    let ancestor = this.selectedNode;
     while (ancestor && ancestor !== root)
       ancestor = ancestor.parent;
     // Selection is not in the subtree being deleted.
     if (!ancestor)
       return;
 
-    var nextSelectedNode;
+    let nextSelectedNode;
     // Skip subtree being deleted when looking for the next selectable node.
     for (ancestor = root; ancestor && !ancestor.nextSibling; ancestor = ancestor.parent) {
     }
@@ -918,7 +918,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {?NODE_TYPE}
    */
   dataGridNodeFromNode(target) {
-    var rowElement = target.enclosingNodeOrSelfWithNodeName('tr');
+    const rowElement = target.enclosingNodeOrSelfWithNodeName('tr');
     return rowElement && rowElement._dataGridNode;
   }
 
@@ -927,7 +927,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @return {?string}
    */
   columnIdFromNode(target) {
-    var cellElement = target.enclosingNodeOrSelfWithNodeName('td');
+    const cellElement = target.enclosingNodeOrSelfWithNodeName('td');
     return cellElement && cellElement[DataGrid.DataGrid._columnIdSymbol];
   }
 
@@ -935,11 +935,11 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _clickInHeaderCell(event) {
-    var cell = event.target.enclosingNodeOrSelfWithNodeName('th');
+    const cell = event.target.enclosingNodeOrSelfWithNodeName('th');
     if (!cell || (cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
       return;
 
-    var sortOrder = DataGrid.DataGrid.Order.Ascending;
+    let sortOrder = DataGrid.DataGrid.Order.Ascending;
     if ((cell === this._sortColumnCell) && this.isSortOrderAscending())
       sortOrder = DataGrid.DataGrid.Order.Descending;
 
@@ -948,7 +948,7 @@ DataGrid.DataGrid = class extends Common.Object {
     this._sortColumnCell = cell;
 
     cell.classList.add(sortOrder);
-    var icon = cell[DataGrid.DataGrid._sortIconSymbol];
+    const icon = cell[DataGrid.DataGrid._sortIconSymbol];
     icon.setIconType(
         sortOrder === DataGrid.DataGrid.Order.Ascending ? 'smallicon-triangle-up' : 'smallicon-triangle-down');
 
@@ -978,12 +978,12 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _mouseDownInDataTable(event) {
-    var target = /** @type {!Node} */ (event.target);
-    var gridNode = this.dataGridNodeFromNode(target);
+    const target = /** @type {!Node} */ (event.target);
+    const gridNode = this.dataGridNodeFromNode(target);
     if (!gridNode || !gridNode.selectable || gridNode.isEventWithinDisclosureTriangle(event))
       return;
 
-    var columnId = this.columnIdFromNode(target);
+    const columnId = this.columnIdFromNode(target);
     if (columnId && this._columns[columnId].nonSelectable)
       return;
 
@@ -1016,8 +1016,8 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _contextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
-    var target = /** @type {!Node} */ (event.target);
+    const contextMenu = new UI.ContextMenu(event);
+    const target = /** @type {!Node} */ (event.target);
 
     if (target.isSelfOrDescendant(this._headerTableBody)) {
       if (this._headerContextMenuCallback)
@@ -1025,7 +1025,7 @@ DataGrid.DataGrid = class extends Common.Object {
       return;
     }
 
-    var gridNode = this.dataGridNodeFromNode(target);
+    const gridNode = this.dataGridNodeFromNode(target);
     if (this._refreshCallback && (!gridNode || gridNode !== this.creationNode))
       contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this._refreshCallback.bind(this));
 
@@ -1034,7 +1034,7 @@ DataGrid.DataGrid = class extends Common.Object {
         if (gridNode === this.creationNode) {
           contextMenu.defaultSection().appendItem(Common.UIString('Add new'), this._startEditing.bind(this, target));
         } else {
-          var columnId = this.columnIdFromNode(target);
+          const columnId = this.columnIdFromNode(target);
           if (columnId && this._columns[columnId].editable) {
             contextMenu.defaultSection().appendItem(
                 Common.UIString('Edit "%s"', this._columns[columnId].title), this._startEditing.bind(this, target));
@@ -1054,7 +1054,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _clickInDataTable(event) {
-    var gridNode = this.dataGridNodeFromNode(/** @type {!Node} */ (event.target));
+    const gridNode = this.dataGridNodeFromNode(/** @type {!Node} */ (event.target));
     if (!gridNode || !gridNode.hasChildren() || !gridNode.isEventWithinDisclosureTriangle(event))
       return;
 
@@ -1096,20 +1096,20 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _resizerDragging(event) {
-    var resizer = this._currentResizer;
+    const resizer = this._currentResizer;
     if (!resizer)
       return;
 
     // Constrain the dragpoint to be within the containing div of the
     // datagrid.
-    var dragPoint = event.clientX - this.element.totalOffsetLeft();
-    var firstRowCells = this._headerTableBody.rows[0].cells;
-    var leftEdgeOfPreviousColumn = 0;
+    let dragPoint = event.clientX - this.element.totalOffsetLeft();
+    const firstRowCells = this._headerTableBody.rows[0].cells;
+    let leftEdgeOfPreviousColumn = 0;
     // Constrain the dragpoint to be within the space made up by the
     // column directly to the left and the column directly to the right.
-    var leftCellIndex = resizer.__index;
-    var rightCellIndex = leftCellIndex + 1;
-    for (var i = 0; i < leftCellIndex; i++)
+    let leftCellIndex = resizer.__index;
+    let rightCellIndex = leftCellIndex + 1;
+    for (let i = 0; i < leftCellIndex; i++)
       leftEdgeOfPreviousColumn += firstRowCells[i].offsetWidth;
 
     // Differences for other resize methods
@@ -1120,29 +1120,29 @@ DataGrid.DataGrid = class extends Common.Object {
       leftCellIndex = 0;
     }
 
-    var rightEdgeOfNextColumn =
+    const rightEdgeOfNextColumn =
         leftEdgeOfPreviousColumn + firstRowCells[leftCellIndex].offsetWidth + firstRowCells[rightCellIndex].offsetWidth;
 
     // Give each column some padding so that they don't disappear.
-    var leftMinimum = leftEdgeOfPreviousColumn + DataGrid.DataGrid.ColumnResizePadding;
-    var rightMaximum = rightEdgeOfNextColumn - DataGrid.DataGrid.ColumnResizePadding;
+    const leftMinimum = leftEdgeOfPreviousColumn + DataGrid.DataGrid.ColumnResizePadding;
+    const rightMaximum = rightEdgeOfNextColumn - DataGrid.DataGrid.ColumnResizePadding;
     if (leftMinimum > rightMaximum)
       return;
 
     dragPoint = Number.constrain(dragPoint, leftMinimum, rightMaximum);
 
-    var position = (dragPoint - DataGrid.DataGrid.CenterResizerOverBorderAdjustment);
+    const position = (dragPoint - DataGrid.DataGrid.CenterResizerOverBorderAdjustment);
     resizer.__position = position;
     resizer.style.left = position + 'px';
 
     this._setPreferredWidth(leftCellIndex, dragPoint - leftEdgeOfPreviousColumn);
     this._setPreferredWidth(rightCellIndex, rightEdgeOfNextColumn - dragPoint);
 
-    var leftColumn = this._visibleColumnsArray[leftCellIndex];
-    var rightColumn = this._visibleColumnsArray[rightCellIndex];
+    const leftColumn = this._visibleColumnsArray[leftCellIndex];
+    const rightColumn = this._visibleColumnsArray[rightCellIndex];
     if (leftColumn.weight || rightColumn.weight) {
-      var sumOfWeights = leftColumn.weight + rightColumn.weight;
-      var delta = rightEdgeOfNextColumn - leftEdgeOfPreviousColumn;
+      const sumOfWeights = leftColumn.weight + rightColumn.weight;
+      const delta = rightEdgeOfNextColumn - leftEdgeOfPreviousColumn;
       leftColumn.weight = (dragPoint - leftEdgeOfPreviousColumn) * sumOfWeights / delta;
       rightColumn.weight = (rightEdgeOfNextColumn - dragPoint) * sumOfWeights / delta;
     }
@@ -1156,7 +1156,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {number} width
    */
   _setPreferredWidth(columnIndex, width) {
-    var pxWidth = width + 'px';
+    const pxWidth = width + 'px';
     this._headerTableColumnGroup.children[columnIndex][DataGrid.DataGrid._preferredWidthSymbol] = width;
     this._headerTableColumnGroup.children[columnIndex].style.width = pxWidth;
     this._dataTableColumnGroup.children[columnIndex].style.width = pxWidth;
@@ -1169,7 +1169,7 @@ DataGrid.DataGrid = class extends Common.Object {
   columnOffset(columnId) {
     if (!this.element.offsetWidth)
       return 0;
-    for (var i = 1; i < this._visibleColumnsArray.length; ++i) {
+    for (let i = 1; i < this._visibleColumnsArray.length; ++i) {
       if (columnId === this._visibleColumnsArray[i].id) {
         if (this._resizers[i - 1])
           return this._resizers[i - 1].__position;
@@ -1309,7 +1309,7 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   element() {
     if (!this._element) {
-      var element = this.createElement();
+      const element = this.createElement();
       this.createCells(element);
     }
     return /** @type {!Element} */ (this._element);
@@ -1358,8 +1358,8 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   createCells(element) {
     element.removeChildren();
-    var columnsArray = this.dataGrid._visibleColumnsArray;
-    for (var i = 0; i < columnsArray.length; ++i)
+    const columnsArray = this.dataGrid._visibleColumnsArray;
+    for (let i = 0; i < columnsArray.length; ++i)
       element.appendChild(this.createCell(columnsArray[i].id));
     element.appendChild(this._createTDWithClass('corner'));
   }
@@ -1386,7 +1386,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (this._revealed !== undefined)
       return this._revealed;
 
-    var currentAncestor = this.parent;
+    let currentAncestor = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
       if (!currentAncestor.expanded) {
         this._revealed = false;
@@ -1412,7 +1412,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (this._element)
       this._element.classList.toggle('revealed', this._revealed);
 
-    for (var i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i)
       this.children[i].revealed = x && this.expanded;
   }
 
@@ -1567,8 +1567,8 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {!Element}
    */
   _createTDWithClass(className) {
-    var cell = createElementWithClass('td', className);
-    var cellClass = this.dataGrid._cellClass;
+    const cell = createElementWithClass('td', className);
+    const cellClass = this.dataGrid._cellClass;
     if (cellClass)
       cell.classList.add(cellClass);
     return cell;
@@ -1579,10 +1579,10 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {!Element}
    */
   createTD(columnId) {
-    var cell = this._createTDWithClass(columnId + '-column');
+    const cell = this._createTDWithClass(columnId + '-column');
     cell[DataGrid.DataGrid._columnIdSymbol] = columnId;
 
-    var alignment = this.dataGrid._columns[columnId].align;
+    const alignment = this.dataGrid._columns[columnId].align;
     if (alignment)
       cell.classList.add(alignment);
 
@@ -1600,9 +1600,9 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {!Element}
    */
   createCell(columnId) {
-    var cell = this.createTD(columnId);
+    const cell = this.createTD(columnId);
 
-    var data = this.data[columnId];
+    const data = this.data[columnId];
     if (data instanceof Node)
       cell.appendChild(data);
     else if (data !== null)
@@ -1653,7 +1653,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (!child)
       throw 'insertChild: Node can\'t be undefined or null.';
     if (child.parent === this) {
-      var currentIndex = this.children.indexOf(child);
+      const currentIndex = this.children.indexOf(child);
       if (currentIndex < 0)
         console.assert(false, 'Inconsistent DataGrid state');
       if (currentIndex === index)
@@ -1673,7 +1673,7 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     child._shouldRefreshChildren = true;
 
-    var current = child.children[0];
+    let current = child.children[0];
     while (current) {
       current.resetNode(true);
       current.dataGrid = this.dataGrid;
@@ -1716,8 +1716,8 @@ DataGrid.DataGridNode = class extends Common.Object {
   removeChildren() {
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
-    for (var i = 0; i < this.children.length; ++i) {
-      var child = this.children[i];
+    for (let i = 0; i < this.children.length; ++i) {
+      const child = this.children[i];
       child._detach();
       child.resetNode();
     }
@@ -1733,12 +1733,12 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (!this.parent)
       return;
 
-    var previousChild = this.parent.children[myIndex - 1] || null;
+    const previousChild = this.parent.children[myIndex - 1] || null;
     if (previousChild)
       previousChild.nextSibling = this;
     this.previousSibling = previousChild;
 
-    var nextChild = this.parent.children[myIndex + 1] || null;
+    const nextChild = this.parent.children[myIndex + 1] || null;
     if (nextChild)
       nextChild.previousSibling = this;
     this.nextSibling = nextChild;
@@ -1752,12 +1752,12 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     this._expanded = false;
 
-    for (var i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i)
       this.children[i].revealed = false;
   }
 
   collapseRecursively() {
-    var item = this;
+    let item = this;
     while (item) {
       if (item.expanded)
         item.collapse();
@@ -1775,19 +1775,19 @@ DataGrid.DataGridNode = class extends Common.Object {
       return;
 
     if (this.revealed && !this._shouldRefreshChildren) {
-      for (var i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i)
         this.children[i].revealed = true;
     }
 
     if (this._shouldRefreshChildren) {
-      for (var i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i)
         this.children[i]._detach();
 
       this.populate();
 
       if (this._attached) {
-        for (var i = 0; i < this.children.length; ++i) {
-          var child = this.children[i];
+        for (let i = 0; i < this.children.length; ++i) {
+          const child = this.children[i];
           if (this.revealed)
             child.revealed = true;
           child._attach();
@@ -1804,7 +1804,7 @@ DataGrid.DataGridNode = class extends Common.Object {
   }
 
   expandRecursively() {
-    var item = this;
+    let item = this;
     while (item) {
       item.expand();
       item = item.traverseNextNode(false, this);
@@ -1814,7 +1814,7 @@ DataGrid.DataGridNode = class extends Common.Object {
   reveal() {
     if (this._isRoot)
       return;
-    var currentAncestor = this.parent;
+    let currentAncestor = this.parent;
     while (currentAncestor && !currentAncestor._isRoot) {
       if (!currentAncestor.expanded)
         currentAncestor.expand();
@@ -1882,7 +1882,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (info)
       info.depthChange = 0;
 
-    var node = (!skipHidden || this.revealed) ? this.children[0] : null;
+    let node = (!skipHidden || this.revealed) ? this.children[0] : null;
     if (node && (!skipHidden || this.expanded)) {
       if (info)
         info.depthChange = 1;
@@ -1916,7 +1916,7 @@ DataGrid.DataGridNode = class extends Common.Object {
    * @return {?NODE_TYPE}
    */
   traversePreviousNode(skipHidden, dontPopulate) {
-    var node = (!skipHidden || this.revealed) ? this.previousSibling : null;
+    let node = (!skipHidden || this.revealed) ? this.previousSibling : null;
     if (!dontPopulate && node && node._hasChildren)
       node.populate();
 
@@ -1943,11 +1943,11 @@ DataGrid.DataGridNode = class extends Common.Object {
   isEventWithinDisclosureTriangle(event) {
     if (!this._hasChildren)
       return false;
-    var cell = event.target.enclosingNodeOrSelfWithNodeName('td');
+    const cell = event.target.enclosingNodeOrSelfWithNodeName('td');
     if (!cell || !cell.classList.contains('disclosure'))
       return false;
 
-    var left = cell.totalOffsetLeft() + this.leftPadding;
+    const left = cell.totalOffsetLeft() + this.leftPadding;
     return event.pageX >= left && event.pageX <= left + this.disclosureToggleWidth;
   }
 
@@ -1957,12 +1957,12 @@ DataGrid.DataGridNode = class extends Common.Object {
 
     this._attached = true;
 
-    var previousNode = this.traversePreviousNode(true, true);
-    var previousElement = previousNode ? previousNode.element() : this.dataGrid._topFillerRow;
+    const previousNode = this.traversePreviousNode(true, true);
+    const previousElement = previousNode ? previousNode.element() : this.dataGrid._topFillerRow;
     this.dataGrid.dataTableBody.insertBefore(this.element(), previousElement.nextSibling);
 
     if (this.expanded) {
-      for (var i = 0; i < this.children.length; ++i)
+      for (let i = 0; i < this.children.length; ++i)
         this.children[i]._attach();
     }
   }
@@ -1976,7 +1976,7 @@ DataGrid.DataGridNode = class extends Common.Object {
     if (this._element)
       this._element.remove();
 
-    for (var i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i)
       this.children[i]._detach();
   }
 
@@ -2064,7 +2064,7 @@ DataGrid.DataGridWidget = class extends UI.VBox {
    */
   detachChildWidgets() {
     super.detachChildWidgets();
-    for (var dataGrid of this._dataGrids)
+    for (const dataGrid of this._dataGrids)
       this.element.removeChild(dataGrid.element);
     this._dataGrids = [];
   }

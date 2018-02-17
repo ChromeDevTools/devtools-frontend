@@ -42,7 +42,7 @@ Workspace.UISourceCode = class extends Common.Object {
     this._project = project;
     this._url = url;
 
-    var parsedURL = url.asParsedURL();
+    const parsedURL = url.asParsedURL();
     if (parsedURL) {
       this._origin = parsedURL.securityOrigin();
       this._parentURL = this._origin + parsedURL.folderPathComponents;
@@ -134,7 +134,7 @@ Workspace.UISourceCode = class extends Common.Object {
   displayName(skipTrim) {
     if (!this._name)
       return Common.UIString('(index)');
-    var name = this._name;
+    let name = this._name;
     try {
       if (this.project().type() === Workspace.projectTypes.FileSystem)
         name = unescape(name);
@@ -157,8 +157,8 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {!Promise<boolean>}
    */
   rename(newName) {
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
+    let fulfill;
+    const promise = new Promise(x => fulfill = x);
     this._project.rename(this, newName, innerCallback.bind(this));
     return promise;
 
@@ -189,7 +189,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {!Common.ResourceType=} contentType
    */
   _updateName(name, url, contentType) {
-    var oldURL = this._url;
+    const oldURL = this._url;
     this._url = this._url.substring(0, this._url.length - this._name.length) + name;
     this._name = name;
     if (url)
@@ -244,7 +244,7 @@ Workspace.UISourceCode = class extends Common.Object {
     if (this._contentLoaded) {
       this._requestContentPromise = Promise.resolve(this._content);
     } else {
-      var fulfill;
+      let fulfill;
       this._requestContentPromise = new Promise(x => fulfill = x);
       this._project.requestFileContent(this, (content, encoded) => {
         if (!this._contentLoaded) {
@@ -276,7 +276,7 @@ Workspace.UISourceCode = class extends Common.Object {
     function contentLoaded(updatedContent, encoded) {
       this._checkingContent = false;
       if (updatedContent === null) {
-        var workingCopy = this.workingCopy();
+        const workingCopy = this.workingCopy();
         this._contentCommitted('', false);
         this.setWorkingCopy(workingCopy);
         return;
@@ -294,7 +294,7 @@ Workspace.UISourceCode = class extends Common.Object {
         return;
       }
 
-      var shouldUpdate =
+      const shouldUpdate =
           window.confirm(Common.UIString('This file was changed externally. Would you like to reload it?'));
       if (shouldUpdate)
         this._contentCommitted(updatedContent, false);
@@ -451,7 +451,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   searchInContent(query, caseSensitive, isRegex) {
-    var content = this.content();
+    const content = this.content();
     if (!content)
       return this._project.searchInFileContent(this, query, caseSensitive, isRegex);
     return Promise.resolve(Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex));
@@ -501,7 +501,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @return {!Workspace.UISourceCode.Message} message
    */
   addMessage(level, text, range) {
-    var message = new Workspace.UISourceCode.Message(this, level, text, range);
+    const message = new Workspace.UISourceCode.Message(this, level, text, range);
     if (!this._messages)
       this._messages = new Set();
     this._messages.add(message);
@@ -520,7 +520,7 @@ Workspace.UISourceCode = class extends Common.Object {
   _removeAllMessages() {
     if (!this._messages)
       return;
-    for (var message of this._messages)
+    for (const message of this._messages)
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.MessageRemoved, message);
     this._messages = null;
   }
@@ -540,7 +540,7 @@ Workspace.UISourceCode = class extends Common.Object {
    * @param {?} data
    */
   addDecoration(range, type, data) {
-    var marker = new Workspace.UISourceCode.LineMarker(range, type, data);
+    const marker = new Workspace.UISourceCode.LineMarker(range, type, data);
     if (!this._decorations)
       this._decorations = new Multimap();
     this._decorations.set(type, marker);
@@ -553,7 +553,7 @@ Workspace.UISourceCode = class extends Common.Object {
   removeDecorationsForType(type) {
     if (!this._decorations)
       return;
-    var markers = this._decorations.get(type);
+    const markers = this._decorations.get(type);
     this._decorations.deleteAll(type);
     markers.forEach(marker => {
       this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker);
@@ -570,7 +570,7 @@ Workspace.UISourceCode = class extends Common.Object {
   removeAllDecorations() {
     if (!this._decorations)
       return;
-    var decorationList = this._decorations.valuesArray();
+    const decorationList = this._decorations.valuesArray();
     this._decorations.clear();
     decorationList.forEach(
         marker => this.dispatchEventToListeners(Workspace.UISourceCode.Events.LineDecorationRemoved, marker));
@@ -616,7 +616,7 @@ Workspace.UILocation = class {
    * @return {string}
    */
   linkText(skipTrim) {
-    var linkText = this.uiSourceCode.displayName(skipTrim);
+    let linkText = this.uiSourceCode.displayName(skipTrim);
     if (typeof this.lineNumber === 'number')
       linkText += ':' + (this.lineNumber + 1);
     return linkText;

@@ -100,7 +100,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   createSelection(index) {
     if (index === -1)
       return null;
-    var request = this._requests[index];
+    const request = this._requests[index];
     this._lastSelection =
         new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
     return this._lastSelection.timelineSelection;
@@ -119,8 +119,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
 
     if (selection.type() !== Timeline.TimelineSelection.Type.NetworkRequest)
       return -1;
-    var request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
-    var index = this._requests.indexOf(request);
+    const request = /** @type{!TimelineModel.TimelineModel.NetworkRequest} */ (selection.object());
+    const index = this._requests.indexOf(request);
     if (index !== -1) {
       this._lastSelection =
           new Timeline.TimelineFlameChartView.Selection(Timeline.TimelineSelection.fromNetworkRequest(request), index);
@@ -134,8 +134,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {string}
    */
   entryColor(index) {
-    var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    var category = Timeline.TimelineUIUtils.networkRequestCategory(request);
+    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const category = Timeline.TimelineUIUtils.networkRequestCategory(request);
     return Timeline.TimelineUIUtils.networkCategoryColor(category);
   }
 
@@ -154,8 +154,8 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {?string}
    */
   entryTitle(index) {
-    var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
-    var parsedURL = new Common.ParsedURL(request.url || '');
+    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const parsedURL = new Common.ParsedURL(request.url || '');
     return parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` : request.url || null;
   }
 
@@ -182,7 +182,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {boolean}
    */
   decorateEntry(index, context, text, barX, barY, barWidth, barHeight, unclippedBarX, timeToPixelRatio) {
-    var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
     if (!request.timing)
       return false;
 
@@ -194,16 +194,16 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       return Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
     }
 
-    var /** @const */ minBarWidthPx = 2;
-    var beginTime = request.beginTime();
-    var startTime = request.startTime;
-    var endTime = request.endTime;
-    var requestTime = request.timing.requestTime * 1000;
-    var sendStart = Math.max(timeToPixel(requestTime + request.timing.sendStart), unclippedBarX);
-    var headersEnd = Math.max(timeToPixel(requestTime + request.timing.receiveHeadersEnd), sendStart);
-    var finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
-    var start = timeToPixel(startTime);
-    var end = Math.max(timeToPixel(endTime), finish);
+    const /** @const */ minBarWidthPx = 2;
+    const beginTime = request.beginTime();
+    const startTime = request.startTime;
+    const endTime = request.endTime;
+    const requestTime = request.timing.requestTime * 1000;
+    const sendStart = Math.max(timeToPixel(requestTime + request.timing.sendStart), unclippedBarX);
+    const headersEnd = Math.max(timeToPixel(requestTime + request.timing.receiveHeadersEnd), sendStart);
+    const finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
+    const start = timeToPixel(startTime);
+    const end = Math.max(timeToPixel(endTime), finish);
 
     context.fillStyle = 'hsla(0, 100%, 100%, 0.8)';
     context.fillRect(sendStart + 0.5, barY + 0.5, headersEnd - sendStart - 0.5, barHeight - 2);
@@ -212,10 +212,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 
     if (request.timing.pushStart) {
-      var pushStart = timeToPixel(request.timing.pushStart * 1000);
-      var pushEnd = timeToPixel(request.timing.pushEnd * 1000);
-      var dentSize = Number.constrain(pushEnd - pushStart - 2, 0, 4);
-      var padding = 1;
+      const pushStart = timeToPixel(request.timing.pushStart * 1000);
+      const pushEnd = timeToPixel(request.timing.pushEnd * 1000);
+      const dentSize = Number.constrain(pushEnd - pushStart - 2, 0, 4);
+      const padding = 1;
       context.save();
       context.beginPath();
       context.moveTo(pushStart + dentSize, barY + barHeight / 2);
@@ -237,7 +237,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
      * @param {number} y
      */
     function drawTick(begin, end, y) {
-      var /** @const */ tickHeightPx = 6;
+      const /** @const */ tickHeightPx = 6;
       context.moveTo(begin, y - tickHeightPx / 2);
       context.lineTo(begin, y + tickHeightPx / 2);
       context.moveTo(begin, y);
@@ -247,33 +247,33 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     context.beginPath();
     context.lineWidth = 1;
     context.strokeStyle = '#ccc';
-    var lineY = Math.floor(barY + barHeight / 2) + 0.5;
-    var leftTick = start + 0.5;
-    var rightTick = end - 0.5;
+    const lineY = Math.floor(barY + barHeight / 2) + 0.5;
+    const leftTick = start + 0.5;
+    const rightTick = end - 0.5;
     drawTick(leftTick, sendStart, lineY);
     drawTick(rightTick, finish, lineY);
     context.stroke();
 
     if (typeof request.priority === 'string') {
-      var color = this._colorForPriority(request.priority);
+      const color = this._colorForPriority(request.priority);
       if (color) {
         context.fillStyle = color;
         context.fillRect(sendStart + 0.5, barY + 0.5, 3.5, 3.5);
       }
     }
 
-    var textStart = Math.max(sendStart, 0);
-    var textWidth = finish - textStart;
-    var /** @const */ minTextWidthPx = 20;
+    const textStart = Math.max(sendStart, 0);
+    const textWidth = finish - textStart;
+    const /** @const */ minTextWidthPx = 20;
     if (textWidth >= minTextWidthPx) {
       text = this.entryTitle(index) || '';
       if (request.fromServiceWorker)
         text = '⚙ ' + text;
       if (text) {
-        var /** @const */ textPadding = 4;
-        var /** @const */ textBaseline = 5;
-        var textBaseHeight = barHeight - textBaseline;
-        var trimmedText = UI.trimTextEnd(context, text, textWidth - 2 * textPadding);
+        const /** @const */ textPadding = 4;
+        const /** @const */ textBaseline = 5;
+        const textBaseHeight = barHeight - textBaseline;
+        const trimmedText = UI.trimTextEnd(context, text, textWidth - 2 * textPadding);
         context.fillStyle = '#333';
         context.fillText(trimmedText, textStart + textPadding, barY + textBaseHeight);
       }
@@ -297,18 +297,18 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    * @return {?Element}
    */
   prepareHighlightedEntryInfo(index) {
-    var /** @const */ maxURLChars = 80;
-    var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
+    const /** @const */ maxURLChars = 80;
+    const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._requests[index]);
     if (!request.url)
       return null;
-    var element = createElement('div');
-    var root = UI.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
-    var contents = root.createChild('div', 'timeline-flamechart-popover');
-    var duration = request.endTime - request.startTime;
+    const element = createElement('div');
+    const root = UI.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
+    const contents = root.createChild('div', 'timeline-flamechart-popover');
+    const duration = request.endTime - request.startTime;
     if (request.startTime && isFinite(duration))
       contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration);
     if (typeof request.priority === 'string') {
-      var div = contents.createChild('span');
+      const div = contents.createChild('span');
       div.textContent =
           PerfUI.uiLabelForNetworkPriority(/** @type {!Protocol.Network.ResourcePriority} */ (request.priority));
       div.style.color = this._colorForPriority(request.priority) || 'black';
@@ -323,13 +323,13 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
    */
   _colorForPriority(priority) {
     if (!this._priorityToValue) {
-      var priorities = Protocol.Network.ResourcePriority;
+      const priorities = Protocol.Network.ResourcePriority;
       this._priorityToValue = new Map([
         [priorities.VeryLow, 1], [priorities.Low, 2], [priorities.Medium, 3], [priorities.High, 4],
         [priorities.VeryHigh, 5]
       ]);
     }
-    var value = this._priorityToValue.get(priority);
+    const value = this._priorityToValue.get(priority);
     return value ? `hsla(214, 80%, 50%, ${value / 5})` : null;
   }
 
@@ -347,12 +347,12 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
   _updateTimelineData() {
     if (!this._timelineData)
       return;
-    var lastTimeByLevel = [];
-    var maxLevel = 0;
-    for (var i = 0; i < this._requests.length; ++i) {
-      var r = this._requests[i];
-      var beginTime = r.beginTime();
-      var visible = beginTime < this._endTime && r.endTime > this._startTime;
+    const lastTimeByLevel = [];
+    let maxLevel = 0;
+    for (let i = 0; i < this._requests.length; ++i) {
+      const r = this._requests[i];
+      const beginTime = r.beginTime();
+      const visible = beginTime < this._endTime && r.endTime > this._startTime;
       if (!visible) {
         this._timelineData.entryLevels[i] = -1;
         continue;
@@ -363,7 +363,7 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       lastTimeByLevel.push(r.endTime);
       maxLevel = Math.max(maxLevel, lastTimeByLevel.length);
     }
-    for (var i = 0; i < this._requests.length; ++i) {
+    for (let i = 0; i < this._requests.length; ++i) {
       if (this._timelineData.entryLevels[i] === -1)
         this._timelineData.entryLevels[i] = maxLevel;
     }

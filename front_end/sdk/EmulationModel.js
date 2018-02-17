@@ -16,13 +16,13 @@ SDK.EmulationModel = class extends SDK.SDKModel {
     if (this._overlayModel)
       this._overlayModel.addEventListener(SDK.OverlayModel.Events.InspectModeWillBeToggled, this._updateTouch, this);
 
-    var disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
+    const disableJavascriptSetting = Common.settings.moduleSetting('javaScriptDisabled');
     disableJavascriptSetting.addChangeListener(
         () => this._emulationAgent.setScriptExecutionDisabled(disableJavascriptSetting.get()));
     if (disableJavascriptSetting.get())
       this._emulationAgent.setScriptExecutionDisabled(true);
 
-    var mediaSetting = Common.moduleSetting('emulatedCSSMedia');
+    const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
     mediaSetting.addChangeListener(() => this._emulateCSSMedia(mediaSetting.get()));
     if (mediaSetting.get())
       this._emulateCSSMedia(mediaSetting.get());
@@ -129,7 +129,7 @@ SDK.EmulationModel = class extends SDK.SDKModel {
   }
 
   _updateTouch() {
-    var configuration = {
+    let configuration = {
       enabled: this._touchEnabled,
       configuration: this._touchMobile ? 'mobile' : 'desktop',
     };
@@ -170,9 +170,9 @@ SDK.EmulationModel.Geolocation = class {
    */
   static parseSetting(value) {
     if (value) {
-      var splitError = value.split(':');
+      const splitError = value.split(':');
       if (splitError.length === 2) {
-        var splitPosition = splitError[0].split('@');
+        const splitPosition = splitError[0].split('@');
         if (splitPosition.length === 2) {
           return new SDK.EmulationModel.Geolocation(
               parseFloat(splitPosition[0]), parseFloat(splitPosition[1]), !!splitError[1]);
@@ -192,14 +192,14 @@ SDK.EmulationModel.Geolocation = class {
     if (!latitudeString && !longitudeString)
       return null;
 
-    var isLatitudeValid = SDK.EmulationModel.Geolocation.latitudeValidator(latitudeString);
-    var isLongitudeValid = SDK.EmulationModel.Geolocation.longitudeValidator(longitudeString);
+    const isLatitudeValid = SDK.EmulationModel.Geolocation.latitudeValidator(latitudeString);
+    const isLongitudeValid = SDK.EmulationModel.Geolocation.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid)
       return null;
 
-    var latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
-    var longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
+    const latitude = isLatitudeValid ? parseFloat(latitudeString) : -1;
+    const longitude = isLongitudeValid ? parseFloat(longitudeString) : -1;
     return new SDK.EmulationModel.Geolocation(latitude, longitude, !!errorStatus);
   }
 
@@ -208,7 +208,7 @@ SDK.EmulationModel.Geolocation = class {
    * @return {boolean}
    */
   static latitudeValidator(value) {
-    var numValue = parseFloat(value);
+    const numValue = parseFloat(value);
     return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
   }
 
@@ -217,7 +217,7 @@ SDK.EmulationModel.Geolocation = class {
    * @return {boolean}
    */
   static longitudeValidator(value) {
-    var numValue = parseFloat(value);
+    const numValue = parseFloat(value);
     return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
   }
 
@@ -248,7 +248,7 @@ SDK.EmulationModel.DeviceOrientation = class {
    */
   static parseSetting(value) {
     if (value) {
-      var jsonObject = JSON.parse(value);
+      const jsonObject = JSON.parse(value);
       return new SDK.EmulationModel.DeviceOrientation(jsonObject.alpha, jsonObject.beta, jsonObject.gamma);
     }
     return new SDK.EmulationModel.DeviceOrientation(0, 0, 0);
@@ -261,16 +261,16 @@ SDK.EmulationModel.DeviceOrientation = class {
     if (!alphaString && !betaString && !gammaString)
       return null;
 
-    var isAlphaValid = SDK.EmulationModel.DeviceOrientation.validator(alphaString);
-    var isBetaValid = SDK.EmulationModel.DeviceOrientation.validator(betaString);
-    var isGammaValid = SDK.EmulationModel.DeviceOrientation.validator(gammaString);
+    const isAlphaValid = SDK.EmulationModel.DeviceOrientation.validator(alphaString);
+    const isBetaValid = SDK.EmulationModel.DeviceOrientation.validator(betaString);
+    const isGammaValid = SDK.EmulationModel.DeviceOrientation.validator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid)
       return null;
 
-    var alpha = isAlphaValid ? parseFloat(alphaString) : -1;
-    var beta = isBetaValid ? parseFloat(betaString) : -1;
-    var gamma = isGammaValid ? parseFloat(gammaString) : -1;
+    const alpha = isAlphaValid ? parseFloat(alphaString) : -1;
+    const beta = isBetaValid ? parseFloat(betaString) : -1;
+    const gamma = isGammaValid ? parseFloat(gammaString) : -1;
 
     return new SDK.EmulationModel.DeviceOrientation(alpha, beta, gamma);
   }

@@ -16,7 +16,7 @@ UI.Context = class {
    * @template T
    */
   setFlavor(flavorType, flavorValue) {
-    var value = this._flavors.get(flavorType) || null;
+    const value = this._flavors.get(flavorType) || null;
     if (value === flavorValue)
       return;
     if (flavorValue)
@@ -33,13 +33,13 @@ UI.Context = class {
    * @template T
    */
   _dispatchFlavorChange(flavorType, flavorValue) {
-    for (var extension of self.runtime.extensions(UI.ContextFlavorListener)) {
+    for (const extension of self.runtime.extensions(UI.ContextFlavorListener)) {
       if (extension.hasContextType(flavorType)) {
         extension.instance().then(
             instance => /** @type {!UI.ContextFlavorListener} */ (instance).flavorChanged(flavorValue));
       }
     }
-    var dispatcher = this._eventDispatchers.get(flavorType);
+    const dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher)
       return;
     dispatcher.dispatchEventToListeners(UI.Context.Events.FlavorChanged, flavorValue);
@@ -51,7 +51,7 @@ UI.Context = class {
    * @param {!Object=} thisObject
    */
   addFlavorChangeListener(flavorType, listener, thisObject) {
-    var dispatcher = this._eventDispatchers.get(flavorType);
+    let dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher) {
       dispatcher = new Common.Object();
       this._eventDispatchers.set(flavorType, dispatcher);
@@ -65,7 +65,7 @@ UI.Context = class {
    * @param {!Object=} thisObject
    */
   removeFlavorChangeListener(flavorType, listener, thisObject) {
-    var dispatcher = this._eventDispatchers.get(flavorType);
+    const dispatcher = this._eventDispatchers.get(flavorType);
     if (!dispatcher)
       return;
     dispatcher.removeEventListener(UI.Context.Events.FlavorChanged, listener, thisObject);
@@ -94,9 +94,9 @@ UI.Context = class {
    * @return {!Set.<!Runtime.Extension>}
    */
   applicableExtensions(extensions) {
-    var targetExtensionSet = new Set();
+    const targetExtensionSet = new Set();
 
-    var availableFlavors = this.flavors();
+    const availableFlavors = this.flavors();
     extensions.forEach(function(extension) {
       if (self.runtime.isExtensionApplicableToContextTypes(extension, availableFlavors))
         targetExtensionSet.add(extension);

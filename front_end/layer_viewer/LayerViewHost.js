@@ -181,13 +181,13 @@ LayerViewer.LayerViewHost = class {
    */
   setLayerTree(layerTree) {
     this._target = layerTree.target();
-    var selectedLayer = this._selectedObject && this._selectedObject.layer();
+    const selectedLayer = this._selectedObject && this._selectedObject.layer();
     if (selectedLayer && (!layerTree || !layerTree.layerById(selectedLayer.id())))
       this.selectObject(null);
-    var hoveredLayer = this._hoveredObject && this._hoveredObject.layer();
+    const hoveredLayer = this._hoveredObject && this._hoveredObject.layer();
     if (hoveredLayer && (!layerTree || !layerTree.layerById(hoveredLayer.id())))
       this.hoverObject(null);
-    for (var view of this._views)
+    for (const view of this._views)
       view.setLayerTree(layerTree);
   }
 
@@ -198,9 +198,9 @@ LayerViewer.LayerViewHost = class {
     if (LayerViewer.LayerView.Selection.isEqual(this._hoveredObject, selection))
       return;
     this._hoveredObject = selection;
-    var layer = selection && selection.layer();
+    const layer = selection && selection.layer();
     this._toggleNodeHighlight(layer ? layer.nodeForSelfOrAncestor() : null);
-    for (var view of this._views)
+    for (const view of this._views)
       view.hoverObject(selection);
   }
 
@@ -211,7 +211,7 @@ LayerViewer.LayerViewHost = class {
     if (LayerViewer.LayerView.Selection.isEqual(this._selectedObject, selection))
       return;
     this._selectedObject = selection;
-    for (var view of this._views)
+    for (const view of this._views)
       view.selectObject(selection);
   }
 
@@ -230,7 +230,7 @@ LayerViewer.LayerViewHost = class {
     contextMenu.defaultSection().appendCheckboxItem(
         Common.UIString('Show internal layers'), this._toggleShowInternalLayers.bind(this),
         this._showInternalLayersSetting.get());
-    var node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
+    const node = selection && selection.layer() && selection.layer().nodeForSelfOrAncestor();
     if (node)
       contextMenu.appendApplicableItems(node);
     contextMenu.show();

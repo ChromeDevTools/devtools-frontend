@@ -50,7 +50,7 @@ UI.InspectorView = class extends UI.VBox {
     this._drawerTabbedLocation.enableMoreTabsButton();
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
-    var closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
+    const closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');
     closeDrawerButton.addEventListener(UI.ToolbarButton.Events.Click, this._closeDrawer, this);
     this._drawerTabbedPane.rightToolbar().appendToolbarItem(closeDrawerButton);
     this._drawerSplitWidget.installResizer(this._drawerTabbedPane.headerElement());
@@ -80,7 +80,7 @@ UI.InspectorView = class extends UI.VBox {
      * @param {!Common.Event} event
      */
     function showPanel(event) {
-      var panelName = /** @type {string} */ (event.data);
+      const panelName = /** @type {string} */ (event.data);
       this.showPanel(panelName);
     }
   }
@@ -243,14 +243,14 @@ UI.InspectorView = class extends UI.VBox {
    * @param {!Event} event
    */
   _keyDown(event) {
-    var keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
     if (!UI.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) || event.altKey || event.shiftKey)
       return;
 
     // Ctrl/Cmd + 1-9 should show corresponding panel.
-    var panelShortcutEnabled = Common.moduleSetting('shortcutPanelSwitch').get();
+    const panelShortcutEnabled = Common.moduleSetting('shortcutPanelSwitch').get();
     if (panelShortcutEnabled) {
-      var panelIndex = -1;
+      let panelIndex = -1;
       if (event.keyCode > 0x30 && event.keyCode < 0x3A)
         panelIndex = event.keyCode - 0x31;
       else if (
@@ -258,7 +258,7 @@ UI.InspectorView = class extends UI.VBox {
           keyboardEvent.location === KeyboardEvent.DOM_KEY_LOCATION_NUMPAD)
         panelIndex = event.keyCode - 0x61;
       if (panelIndex !== -1) {
-        var panelName = this._tabbedPane.allTabs()[panelIndex];
+        const panelName = this._tabbedPane.allTabs()[panelIndex];
         if (panelName) {
           if (!UI.Dialog.hasInstance() && !this._currentPanelLocked)
             this.showPanel(panelName);
@@ -300,7 +300,7 @@ UI.InspectorView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _tabSelected(event) {
-    var tabId = /** @type {string} */ (event.data['tabId']);
+    const tabId = /** @type {string} */ (event.data['tabId']);
     Host.userMetrics.panelShown(tabId);
   }
 
@@ -308,7 +308,7 @@ UI.InspectorView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _drawerTabSelected(event) {
-    var tabId = /** @type {string} */ (event.data['tabId']);
+    const tabId = /** @type {string} */ (event.data['tabId']);
     Host.userMetrics.drawerShown(tabId);
   }
 

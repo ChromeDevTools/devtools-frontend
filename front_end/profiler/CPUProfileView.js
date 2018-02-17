@@ -45,7 +45,7 @@ Profiler.CPUProfileView = class extends Profiler.ProfileView {
    */
   wasShown() {
     super.wasShown();
-    var lineLevelProfile = PerfUI.LineLevelProfile.instance();
+    const lineLevelProfile = PerfUI.LineLevelProfile.instance();
     lineLevelProfile.reset();
     lineLevelProfile.appendCPUProfile(this.profile);
   }
@@ -141,18 +141,18 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
    * @param {!Common.Event} event
    */
   _consoleProfileFinished(event) {
-    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
-    var cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (data.cpuProfile);
-    var profile = new Profiler.CPUProfileHeader(data.cpuProfilerModel, this, data.title);
+    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (event.data);
+    const cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (data.cpuProfile);
+    const profile = new Profiler.CPUProfileHeader(data.cpuProfilerModel, this, data.title);
     profile.setProtocolProfile(cpuProfile);
     this.addProfile(profile);
   }
 
   startRecordingProfile() {
-    var cpuProfilerModel = UI.context.flavor(SDK.CPUProfilerModel);
+    const cpuProfilerModel = UI.context.flavor(SDK.CPUProfilerModel);
     if (this.profileBeingRecorded() || !cpuProfilerModel)
       return;
-    var profile = new Profiler.CPUProfileHeader(cpuProfilerModel, this);
+    const profile = new Profiler.CPUProfileHeader(cpuProfilerModel, this);
     this.setProfileBeingRecorded(profile);
     SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
@@ -167,8 +167,8 @@ Profiler.CPUProfileType = class extends Profiler.ProfileType {
     if (!this.profileBeingRecorded() || !this.profileBeingRecorded()._cpuProfilerModel)
       return;
 
-    var profile = await this.profileBeingRecorded()._cpuProfilerModel.stopRecording();
-    var recordedProfile = this.profileBeingRecorded();
+    const profile = await this.profileBeingRecorded()._cpuProfilerModel.stopRecording();
+    const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
       console.assert(profile);
       recordedProfile.setProtocolProfile(profile);
@@ -281,7 +281,7 @@ Profiler.CPUProfileView.NodeFormatter = class {
    * @return {?Element}
    */
   linkifyNode(node) {
-    var cpuProfilerModel = this._profileView._profileHeader._cpuProfilerModel;
+    const cpuProfilerModel = this._profileView._profileHeader._cpuProfilerModel;
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(
         cpuProfilerModel ? cpuProfilerModel.target() : null, node.profileNode.callFrame, 'profile-node-file');
   }
@@ -307,10 +307,10 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
    */
   _calculateTimelineData() {
     /** @type {!Array.<?Profiler.CPUFlameChartDataProvider.ChartEntry>} */
-    var entries = [];
+    const entries = [];
     /** @type {!Array.<number>} */
-    var stack = [];
-    var maxDepth = 5;
+    const stack = [];
+    let maxDepth = 5;
 
     function onOpenFrame() {
       stack.push(entries.length);
@@ -326,21 +326,21 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
      * @param {number} selfTime
      */
     function onCloseFrame(depth, node, startTime, totalTime, selfTime) {
-      var index = stack.pop();
+      const index = stack.pop();
       entries[index] = new Profiler.CPUFlameChartDataProvider.ChartEntry(depth, totalTime, startTime, selfTime, node);
       maxDepth = Math.max(maxDepth, depth);
     }
     this._cpuProfile.forEachFrame(onOpenFrame, onCloseFrame);
 
     /** @type {!Array<!SDK.CPUProfileNode>} */
-    var entryNodes = new Array(entries.length);
-    var entryLevels = new Uint16Array(entries.length);
-    var entryTotalTimes = new Float32Array(entries.length);
-    var entrySelfTimes = new Float32Array(entries.length);
-    var entryStartTimes = new Float64Array(entries.length);
+    const entryNodes = new Array(entries.length);
+    const entryLevels = new Uint16Array(entries.length);
+    const entryTotalTimes = new Float32Array(entries.length);
+    const entrySelfTimes = new Float32Array(entries.length);
+    const entryStartTimes = new Float64Array(entries.length);
 
-    for (var i = 0; i < entries.length; ++i) {
-      var entry = entries[i];
+    for (let i = 0; i < entries.length; ++i) {
+      const entry = entries[i];
       entryNodes[i] = entry.node;
       entryLevels[i] = entry.depth;
       entryTotalTimes[i] = entry.duration;
@@ -365,12 +365,12 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
    * @return {?Element}
    */
   prepareHighlightedEntryInfo(entryIndex) {
-    var timelineData = this._timelineData;
-    var node = this._entryNodes[entryIndex];
+    const timelineData = this._timelineData;
+    const node = this._entryNodes[entryIndex];
     if (!node)
       return null;
 
-    var entryInfo = [];
+    const entryInfo = [];
     /**
      * @param {string} title
      * @param {string} value
@@ -389,14 +389,14 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
         return Common.UIString('%.1f\xa0ms', ms);
       return Number.secondsToString(ms / 1000, true);
     }
-    var name = UI.beautifyFunctionName(node.functionName);
+    const name = UI.beautifyFunctionName(node.functionName);
     pushEntryInfoRow(Common.UIString('Name'), name);
-    var selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
-    var totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
+    const selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
+    const totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
     pushEntryInfoRow(Common.UIString('Self time'), selfTime);
     pushEntryInfoRow(Common.UIString('Total time'), totalTime);
-    var linkifier = new Components.Linkifier();
-    var link = linkifier.maybeLinkifyConsoleCallFrame(
+    const linkifier = new Components.Linkifier();
+    const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._cpuProfilerModel && this._cpuProfilerModel.target(), node.callFrame);
     if (link)
       pushEntryInfoRow(Common.UIString('URL'), link.textContent);

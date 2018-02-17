@@ -65,7 +65,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @return {!Array<string>}
    */
   static relativePath(uiSourceCode) {
-    var baseURL =
+    const baseURL =
         /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemBaseURL;
     return uiSourceCode.url().substring(baseURL.length).split('/');
   }
@@ -75,7 +75,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @return {string}
    */
   static fileSystemType(project) {
-    var fileSystem =
+    const fileSystem =
         /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project)._fileSystem;
     return fileSystem.type();
   }
@@ -86,7 +86,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @return {string}
    */
   static completeURL(project, relativePath) {
-    var fsProject = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project);
+    const fsProject = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (project);
     return fsProject._fileSystemBaseURL + relativePath;
   }
 
@@ -126,7 +126,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Array<!Persistence.IsolatedFileSystem>} fileSystems
    */
   _onFileSystemsLoaded(fileSystems) {
-    for (var fileSystem of fileSystems)
+    for (const fileSystem of fileSystems)
       this._addFileSystem(fileSystem);
   }
 
@@ -134,7 +134,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _onFileSystemAdded(event) {
-    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
+    const fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
     this._addFileSystem(fileSystem);
   }
 
@@ -142,7 +142,7 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Persistence.IsolatedFileSystem} fileSystem
    */
   _addFileSystem(fileSystem) {
-    var boundFileSystem = new Persistence.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
+    const boundFileSystem = new Persistence.FileSystemWorkspaceBinding.FileSystem(this, fileSystem, this._workspace);
     this._boundFileSystems.set(fileSystem.path(), boundFileSystem);
   }
 
@@ -150,8 +150,8 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _onFileSystemRemoved(event) {
-    var fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
-    var boundFileSystem = this._boundFileSystems.get(fileSystem.path());
+    const fileSystem = /** @type {!Persistence.IsolatedFileSystem} */ (event.data);
+    const boundFileSystem = this._boundFileSystems.get(fileSystem.path());
     boundFileSystem.dispose();
     this._boundFileSystems.remove(fileSystem.path());
   }
@@ -160,23 +160,23 @@ Persistence.FileSystemWorkspaceBinding = class {
    * @param {!Common.Event} event
    */
   _fileSystemFilesChanged(event) {
-    var paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
-    for (var fileSystemPath of paths.changed.keysArray()) {
-      var fileSystem = this._boundFileSystems.get(fileSystemPath);
+    const paths = /** @type {!Persistence.IsolatedFileSystemManager.FilesChangedData} */ (event.data);
+    for (const fileSystemPath of paths.changed.keysArray()) {
+      const fileSystem = this._boundFileSystems.get(fileSystemPath);
       if (!fileSystem)
         continue;
       paths.changed.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
     }
 
-    for (var fileSystemPath of paths.added.keysArray()) {
-      var fileSystem = this._boundFileSystems.get(fileSystemPath);
+    for (const fileSystemPath of paths.added.keysArray()) {
+      const fileSystem = this._boundFileSystems.get(fileSystemPath);
       if (!fileSystem)
         continue;
       paths.added.get(fileSystemPath).forEach(path => fileSystem._fileChanged(path));
     }
 
-    for (var fileSystemPath of paths.removed.keysArray()) {
-      var fileSystem = this._boundFileSystems.get(fileSystemPath);
+    for (const fileSystemPath of paths.removed.keysArray()) {
+      const fileSystem = this._boundFileSystems.get(fileSystemPath);
       if (!fileSystem)
         continue;
       paths.removed.get(fileSystemPath).forEach(path => fileSystem.removeUISourceCode(path));
@@ -185,7 +185,7 @@ Persistence.FileSystemWorkspaceBinding = class {
 
   dispose() {
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (var fileSystem of this._boundFileSystems.values()) {
+    for (const fileSystem of this._boundFileSystems.values()) {
       fileSystem.dispose();
       this._boundFileSystems.remove(fileSystem._fileSystem.path());
     }
@@ -214,10 +214,10 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {!Workspace.Workspace} workspace
    */
   constructor(fileSystemWorkspaceBinding, isolatedFileSystem, workspace) {
-    var fileSystemPath = isolatedFileSystem.path();
-    var id = Persistence.FileSystemWorkspaceBinding.projectId(fileSystemPath);
+    const fileSystemPath = isolatedFileSystem.path();
+    const id = Persistence.FileSystemWorkspaceBinding.projectId(fileSystemPath);
     console.assert(!workspace.project(id));
-    var displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
+    const displayName = fileSystemPath.substr(fileSystemPath.lastIndexOf('/') + 1);
 
     super(workspace, id, Workspace.projectTypes.FileSystem, displayName);
 
@@ -280,8 +280,8 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   requestMetadata(uiSourceCode) {
     if (uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata])
       return uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata];
-    var relativePath = this._filePathForUISourceCode(uiSourceCode);
-    var promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
+    const relativePath = this._filePathForUISourceCode(uiSourceCode);
+    const promise = this._fileSystem.getMetadata(relativePath).then(onMetadata);
     uiSourceCode[Persistence.FileSystemWorkspaceBinding._metadata] = promise;
     return promise;
 
@@ -310,7 +310,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {function(?string, boolean)} callback
    */
   requestFileContent(uiSourceCode, callback) {
-    var filePath = this._filePathForUISourceCode(uiSourceCode);
+    const filePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.requestFileContent(filePath, callback);
   }
 
@@ -330,7 +330,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {function(?string)} callback
    */
   setFileContent(uiSourceCode, newContent, isBase64, callback) {
-    var filePath = this._filePathForUISourceCode(uiSourceCode);
+    const filePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.setFileContent(filePath, newContent, isBase64, callback.bind(this, ''));
   }
 
@@ -340,7 +340,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {string}
    */
   fullDisplayName(uiSourceCode) {
-    var baseURL =
+    const baseURL =
         /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem}*/ (uiSourceCode.project())._fileSystemParentURL;
     return uiSourceCode.url().substring(baseURL.length);
   }
@@ -365,7 +365,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
       return;
     }
 
-    var filePath = this._filePathForUISourceCode(uiSourceCode);
+    let filePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.renameFile(filePath, newName, innerCallback.bind(this));
 
     /**
@@ -379,13 +379,13 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
         return;
       }
       console.assert(newName);
-      var slash = filePath.lastIndexOf('/');
-      var parentPath = filePath.substring(0, slash);
+      const slash = filePath.lastIndexOf('/');
+      const parentPath = filePath.substring(0, slash);
       filePath = parentPath + '/' + newName;
       filePath = filePath.substr(1);
-      var extension = this._extensionForPath(newName);
-      var newURL = this._fileSystemBaseURL + filePath;
-      var newContentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+      const extension = this._extensionForPath(newName);
+      const newURL = this._fileSystemBaseURL + filePath;
+      const newContentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
       this.renameUISourceCode(uiSourceCode, newName);
       callback(true, newName, newURL, newContentType);
     }
@@ -401,7 +401,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    */
   searchInFileContent(uiSourceCode, query, caseSensitive, isRegex) {
     return new Promise(resolve => {
-      var filePath = this._filePathForUISourceCode(uiSourceCode);
+      const filePath = this._filePathForUISourceCode(uiSourceCode);
       this._fileSystem.requestFileContent(filePath, contentCallback);
 
       /**
@@ -421,14 +421,14 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {!Promise<!Array<string>>}
    */
   async findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, progress) {
-    var result = filesMathingFileQuery;
-    var queriesToRun = searchConfig.queries().slice();
+    let result = filesMathingFileQuery;
+    const queriesToRun = searchConfig.queries().slice();
     if (!queriesToRun.length)
       queriesToRun.push('');
     progress.setTotalWork(queriesToRun.length);
 
-    for (var query of queriesToRun) {
-      var files = await this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
+    for (const query of queriesToRun) {
+      const files = await this._fileSystem.searchInPath(searchConfig.isRegex() ? '' : query, progress);
       result = result.intersectOrdered(files.sort(), String.naturalOrderComparator);
       progress.worked(1);
     }
@@ -454,8 +454,8 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
   }
 
   populate() {
-    var chunkSize = 1000;
-    var filePaths = this._fileSystem.initialFilePaths();
+    const chunkSize = 1000;
+    const filePaths = this._fileSystem.initialFilePaths();
     reportFileChunk.call(this, 0);
 
     /**
@@ -463,8 +463,8 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
      * @this {Persistence.FileSystemWorkspaceBinding.FileSystem}
      */
     function reportFileChunk(from) {
-      var to = Math.min(from + chunkSize, filePaths.length);
-      for (var i = from; i < to; ++i)
+      const to = Math.min(from + chunkSize, filePaths.length);
+      for (let i = from; i < to; ++i)
         this._addFile(filePaths[i]);
       if (to < filePaths.length)
         setTimeout(reportFileChunk.bind(this, to), 100);
@@ -476,16 +476,16 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {string} url
    */
   excludeFolder(url) {
-    var relativeFolder = url.substring(this._fileSystemBaseURL.length);
+    let relativeFolder = url.substring(this._fileSystemBaseURL.length);
     if (!relativeFolder.startsWith('/'))
       relativeFolder = '/' + relativeFolder;
     if (!relativeFolder.endsWith('/'))
       relativeFolder += '/';
     this._fileSystem.addExcludedFolder(relativeFolder);
 
-    var uiSourceCodes = this.uiSourceCodes().slice();
-    for (var i = 0; i < uiSourceCodes.length; ++i) {
-      var uiSourceCode = uiSourceCodes[i];
+    const uiSourceCodes = this.uiSourceCodes().slice();
+    for (let i = 0; i < uiSourceCodes.length; ++i) {
+      const uiSourceCode = uiSourceCodes[i];
       if (uiSourceCode.url().startsWith(url))
         this.removeUISourceCode(uiSourceCode.url());
     }
@@ -517,9 +517,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {!Promise<?Workspace.UISourceCode>}
    */
   async createFile(path, name, content, isBase64) {
-    var guardFileName = this._fileSystemPath + path + (!path.endsWith('/') ? '/' : '') + name;
+    const guardFileName = this._fileSystemPath + path + (!path.endsWith('/') ? '/' : '') + name;
     this._creatingFilesGuard.add(guardFileName);
-    var filePath = await this._fileSystem.createFile(path, name);
+    const filePath = await this._fileSystem.createFile(path, name);
     if (!filePath)
       return null;
     if (content)
@@ -533,7 +533,7 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   deleteFile(uiSourceCode) {
-    var relativePath = this._filePathForUISourceCode(uiSourceCode);
+    const relativePath = this._filePathForUISourceCode(uiSourceCode);
     this._fileSystem.deleteFile(relativePath).then(success => {
       if (success)
         this.removeUISourceCode(uiSourceCode.url());
@@ -552,10 +552,10 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @return {!Workspace.UISourceCode}
    */
   _addFile(filePath) {
-    var extension = this._extensionForPath(filePath);
-    var contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
+    const extension = this._extensionForPath(filePath);
+    const contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(extension);
 
-    var uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
+    const uiSourceCode = this.createUISourceCode(this._fileSystemBaseURL + filePath, contentType);
     this.addUISourceCode(uiSourceCode);
     return uiSourceCode;
   }
@@ -567,9 +567,9 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
     // Ignore files that are being created but do not have content yet.
     if (this._creatingFilesGuard.has(path))
       return;
-    var uiSourceCode = this.uiSourceCodeForURL(path);
+    const uiSourceCode = this.uiSourceCodeForURL(path);
     if (!uiSourceCode) {
-      var contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
+      const contentType = Persistence.FileSystemWorkspaceBinding._contentTypeForExtension(this._extensionForPath(path));
       this.addUISourceCode(this.createUISourceCode(path, contentType));
       return;
     }

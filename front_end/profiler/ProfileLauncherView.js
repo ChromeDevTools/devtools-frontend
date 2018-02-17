@@ -42,10 +42,10 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
 
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
-    var controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
-    var targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
+    const controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
+    const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
     targetDiv.createChild('div').textContent = Common.UIString('Target:');
-    var targetsSelect = targetDiv.createChild('select', 'chrome-select');
+    const targetsSelect = targetDiv.createChild('select', 'chrome-select');
     new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
     this._controlButton =
         UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);
@@ -86,7 +86,7 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
       this._controlButton.classList.add('primary-button');
       this._controlButton.textContent = Common.UIString('Start');
     }
-    for (var item of this._typeIdToOptionElement.values())
+    for (const item of this._typeIdToOptionElement.values())
       item.disabled = !!this._isProfiling;
   }
 
@@ -115,16 +115,16 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
    * @param {!Profiler.ProfileType} profileType
    */
   addProfileType(profileType) {
-    var labelElement = UI.createRadioLabel('profile-type', profileType.name);
+    const labelElement = UI.createRadioLabel('profile-type', profileType.name);
     this._profileTypeSelectorForm.appendChild(labelElement);
-    var optionElement = labelElement.radioElement;
+    const optionElement = labelElement.radioElement;
     this._typeIdToOptionElement.set(profileType.id, optionElement);
     optionElement._profileType = profileType;
     optionElement.style.hidden = true;
     optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
-    var descriptionElement = this._profileTypeSelectorForm.createChild('p');
+    const descriptionElement = this._profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;
-    var decorationElement = profileType.decorationElement();
+    const decorationElement = profileType.decorationElement();
     if (decorationElement)
       labelElement.appendChild(decorationElement);
     if (this._typeIdToOptionElement.size > 1)
@@ -134,11 +134,11 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
   }
 
   restoreSelectedProfileType() {
-    var typeId = this._selectedProfileTypeSetting.get();
+    let typeId = this._selectedProfileTypeSetting.get();
     if (!this._typeIdToOptionElement.has(typeId))
       typeId = this._typeIdToOptionElement.keys().next().value;
     this._typeIdToOptionElement.get(typeId).checked = true;
-    var type = this._typeIdToOptionElement.get(typeId)._profileType;
+    const type = this._typeIdToOptionElement.get(typeId)._profileType;
     this.dispatchEventToListeners(Profiler.ProfileLauncherView.Events.ProfileTypeSelected, type);
   }
 

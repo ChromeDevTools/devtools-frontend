@@ -18,7 +18,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     /** @type {?Resources.StorageCategoryView} */
     this._categoryView = null;
 
-    var mainContainer = new UI.VBox();
+    const mainContainer = new UI.VBox();
     this.storageViews = mainContainer.element.createChild('div', 'vbox flex-auto');
     this._storageViewToolbar = new UI.Toolbar('resources-toolbar', mainContainer.element);
     this.splitWidget().setMainWidget(mainContainer);
@@ -48,7 +48,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @return {boolean}
    */
   static _shouldCloseOnReset(view) {
-    var viewClassesToClose = [
+    const viewClassesToClose = [
       SourceFrame.ResourceSourceFrame, SourceFrame.ImageView, SourceFrame.FontView, Resources.StorageItemsView,
       Resources.DatabaseQueryView, Resources.DatabaseTableView
     ];
@@ -97,8 +97,8 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     this.visibleView = view;
 
     this._storageViewToolbar.removeToolbarItems();
-    var toolbarItems = (view instanceof UI.SimpleView && view.syncToolbarItems()) || [];
-    for (var i = 0; i < toolbarItems.length; ++i)
+    const toolbarItems = (view instanceof UI.SimpleView && view.syncToolbarItems()) || [];
+    for (let i = 0; i < toolbarItems.length; ++i)
       this._storageViewToolbar.appendToolbarItem(toolbarItems[i]);
     this._storageViewToolbar.element.classList.toggle('hidden', !toolbarItems.length);
   }
@@ -109,7 +109,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    */
   async scheduleShowView(viewPromise) {
     this._pendingViewPromise = viewPromise;
-    var view = await viewPromise;
+    const view = await viewPromise;
     if (this._pendingViewPromise !== viewPromise)
       return null;
     this.showView(view);
@@ -145,7 +145,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {string} cookieDomain
    */
   showCookies(cookieFrameTarget, cookieDomain) {
-    var model = cookieFrameTarget.model(SDK.CookieModel);
+    const model = cookieFrameTarget.model(SDK.CookieModel);
     if (!model)
       return;
     if (!this._cookieView)
@@ -171,7 +171,7 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
    * @param {string} cookieDomain
    */
   clearCookies(target, cookieDomain) {
-    var model = target.model(SDK.CookieModel);
+    const model = target.model(SDK.CookieModel);
     if (!model)
       return;
     model.clear(cookieDomain, () => {
@@ -193,7 +193,7 @@ Resources.ResourcesPanel.ResourceRevealer = class {
   async reveal(resource) {
     if (!(resource instanceof SDK.Resource))
       return Promise.reject(new Error('Internal error: not a resource'));
-    var sidebar = Resources.ResourcesPanel._instance()._sidebar;
+    const sidebar = Resources.ResourcesPanel._instance()._sidebar;
     await UI.viewManager.showView('resources');
     await sidebar.showResource(resource);
   }

@@ -13,10 +13,11 @@ ObjectUI.CustomPreviewSection = class {
     this._object = object;
     this._expanded = false;
     this._cachedContent = null;
-    var customPreview = object.customPreview();
+    const customPreview = object.customPreview();
 
+    let headerJSON;
     try {
-      var headerJSON = JSON.parse(customPreview.header);
+      headerJSON = JSON.parse(customPreview.header);
     } catch (e) {
       Common.console.error('Broken formatter: header is invalid json ' + e);
       return;
@@ -52,7 +53,7 @@ ObjectUI.CustomPreviewSection = class {
     if (!Array.isArray(jsonML))
       return createTextNode(jsonML + '');
 
-    var array = /** @type {!Array.<*>} */ (jsonML);
+    const array = /** @type {!Array.<*>} */ (jsonML);
     return array[0] === 'object' ? this._layoutObjectTag(array) : this._renderElement(array);
   }
 
@@ -62,16 +63,16 @@ ObjectUI.CustomPreviewSection = class {
    * @return {!Node}
    */
   _renderElement(object) {
-    var tagName = object.shift();
+    const tagName = object.shift();
     if (!ObjectUI.CustomPreviewSection._tagsWhiteList.has(tagName)) {
       Common.console.error('Broken formatter: element ' + tagName + ' is not allowed!');
       return createElement('span');
     }
-    var element = createElement(/** @type {string} */ (tagName));
+    const element = createElement(/** @type {string} */ (tagName));
     if ((typeof object[0] === 'object') && !Array.isArray(object[0])) {
-      var attributes = object.shift();
-      for (var key in attributes) {
-        var value = attributes[key];
+      const attributes = object.shift();
+      for (const key in attributes) {
+        const value = attributes[key];
         if ((key !== 'style') || (typeof value !== 'string'))
           continue;
 
@@ -89,13 +90,13 @@ ObjectUI.CustomPreviewSection = class {
    */
   _layoutObjectTag(objectTag) {
     objectTag.shift();
-    var attributes = objectTag.shift();
-    var remoteObject = this._object.runtimeModel().createRemoteObject(
+    const attributes = objectTag.shift();
+    const remoteObject = this._object.runtimeModel().createRemoteObject(
         /** @type {!Protocol.Runtime.RemoteObject} */ (attributes));
     if (remoteObject.customPreview())
       return (new ObjectUI.CustomPreviewSection(remoteObject)).element();
 
-    var sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
+    const sectionElement = ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(remoteObject);
     sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
     return sectionElement;
   }
@@ -105,7 +106,7 @@ ObjectUI.CustomPreviewSection = class {
    * @param {!Array.<*>} jsonMLTags
    */
   _appendJsonMLTags(parentElement, jsonMLTags) {
-    for (var i = 0; i < jsonMLTags.length; ++i)
+    for (let i = 0; i < jsonMLTags.length; ++i)
       parentElement.appendChild(this._renderJSONMLTag(jsonMLTags[i]));
   }
 
@@ -149,27 +150,27 @@ ObjectUI.CustomPreviewSection = class {
         if (!jsonMLObject || (typeof jsonMLObject !== 'object') || (typeof jsonMLObject.splice !== 'function'))
           return;
 
-        var obj = jsonMLObject.length;
+        const obj = jsonMLObject.length;
         if (!(typeof obj === 'number' && obj >>> 0 === obj && (obj > 0 || 1 / obj > 0)))
           return;
 
-        var startIndex = 1;
+        let startIndex = 1;
         if (jsonMLObject[0] === 'object') {
-          var attributes = jsonMLObject[1];
-          var originObject = attributes['object'];
-          var config = attributes['config'];
+          const attributes = jsonMLObject[1];
+          const originObject = attributes['object'];
+          const config = attributes['config'];
           if (typeof originObject === 'undefined')
             throw 'Illegal format: obligatory attribute "object" isn\'t specified';
 
           jsonMLObject[1] = bindRemoteObject(originObject, config);
           startIndex = 2;
         }
-        for (var i = startIndex; i < jsonMLObject.length; ++i)
+        for (let i = startIndex; i < jsonMLObject.length; ++i)
           substituteObjectTagsInCustomPreview(jsonMLObject[i]);
       }
 
       try {
-        var body = formatter.body(this, config);
+        const body = formatter.body(this, config);
         substituteObjectTagsInCustomPreview(body);
         return body;
       } catch (e) {
@@ -178,8 +179,8 @@ ObjectUI.CustomPreviewSection = class {
       }
     }
 
-    var customPreview = this._object.customPreview();
-    var args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
+    const customPreview = this._object.customPreview();
+    const args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
     if (customPreview.configObjectId)
       args.push({objectId: customPreview.configObjectId});
     this._object.callFunctionJSON(load, args, onBodyLoaded.bind(this));
@@ -210,7 +211,7 @@ ObjectUI.CustomPreviewComponent = class {
     this._object = object;
     this._customPreviewSection = new ObjectUI.CustomPreviewSection(object);
     this.element = createElementWithClass('span', 'source-code');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'object_ui/customPreviewComponent.css');
     this.element.addEventListener('contextmenu', this._contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this._customPreviewSection.element());
   }
@@ -224,7 +225,7 @@ ObjectUI.CustomPreviewComponent = class {
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     if (this._customPreviewSection) {
       contextMenu.revealSection().appendItem(
           Common.UIString('Show as JavaScript object'), this._disassemble.bind(this));

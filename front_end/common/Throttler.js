@@ -59,11 +59,11 @@ Common.Throttler = class {
     this._process = process;
 
     // Run the first scheduled task instantly.
-    var hasScheduledTasks = !!this._processTimeout || this._isRunningProcess;
-    var okToFire = this._getTime() - this._lastCompleteTime > this._timeout;
+    const hasScheduledTasks = !!this._processTimeout || this._isRunningProcess;
+    const okToFire = this._getTime() - this._lastCompleteTime > this._timeout;
     asSoonAsPossible = !!asSoonAsPossible || (!hasScheduledTasks && okToFire);
 
-    var forceTimerUpdate = asSoonAsPossible && !this._asSoonAsPossible;
+    const forceTimerUpdate = asSoonAsPossible && !this._asSoonAsPossible;
     this._asSoonAsPossible = this._asSoonAsPossible || asSoonAsPossible;
 
     this._innerSchedule(forceTimerUpdate);
@@ -82,7 +82,7 @@ Common.Throttler = class {
     if (this._processTimeout)
       this._clearTimeout(this._processTimeout);
 
-    var timeout = this._asSoonAsPossible ? 0 : this._timeout;
+    const timeout = this._asSoonAsPossible ? 0 : this._timeout;
     this._processTimeout = this._setTimeout(this._onTimeout.bind(this), timeout);
   }
 

@@ -5,7 +5,7 @@
  * @return {!Promise<!ProductRegistry.Registry>}
  */
 ProductRegistry.instance = function() {
-  var extension = self.runtime.extension(ProductRegistry.Registry);
+  const extension = self.runtime.extension(ProductRegistry.Registry);
   if (extension)
     return extension.instance();
   return Promise.resolve(self.singleton(ProductRegistry.RegistryStub));

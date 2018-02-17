@@ -15,7 +15,7 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
     /** @type {?Emulation.DeviceModeView} */
     this._deviceModeView = null;
     this._toggleDeviceModeAction = UI.actionRegistry.action('emulation.toggle-device-mode');
-    var model = self.singleton(Emulation.DeviceModeModel);
+    const model = self.singleton(Emulation.DeviceModeModel);
     this._showDeviceModeSetting = model.enabledSetting();
     this._showDeviceModeSetting.setRequiresUserAction(!!Runtime.queryParam('hasOtherClients'));
     this._showDeviceModeSetting.addChangeListener(this._update.bind(this, false));
@@ -50,7 +50,7 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _screenshotRequestedFromOverlay(event) {
-    var clip = /** @type {!Protocol.Page.Viewport} */ (event.data);
+    const clip = /** @type {!Protocol.Page.Viewport} */ (event.data);
     this._captureScreenshot(false, clip);
   }
 
@@ -60,7 +60,7 @@ Emulation.DeviceModeWrapper = class extends UI.VBox {
   _update(force) {
     this._toggleDeviceModeAction.setToggled(this._showDeviceModeSetting.get());
     if (!force) {
-      var showing = this._deviceModeView && this._deviceModeView.isShowing();
+      const showing = this._deviceModeView && this._deviceModeView.isShowing();
       if (this._showDeviceModeSetting.get() === showing)
         return;
     }
@@ -101,14 +101,14 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
           return Emulation.DeviceModeView._wrapperInstance._captureScreenshot();
 
         case 'emulation.capture-node-screenshot': {
-          var node = UI.context.flavor(SDK.DOMNode);
+          const node = UI.context.flavor(SDK.DOMNode);
           if (!node)
             return true;
           async function captureClip() {
-            var object = await node.resolveToObject();
-            var result = await object.callFunctionPromise(function() {
-              var rect = this.getBoundingClientRect();
-              var docRect = this.ownerDocument.documentElement.getBoundingClientRect();
+            const object = await node.resolveToObject();
+            const result = await object.callFunctionPromise(function() {
+              const rect = this.getBoundingClientRect();
+              const docRect = this.ownerDocument.documentElement.getBoundingClientRect();
               return JSON.stringify({
                 x: rect.left - docRect.left,
                 y: rect.top - docRect.top,
@@ -117,7 +117,7 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
                 scale: 1
               });
             });
-            var clip = /** @type {!Protocol.Page.Viewport} */ (JSON.parse(result.object.value));
+            const clip = /** @type {!Protocol.Page.Viewport} */ (JSON.parse(result.object.value));
             Emulation.DeviceModeView._wrapperInstance._captureScreenshot(false, clip);
           }
           captureClip();

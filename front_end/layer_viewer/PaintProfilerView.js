@@ -85,9 +85,9 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     if (LayerViewer.PaintProfilerView._logItemCategoriesMap)
       return LayerViewer.PaintProfilerView._logItemCategoriesMap;
 
-    var categories = LayerViewer.PaintProfilerView.categories();
+    const categories = LayerViewer.PaintProfilerView.categories();
 
-    var logItemCategories = {};
+    const logItemCategories = {};
     logItemCategories['Clear'] = categories['misc'];
     logItemCategories['DrawPaint'] = categories['misc'];
     logItemCategories['DrawData'] = categories['misc'];
@@ -134,10 +134,10 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @return {!LayerViewer.PaintProfilerCategory}
    */
   static _categoryForLogItem(logItem) {
-    var method = logItem.method.toTitleCase();
+    const method = logItem.method.toTitleCase();
 
-    var logItemCategories = LayerViewer.PaintProfilerView._initLogItemCategories();
-    var result = logItemCategories[method];
+    const logItemCategories = LayerViewer.PaintProfilerView._initLogItemCategories();
+    let result = logItemCategories[method];
     if (!result) {
       result = LayerViewer.PaintProfilerView.categories()['misc'];
       logItemCategories[method] = result;
@@ -175,7 +175,7 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     this._progressBanner.classList.remove('hidden');
     this._updateImage();
 
-    var profiles = await snapshot.profile(clipRect);
+    const profiles = await snapshot.profile(clipRect);
 
     this._progressBanner.classList.add('hidden');
     this._profiles = profiles;
@@ -187,8 +187,8 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @param {number} scale
    */
   setScale(scale) {
-    var needsUpdate = scale > this._scale;
-    var predictiveGrowthFactor = 2;
+    const needsUpdate = scale > this._scale;
+    const predictiveGrowthFactor = 2;
     this._pendingScale = Math.min(1, scale * predictiveGrowthFactor);
     if (needsUpdate && this._snapshot)
       this._updateImage();
@@ -201,26 +201,26 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     if (!this._profiles || !this._profiles.length)
       return;
 
-    var maxBars = Math.floor((this._canvas.width - 2 * this._barPaddingWidth) / this._outerBarWidth);
-    var sampleCount = this._log.length;
+    const maxBars = Math.floor((this._canvas.width - 2 * this._barPaddingWidth) / this._outerBarWidth);
+    const sampleCount = this._log.length;
     this._samplesPerBar = Math.ceil(sampleCount / maxBars);
 
-    var maxBarTime = 0;
-    var barTimes = [];
-    var barHeightByCategory = [];
-    var heightByCategory = {};
-    for (var i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
-      var categoryName = (this._logCategories[i] && this._logCategories[i].name) || 'misc';
-      var sampleIndex = this._log[i].commandIndex;
-      for (var row = 0; row < this._profiles.length; row++) {
-        var sample = this._profiles[row][sampleIndex];
+    let maxBarTime = 0;
+    const barTimes = [];
+    const barHeightByCategory = [];
+    let heightByCategory = {};
+    for (let i = 0, lastBarIndex = 0, lastBarTime = 0; i < sampleCount;) {
+      let categoryName = (this._logCategories[i] && this._logCategories[i].name) || 'misc';
+      const sampleIndex = this._log[i].commandIndex;
+      for (let row = 0; row < this._profiles.length; row++) {
+        const sample = this._profiles[row][sampleIndex];
         lastBarTime += sample;
         heightByCategory[categoryName] = (heightByCategory[categoryName] || 0) + sample;
       }
       ++i;
       if (i - lastBarIndex === this._samplesPerBar || i === sampleCount) {
         // Normalize by total number of samples accumulated.
-        var factor = this._profiles.length * (i - lastBarIndex);
+        const factor = this._profiles.length * (i - lastBarIndex);
         lastBarTime /= factor;
         for (categoryName in heightByCategory)
           heightByCategory[categoryName] /= factor;
@@ -237,9 +237,9 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     }
 
     const paddingHeight = 4 * window.devicePixelRatio;
-    var scale = (this._canvas.height - paddingHeight - this._minBarHeight) / maxBarTime;
-    for (var i = 0; i < barTimes.length; ++i) {
-      for (var categoryName in barHeightByCategory[i])
+    const scale = (this._canvas.height - paddingHeight - this._minBarHeight) / maxBarTime;
+    for (let i = 0; i < barTimes.length; ++i) {
+      for (const categoryName in barHeightByCategory[i])
         barHeightByCategory[i][categoryName] *= (barTimes[i] * scale + this._minBarHeight) / barTimes[i];
       this._renderBar(i, barHeightByCategory[i]);
     }
@@ -250,14 +250,14 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
    * @param {!Object.<string, number>} heightByCategory
    */
   _renderBar(index, heightByCategory) {
-    var categories = LayerViewer.PaintProfilerView.categories();
-    var currentHeight = 0;
-    var x = this._barPaddingWidth + index * this._outerBarWidth;
-    for (var categoryName in categories) {
+    const categories = LayerViewer.PaintProfilerView.categories();
+    let currentHeight = 0;
+    const x = this._barPaddingWidth + index * this._outerBarWidth;
+    for (const categoryName in categories) {
       if (!heightByCategory[categoryName])
         continue;
       currentHeight += heightByCategory[categoryName];
-      var y = this._canvas.height - currentHeight;
+      const y = this._canvas.height - currentHeight;
       this._context.fillStyle = categories[categoryName].color;
       this._context.fillRect(x, y, this._innerBarWidth, heightByCategory[categoryName]);
     }
@@ -272,23 +272,23 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
   }
 
   _updatePieChart() {
-    var window = this.selectionWindow();
+    const window = this.selectionWindow();
     if (!this._profiles || !this._profiles.length || !window)
       return;
-    var totalTime = 0;
-    var timeByCategory = {};
-    for (var i = window.left; i < window.right; ++i) {
-      var logEntry = this._log[i];
-      var category = LayerViewer.PaintProfilerView._categoryForLogItem(logEntry);
+    let totalTime = 0;
+    const timeByCategory = {};
+    for (let i = window.left; i < window.right; ++i) {
+      const logEntry = this._log[i];
+      const category = LayerViewer.PaintProfilerView._categoryForLogItem(logEntry);
       timeByCategory[category.color] = timeByCategory[category.color] || 0;
-      for (var j = 0; j < this._profiles.length; ++j) {
-        var time = this._profiles[j][logEntry.commandIndex];
+      for (let j = 0; j < this._profiles.length; ++j) {
+        const time = this._profiles[j][logEntry.commandIndex];
         totalTime += time;
         timeByCategory[category.color] += time;
       }
     }
     this._pieChart.setTotal(totalTime / this._profiles.length);
-    for (var color in timeByCategory)
+    for (const color in timeByCategory)
       this._pieChart.addSlice(timeByCategory[color] / this._profiles.length, color);
   }
 
@@ -307,26 +307,26 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     if (!this._log)
       return null;
 
-    var screenLeft = this._selectionWindow.windowLeft * this._canvas.width;
-    var screenRight = this._selectionWindow.windowRight * this._canvas.width;
-    var barLeft = Math.floor(screenLeft / this._outerBarWidth);
-    var barRight = Math.floor((screenRight + this._innerBarWidth - this._barPaddingWidth / 2) / this._outerBarWidth);
-    var stepLeft = Number.constrain(barLeft * this._samplesPerBar, 0, this._log.length - 1);
-    var stepRight = Number.constrain(barRight * this._samplesPerBar, 0, this._log.length);
+    const screenLeft = this._selectionWindow.windowLeft * this._canvas.width;
+    const screenRight = this._selectionWindow.windowRight * this._canvas.width;
+    const barLeft = Math.floor(screenLeft / this._outerBarWidth);
+    const barRight = Math.floor((screenRight + this._innerBarWidth - this._barPaddingWidth / 2) / this._outerBarWidth);
+    const stepLeft = Number.constrain(barLeft * this._samplesPerBar, 0, this._log.length - 1);
+    const stepRight = Number.constrain(barRight * this._samplesPerBar, 0, this._log.length);
 
     return {left: stepLeft, right: stepRight};
   }
 
   _updateImage() {
     delete this._updateImageTimer;
-    var left;
-    var right;
-    var window = this.selectionWindow();
+    let left;
+    let right;
+    const window = this.selectionWindow();
     if (this._profiles && this._profiles.length && window) {
       left = this._log[window.left].commandIndex;
       right = this._log[window.right - 1].commandIndex;
     }
-    var scale = this._pendingScale;
+    const scale = this._pendingScale;
     this._snapshot.replay(scale, left, right).then(image => {
       if (!image)
         return;
@@ -379,7 +379,7 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
    * @param {!SDK.PaintProfilerLogItem} logItem
    */
   _appendLogItem(logItem) {
-    var treeElement = this._treeItemCache.get(logItem);
+    let treeElement = this._treeItemCache.get(logItem);
     if (!treeElement) {
       treeElement = new LayerViewer.LogTreeElement(this, logItem);
       this._treeItemCache.set(logItem, treeElement);
@@ -406,20 +406,20 @@ LayerViewer.PaintProfilerCommandLogView = class extends UI.ThrottledWidget {
       this._treeOutline.removeChildren();
       return Promise.resolve();
     }
-    var root = this._treeOutline.rootElement();
+    const root = this._treeOutline.rootElement();
     for (;;) {
-      var child = root.firstChild();
+      const child = root.firstChild();
       if (!child || child._logItem.commandIndex >= this._selectionWindow.left)
         break;
       root.removeChildAtIndex(0);
     }
     for (;;) {
-      var child = root.lastChild();
+      const child = root.lastChild();
       if (!child || child._logItem.commandIndex < this._selectionWindow.right)
         break;
       root.removeChildAtIndex(root.children().length - 1);
     }
-    for (var i = this._selectionWindow.left, right = this._selectionWindow.right; i < right; ++i)
+    for (let i = this._selectionWindow.left, right = this._selectionWindow.right; i < right; ++i)
       this._appendLogItem(this._log[i]);
     return Promise.resolve();
   }
@@ -451,7 +451,7 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    for (var param in this._logItem.params)
+    for (const param in this._logItem.params)
       LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
   }
 
@@ -463,9 +463,9 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
   _paramToString(param, name) {
     if (typeof param !== 'object')
       return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);
-    var str = '';
-    var keyCount = 0;
-    for (var key in param) {
+    let str = '';
+    let keyCount = 0;
+    for (const key in param) {
       if (++keyCount > 4 || typeof param[key] === 'object' ||
           (typeof param[key] === 'string' && param[key].length > 100))
         return name;
@@ -481,8 +481,8 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
    * @return {string}
    */
   _paramsToString(params) {
-    var str = '';
-    for (var key in params) {
+    let str = '';
+    for (const key in params) {
       if (str)
         str += ', ';
       str += this._paramToString(params[key], key);
@@ -491,7 +491,7 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
   }
 
   _update() {
-    var title = createDocumentFragment();
+    const title = createDocumentFragment();
     title.createTextChild(this._logItem.method + '(' + this._paramsToString(this._logItem.params) + ')');
     this.title = title;
   }
@@ -515,10 +515,10 @@ LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
    * @param {*} value
    */
   static _appendLogPropertyItem(element, name, value) {
-    var treeElement = new LayerViewer.LogPropertyTreeElement({name: name, value: value});
+    const treeElement = new LayerViewer.LogPropertyTreeElement({name: name, value: value});
     element.appendChild(treeElement);
     if (value && typeof value === 'object') {
-      for (var property in value)
+      for (const property in value)
         LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(treeElement, property, value[property]);
     }
   }
@@ -527,13 +527,13 @@ LayerViewer.LogPropertyTreeElement = class extends UI.TreeElement {
    * @override
    */
   onattach() {
-    var title = createDocumentFragment();
-    var nameElement = title.createChild('span', 'name');
+    const title = createDocumentFragment();
+    const nameElement = title.createChild('span', 'name');
     nameElement.textContent = this._property.name;
-    var separatorElement = title.createChild('span', 'separator');
+    const separatorElement = title.createChild('span', 'separator');
     separatorElement.textContent = ': ';
     if (this._property.value === null || typeof this._property.value !== 'object') {
-      var valueElement = title.createChild('span', 'value');
+      const valueElement = title.createChild('span', 'value');
       valueElement.textContent = JSON.stringify(this._property.value);
       valueElement.classList.add('cm-js-' + (this._property.value === null ? 'null' : typeof this._property.value));
     }

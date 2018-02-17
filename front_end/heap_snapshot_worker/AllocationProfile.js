@@ -49,21 +49,21 @@ HeapSnapshotWorker.AllocationProfile = class {
   }
 
   _buildFunctionAllocationInfos(profile) {
-    var strings = this._strings;
+    const strings = this._strings;
 
-    var functionInfoFields = profile.snapshot.meta.trace_function_info_fields;
-    var functionNameOffset = functionInfoFields.indexOf('name');
-    var scriptNameOffset = functionInfoFields.indexOf('script_name');
-    var scriptIdOffset = functionInfoFields.indexOf('script_id');
-    var lineOffset = functionInfoFields.indexOf('line');
-    var columnOffset = functionInfoFields.indexOf('column');
-    var functionInfoFieldCount = functionInfoFields.length;
+    const functionInfoFields = profile.snapshot.meta.trace_function_info_fields;
+    const functionNameOffset = functionInfoFields.indexOf('name');
+    const scriptNameOffset = functionInfoFields.indexOf('script_name');
+    const scriptIdOffset = functionInfoFields.indexOf('script_id');
+    const lineOffset = functionInfoFields.indexOf('line');
+    const columnOffset = functionInfoFields.indexOf('column');
+    const functionInfoFieldCount = functionInfoFields.length;
 
-    var rawInfos = profile.trace_function_infos;
-    var infoLength = rawInfos.length;
-    var functionInfos = this._functionInfos = new Array(infoLength / functionInfoFieldCount);
-    var index = 0;
-    for (var i = 0; i < infoLength; i += functionInfoFieldCount) {
+    const rawInfos = profile.trace_function_infos;
+    const infoLength = rawInfos.length;
+    const functionInfos = this._functionInfos = new Array(infoLength / functionInfoFieldCount);
+    let index = 0;
+    for (let i = 0; i < infoLength; i += functionInfoFieldCount) {
       functionInfos[index++] = new HeapSnapshotWorker.FunctionAllocationInfo(
           strings[rawInfos[i + functionNameOffset]], strings[rawInfos[i + scriptNameOffset]],
           rawInfos[i + scriptIdOffset], rawInfos[i + lineOffset], rawInfos[i + columnOffset]);
@@ -71,32 +71,32 @@ HeapSnapshotWorker.AllocationProfile = class {
   }
 
   _buildAllocationTree(profile, liveObjectStats) {
-    var traceTreeRaw = profile.trace_tree;
-    var functionInfos = this._functionInfos;
-    var idToTopDownNode = this._idToTopDownNode;
+    const traceTreeRaw = profile.trace_tree;
+    const functionInfos = this._functionInfos;
+    const idToTopDownNode = this._idToTopDownNode;
 
-    var traceNodeFields = profile.snapshot.meta.trace_node_fields;
-    var nodeIdOffset = traceNodeFields.indexOf('id');
-    var functionInfoIndexOffset = traceNodeFields.indexOf('function_info_index');
-    var allocationCountOffset = traceNodeFields.indexOf('count');
-    var allocationSizeOffset = traceNodeFields.indexOf('size');
-    var childrenOffset = traceNodeFields.indexOf('children');
-    var nodeFieldCount = traceNodeFields.length;
+    const traceNodeFields = profile.snapshot.meta.trace_node_fields;
+    const nodeIdOffset = traceNodeFields.indexOf('id');
+    const functionInfoIndexOffset = traceNodeFields.indexOf('function_info_index');
+    const allocationCountOffset = traceNodeFields.indexOf('count');
+    const allocationSizeOffset = traceNodeFields.indexOf('size');
+    const childrenOffset = traceNodeFields.indexOf('children');
+    const nodeFieldCount = traceNodeFields.length;
 
     function traverseNode(rawNodeArray, nodeOffset, parent) {
-      var functionInfo = functionInfos[rawNodeArray[nodeOffset + functionInfoIndexOffset]];
-      var id = rawNodeArray[nodeOffset + nodeIdOffset];
-      var stats = liveObjectStats[id];
-      var liveCount = stats ? stats.count : 0;
-      var liveSize = stats ? stats.size : 0;
-      var result = new HeapSnapshotWorker.TopDownAllocationNode(
+      const functionInfo = functionInfos[rawNodeArray[nodeOffset + functionInfoIndexOffset]];
+      const id = rawNodeArray[nodeOffset + nodeIdOffset];
+      const stats = liveObjectStats[id];
+      const liveCount = stats ? stats.count : 0;
+      const liveSize = stats ? stats.size : 0;
+      const result = new HeapSnapshotWorker.TopDownAllocationNode(
           id, functionInfo, rawNodeArray[nodeOffset + allocationCountOffset],
           rawNodeArray[nodeOffset + allocationSizeOffset], liveCount, liveSize, parent);
       idToTopDownNode[id] = result;
       functionInfo.addTraceTopNode(result);
 
-      var rawChildren = rawNodeArray[nodeOffset + childrenOffset];
-      for (var i = 0; i < rawChildren.length; i += nodeFieldCount)
+      const rawChildren = rawNodeArray[nodeOffset + childrenOffset];
+      for (let i = 0; i < rawChildren.length; i += nodeFieldCount)
         result.children.push(traverseNode(rawChildren, i, result));
 
       return result;
@@ -111,14 +111,14 @@ HeapSnapshotWorker.AllocationProfile = class {
   serializeTraceTops() {
     if (this._traceTops)
       return this._traceTops;
-    var result = this._traceTops = [];
-    var functionInfos = this._functionInfos;
-    for (var i = 0; i < functionInfos.length; i++) {
-      var info = functionInfos[i];
+    const result = this._traceTops = [];
+    const functionInfos = this._functionInfos;
+    for (let i = 0; i < functionInfos.length; i++) {
+      const info = functionInfos[i];
       if (info.totalCount === 0)
         continue;
-      var nodeId = this._nextNodeId++;
-      var isRoot = i === 0;
+      const nodeId = this._nextNodeId++;
+      const isRoot = i === 0;
       result.push(this._serializeNode(
           nodeId, info, info.totalCount, info.totalSize, info.totalLiveCount, info.totalLiveSize, !isRoot));
       this._collapsedTopNodeIdToFunctionInfo[nodeId] = info;
@@ -134,16 +134,16 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @return {!HeapSnapshotModel.AllocationNodeCallers}
    */
   serializeCallers(nodeId) {
-    var node = this._ensureBottomUpNode(nodeId);
-    var nodesWithSingleCaller = [];
+    let node = this._ensureBottomUpNode(nodeId);
+    const nodesWithSingleCaller = [];
     while (node.callers().length === 1) {
       node = node.callers()[0];
       nodesWithSingleCaller.push(this._serializeCaller(node));
     }
 
-    var branchingCallers = [];
-    var callers = node.callers();
-    for (var i = 0; i < callers.length; i++)
+    const branchingCallers = [];
+    const callers = node.callers();
+    for (let i = 0; i < callers.length; i++)
       branchingCallers.push(this._serializeCaller(callers[i]));
 
     return new HeapSnapshotModel.AllocationNodeCallers(nodesWithSingleCaller, branchingCallers);
@@ -154,10 +154,10 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @return {!Array.<!HeapSnapshotModel.AllocationStackFrame>}
    */
   serializeAllocationStack(traceNodeId) {
-    var node = this._idToTopDownNode[traceNodeId];
-    var result = [];
+    let node = this._idToTopDownNode[traceNodeId];
+    const result = [];
     while (node) {
-      var functionInfo = node.functionInfo;
+      const functionInfo = node.functionInfo;
       result.push(new HeapSnapshotModel.AllocationStackFrame(
           functionInfo.functionName, functionInfo.scriptName, functionInfo.scriptId, functionInfo.line,
           functionInfo.column));
@@ -179,9 +179,9 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
    */
   _ensureBottomUpNode(nodeId) {
-    var node = this._idToNode[nodeId];
+    let node = this._idToNode[nodeId];
     if (!node) {
-      var functionInfo = this._collapsedTopNodeIdToFunctionInfo[nodeId];
+      const functionInfo = this._collapsedTopNodeIdToFunctionInfo[nodeId];
       node = functionInfo.bottomUpRoot();
       delete this._collapsedTopNodeIdToFunctionInfo[nodeId];
       this._idToNode[nodeId] = node;
@@ -194,7 +194,7 @@ HeapSnapshotWorker.AllocationProfile = class {
    * @return {!HeapSnapshotModel.SerializedAllocationNode}
    */
   _serializeCaller(node) {
-    var callerId = this._nextNodeId++;
+    const callerId = this._nextNodeId++;
     this._idToNode[callerId] = node;
     return this._serializeNode(
         callerId, node.functionInfo, node.allocationCount, node.allocationSize, node.liveCount, node.liveSize,
@@ -265,10 +265,10 @@ HeapSnapshotWorker.BottomUpAllocationNode = class {
    * @return {!HeapSnapshotWorker.BottomUpAllocationNode}
    */
   addCaller(traceNode) {
-    var functionInfo = traceNode.functionInfo;
-    var result;
-    for (var i = 0; i < this._callers.length; i++) {
-      var caller = this._callers[i];
+    const functionInfo = traceNode.functionInfo;
+    let result;
+    for (let i = 0; i < this._callers.length; i++) {
+      const caller = this._callers[i];
       if (caller.functionInfo === functionInfo) {
         result = caller;
         break;
@@ -347,14 +347,14 @@ HeapSnapshotWorker.FunctionAllocationInfo = class {
   _buildAllocationTraceTree() {
     this._bottomUpTree = new HeapSnapshotWorker.BottomUpAllocationNode(this);
 
-    for (var i = 0; i < this._traceTops.length; i++) {
-      var node = this._traceTops[i];
-      var bottomUpNode = this._bottomUpTree;
-      var count = node.allocationCount;
-      var size = node.allocationSize;
-      var liveCount = node.liveCount;
-      var liveSize = node.liveSize;
-      var traceId = node.id;
+    for (let i = 0; i < this._traceTops.length; i++) {
+      let node = this._traceTops[i];
+      let bottomUpNode = this._bottomUpTree;
+      const count = node.allocationCount;
+      const size = node.allocationSize;
+      const liveCount = node.liveCount;
+      const liveSize = node.liveSize;
+      const traceId = node.id;
       while (true) {
         bottomUpNode.allocationCount += count;
         bottomUpNode.allocationSize += size;

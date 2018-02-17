@@ -24,26 +24,26 @@ UI.FilterSuggestionBuilder = class {
     if (!prefix && !force)
       return Promise.resolve([]);
 
-    var negative = prefix.startsWith('-');
+    const negative = prefix.startsWith('-');
     if (negative)
       prefix = prefix.substring(1);
-    var modifier = negative ? '-' : '';
-    var valueDelimiterIndex = prefix.indexOf(':');
+    const modifier = negative ? '-' : '';
+    const valueDelimiterIndex = prefix.indexOf(':');
 
-    var suggestions = [];
+    const suggestions = [];
     if (valueDelimiterIndex === -1) {
-      var matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
-      for (var key of this._keys) {
+      const matcher = new RegExp('^' + prefix.escapeForRegExp(), 'i');
+      for (const key of this._keys) {
         if (matcher.test(key))
           suggestions.push({text: modifier + key + ':'});
       }
     } else {
-      var key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
-      var value = prefix.substring(valueDelimiterIndex + 1);
-      var matcher = new RegExp('^' + value.escapeForRegExp(), 'i');
-      var values = Array.from(this._valuesMap.get(key) || new Set());
+      const key = prefix.substring(0, valueDelimiterIndex).toLowerCase();
+      const value = prefix.substring(valueDelimiterIndex + 1);
+      const matcher = new RegExp('^' + value.escapeForRegExp(), 'i');
+      const values = Array.from(this._valuesMap.get(key) || new Set());
       this._valueSorter(key, values);
-      for (var item of values) {
+      for (const item of values) {
         if (matcher.test(item) && (item !== value))
           suggestions.push({text: modifier + key + ':' + item});
       }

@@ -30,7 +30,7 @@ BrowserDebugger.ObjectEventListenersSidebarPane = class extends UI.VBox {
           BrowserDebugger.ObjectEventListenersSidebarPane._objectGroupName);
       delete this._lastRequestedContext;
     }
-    var executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext) {
       this._eventListenersView.reset();
       this._eventListenersView.addEmptyHolderIfNeeded();

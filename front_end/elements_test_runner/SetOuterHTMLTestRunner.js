@@ -25,8 +25,8 @@ ElementsTestRunner.setUpTestSuite = function(next) {
   function step3(text) {
     ElementsTestRunner.containerText = text;
 
-    for (var key in SDK.DOMModel.Events) {
-      var eventName = SDK.DOMModel.Events[key];
+    for (const key in SDK.DOMModel.Events) {
+      const eventName = SDK.DOMModel.Events[key];
 
       if (eventName === SDK.DOMModel.Events.MarkersChanged || eventName === SDK.DOMModel.Events.DOMMutated)
         continue;
@@ -43,10 +43,10 @@ ElementsTestRunner.recordEvent = function(eventName, event) {
   if (!event.data)
     return;
 
-  var node = event.data.node || event.data;
-  var parent = event.data.parent;
+  const node = event.data.node || event.data;
+  const parent = event.data.parent;
 
-  for (var currentNode = parent || node; currentNode; currentNode = currentNode.parentNode) {
+  for (let currentNode = parent || node; currentNode; currentNode = currentNode.parentNode) {
     if (currentNode.getAttribute('id') === 'output')
       return;
   }
@@ -90,15 +90,15 @@ ElementsTestRunner.innerSetOuterHTML = async function(newText, last, next) {
 };
 
 ElementsTestRunner._dumpOuterHTML = async function(last, next) {
-  var result = await TestRunner.RuntimeAgent.evaluate('document.getElementById("identity").wrapperIdentity');
+  const result = await TestRunner.RuntimeAgent.evaluate('document.getElementById("identity").wrapperIdentity');
   TestRunner.addResult('Wrapper identity: ' + result.value);
   ElementsTestRunner.events.sort();
 
-  for (var i = 0; i < ElementsTestRunner.events.length; ++i)
+  for (let i = 0; i < ElementsTestRunner.events.length; ++i)
     TestRunner.addResult(ElementsTestRunner.events[i]);
 
   ElementsTestRunner.events = [];
-  var text = await TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId);
+  const text = await TestRunner.DOMAgent.getOuterHTML(ElementsTestRunner.containerId);
   TestRunner.addResult('==========8<==========');
   TestRunner.addResult(text);
   TestRunner.addResult('==========>8==========');

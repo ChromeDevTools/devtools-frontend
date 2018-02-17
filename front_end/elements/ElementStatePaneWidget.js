@@ -10,16 +10,16 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
     this.registerRequiredCSS('elements/elementStatePaneWidget.css');
     this.contentElement.className = 'styles-element-state-pane';
     this.contentElement.createChild('div').createTextChild(Common.UIString('Force element state'));
-    var table = createElementWithClass('table', 'source-code');
+    const table = createElementWithClass('table', 'source-code');
 
-    var inputs = [];
+    const inputs = [];
     this._inputs = inputs;
 
     /**
      * @param {!Event} event
      */
     function clickListener(event) {
-      var node = UI.context.flavor(SDK.DOMNode);
+      const node = UI.context.flavor(SDK.DOMNode);
       if (!node)
         return;
       node.domModel().cssModel().forcePseudoState(node, event.target.state, event.target.checked);
@@ -30,9 +30,9 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
      * @return {!Element}
      */
     function createCheckbox(state) {
-      var td = createElement('td');
-      var label = UI.CheckboxLabel.create(':' + state);
-      var input = label.checkboxElement;
+      const td = createElement('td');
+      const label = UI.CheckboxLabel.create(':' + state);
+      const input = label.checkboxElement;
       input.state = state;
       input.addEventListener('click', clickListener, false);
       inputs.push(input);
@@ -40,7 +40,7 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
       return td;
     }
 
-    var tr = table.createChild('tr');
+    let tr = table.createChild('tr');
     tr.appendChild(createCheckbox.call(null, 'active'));
     tr.appendChild(createCheckbox.call(null, 'hover'));
 
@@ -79,19 +79,19 @@ Elements.ElementStatePaneWidget = class extends UI.Widget {
     if (!this.isShowing())
       return;
 
-    var node = UI.context.flavor(SDK.DOMNode);
+    let node = UI.context.flavor(SDK.DOMNode);
     if (node)
       node = node.enclosingElementOrSelf();
 
     this._updateModel(node ? node.domModel().cssModel() : null);
     if (node) {
-      var nodePseudoState = node.domModel().cssModel().pseudoState(node);
-      for (var input of this._inputs) {
+      const nodePseudoState = node.domModel().cssModel().pseudoState(node);
+      for (const input of this._inputs) {
         input.disabled = !!node.pseudoType();
         input.checked = nodePseudoState.indexOf(input.state) >= 0;
       }
     } else {
-      for (var input of this._inputs) {
+      for (const input of this._inputs) {
         input.disabled = true;
         input.checked = false;
       }

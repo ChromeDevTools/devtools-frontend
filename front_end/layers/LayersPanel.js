@@ -140,7 +140,7 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
   _onLayerPainted(event) {
     if (!this._model)
       return;
-    var layer = /** @type {!SDK.Layer} */ (event.data);
+    const layer = /** @type {!SDK.Layer} */ (event.data);
     if (this._layerViewHost.selection() && this._layerViewHost.selection().layer() === layer)
       this._layerDetailsView.update();
     this._layers3DView.updateLayerSnapshot(layer);
@@ -150,7 +150,7 @@ Layers.LayersPanel = class extends UI.PanelWithSidebar {
    * @param {!Common.Event} event
    */
   _onPaintProfileRequested(event) {
-    var selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
+    const selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (!snapshotWithRect)
         return;

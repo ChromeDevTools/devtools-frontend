@@ -33,7 +33,7 @@ SDK.CSSStyleSheetHeader = class {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      var lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
+      const lazyContent = this._cssModel.originalStyleSheetText.bind(this._cssModel, this);
       this._originalContentProvider = new Common.StaticContentProvider(
           this.contentURL(), this.contentType(), /** @type {function():!Promise<?string>} */ (lazyContent));
     }
@@ -72,10 +72,10 @@ SDK.CSSStyleSheetHeader = class {
    * @return {string}
    */
   _viaInspectorResourceURL() {
-    var frame = this._cssModel.target().model(SDK.ResourceTreeModel).frameForId(this.frameId);
+    const frame = this._cssModel.target().model(SDK.ResourceTreeModel).frameForId(this.frameId);
     console.assert(frame);
-    var parsedURL = new Common.ParsedURL(frame.url);
-    var fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
+    const parsedURL = new Common.ParsedURL(frame.url);
+    let fakeURL = 'inspector://' + parsedURL.host + parsedURL.folderPathComponents;
     if (!fakeURL.endsWith('/'))
       fakeURL += '/';
     fakeURL += 'inspector-stylesheet';
@@ -139,7 +139,7 @@ SDK.CSSStyleSheetHeader = class {
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
   async searchInContent(query, caseSensitive, isRegex) {
-    var content = await this.requestContent();
+    const content = await this.requestContent();
     return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 

@@ -60,7 +60,7 @@ UI.Dialog = class extends UI.GlassPane {
    * @param {!Document|!Element=} where
    */
   show(where) {
-    var document = /** @type {!Document} */ (
+    const document = /** @type {!Document} */ (
         where instanceof Document ? where : (where || UI.inspectorView.element).ownerDocument);
     if (UI.Dialog._instance)
       UI.Dialog._instance.hide();
@@ -88,7 +88,7 @@ UI.Dialog = class extends UI.GlassPane {
   }
 
   addCloseButton() {
-    var closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
+    const closeButton = this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button');
     closeButton.gray = true;
     closeButton.addEventListener('click', () => this.hide(), false);
   }
@@ -98,10 +98,10 @@ UI.Dialog = class extends UI.GlassPane {
    */
   _disableTabIndexOnElements(document) {
     this._tabIndexMap.clear();
-    for (var node = document; node; node = node.traverseNextNode(document)) {
+    for (let node = document; node; node = node.traverseNextNode(document)) {
       if (node instanceof HTMLElement) {
-        var element = /** @type {!HTMLElement} */ (node);
-        var tabIndex = element.tabIndex;
+        const element = /** @type {!HTMLElement} */ (node);
+        const tabIndex = element.tabIndex;
         if (tabIndex >= 0) {
           this._tabIndexMap.set(element, tabIndex);
           element.tabIndex = -1;
@@ -111,7 +111,7 @@ UI.Dialog = class extends UI.GlassPane {
   }
 
   _restoreTabIndexOnElements() {
-    for (var element of this._tabIndexMap.keys())
+    for (const element of this._tabIndexMap.keys())
       element.tabIndex = /** @type {number} */ (this._tabIndexMap.get(element));
     this._tabIndexMap.clear();
   }

@@ -57,7 +57,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @override
    */
   dispose() {
-    for (var sessionId of this._childConnections.keys())
+    for (const sessionId of this._childConnections.keys())
       this.detachedFromTarget(sessionId, undefined);
   }
 
@@ -117,13 +117,13 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
-    var targetName = '';
+    let targetName = '';
     if (targetInfo.type !== 'iframe') {
-      var parsedURL = targetInfo.url.asParsedURL();
+      const parsedURL = targetInfo.url.asParsedURL();
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() :
                                '#' + (++SDK.ChildTargetManager._lastAnonymousTargetId);
     }
-    var target = this._targetManager.createTarget(
+    const target = this._targetManager.createTarget(
         targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
         this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
 
@@ -149,7 +149,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @param {string=} childTargetId
    */
   receivedMessageFromTarget(sessionId, message, childTargetId) {
-    var connection = this._childConnections.get(sessionId);
+    const connection = this._childConnections.get(sessionId);
     if (connection)
       connection.onMessage.call(null, message);
   }
@@ -161,7 +161,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @return {!Protocol.InspectorBackend.Connection}
    */
   _createChildConnection(agent, sessionId, params) {
-    var connection = new SDK.ChildConnection(agent, sessionId, params);
+    const connection = new SDK.ChildConnection(agent, sessionId, params);
     this._childConnections.set(sessionId, connection);
     return connection;
   }

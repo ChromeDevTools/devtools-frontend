@@ -56,7 +56,7 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
     this.reposition();
     view.focus();
 
-    var document = this._popover.element.ownerDocument;
+    const document = this._popover.element.ownerDocument;
     document.addEventListener('mousedown', this._hideProxy, false);
     document.defaultView.addEventListener('resize', this._hideProxy, false);
     this._view.contentElement.addEventListener('keydown', this._boundOnKeyDown, false);
@@ -79,7 +79,7 @@ InlineEditor.SwatchPopoverHelper = class extends Common.Object {
   hide(commitEdit) {
     if (this._isHidden)
       return;
-    var document = this._popover.element.ownerDocument;
+    const document = this._popover.element.ownerDocument;
     this._isHidden = true;
     this._popover.hide();
 

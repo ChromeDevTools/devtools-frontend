@@ -24,7 +24,7 @@ Persistence.Automapping = class {
     this._fileSystemUISourceCodes = new Map();
     this._sweepThrottler = new Common.Throttler(100);
 
-    var pathEncoder = new Persistence.PathEncoder();
+    const pathEncoder = new Persistence.PathEncoder();
     this._filesIndex = new Persistence.Automapping.FilePathIndex(pathEncoder);
     this._projectFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
     this._activeFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
@@ -46,14 +46,14 @@ Persistence.Automapping = class {
           event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)), this),
     ];
 
-    for (var fileSystem of workspace.projects())
+    for (const fileSystem of workspace.projects())
       this._onProjectAdded(fileSystem);
-    for (var uiSourceCode of workspace.uiSourceCodes())
+    for (const uiSourceCode of workspace.uiSourceCodes())
       this._onUISourceCodeAdded(uiSourceCode);
   }
 
   _scheduleRemap() {
-    for (var status of this._statuses.valuesArray())
+    for (const status of this._statuses.valuesArray())
       this._clearNetworkStatus(status.network);
     this._scheduleSweep();
   }
@@ -66,9 +66,9 @@ Persistence.Automapping = class {
      * @return {!Promise}
      */
     function sweepUnmapped() {
-      var networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
-      for (var networkProject of networkProjects) {
-        for (var uiSourceCode of networkProject.uiSourceCodes())
+      const networkProjects = this._workspace.projectsForType(Workspace.projectTypes.Network);
+      for (const networkProject of networkProjects) {
+        for (const uiSourceCode of networkProject.uiSourceCodes())
           this._computeNetworkStatus(uiSourceCode);
       }
       this._onSweepHappenedForTest();
@@ -83,12 +83,12 @@ Persistence.Automapping = class {
    * @param {!Workspace.Project} project
    */
   _onProjectRemoved(project) {
-    for (var uiSourceCode of project.uiSourceCodes())
+    for (const uiSourceCode of project.uiSourceCodes())
       this._onUISourceCodeRemoved(uiSourceCode);
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (var gitFolder of fileSystem.initialGitFolders())
+    const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    for (const gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.removeFolder(gitFolder);
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
     this._scheduleRemap();
@@ -100,8 +100,8 @@ Persistence.Automapping = class {
   _onProjectAdded(project) {
     if (project.type() !== Workspace.projectTypes.FileSystem)
       return;
-    var fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
-    for (var gitFolder of fileSystem.initialGitFolders())
+    const fileSystem = /** @type {!Persistence.FileSystemWorkspaceBinding.FileSystem} */ (project);
+    for (const gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
     project.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
@@ -112,7 +112,7 @@ Persistence.Automapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _onUISourceCodeAdded(uiSourceCode) {
-    var project = uiSourceCode.project();
+    const project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
       // Never do bindings to filesystems that are typed to another client.
       if (Persistence.FileSystemWorkspaceBinding.fileSystemType(project))
@@ -132,7 +132,7 @@ Persistence.Automapping = class {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       this._filesIndex.removePath(uiSourceCode.url());
       this._fileSystemUISourceCodes.delete(uiSourceCode.url());
-      var status = uiSourceCode[Persistence.Automapping._status];
+      const status = uiSourceCode[Persistence.Automapping._status];
       if (status)
         this._clearNetworkStatus(status.network);
     } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
@@ -144,14 +144,14 @@ Persistence.Automapping = class {
    * @param {!Common.Event} event
    */
   _onUISourceCodeRenamed(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
-    var oldURL = /** @type {string} */ (event.data.oldURL);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
+    const oldURL = /** @type {string} */ (event.data.oldURL);
     if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
       return;
 
     this._filesIndex.removePath(oldURL);
     this._fileSystemUISourceCodes.delete(oldURL);
-    var status = uiSourceCode[Persistence.Automapping._status];
+    const status = uiSourceCode[Persistence.Automapping._status];
     if (status)
       this._clearNetworkStatus(status.network);
 
@@ -167,7 +167,7 @@ Persistence.Automapping = class {
     if (networkSourceCode[Persistence.Automapping._processingPromise] ||
         networkSourceCode[Persistence.Automapping._status])
       return;
-    var createBindingPromise =
+    const createBindingPromise =
         this._createBinding(networkSourceCode).then(validateStatus.bind(this)).then(onStatus.bind(this));
     networkSourceCode[Persistence.Automapping._processingPromise] = createBindingPromise;
 
@@ -187,12 +187,12 @@ Persistence.Automapping = class {
       if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
         return null;
 
-      var fileSystemContent = status.fileSystem.workingCopy();
-      var networkContent = status.network.workingCopy();
-      var target = Bindings.NetworkProject.targetForUISourceCode(status.network);
-      var isValid = false;
+      const fileSystemContent = status.fileSystem.workingCopy();
+      const networkContent = status.network.workingCopy();
+      const target = Bindings.NetworkProject.targetForUISourceCode(status.network);
+      let isValid = false;
       if (target && target.isNodeJS()) {
-        var rewrappedNetworkContent =
+        const rewrappedNetworkContent =
             Persistence.Persistence.rewrapNodeJSContent(status.fileSystem, fileSystemContent, networkContent);
         isValid = fileSystemContent === rewrappedNetworkContent;
       } else {
@@ -226,8 +226,8 @@ Persistence.Automapping = class {
       status.network[Persistence.Automapping._status] = status;
       status.fileSystem[Persistence.Automapping._status] = status;
       if (status.exactMatch) {
-        var projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
-        var newFolderAdded = projectFolder ? this._activeFoldersIndex.addFolder(projectFolder) : false;
+        const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
+        const newFolderAdded = projectFolder ? this._activeFoldersIndex.addFolder(projectFolder) : false;
         if (newFolderAdded)
           this._scheduleSweep();
       }
@@ -252,7 +252,7 @@ Persistence.Automapping = class {
       networkSourceCode[Persistence.Automapping._processingPromise] = null;
       return;
     }
-    var status = networkSourceCode[Persistence.Automapping._status];
+    const status = networkSourceCode[Persistence.Automapping._status];
     if (!status)
       return;
 
@@ -260,7 +260,7 @@ Persistence.Automapping = class {
     status.network[Persistence.Automapping._status] = null;
     status.fileSystem[Persistence.Automapping._status] = null;
     if (status.exactMatch) {
-      var projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
+      const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
       if (projectFolder)
         this._activeFoldersIndex.removeFolder(projectFolder);
     }
@@ -273,18 +273,20 @@ Persistence.Automapping = class {
    */
   _createBinding(networkSourceCode) {
     if (networkSourceCode.url().startsWith('file://')) {
-      var fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
-      var status = fileSourceCode ? new Persistence.AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
+      const fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
+      const status =
+          fileSourceCode ? new Persistence.AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;
       return Promise.resolve(status);
     }
 
-    var networkPath = Common.ParsedURL.extractPath(networkSourceCode.url());
+    let networkPath = Common.ParsedURL.extractPath(networkSourceCode.url());
     if (networkPath === null)
       return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
 
     if (networkPath.endsWith('/'))
       networkPath += 'index.html';
-    var similarFiles = this._filesIndex.similarFiles(networkPath).map(path => this._fileSystemUISourceCodes.get(path));
+    const similarFiles =
+        this._filesIndex.similarFiles(networkPath).map(path => this._fileSystemUISourceCodes.get(path));
     if (!similarFiles.length)
       return Promise.resolve(/** @type {?Persistence.AutomappingStatus} */ (null));
 
@@ -294,8 +296,8 @@ Persistence.Automapping = class {
      * @this {Persistence.Automapping}
      */
     function onMetadatas() {
-      var activeFiles = similarFiles.filter(file => !!this._activeFoldersIndex.closestParentFolder(file.url()));
-      var networkMetadata = networkSourceCode[Persistence.Automapping._metadata];
+      const activeFiles = similarFiles.filter(file => !!this._activeFoldersIndex.closestParentFolder(file.url()));
+      const networkMetadata = networkSourceCode[Persistence.Automapping._metadata];
       if (!networkMetadata || (!networkMetadata.modificationTime && typeof networkMetadata.contentSize !== 'number')) {
         // If networkSourceCode does not have metadata, try to match against active folders.
         if (activeFiles.length !== 1)
@@ -304,7 +306,7 @@ Persistence.Automapping = class {
       }
 
       // Try to find exact matches, prioritizing active folders.
-      var exactMatches = this._filterWithMetadata(activeFiles, networkMetadata);
+      let exactMatches = this._filterWithMetadata(activeFiles, networkMetadata);
       if (!exactMatches.length)
         exactMatches = this._filterWithMetadata(similarFiles, networkMetadata);
       if (exactMatches.length !== 1)
@@ -318,7 +320,7 @@ Persistence.Automapping = class {
    * @return {!Promise}
    */
   _pullMetadatas(uiSourceCodes) {
-    var promises = uiSourceCodes.map(file => fetchMetadata(file));
+    const promises = uiSourceCodes.map(file => fetchMetadata(file));
     return Promise.all(promises);
 
     /**
@@ -337,13 +339,13 @@ Persistence.Automapping = class {
    */
   _filterWithMetadata(files, networkMetadata) {
     return files.filter(file => {
-      var fileMetadata = file[Persistence.Automapping._metadata];
+      const fileMetadata = file[Persistence.Automapping._metadata];
       if (!fileMetadata)
         return false;
       // Allow a second of difference due to network timestamps lack of precision.
-      var timeMatches = !networkMetadata.modificationTime ||
+      const timeMatches = !networkMetadata.modificationTime ||
           Math.abs(networkMetadata.modificationTime - fileMetadata.modificationTime) < 1000;
-      var contentMatches = !networkMetadata.contentSize || fileMetadata.contentSize === networkMetadata.contentSize;
+      const contentMatches = !networkMetadata.contentSize || fileMetadata.contentSize === networkMetadata.contentSize;
       return timeMatches && contentMatches;
     });
   }
@@ -356,7 +358,7 @@ Persistence.Automapping = class {
       return;
     this._disposed = true;
     Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (var status of this._statuses.valuesArray())
+    for (const status of this._statuses.valuesArray())
       this._clearNetworkStatus(status.network);
   }
 };
@@ -381,7 +383,7 @@ Persistence.Automapping.FilePathIndex = class {
    * @param {string} path
    */
   addPath(path) {
-    var encodedPath = this._encoder.encode(path);
+    const encodedPath = this._encoder.encode(path);
     this._reversedIndex.add(encodedPath.reverse());
   }
 
@@ -389,7 +391,7 @@ Persistence.Automapping.FilePathIndex = class {
    * @param {string} path
    */
   removePath(path) {
-    var encodedPath = this._encoder.encode(path);
+    const encodedPath = this._encoder.encode(path);
     this._reversedIndex.remove(encodedPath.reverse());
   }
 
@@ -398,8 +400,8 @@ Persistence.Automapping.FilePathIndex = class {
    * @return {!Array<string>}
    */
   similarFiles(networkPath) {
-    var encodedPath = this._encoder.encode(networkPath);
-    var longestCommonPrefix = this._reversedIndex.longestPrefix(encodedPath.reverse(), false);
+    const encodedPath = this._encoder.encode(networkPath);
+    const longestCommonPrefix = this._reversedIndex.longestPrefix(encodedPath.reverse(), false);
     if (!longestCommonPrefix)
       return [];
     return this._reversedIndex.words(longestCommonPrefix)
@@ -428,9 +430,9 @@ Persistence.Automapping.FolderIndex = class {
   addFolder(path) {
     if (path.endsWith('/'))
       path = path.substring(0, path.length - 1);
-    var encodedPath = this._encoder.encode(path);
+    const encodedPath = this._encoder.encode(path);
     this._index.add(encodedPath);
-    var count = this._folderCount.get(encodedPath) || 0;
+    const count = this._folderCount.get(encodedPath) || 0;
     this._folderCount.set(encodedPath, count + 1);
     return count === 0;
   }
@@ -442,8 +444,8 @@ Persistence.Automapping.FolderIndex = class {
   removeFolder(path) {
     if (path.endsWith('/'))
       path = path.substring(0, path.length - 1);
-    var encodedPath = this._encoder.encode(path);
-    var count = this._folderCount.get(encodedPath) || 0;
+    const encodedPath = this._encoder.encode(path);
+    const count = this._folderCount.get(encodedPath) || 0;
     if (!count)
       return false;
     if (count > 1) {
@@ -460,8 +462,8 @@ Persistence.Automapping.FolderIndex = class {
    * @return {string}
    */
   closestParentFolder(path) {
-    var encodedPath = this._encoder.encode(path);
-    var commonPrefix = this._index.longestPrefix(encodedPath, true);
+    const encodedPath = this._encoder.encode(path);
+    const commonPrefix = this._index.longestPrefix(encodedPath, true);
     return this._encoder.decode(commonPrefix);
   }
 };

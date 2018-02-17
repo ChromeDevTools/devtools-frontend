@@ -143,7 +143,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._codeMirror.setOption('flattenSpans', false);
 
-    var maxHighlightLength = options.maxHighlightLength;
+    let maxHighlightLength = options.maxHighlightLength;
     if (typeof maxHighlightLength !== 'number')
       maxHighlightLength = TextEditor.CodeMirrorTextEditor.maxHighlightLength;
     this._codeMirror.setOption('maxHighlightLength', maxHighlightLength);
@@ -195,7 +195,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {!CodeMirror} codeMirror
    */
   static autocompleteCommand(codeMirror) {
-    var autocompleteController = codeMirror._codeMirrorTextEditor._autocompleteController;
+    const autocompleteController = codeMirror._codeMirrorTextEditor._autocompleteController;
     if (autocompleteController)
       autocompleteController.autocomplete(true);
   }
@@ -235,7 +235,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {string} tokenPrefix
    */
   static _overrideModeWithPrefixedTokens(modeName, tokenPrefix) {
-    var oldModeName = modeName + '-old';
+    const oldModeName = modeName + '-old';
     if (CodeMirror.modes[oldModeName])
       return;
 
@@ -243,18 +243,18 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     CodeMirror.defineMode(modeName, modeConstructor);
 
     function modeConstructor(config, parserConfig) {
-      var innerConfig = {};
-      for (var i in parserConfig)
+      const innerConfig = {};
+      for (const i in parserConfig)
         innerConfig[i] = parserConfig[i];
       innerConfig.name = oldModeName;
-      var codeMirrorMode = CodeMirror.getMode(config, innerConfig);
+      const codeMirrorMode = CodeMirror.getMode(config, innerConfig);
       codeMirrorMode.name = modeName;
       codeMirrorMode.token = tokenOverride.bind(null, codeMirrorMode.token);
       return codeMirrorMode;
     }
 
     function tokenOverride(superToken, stream, state) {
-      var token = superToken(stream, state);
+      const token = superToken(stream, state);
       return token ? tokenPrefix + token.split(/ +/).join(' ' + tokenPrefix) : token;
     }
   }
@@ -264,23 +264,23 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!Array<!Runtime.Extension>}}
    */
   static _collectUninstalledModes(mimeType) {
-    var installed = TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions;
+    const installed = TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions;
 
-    var nameToExtension = new Map();
-    var extensions = self.runtime.extensions(TextEditor.CodeMirrorMimeMode);
-    for (var extension of extensions)
+    const nameToExtension = new Map();
+    const extensions = self.runtime.extensions(TextEditor.CodeMirrorMimeMode);
+    for (const extension of extensions)
       nameToExtension.set(extension.descriptor()['fileName'], extension);
 
-    var modesToLoad = new Set();
-    for (var extension of extensions) {
-      var descriptor = extension.descriptor();
+    const modesToLoad = new Set();
+    for (const extension of extensions) {
+      const descriptor = extension.descriptor();
       if (installed.has(extension) || descriptor['mimeTypes'].indexOf(mimeType) === -1)
         continue;
 
       modesToLoad.add(extension);
-      var deps = descriptor['dependencies'] || [];
-      for (var i = 0; i < deps.length; ++i) {
-        var extension = nameToExtension.get(deps[i]);
+      const deps = descriptor['dependencies'] || [];
+      for (let i = 0; i < deps.length; ++i) {
+        const extension = nameToExtension.get(deps[i]);
         if (extension && !installed.has(extension))
           modesToLoad.add(extension);
       }
@@ -293,7 +293,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!Promise}
    */
   static _installMimeTypeModes(extensions) {
-    var promises = extensions.map(extension => extension.instance().then(installMode.bind(null, extension)));
+    const promises = extensions.map(extension => extension.instance().then(installMode.bind(null, extension)));
     return Promise.all(promises);
 
     /**
@@ -303,7 +303,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     function installMode(extension, instance) {
       if (TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions.has(extension))
         return;
-      var mode = /** @type {!TextEditor.CodeMirrorMimeMode} */ (instance);
+      const mode = /** @type {!TextEditor.CodeMirrorMimeMode} */ (instance);
       mode.install(extension);
       TextEditor.CodeMirrorTextEditor._loadedMimeModeExtensions.add(extension);
     }
@@ -315,15 +315,15 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   static _fixWordMovement(codeMirror) {
     function moveLeft(shift, codeMirror) {
       codeMirror.setExtending(shift);
-      var cursor = codeMirror.getCursor('head');
+      const cursor = codeMirror.getCursor('head');
       codeMirror.execCommand('goGroupLeft');
-      var newCursor = codeMirror.getCursor('head');
+      const newCursor = codeMirror.getCursor('head');
       if (newCursor.ch === 0 && newCursor.line !== 0) {
         codeMirror.setExtending(false);
         return;
       }
 
-      var skippedText = codeMirror.getRange(newCursor, cursor, '#');
+      const skippedText = codeMirror.getRange(newCursor, cursor, '#');
       if (/^\s+$/.test(skippedText))
         codeMirror.execCommand('goGroupLeft');
       codeMirror.setExtending(false);
@@ -331,24 +331,24 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     function moveRight(shift, codeMirror) {
       codeMirror.setExtending(shift);
-      var cursor = codeMirror.getCursor('head');
+      const cursor = codeMirror.getCursor('head');
       codeMirror.execCommand('goGroupRight');
-      var newCursor = codeMirror.getCursor('head');
+      const newCursor = codeMirror.getCursor('head');
       if (newCursor.ch === 0 && newCursor.line !== 0) {
         codeMirror.setExtending(false);
         return;
       }
 
-      var skippedText = codeMirror.getRange(cursor, newCursor, '#');
+      const skippedText = codeMirror.getRange(cursor, newCursor, '#');
       if (/^\s+$/.test(skippedText))
         codeMirror.execCommand('goGroupRight');
       codeMirror.setExtending(false);
     }
 
-    var modifierKey = Host.isMac() ? 'Alt' : 'Ctrl';
-    var leftKey = modifierKey + '-Left';
-    var rightKey = modifierKey + '-Right';
-    var keyMap = {};
+    const modifierKey = Host.isMac() ? 'Alt' : 'Ctrl';
+    const leftKey = modifierKey + '-Left';
+    const rightKey = modifierKey + '-Right';
+    const keyMap = {};
     keyMap[leftKey] = moveLeft.bind(null, false);
     keyMap[rightKey] = moveRight.bind(null, false);
     keyMap['Shift-' + leftKey] = moveLeft.bind(null, true);
@@ -383,8 +383,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {{lineNumber: number, columnNumber: number}}
    */
   _normalizePositionForOverlappingColumn(lineNumber, lineLength, charNumber) {
-    var linesCount = this._codeMirror.lineCount();
-    var columnNumber = charNumber;
+    const linesCount = this._codeMirror.lineCount();
+    let columnNumber = charNumber;
     if (charNumber < 0 && lineNumber > 0) {
       --lineNumber;
       columnNumber = this.line(lineNumber).length;
@@ -419,8 +419,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
      * @return {boolean}
      */
     function isWordStart(text, charNumber) {
-      var position = charNumber;
-      var nextPosition = charNumber + 1;
+      const position = charNumber;
+      const nextPosition = charNumber + 1;
       return valid(position, text.length) && valid(nextPosition, text.length) &&
           TextUtils.TextUtils.isWordChar(text[position]) && TextUtils.TextUtils.isWordChar(text[nextPosition]) &&
           TextUtils.TextUtils.isUpperCase(text[position]) && TextUtils.TextUtils.isLowerCase(text[nextPosition]);
@@ -432,8 +432,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
      * @return {boolean}
      */
     function isWordEnd(text, charNumber) {
-      var position = charNumber;
-      var prevPosition = charNumber - 1;
+      const position = charNumber;
+      const prevPosition = charNumber - 1;
       return valid(position, text.length) && valid(prevPosition, text.length) &&
           TextUtils.TextUtils.isWordChar(text[position]) && TextUtils.TextUtils.isWordChar(text[prevPosition]) &&
           TextUtils.TextUtils.isUpperCase(text[position]) && TextUtils.TextUtils.isLowerCase(text[prevPosition]);
@@ -449,13 +449,13 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       return {lineNumber: lineNumber, columnNumber: Number.constrain(columnNumber, 0, lineLength)};
     }
 
-    var text = this.line(lineNumber);
-    var length = text.length;
+    const text = this.line(lineNumber);
+    const length = text.length;
 
     if ((columnNumber === length && direction === 1) || (columnNumber === 0 && direction === -1))
       return this._normalizePositionForOverlappingColumn(lineNumber, length, columnNumber + direction);
 
-    var charNumber = direction === 1 ? columnNumber : columnNumber - 1;
+    let charNumber = direction === 1 ? columnNumber : columnNumber - 1;
 
     // Move through initial spaces if any.
     while (valid(charNumber, length) && TextUtils.TextUtils.isSpaceChar(text[charNumber]))
@@ -490,10 +490,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {boolean} shift
    */
   _doCamelCaseMovement(direction, shift) {
-    var selections = this.selections();
-    for (var i = 0; i < selections.length; ++i) {
-      var selection = selections[i];
-      var move = this._camelCaseMoveFromPosition(selection.endLine, selection.endColumn, direction);
+    const selections = this.selections();
+    for (let i = 0; i < selections.length; ++i) {
+      const selection = selections[i];
+      const move = this._camelCaseMoveFromPosition(selection.endLine, selection.endColumn, direction);
       selection.endLine = move.lineNumber;
       selection.endColumn = move.columnNumber;
       if (!shift)
@@ -588,7 +588,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     if (lineNumber >= this._codeMirror.lineCount() || lineNumber < 0 || column < 0 ||
         column > this._codeMirror.getLine(lineNumber).length)
       return null;
-    var metrics = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, column));
+    const metrics = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, column));
     return {x: metrics.left, y: metrics.top, height: metrics.bottom - metrics.top};
   }
 
@@ -598,14 +598,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {?TextUtils.TextRange}
    */
   coordinatesToCursorPosition(x, y) {
-    var element = this.element.ownerDocument.elementFromPoint(x, y);
+    const element = this.element.ownerDocument.elementFromPoint(x, y);
     if (!element || !element.isSelfOrDescendant(this._codeMirror.getWrapperElement()))
       return null;
-    var gutterBox = this._codeMirror.getGutterElement().boxInWindow();
+    const gutterBox = this._codeMirror.getGutterElement().boxInWindow();
     if (x >= gutterBox.x && x <= gutterBox.x + gutterBox.width && y >= gutterBox.y &&
         y <= gutterBox.y + gutterBox.height)
       return null;
-    var coords = this._codeMirror.coordsChar({left: x, top: y});
+    const coords = this._codeMirror.coordsChar({left: x, top: y});
     return TextEditor.CodeMirrorUtils.toRange(coords, coords);
   }
 
@@ -618,7 +618,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   tokenAtTextPosition(lineNumber, columnNumber) {
     if (lineNumber < 0 || lineNumber >= this._codeMirror.lineCount())
       return null;
-    var token = this._codeMirror.getTokenAt(new CodeMirror.Pos(lineNumber, (columnNumber || 0) + 1));
+    const token = this._codeMirror.getTokenAt(new CodeMirror.Pos(lineNumber, (columnNumber || 0) + 1));
     if (!token)
       return null;
     return {startColumn: token.start, endColumn: token.end, type: token.type};
@@ -644,7 +644,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
         hasLongLines = true;
       return hasLongLines;
     }
-    var hasLongLines = false;
+    let hasLongLines = false;
     this._codeMirror.eachLine(lineIterator);
     return hasLongLines;
   }
@@ -662,7 +662,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    */
   setMimeType(mimeType) {
     this._mimeType = mimeType;
-    var modesToLoad = TextEditor.CodeMirrorTextEditor._collectUninstalledModes(mimeType);
+    const modesToLoad = TextEditor.CodeMirrorTextEditor._collectUninstalledModes(mimeType);
 
     if (!modesToLoad.length)
       setMode.call(this);
@@ -673,7 +673,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
      * @this {TextEditor.CodeMirrorTextEditor}
      */
     function setMode() {
-      var rewrittenMimeType = this.rewriteMimeType(mimeType);
+      const rewrittenMimeType = this.rewriteMimeType(mimeType);
       if (this._codeMirror.options.mode !== rewrittenMimeType)
         this._codeMirror.setOption('mode', rewrittenMimeType);
     }
@@ -747,7 +747,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!TextEditor.TextEditorBookMark}
    */
   addBookmark(lineNumber, columnNumber, element, type, insertBefore) {
-    var bookmark = new TextEditor.TextEditorBookMark(
+    const bookmark = new TextEditor.TextEditorBookMark(
         this._codeMirror.setBookmark(
             new CodeMirror.Pos(lineNumber, columnNumber), {widget: element, insertLeft: insertBefore}),
         type, this);
@@ -761,16 +761,16 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!Array.<!TextEditor.TextEditorBookMark>}
    */
   bookmarks(range, type) {
-    var pos = TextEditor.CodeMirrorUtils.toPos(range);
-    var markers = this._codeMirror.findMarksAt(pos.start);
+    const pos = TextEditor.CodeMirrorUtils.toPos(range);
+    let markers = this._codeMirror.findMarksAt(pos.start);
     if (!range.isEmpty()) {
-      var middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
-      var endMarkers = this._codeMirror.findMarksAt(pos.end);
+      const middleMarkers = this._codeMirror.findMarks(pos.start, pos.end);
+      const endMarkers = this._codeMirror.findMarksAt(pos.end);
       markers = markers.concat(middleMarkers, endMarkers);
     }
-    var bookmarks = [];
-    for (var i = 0; i < markers.length; i++) {
-      var bookmark = markers[i][TextEditor.TextEditorBookMark._symbol];
+    const bookmarks = [];
+    for (let i = 0; i < markers.length; i++) {
+      const bookmark = markers[i][TextEditor.TextEditorBookMark._symbol];
       if (bookmark && (!type || bookmark.type() === type))
         bookmarks.push(bookmark);
     }
@@ -811,14 +811,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {!{left: number, top: number, width: number, height: number, clientWidth: number, clientHeight: number}} scrollInfo
    */
   _innerRevealLine(lineNumber, scrollInfo) {
-    var topLine = this._codeMirror.lineAtHeight(scrollInfo.top, 'local');
-    var bottomLine = this._codeMirror.lineAtHeight(scrollInfo.top + scrollInfo.clientHeight, 'local');
-    var linesPerScreen = bottomLine - topLine + 1;
+    const topLine = this._codeMirror.lineAtHeight(scrollInfo.top, 'local');
+    const bottomLine = this._codeMirror.lineAtHeight(scrollInfo.top + scrollInfo.clientHeight, 'local');
+    const linesPerScreen = bottomLine - topLine + 1;
     if (lineNumber < topLine) {
-      var topLineToReveal = Math.max(lineNumber - (linesPerScreen / 2) + 1, 0) | 0;
+      const topLineToReveal = Math.max(lineNumber - (linesPerScreen / 2) + 1, 0) | 0;
       this._codeMirror.scrollIntoView(new CodeMirror.Pos(topLineToReveal, 0));
     } else if (lineNumber > bottomLine) {
-      var bottomLineToReveal = Math.min(lineNumber + (linesPerScreen / 2) - 1, this.linesCount - 1) | 0;
+      const bottomLineToReveal = Math.min(lineNumber + (linesPerScreen / 2) - 1, this.linesCount - 1) | 0;
       this._codeMirror.scrollIntoView(new CodeMirror.Pos(bottomLineToReveal, 0));
     }
   }
@@ -830,8 +830,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {number=} endColumn
    */
   addDecoration(element, lineNumber, startColumn, endColumn) {
-    var widget = this._codeMirror.addLineWidget(lineNumber, element);
-    var update = null;
+    const widget = this._codeMirror.addLineWidget(lineNumber, element);
+    let update = null;
     if (typeof startColumn !== 'undefined') {
       if (typeof endColumn === 'undefined')
         endColumn = Infinity;
@@ -849,9 +849,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {number} endColumn
    */
   _updateFloatingDecoration(element, lineNumber, startColumn, endColumn) {
-    var base = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, 0), 'page');
-    var start = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, startColumn), 'page');
-    var end = this._codeMirror.charCoords(new CodeMirror.Pos(lineNumber, endColumn), 'page');
+    const base = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, 0), 'page');
+    const start = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, startColumn), 'page');
+    const end = this._codeMirror.charCoords(new CodeMirror.Pos(lineNumber, endColumn), 'page');
     element.style.width = (end.right - start.left) + 'px';
     element.style.left = (start.left - base.left) + 'px';
   }
@@ -942,10 +942,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   _updatePaddingBottom(width, height) {
     if (!this._options.padBottom)
       return;
-    var scrollInfo = this._codeMirror.getScrollInfo();
-    var newPaddingBottom;
-    var linesElement = this._codeMirrorElement.querySelector('.CodeMirror-lines');
-    var lineCount = this._codeMirror.lineCount();
+    const scrollInfo = this._codeMirror.getScrollInfo();
+    let newPaddingBottom;
+    const linesElement = this._codeMirrorElement.querySelector('.CodeMirror-lines');
+    const lineCount = this._codeMirror.lineCount();
     if (lineCount <= 1) {
       newPaddingBottom = 0;
     } else {
@@ -958,14 +958,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   _resizeEditor() {
-    var parentElement = this.element.parentElement;
+    const parentElement = this.element.parentElement;
     if (!parentElement || !this.isShowing())
       return;
     this._codeMirror.operation(() => {
-      var scrollLeft = this._codeMirror.doc.scrollLeft;
-      var scrollTop = this._codeMirror.doc.scrollTop;
-      var width = parentElement.offsetWidth;
-      var height = parentElement.offsetHeight - this.element.offsetTop;
+      const scrollLeft = this._codeMirror.doc.scrollLeft;
+      const scrollTop = this._codeMirror.doc.scrollTop;
+      const width = parentElement.offsetWidth;
+      const height = parentElement.offsetHeight - this.element.offsetTop;
       if (this._options.autoHeight) {
         this._codeMirror.setSize(width, 'auto');
       } else {
@@ -997,9 +997,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!TextUtils.TextRange}
    */
   editRange(range, text, origin) {
-    var pos = TextEditor.CodeMirrorUtils.toPos(range);
+    const pos = TextEditor.CodeMirrorUtils.toPos(range);
     this._codeMirror.replaceRange(text, pos.start, pos.end, origin);
-    var newRange = TextEditor.CodeMirrorUtils.toRange(
+    const newRange = TextEditor.CodeMirrorUtils.toRange(
         pos.start, this._codeMirror.posFromIndex(this._codeMirror.indexFromPos(pos.start) + text.length));
     this.dispatchEventToListeners(UI.TextEditor.Events.TextChanged, {oldRange: range, newRange: newRange});
     return newRange;
@@ -1020,14 +1020,14 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!TextUtils.TextRange}
    */
   wordRangeForCursorPosition(lineNumber, column, isWordChar) {
-    var line = this.line(lineNumber);
-    var wordStart = column;
+    const line = this.line(lineNumber);
+    let wordStart = column;
     if (column !== 0 && isWordChar(line.charAt(column - 1))) {
       wordStart = column - 1;
       while (wordStart > 0 && isWordChar(line.charAt(wordStart - 1)))
         --wordStart;
     }
-    var wordEnd = column;
+    let wordEnd = column;
     while (wordEnd < line.length && isWordChar(line.charAt(wordEnd)))
       ++wordEnd;
     return new TextUtils.TextRange(lineNumber, wordStart, lineNumber, wordEnd);
@@ -1044,7 +1044,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this._updatePlaceholder();
 
     // We do not show "scroll beyond end of file" span for one line documents, so we need to check if "document has one line" changed.
-    var hasOneLine = this._codeMirror.lineCount() === 1;
+    const hasOneLine = this._codeMirror.lineCount() === 1;
     if (hasOneLine !== this._hasOneLine)
       this._resizeEditor();
     this._hasOneLine = hasOneLine;
@@ -1052,12 +1052,12 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this._decorations.valuesArray().forEach(decoration => this._codeMirror.removeLineWidget(decoration.widget));
     this._decorations.clear();
 
-    var edits = [];
-    var currentEdit;
+    const edits = [];
+    let currentEdit;
 
-    for (var changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
-      var changeObject = changes[changeIndex];
-      var edit = TextEditor.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
+    for (let changeIndex = 0; changeIndex < changes.length; ++changeIndex) {
+      const changeObject = changes[changeIndex];
+      const edit = TextEditor.CodeMirrorUtils.changeObjectToEditOperation(changeObject);
       if (currentEdit && edit.oldRange.equal(currentEdit.newRange)) {
         currentEdit.newRange = edit.newRange;
       } else {
@@ -1066,7 +1066,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       }
     }
 
-    for (var i = 0; i < edits.length; i++) {
+    for (let i = 0; i < edits.length; i++) {
       this.dispatchEventToListeners(
           UI.TextEditor.Events.TextChanged, {oldRange: edits[i].oldRange, newRange: edits[i].newRange});
     }
@@ -1084,8 +1084,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {number} lineNumber
    */
   scrollToLine(lineNumber) {
-    var pos = new CodeMirror.Pos(lineNumber, 0);
-    var coords = this._codeMirror.charCoords(pos, 'local');
+    const pos = new CodeMirror.Pos(lineNumber, 0);
+    const coords = this._codeMirror.charCoords(pos, 'local');
     this._codeMirror.scrollTo(0, coords.top);
   }
 
@@ -1114,7 +1114,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {number}
    */
   lastVisibleLine() {
-    var scrollInfo = this._codeMirror.getScrollInfo();
+    const scrollInfo = this._codeMirror.getScrollInfo();
     return this._codeMirror.lineAtHeight(scrollInfo.top + scrollInfo.clientHeight, 'local');
   }
 
@@ -1123,8 +1123,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!TextUtils.TextRange}
    */
   selection() {
-    var start = this._codeMirror.getCursor('anchor');
-    var end = this._codeMirror.getCursor('head');
+    const start = this._codeMirror.getCursor('anchor');
+    const end = this._codeMirror.getCursor('head');
 
     return TextEditor.CodeMirrorUtils.toRange(start, end);
   }
@@ -1133,10 +1133,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!Array.<!TextUtils.TextRange>}
    */
   selections() {
-    var selectionList = this._codeMirror.listSelections();
-    var result = [];
-    for (var i = 0; i < selectionList.length; ++i) {
-      var selection = selectionList[i];
+    const selectionList = this._codeMirror.listSelections();
+    const result = [];
+    for (let i = 0; i < selectionList.length; ++i) {
+      const selection = selectionList[i];
       result.push(TextEditor.CodeMirrorUtils.toRange(selection.anchor, selection.head));
     }
     return result;
@@ -1159,7 +1159,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       this._selectionSetScheduled = true;
       return;
     }
-    var pos = TextEditor.CodeMirrorUtils.toPos(textRange);
+    const pos = TextEditor.CodeMirrorUtils.toPos(textRange);
     this._codeMirror.setSelection(pos.start, pos.end);
   }
 
@@ -1168,9 +1168,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {number=} primarySelectionIndex
    */
   setSelections(ranges, primarySelectionIndex) {
-    var selections = [];
-    for (var i = 0; i < ranges.length; ++i) {
-      var selection = TextEditor.CodeMirrorUtils.toPos(ranges[i]);
+    const selections = [];
+    for (let i = 0; i < ranges.length; ++i) {
+      const selection = TextEditor.CodeMirrorUtils.toPos(ranges[i]);
       selections.push({anchor: selection.start, head: selection.end});
     }
     primarySelectionIndex = primarySelectionIndex || 0;
@@ -1214,7 +1214,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   text(textRange) {
     if (!textRange)
       return this._codeMirror.getValue(this._lineSeparator);
-    var pos = TextEditor.CodeMirrorUtils.toPos(textRange.normalize());
+    const pos = TextEditor.CodeMirrorUtils.toPos(textRange.normalize());
     return this._codeMirror.getRange(pos.start, pos.end, this._lineSeparator);
   }
 
@@ -1223,8 +1223,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @return {!TextUtils.TextRange}
    */
   fullRange() {
-    var lineCount = this.linesCount;
-    var lastLine = this._codeMirror.getLine(lineCount - 1);
+    const lineCount = this.linesCount;
+    const lastLine = this._codeMirror.getLine(lineCount - 1);
     return TextEditor.CodeMirrorUtils.toRange(
         new CodeMirror.Pos(0, 0), new CodeMirror.Pos(lineCount - 1, lastLine.length));
   }
@@ -1297,15 +1297,15 @@ CodeMirror.commands.selectCamelRight = TextEditor.CodeMirrorTextEditor.moveCamel
  * @param {!CodeMirror} codeMirror
  */
 CodeMirror.commands.gotoMatchingBracket = function(codeMirror) {
-  var updatedSelections = [];
-  var selections = codeMirror.listSelections();
-  for (var i = 0; i < selections.length; ++i) {
-    var selection = selections[i];
-    var cursor = selection.head;
-    var matchingBracket = codeMirror.findMatchingBracket(cursor, false, {maxScanLines: 10000});
-    var updatedHead = cursor;
+  const updatedSelections = [];
+  const selections = codeMirror.listSelections();
+  for (let i = 0; i < selections.length; ++i) {
+    const selection = selections[i];
+    const cursor = selection.head;
+    const matchingBracket = codeMirror.findMatchingBracket(cursor, false, {maxScanLines: 10000});
+    let updatedHead = cursor;
     if (matchingBracket && matchingBracket.match) {
-      var columnCorrection = CodeMirror.cmpPos(matchingBracket.from, cursor) === 0 ? 1 : 0;
+      const columnCorrection = CodeMirror.cmpPos(matchingBracket.from, cursor) === 0 ? 1 : 0;
       updatedHead = new CodeMirror.Pos(matchingBracket.to.line, matchingBracket.to.ch + columnCorrection);
     }
     updatedSelections.push({anchor: updatedHead, head: updatedHead});
@@ -1317,11 +1317,11 @@ CodeMirror.commands.gotoMatchingBracket = function(codeMirror) {
  * @param {!CodeMirror} codemirror
  */
 CodeMirror.commands.undoAndReveal = function(codemirror) {
-  var scrollInfo = codemirror.getScrollInfo();
+  const scrollInfo = codemirror.getScrollInfo();
   codemirror.execCommand('undo');
-  var cursor = codemirror.getCursor('start');
+  const cursor = codemirror.getCursor('start');
   codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-  var autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+  const autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
   if (autocompleteController)
     autocompleteController.clearAutocomplete();
 };
@@ -1330,11 +1330,11 @@ CodeMirror.commands.undoAndReveal = function(codemirror) {
  * @param {!CodeMirror} codemirror
  */
 CodeMirror.commands.redoAndReveal = function(codemirror) {
-  var scrollInfo = codemirror.getScrollInfo();
+  const scrollInfo = codemirror.getScrollInfo();
   codemirror.execCommand('redo');
-  var cursor = codemirror.getCursor('start');
+  const cursor = codemirror.getCursor('start');
   codemirror._codeMirrorTextEditor._innerRevealLine(cursor.line, scrollInfo);
-  var autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
+  const autocompleteController = codemirror._codeMirrorTextEditor._autocompleteController;
   if (autocompleteController)
     autocompleteController.clearAutocomplete();
 };
@@ -1343,8 +1343,8 @@ CodeMirror.commands.redoAndReveal = function(codemirror) {
  * @return {!Object|undefined}
  */
 CodeMirror.commands.dismiss = function(codemirror) {
-  var selections = codemirror.listSelections();
-  var selection = selections[0];
+  const selections = codemirror.listSelections();
+  const selection = selections[0];
   if (selections.length === 1) {
     if (TextEditor.CodeMirrorUtils.toRange(selection.anchor, selection.head).isEmpty())
       return CodeMirror.Pass;
@@ -1398,7 +1398,7 @@ TextEditor.CodeMirrorPositionHandle = class {
    * @return {?{lineNumber: number, columnNumber: number}}
    */
   resolve() {
-    var lineNumber = this._lineHandle ? this._codeMirror.getLineNumber(this._lineHandle) : null;
+    const lineNumber = this._lineHandle ? this._codeMirror.getLineNumber(this._lineHandle) : null;
     if (typeof lineNumber !== 'number')
       return null;
     return {lineNumber: lineNumber, columnNumber: this._columnNumber};
@@ -1439,7 +1439,7 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
    * @return {boolean}
    */
   _findRange(selections, range) {
-    for (var i = 0; i < selections.length; ++i) {
+    for (let i = 0; i < selections.length; ++i) {
       if (range.equal(selections[i]))
         return true;
     }
@@ -1453,10 +1453,10 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
   }
 
   selectNextOccurrence() {
-    var selections = this._textEditor.selections();
-    var anyEmptySelection = false;
-    for (var i = 0; i < selections.length; ++i) {
-      var selection = selections[i];
+    const selections = this._textEditor.selections();
+    let anyEmptySelection = false;
+    for (let i = 0; i < selections.length; ++i) {
+      const selection = selections[i];
       anyEmptySelection = anyEmptySelection || selection.isEmpty();
       if (selection.startLine !== selection.endLine)
         return;
@@ -1466,8 +1466,8 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
       return;
     }
 
-    var last = selections[selections.length - 1];
-    var next = last;
+    const last = selections[selections.length - 1];
+    let next = last;
     do
       next = this._findNextOccurrence(next, !!this._fullWordSelection);
     while (next && this._findRange(selections, next) && !next.equal(last));
@@ -1487,16 +1487,16 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
    * @param {!Array.<!TextUtils.TextRange>} selections
    */
   _expandSelectionsToWords(selections) {
-    var newSelections = [];
-    for (var i = 0; i < selections.length; ++i) {
-      var selection = selections[i];
-      var startRangeWord = this._textEditor.wordRangeForCursorPosition(
-                               selection.startLine, selection.startColumn, TextUtils.TextUtils.isWordChar) ||
+    const newSelections = [];
+    for (let i = 0; i < selections.length; ++i) {
+      const selection = selections[i];
+      const startRangeWord = this._textEditor.wordRangeForCursorPosition(
+                                 selection.startLine, selection.startColumn, TextUtils.TextUtils.isWordChar) ||
           TextUtils.TextRange.createFromLocation(selection.startLine, selection.startColumn);
-      var endRangeWord = this._textEditor.wordRangeForCursorPosition(
-                             selection.endLine, selection.endColumn, TextUtils.TextUtils.isWordChar) ||
+      const endRangeWord = this._textEditor.wordRangeForCursorPosition(
+                               selection.endLine, selection.endColumn, TextUtils.TextUtils.isWordChar) ||
           TextUtils.TextRange.createFromLocation(selection.endLine, selection.endColumn);
-      var newSelection = new TextUtils.TextRange(
+      const newSelection = new TextUtils.TextRange(
           startRangeWord.startLine, startRangeWord.startColumn, endRangeWord.endLine, endRangeWord.endColumn);
       newSelections.push(newSelection);
     }
@@ -1511,14 +1511,14 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
    */
   _findNextOccurrence(range, fullWord) {
     range = range.normalize();
-    var matchedLineNumber;
-    var matchedColumnNumber;
-    var textToFind = this._textEditor.text(range);
+    let matchedLineNumber;
+    let matchedColumnNumber;
+    const textToFind = this._textEditor.text(range);
     function findWordInLine(wordRegex, lineNumber, lineText, from, to) {
       if (typeof matchedLineNumber === 'number')
         return true;
       wordRegex.lastIndex = from;
-      var result = wordRegex.exec(lineText);
+      const result = wordRegex.exec(lineText);
       if (!result || result.index + textToFind.length > to)
         return false;
       matchedLineNumber = lineNumber;
@@ -1526,17 +1526,17 @@ TextEditor.CodeMirrorTextEditor.SelectNextOccurrenceController = class {
       return true;
     }
 
-    var iteratedLineNumber;
+    let iteratedLineNumber;
     function lineIterator(regex, lineHandle) {
       if (findWordInLine(regex, iteratedLineNumber++, lineHandle.text, 0, lineHandle.text.length))
         return true;
     }
 
-    var regexSource = textToFind.escapeForRegExp();
+    let regexSource = textToFind.escapeForRegExp();
     if (fullWord)
       regexSource = '\\b' + regexSource + '\\b';
-    var wordRegex = new RegExp(regexSource, 'g');
-    var currentLineText = this._codeMirror.getLine(range.startLine);
+    const wordRegex = new RegExp(regexSource, 'g');
+    const currentLineText = this._codeMirror.getLine(range.startLine);
 
     findWordInLine(wordRegex, range.startLine, currentLineText, range.endColumn, currentLineText.length);
     iteratedLineNumber = range.startLine + 1;
@@ -1609,7 +1609,7 @@ TextEditor.TextEditorBookMark = class {
   }
 
   clear() {
-    var position = this._marker.find();
+    const position = this._marker.find();
     this._marker.clear();
     if (position)
       this._editor._updateDecorations(position.line);
@@ -1617,7 +1617,7 @@ TextEditor.TextEditorBookMark = class {
 
   refresh() {
     this._marker.changed();
-    var position = this._marker.find();
+    const position = this._marker.find();
     if (position)
       this._editor._updateDecorations(position.line);
   }
@@ -1633,7 +1633,7 @@ TextEditor.TextEditorBookMark = class {
    * @return {?TextUtils.TextRange}
    */
   position() {
-    var pos = this._marker.find();
+    const pos = this._marker.find();
     return pos ? TextUtils.TextRange.createFromLocation(pos.line, pos.ch) : null;
   }
 };

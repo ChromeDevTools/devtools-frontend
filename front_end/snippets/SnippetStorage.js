@@ -49,8 +49,8 @@ Snippets.SnippetStorage = class extends Common.Object {
   }
 
   _saveSettings() {
-    var savedSnippets = [];
-    for (var snippet of this._snippets.values())
+    const savedSnippets = [];
+    for (const snippet of this._snippets.values())
       savedSnippets.push(snippet.serializeToObject());
     this._snippetsSetting.set(savedSnippets);
   }
@@ -75,7 +75,7 @@ Snippets.SnippetStorage = class extends Common.Object {
    * @return {?Snippets.Snippet}
    */
   snippetForName(name) {
-    for (var snippet of this._snippets.values()) {
+    for (const snippet of this._snippets.values()) {
       if (snippet.name === name)
         return snippet;
     }
@@ -83,8 +83,8 @@ Snippets.SnippetStorage = class extends Common.Object {
   }
 
   _loadSettings() {
-    var savedSnippets = this._snippetsSetting.get();
-    for (var i = 0; i < savedSnippets.length; ++i)
+    const savedSnippets = this._snippetsSetting.get();
+    for (let i = 0; i < savedSnippets.length; ++i)
       this._snippetAdded(Snippets.Snippet.fromObject(this, savedSnippets[i]));
   }
 
@@ -100,10 +100,10 @@ Snippets.SnippetStorage = class extends Common.Object {
    * @return {!Snippets.Snippet}
    */
   createSnippet() {
-    var nextId = this._lastSnippetIdentifierSetting.get() + 1;
-    var snippetId = String(nextId);
+    const nextId = this._lastSnippetIdentifierSetting.get() + 1;
+    const snippetId = String(nextId);
     this._lastSnippetIdentifierSetting.set(nextId);
-    var snippet = new Snippets.Snippet(this, snippetId);
+    const snippet = new Snippets.Snippet(this, snippetId);
     this._snippetAdded(snippet);
     this._saveSettings();
     return snippet;
@@ -191,7 +191,7 @@ Snippets.Snippet = class extends Common.Object {
    * @return {!Object}
    */
   serializeToObject() {
-    var serializedSnippet = {};
+    const serializedSnippet = {};
     serializedSnippet.id = this.id;
     serializedSnippet.name = this.name;
     serializedSnippet.content = this.content;

@@ -24,10 +24,10 @@ Elements.DOMPath.cssPath = function(node, optimized) {
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return '';
 
-  var steps = [];
-  var contextNode = node;
+  const steps = [];
+  let contextNode = node;
   while (contextNode) {
-    var step = Elements.DOMPath._cssPathStep(contextNode, !!optimized, contextNode === node);
+    const step = Elements.DOMPath._cssPathStep(contextNode, !!optimized, contextNode === node);
     if (!step)
       break;  // Error - bail out early.
     steps.push(step);
@@ -50,19 +50,19 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   if (node.nodeType() !== Node.ELEMENT_NODE)
     return null;
 
-  var id = node.getAttribute('id');
+  const id = node.getAttribute('id');
   if (optimized) {
     if (id)
       return new Elements.DOMPath.Step(idSelector(id), true);
-    var nodeNameLower = node.nodeName().toLowerCase();
+    const nodeNameLower = node.nodeName().toLowerCase();
     if (nodeNameLower === 'body' || nodeNameLower === 'head' || nodeNameLower === 'html')
       return new Elements.DOMPath.Step(node.nodeNameInCorrectCase(), true);
   }
-  var nodeName = node.nodeNameInCorrectCase();
+  const nodeName = node.nodeNameInCorrectCase();
 
   if (id)
     return new Elements.DOMPath.Step(nodeName + idSelector(id), true);
-  var parent = node.parentNode;
+  const parent = node.parentNode;
   if (!parent || parent.nodeType() === Node.DOCUMENT_NODE)
     return new Elements.DOMPath.Step(nodeName, true);
 
@@ -71,7 +71,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
    * @return {!Array.<string>}
    */
   function prefixedElementClassNames(node) {
-    var classAttribute = node.getAttribute('class');
+    const classAttribute = node.getAttribute('class');
     if (!classAttribute)
       return [];
 
@@ -96,8 +96,8 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   function escapeIdentifierIfNeeded(ident) {
     if (isCSSIdentifier(ident))
       return ident;
-    var shouldEscapeFirst = /^(?:[0-9]|-[0-9-]?)/.test(ident);
-    var lastIndex = ident.length - 1;
+    const shouldEscapeFirst = /^(?:[0-9]|-[0-9-]?)/.test(ident);
+    const lastIndex = ident.length - 1;
     return ident.replace(/./g, function(c, i) {
       return ((shouldEscapeFirst && i === 0) || !isCSSIdentChar(c)) ? escapeAsciiChar(c, i === lastIndex) : c;
     });
@@ -116,7 +116,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
    * @param {string} c
    */
   function toHexByte(c) {
-    var hexByte = c.charCodeAt(0).toString(16);
+    let hexByte = c.charCodeAt(0).toString(16);
     if (hexByte.length === 1)
       hexByte = '0' + hexByte;
     return hexByte;
@@ -141,14 +141,14 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
     return /^-{0,2}[a-zA-Z_][a-zA-Z0-9_-]*$/.test(value);
   }
 
-  var prefixedOwnClassNamesArray = prefixedElementClassNames(node);
-  var needsClassNames = false;
-  var needsNthChild = false;
-  var ownIndex = -1;
-  var elementIndex = -1;
-  var siblings = parent.children();
-  for (var i = 0; (ownIndex === -1 || !needsNthChild) && i < siblings.length; ++i) {
-    var sibling = siblings[i];
+  const prefixedOwnClassNamesArray = prefixedElementClassNames(node);
+  let needsClassNames = false;
+  let needsNthChild = false;
+  let ownIndex = -1;
+  let elementIndex = -1;
+  const siblings = parent.children();
+  for (let i = 0; (ownIndex === -1 || !needsNthChild) && i < siblings.length; ++i) {
+    const sibling = siblings[i];
     if (sibling.nodeType() !== Node.ELEMENT_NODE)
       continue;
     elementIndex += 1;
@@ -162,14 +162,14 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
       continue;
 
     needsClassNames = true;
-    var ownClassNames = new Set(prefixedOwnClassNamesArray);
+    const ownClassNames = new Set(prefixedOwnClassNamesArray);
     if (!ownClassNames.size) {
       needsNthChild = true;
       continue;
     }
-    var siblingClassNamesArray = prefixedElementClassNames(sibling);
-    for (var j = 0; j < siblingClassNamesArray.length; ++j) {
-      var siblingClass = siblingClassNamesArray[j];
+    const siblingClassNamesArray = prefixedElementClassNames(sibling);
+    for (let j = 0; j < siblingClassNamesArray.length; ++j) {
+      const siblingClass = siblingClassNamesArray[j];
       if (!ownClassNames.has(siblingClass))
         continue;
       ownClassNames.delete(siblingClass);
@@ -180,14 +180,14 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
     }
   }
 
-  var result = nodeName;
+  let result = nodeName;
   if (isTargetNode && nodeName.toLowerCase() === 'input' && node.getAttribute('type') && !node.getAttribute('id') &&
       !node.getAttribute('class'))
     result += '[type="' + node.getAttribute('type') + '"]';
   if (needsNthChild) {
     result += ':nth-child(' + (ownIndex + 1) + ')';
   } else if (needsClassNames) {
-    for (var prefixedName of prefixedOwnClassNamesArray)
+    for (const prefixedName of prefixedOwnClassNamesArray)
       result += '.' + escapeIdentifierIfNeeded(prefixedName.substr(1));
   }
 
@@ -203,10 +203,10 @@ Elements.DOMPath.xPath = function(node, optimized) {
   if (node.nodeType() === Node.DOCUMENT_NODE)
     return '/';
 
-  var steps = [];
-  var contextNode = node;
+  const steps = [];
+  let contextNode = node;
   while (contextNode) {
-    var step = Elements.DOMPath._xPathValue(contextNode, optimized);
+    const step = Elements.DOMPath._xPathValue(contextNode, optimized);
     if (!step)
       break;  // Error - bail out early.
     steps.push(step);
@@ -225,8 +225,8 @@ Elements.DOMPath.xPath = function(node, optimized) {
  * @return {?Elements.DOMPath.Step}
  */
 Elements.DOMPath._xPathValue = function(node, optimized) {
-  var ownValue;
-  var ownIndex = Elements.DOMPath._xPathIndex(node);
+  let ownValue;
+  const ownIndex = Elements.DOMPath._xPathIndex(node);
   if (ownIndex === -1)
     return null;  // Error.
 
@@ -280,16 +280,16 @@ Elements.DOMPath._xPathIndex = function(node) {
       return true;
 
     // XPath treats CDATA as text nodes.
-    var leftType = left.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType();
-    var rightType = right.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : right.nodeType();
+    const leftType = left.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : left.nodeType();
+    const rightType = right.nodeType() === Node.CDATA_SECTION_NODE ? Node.TEXT_NODE : right.nodeType();
     return leftType === rightType;
   }
 
-  var siblings = node.parentNode ? node.parentNode.children() : null;
+  const siblings = node.parentNode ? node.parentNode.children() : null;
   if (!siblings)
     return 0;  // Root node - no siblings.
-  var hasSameNamedElements;
-  for (var i = 0; i < siblings.length; ++i) {
+  let hasSameNamedElements;
+  for (let i = 0; i < siblings.length; ++i) {
     if (areNodesSimilar(node, siblings[i]) && siblings[i] !== node) {
       hasSameNamedElements = true;
       break;
@@ -297,8 +297,8 @@ Elements.DOMPath._xPathIndex = function(node) {
   }
   if (!hasSameNamedElements)
     return 0;
-  var ownIndex = 1;  // XPath indices start with 1.
-  for (var i = 0; i < siblings.length; ++i) {
+  let ownIndex = 1;  // XPath indices start with 1.
+  for (let i = 0; i < siblings.length; ++i) {
     if (areNodesSimilar(node, siblings[i])) {
       if (siblings[i] === node)
         return ownIndex;

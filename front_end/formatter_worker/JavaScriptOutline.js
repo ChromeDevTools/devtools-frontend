@@ -5,19 +5,19 @@
  * @param {string} content
  */
 FormatterWorker.javaScriptOutline = function(content) {
-  var chunkSize = 100000;
-  var outlineChunk = [];
-  var lastReportedOffset = 0;
+  const chunkSize = 100000;
+  let outlineChunk = [];
+  let lastReportedOffset = 0;
 
-  var ast;
+  let ast;
   try {
     ast = acorn.parse(content, {ranges: false, ecmaVersion: 8});
   } catch (e) {
     ast = acorn.parse_dammit(content, {ranges: false, ecmaVersion: 8});
   }
 
-  var textCursor = new TextUtils.TextCursor(content.computeLineEndings());
-  var walker = new FormatterWorker.ESTreeWalker(beforeVisit);
+  const textCursor = new TextUtils.TextCursor(content.computeLineEndings());
+  const walker = new FormatterWorker.ESTreeWalker(beforeVisit);
   walker.walk(ast);
   postMessage({chunk: outlineChunk, isLastChunk: true});
 
@@ -42,7 +42,7 @@ FormatterWorker.javaScriptOutline = function(content) {
     } else if (
         (node.type === 'MethodDefinition' || node.type === 'Property') && isNameNode(node.key) &&
         isFunctionNode(node.value)) {
-      var namePrefix = [];
+      const namePrefix = [];
       if (node.kind === 'get' || node.kind === 'set')
         namePrefix.push(node.kind);
       if (node.static)
@@ -55,7 +55,7 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @param {!ESTree.Node} nameNode
    */
   function reportClass(nameNode) {
-    var name = 'class ' + stringifyNameNode(nameNode);
+    const name = 'class ' + stringifyNameNode(nameNode);
     textCursor.advance(nameNode.start);
     addOutlineItem({
       name: name,
@@ -70,7 +70,7 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @param {string=} namePrefix
    */
   function reportFunction(nameNode, functionNode, namePrefix) {
-    var name = stringifyNameNode(nameNode);
+    let name = stringifyNameNode(nameNode);
     if (functionNode.generator)
       name = '*' + name;
     if (namePrefix)
@@ -133,8 +133,8 @@ FormatterWorker.javaScriptOutline = function(content) {
    * @return {string}
    */
   function stringifyArguments(params) {
-    var result = [];
-    for (var param of params) {
+    const result = [];
+    for (const param of params) {
       if (param.type === 'Identifier')
         result.push(param.name);
       else if (param.type === 'RestElement' && param.argument.type === 'Identifier')

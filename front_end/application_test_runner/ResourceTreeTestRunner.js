@@ -8,7 +8,7 @@
  */
 
 ApplicationTestRunner.dumpResources = function(formatter) {
-  var results = [];
+  const results = [];
 
   function formatterWrapper(resource) {
     if (formatter)
@@ -25,12 +25,12 @@ ApplicationTestRunner.dumpResources = function(formatter) {
 
   results.sort(comparator);
 
-  for (var i = 0; i < results.length; ++i)
+  for (let i = 0; i < results.length; ++i)
     TestRunner.addResult(results[i].text);
 };
 
 ApplicationTestRunner.dumpResourcesURLMap = function() {
-  var results = [];
+  const results = [];
   TestRunner.resourceTreeModel.forAllResources(collect);
 
   function collect(resource) {
@@ -49,7 +49,7 @@ ApplicationTestRunner.dumpResourcesURLMap = function() {
 
   results.sort(comparator);
 
-  for (var i = 0; i < results.length; ++i)
+  for (let i = 0; i < results.length; ++i)
     TestRunner.addResult(results[i].url + ' == ' + results[i].resource.url);
 };
 
@@ -60,9 +60,9 @@ ApplicationTestRunner.dumpResourcesTree = function() {
 
     TestRunner.addResult(prefix + treeItem.listItemElement.textContent);
     treeItem.expand();
-    var children = treeItem.children();
+    const children = treeItem.children();
 
-    for (var i = 0; children && i < children.length; ++i)
+    for (let i = 0; children && i < children.length; ++i)
       dump(children[i], prefix + '    ');
   }
 

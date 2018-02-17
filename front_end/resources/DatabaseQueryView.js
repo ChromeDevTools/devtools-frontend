@@ -64,7 +64,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
       return [];
 
     prefix = prefix.toLowerCase();
-    var tableNames = await this.database.tableNames();
+    const tableNames = await this.database.tableNames();
     return tableNames.map(name => name + ' ')
         .concat(Resources.DatabaseQueryView._SQL_BUILT_INS)
         .filter(proposal => proposal.toLowerCase().startsWith(prefix))
@@ -102,7 +102,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
 
     this._prompt.clearAutocomplete();
 
-    var query = this._prompt.text();
+    const query = this._prompt.text();
     if (!query.length)
       return;
 
@@ -112,8 +112,8 @@ Resources.DatabaseQueryView = class extends UI.VBox {
   }
 
   _queryFinished(query, columnNames, values) {
-    var dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
-    var trimmedQuery = query.trim();
+    const dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
+    const trimmedQuery = query.trim();
 
     if (dataGrid) {
       dataGrid.setStriped(true);
@@ -135,7 +135,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    * @param {!UI.Widget} view
    */
   _appendViewQueryResult(query, view) {
-    var resultElement = this._appendQueryResult(query);
+    const resultElement = this._appendQueryResult(query);
     view.show(resultElement);
     this._promptElement.scrollIntoView(false);
   }
@@ -145,7 +145,7 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    * @param {string} errorText
    */
   _appendErrorQueryResult(query, errorText) {
-    var resultElement = this._appendQueryResult(query);
+    const resultElement = this._appendQueryResult(query);
     resultElement.classList.add('error');
     resultElement.appendChild(UI.Icon.create('smallicon-error', 'prompt-icon'));
     resultElement.createTextChild(errorText);
@@ -157,17 +157,17 @@ Resources.DatabaseQueryView = class extends UI.VBox {
    * @param {string} query
    */
   _appendQueryResult(query) {
-    var element = createElement('div');
+    const element = createElement('div');
     element.className = 'database-user-query';
     element.appendChild(UI.Icon.create('smallicon-user-command', 'prompt-icon'));
     this.element.insertBefore(element, this._promptContainer);
 
-    var commandTextElement = createElement('span');
+    const commandTextElement = createElement('span');
     commandTextElement.className = 'database-query-text';
     commandTextElement.textContent = query;
     element.appendChild(commandTextElement);
 
-    var resultElement = createElement('div');
+    const resultElement = createElement('div');
     resultElement.className = 'database-query-result';
     element.appendChild(resultElement);
     return resultElement;

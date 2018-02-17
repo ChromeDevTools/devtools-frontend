@@ -47,10 +47,10 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.setMinimumSize(25, 28);
     this._searchableView.setPlaceholder(Common.UIString('Find by string, selector, or XPath'));
-    var stackElement = this._searchableView.element;
+    const stackElement = this._searchableView.element;
 
     this._contentElement = createElement('div');
-    var crumbsContainer = createElement('div');
+    const crumbsContainer = createElement('div');
     stackElement.appendChild(this._contentElement);
     stackElement.appendChild(crumbsContainer);
 
@@ -130,8 +130,8 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.DOMModel} domModel
    */
   modelAdded(domModel) {
-    var parentModel = domModel.parentModel();
-    var treeOutline = parentModel ? Elements.ElementsTreeOutline.forDOMModel(parentModel) : null;
+    const parentModel = domModel.parentModel();
+    let treeOutline = parentModel ? Elements.ElementsTreeOutline.forDOMModel(parentModel) : null;
     if (!treeOutline) {
       treeOutline = new Elements.ElementsTreeOutline(true, true);
       treeOutline.setWordWrap(Common.moduleSetting('domWordWrap').get());
@@ -158,12 +158,12 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.DOMModel} domModel
    */
   modelRemoved(domModel) {
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
     treeOutline.unwireFromDOMModel(domModel);
     if (domModel.parentModel())
       return;
     this._treeOutlines.remove(treeOutline);
-    var header = this._treeOutlineHeaders.get(treeOutline);
+    const header = this._treeOutlineHeaders.get(treeOutline);
     if (header)
       header.remove();
     this._treeOutlineHeaders.delete(treeOutline);
@@ -174,13 +174,13 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.Target} target
    */
   _targetNameChanged(target) {
-    var domModel = target.model(SDK.DOMModel);
+    const domModel = target.model(SDK.DOMModel);
     if (!domModel)
       return;
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
     if (!treeOutline)
       return;
-    var header = this._treeOutlineHeaders.get(treeOutline);
+    const header = this._treeOutlineHeaders.get(treeOutline);
     if (!header)
       return;
     header.removeChildren();
@@ -192,10 +192,10 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (!this._treeOutlines.length)
       return;
 
-    var width = this._splitWidget.element.offsetWidth;
+    let width = this._splitWidget.element.offsetWidth;
     if (this._splitWidget.isVertical())
       width -= this._splitWidget.sidebarSize();
-    for (var i = 0; i < this._treeOutlines.length; ++i)
+    for (let i = 0; i < this._treeOutlines.length; ++i)
       this._treeOutlines[i].setVisibleWidth(width);
 
     this._breadcrumbs.updateSizes();
@@ -223,11 +223,11 @@ Elements.ElementsPanel = class extends UI.Panel {
   wasShown() {
     UI.context.setFlavor(Elements.ElementsPanel, this);
 
-    for (var i = 0; i < this._treeOutlines.length; ++i) {
-      var treeOutline = this._treeOutlines[i];
+    for (let i = 0; i < this._treeOutlines.length; ++i) {
+      const treeOutline = this._treeOutlines[i];
       // Attach heavy component lazily
       if (treeOutline.element.parentElement !== this._contentElement) {
-        var header = this._treeOutlineHeaders.get(treeOutline);
+        const header = this._treeOutlineHeaders.get(treeOutline);
         if (header)
           this._contentElement.appendChild(header);
         this._contentElement.appendChild(treeOutline.element);
@@ -236,11 +236,11 @@ Elements.ElementsPanel = class extends UI.Panel {
     super.wasShown();
     this._breadcrumbs.update();
 
-    var domModels = SDK.targetManager.models(SDK.DOMModel);
-    for (var domModel of domModels) {
+    const domModels = SDK.targetManager.models(SDK.DOMModel);
+    for (const domModel of domModels) {
       if (domModel.parentModel())
         continue;
-      var treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
+      const treeOutline = Elements.ElementsTreeOutline.forDOMModel(domModel);
       treeOutline.setVisible(true);
 
       if (!treeOutline.rootDOMNode) {
@@ -261,12 +261,12 @@ Elements.ElementsPanel = class extends UI.Panel {
     UI.context.setFlavor(Elements.ElementsPanel, null);
 
     SDK.OverlayModel.hideDOMNodeHighlight();
-    for (var i = 0; i < this._treeOutlines.length; ++i) {
-      var treeOutline = this._treeOutlines[i];
+    for (let i = 0; i < this._treeOutlines.length; ++i) {
+      const treeOutline = this._treeOutlines[i];
       treeOutline.setVisible(false);
       // Detach heavy component on hide
       this._contentElement.removeChild(treeOutline.element);
-      var header = this._treeOutlineHeaders.get(treeOutline);
+      const header = this._treeOutlineHeaders.get(treeOutline);
       if (header)
         this._contentElement.removeChild(header);
     }
@@ -287,9 +287,9 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _selectedNodeChanged(event) {
-    var selectedNode = /** @type {?SDK.DOMNode} */ (event.data.node);
-    var focus = /** @type {boolean} */ (event.data.focus);
-    for (var treeOutline of this._treeOutlines) {
+    const selectedNode = /** @type {?SDK.DOMNode} */ (event.data.node);
+    const focus = /** @type {boolean} */ (event.data.focus);
+    for (const treeOutline of this._treeOutlines) {
       if (!selectedNode || Elements.ElementsTreeOutline.forDOMModel(selectedNode.domModel()) !== treeOutline)
         treeOutline.selectDOMNode(null);
     }
@@ -306,9 +306,9 @@ Elements.ElementsPanel = class extends UI.Panel {
       this._hasNonDefaultSelectedNode = true;
     }
 
-    var executionContexts = selectedNode.domModel().runtimeModel().executionContexts();
-    var nodeFrameId = selectedNode.frameId();
-    for (var context of executionContexts) {
+    const executionContexts = selectedNode.domModel().runtimeModel().executionContexts();
+    const nodeFrameId = selectedNode.frameId();
+    for (const context of executionContexts) {
       if (context.frameId === nodeFrameId) {
         UI.context.setFlavor(SDK.ExecutionContext, context);
         break;
@@ -324,7 +324,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _documentUpdatedEvent(event) {
-    var domModel = /** @type {!SDK.DOMModel} */ (event.data);
+    const domModel = /** @type {!SDK.DOMModel} */ (event.data);
     this._documentUpdated(domModel);
   }
 
@@ -346,7 +346,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this._omitDefaultSelection)
       return;
 
-    var savedSelectedNodeOnReset = this._selectedNodeOnReset;
+    const savedSelectedNodeOnReset = this._selectedNodeOnReset;
     restoreNode.call(this, domModel, this._selectedNodeOnReset);
 
     /**
@@ -355,15 +355,15 @@ Elements.ElementsPanel = class extends UI.Panel {
      * @this {Elements.ElementsPanel}
      */
     async function restoreNode(domModel, staleNode) {
-      var nodePath = staleNode ? staleNode.path() : null;
+      const nodePath = staleNode ? staleNode.path() : null;
 
-      var restoredNodeId = nodePath ? await domModel.pushNodeByPathToFrontend(nodePath) : null;
+      const restoredNodeId = nodePath ? await domModel.pushNodeByPathToFrontend(nodePath) : null;
 
       if (savedSelectedNodeOnReset !== this._selectedNodeOnReset)
         return;
-      var node = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
+      let node = restoredNodeId ? domModel.nodeForId(restoredNodeId) : null;
       if (!node) {
-        var inspectedDocument = domModel.existingDocument();
+        const inspectedDocument = domModel.existingDocument();
         node = inspectedDocument ? inspectedDocument.body || inspectedDocument.documentElement : null;
       }
       this._setDefaultSelectedNode(node);
@@ -380,7 +380,7 @@ Elements.ElementsPanel = class extends UI.Panel {
   _setDefaultSelectedNode(node) {
     if (!node || this._hasNonDefaultSelectedNode || this._pendingNodeReveal)
       return;
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
     if (!treeOutline)
       return;
     this.selectDOMNode(node);
@@ -410,7 +410,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var query = searchConfig.query;
+    const query = searchConfig.query;
 
     const whitespaceTrimmedQuery = query.trim();
     if (!whitespaceTrimmedQuery.length)
@@ -423,9 +423,9 @@ Elements.ElementsPanel = class extends UI.Panel {
 
     this._searchConfig = searchConfig;
 
-    var showUAShadowDOM = Common.moduleSetting('showUAShadowDOM').get();
-    var domModels = SDK.targetManager.models(SDK.DOMModel);
-    var promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
+    const showUAShadowDOM = Common.moduleSetting('showUAShadowDOM').get();
+    const domModels = SDK.targetManager.models(SDK.DOMModel);
+    const promises = domModels.map(domModel => domModel.performSearch(whitespaceTrimmedQuery, showUAShadowDOM));
     Promise.all(promises).then(resultCountCallback.bind(this));
 
     /**
@@ -437,9 +437,9 @@ Elements.ElementsPanel = class extends UI.Panel {
        * @type {!Array.<{domModel: !SDK.DOMModel, index: number, node: (?SDK.DOMNode|undefined)}>}
        */
       this._searchResults = [];
-      for (var i = 0; i < resultCounts.length; ++i) {
-        var resultCount = resultCounts[i];
-        for (var j = 0; j < resultCount; ++j)
+      for (let i = 0; i < resultCounts.length; ++i) {
+        const resultCount = resultCounts[i];
+        for (let j = 0; j < resultCount; ++j)
           this._searchResults.push({domModel: domModels[i], index: j, node: undefined});
       }
       this._searchableView.updateSearchMatchesCount(this._searchResults.length);
@@ -448,7 +448,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       if (this._currentSearchResultIndex >= this._searchResults.length)
         this._currentSearchResultIndex = undefined;
 
-      var index = this._currentSearchResultIndex;
+      let index = this._currentSearchResultIndex;
 
       if (shouldJump) {
         if (this._currentSearchResultIndex === undefined)
@@ -463,7 +463,7 @@ Elements.ElementsPanel = class extends UI.Panel {
   _domWordWrapSettingChanged(event) {
     // FIXME: crbug.com/425984
     this._contentElement.classList.toggle('elements-wrap', event.data);
-    for (var i = 0; i < this._treeOutlines.length; ++i)
+    for (let i = 0; i < this._treeOutlines.length; ++i)
       this._treeOutlines[i].setWordWrap(/** @type {boolean} */ (event.data));
   }
 
@@ -478,7 +478,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
-    var link = event.target;
+    let link = event.target;
     while (link && !link[Elements.ElementsTreeElement.HrefSymbol])
       link = link.parentElementOrShadowHost();
     if (!link)
@@ -487,10 +487,10 @@ Elements.ElementsPanel = class extends UI.Panel {
     return {
       box: link.boxInWindow(),
       show: async popover => {
-        var node = this.selectedDOMNode();
+        const node = this.selectedDOMNode();
         if (!node)
           return false;
-        var preview = await BrowserComponents.ImagePreview.build(
+        const preview = await BrowserComponents.ImagePreview.build(
             node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
         if (preview)
           popover.contentElement.appendChild(preview);
@@ -539,9 +539,9 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   _highlightCurrentSearchResult() {
-    var index = this._currentSearchResultIndex;
-    var searchResults = this._searchResults;
-    var searchResult = searchResults[index];
+    const index = this._currentSearchResultIndex;
+    const searchResults = this._searchResults;
+    const searchResult = searchResults[index];
 
     this._searchableView.updateCurrentMatchIndex(index);
     if (searchResult.node === null)
@@ -556,12 +556,12 @@ Elements.ElementsPanel = class extends UI.Panel {
       return;
     }
 
-    var treeElement = this._treeElementForNode(searchResult.node);
+    const treeElement = this._treeElementForNode(searchResult.node);
     searchResult.node.scrollIntoView();
     if (treeElement) {
       treeElement.highlightSearchResults(this._searchConfig.query);
       treeElement.reveal();
-      var matches = treeElement.listItemElement.getElementsByClassName(UI.highlightedSearchResultClassName);
+      const matches = treeElement.listItemElement.getElementsByClassName(UI.highlightedSearchResultClassName);
       if (matches.length)
         matches[0].scrollIntoViewIfNeeded(false);
     }
@@ -570,11 +570,11 @@ Elements.ElementsPanel = class extends UI.Panel {
   _hideSearchHighlights() {
     if (!this._searchResults || !this._searchResults.length || this._currentSearchResultIndex === undefined)
       return;
-    var searchResult = this._searchResults[this._currentSearchResultIndex];
+    const searchResult = this._searchResults[this._currentSearchResultIndex];
     if (!searchResult.node)
       return;
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(searchResult.node.domModel());
-    var treeElement = treeOutline.findTreeElement(searchResult.node);
+    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(searchResult.node.domModel());
+    const treeElement = treeOutline.findTreeElement(searchResult.node);
     if (treeElement)
       treeElement.hideSearchHighlights();
   }
@@ -583,8 +583,8 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @return {?SDK.DOMNode}
    */
   selectedDOMNode() {
-    for (var i = 0; i < this._treeOutlines.length; ++i) {
-      var treeOutline = this._treeOutlines[i];
+    for (let i = 0; i < this._treeOutlines.length; ++i) {
+      const treeOutline = this._treeOutlines[i];
       if (treeOutline.selectedDOMNode())
         return treeOutline.selectedDOMNode();
     }
@@ -596,8 +596,8 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {boolean=} focus
    */
   selectDOMNode(node, focus) {
-    for (var treeOutline of this._treeOutlines) {
-      var outline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    for (const treeOutline of this._treeOutlines) {
+      const outline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
       if (outline === treeOutline)
         treeOutline.selectDOMNode(node, focus);
       else
@@ -609,7 +609,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _updateBreadcrumbIfNeeded(event) {
-    var nodes = /** @type {!Array.<!SDK.DOMNode>} */ (event.data);
+    const nodes = /** @type {!Array.<!SDK.DOMNode>} */ (event.data);
     this._breadcrumbs.updateNodes(nodes);
   }
 
@@ -617,7 +617,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _crumbNodeSelected(event) {
-    var node = /** @type {!SDK.DOMNode} */ (event.data);
+    const node = /** @type {!SDK.DOMNode} */ (event.data);
     this.selectDOMNode(node, true);
   }
 
@@ -629,7 +629,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this._treeOutlines.find(to => to.editing()))
       return;
 
-    var treeOutline = this._treeOutlines.find(to => !!to.selectedDOMNode());
+    const treeOutline = this._treeOutlines.find(to => !!to.selectedDOMNode());
     if (!treeOutline)
       return;
 
@@ -639,7 +639,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       event.handled = true;
     }
 
-    var isRedoKey = Host.isMac() ?
+    const isRedoKey = Host.isMac() ?
         event.metaKey && event.shiftKey && (event.key === 'Z' || event.key === 'z') :  // Z key
         event.ctrlKey && (event.key === 'Y' || event.key === 'y');                     // Y key
     if (isRedoKey) {
@@ -674,7 +674,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @return {?Elements.ElementsTreeElement}
    */
   _treeElementForNode(node) {
-    var treeOutline = this._treeOutlineForNode(node);
+    const treeOutline = this._treeOutlineForNode(node);
     return /** @type {?Elements.ElementsTreeElement} */ (treeOutline.findTreeElement(node));
   }
 
@@ -683,7 +683,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @return {!SDK.DOMNode}
    */
   _leaveUserAgentShadowDOM(node) {
-    var userAgentShadowRoot;
+    let userAgentShadowRoot;
     while ((userAgentShadowRoot = node.ancestorUserAgentShadowRoot()) && userAgentShadowRoot.parentNode)
       node = userAgentShadowRoot.parentNode;
     return node;
@@ -717,7 +717,7 @@ Elements.ElementsPanel = class extends UI.Panel {
   }
 
   _showUAShadowDOMChanged() {
-    for (var i = 0; i < this._treeOutlines.length; ++i)
+    for (let i = 0; i < this._treeOutlines.length; ++i)
       this._treeOutlines[i].update();
   }
 
@@ -725,8 +725,8 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this.sidebarPaneView && this.sidebarPaneView.tabbedPane().shouldHideOnDetach())
       return;  // We can't reparent extension iframes.
 
-    var splitMode;
-    var position = Common.moduleSetting('sidebarPosition').get();
+    let splitMode;
+    const position = Common.moduleSetting('sidebarPosition').get();
     if (position === 'right' || (position === 'auto' && UI.inspectorView.element.offsetWidth > 680))
       splitMode = Elements.ElementsPanel._splitMode.Vertical;
     else if (UI.inspectorView.element.offsetWidth > 415)
@@ -738,8 +738,8 @@ Elements.ElementsPanel = class extends UI.Panel {
       return;
     this._splitMode = splitMode;
 
-    var extensionSidebarPanes = Extensions.extensionServer.sidebarPanes();
-    var lastSelectedTabId = null;
+    const extensionSidebarPanes = Extensions.extensionServer.sidebarPanes();
+    let lastSelectedTabId = null;
     if (this.sidebarPaneView) {
       lastSelectedTabId = this.sidebarPaneView.tabbedPane().selectedTabId;
       this.sidebarPaneView.tabbedPane().detach();
@@ -749,11 +749,11 @@ Elements.ElementsPanel = class extends UI.Panel {
     this._splitWidget.setVertical(this._splitMode === Elements.ElementsPanel._splitMode.Vertical);
     this.showToolbarPane(null /* widget */, null /* toggle */);
 
-    var matchedStylePanesWrapper = new UI.VBox();
+    const matchedStylePanesWrapper = new UI.VBox();
     matchedStylePanesWrapper.element.classList.add('style-panes-wrapper');
     this._stylesWidget.show(matchedStylePanesWrapper.element);
 
-    var computedStylePanesWrapper = new UI.VBox();
+    const computedStylePanesWrapper = new UI.VBox();
     computedStylePanesWrapper.element.classList.add('style-panes-wrapper');
     this._computedStyleWidget.show(computedStylePanesWrapper.element);
 
@@ -773,7 +773,7 @@ Elements.ElementsPanel = class extends UI.Panel {
      * @this {Elements.ElementsPanel}
      */
     function tabSelected(event) {
-      var tabId = /** @type {string} */ (event.data.tabId);
+      const tabId = /** @type {string} */ (event.data.tabId);
       if (tabId === Common.UIString('Computed'))
         showMetrics.call(this, true);
       else if (tabId === Common.UIString('Styles'))
@@ -781,7 +781,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     }
 
     this.sidebarPaneView = UI.viewManager.createTabbedLocation(() => UI.viewManager.showView('elements'));
-    var tabbedPane = this.sidebarPaneView.tabbedPane();
+    const tabbedPane = this.sidebarPaneView.tabbedPane();
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();
     this._popoverHelper = new UI.PopoverHelper(tabbedPane.element, this._getPopoverRequest.bind(this));
@@ -791,13 +791,13 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this._splitMode !== Elements.ElementsPanel._splitMode.Vertical)
       this._splitWidget.installResizer(tabbedPane.headerElement());
 
-    var stylesView = new UI.SimpleView(Common.UIString('Styles'));
+    const stylesView = new UI.SimpleView(Common.UIString('Styles'));
     this.sidebarPaneView.appendView(stylesView);
     if (splitMode === Elements.ElementsPanel._splitMode.Horizontal) {
       // Styles and computed are merged into a single tab.
       stylesView.element.classList.add('flex-auto');
 
-      var splitWidget = new UI.SplitWidget(true, true, 'stylesPaneSplitViewState', 215);
+      const splitWidget = new UI.SplitWidget(true, true, 'stylesPaneSplitViewState', 215);
       splitWidget.show(stylesView.element);
       splitWidget.setMainWidget(matchedStylePanesWrapper);
       splitWidget.setSidebarWidget(computedStylePanesWrapper);
@@ -806,7 +806,7 @@ Elements.ElementsPanel = class extends UI.Panel {
       stylesView.element.classList.add('flex-auto');
       matchedStylePanesWrapper.show(stylesView.element);
 
-      var computedView = new UI.SimpleView(Common.UIString('Computed'));
+      const computedView = new UI.SimpleView(Common.UIString('Computed'));
       computedView.element.classList.add('composite', 'fill');
       computedStylePanesWrapper.show(computedView.element);
 
@@ -818,7 +818,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     showMetrics.call(this, this._splitMode === Elements.ElementsPanel._splitMode.Horizontal);
 
     this.sidebarPaneView.appendApplicableItems('elements-sidebar');
-    for (var i = 0; i < extensionSidebarPanes.length; ++i)
+    for (let i = 0; i < extensionSidebarPanes.length; ++i)
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);
 
     if (lastSelectedTabId)
@@ -831,7 +831,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _extensionSidebarPaneAdded(event) {
-    var pane = /** @type {!Extensions.ExtensionSidebarPane} */ (event.data);
+    const pane = /** @type {!Extensions.ExtensionSidebarPane} */ (event.data);
     this._addExtensionSidebarPane(pane);
   }
 
@@ -875,7 +875,7 @@ Elements.ElementsPanel.ContextMenuProvider = class {
     // Skip adding "Reveal..." menu item for our own tree outline.
     if (Elements.ElementsPanel.instance().element.isAncestor(/** @type {!Node} */ (event.target)))
       return;
-    var commandCallback = Common.Revealer.reveal.bind(Common.Revealer, object);
+    const commandCallback = Common.Revealer.reveal.bind(Common.Revealer, object);
     contextMenu.revealSection().appendItem(Common.UIString('Reveal in Elements panel'), commandCallback);
   }
 };
@@ -892,7 +892,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
    * @return {!Promise}
    */
   reveal(node, omitFocus) {
-    var panel = Elements.ElementsPanel.instance();
+    const panel = Elements.ElementsPanel.instance();
     panel._pendingNodeReveal = true;
 
     return new Promise(revealPromise);
@@ -907,7 +907,7 @@ Elements.ElementsPanel.DOMNodeRevealer = class {
       } else if (node instanceof SDK.DeferredDOMNode) {
         (/** @type {!SDK.DeferredDOMNode} */ (node)).resolve(onNodeResolved);
       } else if (node instanceof SDK.RemoteObject) {
-        var domModel = /** @type {!SDK.RemoteObject} */ (node).runtimeModel().target().model(SDK.DOMModel);
+        const domModel = /** @type {!SDK.RemoteObject} */ (node).runtimeModel().target().model(SDK.DOMModel);
         if (domModel)
           domModel.pushObjectAsNodeToFrontend(node).then(onNodeResolved);
         else
@@ -944,7 +944,7 @@ Elements.ElementsPanel.CSSPropertyRevealer = class {
    * @return {!Promise}
    */
   reveal(property) {
-    var panel = Elements.ElementsPanel.instance();
+    const panel = Elements.ElementsPanel.instance();
     return panel._revealProperty(/** @type {!SDK.CSSProperty} */ (property));
   }
 };
@@ -962,10 +962,10 @@ Elements.ElementsActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var node = UI.context.flavor(SDK.DOMNode);
+    const node = UI.context.flavor(SDK.DOMNode);
     if (!node)
       return true;
-    var treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
+    const treeOutline = Elements.ElementsTreeOutline.forDOMModel(node.domModel());
     if (!treeOutline)
       return true;
 

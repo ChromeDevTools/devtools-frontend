@@ -8,17 +8,17 @@
  */
 
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
-  for (var key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-    var originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-    var originGroup = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroupName);
+  for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
+    const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
+    const originGroup = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroupName);
 
     if (originGroup.hidden)
       continue;
 
     TestRunner.addResult('Group: ' + originGroupName);
-    var originTitles = originGroup.childrenListElement.getElementsByTagName('span');
+    const originTitles = originGroup.childrenListElement.getElementsByTagName('span');
 
-    for (var originTitle of originTitles) {
+    for (const originTitle of originTitles) {
       if (originTitle.className !== 'tree-element-title')
         TestRunner.dumpDeepInnerHTML(originTitle);
     }

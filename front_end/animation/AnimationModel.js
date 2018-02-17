@@ -21,9 +21,9 @@ Animation.AnimationModel = class extends SDK.SDKModel {
     /** @type {!Array.<string>} */
     this._pendingAnimations = [];
     this._playbackRate = 1;
-    var resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel));
+    const resourceTreeModel = /** @type {!SDK.ResourceTreeModel} */ (target.model(SDK.ResourceTreeModel));
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._reset, this);
-    var screenCaptureModel = target.model(SDK.ScreenCaptureModel);
+    const screenCaptureModel = target.model(SDK.ScreenCaptureModel);
     if (screenCaptureModel)
       this._screenshotCapture = new Animation.AnimationModel.ScreenshotCapture(this, screenCaptureModel);
   }
@@ -58,7 +58,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
     if (!payload.source || !payload.source.backendNodeId)
       return;
 
-    var animation = Animation.AnimationModel.Animation.parsePayload(this, payload);
+    const animation = Animation.AnimationModel.Animation.parsePayload(this, payload);
 
     // Ignore Web Animations custom effects & groups.
     if (animation.type() === 'WebAnimation' && animation.source().keyframesRule().keyframes().length === 0) {
@@ -73,7 +73,7 @@ Animation.AnimationModel = class extends SDK.SDKModel {
   }
 
   _flushPendingAnimationsIfNeeded() {
-    for (var id of this._pendingAnimations) {
+    for (const id of this._pendingAnimations) {
       if (!this._animationsById.get(id))
         return;
     }
@@ -87,8 +87,8 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   _matchExistingGroups(incomingGroup) {
-    var matchedGroup = null;
-    for (var group of this._animationGroups.values()) {
+    let matchedGroup = null;
+    for (const group of this._animationGroups.values()) {
       if (group._matches(incomingGroup)) {
         matchedGroup = group;
         group._update(incomingGroup);
@@ -110,10 +110,10 @@ Animation.AnimationModel = class extends SDK.SDKModel {
    */
   _createGroupFromPendingAnimations() {
     console.assert(this._pendingAnimations.length);
-    var groupedAnimations = [this._animationsById.get(this._pendingAnimations.shift())];
-    var remainingAnimations = [];
-    for (var id of this._pendingAnimations) {
-      var anim = this._animationsById.get(id);
+    const groupedAnimations = [this._animationsById.get(this._pendingAnimations.shift())];
+    const remainingAnimations = [];
+    for (const id of this._pendingAnimations) {
+      const anim = this._animationsById.get(id);
       if (anim.startTime() === groupedAnimations[0].startTime())
         groupedAnimations.push(anim);
       else
@@ -268,7 +268,7 @@ Animation.AnimationModel.Animation = class {
    * @return {number}
    */
   _finiteDuration() {
-    var iterations = Math.min(this.source().iterations(), 3);
+    const iterations = Math.min(this.source().iterations(), 3);
     return this.source().delay() + this.source().duration() * iterations;
   }
 
@@ -302,8 +302,8 @@ Animation.AnimationModel.Animation = class {
     if (!this.source().iterations() || !animation.source().iterations())
       return true;
 
-    var firstAnimation = this.startTime() < animation.startTime() ? this : animation;
-    var secondAnimation = firstAnimation === this ? animation : this;
+    const firstAnimation = this.startTime() < animation.startTime() ? this : animation;
+    const secondAnimation = firstAnimation === this ? animation : this;
     return firstAnimation.endTime() >= secondAnimation.startTime();
   }
 
@@ -324,7 +324,7 @@ Animation.AnimationModel.Animation = class {
    * @param {!SDK.DOMNode} node
    */
   _updateNodeStyle(duration, delay, node) {
-    var animationPrefix;
+    let animationPrefix;
     if (this.type() === Animation.AnimationModel.Animation.Type.CSSTransition)
       animationPrefix = 'transition-';
     else if (this.type() === Animation.AnimationModel.Animation.Type.CSSAnimation)
@@ -332,7 +332,7 @@ Animation.AnimationModel.Animation = class {
     else
       return;
 
-    var cssModel = node.domModel().cssModel();
+    const cssModel = node.domModel().cssModel();
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'duration', duration + 'ms');
     cssModel.setEffectivePropertyValueForNode(node.id, animationPrefix + 'delay', delay + 'ms');
   }
@@ -610,8 +610,8 @@ Animation.AnimationModel.AnimationGroup = class {
    * @return {number}
    */
   finiteDuration() {
-    var maxDuration = 0;
-    for (var i = 0; i < this._animations.length; ++i)
+    let maxDuration = 0;
+    for (let i = 0; i < this._animations.length; ++i)
       maxDuration = Math.max(maxDuration, this._animations[i]._finiteDuration());
     return maxDuration;
   }
@@ -644,8 +644,8 @@ Animation.AnimationModel.AnimationGroup = class {
    * @return {!Promise<number>}
    */
   currentTimePromise() {
-    var longestAnim = null;
-    for (var anim of this._animations) {
+    let longestAnim = null;
+    for (const anim of this._animations) {
       if (!longestAnim || anim.endTime() > longestAnim.endTime())
         longestAnim = anim;
     }
@@ -670,9 +670,9 @@ Animation.AnimationModel.AnimationGroup = class {
 
     if (this._animations.length !== group._animations.length)
       return false;
-    var left = this._animations.map(extractId).sort();
-    var right = group._animations.map(extractId).sort();
-    for (var i = 0; i < left.length; i++) {
+    const left = this._animations.map(extractId).sort();
+    const right = group._animations.map(extractId).sort();
+    for (let i = 0; i < left.length; i++) {
       if (left[i] !== right[i])
         return false;
     }
@@ -691,8 +691,8 @@ Animation.AnimationModel.AnimationGroup = class {
    * @return {!Array.<!Image>}
    */
   screenshots() {
-    for (var i = 0; i < this._screenshots.length; ++i) {
-      var image = new Image();
+    for (let i = 0; i < this._screenshots.length; ++i) {
+      const image = new Image();
       image.src = 'data:image/jpeg;base64,' + this._screenshots[i];
       this._screenshotImages.push(image);
     }
@@ -756,8 +756,8 @@ Animation.AnimationModel.ScreenshotCapture = class {
    * @param {!Array<string>} screenshots
    */
   captureScreenshots(duration, screenshots) {
-    var screencastDuration = Math.min(duration / this._animationModel._playbackRate, 3000);
-    var endTime = screencastDuration + window.performance.now();
+    const screencastDuration = Math.min(duration / this._animationModel._playbackRate, 3000);
+    const endTime = screencastDuration + window.performance.now();
     this._requests.push({endTime: endTime, screenshots: screenshots});
 
     if (!this._endTime || endTime > this._endTime) {
@@ -789,9 +789,9 @@ Animation.AnimationModel.ScreenshotCapture = class {
     if (!this._capturing)
       return;
 
-    var now = window.performance.now();
+    const now = window.performance.now();
     this._requests = this._requests.filter(isAnimating);
-    for (var request of this._requests)
+    for (const request of this._requests)
       request.screenshots.push(base64Data);
   }
 

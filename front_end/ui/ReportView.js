@@ -55,7 +55,7 @@ UI.ReportView = class extends UI.VBox {
    * @return {!UI.Toolbar}
    */
   createToolbar() {
-    var toolbar = new UI.Toolbar('');
+    const toolbar = new UI.Toolbar('');
     this._headerElement.appendChild(toolbar.element);
     return toolbar;
   }
@@ -66,7 +66,7 @@ UI.ReportView = class extends UI.VBox {
    * @return {!UI.ReportView.Section}
    */
   appendSection(title, className) {
-    var section = new UI.ReportView.Section(title, className);
+    const section = new UI.ReportView.Section(title, className);
     section.show(this._sectionList);
     return section;
   }
@@ -75,14 +75,14 @@ UI.ReportView = class extends UI.VBox {
    * @param {function(!UI.ReportView.Section, !UI.ReportView.Section): number} comparator
    */
   sortSections(comparator) {
-    var sections = /** @type {!Array<!UI.ReportView.Section>} */ (this.children().slice());
-    var sorted = sections.every((e, i, a) => !i || comparator(a[i - 1], a[i]) <= 0);
+    const sections = /** @type {!Array<!UI.ReportView.Section>} */ (this.children().slice());
+    const sorted = sections.every((e, i, a) => !i || comparator(a[i - 1], a[i]) <= 0);
     if (sorted)
       return;
 
     this.detachChildWidgets();
     sections.sort(comparator);
-    for (var section of sections)
+    for (const section of sections)
       section.show(this._sectionList);
   }
 
@@ -142,7 +142,7 @@ UI.ReportView.Section = class extends UI.VBox {
    * @return {!UI.Toolbar}
    */
   createToolbar() {
-    var toolbar = new UI.Toolbar('');
+    const toolbar = new UI.Toolbar('');
     this._headerElement.appendChild(toolbar.element);
     return toolbar;
   }
@@ -153,7 +153,7 @@ UI.ReportView.Section = class extends UI.VBox {
    * @return {!Element}
    */
   appendField(title, textValue) {
-    var row = this._fieldMap.get(title);
+    let row = this._fieldMap.get(title);
     if (!row) {
       row = this._fieldList.createChild('div', 'report-field');
       row.createChild('div', 'report-field-name').textContent = title;
@@ -169,7 +169,7 @@ UI.ReportView.Section = class extends UI.VBox {
    * @param {string} title
    */
   removeField(title) {
-    var row = this._fieldMap.get(title);
+    const row = this._fieldMap.get(title);
     if (row)
       row.remove();
     this._fieldMap.delete(title);
@@ -180,7 +180,7 @@ UI.ReportView.Section = class extends UI.VBox {
    * @param {boolean} visible
    */
   setFieldVisible(title, visible) {
-    var row = this._fieldMap.get(title);
+    const row = this._fieldMap.get(title);
     if (row)
       row.classList.toggle('hidden', !visible);
   }
@@ -190,7 +190,7 @@ UI.ReportView.Section = class extends UI.VBox {
    * @return {?Element}
    */
   fieldValue(title) {
-    var row = this._fieldMap.get(title);
+    const row = this._fieldMap.get(title);
     return row ? row.lastElementChild : null;
   }
 

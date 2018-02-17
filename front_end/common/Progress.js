@@ -90,17 +90,17 @@ Common.CompositeProgress = class {
    * @return {!Common.SubProgress}
    */
   createSubProgress(weight) {
-    var child = new Common.SubProgress(this, weight);
+    const child = new Common.SubProgress(this, weight);
     this._children.push(child);
     return child;
   }
 
   _update() {
-    var totalWeights = 0;
-    var done = 0;
+    let totalWeights = 0;
+    let done = 0;
 
-    for (var i = 0; i < this._children.length; ++i) {
-      var child = this._children[i];
+    for (let i = 0; i < this._children.length; ++i) {
+      const child = this._children[i];
       if (child._totalWork)
         done += child._weight * child._worked / child._totalWork;
       totalWeights += child._weight;

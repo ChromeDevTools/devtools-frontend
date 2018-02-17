@@ -33,7 +33,7 @@ TextUtils.Text = class {
    * @return {number}
    */
   lineCount() {
-    var lineEndings = this.lineEndings();
+    const lineEndings = this.lineEndings();
     return lineEndings.length;
   }
 
@@ -51,8 +51,8 @@ TextUtils.Text = class {
    * @return {!TextUtils.Text.Position}
    */
   positionFromOffset(offset) {
-    var lineEndings = this.lineEndings();
-    var lineNumber = lineEndings.lowerBound(offset);
+    const lineEndings = this.lineEndings();
+    const lineNumber = lineEndings.lowerBound(offset);
     return {lineNumber: lineNumber, columnNumber: offset - (lineNumber && (lineEndings[lineNumber - 1] + 1))};
   }
 
@@ -60,10 +60,10 @@ TextUtils.Text = class {
    * @return {string}
    */
   lineAt(lineNumber) {
-    var lineEndings = this.lineEndings();
-    var lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
-    var lineEnd = lineEndings[lineNumber];
-    var lineContent = this._value.substring(lineStart, lineEnd);
+    const lineEndings = this.lineEndings();
+    const lineStart = lineNumber > 0 ? lineEndings[lineNumber - 1] + 1 : 0;
+    const lineEnd = lineEndings[lineNumber];
+    let lineContent = this._value.substring(lineStart, lineEnd);
     if (lineContent.length > 0 && lineContent.charAt(lineContent.length - 1) === '\r')
       lineContent = lineContent.substring(0, lineContent.length - 1);
     return lineContent;
@@ -74,8 +74,8 @@ TextUtils.Text = class {
    * @return {!TextUtils.SourceRange}
    */
   toSourceRange(range) {
-    var start = this.offsetFromPosition(range.startLine, range.startColumn);
-    var end = this.offsetFromPosition(range.endLine, range.endColumn);
+    const start = this.offsetFromPosition(range.startLine, range.startColumn);
+    const end = this.offsetFromPosition(range.endLine, range.endColumn);
     return new TextUtils.SourceRange(start, end - start);
   }
 
@@ -84,8 +84,8 @@ TextUtils.Text = class {
    * @return {!TextUtils.TextRange}
    */
   toTextRange(sourceRange) {
-    var cursor = new TextUtils.TextCursor(this.lineEndings());
-    var result = TextUtils.TextRange.createFromLocation(0, 0);
+    const cursor = new TextUtils.TextCursor(this.lineEndings());
+    const result = TextUtils.TextRange.createFromLocation(0, 0);
 
     cursor.resetTo(sourceRange.offset);
     result.startLine = cursor.lineNumber();
@@ -103,7 +103,7 @@ TextUtils.Text = class {
    * @return {string}
    */
   replaceRange(range, replacement) {
-    var sourceRange = this.toSourceRange(range);
+    const sourceRange = this.toSourceRange(range);
     return this._value.substring(0, sourceRange.offset) + replacement +
         this._value.substring(sourceRange.offset + sourceRange.length);
   }
@@ -113,7 +113,7 @@ TextUtils.Text = class {
    * @return {string}
    */
   extract(range) {
-    var sourceRange = this.toSourceRange(range);
+    const sourceRange = this.toSourceRange(range);
     return this._value.substr(sourceRange.offset, sourceRange.length);
   }
 };

@@ -19,8 +19,8 @@ QuickOpen.QuickOpen = class {
    * @param {string} query
    */
   static show(query) {
-    var quickOpen = new this();
-    var filteredListWidget =
+    const quickOpen = new this();
+    const filteredListWidget =
         new QuickOpen.FilteredListWidget(null, this._history, quickOpen._queryChanged.bind(quickOpen));
     quickOpen._filteredListWidget = filteredListWidget;
     filteredListWidget.setPlaceholder(Common.UIString('Type \'?\' to see available commands'));
@@ -32,7 +32,7 @@ QuickOpen.QuickOpen = class {
    * @param {!Runtime.Extension} extension
    */
   _addProvider(extension) {
-    var prefix = extension.descriptor()['prefix'];
+    const prefix = extension.descriptor()['prefix'];
     this._prefixes.push(prefix);
     this._providers.set(
         prefix, /** @type {function():!Promise<!QuickOpen.FilteredListWidget.Provider>} */
@@ -43,7 +43,7 @@ QuickOpen.QuickOpen = class {
    * @param {string} query
    */
   _queryChanged(query) {
-    var prefix = this._prefixes.find(prefix => query.startsWith(prefix));
+    const prefix = this._prefixes.find(prefix => query.startsWith(prefix));
     if (typeof prefix !== 'string' || this._prefix === prefix)
       return;
 

@@ -28,7 +28,7 @@ TimelineModel.TimelineIRModel = class {
     this._processInputLatencies(inputLatencies);
     if (animations)
       this._processAnimations(animations);
-    var range = new Common.SegmentedRange();
+    const range = new Common.SegmentedRange();
     range.appendRange(this._drags);  // Drags take lower precedence than animation, as we can't detect them reliably.
     range.appendRange(this._cssAnimations);
     range.appendRange(this._scrolls);
@@ -40,23 +40,23 @@ TimelineModel.TimelineIRModel = class {
    * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    */
   _processInputLatencies(events) {
-    var eventTypes = TimelineModel.TimelineIRModel.InputEvents;
-    var phases = TimelineModel.TimelineIRModel.Phases;
-    var thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
+    const eventTypes = TimelineModel.TimelineIRModel.InputEvents;
+    const phases = TimelineModel.TimelineIRModel.Phases;
+    const thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
 
-    var scrollStart;
-    var flingStart;
-    var touchStart;
-    var firstTouchMove;
-    var mouseWheel;
-    var mouseDown;
-    var mouseMove;
+    let scrollStart;
+    let flingStart;
+    let touchStart;
+    let firstTouchMove;
+    let mouseWheel;
+    let mouseDown;
+    let mouseMove;
 
-    for (var i = 0; i < events.length; ++i) {
-      var event = events[i];
+    for (let i = 0; i < events.length; ++i) {
+      const event = events[i];
       if (i > 0 && events[i].startTime < events[i - 1].startTime)
         console.assert(false, 'Unordered input events');
-      var type = this._inputEventType(event.name);
+      const type = this._inputEventType(event.name);
       switch (type) {
         case eventTypes.ScrollBegin:
           this._scrolls.append(this._segmentForEvent(event, phases.Scroll));
@@ -184,7 +184,7 @@ TimelineModel.TimelineIRModel = class {
    * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    */
   _processAnimations(events) {
-    for (var i = 0; i < events.length; ++i)
+    for (let i = 0; i < events.length; ++i)
       this._cssAnimations.append(this._segmentForEvent(events[i], TimelineModel.TimelineIRModel.Phases.Animation));
   }
 
@@ -226,7 +226,7 @@ TimelineModel.TimelineIRModel = class {
   }
 
   reset() {
-    var thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
+    const thresholdsMs = TimelineModel.TimelineIRModel._mergeThresholdsMs;
 
     this._segments = [];
     this._drags = new Common.SegmentedRange(merge.bind(null, thresholdsMs.mouse));
@@ -249,7 +249,7 @@ TimelineModel.TimelineIRModel = class {
    * @return {?TimelineModel.TimelineIRModel.InputEvents}
    */
   _inputEventType(eventName) {
-    var prefix = 'InputLatency::';
+    const prefix = 'InputLatency::';
     if (!eventName.startsWith(prefix)) {
       if (eventName === TimelineModel.TimelineIRModel.InputEvents.ImplSideFling)
         return /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ (eventName);

@@ -9,12 +9,12 @@ UI.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
   constructor(reason) {
     super(true);
     this.registerRequiredCSS('ui/remoteDebuggingTerminatedScreen.css');
-    var message = this.contentElement.createChild('div', 'message');
+    const message = this.contentElement.createChild('div', 'message');
     message.createChild('span').textContent = Common.UIString('Debugging connection was closed. Reason: ');
     message.createChild('span', 'reason').textContent = reason;
     this.contentElement.createChild('div', 'message').textContent =
         Common.UIString('Reconnect when ready by reopening DevTools.');
-    var button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
+    const button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());
     this.contentElement.createChild('div', 'button').appendChild(button);
   }
 
@@ -22,7 +22,7 @@ UI.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
    * @param {string} reason
    */
   static show(reason) {
-    var dialog = new UI.Dialog();
+    const dialog = new UI.Dialog();
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);

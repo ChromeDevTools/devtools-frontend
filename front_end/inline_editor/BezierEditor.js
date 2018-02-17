@@ -24,7 +24,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     this._presetsContainer = this._outerContainer.createChild('div', 'bezier-presets');
     this._presetUI = new InlineEditor.BezierUI(40, 40, 0, 2, false);
     this._presetCategories = [];
-    for (var i = 0; i < InlineEditor.BezierEditor.Presets.length; i++) {
+    for (let i = 0; i < InlineEditor.BezierEditor.Presets.length; i++) {
       this._presetCategories[i] = this._createCategory(InlineEditor.BezierEditor.Presets[i]);
       this._presetsContainer.appendChild(this._presetCategories[i].icon);
     }
@@ -36,8 +36,8 @@ InlineEditor.BezierEditor = class extends UI.VBox {
         this._curve, this._dragStart.bind(this), this._dragMove.bind(this), this._dragEnd.bind(this), 'default');
 
     this._header = this.contentElement.createChild('div', 'bezier-header');
-    var minus = this._createPresetModifyIcon(this._header, 'bezier-preset-minus', 'M 12 6 L 8 10 L 12 14');
-    var plus = this._createPresetModifyIcon(this._header, 'bezier-preset-plus', 'M 8 6 L 12 10 L 8 14');
+    const minus = this._createPresetModifyIcon(this._header, 'bezier-preset-minus', 'M 12 6 L 8 10 L 12 14');
+    const plus = this._createPresetModifyIcon(this._header, 'bezier-preset-plus', 'M 8 6 L 12 10 L 8 14');
     minus.addEventListener('click', this._presetModifyClicked.bind(this, false));
     plus.addEventListener('click', this._presetModifyClicked.bind(this, true));
     this._label = this._header.createChild('span', 'source-code bezier-display-value');
@@ -66,8 +66,8 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   wasShown() {
     this._unselectPresets();
     // Check if bezier matches a preset
-    for (var category of this._presetCategories) {
-      for (var i = 0; i < category.presets.length; i++) {
+    for (const category of this._presetCategories) {
+      for (let i = 0; i < category.presets.length; i++) {
         if (this._bezier.asCSSText() === category.presets[i].value) {
           category.presetIndex = i;
           this._presetCategorySelected(category);
@@ -85,8 +85,8 @@ InlineEditor.BezierEditor = class extends UI.VBox {
   }
 
   _updateUI() {
-    var labelText = this._selectedCategory ? this._selectedCategory.presets[this._selectedCategory.presetIndex].name :
-                                             this._bezier.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
+    const labelText = this._selectedCategory ? this._selectedCategory.presets[this._selectedCategory.presetIndex].name :
+                                               this._bezier.asCSSText().replace(/\s(-\d\.\d)/g, '$1');
     this._label.textContent = Common.UIString(labelText);
     this._curveUI.drawCurve(this._bezier, this._curve);
     this._previewOnion.removeChildren();
@@ -98,12 +98,12 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    */
   _dragStart(event) {
     this._mouseDownPosition = new UI.Geometry.Point(event.x, event.y);
-    var ui = this._curveUI;
+    const ui = this._curveUI;
     this._controlPosition = new UI.Geometry.Point(
         Number.constrain((event.offsetX - ui.radius) / ui.curveWidth(), 0, 1),
         (ui.curveHeight() + ui.marginTop + ui.radius - event.offsetY) / ui.curveHeight());
 
-    var firstControlPointIsCloser = this._controlPosition.distanceTo(this._bezier.controlPoints[0]) <
+    const firstControlPointIsCloser = this._controlPosition.distanceTo(this._bezier.controlPoints[0]) <
         this._controlPosition.distanceTo(this._bezier.controlPoints[1]);
     this._selectedPoint = firstControlPointIsCloser ? 0 : 1;
 
@@ -120,9 +120,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @param {number} mouseY
    */
   _updateControlPosition(mouseX, mouseY) {
-    var deltaX = (mouseX - this._mouseDownPosition.x) / this._curveUI.curveWidth();
-    var deltaY = (mouseY - this._mouseDownPosition.y) / this._curveUI.curveHeight();
-    var newPosition = new UI.Geometry.Point(
+    const deltaX = (mouseX - this._mouseDownPosition.x) / this._curveUI.curveWidth();
+    const deltaY = (mouseY - this._mouseDownPosition.y) / this._curveUI.curveHeight();
+    const newPosition = new UI.Geometry.Point(
         Number.constrain(this._controlPosition.x + deltaX, 0, 1), this._controlPosition.y - deltaY);
     this._bezier.controlPoints[this._selectedPoint] = newPosition;
   }
@@ -149,9 +149,9 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @return {!InlineEditor.BezierEditor.PresetCategory}
    */
   _createCategory(presetGroup) {
-    var presetElement = createElementWithClass('div', 'bezier-preset-category');
-    var iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
-    var category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
+    const presetElement = createElementWithClass('div', 'bezier-preset-category');
+    const iconElement = presetElement.createSVGChild('svg', 'bezier-preset monospace');
+    const category = {presets: presetGroup, presetIndex: 0, icon: presetElement};
     this._presetUI.drawCurve(UI.Geometry.CubicBezier.parse(category.presets[0].value), iconElement);
     iconElement.addEventListener('click', this._presetCategorySelected.bind(this, category));
     return category;
@@ -164,16 +164,16 @@ InlineEditor.BezierEditor = class extends UI.VBox {
    * @return {!Element}
    */
   _createPresetModifyIcon(parentElement, className, drawPath) {
-    var icon = parentElement.createSVGChild('svg', 'bezier-preset-modify ' + className);
+    const icon = parentElement.createSVGChild('svg', 'bezier-preset-modify ' + className);
     icon.setAttribute('width', 20);
     icon.setAttribute('height', 20);
-    var path = icon.createSVGChild('path');
+    const path = icon.createSVGChild('path');
     path.setAttribute('d', drawPath);
     return icon;
   }
 
   _unselectPresets() {
-    for (var category of this._presetCategories)
+    for (const category of this._presetCategories)
       category.icon.classList.remove('bezier-preset-selected');
     delete this._selectedCategory;
     this._header.classList.remove('bezier-header-active');
@@ -205,7 +205,7 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     if (!this._selectedCategory)
       return;
 
-    var length = this._selectedCategory.presets.length;
+    const length = this._selectedCategory.presets.length;
     this._selectedCategory.presetIndex = (this._selectedCategory.presetIndex + (intensify ? 1 : -1) + length) % length;
     this.setBezier(
         UI.Geometry.CubicBezier.parse(this._selectedCategory.presets[this._selectedCategory.presetIndex].value));
@@ -220,16 +220,16 @@ InlineEditor.BezierEditor = class extends UI.VBox {
     const animationDuration = 1600;
     const numberOnionSlices = 20;
 
-    var keyframes = [
+    const keyframes = [
       {offset: 0, transform: 'translateX(0px)', easing: this._bezier.asCSSText(), opacity: 1},
       {offset: 0.9, transform: 'translateX(218px)', opacity: 1},
       {offset: 1, transform: 'translateX(218px)', opacity: 0}
     ];
     this._previewAnimation = this._previewElement.animate(keyframes, animationDuration);
     this._previewOnion.removeChildren();
-    for (var i = 0; i <= numberOnionSlices; i++) {
-      var slice = this._previewOnion.createChild('div', 'bezier-preview-animation');
-      var player = slice.animate(
+    for (let i = 0; i <= numberOnionSlices; i++) {
+      const slice = this._previewOnion.createChild('div', 'bezier-preview-animation');
+      const player = slice.animate(
           [{transform: 'translateX(0px)', easing: this._bezier.asCSSText()}, {transform: 'translateX(218px)'}],
           {duration: animationDuration, fill: 'forwards'});
       player.pause();

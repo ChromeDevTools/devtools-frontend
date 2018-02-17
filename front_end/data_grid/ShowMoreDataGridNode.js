@@ -76,7 +76,7 @@ DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
   }
 
   _updateLabels() {
-    var totalSize = this._endPosition - this._startPosition;
+    const totalSize = this._endPosition - this._startPosition;
     if (totalSize > this._chunkSize) {
       this.showNext.classList.remove('hidden');
       this.showLast.classList.remove('hidden');
@@ -102,7 +102,7 @@ DataGrid.ShowMoreDataGridNode = class extends DataGrid.DataGridNode {
    * @return {!Element}
    */
   createCell(columnIdentifier) {
-    var cell = this.createTD(columnIdentifier);
+    const cell = this.createTD(columnIdentifier);
     if (!this._hasCells) {
       this._hasCells = true;
       if (this.depth)

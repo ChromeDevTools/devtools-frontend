@@ -161,20 +161,23 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    * @return {!{start: number, middle: number, end: number}}
    */
   computeBarGraphPercentages(request) {
+    let start;
+    let middle;
+    let end;
     if (request.startTime !== -1)
-      var start = ((request.startTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
+      start = ((request.startTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
     else
-      var start = 0;
+      start = 0;
 
     if (request.responseReceivedTime !== -1)
-      var middle = ((request.responseReceivedTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
+      middle = ((request.responseReceivedTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
     else
-      var middle = (this.startAtZero ? start : 100);
+      middle = (this.startAtZero ? start : 100);
 
     if (request.endTime !== -1)
-      var end = ((request.endTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
+      end = ((request.endTime - this.minimumBoundary()) / this.boundarySpan()) * 100;
     else
-      var end = (this.startAtZero ? middle : 100);
+      end = (this.startAtZero ? middle : 100);
 
     if (this.startAtZero) {
       end -= start;
@@ -238,26 +241,24 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    * @return {!{left: string, right: string, tooltip: (string|undefined)}}
    */
   computeBarGraphLabels(request) {
-    var rightLabel = '';
+    let rightLabel = '';
     if (request.responseReceivedTime !== -1 && request.endTime !== -1)
       rightLabel = Number.secondsToString(request.endTime - request.responseReceivedTime);
 
-    var hasLatency = request.latency > 0;
-    if (hasLatency)
-      var leftLabel = Number.secondsToString(request.latency);
-    else
-      var leftLabel = rightLabel;
+    const hasLatency = request.latency > 0;
+    const leftLabel = hasLatency ? Number.secondsToString(request.latency) : rightLabel;
 
     if (request.timing)
       return {left: leftLabel, right: rightLabel};
 
+    let tooltip;
     if (hasLatency && rightLabel) {
-      var total = Number.secondsToString(request.duration);
-      var tooltip = Network.NetworkTimeCalculator._latencyDownloadTotalFormat.format(leftLabel, rightLabel, total);
+      const total = Number.secondsToString(request.duration);
+      tooltip = Network.NetworkTimeCalculator._latencyDownloadTotalFormat.format(leftLabel, rightLabel, total);
     } else if (hasLatency) {
-      var tooltip = Network.NetworkTimeCalculator._latencyFormat.format(leftLabel);
+      tooltip = Network.NetworkTimeCalculator._latencyFormat.format(leftLabel);
     } else if (rightLabel) {
-      var tooltip = Network.NetworkTimeCalculator._downloadFormat.format(rightLabel);
+      tooltip = Network.NetworkTimeCalculator._downloadFormat.format(rightLabel);
     }
 
     if (request.fetchedViaServiceWorker)
@@ -271,9 +272,9 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    * @param {!SDK.NetworkRequest} request
    */
   updateBoundaries(request) {
-    var lowerBound = this._lowerBound(request);
-    var upperBound = this._upperBound(request);
-    var changed = false;
+    const lowerBound = this._lowerBound(request);
+    const upperBound = this._upperBound(request);
+    let changed = false;
     if (lowerBound !== -1 || this.startAtZero)
       changed = this._extendBoundariesToIncludeTimestamp(this.startAtZero ? 0 : lowerBound);
     if (upperBound !== -1)
@@ -287,8 +288,8 @@ Network.NetworkTimeCalculator = class extends Common.Object {
    * @return {boolean}
    */
   _extendBoundariesToIncludeTimestamp(timestamp) {
-    var previousMinimumBoundary = this._minimumBoundary;
-    var previousMaximumBoundary = this._maximumBoundary;
+    const previousMinimumBoundary = this._minimumBoundary;
+    const previousMaximumBoundary = this._maximumBoundary;
     const minOffset = Network.NetworkTimeCalculator._minimumSpread;
     if (this._minimumBoundary === -1 || this._maximumBoundary === -1) {
       this._minimumBoundary = timestamp;

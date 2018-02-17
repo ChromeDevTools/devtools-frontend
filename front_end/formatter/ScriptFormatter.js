@@ -52,7 +52,7 @@ Formatter.Formatter.format = function(contentType, mimeType, content, callback) 
  * @return {number}
  */
 Formatter.Formatter.locationToPosition = function(lineEndings, lineNumber, columnNumber) {
-  var position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
+  const position = lineNumber ? lineEndings[lineNumber - 1] + 1 : 0;
   return position + columnNumber;
 };
 
@@ -62,11 +62,12 @@ Formatter.Formatter.locationToPosition = function(lineEndings, lineNumber, colum
  * @return {!Array<number>}
  */
 Formatter.Formatter.positionToLocation = function(lineEndings, position) {
-  var lineNumber = lineEndings.upperBound(position - 1);
+  const lineNumber = lineEndings.upperBound(position - 1);
+  let columnNumber;
   if (!lineNumber)
-    var columnNumber = position;
+    columnNumber = position;
   else
-    var columnNumber = position - lineEndings[lineNumber - 1] - 1;
+    columnNumber = position - lineEndings[lineNumber - 1] - 1;
   return [lineNumber, columnNumber];
 };
 
@@ -94,7 +95,7 @@ Formatter.ScriptFormatter = class {
    * @param {!Formatter.FormatterWorkerPool.FormatResult} formatResult
    */
   _didFormatContent(formatResult) {
-    var sourceMapping = new Formatter.FormatterSourceMappingImpl(
+    const sourceMapping = new Formatter.FormatterSourceMappingImpl(
         this._originalContent.computeLineEndings(), formatResult.content.computeLineEndings(), formatResult.mapping);
     this._callback(formatResult.content, sourceMapping);
   }
@@ -185,9 +186,9 @@ Formatter.FormatterSourceMappingImpl = class {
    * @return {!Array.<number>}
    */
   originalToFormatted(lineNumber, columnNumber) {
-    var originalPosition =
+    const originalPosition =
         Formatter.Formatter.locationToPosition(this._originalLineEndings, lineNumber, columnNumber || 0);
-    var formattedPosition =
+    const formattedPosition =
         this._convertPosition(this._mapping.original, this._mapping.formatted, originalPosition || 0);
     return Formatter.Formatter.positionToLocation(this._formattedLineEndings, formattedPosition);
   }
@@ -199,9 +200,9 @@ Formatter.FormatterSourceMappingImpl = class {
    * @return {!Array.<number>}
    */
   formattedToOriginal(lineNumber, columnNumber) {
-    var formattedPosition =
+    const formattedPosition =
         Formatter.Formatter.locationToPosition(this._formattedLineEndings, lineNumber, columnNumber || 0);
-    var originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
+    const originalPosition = this._convertPosition(this._mapping.formatted, this._mapping.original, formattedPosition);
     return Formatter.Formatter.positionToLocation(this._originalLineEndings, originalPosition || 0);
   }
 
@@ -212,8 +213,8 @@ Formatter.FormatterSourceMappingImpl = class {
    * @return {number}
    */
   _convertPosition(positions1, positions2, position) {
-    var index = positions1.upperBound(position) - 1;
-    var convertedPosition = positions2[index] + position - positions1[index];
+    const index = positions1.upperBound(position) - 1;
+    let convertedPosition = positions2[index] + position - positions1[index];
     if (index < positions2.length - 1 && convertedPosition > positions2[index + 1])
       convertedPosition = positions2[index + 1];
     return convertedPosition;

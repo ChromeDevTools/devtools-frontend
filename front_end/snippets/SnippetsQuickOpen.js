@@ -16,7 +16,7 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
   selectItem(itemIndex, promptValue) {
     if (itemIndex === null)
       return;
-    var currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     if (currentExecutionContext)
       Snippets.scriptSnippetModel.evaluateScriptSnippet(currentExecutionContext, this._snippets[itemIndex]);
   }

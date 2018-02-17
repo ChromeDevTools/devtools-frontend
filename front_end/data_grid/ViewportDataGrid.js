@@ -38,9 +38,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    */
   setStriped(striped) {
     this._isStriped = striped;
-    var startsWithOdd = true;
+    let startsWithOdd = true;
     if (this._visibleNodes.length) {
-      var allChildren = this.rootNode().flatChildren();
+      const allChildren = this.rootNode().flatChildren();
       startsWithOdd = !!(allChildren.indexOf(this._visibleNodes[0]));
     }
     this._updateStripesClass(startsWithOdd);
@@ -130,24 +130,24 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @return {{topPadding: number, bottomPadding: number, contentHeight: number, visibleNodes: !Array.<!DataGrid.ViewportDataGridNode>, offset: number}}
    */
   _calculateVisibleNodes(clientHeight, scrollTop) {
-    var nodes = this.rootNode().flatChildren();
+    const nodes = this.rootNode().flatChildren();
     if (this._inline)
       return {topPadding: 0, bottomPadding: 0, contentHeight: 0, visibleNodes: nodes, offset: 0};
 
-    var size = nodes.length;
-    var i = 0;
-    var y = 0;
+    const size = nodes.length;
+    let i = 0;
+    let y = 0;
 
     for (; i < size && y + nodes[i].nodeSelfHeight() < scrollTop; ++i)
       y += nodes[i].nodeSelfHeight();
-    var start = i;
-    var topPadding = y;
+    const start = i;
+    const topPadding = y;
 
     for (; i < size && y < scrollTop + clientHeight; ++i)
       y += nodes[i].nodeSelfHeight();
-    var end = i;
+    const end = i;
 
-    var bottomPadding = 0;
+    let bottomPadding = 0;
     for (; i < size; ++i)
       bottomPadding += nodes[i].nodeSelfHeight();
 
@@ -164,9 +164,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @return {number}
    */
   _contentHeight() {
-    var nodes = this.rootNode().flatChildren();
-    var result = 0;
-    for (var i = 0, size = nodes.length; i < size; ++i)
+    const nodes = this.rootNode().flatChildren();
+    let result = 0;
+    for (let i = 0, size = nodes.length; i < size; ++i)
       result += nodes[i].nodeSelfHeight();
     return result;
   }
@@ -177,34 +177,34 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
       delete this._updateAnimationFrameId;
     }
 
-    var clientHeight = this._scrollContainer.clientHeight;
-    var scrollTop = this._scrollContainer.scrollTop;
-    var currentScrollTop = scrollTop;
-    var maxScrollTop = Math.max(0, this._contentHeight() - clientHeight);
+    const clientHeight = this._scrollContainer.clientHeight;
+    let scrollTop = this._scrollContainer.scrollTop;
+    const currentScrollTop = scrollTop;
+    const maxScrollTop = Math.max(0, this._contentHeight() - clientHeight);
     if (!this._updateIsFromUser && this._stickToBottom)
       scrollTop = maxScrollTop;
     this._updateIsFromUser = false;
     scrollTop = Math.min(maxScrollTop, scrollTop);
 
-    var viewportState = this._calculateVisibleNodes(clientHeight, scrollTop);
-    var visibleNodes = viewportState.visibleNodes;
-    var visibleNodesSet = new Set(visibleNodes);
+    const viewportState = this._calculateVisibleNodes(clientHeight, scrollTop);
+    const visibleNodes = viewportState.visibleNodes;
+    const visibleNodesSet = new Set(visibleNodes);
 
-    for (var i = 0; i < this._visibleNodes.length; ++i) {
-      var oldNode = this._visibleNodes[i];
+    for (let i = 0; i < this._visibleNodes.length; ++i) {
+      const oldNode = this._visibleNodes[i];
       if (!visibleNodesSet.has(oldNode) && oldNode.attached()) {
-        var element = oldNode.existingElement();
+        const element = oldNode.existingElement();
         element.remove();
       }
     }
 
-    var previousElement = this.topFillerRowElement();
-    var tBody = this.dataTableBody;
-    var offset = viewportState.offset;
+    let previousElement = this.topFillerRowElement();
+    const tBody = this.dataTableBody;
+    let offset = viewportState.offset;
 
     if (visibleNodes.length) {
-      var nodes = this.rootNode().flatChildren();
-      var index = nodes.indexOf(visibleNodes[0]);
+      const nodes = this.rootNode().flatChildren();
+      const index = nodes.indexOf(visibleNodes[0]);
       this._updateStripesClass(!!(index % 2));
       if (this._stickToBottom && index !== -1 && !!(index % 2) !== this._firstVisibleIsStriped)
         offset += 1;
@@ -212,9 +212,9 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
 
     this._firstVisibleIsStriped = !!(offset % 2);
 
-    for (var i = 0; i < visibleNodes.length; ++i) {
-      var node = visibleNodes[i];
-      var element = node.element();
+    for (let i = 0; i < visibleNodes.length; ++i) {
+      const node = visibleNodes[i];
+      const element = node.element();
       node.setStriped((offset + i) % 2 === 0);
       if (element !== previousElement.nextSibling)
         tBody.insertBefore(element, previousElement.nextSibling);
@@ -226,7 +226,7 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
     this._lastScrollTop = scrollTop;
     if (scrollTop !== currentScrollTop)
       this._scrollContainer.scrollTop = scrollTop;
-    var contentFits =
+    const contentFits =
         viewportState.contentHeight <= clientHeight && viewportState.topPadding + viewportState.bottomPadding === 0;
     if (contentFits !== this.element.classList.contains('data-grid-fits-viewport')) {
       this.element.classList.toggle('data-grid-fits-viewport', contentFits);
@@ -240,16 +240,16 @@ DataGrid.ViewportDataGrid = class extends DataGrid.DataGrid {
    * @param {!DataGrid.ViewportDataGridNode} node
    */
   _revealViewportNode(node) {
-    var nodes = this.rootNode().flatChildren();
-    var index = nodes.indexOf(node);
+    const nodes = this.rootNode().flatChildren();
+    const index = nodes.indexOf(node);
     if (index === -1)
       return;
-    var fromY = 0;
-    for (var i = 0; i < index; ++i)
+    let fromY = 0;
+    for (let i = 0; i < index; ++i)
       fromY += nodes[i].nodeSelfHeight();
-    var toY = fromY + node.nodeSelfHeight();
+    const toY = fromY + node.nodeSelfHeight();
 
-    var scrollTop = this._scrollContainer.scrollTop;
+    let scrollTop = this._scrollContainer.scrollTop;
     if (scrollTop > fromY) {
       scrollTop = fromY;
       this._stickToBottom = false;
@@ -288,8 +288,8 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    * @return {!Element}
    */
   element() {
-    var existingElement = this.existingElement();
-    var element = existingElement || this.createElement();
+    const existingElement = this.existingElement();
+    const element = existingElement || this.createElement();
     if (!existingElement || this._stale) {
       this.createCells(element);
       this._stale = false;
@@ -317,7 +317,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
    */
   clearFlatNodes() {
     this._flatNodes = null;
-    var parent = /** @type {!DataGrid.ViewportDataGridNode} */ (this.parent);
+    const parent = /** @type {!DataGrid.ViewportDataGridNode} */ (this.parent);
     if (parent)
       parent.clearFlatNodes();
   }
@@ -329,18 +329,18 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     if (this._flatNodes)
       return this._flatNodes;
     /** @type {!Array<!DataGrid.ViewportDataGridNode>} */
-    var flatNodes = [];
+    const flatNodes = [];
     /** @type {!Array<!Array<!DataGrid.ViewportDataGridNode>>} */
-    var children = [this.children];
+    const children = [this.children];
     /** @type {!Array<number>} */
-    var counters = [0];
-    var depth = 0;
+    const counters = [0];
+    let depth = 0;
     while (depth >= 0) {
       if (children[depth].length <= counters[depth]) {
         depth--;
         continue;
       }
-      var node = children[depth][counters[depth]++];
+      const node = children[depth][counters[depth]++];
       flatNodes.push(node);
       if (node._expanded && node.children.length) {
         depth++;
@@ -361,7 +361,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
   insertChild(child, index) {
     this.clearFlatNodes();
     if (child.parent === this) {
-      var currentIndex = this.children.indexOf(child);
+      const currentIndex = this.children.indexOf(child);
       if (currentIndex < 0)
         console.assert(false, 'Inconsistent DataGrid state');
       if (currentIndex === index)
@@ -411,7 +411,7 @@ DataGrid.ViewportDataGridNode = class extends DataGrid.DataGridNode {
     this.clearFlatNodes();
     if (this.dataGrid)
       this.dataGrid.updateSelectionBeforeRemoval(this, true);
-    for (var i = 0; i < this.children.length; ++i)
+    for (let i = 0; i < this.children.length; ++i)
       this.children[i]._unlink();
     this.children = [];
 

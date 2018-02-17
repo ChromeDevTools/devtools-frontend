@@ -7,8 +7,8 @@
  * @suppress {accessControls}
  */
 
-var extensionsHost = 'devtools-extensions.oopif.test';
-var extensionsOrigin = `http://${extensionsHost}:8000`;
+const extensionsHost = 'devtools-extensions.oopif.test';
+const extensionsOrigin = `http://${extensionsHost}:8000`;
 Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);
 
 Extensions.extensionServer._extensionAPITestHook = function(extensionServerClient, coreAPI) {
@@ -47,14 +47,14 @@ ExtensionsTestRunner.evaluateInExtension = function(code) {
 };
 
 ExtensionsTestRunner.runExtensionTests = async function(tests) {
-  var result = await TestRunner.RuntimeAgent.evaluate('location.href', 'console', false);
+  const result = await TestRunner.RuntimeAgent.evaluate('location.href', 'console', false);
 
   if (!result)
     return;
 
   ExtensionsTestRunner._pendingTests = (ExtensionsTestRunner._codeToEvaluateBeforeTests || '') + tests.join('\n');
-  var pageURL = result.value;
-  var extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
+  const pageURL = result.value;
+  let extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
   extensionURL = extensionURL.replace('127.0.0.1', extensionsHost);
 
   InspectorFrontendAPI.addExtensions(

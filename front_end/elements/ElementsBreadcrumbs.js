@@ -29,8 +29,8 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     if (!nodes.length)
       return;
 
-    var crumbs = this.crumbsElement;
-    for (var crumb = crumbs.firstChild; crumb; crumb = crumb.nextSibling) {
+    const crumbs = this.crumbsElement;
+    for (let crumb = crumbs.firstChild; crumb; crumb = crumb.nextSibling) {
       if (nodes.indexOf(crumb[this._nodeSymbol]) !== -1) {
         this.update(true);
         return;
@@ -47,9 +47,9 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
   }
 
   _mouseMovedInCrumbs(event) {
-    var nodeUnderMouse = event.target;
-    var crumbElement = nodeUnderMouse.enclosingNodeOrSelfWithClass('crumb');
-    var node = /** @type {?SDK.DOMNode} */ (crumbElement ? crumbElement[this._nodeSymbol] : null);
+    const nodeUnderMouse = event.target;
+    const crumbElement = nodeUnderMouse.enclosingNodeOrSelfWithClass('crumb');
+    const node = /** @type {?SDK.DOMNode} */ (crumbElement ? crumbElement[this._nodeSymbol] : null);
     if (node)
       node.highlight();
   }
@@ -66,7 +66,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
    */
   _onClickCrumb(event) {
     event.preventDefault();
-    var crumb = /** @type {!Element} */ (event.currentTarget);
+    let crumb = /** @type {!Element} */ (event.currentTarget);
     if (!crumb.classList.contains('collapsed')) {
       this.dispatchEventToListeners(Elements.ElementsBreadcrumbs.Events.NodeSelected, crumb[this._nodeSymbol]);
       return;
@@ -76,10 +76,10 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     if (crumb === this.crumbsElement.firstChild) {
       // If the clicked crumb is the first child, pick the farthest crumb
       // that is still hidden. This allows the user to expose every crumb.
-      var currentCrumb = crumb;
+      let currentCrumb = crumb;
       while (currentCrumb) {
-        var hidden = currentCrumb.classList.contains('hidden');
-        var collapsed = currentCrumb.classList.contains('collapsed');
+        const hidden = currentCrumb.classList.contains('hidden');
+        const collapsed = currentCrumb.classList.contains('collapsed');
         if (!hidden && !collapsed)
           break;
         crumb = currentCrumb;
@@ -120,11 +120,11 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     if (!this.isShowing())
       return;
 
-    var currentDOMNode = this._currentDOMNode;
-    var crumbs = this.crumbsElement;
+    const currentDOMNode = this._currentDOMNode;
+    const crumbs = this.crumbsElement;
 
-    var handled = false;
-    var crumb = crumbs.firstChild;
+    let handled = false;
+    let crumb = crumbs.firstChild;
     while (crumb) {
       if (crumb[this._nodeSymbol] === currentDOMNode) {
         crumb.classList.add('selected');
@@ -145,7 +145,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
 
     crumbs.removeChildren();
 
-    for (var current = currentDOMNode; current; current = current.parentNode) {
+    for (let current = currentDOMNode; current; current = current.parentNode) {
       if (current.nodeType() === Node.DOCUMENT_NODE)
         continue;
 
@@ -153,9 +153,9 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       crumb[this._nodeSymbol] = current;
       crumb.addEventListener('mousedown', this._onClickCrumb.bind(this), false);
 
-      var crumbTitle = this._determineElementTitle(current);
+      const crumbTitle = this._determineElementTitle(current);
       if (crumbTitle) {
-        var nameElement = createElement('span');
+        const nameElement = createElement('span');
         nameElement.textContent = crumbTitle;
         crumb.appendChild(nameElement);
         crumb.title = crumbTitle;
@@ -176,14 +176,14 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
    * @return {{selectedIndex: number, focusedIndex: number, selectedCrumb: ?Element}}
    */
   _resetCrumbStylesAndFindSelections(focusedCrumb) {
-    var crumbs = this.crumbsElement;
-    var selectedIndex = 0;
-    var focusedIndex = 0;
-    var selectedCrumb = null;
+    const crumbs = this.crumbsElement;
+    let selectedIndex = 0;
+    let focusedIndex = 0;
+    let selectedCrumb = null;
 
     // Reset crumb styles.
-    for (var i = 0; i < crumbs.childNodes.length; ++i) {
-      var crumb = crumbs.children[i];
+    for (let i = 0; i < crumbs.childNodes.length; ++i) {
+      const crumb = crumbs.children[i];
       // Find the selected crumb and index.
       if (!selectedCrumb && crumb.classList.contains('selected')) {
         selectedCrumb = crumb;
@@ -204,38 +204,38 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
    * @return {{normal: !Array.<number>, compact: !Array.<number>, collapsed: number, available: number}}
    */
   _measureElementSizes() {
-    var crumbs = this.crumbsElement;
+    const crumbs = this.crumbsElement;
 
     // Layout 1: Measure total and normal crumb sizes at the same time as a
     // dummy element for the collapsed size.
-    var collapsedElement = createElementWithClass('span', 'crumb collapsed');
+    const collapsedElement = createElementWithClass('span', 'crumb collapsed');
     crumbs.insertBefore(collapsedElement, crumbs.firstChild);
 
-    var available = crumbs.offsetWidth;
-    var collapsed = collapsedElement.offsetWidth;
+    const available = crumbs.offsetWidth;
+    const collapsed = collapsedElement.offsetWidth;
 
-    var normalSizes = [];
-    for (var i = 1; i < crumbs.childNodes.length; ++i) {
-      var crumb = crumbs.childNodes[i];
+    const normalSizes = [];
+    for (let i = 1; i < crumbs.childNodes.length; ++i) {
+      const crumb = crumbs.childNodes[i];
       normalSizes[i - 1] = crumb.offsetWidth;
     }
 
     crumbs.removeChild(collapsedElement);
 
     // Layout 2: Measure collapsed crumb sizes
-    var compactSizes = [];
-    for (var i = 0; i < crumbs.childNodes.length; ++i) {
-      var crumb = crumbs.childNodes[i];
+    const compactSizes = [];
+    for (let i = 0; i < crumbs.childNodes.length; ++i) {
+      const crumb = crumbs.childNodes[i];
       crumb.classList.add('compact');
     }
-    for (var i = 0; i < crumbs.childNodes.length; ++i) {
-      var crumb = crumbs.childNodes[i];
+    for (let i = 0; i < crumbs.childNodes.length; ++i) {
+      const crumb = crumbs.childNodes[i];
       compactSizes[i] = crumb.offsetWidth;
     }
 
     // Clean up.
-    for (var i = 0; i < crumbs.childNodes.length; ++i) {
-      var crumb = crumbs.childNodes[i];
+    for (let i = 0; i < crumbs.childNodes.length; ++i) {
+      const crumb = crumbs.childNodes[i];
       crumb.classList.remove('compact', 'collapsed');
     }
 
@@ -249,20 +249,20 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     if (!this.isShowing())
       return;
 
-    var crumbs = this.crumbsElement;
+    const crumbs = this.crumbsElement;
     if (!crumbs.firstChild)
       return;
 
-    var selections = this._resetCrumbStylesAndFindSelections(focusedCrumb);
-    var sizes = this._measureElementSizes();
-    var selectedIndex = selections.selectedIndex;
-    var focusedIndex = selections.focusedIndex;
-    var selectedCrumb = selections.selectedCrumb;
+    const selections = this._resetCrumbStylesAndFindSelections(focusedCrumb);
+    const sizes = this._measureElementSizes();
+    const selectedIndex = selections.selectedIndex;
+    const focusedIndex = selections.focusedIndex;
+    const selectedCrumb = selections.selectedCrumb;
 
     function crumbsAreSmallerThanContainer() {
-      var totalSize = 0;
-      for (var i = 0; i < crumbs.childNodes.length; ++i) {
-        var crumb = crumbs.childNodes[i];
+      let totalSize = 0;
+      for (let i = 0; i < crumbs.childNodes.length; ++i) {
+        const crumb = crumbs.childNodes[i];
         if (crumb.classList.contains('hidden'))
           continue;
         if (crumb.classList.contains('collapsed')) {
@@ -278,20 +278,20 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     if (crumbsAreSmallerThanContainer())
       return;  // No need to compact the crumbs, they all fit at full size.
 
-    var BothSides = 0;
-    var AncestorSide = -1;
-    var ChildSide = 1;
+    const BothSides = 0;
+    const AncestorSide = -1;
+    const ChildSide = 1;
 
     /**
      * @param {function(!Element)} shrinkingFunction
      * @param {number} direction
      */
     function makeCrumbsSmaller(shrinkingFunction, direction) {
-      var significantCrumb = focusedCrumb || selectedCrumb;
-      var significantIndex = significantCrumb === selectedCrumb ? selectedIndex : focusedIndex;
+      const significantCrumb = focusedCrumb || selectedCrumb;
+      const significantIndex = significantCrumb === selectedCrumb ? selectedIndex : focusedIndex;
 
       function shrinkCrumbAtIndex(index) {
-        var shrinkCrumb = crumbs.children[index];
+        const shrinkCrumb = crumbs.children[index];
         if (shrinkCrumb && shrinkCrumb !== significantCrumb)
           shrinkingFunction(shrinkCrumb);
         if (crumbsAreSmallerThanContainer())
@@ -303,7 +303,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       // fit in the container or we run out of crumbs to shrink.
       if (direction) {
         // Crumbs are shrunk on only one side (based on direction) of the signifcant crumb.
-        var index = (direction > 0 ? 0 : crumbs.childNodes.length - 1);
+        let index = (direction > 0 ? 0 : crumbs.childNodes.length - 1);
         while (index !== significantIndex) {
           if (shrinkCrumbAtIndex(index))
             return true;
@@ -312,15 +312,16 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       } else {
         // Crumbs are shrunk in order of descending distance from the signifcant crumb,
         // with a tie going to child crumbs.
-        var startIndex = 0;
-        var endIndex = crumbs.childNodes.length - 1;
+        let startIndex = 0;
+        let endIndex = crumbs.childNodes.length - 1;
         while (startIndex !== significantIndex || endIndex !== significantIndex) {
-          var startDistance = significantIndex - startIndex;
-          var endDistance = endIndex - significantIndex;
+          const startDistance = significantIndex - startIndex;
+          const endDistance = endIndex - significantIndex;
+          let index;
           if (startDistance >= endDistance)
-            var index = startIndex++;
+            index = startIndex++;
           else
-            var index = endIndex--;
+            index = endIndex--;
           if (shrinkCrumbAtIndex(index))
             return true;
         }
@@ -331,14 +332,14 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     }
 
     function coalesceCollapsedCrumbs() {
-      var crumb = crumbs.firstChild;
-      var collapsedRun = false;
-      var newStartNeeded = false;
-      var newEndNeeded = false;
+      let crumb = crumbs.firstChild;
+      let collapsedRun = false;
+      let newStartNeeded = false;
+      let newEndNeeded = false;
       while (crumb) {
-        var hidden = crumb.classList.contains('hidden');
+        const hidden = crumb.classList.contains('hidden');
         if (!hidden) {
-          var collapsed = crumb.classList.contains('collapsed');
+          const collapsed = crumb.classList.contains('collapsed');
           if (collapsedRun && collapsed) {
             crumb.classList.add('hidden');
             crumb.classList.remove('compact');

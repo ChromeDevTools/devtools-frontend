@@ -16,9 +16,9 @@ UI.SoftDropDown = class {
     this._model = model;
 
     this.element = createElementWithClass('button', 'soft-dropdown');
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/softDropDownButton.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/softDropDownButton.css');
     this._titleElement = shadowRoot.createChild('span', 'title');
-    var dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
+    const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
     shadowRoot.appendChild(dropdownArrowIcon);
 
     this._glassPane = new UI.GlassPane();
@@ -72,7 +72,7 @@ UI.SoftDropDown = class {
   }
 
   _updateGlasspaneSize() {
-    var maxHeight = this._rowHeight * (Math.min(this._model.length, 9));
+    const maxHeight = this._rowHeight * (Math.min(this._model.length, 9));
     this._glassPane.setMaxContentSize(new UI.Size(this._width, maxHeight));
     this._list.viewportResized();
   }
@@ -91,7 +91,7 @@ UI.SoftDropDown = class {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    var handled = false;
+    let handled = false;
     switch (event.key) {
       case 'ArrowLeft':
       case 'ArrowUp':
@@ -108,7 +108,7 @@ UI.SoftDropDown = class {
         handled = this._list.selectItemNextPage(false);
         break;
       case 'Home':
-        for (var i = 0; i < this._model.length; i++) {
+        for (let i = 0; i < this._model.length; i++) {
           if (this.isItemSelectable(this._model.at(i))) {
             this._list.selectItem(this._model.at(i));
             handled = true;
@@ -117,7 +117,7 @@ UI.SoftDropDown = class {
         }
         break;
       case 'End':
-        for (var i = this._model.length - 1; i >= 0; i--) {
+        for (let i = this._model.length - 1; i >= 0; i--) {
           if (this.isItemSelectable(this._model.at(i))) {
             this._list.selectItem(this._model.at(i));
             handled = true;
@@ -147,10 +147,10 @@ UI.SoftDropDown = class {
         break;
       default:
         if (event.key.length === 1) {
-          var selectedIndex = this._list.selectedIndex();
-          var letter = event.key.toUpperCase();
-          for (var i = 0; i < this._model.length; i++) {
-            var item = this._model.at((selectedIndex + i + 1) % this._model.length);
+          const selectedIndex = this._list.selectedIndex();
+          const letter = event.key.toUpperCase();
+          for (let i = 0; i < this._model.length; i++) {
+            const item = this._model.at((selectedIndex + i + 1) % this._model.length);
             if (this._delegate.titleFor(item).toUpperCase().startsWith(letter)) {
               this._list.selectItem(item);
               break;
@@ -186,7 +186,7 @@ UI.SoftDropDown = class {
    * @param {!Common.Event} event
    */
   _itemsReplaced(event) {
-    var removed = /** @type {!Array<T>} */ (event.data.removed);
+    const removed = /** @type {!Array<T>} */ (event.data.removed);
     if (removed.indexOf(this._selectedItem) !== -1) {
       this._selectedItem = null;
       this._selectHighlightedItem();
@@ -212,7 +212,7 @@ UI.SoftDropDown = class {
    * @return {!Element}
    */
   createElementForItem(item) {
-    var element = createElementWithClass('div', 'item');
+    const element = createElementWithClass('div', 'item');
     element.addEventListener('mousemove', e => {
       if ((e.movementX || e.movementY) && this._delegate.isItemSelectable(item))
         this._list.selectItem(item, false, /* Don't scroll */ true);

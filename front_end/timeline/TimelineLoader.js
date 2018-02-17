@@ -34,8 +34,8 @@ Timeline.TimelineLoader = class {
    * @return {!Timeline.TimelineLoader}
    */
   static loadFromFile(file, client) {
-    var loader = new Timeline.TimelineLoader(client);
-    var fileReader = new Bindings.ChunkedFileReader(file, Timeline.TimelineLoader.TransferChunkLengthBytes);
+    const loader = new Timeline.TimelineLoader(client);
+    const fileReader = new Bindings.ChunkedFileReader(file, Timeline.TimelineLoader.TransferChunkLengthBytes);
     loader._canceledCallback = fileReader.cancel.bind(fileReader);
     loader._totalSize = file.size;
     fileReader.read(loader).then(success => {
@@ -51,7 +51,7 @@ Timeline.TimelineLoader = class {
    * @return {!Timeline.TimelineLoader}
    */
   static loadFromURL(url, client) {
-    var loader = new Timeline.TimelineLoader(client);
+    const loader = new Timeline.TimelineLoader(client);
     Host.ResourceLoader.loadAsStream(url, null, loader);
     return loader;
   }
@@ -99,10 +99,10 @@ Timeline.TimelineLoader = class {
     }
 
     if (this._state === Timeline.TimelineLoader.State.LookingForEvents) {
-      var objectName = '"traceEvents":';
-      var startPos = this._buffer.length - objectName.length;
+      const objectName = '"traceEvents":';
+      const startPos = this._buffer.length - objectName.length;
       this._buffer += chunk;
-      var pos = this._buffer.indexOf(objectName, startPos);
+      const pos = this._buffer.indexOf(objectName, startPos);
       if (pos === -1)
         return Promise.resolve();
       chunk = this._buffer.slice(pos + objectName.length);
@@ -123,16 +123,16 @@ Timeline.TimelineLoader = class {
    * @param {string} data
    */
   _writeBalancedJSON(data) {
-    var json = data + ']';
+    let json = data + ']';
 
     if (!this._firstChunk) {
-      var commaIndex = json.indexOf(',');
+      const commaIndex = json.indexOf(',');
       if (commaIndex !== -1)
         json = json.slice(commaIndex + 1);
       json = '[' + json;
     }
 
-    var items;
+    let items;
     try {
       items = /** @type {!Array.<!SDK.TracingManager.EventPayload>} */ (JSON.parse(json));
     } catch (e) {
@@ -195,9 +195,9 @@ Timeline.TimelineLoader = class {
    * @param {string} text
    */
   _parseCPUProfileFormat(text) {
-    var traceEvents;
+    let traceEvents;
     try {
-      var profile = JSON.parse(text);
+      const profile = JSON.parse(text);
       traceEvents = TimelineModel.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(profile);
     } catch (e) {
       this._reportErrorAndCancelLoading(Common.UIString('Malformed CPU profile format'));

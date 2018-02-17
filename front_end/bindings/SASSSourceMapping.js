@@ -63,19 +63,19 @@ Bindings.SASSSourceMapping = class {
    * @param {!Common.Event} event
    */
   _sourceMapAttached(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
-    var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
-    for (var sassURL of sourceMap.sourceURLs()) {
-      var uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
+    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    for (const sassURL of sourceMap.sourceURLs()) {
+      let uiSourceCode = this._project.uiSourceCodeForURL(sassURL);
       if (uiSourceCode) {
         Bindings.NetworkProject.addFrameAttribution(uiSourceCode, header.frameId);
         continue;
       }
 
-      var contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
-      var mimeType = Common.ResourceType.mimeFromURL(sassURL) || contentProvider.contentType().canonicalMimeType();
-      var embeddedContent = sourceMap.embeddedContentByURL(sassURL);
-      var metadata =
+      const contentProvider = sourceMap.sourceContentProvider(sassURL, Common.resourceTypes.SourceMapStyleSheet);
+      const mimeType = Common.ResourceType.mimeFromURL(sassURL) || contentProvider.contentType().canonicalMimeType();
+      const embeddedContent = sourceMap.embeddedContentByURL(sassURL);
+      const metadata =
           typeof embeddedContent === 'string' ? new Workspace.UISourceCodeMetadata(null, embeddedContent.length) : null;
       uiSourceCode = this._project.createUISourceCode(sassURL, contentProvider.contentType());
       Bindings.NetworkProject.setInitialFrameAttribution(uiSourceCode, header.frameId);
@@ -90,12 +90,12 @@ Bindings.SASSSourceMapping = class {
    * @param {!Common.Event} event
    */
   _sourceMapDetached(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
-    var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
-    var headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
-    for (var sassURL of sourceMap.sourceURLs()) {
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data.client);
+    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
+    for (const sassURL of sourceMap.sourceURLs()) {
       if (headers.length) {
-        var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (this._project.uiSourceCodeForURL(sassURL));
+        const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (this._project.uiSourceCodeForURL(sassURL));
         Bindings.NetworkProject.removeFrameAttribution(uiSourceCode, header.frameId);
       } else {
         this._project.removeFile(sassURL);
@@ -108,19 +108,19 @@ Bindings.SASSSourceMapping = class {
    * @param {!Common.Event} event
    */
   _sourceMapChanged(event) {
-    var sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
-    var newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
-    var headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
-    for (var sourceURL of newSources.keys()) {
-      var uiSourceCode = this._project.uiSourceCodeForURL(sourceURL);
+    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    const newSources = /** @type {!Map<string, string>} */ (event.data.newSources);
+    const headers = this._sourceMapManager.clientsForSourceMap(sourceMap);
+    for (const sourceURL of newSources.keys()) {
+      const uiSourceCode = this._project.uiSourceCodeForURL(sourceURL);
       if (!uiSourceCode) {
         console.error('Failed to update source for ' + sourceURL);
         continue;
       }
-      var sassText = /** @type {string} */ (newSources.get(sourceURL));
+      const sassText = /** @type {string} */ (newSources.get(sourceURL));
       uiSourceCode.setWorkingCopy(sassText);
     }
-    for (var header of headers)
+    for (const header of headers)
       Bindings.cssWorkspaceBinding.updateLocations(header);
   }
 
@@ -130,16 +130,16 @@ Bindings.SASSSourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var header = rawLocation.header();
+    const header = rawLocation.header();
     if (!header)
       return null;
-    var sourceMap = this._sourceMapManager.sourceMapForClient(header);
+    const sourceMap = this._sourceMapManager.sourceMapForClient(header);
     if (!sourceMap)
       return null;
-    var entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
+    const entry = sourceMap.findEntry(rawLocation.lineNumber, rawLocation.columnNumber);
     if (!entry || !entry.sourceURL)
       return null;
-    var uiSourceCode = this._project.uiSourceCodeForURL(entry.sourceURL);
+    const uiSourceCode = this._project.uiSourceCodeForURL(entry.sourceURL);
     if (!uiSourceCode)
       return null;
     return uiSourceCode.uiLocation(entry.sourceLineNumber || 0, entry.sourceColumnNumber);
@@ -151,13 +151,13 @@ Bindings.SASSSourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    var sourceMap = uiLocation.uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol];
+    const sourceMap = uiLocation.uiSourceCode[Bindings.SASSSourceMapping._sourceMapSymbol];
     if (!sourceMap)
       return [];
-    var entries =
+    const entries =
         sourceMap.findReverseEntries(uiLocation.uiSourceCode.url(), uiLocation.lineNumber, uiLocation.columnNumber);
-    var locations = [];
-    for (var header of this._sourceMapManager.clientsForSourceMap(sourceMap))
+    const locations = [];
+    for (const header of this._sourceMapManager.clientsForSourceMap(sourceMap))
       locations.pushAll(entries.map(entry => new SDK.CSSLocation(header, entry.lineNumber, entry.columnNumber)));
     return locations;
   }

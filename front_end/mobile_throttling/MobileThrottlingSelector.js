@@ -31,17 +31,17 @@ MobileThrottling.MobileThrottlingSelector = class {
    * @return {!MobileThrottling.ConditionsList}
    */
   _populateOptions() {
-    var disabledGroup = {title: Common.UIString('Disabled'), items: [MobileThrottling.NoThrottlingConditions]};
-    var presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.mobilePresets};
-    var advancedGroup = {title: Common.UIString('Advanced'), items: MobileThrottling.advancedMobilePresets};
+    const disabledGroup = {title: Common.UIString('Disabled'), items: [MobileThrottling.NoThrottlingConditions]};
+    const presetsGroup = {title: Common.UIString('Presets'), items: MobileThrottling.mobilePresets};
+    const advancedGroup = {title: Common.UIString('Advanced'), items: MobileThrottling.advancedMobilePresets};
     return this._populateCallback([disabledGroup, presetsGroup, advancedGroup]);
   }
 
   _conditionsChanged() {
-    var networkConditions = SDK.multitargetNetworkManager.networkConditions();
-    var cpuThrottlingRate = MobileThrottling.throttlingManager().cpuThrottlingRate();
-    for (var index = 0; index < this._options.length; ++index) {
-      var option = this._options[index];
+    const networkConditions = SDK.multitargetNetworkManager.networkConditions();
+    const cpuThrottlingRate = MobileThrottling.throttlingManager().cpuThrottlingRate();
+    for (let index = 0; index < this._options.length; ++index) {
+      const option = this._options[index];
       if (option && option.network === networkConditions && option.cpuThrottlingRate === cpuThrottlingRate) {
         this._selectCallback(index);
         return;

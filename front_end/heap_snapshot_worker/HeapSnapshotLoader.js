@@ -60,18 +60,20 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
    */
   buildSnapshot() {
     this._progress.updateStatus('Processing snapshot\u2026');
-    var result = new HeapSnapshotWorker.JSHeapSnapshot(this._snapshot, this._progress);
+    const result = new HeapSnapshotWorker.JSHeapSnapshot(this._snapshot, this._progress);
     this._reset();
     return result;
   }
 
   _parseUintArray() {
-    var index = 0;
-    var char0 = '0'.charCodeAt(0), char9 = '9'.charCodeAt(0), closingBracket = ']'.charCodeAt(0);
-    var length = this._json.length;
+    let index = 0;
+    const char0 = '0'.charCodeAt(0);
+    const char9 = '9'.charCodeAt(0);
+    const closingBracket = ']'.charCodeAt(0);
+    const length = this._json.length;
     while (true) {
       while (index < length) {
-        var code = this._json.charCodeAt(index);
+        const code = this._json.charCodeAt(index);
         if (char0 <= code && code <= char9) {
           break;
         } else if (code === closingBracket) {
@@ -84,10 +86,10 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
         this._json = '';
         return true;
       }
-      var nextNumber = 0;
-      var startIndex = index;
+      let nextNumber = 0;
+      const startIndex = index;
       while (index < length) {
-        var code = this._json.charCodeAt(index);
+        const code = this._json.charCodeAt(index);
         if (char0 > code || code > char9)
           break;
         nextNumber *= 10;
@@ -104,7 +106,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
 
   _parseStringsArray() {
     this._progress.updateStatus('Parsing strings\u2026');
-    var closingBracketIndex = this._json.lastIndexOf(']');
+    const closingBracketIndex = this._json.lastIndexOf(']');
     if (closingBracketIndex === -1)
       throw new Error('Incomplete JSON');
     this._json = this._json.slice(0, closingBracketIndex + 1);
@@ -120,12 +122,12 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
     while (true) {
       switch (this._state) {
         case 'find-snapshot-info': {
-          var snapshotToken = '"snapshot"';
-          var snapshotTokenIndex = this._json.indexOf(snapshotToken);
+          const snapshotToken = '"snapshot"';
+          const snapshotTokenIndex = this._json.indexOf(snapshotToken);
           if (snapshotTokenIndex === -1)
             throw new Error('Snapshot token not found');
 
-          var json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
+          const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
           this._state = 'parse-snapshot-info';
           this._progress.updateStatus('Loading snapshot info\u2026');
           this._json = null;  // tokenizer takes over input.
@@ -140,23 +142,23 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-nodes': {
-          var nodesToken = '"nodes"';
-          var nodesTokenIndex = this._json.indexOf(nodesToken);
+          const nodesToken = '"nodes"';
+          const nodesTokenIndex = this._json.indexOf(nodesToken);
           if (nodesTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', nodesTokenIndex);
+          const bracketIndex = this._json.indexOf('[', nodesTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex + 1);
-          var node_fields_count = this._snapshot.snapshot.meta.node_fields.length;
-          var nodes_length = this._snapshot.snapshot.node_count * node_fields_count;
+          const node_fields_count = this._snapshot.snapshot.meta.node_fields.length;
+          const nodes_length = this._snapshot.snapshot.node_count * node_fields_count;
           this._array = new Uint32Array(nodes_length);
           this._arrayIndex = 0;
           this._state = 'parse-nodes';
           break;
         }
         case 'parse-nodes': {
-          var hasMoreData = this._parseUintArray();
+          const hasMoreData = this._parseUintArray();
           this._progress.updateProgress('Loading nodes\u2026 %d%%', this._arrayIndex, this._array.length);
           if (hasMoreData)
             return;
@@ -166,23 +168,23 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-edges': {
-          var edgesToken = '"edges"';
-          var edgesTokenIndex = this._json.indexOf(edgesToken);
+          const edgesToken = '"edges"';
+          const edgesTokenIndex = this._json.indexOf(edgesToken);
           if (edgesTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', edgesTokenIndex);
+          const bracketIndex = this._json.indexOf('[', edgesTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex + 1);
-          var edge_fields_count = this._snapshot.snapshot.meta.edge_fields.length;
-          var edges_length = this._snapshot.snapshot.edge_count * edge_fields_count;
+          const edge_fields_count = this._snapshot.snapshot.meta.edge_fields.length;
+          const edges_length = this._snapshot.snapshot.edge_count * edge_fields_count;
           this._array = new Uint32Array(edges_length);
           this._arrayIndex = 0;
           this._state = 'parse-edges';
           break;
         }
         case 'parse-edges': {
-          var hasMoreData = this._parseUintArray();
+          const hasMoreData = this._parseUintArray();
           this._progress.updateProgress('Loading edges\u2026 %d%%', this._arrayIndex, this._array.length);
           if (hasMoreData)
             return;
@@ -201,17 +203,17 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-trace-function-infos': {
-          var tracesToken = '"trace_function_infos"';
-          var tracesTokenIndex = this._json.indexOf(tracesToken);
+          const tracesToken = '"trace_function_infos"';
+          const tracesTokenIndex = this._json.indexOf(tracesToken);
           if (tracesTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', tracesTokenIndex);
+          const bracketIndex = this._json.indexOf('[', tracesTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex + 1);
 
-          var trace_function_info_field_count = this._snapshot.snapshot.meta.trace_function_info_fields.length;
-          var trace_function_info_length =
+          const trace_function_info_field_count = this._snapshot.snapshot.meta.trace_function_info_fields.length;
+          const trace_function_info_length =
               this._snapshot.snapshot.trace_function_count * trace_function_info_field_count;
           this._array = new Uint32Array(trace_function_info_length);
           this._arrayIndex = 0;
@@ -227,11 +229,11 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-trace-tree': {
-          var tracesToken = '"trace_tree"';
-          var tracesTokenIndex = this._json.indexOf(tracesToken);
+          const tracesToken = '"trace_tree"';
+          const tracesTokenIndex = this._json.indexOf(tracesToken);
           if (tracesTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', tracesTokenIndex);
+          const bracketIndex = this._json.indexOf('[', tracesTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex);
@@ -240,11 +242,11 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
         }
         case 'parse-trace-tree': {
           // If there is samples array parse it, otherwise jump straight to strings.
-          var nextToken = this._snapshot.snapshot.meta.sample_fields ? '"samples"' : '"strings"';
-          var nextTokenIndex = this._json.indexOf(nextToken);
+          const nextToken = this._snapshot.snapshot.meta.sample_fields ? '"samples"' : '"strings"';
+          const nextTokenIndex = this._json.indexOf(nextToken);
           if (nextTokenIndex === -1)
             return;
-          var bracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
+          const bracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
           this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
           this._json = this._json.slice(bracketIndex + 1);
           if (this._snapshot.snapshot.meta.sample_fields) {
@@ -257,11 +259,11 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-samples': {
-          var samplesToken = '"samples"';
-          var samplesTokenIndex = this._json.indexOf(samplesToken);
+          const samplesToken = '"samples"';
+          const samplesTokenIndex = this._json.indexOf(samplesToken);
           if (samplesTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', samplesTokenIndex);
+          const bracketIndex = this._json.indexOf('[', samplesTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex + 1);
@@ -280,11 +282,11 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           break;
         }
         case 'find-strings': {
-          var stringsToken = '"strings"';
-          var stringsTokenIndex = this._json.indexOf(stringsToken);
+          const stringsToken = '"strings"';
+          const stringsTokenIndex = this._json.indexOf(stringsToken);
           if (stringsTokenIndex === -1)
             return;
-          var bracketIndex = this._json.indexOf('[', stringsTokenIndex);
+          const bracketIndex = this._json.indexOf('[', stringsTokenIndex);
           if (bracketIndex === -1)
             return;
           this._json = this._json.slice(bracketIndex);

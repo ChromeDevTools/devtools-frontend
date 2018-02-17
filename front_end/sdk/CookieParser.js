@@ -72,7 +72,7 @@ SDK.CookieParser = class {
     if (!this._initialize(cookieHeader))
       return null;
 
-    for (var kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
+    for (let kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
       if (kv.key.charAt(0) === '$' && this._lastCookie)
         this._lastCookie.addAttribute(kv.key.slice(1), kv.value);
       else if (kv.key.toLowerCase() !== '$version' && typeof kv.value === 'string')
@@ -90,7 +90,7 @@ SDK.CookieParser = class {
   parseSetCookie(setCookieHeader) {
     if (!this._initialize(setCookieHeader))
       return null;
-    for (var kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
+    for (let kv = this._extractKeyValue(); kv; kv = this._extractKeyValue()) {
       if (this._lastCookie)
         this._lastCookie.addAttribute(kv.key, kv.value);
       else
@@ -133,13 +133,13 @@ SDK.CookieParser = class {
     // and http://crbug.com/12361). The logic below matches latest versions of IE, Firefox,
     // Chrome and Safari on some old platforms. The latest version of Safari supports quoted
     // cookie values, though.
-    var keyValueMatch = /^[ \t]*([^\s=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this._input);
+    const keyValueMatch = /^[ \t]*([^\s=;]+)[ \t]*(?:=[ \t]*([^;\n]*))?/.exec(this._input);
     if (!keyValueMatch) {
       console.error('Failed parsing cookie header before: ' + this._input);
       return null;
     }
 
-    var result = new SDK.CookieParser.KeyValue(
+    const result = new SDK.CookieParser.KeyValue(
         keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(), this._originalInputLength - this._input.length);
     this._input = this._input.slice(keyValueMatch[0].length);
     return result;
@@ -149,7 +149,7 @@ SDK.CookieParser = class {
    * @return {boolean}
    */
   _advanceAndCheckCookieDelimiter() {
-    var match = /^\s*[\n;]\s*/.exec(this._input);
+    const match = /^\s*[\n;]\s*/.exec(this._input);
     if (!match)
       return false;
     this._input = this._input.slice(match[0].length);
@@ -321,7 +321,7 @@ SDK.Cookie = class {
   expiresDate(requestDate) {
     // RFC 6265 indicates that the max-age attribute takes precedence over the expires attribute
     if (this.maxAge()) {
-      var targetDate = requestDate === null ? new Date() : requestDate;
+      const targetDate = requestDate === null ? new Date() : requestDate;
       return new Date(targetDate.getTime() + 1000 * this.maxAge());
     }
 

@@ -35,7 +35,7 @@ FormatterWorker.ESTreeWalker = class {
    */
   _innerWalk(node, parent) {
     if (!node && parent && this._walkNulls) {
-      var result = /** @type {!Object} */ ({raw: 'null', value: null});
+      const result = /** @type {!Object} */ ({raw: 'null', value: null});
       result.type = 'Literal';
       node = /** @type {!ESTree.Node} */ (result);
     }
@@ -49,23 +49,23 @@ FormatterWorker.ESTreeWalker = class {
       return;
     }
 
-    var walkOrder = FormatterWorker.ESTreeWalker._walkOrder[node.type];
+    const walkOrder = FormatterWorker.ESTreeWalker._walkOrder[node.type];
     if (!walkOrder) {
       console.error('Walk order not defined for ' + node.type);
       return;
     }
 
     if (node.type === 'TemplateLiteral') {
-      var templateLiteral = /** @type {!ESTree.TemplateLiteralNode} */ (node);
-      var expressionsLength = templateLiteral.expressions.length;
-      for (var i = 0; i < expressionsLength; ++i) {
+      const templateLiteral = /** @type {!ESTree.TemplateLiteralNode} */ (node);
+      const expressionsLength = templateLiteral.expressions.length;
+      for (let i = 0; i < expressionsLength; ++i) {
         this._innerWalk(templateLiteral.quasis[i], templateLiteral);
         this._innerWalk(templateLiteral.expressions[i], templateLiteral);
       }
       this._innerWalk(templateLiteral.quasis[expressionsLength], templateLiteral);
     } else {
-      for (var i = 0; i < walkOrder.length; ++i) {
-        var entity = node[walkOrder[i]];
+      for (let i = 0; i < walkOrder.length; ++i) {
+        const entity = node[walkOrder[i]];
         if (Array.isArray(entity))
           this._walkArray(entity, node);
         else
@@ -81,7 +81,7 @@ FormatterWorker.ESTreeWalker = class {
    * @param {?ESTree.Node} parentNode
    */
   _walkArray(nodeArray, parentNode) {
-    for (var i = 0; i < nodeArray.length; ++i)
+    for (let i = 0; i < nodeArray.length; ++i)
       this._innerWalk(nodeArray[i], parentNode);
   }
 };

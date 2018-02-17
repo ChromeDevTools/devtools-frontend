@@ -51,7 +51,7 @@ UI.KeyboardShortcut = class {
    * @return {number}
    */
   static makeKeyFromEvent(keyboardEvent) {
-    var modifiers = UI.KeyboardShortcut.Modifiers.None;
+    let modifiers = UI.KeyboardShortcut.Modifiers.None;
     if (keyboardEvent.shiftKey)
       modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
     if (keyboardEvent.ctrlKey)
@@ -62,7 +62,7 @@ UI.KeyboardShortcut = class {
       modifiers |= UI.KeyboardShortcut.Modifiers.Meta;
 
     // Use either a real or a synthetic keyCode (for events originating from extensions).
-    var keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
+    const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, modifiers);
   }
 
@@ -71,7 +71,7 @@ UI.KeyboardShortcut = class {
    * @return {number}
    */
   static makeKeyFromEventIgnoringModifiers(keyboardEvent) {
-    var keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
+    const keyCode = keyboardEvent.keyCode || keyboardEvent['__keyCode'];
     return UI.KeyboardShortcut._makeKeyFromCodeAndModifiers(keyCode, UI.KeyboardShortcut.Modifiers.None);
   }
 
@@ -108,10 +108,10 @@ UI.KeyboardShortcut = class {
    * @return {?UI.KeyboardShortcut.Descriptor}
    */
   static makeDescriptorFromBindingShortcut(shortcut) {
-    var parts = shortcut.split(/\+(?!$)/);
-    var modifiers = 0;
-    var keyString;
-    for (var i = 0; i < parts.length; ++i) {
+    const parts = shortcut.split(/\+(?!$)/);
+    let modifiers = 0;
+    let keyString;
+    for (let i = 0; i < parts.length; ++i) {
       if (typeof UI.KeyboardShortcut.Modifiers[parts[i]] !== 'undefined') {
         modifiers |= UI.KeyboardShortcut.Modifiers[parts[i]];
         continue;
@@ -125,7 +125,7 @@ UI.KeyboardShortcut = class {
     if (!keyString)
       return null;
 
-    var key = UI.KeyboardShortcut.Keys[keyString] || UI.KeyboardShortcut.KeyBindings[keyString];
+    const key = UI.KeyboardShortcut.Keys[keyString] || UI.KeyboardShortcut.KeyBindings[keyString];
     if (key && key.shiftKey)
       modifiers |= UI.KeyboardShortcut.Modifiers.Shift;
     return UI.KeyboardShortcut.makeDescriptor(key ? key : keyString, modifiers);
@@ -174,9 +174,9 @@ UI.KeyboardShortcut = class {
    * @return {string}
    */
   static _modifiersToString(modifiers) {
-    var isMac = Host.isMac();
-    var m = UI.KeyboardShortcut.Modifiers;
-    var modifierNames = new Map([
+    const isMac = Host.isMac();
+    const m = UI.KeyboardShortcut.Modifiers;
+    const modifierNames = new Map([
       [m.Ctrl, isMac ? 'Ctrl\u2004' : 'Ctrl\u200A+\u200A'], [m.Alt, isMac ? '\u2325\u2004' : 'Alt\u200A+\u200A'],
       [m.Shift, isMac ? '\u21e7\u2004' : 'Shift\u200A+\u200A'], [m.Meta, isMac ? '\u2318\u2004' : 'Win\u200A+\u200A']
     ]);
@@ -275,13 +275,13 @@ UI.KeyboardShortcut.Keys = {
 UI.KeyboardShortcut.KeyBindings = {};
 
 (function() {
-  for (var key in UI.KeyboardShortcut.Keys) {
-    var descriptor = UI.KeyboardShortcut.Keys[key];
-    if (typeof descriptor === 'object' && descriptor['code']) {
-      var name = typeof descriptor['name'] === 'string' ? descriptor['name'] : key;
-      UI.KeyboardShortcut.KeyBindings[name] = descriptor;
-    }
+for (const key in UI.KeyboardShortcut.Keys) {
+  const descriptor = UI.KeyboardShortcut.Keys[key];
+  if (typeof descriptor === 'object' && descriptor['code']) {
+    const name = typeof descriptor['name'] === 'string' ? descriptor['name'] : key;
+    UI.KeyboardShortcut.KeyBindings[name] = descriptor;
   }
+}
 })();
 
 

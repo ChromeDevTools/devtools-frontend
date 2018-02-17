@@ -18,7 +18,7 @@ Timeline.TimelineController = class {
     this._performanceModel = performanceModel;
     this._client = client;
 
-    var backingStorage = new Bindings.TempFileBackingStorage();
+    const backingStorage = new Bindings.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel(backingStorage);
 
     this._performanceModel.setMainTarget(tracingManager.target());
@@ -81,13 +81,13 @@ Timeline.TimelineController = class {
     this._extensionSessions =
         providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
-    var startPromise = this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
+    const startPromise = this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
     this._performanceModel.setRecordStartTime(Date.now());
     return startPromise;
   }
 
   stopRecording() {
-    var tracingStoppedPromises = [];
+    const tracingStoppedPromises = [];
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
     this._tracingManager.stop();
@@ -95,10 +95,10 @@ Timeline.TimelineController = class {
 
     this._client.loadingStarted();
 
-    var extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
+    const extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
     if (extensionCompletionPromises.length) {
-      var timerId;
-      var timeoutPromise = new Promise(fulfill => timerId = setTimeout(fulfill, 5000));
+      let timerId;
+      const timeoutPromise = new Promise(fulfill => timerId = setTimeout(fulfill, 5000));
       tracingStoppedPromises.push(
           Promise.race([Promise.all(extensionCompletionPromises).then(() => clearTimeout(timerId)), timeoutPromise]));
     }
@@ -128,7 +128,7 @@ Timeline.TimelineController = class {
    */
   _startProfilingOnAllModels() {
     this._profiling = true;
-    var models = SDK.targetManager.models(SDK.CPUProfilerModel);
+    const models = SDK.targetManager.models(SDK.CPUProfilerModel);
     return Promise.all(models.map(model => model.startRecording()));
   }
 
@@ -150,12 +150,12 @@ Timeline.TimelineController = class {
    * @return {!Promise}
    */
   _stopProfilingOnAllModels() {
-    var models = this._profiling ? SDK.targetManager.models(SDK.CPUProfilerModel) : [];
+    const models = this._profiling ? SDK.targetManager.models(SDK.CPUProfilerModel) : [];
     this._profiling = false;
-    var promises = [];
-    for (var model of models) {
-      var targetId = model.target().id();
-      var modelPromise = model.stopRecording().then(this._addCpuProfile.bind(this, targetId));
+    const promises = [];
+    for (const model of models) {
+      const targetId = model.target().id();
+      const modelPromise = model.stopRecording().then(this._addCpuProfile.bind(this, targetId));
       promises.push(modelPromise);
     }
     return Promise.all(promises);
@@ -168,11 +168,11 @@ Timeline.TimelineController = class {
    */
   _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();
-    var profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
+    const profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
         this._startProfilingOnAllModels() :
         Promise.resolve();
-    var samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
-    var options = 'sampling-frequency=' + samplingFrequencyHz;
+    const samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
+    const options = 'sampling-frequency=' + samplingFrequencyHz;
     return profilingStartedPromise.then(() => this._tracingManager.start(this, categories, options));
   }
 
@@ -211,7 +211,7 @@ Timeline.TimelineController = class {
   _injectCpuProfileEvent(pid, tid, cpuProfile) {
     if (!cpuProfile)
       return;
-    var cpuProfileEvent = /** @type {!SDK.TracingManager.EventPayload} */ ({
+    const cpuProfileEvent = /** @type {!SDK.TracingManager.EventPayload} */ ({
       cat: SDK.TracingModel.DevToolsMetadataEventCategory,
       ph: SDK.TracingModel.Phase.Instant,
       ts: this._tracingModel.maximumRecordTime() * 1000,
@@ -227,21 +227,22 @@ Timeline.TimelineController = class {
     if (!this._cpuProfiles)
       return;
 
-    var metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
-    var metadataEvents = this._tracingModel.devToolsMetadataEvents();
-    var mainMetaEvent =
+    const metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
+    const metadataEvents = this._tracingModel.devToolsMetadataEvents();
+    const mainMetaEvent =
         metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage).peekLast();
     if (!mainMetaEvent)
       return;
 
-    var pid = mainMetaEvent.thread.process().id();
-    var mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
+    const pid = mainMetaEvent.thread.process().id();
+    const mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
     this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
 
-    var workerMetaEvents = metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);
-    for (var metaEvent of workerMetaEvents) {
-      var workerId = metaEvent.args['data']['workerId'];
-      var cpuProfile = this._cpuProfiles.get(workerId);
+    const workerMetaEvents =
+        metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);
+    for (const metaEvent of workerMetaEvents) {
+      const workerId = metaEvent.args['data']['workerId'];
+      const cpuProfile = this._cpuProfiles.get(workerId);
       this._injectCpuProfileEvent(
           metaEvent.thread.process().id(), metaEvent.args['data']['workerThreadId'], cpuProfile);
     }

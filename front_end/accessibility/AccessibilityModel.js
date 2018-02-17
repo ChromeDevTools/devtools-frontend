@@ -68,7 +68,7 @@ Accessibility.AccessibilityNode = class {
    * @return {!Array<!Protocol.Accessibility.AXProperty>}
    */
   coreProperties() {
-    var properties = [];
+    const properties = [];
 
     if (this._name)
       properties.push(/** @type {!Protocol.Accessibility.AXProperty} */ ({name: 'name', value: this._name}));
@@ -164,12 +164,12 @@ Accessibility.AccessibilityNode = class {
    * @return {!Array<!Accessibility.AccessibilityNode>}
    */
   children() {
-    var children = [];
+    const children = [];
     if (!this._childIds)
       return children;
 
-    for (var childId of this._childIds) {
-      var child = this._accessibilityModel.axNodeForId(childId);
+    for (const childId of this._childIds) {
+      const child = this._accessibilityModel.axNodeForId(childId);
       if (child)
         children.push(child);
     }
@@ -203,7 +203,7 @@ Accessibility.AccessibilityNode = class {
    * @return {string}
    */
   printSelfAndChildren(inspectedNode, leadingSpace) {
-    var string = leadingSpace || '';
+    let string = leadingSpace || '';
     if (this._role)
       string += this._role.value;
     else
@@ -214,7 +214,7 @@ Accessibility.AccessibilityNode = class {
       string += ' (' + this._domNode.nodeName() + ')';
     if (this === inspectedNode)
       string += ' *';
-    for (var child of this.children())
+    for (const child of this.children())
       string += '\n' + child.printSelfAndChildren(inspectedNode, (leadingSpace || '') + '  ');
     return string;
   }
@@ -245,15 +245,15 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   async requestPartialAXTree(node) {
-    var payloads = await this._agent.getPartialAXTree(node.id, true);
+    const payloads = await this._agent.getPartialAXTree(node.id, true);
     if (!payloads)
       return;
 
-    for (var payload of payloads)
+    for (const payload of payloads)
       new Accessibility.AccessibilityNode(this, payload);
 
-    for (var axNode of this._axIdToAXNode.values()) {
-      for (var axChild of axNode.children())
+    for (const axNode of this._axIdToAXNode.values()) {
+      for (const axChild of axNode.children())
         axChild._setParentNode(axNode);
     }
   }
@@ -297,7 +297,7 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @param {!SDK.DOMNode} inspectedNode
    */
   logTree(inspectedNode) {
-    var rootNode = inspectedNode;
+    let rootNode = inspectedNode;
     while (rootNode.parentNode())
       rootNode = rootNode.parentNode();
     console.log(rootNode.printSelfAndChildren(inspectedNode));  // eslint-disable-line no-console

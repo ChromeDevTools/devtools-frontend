@@ -50,8 +50,8 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       return Promise.resolve();
 
     // FIXME: avoid updates of a collapsed pane.
-    var node = this.node();
-    var cssModel = this.cssModel();
+    const node = this.node();
+    const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
       this.contentElement.removeChildren();
       return Promise.resolve();
@@ -75,7 +75,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         this._inlineStyle = inlineStyleResult.inlineStyle;
     }
 
-    var promises = [
+    const promises = [
       cssModel.computedStylePromise(node.id).then(callback.bind(this)),
       cssModel.inlineStylesPromise(node.id).then(inlineStyleCallback.bind(this))
     ];
@@ -103,11 +103,11 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
    * @param {string} componentName
    */
   _getBox(computedStyle, componentName) {
-    var suffix = componentName === 'border' ? '-width' : '';
-    var left = this._getPropertyValueAsPx(computedStyle, componentName + '-left' + suffix);
-    var top = this._getPropertyValueAsPx(computedStyle, componentName + '-top' + suffix);
-    var right = this._getPropertyValueAsPx(computedStyle, componentName + '-right' + suffix);
-    var bottom = this._getPropertyValueAsPx(computedStyle, componentName + '-bottom' + suffix);
+    const suffix = componentName === 'border' ? '-width' : '';
+    const left = this._getPropertyValueAsPx(computedStyle, componentName + '-left' + suffix);
+    const top = this._getPropertyValueAsPx(computedStyle, componentName + '-top' + suffix);
+    const right = this._getPropertyValueAsPx(computedStyle, componentName + '-right' + suffix);
+    const bottom = this._getPropertyValueAsPx(computedStyle, componentName + '-bottom' + suffix);
     return {left: left, top: top, right: right, bottom: bottom};
   }
 
@@ -128,8 +128,8 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       SDK.OverlayModel.hideDOMNodeHighlight();
     }
 
-    for (var i = 0; this._boxElements && i < this._boxElements.length; ++i) {
-      var element = this._boxElements[i];
+    for (let i = 0; this._boxElements && i < this._boxElements.length; ++i) {
+      const element = this._boxElements[i];
       if (!this.node() || mode === 'all' || element._name === mode)
         element.style.backgroundColor = element._backgroundColor;
       else
@@ -142,9 +142,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
    */
   _updateMetrics(style) {
     // Updating with computed style.
-    var metricsElement = createElement('div');
+    const metricsElement = createElement('div');
     metricsElement.className = 'metrics';
-    var self = this;
+    const self = this;
 
     /**
      * @param {!Map.<string, string>} style
@@ -154,8 +154,8 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @this {Elements.MetricsSidebarPane}
      */
     function createBoxPartElement(style, name, side, suffix) {
-      var propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
-      var value = style.get(propertyName);
+      const propertyName = (name !== 'position' ? name + '-' : '') + side + suffix;
+      let value = style.get(propertyName);
       if (value === '' || (name !== 'position' && value === '0px'))
         value = '\u2012';
       else if (name === 'position' && value === 'auto')
@@ -163,7 +163,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       value = value.replace(/px$/, '');
       value = Number.toFixedIfFloating(value);
 
-      var element = createElement('div');
+      const element = createElement('div');
       element.className = side;
       element.textContent = value;
       element.addEventListener('dblclick', this.startEditing.bind(this, element, name, propertyName, style), false);
@@ -175,10 +175,10 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @return {string}
      */
     function getContentAreaWidthPx(style) {
-      var width = style.get('width').replace(/px$/, '');
+      let width = style.get('width').replace(/px$/, '');
       if (!isNaN(width) && style.get('box-sizing') === 'border-box') {
-        var borderBox = self._getBox(style, 'border');
-        var paddingBox = self._getBox(style, 'padding');
+        const borderBox = self._getBox(style, 'border');
+        const paddingBox = self._getBox(style, 'padding');
 
         width = width - borderBox.left - borderBox.right - paddingBox.left - paddingBox.right;
       }
@@ -191,10 +191,10 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
      * @return {string}
      */
     function getContentAreaHeightPx(style) {
-      var height = style.get('height').replace(/px$/, '');
+      let height = style.get('height').replace(/px$/, '');
       if (!isNaN(height) && style.get('box-sizing') === 'border-box') {
-        var borderBox = self._getBox(style, 'border');
-        var paddingBox = self._getBox(style, 'padding');
+        const borderBox = self._getBox(style, 'border');
+        const paddingBox = self._getBox(style, 'padding');
 
         height = height - borderBox.top - borderBox.bottom - paddingBox.top - paddingBox.bottom;
       }
@@ -203,7 +203,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     }
 
     // Display types for which margin is ignored.
-    var noMarginDisplayType = {
+    const noMarginDisplayType = {
       'table-cell': true,
       'table-column': true,
       'table-column-group': true,
@@ -214,7 +214,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     };
 
     // Display types for which padding is ignored.
-    var noPaddingDisplayType = {
+    const noPaddingDisplayType = {
       'table-column': true,
       'table-column-group': true,
       'table-footer-group': true,
@@ -224,21 +224,21 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     };
 
     // Position types for which top, left, bottom and right are ignored.
-    var noPositionType = {'static': true};
+    const noPositionType = {'static': true};
 
-    var boxes = ['content', 'padding', 'border', 'margin', 'position'];
-    var boxColors = [
+    const boxes = ['content', 'padding', 'border', 'margin', 'position'];
+    const boxColors = [
       Common.Color.PageHighlight.Content, Common.Color.PageHighlight.Padding, Common.Color.PageHighlight.Border,
       Common.Color.PageHighlight.Margin, Common.Color.fromRGBA([0, 0, 0, 0])
     ];
-    var boxLabels = [
+    const boxLabels = [
       Common.UIString('content'), Common.UIString('padding'), Common.UIString('border'), Common.UIString('margin'),
       Common.UIString('position')
     ];
-    var previousBox = null;
+    let previousBox = null;
     this._boxElements = [];
-    for (var i = 0; i < boxes.length; ++i) {
-      var name = boxes[i];
+    for (let i = 0; i < boxes.length; ++i) {
+      const name = boxes[i];
 
       if (name === 'margin' && noMarginDisplayType[style.get('display')])
         continue;
@@ -247,7 +247,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       if (name === 'position' && noPositionType[style.get('position')])
         continue;
 
-      var boxElement = createElement('div');
+      const boxElement = createElement('div');
       boxElement.className = name;
       boxElement._backgroundColor = boxColors[i].asString(Common.Color.Format.RGBA);
       boxElement._name = name;
@@ -257,12 +257,12 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
       this._boxElements.push(boxElement);
 
       if (name === 'content') {
-        var widthElement = createElement('span');
+        const widthElement = createElement('span');
         widthElement.textContent = getContentAreaWidthPx(style);
         widthElement.addEventListener(
             'dblclick', this.startEditing.bind(this, widthElement, 'width', 'width', style), false);
 
-        var heightElement = createElement('span');
+        const heightElement = createElement('span');
         heightElement.textContent = getContentAreaHeightPx(style);
         heightElement.addEventListener(
             'dblclick', this.startEditing.bind(this, heightElement, 'height', 'height', style), false);
@@ -271,9 +271,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         boxElement.createTextChild(' \u00D7 ');
         boxElement.appendChild(heightElement);
       } else {
-        var suffix = (name === 'border' ? '-width' : '');
+        const suffix = (name === 'border' ? '-width' : '');
 
-        var labelElement = createElement('div');
+        const labelElement = createElement('div');
         labelElement.className = 'label';
         labelElement.textContent = boxLabels[i];
         boxElement.appendChild(labelElement);
@@ -309,14 +309,14 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     if (UI.isBeingEdited(targetElement))
       return;
 
-    var context = {box: box, styleProperty: styleProperty, computedStyle: computedStyle};
-    var boundKeyDown = this._handleKeyDown.bind(this, context, styleProperty);
+    const context = {box: box, styleProperty: styleProperty, computedStyle: computedStyle};
+    const boundKeyDown = this._handleKeyDown.bind(this, context, styleProperty);
     context.keyDownHandler = boundKeyDown;
     targetElement.addEventListener('keydown', boundKeyDown, false);
 
     this._isEditingMetrics = true;
 
-    var config =
+    const config =
         new UI.InplaceEditor.Config(this._editingCommitted.bind(this), this.editingCancelled.bind(this), context);
     UI.InplaceEditor.startEditing(targetElement, config);
 
@@ -324,7 +324,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   _handleKeyDown(context, styleProperty, event) {
-    var element = event.currentTarget;
+    const element = event.currentTarget;
 
     /**
      * @param {string} originalValue
@@ -361,7 +361,7 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     if ('originalPropertyData' in this && this._inlineStyle) {
       if (!this.originalPropertyData) {
         // An added property, remove the last property in the style.
-        var pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
+        const pastLastSourcePropertyIndex = this._inlineStyle.pastLastSourcePropertyIndex();
         if (pastLastSourcePropertyIndex)
           this._inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText('', false);
       } else {
@@ -392,8 +392,8 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
     if (/^\d+$/.test(userInput))
       userInput += 'px';
 
-    var styleProperty = context.styleProperty;
-    var computedStyle = context.computedStyle;
+    const styleProperty = context.styleProperty;
+    const computedStyle = context.computedStyle;
 
     if (computedStyle.get('box-sizing') === 'border-box' && (styleProperty === 'width' || styleProperty === 'height')) {
       if (!userInput.match(/px$/)) {
@@ -402,9 +402,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
         return;
       }
 
-      var borderBox = this._getBox(computedStyle, 'border');
-      var paddingBox = this._getBox(computedStyle, 'padding');
-      var userValuePx = Number(userInput.replace(/px$/, ''));
+      const borderBox = this._getBox(computedStyle, 'border');
+      const paddingBox = this._getBox(computedStyle, 'padding');
+      let userValuePx = Number(userInput.replace(/px$/, ''));
       if (isNaN(userValuePx))
         return;
       if (styleProperty === 'width')
@@ -417,9 +417,9 @@ Elements.MetricsSidebarPane = class extends Elements.ElementsSidebarPane {
 
     this.previousPropertyDataCandidate = null;
 
-    var allProperties = this._inlineStyle.allProperties();
-    for (var i = 0; i < allProperties.length; ++i) {
-      var property = allProperties[i];
+    const allProperties = this._inlineStyle.allProperties();
+    for (let i = 0; i < allProperties.length; ++i) {
+      const property = allProperties[i];
       if (property.name !== context.styleProperty || !property.activeInStyle())
         continue;
 

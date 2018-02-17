@@ -54,8 +54,8 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
    * @return {!Profiler.HeapSnapshotLoaderProxy}
    */
   createLoader(profileUid, snapshotReceivedCallback) {
-    var objectId = this._nextObjectId++;
-    var proxy = new Profiler.HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
+    const objectId = this._nextObjectId++;
+    const proxy = new Profiler.HeapSnapshotLoaderProxy(this, objectId, profileUid, snapshotReceivedCallback);
     this._postMessage({
       callId: this._nextCallId++,
       disposition: 'create',
@@ -76,7 +76,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   }
 
   evaluateForTest(script, callback) {
-    var callId = this._nextCallId++;
+    const callId = this._nextCallId++;
     this._callbacks.set(callId, callback);
     this._postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
   }
@@ -90,9 +90,9 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
    * @template T
    */
   callFactoryMethod(callback, objectId, methodName, proxyConstructor) {
-    var callId = this._nextCallId++;
-    var methodArguments = Array.prototype.slice.call(arguments, 4);
-    var newObjectId = this._nextObjectId++;
+    const callId = this._nextCallId++;
+    const methodArguments = Array.prototype.slice.call(arguments, 4);
+    const newObjectId = this._nextObjectId++;
 
     /**
      * @this {Profiler.HeapSnapshotWorkerProxy}
@@ -131,8 +131,8 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
    * @param {string} methodName
    */
   callMethod(callback, objectId, methodName) {
-    var callId = this._nextCallId++;
-    var methodArguments = Array.prototype.slice.call(arguments, 3);
+    const callId = this._nextCallId++;
+    const methodArguments = Array.prototype.slice.call(arguments, 3);
     if (callback)
       this._callbacks.set(callId, callback);
     this._postMessage({
@@ -152,13 +152,13 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
   }
 
   _checkLongRunningCalls() {
-    for (var callId of this._previousCallbacks) {
+    for (const callId of this._previousCallbacks) {
       if (!this._callbacks.has(callId))
         this._previousCallbacks.delete(callId);
     }
-    var hasLongRunningCalls = !!this._previousCallbacks.size;
+    const hasLongRunningCalls = !!this._previousCallbacks.size;
     this.dispatchEventToListeners(Profiler.HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
-    for (var callId of this._callbacks.keysArray())
+    for (const callId of this._callbacks.keysArray())
       this._previousCallbacks.add(callId);
   }
 
@@ -166,7 +166,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
    * @param {!MessageEvent} event
    */
   _messageReceived(event) {
-    var data = event.data;
+    const data = event.data;
     if (data.eventName) {
       if (this._eventHandler)
         this._eventHandler(data.eventName, data.data);
@@ -183,7 +183,7 @@ Profiler.HeapSnapshotWorkerProxy = class extends Common.Object {
     }
     if (!this._callbacks.has(data.callId))
       return;
-    var callback = this._callbacks.get(data.callId);
+    const callback = this._callbacks.get(data.callId);
     this._callbacks.delete(data.callId);
     callback(data.result);
   }
@@ -246,7 +246,7 @@ Profiler.HeapSnapshotProxyObject = class {
    * @template T
    */
   _callMethodPromise(methodName, var_args) {
-    var args = Array.prototype.slice.call(arguments);
+    const args = Array.prototype.slice.call(arguments);
     return new Promise(resolve => this._callWorker('callMethod', [resolve, ...args]));
   }
 };
@@ -282,7 +282,7 @@ Profiler.HeapSnapshotLoaderProxy = class extends Profiler.HeapSnapshotProxyObjec
    */
   async close() {
     await this._callMethodPromise('close');
-    var snapshotProxy =
+    const snapshotProxy =
         await new Promise(resolve => this.callFactoryMethod(resolve, 'buildSnapshot', Profiler.HeapSnapshotProxy));
     this.dispose();
     snapshotProxy.setProfileUid(this._profileUid);

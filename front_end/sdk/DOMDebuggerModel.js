@@ -37,10 +37,10 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
     if (!remoteObject.objectId)
       return [];
 
-    var payloads = await this._agent.getEventListeners(/** @type {string} */ (remoteObject.objectId));
-    var eventListeners = [];
-    for (var payload of payloads || []) {
-      var location = this._runtimeModel.debuggerModel().createRawLocationByScriptId(
+    const payloads = await this._agent.getEventListeners(/** @type {string} */ (remoteObject.objectId));
+    const eventListeners = [];
+    for (const payload of payloads || []) {
+      const location = this._runtimeModel.debuggerModel().createRawLocationByScriptId(
           payload.scriptId, payload.lineNumber, payload.columnNumber);
       if (!location)
         continue;
@@ -79,13 +79,13 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @return {!SDK.DOMDebuggerModel.DOMBreakpoint}
    */
   setDOMBreakpoint(node, type) {
-    for (var breakpoint of this._domBreakpoints) {
+    for (const breakpoint of this._domBreakpoints) {
       if (breakpoint.node === node && breakpoint.type === type) {
         this.toggleDOMBreakpoint(breakpoint, true);
         return breakpoint;
       }
     }
-    var breakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, type, true);
+    const breakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, type, true);
     this._domBreakpoints.push(breakpoint);
     this._saveDOMBreakpoints();
     this._enableDOMBreakpoint(breakpoint);
@@ -142,7 +142,7 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   _nodeHasBreakpoints(node) {
-    for (var breakpoint of this._domBreakpoints) {
+    for (const breakpoint of this._domBreakpoints) {
       if (breakpoint.node === node && breakpoint.enabled)
         return true;
     }
@@ -154,12 +154,12 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @return {?{type: !SDK.DOMDebuggerModel.DOMBreakpoint.Type, node: !SDK.DOMNode, targetNode: ?SDK.DOMNode, insertion: boolean}}
    */
   resolveDOMBreakpointData(auxData) {
-    var type = auxData['type'];
-    var node = this._domModel.nodeForId(auxData['nodeId']);
+    const type = auxData['type'];
+    const node = this._domModel.nodeForId(auxData['nodeId']);
     if (!type || !node)
       return null;
-    var targetNode = null;
-    var insertion = false;
+    let targetNode = null;
+    let insertion = false;
     if (type === SDK.DOMDebuggerModel.DOMBreakpoint.Type.SubtreeModified) {
       insertion = auxData['insertion'] || false;
       targetNode = this._domModel.nodeForId(auxData['targetNodeId']);
@@ -171,17 +171,17 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @return {string}
    */
   _currentURL() {
-    var domDocument = this._domModel.existingDocument();
+    const domDocument = this._domModel.existingDocument();
     return domDocument ? domDocument.documentURL : '';
   }
 
   _documentUpdated() {
-    var removed = this._domBreakpoints;
+    const removed = this._domBreakpoints;
     this._domBreakpoints = [];
     this.dispatchEventToListeners(SDK.DOMDebuggerModel.Events.DOMBreakpointsRemoved, removed);
 
-    var currentURL = this._currentURL();
-    for (var breakpoint of this._domBreakpointsSetting.get()) {
+    const currentURL = this._currentURL();
+    for (const breakpoint of this._domBreakpointsSetting.get()) {
       if (breakpoint.url === currentURL)
         this._domModel.pushNodeByPathToFrontend(breakpoint.path).then(appendBreakpoint.bind(this, breakpoint));
     }
@@ -192,10 +192,10 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
      * @this {SDK.DOMDebuggerModel}
      */
     function appendBreakpoint(breakpoint, nodeId) {
-      var node = nodeId ? this._domModel.nodeForId(nodeId) : null;
+      const node = nodeId ? this._domModel.nodeForId(nodeId) : null;
       if (!node)
         return;
-      var domBreakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
+      const domBreakpoint = new SDK.DOMDebuggerModel.DOMBreakpoint(this, node, breakpoint.type, breakpoint.enabled);
       this._domBreakpoints.push(domBreakpoint);
       if (breakpoint.enabled)
         this._enableDOMBreakpoint(domBreakpoint);
@@ -207,9 +207,9 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @param {function(!SDK.DOMDebuggerModel.DOMBreakpoint):boolean} filter
    */
   _removeDOMBreakpoints(filter) {
-    var removed = [];
-    var left = [];
-    for (var breakpoint of this._domBreakpoints) {
+    const removed = [];
+    const left = [];
+    for (const breakpoint of this._domBreakpoints) {
       if (filter(breakpoint)) {
         removed.push(breakpoint);
         if (breakpoint.enabled) {
@@ -232,15 +232,15 @@ SDK.DOMDebuggerModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _nodeRemoved(event) {
-    var node = /** @type {!SDK.DOMNode} */ (event.data.node);
-    var children = node.children() || [];
+    const node = /** @type {!SDK.DOMNode} */ (event.data.node);
+    const children = node.children() || [];
     this._removeDOMBreakpoints(breakpoint => breakpoint.node === node || children.indexOf(breakpoint.node) !== -1);
   }
 
   _saveDOMBreakpoints() {
-    var currentURL = this._currentURL();
-    var breakpoints = this._domBreakpointsSetting.get().filter(breakpoint => breakpoint.url !== currentURL);
-    for (var breakpoint of this._domBreakpoints) {
+    const currentURL = this._currentURL();
+    const breakpoints = this._domBreakpointsSetting.get().filter(breakpoint => breakpoint.url !== currentURL);
+    for (const breakpoint of this._domBreakpoints) {
       breakpoints.push(
           {url: currentURL, path: breakpoint.node.path(), type: breakpoint.type, enabled: breakpoint.enabled});
     }
@@ -303,7 +303,7 @@ SDK.EventListener = class {
     this._handler = handler;
     this._originalHandler = originalHandler || handler;
     this._location = location;
-    var script = location.script();
+    const script = location.script();
     this._sourceURL = script ? script.contentURL() : '';
     this._customRemoveFunction = customRemoveFunction;
     this._origin = origin || SDK.EventListener.Origin.Raw;
@@ -527,7 +527,7 @@ SDK.DOMDebuggerModel.EventListenerBreakpoint = class {
     if (this._enabled === enabled)
       return;
     this._enabled = enabled;
-    for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
+    for (const model of SDK.targetManager.models(SDK.DOMDebuggerModel))
       this._updateOnModel(model);
   }
 
@@ -541,7 +541,7 @@ SDK.DOMDebuggerModel.EventListenerBreakpoint = class {
       else
         model._agent.removeInstrumentationBreakpoint(this._instrumentationName);
     } else {
-      for (var eventTargetName of this._eventTargetNames) {
+      for (const eventTargetName of this._eventTargetNames) {
         if (this._enabled)
           model._agent.setEventListenerBreakpoint(this._eventName, eventTargetName);
         else
@@ -569,7 +569,7 @@ SDK.DOMDebuggerManager = class {
     this._xhrBreakpointsSetting = Common.settings.createLocalSetting('xhrBreakpoints', []);
     /** @type {!Map<string, boolean>} */
     this._xhrBreakpoints = new Map();
-    for (var breakpoint of this._xhrBreakpointsSetting.get())
+    for (const breakpoint of this._xhrBreakpointsSetting.get())
       this._xhrBreakpoints.set(breakpoint.url, breakpoint.enabled);
 
     /** @type {!Array<!SDK.DOMDebuggerModel.EventListenerBreakpoint>} */
@@ -678,7 +678,7 @@ SDK.DOMDebuggerManager = class {
    * @param {!Array<string>} instrumentationNames
    */
   _createInstrumentationBreakpoints(category, instrumentationNames) {
-    for (var instrumentationName of instrumentationNames) {
+    for (const instrumentationName of instrumentationNames) {
       this._eventListenerBreakpoints.push(
           new SDK.DOMDebuggerModel.EventListenerBreakpoint(instrumentationName, '', [], category, instrumentationName));
     }
@@ -690,7 +690,7 @@ SDK.DOMDebuggerManager = class {
    * @param {!Array<string>} eventTargetNames
    */
   _createEventListenerBreakpoints(category, eventNames, eventTargetNames) {
-    for (var eventName of eventNames) {
+    for (const eventName of eventNames) {
       this._eventListenerBreakpoints.push(
           new SDK.DOMDebuggerModel.EventListenerBreakpoint('', eventName, eventTargetNames, category, eventName));
     }
@@ -702,9 +702,9 @@ SDK.DOMDebuggerManager = class {
    * @return {?SDK.DOMDebuggerModel.EventListenerBreakpoint}
    */
   _resolveEventListenerBreakpoint(eventName, eventTargetName) {
-    var instrumentationPrefix = 'instrumentation:';
-    var listenerPrefix = 'listener:';
-    var instrumentationName = '';
+    const instrumentationPrefix = 'instrumentation:';
+    const listenerPrefix = 'listener:';
+    let instrumentationName = '';
     if (eventName.startsWith(instrumentationPrefix)) {
       instrumentationName = eventName.substring(instrumentationPrefix.length);
       eventName = '';
@@ -714,8 +714,8 @@ SDK.DOMDebuggerManager = class {
       return null;
     }
     eventTargetName = (eventTargetName || '*').toLowerCase();
-    var result = null;
-    for (var breakpoint of this._eventListenerBreakpoints) {
+    let result = null;
+    for (const breakpoint of this._eventListenerBreakpoints) {
       if (instrumentationName && breakpoint._instrumentationName === instrumentationName)
         result = breakpoint;
       if (eventName && breakpoint._eventName === eventName &&
@@ -740,16 +740,16 @@ SDK.DOMDebuggerManager = class {
    * @return {string}
    */
   resolveEventListenerBreakpointTitle(auxData) {
-    var id = auxData['eventName'];
+    const id = auxData['eventName'];
     if (id === 'instrumentation:webglErrorFired' && auxData['webglErrorName']) {
-      var errorName = auxData['webglErrorName'];
+      let errorName = auxData['webglErrorName'];
       // If there is a hex code of the error, display only this.
       errorName = errorName.replace(/^.*(0x[0-9a-f]+).*$/i, '$1');
       return Common.UIString('WebGL Error Fired (%s)', errorName);
     }
     if (id === 'instrumentation:scriptBlockedByCSP' && auxData['directiveText'])
       return Common.UIString('Script blocked due to Content Security Policy directive: %s', auxData['directiveText']);
-    var breakpoint = this._resolveEventListenerBreakpoint(id, auxData['targetName']);
+    const breakpoint = this._resolveEventListenerBreakpoint(id, auxData['targetName']);
     if (!breakpoint)
       return '';
     if (auxData['targetName'])
@@ -773,8 +773,8 @@ SDK.DOMDebuggerManager = class {
   }
 
   _saveXHRBreakpoints() {
-    var breakpoints = [];
-    for (var url of this._xhrBreakpoints.keys())
+    const breakpoints = [];
+    for (const url of this._xhrBreakpoints.keys())
       breakpoints.push({url: url, enabled: this._xhrBreakpoints.get(url)});
     this._xhrBreakpointsSetting.set(breakpoints);
   }
@@ -786,7 +786,7 @@ SDK.DOMDebuggerManager = class {
   addXHRBreakpoint(url, enabled) {
     this._xhrBreakpoints.set(url, enabled);
     if (enabled) {
-      for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
+      for (const model of SDK.targetManager.models(SDK.DOMDebuggerModel))
         model._agent.setXHRBreakpoint(url);
     }
     this._saveXHRBreakpoints();
@@ -796,10 +796,10 @@ SDK.DOMDebuggerManager = class {
    * @param {string} url
    */
   removeXHRBreakpoint(url) {
-    var enabled = this._xhrBreakpoints.get(url);
+    const enabled = this._xhrBreakpoints.get(url);
     this._xhrBreakpoints.delete(url);
     if (enabled) {
-      for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel))
+      for (const model of SDK.targetManager.models(SDK.DOMDebuggerModel))
         model._agent.removeXHRBreakpoint(url);
     }
     this._saveXHRBreakpoints();
@@ -811,7 +811,7 @@ SDK.DOMDebuggerManager = class {
    */
   toggleXHRBreakpoint(url, enabled) {
     this._xhrBreakpoints.set(url, enabled);
-    for (var model of SDK.targetManager.models(SDK.DOMDebuggerModel)) {
+    for (const model of SDK.targetManager.models(SDK.DOMDebuggerModel)) {
       if (enabled)
         model._agent.setXHRBreakpoint(url);
       else
@@ -825,11 +825,11 @@ SDK.DOMDebuggerManager = class {
    * @param {!SDK.DOMDebuggerModel} domDebuggerModel
    */
   modelAdded(domDebuggerModel) {
-    for (var url of this._xhrBreakpoints.keys()) {
+    for (const url of this._xhrBreakpoints.keys()) {
       if (this._xhrBreakpoints.get(url))
         domDebuggerModel._agent.setXHRBreakpoint(url);
     }
-    for (var breakpoint of this._eventListenerBreakpoints) {
+    for (const breakpoint of this._eventListenerBreakpoints) {
       if (breakpoint._enabled)
         breakpoint._updateOnModel(domDebuggerModel);
     }

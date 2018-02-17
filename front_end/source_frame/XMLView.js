@@ -34,8 +34,8 @@ SourceFrame.XMLView = class extends UI.Widget {
    * @return {!UI.SearchableView}
    */
   static createSearchableView(parsedXML) {
-    var xmlView = new SourceFrame.XMLView(parsedXML);
-    var searchableView = new UI.SearchableView(xmlView);
+    const xmlView = new SourceFrame.XMLView(parsedXML);
+    const searchableView = new UI.SearchableView(xmlView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     xmlView._searchableView = searchableView;
     xmlView.show(searchableView.element);
@@ -49,7 +49,7 @@ SourceFrame.XMLView = class extends UI.Widget {
    * @return {?Document}
    */
   static parseXML(text, mimeType) {
-    var parsedXML;
+    let parsedXML;
     try {
       parsedXML = (new DOMParser()).parseFromString(text, mimeType);
     } catch (e) {
@@ -67,12 +67,12 @@ SourceFrame.XMLView = class extends UI.Widget {
   _jumpToMatch(index, shouldJump) {
     if (!this._searchConfig)
       return;
-    var regex = this._searchConfig.toSearchRegex(true);
-    var previousFocusElement = this._currentSearchTreeElements[this._currentSearchFocusIndex];
+    const regex = this._searchConfig.toSearchRegex(true);
+    const previousFocusElement = this._currentSearchTreeElements[this._currentSearchFocusIndex];
     if (previousFocusElement)
       previousFocusElement.setSearchRegex(regex);
 
-    var newFocusElement = this._currentSearchTreeElements[index];
+    const newFocusElement = this._currentSearchTreeElements[index];
     if (newFocusElement) {
       this._updateSearchIndex(index);
       if (shouldJump)
@@ -109,20 +109,20 @@ SourceFrame.XMLView = class extends UI.Widget {
   _innerPerformSearch(shouldJump, jumpBackwards) {
     if (!this._searchConfig)
       return;
-    var newIndex = this._currentSearchFocusIndex;
-    var previousSearchFocusElement = this._currentSearchTreeElements[newIndex];
+    let newIndex = this._currentSearchFocusIndex;
+    const previousSearchFocusElement = this._currentSearchTreeElements[newIndex];
     this._innerSearchCanceled();
     this._currentSearchTreeElements = [];
-    var regex = this._searchConfig.toSearchRegex(true);
+    const regex = this._searchConfig.toSearchRegex(true);
 
-    for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof SourceFrame.XMLView.Node))
         continue;
-      var hasMatch = element.setSearchRegex(regex);
+      const hasMatch = element.setSearchRegex(regex);
       if (hasMatch)
         this._currentSearchTreeElements.push(element);
       if (previousSearchFocusElement === element) {
-        var currentIndex = this._currentSearchTreeElements.length - 1;
+        const currentIndex = this._currentSearchTreeElements.length - 1;
         if (hasMatch || jumpBackwards)
           newIndex = currentIndex;
         else
@@ -141,7 +141,7 @@ SourceFrame.XMLView = class extends UI.Widget {
   }
 
   _innerSearchCanceled() {
-    for (var element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
+    for (let element = this._treeOutline.rootElement(); element; element = element.traverseNextTreeElement(false)) {
       if (!(element instanceof SourceFrame.XMLView.Node))
         continue;
       element.revertHighlightChanges();
@@ -177,7 +177,7 @@ SourceFrame.XMLView = class extends UI.Widget {
     if (!this._currentSearchTreeElements.length)
       return;
 
-    var newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
+    const newIndex = mod(this._currentSearchFocusIndex + 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex, true);
   }
 
@@ -188,7 +188,7 @@ SourceFrame.XMLView = class extends UI.Widget {
     if (!this._currentSearchTreeElements.length)
       return;
 
-    var newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
+    const newIndex = mod(this._currentSearchFocusIndex - 1, this._currentSearchTreeElements.length);
     this._jumpToMatch(newIndex, true);
   }
 
@@ -236,11 +236,11 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
    * @param {!SourceFrame.XMLView} xmlView
    */
   static populate(root, xmlNode, xmlView) {
-    var node = xmlNode.firstChild;
+    let node = xmlNode.firstChild;
     while (node) {
-      var currentNode = node;
+      const currentNode = node;
       node = node.nextSibling;
-      var nodeType = currentNode.nodeType;
+      const nodeType = currentNode.nodeType;
       // ignore empty TEXT
       if (nodeType === 3 && currentNode.nodeValue.match(/\s+/))
         continue;
@@ -263,12 +263,12 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
     if (this._closeTag && this.parent && !this.parent.expanded)
       return false;
     regex.lastIndex = 0;
-    var cssClasses = UI.highlightedSearchResultClassName;
+    let cssClasses = UI.highlightedSearchResultClassName;
     if (additionalCssClassName)
       cssClasses += ' ' + additionalCssClassName;
-    var content = this.listItemElement.textContent.replace(/\xA0/g, ' ');
-    var match = regex.exec(content);
-    var ranges = [];
+    const content = this.listItemElement.textContent.replace(/\xA0/g, ' ');
+    let match = regex.exec(content);
+    const ranges = [];
     while (match) {
       ranges.push(new TextUtils.SourceRange(match.index, match[0].length));
       match = regex.exec(content);
@@ -284,18 +284,18 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
   }
 
   _updateTitle() {
-    var node = this._node;
+    const node = this._node;
     switch (node.nodeType) {
       case 1:  // ELEMENT
-        var tag = node.tagName;
+        const tag = node.tagName;
         if (this._closeTag) {
           this._setTitle(['</' + tag + '>', 'shadow-xml-view-tag']);
           return;
         }
-        var titleItems = ['<' + tag, 'shadow-xml-view-tag'];
-        var attributes = node.attributes;
-        for (var i = 0; i < attributes.length; ++i) {
-          var attributeNode = attributes.item(i);
+        const titleItems = ['<' + tag, 'shadow-xml-view-tag'];
+        const attributes = node.attributes;
+        for (let i = 0; i < attributes.length; ++i) {
+          const attributeNode = attributes.item(i);
           titleItems.push(
               '\u00a0', 'shadow-xml-view-tag', attributeNode.name, 'shadow-xml-view-attribute-name', '="',
               'shadow-xml-view-tag', attributeNode.value, 'shadow-xml-view-attribute-value', '"',
@@ -337,8 +337,8 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
    * @param {!Array.<string>} items
    */
   _setTitle(items) {
-    var titleFragment = createDocumentFragment();
-    for (var i = 0; i < items.length; i += 2)
+    const titleFragment = createDocumentFragment();
+    for (let i = 0; i < items.length; i += 2)
       titleFragment.createChild('span', items[i + 1]).textContent = items[i];
     this.title = titleFragment;
     this._xmlView._innerPerformSearch(false, false);

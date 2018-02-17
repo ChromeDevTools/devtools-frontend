@@ -8,9 +8,9 @@ NodeMain.NodeConnectionsPanel = class extends UI.Panel {
     this.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
     this.contentElement.classList.add('node-panel');
 
-    var container = this.contentElement.createChild('div', 'node-panel-center');
+    const container = this.contentElement.createChild('div', 'node-panel-center');
 
-    var image = container.createChild('img', 'node-panel-logo');
+    const image = container.createChild('img', 'node-panel-logo');
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.png';
 
     InspectorFrontendHost.events.addEventListener(
@@ -54,10 +54,10 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
     this._callback = callback;
     this.element.classList.add('network-discovery-view');
 
-    var networkDiscoveryFooter = this.element.createChild('div', 'network-discovery-footer');
+    const networkDiscoveryFooter = this.element.createChild('div', 'network-discovery-footer');
     networkDiscoveryFooter.createChild('span').textContent =
         Common.UIString('Specify network endpoint and DevTools will connect to it automatically. ');
-    var link = networkDiscoveryFooter.createChild('span', 'link');
+    const link = networkDiscoveryFooter.createChild('span', 'link');
     link.textContent = Common.UIString('Learn more');
     link.addEventListener('click', () => InspectorFrontendHost.openInNewTab('https://nodejs.org/en/docs/inspector/'));
 
@@ -65,14 +65,14 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
     this._list = new UI.ListWidget(this);
     this._list.registerRequiredCSS('node_main/nodeConnectionsPanel.css');
     this._list.element.classList.add('network-discovery-list');
-    var placeholder = createElementWithClass('div', 'network-discovery-list-empty');
+    const placeholder = createElementWithClass('div', 'network-discovery-list-empty');
     placeholder.textContent = Common.UIString('No connections specified');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.element);
     /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
     this._editor = null;
 
-    var addButton = UI.createTextButton(
+    const addButton = UI.createTextButton(
         Common.UIString('Add connection'), this._addNetworkTargetButtonClicked.bind(this), 'add-network-target-button',
         true /* primary */);
     this.element.appendChild(addButton);
@@ -84,7 +84,7 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
   }
 
   _update() {
-    var config = this._networkDiscoveryConfig.map(item => item.address);
+    const config = this._networkDiscoveryConfig.map(item => item.address);
     this._callback.call(null, config);
   }
 
@@ -98,8 +98,8 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
   discoveryConfigChanged(networkDiscoveryConfig) {
     this._networkDiscoveryConfig = [];
     this._list.clear();
-    for (var address of networkDiscoveryConfig) {
-      var item = {address: address, port: ''};
+    for (const address of networkDiscoveryConfig) {
+      const item = {address: address, port: ''};
       this._networkDiscoveryConfig.push(item);
       this._list.appendItem(item, true);
     }
@@ -112,7 +112,7 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
    * @return {!Element}
    */
   renderItem(rule, editable) {
-    var element = createElementWithClass('div', 'network-discovery-list-item');
+    const element = createElementWithClass('div', 'network-discovery-list-item');
     element.createChild('div', 'network-discovery-value network-discovery-address').textContent = rule.address;
     return element;
   }
@@ -147,7 +147,7 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(rule) {
-    var editor = this._createEditor();
+    const editor = this._createEditor();
     editor.control('address').value = rule.address;
     return editor;
   }
@@ -159,11 +159,11 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
     if (this._editor)
       return this._editor;
 
-    var editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor();
     this._editor = editor;
-    var content = editor.contentElement();
-    var fields = content.createChild('div', 'network-discovery-edit-row');
-    var input = editor.createInput('address', 'text', 'Network address (e.g. localhost:9229)', addressValidator);
+    const content = editor.contentElement();
+    const fields = content.createChild('div', 'network-discovery-edit-row');
+    const input = editor.createInput('address', 'text', 'Network address (e.g. localhost:9229)', addressValidator);
     fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
     return editor;
 
@@ -174,10 +174,10 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
      * @return {boolean}
      */
     function addressValidator(rule, index, input) {
-      var match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
+      const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match)
         return false;
-      var port = parseInt(match[2], 10);
+      const port = parseInt(match[2], 10);
       return port <= 65535;
     }
   }

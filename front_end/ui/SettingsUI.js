@@ -37,18 +37,18 @@ UI.SettingsUI = {};
  * @return {!Element}
  */
 UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphElement, tooltip) {
-  var label = UI.CheckboxLabel.create(name);
+  const label = UI.CheckboxLabel.create(name);
   if (tooltip)
     label.title = tooltip;
 
-  var input = label.checkboxElement;
+  const input = label.checkboxElement;
   input.name = name;
   UI.SettingsUI.bindCheckbox(input, setting);
 
   if (omitParagraphElement)
     return label;
 
-  var p = createElement('p');
+  const p = createElement('p');
   p.appendChild(label);
   return p;
 };
@@ -60,14 +60,14 @@ UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphEleme
  * @return {!Element}
  */
 UI.SettingsUI.createSettingSelect = function(name, options, setting) {
-  var p = createElement('p');
+  const p = createElement('p');
   p.createChild('label').textContent = name;
-  var select = p.createChild('select', 'chrome-select');
+  const select = p.createChild('select', 'chrome-select');
 
-  for (var i = 0; i < options.length; ++i) {
+  for (let i = 0; i < options.length; ++i) {
     // The "raw" flag indicates text is non-i18n-izable.
-    var option = options[i];
-    var optionName = option.raw ? option.text : Common.UIString(option.text);
+    const option = options[i];
+    const optionName = option.raw ? option.text : Common.UIString(option.text);
     select.add(new Option(optionName, option.value));
   }
 
@@ -77,8 +77,8 @@ UI.SettingsUI.createSettingSelect = function(name, options, setting) {
   return p;
 
   function settingChanged() {
-    var newValue = setting.get();
-    for (var i = 0; i < options.length; i++) {
+    const newValue = setting.get();
+    for (let i = 0; i < options.length; i++) {
       if (options[i].value === newValue)
         select.selectedIndex = i;
     }
@@ -115,8 +115,8 @@ UI.SettingsUI.bindCheckbox = function(input, setting) {
  * @return {!Element}
  */
 UI.SettingsUI.createCustomSetting = function(name, element) {
-  var p = createElement('p');
-  var fieldsetElement = p.createChild('fieldset');
+  const p = createElement('p');
+  const fieldsetElement = p.createChild('fieldset');
   fieldsetElement.createChild('label').textContent = name;
   fieldsetElement.appendChild(element);
   return p;
@@ -129,8 +129,8 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
 UI.SettingsUI.createControlForSetting = function(setting) {
   if (!setting.extension())
     return null;
-  var descriptor = setting.extension().descriptor();
-  var uiTitle = Common.UIString(setting.title() || '');
+  const descriptor = setting.extension().descriptor();
+  const uiTitle = Common.UIString(setting.title() || '');
   switch (descriptor['settingType']) {
     case 'boolean':
       return UI.SettingsUI.createSettingCheckbox(uiTitle, setting);

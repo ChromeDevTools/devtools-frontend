@@ -16,12 +16,12 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    var contentProvider = /** @type {!Common.ContentProvider} */ (target);
+    const contentProvider = /** @type {!Common.ContentProvider} */ (target);
     async function saveAs() {
       if (contentProvider instanceof Workspace.UISourceCode)
         /** @type {!Workspace.UISourceCode} */ (contentProvider).commitWorkingCopy();
-      var content = await contentProvider.requestContent();
-      var url = contentProvider.contentURL();
+      const content = await contentProvider.requestContent();
+      const url = contentProvider.contentURL();
       Workspace.fileManager.save(url, /** @type {string} */ (content), true);
       Workspace.fileManager.close(url);
     }
@@ -30,7 +30,7 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
       contextMenu.saveSection().appendItem(Common.UIString('Save as...'), saveAs);
 
     // Retrieve uiSourceCode by URL to pick network resources everywhere.
-    var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
+    const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(contentProvider.contentURL());
     if (uiSourceCode && Persistence.networkPersistenceManager.canSaveUISourceCodeForOverrides(uiSourceCode)) {
       contextMenu.saveSection().appendItem(Common.UIString('Save for overrides'), () => {
         uiSourceCode.commitWorkingCopy();
@@ -40,10 +40,10 @@ Persistence.PersistenceActions.ContextMenuProvider = class {
       });
     }
 
-    var binding = uiSourceCode && Persistence.persistence.binding(uiSourceCode);
-    var fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
+    const binding = uiSourceCode && Persistence.persistence.binding(uiSourceCode);
+    const fileURL = binding ? binding.fileSystem.contentURL() : contentProvider.contentURL();
     if (fileURL.startsWith('file://')) {
-      var path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());
+      const path = Common.ParsedURL.urlToPlatformPath(fileURL, Host.isWin());
       contextMenu.revealSection().appendItem(
           Common.UIString('Open in containing folder'), () => InspectorFrontendHost.showItemInFolder(path));
     }

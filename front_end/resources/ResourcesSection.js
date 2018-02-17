@@ -21,9 +21,9 @@ Resources.ResourcesSection = class {
     addListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
     addListener(SDK.ResourceTreeModel.Events.ResourceAdded, this._resourceAdded, this);
 
-    var mainTarget = SDK.targetManager.mainTarget();
-    var resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
-    var mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
+    const mainTarget = SDK.targetManager.mainTarget();
+    const resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
+    const mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
     if (mainFrame)
       this._populateFrame(mainFrame);
   }
@@ -33,10 +33,10 @@ Resources.ResourcesSection = class {
    * @returns {?SDK.ResourceTreeFrame}
    */
   static _getParentFrame(frame) {
-    var parentFrame = frame.parentFrame;
+    const parentFrame = frame.parentFrame;
     if (parentFrame)
       return parentFrame;
-    var parentTarget = frame.resourceTreeModel().target().parentTarget();
+    const parentTarget = frame.resourceTreeModel().target().parentTarget();
     if (!parentTarget)
       return null;
     return parentTarget.model(SDK.ResourceTreeModel).mainFrame;
@@ -46,14 +46,14 @@ Resources.ResourcesSection = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameAdded(frame) {
-    var parentFrame = Resources.ResourcesSection._getParentFrame(frame);
-    var parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
+    const parentFrame = Resources.ResourcesSection._getParentFrame(frame);
+    const parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
     if (!parentTreeElement) {
       console.warn(`No frame to route ${frame.url} to.`);
       return;
     }
 
-    var frameTreeElement = new Resources.FrameTreeElement(this._panel, frame);
+    const frameTreeElement = new Resources.FrameTreeElement(this._panel, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
     parentTreeElement.appendChild(frameTreeElement);
   }
@@ -62,7 +62,7 @@ Resources.ResourcesSection = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameDetached(frame) {
-    var frameTreeElement = this._treeElementForFrameId.get(frame.id);
+    const frameTreeElement = this._treeElementForFrameId.get(frame.id);
     if (!frameTreeElement)
       return;
 
@@ -75,7 +75,7 @@ Resources.ResourcesSection = class {
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameNavigated(frame) {
-    var frameTreeElement = this._treeElementForFrameId.get(frame.id);
+    const frameTreeElement = this._treeElementForFrameId.get(frame.id);
     if (frameTreeElement)
       frameTreeElement.frameNavigated(frame);
   }
@@ -84,11 +84,11 @@ Resources.ResourcesSection = class {
    * @param {!SDK.Resource} resource
    */
   _resourceAdded(resource) {
-    var statusCode = resource['statusCode'];
+    const statusCode = resource['statusCode'];
     if (statusCode >= 301 && statusCode <= 303)
       return;
 
-    var frameTreeElement = this._treeElementForFrameId.get(resource.frameId);
+    const frameTreeElement = this._treeElementForFrameId.get(resource.frameId);
     if (!frameTreeElement) {
       // This is a frame's main resource, it will be retained
       // and re-added by the resource manager;
@@ -108,9 +108,9 @@ Resources.ResourcesSection = class {
    */
   _populateFrame(frame) {
     this._frameAdded(frame);
-    for (var child of frame.childFrames)
+    for (const child of frame.childFrames)
       this._populateFrame(child);
-    for (var resource of frame.resources())
+    for (const resource of frame.resources())
       this._resourceAdded(resource);
   }
 };
@@ -129,7 +129,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
     this._treeElementForResource = {};
     this.frameNavigated(frame);
 
-    var icon = UI.Icon.create('largeicon-navigator-frame', 'navigator-tree-item');
+    const icon = UI.Icon.create('largeicon-navigator-frame', 'navigator-tree-item');
     icon.classList.add('navigator-frame-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -173,16 +173,16 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    * @param {!SDK.Resource} resource
    */
   appendResource(resource) {
-    var resourceType = resource.resourceType();
-    var categoryName = resourceType.name();
-    var categoryElement = resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
+    const resourceType = resource.resourceType();
+    const categoryName = resourceType.name();
+    let categoryElement = resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
     if (!categoryElement) {
       categoryElement =
           new Resources.StorageCategoryTreeElement(this._panel, resource.resourceType().category().title, categoryName);
       this._categoryElements[resourceType.name()] = categoryElement;
       this._insertInPresentationOrder(this, categoryElement);
     }
-    var resourceTreeElement = new Resources.FrameResourceTreeElement(this._panel, resource);
+    const resourceTreeElement = new Resources.FrameResourceTreeElement(this._panel, resource);
     this._insertInPresentationOrder(categoryElement, resourceTreeElement);
     this._treeElementForResource[resource.url] = resourceTreeElement;
   }
@@ -192,7 +192,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    * @return {?SDK.Resource}
    */
   resourceByURL(url) {
-    var treeElement = this._treeElementForResource[url];
+    const treeElement = this._treeElementForResource[url];
     return treeElement ? treeElement._resource : null;
   }
 
@@ -214,10 +214,10 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
     }
 
     function compare(treeElement1, treeElement2) {
-      var typeWeight1 = typeWeight(treeElement1);
-      var typeWeight2 = typeWeight(treeElement2);
+      const typeWeight1 = typeWeight(treeElement1);
+      const typeWeight2 = typeWeight(treeElement2);
 
-      var result;
+      let result;
       if (typeWeight1 > typeWeight2)
         result = 1;
       else if (typeWeight1 < typeWeight2)
@@ -227,8 +227,8 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
       return result;
     }
 
-    var childCount = parentTreeElement.childCount();
-    var i;
+    const childCount = parentTreeElement.childCount();
+    let i;
     for (i = 0; i < childCount; ++i) {
       if (compare(childTreeElement, parentTreeElement.childAt(i)) < 0)
         break;
@@ -252,7 +252,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
     this.tooltip = resource.url;
     this._resource[Resources.FrameResourceTreeElement._symbol] = this;
 
-    var icon = UI.Icon.create('largeicon-navigator-file', 'navigator-tree-item');
+    const icon = UI.Icon.create('largeicon-navigator-file', 'navigator-tree-item');
     icon.classList.add('navigator-file-tree-item');
     icon.classList.add('navigator-' + resource.resourceType().name() + '-tree-item');
     this.setLeadingIcons([icon]);
@@ -275,7 +275,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
   _preparePreview() {
     if (this._previewPromise)
       return this._previewPromise;
-    var viewPromise = SourceFrame.PreviewFactory.createPreview(this._resource, this._resource.mimeType);
+    const viewPromise = SourceFrame.PreviewFactory.createPreview(this._resource, this._resource.mimeType);
     this._previewPromise = viewPromise.then(view => {
       if (view)
         return view;
@@ -324,7 +324,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
   }
 
   _handleContextMenuEvent(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.appendApplicableItems(this._resource);
     contextMenu.show();
   }
@@ -335,7 +335,7 @@ Resources.FrameResourceTreeElement = class extends Resources.BaseStorageTreeElem
    */
   async revealResource(line, column) {
     this.revealAndSelect(true);
-    var view = await this._panel.scheduleShowView(this._preparePreview());
+    const view = await this._panel.scheduleShowView(this._preparePreview());
     if (!(view instanceof SourceFrame.ResourceSourceFrame) || typeof line !== 'number')
       return;
     view.revealPosition(line, column, true);

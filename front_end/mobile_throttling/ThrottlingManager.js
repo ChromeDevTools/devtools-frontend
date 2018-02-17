@@ -34,8 +34,8 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    * @return {!MobileThrottling.NetworkThrottlingSelector}
    */
   decorateSelectWithNetworkThrottling(selectElement) {
-    var options = [];
-    var selector =
+    let options = [];
+    const selector =
         new MobileThrottling.NetworkThrottlingSelector(populate, select, this._customNetworkConditionsSetting);
     selectElement.addEventListener('change', optionSelected, false);
     return selector;
@@ -47,13 +47,13 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
     function populate(groups) {
       selectElement.removeChildren();
       options = [];
-      for (var i = 0; i < groups.length; ++i) {
-        var group = groups[i];
-        var groupElement = selectElement.createChild('optgroup');
+      for (let i = 0; i < groups.length; ++i) {
+        const group = groups[i];
+        const groupElement = selectElement.createChild('optgroup');
         groupElement.label = group.title;
-        for (var conditions of group.items) {
-          var title = conditions.title;
-          var option = new Option(title, title);
+        for (const conditions of group.items) {
+          const title = conditions.title;
+          const option = new Option(title, title);
           groupElement.appendChild(option);
           options.push(conditions);
         }
@@ -85,7 +85,7 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    * @return {!UI.ToolbarCheckbox}
    */
   createOfflineToolbarCheckbox() {
-    var checkbox = new UI.ToolbarCheckbox(
+    const checkbox = new UI.ToolbarCheckbox(
         Common.UIString('Offline'), Common.UIString('Force disconnected from network'), forceOffline.bind(this));
     SDK.multitargetNetworkManager.addEventListener(
         SDK.MultitargetNetworkManager.Events.ConditionsChanged, networkConditionsChanged);
@@ -113,24 +113,24 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    * @return {!UI.ToolbarMenuButton}
    */
   createMobileThrottlingButton() {
-    var button = new UI.ToolbarMenuButton(appendItems);
+    const button = new UI.ToolbarMenuButton(appendItems);
     button.setTitle(Common.UIString('Throttling'));
     button.setGlyph('');
     button.turnIntoSelect();
     button.setDarkText();
 
     /** @type {!MobileThrottling.ConditionsList} */
-    var options = [];
-    var selectedIndex = -1;
-    var selector = new MobileThrottling.MobileThrottlingSelector(populate, select);
+    let options = [];
+    let selectedIndex = -1;
+    const selector = new MobileThrottling.MobileThrottlingSelector(populate, select);
     return button;
 
     /**
      * @param {!UI.ContextMenu} contextMenu
      */
     function appendItems(contextMenu) {
-      for (var index = 0; index < options.length; ++index) {
-        var conditions = options[index];
+      for (let index = 0; index < options.length; ++index) {
+        const conditions = options[index];
         if (!conditions)
           continue;
         if (conditions.title === MobileThrottling.CustomConditions.title &&
@@ -149,8 +149,8 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
      */
     function populate(groups) {
       options = [];
-      for (var group of groups) {
-        for (var conditions of group.items)
+      for (const group of groups) {
+        for (const conditions of group.items)
           options.push(conditions);
         options.push(null);
       }
@@ -179,16 +179,16 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    */
   setCPUThrottlingRate(rate) {
     this._cpuThrottlingRate = rate;
-    for (var emulationModel of SDK.targetManager.models(SDK.EmulationModel))
+    for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))
       emulationModel.setCPUThrottlingRate(this._cpuThrottlingRate);
-    var icon = null;
+    let icon = null;
     if (this._cpuThrottlingRate !== MobileThrottling.CPUThrottlingRates.NoThrottling) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
       icon = UI.Icon.create('smallicon-warning');
       icon.title = Common.UIString('CPU throttling is enabled');
     }
-    var index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
-    for (var control of this._cpuThrottlingControls)
+    const index = this._cpuThrottlingRates.indexOf(this._cpuThrottlingRate);
+    for (const control of this._cpuThrottlingControls)
       control.setSelectedIndex(index);
     UI.inspectorView.setPanelIcon('timeline', icon);
     this.dispatchEventToListeners(MobileThrottling.ThrottlingManager.Events.RateChanged, this._cpuThrottlingRate);
@@ -214,15 +214,15 @@ MobileThrottling.ThrottlingManager = class extends Common.Object {
    * @return {!UI.ToolbarComboBox}
    */
   createCPUThrottlingSelector() {
-    var control = new UI.ToolbarComboBox(
+    const control = new UI.ToolbarComboBox(
         event => this.setCPUThrottlingRate(this._cpuThrottlingRates[event.target.selectedIndex]));
     this._cpuThrottlingControls.add(control);
-    var currentRate = this._cpuThrottlingRate;
+    const currentRate = this._cpuThrottlingRate;
 
-    for (var i = 0; i < this._cpuThrottlingRates.length; ++i) {
-      var rate = this._cpuThrottlingRates[i];
-      var title = rate === 1 ? Common.UIString('No throttling') : Common.UIString('%d\xD7 slowdown', rate);
-      var option = control.createOption(title);
+    for (let i = 0; i < this._cpuThrottlingRates.length; ++i) {
+      const rate = this._cpuThrottlingRates[i];
+      const title = rate === 1 ? Common.UIString('No throttling') : Common.UIString('%d\xD7 slowdown', rate);
+      const option = control.createOption(title);
       control.addOption(option);
       if (currentRate === rate)
         control.setSelectedIndex(i);

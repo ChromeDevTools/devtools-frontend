@@ -21,7 +21,7 @@ UI.Icon = class extends HTMLSpanElement {
     if (!UI.Icon._constructor)
       UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon.prototype);
 
-    var icon = /** @type {!UI.Icon} */ (new UI.Icon._constructor());
+    const icon = /** @type {!UI.Icon} */ (new UI.Icon._constructor());
     if (className)
       icon.className = className;
     if (iconType)
@@ -54,7 +54,7 @@ UI.Icon = class extends HTMLSpanElement {
       this._descriptor = null;
       this._spriteSheet = null;
     }
-    var descriptor = UI.Icon.Descriptors[iconType] || null;
+    const descriptor = UI.Icon.Descriptors[iconType] || null;
     if (descriptor) {
       this._iconType = iconType;
       this._descriptor = descriptor;
@@ -88,8 +88,8 @@ UI.Icon = class extends HTMLSpanElement {
     if (!this._descriptor.coordinates) {
       if (!this._descriptor.position || !UI.Icon._positionRegex.test(this._descriptor.position))
         throw new Error(`ERROR: icon '${this._iconType}' has malformed position: '${this._descriptor.position}'`);
-      var column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
-      var row = parseInt(this._descriptor.position.substring(1), 10) - 1;
+      const column = this._descriptor.position[0].toLowerCase().charCodeAt(0) - 97;
+      const row = parseInt(this._descriptor.position.substring(1), 10) - 1;
       this._descriptor.coordinates = {
         x: -(this._spriteSheet.cellWidth + this._spriteSheet.padding) * column,
         y: (this._spriteSheet.cellHeight + this._spriteSheet.padding) * (row + 1) - this._spriteSheet.padding

@@ -54,7 +54,7 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    * @return {!Promise<?{viewportX: number, viewportY: number, viewportScale: number, contentWidth: number, contentHeight: number}>}
    */
   async fetchLayoutMetrics() {
-    var response = await this._agent.invoke_getLayoutMetrics({});
+    const response = await this._agent.invoke_getLayoutMetrics({});
     if (response[Protocol.Error])
       return null;
     return {

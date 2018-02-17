@@ -47,7 +47,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @override
    */
   setAXNode(axNode) {
-    var hadFocus = this.element.hasFocus();
+    const hadFocus = this.element.hasFocus();
     super.setAXNode(axNode);
 
     this._rootElement.removeChildren();
@@ -55,17 +55,17 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     if (!axNode)
       return;
 
-    var ancestorChain = [];
-    var ancestor = axNode;
+    const ancestorChain = [];
+    let ancestor = axNode;
     while (ancestor) {
       ancestorChain.push(ancestor);
       ancestor = ancestor.parentNode();
     }
     ancestorChain.reverse();
 
-    var depth = 0;
-    var breadcrumb = null;
-    var parent = null;
+    let depth = 0;
+    let breadcrumb = null;
+    let parent = null;
     for (ancestor of ancestorChain) {
       breadcrumb = new Accessibility.AXBreadcrumb(ancestor, depth, (ancestor === axNode));
       if (parent)
@@ -87,15 +87,15 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
      * @param {number} localDepth
      */
     function append(parentBreadcrumb, axNode, localDepth) {
-      var childBreadcrumb = new Accessibility.AXBreadcrumb(axNode, localDepth, false);
+      const childBreadcrumb = new Accessibility.AXBreadcrumb(axNode, localDepth, false);
       parentBreadcrumb.appendChild(childBreadcrumb);
 
       // In most cases there will be no children here, but there are some special cases.
-      for (var child of axNode.children())
+      for (const child of axNode.children())
         append(childBreadcrumb, child, localDepth + 1);
     }
 
-    for (var child of axNode.children())
+    for (const child of axNode.children())
       append(this._inspectedNodeBreadcrumb, child, depth);
   }
 
@@ -117,7 +117,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
     if (event.shiftKey || event.metaKey || event.ctrlKey)
       return;
 
-    var handled = false;
+    let handled = false;
     if ((event.key === 'ArrowUp' || event.key === 'ArrowLeft') && !event.altKey)
       handled = this._preselectPrevious();
     else if ((event.key === 'ArrowDown' || event.key === 'ArrowRight') && !event.altKey)
@@ -133,7 +133,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @return {boolean}
    */
   _preselectPrevious() {
-    var previousBreadcrumb = this._preselectedBreadcrumb.previousBreadcrumb();
+    const previousBreadcrumb = this._preselectedBreadcrumb.previousBreadcrumb();
     if (!previousBreadcrumb)
       return false;
     this._setPreselectedBreadcrumb(previousBreadcrumb);
@@ -144,7 +144,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @return {boolean}
    */
   _preselectNext() {
-    var nextBreadcrumb = this._preselectedBreadcrumb.nextBreadcrumb();
+    const nextBreadcrumb = this._preselectedBreadcrumb.nextBreadcrumb();
     if (!nextBreadcrumb)
       return false;
     this._setPreselectedBreadcrumb(nextBreadcrumb);
@@ -157,7 +157,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
   _setPreselectedBreadcrumb(breadcrumb) {
     if (breadcrumb === this._preselectedBreadcrumb)
       return;
-    var hadFocus = this.element.hasFocus();
+    const hadFocus = this.element.hasFocus();
     if (this._preselectedBreadcrumb)
       this._preselectedBreadcrumb.setPreselected(false, hadFocus);
 
@@ -181,12 +181,12 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _onMouseMove(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
+    const breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement) {
       this._setHoveredBreadcrumb(null);
       return;
     }
-    var breadcrumb = breadcrumbElement.breadcrumb;
+    const breadcrumb = breadcrumbElement.breadcrumb;
     if (!breadcrumb.isDOMNode())
       return;
     this._setHoveredBreadcrumb(breadcrumb);
@@ -205,12 +205,12 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _onClick(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
+    const breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement) {
       this._setHoveredBreadcrumb(null);
       return;
     }
-    var breadcrumb = breadcrumbElement.breadcrumb;
+    const breadcrumb = breadcrumbElement.breadcrumb;
     if (breadcrumb.inspected()) {
       // If the user is clicking the inspected breadcrumb, they probably want to
       // focus it.
@@ -262,15 +262,15 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
    * @param {!Event} event
    */
   _contextMenuEventFired(event) {
-    var breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
+    const breadcrumbElement = event.target.enclosingNodeOrSelfWithClass('ax-breadcrumb');
     if (!breadcrumbElement)
       return;
 
-    var axNode = breadcrumbElement.breadcrumb.axNode();
+    const axNode = breadcrumbElement.breadcrumb.axNode();
     if (!axNode.isDOMNode() || !axNode.deferredDOMNode())
       return;
 
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.viewSection().appendItem(ls`Scroll into view`, () => {
       axNode.deferredDOMNode().resolvePromise().then(domNode => {
         if (!domNode)
@@ -442,7 +442,7 @@ Accessibility.AXBreadcrumb = class {
   nextBreadcrumb() {
     if (this._children.length)
       return this._children[0];
-    var nextSibling = this.element().nextSibling;
+    const nextSibling = this.element().nextSibling;
     if (nextSibling)
       return nextSibling.breadcrumb;
     return null;
@@ -452,7 +452,7 @@ Accessibility.AXBreadcrumb = class {
    * @return {?Accessibility.AXBreadcrumb}
    */
   previousBreadcrumb() {
-    var previousSibling = this.element().previousSibling;
+    const previousSibling = this.element().previousSibling;
     if (previousSibling)
       return previousSibling.breadcrumb;
 
@@ -463,7 +463,7 @@ Accessibility.AXBreadcrumb = class {
    * @param {string} name
    */
   _appendNameElement(name) {
-    var nameElement = createElement('span');
+    const nameElement = createElement('span');
     nameElement.textContent = '"' + name + '"';
     nameElement.classList.add('ax-readable-string');
     this._nodeWrapper.appendChild(nameElement);
@@ -476,7 +476,7 @@ Accessibility.AXBreadcrumb = class {
     if (!role)
       return;
 
-    var roleElement = createElementWithClass('span', 'monospace');
+    const roleElement = createElementWithClass('span', 'monospace');
     roleElement.classList.add(Accessibility.AXBreadcrumb.RoleStyles[role.type]);
     roleElement.setTextContentTruncatedIfNeeded(role.value || '');
 
@@ -484,7 +484,7 @@ Accessibility.AXBreadcrumb = class {
   }
 
   _appendIgnoredNodeElement() {
-    var ignoredNodeElement = createElementWithClass('span', 'monospace');
+    const ignoredNodeElement = createElementWithClass('span', 'monospace');
     ignoredNodeElement.textContent = ls`Ignored`;
     ignoredNodeElement.classList.add('ax-breadcrumbs-ignored-node');
     this._nodeWrapper.appendChild(ignoredNodeElement);

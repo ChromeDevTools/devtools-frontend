@@ -9,15 +9,15 @@
 
 ApplicationTestRunner.dumpIndexedDBTree = function() {
   TestRunner.addResult('Dumping IndexedDB tree:');
-  var indexedDBTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement;
+  const indexedDBTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement;
 
   if (!indexedDBTreeElement.childCount()) {
     TestRunner.addResult('    (empty)');
     return;
   }
 
-  for (var i = 0; i < indexedDBTreeElement.childCount(); ++i) {
-    var databaseTreeElement = indexedDBTreeElement.childAt(i);
+  for (let i = 0; i < indexedDBTreeElement.childCount(); ++i) {
+    const databaseTreeElement = indexedDBTreeElement.childAt(i);
     TestRunner.addResult('    database: ' + databaseTreeElement.title);
 
     if (!databaseTreeElement.childCount()) {
@@ -25,8 +25,8 @@ ApplicationTestRunner.dumpIndexedDBTree = function() {
       continue;
     }
 
-    for (var j = 0; j < databaseTreeElement.childCount(); ++j) {
-      var objectStoreTreeElement = databaseTreeElement.childAt(j);
+    for (let j = 0; j < databaseTreeElement.childCount(); ++j) {
+      const objectStoreTreeElement = databaseTreeElement.childAt(j);
       TestRunner.addResult('        Object store: ' + objectStoreTreeElement.title);
 
       if (!objectStoreTreeElement.childCount()) {
@@ -34,8 +34,8 @@ ApplicationTestRunner.dumpIndexedDBTree = function() {
         continue;
       }
 
-      for (var k = 0; k < objectStoreTreeElement.childCount(); ++k) {
-        var indexTreeElement = objectStoreTreeElement.childAt(k);
+      for (let k = 0; k < objectStoreTreeElement.childCount(); ++k) {
+        const indexTreeElement = objectStoreTreeElement.childAt(k);
         TestRunner.addResult('            Index: ' + indexTreeElement.title);
       }
     }
@@ -44,21 +44,21 @@ ApplicationTestRunner.dumpIndexedDBTree = function() {
 
 ApplicationTestRunner.dumpObjectStores = function() {
   TestRunner.addResult('Dumping ObjectStore data:');
-  let idbDatabaseTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement._idbDatabaseTreeElements[0];
+  const idbDatabaseTreeElement = UI.panels.resources._sidebar.indexedDBListTreeElement._idbDatabaseTreeElements[0];
   for (let i = 0; i < idbDatabaseTreeElement.childCount(); ++i) {
-    let objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
+    const objectStoreTreeElement = idbDatabaseTreeElement.childAt(i);
     objectStoreTreeElement.onselect(false);
     TestRunner.addResult('    Object store: ' + objectStoreTreeElement.title);
-    let entries = objectStoreTreeElement._view._entries;
+    const entries = objectStoreTreeElement._view._entries;
     TestRunner.addResult('            Number of entries: ' + entries.length);
     for (let j = 0; j < entries.length; ++j)
       TestRunner.addResult('            Key = ' + entries[j].key._value + ', value = ' + entries[j].value);
 
     for (let k = 0; k < objectStoreTreeElement.childCount(); ++k) {
-      let indexTreeElement = objectStoreTreeElement.childAt(k);
+      const indexTreeElement = objectStoreTreeElement.childAt(k);
       TestRunner.addResult('            Index: ' + indexTreeElement.title);
       indexTreeElement.onselect(false);
-      let entries = indexTreeElement._view._entries;
+      const entries = indexTreeElement._view._entries;
       TestRunner.addResult('                Number of entries: ' + entries.length);
       for (let j = 0; j < entries.length; ++j)
         TestRunner.addResult('                Key = ' + entries[j].primaryKey._value + ', value = ' + entries[j].value);
@@ -66,20 +66,20 @@ ApplicationTestRunner.dumpObjectStores = function() {
   }
 };
 
-var lastCallbackId = 0;
-var callbacks = {};
-var callbackIdPrefix = 'InspectorTest.IndexedDB_callback';
+let lastCallbackId = 0;
+const callbacks = {};
+const callbackIdPrefix = 'InspectorTest.IndexedDB_callback';
 
 ApplicationTestRunner.evaluateWithCallback = function(frameId, methodName, parameters, callback) {
   ApplicationTestRunner._installIndexedDBSniffer();
-  var callbackId = ++lastCallbackId;
+  const callbackId = ++lastCallbackId;
   callbacks[callbackId] = callback;
-  var parametersString = 'dispatchCallback.bind(this, "' + callbackIdPrefix + callbackId + '")';
+  let parametersString = 'dispatchCallback.bind(this, "' + callbackIdPrefix + callbackId + '")';
 
-  for (var i = 0; i < parameters.length; ++i)
+  for (let i = 0; i < parameters.length; ++i)
     parametersString += ', ' + JSON.stringify(parameters[i]);
 
-  var requestString = methodName + '(' + parametersString + ')';
+  const requestString = methodName + '(' + parametersString + ')';
   TestRunner.evaluateInPageAnonymously(requestString);
 };
 
@@ -87,14 +87,14 @@ ApplicationTestRunner._installIndexedDBSniffer = function() {
   ConsoleTestRunner.addConsoleSniffer(consoleMessageOverride, false);
 
   function consoleMessageOverride(msg) {
-    var text = msg.messageText;
+    const text = msg.messageText;
 
     if (!text.startsWith(callbackIdPrefix)) {
       ConsoleTestRunner.addConsoleSniffer(consoleMessageOverride, false);
       return;
     }
 
-    var callbackId = text.substring(callbackIdPrefix.length);
+    const callbackId = text.substring(callbackIdPrefix.length);
     callbacks[callbackId].call();
     delete callbacks[callbackId];
   }
@@ -137,7 +137,7 @@ ApplicationTestRunner.addIDBValue = function(frameId, databaseName, objectStoreN
 };
 
 ApplicationTestRunner.createIndexedDBModel = function() {
-  var indexedDBModel = new Resources.IndexedDBModel(SDK.targetManager.mainTarget(), TestRunner.securityOriginManager);
+  const indexedDBModel = new Resources.IndexedDBModel(SDK.targetManager.mainTarget(), TestRunner.securityOriginManager);
   indexedDBModel.enable();
   return indexedDBModel;
 };
@@ -180,7 +180,7 @@ ApplicationTestRunner.deleteIDBValueAsync = function(databaseName, objectStoreNa
       'deleteIDBValueAsync(\'' + databaseName + '\', \'' + objectStoreName + '\', \'' + key + '\')');
 };
 
-var __indexedDBHelpers = `
+const __indexedDBHelpers = `
   function dispatchCallback(callbackId) {
     console.log(callbackId);
   }
@@ -195,11 +195,11 @@ var __indexedDBHelpers = `
 
   function doWithDatabase(databaseName, callback) {
     function innerCallback() {
-      var db = request.result;
+      let db = request.result;
       callback(db);
     }
 
-    var request = indexedDB.open(databaseName);
+    let request = indexedDB.open(databaseName);
     request.onblocked = onIndexedDBBlocked;
     request.onerror = onIndexedDBError;
     request.onsuccess = innerCallback;
@@ -209,7 +209,7 @@ var __indexedDBHelpers = `
     doWithDatabase(databaseName, step2);
 
     function step2(db) {
-      var version = db.version;
+      let version = db.version;
       db.close();
       request = indexedDB.open(databaseName, version + 1);
       request.onerror = onIndexedDBError;
@@ -217,13 +217,13 @@ var __indexedDBHelpers = `
       request.onsuccess = onOpened;
 
       function onUpgradeNeeded(e) {
-        var db = e.target.result;
-        var trans = e.target.transaction;
+        let db = e.target.result;
+        let trans = e.target.transaction;
         callback(db, trans);
       }
 
       function onOpened(e) {
-        var db = e.target.result;
+        let db = e.target.result;
         db.close();
         commitCallback();
       }
@@ -234,8 +234,8 @@ var __indexedDBHelpers = `
     doWithDatabase(databaseName, step2);
 
     function step2(db) {
-      var transaction = db.transaction([objectStoreName], 'readwrite');
-      var objectStore = transaction.objectStore(objectStoreName);
+      let transaction = db.transaction([objectStoreName], 'readwrite');
+      let objectStore = transaction.objectStore(objectStoreName);
       callback(objectStore, innerCommitCallback);
 
       function innerCommitCallback() {
@@ -246,7 +246,7 @@ var __indexedDBHelpers = `
   }
 
   function createDatabase(callback, databaseName) {
-    var request = indexedDB.open(databaseName);
+    let request = indexedDB.open(databaseName);
     request.onerror = onIndexedDBError;
     request.onsuccess = closeDatabase;
 
@@ -257,7 +257,7 @@ var __indexedDBHelpers = `
   }
 
   function deleteDatabase(callback, databaseName) {
-    var request = indexedDB.deleteDatabase(databaseName);
+    let request = indexedDB.deleteDatabase(databaseName);
     request.onerror = onIndexedDBError;
     request.onsuccess = callback;
   }
@@ -266,7 +266,7 @@ var __indexedDBHelpers = `
     doWithVersionTransaction(databaseName, withTransactionCallback, callback);
 
     function withTransactionCallback(db, transaction) {
-      var store = db.createObjectStore(objectStoreName, {
+      let store = db.createObjectStore(objectStoreName, {
         keyPath: keyPath,
         autoIncrement: autoIncrement
       });
@@ -277,7 +277,7 @@ var __indexedDBHelpers = `
     doWithVersionTransaction(databaseName, withTransactionCallback, callback);
 
     function withTransactionCallback(db, transaction) {
-      var store = db.deleteObjectStore(objectStoreName);
+      let store = db.deleteObjectStore(objectStoreName);
     }
   }
 
@@ -285,7 +285,7 @@ var __indexedDBHelpers = `
     doWithVersionTransaction(databaseName, withTransactionCallback, callback);
 
     function withTransactionCallback(db, transaction) {
-      var objectStore = transaction.objectStore(objectStoreName);
+      let objectStore = transaction.objectStore(objectStoreName);
 
       objectStore.createIndex(objectStoreIndexName, keyPath, {
         unique: unique,
@@ -298,7 +298,7 @@ var __indexedDBHelpers = `
     doWithVersionTransaction(databaseName, withTransactionCallback, callback);
 
     function withTransactionCallback(db, transaction) {
-      var objectStore = transaction.objectStore(objectStoreName);
+      let objectStore = transaction.objectStore(objectStoreName);
       objectStore.deleteIndex(objectStoreIndexName);
     }
   }
@@ -307,7 +307,7 @@ var __indexedDBHelpers = `
     doWithReadWriteTransaction(databaseName, objectStoreName, withTransactionCallback, callback);
 
     function withTransactionCallback(objectStore, commitCallback) {
-      var request;
+      let request;
 
       if (key)
         request = objectStore.add(value, key);
@@ -326,20 +326,20 @@ var __indexedDBHelpers = `
   }
 
   function upgradeRequestAsync(databaseName, onUpgradeNeeded, callback) {
-    var request = indexedDB.open(databaseName);
+    let request = indexedDB.open(databaseName);
     request.onerror = onIndexedDBError;
     request.onsuccess = function(event) {
-      var db = request.result;
-      var version = db.version;
+      let db = request.result;
+      let version = db.version;
       db.close();
 
-      var upgradeRequest = indexedDB.open(databaseName, version + 1);
+      let upgradeRequest = indexedDB.open(databaseName, version + 1);
       upgradeRequest.onerror = onIndexedDBError;
       upgradeRequest.onupgradeneeded = function(e) {
         onUpgradeNeeded(e.target.result, e.target.transaction, callback);
       }
       upgradeRequest.onsuccess = function(e) {
-        var upgradeDb = e.target.result;
+        let upgradeDb = e.target.result;
         upgradeDb.close();
         callback();
       }
@@ -347,19 +347,19 @@ var __indexedDBHelpers = `
   }
 
   function deleteDatabaseAsync(databaseName) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var request = indexedDB.deleteDatabase(databaseName);
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let request = indexedDB.deleteDatabase(databaseName);
     request.onerror = onIndexedDBError;
     request.onsuccess = callback;
     return promise;
   }
 
   function createObjectStoreAsync(databaseName, objectStoreName, indexName) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
-      var store = upgradeDb.createObjectStore(objectStoreName, { keyPath: "test", autoIncrement: false });
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      let store = upgradeDb.createObjectStore(objectStoreName, { keyPath: "test", autoIncrement: false });
       store.createIndex(indexName, "test", { unique: false, multiEntry: false });
       callback();
     }
@@ -368,9 +368,9 @@ var __indexedDBHelpers = `
   }
 
   function deleteObjectStoreAsync(databaseName, objectStoreName) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let onUpgradeNeeded = function(upgradeDb, transaction, callback) {
       upgradeDb.deleteObjectStore(objectStoreName);
       callback();
     }
@@ -379,10 +379,10 @@ var __indexedDBHelpers = `
   }
 
   function createObjectStoreIndexAsync(databaseName, objectStoreName, indexName) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
-      var store = transaction.objectStore(objectStoreName);
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      let store = transaction.objectStore(objectStoreName);
       store.createIndex(indexName, "test", { unique: false, multiEntry: false });
       callback();
     }
@@ -391,10 +391,10 @@ var __indexedDBHelpers = `
   }
 
   function deleteObjectStoreIndexAsync(databaseName, objectStoreName, indexName) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var onUpgradeNeeded = function(upgradeDb, transaction, callback) {
-      var store = transaction.objectStore(objectStoreName);
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let onUpgradeNeeded = function(upgradeDb, transaction, callback) {
+      let store = transaction.objectStore(objectStoreName);
       store.deleteIndex(indexName);
       callback();
     }
@@ -403,15 +403,15 @@ var __indexedDBHelpers = `
   }
 
   function addIDBValueAsync(databaseName, objectStoreName, key, value) {
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
-    var request = indexedDB.open(databaseName);
+    let callback;
+    let promise = new Promise(fulfill => callback = fulfill);
+    let request = indexedDB.open(databaseName);
     request.onerror = onIndexedDBError;
 
     request.onsuccess = function(event) {
-      var db = request.result;
-      var transaction = db.transaction(objectStoreName, 'readwrite');
-      var store = transaction.objectStore(objectStoreName);
+      let db = request.result;
+      let transaction = db.transaction(objectStoreName, 'readwrite');
+      let store = transaction.objectStore(objectStoreName);
 
       store.put({
         test: key,
@@ -430,14 +430,14 @@ var __indexedDBHelpers = `
   }
 
   function deleteIDBValueAsync(databaseName, objectStoreName, key) {
-    var callback;
-    var promise = new Promise((fulfill) => callback = fulfill);
-    var request = indexedDB.open(databaseName);
+    let callback;
+    let promise = new Promise((fulfill) => callback = fulfill);
+    let request = indexedDB.open(databaseName);
     request.onerror = onIndexedDBError;
     request.onsuccess = function(event) {
-      var db = request.result;
-      var transaction = db.transaction(objectStoreName, "readwrite");
-      var store = transaction.objectStore(objectStoreName);
+      let db = request.result;
+      let transaction = db.transaction(objectStoreName, "readwrite");
+      let store = transaction.objectStore(objectStoreName);
       store.delete(key);
 
       transaction.onerror = onIndexedDBError;

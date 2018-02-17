@@ -33,13 +33,13 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @return {!Element}
    */
   createElementForItem(debuggerModel) {
-    var element = createElementWithClass('div', 'thread-item');
-    var title = element.createChild('div', 'thread-item-title');
-    var pausedState = element.createChild('div', 'thread-item-paused-state');
+    const element = createElementWithClass('div', 'thread-item');
+    const title = element.createChild('div', 'thread-item-title');
+    const pausedState = element.createChild('div', 'thread-item-paused-state');
     element.appendChild(UI.Icon.create('smallicon-thick-right-arrow', 'selected-thread-icon'));
 
     function updateTitle() {
-      var executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
+      const executionContext = debuggerModel.runtimeModel().defaultExecutionContext();
       title.textContent =
           executionContext && executionContext.label() ? executionContext.label() : debuggerModel.target().name();
     }
@@ -52,7 +52,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
      * @param {!Common.Event} event
      */
     function targetNameChanged(event) {
-      var target = /** @type {!SDK.Target} */ (event.data);
+      const target = /** @type {!SDK.Target} */ (event.data);
       if (target === debuggerModel.target())
         updateTitle();
     }
@@ -108,7 +108,7 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    */
   modelAdded(debuggerModel) {
     this._items.insert(this._items.length, debuggerModel);
-    var currentTarget = UI.context.flavor(SDK.Target);
+    const currentTarget = UI.context.flavor(SDK.Target);
     if (currentTarget === debuggerModel.target())
       this._list.selectItem(debuggerModel);
   }
@@ -125,8 +125,8 @@ Sources.ThreadsSidebarPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _targetFlavorChanged(event) {
-    var target = /** @type {!SDK.Target} */ (event.data);
-    var debuggerModel = target.model(SDK.DebuggerModel);
+    const target = /** @type {!SDK.Target} */ (event.data);
+    const debuggerModel = target.model(SDK.DebuggerModel);
     if (debuggerModel)
       this._list.selectItem(debuggerModel);
   }

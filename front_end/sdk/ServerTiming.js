@@ -21,12 +21,12 @@ SDK.ServerTiming = class {
    * @return {?Array<!SDK.ServerTiming>}
    */
   static parseHeaders(headers) {
-    var rawServerTimingHeaders = headers.filter(item => item.name.toLowerCase() === 'server-timing');
+    const rawServerTimingHeaders = headers.filter(item => item.name.toLowerCase() === 'server-timing');
     if (!rawServerTimingHeaders.length)
       return null;
 
-    var serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
-      var timing = this.createFromHeaderValue(header.value);
+    const serverTimings = rawServerTimingHeaders.reduce((memo, header) => {
+      const timing = this.createFromHeaderValue(header.value);
       memo.pushAll(timing.map(function(entry) {
         return new SDK.ServerTiming(
             entry.name, entry.hasOwnProperty('dur') ? entry.dur : null, entry.hasOwnProperty('desc') ? entry.desc : '');
@@ -56,7 +56,7 @@ SDK.ServerTiming = class {
     }
     function consumeToken() {
       // https://tools.ietf.org/html/rfc7230#appendix-B
-      var result = /^(?:\s*)([\w!#$%&'*+\-.^`|~]+)(?:\s*)(.*)/.exec(valueString);
+      const result = /^(?:\s*)([\w!#$%&'*+\-.^`|~]+)(?:\s*)(.*)/.exec(valueString);
       if (!result)
         return null;
 
@@ -74,12 +74,12 @@ SDK.ServerTiming = class {
       console.assert(valueString.charAt(0) === '"');
       valueString = valueString.substring(1);  // remove leading DQUOTE
 
-      var value = '';
+      let value = '';
       while (valueString.length) {
         // split into two parts:
         //  -everything before the first " or \
         //  -everything else
-        var result = /^([^"\\]*)(.*)/.exec(valueString);
+        const result = /^([^"\\]*)(.*)/.exec(valueString);
         value += result[1];
         if (result[2].charAt(0) === '"') {
           // we have found our closing "
@@ -96,27 +96,27 @@ SDK.ServerTiming = class {
       return null;  // not a valid quoted-string
     }
     function consumeExtraneous() {
-      var result = /([,;].*)/.exec(valueString);
+      const result = /([,;].*)/.exec(valueString);
       if (result)
         valueString = result[1];
     }
 
-    var result = [];
-    var name;
+    const result = [];
+    let name;
     while ((name = consumeToken()) !== null) {
-      var entry = {name};
+      const entry = {name};
 
       if (valueString.charAt(0) === '=')
         this.showWarning(ls`Deprecated syntax found. Please use: <name>;dur=<duration>;desc=<description>`);
 
       while (consumeDelimiter(';')) {
-        var paramName;
+        let paramName;
         if ((paramName = consumeToken()) === null)
           continue;
 
         paramName = paramName.toLowerCase();
-        var parseParameter = this.getParserForParameter(paramName);
-        var paramValue = null;
+        const parseParameter = this.getParserForParameter(paramName);
+        let paramValue = null;
         if (consumeDelimiter('=')) {
           // always parse the value, even if we don't recognize the parameter name
           paramValue = consumeTokenOrQuotedString();
@@ -160,7 +160,7 @@ SDK.ServerTiming = class {
         return function(entry, paramValue) {
           entry.dur = 0;
           if (paramValue !== null) {
-            var duration = parseFloat(paramValue);
+            const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
               this.showWarning(ls`Unable to parse \"${paramName}\" value \"${paramValue}\".`);
               return;

@@ -54,7 +54,7 @@ UI.Widget = class extends Common.Object {
   }
 
   static _incrementWidgetCounter(parentElement, childElement) {
-    var count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
+    const count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
     if (!count)
       return;
 
@@ -65,7 +65,7 @@ UI.Widget = class extends Common.Object {
   }
 
   static _decrementWidgetCounter(parentElement, childElement) {
-    var count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
+    const count = (childElement.__widgetCounter || 0) + (childElement.__widget ? 1 : 0);
     if (!count)
       return;
 
@@ -92,7 +92,7 @@ UI.Widget = class extends Common.Object {
     if (!node)
       return;
 
-    var widget = node.__widget;
+    let widget = node.__widget;
     while (widget._parentWidget) {
       widget._parentWidget._defaultFocusedChild = widget;
       widget = widget._parentWidget;
@@ -140,7 +140,7 @@ UI.Widget = class extends Common.Object {
       return false;
     if (this._hideOnDetach)
       return true;
-    for (var child of this._children) {
+    for (const child of this._children) {
       if (child.shouldHideOnDetach())
         return true;
     }
@@ -168,8 +168,8 @@ UI.Widget = class extends Common.Object {
    * @param {function(this:UI.Widget)} method
    */
   _callOnVisibleChildren(method) {
-    var copy = this._children.slice();
-    for (var i = 0; i < copy.length; ++i) {
+    const copy = this._children.slice();
+    for (let i = 0; i < copy.length; ++i) {
       if (copy[i]._parentWidget === this && copy[i]._visible)
         method.call(copy[i]);
     }
@@ -247,7 +247,7 @@ UI.Widget = class extends Common.Object {
 
     if (!this._isRoot) {
       // Update widget hierarchy.
-      var currentParent = parentElement;
+      let currentParent = parentElement;
       while (currentParent && !currentParent.__widget)
         currentParent = currentParent.parentElementOrShadowHost();
       UI.Widget.__assert(currentParent, 'Attempt to attach widget to orphan node');
@@ -282,7 +282,7 @@ UI.Widget = class extends Common.Object {
    * @param {?Node=} insertBefore
    */
   _showWidget(parentElement, insertBefore) {
-    var currentParent = parentElement;
+    let currentParent = parentElement;
     while (currentParent && !currentParent.__widget)
       currentParent = currentParent.parentElementOrShadowHost();
 
@@ -294,7 +294,7 @@ UI.Widget = class extends Common.Object {
           'Attempt to show under node belonging to alien widget');
     }
 
-    var wasVisible = this._visible;
+    const wasVisible = this._visible;
     if (wasVisible && this.element.parentElement === parentElement)
       return;
 
@@ -334,7 +334,7 @@ UI.Widget = class extends Common.Object {
    */
   _hideWidget(removeFromDOM) {
     this._visible = false;
-    var parentElement = this.element.parentElement;
+    const parentElement = this.element.parentElement;
 
     if (this._parentIsShowing())
       this._processWillHide();
@@ -365,11 +365,11 @@ UI.Widget = class extends Common.Object {
     //
     // overrideHideOnDetach will override hideOnDetach and the client takes
     // responsibility for the consequences.
-    var removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
+    const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
     if (this._visible) {
       this._hideWidget(removeFromDOM);
     } else if (removeFromDOM && this.element.parentElement) {
-      var parentElement = this.element.parentElement;
+      const parentElement = this.element.parentElement;
       // Force kick out from DOM.
       UI.Widget._decrementWidgetCounter(parentElement, this.element);
       UI.Widget._originalRemoveChild.call(parentElement, this.element);
@@ -377,7 +377,7 @@ UI.Widget = class extends Common.Object {
 
     // Update widget hierarchy.
     if (this._parentWidget) {
-      var childIndex = this._parentWidget._children.indexOf(this);
+      const childIndex = this._parentWidget._children.indexOf(this);
       UI.Widget.__assert(childIndex >= 0, 'Attempt to remove non-child widget');
       this._parentWidget._children.splice(childIndex, 1);
       if (this._parentWidget._defaultFocusedChild === this)
@@ -390,8 +390,8 @@ UI.Widget = class extends Common.Object {
   }
 
   detachChildWidgets() {
-    var children = this._children.slice();
-    for (var i = 0; i < children.length; ++i)
+    const children = this._children.slice();
+    for (let i = 0; i < children.length; ++i)
       children[i].detach();
   }
 
@@ -403,18 +403,18 @@ UI.Widget = class extends Common.Object {
   }
 
   storeScrollPositions() {
-    var elements = this.elementsToRestoreScrollPositionsFor();
-    for (var i = 0; i < elements.length; ++i) {
-      var container = elements[i];
+    const elements = this.elementsToRestoreScrollPositionsFor();
+    for (let i = 0; i < elements.length; ++i) {
+      const container = elements[i];
       container._scrollTop = container.scrollTop;
       container._scrollLeft = container.scrollLeft;
     }
   }
 
   restoreScrollPositions() {
-    var elements = this.elementsToRestoreScrollPositionsFor();
-    for (var i = 0; i < elements.length; ++i) {
-      var container = elements[i];
+    const elements = this.elementsToRestoreScrollPositionsFor();
+    for (let i = 0; i < elements.length; ++i) {
+      const container = elements[i];
       if (container._scrollTop)
         container.scrollTop = container._scrollTop;
       if (container._scrollLeft)
@@ -445,7 +445,7 @@ UI.Widget = class extends Common.Object {
   }
 
   printWidgetHierarchy() {
-    var lines = [];
+    const lines = [];
     this._collectWidgetHierarchy('', lines);
     console.log(lines.join('\n'));  // eslint-disable-line no-console
   }
@@ -453,7 +453,7 @@ UI.Widget = class extends Common.Object {
   _collectWidgetHierarchy(prefix, lines) {
     lines.push(prefix + '[' + this.element.className + ']' + (this._children.length ? ' {' : ''));
 
-    for (var i = 0; i < this._children.length; ++i)
+    for (let i = 0; i < this._children.length; ++i)
       this._children[i]._collectWidgetHierarchy(prefix + '    ', lines);
 
     if (this._children.length)
@@ -479,7 +479,7 @@ UI.Widget = class extends Common.Object {
     if (!this.isShowing())
       return;
 
-    var element = this._defaultFocusedElement;
+    const element = this._defaultFocusedElement;
     if (element) {
       if (!element.hasFocus())
         element.focus();
@@ -489,13 +489,13 @@ UI.Widget = class extends Common.Object {
     if (this._defaultFocusedChild && this._defaultFocusedChild._visible) {
       this._defaultFocusedChild.focus();
     } else {
-      for (var child of this._children) {
+      for (const child of this._children) {
         if (child._visible) {
           child.focus();
           return;
         }
       }
-      var child = this.contentElement.traverseNextNode(this.contentElement);
+      let child = this.contentElement.traverseNextNode(this.contentElement);
       while (child) {
         if (child instanceof UI.XWidget) {
           child.focus();
@@ -555,7 +555,7 @@ UI.Widget = class extends Common.Object {
    * @return {boolean}
    */
   _hasNonZeroConstraints() {
-    var constraints = this.constraints();
+    const constraints = this.constraints();
     return !!(
         constraints.minimum.width || constraints.minimum.height || constraints.preferred.width ||
         constraints.preferred.height);
@@ -577,9 +577,9 @@ UI.Widget = class extends Common.Object {
       return;
     }
     this._invalidationsRequested = false;
-    var cached = this._cachedConstraints;
+    const cached = this._cachedConstraints;
     delete this._cachedConstraints;
-    var actual = this.constraints();
+    const actual = this.constraints();
     if (!actual.isEqual(cached) && this._parentWidget)
       this._parentWidget.invalidateConstraints();
     else
@@ -610,14 +610,14 @@ UI.VBox = class extends UI.Widget {
    * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    var constraints = new UI.Constraints();
+    let constraints = new UI.Constraints();
 
     /**
      * @this {!UI.Widget}
      * @suppressReceiverCheck
      */
     function updateForChild() {
-      var child = this.constraints();
+      const child = this.constraints();
       constraints = constraints.widthToMax(child);
       constraints = constraints.addHeight(child);
     }
@@ -644,14 +644,14 @@ UI.HBox = class extends UI.Widget {
    * @return {!UI.Constraints}
    */
   calculateConstraints() {
-    var constraints = new UI.Constraints();
+    let constraints = new UI.Constraints();
 
     /**
      * @this {!UI.Widget}
      * @suppressReceiverCheck
      */
     function updateForChild() {
-      var child = this.constraints();
+      const child = this.constraints();
       constraints = constraints.addWidth(child);
       constraints = constraints.heightToMax(child);
     }

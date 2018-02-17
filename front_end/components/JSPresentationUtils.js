@@ -39,28 +39,28 @@ Components.JSPresentationUtils = {};
  */
 Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     target, linkifier, stackTrace, contentUpdated) {
-  var element = createElement('span');
+  const element = createElement('span');
   element.style.display = 'inline-block';
-  var shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
-  var contentElement = shadowRoot.createChild('table', 'stack-preview-container');
-  var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
-  var totalHiddenCallFramesCount = 0;
+  const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
+  const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
+  const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
+  let totalHiddenCallFramesCount = 0;
 
   /**
    * @param {!Protocol.Runtime.StackTrace} stackTrace
    * @return {boolean}
    */
   function appendStackTrace(stackTrace) {
-    var hiddenCallFrames = 0;
-    for (var stackFrame of stackTrace.callFrames) {
-      var row = createElement('tr');
+    let hiddenCallFrames = 0;
+    for (const stackFrame of stackTrace.callFrames) {
+      const row = createElement('tr');
       row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
-      var link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
+      const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         if (debuggerModel) {
-          var location = debuggerModel.createRawLocationByScriptId(
+          const location = debuggerModel.createRawLocationByScriptId(
               stackFrame.scriptId, stackFrame.lineNumber, stackFrame.columnNumber);
           if (location && Bindings.blackboxManager.isBlackboxedRawLocation(location)) {
             row.classList.add('blackboxed');
@@ -82,9 +82,9 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
    * @param {!Event} event
    */
   function populateContextMenu(link, event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     event.consume(true);
-    var uiLocation = Components.Linkifier.uiLocation(link);
+    const uiLocation = Components.Linkifier.uiLocation(link);
     if (uiLocation && Bindings.blackboxManager.canBlackboxUISourceCode(uiLocation.uiSourceCode)) {
       if (Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
         contextMenu.debugSection().appendItem(
@@ -103,13 +103,13 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
 
   appendStackTrace(stackTrace);
 
-  var asyncStackTrace = stackTrace.parent;
+  let asyncStackTrace = stackTrace.parent;
   while (asyncStackTrace) {
     if (!asyncStackTrace.callFrames.length) {
       asyncStackTrace = asyncStackTrace.parent;
       continue;
     }
-    var row = contentElement.createChild('tr');
+    const row = contentElement.createChild('tr');
     row.createChild('td').textContent = '\n';
     row.createChild('td', 'stack-preview-async-description').textContent =
         UI.asyncStackTraceLabel(asyncStackTrace.description);
@@ -121,11 +121,11 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   }
 
   if (totalHiddenCallFramesCount) {
-    var row = contentElement.createChild('tr', 'show-blackboxed-link');
+    const row = contentElement.createChild('tr', 'show-blackboxed-link');
     row.createChild('td').textContent = '\n';
-    var cell = row.createChild('td');
+    const cell = row.createChild('td');
     cell.colSpan = 4;
-    var showAllLink = cell.createChild('span', 'link');
+    const showAllLink = cell.createChild('span', 'link');
     if (totalHiddenCallFramesCount === 1)
       showAllLink.textContent = ls`Show 1 more blackboxed frame`;
     else

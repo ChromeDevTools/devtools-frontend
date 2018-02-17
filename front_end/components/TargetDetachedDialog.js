@@ -36,7 +36,7 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
    * @override
    */
   targetCrashed() {
-    var dialog = new UI.Dialog();
+    const dialog = new UI.Dialog();
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
     dialog.addCloseButton();
     dialog.setDimmed(true);

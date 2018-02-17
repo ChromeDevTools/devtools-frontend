@@ -31,7 +31,7 @@ FormatterWorker.HTMLFormatter = class {
    */
   _formatTokensTill(element, offset) {
     while (this._model.peekToken() && this._model.peekToken().startOffset < offset) {
-      var token = this._model.nextToken();
+      const token = this._model.nextToken();
       this._formatToken(element, token);
     }
   }
@@ -45,7 +45,7 @@ FormatterWorker.HTMLFormatter = class {
     this._beforeOpenTag(element);
     this._formatTokensTill(element, element.openTag.endOffset);
     this._afterOpenTag(element);
-    for (var i = 0; i < element.children.length; ++i)
+    for (let i = 0; i < element.children.length; ++i)
       this._walk(element.children[i]);
 
     this._formatTokensTill(element, element.closeTag.startOffset);
@@ -104,7 +104,7 @@ FormatterWorker.HTMLFormatter = class {
       return;
     }
 
-    var isBodyToken =
+    const isBodyToken =
         element.openTag.endOffset <= token.startOffset && token.startOffset < element.closeTag.startOffset;
     if (isBodyToken && element.name === 'style') {
       this._builder.addNewLine();
@@ -116,7 +116,7 @@ FormatterWorker.HTMLFormatter = class {
     if (isBodyToken && element.name === 'script') {
       this._builder.addNewLine();
       this._builder.increaseNestingLevel();
-      var mimeType =
+      const mimeType =
           element.openTag.attributes.has('type') ? element.openTag.attributes.get('type').toLowerCase() : null;
       if (!mimeType || FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes.has(mimeType)) {
         this._jsFormatter.format(this._text, this._lineEndings, token.startOffset, token.endOffset);
@@ -163,26 +163,26 @@ FormatterWorker.HTMLModel = class {
    * @param {string} text
    */
   _build(text) {
-    var tokenizer = FormatterWorker.createTokenizer('text/html');
-    var lastOffset = 0;
-    var lowerCaseText = text.toLowerCase();
+    const tokenizer = FormatterWorker.createTokenizer('text/html');
+    let lastOffset = 0;
+    const lowerCaseText = text.toLowerCase();
 
     while (true) {
       tokenizer(text.substring(lastOffset), processToken.bind(this, lastOffset));
       if (lastOffset >= text.length)
         break;
-      var element = this._stack.peekLast();
+      const element = this._stack.peekLast();
       lastOffset = lowerCaseText.indexOf('</' + element.name, lastOffset);
       if (lastOffset === -1)
         lastOffset = text.length;
-      var tokenStart = element.openTag.endOffset;
-      var tokenEnd = lastOffset;
-      var tokenValue = text.substring(tokenStart, tokenEnd);
+      const tokenStart = element.openTag.endOffset;
+      const tokenEnd = lastOffset;
+      const tokenValue = text.substring(tokenStart, tokenEnd);
       this._tokens.push(new FormatterWorker.HTMLModel.Token(tokenValue, new Set(), tokenStart, tokenEnd));
     }
 
     while (this._stack.length > 1) {
-      var element = this._stack.peekLast();
+      const element = this._stack.peekLast();
       this._popElement(
           new FormatterWorker.HTMLModel.Tag(element.name, text.length, text.length, new Map(), false, false));
     }
@@ -201,12 +201,12 @@ FormatterWorker.HTMLModel = class {
       tokenEnd += baseOffset;
       lastOffset = tokenEnd;
 
-      var tokenType = type ? new Set(type.split(' ')) : new Set();
-      var token = new FormatterWorker.HTMLModel.Token(tokenValue, tokenType, tokenStart, tokenEnd);
+      const tokenType = type ? new Set(type.split(' ')) : new Set();
+      const token = new FormatterWorker.HTMLModel.Token(tokenValue, tokenType, tokenStart, tokenEnd);
       this._tokens.push(token);
       this._updateDOM(token);
 
-      var element = this._stack.peekLast();
+      const element = this._stack.peekLast();
       if (element && (element.name === 'script' || element.name === 'style') &&
           element.openTag.endOffset === lastOffset)
         return FormatterWorker.AbortTokenization;
@@ -217,9 +217,9 @@ FormatterWorker.HTMLModel = class {
    * @param {!FormatterWorker.HTMLModel.Token} token
    */
   _updateDOM(token) {
-    var S = FormatterWorker.HTMLModel.ParseState;
-    var value = token.value;
-    var type = token.type;
+    const S = FormatterWorker.HTMLModel.ParseState;
+    const value = token.value;
+    const type = token.type;
     switch (this._state) {
       case S.Initial:
         if (type.has('bracket') && (value === '<' || value === '</')) {
@@ -276,8 +276,8 @@ FormatterWorker.HTMLModel = class {
    */
   _onEndTag(token) {
     this._tagEndOffset = token.endOffset;
-    var selfClosingTag = token.value === '/>' || FormatterWorker.HTMLModel.SelfClosingTags.has(this._tagName);
-    var tag = new FormatterWorker.HTMLModel.Tag(
+    const selfClosingTag = token.value === '/>' || FormatterWorker.HTMLModel.SelfClosingTags.has(this._tagName);
+    const tag = new FormatterWorker.HTMLModel.Tag(
         this._tagName, this._tagStartOffset, this._tagEndOffset, this._attributes, this._isOpenTag, selfClosingTag);
     this._onTagComplete(tag);
   }
@@ -287,7 +287,7 @@ FormatterWorker.HTMLModel = class {
    */
   _onTagComplete(tag) {
     if (tag.isOpenTag) {
-      var topElement = this._stack.peekLast();
+      const topElement = this._stack.peekLast();
       if (topElement !== this._document && topElement.openTag.selfClosingTag)
         this._popElement(autocloseTag(topElement, topElement.openTag.endOffset));
       else if (
@@ -318,7 +318,7 @@ FormatterWorker.HTMLModel = class {
    * @param {!FormatterWorker.HTMLModel.Tag} closeTag
    */
   _popElement(closeTag) {
-    var element = this._stack.pop();
+    const element = this._stack.pop();
     element.closeTag = closeTag;
   }
 
@@ -326,8 +326,8 @@ FormatterWorker.HTMLModel = class {
    * @param {!FormatterWorker.HTMLModel.Tag} openTag
    */
   _pushElement(openTag) {
-    var topElement = this._stack.peekLast();
-    var newElement = new FormatterWorker.HTMLModel.Element(openTag.name);
+    const topElement = this._stack.peekLast();
+    const newElement = new FormatterWorker.HTMLModel.Element(openTag.name);
     newElement.parent = topElement;
     topElement.children.push(newElement);
     newElement.openTag = openTag;

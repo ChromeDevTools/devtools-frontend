@@ -26,13 +26,13 @@ Coverage.CoverageDecorationManager = class {
     /** @type {!WeakMap<!Workspace.UISourceCode, !Array<!SDK.CSSStyleSheetHeader>>} */
     this._documentUISouceCodeToStylesheets = new WeakMap();
 
-    for (var uiSourceCode of Workspace.workspace.uiSourceCodes())
+    for (const uiSourceCode of Workspace.workspace.uiSourceCodes())
       uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
     Workspace.workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this._onUISourceCodeAdded, this);
   }
 
   reset() {
-    for (var uiSourceCode of Workspace.workspace.uiSourceCodes())
+    for (const uiSourceCode of Workspace.workspace.uiSourceCodes())
       uiSourceCode.removeDecorationsForType(Coverage.CoverageDecorationManager._decoratorType);
   }
 
@@ -46,8 +46,8 @@ Coverage.CoverageDecorationManager = class {
    * @param {!Array<!Coverage.CoverageInfo>} updatedEntries
    */
   update(updatedEntries) {
-    for (var entry of updatedEntries) {
-      for (var uiSourceCode of this._uiSourceCodeByContentProvider.get(entry.contentProvider())) {
+    for (const entry of updatedEntries) {
+      for (const uiSourceCode of this._uiSourceCodeByContentProvider.get(entry.contentProvider())) {
         uiSourceCode.removeDecorationsForType(Coverage.CoverageDecorationManager._decoratorType);
         uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
       }
@@ -59,33 +59,33 @@ Coverage.CoverageDecorationManager = class {
    * @return {!Promise<!Array<boolean>>}
    */
   async usageByLine(uiSourceCode) {
-    var result = [];
-    var sourceText = new TextUtils.Text(uiSourceCode.content() || '');
+    const result = [];
+    const sourceText = new TextUtils.Text(uiSourceCode.content() || '');
     await this._updateTexts(uiSourceCode, sourceText);
-    var lineEndings = sourceText.lineEndings();
-    for (var line = 0; line < sourceText.lineCount(); ++line) {
-      var lineLength = lineEndings[line] - (line ? lineEndings[line - 1] : 0) - 1;
+    const lineEndings = sourceText.lineEndings();
+    for (let line = 0; line < sourceText.lineCount(); ++line) {
+      const lineLength = lineEndings[line] - (line ? lineEndings[line - 1] : 0) - 1;
       if (!lineLength) {
         result.push(undefined);
         continue;
       }
-      var startLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, 0);
-      var endLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, lineLength);
-      var used = undefined;
-      for (var startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
-        var start = startLocations[startIndex];
+      const startLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, 0);
+      const endLocations = this._rawLocationsForSourceLocation(uiSourceCode, line, lineLength);
+      let used = undefined;
+      for (let startIndex = 0, endIndex = 0; startIndex < startLocations.length; ++startIndex) {
+        const start = startLocations[startIndex];
         while (endIndex < endLocations.length &&
                Coverage.CoverageDecorationManager._compareLocations(start, endLocations[endIndex]) >= 0)
           ++endIndex;
         if (endIndex >= endLocations.length || endLocations[endIndex].id !== start.id)
           continue;
-        var end = endLocations[endIndex++];
-        var text = this._textByProvider.get(end.contentProvider);
+        const end = endLocations[endIndex++];
+        const text = this._textByProvider.get(end.contentProvider);
         if (!text)
           continue;
-        var textValue = text.value();
-        var startOffset = Math.min(text.offsetFromPosition(start.line, start.column), textValue.length - 1);
-        var endOffset = Math.min(text.offsetFromPosition(end.line, end.column), textValue.length - 1);
+        const textValue = text.value();
+        let startOffset = Math.min(text.offsetFromPosition(start.line, start.column), textValue.length - 1);
+        let endOffset = Math.min(text.offsetFromPosition(end.line, end.column), textValue.length - 1);
         while (startOffset <= endOffset && /\s/.test(textValue[startOffset]))
           ++startOffset;
         while (startOffset <= endOffset && /\s/.test(textValue[endOffset]))
@@ -106,9 +106,9 @@ Coverage.CoverageDecorationManager = class {
    * @return {!Promise}
    */
   _updateTexts(uiSourceCode, text) {
-    var promises = [];
-    for (var line = 0; line < text.lineCount(); ++line) {
-      for (var entry of this._rawLocationsForSourceLocation(uiSourceCode, line, 0)) {
+    const promises = [];
+    for (let line = 0; line < text.lineCount(); ++line) {
+      for (const entry of this._rawLocationsForSourceLocation(uiSourceCode, line, 0)) {
         if (this._textByProvider.has(entry.contentProvider))
           continue;
         this._textByProvider.set(entry.contentProvider, null);
@@ -124,7 +124,7 @@ Coverage.CoverageDecorationManager = class {
    * @return {!Promise}
    */
   async _updateTextForProvider(contentProvider) {
-    var content = await contentProvider.requestContent();
+    const content = await contentProvider.requestContent();
     this._textByProvider.set(contentProvider, new TextUtils.Text(content));
   }
 
@@ -135,12 +135,12 @@ Coverage.CoverageDecorationManager = class {
    * @return {!Array<!Coverage.RawLocation>}
    */
   _rawLocationsForSourceLocation(uiSourceCode, line, column) {
-    var result = [];
-    var contentType = uiSourceCode.contentType();
+    const result = [];
+    const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      var location = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, line, column);
+      let location = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, line, column);
       if (location && location.script()) {
-        var script = location.script();
+        const script = location.script();
         if (script.isInlineScript() && contentType.isDocument()) {
           if (comparePositions(script.lineOffset, script.columnOffset, location.lineNumber, location.columnNumber) >
                   0 ||
@@ -163,11 +163,11 @@ Coverage.CoverageDecorationManager = class {
       }
     }
     if (contentType.isStyleSheet() || contentType.isDocument()) {
-      var rawStyleLocations = contentType.isDocument() ?
+      const rawStyleLocations = contentType.isDocument() ?
           this._documentUILocationToCSSRawLocations(uiSourceCode, line, column) :
           Bindings.cssWorkspaceBinding.uiLocationToRawLocations(new Workspace.UILocation(uiSourceCode, line, column));
-      for (var location of rawStyleLocations) {
-        var header = location.header();
+      for (const location of rawStyleLocations) {
+        const header = location.header();
         if (!header)
           continue;
         if (header.isInline && contentType.isDocument()) {
@@ -207,27 +207,27 @@ Coverage.CoverageDecorationManager = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   _documentUILocationToCSSRawLocations(uiSourceCode, line, column) {
-    var stylesheets = this._documentUISouceCodeToStylesheets.get(uiSourceCode);
+    let stylesheets = this._documentUISouceCodeToStylesheets.get(uiSourceCode);
     if (!stylesheets) {
       stylesheets = [];
-      var cssModel = this._coverageModel.target().model(SDK.CSSModel);
+      const cssModel = this._coverageModel.target().model(SDK.CSSModel);
       if (!cssModel)
         return [];
-      for (var headerId of cssModel.styleSheetIdsForURL(uiSourceCode.url())) {
-        var header = cssModel.styleSheetHeaderForId(headerId);
+      for (const headerId of cssModel.styleSheetIdsForURL(uiSourceCode.url())) {
+        const header = cssModel.styleSheetHeaderForId(headerId);
         if (header)
           stylesheets.push(header);
       }
       stylesheets.sort(stylesheetComparator);
       this._documentUISouceCodeToStylesheets.set(uiSourceCode, stylesheets);
     }
-    var endIndex =
+    const endIndex =
         stylesheets.upperBound(undefined, (unused, header) => line - header.startLine || column - header.startColumn);
     if (!endIndex)
       return [];
-    var locations = [];
-    var last = stylesheets[endIndex - 1];
-    for (var index = endIndex - 1; index >= 0 && stylesheets[index].startLine === last.startLine &&
+    const locations = [];
+    const last = stylesheets[endIndex - 1];
+    for (let index = endIndex - 1; index >= 0 && stylesheets[index].startLine === last.startLine &&
          stylesheets[index].startColumn === last.startColumn;
          --index)
       locations.push(new SDK.CSSLocation(stylesheets[index], line, column));
@@ -255,7 +255,7 @@ Coverage.CoverageDecorationManager = class {
    * @param {!Common.Event} event
    */
   _onUISourceCodeAdded(event) {
-    var uiSourceCode = /** @type !Workspace.UISourceCode */ (event.data);
+    const uiSourceCode = /** @type !Workspace.UISourceCode */ (event.data);
     uiSourceCode.addLineDecoration(0, Coverage.CoverageDecorationManager._decoratorType, this);
   }
 };
@@ -272,12 +272,12 @@ Coverage.CoverageView.LineDecorator = class {
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    */
   decorate(uiSourceCode, textEditor) {
-    var decorations = uiSourceCode.decorationsForType(Coverage.CoverageDecorationManager._decoratorType);
+    const decorations = uiSourceCode.decorationsForType(Coverage.CoverageDecorationManager._decoratorType);
     if (!decorations || !decorations.size) {
       textEditor.uninstallGutter(Coverage.CoverageView.LineDecorator._gutterType);
       return;
     }
-    var decorationManager =
+    const decorationManager =
         /** @type {!Coverage.CoverageDecorationManager} */ (decorations.values().next().value.data());
     decorationManager.usageByLine(uiSourceCode).then(lineUsage => {
       textEditor.operation(() => this._innerDecorate(textEditor, lineUsage));
@@ -289,14 +289,14 @@ Coverage.CoverageView.LineDecorator = class {
    * @param {!Array<boolean>} lineUsage
    */
   _innerDecorate(textEditor, lineUsage) {
-    var gutterType = Coverage.CoverageView.LineDecorator._gutterType;
+    const gutterType = Coverage.CoverageView.LineDecorator._gutterType;
     textEditor.uninstallGutter(gutterType);
     textEditor.installGutter(gutterType, false);
-    for (var line = 0; line < lineUsage.length; ++line) {
+    for (let line = 0; line < lineUsage.length; ++line) {
       // Do not decorate the line if we don't have data.
       if (typeof lineUsage[line] !== 'boolean')
         continue;
-      var className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
+      const className = lineUsage[line] ? 'text-editor-coverage-used-marker' : 'text-editor-coverage-unused-marker';
       textEditor.setGutterDecoration(line, gutterType, createElementWithClass('div', className));
     }
   }

@@ -76,20 +76,20 @@ SDK.ProfileTreeModel = class {
   }
 
   _assignDepthsAndParents() {
-    var root = this.root;
+    const root = this.root;
     root.depth = -1;
     root.parent = null;
     this.maxDepth = 0;
-    var nodesToTraverse = [root];
+    const nodesToTraverse = [root];
     while (nodesToTraverse.length) {
-      var parent = nodesToTraverse.pop();
-      var depth = parent.depth + 1;
+      const parent = nodesToTraverse.pop();
+      const depth = parent.depth + 1;
       if (depth > this.maxDepth)
         this.maxDepth = depth;
-      var children = parent.children;
-      var length = children.length;
-      for (var i = 0; i < length; ++i) {
-        var child = children[i];
+      const children = parent.children;
+      const length = children.length;
+      for (let i = 0; i < length; ++i) {
+        const child = children[i];
         child.depth = depth;
         child.parent = parent;
         if (child.children.length)
@@ -103,16 +103,16 @@ SDK.ProfileTreeModel = class {
    * @return {number}
    */
   _calculateTotals(root) {
-    var nodesToTraverse = [root];
-    var dfsList = [];
+    const nodesToTraverse = [root];
+    const dfsList = [];
     while (nodesToTraverse.length) {
-      var node = nodesToTraverse.pop();
+      const node = nodesToTraverse.pop();
       node.total = node.self;
       dfsList.push(node);
       nodesToTraverse.push(...node.children);
     }
     while (dfsList.length > 1) {
-      var node = dfsList.pop();
+      const node = dfsList.pop();
       node.parent.total += node.total;
     }
     return root.total;

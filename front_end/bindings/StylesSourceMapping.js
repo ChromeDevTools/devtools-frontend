@@ -39,7 +39,7 @@ Bindings.StylesSourceMapping = class {
    */
   constructor(cssModel, workspace) {
     this._cssModel = cssModel;
-    var target = this._cssModel.target();
+    const target = this._cssModel.target();
     this._project = new Bindings.ContentProviderBasedProject(
         workspace, 'css:' + target.id(), Workspace.projectTypes.Network, '', false /* isServiceProject */);
     Bindings.NetworkProject.setTargetForProject(this._project, target);
@@ -59,14 +59,14 @@ Bindings.StylesSourceMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var header = rawLocation.header();
+    const header = rawLocation.header();
     if (!header || !this._acceptsHeader(header))
       return null;
-    var styleFile = this._styleFiles.get(header.resourceURL());
+    const styleFile = this._styleFiles.get(header.resourceURL());
     if (!styleFile)
       return null;
-    var lineNumber = rawLocation.lineNumber;
-    var columnNumber = rawLocation.columnNumber;
+    let lineNumber = rawLocation.lineNumber;
+    let columnNumber = rawLocation.columnNumber;
     if (header.isInline && header.hasSourceURL) {
       lineNumber -= header.lineNumberInSource(0);
       columnNumber -= header.columnNumberInSource(lineNumber, 0);
@@ -80,13 +80,13 @@ Bindings.StylesSourceMapping = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    var styleFile = uiLocation.uiSourceCode[Bindings.StyleFile._symbol];
+    const styleFile = uiLocation.uiSourceCode[Bindings.StyleFile._symbol];
     if (!styleFile)
       return [];
-    var rawLocations = [];
-    for (var header of styleFile._headers) {
-      var lineNumber = uiLocation.lineNumber;
-      var columnNumber = uiLocation.columnNumber;
+    const rawLocations = [];
+    for (const header of styleFile._headers) {
+      let lineNumber = uiLocation.lineNumber;
+      let columnNumber = uiLocation.columnNumber;
       if (header.isInline && header.hasSourceURL) {
         columnNumber = header.columnNumberInSource(lineNumber, columnNumber);
         lineNumber = header.lineNumberInSource(lineNumber);
@@ -111,12 +111,12 @@ Bindings.StylesSourceMapping = class {
    * @param {!Common.Event} event
    */
   _styleSheetAdded(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     if (!this._acceptsHeader(header))
       return;
 
-    var url = header.resourceURL();
-    var styleFile = this._styleFiles.get(url);
+    const url = header.resourceURL();
+    let styleFile = this._styleFiles.get(url);
     if (!styleFile) {
       styleFile = new Bindings.StyleFile(this._cssModel, this._project, header);
       this._styleFiles.set(url, styleFile);
@@ -129,11 +129,11 @@ Bindings.StylesSourceMapping = class {
    * @param {!Common.Event} event
    */
   _styleSheetRemoved(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     if (!this._acceptsHeader(header))
       return;
-    var url = header.resourceURL();
-    var styleFile = this._styleFiles.get(url);
+    const url = header.resourceURL();
+    const styleFile = this._styleFiles.get(url);
     if (styleFile._headers.size === 1) {
       styleFile.dispose();
       this._styleFiles.delete(url);
@@ -146,15 +146,15 @@ Bindings.StylesSourceMapping = class {
    * @param {!Common.Event} event
    */
   _styleSheetChanged(event) {
-    var header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
+    const header = this._cssModel.styleSheetHeaderForId(event.data.styleSheetId);
     if (!header || !this._acceptsHeader(header))
       return;
-    var styleFile = this._styleFiles.get(header.resourceURL());
+    const styleFile = this._styleFiles.get(header.resourceURL());
     styleFile._styleSheetChanged(header);
   }
 
   dispose() {
-    for (var styleFile of this._styleFiles.values())
+    for (const styleFile of this._styleFiles.values())
       styleFile.dispose();
     this._styleFiles.clear();
     Common.EventTarget.removeEventListeners(this._eventListeners);
@@ -178,10 +178,10 @@ Bindings.StyleFile = class {
     /** @type {!Set<!SDK.CSSStyleSheetHeader>} */
     this._headers = new Set([header]);
 
-    var target = cssModel.target();
+    const target = cssModel.target();
 
-    var url = header.resourceURL();
-    var metadata = Bindings.metadataForURL(target, header.frameId, url);
+    const url = header.resourceURL();
+    const metadata = Bindings.metadataForURL(target, header.frameId, url);
 
     this._uiSourceCode = this._project.createUISourceCode(url, header.contentType());
     this._uiSourceCode[Bindings.StyleFile._symbol] = this;
@@ -221,7 +221,7 @@ Bindings.StyleFile = class {
     console.assert(this._headers.has(header));
     if (this._isUpdatingHeaders || !this._headers.has(header))
       return;
-    var mirrorContentBound = this._mirrorContent.bind(this, header, true /* majorChange */);
+    const mirrorContentBound = this._mirrorContent.bind(this, header, true /* majorChange */);
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
@@ -231,7 +231,7 @@ Bindings.StyleFile = class {
   _workingCopyCommitted(event) {
     if (this._isAddingRevision)
       return;
-    var mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, true /* majorChange */);
+    const mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, true /* majorChange */);
     this._throttler.schedule(mirrorContentBound, true /* asSoonAsPossible */);
   }
 
@@ -241,7 +241,7 @@ Bindings.StyleFile = class {
   _workingCopyChanged(event) {
     if (this._isAddingRevision)
       return;
-    var mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, false /* majorChange */);
+    const mirrorContentBound = this._mirrorContent.bind(this, this._uiSourceCode, false /* majorChange */);
     this._throttler.schedule(mirrorContentBound, false /* asSoonAsPossible */);
   }
 
@@ -256,7 +256,7 @@ Bindings.StyleFile = class {
       return;
     }
 
-    var newContent = null;
+    let newContent = null;
     if (fromProvider === this._uiSourceCode) {
       newContent = this._uiSourceCode.workingCopy();
     } else {
@@ -276,8 +276,8 @@ Bindings.StyleFile = class {
     }
 
     this._isUpdatingHeaders = true;
-    var promises = [];
-    for (var header of this._headers) {
+    const promises = [];
+    for (const header of this._headers) {
       if (header === fromProvider)
         continue;
       promises.push(this._cssModel.setStyleSheetText(header.id, newContent, majorChange));

@@ -71,7 +71,7 @@ UI.XLink = class extends UI.XElement {
     }
 
     if (attr === 'href') {
-      var href = newValue;
+      let href = newValue;
       if (newValue.trim().toLowerCase().startsWith('javascript:'))
         href = null;
       if (Common.ParsedURL.isRelativeURL(newValue))
@@ -110,7 +110,7 @@ UI.XLink.ContextMenuProvider = class {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    var targetNode = /** @type {!Node} */ (target);
+    let targetNode = /** @type {!Node} */ (target);
     while (targetNode && !(targetNode instanceof UI.XLink))
       targetNode = targetNode.parentNodeOrShadowHost();
     if (!targetNode || !targetNode._href)

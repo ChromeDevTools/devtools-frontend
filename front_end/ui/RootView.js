@@ -28,11 +28,11 @@ UI.RootView = class extends UI.VBox {
    */
   doResize() {
     if (this._window) {
-      var size = this.constraints().minimum;
-      var zoom = UI.zoomManager.zoomFactor();
-      var right = Math.min(0, this._window.innerWidth - size.width / zoom);
+      const size = this.constraints().minimum;
+      const zoom = UI.zoomManager.zoomFactor();
+      const right = Math.min(0, this._window.innerWidth - size.width / zoom);
       this.element.style.marginRight = right + 'px';
-      var bottom = Math.min(0, this._window.innerHeight - size.height / zoom);
+      const bottom = Math.min(0, this._window.innerHeight - size.height / zoom);
       this.element.style.marginBottom = bottom + 'px';
     }
     super.doResize();

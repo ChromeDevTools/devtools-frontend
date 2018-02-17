@@ -44,8 +44,8 @@ Elements.ComputedStyleModel = class extends Common.Object {
       return;
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._cssModel = cssModel;
-    var domModel = cssModel ? cssModel.domModel() : null;
-    var resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel) : null;
+    const domModel = cssModel ? cssModel.domModel() : null;
+    const resourceTreeModel = cssModel ? cssModel.target().model(SDK.ResourceTreeModel) : null;
     if (cssModel && domModel && resourceTreeModel) {
       this._eventListeners = [
         cssModel.addEventListener(SDK.CSSModel.Events.StyleSheetAdded, this._onComputedStyleChanged, this),
@@ -74,7 +74,7 @@ Elements.ComputedStyleModel = class extends Common.Object {
    */
   _onDOMModelChanged(event) {
     // Any attribute removal or modification can affect the styles of "related" nodes.
-    var node = /** @type {!SDK.DOMNode} */ (event.data);
+    const node = /** @type {!SDK.DOMNode} */ (event.data);
     if (!this._node || this._node !== node && node.parentNode !== this._node.parentNode && !node.isAncestor(this._node))
       return;
     this._onComputedStyleChanged(null);
@@ -109,8 +109,8 @@ Elements.ComputedStyleModel = class extends Common.Object {
    * @return {!Promise.<?Elements.ComputedStyleModel.ComputedStyle>}
    */
   fetchComputedStyle() {
-    var elementNode = this._elementNode();
-    var cssModel = this.cssModel();
+    const elementNode = this._elementNode();
+    const cssModel = this.cssModel();
     if (!elementNode || !cssModel)
       return Promise.resolve(/** @type {?Elements.ComputedStyleModel.ComputedStyle} */ (null));
 

@@ -58,7 +58,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     this._cookieDomain = domain;
     this.refreshItems();
     Common.EventTarget.removeEventListeners(this._eventDescriptors);
-    var networkManager = model.target().model(SDK.NetworkManager);
+    const networkManager = model.target().model(SDK.NetworkManager);
     this._eventDescriptors =
         [networkManager.addEventListener(SDK.NetworkManager.Events.ResponseReceived, this._onResponseReceived, this)];
   }
@@ -102,7 +102,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
     const host = parsedURL ? parsedURL.host : '';
     this._cookiesTable.setCookieDomain(host);
 
-    var shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
+    const shownCookies = this.filter(allCookies, cookie => `${cookie.name()} ${cookie.value()} ${cookie.domain()}`);
     this._cookiesTable.setCookies(shownCookies);
     this._cookiesTable.show(this.element);
     this.setCanFilter(true);
@@ -121,7 +121,7 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
    * @override
    */
   deleteSelectedItem() {
-    var selectedCookie = this._cookiesTable.selectedCookie();
+    const selectedCookie = this._cookiesTable.selectedCookie();
     if (selectedCookie)
       this._model.deleteCookie(selectedCookie, () => this.refreshItems());
   }

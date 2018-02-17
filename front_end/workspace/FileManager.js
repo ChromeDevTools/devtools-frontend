@@ -59,8 +59,8 @@ Workspace.FileManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _savedURL(event) {
-    var url = /** @type {string} */ (event.data.url);
-    var callback = this._saveCallbacks.get(url);
+    const url = /** @type {string} */ (event.data.url);
+    const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
     if (callback)
       callback({fileSystemPath: /** @type {string} */ (event.data.fileSystemPath)});
@@ -70,8 +70,8 @@ Workspace.FileManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _canceledSavedURL(event) {
-    var url = /** @type {string} */ (event.data);
-    var callback = this._saveCallbacks.get(url);
+    const url = /** @type {string} */ (event.data);
+    const callback = this._saveCallbacks.get(url);
     this._saveCallbacks.delete(url);
     if (callback)
       callback(null);
@@ -96,7 +96,7 @@ Workspace.FileManager = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _appendedToURL(event) {
-    var url = /** @type {string} */ (event.data);
+    const url = /** @type {string} */ (event.data);
     this.dispatchEventToListeners(Workspace.FileManager.Events.AppendedToURL, url);
   }
 };

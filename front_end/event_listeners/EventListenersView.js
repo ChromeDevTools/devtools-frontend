@@ -47,12 +47,12 @@ EventListeners.EventListenersView = class extends UI.VBox {
    */
   _addObject(object) {
     /** @type {!Array<!SDK.EventListener>} */
-    var eventListeners;
+    let eventListeners;
     /** @type {?EventListeners.FrameworkEventListenersObject}*/
-    var frameworkEventListenersObject = null;
+    let frameworkEventListenersObject = null;
 
-    var promises = [];
-    var domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
+    const promises = [];
+    const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
     // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
     if (domDebuggerModel)
       promises.push(domDebuggerModel.eventListeners(object).then(storeEventListeners));
@@ -97,9 +97,9 @@ EventListeners.EventListenersView = class extends UI.VBox {
        * @this {Array<*>}
        */
       function isInternalEventListener() {
-        var isInternal = [];
-        var internalHandlersSet = new Set(this);
-        for (var handler of arguments)
+        const isInternal = [];
+        const internalHandlersSet = new Set(this);
+        for (const handler of arguments)
           isInternal.push(internalHandlersSet.has(handler));
         return isInternal;
       }
@@ -108,7 +108,7 @@ EventListeners.EventListenersView = class extends UI.VBox {
        * @param {!Array<boolean>} isInternal
        */
       function setIsInternal(isInternal) {
-        for (var i = 0; i < eventListeners.length; ++i) {
+        for (let i = 0; i < eventListeners.length; ++i) {
           if (isInternal[i])
             eventListeners[i].markAsFramework();
         }
@@ -131,8 +131,8 @@ EventListeners.EventListenersView = class extends UI.VBox {
   _addObjectEventListeners(object, eventListeners) {
     if (!eventListeners)
       return;
-    for (var eventListener of eventListeners) {
-      var treeItem = this._getOrCreateTreeElementForType(eventListener.type());
+    for (const eventListener of eventListeners) {
+      const treeItem = this._getOrCreateTreeElementForType(eventListener.type());
       treeItem.addObjectEventListener(eventListener, object);
     }
   }
@@ -143,12 +143,12 @@ EventListeners.EventListenersView = class extends UI.VBox {
    * @param {boolean} showBlocking
    */
   showFrameworkListeners(showFramework, showPassive, showBlocking) {
-    var eventTypes = this._treeOutline.rootElement().children();
-    for (var eventType of eventTypes) {
-      var hiddenEventType = true;
-      for (var listenerElement of eventType.children()) {
-        var listenerOrigin = listenerElement.eventListener().origin();
-        var hidden = false;
+    const eventTypes = this._treeOutline.rootElement().children();
+    for (const eventType of eventTypes) {
+      let hiddenEventType = true;
+      for (const listenerElement of eventType.children()) {
+        const listenerOrigin = listenerElement.eventListener().origin();
+        let hidden = false;
         if (listenerOrigin === SDK.EventListener.Origin.FrameworkUser && !showFramework)
           hidden = true;
         if (listenerOrigin === SDK.EventListener.Origin.Framework && showFramework)
@@ -169,7 +169,7 @@ EventListeners.EventListenersView = class extends UI.VBox {
    * @return {!EventListeners.EventListenersTreeElement}
    */
   _getOrCreateTreeElementForType(type) {
-    var treeItem = this._treeItemMap.get(type);
+    let treeItem = this._treeItemMap.get(type);
     if (!treeItem) {
       treeItem = new EventListeners.EventListenersTreeElement(type, this._linkifier, this._changeCallback);
       this._treeItemMap.set(type, treeItem);
@@ -181,8 +181,8 @@ EventListeners.EventListenersView = class extends UI.VBox {
   }
 
   addEmptyHolderIfNeeded() {
-    var allHidden = true;
-    for (var eventType of this._treeOutline.rootElement().children()) {
+    let allHidden = true;
+    for (const eventType of this._treeOutline.rootElement().children()) {
       eventType.hidden = !eventType.firstChild();
       allHidden = allHidden && eventType.hidden;
     }
@@ -191,8 +191,8 @@ EventListeners.EventListenersView = class extends UI.VBox {
   }
 
   reset() {
-    var eventTypes = this._treeOutline.rootElement().children();
-    for (var eventType of eventTypes)
+    const eventTypes = this._treeOutline.rootElement().children();
+    for (const eventType of eventTypes)
       eventType.removeChildren();
     this._linkifier.reset();
   }
@@ -234,7 +234,7 @@ EventListeners.EventListenersTreeElement = class extends UI.TreeElement {
    * @param {!SDK.RemoteObject} object
    */
   addObjectEventListener(eventListener, object) {
-    var treeElement =
+    const treeElement =
         new EventListeners.ObjectEventListenerBar(eventListener, object, this._linkifier, this._changeCallback);
     this.appendChild(/** @type {!UI.TreeElement} */ (treeElement));
   }
@@ -264,9 +264,9 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    var properties = [];
-    var eventListener = this._eventListener;
-    var runtimeModel = eventListener.domDebuggerModel().runtimeModel();
+    const properties = [];
+    const eventListener = this._eventListener;
+    const runtimeModel = eventListener.domDebuggerModel().runtimeModel();
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('useCapture', eventListener.useCapture()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('passive', eventListener.passive()));
     properties.push(runtimeModel.createRemotePropertyFromPrimitiveValue('once', eventListener.once()));
@@ -280,15 +280,15 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
    * @param {!Components.Linkifier} linkifier
    */
   _setTitle(object, linkifier) {
-    var title = this.listItemElement.createChild('span');
-    var subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
+    const title = this.listItemElement.createChild('span');
+    const subtitle = this.listItemElement.createChild('span', 'event-listener-tree-subtitle');
     subtitle.appendChild(linkifier.linkifyRawLocation(this._eventListener.location(), this._eventListener.sourceURL()));
 
     title.appendChild(
         ObjectUI.ObjectPropertiesSection.createValueElement(object, false /* wasThrown */, false /* showPreview */));
 
     if (this._eventListener.canRemove()) {
-      var deleteButton = title.createChild('span', 'event-listener-button');
+      const deleteButton = title.createChild('span', 'event-listener-button');
       deleteButton.textContent = Common.UIString('Remove');
       deleteButton.title = Common.UIString('Delete event listener');
       deleteButton.addEventListener('click', removeListener.bind(this), false);
@@ -296,7 +296,7 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     }
 
     if (this._eventListener.isScrollBlockingType() && this._eventListener.canTogglePassive()) {
-      var passiveButton = title.createChild('span', 'event-listener-button');
+      const passiveButton = title.createChild('span', 'event-listener-button');
       passiveButton.textContent = Common.UIString('Toggle Passive');
       passiveButton.title = Common.UIString('Toggle whether event listener is passive or blocking');
       passiveButton.addEventListener('click', togglePassiveListener.bind(this), false);
@@ -324,12 +324,12 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
   }
 
   _removeListenerBar() {
-    var parent = this.parent;
+    const parent = this.parent;
     parent.removeChild(this);
     if (!parent.childCount())
       parent.collapse();
-    var allHidden = true;
-    for (var i = 0; i < parent.childCount(); ++i) {
+    let allHidden = true;
+    for (let i = 0; i < parent.childCount(); ++i) {
       if (!parent.childAt(i).hidden)
         allHidden = false;
     }

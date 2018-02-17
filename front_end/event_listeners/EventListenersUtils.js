@@ -12,14 +12,14 @@ EventListeners.EventListenerObjectInInspectedPage;
  * @return {!Promise<!EventListeners.FrameworkEventListenersObject>}
  */
 EventListeners.frameworkEventListeners = function(object) {
-  var domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
+  const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel);
   if (!domDebuggerModel) {
     // TODO(kozyatinskiy): figure out how this should work for |window|.
     return Promise.resolve(
         /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: [], internalHandlers: null}));
   }
 
-  var listenersResult = /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: []});
+  const listenersResult = /** @type {!EventListeners.FrameworkEventListenersObject} */ ({eventListeners: []});
   return object.callFunctionPromise(frameworkEventListeners, undefined)
       .then(assertCallFunctionResult)
       .then(getOwnProperties)
@@ -42,8 +42,8 @@ EventListeners.frameworkEventListeners = function(object) {
   function createEventListeners(result) {
     if (!result.properties)
       throw new Error('Object properties is empty');
-    var promises = [];
-    for (var property of result.properties) {
+    const promises = [];
+    for (const property of result.properties) {
       if (property.name === 'eventListeners' && property.value)
         promises.push(convertToEventListeners(property.value).then(storeEventListeners));
       if (property.name === 'internalHandlers' && property.value)
@@ -67,23 +67,23 @@ EventListeners.frameworkEventListeners = function(object) {
      */
     function toEventListener(listenerObject) {
       /** @type {string} */
-      var type;
+      let type;
       /** @type {boolean} */
-      var useCapture;
+      let useCapture;
       /** @type {boolean} */
-      var passive;
+      let passive;
       /** @type {boolean} */
-      var once;
+      let once;
       /** @type {?SDK.RemoteObject} */
-      var handler = null;
+      let handler = null;
       /** @type {?SDK.RemoteObject} */
-      var originalHandler = null;
+      let originalHandler = null;
       /** @type {?SDK.DebuggerModel.Location} */
-      var location = null;
+      let location = null;
       /** @type {?SDK.RemoteObject} */
-      var removeFunctionObject = null;
+      let removeFunctionObject = null;
 
-      var promises = [];
+      const promises = [];
       promises.push(
           listenerObject.callFunctionJSONPromise(truncatePageEventListener, undefined).then(storeTruncatedListener));
 
@@ -287,10 +287,10 @@ EventListeners.frameworkEventListeners = function(object) {
    * @this {Object}
    */
   function frameworkEventListeners() {
-    var errorLines = [];
-    var eventListeners = [];
-    var internalHandlers = [];
-    var fetchers = [jQueryFetcher];
+    const errorLines = [];
+    let eventListeners = [];
+    let internalHandlers = [];
+    let fetchers = [jQueryFetcher];
     try {
       if (self.devtoolsFrameworkEventListeners && isArrayLike(self.devtoolsFrameworkEventListeners))
         fetchers = fetchers.concat(self.devtoolsFrameworkEventListeners);
@@ -298,9 +298,9 @@ EventListeners.frameworkEventListeners = function(object) {
       errorLines.push('devtoolsFrameworkEventListeners call produced error: ' + toString(e));
     }
 
-    for (var i = 0; i < fetchers.length; ++i) {
+    for (let i = 0; i < fetchers.length; ++i) {
       try {
-        var fetcherResult = fetchers[i](this);
+        const fetcherResult = fetchers[i](this);
         if (fetcherResult.eventListeners && isArrayLike(fetcherResult.eventListeners)) {
           eventListeners =
               eventListeners.concat(fetcherResult.eventListeners.map(checkEventListener).filter(nonEmptyObject));
@@ -313,11 +313,11 @@ EventListeners.frameworkEventListeners = function(object) {
         errorLines.push('fetcher call produced error: ' + toString(e));
       }
     }
-    var result = {eventListeners: eventListeners};
+    const result = {eventListeners: eventListeners};
     if (internalHandlers.length)
       result.internalHandlers = internalHandlers;
     if (errorLines.length) {
-      var errorString = 'Framework Event Listeners API Errors:\n\t' + errorLines.join('\n\t');
+      let errorString = 'Framework Event Listeners API Errors:\n\t' + errorLines.join('\n\t');
       errorString = errorString.substr(0, errorString.length - 1);
       result.errorString = errorString;
     }
@@ -332,7 +332,7 @@ EventListeners.frameworkEventListeners = function(object) {
         return false;
       try {
         if (typeof obj.splice === 'function') {
-          var len = obj.length;
+          const len = obj.length;
           return typeof len === 'number' && (len >>> 0 === len && (len > 0 || 1 / len > 0));
         }
       } catch (e) {
@@ -346,25 +346,25 @@ EventListeners.frameworkEventListeners = function(object) {
      */
     function checkEventListener(eventListener) {
       try {
-        var errorString = '';
+        let errorString = '';
         if (!eventListener)
           errorString += 'empty event listener, ';
-        var type = eventListener.type;
+        const type = eventListener.type;
         if (!type || (typeof type !== 'string'))
           errorString += 'event listener\'s type isn\'t string or empty, ';
-        var useCapture = eventListener.useCapture;
+        const useCapture = eventListener.useCapture;
         if (typeof useCapture !== 'boolean')
           errorString += 'event listener\'s useCapture isn\'t boolean or undefined, ';
-        var passive = eventListener.passive;
+        const passive = eventListener.passive;
         if (typeof passive !== 'boolean')
           errorString += 'event listener\'s passive isn\'t boolean or undefined, ';
-        var once = eventListener.once;
+        const once = eventListener.once;
         if (typeof once !== 'boolean')
           errorString += 'event listener\'s once isn\'t boolean or undefined, ';
-        var handler = eventListener.handler;
+        const handler = eventListener.handler;
         if (!handler || (typeof handler !== 'function'))
           errorString += 'event listener\'s handler isn\'t a function or empty, ';
-        var remove = eventListener.remove;
+        const remove = eventListener.remove;
         if (remove && (typeof remove !== 'function'))
           errorString += 'event listener\'s remove isn\'t a function, ';
         if (!errorString) {
@@ -414,22 +414,22 @@ EventListeners.frameworkEventListeners = function(object) {
     function jQueryFetcher(node) {
       if (!node || !(node instanceof Node))
         return {eventListeners: []};
-      var jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
+      const jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
       if (!jQuery || !jQuery.fn)
         return {eventListeners: []};
-      var jQueryFunction = /** @type {function(!Node)} */ (jQuery);
-      var data = jQuery._data || jQuery.data;
+      const jQueryFunction = /** @type {function(!Node)} */ (jQuery);
+      const data = jQuery._data || jQuery.data;
 
-      var eventListeners = [];
-      var internalHandlers = [];
+      const eventListeners = [];
+      const internalHandlers = [];
 
       if (typeof data === 'function') {
-        var events = data(node, 'events');
-        for (var type in events) {
-          for (var key in events[type]) {
-            var frameworkListener = events[type][key];
+        const events = data(node, 'events');
+        for (const type in events) {
+          for (const key in events[type]) {
+            const frameworkListener = events[type][key];
             if (typeof frameworkListener === 'object' || typeof frameworkListener === 'function') {
-              var listener = {
+              const listener = {
                 handler: frameworkListener.handler || frameworkListener,
                 useCapture: true,
                 passive: false,
@@ -441,18 +441,18 @@ EventListeners.frameworkEventListeners = function(object) {
             }
           }
         }
-        var nodeData = data(node);
+        const nodeData = data(node);
         if (nodeData && typeof nodeData.handle === 'function')
           internalHandlers.push(nodeData.handle);
       }
-      var entry = jQueryFunction(node)[0];
+      const entry = jQueryFunction(node)[0];
       if (entry) {
-        var entryEvents = entry['$events'];
-        for (var type in entryEvents) {
-          var events = entryEvents[type];
-          for (var key in events) {
+        const entryEvents = entry['$events'];
+        for (const type in entryEvents) {
+          const events = entryEvents[type];
+          for (const key in events) {
             if (typeof events[key] === 'function') {
-              var listener = {handler: events[key], useCapture: true, passive: false, once: false, type: type};
+              const listener = {handler: events[key], useCapture: true, passive: false, once: false, type: type};
               // We don't support removing for old version < 1.4 of jQuery because it doesn't provide API for getting "selector".
               eventListeners.push(listener);
             }
@@ -473,11 +473,11 @@ EventListeners.frameworkEventListeners = function(object) {
     function jQueryRemove(selector, type, handler) {
       if (!this || !(this instanceof Node))
         return;
-      var node = /** @type {!Node} */ (this);
-      var jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
+      const node = /** @type {!Node} */ (this);
+      const jQuery = /** @type {?{fn,data,_data}}*/ (window['jQuery']);
       if (!jQuery || !jQuery.fn)
         return;
-      var jQueryFunction = /** @type {function(!Node)} */ (jQuery);
+      const jQueryFunction = /** @type {function(!Node)} */ (jQuery);
       jQueryFunction(node).off(type, selector, handler);
     }
   }

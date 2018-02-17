@@ -76,7 +76,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var mapping = this._mappingForDebuggerModel.get(rawLocation.debuggerModel);
+    const mapping = this._mappingForDebuggerModel.get(rawLocation.debuggerModel);
     if (!mapping)
       return null;
     return mapping.rawLocationToUILocation(rawLocation);
@@ -90,8 +90,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    for (var mapping of this._mappingForDebuggerModel.values()) {
-      var rawLocation = mapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
+    for (const mapping of this._mappingForDebuggerModel.values()) {
+      const rawLocation = mapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
       if (rawLocation)
         return rawLocation;
     }
@@ -114,7 +114,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
   }
 
   _loadSnippets() {
-    for (var snippet of this._snippetStorage.snippets())
+    for (const snippet of this._snippetStorage.snippets())
       this._addScriptSnippet(snippet);
   }
 
@@ -123,7 +123,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {!Workspace.UISourceCode}
    */
   createScriptSnippet(content) {
-    var snippet = this._snippetStorage.createSnippet();
+    const snippet = this._snippetStorage.createSnippet();
     snippet.content = content;
     return this._addScriptSnippet(snippet);
   }
@@ -133,10 +133,10 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {!Workspace.UISourceCode}
    */
   _addScriptSnippet(snippet) {
-    var uiSourceCode = this._project.addSnippet(snippet.name, new Snippets.SnippetContentProvider(snippet));
+    const uiSourceCode = this._project.addSnippet(snippet.name, new Snippets.SnippetContentProvider(snippet));
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this._workingCopyChanged, this);
     this._snippetIdForUISourceCode.set(uiSourceCode, snippet.id);
-    var breakpointLocations = this._removeBreakpoints(uiSourceCode);
+    const breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
     this._uiSourceCodeForSnippetId[snippet.id] = uiSourceCode;
     return uiSourceCode;
@@ -146,7 +146,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _workingCopyChanged(event) {
-    var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
     this._scriptSnippetEdited(uiSourceCode);
   }
 
@@ -154,8 +154,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   deleteScriptSnippet(uiSourceCode) {
-    var snippetId = this._snippetIdForUISourceCode.get(uiSourceCode) || '';
-    var snippet = this._snippetStorage.snippetForId(snippetId);
+    const snippetId = this._snippetIdForUISourceCode.get(uiSourceCode) || '';
+    const snippet = this._snippetStorage.snippetForId(snippetId);
     if (!snippet)
       return;
     this._snippetStorage.deleteSnippet(snippet);
@@ -177,12 +177,12 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
       callback(false);
       return;
     }
-    var snippet = this._snippetStorage.snippetForName(name);
+    const snippet = this._snippetStorage.snippetForName(name);
     console.assert(snippet, 'Snippet \'' + name + '\' was not found.');
-    var uiSourceCode = this._uiSourceCodeForSnippetId[snippet.id];
+    const uiSourceCode = this._uiSourceCodeForSnippetId[snippet.id];
     console.assert(uiSourceCode, 'No uiSourceCode was found for snippet \'' + name + '\'.');
 
-    var breakpointLocations = this._removeBreakpoints(uiSourceCode);
+    const breakpointLocations = this._removeBreakpoints(uiSourceCode);
     snippet.name = newName;
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
     callback(true, newName);
@@ -193,7 +193,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {string} newContent
    */
   _setScriptSnippetContent(name, newContent) {
-    var snippet = this._snippetStorage.snippetForName(name);
+    const snippet = this._snippetStorage.snippetForName(name);
     snippet.content = newContent;
   }
 
@@ -201,7 +201,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _scriptSnippetEdited(uiSourceCode) {
-    var breakpointLocations = this._removeBreakpoints(uiSourceCode);
+    const breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._releaseSnippetScript(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
     this._mappingForDebuggerModel.valuesArray().forEach(function(mapping) {
@@ -213,7 +213,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {number}
    */
   _nextEvaluationIndex() {
-    var evaluationIndex = this._lastSnippetEvaluationIndexSetting.get() + 1;
+    const evaluationIndex = this._lastSnippetEvaluationIndexSetting.get() + 1;
     this._lastSnippetEvaluationIndexSetting.set(evaluationIndex);
     return evaluationIndex;
   }
@@ -225,23 +225,23 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    */
   async evaluateScriptSnippet(executionContext, uiSourceCode) {
     console.assert(uiSourceCode.project().type() === Workspace.projectTypes.Snippets);
-    var breakpointLocations = this._removeBreakpoints(uiSourceCode);
+    let breakpointLocations = this._removeBreakpoints(uiSourceCode);
     this._releaseSnippetScript(uiSourceCode);
     this._restoreBreakpoints(uiSourceCode, breakpointLocations);
 
-    var runtimeModel = executionContext.runtimeModel;
-    var debuggerModel = executionContext.debuggerModel;
-    var evaluationIndex = this._nextEvaluationIndex();
-    var mapping = this._mappingForDebuggerModel.get(debuggerModel);
+    const runtimeModel = executionContext.runtimeModel;
+    const debuggerModel = executionContext.debuggerModel;
+    const evaluationIndex = this._nextEvaluationIndex();
+    const mapping = this._mappingForDebuggerModel.get(debuggerModel);
     mapping._setEvaluationIndex(evaluationIndex, uiSourceCode);
-    var evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
+    const evaluationUrl = mapping._evaluationSourceURL(uiSourceCode);
     await uiSourceCode.requestContent();
-    var expression = uiSourceCode.workingCopy();
+    const expression = uiSourceCode.workingCopy();
     Common.console.show();
-    var result = await runtimeModel.compileScript(expression, '', true, executionContext.id);
+    const result = await runtimeModel.compileScript(expression, '', true, executionContext.id);
     if (!result || mapping.evaluationIndex(uiSourceCode) !== evaluationIndex)
       return;
-    var script = /** @type {!SDK.Script} */ (
+    const script = /** @type {!SDK.Script} */ (
         debuggerModel.scriptForId(/** @type {string} */ (result.scriptId || result.exceptionDetails.scriptId)));
     mapping._addScript(script, uiSourceCode);
     if (!result.scriptId) {
@@ -262,8 +262,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   async _runScript(scriptId, executionContext, sourceURL) {
-    var runtimeModel = executionContext.runtimeModel;
-    var result = await runtimeModel.runScript(
+    const runtimeModel = executionContext.runtimeModel;
+    const result = await runtimeModel.runScript(
         scriptId, executionContext.id, 'console', /* silent */ false, /* includeCommandLineAPI */ true,
         /* returnByValue */ false, /* generatePreview */ true);
     if (result.error)
@@ -281,7 +281,7 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {?string=} sourceURL
    */
   _printRunScriptResult(runtimeModel, result, scriptId, sourceURL) {
-    var consoleMessage = new SDK.ConsoleMessage(
+    const consoleMessage = new SDK.ConsoleMessage(
         runtimeModel, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Info, '',
         SDK.ConsoleMessage.MessageType.Result, sourceURL, undefined, undefined, [result], undefined, undefined,
         undefined, scriptId);
@@ -303,8 +303,8 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>}
    */
   _removeBreakpoints(uiSourceCode) {
-    var breakpointLocations = Bindings.breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-    for (var i = 0; i < breakpointLocations.length; ++i)
+    const breakpointLocations = Bindings.breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
+    for (let i = 0; i < breakpointLocations.length; ++i)
       breakpointLocations[i].breakpoint.remove(false /* keepInStorage */);
     return breakpointLocations;
   }
@@ -314,9 +314,9 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} breakpointLocations
    */
   _restoreBreakpoints(uiSourceCode, breakpointLocations) {
-    for (var i = 0; i < breakpointLocations.length; ++i) {
-      var uiLocation = breakpointLocations[i].uiLocation;
-      var breakpoint = breakpointLocations[i].breakpoint;
+    for (let i = 0; i < breakpointLocations.length; ++i) {
+      const uiLocation = breakpointLocations[i].uiLocation;
+      const breakpoint = breakpointLocations[i].breakpoint;
       Bindings.breakpointManager.setBreakpoint(
           uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber, breakpoint.condition(), breakpoint.enabled());
     }
@@ -336,11 +336,11 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @return {?string}
    */
   _snippetIdForSourceURL(sourceURL) {
-    var snippetPrefix = Snippets.ScriptSnippetModel.snippetSourceURLPrefix;
+    const snippetPrefix = Snippets.ScriptSnippetModel.snippetSourceURLPrefix;
     if (!sourceURL.startsWith(snippetPrefix))
       return null;
-    var splitURL = sourceURL.substring(snippetPrefix.length).split('_');
-    var snippetId = splitURL[0];
+    const splitURL = sourceURL.substring(snippetPrefix.length).split('_');
+    const snippetId = splitURL[0];
     return snippetId;
   }
 };
@@ -371,7 +371,7 @@ Snippets.SnippetScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _releaseSnippetScript(uiSourceCode) {
-    var script = this._scriptForUISourceCode.get(uiSourceCode);
+    const script = this._scriptForUISourceCode.get(uiSourceCode);
     if (!script)
       return;
 
@@ -401,8 +401,8 @@ Snippets.SnippetScriptMapping = class {
    * @return {string}
    */
   _evaluationSourceURL(uiSourceCode) {
-    var evaluationSuffix = '_' + this._evaluationIndexForUISourceCode.get(uiSourceCode);
-    var snippetId = this._scriptSnippetModel._snippetIdForUISourceCode.get(uiSourceCode);
+    const evaluationSuffix = '_' + this._evaluationIndexForUISourceCode.get(uiSourceCode);
+    const snippetId = this._scriptSnippetModel._snippetIdForUISourceCode.get(uiSourceCode);
     return Snippets.ScriptSnippetModel.snippetSourceURLPrefix + snippetId + evaluationSuffix;
   }
 
@@ -417,8 +417,8 @@ Snippets.SnippetScriptMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
-    var uiSourceCode = this._uiSourceCodeForScriptId[debuggerModelLocation.scriptId];
+    const debuggerModelLocation = /** @type {!SDK.DebuggerModel.Location} */ (rawLocation);
+    const uiSourceCode = this._uiSourceCodeForScriptId[debuggerModelLocation.scriptId];
     if (!uiSourceCode)
       return null;
 
@@ -432,7 +432,7 @@ Snippets.SnippetScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var script = this._scriptForUISourceCode.get(uiSourceCode);
+    const script = this._scriptForUISourceCode.get(uiSourceCode);
     if (!script)
       return null;
 
@@ -455,12 +455,12 @@ Snippets.SnippetScriptMapping = class {
    * @param {!Array.<!{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} breakpointLocations
    */
   _restoreBreakpoints(uiSourceCode, breakpointLocations) {
-    var script = this._scriptForUISourceCode.get(uiSourceCode);
+    const script = this._scriptForUISourceCode.get(uiSourceCode);
     if (!script)
       return;
-    var rawLocation =
+    const rawLocation =
         /** @type {!SDK.DebuggerModel.Location} */ (this._debuggerModel.createRawLocation(script, 0, 0));
-    var uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
+    const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
     if (uiLocation)
       this._scriptSnippetModel._restoreBreakpoints(uiLocation.uiSourceCode, breakpointLocations);
   }

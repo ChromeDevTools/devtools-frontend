@@ -37,7 +37,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   startSampling() {
-    var defaultSamplingIntervalInBytes = 16384;
+    const defaultSamplingIntervalInBytes = 16384;
     this._heapProfilerAgent.startSampling(defaultSamplingIntervalInBytes);
   }
 
@@ -50,7 +50,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
   }
 
   startNativeSampling() {
-    var defaultSamplingIntervalInBytes = 65536;
+    const defaultSamplingIntervalInBytes = 65536;
     this._memoryAgent.startSampling(defaultSamplingIntervalInBytes);
   }
 
@@ -58,7 +58,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   async stopNativeSampling() {
-    var rawProfile = await this._memoryAgent.getSamplingProfile();
+    const rawProfile = await this._memoryAgent.getSamplingProfile();
     this._memoryAgent.stopSampling();
     return this._convertNativeProfile(rawProfile);
   }
@@ -67,7 +67,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   async takeNativeSnapshot() {
-    var rawProfile = await this._memoryAgent.getAllTimeSamplingProfile();
+    const rawProfile = await this._memoryAgent.getAllTimeSamplingProfile();
     return this._convertNativeProfile(rawProfile);
   }
 
@@ -76,13 +76,13 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @return {!Protocol.HeapProfiler.SamplingHeapProfile}
    */
   _convertNativeProfile(rawProfile) {
-    var head = {children: new Map(), selfSize: 0, callFrame: {functionName: '(root)', url: ''}};
-    for (var sample of rawProfile.samples) {
-      var node = sample.stack.reverse().reduce((node, name) => {
-        var child = node.children.get(name);
+    const head = {children: new Map(), selfSize: 0, callFrame: {functionName: '(root)', url: ''}};
+    for (const sample of rawProfile.samples) {
+      const node = sample.stack.reverse().reduce((node, name) => {
+        let child = node.children.get(name);
         if (child)
           return child;
-        var namespace = /^([^:]*)::/.exec(name);
+        const namespace = /^([^:]*)::/.exec(name);
         child = {
           children: new Map(),
           callFrame: {functionName: name, url: namespace && namespace[1] || ''},

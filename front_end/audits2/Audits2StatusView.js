@@ -64,7 +64,7 @@ Audits2.Audits2StatusView = class {
       return;
     }
 
-    var nextPhase = this._getPhaseForMessage(message);
+    const nextPhase = this._getPhaseForMessage(message);
     if (!nextPhase && !this._currentPhase) {
       this._commitTextChange(Common.UIString('Lighthouse is warming up\u2026'));
       clearTimeout(this._scheduledFastFactTimeout);
@@ -105,13 +105,13 @@ Audits2.Audits2StatusView = class {
   }
 
   _updateFastFactIfNecessary() {
-    var now = performance.now();
+    const now = performance.now();
     if (now - this._textChangedAt < Audits2.Audits2StatusView.fastFactRotationInterval)
       return;
     if (!this._fastFactsQueued.length)
       return;
 
-    var fastFactIndex = Math.floor(Math.random() * this._fastFactsQueued.length);
+    const fastFactIndex = Math.floor(Math.random() * this._fastFactsQueued.length);
     this._scheduleTextChange(ls`\ud83d\udca1 ${this._fastFactsQueued[fastFactIndex]}`);
     this._fastFactsQueued.splice(fastFactIndex, 1);
   }
@@ -133,8 +133,8 @@ Audits2.Audits2StatusView = class {
     if (this._scheduledTextChangeTimeout)
       clearTimeout(this._scheduledTextChangeTimeout);
 
-    var msSinceLastChange = performance.now() - this._textChangedAt;
-    var msToTextChange = Audits2.Audits2StatusView.minimumTextVisibilityDuration - msSinceLastChange;
+    const msSinceLastChange = performance.now() - this._textChangedAt;
+    const msToTextChange = Audits2.Audits2StatusView.minimumTextVisibilityDuration - msSinceLastChange;
 
     this._scheduledTextChangeTimeout = setTimeout(() => {
       this._commitTextChange(text);
@@ -156,7 +156,7 @@ Audits2.Audits2StatusView = class {
     this._statusText.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
     this._statusText.createChild('em').createTextChild(err.message);
     if (Audits2.Audits2StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
-      var message = Common.UIString(
+      const message = Common.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or ' +
           'extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
@@ -170,10 +170,10 @@ Audits2.Audits2StatusView = class {
    * @param {string} auditURL
    */
   _renderBugReportLink(err, auditURL) {
-    var baseURI = 'https://github.com/GoogleChrome/lighthouse/issues/new?';
-    var title = encodeURI('title=DevTools Error: ' + err.message.substring(0, 60));
+    const baseURI = 'https://github.com/GoogleChrome/lighthouse/issues/new?';
+    const title = encodeURI('title=DevTools Error: ' + err.message.substring(0, 60));
 
-    var issueBody = `
+    const issueBody = `
 **Initial URL**: ${auditURL}
 **Chrome Version**: ${navigator.userAgent.match(/Chrome\/(\S+)/)[1]}
 **Error Message**: ${err.message}
@@ -182,8 +182,8 @@ Audits2.Audits2StatusView = class {
 ${err.stack}
 \`\`\`
     `;
-    var body = '&body=' + encodeURIComponent(issueBody.trim());
-    var reportErrorEl = UI.XLink.create(
+    const body = '&body=' + encodeURIComponent(issueBody.trim());
+    const reportErrorEl = UI.XLink.create(
         baseURI + title + body, Common.UIString('Report this bug'), 'audits2-link audits2-report-error');
     this._statusText.appendChild(reportErrorEl);
   }

@@ -67,6 +67,8 @@ module.exports = {
         "no-unsafe-negation": 2,
         "radix": 2,
         "valid-typeof": 2,
+        "no-var": 2,
+        "prefer-const": 2,
         "no-unused-vars": [2, { "args": "none", "vars": "local" }],
 
         // es2015 features

@@ -37,7 +37,7 @@ Sources.SnippetsPlugin = class {
    * @return {!Array<!UI.ToolbarItem>}
    */
   rightToolbarItems() {
-    var runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
+    const runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
     runSnippet.setText(Host.isMac() ? Common.UIString('\u2318+Enter') : Common.UIString('Ctrl+Enter'));
 
     return [runSnippet];

@@ -98,7 +98,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
   _createScrollRectElement(scrollRect, index) {
     if (index)
       this._scrollRectsCell.createTextChild(', ');
-    var element = this._scrollRectsCell.createChild('span', 'scroll-rect');
+    const element = this._scrollRectsCell.createChild('span', 'scroll-rect');
     if (this._selection.scrollRectIndex === index)
       element.classList.add('active');
     element.textContent = Common.UIString(
@@ -116,8 +116,8 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     if (!layer)
       return '';
 
-    var node = layer.nodeForSelfOrAncestor();
-    var name = node ? node.simpleSelector() : Common.UIString('<unnamed>');
+    const node = layer.nodeForSelfOrAncestor();
+    const name = node ? node.simpleSelector() : Common.UIString('<unnamed>');
     return Common.UIString('%s: %s (%s)', title, name, layer.id());
   }
 
@@ -130,7 +130,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
       return;
 
     this._stickyPositionConstraintCell.createTextChild(', ');
-    var child = this._stickyPositionConstraintCell.createChild('span');
+    const child = this._stickyPositionConstraintCell.createChild('span');
     child.textContent = this._formatStickyAncestorLayer(title, layer);
   }
 
@@ -142,15 +142,15 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     if (!constraint)
       return;
 
-    var stickyBoxRect = constraint.stickyBoxRect();
-    var stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
+    const stickyBoxRect = constraint.stickyBoxRect();
+    const stickyBoxRectElement = this._stickyPositionConstraintCell.createChild('span');
     stickyBoxRectElement.textContent = Common.UIString(
         'Sticky Box %d × %d (at %d, %d)', stickyBoxRect.width, stickyBoxRect.height, stickyBoxRect.x, stickyBoxRect.y);
 
     this._stickyPositionConstraintCell.createTextChild(', ');
 
-    var containingBlockRect = constraint.containingBlockRect();
-    var containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');
+    const containingBlockRect = constraint.containingBlockRect();
+    const containingBlockRectElement = this._stickyPositionConstraintCell.createChild('span');
     containingBlockRectElement.textContent = Common.UIString(
         'Containing Block %d × %d (at %d, %d)', containingBlockRect.width, containingBlockRect.height,
         containingBlockRect.x, containingBlockRect.y);
@@ -162,7 +162,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
   }
 
   update() {
-    var layer = this._selection && this._selection.layer();
+    const layer = this._selection && this._selection.layer();
     if (!layer) {
       this._tableElement.remove();
       this._paintProfilerButton.remove();
@@ -181,7 +181,7 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
     this._scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this._createScrollRectElement.bind(this));
     this._populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
-    var snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
+    const snapshot = this._selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot ?
         /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (this._selection).snapshot() :
         null;
     this._paintProfilerButton.classList.toggle('hidden', !snapshot);
@@ -205,8 +205,8 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
    * @param {string} title
    */
   _createRow(title) {
-    var tr = this._tbodyElement.createChild('tr');
-    var titleCell = tr.createChild('td');
+    const tr = this._tbodyElement.createChild('tr');
+    const titleCell = tr.createChild('td');
     titleCell.textContent = title;
     return tr.createChild('td');
   }
@@ -220,9 +220,9 @@ LayerViewer.LayerDetailsView = class extends UI.Widget {
       return;
     }
     this._compositingReasonsCell.removeChildren();
-    var list = this._compositingReasonsCell.createChild('ul');
-    for (var i = 0; i < compositingReasons.length; ++i) {
-      var text = LayerViewer.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
+    const list = this._compositingReasonsCell.createChild('ul');
+    for (let i = 0; i < compositingReasons.length; ++i) {
+      let text = LayerViewer.LayerDetailsView.CompositingReasonDetail[compositingReasons[i]] || compositingReasons[i];
       // If the text is more than one word but does not terminate with period, add the period.
       if (/\s.*[^.]$/.test(text))
         text += '.';

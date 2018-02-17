@@ -48,13 +48,13 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
    * @param {!Common.Event} event
    */
   _inspectedURLChanged(event) {
-    var mainTarget = SDK.targetManager.mainTarget();
+    const mainTarget = SDK.targetManager.mainTarget();
     if (event.data !== mainTarget)
       return;
-    var inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
-    for (var uiSourceCode of this.workspace().uiSourceCodes()) {
+    for (const uiSourceCode of this.workspace().uiSourceCodes()) {
       if (this.acceptProject(uiSourceCode.project()) && uiSourceCode.url() === inspectedURL)
         this.revealUISourceCode(uiSourceCode, true);
     }
@@ -65,8 +65,8 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   uiSourceCodeAdded(uiSourceCode) {
-    var mainTarget = SDK.targetManager.mainTarget();
-    var inspectedURL = mainTarget && mainTarget.inspectedURL();
+    const mainTarget = SDK.targetManager.mainTarget();
+    const inspectedURL = mainTarget && mainTarget.inspectedURL();
     if (!inspectedURL)
       return;
     if (uiSourceCode.url() === inspectedURL)
@@ -80,9 +80,9 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
 Sources.FilesNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
-    var toolbar = new UI.Toolbar('navigator-toolbar');
-    var title = Common.UIString('Add folder to workspace');
-    var addButton = new UI.ToolbarButton(title, 'largeicon-add', title);
+    const toolbar = new UI.Toolbar('navigator-toolbar');
+    const title = Common.UIString('Add folder to workspace');
+    const addButton = new UI.ToolbarButton(title, 'largeicon-add', title);
     addButton.addEventListener(
         UI.ToolbarButton.Events.Click, () => Persistence.isolatedFileSystemManager.addFileSystem());
     toolbar.appendToolbarItem(addButton);
@@ -104,7 +104,7 @@ Sources.FilesNavigatorView = class extends Sources.NavigatorView {
    * @param {!Event} event
    */
   handleContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     Sources.NavigatorView.appendAddFolderItem(contextMenu);
     contextMenu.show();
   }
@@ -128,7 +128,7 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
    * @param {!Common.Event} event
    */
   _onProjectAddOrRemoved(event) {
-    var project = /** @type {!Workspace.Project} */ (event.data);
+    const project = /** @type {!Workspace.Project} */ (event.data);
     if (project && project.type() === Workspace.projectTypes.FileSystem &&
         Persistence.FileSystemWorkspaceBinding.fileSystemType(project) !== 'overrides')
       return;
@@ -137,7 +137,7 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
 
   _updateProjectAndUI() {
     this.reset();
-    var project = Persistence.networkPersistenceManager.project();
+    const project = Persistence.networkPersistenceManager.project();
     if (project)
       this.tryAddProject(project);
     this._updateUI();
@@ -145,29 +145,28 @@ Sources.OverridesNavigatorView = class extends Sources.NavigatorView {
 
   _updateUI() {
     this._toolbar.removeToolbarItems();
-    var project = Persistence.networkPersistenceManager.project();
+    const project = Persistence.networkPersistenceManager.project();
     if (project) {
-      var title = Common.UIString('Enable Overrides');
-      var enableCheckbox =
+      const enableCheckbox =
           new UI.ToolbarSettingCheckbox(Common.settings.moduleSetting('persistenceNetworkOverridesEnabled'));
       this._toolbar.appendToolbarItem(enableCheckbox);
 
       this._toolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
-      var clearButton = new UI.ToolbarButton(Common.UIString('Clear configuration'), 'largeicon-clear');
+      const clearButton = new UI.ToolbarButton(Common.UIString('Clear configuration'), 'largeicon-clear');
       clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => {
         project.remove();
       });
       this._toolbar.appendToolbarItem(clearButton);
       return;
     }
-    var title = Common.UIString('Select folder for overrides');
-    var setupButton = new UI.ToolbarButton(title, 'largeicon-add', title);
+    const title = Common.UIString('Select folder for overrides');
+    const setupButton = new UI.ToolbarButton(title, 'largeicon-add', title);
     setupButton.addEventListener(UI.ToolbarButton.Events.Click, this._setupNewWorkspace, this);
     this._toolbar.appendToolbarItem(setupButton);
   }
 
   async _setupNewWorkspace() {
-    var fileSystem = await Persistence.isolatedFileSystemManager.addFileSystem('overrides');
+    const fileSystem = await Persistence.isolatedFileSystemManager.addFileSystem('overrides');
     if (!fileSystem)
       return;
     Common.settings.moduleSetting('persistenceNetworkOverridesEnabled').set(true);
@@ -207,8 +206,8 @@ Sources.ContentScriptsNavigatorView = class extends Sources.NavigatorView {
 Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
-    var toolbar = new UI.Toolbar('navigator-toolbar');
-    var newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New snippet'));
+    const toolbar = new UI.Toolbar('navigator-toolbar');
+    const newButton = new UI.ToolbarButton('', 'largeicon-add', Common.UIString('New snippet'));
     newButton.addEventListener(UI.ToolbarButton.Events.Click, this._handleCreateSnippet.bind(this));
     toolbar.appendToolbarItem(newButton);
     this.contentElement.insertBefore(toolbar.element, this.contentElement.firstChild);
@@ -228,7 +227,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    * @param {!Event} event
    */
   handleContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.headerSection().appendItem(Common.UIString('New'), this._handleCreateSnippet.bind(this));
     contextMenu.show();
   }
@@ -239,8 +238,8 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    * @param {!Sources.NavigatorUISourceCodeTreeNode} node
    */
   handleFileContextMenu(event, node) {
-    var uiSourceCode = node.uiSourceCode();
-    var contextMenu = new UI.ContextMenu(event);
+    const uiSourceCode = node.uiSourceCode();
+    const contextMenu = new UI.ContextMenu(event);
 
     contextMenu.headerSection().appendItem(
         Common.UIString('Run'), this._handleEvaluateSnippet.bind(this, uiSourceCode));
@@ -255,7 +254,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   _handleEvaluateSnippet(uiSourceCode) {
-    var executionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext)
       return;
     Snippets.scriptSnippetModel.evaluateScriptSnippet(executionContext, uiSourceCode);
@@ -269,7 +268,7 @@ Sources.SnippetsNavigatorView = class extends Sources.NavigatorView {
       return;
 
     uiSourceCode.commitWorkingCopy();
-    var content = await uiSourceCode.requestContent();
+    const content = await uiSourceCode.requestContent();
     Workspace.fileManager.save(uiSourceCode.url(), content, true);
     Workspace.fileManager.close(uiSourceCode.url());
   }
@@ -308,7 +307,7 @@ Sources.SnippetsNavigatorView.CreatingActionDelegate = class {
   handleAction(context, actionId) {
     switch (actionId) {
       case 'sources.create-snippet':
-        var uiSourceCode = Snippets.scriptSnippetModel.createScriptSnippet('');
+        const uiSourceCode = Snippets.scriptSnippetModel.createScriptSnippet('');
         Common.Revealer.reveal(uiSourceCode);
         return true;
       case 'sources.add-folder-to-workspace':

@@ -207,7 +207,7 @@ UI.SimpleResizerWidget = class extends UI.ResizerWidget {
    * @param {number} y
    */
   sendDragStart(x, y) {
-    var position = this._isVertical ? y : x;
+    const position = this._isVertical ? y : x;
     this.dispatchEventToListeners(
         UI.ResizerWidget.Events.ResizeStart, {startPosition: position, currentPosition: position});
   }

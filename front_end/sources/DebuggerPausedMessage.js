@@ -7,7 +7,7 @@
 Sources.DebuggerPausedMessage = class {
   constructor() {
     this._element = createElementWithClass('div', 'paused-message flex-none');
-    var root = UI.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
+    const root = UI.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
     this._contentElement = root.createChild('div', 'paused-status');
   }
 
@@ -22,7 +22,7 @@ Sources.DebuggerPausedMessage = class {
    * @param {string} description
    */
   static _descriptionWithoutStack(description) {
-    var firstCallFrame = /^\s+at\s/m.exec(description);
+    const firstCallFrame = /^\s+at\s/m.exec(description);
     return firstCallFrame ? description.substring(0, firstCallFrame.index - 1) :
                             description.substring(0, description.lastIndexOf('\n'));
   }
@@ -32,26 +32,26 @@ Sources.DebuggerPausedMessage = class {
    * @return {!Promise<!Element>}
    */
   static async _createDOMBreakpointHitMessage(details) {
-    var messageWrapper = createElement('span');
-    var domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
+    const messageWrapper = createElement('span');
+    const domDebuggerModel = details.debuggerModel.target().model(SDK.DOMDebuggerModel);
     if (!details.auxData || !domDebuggerModel)
       return messageWrapper;
-    var data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
+    const data = domDebuggerModel.resolveDOMBreakpointData(/** @type {!Object} */ (details.auxData));
     if (!data)
       return messageWrapper;
 
-    var mainElement = messageWrapper.createChild('div', 'status-main');
+    const mainElement = messageWrapper.createChild('div', 'status-main');
     mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
     mainElement.appendChild(createTextNode(
         String.sprintf('Paused on %s', Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(data.type))));
 
-    var subElement = messageWrapper.createChild('div', 'status-sub monospace');
-    var linkifiedNode = await Common.Linkifier.linkify(data.node);
+    const subElement = messageWrapper.createChild('div', 'status-sub monospace');
+    const linkifiedNode = await Common.Linkifier.linkify(data.node);
     subElement.appendChild(linkifiedNode);
 
     if (data.targetNode) {
-      var targetNodeLink = await Common.Linkifier.linkify(data.targetNode);
-      var message;
+      const targetNodeLink = await Common.Linkifier.linkify(data.targetNode);
+      let message;
       if (data.insertion)
         message = data.targetNode === data.node ? 'Child %s added' : 'Descendant %s added';
       else
@@ -74,16 +74,16 @@ Sources.DebuggerPausedMessage = class {
     if (!details)
       return;
 
-    var status = this._contentElement.createChild('div', 'flex-auto');
+    const status = this._contentElement.createChild('div', 'flex-auto');
 
-    var errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
+    const errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
         details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||
         details.reason === SDK.DebuggerModel.BreakReason.Assert || details.reason === SDK.DebuggerModel.BreakReason.OOM;
-    var messageWrapper;
+    let messageWrapper;
     if (details.reason === SDK.DebuggerModel.BreakReason.DOM) {
       messageWrapper = await Sources.DebuggerPausedMessage._createDOMBreakpointHitMessage(details);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.EventListener) {
-      var eventNameForUI = '';
+      let eventNameForUI = '';
       if (details.auxData) {
         eventNameForUI =
             SDK.domDebuggerManager.resolveEventListenerBreakpointTitle(/** @type {!Object} */ (details.auxData));
@@ -92,12 +92,12 @@ Sources.DebuggerPausedMessage = class {
     } else if (details.reason === SDK.DebuggerModel.BreakReason.XHR) {
       messageWrapper = buildWrapper(Common.UIString('Paused on XHR or fetch'), details.auxData['url'] || '');
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Exception) {
-      var description = details.auxData['description'] || details.auxData['value'] || '';
-      var descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
+      const description = details.auxData['description'] || details.auxData['value'] || '';
+      const descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
       messageWrapper = buildWrapper(Common.UIString('Paused on exception'), descriptionWithoutStack, description);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection) {
-      var description = details.auxData['description'] || details.auxData['value'] || '';
-      var descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
+      const description = details.auxData['description'] || details.auxData['value'] || '';
+      const descriptionWithoutStack = Sources.DebuggerPausedMessage._descriptionWithoutStack(description);
       messageWrapper =
           buildWrapper(Common.UIString('Paused on promise rejection'), descriptionWithoutStack, description);
     } else if (details.reason === SDK.DebuggerModel.BreakReason.Assert) {
@@ -107,11 +107,11 @@ Sources.DebuggerPausedMessage = class {
     } else if (details.reason === SDK.DebuggerModel.BreakReason.OOM) {
       messageWrapper = buildWrapper(Common.UIString('Paused before potential out-of-memory crash'));
     } else if (details.callFrames.length) {
-      var uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
-      var breakpoint = uiLocation ?
+      const uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
+      const breakpoint = uiLocation ?
           breakpointManager.findBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) :
           null;
-      var defaultText = breakpoint ? Common.UIString('Paused on breakpoint') : Common.UIString('Debugger paused');
+      const defaultText = breakpoint ? Common.UIString('Paused on breakpoint') : Common.UIString('Debugger paused');
       messageWrapper = buildWrapper(defaultText);
     } else {
       console.warn(
@@ -129,13 +129,13 @@ Sources.DebuggerPausedMessage = class {
      * @return {!Element}
      */
     function buildWrapper(mainText, subText, title) {
-      var messageWrapper = createElement('span');
-      var mainElement = messageWrapper.createChild('div', 'status-main');
-      var icon = UI.Icon.create(errorLike ? 'smallicon-error' : 'smallicon-info', 'status-icon');
+      const messageWrapper = createElement('span');
+      const mainElement = messageWrapper.createChild('div', 'status-main');
+      const icon = UI.Icon.create(errorLike ? 'smallicon-error' : 'smallicon-info', 'status-icon');
       mainElement.appendChild(icon);
       mainElement.appendChild(createTextNode(mainText));
       if (subText) {
-        var subElement = messageWrapper.createChild('div', 'status-sub monospace');
+        const subElement = messageWrapper.createChild('div', 'status-sub monospace');
         subElement.textContent = subText;
         subElement.title = title || subText;
       }

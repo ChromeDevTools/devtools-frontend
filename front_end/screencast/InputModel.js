@@ -18,7 +18,7 @@ Screencast.InputModel = class extends SDK.SDKModel {
    * @param {!Event} event
    */
   emitKeyEvent(event) {
-    var type;
+    let type;
     switch (event.type) {
       case 'keydown':
         type = 'keyDown';
@@ -33,7 +33,7 @@ Screencast.InputModel = class extends SDK.SDKModel {
         return;
     }
 
-    var text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
+    const text = event.type === 'keypress' ? String.fromCharCode(event.charCode) : undefined;
     this._inputAgent.invoke_dispatchKeyEvent({
       type: type,
       modifiers: this._modifiersForEvent(event),
@@ -56,8 +56,8 @@ Screencast.InputModel = class extends SDK.SDKModel {
    * @param {number} zoom
    */
   emitTouchFromMouseEvent(event, offsetTop, zoom) {
-    var buttons = {0: 'none', 1: 'left', 2: 'middle', 3: 'right'};
-    var types = {
+    const buttons = {0: 'none', 1: 'left', 2: 'middle', 3: 'right'};
+    const types = {
       'mousedown': 'mousePressed',
       'mouseup': 'mouseReleased',
       'mousemove': 'mouseMoved',
@@ -71,10 +71,10 @@ Screencast.InputModel = class extends SDK.SDKModel {
     if (event.type === 'mousedown' || this._activeTouchOffsetTop === null)
       this._activeTouchOffsetTop = offsetTop;
 
-    var x = Math.round(event.offsetX / zoom);
-    var y = Math.round(event.offsetY / zoom);
+    const x = Math.round(event.offsetX / zoom);
+    let y = Math.round(event.offsetY / zoom);
     y = Math.round(y - this._activeTouchOffsetTop);
-    var params = {
+    const params = {
       type: types[event.type],
       x: x,
       y: y,
@@ -95,7 +95,7 @@ Screencast.InputModel = class extends SDK.SDKModel {
 
   cancelTouch() {
     if (this._activeTouchOffsetTop !== null) {
-      var params = this._activeTouchParams;
+      const params = this._activeTouchParams;
       this._activeTouchParams = null;
       params.type = 'mouseReleased';
       this._inputAgent.invoke_emulateTouchFromMouseEvent(params);

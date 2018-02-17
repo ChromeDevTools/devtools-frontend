@@ -21,10 +21,10 @@ ConsoleTestRunner.dumpConsoleMessages = function(printOriginatingCommand, dumpCl
 };
 
 ConsoleTestRunner.renderCompleteMessages = async function() {
-  var consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.instance();
   if (consoleView._needsFullUpdate)
     consoleView._updateMessageList();
-  var viewMessages = consoleView._visibleViewMessages;
+  const viewMessages = consoleView._visibleViewMessages;
   await Promise.all(viewMessages.map(uiMessage => uiMessage.completeElementForTest()));
 };
 
@@ -36,20 +36,21 @@ ConsoleTestRunner.renderCompleteMessages = async function() {
  */
 ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
-  var result = [];
+  const result = [];
   ConsoleTestRunner.disableConsoleViewport();
-  var consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.instance();
   if (consoleView._needsFullUpdate)
     consoleView._updateMessageList();
-  var viewMessages = consoleView._visibleViewMessages;
-  for (var i = 0; i < viewMessages.length; ++i) {
-    var uiMessage = viewMessages[i];
-    var message = uiMessage.consoleMessage();
-    var element = uiMessage.element();
+  const viewMessages = consoleView._visibleViewMessages;
+  for (let i = 0; i < viewMessages.length; ++i) {
+    const uiMessage = viewMessages[i];
+    const message = uiMessage.consoleMessage();
+    const element = uiMessage.element();
 
+    let classNames;
     if (dumpClassNames) {
-      var classNames = [];
-      for (var node = element.firstChild; node; node = node.traverseNextNode(element)) {
+      classNames = [];
+      for (let node = element.firstChild; node; node = node.traverseNextNode(element)) {
         if (node.nodeType === Node.ELEMENT_NODE && node.className) {
           classNames.push(node.className.replace('platform-linux', 'platform-*')
                               .replace('platform-mac', 'platform-*')
@@ -62,7 +63,7 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
       if (dumpClassNames)
         result.push(classNames.join(' > '));
     } else {
-      var messageText = formatter(element, message);
+      let messageText = formatter(element, message);
       messageText = messageText.replace(/VM\d+/g, 'VM');
       result.push(messageText + (dumpClassNames ? ' ' + classNames.join(' > ') : ''));
     }
@@ -78,14 +79,14 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
  * @return {string}
  */
 ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
-  var messageText = messageElement.deepTextContent().replace(/\u200b/g, '');
+  let messageText = messageElement.deepTextContent().replace(/\u200b/g, '');
   // Replace scriptIds with generic scriptId string to avoid flakiness.
   messageText = messageText.replace(/VM\d+/g, 'VM');
   // Remove line and column of evaluate method.
   messageText = messageText.replace(/(at eval \(eval at evaluate) \(:\d+:\d+\)/, '$1');
 
   if (messageText.startsWith('Navigated to')) {
-    var fileName = messageText.split(' ').pop().split('/').pop();
+    const fileName = messageText.split(' ').pop().split('/').pop();
     messageText = 'Navigated to ' + fileName;
   }
   // The message might be extremely long in case of dumping stack overflow message.
@@ -102,24 +103,24 @@ ConsoleTestRunner.prepareConsoleMessageText = function(messageElement) {
 ConsoleTestRunner.dumpConsoleTableMessage = function(viewMessage, forceInvalidate, results) {
   if (forceInvalidate)
     Console.ConsoleView.instance()._viewport.invalidate();
-  var table = viewMessage.element();
-  var headers = table.querySelectorAll('th > div:first-child');
+  const table = viewMessage.element();
+  const headers = table.querySelectorAll('th > div:first-child');
   if (!headers.length)
     return false;
 
-  var headerLine = '';
-  for (var i = 0; i < headers.length; i++)
+  let headerLine = '';
+  for (let i = 0; i < headers.length; i++)
     headerLine += headers[i].textContent + ' | ';
 
   addResult('HEADER ' + headerLine);
 
-  var rows = table.querySelectorAll('.data-container tr');
+  const rows = table.querySelectorAll('.data-container tr');
 
-  for (var i = 0; i < rows.length; i++) {
-    var row = rows[i];
-    var rowLine = '';
-    var items = row.querySelectorAll('td > span');
-    for (var j = 0; j < items.length; j++)
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    let rowLine = '';
+    const items = row.querySelectorAll('td > span');
+    for (let j = 0; j < items.length; j++)
       rowLine += items[j].textContent + ' | ';
 
     if (rowLine.trim())
@@ -148,7 +149,7 @@ ConsoleTestRunner.disableConsoleViewport = function() {
  * @param {number} height
  */
 ConsoleTestRunner.fixConsoleViewportDimensions = function(width, height) {
-  var viewport = Console.ConsoleView.instance()._viewport;
+  const viewport = Console.ConsoleView.instance()._viewport;
   viewport.element.style.width = width + 'px';
   viewport.element.style.height = height + 'px';
   viewport.element.style.position = 'absolute';
@@ -156,8 +157,8 @@ ConsoleTestRunner.fixConsoleViewportDimensions = function(width, height) {
 };
 
 ConsoleTestRunner.selectMainExecutionContext = function() {
-  var executionContexts = TestRunner.runtimeModel.executionContexts();
-  for (var context of executionContexts) {
+  const executionContexts = TestRunner.runtimeModel.executionContexts();
+  for (const context of executionContexts) {
     if (context.isDefault) {
       UI.context.setFlavor(SDK.ExecutionContext, context);
       return;
@@ -175,7 +176,7 @@ ConsoleTestRunner.evaluateInConsole = function(code, callback, dontForceMainCont
     ConsoleTestRunner.selectMainExecutionContext();
   callback = TestRunner.safeWrap(callback);
 
-  var consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.instance();
   consoleView._prompt._appendCommand(code, true);
   ConsoleTestRunner.addConsoleViewSniffer(function(commandResult) {
     callback(commandResult.toMessageElement().deepTextContent());
@@ -200,7 +201,7 @@ ConsoleTestRunner.addConsoleViewSniffer = function(override, opt_sticky) {
 };
 
 ConsoleTestRunner.waitForPendingViewportUpdates = async function() {
-  var refreshPromise = Console.ConsoleView.instance()._scheduledRefreshPromiseForTest || Promise.resolve();
+  const refreshPromise = Console.ConsoleView.instance()._scheduledRefreshPromiseForTest || Promise.resolve();
   await refreshPromise;
 };
 
@@ -226,7 +227,7 @@ ConsoleTestRunner.evaluateInConsoleAndDump = function(code, callback, dontForceM
  * @return {number}
  */
 ConsoleTestRunner.consoleMessagesCount = function() {
-  var consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.instance();
   return consoleView._consoleMessages.length;
 };
 
@@ -247,13 +248,13 @@ ConsoleTestRunner.formatterIgnoreStackFrameUrls = function(messageFormatter, nod
    * @param {string} string
    */
   function ignoreStackFrameAndMutableData(string) {
-    var buffer = string.replace(/\u200b/g, '');
+    let buffer = string.replace(/\u200b/g, '');
     buffer = buffer.replace(/VM\d+/g, 'VM');
     return buffer.replace(/^\s+at [^\]]+(]?)$/, '$1');
   }
 
   messageFormatter = messageFormatter || TestRunner.textContentWithLineBreaks;
-  var buffer = messageFormatter(node);
+  const buffer = messageFormatter(node);
   return buffer.split('\n').map(ignoreStackFrameAndMutableData).filter(isNotEmptyLine).join('\n');
 };
 
@@ -279,13 +280,13 @@ ConsoleTestRunner.dumpConsoleMessagesIgnoreErrorStackFrames = function(
 };
 
 ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
-  for (var i = 0; i < messageViews.length; ++i) {
-    var element = messageViews[i].element();
-    var messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  for (let i = 0; i < messageViews.length; ++i) {
+    const element = messageViews[i].element();
+    const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     TestRunner.addResult(messageText);
-    var spans = element.querySelectorAll('.console-message-text *');
-    for (var j = 0; j < spans.length; ++j)
+    const spans = element.querySelectorAll('.console-message-text *');
+    for (let j = 0; j < spans.length; ++j)
       TestRunner.addResult('Styled text #' + j + ': ' + (spans[j].style.cssText || 'NO STYLES DEFINED'));
   }
 };
@@ -294,12 +295,12 @@ ConsoleTestRunner.dumpConsoleMessagesWithStyles = function() {
  * @param {boolean=} sortMessages
  */
 ConsoleTestRunner.dumpConsoleMessagesWithClasses = function(sortMessages) {
-  var result = [];
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
-  for (var i = 0; i < messageViews.length; ++i) {
-    var element = messageViews[i].element();
-    var contentElement = messageViews[i].contentElement();
-    var messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
+  const result = [];
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  for (let i = 0; i < messageViews.length; ++i) {
+    const element = messageViews[i].element();
+    const contentElement = messageViews[i].contentElement();
+    const messageText = ConsoleTestRunner.prepareConsoleMessageText(element);
     result.push(messageText + ' ' + element.getAttribute('class') + ' > ' + contentElement.getAttribute('class'));
   }
   if (sortMessages)
@@ -308,18 +309,18 @@ ConsoleTestRunner.dumpConsoleMessagesWithClasses = function(sortMessages) {
 };
 
 ConsoleTestRunner.dumpConsoleClassesBrief = function() {
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
-  for (var i = 0; i < messageViews.length; ++i) {
-    var repeatText = messageViews[i].repeatCount() > 1 ? (' x' + messageViews[i].repeatCount()) : '';
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  for (let i = 0; i < messageViews.length; ++i) {
+    const repeatText = messageViews[i].repeatCount() > 1 ? (' x' + messageViews[i].repeatCount()) : '';
     TestRunner.addResult(messageViews[i].toMessageElement().className + repeatText);
   }
 };
 
 ConsoleTestRunner.dumpConsoleCounters = async function() {
-  var counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
+  const counter = ConsoleCounters.WarningErrorCounter._instanceForTest;
   if (counter._updatingForTest)
     await TestRunner.addSnifferPromise(counter, '_updatedForTest');
-  for (var index = 0; index < counter._titles.length; ++index)
+  for (let index = 0; index < counter._titles.length; ++index)
     TestRunner.addResult(counter._titles[index]);
   ConsoleTestRunner.dumpConsoleClassesBrief();
 };
@@ -331,18 +332,18 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
  */
 ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, sectionFilter) {
   Console.ConsoleView.instance()._invalidateViewport();
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
 
   // Initiate round-trips to fetch necessary data for further rendering.
-  for (var i = 0; i < messageViews.length; ++i)
+  for (let i = 0; i < messageViews.length; ++i)
     messageViews[i].element();
 
   TestRunner.deprecatedRunAfterPendingDispatches(expandTreeElements);
 
   function expandTreeElements() {
-    for (var i = 0; i < messageViews.length; ++i) {
-      var element = messageViews[i].element();
-      for (var node = element; node; node = node.traverseNextNode(element)) {
+    for (let i = 0; i < messageViews.length; ++i) {
+      const element = messageViews[i].element();
+      for (let node = element; node; node = node.traverseNextNode(element)) {
         if (node.treeElementForTest)
           node.treeElementForTest.expand();
         if (node._expandStackTraceForTest)
@@ -355,9 +356,9 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 
         if (!deepFilter)
           continue;
-        var treeElements = node._section.rootElement().children();
-        for (var j = 0; j < treeElements.length; ++j) {
-          for (var treeElement = treeElements[j]; treeElement;
+        const treeElements = node._section.rootElement().children();
+        for (let j = 0; j < treeElements.length; ++j) {
+          for (let treeElement = treeElements[j]; treeElement;
                treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
             if (deepFilter(treeElement))
               treeElement.expand();
@@ -373,13 +374,13 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
-  var properties = [];
-  var propertiesCount = 0;
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  const properties = [];
+  let propertiesCount = 0;
   TestRunner.addSniffer(ObjectUI.ObjectPropertyTreeElement.prototype, '_updateExpandable', propertyExpandableUpdated);
-  for (var i = 0; i < messageViews.length; ++i) {
-    var element = messageViews[i].element();
-    for (var node = element; node; node = node.traverseNextNode(element)) {
+  for (let i = 0; i < messageViews.length; ++i) {
+    const element = messageViews[i].element();
+    for (let node = element; node; node = node.traverseNextNode(element)) {
       if (node.classList && node.classList.contains('object-value-calculate-value-button')) {
         ++propertiesCount;
         node.click();
@@ -391,7 +392,7 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
   function propertyExpandableUpdated() {
     --propertiesCount;
     if (propertiesCount === 0) {
-      for (var i = 0; i < properties.length; ++i)
+      for (let i = 0; i < properties.length; ++i)
         properties[i].click();
       TestRunner.deprecatedRunAfterPendingDispatches(callback);
     } else {
@@ -405,9 +406,9 @@ ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
-  var messageViews = Console.ConsoleView.instance()._visibleViewMessages;
+  const messageViews = Console.ConsoleView.instance()._visibleViewMessages;
   // Initiate round-trips to fetch necessary data for further rendering.
-  for (var i = 0; i < messageViews.length; ++i)
+  for (let i = 0; i < messageViews.length; ++i)
     messageViews[i].element();
   TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
@@ -416,8 +417,8 @@ ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
-  var messages = Console.ConsoleView.instance()._visibleViewMessages;
-  for (var i = 0; i < messages.length; ++i)
+  const messages = Console.ConsoleView.instance()._visibleViewMessages;
+  for (let i = 0; i < messages.length; ++i)
     messages[i].toMessageElement();
   TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
@@ -426,9 +427,9 @@ ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
  * @return {!Promise}
  */
 ConsoleTestRunner.waitUntilConsoleEditorLoaded = function() {
-  var fulfill;
-  var promise = new Promise(x => (fulfill = x));
-  var prompt = Console.ConsoleView.instance()._prompt;
+  let fulfill;
+  const promise = new Promise(x => (fulfill = x));
+  const prompt = Console.ConsoleView.instance()._prompt;
   if (prompt._editor)
     fulfill(prompt._editor);
   else
@@ -476,8 +477,8 @@ ConsoleTestRunner.waitUntilNthMessageReceivedPromise = function(count) {
  * @param {string} namePrefix
  */
 ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
-  var selector = Console.ConsoleView.instance()._consoleContextSelector;
-  for (var executionContext of selector._items) {
+  const selector = Console.ConsoleView.instance()._consoleContextSelector;
+  for (const executionContext of selector._items) {
     if (selector.titleFor(executionContext).startsWith(namePrefix)) {
       UI.context.setFlavor(SDK.ExecutionContext, executionContext);
       return;
@@ -491,7 +492,7 @@ ConsoleTestRunner.changeExecutionContext = function(namePrefix) {
  * @param {!Function} callback
  */
 ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
-  var consoleView = Console.ConsoleView.instance();
+  const consoleView = Console.ConsoleView.instance();
   checkAndReturn();
 
   function checkAndReturn() {
@@ -521,9 +522,9 @@ ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) 
  * @suppressGlobalPropertiesCheck
  */
 ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, toMessage, toTextOffset) {
-  var consoleView = Console.ConsoleView.instance();
-  var from = selectionContainerAndOffset(consoleView.itemElement(fromMessage).element(), fromTextOffset);
-  var to = selectionContainerAndOffset(consoleView.itemElement(toMessage).element(), toTextOffset);
+  const consoleView = Console.ConsoleView.instance();
+  const from = selectionContainerAndOffset(consoleView.itemElement(fromMessage).element(), fromTextOffset);
+  const to = selectionContainerAndOffset(consoleView.itemElement(toMessage).element(), toTextOffset);
   window.getSelection().setBaseAndExtent(from.container, from.offset, to.container, to.offset);
 
   /**
@@ -533,14 +534,14 @@ ConsoleTestRunner.selectConsoleMessages = function(fromMessage, fromTextOffset, 
    */
   function selectionContainerAndOffset(container, offset) {
     /** @type {?Node} */
-    var node = container;
+    let node = container;
     if (offset === 0 && container.nodeType !== Node.TEXT_NODE) {
       container = /** @type {!Node} */ (container.traverseNextTextNode());
       node = container;
     }
-    var charCount = 0;
+    let charCount = 0;
     while ((node = node.traverseNextTextNode(container))) {
-      var length = node.textContent.length;
+      const length = node.textContent.length;
       if (charCount + length >= offset)
         return {container: node, offset: offset - charCount};
 
@@ -574,12 +575,12 @@ ConsoleTestRunner.wrapListener = function(func) {
 };
 
 ConsoleTestRunner.dumpStackTraces = function() {
-  var viewMessages = Console.ConsoleView.instance()._visibleViewMessages;
-  for (var i = 0; i < viewMessages.length; ++i) {
-    var m = viewMessages[i].consoleMessage();
+  const viewMessages = Console.ConsoleView.instance()._visibleViewMessages;
+  for (let i = 0; i < viewMessages.length; ++i) {
+    const m = viewMessages[i].consoleMessage();
     TestRunner.addResult(
         'Message[' + i + ']: ' + Bindings.displayNameForURL(m.url || '') + ':' + m.line + ' ' + m.messageText);
-    var trace = m.stackTrace ? m.stackTrace.callFrames : null;
+    const trace = m.stackTrace ? m.stackTrace.callFrames : null;
     if (!trace) {
       TestRunner.addResult('FAIL: no stack trace attached to message #' + i);
     } else {
@@ -596,20 +597,20 @@ ConsoleTestRunner.dumpStackTraces = function() {
  * @return {!{first: number, last: number, count: number}}
  */
 ConsoleTestRunner.visibleIndices = function() {
-  var consoleView = Console.ConsoleView.instance();
-  var viewport = consoleView._viewport;
-  var viewportRect = viewport.element.getBoundingClientRect();
-  var viewportPadding = parseFloat(window.getComputedStyle(viewport.element).paddingTop);
-  var first = -1;
-  var last = -1;
-  var count = 0;
-  for (var i = 0; i < consoleView._visibleViewMessages.length; i++) {
+  const consoleView = Console.ConsoleView.instance();
+  const viewport = consoleView._viewport;
+  const viewportRect = viewport.element.getBoundingClientRect();
+  const viewportPadding = parseFloat(window.getComputedStyle(viewport.element).paddingTop);
+  let first = -1;
+  let last = -1;
+  let count = 0;
+  for (let i = 0; i < consoleView._visibleViewMessages.length; i++) {
     // Created message elements may have a bounding rect, but not be connected to DOM.
-    var item = consoleView._visibleViewMessages[i];
+    const item = consoleView._visibleViewMessages[i];
     if (!item._element || !item._element.isConnected)
       continue;
-    var itemRect = item._element.getBoundingClientRect();
-    var isVisible = (itemRect.bottom > viewportRect.top + viewportPadding + 1) &&
+    const itemRect = item._element.getBoundingClientRect();
+    const isVisible = (itemRect.bottom > viewportRect.top + viewportPadding + 1) &&
         (itemRect.top <= viewportRect.bottom - viewportPadding - 1);
     if (isVisible) {
       first = first === -1 ? i : first;

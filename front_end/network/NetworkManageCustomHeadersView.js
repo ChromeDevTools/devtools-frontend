@@ -25,7 +25,7 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
     this._list.element.classList.add('custom-headers-list');
     this._list.registerRequiredCSS('network/networkManageCustomHeadersView.css');
 
-    var placeholder = createElementWithClass('div', 'custom-headers-list-list-empty');
+    const placeholder = createElementWithClass('div', 'custom-headers-list-list-empty');
     placeholder.textContent = Common.UIString('No custom headers');
     this._list.setEmptyPlaceholder(placeholder);
     this._list.show(this.contentElement);
@@ -66,8 +66,8 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
    * @return {!Element}
    */
   renderItem(item, editable) {
-    var element = createElementWithClass('div', 'custom-headers-list-item');
-    var header = element.createChild('div', 'custom-header-name');
+    const element = createElementWithClass('div', 'custom-headers-list-item');
+    const header = element.createChild('div', 'custom-header-name');
     header.textContent = item.header;
     header.title = item.header;
     return element;
@@ -91,8 +91,8 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    var headerId = editor.control('header').value.trim();
-    var success;
+    const headerId = editor.control('header').value.trim();
+    let success;
     if (isNew)
       success = this._addHeaderColumnCallback(headerId);
     else
@@ -112,7 +112,7 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
    * @return {!UI.ListWidget.Editor}
    */
   beginEdit(item) {
-    var editor = this._createEditor();
+    const editor = this._createEditor();
     editor.control('header').value = item.header;
     return editor;
   }
@@ -124,14 +124,14 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
     if (this._editor)
       return this._editor;
 
-    var editor = new UI.ListWidget.Editor();
+    const editor = new UI.ListWidget.Editor();
     this._editor = editor;
-    var content = editor.contentElement();
+    const content = editor.contentElement();
 
-    var titles = content.createChild('div', 'custom-headers-edit-row');
+    const titles = content.createChild('div', 'custom-headers-edit-row');
     titles.createChild('div', 'custom-headers-header').textContent = Common.UIString('Header Name');
 
-    var fields = content.createChild('div', 'custom-headers-edit-row');
+    const fields = content.createChild('div', 'custom-headers-edit-row');
     fields.createChild('div', 'custom-headers-header')
         .appendChild(editor.createInput('header', 'text', 'x-custom-header', validateHeader.bind(this)));
 
@@ -145,7 +145,7 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
      * @return {boolean}
      */
     function validateHeader(item, index, input) {
-      var headerId = editor.control('header').value.trim().toLowerCase();
+      const headerId = editor.control('header').value.trim().toLowerCase();
       if (this._columnConfigs.has(headerId) && item.header !== headerId)
         return false;
       return true;

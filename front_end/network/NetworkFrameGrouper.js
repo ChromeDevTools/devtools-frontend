@@ -21,10 +21,10 @@ Network.NetworkFrameGrouper = class {
    * @return {?Network.NetworkGroupNode}
    */
   groupNodeForRequest(request) {
-    var frame = SDK.ResourceTreeModel.frameForRequest(request);
+    const frame = SDK.ResourceTreeModel.frameForRequest(request);
     if (!frame || frame.isTopFrame())
       return null;
-    var groupNode = this._activeGroups.get(frame);
+    let groupNode = this._activeGroups.get(frame);
     if (groupNode)
       return groupNode;
     groupNode = new Network.FrameGroupNode(this._parentView, frame);
@@ -67,7 +67,7 @@ Network.FrameGroupNode = class extends Network.NetworkGroupNode {
   renderCell(cell, columnId) {
     super.renderCell(cell, columnId);
     if (columnId === 'name') {
-      var name = this.displayName();
+      const name = this.displayName();
       if (!this._productBadge) {
         this._productBadge = this.parentView().badgePool.badgeForFrame(this._frame);
         this._productBadge.classList.add('network-frame-group-badge');

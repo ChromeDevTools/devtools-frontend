@@ -17,7 +17,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._allPaused = false;
     this._createHeader();
     this._animationsContainer = this.contentElement.createChild('div', 'animation-timeline-rows');
-    var timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
+    const timelineHint = this.contentElement.createChild('div', 'animation-timeline-rows-hint');
     timelineHint.textContent = ls`Select an effect above to inspect and modify.`;
 
     /** @const */ this._defaultDuration = 100;
@@ -41,7 +41,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    for (var animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
       this._addEventListeners(animationModel);
   }
 
@@ -49,7 +49,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @override
    */
   willHide() {
-    for (var animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
       this._removeEventListeners(animationModel);
     this._popoverHelper.hidePopover();
   }
@@ -91,7 +91,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _nodeChanged() {
-    for (var nodeUI of this._nodesMap.values())
+    for (const nodeUI of this._nodesMap.values())
       nodeUI._nodeChanged();
   }
 
@@ -107,9 +107,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _createHeader() {
-    var toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
-    var topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
-    var clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
+    const toolbarContainer = this.contentElement.createChild('div', 'animation-timeline-toolbar-container');
+    const topToolbar = new UI.Toolbar('animation-timeline-toolbar', toolbarContainer);
+    const clearButton = new UI.ToolbarButton(ls`Clear all`, 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._reset.bind(this));
     topToolbar.appendToolbarItem(clearButton);
     topToolbar.appendSeparator();
@@ -118,10 +118,10 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._pauseButton.addEventListener(UI.ToolbarButton.Events.Click, this._togglePauseAll.bind(this));
     topToolbar.appendToolbarItem(this._pauseButton);
 
-    var playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
+    const playbackRateControl = toolbarContainer.createChild('div', 'animation-playback-rate-control');
     this._playbackRateButtons = [];
-    for (var playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
-      var button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
+    for (const playbackRate of Animation.AnimationTimeline.GlobalPlaybackRates) {
+      const button = playbackRateControl.createChild('div', 'animation-playback-rate-button');
       button.textContent = playbackRate ? ls`${playbackRate * 100}%` : ls`Pause`;
       button.playbackRate = playbackRate;
       button.addEventListener('click', this._setPlaybackRate.bind(this, playbackRate));
@@ -134,20 +134,20 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._popoverHelper = new UI.PopoverHelper(this._previewContainer, this._getPopoverRequest.bind(this));
     this._popoverHelper.setDisableOnClick(true);
     this._popoverHelper.setTimeout(0);
-    var emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
+    const emptyBufferHint = this.contentElement.createChild('div', 'animation-timeline-buffer-hint');
     emptyBufferHint.textContent = ls`Listening for animations...`;
-    var container = this.contentElement.createChild('div', 'animation-timeline-header');
-    var controls = container.createChild('div', 'animation-controls');
+    const container = this.contentElement.createChild('div', 'animation-timeline-header');
+    const controls = container.createChild('div', 'animation-controls');
     this._currentTime = controls.createChild('div', 'animation-timeline-current-time monospace');
 
-    var toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
+    const toolbar = new UI.Toolbar('animation-controls-toolbar', controls);
     this._controlButton = new UI.ToolbarToggle(ls`Replay timeline`, 'largeicon-replay-animation');
     this._controlState = Animation.AnimationTimeline._ControlState.Replay;
     this._controlButton.setToggled(true);
     this._controlButton.addEventListener(UI.ToolbarButton.Events.Click, this._controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this._controlButton);
 
-    var gridHeader = container.createChild('div', 'animation-grid-header');
+    const gridHeader = container.createChild('div', 'animation-grid-header');
     UI.installDragHandle(
         gridHeader, this._repositionScrubber.bind(this), this._scrubberDragMove.bind(this),
         this._scrubberDragEnd.bind(this), 'text');
@@ -165,25 +165,25 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @return {?UI.PopoverRequest}
    */
   _getPopoverRequest(event) {
-    var element = event.target;
+    const element = event.target;
     if (!element.isDescendant(this._previewContainer))
       return null;
 
     return {
       box: event.target.boxInWindow(),
       show: popover => {
-        var animGroup;
-        for (var group of this._previewMap.keysArray()) {
+        let animGroup;
+        for (const group of this._previewMap.keysArray()) {
           if (this._previewMap.get(group).element === element.parentElement)
             animGroup = group;
         }
         console.assert(animGroup);
-        var screenshots = animGroup.screenshots();
+        const screenshots = animGroup.screenshots();
         if (!screenshots.length)
           return Promise.resolve(false);
 
-        var fulfill;
-        var promise = new Promise(x => fulfill = x);
+        let fulfill;
+        const promise = new Promise(x => fulfill = x);
         if (!screenshots[0].complete)
           screenshots[0].onload = onFirstScreenshotLoaded.bind(null, screenshots);
         else
@@ -213,7 +213,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
    */
   _setPlaybackRate(playbackRate) {
     this._playbackRate = playbackRate;
-    for (var animationModel of SDK.targetManager.models(Animation.AnimationModel))
+    for (const animationModel of SDK.targetManager.models(Animation.AnimationModel))
       animationModel.setPlaybackRate(this._allPaused ? 0 : this._playbackRate);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);
     if (this._scrubberPlayer)
@@ -223,8 +223,8 @@ Animation.AnimationTimeline = class extends UI.VBox {
   }
 
   _updatePlaybackControls() {
-    for (var button of this._playbackRateButtons) {
-      var selected = this._playbackRate === button.playbackRate;
+    for (const button of this._playbackRateButtons) {
+      const selected = this._playbackRate === button.playbackRate;
       button.classList.toggle('selected', selected);
     }
   }
@@ -321,7 +321,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     else
       this._setPlaybackRate(this._playbackRate);
 
-    for (var group of this._groupBuffer)
+    for (const group of this._groupBuffer)
       group.release();
     this._groupBuffer = [];
     this._previewMap.clear();
@@ -358,19 +358,19 @@ Animation.AnimationTimeline = class extends UI.VBox {
     }
     this._groupBuffer.sort(startTimeComparator);
     // Discard oldest groups from buffer if necessary
-    var groupsToDiscard = [];
-    var bufferSize = this.width() / 50;
+    const groupsToDiscard = [];
+    const bufferSize = this.width() / 50;
     while (this._groupBuffer.length > bufferSize) {
-      var toDiscard = this._groupBuffer.splice(this._groupBuffer[0] === this._selectedGroup ? 1 : 0, 1);
+      const toDiscard = this._groupBuffer.splice(this._groupBuffer[0] === this._selectedGroup ? 1 : 0, 1);
       groupsToDiscard.push(toDiscard[0]);
     }
-    for (var g of groupsToDiscard) {
+    for (const g of groupsToDiscard) {
       this._previewMap.get(g).element.remove();
       this._previewMap.delete(g);
       g.release();
     }
     // Generate preview
-    var preview = new Animation.AnimationGroupPreviewUI(group);
+    const preview = new Animation.AnimationGroupPreviewUI(group);
     this._groupBuffer.push(group);
     this._previewMap.set(group, preview);
     this._previewContainer.appendChild(preview.element);
@@ -417,7 +417,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     this._selectedGroup = group;
     this._previewMap.forEach(applySelectionClass, this);
     this.setDuration(Math.max(500, group.finiteDuration() + 100));
-    for (var anim of group.animations())
+    for (const anim of group.animations())
       this._addAnimation(anim);
     this.scheduleRedraw();
     this._timelineScrubber.classList.remove('hidden');
@@ -440,14 +440,14 @@ Animation.AnimationTimeline = class extends UI.VBox {
         node[this._symbol] = nodeUI;
     }
 
-    var nodeUI = this._nodesMap.get(animation.source().backendNodeId());
+    let nodeUI = this._nodesMap.get(animation.source().backendNodeId());
     if (!nodeUI) {
       nodeUI = new Animation.AnimationTimeline.NodeUI(animation.source());
       this._animationsContainer.appendChild(nodeUI.element);
       this._nodesMap.set(animation.source().backendNodeId(), nodeUI);
     }
-    var nodeRow = nodeUI.createNewRow();
-    var uiAnimation = new Animation.AnimationUI(animation, this, nodeRow);
+    const nodeRow = nodeUI.createNewRow();
+    const uiAnimation = new Animation.AnimationUI(animation, this, nodeRow);
     animation.source().deferredNode().resolve(nodeResolved.bind(this));
     this._uiAnimations.push(uiAnimation);
     this._animationsMap.set(animation.id(), animation);
@@ -457,30 +457,30 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _nodeRemoved(event) {
-    var node = event.data.node;
+    const node = event.data.node;
     if (node[this._symbol])
       node[this._symbol].nodeRemoved();
   }
 
   _renderGrid() {
-    /** @const */ var gridSize = 250;
+    /** @const */ const gridSize = 250;
     this._grid.setAttribute('width', this.width() + 10);
     this._grid.setAttribute('height', this._cachedTimelineHeight + 30);
     this._grid.setAttribute('shape-rendering', 'crispEdges');
     this._grid.removeChildren();
-    var lastDraw = undefined;
-    for (var time = 0; time < this.duration(); time += gridSize) {
-      var line = this._grid.createSVGChild('rect', 'animation-timeline-grid-line');
+    let lastDraw = undefined;
+    for (let time = 0; time < this.duration(); time += gridSize) {
+      const line = this._grid.createSVGChild('rect', 'animation-timeline-grid-line');
       line.setAttribute('x', time * this.pixelMsRatio() + 10);
       line.setAttribute('y', 23);
       line.setAttribute('height', '100%');
       line.setAttribute('width', 1);
     }
-    for (var time = 0; time < this.duration(); time += gridSize) {
-      var gridWidth = time * this.pixelMsRatio();
+    for (let time = 0; time < this.duration(); time += gridSize) {
+      const gridWidth = time * this.pixelMsRatio();
       if (lastDraw === undefined || gridWidth - lastDraw > 50) {
         lastDraw = gridWidth;
-        var label = this._grid.createSVGChild('text', 'animation-timeline-grid-label');
+        const label = this._grid.createSVGChild('text', 'animation-timeline-grid-label');
         label.textContent = Number.millisToString(time);
         label.setAttribute('x', gridWidth + 10);
         label.setAttribute('y', 16);
@@ -490,7 +490,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
 
   scheduleRedraw() {
     this._renderQueue = [];
-    for (var ui of this._uiAnimations)
+    for (const ui of this._uiAnimations)
       this._renderQueue.push(ui);
     if (this._redrawing)
       return;
@@ -535,11 +535,11 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @return {boolean}
    */
   _resizeWindow(animation) {
-    var resized = false;
+    let resized = false;
 
     // This shows at most 3 iterations
-    var duration = animation.source().duration() * Math.min(2, animation.source().iterations());
-    var requiredDuration = animation.source().delay() + duration + animation.source().endDelay();
+    const duration = animation.source().duration() * Math.min(2, animation.source().iterations());
+    const requiredDuration = animation.source().delay() + duration + animation.source().endDelay();
     if (requiredDuration > this._duration) {
       resized = true;
       this._duration = requiredDuration + 200;
@@ -602,7 +602,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
     // Seek to current mouse position.
     if (!this._gridOffsetLeft)
       this._gridOffsetLeft = this._grid.totalOffsetLeft() + 10;
-    var seekTime = Math.max(0, event.x - this._gridOffsetLeft) / this.pixelMsRatio();
+    const seekTime = Math.max(0, event.x - this._gridOffsetLeft) / this.pixelMsRatio();
     this._selectedGroup.seekTo(seekTime);
     this._togglePause(true);
     this._animateTime(seekTime);
@@ -634,8 +634,9 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {!Event} event
    */
   _scrubberDragMove(event) {
-    var delta = event.x - this._originalMousePosition;
-    var currentTime = Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration()));
+    const delta = event.x - this._originalMousePosition;
+    const currentTime =
+        Math.max(0, Math.min(this._originalScrubberTime + delta / this.pixelMsRatio(), this.duration()));
     this._scrubberPlayer.currentTime = currentTime;
     this._currentTime.textContent = Number.millisToString(Math.round(currentTime));
     this._selectedGroup.seekTo(currentTime);
@@ -645,7 +646,7 @@ Animation.AnimationTimeline = class extends UI.VBox {
    * @param {!Event} event
    */
   _scrubberDragEnd(event) {
-    var currentTime = Math.max(0, this._scrubberPlayer.currentTime);
+    const currentTime = Math.max(0, this._scrubberPlayer.currentTime);
     this._scrubberPlayer.play();
     this._scrubberPlayer.currentTime = currentTime;
     this._currentTime.window().requestAnimationFrame(this._updateScrubber.bind(this));
@@ -725,7 +726,7 @@ Animation.AnimationTimeline.StepTimingFunction = class {
    * @return {?Animation.AnimationTimeline.StepTimingFunction}
    */
   static parse(text) {
-    var match = text.match(/^steps\((\d+), (start|middle)\)$/);
+    let match = text.match(/^steps\((\d+), (start|middle)\)$/);
     if (match)
       return new Animation.AnimationTimeline.StepTimingFunction(parseInt(match[1], 10), match[2]);
     match = text.match(/^steps\((\d+)\)$/);

@@ -22,12 +22,12 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
     this._rightSplitWidget.element.classList.add('timeline-layers-view-properties');
     this.setMainWidget(this._rightSplitWidget);
 
-    var vbox = new UI.VBox();
+    const vbox = new UI.VBox();
     this.setSidebarWidget(vbox);
 
     this._layerViewHost = new LayerViewer.LayerViewHost();
 
-    var layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
+    const layerTreeOutline = new LayerViewer.LayerTreeOutline(this._layerViewHost);
     vbox.element.appendChild(layerTreeOutline.element);
 
     this._layers3DView = new LayerViewer.Layers3DView(this._layerViewHost);
@@ -35,7 +35,7 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
         LayerViewer.Layers3DView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
     this._rightSplitWidget.setMainWidget(this._layers3DView);
 
-    var layerDetailsView = new LayerViewer.LayerDetailsView(this._layerViewHost);
+    const layerDetailsView = new LayerViewer.LayerDetailsView(this._layerViewHost);
     this._rightSplitWidget.setSidebarWidget(layerDetailsView);
     layerDetailsView.addEventListener(
         LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this._onPaintProfilerRequested, this);
@@ -66,7 +66,7 @@ Timeline.TimelineLayersView = class extends UI.SplitWidget {
    * @param {!Common.Event} event
    */
   _onPaintProfilerRequested(event) {
-    var selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
+    const selection = /** @type {!LayerViewer.LayerView.Selection} */ (event.data);
     this._layers3DView.snapshotForSelection(selection).then(snapshotWithRect => {
       if (snapshotWithRect)
         this._showPaintProfilerCallback(snapshotWithRect.snapshot);

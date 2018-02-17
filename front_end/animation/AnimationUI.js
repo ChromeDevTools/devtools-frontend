@@ -42,8 +42,9 @@ Animation.AnimationUI = class {
    * @return {string}
    */
   static Color(animation) {
-    var names = Object.keys(Animation.AnimationUI.Colors);
-    var color = Animation.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
+    const names = Object.keys(Animation.AnimationUI.Colors);
+    const color =
+        Animation.AnimationUI.Colors[names[String.hashCode(animation.name() || animation.id()) % names.length]];
     return color.asString(Common.Color.Format.RGB);
   }
 
@@ -66,7 +67,7 @@ Animation.AnimationUI = class {
    * @param {string} className
    */
   _createLine(parentElement, className) {
-    var line = parentElement.createSVGChild('line', className);
+    const line = parentElement.createSVGChild('line', className);
     line.setAttribute('x1', Animation.AnimationUI.Options.AnimationMargin);
     line.setAttribute('y1', Animation.AnimationUI.Options.AnimationHeight);
     line.setAttribute('y2', Animation.AnimationUI.Options.AnimationHeight);
@@ -79,7 +80,7 @@ Animation.AnimationUI = class {
    * @param {!Element} parentElement
    */
   _drawAnimationLine(iteration, parentElement) {
-    var cache = this._cachedElements[iteration];
+    const cache = this._cachedElements[iteration];
     if (!cache.animationLine)
       cache.animationLine = this._createLine(parentElement, 'animation-line');
     cache.animationLine.setAttribute(
@@ -95,14 +96,14 @@ Animation.AnimationUI = class {
       this._delayLine = this._createLine(parentElement, 'animation-delay-line');
       this._endDelayLine = this._createLine(parentElement, 'animation-delay-line');
     }
-    var fill = this._animation.source().fill();
+    const fill = this._animation.source().fill();
     this._delayLine.classList.toggle('animation-fill', fill === 'backwards' || fill === 'both');
-    var margin = Animation.AnimationUI.Options.AnimationMargin;
+    const margin = Animation.AnimationUI.Options.AnimationMargin;
     this._delayLine.setAttribute('x1', margin);
     this._delayLine.setAttribute('x2', (this._delay() * this._timeline.pixelMsRatio() + margin).toFixed(2));
-    var forwardsFill = fill === 'forwards' || fill === 'both';
+    const forwardsFill = fill === 'forwards' || fill === 'both';
     this._endDelayLine.classList.toggle('animation-fill', forwardsFill);
-    var leftMargin = Math.min(
+    const leftMargin = Math.min(
         this._timeline.width(),
         (this._delay() + this._duration() * this._animation.source().iterations()) * this._timeline.pixelMsRatio());
     this._endDelayLine.style.transform = 'translateX(' + leftMargin.toFixed(2) + 'px)';
@@ -125,7 +126,7 @@ Animation.AnimationUI = class {
       return;
     }
 
-    var circle =
+    const circle =
         parentElement.createSVGChild('circle', keyframeIndex <= 0 ? 'animation-endpoint' : 'animation-keyframe-point');
     circle.setAttribute('cx', x.toFixed(2));
     circle.setAttribute('cy', Animation.AnimationUI.Options.AnimationHeight);
@@ -140,7 +141,7 @@ Animation.AnimationUI = class {
     if (!attachEvents)
       return;
 
-    var eventType;
+    let eventType;
     if (keyframeIndex === 0)
       eventType = Animation.AnimationUI.MouseEvents.StartEndpointMove;
     else if (keyframeIndex === -1)
@@ -167,7 +168,7 @@ Animation.AnimationUI = class {
      * @param {string} strokeColor
      */
     function createStepLine(parentElement, x, strokeColor) {
-      var line = parentElement.createSVGChild('line');
+      const line = parentElement.createSVGChild('line');
       line.setAttribute('x1', x);
       line.setAttribute('x2', x);
       line.setAttribute('y1', Animation.AnimationUI.Options.AnimationMargin);
@@ -175,35 +176,35 @@ Animation.AnimationUI = class {
       line.style.stroke = strokeColor;
     }
 
-    var bezier = UI.Geometry.CubicBezier.parse(easing);
-    var cache = this._cachedElements[iteration].keyframeRender;
+    const bezier = UI.Geometry.CubicBezier.parse(easing);
+    const cache = this._cachedElements[iteration].keyframeRender;
     if (!cache[keyframeIndex]) {
       cache[keyframeIndex] = bezier ? parentElement.createSVGChild('path', 'animation-keyframe') :
                                       parentElement.createSVGChild('g', 'animation-keyframe-step');
     }
-    var group = cache[keyframeIndex];
+    const group = cache[keyframeIndex];
     group.style.transform = 'translateX(' + leftDistance.toFixed(2) + 'px)';
 
     if (easing === 'linear') {
       group.style.fill = this._color;
-      var height = InlineEditor.BezierUI.Height;
+      const height = InlineEditor.BezierUI.Height;
       group.setAttribute(
           'd', ['M', 0, height, 'L', 0, 5, 'L', width.toFixed(2), 5, 'L', width.toFixed(2), height, 'Z'].join(' '));
     } else if (bezier) {
       group.style.fill = this._color;
       InlineEditor.BezierUI.drawVelocityChart(bezier, group, width);
     } else {
-      var stepFunction = Animation.AnimationTimeline.StepTimingFunction.parse(easing);
+      const stepFunction = Animation.AnimationTimeline.StepTimingFunction.parse(easing);
       group.removeChildren();
-      /** @const */ var offsetMap = {'start': 0, 'middle': 0.5, 'end': 1};
-      /** @const */ var offsetWeight = offsetMap[stepFunction.stepAtPosition];
-      for (var i = 0; i < stepFunction.steps; i++)
+      /** @const */ const offsetMap = {'start': 0, 'middle': 0.5, 'end': 1};
+      /** @const */ const offsetWeight = offsetMap[stepFunction.stepAtPosition];
+      for (let i = 0; i < stepFunction.steps; i++)
         createStepLine(group, (i + offsetWeight) * width / stepFunction.steps, this._color);
     }
   }
 
   redraw() {
-    var maxWidth = this._timeline.width() - Animation.AnimationUI.Options.AnimationMargin;
+    const maxWidth = this._timeline.width() - Animation.AnimationUI.Options.AnimationMargin;
 
     this._svg.setAttribute('width', (maxWidth + 2 * Animation.AnimationUI.Options.AnimationMargin).toFixed(2));
     this._activeIntervalGroup.style.transform =
@@ -223,8 +224,9 @@ Animation.AnimationUI = class {
     this._renderIteration(this._activeIntervalGroup, 0);
     if (!this._tailGroup)
       this._tailGroup = this._activeIntervalGroup.createSVGChild('g', 'animation-tail-iterations');
-    var iterationWidth = this._duration() * this._timeline.pixelMsRatio();
-    for (var iteration = 1;
+    const iterationWidth = this._duration() * this._timeline.pixelMsRatio();
+    let iteration;
+    for (iteration = 1;
          iteration < this._animation.source().iterations() && iterationWidth * (iteration - 1) < this._timeline.width();
          iteration++)
       this._renderIteration(this._tailGroup, iteration);
@@ -254,15 +256,15 @@ Animation.AnimationUI = class {
       this._cachedElements[iteration] =
           {animationLine: null, keyframePoints: {}, keyframeRender: {}, group: parentElement.createSVGChild('g')};
     }
-    var group = this._cachedElements[iteration].group;
+    const group = this._cachedElements[iteration].group;
     group.style.transform =
         'translateX(' + (iteration * this._duration() * this._timeline.pixelMsRatio()).toFixed(2) + 'px)';
     this._drawAnimationLine(iteration, group);
     console.assert(this._keyframes.length > 1);
-    for (var i = 0; i < this._keyframes.length - 1; i++) {
-      var leftDistance = this._offset(i) * this._duration() * this._timeline.pixelMsRatio() +
+    for (let i = 0; i < this._keyframes.length - 1; i++) {
+      const leftDistance = this._offset(i) * this._duration() * this._timeline.pixelMsRatio() +
           Animation.AnimationUI.Options.AnimationMargin;
-      var width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
+      const width = this._duration() * (this._offset(i + 1) - this._offset(i)) * this._timeline.pixelMsRatio();
       this._renderKeyframe(iteration, i, group, leftDistance, width, this._keyframes[i].easing());
       if (i || (!i && iteration === 0))
         this._drawPoint(iteration, group, leftDistance, i, iteration === 0);
@@ -277,7 +279,7 @@ Animation.AnimationUI = class {
    * @return {number}
    */
   _delay() {
-    var delay = this._animation.source().delay();
+    let delay = this._animation.source().delay();
     if (this._mouseEventType === Animation.AnimationUI.MouseEvents.AnimationDrag ||
         this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove)
       delay += this._movementInMs;
@@ -289,7 +291,7 @@ Animation.AnimationUI = class {
    * @return {number}
    */
   _duration() {
-    var duration = this._animation.source().duration();
+    let duration = this._animation.source().duration();
     if (this._mouseEventType === Animation.AnimationUI.MouseEvents.FinishEndpointMove)
       duration += this._movementInMs;
     else if (this._mouseEventType === Animation.AnimationUI.MouseEvents.StartEndpointMove)
@@ -302,7 +304,7 @@ Animation.AnimationUI = class {
    * @return {number} offset
    */
   _offset(i) {
-    var offset = this._keyframes[i].offsetAsNumber();
+    let offset = this._keyframes[i].offsetAsNumber();
     if (this._mouseEventType === Animation.AnimationUI.MouseEvents.KeyframeMove && i === this._keyframeMoved) {
       console.assert(i > 0 && i < this._keyframes.length - 1, 'First and last keyframe cannot be moved');
       offset += this._movementInMs / this._animation.source().duration();
@@ -371,7 +373,7 @@ Animation.AnimationUI = class {
     function showContextMenu(remoteObject) {
       if (!remoteObject)
         return;
-      var contextMenu = new UI.ContextMenu(event);
+      const contextMenu = new UI.ContextMenu(event);
       contextMenu.appendApplicableItems(remoteObject);
       contextMenu.show();
     }

@@ -17,14 +17,14 @@ Elements.StylePropertyHighlighter = class {
 
   perform() {
     // Expand all shorthands.
-    for (var section of this._styleSidebarPane.allSections()) {
-      for (var treeElement = section.propertiesTreeOutline.firstChild(); treeElement;
+    for (const section of this._styleSidebarPane.allSections()) {
+      for (let treeElement = section.propertiesTreeOutline.firstChild(); treeElement;
            treeElement = treeElement.nextSibling)
         treeElement.onpopulate();
     }
-    var highlightTreeElement = null;
-    for (var section of this._styleSidebarPane.allSections()) {
-      var treeElement = section.propertiesTreeOutline.firstChild();
+    let highlightTreeElement = null;
+    for (const section of this._styleSidebarPane.allSections()) {
+      let treeElement = section.propertiesTreeOutline.firstChild();
       while (treeElement && !highlightTreeElement) {
         if (treeElement.property === this._cssProperty) {
           highlightTreeElement = treeElement;

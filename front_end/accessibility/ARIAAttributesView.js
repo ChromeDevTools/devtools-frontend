@@ -21,16 +21,16 @@ Accessibility.ARIAAttributesPane = class extends Accessibility.AccessibilitySubP
     this._treeOutline.removeChildren();
     if (!this.node())
       return;
-    var target = this.node().domModel().target();
-    var attributes = node.attributes();
-    for (var i = 0; i < attributes.length; ++i) {
-      var attribute = attributes[i];
+    const target = this.node().domModel().target();
+    const attributes = node.attributes();
+    for (let i = 0; i < attributes.length; ++i) {
+      const attribute = attributes[i];
       if (Accessibility.ARIAAttributesPane._attributes.indexOf(attribute.name) < 0)
         continue;
       this._treeOutline.appendChild(new Accessibility.ARIAAttributesTreeElement(this, attribute, target));
     }
 
-    var foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
+    const foundAttributes = (this._treeOutline.rootElement().childCount() !== 0);
     this._noPropertiesInfo.classList.toggle('hidden', foundAttributes);
     this._treeOutline.element.classList.toggle('hidden', !foundAttributes);
   }
@@ -59,7 +59,7 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
    * @return {!Element}
    */
   static createARIAValueElement(value) {
-    var valueElement = createElementWithClass('span', 'monospace');
+    const valueElement = createElementWithClass('span', 'monospace');
     // TODO(aboxhall): quotation marks?
     valueElement.setTextContentTruncatedIfNeeded(value || '');
     return valueElement;
@@ -112,12 +112,12 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
   }
 
   _startEditing() {
-    var valueElement = this._valueElement;
+    const valueElement = this._valueElement;
 
     if (UI.isBeingEdited(valueElement))
       return;
 
-    var previousContent = valueElement.textContent;
+    const previousContent = valueElement.textContent;
 
     /**
      * @param {string} previousContent
@@ -125,14 +125,14 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
      * @this {Accessibility.ARIAAttributesTreeElement}
      */
     function blurListener(previousContent, event) {
-      var text = event.target.textContent;
+      const text = event.target.textContent;
       this._editingCommitted(text, previousContent);
     }
 
     this._prompt = new Accessibility.ARIAAttributesPane.ARIAAttributePrompt(
         Accessibility.ariaMetadata().valuesForProperty(this._nameElement.textContent), this);
     this._prompt.setAutocompletionTimeout(0);
-    var proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
+    const proxyElement = this._prompt.attachAndStartEditing(valueElement, blurListener.bind(this, previousContent));
 
     proxyElement.addEventListener('keydown', this._editingValueKeyDown.bind(this, previousContent), false);
 

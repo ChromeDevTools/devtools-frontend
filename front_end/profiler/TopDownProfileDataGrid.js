@@ -32,7 +32,7 @@ Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode
    * @param {!Profiler.TopDownProfileDataGridTree} owningTree
    */
   constructor(profileNode, owningTree) {
-    var hasChildren = !!(profileNode.children && profileNode.children.length);
+    const hasChildren = !!(profileNode.children && profileNode.children.length);
 
     super(profileNode, owningTree, hasChildren);
 
@@ -43,10 +43,10 @@ Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode
    * @param {!Profiler.TopDownProfileDataGridNode|!Profiler.TopDownProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
-    var children = container._remainingChildren;
-    var childrenLength = children.length;
+    const children = container._remainingChildren;
+    const childrenLength = children.length;
 
-    for (var i = 0; i < childrenLength; ++i) {
+    for (let i = 0; i < childrenLength; ++i) {
       container.appendChild(new Profiler.TopDownProfileDataGridNode(
           children[i], /** @type {!Profiler.TopDownProfileDataGridTree} */ (container.tree)));
     }
@@ -64,13 +64,13 @@ Profiler.TopDownProfileDataGridNode = class extends Profiler.ProfileDataGridNode
 
     container.save();
 
-    var children = container.children;
-    var index = container.children.length;
+    const children = container.children;
+    let index = container.children.length;
 
     while (index--)
       Profiler.TopDownProfileDataGridNode._excludeRecursively(children[index], aCallUID);
 
-    var child = container.childrenByCallUID.get(aCallUID);
+    const child = container.childrenByCallUID.get(aCallUID);
 
     if (child)
       Profiler.ProfileDataGridNode.merge(container, child, true);

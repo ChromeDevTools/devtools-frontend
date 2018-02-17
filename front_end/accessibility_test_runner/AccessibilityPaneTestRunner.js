@@ -20,7 +20,7 @@ AccessibilityTestRunner.selectNodeAndWaitForAccessibility = function(idValue) {
 };
 
 AccessibilityTestRunner.dumpSelectedElementAccessibilityNode = function() {
-  var sidebarPane = AccessibilityTestRunner.accessibilitySidebarPane();
+  const sidebarPane = AccessibilityTestRunner.accessibilitySidebarPane();
 
   if (!sidebarPane) {
     TestRunner.addResult('No sidebarPane in dumpSelectedElementAccessibilityNode');
@@ -38,12 +38,12 @@ AccessibilityTestRunner.dumpAccessibilityNode = function(accessibilityNode) {
     return;
   }
 
-  var builder = [];
+  const builder = [];
   builder.push(accessibilityNode.role().value);
   builder.push((accessibilityNode.name() ? '"' + accessibilityNode.name().value + '"' : '<undefined>'));
 
   if (accessibilityNode.properties()) {
-    for (var property of accessibilityNode.properties()) {
+    for (const property of accessibilityNode.properties()) {
       if ('value' in property)
         builder.push(property.name + '="' + property.value.value + '"');
     }
@@ -53,7 +53,7 @@ AccessibilityTestRunner.dumpAccessibilityNode = function(accessibilityNode) {
 };
 
 AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
-  var sidebarPane = AccessibilityTestRunner.accessibilitySidebarPane();
+  const sidebarPane = AccessibilityTestRunner.accessibilitySidebarPane();
 
   if (!sidebarPane) {
     TestRunner.addResult('Could not get Accessibility sidebar pane.');
@@ -61,11 +61,11 @@ AccessibilityTestRunner.findARIAAttributeTreeElement = function(attribute) {
     return;
   }
 
-  var ariaSubPane = sidebarPane._ariaSubPane;
-  var treeOutline = ariaSubPane._treeOutline;
-  var childNodes = treeOutline._rootElement._children;
+  const ariaSubPane = sidebarPane._ariaSubPane;
+  const treeOutline = ariaSubPane._treeOutline;
+  const childNodes = treeOutline._rootElement._children;
 
-  for (var treeElement of childNodes) {
+  for (const treeElement of childNodes) {
     if (treeElement._attribute.name === attribute)
       return treeElement;
   }

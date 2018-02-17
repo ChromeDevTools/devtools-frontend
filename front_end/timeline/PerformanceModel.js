@@ -52,14 +52,14 @@ Timeline.PerformanceModel = class extends Common.Object {
     this._tracingModel = model;
     this._timelineModel.setEvents(model, !this._mainTarget);
 
-    var groups = TimelineModel.TimelineModel.AsyncEventGroup;
-    var asyncEventsByGroup = this._timelineModel.mainThreadAsyncEvents();
+    const groups = TimelineModel.TimelineModel.AsyncEventGroup;
+    const asyncEventsByGroup = this._timelineModel.mainThreadAsyncEvents();
     this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
 
     this._frameModel.addTraceEvents(
         this._mainTarget, this._timelineModel.inspectedTargetEvents(), this._timelineModel.sessionId() || '');
 
-    for (var entry of this._extensionTracingModels) {
+    for (const entry of this._extensionTracingModels) {
       entry.model.adjustTime(
           this._tracingModel.minimumRecordTime() + (entry.timeOffset / 1000) - this._recordStartTime);
     }
@@ -137,7 +137,7 @@ Timeline.PerformanceModel = class extends Common.Object {
   dispose() {
     if (this._tracingModel)
       this._tracingModel.dispose();
-    for (var extensionEntry of this._extensionTracingModels)
+    for (const extensionEntry of this._extensionTracingModels)
       extensionEntry.model.dispose();
   }
 
@@ -147,8 +147,8 @@ Timeline.PerformanceModel = class extends Common.Object {
    */
   filmStripModelFrame(frame) {
     // For idle frames, look at the state at the beginning of the frame.
-    var screenshotTime = frame.idle ? frame.startTime : frame.endTime;
-    var filmStripFrame = this._filmStripModel.frameByTimestamp(screenshotTime);
+    const screenshotTime = frame.idle ? frame.startTime : frame.endTime;
+    const filmStripFrame = this._filmStripModel.frameByTimestamp(screenshotTime);
     return filmStripFrame && filmStripFrame.timestamp - frame.endTime < 10 ? filmStripFrame : null;
   }
 
@@ -157,7 +157,7 @@ Timeline.PerformanceModel = class extends Common.Object {
    * @return {!Promise<?FileError>}
    */
   save(stream) {
-    var backingStorage = /** @type {!Bindings.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
+    const backingStorage = /** @type {!Bindings.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
     return backingStorage.writeToStream(stream);
   }
 };

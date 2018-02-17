@@ -24,7 +24,7 @@ Timeline.TimelineFilters.IsLong = class extends TimelineModel.TimelineModelFilte
    * @return {boolean}
    */
   accept(event) {
-    var duration = event.endTime ? event.endTime - event.startTime : 0;
+    const duration = event.endTime ? event.endTime - event.startTime : 0;
     return duration >= this._minimumRecordDuration;
   }
 };

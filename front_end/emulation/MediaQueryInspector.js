@@ -71,11 +71,11 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
    * @param {!Event} event
    */
   _onMediaQueryClicked(event) {
-    var mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
+    const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
     if (!mediaQueryMarker)
       return;
 
-    var model = mediaQueryMarker._model;
+    const model = mediaQueryMarker._model;
     if (model.section() === Emulation.MediaQueryInspector.Section.Max) {
       this._setWidthCallback(model.maxWidthExpression().computedLength());
       return;
@@ -84,7 +84,7 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
       this._setWidthCallback(model.minWidthExpression().computedLength());
       return;
     }
-    var currentWidth = this._getWidthCallback();
+    const currentWidth = this._getWidthCallback();
     if (currentWidth !== model.minWidthExpression().computedLength())
       this._setWidthCallback(model.minWidthExpression().computedLength());
     else
@@ -98,26 +98,26 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     if (!this._cssModel || !this._cssModel.isEnabled())
       return;
 
-    var mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
+    const mediaQueryMarker = event.target.enclosingNodeOrSelfWithClass('media-inspector-bar');
     if (!mediaQueryMarker)
       return;
 
-    var locations = mediaQueryMarker._locations;
-    var uiLocations = new Map();
-    for (var i = 0; i < locations.length; ++i) {
-      var uiLocation = Bindings.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
+    const locations = mediaQueryMarker._locations;
+    const uiLocations = new Map();
+    for (let i = 0; i < locations.length; ++i) {
+      const uiLocation = Bindings.cssWorkspaceBinding.rawLocationToUILocation(locations[i]);
       if (!uiLocation)
         continue;
-      var descriptor = String.sprintf(
+      const descriptor = String.sprintf(
           '%s:%d:%d', uiLocation.uiSourceCode.url(), uiLocation.lineNumber + 1, uiLocation.columnNumber + 1);
       uiLocations.set(descriptor, uiLocation);
     }
 
-    var contextMenuItems = uiLocations.keysArray().sort();
-    var contextMenu = new UI.ContextMenu(event);
-    var subMenuItem = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('Reveal in source code'));
-    for (var i = 0; i < contextMenuItems.length; ++i) {
-      var title = contextMenuItems[i];
+    const contextMenuItems = uiLocations.keysArray().sort();
+    const contextMenu = new UI.ContextMenu(event);
+    const subMenuItem = contextMenu.defaultSection().appendSubMenuItem(Common.UIString('Reveal in source code'));
+    for (let i = 0; i < contextMenuItems.length; ++i) {
+      const title = contextMenuItems[i];
       subMenuItem.defaultSection().appendItem(
           title, this._revealSourceLocation.bind(this, /** @type {!Workspace.UILocation} */ (uiLocations.get(title))));
     }
@@ -149,9 +149,9 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
    * @return {!Array.<!Emulation.MediaQueryInspector.MediaQueryUIModel>}
    */
   _squashAdjacentEqual(models) {
-    var filtered = [];
-    for (var i = 0; i < models.length; ++i) {
-      var last = filtered.peekLast();
+    const filtered = [];
+    for (let i = 0; i < models.length; ++i) {
+      const last = filtered.peekLast();
       if (!last || !last.equals(models[i]))
         filtered.push(models[i]);
     }
@@ -162,14 +162,14 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
    * @param {!Array.<!SDK.CSSMedia>} cssMedias
    */
   _rebuildMediaQueries(cssMedias) {
-    var queryModels = [];
-    for (var i = 0; i < cssMedias.length; ++i) {
-      var cssMedia = cssMedias[i];
+    let queryModels = [];
+    for (let i = 0; i < cssMedias.length; ++i) {
+      const cssMedia = cssMedias[i];
       if (!cssMedia.mediaList)
         continue;
-      for (var j = 0; j < cssMedia.mediaList.length; ++j) {
-        var mediaQuery = cssMedia.mediaList[j];
-        var queryModel = Emulation.MediaQueryInspector.MediaQueryUIModel.createFromMediaQuery(cssMedia, mediaQuery);
+      for (let j = 0; j < cssMedia.mediaList.length; ++j) {
+        const mediaQuery = cssMedia.mediaList[j];
+        const queryModel = Emulation.MediaQueryInspector.MediaQueryUIModel.createFromMediaQuery(cssMedia, mediaQuery);
         if (queryModel && queryModel.rawLocation())
           queryModels.push(queryModel);
       }
@@ -177,8 +177,8 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     queryModels.sort(compareModels);
     queryModels = this._squashAdjacentEqual(queryModels);
 
-    var allEqual = this._cachedQueryModels && this._cachedQueryModels.length === queryModels.length;
-    for (var i = 0; allEqual && i < queryModels.length; ++i)
+    let allEqual = this._cachedQueryModels && this._cachedQueryModels.length === queryModels.length;
+    for (let i = 0; allEqual && i < queryModels.length; ++i)
       allEqual = allEqual && this._cachedQueryModels[i].equals(queryModels[i]);
     if (allEqual)
       return;
@@ -199,10 +199,10 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     if (!this._cachedQueryModels || !this.isShowing())
       return;
 
-    var markers = [];
-    var lastMarker = null;
-    for (var i = 0; i < this._cachedQueryModels.length; ++i) {
-      var model = this._cachedQueryModels[i];
+    const markers = [];
+    let lastMarker = null;
+    for (let i = 0; i < this._cachedQueryModels.length; ++i) {
+      const model = this._cachedQueryModels[i];
       if (lastMarker && lastMarker.model.dimensionsEqual(model)) {
         lastMarker.locations.push(model.rawLocation());
         lastMarker.active = lastMarker.active || model.active();
@@ -214,12 +214,12 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
 
     this.contentElement.removeChildren();
 
-    var container = null;
-    for (var i = 0; i < markers.length; ++i) {
+    let container = null;
+    for (let i = 0; i < markers.length; ++i) {
       if (!i || markers[i].model.section() !== markers[i - 1].model.section())
         container = this.contentElement.createChild('div', 'media-inspector-marker-container');
-      var marker = markers[i];
-      var bar = this._createElementFromMediaQueryModel(marker.model);
+      const marker = markers[i];
+      const bar = this._createElementFromMediaQueryModel(marker.model);
       bar._model = marker.model;
       bar._locations = marker.locations;
       bar.classList.toggle('media-inspector-marker-inactive', !marker.active);
@@ -246,14 +246,14 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
    * @return {!Element}
    */
   _createElementFromMediaQueryModel(model) {
-    var zoomFactor = this._zoomFactor();
-    var minWidthValue = model.minWidthExpression() ? model.minWidthExpression().computedLength() / zoomFactor : 0;
-    var maxWidthValue = model.maxWidthExpression() ? model.maxWidthExpression().computedLength() / zoomFactor : 0;
-    var result = createElementWithClass('div', 'media-inspector-bar');
+    const zoomFactor = this._zoomFactor();
+    const minWidthValue = model.minWidthExpression() ? model.minWidthExpression().computedLength() / zoomFactor : 0;
+    const maxWidthValue = model.maxWidthExpression() ? model.maxWidthExpression().computedLength() / zoomFactor : 0;
+    const result = createElementWithClass('div', 'media-inspector-bar');
 
     if (model.section() === Emulation.MediaQueryInspector.Section.Max) {
       result.createChild('div', 'media-inspector-marker-spacer');
-      var markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
+      const markerElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-max-width');
       markerElement.style.width = maxWidthValue + 'px';
       markerElement.title = model.mediaText();
       appendLabel(markerElement, model.maxWidthExpression(), false, false);
@@ -263,13 +263,13 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
 
     if (model.section() === Emulation.MediaQueryInspector.Section.MinMax) {
       result.createChild('div', 'media-inspector-marker-spacer');
-      var leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
+      const leftElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
       leftElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
       leftElement.title = model.mediaText();
       appendLabel(leftElement, model.minWidthExpression(), true, false);
       appendLabel(leftElement, model.maxWidthExpression(), false, true);
       result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-      var rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
+      const rightElement = result.createChild('div', 'media-inspector-marker media-inspector-marker-min-max-width');
       rightElement.style.width = (maxWidthValue - minWidthValue) * 0.5 + 'px';
       rightElement.title = model.mediaText();
       appendLabel(rightElement, model.minWidthExpression(), true, false);
@@ -278,12 +278,12 @@ Emulation.MediaQueryInspector = class extends UI.Widget {
     }
 
     if (model.section() === Emulation.MediaQueryInspector.Section.Min) {
-      var leftElement = result.createChild(
+      const leftElement = result.createChild(
           'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-left');
       leftElement.title = model.mediaText();
       appendLabel(leftElement, model.minWidthExpression(), false, false);
       result.createChild('div', 'media-inspector-marker-spacer').style.flex = '0 0 ' + minWidthValue + 'px';
-      var rightElement = result.createChild(
+      const rightElement = result.createChild(
           'div', 'media-inspector-marker media-inspector-marker-min-width media-inspector-marker-min-width-right');
       rightElement.title = model.mediaText();
       appendLabel(rightElement, model.minWidthExpression(), true, true);
@@ -343,17 +343,17 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
    * @return {?Emulation.MediaQueryInspector.MediaQueryUIModel}
    */
   static createFromMediaQuery(cssMedia, mediaQuery) {
-    var maxWidthExpression = null;
-    var maxWidthPixels = Number.MAX_VALUE;
-    var minWidthExpression = null;
-    var minWidthPixels = Number.MIN_VALUE;
-    var expressions = mediaQuery.expressions();
-    for (var i = 0; i < expressions.length; ++i) {
-      var expression = expressions[i];
-      var feature = expression.feature();
+    let maxWidthExpression = null;
+    let maxWidthPixels = Number.MAX_VALUE;
+    let minWidthExpression = null;
+    let minWidthPixels = Number.MIN_VALUE;
+    const expressions = mediaQuery.expressions();
+    for (let i = 0; i < expressions.length; ++i) {
+      const expression = expressions[i];
+      const feature = expression.feature();
       if (feature.indexOf('width') === -1)
         continue;
-      var pixels = expression.computedLength();
+      const pixels = expression.computedLength();
       if (feature.startsWith('max-') && pixels < maxWidthPixels) {
         maxWidthExpression = expression;
         maxWidthPixels = pixels;
@@ -397,8 +397,8 @@ Emulation.MediaQueryInspector.MediaQueryUIModel = class {
     if (this.section() !== other.section())
       return this.section() - other.section();
     if (this.dimensionsEqual(other)) {
-      var myLocation = this.rawLocation();
-      var otherLocation = other.rawLocation();
+      const myLocation = this.rawLocation();
+      const otherLocation = other.rawLocation();
       if (!myLocation && !otherLocation)
         return this.mediaText().compareTo(other.mediaText());
       if (myLocation && !otherLocation)

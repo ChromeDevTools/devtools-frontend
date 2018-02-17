@@ -45,12 +45,12 @@ Common.SegmentedRange = class {
    */
   append(newSegment) {
     // 1. Find the proper insertion point for new segment
-    var startIndex = this._segments.lowerBound(newSegment, (a, b) => a.begin - b.begin);
-    var endIndex = startIndex;
-    var merged = null;
+    let startIndex = this._segments.lowerBound(newSegment, (a, b) => a.begin - b.begin);
+    let endIndex = startIndex;
+    let merged = null;
     if (startIndex > 0) {
       // 2. Try mering the preceding segment
-      var precedingSegment = this._segments[startIndex - 1];
+      const precedingSegment = this._segments[startIndex - 1];
       merged = this._tryMerge(precedingSegment, newSegment);
       if (merged) {
         --startIndex;
@@ -101,7 +101,7 @@ Common.SegmentedRange = class {
    * @return {?Common.Segment}
    */
   _tryMerge(first, second) {
-    var merged = this._mergeCallback && this._mergeCallback(first, second);
+    const merged = this._mergeCallback && this._mergeCallback(first, second);
     if (!merged)
       return null;
     merged.begin = first.begin;

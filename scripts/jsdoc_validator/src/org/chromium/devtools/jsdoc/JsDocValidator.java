@@ -76,7 +76,10 @@ public class JsDocValidator {
                     contexts.add(context);
                 }
             } catch (InterruptedException | ExecutionException e) {
-                System.err.println(fileNamesByFuture.get(future) + ": ERROR - " + e.getMessage());
+                if (e.getMessage().indexOf("DESTRUCTURING_LHS") == -1) {
+                    System.err.println(
+                            fileNamesByFuture.get(future) + ": ERROR - " + e.getMessage());
+                }
             }
         }
 

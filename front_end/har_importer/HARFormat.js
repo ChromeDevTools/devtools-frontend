@@ -16,7 +16,7 @@ HARImporter.HARBase = class {
    * @return {!Date}
    */
   static _safeDate(data) {
-    var date = new Date(data);
+    const date = new Date(data);
     if (!Number.isNaN(date.getTime()))
       return date;
     throw 'Invalid date format';
@@ -27,7 +27,7 @@ HARImporter.HARBase = class {
    * @return {number}
    */
   static _safeNumber(data) {
-    var result = Number(data);
+    const result = Number(data);
     if (!Number.isNaN(result))
       return result;
     throw 'Casting to number results in NaN';
@@ -55,7 +55,7 @@ HARImporter.HARBase = class {
    */
   customAsString(name) {
     // Har specification says starting with '_' is a custom property, but closure uses '_' as a private property.
-    var value = /** @type {!Object} */ (this)['_' + name];
+    const value = /** @type {!Object} */ (this)['_' + name];
     return value !== undefined ? String(value) : undefined;
   }
 
@@ -65,7 +65,7 @@ HARImporter.HARBase = class {
    */
   customAsNumber(name) {
     // Har specification says starting with '_' is a custom property, but closure uses '_' as a private property.
-    var value = /** @type {!Object} */ (this)['_' + name];
+    let value = /** @type {!Object} */ (this)['_' + name];
     if (value === undefined)
       return;
     value = Number(value);

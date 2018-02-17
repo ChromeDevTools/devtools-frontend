@@ -18,10 +18,10 @@ Network.BlockedURLsPane = class extends UI.VBox {
         new UI.ToolbarCheckbox(Common.UIString('Enable request blocking'), undefined, this._toggleEnabled.bind(this));
     this._toolbar.appendToolbarItem(this._enabledCheckbox);
     this._toolbar.appendSeparator();
-    var addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
+    const addButton = new UI.ToolbarButton(Common.UIString('Add pattern'), 'largeicon-add');
     addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked, this);
     this._toolbar.appendToolbarItem(addButton);
-    var clearButton = new UI.ToolbarButton(Common.UIString('Remove all patterns'), 'largeicon-clear');
+    const clearButton = new UI.ToolbarButton(Common.UIString('Remove all patterns'), 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._removeAll, this);
     this._toolbar.appendToolbarItem(clearButton);
 
@@ -49,9 +49,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {!Element}
    */
   _createEmptyPlaceholder() {
-    var element = this.contentElement.createChild('div', 'no-blocked-urls');
+    const element = this.contentElement.createChild('div', 'no-blocked-urls');
     element.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
-    var addLink = element.createChild('span', 'link');
+    const addLink = element.createChild('span', 'link');
     addLink.textContent = Common.UIString('Add pattern.');
     addLink.href = '';
     addLink.addEventListener('click', this._addButtonClicked.bind(this), false);
@@ -75,9 +75,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {!Element}
    */
   renderItem(pattern, editable) {
-    var count = this._blockedRequestsCount(pattern.url);
-    var element = createElementWithClass('div', 'blocked-url');
-    var checkbox = element.createChild('input', 'blocked-url-checkbox');
+    const count = this._blockedRequestsCount(pattern.url);
+    const element = createElementWithClass('div', 'blocked-url');
+    const checkbox = element.createChild('input', 'blocked-url-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = pattern.enabled;
     checkbox.disabled = !this._manager.blockingEnabled();
@@ -94,7 +94,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
    */
   _togglePattern(pattern, event) {
     event.consume(true);
-    var patterns = this._manager.blockedPatterns();
+    const patterns = this._manager.blockedPatterns();
     patterns.splice(patterns.indexOf(pattern), 1, {enabled: !pattern.enabled, url: pattern.url});
     this._manager.setBlockedPatterns(patterns);
   }
@@ -110,7 +110,7 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @param {number} index
    */
   removeItemRequested(pattern, index) {
-    var patterns = this._manager.blockedPatterns();
+    const patterns = this._manager.blockedPatterns();
     patterns.splice(index, 1);
     this._manager.setBlockedPatterns(patterns);
   }
@@ -133,8 +133,8 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @param {boolean} isNew
    */
   commitEdit(item, editor, isNew) {
-    var url = editor.control('url').value;
-    var patterns = this._manager.blockedPatterns();
+    const url = editor.control('url').value;
+    const patterns = this._manager.blockedPatterns();
     if (isNew)
       patterns.push({enabled: true, url: url});
     else
@@ -150,13 +150,13 @@ Network.BlockedURLsPane = class extends UI.VBox {
     if (this._editor)
       return this._editor;
 
-    var editor = new UI.ListWidget.Editor();
-    var content = editor.contentElement();
-    var titles = content.createChild('div', 'blocked-url-edit-row');
+    const editor = new UI.ListWidget.Editor();
+    const content = editor.contentElement();
+    const titles = content.createChild('div', 'blocked-url-edit-row');
     titles.createChild('div').textContent =
         Common.UIString('Text pattern to block matching requests; use * for wildcard');
-    var fields = content.createChild('div', 'blocked-url-edit-row');
-    var urlInput = editor.createInput(
+    const fields = content.createChild('div', 'blocked-url-edit-row');
+    const urlInput = editor.createInput(
         'url', 'text', '',
         (item, index, input) =>
             !!input.value && !this._manager.blockedPatterns().find(pattern => pattern.url === input.value));
@@ -172,11 +172,11 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {!Promise<?>}
    */
   _update() {
-    var enabled = this._manager.blockingEnabled();
+    const enabled = this._manager.blockingEnabled();
     this._list.element.classList.toggle('blocking-disabled', !enabled && !!this._manager.blockedPatterns().length);
     this._enabledCheckbox.setChecked(enabled);
     this._list.clear();
-    for (var pattern of this._manager.blockedPatterns())
+    for (const pattern of this._manager.blockedPatterns())
       this._list.appendItem(pattern, true);
     return Promise.resolve();
   }
@@ -189,8 +189,8 @@ Network.BlockedURLsPane = class extends UI.VBox {
     if (!url)
       return 0;
 
-    var result = 0;
-    for (var blockedUrl of this._blockedCountForUrl.keys()) {
+    let result = 0;
+    for (const blockedUrl of this._blockedCountForUrl.keys()) {
       if (this._matches(url, blockedUrl))
         result += this._blockedCountForUrl.get(blockedUrl);
     }
@@ -203,10 +203,10 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @return {boolean}
    */
   _matches(pattern, url) {
-    var pos = 0;
-    var parts = pattern.split('*');
-    for (var index = 0; index < parts.length; index++) {
-      var part = parts[index];
+    let pos = 0;
+    const parts = pattern.split('*');
+    for (let index = 0; index < parts.length; index++) {
+      const part = parts[index];
       if (!part.length)
         continue;
       pos = url.indexOf(part, pos);
@@ -226,9 +226,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onRequestFinished(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     if (request.wasBlocked()) {
-      var count = this._blockedCountForUrl.get(request.url()) || 0;
+      const count = this._blockedCountForUrl.get(request.url()) || 0;
       this._blockedCountForUrl.set(request.url(), count + 1);
       this._updateThrottler.schedule(this._update.bind(this));
     }

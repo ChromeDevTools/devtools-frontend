@@ -14,8 +14,8 @@ NetworkTestRunner.resetProductRegistry = function() {
 
 NetworkTestRunner.addProductRegistryEntry = function(domainPattern, productName, type) {
   TestRunner.addResult('Adding entry: ' + domainPattern);
-  var wildCardPosition = domainPattern.indexOf('*');
-  var prefix = '';
+  const wildCardPosition = domainPattern.indexOf('*');
+  let prefix = '';
 
   if (wildCardPosition === -1) {
   } else if (wildCardPosition === 0) {
@@ -30,7 +30,7 @@ NetworkTestRunner.addProductRegistryEntry = function(domainPattern, productName,
   }
 
   console.assert(domainPattern.indexOf('*') === -1, 'Domain pattern may only have 1 wildcard.');
-  var prefixes = {};
+  const prefixes = {};
 
   prefixes[prefix] = {product: 0, type: type};
 

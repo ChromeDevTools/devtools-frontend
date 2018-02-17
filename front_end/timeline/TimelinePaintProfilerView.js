@@ -88,11 +88,11 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
     this._logTreeView.setCommandLog([]);
     this._paintProfilerView.setSnapshotAndLog(null, [], null);
 
-    var snapshotPromise;
+    let snapshotPromise;
     if (this._pendingSnapshot) {
       snapshotPromise = Promise.resolve({rect: null, snapshot: this._pendingSnapshot});
     } else if (this._event.name === TimelineModel.TimelineModel.RecordType.Paint) {
-      var picture = TimelineModel.TimelineData.forEvent(this._event).picture;
+      const picture = TimelineModel.TimelineData.forEvent(this._event).picture;
       snapshotPromise = picture.objectPromise()
                             .then(data => this._paintProfilerModel.loadSnapshot(data['skp64']))
                             .then(snapshot => snapshot && {rect: null, snapshot: snapshot});
@@ -108,7 +108,7 @@ Timeline.TimelinePaintProfilerView = class extends UI.SplitWidget {
         this._imageView.showImage();
         return;
       }
-      var snapshot = snapshotWithRect.snapshot;
+      const snapshot = snapshotWithRect.snapshot;
       this._lastLoadedSnapshot = snapshot;
       this._imageView.setMask(snapshotWithRect.rect);
       snapshot.commandLog().then(log => onCommandLogDone.call(this, snapshot, snapshotWithRect.rect, log));
@@ -165,20 +165,20 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
   }
 
   _updateImagePosition() {
-    var width = this._imageElement.naturalWidth;
-    var height = this._imageElement.naturalHeight;
-    var clientWidth = this.contentElement.clientWidth;
-    var clientHeight = this.contentElement.clientHeight;
+    const width = this._imageElement.naturalWidth;
+    const height = this._imageElement.naturalHeight;
+    const clientWidth = this.contentElement.clientWidth;
+    const clientHeight = this.contentElement.clientHeight;
 
-    var paddingFraction = 0.1;
-    var paddingX = clientWidth * paddingFraction;
-    var paddingY = clientHeight * paddingFraction;
-    var scaleX = (clientWidth - paddingX) / width;
-    var scaleY = (clientHeight - paddingY) / height;
-    var scale = Math.min(scaleX, scaleY);
+    const paddingFraction = 0.1;
+    const paddingX = clientWidth * paddingFraction;
+    const paddingY = clientHeight * paddingFraction;
+    const scaleX = (clientWidth - paddingX) / width;
+    const scaleY = (clientHeight - paddingY) / height;
+    const scale = Math.min(scaleX, scaleY);
 
     if (this._maskRectangle) {
-      var style = this._maskElement.style;
+      const style = this._maskElement.style;
       style.width = width + 'px';
       style.height = height + 'px';
       style.borderLeftWidth = this._maskRectangle.x + 'px';
@@ -187,12 +187,12 @@ Timeline.TimelinePaintImageView = class extends UI.Widget {
       style.borderBottomWidth = (height - this._maskRectangle.y - this._maskRectangle.height) + 'px';
     }
     this._transformController.setScaleConstraints(0.5, 10 / scale);
-    var matrix = new WebKitCSSMatrix()
+    let matrix = new WebKitCSSMatrix()
                      .scale(this._transformController.scale(), this._transformController.scale())
                      .translate(clientWidth / 2, clientHeight / 2)
                      .scale(scale, scale)
                      .translate(-width / 2, -height / 2);
-    var bounds = UI.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
+    const bounds = UI.Geometry.boundsForTransformedPoints(matrix, [0, 0, 0, width, height, 0]);
     this._transformController.clampOffsets(
         paddingX - bounds.maxX, clientWidth - paddingX - bounds.minX, paddingY - bounds.maxY,
         clientHeight - paddingY - bounds.minY);

@@ -15,7 +15,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @return {!SDK.Cookie}
    */
   static _parseProtocolCookie(protocolCookie) {
-    var cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null);
+    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null);
     cookie.addAttribute('domain', protocolCookie['domain']);
     cookie.addAttribute('path', protocolCookie['path']);
     cookie.addAttribute('port', protocolCookie['port']);
@@ -37,7 +37,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @return {boolean}
    */
   static cookieMatchesResourceURL(cookie, resourceURL) {
-    var url = resourceURL.asParsedURL();
+    const url = resourceURL.asParsedURL();
     if (!url || !SDK.CookieModel.cookieDomainMatchesResourceDomain(cookie.domain(), url.host))
       return false;
     return (
@@ -87,10 +87,10 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @return {!Promise<boolean>}
    */
   saveCookie(cookie) {
-    var domain = cookie.domain();
+    let domain = cookie.domain();
     if (!domain.startsWith('.'))
       domain = '';
-    var expires = undefined;
+    let expires = undefined;
     if (cookie.expires())
       expires = Math.floor(Date.parse(cookie.expires()) / 1000);
     return this.target()
@@ -106,16 +106,16 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @return {!Promise<!Array<!SDK.Cookie>>}
    */
   getCookiesForDomain(domain) {
-    var resourceURLs = [];
+    const resourceURLs = [];
     /**
      * @param {!SDK.Resource} resource
      */
     function populateResourceURLs(resource) {
-      var url = resource.documentURL.asParsedURL();
+      const url = resource.documentURL.asParsedURL();
       if (url && (!domain || url.securityOrigin() === domain))
         resourceURLs.push(resource.url);
     }
-    var resourceTreeModel = this.target().model(SDK.ResourceTreeModel);
+    const resourceTreeModel = this.target().model(SDK.ResourceTreeModel);
     if (resourceTreeModel)
       resourceTreeModel.forAllResources(populateResourceURLs);
     return this.getCookies(resourceURLs);
@@ -126,7 +126,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
    * @param {function()=} callback
    */
   _deleteAll(cookies, callback) {
-    var networkAgent = this.target().networkAgent();
+    const networkAgent = this.target().networkAgent();
     Promise
         .all(
             cookies.map(cookie => networkAgent.deleteCookies(cookie.name(), undefined, cookie.domain(), cookie.path())))

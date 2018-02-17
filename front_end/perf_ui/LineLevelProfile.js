@@ -23,24 +23,24 @@ PerfUI.LineLevelProfile = class {
    * @param {!SDK.CPUProfileDataModel} profile
    */
   appendCPUProfile(profile) {
-    var nodesToGo = [profile.profileHead];
-    var sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
+    const nodesToGo = [profile.profileHead];
+    const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
-      var nodes = nodesToGo.pop().children;
-      for (var i = 0; i < nodes.length; ++i) {
-        var node = nodes[i];
+      const nodes = nodesToGo.pop().children;
+      for (let i = 0; i < nodes.length; ++i) {
+        const node = nodes[i];
         nodesToGo.push(node);
         if (!node.url || !node.positionTicks)
           continue;
-        var fileInfo = this._files.get(node.url);
+        let fileInfo = this._files.get(node.url);
         if (!fileInfo) {
           fileInfo = new Map();
           this._files.set(node.url, fileInfo);
         }
-        for (var j = 0; j < node.positionTicks.length; ++j) {
-          var lineInfo = node.positionTicks[j];
-          var line = lineInfo.line;
-          var time = lineInfo.ticks * sampleDuration;
+        for (let j = 0; j < node.positionTicks.length; ++j) {
+          const lineInfo = node.positionTicks[j];
+          const line = lineInfo.line;
+          const time = lineInfo.ticks * sampleDuration;
           fileInfo.set(line, (fileInfo.get(line) || 0) + time);
         }
       }
@@ -68,19 +68,19 @@ PerfUI.LineLevelProfile = class {
     this._locationPool.disposeAll();
     Workspace.workspace.uiSourceCodes().forEach(
         uiSourceCode => uiSourceCode.removeDecorationsForType(PerfUI.LineLevelProfile.LineDecorator.type));
-    for (var fileInfo of this._files) {
-      var url = /** @type {string} */ (fileInfo[0]);
-      var uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
+    for (const fileInfo of this._files) {
+      const url = /** @type {string} */ (fileInfo[0]);
+      const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
       if (!uiSourceCode)
         continue;
-      var target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
-      var debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
+      const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
+      const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
       if (!debuggerModel)
         continue;
-      for (var lineInfo of fileInfo[1]) {
-        var line = lineInfo[0] - 1;
-        var time = lineInfo[1];
-        var rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
+      for (const lineInfo of fileInfo[1]) {
+        const line = lineInfo[0] - 1;
+        const time = lineInfo[1];
+        const rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
         if (rawLocation)
           new PerfUI.LineLevelProfile.Presentation(rawLocation, time, this._locationPool);
         else if (uiSourceCode)
@@ -130,17 +130,17 @@ PerfUI.LineLevelProfile.LineDecorator = class {
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
    */
   decorate(uiSourceCode, textEditor) {
-    var gutterType = 'CodeMirror-gutter-performance';
-    var decorations = uiSourceCode.decorationsForType(PerfUI.LineLevelProfile.LineDecorator.type);
+    const gutterType = 'CodeMirror-gutter-performance';
+    const decorations = uiSourceCode.decorationsForType(PerfUI.LineLevelProfile.LineDecorator.type);
     textEditor.uninstallGutter(gutterType);
     if (!decorations || !decorations.size)
       return;
     textEditor.installGutter(gutterType, false);
-    for (var decoration of decorations) {
-      var time = /** @type {number} */ (decoration.data());
-      var text = Common.UIString('%.1f\xa0ms', time);
-      var intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);
-      var element = createElementWithClass('div', 'text-editor-line-marker-performance');
+    for (const decoration of decorations) {
+      const time = /** @type {number} */ (decoration.data());
+      const text = Common.UIString('%.1f\xa0ms', time);
+      const intensity = Number.constrain(Math.log10(1 + 2 * time) / 5, 0.02, 1);
+      const element = createElementWithClass('div', 'text-editor-line-marker-performance');
       element.textContent = text;
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
       textEditor.setGutterDecoration(decoration.range().startLine, gutterType, element);

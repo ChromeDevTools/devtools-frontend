@@ -53,8 +53,8 @@ Common.Revealer.reveal = function(revealable, omitFocus) {
    * @return {!Promise.<undefined>}
    */
   function reveal(revealers) {
-    var promises = [];
-    for (var i = 0; i < revealers.length; ++i)
+    const promises = [];
+    for (let i = 0; i < revealers.length; ++i)
       promises.push(revealers[i].reveal(/** @type {!Object} */ (revealable), omitFocus));
     return Promise.race(promises);
   }
@@ -65,7 +65,7 @@ Common.Revealer.reveal = function(revealable, omitFocus) {
  * @return {?string}
  */
 Common.Revealer.revealDestination = function(revealable) {
-  var extension = self.runtime.extension(Common.Revealer, revealable);
+  const extension = self.runtime.extension(Common.Revealer, revealable);
   if (!extension)
     return null;
   return extension.descriptor()['destination'];

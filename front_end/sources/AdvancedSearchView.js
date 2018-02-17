@@ -29,13 +29,13 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
 
-    var searchIcon = UI.Icon.create('mediumicon-search', 'search-icon');
+    const searchIcon = UI.Icon.create('mediumicon-search', 'search-icon');
     this._searchPanelElement.appendChild(searchIcon);
 
     this._searchInputClearElement = UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button');
     this._searchInputClearElement.classList.add('hidden');
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
-    var cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');
+    const cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');
     cancelButtonContainer.appendChild(this._searchInputClearElement);
 
     this._ignoreCaseLabel = UI.CheckboxLabel.create(Common.UIString('Ignore case'));
@@ -68,9 +68,9 @@ Sources.AdvancedSearchView = class extends UI.VBox {
    */
   static openSearch(query, filePath) {
     UI.viewManager.showView('sources.search');
-    var searchView =
+    const searchView =
         /** @type {!Sources.AdvancedSearchView} */ (self.runtime.sharedInstance(Sources.AdvancedSearchView));
-    var fileMask = filePath ? ' file:' + filePath : '';
+    const fileMask = filePath ? ' file:' + filePath : '';
     searchView._toggle(query + fileMask);
   }
 
@@ -108,7 +108,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _onIndexingFinished() {
-    var finished = !this._progressIndicator.isCanceled();
+    const finished = !this._progressIndicator.isCanceled();
     this._progressIndicator.done();
     delete this._progressIndicator;
     delete this._isIndexing;
@@ -117,7 +117,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
       delete this._pendingSearchConfig;
     if (!this._pendingSearchConfig)
       return;
-    var searchConfig = this._pendingSearchConfig;
+    const searchConfig = this._pendingSearchConfig;
     delete this._pendingSearchConfig;
     this._innerStartSearch(searchConfig);
   }
@@ -323,7 +323,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _onInput() {
-    var hasText = this._search.value && this._search.value.length;
+    const hasText = this._search.value && this._search.value.length;
     this._searchInputClearElement.classList.toggle('hidden', !hasText);
   }
 
@@ -332,7 +332,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _load() {
-    var searchConfig = Workspace.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
+    const searchConfig = Workspace.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
     this._ignoreCaseCheckbox.checked = searchConfig.ignoreCase();
     this._regexCheckbox.checked = searchConfig.isRegex();
@@ -341,7 +341,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _onAction() {
-    var searchConfig = this._buildSearchConfig();
+    const searchConfig = this._buildSearchConfig();
     if (!searchConfig.query() || !searchConfig.query().length)
       return;
 
@@ -394,8 +394,8 @@ Sources.AdvancedSearchView.ActionDelegate = class {
   }
 
   _showSearch() {
-    var selection = UI.inspectorView.element.window().getSelection();
-    var queryCandidate = '';
+    const selection = UI.inspectorView.element.window().getSelection();
+    let queryCandidate = '';
     if (selection.rangeCount)
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
     Sources.AdvancedSearchView.openSearch(queryCandidate);

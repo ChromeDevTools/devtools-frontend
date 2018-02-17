@@ -37,16 +37,16 @@
  * @return {!Range}
  */
 Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, direction) {
-  var startNode;
-  var startOffset = 0;
-  var endNode;
-  var endOffset = 0;
+  let startNode;
+  let startOffset = 0;
+  let endNode;
+  let endOffset = 0;
 
   if (!stayWithinNode)
     stayWithinNode = this;
 
   if (!direction || direction === 'backward' || direction === 'both') {
-    var node = this;
+    let node = this;
     while (node) {
       if (node === stayWithinNode) {
         if (!startNode)
@@ -55,8 +55,8 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
       }
 
       if (node.nodeType === Node.TEXT_NODE) {
-        var start = (node === this ? (offset - 1) : (node.nodeValue.length - 1));
-        for (var i = start; i >= 0; --i) {
+        const start = (node === this ? (offset - 1) : (node.nodeValue.length - 1));
+        for (let i = start; i >= 0; --i) {
           if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
             startNode = node;
             startOffset = i + 1;
@@ -81,7 +81,7 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
   }
 
   if (!direction || direction === 'forward' || direction === 'both') {
-    node = this;
+    let node = this;
     while (node) {
       if (node === stayWithinNode) {
         if (!endNode)
@@ -90,8 +90,8 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
       }
 
       if (node.nodeType === Node.TEXT_NODE) {
-        var start = (node === this ? offset : 0);
-        for (var i = start; i < node.nodeValue.length; ++i) {
+        const start = (node === this ? offset : 0);
+        for (let i = start; i < node.nodeValue.length; ++i) {
           if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
             endNode = node;
             endOffset = i;
@@ -116,7 +116,7 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
     endOffset = offset;
   }
 
-  var result = this.ownerDocument.createRange();
+  const result = this.ownerDocument.createRange();
   result.setStart(startNode, startOffset);
   result.setEnd(endNode, endOffset);
 
@@ -128,10 +128,10 @@ Node.prototype.rangeOfWord = function(offset, stopCharacters, stayWithinNode, di
  * @return {?Node}
  */
 Node.prototype.traverseNextTextNode = function(stayWithin) {
-  var node = this.traverseNextNode(stayWithin);
+  let node = this.traverseNextNode(stayWithin);
   if (!node)
     return null;
-  var nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
+  const nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
   while (node && (node.nodeType !== Node.TEXT_NODE || nonTextTags[node.parentElement.nodeName]))
     node = node.traverseNextNode(stayWithin);
 
@@ -144,7 +144,7 @@ Node.prototype.traverseNextTextNode = function(stayWithin) {
  * @param {!Element=} relativeTo
  */
 Element.prototype.positionAt = function(x, y, relativeTo) {
-  var shift = {x: 0, y: 0};
+  let shift = {x: 0, y: 0};
   if (relativeTo)
     shift = relativeTo.boxInWindow(this.ownerDocument.defaultView);
 
@@ -181,8 +181,8 @@ Element.prototype.isScrolledToBottom = function() {
  * @return {?Node}
  */
 Node.prototype.enclosingNodeOrSelfWithNodeNameInArray = function(nameArray) {
-  for (var node = this; node && node !== this.ownerDocument; node = node.parentNodeOrShadowHost()) {
-    for (var i = 0; i < nameArray.length; ++i) {
+  for (let node = this; node && node !== this.ownerDocument; node = node.parentNodeOrShadowHost()) {
+    for (let i = 0; i < nameArray.length; ++i) {
       if (node.nodeName.toLowerCase() === nameArray[i].toLowerCase())
         return node;
     }
@@ -213,11 +213,11 @@ Node.prototype.enclosingNodeOrSelfWithClass = function(className, stayWithin) {
  * @return {?Element}
  */
 Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithin) {
-  for (var node = this; node && node !== stayWithin && node !== this.ownerDocument;
+  for (let node = this; node && node !== stayWithin && node !== this.ownerDocument;
        node = node.parentNodeOrShadowHost()) {
     if (node.nodeType === Node.ELEMENT_NODE) {
-      var containsAll = true;
-      for (var i = 0; i < classNames.length && containsAll; ++i) {
+      let containsAll = true;
+      for (let i = 0; i < classNames.length && containsAll; ++i) {
         if (!node.classList.contains(classNames[i]))
           containsAll = false;
       }
@@ -234,7 +234,7 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithi
 Node.prototype.parentElementOrShadowHost = function() {
   if (this.nodeType === Node.DOCUMENT_FRAGMENT_NODE && this.host)
     return /** @type {!Element} */ (this.host);
-  var node = this.parentNode;
+  const node = this.parentNode;
   if (!node)
     return null;
   if (node.nodeType === Node.ELEMENT_NODE)
@@ -259,7 +259,7 @@ Node.prototype.parentNodeOrShadowHost = function() {
  * @return {?Selection}
  */
 Node.prototype.getComponentSelection = function() {
-  var parent = this.parentNode;
+  let parent = this.parentNode;
   while (parent && parent.nodeType !== Node.DOCUMENT_FRAGMENT_NODE)
     parent = parent.parentNode;
   return parent instanceof ShadowRoot ? parent.getSelection() : this.window().getSelection();
@@ -270,13 +270,13 @@ Node.prototype.getComponentSelection = function() {
  */
 Node.prototype.hasSelection = function() {
   // TODO(luoe): use contains(node, {includeShadow: true}) when it is fixed for shadow dom.
-  var contents = this.querySelectorAll('content');
-  for (var content of contents) {
+  const contents = this.querySelectorAll('content');
+  for (const content of contents) {
     if (Array.prototype.some.call(content.getDistributedNodes(), node => node.hasSelection()))
       return true;
   }
 
-  var selection = this.getComponentSelection();
+  const selection = this.getComponentSelection();
   if (selection.type !== 'Range')
     return false;
   return selection.containsNode(this, true) || selection.anchorNode.isSelfOrDescendant(this) ||
@@ -321,7 +321,7 @@ function createTextNode(data) {
  * @return {!Element}
  */
 Document.prototype.createElementWithClass = function(elementName, className, customElementType) {
-  var element = this.createElement(elementName, customElementType || '');
+  const element = this.createElement(elementName, customElementType || '');
   if (className)
     element.className = className;
   return element;
@@ -344,7 +344,7 @@ function createElementWithClass(elementName, className, customElementType) {
  * @return {!Element}
  */
 Document.prototype.createSVGElement = function(childType, className) {
-  var element = this.createElementNS('http://www.w3.org/2000/svg', childType);
+  const element = this.createElementNS('http://www.w3.org/2000/svg', childType);
   if (className)
     element.setAttribute('class', className);
   return element;
@@ -375,7 +375,7 @@ function createDocumentFragment() {
  * @return {!Element}
  */
 Element.prototype.createChild = function(elementName, className, customElementType) {
-  var element = this.ownerDocument.createElementWithClass(elementName, className, customElementType);
+  const element = this.ownerDocument.createElementWithClass(elementName, className, customElementType);
   this.appendChild(element);
   return element;
 };
@@ -387,7 +387,7 @@ DocumentFragment.prototype.createChild = Element.prototype.createChild;
  * @return {!Text}
  */
 Element.prototype.createTextChild = function(text) {
-  var element = this.ownerDocument.createTextNode(text);
+  const element = this.ownerDocument.createTextNode(text);
   this.appendChild(element);
   return element;
 };
@@ -398,7 +398,7 @@ DocumentFragment.prototype.createTextChild = Element.prototype.createTextChild;
  * @param {...string} var_args
  */
 Element.prototype.createTextChildren = function(var_args) {
-  for (var i = 0, n = arguments.length; i < n; ++i)
+  for (let i = 0, n = arguments.length; i < n; ++i)
     this.createTextChild(arguments[i]);
 };
 
@@ -422,7 +422,7 @@ Element.prototype.totalOffsetTop = function() {
  * @return {!{left: number, top: number}}
  */
 Element.prototype.totalOffset = function() {
-  var rect = this.getBoundingClientRect();
+  const rect = this.getBoundingClientRect();
   return {left: rect.left, top: rect.top};
 };
 
@@ -432,7 +432,7 @@ Element.prototype.totalOffset = function() {
  * @return {!Element}
  */
 Element.prototype.createSVGChild = function(childType, className) {
-  var child = this.ownerDocument.createSVGElement(childType, className);
+  const child = this.ownerDocument.createSVGElement(childType, className);
   this.appendChild(child);
   return child;
 };
@@ -440,7 +440,7 @@ Element.prototype.createSVGChild = function(childType, className) {
 /**
  * @unrestricted
  */
-var AnchorBox = class {
+var AnchorBox = class {  // eslint-disable-line
   /**
    * @param {number=} x
    * @param {number=} y
@@ -496,9 +496,9 @@ AnchorBox.prototype.equals = function(anchorBox) {
 Element.prototype.boxInWindow = function(targetWindow) {
   targetWindow = targetWindow || this.ownerDocument.defaultView;
 
-  var anchorBox = new AnchorBox();
-  var curElement = this;
-  var curWindow = this.ownerDocument.defaultView;
+  const anchorBox = new AnchorBox();
+  let curElement = this;
+  let curWindow = this.ownerDocument.defaultView;
   while (curWindow && curElement) {
     anchorBox.x += curElement.totalOffsetLeft();
     anchorBox.y += curElement.totalOffsetTop();
@@ -535,9 +535,9 @@ Text.prototype.select = function(start, end) {
   if (start < 0)
     start = end + start;
 
-  var selection = this.getComponentSelection();
+  const selection = this.getComponentSelection();
   selection.removeAllRanges();
-  var range = this.ownerDocument.createRange();
+  const range = this.ownerDocument.createRange();
   range.setStart(this, start);
   range.setEnd(this, end);
   selection.addRange(range);
@@ -550,12 +550,12 @@ Text.prototype.select = function(start, end) {
 Element.prototype.selectionLeftOffset = function() {
   // Calculate selection offset relative to the current element.
 
-  var selection = this.getComponentSelection();
+  const selection = this.getComponentSelection();
   if (!selection.containsNode(this, true))
     return null;
 
-  var leftOffset = selection.anchorOffset;
-  var node = selection.anchorNode;
+  let leftOffset = selection.anchorOffset;
+  let node = selection.anchorNode;
 
   while (node !== this) {
     while (node.previousSibling) {
@@ -572,7 +572,7 @@ Element.prototype.selectionLeftOffset = function() {
  * @param {...!Node} var_args
  */
 Node.prototype.appendChildren = function(var_args) {
-  for (var i = 0, n = arguments.length; i < n; ++i)
+  for (let i = 0, n = arguments.length; i < n; ++i)
     this.appendChild(arguments[i]);
 };
 
@@ -591,9 +591,9 @@ Node.prototype.deepTextContent = function() {
  * @return {!Array.<!Node>}
  */
 Node.prototype.childTextNodes = function() {
-  var node = this.traverseNextTextNode(this);
-  var result = [];
-  var nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
+  let node = this.traverseNextTextNode(this);
+  const result = [];
+  const nonTextTags = {'STYLE': 1, 'SCRIPT': 1};
   while (node) {
     if (!nonTextTags[node.parentElement.nodeName])
       result.push(node);
@@ -610,7 +610,7 @@ Node.prototype.isAncestor = function(node) {
   if (!node)
     return false;
 
-  var currentNode = node.parentNodeOrShadowHost();
+  let currentNode = node.parentNodeOrShadowHost();
   while (currentNode) {
     if (this === currentNode)
       return true;
@@ -651,7 +651,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
   if (this.shadowRoot)
     return this.shadowRoot;
 
-  var distributedNodes = this.getDistributedNodes ? this.getDistributedNodes() : [];
+  const distributedNodes = this.getDistributedNodes ? this.getDistributedNodes() : [];
 
   if (distributedNodes.length)
     return distributedNodes[0];
@@ -659,12 +659,12 @@ Node.prototype.traverseNextNode = function(stayWithin) {
   if (this.firstChild)
     return this.firstChild;
 
-  var node = this;
+  let node = this;
   while (node) {
     if (stayWithin && node === stayWithin)
       return null;
 
-    var sibling = nextSibling(node);
+    const sibling = nextSibling(node);
     if (sibling)
       return sibling;
 
@@ -676,12 +676,12 @@ Node.prototype.traverseNextNode = function(stayWithin) {
    * @return {?Node}
    */
   function nextSibling(node) {
-    var parent = insertionPoint(node);
+    const parent = insertionPoint(node);
     if (!parent)
       return node.nextSibling;
-    var distributedNodes = parent.getDistributedNodes ? parent.getDistributedNodes() : [];
+    const distributedNodes = parent.getDistributedNodes ? parent.getDistributedNodes() : [];
 
-    var position = Array.prototype.indexOf.call(distributedNodes, node);
+    const position = Array.prototype.indexOf.call(distributedNodes, node);
     if (position + 1 < distributedNodes.length)
       return distributedNodes[position + 1];
     return null;
@@ -692,7 +692,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
    * @return {?Node}
    */
   function insertionPoint(node) {
-    var insertionPoints = node.getDestinationInsertionPoints ? node.getDestinationInsertionPoints() : [];
+    const insertionPoints = node.getDestinationInsertionPoints ? node.getDestinationInsertionPoints() : [];
     return insertionPoints.length > 0 ? insertionPoints[insertionPoints.length - 1] : null;
   }
 
@@ -706,7 +706,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
 Node.prototype.traversePreviousNode = function(stayWithin) {
   if (stayWithin && this === stayWithin)
     return null;
-  var node = this.previousSibling;
+  let node = this.previousSibling;
   while (node && node.lastChild)
     node = node.lastChild;
   if (node)
@@ -741,7 +741,7 @@ Event.prototype.deepElementFromPoint = function() {
   // Some synthetic events have zero coordinates which lead to a wrong element. Better return nothing in this case.
   if (!this.which && !this.pageX && !this.pageY && !this.clientX && !this.clientY && !this.movementX && !this.movementY)
     return null;
-  var root = this.target && this.target.getComponentRoot();
+  const root = this.target && this.target.getComponentRoot();
   return root ? root.deepElementFromPoint(this.pageX, this.pageY) : null;
 };
 
@@ -751,10 +751,10 @@ Event.prototype.deepElementFromPoint = function() {
  * @return {?Node}
  */
 Document.prototype.deepElementFromPoint = function(x, y) {
-  var container = this;
-  var node = null;
+  let container = this;
+  let node = null;
   while (container) {
-    var innerNode = container.elementFromPoint(x, y);
+    const innerNode = container.elementFromPoint(x, y);
     if (!innerNode || node === innerNode)
       break;
     node = innerNode;
@@ -769,7 +769,7 @@ DocumentFragment.prototype.deepElementFromPoint = Document.prototype.deepElement
  * @return {?Element}
  */
 Document.prototype.deepActiveElement = function() {
-  var activeElement = this.activeElement;
+  let activeElement = this.activeElement;
   while (activeElement && activeElement.shadowRoot && activeElement.shadowRoot.activeElement)
     activeElement = activeElement.shadowRoot.activeElement;
   return activeElement;
@@ -781,7 +781,7 @@ DocumentFragment.prototype.deepActiveElement = Document.prototype.deepActiveElem
  * @return {boolean}
  */
 Element.prototype.hasFocus = function() {
-  var root = this.getComponentRoot();
+  const root = this.getComponentRoot();
   return !!root && this.isSelfOrAncestor(root.activeElement);
 };
 
@@ -789,7 +789,7 @@ Element.prototype.hasFocus = function() {
  * @return {?Document|?DocumentFragment}
  */
 Node.prototype.getComponentRoot = function() {
-  var node = this;
+  let node = this;
   while (node && node.nodeType !== Node.DOCUMENT_FRAGMENT_NODE && node.nodeType !== Node.DOCUMENT_NODE)
     node = node.parentNode;
   return /** @type {?Document|?DocumentFragment} */ (node);

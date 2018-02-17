@@ -45,8 +45,8 @@ Sources.SourcesSearchScope = class {
       return -1;
     if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty())
       return 1;
-    var url1 = uiSourceCode1.url();
-    var url2 = uiSourceCode2.url();
+    const url1 = uiSourceCode1.url();
+    const url2 = uiSourceCode2.url();
     if (url1 && !url2)
       return -1;
     if (!url1 && url2)
@@ -61,11 +61,11 @@ Sources.SourcesSearchScope = class {
   performIndexing(progress) {
     this.stopSearch();
 
-    var projects = this._projects();
-    var compositeProgress = new Common.CompositeProgress(progress);
-    for (var i = 0; i < projects.length; ++i) {
-      var project = projects[i];
-      var projectProgress = compositeProgress.createSubProgress(project.uiSourceCodes().length);
+    const projects = this._projects();
+    const compositeProgress = new Common.CompositeProgress(progress);
+    for (let i = 0; i < projects.length; ++i) {
+      const project = projects[i];
+      const projectProgress = compositeProgress.createSubProgress(project.uiSourceCodes().length);
       project.indexContent(projectProgress);
     }
   }
@@ -74,7 +74,7 @@ Sources.SourcesSearchScope = class {
    * @return {!Array.<!Workspace.Project>}
    */
   _projects() {
-    var searchInAnonymousAndContentScripts = Common.moduleSetting('searchInAnonymousAndContentScripts').get();
+    const searchInAnonymousAndContentScripts = Common.moduleSetting('searchInAnonymousAndContentScripts').get();
 
     return Workspace.workspace.projects().filter(project => {
       if (project.type() === Workspace.projectTypes.Service)
@@ -101,15 +101,15 @@ Sources.SourcesSearchScope = class {
     this._searchFinishedCallback = searchFinishedCallback;
     this._searchConfig = searchConfig;
 
-    var promises = [];
-    var compositeProgress = new Common.CompositeProgress(progress);
-    var searchContentProgress = compositeProgress.createSubProgress();
-    var findMatchingFilesProgress = new Common.CompositeProgress(compositeProgress.createSubProgress());
-    for (var project of this._projects()) {
-      var weight = project.uiSourceCodes().length;
-      var findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
-      var filesMathingFileQuery = this._projectFilesMatchingFileQuery(project, searchConfig);
-      var promise =
+    const promises = [];
+    const compositeProgress = new Common.CompositeProgress(progress);
+    const searchContentProgress = compositeProgress.createSubProgress();
+    const findMatchingFilesProgress = new Common.CompositeProgress(compositeProgress.createSubProgress());
+    for (const project of this._projects()) {
+      const weight = project.uiSourceCodes().length;
+      const findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
+      const filesMathingFileQuery = this._projectFilesMatchingFileQuery(project, searchConfig);
+      const promise =
           project
               .findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, findMatchingFilesInProjectProgress)
               .then(this._processMatchingFilesForProject.bind(this, this._searchId, project, filesMathingFileQuery));
@@ -127,13 +127,13 @@ Sources.SourcesSearchScope = class {
    * @return {!Array.<string>}
    */
   _projectFilesMatchingFileQuery(project, searchConfig, dirtyOnly) {
-    var result = [];
-    var uiSourceCodes = project.uiSourceCodes();
-    for (var i = 0; i < uiSourceCodes.length; ++i) {
-      var uiSourceCode = uiSourceCodes[i];
+    const result = [];
+    const uiSourceCodes = project.uiSourceCodes();
+    for (let i = 0; i < uiSourceCodes.length; ++i) {
+      const uiSourceCode = uiSourceCodes[i];
       if (!uiSourceCode.contentType().isTextType())
         continue;
-      var binding = Persistence.persistence.binding(uiSourceCode);
+      const binding = Persistence.persistence.binding(uiSourceCode);
       if (binding && binding.network === uiSourceCode)
         continue;
       if (dirtyOnly && !uiSourceCode.isDirty())
@@ -159,15 +159,15 @@ Sources.SourcesSearchScope = class {
 
     files.sort(String.naturalOrderComparator);
     files = files.intersectOrdered(filesMathingFileQuery, String.naturalOrderComparator);
-    var dirtyFiles = this._projectFilesMatchingFileQuery(project, this._searchConfig, true);
+    const dirtyFiles = this._projectFilesMatchingFileQuery(project, this._searchConfig, true);
     files = files.mergeOrdered(dirtyFiles, String.naturalOrderComparator);
 
-    var uiSourceCodes = [];
-    for (var file of files) {
-      var uiSourceCode = project.uiSourceCodeForURL(file);
+    const uiSourceCodes = [];
+    for (const file of files) {
+      const uiSourceCode = project.uiSourceCodeForURL(file);
       if (!uiSourceCode)
         continue;
-      var script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
+      const script = Bindings.DefaultScriptMapping.scriptForUISourceCode(uiSourceCode);
       if (script && !script.isAnonymousScript())
         continue;
       uiSourceCodes.push(uiSourceCode);
@@ -188,7 +188,7 @@ Sources.SourcesSearchScope = class {
       return;
     }
 
-    var files = this._searchResultCandidates;
+    const files = this._searchResultCandidates;
     if (!files.length) {
       progress.done();
       callback();
@@ -197,11 +197,11 @@ Sources.SourcesSearchScope = class {
 
     progress.setTotalWork(files.length);
 
-    var fileIndex = 0;
-    var maxFileContentRequests = 20;
-    var callbacksLeft = 0;
+    let fileIndex = 0;
+    const maxFileContentRequests = 20;
+    let callbacksLeft = 0;
 
-    for (var i = 0; i < maxFileContentRequests && i < files.length; ++i)
+    for (let i = 0; i < maxFileContentRequests && i < files.length; ++i)
       scheduleSearchInNextFileOrFinish.call(this);
 
     /**
@@ -229,7 +229,7 @@ Sources.SourcesSearchScope = class {
       }
 
       ++callbacksLeft;
-      var uiSourceCode = files[fileIndex++];
+      const uiSourceCode = files[fileIndex++];
       setTimeout(searchInNextFile.bind(this, uiSourceCode), 0);
     }
 
@@ -248,17 +248,17 @@ Sources.SourcesSearchScope = class {
       }
 
       progress.worked(1);
-      var matches = [];
-      var queries = this._searchConfig.queries();
+      let matches = [];
+      const queries = this._searchConfig.queries();
       if (content !== null) {
-        for (var i = 0; i < queries.length; ++i) {
-          var nextMatches = Common.ContentProvider.performSearchInContent(
+        for (let i = 0; i < queries.length; ++i) {
+          const nextMatches = Common.ContentProvider.performSearchInContent(
               content, queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex());
           matches = matches.mergeOrdered(nextMatches, matchesComparator);
         }
       }
       if (matches) {
-        var searchResult = new Sources.FileBasedSearchResult(uiSourceCode, matches);
+        const searchResult = new Sources.FileBasedSearchResult(uiSourceCode, matches);
         this._searchResultCallback(searchResult);
       }
 

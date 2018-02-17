@@ -11,11 +11,11 @@ BrowserComponents.ImagePreview = class {
    * @return {!Promise<?Element>}
    */
   static build(target, originalImageURL, showDimensions, precomputedFeatures) {
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (!resourceTreeModel)
       return Promise.resolve(/** @type {?Element} */ (null));
-    var resource = resourceTreeModel.resourceForURL(originalImageURL);
-    var imageURL = originalImageURL;
+    let resource = resourceTreeModel.resourceForURL(originalImageURL);
+    let imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures && precomputedFeatures.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
       resource = resourceTreeModel.resourceForURL(imageURL);
@@ -23,9 +23,9 @@ BrowserComponents.ImagePreview = class {
     if (!isImageResource(resource))
       return Promise.resolve(/** @type {?Element} */ (null));
 
-    var fulfill;
-    var promise = new Promise(x => fulfill = x);
-    var imageElement = createElement('img');
+    let fulfill;
+    const promise = new Promise(x => fulfill = x);
+    const imageElement = createElement('img');
     imageElement.addEventListener('load', buildContent, false);
     imageElement.addEventListener('error', () => fulfill(null), false);
     resource.populateImageSource(imageElement);
@@ -40,14 +40,14 @@ BrowserComponents.ImagePreview = class {
     }
 
     function buildContent() {
-      var container = createElement('table');
+      const container = createElement('table');
       UI.appendStyle(container, 'browser_components/imagePreview.css');
       container.className = 'image-preview-container';
-      var naturalWidth = precomputedFeatures ? precomputedFeatures.naturalWidth : imageElement.naturalWidth;
-      var naturalHeight = precomputedFeatures ? precomputedFeatures.naturalHeight : imageElement.naturalHeight;
-      var offsetWidth = precomputedFeatures ? precomputedFeatures.offsetWidth : naturalWidth;
-      var offsetHeight = precomputedFeatures ? precomputedFeatures.offsetHeight : naturalHeight;
-      var description;
+      const naturalWidth = precomputedFeatures ? precomputedFeatures.naturalWidth : imageElement.naturalWidth;
+      const naturalHeight = precomputedFeatures ? precomputedFeatures.naturalHeight : imageElement.naturalHeight;
+      const offsetWidth = precomputedFeatures ? precomputedFeatures.offsetWidth : naturalWidth;
+      const offsetHeight = precomputedFeatures ? precomputedFeatures.offsetHeight : naturalHeight;
+      let description;
       if (showDimensions) {
         if (offsetHeight === naturalHeight && offsetWidth === naturalWidth) {
           description = Common.UIString('%d \xd7 %d pixels', offsetWidth, offsetHeight);

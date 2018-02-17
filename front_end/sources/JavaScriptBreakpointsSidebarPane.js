@@ -26,11 +26,11 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @return {!Promise<?>}
    */
   doUpdate() {
-    var breakpointLocations = this._breakpointManager.allBreakpointLocations();
+    const breakpointLocations = this._breakpointManager.allBreakpointLocations();
     if (!breakpointLocations.length) {
       this._listElement = null;
       this.contentElement.removeChildren();
-      var emptyElement = this.contentElement.createChild('div', 'gray-info-message');
+      const emptyElement = this.contentElement.createChild('div', 'gray-info-message');
       emptyElement.textContent = Common.UIString('No breakpoints');
       this.contentElement.appendChild(emptyElement);
       this._didUpdateForTest();
@@ -46,40 +46,40 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     breakpointLocations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
 
     /** @type {!Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} */
-    var locationForEntry = new Multimap();
-    for (var breakpointLocation of breakpointLocations) {
-      var uiLocation = breakpointLocation.uiLocation;
-      var entryDescriptor = uiLocation.uiSourceCode.url() + ':' + uiLocation.lineNumber;
+    const locationForEntry = new Multimap();
+    for (const breakpointLocation of breakpointLocations) {
+      const uiLocation = breakpointLocation.uiLocation;
+      const entryDescriptor = uiLocation.uiSourceCode.url() + ':' + uiLocation.lineNumber;
       locationForEntry.set(entryDescriptor, breakpointLocation);
     }
 
-    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
-    var selectedUILocation = details && details.callFrames.length ?
+    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const selectedUILocation = details && details.callFrames.length ?
         Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location()) :
         null;
 
-    var shouldShowView = false;
-    var entry = this._listElement.firstChild;
-    var promises = [];
-    for (var descriptor of locationForEntry.keysArray()) {
+    let shouldShowView = false;
+    let entry = this._listElement.firstChild;
+    const promises = [];
+    for (const descriptor of locationForEntry.keysArray()) {
       if (!entry) {
         entry = this._listElement.createChild('div', 'breakpoint-entry');
         entry.addEventListener('contextmenu', this._breakpointContextMenu.bind(this), true);
         entry.addEventListener('click', this._revealLocation.bind(this), false);
-        var checkboxLabel = UI.CheckboxLabel.create('');
+        const checkboxLabel = UI.CheckboxLabel.create('');
         checkboxLabel.addEventListener('click', this._breakpointCheckboxClicked.bind(this), false);
         entry.appendChild(checkboxLabel);
         entry[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol] = checkboxLabel;
-        var snippetElement = entry.createChild('div', 'source-text monospace');
+        const snippetElement = entry.createChild('div', 'source-text monospace');
         entry[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol] = snippetElement;
       }
 
-      var locations = Array.from(locationForEntry.get(descriptor));
-      var uiLocation = locations[0].uiLocation;
-      var isSelected =
+      const locations = Array.from(locationForEntry.get(descriptor));
+      const uiLocation = locations[0].uiLocation;
+      const isSelected =
           !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
-      var hasEnabled = locations.some(location => location.breakpoint.enabled());
-      var hasDisabled = locations.some(location => !location.breakpoint.enabled());
+      const hasEnabled = locations.some(location => location.breakpoint.enabled());
+      const hasDisabled = locations.some(location => !location.breakpoint.enabled());
       promises.push(this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled));
 
       if (isSelected)
@@ -87,7 +87,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       entry = entry.nextSibling;
     }
     while (entry) {
-      var next = entry.nextSibling;
+      const next = entry.nextSibling;
       entry.remove();
       entry = next;
     }
@@ -110,12 +110,12 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
     element[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] = uiLocation;
     element.classList.toggle('breakpoint-hit', isSelected);
 
-    var checkboxLabel = element[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol];
+    const checkboxLabel = element[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol];
     checkboxLabel.textElement.textContent = uiLocation.linkText();
     checkboxLabel.checkboxElement.checked = hasEnabled;
     checkboxLabel.checkboxElement.indeterminate = hasEnabled && hasDisabled;
 
-    var snippetElement = element[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol];
+    const snippetElement = element[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol];
     return uiLocation.uiSourceCode.requestContent().then(fillSnippetElement.bind(null, snippetElement));
 
     /**
@@ -123,11 +123,11 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
      * @param {?string} content
      */
     function fillSnippetElement(snippetElement, content) {
-      var lineNumber = uiLocation.lineNumber;
-      var text = new TextUtils.Text(content || '');
+      const lineNumber = uiLocation.lineNumber;
+      const text = new TextUtils.Text(content || '');
       if (lineNumber < text.lineCount()) {
-        var lineText = text.lineAt(lineNumber);
-        var maxSnippetLength = 200;
+        const lineText = text.lineAt(lineNumber);
+        const maxSnippetLength = 200;
         snippetElement.textContent = lineText.trimEnd(maxSnippetLength);
       }
     }
@@ -138,7 +138,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @return {?Workspace.UILocation}
    */
   _uiLocationFromEvent(event) {
-    var node = event.target.enclosingNodeOrSelfWithClass('breakpoint-entry');
+    const node = event.target.enclosingNodeOrSelfWithClass('breakpoint-entry');
     if (!node)
       return null;
     return node[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] || null;
@@ -148,13 +148,13 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _breakpointCheckboxClicked(event) {
-    var uiLocation = this._uiLocationFromEvent(event);
+    const uiLocation = this._uiLocationFromEvent(event);
     if (!uiLocation)
       return;
 
-    var breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
-    var newState = event.target.checkboxElement.checked;
-    for (var breakpoint of breakpoints)
+    const breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
+    const newState = event.target.checkboxElement.checked;
+    for (const breakpoint of breakpoints)
       breakpoint.setEnabled(newState);
     event.consume();
   }
@@ -163,7 +163,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _revealLocation(event) {
-    var uiLocation = this._uiLocationFromEvent(event);
+    const uiLocation = this._uiLocationFromEvent(event);
     if (uiLocation)
       Common.Revealer.reveal(uiLocation);
   }
@@ -172,39 +172,39 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _breakpointContextMenu(event) {
-    var uiLocation = this._uiLocationFromEvent(event);
+    const uiLocation = this._uiLocationFromEvent(event);
     if (!uiLocation)
       return;
 
-    var breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
+    const breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
 
-    var contextMenu = new UI.ContextMenu(event);
-    var removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
-                                                    Common.UIString('Remove breakpoint');
+    const contextMenu = new UI.ContextMenu(event);
+    const removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
+                                                      Common.UIString('Remove breakpoint');
     contextMenu.defaultSection().appendItem(
         removeEntryTitle, () => breakpoints.map(breakpoint => breakpoint.remove(false /* keepInStorage */)));
 
-    var breakpointActive = this._breakpointManager.breakpointsActive();
-    var breakpointActiveTitle =
+    const breakpointActive = this._breakpointManager.breakpointsActive();
+    const breakpointActiveTitle =
         breakpointActive ? Common.UIString('Deactivate breakpoints') : Common.UIString('Activate breakpoints');
     contextMenu.defaultSection().appendItem(
         breakpointActiveTitle,
         this._breakpointManager.setBreakpointsActive.bind(this._breakpointManager, !breakpointActive));
 
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
-      var enableTitle = Common.UIString('Enable all breakpoints');
+      const enableTitle = Common.UIString('Enable all breakpoints');
       contextMenu.defaultSection().appendItem(
           enableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, true));
     }
     if (breakpoints.some(breakpoint => breakpoint.enabled())) {
-      var disableTitle = Common.UIString('Disable all breakpoints');
+      const disableTitle = Common.UIString('Disable all breakpoints');
       contextMenu.defaultSection().appendItem(
           disableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, false));
     }
-    var removeAllTitle = Common.UIString('Remove all breakpoints');
+    const removeAllTitle = Common.UIString('Remove all breakpoints');
     contextMenu.defaultSection().appendItem(
         removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
-    var removeOtherTitle = Common.UIString('Remove other breakpoints');
+    const removeOtherTitle = Common.UIString('Remove other breakpoints');
     contextMenu.defaultSection().appendItem(
         removeOtherTitle,
         this._breakpointManager.removeOtherBreakpoints.bind(this._breakpointManager, new Set(breakpoints)));

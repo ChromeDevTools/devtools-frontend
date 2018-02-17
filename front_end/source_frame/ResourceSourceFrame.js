@@ -78,17 +78,17 @@ SourceFrame.ResourceSourceFrame._SearchableContainer = class extends UI.VBox {
   constructor(resource, highlighterType, autoPrettyPrint) {
     super(true);
     this.registerRequiredCSS('source_frame/resourceSourceFrame.css');
-    var sourceFrame = new SourceFrame.ResourceSourceFrame(resource, autoPrettyPrint);
+    const sourceFrame = new SourceFrame.ResourceSourceFrame(resource, autoPrettyPrint);
     sourceFrame.setHighlighterType(highlighterType);
-    var searchableView = new UI.SearchableView(sourceFrame);
+    const searchableView = new UI.SearchableView(sourceFrame);
     searchableView.element.classList.add('searchable-view');
     searchableView.setPlaceholder(ls`Find`);
     sourceFrame.show(searchableView.element);
     sourceFrame.setSearchableView(searchableView);
     searchableView.show(this.contentElement);
 
-    var toolbar = new UI.Toolbar('toolbar', this.contentElement);
-    for (var item of sourceFrame.syncToolbarItems())
+    const toolbar = new UI.Toolbar('toolbar', this.contentElement);
+    for (const item of sourceFrame.syncToolbarItems())
       toolbar.appendToolbarItem(item);
   }
 };

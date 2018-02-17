@@ -8,11 +8,11 @@
  */
 
 function flattenRuleRanges(rule) {
-  var ranges = [];
-  var medias = rule.media || [];
+  const ranges = [];
+  const medias = rule.media || [];
 
-  for (var i = 0; i < medias.length; ++i) {
-    var media = medias[i];
+  for (let i = 0; i < medias.length; ++i) {
+    const media = medias[i];
 
     if (!media.range)
       continue;
@@ -20,8 +20,8 @@ function flattenRuleRanges(rule) {
     ranges.push({range: media.range, name: 'media #' + i});
   }
 
-  for (var i = 0; i < rule.selectors.length; ++i) {
-    var selector = rule.selectors[i];
+  for (let i = 0; i < rule.selectors.length; ++i) {
+    const selector = rule.selectors[i];
 
     if (!selector.range)
       continue;
@@ -33,10 +33,10 @@ function flattenRuleRanges(rule) {
     ranges.push({range: rule.style.range, name: 'style range'});
 
 
-  var properties = rule.style.allProperties();
+  const properties = rule.style.allProperties();
 
-  for (var i = 0; i < properties.length; ++i) {
-    var property = properties[i];
+  for (let i = 0; i < properties.length; ++i) {
+    const property = properties[i];
 
     if (!property.range)
       continue;
@@ -54,8 +54,8 @@ function compareRuleRanges(lazyRule, originalRule) {
     return false;
   }
 
-  var flattenLazy = flattenRuleRanges(lazyRule);
-  var flattenOriginal = flattenRuleRanges(originalRule);
+  const flattenLazy = flattenRuleRanges(lazyRule);
+  const flattenOriginal = flattenRuleRanges(originalRule);
 
   if (flattenLazy.length !== flattenOriginal.length) {
     TestRunner.addResult(
@@ -63,9 +63,9 @@ function compareRuleRanges(lazyRule, originalRule) {
     return false;
   }
 
-  for (var i = 0; i < flattenLazy.length; ++i) {
-    var lazyRange = flattenLazy[i];
-    var originalRange = flattenOriginal[i];
+  for (let i = 0; i < flattenLazy.length; ++i) {
+    const lazyRange = flattenLazy[i];
+    const originalRange = flattenOriginal[i];
 
     if (lazyRange.name !== originalRange.name) {
       TestRunner.addResult('Error: rule names are not equal: ' + lazyRange.name + ' != ' + originalRange.name);
@@ -93,7 +93,7 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
   }
 
   function onContainerSelected() {
-    var fetchedRules = ElementsTestRunner.getMatchedRules();
+    const fetchedRules = ElementsTestRunner.getMatchedRules();
 
     if (fetchedRules.length !== rules.length) {
       TestRunner.addResult(String.sprintf(
@@ -102,7 +102,7 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
       return;
     }
 
-    for (var i = 0; i < fetchedRules.length; ++i) {
+    for (let i = 0; i < fetchedRules.length; ++i) {
       if (!compareRuleRanges(rules[i], fetchedRules[i])) {
         TestRunner.completeTest();
         return;
@@ -114,11 +114,11 @@ ElementsTestRunner.validateRuleRanges = function(selector, rules, callback) {
 };
 
 ElementsTestRunner.getMatchedRules = function() {
-  var rules = [];
+  const rules = [];
 
-  for (var block of UI.panels.elements._stylesWidget._sectionBlocks) {
-    for (var section of block.sections) {
-      var rule = section.style().parentRule;
+  for (const block of UI.panels.elements._stylesWidget._sectionBlocks) {
+    for (const section of block.sections) {
+      const rule = section.style().parentRule;
 
       if (rule)
         rules.push(rule);

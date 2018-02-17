@@ -35,7 +35,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   _emptyElementContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.defaultSection().appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
     contextMenu.show();
   }
@@ -43,10 +43,10 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   _addButtonClicked() {
     UI.viewManager.showView('sources.xhrBreakpoints');
 
-    var inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
+    const inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
     inputElementContainer.textContent = Common.UIString('Break when URL contains:');
 
-    var inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
+    const inputElement = inputElementContainer.createChild('span', 'breakpoint-condition-input');
     this._addListElement(inputElementContainer, /** @type {?Element} */ (this._listElement.firstChild));
 
     /**
@@ -63,7 +63,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
       }
     }
 
-    var config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
+    const config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
     UI.InplaceEditor.startEditing(inputElement, config);
   }
 
@@ -77,12 +77,12 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
       return;
     }
 
-    var element = createElementWithClass('div', 'breakpoint-entry');
+    const element = createElementWithClass('div', 'breakpoint-entry');
     element._url = url;
     element.addEventListener('contextmenu', this._contextMenu.bind(this, url), true);
 
-    var title = url ? Common.UIString('URL contains "%s"', url) : Common.UIString('Any XHR or fetch');
-    var label = UI.CheckboxLabel.create(title, enabled);
+    const title = url ? Common.UIString('URL contains "%s"', url) : Common.UIString('Any XHR or fetch');
+    const label = UI.CheckboxLabel.create(title, enabled);
     element.appendChild(label);
     label.checkboxElement.addEventListener('click', this._checkboxClicked.bind(this, url), false);
     element._checkboxElement = label.checkboxElement;
@@ -90,7 +90,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
     label.classList.add('cursor-auto');
     label.textElement.addEventListener('dblclick', this._labelClicked.bind(this, url), false);
 
-    var currentElement = /** @type {?Element} */ (this._listElement.firstChild);
+    let currentElement = /** @type {?Element} */ (this._listElement.firstChild);
     while (currentElement) {
       if (currentElement._url && currentElement._url < element._url)
         break;
@@ -104,7 +104,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
    * @param {string} url
    */
   _removeBreakpoint(url) {
-    var element = this._breakpointElements.get(url);
+    const element = this._breakpointElements.get(url);
     if (!element)
       return;
 
@@ -134,7 +134,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   _contextMenu(url, event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
 
     /**
      * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
@@ -148,12 +148,12 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
      * @this {BrowserDebugger.XHRBreakpointsSidebarPane}
      */
     function removeAllBreakpoints() {
-      for (var url of this._breakpointElements.keys()) {
+      for (const url of this._breakpointElements.keys()) {
         SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
       }
     }
-    var removeAllTitle = Common.UIString('Remove all breakpoints');
+    const removeAllTitle = Common.UIString('Remove all breakpoints');
 
     contextMenu.defaultSection().appendItem(Common.UIString('Add breakpoint'), this._addButtonClicked.bind(this));
     contextMenu.defaultSection().appendItem(Common.UIString('Remove breakpoint'), removeBreakpoint.bind(this));
@@ -166,8 +166,8 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   _labelClicked(url) {
-    var element = this._breakpointElements.get(url) || null;
-    var inputElement = createElementWithClass('span', 'breakpoint-condition');
+    const element = this._breakpointElements.get(url) || null;
+    const inputElement = createElementWithClass('span', 'breakpoint-condition');
     inputElement.textContent = url;
     this._listElement.insertBefore(inputElement, element);
     element.classList.add('hidden');
@@ -183,7 +183,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
       if (accept) {
         SDK.domDebuggerManager.removeXHRBreakpoint(url);
         this._removeBreakpoint(url);
-        var enabled = element ? element._checkboxElement.checked : true;
+        const enabled = element ? element._checkboxElement.checked : true;
         SDK.domDebuggerManager.addXHRBreakpoint(text, enabled);
         this._setBreakpoint(text, enabled);
       } else {
@@ -204,7 +204,7 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   _update() {
-    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
     if (!details || details.reason !== SDK.DebuggerModel.BreakReason.XHR) {
       if (this._highlightedElement) {
         this._highlightedElement.classList.remove('breakpoint-hit');
@@ -212,8 +212,8 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
       }
       return;
     }
-    var url = details.auxData['breakpointURL'];
-    var element = this._breakpointElements.get(url);
+    const url = details.auxData['breakpointURL'];
+    const element = this._breakpointElements.get(url);
     if (!element)
       return;
     UI.viewManager.showView('sources.xhrBreakpoints');
@@ -222,8 +222,8 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
   }
 
   _restoreBreakpoints() {
-    var breakpoints = SDK.domDebuggerManager.xhrBreakpoints();
-    for (var url of breakpoints.keys())
+    const breakpoints = SDK.domDebuggerManager.xhrBreakpoints();
+    for (const url of breakpoints.keys())
       this._setBreakpoint(url, breakpoints.get(url));
   }
 };

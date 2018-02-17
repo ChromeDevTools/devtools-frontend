@@ -71,16 +71,16 @@ SDK.Script = class {
    * @return {string}
    */
   static _trimSourceURLComment(source) {
-    var sourceURLIndex = source.lastIndexOf('//# sourceURL=');
+    let sourceURLIndex = source.lastIndexOf('//# sourceURL=');
     if (sourceURLIndex === -1) {
       sourceURLIndex = source.lastIndexOf('//@ sourceURL=');
       if (sourceURLIndex === -1)
         return source;
     }
-    var sourceURLLineIndex = source.lastIndexOf('\n', sourceURLIndex);
+    const sourceURLLineIndex = source.lastIndexOf('\n', sourceURLIndex);
     if (sourceURLLineIndex === -1)
       return source;
-    var sourceURLLine = source.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
+    const sourceURLLine = source.substr(sourceURLLineIndex + 1).split('\n', 1)[0];
     if (sourceURLLine.search(SDK.Script.sourceURLRegex) === -1)
       return source;
     return source.substr(0, sourceURLLineIndex) + source.substr(sourceURLLineIndex + sourceURLLine.length + 1);
@@ -140,7 +140,7 @@ SDK.Script = class {
       return this._source;
     if (!this.scriptId)
       return '';
-    var source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
+    const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
     this._source = source ? SDK.Script._trimSourceURLComment(source) : '';
     if (this._originalSource === null)
       this._originalSource = this._source;
@@ -152,7 +152,7 @@ SDK.Script = class {
    */
   originalContentProvider() {
     if (!this._originalContentProvider) {
-      var lazyContent = () => this.requestContent().then(() => this._originalSource);
+      const lazyContent = () => this.requestContent().then(() => this._originalSource);
       this._originalContentProvider =
           new Common.StaticContentProvider(this.contentURL(), this.contentType(), lazyContent);
     }
@@ -170,7 +170,7 @@ SDK.Script = class {
     if (!this.scriptId)
       return [];
 
-    var matches =
+    const matches =
         await this.debuggerModel.target().debuggerAgent().searchInContent(this.scriptId, query, caseSensitive, isRegex);
     return (matches || []).map(match => new Common.ContentProvider.SearchMatch(match.lineNumber, match.lineContent));
   }
@@ -204,13 +204,13 @@ SDK.Script = class {
       callback(null);
       return;
     }
-    var response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setScriptSource(
         {scriptId: this.scriptId, scriptSource: newSource});
 
     if (!response[Protocol.Error] && !response.exceptionDetails)
       this._source = newSource;
 
-    var needsStepIn = !!response.stackChanged;
+    const needsStepIn = !!response.stackChanged;
     callback(
         response[Protocol.Error], response.exceptionDetails, response.callFrames, response.asyncStackTrace,
         response.asyncStackTraceId, needsStepIn);
@@ -229,7 +229,7 @@ SDK.Script = class {
    * @return {boolean}
    */
   isInlineScript() {
-    var startsAtZero = !this.lineOffset && !this.columnOffset;
+    const startsAtZero = !this.lineOffset && !this.columnOffset;
     return !!this.sourceURL && !startsAtZero;
   }
 
@@ -252,9 +252,9 @@ SDK.Script = class {
    * @return {!Promise<boolean>}
    */
   async setBlackboxedRanges(positions) {
-    var response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
         {scriptId: this.scriptId, positions});
-    var error = response[Protocol.Error];
+    const error = response[Protocol.Error];
     if (error)
       console.error(error);
     return !error;

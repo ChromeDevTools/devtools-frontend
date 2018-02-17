@@ -19,7 +19,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
     this._items = [];
     this._active = false;
 
-    var uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this._currentUISourceCode();
     if (uiSourceCode) {
       this._active = Formatter.formatterWorkerPool().outlineForMimetype(
           uiSourceCode.workingCopy(), uiSourceCode.contentType().canonicalMimeType(),
@@ -50,7 +50,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @return {string}
    */
   itemKeyAt(itemIndex) {
-    var item = this._items[itemIndex];
+    const item = this._items[itemIndex];
     return item.title + (item.subtitle ? item.subtitle : '');
   }
 
@@ -61,8 +61,8 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @return {number}
    */
   itemScoreAt(itemIndex, query) {
-    var item = this._items[itemIndex];
-    var methodName = query.split('(')[0];
+    const item = this._items[itemIndex];
+    const methodName = query.split('(')[0];
     if (methodName.toLowerCase() === item.title.toLowerCase())
       return 1 / (1 + item.line);
     return -item.line - 1;
@@ -76,7 +76,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-    var item = this._items[itemIndex];
+    const item = this._items[itemIndex];
     titleElement.textContent = item.title + (item.subtitle ? item.subtitle : '');
     QuickOpen.FilteredListWidget.highlightRanges(titleElement, query);
     subtitleElement.textContent = ':' + (item.line + 1);
@@ -90,10 +90,10 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
   selectItem(itemIndex, promptValue) {
     if (itemIndex === null)
       return;
-    var uiSourceCode = this._currentUISourceCode();
+    const uiSourceCode = this._currentUISourceCode();
     if (!uiSourceCode)
       return;
-    var lineNumber = this._items[itemIndex].line;
+    const lineNumber = this._items[itemIndex].line;
     if (!isNaN(lineNumber) && lineNumber >= 0)
       Common.Revealer.reveal(uiSourceCode.uiLocation(lineNumber, this._items[itemIndex].column));
   }
@@ -103,7 +103,7 @@ Sources.OutlineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @return {?Workspace.UISourceCode}
    */
   _currentUISourceCode() {
-    var sourcesView = UI.context.flavor(Sources.SourcesView);
+    const sourcesView = UI.context.flavor(Sources.SourcesView);
     if (!sourcesView)
       return null;
     return sourcesView.currentUISourceCode();

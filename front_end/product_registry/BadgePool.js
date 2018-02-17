@@ -50,9 +50,9 @@ ProductRegistry.BadgePool = class {
    * @return {!Element}
    */
   _badgeForFrameOrUrl(urlResolver) {
-    var element = createElementWithClass('span', 'hidden');
-    var root = UI.createShadowRootWithCoreStyles(element, 'product_registry/badge.css');
-    var badgeElement = root.createChild('span');
+    const element = createElementWithClass('span', 'hidden');
+    const root = UI.createShadowRootWithCoreStyles(element, 'product_registry/badge.css');
+    const badgeElement = root.createChild('span');
     badgeElement.classList.toggle('hide-badge-title', !this._showTitles);
     badgeElement.addEventListener('mousedown', event => event.consume());
     badgeElement.addEventListener('click', event => {
@@ -69,9 +69,9 @@ ProductRegistry.BadgePool = class {
    * @return {!Promise<!Common.ParsedURL>}
    */
   async _resolveUrl(frame) {
-    var registry = await ProductRegistry.instance();
-    var parsedUrl = new Common.ParsedURL(frame.url);
-    var entry = registry.entryForUrl(parsedUrl);
+    const registry = await ProductRegistry.instance();
+    let parsedUrl = new Common.ParsedURL(frame.url);
+    const entry = registry.entryForUrl(parsedUrl);
     if (!entry) {
       frame.findCreationCallFrame(callFrame => {
         if (!callFrame.url)
@@ -92,20 +92,20 @@ ProductRegistry.BadgePool = class {
       return;
     }
 
-    var parsedUrl = await this._badgeElements.get(badgeElement)();
-    var registry = await ProductRegistry.instance();
-    var entryName = parsedUrl && registry.nameForUrl(parsedUrl);
+    const parsedUrl = await this._badgeElements.get(badgeElement)();
+    const registry = await ProductRegistry.instance();
+    const entryName = parsedUrl && registry.nameForUrl(parsedUrl);
     if (!entryName)
       return;
 
-    var tokens = entryName.replace(/[a-z]*/g, '').split(' ');
-    var label;
+    const tokens = entryName.replace(/[a-z]*/g, '').split(' ');
+    let label;
     if (tokens.length > 1)
       label = tokens[0][0] + tokens[1][0];
     else
       label = entryName;
 
-    var iconElement = badgeElement.createChild('span', 'product-registry-badge monospace');
+    const iconElement = badgeElement.createChild('span', 'product-registry-badge monospace');
     iconElement.setAttribute('data-initial', label.substring(0, 2).toUpperCase());
     iconElement.title = entryName;
     iconElement.style.backgroundColor = ProductRegistry.BadgePool.colorForEntryName(entryName);
@@ -115,7 +115,7 @@ ProductRegistry.BadgePool = class {
   }
 
   _settingUpdated() {
-    for (var badgeElement of this._badgeElements.keys())
+    for (const badgeElement of this._badgeElements.keys())
       this._renderBadge(badgeElement);
   }
 
@@ -142,23 +142,23 @@ ProductRegistry.BadgePool = class {
     if (!this._badgeElements.has(badgeElement))
       return;
 
-    var registry = await ProductRegistry.instance();
-    var parsedUrl = await this._badgeElements.get(badgeElement)();
-    var entryName = registry.nameForUrl(parsedUrl);
+    const registry = await ProductRegistry.instance();
+    const parsedUrl = await this._badgeElements.get(badgeElement)();
+    const entryName = registry.nameForUrl(parsedUrl);
 
-    var element = createElement('div');
-    var root = UI.createShadowRootWithCoreStyles(element, 'product_registry/popup.css');
-    var popupElement = root.createChild('div', 'product-registry-popup');
-    var domainElement = popupElement.createChild('div', 'product-registry-domain');
+    const element = createElement('div');
+    const root = UI.createShadowRootWithCoreStyles(element, 'product_registry/popup.css');
+    const popupElement = root.createChild('div', 'product-registry-popup');
+    const domainElement = popupElement.createChild('div', 'product-registry-domain');
     domainElement.textContent = parsedUrl.domain();
-    var entryNameElement = popupElement.createChild('div', 'product-registry-name');
+    const entryNameElement = popupElement.createChild('div', 'product-registry-name');
     entryNameElement.textContent = entryName;
-    var reportLink =
+    const reportLink =
         'https://docs.google.com/forms/d/e/1FAIpQLSchz2FdcQ-rRllzl8BbhWaTRRY-12BpPjW6Hr9e1-BpCA083w/viewform' +
         '?entry_1425918171=' + encodeURIComponent((parsedUrl.domain() + parsedUrl.path).substr(0, 100));
     popupElement.appendChild(UI.XLink.create(reportLink, 'Report mismatch', 'product-registry-link'));
 
-    var dialog = new UI.Dialog();
+    const dialog = new UI.Dialog();
     dialog.setContentAnchorBox(badgeElement.boxInWindow());
     dialog.contentElement.appendChild(element);
     dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);

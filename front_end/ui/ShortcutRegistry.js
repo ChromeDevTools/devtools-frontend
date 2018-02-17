@@ -47,10 +47,10 @@ UI.ShortcutRegistry = class {
    * @return {!Array.<number>}
    */
   keysForActions(actionIds) {
-    var result = [];
-    for (var i = 0; i < actionIds.length; ++i) {
-      var descriptors = this.shortcutDescriptorsForAction(actionIds[i]);
-      for (var j = 0; j < descriptors.length; ++j)
+    const result = [];
+    for (let i = 0; i < actionIds.length; ++i) {
+      const descriptors = this.shortcutDescriptorsForAction(actionIds[i]);
+      for (let j = 0; j < descriptors.length; ++j)
         result.push(descriptors[j].key);
     }
     return result;
@@ -61,7 +61,7 @@ UI.ShortcutRegistry = class {
    * @return {string|undefined}
    */
   shortcutTitleForAction(actionId) {
-    var descriptors = this.shortcutDescriptorsForAction(actionId);
+    const descriptors = this.shortcutDescriptorsForAction(actionId);
     if (descriptors.length)
       return descriptors[0].name;
   }
@@ -80,7 +80,7 @@ UI.ShortcutRegistry = class {
    */
   eventMatchesAction(event, actionId) {
     console.assert(this._defaultActionToShortcut.has(actionId), 'Unknown action ' + actionId);
-    var key = UI.KeyboardShortcut.makeKeyFromEvent(event);
+    const key = UI.KeyboardShortcut.makeKeyFromEvent(event);
     return this._defaultActionToShortcut.get(actionId).valuesArray().some(descriptor => descriptor.key === key);
   }
 
@@ -105,8 +105,8 @@ UI.ShortcutRegistry = class {
    * @param {!KeyboardEvent=} event
    */
   handleKey(key, domKey, event) {
-    var keyModifiers = key >> 8;
-    var actions = this._applicableActions(key);
+    const keyModifiers = key >> 8;
+    const actions = this._applicableActions(key);
     if (!actions.length)
       return;
     if (UI.Dialog.hasInstance()) {
@@ -129,7 +129,7 @@ UI.ShortcutRegistry = class {
      */
     function processNextAction(handled) {
       delete this._pendingActionTimer;
-      var action = actions.shift();
+      const action = actions.shift();
       if (!action || handled)
         return;
 
@@ -146,7 +146,7 @@ UI.ShortcutRegistry = class {
       if (!keyModifiers)
         return true;
 
-      var modifiers = UI.KeyboardShortcut.Modifiers;
+      const modifiers = UI.KeyboardShortcut.Modifiers;
       if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt))
         return Host.isWin();
 
@@ -167,7 +167,7 @@ UI.ShortcutRegistry = class {
    * @param {string} shortcut
    */
   registerShortcut(actionId, shortcut) {
-    var descriptor = UI.KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
+    const descriptor = UI.KeyboardShortcut.makeDescriptorFromBindingShortcut(shortcut);
     if (!descriptor)
       return;
     this._defaultActionToShortcut.set(actionId, descriptor);
@@ -186,7 +186,7 @@ UI.ShortcutRegistry = class {
    */
   _registerBindings(document) {
     document.addEventListener('input', this.dismissPendingShortcutAction.bind(this), true);
-    var extensions = self.runtime.extensions('action');
+    const extensions = self.runtime.extensions('action');
     extensions.forEach(registerExtension, this);
 
     /**
@@ -194,12 +194,12 @@ UI.ShortcutRegistry = class {
      * @this {UI.ShortcutRegistry}
      */
     function registerExtension(extension) {
-      var descriptor = extension.descriptor();
-      var bindings = descriptor['bindings'];
-      for (var i = 0; bindings && i < bindings.length; ++i) {
+      const descriptor = extension.descriptor();
+      const bindings = descriptor['bindings'];
+      for (let i = 0; bindings && i < bindings.length; ++i) {
         if (!platformMatches(bindings[i].platform))
           continue;
-        var shortcuts = bindings[i]['shortcut'].split(/\s+/);
+        const shortcuts = bindings[i]['shortcut'].split(/\s+/);
         shortcuts.forEach(this.registerShortcut.bind(this, descriptor['actionId']));
       }
     }
@@ -211,10 +211,10 @@ UI.ShortcutRegistry = class {
     function platformMatches(platformsString) {
       if (!platformsString)
         return true;
-      var platforms = platformsString.split(',');
-      var isMatch = false;
-      var currentPlatform = Host.platform();
-      for (var i = 0; !isMatch && i < platforms.length; ++i)
+      const platforms = platformsString.split(',');
+      let isMatch = false;
+      const currentPlatform = Host.platform();
+      for (let i = 0; !isMatch && i < platforms.length; ++i)
         isMatch = platforms[i] === currentPlatform;
       return isMatch;
     }

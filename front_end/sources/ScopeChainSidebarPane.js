@@ -45,8 +45,8 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
   }
 
   _update() {
-    var callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
-    var details = UI.context.flavor(SDK.DebuggerPausedDetails);
+    const callFrame = UI.context.flavor(SDK.DebuggerModel.CallFrame);
+    const details = UI.context.flavor(SDK.DebuggerPausedDetails);
     this._linkifier.reset();
     Sources.SourceMapNamesResolver.resolveThisObject(callFrame).then(this._innerUpdate.bind(this, details, callFrame));
   }
@@ -60,20 +60,20 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
     this.contentElement.removeChildren();
 
     if (!details || !callFrame) {
-      var infoElement = createElement('div');
+      const infoElement = createElement('div');
       infoElement.className = 'gray-info-message';
       infoElement.textContent = Common.UIString('Not paused');
       this.contentElement.appendChild(infoElement);
       return;
     }
 
-    var foundLocalScope = false;
-    var scopeChain = callFrame.scopeChain();
-    for (var i = 0; i < scopeChain.length; ++i) {
-      var scope = scopeChain[i];
-      var title = scope.typeName();
-      var emptyPlaceholder = null;
-      var extraProperties = [];
+    let foundLocalScope = false;
+    const scopeChain = callFrame.scopeChain();
+    for (let i = 0; i < scopeChain.length; ++i) {
+      const scope = scopeChain[i];
+      let title = scope.typeName();
+      let emptyPlaceholder = null;
+      const extraProperties = [];
 
       switch (scope.type()) {
         case Protocol.Debugger.ScopeType.Local:
@@ -82,13 +82,13 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           if (thisObject)
             extraProperties.push(new SDK.RemoteObjectProperty('this', thisObject));
           if (i === 0) {
-            var exception = details.exception();
+            const exception = details.exception();
             if (exception) {
               extraProperties.push(new SDK.RemoteObjectProperty(
                   Common.UIString('Exception'), exception, undefined, undefined, undefined, undefined, undefined,
                   true));
             }
-            var returnValue = callFrame.returnValue();
+            const returnValue = callFrame.returnValue();
             if (returnValue) {
               extraProperties.push(new SDK.RemoteObjectProperty(
                   Common.UIString('Return value'), returnValue, undefined, undefined, undefined, undefined, undefined,
@@ -97,7 +97,7 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           }
           break;
         case Protocol.Debugger.ScopeType.Closure:
-          var scopeName = scope.name();
+          const scopeName = scope.name();
           if (scopeName)
             title = Common.UIString('Closure (%s)', UI.beautifyFunctionName(scopeName));
           else
@@ -106,15 +106,15 @@ Sources.ScopeChainSidebarPane = class extends UI.VBox {
           break;
       }
 
-      var subtitle = scope.description();
+      let subtitle = scope.description();
       if (!title || title === subtitle)
         subtitle = undefined;
 
-      var titleElement = createElementWithClass('div', 'scope-chain-sidebar-pane-section-header');
+      const titleElement = createElementWithClass('div', 'scope-chain-sidebar-pane-section-header');
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-subtitle').textContent = subtitle;
       titleElement.createChild('div', 'scope-chain-sidebar-pane-section-title').textContent = title;
 
-      var section = new ObjectUI.ObjectPropertiesSection(
+      const section = new ObjectUI.ObjectPropertiesSection(
           Sources.SourceMapNamesResolver.resolveScopeInObject(scope), titleElement, this._linkifier, emptyPlaceholder,
           true, extraProperties);
       this._expandController.watchSection(title + (subtitle ? ':' + subtitle : ''), section);

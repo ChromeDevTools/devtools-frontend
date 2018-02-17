@@ -33,9 +33,9 @@ SDK.Target = class extends Protocol.TargetBase {
     this._creatingModels = true;
     // TODO(dgozman): fix this in bindings layer.
     this.model(SDK.ResourceTreeModel);
-    var registered = Array.from(SDK.SDKModel._registeredModels.keys());
-    for (var modelClass of registered) {
-      var info = SDK.SDKModel._registeredModels.get(modelClass);
+    const registered = Array.from(SDK.SDKModel._registeredModels.keys());
+    for (const modelClass of registered) {
+      const info = SDK.SDKModel._registeredModels.get(modelClass);
       if (info.autostart || required.has(modelClass))
         this.model(modelClass);
     }
@@ -145,7 +145,7 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   dispose() {
     this._targetManager.removeTarget(this);
-    for (var model of this._modelByConstructor.valuesArray())
+    for (const model of this._modelByConstructor.valuesArray())
       model.dispose();
   }
 
@@ -156,11 +156,11 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   model(modelClass) {
     if (!this._modelByConstructor.get(modelClass)) {
-      var info = SDK.SDKModel._registeredModels.get(modelClass);
+      const info = SDK.SDKModel._registeredModels.get(modelClass);
       if (info === undefined)
         throw 'Model class is not registered @' + new Error().stack;
       if ((this._capabilitiesMask & info.capabilities) === info.capabilities) {
-        var model = new modelClass(this);
+        const model = new modelClass(this);
         this._modelByConstructor.set(modelClass, model);
         if (!this._creatingModels)
           this._targetManager.modelAdded(this, modelClass, model);
@@ -188,7 +188,7 @@ SDK.Target = class extends Protocol.TargetBase {
    */
   setInspectedURL(inspectedURL) {
     this._inspectedURL = inspectedURL;
-    var parsedURL = inspectedURL.asParsedURL();
+    const parsedURL = inspectedURL.asParsedURL();
     this._inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this._id;
     if (!this.parentTarget())
       InspectorFrontendHost.inspectedURLChanged(inspectedURL || '');
@@ -205,8 +205,8 @@ SDK.Target = class extends Protocol.TargetBase {
       return Promise.resolve();
     this._isSuspended = true;
 
-    var promises = [];
-    for (var model of this.models().values())
+    const promises = [];
+    for (const model of this.models().values())
       promises.push(model.suspendModel());
     return Promise.all(promises);
   }
@@ -219,8 +219,8 @@ SDK.Target = class extends Protocol.TargetBase {
       return Promise.resolve();
     this._isSuspended = false;
 
-    var promises = [];
-    for (var model of this.models().values())
+    const promises = [];
+    for (const model of this.models().values())
       promises.push(model.resumeModel());
     return Promise.all(promises);
   }

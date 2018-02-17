@@ -39,10 +39,10 @@ SDK.SourceMapManager = class extends Common.Object {
     if (isEnabled === this._isEnabled)
       return;
     this._isEnabled = isEnabled;
-    var clients = Array.from(this._resolvedSourceMapURL.keys());
-    for (var client of clients) {
-      var relativeSourceURL = this._relativeSourceURL.get(client);
-      var relativeSourceMapURL = this._relativeSourceMapURL.get(client);
+    const clients = Array.from(this._resolvedSourceMapURL.keys());
+    for (const client of clients) {
+      const relativeSourceURL = this._relativeSourceURL.get(client);
+      const relativeSourceMapURL = this._relativeSourceMapURL.get(client);
       this.detachSourceMap(client);
       this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
     }
@@ -55,12 +55,12 @@ SDK.SourceMapManager = class extends Common.Object {
     if (event.data !== this._target)
       return;
 
-    var clients = Array.from(this._resolvedSourceMapURL.keys());
-    for (var client of clients) {
-      var relativeSourceURL = this._relativeSourceURL.get(client);
-      var relativeSourceMapURL = this._relativeSourceMapURL.get(client);
-      var resolvedSourceMapURL = this._resolvedSourceMapURL.get(client);
-      var sourceMapURL = this._resolveRelativeURLs(relativeSourceURL, relativeSourceMapURL).sourceMapURL;
+    const clients = Array.from(this._resolvedSourceMapURL.keys());
+    for (const client of clients) {
+      const relativeSourceURL = this._relativeSourceURL.get(client);
+      const relativeSourceMapURL = this._relativeSourceMapURL.get(client);
+      const resolvedSourceMapURL = this._resolvedSourceMapURL.get(client);
+      const sourceMapURL = this._resolveRelativeURLs(relativeSourceURL, relativeSourceMapURL).sourceMapURL;
       if (sourceMapURL !== resolvedSourceMapURL) {
         this.detachSourceMap(client);
         this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
@@ -73,7 +73,7 @@ SDK.SourceMapManager = class extends Common.Object {
    * @return {?SDK.SourceMap}
    */
   sourceMapForClient(client) {
-    var sourceMapURL = this._resolvedSourceMapURL.get(client);
+    const sourceMapURL = this._resolvedSourceMapURL.get(client);
     return sourceMapURL ? this._sourceMapByURL.get(sourceMapURL) || null : null;
   }
 
@@ -106,8 +106,9 @@ SDK.SourceMapManager = class extends Common.Object {
   _resolveRelativeURLs(sourceURL, sourceMapURL) {
     // |sourceURL| can be a random string, but is generally an absolute path.
     // Complete it to inspected page url for relative links.
-    var resolvedSourceURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), sourceURL);
-    var resolvedSourceMapURL = resolvedSourceURL ? Common.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL) : null;
+    const resolvedSourceURL = Common.ParsedURL.completeURL(this._target.inspectedURL(), sourceURL);
+    const resolvedSourceMapURL =
+        resolvedSourceURL ? Common.ParsedURL.completeURL(resolvedSourceURL, sourceMapURL) : null;
     return {sourceURL: resolvedSourceURL, sourceMapURL: resolvedSourceMapURL};
   }
 
@@ -120,7 +121,7 @@ SDK.SourceMapManager = class extends Common.Object {
     if (!sourceMapURL)
       return;
     console.assert(!this._resolvedSourceMapURL.has(client), 'SourceMap is already attached to client');
-    var resolvedURLs = this._resolveRelativeURLs(sourceURL, sourceMapURL);
+    const resolvedURLs = this._resolveRelativeURLs(sourceURL, sourceMapURL);
     if (!resolvedURLs.sourceURL || !resolvedURLs.sourceMapURL)
       return;
     this._relativeSourceURL.set(client, sourceURL);
@@ -154,7 +155,7 @@ SDK.SourceMapManager = class extends Common.Object {
     function onTextSourceMapLoaded(sourceMapURL, sourceMap) {
       if (!sourceMap)
         return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
-      var factoryExtension = this._factoryForSourceMap(sourceMap);
+      const factoryExtension = this._factoryForSourceMap(sourceMap);
       if (!factoryExtension)
         return Promise.resolve(/** @type {?SDK.SourceMap} */ (sourceMap));
       return factoryExtension.instance()
@@ -170,17 +171,17 @@ SDK.SourceMapManager = class extends Common.Object {
      */
     function onSourceMap(sourceMapURL, sourceMap) {
       this._sourceMapLoadedForTest();
-      var clients = this._sourceMapURLToLoadingClients.get(sourceMapURL);
+      const clients = this._sourceMapURLToLoadingClients.get(sourceMapURL);
       this._sourceMapURLToLoadingClients.deleteAll(sourceMapURL);
       if (!clients.size)
         return;
       if (!sourceMap) {
-        for (var client of clients)
+        for (const client of clients)
           this.dispatchEventToListeners(SDK.SourceMapManager.Events.SourceMapFailedToAttach, client);
         return;
       }
       this._sourceMapByURL.set(sourceMapURL, sourceMap);
-      for (var client of clients)
+      for (const client of clients)
         attach.call(this, sourceMapURL, client);
     }
 
@@ -191,7 +192,7 @@ SDK.SourceMapManager = class extends Common.Object {
      */
     function attach(sourceMapURL, client) {
       this._sourceMapURLToClients.set(sourceMapURL, client);
-      var sourceMap = this._sourceMapByURL.get(sourceMapURL);
+      const sourceMap = this._sourceMapByURL.get(sourceMapURL);
       this.dispatchEventToListeners(
           SDK.SourceMapManager.Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
     }
@@ -202,11 +203,11 @@ SDK.SourceMapManager = class extends Common.Object {
    * @return {?Runtime.Extension}
    */
   _factoryForSourceMap(sourceMap) {
-    var sourceExtensions = new Set();
-    for (var url of sourceMap.sourceURLs())
+    const sourceExtensions = new Set();
+    for (const url of sourceMap.sourceURLs())
       sourceExtensions.add(Common.ParsedURL.extractExtension(url));
-    for (var runtimeExtension of self.runtime.extensions(SDK.SourceMapFactory)) {
-      var supportedExtensions = new Set(runtimeExtension.descriptor()['extensions']);
+    for (const runtimeExtension of self.runtime.extensions(SDK.SourceMapFactory)) {
+      const supportedExtensions = new Set(runtimeExtension.descriptor()['extensions']);
       if (supportedExtensions.containsAll(sourceExtensions))
         return runtimeExtension;
     }
@@ -217,7 +218,7 @@ SDK.SourceMapManager = class extends Common.Object {
    * @param {!T} client
    */
   detachSourceMap(client) {
-    var sourceMapURL = this._resolvedSourceMapURL.get(client);
+    const sourceMapURL = this._resolvedSourceMapURL.get(client);
     this._relativeSourceURL.delete(client);
     this._relativeSourceMapURL.delete(client);
     this._resolvedSourceMapURL.delete(client);
@@ -230,7 +231,7 @@ SDK.SourceMapManager = class extends Common.Object {
       return;
     }
     this._sourceMapURLToClients.delete(sourceMapURL, client);
-    var sourceMap = this._sourceMapByURL.get(sourceMapURL);
+    const sourceMap = this._sourceMapByURL.get(sourceMapURL);
     if (!this._sourceMapURLToClients.has(sourceMapURL))
       this._sourceMapByURL.delete(sourceMapURL);
     this.dispatchEventToListeners(

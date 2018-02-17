@@ -41,7 +41,7 @@ PerfUI.FilmStripView = class extends UI.HBox {
     this._model = filmStripModel;
     this._zeroTime = zeroTime;
     this._spanTime = spanTime;
-    var frames = filmStripModel.frames();
+    const frames = filmStripModel.frames();
     if (!frames.length) {
       this.reset();
       return;
@@ -54,11 +54,11 @@ PerfUI.FilmStripView = class extends UI.HBox {
    * @return {!Promise<!Element>}
    */
   createFrameElement(frame) {
-    var time = frame.timestamp;
-    var element = createElementWithClass('div', 'frame');
+    const time = frame.timestamp;
+    const element = createElementWithClass('div', 'frame');
     element.title = Common.UIString('Doubleclick to zoom image. Click to view preceding requests.');
     element.createChild('div', 'time').textContent = Number.millisToString(time - this._zeroTime);
-    var imageElement = element.createChild('div', 'thumbnail').createChild('img');
+    const imageElement = element.createChild('div', 'thumbnail').createChild('img');
     element.addEventListener(
         'mousedown', this._onMouseEvent.bind(this, PerfUI.FilmStripView.Events.FrameSelected, time), false);
     element.addEventListener(
@@ -93,15 +93,15 @@ PerfUI.FilmStripView = class extends UI.HBox {
     }
     // Using the first frame to fill the interval between recording start
     // and a moment the frame is taken.
-    var frames = this._model.frames();
-    var index = Math.max(frames.upperBound(time, comparator) - 1, 0);
+    const frames = this._model.frames();
+    const index = Math.max(frames.upperBound(time, comparator) - 1, 0);
     return frames[index];
   }
 
   update() {
     if (!this._model)
       return;
-    var frames = this._model.frames();
+    const frames = this._model.frames();
     if (!frames.length)
       return;
 
@@ -110,8 +110,8 @@ PerfUI.FilmStripView = class extends UI.HBox {
       return;
     }
 
-    var width = this.contentElement.clientWidth;
-    var scale = this._spanTime / width;
+    const width = this.contentElement.clientWidth;
+    const scale = this._spanTime / width;
     this.createFrameElement(frames[0]).then(
         continueWhenFrameImageLoaded.bind(this));  // Calculate frame width basing on the first frame.
 
@@ -120,13 +120,13 @@ PerfUI.FilmStripView = class extends UI.HBox {
      * @param {!Element} element0
      */
     function continueWhenFrameImageLoaded(element0) {
-      var frameWidth = Math.ceil(UI.measurePreferredSize(element0, this.contentElement).width);
+      const frameWidth = Math.ceil(UI.measurePreferredSize(element0, this.contentElement).width);
       if (!frameWidth)
         return;
 
-      var promises = [];
-      for (var pos = frameWidth; pos < width; pos += frameWidth) {
-        var time = pos * scale + this._zeroTime;
+      const promises = [];
+      for (let pos = frameWidth; pos < width; pos += frameWidth) {
+        const time = pos * scale + this._zeroTime;
         promises.push(this.createFrameElement(this.frameByTime(time)).then(fixWidth));
       }
       Promise.all(promises).then(appendElements.bind(this));
@@ -146,7 +146,7 @@ PerfUI.FilmStripView = class extends UI.HBox {
      */
     function appendElements(elements) {
       this.contentElement.removeChildren();
-      for (var i = 0; i < elements.length; ++i)
+      for (let i = 0; i < elements.length; ++i)
         this.contentElement.appendChild(elements[i]);
     }
   }
@@ -207,9 +207,9 @@ PerfUI.FilmStripView.Dialog = class {
    * @param {number=} zeroTime
    */
   constructor(filmStripFrame, zeroTime) {
-    var prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));
+    const prevButton = UI.createTextButton('\u25C0', this._onPrevFrame.bind(this));
     prevButton.title = Common.UIString('Previous frame');
-    var nextButton = UI.createTextButton('\u25B6', this._onNextFrame.bind(this));
+    const nextButton = UI.createTextButton('\u25B6', this._onNextFrame.bind(this));
     nextButton.title = Common.UIString('Next frame');
 
     this._fragment = UI.Fragment.build`
@@ -302,7 +302,7 @@ PerfUI.FilmStripView.Dialog = class {
    * @return {!Promise<undefined>}
    */
   _render() {
-    var frame = this._frames[this._index];
+    const frame = this._frames[this._index];
     this._fragment.$('time').textContent = Number.millisToString(frame.timestamp - this._zeroTime);
     return frame.imageDataPromise()
         .then(PerfUI.FilmStripView._setImageData.bind(null, this._fragment.$('image')))

@@ -35,7 +35,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
 
     this.element.classList.add('storage-view', 'table');
 
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
       {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, longText: true, weight: 50}
     ]);
@@ -52,7 +52,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     this._splitWidget.setSecondIsSidebar(true);
 
     this._previewPanel = new UI.VBox();
-    var resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
+    const resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
     this._splitWidget.setMainWidget(this._dataGrid.asWidget());
     this._splitWidget.setSidebarWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
@@ -103,12 +103,12 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     if (!this.isShowing() || !this._dataGrid)
       return;
 
-    var storageData = event.data;
-    var rootNode = this._dataGrid.rootNode();
-    var children = rootNode.children;
+    const storageData = event.data;
+    const rootNode = this._dataGrid.rootNode();
+    const children = rootNode.children;
 
-    for (var i = 0; i < children.length; ++i) {
-      var childNode = children[i];
+    for (let i = 0; i < children.length; ++i) {
+      const childNode = children[i];
       if (childNode.data.key === storageData.key) {
         rootNode.removeChild(childNode);
         this.setCanDeleteSelected(children.length > 1);
@@ -124,16 +124,16 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     if (!this.isShowing() || !this._dataGrid)
       return;
 
-    var storageData = event.data;
-    var rootNode = this._dataGrid.rootNode();
-    var children = rootNode.children;
+    const storageData = event.data;
+    const rootNode = this._dataGrid.rootNode();
+    const children = rootNode.children;
 
-    for (var i = 0; i < children.length; ++i) {
+    for (let i = 0; i < children.length; ++i) {
       if (children[i].data.key === storageData.key)
         return;
     }
 
-    var childNode = new DataGrid.DataGridNode({key: storageData.key, value: storageData.value}, false);
+    const childNode = new DataGrid.DataGridNode({key: storageData.key, value: storageData.value}, false);
     rootNode.insertChild(childNode, children.length - 1);
   }
 
@@ -144,8 +144,8 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
     if (!this.isShowing() || !this._dataGrid)
       return;
 
-    var storageData = event.data;
-    var childNode = this._dataGrid.rootNode().children.find(child => child.data.key === storageData.key);
+    const storageData = event.data;
+    const childNode = this._dataGrid.rootNode().children.find(child => child.data.key === storageData.key);
     if (!childNode || childNode.data.value === storageData.value)
       return;
 
@@ -161,21 +161,21 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!Array<!Array<string>>} items
    */
   _showDOMStorageItems(items) {
-    var rootNode = this._dataGrid.rootNode();
-    var selectedKey = null;
-    for (var node of rootNode.children) {
+    const rootNode = this._dataGrid.rootNode();
+    let selectedKey = null;
+    for (const node of rootNode.children) {
       if (!node.selected)
         continue;
       selectedKey = node.data.key;
       break;
     }
     rootNode.removeChildren();
-    var selectedNode = null;
-    var filteredItems = item => `${item[0]} ${item[1]}`;
-    for (var item of this.filter(items, filteredItems)) {
-      var key = item[0];
-      var value = item[1];
-      var node = new DataGrid.DataGridNode({key: key, value: value}, false);
+    let selectedNode = null;
+    const filteredItems = item => `${item[0]} ${item[1]}`;
+    for (const item of this.filter(items, filteredItems)) {
+      const key = item[0];
+      const value = item[1];
+      const node = new DataGrid.DataGridNode({key: key, value: value}, false);
       node.selectable = true;
       rootNode.appendChild(node);
       if (!selectedNode || key === selectedKey)
@@ -214,7 +214,7 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
   }
 
   _editingCallback(editingNode, columnIdentifier, oldText, newText) {
-    var domStorage = this._domStorage;
+    const domStorage = this._domStorage;
     if (columnIdentifier === 'key') {
       if (typeof oldText === 'string')
         domStorage.removeItem(oldText);
@@ -229,10 +229,10 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {!DataGrid.DataGridNode} masterNode
    */
   _removeDupes(masterNode) {
-    var rootNode = this._dataGrid.rootNode();
-    var children = rootNode.children;
-    for (var i = children.length - 1; i >= 0; --i) {
-      var childNode = children[i];
+    const rootNode = this._dataGrid.rootNode();
+    const children = rootNode.children;
+    for (let i = children.length - 1; i >= 0; --i) {
+      const childNode = children[i];
       if ((childNode.data.key === masterNode.data.key) && (masterNode !== childNode))
         rootNode.removeChild(childNode);
     }
@@ -266,16 +266,16 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
    * @param {?DataGrid.DataGridNode} entry
    */
   async _previewEntry(entry) {
-    var value = entry && entry.data && entry.data.value;
+    const value = entry && entry.data && entry.data.value;
     if (!value) {
       this._showPreview(null, value);
       return;
     }
-    var protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
-    var url = `${protocol}://${entry.key}`;
-    var provider =
+    const protocol = this._domStorage.isLocalStorage ? 'localstorage' : 'sessionstorage';
+    const url = `${protocol}://${entry.key}`;
+    const provider =
         Common.StaticContentProvider.fromString(url, Common.resourceTypes.XHR, /** @type {string} */ (value));
-    var preview = await SourceFrame.PreviewFactory.createPreview(provider, 'text/plain');
+    const preview = await SourceFrame.PreviewFactory.createPreview(provider, 'text/plain');
     // Selection could've changed while the preview was loaded
     if (!entry.selected)
       return;

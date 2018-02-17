@@ -40,7 +40,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
     this._agent = target.applicationCacheAgent();
     this._agent.enable();
 
-    var resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this._frameNavigated, this);
     resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameDetached, this._frameDetached, this);
 
@@ -55,14 +55,14 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   async _frameNavigated(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     if (frame.isMainFrame()) {
       this._mainFrameNavigated();
       return;
     }
 
-    var frameId = frame.id;
-    var manifestURL = await this._agent.getManifestForFrame(frameId);
+    const frameId = frame.id;
+    const manifestURL = await this._agent.getManifestForFrame(frameId);
     if (manifestURL !== null && !manifestURL)
       this._frameManifestRemoved(frameId);
   }
@@ -71,7 +71,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @param {!Common.Event} event
    */
   _frameDetached(event) {
-    var frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
+    const frame = /** @type {!SDK.ResourceTreeFrame} */ (event.data);
     this._frameManifestRemoved(frame.id);
   }
 
@@ -82,8 +82,8 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
   }
 
   async _mainFrameNavigated() {
-    var framesWithManifests = await this._agent.getFramesWithManifests();
-    for (var frame of framesWithManifests || [])
+    const framesWithManifests = await this._agent.getFramesWithManifests();
+    for (const frame of framesWithManifests || [])
       this._frameManifestUpdated(frame.frameId, frame.manifestURL, frame.status);
   }
 
@@ -104,7 +104,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
     if (this._manifestURLsByFrame[frameId] && manifestURL !== this._manifestURLsByFrame[frameId])
       this._frameManifestRemoved(frameId);
 
-    var statusChanged = this._statuses[frameId] !== status;
+    const statusChanged = this._statuses[frameId] !== status;
     this._statuses[frameId] = status;
 
     if (!this._manifestURLsByFrame[frameId]) {

@@ -126,7 +126,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   _updateContentElementSize() {
-    var offsetWidth = this._vScrollElement.offsetLeft;
+    let offsetWidth = this._vScrollElement.offsetLeft;
     if (!offsetWidth)
       offsetWidth = this.contentElement.offsetWidth;
     this._offsetWidth = offsetWidth;
@@ -179,9 +179,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!Event} e
    */
   _onMouseWheel(e) {
-    var doZoomInstead = e.shiftKey ^ (Common.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
-    var panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
-    var panHorizontally = doZoomInstead && Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY);
+    const doZoomInstead = e.shiftKey ^ (Common.moduleSetting('flamechartMouseWheelAction').get() === 'zoom');
+    const panVertically = !doZoomInstead && (e.wheelDeltaY || Math.abs(e.wheelDeltaX) === 120);
+    const panHorizontally = doZoomInstead && Math.abs(e.wheelDeltaX) > Math.abs(e.wheelDeltaY);
     if (panVertically) {
       this._vScrollElement.scrollTop -= (e.wheelDeltaY || e.wheelDeltaX) / 120 * this._offsetHeight / 8;
     } else if (panHorizontally) {
@@ -216,12 +216,12 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!MouseEvent} event
    */
   _dragging(event) {
-    var pixelShift = this._dragStartPointX - event.pageX;
+    const pixelShift = this._dragStartPointX - event.pageX;
     this._dragStartPointX = event.pageX;
     this._muteAnimation = true;
     this._handlePanGesture(pixelShift);
     this._muteAnimation = false;
-    var pixelScroll = this._dragStartPointY - event.pageY;
+    const pixelScroll = this._dragStartPointY - event.pageY;
     this._vScrollElement.scrollTop = this._dragStartScrollTop + pixelScroll;
   }
 
@@ -240,7 +240,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     this._selectionOffsetShiftX = event.offsetX - event.pageX;
     this._selectionOffsetShiftY = event.offsetY - event.pageY;
     this._selectionStartX = event.offsetX;
-    var style = this._selectionOverlay.style;
+    const style = this._selectionOverlay.style;
     style.left = this._selectionStartX + 'px';
     style.width = '1px';
     this._selectedTimeSpanLabel.textContent = '';
@@ -260,9 +260,9 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!MouseEvent} event
    */
   _rangeSelectionDragging(event) {
-    var x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
-    var start = this.pixelToTime(this._selectionStartX);
-    var end = this.pixelToTime(x);
+    const x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
+    const start = this.pixelToTime(this._selectionStartX);
+    const end = this.pixelToTime(x);
     this._rangeSelectionStart = Math.min(start, end);
     this._rangeSelectionEnd = Math.max(start, end);
     this._updateRangeSelectionOverlay();
@@ -270,13 +270,13 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   _updateRangeSelectionOverlay() {
-    var /** @const */ margin = 100;
-    var left = Number.constrain(this.timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
-    var right = Number.constrain(this.timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
-    var style = this._selectionOverlay.style;
+    const /** @const */ margin = 100;
+    const left = Number.constrain(this.timeToPosition(this._rangeSelectionStart), -margin, this._offsetWidth + margin);
+    const right = Number.constrain(this.timeToPosition(this._rangeSelectionEnd), -margin, this._offsetWidth + margin);
+    const style = this._selectionOverlay.style;
     style.left = left + 'px';
     style.width = (right - left) + 'px';
-    var timeSpan = this._rangeSelectionEnd - this._rangeSelectionStart;
+    const timeSpan = this._rangeSelectionEnd - this._rangeSelectionStart;
     this._selectedTimeSpanLabel.textContent = Number.preciseMillisToString(timeSpan, 2);
   }
 
@@ -359,8 +359,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
   _handleZoomPanKeys(e) {
     if (!UI.KeyboardShortcut.hasNoModifiers(e))
       return;
-    var zoomFactor = e.shiftKey ? 0.8 : 0.3;
-    var panOffset = e.shiftKey ? 320 : 80;
+    const zoomFactor = e.shiftKey ? 0.8 : 0.3;
+    const panOffset = e.shiftKey ? 320 : 80;
     switch (e.code) {
       case 'KeyA':
         this._handlePanGesture(-panOffset);
@@ -385,8 +385,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
    */
   _handleZoomGesture(zoom) {
     this._cancelAnimation();
-    var bounds = {left: this._timeWindowLeft, right: this._timeWindowRight};
-    var cursorTime = this.pixelToTime(this._lastMouseOffsetX);
+    const bounds = {left: this._timeWindowLeft, right: this._timeWindowRight};
+    const cursorTime = this.pixelToTime(this._lastMouseOffsetX);
     bounds.left += (bounds.left - cursorTime) * zoom;
     bounds.right += (bounds.right - cursorTime) * zoom;
     this._requestWindowTimes(bounds);
@@ -397,8 +397,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
    */
   _handlePanGesture(offset) {
     this._cancelAnimation();
-    var bounds = {left: this._timeWindowLeft, right: this._timeWindowRight};
-    var timeOffset = Number.constrain(
+    const bounds = {left: this._timeWindowLeft, right: this._timeWindowRight};
+    const timeOffset = Number.constrain(
         this.pixelToTimeOffset(offset), this._minimumBoundary - bounds.left,
         this._totalTime + this._minimumBoundary - bounds.right);
     bounds.left += timeOffset;
@@ -410,7 +410,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {!{left: number, right: number}} bounds
    */
   _requestWindowTimes(bounds) {
-    var maxBound = this._minimumBoundary + this._totalTime;
+    const maxBound = this._minimumBoundary + this._totalTime;
     if (bounds.left < this._minimumBoundary) {
       bounds.right = Math.min(bounds.right + this._minimumBoundary - bounds.left, maxBound);
       bounds.left = this._minimumBoundary;

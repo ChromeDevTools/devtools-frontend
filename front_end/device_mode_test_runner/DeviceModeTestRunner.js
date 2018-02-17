@@ -8,7 +8,7 @@
  */
 
 DeviceModeTestRunner.buildFakePhone = function(overrides) {
-  var StandardPhoneJSON = {
+  const StandardPhoneJSON = {
     'show-by-default': false,
     'title': 'Fake Phone 1',
 
@@ -40,6 +40,6 @@ DeviceModeTestRunner.buildFakePhone = function(overrides) {
     ]
   };
 
-  var json = Object.assign(StandardPhoneJSON, overrides || {});
+  const json = Object.assign(StandardPhoneJSON, overrides || {});
   return Emulation.EmulatedDevice.fromJSONV1(json);
 };

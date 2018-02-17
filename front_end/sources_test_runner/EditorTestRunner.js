@@ -8,7 +8,8 @@
  */
 
 SourcesTestRunner.createTestEditor = function(clientHeight, textEditorDelegate) {
-  var textEditor = new SourceFrame.SourcesTextEditor(textEditorDelegate || new SourceFrame.SourcesTextEditorDelegate());
+  const textEditor =
+      new SourceFrame.SourcesTextEditor(textEditorDelegate || new SourceFrame.SourcesTextEditorDelegate());
   clientHeight = clientHeight || 100;
   textEditor.element.style.height = clientHeight + 'px';
   textEditor.element.style.flex = 'none';
@@ -24,13 +25,13 @@ function textWithSelection(text, selections) {
     return line.substring(0, column) + cursorChar + line.substring(column);
   }
 
-  var lines = text.split('\n');
+  const lines = text.split('\n');
   selections.sort(TextUtils.TextRange.comparator);
 
-  for (var i = selections.length - 1; i >= 0; --i) {
-    var selection = selections[i];
+  for (let i = selections.length - 1; i >= 0; --i) {
+    let selection = selections[i];
     selection = selection.normalize();
-    var endCursorChar = (selection.isEmpty() ? '|' : '<');
+    const endCursorChar = (selection.isEmpty() ? '|' : '<');
     lines[selection.endLine] = lineWithCursor(lines[selection.endLine], selection.endColumn, endCursorChar);
 
     if (!selection.isEmpty())
@@ -41,7 +42,7 @@ function textWithSelection(text, selections) {
 }
 
 SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) {
-  var text = textWithSelection(textEditor.text(), textEditor.selections());
+  let text = textWithSelection(textEditor.text(), textEditor.selections());
 
   if (dumpWhiteSpaces)
     text = text.replace(/ /g, '.');
@@ -50,10 +51,10 @@ SourcesTestRunner.dumpTextWithSelection = function(textEditor, dumpWhiteSpaces) 
 };
 
 SourcesTestRunner.setLineSelections = function(editor, selections) {
-  var coords = [];
+  const coords = [];
 
-  for (var i = 0; i < selections.length; ++i) {
-    var selection = selections[i];
+  for (let i = 0; i < selections.length; ++i) {
+    const selection = selections[i];
 
     if (typeof selection.column === 'number') {
       selection.from = selection.column;
@@ -68,10 +69,10 @@ SourcesTestRunner.setLineSelections = function(editor, selections) {
 
 SourcesTestRunner.typeIn = function(editor, typeText, callback) {
   callback = callback || new Function();
-  var noop = new Function();
+  const noop = new Function();
 
-  for (var charIndex = 0; charIndex < typeText.length; ++charIndex) {
-    var iterationCallback = (charIndex + 1 === typeText.length ? callback : noop);
+  for (let charIndex = 0; charIndex < typeText.length; ++charIndex) {
+    const iterationCallback = (charIndex + 1 === typeText.length ? callback : noop);
 
     switch (typeText[charIndex]) {
       case '\n':
@@ -95,14 +96,21 @@ SourcesTestRunner.typeIn = function(editor, typeText, callback) {
   }
 };
 
-var eventCodes = {Enter: 13, Home: 36, ArrowLeft: 37, ArrowUp: 38, ArrowRight: 39, ArrowDown: 40};
+const eventCodes = {
+  Enter: 13,
+  Home: 36,
+  ArrowLeft: 37,
+  ArrowUp: 38,
+  ArrowRight: 39,
+  ArrowDown: 40
+};
 
 function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers) {
   function eventPreventDefault() {
     this._handled = true;
   }
 
-  var event = {
+  const event = {
     _handled: false,
     type: eventType,
     keyCode: code,
@@ -113,7 +121,7 @@ function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers)
   };
 
   if (modifiers) {
-    for (var i = 0; i < modifiers.length; ++i)
+    for (let i = 0; i < modifiers.length; ++i)
       event[modifiers[i]] = true;
   }
 
@@ -121,7 +129,7 @@ function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers)
 }
 
 function fakeCodeMirrorKeyEvent(editor, eventType, code, charCode, modifiers) {
-  var event = createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers);
+  const event = createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers);
 
   switch (eventType) {
     case 'keydown':
@@ -147,8 +155,8 @@ function fakeCodeMirrorInputEvent(editor, character) {
 
 SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
   modifiers = modifiers || [];
-  var code;
-  var charCode;
+  let code;
+  let charCode;
 
   if (originalCode === '\'') {
     code = 222;
@@ -163,7 +171,7 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
     charCode = originalCode.charCodeAt(0);
   }
 
-  var code = code || eventCodes[originalCode] || originalCode;
+  code = code || eventCodes[originalCode] || originalCode;
 
   if (typeof code === 'string')
     code = code.charCodeAt(0);
@@ -190,13 +198,13 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
 };
 
 SourcesTestRunner.dumpSelectionStats = function(textEditor) {
-  var listHashMap = {};
-  var sortedKeys = [];
-  var selections = textEditor.selections();
+  const listHashMap = {};
+  const sortedKeys = [];
+  const selections = textEditor.selections();
 
-  for (var i = 0; i < selections.length; ++i) {
-    var selection = selections[i];
-    var text = textEditor.text(selection);
+  for (let i = 0; i < selections.length; ++i) {
+    const selection = selections[i];
+    const text = textEditor.text(selection);
 
     if (!listHashMap[text]) {
       listHashMap[text] = 1;
@@ -206,8 +214,8 @@ SourcesTestRunner.dumpSelectionStats = function(textEditor) {
     }
   }
 
-  for (var i = 0; i < sortedKeys.length; ++i) {
-    var keyName = sortedKeys[i];
+  for (let i = 0; i < sortedKeys.length; ++i) {
+    let keyName = sortedKeys[i];
 
     if (!keyName.length)
       keyName = '<Empty string>';

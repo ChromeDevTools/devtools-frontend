@@ -15,7 +15,7 @@ Formatter.FormatterWorkerPool = class {
    * @return {!Common.Worker}
    */
   _createWorker() {
-    var worker = new Common.Worker('formatter_worker');
+    const worker = new Common.Worker('formatter_worker');
     worker.onmessage = this._onWorkerMessage.bind(this, worker);
     worker.onerror = this._onWorkerError.bind(this, worker);
     return worker;
@@ -25,13 +25,13 @@ Formatter.FormatterWorkerPool = class {
     if (!this._taskQueue.length)
       return;
 
-    var freeWorker = this._workerTasks.keysArray().find(worker => !this._workerTasks.get(worker));
+    let freeWorker = this._workerTasks.keysArray().find(worker => !this._workerTasks.get(worker));
     if (!freeWorker && this._workerTasks.size < Formatter.FormatterWorkerPool.MaxWorkers)
       freeWorker = this._createWorker();
     if (!freeWorker)
       return;
 
-    var task = this._taskQueue.shift();
+    const task = this._taskQueue.shift();
     this._workerTasks.set(freeWorker, task);
     freeWorker.postMessage({method: task.method, params: task.params});
   }
@@ -41,7 +41,7 @@ Formatter.FormatterWorkerPool = class {
    * @param {!MessageEvent} event
    */
   _onWorkerMessage(worker, event) {
-    var task = this._workerTasks.get(worker);
+    const task = this._workerTasks.get(worker);
     if (task.isChunked && event.data && !event.data['isLastChunk']) {
       task.callback(event.data);
       return;
@@ -58,11 +58,11 @@ Formatter.FormatterWorkerPool = class {
    */
   _onWorkerError(worker, event) {
     console.error(event);
-    var task = this._workerTasks.get(worker);
+    const task = this._workerTasks.get(worker);
     worker.terminate();
     this._workerTasks.delete(worker);
 
-    var newWorker = this._createWorker();
+    const newWorker = this._createWorker();
     this._workerTasks.set(newWorker, null);
     this._processNextTask();
     task.callback(null);
@@ -74,7 +74,7 @@ Formatter.FormatterWorkerPool = class {
    * @param {function(boolean, *)} callback
    */
   _runChunkedTask(methodName, params, callback) {
-    var task = new Formatter.FormatterWorkerPool.Task(methodName, params, onData, true);
+    const task = new Formatter.FormatterWorkerPool.Task(methodName, params, onData, true);
     this._taskQueue.push(task);
     this._processNextTask();
 
@@ -86,8 +86,8 @@ Formatter.FormatterWorkerPool = class {
         callback(true, null);
         return;
       }
-      var isLastChunk = !!data['isLastChunk'];
-      var chunk = data['chunk'];
+      const isLastChunk = !!data['isLastChunk'];
+      const chunk = data['chunk'];
       callback(isLastChunk, chunk);
     }
   }
@@ -98,9 +98,9 @@ Formatter.FormatterWorkerPool = class {
    * @return {!Promise<*>}
    */
   _runTask(methodName, params) {
-    var callback;
-    var promise = new Promise(fulfill => callback = fulfill);
-    var task = new Formatter.FormatterWorkerPool.Task(methodName, params, callback, false);
+    let callback;
+    const promise = new Promise(fulfill => callback = fulfill);
+    const task = new Formatter.FormatterWorkerPool.Task(methodName, params, callback, false);
     this._taskQueue.push(task);
     this._processNextTask();
     return promise;
@@ -129,7 +129,7 @@ Formatter.FormatterWorkerPool = class {
    * @return {!Promise<!Formatter.FormatterWorkerPool.FormatResult>}
    */
   format(mimeType, content, indentString) {
-    var parameters = {mimeType: mimeType, content: content, indentString: indentString};
+    const parameters = {mimeType: mimeType, content: content, indentString: indentString};
     return /** @type {!Promise<!Formatter.FormatterWorkerPool.FormatResult>} */ (this._runTask('format', parameters));
   }
 
@@ -169,7 +169,7 @@ Formatter.FormatterWorkerPool = class {
      * @param {*} data
      */
     function onDataChunk(isLastChunk, data) {
-      var rules = /** @type {!Array<!Formatter.FormatterWorkerPool.CSSRule>} */ (data || []);
+      const rules = /** @type {!Array<!Formatter.FormatterWorkerPool.CSSRule>} */ (data || []);
       callback(isLastChunk, rules);
     }
   }
@@ -186,7 +186,7 @@ Formatter.FormatterWorkerPool = class {
      * @param {*} data
      */
     function onDataChunk(isLastChunk, data) {
-      var items = /** @type {!Array.<!Formatter.FormatterWorkerPool.JSOutlineItem>} */ (data || []);
+      const items = /** @type {!Array.<!Formatter.FormatterWorkerPool.JSOutlineItem>} */ (data || []);
       callback(isLastChunk, items);
     }
   }

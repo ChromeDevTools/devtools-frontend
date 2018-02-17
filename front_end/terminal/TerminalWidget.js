@@ -16,7 +16,7 @@ Terminal.TerminalWidget = class extends UI.VBox {
   }
 
   async _init() {
-    var backend = await Services.serviceManager.createRemoteService('Terminal');
+    const backend = await Services.serviceManager.createRemoteService('Terminal');
     this._initialized(backend);
   }
 
@@ -85,8 +85,8 @@ Terminal.TerminalWidget = class extends UI.VBox {
     this._mutationObserver.takeRecords();
     this._mutationObserver.disconnect();
     this._linkifier.reset();
-    var rows = this._term['rowContainer'].children;
-    for (var i = 0; i < rows.length; i++)
+    const rows = this._term['rowContainer'].children;
+    for (let i = 0; i < rows.length; i++)
       this._linkifyTerminalLine(rows[i]);
     this._mutationObserver.observe(this.contentElement, this._config);
   }
@@ -95,23 +95,23 @@ Terminal.TerminalWidget = class extends UI.VBox {
    * @param {string} string
    */
   _linkifyText(string) {
-    var regex1 = /([/\w\.-]*)+\:([\d]+)(?:\:([\d]+))?/;
-    var regex2 = /([/\w\.-]*)+\(([\d]+),([\d]+)\)/;
-    var container = createDocumentFragment();
+    const regex1 = /([/\w\.-]*)+\:([\d]+)(?:\:([\d]+))?/;
+    const regex2 = /([/\w\.-]*)+\(([\d]+),([\d]+)\)/;
+    const container = createDocumentFragment();
 
     while (string) {
-      var linkString = regex1.exec(string) || regex2.exec(string);
+      const linkString = regex1.exec(string) || regex2.exec(string);
       if (!linkString)
         break;
 
-      var text = linkString[0];
-      var path = linkString[1];
-      var lineNumber = parseInt(linkString[2], 10) - 1 || 0;
-      var columnNumber = parseInt(linkString[3], 10) - 1 || 0;
+      const text = linkString[0];
+      const path = linkString[1];
+      const lineNumber = parseInt(linkString[2], 10) - 1 || 0;
+      const columnNumber = parseInt(linkString[3], 10) - 1 || 0;
 
-      var uiSourceCode = Workspace.workspace.uiSourceCodes().find(uisc => uisc.url().endsWith(path));
-      var linkIndex = string.indexOf(text);
-      var nonLink = string.substring(0, linkIndex);
+      const uiSourceCode = Workspace.workspace.uiSourceCodes().find(uisc => uisc.url().endsWith(path));
+      const linkIndex = string.indexOf(text);
+      const nonLink = string.substring(0, linkIndex);
       container.appendChild(createTextNode(nonLink));
 
       if (uiSourceCode) {
@@ -133,15 +133,15 @@ Terminal.TerminalWidget = class extends UI.VBox {
    * @param {!Node} line
    */
   _linkifyTerminalLine(line) {
-    var node = line.firstChild;
+    let node = line.firstChild;
     while (node) {
       if (node.nodeType !== Node.TEXT_NODE) {
         node = node.nextSibling;
         continue;
       }
-      var nextNode = node.nextSibling;
+      const nextNode = node.nextSibling;
       node.remove();
-      var linkified = this._linkifyText(node.textContent);
+      const linkified = this._linkifyText(node.textContent);
       line.insertBefore(linkified, nextNode);
       node = nextNode;
     }

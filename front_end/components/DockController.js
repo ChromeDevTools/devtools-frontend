@@ -114,7 +114,7 @@ Components.DockController = class extends Common.Object {
       this._lastDockStateSetting.set(this._dockSide);
 
     this._savedFocus = document.deepActiveElement();
-    var eventData = {from: this._dockSide, to: dockSide};
+    const eventData = {from: this._dockSide, to: dockSide};
     this.dispatchEventToListeners(Components.DockController.Events.BeforeDockSideChanged, eventData);
     console.timeStamp('DockController.setIsDocked');
     this._dockSide = dockSide;
@@ -138,7 +138,7 @@ Components.DockController = class extends Common.Object {
 
   _toggleDockSide() {
     if (this._lastDockStateSetting.get() === this._currentDockStateSetting.get()) {
-      var index = this._states.indexOf(this._currentDockStateSetting.get()) || 0;
+      const index = this._states.indexOf(this._currentDockStateSetting.get()) || 0;
       this._lastDockStateSetting.set(this._states[(index + 1) % this._states.length]);
     }
     this.setDockSide(this._lastDockStateSetting.get());

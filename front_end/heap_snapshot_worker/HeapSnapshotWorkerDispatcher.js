@@ -39,9 +39,9 @@ HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
   }
 
   _findFunction(name) {
-    var path = name.split('.');
-    var result = this._global;
-    for (var i = 0; i < path.length; ++i)
+    const path = name.split('.');
+    let result = this._global;
+    for (let i = 0; i < path.length; ++i)
       result = result[path[i]];
     return result;
   }
@@ -55,33 +55,36 @@ HeapSnapshotWorker.HeapSnapshotWorkerDispatcher = class {
   }
 
   dispatchMessage(event) {
-    var data = /** @type {!HeapSnapshotModel.WorkerCommand } */ (event.data);
-    var response = {callId: data.callId};
+    const data = /** @type {!HeapSnapshotModel.WorkerCommand } */ (event.data);
+    const response = {callId: data.callId};
     try {
       switch (data.disposition) {
         case 'create':
-          var constructorFunction = this._findFunction(data.methodName);
+          const constructorFunction = this._findFunction(data.methodName);
           this._objects[data.objectId] = new constructorFunction(this);
           break;
         case 'dispose':
           delete this._objects[data.objectId];
           break;
-        case 'getter':
-          var object = this._objects[data.objectId];
-          var result = object[data.methodName];
+        case 'getter': {
+          const object = this._objects[data.objectId];
+          const result = object[data.methodName];
           response.result = result;
           break;
-        case 'factory':
-          var object = this._objects[data.objectId];
-          var result = object[data.methodName].apply(object, data.methodArguments);
+        }
+        case 'factory': {
+          const object = this._objects[data.objectId];
+          const result = object[data.methodName].apply(object, data.methodArguments);
           if (result)
             this._objects[data.newObjectId] = result;
           response.result = !!result;
           break;
-        case 'method':
-          var object = this._objects[data.objectId];
+        }
+        case 'method': {
+          const object = this._objects[data.objectId];
           response.result = object[data.methodName].apply(object, data.methodArguments);
           break;
+        }
         case 'evaluateForTest':
           try {
             response.result = self.eval(data.source);

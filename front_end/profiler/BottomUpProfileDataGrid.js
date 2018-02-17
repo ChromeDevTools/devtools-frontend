@@ -45,18 +45,18 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
    * @param {!Profiler.BottomUpProfileDataGridNode|!Profiler.BottomUpProfileDataGridTree} container
    */
   static _sharedPopulate(container) {
-    var remainingNodeInfos = container._remainingNodeInfos;
-    var count = remainingNodeInfos.length;
+    const remainingNodeInfos = container._remainingNodeInfos;
+    const count = remainingNodeInfos.length;
 
-    for (var index = 0; index < count; ++index) {
-      var nodeInfo = remainingNodeInfos[index];
-      var ancestor = nodeInfo.ancestor;
-      var focusNode = nodeInfo.focusNode;
-      var child = container.findChild(ancestor);
+    for (let index = 0; index < count; ++index) {
+      const nodeInfo = remainingNodeInfos[index];
+      const ancestor = nodeInfo.ancestor;
+      const focusNode = nodeInfo.focusNode;
+      let child = container.findChild(ancestor);
 
       // If we already have this child, then merge the data together.
       if (child) {
-        var totalAccountedFor = nodeInfo.totalAccountedFor;
+        const totalAccountedFor = nodeInfo.totalAccountedFor;
 
         child.self += focusNode.self;
 
@@ -77,7 +77,7 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
         container.appendChild(child);
       }
 
-      var parent = ancestor.parent;
+      const parent = ancestor.parent;
       if (parent && parent.parent) {
         nodeInfo.ancestor = parent;
         child._remainingNodeInfos.push(nodeInfo);
@@ -116,13 +116,13 @@ Profiler.BottomUpProfileDataGridNode = class extends Profiler.ProfileDataGridNod
 
     this.save();
 
-    var children = this.children;
-    var index = this.children.length;
+    const children = this.children;
+    let index = this.children.length;
 
     while (index--)
       children[index]._exclude(aCallUID);
 
-    var child = this.childrenByCallUID.get(aCallUID);
+    const child = this.childrenByCallUID.get(aCallUID);
 
     if (child)
       this.merge(child, true);
@@ -178,28 +178,28 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
     this.deepSearch = false;
 
     // Iterate each node in pre-order.
-    var profileNodeUIDs = 0;
-    var profileNodeGroups = [[], [rootProfileNode]];
+    let profileNodeUIDs = 0;
+    const profileNodeGroups = [[], [rootProfileNode]];
     /** @type {!Map<string, !Set<number>>} */
-    var visitedProfileNodesForCallUID = new Map();
+    const visitedProfileNodesForCallUID = new Map();
 
     this._remainingNodeInfos = [];
 
-    for (var profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length; ++profileNodeGroupIndex) {
-      var parentProfileNodes = profileNodeGroups[profileNodeGroupIndex];
-      var profileNodes = profileNodeGroups[++profileNodeGroupIndex];
-      var count = profileNodes.length;
+    for (let profileNodeGroupIndex = 0; profileNodeGroupIndex < profileNodeGroups.length; ++profileNodeGroupIndex) {
+      const parentProfileNodes = profileNodeGroups[profileNodeGroupIndex];
+      const profileNodes = profileNodeGroups[++profileNodeGroupIndex];
+      const count = profileNodes.length;
 
-      for (var index = 0; index < count; ++index) {
-        var profileNode = profileNodes[index];
+      for (let index = 0; index < count; ++index) {
+        const profileNode = profileNodes[index];
 
         if (!profileNode.UID)
           profileNode.UID = ++profileNodeUIDs;
 
         if (profileNode.parent) {
           // The total time of this ancestor is accounted for if we're in any form of recursive cycle.
-          var visitedNodes = visitedProfileNodesForCallUID.get(profileNode.callUID);
-          var totalAccountedFor = false;
+          let visitedNodes = visitedProfileNodesForCallUID.get(profileNode.callUID);
+          let totalAccountedFor = false;
 
           if (!visitedNodes) {
             visitedNodes = new Set();
@@ -207,8 +207,8 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
           } else {
             // The total time for this node has already been accounted for iff one of it's parents has already been visited.
             // We can do this check in this style because we are traversing the tree in pre-order.
-            var parentCount = parentProfileNodes.length;
-            for (var parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
+            const parentCount = parentProfileNodes.length;
+            for (let parentIndex = 0; parentIndex < parentCount; ++parentIndex) {
               if (visitedNodes.has(parentProfileNodes[parentIndex].UID)) {
                 totalAccountedFor = true;
                 break;
@@ -222,7 +222,7 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
               {ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor});
         }
 
-        var children = profileNode.children;
+        const children = profileNode.children;
         if (children.length) {
           profileNodeGroups.push(parentProfileNodes.concat([profileNode]));
           profileNodeGroups.push(children);
@@ -246,8 +246,8 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
 
     this.save();
 
-    var currentNode = profileDataGridNode;
-    var focusNode = profileDataGridNode;
+    let currentNode = profileDataGridNode;
+    let focusNode = profileDataGridNode;
 
     while (currentNode.parent && (currentNode instanceof Profiler.ProfileDataGridNode)) {
       currentNode._takePropertiesFromProfileDataGridNode(profileDataGridNode);
@@ -272,18 +272,18 @@ Profiler.BottomUpProfileDataGridTree = class extends Profiler.ProfileDataGridTre
 
     this.save();
 
-    var excludedCallUID = profileDataGridNode.callUID;
-    var excludedTopLevelChild = this.childrenByCallUID.get(excludedCallUID);
+    const excludedCallUID = profileDataGridNode.callUID;
+    const excludedTopLevelChild = this.childrenByCallUID.get(excludedCallUID);
 
     // If we have a top level node that is excluded, get rid of it completely (not keeping children),
     // since bottom up data relies entirely on the root node.
     if (excludedTopLevelChild)
       this.children.remove(excludedTopLevelChild);
 
-    var children = this.children;
-    var count = children.length;
+    const children = this.children;
+    const count = children.length;
 
-    for (var index = 0; index < count; ++index)
+    for (let index = 0; index < count; ++index)
       children[index]._exclude(excludedCallUID);
 
     if (this.lastComparator)

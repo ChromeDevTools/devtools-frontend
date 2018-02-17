@@ -13,7 +13,7 @@ PerfUI.GCActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    for (var heapProfilerModel of SDK.targetManager.models(SDK.HeapProfilerModel))
+    for (const heapProfilerModel of SDK.targetManager.models(SDK.HeapProfilerModel))
       heapProfilerModel.collectGarbage();
     return true;
   }

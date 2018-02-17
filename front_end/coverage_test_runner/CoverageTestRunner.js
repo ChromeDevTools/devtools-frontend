@@ -9,7 +9,7 @@
 
 CoverageTestRunner.startCoverage = function() {
   UI.viewManager.showView('coverage');
-  var coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
   coverageView._startRecording();
 };
 
@@ -17,7 +17,7 @@ CoverageTestRunner.startCoverage = function() {
  * @return {!Promise}
  */
 CoverageTestRunner.stopCoverage = function() {
-  var coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
   return coverageView._stopRecording();
 };
 
@@ -25,7 +25,7 @@ CoverageTestRunner.stopCoverage = function() {
  * @return {!Promise}
  */
 CoverageTestRunner.pollCoverage = function() {
-  var coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
   return coverageView._poll();
 };
 
@@ -34,14 +34,14 @@ CoverageTestRunner.pollCoverage = function() {
  */
 CoverageTestRunner.sourceDecorated = async function(source) {
   await UI.inspectorView.showPanel('sources');
-  var decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, '_innerDecorate');
-  var sourceFrame = await SourcesTestRunner.showScriptSourcePromise(source);
+  const decoratePromise = TestRunner.addSnifferPromise(Coverage.CoverageView.LineDecorator.prototype, '_innerDecorate');
+  const sourceFrame = await SourcesTestRunner.showScriptSourcePromise(source);
   await decoratePromise;
   return sourceFrame;
 };
 
 CoverageTestRunner.dumpDecorations = async function(source) {
-  var sourceFrame = await CoverageTestRunner.sourceDecorated(source);
+  const sourceFrame = await CoverageTestRunner.sourceDecorated(source);
   CoverageTestRunner.dumpDecorationsInSourceFrame(sourceFrame);
 };
 
@@ -49,10 +49,10 @@ CoverageTestRunner.dumpDecorations = async function(source) {
  * @return {?DataGrid.DataGridNode}
  */
 CoverageTestRunner.findCoverageNodeForURL = function(url) {
-  var coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
-  var rootNode = coverageListView._dataGrid.rootNode();
+  const coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
+  const rootNode = coverageListView._dataGrid.rootNode();
 
-  for (var child of rootNode.children) {
+  for (const child of rootNode.children) {
     if (child._coverageInfo.url().endsWith(url))
       return child;
   }
@@ -61,21 +61,21 @@ CoverageTestRunner.findCoverageNodeForURL = function(url) {
 };
 
 CoverageTestRunner.dumpDecorationsInSourceFrame = function(sourceFrame) {
-  var markerMap = new Map([['used', '+'], ['unused', '-']]);
-  var codeMirror = sourceFrame.textEditor.codeMirror();
+  const markerMap = new Map([['used', '+'], ['unused', '-']]);
+  const codeMirror = sourceFrame.textEditor.codeMirror();
 
-  for (var line = 0; line < codeMirror.lineCount(); ++line) {
-    var text = codeMirror.getLine(line);
-    var markerType = ' ';
-    var lineInfo = codeMirror.lineInfo(line);
+  for (let line = 0; line < codeMirror.lineCount(); ++line) {
+    const text = codeMirror.getLine(line);
+    let markerType = ' ';
+    const lineInfo = codeMirror.lineInfo(line);
 
     if (!lineInfo)
       continue;
 
-    var gutterElement = lineInfo.gutterMarkers && lineInfo.gutterMarkers['CodeMirror-gutter-coverage'];
+    const gutterElement = lineInfo.gutterMarkers && lineInfo.gutterMarkers['CodeMirror-gutter-coverage'];
 
     if (gutterElement) {
-      var markerClass = /^text-editor-coverage-(\w*)-marker$/.exec(gutterElement.classList)[1];
+      const markerClass = /^text-editor-coverage-(\w*)-marker$/.exec(gutterElement.classList)[1];
       markerType = markerMap.get(markerClass) || gutterElement.classList;
     }
 
@@ -84,18 +84,18 @@ CoverageTestRunner.dumpDecorationsInSourceFrame = function(sourceFrame) {
 };
 
 CoverageTestRunner.dumpCoverageListView = function() {
-  var coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
-  var dataGrid = coverageListView._dataGrid;
+  const coverageListView = self.runtime.sharedInstance(Coverage.CoverageView)._listView;
+  const dataGrid = coverageListView._dataGrid;
   dataGrid.updateInstantly();
 
-  for (var child of dataGrid.rootNode().children) {
-    var data = child._coverageInfo;
-    var url = TestRunner.formatters.formatAsURL(data.url());
+  for (const child of dataGrid.rootNode().children) {
+    const data = child._coverageInfo;
+    const url = TestRunner.formatters.formatAsURL(data.url());
 
     if (url.startsWith('test://'))
       continue;
 
-    var type = Coverage.CoverageListView._typeToString(data.type());
+    const type = Coverage.CoverageListView._typeToString(data.type());
     TestRunner.addResult(`${url} ${type} used: ${data.usedSize()} unused: ${data.unusedSize()} total: ${data.size()}`);
   }
 };

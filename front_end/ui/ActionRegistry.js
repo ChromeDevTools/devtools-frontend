@@ -21,11 +21,11 @@ UI.ActionRegistry = class {
     function registerExtension(extension) {
       if (!extension.canInstantiate())
         return;
-      var actionId = extension.descriptor()['actionId'];
+      const actionId = extension.descriptor()['actionId'];
       console.assert(actionId);
       console.assert(!this._actionsById.get(actionId));
 
-      var action = new UI.Action(extension);
+      const action = new UI.Action(extension);
       if (!action.category() || action.title())
         this._actionsById.set(actionId, action);
       else
@@ -46,9 +46,9 @@ UI.ActionRegistry = class {
    * @return {!Array.<!UI.Action>}
    */
   applicableActions(actionIds, context) {
-    var extensions = [];
+    const extensions = [];
     actionIds.forEach(function(actionId) {
-      var action = this._actionsById.get(actionId);
+      const action = this._actionsById.get(actionId);
       if (action)
         extensions.push(action._extension);
     }, this);
@@ -106,8 +106,8 @@ UI.Action = class extends Common.Object {
      * @this {UI.Action}
      */
     function handleAction(actionDelegate) {
-      var actionId = this._extension.descriptor()['actionId'];
-      var delegate = /** @type {!UI.ActionDelegate} */ (actionDelegate);
+      const actionId = this._extension.descriptor()['actionId'];
+      const delegate = /** @type {!UI.ActionDelegate} */ (actionDelegate);
       return delegate.handleAction(UI.context, actionId);
     }
   }
@@ -169,10 +169,10 @@ UI.Action = class extends Common.Object {
    * @return {string}
    */
   title() {
-    var title = this._extension.title();
-    var options = this._extension.descriptor()['options'];
+    let title = this._extension.title();
+    const options = this._extension.descriptor()['options'];
     if (options) {
-      for (var pair of options) {
+      for (const pair of options) {
         if (pair['value'] !== this._toggled)
           title = pair['title'];
       }

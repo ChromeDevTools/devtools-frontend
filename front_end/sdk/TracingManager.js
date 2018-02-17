@@ -82,7 +82,7 @@ SDK.TracingManager = class extends SDK.SDKModel {
   start(client, categoryFilter, options) {
     if (this._activeClient)
       throw new Error('Tracing is already started');
-    var bufferUsageReportingIntervalMs = 500;
+    const bufferUsageReportingIntervalMs = 500;
     this._activeClient = client;
     return this._tracingAgent.start(
         categoryFilter, options, bufferUsageReportingIntervalMs, SDK.TracingManager.TransferMode.ReportEvents);

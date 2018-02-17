@@ -41,7 +41,7 @@ SDK.CSSStyleDeclaration = class {
       this._reinitialize(/** @type {!Protocol.CSS.CSSStyle} */ (edit.payload));
     } else {
       this.range = this.range.rebaseAfterTextEdit(edit.oldRange, edit.newRange);
-      for (var i = 0; i < this._allProperties.length; ++i)
+      for (let i = 0; i < this._allProperties.length; ++i)
         this._allProperties[i].rebase(edit);
     }
   }
@@ -53,18 +53,18 @@ SDK.CSSStyleDeclaration = class {
     this.styleSheetId = payload.styleSheetId;
     this.range = payload.range ? TextUtils.TextRange.fromObject(payload.range) : null;
 
-    var shorthandEntries = payload.shorthandEntries;
+    const shorthandEntries = payload.shorthandEntries;
     this._shorthandValues = new Map();
     this._shorthandIsImportant = new Set();
-    for (var i = 0; i < shorthandEntries.length; ++i) {
+    for (let i = 0; i < shorthandEntries.length; ++i) {
       this._shorthandValues.set(shorthandEntries[i].name, shorthandEntries[i].value);
       if (shorthandEntries[i].important)
         this._shorthandIsImportant.add(shorthandEntries[i].name);
     }
 
     this._allProperties = [];
-    for (var i = 0; i < payload.cssProperties.length; ++i) {
-      var property = SDK.CSSProperty.parsePayload(this, i, payload.cssProperties[i]);
+    for (let i = 0; i < payload.cssProperties.length; ++i) {
+      const property = SDK.CSSProperty.parsePayload(this, i, payload.cssProperties[i]);
       this._allProperties.push(property);
     }
 
@@ -72,7 +72,7 @@ SDK.CSSStyleDeclaration = class {
     this._computeInactiveProperties();
 
     this._activePropertyMap = new Map();
-    for (var property of this._allProperties) {
+    for (const property of this._allProperties) {
       if (!property.activeInStyle())
         continue;
       this._activePropertyMap.set(property.name, property);
@@ -89,25 +89,25 @@ SDK.CSSStyleDeclaration = class {
     if (!this._shorthandValues.size)
       return;
 
-    var propertiesSet = new Set();
-    for (var property of this._allProperties)
+    const propertiesSet = new Set();
+    for (const property of this._allProperties)
       propertiesSet.add(property.name);
 
-    var generatedProperties = [];
+    const generatedProperties = [];
     // For style-based properties, generate shorthands with values when possible.
-    for (var property of this._allProperties) {
+    for (const property of this._allProperties) {
       // For style-based properties, try generating shorthands.
-      var shorthands = SDK.cssMetadata().shorthands(property.name) || [];
-      for (var shorthand of shorthands) {
+      const shorthands = SDK.cssMetadata().shorthands(property.name) || [];
+      for (const shorthand of shorthands) {
         if (propertiesSet.has(shorthand))
           continue;  // There already is a shorthand this longhands falls under.
-        var shorthandValue = this._shorthandValues.get(shorthand);
+        const shorthandValue = this._shorthandValues.get(shorthand);
         if (!shorthandValue)
           continue;  // Never generate synthetic shorthands when no value is available.
 
         // Generate synthetic shorthand we have a value for.
-        var shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
-        var shorthandProperty = new SDK.CSSProperty(
+        const shorthandImportance = !!this._shorthandIsImportant.has(shorthand);
+        const shorthandProperty = new SDK.CSSProperty(
             this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
         generatedProperties.push(shorthandProperty);
         propertiesSet.add(shorthand);
@@ -131,11 +131,11 @@ SDK.CSSStyleDeclaration = class {
     if (this.range)
       return this._allProperties.filter(propertyHasRange);
 
-    var leadingProperties = [];
-    for (var property of this._allProperties) {
-      var shorthands = SDK.cssMetadata().shorthands(property.name) || [];
-      var belongToAnyShorthand = false;
-      for (var shorthand of shorthands) {
+    const leadingProperties = [];
+    for (const property of this._allProperties) {
+      const shorthands = SDK.cssMetadata().shorthands(property.name) || [];
+      let belongToAnyShorthand = false;
+      for (const shorthand of shorthands) {
         if (this._shorthandValues.get(shorthand)) {
           belongToAnyShorthand = true;
           break;
@@ -172,15 +172,15 @@ SDK.CSSStyleDeclaration = class {
   }
 
   _computeInactiveProperties() {
-    var activeProperties = {};
-    for (var i = 0; i < this._allProperties.length; ++i) {
-      var property = this._allProperties[i];
+    const activeProperties = {};
+    for (let i = 0; i < this._allProperties.length; ++i) {
+      const property = this._allProperties[i];
       if (property.disabled || !property.parsedOk) {
         property.setActive(false);
         continue;
       }
-      var canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
-      var activeProperty = activeProperties[canonicalName];
+      const canonicalName = SDK.cssMetadata().canonicalPropertyName(property.name);
+      const activeProperty = activeProperties[canonicalName];
       if (!activeProperty) {
         activeProperties[canonicalName] = property;
       } else if (!activeProperty.important || property.important) {
@@ -204,7 +204,7 @@ SDK.CSSStyleDeclaration = class {
    * @return {string}
    */
   getPropertyValue(name) {
-    var property = this._activePropertyMap.get(name);
+    const property = this._activePropertyMap.get(name);
     return property ? property.value : '';
   }
 
@@ -213,7 +213,7 @@ SDK.CSSStyleDeclaration = class {
    * @return {boolean}
    */
   isPropertyImplicit(name) {
-    var property = this._activePropertyMap.get(name);
+    const property = this._activePropertyMap.get(name);
     return property ? property.implicit : false;
   }
 
@@ -222,10 +222,10 @@ SDK.CSSStyleDeclaration = class {
    * @return {!Array.<!SDK.CSSProperty>}
    */
   longhandProperties(name) {
-    var longhands = SDK.cssMetadata().longhands(name);
-    var result = [];
-    for (var i = 0; longhands && i < longhands.length; ++i) {
-      var property = this._activePropertyMap.get(longhands[i]);
+    const longhands = SDK.cssMetadata().longhands(name);
+    const result = [];
+    for (let i = 0; longhands && i < longhands.length; ++i) {
+      const property = this._activePropertyMap.get(longhands[i]);
       if (property)
         result.push(property);
     }
@@ -244,7 +244,7 @@ SDK.CSSStyleDeclaration = class {
    * @return {number}
    */
   pastLastSourcePropertyIndex() {
-    for (var i = this.allProperties().length - 1; i >= 0; --i) {
+    for (let i = this.allProperties().length - 1; i >= 0; --i) {
       if (this.allProperties()[i].range)
         return i + 1;
     }
@@ -256,7 +256,7 @@ SDK.CSSStyleDeclaration = class {
    * @return {!TextUtils.TextRange}
    */
   _insertionRange(index) {
-    var property = this.propertyAt(index);
+    const property = this.propertyAt(index);
     return property && property.range ? property.range.collapseToStart() : this.range.collapseToEnd();
   }
 
@@ -266,7 +266,8 @@ SDK.CSSStyleDeclaration = class {
    */
   newBlankProperty(index) {
     index = (typeof index === 'undefined') ? this.pastLastSourcePropertyIndex() : index;
-    var property = new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
+    const property =
+        new SDK.CSSProperty(this, index, '', '', false, false, true, false, '', this._insertionRange(index));
     return property;
   }
 

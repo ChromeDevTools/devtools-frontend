@@ -125,9 +125,9 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Array<{filterType: !Network.NetworkLogView.FilterType, filterValue: string}>} filters
    */
   static revealAndFilter(filters) {
-    var panel = Network.NetworkPanel._instance();
-    var filterString = '';
-    for (var filter of filters)
+    const panel = Network.NetworkPanel._instance();
+    let filterString = '';
+    for (const filter of filters)
       filterString += `${filter.filterType}:${filter.filterValue} `;
     panel._networkLogView.setTextFilterValue(filterString);
     UI.viewManager.showView('network');
@@ -158,19 +158,19 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {
-    var startTime = Math.max(this._calculator.minimumBoundary(), event.data.startTime / 1000);
-    var endTime = Math.min(this._calculator.maximumBoundary(), event.data.endTime / 1000);
+    const startTime = Math.max(this._calculator.minimumBoundary(), event.data.startTime / 1000);
+    const endTime = Math.min(this._calculator.maximumBoundary(), event.data.endTime / 1000);
     this._networkLogView.setWindow(startTime, endTime);
   }
 
   _setupToolbarButtons() {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._toggleRecordAction));
 
-    var clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => BrowserSDK.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
-    var recordFilmStripButton = new UI.ToolbarSettingToggle(
+    const recordFilmStripButton = new UI.ToolbarSettingToggle(
         this._networkRecordFilmStripSetting, 'largeicon-camera', Common.UIString('Capture screenshots'));
     this._panelToolbar.appendToolbarItem(recordFilmStripButton);
 
@@ -179,12 +179,12 @@ Network.NetworkPanel = class extends UI.Panel {
 
     this._panelToolbar.appendText(Common.UIString('View:'));
 
-    var largerRequestsButton = new UI.ToolbarSettingToggle(
+    const largerRequestsButton = new UI.ToolbarSettingToggle(
         this._networkLogLargeRowsSetting, 'largeicon-large-list', Common.UIString('Use large request rows'),
         Common.UIString('Use small request rows'));
     this._panelToolbar.appendToolbarItem(largerRequestsButton);
 
-    var showOverviewButton = new UI.ToolbarSettingToggle(
+    const showOverviewButton = new UI.ToolbarSettingToggle(
         this._networkLogShowOverviewSetting, 'largeicon-waterfall', Common.UIString('Show overview'),
         Common.UIString('Hide overview'));
     this._panelToolbar.appendToolbarItem(showOverviewButton);
@@ -197,7 +197,7 @@ Network.NetworkPanel = class extends UI.Panel {
         this._preserveLogSetting, Common.UIString('Do not clear log on page reload / navigation'),
         Common.UIString('Preserve log')));
 
-    var disableCacheCheckbox = new UI.ToolbarSettingCheckbox(
+    const disableCacheCheckbox = new UI.ToolbarSettingCheckbox(
         Common.moduleSetting('cacheDisabled'), Common.UIString('Disable cache (while DevTools is open)'),
         Common.UIString('Disable cache'));
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
@@ -213,7 +213,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @return {!UI.ToolbarComboBox}
    */
   _createThrottlingConditionsSelect() {
-    var toolbarItem = new UI.ToolbarComboBox(null);
+    const toolbarItem = new UI.ToolbarComboBox(null);
     toolbarItem.setMaxWidth(160);
     MobileThrottling.throttlingManager().decorateSelectWithNetworkThrottling(toolbarItem.selectElement());
     return toolbarItem;
@@ -244,10 +244,10 @@ Network.NetworkPanel = class extends UI.Panel {
   _filmStripAvailable(filmStripModel) {
     if (!filmStripModel)
       return;
-    var calculator = this._networkLogView.timeCalculator();
+    const calculator = this._networkLogView.timeCalculator();
     this._filmStripView.setModel(filmStripModel, calculator.minimumBoundary() * 1000, calculator.boundarySpan() * 1000);
     this._networkOverview.setFilmStripModel(filmStripModel);
-    var timestamps = filmStripModel.frames().map(mapTimestamp);
+    const timestamps = filmStripModel.frames().map(mapTimestamp);
 
     /**
      * @param {!SDK.FilmStripModel.Frame} frame
@@ -303,7 +303,7 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   _toggleShowOverview() {
-    var toggled = this._networkLogShowOverviewSetting.get();
+    const toggled = this._networkLogShowOverviewSetting.get();
     if (toggled)
       this._overviewPane.show(this._overviewPlaceholderElement);
     else
@@ -312,7 +312,7 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   _toggleRecordFilmStrip() {
-    var toggled = this._networkRecordFilmStripSetting.get();
+    const toggled = this._networkRecordFilmStripSetting.get();
     if (toggled && !this._filmStripRecorder) {
       this._filmStripView = new PerfUI.FilmStripView();
       this._filmStripView.setMode(PerfUI.FilmStripView.Modes.FrameBased);
@@ -404,7 +404,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onSearchCountUpdated(event) {
-    var count = /** @type {number} */ (event.data);
+    const count = /** @type {number} */ (event.data);
     this._searchableView.updateSearchMatchesCount(count);
   }
 
@@ -412,7 +412,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onSearchIndexUpdated(event) {
-    var index = /** @type {number} */ (event.data);
+    const index = /** @type {number} */ (event.data);
     this._searchableView.updateCurrentMatchIndex(index);
   }
 
@@ -420,7 +420,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onRequestSelected(event) {
-    var request = /** @type {?SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {?SDK.NetworkRequest} */ (event.data);
     this._showRequest(request);
   }
 
@@ -524,14 +524,14 @@ Network.NetworkPanel = class extends UI.Panel {
       return;
 
     if (target instanceof SDK.Resource) {
-      var resource = /** @type {!SDK.Resource} */ (target);
+      const resource = /** @type {!SDK.Resource} */ (target);
       if (resource.request)
         appendRevealItem.call(this, resource.request);
       return;
     }
     if (target instanceof Workspace.UISourceCode) {
-      var uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
-      var resource = Bindings.resourceForURL(uiSourceCode.url());
+      const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (target);
+      const resource = Bindings.resourceForURL(uiSourceCode.url());
       if (resource && resource.request)
         appendRevealItem.call(this, resource.request);
       return;
@@ -539,7 +539,7 @@ Network.NetworkPanel = class extends UI.Panel {
 
     if (!(target instanceof SDK.NetworkRequest))
       return;
-    var request = /** @type {!SDK.NetworkRequest} */ (target);
+    const request = /** @type {!SDK.NetworkRequest} */ (target);
     if (this._networkItemView && this._networkItemView.isShowing() && this._networkItemView.request() === request)
       return;
 
@@ -550,7 +550,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onFilmFrameSelected(event) {
-    var timestamp = /** @type {number} */ (event.data);
+    const timestamp = /** @type {number} */ (event.data);
     this._overviewPane.requestWindowTimes(0, timestamp);
   }
 
@@ -558,7 +558,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onFilmFrameEnter(event) {
-    var timestamp = /** @type {number} */ (event.data);
+    const timestamp = /** @type {number} */ (event.data);
     this._networkOverview.selectFilmStripFrame(timestamp);
     this._networkLogView.selectFilmStripFrame(timestamp / 1000);
   }
@@ -575,7 +575,7 @@ Network.NetworkPanel = class extends UI.Panel {
    * @param {!Common.Event} event
    */
   _onUpdateRequest(event) {
-    var request = /** @type {!SDK.NetworkRequest} */ (event.data);
+    const request = /** @type {!SDK.NetworkRequest} */ (event.data);
     this._calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this._overviewPane.setBounds(this._calculator.minimumBoundary() * 1000, this._calculator.maximumBoundary() * 1000);
@@ -615,7 +615,7 @@ Network.NetworkPanel.RequestRevealer = class {
   reveal(request) {
     if (!(request instanceof SDK.NetworkRequest))
       return Promise.reject(new Error('Internal error: not a network request'));
-    var panel = Network.NetworkPanel._instance();
+    const panel = Network.NetworkPanel._instance();
     return UI.viewManager.showView('network').then(panel.revealAndHighlightRequest.bind(panel, request));
   }
 };
@@ -682,7 +682,7 @@ Network.NetworkPanel.FilmStripRecorder = class {
   startRecording() {
     this._filmStripView.reset();
     this._filmStripView.setStatusText(Common.UIString('Recording frames...'));
-    var tracingManagers = SDK.targetManager.models(SDK.TracingManager);
+    const tracingManagers = SDK.targetManager.models(SDK.TracingManager);
     if (this._tracingManager || !tracingManagers.length)
       return;
 
@@ -727,7 +727,7 @@ Network.NetworkPanel.RecordActionDelegate = class {
    * @return {boolean}
    */
   handleAction(context, actionId) {
-    var panel = UI.context.flavor(Network.NetworkPanel);
+    const panel = UI.context.flavor(Network.NetworkPanel);
     console.assert(panel && panel instanceof Network.NetworkPanel);
     panel._toggleRecording();
     return true;

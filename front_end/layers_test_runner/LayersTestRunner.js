@@ -15,10 +15,10 @@ LayersTestRunner.layerTreeModel = function() {
 };
 
 LayersTestRunner.labelForLayer = function(layer) {
-  var node = layer.nodeForSelfOrAncestor();
-  var label = (node ? Elements.DOMPath.fullQualifiedSelector(node, false) : '<invalid node id>');
-  var height = layer.height();
-  var width = layer.width();
+  const node = layer.nodeForSelfOrAncestor();
+  let label = (node ? Elements.DOMPath.fullQualifiedSelector(node, false) : '<invalid node id>');
+  const height = layer.height();
+  const width = layer.width();
 
   if (height <= 200 && width <= 200)
     label += ' ' + height + 'x' + width;
@@ -57,7 +57,7 @@ LayersTestRunner.dumpLayers3DView = function(prefix, root) {
   if (root.__layer)
     TestRunner.addResult(prefix + LayersTestRunner.labelForLayer(root.__layer));
 
-  for (var element = root.firstElementChild; element; element = element.nextSibling)
+  for (let element = root.firstElementChild; element; element = element.nextSibling)
     LayersTestRunner.dumpLayers3DView(prefix + '    ', element);
 };
 
@@ -67,10 +67,10 @@ LayersTestRunner.evaluateAndWaitForTreeChange = async function(expression) {
 };
 
 LayersTestRunner.findLayerByNodeIdAttribute = function(nodeIdAttribute) {
-  var result;
+  let result;
 
   function testLayer(layer) {
-    var node = layer.node();
+    const node = layer.node();
 
     if (!node)
       return false;
@@ -96,9 +96,9 @@ LayersTestRunner.requestLayers = function() {
 };
 
 LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offsetX, offsetY) {
-  var totalOffset = element.totalOffset();
+  const totalOffset = element.totalOffset();
 
-  var eventArguments = {
+  const eventArguments = {
     bubbles: true,
     cancelable: true,
     view: window,
@@ -120,19 +120,19 @@ LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offse
 };
 
 LayersTestRunner.findLayerTreeElement = function(layer) {
-  var element = layer[LayerViewer.LayerTreeElement._symbol];
+  const element = layer[LayerViewer.LayerTreeElement._symbol];
   element.reveal();
   return element.listItemElement;
 };
 
 LayersTestRunner.dispatchMouseEventToLayerTree = function(eventType, button, layer) {
-  var element = LayersTestRunner.findLayerTreeElement(layer);
+  const element = LayersTestRunner.findLayerTreeElement(layer);
   TestRunner.assertTrue(!!element);
   LayersTestRunner.dispatchMouseEvent(eventType, button, element, element.clientWidth >> 1, element.clientHeight >> 1);
 };
 
 LayersTestRunner.dumpSelectedStyles = function(message, element) {
-  var classes = [];
+  const classes = [];
   if (element.classList.contains('selected'))
     classes.push('selected');
   if (element.classList.contains('hovered'))

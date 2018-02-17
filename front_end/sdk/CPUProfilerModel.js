@@ -99,9 +99,9 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
    * @param {!Protocol.Profiler.Profile=} cpuProfile
    */
   _dispatchProfileEvent(eventName, id, scriptLocation, title, cpuProfile) {
-    var debuggerLocation = SDK.DebuggerModel.Location.fromPayload(this._debuggerModel, scriptLocation);
-    var globalId = this.target().id() + '.' + id;
-    var data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
+    const debuggerLocation = SDK.DebuggerModel.Location.fromPayload(this._debuggerModel, scriptLocation);
+    const globalId = this.target().id() + '.' + id;
+    const data = /** @type {!SDK.CPUProfilerModel.EventData} */ (
         {id: globalId, scriptLocation: debuggerLocation, cpuProfile: cpuProfile, title: title, cpuProfilerModel: this});
     this.dispatchEventToListeners(eventName, data);
   }
@@ -118,7 +118,7 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
    */
   startRecording() {
     this._isRecording = true;
-    var intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
+    const intervalUs = Common.moduleSetting('highResolutionCpuProfiling').get() ? 100 : 1000;
     this._profilerAgent.setSamplingInterval(intervalUs);
     return this._profilerAgent.start();
   }
@@ -135,8 +135,8 @@ SDK.CPUProfilerModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   startPreciseCoverage() {
-    var callCount = false;
-    var detailed = true;
+    const callCount = false;
+    const detailed = true;
     return this._profilerAgent.startPreciseCoverage(callCount, detailed);
   }
 

@@ -212,7 +212,7 @@ DOMFileSystem.prototype.root = null;
  */
 window.domAutomationController;
 
-var DevToolsHost = function() {};
+const DevToolsHost = function() {};
 
 /** @typedef {{type:string, id:(number|undefined),
               label:(string|undefined), enabled:(boolean|undefined), checked:(boolean|undefined),
@@ -302,7 +302,7 @@ function PanelWithSidebar() {
 function Resource() {
 }
 
-var extensionServer;
+let extensionServer;
 
 /**
  * @constructor
@@ -322,7 +322,7 @@ function ExtensionReloadOptions() {
   this.userAgent = '';
 }
 
-var Adb = {};
+const Adb = {};
 /** @typedef {{id: string, name: string, url: string, attached: boolean}} */
 Adb.Page;
 /** @typedef {{id: string, adbBrowserChromeVersion: string, compatibleVersion: boolean, adbBrowserName: string, source: string, adbBrowserVersion: string, pages: !Array<!Adb.Page>}} */
@@ -351,7 +351,7 @@ Adb.NetworkDiscoveryConfig;
 Adb.Config;
 
 /** @const */
-var module = {};
+const module = {};
 
 /**
  * @constructor
@@ -374,7 +374,7 @@ diff_match_patch.prototype = {
 };
 
 /** @constructor */
-var Doc = function() {};
+const Doc = function() {};
 Doc.prototype = {
   /** @type {number} */
   scrollLeft: 0,
@@ -383,7 +383,7 @@ Doc.prototype = {
 };
 
 /** @constructor */
-var CodeMirror = function(element, config) {};
+const CodeMirror = function(element, config) {};
 CodeMirror.on = function(obj, type, handler) {};
 CodeMirror.prototype = {
   /** @type {!Doc} */
@@ -647,7 +647,7 @@ Element.prototype.addEventListener = function(type, listener, options) {};
  */
 Element.prototype.removeEventListener = function(type, listener, options) {};
 
-var acorn = {
+const acorn = {
   /**
    * @param {string} text
    * @param {Object.<string, boolean>} options
@@ -681,7 +681,7 @@ var acorn = {
   }
 };
 
-var Acorn = {};
+const Acorn = {};
 /**
  * @constructor
  */
@@ -715,7 +715,7 @@ Acorn.Comment;
  */
 Acorn.TokenOrComment;
 
-var ESTree = {};
+const ESTree = {};
 
 /**
  * @constructor
@@ -787,7 +787,7 @@ DOMException.ABORT_ERR;
  * @constructor
  * @param {!Object} params
  */
-var Terminal = function(params) {};
+const Terminal = function(params) {};
 
 Terminal.prototype = {
   fit: function() {},
@@ -810,10 +810,10 @@ Console.prototype.context = function(context) {};
  * @param {...*} vararg
  * @return {string}
  */
-var ls = function(strings, vararg) {};
+const ls = function(strings, vararg) {};
 
 /**
  * @constructor
  * @param {function(!Array<*>)} callback
  */
-var ResizeObserver = function(callback) {};
+const ResizeObserver = function(callback) {};

@@ -9,8 +9,8 @@
 
 ElementsTestRunner.selectReloadAndDump = function(next, node) {
   ElementsTestRunner.selectNode(node).then(onSelected);
-  var reloaded = false;
-  var selected = false;
+  let reloaded = false;
+  let selected = false;
 
   function onSelected() {
     TestRunner.reloadPage(onReloaded);
@@ -31,8 +31,8 @@ ElementsTestRunner.selectReloadAndDump = function(next, node) {
     if (!reloaded || !selected)
       return;
 
-    var selectedElement = ElementsTestRunner.firstElementsTreeOutline().selectedTreeElement;
-    var nodeName = (selectedElement ? selectedElement.node().nodeNameInCorrectCase() : 'null');
+    const selectedElement = ElementsTestRunner.firstElementsTreeOutline().selectedTreeElement;
+    const nodeName = (selectedElement ? selectedElement.node().nodeNameInCorrectCase() : 'null');
     TestRunner.addResult('Selected node: \'' + nodeName + '\'');
     next();
   }

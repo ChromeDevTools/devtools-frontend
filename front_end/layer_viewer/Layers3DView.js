@@ -96,7 +96,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
       return;
     }
     UI.loadImage(imageURL).then(image => {
-      var texture = image && LayerViewer.LayerTextureManager._createTextureForImage(this._gl, image);
+      const texture = image && LayerViewer.LayerTextureManager._createTextureForImage(this._gl, image);
       this._layerTexture = texture ? {layer: layer, texture: texture} : null;
       this._update();
     });
@@ -167,12 +167,12 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    */
   snapshotForSelection(selection) {
     if (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
-      var snapshotWithRect = /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (selection).snapshot();
+      const snapshotWithRect = /** @type {!LayerViewer.LayerView.SnapshotSelection} */ (selection).snapshot();
       snapshotWithRect.snapshot.addReference();
       return /** @type {!Promise<?SDK.SnapshotWithRect>} */ (Promise.resolve(snapshotWithRect));
     }
     if (selection.layer()) {
-      var promise = selection.layer().snapshots()[0];
+      const promise = selection.layer().snapshots()[0];
       if (promise)
         return promise;
     }
@@ -184,7 +184,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {?WebGLRenderingContext}
    */
   _initGL(canvas) {
-    var gl = canvas.getContext('webgl');
+    const gl = canvas.getContext('webgl');
     if (!gl)
       return null;
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -199,7 +199,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {string} script
    */
   _createShader(type, script) {
-    var shader = this._gl.createShader(type);
+    const shader = this._gl.createShader(type);
     this._gl.shaderSource(shader, script);
     this._gl.compileShader(shader);
     this._gl.attachShader(this._shaderProgram, shader);
@@ -229,42 +229,42 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   }
 
   _updateTransformAndConstraints() {
-    var paddingFraction = 0.1;
-    var viewport = this._layerTree.viewportSize();
-    var baseWidth = viewport ? viewport.width : this._dimensionsForAutoscale.width;
-    var baseHeight = viewport ? viewport.height : this._dimensionsForAutoscale.height;
-    var canvasWidth = this._canvasElement.width;
-    var canvasHeight = this._canvasElement.height;
-    var paddingX = canvasWidth * paddingFraction;
-    var paddingY = canvasHeight * paddingFraction;
-    var scaleX = (canvasWidth - 2 * paddingX) / baseWidth;
-    var scaleY = (canvasHeight - 2 * paddingY) / baseHeight;
-    var viewScale = Math.min(scaleX, scaleY);
-    var minScaleConstraint =
+    const paddingFraction = 0.1;
+    const viewport = this._layerTree.viewportSize();
+    const baseWidth = viewport ? viewport.width : this._dimensionsForAutoscale.width;
+    const baseHeight = viewport ? viewport.height : this._dimensionsForAutoscale.height;
+    const canvasWidth = this._canvasElement.width;
+    const canvasHeight = this._canvasElement.height;
+    const paddingX = canvasWidth * paddingFraction;
+    const paddingY = canvasHeight * paddingFraction;
+    const scaleX = (canvasWidth - 2 * paddingX) / baseWidth;
+    const scaleY = (canvasHeight - 2 * paddingY) / baseHeight;
+    const viewScale = Math.min(scaleX, scaleY);
+    const minScaleConstraint =
         Math.min(baseWidth / this._dimensionsForAutoscale.width, baseHeight / this._dimensionsForAutoscale.width) / 2;
     this._transformController.setScaleConstraints(
         minScaleConstraint,
         10 / viewScale);  // 1/viewScale is 1:1 in terms of pixels, so allow zooming to 10x of native size
-    var scale = this._transformController.scale();
-    var rotateX = this._transformController.rotateX();
-    var rotateY = this._transformController.rotateY();
+    const scale = this._transformController.scale();
+    const rotateX = this._transformController.rotateX();
+    const rotateY = this._transformController.rotateY();
 
     this._scale = scale * viewScale;
-    var textureScale = Number.constrain(this._scale, 0.1, 1);
+    const textureScale = Number.constrain(this._scale, 0.1, 1);
     if (textureScale !== this._oldTextureScale) {
       this._oldTextureScale = textureScale;
       this._textureManager.setScale(textureScale);
       this.dispatchEventToListeners(LayerViewer.Layers3DView.Events.ScaleChanged, textureScale);
     }
-    var scaleAndRotationMatrix = new WebKitCSSMatrix()
-                                     .scale(scale, scale, scale)
-                                     .translate(canvasWidth / 2, canvasHeight / 2, 0)
-                                     .rotate(rotateX, rotateY, 0)
-                                     .scale(viewScale, viewScale, viewScale)
-                                     .translate(-baseWidth / 2, -baseHeight / 2, 0);
+    const scaleAndRotationMatrix = new WebKitCSSMatrix()
+                                       .scale(scale, scale, scale)
+                                       .translate(canvasWidth / 2, canvasHeight / 2, 0)
+                                       .rotate(rotateX, rotateY, 0)
+                                       .scale(viewScale, viewScale, viewScale)
+                                       .translate(-baseWidth / 2, -baseHeight / 2, 0);
 
-    var bounds;
-    for (var i = 0; i < this._rects.length; ++i)
+    let bounds;
+    for (let i = 0; i < this._rects.length; ++i)
       bounds = UI.Geometry.boundsForTransformedPoints(scaleAndRotationMatrix, this._rects[i].vertices, bounds);
 
     this._transformController.clampOffsets(
@@ -272,16 +272,16 @@ LayerViewer.Layers3DView = class extends UI.VBox {
         (canvasWidth - paddingX - bounds.minX) / window.devicePixelRatio,
         (paddingY - bounds.maxY) / window.devicePixelRatio,
         (canvasHeight - paddingY - bounds.minY) / window.devicePixelRatio);
-    var offsetX = this._transformController.offsetX() * window.devicePixelRatio;
-    var offsetY = this._transformController.offsetY() * window.devicePixelRatio;
+    const offsetX = this._transformController.offsetX() * window.devicePixelRatio;
+    const offsetY = this._transformController.offsetY() * window.devicePixelRatio;
     // Multiply to translation matrix on the right rather than translate (which would implicitly multiply on the left).
     this._projectionMatrix = new WebKitCSSMatrix().translate(offsetX, offsetY, 0).multiply(scaleAndRotationMatrix);
 
-    var glProjectionMatrix = new WebKitCSSMatrix()
-                                 .scale(1, -1, -1)
-                                 .translate(-1, -1, 0)
-                                 .scale(2 / this._canvasElement.width, 2 / this._canvasElement.height, 1 / 1000000)
-                                 .multiply(this._projectionMatrix);
+    const glProjectionMatrix = new WebKitCSSMatrix()
+                                   .scale(1, -1, -1)
+                                   .translate(-1, -1, 0)
+                                   .scale(2 / this._canvasElement.width, 2 / this._canvasElement.height, 1 / 1000000)
+                                   .multiply(this._projectionMatrix);
     this._gl.uniformMatrix4fv(this._shaderProgram.pMatrixUniform, false, this._arrayFromMatrix(glProjectionMatrix));
   }
 
@@ -298,7 +298,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _initWhiteTexture() {
     this._whiteTexture = this._gl.createTexture();
     this._gl.bindTexture(this._gl.TEXTURE_2D, this._whiteTexture);
-    var whitePixel = new Uint8Array([255, 255, 255, 255]);
+    const whitePixel = new Uint8Array([255, 255, 255, 255]);
     this._gl.texImage2D(
         this._gl.TEXTURE_2D, 0, this._gl.RGBA, 1, 1, 0, this._gl.RGBA, this._gl.UNSIGNED_BYTE, whitePixel);
   }
@@ -338,19 +338,20 @@ LayerViewer.Layers3DView = class extends UI.VBox {
 
   _calculateDepthsAndVisibility() {
     this._depthByLayerId = {};
-    var depth = 0;
-    var showInternalLayers = this._layerViewHost.showInternalLayersSetting().get();
-    var root = showInternalLayers ? this._layerTree.root() : (this._layerTree.contentRoot() || this._layerTree.root());
-    var queue = [root];
+    let depth = 0;
+    const showInternalLayers = this._layerViewHost.showInternalLayersSetting().get();
+    const root =
+        showInternalLayers ? this._layerTree.root() : (this._layerTree.contentRoot() || this._layerTree.root());
+    const queue = [root];
     this._depthByLayerId[root.id()] = 0;
     /** @type {!Set<!SDK.Layer>} */
     this._visibleLayers = new Set();
     while (queue.length > 0) {
-      var layer = queue.shift();
+      const layer = queue.shift();
       if (showInternalLayers || layer.drawsContent())
         this._visibleLayers.add(layer);
-      var children = layer.children();
-      for (var i = 0; i < children.length; ++i) {
+      const children = layer.children();
+      for (let i = 0; i < children.length; ++i) {
         this._depthByLayerId[children[i].id()] = ++depth;
         queue.push(children[i]);
       }
@@ -393,8 +394,8 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _calculateLayerRect(layer) {
     if (!this._visibleLayers.has(layer))
       return;
-    var selection = new LayerViewer.LayerView.LayerSelection(layer);
-    var rect = new LayerViewer.Layers3DView.Rectangle(selection);
+    const selection = new LayerViewer.LayerView.LayerSelection(layer);
+    const rect = new LayerViewer.Layers3DView.Rectangle(selection);
     rect.setVertices(layer.quad(), this._depthForLayer(layer));
     this._appendRect(rect);
     this._updateDimensionsForAutoscale(layer);
@@ -404,17 +405,17 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!LayerViewer.Layers3DView.Rectangle} rect
    */
   _appendRect(rect) {
-    var selection = rect.relatedObject;
-    var isSelected = LayerViewer.LayerView.Selection.isEqual(
+    const selection = rect.relatedObject;
+    const isSelected = LayerViewer.LayerView.Selection.isEqual(
         this._lastSelection[LayerViewer.Layers3DView.OutlineType.Selected], selection);
-    var isHovered = LayerViewer.LayerView.Selection.isEqual(
+    const isHovered = LayerViewer.LayerView.Selection.isEqual(
         this._lastSelection[LayerViewer.Layers3DView.OutlineType.Hovered], selection);
     if (isSelected) {
       rect.borderColor = LayerViewer.Layers3DView.SelectedBorderColor;
     } else if (isHovered) {
       rect.borderColor = LayerViewer.Layers3DView.HoveredBorderColor;
-      var fillColor = rect.fillColor || [255, 255, 255, 1];
-      var maskColor = LayerViewer.Layers3DView.HoveredImageMaskColor;
+      const fillColor = rect.fillColor || [255, 255, 255, 1];
+      const maskColor = LayerViewer.Layers3DView.HoveredImageMaskColor;
       rect.fillColor = [
         fillColor[0] * maskColor[0] / 255, fillColor[1] * maskColor[1] / 255, fillColor[2] * maskColor[2] / 255,
         fillColor[3] * maskColor[3]
@@ -430,10 +431,10 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!SDK.Layer} layer
    */
   _calculateLayerScrollRects(layer) {
-    var scrollRects = layer.scrollRects();
-    for (var i = 0; i < scrollRects.length; ++i) {
-      var selection = new LayerViewer.LayerView.ScrollRectSelection(layer, i);
-      var rect = new LayerViewer.Layers3DView.Rectangle(selection);
+    const scrollRects = layer.scrollRects();
+    for (let i = 0; i < scrollRects.length; ++i) {
+      const selection = new LayerViewer.LayerView.ScrollRectSelection(layer, i);
+      const rect = new LayerViewer.Layers3DView.Rectangle(selection);
       rect.calculateVerticesFromRect(layer, scrollRects[i].rect, this._calculateScrollRectDepth(layer, i));
       rect.fillColor = LayerViewer.Layers3DView.ScrollRectBackgroundColor;
       this._appendRect(rect);
@@ -444,13 +445,13 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!SDK.Layer} layer
    */
   _calculateLayerTileRects(layer) {
-    var tiles = this._textureManager.tilesForLayer(layer);
-    for (var i = 0; i < tiles.length; ++i) {
-      var tile = tiles[i];
+    const tiles = this._textureManager.tilesForLayer(layer);
+    for (let i = 0; i < tiles.length; ++i) {
+      const tile = tiles[i];
       if (!tile.texture)
         continue;
-      var selection = new LayerViewer.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
-      var rect = new LayerViewer.Layers3DView.Rectangle(selection);
+      const selection = new LayerViewer.LayerView.SnapshotSelection(layer, {rect: tile.rect, snapshot: tile.snapshot});
+      const rect = new LayerViewer.Layers3DView.Rectangle(selection);
       rect.calculateVerticesFromRect(layer, tile.rect, this._depthForLayer(layer) + 1);
       rect.texture = tile.texture;
       this._appendRect(rect);
@@ -466,9 +467,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
       this._layerTree.forEachLayer(this._calculateLayerScrollRects.bind(this));
 
     if (this._layerTexture && this._visibleLayers.has(this._layerTexture.layer)) {
-      var layer = this._layerTexture.layer;
-      var selection = new LayerViewer.LayerView.LayerSelection(layer);
-      var rect = new LayerViewer.Layers3DView.Rectangle(selection);
+      const layer = this._layerTexture.layer;
+      const selection = new LayerViewer.LayerView.LayerSelection(layer);
+      const rect = new LayerViewer.Layers3DView.Rectangle(selection);
       rect.setVertices(layer.quad(), this._depthForLayer(layer));
       rect.texture = this._layerTexture.texture;
       this._appendRect(rect);
@@ -482,9 +483,9 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {!Array.<number>}
    */
   _makeColorsArray(color) {
-    var colors = [];
-    var normalizedColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3]];
-    for (var i = 0; i < 4; i++)
+    let colors = [];
+    const normalizedColor = [color[0] / 255, color[1] / 255, color[2] / 255, color[3]];
+    for (let i = 0; i < 4; i++)
       colors = colors.concat(normalizedColor);
     return colors;
   }
@@ -495,8 +496,8 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {number} length
    */
   _setVertexAttribute(attribute, array, length) {
-    var gl = this._gl;
-    var buffer = gl.createBuffer();
+    const gl = this._gl;
+    const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(array), gl.STATIC_DRAW);
     gl.vertexAttribPointer(attribute, length, gl.FLOAT, false, 0, 0);
@@ -509,8 +510,8 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!Object=} texture
    */
   _drawRectangle(vertices, mode, color, texture) {
-    var gl = this._gl;
-    var white = [255, 255, 255, 1];
+    const gl = this._gl;
+    const white = [255, 255, 255, 1];
     color = color || white;
     this._setVertexAttribute(this._shaderProgram.vertexPositionAttribute, vertices, 3);
     this._setVertexAttribute(this._shaderProgram.textureCoordAttribute, [0, 1, 1, 1, 1, 0, 0, 0], 2);
@@ -524,7 +525,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
       gl.bindTexture(gl.TEXTURE_2D, this._whiteTexture);
     }
 
-    var numberOfVertices = vertices.length / 3;
+    const numberOfVertices = vertices.length / 3;
     gl.drawArrays(mode, 0, numberOfVertices);
   }
 
@@ -538,15 +539,15 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   }
 
   _drawViewportAndChrome() {
-    var viewport = this._layerTree.viewportSize();
+    const viewport = this._layerTree.viewportSize();
     if (!viewport)
       return;
 
-    var drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() && this._chromeTextures.length >= 3 &&
+    const drawChrome = !Common.moduleSetting('frameViewerHideChromeWindow').get() && this._chromeTextures.length >= 3 &&
         this._chromeTextures.indexOf(undefined) < 0;
-    var z = (this._maxDepth + 1) * LayerViewer.Layers3DView.LayerSpacing;
-    var borderWidth = Math.ceil(LayerViewer.Layers3DView.ViewportBorderWidth * this._scale);
-    var vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
+    const z = (this._maxDepth + 1) * LayerViewer.Layers3DView.LayerSpacing;
+    const borderWidth = Math.ceil(LayerViewer.Layers3DView.ViewportBorderWidth * this._scale);
+    let vertices = [viewport.width, 0, z, viewport.width, viewport.height, z, 0, viewport.height, z, 0, 0, z];
     this._gl.lineWidth(borderWidth);
     this._drawRectangle(
         vertices, drawChrome ? this._gl.LINE_STRIP : this._gl.LINE_LOOP, LayerViewer.Layers3DView.ViewportBorderColor);
@@ -554,16 +555,16 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     if (!drawChrome)
       return;
 
-    var borderAdjustment = LayerViewer.Layers3DView.ViewportBorderWidth / 2;
-    var viewportWidth = this._layerTree.viewportSize().width + 2 * borderAdjustment;
-    var chromeHeight = this._chromeTextures[0].image.naturalHeight;
-    var middleFragmentWidth =
+    const borderAdjustment = LayerViewer.Layers3DView.ViewportBorderWidth / 2;
+    const viewportWidth = this._layerTree.viewportSize().width + 2 * borderAdjustment;
+    const chromeHeight = this._chromeTextures[0].image.naturalHeight;
+    const middleFragmentWidth =
         viewportWidth - this._chromeTextures[0].image.naturalWidth - this._chromeTextures[2].image.naturalWidth;
-    var x = -borderAdjustment;
-    var y = -chromeHeight;
-    for (var i = 0; i < this._chromeTextures.length; ++i) {
-      var width = i === LayerViewer.Layers3DView.ChromeTexture.Middle ? middleFragmentWidth :
-                                                                        this._chromeTextures[i].image.naturalWidth;
+    let x = -borderAdjustment;
+    const y = -chromeHeight;
+    for (let i = 0; i < this._chromeTextures.length; ++i) {
+      const width = i === LayerViewer.Layers3DView.ChromeTexture.Middle ? middleFragmentWidth :
+                                                                          this._chromeTextures[i].image.naturalWidth;
       if (width < 0 || x + width > viewportWidth)
         break;
       vertices = [x, y, z, x + width, y, z, x + width, y + chromeHeight, z, x, y + chromeHeight, z];
@@ -576,7 +577,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!LayerViewer.Layers3DView.Rectangle} rect
    */
   _drawViewRect(rect) {
-    var vertices = rect.vertices;
+    const vertices = rect.vertices;
     if (rect.texture)
       this._drawTexture(vertices, rect.texture, rect.fillColor || undefined);
     else if (rect.fillColor)
@@ -595,7 +596,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
       this._failBanner.show(this.contentElement);
       return;
     }
-    var gl = this._initGLIfNecessary();
+    const gl = this._initGLIfNecessary();
     if (!gl) {
       this._failBanner.element.removeChildren();
       this._failBanner.element.appendChild(this._webglDisabledBanner());
@@ -621,7 +622,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {!Node}
    */
   _webglDisabledBanner() {
-    var fragment = this.contentElement.ownerDocument.createDocumentFragment();
+    const fragment = this.contentElement.ownerDocument.createDocumentFragment();
     fragment.createChild('div').textContent = Common.UIString('Can\'t display layers,');
     fragment.createChild('div').textContent = Common.UIString('WebGL support is disabled in your browser.');
     fragment.appendChild(UI.formatLocalized('Check %s for possible reasons.', [UI.XLink.create('about:gpu')]));
@@ -635,11 +636,12 @@ LayerViewer.Layers3DView = class extends UI.VBox {
   _selectionFromEventPoint(event) {
     if (!this._layerTree)
       return null;
-    var closestIntersectionPoint = Infinity;
-    var closestObject = null;
-    var projectionMatrix = new WebKitCSSMatrix().scale(1, -1, -1).translate(-1, -1, 0).multiply(this._projectionMatrix);
-    var x0 = (event.clientX - this._canvasElement.totalOffsetLeft()) * window.devicePixelRatio;
-    var y0 = -(event.clientY - this._canvasElement.totalOffsetTop()) * window.devicePixelRatio;
+    let closestIntersectionPoint = Infinity;
+    let closestObject = null;
+    const projectionMatrix =
+        new WebKitCSSMatrix().scale(1, -1, -1).translate(-1, -1, 0).multiply(this._projectionMatrix);
+    const x0 = (event.clientX - this._canvasElement.totalOffsetLeft()) * window.devicePixelRatio;
+    const y0 = -(event.clientY - this._canvasElement.totalOffsetTop()) * window.devicePixelRatio;
 
     /**
      * @param {!LayerViewer.Layers3DView.Rectangle} rect
@@ -647,7 +649,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
     function checkIntersection(rect) {
       if (!rect.relatedObject)
         return;
-      var t = rect.intersectWithLine(projectionMatrix, x0, y0);
+      const t = rect.intersectWithLine(projectionMatrix, x0, y0);
       if (t < closestIntersectionPoint) {
         closestIntersectionPoint = t;
         closestObject = rect.relatedObject;
@@ -666,7 +668,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @return {!Common.Setting}
    */
   _createVisibilitySetting(caption, name, value, toolbar) {
-    var setting = Common.settings.createSetting(name, value);
+    const setting = Common.settings.createSetting(name, value);
     setting.setTitle(Common.UIString(caption));
     setting.addChangeListener(this._update, this);
     toolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(setting));
@@ -688,10 +690,10 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!Event} event
    */
   _onContextMenu(event) {
-    var contextMenu = new UI.ContextMenu(event);
+    const contextMenu = new UI.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
         Common.UIString('Reset View'), this._transformController.resetAndNotify.bind(this._transformController), false);
-    var selection = this._selectionFromEventPoint(event);
+    const selection = this._selectionFromEventPoint(event);
     if (selection && selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot) {
       contextMenu.defaultSection().appendItem(
           Common.UIString('Show Paint Profiler'),
@@ -734,7 +736,7 @@ LayerViewer.Layers3DView = class extends UI.VBox {
    * @param {!Event} event
    */
   _onDoubleClick(event) {
-    var selection = this._selectionFromEventPoint(event);
+    const selection = this._selectionFromEventPoint(event);
     if (selection && (selection.type() === LayerViewer.LayerView.Selection.Type.Snapshot || selection.layer()))
       this.dispatchEventToListeners(LayerViewer.Layers3DView.Events.PaintProfilerRequested, selection);
     event.stopPropagation();
@@ -854,7 +856,7 @@ LayerViewer.LayerTextureManager = class {
    * @return {!WebGLTexture} texture
    */
   static _createTextureForImage(gl, image) {
-    var texture = gl.createTexture();
+    const texture = gl.createTexture();
     texture.image = image;
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -900,8 +902,8 @@ LayerViewer.LayerTextureManager = class {
    * @param {?SDK.LayerTreeBase} layerTree
    */
   setLayerTree(layerTree) {
-    var newLayers = new Set();
-    var oldLayers = Array.from(this._tilesByLayer.keys());
+    const newLayers = new Set();
+    const oldLayers = Array.from(this._tilesByLayer.keys());
     if (layerTree) {
       layerTree.forEachLayer(layer => {
         if (!layer.drawsContent())
@@ -915,7 +917,7 @@ LayerViewer.LayerTextureManager = class {
     }
     if (!oldLayers.length)
       this.forceUpdate();
-    for (var layer of oldLayers) {
+    for (const layer of oldLayers) {
       if (newLayers.has(layer))
         continue;
       this._tilesByLayer.get(layer).forEach(tile => tile.dispose());
@@ -929,11 +931,11 @@ LayerViewer.LayerTextureManager = class {
    * @return {!Promise}
    */
   _setSnapshotsForLayer(layer, snapshots) {
-    var oldSnapshotsToTiles = new Map((this._tilesByLayer.get(layer) || []).map(tile => [tile.snapshot, tile]));
-    var newTiles = [];
-    var reusedTiles = [];
-    for (var snapshot of snapshots) {
-      var oldTile = oldSnapshotsToTiles.get(snapshot);
+    const oldSnapshotsToTiles = new Map((this._tilesByLayer.get(layer) || []).map(tile => [tile.snapshot, tile]));
+    const newTiles = [];
+    const reusedTiles = [];
+    for (const snapshot of snapshots) {
+      const oldTile = oldSnapshotsToTiles.get(snapshot);
       if (oldTile) {
         reusedTiles.push(oldTile);
         oldSnapshotsToTiles.delete(oldTile);
@@ -942,7 +944,7 @@ LayerViewer.LayerTextureManager = class {
       }
     }
     this._tilesByLayer.set(layer, reusedTiles.concat(newTiles));
-    for (var tile of oldSnapshotsToTiles.values())
+    for (const tile of oldSnapshotsToTiles.values())
       tile.dispose();
     if (!this._gl || !this._scale)
       return Promise.resolve();
@@ -987,7 +989,7 @@ LayerViewer.LayerTextureManager = class {
    * @return {!Promise}
    */
   _update() {
-    var layer = this._queue.shift();
+    const layer = this._queue.shift();
     if (!layer)
       return Promise.resolve();
     if (this._queue.length)
@@ -1010,9 +1012,9 @@ LayerViewer.LayerTextureManager = class {
     if (!this._scale)
       return;
 
-    for (var tiles of this._tilesByLayer.values()) {
-      for (var tile of tiles) {
-        var promise = tile.updateScale(this._gl, this._scale);
+    for (const tiles of this._tilesByLayer.values()) {
+      for (const tile of tiles) {
+        const promise = tile.updateScale(this._gl, this._scale);
         if (promise)
           promise.then(this._textureUpdatedCallback);
       }
@@ -1056,22 +1058,22 @@ LayerViewer.Layers3DView.Rectangle = class {
    * @return {!Array.<number>}
    */
   _calculatePointOnQuad(quad, ratioX, ratioY) {
-    var x0 = quad[0];
-    var y0 = quad[1];
-    var x1 = quad[2];
-    var y1 = quad[3];
-    var x2 = quad[4];
-    var y2 = quad[5];
-    var x3 = quad[6];
-    var y3 = quad[7];
+    const x0 = quad[0];
+    const y0 = quad[1];
+    const x1 = quad[2];
+    const y1 = quad[3];
+    const x2 = quad[4];
+    const y2 = quad[5];
+    const x3 = quad[6];
+    const y3 = quad[7];
     // Point on the first quad side clockwise
-    var firstSidePointX = x0 + ratioX * (x1 - x0);
-    var firstSidePointY = y0 + ratioX * (y1 - y0);
+    const firstSidePointX = x0 + ratioX * (x1 - x0);
+    const firstSidePointY = y0 + ratioX * (y1 - y0);
     // Point on the third quad side clockwise
-    var thirdSidePointX = x3 + ratioX * (x2 - x3);
-    var thirdSidePointY = y3 + ratioX * (y2 - y3);
-    var x = firstSidePointX + ratioY * (thirdSidePointX - firstSidePointX);
-    var y = firstSidePointY + ratioY * (thirdSidePointY - firstSidePointY);
+    const thirdSidePointX = x3 + ratioX * (x2 - x3);
+    const thirdSidePointY = y3 + ratioX * (y2 - y3);
+    const x = firstSidePointX + ratioY * (thirdSidePointX - firstSidePointX);
+    const y = firstSidePointY + ratioY * (thirdSidePointY - firstSidePointY);
     return [x, y];
   }
 
@@ -1081,15 +1083,15 @@ LayerViewer.Layers3DView.Rectangle = class {
    * @param {number} z
    */
   calculateVerticesFromRect(layer, rect, z) {
-    var quad = layer.quad();
-    var rx1 = rect.x / layer.width();
-    var rx2 = (rect.x + rect.width) / layer.width();
-    var ry1 = rect.y / layer.height();
-    var ry2 = (rect.y + rect.height) / layer.height();
-    var rectQuad = this._calculatePointOnQuad(quad, rx1, ry1)
-                       .concat(this._calculatePointOnQuad(quad, rx2, ry1))
-                       .concat(this._calculatePointOnQuad(quad, rx2, ry2))
-                       .concat(this._calculatePointOnQuad(quad, rx1, ry2));
+    const quad = layer.quad();
+    const rx1 = rect.x / layer.width();
+    const rx2 = (rect.x + rect.width) / layer.width();
+    const ry1 = rect.y / layer.height();
+    const ry2 = (rect.y + rect.height) / layer.height();
+    const rectQuad = this._calculatePointOnQuad(quad, rx1, ry1)
+                         .concat(this._calculatePointOnQuad(quad, rx2, ry1))
+                         .concat(this._calculatePointOnQuad(quad, rx2, ry2))
+                         .concat(this._calculatePointOnQuad(quad, rx1, ry2));
     this.setVertices(rectQuad, z);
   }
 
@@ -1101,31 +1103,31 @@ LayerViewer.Layers3DView.Rectangle = class {
    * @return {(number|undefined)}
    */
   intersectWithLine(matrix, x0, y0) {
-    var i;
+    let i;
     // Vertices of the quad with transform matrix applied
-    var points = [];
+    const points = [];
     for (i = 0; i < 4; ++i) {
       points[i] = UI.Geometry.multiplyVectorByMatrixAndNormalize(
           new UI.Geometry.Vector(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]), matrix);
     }
     // Calculating quad plane normal
-    var normal = UI.Geometry.crossProduct(
+    const normal = UI.Geometry.crossProduct(
         UI.Geometry.subtract(points[1], points[0]), UI.Geometry.subtract(points[2], points[1]));
     // General form of the equation of the quad plane: A * x + B * y + C * z + D = 0
-    var A = normal.x;
-    var B = normal.y;
-    var C = normal.z;
-    var D = -(A * points[0].x + B * points[0].y + C * points[0].z);
+    const A = normal.x;
+    const B = normal.y;
+    const C = normal.z;
+    const D = -(A * points[0].x + B * points[0].y + C * points[0].z);
     // Finding t from the equation
-    var t = -(D + A * x0 + B * y0) / C;
+    const t = -(D + A * x0 + B * y0) / C;
     // Point of the intersection
-    var pt = new UI.Geometry.Vector(x0, y0, t);
+    const pt = new UI.Geometry.Vector(x0, y0, t);
     // Vectors from the intersection point to vertices of the quad
-    var tVects = points.map(UI.Geometry.subtract.bind(null, pt));
+    const tVects = points.map(UI.Geometry.subtract.bind(null, pt));
     // Intersection point lies inside of the polygon if scalar products of normal of the plane and
     // cross products of successive tVects are all nonstrictly above or all nonstrictly below zero
     for (i = 0; i < tVects.length; ++i) {
-      var product =
+      const product =
           UI.Geometry.scalarProduct(normal, UI.Geometry.crossProduct(tVects[i], tVects[(i + 1) % tVects.length]));
       if (product < 0)
         return undefined;
@@ -1177,8 +1179,8 @@ LayerViewer.LayerTextureManager.Tile = class {
   async update(glContext, scale) {
     this._gl = glContext;
     this.scale = scale;
-    var imageURL = await this.snapshot.replay(scale);
-    var image = imageURL && await UI.loadImage(imageURL);
+    const imageURL = await this.snapshot.replay(scale);
+    const image = imageURL && await UI.loadImage(imageURL);
     this.texture = image && LayerViewer.LayerTextureManager._createTextureForImage(glContext, image);
   }
 };

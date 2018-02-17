@@ -32,10 +32,10 @@ ProductRegistryImpl.sha1 = function(str) {
    */
   function rstr2hex(input)
   {
-    var hex_tab = "0123456789abcdef";
-    var output = "";
-    var x;
-    for(var i = 0; i < input.length; i++)
+    let hex_tab = "0123456789abcdef";
+    let output = "";
+    let x;
+    for(let i = 0; i < input.length; i++)
     {
       x = input.charCodeAt(i);
       output += hex_tab.charAt((x >>> 4) & 0x0F)
@@ -52,9 +52,9 @@ ProductRegistryImpl.sha1 = function(str) {
    */
   function str2rstr_utf8(input)
   {
-    var output = "";
-    var i = -1;
-    var x, y;
+    let output = "";
+    let i = -1;
+    let x, y;
 
     while(++i < input.length)
     {
@@ -94,10 +94,10 @@ ProductRegistryImpl.sha1 = function(str) {
    */
   function rstr2binb(input)
   {
-    var output = Array(input.length >> 2);
-    for(var i = 0; i < output.length; i++)
+    let output = Array(input.length >> 2);
+    for(let i = 0; i < output.length; i++)
       output[i] = 0;
-    for(var i = 0; i < input.length * 8; i += 8)
+    for(let i = 0; i < input.length * 8; i += 8)
       output[i>>5] |= (input.charCodeAt(i / 8) & 0xFF) << (24 - i % 32);
     return output;
   }
@@ -109,8 +109,8 @@ ProductRegistryImpl.sha1 = function(str) {
    */
   function binb2rstr(input)
   {
-    var output = "";
-    for(var i = 0; i < input.length * 32; i += 8)
+    let output = "";
+    for(let i = 0; i < input.length * 32; i += 8)
       output += String.fromCharCode((input[i>>5] >>> (24 - i % 32)) & 0xFF);
     return output;
   }
@@ -127,26 +127,26 @@ ProductRegistryImpl.sha1 = function(str) {
     x[len >> 5] |= 0x80 << (24 - len % 32);
     x[((len + 64 >> 9) << 4) + 15] = len;
 
-    var w = Array(80);
-    var a =  1732584193;
-    var b = -271733879;
-    var c = -1732584194;
-    var d =  271733878;
-    var e = -1009589776;
+    let w = Array(80);
+    let a =  1732584193;
+    let b = -271733879;
+    let c = -1732584194;
+    let d =  271733878;
+    let e = -1009589776;
 
-    for(var i = 0; i < x.length; i += 16)
+    for(let i = 0; i < x.length; i += 16)
     {
-      var olda = a;
-      var oldb = b;
-      var oldc = c;
-      var oldd = d;
-      var olde = e;
+      let olda = a;
+      let oldb = b;
+      let oldc = c;
+      let oldd = d;
+      let olde = e;
 
-      for(var j = 0; j < 80; j++)
+      for(let j = 0; j < 80; j++)
       {
         if(j < 16) w[j] = x[i + j];
         else w[j] = bit_rol(w[j-3] ^ w[j-8] ^ w[j-14] ^ w[j-16], 1);
-        var t = safe_add(safe_add(bit_rol(a, 5), sha1_ft(j, b, c, d)),
+        let t = safe_add(safe_add(bit_rol(a, 5), sha1_ft(j, b, c, d)),
                          safe_add(safe_add(e, w[j]), sha1_kt(j)));
         e = d;
         d = c;
@@ -202,8 +202,8 @@ ProductRegistryImpl.sha1 = function(str) {
    */
   function safe_add(x, y)
   {
-    var lsw = (x & 0xFFFF) + (y & 0xFFFF);
-    var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
+    let lsw = (x & 0xFFFF) + (y & 0xFFFF);
+    let msw = (x >> 16) + (y >> 16) + (lsw >> 16);
     return (msw << 16) | (lsw & 0xFFFF);
   }
 

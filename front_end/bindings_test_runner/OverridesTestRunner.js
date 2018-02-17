@@ -7,10 +7,10 @@
  * @return {!{isolatedFileSystem: !Persistence.IsolatedFileSystem, project: !Workspace.Project, testFileSystem: !BindingsTestRunner.TestFileSystem}}
  */
 BindingsTestRunner.createOverrideProject = async function(folderPath) {
-  var testFileSystem = new BindingsTestRunner.TestFileSystem(folderPath);
-  var isolatedFileSystem = await testFileSystem.reportCreatedPromise('overrides');
+  const testFileSystem = new BindingsTestRunner.TestFileSystem(folderPath);
+  const isolatedFileSystem = await testFileSystem.reportCreatedPromise('overrides');
   isolatedFileSystem._type = 'overrides';
-  var project =
+  const project =
       Workspace.workspace.project(Persistence.FileSystemWorkspaceBinding.projectId(isolatedFileSystem.path()));
   console.assert(project);
   return {isolatedFileSystem, project, testFileSystem};

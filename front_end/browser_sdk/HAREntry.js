@@ -57,19 +57,19 @@ BrowserSDK.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   static async build(request) {
-    var harEntry = new BrowserSDK.HAREntry(request);
-    var ipAddress = harEntry._request.remoteAddress();
-    var portPositionInString = ipAddress.lastIndexOf(':');
+    const harEntry = new BrowserSDK.HAREntry(request);
+    let ipAddress = harEntry._request.remoteAddress();
+    const portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1)
       ipAddress = ipAddress.substr(0, portPositionInString);
 
-    var timings = harEntry._buildTimings();
-    var time = 0;
+    const timings = harEntry._buildTimings();
+    let time = 0;
     // "ssl" is included in the connect field, so do not double count it.
-    for (var t of [timings.blocked, timings.dns, timings.connect, timings.send, timings.wait, timings.receive])
+    for (const t of [timings.blocked, timings.dns, timings.connect, timings.send, timings.wait, timings.receive])
       time += Math.max(t, 0);
 
-    var entry = {
+    const entry = {
       startedDateTime: BrowserSDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
       time: time,
       request: await harEntry._buildRequest(),
@@ -86,7 +86,7 @@ BrowserSDK.HAREntry = class {
 
     if (harEntry._request.connectionId !== '0')
       entry.connection = harEntry._request.connectionId;
-    var page = BrowserSDK.PageLoad.forRequest(harEntry._request);
+    const page = BrowserSDK.PageLoad.forRequest(harEntry._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -96,8 +96,8 @@ BrowserSDK.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   async _buildRequest() {
-    var headersText = this._request.requestHeadersText();
-    var res = {
+    const headersText = this._request.requestHeadersText();
+    const res = {
       method: this._request.requestMethod,
       url: this._buildRequestURL(this._request.url()),
       httpVersion: this._request.requestHttpVersion(),
@@ -107,7 +107,7 @@ BrowserSDK.HAREntry = class {
       headersSize: headersText ? headersText.length : -1,
       bodySize: this.requestBodySize
     };
-    var postData = await this._buildPostData();
+    const postData = await this._buildPostData();
     if (postData)
       res.postData = postData;
 
@@ -118,7 +118,7 @@ BrowserSDK.HAREntry = class {
    * @return {!Object}
    */
   _buildResponse() {
-    var headersText = this._request.responseHeadersText;
+    const headersText = this._request.responseHeadersText;
     return {
       status: this._request.statusCode,
       statusText: this._request.statusText,
@@ -138,12 +138,12 @@ BrowserSDK.HAREntry = class {
    * @return {!Object}
    */
   _buildContent() {
-    var content = {
+    const content = {
       size: this._request.resourceSize,
       mimeType: this._request.mimeType || 'x-unknown',
       // text: this._request.content // TODO: pull out into a boolean flag, as content can be huge (and needs to be requested with an async call)
     };
-    var compression = this.responseCompression;
+    const compression = this.responseCompression;
     if (typeof compression === 'number')
       content.compression = compression;
     return content;
@@ -154,21 +154,21 @@ BrowserSDK.HAREntry = class {
    */
   _buildTimings() {
     // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
-    var timing = this._request.timing;
-    var issueTime = this._request.issueTime();
-    var startTime = this._request.startTime;
+    const timing = this._request.timing;
+    const issueTime = this._request.issueTime();
+    const startTime = this._request.startTime;
 
-    var result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
+    const result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
 
-    var queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
+    const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = queuedTime;
     result._blocked_queueing = BrowserSDK.HAREntry._toMilliseconds(queuedTime);
 
-    var highestTime = 0;
+    let highestTime = 0;
     if (timing) {
       // "blocked" here represents both queued + blocked/stalled + proxy (ie: anything before request was started).
       // We pick the better of when the network request start was reported and pref timing.
-      var blockedStart = leastNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
+      const blockedStart = leastNonNegative([timing.dnsStart, timing.connectStart, timing.sendStart]);
       if (blockedStart !== Infinity)
         result.blocked += blockedStart;
 
@@ -178,22 +178,22 @@ BrowserSDK.HAREntry = class {
       if (result._blocked_proxy && result._blocked_proxy > result.blocked)
         result.blocked = result._blocked_proxy;
 
-      var dnsStart = timing.dnsEnd >= 0 ? blockedStart : 0;
-      var dnsEnd = timing.dnsEnd >= 0 ? timing.dnsEnd : -1;
+      const dnsStart = timing.dnsEnd >= 0 ? blockedStart : 0;
+      const dnsEnd = timing.dnsEnd >= 0 ? timing.dnsEnd : -1;
       result.dns = dnsEnd - dnsStart;
 
       // SSL timing is included in connection timing.
-      var sslStart = timing.sslEnd > 0 ? timing.sslStart : 0;
-      var sslEnd = timing.sslEnd > 0 ? timing.sslEnd : -1;
+      const sslStart = timing.sslEnd > 0 ? timing.sslStart : 0;
+      const sslEnd = timing.sslEnd > 0 ? timing.sslEnd : -1;
       result.ssl = sslEnd - sslStart;
 
-      var connectStart = timing.connectEnd >= 0 ? leastNonNegative([dnsEnd, blockedStart]) : 0;
-      var connectEnd = timing.connectEnd >= 0 ? timing.connectEnd : -1;
+      const connectStart = timing.connectEnd >= 0 ? leastNonNegative([dnsEnd, blockedStart]) : 0;
+      const connectEnd = timing.connectEnd >= 0 ? timing.connectEnd : -1;
       result.connect = connectEnd - connectStart;
 
       // Send should not be -1 for legacy reasons even if it is served from cache.
-      var sendStart = timing.sendEnd >= 0 ? Math.max(connectEnd, dnsEnd, blockedStart) : 0;
-      var sendEnd = timing.sendEnd >= 0 ? timing.sendEnd : 0;
+      const sendStart = timing.sendEnd >= 0 ? Math.max(connectEnd, dnsEnd, blockedStart) : 0;
+      const sendEnd = timing.sendEnd >= 0 ? timing.sendEnd : 0;
       result.send = sendEnd - sendStart;
       // Quic sometimes says that sendStart is before connectionEnd (see: crbug.com/740792)
       if (result.send < 0)
@@ -205,13 +205,13 @@ BrowserSDK.HAREntry = class {
       return result;
     }
 
-    var requestTime = timing ? timing.requestTime : startTime;
-    var waitStart = highestTime;
-    var waitEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    const requestTime = timing ? timing.requestTime : startTime;
+    const waitStart = highestTime;
+    const waitEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
-    var receiveStart = waitEnd;
-    var receiveEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.endTime - issueTime);
+    const receiveStart = waitEnd;
+    const receiveEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.endTime - issueTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -229,11 +229,11 @@ BrowserSDK.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   async _buildPostData() {
-    var postData = await this._request.requestFormData();
+    const postData = await this._request.requestFormData();
     if (!postData)
       return null;
-    var res = {mimeType: this._request.requestContentType(), text: postData};
-    var formParameters = await this._request.formParameters();
+    const res = {mimeType: this._request.requestContentType(), text: postData};
+    const formParameters = await this._request.formParameters();
     if (formParameters)
       res.params = this._buildParameters(formParameters);
     return res;
@@ -268,7 +268,7 @@ BrowserSDK.HAREntry = class {
    * @return {!Object}
    */
   _buildCookie(cookie) {
-    var c = {
+    const c = {
       name: cookie.name(),
       value: cookie.value(),
       path: cookie.path(),
@@ -344,16 +344,16 @@ BrowserSDK.HARLog = class {
    * @return {!Promise<!Object>}
    */
   static async build(requests) {
-    var log = new BrowserSDK.HARLog();
-    var entryPromises = [];
-    for (var request of requests)
+    const log = new BrowserSDK.HARLog();
+    const entryPromises = [];
+    for (const request of requests)
       entryPromises.push(BrowserSDK.HAREntry.build(request));
-    var entries = await Promise.all(entryPromises);
+    const entries = await Promise.all(entryPromises);
     return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
   }
 
   _creator() {
-    var webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
+    const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
 
     return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
   }
@@ -363,11 +363,11 @@ BrowserSDK.HARLog = class {
    * @return {!Array.<!Object>}
    */
   _buildPages(requests) {
-    var seenIdentifiers = {};
-    var pages = [];
-    for (var i = 0; i < requests.length; ++i) {
-      var request = requests[i];
-      var page = BrowserSDK.PageLoad.forRequest(request);
+    const seenIdentifiers = {};
+    const pages = [];
+    for (let i = 0; i < requests.length; ++i) {
+      const request = requests[i];
+      const page = BrowserSDK.PageLoad.forRequest(request);
       if (!page || seenIdentifiers[page.id])
         continue;
       seenIdentifiers[page.id] = true;
@@ -399,7 +399,7 @@ BrowserSDK.HARLog = class {
    * @return {number}
    */
   _pageEventTime(page, time) {
-    var startTime = page.startTime;
+    const startTime = page.startTime;
     if (time === -1 || startTime === -1)
       return -1;
     return BrowserSDK.HAREntry._toMilliseconds(time - startTime);

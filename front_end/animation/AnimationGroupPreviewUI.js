@@ -29,9 +29,9 @@ Animation.AnimationGroupPreviewUI = class {
    * @return {number}
    */
   _groupDuration() {
-    var duration = 0;
-    for (var anim of this._model.animations()) {
-      var animDuration = anim.source().delay() + anim.source().duration();
+    let duration = 0;
+    for (const anim of this._model.animations()) {
+      const animDuration = anim.source().delay() + anim.source().duration();
       if (animDuration > duration)
         duration = animDuration;
     }
@@ -56,15 +56,15 @@ Animation.AnimationGroupPreviewUI = class {
 
   _render() {
     this._svg.removeChildren();
-    var maxToShow = 10;
-    var numberOfAnimations = Math.min(this._model.animations().length, maxToShow);
-    var timeToPixelRatio = 100 / Math.max(this._groupDuration(), 750);
-    for (var i = 0; i < numberOfAnimations; i++) {
-      var effect = this._model.animations()[i].source();
-      var line = this._svg.createSVGChild('line');
+    const maxToShow = 10;
+    const numberOfAnimations = Math.min(this._model.animations().length, maxToShow);
+    const timeToPixelRatio = 100 / Math.max(this._groupDuration(), 750);
+    for (let i = 0; i < numberOfAnimations; i++) {
+      const effect = this._model.animations()[i].source();
+      const line = this._svg.createSVGChild('line');
       line.setAttribute('x1', effect.delay() * timeToPixelRatio);
       line.setAttribute('x2', (effect.delay() + effect.duration()) * timeToPixelRatio);
-      var y = Math.floor(this._viewBoxHeight / Math.max(6, numberOfAnimations) * i + 1);
+      const y = Math.floor(this._viewBoxHeight / Math.max(6, numberOfAnimations) * i + 1);
       line.setAttribute('y1', y);
       line.setAttribute('y2', y);
       line.style.stroke = Animation.AnimationUI.Color(this._model.animations()[i]);

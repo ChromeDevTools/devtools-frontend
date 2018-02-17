@@ -30,7 +30,7 @@ Screencast.ScreencastApp = class {
    * @param {!Document} document
    */
   presentUI(document) {
-    var rootView = new UI.RootView();
+    const rootView = new UI.RootView();
 
     this._rootSplitWidget = new UI.SplitWidget(false, true, 'InspectorView.screencastSplitViewState', 300, 300);
     this._rootSplitWidget.setVertical(true);
@@ -73,7 +73,7 @@ Screencast.ScreencastApp = class {
   }
 
   _toggleButtonClicked() {
-    var enabled = !this._toggleButton.toggled();
+    const enabled = !this._toggleButton.toggled();
     this._enabledSetting.set(enabled);
     this._onScreencastEnabledChanged();
   }
@@ -81,7 +81,7 @@ Screencast.ScreencastApp = class {
   _onScreencastEnabledChanged() {
     if (!this._rootSplitWidget)
       return;
-    var enabled = this._enabledSetting.get() && this._screencastView;
+    const enabled = this._enabledSetting.get() && this._screencastView;
     this._toggleButton.setToggled(enabled);
     if (enabled)
       this._rootSplitWidget.showBoth();

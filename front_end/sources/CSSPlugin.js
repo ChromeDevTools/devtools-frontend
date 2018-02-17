@@ -63,14 +63,14 @@ Sources.CSSPlugin = class {
   }
 
   _registerShortcuts() {
-    var shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
-    for (var descriptor of shortcutKeys.IncreaseCSSUnitByOne)
+    const shortcutKeys = UI.ShortcutsScreen.SourcesPanelShortcuts;
+    for (const descriptor of shortcutKeys.IncreaseCSSUnitByOne)
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 1);
-    for (var descriptor of shortcutKeys.DecreaseCSSUnitByOne)
+    for (const descriptor of shortcutKeys.DecreaseCSSUnitByOne)
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -1);
-    for (var descriptor of shortcutKeys.IncreaseCSSUnitByTen)
+    for (const descriptor of shortcutKeys.IncreaseCSSUnitByTen)
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, 10);
-    for (var descriptor of shortcutKeys.DecreaseCSSUnitByTen)
+    for (const descriptor of shortcutKeys.DecreaseCSSUnitByTen)
       this._shortcuts[descriptor.key] = this._handleUnitModification.bind(this, -10);
   }
 
@@ -78,8 +78,8 @@ Sources.CSSPlugin = class {
    * @param {!Event} event
    */
   _handleKeyDown(event) {
-    var shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
-    var handler = this._shortcuts[shortcutKey];
+    const shortcutKey = UI.KeyboardShortcut.makeKeyFromEvent(/** @type {!KeyboardEvent} */ (event));
+    const handler = this._shortcuts[shortcutKey];
     if (handler && handler())
       event.consume(true);
   }
@@ -95,10 +95,10 @@ Sources.CSSPlugin = class {
    * @return {?string}
    */
   _modifyUnit(unit, change) {
-    var unitValue = parseInt(unit, 10);
+    const unitValue = parseInt(unit, 10);
     if (isNaN(unitValue))
       return null;
-    var tail = unit.substring((unitValue).toString().length);
+    const tail = unit.substring((unitValue).toString().length);
     return String.sprintf('%d%s', unitValue + change, tail);
   }
 
@@ -107,8 +107,8 @@ Sources.CSSPlugin = class {
    * @return {boolean}
    */
   _handleUnitModification(change) {
-    var selection = this._textEditor.selection().normalize();
-    var token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
+    const selection = this._textEditor.selection().normalize();
+    let token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn);
     if (!token) {
       if (selection.startColumn > 0)
         token = this._textEditor.tokenAtTextPosition(selection.startLine, selection.startColumn - 1);
@@ -118,10 +118,10 @@ Sources.CSSPlugin = class {
     if (token.type !== 'css-number')
       return false;
 
-    var cssUnitRange =
+    const cssUnitRange =
         new TextUtils.TextRange(selection.startLine, token.startColumn, selection.startLine, token.endColumn);
-    var cssUnitText = this._textEditor.text(cssUnitRange);
-    var newUnitText = this._modifyUnit(cssUnitText, change);
+    const cssUnitText = this._textEditor.text(cssUnitRange);
+    const newUnitText = this._modifyUnit(cssUnitText, change);
     if (!newUnitText)
       return false;
     this._textEditor.editRange(cssUnitRange, newUnitText);
@@ -136,29 +136,29 @@ Sources.CSSPlugin = class {
    * @param {number} endLine
    */
   _updateSwatches(startLine, endLine) {
-    var swatches = [];
-    var swatchPositions = [];
+    const swatches = [];
+    const swatchPositions = [];
 
-    var regexes =
+    const regexes =
         [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex, UI.Geometry.CubicBezier.Regex, Common.Color.Regex];
-    var handlers = new Map();
+    const handlers = new Map();
     handlers.set(Common.Color.Regex, this._createColorSwatch.bind(this));
     handlers.set(UI.Geometry.CubicBezier.Regex, this._createBezierSwatch.bind(this));
 
-    for (var lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
-      var line = this._textEditor.line(lineNumber).substring(0, Sources.CSSPlugin.maxSwatchProcessingLength);
-      var results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
-      for (var i = 0; i < results.length; i++) {
-        var result = results[i];
+    for (let lineNumber = startLine; lineNumber <= endLine; lineNumber++) {
+      const line = this._textEditor.line(lineNumber).substring(0, Sources.CSSPlugin.maxSwatchProcessingLength);
+      const results = TextUtils.TextUtils.splitStringByRegexes(line, regexes);
+      for (let i = 0; i < results.length; i++) {
+        const result = results[i];
         if (result.regexIndex === -1 || !handlers.has(regexes[result.regexIndex]))
           continue;
-        var delimiters = /[\s:;,(){}]/;
-        var positionBefore = result.position - 1;
-        var positionAfter = result.position + result.value.length;
+        const delimiters = /[\s:;,(){}]/;
+        const positionBefore = result.position - 1;
+        const positionAfter = result.position + result.value.length;
         if (positionBefore >= 0 && !delimiters.test(line.charAt(positionBefore)) ||
             positionAfter < line.length && !delimiters.test(line.charAt(positionAfter)))
           continue;
-        var swatch = handlers.get(regexes[result.regexIndex])(result.value);
+        const swatch = handlers.get(regexes[result.regexIndex])(result.value);
         if (!swatch)
           continue;
         swatches.push(swatch);
@@ -171,13 +171,13 @@ Sources.CSSPlugin = class {
      * @this {Sources.CSSPlugin}
      */
     function putSwatchesInline() {
-      var clearRange = new TextUtils.TextRange(startLine, 0, endLine, this._textEditor.line(endLine).length);
+      const clearRange = new TextUtils.TextRange(startLine, 0, endLine, this._textEditor.line(endLine).length);
       this._textEditor.bookmarks(clearRange, Sources.CSSPlugin.SwatchBookmark).forEach(marker => marker.clear());
 
-      for (var i = 0; i < swatches.length; i++) {
-        var swatch = swatches[i];
-        var swatchPosition = swatchPositions[i];
-        var bookmark = this._textEditor.addBookmark(
+      for (let i = 0; i < swatches.length; i++) {
+        const swatch = swatches[i];
+        const swatchPosition = swatchPositions[i];
+        const bookmark = this._textEditor.addBookmark(
             swatchPosition.startLine, swatchPosition.startColumn, swatch, Sources.CSSPlugin.SwatchBookmark);
         swatch[Sources.CSSPlugin.SwatchBookmark] = bookmark;
       }
@@ -189,10 +189,10 @@ Sources.CSSPlugin = class {
    * @return {?InlineEditor.ColorSwatch}
    */
   _createColorSwatch(text) {
-    var color = Common.Color.parse(text);
+    const color = Common.Color.parse(text);
     if (!color)
       return null;
-    var swatch = InlineEditor.ColorSwatch.create();
+    const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.iconElement().title = Common.UIString('Open color picker.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
@@ -207,7 +207,7 @@ Sources.CSSPlugin = class {
   _createBezierSwatch(text) {
     if (!UI.Geometry.CubicBezier.parse(text))
       return null;
-    var swatch = InlineEditor.BezierSwatch.create();
+    const swatch = InlineEditor.BezierSwatch.create();
     swatch.setBezierText(text);
     swatch.iconElement().title = Common.UIString('Open cubic bezier editor.');
     swatch.iconElement().addEventListener('click', this._swatchIconClicked.bind(this, swatch), false);
@@ -223,7 +223,7 @@ Sources.CSSPlugin = class {
     event.consume(true);
     this._hadSwatchChange = false;
     this._muteSwatchProcessing = true;
-    var swatchPosition = swatch[Sources.CSSPlugin.SwatchBookmark].position();
+    const swatchPosition = swatch[Sources.CSSPlugin.SwatchBookmark].position();
     this._textEditor.setSelection(swatchPosition);
     this._editedSwatchTextRange = swatchPosition.clone();
     this._editedSwatchTextRange.endColumn += swatch.textContent.length;
@@ -259,8 +259,8 @@ Sources.CSSPlugin = class {
    * @param {!Common.Event} event
    */
   _spectrumChanged(event) {
-    var colorString = /** @type {string} */ (event.data);
-    var color = Common.Color.parse(colorString);
+    const colorString = /** @type {string} */ (event.data);
+    const color = Common.Color.parse(colorString);
     if (!color)
       return;
     this._currentSwatch.setColor(color);
@@ -275,7 +275,7 @@ Sources.CSSPlugin = class {
       this._bezierEditor = new InlineEditor.BezierEditor();
       this._bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BezierChanged, this._bezierChanged, this);
     }
-    var cubicBezier = UI.Geometry.CubicBezier.parse(swatch.bezierText());
+    let cubicBezier = UI.Geometry.CubicBezier.parse(swatch.bezierText());
     if (!cubicBezier) {
       cubicBezier =
           /** @type {!UI.Geometry.CubicBezier} */ (UI.Geometry.CubicBezier.parse('linear'));
@@ -288,7 +288,7 @@ Sources.CSSPlugin = class {
    * @param {!Common.Event} event
    */
   _bezierChanged(event) {
-    var bezierString = /** @type {string} */ (event.data);
+    const bezierString = /** @type {string} */ (event.data);
     this._currentSwatch.setBezierText(bezierString);
     this._changeSwatchText(bezierString);
   }
@@ -333,17 +333,17 @@ Sources.CSSPlugin = class {
    * @return {?Promise.<!UI.SuggestBox.Suggestions>}
    */
   _cssSuggestions(prefixRange, substituteRange) {
-    var prefix = this._textEditor.text(prefixRange);
+    const prefix = this._textEditor.text(prefixRange);
     if (prefix.startsWith('$'))
       return null;
 
-    var propertyToken = this._backtrackPropertyToken(prefixRange.startLine, prefixRange.startColumn - 1);
+    const propertyToken = this._backtrackPropertyToken(prefixRange.startLine, prefixRange.startColumn - 1);
     if (!propertyToken)
       return null;
 
-    var line = this._textEditor.line(prefixRange.startLine);
-    var tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
-    var propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
+    const line = this._textEditor.line(prefixRange.startLine);
+    const tokenContent = line.substring(propertyToken.startColumn, propertyToken.endColumn);
+    const propertyValues = SDK.cssMetadata().propertyValues(tokenContent);
     return Promise.resolve(propertyValues.filter(value => value.startsWith(prefix)).map(value => ({text: value})));
   }
 
@@ -353,13 +353,13 @@ Sources.CSSPlugin = class {
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
   _backtrackPropertyToken(lineNumber, columnNumber) {
-    var backtrackDepth = 10;
-    var tokenPosition = columnNumber;
-    var line = this._textEditor.line(lineNumber);
-    var seenColon = false;
+    const backtrackDepth = 10;
+    let tokenPosition = columnNumber;
+    const line = this._textEditor.line(lineNumber);
+    let seenColon = false;
 
-    for (var i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
-      var token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
+    for (let i = 0; i < backtrackDepth && tokenPosition >= 0; ++i) {
+      const token = this._textEditor.tokenAtTextPosition(lineNumber, tokenPosition);
       if (!token)
         return null;
       if (token.type === 'css-property')

@@ -4,7 +4,6 @@
 
 /**
  * @implements {Protocol.LogDispatcher}
- * @unrestricted
  */
 SDK.LogModel = class extends SDK.SDKModel {
   /**

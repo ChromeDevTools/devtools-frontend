@@ -28,7 +28,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     // Create main and network flamecharts.
     this._networkSplitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
-    var mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
+    const mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
     this._mainDataProvider = new Timeline.TimelineFlameChartDataProvider(filters);
     this._mainDataProvider.addEventListener(
         Timeline.TimelineFlameChartDataProvider.Events.DataChanged, () => this._mainFlameChart.scheduleUpdate());
@@ -93,7 +93,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._urlToColorCache = new Map();
     if (!this._model)
       return;
-    var colorByProduct = this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
+    const colorByProduct = this._groupBySetting.get() === Timeline.AggregatedTimelineTreeView.GroupBy.Product;
     this._mainDataProvider.setEventColorMapping(
         colorByProduct ? this._colorByProductForEvent.bind(this) : Timeline.TimelineUIUtils.eventColor);
     this._mainFlameChart.update();
@@ -139,7 +139,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {?Timeline.PerformanceModel} model
    */
   setModel(model) {
-    var extensionDataAdded = Timeline.PerformanceModel.Events.ExtensionDataAdded;
+    const extensionDataAdded = Timeline.PerformanceModel.Events.ExtensionDataAdded;
     if (this._model)
       this._model.removeEventListener(extensionDataAdded, this._appendExtensionData, this);
     this._model = model;
@@ -174,7 +174,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   _appendExtensionData() {
     if (!this._model)
       return;
-    var extensions = this._model.extensionInfo();
+    const extensions = this._model.extensionInfo();
     while (this._nextExtensionIndex < extensions.length)
       this._mainDataProvider.appendExtensionEvents(extensions[this._nextExtensionIndex++]);
     this._mainFlameChart.scheduleUpdate();
@@ -185,15 +185,15 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    */
   _onEntryHighlighted(commonEvent) {
     SDK.OverlayModel.hideDOMNodeHighlight();
-    var entryIndex = /** @type {number} */ (commonEvent.data);
-    var event = this._mainDataProvider.eventByIndex(entryIndex);
+    const entryIndex = /** @type {number} */ (commonEvent.data);
+    const event = this._mainDataProvider.eventByIndex(entryIndex);
     if (!event)
       return;
-    var target = this._model && this._model.timelineModel().targetByEvent(event);
+    const target = this._model && this._model.timelineModel().targetByEvent(event);
     if (!target)
       return;
-    var timelineData = TimelineModel.TimelineData.forEvent(event);
-    var backendNodeId = timelineData.backendNodeId;
+    const timelineData = TimelineModel.TimelineData.forEvent(event);
+    const backendNodeId = timelineData.backendNodeId;
     if (!backendNodeId)
       return;
     new SDK.DeferredDOMNode(target, backendNodeId).highlight();
@@ -204,7 +204,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {?SDK.TracingModel.Event} event
    */
   highlightEvent(event) {
-    var entryIndex =
+    const entryIndex =
         event ? this._mainDataProvider.entryIndexForSelection(Timeline.TimelineSelection.fromTraceEvent(event)) : -1;
     if (entryIndex >= 0)
       this._mainFlameChart.highlightEntry(entryIndex);
@@ -269,7 +269,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!Timeline.TimelineSelection} selection
    */
   setSelection(selection) {
-    var index = this._mainDataProvider.entryIndexForSelection(selection);
+    let index = this._mainDataProvider.entryIndexForSelection(selection);
     this._mainFlameChart.setSelectedEntry(index);
     index = this._networkDataProvider.entryIndexForSelection(selection);
     this._networkFlameChart.setSelectedEntry(index);
@@ -282,7 +282,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _onEntrySelected(dataProvider, event) {
-    var entryIndex = /** @type{number} */ (event.data);
+    const entryIndex = /** @type{number} */ (event.data);
     if (Runtime.experiments.isEnabled('timelineEventInitiators') && dataProvider === this._mainDataProvider) {
       if (this._mainDataProvider.buildFlowForInitiator(entryIndex))
         this._mainFlameChart.scheduleUpdate();
@@ -318,7 +318,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   jumpToNextSearchResult() {
     if (!this._searchResults || !this._searchResults.length)
       return;
-    var index = typeof this._selectedSearchResult !== 'undefined' ?
+    const index = typeof this._selectedSearchResult !== 'undefined' ?
         this._searchResults.indexOf(this._selectedSearchResult) :
         -1;
     this._selectSearchResult(mod(index + 1, this._searchResults.length));
@@ -330,7 +330,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   jumpToPreviousSearchResult() {
     if (!this._searchResults || !this._searchResults.length)
       return;
-    var index =
+    const index =
         typeof this._selectedSearchResult !== 'undefined' ? this._searchResults.indexOf(this._selectedSearchResult) : 0;
     this._selectSearchResult(mod(index - 1, this._searchResults.length));
   }
@@ -365,18 +365,18 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {boolean=} jumpBackwards
    */
   _updateSearchResults(shouldJump, jumpBackwards) {
-    var oldSelectedSearchResult = this._selectedSearchResult;
+    const oldSelectedSearchResult = this._selectedSearchResult;
     delete this._selectedSearchResult;
     this._searchResults = [];
     if (!this._searchRegex)
       return;
 
-    var regExpFilter = new Timeline.TimelineFilters.RegExp(this._searchRegex);
+    const regExpFilter = new Timeline.TimelineFilters.RegExp(this._searchRegex);
     this._searchResults = this._mainDataProvider.search(this._windowStartTime, this._windowEndTime, regExpFilter);
     this._searchableView.updateSearchMatchesCount(this._searchResults.length);
     if (!shouldJump || !this._searchResults.length)
       return;
-    var selectedIndex = this._searchResults.indexOf(oldSelectedSearchResult);
+    let selectedIndex = this._searchResults.indexOf(oldSelectedSearchResult);
     if (selectedIndex === -1)
       selectedIndex = jumpBackwards ? this._searchResults.length - 1 : 0;
     this._selectSearchResult(selectedIndex);
@@ -460,7 +460,7 @@ Timeline.TimelineFlameChartMarker = class {
    * @return {string}
    */
   title() {
-    var startTime = Number.millisToString(this._startOffset);
+    const startTime = Number.millisToString(this._startOffset);
     return Common.UIString('%s at %s', this._style.title, startTime);
   }
 
@@ -472,7 +472,7 @@ Timeline.TimelineFlameChartMarker = class {
    * @param {number} pixelsPerMillisecond
    */
   draw(context, x, height, pixelsPerMillisecond) {
-    var lowPriorityVisibilityThresholdInPixelsPerMs = 4;
+    const lowPriorityVisibilityThresholdInPixelsPerMs = 4;
 
     if (this._style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs)
       return;

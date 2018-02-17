@@ -83,11 +83,11 @@ Common.ResourceType = class {
    * @return {string|undefined}
    */
   static mimeFromURL(url) {
-    var name = Common.ParsedURL.extractName(url);
+    const name = Common.ParsedURL.extractName(url);
     if (Common.ResourceType._mimeTypeByName.has(name))
       return Common.ResourceType._mimeTypeByName.get(name);
 
-    var ext = Common.ParsedURL.extractExtension(url).toLowerCase();
+    const ext = Common.ParsedURL.extractExtension(url).toLowerCase();
     return Common.ResourceType._mimeTypeByExtension.get(ext);
   }
 

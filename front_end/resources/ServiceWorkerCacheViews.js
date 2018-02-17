@@ -17,12 +17,12 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this.element.classList.add('service-worker-cache-data-view');
     this.element.classList.add('storage-view');
 
-    var editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
+    const editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
     this._splitWidget = new UI.SplitWidget(false, false);
     this._splitWidget.show(this.element);
 
     this._previewPanel = new UI.VBox();
-    var resizer = this._previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
+    const resizer = this._previewPanel.element.createChild('div', 'cache-preview-panel-resizer');
     this._splitWidget.setMainWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 
@@ -96,7 +96,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @return {!DataGrid.DataGrid}
    */
   _createDataGrid() {
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'path', title: Common.UIString('Path'), weight: 4, sortable: true},
       {id: 'contentType', title: Common.UIString('Content-Type'), weight: 1, sortable: true}, {
         id: 'contentLength',
@@ -114,7 +114,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
         sortable: true
       }
     ]);
-    var dataGrid = new DataGrid.DataGrid(
+    const dataGrid = new DataGrid.DataGrid(
         columns, undefined, this._deleteButtonClicked.bind(this), this._updateData.bind(this, true));
 
     dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
@@ -129,9 +129,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     if (!this._dataGrid)
       return;
 
-    var accending = this._dataGrid.isSortOrderAscending();
-    var columnId = this._dataGrid.sortColumnId();
-    var comparator;
+    const accending = this._dataGrid.isSortOrderAscending();
+    const columnId = this._dataGrid.sortColumnId();
+    let comparator;
     if (columnId === 'path')
       comparator = (a, b) => a._path.localeCompare(b._path);
     else if (columnId === 'contentType')
@@ -141,10 +141,10 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     else if (columnId === 'responseTime')
       comparator = (a, b) => a.data.endTime - b.data.endTime;
 
-    var children = this._dataGrid.rootNode().children.slice();
+    const children = this._dataGrid.rootNode().children.slice();
     this._dataGrid.rootNode().removeChildren();
     children.sort((a, b) => {
-      var result = comparator(a, b);
+      const result = comparator(a, b);
       return accending ? result : -result;
     });
     children.forEach(child => this._dataGrid.rootNode().appendChild(child));
@@ -200,19 +200,19 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @this {Resources.ServiceWorkerCacheView}
    */
   _updateDataCallback(skipCount, entries, hasMore) {
-    var selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
+    const selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
     this._refreshButton.setEnabled(true);
     this._entriesForTest = entries;
 
     /** @type {!Map<string, !DataGrid.DataGridNode>} */
-    var oldEntries = new Map();
-    var rootNode = this._dataGrid.rootNode();
-    for (var node of rootNode.children)
+    const oldEntries = new Map();
+    const rootNode = this._dataGrid.rootNode();
+    for (const node of rootNode.children)
       oldEntries.set(node.data.url, node);
     rootNode.removeChildren();
-    var selectedNode = null;
-    for (var entry of entries) {
-      var node = oldEntries.get(entry.requestURL);
+    let selectedNode = null;
+    for (const entry of entries) {
+      let node = oldEntries.get(entry.requestURL);
       if (!node || node.data.responseTime !== entry.responseTime) {
         node = new Resources.ServiceWorkerCacheView.DataGridNode(this._createRequest(entry));
         node.selectable = true;
@@ -234,8 +234,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {boolean} force
    */
   _updateData(force) {
-    var pageSize = this._pageSize;
-    var skipCount = this._skipCount;
+    const pageSize = this._pageSize;
+    let skipCount = this._skipCount;
 
     if (!force && this._lastPageSize === pageSize && this._lastSkipCount === skipCount)
       return;
@@ -260,7 +260,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {!Common.Event} event
    */
   _cacheContentUpdated(event) {
-    var nameAndOrigin = event.data;
+    const nameAndOrigin = event.data;
     if (this._cache.securityOrigin !== nameAndOrigin.origin || this._cache.cacheName !== nameAndOrigin.cacheName)
       return;
     this._refreshThrottler.schedule(() => Promise.resolve(this._updateData(true)), true);
@@ -270,7 +270,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {!SDK.NetworkRequest} request
    */
   async _previewCachedResponse(request) {
-    var preview = request[Resources.ServiceWorkerCacheView._previewSymbol];
+    let preview = request[Resources.ServiceWorkerCacheView._previewSymbol];
     if (!preview) {
       preview = new Resources.ServiceWorkerCacheView.RequestView(request);
       request[Resources.ServiceWorkerCacheView._previewSymbol] = preview;
@@ -286,7 +286,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @return {!SDK.NetworkRequest}
    */
   _createRequest(entry) {
-    var request = new SDK.NetworkRequest('cache-storage-' + entry.requestURL, entry.requestURL, '', '', '', null);
+    const request = new SDK.NetworkRequest('cache-storage-' + entry.requestURL, entry.requestURL, '', '', '', null);
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
@@ -296,14 +296,14 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     request.setRequestHeadersText('');
     request.endTime = entry.responseTime;
 
-    var header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
-    var contentType = header ? header.value : 'text/plain';
+    let header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-type');
+    const contentType = header ? header.value : 'text/plain';
     request.mimeType = contentType;
 
     header = entry.responseHeaders.find(header => header.name.toLowerCase() === 'content-length');
     request.resourceSize = (header && header.value) | 0;
 
-    var resourceType = Common.ResourceType.fromMimeType(contentType);
+    let resourceType = Common.ResourceType.fromMimeType(contentType);
     if (!resourceType)
       resourceType = Common.ResourceType.fromURL(entry.requestURL) || Common.resourceTypes.Other;
     request.setResourceType(resourceType);
@@ -316,9 +316,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @return {!Promise<!SDK.NetworkRequest.ContentData>}
    */
   async _requestContent(request) {
-    var isText = request.resourceType().isTextType();
-    var contentData = {error: null, content: null, encoded: !isText};
-    var response = await this._cache.requestCachedResponse(request.url());
+    const isText = request.resourceType().isTextType();
+    const contentData = {error: null, content: null, encoded: !isText};
+    const response = await this._cache.requestCachedResponse(request.url());
     if (response)
       contentData.content = isText ? window.atob(response.body) : response.body;
     return contentData;
@@ -352,8 +352,8 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
    * @return {!Element}
    */
   createCell(columnId) {
-    var cell = this.createTD(columnId);
-    var value;
+    const cell = this.createTD(columnId);
+    let value;
     if (columnId === 'path')
       value = this._path;
     else if (columnId === 'contentType')

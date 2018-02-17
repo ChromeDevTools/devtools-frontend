@@ -8,7 +8,7 @@ Persistence.PersistenceUtils = class {
    * @return {string}
    */
   static tooltipForUISourceCode(uiSourceCode) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.persistence.binding(uiSourceCode);
     if (!binding)
       return '';
     if (uiSourceCode === binding.network)
@@ -23,9 +23,9 @@ Persistence.PersistenceUtils = class {
    * @return {?UI.Icon}
    */
   static iconForUISourceCode(uiSourceCode) {
-    var binding = Persistence.persistence.binding(uiSourceCode);
+    const binding = Persistence.persistence.binding(uiSourceCode);
     if (binding) {
-      var icon = UI.Icon.create('mediumicon-file-sync');
+      const icon = UI.Icon.create('mediumicon-file-sync');
       icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
       // TODO(allada) This will not work properly with dark theme.
       if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project())
@@ -34,7 +34,7 @@ Persistence.PersistenceUtils = class {
     }
     if (uiSourceCode.project().type() !== Workspace.projectTypes.FileSystem)
       return null;
-    var icon = UI.Icon.create('mediumicon-file');
+    const icon = UI.Icon.create('mediumicon-file');
     icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(uiSourceCode);
     return icon;
   }
@@ -58,7 +58,7 @@ Persistence.PersistenceUtils.LinkDecorator = class extends Common.Object {
    * @param {!Common.Event} event
    */
   _bindingChanged(event) {
-    var binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
+    const binding = /** @type {!Persistence.PersistenceBinding} */ (event.data);
     this.dispatchEventToListeners(Components.LinkDecorator.Events.LinkIconChanged, binding.network);
   }
 

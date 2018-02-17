@@ -67,12 +67,12 @@ Bindings.DefaultScriptMapping = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    var script = rawLocation.script();
+    const script = rawLocation.script();
     if (!script)
       return null;
-    var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
-    var lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
-    var columnNumber = rawLocation.columnNumber || 0;
+    const uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
+    const lineNumber = rawLocation.lineNumber - (script.isInlineScriptWithSourceURL() ? script.lineOffset : 0);
+    let columnNumber = rawLocation.columnNumber || 0;
     if (script.isInlineScriptWithSourceURL() && !lineNumber && columnNumber)
       columnNumber -= script.columnOffset;
     return uiSourceCode.uiLocation(lineNumber, columnNumber);
@@ -86,7 +86,7 @@ Bindings.DefaultScriptMapping = class {
    * @return {?SDK.DebuggerModel.Location}
    */
   uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    var script = uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
+    const script = uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol];
     if (!script)
       return null;
     if (script.isInlineScriptWithSourceURL()) {
@@ -100,11 +100,11 @@ Bindings.DefaultScriptMapping = class {
    * @param {!Common.Event} event
    */
   _parsedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
-    var name = Common.ParsedURL.extractName(script.sourceURL);
-    var url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
+    const script = /** @type {!SDK.Script} */ (event.data);
+    const name = Common.ParsedURL.extractName(script.sourceURL);
+    const url = 'debugger:///VM' + script.scriptId + (name ? ' ' + name : '');
 
-    var uiSourceCode = this._project.createUISourceCode(url, Common.resourceTypes.Script);
+    const uiSourceCode = this._project.createUISourceCode(url, Common.resourceTypes.Script);
     uiSourceCode[Bindings.DefaultScriptMapping._scriptSymbol] = script;
     script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol] = uiSourceCode;
     this._project.addUISourceCodeWithProvider(uiSourceCode, script, null, 'text/javascript');
@@ -115,8 +115,8 @@ Bindings.DefaultScriptMapping = class {
    * @param {!Common.Event} event
    */
   _discardedScriptSource(event) {
-    var script = /** @type {!SDK.Script} */ (event.data);
-    var uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
+    const script = /** @type {!SDK.Script} */ (event.data);
+    const uiSourceCode = script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];
     if (!uiSourceCode)
       return;
     delete script[Bindings.DefaultScriptMapping._uiSourceCodeSymbol];

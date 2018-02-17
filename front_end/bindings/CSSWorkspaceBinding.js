@@ -60,20 +60,20 @@ Bindings.CSSWorkspaceBinding = class {
    * @return {?Workspace.UILocation}
    */
   propertyUILocation(cssProperty, forName) {
-    var style = cssProperty.ownerStyle;
+    const style = cssProperty.ownerStyle;
     if (!style || style.type !== SDK.CSSStyleDeclaration.Type.Regular || !style.styleSheetId)
       return null;
-    var header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
+    const header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
     if (!header)
       return null;
 
-    var range = forName ? cssProperty.nameRange() : cssProperty.valueRange();
+    const range = forName ? cssProperty.nameRange() : cssProperty.valueRange();
     if (!range)
       return null;
 
-    var lineNumber = range.startLine;
-    var columnNumber = range.startColumn;
-    var rawLocation = new SDK.CSSLocation(
+    const lineNumber = range.startLine;
+    const columnNumber = range.startColumn;
+    const rawLocation = new SDK.CSSLocation(
         header, header.lineNumberInSource(lineNumber), header.columnNumberInSource(lineNumber, columnNumber));
     return this.rawLocationToUILocation(rawLocation);
   }
@@ -83,8 +83,8 @@ Bindings.CSSWorkspaceBinding = class {
    * @return {?Workspace.UILocation}
    */
   rawLocationToUILocation(rawLocation) {
-    for (var i = this._sourceMappings.length - 1; i >= 0; --i) {
-      var uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
+    for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
+      const uiLocation = this._sourceMappings[i].rawLocationToUILocation(rawLocation);
       if (uiLocation)
         return uiLocation;
     }
@@ -96,13 +96,13 @@ Bindings.CSSWorkspaceBinding = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   uiLocationToRawLocations(uiLocation) {
-    for (var i = this._sourceMappings.length - 1; i >= 0; --i) {
-      var rawLocations = this._sourceMappings[i].uiLocationToRawLocations(uiLocation);
+    for (let i = this._sourceMappings.length - 1; i >= 0; --i) {
+      const rawLocations = this._sourceMappings[i].uiLocationToRawLocations(uiLocation);
       if (rawLocations.length)
         return rawLocations;
     }
-    var rawLocations = [];
-    for (var modelInfo of this._modelToInfo.values())
+    const rawLocations = [];
+    for (const modelInfo of this._modelToInfo.values())
       rawLocations.pushAll(modelInfo._uiLocationToRawLocations(uiLocation));
     return rawLocations;
   }
@@ -146,7 +146,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
     ];
 
     this._stylesSourceMapping = new Bindings.StylesSourceMapping(cssModel, workspace);
-    var sourceMapManager = cssModel.sourceMapManager();
+    const sourceMapManager = cssModel.sourceMapManager();
     this._sassSourceMapping = new Bindings.SASSSourceMapping(cssModel.target(), sourceMapManager, workspace);
 
     /** @type {!Multimap<!SDK.CSSStyleSheetHeader, !Bindings.CSSWorkspaceBinding.LiveLocation>} */
@@ -162,8 +162,8 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @return {!Bindings.CSSWorkspaceBinding.LiveLocation}
    */
   _createLiveLocation(rawLocation, updateDelegate, locationPool) {
-    var location = new Bindings.CSSWorkspaceBinding.LiveLocation(rawLocation, this, updateDelegate, locationPool);
-    var header = rawLocation.header();
+    const location = new Bindings.CSSWorkspaceBinding.LiveLocation(rawLocation, this, updateDelegate, locationPool);
+    const header = rawLocation.header();
     if (header) {
       location._header = header;
       this._locations.set(header, location);
@@ -188,7 +188,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!SDK.CSSStyleSheetHeader} header
    */
   _updateLocations(header) {
-    for (var location of this._locations.get(header))
+    for (const location of this._locations.get(header))
       location.update();
   }
 
@@ -196,11 +196,11 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _styleSheetAdded(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
     if (!header.sourceURL)
       return;
 
-    for (var location of this._unboundLocations.get(header.sourceURL)) {
+    for (const location of this._unboundLocations.get(header.sourceURL)) {
       location._header = header;
       this._locations.set(header, location);
       location.update();
@@ -212,8 +212,8 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @param {!Common.Event} event
    */
   _styleSheetRemoved(event) {
-    var header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
-    for (var location of this._locations.get(header)) {
+    const header = /** @type {!SDK.CSSStyleSheetHeader} */ (event.data);
+    for (const location of this._locations.get(header)) {
       location._header = null;
       this._unboundLocations.set(location._url, location);
       location.update();
@@ -226,7 +226,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @return {?Workspace.UILocation}
    */
   _rawLocationToUILocation(rawLocation) {
-    var uiLocation = null;
+    let uiLocation = null;
     uiLocation = uiLocation || this._sassSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || this._stylesSourceMapping.rawLocationToUILocation(rawLocation);
     uiLocation = uiLocation || Bindings.resourceMapping.cssLocationToUILocation(rawLocation);
@@ -238,7 +238,7 @@ Bindings.CSSWorkspaceBinding.ModelInfo = class {
    * @return {!Array<!SDK.CSSLocation>}
    */
   _uiLocationToRawLocations(uiLocation) {
-    var rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
+    const rawLocations = this._sassSourceMapping.uiLocationToRawLocations(uiLocation);
     if (rawLocations.length)
       return rawLocations;
     return this._stylesSourceMapping.uiLocationToRawLocations(uiLocation);
@@ -277,7 +277,7 @@ Bindings.CSSWorkspaceBinding.LiveLocation = class extends Bindings.LiveLocationW
   uiLocation() {
     if (!this._header)
       return null;
-    var rawLocation = new SDK.CSSLocation(this._header, this._lineNumber, this._columnNumber);
+    const rawLocation = new SDK.CSSLocation(this._header, this._lineNumber, this._columnNumber);
     return Bindings.cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
   }
 

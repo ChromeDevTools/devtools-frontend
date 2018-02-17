@@ -56,7 +56,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     this._model = model;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
-    for (var view of this._rangeDetailViews.values())
+    for (const view of this._rangeDetailViews.values())
       view.setModel(model);
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
@@ -67,7 +67,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    */
   _setContent(node) {
     const allTabs = this._tabbedPane.otherTabs(Timeline.TimelineDetailsView.Tab.Details);
-    for (var i = 0; i < allTabs.length; ++i) {
+    for (let i = 0; i < allTabs.length; ++i) {
       if (!this._rangeDetailViews.has(allTabs[i]))
         this._tabbedPane.closeTab(allTabs[i]);
     }
@@ -116,24 +116,24 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     this._selection = selection;
     switch (this._selection.type()) {
       case Timeline.TimelineSelection.Type.TraceEvent:
-        var event = /** @type {!SDK.TracingModel.Event} */ (this._selection.object());
+        const event = /** @type {!SDK.TracingModel.Event} */ (this._selection.object());
         Timeline.TimelineUIUtils
             .buildTraceEventDetails(event, this._model.timelineModel(), this._detailsLinkifier, this._badgePool, true)
             .then(fragment => this._appendDetailsTabsForTraceEventAndShowDetails(event, fragment));
         break;
       case Timeline.TimelineSelection.Type.Frame:
-        var frame = /** @type {!TimelineModel.TimelineFrame} */ (this._selection.object());
-        var filmStripFrame = this._model.filmStripModelFrame(frame);
+        const frame = /** @type {!TimelineModel.TimelineFrame} */ (this._selection.object());
+        const filmStripFrame = this._model.filmStripModelFrame(frame);
         this._setContent(Timeline.TimelineUIUtils.generateDetailsContentForFrame(frame, filmStripFrame));
         if (frame.layerTree) {
-          var layersView = this._layersView();
+          const layersView = this._layersView();
           layersView.showLayerTree(frame.layerTree);
           if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.LayerViewer))
             this._appendTab(Timeline.TimelineDetailsView.Tab.LayerViewer, Common.UIString('Layers'), layersView);
         }
         break;
       case Timeline.TimelineSelection.Type.NetworkRequest:
-        var request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._selection.object());
+        const request = /** @type {!TimelineModel.TimelineModel.NetworkRequest} */ (this._selection.object());
         Timeline.TimelineUIUtils
             .buildNetworkRequestDetails(request, this._model.timelineModel(), this._detailsLinkifier, this._badgePool)
             .then(this._setContent.bind(this));
@@ -181,7 +181,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {!SDK.PaintProfilerSnapshot} snapshot
    */
   _showSnapshotInPaintProfiler(snapshot) {
-    var paintProfilerView = this._paintProfilerView();
+    const paintProfilerView = this._paintProfilerView();
     paintProfilerView.setSnapshot(snapshot);
     if (!this._tabbedPane.hasTab(Timeline.TimelineDetailsView.Tab.PaintProfiler)) {
       this._appendTab(

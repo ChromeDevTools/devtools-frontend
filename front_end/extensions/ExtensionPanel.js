@@ -48,7 +48,7 @@ Extensions.ExtensionPanel = class extends UI.Panel {
     this._searchableView = new UI.SearchableView(this);
     this._searchableView.show(this.element);
 
-    var extensionView = new Extensions.ExtensionView(server, this._id, pageURL, 'extension');
+    const extensionView = new Extensions.ExtensionView(server, this._id, pageURL, 'extension');
     extensionView.show(this._searchableView.element);
   }
 
@@ -83,7 +83,7 @@ Extensions.ExtensionPanel = class extends UI.Panel {
    * @param {boolean=} jumpBackwards
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
-    var query = searchConfig.query;
+    const query = searchConfig.query;
     this._server.notifySearchAction(this._id, Extensions.extensionAPI.panels.SearchAction.PerformSearch, query);
   }
 

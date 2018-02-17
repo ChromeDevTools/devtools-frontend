@@ -13,7 +13,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
     this._searchableView.setPlaceholder(Common.UIString('Find by cost (>50ms), name or file'));
     this._searchableView.show(this.element);
 
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([]);
     columns.push({
       id: 'self',
       title: this.columnHeader('self'),
@@ -52,9 +52,9 @@ Profiler.ProfileView = class extends UI.SimpleView {
    * @return {!Element}
    */
   static buildPopoverTable(entryInfo) {
-    var table = createElement('table');
-    for (var entry of entryInfo) {
-      var row = table.createChild('tr');
+    const table = createElement('table');
+    for (const entry of entryInfo) {
+      const row = table.createChild('tr');
       row.createChild('td').textContent = entry.title;
       row.createChild('td').textContent = entry.value;
     }
@@ -74,16 +74,16 @@ Profiler.ProfileView = class extends UI.SimpleView {
       Profiler.ProfileView.ViewTypes.Flame, Profiler.ProfileView.ViewTypes.Heavy, Profiler.ProfileView.ViewTypes.Tree
     ];
 
-    var optionNames = new Map([
+    const optionNames = new Map([
       [Profiler.ProfileView.ViewTypes.Flame, Common.UIString('Chart')],
       [Profiler.ProfileView.ViewTypes.Heavy, Common.UIString('Heavy (Bottom Up)')],
       [Profiler.ProfileView.ViewTypes.Tree, Common.UIString('Tree (Top Down)')],
     ]);
 
-    var options =
+    const options =
         new Map(viewTypes.map(type => [type, this.viewSelectComboBox.createOption(optionNames.get(type), '', type)]));
-    var optionName = this._viewType.get() || viewTypes[0];
-    var option = options.get(optionName) || options.get(viewTypes[0]);
+    const optionName = this._viewType.get() || viewTypes[0];
+    const option = options.get(optionName) || options.get(viewTypes[0]);
     this.viewSelectComboBox.select(option);
 
     this._changeView();
@@ -157,14 +157,14 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   refresh() {
-    var selectedProfileNode = this.dataGrid.selectedNode ? this.dataGrid.selectedNode.profileNode : null;
+    const selectedProfileNode = this.dataGrid.selectedNode ? this.dataGrid.selectedNode.profileNode : null;
 
     this.dataGrid.rootNode().removeChildren();
 
-    var children = this.profileDataGridTree.children;
-    var count = children.length;
+    const children = this.profileDataGridTree.children;
+    const count = children.length;
 
-    for (var index = 0; index < count; ++index)
+    for (let index = 0; index < count; ++index)
       this.dataGrid.rootNode().appendChild(children[index]);
 
     if (selectedProfileNode)
@@ -172,7 +172,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   refreshVisibleData() {
-    var child = this.dataGrid.rootNode().children[0];
+    let child = this.dataGrid.rootNode().children[0];
     while (child) {
       child.refresh();
       child = child.traverseNextNode(false, null, true);
@@ -259,15 +259,15 @@ Profiler.ProfileView = class extends UI.SimpleView {
    * @param {!Common.Event} event
    */
   _onEntrySelected(event) {
-    var entryIndex = event.data;
-    var node = this._dataProvider._entryNodes[entryIndex];
-    var debuggerModel = this._profileHeader._debuggerModel;
+    const entryIndex = event.data;
+    const node = this._dataProvider._entryNodes[entryIndex];
+    const debuggerModel = this._profileHeader._debuggerModel;
     if (!node || !node.scriptId || !debuggerModel)
       return;
-    var script = debuggerModel.scriptForId(node.scriptId);
+    const script = debuggerModel.scriptForId(node.scriptId);
     if (!script)
       return;
-    var location = /** @type {!SDK.DebuggerModel.Location} */ (
+    const location = /** @type {!SDK.DebuggerModel.Location} */ (
         debuggerModel.createRawLocation(script, node.lineNumber, node.columnNumber));
     Common.Revealer.reveal(Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location));
   }
@@ -302,7 +302,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
         break;
     }
 
-    var isFlame = this._viewType.get() === Profiler.ProfileView.ViewTypes.Flame;
+    const isFlame = this._viewType.get() === Profiler.ProfileView.ViewTypes.Flame;
     this.focusButton.setVisible(!isFlame);
     this.excludeButton.setVisible(!isFlame);
     this.resetButton.setVisible(!isFlame);
@@ -336,7 +336,7 @@ Profiler.ProfileView = class extends UI.SimpleView {
    * @param {!Common.Event} event
    */
   _excludeClicked(event) {
-    var selectedNode = this.dataGrid.selectedNode;
+    const selectedNode = this.dataGrid.selectedNode;
 
     if (!selectedNode)
       return;
@@ -362,9 +362,9 @@ Profiler.ProfileView = class extends UI.SimpleView {
   }
 
   _sortProfile() {
-    var sortAscending = this.dataGrid.isSortOrderAscending();
-    var sortColumnId = this.dataGrid.sortColumnId();
-    var sortProperty = sortColumnId === 'function' ? 'functionName' : sortColumnId || '';
+    const sortAscending = this.dataGrid.isSortOrderAscending();
+    const sortColumnId = this.dataGrid.sortColumnId();
+    const sortProperty = sortColumnId === 'function' ? 'functionName' : sortColumnId || '';
     this.profileDataGridTree.sort(Profiler.ProfileDataGridTree.propertyComparator(sortProperty, sortAscending));
 
     this.refresh();
@@ -454,13 +454,13 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    * @override
    */
   async saveToFile() {
-    var fileOutputStream = new Bindings.FileOutputStream();
+    const fileOutputStream = new Bindings.FileOutputStream();
     this._fileName = this._fileName ||
         `${this.profileType().typeName()}-${new Date().toISO8601Compact()}${this.profileType().fileExtension()}`;
-    var accepted = await fileOutputStream.open(this._fileName);
+    const accepted = await fileOutputStream.open(this._fileName);
     if (!accepted || !this._tempFile)
       return;
-    var data = await this._tempFile.read();
+    const data = await this._tempFile.read();
     if (data)
       await fileOutputStream.write(data);
     fileOutputStream.close();
@@ -473,17 +473,17 @@ Profiler.WritableProfileHeader = class extends Profiler.ProfileHeader {
    */
   async loadFromFile(file) {
     this.updateStatus(Common.UIString('Loading\u2026'), true);
-    var fileReader = new Bindings.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
+    const fileReader = new Bindings.ChunkedFileReader(file, 10000000, this._onChunkTransferred.bind(this));
     this._jsonifiedProfile = '';
 
-    var success = await fileReader.read(this);
+    const success = await fileReader.read(this);
     if (!success) {
       this._onError(fileReader);
       return new Error(Common.UIString('Failed to read file'));
     }
 
     this.updateStatus(Common.UIString('Parsing\u2026'), true);
-    var error = null;
+    let error = null;
     try {
       this._profile = /** @type {!Protocol.Profiler.Profile} */ (JSON.parse(this._jsonifiedProfile));
       this.setProfile(this._profile);

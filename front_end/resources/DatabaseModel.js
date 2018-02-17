@@ -84,7 +84,7 @@ Resources.Database = class {
    * @return {!Promise<!Array<string>>}
    */
   async tableNames() {
-    var names = await this._model._agent.getDatabaseTableNames(this._id) || [];
+    const names = await this._model._agent.getDatabaseTableNames(this._id) || [];
     return names.sort();
   }
 
@@ -94,18 +94,18 @@ Resources.Database = class {
    * @param {function(string)} onError
    */
   async executeSql(query, onSuccess, onError) {
-    var response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
-    var error = response[Protocol.Error];
+    const response = await this._model._agent.invoke_executeSQL({'databaseId': this._id, 'query': query});
+    const error = response[Protocol.Error];
     if (error) {
       onError(error);
       return;
     }
-    var sqlError = response.sqlError;
+    const sqlError = response.sqlError;
     if (!sqlError) {
       onSuccess(response.columnNames, response.values);
       return;
     }
-    var message;
+    let message;
     if (sqlError.message)
       message = sqlError.message;
     else if (sqlError.code === 2)
@@ -151,8 +151,8 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
    * @return {!Array.<!Resources.Database>}
    */
   databases() {
-    var result = [];
-    for (var database of this._databases)
+    const result = [];
+    for (const database of this._databases)
       result.push(database);
     return result;
   }

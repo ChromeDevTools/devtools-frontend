@@ -45,9 +45,9 @@ CookieTable.CookiesTable = class extends UI.VBox {
     this._refreshCallback = refreshCallback;
     this._deleteCallback = deleteCallback;
 
-    var editable = !!saveCallback;
+    const editable = !!saveCallback;
 
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {
         id: 'name',
         title: Common.UIString('Name'),
@@ -135,7 +135,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @return {?SDK.Cookie}
    */
   selectedCookie() {
-    var node = this._dataGrid.selectedNode;
+    const node = this._dataGrid.selectedNode;
     return node ? node.cookie : null;
   }
 
@@ -143,9 +143,9 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @return {{current: ?SDK.Cookie, neighbor: ?SDK.Cookie}}
    */
   _getSelectionCookies() {
-    var node = this._dataGrid.selectedNode;
-    var nextNeighbor = node && node.traverseNextNode(true);
-    var previousNeighbor = node && node.traversePreviousNode(true);
+    const node = this._dataGrid.selectedNode;
+    const nextNeighbor = node && node.traverseNextNode(true);
+    const previousNeighbor = node && node.traversePreviousNode(true);
 
     return {
       current: node && node.cookie,
@@ -169,13 +169,13 @@ CookieTable.CookiesTable = class extends UI.VBox {
     if (!cookies)
       return null;
 
-    var current = selectionCookies.current;
-    var foundCurrent = cookies.find(cookie => this._isSameCookie(cookie, current));
+    const current = selectionCookies.current;
+    const foundCurrent = cookies.find(cookie => this._isSameCookie(cookie, current));
     if (foundCurrent)
       return foundCurrent;
 
-    var neighbor = selectionCookies.neighbor;
-    var foundNeighbor = cookies.find(cookie => this._isSameCookie(cookie, neighbor));
+    const neighbor = selectionCookies.neighbor;
+    const foundNeighbor = cookies.find(cookie => this._isSameCookie(cookie, neighbor));
     if (foundNeighbor)
       return foundNeighbor;
 
@@ -193,15 +193,15 @@ CookieTable.CookiesTable = class extends UI.VBox {
   }
 
   _rebuildTable() {
-    var selectionCookies = this._getSelectionCookies();
-    var lastEditedColumnId = this._lastEditedColumnId;
+    const selectionCookies = this._getSelectionCookies();
+    const lastEditedColumnId = this._lastEditedColumnId;
     this._lastEditedColumnId = null;
     this._dataGrid.rootNode().removeChildren();
-    for (var i = 0; i < this._data.length; ++i) {
-      var item = this._data[i];
-      var selectedCookie = this._findSelectedCookie(selectionCookies, item.cookies);
+    for (let i = 0; i < this._data.length; ++i) {
+      const item = this._data[i];
+      const selectedCookie = this._findSelectedCookie(selectionCookies, item.cookies);
       if (item.folderName) {
-        var groupData = {
+        const groupData = {
           name: item.folderName,
           value: '',
           domain: '',
@@ -212,7 +212,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
           secure: '',
           sameSite: ''
         };
-        var groupNode = new DataGrid.DataGridNode(groupData);
+        const groupNode = new DataGrid.DataGridNode(groupData);
         groupNode.selectable = true;
         this._dataGrid.rootNode().appendChild(groupNode);
         groupNode.element().classList.add('row-group');
@@ -240,9 +240,9 @@ CookieTable.CookiesTable = class extends UI.VBox {
       return;
 
     this._sortCookies(cookies);
-    for (var i = 0; i < cookies.length; ++i) {
-      var cookie = cookies[i];
-      var cookieNode = this._createGridNode(cookie);
+    for (let i = 0; i < cookies.length; ++i) {
+      const cookie = cookies[i];
+      const cookieNode = this._createGridNode(cookie);
       parentNode.appendChild(cookieNode);
       if (this._isSameCookie(cookie, selectedCookie)) {
         cookieNode.select();
@@ -267,8 +267,8 @@ CookieTable.CookiesTable = class extends UI.VBox {
   }
 
   _totalSize(cookies) {
-    var totalSize = 0;
-    for (var i = 0; cookies && i < cookies.length; ++i)
+    let totalSize = 0;
+    for (let i = 0; cookies && i < cookies.length; ++i)
       totalSize += cookies[i].size();
     return totalSize;
   }
@@ -277,7 +277,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @param {!Array.<!SDK.Cookie>} cookies
    */
   _sortCookies(cookies) {
-    var sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
+    const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     /**
      * @param {!SDK.Cookie} cookie
@@ -323,8 +323,8 @@ CookieTable.CookiesTable = class extends UI.VBox {
       return sortDirection * (cookie1.expires() ? 1 : -1);
     }
 
-    var comparator;
-    var columnId = this._dataGrid.sortColumnId() || 'name';
+    let comparator;
+    const columnId = this._dataGrid.sortColumnId() || 'name';
     if (columnId === 'expires')
       comparator = expiresCompare;
     else if (columnId === 'size')
@@ -339,7 +339,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @return {!DataGrid.DataGridNode}
    */
   _createGridNode(cookie) {
-    var data = {};
+    const data = {};
     data.name = cookie.name();
     data.value = cookie.value();
     if (cookie.type() === SDK.Cookie.Type.Request) {
@@ -362,7 +362,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
     data.secure = (cookie.secure() ? checkmark : '');
     data.sameSite = cookie.sameSite() || '';
 
-    var node = new DataGrid.DataGridNode(data);
+    const node = new DataGrid.DataGridNode(data);
     node.cookie = cookie;
     node.selectable = true;
     return node;
@@ -411,8 +411,8 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @param {!DataGrid.DataGridNode} node
    */
   _saveNode(node) {
-    var oldCookie = node.cookie;
-    var newCookie = this._createCookieFromData(node.data);
+    const oldCookie = node.cookie;
+    const newCookie = this._createCookieFromData(node.data);
     node.cookie = newCookie;
     this._saveCallback(newCookie, oldCookie).then(success => {
       if (success)
@@ -427,7 +427,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @returns {!SDK.Cookie}
    */
   _createCookieFromData(data) {
-    var cookie = new SDK.Cookie(data.name, data.value, null);
+    const cookie = new SDK.Cookie(data.name, data.value, null);
     cookie.addAttribute('domain', data.domain);
     cookie.addAttribute('path', data.path);
     if (data.expires && data.expires !== CookieTable.CookiesTable._expiresSessionValue)
@@ -458,7 +458,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
   _isValidDomain(domain) {
     if (!domain)
       return true;
-    var parsedURL = ('http://' + domain).asParsedURL();
+    const parsedURL = ('http://' + domain).asParsedURL();
     return !!parsedURL && parsedURL.domain() === domain;
   }
 
@@ -467,7 +467,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
    * @returns {boolean}
    */
   _isValidPath(path) {
-    var parsedURL = ('http://example.com' + path).asParsedURL();
+    const parsedURL = ('http://example.com' + path).asParsedURL();
     return !!parsedURL && parsedURL.path === path;
   }
 

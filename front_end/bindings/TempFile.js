@@ -67,11 +67,11 @@ Bindings.TempFile = class {
       Common.console.error('Attempt to read a temp file that was never written');
       return Promise.resolve('');
     }
-    var blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
+    const blob = typeof startOffset === 'number' || typeof endOffset === 'number' ?
         this._lastBlob.slice(/** @type {number} */ (startOffset), /** @type {number} */ (endOffset)) :
         this._lastBlob;
 
-    var reader = new FileReader();
+    const reader = new FileReader();
     try {
       await new Promise((resolve, reject) => {
         reader.onloadend = resolve;
@@ -95,7 +95,7 @@ Bindings.TempFile = class {
       outputStream.close();
       return Promise.resolve(/** @type {?FileError} */ (null));
     }
-    var reader = new Bindings.ChunkedFileReader(/** @type {!Blob} */ (this._lastBlob), 10 * 1000 * 1000, progress);
+    const reader = new Bindings.ChunkedFileReader(/** @type {!Blob} */ (this._lastBlob), 10 * 1000 * 1000, progress);
     return reader.read(outputStream).then(success => success ? null : reader.error());
   }
 
@@ -125,7 +125,7 @@ Bindings.TempFileBackingStorage = class {
   appendString(string) {
     this._strings.push(string);
     this._stringsLength += string.length;
-    var flushStringLength = 10 * 1024 * 1024;
+    const flushStringLength = 10 * 1024 * 1024;
     if (this._stringsLength > flushStringLength)
       this._flush();
   }
@@ -137,7 +137,7 @@ Bindings.TempFileBackingStorage = class {
    */
   appendAccessibleString(string) {
     this._flush();
-    var startOffset = this._file.size();
+    const startOffset = this._file.size();
     this._strings.push(string);
     this._flush();
     return this._file.readRange.bind(this._file, startOffset, this._file.size());

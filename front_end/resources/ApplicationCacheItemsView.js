@@ -50,7 +50,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
     this._markDirty();
 
-    var status = this._model.frameManifestStatus(frameId);
+    const status = this._model.frameManifestStatus(frameId);
     this.updateStatus(status);
     this.updateNetworkState(this._model.onLine);
 
@@ -100,10 +100,10 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
    * @param {number} status
    */
   updateStatus(status) {
-    var oldStatus = this._status;
+    const oldStatus = this._status;
     this._status = status;
 
-    var statusInformation = {};
+    const statusInformation = {};
     // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
     statusInformation[applicationCache.UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
     statusInformation[applicationCache.IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
@@ -112,7 +112,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     statusInformation[applicationCache.UPDATEREADY] = {type: 'smallicon-green-ball', text: 'UPDATEREADY'};
     statusInformation[applicationCache.OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
 
-    var info = statusInformation[status] || statusInformation[applicationCache.UNCACHED];
+    const info = statusInformation[status] || statusInformation[applicationCache.UNCACHED];
 
     this._statusIcon.type = info.type;
     this._statusIcon.textContent = info.text;
@@ -137,7 +137,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
   }
 
   async _update() {
-    var applicationCache = await this._model.requestApplicationCache(this._frameId);
+    const applicationCache = await this._model.requestApplicationCache(this._frameId);
 
     if (!applicationCache || !applicationCache.manifestURL) {
       delete this._manifest;
@@ -174,7 +174,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
   }
 
   _createDataGrid() {
-    var columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+    const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'resource', title: Common.UIString('Resource'), sort: DataGrid.DataGrid.Order.Ascending, sortable: true},
       {id: 'type', title: Common.UIString('Type'), sortable: true},
       {id: 'size', title: Common.UIString('Size'), align: DataGrid.DataGrid.Align.Right, sortable: true}
@@ -186,8 +186,8 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
   }
 
   _populateDataGrid() {
-    var selectedResource = this._dataGrid.selectedNode ? this._dataGrid.selectedNode.resource : null;
-    var sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
+    const selectedResource = this._dataGrid.selectedNode ? this._dataGrid.selectedNode.resource : null;
+    const sortDirection = this._dataGrid.isSortOrderAscending() ? 1 : -1;
 
     function numberCompare(field, resource1, resource2) {
       return sortDirection * (resource1[field] - resource2[field]);
@@ -196,7 +196,7 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
       return sortDirection * (resource1[field] + '').localeCompare(resource2[field] + '');
     }
 
-    var comparator;
+    let comparator;
     switch (this._dataGrid.sortColumnId()) {
       case 'resource':
         comparator = localeCompare.bind(null, 'url');
@@ -214,14 +214,14 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     this._resources.sort(comparator);
     this._dataGrid.rootNode().removeChildren();
 
-    var nodeToSelect;
-    for (var i = 0; i < this._resources.length; ++i) {
-      var data = {};
-      var resource = this._resources[i];
+    let nodeToSelect;
+    for (let i = 0; i < this._resources.length; ++i) {
+      const data = {};
+      const resource = this._resources[i];
       data.resource = resource.url;
       data.type = resource.type;
       data.size = Number.bytesToString(resource.size);
-      var node = new DataGrid.DataGridNode(data);
+      const node = new DataGrid.DataGridNode(data);
       node.resource = resource;
       node.selectable = true;
       this._dataGrid.rootNode().appendChild(node);

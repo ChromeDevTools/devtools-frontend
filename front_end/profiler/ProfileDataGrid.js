@@ -56,12 +56,12 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
    * @template T
    */
   static sort(gridNodeGroups, comparator, force) {
-    for (var gridNodeGroupIndex = 0; gridNodeGroupIndex < gridNodeGroups.length; ++gridNodeGroupIndex) {
-      var gridNodes = gridNodeGroups[gridNodeGroupIndex];
-      var count = gridNodes.length;
+    for (let gridNodeGroupIndex = 0; gridNodeGroupIndex < gridNodeGroups.length; ++gridNodeGroupIndex) {
+      const gridNodes = gridNodeGroups[gridNodeGroupIndex];
+      const count = gridNodes.length;
 
-      for (var index = 0; index < count; ++index) {
-        var gridNode = gridNodes[index];
+      for (let index = 0; index < count; ++index) {
+        const gridNode = gridNodes[index];
 
         // If the grid node is collapsed, then don't sort children (save operation for later).
         // If the grid node has the same sorting as previously, then there is no point in sorting it again.
@@ -73,13 +73,13 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
 
         gridNode.lastComparator = comparator;
 
-        var children = gridNode.children;
-        var childCount = children.length;
+        const children = gridNode.children;
+        const childCount = children.length;
 
         if (childCount) {
           children.sort(comparator);
 
-          for (var childIndex = 0; childIndex < childCount; ++childIndex)
+          for (let childIndex = 0; childIndex < childCount; ++childIndex)
             children[childIndex].recalculateSiblings(childIndex);
 
           gridNodeGroups.push(children);
@@ -99,13 +99,13 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
     if (!shouldAbsorb)
       container.total += child.total;
 
-    var children = container.children.slice();
+    let children = container.children.slice();
 
     container.removeChildren();
 
-    var count = children.length;
+    let count = children.length;
 
-    for (var index = 0; index < count; ++index) {
+    for (let index = 0; index < count; ++index) {
       if (!shouldAbsorb || children[index] !== child)
         container.appendChild(children[index]);
     }
@@ -113,9 +113,9 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
     children = child.children.slice();
     count = children.length;
 
-    for (var index = 0; index < count; ++index) {
-      var orphanedChild = children[index];
-      var existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
+    for (let index = 0; index < count; ++index) {
+      const orphanedChild = children[index];
+      const existingChild = container.childrenByCallUID.get(orphanedChild.callUID);
 
       if (existingChild)
         existingChild.merge(/** @type{!Profiler.ProfileDataGridNode} */ (orphanedChild), false);
@@ -134,7 +134,7 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
 
     container.populateChildren();
 
-    var currentComparator = container.tree.lastComparator;
+    const currentComparator = container.tree.lastComparator;
 
     if (currentComparator)
       container.sort(currentComparator, true);
@@ -146,7 +146,7 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
    * @return {!Element}
    */
   createCell(columnId) {
-    var cell;
+    let cell;
     switch (columnId) {
       case 'self':
         cell = this._createValueCell(this.self, this.selfPercent);
@@ -163,14 +163,14 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
         cell.classList.toggle('highlight', this._searchMatchedFunctionColumn);
         if (this._deoptReason) {
           cell.classList.add('not-optimized');
-          var warningIcon = UI.Icon.create('smallicon-warning', 'profile-warn-marker');
+          const warningIcon = UI.Icon.create('smallicon-warning', 'profile-warn-marker');
           warningIcon.title = Common.UIString('Not optimized: %s', this._deoptReason);
           cell.appendChild(warningIcon);
         }
         cell.createTextChild(this.functionName);
         if (this.profileNode.scriptId === '0')
           break;
-        var urlElement = this.tree._formatter.linkifyNode(this);
+        const urlElement = this.tree._formatter.linkifyNode(this);
         if (!urlElement)
           break;
         urlElement.style.maxWidth = '75%';
@@ -190,8 +190,8 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
    * @return {!Element}
    */
   _createValueCell(value, percent) {
-    var cell = createElementWithClass('td', 'numeric-column');
-    var div = cell.createChild('div', 'profile-multiple-values');
+    const cell = createElementWithClass('td', 'numeric-column');
+    const div = cell.createChild('div', 'profile-multiple-values');
     div.createChild('span').textContent = this.tree._formatter.formatValue(value, this);
     div.createChild('span', 'percent-column').textContent = this.tree._formatter.formatPercent(percent, this);
     return cell;
@@ -295,10 +295,10 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
 
     this.removeChildren();
 
-    var children = this._savedChildren;
-    var count = children.length;
+    const children = this._savedChildren;
+    const count = children.length;
 
-    for (var index = 0; index < count; ++index) {
+    for (let index = 0; index < count; ++index) {
       children[index].restore();
       this.appendChild(children[index]);
     }
@@ -341,7 +341,7 @@ Profiler.ProfileDataGridTree = class {
    * @return {function(!Object.<string, *>, !Object.<string, *>)}
    */
   static propertyComparator(property, isAscending) {
-    var comparator = Profiler.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
+    let comparator = Profiler.ProfileDataGridTree.propertyComparators[(isAscending ? 1 : 0)][property];
 
     if (!comparator) {
       if (isAscending) {
@@ -430,10 +430,10 @@ Profiler.ProfileDataGridTree = class {
     this.children = this._savedChildren;
     this.total = this._savedTotal;
 
-    var children = this.children;
-    var count = children.length;
+    const children = this.children;
+    const count = children.length;
 
-    for (var index = 0; index < count; ++index)
+    for (let index = 0; index < count; ++index)
       children[index].restore();
 
     this._savedChildren = null;
@@ -444,18 +444,18 @@ Profiler.ProfileDataGridTree = class {
    * @return {?function(!Profiler.ProfileDataGridNode):boolean}
    */
   _matchFunction(searchConfig) {
-    var query = searchConfig.query.trim();
+    const query = searchConfig.query.trim();
     if (!query.length)
       return null;
 
-    var greaterThan = (query.startsWith('>'));
-    var lessThan = (query.startsWith('<'));
-    var equalTo = (query.startsWith('=') || ((greaterThan || lessThan) && query.indexOf('=') === 1));
-    var percentUnits = (query.endsWith('%'));
-    var millisecondsUnits = (query.length > 2 && query.endsWith('ms'));
-    var secondsUnits = (!millisecondsUnits && query.endsWith('s'));
+    const greaterThan = (query.startsWith('>'));
+    const lessThan = (query.startsWith('<'));
+    let equalTo = (query.startsWith('=') || ((greaterThan || lessThan) && query.indexOf('=') === 1));
+    const percentUnits = (query.endsWith('%'));
+    const millisecondsUnits = (query.length > 2 && query.endsWith('ms'));
+    const secondsUnits = (!millisecondsUnits && query.endsWith('s'));
 
-    var queryNumber = parseFloat(query);
+    let queryNumber = parseFloat(query);
     if (greaterThan || lessThan || equalTo) {
       if (equalTo && (greaterThan || lessThan))
         queryNumber = parseFloat(query.substring(2));
@@ -463,13 +463,13 @@ Profiler.ProfileDataGridTree = class {
         queryNumber = parseFloat(query.substring(1));
     }
 
-    var queryNumberMilliseconds = (secondsUnits ? (queryNumber * 1000) : queryNumber);
+    const queryNumberMilliseconds = (secondsUnits ? (queryNumber * 1000) : queryNumber);
 
     // Make equalTo implicitly true if it wasn't specified there is no other operator.
     if (!isNaN(queryNumber) && !(greaterThan || lessThan))
       equalTo = true;
 
-    var matcher = createPlainTextSearchRegex(query, 'i');
+    const matcher = createPlainTextSearchRegex(query, 'i');
 
     /**
      * @param {!Profiler.ProfileDataGridNode} profileDataGridNode
@@ -543,13 +543,13 @@ Profiler.ProfileDataGridTree = class {
    */
   performSearch(searchConfig, shouldJump, jumpBackwards) {
     this.searchCanceled();
-    var matchesQuery = this._matchFunction(searchConfig);
+    const matchesQuery = this._matchFunction(searchConfig);
     if (!matchesQuery)
       return;
 
     this._searchResults = [];
     const deepSearch = this.deepSearch;
-    for (var current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
+    for (let current = this.children[0]; current; current = current.traverseNextNode(!deepSearch, null, !deepSearch)) {
       if (matchesQuery(current))
         this._searchResults.push({profileNode: current});
     }
@@ -563,8 +563,8 @@ Profiler.ProfileDataGridTree = class {
    */
   searchCanceled() {
     if (this._searchResults) {
-      for (var i = 0; i < this._searchResults.length; ++i) {
-        var profileNode = this._searchResults[i].profileNode;
+      for (let i = 0; i < this._searchResults.length; ++i) {
+        const profileNode = this._searchResults[i].profileNode;
         delete profileNode._searchMatchedSelfColumn;
         delete profileNode._searchMatchedTotalColumn;
         delete profileNode._searchMatchedFunctionColumn;
@@ -616,10 +616,10 @@ Profiler.ProfileDataGridTree = class {
    * @param {number} index
    */
   _jumpToSearchResult(index) {
-    var searchResult = this._searchResults[index];
+    const searchResult = this._searchResults[index];
     if (!searchResult)
       return;
-    var profileNode = searchResult.profileNode;
+    const profileNode = searchResult.profileNode;
     profileNode.revealAndSelect();
     this._searchableView.updateCurrentMatchIndex(index);
   }

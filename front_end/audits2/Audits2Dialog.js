@@ -18,24 +18,24 @@ Audits2.Audits2Dialog = class {
   render(dialogRenderElement) {
     this._dialog = new UI.Dialog();
     this._dialog.setOutsideClickCallback(event => event.consume(true));
-    var root = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits2/audits2Dialog.css');
-    var auditsViewElement = root.createChild('div', 'audits2-view vbox');
+    const root = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits2/audits2Dialog.css');
+    const auditsViewElement = root.createChild('div', 'audits2-view vbox');
 
-    var closeButton = auditsViewElement.createChild('div', 'dialog-close-button', 'dt-close-button');
+    const closeButton = auditsViewElement.createChild('div', 'dialog-close-button', 'dt-close-button');
     closeButton.addEventListener('click', () => this._cancelAndClose());
 
-    var uiElement = auditsViewElement.createChild('div', 'vbox launcher-container');
-    var headerElement = uiElement.createChild('header');
+    const uiElement = auditsViewElement.createChild('div', 'vbox launcher-container');
+    const headerElement = uiElement.createChild('header');
     this._headerTitleElement = headerElement.createChild('p');
     this._headerTitleElement.textContent = Common.UIString('Audits to perform');
     uiElement.appendChild(headerElement);
 
     this._auditSelectorForm = uiElement.createChild('form', 'audits2-form');
 
-    for (var preset of Audits2.Audits2Panel.Presets) {
+    for (const preset of Audits2.Audits2Panel.Presets) {
       preset.setting.setTitle(preset.title);
-      var checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
-      var row = this._auditSelectorForm.createChild('div', 'vbox audits2-launcher-row');
+      const checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
+      const row = this._auditSelectorForm.createChild('div', 'vbox audits2-launcher-row');
       row.appendChild(checkbox.element);
       row.createChild('span', 'audits2-launcher-description dimmed').textContent = preset.description;
     }
@@ -44,7 +44,7 @@ Audits2.Audits2Dialog = class {
     this._statusView.render(uiElement);
     this._dialogHelpText = uiElement.createChild('div', 'audits2-dialog-help-text');
 
-    var buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
+    const buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
         UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), '', true /* primary */);
     this._startButton.autofocus = true;
@@ -124,10 +124,10 @@ Audits2.Audits2Dialog = class {
    * @return {!Promise<undefined>}
    */
   _getInspectedURL() {
-    var mainTarget = SDK.targetManager.mainTarget();
-    var runtimeModel = mainTarget.model(SDK.RuntimeModel);
-    var executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
-    var inspectedURL = mainTarget.inspectedURL();
+    const mainTarget = SDK.targetManager.mainTarget();
+    const runtimeModel = mainTarget.model(SDK.RuntimeModel);
+    const executionContext = runtimeModel && runtimeModel.defaultExecutionContext();
+    let inspectedURL = mainTarget.inspectedURL();
     if (!executionContext)
       return Promise.resolve(inspectedURL);
 
@@ -155,21 +155,21 @@ Audits2.Audits2Dialog = class {
   }
 
   async _start() {
-    var emulationModel = self.singleton(Emulation.DeviceModeModel);
+    const emulationModel = self.singleton(Emulation.DeviceModeModel);
     this._emulationEnabledBefore = emulationModel.enabledSetting().get();
     this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
     emulationModel.enabledSetting().set(true);
     emulationModel.deviceOutlineSetting().set(true);
     emulationModel.toolbarControlsEnabledSetting().set(false);
 
-    for (var device of Emulation.EmulatedDevicesList.instance().standard()) {
+    for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
       if (device.title === 'Nexus 5X')
         emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
     }
     this._dialog.setCloseOnEscape(false);
 
-    var categoryIDs = [];
-    for (var preset of Audits2.Audits2Panel.Presets) {
+    const categoryIDs = [];
+    for (const preset of Audits2.Audits2Panel.Presets) {
       if (preset.setting.get())
         categoryIDs.push(preset.configID);
     }
@@ -183,9 +183,9 @@ Audits2.Audits2Dialog = class {
       this._updateButton(this._auditURL);
       this._updateStatus(Common.UIString('Loading\u2026'));
 
-      var lighthouseResult = await this._protocolService.startLighthouse(this._auditURL, categoryIDs);
+      const lighthouseResult = await this._protocolService.startLighthouse(this._auditURL, categoryIDs);
       if (lighthouseResult && lighthouseResult.fatal) {
-        var error = new Error(lighthouseResult.message);
+        const error = new Error(lighthouseResult.message);
         error.stack = lighthouseResult.stack;
         throw error;
       }
@@ -207,14 +207,14 @@ Audits2.Audits2Dialog = class {
   async _stopAndReattach() {
     await this._protocolService.detach();
 
-    var emulationModel = self.singleton(Emulation.DeviceModeModel);
+    const emulationModel = self.singleton(Emulation.DeviceModeModel);
     emulationModel.enabledSetting().set(this._emulationEnabledBefore);
     emulationModel.deviceOutlineSetting().set(this._emulationOutlineEnabledBefore);
     emulationModel.toolbarControlsEnabledSetting().set(true);
     Emulation.InspectedPagePlaceholder.instance().update(true);
 
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Finished);
-    var resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
+    const resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
     // reload to reset the page state
     await resourceTreeModel.navigate(this._auditURL);
     this._auditRunning = false;
@@ -232,8 +232,8 @@ Audits2.Audits2Dialog = class {
     this._statusView.setVisible(this._auditRunning);
     this._auditSelectorForm.classList.toggle('hidden', this._auditRunning);
     if (this._auditRunning) {
-      var parsedURL = (auditURL || '').asParsedURL();
-      var pageHost = parsedURL && parsedURL.host;
+      const parsedURL = (auditURL || '').asParsedURL();
+      const pageHost = parsedURL && parsedURL.host;
       this._headerTitleElement.textContent =
           pageHost ? ls`Auditing ${pageHost}\u2026` : ls`Auditing your web page\u2026`;
     } else {

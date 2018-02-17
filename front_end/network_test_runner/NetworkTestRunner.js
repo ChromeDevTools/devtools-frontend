@@ -17,8 +17,8 @@ NetworkTestRunner.waitForRequestResponse = function(request) {
 };
 
 NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
-  var networkLogView = UI.panels.network._networkLogView;
-  var node = networkLogView.nodeForRequest(request);
+  const networkLogView = UI.panels.network._networkLogView;
+  const node = networkLogView.nodeForRequest(request);
 
   if (node)
     return Promise.resolve(node);
@@ -26,14 +26,14 @@ NetworkTestRunner.waitForNetworkLogViewNodeForRequest = function(request) {
   console.assert(networkLogView._staleRequests.has(request));
 
   return TestRunner.addSnifferPromise(networkLogView, '_didRefreshForTest').then(() => {
-    var node = networkLogView.nodeForRequest(request);
+    const node = networkLogView.nodeForRequest(request);
     console.assert(node);
     return node;
   });
 };
 
 NetworkTestRunner.waitForWebsocketFrameReceived = function(wsRequest, message) {
-  for (var frame of wsRequest.frames()) {
+  for (const frame of wsRequest.frames()) {
     if (checkFrame(frame))
       return Promise.resolve(frame);
   }
@@ -58,7 +58,7 @@ NetworkTestRunner.networkRequests = function() {
 };
 
 NetworkTestRunner.dumpNetworkRequests = function() {
-  var requests = NetworkTestRunner.networkRequests();
+  const requests = NetworkTestRunner.networkRequests();
 
   requests.sort(function(a, b) {
     return a.url().localeCompare(b.url());
@@ -86,7 +86,7 @@ NetworkTestRunner.makeSimpleXHRWithPayload = function(method, url, async, payloa
 
 NetworkTestRunner.makeXHR = function(
     method, url, async, user, password, headers, withCredentials, payload, type, callback) {
-  var args = {};
+  const args = {};
   args.method = method;
   args.url = TestRunner.url(url);
   args.async = async;
@@ -96,7 +96,7 @@ NetworkTestRunner.makeXHR = function(
   args.withCredentials = withCredentials;
   args.payload = payload;
   args.type = type;
-  var jsonArgs = JSON.stringify(args).replace(/\"/g, '\\"');
+  const jsonArgs = JSON.stringify(args).replace(/\"/g, '\\"');
 
   function innerCallback(msg) {
     if (msg.messageText.indexOf('XHR loaded') !== -1) {
@@ -150,7 +150,7 @@ NetworkTestRunner.HARPropertyFormattersWithSize = JSON.parse(JSON.stringify(Netw
 NetworkTestRunner.HARPropertyFormattersWithSize.size = 'formatAsTypeName';
 
 TestRunner.deprecatedInitAsync(`
-  var lastXHRIndex = 0;
+  let lastXHRIndex = 0;
 
   function xhrLoadedCallback() {
     console.log('XHR loaded: ' + ++lastXHRIndex);
@@ -165,7 +165,7 @@ TestRunner.deprecatedInitAsync(`
   }
 
   function makeXHR(method, url, async, user, password, headers, withCredentials, payload, type, callback) {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
 
     if (type == undefined)
       xhr.responseType = '';
@@ -182,14 +182,14 @@ TestRunner.deprecatedInitAsync(`
     xhr.open(method, url, async, user, password);
     xhr.withCredentials = withCredentials;
 
-    for (var i = 0; i < headers.length; ++i)
+    for (let i = 0; i < headers.length; ++i)
       xhr.setRequestHeader(headers[i][0], headers[i][1]);
 
     try { xhr.send(payload); } catch (e) {}
   }
 
   function makeXHRForJSONArguments(jsonArgs) {
-    var args = JSON.parse(jsonArgs);
+    let args = JSON.parse(jsonArgs);
 
     makeXHR(
       args.method,
@@ -214,7 +214,7 @@ TestRunner.deprecatedInitAsync(`
 
   function makeFetchInWorker(url, requestInitializer) {
     return new Promise(resolve => {
-      var worker = new Worker('/devtools/network/resources/fetch-worker.js');
+      let worker = new Worker('/devtools/network/resources/fetch-worker.js');
 
       worker.onmessage = event => {
         resolve(event.data);

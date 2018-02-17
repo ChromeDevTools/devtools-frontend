@@ -23,7 +23,7 @@ Extensions.ExtensionTraceProvider = class {
    * @param {!Extensions.TracingSession} session
    */
   start(session) {
-    var sessionId = String(++Extensions.ExtensionTraceProvider._lastSessionId);
+    const sessionId = String(++Extensions.ExtensionTraceProvider._lastSessionId);
     Extensions.extensionServer.startTraceRecording(this._id, sessionId, session);
   }
 

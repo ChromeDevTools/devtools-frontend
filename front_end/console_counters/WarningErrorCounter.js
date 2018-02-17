@@ -13,7 +13,7 @@ ConsoleCounters.WarningErrorCounter = class {
     this._counter = createElement('div');
     this._counter.addEventListener('click', Common.console.show.bind(Common.console), false);
     this._toolbarItem = new UI.ToolbarItem(this._counter);
-    var shadowRoot = UI.createShadowRootWithCoreStyles(this._counter, 'console_counters/errorWarningCounter.css');
+    const shadowRoot = UI.createShadowRootWithCoreStyles(this._counter, 'console_counters/errorWarningCounter.css');
 
     this._errors = this._createItem(shadowRoot, 'smallicon-error');
     this._warnings = this._createItem(shadowRoot, 'smallicon-warning');
@@ -38,10 +38,10 @@ ConsoleCounters.WarningErrorCounter = class {
    * @return {!{item: !Element, text: !Element}}
    */
   _createItem(shadowRoot, iconType) {
-    var item = createElementWithClass('span', 'counter-item');
-    var icon = item.createChild('label', '', 'dt-icon-label');
+    const item = createElementWithClass('span', 'counter-item');
+    const icon = item.createChild('label', '', 'dt-icon-label');
     icon.type = iconType;
-    var text = icon.createChild('span');
+    const text = icon.createChild('span');
     shadowRoot.appendChild(item);
     return {item: item, text: text};
   }
@@ -69,8 +69,8 @@ ConsoleCounters.WarningErrorCounter = class {
    * @return {!Promise}
    */
   _updateThrottled() {
-    var errors = SDK.consoleModel.errors();
-    var warnings = SDK.consoleModel.warnings();
+    const errors = SDK.consoleModel.errors();
+    const warnings = SDK.consoleModel.warnings();
     if (errors === this._errorCount && warnings === this._warningCount)
       return Promise.resolve();
     this._errorCount = errors;

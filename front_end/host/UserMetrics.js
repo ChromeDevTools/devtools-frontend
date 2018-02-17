@@ -36,8 +36,8 @@ Host.UserMetrics = class {
    * @param {string} panelName
    */
   panelShown(panelName) {
-    var code = Host.UserMetrics._PanelCodes[panelName] || 0;
-    var size = Object.keys(Host.UserMetrics._PanelCodes).length + 1;
+    const code = Host.UserMetrics._PanelCodes[panelName] || 0;
+    const size = Object.keys(Host.UserMetrics._PanelCodes).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
   }
 
@@ -52,7 +52,7 @@ Host.UserMetrics = class {
    * @param {!Host.UserMetrics.Action} action
    */
   actionTaken(action) {
-    var size = Object.keys(Host.UserMetrics.Action).length + 1;
+    const size = Object.keys(Host.UserMetrics.Action).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
   }
 };

@@ -37,6 +37,12 @@ public final class DisallowedGlobalPropertiesChecker extends ContextTrackingChec
             case VAR:
                 handleVar(node);
                 break;
+            case CONST:
+                handleVar(node);
+                break;
+            case LET:
+                handleVar(node);
+                break;
             case NAME:
                 handleName(node);
                 break;

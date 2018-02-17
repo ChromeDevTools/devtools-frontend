@@ -51,8 +51,8 @@ FormatterWorker.CSSFormatter = class {
     this._toOffset = toOffset;
     this._lastLine = -1;
     this._state = {};
-    var tokenize = FormatterWorker.createTokenizer('text/css');
-    var oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
+    const tokenize = FormatterWorker.createTokenizer('text/css');
+    const oldEnforce = this._builder.setEnforceSpaceBetweenWords(false);
     tokenize(text.substring(this._fromOffset, this._toOffset), this._tokenCallback.bind(this));
     this._builder.setEnforceSpaceBetweenWords(oldEnforce);
   }
@@ -64,13 +64,13 @@ FormatterWorker.CSSFormatter = class {
    */
   _tokenCallback(token, type, startPosition) {
     startPosition += this._fromOffset;
-    var startLine = this._lineEndings.lowerBound(startPosition);
+    const startLine = this._lineEndings.lowerBound(startPosition);
     if (startLine !== this._lastLine)
       this._state.eatWhitespace = true;
     if (/^property/.test(type) && !this._state.inPropertyValue)
       this._state.seenProperty = true;
     this._lastLine = startLine;
-    var isWhitespace = /^\s+$/.test(token);
+    const isWhitespace = /^\s+$/.test(token);
     if (isWhitespace) {
       if (!this._state.eatWhitespace)
         this._builder.addSoftSpace();

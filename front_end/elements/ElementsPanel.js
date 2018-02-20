@@ -316,10 +316,6 @@ Elements.ElementsPanel = class extends UI.Panel {
     }
   }
 
-  _reset() {
-    delete this.currentQuery;
-  }
-
   /**
    * @param {!Common.Event} event
    */
@@ -332,8 +328,7 @@ Elements.ElementsPanel = class extends UI.Panel {
    * @param {!SDK.DOMModel} domModel
    */
   _documentUpdated(domModel) {
-    this._reset();
-    this.searchCanceled();
+    this._searchableView.resetSearch();
 
     if (!domModel.existingDocument()) {
       if (this.isShowing())

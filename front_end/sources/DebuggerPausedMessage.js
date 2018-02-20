@@ -8,7 +8,7 @@ Sources.DebuggerPausedMessage = class {
   constructor() {
     this._element = createElementWithClass('div', 'paused-message flex-none');
     const root = UI.createShadowRootWithCoreStyles(this._element, 'sources/debuggerPausedMessage.css');
-    this._contentElement = root.createChild('div', 'paused-status');
+    this._contentElement = root.createChild('div');
   }
 
   /**
@@ -74,7 +74,7 @@ Sources.DebuggerPausedMessage = class {
     if (!details)
       return;
 
-    const status = this._contentElement.createChild('div', 'flex-auto');
+    const status = this._contentElement.createChild('div', 'paused-status');
 
     const errorLike = details.reason === SDK.DebuggerModel.BreakReason.Exception ||
         details.reason === SDK.DebuggerModel.BreakReason.PromiseRejection ||

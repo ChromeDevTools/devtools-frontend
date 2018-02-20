@@ -4,10 +4,6 @@
  * found in the LICENSE file.
  */
 
-.paused-container {
-    flex: none;
-}
-
 .paused-status {
     padding: 6px;
     border-bottom: 1px solid transparent;

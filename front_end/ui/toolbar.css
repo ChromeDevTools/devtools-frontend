@@ -52,10 +52,18 @@
     color: #5a5a5a;
 }
 
+select.toolbar-item:disabled {
+    opacity: 0.5;
+}
+
 .toolbar-dropdown-arrow {
     background-color: #6D6D6D;
     pointer-events: none;
     flex: none;
+}
+
+select.toolbar-item:disabled + .toolbar-dropdown-arrow {
+    opacity: 0.5;
 }
 
 /* Toolbar item */

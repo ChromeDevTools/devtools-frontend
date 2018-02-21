@@ -14,24 +14,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     this._protocolService = new Audits2.ProtocolService();
 
-    const toolbar = new UI.Toolbar('', this.element);
-
-    const newButton = new UI.ToolbarButton(Common.UIString('New audit\u2026'), 'largeicon-add');
-    toolbar.appendToolbarItem(newButton);
-    newButton.addEventListener(UI.ToolbarButton.Events.Click, this._showDialog.bind(this));
-
-    const downloadButton = new UI.ToolbarButton(Common.UIString('Download report'), 'largeicon-download');
-    toolbar.appendToolbarItem(downloadButton);
-    downloadButton.addEventListener(UI.ToolbarButton.Events.Click, this._downloadSelected.bind(this));
-
-    toolbar.appendSeparator();
-
-    this._reportSelector = new Audits2.ReportSelector();
-    toolbar.appendToolbarItem(this._reportSelector.comboBox());
-
-    const clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
-    toolbar.appendToolbarItem(clearButton);
-    clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
+    this._renderToolbar();
 
     this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
     this._dropTarget = new UI.DropTarget(
@@ -40,6 +23,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     for (const preset of Audits2.Audits2Panel.Presets)
       preset.setting.addChangeListener(this._refreshDialogUI.bind(this));
+
     this._showLandingPage();
     SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._refreshDialogUI, this);
@@ -157,17 +141,45 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._dialog.setStartEnabled(!isDisabled);
   }
 
+  _refreshToolbarUI() {
+    this._downloadButton.setEnabled(this._reportSelector.hasCurrentSelection());
+    this._clearButton.setEnabled(this._reportSelector.hasItems());
+  }
+
   _clearAll() {
     this._reportSelector.clearAll();
     this._showLandingPage();
+    this._refreshToolbarUI();
   }
 
   _downloadSelected() {
     this._reportSelector.downloadSelected();
   }
 
+  _renderToolbar() {
+    const toolbar = new UI.Toolbar('', this.element);
+
+    this._newButton = new UI.ToolbarButton(Common.UIString('Perform an audit\u2026'), 'largeicon-add');
+    toolbar.appendToolbarItem(this._newButton);
+    this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._showDialog.bind(this));
+
+    this._downloadButton = new UI.ToolbarButton(Common.UIString('Download report'), 'largeicon-download');
+    toolbar.appendToolbarItem(this._downloadButton);
+    this._downloadButton.addEventListener(UI.ToolbarButton.Events.Click, this._downloadSelected.bind(this));
+
+    toolbar.appendSeparator();
+
+    this._reportSelector = new Audits2.ReportSelector();
+    toolbar.appendToolbarItem(this._reportSelector.comboBox());
+
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
+    toolbar.appendToolbarItem(this._clearButton);
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
+    this._refreshToolbarUI();
+  }
+
   _showLandingPage() {
-    if (this._reportSelector.comboBox().size())
+    if (this._reportSelector.hasCurrentSelection())
       return;
 
     this._auditResultsElement.removeChildren();
@@ -188,6 +200,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
         Common.UIString('Perform an audit\u2026'), this._showDialog.bind(this), '', true /* primary */);
     landingCenter.appendChild(newButton);
     this.setDefaultFocusedElement(newButton);
+    this._refreshToolbarUI();
   }
 
   _showDialog() {
@@ -215,6 +228,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
         new Audits2.ReportSelector.Item(lighthouseResult, this._auditResultsElement, this._showLandingPage.bind(this));
     this._reportSelector.prepend(optionElement);
     this._hideDialog();
+    this._refreshToolbarUI();
   }
 
   /**
@@ -319,10 +333,20 @@ Audits2.Audits2Panel.Presets = [
 
 Audits2.ReportSelector = class {
   constructor() {
+    this._emptyItem = null;
     this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits2-report');
     this._comboBox.setMaxWidth(270);
     this._comboBox.setMinWidth(200);
     this._itemByOptionElement = new Map();
+    this._setPlaceholderState();
+  }
+
+  _setPlaceholderState() {
+    this._comboBox.setEnabled(false);
+    this._emptyItem = createElement('option');
+    this._emptyItem.label = Common.UIString('(no reports)');
+    this._comboBox.selectElement().appendChild(this._emptyItem);
+    this._comboBox.select(this._emptyItem);
   }
 
   /**
@@ -343,6 +367,20 @@ Audits2.ReportSelector = class {
   }
 
   /**
+   * @return {boolean}
+   */
+  hasCurrentSelection() {
+    return !!this._selectedItem();
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasItems() {
+    return this._itemByOptionElement.size > 0;
+  }
+
+  /**
    * @return {!UI.ToolbarComboBox}
    */
   comboBox() {
@@ -353,18 +391,28 @@ Audits2.ReportSelector = class {
    * @param {!Audits2.ReportSelector.Item} item
    */
   prepend(item) {
+    if (this._emptyItem) {
+      this._emptyItem.remove();
+      delete this._emptyItem;
+    }
+
     const optionEl = item.optionElement();
     const selectEl = this._comboBox.selectElement();
 
     this._itemByOptionElement.set(optionEl, item);
     selectEl.insertBefore(optionEl, selectEl.firstElementChild);
+    this._comboBox.setEnabled(true);
     this._comboBox.select(optionEl);
     item.select();
   }
 
   clearAll() {
-    for (const elem of this._comboBox.options())
+    for (const elem of this._comboBox.options()) {
       this._itemByOptionElement.get(elem).delete();
+      this._itemByOptionElement.delete(elem);
+    }
+
+    this._setPlaceholderState();
   }
 
   downloadSelected() {

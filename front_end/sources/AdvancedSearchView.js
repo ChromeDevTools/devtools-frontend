@@ -1,16 +1,30 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
 Sources.AdvancedSearchView = class extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(0, 40);
     this.registerRequiredCSS('sources/sourcesSearch.css');
 
-    this._searchId = 0;
+    this._focusOnShow = false;
+    this._isIndexing = false;
+    this._searchId = 1;
+    this._searchMatchesCount = 0;
+    this._searchResultsCount = 0;
+    this._nonEmptySearchResultsCount = 0;
+    /** @type {?UI.Widget} */
+    this._searchingView = null;
+    /** @type {?UI.Widget} */
+    this._notFoundView = null;
+    /** @type {?Workspace.SearchConfig} */
+    this._searchConfig = null;
+    /** @type {?Workspace.SearchConfig} */
+    this._pendingSearchConfig = null;
+    /** @type {?Sources.FileBasedSearchResultsPane} */
+    this._searchResultsPane = null;
+    /** @type {?UI.ProgressIndicator} */
+    this._progressIndicator = null;
 
     this.contentElement.classList.add('search-view');
 
@@ -38,22 +52,16 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     const cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');
     cancelButtonContainer.appendChild(this._searchInputClearElement);
 
-    this._ignoreCaseLabel = UI.CheckboxLabel.create(Common.UIString('Ignore case'));
-    this._ignoreCaseLabel.classList.add('search-config-label');
-    this._searchPanelElement.appendChild(this._ignoreCaseLabel);
-    this._ignoreCaseCheckbox = this._ignoreCaseLabel.checkboxElement;
-    this._ignoreCaseCheckbox.classList.add('search-config-checkbox');
+    const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
+    this._ignoreCaseCheckbox = new UI.ToolbarCheckbox(Common.UIString('Ignore case'));
+    toolbar.appendToolbarItem(this._ignoreCaseCheckbox);
+    this._regexCheckbox = new UI.ToolbarCheckbox(Common.UIString('Regular expression'));
+    toolbar.appendToolbarItem(this._regexCheckbox);
 
-    this._regexLabel = UI.CheckboxLabel.create(Common.UIString('Regular expression'));
-    this._regexLabel.classList.add('search-config-label');
-    this._searchPanelElement.appendChild(this._regexLabel);
-    this._regexCheckbox = this._regexLabel.checkboxElement;
-    this._regexCheckbox.classList.add('search-config-checkbox');
-
-    this._searchToolbarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
-    this._searchMessageElement = this._searchToolbarElement.createChild('div', 'search-message');
-    this._searchProgressPlaceholderElement = this._searchToolbarElement.createChild('div', 'flex-centered');
-    this._searchResultsMessageElement = this._searchToolbarElement.createChild('div', 'search-message');
+    const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
+    this._searchMessageElement = searchStatusBarElement.createChild('div', 'search-message');
+    this._searchProgressPlaceholderElement = searchStatusBarElement.createChild('div', 'flex-centered');
+    this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
     this._advancedSearchConfig = Common.settings.createLocalSetting(
         'advancedSearchConfig', new Workspace.SearchConfig('', true, false).toPlainObject());
@@ -79,7 +87,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
    */
   _buildSearchConfig() {
     return new Workspace.SearchConfig(
-        this._search.value, this._ignoreCaseCheckbox.checked, this._regexCheckbox.checked);
+        this._search.value, this._ignoreCaseCheckbox.checked(), this._regexCheckbox.checked());
   }
 
   /**
@@ -103,22 +111,22 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   wasShown() {
     if (this._focusOnShow) {
       this.focus();
-      delete this._focusOnShow;
+      this._focusOnShow = false;
     }
   }
 
   _onIndexingFinished() {
     const finished = !this._progressIndicator.isCanceled();
     this._progressIndicator.done();
-    delete this._progressIndicator;
-    delete this._isIndexing;
+    this._progressIndicator = null;
+    this._isIndexing = false;
     this._indexingFinished(finished);
     if (!finished)
-      delete this._pendingSearchConfig;
+      this._pendingSearchConfig = null;
     if (!this._pendingSearchConfig)
       return;
     const searchConfig = this._pendingSearchConfig;
-    delete this._pendingSearchConfig;
+    this._pendingSearchConfig = null;
     this._innerStartSearch(searchConfig);
   }
 
@@ -153,8 +161,10 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._addSearchResult(searchResult);
     if (!searchResult.searchMatches.length)
       return;
-    if (!this._searchResultsPane)
-      this._searchResultsPane = new Sources.FileBasedSearchResultsPane(this._searchConfig);
+    if (!this._searchResultsPane) {
+      this._searchResultsPane =
+          new Sources.FileBasedSearchResultsPane(/** @type {!Workspace.SearchConfig} */ (this._searchConfig));
+    }
     this._resetResults();
     this._searchResultsElement.appendChild(this._searchResultsPane.element);
     this._searchResultsPane.addSearchResult(searchResult);
@@ -334,8 +344,8 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   _load() {
     const searchConfig = Workspace.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
-    this._ignoreCaseCheckbox.checked = searchConfig.ignoreCase();
-    this._regexCheckbox.checked = searchConfig.isRegex();
+    this._ignoreCaseCheckbox.setChecked(searchConfig.ignoreCase());
+    this._regexCheckbox.setChecked(searchConfig.isRegex());
     if (this._search.value && this._search.value.length)
       this._searchInputClearElement.classList.remove('hidden');
   }
@@ -351,9 +361,6 @@ Sources.AdvancedSearchView = class extends UI.VBox {
 };
 
 
-/**
- * @unrestricted
- */
 Sources.SearchResultsPane = class {
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
@@ -379,7 +386,6 @@ Sources.SearchResultsPane = class {
 
 /**
  * @implements {UI.ActionDelegate}
- * @unrestricted
  */
 Sources.AdvancedSearchView.ActionDelegate = class {
   /**

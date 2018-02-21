@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 /**
  * @implements {Workspace.ProjectSearchConfig}
- * @unrestricted
  */
 Workspace.SearchConfig = class {
   /**
@@ -177,9 +176,6 @@ Workspace.SearchConfig.FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 Workspace.SearchConfig.RegexQuery;
 
 
-/**
- * @unrestricted
- */
 Workspace.SearchConfig.QueryTerm = class {
   /**
    * @param {string} text

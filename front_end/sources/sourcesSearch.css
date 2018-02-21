@@ -50,19 +50,6 @@
     top: 1px;
 }
 
-.search-drawer-header label.search-config-label:first-of-type {
-    border-left: 1px solid #dadada;
-    margin: 0px 0px 0px 1px;
-    padding-left: 10px;
-}
-
-.search-drawer-header label.search-config-label {
-    margin: 2px 4px;
-    margin-left: 8px;
-    color: #303030;
-    display: flex;
-}
-
 .search-toolbar-summary {
     background-color: #eee;
     border-top: 1px solid #ccc;
@@ -102,4 +89,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+.search-toolbar {
+    border-left: 1px solid #dadada;
+    padding: 4px 16px 0 8px;
+    flex-grow: 1;
 }

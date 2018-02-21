@@ -1,12 +1,9 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
 Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
   /**
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
+   * @param {!Workspace.SearchConfig} searchConfig
    */
   constructor(searchConfig) {
     super(searchConfig);
@@ -47,9 +44,6 @@ Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
 Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount = 20;
 Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
 
-/**
- * @unrestricted
- */
 Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElement {
   /**
    * @param {!Workspace.ProjectSearchConfig} searchConfig
@@ -59,6 +53,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
     super('', true);
     this._searchConfig = searchConfig;
     this._searchResult = searchResult;
+    this._initialized = false;
 
     this.toggleOnClick = true;
     this.selectable = false;
@@ -162,10 +157,11 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
   _appendShowMoreMatchesElement(startMatchIndex) {
     const matchesLeftCount = this._searchResult.searchMatches.length - startMatchIndex;
     const showMoreMatchesText = Common.UIString('Show all matches (%d more).', matchesLeftCount);
-    this._showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
-    this.appendChild(this._showMoreMatchesTreeElement);
-    this._showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
-    this._showMoreMatchesTreeElement.onselect = this._showMoreMatchesElementSelected.bind(this, startMatchIndex);
+    const showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
+    this.appendChild(showMoreMatchesTreeElement);
+    showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
+    showMoreMatchesTreeElement.onselect =
+        this._showMoreMatchesElementSelected.bind(this, showMoreMatchesTreeElement, startMatchIndex);
   }
 
   /**
@@ -206,11 +202,12 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
   }
 
   /**
+   * @param {!UI.TreeElement} showMoreMatchesTreeElement
    * @param {number} startMatchIndex
    * @return {boolean}
    */
-  _showMoreMatchesElementSelected(startMatchIndex) {
-    this.removeChild(this._showMoreMatchesTreeElement);
+  _showMoreMatchesElementSelected(showMoreMatchesTreeElement, startMatchIndex) {
+    this.removeChild(showMoreMatchesTreeElement);
     this._appendSearchMatches(startMatchIndex, this._searchResult.searchMatches.length);
     return false;
   }

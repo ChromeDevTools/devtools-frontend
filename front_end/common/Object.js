@@ -80,8 +80,10 @@ Common.Object = class {
       return;
     const listeners = this._listeners.get(eventType);
     for (let i = 0; i < listeners.length; ++i) {
-      if (listeners[i].listener === listener && listeners[i].thisObject === thisObject)
+      if (listeners[i].listener === listener && listeners[i].thisObject === thisObject) {
+        listeners[i].disposed = true;
         listeners.splice(i--, 1);
+      }
     }
 
     if (!listeners.length)
@@ -108,8 +110,10 @@ Common.Object = class {
 
     const event = /** @type {!Common.Event} */ ({data: eventData});
     const listeners = this._listeners.get(eventType).slice(0);
-    for (let i = 0; i < listeners.length; ++i)
-      listeners[i].listener.call(listeners[i].thisObject, event);
+    for (let i = 0; i < listeners.length; ++i) {
+      if (!listeners[i].disposed)
+        listeners[i].listener.call(listeners[i].thisObject, event);
+    }
   }
 };
 
@@ -119,7 +123,7 @@ Common.Object = class {
 Common.Event;
 
 /**
- * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event)}}
+ * @typedef {!{thisObject: (!Object|undefined), listener: function(!Common.Event), disposed: (boolean|undefined)}}
  */
 Common.Object._listenerCallbackTuple;
 

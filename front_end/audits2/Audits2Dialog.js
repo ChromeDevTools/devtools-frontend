@@ -47,16 +47,15 @@ Audits2.Audits2Dialog = class {
     const buttonsRow = uiElement.createChild('div', 'audits2-dialog-buttons hbox');
     this._startButton =
         UI.createTextButton(Common.UIString('Run audit'), this._start.bind(this), '', true /* primary */);
-    this._startButton.autofocus = true;
     buttonsRow.appendChild(this._startButton);
     this._cancelButton = UI.createTextButton(Common.UIString('Cancel'), this._cancel.bind(this));
     buttonsRow.appendChild(this._cancelButton);
 
+    auditsViewElement.tabIndex = 0;
+    this._dialog.setDefaultFocusedElement(this._startButton);
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
     this._dialog.setMaxContentSize(new UI.Size(500, 400));
     this._dialog.show(dialogRenderElement);
-    auditsViewElement.tabIndex = 0;
-    auditsViewElement.focus();
   }
 
   hide() {

@@ -256,7 +256,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
   _frameNavigated(event) {
     const frame = event.data;
 
-    if (!frame.parentFrame)
+    if (frame.isTopFrame())
       this._reset();
 
     const applicationCacheFrameTreeElement = this._applicationCacheFrameElements[frame.id];

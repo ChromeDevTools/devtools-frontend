@@ -99,6 +99,33 @@ ApplicationTestRunner.resourceMatchingURL = function(resourceURL) {
   return result;
 };
 
+ApplicationTestRunner.waitForCookies = function() {
+  return new Promise(resolve => {
+    TestRunner.addSniffer(CookieTable.CookiesTable.prototype, '_rebuildTable', resolve);
+  });
+};
+
+ApplicationTestRunner.dumpCookieDomains = function() {
+  const cookieListChildren = UI.panels.resources._sidebar.cookieListTreeElement.children();
+  TestRunner.addResult('Available cookie domains:');
+  for (const child of cookieListChildren)
+    TestRunner.addResult(child._cookieDomain);
+};
+
+ApplicationTestRunner.dumpCookies = function() {
+  if (!UI.panels.resources._cookieView || !UI.panels.resources._cookieView.isShowing()) {
+    TestRunner.addResult('No cookies visible');
+    return;
+  }
+
+  TestRunner.addResult('Visible cookies');
+  for (const item of UI.panels.resources._cookieView._cookiesTable._data) {
+    const cookies = item.cookies || [];
+    for (const cookie of cookies)
+      TestRunner.addResult(`${cookie.name()}=${cookie.value()}`);
+  }
+};
+
 ApplicationTestRunner.databaseModel = function() {
   return TestRunner.mainTarget.model(Resources.DatabaseModel);
 };

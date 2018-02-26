@@ -66,7 +66,7 @@ Console.ConsoleFilter = class {
       return false;
 
     if (message.type === SDK.ConsoleMessage.MessageType.Command ||
-        message.type === SDK.ConsoleMessage.MessageType.Result || message.isGroupMessage())
+        message.type === SDK.ConsoleMessage.MessageType.Result)
       return true;
 
     if (message.level && !this.levelsMask[/** @type {string} */ (message.level)])

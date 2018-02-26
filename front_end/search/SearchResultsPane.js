@@ -1,53 +1,51 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Sources.FileBasedSearchResultsPane = class extends Sources.SearchResultsPane {
+Search.SearchResultsPane = class extends UI.VBox {
   /**
-   * @param {!Workspace.SearchConfig} searchConfig
+   * @param {!Search.SearchConfig} searchConfig
    */
   constructor(searchConfig) {
-    super(searchConfig);
+    super(true);
+    this._searchConfig = searchConfig;
 
+    /** @type {!Array<!Search.SearchResult>} */
     this._searchResults = [];
     this._treeOutline = new UI.TreeOutlineInShadow();
-    this._treeOutline.registerRequiredCSS('sources/fileBasedSearchResultsPane.css');
-    this.element.appendChild(this._treeOutline.element);
+    this._treeOutline.registerRequiredCSS('search/searchResultsPane.css');
+    this.contentElement.appendChild(this._treeOutline.element);
 
     this._matchesExpandedCount = 0;
   }
 
   /**
-   * @override
-   * @param {!Sources.FileBasedSearchResult} searchResult
+   * @param {!Search.SearchResult} searchResult
    */
   addSearchResult(searchResult) {
     this._searchResults.push(searchResult);
-    const uiSourceCode = searchResult.uiSourceCode;
-    if (!uiSourceCode)
-      return;
-    this._addFileTreeElement(searchResult);
+    this._addTreeElement(searchResult);
   }
 
   /**
-   * @param {!Sources.FileBasedSearchResult} searchResult
+   * @param {!Search.SearchResult} searchResult
    */
-  _addFileTreeElement(searchResult) {
-    const fileTreeElement = new Sources.FileBasedSearchResultsPane.FileTreeElement(this.searchConfig, searchResult);
-    this._treeOutline.appendChild(fileTreeElement);
+  _addTreeElement(searchResult) {
+    const treeElement = new Search.SearchResultsPane.SearchResultsTreeElement(this._searchConfig, searchResult);
+    this._treeOutline.appendChild(treeElement);
     // Expand until at least a certain number of matches is expanded.
-    if (this._matchesExpandedCount < Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount)
-      fileTreeElement.expand();
-    this._matchesExpandedCount += searchResult.searchMatches.length;
+    if (this._matchesExpandedCount < Search.SearchResultsPane._matchesExpandedByDefault)
+      treeElement.expand();
+    this._matchesExpandedCount += searchResult.matchesCount();
   }
 };
 
-Sources.FileBasedSearchResultsPane.matchesExpandedByDefaultCount = 20;
-Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce = 20;
+Search.SearchResultsPane._matchesExpandedByDefault = 20;
+Search.SearchResultsPane._matchesShownAtOnce = 20;
 
-Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElement {
+Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement {
   /**
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
-   * @param {!Sources.FileBasedSearchResult} searchResult
+   * @param {!Search.SearchConfig} searchConfig
+   * @param {!Search.SearchResult} searchResult
    */
   constructor(searchConfig, searchResult) {
     super('', true);
@@ -72,9 +70,8 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
 
   _updateMatchesUI() {
     this.removeChildren();
-    const toIndex =
-        Math.min(this._searchResult.searchMatches.length, Sources.FileBasedSearchResultsPane.fileMatchesShownAtOnce);
-    if (toIndex < this._searchResult.searchMatches.length) {
+    const toIndex = Math.min(this._searchResult.matchesCount(), Search.SearchResultsPane._matchesShownAtOnce);
+    if (toIndex < this._searchResult.matchesCount()) {
       this._appendSearchMatches(0, toIndex - 1);
       this._appendShowMoreMatchesElement(toIndex - 1);
     } else {
@@ -94,13 +91,13 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
 
     const fileNameSpan = createElement('span');
     fileNameSpan.className = 'search-result-file-name';
-    fileNameSpan.textContent = this._searchResult.uiSourceCode.fullDisplayName();
+    fileNameSpan.textContent = this._searchResult.label();
     this.listItemElement.appendChild(fileNameSpan);
 
     const matchesCountSpan = createElement('span');
     matchesCountSpan.className = 'search-result-matches-count';
 
-    const searchMatchesCount = this._searchResult.searchMatches.length;
+    const searchMatchesCount = this._searchResult.matchesCount();
     if (searchMatchesCount === 1)
       matchesCountSpan.textContent = Common.UIString('(%d match)', searchMatchesCount);
     else
@@ -117,8 +114,6 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
    */
   _appendSearchMatches(fromIndex, toIndex) {
     const searchResult = this._searchResult;
-    const uiSourceCode = searchResult.uiSourceCode;
-    const searchMatches = searchResult.searchMatches;
 
     const queries = this._searchConfig.queries();
     const regexes = [];
@@ -126,13 +121,13 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
       regexes.push(createSearchRegex(queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
 
     for (let i = fromIndex; i < toIndex; ++i) {
-      const lineNumber = searchMatches[i].lineNumber;
-      const lineContent = searchMatches[i].lineContent;
+      const lineNumber = searchResult.matchLineNumber(i);
+      const lineContent = searchResult.matchLineContent(i);
       let matchRanges = [];
       for (let j = 0; j < regexes.length; ++j)
         matchRanges = matchRanges.concat(this._regexMatchRanges(lineContent, regexes[j]));
 
-      const anchor = this._createAnchor(uiSourceCode, lineNumber, matchRanges[0].offset);
+      const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
 
       const numberString = numberToStringWithSpacesPadding(lineNumber + 1, 4);
       const lineNumberSpan = createElement('span');
@@ -155,23 +150,13 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
    * @param {number} startMatchIndex
    */
   _appendShowMoreMatchesElement(startMatchIndex) {
-    const matchesLeftCount = this._searchResult.searchMatches.length - startMatchIndex;
+    const matchesLeftCount = this._searchResult.matchesCount() - startMatchIndex;
     const showMoreMatchesText = Common.UIString('Show all matches (%d more).', matchesLeftCount);
     const showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
     this.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
     showMoreMatchesTreeElement.onselect =
         this._showMoreMatchesElementSelected.bind(this, showMoreMatchesTreeElement, startMatchIndex);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {!Element}
-   */
-  _createAnchor(uiSourceCode, lineNumber, columnNumber) {
-    return Components.Linkifier.linkifyRevealable(uiSourceCode.uiLocation(lineNumber, columnNumber), '');
   }
 
   /**
@@ -208,7 +193,7 @@ Sources.FileBasedSearchResultsPane.FileTreeElement = class extends UI.TreeElemen
    */
   _showMoreMatchesElementSelected(showMoreMatchesTreeElement, startMatchIndex) {
     this.removeChild(showMoreMatchesTreeElement);
-    this._appendSearchMatches(startMatchIndex, this._searchResult.searchMatches.length);
+    this._appendSearchMatches(startMatchIndex, this._searchResult.matchesCount());
     return false;
   }
 };

@@ -4,13 +4,15 @@
 /**
  * @implements {Workspace.ProjectSearchConfig}
  */
-Workspace.SearchConfig = class {
+Search.SearchConfig = class {
   /**
+   * @param {?string} scopeType
    * @param {string} query
    * @param {boolean} ignoreCase
    * @param {boolean} isRegex
    */
-  constructor(query, ignoreCase, isRegex) {
+  constructor(scopeType, query, ignoreCase, isRegex) {
+    this._scopeType = scopeType;
     this._query = query;
     this._ignoreCase = ignoreCase;
     this._isRegex = isRegex;
@@ -18,11 +20,19 @@ Workspace.SearchConfig = class {
   }
 
   /**
-   * @param {{query: string, ignoreCase: boolean, isRegex: boolean}} object
-   * @return {!Workspace.SearchConfig}
+   * @param {{scopeType: ?string, query: string, ignoreCase: boolean, isRegex: boolean}} object
+   * @return {!Search.SearchConfig}
    */
   static fromPlainObject(object) {
-    return new Workspace.SearchConfig(object.query, object.ignoreCase, object.isRegex);
+    const scopeType = object.scopeType || null;
+    return new Search.SearchConfig(scopeType, object.query, object.ignoreCase, object.isRegex);
+  }
+
+  /**
+   * @return {?string}
+   */
+  scopeType() {
+    return this._scopeType;
   }
 
   /**
@@ -53,7 +63,7 @@ Workspace.SearchConfig = class {
    * @return {{query: string, ignoreCase: boolean, isRegex: boolean}}
    */
   toPlainObject() {
-    return {query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
+    return {scopeType: this.scopeType(), query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
   }
 
   _parse() {
@@ -65,14 +75,14 @@ Workspace.SearchConfig = class {
 
 
     const pattern = [
-      '(\\s*' + Workspace.SearchConfig.FilePatternRegex.source + '\\s*)',
+      '(\\s*' + Search.SearchConfig.FilePatternRegex.source + '\\s*)',
       '(' + quotedPattern.source + ')',
       '(' + unquotedPattern + ')',
     ].join('|');
     const regexp = new RegExp(pattern, 'g');
     const queryParts = this._query.match(regexp) || [];
     /**
-     * @type {!Array.<!Workspace.SearchConfig.QueryTerm>}
+     * @type {!Array.<!Search.SearchConfig.QueryTerm>}
      */
     this._fileQueries = [];
 
@@ -88,7 +98,7 @@ Workspace.SearchConfig = class {
       const fileQuery = this._parseFileQuery(queryPart);
       if (fileQuery) {
         this._fileQueries.push(fileQuery);
-        /** @type {!Array.<!Workspace.SearchConfig.RegexQuery>} */
+        /** @type {!Array.<!Search.SearchConfig.RegexQuery>} */
         this._fileRegexQueries = this._fileRegexQueries || [];
         this._fileRegexQueries.push(
             {regex: new RegExp(fileQuery.text, this.ignoreCase ? 'i' : ''), isNegative: fileQuery.isNegative});
@@ -141,10 +151,10 @@ Workspace.SearchConfig = class {
 
   /**
    * @param {string} query
-   * @return {?Workspace.SearchConfig.QueryTerm}
+   * @return {?Search.SearchConfig.QueryTerm}
    */
   _parseFileQuery(query) {
-    const match = query.match(Workspace.SearchConfig.FilePatternRegex);
+    const match = query.match(Search.SearchConfig.FilePatternRegex);
     if (!match)
       return null;
     const isNegative = !!match[1];
@@ -165,18 +175,17 @@ Workspace.SearchConfig = class {
         result += query.charAt(i);
       }
     }
-    return new Workspace.SearchConfig.QueryTerm(result, isNegative);
+    return new Search.SearchConfig.QueryTerm(result, isNegative);
   }
 };
 
 // After file: prefix: any symbol except space and backslash or any symbol escaped with a backslash.
-Workspace.SearchConfig.FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
+Search.SearchConfig.FilePatternRegex = /(-)?f(ile)?:((?:[^\\ ]|\\.)+)/;
 
 /** @typedef {!{regex: !RegExp, isNegative: boolean}} */
-Workspace.SearchConfig.RegexQuery;
+Search.SearchConfig.RegexQuery;
 
-
-Workspace.SearchConfig.QueryTerm = class {
+Search.SearchConfig.QueryTerm = class {
   /**
    * @param {string} text
    * @param {boolean} isNegative
@@ -185,4 +194,61 @@ Workspace.SearchConfig.QueryTerm = class {
     this.text = text;
     this.isNegative = isNegative;
   }
+};
+
+/**
+ * @interface
+ */
+Search.SearchResult = function() {};
+
+Search.SearchResult.prototype = {
+  /**
+   * @return {string}
+   */
+  label() {},
+
+  /**
+   * @return {number}
+   */
+  matchesCount() {},
+
+  /**
+   * @param {number} index
+   * @return {number}
+   */
+  matchLineNumber(index) {},
+
+  /**
+   * @param {number} index
+   * @return {string}
+   */
+  matchLineContent(index) {},
+
+  /**
+   * @param {number} index
+   * @return {!Object}
+   */
+  matchRevealable(index) {}
+};
+
+/**
+ * @interface
+ */
+Search.SearchScope = function() {};
+
+Search.SearchScope.prototype = {
+  /**
+   * @param {!Search.SearchConfig} searchConfig
+   * @param {!Common.Progress} progress
+   * @param {function(!Search.SearchResult)} searchResultCallback
+   * @param {function(boolean)} searchFinishedCallback
+   */
+  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
+
+  /**
+   * @param {!Common.Progress} progress
+   */
+  performIndexing(progress) {},
+
+  stopSearch() {}
 };

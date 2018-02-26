@@ -45,15 +45,15 @@ SourcesTestRunner.runSearchAndDumpResults = function(scope, searchConfig, callba
 
   function searchFinishedCallback() {
     function comparator(searchResultA, searchResultB) {
-      return searchResultA.uiSourceCode.url().compareTo(searchResultB.uiSourceCode.url());
+      return searchResultA._uiSourceCode.url().compareTo(searchResultB._uiSourceCode.url());
     }
 
     searchResults.sort(comparator);
 
     for (let i = 0; i < searchResults.length; ++i) {
       const searchResult = searchResults[i];
-      const uiSourceCode = searchResult.uiSourceCode;
-      const searchMatches = searchResult.searchMatches;
+      const uiSourceCode = searchResult._uiSourceCode;
+      const searchMatches = searchResult._searchMatches;
 
       if (!searchMatches.length)
         continue;

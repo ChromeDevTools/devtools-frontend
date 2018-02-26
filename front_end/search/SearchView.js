@@ -1,11 +1,11 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-Sources.AdvancedSearchView = class extends UI.VBox {
+Search.SearchView = class extends UI.VBox {
   constructor() {
     super(true);
     this.setMinimumSize(0, 40);
-    this.registerRequiredCSS('sources/sourcesSearch.css');
+    this.registerRequiredCSS('search/searchView.css');
 
     this._focusOnShow = false;
     this._isIndexing = false;
@@ -17,14 +17,16 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._searchingView = null;
     /** @type {?UI.Widget} */
     this._notFoundView = null;
-    /** @type {?Workspace.SearchConfig} */
+    /** @type {?Search.SearchConfig} */
     this._searchConfig = null;
-    /** @type {?Workspace.SearchConfig} */
+    /** @type {?Search.SearchConfig} */
     this._pendingSearchConfig = null;
-    /** @type {?Sources.FileBasedSearchResultsPane} */
+    /** @type {?Search.SearchResultsPane} */
     this._searchResultsPane = null;
     /** @type {?UI.ProgressIndicator} */
     this._progressIndicator = null;
+    /** @type {?UI.Widget} */
+    this._visiblePane = null;
 
     this.contentElement.classList.add('search-view');
 
@@ -57,6 +59,10 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._ignoreCaseCheckbox);
     this._regexCheckbox = new UI.ToolbarCheckbox(Common.UIString('Regular expression'));
     toolbar.appendToolbarItem(this._regexCheckbox);
+    toolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
+
+    this._scopeMenu = new UI.ToolbarComboBox(() => {});
+    toolbar.appendToolbarItem(this._scopeMenu);
 
     const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
     this._searchMessageElement = searchStatusBarElement.createChild('div', 'search-message');
@@ -64,45 +70,79 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
     this._advancedSearchConfig = Common.settings.createLocalSetting(
-        'advancedSearchConfig', new Workspace.SearchConfig('', true, false).toPlainObject());
+        'advancedSearchConfig', new Search.SearchConfig(null, '', true, false).toPlainObject());
+
+    /** @type {!Map<string, !Runtime.Extension>} */
+    this._searchScopes = new Map();
+    this._defaultScope = Search.SearchView._readScopesExtenstions(this._scopeMenu, this._searchScopes);
+
     this._load();
-    /** @type {!Sources.SearchScope} */
-    this._searchScope = new Sources.SourcesSearchScope();
+    /** @type {?Search.SearchScope} */
+    this._searchScope = null;
   }
 
   /**
+   * @param {?string} searchScopeType
    * @param {string} query
-   * @param {string=} filePath
    */
-  static openSearch(query, filePath) {
-    UI.viewManager.showView('sources.search');
+  static openSearch(searchScopeType, query) {
+    UI.viewManager.showView('search.search');
     const searchView =
-        /** @type {!Sources.AdvancedSearchView} */ (self.runtime.sharedInstance(Sources.AdvancedSearchView));
-    const fileMask = filePath ? ' file:' + filePath : '';
-    searchView._toggle(query + fileMask);
+        /** @type {!Search.SearchView} */ (self.runtime.sharedInstance(Search.SearchView));
+    searchView._toggle(searchScopeType, query);
   }
 
   /**
-   * @return {!Workspace.SearchConfig}
+   * @param {!UI.ToolbarComboBox} combobox
+   * @param {!Map<string, !Runtime.Extension>} scopesMap
+   * @return {!Runtime.Extension}
+   */
+  static _readScopesExtenstions(combobox, scopesMap) {
+    let defaultScope = null;
+    for (const extension of self.runtime.extensions(Search.SearchScope)) {
+      const id = extension.descriptor().id;
+      const title = extension.title();
+      scopesMap.set(id, extension);
+      combobox.addOption(combobox.createOption(title, title, id));
+      if (!defaultScope)
+        defaultScope = extension;
+    }
+    return defaultScope;
+  }
+
+
+  /**
+   * @return {!Search.SearchConfig}
    */
   _buildSearchConfig() {
-    return new Workspace.SearchConfig(
-        this._search.value, this._ignoreCaseCheckbox.checked(), this._regexCheckbox.checked());
+    return new Search.SearchConfig(
+        this._scopeMenu.selectedOption().value, this._search.value, this._ignoreCaseCheckbox.checked(),
+        this._regexCheckbox.checked());
   }
 
   /**
+   * @param {?string} searchScopeType
    * @param {string} queryCandidate
    */
-  _toggle(queryCandidate) {
+  async _toggle(searchScopeType, queryCandidate) {
     if (queryCandidate)
       this._search.value = queryCandidate;
-
+    this._selectScope(searchScopeType);
     if (this.isShowing())
       this.focus();
     else
       this._focusOnShow = true;
 
+    await this._initScope(this._scopeMenu.selectedOption().value);
     this._startIndexing();
+  }
+
+  /**
+   * @param {?string} scopeType
+   */
+  async _initScope(scopeType) {
+    const extension = scopeType ? this._searchScopes.get(scopeType) : this._defaultScope;
+    this._searchScope = await extension.instance();
   }
 
   /**
@@ -149,7 +189,7 @@ Sources.AdvancedSearchView = class extends UI.VBox {
 
   /**
    * @param {number} searchId
-   * @param {!Sources.FileBasedSearchResult} searchResult
+   * @param {!Search.SearchResult} searchResult
    */
   _onSearchResult(searchId, searchResult) {
     if (searchId !== this._searchId || !this._progressIndicator)
@@ -159,14 +199,12 @@ Sources.AdvancedSearchView = class extends UI.VBox {
       return;
     }
     this._addSearchResult(searchResult);
-    if (!searchResult.searchMatches.length)
+    if (!searchResult.matchesCount())
       return;
     if (!this._searchResultsPane) {
-      this._searchResultsPane =
-          new Sources.FileBasedSearchResultsPane(/** @type {!Workspace.SearchConfig} */ (this._searchConfig));
+      this._searchResultsPane = new Search.SearchResultsPane(/** @type {!Search.SearchConfig} */ (this._searchConfig));
+      this._showPane(this._searchResultsPane);
     }
-    this._resetResults();
-    this._searchResultsElement.appendChild(this._searchResultsPane.element);
     this._searchResultsPane.addSearchResult(searchResult);
   }
 
@@ -180,23 +218,21 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     if (!this._searchResultsPane)
       this._nothingFound();
     this._searchFinished(finished);
-    delete this._searchConfig;
+    this._searchConfig = null;
   }
 
   /**
-   * @param {!Workspace.SearchConfig} searchConfig
+   * @param {!Search.SearchConfig} searchConfig
    */
-  _startSearch(searchConfig) {
+  async _startSearch(searchConfig) {
     this._resetSearch();
     ++this._searchId;
+    await this._initScope(searchConfig.scopeType());
     if (!this._isIndexing)
       this._startIndexing();
     this._pendingSearchConfig = searchConfig;
   }
 
-  /**
-   * @param {!Workspace.SearchConfig} searchConfig
-   */
   _innerStartSearch(searchConfig) {
     this._searchConfig = searchConfig;
     if (this._progressIndicator)
@@ -210,11 +246,8 @@ Sources.AdvancedSearchView = class extends UI.VBox {
 
   _resetSearch() {
     this._stopSearch();
-
-    if (this._searchResultsPane) {
-      this._resetResults();
-      delete this._searchResultsPane;
-    }
+    this._showPane(null);
+    this._searchResultsPane = null;
   }
 
   _stopSearch() {
@@ -222,23 +255,20 @@ Sources.AdvancedSearchView = class extends UI.VBox {
       this._progressIndicator.cancel();
     if (this._searchScope)
       this._searchScope.stopSearch();
-    delete this._searchConfig;
+    this._searchConfig = null;
   }
 
   /**
    * @param {!UI.ProgressIndicator} progressIndicator
    */
   _searchStarted(progressIndicator) {
-    this._resetResults();
     this._resetCounters();
-
+    if (!this._searchingView)
+      this._searchingView = new UI.EmptyWidget(Common.UIString('Searching\u2026'));
+    this._showPane(this._searchingView);
     this._searchMessageElement.textContent = Common.UIString('Searching\u2026');
     progressIndicator.show(this._searchProgressPlaceholderElement);
     this._updateSearchResultsMessage();
-
-    if (!this._searchingView)
-      this._searchingView = new UI.EmptyWidget(Common.UIString('Searching\u2026'));
-    this._searchingView.show(this._searchResultsElement);
   }
 
   /**
@@ -264,12 +294,15 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     }
   }
 
-  _resetResults() {
-    if (this._searchingView)
-      this._searchingView.detach();
-    if (this._notFoundView)
-      this._notFoundView.detach();
-    this._searchResultsElement.removeChildren();
+  /**
+   * @param {?UI.Widget} panel
+   */
+  _showPane(panel) {
+    if (this._visiblePane)
+      this._visiblePane.detach();
+    if (panel)
+      panel.show(this._searchResultsElement);
+    this._visiblePane = panel;
   }
 
   _resetCounters() {
@@ -279,21 +312,20 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _nothingFound() {
-    this._resetResults();
-
     if (!this._notFoundView)
       this._notFoundView = new UI.EmptyWidget(Common.UIString('No matches found.'));
-    this._notFoundView.show(this._searchResultsElement);
+    this._showPane(this._notFoundView);
     this._searchResultsMessageElement.textContent = Common.UIString('No matches found.');
   }
 
   /**
-   * @param {!Sources.FileBasedSearchResult} searchResult
+   * @param {!Search.SearchResult} searchResult
    */
   _addSearchResult(searchResult) {
-    this._searchMatchesCount += searchResult.searchMatches.length;
+    const matchesCount = searchResult.matchesCount();
+    this._searchMatchesCount += matchesCount;
     this._searchResultsCount++;
-    if (searchResult.searchMatches.length)
+    if (matchesCount)
       this._nonEmptySearchResultsCount++;
     this._updateSearchResultsMessage();
   }
@@ -342,10 +374,12 @@ Sources.AdvancedSearchView = class extends UI.VBox {
   }
 
   _load() {
-    const searchConfig = Workspace.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
+    const searchConfig = Search.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
     this._ignoreCaseCheckbox.setChecked(searchConfig.ignoreCase());
     this._regexCheckbox.setChecked(searchConfig.isRegex());
+    this._selectScope(searchConfig.scopeType() || this._scopeMenu.options()[0].value);
+
     if (this._search.value && this._search.value.length)
       this._searchInputClearElement.classList.remove('hidden');
   }
@@ -358,36 +392,26 @@ Sources.AdvancedSearchView = class extends UI.VBox {
     this._save();
     this._startSearch(searchConfig);
   }
-};
-
-
-Sources.SearchResultsPane = class {
-  /**
-   * @param {!Workspace.ProjectSearchConfig} searchConfig
-   */
-  constructor(searchConfig) {
-    this._searchConfig = searchConfig;
-    this.element = createElement('div');
-  }
 
   /**
-   * @return {!Workspace.ProjectSearchConfig}
+   * @param {?string} scopeType
    */
-  get searchConfig() {
-    return this._searchConfig;
-  }
-
-  /**
-   * @param {!Sources.FileBasedSearchResult} searchResult
-   */
-  addSearchResult(searchResult) {
+  _selectScope(scopeType) {
+    if (!scopeType)
+      return;
+    let scope = this._scopeMenu.options().find(option => option.value === scopeType);
+    if (!scope) {
+      console.warn(`Search scope '${scopeType}' was not found`);
+      scope = this._scopeMenu.options()[0];
+    }
+    this._scopeMenu.select(scope);
   }
 };
 
 /**
  * @implements {UI.ActionDelegate}
  */
-Sources.AdvancedSearchView.ActionDelegate = class {
+Search.SearchView.ActionDelegate = class {
   /**
    * @override
    * @param {!UI.Context} context
@@ -404,42 +428,6 @@ Sources.AdvancedSearchView.ActionDelegate = class {
     let queryCandidate = '';
     if (selection.rangeCount)
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
-    Sources.AdvancedSearchView.openSearch(queryCandidate);
+    Search.SearchView.openSearch(null, queryCandidate);
   }
-};
-
-/**
- * @unrestricted
- */
-Sources.FileBasedSearchResult = class {
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   * @param {!Array.<!Object>} searchMatches
-   */
-  constructor(uiSourceCode, searchMatches) {
-    this.uiSourceCode = uiSourceCode;
-    this.searchMatches = searchMatches;
-  }
-};
-
-/**
- * @interface
- */
-Sources.SearchScope = function() {};
-
-Sources.SearchScope.prototype = {
-  /**
-   * @param {!Workspace.SearchConfig} searchConfig
-   * @param {!Common.Progress} progress
-   * @param {function(!Sources.FileBasedSearchResult)} searchResultCallback
-   * @param {function(boolean)} searchFinishedCallback
-   */
-  performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {},
-
-  /**
-   * @param {!Common.Progress} progress
-   */
-  performIndexing(progress) {},
-
-  stopSearch() {}
 };

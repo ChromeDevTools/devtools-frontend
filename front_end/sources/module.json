@@ -152,23 +152,6 @@
         },
         {
             "type": "action",
-            "actionId": "sources.search.toggle",
-            "title": "Search all files",
-            "className": "Sources.AdvancedSearchView.ActionDelegate",
-            "category": "DevTools",
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Alt+F"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+F"
-                }
-            ]
-        },
-        {
-            "type": "action",
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
             "iconClass": "largeicon-deactivate-breakpoints",
@@ -250,11 +233,6 @@
             "title": "Go to symbol",
             "prefix": "@",
             "className": "Sources.OutlineQuickOpen"
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/default",
-            "actionId": "sources.search.toggle"
         },
         {
             "type": "context-menu-item",
@@ -576,15 +554,6 @@
         {
             "type": "view",
             "location": "drawer-view",
-            "id": "sources.search",
-            "title": "Search",
-            "persistence": "closeable",
-            "order": 100,
-            "className": "Sources.AdvancedSearchView"
-        },
-        {
-            "type": "view",
-            "location": "drawer-view",
             "id": "sources.quick",
             "title": "Quick source",
             "persistence": "closeable",
@@ -844,10 +813,17 @@
                     "shortcut": "Ctrl+."
                 }
             ]
+        },
+        {
+            "type": "@Search.SearchScope",
+            "id": "sources.search-in-files",
+            "className": "Sources.SourcesSearchScope",
+            "title": "Search files"
         }
     ],
     "dependencies": [
         "components",
+        "search",
         "source_frame",
         "snippets",
         "extensions",
@@ -885,8 +861,6 @@
         "SourceFormatter.js",
         "OpenFileQuickOpen.js",
         "SourcesView.js",
-        "AdvancedSearchView.js",
-        "FileBasedSearchResultsPane.js",
         "SourcesSearchScope.js",
         "SourcesPanel.js",
         "JavaScriptCompilerPlugin.js",
@@ -895,7 +869,6 @@
     "resources": [
         "callStackSidebarPane.css",
         "debuggerPausedMessage.css",
-        "fileBasedSearchResultsPane.css",
         "javaScriptBreakpointsSidebarPane.css",
         "navigatorTree.css",
         "navigatorView.css",
@@ -903,7 +876,6 @@
         "scopeChainSidebarPane.css",
         "serviceWorkersSidebar.css",
         "sourcesPanel.css",
-        "sourcesSearch.css",
         "sourcesView.css",
         "threadsSidebarPane.css",
         "watchExpressionsSidebarPane.css",

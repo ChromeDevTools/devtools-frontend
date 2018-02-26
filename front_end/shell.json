@@ -35,6 +35,7 @@
     { "name": "perf_ui" },
     { "name": "profiler" },
     { "name": "quick_open" },
+    { "name": "search" },
     { "name": "settings" },
     { "name": "snippets" },
     { "name": "source_frame" },

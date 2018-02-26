@@ -26,13 +26,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * @implements {Sources.SearchScope}
- * @unrestricted
+ * @implements {Search.SearchScope}
  */
 Sources.SourcesSearchScope = class {
   constructor() {
     // FIXME: Add title once it is used by search controller.
     this._searchId = 0;
+    /** @type {!Array<!Workspace.UISourceCode>} */
+    this._searchResultCandidates = [];
+    /** @type {?function(!Search.SearchResult)} */
+    this._searchResultCallback = null;
+    /** @type {?function(boolean)} */
+    this._searchFinishedCallback = null;
+    /** @type {?Workspace.ProjectSearchConfig} */
+    this._searchConfig = null;
   }
 
   /**
@@ -91,7 +98,7 @@ Sources.SourcesSearchScope = class {
    * @override
    * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Common.Progress} progress
-   * @param {function(!Sources.FileBasedSearchResult)} searchResultCallback
+   * @param {function(!Search.SearchResult)} searchResultCallback
    * @param {function(boolean)} searchFinishedCallback
    */
   performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
@@ -112,7 +119,8 @@ Sources.SourcesSearchScope = class {
       const promise =
           project
               .findFilesMatchingSearchRequest(searchConfig, filesMathingFileQuery, findMatchingFilesInProjectProgress)
-              .then(this._processMatchingFilesForProject.bind(this, this._searchId, project, filesMathingFileQuery));
+              .then(this._processMatchingFilesForProject.bind(
+                  this, this._searchId, project, searchConfig, filesMathingFileQuery));
       promises.push(promise);
     }
 
@@ -138,7 +146,7 @@ Sources.SourcesSearchScope = class {
         continue;
       if (dirtyOnly && !uiSourceCode.isDirty())
         continue;
-      if (this._searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName()))
+      if (searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName()))
         result.push(uiSourceCode.url());
     }
     result.sort(String.naturalOrderComparator);
@@ -148,10 +156,11 @@ Sources.SourcesSearchScope = class {
   /**
    * @param {number} searchId
    * @param {!Workspace.Project} project
+   * @param {!Workspace.ProjectSearchConfig} searchConfig
    * @param {!Array<string>} filesMathingFileQuery
    * @param {!Array<string>} files
    */
-  _processMatchingFilesForProject(searchId, project, filesMathingFileQuery, files) {
+  _processMatchingFilesForProject(searchId, project, searchConfig, filesMathingFileQuery, files) {
     if (searchId !== this._searchId) {
       this._searchFinishedCallback(false);
       return;
@@ -159,7 +168,7 @@ Sources.SourcesSearchScope = class {
 
     files.sort(String.naturalOrderComparator);
     files = files.intersectOrdered(filesMathingFileQuery, String.naturalOrderComparator);
-    const dirtyFiles = this._projectFilesMatchingFileQuery(project, this._searchConfig, true);
+    const dirtyFiles = this._projectFilesMatchingFileQuery(project, searchConfig, true);
     files = files.mergeOrdered(dirtyFiles, String.naturalOrderComparator);
 
     const uiSourceCodes = [];
@@ -272,5 +281,64 @@ Sources.SourcesSearchScope = class {
    */
   stopSearch() {
     ++this._searchId;
+  }
+};
+
+
+/**
+ * @implements {Search.SearchResult}
+ */
+Sources.FileBasedSearchResult = class {
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {!Array.<!Common.ContentProvider.SearchMatch>} searchMatches
+   */
+  constructor(uiSourceCode, searchMatches) {
+    this._uiSourceCode = uiSourceCode;
+    this._searchMatches = searchMatches;
+  }
+
+  /**
+   * @override
+   * @return {string}
+   */
+  label() {
+    return this._uiSourceCode.fullDisplayName();
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  matchesCount() {
+    return this._searchMatches.length;
+  }
+
+  /**
+   * @override
+   * @param {number} index
+   * @return {number}
+   */
+  matchLineNumber(index) {
+    return this._searchMatches[index].lineNumber;
+  }
+
+  /**
+   * @override
+   * @param {number} index
+   * @return {string}
+   */
+  matchLineContent(index) {
+    return this._searchMatches[index].lineContent;
+  }
+
+  /**
+   * @override
+   * @param {number} index
+   * @return {!Object}
+   */
+  matchRevealable(index) {
+    const match = this._searchMatches[index];
+    return this._uiSourceCode.uiLocation(match.lineNumber, match.columnNumber);
   }
 };

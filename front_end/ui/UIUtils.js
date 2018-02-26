@@ -138,7 +138,11 @@ UI.DragHandler = class {
         (UI.DragHandler._documentForMouseOut || targetDocument) === targetDocument, 'Dragging on multiple documents.');
     UI.DragHandler._documentForMouseOut = targetDocument;
     this._dragEventsTargetDocument = targetDocument;
-    this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
+    try {
+      this._dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
+    } catch (e) {
+      this._dragEventsTargetDocumentTop = this._dragEventsTargetDocument;
+    }
 
     targetDocument.addEventListener('mousemove', this._elementDragMove, true);
     targetDocument.addEventListener('mouseup', this._elementDragEnd, true);

@@ -10,6 +10,7 @@
 
 .widget.ax-subpane {
     overflow-x: hidden;
+    -webkit-user-select: text;
 }
 
 div.ax-text-alternatives {

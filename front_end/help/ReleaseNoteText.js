@@ -12,6 +12,34 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 9,
+    header: 'Highlights from the Chrome 66 update',
+    highlights: [
+      {
+        title: 'Pretty-printing in the Preview and Response tabs',
+        subtitle: 'The Preview tab now pretty-prints by default, and you can force ' +
+            'pretty-printing in the Response tab via the new Format button.',
+        link: 'https://developers.google.com/web/updates/2018/02/devtools#pretty-printing',
+      },
+      {
+        title: 'Previewing HTML content in the Preview tab',
+        subtitle: 'The Preview tab now always does a basic rendering of HTML content.',
+        link: 'https://developers.google.com/web/updates/2018/02/devtools#previews',
+      },
+      {
+        title: 'Local Overrides with styles defined in HTML',
+        subtitle: 'Local Overrides now works with styles defined in HTML, with one exception.',
+        link: 'https://developers.google.com/web/updates/2018/02/devtools#overrides',
+      },
+      {
+        title: 'Blackboxing in the Initiator column',
+        subtitle: 'Hide framework scripts in order to see the app code that caused a request.',
+        link: 'https://developers.google.com/web/updates/2018/02/devtools#blackboxing',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2018/02/devtools',
+  },
+  {
     version: 8,
     header: 'Highlights from the Chrome 65 update',
     highlights: [

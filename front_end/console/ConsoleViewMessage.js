@@ -564,7 +564,11 @@ Console.ConsoleViewMessage = class {
    */
   _formatParameterAsValue(obj) {
     const result = createElement('span');
-    result.createTextChild(obj.description || '');
+    const description = obj.description || '';
+    if (description.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
+      result.appendChild(Console.ConsoleViewMessage._createExpandableFragment(description));
+    else
+      result.createTextChild(description);
     if (obj.objectId)
       result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, obj), false);
     return result;
@@ -1350,7 +1354,7 @@ Console.ConsoleViewMessage = class {
    */
   static linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
-      return createExpandableFragment(string);
+      return Console.ConsoleViewMessage._createExpandableFragment(string);
     const container = createDocumentFragment();
     const tokens = this._tokenizeMessageText(string);
     for (const token of tokens) {
@@ -1372,31 +1376,31 @@ Console.ConsoleViewMessage = class {
       }
     }
     return container;
+  }
 
-    /**
-     * @param {string} text
-     * @return {!DocumentFragment}
-     */
-    function createExpandableFragment(text) {
-      const fragment = createDocumentFragment();
-      fragment.textContent = text.slice(0, Console.ConsoleViewMessage._LongStringVisibleLength);
-      const hiddenText = text.slice(Console.ConsoleViewMessage._LongStringVisibleLength);
+  /**
+   * @param {string} text
+   * @return {!DocumentFragment}
+   */
+  static _createExpandableFragment(text) {
+    const fragment = createDocumentFragment();
+    fragment.textContent = text.slice(0, Console.ConsoleViewMessage._LongStringVisibleLength);
+    const hiddenText = text.slice(Console.ConsoleViewMessage._LongStringVisibleLength);
 
-      const expandButton = fragment.createChild('span', 'console-inline-button');
-      expandButton.setAttribute('data-text', ls`Show ${Number.withThousandsSeparator(hiddenText.length)} more`);
-      expandButton.addEventListener('click', () => {
-        if (expandButton.parentElement)
-          expandButton.parentElement.insertBefore(createTextNode(hiddenText), expandButton);
-        expandButton.remove();
-      });
+    const expandButton = fragment.createChild('span', 'console-inline-button');
+    expandButton.setAttribute('data-text', ls`Show ${Number.withThousandsSeparator(hiddenText.length)} more`);
+    expandButton.addEventListener('click', () => {
+      if (expandButton.parentElement)
+        expandButton.parentElement.insertBefore(createTextNode(hiddenText), expandButton);
+      expandButton.remove();
+    });
 
-      const copyButton = fragment.createChild('span', 'console-inline-button');
-      copyButton.setAttribute('data-text', ls`Copy`);
-      copyButton.addEventListener('click', () => {
-        InspectorFrontendHost.copyText(text);
-      });
-      return fragment;
-    }
+    const copyButton = fragment.createChild('span', 'console-inline-button');
+    copyButton.setAttribute('data-text', ls`Copy`);
+    copyButton.addEventListener('click', () => {
+      InspectorFrontendHost.copyText(text);
+    });
+    return fragment;
   }
 
   /**

@@ -120,6 +120,7 @@ SDK.DOMNode = class {
       const childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
       if (childModel)
         childModel.requestDocument();
+      this._children = [];
     }
 
     if (payload.importedDocument) {
@@ -1192,6 +1193,7 @@ SDK.DOMModel = class extends SDK.SDKModel {
     if (this._frameOwnerNode) {
       const oldDocument = this._frameOwnerNode._contentDocument;
       this._frameOwnerNode._contentDocument = this._document;
+      this._frameOwnerNode._children = [];
       if (this._document) {
         this._document.parentNode = this._frameOwnerNode;
         this.dispatchEventToListeners(SDK.DOMModel.Events.NodeInserted, this._document);

@@ -212,7 +212,8 @@ InspectorMain.BackendSettingsSync = class {
    * @param {!SDK.Target} target
    */
   _updateTarget(target) {
-    target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
+    if (!target.parentTarget())
+      target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
   }
 
   _updateAutoAttach() {

@@ -91,7 +91,7 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
         node.children.set(name, child);
         return child;
       }, head);
-      node.selfSize += sample.count * sample.size;
+      node.selfSize += sample.total;
     }
 
     function convertChildren(node) {

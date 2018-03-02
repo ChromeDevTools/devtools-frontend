@@ -317,15 +317,6 @@ Sources.FileBasedSearchResult = class {
   /**
    * @override
    * @param {number} index
-   * @return {number}
-   */
-  matchLineNumber(index) {
-    return this._searchMatches[index].lineNumber;
-  }
-
-  /**
-   * @override
-   * @param {number} index
    * @return {string}
    */
   matchLineContent(index) {
@@ -340,5 +331,14 @@ Sources.FileBasedSearchResult = class {
   matchRevealable(index) {
     const match = this._searchMatches[index];
     return this._uiSourceCode.uiLocation(match.lineNumber, match.columnNumber);
+  }
+
+  /**
+   * @override
+   * @param {number} index
+   * @return {?}
+   */
+  matchLabel(index) {
+    return this._searchMatches[index].lineNumber + 1;
   }
 };

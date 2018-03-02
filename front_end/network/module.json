@@ -26,6 +26,13 @@
             "className": "Network.NetworkPanel.RequestRevealer"
         },
         {
+            "type": "@Common.Revealer",
+            "contextTypes": [
+                "Network.UIRequestLocation"
+            ],
+            "className": "Network.NetworkPanel.RequestLocationRevealer"
+        },
+        {
             "type": "setting",
             "category": "Network",
             "title": "Color-code resource types",
@@ -112,9 +119,18 @@
             "order": 40,
             "className": "Network.NetworkConfigView",
             "tags": "disk cache, network throttling, useragent, user agent"
+        },
+        {
+            "type": "@Search.SearchScope",
+            "experiment": "networkSearch",
+            "id": "network.searchInNetwork",
+            "className": "Network.NetworkSearchScope",
+            "title": "Search network"
         }
+
     ],
     "dependencies": [
+        "search",
         "source_frame",
         "components",
         "perf_ui",
@@ -139,6 +155,7 @@
         "NetworkFrameGrouper.js",
         "NetworkManageCustomHeadersView.js",
         "NetworkOverview.js",
+        "NetworkSearchScope.js",
         "NetworkWaterfallColumn.js",
         "RequestCookiesView.js",
         "RequestHeadersView.js",

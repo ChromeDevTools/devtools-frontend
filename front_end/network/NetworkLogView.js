@@ -1597,15 +1597,33 @@ Network.NetworkLogView = class extends UI.VBox {
 
   /**
    * @param {!SDK.NetworkRequest} request
+   * @return {?Network.NetworkRequestNode}
+   */
+  _reveal(request) {
+    this.removeAllNodeHighlights();
+    const node = request[Network.NetworkLogView._networkNodeSymbol];
+    if (!node || !node.dataGrid)
+      return null;
+    node.reveal();
+    return node;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
    */
   revealAndHighlightRequest(request) {
-    this.removeAllNodeHighlights();
-
-    const node = request[Network.NetworkLogView._networkNodeSymbol];
-    if (node && node.attached()) {
-      node.reveal();
+    const node = this._reveal(request);
+    if (node)
       this._highlightNode(node);
-    }
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  selectRequest(request) {
+    const node = this._reveal(request);
+    if (node)
+      node.select();
   }
 
   removeAllNodeHighlights() {

@@ -394,6 +394,16 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   /**
+   * @param {!SDK.NetworkRequest} request
+   * @return {!Promise<?Network.NetworkItemView>}
+   */
+  async selectRequest(request) {
+    await UI.viewManager.showView('network');
+    this._networkLogView.selectRequest(request);
+    return this._networkItemView;
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _onRowSizeChanged(event) {
@@ -731,5 +741,28 @@ Network.NetworkPanel.RecordActionDelegate = class {
     console.assert(panel && panel instanceof Network.NetworkPanel);
     panel._toggleRecording();
     return true;
+  }
+};
+
+/**
+ * @implements {Common.Revealer}
+ */
+Network.NetworkPanel.RequestLocationRevealer = class {
+  /**
+   * @override
+   * @param {!Object} match
+   * @return {!Promise}
+   */
+  async reveal(match) {
+    const location = /** @type {!Network.UIRequestLocation} */ (match);
+    const view = await Network.NetworkPanel._instance().selectRequest(location.request);
+    if (!view)
+      return;
+    if (location.searchMatch)
+      await view.revealResponseBody(location.searchMatch.lineNumber);
+    if (location.requestHeader)
+      view.revealRequestHeader(location.requestHeader.name);
+    if (location.responseHeader)
+      view.revealResponseHeader(location.responseHeader.name);
   }
 };

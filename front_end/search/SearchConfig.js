@@ -214,9 +214,9 @@ Search.SearchResult.prototype = {
 
   /**
    * @param {number} index
-   * @return {number}
+   * @return {?}
    */
-  matchLineNumber(index) {},
+  matchLabel(index) {},
 
   /**
    * @param {number} index

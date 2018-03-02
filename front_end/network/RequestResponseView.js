@@ -90,25 +90,30 @@ Network.RequestResponseView = class extends UI.VBox {
    * @final
    */
   wasShown() {
-    this.showPreview();
+    this._doShowPreview();
+  }
+
+  /**
+   * @return {!Promise<!UI.Widget>}
+   */
+  _doShowPreview() {
+    if (!this._contentViewPromise)
+      this._contentViewPromise = this.showPreview();
+    return this._contentViewPromise;
   }
 
   /**
    * @protected
-   * @return {!Promise<?UI.Widget>}
+   * @return {!Promise<!UI.Widget>}
    */
   async showPreview() {
-    if (!this._contentViewPromise)
-      this._contentViewPromise = this.createPreview();
-    const responseView = await this._contentViewPromise;
-    if (this.element.contains(responseView.element))
-      return null;
-
+    const responseView = await this.createPreview();
     responseView.show(this.element);
     return responseView;
   }
 
   /**
+   * @protected
    * @return {!Promise<!UI.Widget>}
    */
   async createPreview() {
@@ -119,6 +124,15 @@ Network.RequestResponseView = class extends UI.VBox {
     if (contentData.content && sourceView)
       return sourceView;
     return new UI.EmptyWidget(Common.UIString('Failed to load response data'));
+  }
+
+  /**
+   * @param {number} line
+   */
+  async revealLine(line) {
+    const view = await this._doShowPreview();
+    if (view instanceof SourceFrame.ResourceSourceFrame.SearchableContainer)
+      view.revealPosition(line);
   }
 };
 

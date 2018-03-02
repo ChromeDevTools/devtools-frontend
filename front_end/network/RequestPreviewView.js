@@ -39,7 +39,7 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
   /**
    * @override
    * @protected
-   * @return {!Promise<?UI.Widget>}
+   * @return {!Promise<!UI.Widget>}
    */
   async showPreview() {
     const view = await super.showPreview();
@@ -75,6 +75,7 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
 
   /**
    * @override
+   * @protected
    * @return {!Promise<!UI.Widget>}
    */
   async createPreview() {

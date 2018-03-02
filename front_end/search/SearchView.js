@@ -84,12 +84,14 @@ Search.SearchView = class extends UI.VBox {
   /**
    * @param {?string} searchScopeType
    * @param {string} query
+   * @return {!Promise<!Search.SearchView>}
    */
-  static openSearch(searchScopeType, query) {
-    UI.viewManager.showView('search.search');
+  static async openSearch(searchScopeType, query) {
+    await UI.viewManager.showView('search.search');
     const searchView =
         /** @type {!Search.SearchView} */ (self.runtime.sharedInstance(Search.SearchView));
     searchView._toggle(searchScopeType, query);
+    return searchView;
   }
 
   /**
@@ -428,6 +430,6 @@ Search.SearchView.ActionDelegate = class {
     let queryCandidate = '';
     if (selection.rangeCount)
       queryCandidate = selection.toString().replace(/\r?\n.*/, '');
-    Search.SearchView.openSearch(null, queryCandidate);
+    return Search.SearchView.openSearch(null, queryCandidate);
   }
 };

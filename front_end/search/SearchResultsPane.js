@@ -121,18 +121,15 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       regexes.push(createSearchRegex(queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
 
     for (let i = fromIndex; i < toIndex; ++i) {
-      const lineNumber = searchResult.matchLineNumber(i);
       const lineContent = searchResult.matchLineContent(i);
       let matchRanges = [];
       for (let j = 0; j < regexes.length; ++j)
         matchRanges = matchRanges.concat(this._regexMatchRanges(lineContent, regexes[j]));
 
       const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
-
-      const numberString = numberToStringWithSpacesPadding(lineNumber + 1, 4);
       const lineNumberSpan = createElement('span');
       lineNumberSpan.classList.add('search-match-line-number');
-      lineNumberSpan.textContent = numberString;
+      lineNumberSpan.textContent = this._labelString(searchResult, i);
       anchor.appendChild(lineNumberSpan);
 
       const contentSpan = this._createContentSpan(lineContent, matchRanges);
@@ -144,6 +141,20 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       searchMatchElement.listItemElement.className = 'search-match source-code';
       searchMatchElement.listItemElement.appendChild(anchor);
     }
+  }
+
+  /**
+   * @param {!Search.SearchResult} searchResult
+   * @param {number} index
+   * @return {string}
+   */
+  _labelString(searchResult, index) {
+    const MIN_WIDTH = 4;
+    let label = searchResult.matchLabel(index);
+    if (label === null)
+      return spacesPadding(MIN_WIDTH);
+    label = label.toString();
+    return label.length < MIN_WIDTH ? spacesPadding(MIN_WIDTH - label.length) + label : label;
   }
 
   /**

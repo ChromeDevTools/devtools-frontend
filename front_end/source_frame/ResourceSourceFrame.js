@@ -48,7 +48,7 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
    * @return {!UI.Widget}
    */
   static createSearchableView(resource, highlighterType, autoPrettyPrint) {
-    return new SourceFrame.ResourceSourceFrame._SearchableContainer(resource, highlighterType, autoPrettyPrint);
+    return new SourceFrame.ResourceSourceFrame.SearchableContainer(resource, highlighterType, autoPrettyPrint);
   }
 
   get resource() {
@@ -68,7 +68,7 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   }
 };
 
-SourceFrame.ResourceSourceFrame._SearchableContainer = class extends UI.VBox {
+SourceFrame.ResourceSourceFrame.SearchableContainer = class extends UI.VBox {
   /**
    * @param {!Common.ContentProvider} resource
    * @param {string} highlighterType
@@ -79,6 +79,7 @@ SourceFrame.ResourceSourceFrame._SearchableContainer = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('source_frame/resourceSourceFrame.css');
     const sourceFrame = new SourceFrame.ResourceSourceFrame(resource, autoPrettyPrint);
+    this._sourceFrame = sourceFrame;
     sourceFrame.setHighlighterType(highlighterType);
     const searchableView = new UI.SearchableView(sourceFrame);
     searchableView.element.classList.add('searchable-view');
@@ -90,5 +91,13 @@ SourceFrame.ResourceSourceFrame._SearchableContainer = class extends UI.VBox {
     const toolbar = new UI.Toolbar('toolbar', this.contentElement);
     for (const item of sourceFrame.syncToolbarItems())
       toolbar.appendToolbarItem(item);
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number=} columnNumber
+   */
+  async revealPosition(lineNumber, columnNumber) {
+    this._sourceFrame.revealPosition(lineNumber, columnNumber, true);
   }
 };

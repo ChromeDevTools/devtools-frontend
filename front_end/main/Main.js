@@ -112,6 +112,7 @@ Main.Main = class {
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
+    Runtime.experiments.register('networkSearch', 'Network search', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register(
         'stepIntoAsync', 'Introduce separate step action, stepInto becomes powerful enough to go inside async call');
@@ -136,6 +137,8 @@ Main.Main = class {
       // Enable experiments for testing.
       if (testPath.indexOf('oopif/') !== -1)
         Runtime.experiments.enableForTest('oopifInlineDOM');
+      if (testPath.indexOf('network/') !== -1)
+        Runtime.experiments.enableForTest('networkSearch');
     }
 
     Runtime.experiments.setDefaultExperiments(

@@ -28,9 +28,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 Network.RequestHeadersView = class extends UI.VBox {
   /**
    * @param {!SDK.NetworkRequest} request
@@ -44,6 +41,9 @@ Network.RequestHeadersView = class extends UI.VBox {
     this._decodeRequestParameters = true;
     this._showRequestHeadersText = false;
     this._showResponseHeadersText = false;
+
+    /** @type {?UI.TreeElement} */
+    this._highlightedElement = null;
 
     const root = new UI.TreeOutlineInShadow();
     root.registerRequiredCSS('network/requestHeadersTree.css');
@@ -75,6 +75,7 @@ Network.RequestHeadersView = class extends UI.VBox {
    * @override
    */
   wasShown() {
+    this._clearHighlight();
     this._request.addEventListener(SDK.NetworkRequest.Events.RemoteAddressChanged, this._refreshRemoteAddress, this);
     this._request.addEventListener(SDK.NetworkRequest.Events.RequestHeadersChanged, this._refreshRequestHeaders, this);
     this._request.addEventListener(
@@ -448,6 +449,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       const headerTreeElement = new UI.TreeElement(this._formatHeader(headers[i].name, headers[i].value));
       headerTreeElement.selectable = false;
       headersTreeElement.appendChild(headerTreeElement);
+      headerTreeElement[Network.RequestHeadersView._headerNameSymbol] = headers[i].name;
     }
   }
 
@@ -514,8 +516,46 @@ Network.RequestHeadersView = class extends UI.VBox {
     const toggleTitle = isHeadersTextShown ? Common.UIString('view parsed') : Common.UIString('view source');
     return this._createToggleButton(toggleTitle);
   }
+
+  _clearHighlight() {
+    if (this._highlightedElement)
+      this._highlightedElement.listItemElement.classList.remove('header-highlight');
+    this._highlightedElement = null;
+  }
+
+
+  /**
+   * @param {?UI.TreeElement} category
+   * @param {string} name
+   */
+  _revealAndHighlight(category, name) {
+    this._clearHighlight();
+    for (const element of category.children()) {
+      if (element[Network.RequestHeadersView._headerNameSymbol] !== name)
+        continue;
+      this._highlightedElement = element;
+      element.reveal();
+      element.listItemElement.classList.add('header-highlight');
+      return;
+    }
+  }
+
+  /**
+   * @param {string} header
+   */
+  revealRequestHeader(header) {
+    this._revealAndHighlight(this._requestHeadersCategory, header);
+  }
+
+  /**
+   * @param {string} header
+   */
+  revealResponseHeader(header) {
+    this._revealAndHighlight(this._responseHeadersCategory, header);
+  }
 };
 
+Network.RequestHeadersView._headerNameSymbol = Symbol('HeaderName');
 Network.RequestHeadersView._viewSourceSymbol = Symbol('ViewSource');
 
 /**

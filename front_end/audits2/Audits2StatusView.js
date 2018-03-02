@@ -70,11 +70,30 @@ Audits2.Audits2StatusView = class {
       clearTimeout(this._scheduledFastFactTimeout);
     } else if (nextPhase && (!this._currentPhase || this._currentPhase.order < nextPhase.order)) {
       this._currentPhase = nextPhase;
-      this._scheduleTextChange(Common.UIString(nextPhase.message));
+      this._scheduleTextChange(this._getMessageForPhase(nextPhase));
       this._scheduleFastFactCheck();
       this._resetProgressBarClasses();
       this._progressBar.classList.add(nextPhase.progressBarClass);
     }
+  }
+
+  /**
+   * @param {!Audits2.Audits2StatusView.StatusPhases} phase
+   * @return {string}
+   */
+  _getMessageForPhase(phase) {
+    if (phase.message)
+      return Common.UIString(phase.message);
+
+    const deviceType =
+        Audits2.Audits2Panel.RuntimeSettings.find(item => item.setting.name === 'audits2.device_type').setting.get();
+    const throttling =
+        Audits2.Audits2Panel.RuntimeSettings.find(item => item.setting.name === 'audits2.throttling').setting.get();
+    const match = Audits2.Audits2StatusView.LoadingMessages.find(item => {
+      return item.deviceType === deviceType && item.throttling === throttling;
+    });
+
+    return match ? ls`${match.message}` : ls`Lighthouse is loading your page`;
   }
 
   /**
@@ -203,23 +222,49 @@ Audits2.Audits2StatusView.KnownBugPatterns = [
 /** @typedef {{message: string, progressBarClass: string, order: number}} */
 Audits2.Audits2StatusView.StatusPhases = [
   {
+    id: 'loading',
     progressBarClass: 'loading',
-    message: 'Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.',
     statusMessagePrefix: 'Loading page',
     order: 10,
   },
   {
+    id: 'gathering',
     progressBarClass: 'gathering',
     message: 'Lighthouse is gathering information about the page to compute your score.',
     statusMessagePrefix: 'Retrieving',
     order: 20,
   },
   {
+    id: 'auditing',
     progressBarClass: 'auditing',
     message: 'Almost there! Lighthouse is now generating your own special pretty report!',
     statusMessagePrefix: 'Evaluating',
     order: 30,
   }
+];
+
+/** @typedef {{message: string, deviceType: string, throttling: string}} */
+Audits2.Audits2StatusView.LoadingMessages = [
+  {
+    deviceType: 'mobile',
+    throttling: 'on',
+    message: 'Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.',
+  },
+  {
+    deviceType: 'desktop',
+    throttling: 'on',
+    message: 'Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G.',
+  },
+  {
+    deviceType: 'mobile',
+    throttling: 'off',
+    message: 'Lighthouse is loading your page with mobile emulation.',
+  },
+  {
+    deviceType: 'desktop',
+    throttling: 'off',
+    message: 'Lighthouse is loading your page.',
+  },
 ];
 
 Audits2.Audits2StatusView.FastFacts = [

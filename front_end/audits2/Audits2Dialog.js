@@ -153,18 +153,38 @@ Audits2.Audits2Dialog = class {
         });
   }
 
+  /**
+   * @return {!Object}
+   */
+  _getFlags() {
+    const flags = {};
+    for (const runtimeSetting of Audits2.Audits2Panel.RuntimeSettings)
+      runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
+    return flags;
+  }
+
   async _start() {
+    const flags = this._getFlags();
+
     const emulationModel = self.singleton(Emulation.DeviceModeModel);
     this._emulationEnabledBefore = emulationModel.enabledSetting().get();
     this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
-    emulationModel.enabledSetting().set(true);
-    emulationModel.deviceOutlineSetting().set(true);
     emulationModel.toolbarControlsEnabledSetting().set(false);
 
-    for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
-      if (device.title === 'Nexus 5X')
-        emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+    if (flags.disableDeviceEmulation) {
+      emulationModel.enabledSetting().set(false);
+      emulationModel.deviceOutlineSetting().set(false);
+      emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);
+    } else {
+      emulationModel.enabledSetting().set(true);
+      emulationModel.deviceOutlineSetting().set(true);
+
+      for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
+        if (device.title === 'Nexus 5X')
+          emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+      }
     }
+
     this._dialog.setCloseOnEscape(false);
 
     const categoryIDs = [];
@@ -182,7 +202,7 @@ Audits2.Audits2Dialog = class {
       this._updateButton(this._auditURL);
       this._updateStatus(Common.UIString('Loading\u2026'));
 
-      const lighthouseResult = await this._protocolService.startLighthouse(this._auditURL, categoryIDs);
+      const lighthouseResult = await this._protocolService.startLighthouse(this._auditURL, categoryIDs, flags);
       if (lighthouseResult && lighthouseResult.fatal) {
         const error = new Error(lighthouseResult.message);
         error.stack = lighthouseResult.stack;

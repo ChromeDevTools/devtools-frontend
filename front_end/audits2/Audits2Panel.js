@@ -175,6 +175,16 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     toolbar.appendToolbarItem(this._clearButton);
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
+
+    toolbar.appendSeparator();
+
+    toolbar.appendText(ls`Emulation: `);
+    for (const runtimeSetting of Audits2.Audits2Panel.RuntimeSettings) {
+      const control = new UI.ToolbarSettingComboBox(runtimeSetting.options, runtimeSetting.setting);
+      control.element.title = runtimeSetting.description;
+      toolbar.appendToolbarItem(control);
+    }
+
     this._refreshToolbarUI();
   }
 
@@ -331,12 +341,53 @@ Audits2.Audits2Panel.Presets = [
   },
 ];
 
+/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: !Array}} */
+Audits2.Audits2Panel.RuntimeSetting;
+
+/** @type {!Array.<!Audits2.Audits2Panel.RuntimeSetting>} */
+Audits2.Audits2Panel.RuntimeSettings = [
+  {
+    setting: Common.settings.createSetting('audits2.device_type', 'mobile'),
+    description: Common.UIString('Apply mobile emulation during auditing'),
+    setFlags: (flags, value) => {
+      flags.disableDeviceEmulation = value === 'desktop';
+    },
+    options: [
+      {label: Common.UIString('Mobile'), value: 'mobile'},
+      {label: Common.UIString('Desktop'), value: 'desktop'},
+    ],
+  },
+  {
+    setting: Common.settings.createSetting('audits2.throttling', 'default'),
+    description: Common.UIString('Apply network and CPU throttling during performance auditing'),
+    setFlags: (flags, value) => {
+      flags.disableNetworkThrottling = value === 'off';
+      flags.disableCpuThrottling = value === 'off';
+    },
+    options: [
+      {label: Common.UIString('3G w/ CPU slowdown'), value: 'default'},
+      {label: Common.UIString('No throttling'), value: 'off'},
+    ],
+  },
+  {
+    setting: Common.settings.createSetting('audits2.storage_reset', 'on'),
+    description: Common.UIString('Reset storage (localStorage, IndexedDB, etc) to a clean baseline before auditing'),
+    setFlags: (flags, value) => {
+      flags.disableStorageReset = value === 'off';
+    },
+    options: [
+      {label: Common.UIString('Clear storage'), value: 'on'},
+      {label: Common.UIString('Preserve storage'), value: 'off'},
+    ],
+  },
+];
+
 Audits2.ReportSelector = class {
   constructor() {
     this._emptyItem = null;
     this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits2-report');
-    this._comboBox.setMaxWidth(270);
-    this._comboBox.setMinWidth(200);
+    this._comboBox.setMaxWidth(180);
+    this._comboBox.setMinWidth(140);
     this._itemByOptionElement = new Map();
     this._setPlaceholderState();
   }
@@ -438,7 +489,7 @@ Audits2.ReportSelector.Item = class {
     const url = new Common.ParsedURL(lighthouseResult.url);
     const timestamp = lighthouseResult.generatedTime;
     this._element = createElement('option');
-    this._element.label = `${url.domain()} ${new Date(timestamp).toLocaleString()}`;
+    this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
 
   select() {

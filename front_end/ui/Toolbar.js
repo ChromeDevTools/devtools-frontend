@@ -386,12 +386,13 @@ UI.ToolbarItem = class extends Common.Object {
   }
 
   /**
-   * @param {!Element|string} title
+   * @param {string} title
    */
   setTitle(title) {
     if (this._title === title)
       return;
     this._title = title;
+    UI.ARIAUtils.setAccessibleName(this.element, title);
     UI.Tooltip.install(this.element, title);
   }
 

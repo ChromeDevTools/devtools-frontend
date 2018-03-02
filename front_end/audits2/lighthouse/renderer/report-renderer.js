@@ -230,6 +230,7 @@ ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
  *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,
  *     runtimeConfig: {
  *       blockedUrlPatterns: !Array<string>,
+ *       extraHeaders: !Object,
  *       environment: !Array<{description: string, enabled: boolean, name: string}>
  *     }
  * }}

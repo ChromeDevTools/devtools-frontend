@@ -1,4 +1,4 @@
-// lighthouse, browserified. 2.8.0 (db22c38285b4ebca65633ecaa4b3430c4e35e696)
+// lighthouse, browserified. 2.9.1 (f9171e0133fa0bffd8cd419ac3ec91861d5d5713)
 require=function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f;}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e);},l,l.exports,e,t,n,r);}return n[o].exports;}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s;}({"../audits/accessibility/accesskeys":[function(require,module,exports){
 
 
@@ -818,7 +818,7 @@ static get meta(){
 return{
 name:'link-name',
 description:'Links have a discernible name',
-failureDescription:'Links do not have a discernable name',
+failureDescription:'Links do not have a discernible name',
 helpText:'Link text (and alternate text for images, when used as links) that is '+
 'discernible, unique, and focusable improves the navigation experience for '+
 'screen reader users. '+
@@ -1634,7 +1634,7 @@ value:extendedInfo}};
 
 module.exports=BootupTime;
 
-},{"../lib/task-groups":33,"../lib/web-inspector":39,"../report/v2/renderer/util":40,"./audit":2}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"../lib/task-groups":36,"../lib/web-inspector":42,"../report/v2/renderer/util":43,"./audit":2}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 
 
 
@@ -1665,7 +1665,7 @@ return{
 name:'offscreen-images',
 description:'Offscreen images',
 informative:true,
-helpText:'Consider lazy-loading offscreen images to improve page load speed '+
+helpText:'Consider lazy-loading offscreen and hidden images to improve page load speed '+
 'and time to interactive. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images).',
 requiredArtifacts:['ImageUsage','ViewportDimensions','traces','devtoolsLogs']};
@@ -1779,7 +1779,7 @@ headings};
 
 module.exports=OffscreenImages;
 
-},{"../../lib/sentry":31,"../../lib/url-shim":38,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
+},{"../../lib/sentry":33,"../../lib/url-shim":41,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 
 
 
@@ -2068,7 +2068,7 @@ return{
 name:'unminified-javascript',
 description:'Minify JavaScript',
 informative:true,
-helpText:'Minifying JavaScript files can reduce payload sizes and script parse time.'+
+helpText:'Minifying JavaScript files can reduce payload sizes and script parse time. '+
 '[Learn more](https://developers.google.com/speed/docs/insights/MinifyResources).',
 requiredArtifacts:['Scripts','devtoolsLogs']};
 
@@ -2082,7 +2082,11 @@ static computeWaste(scriptContent,networkRecord){
 const contentLength=scriptContent.length;
 let totalTokenLength=0;
 
-const tokens=esprima.tokenize(scriptContent);
+const tokens=esprima.tokenize(scriptContent,{tolerant:true});
+if(!tokens.length&&tokens.errors&&tokens.errors.length){
+throw tokens.errors[0];
+}
+
 for(const token of tokens){
 totalTokenLength+=token.value.length;
 }
@@ -2106,22 +2110,27 @@ wastedPercent:100*wastedRatio};
 
 static audit_(artifacts,networkRecords){
 const results=[];
+let debugString;
 for(const requestId of Object.keys(artifacts.Scripts)){
 const scriptContent=artifacts.Scripts[requestId];
 const networkRecord=networkRecords.find(record=>record.requestId===requestId);
 if(!networkRecord||!scriptContent)continue;
 
+try{
 const result=UnminifiedJavaScript.computeWaste(scriptContent,networkRecord);
-
 
 
 if(result.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT||
 result.wastedBytes<IGNORE_THRESHOLD_IN_BYTES)continue;
 results.push(result);
+}catch(err){
+debugString=`Unable to process ${networkRecord._url}: ${err.message}`;
+}
 }
 
 return{
 results,
+debugString,
 headings:[
 {key:'url',itemType:'url',text:'URL'},
 {key:'totalKb',itemType:'text',text:'Original'},
@@ -2133,7 +2142,7 @@ headings:[
 
 module.exports=UnminifiedJavaScript;
 
-},{"./byte-efficiency-audit":3,"esprima":129}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
+},{"./byte-efficiency-audit":3,"esprima":130}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
 
 
 
@@ -2688,7 +2697,7 @@ details:tableDetails};
 
 module.exports=CacheHeaders;
 
-},{"../../lib/url-shim":38,"../../lib/web-inspector":39,"../../report/v2/renderer/util.js":40,"./byte-efficiency-audit":3,"assert":44,"parse-cache-control":137}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../../lib/web-inspector":42,"../../report/v2/renderer/util.js":43,"./byte-efficiency-audit":3,"assert":47,"parse-cache-control":141}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 
 
 
@@ -2785,7 +2794,7 @@ headings};
 
 module.exports=UsesOptimizedImages;
 
-},{"../../lib/url-shim":38,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-request-compression":[function(require,module,exports){
+},{"../../lib/url-shim":41,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-request-compression":[function(require,module,exports){
 
 
 
@@ -2872,7 +2881,7 @@ headings};
 
 module.exports=ResponsesAreCompressed;
 
-},{"../../lib/url-shim":38,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
+},{"../../lib/url-shim":41,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
 
 
 
@@ -2925,6 +2934,12 @@ const wastedRatio=1-usedPixels/actualPixels;
 const totalBytes=image.networkRecord.resourceSize;
 const wastedBytes=Math.round(totalBytes*wastedRatio);
 
+
+
+if(!usedPixels){
+return null;
+}
+
 if(!Number.isFinite(wastedRatio)){
 return new Error(`Invalid image sizing information ${url}`);
 }
@@ -2960,6 +2975,8 @@ return;
 }
 
 const processed=UsesResponsiveImages.computeWaste(image,DPR);
+if(!processed)return;
+
 if(processed instanceof Error){
 debugString=processed.message;
 Sentry.captureException(processed,{tags:{audit:this.meta.name},level:'warning'});
@@ -2993,7 +3010,7 @@ headings};
 
 module.exports=UsesResponsiveImages;
 
-},{"../../lib/sentry":31,"../../lib/url-shim":38,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
+},{"../../lib/sentry":33,"../../lib/url-shim":41,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
 
 
 
@@ -3079,7 +3096,7 @@ headings};
 
 module.exports=UsesWebPImages;
 
-},{"../../lib/url-shim":38,"./byte-efficiency-audit":3,"./uses-optimized-images":"../audits/byte-efficiency/uses-optimized-images"}],"../audits/cache-start-url":[function(require,module,exports){
+},{"../../lib/url-shim":41,"./byte-efficiency-audit":3,"./uses-optimized-images":"../audits/byte-efficiency/uses-optimized-images"}],"../audits/cache-start-url":[function(require,module,exports){
 
 
 
@@ -3156,9 +3173,10 @@ module.exports=CacheStartUrl;
 'use strict';
 
 const Audit=require('./audit');
-const Util=require('../report/v2/renderer/util.js');
+const Util=require('../report/v2/renderer/util');
 const NetworkRecorder=require('../lib/network-recorder');
 const TracingProcessor=require('../lib/traces/tracing-processor');
+const LHError=require('../lib/errors');
 
 
 
@@ -3295,10 +3313,11 @@ cpuCandidate=cpuQueue.shift();
 }
 }
 
-const culprit=cpuCandidate?'Network':'Main thread';
-throw new Error(`${culprit} activity continued through the end of the trace recording. `+
-'Consistently Interactive requires a minimum of 5 seconds of both main thread idle and '+
-'network idle.');
+throw new LHError(
+cpuCandidate?
+LHError.errors.NO_TTI_NETWORK_IDLE_PERIOD:
+LHError.errors.NO_TTI_CPU_IDLE_PERIOD);
+
 }
 
 
@@ -3316,11 +3335,11 @@ artifacts.requestTraceOfTab(trace)];
 return Promise.all(computedArtifacts).
 then(([networkRecords,traceOfTab])=>{
 if(!traceOfTab.timestamps.firstMeaningfulPaint){
-throw new Error('No firstMeaningfulPaint found in trace.');
+throw new LHError(LHError.errors.NO_FMP);
 }
 
 if(!traceOfTab.timestamps.domContentLoaded){
-throw new Error('No domContentLoaded found in trace.');
+throw new LHError(LHError.errors.NO_DCL);
 }
 
 const longTasks=TracingProcessor.getMainThreadTopLevelEvents(traceOfTab).
@@ -3363,7 +3382,7 @@ module.exports=ConsistentlyInteractiveMetric;
 
 let TimePeriod;
 
-},{"../lib/network-recorder":30,"../lib/traces/tracing-processor":37,"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/content-width":[function(require,module,exports){
+},{"../lib/errors":28,"../lib/network-recorder":32,"../lib/traces/tracing-processor":40,"../report/v2/renderer/util":43,"./audit":2}],"../audits/content-width":[function(require,module,exports){
 
 
 
@@ -3500,6 +3519,42 @@ return longest;
 
 
 
+static flattenRequests(tree){
+const flattendChains={};
+const chainMap=new Map();
+CriticalRequestChains._traverse(tree,opts=>{
+let chain;
+if(chainMap.has(opts.id)){
+chain=chainMap.get(opts.id);
+}else{
+chain={};
+flattendChains[opts.id]=chain;
+}
+
+const request=opts.node.request;
+chain.request={
+url:request.url,
+startTime:request.startTime,
+endTime:request.endTime,
+responseReceivedTime:request.responseReceivedTime,
+transferSize:request.transferSize};
+
+chain.children={};
+Object.keys(opts.node.children).forEach(chainId=>{
+const childChain={};
+chainMap.set(chainId,childChain);
+chain.children[chainId]=childChain;
+});
+
+chainMap.set(opts.id,chain);
+});
+
+return flattendChains;
+}
+
+
+
+
 
 
 static audit(artifacts){
@@ -3521,28 +3576,30 @@ walk(child.children,depth+1);
 },'');
 }
 
+const flattenedChains=CriticalRequestChains.flattenRequests(chains);
 
-const initialNavKey=Object.keys(chains)[0];
-const initialNavChildren=initialNavKey&&chains[initialNavKey].children;
+
+const initialNavKey=Object.keys(flattenedChains)[0];
+const initialNavChildren=initialNavKey&&flattenedChains[initialNavKey].children;
 if(initialNavChildren&&Object.keys(initialNavChildren).length>0){
 walk(initialNavChildren,0);
 }
 
-const longestChain=CriticalRequestChains._getLongestChain(chains);
+const longestChain=CriticalRequestChains._getLongestChain(flattenedChains);
 
 return{
 rawValue:chainCount===0,
 displayValue:Util.formatNumber(chainCount),
 extendedInfo:{
 value:{
-chains,
+chains:flattenedChains,
 longestChain}},
 
 
 details:{
 type:'criticalrequestchain',
 header:{type:'text',text:'View critical network waterfall:'},
-chains,
+chains:flattenedChains,
 longestChain}};
 
 
@@ -3552,7 +3609,7 @@ longestChain}};
 
 module.exports=CriticalRequestChains;
 
-},{"../report/v2/renderer/util":40,"./audit":2}],"../audits/deprecations":[function(require,module,exports){
+},{"../report/v2/renderer/util":43,"./audit":2}],"../audits/deprecations":[function(require,module,exports){
 
 
 
@@ -3628,7 +3685,7 @@ details};
 
 module.exports=Deprecations;
 
-},{"../report/v2/renderer/util":40,"./audit":2}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
+},{"../report/v2/renderer/util":43,"./audit":2}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
 
 
 
@@ -3789,7 +3846,7 @@ items:cards}};
 
 module.exports=DOMSize;
 
-},{"../../report/v2/renderer/util.js":40,"../audit":2}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
+},{"../../report/v2/renderer/util.js":43,"../audit":2}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
 
 
 
@@ -3874,7 +3931,7 @@ debugString};
 
 module.exports=ExternalAnchorsUseRelNoopenerAudit;
 
-},{"../../lib/url-shim":38,"../audit":2}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../audit":2}],"../audits/dobetterweb/geolocation-on-start":[function(require,module,exports){
 
 
 
@@ -4050,7 +4107,7 @@ return this.computeAuditResultForTags(artifacts,'LINK',fcpTsInMs,LOAD_THRESHOLD_
 
 module.exports=LinkBlockingFirstPaintAudit;
 
-},{"../../report/v2/renderer/util.js":40,"../audit":2,"../byte-efficiency/byte-efficiency-audit":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
+},{"../../report/v2/renderer/util.js":43,"../audit":2,"../byte-efficiency/byte-efficiency-audit":3}],"../audits/dobetterweb/no-document-write":[function(require,module,exports){
 
 
 
@@ -4199,7 +4256,7 @@ debugString};
 
 module.exports=NoMutationEventsAudit;
 
-},{"../../lib/event-helpers":27,"../../lib/url-shim":38,"../audit":2}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
+},{"../../lib/event-helpers":29,"../../lib/url-shim":41,"../audit":2}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
 
 
 
@@ -4378,7 +4435,7 @@ details};
 
 module.exports=NoVulnerableLibrariesAudit;
 
-},{"../../../third-party/snyk/snapshot.json":143,"../../lib/sentry":31,"../audit":2,"semver":138}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":147,"../../lib/sentry":33,"../audit":2,"semver":142}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
 
 
 
@@ -4671,7 +4728,7 @@ details};
 
 module.exports=UsesHTTP2Audit;
 
-},{"../../lib/url-shim":38,"../../report/v2/renderer/util.js":40,"../audit":2}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../../report/v2/renderer/util.js":43,"../audit":2}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
 
 
 
@@ -4817,8 +4874,9 @@ module.exports=ErrorLogs;
 'use strict';
 
 const Audit=require('./audit');
-const Util=require('../report/v2/renderer/util.js');
+const Util=require('../report/v2/renderer/util');
 const TracingProcessor=require('../lib/traces/tracing-processor');
+const LHError=require('../lib/errors');
 
 
 
@@ -4846,7 +4904,7 @@ requiredArtifacts:['traces']};
 static calculate(tabTrace){
 const startTime=tabTrace.timings.firstMeaningfulPaint;
 if(!startTime){
-throw new Error('No firstMeaningfulPaint event found in trace');
+throw new LHError(LHError.errors.NO_FMP);
 }
 
 const latencyPercentiles=TracingProcessor.getRiskToResponsiveness(tabTrace,startTime);
@@ -4891,7 +4949,7 @@ then(EstimatedInputLatency.calculate);
 
 module.exports=EstimatedInputLatency;
 
-},{"../lib/traces/tracing-processor":37,"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/first-interactive":[function(require,module,exports){
+},{"../lib/errors":28,"../lib/traces/tracing-processor":40,"../report/v2/renderer/util":43,"./audit":2}],"../audits/first-interactive":[function(require,module,exports){
 
 
 
@@ -4952,7 +5010,7 @@ value:firstInteractive}};
 
 module.exports=FirstInteractiveMetric;
 
-},{"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/first-meaningful-paint":[function(require,module,exports){
+},{"../report/v2/renderer/util.js":43,"./audit":2}],"../audits/first-meaningful-paint":[function(require,module,exports){
 
 
 
@@ -4961,7 +5019,8 @@ module.exports=FirstInteractiveMetric;
 'use strict';
 
 const Audit=require('./audit');
-const Util=require('../report/v2/renderer/util.js');
+const Util=require('../report/v2/renderer/util');
+const LHError=require('../lib/errors');
 
 
 
@@ -4995,13 +5054,13 @@ static audit(artifacts){
 const trace=artifacts.traces[this.DEFAULT_PASS];
 return artifacts.requestTraceOfTab(trace).then(tabTrace=>{
 if(!tabTrace.firstMeaningfulPaintEvt){
-throw new Error('No usable `firstMeaningfulPaint(Candidate)` events found in trace');
+throw new LHError(LHError.errors.NO_FMP);
 }
 
 
 
 if(!tabTrace.navigationStartEvt){
-throw new Error('No `navigationStart` event found in trace');
+throw new LHError(LHError.errors.NO_NAVSTART);
 }
 
 const result=this.calculateScore(tabTrace);
@@ -5070,7 +5129,90 @@ extendedInfo};
 
 module.exports=FirstMeaningfulPaint;
 
-},{"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../lib/errors":28,"../report/v2/renderer/util":43,"./audit":2}],"../audits/font-display":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const Util=require('../report/v2/renderer/util');
+const WebInspector=require('../lib/web-inspector');
+const allowedFontFaceDisplays=['block','fallback','optional','swap'];
+
+class FontDisplay extends Audit{
+
+
+
+static get meta(){
+return{
+name:'font-display',
+description:'All text remains visible during webfont loads',
+failureDescription:'Avoid invisible text while webfonts are loading',
+helpText:'Leverage the font-display CSS feature to ensure text is user-visible while '+
+'webfonts are loading. '+
+'[Learn more](https://developers.google.com/web/updates/2016/02/font-display).',
+requiredArtifacts:['devtoolsLogs','Fonts']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+const devtoolsLogs=artifacts.devtoolsLogs[this.DEFAULT_PASS];
+const fontFaces=artifacts.Fonts;
+
+
+const fontsWithoutProperDisplay=fontFaces.filter(fontFace=>
+!fontFace.display||!allowedFontFaceDisplays.includes(fontFace.display));
+
+
+return artifacts.requestNetworkRecords(devtoolsLogs).then(networkRecords=>{
+const results=networkRecords.filter(record=>{
+const isFont=record._resourceType===WebInspector.resourceTypes.Font;
+
+return isFont;
+}).
+filter(fontRecord=>{
+
+return!!fontsWithoutProperDisplay.find(fontFace=>{
+return fontFace.src.find(src=>fontRecord.url===src);
+});
+}).
+
+map(record=>{
+
+
+const wastedTime=Math.min((record._endTime-record._startTime)*1000,3000);
+
+return{
+url:record.url,
+wastedTime:Util.formatMilliseconds(wastedTime,1)};
+
+});
+
+const headings=[
+{key:'url',itemType:'url',text:'Font URL'},
+{key:'wastedTime',itemType:'text',text:'Font download time'}];
+
+const details=Audit.makeTableDetails(headings,results);
+
+return{
+score:results.length===0,
+rawValue:results.length===0,
+details};
+
+});
+}}
+
+
+module.exports=FontDisplay;
+
+},{"../lib/web-inspector":42,"../report/v2/renderer/util":43,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
 
 
 
@@ -5178,7 +5320,7 @@ details:Audit.makeTableDetails(headings,results)};
 
 module.exports=ImageAspectRatio;
 
-},{"../lib/url-shim":38,"./audit":2}],"../audits/is-on-https":[function(require,module,exports){
+},{"../lib/url-shim":41,"./audit":2}],"../audits/is-on-https":[function(require,module,exports){
 
 
 
@@ -5257,7 +5399,7 @@ items:insecureRecords.map(record=>({type:'url',text:record.url}))}};
 
 module.exports=HTTPS;
 
-},{"../lib/url-shim":38,"../report/v2/renderer/util":40,"./audit":2}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
+},{"../lib/url-shim":41,"../report/v2/renderer/util":43,"./audit":2}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
 
 
 
@@ -5407,7 +5549,7 @@ extendedInfo};
 
 module.exports=LoadFastEnough4Pwa;
 
-},{"../lib/emulation":26,"../lib/sentry":31,"../lib/url-shim":38,"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
+},{"../lib/emulation":27,"../lib/sentry":33,"../lib/url-shim":41,"../report/v2/renderer/util.js":43,"./audit":2}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
 
 
 
@@ -5509,7 +5651,7 @@ value:extendedInfo}};
 
 module.exports=PageExecutionTimings;
 
-},{"../lib/task-groups":33,"../report/v2/renderer/util":40,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
+},{"../lib/task-groups":36,"../report/v2/renderer/util":43,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
 
 
 
@@ -5657,7 +5799,172 @@ super.meta);
 
 module.exports=PWAPageTransitions;
 
-},{"./manual-audit":4}],"../audits/predictive-perf":[function(require,module,exports){
+},{"./manual-audit":4}],"../audits/mixed-content":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const URL=require('../lib/url-shim');
+const Util=require('../report/v2/renderer/util');
+
+
+
+
+
+
+
+class MixedContent extends Audit{
+
+
+
+static get meta(){
+return{
+category:'Mixed Content',
+name:'mixed-content',
+description:'All resources loaded are secure',
+informative:true,
+failureDescription:'Some insecure resources can be upgraded to HTTPS',
+helpText:`Mixed content warnings can prevent you from upgrading to HTTPS.
+      This audit shows which insecure resources this page uses that can be
+      upgraded to HTTPS. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/mixed-content)`,
+requiredArtifacts:['devtoolsLogs','MixedContent']};
+
+}
+
+
+
+
+
+
+
+
+
+static isSecureRecord(record){
+return record.securityState()==='secure'||record.protocol==='data';
+}
+
+
+
+
+
+
+
+static upgradeURL(url){
+const parsedURL=new URL(url);
+parsedURL.protocol='https:';
+return parsedURL.href;
+}
+
+
+
+
+
+
+
+static simplifyURL(url){
+const parsedURL=new URL(url);
+parsedURL.hash='';
+parsedURL.search='';
+return parsedURL.href;
+}
+
+
+
+
+
+
+
+static displayURL(url){
+const displayOptions={
+numPathParts:4,
+preserveQuery:false,
+preserveHost:true};
+
+return URL.getURLDisplayName(url,displayOptions);
+}
+
+
+
+
+
+static audit(artifacts){
+const defaultLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const upgradeLogs=artifacts.devtoolsLogs['mixedContentPass'];
+const baseHostname=new URL(artifacts.MixedContent.url).host;
+
+const computedArtifacts=[
+artifacts.requestNetworkRecords(defaultLogs),
+artifacts.requestNetworkRecords(upgradeLogs)];
+
+
+return Promise.all(computedArtifacts).then(([defaultRecords,upgradedRecords])=>{
+const insecureRecords=defaultRecords.filter(
+record=>!MixedContent.isSecureRecord(record));
+const secureRecords=defaultRecords.filter(
+record=>MixedContent.isSecureRecord(record));
+
+const upgradePassHosts=new Set();
+const upgradePassSecureHosts=new Set();
+upgradedRecords.forEach(record=>{
+upgradePassHosts.add(new URL(record.url).hostname);
+if(MixedContent.isSecureRecord(record)&&record.finished&&!record.failed){
+upgradePassSecureHosts.add(new URL(record.url).hostname);
+}
+});
+
+
+
+
+const seen=new Set();
+const upgradeableResources=[];
+
+for(const record of insecureRecords){
+const simpleUrl=this.simplifyURL(record.url);
+if(seen.has(simpleUrl))continue;
+seen.add(simpleUrl);
+
+const resource={
+host:new URL(record.url).hostname,
+fullUrl:record.url,
+referrerDocUrl:this.displayURL(record._documentURL)};
+
+
+if(!upgradePassSecureHosts.has(resource.host))continue;
+
+if(!resource.referrerDocUrl.includes(baseHostname))continue;
+
+upgradeableResources.push(resource);
+}
+
+const displayValue=`${Util.formatNumber(upgradeableResources.length)}
+          ${upgradeableResources.length===1?'request':'requests'}`;
+
+const headings=[
+{key:'fullUrl',itemType:'url',text:'URL'}];
+
+const details=Audit.makeTableDetails(headings,upgradeableResources);
+
+const totalRecords=defaultRecords.length;
+const score=100*(
+secureRecords.length+0.5*upgradeableResources.length)/
+totalRecords;
+
+return{
+rawValue:score,
+displayValue:displayValue,
+details};
+
+});
+}}
+
+
+module.exports=MixedContent;
+
+},{"../lib/url-shim":41,"../report/v2/renderer/util":43,"./audit":2}],"../audits/predictive-perf":[function(require,module,exports){
 
 
 
@@ -5933,7 +6240,7 @@ extendedInfo:{value:values}};
 
 module.exports=PredictivePerf;
 
-},{"../lib/dependency-graph/node.js":21,"../lib/dependency-graph/simulator/simulator.js":22,"../lib/web-inspector":39,"../report/v2/renderer/util.js":40,"./audit":2}],"../audits/redirects-http":[function(require,module,exports){
+},{"../lib/dependency-graph/node.js":22,"../lib/dependency-graph/simulator/simulator.js":23,"../lib/web-inspector":42,"../report/v2/renderer/util.js":43,"./audit":2}],"../audits/redirects-http":[function(require,module,exports){
 
 
 
@@ -6059,7 +6366,7 @@ details};
 
 module.exports=Redirects;
 
-},{"../report/v2/renderer/util":40,"./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
+},{"../report/v2/renderer/util":43,"./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/screenshot-thumbnails":[function(require,module,exports){
 
 
 
@@ -6073,7 +6380,7 @@ const TTCI=require('./consistently-interactive');
 const jpeg=require('jpeg-js');
 
 const NUMBER_OF_THUMBNAILS=10;
-const THUMBNAIL_WIDTH=60;
+const THUMBNAIL_WIDTH=120;
 
 class ScreenshotThumbnails extends Audit{
 
@@ -6190,7 +6497,7 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"./audit":2,"./consistently-interactive":"../audits/consistently-interactive","./first-interactive":"../audits/first-interactive","jpeg-js":133}],"../audits/seo/canonical":[function(require,module,exports){
+},{"./audit":2,"./consistently-interactive":"../audits/consistently-interactive","./first-interactive":"../audits/first-interactive","jpeg-js":134}],"../audits/seo/canonical":[function(require,module,exports){
 
 
 
@@ -6359,7 +6666,7 @@ rawValue:true};
 
 module.exports=Canonical;
 
-},{"../../lib/url-shim":38,"../audit":2,"http-link-header":130}],"../audits/seo/font-size":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../audit":2,"http-link-header":131}],"../audits/seo/font-size":[function(require,module,exports){
 (function(global){
 
 
@@ -6649,7 +6956,7 @@ debugString};
 module.exports=FontSize;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../../lib/url-shim":38,"../../lib/web-inspector":39,"../audit":2,"../viewport":"../audits/viewport"}],"../audits/seo/hreflang":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../../lib/web-inspector":42,"../audit":2,"../viewport":"../audits/viewport"}],"../audits/seo/hreflang":[function(require,module,exports){
 (function(global){
 
 
@@ -6765,7 +7072,7 @@ details};
 module.exports=Hreflang;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../audit":2,"axe-core/lib/commons/utils/valid-langs.js":93,"http-link-header":130}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"../audit":2,"axe-core/lib/commons/utils/valid-langs.js":92,"http-link-header":131}],"../audits/seo/http-status-code":[function(require,module,exports){
 
 
 
@@ -7013,7 +7320,7 @@ displayValue};
 
 module.exports=LinkText;
 
-},{"../../lib/url-shim":38,"../audit":2}],"../audits/seo/manual/mobile-friendly":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../audit":2}],"../audits/seo/manual/mobile-friendly":[function(require,module,exports){
 
 
 
@@ -7034,7 +7341,7 @@ class MobileFriendly extends ManualAudit{
 static get meta(){
 return Object.assign({
 name:'mobile-friendly',
-helpText:'Take the [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) to see how easily a visitor can use your page on a mobile device. [Learn more](https://developers.google.com/search/mobile-sites/).',
+helpText:'Take the [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) to check for audits not covered by Lighthouse, like sizing tap targets appropriately. [Learn more](https://developers.google.com/search/mobile-sites/).',
 description:'Page is mobile friendly'},
 super.meta);
 }}
@@ -7272,7 +7579,7 @@ details};
 
 module.exports=Plugins;
 
-},{"../../lib/url-shim":38,"../audit":2}],"../audits/service-worker":[function(require,module,exports){
+},{"../../lib/url-shim":41,"../audit":2}],"../audits/service-worker":[function(require,module,exports){
 
 
 
@@ -7321,7 +7628,7 @@ rawValue:!!matchingSW};
 
 module.exports=ServiceWorker;
 
-},{"../lib/url-shim":38,"./audit":2}],"../audits/speed-index-metric":[function(require,module,exports){
+},{"../lib/url-shim":41,"./audit":2}],"../audits/speed-index-metric":[function(require,module,exports){
 
 
 
@@ -7331,6 +7638,7 @@ module.exports=ServiceWorker;
 
 const Audit=require('./audit');
 const Util=require('../report/v2/renderer/util');
+const LHError=require('../lib/errors');
 
 
 
@@ -7364,11 +7672,11 @@ const trace=artifacts.traces[this.DEFAULT_PASS];
 
 return artifacts.requestSpeedline(trace).then(speedline=>{
 if(speedline.frames.length===0){
-throw new Error('Trace unable to find visual progress frames.');
+throw new LHError(LHError.errors.NO_SPEEDLINE_FRAMES);
 }
 
 if(speedline.perceptualSpeedIndex===0){
-throw new Error('Error in Speedline calculating Speed Index (speedIndex of 0).');
+throw new LHError(LHError.errors.SPEEDINDEX_OF_ZERO);
 }
 
 let visuallyReadyInMs=undefined;
@@ -7427,7 +7735,7 @@ value:extendedInfo}};
 
 module.exports=SpeedIndexMetric;
 
-},{"../report/v2/renderer/util":40,"./audit":2}],"../audits/splash-screen":[function(require,module,exports){
+},{"../lib/errors":28,"../report/v2/renderer/util":43,"./audit":2}],"../audits/splash-screen":[function(require,module,exports){
 
 
 
@@ -7579,7 +7887,7 @@ themeColor:artifacts.ThemeColor};
 
 module.exports=ThemedOmnibox;
 
-},{"../lib/web-inspector":39,"./multi-check-audit":5}],"../audits/time-to-first-byte":[function(require,module,exports){
+},{"../lib/web-inspector":42,"./multi-check-audit":5}],"../audits/time-to-first-byte":[function(require,module,exports){
 
 
 
@@ -7651,7 +7959,7 @@ debugString};
 
 module.exports=TTFBMetric;
 
-},{"../report/v2/renderer/util":40,"./audit":2}],"../audits/user-timings":[function(require,module,exports){
+},{"../report/v2/renderer/util":43,"./audit":2}],"../audits/user-timings":[function(require,module,exports){
 
 
 
@@ -7807,7 +8115,119 @@ details};
 
 module.exports=UserTimings;
 
-},{"../report/v2/renderer/util":40,"./audit":2}],"../audits/viewport":[function(require,module,exports){
+},{"../report/v2/renderer/util":43,"./audit":2}],"../audits/uses-rel-preload":[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const Util=require('../report/v2/renderer/util');
+const UnusedBytes=require('./byte-efficiency/byte-efficiency-audit');
+const THRESHOLD_IN_MS=100;
+
+class UsesRelPreloadAudit extends Audit{
+
+
+
+static get meta(){
+return{
+category:'Performance',
+name:'uses-rel-preload',
+description:'Preload key requests',
+informative:true,
+helpText:'Consider using <link rel=preload> to prioritize fetching late-discovered '+
+'resources sooner [Learn more](https://developers.google.com/web/updates/2016/03/link-rel-preload).',
+requiredArtifacts:['devtoolsLogs','traces'],
+scoringMode:Audit.SCORING_MODES.NUMERIC};
+
+}
+
+static _flattenRequests(chains,maxLevel,minLevel=0){
+const requests=[];
+const flatten=(chains,level)=>{
+Object.keys(chains).forEach(chain=>{
+if(chains[chain]){
+const currentChain=chains[chain];
+if(level>=minLevel){
+requests.push(currentChain.request);
+}
+
+if(level<maxLevel){
+flatten(currentChain.children,level+1);
+}
+}
+});
+};
+
+flatten(chains,0);
+
+return requests;
+}
+
+
+
+
+
+static audit(artifacts){
+const devtoolsLogs=artifacts.devtoolsLogs[UsesRelPreloadAudit.DEFAULT_PASS];
+
+return Promise.all([
+artifacts.requestCriticalRequestChains(devtoolsLogs),
+artifacts.requestMainResource(devtoolsLogs)]).
+then(([critChains,mainResource])=>{
+const results=[];
+let maxWasted=0;
+
+const mainResourceIndex=mainResource.redirects?mainResource.redirects.length:0;
+
+const criticalRequests=UsesRelPreloadAudit._flattenRequests(critChains,
+3+mainResourceIndex,2+mainResourceIndex);
+criticalRequests.forEach(request=>{
+const networkRecord=request;
+if(!networkRecord._isLinkPreload&&networkRecord.protocol!=='data'){
+
+const wastedMs=Math.min(request._startTime-mainResource._endTime,
+request._endTime-request._startTime)*1000;
+
+if(wastedMs>=THRESHOLD_IN_MS){
+maxWasted=Math.max(wastedMs,maxWasted);
+results.push({
+url:request.url,
+wastedMs:Util.formatMilliseconds(wastedMs)});
+
+}
+}
+});
+
+
+results.sort((a,b)=>b.wastedMs-a.wastedMs);
+
+const headings=[
+{key:'url',itemType:'url',text:'URL'},
+{key:'wastedMs',itemType:'text',text:'Potential Savings'}];
+
+const details=Audit.makeTableDetails(headings,results);
+
+return{
+score:UnusedBytes.scoreForWastedMs(maxWasted),
+rawValue:maxWasted,
+displayValue:Util.formatMilliseconds(maxWasted),
+extendedInfo:{
+value:results},
+
+details};
+
+});
+}}
+
+
+module.exports=UsesRelPreloadAudit;
+
+},{"../report/v2/renderer/util":43,"./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/viewport":[function(require,module,exports){
 
 
 
@@ -7869,7 +8289,7 @@ debugString};
 
 module.exports=Viewport;
 
-},{"./audit":2,"metaviewport-parser":136}],"../audits/webapp-install-banner":[function(require,module,exports){
+},{"./audit":2,"metaviewport-parser":139}],"../audits/webapp-install-banner":[function(require,module,exports){
 
 
 
@@ -7952,6 +8372,7 @@ const hasOfflineStartUrl=artifacts.StartUrl.statusCode===200;
 
 if(!hasOfflineStartUrl){
 result.failures.push('Service worker does not successfully serve the manifest\'s start_url');
+if(artifacts.StartUrl.debugString)result.failures.push(artifacts.StartUrl.debugString);
 }
 
 if(artifacts.StartUrl.debugString){
@@ -8074,7 +8495,7 @@ debugString};
 
 module.exports=WorksOffline;
 
-},{"../lib/url-shim":38,"./audit":2}],"./gather/computed/computed-artifact":[function(require,module,exports){
+},{"../lib/url-shim":41,"./audit":2}],"./gather/computed/computed-artifact":[function(require,module,exports){
 
 
 
@@ -8082,13 +8503,16 @@ module.exports=WorksOffline;
 
 'use strict';
 
+const ArbitraryEqualityMap=require('../../lib/arbitrary-equality-map');
+
 class ComputedArtifact{
 
 
 
 constructor(allComputedArtifacts){
 
-this._cache=new Map();
+this._cache=new ArbitraryEqualityMap();
+this._cache.setEqualityFn(ArbitraryEqualityMap.deepEquals);
 
 
 this._allComputedArtifacts=allComputedArtifacts;
@@ -8116,74 +8540,6 @@ throw new Error('compute_() not implemented for computed artifact '+this.name);
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-_performCacheOperation(artifacts,cacheOperation){
-artifacts=artifacts.slice();
-
-let cache=this._cache;
-while(artifacts.length>1){
-const nextKey=artifacts.shift();
-if(cache.has(nextKey)){
-cache=cache.get(nextKey);
-}else{
-const nextCache=new Map();
-cache.set(nextKey,nextCache);
-cache=nextCache;
-}
-}
-
-return cacheOperation(cache,artifacts.shift());
-}
-
-
-
-
-
-
-_cacheHas(artifacts){
-return this._performCacheOperation(artifacts,(cache,key)=>cache.has(key));
-}
-
-
-
-
-
-
-_cacheGet(artifacts){
-return this._performCacheOperation(artifacts,(cache,key)=>cache.get(key));
-}
-
-
-
-
-
-
-_cacheSet(artifacts,result){
-return this._performCacheOperation(artifacts,(cache,key)=>cache.set(key,result));
-}
-
-
-
-
-
 _assertCorrectNumberOfArtifacts(artifacts){
 const actual=artifacts.length;
 const expected=this.requiredNumberOfArtifacts;
@@ -8202,13 +8558,13 @@ throw new Error(`${className} requires ${expected} artifacts but ${actual} were 
 
 request(...artifacts){
 this._assertCorrectNumberOfArtifacts(artifacts);
-if(this._cacheHas(artifacts)){
-return Promise.resolve(this._cacheGet(artifacts));
+if(this._cache.has(artifacts)){
+return Promise.resolve(this._cache.get(artifacts));
 }
 
 const artifactPromise=Promise.resolve().
 then(_=>this.compute_(...artifacts,this._allComputedArtifacts));
-this._cacheSet(artifacts,artifactPromise);
+this._cache.set(artifacts,artifactPromise);
 
 return artifactPromise;
 }}
@@ -8216,7 +8572,7 @@ return artifactPromise;
 
 module.exports=ComputedArtifact;
 
-},{}],"./gather/computed/critical-request-chains":[function(require,module,exports){
+},{"../../lib/arbitrary-equality-map":17}],"./gather/computed/critical-request-chains":[function(require,module,exports){
 
 
 
@@ -8277,16 +8633,6 @@ requestIdToRequests.set(request.requestId,request);
 const criticalRequests=networkRecords.filter(request=>
 CriticalRequestChains.isCritical(request,mainResource));
 
-const flattenRequest=request=>{
-return{
-url:request._url,
-startTime:request.startTime,
-endTime:request.endTime,
-responseReceivedTime:request.responseReceivedTime,
-transferSize:request.transferSize};
-
-};
-
 
 const criticalRequestChains={};
 for(const request of criticalRequests){
@@ -8322,7 +8668,7 @@ const parentRequest=requestIdToRequests.get(ancestor);
 const parentRequestId=parentRequest.requestId;
 if(!node[parentRequestId]){
 node[parentRequestId]={
-request:flattenRequest(parentRequest),
+request:parentRequest,
 children:{}};
 
 }
@@ -8343,7 +8689,7 @@ continue;
 
 
 node[request.requestId]={
-request:flattenRequest(request),
+request,
 children:{}};
 
 }
@@ -8367,7 +8713,7 @@ then(CriticalRequestChains.extractChain);
 
 module.exports=CriticalRequestChains;
 
-},{"../../lib/web-inspector":39,"./computed-artifact":"./gather/computed/computed-artifact","assert":44}],"./gather/computed/dtm-model":[function(require,module,exports){
+},{"../../lib/web-inspector":42,"./computed-artifact":"./gather/computed/computed-artifact","assert":47}],"./gather/computed/dtm-model":[function(require,module,exports){
 
 
 
@@ -8394,7 +8740,7 @@ return Promise.resolve(new DTM(trace));
 
 module.exports=DevtoolsTimelineModel;
 
-},{"../../lib/traces/devtools-timeline-model":34,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/first-interactive":[function(require,module,exports){
+},{"../../lib/traces/devtools-timeline-model":37,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/first-interactive":[function(require,module,exports){
 
 
 
@@ -8404,6 +8750,7 @@ module.exports=DevtoolsTimelineModel;
 
 const ComputedArtifact=require('./computed-artifact');
 const TracingProcessor=require('../../lib/traces/tracing-processor');
+const LHError=require('../../lib/errors');
 
 const LONG_TASK_THRESHOLD=50;
 
@@ -8412,8 +8759,6 @@ const MIN_TASK_CLUSTER_PADDING=1000;
 const MIN_TASK_CLUSTER_FMP_DISTANCE=5000;
 
 const MAX_QUIET_WINDOW_SIZE=5000;
-const TRACE_BUSY_MSG='The main thread was busy for the entire trace recording. '+
-'First Interactive requires the main thread to be idle for several seconds.';
 
 
 const EXPONENTIATION_COEFFICIENT=-Math.log(3-1)/15;
@@ -8540,7 +8885,7 @@ const windowEnd=windowStart+windowSize;
 
 
 if(windowEnd>traceEnd){
-throw new Error(TRACE_BUSY_MSG);
+throw new LHError(LHError.errors.NO_FCPUI_IDLE_PERIOD);
 }
 
 
@@ -8557,7 +8902,7 @@ return windowStart;
 }
 }
 
-throw new Error(TRACE_BUSY_MSG);
+throw new LHError(LHError.errors.NO_FCPUI_IDLE_PERIOD);
 }
 
 
@@ -8571,11 +8916,11 @@ const DCL=traceOfTab.timings.domContentLoaded;
 const traceEnd=traceOfTab.timings.traceEnd;
 
 if(traceEnd-FMP<MAX_QUIET_WINDOW_SIZE){
-throw new Error('trace not at least 5 seconds longer than FMP');
+throw new LHError(LHError.errors.FMP_TOO_LATE_FOR_FCPUI);
 }
 
 if(!FMP||!DCL){
-throw new Error(`No ${FMP?'domContentLoaded':'firstMeaningfulPaint'} event in trace`);
+throw new LHError(FMP?LHError.errors.NO_DCL:LHError.errors.NO_FMP);
 }
 
 const longTasksAfterFMP=TracingProcessor.getMainThreadTopLevelEvents(traceOfTab,FMP).
@@ -8603,7 +8948,7 @@ return this.computeWithArtifacts(traceOfTab);
 
 module.exports=FirstInteractive;
 
-},{"../../lib/traces/tracing-processor":37,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/main-resource":[function(require,module,exports){
+},{"../../lib/errors":28,"../../lib/traces/tracing-processor":40,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/main-resource":[function(require,module,exports){
 
 
 
@@ -8772,7 +9117,7 @@ allChecks:remainingChecks};
 
 module.exports=ManifestValues;
 
-},{"../../lib/icons":28,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-records":[function(require,module,exports){
+},{"../../lib/icons":30,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-records":[function(require,module,exports){
 
 
 
@@ -8799,7 +9144,7 @@ return NetworkRecorder.recordsFromLogs(devtoolsLog);
 
 module.exports=NetworkRecords;
 
-},{"../../lib/network-recorder":30,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-throughput":[function(require,module,exports){
+},{"../../lib/network-recorder":32,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/network-throughput":[function(require,module,exports){
 
 
 
@@ -8956,7 +9301,7 @@ const evt=traceOfTab.mainThreadEvents[i];
 
 
 if(
-evt.name!==TracingProcessor.SCHEDULABLE_TASK_TITLE||
+!TracingProcessor.isScheduleableTask(evt)||
 !evt.dur||
 evt.dur<minimumEvtDur)
 {
@@ -9182,7 +9527,7 @@ module.exports=PageDependencyGraphArtifact;
 
 PageDependencyGraphArtifact.NetworkNodeOutput;
 
-},{"../../lib/dependency-graph/cpu-node":19,"../../lib/dependency-graph/network-node":20,"../../lib/traces/tracing-processor":37,"../../lib/web-inspector":39,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/pushed-requests":[function(require,module,exports){
+},{"../../lib/dependency-graph/cpu-node":20,"../../lib/dependency-graph/network-node":21,"../../lib/traces/tracing-processor":40,"../../lib/web-inspector":42,"./computed-artifact":"./gather/computed/computed-artifact"}],"./gather/computed/pushed-requests":[function(require,module,exports){
 
 
 
@@ -9267,6 +9612,7 @@ module.exports=ScreenshotFilmstrip;
 
 const ComputedArtifact=require('./computed-artifact');
 const speedline=require('speedline');
+const LHError=require('../../lib/errors');
 
 class Speedline extends ComputedArtifact{
 get name(){
@@ -9291,13 +9637,19 @@ timeOrigin:navStart,
 fastMode:true,
 include:'perceptualSpeedIndex'});
 
+}).catch(err=>{
+if(/No screenshots found in trace/.test(err.message)){
+throw new LHError(LHError.errors.NO_SCREENSHOTS);
+}
+
+throw err;
 });
 }}
 
 
 module.exports=Speedline;
 
-},{"./computed-artifact":"./gather/computed/computed-artifact","speedline":140}],"./gather/computed/trace-of-tab":[function(require,module,exports){
+},{"../../lib/errors":28,"./computed-artifact":"./gather/computed/computed-artifact","speedline":144}],"./gather/computed/trace-of-tab":[function(require,module,exports){
 
 
 
@@ -9318,6 +9670,7 @@ module.exports=Speedline;
 
 const ComputedArtifact=require('./computed-artifact');
 const log=require('lighthouse-logger');
+const LHError=require('../../lib/errors');
 const Sentry=require('../../lib/sentry');
 
 
@@ -9351,13 +9704,13 @@ stableSort((event0,event1)=>event0.ts-event1.ts);
 
 
 const startedInPageEvt=keyEvents.find(e=>e.name==='TracingStartedInPage');
-if(!startedInPageEvt)throw new Error('TracingStartedInPage was not found in the trace');
+if(!startedInPageEvt)throw new LHError(LHError.errors.NO_TRACING_STARTED);
 
 const frameEvents=keyEvents.filter(e=>e.args.frame===startedInPageEvt.args.data.page);
 
 
 const navigationStart=frameEvents.filter(e=>e.name==='navigationStart').pop();
-if(!navigationStart)throw new Error('navigationStart was not found in the trace');
+if(!navigationStart)throw new LHError(LHError.errors.NO_NAVSTART);
 
 
 const firstPaint=frameEvents.find(e=>e.name==='firstPaint'&&e.ts>navigationStart.ts);
@@ -9445,7 +9798,7 @@ fmpFellBack};
 
 module.exports=TraceOfTab;
 
-},{"../../lib/sentry":31,"../../lib/web-inspector":39,"./computed-artifact":"./gather/computed/computed-artifact","lighthouse-logger":89}],"./gatherers/accessibility":[function(require,module,exports){
+},{"../../lib/errors":28,"../../lib/sentry":33,"../../lib/web-inspector":42,"./computed-artifact":"./gather/computed/computed-artifact","lighthouse-logger":137}],"./gatherers/accessibility":[function(require,module,exports){
 
 
 
@@ -9473,6 +9826,7 @@ values:[
 'wcag2aa']},
 
 
+resultTypes:['violations','inapplicable'],
 rules:{
 'tabindex':{enabled:true},
 'table-fake-caption':{enabled:true},
@@ -9880,7 +10234,7 @@ return options.driver.evaluateAsync(expression);
 
 module.exports=AnchorsWithNoRelNoopener;
 
-},{"../../../lib/dom-helpers.js":24,"../gatherer":16}],"./gatherers/dobetterweb/appcache":[function(require,module,exports){
+},{"../../../lib/dom-helpers.js":25,"../gatherer":16}],"./gatherers/dobetterweb/appcache":[function(require,module,exports){
 
 
 
@@ -10335,7 +10689,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/sentry":31,"../../../lib/url-shim":38,"../gatherer":16}],"./gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/sentry":33,"../../../lib/url-shim":41,"../gatherer":16}],"./gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -10406,6 +10760,7 @@ const Gatherer=require('../gatherer');
 const gzip=require('zlib').gzip;
 
 const compressionTypes=['gzip','br','deflate'];
+const binaryMimeTypes=['image','audio','video'];
 const CHROME_EXTENSION_PROTOCOL='chrome-extension:';
 
 class ResponseCompression extends Gatherer{
@@ -10417,7 +10772,11 @@ static filterUnoptimizedResponses(networkRecords){
 const unoptimizedResponses=[];
 
 networkRecords.forEach(record=>{
-const isTextBasedResource=record.resourceType()&&record.resourceType().isTextType();
+const mimeType=record.mimeType;
+const resourceType=record.resourceType();
+
+const isBinaryResource=mimeType&&binaryMimeTypes.some(type=>mimeType.startsWith(type));
+const isTextBasedResource=!isBinaryResource&&resourceType&&resourceType.isTextType();
 const isChromeExtensionResource=record.url.startsWith(CHROME_EXTENSION_PROTOCOL);
 
 if(!isTextBasedResource||!record.resourceSize||!record.finished||
@@ -10480,7 +10839,7 @@ resolve(record);
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../gatherer":16,"buffer":51,"zlib":48}],"./gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../gatherer":16,"buffer":54,"zlib":51}],"./gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -10664,7 +11023,174 @@ return result&&result.database;
 
 module.exports=WebSQL;
 
-},{"../gatherer":16}],"./gatherers/html-without-javascript":[function(require,module,exports){
+},{"../gatherer":16}],"./gatherers/fonts":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer');
+const Sentry=require('../../lib/sentry');
+const fontFaceDescriptors=[
+'display',
+'family',
+'featureSettings',
+'stretch',
+'style',
+'unicodeRange',
+'variant',
+'weight'];
+
+
+
+
+
+
+
+
+
+function getAllLoadedFonts(descriptors){
+const getFont=fontFace=>{
+const fontRule={};
+descriptors.forEach(descriptor=>{
+fontRule[descriptor]=fontFace[descriptor];
+});
+
+return fontRule;
+};
+
+return document.fonts.ready.then(()=>{
+return Array.from(document.fonts).filter(fontFace=>fontFace.status==='loaded').
+map(getFont);
+});
+}
+
+
+
+
+
+
+function getFontFaceFromStylesheets(){
+
+
+
+
+
+function getSheetsFontFaces(stylesheet){
+const fontUrlRegex='url\\((?:")([^"]+)(?:"|\')\\)';
+const fontFaceRules=[];
+if(stylesheet.cssRules){
+for(const rule of stylesheet.cssRules){
+if(rule instanceof CSSFontFaceRule){
+const fontsObject={
+display:rule.style.fontDisplay||'auto',
+family:rule.style.fontFamily.replace(/"|'/g,''),
+stretch:rule.style.fontStretch||'normal',
+style:rule.style.fontStyle||'normal',
+weight:rule.style.fontWeight||'normal',
+variant:rule.style.fontVariant||'normal',
+unicodeRange:rule.style.unicodeRange||'U+0-10FFFF',
+featureSettings:rule.style.featureSettings||'normal',
+src:[]};
+
+
+if(rule.style.src){
+const matches=rule.style.src.match(new RegExp(fontUrlRegex,'g'));
+if(matches){
+fontsObject.src=matches.map(match=>{
+const res=new RegExp(fontUrlRegex).exec(match);
+return new URL(res[1],location.href).href;
+});
+}
+}
+
+fontFaceRules.push(fontsObject);
+}
+}
+}
+
+return fontFaceRules;
+}
+
+
+
+
+
+
+
+function loadStylesheetWithCORS(oldNode){
+const newNode=oldNode.cloneNode(true);
+
+return new Promise(resolve=>{
+newNode.addEventListener('load',function onload(){
+newNode.removeEventListener('load',onload);
+resolve(getFontFaceFromStylesheets());
+});
+newNode.crossOrigin='anonymous';
+oldNode.parentNode.insertBefore(newNode,oldNode);
+oldNode.remove();
+});
+}
+
+const promises=[];
+
+for(const stylesheet of document.styleSheets){
+try{
+
+if(stylesheet.cssRules===null&&stylesheet.href&&stylesheet.ownerNode&&
+!stylesheet.ownerNode.crossOrigin){
+promises.push(loadStylesheetWithCORS(stylesheet.ownerNode));
+}else{
+promises.push(Promise.resolve(getSheetsFontFaces(stylesheet)));
+}
+}catch(err){
+promises.push({err:{message:err.message,stack:err.stack}});
+}
+}
+
+return Promise.all(promises).then(fontFaces=>[].concat(...fontFaces));
+}
+
+
+class Fonts extends Gatherer{
+_findSameFontFamily(fontFace,fontFacesList){
+return fontFacesList.find(fontItem=>{
+return!fontFaceDescriptors.find(descriptor=>{
+return fontFace[descriptor]!==fontItem[descriptor];
+});
+});
+}
+
+afterPass({driver}){
+const args=JSON.stringify(fontFaceDescriptors);
+return Promise.all(
+[
+driver.evaluateAsync(`(${getAllLoadedFonts.toString()})(${args})`),
+driver.evaluateAsync(`(${getFontFaceFromStylesheets.toString()})()`)]).
+
+then(([loadedFonts,fontFaces])=>{
+return loadedFonts.map(fontFace=>{
+if(fontFace.err){
+const err=new Error(fontFace.err.message);
+err.stack=fontFace.err.stack;
+Sentry.captureException(err,{tags:{gatherer:'Fonts'},level:'warning'});
+return null;
+}
+
+const fontFaceItem=this._findSameFontFamily(fontFace,fontFaces);
+fontFace.src=fontFaceItem&&fontFaceItem.src||[];
+
+return fontFace;
+}).filter(Boolean);
+});
+}}
+
+
+module.exports=Fonts;
+
+},{"../../lib/sentry":33,"./gatherer":16}],"./gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -10949,7 +11475,7 @@ return collector;
 
 module.exports=ImageUsage;
 
-},{"../../lib/dom-helpers.js":24,"./gatherer":16}],"./gatherers/js-usage":[function(require,module,exports){
+},{"../../lib/dom-helpers.js":25,"./gatherer":16}],"./gatherers/js-usage":[function(require,module,exports){
 
 
 
@@ -11038,7 +11564,116 @@ return manifestParser(response.data,response.url,options.url);
 module.exports=Manifest;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/manifest-parser":29,"./gatherer":16,"buffer":51}],"./gatherers/offline":[function(require,module,exports){
+},{"../../lib/manifest-parser":31,"./gatherer":16,"buffer":54}],"./gatherers/mixed-content":[function(require,module,exports){
+(function(Buffer){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer');
+const URL=require('../../lib/url-shim');
+
+
+
+
+
+
+
+
+
+
+
+
+
+class MixedContent extends Gatherer{
+constructor(){
+super();
+this.ids=new Set();
+this.url=undefined;
+}
+
+
+
+
+
+upgradeURL(url){
+const parsedURL=new URL(url);
+parsedURL.protocol='https:';
+return parsedURL.href;
+}
+
+
+
+
+
+downgradeURL(url){
+const parsedURL=new URL(url);
+parsedURL.protocol='http:';
+return parsedURL.href;
+}
+
+_onRequestIntercepted(driver,event){
+
+
+
+if(new URL(event.request.url).protocol==='http:'&&
+!URL.equalWithExcludedFragments(event.request.url,this.url)&&
+!this.ids.has(event.interceptionId)){
+this.ids.add(event.interceptionId);
+event.request.url=this.upgradeURL(event.request.url);
+driver.sendCommand('Network.continueInterceptedRequest',{
+interceptionId:event.interceptionId,
+rawResponse:Buffer.from(
+`HTTP/1.1 302 Found\r\nLocation: ${event.request.url}\r\n\r\n`,
+'utf8').toString('base64')});
+
+}else{
+driver.sendCommand('Network.continueInterceptedRequest',{
+interceptionId:event.interceptionId});
+
+}
+}
+
+beforePass(options){
+const driver=options.driver;
+
+
+
+
+
+options.url=this.downgradeURL(options.url);
+this.url=options.url;
+
+driver.sendCommand('Network.enable',{});
+driver.on('Network.requestIntercepted',
+this._onRequestIntercepted.bind(this,driver));
+driver.sendCommand('Network.setCacheDisabled',{cacheDisabled:true});
+driver.sendCommand('Network.setRequestInterception',
+{patterns:[{urlPattern:'*'}]});
+}
+
+afterPass(options,_){
+const driver=options.driver;
+return Promise.resolve().then(_=>driver.sendCommand(
+'Network.setRequestInterception',{patterns:[]})).
+then(_=>driver.off(
+'Network.requestIntercepted',
+this._onRequestIntercepted.bind(this,driver))).
+then(driver.sendCommand(
+'Network.setCacheDisabled',{cacheDisabled:false})).
+then(_=>{
+return{url:options.url};
+});
+}}
+
+
+module.exports=MixedContent;
+
+}).call(this,require("buffer").Buffer);
+},{"../../lib/url-shim":41,"./gatherer":16,"buffer":54}],"./gatherers/offline":[function(require,module,exports){
 
 
 
@@ -11067,7 +11702,7 @@ then(_=>navigationRecord?navigationRecord.statusCode:-1);
 
 module.exports=Offline;
 
-},{"../../lib/url-shim":38,"./gatherer":16}],"./gatherers/runtime-exceptions":[function(require,module,exports){
+},{"../../lib/url-shim":41,"./gatherer":16}],"./gatherers/runtime-exceptions":[function(require,module,exports){
 
 
 
@@ -11151,7 +11786,7 @@ then(()=>scriptContentMap);
 
 module.exports=Scripts;
 
-},{"../../lib/web-inspector":39,"./gatherer":16}],"./gatherers/seo/canonical":[function(require,module,exports){
+},{"../../lib/web-inspector":42,"./gatherer":16}],"./gatherers/seo/canonical":[function(require,module,exports){
 
 
 
@@ -11212,7 +11847,7 @@ return options.driver.evaluateAsync(expression);
 module.exports=CrawlableLinks;
 
 
-},{"../../../lib/dom-helpers.js":24,"../gatherer":16}],"./gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../../../lib/dom-helpers.js":25,"../gatherer":16}],"./gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -11255,7 +11890,7 @@ return options.driver.evaluateAsync(expression);
 
 module.exports=EmbeddedContent;
 
-},{"../../../lib/dom-helpers.js":24,"../gatherer":16}],"./gatherers/seo/font-size":[function(require,module,exports){
+},{"../../../lib/dom-helpers.js":25,"../gatherer":16}],"./gatherers/seo/font-size":[function(require,module,exports){
 (function(global){
 
 
@@ -11505,7 +12140,7 @@ module.exports=FontSize;
 
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../../../lib/sentry.js":31,"../../../lib/web-inspector":39,"../gatherer":16}],"./gatherers/seo/hreflang":[function(require,module,exports){
+},{"../../../lib/sentry.js":33,"../../../lib/web-inspector":42,"../gatherer":16}],"./gatherers/seo/hreflang":[function(require,module,exports){
 
 
 
@@ -11636,32 +12271,11 @@ this.err=null;
 }
 
 executeFetchRequest(driver,url){
-return new Promise((resolve,reject)=>{
-let requestId;
-const fetchRequestId=data=>{
-if(URL.equalWithExcludedFragments(data.request.url,url)){
-requestId=data.requestId;
-driver.off('Network.requestWillBeSent',fetchRequestId);
-}
-};
-const fetchDone=data=>{
-if(data.requestId===requestId){
-driver.off('Network.loadingFinished',fetchDone);
-driver.off('Network.loadingFailed',fetchDone);
-
-resolve();
-}
-};
-
-driver.on('Network.requestWillBeSent',fetchRequestId);
-driver.on('Network.loadingFinished',fetchDone);
-driver.on('Network.loadingFailed',fetchDone);
-driver.evaluateAsync(
+return driver.evaluateAsync(
 `fetch('${url}')
-          .then(response => response.status)
-          .catch(err => -1)`).
-catch(err=>reject(err));
-});
+        .then(response => response.status)
+        .catch(err => ({fetchFailed: true, message: err.message}))`);
+
 }
 
 pass(options){
@@ -11696,17 +12310,18 @@ return URL.equalWithExcludedFragments(record._url,this.startUrl)&&
 record._fetchedViaServiceWorker;
 }).pop();
 
+const msgWithExtraDebugString=msg=>this.debugString?`${msg}: ${this.debugString}`:msg;
 return options.driver.goOnline(options).
 then(_=>{
 if(!this.startUrl){
 return{
 statusCode:-1,
-debugString:this.debugString||'No start URL to fetch'};
+debugString:msgWithExtraDebugString('No start URL to fetch')};
 
 }else if(!navigationRecord){
 return{
 statusCode:-1,
-debugString:this.debugString||'Did not fetch start URL from service worker'};
+debugString:msgWithExtraDebugString('Unable to fetch start URL via service worker')};
 
 }else{
 return{
@@ -11720,7 +12335,7 @@ debugString:this.debugString};
 
 module.exports=StartUrl;
 
-},{"../../lib/manifest-parser":29,"../../lib/url-shim":38,"./gatherer":16}],"./gatherers/theme-color":[function(require,module,exports){
+},{"../../lib/manifest-parser":31,"../../lib/url-shim":41,"./gatherer":16}],"./gatherers/theme-color":[function(require,module,exports){
 
 
 
@@ -12100,7 +12715,7 @@ module.exports=Audit;
 
 
 
-},{"../lib/statistics":32}],3:[function(require,module,exports){
+},{"../lib/statistics":34}],3:[function(require,module,exports){
 
 
 
@@ -12264,7 +12879,7 @@ throw new Error('audit_ unimplemented');
 
 module.exports=UnusedBytes;
 
-},{"../../report/v2/renderer/util":40,"../audit":2}],4:[function(require,module,exports){
+},{"../../report/v2/renderer/util":43,"../audit":2}],4:[function(require,module,exports){
 
 
 
@@ -13010,7 +13625,7 @@ return this._groups;
 module.exports=Config;
 
 }).call(this,"/../lighthouse-core/config");
-},{"../audits/audit":2,"../gather/gather-runner":15,"../runner":41,"./default.js":8,"./full-config.js":10,"lighthouse-logger":89,"path":66}],8:[function(require,module,exports){
+},{"../audits/audit":2,"../gather/gather-runner":15,"../runner":44,"./default.js":8,"./full-config.js":10,"lighthouse-logger":137,"path":69}],8:[function(require,module,exports){
 
 
 
@@ -13057,7 +13672,8 @@ gatherers:[
 'seo/meta-robots',
 'seo/hreflang',
 'seo/embedded-content',
-'seo/canonical']},
+'seo/canonical',
+'fonts']},
 
 
 {
@@ -13111,6 +13727,8 @@ audits:[
 'deprecations',
 'mainthread-work-breakdown',
 'bootup-time',
+'uses-rel-preload',
+'font-display',
 'manual/pwa-cross-browser',
 'manual/pwa-page-transitions',
 'manual/pwa-each-page-has-url',
@@ -13229,7 +13847,7 @@ title:'Elements Use Attributes Correctly',
 description:'These are opportunities to improve the configuration of your HTML elements.'},
 
 'a11y-element-names':{
-title:'Elements Have Discernable Names',
+title:'Elements Have Discernible Names',
 description:'These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.'},
 
 'a11y-language':{
@@ -13290,6 +13908,7 @@ audits:[
 {id:'uses-request-compression',weight:0,group:'perf-hint'},
 {id:'time-to-first-byte',weight:0,group:'perf-hint'},
 {id:'redirects',weight:0,group:'perf-hint'},
+{id:'uses-rel-preload',weight:0,group:'perf-hint'},
 {id:'total-byte-weight',weight:0,group:'perf-info'},
 {id:'uses-long-cache-ttl',weight:0,group:'perf-info'},
 {id:'dom-size',weight:0,group:'perf-info'},
@@ -13297,7 +13916,8 @@ audits:[
 {id:'user-timings',weight:0,group:'perf-info'},
 {id:'bootup-time',weight:0,group:'perf-info'},
 {id:'screenshot-thumbnails',weight:0},
-{id:'mainthread-work-breakdown',weight:0,group:'perf-info'}]},
+{id:'mainthread-work-breakdown',weight:0,group:'perf-info'},
+{id:'font-display',weight:0,group:'perf-info'}]},
 
 
 'pwa':{
@@ -13510,6 +14130,7 @@ audits:[
 
 const EventEmitter=require('events').EventEmitter;
 const log=require('lighthouse-logger');
+const LHError=require('../../lib/errors');
 
 class Connection{
 constructor(){
@@ -13601,12 +14222,7 @@ return callback.resolve(Promise.resolve().then(_=>{
 if(object.error){
 const logLevel=callback.options&&callback.options.silent?'verbose':'error';
 log.formatProtocol('method <= browser ERR',{method:callback.method},logLevel);
-let errMsg=`(${callback.method}): ${object.error.message}`;
-if(object.error.data)errMsg+=` (${object.error.data})`;
-const error=new Error(`Protocol error ${errMsg}`);
-error.protocolMethod=callback.method;
-error.protocolError=object.error.message;
-throw error;
+throw LHError.fromProtocolMessage(callback.method,object.error);
 }
 
 log.formatProtocol('method <= browser OK',
@@ -13646,7 +14262,7 @@ this._eventEmitter=null;
 
 module.exports=Connection;
 
-},{"events":53,"lighthouse-logger":89}],12:[function(require,module,exports){
+},{"../../lib/errors":28,"events":56,"lighthouse-logger":137}],12:[function(require,module,exports){
 
 
 
@@ -14741,6 +15357,20 @@ then(_=>this.sendCommand('Network.setCacheDisabled',{cacheDisabled:true})).
 then(_=>this.sendCommand('Network.setCacheDisabled',{cacheDisabled:false}));
 }
 
+
+
+
+
+setExtraHTTPHeaders(headers){
+if(headers){
+return this.sendCommand('Network.setExtraHTTPHeaders',{
+headers});
+
+}
+
+return Promise.resolve({});
+}
+
 clearDataForOrigin(url){
 const origin=new URL(url).origin;
 
@@ -14846,6 +15476,7 @@ promptText:'Lighthouse prompt response'});
 });
 });
 }}
+
 
 
 
@@ -14980,7 +15611,7 @@ resolve(timeSinceLongTask);
 
 module.exports=Driver;
 
-},{"../lib/element":25,"../lib/emulation":26,"../lib/network-recorder":30,"../lib/traces/trace-parser":36,"../lib/url-shim":38,"./devtools-log":13,"events":53,"lighthouse-logger":89}],15:[function(require,module,exports){
+},{"../lib/element":26,"../lib/emulation":27,"../lib/network-recorder":32,"../lib/traces/trace-parser":39,"../lib/url-shim":41,"./devtools-log":13,"events":56,"lighthouse-logger":137}],15:[function(require,module,exports){
 
 
 
@@ -14991,6 +15622,7 @@ module.exports=Driver;
 
 const log=require('lighthouse-logger');
 const Audit=require('../audits/audit');
+const LHError=require('../lib/errors');
 const URL=require('../lib/url-shim');
 const NetworkRecorder=require('../lib/network-recorder.js');
 
@@ -15132,17 +15764,18 @@ const mainRecord=networkRecords.find(record=>{
 return URL.equalWithExcludedFragments(record.url,url);
 });
 
-let errorMessage;
+let errorCode;
+let errorReason;
 if(!mainRecord){
-errorMessage='no document request found';
+errorCode=LHError.errors.NO_DOCUMENT_REQUEST;
 }else if(mainRecord.failed){
-errorMessage=`failed document request (${mainRecord.localizedFailDescription})`;
+errorCode=LHError.errors.FAILED_DOCUMENT_REQUEST;
+errorReason=mainRecord.localizedFailDescription;
 }
 
-if(errorMessage){
-log.error('GatherRunner',errorMessage,url);
-const error=new Error(`Unable to load page: ${errorMessage}`);
-error.code='PAGE_LOAD_ERROR';
+if(errorCode){
+const error=new LHError(errorCode,{reason:errorReason});
+log.error('GatherRunner',error.message,url);
 return error;
 }
 }
@@ -15181,7 +15814,8 @@ const pass=GatherRunner.loadBlank(options.driver,blankPage,blankDuration).
 
 
 
-then(()=>options.driver.blockUrlPatterns(blockedUrls));
+then(()=>options.driver.blockUrlPatterns(blockedUrls)).
+then(()=>options.driver.setExtraHTTPHeaders(options.flags.extraHeaders));
 
 return options.config.gatherers.reduce((chain,gatherer)=>{
 return chain.then(_=>{
@@ -15337,7 +15971,7 @@ artifacts[gathererName]=artifact;
 
 artifacts[gathererName]=err;
 
-if(err.code==='PAGE_LOAD_ERROR')pageLoadFailures.push(err);
+if(LHError.isPageLoadError(err))pageLoadFailures.push(err);
 });
 });
 },Promise.resolve()).then(_=>{
@@ -15490,7 +16124,7 @@ return pass;
 
 module.exports=GatherRunner;
 
-},{"../audits/audit":2,"../lib/network-recorder.js":30,"../lib/url-shim":38,"../runner":41,"lighthouse-logger":89}],16:[function(require,module,exports){
+},{"../audits/audit":2,"../lib/errors":28,"../lib/network-recorder.js":32,"../lib/url-shim":41,"../runner":44,"lighthouse-logger":137}],16:[function(require,module,exports){
 
 
 
@@ -15548,6 +16182,70 @@ afterPass(options,loadData){}}
 module.exports=Gatherer;
 
 },{}],17:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const isEqual=require('lodash.isequal');
+
+
+
+
+
+
+module.exports=class ArbitraryEqualityMap{
+constructor(){
+this._equalsFn=(a,b)=>a===b;
+this._entries=[];
+}
+
+
+
+
+setEqualityFn(equalsFn){
+this._equalsFn=equalsFn;
+}
+
+has(key){
+return this._findIndexOf(key)!==-1;
+}
+
+get(key){
+const entry=this._entries[this._findIndexOf(key)];
+return entry&&entry.value;
+}
+
+set(key,value){
+let index=this._findIndexOf(key);
+if(index===-1)index=this._entries.length;
+this._entries[index]={key,value};
+}
+
+_findIndexOf(key){
+for(let i=0;i<this._entries.length;i++){
+if(this._equalsFn(key,this._entries[i].key))return i;
+}
+
+return-1;
+}
+
+
+
+
+
+
+
+
+
+static deepEquals(objA,objB){
+return isEqual(objA,objB);
+}};
+
+
+},{"lodash.isequal":138}],18:[function(require,module,exports){
 
 
 
@@ -15836,7 +16534,7 @@ log.log('saveAssets','trace file streamed to disk: '+streamTraceFilename);
 function logAssets(artifacts,audits){
 return prepareAssets(artifacts,audits).then(assets=>{
 assets.map(data=>{
-log.log(`devtoolslog-${data.passName}.json`,data.devtoolsLog);
+log.log(`devtoolslog-${data.passName}.json`,JSON.stringify(data.devtoolsLog));
 const traceIter=traceJsonGenerator(data.traceData);
 let traceJson='';
 for(const trace of traceIter){
@@ -15856,7 +16554,7 @@ saveTrace,
 logAssets};
 
 
-},{"./traces/pwmetrics-events":35,"./traces/trace-parser":36,"lighthouse-logger":89,"mkdirp":49,"path":66,"rimraf":49,"stream":83}],18:[function(require,module,exports){
+},{"./traces/pwmetrics-events":38,"./traces/trace-parser":39,"lighthouse-logger":137,"mkdirp":52,"path":69,"rimraf":52,"stream":86}],19:[function(require,module,exports){
 
 
 
@@ -15901,7 +16599,7 @@ ConsoleQuieter._consoleerror=console.error.bind(console);
 
 module.exports=ConsoleQuieter;
 
-},{"lighthouse-logger":89}],19:[function(require,module,exports){
+},{"lighthouse-logger":137}],20:[function(require,module,exports){
 
 
 
@@ -15990,7 +16688,7 @@ return new CPUNode(this._event,this._childEvents);
 
 module.exports=CPUNode;
 
-},{"./node":21}],20:[function(require,module,exports){
+},{"./node":22}],21:[function(require,module,exports){
 
 
 
@@ -16064,7 +16762,7 @@ return new NetworkNode(this._record);
 
 module.exports=NetworkNode;
 
-},{"../web-inspector":39,"./node":21}],21:[function(require,module,exports){
+},{"../web-inspector":42,"./node":22}],22:[function(require,module,exports){
 
 
 
@@ -16320,7 +17018,7 @@ CPU:'cpu'};
 
 module.exports=Node;
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 
 
 
@@ -16732,7 +17430,7 @@ module.exports=Simulator;
 
 Simulator.NodeTimingData;
 
-},{"../../emulation":26,"../node":21,"./tcp-connection":23}],23:[function(require,module,exports){
+},{"../../emulation":27,"../node":22,"./tcp-connection":24}],24:[function(require,module,exports){
 
 
 
@@ -16893,7 +17591,7 @@ congestionWindow};
 
 module.exports=TcpConnection;
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 
 
 
@@ -16936,7 +17634,7 @@ module.exports={
 getElementsInDocumentFnString:getElementsInDocument.toString()};
 
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 
 
 
@@ -16993,7 +17691,7 @@ return this.driver.getObjectProperty(resp.object.objectId,propName);
 
 module.exports=Element;
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 
 
 
@@ -17164,7 +17862,105 @@ CPU_THROTTLE_METRICS}};
 
 
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const strings=require('./strings');
+
+
+
+
+
+
+
+
+class LighthouseError extends Error{
+
+
+
+
+constructor(errorDefinition,properties){
+super(errorDefinition.code);
+this.name='LHError';
+this.code=errorDefinition.code;
+this.friendlyMessage=errorDefinition.message;
+if(properties)Object.assign(this,properties);
+
+Error.captureStackTrace(this,LighthouseError);
+}
+
+
+
+
+static isPageLoadError(err){
+return err.code===ERRORS.NO_DOCUMENT_REQUEST.code||
+err.code===ERRORS.FAILED_DOCUMENT_REQUEST.code;
+}
+
+
+
+
+
+
+static fromProtocolMessage(method,protocolError){
+
+const protocolErrors=Object.keys(ERRORS).filter(k=>ERRORS[k].pattern).map(k=>ERRORS[k]);
+
+const matchedErrorDefinition=protocolErrors.find(e=>e.pattern.test(protocolError.message));
+if(matchedErrorDefinition){
+return new LighthouseError(matchedErrorDefinition,{
+protocolMethod:method,
+protocolError:protocolError.message});
+
+}
+
+
+let errMsg=`(${method}): ${protocolError.message}`;
+if(protocolError.data)errMsg+=` (${protocolError.data})`;
+const error=new Error(`Protocol error ${errMsg}`);
+return Object.assign(error,{protocolMethod:method,protocolError:protocolError.message});
+}}
+
+
+const ERRORS={
+
+NO_SPEEDLINE_FRAMES:{message:strings.didntCollectScreenshots},
+SPEEDINDEX_OF_ZERO:{message:strings.didntCollectScreenshots},
+NO_SCREENSHOTS:{message:strings.didntCollectScreenshots},
+
+
+NO_TRACING_STARTED:{message:strings.badTraceRecording},
+NO_NAVSTART:{message:strings.badTraceRecording},
+NO_FMP:{message:strings.badTraceRecording},
+NO_DCL:{message:strings.badTraceRecording},
+
+
+FMP_TOO_LATE_FOR_FCPUI:{message:strings.pageLoadTookTooLong},
+NO_FCPUI_IDLE_PERIOD:{message:strings.pageLoadTookTooLong},
+NO_TTI_CPU_IDLE_PERIOD:{message:strings.pageLoadTookTooLong},
+NO_TTI_NETWORK_IDLE_PERIOD:{message:strings.pageLoadTookTooLong},
+
+
+NO_DOCUMENT_REQUEST:{message:strings.pageLoadFailed},
+FAILED_DOCUMENT_REQUEST:{message:strings.pageLoadFailed},
+
+
+TRACING_ALREADY_STARTED:{message:strings.internalChromeError,pattern:/Tracing.*started/},
+PARSING_PROBLEM:{message:strings.internalChromeError,pattern:/Parsing problem/},
+READ_FAILED:{message:strings.internalChromeError,pattern:/Read failed/}};
+
+
+Object.keys(ERRORS).forEach(code=>ERRORS[code].code=code);
+LighthouseError.errors=ERRORS;
+module.exports=LighthouseError;
+
+
+},{"./strings":35}],29:[function(require,module,exports){
 
 
 
@@ -17239,7 +18035,7 @@ addFormattedCodeSnippet,
 groupCodeSnippetsByLocation};
 
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 
 
 
@@ -17296,7 +18092,7 @@ doExist,
 sizeAtLeast};
 
 
-},{}],29:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 
 
 
@@ -17686,7 +18482,7 @@ debugString:undefined};
 
 module.exports=parse;
 
-},{"./url-shim":38,"./web-inspector":39}],30:[function(require,module,exports){
+},{"./url-shim":41,"./web-inspector":42}],32:[function(require,module,exports){
 
 
 
@@ -17920,7 +18716,7 @@ return records;
 
 module.exports=NetworkRecorder;
 
-},{"./web-inspector":39,"events":53,"lighthouse-logger":89}],31:[function(require,module,exports){
+},{"./web-inspector":42,"events":56,"lighthouse-logger":137}],33:[function(require,module,exports){
 
 
 
@@ -17944,10 +18740,15 @@ getContext:noop};
 
 
 const SAMPLED_ERRORS=[
-{pattern:/Unable to load/,rate:0.1},
+
+{pattern:/DOCUMENT_REQUEST$/,rate:0.1},
+{pattern:/(IDLE_PERIOD|FMP_TOO_LATE)/,rate:0.1},
+{pattern:/^NO_.*/,rate:0.1},
+
 {pattern:/Failed to decode/,rate:0.1},
-{pattern:/No resource with given id/,rate:0.01},
-{pattern:/No node with given id/,rate:0.01}];
+{pattern:/All image optimizations failed/,rate:0.1},
+{pattern:/No.*resource with given/,rate:0.01},
+{pattern:/No.*node with given id/,rate:0.01}];
 
 
 
@@ -18013,7 +18814,7 @@ return context;
 
 module.exports=sentryDelegate;
 
-},{"lighthouse-logger":89,"raven":49}],32:[function(require,module,exports){
+},{"lighthouse-logger":137,"raven":52}],34:[function(require,module,exports){
 
 
 
@@ -18079,7 +18880,24 @@ module.exports={
 getLogNormalDistribution};
 
 
-},{}],33:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+module.exports={
+didntCollectScreenshots:`Chrome didn't collect any screenshots during the page load. Please make sure there is content visible on the page, and then try re-running Lighthouse.`,
+badTraceRecording:`Something went wrong with recording the trace over your page load. Please run Lighthouse again.`,
+pageLoadTookTooLong:`Your page took too long to load. Please follow the opportunities in the report to reduce your page load time, and then try re-running Lighthouse.`,
+pageLoadFailed:`Your page failed to load. Verify that the URL is valid and re-run Lighthouse.`,
+internalChromeError:`An internal Chrome error occurred. Please restart Chrome and try re-running Lighthouse.`};
+
+
+},{}],36:[function(require,module,exports){
 
 
 
@@ -18175,7 +18993,7 @@ groupIdToName,
 taskToGroup};
 
 
-},{}],34:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 
 
 
@@ -18301,7 +19119,7 @@ return irModel;
 
 module.exports=TimelineModel;
 
-},{"../console-quieter":18,"../web-inspector":39,"devtools-timeline-model/lib/timeline-model-treeview.js":128}],35:[function(require,module,exports){
+},{"../console-quieter":19,"../web-inspector":42,"devtools-timeline-model/lib/timeline-model-treeview.js":129}],38:[function(require,module,exports){
 
 
 
@@ -18572,7 +19390,7 @@ return fakeEvents;
 
 module.exports=Metrics;
 
-},{"lighthouse-logger":89}],36:[function(require,module,exports){
+},{"lighthouse-logger":137}],39:[function(require,module,exports){
 
 
 
@@ -18646,7 +19464,7 @@ traceEvents:this.traceEvents};
 
 module.exports=TraceParser;
 
-},{"../web-inspector":39}],37:[function(require,module,exports){
+},{"../web-inspector":42}],40:[function(require,module,exports){
 
 
 
@@ -18658,6 +19476,7 @@ module.exports=TraceParser;
 
 const BASE_RESPONSE_LATENCY=16;
 const SCHEDULABLE_TASK_TITLE='TaskQueueManager::ProcessTaskFromWorkQueue';
+const SCHEDULABLE_TASK_TITLE_ALT='ThreadControllerImpl::DoWork';
 
 class TraceProcessor{
 
@@ -18802,7 +19621,7 @@ static getMainThreadTopLevelEvents(tabTrace,startTime=0,endTime=Infinity){
 const topLevelEvents=[];
 
 for(const event of tabTrace.mainThreadEvents){
-if(event.name!==SCHEDULABLE_TASK_TITLE||!event.dur)continue;
+if(!TraceProcessor.isScheduleableTask(event)||!event.dur)continue;
 
 const start=(event.ts-tabTrace.navigationStartEvt.ts)/1000;
 const end=(event.ts+event.dur-tabTrace.navigationStartEvt.ts)/1000;
@@ -18814,15 +19633,24 @@ end,
 duration:event.dur/1000});
 
 }
+
+
+
+if(!topLevelEvents.length){
+throw new Error('Could not find any top level events');
+}
+
 return topLevelEvents;
+}
+
+static isScheduleableTask(evt){
+return evt.name===SCHEDULABLE_TASK_TITLE||evt.name===SCHEDULABLE_TASK_TITLE_ALT;
 }}
 
 
-TraceProcessor.SCHEDULABLE_TASK_TITLE=SCHEDULABLE_TASK_TITLE;
-
 module.exports=TraceProcessor;
 
-},{}],38:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 
 
 
@@ -18961,7 +19789,7 @@ return false;
 
 module.exports=URL;
 
-},{"../report/v2/renderer/util.js":40,"whatwg-url":49}],39:[function(require,module,exports){
+},{"../report/v2/renderer/util.js":43,"whatwg-url":52}],42:[function(require,module,exports){
 (function(global){
 
 
@@ -19286,7 +20114,7 @@ return WebInspector;
 }();
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"chrome-devtools-frontend/front_end/bindings/TempFile.js":94,"chrome-devtools-frontend/front_end/common/Color.js":95,"chrome-devtools-frontend/front_end/common/Object.js":96,"chrome-devtools-frontend/front_end/common/ParsedURL.js":97,"chrome-devtools-frontend/front_end/common/ResourceType.js":98,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":99,"chrome-devtools-frontend/front_end/common/TextRange.js":100,"chrome-devtools-frontend/front_end/common/TextUtils.js":101,"chrome-devtools-frontend/front_end/common/UIString.js":102,"chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js":103,"chrome-devtools-frontend/front_end/platform/utilities.js":104,"chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js":105,"chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js":106,"chrome-devtools-frontend/front_end/sdk/CSSMedia.js":107,"chrome-devtools-frontend/front_end/sdk/CSSMetadata.js":108,"chrome-devtools-frontend/front_end/sdk/CSSProperty.js":109,"chrome-devtools-frontend/front_end/sdk/CSSRule.js":110,"chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js":111,"chrome-devtools-frontend/front_end/sdk/NetworkManager.js":112,"chrome-devtools-frontend/front_end/sdk/NetworkRequest.js":113,"chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js":114,"chrome-devtools-frontend/front_end/sdk/Target.js":115,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":116,"chrome-devtools-frontend/front_end/sdk/TracingModel.js":117,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":118,"chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js":119,"chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js":120,"chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js":121,"chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js":122,"chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js":123,"chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js":124,"chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js":125,"chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js":126,"chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js":127}],40:[function(require,module,exports){
+},{"chrome-devtools-frontend/front_end/bindings/TempFile.js":93,"chrome-devtools-frontend/front_end/common/Color.js":94,"chrome-devtools-frontend/front_end/common/Object.js":95,"chrome-devtools-frontend/front_end/common/ParsedURL.js":96,"chrome-devtools-frontend/front_end/common/ResourceType.js":97,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":98,"chrome-devtools-frontend/front_end/common/TextRange.js":99,"chrome-devtools-frontend/front_end/common/TextUtils.js":100,"chrome-devtools-frontend/front_end/common/UIString.js":101,"chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js":102,"chrome-devtools-frontend/front_end/platform/utilities.js":103,"chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js":104,"chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js":105,"chrome-devtools-frontend/front_end/sdk/CSSMedia.js":106,"chrome-devtools-frontend/front_end/sdk/CSSMetadata.js":107,"chrome-devtools-frontend/front_end/sdk/CSSProperty.js":108,"chrome-devtools-frontend/front_end/sdk/CSSRule.js":109,"chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js":110,"chrome-devtools-frontend/front_end/sdk/NetworkManager.js":111,"chrome-devtools-frontend/front_end/sdk/NetworkRequest.js":112,"chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js":113,"chrome-devtools-frontend/front_end/sdk/Target.js":114,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":115,"chrome-devtools-frontend/front_end/sdk/TracingModel.js":116,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":117,"chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js":118,"chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js":119,"chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js":120,"chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js":121,"chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js":122,"chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js":123,"chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js":124,"chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js":125,"chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js":126}],43:[function(require,module,exports){
 
 
 
@@ -19499,7 +20327,7 @@ module.exports=Util;
 self.Util=Util;
 }
 
-},{}],41:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 (function(process,__dirname){
 
 
@@ -19757,7 +20585,10 @@ throw err;
 
 Sentry.captureException(err,{tags:{audit:audit.meta.name},level:'error'});
 
-return Audit.generateErrorAuditResult(audit,'Audit error: '+err.message);
+const debugString=err.friendlyMessage?
+`${err.friendlyMessage} (${err.message})`:
+`Audit error: ${err.message}`;
+return Audit.generateErrorAuditResult(audit,debugString);
 }).then(result=>{
 log.verbose('statusEnd',status);
 return result;
@@ -19779,7 +20610,7 @@ const ignoredFiles=[
 
 
 const fileList=[
-...["accessibility","audit.js","bootup-time.js","byte-efficiency","cache-start-url.js","consistently-interactive.js","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","estimated-input-latency.js","first-interactive.js","first-meaningful-paint.js","image-aspect-ratio.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manifest-short-name-length.js","manual","multi-check-audit.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","speed-index-metric.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
+...[".DS_Store","accessibility","audit.js","bootup-time.js","byte-efficiency","cache-start-url.js","consistently-interactive.js","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","estimated-input-latency.js","first-interactive.js","first-meaningful-paint.js","font-display.js","image-aspect-ratio.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manifest-short-name-length.js","manual","mixed-content.js","multi-check-audit.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","speed-index-metric.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","uses-rel-preload.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
 ...["appcache-manifest.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","link-blocking-first-paint.js","no-document-write.js","no-mutation-events.js","no-vulnerable-libraries.js","no-websql.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","script-blocking-first-paint.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
 ...["canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js"].map(f=>`seo/${f}`),
 ...["mobile-friendly.js","structured-data.js"].map(f=>`seo/manual/${f}`),
@@ -19802,7 +20633,7 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 
 static getGathererList(){
 const fileList=[
-...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-usage.js","js-usage.js","manifest.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","theme-color.js","url.js","viewport-dimensions.js","viewport.js"],
+...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","fonts.js","gatherer.js","html-without-javascript.js","http-redirect.js","image-usage.js","js-usage.js","manifest.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","theme-color.js","url.js","viewport-dimensions.js","viewport.js"],
 ...["canonical.js","crawlable-links.js","embedded-content.js","font-size.js","hreflang.js","meta-description.js","meta-robots.js"].map(f=>`seo/${f}`),
 ...["all-event-listeners.js","anchors-with-no-rel-noopener.js","appcache.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js","websql.js"].
 map(f=>`dobetterweb/${f}`)];
@@ -19903,14 +20734,18 @@ description:emulationDesc['cpuThrottling']}];
 
 
 
-return{environment,blockedUrlPatterns:flags.blockedUrlPatterns||[]};
+return{
+environment,
+blockedUrlPatterns:flags.blockedUrlPatterns||[],
+extraHeaders:flags.extraHeaders||{}};
+
 }}
 
 
 module.exports=Runner;
 
 }).call(this,require('_process'),"/../lighthouse-core");
-},{"../package":142,"./audits/audit":2,"./gather/driver.js":14,"./gather/gather-runner":15,"./lib/asset-saver":17,"./lib/emulation":26,"./lib/sentry":31,"./lib/url-shim":38,"./scoring":42,"_process":68,"lighthouse-logger":89,"path":66}],42:[function(require,module,exports){
+},{"../package":146,"./audits/audit":2,"./gather/driver.js":14,"./gather/gather-runner":15,"./lib/asset-saver":18,"./lib/emulation":27,"./lib/sentry":33,"./lib/url-shim":41,"./scoring":45,"_process":71,"lighthouse-logger":137,"path":69}],45:[function(require,module,exports){
 
 
 
@@ -19980,7 +20815,7 @@ return{score:overallScore,categories};
 
 module.exports=ReportScoring;
 
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 
 
 
@@ -20051,7 +20886,7 @@ window.listenForStatus=function(listenCallback){
 log.events.addListener('status',listenCallback);
 };
 
-},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default.js":8,"../../../lighthouse-core/config/fast-config.js":9,"../../../lighthouse-core/gather/connections/raw":12,"../../../lighthouse-core/runner":41,"lighthouse-logger":89}],44:[function(require,module,exports){
+},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default.js":8,"../../../lighthouse-core/config/fast-config.js":9,"../../../lighthouse-core/gather/connections/raw":12,"../../../lighthouse-core/runner":44,"lighthouse-logger":137}],47:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -20545,7 +21380,7 @@ return keys;
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"util/":88}],45:[function(require,module,exports){
+},{"util/":91}],48:[function(require,module,exports){
 'use strict';
 
 exports.byteLength=byteLength;
@@ -20661,9 +21496,9 @@ parts.push(output);
 return parts.join('');
 }
 
-},{}],46:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 
-},{}],47:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function(process,Buffer){
 var msg=require('pako/lib/zlib/messages');
 var zstream=require('pako/lib/zlib/zstream');
@@ -20903,7 +21738,7 @@ this.close();
 exports.Zlib=Zlib;
 
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"_process":68,"buffer":51,"pako/lib/zlib/constants":60,"pako/lib/zlib/deflate.js":62,"pako/lib/zlib/inflate.js":49,"pako/lib/zlib/messages":63,"pako/lib/zlib/zstream":65}],48:[function(require,module,exports){
+},{"_process":71,"buffer":54,"pako/lib/zlib/constants":63,"pako/lib/zlib/deflate.js":65,"pako/lib/zlib/inflate.js":52,"pako/lib/zlib/messages":66,"pako/lib/zlib/zstream":68}],51:[function(require,module,exports){
 (function(process,Buffer){
 
 
@@ -21517,9 +22352,9 @@ util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"./binding":47,"_process":68,"_stream_transform":81,"assert":44,"buffer":51,"util":88}],49:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments);
-},{"dup":46}],50:[function(require,module,exports){
+},{"./binding":50,"_process":71,"_stream_transform":84,"assert":47,"buffer":54,"util":91}],52:[function(require,module,exports){
+arguments[4][49][0].apply(exports,arguments);
+},{"dup":49}],53:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -21631,7 +22466,7 @@ return new SlowBuffer(size);
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"buffer":51}],51:[function(require,module,exports){
+},{"buffer":54}],54:[function(require,module,exports){
 (function(global){
 
 
@@ -23424,7 +24259,7 @@ return val!==val;
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"base64-js":45,"ieee754":54,"isarray":57}],52:[function(require,module,exports){
+},{"base64-js":48,"ieee754":57,"isarray":60}],55:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -23535,7 +24370,7 @@ return Object.prototype.toString.call(o);
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")});
-},{"../../is-buffer/index.js":56}],53:[function(require,module,exports){
+},{"../../is-buffer/index.js":59}],56:[function(require,module,exports){
 
 
 
@@ -23839,7 +24674,7 @@ function isUndefined(arg){
 return arg===void 0;
 }
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 exports.read=function(buffer,offset,isLE,mLen,nBytes){
 var e,m;
 var eLen=nBytes*8-mLen-1;
@@ -23925,7 +24760,7 @@ for(;eLen>0;buffer[offset+i]=e&0xff,i+=d,e/=256,eLen-=8){}
 buffer[offset+i-d]|=s*128;
 };
 
-},{}],55:[function(require,module,exports){
+},{}],58:[function(require,module,exports){
 if(typeof Object.create==='function'){
 
 module.exports=function inherits(ctor,superCtor){
@@ -23950,7 +24785,7 @@ ctor.prototype.constructor=ctor;
 };
 }
 
-},{}],56:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 
 
 
@@ -23973,14 +24808,14 @@ function isSlowBuffer(obj){
 return typeof obj.readFloatLE==='function'&&typeof obj.slice==='function'&&isBuffer(obj.slice(0,0));
 }
 
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 var toString={}.toString;
 
 module.exports=Array.isArray||function(arr){
 return toString.call(arr)=='[object Array]';
 };
 
-},{}],58:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 'use strict';
 
 
@@ -24084,7 +24919,7 @@ exports.assign(exports,fnUntyped);
 
 exports.setTyped(TYPED_OK);
 
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 'use strict';
 
 
@@ -24118,7 +24953,7 @@ return s1|s2<<16|0;
 
 module.exports=adler32;
 
-},{}],60:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 'use strict';
 
 
@@ -24170,7 +25005,7 @@ Z_DEFLATED:8};
 
 
 
-},{}],61:[function(require,module,exports){
+},{}],64:[function(require,module,exports){
 'use strict';
 
 
@@ -24213,7 +25048,7 @@ return crc^-1;
 
 module.exports=crc32;
 
-},{}],62:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 'use strict';
 
 var utils=require('../utils/common');
@@ -26070,7 +26905,7 @@ exports.deflateInfo='pako deflate (from Nodeca project)';
 
 
 
-},{"../utils/common":58,"./adler32":59,"./crc32":61,"./messages":63,"./trees":64}],63:[function(require,module,exports){
+},{"../utils/common":61,"./adler32":62,"./crc32":64,"./messages":66,"./trees":67}],66:[function(require,module,exports){
 'use strict';
 
 module.exports={
@@ -26085,7 +26920,7 @@ module.exports={
 '-6':'incompatible version'};
 
 
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 
@@ -27289,7 +28124,7 @@ exports._tr_flush_block=_tr_flush_block;
 exports._tr_tally=_tr_tally;
 exports._tr_align=_tr_align;
 
-},{"../utils/common":58}],65:[function(require,module,exports){
+},{"../utils/common":61}],68:[function(require,module,exports){
 'use strict';
 
 
@@ -27320,7 +28155,7 @@ this.adler=0;
 
 module.exports=ZStream;
 
-},{}],66:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 (function(process){
 
 
@@ -27548,7 +28383,7 @@ return str.substr(start,len);
 
 
 }).call(this,require('_process'));
-},{"_process":68}],67:[function(require,module,exports){
+},{"_process":71}],70:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -27595,7 +28430,7 @@ fn.apply(null,args);
 }
 
 }).call(this,require('_process'));
-},{"_process":68}],68:[function(require,module,exports){
+},{"_process":71}],71:[function(require,module,exports){
 
 var process=module.exports={};
 
@@ -27777,7 +28612,7 @@ throw new Error('process.chdir is not supported');
 };
 process.umask=function(){return 0;};
 
-},{}],69:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 
 
 
@@ -27863,7 +28698,7 @@ var isArray=Array.isArray||function(xs){
 return Object.prototype.toString.call(xs)==='[object Array]';
 };
 
-},{}],70:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 
 
 
@@ -27950,16 +28785,16 @@ if(Object.prototype.hasOwnProperty.call(obj,key))res.push(key);
 return res;
 };
 
-},{}],71:[function(require,module,exports){
+},{}],74:[function(require,module,exports){
 'use strict';
 
 exports.decode=exports.parse=require('./decode');
 exports.encode=exports.stringify=require('./encode');
 
-},{"./decode":69,"./encode":70}],72:[function(require,module,exports){
+},{"./decode":72,"./encode":73}],75:[function(require,module,exports){
 module.exports=require("./lib/_stream_duplex.js");
 
-},{"./lib/_stream_duplex.js":73}],73:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":76}],76:[function(require,module,exports){
 
 
 
@@ -28035,7 +28870,7 @@ for(var i=0,l=xs.length;i<l;i++){
 f(xs[i],i);
 }
 }
-},{"./_stream_readable":75,"./_stream_writable":77,"core-util-is":52,"inherits":55,"process-nextick-args":67}],74:[function(require,module,exports){
+},{"./_stream_readable":78,"./_stream_writable":80,"core-util-is":55,"inherits":58,"process-nextick-args":70}],77:[function(require,module,exports){
 
 
 
@@ -28062,7 +28897,7 @@ Transform.call(this,options);
 PassThrough.prototype._transform=function(chunk,encoding,cb){
 cb(null,chunk);
 };
-},{"./_stream_transform":76,"core-util-is":52,"inherits":55}],75:[function(require,module,exports){
+},{"./_stream_transform":79,"core-util-is":55,"inherits":58}],78:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -29006,7 +29841,7 @@ if(xs[i]===x)return i;
 return-1;
 }
 }).call(this,require('_process'));
-},{"./_stream_duplex":73,"./internal/streams/BufferList":78,"_process":68,"buffer":51,"buffer-shims":50,"core-util-is":52,"events":53,"inherits":55,"isarray":57,"process-nextick-args":67,"string_decoder/":84,"util":46}],76:[function(require,module,exports){
+},{"./_stream_duplex":76,"./internal/streams/BufferList":81,"_process":71,"buffer":54,"buffer-shims":53,"core-util-is":55,"events":56,"inherits":58,"isarray":60,"process-nextick-args":70,"string_decoder/":87,"util":49}],79:[function(require,module,exports){
 
 
 
@@ -29189,7 +30024,7 @@ if(ts.transforming)throw new Error('Calling transform done when still transformi
 
 return stream.push(null);
 }
-},{"./_stream_duplex":73,"core-util-is":52,"inherits":55}],77:[function(require,module,exports){
+},{"./_stream_duplex":76,"core-util-is":55,"inherits":58}],80:[function(require,module,exports){
 (function(process){
 
 
@@ -29746,7 +30581,7 @@ state.corkedRequestsFree=_this;
 };
 }
 }).call(this,require('_process'));
-},{"./_stream_duplex":73,"_process":68,"buffer":51,"buffer-shims":50,"core-util-is":52,"events":53,"inherits":55,"process-nextick-args":67,"util-deprecate":85}],78:[function(require,module,exports){
+},{"./_stream_duplex":76,"_process":71,"buffer":54,"buffer-shims":53,"core-util-is":55,"events":56,"inherits":58,"process-nextick-args":70,"util-deprecate":88}],81:[function(require,module,exports){
 'use strict';
 
 var Buffer=require('buffer').Buffer;
@@ -29811,10 +30646,10 @@ p=p.next;
 }
 return ret;
 };
-},{"buffer":51,"buffer-shims":50}],79:[function(require,module,exports){
+},{"buffer":54,"buffer-shims":53}],82:[function(require,module,exports){
 module.exports=require("./lib/_stream_passthrough.js");
 
-},{"./lib/_stream_passthrough.js":74}],80:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":77}],83:[function(require,module,exports){
 (function(process){
 var Stream=function(){
 try{
@@ -29834,13 +30669,13 @@ module.exports=Stream;
 }
 
 }).call(this,require('_process'));
-},{"./lib/_stream_duplex.js":73,"./lib/_stream_passthrough.js":74,"./lib/_stream_readable.js":75,"./lib/_stream_transform.js":76,"./lib/_stream_writable.js":77,"_process":68}],81:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":76,"./lib/_stream_passthrough.js":77,"./lib/_stream_readable.js":78,"./lib/_stream_transform.js":79,"./lib/_stream_writable.js":80,"_process":71}],84:[function(require,module,exports){
 module.exports=require("./lib/_stream_transform.js");
 
-},{"./lib/_stream_transform.js":76}],82:[function(require,module,exports){
+},{"./lib/_stream_transform.js":79}],85:[function(require,module,exports){
 module.exports=require("./lib/_stream_writable.js");
 
-},{"./lib/_stream_writable.js":77}],83:[function(require,module,exports){
+},{"./lib/_stream_writable.js":80}],86:[function(require,module,exports){
 
 
 
@@ -29969,7 +30804,7 @@ dest.emit('pipe',source);
 return dest;
 };
 
-},{"events":53,"inherits":55,"readable-stream/duplex.js":72,"readable-stream/passthrough.js":79,"readable-stream/readable.js":80,"readable-stream/transform.js":81,"readable-stream/writable.js":82}],84:[function(require,module,exports){
+},{"events":56,"inherits":58,"readable-stream/duplex.js":75,"readable-stream/passthrough.js":82,"readable-stream/readable.js":83,"readable-stream/transform.js":84,"readable-stream/writable.js":85}],87:[function(require,module,exports){
 
 
 
@@ -30192,7 +31027,7 @@ this.charReceived=buffer.length%3;
 this.charLength=this.charReceived?3:0;
 }
 
-},{"buffer":51}],85:[function(require,module,exports){
+},{"buffer":54}],88:[function(require,module,exports){
 (function(global){
 
 
@@ -30263,16 +31098,16 @@ return String(val).toLowerCase()==='true';
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],86:[function(require,module,exports){
-arguments[4][55][0].apply(exports,arguments);
-},{"dup":55}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
+arguments[4][58][0].apply(exports,arguments);
+},{"dup":58}],90:[function(require,module,exports){
 module.exports=function isBuffer(arg){
 return arg&&typeof arg==='object'&&
 typeof arg.copy==='function'&&
 typeof arg.fill==='function'&&
 typeof arg.readUInt8==='function';
 };
-},{}],88:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 (function(process,global){
 
 
@@ -30862,769 +31697,7 @@ return Object.prototype.hasOwnProperty.call(obj,prop);
 }
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./support/isBuffer":87,"_process":68,"inherits":86}],89:[function(require,module,exports){
-(function(process){
-
-
-
-
-
-'use strict';
-
-const debug=require('debug');
-const EventEmitter=require('events').EventEmitter;
-const isWindows=process.platform==='win32';
-
-
-const isBrowser=process.browser;
-
-const colors={
-red:isBrowser?'crimson':1,
-yellow:isBrowser?'gold':3,
-cyan:isBrowser?'darkturquoise':6,
-green:isBrowser?'forestgreen':2,
-blue:isBrowser?'steelblue':4,
-magenta:isBrowser?'palevioletred':5};
-
-
-
-debug.colors=[colors.cyan,colors.green,colors.blue,colors.magenta];
-
-class Emitter extends EventEmitter{
-
-
-
-
-
-
-issueStatus(title,argsArray){
-if(title==='status'||title==='statusEnd'){
-this.emit(title,[title,...argsArray]);
-}
-}
-
-
-
-
-
-
-
-issueWarning(title,argsArray){
-this.emit('warning',[title,...argsArray]);
-}}
-
-
-const loggersByTitle={};
-const loggingBufferColumns=25;
-
-class Log{
-static _logToStdErr(title,argsArray){
-const log=Log.loggerfn(title);
-log(...argsArray);
-}
-
-static loggerfn(title){
-let log=loggersByTitle[title];
-if(!log){
-log=debug(title);
-loggersByTitle[title]=log;
-
-if(title.endsWith('error')){
-log.color=colors.red;
-}else if(title.endsWith('warn')){
-log.color=colors.yellow;
-}
-}
-return log;
-}
-
-static setLevel(level){
-switch(level){
-case'silent':
-debug.enable('-*');
-break;
-case'verbose':
-debug.enable('*');
-break;
-case'error':
-debug.enable('-*, *:error');
-break;
-default:
-debug.enable('*, -*:verbose');}
-
-}
-
-
-
-
-
-
-
-static formatProtocol(prefix,data,level){
-const columns=!process||process.browser?Infinity:process.stdout.columns;
-const method=data.method||'?????';
-const maxLength=columns-method.length-prefix.length-loggingBufferColumns;
-
-const snippet=data.params&&method!=='IO.read'?
-JSON.stringify(data.params).substr(0,maxLength):'';
-Log._logToStdErr(`${prefix}:${level||''}`,[method,snippet]);
-}
-
-static log(title,...args){
-Log.events.issueStatus(title,args);
-return Log._logToStdErr(title,args);
-}
-
-static warn(title,...args){
-Log.events.issueWarning(title,args);
-return Log._logToStdErr(`${title}:warn`,args);
-}
-
-static error(title,...args){
-return Log._logToStdErr(`${title}:error`,args);
-}
-
-static verbose(title,...args){
-Log.events.issueStatus(title,args);
-return Log._logToStdErr(`${title}:verbose`,args);
-}
-
-
-
-
-
-
-static greenify(str){
-return`${Log.green}${str}${Log.reset}`;
-}
-
-
-
-
-
-
-static redify(str){
-return`${Log.red}${str}${Log.reset}`;
-}
-
-static get green(){
-return'\x1B[32m';
-}
-
-static get red(){
-return'\x1B[31m';
-}
-
-static get yellow(){
-return'\x1b[33m';
-}
-
-static get purple(){
-return'\x1b[95m';
-}
-
-static get reset(){
-return'\x1B[0m';
-}
-
-static get bold(){
-return'\x1b[1m';
-}
-
-static get dim(){
-return'\x1b[2m';
-}
-
-static get tick(){
-return isWindows?'\u221A':'✓';
-}
-
-static get cross(){
-return isWindows?'\u00D7':'✘';
-}
-
-static get whiteSmallSquare(){
-return isWindows?'\u0387':'▫';
-}
-
-static get heavyHorizontal(){
-return isWindows?'\u2500':'━';
-}
-
-static get heavyVertical(){
-return isWindows?'\u2502 ':'┃ ';
-}
-
-static get heavyUpAndRight(){
-return isWindows?'\u2514':'┗';
-}
-
-static get heavyVerticalAndRight(){
-return isWindows?'\u251C':'┣';
-}
-
-static get heavyDownAndHorizontal(){
-return isWindows?'\u252C':'┳';
-}
-
-static get doubleLightHorizontal(){
-return'──';
-}}
-
-
-Log.events=new Emitter();
-
-module.exports=Log;
-
-}).call(this,require('_process'));
-},{"_process":68,"debug":90,"events":53}],90:[function(require,module,exports){
-(function(process){
-
-
-
-
-
-
-exports=module.exports=require('./debug');
-exports.log=log;
-exports.formatArgs=formatArgs;
-exports.save=save;
-exports.load=load;
-exports.useColors=useColors;
-exports.storage='undefined'!=typeof chrome&&
-'undefined'!=typeof chrome.storage?
-chrome.storage.local:
-localstorage();
-
-
-
-
-
-exports.colors=[
-'lightseagreen',
-'forestgreen',
-'goldenrod',
-'dodgerblue',
-'darkorchid',
-'crimson'];
-
-
-
-
-
-
-
-
-
-
-function useColors(){
-
-
-
-if(typeof window!=='undefined'&&window.process&&window.process.type==='renderer'){
-return true;
-}
-
-
-
-return typeof document!=='undefined'&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||
-
-typeof window!=='undefined'&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||
-
-
-typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||
-
-typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
-}
-
-
-
-
-
-exports.formatters.j=function(v){
-try{
-return JSON.stringify(v);
-}catch(err){
-return'[UnexpectedJSONParseError]: '+err.message;
-}
-};
-
-
-
-
-
-
-
-
-function formatArgs(args){
-var useColors=this.useColors;
-
-args[0]=(useColors?'%c':'')+
-this.namespace+(
-useColors?' %c':' ')+
-args[0]+(
-useColors?'%c ':' ')+
-'+'+exports.humanize(this.diff);
-
-if(!useColors)return;
-
-var c='color: '+this.color;
-args.splice(1,0,c,'color: inherit');
-
-
-
-
-var index=0;
-var lastC=0;
-args[0].replace(/%[a-zA-Z%]/g,function(match){
-if('%%'===match)return;
-index++;
-if('%c'===match){
-
-
-lastC=index;
-}
-});
-
-args.splice(lastC,0,c);
-}
-
-
-
-
-
-
-
-
-function log(){
-
-
-return'object'===typeof console&&
-console.log&&
-Function.prototype.apply.call(console.log,console,arguments);
-}
-
-
-
-
-
-
-
-
-function save(namespaces){
-try{
-if(null==namespaces){
-exports.storage.removeItem('debug');
-}else{
-exports.storage.debug=namespaces;
-}
-}catch(e){}
-}
-
-
-
-
-
-
-
-
-function load(){
-var r;
-try{
-r=exports.storage.debug;
-}catch(e){}
-
-
-if(!r&&typeof process!=='undefined'&&'env'in process){
-r=process.env.DEBUG;
-}
-
-return r;
-}
-
-
-
-
-
-exports.enable(load());
-
-
-
-
-
-
-
-
-
-
-
-
-function localstorage(){
-try{
-return window.localStorage;
-}catch(e){}
-}
-
-}).call(this,require('_process'));
-},{"./debug":91,"_process":68}],91:[function(require,module,exports){
-
-
-
-
-
-
-
-
-exports=module.exports=createDebug.debug=createDebug['default']=createDebug;
-exports.coerce=coerce;
-exports.disable=disable;
-exports.enable=enable;
-exports.enabled=enabled;
-exports.humanize=require('ms');
-
-
-
-
-
-exports.names=[];
-exports.skips=[];
-
-
-
-
-
-
-
-exports.formatters={};
-
-
-
-
-
-var prevTime;
-
-
-
-
-
-
-
-
-function selectColor(namespace){
-var hash=0,i;
-
-for(i in namespace){
-hash=(hash<<5)-hash+namespace.charCodeAt(i);
-hash|=0;
-}
-
-return exports.colors[Math.abs(hash)%exports.colors.length];
-}
-
-
-
-
-
-
-
-
-
-function createDebug(namespace){
-
-function debug(){
-
-if(!debug.enabled)return;
-
-var self=debug;
-
-
-var curr=+new Date();
-var ms=curr-(prevTime||curr);
-self.diff=ms;
-self.prev=prevTime;
-self.curr=curr;
-prevTime=curr;
-
-
-var args=new Array(arguments.length);
-for(var i=0;i<args.length;i++){
-args[i]=arguments[i];
-}
-
-args[0]=exports.coerce(args[0]);
-
-if('string'!==typeof args[0]){
-
-args.unshift('%O');
-}
-
-
-var index=0;
-args[0]=args[0].replace(/%([a-zA-Z%])/g,function(match,format){
-
-if(match==='%%')return match;
-index++;
-var formatter=exports.formatters[format];
-if('function'===typeof formatter){
-var val=args[index];
-match=formatter.call(self,val);
-
-
-args.splice(index,1);
-index--;
-}
-return match;
-});
-
-
-exports.formatArgs.call(self,args);
-
-var logFn=debug.log||exports.log||console.log.bind(console);
-logFn.apply(self,args);
-}
-
-debug.namespace=namespace;
-debug.enabled=exports.enabled(namespace);
-debug.useColors=exports.useColors();
-debug.color=selectColor(namespace);
-
-
-if('function'===typeof exports.init){
-exports.init(debug);
-}
-
-return debug;
-}
-
-
-
-
-
-
-
-
-
-function enable(namespaces){
-exports.save(namespaces);
-
-exports.names=[];
-exports.skips=[];
-
-var split=(typeof namespaces==='string'?namespaces:'').split(/[\s,]+/);
-var len=split.length;
-
-for(var i=0;i<len;i++){
-if(!split[i])continue;
-namespaces=split[i].replace(/\*/g,'.*?');
-if(namespaces[0]==='-'){
-exports.skips.push(new RegExp('^'+namespaces.substr(1)+'$'));
-}else{
-exports.names.push(new RegExp('^'+namespaces+'$'));
-}
-}
-}
-
-
-
-
-
-
-
-function disable(){
-exports.enable('');
-}
-
-
-
-
-
-
-
-
-
-function enabled(name){
-var i,len;
-for(i=0,len=exports.skips.length;i<len;i++){
-if(exports.skips[i].test(name)){
-return false;
-}
-}
-for(i=0,len=exports.names.length;i<len;i++){
-if(exports.names[i].test(name)){
-return true;
-}
-}
-return false;
-}
-
-
-
-
-
-
-
-
-
-function coerce(val){
-if(val instanceof Error)return val.stack||val.message;
-return val;
-}
-
-},{"ms":92}],92:[function(require,module,exports){
-
-
-
-
-var s=1000;
-var m=s*60;
-var h=m*60;
-var d=h*24;
-var y=d*365.25;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports=function(val,options){
-options=options||{};
-var type=typeof val;
-if(type==='string'&&val.length>0){
-return parse(val);
-}else if(type==='number'&&isNaN(val)===false){
-return options.long?fmtLong(val):fmtShort(val);
-}
-throw new Error(
-'val is not a non-empty string or a valid number. val='+
-JSON.stringify(val));
-
-};
-
-
-
-
-
-
-
-
-
-function parse(str){
-str=String(str);
-if(str.length>100){
-return;
-}
-var match=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
-str);
-
-if(!match){
-return;
-}
-var n=parseFloat(match[1]);
-var type=(match[2]||'ms').toLowerCase();
-switch(type){
-case'years':
-case'year':
-case'yrs':
-case'yr':
-case'y':
-return n*y;
-case'days':
-case'day':
-case'd':
-return n*d;
-case'hours':
-case'hour':
-case'hrs':
-case'hr':
-case'h':
-return n*h;
-case'minutes':
-case'minute':
-case'mins':
-case'min':
-case'm':
-return n*m;
-case'seconds':
-case'second':
-case'secs':
-case'sec':
-case's':
-return n*s;
-case'milliseconds':
-case'millisecond':
-case'msecs':
-case'msec':
-case'ms':
-return n;
-default:
-return undefined;}
-
-}
-
-
-
-
-
-
-
-
-
-function fmtShort(ms){
-if(ms>=d){
-return Math.round(ms/d)+'d';
-}
-if(ms>=h){
-return Math.round(ms/h)+'h';
-}
-if(ms>=m){
-return Math.round(ms/m)+'m';
-}
-if(ms>=s){
-return Math.round(ms/s)+'s';
-}
-return ms+'ms';
-}
-
-
-
-
-
-
-
-
-
-function fmtLong(ms){
-return plural(ms,d,'day')||
-plural(ms,h,'hour')||
-plural(ms,m,'minute')||
-plural(ms,s,'second')||
-ms+' ms';
-}
-
-
-
-
-
-function plural(ms,n,name){
-if(ms<n){
-return;
-}
-if(ms<n*1.5){
-return Math.floor(ms/n)+' '+name;
-}
-return Math.ceil(ms/n)+' '+name+'s';
-}
-
-},{}],93:[function(require,module,exports){
+},{"./support/isBuffer":90,"_process":71,"inherits":89}],92:[function(require,module,exports){
 
 
 var langs=[
@@ -39768,7 +39841,7 @@ axe.utils.validLangs=function(){
 return langs;
 };
 
-},{}],94:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 
 
 
@@ -40362,7 +40435,7 @@ this._file.copyToOutputStream(outputStream,delegate);
 }};
 
 
-},{}],95:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 
 
 
@@ -41189,7 +41262,7 @@ format=cf.RGBA;
 return format;
 };
 
-},{}],96:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 
 
 
@@ -41410,7 +41483,7 @@ this.receiver=receiver;
 this.method=method;
 };
 
-},{}],97:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 
 
 
@@ -41773,7 +41846,7 @@ return parsedURL;
 return null;
 };
 
-},{}],98:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 
 
 
@@ -42083,7 +42156,7 @@ WebInspector.ResourceType._mimeTypeByExtension=new Map([
 ["woff","application/font-woff"]]);
 
 
-},{}],99:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 
 
 
@@ -42197,7 +42270,7 @@ return merged;
 }};
 
 
-},{}],100:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 
 
 
@@ -42544,7 +42617,7 @@ WebInspector.SourceEdit.comparator=function(edit1,edit2)
 return WebInspector.TextRange.comparator(edit1.oldRange,edit2.oldRange);
 };
 
-},{}],101:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 
 
@@ -42854,7 +42927,7 @@ WebInspector.TokenizerFactory.prototype={
 createTokenizer:function(mimeType){}};
 
 
-},{}],102:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 
 
 
@@ -42966,7 +43039,7 @@ String.standardFormatters,"",WebInspector.UIStringFormat._append,this._tokenized
 }};
 
 
-},{}],103:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 
 
@@ -43122,7 +43195,7 @@ return this._snapshot.objectPromise();
 }};
 
 
-},{}],104:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 
 
 
@@ -44664,7 +44737,7 @@ equal:equal};
 
 };
 
-},{}],105:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 
 
 
@@ -45043,7 +45116,7 @@ return this._idToNode.get(this.samples[index])||null;
 __proto__:WebInspector.ProfileTreeModel.prototype};
 
 
-},{}],106:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 
 
@@ -45489,7 +45562,7 @@ Active:"Active",
 Overloaded:"Overloaded"};
 
 
-},{}],107:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 
 
 
@@ -45743,7 +45816,7 @@ return new WebInspector.CSSLocation(header,lineNumber,this.columnNumberInSource(
 }};
 
 
-},{}],108:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 
 
 
@@ -46714,7 +46787,7 @@ WebInspector.CSSMetadata.Weight={
 "zoom":200};
 
 
-},{}],109:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 
 
 
@@ -47016,7 +47089,7 @@ return this.setText(text,true,true);
 }};
 
 
-},{}],110:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 
 
@@ -47342,7 +47415,7 @@ return this._cssModel.setKeyframeKey(styleSheetId,range,newKeyText);
 __proto__:WebInspector.CSSRule.prototype};
 
 
-},{}],111:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 
 
 
@@ -47657,7 +47730,7 @@ this.insertPropertyAt(this.allProperties.length,name,value,userCallback);
 }};
 
 
-},{}],112:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 
 
 
@@ -48595,7 +48668,7 @@ __proto__:WebInspector.Object.prototype};
 
 WebInspector.multitargetNetworkManager;
 
-},{}],113:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 
 
 
@@ -49860,7 +49933,7 @@ return this._networkManager;
 __proto__:WebInspector.SDKObject.prototype};
 
 
-},{}],114:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 
 
 
@@ -49987,7 +50060,7 @@ return root.total;
 }};
 
 
-},{}],115:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 
 
 
@@ -50280,7 +50353,7 @@ WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events
 __proto__:WebInspector.SDKObject.prototype};
 
 
-},{}],116:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 
 
 
@@ -50671,7 +50744,7 @@ targetRemoved:function(target){}};
 
 WebInspector.targetManager=new WebInspector.TargetManager();
 
-},{}],117:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 
 
 
@@ -51658,7 +51731,7 @@ return this._asyncEvents;
 __proto__:WebInspector.TracingModel.NamedObject.prototype};
 
 
-},{}],118:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 
 
 
@@ -51939,7 +52012,7 @@ WebInspector.console.error(WebInspector.UIString("Failed to save timeline: %s (%
 }};
 
 
-},{}],119:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 
 
 
@@ -52829,7 +52902,7 @@ this.dispatchEventToListeners(WebInspector.TimelineStackView.Events.SelectionCha
 __proto__:WebInspector.VBox.prototype};
 
 
-},{}],120:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 
 
 
@@ -54985,7 +55058,7 @@ console.assert(false,"Unhandled TimelineModel.WarningType");}
 return span;
 };
 
-},{}],121:[function(require,module,exports){
+},{}],120:[function(require,module,exports){
 
 
 
@@ -56297,7 +56370,7 @@ model=new WebInspector.LayerTreeModel(target);
 return model;
 };
 
-},{}],122:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 
 
 
@@ -56958,7 +57031,7 @@ this.mainFrameId=undefined;
 this.triggerTime=triggerTime;
 };
 
-},{}],123:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 
 
 
@@ -57293,7 +57366,7 @@ return eventName.substr(prefix.length);
 
 
 
-},{}],124:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 
 
 
@@ -57793,7 +57866,7 @@ break;}
 return samples;
 };
 
-},{}],125:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 
 
 
@@ -59592,7 +59665,7 @@ event.initiator=initiatorMap.get(id)||null;
 }};
 
 
-},{}],126:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 
 
 
@@ -59973,7 +60046,7 @@ return this._groupNodes.get(id)||this._buildGroupNode(id,node.event);
 }};
 
 
-},{}],127:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 
 
 
@@ -60162,7 +60235,400 @@ child._sortChildren();
 __proto__:WebInspector.ViewportDataGridNode.prototype};
 
 
-},{}],128:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
+(function(process){
+
+
+
+
+
+
+exports=module.exports=require('./debug');
+exports.log=log;
+exports.formatArgs=formatArgs;
+exports.save=save;
+exports.load=load;
+exports.useColors=useColors;
+exports.storage='undefined'!=typeof chrome&&
+'undefined'!=typeof chrome.storage?
+chrome.storage.local:
+localstorage();
+
+
+
+
+
+exports.colors=[
+'lightseagreen',
+'forestgreen',
+'goldenrod',
+'dodgerblue',
+'darkorchid',
+'crimson'];
+
+
+
+
+
+
+
+
+
+
+function useColors(){
+
+
+
+if(typeof window!=='undefined'&&window.process&&window.process.type==='renderer'){
+return true;
+}
+
+
+
+return typeof document!=='undefined'&&document.documentElement&&document.documentElement.style&&document.documentElement.style.WebkitAppearance||
+
+typeof window!=='undefined'&&window.console&&(window.console.firebug||window.console.exception&&window.console.table)||
+
+
+typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)&&parseInt(RegExp.$1,10)>=31||
+
+typeof navigator!=='undefined'&&navigator.userAgent&&navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+}
+
+
+
+
+
+exports.formatters.j=function(v){
+try{
+return JSON.stringify(v);
+}catch(err){
+return'[UnexpectedJSONParseError]: '+err.message;
+}
+};
+
+
+
+
+
+
+
+
+function formatArgs(args){
+var useColors=this.useColors;
+
+args[0]=(useColors?'%c':'')+
+this.namespace+(
+useColors?' %c':' ')+
+args[0]+(
+useColors?'%c ':' ')+
+'+'+exports.humanize(this.diff);
+
+if(!useColors)return;
+
+var c='color: '+this.color;
+args.splice(1,0,c,'color: inherit');
+
+
+
+
+var index=0;
+var lastC=0;
+args[0].replace(/%[a-zA-Z%]/g,function(match){
+if('%%'===match)return;
+index++;
+if('%c'===match){
+
+
+lastC=index;
+}
+});
+
+args.splice(lastC,0,c);
+}
+
+
+
+
+
+
+
+
+function log(){
+
+
+return'object'===typeof console&&
+console.log&&
+Function.prototype.apply.call(console.log,console,arguments);
+}
+
+
+
+
+
+
+
+
+function save(namespaces){
+try{
+if(null==namespaces){
+exports.storage.removeItem('debug');
+}else{
+exports.storage.debug=namespaces;
+}
+}catch(e){}
+}
+
+
+
+
+
+
+
+
+function load(){
+var r;
+try{
+r=exports.storage.debug;
+}catch(e){}
+
+
+if(!r&&typeof process!=='undefined'&&'env'in process){
+r=process.env.DEBUG;
+}
+
+return r;
+}
+
+
+
+
+
+exports.enable(load());
+
+
+
+
+
+
+
+
+
+
+
+
+function localstorage(){
+try{
+return window.localStorage;
+}catch(e){}
+}
+
+}).call(this,require('_process'));
+},{"./debug":128,"_process":71}],128:[function(require,module,exports){
+
+
+
+
+
+
+
+
+exports=module.exports=createDebug.debug=createDebug['default']=createDebug;
+exports.coerce=coerce;
+exports.disable=disable;
+exports.enable=enable;
+exports.enabled=enabled;
+exports.humanize=require('ms');
+
+
+
+
+
+exports.names=[];
+exports.skips=[];
+
+
+
+
+
+
+
+exports.formatters={};
+
+
+
+
+
+var prevTime;
+
+
+
+
+
+
+
+
+function selectColor(namespace){
+var hash=0,i;
+
+for(i in namespace){
+hash=(hash<<5)-hash+namespace.charCodeAt(i);
+hash|=0;
+}
+
+return exports.colors[Math.abs(hash)%exports.colors.length];
+}
+
+
+
+
+
+
+
+
+
+function createDebug(namespace){
+
+function debug(){
+
+if(!debug.enabled)return;
+
+var self=debug;
+
+
+var curr=+new Date();
+var ms=curr-(prevTime||curr);
+self.diff=ms;
+self.prev=prevTime;
+self.curr=curr;
+prevTime=curr;
+
+
+var args=new Array(arguments.length);
+for(var i=0;i<args.length;i++){
+args[i]=arguments[i];
+}
+
+args[0]=exports.coerce(args[0]);
+
+if('string'!==typeof args[0]){
+
+args.unshift('%O');
+}
+
+
+var index=0;
+args[0]=args[0].replace(/%([a-zA-Z%])/g,function(match,format){
+
+if(match==='%%')return match;
+index++;
+var formatter=exports.formatters[format];
+if('function'===typeof formatter){
+var val=args[index];
+match=formatter.call(self,val);
+
+
+args.splice(index,1);
+index--;
+}
+return match;
+});
+
+
+exports.formatArgs.call(self,args);
+
+var logFn=debug.log||exports.log||console.log.bind(console);
+logFn.apply(self,args);
+}
+
+debug.namespace=namespace;
+debug.enabled=exports.enabled(namespace);
+debug.useColors=exports.useColors();
+debug.color=selectColor(namespace);
+
+
+if('function'===typeof exports.init){
+exports.init(debug);
+}
+
+return debug;
+}
+
+
+
+
+
+
+
+
+
+function enable(namespaces){
+exports.save(namespaces);
+
+exports.names=[];
+exports.skips=[];
+
+var split=(typeof namespaces==='string'?namespaces:'').split(/[\s,]+/);
+var len=split.length;
+
+for(var i=0;i<len;i++){
+if(!split[i])continue;
+namespaces=split[i].replace(/\*/g,'.*?');
+if(namespaces[0]==='-'){
+exports.skips.push(new RegExp('^'+namespaces.substr(1)+'$'));
+}else{
+exports.names.push(new RegExp('^'+namespaces+'$'));
+}
+}
+}
+
+
+
+
+
+
+
+function disable(){
+exports.enable('');
+}
+
+
+
+
+
+
+
+
+
+function enabled(name){
+var i,len;
+for(i=0,len=exports.skips.length;i<len;i++){
+if(exports.skips[i].test(name)){
+return false;
+}
+}
+for(i=0,len=exports.names.length;i<len;i++){
+if(exports.names[i].test(name)){
+return true;
+}
+}
+return false;
+}
+
+
+
+
+
+
+
+
+
+function coerce(val){
+if(val instanceof Error)return val.stack||val.message;
+return val;
+}
+
+},{"ms":140}],129:[function(require,module,exports){
 
 
 
@@ -60259,7 +60725,7 @@ return TimelineModelTreeView;
 
 };
 
-},{}],129:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root,factory){
 
 if(typeof exports==='object'&&typeof module==='object')
@@ -66960,7 +67426,7 @@ exports.Tokenizer=Tokenizer;
 
 });
 ;
-},{}],130:[function(require,module,exports){
+},{}],131:[function(require,module,exports){
 (function(Buffer){
 var querystring=require('querystring');
 var trim=require('./trim');
@@ -67267,12 +67733,12 @@ return refs.join(', ');
 module.exports=Link;
 
 }).call(this,{"isBuffer":require("../../../lighthouse-extension/node_modules/is-buffer/index.js")});
-},{"../../../lighthouse-extension/node_modules/is-buffer/index.js":56,"./trim":131,"querystring":71}],131:[function(require,module,exports){
+},{"../../../lighthouse-extension/node_modules/is-buffer/index.js":59,"./trim":132,"querystring":74}],132:[function(require,module,exports){
 module.exports=function trim(value){
 return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
 };
 
-},{}],132:[function(require,module,exports){
+},{}],133:[function(require,module,exports){
 
 
 
@@ -67417,7 +67883,7 @@ return sumLuma/lumaValues.length;
 })(ImageSSIM||(ImageSSIM={}));
 module.exports=ImageSSIM;
 
-},{}],133:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 var encode=require('./lib/encoder'),
 decode=require('./lib/decoder');
 
@@ -67426,7 +67892,7 @@ encode:encode,
 decode:decode};
 
 
-},{"./lib/decoder":134,"./lib/encoder":135}],134:[function(require,module,exports){
+},{"./lib/decoder":135,"./lib/encoder":136}],135:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -68416,7 +68882,7 @@ return image;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":51}],135:[function(require,module,exports){
+},{"buffer":54}],136:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -69186,7 +69652,2075 @@ return ctx.getImageData(0,0,cvs.width,cvs.height);
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":51}],136:[function(require,module,exports){
+},{"buffer":54}],137:[function(require,module,exports){
+(function(process){
+
+
+
+
+
+'use strict';
+
+const debug=require('debug');
+const EventEmitter=require('events').EventEmitter;
+const isWindows=process.platform==='win32';
+
+
+const isBrowser=process.browser;
+
+const colors={
+red:isBrowser?'crimson':1,
+yellow:isBrowser?'gold':3,
+cyan:isBrowser?'darkturquoise':6,
+green:isBrowser?'forestgreen':2,
+blue:isBrowser?'steelblue':4,
+magenta:isBrowser?'palevioletred':5};
+
+
+
+debug.colors=[colors.cyan,colors.green,colors.blue,colors.magenta];
+
+class Emitter extends EventEmitter{
+
+
+
+
+
+
+issueStatus(title,argsArray){
+if(title==='status'||title==='statusEnd'){
+this.emit(title,[title,...argsArray]);
+}
+}
+
+
+
+
+
+
+
+issueWarning(title,argsArray){
+this.emit('warning',[title,...argsArray]);
+}}
+
+
+const loggersByTitle={};
+const loggingBufferColumns=25;
+
+class Log{
+
+static _logToStdErr(title,argsArray){
+const log=Log.loggerfn(title);
+log(...argsArray);
+}
+
+static loggerfn(title){
+let log=loggersByTitle[title];
+if(!log){
+log=debug(title);
+loggersByTitle[title]=log;
+
+if(title.endsWith('error')){
+log.color=colors.red;
+}else if(title.endsWith('warn')){
+log.color=colors.yellow;
+}
+}
+return log;
+}
+
+static setLevel(level){
+switch(level){
+case'silent':
+debug.enable('-*');
+break;
+case'verbose':
+debug.enable('*');
+break;
+case'error':
+debug.enable('-*, *:error');
+break;
+default:
+debug.enable('*, -*:verbose');}
+
+}
+
+
+
+
+
+
+
+static formatProtocol(prefix,data,level){
+const columns=!process||process.browser?Infinity:process.stdout.columns;
+const method=data.method||'?????';
+const maxLength=columns-method.length-prefix.length-loggingBufferColumns;
+
+const snippet=data.params&&method!=='IO.read'?
+JSON.stringify(data.params).substr(0,maxLength):'';
+Log._logToStdErr(`${prefix}:${level||''}`,[method,snippet]);
+}
+
+static log(title,...args){
+Log.events.issueStatus(title,args);
+return Log._logToStdErr(title,args);
+}
+
+static warn(title,...args){
+Log.events.issueWarning(title,args);
+return Log._logToStdErr(`${title}:warn`,args);
+}
+
+static error(title,...args){
+return Log._logToStdErr(`${title}:error`,args);
+}
+
+static verbose(title,...args){
+Log.events.issueStatus(title,args);
+return Log._logToStdErr(`${title}:verbose`,args);
+}
+
+
+
+
+
+
+static greenify(str){
+return`${Log.green}${str}${Log.reset}`;
+}
+
+
+
+
+
+
+static redify(str){
+return`${Log.red}${str}${Log.reset}`;
+}
+
+static get green(){
+return'\x1B[32m';
+}
+
+static get red(){
+return'\x1B[31m';
+}
+
+static get yellow(){
+return'\x1b[33m';
+}
+
+static get purple(){
+return'\x1b[95m';
+}
+
+static get reset(){
+return'\x1B[0m';
+}
+
+static get bold(){
+return'\x1b[1m';
+}
+
+static get dim(){
+return'\x1b[2m';
+}
+
+static get tick(){
+return isWindows?'\u221A':'✓';
+}
+
+static get cross(){
+return isWindows?'\u00D7':'✘';
+}
+
+static get whiteSmallSquare(){
+return isWindows?'\u0387':'▫';
+}
+
+static get heavyHorizontal(){
+return isWindows?'\u2500':'━';
+}
+
+static get heavyVertical(){
+return isWindows?'\u2502 ':'┃ ';
+}
+
+static get heavyUpAndRight(){
+return isWindows?'\u2514':'┗';
+}
+
+static get heavyVerticalAndRight(){
+return isWindows?'\u251C':'┣';
+}
+
+static get heavyDownAndHorizontal(){
+return isWindows?'\u252C':'┳';
+}
+
+static get doubleLightHorizontal(){
+return'──';
+}}
+
+
+Log.events=new Emitter();
+
+module.exports=Log;
+
+}).call(this,require('_process'));
+},{"_process":71,"debug":127,"events":56}],138:[function(require,module,exports){
+(function(global){
+
+
+
+
+
+
+
+
+
+
+var LARGE_ARRAY_SIZE=200;
+
+
+var HASH_UNDEFINED='__lodash_hash_undefined__';
+
+
+var COMPARE_PARTIAL_FLAG=1,
+COMPARE_UNORDERED_FLAG=2;
+
+
+var MAX_SAFE_INTEGER=9007199254740991;
+
+
+var argsTag='[object Arguments]',
+arrayTag='[object Array]',
+asyncTag='[object AsyncFunction]',
+boolTag='[object Boolean]',
+dateTag='[object Date]',
+errorTag='[object Error]',
+funcTag='[object Function]',
+genTag='[object GeneratorFunction]',
+mapTag='[object Map]',
+numberTag='[object Number]',
+nullTag='[object Null]',
+objectTag='[object Object]',
+promiseTag='[object Promise]',
+proxyTag='[object Proxy]',
+regexpTag='[object RegExp]',
+setTag='[object Set]',
+stringTag='[object String]',
+symbolTag='[object Symbol]',
+undefinedTag='[object Undefined]',
+weakMapTag='[object WeakMap]';
+
+var arrayBufferTag='[object ArrayBuffer]',
+dataViewTag='[object DataView]',
+float32Tag='[object Float32Array]',
+float64Tag='[object Float64Array]',
+int8Tag='[object Int8Array]',
+int16Tag='[object Int16Array]',
+int32Tag='[object Int32Array]',
+uint8Tag='[object Uint8Array]',
+uint8ClampedTag='[object Uint8ClampedArray]',
+uint16Tag='[object Uint16Array]',
+uint32Tag='[object Uint32Array]';
+
+
+
+
+
+var reRegExpChar=/[\\^$.*+?()[\]{}|]/g;
+
+
+var reIsHostCtor=/^\[object .+?Constructor\]$/;
+
+
+var reIsUint=/^(?:0|[1-9]\d*)$/;
+
+
+var typedArrayTags={};
+typedArrayTags[float32Tag]=typedArrayTags[float64Tag]=
+typedArrayTags[int8Tag]=typedArrayTags[int16Tag]=
+typedArrayTags[int32Tag]=typedArrayTags[uint8Tag]=
+typedArrayTags[uint8ClampedTag]=typedArrayTags[uint16Tag]=
+typedArrayTags[uint32Tag]=true;
+typedArrayTags[argsTag]=typedArrayTags[arrayTag]=
+typedArrayTags[arrayBufferTag]=typedArrayTags[boolTag]=
+typedArrayTags[dataViewTag]=typedArrayTags[dateTag]=
+typedArrayTags[errorTag]=typedArrayTags[funcTag]=
+typedArrayTags[mapTag]=typedArrayTags[numberTag]=
+typedArrayTags[objectTag]=typedArrayTags[regexpTag]=
+typedArrayTags[setTag]=typedArrayTags[stringTag]=
+typedArrayTags[weakMapTag]=false;
+
+
+var freeGlobal=typeof global=='object'&&global&&global.Object===Object&&global;
+
+
+var freeSelf=typeof self=='object'&&self&&self.Object===Object&&self;
+
+
+var root=freeGlobal||freeSelf||Function('return this')();
+
+
+var freeExports=typeof exports=='object'&&exports&&!exports.nodeType&&exports;
+
+
+var freeModule=freeExports&&typeof module=='object'&&module&&!module.nodeType&&module;
+
+
+var moduleExports=freeModule&&freeModule.exports===freeExports;
+
+
+var freeProcess=moduleExports&&freeGlobal.process;
+
+
+var nodeUtil=function(){
+try{
+return freeProcess&&freeProcess.binding&&freeProcess.binding('util');
+}catch(e){}
+}();
+
+
+var nodeIsTypedArray=nodeUtil&&nodeUtil.isTypedArray;
+
+
+
+
+
+
+
+
+
+
+function arrayFilter(array,predicate){
+var index=-1,
+length=array==null?0:array.length,
+resIndex=0,
+result=[];
+
+while(++index<length){
+var value=array[index];
+if(predicate(value,index,array)){
+result[resIndex++]=value;
+}
+}
+return result;
+}
+
+
+
+
+
+
+
+
+
+function arrayPush(array,values){
+var index=-1,
+length=values.length,
+offset=array.length;
+
+while(++index<length){
+array[offset+index]=values[index];
+}
+return array;
+}
+
+
+
+
+
+
+
+
+
+
+
+function arraySome(array,predicate){
+var index=-1,
+length=array==null?0:array.length;
+
+while(++index<length){
+if(predicate(array[index],index,array)){
+return true;
+}
+}
+return false;
+}
+
+
+
+
+
+
+
+
+
+
+function baseTimes(n,iteratee){
+var index=-1,
+result=Array(n);
+
+while(++index<n){
+result[index]=iteratee(index);
+}
+return result;
+}
+
+
+
+
+
+
+
+
+function baseUnary(func){
+return function(value){
+return func(value);
+};
+}
+
+
+
+
+
+
+
+
+
+function cacheHas(cache,key){
+return cache.has(key);
+}
+
+
+
+
+
+
+
+
+
+function getValue(object,key){
+return object==null?undefined:object[key];
+}
+
+
+
+
+
+
+
+
+function mapToArray(map){
+var index=-1,
+result=Array(map.size);
+
+map.forEach(function(value,key){
+result[++index]=[key,value];
+});
+return result;
+}
+
+
+
+
+
+
+
+
+
+function overArg(func,transform){
+return function(arg){
+return func(transform(arg));
+};
+}
+
+
+
+
+
+
+
+
+function setToArray(set){
+var index=-1,
+result=Array(set.size);
+
+set.forEach(function(value){
+result[++index]=value;
+});
+return result;
+}
+
+
+var arrayProto=Array.prototype,
+funcProto=Function.prototype,
+objectProto=Object.prototype;
+
+
+var coreJsData=root['__core-js_shared__'];
+
+
+var funcToString=funcProto.toString;
+
+
+var hasOwnProperty=objectProto.hasOwnProperty;
+
+
+var maskSrcKey=function(){
+var uid=/[^.]+$/.exec(coreJsData&&coreJsData.keys&&coreJsData.keys.IE_PROTO||'');
+return uid?'Symbol(src)_1.'+uid:'';
+}();
+
+
+
+
+
+
+var nativeObjectToString=objectProto.toString;
+
+
+var reIsNative=RegExp('^'+
+funcToString.call(hasOwnProperty).replace(reRegExpChar,'\\$&').
+replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g,'$1.*?')+'$');
+
+
+
+var Buffer=moduleExports?root.Buffer:undefined,
+Symbol=root.Symbol,
+Uint8Array=root.Uint8Array,
+propertyIsEnumerable=objectProto.propertyIsEnumerable,
+splice=arrayProto.splice,
+symToStringTag=Symbol?Symbol.toStringTag:undefined;
+
+
+var nativeGetSymbols=Object.getOwnPropertySymbols,
+nativeIsBuffer=Buffer?Buffer.isBuffer:undefined,
+nativeKeys=overArg(Object.keys,Object);
+
+
+var DataView=getNative(root,'DataView'),
+Map=getNative(root,'Map'),
+Promise=getNative(root,'Promise'),
+Set=getNative(root,'Set'),
+WeakMap=getNative(root,'WeakMap'),
+nativeCreate=getNative(Object,'create');
+
+
+var dataViewCtorString=toSource(DataView),
+mapCtorString=toSource(Map),
+promiseCtorString=toSource(Promise),
+setCtorString=toSource(Set),
+weakMapCtorString=toSource(WeakMap);
+
+
+var symbolProto=Symbol?Symbol.prototype:undefined,
+symbolValueOf=symbolProto?symbolProto.valueOf:undefined;
+
+
+
+
+
+
+
+
+function Hash(entries){
+var index=-1,
+length=entries==null?0:entries.length;
+
+this.clear();
+while(++index<length){
+var entry=entries[index];
+this.set(entry[0],entry[1]);
+}
+}
+
+
+
+
+
+
+
+
+function hashClear(){
+this.__data__=nativeCreate?nativeCreate(null):{};
+this.size=0;
+}
+
+
+
+
+
+
+
+
+
+
+
+function hashDelete(key){
+var result=this.has(key)&&delete this.__data__[key];
+this.size-=result?1:0;
+return result;
+}
+
+
+
+
+
+
+
+
+
+
+function hashGet(key){
+var data=this.__data__;
+if(nativeCreate){
+var result=data[key];
+return result===HASH_UNDEFINED?undefined:result;
+}
+return hasOwnProperty.call(data,key)?data[key]:undefined;
+}
+
+
+
+
+
+
+
+
+
+
+function hashHas(key){
+var data=this.__data__;
+return nativeCreate?data[key]!==undefined:hasOwnProperty.call(data,key);
+}
+
+
+
+
+
+
+
+
+
+
+
+function hashSet(key,value){
+var data=this.__data__;
+this.size+=this.has(key)?0:1;
+data[key]=nativeCreate&&value===undefined?HASH_UNDEFINED:value;
+return this;
+}
+
+
+Hash.prototype.clear=hashClear;
+Hash.prototype['delete']=hashDelete;
+Hash.prototype.get=hashGet;
+Hash.prototype.has=hashHas;
+Hash.prototype.set=hashSet;
+
+
+
+
+
+
+
+
+function ListCache(entries){
+var index=-1,
+length=entries==null?0:entries.length;
+
+this.clear();
+while(++index<length){
+var entry=entries[index];
+this.set(entry[0],entry[1]);
+}
+}
+
+
+
+
+
+
+
+
+function listCacheClear(){
+this.__data__=[];
+this.size=0;
+}
+
+
+
+
+
+
+
+
+
+
+function listCacheDelete(key){
+var data=this.__data__,
+index=assocIndexOf(data,key);
+
+if(index<0){
+return false;
+}
+var lastIndex=data.length-1;
+if(index==lastIndex){
+data.pop();
+}else{
+splice.call(data,index,1);
+}
+--this.size;
+return true;
+}
+
+
+
+
+
+
+
+
+
+
+function listCacheGet(key){
+var data=this.__data__,
+index=assocIndexOf(data,key);
+
+return index<0?undefined:data[index][1];
+}
+
+
+
+
+
+
+
+
+
+
+function listCacheHas(key){
+return assocIndexOf(this.__data__,key)>-1;
+}
+
+
+
+
+
+
+
+
+
+
+
+function listCacheSet(key,value){
+var data=this.__data__,
+index=assocIndexOf(data,key);
+
+if(index<0){
+++this.size;
+data.push([key,value]);
+}else{
+data[index][1]=value;
+}
+return this;
+}
+
+
+ListCache.prototype.clear=listCacheClear;
+ListCache.prototype['delete']=listCacheDelete;
+ListCache.prototype.get=listCacheGet;
+ListCache.prototype.has=listCacheHas;
+ListCache.prototype.set=listCacheSet;
+
+
+
+
+
+
+
+
+function MapCache(entries){
+var index=-1,
+length=entries==null?0:entries.length;
+
+this.clear();
+while(++index<length){
+var entry=entries[index];
+this.set(entry[0],entry[1]);
+}
+}
+
+
+
+
+
+
+
+
+function mapCacheClear(){
+this.size=0;
+this.__data__={
+'hash':new Hash(),
+'map':new(Map||ListCache)(),
+'string':new Hash()};
+
+}
+
+
+
+
+
+
+
+
+
+
+function mapCacheDelete(key){
+var result=getMapData(this,key)['delete'](key);
+this.size-=result?1:0;
+return result;
+}
+
+
+
+
+
+
+
+
+
+
+function mapCacheGet(key){
+return getMapData(this,key).get(key);
+}
+
+
+
+
+
+
+
+
+
+
+function mapCacheHas(key){
+return getMapData(this,key).has(key);
+}
+
+
+
+
+
+
+
+
+
+
+
+function mapCacheSet(key,value){
+var data=getMapData(this,key),
+size=data.size;
+
+data.set(key,value);
+this.size+=data.size==size?0:1;
+return this;
+}
+
+
+MapCache.prototype.clear=mapCacheClear;
+MapCache.prototype['delete']=mapCacheDelete;
+MapCache.prototype.get=mapCacheGet;
+MapCache.prototype.has=mapCacheHas;
+MapCache.prototype.set=mapCacheSet;
+
+
+
+
+
+
+
+
+
+function SetCache(values){
+var index=-1,
+length=values==null?0:values.length;
+
+this.__data__=new MapCache();
+while(++index<length){
+this.add(values[index]);
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+function setCacheAdd(value){
+this.__data__.set(value,HASH_UNDEFINED);
+return this;
+}
+
+
+
+
+
+
+
+
+
+
+function setCacheHas(value){
+return this.__data__.has(value);
+}
+
+
+SetCache.prototype.add=SetCache.prototype.push=setCacheAdd;
+SetCache.prototype.has=setCacheHas;
+
+
+
+
+
+
+
+
+function Stack(entries){
+var data=this.__data__=new ListCache(entries);
+this.size=data.size;
+}
+
+
+
+
+
+
+
+
+function stackClear(){
+this.__data__=new ListCache();
+this.size=0;
+}
+
+
+
+
+
+
+
+
+
+
+function stackDelete(key){
+var data=this.__data__,
+result=data['delete'](key);
+
+this.size=data.size;
+return result;
+}
+
+
+
+
+
+
+
+
+
+
+function stackGet(key){
+return this.__data__.get(key);
+}
+
+
+
+
+
+
+
+
+
+
+function stackHas(key){
+return this.__data__.has(key);
+}
+
+
+
+
+
+
+
+
+
+
+
+function stackSet(key,value){
+var data=this.__data__;
+if(data instanceof ListCache){
+var pairs=data.__data__;
+if(!Map||pairs.length<LARGE_ARRAY_SIZE-1){
+pairs.push([key,value]);
+this.size=++data.size;
+return this;
+}
+data=this.__data__=new MapCache(pairs);
+}
+data.set(key,value);
+this.size=data.size;
+return this;
+}
+
+
+Stack.prototype.clear=stackClear;
+Stack.prototype['delete']=stackDelete;
+Stack.prototype.get=stackGet;
+Stack.prototype.has=stackHas;
+Stack.prototype.set=stackSet;
+
+
+
+
+
+
+
+
+
+function arrayLikeKeys(value,inherited){
+var isArr=isArray(value),
+isArg=!isArr&&isArguments(value),
+isBuff=!isArr&&!isArg&&isBuffer(value),
+isType=!isArr&&!isArg&&!isBuff&&isTypedArray(value),
+skipIndexes=isArr||isArg||isBuff||isType,
+result=skipIndexes?baseTimes(value.length,String):[],
+length=result.length;
+
+for(var key in value){
+if((inherited||hasOwnProperty.call(value,key))&&
+!(skipIndexes&&(
+
+key=='length'||
+
+isBuff&&(key=='offset'||key=='parent')||
+
+isType&&(key=='buffer'||key=='byteLength'||key=='byteOffset')||
+
+isIndex(key,length))))
+{
+result.push(key);
+}
+}
+return result;
+}
+
+
+
+
+
+
+
+
+
+function assocIndexOf(array,key){
+var length=array.length;
+while(length--){
+if(eq(array[length][0],key)){
+return length;
+}
+}
+return-1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function baseGetAllKeys(object,keysFunc,symbolsFunc){
+var result=keysFunc(object);
+return isArray(object)?result:arrayPush(result,symbolsFunc(object));
+}
+
+
+
+
+
+
+
+
+function baseGetTag(value){
+if(value==null){
+return value===undefined?undefinedTag:nullTag;
+}
+return symToStringTag&&symToStringTag in Object(value)?
+getRawTag(value):
+objectToString(value);
+}
+
+
+
+
+
+
+
+
+function baseIsArguments(value){
+return isObjectLike(value)&&baseGetTag(value)==argsTag;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function baseIsEqual(value,other,bitmask,customizer,stack){
+if(value===other){
+return true;
+}
+if(value==null||other==null||!isObjectLike(value)&&!isObjectLike(other)){
+return value!==value&&other!==other;
+}
+return baseIsEqualDeep(value,other,bitmask,customizer,baseIsEqual,stack);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function baseIsEqualDeep(object,other,bitmask,customizer,equalFunc,stack){
+var objIsArr=isArray(object),
+othIsArr=isArray(other),
+objTag=objIsArr?arrayTag:getTag(object),
+othTag=othIsArr?arrayTag:getTag(other);
+
+objTag=objTag==argsTag?objectTag:objTag;
+othTag=othTag==argsTag?objectTag:othTag;
+
+var objIsObj=objTag==objectTag,
+othIsObj=othTag==objectTag,
+isSameTag=objTag==othTag;
+
+if(isSameTag&&isBuffer(object)){
+if(!isBuffer(other)){
+return false;
+}
+objIsArr=true;
+objIsObj=false;
+}
+if(isSameTag&&!objIsObj){
+stack||(stack=new Stack());
+return objIsArr||isTypedArray(object)?
+equalArrays(object,other,bitmask,customizer,equalFunc,stack):
+equalByTag(object,other,objTag,bitmask,customizer,equalFunc,stack);
+}
+if(!(bitmask&COMPARE_PARTIAL_FLAG)){
+var objIsWrapped=objIsObj&&hasOwnProperty.call(object,'__wrapped__'),
+othIsWrapped=othIsObj&&hasOwnProperty.call(other,'__wrapped__');
+
+if(objIsWrapped||othIsWrapped){
+var objUnwrapped=objIsWrapped?object.value():object,
+othUnwrapped=othIsWrapped?other.value():other;
+
+stack||(stack=new Stack());
+return equalFunc(objUnwrapped,othUnwrapped,bitmask,customizer,stack);
+}
+}
+if(!isSameTag){
+return false;
+}
+stack||(stack=new Stack());
+return equalObjects(object,other,bitmask,customizer,equalFunc,stack);
+}
+
+
+
+
+
+
+
+
+
+function baseIsNative(value){
+if(!isObject(value)||isMasked(value)){
+return false;
+}
+var pattern=isFunction(value)?reIsNative:reIsHostCtor;
+return pattern.test(toSource(value));
+}
+
+
+
+
+
+
+
+
+function baseIsTypedArray(value){
+return isObjectLike(value)&&
+isLength(value.length)&&!!typedArrayTags[baseGetTag(value)];
+}
+
+
+
+
+
+
+
+
+function baseKeys(object){
+if(!isPrototype(object)){
+return nativeKeys(object);
+}
+var result=[];
+for(var key in Object(object)){
+if(hasOwnProperty.call(object,key)&&key!='constructor'){
+result.push(key);
+}
+}
+return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function equalArrays(array,other,bitmask,customizer,equalFunc,stack){
+var isPartial=bitmask&COMPARE_PARTIAL_FLAG,
+arrLength=array.length,
+othLength=other.length;
+
+if(arrLength!=othLength&&!(isPartial&&othLength>arrLength)){
+return false;
+}
+
+var stacked=stack.get(array);
+if(stacked&&stack.get(other)){
+return stacked==other;
+}
+var index=-1,
+result=true,
+seen=bitmask&COMPARE_UNORDERED_FLAG?new SetCache():undefined;
+
+stack.set(array,other);
+stack.set(other,array);
+
+
+while(++index<arrLength){
+var arrValue=array[index],
+othValue=other[index];
+
+if(customizer){
+var compared=isPartial?
+customizer(othValue,arrValue,index,other,array,stack):
+customizer(arrValue,othValue,index,array,other,stack);
+}
+if(compared!==undefined){
+if(compared){
+continue;
+}
+result=false;
+break;
+}
+
+if(seen){
+if(!arraySome(other,function(othValue,othIndex){
+if(!cacheHas(seen,othIndex)&&(
+arrValue===othValue||equalFunc(arrValue,othValue,bitmask,customizer,stack))){
+return seen.push(othIndex);
+}
+})){
+result=false;
+break;
+}
+}else if(!(
+arrValue===othValue||
+equalFunc(arrValue,othValue,bitmask,customizer,stack)))
+{
+result=false;
+break;
+}
+}
+stack['delete'](array);
+stack['delete'](other);
+return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function equalByTag(object,other,tag,bitmask,customizer,equalFunc,stack){
+switch(tag){
+case dataViewTag:
+if(object.byteLength!=other.byteLength||
+object.byteOffset!=other.byteOffset){
+return false;
+}
+object=object.buffer;
+other=other.buffer;
+
+case arrayBufferTag:
+if(object.byteLength!=other.byteLength||
+!equalFunc(new Uint8Array(object),new Uint8Array(other))){
+return false;
+}
+return true;
+
+case boolTag:
+case dateTag:
+case numberTag:
+
+
+return eq(+object,+other);
+
+case errorTag:
+return object.name==other.name&&object.message==other.message;
+
+case regexpTag:
+case stringTag:
+
+
+
+return object==other+'';
+
+case mapTag:
+var convert=mapToArray;
+
+case setTag:
+var isPartial=bitmask&COMPARE_PARTIAL_FLAG;
+convert||(convert=setToArray);
+
+if(object.size!=other.size&&!isPartial){
+return false;
+}
+
+var stacked=stack.get(object);
+if(stacked){
+return stacked==other;
+}
+bitmask|=COMPARE_UNORDERED_FLAG;
+
+
+stack.set(object,other);
+var result=equalArrays(convert(object),convert(other),bitmask,customizer,equalFunc,stack);
+stack['delete'](object);
+return result;
+
+case symbolTag:
+if(symbolValueOf){
+return symbolValueOf.call(object)==symbolValueOf.call(other);
+}}
+
+return false;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function equalObjects(object,other,bitmask,customizer,equalFunc,stack){
+var isPartial=bitmask&COMPARE_PARTIAL_FLAG,
+objProps=getAllKeys(object),
+objLength=objProps.length,
+othProps=getAllKeys(other),
+othLength=othProps.length;
+
+if(objLength!=othLength&&!isPartial){
+return false;
+}
+var index=objLength;
+while(index--){
+var key=objProps[index];
+if(!(isPartial?key in other:hasOwnProperty.call(other,key))){
+return false;
+}
+}
+
+var stacked=stack.get(object);
+if(stacked&&stack.get(other)){
+return stacked==other;
+}
+var result=true;
+stack.set(object,other);
+stack.set(other,object);
+
+var skipCtor=isPartial;
+while(++index<objLength){
+key=objProps[index];
+var objValue=object[key],
+othValue=other[key];
+
+if(customizer){
+var compared=isPartial?
+customizer(othValue,objValue,key,other,object,stack):
+customizer(objValue,othValue,key,object,other,stack);
+}
+
+if(!(compared===undefined?
+objValue===othValue||equalFunc(objValue,othValue,bitmask,customizer,stack):
+compared))
+{
+result=false;
+break;
+}
+skipCtor||(skipCtor=key=='constructor');
+}
+if(result&&!skipCtor){
+var objCtor=object.constructor,
+othCtor=other.constructor;
+
+
+if(objCtor!=othCtor&&
+'constructor'in object&&'constructor'in other&&
+!(typeof objCtor=='function'&&objCtor instanceof objCtor&&
+typeof othCtor=='function'&&othCtor instanceof othCtor)){
+result=false;
+}
+}
+stack['delete'](object);
+stack['delete'](other);
+return result;
+}
+
+
+
+
+
+
+
+
+function getAllKeys(object){
+return baseGetAllKeys(object,keys,getSymbols);
+}
+
+
+
+
+
+
+
+
+
+function getMapData(map,key){
+var data=map.__data__;
+return isKeyable(key)?
+data[typeof key=='string'?'string':'hash']:
+data.map;
+}
+
+
+
+
+
+
+
+
+
+function getNative(object,key){
+var value=getValue(object,key);
+return baseIsNative(value)?value:undefined;
+}
+
+
+
+
+
+
+
+
+function getRawTag(value){
+var isOwn=hasOwnProperty.call(value,symToStringTag),
+tag=value[symToStringTag];
+
+try{
+value[symToStringTag]=undefined;
+var unmasked=true;
+}catch(e){}
+
+var result=nativeObjectToString.call(value);
+if(unmasked){
+if(isOwn){
+value[symToStringTag]=tag;
+}else{
+delete value[symToStringTag];
+}
+}
+return result;
+}
+
+
+
+
+
+
+
+
+var getSymbols=!nativeGetSymbols?stubArray:function(object){
+if(object==null){
+return[];
+}
+object=Object(object);
+return arrayFilter(nativeGetSymbols(object),function(symbol){
+return propertyIsEnumerable.call(object,symbol);
+});
+};
+
+
+
+
+
+
+
+
+var getTag=baseGetTag;
+
+
+if(DataView&&getTag(new DataView(new ArrayBuffer(1)))!=dataViewTag||
+Map&&getTag(new Map())!=mapTag||
+Promise&&getTag(Promise.resolve())!=promiseTag||
+Set&&getTag(new Set())!=setTag||
+WeakMap&&getTag(new WeakMap())!=weakMapTag){
+getTag=function(value){
+var result=baseGetTag(value),
+Ctor=result==objectTag?value.constructor:undefined,
+ctorString=Ctor?toSource(Ctor):'';
+
+if(ctorString){
+switch(ctorString){
+case dataViewCtorString:return dataViewTag;
+case mapCtorString:return mapTag;
+case promiseCtorString:return promiseTag;
+case setCtorString:return setTag;
+case weakMapCtorString:return weakMapTag;}
+
+}
+return result;
+};
+}
+
+
+
+
+
+
+
+
+
+function isIndex(value,length){
+length=length==null?MAX_SAFE_INTEGER:length;
+return!!length&&(
+typeof value=='number'||reIsUint.test(value))&&
+value>-1&&value%1==0&&value<length;
+}
+
+
+
+
+
+
+
+
+function isKeyable(value){
+var type=typeof value;
+return type=='string'||type=='number'||type=='symbol'||type=='boolean'?
+value!=='__proto__':
+value===null;
+}
+
+
+
+
+
+
+
+
+function isMasked(func){
+return!!maskSrcKey&&maskSrcKey in func;
+}
+
+
+
+
+
+
+
+
+function isPrototype(value){
+var Ctor=value&&value.constructor,
+proto=typeof Ctor=='function'&&Ctor.prototype||objectProto;
+
+return value===proto;
+}
+
+
+
+
+
+
+
+
+function objectToString(value){
+return nativeObjectToString.call(value);
+}
+
+
+
+
+
+
+
+
+function toSource(func){
+if(func!=null){
+try{
+return funcToString.call(func);
+}catch(e){}
+try{
+return func+'';
+}catch(e){}
+}
+return'';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function eq(value,other){
+return value===other||value!==value&&other!==other;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var isArguments=baseIsArguments(function(){return arguments;}())?baseIsArguments:function(value){
+return isObjectLike(value)&&hasOwnProperty.call(value,'callee')&&
+!propertyIsEnumerable.call(value,'callee');
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var isArray=Array.isArray;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isArrayLike(value){
+return value!=null&&isLength(value.length)&&!isFunction(value);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var isBuffer=nativeIsBuffer||stubFalse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isEqual(value,other){
+return baseIsEqual(value,other);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isFunction(value){
+if(!isObject(value)){
+return false;
+}
+
+
+var tag=baseGetTag(value);
+return tag==funcTag||tag==genTag||tag==asyncTag||tag==proxyTag;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isLength(value){
+return typeof value=='number'&&
+value>-1&&value%1==0&&value<=MAX_SAFE_INTEGER;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isObject(value){
+var type=typeof value;
+return value!=null&&(type=='object'||type=='function');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isObjectLike(value){
+return value!=null&&typeof value=='object';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var isTypedArray=nodeIsTypedArray?baseUnary(nodeIsTypedArray):baseIsTypedArray;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function keys(object){
+return isArrayLike(object)?arrayLikeKeys(object):baseKeys(object);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function stubArray(){
+return[];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function stubFalse(){
+return false;
+}
+
+module.exports=isEqual;
+
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{}],139:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -69205,6 +71739,7 @@ var width=null,height=null;
 var initialWidth=uaDeviceWidth;
 var initialHeight=uaDeviceHeight;
 var userZoom="zoom";
+
 if(viewportProperties["maximum-scale"]!==undefined){
 maxZoom=translateZoomProperty(viewportProperties["maximum-scale"]);
 }
@@ -69460,7 +71995,7 @@ i=parseProperty(parsedContent,S,i);
 return parsedContent;
 };
 
-var propertyNames=["width","height","initial-scale","minimum-scale","maximum-scale","user-scalable","shrink-to-fit"];
+var propertyNames=["width","height","initial-scale","minimum-scale","maximum-scale","user-scalable","shrink-to-fit","viewport-fit"];
 
 function parseProperty(parsedContent,S,i){
 var start=i;
@@ -69500,10 +72035,16 @@ parsedContent.validProperties[name]=number;
 return;
 }
 var string=value.toLowerCase();
-if(string==="yes"||string==="no"||string==="device-width"||string==="device-height"){
+
+if(string==="yes"||string==="no"||string==="device-width"||string==="device-height"||
+
+
+name.toLowerCase()==='viewport-fit'&&(string==='auto'||string==='cover')){
+
 parsedContent.validProperties[name]=string;
 return;
 }
+
 parsedContent.validProperties[name]=null;
 parsedContent.invalidValues[name]=value;
 }else{
@@ -69518,10 +72059,165 @@ exports.expectedValues={
 "minimum-scale":["a positive number"],
 "maximum-scale":["a positive number"],
 "user-scalable":["yes","no","0","1"],
-"shrink-to-fit":["yes","no"]};
+"shrink-to-fit":["yes","no"],
+"viewport-fit":["auto","cover"]};
 
 
-},{}],137:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
+
+
+
+
+var s=1000;
+var m=s*60;
+var h=m*60;
+var d=h*24;
+var y=d*365.25;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports=function(val,options){
+options=options||{};
+var type=typeof val;
+if(type==='string'&&val.length>0){
+return parse(val);
+}else if(type==='number'&&isNaN(val)===false){
+return options.long?fmtLong(val):fmtShort(val);
+}
+throw new Error(
+'val is not a non-empty string or a valid number. val='+
+JSON.stringify(val));
+
+};
+
+
+
+
+
+
+
+
+
+function parse(str){
+str=String(str);
+if(str.length>100){
+return;
+}
+var match=/^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+str);
+
+if(!match){
+return;
+}
+var n=parseFloat(match[1]);
+var type=(match[2]||'ms').toLowerCase();
+switch(type){
+case'years':
+case'year':
+case'yrs':
+case'yr':
+case'y':
+return n*y;
+case'days':
+case'day':
+case'd':
+return n*d;
+case'hours':
+case'hour':
+case'hrs':
+case'hr':
+case'h':
+return n*h;
+case'minutes':
+case'minute':
+case'mins':
+case'min':
+case'm':
+return n*m;
+case'seconds':
+case'second':
+case'secs':
+case'sec':
+case's':
+return n*s;
+case'milliseconds':
+case'millisecond':
+case'msecs':
+case'msec':
+case'ms':
+return n;
+default:
+return undefined;}
+
+}
+
+
+
+
+
+
+
+
+
+function fmtShort(ms){
+if(ms>=d){
+return Math.round(ms/d)+'d';
+}
+if(ms>=h){
+return Math.round(ms/h)+'h';
+}
+if(ms>=m){
+return Math.round(ms/m)+'m';
+}
+if(ms>=s){
+return Math.round(ms/s)+'s';
+}
+return ms+'ms';
+}
+
+
+
+
+
+
+
+
+
+function fmtLong(ms){
+return plural(ms,d,'day')||
+plural(ms,h,'hour')||
+plural(ms,m,'minute')||
+plural(ms,s,'second')||
+ms+' ms';
+}
+
+
+
+
+
+function plural(ms,n,name){
+if(ms<n){
+return;
+}
+if(ms<n*1.5){
+return Math.floor(ms/n)+' '+name;
+}
+return Math.ceil(ms/n)+' '+name+'s';
+}
+
+},{}],141:[function(require,module,exports){
 module.exports=function parseCacheControl(field){
 
 if(typeof field!=='string'){
@@ -69560,7 +72256,7 @@ catch(err){}
 return err?null:header;
 };
 
-},{}],138:[function(require,module,exports){
+},{}],142:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -70767,7 +73463,7 @@ return parsed&&parsed.prerelease.length?parsed.prerelease:null;
 }
 
 }).call(this,require('_process'));
-},{"_process":68}],139:[function(require,module,exports){
+},{"_process":71}],143:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -70955,7 +73651,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":51,"jpeg-js":133}],140:[function(require,module,exports){
+},{"buffer":54,"jpeg-js":134}],144:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -71013,7 +73709,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":139,"./speed-index":141}],141:[function(require,module,exports){
+},{"./frame":143,"./speed-index":145}],145:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -71236,11 +73932,11 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":132}],142:[function(require,module,exports){
+},{"image-ssim":133}],146:[function(require,module,exports){
 module.exports={
-"version":"2.8.0"};
+"version":"2.9.1"};
 
-},{}],143:[function(require,module,exports){
-module.exports={"npm":{"angular":[{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10170"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<=1.1.5"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2013-06-20T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:00:00.000Z","modificationTime":"2016-11-01T14:08:59.890Z","creationTime":"2016-11-01T14:08:59.890Z","id":"npm:angular:20130621","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10170"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10179"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0 >=1.0.0"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-21T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:10:00.000Z","modificationTime":"2016-11-01T15:35:22.355Z","creationTime":"2016-11-01T15:35:22.355Z","id":"npm:angular:20130622","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10179"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10140"]},"severity":"high","semver":{"unaffected":[">=1.1.5"],"vulnerable":["<1.1.5"]},"credit":["Chirayu Krishnappa","Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H","disclosureTime":"2013-06-24T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:20:00.000Z","modificationTime":"2016-11-01T12:48:50.251Z","creationTime":"2016-11-01T12:48:50.251Z","id":"npm:angular:20130625","packageName":"angular","cvssScore":8.1,"alternativeIds":["SNYK-JS-ANGULAR-10140"]},{"title":"Protection Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10200"]},"severity":"high","semver":{"unaffected":[">=1.2.2"],"vulnerable":["<1.2.2"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2013-11-12T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:30:00.000Z","modificationTime":"2016-11-09T12:07:09.956Z","creationTime":"2016-11-09T12:07:09.956Z","id":"npm:angular:20131113","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10200"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10201"]},"severity":"low","semver":{"unaffected":[">=1.3.0"],"vulnerable":["<1.3.0"]},"credit":["Jann Horn"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N","disclosureTime":"2014-06-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:40:00.000Z","modificationTime":"2016-11-09T12:23:07.035Z","creationTime":"2016-11-09T12:23:07.035Z","id":"npm:angular:20140608","packageName":"angular","cvssScore":3.7,"alternativeIds":["SNYK-JS-ANGULAR-10201"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10191"]},"severity":"medium","semver":{"unaffected":[">=1.3.0-rc.4"],"vulnerable":["<1.3.0-rc.4"]},"credit":["Laurent Trillaud"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2014-09-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:50:00.000Z","modificationTime":"2016-11-07T09:46:43.092Z","creationTime":"2016-11-07T09:46:43.092Z","id":"npm:angular:20140908","packageName":"angular","cvssScore":5.3,"alternativeIds":["SNYK-JS-ANGULAR-10191"]},{"title":"Unsafe Object Deserialization","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10141"]},"severity":"high","semver":{"unaffected":[">=1.2.24"],"vulnerable":["<1.2.24 >=1.2.19"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2014-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:00:00.000Z","modificationTime":"2016-11-01T13:57:31.962Z","creationTime":"2016-11-01T13:57:31.962Z","id":"npm:angular:20140909","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10141"]},{"title":"Arbitrary Command Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10173"]},"severity":"medium","semver":{"unaffected":[">=1.3.2"],"vulnerable":["<1.3.2"]},"credit":["Sebastian Lekies","Jann Horn","Gábor Molnár"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:L","disclosureTime":"2014-11-03T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:10:00.000Z","modificationTime":"2016-11-01T12:33:38.496Z","creationTime":"2016-11-01T12:33:38.496Z","id":"npm:angular:20141104","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10173"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10174"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Rodric Haddad"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2015-03-09T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:20:00.000Z","modificationTime":"2017-02-13T14:24:12.988Z","creationTime":"2016-11-01T14:24:12.988Z","id":"npm:angular:20150310","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10174"]},{"title":"JSONP Callback Attack","moduleName":"angular","packageName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10175"]},"severity":"medium","semver":{"vulnerable":["<1.6.1"],"unaffected":[">=1.6.1"]},"credit":["Pete Bacon Darwin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-03-14T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T18:30:00.000Z","modificationTime":"2017-02-13T14:36:18.735Z","creationTime":"2016-11-01T14:36:18.735Z","id":"npm:angular:20150315","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10175"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10176"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.0.0"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:40:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10176"]},{"title":"Clickjacking","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-693"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10177"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.3.1"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:50:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807-1","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10177"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10182"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:00:00.000Z","modificationTime":"2016-11-02T08:40:11.750Z","creationTime":"2016-11-02T08:40:11.750Z","id":"npm:angular:20150909","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10182"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10180"]},"severity":"medium","semver":{"unaffected":[">=1.4.10"],"vulnerable":["<1.4.10"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-11-29T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:10:00.000Z","modificationTime":"2016-11-02T08:16:55.157Z","creationTime":"2016-11-02T08:16:55.157Z","id":"npm:angular:20151130","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10180"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10181"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.0"],"vulnerable":["<1.5.0-rc.0"]},"credit":["Pete Bacon Darwin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2015-12-04T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:20:00.000Z","modificationTime":"2016-11-02T08:26:38.753Z","creationTime":"2016-11-02T08:26:38.753Z","id":"npm:angular:20151205","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10181"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10202"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.2"],"vulnerable":["<1.5.0-rc.2 >=1.3.0"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2016-01-21T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:30:00.000Z","modificationTime":"2016-11-09T12:45:57.682Z","creationTime":"2016-11-09T12:45:57.682Z","id":"npm:angular:20160122","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10202"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10203"]},"severity":"medium","semver":{"unaffected":[">=1.2.30"],"vulnerable":["<1.2.30 >=1.0.0"]},"credit":["Raphaël Jamet"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2016-05-26T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:40:00.000Z","modificationTime":"2016-11-09T13:00:18.135Z","creationTime":"2016-11-09T13:00:18.135Z","id":"npm:angular:20160527","packageName":"angular","cvssScore":4.8,"alternativeIds":["SNYK-JS-ANGULAR-10203"]},{"title":"Content Security Policy (CSP) Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10190"]},"severity":"medium","semver":{"unaffected":[">=1.5.9"],"vulnerable":["<1.5.9 >=1.5.0"]},"credit":["Martin Probst"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N","disclosureTime":"2016-10-31T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:50:00.000Z","modificationTime":"2017-01-24T09:16:32.893Z","creationTime":"2016-11-07T09:16:32.893Z","id":"npm:angular:20161101","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10190"]}],"backbone":[{"title":"Cross Site Scripting","credit":[],"language":"js","packageManager":"npm","packageName":"backbone","moduleName":"backbone","semver":{"vulnerable":["<0.5.0"],"unaffected":[">=0.5.0"]},"identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-BACKBONE-10054"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/backbone/20110701/backbone_20110701_0_0_0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"version":"<0.5.0 >=0.3.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/jashkenas/backbone/commit/0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"id":"patch:npm:backbone:20110701:0"}],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","id":"npm:backbone:20110701","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10054"]},{"title":"Cross Site Scripting","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T17:50:20.000Z","disclosureTime":"2016-05-23T17:50:20.000Z","semver":{"vulnerable":["<= 0.3.3"],"unaffected":[">= 0.5.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":108,"ALTERNATIVE":["SNYK-JS-BACKBONE-10110"]},"patches":[],"moduleName":"backbone","language":"js","packageManager":"npm","id":"npm:backbone:20160523","packageName":"backbone","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10110"]}],"bootstrap":[{"title":"Cross-site Scripting (XSS)","credit":["Peter Corsaro"],"packageName":"bootstrap","moduleName":"bootstrap","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-BOOTSTRAP-10433"]},"semver":{"unaffected":[">=2.1.0"],"vulnerable":["<2.1.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2012-05-09T21:00:00.000Z","publicationTime":"2017-04-10T09:39:59.975Z","modificationTime":"2017-02-27T10:05:00.075Z","creationTime":"2017-02-27T10:05:00.075Z","id":"npm:bootstrap:20120510","cvssScore":6.5,"alternativeIds":["SNYK-JS-BOOTSTRAP-10433"]}],"dojo":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.1"],"unaffected":[">=1.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"ALTERNATIVE":["SNYK-JS-DOJO-10051"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20090409","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10051"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":[">=0.4 <0.4.4 || >=1.0 <1.0.3 || >=1.1 <1.1.2 || >=1.2 <1.2.4 || >=1.3 <1.3.3 || >=1.4 <1.4.2"],"unaffected":["<0.4 >=0.4.4 || <1.0 >=1.0.3 || <1.1 >=1.1.2 || <1.2 >=1.2.4 || <1.3 >=1.3.3 || <1.4 >=1.4.2"]},"CVSSv2":"CVSS:2.0/AV:N/AC:L/Au:N/C:C/I:C/A:C","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H","severity":"high","identifiers":{"CWE":["CWE-16"],"CVE":["CVE-2010-2276","CVE-2010-2272"],"ALTERNATIVE":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614","packageName":"dojo","cvssScore":10,"alternativeIds":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.4.2"],"unaffected":[">=1.4.2"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-2275"],"ALTERNATIVE":["SNYK-JS-DOJO-10053"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614-6","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10053"]},{"title":"Cross Site Scripting","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T00:00:00.000Z","disclosureTime":"2016-05-23T16:48:27.000Z","semver":{"vulnerable":["<= 1.0.0"],"unaffected":[">= 1.1.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"NSP":107,"ALTERNATIVE":["SNYK-JS-DOJO-10108"]},"patches":[],"moduleName":"dojo","language":"js","packageManager":"npm","id":"npm:dojo:20160523","packageName":"dojo","cvssScore":4.3,"alternativeIds":["SNYK-JS-DOJO-10108"]}],"foundation-sites":[{"title":"Cross-site Scripting (XSS)","credit":["Mathieu Amiot"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10413"]},"semver":{"unaffected":[">=3.0.6"],"vulnerable":["<3.0.6 >=3.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2012-07-16T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.155Z","modificationTime":"2017-03-06T12:29:55.952Z","creationTime":"2017-03-06T12:29:55.952Z","id":"npm:foundation-sites:20120717","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10413"]},{"title":"Cross-site Scripting (XSS)","credit":["Maya Kokits"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10414"]},"semver":{"unaffected":[">=5.5.3"],"vulnerable":["<5.5.3"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-18T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.227Z","modificationTime":"2017-03-06T12:57:37.670Z","creationTime":"2017-03-06T12:57:37.670Z","id":"npm:foundation-sites:20150619","cvssScore":6.5,"alternativeIds":["SNYK-JS-FOUNDATIONSITES-10414"]},{"title":"Cross-site Scripting (XSS)","credit":["Nathaniel Paulus"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10743"]},"semver":{"vulnerable":["<6.0.0"],"unaffected":[">=6.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2017-08-01T21:00:00.000Z","publicationTime":"2017-08-02T13:09:44.451Z","modificationTime":"2017-08-02T10:42:11.945Z","creationTime":"2017-08-02T10:42:11.945Z","id":"npm:foundation-sites:20170802","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10743"]}],"handlebars":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<=1.0.0-beta.3"],"unaffected":[">1.0.0-beta.3"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10047"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20110425/handlebars_20110425_0_0_b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"version":"<=1.0.0-beta.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/rgrove/handlebars.js/commit/b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"id":"patch:npm:handlebars:20110425:0"}],"moduleName":"handlebars","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:handlebars:20110425","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10047"]},{"title":"Content Injection (XSS)","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<4.0.0"],"unaffected":[">=4.0.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":61,"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10068"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20151207/handlebars_0.patch"],"version":"<4.0.0 >=3.0.2","modificationTime":"2015-12-14T23:52:16.811Z","comments":["https://github.com/wycats/handlebars.js/commit/83b8e846a3569bd366cf0b6bdc1e4604d1a2077e"],"id":"patch:npm:handlebars:20151207:0"}],"moduleName":"handlebars","creationTime":"2015-12-14T23:52:16.811Z","modificationTime":"2015-12-14T23:52:16.811Z","publicationTime":"2015-12-14T23:52:16.811Z","disclosureTime":"2015-12-07T16:52:07.962Z","language":"js","packageManager":"npm","id":"npm:handlebars:20151207","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10068"]}],"jquery":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2011-4969"],"ALTERNATIVE":["SNYK-JS-JQUERY-10183"]},"severity":"medium","semver":{"unaffected":[">=1.6.3"],"vulnerable":["<1.6.3"]},"credit":["Dave Methvin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2011-06-05T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-11-06T15:25:26.117Z","creationTime":"2016-11-06T15:25:26.117Z","id":"npm:jquery:20110606","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10183"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"NSP":329,"ALTERNATIVE":["SNYK-JS-JQUERY-10184"]},"severity":"medium","semver":{"unaffected":[">=1.9.0"],"vulnerable":["<1.9.0 >=1.7.1"]},"credit":["Richard Gibson"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-06-19T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2017-03-12T14:17:57.686Z","creationTime":"2016-11-06T13:53:57.686Z","id":"npm:jquery:20120206","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10184"]},{"title":"DOM Based Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2014-6071"],"ALTERNATIVE":["SNYK-JS-JQUERY-10185"]},"severity":"medium","semver":{"unaffected":[">=1.6.2"],"vulnerable":["<=1.5.1 >=1.4.2"]},"credit":["Mauro Risonho de Paula Assumpção"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2014-09-01T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-10-06T14:16:53.138Z","creationTime":"2016-11-06T14:16:53.138Z","id":"npm:jquery:20140902","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10185"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":328,"ALTERNATIVE":["SNYK-JS-JQUERY-10186"]},"severity":"medium","semver":{"unaffected":[">=3.0.0-beta1 || >=1.12.0 <1.12.3"],"vulnerable":["<3.0.0-beta1 >1.12.3 || <1.12.0 >=1.4.0"]},"credit":["Egor Homakov"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-26T21:00:00.000Z","patches":[],"publicationTime":"2016-11-27T00:00:00.000Z","modificationTime":"2017-03-27T15:12:44.538Z","creationTime":"2016-11-06T15:12:44.538Z","id":"npm:jquery:20150627","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10186"]},{"title":"Denial of Service (DoS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"NSP":330,"ALTERNATIVE":["SNYK-JS-JQUERY-10187"]},"severity":"low","semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-beta1"]},"credit":["Michał Gołębiowski"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L","disclosureTime":"2016-05-28T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:37:35.224Z","modificationTime":"2016-12-26T15:37:35.224Z","creationTime":"2016-11-06T15:37:35.224Z","id":"npm:jquery:20160529","packageName":"jquery","cvssScore":3.7,"alternativeIds":["SNYK-JS-JQUERY-10187"]}],"jquery-mobile":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-mobile","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-JQUERYMOBILE-10199"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0"]},"credit":["Masato Kinugawa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2012-08-01T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T11:28:34.624Z","modificationTime":"2016-12-26T11:28:34.624Z","creationTime":"2016-11-09T11:28:34.624Z","id":"npm:jquery-mobile:20120802","packageName":"jquery-mobile","cvssScore":6.5,"alternativeIds":["SNYK-JS-JQUERYMOBILE-10199"]}],"jquery-ui":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-ui","packageName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-5312"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10188"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["shadowman131"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2010-09-02T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T14:37:13.516Z","modificationTime":"2017-02-13T14:37:13.516Z","creationTime":"2016-12-26T14:37:13.516Z","id":"npm:jquery-ui:20100903","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10188"]},{"title":"Cross-site Scripting (XSS) via Tooltip","moduleName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-6662"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10189"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["Scott González"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2012-11-26T22:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:04:27.065Z","modificationTime":"2016-12-26T15:04:27.065Z","creationTime":"2016-11-06T15:04:27.065Z","id":"npm:jquery-ui:20121127","packageName":"jquery-ui","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10189"]},{"title":"XSS in dialog closeText","credit":["Phat Ly"],"creationTime":"2016-07-22T00:00:02.715Z","modificationTime":"2016-07-22T00:00:02.715Z","publicationTime":"2016-07-21T22:21:41.000Z","disclosureTime":"2016-07-21T22:21:41.000Z","semver":{"vulnerable":["<=1.11.4"],"unaffected":[">=1.12.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N","severity":"high","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":127,"ALTERNATIVE":["SNYK-JS-JQUERYUI-10118"]},"patches":[],"moduleName":"jquery-ui","language":"js","packageManager":"npm","id":"npm:jquery-ui:20160721","packageName":"jquery-ui","cvssScore":7.3,"alternativeIds":["SNYK-JS-JQUERYUI-10118"]}],"knockout":[{"title":"Cross-site Scripting (XSS)","credit":["Steven Sanderson"],"moduleName":"knockout","packageName":"knockout","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-KNOCKOUT-10415"]},"semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-pre"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-30T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.295Z","modificationTime":"2017-03-01T12:39:34.669Z","creationTime":"2017-03-01T12:39:34.669Z","id":"npm:knockout:20130701","cvssScore":5.4,"alternativeIds":["SNYK-JS-KNOCKOUT-10415"]}],"moment":[{"title":"Regular Expression Denial of Service (DoS)","credit":["Adam Baldwin"],"creationTime":"2016-02-01T19:00:03.862Z","modificationTime":"2016-09-28T19:00:03.862Z","publicationTime":"2016-02-01T19:00:03.862Z","semver":{"vulnerable":["<=2.11.1"],"unaffected":[">2.11.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L","severity":"low","identifiers":{"CWE":["CWE-400"],"CVE":[],"NSP":55,"ALTERNATIVE":["SNYK-JS-MOMENT-10084"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_0_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.11.1 >2.10.6","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_1_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.10.6 >2.9.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:1"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_2_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.9.0 >2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:2"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_3_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"=2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:3"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_4_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<2.2.1 >2.0.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:4"}],"moduleName":"moment","disclosureTime":"2016-01-26T20:04:21.225Z","language":"js","packageManager":"npm","id":"npm:moment:20160126","packageName":"moment","cvssScore":5.3,"alternativeIds":["SNYK-JS-MOMENT-10084"]},{"title":"Regular Expression Denial of Service (DoS)","moduleName":"moment","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-400"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MOMENT-10164"]},"semver":{"vulnerable":["<2.15.2"],"unaffected":[">=2.15.2"]},"credit":["Snyk Security Research Team"],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H","disclosureTime":"2016-10-18T21:00:00.000Z","patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_1.patch"],"version":"<2.15.2 >=2.14.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_0.patch"],"version":"<2.14.0 >=2.12.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:1"}],"publicationTime":"2016-10-24T06:57:59.675Z","modificationTime":"2016-10-23T06:57:59.675Z","creationTime":"2016-10-23T06:57:59.675Z","id":"npm:moment:20161019","packageName":"moment","cvssScore":5.9,"alternativeIds":["SNYK-JS-MOMENT-10164"]}],"mustache":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["< 0.3.1"],"unaffected":[">= 0.3.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MUSTACHE-10046"]},"patches":[],"moduleName":"mustache","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:mustache:20110814","packageName":"mustache","cvssScore":5.4,"alternativeIds":["SNYK-JS-MUSTACHE-10046"]},{"title":"Content Injection due to quoteless attributes","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<2.2.1"],"unaffected":[">=2.2.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":62,"ALTERNATIVE":["SNYK-JS-MUSTACHE-10067"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/mustache/20151207/mustache_0.patch"],"version":"<2.2.1 >=2.1.0","modificationTime":"2015-12-14T23:52:16.806Z","comments":["https://github.com/janl/mustache.js/commit/378bcca8a5cfe4058f294a3dbb78e8755e8e0da5"],"id":"patch:npm:mustache:20151207:0"}],"moduleName":"mustache","creationTime":"2015-12-14T23:52:16.806Z","modificationTime":"2015-12-14T23:52:16.806Z","publicationTime":"2015-12-14T23:52:16.806Z","disclosureTime":"2015-12-07T17:13:57.565Z","language":"js","packageManager":"npm","id":"npm:mustache:20151207","packageName":"mustache","cvssScore":5.3,"alternativeIds":["SNYK-JS-MUSTACHE-10067"]}],"react":[{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-7035"],"ALTERNATIVE":["SNYK-JS-REACT-10192"]},"severity":"medium","semver":{"unaffected":[">=0.5.2 || <=0.3.x || =0.4.2"],"vulnerable":[">=0.5.0 <0.5.2 || >=0.4.0 <0.4.2"]},"credit":["Paul O’Shannessy","Thomas Aylott"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2013-12-16T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:21.094Z","modificationTime":"2016-11-08T08:23:21.094Z","creationTime":"2016-11-08T08:23:21.094Z","id":"npm:react:20131217","packageName":"react","cvssScore":6.5,"alternativeIds":["SNYK-JS-REACT-10192"]},{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-REACT-10193"]},"severity":"high","semver":{"unaffected":[">=0.14.0"],"vulnerable":["<0.14.0"]},"credit":["Daniel LeCheminant"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-03-17T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:38.403Z","modificationTime":"2016-11-08T09:59:38.403Z","creationTime":"2016-11-08T09:59:38.403Z","id":"npm:react:20150318","packageName":"react","cvssScore":7.1,"alternativeIds":["SNYK-JS-REACT-10193"]}],"riot":[{"title":"Cross-site Scripting (XSS)","credit":["crazy2be"],"moduleName":"riot","packageName":"riot","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-RIOT-10447"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2013-11-13T22:00:00.000Z","publicationTime":"2017-05-08T12:34:46.386Z","modificationTime":"2017-03-20T14:44:23.092Z","creationTime":"2017-03-20T14:44:23.092Z","id":"npm:riot:20131114","cvssScore":6.5,"alternativeIds":["SNYK-JS-RIOT-10447"]}],"socket.io":[{"title":"Insecure Randomness","credit":["Martin Thomson"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-330"],"CVE":[],"NSP":321,"ALTERNATIVE":["SNYK-JS-SOCKETIO-10397"]},"semver":{"unaffected":[">=0.9.7"],"vulnerable":["<0.9.7"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2012-03-22T22:00:00.000Z","publicationTime":"2017-02-13T13:46:59.513Z","modificationTime":"2017-02-13T13:46:59.513Z","creationTime":"2017-02-01T13:46:59.513Z","id":"npm:socket.io:20120323","cvssScore":5.3,"alternativeIds":["SNYK-JS-SOCKETIO-10397"]},{"title":"Cross-site Scripting (XSS)","credit":["Almog Melamed"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-SOCKETIO-10398"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-16T21:00:00.000Z","publicationTime":"2017-02-13T13:28:52.754Z","modificationTime":"2017-02-13T13:28:52.754Z","creationTime":"2017-02-01T13:28:52.754Z","id":"npm:socket.io:20120417","cvssScore":5.4,"alternativeIds":["SNYK-JS-SOCKETIO-10398"]}],"yui":[{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-4207"],"ALTERNATIVE":["SNYK-JS-YUI-10383"]},"severity":"medium","semver":{"unaffected":[">=2.8.2 || <2.4.0"],"vulnerable":["<2.8.2 >=2.4.0"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2010-10-24T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:24:55.944Z","modificationTime":"2017-01-22T09:24:55.944Z","creationTime":"2017-01-22T09:24:55.944Z","id":"npm:yui:20101025","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10383"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-YUI-10384"]},"severity":"medium","semver":{"unaffected":[">=3.5.1 || <3.5.0-PR1"],"vulnerable":["<3.5.1 >=3.5.0-PR1"]},"credit":["Ryan Grove"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-27T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:12:40.841Z","modificationTime":"2017-02-13T09:12:40.841Z","creationTime":"2017-01-22T09:12:40.841Z","id":"npm:yui:20120428","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10384"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-5881","CVE-2012-5882","CVE-2012-5883"],"ALTERNATIVE":["SNYK-JS-YUI-10385"]},"severity":"medium","semver":{"unaffected":[">=3.0.0 || <2.4.0"],"vulnerable":["<3.0.0 >=2.4.0"]},"credit":["Unknwon"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-10-29T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:20:03.679Z","modificationTime":"2017-02-13T09:20:03.679Z","creationTime":"2017-01-22T09:20:03.679Z","id":"npm:yui:20121030","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10385"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4941"],"NSP":332,"ALTERNATIVE":["SNYK-JS-YUI-10386"]},"severity":"medium","semver":{"unaffected":[">=3.10.0 || <3.0.0"],"vulnerable":["<3.10.0 >=3.0.0"]},"credit":["Aleksandr Dobkin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-05-14T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T08:54:05.822Z","modificationTime":"2017-02-13T08:54:05.822Z","creationTime":"2017-01-22T08:54:05.822Z","id":"npm:yui:20130515","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10386"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4940"],"ALTERNATIVE":["SNYK-JS-YUI-10387"]},"severity":"medium","semver":{"unaffected":[">=3.10.3 <3.10.2"],"vulnerable":["=3.10.2"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-03T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:01:24.863Z","modificationTime":"2017-02-13T09:01:24.863Z","creationTime":"2017-01-22T09:01:24.863Z","id":"npm:yui:20130604","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10387"]}]}};
+},{}],147:[function(require,module,exports){
+module.exports={"npm":{"angular":[{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10170"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<=1.1.5"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2013-06-20T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:00:00.000Z","modificationTime":"2016-11-01T14:08:59.890Z","creationTime":"2016-11-01T14:08:59.890Z","id":"npm:angular:20130621","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10170"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10179"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0 >=1.0.0"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-21T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:10:00.000Z","modificationTime":"2016-11-01T15:35:22.355Z","creationTime":"2016-11-01T15:35:22.355Z","id":"npm:angular:20130622","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10179"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10140"]},"severity":"high","semver":{"unaffected":[">=1.1.5"],"vulnerable":["<1.1.5"]},"credit":["Chirayu Krishnappa","Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H","disclosureTime":"2013-06-24T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:20:00.000Z","modificationTime":"2016-11-01T12:48:50.251Z","creationTime":"2016-11-01T12:48:50.251Z","id":"npm:angular:20130625","packageName":"angular","cvssScore":8.1,"alternativeIds":["SNYK-JS-ANGULAR-10140"]},{"title":"Protection Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10200"]},"severity":"high","semver":{"unaffected":[">=1.2.2"],"vulnerable":["<1.2.2"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2013-11-12T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:30:00.000Z","modificationTime":"2016-11-09T12:07:09.956Z","creationTime":"2016-11-09T12:07:09.956Z","id":"npm:angular:20131113","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10200"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10201"]},"severity":"low","semver":{"unaffected":[">=1.3.0"],"vulnerable":["<1.3.0"]},"credit":["Jann Horn"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N","disclosureTime":"2014-06-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:40:00.000Z","modificationTime":"2016-11-09T12:23:07.035Z","creationTime":"2016-11-09T12:23:07.035Z","id":"npm:angular:20140608","packageName":"angular","cvssScore":3.7,"alternativeIds":["SNYK-JS-ANGULAR-10201"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10191"]},"severity":"medium","semver":{"unaffected":[">=1.3.0-rc.4"],"vulnerable":["<1.3.0-rc.4"]},"credit":["Laurent Trillaud"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2014-09-07T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T10:50:00.000Z","modificationTime":"2016-11-07T09:46:43.092Z","creationTime":"2016-11-07T09:46:43.092Z","id":"npm:angular:20140908","packageName":"angular","cvssScore":5.3,"alternativeIds":["SNYK-JS-ANGULAR-10191"]},{"title":"Unsafe Object Deserialization","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10141"]},"severity":"high","semver":{"unaffected":[">=1.2.24"],"vulnerable":["<1.2.24 >=1.2.19"]},"credit":["Chirayu Krishnappa"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2014-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:00:00.000Z","modificationTime":"2016-11-01T13:57:31.962Z","creationTime":"2016-11-01T13:57:31.962Z","id":"npm:angular:20140909","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10141"]},{"title":"Arbitrary Command Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10173"]},"severity":"medium","semver":{"unaffected":[">=1.3.2"],"vulnerable":["<1.3.2"]},"credit":["Sebastian Lekies","Jann Horn","Gábor Molnár"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:L/A:L","disclosureTime":"2014-11-03T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:10:00.000Z","modificationTime":"2016-11-01T12:33:38.496Z","creationTime":"2016-11-01T12:33:38.496Z","id":"npm:angular:20141104","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10173"]},{"title":"Arbitrary Code Execution","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10174"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Rodric Haddad"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N","disclosureTime":"2015-03-09T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:20:00.000Z","modificationTime":"2017-02-13T14:24:12.988Z","creationTime":"2016-11-01T14:24:12.988Z","id":"npm:angular:20150310","packageName":"angular","cvssScore":7.4,"alternativeIds":["SNYK-JS-ANGULAR-10174"]},{"title":"JSONP Callback Attack","credit":["Pete Bacon Darwin"],"moduleName":"angular","packageName":"angular","language":"js","packageManager":"npm","id":"npm:angular:20150315","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10175"]},"semver":{"vulnerable":["<1.6.1"],"unaffected":[">=1.6.1"]},"patches":[],"cvssScore":6.5,"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-03-14T22:00:00.000Z","publicationTime":"2017-02-13T18:30:00.000Z","modificationTime":"2017-02-13T14:36:18.735Z","creationTime":"2016-11-01T14:36:18.735Z","alternativeIds":["SNYK-JS-ANGULAR-10175"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-78"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10176"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.0.0"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:40:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10176"]},{"title":"Clickjacking","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-693"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10177"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-beta.0"],"vulnerable":["<1.5.0-beta.0 >=1.3.1"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:H/A:N","disclosureTime":"2015-08-06T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T11:50:00.000Z","modificationTime":"2016-11-01T13:30:14.967Z","creationTime":"2016-11-01T13:30:14.967Z","id":"npm:angular:20150807-1","packageName":"angular","cvssScore":6.8,"alternativeIds":["SNYK-JS-ANGULAR-10177"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10182"]},"severity":"high","semver":{"unaffected":[">=1.5.0-beta.2"],"vulnerable":["<1.5.0-beta.2"]},"credit":["Igor Minar"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-09-08T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:00:00.000Z","modificationTime":"2016-11-02T08:40:11.750Z","creationTime":"2016-11-02T08:40:11.750Z","id":"npm:angular:20150909","packageName":"angular","cvssScore":7.1,"alternativeIds":["SNYK-JS-ANGULAR-10182"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10180"]},"severity":"medium","semver":{"unaffected":[">=1.4.10"],"vulnerable":["<1.4.10"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-11-29T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:10:00.000Z","modificationTime":"2016-11-02T08:16:55.157Z","creationTime":"2016-11-02T08:16:55.157Z","id":"npm:angular:20151130","packageName":"angular","cvssScore":5.4,"alternativeIds":["SNYK-JS-ANGULAR-10180"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10181"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.0"],"vulnerable":["<1.5.0-rc.0"]},"credit":["Pete Bacon Darwin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2015-12-04T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:20:00.000Z","modificationTime":"2016-11-02T08:26:38.753Z","creationTime":"2016-11-02T08:26:38.753Z","id":"npm:angular:20151205","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10181"]},{"title":"Cross-site Scripting (XSS)","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10202"]},"severity":"medium","semver":{"unaffected":[">=1.5.0-rc.2"],"vulnerable":["<1.5.0-rc.2 >=1.3.0"]},"credit":["Lucas Mirelmann"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2016-01-21T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:30:00.000Z","modificationTime":"2016-11-09T12:45:57.682Z","creationTime":"2016-11-09T12:45:57.682Z","id":"npm:angular:20160122","packageName":"angular","cvssScore":4.3,"alternativeIds":["SNYK-JS-ANGULAR-10202"]},{"title":"Arbitrary Script Injection","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10203"]},"severity":"medium","semver":{"unaffected":[">=1.2.30"],"vulnerable":["<1.2.30 >=1.0.0"]},"credit":["Raphaël Jamet"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2016-05-26T21:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:40:00.000Z","modificationTime":"2016-11-09T13:00:18.135Z","creationTime":"2016-11-09T13:00:18.135Z","id":"npm:angular:20160527","packageName":"angular","cvssScore":4.8,"alternativeIds":["SNYK-JS-ANGULAR-10203"]},{"title":"Content Security Policy (CSP) Bypass","moduleName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-10190"]},"severity":"medium","semver":{"unaffected":[">=1.5.9"],"vulnerable":["<1.5.9 >=1.5.0"]},"credit":["Martin Probst"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N","disclosureTime":"2016-10-31T22:00:00.000Z","patches":[],"publicationTime":"2017-01-23T12:50:00.000Z","modificationTime":"2017-01-24T09:16:32.893Z","creationTime":"2016-11-07T09:16:32.893Z","id":"npm:angular:20161101","packageName":"angular","cvssScore":6.5,"alternativeIds":["SNYK-JS-ANGULAR-10190"]},{"title":"Cross-site Scripting (XSS)","credit":["Unknown"],"moduleName":"angular","packageName":"angular","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-ANGULAR-12026"]},"semver":{"unaffected":[">=1.6.7"],"vulnerable":["<1.6.7"]},"patches":[],"cvssScore":6.5,"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2017-10-17T21:00:00.000Z","publicationTime":"2017-12-25T14:45:01.473Z","modificationTime":"2017-12-19T11:18:55.007Z","creationTime":"2017-12-19T11:18:55.007Z","id":"npm:angular:20171018","alternativeIds":["SNYK-JS-ANGULAR-12026"]}],"backbone":[{"title":"Cross-site Scripting (XSS)","credit":[],"language":"js","packageManager":"npm","packageName":"backbone","moduleName":"backbone","semver":{"vulnerable":["<0.5.0"],"unaffected":[">=0.5.0"]},"identifiers":{"CWE":[],"CVE":[],"ALTERNATIVE":["SNYK-JS-BACKBONE-10054"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/backbone/20110701/backbone_20110701_0_0_0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"version":"<0.5.0 >=0.3.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/jashkenas/backbone/commit/0cdc525961d3fa98e810ffae6bcc8e3838e36d93.patch"],"id":"patch:npm:backbone:20110701:0"}],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","id":"npm:backbone:20110701","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10054"]},{"title":"Cross-site Scripting (XSS)","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T17:50:20.000Z","disclosureTime":"2016-05-23T17:50:20.000Z","semver":{"vulnerable":["<= 0.3.3"],"unaffected":[">= 0.5.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":108,"ALTERNATIVE":["SNYK-JS-BACKBONE-10110"]},"patches":[],"moduleName":"backbone","language":"js","packageManager":"npm","id":"npm:backbone:20160523","packageName":"backbone","cvssScore":6.5,"alternativeIds":["SNYK-JS-BACKBONE-10110"]}],"bootstrap":[{"title":"Cross-site Scripting (XSS)","credit":["Peter Corsaro"],"packageName":"bootstrap","moduleName":"bootstrap","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-BOOTSTRAP-10433"]},"semver":{"unaffected":[">=2.1.0"],"vulnerable":["<2.1.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2012-05-09T21:00:00.000Z","publicationTime":"2017-04-10T09:39:59.975Z","modificationTime":"2017-02-27T10:05:00.075Z","creationTime":"2017-02-27T10:05:00.075Z","id":"npm:bootstrap:20120510","cvssScore":6.5,"alternativeIds":["SNYK-JS-BOOTSTRAP-10433"]},{"title":"Cross-Site Scripting (XSS)","credit":["Unknown"],"moduleName":"bootstrap","packageName":"bootstrap","language":"js","packageManager":"npm","identifiers":{"CVE":[],"CWE":["CWE-79"],"ALTERNATIVE":["SNYK-JS-BOOTSTRAP-10860"]},"semver":{"unaffected":[">=3.4.0 <4.0.0-alpha || >4.0.0-beta.2"],"vulnerable":["<3.4.0 || >=4.0.0-alpha <4.0.0-beta.2"]},"severity":"medium","cvssScore":6.5,"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","patches":[],"creationTime":"2017-11-25T17:23:26.518Z","modificationTime":"2017-11-25T17:23:26.518Z","publicationTime":"2018-01-19T09:37:48.056Z","disclosureTime":"2016-06-27T17:23:26.518Z","id":"npm:bootstrap:20160627","alternativeIds":["SNYK-JS-BOOTSTRAP-10860"]}],"dojo":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.1"],"unaffected":[">=1.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"ALTERNATIVE":["SNYK-JS-DOJO-10051"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20090409","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10051"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":[">=0.4 <0.4.4 || >=1.0 <1.0.3 || >=1.1 <1.1.2 || >=1.2 <1.2.4 || >=1.3 <1.3.3 || >=1.4 <1.4.2"],"unaffected":["<0.4 >=0.4.4 || <1.0 >=1.0.3 || <1.1 >=1.1.2 || <1.2 >=1.2.4 || <1.3 >=1.3.3 || <1.4 >=1.4.2"]},"CVSSv2":"CVSS:2.0/AV:N/AC:L/Au:N/C:C/I:C/A:C","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H","severity":"high","identifiers":{"CWE":["CWE-16"],"CVE":["CVE-2010-2276","CVE-2010-2272"],"ALTERNATIVE":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614","packageName":"dojo","cvssScore":10,"alternativeIds":["npm:dojo:20100614-1","npm:dojo:20100614-2","npm:dojo:20100614-3","npm:dojo:20100614-4","npm:dojo:20100614-5","SNYK-JS-DOJO-10052"]},{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<1.4.2"],"unaffected":[">=1.4.2"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-2275"],"ALTERNATIVE":["SNYK-JS-DOJO-10053"]},"patches":[],"moduleName":"dojo","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:dojo:20100614-6","packageName":"dojo","cvssScore":6.5,"alternativeIds":["SNYK-JS-DOJO-10053"]},{"title":"Cross Site Scripting","credit":["Unknown"],"creationTime":"2016-05-24T06:45:20.086Z","modificationTime":"2016-05-24T06:45:20.086Z","publicationTime":"2016-06-22T00:00:00.000Z","disclosureTime":"2016-05-23T16:48:27.000Z","semver":{"vulnerable":["<= 1.0.0"],"unaffected":[">= 1.1.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2008-6681"],"NSP":107,"ALTERNATIVE":["SNYK-JS-DOJO-10108"]},"patches":[],"moduleName":"dojo","language":"js","packageManager":"npm","id":"npm:dojo:20160523","packageName":"dojo","cvssScore":4.3,"alternativeIds":["SNYK-JS-DOJO-10108"]}],"foundation-sites":[{"title":"Cross-site Scripting (XSS)","credit":["Mathieu Amiot"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10413"]},"semver":{"unaffected":[">=3.0.6"],"vulnerable":["<3.0.6 >=3.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2012-07-16T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.155Z","modificationTime":"2017-03-06T12:29:55.952Z","creationTime":"2017-03-06T12:29:55.952Z","id":"npm:foundation-sites:20120717","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10413"]},{"title":"Cross-site Scripting (XSS)","credit":["Maya Kokits"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10414"]},"semver":{"unaffected":[">=5.5.3"],"vulnerable":["<5.5.3"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-18T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.227Z","modificationTime":"2017-03-06T12:57:37.670Z","creationTime":"2017-03-06T12:57:37.670Z","id":"npm:foundation-sites:20150619","cvssScore":6.5,"alternativeIds":["SNYK-JS-FOUNDATIONSITES-10414"]},{"title":"Cross-site Scripting (XSS)","credit":["Nathaniel Paulus"],"moduleName":"foundation-sites","packageName":"foundation-sites","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-FOUNDATIONSITES-10743"]},"semver":{"vulnerable":["<6.0.0"],"unaffected":[">=6.0.0"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","cvssScore":6.5,"disclosureTime":"2017-08-01T21:00:00.000Z","publicationTime":"2017-08-02T13:09:44.451Z","modificationTime":"2017-08-02T10:42:11.945Z","creationTime":"2017-08-02T10:42:11.945Z","id":"npm:foundation-sites:20170802","alternativeIds":["SNYK-JS-FOUNDATIONSITES-10743"]}],"handlebars":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["<=1.0.0-beta.3"],"unaffected":[">1.0.0-beta.3"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10047"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20110425/handlebars_20110425_0_0_b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"version":"<=1.0.0-beta.3","modificationTime":"2015-11-06T02:09:36.180Z","comments":["https://github.com/rgrove/handlebars.js/commit/b291a1ad8c9a33f834d126450635f0b6ca546a0c.patch"],"id":"patch:npm:handlebars:20110425:0"}],"moduleName":"handlebars","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:handlebars:20110425","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10047"]},{"title":"Content Injection (XSS)","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<4.0.0"],"unaffected":[">=4.0.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":61,"ALTERNATIVE":["SNYK-JS-HANDLEBARS-10068"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/handlebars/20151207/handlebars_0.patch"],"version":"<4.0.0 >=3.0.2","modificationTime":"2015-12-14T23:52:16.811Z","comments":["https://github.com/wycats/handlebars.js/commit/83b8e846a3569bd366cf0b6bdc1e4604d1a2077e"],"id":"patch:npm:handlebars:20151207:0"}],"moduleName":"handlebars","creationTime":"2015-12-14T23:52:16.811Z","modificationTime":"2015-12-14T23:52:16.811Z","publicationTime":"2015-12-14T23:52:16.811Z","disclosureTime":"2015-12-07T16:52:07.962Z","language":"js","packageManager":"npm","id":"npm:handlebars:20151207","packageName":"handlebars","cvssScore":5.3,"alternativeIds":["SNYK-JS-HANDLEBARS-10068"]}],"jquery":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2011-4969"],"ALTERNATIVE":["SNYK-JS-JQUERY-10183"]},"severity":"medium","semver":{"unaffected":[">=1.6.3"],"vulnerable":["<1.6.3"]},"credit":["Dave Methvin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2011-06-05T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-11-06T15:25:26.117Z","creationTime":"2016-11-06T15:25:26.117Z","id":"npm:jquery:20110606","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10183"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-6708"],"NSP":329,"ALTERNATIVE":["SNYK-JS-JQUERY-10184"]},"severity":"medium","semver":{"unaffected":[">=1.9.0"],"vulnerable":["<1.9.0 >=1.7.1"]},"credit":["Richard Gibson"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-06-19T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2017-03-12T14:17:57.686Z","creationTime":"2016-11-06T13:53:57.686Z","id":"npm:jquery:20120206","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10184"]},{"title":"DOM Based Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2014-6071"],"ALTERNATIVE":["SNYK-JS-JQUERY-10185"]},"severity":"medium","semver":{"unaffected":[">=1.6.2"],"vulnerable":["<=1.5.1 >=1.4.2"]},"credit":["Mauro Risonho de Paula Assumpção"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2014-09-01T21:00:00.000Z","patches":[],"publicationTime":"2016-10-20T14:16:53.138Z","modificationTime":"2016-10-06T14:16:53.138Z","creationTime":"2016-11-06T14:16:53.138Z","id":"npm:jquery:20140902","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10185"]},{"title":"Cross-site Scripting (XSS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2015-9251"],"NSP":328,"ALTERNATIVE":["SNYK-JS-JQUERY-10186"]},"severity":"medium","semver":{"unaffected":[">=3.0.0-beta1 || >=1.12.0 <1.12.3"],"vulnerable":["<3.0.0-beta1 >1.12.3 || <1.12.0 >=1.4.0"]},"credit":["Egor Homakov"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2015-06-26T21:00:00.000Z","patches":[],"publicationTime":"2016-11-27T00:00:00.000Z","modificationTime":"2017-03-27T15:12:44.538Z","creationTime":"2016-11-06T15:12:44.538Z","id":"npm:jquery:20150627","packageName":"jquery","cvssScore":5.4,"alternativeIds":["SNYK-JS-JQUERY-10186"]},{"title":"Denial of Service (DoS)","moduleName":"jquery","language":"js","packageManager":"npm","identifiers":{"CWE":[],"CVE":["CVE-2016-10707"],"NSP":330,"ALTERNATIVE":["SNYK-JS-JQUERY-10187"]},"severity":"low","semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-beta1"]},"credit":["Michał Gołębiowski"],"CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L","disclosureTime":"2016-05-28T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:37:35.224Z","modificationTime":"2016-12-26T15:37:35.224Z","creationTime":"2016-11-06T15:37:35.224Z","id":"npm:jquery:20160529","packageName":"jquery","cvssScore":3.7,"alternativeIds":["SNYK-JS-JQUERY-10187"]}],"jquery-mobile":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-mobile","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-JQUERYMOBILE-10199"]},"severity":"medium","semver":{"unaffected":[">=1.2.0"],"vulnerable":["<1.2.0"]},"credit":["Masato Kinugawa"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2012-08-01T21:00:00.000Z","patches":[],"publicationTime":"2016-12-26T11:28:34.624Z","modificationTime":"2016-12-26T11:28:34.624Z","creationTime":"2016-11-09T11:28:34.624Z","id":"npm:jquery-mobile:20120802","packageName":"jquery-mobile","cvssScore":6.5,"alternativeIds":["SNYK-JS-JQUERYMOBILE-10199"]}],"jquery-ui":[{"title":"Cross-site Scripting (XSS)","moduleName":"jquery-ui","packageName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-5312"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10188"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["shadowman131"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2010-09-02T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T14:37:13.516Z","modificationTime":"2017-02-13T14:37:13.516Z","creationTime":"2016-12-26T14:37:13.516Z","id":"npm:jquery-ui:20100903","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10188"]},{"title":"Cross-site Scripting (XSS) via Tooltip","moduleName":"jquery-ui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-6662"],"ALTERNATIVE":["SNYK-JS-JQUERYUI-10189"]},"severity":"medium","semver":{"unaffected":[">=1.10.0"],"vulnerable":["<1.10.0"]},"credit":["Scott González"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:N/A:N","disclosureTime":"2012-11-26T22:00:00.000Z","patches":[],"publicationTime":"2016-12-26T15:04:27.065Z","modificationTime":"2016-12-26T15:04:27.065Z","creationTime":"2016-11-06T15:04:27.065Z","id":"npm:jquery-ui:20121127","packageName":"jquery-ui","cvssScore":4.3,"alternativeIds":["SNYK-JS-JQUERYUI-10189"]},{"title":"XSS in dialog closeText","credit":["Phat Ly"],"creationTime":"2016-07-22T00:00:02.715Z","modificationTime":"2016-07-22T00:00:02.715Z","publicationTime":"2016-07-21T22:21:41.000Z","disclosureTime":"2016-07-21T22:21:41.000Z","semver":{"vulnerable":["<=1.11.4"],"unaffected":[">=1.12.0"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:L/UI:R/S:U/C:H/I:H/A:N","severity":"high","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":127,"ALTERNATIVE":["SNYK-JS-JQUERYUI-10118"]},"patches":[],"moduleName":"jquery-ui","language":"js","packageManager":"npm","id":"npm:jquery-ui:20160721","packageName":"jquery-ui","cvssScore":7.3,"alternativeIds":["SNYK-JS-JQUERYUI-10118"]}],"knockout":[{"title":"Cross-site Scripting (XSS)","credit":["Steven Sanderson"],"moduleName":"knockout","packageName":"knockout","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-KNOCKOUT-10415"]},"semver":{"unaffected":[">=3.0.0"],"vulnerable":["<3.0.0 >=2.1.0-pre"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-30T21:00:00.000Z","publicationTime":"2017-03-13T08:00:22.295Z","modificationTime":"2017-03-01T12:39:34.669Z","creationTime":"2017-03-01T12:39:34.669Z","id":"npm:knockout:20130701","cvssScore":5.4,"alternativeIds":["SNYK-JS-KNOCKOUT-10415"]}],"moment":[{"title":"Regular Expression Denial of Service (ReDoS)","credit":["Adam Baldwin"],"language":"js","packageManager":"npm","moduleName":"moment","packageName":"moment","id":"npm:moment:20160126","semver":{"vulnerable":["<=2.11.1"],"unaffected":[">2.11.1"]},"identifiers":{"CWE":["CWE-400"],"CVE":[],"NSP":55,"ALTERNATIVE":["SNYK-JS-MOMENT-10084"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_0_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.11.1 >2.10.6","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_1_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.10.6 >2.9.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:1"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_2_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<=2.9.0 >2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:2"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_3_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"=2.2.1","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:3"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20160126/moment_20160126_0_4_34af63b8b21208a949dfaf42d228502c73d20ec0.patch"],"version":"<2.2.1 >2.0.0","modificationTime":"2016-01-26T20:04:21.225Z","comments":[],"id":"patch:npm:moment:20160126:4"}],"cvssScore":5.3,"severity":"low","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L","disclosureTime":"2016-01-26T20:04:21.225Z","creationTime":"2016-02-01T19:00:03.862Z","modificationTime":"2016-09-28T19:00:03.862Z","publicationTime":"2016-02-01T19:00:03.862Z","alternativeIds":["SNYK-JS-MOMENT-10084"]},{"title":"Regular Expression Denial of Service (ReDoS)","credit":["Snyk Security Research Team"],"language":"js","packageManager":"npm","moduleName":"moment","packageName":"moment","id":"npm:moment:20161019","identifiers":{"CWE":["CWE-400"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MOMENT-10164"]},"semver":{"vulnerable":["<2.15.2"],"unaffected":[">=2.15.2"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_1.patch"],"version":"<2.15.2 >=2.14.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:0"},{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20161019/moment_20161019_0_0.patch"],"version":"<2.14.0 >=2.12.0","modificationTime":"2016-10-24T00:00:00.000Z","comments":[],"id":"patch:npm:moment:20161019:1"}],"cvssScore":5.9,"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H","disclosureTime":"2016-10-18T21:00:00.000Z","publicationTime":"2016-10-24T06:57:59.675Z","modificationTime":"2016-10-23T06:57:59.675Z","creationTime":"2016-10-23T06:57:59.675Z","alternativeIds":["SNYK-JS-MOMENT-10164"]},{"title":"Regular Expression Denial of Service (ReDoS)","credit":["Cristian-Alexandru Staicu"],"moduleName":"moment","packageName":"moment","language":"js","packageManager":"npm","identifiers":{"NSP":532,"CWE":["CWE-400"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MOMENT-10841"]},"semver":{"unaffected":[">=2.19.3"],"vulnerable":["<2.19.3"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/moment/20170905/moment_0_0_69ed9d44957fa6ab12b73d2ae29d286a857b80eb.patch"],"version":"<2.19.3 >=2.16.0","modificationTime":"2017-11-30T14:47:22.471Z","comments":[],"id":"patch:npm:moment:20170905:0"}],"cvssScore":3.7,"severity":"low","CVSSv3":"CVSS:3.0/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L","disclosureTime":"2017-09-05T21:00:00.000Z","publicationTime":"2017-11-28T14:47:22.471Z","modificationTime":"2017-11-28T06:55:05.106Z","creationTime":"2017-09-13T07:55:05.106Z","id":"npm:moment:20170905","alternativeIds":["SNYK-JS-MOMENT-10841"]}],"mustache":[{"title":"Cross-site Scripting (XSS)","credit":[],"semver":{"vulnerable":["< 0.3.1"],"unaffected":[">= 0.3.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-MUSTACHE-10046"]},"patches":[],"moduleName":"mustache","creationTime":"2015-11-06T02:09:36.180Z","publicationTime":"2015-11-06T02:09:36.180Z","modificationTime":"2015-11-06T02:09:36.180Z","disclosureTime":"2015-11-06T02:09:36.180Z","language":"js","packageManager":"npm","id":"npm:mustache:20110814","packageName":"mustache","cvssScore":5.4,"alternativeIds":["SNYK-JS-MUSTACHE-10046"]},{"title":"Content Injection due to quoteless attributes","credit":["Matias P. Brutti"],"semver":{"vulnerable":["<2.2.1"],"unaffected":[">=2.2.1"]},"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N","severity":"medium","identifiers":{"CWE":["CWE-79"],"CVE":[],"NSP":62,"ALTERNATIVE":["SNYK-JS-MUSTACHE-10067"]},"patches":[{"urls":["https://s3.amazonaws.com/snyk-rules-pre-repository/snapshots/master/patches/npm/mustache/20151207/mustache_0.patch"],"version":"<2.2.1 >=2.1.0","modificationTime":"2015-12-14T23:52:16.806Z","comments":["https://github.com/janl/mustache.js/commit/378bcca8a5cfe4058f294a3dbb78e8755e8e0da5"],"id":"patch:npm:mustache:20151207:0"}],"moduleName":"mustache","creationTime":"2015-12-14T23:52:16.806Z","modificationTime":"2015-12-14T23:52:16.806Z","publicationTime":"2015-12-14T23:52:16.806Z","disclosureTime":"2015-12-07T17:13:57.565Z","language":"js","packageManager":"npm","id":"npm:mustache:20151207","packageName":"mustache","cvssScore":5.3,"alternativeIds":["SNYK-JS-MUSTACHE-10067"]}],"react":[{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-7035"],"ALTERNATIVE":["SNYK-JS-REACT-10192"]},"severity":"medium","semver":{"unaffected":[">=0.5.2 || <=0.3.x || =0.4.2"],"vulnerable":[">=0.5.0 <0.5.2 || >=0.4.0 <0.4.2"]},"credit":["Paul O’Shannessy","Thomas Aylott"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N","disclosureTime":"2013-12-16T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:21.094Z","modificationTime":"2016-11-08T08:23:21.094Z","creationTime":"2016-11-08T08:23:21.094Z","id":"npm:react:20131217","packageName":"react","cvssScore":6.5,"alternativeIds":["SNYK-JS-REACT-10192"]},{"title":"Cross-site Scripting (XSS)","moduleName":"react","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-REACT-10193"]},"severity":"high","semver":{"unaffected":[">=0.14.0"],"vulnerable":["<0.14.0"]},"credit":["Daniel LeCheminant"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N","disclosureTime":"2015-03-17T22:00:00.000Z","patches":[],"publicationTime":"2017-01-18T14:00:38.403Z","modificationTime":"2016-11-08T09:59:38.403Z","creationTime":"2016-11-08T09:59:38.403Z","id":"npm:react:20150318","packageName":"react","cvssScore":7.1,"alternativeIds":["SNYK-JS-REACT-10193"]}],"riot":[{"title":"Cross-site Scripting (XSS)","credit":["crazy2be"],"moduleName":"riot","packageName":"riot","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-RIOT-10447"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2013-11-13T22:00:00.000Z","publicationTime":"2017-05-08T12:34:46.386Z","modificationTime":"2017-03-20T14:44:23.092Z","creationTime":"2017-03-20T14:44:23.092Z","id":"npm:riot:20131114","cvssScore":6.5,"alternativeIds":["SNYK-JS-RIOT-10447"]}],"socket.io":[{"title":"Insecure Randomness","credit":["Martin Thomson"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-330"],"CVE":[],"NSP":321,"ALTERNATIVE":["SNYK-JS-SOCKETIO-10397"]},"semver":{"unaffected":[">=0.9.7"],"vulnerable":["<0.9.7"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:N/A:N","disclosureTime":"2012-03-22T22:00:00.000Z","publicationTime":"2017-02-13T13:46:59.513Z","modificationTime":"2017-02-13T13:46:59.513Z","creationTime":"2017-02-01T13:46:59.513Z","id":"npm:socket.io:20120323","cvssScore":5.3,"alternativeIds":["SNYK-JS-SOCKETIO-10397"]},{"title":"Cross-site Scripting (XSS)","credit":["Almog Melamed"],"moduleName":"socket.io","packageName":"socket.io","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-SOCKETIO-10398"]},"semver":{"unaffected":[">=0.9.6"],"vulnerable":["<0.9.6"]},"patches":[],"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-16T21:00:00.000Z","publicationTime":"2017-02-13T13:28:52.754Z","modificationTime":"2017-02-13T13:28:52.754Z","creationTime":"2017-02-01T13:28:52.754Z","id":"npm:socket.io:20120417","cvssScore":5.4,"alternativeIds":["SNYK-JS-SOCKETIO-10398"]}],"vue":[{"title":"Cross-site Scripting (XSS)","credit":["Unknown"],"moduleName":"vue","packageName":"vue","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-VUE-12035"]},"semver":{"unaffected":[">=2.3.0-beta.1"],"vulnerable":["<2.3.0-beta.1"]},"patches":[],"cvssScore":6.5,"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2017-03-31T21:00:00.000Z","publicationTime":"2017-12-25T14:45:02.463Z","modificationTime":"2017-12-19T11:55:30.354Z","creationTime":"2017-12-19T11:55:30.354Z","id":"npm:vue:20170401","alternativeIds":["SNYK-JS-VUE-12035"]},{"title":"Cross-site Scripting (XSS)","credit":["Unknown"],"moduleName":"vue","packageName":"vue","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-VUE-12036"]},"semver":{"unaffected":[">=2.4.3"],"vulnerable":["<2.4.3"]},"patches":[],"cvssScore":6.5,"severity":"medium","CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N","disclosureTime":"2017-08-28T21:00:00.000Z","publicationTime":"2017-12-25T14:45:02.568Z","modificationTime":"2017-12-19T11:56:17.017Z","creationTime":"2017-12-19T11:56:17.017Z","id":"npm:vue:20170829","alternativeIds":["SNYK-JS-VUE-12036"]}],"yui":[{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2010-4207"],"ALTERNATIVE":["SNYK-JS-YUI-10383"]},"severity":"medium","semver":{"unaffected":[">=2.8.2 || <2.4.0"],"vulnerable":["<2.8.2 >=2.4.0"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2010-10-24T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:24:55.944Z","modificationTime":"2017-01-22T09:24:55.944Z","creationTime":"2017-01-22T09:24:55.944Z","id":"npm:yui:20101025","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10383"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":[],"ALTERNATIVE":["SNYK-JS-YUI-10384"]},"severity":"medium","semver":{"unaffected":[">=3.5.1 || <3.5.0-PR1"],"vulnerable":["<3.5.1 >=3.5.0-PR1"]},"credit":["Ryan Grove"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-04-27T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:12:40.841Z","modificationTime":"2017-02-13T09:12:40.841Z","creationTime":"2017-01-22T09:12:40.841Z","id":"npm:yui:20120428","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10384"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2012-5881","CVE-2012-5882","CVE-2012-5883"],"ALTERNATIVE":["SNYK-JS-YUI-10385"]},"severity":"medium","semver":{"unaffected":[">=3.0.0 || <2.4.0"],"vulnerable":["<3.0.0 >=2.4.0"]},"credit":["Unknwon"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2012-10-29T22:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:20:03.679Z","modificationTime":"2017-02-13T09:20:03.679Z","creationTime":"2017-01-22T09:20:03.679Z","id":"npm:yui:20121030","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10385"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4941"],"NSP":332,"ALTERNATIVE":["SNYK-JS-YUI-10386"]},"severity":"medium","semver":{"unaffected":[">=3.10.0 || <3.0.0"],"vulnerable":["<3.10.0 >=3.0.0"]},"credit":["Aleksandr Dobkin"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-05-14T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T08:54:05.822Z","modificationTime":"2017-02-13T08:54:05.822Z","creationTime":"2017-01-22T08:54:05.822Z","id":"npm:yui:20130515","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10386"]},{"title":"Cross-site Scripting (XSS)","moduleName":"yui","packageName":"yui","language":"js","packageManager":"npm","identifiers":{"CWE":["CWE-79"],"CVE":["CVE-2013-4940"],"ALTERNATIVE":["SNYK-JS-YUI-10387"]},"severity":"medium","semver":{"unaffected":[">=3.10.3 <3.10.2"],"vulnerable":["=3.10.2"]},"credit":["Unknown"],"CVSSv3":"CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:L/I:L/A:N","disclosureTime":"2013-06-03T21:00:00.000Z","patches":[],"publicationTime":"2017-02-13T09:01:24.863Z","modificationTime":"2017-02-13T09:01:24.863Z","creationTime":"2017-01-22T09:01:24.863Z","id":"npm:yui:20130604","cvssScore":5.4,"alternativeIds":["SNYK-JS-YUI-10387"]}]}};
 
-},{}]},{},[43]);
+},{}]},{},[46]);

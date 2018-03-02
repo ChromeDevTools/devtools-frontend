@@ -1110,6 +1110,59 @@
     this.releaseControl();
   };
 
+  TestSuite.prototype.testInputDispatchEventsToOOPIF = async function() {
+    this.takeControl();
+
+    await new Promise(callback => this._waitForTargets(2, callback));
+
+    async function takeLogs(target) {
+      const code = `
+        (function() {
+          var result = window.logs.join(' ');
+          window.logs = [];
+          return result;
+        })()
+      `;
+      return (await target.runtimeAgent().invoke_evaluate({expression: code})).result.value;
+    }
+
+    let parentFrameOutput;
+    let childFrameOutput;
+
+    const inputAgent = SDK.targetManager.mainTarget().inputAgent();
+    const runtimeAgent = SDK.targetManager.mainTarget().runtimeAgent();
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mousePressed', button: 'left', clickCount: 1, x: 10, y: 10});
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 10, y: 20});
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 10, y: 20});
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mousePressed', button: 'left', clickCount: 1, x: 230, y: 140});
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseMoved', button: 'left', clickCount: 1, x: 230, y: 150});
+    await inputAgent.invoke_dispatchMouseEvent({type: 'mouseReleased', button: 'left', clickCount: 1, x: 230, y: 150});
+    parentFrameOutput = 'Event type: mousedown button: 0 x: 10 y: 10 Event type: mouseup button: 0 x: 10 y: 20';
+    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    childFrameOutput = 'Event type: mousedown button: 0 x: 30 y: 40 Event type: mouseup button: 0 x: 30 y: 50';
+    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+
+
+    await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
+    await runtimeAgent.invoke_evaluate({expression: `document.querySelector('iframe').focus()`});
+    await inputAgent.invoke_dispatchKeyEvent({type: 'keyDown', key: 'a'});
+    parentFrameOutput = 'Event type: keydown';
+    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    childFrameOutput = 'Event type: keydown';
+    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+
+    await inputAgent.invoke_dispatchTouchEvent({type: 'touchStart', touchPoints: [{x: 10, y: 10}]});
+    await inputAgent.invoke_dispatchTouchEvent({type: 'touchEnd', touchPoints: []});
+    await inputAgent.invoke_dispatchTouchEvent({type: 'touchStart', touchPoints: [{x: 230, y: 140}]});
+    await inputAgent.invoke_dispatchTouchEvent({type: 'touchEnd', touchPoints: []});
+    parentFrameOutput = 'Event type: touchstart touch x: 10 touch y: 10';
+    this.assertEquals(parentFrameOutput, await takeLogs(SDK.targetManager.targets()[0]));
+    childFrameOutput = 'Event type: touchstart touch x: 30 touch y: 40';
+    this.assertEquals(childFrameOutput, await takeLogs(SDK.targetManager.targets()[1]));
+
+    this.releaseControl();
+  };
+
   /**
    * Serializes array of uiSourceCodes to string.
    * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes

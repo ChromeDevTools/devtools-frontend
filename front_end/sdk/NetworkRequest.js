@@ -1032,11 +1032,11 @@ SDK.NetworkRequest = class extends Common.Object {
      */
     function onResourceContent(content) {
       let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, true);
-      if (imageSrc === null)
+      const cacheControl = this.responseHeaderValue('cache-control');
+      if (imageSrc === null && (!cacheControl || !cacheControl.includes('no-cache')))
         imageSrc = this._url;
       image.src = imageSrc;
     }
-
     this.requestContent().then(onResourceContent.bind(this));
   }
 

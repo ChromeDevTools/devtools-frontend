@@ -674,6 +674,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   dispose() {
+    this._popoverHelper.dispose();
     if (this._allocationStackView) {
       this._allocationStackView.clear();
       this._allocationDataGrid.dispose();

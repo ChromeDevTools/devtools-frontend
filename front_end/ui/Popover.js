@@ -28,9 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 UI.PopoverHelper = class {
   /**
    * @param {!Element} container
@@ -43,9 +40,19 @@ UI.PopoverHelper = class {
     this._scheduledRequest = null;
     /** @type {?function()} */
     this._hidePopoverCallback = null;
-    container.addEventListener('mousedown', this._mouseDown.bind(this), false);
-    container.addEventListener('mousemove', this._mouseMove.bind(this), false);
-    container.addEventListener('mouseout', this._mouseOut.bind(this), false);
+    this._container = container;
+    this._showTimeout = 0;
+    this._hideTimeout = 0;
+    /** @type {?number} */
+    this._hidePopoverTimer = null;
+    /** @type {?number} */
+    this._showPopoverTimer = null;
+    this._boundMouseDown = this._mouseDown.bind(this);
+    this._boundMouseMove = this._mouseMove.bind(this);
+    this._boundMouseOut = this._mouseOut.bind(this);
+    this._container.addEventListener('mousedown', this._boundMouseDown, false);
+    this._container.addEventListener('mousemove', this._boundMouseMove, false);
+    this._container.addEventListener('mouseout', this._boundMouseOut, false);
     this.setTimeout(1000);
   }
 
@@ -150,7 +157,7 @@ UI.PopoverHelper = class {
 
     this._hidePopoverTimer = setTimeout(() => {
       this._hidePopover();
-      delete this._hidePopoverTimer;
+      this._hidePopoverTimer = null;
     }, timeout);
   }
 
@@ -164,7 +171,7 @@ UI.PopoverHelper = class {
       return;
 
     this._showPopoverTimer = setTimeout(() => {
-      delete this._showPopoverTimer;
+      this._showPopoverTimer = null;
       this._stopHidePopoverTimer();
       this._hidePopover();
       this._showPopover(event.target.ownerDocument);
@@ -175,7 +182,7 @@ UI.PopoverHelper = class {
     if (!this._showPopoverTimer)
       return;
     clearTimeout(this._showPopoverTimer);
-    delete this._showPopoverTimer;
+    this._showPopoverTimer = null;
   }
 
   /**
@@ -242,11 +249,17 @@ UI.PopoverHelper = class {
     if (!this._hidePopoverTimer)
       return;
     clearTimeout(this._hidePopoverTimer);
-    delete this._hidePopoverTimer;
+    this._hidePopoverTimer = null;
 
     // We know that we reached the popup, but we might have moved over other elements.
     // Discard pending command.
     this._stopShowPopoverTimer();
+  }
+
+  dispose() {
+    this._container.removeEventListener('mousedown', this._boundMouseDown, false);
+    this._container.removeEventListener('mousemove', this._boundMouseMove, false);
+    this._container.removeEventListener('mouseout', this._boundMouseOut, false);
   }
 };
 

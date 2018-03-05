@@ -1567,6 +1567,8 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
    * @override
    */
   dispose() {
+    this._popoverHelper.dispose();
+
     this._breakpointManager.removeEventListener(
         Bindings.BreakpointManager.Events.BreakpointAdded, this._breakpointAdded, this);
     this._breakpointManager.removeEventListener(

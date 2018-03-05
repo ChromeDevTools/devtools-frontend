@@ -361,6 +361,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   dispose() {
+    this._errorPopoverHelper.dispose();
     this._disposePlugins();
     if (this._diff)
       this._diff.dispose();

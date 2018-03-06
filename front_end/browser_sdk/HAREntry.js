@@ -70,7 +70,7 @@ BrowserSDK.HAREntry = class {
       time += Math.max(t, 0);
 
     const entry = {
-      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()),
+      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
       time: time,
       request: await harEntry._buildRequest(),
       response: harEntry._buildResponse(),
@@ -333,10 +333,10 @@ BrowserSDK.HARLog = class {
   /**
    * @param {!SDK.NetworkRequest} request
    * @param {number} monotonicTime
-   * @return {string}
+   * @return {!Date}
    */
   static pseudoWallTime(request, monotonicTime) {
-    return new Date(request.pseudoWallTime(monotonicTime) * 1000).toJSON();
+    return new Date(request.pseudoWallTime(monotonicTime) * 1000);
   }
 
   /**
@@ -383,7 +383,7 @@ BrowserSDK.HARLog = class {
    */
   _convertPage(page, request) {
     return {
-      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(request, page.startTime),
+      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(request, page.startTime).toJSON(),
       id: 'page_' + page.id,
       title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
       pageTimings: {

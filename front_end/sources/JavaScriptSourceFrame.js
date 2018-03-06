@@ -1624,7 +1624,7 @@ Sources.JavaScriptSourceFrame.BreakpointDecoration = class {
   }
 
   update() {
-    if (!!this.condition)
+    if (!this.condition)
       this.element.setIconType('smallicon-inline-breakpoint');
     else
       this.element.setIconType('smallicon-inline-breakpoint-conditional');

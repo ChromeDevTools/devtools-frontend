@@ -127,10 +127,9 @@ InspectorMain.NodeIndicator = class {
     element.addEventListener('click', () => InspectorFrontendHost.openNodeFrontend(), false);
     this._button = new UI.ToolbarItem(element);
     this._button.setTitle(Common.UIString('Open dedicated DevTools for Node.js'));
-    self.runtime.sharedInstance(InspectorMain.InspectorMain)
-        .addEventListener(
-            SDK.TargetManager.Events.AvailableTargetsChanged,
-            event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
+    SDK.targetManager.addEventListener(
+        SDK.TargetManager.Events.AvailableTargetsChanged,
+        event => this._update(/** @type {!Array<!Protocol.Target.TargetInfo>} */ (event.data)));
     this._button.setVisible(false);
     this._update([]);
   }

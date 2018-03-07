@@ -640,10 +640,6 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint",
-            "className": "Sources.SourcesView.ActionDelegate",
-            "contextTypes": [
-                "Sources.SourcesPanel"
-            ],
             "bindings": [
                 {
                     "platform":"windows,linux",
@@ -658,10 +654,6 @@
         {
             "type": "action",
             "actionId": "debugger.toggle-breakpoint-enabled",
-            "className": "Sources.SourcesView.ActionDelegate",
-            "contextTypes": [
-                "Sources.SourcesPanel"
-            ],
             "bindings": [
                 {
                     "platform":"windows,linux",

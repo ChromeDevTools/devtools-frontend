@@ -626,23 +626,6 @@ Sources.SourcesView = class extends UI.VBox {
   }
 
   /**
-   * @param {boolean} onlyDisable
-   * @return {boolean}
-   */
-  _toggleBreakpoint(onlyDisable) {
-    const sourceFrame = this.currentSourceFrame();
-    if (!sourceFrame)
-      return false;
-
-    if (sourceFrame instanceof Sources.JavaScriptSourceFrame) {
-      const javaScriptSourceFrame = /** @type {!Sources.JavaScriptSourceFrame} */ (sourceFrame);
-      javaScriptSourceFrame.toggleBreakpointOnCurrentLine(onlyDisable);
-      return true;
-    }
-    return false;
-  }
-
-  /**
    * @param {boolean} active
    */
   toggleBreakpointsActiveState(active) {
@@ -762,10 +745,6 @@ Sources.SourcesView.ActionDelegate = class {
       case 'sources.go-to-member':
         sourcesView._showOutlineQuickOpen();
         return true;
-      case 'debugger.toggle-breakpoint':
-        return sourcesView._toggleBreakpoint(false /* onlyDisable */);
-      case 'debugger.toggle-breakpoint-enabled':
-        return sourcesView._toggleBreakpoint(true /* onlyDisable */);
       case 'sources.save':
         sourcesView._save();
         return true;

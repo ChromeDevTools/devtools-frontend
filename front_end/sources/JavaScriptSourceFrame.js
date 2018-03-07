@@ -494,6 +494,23 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
       return;
     }
 
+    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint')) {
+      const selection = this.textEditor.selection();
+      if (!selection)
+        return;
+      this._toggleBreakpoint(selection.startLine, false);
+      event.consume(true);
+      return;
+    }
+    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.toggle-breakpoint-enabled')) {
+      const selection = this.textEditor.selection();
+      if (!selection)
+        return;
+      this._toggleBreakpoint(selection.startLine, true);
+      event.consume(true);
+      return;
+    }
+
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
       this._controlDown = true;
       if (event.key === (Host.isMac() ? 'Meta' : 'Control')) {

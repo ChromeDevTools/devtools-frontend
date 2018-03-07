@@ -467,6 +467,13 @@ Bindings.BreakpointManager.Breakpoint = class {
     this._breakpointManager._targetManager.observeModels(SDK.DebuggerModel, this);
   }
 
+  refreshInDebugger() {
+    if (this._isRemoved)
+      return;
+    for (const breakpoint of this._modelBreakpoints.values())
+      breakpoint._refreshBreakpoint();
+  }
+
   /**
    * @override
    * @param {!SDK.DebuggerModel} debuggerModel
@@ -784,10 +791,8 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
     this._breakpoint._currentState = newState;
 
     if (this._debuggerId) {
-      this._resetLocations();
-      this._debuggerModel.removeBreakpoint(this._debuggerId).then(this._didRemoveFromDebugger.bind(this, callback));
-      this._scheduleUpdateInDebugger();
-      this._currentState = null;
+      await this._refreshBreakpoint();
+      callback();
       return;
     }
 
@@ -809,6 +814,16 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
       this._didSetBreakpointInDebugger(callback, result.breakpointId, result.locations);
     else
       this._didSetBreakpointInDebugger(callback, null, []);
+  }
+
+  async _refreshBreakpoint() {
+    if (!this._debuggerId)
+      return;
+    this._resetLocations();
+    await this._debuggerModel.removeBreakpoint(this._debuggerId);
+    this._didRemoveFromDebugger();
+    this._currentState = null;
+    this._scheduleUpdateInDebugger();
   }
 
   /**
@@ -838,20 +853,15 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
     callback();
   }
 
-  /**
-   * @param {function()} callback
-   */
-  _didRemoveFromDebugger(callback) {
+  _didRemoveFromDebugger() {
     if (this._cancelCallback) {
       this._cancelCallback = false;
-      callback();
       return;
     }
 
     this._resetLocations();
     this._debuggerModel.removeBreakpointListener(this._debuggerId, this._breakpointResolved, this);
     delete this._debuggerId;
-    callback();
   }
 
   /**
@@ -901,7 +911,7 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
     this._resetLocations();
     this._currentState = null;
     if (this._debuggerId)
-      this._didRemoveFromDebugger(function() {});
+      this._didRemoveFromDebugger();
   }
 
   _removeEventListeners() {

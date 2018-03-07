@@ -183,17 +183,6 @@ Sources.JavaScriptSourceFrame = class extends Sources.UISourceCodeFrame {
   /**
    * @override
    */
-  onUISourceCodeContentChanged() {
-    for (const decoration of this._breakpointDecorations) {
-      if (decoration.breakpoint)
-        decoration.breakpoint.remove();
-    }
-    super.onUISourceCodeContentChanged();
-  }
-
-  /**
-   * @override
-   */
   onTextChanged(oldRange, newRange) {
     this._scriptsPanel.updateLastModificationTime();
     super.onTextChanged(oldRange, newRange);

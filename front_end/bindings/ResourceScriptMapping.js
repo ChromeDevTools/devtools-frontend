@@ -308,6 +308,7 @@ Bindings.ResourceScriptFile = class extends Common.Object {
     if (!this._script)
       return;
     const debuggerModel = this._resourceScriptMapping._debuggerModel;
+    const breakpoints = Bindings.breakpointManager.breakpointsForUISourceCode(this._uiSourceCode);
     const source = this._uiSourceCode.workingCopy();
     debuggerModel.setScriptSource(this._script.scriptId, source, scriptSourceWasSet.bind(this));
 
@@ -316,13 +317,17 @@ Bindings.ResourceScriptFile = class extends Common.Object {
      * @param {!Protocol.Runtime.ExceptionDetails=} exceptionDetails
      * @this {Bindings.ResourceScriptFile}
      */
-    function scriptSourceWasSet(error, exceptionDetails) {
+    async function scriptSourceWasSet(error, exceptionDetails) {
       if (!error && !exceptionDetails)
         this._scriptSource = source;
       this._update();
 
-      if (!error && !exceptionDetails)
+      if (!error && !exceptionDetails) {
+        // Live edit can cause breakpoints to be in the wrong position, or to be lost altogether.
+        // If any breakpoints were in the pre-live edit script, they need to be re-added.
+        breakpoints.map(breakpoint => breakpoint.refreshInDebugger());
         return;
+      }
       if (!exceptionDetails) {
         Common.console.addMessage(Common.UIString('LiveEdit failed: %s', error), Common.Console.MessageLevel.Warning);
         return;

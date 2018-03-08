@@ -104,16 +104,22 @@ Console.ConsolePrompt = class extends UI.Widget {
     const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
     let newText;
     let isPrevious;
+    // Check against visual coordinates in case lines wrap.
+    const selection = this._editor.selection();
+    const cursorY = this._editor.visualCoordinates(selection.endLine, selection.endColumn).y;
 
     switch (keyboardEvent.keyCode) {
       case UI.KeyboardShortcut.Keys.Up.code:
-        if (keyboardEvent.shiftKey || this._editor.selection().endLine > 0)
+        const startY = this._editor.visualCoordinates(0, 0).y;
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== startY)
           break;
         newText = this._history.previous(this.text());
         isPrevious = true;
         break;
       case UI.KeyboardShortcut.Keys.Down.code:
-        if (keyboardEvent.shiftKey || this._editor.selection().endLine < this._editor.fullRange().endLine)
+        const fullRange = this._editor.fullRange();
+        const endY = this._editor.visualCoordinates(fullRange.endLine, fullRange.endColumn).y;
+        if (keyboardEvent.shiftKey || !selection.isEmpty() || cursorY !== endY)
           break;
         newText = this._history.next();
         break;

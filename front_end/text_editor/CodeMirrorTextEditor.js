@@ -613,6 +613,17 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @override
    * @param {number} lineNumber
    * @param {number} columnNumber
+   * @return {!{x: number, y: number}}
+   */
+  visualCoordinates(lineNumber, columnNumber) {
+    const metrics = this._codeMirror.cursorCoords(new CodeMirror.Pos(lineNumber, columnNumber));
+    return {x: metrics.left, y: metrics.top};
+  }
+
+  /**
+   * @override
+   * @param {number} lineNumber
+   * @param {number} columnNumber
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
   tokenAtTextPosition(lineNumber, columnNumber) {

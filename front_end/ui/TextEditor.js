@@ -76,6 +76,13 @@ UI.TextEditor.prototype = {
   /**
    * @param {number} lineNumber
    * @param {number} columnNumber
+   * @return {!{x: number, y: number}}
+   */
+  visualCoordinates(lineNumber, columnNumber) {},
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
   tokenAtTextPosition(lineNumber, columnNumber) {}

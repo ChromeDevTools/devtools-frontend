@@ -27,16 +27,6 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
-
-    const mode = Timeline.PerformanceMonitor.MetricMode;
-    /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricMode>} */
-    this._metricModes = new Map([
-      ['TaskDuration', mode.CumulativeTime], ['ScriptDuration', mode.CumulativeTime],
-      ['LayoutDuration', mode.CumulativeTime], ['RecalcStyleDuration', mode.CumulativeTime],
-      ['LayoutCount', mode.CumulativeCount], ['RecalcStyleCount', mode.CumulativeCount]
-    ]);
-    /** @type {!Map<string, !{lastValue: (number|undefined), lastTimestamp: (number|undefined)}>} */
-    this._metricData = new Map();
     this._controlPane.addEventListener(
         Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
   }
@@ -91,44 +81,9 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   async _poll() {
-    const metrics = await this._model.requestMetrics();
-    this._processMetrics(metrics);
-  }
-
-  /**
-   * @param {!Array<!Protocol.Performance.Metric>} rawMetrics
-   */
-  _processMetrics(rawMetrics) {
-    const metrics = new Map();
-    const timestamp = performance.now();
-    for (const metric of rawMetrics) {
-      let data = this._metricData.get(metric.name);
-      if (!data) {
-        data = {};
-        this._metricData.set(metric.name, data);
-      }
-      let value;
-      switch (this._metricModes.get(metric.name)) {
-        case Timeline.PerformanceMonitor.MetricMode.CumulativeTime:
-          value = data.lastTimestamp ?
-              Number.constrain((metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp), 0, 1) :
-              0;
-          data.lastValue = metric.value;
-          data.lastTimestamp = timestamp;
-          break;
-        case Timeline.PerformanceMonitor.MetricMode.CumulativeCount:
-          value = data.lastTimestamp ?
-              Math.max(0, (metric.value - data.lastValue) * 1000 / (timestamp - data.lastTimestamp)) :
-              0;
-          data.lastValue = metric.value;
-          data.lastTimestamp = timestamp;
-          break;
-        default:
-          value = metric.value;
-          break;
-      }
-      metrics.set(metric.name, value);
-    }
+    const data = await this._model.requestMetrics();
+    const timestamp = data.timestamp;
+    const metrics = data.metrics;
     this._metricsBuffer.push({timestamp, metrics: metrics});
     const millisPerWidth = this._width / this._pixelsPerMs;
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
@@ -378,12 +333,6 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 };
 
 /** @enum {symbol} */
-Timeline.PerformanceMonitor.MetricMode = {
-  CumulativeTime: Symbol('CumulativeTime'),
-  CumulativeCount: Symbol('CumulativeCount'),
-};
-
-/** @enum {symbol} */
 Timeline.PerformanceMonitor.Format = {
   Percent: Symbol('Percent'),
   Bytes: Symbol('Bytes'),
@@ -404,8 +353,7 @@ Timeline.PerformanceMonitor.ChartInfo;
 /**
  * @typedef {!{
  *   name: string,
- *   color: string,
- *   mode: (!Timeline.PerformanceMonitor.MetricMode|undefined)
+ *   color: string
  * }}
  */
 Timeline.PerformanceMonitor.MetricInfo;

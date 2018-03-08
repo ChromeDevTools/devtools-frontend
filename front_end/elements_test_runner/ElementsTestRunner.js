@@ -43,10 +43,13 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
   callback = TestRunner.safeWrap(callback);
   let result = null;
   let pendingRequests = 0;
-  function processChildren(node) {
+  async function processChildren(node) {
     try {
       if (result)
         return;
+
+      if (node._childDocumentPromiseForTesting)
+        await node._childDocumentPromiseForTesting;
 
       const pseudoElementsMap = node.pseudoElements();
       const pseudoElements = pseudoElementsMap ? pseudoElementsMap.valuesArray() : [];

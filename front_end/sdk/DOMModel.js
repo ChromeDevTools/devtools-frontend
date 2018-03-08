@@ -119,7 +119,7 @@ SDK.DOMNode = class {
       const childTarget = SDK.targetManager.targetById(payload.frameId);
       const childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
       if (childModel)
-        childModel.requestDocument();
+        this._childDocumentPromiseForTesting = childModel.requestDocument();
       this._children = [];
     }
 
@@ -1346,8 +1346,9 @@ SDK.DOMModel = class extends SDK.SDKModel {
   _documentUpdated() {
     // If we have this._pendingDocumentRequestPromise in flight,
     // if it hits backend post document update, it will contain most recent result.
+    const documentWasRequested = this._document || this._pendingDocumentRequestPromise;
     this._setDocument(null);
-    if (this.parentModel())
+    if (this.parentModel() && documentWasRequested)
       this.requestDocument();
   }
 

@@ -100,7 +100,7 @@ FormatterWorker.parseJSONRelaxed = function(content) {
  * @param {string} content
  */
 FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
-  const tokenizer = acorn.tokenizer(content, {ecmaVersion: 8});
+  const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
   let result = '';
   try {
     let token = tokenizer.getToken();
@@ -143,7 +143,7 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
  */
 FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
   let wrapped = '(async () => {' + content + '})()';
-  const root = acorn.parse(wrapped, {ecmaVersion: 8});
+  const root = acorn.parse(wrapped, {ecmaVersion: 9});
   const body = root.body[0].expression.callee.body;
   const changes = [];
   let containsAwait = false;
@@ -227,7 +227,7 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
  * @param {string} content
  */
 FormatterWorker.javaScriptIdentifiers = function(content) {
-  const root = acorn.parse(content, {ranges: false, ecmaVersion: 8});
+  const root = acorn.parse(content, {ranges: false, ecmaVersion: 9});
 
   /** @type {!Array<!ESTree.Node>} */
   const identifiers = [];

@@ -187,25 +187,26 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {number|string|boolean|undefined} value
+   * @param {number|string|boolean|undefined|bigint} value
    * @return {!SDK.RemoteObject}
    */
   createRemoteObjectFromPrimitiveValue(value) {
     const type = typeof value;
     let unserializableValue = undefined;
-    if (typeof value === 'number') {
+    if (type === 'number') {
       const description = String(value);
       if (value === 0 && 1 / value < 0)
-        unserializableValue = Protocol.Runtime.UnserializableValue.Negative0;
-      if (description === 'NaN')
-        unserializableValue = Protocol.Runtime.UnserializableValue.NaN;
-      if (description === 'Infinity')
-        unserializableValue = Protocol.Runtime.UnserializableValue.Infinity;
-      if (description === '-Infinity')
-        unserializableValue = Protocol.Runtime.UnserializableValue.NegativeInfinity;
-      if (typeof unserializableValue !== 'undefined')
-        value = undefined;
+        unserializableValue = SDK.RemoteObject.UnserializableNumber.Negative0;
+      else if (
+          description === SDK.RemoteObject.UnserializableNumber.NaN ||
+          description === SDK.RemoteObject.UnserializableNumber.Infinity ||
+          description === SDK.RemoteObject.UnserializableNumber.NegativeInfinity)
+        unserializableValue = description;
     }
+    if (type === 'bigint')
+      unserializableValue = /** @type {!Protocol.Runtime.UnserializableValue} */ (String(value) + 'n');
+    if (typeof unserializableValue !== 'undefined')
+      value = undefined;
     return new SDK.RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);
   }
 
@@ -357,7 +358,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   _copyRequested(object) {
     if (!object.objectId) {
-      InspectorFrontendHost.copyText(object.value);
+      InspectorFrontendHost.copyText(object.unserializableValue() || object.value);
       return;
     }
     object.callFunctionJSON(

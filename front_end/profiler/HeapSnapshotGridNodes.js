@@ -536,6 +536,9 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
         value = value + '()';
         valueStyle = 'function';
         break;
+      case 'bigint':
+        valueStyle = 'bigint';
+        break;
       case 'number':
         valueStyle = 'number';
         break;

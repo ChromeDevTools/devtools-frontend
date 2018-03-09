@@ -195,6 +195,15 @@ Array.prototype.mergeOrdered = function(array, comparator) {};
  */
 Int32Array.prototype.lowerBound = function(object, comparator, left, right) {};
 
+// TODO(luoe): remove these BigInt types once closure supports them.
+/**
+ * @param {number|string} value
+ */
+const BigInt = function(value) {};
+
+/** @typedef {*} */
+const bigint = null;
+
 // File System API
 /**
  * @constructor

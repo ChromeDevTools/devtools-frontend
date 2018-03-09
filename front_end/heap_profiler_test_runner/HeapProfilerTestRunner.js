@@ -117,7 +117,8 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
     'regexp': 'regexp',
     'number': 'number',
     'native': 'native',
-    'synthetic': 'synthetic'
+    'synthetic': 'synthetic',
+    'bigint': 'bigint'
   };
 
   HeapProfilerTestRunner.HeapNode.prototype = {

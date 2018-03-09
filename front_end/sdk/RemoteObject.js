@@ -84,7 +84,7 @@ SDK.RemoteObject = class {
   }
 
   /**
-   * @param {!Protocol.Runtime.RemoteObject|!SDK.RemoteObject|number|string|boolean|undefined|null} object
+   * @param {!Protocol.Runtime.RemoteObject|!SDK.RemoteObject|number|string|boolean|undefined|null|bigint} object
    * @return {!Protocol.Runtime.CallArgument}
    */
   static toCallArgument(object) {
@@ -94,14 +94,16 @@ SDK.RemoteObject = class {
     if (type === 'number') {
       const description = String(object);
       if (object === 0 && 1 / object < 0)
-        return {unserializableValue: Protocol.Runtime.UnserializableValue.Negative0};
-      if (description === 'NaN')
-        return {unserializableValue: Protocol.Runtime.UnserializableValue.NaN};
-      if (description === 'Infinity')
-        return {unserializableValue: Protocol.Runtime.UnserializableValue.Infinity};
-      if (description === '-Infinity')
-        return {unserializableValue: Protocol.Runtime.UnserializableValue.NegativeInfinity};
+        return {unserializableValue: SDK.RemoteObject.UnserializableNumber.Negative0};
+      if (description === SDK.RemoteObject.UnserializableNumber.NaN ||
+          description === SDK.RemoteObject.UnserializableNumber.Infinity ||
+          description === SDK.RemoteObject.UnserializableNumber.NegativeInfinity)
+        return {unserializableValue: description};
       return {value: object};
+    }
+    if (type === 'bigint') {
+      const value = String(object) + 'n';
+      return {unserializableValue: /** @type {!Protocol.Runtime.UnserializableValue} */ (value)};
     }
     if (type === 'string' || type === 'boolean')
       return {value: object};
@@ -109,9 +111,10 @@ SDK.RemoteObject = class {
     if (!object)
       return {value: null};
 
-    if (typeof object.unserializableValue !== 'undefined')
+    const isSDKRemoteObject = object instanceof SDK.RemoteObjectImpl;
+    if (!isSDKRemoteObject && typeof object.unserializableValue !== 'undefined')
       return {unserializableValue: object.unserializableValue};
-    if (object instanceof SDK.RemoteObjectImpl && typeof object._unserializableValue !== 'undefined')
+    if (isSDKRemoteObject && typeof object._unserializableValue !== 'undefined')
       return {unserializableValue: object._unserializableValue};
 
     if (typeof object.objectId !== 'undefined')
@@ -209,6 +212,11 @@ SDK.RemoteObject = class {
 
   /** @return {*} */
   get value() {
+    throw 'Not implemented';
+  }
+
+  /** @return {string|undefined} */
+  unserializableValue() {
     throw 'Not implemented';
   }
 
@@ -443,13 +451,15 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       if (!this._description && (typeof value !== 'object' || value === null))
         this._description = value + '';
       this._hasChildren = false;
-      if (typeof unserializableValue !== 'undefined') {
+      if (typeof unserializableValue === 'string') {
         this._unserializableValue = unserializableValue;
-        if (unserializableValue === Protocol.Runtime.UnserializableValue.Infinity ||
-            unserializableValue === Protocol.Runtime.UnserializableValue.NegativeInfinity ||
-            unserializableValue === Protocol.Runtime.UnserializableValue.Negative0 ||
-            unserializableValue === Protocol.Runtime.UnserializableValue.NaN)
+        if (unserializableValue === SDK.RemoteObject.UnserializableNumber.Infinity ||
+            unserializableValue === SDK.RemoteObject.UnserializableNumber.NegativeInfinity ||
+            unserializableValue === SDK.RemoteObject.UnserializableNumber.Negative0 ||
+            unserializableValue === SDK.RemoteObject.UnserializableNumber.NaN)
           this._value = Number(unserializableValue);
+        else if (type === 'bigint' && unserializableValue.endsWith('n'))
+          this._value = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
         else
           this._value = unserializableValue;
 
@@ -498,6 +508,14 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
    */
   get value() {
     return this._value;
+  }
+
+  /**
+   * @override
+   * @return {string|undefined}
+   */
+  unserializableValue() {
+    return this._unserializableValue;
   }
 
   /**
@@ -1389,3 +1407,14 @@ SDK.RemoteObject._descriptionLengthParenRegex = /\(([0-9]+)\)/;
  * @type {!RegExp}
  */
 SDK.RemoteObject._descriptionLengthSquareRegex = /\[([0-9]+)\]/;
+
+/**
+ * @const
+ * @enum {!Protocol.Runtime.UnserializableValue}
+ */
+SDK.RemoteObject.UnserializableNumber = {
+  Negative0: /** @type {!Protocol.Runtime.UnserializableValue} */ ('-0'),
+  NaN: /** @type {!Protocol.Runtime.UnserializableValue} */ ('NaN'),
+  Infinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('Infinity'),
+  NegativeInfinity: /** @type {!Protocol.Runtime.UnserializableValue} */ ('-Infinity')
+};

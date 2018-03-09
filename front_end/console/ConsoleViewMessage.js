@@ -547,6 +547,7 @@ Console.ConsoleViewMessage = class {
       case 'regexp':
       case 'symbol':
       case 'undefined':
+      case 'bigint':
         element = this._formatParameterAsValue(output);
         break;
       default:

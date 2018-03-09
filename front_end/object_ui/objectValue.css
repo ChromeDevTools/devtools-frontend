@@ -41,6 +41,10 @@
     color: rgb(28, 0, 207);
 }
 
+.object-value-bigint {
+    color: rgb(0, 93, 0);
+}
+
 .object-value-string,
 .object-value-regexp,
 .object-value-symbol {

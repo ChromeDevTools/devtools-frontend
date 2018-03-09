@@ -236,7 +236,9 @@ ObjectUI.JavaScriptAutocomplete = class {
         completions =
             await object.callFunctionJSONPromise(getCompletions, [SDK.RemoteObject.toCallArgument(object.subtype)]) ||
             [];
-      } else if (object.type === 'string' || object.type === 'number' || object.type === 'boolean') {
+      } else if (
+          object.type === 'string' || object.type === 'number' || object.type === 'boolean' ||
+          object.type === 'bigint') {
         const evaluateResult = await executionContext.evaluate(
             {
               expression: '(' + getCompletions + ')("' + object.type + '")',
@@ -283,6 +285,9 @@ ObjectUI.JavaScriptAutocomplete = class {
           object = new String('');
         else if (type === 'number')
           object = new Number(0);
+        // Object-wrapped BigInts cannot be constructed via `new BigInt`.
+        else if (type === 'bigint')
+          object = Object(BigInt(0));
         else if (type === 'boolean')
           object = new Boolean(false);
         else

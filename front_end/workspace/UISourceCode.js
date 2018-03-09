@@ -273,7 +273,7 @@ Workspace.UISourceCode = class extends Common.Object {
      * @param {boolean} encoded
      * @this {Workspace.UISourceCode}
      */
-    function contentLoaded(updatedContent, encoded) {
+    async function contentLoaded(updatedContent, encoded) {
       this._checkingContent = false;
       if (updatedContent === null) {
         const workingCopy = this.workingCopy();
@@ -290,14 +290,19 @@ Workspace.UISourceCode = class extends Common.Object {
       }
 
       if (!this.isDirty() || this._workingCopy === updatedContent) {
-        this._contentCommitted(updatedContent, false);
+        this._contentCommitted(/** @type {string} */ (updatedContent), false);
         return;
       }
+
+      await Common.Revealer.reveal(this);
+
+      // Make sure we are in the next frame before stopping the world with confirm
+      await new Promise(resolve => setTimeout(resolve, 0));
 
       const shouldUpdate =
           window.confirm(Common.UIString('This file was changed externally. Would you like to reload it?'));
       if (shouldUpdate)
-        this._contentCommitted(updatedContent, false);
+        this._contentCommitted(/** @type {string} */ (updatedContent), false);
       else
         this._lastAcceptedContent = updatedContent;
     }

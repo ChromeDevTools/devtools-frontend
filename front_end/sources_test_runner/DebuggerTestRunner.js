@@ -27,7 +27,7 @@ SourcesTestRunner.startDebuggerTestPromise = function(quiet) {
 };
 
 SourcesTestRunner.completeDebuggerTest = function() {
-  Bindings.breakpointManager.setBreakpointsActive(true);
+  Common.moduleSetting('breakpointsActive').set(true);
   SourcesTestRunner.resumeExecution(TestRunner.completeTest.bind(TestRunner));
 };
 

@@ -100,6 +100,14 @@
         },
         {
             "type": "setting",
+            "category": "Debugger",
+            "settingName": "breakpointsActive",
+            "settingType": "boolean",
+            "storageType": "session",
+            "defaultValue": true
+        },
+        {
+            "type": "setting",
             "category": "Elements",
             "title": "Show rulers",
             "settingName": "showMetricsRulers",

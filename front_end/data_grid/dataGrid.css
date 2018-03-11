@@ -75,6 +75,7 @@
 
 .data-grid table.data tr {
     display: none;
+    height: 20px;
 }
 
 .data-grid table.data tr.revealed {

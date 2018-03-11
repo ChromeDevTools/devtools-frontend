@@ -55,7 +55,7 @@ SourceFrame.JSONView = class extends UI.VBox {
 
   /**
    * @param {string} content
-   * @return {!Promise<?SourceFrame.JSONView>}
+   * @return {!Promise<?UI.SearchableView>}
    */
   static async createView(content) {
     // We support non-strict JSON parsing by parsing an AST tree which is why we offload it to a worker.
@@ -64,6 +64,20 @@ SourceFrame.JSONView = class extends UI.VBox {
       return null;
 
     const jsonView = new SourceFrame.JSONView(parsedJSON);
+    const searchableView = new UI.SearchableView(jsonView);
+    searchableView.setPlaceholder(Common.UIString('Find'));
+    jsonView._searchableView = searchableView;
+    jsonView.show(searchableView.element);
+    jsonView.element.setAttribute('tabIndex', 0);
+    return searchableView;
+  }
+
+  /**
+   * @param {?Object} obj
+   * @return {!UI.SearchableView}
+   */
+  static createViewSync(obj) {
+    const jsonView = new SourceFrame.JSONView(new SourceFrame.ParsedJSON(obj, '', ''));
     const searchableView = new UI.SearchableView(jsonView);
     searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;

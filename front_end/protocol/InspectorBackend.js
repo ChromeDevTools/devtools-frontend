@@ -212,11 +212,12 @@ Protocol.InspectorBackend.Connection.Factory;
 /**
  * @unrestricted
  */
-Protocol.TargetBase = class {
+Protocol.TargetBase = class extends Common.Object {
   /**
    *  @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    */
   constructor(connectionFactory) {
+    super();
     this._connection =
         connectionFactory({onMessage: this._onMessage.bind(this), onDisconnect: this._onDisconnect.bind(this)});
     this._lastMessageId = 1;
@@ -290,6 +291,11 @@ Protocol.TargetBase = class {
 
     if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
       this._dumpProtocolMessage('frontend: ' + message, '[FE] ' + domain);
+    if (this.hasEventListeners(Protocol.TargetBase.Events.MessageSent)) {
+      this.dispatchEventToListeners(
+          Protocol.TargetBase.Events.MessageSent,
+          {domain, method, params: JSON.parse(JSON.stringify(params)), id: messageId});
+    }
 
     this._connection.sendMessage(message);
     ++this._pendingResponsesCount;
@@ -332,6 +338,12 @@ Protocol.TargetBase = class {
       this._dumpProtocolMessage(
           'backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)), 'Backend');
     }
+    if (this.hasEventListeners(Protocol.TargetBase.Events.MessageReceived)) {
+      this.dispatchEventToListeners(Protocol.TargetBase.Events.MessageReceived, {
+        message: JSON.parse((typeof message === 'string') ? message : JSON.stringify(message)),
+      });
+    }
+
 
     const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
@@ -474,6 +486,11 @@ Protocol.TargetBase = class {
             this._agent(domain), messageObject, methodName, callback),
         0);
   }
+};
+
+Protocol.TargetBase.Events = {
+  MessageSent: Symbol('MessageSent'),
+  MessageReceived: Symbol('MessageReceived')
 };
 
 /**

@@ -1,4 +1,7 @@
 {
+  "dependencies": [
+    "common"
+  ],
   "scripts": [
     "InspectorBackend.js",
     "../InspectorBackendCommands.js"

@@ -26,12 +26,15 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 // For testing.
-UI.panels = [];
+UI.panels = {};
 
 /**
  * @unrestricted
  */
 UI.Panel = class extends UI.VBox {
+  /**
+   * @param {string} name
+   */
   constructor(name) {
     super();
 

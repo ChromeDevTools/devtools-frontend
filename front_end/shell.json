@@ -42,6 +42,7 @@
     { "name": "sources" },
     { "name": "terminal", "type": "remote" },
     { "name": "text_editor" },
-    { "name": "workspace_diff" }
+    { "name": "workspace_diff" },
+    { "name": "protocol_monitor"}
   ]
 }

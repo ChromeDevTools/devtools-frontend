@@ -212,19 +212,8 @@ Main.Main = class {
     this._registerForwardedShortcuts();
     this._registerMessageSinkListener();
 
-    // Pick first app we could instantiate (for test harness).
-    for (const extension of self.runtime.extensions(Common.AppProvider)) {
-      try {
-        const instance = await extension.instance();
-        if (instance) {
-          this._showAppUI(instance);
-          break;
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    }
     Main.Main.timeEnd('Main._createAppUI');
+    this._showAppUI(await self.runtime.extension(Common.AppProvider).instance());
   }
 
   /**

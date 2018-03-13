@@ -648,7 +648,6 @@ SDK.CSSMetadata._propertyDataMap = {
         ['baseline', 'middle', 'sub', 'super', 'text-top', 'text-bottom', 'top', 'bottom', '-webkit-baseline-middle']
   },
   'white-space': {values: ['normal', 'nowrap', 'pre', 'pre-line', 'pre-wrap']},
-  'box-lines': {values: ['single', 'multiple']},
   'page-break-after': {values: ['left', 'right', 'auto', 'always', 'avoid']},
   'clip-path': {values: ['none']},
   'margin': {values: ['auto']},
@@ -1349,7 +1348,6 @@ SDK.CSSMetadata.Weight = {
   '-webkit-box-align': 101,
   '-webkit-box-direction': 51,
   '-webkit-box-flex': 128,
-  '-webkit-box-lines': 2,
   '-webkit-box-ordinal-group': 91,
   '-webkit-box-orient': 144,
   '-webkit-box-pack': 106,

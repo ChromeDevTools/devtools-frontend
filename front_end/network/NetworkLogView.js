@@ -166,6 +166,8 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _createSearchPrompt() {
+    if (!Runtime.experiments.isEnabled('networkSearch'))
+      return null;
     const text = this._searchHint.contentElement.createChild('div', 'search-button');
     text.createChild('span').textContent = ls`Search headers and response bodies for `;
     const filterString = text.createChild('strong');
@@ -1839,6 +1841,8 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _updateSearchPrompt() {
+    if (!Runtime.experiments.isEnabled('networkSearch'))
+      return;
     const filterString = this._filterBar.visible() ? this._textFilterUI.value() : '';
     if (filterString.length) {
       const filterBarElement = this._filterBar.element;

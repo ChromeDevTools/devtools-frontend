@@ -78,6 +78,9 @@ Search.SearchView = class extends UI.VBox {
     this._searchScopes = new Map();
     this._defaultScope = Search.SearchView._readScopesExtenstions(this._scopesSelector, this._searchScopes);
 
+    if (this._searchScopes.size < 2)
+      this._scopesSelector.hideWidget();
+
     this._load();
     /** @type {?Search.SearchScope} */
     this._searchScope = null;

@@ -123,6 +123,7 @@
         {
             "type": "@Search.SearchScope",
             "id": "network.searchInNetwork",
+            "experiment": "networkSearch",
             "className": "Network.NetworkSearchScope",
             "title": "Network",
             "description": "Search headers and response bodies"

@@ -304,8 +304,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   async queryObjects(prototype) {
     if (!prototype.objectId)
       return {error: 'Prototype should be an Object.'};
-    const response =
-        await this._agent.invoke_queryObjects({prototypeObjectId: /** @type {string} */ (prototype.objectId)});
+    const response = await this._agent.invoke_queryObjects(
+        {prototypeObjectId: /** @type {string} */ (prototype.objectId), objectGroup: 'console'});
     const error = response[Protocol.Error];
     if (error) {
       console.error(error);

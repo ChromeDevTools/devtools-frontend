@@ -810,7 +810,8 @@
             "type": "@Search.SearchScope",
             "id": "sources.search-in-files",
             "className": "Sources.SourcesSearchScope",
-            "title": "Search files"
+            "title": "Sources",
+            "description": "Search workspace sources"
         }
     ],
     "dependencies": [

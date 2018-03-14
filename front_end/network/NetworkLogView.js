@@ -157,7 +157,27 @@ Network.NetworkLogView = class extends UI.VBox {
 
     this._updateGroupByFrame();
     Common.moduleSetting('network.group-by-frame').addChangeListener(() => this._updateGroupByFrame());
+
+    this._filterBar = filterBar;
+    this._searchHint = new UI.HBox();
+    this._searchHint.element.classList.add('open-search-view');
+    this._filterStringSearchReminder = this._createSearchPrompt();
+    this._updateSearchPrompt();
   }
+
+  _createSearchPrompt() {
+    const text = this._searchHint.contentElement.createChild('div', 'search-button');
+    text.createChild('span').textContent = ls`Search headers and response bodies for `;
+    const filterString = text.createChild('strong');
+    const button = UI.createTextButton('Find All', () => this._openSearchView());
+    this._searchHint.contentElement.appendChild(button);
+    this._filterBar.element.addEventListener('keydown', event => {
+      if (event.key === 'ArrowDown')
+        button.focus();
+    });
+    return filterString;
+  }
+
 
   _updateGroupByFrame() {
     const value = Common.moduleSetting('network.group-by-frame').get();
@@ -589,6 +609,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this.removeAllNodeHighlights();
     this._parseFilterQuery(this._textFilterUI.value());
     this._filterRequests();
+    this._updateSearchPrompt();
   }
 
   _showRecordingHint() {
@@ -1815,6 +1836,23 @@ Network.NetworkLogView = class extends UI.VBox {
     }
 
     return command.join(' ');
+  }
+
+  _updateSearchPrompt() {
+    const filterString = this._filterBar.visible() ? this._textFilterUI.value() : '';
+    if (filterString.length) {
+      const filterBarElement = this._filterBar.element;
+      this._searchHint.show(/** @type {!Element} */ (filterBarElement.parentElement), filterBarElement.nextSibling);
+      this._filterStringSearchReminder.textContent = filterString;
+    } else {
+      this._searchHint.hideWidget();
+    }
+  }
+
+  _openSearchView() {
+    const filterString = this._textFilterUI.value();
+    this._textFilterUI.setValue('');
+    Search.SearchView.openSearch('network.searchInNetwork', filterString, true);
   }
 };
 

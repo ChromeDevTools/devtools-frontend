@@ -136,3 +136,7 @@
 .toolbar-search > .replace-toggle-toolbar {
     margin: 0 -3px 0 0;
 }
+
+.toolbar-search-options {
+    margin: 0 auto;
+}

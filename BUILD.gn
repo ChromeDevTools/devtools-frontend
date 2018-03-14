@@ -802,6 +802,8 @@ all_devtools_files = [
   "front_end/ui/RootView.js",
   "front_end/ui/searchableView.css",
   "front_end/ui/SearchableView.js",
+  "front_end/ui/segmentedButton.css",
+  "front_end/ui/SegmentedButton.js",
   "front_end/ui/SettingsUI.js",
   "front_end/ui/ShortcutRegistry.js",
   "front_end/ui/ShortcutsScreen.js",

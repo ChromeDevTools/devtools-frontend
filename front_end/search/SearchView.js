@@ -37,8 +37,12 @@ Search.SearchView = class extends UI.VBox {
     this._searchResultsElement = this.contentElement.createChild('div');
     this._searchResultsElement.className = 'search-results';
 
+    const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
+
+    const searchContainer = this._searchPanelElement.createChild('div', 'search-container');
+
     this._search = UI.HistoryInput.create();
-    this._searchPanelElement.appendChild(this._search);
+    searchContainer.appendChild(this._search);
     this._search.placeholder = Common.UIString('Search all sources (use "file:" to filter by path)\u200e');
     this._search.setAttribute('type', 'text');
     this._search.classList.add('search-config-search');
@@ -46,35 +50,33 @@ Search.SearchView = class extends UI.VBox {
     this._search.setAttribute('size', 42);
 
     const searchIcon = UI.Icon.create('mediumicon-search', 'search-icon');
-    this._searchPanelElement.appendChild(searchIcon);
+    searchContainer.appendChild(searchIcon);
 
     this._searchInputClearElement = UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button');
     this._searchInputClearElement.classList.add('hidden');
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
-    const cancelButtonContainer = this._searchPanelElement.createChild('div', 'search-cancel-button-container');
+    const cancelButtonContainer = searchContainer.createChild('div', 'search-cancel-button-container');
     cancelButtonContainer.appendChild(this._searchInputClearElement);
 
-    const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
-    this._ignoreCaseCheckbox = new UI.ToolbarCheckbox(Common.UIString('Ignore case'));
-    toolbar.appendToolbarItem(this._ignoreCaseCheckbox);
-    this._regexCheckbox = new UI.ToolbarCheckbox(Common.UIString('Regular expression'));
-    toolbar.appendToolbarItem(this._regexCheckbox);
-    toolbar.appendToolbarItem(new UI.ToolbarSeparator(true));
-
-    this._scopeMenu = new UI.ToolbarComboBox(() => {});
-    toolbar.appendToolbarItem(this._scopeMenu);
+    this._matchCaseButton = Search.SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
+    this._regexButton =
+        Search.SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
 
     const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
     this._searchMessageElement = searchStatusBarElement.createChild('div', 'search-message');
     this._searchProgressPlaceholderElement = searchStatusBarElement.createChild('div', 'flex-centered');
     this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
+    this._scopesSelector = new UI.SegmentedButton();
+    this._scopesSelector.element.classList.add('search-scopes');
+    this._scopesSelector.show(this._searchPanelElement);
+
     this._advancedSearchConfig = Common.settings.createLocalSetting(
         'advancedSearchConfig', new Search.SearchConfig(null, '', true, false).toPlainObject());
 
     /** @type {!Map<string, !Runtime.Extension>} */
     this._searchScopes = new Map();
-    this._defaultScope = Search.SearchView._readScopesExtenstions(this._scopeMenu, this._searchScopes);
+    this._defaultScope = Search.SearchView._readScopesExtenstions(this._scopesSelector, this._searchScopes);
 
     this._load();
     /** @type {?Search.SearchScope} */
@@ -82,51 +84,65 @@ Search.SearchView = class extends UI.VBox {
   }
 
   /**
+   * @param {!UI.Toolbar} toolbar
+   * @param {string} text
+   * @param {string} tooltip
+   * @return {!UI.ToolbarToggle}
+   */
+  static _appendToolbarToggle(toolbar, text, tooltip) {
+    const toggle = new UI.ToolbarToggle(tooltip);
+    toggle.setText(text);
+    toggle.addEventListener(UI.ToolbarButton.Events.Click, () => toggle.setToggled(!toggle.toggled()));
+    toolbar.appendToolbarItem(toggle);
+    return toggle;
+  }
+
+  /**
    * @param {?string} searchScopeType
    * @param {string} query
+   * @param {boolean=} searchImmediately
    * @return {!Promise<!Search.SearchView>}
    */
-  static async openSearch(searchScopeType, query) {
+  static async openSearch(searchScopeType, query, searchImmediately) {
     await UI.viewManager.showView('search.search');
     const searchView =
         /** @type {!Search.SearchView} */ (self.runtime.sharedInstance(Search.SearchView));
-    searchView._toggle(searchScopeType, query);
+    searchView._toggle(searchScopeType, query, !!searchImmediately);
     return searchView;
   }
 
   /**
-   * @param {!UI.ToolbarComboBox} combobox
+   * @param {!UI.SegmentedButton} selector
    * @param {!Map<string, !Runtime.Extension>} scopesMap
    * @return {!Runtime.Extension}
    */
-  static _readScopesExtenstions(combobox, scopesMap) {
+  static _readScopesExtenstions(selector, scopesMap) {
     let defaultScope = null;
     for (const extension of self.runtime.extensions(Search.SearchScope)) {
       const id = extension.descriptor().id;
-      const title = extension.title();
       scopesMap.set(id, extension);
-      combobox.addOption(combobox.createOption(title, title, id));
+      selector.addSegment(extension.title(), id, extension.descriptor().description);
       if (!defaultScope)
         defaultScope = extension;
     }
     return defaultScope;
   }
 
-
   /**
    * @return {!Search.SearchConfig}
    */
   _buildSearchConfig() {
     return new Search.SearchConfig(
-        this._scopeMenu.selectedOption().value, this._search.value, this._ignoreCaseCheckbox.checked(),
-        this._regexCheckbox.checked());
+        this._scopesSelector.selected(), this._search.value, !this._matchCaseButton.toggled(),
+        this._regexButton.toggled());
   }
 
   /**
    * @param {?string} searchScopeType
    * @param {string} queryCandidate
+   * @param {boolean=} searchImmediately
    */
-  async _toggle(searchScopeType, queryCandidate) {
+  async _toggle(searchScopeType, queryCandidate, searchImmediately) {
     if (queryCandidate)
       this._search.value = queryCandidate;
     this._selectScope(searchScopeType);
@@ -135,15 +151,20 @@ Search.SearchView = class extends UI.VBox {
     else
       this._focusOnShow = true;
 
-    await this._initScope(this._scopeMenu.selectedOption().value);
-    this._startIndexing();
+    await this._initScope(this._scopesSelector.selected());
+    if (searchImmediately)
+      this._onAction();
+    else
+      this._startIndexing();
   }
 
   /**
-   * @param {?string} scopeType
+   * @param {?string} scopeTypeId
    */
-  async _initScope(scopeType) {
-    const extension = scopeType ? this._searchScopes.get(scopeType) : this._defaultScope;
+  async _initScope(scopeTypeId) {
+    let extension = scopeTypeId ? this._searchScopes.get(scopeTypeId) : null;
+    if (!extension)
+      extension = this._defaultScope;
     this._searchScope = await extension.instance();
   }
 
@@ -378,9 +399,9 @@ Search.SearchView = class extends UI.VBox {
   _load() {
     const searchConfig = Search.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
-    this._ignoreCaseCheckbox.setChecked(searchConfig.ignoreCase());
-    this._regexCheckbox.setChecked(searchConfig.isRegex());
-    this._selectScope(searchConfig.scopeType() || this._scopeMenu.options()[0].value);
+    this._matchCaseButton.setToggled(searchConfig.ignoreCase());
+    this._regexButton.setToggled(searchConfig.isRegex());
+    this._selectScope(searchConfig.scopeType());
 
     if (this._search.value && this._search.value.length)
       this._searchInputClearElement.classList.remove('hidden');
@@ -396,17 +417,10 @@ Search.SearchView = class extends UI.VBox {
   }
 
   /**
-   * @param {?string} scopeType
+   * @param {?string} scopeTypeId
    */
-  _selectScope(scopeType) {
-    if (!scopeType)
-      return;
-    let scope = this._scopeMenu.options().find(option => option.value === scopeType);
-    if (!scope) {
-      console.warn(`Search scope '${scopeType}' was not found`);
-      scope = this._scopeMenu.options()[0];
-    }
-    this._scopeMenu.select(scope);
+  _selectScope(scopeTypeId) {
+    this._scopesSelector.select(scopeTypeId || this._defaultScope.descriptor().id);
   }
 };
 

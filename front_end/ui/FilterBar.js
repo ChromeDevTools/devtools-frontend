@@ -101,8 +101,7 @@ UI.FilterBar = class extends UI.HBox {
   _updateFilterBar() {
     if (!this.parentWidget() || this._showingWidget)
       return;
-    const visible = this._alwaysShowFilters || (this._stateSetting.get() && this._enabled);
-    if (visible) {
+    if (this.visible()) {
       this._showingWidget = true;
       this.showWidget();
       this._showingWidget = false;
@@ -136,6 +135,14 @@ UI.FilterBar = class extends UI.HBox {
     this.element.removeChildren();
     this._filters = [];
     this._updateFilterButton();
+  }
+
+  setting() {
+    return this._stateSetting;
+  }
+
+  visible() {
+    return this._alwaysShowFilters || (this._stateSetting.get() && this._enabled);
   }
 };
 

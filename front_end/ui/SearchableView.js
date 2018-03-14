@@ -91,18 +91,18 @@ UI.SearchableView = class extends UI.VBox {
     this._buttonsContainer = this._footerElement.createChild('div', 'toolbar-search-buttons');
     const firstRowButtons = this._buttonsContainer.createChild('div', 'first-row-buttons');
 
-    const toolbar = new UI.Toolbar('', firstRowButtons);
+    const toolbar = new UI.Toolbar('toolbar-search-options', firstRowButtons);
 
     if (this._searchProvider.supportsCaseSensitiveSearch()) {
-      this._caseSensitiveButton = new UI.ToolbarToggle(Common.UIString('Case sensitive'));
+      this._caseSensitiveButton = new UI.ToolbarToggle(Common.UIString('Match Case'));
       this._caseSensitiveButton.setText('Aa');
       this._caseSensitiveButton.addEventListener(UI.ToolbarButton.Events.Click, this._toggleCaseSensitiveSearch, this);
       toolbar.appendToolbarItem(this._caseSensitiveButton);
     }
 
     if (this._searchProvider.supportsRegexSearch()) {
-      this._regexButton = new UI.ToolbarToggle('');
-      this._regexButton.setText('/regex/');
+      this._regexButton = new UI.ToolbarToggle(Common.UIString('Use Regular Expression'));
+      this._regexButton.setText('.*');
       this._regexButton.addEventListener(UI.ToolbarButton.Events.Click, this._toggleRegexSearch, this);
       toolbar.appendToolbarItem(this._regexButton);
     }

@@ -12,7 +12,7 @@
         {
             "type": "action",
             "actionId": "search.all",
-            "title": "Search all files",
+            "title": "Search",
             "className": "Search.SearchView.ActionDelegate",
             "category": "DevTools",
             "bindings": [

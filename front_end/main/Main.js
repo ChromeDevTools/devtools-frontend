@@ -111,7 +111,7 @@ Main.Main = class {
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
-    Runtime.experiments.register('networkSearch', 'Network search', true);
+    Runtime.experiments.register('networkSearch', 'Network search');
     Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
     Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Runtime.experiments.register('sourceDiff', 'Source diff');

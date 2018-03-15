@@ -211,10 +211,10 @@ ${err.stack}
 
 /** @type {!Array.<!RegExp>} */
 Audits2.Audits2StatusView.KnownBugPatterns = [
-  /Parsing problem/,
-  /Read failed/,
-  /Tracing.*already started/,
-  /Unable to load.*page/,
+  /PARSING_PROBLEM/,
+  /DOCUMENT_REQUEST/,
+  /READ_FAILED/,
+  /TRACING_ALREADY_STARTED/,
   /^You must provide a url to the runner/,
   /^You probably have multiple tabs open/,
 ];

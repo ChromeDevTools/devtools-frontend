@@ -36,7 +36,7 @@
 #sources-panel-sources-view .sources-toolbar {
     display: flex;
     flex: 0 0 27px;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     border-top: 1px solid #dadada;
     overflow: hidden;
     z-index: 0;

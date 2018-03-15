@@ -130,6 +130,7 @@ Main.Main = class {
     Runtime.experiments.register('timelineShowAllProcesses', 'Timeline: show all processes', true);
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline: tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
+    Runtime.experiments.register('uiExplorations', 'UI explorations', true);
 
     Runtime.experiments.cleanUpStaleExperiments();
 
@@ -143,7 +144,7 @@ Main.Main = class {
     }
 
     Runtime.experiments.setDefaultExperiments(
-        ['colorContrastRatio', 'stepIntoAsync', 'timelineKeepHistory', 'oopifInlineDOM']);
+        ['colorContrastRatio', 'stepIntoAsync', 'timelineKeepHistory', 'oopifInlineDOM', 'uiExplorations']);
   }
 
   /**

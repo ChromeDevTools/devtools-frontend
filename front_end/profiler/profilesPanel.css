@@ -65,7 +65,7 @@
 }
 
 .profiles-toolbar {
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     border-bottom: 1px solid #ccc;
     flex-shrink: 0;
 }

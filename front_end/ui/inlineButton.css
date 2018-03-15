@@ -10,7 +10,7 @@
   position: relative;
   top: 7px;
   margin: 2px;
-  background-color: #f3f3f3;
+  background-color: var(--toolbar-bg-color);
 }
 
 :host > * {

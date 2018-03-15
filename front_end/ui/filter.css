@@ -29,7 +29,7 @@
  */
 
 .filter-bar {
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     flex: none;
     flex-wrap: wrap;
     align-items: center;

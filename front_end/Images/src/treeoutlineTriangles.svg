@@ -13,8 +13,11 @@
    height="24"
    id="svg3620"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="treeoutlineTriangles.svg">
+   inkscape:version="0.92.2pre0 (973e216, 2017-07-25)"
+   sodipodi:docname="treeoutlineTriangles.svg"
+   inkscape:export-filename="/usr/local/google/code/chromium/src/third_party/WebKit/Source/devtools/front_end/Images/treeoutlineTriangles.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96">
   <defs
      id="defs3622" />
   <sodipodi:namedview
@@ -25,18 +28,18 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.313708"
-     inkscape:cx="11.811861"
+     inkscape:cx="-2.2860811"
      inkscape:cy="13.085725"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="858"
-     inkscape:window-height="521"
-     inkscape:window-x="164"
-     inkscape:window-y="121"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="2560"
+     inkscape:window-height="1539"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata3625">
     <rdf:RDF>
@@ -55,12 +58,14 @@
      id="layer1"
      transform="translate(0,-1028.3622)">
     <path
-       d="m 8,1034.3622 -7,-4 0,8"
+       d="m 7,1034.3622 -5,-3.5 v 7"
        id="path3619"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
     <path
-       d="m 20,1038.3622 4,-7 -8,0"
+       d="m 23,1037.3622 0,-6 -6,6"
        id="path3621"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccc" />
   </g>
 </svg>

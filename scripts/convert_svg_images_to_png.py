@@ -77,8 +77,8 @@ processes = {}
 for file_name in svg_file_names:
     name = re.sub(".svg$", "", file_name)
     name2x = name + "_2x"
-    processes[name] = convert_svg_to_png(name, name, 90)
-    processes[name2x] = convert_svg_to_png(name, name2x, 180)
+    processes[name] = convert_svg_to_png(name, name, 96)
+    processes[name2x] = convert_svg_to_png(name, name2x, 192)
 
 for file_name, proc in processes.items():
     (convert_out, _) = proc.communicate()

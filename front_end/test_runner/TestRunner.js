@@ -515,7 +515,7 @@ TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
 TestRunner.loadHTML = function(html) {
   if (!html.includes('<base')) {
     // <!DOCTYPE...> tag needs to be first
-    const doctypeRegex = /(<!DOCTYPE.*?>)/;
+    const doctypeRegex = /(<!DOCTYPE.*?>)/i;
     const baseTag = `<base href="${TestRunner.url()}">`;
     if (html.match(doctypeRegex))
       html = html.replace(doctypeRegex, '$1' + baseTag);

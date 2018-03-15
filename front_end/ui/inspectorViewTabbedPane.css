@@ -13,10 +13,6 @@
     border-right: 2px solid transparent;
 }
 
-.tabbed-pane-header-tab:not(.dragging):not(:hover) {
-    background: #f3f3f3;
-}
-
 .tabbed-pane-header-tab.selected {
     border-width: 0 2px 0 2px;
 }

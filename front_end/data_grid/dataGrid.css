@@ -110,7 +110,7 @@
 
 .data-grid th {
     text-align: left;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     border-bottom: 1px solid #aaa;
     font-weight: normal;
     vertical-align: middle;

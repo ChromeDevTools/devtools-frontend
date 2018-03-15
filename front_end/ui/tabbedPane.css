@@ -79,7 +79,7 @@
     border-bottom: 1px solid #ccc;
     overflow: visible;
     width: 100%;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
 }
 
 .tabbed-pane-header-contents {
@@ -119,7 +119,7 @@
 .tabbed-pane-header-tab.selected:hover,
 .tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
     color: #333;
-    background-color: #e5e5e5;
+    background-color: var(--toolbar-hover-bg-color);
 }
 
 .tabbed-pane-header-tab-title {
@@ -134,11 +134,14 @@
 .tabbed-pane-header-tab.selected {
     border: 1px solid #ccc;
     border-bottom: none;
-    color: #333;
+}
+
+
+.tabbed-pane-no-tab-borders .tabbed-pane-header-tab.selected {
+    color: var(--selection-bg-color);
 }
 
 .tabbed-pane-header-tab.selected {
-    background-color: white;
     border-top-color: #ccc;
 }
 

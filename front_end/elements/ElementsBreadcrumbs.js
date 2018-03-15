@@ -105,7 +105,7 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
       case Node.COMMENT_NODE:
         return '<!-->';
       case Node.DOCUMENT_TYPE_NODE:
-        return '<!DOCTYPE>';
+        return '<!doctype>';
       case Node.DOCUMENT_FRAGMENT_NODE:
         return domNode.shadowRootType() ? '#shadow-root' : domNode.nodeNameInCorrectCase();
       default:

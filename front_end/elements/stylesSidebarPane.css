@@ -21,10 +21,6 @@
     border-bottom: none;
 }
 
-.styles-pane .sidebar-separator {
-    border-top: 0 none;
-}
-
 .styles-section.read-only {
     background-color: #eee;
 }
@@ -183,15 +179,14 @@
 }
 
 .sidebar-separator {
-    background-color: #ddd;
+    background-color: var(--toolbar-bg-color);
     padding: 0 5px;
-    border-top: 1px solid #ccc;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #eee;
     color: rgb(50, 50, 50);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    line-height: 16px;
+    line-height: 22px;
 }
 
 .sidebar-separator > span.monospace {

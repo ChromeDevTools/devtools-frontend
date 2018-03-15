@@ -1,6 +1,6 @@
 ## Adding new icons
 
-1. Use Inkscape 0.48.4. Newer versions are incompatible because of DPI issues.
+1. Use Inkscape 0.92 or newer.
 1. Choose an existing spritesheet, like `largeIcons.svg` to add the icon to
 1. Open that file with Inkscape and import the new SVG into the document
 1. Place in an open spot, and use guides to scale the icon to a good size, relative to other icons

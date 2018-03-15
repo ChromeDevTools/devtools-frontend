@@ -1510,7 +1510,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
       case Node.DOCUMENT_TYPE_NODE:
         const docTypeElement = titleDOM.createChild('span', 'webkit-html-doctype');
-        docTypeElement.createTextChild('<!DOCTYPE ' + node.nodeName());
+        docTypeElement.createTextChild('<!doctype ' + node.nodeName());
         if (node.publicId) {
           docTypeElement.createTextChild(' PUBLIC "' + node.publicId + '"');
           if (node.systemId)

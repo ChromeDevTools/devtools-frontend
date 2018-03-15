@@ -17,7 +17,8 @@
     margin-left: -2px;
     word-wrap: break-word;
     position: relative;
-    min-height: 14px;
+    min-height: 15px;
+    line-height: 15px;
 }
 
 .elements-disclosure li.parent {
@@ -63,7 +64,7 @@
 
 .elements-disclosure li.parent::before {
     -webkit-mask-position: 0 0;
-    background-color: rgb(110, 110, 110);
+    background-color: #727272;
 }
 
 .elements-disclosure li .selection {
@@ -85,7 +86,7 @@
 
 .elements-disclosure li.selected .selection {
     display: block;
-    background-color: #dadada;
+    background-color: var(--selection-inactive-bg-color);
 }
 
 .elements-disclosure ol {
@@ -129,7 +130,7 @@
 }
 
 .elements-disclosure ol li.selected:focus .selection {
-    background-color: rgb(56, 121, 217);
+    background-color: var(--selection-bg-color);
 }
 
 .elements-tree-outline ol.shadow-root-depth-4 {

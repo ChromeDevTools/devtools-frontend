@@ -46,6 +46,13 @@
     box-sizing: border-box;
 }
 
+:root {
+  --toolbar-bg-color: #fafafa;
+  --toolbar-hover-bg-color: #eaeaea;
+  --selection-bg-color: #3879d9;
+  --selection-inactive-bg-color: #dadada;
+}
+
 :focus {
     outline-width: 0;
 }

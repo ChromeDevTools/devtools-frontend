@@ -7,7 +7,7 @@
     -webkit-user-select: text;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: #fafafa;
+    background-color: var(--toolbar-bg-color);
 }
 
 .security-main-view > div {

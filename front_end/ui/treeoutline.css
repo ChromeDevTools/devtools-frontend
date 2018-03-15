@@ -37,7 +37,7 @@
 
 .tree-outline li.selected .selection {
     display: block;
-    background-color: #ddd;
+    background-color: var(--selection-inactive-bg-color);
 }
 
 .tree-outline li.in-clipboard .highlight {
@@ -47,11 +47,12 @@
 .tree-outline li.elements-drag-over .selection {
     display: block;
     margin-top: -2px;
-    border-top: 2px solid rgb(56, 121, 217);
+    border-top: 2px solid;
+    border-top-color: var(--selection-bg-color);
 }
 
 ol.tree-outline li.selected:focus .selection {
-    background-color: rgb(56, 121, 217);
+    background-color: var(--selection-bg-color);
 }
 
 ol.tree-outline li.parent.selected:focus::before {
@@ -125,7 +126,7 @@ ol.tree-outline li.selected:focus * {
 
 .tree-outline li::before {
     -webkit-mask-position: 0 0;
-    background-color: rgb(110, 110, 110);
+    background-color: #727272;
 }
 
 .tree-outline li.parent.expanded::before {

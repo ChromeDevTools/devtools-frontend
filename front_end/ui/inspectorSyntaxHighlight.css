@@ -56,6 +56,11 @@
 .cm-xml-attribute {color: rgb(153, 69, 0);}
 .cm-xml-link {color: #00e;}
 
+:root {
+    --dom-tag-name-color: rgb(136, 18, 128);
+    --dom-attribute-name-color: rgb(153, 69, 0);
+}
+
 .webkit-html-comment {
     /* Keep this in sync with view-source.css (.webkit-html-comment) */
     color: rgb(35, 110, 37);
@@ -67,7 +72,7 @@
 
 .webkit-html-tag-name, .webkit-html-close-tag-name {
     /* Keep this in sync with view-source.css (.webkit-html-tag) */
-    color: rgb(136, 18, 128);
+    color: var(--dom-tag-name-color);
 }
 
 .webkit-html-pseudo-element {
@@ -97,7 +102,7 @@
 
 .webkit-html-attribute-name {
     /* Keep this in sync with view-source.css (.webkit-html-attribute-name) */
-    color: rgb(153, 69, 0);
+    color: var(--dom-attribute-name-color);
     unicode-bidi: -webkit-isolate;
 }
 

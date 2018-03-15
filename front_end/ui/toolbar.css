@@ -119,7 +119,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-toggled-gray:not(.toolbar-render-as-links) .toolbar-button:not(.toolbar-has-glyph):not(.toolbar-has-dropdown):not(.largeicon-menu):hover {
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
 }
 
 .toolbar-glyph {
@@ -176,7 +176,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
-    background-color: #f3f3f3 !important;
+    background-color: var(--toolbar-bg-color) !important;
 }
 
 .toolbar-button.toolbar-state-on.toolbar-toggle-with-red-color .toolbar-glyph,

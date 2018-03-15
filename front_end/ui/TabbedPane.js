@@ -55,6 +55,8 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabsById = new Map();
     this._currentTabLocked = false;
     this._autoSelectFirstItemOnShow = true;
+    if (Runtime.experiments.isEnabled('uiExplorations'))
+      this.makeTabSlider();
 
     this._dropDownButton = this._createDropDownButton();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
@@ -133,11 +135,9 @@ UI.TabbedPane = class extends UI.VBox {
     this._shrinkableTabs = shrinkableTabs;
   }
 
-  /**
-   * @param {boolean} verticalTabLayout
-   */
-  setVerticalTabLayout(verticalTabLayout) {
-    this._verticalTabLayout = verticalTabLayout;
+  makeVerticalTabLayout() {
+    this._verticalTabLayout = true;
+    this._setTabSlider(false);
     this.contentElement.classList.add('vertical-tab-layout');
     this.invalidateConstraints();
   }
@@ -468,13 +468,19 @@ UI.TabbedPane = class extends UI.VBox {
       this.selectTab(effectiveTab.id);
   }
 
+  makeTabSlider() {
+    if (this._verticalTabLayout)
+      return;
+    this._setTabSlider(true);
+  }
+
   /**
    * @param {boolean} enable
    */
-  setTabSlider(enable) {
+  _setTabSlider(enable) {
     this._sliderEnabled = enable;
     this._tabSlider.classList.toggle('enabled', enable);
-    this._headerElement.classList.add('tabbed-pane-no-tab-borders');
+    this._headerElement.classList.toggle('tabbed-pane-no-tab-borders', enable);
   }
 
   /**

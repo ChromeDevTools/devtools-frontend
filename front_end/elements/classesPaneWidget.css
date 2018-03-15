@@ -5,7 +5,7 @@
  */
 
 .styles-element-classes-pane {
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     border-bottom: 1px solid rgb(189, 189, 189);
     padding: 6px 2px 2px;
 }

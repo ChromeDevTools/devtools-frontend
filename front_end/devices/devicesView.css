@@ -69,7 +69,7 @@
 
 .devices-footer {
     border-top: 1px solid #cdcdcd;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
     flex: none;
     padding: 3px 10px;
     overflow: hidden;

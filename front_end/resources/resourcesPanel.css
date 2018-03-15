@@ -29,12 +29,12 @@
 
 .resources-toolbar {
     border-top: 1px solid #ccc;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
 }
 
 .top-resources-toolbar {
     border-bottom: 1px solid #ccc;
-    background-color: #f3f3f3;
+    background-color: var(--toolbar-bg-color);
 }
 
 li.selected .base-storage-tree-element-subtitle {

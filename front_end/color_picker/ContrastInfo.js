@@ -162,18 +162,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     const fontSizePx = parseFloat(fontSize.replace('px', ''));
     const isBold = (boldWeights.indexOf(fontWeight) !== -1);
 
-    if (bodyFontSize) {
-      const bodyFontSizePx = parseFloat(bodyFontSize.replace('px', ''));
-      if (isBold) {
-        if (fontSizePx >= (bodyFontSizePx * 1.2))
-          return true;
-      } else if (fontSizePx >= (bodyFontSizePx * 1.5)) {
-        return true;
-      }
-      return false;
-    }
-
-    const fontSizePt = Math.ceil(fontSizePx * 72 / 96);
+    const fontSizePt = fontSizePx * 72 / 96;
     if (isBold)
       return fontSizePt >= 14;
     else

@@ -44,6 +44,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     /** @type {!Map<number, !SDK.ExecutionContext>} */
     this._executionContextById = new Map();
     this._executionContextComparator = SDK.ExecutionContext.comparator;
+    /** @type {?boolean} */
+    this._hasSideEffectSupport = null;
 
     if (Common.moduleSetting('customFormatters').get())
       this._agent.setCustomObjectFormatterEnabled(true);
@@ -466,9 +468,45 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
       return 0;
     return this.executionContextIdForScriptId(stackTrace.callFrames[0].scriptId);
   }
+
+  /**
+   * @return {?boolean}
+   */
+  hasSideEffectSupport() {
+    return this._hasSideEffectSupport;
+  }
+
+  /**
+   * @return {!Promise<boolean>}
+   */
+  async checkSideEffectSupport() {
+    const testContext = this.executionContexts().peekLast();
+    if (!testContext)
+      return false;
+    // Check for a positive throwOnSideEffect response without triggering side effects.
+    const response = await this._agent.invoke_evaluate(
+        {expression: SDK.RuntimeModel._sideEffectTestExpression, contextId: testContext.id, throwOnSideEffect: true});
+
+    const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
+    const supports =
+        !!(exceptionDetails && exceptionDetails.exception &&
+           exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
+    this._hasSideEffectSupport = supports;
+    return supports;
+  }
 };
 
 SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS, true);
+
+/**
+ * This expression:
+ * - IMPORTANT: must not actually cause user-visible or JS-visible side-effects.
+ * - Must throw when evaluated with `throwOnSideEffect: true`.
+ * - Must be valid when run from any ExecutionContext that supports `throwOnSideEffect`.
+ * @const
+ * @type {string}
+ */
+SDK.RuntimeModel._sideEffectTestExpression = '(async function(){ await 1; })()';
 
 /** @enum {symbol} */
 SDK.RuntimeModel.Events = {
@@ -498,7 +536,8 @@ SDK.RuntimeModel.CompileScriptResult;
  *    includeCommandLineAPI: (boolean|undefined),
  *    silent: (boolean|undefined),
  *    returnByValue: (boolean|undefined),
- *    generatePreview: (boolean|undefined)
+ *    generatePreview: (boolean|undefined),
+ *    throwOnSideEffect: (boolean|undefined)
  *  }}
  */
 SDK.RuntimeModel.EvaluationOptions;
@@ -677,7 +716,19 @@ SDK.ExecutionContext = class {
     // FIXME: It will be moved to separate ExecutionContext.
     if (this.debuggerModel.selectedCallFrame())
       return this.debuggerModel.evaluateOnSelectedCallFrame(options);
-    return this._evaluateGlobal(options, userGesture, awaitPromise);
+    if (!options.throwOnSideEffect || this.runtimeModel.hasSideEffectSupport())
+      return this._evaluateGlobal(options, userGesture, awaitPromise);
+
+    /** @type {!SDK.RuntimeModel.EvaluationResult} */
+    const unsupportedError = {error: 'Side-effect checks not supported by backend.'};
+    if (this.runtimeModel.hasSideEffectSupport() === false)
+      return Promise.resolve(unsupportedError);
+
+    return this.runtimeModel.checkSideEffectSupport().then(() => {
+      if (this.runtimeModel.hasSideEffectSupport())
+        return this._evaluateGlobal(options, userGesture, awaitPromise);
+      return Promise.resolve(unsupportedError);
+    });
   }
 
   /**
@@ -719,7 +770,8 @@ SDK.ExecutionContext = class {
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
       userGesture: userGesture,
-      awaitPromise: awaitPromise
+      awaitPromise: awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect
     });
 
     const error = response[Protocol.Error];

@@ -1292,6 +1292,12 @@ SDK.DebuggerModel.CallFrame = class {
    * @return {!Promise<!SDK.RuntimeModel.EvaluationResult>}
    */
   async evaluate(options) {
+    const runtimeModel = this.debuggerModel.runtimeModel();
+    if (options.throwOnSideEffect &&
+        (runtimeModel.hasSideEffectSupport() === false ||
+         (runtimeModel.hasSideEffectSupport() === null && !await runtimeModel.checkSideEffectSupport())))
+      return {error: 'Side-effect checks not supported by backend.'};
+
     const response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
       callFrameId: this.id,
       expression: options.expression,
@@ -1300,17 +1306,14 @@ SDK.DebuggerModel.CallFrame = class {
       silent: options.silent,
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
-      throwOnSideEffect: false
+      throwOnSideEffect: options.throwOnSideEffect
     });
     const error = response[Protocol.Error];
     if (error) {
       console.error(error);
       return {error: error};
     }
-    return {
-      object: this.debuggerModel.runtimeModel().createRemoteObject(response.result),
-      exceptionDetails: response.exceptionDetails
-    };
+    return {object: runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
   }
 
   async restart() {

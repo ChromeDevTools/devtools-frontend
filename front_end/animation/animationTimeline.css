@@ -331,7 +331,7 @@ text.animation-timeline-grid-label {
 }
 
 .animation-buffer-preview.selected {
-    background-color: hsl(217, 89%, 61%);
+    background-color: var(--selection-bg-color);
 }
 
 .animation-paused {
@@ -404,17 +404,17 @@ text.animation-timeline-grid-label {
 
 .animation-playback-rate-button.selected {
     color: hsl(0, 100%, 100%);
-    background-color: hsl(217, 89%, 61%);
-    border-color: hsl(217, 89%, 61%);
+    background-color: var(--selection-bg-color);
+    border-color: var(--selection-bg-color);
     z-index: 1;
 }
 
 .animation-playback-rate-button.selected:first-child {
-    color: hsl(217, 89%, 61%);
+    color: var(--selection-bg-color);
     background-color: hsl(217, 89%, 100%);
 }
 
-.animation-remove-button {
+.animation-remove-button, -theme-preserve {
     position: absolute;
     top: -3px;
     right: -3px;

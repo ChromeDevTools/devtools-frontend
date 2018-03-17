@@ -7,7 +7,7 @@
 .widget {
     display: flex;
     background: white;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--drop-shadow);
     border-radius: 2px;
     overflow: auto;
     -webkit-user-select: text;

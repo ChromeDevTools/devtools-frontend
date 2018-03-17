@@ -56,7 +56,7 @@ ol.tree-outline li.selected:focus .selection {
 }
 
 ol.tree-outline li.parent.selected:focus::before {
-    background-color: white;
+    background-color: var(--selection-fg-color);
 }
 
 ol.tree-outline,
@@ -82,7 +82,7 @@ ol.tree-outline,
 }
 
 ol.tree-outline li.selected:focus {
-    color: white;
+    color: var(--selection-fg-color);
 }
 
 ol.tree-outline li.selected:focus * {

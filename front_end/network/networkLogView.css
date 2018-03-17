@@ -146,7 +146,7 @@
 .network-log-grid.data-grid:focus tr.selected,
 .network-log-grid.data-grid:focus tr.selected .network-cell-subtitle,
 .network-log-grid.data-grid:focus tr.selected .network-dim-cell {
-    color: white !important;
+    color: var(--selection-fg-color) !important;
 }
 
 .network-log-grid tr.highlighted-row {

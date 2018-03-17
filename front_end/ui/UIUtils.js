@@ -1816,7 +1816,6 @@ UI.ThemeSupport = class {
    *
    * Theming API is primarily targeted at making dark theme look good.
    * - If rule has ".-theme-preserve" in selector, it won't be affected.
-   * - If rule has ".selection" or "selected" or "-theme-selection-color" in selector, its hue is rotated 180deg in dark themes.
    * - One can create specializations for dark themes via body.-theme-with-dark-background selector in host context.
    */
   _patchProperty(selectorText, style, name, output) {
@@ -1829,19 +1828,10 @@ UI.ThemeSupport = class {
     if (name === 'background-image' && value.indexOf('gradient') === -1)
       return;
 
-    let isSelection = selectorText.indexOf('.-theme-selection-color') !== -1;
-    if (selectorText.indexOf('-theme-') !== -1 && !isSelection)
+    if (selectorText.indexOf('-theme-') !== -1)
       return;
 
-    if (name === '-webkit-border-image') {
-      output.push('-webkit-filter: invert(100%)');
-      return;
-    }
-
-    isSelection = isSelection || selectorText.indexOf('selected') !== -1 || selectorText.indexOf('.selection') !== -1;
     let colorUsage = UI.ThemeSupport.ColorUsage.Unknown;
-    if (isSelection)
-      colorUsage |= UI.ThemeSupport.ColorUsage.Selection;
     if (name.indexOf('background') === 0 || name.indexOf('border') === 0)
       colorUsage |= UI.ThemeSupport.ColorUsage.Background;
     if (name.indexOf('background') === -1)
@@ -1891,15 +1881,13 @@ UI.ThemeSupport = class {
    * @param {!UI.ThemeSupport.ColorUsage} colorUsage
    */
   _patchHSLA(hsla, colorUsage) {
-    let hue = hsla[0];
+    const hue = hsla[0];
     const sat = hsla[1];
     let lit = hsla[2];
     const alpha = hsla[3];
 
     switch (this._themeName) {
       case 'dark':
-        if (colorUsage & UI.ThemeSupport.ColorUsage.Selection)
-          hue = (hue + 0.5) % 1;
         const minCap = colorUsage & UI.ThemeSupport.ColorUsage.Background ? 0.14 : 0;
         const maxCap = colorUsage & UI.ThemeSupport.ColorUsage.Foreground ? 0.9 : 1;
         lit = 1 - lit;
@@ -1924,7 +1912,6 @@ UI.ThemeSupport.ColorUsage = {
   Unknown: 0,
   Foreground: 1 << 0,
   Background: 1 << 1,
-  Selection: 1 << 2,
 };
 
 /**

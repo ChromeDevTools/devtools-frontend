@@ -16,7 +16,7 @@
 }
 
 :focus.selected {
-    background-color: rgb(56, 121, 217);
+    background-color: var(--selection-bg-color);
     color: #FFF;
 }
 

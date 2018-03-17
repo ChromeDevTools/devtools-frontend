@@ -136,7 +136,7 @@
     to { background-color: rgb(171, 191, 254); }
 }
 
-.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, -theme-preserve {
     color: white;
     border-width: 1px 4px 1px 1px !important;
     -webkit-border-image: url(Images/breakpoint.png) 1 4 1 1;
@@ -268,24 +268,28 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
     display: block !important;
 }
 
-.cm-execution-line,
-.-theme-selection-color {
-    background-color: rgb(230, 236, 255);
+.cm-execution-line {
+    background-color: rgba(0, 59, 255, 0.10);
 }
 
-.cm-execution-line-outline,
-.-theme-selection-color {
+.cm-execution-line-outline {
     outline: 1px solid rgb(64, 115, 244);
 }
 
-.cm-execution-line-tail,
-.-theme-selection-color {
+.cm-execution-line-tail {
     background-color: rgb(171, 191, 254);
 }
 
-.cm-execution-line .CodeMirror-linenumber,
-.-theme-selection-color {
+.cm-execution-line .CodeMirror-linenumber {
     border-right: 1px solid rgb(64, 115, 244);
+}
+
+.-theme-with-dark-background .cm-execution-line {
+    outline: 1px solid var(--selection-color);
+}
+
+.-theme-with-dark-background .cm-execution-line-tail {
+    background-color: var(--selection-color);
 }
 
 .cm-token-highlight {

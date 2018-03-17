@@ -665,6 +665,10 @@
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 
+.-theme-with-dark-background .timeline-landing-warning {
+    background: black;
+}
+
 .timeline-landing-warning-close {
     float: right;
     margin-top: -10px;

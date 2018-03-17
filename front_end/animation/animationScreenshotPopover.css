@@ -14,5 +14,5 @@ img {
     height: 2px;
     bottom: 0;
     left: 0;
-    background: hsl(217, 89%, 61%);
+    background: var(--selection-bg-color);
 }

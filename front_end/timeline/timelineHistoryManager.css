@@ -6,7 +6,7 @@
 
 .drop-down {
   padding: 1px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2), 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--drop-shadow);
   background: white;
 }
 
@@ -19,7 +19,7 @@
 }
 
 .preview-item.selected {
-  border-color: rgb(56, 121, 217);
+  border-color: var(--selection-bg-color);
 }
 
 .preview-item canvas {

@@ -10,9 +10,7 @@
 }
 
 .text-prompt-editing {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-                0 2px 4px rgba(0, 0, 0, 0.2),
-                0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--drop-shadow);
     background-color: white;
     text-overflow: clip !important;
     padding-left: 2px;

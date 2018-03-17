@@ -21,7 +21,7 @@
 .tree-outline li.selected:focus .lock-icon,
 .tree-outline .security-sidebar-tree-item.selected:focus .icon
 {
-    background-color: white;
+    background-color: var(--selection-fg-color);
 }
 
 .tree-outline .security-main-view-sidebar-tree-item {

@@ -27,9 +27,33 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-html {
+:root {
     height: 100%;
     overflow: hidden;
+}
+
+:root {
+  --toolbar-bg-color: #fafafa;
+  --toolbar-hover-bg-color: #eaeaea;
+  --selection-fg-color: white;
+  --selection-bg-color: #3879d9;
+  --selection-inactive-bg-color: #dadada;
+  --tab-selected-fg-color: #3879d9;
+  --drop-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
+                 0 2px 4px rgba(0, 0, 0, 0.2),
+                 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.-theme-with-dark-background {
+  --toolbar-bg-color: #333333;
+  --toolbar-hover-bg-color: #202020;
+  --selection-bg-color: #264f78;
+  --selection-fg-color: #cdcdcd;
+  --selection-inactive-bg-color: #333333;
+  --tab-selected-fg-color: #eaeaea;
+  --drop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2),
+                 0 2px 4px 2px rgba(0, 0, 0, 0.2),
+                 0 2px 6px 2px rgba(0, 0, 0, 0.1);
 }
 
 body {

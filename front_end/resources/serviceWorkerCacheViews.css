@@ -34,7 +34,7 @@
 }
 
 .service-worker-cache-data-view .data-grid:focus .data-container tr.selected {
-    background-color: rgb(56, 121, 217);
+    background-color: var(--selection-bg-color);
     color: white;
 }
 

@@ -213,21 +213,21 @@
 }
 
 .data-grid:focus table.data tr.selected {
-    background-color: rgb(56, 121, 217);
-    color: white;
+    background-color: var(--selection-bg-color);
+    color: var(--selection-fg-color);
 }
 
 .data-grid:focus tr.selected .devtools-link {
-    color: white;
+    color: var(--selection-fg-color);
 }
 
 .data-grid:focus tr.parent.selected td.disclosure::before {
-    background-color: white;
+    background-color: var(--selection-fg-color);
     -webkit-mask-position: 0 0;
 }
 
 .data-grid:focus tr.expanded.selected td.disclosure::before {
-    background-color: white;
+    background-color: var(--selection-fg-color);
     -webkit-mask-position: -16px 0;
 }
 

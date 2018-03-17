@@ -46,13 +46,6 @@
     box-sizing: border-box;
 }
 
-:root {
-  --toolbar-bg-color: #fafafa;
-  --toolbar-hover-bg-color: #eaeaea;
-  --selection-bg-color: #3879d9;
-  --selection-inactive-bg-color: #dadada;
-}
-
 :focus {
     outline-width: 0;
 }
@@ -205,9 +198,7 @@ input {
 }
 
 .editing {
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2),
-                0 2px 4px rgba(0, 0, 0, 0.2),
-                0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--drop-shadow);
     background-color: white;
     text-overflow: clip !important;
     padding-left: 2px;
@@ -393,20 +384,20 @@ label[is=dt-icon-label] {
     background-image: url(Images/popoverArrows.png);
 }
 
-.force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons {
+.force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve {
     -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
     -webkit-mask-position: var(--spritesheet-position);
-    background: white !important;
+    background: #fafafa !important;
 }
 
-.force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons {
+.force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve {
     -webkit-mask-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
     -webkit-mask-position: var(--spritesheet-position);
-    background: white !important;
+    background: #fafafa !important;
 }
 
-.force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons {
+.force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons, -theme-preserve {
     -webkit-mask-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
     -webkit-mask-position: var(--spritesheet-position);
-    background: white !important;
+    background: #fafafa !important;
 }

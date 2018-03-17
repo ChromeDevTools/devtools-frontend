@@ -91,11 +91,12 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
     if (!profile.timeDeltas)
       return null;
     let lastTimeUsec = profile.startTime;
-    const timestamps = new Array(profile.timeDeltas.length);
-    for (let i = 0; i < timestamps.length; ++i) {
-      lastTimeUsec += profile.timeDeltas[i];
+    const timestamps = new Array(profile.timeDeltas.length + 1);
+    for (let i = 0; i < profile.timeDeltas.length; ++i) {
       timestamps[i] = lastTimeUsec;
+      lastTimeUsec += profile.timeDeltas[i];
     }
+    timestamps[profile.timeDeltas.length] = lastTimeUsec;
     return timestamps;
   }
 
@@ -210,9 +211,12 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
     // Convert samples from usec to msec
     for (let i = 0; i < timestamps.length; ++i)
       timestamps[i] /= 1000;
-    const averageSample = (timestamps.peekLast() - timestamps[0]) / (timestamps.length - 1);
-    // Add an extra timestamp used to calculate the last sample duration.
-    this.timestamps.push(timestamps.peekLast() + averageSample);
+    if (this.samples.length === timestamps.length) {
+      // Support for a legacy format where were no timeDeltas.
+      // Add an extra timestamp used to calculate the last sample duration.
+      const averageSample = (timestamps.peekLast() - timestamps[0]) / (timestamps.length - 1);
+      this.timestamps.push(timestamps.peekLast() + averageSample);
+    }
     this.profileStartTime = timestamps[0];
     this.profileEndTime = timestamps.peekLast();
   }
@@ -263,18 +267,22 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
     let stackTop = 0;
     const stackNodes = [];
     let prevId = this.profileHead.id;
-    let sampleTime = timestamps[samplesCount];
+    let sampleTime;
     let gcParentNode = null;
 
+    // Extra slots for gc being put on top,
+    // and one at the bottom to allow safe stackTop-1 access.
+    const stackDepth = this.maxDepth + 3;
     if (!this._stackStartTimes)
-      this._stackStartTimes = new Float64Array(this.maxDepth + 2);
+      this._stackStartTimes = new Float64Array(stackDepth);
     const stackStartTimes = this._stackStartTimes;
     if (!this._stackChildrenDuration)
-      this._stackChildrenDuration = new Float64Array(this.maxDepth + 2);
+      this._stackChildrenDuration = new Float64Array(stackDepth);
     const stackChildrenDuration = this._stackChildrenDuration;
 
     let node;
-    for (let sampleIndex = startIndex; sampleIndex < samplesCount; sampleIndex++) {
+    let sampleIndex;
+    for (sampleIndex = startIndex; sampleIndex < samplesCount; sampleIndex++) {
       sampleTime = timestamps[sampleIndex];
       if (sampleTime >= stopTime)
         break;
@@ -337,12 +345,14 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       prevId = id;
     }
 
+    sampleTime = timestamps[sampleIndex] || this.profileEndTime;
     if (idToNode.get(prevId) === gcNode) {
       const start = stackStartTimes[stackTop];
       const duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
       closeFrameCallback(gcParentNode.depth + 1, node, start, duration, duration - stackChildrenDuration[stackTop]);
       --stackTop;
+      prevId = gcParentNode.id;
     }
 
     for (let node = idToNode.get(prevId); node.parent; node = node.parent) {

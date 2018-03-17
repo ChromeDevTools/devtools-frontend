@@ -104,9 +104,15 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   /**
    * @param {!UI.ContextMenu} contextMenu
    * @param {!SDK.DOMNode} node
+   * @suppressGlobalPropertiesCheck
    */
   static populateForcedPseudoStateItems(contextMenu, node) {
     const pseudoClasses = ['active', 'hover', 'focus', 'visited', 'focus-within'];
+    try {
+      document.querySelector(':focus-visible');  // Will throw if not supported
+      pseudoClasses.push('focus-visible');
+    } catch (e) {
+    }
     const forcedPseudoState = node.domModel().cssModel().pseudoState(node);
     const stateMenu = contextMenu.debugSection().appendSubMenuItem(Common.UIString('Force state'));
     for (let i = 0; i < pseudoClasses.length; ++i) {

@@ -62,6 +62,17 @@ UI.ARIAUtils.markAsHidden = function(element) {
 
 /**
  * @param {!Element} element
+ * @param {?string} placeholder
+ */
+UI.ARIAUtils.setPlaceholder = function(element, placeholder) {
+  if (placeholder)
+    element.setAttribute('aria-placeholder', placeholder);
+  else
+    element.removeAttribute('aria-placeholder');
+};
+
+/**
+ * @param {!Element} element
  */
 UI.ARIAUtils.markAsPresentation = function(element) {
   element.setAttribute('role', 'presentation');

@@ -46,3 +46,8 @@ li .largeicon-navigator-folder {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.tree-outline li:hover:not(.selected) .selection {
+    display: block;
+    background-color: rgba(56, 121, 217, 0.1);
+}

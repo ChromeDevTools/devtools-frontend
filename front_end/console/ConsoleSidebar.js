@@ -133,7 +133,7 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
    * @param {!Common.Setting} selectedFilterSetting
    */
   constructor(filter, icon, badgePool, selectedFilterSetting) {
-    super(filter.name, true /* expandable */);
+    super(filter.name);
     this._filter = filter;
     this._badgePool = badgePool;
     this._selectedFilterSetting = selectedFilterSetting;
@@ -173,6 +173,7 @@ Console.ConsoleSidebar.FilterTreeElement = class extends UI.TreeElement {
     const pluralizedName = this._messageCount === 1 ? this._filter.name :
                                                       Console.ConsoleSidebar._groupPluralNameMap.get(this._filter.name);
     this.title = `${prefix} ${pluralizedName}`;
+    this.setExpandable(!!this.childCount());
   }
 
   /**

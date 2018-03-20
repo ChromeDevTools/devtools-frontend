@@ -786,8 +786,12 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   _updateTabSlider() {
-    if (!this._currentTab || !this._sliderEnabled)
+    if (!this._sliderEnabled)
       return;
+    if (!this._currentTab) {
+      this._tabSlider.style.width = 0;
+      return;
+    }
     let left = 0;
     for (let i = 0; i < this._tabs.length && this._currentTab !== this._tabs[i]; i++) {
       if (this._tabs[i]._shown)

@@ -50,7 +50,7 @@ PerformanceTestRunner.timelineData = function() {
       'ts': 0
     },
     {
-      'args': {'sessionId': '9.4'},
+      'args': {'data': {'sessionId': '9.4', 'frames': [{'frame': 'frame1', 'url': 'frameurl', 'name': 'frame-name'}]}},
 
       'cat': 'disabled-by-default-devtools.timeline',
       'name': 'TracingStartedInPage',
@@ -62,7 +62,7 @@ PerformanceTestRunner.timelineData = function() {
       'tts': 170409
     },
     {
-      'args': {'layerTreeId': 1, 'sessionId': '9.4'},
+      'args': {'data': {'layerTreeId': 17, 'frame': 'frame-unknown'}},
 
       'cat': 'disabled-by-default-devtools.timeline',
       'name': 'SetLayerTreeId',
@@ -71,6 +71,18 @@ PerformanceTestRunner.timelineData = function() {
       's': 'g',
       'tid': 9,
       'ts': 1122673092082,
+      'tts': 170421
+    },
+    {
+      'args': {'data': {'layerTreeId': 1, 'frame': 'frame1'}},
+
+      'cat': 'disabled-by-default-devtools.timeline',
+      'name': 'SetLayerTreeId',
+      'ph': 'I',
+      'pid': 3834,
+      's': 'g',
+      'tid': 9,
+      'ts': 1122673092083,
       'tts': 170421
     },
     {

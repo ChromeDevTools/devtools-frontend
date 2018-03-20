@@ -121,7 +121,7 @@ TimelineModel.TimelineFrameModel = class {
     this._framePendingActivation = null;
     this._lastTaskBeginTime = null;
     this._target = null;
-    this._sessionId = null;
+    this._layerTreeId = null;
     this._currentTaskTimeByCategory = {};
   }
 
@@ -239,11 +239,9 @@ TimelineModel.TimelineFrameModel = class {
   /**
    * @param {?SDK.Target} target
    * @param {!Array.<!SDK.TracingModel.Event>} events
-   * @param {string} sessionId
    */
-  addTraceEvents(target, events, sessionId) {
+  addTraceEvents(target, events) {
     this._target = target;
-    this._sessionId = sessionId;
     for (let i = 0; i < events.length; ++i)
       this._addTraceEvent(events[i]);
   }
@@ -257,11 +255,9 @@ TimelineModel.TimelineFrameModel = class {
       this._minimumRecordTime = event.startTime;
 
     if (event.name === eventNames.SetLayerTreeId) {
-      const sessionId = event.args['sessionId'] || event.args['data']['sessionId'];
-      if (this._sessionId === sessionId)
-        this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
+      this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
     } else if (event.name === eventNames.TracingStartedInPage) {
-      this._mainThread = event.thread;
+      this._currentProcessMainThread = event.thread;
     } else if (
         event.phase === SDK.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot &&
         parseInt(event.id, 0) === this._layerTreeId) {
@@ -269,7 +265,7 @@ TimelineModel.TimelineFrameModel = class {
       this.handleLayerTreeSnapshot(new TimelineModel.TracingFrameLayerTree(this._target, snapshot));
     } else {
       this._processCompositorEvents(event);
-      if (event.thread === this._mainThread)
+      if (event.thread === this._currentProcessMainThread)
         this._addMainThreadTraceEvent(event);
       else if (this._lastFrame && event.selfTime && !SDK.TracingModel.isTopLevelEvent(event))
         this._lastFrame._addTimeForCategory(this._categoryMapper(event), event.selfTime);

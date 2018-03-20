@@ -147,13 +147,6 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @return {?string}
-   */
-  sessionId() {
-    return this._sessionId;
-  }
-
-  /**
    * @param {!SDK.TracingModel.Event} event
    * @return {?SDK.Target}
    */
@@ -699,7 +692,18 @@ TimelineModel.TimelineModel = class {
         break;
 
       case recordTypes.SetLayerTreeId:
-        this._inspectedTargetLayerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
+        // This is to support old traces.
+        if (this._sessionId && eventData['sessionId'] && this._sessionId === eventData['sessionId']) {
+          this._mainFrameLayerTreeId = eventData['layerTreeId'];
+          break;
+        }
+
+        // We currently only show layer tree for the main frame.
+        const frameId = TimelineModel.TimelineModel.eventFrameId(event);
+        const pageFrame = this._pageFrames.get(frameId);
+        if (!pageFrame || pageFrame.parent)
+          return false;
+        this._mainFrameLayerTreeId = eventData['layerTreeId'];
         break;
 
       case recordTypes.Paint: {
@@ -716,7 +720,7 @@ TimelineModel.TimelineModel = class {
       case recordTypes.DisplayItemListSnapshot:
       case recordTypes.PictureSnapshot: {
         const layerUpdateEvent = this._findAncestorEvent(recordTypes.UpdateLayer);
-        if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this._inspectedTargetLayerTreeId)
+        if (!layerUpdateEvent || layerUpdateEvent.args['layerTreeId'] !== this._mainFrameLayerTreeId)
           break;
         const paintEvent = this._lastPaintForLayer[layerUpdateEvent.args['layerId']];
         if (paintEvent) {

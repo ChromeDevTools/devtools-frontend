@@ -56,8 +56,7 @@ Timeline.PerformanceModel = class extends Common.Object {
     const asyncEventsByGroup = this._timelineModel.mainThreadAsyncEvents();
     this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
 
-    this._frameModel.addTraceEvents(
-        this._mainTarget, this._timelineModel.inspectedTargetEvents(), this._timelineModel.sessionId() || '');
+    this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents());
 
     for (const entry of this._extensionTracingModels) {
       entry.model.adjustTime(

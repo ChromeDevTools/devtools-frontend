@@ -69,6 +69,7 @@ TimelineModel.TimelineJSProfileProcessor = class {
         case TimelineModel.TimelineModel.RecordType.EvaluateScript:
         case TimelineModel.TimelineModel.RecordType.EvaluateModule:
         case TimelineModel.TimelineModel.RecordType.EventDispatch:
+        case TimelineModel.TimelineModel.RecordType.V8Execute:
           return true;
       }
       return false;
@@ -199,10 +200,8 @@ TimelineModel.TimelineJSProfileProcessor = class {
     }
 
     const firstTopLevelEvent = events.find(SDK.TracingModel.isTopLevelEvent);
-    if (firstTopLevelEvent) {
-      TimelineModel.TimelineModel.forEachEvent(
-          events, onStartEvent, onEndEvent, onInstantEvent, firstTopLevelEvent.startTime);
-    }
+    const startTime = firstTopLevelEvent ? firstTopLevelEvent.startTime : 0;
+    TimelineModel.TimelineModel.forEachEvent(events, onStartEvent, onEndEvent, onInstantEvent, startTime);
     return jsFrameEvents;
   }
 

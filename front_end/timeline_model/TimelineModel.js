@@ -283,11 +283,12 @@ TimelineModel.TimelineModel = class {
    */
   _makeMockPageMetadataEvent(tracingModel) {
     const rendererMainThreadName = TimelineModel.TimelineModel.RendererMainThreadName;
-    // FIXME: pick up the first renderer process for now.
-    const process = tracingModel.sortedProcesses().filter(function(p) {
-      return p.threadByName(rendererMainThreadName);
-    })[0];
-    const thread = process && process.threadByName(rendererMainThreadName);
+    // TODO(alph): Support selection of process and thread.
+    const processes = tracingModel.sortedProcesses();
+    const process = processes.find(p => !!p.threadByName(rendererMainThreadName)) || processes[0];
+    if (!process)
+      return null;
+    const thread = process.threadByName(rendererMainThreadName) || process.sortedThreads()[0];
     if (!thread)
       return null;
     const pageMetaEvent = new SDK.TracingModel.Event(
@@ -1138,6 +1139,7 @@ TimelineModel.TimelineModel.RecordType = {
   JitCodeAdded: 'JitCodeAdded',
   JitCodeMoved: 'JitCodeMoved',
   ParseScriptOnBackground: 'v8.parseOnBackground',
+  V8Execute: 'V8.Execute',
 
   UpdateCounters: 'UpdateCounters',
 

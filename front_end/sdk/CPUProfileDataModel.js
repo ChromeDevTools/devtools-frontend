@@ -58,6 +58,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       this._buildIdToNodeMap();
       this._sortSamples();
       this._normalizeTimestamps();
+      this._fixMissingSamples();
     }
   }
 
@@ -243,6 +244,53 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
         this.programNode = node;
       else if (node.functionName === '(idle)')
         this.idleNode = node;
+    }
+  }
+
+  _fixMissingSamples() {
+    // Sometimes sampler is not able to parse the JS stack and returns
+    // a (program) sample instead. The issue leads to call frames belong
+    // to the same function invocation being split apart.
+    // Here's a workaround for that. When there's a single (program) sample
+    // between two call stacks sharing the same bottom node, it is replaced
+    // with the preceeding sample.
+    const samples = this.samples;
+    const samplesCount = samples.length;
+    if (!this.programNode || samplesCount < 3)
+      return;
+    const idToNode = this._idToNode;
+    const programNodeId = this.programNode.id;
+    const gcNodeId = this.gcNode ? this.gcNode.id : -1;
+    const idleNodeId = this.idleNode ? this.idleNode.id : -1;
+    let prevNodeId = samples[0];
+    let nodeId = samples[1];
+    let count = 0;
+    for (let sampleIndex = 1; sampleIndex < samplesCount - 1; sampleIndex++) {
+      const nextNodeId = samples[sampleIndex + 1];
+      if (nodeId === programNodeId && !isSystemNode(prevNodeId) && !isSystemNode(nextNodeId) &&
+          bottomNode(idToNode.get(prevNodeId)) === bottomNode(idToNode.get(nextNodeId))) {
+        ++count;
+        samples[sampleIndex] = prevNodeId;
+      }
+      prevNodeId = nodeId;
+      nodeId = nextNodeId;
+    }
+    Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
+    /**
+     * @param {!SDK.ProfileNode} node
+     * @return {!SDK.ProfileNode}
+     */
+    function bottomNode(node) {
+      while (node.parent && node.parent.parent)
+        node = node.parent;
+      return node;
+    }
+    /**
+     * @param {number} nodeId
+     * @return {boolean}
+     */
+    function isSystemNode(nodeId) {
+      return nodeId === programNodeId || nodeId === gcNodeId || nodeId === idleNodeId;
     }
   }
 

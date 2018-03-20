@@ -549,7 +549,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
         value = (value || '') + '[]';
         break;
     }
-    if (this._reachableFromWindow)
+    if (this._reachableFromWindow && !this.detachedDOMTreeNode)
       valueStyle += ' highlight';
     if (value === 'Object')
       value = '';

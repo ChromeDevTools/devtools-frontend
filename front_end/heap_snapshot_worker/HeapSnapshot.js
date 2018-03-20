@@ -2616,26 +2616,20 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
   }
 
   _markDetachedDOMTreeNodes() {
+    const nodes = this.nodes;
+    const nodesLength = nodes.length;
+    const nodeFieldCount = this._nodeFieldCount;
+    const nodeNativeType = this._nodeNativeType;
+    const nodeTypeOffset = this._nodeTypeOffset;
     const flag = this._nodeFlags.detachedDOMTreeNode;
-    let detachedDOMTreesRoot;
-    for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next()) {
-      const node = iter.edge.node();
-      if (node.name() === '(Detached DOM trees)') {
-        detachedDOMTreesRoot = node;
-        break;
-      }
-    }
-
-    if (!detachedDOMTreesRoot)
-      return;
-
-    const detachedDOMTreeRE = /^Detached DOM tree/;
-    for (let iter = detachedDOMTreesRoot.edges(); iter.hasNext(); iter.next()) {
-      const node = iter.edge.node();
-      if (detachedDOMTreeRE.test(node.className())) {
-        for (let edgesIter = node.edges(); edgesIter.hasNext(); edgesIter.next())
-          this._flags[edgesIter.edge.node().nodeIndex / this._nodeFieldCount] |= flag;
-      }
+    const node = this.rootNode();
+    for (let nodeIndex = 0, ordinal = 0; nodeIndex < nodesLength; nodeIndex += nodeFieldCount, ordinal++) {
+      const nodeType = nodes[nodeIndex + nodeTypeOffset];
+      if (nodeType !== nodeNativeType)
+        continue;
+      node.nodeIndex = nodeIndex;
+      if (node.name().startsWith('Detached '))
+        this._flags[ordinal] |= flag;
     }
   }
 

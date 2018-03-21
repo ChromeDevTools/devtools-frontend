@@ -1041,9 +1041,6 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/workspace_diff/workspace_diff_module.js",
 ]
 
-generated_resources =
-    generated_applications + generated_non_autostart_non_remote_modules
-
 generated_remote_modules = [
   "$resources_out_dir/accessibility/accessibility_module.js",
   "$resources_out_dir/audits2_worker/audits2_worker_module.js",
@@ -1118,8 +1115,16 @@ action("generate_devtools_grd") {
     ":devtools_frontend_resources",
   ]
 
-  grd_files = generated_resources + devtools_embedder_scripts +
-              [ "$resources_out_dir/devtools_extension_api.js" ]
+  grd_files =
+      generated_applications + generated_non_autostart_non_remote_modules +
+      devtools_embedder_scripts +
+      [ "$resources_out_dir/devtools_extension_api.js" ]
+
+  # Bundle remote modules in ChromeOS.
+  if (is_chromeos) {
+    grd_files += generated_remote_modules
+  }
+
   inputs = grd_files + devtools_image_files
   outfile = "$root_gen_dir/devtools/devtools_resources.grd"
   outputs = [
@@ -1202,7 +1207,9 @@ action("build_release_devtools") {
 
   inputs = helper_scripts + all_devtools_files + generated_scripts +
            application_templates
-  outputs = generated_resources + generated_remote_modules
+  outputs =
+      generated_applications + generated_non_autostart_non_remote_modules +
+      generated_remote_modules
 
   args = devtools_applications + [
            "--input_path",

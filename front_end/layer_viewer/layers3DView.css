@@ -9,6 +9,11 @@
     -webkit-user-select: none;
 }
 
+.toolbar {
+    background-color: var(--toolbar-bg-color);
+    border-bottom: 1px solid #dadada;
+}
+
 canvas {
     flex: 1 1;
 }

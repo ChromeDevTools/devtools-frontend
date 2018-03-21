@@ -84,20 +84,20 @@
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
     border: 0;
-    border-top: 1px solid rgb(64%, 64%, 64%);
+    border-top: 1px solid var(--split-resizer-fg-color);
 }
 
 .shadow-split-widget.vbox.shadow-split-widget-first-is-sidebar > .shadow-split-widget-sidebar:not(.maximized) {
     border: 0;
-    border-bottom: 1px solid rgb(64%, 64%, 64%);
+    border-bottom: 1px solid var(--split-resizer-fg-color);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
     border: 0;
-    border-left: 1px solid rgb(64%, 64%, 64%);
+    border-left: 1px solid var(--split-resizer-fg-color);
 }
 
 .shadow-split-widget.hbox.shadow-split-widget-first-is-sidebar > .shadow-split-widget-sidebar:not(.maximized) {
     border: 0;
-    border-right: 1px solid rgb(64%, 64%, 64%);
+    border-right: 1px solid var(--split-resizer-fg-color);
 }

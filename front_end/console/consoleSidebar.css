@@ -6,6 +6,7 @@
 
 :host {
     overflow: auto;
+    background-color: var(--toolbar-bg-color);
 }
 
 .tree-outline-disclosure {

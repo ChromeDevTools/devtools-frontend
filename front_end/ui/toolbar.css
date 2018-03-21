@@ -238,14 +238,16 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
     padding: 4px 3px 3px 3px;
     margin: 1px 3px;
     background-color: white;
-    border: solid 1px #d8d8d8;
-    border-radius: 2px;
+    border: 1px solid transparent ;
     min-width: 35px;
 }
 
-.toolbar-input.focused,
 .toolbar-input:hover {
-    border: solid 1px rgb(202, 202, 202);
+    box-shadow: 0 0 0 1px #e0e0e0;
+}
+
+.toolbar-input.focused {
+    box-shadow: 0 0 0 1px #61b8ff;
 }
 
 .toolbar-input > input {

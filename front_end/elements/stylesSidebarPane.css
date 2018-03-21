@@ -150,7 +150,7 @@
     overflow: hidden;
     position: sticky;
     top: 0;
-    background-color: #fff;
+    background-color: var(--toolbar-bg-color);
     z-index: 1;
 }
 
@@ -168,8 +168,17 @@
     outline: none !important;
     border: none;
     width: 100%;
-    background: transparent;
-    margin-left: 4px;
+    background: white;
+    padding-left: 4px;
+    margin: 3px;
+}
+
+.styles-sidebar-pane-filter-box > input:hover {
+    box-shadow: 0 0 0 1px #e0e0e0;
+}
+
+.styles-sidebar-pane-filter-box > input:focus {
+    box-shadow: 0 0 0 1px #61b8ff;
 }
 
 .styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,

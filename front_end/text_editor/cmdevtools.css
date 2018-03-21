@@ -92,8 +92,8 @@
 }
 
 .CodeMirror-gutters {
-    border-right: 1px solid rgb(187, 187, 187);
-    background-color: #eee;
+    border-right: 1px solid var(--split-resizer-fg-color);
+    background-color: var(--toolbar-bg-color);
     white-space: nowrap;
 }
 

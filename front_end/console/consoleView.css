@@ -33,6 +33,7 @@
 }
 
 .console-view > .toolbar {
+    background-color: var(--toolbar-bg-color);
     border-bottom: 1px solid #dadada;
 }
 

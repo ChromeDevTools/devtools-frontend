@@ -174,16 +174,20 @@ input {
 .harmony-input[type=number],
 .harmony-input[type=text] {
     padding: 3px 6px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
     height: 24px;
+    border: none;
+}
+
+.harmony-input:not([type]):not(.error-input):not(:invalid):hover,
+.harmony-input[type=number]:not(.error-input):not(:invalid):hover,
+.harmony-input[type=text]:not(.error-input):not(:invalid):hover {
+    box-shadow: 0 0 0 1px #e0e0e0;
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):focus,
 .harmony-input[type=number]:not(.error-input):not(:invalid):focus,
 .harmony-input[type=text]:not(.error-input):not(:invalid):focus {
-    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.4);
-    border-color: transparent;
+    box-shadow: 0 0 0 1px #61b8ff;
 }
 
 .highlighted-search-result.current-search-result {

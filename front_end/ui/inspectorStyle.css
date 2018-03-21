@@ -42,6 +42,7 @@
   --drop-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05),
                  0 2px 4px rgba(0, 0, 0, 0.2),
                  0 2px 6px rgba(0, 0, 0, 0.1);
+  --split-resizer-fg-color: #e0e0e0;
 }
 
 .-theme-with-dark-background {
@@ -54,6 +55,7 @@
   --drop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2),
                  0 2px 4px 2px rgba(0, 0, 0, 0.2),
                  0 2px 6px 2px rgba(0, 0, 0, 0.1);
+    --split-resizer-fg-color: #525252;
 }
 
 body {

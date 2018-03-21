@@ -1,0 +1,28 @@
+/*
+ * Copyright 2018 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.profile-isolate-item {
+    padding: 5px;
+    border-left: 2px solid transparent;
+}
+
+.profile-isolate-item:hover {
+    background-color: hsla(0, 0%, 0%, 0.05);
+}
+
+.profile-isolate-item.selected {
+    border-color: #4285f4;
+    background-color: #4285f420;
+}
+
+.profile-isolate-item > div {
+    flex-shrink:  0;
+    margin-left: 9px;
+}
+
+.profile-isolate-item-heap {
+    width: 120px;
+}

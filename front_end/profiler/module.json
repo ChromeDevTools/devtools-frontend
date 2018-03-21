@@ -105,12 +105,14 @@
         "HeapSnapshotGridNodes.js",
         "HeapSnapshotView.js",
         "HeapProfilerPanel.js",
+        "IsolateSelector.js",
         "ProfileLauncherView.js",
         "ProfileTypeRegistry.js",
         "TargetsComboBoxController.js"
     ],
     "resources": [
         "heapProfiler.css",
+        "profileLauncherView.css",
         "profilesPanel.css",
         "profilesSidebarTree.css"
     ]

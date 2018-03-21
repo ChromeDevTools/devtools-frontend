@@ -317,6 +317,21 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise<string>}
+   */
+  async isolateId() {
+    return (await this._agent.getIsolateId()) || this.target().id();
+  }
+
+  /**
+   * @return {!Promise<?{usedSize: number, totalSize: number}>}
+   */
+  async heapUsage() {
+    const result = await this._agent.invoke_getHeapUsage({});
+    return result[Protocol.Error] ? null : result;
+  }
+
+  /**
    * @param {!Protocol.Runtime.RemoteObject} payload
    * @param {!Object=} hints
    */

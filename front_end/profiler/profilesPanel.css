@@ -131,6 +131,13 @@
     min-width: 110px;
 }
 
+.profile-launcher-target-list {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+
 .profile-launcher-target {
     align-items: baseline;
 }
@@ -196,9 +203,9 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 }
 
 .profile-launcher-button {
-    margin-top: 10px;
-    margin-right: 8px;
-    min-width: 110px;
+    min-width: 120px;
+    height: 28px;
+    margin: 8px 16px 8px 0;
 }
 
 .cpu-profile-flame-chart-overview-container {

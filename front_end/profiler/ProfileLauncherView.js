@@ -43,10 +43,15 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
     const controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
-    const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
-    targetDiv.createChild('div').textContent = Common.UIString('Target:');
-    const targetsSelect = targetDiv.createChild('select', 'chrome-select');
-    new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
+    if (Runtime.experiments.isEnabled('memoryLauncherViewV2')) {
+      const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target-list');
+      new Profiler.IsolateSelector().show(targetDiv);
+    } else {
+      const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
+      targetDiv.createChild('div').textContent = Common.UIString('Target:');
+      const targetsSelect = targetDiv.createChild('select', 'chrome-select');
+      new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
+    }
     this._controlButton =
         UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);
     this._contentElement.appendChild(this._controlButton);

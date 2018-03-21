@@ -91,6 +91,16 @@ Persistence.Persistence = class extends Common.Object {
 
     this._moveBreakpoints(binding.fileSystem, binding.network);
 
+    console.assert(!binding.fileSystem.isDirty() || !binding.network.isDirty());
+    if (binding.fileSystem.isDirty()) {
+      this._syncWorkingCopy(binding.fileSystem);
+    } else if (binding.network.isDirty()) {
+      this._syncWorkingCopy(binding.network);
+    } else if (binding.network.hasCommits()) {
+      binding.network.setWorkingCopy(binding.network.content());
+      this._syncWorkingCopy(binding.network);
+    }
+
     this._notifyBindingEvent(binding.network);
     this._notifyBindingEvent(binding.fileSystem);
     this.dispatchEventToListeners(Persistence.Persistence.Events.BindingCreated, binding);
@@ -148,6 +158,13 @@ Persistence.Persistence = class extends Common.Object {
    */
   _onWorkingCopyChanged(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data);
+    this._syncWorkingCopy(uiSourceCode);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  _syncWorkingCopy(uiSourceCode) {
     const binding = uiSourceCode[Persistence.Persistence._binding];
     if (!binding || binding[Persistence.Persistence._muteWorkingCopy])
       return;

@@ -182,13 +182,36 @@ Persistence.Automapping = class {
       if (status.network.contentType().isFromSourceMap() || !status.fileSystem.contentType().isTextType())
         return status;
 
-      await Promise.all([status.network.requestContent(), status.fileSystem.requestContent()]);
+      // At the time binding comes, there are multiple user scenarios:
+      // 1. Both network and fileSystem files are **not** dirty.
+      //    This is a typical scenario when user hasn't done any edits yet to the
+      //    files in question.
+      // 2. FileSystem file has unsaved changes, network is clear.
+      //    This typically happens with CSS files editing. Consider the following
+      //    scenario:
+      //      - user edits file that has been successfully mapped before
+      //      - user doesn't save the file
+      //      - user hits reload
+      // 3. Network file has either unsaved changes or commits, but fileSystem file is clear.
+      //    This typically happens when we've been editing file and then realized we'd like to drop
+      //    a folder and persist all the changes.
+      // 4. Network file has either unsaved changes or commits, and fileSystem file has unsaved changes.
+      //    We consider this to be un-realistic scenario and in this case just fail gracefully.
+      //
+      // To support usecase (3), we need to validate against original network content.
+      if (status.fileSystem.isDirty() && (status.network.isDirty() || status.network.hasCommits()))
+        return null;
+
+      const contents = await Promise.all([
+        status.fileSystem.requestContent(),
+        new Promise(x => status.network.project().requestFileContent(status.network, x))
+      ]);
+      const fileSystemContent = contents[0];
+      const networkContent = contents[1];
 
       if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
         return null;
 
-      const fileSystemContent = status.fileSystem.workingCopy();
-      const networkContent = status.network.workingCopy();
       const target = Bindings.NetworkProject.targetForUISourceCode(status.network);
       let isValid = false;
       if (target && target.isNodeJS()) {

@@ -74,6 +74,15 @@
             "hasToolbar": true,
             "persistence": "permanent",
             "className": "BrowserDebugger.ObjectEventListenersSidebarPane"
+        },
+        {
+            "type": "view",
+            "location": "navigator-view",
+            "id": "navigator-network",
+            "title": "Page",
+            "order": 2,
+            "persistence": "permanent",
+            "className": "Sources.NetworkNavigatorView"
         }
     ],
     "dependencies": [

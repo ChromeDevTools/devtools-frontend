@@ -282,15 +282,6 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "navigator-network",
-            "title": "Network",
-            "order": 2,
-            "persistence": "permanent",
-            "className": "Sources.NetworkNavigatorView"
-        },
-        {
-            "type": "view",
-            "location": "navigator-view",
             "id": "navigator-files",
             "title": "Filesystem",
             "order": 3,
@@ -403,18 +394,18 @@
         {
             "type": "setting",
             "category": "Sources",
-            "title": "Automatically reveal files in navigator",
+            "title": "Automatically reveal files in sidebar",
             "settingName": "autoRevealInNavigator",
             "settingType": "boolean",
             "defaultValue": false,
             "options": [
                 {
                     "value": true,
-                    "title": "Automatically reveal files in navigator"
+                    "title": "Automatically reveal files in sidebar"
                 },
                 {
                     "value": false,
-                    "title": "Do not automatically reveal files in navigator"
+                    "title": "Do not automatically reveal files in sidebar"
                 }
             ]
         },

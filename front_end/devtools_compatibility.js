@@ -581,9 +581,13 @@
      * @override
      * @param {number} requestId
      * @param {string} fileSystemPath
+     * @param {string} excludedFolders
      */
-    indexPath(requestId, fileSystemPath) {
-      DevToolsAPI.sendMessageToEmbedder('indexPath', [requestId, fileSystemPath], null);
+    indexPath(requestId, fileSystemPath, excludedFolders) {
+      // |excludedFolders| added in M67. For backward compatibility,
+      // pass empty array.
+      excludedFolders = excludedFolders || '[]';
+      DevToolsAPI.sendMessageToEmbedder('indexPath', [requestId, fileSystemPath, excludedFolders], null);
     }
 
     /**

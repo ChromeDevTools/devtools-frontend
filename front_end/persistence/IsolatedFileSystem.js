@@ -48,6 +48,8 @@ Persistence.IsolatedFileSystem = class {
     this._excludedFoldersSetting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
+    /** @type {!Array<string>} */
+    this._excludedEmbedderFolders = [];
 
     /** @type {!Set<string>} */
     this._initialFilePaths = new Set();
@@ -173,8 +175,11 @@ Persistence.IsolatedFileSystem = class {
             const parentFolder = entry.fullPath.substring(1, lastSlash);
             this._initialGitFolders.add(parentFolder);
           }
-          if (this.isFileExcluded(entry.fullPath + '/'))
+          if (this.isFileExcluded(entry.fullPath + '/')) {
+            this._excludedEmbedderFolders.push(
+                Common.ParsedURL.urlToPlatformPath(this._path + entry.fullPath, Host.isWin()));
             continue;
+          }
           ++pendingRequests;
           this._requestEntries(entry.fullPath, boundInnerCallback);
         }
@@ -604,7 +609,7 @@ Persistence.IsolatedFileSystem = class {
   indexContent(progress) {
     progress.setTotalWork(1);
     const requestId = this._manager.registerProgress(progress);
-    InspectorFrontendHost.indexPath(requestId, this._embedderPath);
+    InspectorFrontendHost.indexPath(requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
   }
 };
 

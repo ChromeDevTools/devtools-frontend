@@ -183,8 +183,16 @@ TimelineModel.TimelineModel = class {
         const endTime = i + 1 < length ? metadataEvents.page[i + 1].startTime : Infinity;
         this._legacyCurrentPage = metaEvent.args['data'] && metaEvent.args['data']['page'];
         for (const thread of process.sortedThreads()) {
-          if (thread.name() === TimelineModel.TimelineModel.WorkerThreadName) {
-            const workerMetaEvent = metadataEvents.workers.find(e => e.args['data']['workerThreadId'] === thread.id());
+          if (thread.name() === TimelineModel.TimelineModel.WorkerThreadName ||
+              thread.name() === TimelineModel.TimelineModel.WorkerThreadNameLegacy) {
+            const workerMetaEvent = metadataEvents.workers.find(e => {
+              if (e.args['data']['workerThreadId'] !== thread.id())
+                return false;
+              // This is to support old traces.
+              if (e.args['data']['sessionId'] === this._sessionId)
+                return true;
+              return !!this._pageFrames.get(TimelineModel.TimelineModel.eventFrameId(e));
+            });
             if (!workerMetaEvent)
               continue;
             const workerId = workerMetaEvent.args['data']['workerId'];
@@ -262,7 +270,7 @@ TimelineModel.TimelineModel = class {
     }
     const result = {
       page: pageDevToolsMetadataEvents.filter(checkSessionId).sort(SDK.TracingModel.Event.compareStartTime),
-      workers: workersDevToolsMetadataEvents.filter(checkSessionId).sort(SDK.TracingModel.Event.compareStartTime)
+      workers: workersDevToolsMetadataEvents.sort(SDK.TracingModel.Event.compareStartTime)
     };
     if (mismatchingIds.size) {
       Common.console.error(
@@ -1237,7 +1245,8 @@ TimelineModel.TimelineModel.WarningType = {
 };
 
 TimelineModel.TimelineModel.MainThreadName = 'main';
-TimelineModel.TimelineModel.WorkerThreadName = 'DedicatedWorker Thread';
+TimelineModel.TimelineModel.WorkerThreadName = 'DedicatedWorker thread';
+TimelineModel.TimelineModel.WorkerThreadNameLegacy = 'DedicatedWorker Thread';
 TimelineModel.TimelineModel.RendererMainThreadName = 'CrRendererMain';
 
 /**
@@ -1283,7 +1292,8 @@ TimelineModel.TimelineModel.VirtualThread = class {
    * @return {boolean}
    */
   isWorker() {
-    return this.name === TimelineModel.TimelineModel.WorkerThreadName;
+    return this.name === TimelineModel.TimelineModel.WorkerThreadName ||
+        this.name === TimelineModel.TimelineModel.WorkerThreadNameLegacy;
   }
 };
 

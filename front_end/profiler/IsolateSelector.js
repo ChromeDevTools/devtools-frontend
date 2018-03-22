@@ -195,15 +195,18 @@ Profiler.IsolateSelector.ListItem = class {
     const modelCountByName = new Map();
     for (const model of this._models.values()) {
       const target = model.target();
-      const name = target.decorateLabel(target.name() || ls`(empty)`);
+      const name = SDK.targetManager.mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL(target.inspectedURL());
       const domain = parsedURL.isValid ? parsedURL.domain() : '';
-      const title = domain ? `${domain}: ${name}` : name;
+      const title = target.decorateLabel(domain && name ? `${domain}: ${name}` : name || domain || ls`(empty)`);
       modelCountByName.set(title, (modelCountByName.get(title) || 0) + 1);
     }
-    const titles = [];
-    for (const [name, count] of modelCountByName)
-      titles.push(count > 1 ? `${name} (${count})` : name);
-    this._nameDiv.textContent = titles.join(', ');
+    this._nameDiv.removeChildren();
+    for (const [name, count] of modelCountByName) {
+      const lineDiv = this._nameDiv.createChild('div');
+      const title = count > 1 ? `${name} (${count})` : name;
+      lineDiv.textContent = title;
+      lineDiv.setAttribute('title', title);
+    }
   }
 };

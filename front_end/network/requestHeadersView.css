@@ -23,7 +23,6 @@
 }
 
 .request-headers-tree {
-    padding: 0 0 0 4px;
     flex-grow: 1;
     overflow-y: auto;
     margin: 0;

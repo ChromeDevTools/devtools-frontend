@@ -28,5 +28,5 @@
 }
 
 .protocol-monitor-toolbar {
-    border-bottom:1px solid #dadada;
+    border-bottom:var(--divider-border);
 }

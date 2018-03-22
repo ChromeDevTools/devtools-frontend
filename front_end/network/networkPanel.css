@@ -29,7 +29,7 @@
 
 .panel.network > .toolbar {
     background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
 }
 
 .network-details-view {
@@ -120,14 +120,14 @@
 }
 
 .network-blocked-urls {
-    border-top: 1px solid #dadada;
+    border-top: var(--divider-border);
     flex: 104px 0 0;
 }
 
 .open-search-view {
     align-items: center;
     background-color: hsl(50, 100%, 88%);
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
     cursor: pointer;
     flex-grow: 0;
     padding: 4px;

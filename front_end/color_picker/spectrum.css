@@ -111,7 +111,7 @@
     top: 0;
     font-size: 13px;
     color: #333;
-    border-top: 1px solid #dadada;
+    border-top: var(--divider-border);
     line-height: initial;
     overflow: hidden;
     flex: none;
@@ -301,7 +301,7 @@
     width: 40px;
     overflow: hidden;
     text-align: center;
-    border: 1px solid #dadada;
+    border: var(--divider-border);
     border-radius: 2px;
     margin-right: 6px;
     line-height: 20px;
@@ -370,7 +370,7 @@
 }
 
 .spectrum-palette-container {
-    border-top: 1px solid #dadada;
+    border-top: var(--divider-border);
     position: relative;
     width: 100%;
     padding: 6px 24px 6px 6px;
@@ -475,7 +475,7 @@
     background-color: white;
     z-index: 14;
     transition: transform 200ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 200ms;
-    border-top: 1px solid #dadada;
+    border-top: var(--divider-border);
     visibility: hidden;
 }
 
@@ -493,7 +493,7 @@
 
 .palette-panel > div:not(.toolbar) {
     flex: 0 0 38px;
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
     padding: 12px;
     line-height: 14px;
     color: #333;

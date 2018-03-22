@@ -6,7 +6,7 @@
 
 .toolbar {
     background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
 }
 
 .audits2-logo {

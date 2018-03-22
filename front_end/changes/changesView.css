@@ -61,5 +61,5 @@
 
 .changes-toolbar {
     background-color: var(--toolbar-bg-color);
-    border-top: 1px solid #dadada;
+    border-top: var(--divider-border);
 }

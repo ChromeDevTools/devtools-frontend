@@ -6,7 +6,7 @@
 
 .list {
     border: none !important;
-    border-top: 1px solid #dadada !important;
+    border-top: var(--divider-border) !important;
 }
 
 .blocking-disabled {

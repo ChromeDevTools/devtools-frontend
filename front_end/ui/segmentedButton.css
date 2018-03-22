@@ -12,7 +12,7 @@
 
 .segmented-button-segment {
   background-color: white;
-  border: #dadada 1px solid;
+  border: var(--divider-border);
   border-right-style: none;
   color: #5a5a5a;
   flex: 1 1 0;

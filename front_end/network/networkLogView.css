@@ -75,12 +75,9 @@
     border-left: 1px solid rgb(205, 205, 205);
 }
 
-.network-log-grid.data-grid th {
-    background: white;
-}
-
 .network-waterfall-header, .network-log-grid.data-grid .header-container {
     height: 31px;
+    background-color: var(--toolbar-bg-color);
 }
 
 .network-log-grid.data-grid .data-container {

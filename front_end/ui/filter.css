@@ -33,7 +33,7 @@
     flex: none;
     flex-wrap: wrap;
     align-items: center;
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
 }
 
 .filter-text-filter {
@@ -147,9 +147,9 @@
 }
 
 .filter-input-field:hover {
-    box-shadow: 0 0 0 1px #e0e0e0;
+    box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .filter-input-field:focus {
-    box-shadow: 0 0 0 1px #61b8ff;
+    box-shadow: var(--focus-ring-active-shadow);
 }

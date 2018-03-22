@@ -96,7 +96,7 @@ circle.animation-keyframe-point {
 .animation-timeline-toolbar-container {
     display: flex;
     background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
     flex: 0 0;
 }
 

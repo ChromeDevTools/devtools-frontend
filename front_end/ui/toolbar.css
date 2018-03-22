@@ -148,12 +148,12 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 .toolbar-button.toolbar-state-on .toolbar-glyph,
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active),
 .-theme-selection-color {
-    background-color: hsl(218, 81%, 59%);
+    background-color: var(--accent-color-b);
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text,
 .-theme-selection-color {
-    color: hsl(218, 81%, 59%);
+    color: var(--accent-color-b);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
@@ -167,12 +167,12 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph,
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover,
 .-theme-selection-color {
-    background-color: hsl(218, 96%, 54%);
+    background-color: var(--accent-color-b);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text,
 .-theme-selection-color {
-    color: hsl(218, 96%, 54%);
+    color: var(--accent-color-b);
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {
@@ -243,11 +243,11 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 }
 
 .toolbar-input:hover {
-    box-shadow: 0 0 0 1px #e0e0e0;
+    box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .toolbar-input.focused {
-    box-shadow: 0 0 0 1px #61b8ff;
+    box-shadow: var(--focus-ring-active-shadow);
 }
 
 .toolbar-input > input {

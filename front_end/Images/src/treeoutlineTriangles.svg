@@ -13,11 +13,11 @@
    height="24"
    id="svg3620"
    version="1.1"
-   inkscape:version="0.92.2pre0 (973e216, 2017-07-25)"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
    sodipodi:docname="treeoutlineTriangles.svg"
-   inkscape:export-filename="/usr/local/google/code/chromium/src/third_party/WebKit/Source/devtools/front_end/Images/treeoutlineTriangles.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-filename="/Users/pfeldman/code/chromium/src/third_party/WebKit/Source/devtools/front_end/Images/treeoutlineTriangles_2x.png"
+   inkscape:export-xdpi="192"
+   inkscape:export-ydpi="192">
   <defs
      id="defs3622" />
   <sodipodi:namedview
@@ -27,18 +27,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11.313708"
-     inkscape:cx="-2.2860811"
-     inkscape:cy="13.085725"
+     inkscape:zoom="15.999999"
+     inkscape:cx="5.8968306"
+     inkscape:cy="33.634397"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
-     inkscape:window-width="2560"
-     inkscape:window-height="1539"
+     inkscape:window-width="1680"
+     inkscape:window-height="1005"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="1"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata3625">
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,12 +58,12 @@
      id="layer1"
      transform="translate(0,-1028.3622)">
     <path
-       d="m 7,1034.3622 -5,-3.5 v 7"
+       d="m 7.5,1034.3622 -5.5,-3.75 v 7.5"
        id="path3619"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
     <path
-       d="m 23,1037.3622 0,-6 -6,6"
+       d="m 20.5,1037.8622 3.75,-5.5 h -7.5"
        id="path3621"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />

@@ -92,9 +92,9 @@
 }
 
 .CodeMirror-gutters {
-    border-right: 1px solid var(--split-resizer-fg-color);
-    background-color: var(--toolbar-bg-color);
+    border-right: 1px solid var(--divider-color);
     white-space: nowrap;
+    background-color: white;
 }
 
 .CodeMirror-linenumber {

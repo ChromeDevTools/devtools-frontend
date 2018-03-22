@@ -34,7 +34,7 @@
 
 .console-view > .toolbar {
     background-color: var(--toolbar-bg-color);
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
 }
 
 .console-view-wrapper {
@@ -48,7 +48,8 @@
 
 .console-settings-pane {
     flex: none;
-    border-bottom: 1px solid #dadada;
+    background-color: var(--toolbar-bg-color);
+    border-bottom: var(--divider-border);
 }
 
 .console-settings-pane .toolbar {

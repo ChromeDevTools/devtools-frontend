@@ -85,7 +85,7 @@
 .tabbed-pane-header-contents {
     flex: auto;
     pointer-events: none;
-    margin-left: 5px;
+    margin-left: 0;
     position: relative;
 }
 
@@ -102,11 +102,8 @@
 
 .tabbed-pane-header-tab {
     float: left;
-    margin-top: 2px;
-    padding: 2px 4px 2px 4px;
-    height: 24px;
-    border: 1px solid transparent;
-    border-bottom: none;
+    padding: 2px 0.8em;
+    height: 26px;
     line-height: 15px;
     white-space: nowrap;
     cursor: default;
@@ -115,14 +112,13 @@
     color: #5a5a5a;
 }
 
-.tabbed-pane-header-tab:hover,
-.tabbed-pane-header-tab.selected:hover,
-.tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
-    color: #333;
-    background-color: var(--toolbar-hover-bg-color);
+.tabbed-pane-header-tab.closeable {
+    padding-right: 4px;
 }
 
-:host-context(.-theme-with-dark-background) .tabbed-pane-header-tab.selected {
+.tabbed-pane-header-tab:hover,
+.tabbed-pane-shadow .tabbed-pane-header-tab[data-keyboard-focus="true"]:focus {
+    color: #333;
     background-color: var(--toolbar-hover-bg-color);
 }
 
@@ -136,17 +132,12 @@
 }
 
 .tabbed-pane-header-tab.selected {
-    border: 1px solid #ccc;
     border-bottom: none;
 }
 
-
-.tabbed-pane-no-tab-borders .tabbed-pane-header-tab.selected {
-    color: var(--tab-selected-fg-color);
-}
-
 .tabbed-pane-header-tab.selected {
-    border-top-color: #ccc;
+    background-color: var(--tab-selected-bg-color);
+    color: var(--tab-selected-fg-color);
 }
 
 .tabbed-pane-header-tab.dragging {
@@ -255,7 +246,7 @@
     height: 2px;
     position: absolute;
     bottom: -1px;
-    background-color: var(--tab-selected-fg-color);
+    background-color: #03a9f4;
     left: 0;
     z-index: 50;
     transform-origin: 0 100%;
@@ -280,19 +271,6 @@
 .tabbed-pane-header-tab.disabled {
     opacity: 0.5;
     pointer-events: none;
-}
-
-.tabbed-pane-header.tabbed-pane-no-header-background {
-    background-color: transparent;
-}
-
-.tabbed-pane-no-tab-borders .tabbed-pane-header-tab {
-    border: none !important;
-    padding: 2px 0.8em;
-}
-
-.tabbed-pane-no-tab-borders .tabbed-pane-header-contents {
-    margin-left: 0;
 }
 
 .tabbed-pane-left-toolbar {

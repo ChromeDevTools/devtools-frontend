@@ -14,8 +14,7 @@
 .crumbs .crumb {
     display: inline-block;
     padding: 0 7px;
-    height: 18px;
-    line-height: 18px;
+    line-height: 23px;
     white-space: nowrap;
 }
 
@@ -33,7 +32,7 @@
 }
 
 .crumb.selected, .crumb:hover {
-    background-color: var(--toolbar-hover-bg-color);
+    background-color: var(--toolbar-bg-color);
 }
 
 .crumb:not(.selected) .node-label-name {

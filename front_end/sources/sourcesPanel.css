@@ -67,3 +67,7 @@
 .cursor-auto {
     cursor: auto;
 }
+
+.navigator-tabbed-pane {
+    background-color: var(--toolbar-bg-color);
+}

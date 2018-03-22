@@ -35,7 +35,6 @@ Network.NetworkItemView = class extends UI.TabbedPane {
    */
   constructor(request, calculator) {
     super();
-    this.renderWithNoHeaderBackground();
     this.element.classList.add('network-item-view');
 
     this._resourceViewTabSetting = Common.settings.createSetting('resourceViewTab', 'preview');

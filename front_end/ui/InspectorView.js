@@ -64,7 +64,6 @@ UI.InspectorView = class extends UI.VBox {
 
     this._tabbedPane = this._tabbedLocation.tabbedPane();
     this._tabbedPane.registerRequiredCSS('ui/inspectorViewTabbedPane.css');
-    this._tabbedPane.makeTabSlider();
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.setAccessibleName(Common.UIString('Panels'));
 

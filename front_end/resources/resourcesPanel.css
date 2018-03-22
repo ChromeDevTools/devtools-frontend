@@ -87,7 +87,7 @@ li.selected .base-storage-tree-element-subtitle {
 
 .storage-view .filter-bar {
     border-top: none;
-    border-bottom: 1px solid #dadada;
+    border-bottom: var(--divider-border);
 }
 
 .database-query-prompt-container {

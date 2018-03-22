@@ -181,13 +181,13 @@ input {
 .harmony-input:not([type]):not(.error-input):not(:invalid):hover,
 .harmony-input[type=number]:not(.error-input):not(:invalid):hover,
 .harmony-input[type=text]:not(.error-input):not(:invalid):hover {
-    box-shadow: 0 0 0 1px #e0e0e0;
+    box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .harmony-input:not([type]):not(.error-input):not(:invalid):focus,
 .harmony-input[type=number]:not(.error-input):not(:invalid):focus,
 .harmony-input[type=text]:not(.error-input):not(:invalid):focus {
-    box-shadow: 0 0 0 1px #61b8ff;
+    box-shadow: var(--focus-ring-active-shadow);
 }
 
 .highlighted-search-result.current-search-result {

@@ -55,11 +55,10 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabsById = new Map();
     this._currentTabLocked = false;
     this._autoSelectFirstItemOnShow = true;
-    if (Runtime.experiments.isEnabled('uiExplorations'))
-      this.makeTabSlider();
 
     this._dropDownButton = this._createDropDownButton();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
+    this.makeTabSlider();
   }
 
   /**
@@ -480,7 +479,6 @@ UI.TabbedPane = class extends UI.VBox {
   _setTabSlider(enable) {
     this._sliderEnabled = enable;
     this._tabSlider.classList.toggle('enabled', enable);
-    this._headerElement.classList.toggle('tabbed-pane-no-tab-borders', enable);
   }
 
   /**
@@ -860,10 +858,6 @@ UI.TabbedPane = class extends UI.VBox {
     return this._rightToolbar;
   }
 
-  renderWithNoHeaderBackground() {
-    this._headerElement.classList.add('tabbed-pane-no-header-background');
-  }
-
   /**
    * @param {boolean} allow
    * @param {boolean=} automatic
@@ -1102,8 +1096,10 @@ UI.TabbedPaneTab = class {
     if (!measuring)
       this._titleElement = titleElement;
 
-    if (this._closeable)
+    if (this._closeable) {
       tabElement.createChild('div', 'tabbed-pane-close-button', 'dt-close-button').gray = true;
+      tabElement.classList.add('closeable');
+    }
 
     if (measuring) {
       tabElement.classList.add('measuring');

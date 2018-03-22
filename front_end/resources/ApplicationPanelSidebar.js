@@ -353,9 +353,7 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
    * @return {!Promise}
    */
   async showResource(resource, line, column) {
-    const resourceTreeElement = Resources.FrameResourceTreeElement.forResource(resource);
-    if (resourceTreeElement)
-      await resourceTreeElement.revealResource(line, column);
+    await this._resourcesSection.revealResource(resource, line, column);
   }
 
   /**

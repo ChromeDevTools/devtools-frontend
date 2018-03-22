@@ -284,4 +284,11 @@ SDK.Resource = class {
       return !!this._content && !this._contentEncoded;
     return false;
   }
+
+  /**
+   * @return {!SDK.ResourceTreeFrame}
+   */
+  frame() {
+    return this._resourceTreeModel.frameForId(this._frameId);
+  }
 };

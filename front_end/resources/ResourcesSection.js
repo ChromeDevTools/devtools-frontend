@@ -25,7 +25,7 @@ Resources.ResourcesSection = class {
     const resourceTreeModel = mainTarget && mainTarget.model(SDK.ResourceTreeModel);
     const mainFrame = resourceTreeModel && resourceTreeModel.mainFrame;
     if (mainFrame)
-      this._populateFrame(mainFrame);
+      this._frameAdded(mainFrame);
   }
 
   /**
@@ -43,17 +43,45 @@ Resources.ResourcesSection = class {
   }
 
   /**
+   * @param {?SDK.ResourceTreeFrame} frame
+   * @return {boolean}
+   */
+  _expandFrame(frame) {
+    if (!frame)
+      return false;
+    let treeElement = this._treeElementForFrameId.get(frame.id);
+    if (!treeElement && !this._expandFrame(Resources.ResourcesSection._getParentFrame(frame)))
+      return false;
+    treeElement = this._treeElementForFrameId.get(frame.id);
+    if (!treeElement)
+      return false;
+    treeElement.expand();
+    return true;
+  }
+
+  /**
+   * @param {!SDK.Resource} resource
+   * @param {number=} line
+   * @param {number=} column
+   * @return {!Promise}
+   */
+  async revealResource(resource, line, column) {
+    if (!this._expandFrame(resource.frame()))
+      return;
+    const resourceTreeElement = Resources.FrameResourceTreeElement.forResource(resource);
+    if (resourceTreeElement)
+      await resourceTreeElement.revealResource(line, column);
+  }
+
+  /**
    * @param {!SDK.ResourceTreeFrame} frame
    */
   _frameAdded(frame) {
     const parentFrame = Resources.ResourcesSection._getParentFrame(frame);
     const parentTreeElement = parentFrame ? this._treeElementForFrameId.get(parentFrame.id) : this._treeElement;
-    if (!parentTreeElement) {
-      console.warn(`No frame to route ${frame.url} to.`);
+    if (!parentTreeElement)
       return;
-    }
-
-    const frameTreeElement = new Resources.FrameTreeElement(this._panel, frame);
+    const frameTreeElement = new Resources.FrameTreeElement(this, frame);
     this._treeElementForFrameId.set(frame.id, frameTreeElement);
     parentTreeElement.appendChild(frameTreeElement);
   }
@@ -84,17 +112,12 @@ Resources.ResourcesSection = class {
    * @param {!SDK.Resource} resource
    */
   _resourceAdded(resource) {
-    const statusCode = resource['statusCode'];
-    if (statusCode >= 301 && statusCode <= 303)
-      return;
-
     const frameTreeElement = this._treeElementForFrameId.get(resource.frameId);
     if (!frameTreeElement) {
       // This is a frame's main resource, it will be retained
       // and re-added by the resource manager;
       return;
     }
-
     frameTreeElement.appendResource(resource);
   }
 
@@ -102,31 +125,22 @@ Resources.ResourcesSection = class {
     this._treeElement.removeChildren();
     this._treeElementForFrameId.clear();
   }
-
-  /**
-   * @param {!SDK.ResourceTreeFrame} frame
-   */
-  _populateFrame(frame) {
-    this._frameAdded(frame);
-    for (const child of frame.childFrames)
-      this._populateFrame(child);
-    for (const resource of frame.resources())
-      this._resourceAdded(resource);
-  }
 };
 
 Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
   /**
-   * @param {!Resources.ResourcesPanel} storagePanel
+   * @param {!Resources.ResourcesSection} section
    * @param {!SDK.ResourceTreeFrame} frame
    */
-  constructor(storagePanel, frame) {
-    super(storagePanel, '', false);
-    this._panel = storagePanel;
+  constructor(section, frame) {
+    super(section._panel, '', false);
+    this._populated = false;
+    this._section = section;
     this._frame = frame;
     this._frameId = frame.id;
     this._categoryElements = {};
     this._treeElementForResource = {};
+    this.setExpandable(true);
     this.frameNavigated(frame);
 
     const icon = UI.Icon.create('largeicon-navigator-frame', 'navigator-tree-item');
@@ -134,8 +148,11 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
     this.setLeadingIcons([icon]);
   }
 
+  /**
+   * @param {!SDK.ResourceTreeFrame} frame
+   */
   frameNavigated(frame) {
-    this.removeChildren();
+    this.invalidateChildren();
     this._frameId = frame.id;
     this.title = frame.displayName();
     this._categoryElements = {};
@@ -152,7 +169,7 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._panel.showCategoryView(this.titleAsText());
+    this._section._panel.showCategoryView(this.titleAsText());
 
     this.listItemElement.classList.remove('hovered');
     SDK.OverlayModel.hideDOMNodeHighlight();
@@ -173,16 +190,22 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
    * @param {!SDK.Resource} resource
    */
   appendResource(resource) {
+    if (!this._populated)
+      return;
+    const statusCode = resource['statusCode'];
+    if (statusCode >= 301 && statusCode <= 303)
+      return;
+
     const resourceType = resource.resourceType();
     const categoryName = resourceType.name();
     let categoryElement = resourceType === Common.resourceTypes.Document ? this : this._categoryElements[categoryName];
     if (!categoryElement) {
-      categoryElement =
-          new Resources.StorageCategoryTreeElement(this._panel, resource.resourceType().category().title, categoryName);
+      categoryElement = new Resources.StorageCategoryTreeElement(
+          this._section._panel, resource.resourceType().category().title, categoryName);
       this._categoryElements[resourceType.name()] = categoryElement;
       this._insertInPresentationOrder(this, categoryElement);
     }
-    const resourceTreeElement = new Resources.FrameResourceTreeElement(this._panel, resource);
+    const resourceTreeElement = new Resources.FrameResourceTreeElement(this._section._panel, resource);
     this._insertInPresentationOrder(categoryElement, resourceTreeElement);
     this._treeElementForResource[resource.url] = resourceTreeElement;
   }
@@ -198,8 +221,11 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
 
   /**
    * @override
+   * @param {!UI.TreeElement} treeElement
    */
   appendChild(treeElement) {
+    if (!this._populated)
+      return;
     this._insertInPresentationOrder(this, treeElement);
   }
 
@@ -234,6 +260,17 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
         break;
     }
     parentTreeElement.insertChild(childTreeElement, i);
+  }
+
+  /**
+   * @override
+   */
+  onpopulate() {
+    this._populated = true;
+    for (const child of this._frame.childFrames)
+      this._section._frameAdded(child);
+    for (const resource of this._frame.resources())
+      this.appendResource(resource);
   }
 };
 

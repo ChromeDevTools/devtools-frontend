@@ -307,8 +307,11 @@ Resources.ServiceWorkersView.Section = class {
     this._sourceField = this._wrapWidget(this._section.appendField(Common.UIString('Source')));
     this._statusField = this._wrapWidget(this._section.appendField(Common.UIString('Status')));
     this._clientsField = this._wrapWidget(this._section.appendField(Common.UIString('Clients')));
-    this._createPushNotificationField();
-    this._createSyncNotificationField();
+    this._createSyncNotificationField(
+        Common.UIString('Push'), this._pushNotificationDataSetting.get(), Common.UIString('Push data'),
+        this._push.bind(this));
+    this._createSyncNotificationField(
+        Common.UIString('Sync'), this._syncTagNameSetting.get(), Common.UIString('Sync tag'), this._sync.bind(this));
 
     this._linkifier = new Components.Linkifier();
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
@@ -316,42 +319,25 @@ Resources.ServiceWorkersView.Section = class {
     this._throttler = new Common.Throttler(500);
   }
 
-  _createPushNotificationField() {
-    const form = this._wrapWidget(this._section.appendField(Common.UIString('Push')))
-                     .createChild('form', 'service-worker-editor-with-button');
-    const editorContainer = form.createChild('div', 'service-worker-notification-editor');
-    const button = UI.createTextButton(Common.UIString('Push'));
-    button.type = 'submit';
-    form.appendChild(button);
-
-    const editorOptions =
-        {lineNumbers: false, lineWrapping: true, autoHeight: true, padBottom: false, mimeType: 'application/json'};
-    const editor = new TextEditor.CodeMirrorTextEditor(editorOptions);
-    editor.setText(this._pushNotificationDataSetting.get());
-    editor.element.addEventListener('keydown', e => {
-      if (e.key === 'Tab')
-        e.consume(false);
-    }, true);
-    editor.show(editorContainer);
-    form.addEventListener('submit', e => {
-      this._push(editor.text() || '');
-      e.consume(true);
-    });
-  }
-
-  _createSyncNotificationField() {
-    const form = this._wrapWidget(this._section.appendField(Common.UIString('Sync')))
-                     .createChild('form', 'service-worker-editor-with-button');
+  /**
+   * @param {string} label
+   * @param {string} initialValue
+   * @param {string} placeholder
+   * @param {function(string)} callback
+   */
+  _createSyncNotificationField(label, initialValue, placeholder, callback) {
+    const form =
+        this._wrapWidget(this._section.appendField(label)).createChild('form', 'service-worker-editor-with-button');
     const editor = form.createChild('input', 'source-code service-worker-notification-editor');
-    const button = UI.createTextButton(Common.UIString('Sync'));
+    const button = UI.createTextButton(label);
     button.type = 'submit';
     form.appendChild(button);
 
-    editor.value = this._syncTagNameSetting.get();
-    editor.placeholder = Common.UIString('Sync tag');
+    editor.value = initialValue;
+    editor.placeholder = placeholder;
 
     form.addEventListener('submit', e => {
-      this._sync(true, editor.value || '');
+      callback(editor.value || '');
       e.consume(true);
     });
   }
@@ -524,12 +510,11 @@ Resources.ServiceWorkersView.Section = class {
   }
 
   /**
-   * @param {boolean} lastChance
    * @param {string} tag
    */
-  _sync(lastChance, tag) {
+  _sync(tag) {
     this._syncTagNameSetting.set(tag);
-    this._manager.dispatchSyncEvent(this._registration.id, tag, lastChance);
+    this._manager.dispatchSyncEvent(this._registration.id, tag, true);
   }
 
   /**

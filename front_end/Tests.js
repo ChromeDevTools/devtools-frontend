@@ -1163,6 +1163,46 @@
     this.releaseControl();
   };
 
+  TestSuite.prototype.testLoadResourceForFrontend = async function(baseURL) {
+    const test = this;
+    const loggedHeaders = new Set(['cache-control', 'pragma']);
+    function testCase(url, headers, expectedStatus, expectedHeaders, expectedContent) {
+      return new Promise(fulfill => {
+        Host.ResourceLoader.load(url, headers, callback);
+
+        function callback(statusCode, headers, content) {
+          test.assertEquals(expectedStatus, statusCode);
+
+          const headersArray = [];
+          for (const name in headers) {
+            const nameLower = name.toLowerCase();
+            if (loggedHeaders.has(nameLower))
+              headersArray.push(nameLower);
+          }
+          headersArray.sort();
+          test.assertEquals(expectedHeaders.join(', '), headersArray.join(', '));
+          test.assertEquals(expectedContent, content);
+          fulfill();
+        }
+      });
+    }
+
+    this.takeControl();
+    await testCase(baseURL + 'non-existent.html', undefined, 404, [], '');
+    await testCase(baseURL + 'hello.html', undefined, 200, [], '<!doctype html>\n<p>hello</p>\n');
+    await testCase(baseURL + 'echoheader?x-devtools-test', {'x-devtools-test': 'Foo'}, 200, ['cache-control'], 'Foo');
+    await testCase(baseURL + 'set-header?pragma:%20no-cache', undefined, 200, ['pragma'], 'pragma: no-cache');
+
+    await SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
+      expression: `fetch("/set-cookie?devtools-test-cookie=Bar",
+                         {credentials: 'include'})`,
+      awaitPromise: true
+    });
+    await testCase(baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=Bar');
+
+    this.releaseControl();
+  };
+
   /**
    * Serializes array of uiSourceCodes to string.
    * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes

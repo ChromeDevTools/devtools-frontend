@@ -208,6 +208,8 @@ Persistence.Automapping = class {
       ]);
       const fileSystemContent = contents[0];
       const networkContent = contents[1];
+      if (fileSystemContent === null || networkContent === null)
+        return null;
 
       if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
         return null;

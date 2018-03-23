@@ -5,7 +5,8 @@
  */
 
 .profile-isolate-item {
-    padding: 5px;
+    padding: 4px;
+    line-height: 16px;
     border-left: 2px solid transparent;
     overflow-x: hidden;
 }

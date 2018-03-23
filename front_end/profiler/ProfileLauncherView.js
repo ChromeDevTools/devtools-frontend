@@ -38,17 +38,18 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
   constructor(profilesPanel) {
     super();
     this._panel = profilesPanel;
-    this.element.classList.add('profile-launcher-view', 'panel-enabler-view');
+    this.element.classList.add('profile-launcher-view');
 
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
     const controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
     if (Runtime.experiments.isEnabled('memoryLauncherViewV2')) {
+      controlDiv.createChild('h1').textContent = ls`Select JavaScript VM instance`;
       const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target-list');
       new Profiler.IsolateSelector().show(targetDiv);
     } else {
       const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target');
-      targetDiv.createChild('div').textContent = Common.UIString('Target:');
+      targetDiv.createChild('div').textContent = ls`Target:`;
       const targetsSelect = targetDiv.createChild('select', 'chrome-select');
       new Profiler.TargetsComboBoxController(targetsSelect, targetDiv);
     }
@@ -129,11 +130,11 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
     const descriptionElement = this._profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;
-    const decorationElement = profileType.decorationElement();
-    if (decorationElement)
-      labelElement.appendChild(decorationElement);
+    const customContent = profileType.customContent();
+    if (customContent)
+      this._profileTypeSelectorForm.createChild('p').appendChild(customContent);
     if (this._typeIdToOptionElement.size > 1)
-      this._header.textContent = Common.UIString('Select profiling type');
+      this._header.textContent = ls`Select profiling type`;
     else
       this._header.textContent = profileType.name;
   }

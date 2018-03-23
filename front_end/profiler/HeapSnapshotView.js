@@ -81,7 +81,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._diffWidget = this._diffDataGrid.asWidget();
     this._diffWidget.setMinimumSize(50, 25);
 
-    if (isHeapTimeline && Common.moduleSetting('recordAllocationStacks').get()) {
+    if (isHeapTimeline) {
       this._allocationDataGrid = new Profiler.AllocationDataGrid(profile._heapProfilerModel, this);
       this._allocationDataGrid.addEventListener(
           DataGrid.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
@@ -1097,6 +1097,7 @@ Profiler.HeapSnapshotProfileType.SnapshotReceived = 'SnapshotReceived';
 Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotProfileType {
   constructor() {
     super(Profiler.TrackingHeapSnapshotProfileType.TypeId, ls`Allocation instrumentation on timeline`);
+    this._recordAllocationStacksSetting = Common.settings.createSetting('recordAllocationStacks', false);
   }
 
   /**
@@ -1191,8 +1192,16 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     const heapProfilerModel = this._addNewProfile();
     if (!heapProfilerModel)
       return;
-    const recordAllocationStacks = Common.moduleSetting('recordAllocationStacks').get();
-    heapProfilerModel.startTrackingHeapObjects(recordAllocationStacks);
+    heapProfilerModel.startTrackingHeapObjects(this._recordAllocationStacksSetting.get());
+  }
+
+  /**
+   * @override
+   * @return {?Element}
+   */
+  customContent() {
+    return UI.SettingsUI.createSettingCheckbox(
+        ls`Record allocation stacks (extra performance overhead)`, this._recordAllocationStacksSetting, true);
   }
 
   /**

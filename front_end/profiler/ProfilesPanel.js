@@ -36,7 +36,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   constructor(name, profileTypes, recordingActionId) {
     super(name);
     this._profileTypes = profileTypes;
-    this.registerRequiredCSS('ui/panelEnablerView.css');
     this.registerRequiredCSS('profiler/heapProfiler.css');
     this.registerRequiredCSS('profiler/profilesPanel.css');
     this.registerRequiredCSS('object_ui/objectValue.css');

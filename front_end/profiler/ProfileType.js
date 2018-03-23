@@ -119,7 +119,7 @@ Profiler.ProfileType = class extends Common.Object {
   /**
    * @return {?Element}
    */
-  decorationElement() {
+  customContent() {
     return null;
   }
 

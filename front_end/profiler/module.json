@@ -18,14 +18,6 @@
         {
             "type": "setting",
             "category": "Performance",
-            "title": "Record heap allocation stack traces",
-            "settingName": "recordAllocationStacks",
-            "settingType": "boolean",
-            "defaultValue": false
-        },
-        {
-            "type": "setting",
-            "category": "Performance",
             "title": "High resolution CPU profiling",
             "settingName": "highResolutionCpuProfiling",
             "settingType": "boolean",

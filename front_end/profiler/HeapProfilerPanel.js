@@ -10,7 +10,7 @@ Profiler.HeapProfilerPanel = class extends Profiler.ProfilesPanel {
   constructor() {
     const registry = Profiler.ProfileTypeRegistry.instance;
     const profileTypes =
-        [registry.heapSnapshotProfileType, registry.samplingHeapProfileType, registry.trackingHeapSnapshotProfileType];
+        [registry.heapSnapshotProfileType, registry.trackingHeapSnapshotProfileType, registry.samplingHeapProfileType];
     if (Runtime.experiments.isEnabled('nativeHeapProfiler'))
       profileTypes.push(registry.samplingNativeHeapProfileType, registry.samplingNativeHeapSnapshotType);
     super('heap_profiler', profileTypes, 'profiler.heap-toggle-recording');

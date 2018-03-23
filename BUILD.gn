@@ -790,7 +790,6 @@ all_devtools_files = [
   "front_end/ui/ListWidget.js",
   "front_end/ui/module.json",
   "front_end/ui/Panel.js",
-  "front_end/ui/panelEnablerView.css",
   "front_end/ui/popover.css",
   "front_end/ui/Popover.js",
   "front_end/ui/progressIndicator.css",

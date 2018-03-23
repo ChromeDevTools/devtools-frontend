@@ -36,6 +36,10 @@
 
 .elements-disclosure li.selected .selected-hint:before {
     opacity: 0.6;
+    color: var(--selection-inactive-fg-color);
+}
+
+.elements-disclosure li.selected:focus .selected-hint:before {
     color: var(--selection-fg-color);
 }
 

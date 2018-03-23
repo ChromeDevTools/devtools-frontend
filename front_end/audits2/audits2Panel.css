@@ -73,6 +73,15 @@
   word-wrap: break-word;
 }
 
+/* for View Trace button */
+.lh-audit-group {
+  position: relative;
+}
+button.view-trace {
+  position: absolute;
+  right: 0;
+}
+
 .audits2-landing-center button {
     margin-top: 20px;
 }

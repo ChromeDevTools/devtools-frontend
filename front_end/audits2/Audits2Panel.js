@@ -527,7 +527,8 @@ Audits2.ReportSelector.Item = class {
 
     const dom = new DOM(/** @type {!Document} */ (this._resultsView.ownerDocument));
     const detailsRenderer = new Audits2.DetailsRenderer(dom);
-    const categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
+    const categoryRenderer = new Audits2.CategoryRenderer(dom, detailsRenderer);
+    categoryRenderer.setTraceArtifact(this._lighthouseResult);
     const renderer = new Audits2.Audits2Panel.ReportRenderer(dom, categoryRenderer);
 
     const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
@@ -537,6 +538,49 @@ Audits2.ReportSelector.Item = class {
 
     renderer.setTemplateContext(templatesDOM);
     renderer.renderReport(this._lighthouseResult, this._reportContainer);
+  }
+};
+
+Audits2.CategoryRenderer = class extends CategoryRenderer {
+  /**
+   * @override
+   * @param {!DOM} dom
+   * @param {!DetailsRenderer} detailsRenderer
+   */
+  constructor(dom, detailsRenderer) {
+    super(dom, detailsRenderer);
+    this._defaultPassTrace = null;
+  }
+
+  /**
+   * @param {!ReportRenderer.ReportJSON} lhr
+   */
+  setTraceArtifact(lhr) {
+    if (!lhr.artifacts || !lhr.artifacts.traces || !lhr.artifacts.traces.defaultPass)
+      return;
+    this._defaultPassTrace = lhr.artifacts.traces.defaultPass;
+  }
+
+  /**
+   * @override
+   * @param {!ReportRenderer.CategoryJSON} category
+   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups
+   * @return {!Element}
+   */
+  renderPerformanceCategory(category, groups) {
+    const defaultPassTrace = this._defaultPassTrace;
+    const element = super.renderPerformanceCategory(category, groups);
+    if (!defaultPassTrace)
+      return element;
+
+    const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
+    element.querySelector('.lh-audit-group').prepend(timelineButton);
+    return element;
+
+    async function onViewTraceClick() {
+      await UI.inspectorView.showPanel('timeline');
+      Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
+    }
   }
 };
 

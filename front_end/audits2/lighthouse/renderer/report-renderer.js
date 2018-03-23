@@ -225,7 +225,7 @@ ReportRenderer.GroupJSON; // eslint-disable-line no-unused-expressions
  *     initialUrl: string,
  *     url: string,
  *     runWarnings: (!Array<string>|undefined),
- *     artifacts: {traces: !Object},
+ *     artifacts: {traces: {defaultPass: {traceEvents: !Array}}},
  *     reportCategories: !Array<!ReportRenderer.CategoryJSON>,
  *     reportGroups: !Object<string, !ReportRenderer.GroupJSON>,
  *     runtimeConfig: {

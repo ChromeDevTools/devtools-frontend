@@ -343,7 +343,7 @@ class CategoryRenderer {
   render(category, groups) {
     switch (category.id) {
       case 'performance':
-        return this._renderPerformanceCategory(category, groups);
+        return this.renderPerformanceCategory(category, groups);
       case 'accessibility':
         return this._renderAccessibilityCategory(category, groups);
       default:
@@ -393,7 +393,7 @@ class CategoryRenderer {
    * @param {!Object<string, !ReportRenderer.GroupJSON>} groups
    * @return {!Element}
    */
-  _renderPerformanceCategory(category, groups) {
+  renderPerformanceCategory(category, groups) {
     const element = this._dom.createElement('div', 'lh-category');
     this._createPermalinkSpan(element, category.id);
     element.appendChild(this._renderCategoryScore(category));

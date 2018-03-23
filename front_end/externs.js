@@ -639,6 +639,13 @@ window.dispatchStandaloneTestRunnerMessages;
 Element.prototype.animate = function(keyframes, timing) {};
 
 /**
+ * @param {...!Node} nodes
+ * @return {undefined}
+ * @see https://dom.spec.whatwg.org/#dom-parentnode-prepend
+ */
+Element.prototype.prepend = function(nodes) {};
+
+/**
  * @override
  * @param {string} type
  * @param {(!EventListener|!function (!Event): (boolean|undefined)|null)} listener

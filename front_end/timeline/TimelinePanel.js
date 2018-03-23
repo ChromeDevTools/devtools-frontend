@@ -160,6 +160,16 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   /**
+   * @param {!Array.<!SDK.TracingManager.EventPayload>} events
+   */
+  loadFromEvents(events) {
+    if (this._state !== Timeline.TimelinePanel.State.Idle)
+      return;
+    this._prepareToLoadTimeline();
+    this._loader = Timeline.TimelineLoader.loadFromEvents(events, this);
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _onWindowChanged(event) {

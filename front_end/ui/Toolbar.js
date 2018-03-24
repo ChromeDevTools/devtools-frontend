@@ -982,7 +982,7 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
  */
 UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
   /**
-   * @param {!Array.<!{value: string, label: string, title: string, default:(boolean|undefined)}>} options
+   * @param {!Array<!{value: string, label: string, title: string}>} options
    * @param {!Common.Setting} setting
    * @param {string=} optGroup
    */
@@ -991,21 +991,30 @@ UI.ToolbarSettingComboBox = class extends UI.ToolbarComboBox {
     this._setting = setting;
     this._options = options;
     this._selectElement.addEventListener('change', this._valueChanged.bind(this), false);
-    let optionContainer = this._selectElement;
-    const optGroupElement = optGroup ? this._selectElement.createChild('optgroup') : null;
-    if (optGroupElement) {
+    if (optGroup) {
+      const optGroupElement = this._selectElement.createChild('optgroup');
       optGroupElement.label = optGroup;
-      optionContainer = optGroupElement;
+      this._optionContainer = optGroupElement;
+    } else {
+      this._optionContainer = this._selectElement;
     }
+    this.setOptions(options);
+    setting.addChangeListener(this._settingChanged, this);
+  }
+
+  /**
+   * @param {!Array<!{value: string, label: string, title: string}>} options
+   */
+  setOptions(options) {
+    this._options = options;
+    this._optionContainer.removeChildren();
     for (let i = 0; i < options.length; ++i) {
       const dataOption = options[i];
       const option = this.createOption(dataOption.label, dataOption.title, dataOption.value);
-      optionContainer.appendChild(option);
-      if (setting.get() === dataOption.value)
+      this._optionContainer.appendChild(option);
+      if (this._setting.get() === dataOption.value)
         this.setSelectedIndex(i);
     }
-
-    setting.addChangeListener(this._settingChanged, this);
   }
 
   /**

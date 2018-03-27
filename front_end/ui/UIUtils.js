@@ -1736,7 +1736,7 @@ UI.ThemeSupport = class {
       return;
 
     if (this._themeName === 'dark')
-      document.body.classList.add('-theme-with-dark-background');
+      document.documentElement.classList.add('-theme-with-dark-background');
 
     const styleSheets = document.styleSheets;
     const result = [];

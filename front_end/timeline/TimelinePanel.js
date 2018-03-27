@@ -661,9 +661,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     const learnMoreNode = UI.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/',
         Common.UIString('Learn\xa0more'));
-    const learnMoreMigrationNode = UI.XLink.create(
-        'https://developers.google.com/web/updates/2016/12/devtools-javascript-cpu-profile-migration',
-        Common.UIString('Learn\xa0more'));
 
     const recordKey =
         encloseWithTag('b', UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.toggle-recording')[0].name);
@@ -687,22 +684,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
         'After recording, select an area of interest in the overview by dragging.\n' +
         'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
         [navigateNode, learnMoreNode]));
-
-    const cpuProfilerHintSetting = Common.settings.createSetting('timelineShowProfilerHint', true);
-    if (cpuProfilerHintSetting.get()) {
-      const warning = centered.createChild('p', 'timeline-landing-warning');
-      const closeButton = warning.createChild('div', 'timeline-landing-warning-close', 'dt-close-button');
-      closeButton.addEventListener('click', () => {
-        warning.style.visibility = 'hidden';
-        cpuProfilerHintSetting.set(false);
-      }, false);
-      const performanceSpan = encloseWithTag('b', Common.UIString('Performance'));
-      warning.createChild('div').appendChild(UI.formatLocalized(
-          `The %s panel provides the combined functionality of Timeline and JavaScript CPU profiler. %s%s` +
-          `The JavaScript CPU profiler will be removed shortly. Meanwhile, it's available under ` +
-          `%s \u2192 More Tools \u2192 JavaScript Profiler.`,
-          [performanceSpan, learnMoreMigrationNode, createElement('p'), UI.Icon.create('largeicon-menu')]));
-    }
 
     this._landingPage.show(this._statusPaneContainer);
   }

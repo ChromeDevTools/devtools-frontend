@@ -660,24 +660,3 @@
     flex: none;
     white-space: pre-line;
 }
-
-.timeline-landing-warning {
-    background-color: #fffde7;
-    padding: 16px 20px;
-    margin-top: 40px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-}
-
-.-theme-with-dark-background .timeline-landing-warning {
-    background: black;
-}
-
-.timeline-landing-warning-close {
-    float: right;
-    margin-top: -10px;
-    margin-right: -13px;
-}
-
-.timeline-landing-warning span[is=ui-icon] {
-    margin: -8px;
-}

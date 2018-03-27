@@ -40,7 +40,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   setModel(model) {
     this._model = model;
-    this._populateThreadSelector();
+    this._updateThreadsData();
     this.refreshTree();
   }
 
@@ -155,15 +155,25 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   _modelEvents() {
     if (!this._model || this._threadSelector.size() === 0)
       return [];
-    return this._threadEvents[Number(this._threadSelector.selectedOption().value)];
+    return this._threadEvents[Number(this._currentThreadSetting.get())];
   }
 
-  _populateThreadSelector() {
+  _updateThreadsData() {
     if (!this._model)
       return;
-    const options = [];
+    const options = [{value: '0', label: ls`Main`, title: ls`Main`}];
     this._threadEvents = [this._model.timelineModel().mainThreadEvents()];
-    options.push({value: '0', label: ls`Main`, title: ls`Main`});
+
+    const userTimingGroup = TimelineModel.TimelineModel.AsyncEventGroup.userTiming;
+    const mainThreadAsyncEvents = this._model.timelineModel().mainThreadAsyncEvents();
+    const userTimingEvents =
+        TimelineModel.TimelineModel.buildNestableSyncEventsFromAsync(mainThreadAsyncEvents.get(userTimingGroup) || []);
+    if (userTimingEvents.length) {
+      const userTimingTitle = Timeline.TimelineUIUtils.titleForAsyncEventGroup(userTimingGroup);
+      options.push({value: '1', label: userTimingTitle, title: userTimingTitle});
+      this._threadEvents.push(userTimingEvents);
+    }
+
     for (const thread of this._model.timelineModel().virtualThreads()) {
       if (!thread.name)
         continue;

@@ -1078,6 +1078,30 @@ TimelineModel.TimelineModel = class {
     }
     return zeroStartRequestsList.concat(requestsList);
   }
+
+  /**
+   * @param {!Array<!SDK.TracingModel.Event>} asyncEvents
+   * @return {!Array<!SDK.TracingModel.Event>}
+   */
+  static buildNestableSyncEventsFromAsync(asyncEvents) {
+    const stack = [];
+    const events = [];
+    for (const event of asyncEvents) {
+      const startTime = event.startTime;
+      const endTime = event.endTime;
+      while (stack.length && startTime >= stack.peekLast().endTime)
+        stack.pop();
+      if (stack.length && endTime > stack.peekLast().endTime)
+        return [];  // Events are not properly nested. Bail out.
+      const syncEvent = new SDK.TracingModel.Event(
+          event.categoriesString, event.name, SDK.TracingModel.Phase.Complete, startTime, event.thread);
+      syncEvent.setEndTime(endTime);
+      syncEvent.addArgs(event.args);
+      events.push(syncEvent);
+      stack.push(syncEvent);
+    }
+    return events;
+  }
 };
 
 /**

@@ -440,6 +440,13 @@ Profiler.HeapSnapshotViewportDataGrid = class extends Profiler.HeapSnapshotSorta
     return new Promise(resolve => {
       console.assert(!this._scrollToResolveCallback);
       this._scrollToResolveCallback = resolve.bind(null, node);
+      // Still resolve the promise if it does not scroll for some reason.
+      this.scrollContainer.window().requestAnimationFrame(() => {
+        if (!this._scrollToResolveCallback)
+          return;
+        this._scrollToResolveCallback();
+        this._scrollToResolveCallback = null;
+      });
     });
   }
 

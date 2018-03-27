@@ -295,13 +295,8 @@ UI.SearchableView = class extends UI.VBox {
   _updateSearchNavigationButtonState(enabled) {
     this._replaceButtonElement.disabled = !enabled;
     this._replaceAllButtonElement.disabled = !enabled;
-    if (enabled) {
-      this._searchNavigationPrevElement.classList.add('enabled');
-      this._searchNavigationNextElement.classList.add('enabled');
-    } else {
-      this._searchNavigationPrevElement.classList.remove('enabled');
-      this._searchNavigationNextElement.classList.remove('enabled');
-    }
+    this._searchNavigationPrevElement.classList.toggle('enabled', enabled);
+    this._searchNavigationNextElement.classList.toggle('enabled', enabled);
   }
 
   /**

@@ -174,9 +174,14 @@ UI.TextPrompt = class extends Common.Object {
     this.clearAutocomplete();
     this._element.textContent = text;
     this._previousText = this.text();
+    if (this._element.hasFocus()) {
+      this.moveCaretToEndOfPrompt();
+      this._element.scrollIntoView();
+    }
+  }
 
-    this.moveCaretToEndOfPrompt();
-    this._element.scrollIntoView();
+  focus() {
+    this._element.focus();
   }
 
   /**

@@ -275,6 +275,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
    * @param {string} query
    */
   setQuery(query) {
+    this._prompt.focus();
     this._prompt.setText(query);
     this._queryChanged();
     this._prompt.autoCompleteSoon(true);
@@ -295,6 +296,7 @@ QuickOpen.FilteredListWidget = class extends UI.VBox {
     }
     if (!completion)
       return false;
+    this._prompt.focus();
     this._prompt.setText(completion);
     this._prompt.setDOMSelection(userEnteredText.length, completion.length);
     this._scheduleFilter();

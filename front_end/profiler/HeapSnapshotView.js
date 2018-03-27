@@ -342,7 +342,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._searchableView.updateSearchMatchesCount(this._searchResults.length);
     if (this._searchResults.length)
       this._currentSearchResultIndex = nextQuery.jumpBackwards ? this._searchResults.length - 1 : 0;
-    return this._jumpToSearchResult(this._currentSearchResultIndex);
+    await this._jumpToSearchResult(this._currentSearchResultIndex);
   }
 
   /**
@@ -372,6 +372,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   async _jumpToSearchResult(searchResultIndex) {
     this._searchableView.updateCurrentMatchIndex(searchResultIndex);
+    if (searchResultIndex === -1)
+      return;
     const node = await this._dataGrid.revealObjectByHeapSnapshotId(String(this._searchResults[searchResultIndex]));
     this._selectRevealedNode(node);
   }

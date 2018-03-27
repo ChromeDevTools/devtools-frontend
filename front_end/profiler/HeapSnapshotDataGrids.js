@@ -125,16 +125,9 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     if (!td)
       return;
     const node = td.heapSnapshotNode;
-
-    /**
-     * @this {Profiler.HeapSnapshotSortableDataGrid}
-     */
-    function revealInSummaryView() {
-      this._dataDisplayDelegate.showObject(node.snapshotNodeId, 'Summary');
-    }
-
-    if (node instanceof Profiler.HeapSnapshotRetainingObjectNode)
-      contextMenu.revealSection().appendItem(Common.UIString('Reveal in Summary view'), revealInSummaryView.bind(this));
+    contextMenu.revealSection().appendItem(ls`Reveal in Summary view`, () => {
+      this._dataDisplayDelegate.showObject(node.snapshotNodeId, ls`Summary`);
+    });
   }
 
   resetSortingCache() {

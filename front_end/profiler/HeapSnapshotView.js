@@ -167,6 +167,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._populate();
     this._searchThrottler = new Common.Throttler(0);
 
+    this.element.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this), true);
+
     for (const existingProfile of this._profiles())
       existingProfile.addEventListener(Profiler.ProfileHeader.Events.ProfileTitleChanged, this._updateControls, this);
   }
@@ -298,6 +300,16 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   /**
+   * @param {!Event} event
+   */
+  _handleContextMenuEvent(event) {
+    const contextMenu = new UI.ContextMenu(event);
+    if (this._dataGrid)
+      this._dataGrid.populateContextMenu(contextMenu, event);
+    contextMenu.show();
+  }
+
+  /**
    * @override
    * @param {!UI.SearchableView.SearchConfig} searchConfig
    * @param {boolean} shouldJump
@@ -425,15 +437,6 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   _profiles() {
     return this._profile.profileType().getProfiles();
-  }
-
-  /**
-   * @param {!UI.ContextMenu} contextMenu
-   * @param {!Event} event
-   */
-  populateContextMenu(contextMenu, event) {
-    if (this._dataGrid)
-      this._dataGrid.populateContextMenu(contextMenu, event);
   }
 
   /**

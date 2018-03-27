@@ -295,9 +295,6 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    */
   _handleContextMenuEvent(event) {
     const contextMenu = new UI.ContextMenu(event);
-    if (this.visibleView instanceof Profiler.HeapSnapshotView)
-      this.visibleView.populateContextMenu(contextMenu, event);
-
     if (this.panelSidebarElement().isSelfOrAncestor(event.srcElement)) {
       contextMenu.defaultSection().appendItem(
           Common.UIString('Load\u2026'), this._fileSelectorElement.click.bind(this._fileSelectorElement));

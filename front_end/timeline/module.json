@@ -255,7 +255,6 @@
         "TimelineFlameChartNetworkDataProvider.js",
         "TimelineFlameChartView.js",
         "TimelineHistoryManager.js",
-        "TimelineTreeModeView.js",
         "TimelineTreeView.js",
         "EventsTimelineTreeView.js",
         "TimelineUIUtils.js",

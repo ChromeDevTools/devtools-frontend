@@ -740,7 +740,6 @@ all_devtools_files = [
   "front_end/timeline/timelinePanel.css",
   "front_end/timeline/TimelinePanel.js",
   "front_end/timeline/timelineStatusDialog.css",
-  "front_end/timeline/TimelineTreeModeView.js",
   "front_end/timeline/TimelineTreeView.js",
   "front_end/timeline/TimelineUIUtils.js",
   "front_end/timeline/PerformanceMonitor.js",

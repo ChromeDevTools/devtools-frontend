@@ -428,15 +428,13 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._sectionBlocks =
         await this._rebuildSectionsForMatchedStyleRules(/** @type {!SDK.CSSMatchedStyles} */ (matchedStyles));
     let pseudoTypes = [];
-    const keys = new Set(matchedStyles.pseudoStyles().keys());
+    const keys = matchedStyles.pseudoTypes();
     if (keys.delete(Protocol.DOM.PseudoType.Before))
       pseudoTypes.push(Protocol.DOM.PseudoType.Before);
     pseudoTypes = pseudoTypes.concat(keys.valuesArray().sort());
     for (const pseudoType of pseudoTypes) {
       const block = Elements.SectionBlock.createPseudoTypeBlock(pseudoType);
-      const styles =
-          /** @type {!Array<!SDK.CSSStyleDeclaration>} */ (matchedStyles.pseudoStyles().get(pseudoType));
-      for (const style of styles) {
+      for (const style of matchedStyles.pseudoStyles(pseudoType)) {
         const section = new Elements.StylePropertiesSection(this, matchedStyles, style);
         block.sections.push(section);
       }

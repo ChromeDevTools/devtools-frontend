@@ -562,7 +562,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     } else {
       cssCompletions = SDK.cssMetadata().propertyValues(this.nameElement.textContent);
     }
-    const cssVariables = this._matchedStyles.cssVariables().sort(String.naturalOrderComparator);
+
+    const cssVariables = this._matchedStyles.availableCSSVariables(this.property.ownerStyle);
+    cssVariables.sort(String.naturalOrderComparator);
 
     this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);

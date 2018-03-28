@@ -96,6 +96,14 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   }
 
   /**
+   * @param {!PerfUI.FlameChart.Group} group
+   * @return {?Array<!SDK.TracingModel.Event>}
+   */
+  groupEvents(group) {
+    return group._events || null;
+  }
+
+  /**
    * @override
    * @param {number} entryIndex
    * @return {?string}
@@ -190,6 +198,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       return this._timelineData;
 
     this._timelineData = new PerfUI.FlameChart.TimelineData([], [], [], []);
+    this._selectedGroup = null;
     if (!this._model)
       return this._timelineData;
 
@@ -220,11 +229,12 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     const threads = this._model.virtualThreads();
     if (!Runtime.experiments.isEnabled('timelinePerFrameTrack')) {
       this._appendThreadTimelineData(
-          Common.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true);
+          Common.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true,
+          true /* selected */);
     } else {
       this._appendThreadTimelineData(
           Common.UIString('Page'), this._model.eventsForFrame(TimelineModel.TimelineModel.PageFrame.mainFrameId),
-          this._model.mainThreadAsyncEvents(), true);
+          this._model.mainThreadAsyncEvents(), true, true /* selected */);
       for (const frame of this._model.rootFrames()) {
         // Ignore top frame itself, since it should be part of page events.
         frame.children.forEach(this._appendFrameEvents.bind(this, 0));
@@ -253,6 +263,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._timelineData.markers = this._markers;
     this._flowEventIndexById.clear();
 
+    this._timelineData.selectedGroup = this._selectedGroup;
     return this._timelineData;
   }
 
@@ -320,11 +331,12 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @param {!Array<!SDK.TracingModel.Event>} syncEvents
    * @param {!Map<!TimelineModel.TimelineModel.AsyncEventGroup, !Array<!SDK.TracingModel.AsyncEvent>>} asyncEvents
    * @param {boolean=} forceExpanded
+   * @param {boolean=} selected
    */
-  _appendThreadTimelineData(threadTitle, syncEvents, asyncEvents, forceExpanded) {
+  _appendThreadTimelineData(threadTitle, syncEvents, asyncEvents, forceExpanded, selected) {
     const entryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
     this._appendAsyncEvents(asyncEvents);
-    this._appendSyncEvents(syncEvents, threadTitle, this._headerLevel1, entryType, forceExpanded);
+    this._appendSyncEvents(syncEvents, threadTitle, this._headerLevel1, entryType, forceExpanded, selected);
   }
 
   /**
@@ -333,8 +345,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {!Timeline.TimelineFlameChartDataProvider.EntryType} entryType
    * @param {boolean=} forceExpanded
+   * @param {boolean=} selected
    */
-  _appendSyncEvents(events, title, style, entryType, forceExpanded) {
+  _appendSyncEvents(events, title, style, entryType, forceExpanded, selected) {
     const isExtension = entryType === Timeline.TimelineFlameChartDataProvider.EntryType.ExtensionEvent;
     const openEvents = [];
     const flowEventsEnabled = Runtime.experiments.isEnabled('timelineFlowEvents');
@@ -366,7 +379,10 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
         e._blackboxRoot = true;
       }
       if (title) {
-        this._appendHeader(title, style, forceExpanded);
+        const group = this._appendHeader(title, style, forceExpanded, true /* selectable */);
+        group._events = events;
+        if (selected)
+          this._selectedGroup = group;
         title = '';
       }
 
@@ -424,7 +440,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       if (!events)
         continue;
       const title = Timeline.TimelineUIUtils.titleForAsyncEventGroup(group);
-      this._appendAsyncEventsGroup(title, events, this._headerLevel1, entryType);
+      this._appendAsyncEventsGroup(title, events, this._headerLevel1, entryType, true /* selectable */);
     }
   }
 
@@ -433,17 +449,19 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @param {!Array<!SDK.TracingModel.AsyncEvent>} events
    * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {!Timeline.TimelineFlameChartDataProvider.EntryType} entryType
+   * @param {boolean=} selectable
    */
-  _appendAsyncEventsGroup(header, events, style, entryType) {
+  _appendAsyncEventsGroup(header, events, style, entryType, selectable) {
     const lastUsedTimeByLevel = [];
-    let groupHeaderAppended = false;
+    let group;
     for (let i = 0; i < events.length; ++i) {
       const asyncEvent = events[i];
       if (!this._isVisible(asyncEvent))
         continue;
-      if (!groupHeaderAppended) {
-        this._appendHeader(header, style);
-        groupHeaderAppended = true;
+      if (!group) {
+        group = this._appendHeader(header, style, false /* expanded */, selectable);
+        if (selectable)
+          group._events = TimelineModel.TimelineModel.buildNestableSyncEventsFromAsync(events);
       }
       const startTime = asyncEvent.startTime;
       let level;
@@ -779,7 +797,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
 
     this._appendHeader(entry.title, this._headerLevel1);
     for (const thread of allThreads) {
-      this._appendAsyncEventsGroup(thread.name(), thread.asyncEvents(), this._headerLevel2, entryType);
+      this._appendAsyncEventsGroup(
+          thread.name(), thread.asyncEvents(), this._headerLevel2, entryType, true /* selectable */);
       this._appendSyncEvents(thread.events(), thread.name(), this._headerLevel2, entryType, false);
     }
   }
@@ -788,9 +807,14 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
    * @param {string} title
    * @param {!PerfUI.FlameChart.GroupStyle} style
    * @param {boolean=} expanded
+   * @param {boolean=} selectable
+   * @return {!PerfUI.FlameChart.Group}
    */
-  _appendHeader(title, style, expanded) {
-    this._timelineData.groups.push({startLevel: this._currentLevel, name: title, expanded: expanded, style: style});
+  _appendHeader(title, style, expanded, selectable) {
+    const group =
+        {startLevel: this._currentLevel, name: title, expanded: expanded, style: style, selectable: selectable};
+    this._timelineData.groups.push(group);
+    return group;
   }
 
   /**

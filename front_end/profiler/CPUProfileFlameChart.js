@@ -439,6 +439,14 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
   }
 
   /**
+   * @override
+   * @param {!PerfUI.FlameChart} flameChart
+   * @param {?PerfUI.FlameChart.Group} group
+   */
+  updateSelectedGroup(flameChart, group) {
+  }
+
+  /**
    * @param {number} timeLeft
    * @param {number} timeRight
    */

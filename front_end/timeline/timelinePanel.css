@@ -340,10 +340,10 @@
 .timeline-details-view-block {
     flex: none;
     display: flex;
-    background-color: white;
+    background-color: var(--toolbar-bg-color);
     flex-direction: column;
     padding-bottom: 5px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: var(--divider-border);
 }
 
 .timeline-details-view-row {
@@ -634,7 +634,7 @@
 
 .timeline-stack-view-header {
     height: 27px;
-    background-color: white;
+    background-color: var(--toolbar-bg-color);
     padding: 6px 10px;
     color: #5a5a5a;
     white-space: nowrap;

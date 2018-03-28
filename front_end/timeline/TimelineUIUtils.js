@@ -1055,32 +1055,12 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineModel} model
-   * @param {number} startTime
-   * @param {number} endTime
-   * @return {!DocumentFragment}
-   */
-  static buildRangeStats(model, startTime, endTime) {
-    const aggregatedStats = Timeline.TimelineUIUtils.statsForTimeRange(model, startTime, endTime);
-    const startOffset = startTime - model.minimumRecordTime();
-    const endOffset = endTime - model.minimumRecordTime();
-
-    const contentHelper = new Timeline.TimelineDetailsContentHelper(null, null);
-    contentHelper.addSection(
-        Common.UIString('Range:  %s \u2013 %s', Number.millisToString(startOffset), Number.millisToString(endOffset)));
-    const pieChart = Timeline.TimelineUIUtils.generatePieChart(aggregatedStats);
-    contentHelper.appendElementRow('', pieChart);
-    return contentHelper.fragment;
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineModel} model
+   * @param {!Array<!SDK.TracingModel.Event>} events
    * @param {number} startTime
    * @param {number} endTime
    * @return {!Object<string, number>}
    */
-  static statsForTimeRange(model, startTime, endTime) {
-    const events = model.mainThreadEvents();
+  static statsForTimeRange(events, startTime, endTime) {
     const symbol = Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol;
     Timeline.TimelineUIUtils._buildRangeStatsCacheIfNeeded(events);
 

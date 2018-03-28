@@ -42,6 +42,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkFlameChart = new PerfUI.FlameChart(
         this._networkDataProvider, this, this._networkFlameChartGroupExpansionSetting);
     this._networkFlameChart.alwaysShowVerticalScroll();
+    this._networkFlameChart.disableRangeSelection();
 
     this._networkPane = new UI.VBox();
     this._networkPane.setMinimumSize(23, 23);
@@ -79,6 +80,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._nextExtensionIndex = 0;
 
     this._boundRefresh = this._refresh.bind(this);
+    this._selectedEventsTrack = null;
 
     this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
     this._groupBySetting =
@@ -136,25 +138,43 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
 
   /**
    * @override
+   * @param {!PerfUI.FlameChart} flameChart
+   * @param {?PerfUI.FlameChart.Group} group
+   */
+  updateSelectedGroup(flameChart, group) {
+    if (flameChart !== this._mainFlameChart)
+      return;
+    const events = group ? this._mainDataProvider.groupEvents(group) : null;
+    this._selectedEventsTrack = events;
+    this._updateEventsTrack();
+  }
+
+  /**
+   * @override
    * @param {?Timeline.PerformanceModel} model
    */
   setModel(model) {
+    if (model === this._model)
+      return;
     const extensionDataAdded = Timeline.PerformanceModel.Events.ExtensionDataAdded;
     if (this._model)
       this._model.removeEventListener(extensionDataAdded, this._appendExtensionData, this);
     this._model = model;
+    this._selectedEventsTrack = null;
     if (this._model)
       this._model.addEventListener(extensionDataAdded, this._appendExtensionData, this);
     this._mainDataProvider.setModel(this._model);
     this._networkDataProvider.setModel(this._model);
-    this._countersView.setModel(this._model);
-    this._detailsView.setModel(this._model);
     this._updateColorMapper();
-
+    this._updateEventsTrack();
     this._nextExtensionIndex = 0;
     this._appendExtensionData();
-
     this._refresh();
+  }
+
+  _updateEventsTrack() {
+    this._countersView.setModel(this._model, this._selectedEventsTrack);
+    this._detailsView.setModel(this._model, this._selectedEventsTrack);
   }
 
   _refresh() {

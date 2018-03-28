@@ -856,10 +856,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
   /**
    * @override
+   * @param {?Array<!SDK.TracingModel.Event>} events
    * @param {number} time
    */
-  selectEntryAtTime(time) {
-    const events = this._performanceModel ? this._performanceModel.timelineModel().mainThreadEvents() : [];
+  selectEntryAtTime(events, time) {
+    if (!events)
+      return;
     // Find best match, then backtrack to the first visible entry.
     for (let index = events.upperBound(time, (time, event) => time - event.startTime) - 1; index >= 0; --index) {
       const event = events[index];
@@ -1123,8 +1125,9 @@ Timeline.TimelineModeView.prototype = {
 
   /**
    * @param {?Timeline.PerformanceModel} model
+   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
    */
-  setModel(model) {},
+  setModel(model, eventsTrack) {},
 
   /**
    * @param {number} startTime
@@ -1161,14 +1164,15 @@ Timeline.TimelineModeViewDelegate.prototype = {
   select(selection) {},
 
   /**
+   * @param {?Array<!SDK.TracingModel.Event>} events
    * @param {number} time
    */
-  selectEntryAtTime(time) {},
+  selectEntryAtTime(events, time) {},
 
   /**
    * @param {?SDK.TracingModel.Event} event
    */
-  highlightEvent(event) {}
+  highlightEvent(event) {},
 };
 
 /**

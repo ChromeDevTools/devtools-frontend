@@ -11,6 +11,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     super();
     /** @type {?Timeline.PerformanceModel} */
     this._model = null;
+    /** @type {?Array<!SDK.TracingModel.Event>} */
+    this._eventsTrack = null;
     /** @type {?TimelineModel.TimelineProfileTree.Node} */
     this._tree = null;
     this.element.classList.add('timeline-tree-view');
@@ -37,10 +39,11 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @param {?Timeline.PerformanceModel} model
+   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
    */
-  setModel(model) {
+  setModel(model, eventsTrack) {
     this._model = model;
-    this._updateThreadsData();
+    this._eventsTrack = eventsTrack;
     this.refreshTree();
   }
 
@@ -130,11 +133,6 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @param {!UI.Toolbar} toolbar
    */
   populateToolbar(toolbar) {
-    this._threadSelector = new UI.ToolbarSettingComboBox([], this._currentThreadSetting);
-    this._threadSelector.setVisible(false);
-    this._threadSelector.setMaxWidth(230);
-    toolbar.appendToolbarItem(this._threadSelector);
-
     this._textFilterUI = new UI.ToolbarInput(Common.UIString('Filter'));
     this._textFilterUI.addEventListener(UI.ToolbarInput.Event.TextChanged, textFilterChanged, this);
     toolbar.appendToolbarItem(this._textFilterUI);
@@ -153,38 +151,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @return {!Array<!SDK.TracingModel.Event>}
    */
   _modelEvents() {
-    if (!this._model || this._threadSelector.size() === 0)
-      return [];
-    return this._threadEvents[Number(this._currentThreadSetting.get())];
-  }
-
-  _updateThreadsData() {
-    if (!this._model)
-      return;
-    const options = [{value: '0', label: ls`Main`, title: ls`Main`}];
-    this._threadEvents = [this._model.timelineModel().mainThreadEvents()];
-
-    const userTimingGroup = TimelineModel.TimelineModel.AsyncEventGroup.userTiming;
-    const mainThreadAsyncEvents = this._model.timelineModel().mainThreadAsyncEvents();
-    const userTimingEvents =
-        TimelineModel.TimelineModel.buildNestableSyncEventsFromAsync(mainThreadAsyncEvents.get(userTimingGroup) || []);
-    if (userTimingEvents.length) {
-      const userTimingTitle = Timeline.TimelineUIUtils.titleForAsyncEventGroup(userTimingGroup);
-      options.push({value: '1', label: userTimingTitle, title: userTimingTitle});
-      this._threadEvents.push(userTimingEvents);
-    }
-
-    for (const thread of this._model.timelineModel().virtualThreads()) {
-      if (!thread.name)
-        continue;
-      if (!thread.events.some(e => SDK.TracingModel.isTopLevelEvent(e)))
-        continue;
-      options.push({value: String(this._threadEvents.length), label: thread.name, title: thread.name});
-      this._threadEvents.push(thread.events);
-    }
-
-    this._threadSelector.setOptions(options);
-    this._threadSelector.setVisible(this._threadEvents.length > 1);
+    return this._eventsTrack || [];
   }
 
   /**
@@ -662,10 +629,11 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
    * @override
    * @param {?Timeline.PerformanceModel} model
+   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
    */
-  setModel(model) {
+  setModel(model, eventsTrack) {
     this._badgePool.reset();
-    super.setModel(model);
+    super.setModel(model, eventsTrack);
   }
 
   /**

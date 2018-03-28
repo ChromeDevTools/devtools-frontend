@@ -57,6 +57,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
         this._endRangeSelection.bind(this), 'text', null);
 
     this._alwaysShowVerticalScroll = false;
+    this._rangeSelectionEnabled = true;
     this._vScrollElement = this.contentElement.createChild('div', 'chart-viewport-v-scroll');
     this._vScrollContent = this._vScrollElement.createChild('div');
     this._vScrollElement.addEventListener('scroll', this._onScroll.bind(this), false);
@@ -72,6 +73,13 @@ PerfUI.ChartViewport = class extends UI.VBox {
   alwaysShowVerticalScroll() {
     this._alwaysShowVerticalScroll = true;
     this._vScrollElement.classList.add('always-show-scrollbar');
+  }
+
+  disableRangeSelection() {
+    this._rangeSelectionEnabled = false;
+    this._rangeSelectionStart = null;
+    this._rangeSelectionEnd = null;
+    this._updateRangeSelectionOverlay();
   }
 
   /**
@@ -109,8 +117,8 @@ PerfUI.ChartViewport = class extends UI.VBox {
   reset() {
     this._vScrollElement.scrollTop = 0;
     this._scrollTop = 0;
-    this._rangeSelectionStart = 0;
-    this._rangeSelectionEnd = 0;
+    this._rangeSelectionStart = null;
+    this._rangeSelectionEnd = null;
     this._isDragging = false;
     this._dragStartPointX = 0;
     this._dragStartPointY = 0;
@@ -234,7 +242,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @return {boolean}
    */
   _startRangeSelection(event) {
-    if (!event.shiftKey)
+    if (!event.shiftKey || !this._rangeSelectionEnabled)
       return false;
     this._isDragging = true;
     this._selectionOffsetShiftX = event.offsetX - event.pageX;
@@ -250,10 +258,36 @@ PerfUI.ChartViewport = class extends UI.VBox {
 
   _endRangeSelection() {
     this._isDragging = false;
+    this._selectionStartX = null;
   }
 
   hideRangeSelection() {
     this._selectionOverlay.classList.add('hidden');
+    this._rangeSelectionStart = null;
+    this._rangeSelectionEnd = null;
+  }
+
+  /**
+   * @param {number} startTime
+   * @param {number} endTime
+   */
+  setRangeSelection(startTime, endTime) {
+    if (!this._rangeSelectionEnabled)
+      return;
+    this._rangeSelectionStart = Math.min(startTime, endTime);
+    this._rangeSelectionEnd = Math.max(startTime, endTime);
+    this._updateRangeSelectionOverlay();
+    this._delegate.updateRangeSelection(this._rangeSelectionStart, this._rangeSelectionEnd);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  onClick(event) {
+    const time = this.pixelToTime(event.offsetX);
+    if (this._rangeSelectionStart !== null && time >= this._rangeSelectionStart && time <= this._rangeSelectionEnd)
+      return;
+    this.hideRangeSelection();
   }
 
   /**
@@ -263,10 +297,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     const x = Number.constrain(event.pageX + this._selectionOffsetShiftX, 0, this._offsetWidth);
     const start = this.pixelToTime(this._selectionStartX);
     const end = this.pixelToTime(x);
-    this._rangeSelectionStart = Math.min(start, end);
-    this._rangeSelectionEnd = Math.max(start, end);
-    this._updateRangeSelectionOverlay();
-    this._delegate.updateRangeSelection(this._rangeSelectionStart, this._rangeSelectionEnd);
+    this.setRangeSelection(start, end);
   }
 
   _updateRangeSelectionOverlay() {
@@ -442,6 +473,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
   }
 
   _update() {
+    this._updateRangeSelectionOverlay();
     this._delegate.update();
   }
 
@@ -450,7 +482,6 @@ PerfUI.ChartViewport = class extends UI.VBox {
    * @param {number} endTime
    */
   setWindowTimes(startTime, endTime) {
-    this.hideRangeSelection();
     if (this._muteAnimation || this._timeWindowLeft === 0 || this._timeWindowRight === Infinity ||
         (startTime === 0 && endTime === Infinity) || (startTime === Infinity && endTime === Infinity)) {
       // Initial setup.

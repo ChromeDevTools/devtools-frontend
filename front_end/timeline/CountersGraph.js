@@ -88,19 +88,20 @@ Timeline.CountersGraph = class extends UI.VBox {
   /**
    * @override
    * @param {?Timeline.PerformanceModel} model
+   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
    */
-  setModel(model) {
+  setModel(model, eventsTrack) {
     this._calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
     for (let i = 0; i < this._counters.length; ++i) {
       this._counters[i].reset();
       this._counterUI[i].reset();
     }
     this.scheduleRefresh();
-    if (!model)
+    this._eventsTrack = eventsTrack;
+    if (!eventsTrack)
       return;
-    const events = model.timelineModel().mainThreadEvents();
-    for (let i = 0; i < events.length; ++i) {
-      const event = events[i];
+    for (let i = 0; i < eventsTrack.length; ++i) {
+      const event = eventsTrack[i];
       if (event.name !== TimelineModel.TimelineModel.RecordType.UpdateCounters)
         continue;
 
@@ -207,7 +208,7 @@ Timeline.CountersGraph = class extends UI.VBox {
       }
     }
     if (bestTime !== undefined)
-      this._delegate.selectEntryAtTime(bestTime);
+      this._delegate.selectEntryAtTime(this._eventsTrack, bestTime);
   }
 
   /**

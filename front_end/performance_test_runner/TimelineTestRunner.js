@@ -187,7 +187,7 @@ PerformanceTestRunner.printTimelineRecordsWithDetails = function(name) {
 PerformanceTestRunner.walkTimelineEventTree = function(callback) {
   const performanceModel = PerformanceTestRunner.performanceModel();
   const view = new Timeline.EventsTimelineTreeView(UI.panels.timeline._filters, null);
-  view.setModel(performanceModel);
+  view.setModel(performanceModel, performanceModel.timelineModel().mainThreadEvents());
   const selection = Timeline.TimelineSelection.fromRange(
       performanceModel.timelineModel().minimumRecordTime(), performanceModel.timelineModel().maximumRecordTime());
   view.updateContents(selection);

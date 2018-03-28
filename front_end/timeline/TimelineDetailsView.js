@@ -51,13 +51,15 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
 
   /**
    * @param {?Timeline.PerformanceModel} model
+   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
    */
-  setModel(model) {
+  setModel(model, eventsTrack) {
     this._model = model;
+    this._eventsTrack = eventsTrack;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
     for (const view of this._rangeDetailViews.values())
-      view.setModel(model);
+      view.setModel(model, eventsTrack);
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
   }
@@ -223,8 +225,18 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {number} endTime
    */
   _updateSelectedRangeStats(startTime, endTime) {
-    if (this._model)
-      this._setContent(Timeline.TimelineUIUtils.buildRangeStats(this._model.timelineModel(), startTime, endTime));
+    if (!this._model || !this._eventsTrack)
+      return;
+    const aggregatedStats = Timeline.TimelineUIUtils.statsForTimeRange(this._eventsTrack, startTime, endTime);
+    const startOffset = startTime - this._model.timelineModel().minimumRecordTime();
+    const endOffset = endTime - this._model.timelineModel().minimumRecordTime();
+
+    const contentHelper = new Timeline.TimelineDetailsContentHelper(null, null);
+    contentHelper.addSection(
+        ls`Range:  ${Number.millisToString(startOffset)} \u2013 ${Number.millisToString(endOffset)}`);
+    const pieChart = Timeline.TimelineUIUtils.generatePieChart(aggregatedStats);
+    contentHelper.appendElementRow('', pieChart);
+    this._setContent(contentHelper.fragment);
   }
 };
 

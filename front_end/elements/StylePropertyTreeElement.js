@@ -141,6 +141,37 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   /**
+   * @param {string} text
+   * @return {!Node}
+   */
+  _processVar(text) {
+    const computedValue = this._matchedStyles.computeValue(this._style, text);
+    if (!computedValue)
+      return createTextNode(text);
+    const color = Common.Color.parse(computedValue);
+    if (!color) {
+      const node = createElement('span');
+      node.textContent = text;
+      node.title = computedValue;
+      return node;
+    }
+    if (!this._editable()) {
+      const swatch = InlineEditor.ColorSwatch.create();
+      swatch.setText(text, computedValue);
+      swatch.setColor(color);
+      return swatch;
+    }
+
+    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
+    const swatch = InlineEditor.ColorSwatch.create();
+    swatch.setColor(color);
+    swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
+    swatch.setText(text, computedValue);
+    new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
+    return swatch;
+  }
+
+  /**
    * @return {string}
    */
   renderedPropertyText() {
@@ -357,6 +388,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     const propertyRenderer =
         new Elements.StylesSidebarPropertyRenderer(this._style.parentRule, this.node(), this.name, this.value);
     if (this.property.parsedOk) {
+      propertyRenderer.setVarHandler(this._processVar.bind(this));
       propertyRenderer.setColorHandler(this._processColor.bind(this));
       propertyRenderer.setBezierHandler(this._processBezier.bind(this));
       propertyRenderer.setShadowHandler(this._processShadow.bind(this));
@@ -364,6 +396,8 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     this.listItemElement.removeChildren();
     this.nameElement = propertyRenderer.renderName();
+    if (this.property.name.startsWith('--'))
+      this.nameElement.title = this._matchedStyles.computeCSSVariable(this._style, this.property.name) || '';
     this.valueElement = propertyRenderer.renderValue();
     if (!this.treeOutline)
       return;

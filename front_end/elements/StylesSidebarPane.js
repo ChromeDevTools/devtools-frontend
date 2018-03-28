@@ -2232,6 +2232,8 @@ Elements.StylesSidebarPropertyRenderer = class {
     this._bezierHandler = null;
     /** @type {?function(string, string):!Node} */
     this._shadowHandler = null;
+    /** @type {?function(string):!Node} */
+    this._varHandler = createTextNode;
   }
 
   /**
@@ -2253,6 +2255,13 @@ Elements.StylesSidebarPropertyRenderer = class {
    */
   setShadowHandler(handler) {
     this._shadowHandler = handler;
+  }
+
+  /**
+   * @param {function(string):!Node} handler
+   */
+  setVarHandler(handler) {
+    this._varHandler = handler;
   }
 
   /**
@@ -2284,7 +2293,7 @@ Elements.StylesSidebarPropertyRenderer = class {
     }
 
     const regexes = [SDK.CSSMetadata.VariableRegex, SDK.CSSMetadata.URLRegex];
-    const processors = [createTextNode, this._processURL.bind(this)];
+    const processors = [this._varHandler, this._processURL.bind(this)];
     if (this._bezierHandler && SDK.cssMetadata().isBezierAwareProperty(this._propertyName)) {
       regexes.push(UI.Geometry.CubicBezier.Regex);
       processors.push(this._bezierHandler);

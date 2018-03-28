@@ -80,8 +80,8 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
   setColor(color) {
     this._color = color;
     this._format = this._color.format();
-    const colorString = this._color.asString(this._format);
-    this._colorValueElement.textContent = colorString;
+    const colorString = /** @type {string} */ (this._color.asString(this._format));
+    this.setText(colorString);
     this._swatchInner.style.backgroundColor = colorString;
   }
 
@@ -90,6 +90,15 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
    */
   hideText(hide) {
     this._colorValueElement.hidden = hide;
+  }
+
+  /**
+   * @param {string} text
+   * @param {string=} tooltip
+   */
+  setText(text, tooltip) {
+    this._colorValueElement.textContent = text;
+    this._colorValueElement.title = tooltip;
   }
 
   /**
@@ -104,7 +113,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
    */
   setFormat(format) {
     this._format = format;
-    this._colorValueElement.textContent = this._color.asString(this._format);
+    this.setText(this._color.asString(this._format));
   }
 
   toggleNextFormat() {
@@ -113,7 +122,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
       this._format = InlineEditor.ColorSwatch._nextColorFormat(this._color, this._format);
       currentValue = this._color.asString(this._format);
     } while (currentValue === this._colorValueElement.textContent);
-    this._colorValueElement.textContent = currentValue;
+    this.setText(currentValue);
   }
 
   /**

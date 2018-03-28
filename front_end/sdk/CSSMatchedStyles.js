@@ -350,6 +350,26 @@ SDK.CSSMatchedStyles = class {
 
   /**
    * @param {!SDK.CSSStyleDeclaration} style
+   * @param {string} variableName
+   * @return {?string}
+   */
+  computeCSSVariable(style, variableName) {
+    const domCascade = this._styleToDOMCascade.get(style) || null;
+    return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
+  }
+
+  /**
+   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {string} value
+   * @return {?string}
+   */
+  computeValue(style, value) {
+    const domCascade = this._styleToDOMCascade.get(style) || null;
+    return domCascade ? domCascade.computeValue(style, value) : null;
+  }
+
+  /**
+   * @param {!SDK.CSSStyleDeclaration} style
    * @return {boolean}
    */
   isInherited(style) {
@@ -434,8 +454,10 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
     this._nodeCascades = nodeCascades;
     /** @type {!Map<!SDK.CSSProperty, !SDK.CSSMatchedStyles.PropertyState>} */
     this._propertiesState = new Map();
-    /** @type {!Map<!SDK.CSSMatchedStyles.NodeCascade, !Set<string>>} */
+    /** @type {!Map<!SDK.CSSMatchedStyles.NodeCascade, !Map<string, string>>} */
     this._availableCSSVariables = new Map();
+    /** @type {!Map<!SDK.CSSMatchedStyles.NodeCascade, !Map<string, ?string>>} */
+    this._computedCSSVariables = new Map();
     this._initialized = false;
 
     /** @type {!Map<!SDK.CSSStyleDeclaration, !SDK.CSSMatchedStyles.NodeCascade>} */
@@ -455,7 +477,86 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
     if (!nodeCascade)
       return [];
     this._ensureInitialized();
-    return Array.from(this._availableCSSVariables.get(nodeCascade));
+    return Array.from(this._availableCSSVariables.get(nodeCascade).keys());
+  }
+
+  /**
+   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {string} variableName
+   * @return {?string}
+   */
+  computeCSSVariable(style, variableName) {
+    const nodeCascade = this._styleToNodeCascade.get(style);
+    if (!nodeCascade)
+      return null;
+    this._ensureInitialized();
+    const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
+    const computedCSSVariables = this._computedCSSVariables.get(nodeCascade);
+    return this._innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, variableName);
+  }
+
+  /**
+   * @param {!SDK.CSSStyleDeclaration} style
+   * @param {string} value
+   * @return {?string}
+   */
+  computeValue(style, value) {
+    const nodeCascade = this._styleToNodeCascade.get(style);
+    if (!nodeCascade)
+      return null;
+    this._ensureInitialized();
+    const availableCSSVariables = this._availableCSSVariables.get(nodeCascade);
+    const computedCSSVariables = this._computedCSSVariables.get(nodeCascade);
+    return this._innerComputeValue(availableCSSVariables, computedCSSVariables, value);
+  }
+
+  /**
+   * @param {!Map<string, string>} availableCSSVariables
+   * @param {!Map<string, ?string>} computedCSSVariables
+   * @param {string} variableName
+   * @return {?string}
+   */
+  _innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, variableName) {
+    if (!availableCSSVariables.has(variableName))
+      return null;
+    if (computedCSSVariables.has(variableName))
+      return computedCSSVariables.get(variableName);
+    // Set dummy value to avoid infinite recursion.
+    computedCSSVariables.set(variableName, null);
+    const definedValue = availableCSSVariables.get(variableName);
+    const computedValue = this._innerComputeValue(availableCSSVariables, computedCSSVariables, definedValue);
+    computedCSSVariables.set(variableName, computedValue);
+    return computedValue;
+  }
+
+  /**
+   * @param {!Map<string, string>} availableCSSVariables
+   * @param {!Map<string, ?string>} computedCSSVariables
+   * @param {string} value
+   * @return {?string}
+   */
+  _innerComputeValue(availableCSSVariables, computedCSSVariables, value) {
+    const results = TextUtils.TextUtils.splitStringByRegexes(value, [SDK.CSSMetadata.VariableRegex]);
+    const tokens = [];
+    for (const result of results) {
+      if (result.regexIndex === -1) {
+        tokens.push(result.value);
+        continue;
+      }
+      // process var() function
+      const regexMatch = result.value.match(/^var\((--[a-zA-Z0-9-_]+)[,]?\s*(.*)\)$/);
+      if (!regexMatch)
+        return null;
+      const cssVariable = regexMatch[1];
+      const computedValue = this._innerComputeCSSVariable(availableCSSVariables, computedCSSVariables, cssVariable);
+      if (computedValue === null && !regexMatch[2])
+        return null;
+      if (computedValue === null)
+        tokens.push(regexMatch[2]);
+      else
+        tokens.push(computedValue);
+    }
+    return tokens.map(token => token.trim()).join(' ');
   }
 
   /**
@@ -478,6 +579,7 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
     this._initialized = false;
     this._propertiesState.clear();
     this._availableCSSVariables.clear();
+    this._computedCSSVariables.clear();
   }
 
   _ensureInitialized() {
@@ -530,14 +632,17 @@ SDK.CSSMatchedStyles.DOMInheritanceCascade = class {
     }
 
     // Work inheritance chain backwards to compute visible CSS Variables.
-    const accumulatedCSSVariables = new Set();
+    const accumulatedCSSVariables = new Map();
     for (let i = this._nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this._nodeCascades[i];
-      for (const propertyName of nodeCascade._activeProperties.keys()) {
+      for (const entry of nodeCascade._activeProperties.entries()) {
+        const propertyName = /** @type {string} */ (entry[0]);
+        const property = /** @type {!SDK.CSSProperty} */ (entry[1]);
         if (propertyName.startsWith('--'))
-          accumulatedCSSVariables.add(propertyName);
+          accumulatedCSSVariables.set(propertyName, property.value);
       }
-      this._availableCSSVariables.set(nodeCascade, new Set(accumulatedCSSVariables));
+      this._availableCSSVariables.set(nodeCascade, new Map(accumulatedCSSVariables));
+      this._computedCSSVariables.set(nodeCascade, new Map());
     }
   }
 };

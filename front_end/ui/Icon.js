@@ -240,6 +240,7 @@ UI.Icon.Descriptors = {
   'largeicon-step-over': {position: 'c1', spritesheet: 'largeicons', isMask: true},
   'largeicon-step': {position: 'h1', spritesheet: 'largeicons', isMask: true},
   'largeicon-stop-recording': {position: 'd1', spritesheet: 'largeicons', isMask: true},
+  'largeicon-terminate-execution': {position: 'h2', spritesheet: 'largeicons', isMask: true},
   'largeicon-text-shadow': {position: 'e1', spritesheet: 'largeicons', isMask: true},
   'largeicon-trash-bin': {position: 'f1', spritesheet: 'largeicons', isMask: true},
   'largeicon-undo': {position: 'h7', spritesheet: 'largeicons', isMask: true},

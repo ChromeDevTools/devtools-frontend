@@ -509,6 +509,13 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     this._hasSideEffectSupport = supports;
     return supports;
   }
+
+  /**
+   * @return {!Promise}
+   */
+  terminateExecution() {
+    return this._agent.invoke_terminateExecution({});
+  }
 };
 
 SDK.SDKModel.register(SDK.RuntimeModel, SDK.Target.Capability.JS, true);

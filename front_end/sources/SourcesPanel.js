@@ -610,6 +610,17 @@ Sources.SourcesPanel = class extends UI.Panel {
   }
 
   /**
+   * @param {!Common.Event} event
+   */
+  _terminateExecution(event) {
+    const debuggerModel = this._prepareToResume();
+    if (!debuggerModel)
+      return;
+    debuggerModel.runtimeModel().terminateExecution();
+    debuggerModel.resume();
+  }
+
+  /**
    * @return {boolean}
    */
   _stepOver() {
@@ -693,7 +704,11 @@ Sources.SourcesPanel = class extends UI.Panel {
     const longResumeButton =
         new UI.ToolbarButton(Common.UIString('Resume with all pauses blocked for 500 ms'), 'largeicon-play');
     longResumeButton.addEventListener(UI.ToolbarButton.Events.Click, this._longResume, this);
-    debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._togglePauseAction, [longResumeButton], []));
+    const terminateExecutionButton =
+        new UI.ToolbarButton(ls`Terminate current JavaScript call`, 'largeicon-terminate-execution');
+    terminateExecutionButton.addEventListener(UI.ToolbarButton.Events.Click, this._terminateExecution, this);
+    debugToolbar.appendToolbarItem(
+        UI.Toolbar.createActionButton(this._togglePauseAction, [terminateExecutionButton, longResumeButton], []));
 
     if (Runtime.experiments.isEnabled('stepIntoAsync')) {
       debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));

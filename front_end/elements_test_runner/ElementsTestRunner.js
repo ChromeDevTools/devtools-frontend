@@ -291,6 +291,10 @@ ElementsTestRunner.selectNodeAndWaitForStyles = function(idValue, callback) {
   }
 };
 
+ElementsTestRunner.selectNodeAndWaitForStylesPromise = function(idValue) {
+  return new Promise(x => ElementsTestRunner.selectNodeAndWaitForStyles(idValue, x));
+};
+
 ElementsTestRunner.selectPseudoElementAndWaitForStyles = function(parentId, pseudoType, callback) {
   callback = TestRunner.safeWrap(callback);
   let targetNode;

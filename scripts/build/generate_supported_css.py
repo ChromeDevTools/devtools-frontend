@@ -63,14 +63,14 @@ def properties_from_file(file_name):
         doc = _json5_load(json5_file.read())
 
     properties = []
-    propertyNames = set()
+    property_names = {}
     for entry in doc["data"]:
         if type(entry) is str:
             entry = {"name": entry}
         if "alias_for" in entry:
             continue
         properties.append(_keep_only_required_keys(entry))
-        propertyNames.add(entry["name"])
+        property_names[entry["name"]] = entry
 
     properties.sort(key=lambda entry: entry["name"])
 
@@ -81,11 +81,17 @@ def properties_from_file(file_name):
             continue
         if type(longhands) is str:
             longhands = longhands.split(";")
-        longhands = [longhand for longhand in longhands if longhand in propertyNames]
+        longhands = [longhand for longhand in longhands if longhand in property_names]
         if not longhands:
             del property["longhands"]
         else:
             property["longhands"] = longhands
+        all_inherited = True
+        for longhand in longhands:
+            longhand_property = property_names[longhand]
+            all_inherited = all_inherited and ("inherited" in longhand_property) and longhand_property["inherited"]
+        if all_inherited:
+            property["inherited"] = True
 
     return properties
 

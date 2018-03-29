@@ -172,17 +172,12 @@ UI.SuggestBox = class {
       this._suggestBoxDelegate.applySuggestion(this._onlyCompletion, isIntermediateSuggestion);
       return true;
     }
-
-    if (!this.visible() || !this._list.selectedItem())
-      return false;
-
-    const suggestion = this._list.selectedItem().text;
-    if (!suggestion)
-      return false;
-
-    UI.ARIAUtils.alert(ls`${suggestion}, suggestion`, this._element);
+    const suggestion = this._list.selectedItem() ? this._list.selectedItem().text : '';
+    if (suggestion)
+      UI.ARIAUtils.alert(ls`${suggestion}, suggestion`, this._element);
     this._suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
-    return true;
+
+    return this.visible() && !!suggestion;
   }
 
   /**
@@ -265,8 +260,6 @@ UI.SuggestBox = class {
       if (fromElement || this._userInteracted || !this._defaultSelectionIsDimmed)
         toElement.classList.add('force-white-icons');
     }
-    if (!to)
-      return;
     this._applySuggestion(true);
   }
 
@@ -333,6 +326,8 @@ UI.SuggestBox = class {
           }
         }
         this._list.selectItem(highestPriorityItem, true);
+      } else {
+        this._list.selectItem(null);
       }
     } else {
       if (completions.length === 1) {

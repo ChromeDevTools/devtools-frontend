@@ -360,7 +360,7 @@ UI.TextPrompt = class extends Common.Object {
   }
 
   _refreshGhostText() {
-    if (this._queryRange && this._isCaretAtEndOfPrompt() &&
+    if (this._queryRange && this._currentSuggestion && this._isCaretAtEndOfPrompt() &&
         this._currentSuggestion.startsWith(this.text().substring(this._queryRange.startColumn))) {
       this._ghostTextElement.textContent =
           this._currentSuggestion.substring(this._queryRange.endColumn - this._queryRange.startColumn);
@@ -391,9 +391,8 @@ UI.TextPrompt = class extends Common.Object {
 
   /**
    * @param {boolean=} force
-   * @param {boolean=} reverse
    */
-  complete(force, reverse) {
+  async complete(force) {
     this._clearAutocompleteTimeout();
     const selection = this._element.getComponentSelection();
     const selectionRange = selection && selection.rangeCount ? selection.getRangeAt(0) : null;
@@ -402,18 +401,11 @@ UI.TextPrompt = class extends Common.Object {
 
     let shouldExit;
 
-    if (!force && !this._isCaretAtEndOfPrompt() && !this._isSuggestBoxVisible()) {
+    if (!force && !this._isCaretAtEndOfPrompt() && !this._isSuggestBoxVisible())
       shouldExit = true;
-    } else if (!selection.isCollapsed) {
+    else if (!selection.isCollapsed)
       shouldExit = true;
-    } else if (!force) {
-      // BUG72018: Do not show suggest box if caret is followed by a non-stop character.
-      const wordSuffixRange = selectionRange.startContainer.rangeOfWord(
-          selectionRange.endOffset, this._completionStopCharacters, this._element, 'forward');
-      const autocompleteTextLength = this._ghostTextElement.parentNode ? this._ghostTextElement.textContent.length : 0;
-      if (wordSuffixRange.toString().length !== autocompleteTextLength)
-        shouldExit = true;
-    }
+
     if (shouldExit) {
       this.clearAutocomplete();
       return;
@@ -425,9 +417,9 @@ UI.TextPrompt = class extends Common.Object {
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);
     expressionRange.setStartBefore(this._proxyElement);
-    this._loadCompletions(expressionRange.toString(), wordQueryRange.toString(), !!force)
-        .then(this._completionsReady.bind(
-            this, ++this._completionRequestId, selection, wordQueryRange, !!reverse, !!force));
+    const completionRequestId = ++this._completionRequestId;
+    const completions = await this._loadCompletions(expressionRange.toString(), wordQueryRange.toString(), !!force);
+    this._completionsReady(completionRequestId, selection, wordQueryRange, !!force, completions);
   }
 
   disableDefaultSuggestionForEmptyInput() {
@@ -470,11 +462,10 @@ UI.TextPrompt = class extends Common.Object {
    * @param {number} completionRequestId
    * @param {!Selection} selection
    * @param {!Range} originalWordQueryRange
-   * @param {boolean} reverse
    * @param {boolean} force
    * @param {!UI.SuggestBox.Suggestions} completions
    */
-  _completionsReady(completionRequestId, selection, originalWordQueryRange, reverse, force, completions) {
+  _completionsReady(completionRequestId, selection, originalWordQueryRange, force, completions) {
     if (this._completionRequestId !== completionRequestId)
       return;
 
@@ -525,8 +516,6 @@ UI.TextPrompt = class extends Common.Object {
    * @param {boolean=} isIntermediateSuggestion
    */
   applySuggestion(suggestion, isIntermediateSuggestion) {
-    if (!this._queryRange)
-      return;
     this._currentSuggestion = suggestion;
     this._refreshGhostText();
     if (isIntermediateSuggestion)

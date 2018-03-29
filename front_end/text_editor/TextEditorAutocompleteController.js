@@ -266,7 +266,7 @@ TextEditor.TextEditorAutocompleteController = class {
    */
   _setHint(hint) {
     const query = this._textEditor.text(this._queryRange);
-    if (!this._isCursorAtEndOfLine() || !hint.startsWith(query)) {
+    if (!hint || !this._isCursorAtEndOfLine() || !hint.startsWith(query)) {
       this._clearHint();
       return;
     }

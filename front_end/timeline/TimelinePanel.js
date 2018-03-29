@@ -53,10 +53,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._recordReloadAction =
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('timeline.record-reload'));
 
-    if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
-      this._historyManager = null;
-    else
-      this._historyManager = new Timeline.TimelineHistoryManager();
+    this._historyManager = new Timeline.TimelineHistoryManager();
 
     /** @type {!Array<!TimelineModel.TimelineModelFilter>} */
     this._filters = [];
@@ -155,8 +152,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    */
   willHide() {
     UI.context.setFlavor(Timeline.TimelinePanel, null);
-    if (this._historyManager)
-      this._historyManager.cancelIfShowing();
+    this._historyManager.cancelIfShowing();
   }
 
   /**
@@ -230,10 +226,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(this._saveButton);
 
     // History
-    if (this._historyManager) {
-      this._panelToolbar.appendSeparator();
-      this._panelToolbar.appendToolbarItem(this._historyManager.button());
-    }
+    this._panelToolbar.appendSeparator();
+    this._panelToolbar.appendToolbarItem(this._historyManager.button());
     this._panelToolbar.appendSeparator();
 
     // View
@@ -389,8 +383,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @return {boolean}
    */
   _navigateHistory(direction) {
-    if (!this._historyManager)
-      return true;
     const model = this._historyManager.navigate(direction);
     if (model && model !== this._performanceModel)
       this._setModel(model);
@@ -534,8 +526,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._toggleRecordAction.setToggled(this._state === state.Recording);
     this._toggleRecordAction.setEnabled(this._state === state.Recording || this._state === state.Idle);
     this._recordReloadAction.setEnabled(this._state === state.Idle);
-    if (this._historyManager)
-      this._historyManager.setEnabled(this._state === state.Idle);
+    this._historyManager.setEnabled(this._state === state.Idle);
     this._clearButton.setEnabled(this._state === state.Idle);
     this._panelToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
@@ -562,8 +553,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _onClearButton() {
-    if (this._historyManager)
-      this._historyManager.clear();
+    this._historyManager.clear();
     this._clear();
   }
 
@@ -581,8 +571,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {?Timeline.PerformanceModel} model
    */
   _setModel(model) {
-    if (this._performanceModel && !this._historyManager)
-      this._performanceModel.dispose();
     this._performanceModel = model;
     this._flameChart.setModel(model);
 
@@ -747,8 +735,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     performanceModel.setTracingModel(tracingModel);
     this._setModel(performanceModel);
-    if (this._historyManager)
-      this._historyManager.addRecording(performanceModel);
+    this._historyManager.addRecording(performanceModel);
   }
 
   _showRecordingStarted() {
@@ -1320,13 +1307,9 @@ Timeline.TimelinePanel.ActionDelegate = class {
         panel._showHistory();
         return true;
       case 'timeline.previous-recording':
-        if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
-          return false;
         panel._navigateHistory(1);
         return true;
       case 'timeline.next-recording':
-        if (!Runtime.experiments.isEnabled('timelineKeepHistory'))
-          return false;
         panel._navigateHistory(-1);
         return true;
     }

@@ -124,7 +124,6 @@ Main.Main = class {
     Runtime.experiments.register('timelineEventInitiators', 'Timeline: event initiators');
     Runtime.experiments.register('timelineFlowEvents', 'Timeline: flow events', true);
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
-    Runtime.experiments.register('timelineKeepHistory', 'Timeline: keep recording history');
     Runtime.experiments.register('timelinePaintTimingMarkers', 'Timeline: paint timing markers', true);
     Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);
     Runtime.experiments.register('timelineShowAllProcesses', 'Timeline: show all processes', true);
@@ -142,8 +141,7 @@ Main.Main = class {
         Runtime.experiments.enableForTest('networkSearch');
     }
 
-    Runtime.experiments.setDefaultExperiments(
-        ['colorContrastRatio', 'stepIntoAsync', 'timelineKeepHistory', 'oopifInlineDOM']);
+    Runtime.experiments.setDefaultExperiments(['colorContrastRatio', 'stepIntoAsync', 'oopifInlineDOM']);
   }
 
   /**

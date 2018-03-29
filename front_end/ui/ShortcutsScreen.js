@@ -165,15 +165,13 @@ UI.ShortcutsScreen = class {
         UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-previous-frame')
             .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.jump-to-next-frame')),
         Common.UIString('Jump to previous/next frame'));
-    if (Runtime.experiments.isEnabled('timelineKeepHistory')) {
-      section.addRelatedKeys(
-          UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.show-history'),
-          Common.UIString('Pick a recording from history'));
-      section.addRelatedKeys(
-          UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.previous-recording')
-              .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.next-recording')),
-          Common.UIString('Show previous/next recording'));
-    }
+    section.addRelatedKeys(
+        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.show-history'),
+        Common.UIString('Pick a recording from history'));
+    section.addRelatedKeys(
+        UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.previous-recording')
+            .concat(UI.shortcutRegistry.shortcutDescriptorsForAction('timeline.next-recording')),
+        Common.UIString('Show previous/next recording'));
 
     // Memory panel
     section = UI.shortcutsScreen.section(Common.UIString('Memory Panel'));

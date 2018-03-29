@@ -167,7 +167,6 @@
             "className": "Timeline.TimelinePanel.ActionDelegate",
             "category": "Performance",
             "title": "Show recent timeline sessions",
-            "experiment": "timelineKeepHistory",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
@@ -195,7 +194,6 @@
             "type": "action",
             "actionId": "timeline.previous-recording",
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "experiment": "timelineKeepHistory",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],
@@ -214,7 +212,6 @@
             "type": "action",
             "actionId": "timeline.next-recording",
             "className": "Timeline.TimelinePanel.ActionDelegate",
-            "experiment": "timelineKeepHistory",
             "contextTypes": [
                 "Timeline.TimelinePanel"
             ],

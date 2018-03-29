@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 Search.SearchView = class extends UI.VBox {
-  constructor() {
+  /**
+   * @param {string} settingKey
+   */
+  constructor(settingKey) {
     super(true);
     this.setMinimumSize(0, 40);
     this.registerRequiredCSS('search/searchView.css');
@@ -38,12 +41,25 @@ Search.SearchView = class extends UI.VBox {
     this._searchResultsElement.className = 'search-results';
 
     const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
+    this._matchCaseButton = Search.SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
+    this._regexButton =
+        Search.SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
+    toolbar.appendSpacer();
+    const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
+    const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    toolbar.appendToolbarItem(refreshButton);
+    toolbar.appendToolbarItem(clearButton);
+    refreshButton.addEventListener(UI.ToolbarButton.Events.Click, this._onAction.bind(this));
+    clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => {
+      this._resetSearch();
+      this._onSearchInputClear();
+    });
 
     const searchContainer = this._searchPanelElement.createChild('div', 'search-container');
 
     this._search = UI.HistoryInput.create();
     searchContainer.appendChild(this._search);
-    this._search.placeholder = Common.UIString('Search all sources (use "file:" to filter by path)\u200e');
+    this._search.placeholder = Common.UIString('Search');
     this._search.setAttribute('type', 'text');
     this._search.classList.add('search-config-search');
     this._search.setAttribute('results', '0');
@@ -58,28 +74,14 @@ Search.SearchView = class extends UI.VBox {
     const cancelButtonContainer = searchContainer.createChild('div', 'search-cancel-button-container');
     cancelButtonContainer.appendChild(this._searchInputClearElement);
 
-    this._matchCaseButton = Search.SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
-    this._regexButton =
-        Search.SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
 
     const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
     this._searchMessageElement = searchStatusBarElement.createChild('div', 'search-message');
     this._searchProgressPlaceholderElement = searchStatusBarElement.createChild('div', 'flex-centered');
     this._searchResultsMessageElement = searchStatusBarElement.createChild('div', 'search-message');
 
-    this._scopesSelector = new UI.SegmentedButton();
-    this._scopesSelector.element.classList.add('search-scopes');
-    this._scopesSelector.show(this._searchPanelElement);
-
     this._advancedSearchConfig = Common.settings.createLocalSetting(
-        'advancedSearchConfig', new Search.SearchConfig(null, '', true, false).toPlainObject());
-
-    /** @type {!Map<string, !Runtime.Extension>} */
-    this._searchScopes = new Map();
-    this._defaultScope = Search.SearchView._readScopesExtenstions(this._scopesSelector, this._searchScopes);
-
-    if (this._searchScopes.size < 2)
-      this._scopesSelector.hideWidget();
+        settingKey + 'SearchConfig', new Search.SearchConfig('', true, false).toPlainObject());
 
     this._load();
     /** @type {?Search.SearchScope} */
@@ -101,60 +103,26 @@ Search.SearchView = class extends UI.VBox {
   }
 
   /**
-   * @param {?string} searchScopeType
-   * @param {string} query
-   * @param {boolean=} searchImmediately
-   * @return {!Promise<!Search.SearchView>}
-   */
-  static async openSearch(searchScopeType, query, searchImmediately) {
-    await UI.viewManager.showView('search.search');
-    const searchView =
-        /** @type {!Search.SearchView} */ (self.runtime.sharedInstance(Search.SearchView));
-    searchView._toggle(searchScopeType, query, !!searchImmediately);
-    return searchView;
-  }
-
-  /**
-   * @param {!UI.SegmentedButton} selector
-   * @param {!Map<string, !Runtime.Extension>} scopesMap
-   * @return {!Runtime.Extension}
-   */
-  static _readScopesExtenstions(selector, scopesMap) {
-    let defaultScope = null;
-    for (const extension of self.runtime.extensions(Search.SearchScope)) {
-      const id = extension.descriptor().id;
-      scopesMap.set(id, extension);
-      selector.addSegment(extension.title(), id, extension.descriptor().description);
-      if (!defaultScope)
-        defaultScope = extension;
-    }
-    return defaultScope;
-  }
-
-  /**
    * @return {!Search.SearchConfig}
    */
   _buildSearchConfig() {
-    return new Search.SearchConfig(
-        this._scopesSelector.selected(), this._search.value, !this._matchCaseButton.toggled(),
-        this._regexButton.toggled());
+    return new Search.SearchConfig(this._search.value, !this._matchCaseButton.toggled(), this._regexButton.toggled());
   }
 
   /**
-   * @param {?string} searchScopeType
+   * @protected
    * @param {string} queryCandidate
    * @param {boolean=} searchImmediately
    */
-  async _toggle(searchScopeType, queryCandidate, searchImmediately) {
+  async toggle(queryCandidate, searchImmediately) {
     if (queryCandidate)
       this._search.value = queryCandidate;
-    this._selectScope(searchScopeType);
     if (this.isShowing())
       this.focus();
     else
       this._focusOnShow = true;
 
-    await this._initScope(this._scopesSelector.selected());
+    this._initScope();
     if (searchImmediately)
       this._onAction();
     else
@@ -162,13 +130,15 @@ Search.SearchView = class extends UI.VBox {
   }
 
   /**
-   * @param {?string} scopeTypeId
+   * @protected
+   * @return {!Search.SearchScope}
    */
-  async _initScope(scopeTypeId) {
-    let extension = scopeTypeId ? this._searchScopes.get(scopeTypeId) : null;
-    if (!extension)
-      extension = this._defaultScope;
-    this._searchScope = await extension.instance();
+  createScope() {
+    throw new Error('Not implemented');
+  }
+
+  _initScope() {
+    this._searchScope = this.createScope();
   }
 
   /**
@@ -253,7 +223,7 @@ Search.SearchView = class extends UI.VBox {
   async _startSearch(searchConfig) {
     this._resetSearch();
     ++this._searchId;
-    await this._initScope(searchConfig.scopeType());
+    this._initScope();
     if (!this._isIndexing)
       this._startIndexing();
     this._pendingSearchConfig = searchConfig;
@@ -402,9 +372,8 @@ Search.SearchView = class extends UI.VBox {
   _load() {
     const searchConfig = Search.SearchConfig.fromPlainObject(this._advancedSearchConfig.get());
     this._search.value = searchConfig.query();
-    this._matchCaseButton.setToggled(searchConfig.ignoreCase());
+    this._matchCaseButton.setToggled(!searchConfig.ignoreCase());
     this._regexButton.setToggled(searchConfig.isRegex());
-    this._selectScope(searchConfig.scopeType());
 
     if (this._search.value && this._search.value.length)
       this._searchInputClearElement.classList.remove('hidden');
@@ -414,39 +383,7 @@ Search.SearchView = class extends UI.VBox {
     const searchConfig = this._buildSearchConfig();
     if (!searchConfig.query() || !searchConfig.query().length)
       return;
-
     this._save();
     this._startSearch(searchConfig);
-  }
-
-  /**
-   * @param {?string} scopeTypeId
-   */
-  _selectScope(scopeTypeId) {
-    this._scopesSelector.select(scopeTypeId || this._defaultScope.descriptor().id);
-  }
-};
-
-/**
- * @implements {UI.ActionDelegate}
- */
-Search.SearchView.ActionDelegate = class {
-  /**
-   * @override
-   * @param {!UI.Context} context
-   * @param {string} actionId
-   * @return {boolean}
-   */
-  handleAction(context, actionId) {
-    this._showSearch();
-    return true;
-  }
-
-  _showSearch() {
-    const selection = UI.inspectorView.element.window().getSelection();
-    let queryCandidate = '';
-    if (selection.rangeCount)
-      queryCandidate = selection.toString().replace(/\r?\n.*/, '');
-    return Search.SearchView.openSearch(null, queryCandidate);
   }
 };

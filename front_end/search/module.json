@@ -1,37 +1,4 @@
 {
-    "extensions": [
-        {
-            "type": "view",
-            "location": "drawer-view",
-            "id": "search.search",
-            "title": "Search",
-            "persistence": "closeable",
-            "order": 100,
-            "className": "Search.SearchView"
-        },
-        {
-            "type": "action",
-            "actionId": "search.all",
-            "title": "Search",
-            "className": "Search.SearchView.ActionDelegate",
-            "category": "DevTools",
-            "bindings": [
-                {
-                    "platform": "mac",
-                    "shortcut": "Meta+Alt+F"
-                },
-                {
-                    "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+F"
-                }
-            ]
-        },
-        {
-            "type": "context-menu-item",
-            "location": "mainMenu/default",
-            "actionId": "search.all"
-        }
-    ],
     "dependencies": [
         "components"
     ],

@@ -6,13 +6,11 @@
  */
 Search.SearchConfig = class {
   /**
-   * @param {?string} scopeType
    * @param {string} query
    * @param {boolean} ignoreCase
    * @param {boolean} isRegex
    */
-  constructor(scopeType, query, ignoreCase, isRegex) {
-    this._scopeType = scopeType;
+  constructor(query, ignoreCase, isRegex) {
     this._query = query;
     this._ignoreCase = ignoreCase;
     this._isRegex = isRegex;
@@ -20,19 +18,11 @@ Search.SearchConfig = class {
   }
 
   /**
-   * @param {{scopeType: ?string, query: string, ignoreCase: boolean, isRegex: boolean}} object
+   * @param {{query: string, ignoreCase: boolean, isRegex: boolean}} object
    * @return {!Search.SearchConfig}
    */
   static fromPlainObject(object) {
-    const scopeType = object.scopeType || null;
-    return new Search.SearchConfig(scopeType, object.query, object.ignoreCase, object.isRegex);
-  }
-
-  /**
-   * @return {?string}
-   */
-  scopeType() {
-    return this._scopeType;
+    return new Search.SearchConfig(object.query, object.ignoreCase, object.isRegex);
   }
 
   /**
@@ -63,7 +53,7 @@ Search.SearchConfig = class {
    * @return {{query: string, ignoreCase: boolean, isRegex: boolean}}
    */
   toPlainObject() {
-    return {scopeType: this.scopeType(), query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
+    return {query: this.query(), ignoreCase: this.ignoreCase(), isRegex: this.isRegex()};
   }
 
   _parse() {
@@ -208,13 +198,18 @@ Search.SearchResult.prototype = {
   label() {},
 
   /**
+   * @return {string}
+   */
+  description() {},
+
+  /**
    * @return {number}
    */
   matchesCount() {},
 
   /**
    * @param {number} index
-   * @return {?}
+   * @return {string}
    */
   matchLabel(index) {},
 

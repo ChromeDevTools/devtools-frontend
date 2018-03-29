@@ -229,6 +229,7 @@ UI.Icon.Descriptors = {
   'largeicon-resume': {position: 'f2', spritesheet: 'largeicons', isMask: true},
   'largeicon-rotate': {position: 'g9', spritesheet: 'largeicons', isMask: true},
   'largeicon-rotate-screen': {position: 'g8', spritesheet: 'largeicons', isMask: true},
+  'largeicon-search': {position: 'h4', spritesheet: 'largeicons', isMask: true},
   'largeicon-settings-gear': {position: 'g7', spritesheet: 'largeicons', isMask: true},
   'largeicon-show-bottom-sidebar': {position: 'g6', spritesheet: 'largeicons', isMask: true},
   'largeicon-show-left-sidebar': {position: 'g5', spritesheet: 'largeicons', isMask: true},

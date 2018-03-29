@@ -668,6 +668,7 @@ all_devtools_files = [
   "front_end/sources/scopeChainSidebarPane.css",
   "front_end/sources/ScopeChainSidebarPane.js",
   "front_end/sources/ScriptFormatterEditorAction.js",
+  "front_end/sources/SearchSourcesView.js",
   "front_end/sources/serviceWorkersSidebar.css",
   "front_end/sources/SimpleHistoryManager.js",
   "front_end/sources/SnippetsPlugin.js",

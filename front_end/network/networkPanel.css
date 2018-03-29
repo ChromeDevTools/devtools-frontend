@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.panel.network > .toolbar {
+.panel.network .toolbar {
     background-color: var(--toolbar-bg-color);
     border-bottom: var(--divider-border);
 }
@@ -135,4 +135,8 @@
 
 .open-search-view > * {
     margin: 0 4px;
+}
+
+.network-tabbed-pane {
+    background-color: var(--toolbar-bg-color);
 }

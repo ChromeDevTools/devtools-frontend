@@ -131,7 +131,7 @@ Sources.NavigatorView = class extends UI.VBox {
    */
   static appendSearchItem(contextMenu, path) {
     function searchPath() {
-      Search.SearchView.openSearch('sources.search-in-files', `file:${path.trim()}`);
+      Sources.SearchSourcesView.openSearch(`file:${path.trim()}`);
     }
 
     let searchLabel = Common.UIString('Search in folder');

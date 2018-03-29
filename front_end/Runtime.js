@@ -533,8 +533,10 @@ var Runtime = class {  // eslint-disable-line
    * @return {!Object}
    */
   sharedInstance(constructorFunction) {
-    if (Runtime._instanceSymbol in constructorFunction)
+    if (Runtime._instanceSymbol in constructorFunction &&
+        Object.getOwnPropertySymbols(constructorFunction).includes(Runtime._instanceSymbol))
       return constructorFunction[Runtime._instanceSymbol];
+
     const instance = new constructorFunction();
     constructorFunction[Runtime._instanceSymbol] = instance;
     return instance;

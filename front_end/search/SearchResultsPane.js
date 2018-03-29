@@ -12,6 +12,7 @@ Search.SearchResultsPane = class extends UI.VBox {
     /** @type {!Array<!Search.SearchResult>} */
     this._searchResults = [];
     this._treeOutline = new UI.TreeOutlineInShadow();
+    this._treeOutline.hideOverflow();
     this._treeOutline.registerRequiredCSS('search/searchResultsPane.css');
     this.contentElement.appendChild(this._treeOutline.element);
 
@@ -92,16 +93,13 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     const fileNameSpan = createElement('span');
     fileNameSpan.className = 'search-result-file-name';
     fileNameSpan.textContent = this._searchResult.label();
+    this.tooltip = this._searchResult.description();
     this.listItemElement.appendChild(fileNameSpan);
 
     const matchesCountSpan = createElement('span');
     matchesCountSpan.className = 'search-result-matches-count';
 
-    const searchMatchesCount = this._searchResult.matchesCount();
-    if (searchMatchesCount === 1)
-      matchesCountSpan.textContent = Common.UIString('(%d match)', searchMatchesCount);
-    else
-      matchesCountSpan.textContent = Common.UIString('(%d matches)', searchMatchesCount);
+    matchesCountSpan.textContent = `${this._searchResult.matchesCount()}`;
 
     this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded)
@@ -121,15 +119,16 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       regexes.push(createSearchRegex(queries[i], !this._searchConfig.ignoreCase(), this._searchConfig.isRegex()));
 
     for (let i = fromIndex; i < toIndex; ++i) {
-      const lineContent = searchResult.matchLineContent(i);
+      const lineContent = searchResult.matchLineContent(i).trim();
       let matchRanges = [];
       for (let j = 0; j < regexes.length; ++j)
         matchRanges = matchRanges.concat(this._regexMatchRanges(lineContent, regexes[j]));
 
       const anchor = Components.Linkifier.linkifyRevealable(searchResult.matchRevealable(i), '');
+      anchor.classList.add('search-match-link');
       const lineNumberSpan = createElement('span');
       lineNumberSpan.classList.add('search-match-line-number');
-      lineNumberSpan.textContent = this._labelString(searchResult, i);
+      lineNumberSpan.textContent = searchResult.matchLabel(i);
       anchor.appendChild(lineNumberSpan);
 
       const contentSpan = this._createContentSpan(lineContent, matchRanges);
@@ -138,23 +137,10 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
       const searchMatchElement = new UI.TreeElement();
       searchMatchElement.selectable = false;
       this.appendChild(searchMatchElement);
-      searchMatchElement.listItemElement.className = 'search-match source-code';
+      searchMatchElement.listItemElement.className = 'search-match';
       searchMatchElement.listItemElement.appendChild(anchor);
+      searchMatchElement.tooltip = lineContent;
     }
-  }
-
-  /**
-   * @param {!Search.SearchResult} searchResult
-   * @param {number} index
-   * @return {string}
-   */
-  _labelString(searchResult, index) {
-    const MIN_WIDTH = 4;
-    let label = searchResult.matchLabel(index);
-    if (label === null)
-      return spacesPadding(MIN_WIDTH);
-    label = label.toString();
-    return label.length < MIN_WIDTH ? spacesPadding(MIN_WIDTH - label.length) + label : label;
   }
 
   /**
@@ -173,8 +159,15 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
   /**
    * @param {string} lineContent
    * @param {!Array.<!TextUtils.SourceRange>} matchRanges
+   * @return {!Element}
    */
   _createContentSpan(lineContent, matchRanges) {
+    const trimBy = matchRanges[0].offset > 20 ? matchRanges[0].offset - 15 : 0;
+    lineContent = lineContent.substring(trimBy, 1000 + trimBy);
+    if (trimBy) {
+      matchRanges = matchRanges.map(range => new TextUtils.SourceRange(range.offset - trimBy + 1, range.length));
+      lineContent = '\u2026' + lineContent;
+    }
     const contentSpan = createElement('span');
     contentSpan.className = 'search-match-content';
     contentSpan.textContent = lineContent;

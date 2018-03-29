@@ -144,14 +144,23 @@ Network.NetworkSearchResult = class {
 
   /**
    * @override
+   * @return {string}
+   */
+  description() {
+    return this._request.url();
+  }
+
+  /**
+   * @override
    * @param {number} index
    * @return {string}
    */
   matchLineContent(index) {
-    const header = this._locations[index].requestHeader || this._locations[index].responseHeader;
+    const location = this._locations[index];
+    const header = location.requestHeader || location.responseHeader;
     if (header)
-      return `${header.name}: ${header.value}`;
-    return this._locations[index].searchMatch.lineContent;
+      return header.value;
+    return location.searchMatch.lineContent;
   }
 
   /**
@@ -170,10 +179,9 @@ Network.NetworkSearchResult = class {
    */
   matchLabel(index) {
     const location = this._locations[index];
-    if (location.requestHeader)
-      return Common.UIString(' Request Header');  // These strings should have same length for æsthetics
-    if (location.responseHeader)
-      return Common.UIString('Response Header');
+    const header = location.requestHeader || location.responseHeader;
+    if (header)
+      return header.name;
     return location.searchMatch.lineNumber + 1;
   }
 };

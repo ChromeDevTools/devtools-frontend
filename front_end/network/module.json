@@ -121,14 +121,39 @@
             "tags": "disk cache, network throttling, useragent, user agent"
         },
         {
-            "type": "@Search.SearchScope",
-            "id": "network.searchInNetwork",
-            "experiment": "networkSearch",
-            "className": "Network.NetworkSearchScope",
-            "title": "Network",
-            "description": "Search headers and response bodies"
+            "type": "@UI.ViewLocationResolver",
+            "name": "network-sidebar",
+            "category": "Network",
+            "className": "Network.NetworkPanel"
+        },
+        {
+            "type": "view",
+            "location": "network-sidebar",
+            "id": "network.search-network-tab",
+            "title": "Search",
+            "persistence": "permanent",
+            "className": "Network.SearchNetworkView"
+        },
+        {
+            "type": "action",
+            "actionId": "network.search",
+            "title": "Search",
+            "className": "Network.NetworkPanel.SearchActionDelegate",
+            "contextTypes": [
+                "Network.NetworkPanel"
+            ],
+            "category": "DevTools",
+            "bindings": [
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Alt+F"
+                },
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Shift+F"
+                }
+            ]
         }
-
     ],
     "dependencies": [
         "search",

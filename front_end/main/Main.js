@@ -126,7 +126,6 @@ Main.Main = class {
     Runtime.experiments.register('timelineInvalidationTracking', 'Timeline: invalidation tracking', true);
     Runtime.experiments.register('timelineKeepHistory', 'Timeline: keep recording history');
     Runtime.experiments.register('timelinePaintTimingMarkers', 'Timeline: paint timing markers', true);
-    Runtime.experiments.register('timelinePerFrameTrack', 'Timeline: per-frame tracks', true);
     Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);
     Runtime.experiments.register('timelineShowAllProcesses', 'Timeline: show all processes', true);
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline: tracing based JS profiler', true);

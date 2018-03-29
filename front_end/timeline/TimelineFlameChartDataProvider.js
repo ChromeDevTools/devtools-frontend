@@ -227,19 +227,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       this._appendAsyncEventsGroup(title, animations, this._interactionsHeaderLevel2, eventEntryType);
     }
     const threads = this._model.virtualThreads();
-    if (!Runtime.experiments.isEnabled('timelinePerFrameTrack')) {
-      this._appendThreadTimelineData(
-          Common.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true,
-          true /* selected */);
-    } else {
-      this._appendThreadTimelineData(
-          Common.UIString('Page'), this._model.eventsForFrame(TimelineModel.TimelineModel.PageFrame.mainFrameId),
-          this._model.mainThreadAsyncEvents(), true, true /* selected */);
-      for (const frame of this._model.rootFrames()) {
-        // Ignore top frame itself, since it should be part of page events.
-        frame.children.forEach(this._appendFrameEvents.bind(this, 0));
-      }
-    }
+    this._appendThreadTimelineData(
+        Common.UIString('Main'), this._model.mainThreadEvents(), this._model.mainThreadAsyncEvents(), true,
+        true /* selected */);
     const compositorThreads = threads.filter(thread => thread.name.startsWith('CompositorTileWorker'));
     const otherThreads = threads.filter(thread => !thread.name.startsWith('CompositorTileWorker'));
     if (compositorThreads.length) {
@@ -309,21 +299,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
             /** @type {!SDK.TracingModel.Event} */ (this._entryData[a]),
             /** @type {!SDK.TracingModel.Event} */ (this._entryData[b])));
     return result;
-  }
-
-  /**
-   * @param {number} level
-   * @param {!TimelineModel.TimelineModel.PageFrame} frame
-   */
-  _appendFrameEvents(level, frame) {
-    const events = this._model.eventsForFrame(frame.id);
-    const clonedHeader = Object.assign({}, this._headerLevel1);
-    clonedHeader.nestingLevel = level;
-    this._appendSyncEvents(
-        events, Timeline.TimelineUIUtils.displayNameForFrame(frame),
-        /** @type {!PerfUI.FlameChart.GroupStyle} */ (clonedHeader),
-        Timeline.TimelineFlameChartDataProvider.EntryType.Event);
-    frame.children.forEach(this._appendFrameEvents.bind(this, level + 1));
   }
 
   /**

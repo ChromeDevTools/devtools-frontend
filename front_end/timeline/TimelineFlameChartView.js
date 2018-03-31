@@ -80,7 +80,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._nextExtensionIndex = 0;
 
     this._boundRefresh = this._refresh.bind(this);
-    this._selectedEventsTrack = null;
+    this._selectedTrack = null;
 
     this._mainDataProvider.setEventColorMapping(Timeline.TimelineUIUtils.eventColor);
     this._groupBySetting =
@@ -144,9 +144,9 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
   updateSelectedGroup(flameChart, group) {
     if (flameChart !== this._mainFlameChart)
       return;
-    const events = group ? this._mainDataProvider.groupEvents(group) : null;
-    this._selectedEventsTrack = events;
-    this._updateEventsTrack();
+    const track = group ? this._mainDataProvider.groupTrack(group) : null;
+    this._selectedTrack = track;
+    this._updateTrack();
   }
 
   /**
@@ -160,21 +160,21 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     if (this._model)
       this._model.removeEventListener(extensionDataAdded, this._appendExtensionData, this);
     this._model = model;
-    this._selectedEventsTrack = null;
+    this._selectedTrack = null;
     if (this._model)
       this._model.addEventListener(extensionDataAdded, this._appendExtensionData, this);
     this._mainDataProvider.setModel(this._model);
     this._networkDataProvider.setModel(this._model);
     this._updateColorMapper();
-    this._updateEventsTrack();
+    this._updateTrack();
     this._nextExtensionIndex = 0;
     this._appendExtensionData();
     this._refresh();
   }
 
-  _updateEventsTrack() {
-    this._countersView.setModel(this._model, this._selectedEventsTrack);
-    this._detailsView.setModel(this._model, this._selectedEventsTrack);
+  _updateTrack() {
+    this._countersView.setModel(this._model, this._selectedTrack);
+    this._detailsView.setModel(this._model, this._selectedTrack);
   }
 
   _refresh() {

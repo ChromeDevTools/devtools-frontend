@@ -84,7 +84,6 @@ Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOvervi
     super.update();
     if (!this._model)
       return;
-    const events = this._model.timelineModel().mainThreadEvents();
     const height = this.height();
     const descriptors = Timeline.TimelineUIUtils.eventDispatchDesciptors();
     /** @type {!Map.<string,!Timeline.TimelineUIUtils.EventDispatchTypeDescriptor>} */
@@ -96,24 +95,26 @@ Timeline.TimelineEventOverviewInput = class extends Timeline.TimelineEventOvervi
       maxPriority = Math.max(maxPriority, descriptor.priority);
     }
 
-    const /** @const */ minWidth = 2 * window.devicePixelRatio;
+    const minWidth = 2 * window.devicePixelRatio;
     const timeOffset = this._model.timelineModel().minimumRecordTime();
     const timeSpan = this._model.timelineModel().maximumRecordTime() - timeOffset;
     const canvasWidth = this.width();
     const scale = canvasWidth / timeSpan;
 
     for (let priority = 0; priority <= maxPriority; ++priority) {
-      for (let i = 0; i < events.length; ++i) {
-        const event = events[i];
-        if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch)
-          continue;
-        const descriptor = descriptorsByType.get(event.args['data']['type']);
-        if (!descriptor || descriptor.priority !== priority)
-          continue;
-        const start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
-        const end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
-        const width = Math.max(end - start, minWidth);
-        this._renderBar(start, start + width, 0, height, descriptor.color);
+      for (const track of this._model.timelineModel().tracks()) {
+        for (let i = 0; i < track.events.length; ++i) {
+          const event = track.events[i];
+          if (event.name !== TimelineModel.TimelineModel.RecordType.EventDispatch)
+            continue;
+          const descriptor = descriptorsByType.get(event.args['data']['type']);
+          if (!descriptor || descriptor.priority !== priority)
+            continue;
+          const start = Number.constrain(Math.floor((event.startTime - timeOffset) * scale), 0, canvasWidth);
+          const end = Number.constrain(Math.ceil((event.endTime - timeOffset) * scale), 0, canvasWidth);
+          const width = Math.max(end - start, minWidth);
+          this._renderBar(start, start + width, 0, height, descriptor.color);
+        }
       }
     }
   }
@@ -204,10 +205,13 @@ Timeline.TimelineEventOverviewCPUActivity = class extends Timeline.TimelineEvent
       categories[categoryOrder[i]]._overviewIndex = i;
 
     const backgroundContext = this._backgroundCanvas.getContext('2d');
-    for (const thread of timelineModel.virtualThreads())
-      drawThreadEvents(backgroundContext, thread.events);
+    for (const track of timelineModel.tracks()) {
+      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+        drawThreadEvents(this.context(), track.events);
+      else
+        drawThreadEvents(backgroundContext, track.events);
+    }
     applyPattern(backgroundContext);
-    drawThreadEvents(this.context(), timelineModel.mainThreadEvents());
 
     /**
      * @param {!CanvasRenderingContext2D} ctx
@@ -314,11 +318,13 @@ Timeline.TimelineEventOverviewResponsiveness = class extends Timeline.TimelineEv
       paintWarningDecoration(frame.startTime, frame.duration);
     }
 
-    const events = this._model.timelineModel().mainThreadEvents();
-    for (let i = 0; i < events.length; ++i) {
-      if (!TimelineModel.TimelineData.forEvent(events[i]).warning)
-        continue;
-      paintWarningDecoration(events[i].startTime, events[i].duration);
+    for (const track of this._model.timelineModel().tracks()) {
+      const events = track.events;
+      for (let i = 0; i < events.length; ++i) {
+        if (!TimelineModel.TimelineData.forEvent(events[i]).warning)
+          continue;
+        paintWarningDecoration(events[i].startTime, events[i].duration);
+      }
     }
 
     ctx.fillStyle = 'hsl(0, 80%, 90%)';
@@ -553,17 +559,21 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     super.update();
     const ratio = window.devicePixelRatio;
 
-    let events = this._model ? this._model.timelineModel().mainThreadEvents() : [];
-    if (!events.length) {
+    if (!this._model) {
       this.resetHeapSizeLabels();
       return;
     }
+
+    const tracks = this._model.timelineModel().tracks().filter(
+        track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame);
+    const trackEvents = tracks.map(track => track.events);
 
     const lowerOffset = 3 * ratio;
     let maxUsedHeapSize = 0;
     let minUsedHeapSize = 100000000000;
     const minTime = this._model.timelineModel().minimumRecordTime();
     const maxTime = this._model.timelineModel().maximumRecordTime();
+
     /**
      * @param {!SDK.TracingModel.Event} event
      * @return {boolean}
@@ -571,7 +581,9 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
     function isUpdateCountersEvent(event) {
       return event.name === TimelineModel.TimelineModel.RecordType.UpdateCounters;
     }
-    events = events.filter(isUpdateCountersEvent);
+    for (let i = 0; i < trackEvents.length; i++)
+      trackEvents[i] = trackEvents[i].filter(isUpdateCountersEvent);
+
     /**
      * @param {!SDK.TracingModel.Event} event
      */
@@ -582,7 +594,8 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
       maxUsedHeapSize = Math.max(maxUsedHeapSize, counters.jsHeapSizeUsed);
       minUsedHeapSize = Math.min(minUsedHeapSize, counters.jsHeapSizeUsed);
     }
-    events.forEach(calculateMinMaxSizes);
+    for (let i = 0; i < trackEvents.length; i++)
+      trackEvents[i].forEach(calculateMinMaxSizes);
     minUsedHeapSize = Math.min(minUsedHeapSize, maxUsedHeapSize);
 
     const lineWidth = 1;
@@ -602,9 +615,11 @@ Timeline.TimelineEventOverviewMemory = class extends Timeline.TimelineEventOverv
         return;
       const x = Math.round((event.startTime - minTime) * xFactor);
       const y = Math.round((counters.jsHeapSizeUsed - minUsedHeapSize) * yFactor);
+      // TODO(alph): use sum instead of max.
       histogram[x] = Math.max(histogram[x] || 0, y);
     }
-    events.forEach(buildHistogram);
+    for (let i = 0; i < trackEvents.length; i++)
+      trackEvents[i].forEach(buildHistogram);
 
     const ctx = this.context();
     const heightBeyondView = height + lowerOffset + lineWidth;

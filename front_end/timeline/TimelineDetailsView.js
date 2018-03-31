@@ -51,15 +51,15 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
 
   /**
    * @param {?Timeline.PerformanceModel} model
-   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
+   * @param {?TimelineModel.TimelineModel.Track} track
    */
-  setModel(model, eventsTrack) {
+  setModel(model, track) {
     this._model = model;
-    this._eventsTrack = eventsTrack;
+    this._track = track;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
     for (const view of this._rangeDetailViews.values())
-      view.setModel(model, eventsTrack);
+      view.setModel(model, track);
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
   }
@@ -225,9 +225,9 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {number} endTime
    */
   _updateSelectedRangeStats(startTime, endTime) {
-    if (!this._model || !this._eventsTrack)
+    if (!this._model || !this._track)
       return;
-    const aggregatedStats = Timeline.TimelineUIUtils.statsForTimeRange(this._eventsTrack, startTime, endTime);
+    const aggregatedStats = Timeline.TimelineUIUtils.statsForTimeRange(this._track.syncEvents(), startTime, endTime);
     const startOffset = startTime - this._model.timelineModel().minimumRecordTime();
     const endOffset = endTime - this._model.timelineModel().minimumRecordTime();
 

@@ -1084,7 +1084,7 @@
   TestSuite.prototype.checkInputEventsPresent = function() {
     const expectedEvents = new Set(arguments);
     const model = UI.panels.timeline._performanceModel.timelineModel();
-    const asyncEvents = model.mainThreadAsyncEvents();
+    const asyncEvents = model.virtualThreads().find(thread => thread.isMainFrame).asyncEventsByGroup;
     const input = asyncEvents.get(TimelineModel.TimelineModel.AsyncEventGroup.input) || [];
     const prefix = 'InputLatency::';
     for (const e of input) {

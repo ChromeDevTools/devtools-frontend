@@ -1566,21 +1566,6 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @param {!TimelineModel.TimelineModel.AsyncEventGroup} group
-   * @return {string}
-   */
-  static titleForAsyncEventGroup(group) {
-    if (!Timeline.TimelineUIUtils._titleForAsyncEventGroupMap) {
-      const groups = TimelineModel.TimelineModel.AsyncEventGroup;
-      Timeline.TimelineUIUtils._titleForAsyncEventGroupMap = new Map([
-        [groups.animation, Common.UIString('Animation')], [groups.console, Common.UIString('Console')],
-        [groups.userTiming, Common.UIString('User Timing')], [groups.input, Common.UIString('Input')]
-      ]);
-    }
-    return Timeline.TimelineUIUtils._titleForAsyncEventGroupMap.get(group) || '';
-  }
-
-  /**
    * @param {!Object} aggregatedStats
    * @param {!Timeline.TimelineCategory=} selfCategory
    * @param {number=} selfTime

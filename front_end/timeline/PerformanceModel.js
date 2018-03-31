@@ -52,9 +52,16 @@ Timeline.PerformanceModel = class extends Common.Object {
     this._tracingModel = model;
     this._timelineModel.setEvents(model, !this._mainTarget);
 
-    const groups = TimelineModel.TimelineModel.AsyncEventGroup;
-    const asyncEventsByGroup = this._timelineModel.mainThreadAsyncEvents();
-    this._irModel.populate(asyncEventsByGroup.get(groups.input), asyncEventsByGroup.get(groups.animation));
+    let inputEvents = null;
+    let animationEvents = null;
+    for (const track of this._timelineModel.tracks()) {
+      if (track.type === TimelineModel.TimelineModel.TrackType.Input)
+        inputEvents = track.asyncEvents;
+      if (track.type === TimelineModel.TimelineModel.TrackType.Animation)
+        animationEvents = track.asyncEvents;
+    }
+    if (inputEvents || animationEvents)
+      this._irModel.populate(inputEvents || [], animationEvents || []);
 
     this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents());
 

@@ -11,8 +11,8 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     super();
     /** @type {?Timeline.PerformanceModel} */
     this._model = null;
-    /** @type {?Array<!SDK.TracingModel.Event>} */
-    this._eventsTrack = null;
+    /** @type {?TimelineModel.TimelineModel.Track} */
+    this._track = null;
     /** @type {?TimelineModel.TimelineProfileTree.Node} */
     this._tree = null;
     this.element.classList.add('timeline-tree-view');
@@ -39,11 +39,11 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @param {?Timeline.PerformanceModel} model
-   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
+   * @param {?TimelineModel.TimelineModel.Track} track
    */
-  setModel(model, eventsTrack) {
+  setModel(model, track) {
     this._model = model;
-    this._eventsTrack = eventsTrack;
+    this._track = track;
     this.refreshTree();
   }
 
@@ -151,7 +151,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @return {!Array<!SDK.TracingModel.Event>}
    */
   _modelEvents() {
-    return this._eventsTrack || [];
+    return this._track ? this._track.syncEvents() : [];
   }
 
   /**
@@ -629,11 +629,11 @@ Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
    * @override
    * @param {?Timeline.PerformanceModel} model
-   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
+   * @param {?TimelineModel.TimelineModel.Track} track
    */
-  setModel(model, eventsTrack) {
+  setModel(model, track) {
     this._badgePool.reset();
-    super.setModel(model, eventsTrack);
+    super.setModel(model, track);
   }
 
   /**

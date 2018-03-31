@@ -913,7 +913,12 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @return {!{start: number, end: number}}
    */
   static _autoWindowTimes(timelineModel) {
-    const tasks = timelineModel.mainThreadTasks();
+    let tasks = [];
+    for (const track of timelineModel.tracks()) {
+      // Deliberately pick up last main frame's track.
+      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+        tasks = track.tasks;
+    }
     if (!tasks.length)
       return {start: timelineModel.minimumRecordTime(), end: timelineModel.maximumRecordTime()};
 
@@ -1112,9 +1117,9 @@ Timeline.TimelineModeView.prototype = {
 
   /**
    * @param {?Timeline.PerformanceModel} model
-   * @param {?Array<!SDK.TracingModel.Event>} eventsTrack
+   * @param {?TimelineModel.TimelineModel.Track} track
    */
-  setModel(model, eventsTrack) {},
+  setModel(model, track) {},
 
   /**
    * @param {number} startTime

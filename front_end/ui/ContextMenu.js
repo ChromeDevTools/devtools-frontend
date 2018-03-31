@@ -145,17 +145,19 @@ UI.ContextMenuSection = class {
   /**
    * @param {string} actionId
    * @param {string=} label
-   * @return {!UI.ContextMenuItem}
    */
   appendAction(actionId, label) {
     const action = UI.actionRegistry.action(actionId);
+    if (!action) {
+      console.error(`Action ${actionId} was not defined`);
+      return;
+    }
     if (!label)
       label = action.title();
     const result = this.appendItem(label, action.execute.bind(action));
     const shortcut = UI.shortcutRegistry.shortcutTitleForAction(actionId);
     if (shortcut)
       result.setShortcut(shortcut);
-    return result;
   }
 
   /**

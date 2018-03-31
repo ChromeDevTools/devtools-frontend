@@ -827,7 +827,7 @@
         {
             "type": "context-menu-item",
             "location": "mainMenu/default",
-            "actionId": "search.all"
+            "actionId": "sources.search"
         }
 
     ],

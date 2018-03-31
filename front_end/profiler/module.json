@@ -99,8 +99,7 @@
         "HeapProfilerPanel.js",
         "IsolateSelector.js",
         "ProfileLauncherView.js",
-        "ProfileTypeRegistry.js",
-        "TargetsComboBoxController.js"
+        "ProfileTypeRegistry.js"
     ],
     "resources": [
         "heapProfiler.css",

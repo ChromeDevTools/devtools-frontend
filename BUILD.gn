@@ -509,7 +509,6 @@ all_devtools_files = [
   "front_end/profiler/profilesSidebarTree.css",
   "front_end/profiler/ProfileTypeRegistry.js",
   "front_end/profiler/ProfileView.js",
-  "front_end/profiler/TargetsComboBoxController.js",
   "front_end/profiler/TopDownProfileDataGrid.js",
   "front_end/protocol/InspectorBackend.js",
   "front_end/protocol/module.json",

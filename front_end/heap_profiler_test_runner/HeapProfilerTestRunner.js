@@ -593,7 +593,7 @@ HeapProfilerTestRunner.switchToView = function(title, callback) {
   HeapProfilerTestRunner._currentGrid().scrollContainer.style.height = '10000px';
 };
 
-HeapProfilerTestRunner.takeAndOpenSnapshot = function(generator, callback) {
+HeapProfilerTestRunner.takeAndOpenSnapshot = async function(generator, callback) {
   callback = TestRunner.safeWrap(callback);
   const snapshot = generator();
   const profileType = Profiler.ProfileTypeRegistry.instance.heapSnapshotProfileType;
@@ -601,19 +601,17 @@ HeapProfilerTestRunner.takeAndOpenSnapshot = function(generator, callback) {
   function pushGeneratedSnapshot(reportProgress) {
     if (reportProgress) {
       profileType._reportHeapSnapshotProgress({data: {done: 50, total: 100, finished: false}});
-
       profileType._reportHeapSnapshotProgress({data: {done: 100, total: 100, finished: true}});
     }
-
     snapshot.snapshot.typeId = 'HEAP';
-
     profileType._addHeapSnapshotChunk({data: JSON.stringify(snapshot)});
-
     return Promise.resolve();
   }
 
-  TestRunner.override(TestRunner.HeapProfilerAgent, 'takeHeapSnapshot', pushGeneratedSnapshot);
   HeapProfilerTestRunner._takeAndOpenSnapshotCallback = callback;
+  TestRunner.override(TestRunner.HeapProfilerAgent, 'takeHeapSnapshot', pushGeneratedSnapshot);
+  if (!UI.context.flavor(SDK.HeapProfilerModel))
+    await new Promise(resolve => UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   profileType._takeHeapSnapshot();
 };
 
@@ -675,7 +673,9 @@ HeapProfilerTestRunner._profileViewRefresh = function() {
   }
 };
 
-HeapProfilerTestRunner.startSamplingHeapProfiler = function() {
+HeapProfilerTestRunner.startSamplingHeapProfiler = async function() {
+  if (!UI.context.flavor(SDK.HeapProfilerModel))
+    await new Promise(resolve => UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, resolve));
   Profiler.SamplingHeapProfileType.instance.startRecordingProfile();
 };
 

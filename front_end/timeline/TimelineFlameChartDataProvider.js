@@ -209,7 +209,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
 
     this._appendFrameBars();
 
-    this._appendHeader(Common.UIString('Interactions'), this._interactionsHeaderLevel1, false /* selectable */);
     this._appendInteractionRecords();
 
     const eventEntryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
@@ -477,7 +476,18 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   }
 
   _appendInteractionRecords() {
-    this._performanceModel.interactionRecords().forEach(this._appendSegment, this);
+    const interactionRecords = this._performanceModel.interactionRecords();
+    if (!interactionRecords.length)
+      return;
+    this._appendHeader(ls`Interactions`, this._interactionsHeaderLevel1, false /* selectable */);
+    for (const segment of interactionRecords) {
+      const index = this._entryData.length;
+      this._entryData.push(/** @type {!TimelineModel.TimelineIRModel.Phases} */ (segment.data));
+      this._entryIndexToTitle[index] = /** @type {string} */ (segment.data);
+      this._timelineData.entryLevels[index] = this._currentLevel;
+      this._timelineData.entryTotalTimes[index] = segment.end - segment.begin;
+      this._timelineData.entryStartTimes[index] = segment.begin;
+    }
     this._entryTypeByLevel[this._currentLevel++] = Timeline.TimelineFlameChartDataProvider.EntryType.InteractionRecord;
   }
 
@@ -904,18 +914,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._timelineData.entryLevels[index] = this._currentLevel;
     this._timelineData.entryTotalTimes[index] = frame.duration;
     this._timelineData.entryStartTimes[index] = frame.startTime;
-  }
-
-  /**
-   * @param {!Common.Segment} segment
-   */
-  _appendSegment(segment) {
-    const index = this._entryData.length;
-    this._entryData.push(/** @type {!TimelineModel.TimelineIRModel.Phases} */ (segment.data));
-    this._entryIndexToTitle[index] = /** @type {string} */ (segment.data);
-    this._timelineData.entryLevels[index] = this._currentLevel;
-    this._timelineData.entryTotalTimes[index] = segment.end - segment.begin;
-    this._timelineData.entryStartTimes[index] = segment.begin;
   }
 
   /**

@@ -71,7 +71,30 @@ SDK.PerformanceMetricsModel = class extends SDK.SDKModel {
       }
       metrics.set(metric.name, value);
     }
+    const totalMemoryUsage = await this._requestTotalMemory();
+    metrics.set('JSHeapUsedSize', totalMemoryUsage.usedSize);
+    metrics.set('JSHeapTotalSize', totalMemoryUsage.totalSize);
     return {metrics: metrics, timestamp: timestamp};
+  }
+
+  /**
+   * @return {!Promise<!{usedSize: number, totalSize: number}>}
+   */
+  async _requestTotalMemory() {
+    const models = SDK.targetManager.models(SDK.RuntimeModel);
+    const isolates = await Promise.all(models.map(model => model.isolateId()));
+    /** @type {!Map<string, !SDK.RuntimeModel>} */
+    const modelsByIsolate = new Map();
+    for (let i = 0; i < isolates.length; ++i)
+      modelsByIsolate.set(isolates[i], models[i]);
+    const usages = await Promise.all(modelsByIsolate.valuesArray().map(model => model.heapUsage()));
+    let totalSize = 0;
+    let usedSize = 0;
+    for (const usage of usages) {
+      totalSize += usage ? usage.totalSize : 0;
+      usedSize += usage ? usage.usedSize : 0;
+    }
+    return {totalSize, usedSize};
   }
 };
 

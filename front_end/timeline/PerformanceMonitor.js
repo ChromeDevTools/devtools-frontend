@@ -492,7 +492,7 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
       case Timeline.PerformanceMonitor.Format.Percent:
         return value.toLocaleString('en-US', {maximumFractionDigits: 1, style: 'percent'});
       case Timeline.PerformanceMonitor.Format.Bytes:
-        return Common.UIString('%s\xa0MB', (value / 1e6).toLocaleString('en-US', {maximumFractionDigits: 1}));
+        return Number.bytesToString(value);
       default:
         return value.toLocaleString('en-US', {maximumFractionDigits: 1});
     }

@@ -146,11 +146,11 @@
             "bindings": [
                 {
                     "platform": "mac",
-                    "shortcut": "Meta+Alt+F"
+                    "shortcut": "Meta+F"
                 },
                 {
                     "platform": "windows,linux",
-                    "shortcut": "Ctrl+Shift+F"
+                    "shortcut": "Ctrl+F"
                 }
             ]
         }

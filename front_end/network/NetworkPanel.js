@@ -29,7 +29,6 @@
  */
 /**
  * @implements {UI.ContextMenu.Provider}
- * @implements {UI.Searchable}
  * @implements {UI.ViewLocationResolver}
  */
 Network.NetworkPanel = class extends UI.Panel {
@@ -89,6 +88,15 @@ Network.NetworkPanel = class extends UI.Panel {
     const tabbedPane = this._sidebarLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add('network-tabbed-pane');
+    tabbedPane.element.addEventListener('keydown', event => {
+      if (event.key !== 'Escape')
+        return;
+      splitWidget.hideSidebar();
+      event.consume();
+    });
+    const closeSidebar = new UI.ToolbarButton(Common.UIString('Close'), 'largeicon-delete');
+    closeSidebar.addEventListener(UI.ToolbarButton.Events.Click, () => splitWidget.hideSidebar());
+    tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
     splitWidget.setMainWidget(panel);
     splitWidget.setDefaultFocusedChild(panel);
@@ -96,15 +104,10 @@ Network.NetworkPanel = class extends UI.Panel {
 
     this._progressBarContainer = createElement('div');
 
-    this._searchableView = new UI.SearchableView(this);
-    this._searchableView.setPlaceholder(Common.UIString('Find by filename or path'));
-
     /** @type {!Network.NetworkLogView} */
     this._networkLogView =
         new Network.NetworkLogView(this._filterBar, this._progressBarContainer, this._networkLogLargeRowsSetting);
-    this._networkLogView.show(this._searchableView.element);
-
-    this._splitWidget.setSidebarWidget(this._searchableView);
+    this._splitWidget.setSidebarWidget(this._networkLogView);
 
     this._detailsWidget = new UI.VBox();
     this._detailsWidget.element.classList.add('network-details-view');
@@ -134,10 +137,6 @@ Network.NetworkPanel = class extends UI.Panel {
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.WillReloadPage, this._willReloadPage, this);
     SDK.targetManager.addModelListener(SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._load, this);
     this._networkLogView.addEventListener(Network.NetworkLogView.Events.RequestSelected, this._onRequestSelected, this);
-    this._networkLogView.addEventListener(
-        Network.NetworkLogView.Events.SearchCountUpdated, this._onSearchCountUpdated, this);
-    this._networkLogView.addEventListener(
-        Network.NetworkLogView.Events.SearchIndexUpdated, this._onSearchIndexUpdated, this);
     BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.RequestAdded, this._onUpdateRequest, this);
     BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.RequestUpdated, this._onUpdateRequest, this);
     BrowserSDK.networkLog.addEventListener(BrowserSDK.NetworkLog.Events.Reset, this._onNetworkLogReset, this);
@@ -384,14 +383,6 @@ Network.NetworkPanel = class extends UI.Panel {
 
   /**
    * @override
-   * @return {!UI.SearchableView}
-   */
-  searchableView() {
-    return this._searchableView;
-  }
-
-  /**
-   * @override
    * @param {!KeyboardEvent} event
    */
   handleShortcut(event) {
@@ -447,22 +438,6 @@ Network.NetworkPanel = class extends UI.Panel {
   /**
    * @param {!Common.Event} event
    */
-  _onSearchCountUpdated(event) {
-    const count = /** @type {number} */ (event.data);
-    this._searchableView.updateSearchMatchesCount(count);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _onSearchIndexUpdated(event) {
-    const index = /** @type {number} */ (event.data);
-    this._searchableView.updateCurrentMatchIndex(index);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
   _onRequestSelected(event) {
     const request = /** @type {?SDK.NetworkRequest} */ (event.data);
     this._showRequest(request);
@@ -493,53 +468,6 @@ Network.NetworkPanel = class extends UI.Panel {
     this._detailsWidget.element.classList.toggle(
         'network-details-view-tall-header', this._networkLogLargeRowsSetting.get());
     this._networkLogView.switchViewMode(!this._splitWidget.isResizable());
-  }
-
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
-    this._networkLogView.performSearch(searchConfig, shouldJump, jumpBackwards);
-  }
-
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
-    this._networkLogView.jumpToPreviousSearchResult();
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
-    return false;
-  }
-
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
-    this._networkLogView.jumpToNextSearchResult();
-  }
-
-  /**
-   * @override
-   */
-  searchCanceled() {
-    this._networkLogView.searchCanceled();
   }
 
   /**

@@ -809,7 +809,6 @@
         {
             "type": "action",
             "actionId": "sources.search",
-            "order": 10000,
             "title": "Search",
             "className": "Sources.SearchSourcesView.ActionDelegate",
             "category": "DevTools",

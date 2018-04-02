@@ -12,23 +12,14 @@
 
 .search-drawer-header input.search-config-search {
     border: none;
-    border-radius: 2px;
-    color: #303030;
     flex-grow: 1;
-    height: 28px;
+    height: 22px;
     margin: 2px 2px 2px 2px;
-    min-width: 95px;
-    padding: 0 28px;
+    padding-left: 2px;
 }
 
 .search-drawer-header input.search-config-search:focus {
     box-shadow: var(--focus-ring-active-shadow);
-}
-
-.search-drawer-header .search-icon {
-    left: 8px;
-    top: 8px;
-    position: absolute;
 }
 
 .search-config-search::-webkit-search-cancel-button {
@@ -41,8 +32,8 @@
 
 .search-drawer-header .search-cancel-button {
     position: absolute;
-    right: 7px;
-    top: 8px;
+    right: 6px;
+    top: 6px;
 }
 
 :host-context(.platform-mac) .search-drawer-header input.search-config-search {
@@ -77,12 +68,9 @@
 }
 
 .search-container {
-    background-color: white;
-    border: #dadada 0.5px;
-    border-style: solid none;
     display: flex;
     flex-grow: 1;
-    position: relative;
+    margin: 4px;
 }
 
 .search-container:focus-within {

@@ -311,7 +311,7 @@ Sources.FileBasedSearchResult = class {
    * @return {string}
    */
   description() {
-    return this._uiSourceCode.url();
+    return this._uiSourceCode.fullDisplayName();
   }
 
   /**

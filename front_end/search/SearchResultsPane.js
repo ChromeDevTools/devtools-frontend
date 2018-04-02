@@ -90,12 +90,12 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
   _updateSearchMatches() {
     this.listItemElement.classList.add('search-result');
 
-    const fileNameSpan = createElement('span');
-    fileNameSpan.className = 'search-result-file-name';
-    fileNameSpan.textContent = this._searchResult.label();
+    const fileNameSpan = span(this._searchResult.label(), 'search-result-file-name');
+    fileNameSpan.appendChild(span('\u2014', 'search-result-dash'));
+    fileNameSpan.appendChild(span(this._searchResult.description(), 'search-result-qualifier'));
+
     this.tooltip = this._searchResult.description();
     this.listItemElement.appendChild(fileNameSpan);
-
     const matchesCountSpan = createElement('span');
     matchesCountSpan.className = 'search-result-matches-count';
 
@@ -104,6 +104,18 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
     this.listItemElement.appendChild(matchesCountSpan);
     if (this.expanded)
       this._updateMatchesUI();
+
+    /**
+     * @param {string} text
+     * @param {string} className
+     * @return {!Element}
+     */
+    function span(text, className) {
+      const span = createElement('span');
+      span.className = className;
+      span.textContent = text;
+      return span;
+    }
   }
 
   /**
@@ -148,7 +160,7 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
    */
   _appendShowMoreMatchesElement(startMatchIndex) {
     const matchesLeftCount = this._searchResult.matchesCount() - startMatchIndex;
-    const showMoreMatchesText = Common.UIString('Show all matches (%d more).', matchesLeftCount);
+    const showMoreMatchesText = Common.UIString('Show %d more', matchesLeftCount);
     const showMoreMatchesTreeElement = new UI.TreeElement(showMoreMatchesText);
     this.appendChild(showMoreMatchesTreeElement);
     showMoreMatchesTreeElement.listItemElement.classList.add('show-more-matches');
@@ -162,7 +174,9 @@ Search.SearchResultsPane.SearchResultsTreeElement = class extends UI.TreeElement
    * @return {!Element}
    */
   _createContentSpan(lineContent, matchRanges) {
-    const trimBy = matchRanges[0].offset > 20 ? matchRanges[0].offset - 15 : 0;
+    let trimBy = 0;
+    if (matchRanges.length > 0 && matchRanges[0].offset > 20)
+      trimBy = 15;
     lineContent = lineContent.substring(trimBy, 1000 + trimBy);
     if (trimBy) {
       matchRanges = matchRanges.map(range => new TextUtils.SourceRange(range.offset - trimBy + 1, range.length));

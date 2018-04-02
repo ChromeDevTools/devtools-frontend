@@ -29,7 +29,6 @@
  */
 
 /**
- * @implements {UI.Searchable}
  * @implements {SDK.SDKModelObserver<!SDK.NetworkManager>}
  */
 Network.NetworkLogView = class extends UI.VBox {
@@ -80,7 +79,6 @@ Network.NetworkLogView = class extends UI.VBox {
     this._mainRequestLoadTime = -1;
     /** @type {number} */
     this._mainRequestDOMContentLoadedTime = -1;
-    this._matchedRequestCount = 0;
     this._highlightedSubstringChanges = [];
 
     /** @type {!Array.<!Network.NetworkLogView.Filter>} */
@@ -93,13 +91,8 @@ Network.NetworkLogView = class extends UI.VBox {
     this._recordingHint = null;
     /** @type {?number} */
     this._refreshRequestId = null;
-    /** @type {?RegExp} */
-    this._searchRegex = null;
     /** @type {?Network.NetworkRequestNode} */
     this._highlightedNode = null;
-
-    this._currentMatchedRequestNode = null;
-    this._currentMatchedRequestIndex = -1;
 
     this.linkifier = new Components.Linkifier();
     this.badgePool = new ProductRegistry.BadgePool();
@@ -992,19 +985,11 @@ Network.NetworkLogView = class extends UI.VBox {
       nodesToInsert.set(node, newParent);
     }
 
-    for (const node of nodesToInsert.keys()) {
-      const parent = nodesToInsert.get(node);
-      const request = node.request();
-      if (request)
-        node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(request);
-      parent.appendChild(node);
-    }
+    for (const node of nodesToInsert.keys())
+      nodesToInsert.get(node).appendChild(node);
 
     for (const node of nodesToRefresh)
       node.refresh();
-
-    this._highlightNthMatchedRequestForSearch(
-        this._updateMatchCountAndFindMatchIndex(this._currentMatchedRequestNode), false);
 
     this._updateSummaryBar();
 
@@ -1034,8 +1019,6 @@ Network.NetworkLogView = class extends UI.VBox {
 
   _reset() {
     this.dispatchEventToListeners(Network.NetworkLogView.Events.RequestSelected, null);
-
-    this._clearSearchMatchedList();
 
     this._setHoveredNode(null);
     this._columns.reset();
@@ -1077,7 +1060,6 @@ Network.NetworkLogView = class extends UI.VBox {
     const node = new Network.NetworkRequestNode(this, request);
     request[Network.NetworkLogView._networkNodeSymbol] = node;
     node[Network.NetworkLogView._isFilteredOutSymbol] = true;
-    node[Network.NetworkLogView._isMatchingSearchQuerySymbol] = false;
 
     for (let redirect = request.redirectSource(); redirect; redirect = redirect.redirectSource())
       this._refreshRequest(redirect);
@@ -1348,139 +1330,11 @@ Network.NetworkLogView = class extends UI.VBox {
       SDK.multitargetNetworkManager.clearBrowserCookies();
   }
 
-  /**
-   * @param {!SDK.NetworkRequest} request
-   * @return {boolean}
-   */
-  _matchRequest(request) {
-    const re = this._searchRegex;
-    if (!re)
-      return false;
-
-    const text = this._networkLogLargeRowsSetting.get() ? request.path() + '/' + request.name() : request.name();
-    return re.test(text);
-  }
-
-  _clearSearchMatchedList() {
-    this._matchedRequestCount = -1;
-    this._currentMatchedRequestNode = null;
-    this._removeAllHighlights();
-  }
-
   _removeAllHighlights() {
     this.removeAllNodeHighlights();
     for (let i = 0; i < this._highlightedSubstringChanges.length; ++i)
       UI.revertDomChanges(this._highlightedSubstringChanges[i]);
     this._highlightedSubstringChanges = [];
-  }
-
-  dataGridSorted() {
-    this._highlightNthMatchedRequestForSearch(
-        this._updateMatchCountAndFindMatchIndex(this._currentMatchedRequestNode), false);
-  }
-
-  /**
-   * @param {number} n
-   * @param {boolean} reveal
-   */
-  _highlightNthMatchedRequestForSearch(n, reveal) {
-    this._removeAllHighlights();
-
-    /** @type {!Array.<!Network.NetworkRequestNode>} */
-    const nodes = this._dataGrid.rootNode().children;
-    let matchCount = 0;
-    let node = null;
-    for (let i = 0; i < nodes.length; ++i) {
-      if (nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol]) {
-        if (matchCount === n) {
-          node = nodes[i];
-          break;
-        }
-        matchCount++;
-      }
-    }
-    if (!node) {
-      this._currentMatchedRequestNode = null;
-      return;
-    }
-
-    const request = node.request();
-    if (reveal)
-      Common.Revealer.reveal(request);
-    const highlightedSubstringChanges = node.highlightMatchedSubstring(this._searchRegex);
-    this._highlightedSubstringChanges.push(highlightedSubstringChanges);
-
-    this._currentMatchedRequestNode = node;
-    this._currentMatchedRequestIndex = n;
-    this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchIndexUpdated, n);
-  }
-
-  /**
-   * @override
-   * @param {!UI.SearchableView.SearchConfig} searchConfig
-   * @param {boolean} shouldJump
-   * @param {boolean=} jumpBackwards
-   */
-  performSearch(searchConfig, shouldJump, jumpBackwards) {
-    const query = searchConfig.query;
-    const currentMatchedRequestNode = this._currentMatchedRequestNode;
-    this._clearSearchMatchedList();
-    this._searchRegex = createPlainTextSearchRegex(query, 'i');
-
-    /** @type {!Array.<!Network.NetworkRequestNode>} */
-    const nodes = this._dataGrid.rootNode().children;
-    for (let i = 0; i < nodes.length; ++i)
-      nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol] = this._matchRequest(nodes[i].request());
-    let newMatchedRequestIndex = this._updateMatchCountAndFindMatchIndex(currentMatchedRequestNode);
-    if (!newMatchedRequestIndex && jumpBackwards)
-      newMatchedRequestIndex = this._matchedRequestCount - 1;
-    this._highlightNthMatchedRequestForSearch(newMatchedRequestIndex, shouldJump);
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsCaseSensitiveSearch() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  supportsRegexSearch() {
-    return true;
-  }
-
-  /**
-   * @param {?Network.NetworkRequestNode} node
-   * @return {number}
-   */
-  _updateMatchCountAndFindMatchIndex(node) {
-    const nodes = this._dataGrid.rootNode().children;
-    let matchCount = 0;
-    let matchIndex = 0;
-    for (let i = 0; i < nodes.length; ++i) {
-      if (!nodes[i][Network.NetworkLogView._isMatchingSearchQuerySymbol])
-        continue;
-      if (node === nodes[i])
-        matchIndex = matchCount;
-      matchCount++;
-    }
-    if (this._matchedRequestCount !== matchCount) {
-      this._matchedRequestCount = matchCount;
-      this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchCountUpdated, matchCount);
-    }
-    return matchIndex;
-  }
-
-  /**
-   * @param {number} index
-   * @return {number}
-   */
-  _normalizeSearchResultIndex(index) {
-    return (index + this._matchedRequestCount) % this._matchedRequestCount;
   }
 
   /**
@@ -1604,35 +1458,6 @@ Network.NetworkLogView = class extends UI.VBox {
   _filterRequests() {
     this._removeAllHighlights();
     this._invalidateAllItems();
-  }
-
-  /**
-   * @override
-   */
-  jumpToPreviousSearchResult() {
-    if (!this._matchedRequestCount)
-      return;
-    const index = this._normalizeSearchResultIndex(this._currentMatchedRequestIndex - 1);
-    this._highlightNthMatchedRequestForSearch(index, true);
-  }
-
-  /**
-   * @override
-   */
-  jumpToNextSearchResult() {
-    if (!this._matchedRequestCount)
-      return;
-    const index = this._normalizeSearchResultIndex(this._currentMatchedRequestIndex + 1);
-    this._highlightNthMatchedRequestForSearch(index, true);
-  }
-
-  /**
-   * @override
-   */
-  searchCanceled() {
-    this._searchRegex = null;
-    this._clearSearchMatchedList();
-    this.dispatchEventToListeners(Network.NetworkLogView.Events.SearchCountUpdated, 0);
   }
 
   /**
@@ -1967,7 +1792,6 @@ Network.NetworkLogView = class extends UI.VBox {
 };
 
 Network.NetworkLogView._isFilteredOutSymbol = Symbol('isFilteredOut');
-Network.NetworkLogView._isMatchingSearchQuerySymbol = Symbol('isMatchingSearchQuery');
 Network.NetworkLogView._networkNodeSymbol = Symbol('NetworkNode');
 
 Network.NetworkLogView.HTTPSchemas = {
@@ -1979,9 +1803,7 @@ Network.NetworkLogView.HTTPSchemas = {
 
 /** @enum {symbol} */
 Network.NetworkLogView.Events = {
-  RequestSelected: Symbol('RequestSelected'),
-  SearchCountUpdated: Symbol('SearchCountUpdated'),
-  SearchIndexUpdated: Symbol('SearchIndexUpdated')
+  RequestSelected: Symbol('RequestSelected')
 };
 
 /** @enum {string} */

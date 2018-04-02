@@ -275,7 +275,7 @@ Network.NetworkLogViewColumns = class {
 
       const sortFunction = Network.NetworkRequestNode.RequestPropertyComparator.bind(null, this._activeWaterfallSortId);
       this._dataGrid.sortNodes(sortFunction, !this._dataGrid.isSortOrderAscending());
-      this._networkLogView.dataGridSorted();
+      this._dataGridSortedForTest();
       return;
     }
     this._waterfallColumnSortIcon.setIconType('');
@@ -285,7 +285,10 @@ Network.NetworkLogViewColumns = class {
       return;
 
     this._dataGrid.sortNodes(columnConfig.sortingFunction, !this._dataGrid.isSortOrderAscending());
-    this._networkLogView.dataGridSorted();
+    this._dataGridSortedForTest();
+  }
+
+  _dataGridSortedForTest() {
   }
 
   _updateColumns() {

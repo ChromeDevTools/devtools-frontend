@@ -55,8 +55,7 @@ li.search-result.expanded .search-result-matches-count {
 li.show-more-matches {
     color: #222;
     cursor: pointer;
-    font-weight: bold;
-    padding: 8px 0;
+    margin: 8px 0 0 -4px;
 }
 
 li.show-more-matches:hover {
@@ -64,6 +63,7 @@ li.show-more-matches:hover {
 }
 
 li.search-match {
+    margin: 2px 0;
     word-wrap: normal;
     white-space: pre;
 }
@@ -104,10 +104,19 @@ li.search-match .search-match-content {
 }
 
 ol.children.expanded {
-    padding: 4px 0;
+    padding-bottom: 4px;
 }
 
 .search-match-link {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.search-result-qualifier {
+    color: #AAA;
+}
+
+.search-result-dash {
+    color: #AAA;
+    margin: 0 4px;
 }

@@ -139,7 +139,7 @@ Network.NetworkSearchResult = class {
    * @return {string}
    */
   label() {
-    return this._request.url();
+    return this._request.displayName;
   }
 
   /**
@@ -147,7 +147,10 @@ Network.NetworkSearchResult = class {
    * @return {string}
    */
   description() {
-    return this._request.url();
+    const parsedUrl = this._request.parsedURL;
+    if (!parsedUrl)
+      return this._request.url();
+    return parsedUrl.urlWithoutScheme();
   }
 
   /**
@@ -181,7 +184,7 @@ Network.NetworkSearchResult = class {
     const location = this._locations[index];
     const header = location.requestHeader || location.responseHeader;
     if (header)
-      return header.name;
+      return `${header.name}:`;
     return location.searchMatch.lineNumber + 1;
   }
 };

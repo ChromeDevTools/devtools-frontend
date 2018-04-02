@@ -65,9 +65,6 @@ Search.SearchView = class extends UI.VBox {
     this._search.setAttribute('results', '0');
     this._search.setAttribute('size', 42);
 
-    const searchIcon = UI.Icon.create('mediumicon-search', 'search-icon');
-    searchContainer.appendChild(searchIcon);
-
     this._searchInputClearElement = UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button');
     this._searchInputClearElement.classList.add('hidden');
     this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);

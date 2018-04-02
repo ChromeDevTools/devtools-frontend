@@ -1061,6 +1061,8 @@ Timeline.TimelineUIUtils = class {
    * @return {!Object<string, number>}
    */
   static statsForTimeRange(events, startTime, endTime) {
+    if (!events.length)
+      return {'idle': endTime - startTime};
     const symbol = Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol;
     Timeline.TimelineUIUtils._buildRangeStatsCacheIfNeeded(events);
 

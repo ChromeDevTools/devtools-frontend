@@ -226,17 +226,7 @@ input {
 .harmony-input:not([type]):invalid,
 .harmony-input[type=number]:invalid,
 .harmony-input[type=text]:invalid {
-    border-color: #C53929;
-}
-
-.harmony-input:not([type]).error-input:focus,
-.harmony-input[type=number].error-input:focus,
-.harmony-input[type=text].error-input:focus,
-.harmony-input:not([type]):invalid:focus,
-.harmony-input[type=number]:invalid:focus,
-.harmony-input[type=text]:invalid:focus {
-    border-color: transparent;
-    box-shadow: 0 0 0 2px rgba(197, 57, 41, 0.4);
+    box-shadow: 0 0 0 1px #ff1a00;
 }
 
 .chrome-select {

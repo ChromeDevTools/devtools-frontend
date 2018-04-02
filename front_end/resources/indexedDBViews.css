@@ -84,6 +84,10 @@
     unicode-bidi: -webkit-isolate;
 }
 
+.source-code.indexed-db-key-path {
+    font-size: unset !important;
+}
+
 .resources-toolbar {
     padding-right: 10px;
 }

@@ -7,4 +7,5 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   flex-grow: 1;
   margin: 20px;
+  pointer-events: none;
 }

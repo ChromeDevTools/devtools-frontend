@@ -297,9 +297,18 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   /**
-   * @param {!Elements.StylePropertiesSection=} editedSection
+   * @param {!Elements.StylePropertiesSection} editedSection
+   * @param {!Elements.StylePropertyTreeElement=} editedTreeElement
    */
-  _refreshUpdate(editedSection) {
+  _refreshUpdate(editedSection, editedTreeElement) {
+    if (editedTreeElement) {
+      for (const section of this.allSections()) {
+        if (section.isBlank)
+          continue;
+        section._updateVarFunctions(editedTreeElement);
+      }
+    }
+
     if (this._isEditingStyle)
       return;
     const node = this.node();
@@ -1276,8 +1285,23 @@ Elements.StylePropertiesSection = class {
     return (curSection && curSection.editable) ? curSection : null;
   }
 
-  refreshUpdate() {
-    this._parentPane._refreshUpdate(this);
+  /**
+   * @param {!Elements.StylePropertyTreeElement} editedTreeElement
+   */
+  refreshUpdate(editedTreeElement) {
+    this._parentPane._refreshUpdate(this, editedTreeElement);
+  }
+
+  /**
+   * @param {!Elements.StylePropertyTreeElement} editedTreeElement
+   */
+  _updateVarFunctions(editedTreeElement) {
+    let child = this.propertiesTreeOutline.firstChild();
+    while (child) {
+      if (child !== editedTreeElement)
+        child.updateTitleIfComputedValueChanged();
+      child = child.traverseNextTreeElement(false /* skipUnrevealed */, null /* stayWithin */, true /* dontPopulate */);
+    }
   }
 
   /**
@@ -1292,7 +1316,8 @@ Elements.StylePropertiesSection = class {
       let child = this.propertiesTreeOutline.firstChild();
       while (child) {
         child.setOverloaded(this._isPropertyOverloaded(child.property));
-        child = child.traverseNextTreeElement(false, null, true);
+        child =
+            child.traverseNextTreeElement(false /* skipUnrevealed */, null /* stayWithin */, true /* dontPopulate */);
       }
     }
   }

@@ -34,6 +34,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._originalPropertyText = '';
     this._prompt = null;
     this._propertyHasBeenEditedIncrementally = false;
+    this._lastComputedValue = null;
   }
 
   /**
@@ -280,7 +281,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   _updatePane() {
     const section = this.section();
     if (section)
-      section.refreshUpdate();
+      section.refreshUpdate(this);
   }
 
   /**
@@ -378,7 +379,20 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       this._expandElement.setIconType('smallicon-triangle-right');
   }
 
+  updateTitleIfComputedValueChanged() {
+    const computedValue = this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value);
+    if (computedValue === this._lastComputedValue)
+      return;
+    this._lastComputedValue = computedValue;
+    this._innerUpdateTitle();
+  }
+
   updateTitle() {
+    this._lastComputedValue = this._matchedStyles.computeValue(this.property.ownerStyle, this.property.value);
+    this._innerUpdateTitle();
+  }
+
+  _innerUpdateTitle() {
     this._updateState();
     if (this.isExpandable())
       this._expandElement = UI.Icon.create('smallicon-triangle-right', 'expand-icon');

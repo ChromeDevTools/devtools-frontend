@@ -276,6 +276,10 @@ ElementsTestRunner.waitForStyleApplied = function(callback) {
   TestRunner.addSniffer(Elements.StylePropertyTreeElement.prototype, 'styleTextAppliedForTest', callback);
 };
 
+ElementsTestRunner.waitForStyleAppliedPromise = function() {
+  return new Promise(resolve => ElementsTestRunner.waitForStyleApplied(resolve));
+};
+
 ElementsTestRunner.selectNodeAndWaitForStyles = function(idValue, callback) {
   callback = TestRunner.safeWrap(callback);
   let targetNode;

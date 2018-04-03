@@ -5,7 +5,7 @@
  */
 
 .search-bar {
-    flex: 0 0 29px;
+    flex: 0 0 31px;
     background-color: #eee;
     border-top: 1px solid #ccc;
     display: flex;
@@ -14,7 +14,7 @@
 }
 
 .search-bar.replaceable {
-    flex: 0 0 55px;
+    flex: 0 0 57px;
 }
 
 .search-replace {
@@ -35,7 +35,7 @@
 }
 
 .toolbar-search > div {
-    margin: 0px 2px;
+    margin: 2px 2px;
     flex-shrink: 0;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .toolbar-search > .replace-toggle-toolbar {
-    margin: 0 -3px 0 0;
+    margin: 2px -2px 0 0;
 }
 
 .toolbar-search-options {

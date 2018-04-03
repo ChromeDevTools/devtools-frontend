@@ -53,6 +53,15 @@
     background-color: rgb(171, 191, 254);
 }
 
+.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location {
+    background-color: #14522b;
+}
+
+.-theme-with-dark-background .CodeMirror .source-frame-continue-to-location:hover {
+    border: 1px solid #33cc6b;
+    background-color: #14522b;
+}
+
 .CodeMirror .source-frame-continue-to-location-start {
     border-left-width: 1px;
     margin-left: -1px;
@@ -123,7 +132,6 @@
 .cm-readonly-highlight {
     background-color: rgb(255, 255, 120);
 }
-
 .-theme-with-dark-background .cm-readonly-highlight {
     background-color: hsla(133, 100%, 30%, 0.5);
 }
@@ -131,9 +139,17 @@
 .cm-highlight.cm-execution-line {
     -webkit-animation: fadeout-execution-line 1s 0s;
 }
+.-theme-with-dark-background .cm-highlight.cm-execution-line {
+    -webkit-animation: fadeout-execution-line-dark 1s 0s;
+}
+
 @-webkit-keyframes fadeout-execution-line {
     from {background-color: rgb(121, 141, 254); }
     to { background-color: rgb(171, 191, 254); }
+}
+@-webkit-keyframes fadeout-execution-line-dark {
+    from {background-color: #208043; }
+    to { background-color: #14522b; }
 }
 
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, -theme-preserve {
@@ -164,6 +180,10 @@
     -webkit-border-image: url(Images/breakpointConditional_2x.png) 2 8 2 2;
 }
 } /* media */
+
+.-theme-with-dark-background .cm-breakpoint:not(.cm-breakpoint-conditional) .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
+    filter: hue-rotate(-139deg);
+}
 
 .cm-breakpoint-disabled .CodeMirror-linenumber {
     opacity: 0.5;
@@ -285,11 +305,15 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {
 }
 
 .-theme-with-dark-background .cm-execution-line {
-    outline: 1px solid var(--selection-color);
+    background-color: #14522b;
+}
+
+.-theme-with-dark-background .cm-execution-line-outline {
+    outline: 1px solid #33cc6b;
 }
 
 .-theme-with-dark-background .cm-execution-line-tail {
-    background-color: var(--selection-color);
+    background-color: #347132;
 }
 
 .cm-token-highlight {

@@ -62,9 +62,9 @@
 .source-frame-breakpoint-condition {
     z-index: 30;
     padding: 4px;
-    background-color: rgb(203, 226, 255);
+    background-color: #e6e6e6;
     border-radius: 7px;
-    border: 2px solid rgb(169, 172, 203);
+    border: 2px solid #bababa;
     width: 90%;
     pointer-events: auto;
 }

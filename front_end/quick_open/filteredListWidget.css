@@ -66,6 +66,10 @@
     background-color: #f0f0f0;
 }
 
+:host-context(.-theme-with-dark-background) .filtered-list-widget-item.selected {
+    background-color: #333333;
+}
+
 .filtered-list-widget-item span.highlight {
     color: #222;
     font-weight: bold;

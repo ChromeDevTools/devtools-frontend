@@ -151,7 +151,7 @@ Host.InspectorFrontendHostStub = class {
    * @suppressGlobalPropertiesCheck
    */
   inspectedURLChanged(url) {
-    document.title = Common.UIString('Developer Tools - %s', url);
+    document.title = Common.UIString('DevTools - %s', url.replace(/^https?:\/\//, ''));
   }
 
   /**

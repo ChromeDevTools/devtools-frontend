@@ -364,7 +364,7 @@ UI.ViewManager = class {
       return location.showView(view, undefined, userGesture, omitFocus);
     }
 
-    return this._resolveLocation(locationName).then(location => {
+    return this.resolveLocation(locationName).then(location => {
       if (!location)
         throw new Error('Could not resolve location for view: ' + viewId);
       location._reveal();
@@ -376,7 +376,7 @@ UI.ViewManager = class {
    * @param {string=} location
    * @return {!Promise<?UI.ViewManager._Location>}
    */
-  _resolveLocation(location) {
+  resolveLocation(location) {
     if (!location)
       return /** @type {!Promise<?UI.ViewManager._Location>} */ (Promise.resolve(null));
 
@@ -730,10 +730,12 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
   appendView(view, insertBefore) {
     if (this._tabbedPane.hasTab(view.viewId()))
       return;
+    const oldLocation = view[UI.ViewManager._Location.symbol];
+    if (oldLocation && oldLocation !== this)
+      oldLocation.removeView(view);
     view[UI.ViewManager._Location.symbol] = this;
     this._manager._views.set(view.viewId(), view);
     this._views.set(view.viewId(), view);
-
     let index = undefined;
     const tabIds = this._tabbedPane.tabIds();
     if (this._allowReorder) {
@@ -793,8 +795,8 @@ UI.ViewManager._TabbedLocation = class extends UI.ViewManager._Location {
 
     delete view[UI.ViewManager._Location.symbol];
     this._manager._views.delete(view.viewId());
-    this._views.delete(view.viewId());
     this._tabbedPane.closeTab(view.viewId());
+    this._views.delete(view.viewId());
   }
 
   /**
@@ -858,6 +860,10 @@ UI.ViewManager._StackLocation = class extends UI.ViewManager._Location {
    * @param {?UI.View=} insertBefore
    */
   appendView(view, insertBefore) {
+    const oldLocation = view[UI.ViewManager._Location.symbol];
+    if (oldLocation && oldLocation !== this)
+      oldLocation.removeView(view);
+
     let container = this._expandableContainers.get(view.viewId());
     if (!container) {
       view[UI.ViewManager._Location.symbol] = this;

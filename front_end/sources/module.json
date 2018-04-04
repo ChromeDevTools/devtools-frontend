@@ -317,11 +317,11 @@
         },
         {
             "type": "view",
-            "location": "navigator-view",
+            "location": "drawer-view",
             "id": "sources.search-sources-tab",
             "title": "Search",
             "order": 7,
-            "persistence": "permanent",
+            "persistence": "closeable",
             "className": "Sources.SearchSourcesView"
         },
         {

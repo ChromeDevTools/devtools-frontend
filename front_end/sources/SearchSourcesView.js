@@ -10,14 +10,18 @@ Sources.SearchSourcesView = class extends Search.SearchView {
   /**
    * @param {string} query
    * @param {boolean=} searchImmediately
-   * @return {!Promise<!Search.SearchView>}
+   * @return {!Promise}
    */
   static async openSearch(query, searchImmediately) {
-    await UI.viewManager.showView('sources.search-sources-tab');
-    const searchView =
-        /** @type {!Search.SearchView} */ (self.runtime.sharedInstance(Sources.SearchSourcesView));
-    searchView.toggle(query, !!searchImmediately);
-    return searchView;
+    const view = UI.viewManager.view('sources.search-sources-tab');
+    // Deliberately use target location name so that it could be changed
+    // based on the setting later.
+    const location = await UI.viewManager.resolveLocation('drawer-view');
+    location.appendView(view);
+    await UI.viewManager.revealView(/** @type {!UI.View} */ (view));
+    const widget = /** @type {!Search.SearchView} */ (await view.widget());
+    widget.toggle(query, !!searchImmediately);
+    return widget;
   }
 
   /**

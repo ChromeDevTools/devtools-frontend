@@ -5,10 +5,6 @@
  * @unrestricted
  */
 UI.HistoryInput = class extends HTMLInputElement {
-  constructor() {
-    super();
-  }
-
   /**
    * @return {!UI.HistoryInput}
    */

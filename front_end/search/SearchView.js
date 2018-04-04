@@ -35,16 +35,27 @@ Search.SearchView = class extends UI.VBox {
 
     this._searchPanelElement = this.contentElement.createChild('div', 'search-drawer-header');
     this._searchPanelElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this._searchPanelElement.addEventListener('input', this._onInput.bind(this), false);
 
     this._searchResultsElement = this.contentElement.createChild('div');
     this._searchResultsElement.className = 'search-results';
+
+    const searchContainer = createElement('div');
+    searchContainer.style.flex = 'auto';
+    searchContainer.style.justifyContent = 'start';
+    searchContainer.style.maxWidth = '300px';
+    this._search = UI.HistoryInput.create();
+    searchContainer.appendChild(this._search);
+    this._search.placeholder = Common.UIString('Search');
+    this._search.setAttribute('type', 'text');
+    this._search.setAttribute('results', '0');
+    this._search.setAttribute('size', 42);
+    const searchItem = new UI.ToolbarItem(searchContainer);
 
     const toolbar = new UI.Toolbar('search-toolbar', this._searchPanelElement);
     this._matchCaseButton = Search.SearchView._appendToolbarToggle(toolbar, 'Aa', Common.UIString('Match Case'));
     this._regexButton =
         Search.SearchView._appendToolbarToggle(toolbar, '.*', Common.UIString('Use Regular Expression'));
-    toolbar.appendSpacer();
+    toolbar.appendToolbarItem(searchItem);
     const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
     toolbar.appendToolbarItem(refreshButton);
@@ -54,23 +65,6 @@ Search.SearchView = class extends UI.VBox {
       this._resetSearch();
       this._onSearchInputClear();
     });
-
-    const searchContainer = this._searchPanelElement.createChild('div', 'search-container');
-
-    this._search = UI.HistoryInput.create();
-    searchContainer.appendChild(this._search);
-    this._search.placeholder = Common.UIString('Search');
-    this._search.setAttribute('type', 'text');
-    this._search.classList.add('search-config-search');
-    this._search.setAttribute('results', '0');
-    this._search.setAttribute('size', 42);
-
-    this._searchInputClearElement = UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button');
-    this._searchInputClearElement.classList.add('hidden');
-    this._searchInputClearElement.addEventListener('click', this._onSearchInputClear.bind(this), false);
-    const cancelButtonContainer = searchContainer.createChild('div', 'search-cancel-button-container');
-    cancelButtonContainer.appendChild(this._searchInputClearElement);
-
 
     const searchStatusBarElement = this.contentElement.createChild('div', 'search-toolbar-summary');
     this._searchMessageElement = searchStatusBarElement.createChild('div', 'search-message');
@@ -177,7 +171,6 @@ Search.SearchView = class extends UI.VBox {
   _onSearchInputClear() {
     this._search.value = '';
     this.focus();
-    this._searchInputClearElement.classList.add('hidden');
   }
 
   /**
@@ -357,11 +350,6 @@ Search.SearchView = class extends UI.VBox {
     }
   }
 
-  _onInput() {
-    const hasText = this._search.value && this._search.value.length;
-    this._searchInputClearElement.classList.toggle('hidden', !hasText);
-  }
-
   _save() {
     this._advancedSearchConfig.set(this._buildSearchConfig().toPlainObject());
   }
@@ -371,9 +359,6 @@ Search.SearchView = class extends UI.VBox {
     this._search.value = searchConfig.query();
     this._matchCaseButton.setToggled(!searchConfig.ignoreCase());
     this._regexButton.setToggled(searchConfig.isRegex());
-
-    if (this._search.value && this._search.value.length)
-      this._searchInputClearElement.classList.remove('hidden');
   }
 
   _onAction() {

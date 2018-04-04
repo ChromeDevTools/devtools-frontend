@@ -327,3 +327,17 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
     width: 28px;
     left: -2px;
 }
+
+input[is=history-input] {
+    border: none;
+    line-height: 16px;
+    padding: 1px;
+}
+
+input[is=history-input]:hover {
+    box-shadow: var(--focus-ring-inactive-shadow);
+}
+
+input[is=history-input]:focus {
+    box-shadow: var(--focus-ring-active-shadow);
+}

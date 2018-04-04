@@ -301,13 +301,12 @@
     width: 40px;
     overflow: hidden;
     text-align: center;
-    border: var(--divider-border);
-    border-radius: 2px;
     margin-right: 6px;
     line-height: 20px;
     padding: 0;
     color: #333;
     white-space: nowrap;
+    box-shadow: var(--focus-ring-inactive-shadow);
 }
 
 .spectrum-text-label {

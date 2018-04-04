@@ -9,10 +9,15 @@
     padding: 4px 12px 12px 12px;
 }
 
+.shadow-editor-field:last-of-type {
+    margin-bottom: 8px;
+}
+
 .shadow-editor-field {
     height: 24px;
     margin-top: 8px;
     font-size: 12px;
+    flex-shrink: 0;
 }
 
 .shadow-editor-flex-field {

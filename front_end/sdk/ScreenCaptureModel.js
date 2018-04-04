@@ -173,9 +173,10 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    * @param {string} url
    * @param {string} message
    * @param {string} dialogType
+   * @param {boolean} hasBrowserHandler
    * @param {string=} prompt
    */
-  javascriptDialogOpening(url, message, dialogType, prompt) {
+  javascriptDialogOpening(url, message, dialogType, hasBrowserHandler, prompt) {
   }
 
   /**

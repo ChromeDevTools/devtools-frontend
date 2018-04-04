@@ -877,9 +877,12 @@ SDK.PageDispatcher = class {
    * @param {string} url
    * @param {string} message
    * @param {string} dialogType
+   * @param {boolean} hasBrowserHandler
    * @param {string=} prompt
    */
-  javascriptDialogOpening(url, message, dialogType, prompt) {
+  javascriptDialogOpening(url, message, dialogType, hasBrowserHandler, prompt) {
+    if (!hasBrowserHandler)
+      this._resourceTreeModel._agent.handleJavaScriptDialog(false);
   }
 
   /**

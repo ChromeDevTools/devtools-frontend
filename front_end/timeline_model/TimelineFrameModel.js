@@ -239,11 +239,18 @@ TimelineModel.TimelineFrameModel = class {
   /**
    * @param {?SDK.Target} target
    * @param {!Array.<!SDK.TracingModel.Event>} events
+   * @param {!Array<!{thread: !SDK.TracingModel.Thread, time: number}>} threadData
    */
-  addTraceEvents(target, events) {
+  addTraceEvents(target, events, threadData) {
     this._target = target;
-    for (let i = 0; i < events.length; ++i)
+    let j = 0;
+    this._currentProcessMainThread = threadData.length && threadData[0].thread || null;
+    for (let i = 0; i < events.length; ++i) {
+      while (j + 1 < threadData.length && threadData[j + 1].time <= events[i].startTime)
+        this._currentProcessMainThread = threadData[++j].thread;
       this._addTraceEvent(events[i]);
+    }
+    this._currentProcessMainThread = null;
   }
 
   /**
@@ -256,8 +263,6 @@ TimelineModel.TimelineFrameModel = class {
 
     if (event.name === eventNames.SetLayerTreeId) {
       this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId'];
-    } else if (event.name === eventNames.TracingStartedInPage) {
-      this._currentProcessMainThread = event.thread;
     } else if (
         event.phase === SDK.TracingModel.Phase.SnapshotObject && event.name === eventNames.LayerTreeHostImplSnapshot &&
         parseInt(event.id, 0) === this._layerTreeId) {

@@ -63,7 +63,14 @@ Timeline.PerformanceModel = class extends Common.Object {
     if (inputEvents || animationEvents)
       this._irModel.populate(inputEvents || [], animationEvents || []);
 
-    this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents());
+    const mainTracks = this._timelineModel.tracks().filter(
+        track => track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame &&
+            track.events.length);
+    const threadData = mainTracks.map(track => {
+      const event = track.events[0];
+      return {thread: event.thread, time: event.startTime};
+    });
+    this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents(), threadData);
 
     for (const entry of this._extensionTracingModels) {
       entry.model.adjustTime(

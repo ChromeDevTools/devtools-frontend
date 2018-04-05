@@ -240,7 +240,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     };
 
     const tracks = this._model.tracks().slice();
-    tracks.sort((a, b) => weight(a) - weight(b));
+    tracks.stableSort((a, b) => weight(a) - weight(b));
     let rasterCount = 0;
     for (const track of tracks) {
       switch (track.type) {
@@ -265,19 +265,19 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
         case TimelineModel.TimelineModel.TrackType.MainThread:
           if (track.forMainFrame) {
             const group = this._appendSyncEvents(
-                track, track.events, ls`Main`, this._headerLevel1, eventEntryType, true /* selectable */);
-            if (group) {
-              group.expanded = true;
+                track, track.events, track.url ? ls`Main \u2014 ${track.url}` : ls`Main`, this._headerLevel1,
+                eventEntryType, true /* selectable */);
+            if (group)
               this._timelineData.selectedGroup = group;
-            }
           } else {
             this._appendSyncEvents(
-                track, track.events, track.name, this._headerLevel2, eventEntryType, true /* selectable */);
+                track, track.events, track.url ? ls`Frame \u2014 ${track.url}` : ls`Subframe`, this._headerLevel1,
+                eventEntryType, true /* selectable */);
           }
           break;
         case TimelineModel.TimelineModel.TrackType.Worker:
           this._appendSyncEvents(
-              track, track.events, track.workerUrl ? ls`Worker ${track.workerUrl}` : ls`Dedicated worker`,
+              track, track.events, track.url ? ls`Worker \u2014 ${track.url}` : ls`Dedicated Worker`,
               this._headerLevel1, eventEntryType, true /* selectable */);
           break;
         case TimelineModel.TimelineModel.TrackType.Raster:
@@ -300,6 +300,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
           break;
       }
     }
+    if (this._timelineData.selectedGroup)
+      this._timelineData.selectedGroup.expanded = true;
 
     for (let extensionIndex = 0; extensionIndex < this._extensionInfo.length; extensionIndex++)
       this._innerAppendExtensionEvents(extensionIndex);

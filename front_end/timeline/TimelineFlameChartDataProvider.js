@@ -49,6 +49,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._performanceModel = null;
     /** @type {?TimelineModel.TimelineModel} */
     this._model = null;
+    this._minimumBoundary = 0;
+    this._maximumBoundary = 0;
+    this._timeSpan = 0;
 
     this._consoleColorGenerator =
         new Common.Color.Generator({min: 30, max: 55}, {min: 70, max: 100, count: 6}, 50, 0.7);

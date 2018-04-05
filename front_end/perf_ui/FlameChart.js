@@ -37,8 +37,9 @@ PerfUI.FlameChartDelegate.prototype = {
   /**
    * @param {number} startTime
    * @param {number} endTime
+   * @param {boolean} animate
    */
-  requestWindowTimes(startTime, endTime) {},
+  requestWindowTimes(startTime, endTime, animate) {},
 
   /**
    * @param {number} startTime
@@ -55,6 +56,7 @@ PerfUI.FlameChartDelegate.prototype = {
 
 /**
  * @unrestricted
+ * @implements {PerfUI.TimelineGrid.Calculator}
  * @implements {PerfUI.ChartViewportDelegate}
  */
 PerfUI.FlameChart = class extends UI.VBox {
@@ -75,7 +77,6 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._chartViewport.show(this.contentElement);
 
     this._dataProvider = dataProvider;
-    this._calculator = new PerfUI.FlameChart.Calculator(dataProvider);
 
     this._viewportElement = this._chartViewport.viewportElement;
     this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas'));
@@ -97,17 +98,14 @@ PerfUI.FlameChart = class extends UI.VBox {
         null);
 
     this._rulerEnabled = true;
-    this._windowLeft = 0.0;
-    this._windowRight = 1.0;
-    this._timeWindowLeft = dataProvider.minimumBoundary();
-    this._timeWindowRight = this._timeWindowLeft + dataProvider.totalTime();
     this._rangeSelectionStart = 0;
     this._rangeSelectionEnd = 0;
     this._barHeight = 17;
     this._textBaseline = 5;
     this._textPadding = 5;
     this._markerRadius = 6;
-    this._chartViewport.setWindowTimes(this._timeWindowLeft, this._timeWindowRight);
+    this._chartViewport.setWindowTimes(
+        dataProvider.minimumBoundary(), dataProvider.minimumBoundary() + dataProvider.totalTime());
 
     /** @const */
     this._headerLeftPadding = 6;
@@ -212,9 +210,10 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @override
    * @param {number} startTime
    * @param {number} endTime
+   * @param {boolean} animate
    */
-  requestWindowTimes(startTime, endTime) {
-    this._flameChartDelegate.requestWindowTimes(startTime, endTime);
+  requestWindowTimes(startTime, endTime, animate) {
+    this._flameChartDelegate.requestWindowTimes(startTime, endTime, animate);
   }
 
   /**
@@ -282,8 +281,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     const timelineData = this._timelineData();
     if (!timelineData)
       return;
-    const timeLeft = this._timeWindowLeft;
-    const timeRight = this._timeWindowRight;
+    const timeLeft = this._chartViewport.windowLeftTime();
+    const timeRight = this._chartViewport.windowRightTime();
     const entryStartTime = timelineData.entryStartTimes[entryIndex];
     const entryTotalTime = timelineData.entryTotalTimes[entryIndex];
     const entryEndTime = entryStartTime + entryTotalTime;
@@ -297,21 +296,20 @@ PerfUI.FlameChart = class extends UI.VBox {
     minEntryTimeWindow = Math.max(minEntryTimeWindow, futurePixelToTime * minVisibleWidthPx);
     if (timeLeft > entryEndTime) {
       const delta = timeLeft - entryEndTime + minEntryTimeWindow;
-      this.requestWindowTimes(timeLeft - delta, timeRight - delta);
+      this.requestWindowTimes(timeLeft - delta, timeRight - delta, /* animate */ true);
     } else if (timeRight < entryStartTime) {
       const delta = entryStartTime - timeRight + minEntryTimeWindow;
-      this.requestWindowTimes(timeLeft + delta, timeRight + delta);
+      this.requestWindowTimes(timeLeft + delta, timeRight + delta, /* animate */ true);
     }
   }
 
   /**
    * @param {number} startTime
    * @param {number} endTime
+   * @param {boolean=} animate
    */
-  setWindowTimes(startTime, endTime) {
-    this._chartViewport.setWindowTimes(startTime, endTime);
-    this._timeWindowLeft = startTime;
-    this._timeWindowRight = endTime;
+  setWindowTimes(startTime, endTime, animate) {
+    this._chartViewport.setWindowTimes(startTime, endTime, animate);
     this._updateHighlight();
   }
 
@@ -720,13 +718,15 @@ PerfUI.FlameChart = class extends UI.VBox {
       // Entries are ordered by start time within a level, so find the last visible entry.
       const levelIndexes = this._timelineLevels[level];
       const rightIndexOnLevel =
-          levelIndexes.lowerBound(this._timeWindowRight, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1;
+          levelIndexes.lowerBound(
+              this._chartViewport.windowRightTime(), (time, entryIndex) => time - entryStartTimes[entryIndex]) -
+          1;
       let lastDrawOffset = Infinity;
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
         const entryIndex = levelIndexes[entryIndexOnLevel];
         const entryStartTime = entryStartTimes[entryIndex];
         const entryOffsetRight = entryStartTime + (entryTotalTimes[entryIndex] || 0);
-        if (entryOffsetRight <= this._timeWindowLeft)
+        if (entryOffsetRight <= this._chartViewport.windowLeftTime())
           break;
 
         const barX = this._timeToPositionClipped(entryStartTime);
@@ -821,11 +821,11 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._drawGroupHeaders(width, height);
     this._drawFlowEvents(context, width, height);
     this._drawMarkers();
-    const dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(this._calculator);
+    const dividersData = PerfUI.TimelineGrid.calculateGridOffsets(this);
     PerfUI.TimelineGrid.drawCanvasGrid(context, dividersData);
     if (this._rulerEnabled) {
       PerfUI.TimelineGrid.drawCanvasHeaders(
-          context, dividersData, time => this._calculator.formatValue(time, dividersData.precision), 3,
+          context, dividersData, time => this.formatValue(time, dividersData.precision), 3,
           PerfUI.FlameChart.HeaderHeight);
     }
 
@@ -1015,8 +1015,8 @@ PerfUI.FlameChart = class extends UI.VBox {
    */
   _drawCollapsedOverviewForGroup(group, y, endLevel) {
     const range = new Common.SegmentedRange(mergeCallback);
-    const timeWindowRight = this._timeWindowRight;
-    const timeWindowLeft = this._timeWindowLeft;
+    const timeWindowLeft = this._chartViewport.windowLeftTime();
+    const timeWindowRight = this._chartViewport.windowRightTime();
     const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
     const barHeight = group.style.height;
     const entryStartTimes = this._rawTimelineData.entryStartTimes;
@@ -1096,11 +1096,11 @@ PerfUI.FlameChart = class extends UI.VBox {
     context.fillStyle = '#7f5050';
     context.strokeStyle = '#7f5050';
     const td = this._timelineData();
-    const endIndex = td.flowStartTimes.lowerBound(this._timeWindowRight);
+    const endIndex = td.flowStartTimes.lowerBound(this._chartViewport.windowRightTime());
 
     context.lineWidth = 0.5;
     for (let i = 0; i < endIndex; ++i) {
-      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._timeWindowLeft)
+      if (!td.flowEndTimes[i] || td.flowEndTimes[i] < this._chartViewport.windowLeftTime())
         continue;
       const startX = this._chartViewport.timeToPosition(td.flowStartTimes[i]);
       const endX = this._chartViewport.timeToPosition(td.flowEndTimes[i]);
@@ -1150,8 +1150,8 @@ PerfUI.FlameChart = class extends UI.VBox {
 
   _drawMarkers() {
     const markers = this._timelineData().markers;
-    const left = this._markerIndexBeforeTime(this._calculator.minimumBoundary());
-    const rightBoundary = this._calculator.maximumBoundary();
+    const left = this._markerIndexBeforeTime(this.minimumBoundary());
+    const rightBoundary = this.maximumBoundary();
     const timeToPixel = this._chartViewport.timeToPixel();
 
     const context = /** @type {!CanvasRenderingContext2D} */ (this._canvas.getContext('2d'));
@@ -1164,7 +1164,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       const timestamp = markers[i].startTime();
       if (timestamp > rightBoundary)
         break;
-      markers[i].draw(context, this._calculator.computePosition(timestamp), height, timeToPixel);
+      markers[i].draw(context, this._chartViewport.timeToPosition(timestamp), height, timeToPixel);
     }
     context.restore();
   }
@@ -1384,23 +1384,6 @@ PerfUI.FlameChart = class extends UI.VBox {
   _updateBoundaries() {
     this._totalTime = this._dataProvider.totalTime();
     this._minimumBoundary = this._dataProvider.minimumBoundary();
-
-    let windowWidth = 1;
-    if (this._timeWindowRight !== Infinity) {
-      this._windowLeft = (this._timeWindowLeft - this._minimumBoundary) / this._totalTime;
-      this._windowRight = (this._timeWindowRight - this._minimumBoundary) / this._totalTime;
-      windowWidth = this._windowRight - this._windowLeft;
-    } else if (this._timeWindowLeft === Infinity) {
-      this._windowLeft = Infinity;
-      this._windowRight = Infinity;
-    } else {
-      this._windowLeft = 0;
-      this._windowRight = 1;
-    }
-
-    const totalPixels = Math.floor(this._offsetWidth / windowWidth);
-    this._pixelWindowLeft = Math.floor(totalPixels * this._windowLeft);
-
     this._chartViewport.setBoundaries(this._minimumBoundary, this._totalTime);
   }
 
@@ -1425,7 +1408,6 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._resetCanvas();
     this._updateHeight();
     this._updateBoundaries();
-    this._calculator._updateBoundaries(this);
     this._draw();
     if (!this._chartViewport.isDragging())
       this._updateHighlight();
@@ -1449,6 +1431,57 @@ PerfUI.FlameChart = class extends UI.VBox {
 
   _enabled() {
     return this._rawTimelineDataLength !== 0;
+  }
+
+  /**
+   * @override
+   * @param {number} time
+   * @return {number}
+   */
+  computePosition(time) {
+    return this._chartViewport.timeToPosition(time);
+  }
+
+  /**
+   * @override
+   * @param {number} value
+   * @param {number=} precision
+   * @return {string}
+   */
+  formatValue(value, precision) {
+    return this._dataProvider.formatValue(value - this.zeroTime(), precision);
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  maximumBoundary() {
+    return this._chartViewport.windowRightTime();
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  minimumBoundary() {
+    return this._chartViewport.windowLeftTime();
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  zeroTime() {
+    return this._dataProvider.minimumBoundary();
+  }
+
+  /**
+   * @override
+   * @return {number}
+   */
+  boundarySpan() {
+    return this._dataProvider.totalTime();
   }
 };
 
@@ -1639,80 +1672,4 @@ PerfUI.FlameChart.Events = {
 PerfUI.FlameChart.Colors = {
   SelectedGroupBackground: 'hsl(215, 85%, 98%)',
   SelectedGroupBorder: 'hsl(216, 68%, 54%)',
-};
-
-/**
- * @implements {PerfUI.TimelineGrid.Calculator}
- * @unrestricted
- */
-PerfUI.FlameChart.Calculator = class {
-  /**
-   * @param {!PerfUI.FlameChartDataProvider} dataProvider
-   */
-  constructor(dataProvider) {
-    this._dataProvider = dataProvider;
-  }
-
-  /**
-   * @param {!PerfUI.FlameChart} mainPane
-   */
-  _updateBoundaries(mainPane) {
-    this._totalTime = mainPane._dataProvider.totalTime();
-    this._zeroTime = mainPane._dataProvider.minimumBoundary();
-    this._minimumBoundaries = this._zeroTime + mainPane._windowLeft * this._totalTime;
-    this._maximumBoundaries = this._zeroTime + mainPane._windowRight * this._totalTime;
-    this._width = mainPane._offsetWidth;
-    this._timeToPixel = this._width / this.boundarySpan();
-  }
-
-  /**
-   * @override
-   * @param {number} time
-   * @return {number}
-   */
-  computePosition(time) {
-    return Math.round((time - this._minimumBoundaries) * this._timeToPixel);
-  }
-
-  /**
-   * @override
-   * @param {number} value
-   * @param {number=} precision
-   * @return {string}
-   */
-  formatValue(value, precision) {
-    return this._dataProvider.formatValue(value - this._zeroTime, precision);
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  maximumBoundary() {
-    return this._maximumBoundaries;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  minimumBoundary() {
-    return this._minimumBoundaries;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  zeroTime() {
-    return this._zeroTime;
-  }
-
-  /**
-   * @override
-   * @return {number}
-   */
-  boundarySpan() {
-    return this._maximumBoundaries - this._minimumBoundaries;
-  }
 };

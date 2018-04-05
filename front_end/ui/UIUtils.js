@@ -1043,43 +1043,24 @@ UI.invokeOnceAfterBatchUpdate = function(object, method) {
  * @param {!Window} window
  * @param {!Function} func
  * @param {!Array.<{from:number, to:number}>} params
- * @param {number} frames
+ * @param {number} duration
  * @param {function()=} animationComplete
  * @return {function()}
  */
-UI.animateFunction = function(window, func, params, frames, animationComplete) {
-  const values = new Array(params.length);
-  const deltas = new Array(params.length);
-  for (let i = 0; i < params.length; ++i) {
-    values[i] = params[i].from;
-    deltas[i] = (params[i].to - params[i].from) / frames;
-  }
-
+UI.animateFunction = function(window, func, params, duration, animationComplete) {
+  const start = window.performance.now();
   let raf = window.requestAnimationFrame(animationStep);
 
-  let framesLeft = frames;
-
-  function animationStep() {
-    if (--framesLeft < 0) {
-      if (animationComplete)
-        animationComplete();
-      return;
-    }
-    for (let i = 0; i < params.length; ++i) {
-      if (params[i].to > params[i].from)
-        values[i] = Number.constrain(values[i] + deltas[i], params[i].from, params[i].to);
-      else
-        values[i] = Number.constrain(values[i] + deltas[i], params[i].to, params[i].from);
-    }
-    func.apply(null, values);
-    raf = window.requestAnimationFrame(animationStep);
+  function animationStep(timestamp) {
+    const progress = Number.constrain((timestamp - start) / duration, 0, 1);
+    func(...params.map(p => p.from + (p.to - p.from) * progress));
+    if (progress < 1)
+      raf = window.requestAnimationFrame(animationStep);
+    else if (animationComplete)
+      animationComplete();
   }
 
-  function cancelAnimation() {
-    window.cancelAnimationFrame(raf);
-  }
-
-  return cancelAnimation;
+  return () => window.cancelAnimationFrame(raf);
 };
 
 /**

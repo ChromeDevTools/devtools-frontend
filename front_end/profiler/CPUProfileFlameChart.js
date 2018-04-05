@@ -233,7 +233,7 @@ Profiler.CPUProfileFlameChart = class extends UI.VBox {
   _onWindowChanged(event) {
     const windowLeft = event.data.windowTimeLeft;
     const windowRight = event.data.windowTimeRight;
-    this._mainPane.setWindowTimes(windowLeft, windowRight);
+    this._mainPane.setWindowTimes(windowLeft, windowRight, /* animate */ true);
   }
 
   /**

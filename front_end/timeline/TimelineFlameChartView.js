@@ -122,8 +122,11 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @override
    * @param {number} windowStartTime
    * @param {number} windowEndTime
+   * @param {boolean} animate
    */
-  requestWindowTimes(windowStartTime, windowEndTime) {
+  requestWindowTimes(windowStartTime, windowEndTime, animate) {
+    this._mainFlameChart.setWindowTimes(windowStartTime, windowEndTime, animate);
+    this._networkFlameChart.setWindowTimes(windowStartTime, windowEndTime, animate);
     this._delegate.requestWindowTimes(windowStartTime, windowEndTime);
   }
 
@@ -275,8 +278,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
    * @param {number} endTime
    */
   setWindowTimes(startTime, endTime) {
-    this._mainFlameChart.setWindowTimes(startTime, endTime);
-    this._networkFlameChart.setWindowTimes(startTime, endTime);
+    this._mainFlameChart.setWindowTimes(startTime, endTime, /* animate */ true);
+    this._networkFlameChart.setWindowTimes(startTime, endTime, /* animate */ true);
     this._networkDataProvider.setWindowTimes(startTime, endTime);
     this._countersView.setWindowTimes(startTime, endTime);
     this._windowStartTime = startTime;

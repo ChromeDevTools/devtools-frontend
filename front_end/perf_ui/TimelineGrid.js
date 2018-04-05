@@ -50,7 +50,7 @@ PerfUI.TimelineGrid = class {
    * @param {number=} freeZoneAtLeft
    * @return {!PerfUI.TimelineGrid.DividersData}
    */
-  static calculateDividerOffsets(calculator, freeZoneAtLeft) {
+  static calculateGridOffsets(calculator, freeZoneAtLeft) {
     /** @const */ const minGridSlicePx = 64;  // minimal distance between grid lines.
 
     const clientWidth = calculator.computePosition(calculator.maximumBoundary());
@@ -166,7 +166,7 @@ PerfUI.TimelineGrid = class {
    * @return {boolean}
    */
   updateDividers(calculator, freeZoneAtLeft) {
-    const dividersData = PerfUI.TimelineGrid.calculateDividerOffsets(calculator, freeZoneAtLeft);
+    const dividersData = PerfUI.TimelineGrid.calculateGridOffsets(calculator, freeZoneAtLeft);
     const dividerOffsets = dividersData.offsets;
     const precision = dividersData.precision;
 

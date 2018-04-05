@@ -340,7 +340,7 @@
 .timeline-details-view-block {
     flex: none;
     display: flex;
-    background-color: var(--toolbar-bg-color);
+    background-color: white;
     flex-direction: column;
     padding-bottom: 5px;
     border-bottom: var(--divider-border);

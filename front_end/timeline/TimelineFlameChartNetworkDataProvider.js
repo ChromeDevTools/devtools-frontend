@@ -23,6 +23,9 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       shareHeaderLine: false
     };
     this._group = {startLevel: 0, name: Common.UIString('Network'), expanded: false, style: this._style};
+    this._minimumBoundary = 0;
+    this._maximumBoundary = 0;
+    this._timeSpan = 0;
   }
 
   /**

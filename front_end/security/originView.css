@@ -32,6 +32,11 @@
     color: #8c8c8c;
 }
 
+.origin-view-section-notes {
+    margin-top: 6px;
+    color: #8c8c8c;
+}
+
 .security-origin-view .origin-display {
     font-size: 12px;
     padding-left: 38px;

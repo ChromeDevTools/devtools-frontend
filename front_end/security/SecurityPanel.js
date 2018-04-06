@@ -229,6 +229,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
       if (securityDetails)
         originState.securityDetails = securityDetails;
 
+      originState.loadedFromCache = request.cached();
 
       this._origins.set(origin, originState);
 
@@ -372,10 +373,11 @@ Security.SecurityPanel.Origin;
 
 /**
  * @typedef {Object}
- * @property {!Protocol.Security.SecurityState} securityState - Current security state of the origin.
- * @property {?Protocol.Network.SecurityDetails} securityDetails - Security details of the origin, if available.
- * @property {?Promise<>} certificateDetailsPromise - Certificate details of the origin.
- * @property {?Security.SecurityOriginView} originView - Current SecurityOriginView corresponding to origin.
+ * @property {!Protocol.Security.SecurityState} securityState
+ * @property {?Protocol.Network.SecurityDetails} securityDetails
+ * @property {?Promise<>} certificateDetailsPromise
+ * @property {?bool} loadedFromCache
+ * @property {?Security.SecurityOriginView} originView
  */
 Security.SecurityPanel.OriginState;
 
@@ -819,8 +821,10 @@ Security.SecurityOriginView = class extends UI.VBox {
       const certificateSection = this.element.createChild('div', 'origin-view-section');
       certificateSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Certificate');
 
+      const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
+      const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
       let sctSection;
-      if (originState.securityDetails.signedCertificateTimestampList.length) {
+      if (sctListLength || ctCompliance !== Protocol.Network.CertificateTransparencyCompliance.Unknown) {
         // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
         sctSection = this.element.createChild('div', 'origin-view-section');
         sctSection.createChild('div', 'origin-view-section-title').textContent =
@@ -851,7 +855,7 @@ Security.SecurityOriginView = class extends UI.VBox {
       const sctSummaryTable = new Security.SecurityDetailsTable();
       sctSummaryTable.element().classList.add('sct-summary');
       sctSection.appendChild(sctSummaryTable.element());
-      for (let i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
+      for (let i = 0; i < sctListLength; i++) {
         const sct = originState.securityDetails.signedCertificateTimestampList[i];
         sctSummaryTable.addRow(
             Common.UIString('SCT'), sct.logDescription + ' (' + sct.origin + ', ' + sct.status + ')');
@@ -860,7 +864,7 @@ Security.SecurityOriginView = class extends UI.VBox {
       // Show detailed SCT(s) of Certificate Transparency.
       const sctTableWrapper = sctSection.createChild('div', 'sct-details');
       sctTableWrapper.classList.add('hidden');
-      for (let i = 0; i < originState.securityDetails.signedCertificateTimestampList.length; i++) {
+      for (let i = 0; i < sctListLength; i++) {
         const sctTable = new Security.SecurityDetailsTable();
         sctTableWrapper.appendChild(sctTable.element());
         const sct = originState.securityDetails.signedCertificateTimestampList[i];
@@ -875,21 +879,40 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
 
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
-      const toggleSctsDetailsLink = sctSection.createChild('div', 'link');
-      toggleSctsDetailsLink.classList.add('sct-toggle');
-      toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
-      function toggleSctDetailsDisplay() {
-        const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
-        if (isDetailsShown)
-          toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
-        else
-          toggleSctsDetailsLink.textContent = Common.UIString('Hide full details');
-        sctSummaryTable.element().classList.toggle('hidden');
-        sctTableWrapper.classList.toggle('hidden');
+      if (sctListLength) {
+        const toggleSctsDetailsLink = sctSection.createChild('div', 'link');
+        toggleSctsDetailsLink.classList.add('sct-toggle');
+        toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
+        function toggleSctDetailsDisplay() {
+          const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
+          if (isDetailsShown)
+            toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
+          else
+            toggleSctsDetailsLink.textContent = Common.UIString('Hide full details');
+          sctSummaryTable.element().classList.toggle('hidden');
+          sctTableWrapper.classList.toggle('hidden');
+        }
+        toggleSctsDetailsLink.addEventListener('click', toggleSctDetailsDisplay, false);
       }
-      toggleSctsDetailsLink.addEventListener('click', toggleSctDetailsDisplay, false);
+
+      switch (ctCompliance) {
+        case Protocol.Network.CertificateTransparencyCompliance.Compliant:
+          sctSection.createChild('div', 'origin-view-section-notes').textContent =
+              Common.UIString('This request complies with Chrome\'s Certificate Transparency policy.');
+          break;
+        case Protocol.Network.CertificateTransparencyCompliance.NotCompliant:
+          sctSection.createChild('div', 'origin-view-section-notes').textContent =
+              Common.UIString('This request does not comply with Chrome\'s Certificate Transparency policy.');
+          break;
+        case Protocol.Network.CertificateTransparencyCompliance.Unknown:
+          break;
+      }
 
       const noteSection = this.element.createChild('div', 'origin-view-section origin-view-notes');
+      if (originState.loadedFromCache) {
+        noteSection.createChild('div').textContent =
+            Common.UIString('This response was loaded from cache. Some security details might be missing.');
+      }
       noteSection.createChild('div').textContent =
           Common.UIString('The security details above are from the first inspected response.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {

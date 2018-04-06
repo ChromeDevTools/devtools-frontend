@@ -89,7 +89,7 @@ PerformanceTestRunner.invokeWithTracing = function(functionName, callback, addit
     categories += ',' + additionalCategories;
 
   const timelinePanel = UI.panels.timeline;
-  const timelineController = PerformanceTestRunner.timelineController();
+  const timelineController = PerformanceTestRunner.createTimelineController();
   timelinePanel._timelineController = timelineController;
   timelineController._startRecordingWithCategories(categories, enableJSSampling).then(tracingStarted);
 
@@ -126,10 +126,10 @@ PerformanceTestRunner.createPerformanceModelWithEvents = function(events) {
   return performanceModel;
 };
 
-PerformanceTestRunner.timelineController = function() {
-  const performanceModel = new Timeline.PerformanceModel();
-  UI.panels.timeline._pendingPerformanceModel = performanceModel;
-  return new Timeline.TimelineController(TestRunner.tracingManager, performanceModel, UI.panels.timeline);
+PerformanceTestRunner.createTimelineController = function() {
+  const controller = new Timeline.TimelineController(SDK.targetManager.mainTarget(), UI.panels.timeline);
+  controller._tracingManager = TestRunner.tracingManager;
+  return controller;
 };
 
 PerformanceTestRunner.runWhenTimelineIsReady = function(callback) {

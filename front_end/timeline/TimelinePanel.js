@@ -64,8 +64,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     /** @type {?Timeline.PerformanceModel} */
     this._performanceModel = null;
-    /** @type {?Timeline.PerformanceModel} */
-    this._pendingPerformanceModel = null;
 
     this._viewModeSetting =
         Common.settings.createSetting('timelineViewMode', Timeline.TimelinePanel.ViewMode.FlameChart);
@@ -331,7 +329,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _prepareToLoadTimeline() {
     console.assert(this._state === Timeline.TimelinePanel.State.Idle);
     this._setState(Timeline.TimelinePanel.State.Loading);
-    this._pendingPerformanceModel = new Timeline.PerformanceModel();
+    if (this._performanceModel) {
+      this._performanceModel.dispose();
+      this._performanceModel = null;
+    }
   }
 
   _createFileSelector() {
@@ -479,11 +480,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   /**
    * @return {!Promise}
    */
-  _startRecording() {
-    const tracingManagers = SDK.targetManager.models(SDK.TracingManager);
-    if (!tracingManagers.length)
-      return Promise.resolve();
-
+  async _startRecording() {
     console.assert(!this._statusPane, 'Status pane is already opened.');
     this._setState(Timeline.TimelinePanel.State.StartPending);
     this._showRecordingStarted();
@@ -497,24 +494,24 @@ Timeline.TimelinePanel = class extends UI.Panel {
       captureFilmStrip: this._showScreenshotsSetting.get()
     };
 
-    this._pendingPerformanceModel = new Timeline.PerformanceModel();
-    this._controller = new Timeline.TimelineController(tracingManagers[0], this._pendingPerformanceModel, this);
+    const mainTarget = /** @type {!SDK.Target} */ (SDK.targetManager.mainTarget());
+    this._controller = new Timeline.TimelineController(mainTarget, this);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
-    return this._controller.startRecording(recordingOptions, enabledTraceProviders)
-        .then(() => this._recordingStarted());
+    await this._controller.startRecording(recordingOptions, enabledTraceProviders);
+    this._recordingStarted();
   }
 
-  _stopRecording() {
+  async _stopRecording() {
     if (this._statusPane) {
       this._statusPane.finish();
       this._statusPane.updateStatus(Common.UIString('Stopping timeline\u2026'));
       this._statusPane.updateProgressBar(Common.UIString('Received'), 0);
     }
     this._setState(Timeline.TimelinePanel.State.StopPending);
-    this._controller.stopRecording();
-    this._controller = null;
+    this._performanceModel = await this._controller.stopRecording();
     this._setUIControlsEnabled(true);
+    this._controller = null;
   }
 
   _onSuspendStateChanged() {
@@ -720,22 +717,21 @@ Timeline.TimelinePanel = class extends UI.Panel {
   loadingComplete(tracingModel) {
     delete this._loader;
     this._setState(Timeline.TimelinePanel.State.Idle);
-    const performanceModel = this._pendingPerformanceModel;
-    this._pendingPerformanceModel = null;
 
     if (this._statusPane)
       this._statusPane.hide();
     delete this._statusPane;
 
     if (!tracingModel) {
-      performanceModel.dispose();
       this._clear();
       return;
     }
 
-    performanceModel.setTracingModel(tracingModel);
-    this._setModel(performanceModel);
-    this._historyManager.addRecording(performanceModel);
+    if (!this._performanceModel)
+      this._performanceModel = new Timeline.PerformanceModel();
+    this._performanceModel.setTracingModel(tracingModel);
+    this._setModel(this._performanceModel);
+    this._historyManager.addRecording(this._performanceModel);
   }
 
   _showRecordingStarted() {
@@ -772,23 +768,18 @@ Timeline.TimelinePanel = class extends UI.Panel {
   /**
    * @param {!Common.Event} event
    */
-  _loadEventFired(event) {
+  async _loadEventFired(event) {
     if (this._state !== Timeline.TimelinePanel.State.Recording || !this._recordingPageReload ||
         this._controller.mainTarget() !== event.data.resourceTreeModel.target())
       return;
-    setTimeout(stopRecordingOnReload.bind(this, this._controller), this._millisecondsToRecordAfterLoadEvent);
+    const controller = this._controller;
+    await new Promise(r => setTimeout(r, this._millisecondsToRecordAfterLoadEvent));
 
-    /**
-     * @param {!Timeline.TimelineController} controller
-     * @this {Timeline.TimelinePanel}
-     */
-    function stopRecordingOnReload(controller) {
-      // Check if we're still in the same recording session.
-      if (controller !== this._controller)
-        return;
-      this._recordingPageReload = false;
-      this._stopRecording();
-    }
+    // Check if we're still in the same recording session.
+    if (controller !== this._controller)
+      return;
+    this._recordingPageReload = false;
+    this._stopRecording();
   }
 
   /**

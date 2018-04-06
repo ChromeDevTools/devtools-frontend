@@ -9,19 +9,17 @@
  */
 Timeline.TimelineController = class {
   /**
-   * @param {!SDK.TracingManager} tracingManager
-   * @param {!Timeline.PerformanceModel} performanceModel
+   * @param {!SDK.Target} target
    * @param {!Timeline.TimelineController.Client} client
    */
-  constructor(tracingManager, performanceModel, client) {
-    this._tracingManager = tracingManager;
-    this._performanceModel = performanceModel;
+  constructor(target, client) {
+    this._tracingManager = target.model(SDK.TracingManager);
+    this._performanceModel = new Timeline.PerformanceModel();
+    this._performanceModel.setMainTarget(target);
     this._client = client;
 
     const backingStorage = new Bindings.TempFileBackingStorage();
     this._tracingModel = new SDK.TracingModel(backingStorage);
-
-    this._performanceModel.setMainTarget(tracingManager.target());
 
     /** @type {!Array<!Timeline.ExtensionTracingSession>} */
     this._extensionSessions = [];
@@ -86,7 +84,10 @@ Timeline.TimelineController = class {
     return startPromise;
   }
 
-  stopRecording() {
+  /**
+   * @return {!Promise<!Timeline.PerformanceModel>}
+   */
+  async stopRecording() {
     const tracingStoppedPromises = [];
     tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
@@ -97,12 +98,12 @@ Timeline.TimelineController = class {
 
     const extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
     if (extensionCompletionPromises.length) {
-      let timerId;
-      const timeoutPromise = new Promise(fulfill => timerId = setTimeout(fulfill, 5000));
       tracingStoppedPromises.push(
-          Promise.race([Promise.all(extensionCompletionPromises).then(() => clearTimeout(timerId)), timeoutPromise]));
+          Promise.race([Promise.all(extensionCompletionPromises), new Promise(r => setTimeout(r, 5000))]));
     }
-    Promise.all(tracingStoppedPromises).then(() => this._allSourcesFinished());
+    await Promise.all(tracingStoppedPromises);
+    this._allSourcesFinished();
+    return this._performanceModel;
   }
 
   /**

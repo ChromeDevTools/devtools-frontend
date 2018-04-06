@@ -55,17 +55,15 @@ Timeline.TimelineLoader = class {
 
     setTimeout(async () => {
       const eventsPerChunk = 5000;
-      const yieldEventLoopToPaint = () => new Promise(res => setTimeout(res, 0));
-
       client.loadingStarted();
       for (let i = 0; i < events.length; i += eventsPerChunk) {
         const chunk = events.slice(i, i + eventsPerChunk);
         loader._tracingModel.addEvents(chunk);
         client.loadingProgress((i + chunk.length) / events.length);
-        await yieldEventLoopToPaint();
+        await new Promise(r => setTimeout(r));  // Yield event loop to paint.
       }
       loader.close();
-    }, 0);
+    });
 
     return loader;
   }

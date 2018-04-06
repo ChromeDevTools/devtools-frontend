@@ -114,6 +114,14 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   /**
    * @override
    * @param {!Protocol.Page.FrameId} frameId
+   * @param {string} url
+   */
+  navigatedWithinDocument(frameId, url) {
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Page.FrameId} frameId
    * @param {!Protocol.Page.FrameId} parentFrameId
    */
   frameAttached(frameId, parentFrameId) {

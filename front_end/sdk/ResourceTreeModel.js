@@ -867,6 +867,14 @@ SDK.PageDispatcher = class {
 
   /**
    * @override
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {string} url
+   */
+  navigatedWithinDocument(frameId, url) {
+  }
+
+  /**
+   * @override
    */
   frameResized() {
     this._resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.FrameResized, null);

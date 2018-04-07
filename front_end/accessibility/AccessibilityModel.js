@@ -245,7 +245,7 @@ Accessibility.AccessibilityModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   async requestPartialAXTree(node) {
-    const payloads = await this._agent.getPartialAXTree(node.id, true);
+    const payloads = await this._agent.getPartialAXTree(node.id, undefined, undefined, true);
     if (!payloads)
       return;
 

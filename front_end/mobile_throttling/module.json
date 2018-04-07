@@ -1,0 +1,54 @@
+{
+    "extensions": [
+        {
+            "type": "setting",
+            "settingName": "customNetworkConditions",
+            "settingType": "array",
+            "defaultValue": []
+        },
+        {
+            "type": "action",
+            "actionId": "network-conditions.network-offline",
+            "category": "Network",
+            "title": "Go offline",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
+            "tags": "device"
+        },
+        {
+            "type": "action",
+            "actionId": "network-conditions.network-online",
+            "category": "Network",
+            "title": "Go online",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
+            "tags": "device"
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "id": "throttling-conditions",
+            "title": "Throttling",
+            "order": 35,
+            "className": "MobileThrottling.ThrottlingSettingsTab",
+            "settings": [
+                "customNetworkConditions"
+            ]
+        }
+    ],
+    "dependencies": [
+        "common",
+        "sdk",
+        "ui",
+        "protocol"
+    ],
+    "scripts": [
+        "ThrottlingPresets.js",
+        "MobileThrottlingSelector.js",
+        "NetworkPanelIndicator.js",
+        "NetworkThrottlingSelector.js",
+        "ThrottlingSettingsTab.js",
+        "ThrottlingManager.js"
+    ],
+    "resources": [
+        "throttlingSettingsTab.css"
+    ]
+}

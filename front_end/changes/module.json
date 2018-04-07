@@ -1,0 +1,30 @@
+{
+    "extensions": [
+        {
+            "type": "view",
+            "location": "drawer-view",
+            "id": "changes.changes",
+            "title": "Changes",
+            "persistence": "closeable",
+            "className": "Changes.ChangesView"
+        }
+    ],
+    "dependencies": [
+      "workspace_diff",
+      "text_editor",
+      "workspace",
+      "diff",
+      "bindings",
+      "persistence",
+      "ui"
+    ],
+    "scripts": [
+      "ChangesHighlighter.js",
+      "ChangesView.js",
+      "ChangesSidebar.js"
+    ],
+    "resources": [
+      "changesView.css",
+      "changesSidebar.css"
+    ]
+}

@@ -1,0 +1,69 @@
+/*
+ * Copyright (c) 2014 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+    margin: 2px;
+    height: 24px;
+    font-size: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    padding: 0px 12px;
+    font-weight: 500;
+    color: #333;
+    background-color: #fff;
+    flex: none;
+    white-space: nowrap;
+}
+
+:host(:not(:disabled):focus),
+:host(:not(:disabled):hover),
+:host(:not(:disabled):active) {
+    background-color: var(--toolbar-bg-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+:host(:not(:disabled):active) {
+    background-color: #f2f2f2;
+}
+
+:host(:not(:disabled):focus) {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(66, 133, 244, 0.4);
+}
+
+:host(:disabled) {
+    opacity: 0.38;
+}
+
+:host(.primary-button), -theme-preserve {
+    background-color: #4285F4;
+    border: none;
+    color: #fff;
+}
+
+:host(.primary-button:not(:disabled):focus),
+:host(.primary-button:not(:disabled):hover), -theme-preserve {
+    background-color: #3B78E7;
+}
+
+:host(.primary-button:not(:disabled):active), -theme-preserve {
+    background-color: #3367D6;
+}
+
+:host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):focus),
+:host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):hover),
+:host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):active) {
+    background-color: #313131;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+:host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):focus) {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(94, 151, 246, 0.6);
+}
+
+:host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):active) {
+    background-color: #3e3e3e;
+}

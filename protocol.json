@@ -1,0 +1,12 @@
+The protocol.json has split into separate files. https://crbug.com/580337
+
+One for the browser, one for a V8 javascript environment:
+    src/third_party/WebKit/Source/core/inspector/browser_protocol.json
+    src/v8/src/inspector/js_protocol.json
+
+Browsable here:
+    https://chromium.googlesource.com/chromium/src/+/master/third_party/WebKit/Source/core/inspector/browser_protocol.json
+    https://chromium.googlesource.com/v8/v8/+/master/src/inspector/js_protocol.json
+
+More details on the protocol:
+    https://developer.chrome.com/devtools/docs/debugger-protocol

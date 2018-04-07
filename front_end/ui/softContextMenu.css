@@ -1,0 +1,109 @@
+/*
+ * Copyright (c) 2014 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.soft-context-menu {
+    border: 1px solid rgba(196, 196, 196, 0.9);
+    border-top: 1px solid rgba(196, 196, 196, 0.5);
+    /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.js */
+    padding: 4px 0 4px 0;
+    border-radius: 4px;
+    background-color: rgb(240, 240, 240);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
+    min-width: 160px !important;
+}
+
+:host-context(.-theme-with-dark-background) .soft-context-menu {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
+}
+
+.soft-context-menu-item {
+    display: flex;
+    width: 100%;
+    line-height: 14px;
+    font-size: 12px;
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    padding: 2px 7px 2px 8px;
+    margin: 0 13px 0 0;
+    white-space: nowrap;
+}
+
+.soft-context-menu-disabled {
+    color: #999;
+    pointer-events: none;
+}
+
+.soft-context-menu-separator {
+    height: 10px;
+    margin: 0 1px;
+}
+
+.soft-context-menu-separator > .separator-line {
+    margin: 0;
+    height: 5px;
+    border-bottom: 1px solid rgb(222, 222, 222);
+    pointer-events: none;
+}
+
+.soft-context-menu-item-mouse-over,
+.-theme-selection-color {
+    border-top: 1px solid var(--selection-bg-color);
+    border-bottom: 1px solid var(--selection-bg-color);
+    background-color: var(--selection-bg-color);
+    color: white;
+}
+
+:host-context(.platform-mac) .soft-context-menu-item-mouse-over, -theme-preserve {
+    border-top: 1px solid transparent;
+    border-bottom: 1px solid transparent;
+    background-image: linear-gradient(to right, hsl(214, 81%, 60%), hsl(214, 100%, 56%));
+}
+
+:host-context(.platform-mac) .separator-line {
+    border-width: 2px;
+}
+
+.soft-context-menu-item-submenu-arrow {
+    color: #222;
+    pointer-events: none;
+    font-size: 11px;
+    flex: 1 1 auto;
+    text-align: right;
+}
+
+.soft-context-menu-item-mouse-over .soft-context-menu-item-checkmark {
+    color: var(--selection-fg-color);
+}
+
+.soft-context-menu-custom-item {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex: auto;
+}
+
+.soft-context-menu-shortcut {
+    color: gray;
+    pointer-events: none;
+    flex: 1 1 auto;
+    text-align: right;
+    padding-left: 10px;
+}
+
+.soft-context-menu-item-mouse-over .soft-context-menu-shortcut {
+    color: inherit;
+}
+
+.checkmark {
+    opacity: 0.7;
+    pointer-events: none;
+    margin: auto 5px auto 0px;
+}
+
+.soft-context-menu-item-mouse-over .checkmark {
+    opacity: 1;
+}

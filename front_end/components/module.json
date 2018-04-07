@@ -1,0 +1,17 @@
+{
+    "dependencies": [
+        "bindings",
+        "platform",
+        "ui"
+    ],
+    "scripts": [
+        "JSPresentationUtils.js",
+        "DockController.js",
+        "Linkifier.js",
+        "Reload.js",
+        "TargetDetachedDialog.js"
+    ],
+    "resources": [
+        "jsUtils.css"
+    ]
+}

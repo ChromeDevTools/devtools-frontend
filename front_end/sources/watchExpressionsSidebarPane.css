@@ -1,0 +1,102 @@
+/*
+ * Copyright 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.watch-expression-delete-button {
+    width: 10px;
+    height: 10px;
+    background-image: url(Images/deleteIcon.png);
+    background-position: 0 0;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: 0 none transparent;
+    position: absolute;
+    top: 4px;
+    right: 3px;
+    display: none;
+}
+
+.watch-expression-header:hover .watch-expression-delete-button {
+    display: inline;
+}
+
+.watch-expressions {
+    overflow-x: hidden;
+    min-height: 26px;
+}
+
+.watch-expressions .dimmed {
+    opacity: 0.6;
+}
+
+.watch-expression-title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 20px;
+    margin-left: 11px;
+}
+
+.watch-expression-object-header .watch-expression-title {
+    margin-left: 1px;
+}
+
+.watch-expression {
+    position: relative;
+    padding: 0 6px;
+    flex: none;
+    min-height: 20px;
+}
+
+.watch-expressions .name {
+    color: rgb(136, 19, 145);
+    flex: none;
+    white-space: nowrap;
+    text-overflow: ellipsis ;
+    overflow: hidden;
+}
+
+.watch-expression-error {
+    color: red;
+}
+
+:host-context(.-theme-with-dark-background) .watch-expression-error {
+    color: hsl(0, 100%, 65%);
+}
+
+.watch-expressions-separator {
+    flex: none;
+}
+
+.watch-expressions .value {
+    white-space: nowrap;
+    display: inline;
+}
+
+.watch-expression .text-prompt {
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+    padding-left: 4px;
+    -webkit-user-select: text;
+}
+
+.watch-expression-text-prompt-proxy {
+    margin-left: 12px;
+}
+
+.watch-expression-header {
+    flex: auto;
+}
+
+.watch-expression-object-header {
+    margin-left: -12px;
+    padding-left: 12px;
+}
+
+.watch-expression-header:hover {
+    background-color: #F0F0F0;
+    padding-right: 14px;
+}

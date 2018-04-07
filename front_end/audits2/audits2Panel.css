@@ -1,0 +1,92 @@
+/*
+ * Copyright 2017 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.toolbar {
+    background-color: var(--toolbar-bg-color);
+    border-bottom: var(--divider-border);
+}
+
+.audits2-logo {
+    width: 210px;
+    height: 200px;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-top: 10px;
+    background-image: url(Images/audits_logo.svg);
+}
+
+.audits2-landing-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+}
+
+
+.audits2-landing-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    margin: 50px;
+}
+
+.audits2-landing-center > * {
+    flex-shrink: 0;
+}
+
+.audits2-landing-text {
+    color: #666;
+}
+
+.audits2-landing-bold-text {
+    font-weight: bold;
+}
+
+.lh-root {
+  --report-menu-width: 0;
+  user-select: initial;
+  --lh-bg-color: #fff;
+  background-color: var(--lh-bg-color);
+}
+
+.-theme-with-dark-background .lh-root {
+  --lh-bg-color: hsl(0, 0%, 14%);
+  --secondary-text-color: hsl(0, 0%, 66%);
+  --report-secondary-border-color: hsl(0, 0%, 8%);
+}
+
+.-theme-with-dark-background .lh-root .lh-gauge {
+  --circle-background: hsl(0, 0%, 27%);
+  --inset-color: var(--lh-bg-color);
+}
+
+.lh-root .lh-container {
+  word-wrap: normal;
+}
+
+.lh-root pre {
+  word-wrap: break-word;
+}
+
+/* for View Trace button */
+.lh-audit-group {
+  position: relative;
+}
+button.view-trace {
+  position: absolute;
+  right: 0;
+}
+
+.audits2-landing-center button {
+    margin-top: 20px;
+}
+
+.audits2-results-container {
+    overflow-y: scroll;
+    position: relative;
+}

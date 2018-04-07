@@ -1,0 +1,16 @@
+{
+    "extensions": [
+        {
+            "type": "@QuickOpen.FilteredListWidget.Provider",
+            "title": "Run snippet",
+            "prefix": "!",
+            "className": "Snippets.SnippetsQuickOpen"
+        }
+    ],
+    "dependencies": ["bindings", "quick_open"],
+    "scripts": [
+        "SnippetStorage.js",
+        "ScriptSnippetModel.js",
+        "SnippetsQuickOpen.js"
+    ]
+}

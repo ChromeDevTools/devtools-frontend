@@ -1,0 +1,12 @@
+{
+    "dependencies": [
+        "common",
+        "host",
+        "platform"
+    ],
+    "scripts": [
+        "FileManager.js",
+        "UISourceCode.js",
+        "Workspace.js"
+    ]
+}

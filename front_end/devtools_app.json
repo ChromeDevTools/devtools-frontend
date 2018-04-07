@@ -19,6 +19,7 @@
     { "name": "layers" },
     { "name": "layer_viewer" },
     { "name": "network" },
+    { "name": "performance_monitor" },
     { "name": "product_registry_impl", "type": "remote" },
     { "name": "resources" },
     { "name": "security" },

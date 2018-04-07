@@ -5,10 +5,10 @@
 /**
  * @unrestricted
  */
-Timeline.PerformanceMonitor = class extends UI.HBox {
+PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
   constructor() {
     super(true);
-    this.registerRequiredCSS('timeline/performanceMonitor.css');
+    this.registerRequiredCSS('performance_monitor/performanceMonitor.css');
     this.contentElement.classList.add('perfmon-pane');
     this._model = SDK.targetManager.mainTarget().model(SDK.PerformanceMetricsModel);
     /** @type {!Array<!{timestamp: number, metrics: !Map<string, number>}>} */
@@ -22,13 +22,13 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     /** @const */
     this._graphHeight = 90;
     this._gridColor = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.08)', UI.ThemeSupport.ColorUsage.Foreground);
-    this._controlPane = new Timeline.PerformanceMonitor.ControlPane(this.contentElement);
+    this._controlPane = new PerformanceMonitor.PerformanceMonitor.ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
     this._controlPane.addEventListener(
-        Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
+        PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
   }
 
   /**
@@ -66,7 +66,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     animate.call(this);
 
     /**
-     * @this {Timeline.PerformanceMonitor}
+     * @this {PerformanceMonitor.PerformanceMonitor}
      */
     function animate() {
       this._draw();
@@ -135,7 +135,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 
   /**
    * @param {!CanvasRenderingContext2D} ctx
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
    * @param {number} height
    */
   _drawChart(ctx, chartInfo, height) {
@@ -172,7 +172,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   /**
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
    * @return {number}
    */
   _calcMax(chartInfo) {
@@ -205,7 +205,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
    * @param {!CanvasRenderingContext2D} ctx
    * @param {number} height
    * @param {number} max
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
    */
   _drawVerticalGrid(ctx, height, max, info) {
     let base = Math.pow(10, Math.floor(Math.log10(max)));
@@ -222,7 +222,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
       const y = calcY(scaleValue);
-      const labelText = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
+      const labelText = PerformanceMonitor.PerformanceMonitor.MetricIndicator._formatNumber(scaleValue, info);
       ctx.moveTo(0, y);
       ctx.lineTo(4, y);
       ctx.moveTo(ctx.measureText(labelText).width + 12, y);
@@ -246,8 +246,8 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
   }
 
   /**
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} chartInfo
-   * @param {!Timeline.PerformanceMonitor.MetricInfo} metricInfo
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} chartInfo
+   * @param {!PerformanceMonitor.PerformanceMonitor.MetricInfo} metricInfo
    * @param {number} height
    * @param {number} scaleMax
    * @param {?Map<number, number>} stackedChartBaseLandscape
@@ -333,7 +333,7 @@ Timeline.PerformanceMonitor = class extends UI.HBox {
 };
 
 /** @enum {symbol} */
-Timeline.PerformanceMonitor.Format = {
+PerformanceMonitor.PerformanceMonitor.Format = {
   Percent: Symbol('Percent'),
   Bytes: Symbol('Bytes'),
 };
@@ -341,14 +341,14 @@ Timeline.PerformanceMonitor.Format = {
 /**
  * @typedef {!{
  *   title: string,
- *   metrics: !Array<!Timeline.PerformanceMonitor.MetricInfo>,
+ *   metrics: !Array<!PerformanceMonitor.PerformanceMonitor.MetricInfo>,
  *   max: (number|undefined),
  *   currentMax: (number|undefined),
- *   format: (!Timeline.PerformanceMonitor.Format|undefined),
+ *   format: (!PerformanceMonitor.PerformanceMonitor.Format|undefined),
  *   smooth: (boolean|undefined)
  * }}
  */
-Timeline.PerformanceMonitor.ChartInfo;
+PerformanceMonitor.PerformanceMonitor.ChartInfo;
 
 /**
  * @typedef {!{
@@ -356,9 +356,9 @@ Timeline.PerformanceMonitor.ChartInfo;
  *   color: string
  * }}
  */
-Timeline.PerformanceMonitor.MetricInfo;
+PerformanceMonitor.PerformanceMonitor.MetricInfo;
 
-Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
+PerformanceMonitor.PerformanceMonitor.ControlPane = class extends Common.Object {
   /**
    * @param {!Element} parent
    */
@@ -370,9 +370,9 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
         Common.settings.createSetting('perfmonActiveIndicators2', ['TaskDuration', 'JSHeapTotalSize', 'Nodes']);
     /** @type {!Set<string>} */
     this._enabledCharts = new Set(this._enabledChartsSetting.get());
-    const format = Timeline.PerformanceMonitor.Format;
+    const format = PerformanceMonitor.PerformanceMonitor.Format;
 
-    /** @type {!Array<!Timeline.PerformanceMonitor.ChartInfo>} */
+    /** @type {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>} */
     this._chartsInfo = [
       {
         title: Common.UIString('CPU usage'),
@@ -404,12 +404,12 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
         metric.color = UI.themeSupport.patchColorText(metric.color, UI.ThemeSupport.ColorUsage.Foreground);
     }
 
-    /** @type {!Map<string, !Timeline.PerformanceMonitor.MetricIndicator>} */
+    /** @type {!Map<string, !PerformanceMonitor.PerformanceMonitor.MetricIndicator>} */
     this._indicators = new Map();
     for (const chartInfo of this._chartsInfo) {
       const chartName = chartInfo.metrics[0].name;
       const active = this._enabledCharts.has(chartName);
-      const indicator = new Timeline.PerformanceMonitor.MetricIndicator(
+      const indicator = new PerformanceMonitor.PerformanceMonitor.MetricIndicator(
           this.element, chartInfo, active, this._onToggle.bind(this, chartName));
       this._indicators.set(chartName, indicator);
     }
@@ -425,11 +425,11 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
     else
       this._enabledCharts.delete(chartName);
     this._enabledChartsSetting.set(Array.from(this._enabledCharts));
-    this.dispatchEventToListeners(Timeline.PerformanceMonitor.ControlPane.Events.MetricChanged);
+    this.dispatchEventToListeners(PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged);
   }
 
   /**
-   * @return {!Array<!Timeline.PerformanceMonitor.ChartInfo>}
+   * @return {!Array<!PerformanceMonitor.PerformanceMonitor.ChartInfo>}
    */
   charts() {
     return this._chartsInfo;
@@ -455,14 +455,14 @@ Timeline.PerformanceMonitor.ControlPane = class extends Common.Object {
 };
 
 /** @enum {symbol} */
-Timeline.PerformanceMonitor.ControlPane.Events = {
+PerformanceMonitor.PerformanceMonitor.ControlPane.Events = {
   MetricChanged: Symbol('MetricChanged')
 };
 
-Timeline.PerformanceMonitor.MetricIndicator = class {
+PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
   /**
    * @param {!Element} parent
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
    * @param {boolean} active
    * @param {function(boolean)} onToggle
    */
@@ -484,14 +484,14 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
 
   /**
    * @param {number} value
-   * @param {!Timeline.PerformanceMonitor.ChartInfo} info
+   * @param {!PerformanceMonitor.PerformanceMonitor.ChartInfo} info
    * @return {string}
    */
   static _formatNumber(value, info) {
     switch (info.format) {
-      case Timeline.PerformanceMonitor.Format.Percent:
+      case PerformanceMonitor.PerformanceMonitor.Format.Percent:
         return value.toLocaleString('en-US', {maximumFractionDigits: 1, style: 'percent'});
-      case Timeline.PerformanceMonitor.Format.Bytes:
+      case PerformanceMonitor.PerformanceMonitor.Format.Bytes:
         return Number.bytesToString(value);
       default:
         return value.toLocaleString('en-US', {maximumFractionDigits: 1});
@@ -502,7 +502,8 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
    * @param {number} value
    */
   setValue(value) {
-    this._valueElement.textContent = Timeline.PerformanceMonitor.MetricIndicator._formatNumber(value, this._info);
+    this._valueElement.textContent =
+        PerformanceMonitor.PerformanceMonitor.MetricIndicator._formatNumber(value, this._info);
   }
 
   _toggleIndicator() {
@@ -512,4 +513,5 @@ Timeline.PerformanceMonitor.MetricIndicator = class {
   }
 };
 
-Timeline.PerformanceMonitor.MetricIndicator._format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+PerformanceMonitor.PerformanceMonitor.MetricIndicator._format =
+    new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});

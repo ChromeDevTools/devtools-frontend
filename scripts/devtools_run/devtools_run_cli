@@ -17,7 +17,7 @@ try {
   process.exit(1);
 }
 
-var devtoolsPath = path.join(repoRootPath, 'third_party', 'WebKit', 'Source', 'devtools');
+var devtoolsPath = path.join(repoRootPath, 'third_party', 'blink', 'renderer', 'devtools');
 
 if (!isDir(devtoolsPath)) {
   console.log('ERROR: cannot use dtrun outside of chromium repo');

@@ -28,7 +28,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// WebKit Web Facing API
+// Blink Web Facing API
 
 /**
  * @param {!Object} object

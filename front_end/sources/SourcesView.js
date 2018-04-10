@@ -330,10 +330,9 @@ Sources.SourcesView = class extends UI.VBox {
     else
       sourceFrame = new Sources.UISourceCodeFrame(uiSourceCode);
 
-    if (sourceFrame) {
-      sourceFrame.setHighlighterType(uiSourceCode.mimeType());
+    if (sourceFrame)
       this._historyManager.trackSourceFrameCursorJumps(sourceFrame);
-    }
+
     const widget = /** @type {!UI.Widget} */ (sourceFrame || sourceView);
     this._sourceViewByUISourceCode.set(uiSourceCode, widget);
     uiSourceCode.addEventListener(Workspace.UISourceCode.Events.TitleChanged, this._uiSourceCodeTitleChanged, this);
@@ -368,7 +367,7 @@ Sources.SourcesView = class extends UI.VBox {
       return;
     const oldSourceFrame = /** @type {!Sources.UISourceCodeFrame} */ (oldSourceView);
     if (this._sourceFrameMatchesUISourceCode(oldSourceFrame, uiSourceCode)) {
-      oldSourceFrame.setHighlighterType(uiSourceCode.mimeType());
+      oldSourceFrame.refreshHighlighterType();
     } else {
       this._editorContainer.removeUISourceCode(uiSourceCode);
       this._removeSourceFrame(uiSourceCode);

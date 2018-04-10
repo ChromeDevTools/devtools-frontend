@@ -81,6 +81,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     /** @type {!Array<!Sources.UISourceCodeFrame.Plugin>} */
     this._plugins = [];
 
+    this.refreshHighlighterType();
+
     /**
      * @return {!Promise<?string>}
      */
@@ -145,12 +147,12 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._uiSourceCode.removeWorkingCopyGetter();
   }
 
-  /**
-   * @override
-   * @param {string} highlighterType
-   */
-  setHighlighterType(highlighterType) {
-    super.setHighlighterType(highlighterType);
+  refreshHighlighterType() {
+    const binding = Persistence.persistence.binding(this._uiSourceCode);
+    const highlighterType = binding ? binding.network.mimeType() : this._uiSourceCode.mimeType();
+    if (this.highlighterType() === highlighterType)
+      return;
+    this.setHighlighterType(highlighterType);
     if (this.loaded)
       this._refreshPlugins();
   }
@@ -283,6 +285,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._decorateAllTypes();
     this._updateDiffUISourceCode();
     this.onBindingChanged();
+    this.refreshHighlighterType();
     this._refreshPlugins();
   }
 

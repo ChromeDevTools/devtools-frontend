@@ -339,6 +339,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
+   * @protected
+   * @return {string}
+   */
+  highlighterType() {
+    return this._highlighterType;
+  }
+
+  /**
    * @param {string} content
    */
   _updateHighlighterType(content) {

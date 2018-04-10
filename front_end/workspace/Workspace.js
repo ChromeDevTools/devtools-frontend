@@ -112,9 +112,9 @@ Workspace.Project.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
-   * @param {function(?string)} callback
+   * @return {!Promise}
    */
-  setFileContent(uiSourceCode, newContent, isBase64, callback) {},
+  setFileContent(uiSourceCode, newContent, isBase64) {},
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode

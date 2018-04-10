@@ -96,7 +96,7 @@ Persistence.Persistence = class extends Common.Object {
       this._syncWorkingCopy(binding.fileSystem);
     } else if (binding.network.isDirty()) {
       this._syncWorkingCopy(binding.network);
-    } else if (binding.network.hasCommits()) {
+    } else if (binding.network.hasCommits() && binding.network.content() !== binding.fileSystem.content()) {
       binding.network.setWorkingCopy(binding.network.content());
       this._syncWorkingCopy(binding.network);
     }

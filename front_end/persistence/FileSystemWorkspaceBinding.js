@@ -327,11 +327,11 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
-   * @param {function(?string)} callback
+   * @return {!Promise}
    */
-  setFileContent(uiSourceCode, newContent, isBase64, callback) {
+  async setFileContent(uiSourceCode, newContent, isBase64) {
     const filePath = this._filePathForUISourceCode(uiSourceCode);
-    this._fileSystem.setFileContent(filePath, newContent, isBase64, callback.bind(this, ''));
+    await this._fileSystem.setFileContent(filePath, newContent, isBase64);
   }
 
   /**
@@ -522,10 +522,10 @@ Persistence.FileSystemWorkspaceBinding.FileSystem = class extends Workspace.Proj
     const filePath = await this._fileSystem.createFile(path, name);
     if (!filePath)
       return null;
-    if (content)
-      await new Promise(resolve => this._fileSystem.setFileContent(filePath, content, isBase64 || false, resolve));
+    const uiSourceCode = this._addFile(filePath);
+    uiSourceCode.setContent(content, !!isBase64);
     this._creatingFilesGuard.delete(guardFileName);
-    return this._addFile(filePath);
+    return uiSourceCode;
   }
 
   /**

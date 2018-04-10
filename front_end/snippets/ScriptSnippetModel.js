@@ -557,11 +557,10 @@ Snippets.SnippetsProject = class extends Bindings.ContentProviderBasedProject {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
    * @param {boolean} isBase64
-   * @param {function(?string)} callback
+   * @return {!Promise}
    */
-  setFileContent(uiSourceCode, newContent, isBase64, callback) {
+  async setFileContent(uiSourceCode, newContent, isBase64) {
     this._model._setScriptSnippetContent(uiSourceCode.url(), newContent);
-    callback('');
   }
 
   /**

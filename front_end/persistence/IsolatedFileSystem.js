@@ -55,6 +55,8 @@ Persistence.IsolatedFileSystem = class {
     this._initialFilePaths = new Set();
     /** @type {!Set<string>} */
     this._initialGitFolders = new Set();
+    /** @type {!Map<string, !Promise>} */
+    this._fileLocks = new Map();
   }
 
   /**
@@ -83,6 +85,18 @@ Persistence.IsolatedFileSystem = class {
    */
   static errorMessage(error) {
     return Common.UIString('File system error: %s', error.message);
+  }
+
+  /**
+   * @template T
+   * @param {string} path
+   * @param {function():!Promise<T>} operation
+   * @return {!Promise<T>}
+   */
+  _serializedFileOperation(path, operation) {
+    const promise = Promise.resolve(this._fileLocks.get(path)).then(() => operation.call(null));
+    this._fileLocks.set(path, promise);
+    return promise;
   }
 
   /**
@@ -233,7 +247,7 @@ Persistence.IsolatedFileSystem = class {
     const dirEntry = await this._createFoldersIfNotExist(path);
     if (!dirEntry)
       return null;
-    const fileEntry = await createFileCandidate.call(this, name || 'NewFile');
+    const fileEntry = await this._serializedFileOperation(path, createFileCandidate.bind(this, name || 'NewFile'));
     if (!fileEntry)
       return null;
     return fileEntry.fullPath.substr(1);
@@ -327,15 +341,23 @@ Persistence.IsolatedFileSystem = class {
    * @param {string} path
    * @param {function(?string,boolean)} callback
    */
-  async requestFileContent(path, callback) {
-    const blob = await this.requestFileBlob(path);
-    if (!blob)
-      return null;
+  requestFileContent(path, callback) {
+    const innerRequestFileContent = async () => {
+      const blob = await this.requestFileBlob(path);
+      if (!blob) {
+        callback(null, false);
+        return;
+      }
 
-    const reader = new FileReader();
-    const extension = Common.ParsedURL.extractExtension(path);
-    const encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
-    reader.onloadend = content => {
+      const reader = new FileReader();
+      const extension = Common.ParsedURL.extractExtension(path);
+      const encoded = Persistence.IsolatedFileSystem.BinaryExtensions.has(extension);
+      const readPromise = new Promise(x => reader.onloadend = x);
+      if (encoded)
+        reader.readAsBinaryString(blob);
+      else
+        reader.readAsText(blob);
+      await readPromise;
       if (reader.error) {
         console.error('Can\'t read file: ' + path + ': ' + reader.error);
         callback(null, false);
@@ -355,21 +377,24 @@ Persistence.IsolatedFileSystem = class {
       callback(encoded ? btoa(result) : result, encoded);
     };
 
-    if (encoded)
-      reader.readAsBinaryString(blob);
-    else
-      reader.readAsText(blob);
+    this._serializedFileOperation(path, innerRequestFileContent);
   }
 
   /**
    * @param {string} path
    * @param {string} content
    * @param {boolean} isBase64
-   * @param {function()} callback
    */
-  setFileContent(path, content, isBase64, callback) {
+  async setFileContent(path, content, isBase64) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FileSavedInWorkspace);
-    this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
+    let callback;
+    const innerSetFileContent = () => {
+      const promise = new Promise(x => callback = x);
+      this._domFileSystem.root.getFile(path, {create: true}, fileEntryLoaded.bind(this), errorHandler.bind(this));
+      return promise;
+    };
+
+    this._serializedFileOperation(path, innerSetFileContent);
 
     /**
      * @param {!FileEntry} entry

@@ -93,7 +93,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     // Create top overview component.
     this._overviewPane = new PerfUI.TimelineOverviewPane('timeline');
     this._overviewPane.addEventListener(
-        PerfUI.TimelineOverviewPane.Events.WindowChanged, this._onWindowChanged.bind(this));
+        PerfUI.TimelineOverviewPane.Events.WindowChanged, this._onOverviewWindowChanged.bind(this));
     this._overviewPane.show(topPaneElement);
     /** @type {!Array<!Timeline.TimelineEventOverview>} */
     this._overviewControls = [];
@@ -166,25 +166,18 @@ Timeline.TimelinePanel = class extends UI.Panel {
   /**
    * @param {!Common.Event} event
    */
-  _onWindowChanged(event) {
-    const selectionData = this._currentModelSelectionData();
-    if (!selectionData)
-      return;
-    selectionData.windowStartTime = event.data.startTime;
-    selectionData.windowEndTime = event.data.endTime;
-
-    this._flameChart.setWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
-    if (selectionData.selection.type() === Timeline.TimelineSelection.Type.Range)
-      this.select(null);
+  _onOverviewWindowChanged(event) {
+    const left = event.data.startTime;
+    const right = event.data.endTime;
+    this._performanceModel.setWindow({left, right}, /* animate */ true);
   }
 
   /**
-   * @override
-   * @param {number} windowStartTime
-   * @param {number} windowEndTime
+   * @param {!Common.Event} event
    */
-  requestWindowTimes(windowStartTime, windowEndTime) {
-    this._overviewPane.requestWindowTimes(windowStartTime, windowEndTime);
+  _onModelWindowChanged(event) {
+    const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
+    this._overviewPane.setWindowTimes(window.left, window.right);
   }
 
   /**
@@ -568,36 +561,27 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {?Timeline.PerformanceModel} model
    */
   _setModel(model) {
+    if (this._performanceModel) {
+      this._performanceModel.removeEventListener(
+          Timeline.PerformanceModel.Events.WindowChanged, this._onModelWindowChanged, this);
+    }
     this._performanceModel = model;
     this._flameChart.setModel(model);
 
     this._overviewPane.reset();
     if (model) {
+      this._performanceModel.addEventListener(
+          Timeline.PerformanceModel.Events.WindowChanged, this._onModelWindowChanged, this);
       this._overviewPane.setBounds(
           model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
-      if (!model[Timeline.TimelinePanel._modelSelectionDataSymbol]) {
-        const times = Timeline.TimelinePanel._autoWindowTimes(model.timelineModel());
-        model[Timeline.TimelinePanel._modelSelectionDataSymbol] = {
-          selection: Timeline.TimelineSelection.fromRange(times.start, times.end),
-          windowStartTime: times.start,
-          windowEndTime: times.end
-        };
-      }
+      for (const profile of model.timelineModel().cpuProfiles())
+        PerfUI.LineLevelProfile.instance().appendCPUProfile(profile);
+      this._setMarkers(model.timelineModel());
+      this._flameChart.setSelection(null);
+      this._overviewPane.setWindowTimes(model.window().left, model.window().right);
     }
     for (const control of this._overviewControls)
       control.setModel(model);
-
-    if (model) {
-      const cpuProfiles = model.timelineModel().cpuProfiles();
-      cpuProfiles.forEach(profile => PerfUI.LineLevelProfile.instance().appendCPUProfile(profile));
-
-      this._setMarkers(model.timelineModel());
-      const selectionData = this._currentModelSelectionData();
-      this.requestWindowTimes(selectionData.windowStartTime, selectionData.windowEndTime);
-      this._flameChart.setSelection(selectionData.selection);
-    } else {
-      this.requestWindowTimes(0, Infinity);
-    }
     if (this._flameChart)
       this._flameChart.resizeToPreferredHeights();
     this._updateTimelineControls();
@@ -804,8 +788,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {number} offset
    */
   _jumpToFrame(offset) {
-    const selection = this._selection();
-    const currentFrame = selection && this._frameForSelection(selection);
+    const currentFrame = this._selection && this._frameForSelection(this._selection);
     if (!currentFrame)
       return;
     const frames = this._performanceModel.frames();
@@ -823,12 +806,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {?Timeline.TimelineSelection} selection
    */
   select(selection) {
-    const selectionData = this._currentModelSelectionData();
-    if (!selectionData)
-      return;
-    if (!selection)
-      selection = Timeline.TimelineSelection.fromRange(selectionData.windowStartTime, selectionData.windowEndTime);
-    selectionData.selection = selection;
+    this._selection = selection;
     this._flameChart.setSelection(selection);
   }
 
@@ -867,16 +845,13 @@ Timeline.TimelinePanel = class extends UI.Panel {
    * @param {number} endTime
    */
   _revealTimeRange(startTime, endTime) {
-    const selectionData = this._currentModelSelectionData();
-    if (!selectionData)
-      return;
-    let timeShift = 0;
-    if (selectionData.windowEndTime < endTime)
-      timeShift = endTime - selectionData.windowEndTime;
-    else if (selectionData.windowStartTime > startTime)
-      timeShift = startTime - selectionData.windowStartTime;
-    if (timeShift)
-      this.requestWindowTimes(selectionData.windowStartTime + timeShift, selectionData.windowEndTime + timeShift);
+    const window = this._performanceModel.window();
+    let offset = 0;
+    if (window.right < endTime)
+      offset = endTime - window.right;
+    else if (window.left > startTime)
+      offset = startTime - window.left;
+    this._performanceModel.setWindow({left: window.left + offset, right: window.right + offset}, /* animate */ true);
   }
 
   /**
@@ -897,75 +872,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
         return;
       entry.file(this._loadFromFile.bind(this));
     }
-  }
-
-  /**
-   * @param {!TimelineModel.TimelineModel} timelineModel
-   * @return {!{start: number, end: number}}
-   */
-  static _autoWindowTimes(timelineModel) {
-    let tasks = [];
-    for (const track of timelineModel.tracks()) {
-      // Deliberately pick up last main frame's track.
-      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
-        tasks = track.tasks;
-    }
-    if (!tasks.length)
-      return {start: timelineModel.minimumRecordTime(), end: timelineModel.maximumRecordTime()};
-
-    /**
-     * @param {number} startIndex
-     * @param {number} stopIndex
-     * @return {number}
-     */
-    function findLowUtilizationRegion(startIndex, stopIndex) {
-      const /** @const */ threshold = 0.1;
-      let cutIndex = startIndex;
-      let cutTime = (tasks[cutIndex].startTime + tasks[cutIndex].endTime) / 2;
-      let usedTime = 0;
-      const step = Math.sign(stopIndex - startIndex);
-      for (let i = startIndex; i !== stopIndex; i += step) {
-        const task = tasks[i];
-        const taskTime = (task.startTime + task.endTime) / 2;
-        const interval = Math.abs(cutTime - taskTime);
-        if (usedTime < threshold * interval) {
-          cutIndex = i;
-          cutTime = taskTime;
-          usedTime = 0;
-        }
-        usedTime += task.duration;
-      }
-      return cutIndex;
-    }
-    const rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
-    const leftIndex = findLowUtilizationRegion(0, rightIndex);
-    let leftTime = tasks[leftIndex].startTime;
-    let rightTime = tasks[rightIndex].endTime;
-    const span = rightTime - leftTime;
-    const totalSpan = timelineModel.maximumRecordTime() - timelineModel.minimumRecordTime();
-    if (span < totalSpan * 0.1) {
-      leftTime = timelineModel.minimumRecordTime();
-      rightTime = timelineModel.maximumRecordTime();
-    } else {
-      leftTime = Math.max(leftTime - 0.05 * span, timelineModel.minimumRecordTime());
-      rightTime = Math.min(rightTime + 0.05 * span, timelineModel.maximumRecordTime());
-    }
-    return {start: leftTime, end: rightTime};
-  }
-
-  /**
-   * @return {?Timeline.TimelineSelection}
-   */
-  _selection() {
-    const selectionData = this._currentModelSelectionData();
-    return selectionData && selectionData.selection;
-  }
-
-  /**
-   * return {?Timeline.TimelinePanel.ModelSelectionData}
-   */
-  _currentModelSelectionData() {
-    return this._performanceModel && this._performanceModel[Timeline.TimelinePanel._modelSelectionDataSymbol];
   }
 };
 
@@ -993,8 +899,6 @@ Timeline.TimelinePanel.ViewMode = {
 // Define row and header height, should be in sync with styles for timeline graphs.
 Timeline.TimelinePanel.rowHeight = 18;
 Timeline.TimelinePanel.headerHeight = 20;
-
-Timeline.TimelinePanel._modelSelectionDataSymbol = Symbol('modelSelectionData');
 
 /** @typedef {{selection: ?Timeline.TimelineSelection, windowLeftTime: number, windowRightTime: number}} */
 Timeline.TimelinePanel.ModelSelectionData;
@@ -1088,59 +992,12 @@ Timeline.TimelineSelection.Type = {
   Range: 'Range'
 };
 
-
-/**
- * @interface
- * @extends {Common.EventTarget}
- */
-Timeline.TimelineModeView = function() {};
-
-Timeline.TimelineModeView.prototype = {
-  /**
-   * @return {!UI.Widget}
-   */
-  view() {},
-
-  /**
-   * @return {?Element}
-   */
-  resizerElement() {},
-
-  /**
-   * @param {?Timeline.PerformanceModel} model
-   * @param {?TimelineModel.TimelineModel.Track} track
-   */
-  setModel(model, track) {},
-
-  /**
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  setWindowTimes(startTime, endTime) {},
-
-  /**
-   * @param {!Timeline.TimelineSelection} selection
-   */
-  setSelection(selection) {},
-
-  /**
-   * @param {?SDK.TracingModel.Event} event
-   */
-  highlightEvent(event) {}
-};
-
 /**
  * @interface
  */
 Timeline.TimelineModeViewDelegate = function() {};
 
 Timeline.TimelineModeViewDelegate.prototype = {
-  /**
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  requestWindowTimes(startTime, endTime) {},
-
   /**
    * @param {?Timeline.TimelineSelection} selection
    */

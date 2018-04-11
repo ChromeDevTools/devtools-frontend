@@ -54,7 +54,11 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {?TimelineModel.TimelineModel.Track} track
    */
   setModel(model, track) {
+    if (this._model)
+      this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
     this._model = model;
+    if (this._model)
+      this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
     this._track = track;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);
@@ -62,6 +66,7 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
       view.setModel(model, track);
     this._lazyPaintProfilerView = null;
     this._lazyLayersView = null;
+    this.setSelection(null);
   }
 
   /**
@@ -79,8 +84,10 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
 
   _updateContents() {
     const view = this._rangeDetailViews.get(this._tabbedPane.selectedTabId || '');
-    if (view)
-      view.updateContents(this._selection);
+    if (view) {
+      const window = this._model.window();
+      view.updateContents(this._selection || Timeline.TimelineSelection.fromRange(window.left, window.right));
+    }
   }
 
   /**
@@ -110,12 +117,32 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
   }
 
   /**
-   * @param {!Timeline.TimelineSelection} selection
+   * @param {!Common.Event} event
+   */
+  _onWindowChanged(event) {
+    if (!this._selection)
+      this._updateContentsFromWindow();
+  }
+
+  _updateContentsFromWindow() {
+    if (!this._model)
+      return;
+    const window = this._model.window();
+    this._updateSelectedRangeStats(window.left, window.right);
+    this._updateContents();
+  }
+
+  /**
+   * @param {?Timeline.TimelineSelection} selection
    */
   setSelection(selection) {
     this._detailsLinkifier.reset();
     this._badgePool.reset();
     this._selection = selection;
+    if (!this._selection) {
+      this._updateContentsFromWindow();
+      return;
+    }
     switch (this._selection.type()) {
       case Timeline.TimelineSelection.Type.TraceEvent:
         const event = /** @type {!SDK.TracingModel.Event} */ (this._selection.object());

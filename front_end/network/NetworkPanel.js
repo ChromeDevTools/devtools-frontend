@@ -523,7 +523,7 @@ Network.NetworkPanel = class extends UI.Panel {
    */
   _onFilmFrameSelected(event) {
     const timestamp = /** @type {number} */ (event.data);
-    this._overviewPane.requestWindowTimes(0, timestamp);
+    this._overviewPane.setWindowTimes(0, timestamp);
   }
 
   /**

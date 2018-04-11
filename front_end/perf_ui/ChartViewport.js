@@ -13,7 +13,7 @@ PerfUI.ChartViewportDelegate.prototype = {
    * @param {number} endTime
    * @param {boolean} animate
    */
-  requestWindowTimes(startTime, endTime, animate) {},
+  windowChanged(startTime, endTime, animate) {},
 
   /**
    * @param {number} startTime
@@ -448,7 +448,7 @@ PerfUI.ChartViewport = class extends UI.VBox {
     }
     if (bounds.right - bounds.left < PerfUI.FlameChart.MinimalTimeWindowMs)
       return;
-    this._delegate.requestWindowTimes(bounds.left, bounds.right, animate);
+    this._delegate.windowChanged(bounds.left, bounds.right, animate);
   }
 
   scheduleUpdate() {

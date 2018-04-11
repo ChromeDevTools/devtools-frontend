@@ -426,7 +426,7 @@ Profiler.CPUProfileFlameChart.OverviewPane = class extends UI.VBox {
    * @param {number} windowStartTime
    * @param {number} windowEndTime
    */
-  requestWindowTimes(windowStartTime, windowEndTime) {
+  windowChanged(windowStartTime, windowEndTime) {
     this._selectRange(windowStartTime, windowEndTime);
   }
 

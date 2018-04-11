@@ -234,7 +234,7 @@ PerfUI.TimelineOverviewPane = class extends UI.VBox {
    * @param {number} startTime
    * @param {number} endTime
    */
-  requestWindowTimes(startTime, endTime) {
+  setWindowTimes(startTime, endTime) {
     if (startTime === this._windowStartTime && endTime === this._windowEndTime)
       return;
     this._windowStartTime = startTime;

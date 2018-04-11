@@ -39,7 +39,7 @@ PerfUI.FlameChartDelegate.prototype = {
    * @param {number} endTime
    * @param {boolean} animate
    */
-  requestWindowTimes(startTime, endTime, animate) {},
+  windowChanged(startTime, endTime, animate) {},
 
   /**
    * @param {number} startTime
@@ -212,8 +212,8 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} endTime
    * @param {boolean} animate
    */
-  requestWindowTimes(startTime, endTime, animate) {
-    this._flameChartDelegate.requestWindowTimes(startTime, endTime, animate);
+  windowChanged(startTime, endTime, animate) {
+    this._flameChartDelegate.windowChanged(startTime, endTime, animate);
   }
 
   /**
@@ -296,10 +296,10 @@ PerfUI.FlameChart = class extends UI.VBox {
     minEntryTimeWindow = Math.max(minEntryTimeWindow, futurePixelToTime * minVisibleWidthPx);
     if (timeLeft > entryEndTime) {
       const delta = timeLeft - entryEndTime + minEntryTimeWindow;
-      this.requestWindowTimes(timeLeft - delta, timeRight - delta, /* animate */ true);
+      this.windowChanged(timeLeft - delta, timeRight - delta, /* animate */ true);
     } else if (timeRight < entryStartTime) {
       const delta = entryStartTime - timeRight + minEntryTimeWindow;
-      this.requestWindowTimes(timeLeft + delta, timeRight + delta, /* animate */ true);
+      this.windowChanged(timeLeft + delta, timeRight + delta, /* animate */ true);
     }
   }
 
@@ -1481,7 +1481,7 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @return {number}
    */
   boundarySpan() {
-    return this._dataProvider.totalTime();
+    return this.maximumBoundary() - this.minimumBoundary();
   }
 };
 

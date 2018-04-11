@@ -27,8 +27,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 /**
- * @implements {Timeline.TimelineModeView}
  * @unrestricted
  */
 Timeline.CountersGraph = class extends UI.VBox {
@@ -86,11 +86,15 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   /**
-   * @override
    * @param {?Timeline.PerformanceModel} model
    * @param {?TimelineModel.TimelineModel.Track} track
    */
   setModel(model, track) {
+    if (this._model)
+      this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+    this._model = model;
+    if (this._model)
+      this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
     this._calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
     for (let i = 0; i < this._counters.length; ++i) {
       this._counters[i].reset();
@@ -142,15 +146,6 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   /**
-   * @override
-   * @return {!UI.Widget}
-   */
-  view() {
-    return this;
-  }
-
-  /**
-   * @override
    * @return {?Element}
    */
   resizerElement() {
@@ -166,12 +161,11 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   /**
-   * @override
-   * @param {number} startTime
-   * @param {number} endTime
+   * @param {!Common.Event} event
    */
-  setWindowTimes(startTime, endTime) {
-    this._calculator.setWindow(startTime, endTime);
+  _onWindowChanged(event) {
+    const window = /** @type {!Timeline.PerformanceModel.Window} */ (event.data.window);
+    this._calculator.setWindow(window.left, window.right);
     this.scheduleRefresh();
   }
 
@@ -180,14 +174,13 @@ Timeline.CountersGraph = class extends UI.VBox {
   }
 
   draw() {
-    for (let i = 0; i < this._counters.length; ++i) {
-      this._counters[i]._calculateVisibleIndexes(this._calculator);
-      this._counters[i]._calculateXValues(this._canvas.width);
-    }
     this._clear();
-
-    for (let i = 0; i < this._counterUI.length; i++)
-      this._counterUI[i]._drawGraph(this._canvas);
+    for (const counter of this._counters) {
+      counter._calculateVisibleIndexes(this._calculator);
+      counter._calculateXValues(this._canvas.width);
+    }
+    for (const counterUI of this._counterUI)
+      counterUI._drawGraph(this._canvas);
   }
 
   /**
@@ -197,8 +190,7 @@ Timeline.CountersGraph = class extends UI.VBox {
     const x = event.x - this._canvasContainer.totalOffsetLeft();
     let minDistance = Infinity;
     let bestTime;
-    for (let i = 0; i < this._counterUI.length; ++i) {
-      const counterUI = this._counterUI[i];
+    for (const counterUI of this._counterUI) {
       if (!counterUI.counter.times.length)
         continue;
       const index = counterUI._recordIndexAt(x);
@@ -208,8 +200,10 @@ Timeline.CountersGraph = class extends UI.VBox {
         bestTime = counterUI.counter.times[index];
       }
     }
-    if (bestTime !== undefined)
-      this._delegate.selectEntryAtTime(this._track, bestTime);
+    if (bestTime !== undefined) {
+      this._delegate.selectEntryAtTime(
+          this._track.events.length ? this._track.events : this._track.asyncEvents, bestTime);
+    }
   }
 
   /**
@@ -250,20 +244,6 @@ Timeline.CountersGraph = class extends UI.VBox {
   _clear() {
     const ctx = this._canvas.getContext('2d');
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
-  /**
-   * @override
-   * @param {?SDK.TracingModel.Event} event
-   */
-  highlightEvent(event) {
-  }
-
-  /**
-   * @override
-   * @param {?Timeline.TimelineSelection} selection
-   */
-  setSelection(selection) {
   }
 };
 
@@ -533,7 +513,6 @@ Timeline.CountersGraph.Calculator = class {
   setZeroTime(time) {
     this._zeroTime = time;
   }
-
 
   /**
    * @override

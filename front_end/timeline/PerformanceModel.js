@@ -18,6 +18,9 @@ Timeline.PerformanceModel = class extends Common.Object {
     /** @type {?TimelineModel.TimelineIRModel} */
     this._irModel = new TimelineModel.TimelineIRModel();
 
+    /** @type {!Timeline.PerformanceModel.Window} */
+    this._window = {left: 0, right: Infinity};
+
     /** @type {!Array<!{title: string, model: !SDK.TracingModel, timeOffset: number}>} */
     this._extensionTracingModels = [];
     /** @type {number|undefined} */
@@ -76,6 +79,7 @@ Timeline.PerformanceModel = class extends Common.Object {
       entry.model.adjustTime(
           this._tracingModel.minimumRecordTime() + (entry.timeOffset / 1000) - this._recordStartTime);
     }
+    this._autoWindowTimes();
   }
 
   /**
@@ -173,11 +177,84 @@ Timeline.PerformanceModel = class extends Common.Object {
     const backingStorage = /** @type {!Bindings.TempFileBackingStorage} */ (this._tracingModel.backingStorage());
     return backingStorage.writeToStream(stream);
   }
+
+  /**
+   * @param {!Timeline.PerformanceModel.Window} window
+   * @param {boolean=} animate
+   */
+  setWindow(window, animate) {
+    this._window = window;
+    this.dispatchEventToListeners(Timeline.PerformanceModel.Events.WindowChanged, {window, animate});
+  }
+
+  /**
+   * @return {!Timeline.PerformanceModel.Window}
+   */
+  window() {
+    return this._window;
+  }
+
+  _autoWindowTimes() {
+    const timelineModel = this._timelineModel;
+    let tasks = [];
+    for (const track of timelineModel.tracks()) {
+      // Deliberately pick up last main frame's track.
+      if (track.type === TimelineModel.TimelineModel.TrackType.MainThread && track.forMainFrame)
+        tasks = track.tasks;
+    }
+    if (!tasks.length) {
+      this.setWindow({left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime()});
+      return;
+    }
+
+    /**
+     * @param {number} startIndex
+     * @param {number} stopIndex
+     * @return {number}
+     */
+    function findLowUtilizationRegion(startIndex, stopIndex) {
+      const /** @const */ threshold = 0.1;
+      let cutIndex = startIndex;
+      let cutTime = (tasks[cutIndex].startTime + tasks[cutIndex].endTime) / 2;
+      let usedTime = 0;
+      const step = Math.sign(stopIndex - startIndex);
+      for (let i = startIndex; i !== stopIndex; i += step) {
+        const task = tasks[i];
+        const taskTime = (task.startTime + task.endTime) / 2;
+        const interval = Math.abs(cutTime - taskTime);
+        if (usedTime < threshold * interval) {
+          cutIndex = i;
+          cutTime = taskTime;
+          usedTime = 0;
+        }
+        usedTime += task.duration;
+      }
+      return cutIndex;
+    }
+    const rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
+    const leftIndex = findLowUtilizationRegion(0, rightIndex);
+    let leftTime = tasks[leftIndex].startTime;
+    let rightTime = tasks[rightIndex].endTime;
+    const span = rightTime - leftTime;
+    const totalSpan = timelineModel.maximumRecordTime() - timelineModel.minimumRecordTime();
+    if (span < totalSpan * 0.1) {
+      leftTime = timelineModel.minimumRecordTime();
+      rightTime = timelineModel.maximumRecordTime();
+    } else {
+      leftTime = Math.max(leftTime - 0.05 * span, timelineModel.minimumRecordTime());
+      rightTime = Math.min(rightTime + 0.05 * span, timelineModel.maximumRecordTime());
+    }
+    this.setWindow({left: leftTime, right: rightTime});
+  }
 };
 
 /**
  * @enum {symbol}
  */
 Timeline.PerformanceModel.Events = {
-  ExtensionDataAdded: Symbol('ExtensionDataAdded')
+  ExtensionDataAdded: Symbol('ExtensionDataAdded'),
+  WindowChanged: Symbol('WindowChanged')
 };
+
+/** @typedef {!{left: number, right: number}} */
+Timeline.PerformanceModel.Window;

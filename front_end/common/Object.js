@@ -141,12 +141,10 @@ Common.EventTarget.EventDescriptor;
  * @param {!Array<!Common.EventTarget.EventDescriptor>} eventList
  */
 Common.EventTarget.removeEventListeners = function(eventList) {
-  for (let i = 0; i < eventList.length; ++i) {
-    const eventInfo = eventList[i];
+  for (const eventInfo of eventList)
     eventInfo.eventTarget.removeEventListener(eventInfo.eventType, eventInfo.listener, eventInfo.thisObject);
-  }
   // Do not hold references on unused event descriptors.
-  eventList.splice(0, eventList.length);
+  eventList.splice(0);
 };
 
 Common.EventTarget.prototype = {

@@ -590,7 +590,7 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
    */
   constructor(dom) {
     super(dom);
-    this._onMainFrameNavigatedPromise = null;
+    this._onLoadPromise = null;
   }
 
   /**
@@ -610,12 +610,12 @@ Audits2.DetailsRenderer = class extends DetailsRenderer {
    */
   async _replaceWithDeferredNodeBlock(origElement, detailsItem) {
     const mainTarget = SDK.targetManager.mainTarget();
-    if (!this._onMainFrameNavigatedPromise) {
+    if (!this._onLoadPromise) {
       const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
-      this._onMainFrameNavigatedPromise = resourceTreeModel.once(SDK.ResourceTreeModel.Events.MainFrameNavigated);
+      this._onLoadPromise = resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
     }
 
-    await this._onMainFrameNavigatedPromise;
+    await this._onLoadPromise;
 
     const domModel = mainTarget.model(SDK.DOMModel);
     if (!detailsItem.path)

@@ -34,12 +34,7 @@
             "actionId": "inspector_main.focus-debuggee",
             "className": "InspectorMain.FocusDebuggeeActionDelegate",
             "order": 100,
-            "title": "Focus debuggee",
-            "bindings": [
-                {
-                    "shortcut": "F12"
-                }
-            ]
+            "title": "Focus debuggee"
         },
         {
             "type": "action",

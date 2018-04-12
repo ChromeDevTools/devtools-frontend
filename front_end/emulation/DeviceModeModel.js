@@ -649,12 +649,16 @@ Emulation.DeviceModeModel = class extends Common.Object {
       const metrics = await screenCaptureModel.fetchLayoutMetrics();
       if (!metrics)
         return null;
+
+      // Cap the height to not hit the GPU limit.
+      const contentHeight = Math.min((1 << 14) / this._appliedDeviceScaleFactor, metrics.contentHeight);
       deviceMetrics = {
         width: Math.floor(metrics.contentWidth),
-        height: Math.floor(metrics.contentHeight),
+        height: Math.floor(contentHeight),
         deviceScaleFactor: this._appliedDeviceScaleFactor,
         mobile: this._isMobile(),
       };
+
       clip = {x: 0, y: 0, width: deviceMetrics.width, height: deviceMetrics.height, scale: 1};
 
       if (this._device) {

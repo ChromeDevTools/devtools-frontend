@@ -7,10 +7,48 @@
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
 const continueToHereShortcut = Host.isMac() ? 'Command' : 'Control';
+const networkSearchShortcut = Host.isMac() ? 'Command + F' : 'Control + F';
 const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
 
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
+  {
+    version: 10,
+    header: 'Highlights from the Chrome 67 update',
+    highlights: [
+      {
+        title: 'Search across all network headers',
+        subtitle: `Press ${networkSearchShortcut} in the Network panel to open the Network Search pane.`,
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#network-search',
+      },
+      {
+        title: 'CSS variable value previews in the Styles pane',
+        subtitle: 'When a property value is a CSS variable, DevTools now shows a color preview next to the variable.',
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#vars',
+      },
+      {
+        title: 'Stop infinite loops',
+        subtitle: 'Pause JavaScript execution then select the new Stop Current JavaScript Call button.',
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#stop',
+      },
+      {
+        title: 'Copy as fetch',
+        subtitle: 'Right-click a network request then select Copy > Copy as fetch.',
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#fetch',
+      },
+      {
+        title: 'More audits',
+        subtitle: 'Two new audits, desktop configuration options, and viewing traces.',
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#audits',
+      },
+      {
+        title: 'User Timing in the Performance tabs',
+        subtitle: 'Click the User Timing section to view measures in the Summary, Bottom-Up, and Call Tree tabs.',
+        link: 'https://developers.google.com/web/updates/2018/04/devtools#tabs',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2018/04/devtools',
+  },
   {
     version: 9,
     header: 'Highlights from the Chrome 66 update',

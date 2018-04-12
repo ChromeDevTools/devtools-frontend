@@ -479,7 +479,7 @@
 }
 
 .palette-panel-showing > .palette-panel {
-    transform: translateY(calc(-100% + 117px));
+    transform: translateY(calc(-100% + 104px));
     transition-delay: 0s;
     visibility: visible;
 }

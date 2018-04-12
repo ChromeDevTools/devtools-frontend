@@ -154,7 +154,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._colorPickedBound = this._colorPicked.bind(this);
 
     this._loadPalettes();
-    new ColorPicker.Spectrum.PaletteGenerator(this._generatedPaletteLoaded.bind(this));
+    new ColorPicker.Spectrum.PaletteGenerator(palette => {
+      if (palette.colors.length)
+        this.addPalette(palette);
+      else if (this._selectedColorPalette.get() === palette.title)
+        this._paletteSelected(ColorPicker.Spectrum.MaterialPalette);
+    });
 
     /**
      * @param {function(!Event)} callback
@@ -176,7 +181,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     function positionHue(event) {
       const hsva = this._hsv.slice();
       hsva[0] = Number.constrain(1 - (event.x - this._hueAlphaLeft) / this._hueAlphaWidth, 0, 1);
-      this._innerSetColor(hsva, '', undefined, ColorPicker.Spectrum._ChangeSource.Other);
+      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
 
     /**
@@ -187,7 +192,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
       const newAlpha = Math.round((event.x - this._hueAlphaLeft) / this._hueAlphaWidth * 100) / 100;
       const hsva = this._hsv.slice();
       hsva[3] = Number.constrain(newAlpha, 0, 1);
-      this._innerSetColor(hsva, '', undefined, ColorPicker.Spectrum._ChangeSource.Other);
+      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
 
     /**
@@ -199,7 +204,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
       hsva[1] = Number.constrain((event.x - this._colorOffset.left) / this.dragWidth, 0, 1);
       hsva[2] = Number.constrain(1 - (event.y - this._colorOffset.top) / this.dragHeight, 0, 1);
 
-      this._innerSetColor(hsva, '', undefined, ColorPicker.Spectrum._ChangeSource.Other);
+      this._innerSetColor(hsva, '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     }
   }
 
@@ -243,15 +248,16 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
   /**
    * @param {string} colorText
+   * @param {string=} colorName
    * @param {number=} animationDelay
    * @return {!Element}
    */
-  _createPaletteColor(colorText, animationDelay) {
+  _createPaletteColor(colorText, colorName, animationDelay) {
     const element = createElementWithClass('div', 'spectrum-palette-color');
     element.style.background = String.sprintf('linear-gradient(%s, %s), url(Images/checker.png)', colorText, colorText);
     if (animationDelay)
       element.animate([{opacity: 0}, {opacity: 1}], {duration: 100, delay: animationDelay, fill: 'backwards'});
-    element.title = colorText;
+    element.title = colorName || colorText;
     return element;
   }
 
@@ -265,9 +271,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._paletteContainer.removeChildren();
     for (let i = 0; i < palette.colors.length; i++) {
       const animationDelay = animate ? i * 100 / palette.colors.length : 0;
-      const colorElement = this._createPaletteColor(palette.colors[i], animationDelay);
+      const colorElement = this._createPaletteColor(palette.colors[i], palette.colorNames[i], animationDelay);
       colorElement.addEventListener(
-          'mousedown', this._paletteColorSelected.bind(this, palette.colors[i], palette.matchUserFormat));
+          'mousedown',
+          this._paletteColorSelected.bind(this, palette.colors[i], palette.colorNames[i], palette.matchUserFormat));
       if (palette.mutable) {
         colorElement.__mutable = true;
         colorElement.__color = palette.colors[i];
@@ -331,8 +338,9 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
     const shades = ColorPicker.Spectrum.MaterialPaletteShades[colorText];
     for (let i = shades.length - 1; i >= 0; i--) {
-      const shadeElement = this._createPaletteColor(shades[i], i * 200 / shades.length + 100);
-      shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], false));
+      const shadeElement =
+          this._createPaletteColor(shades[i], undefined /* colorName */, i * 200 / shades.length + 100);
+      shadeElement.addEventListener('mousedown', this._paletteColorSelected.bind(this, shades[i], shades[i], false));
       this._shadesContainer.appendChild(shadeElement);
     }
 
@@ -453,7 +461,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
   _loadPalettes() {
     this._palettes.set(ColorPicker.Spectrum.MaterialPalette.title, ColorPicker.Spectrum.MaterialPalette);
     /** @type {!ColorPicker.Spectrum.Palette} */
-    const defaultCustomPalette = {title: 'Custom', colors: [], mutable: true};
+    const defaultCustomPalette = {title: 'Custom', colors: [], colorNames: [], mutable: true};
     this._customPaletteSetting = Common.settings.createSetting('customColorPalette', defaultCustomPalette);
     this._palettes.set(this._customPaletteSetting.get().title, this._customPaletteSetting.get());
 
@@ -465,18 +473,12 @@ ColorPicker.Spectrum = class extends UI.VBox {
   }
 
   /**
-   * @param {!ColorPicker.Spectrum.Palette} generatedPalette
+   * @param {!ColorPicker.Spectrum.Palette} palette
    */
-  _generatedPaletteLoaded(generatedPalette) {
-    if (generatedPalette.colors.length)
-      this._palettes.set(generatedPalette.title, generatedPalette);
-    if (this._selectedColorPalette.get() !== generatedPalette.title) {
-      return;
-    } else if (!generatedPalette.colors.length) {
-      this._paletteSelected(ColorPicker.Spectrum.MaterialPalette);
-      return;
-    }
-    this._showPalette(generatedPalette, true);
+  addPalette(palette) {
+    this._palettes.set(palette.title, palette);
+    if (this._selectedColorPalette.get() === palette.title)
+      this._showPalette(palette, true);
   }
 
   /**
@@ -490,7 +492,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     titleElement.textContent = palette.title;
     let i;
     for (i = 0; i < colorsPerPreviewRow && i < palette.colors.length; i++)
-      previewElement.appendChild(this._createPaletteColor(palette.colors[i]));
+      previewElement.appendChild(this._createPaletteColor(palette.colors[i], palette.colorNames[i]));
     for (; i < colorsPerPreviewRow; i++)
       previewElement.createChild('div', 'spectrum-palette-color empty-color');
     previewElement.addEventListener('click', this._paletteSelected.bind(this, palette));
@@ -534,14 +536,15 @@ ColorPicker.Spectrum = class extends UI.VBox {
 
   /**
    * @param {string} colorText
+   * @param {(string|undefined)} colorName
    * @param {boolean} matchUserFormat
    */
-  _paletteColorSelected(colorText, matchUserFormat) {
+  _paletteColorSelected(colorText, colorName, matchUserFormat) {
     const color = Common.Color.parse(colorText);
     if (!color)
       return;
     this._innerSetColor(
-        color.hsva(), colorText, matchUserFormat ? this._colorFormat : color.format(),
+        color.hsva(), colorText, colorName, matchUserFormat ? this._colorFormat : color.format(),
         ColorPicker.Spectrum._ChangeSource.Other);
   }
 
@@ -594,7 +597,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
    */
   setColor(color, colorFormat) {
     this._originalFormat = colorFormat;
-    this._innerSetColor(color.hsva(), '', colorFormat, ColorPicker.Spectrum._ChangeSource.Model);
+    this._innerSetColor(
+        color.hsva(), '', undefined /* colorName */, colorFormat, ColorPicker.Spectrum._ChangeSource.Model);
   }
 
   /**
@@ -614,12 +618,14 @@ ColorPicker.Spectrum = class extends UI.VBox {
   /**
    * @param {!Array<number>|undefined} hsva
    * @param {string|undefined} colorString
+   * @param {string|undefined} colorName
    * @param {string|undefined} colorFormat
    * @param {string} changeSource
    */
-  _innerSetColor(hsva, colorString, colorFormat, changeSource) {
+  _innerSetColor(hsva, colorString, colorName, colorFormat, changeSource) {
     if (hsva !== undefined)
       this._hsv = hsva;
+    this._colorName = colorName;
     if (colorString !== undefined)
       this._colorString = colorString;
     if (colorFormat !== undefined) {
@@ -653,6 +659,13 @@ ColorPicker.Spectrum = class extends UI.VBox {
    */
   _color() {
     return Common.Color.fromHSVA(this._hsv);
+  }
+
+  /**
+   * @return {string|undefined}
+   */
+  colorName() {
+    return this._colorName;
   }
 
   /**
@@ -755,7 +768,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
       format = cf.HSL;
     else if (this._colorFormat === cf.HSL)
       format = (this._originalFormat === cf.ShortHEX || this._originalFormat === cf.ShortHEXA) ? cf.ShortHEX : cf.HEX;
-    this._innerSetColor(undefined, '', format, ColorPicker.Spectrum._ChangeSource.Other);
+    this._innerSetColor(undefined, '', undefined /* colorName */, format, ColorPicker.Spectrum._ChangeSource.Other);
   }
 
   /**
@@ -796,7 +809,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     let colorFormat = undefined;
     if (this._colorFormat === cf.HEX || this._colorFormat === cf.ShortHEX)
       colorFormat = color.detectHEXFormat();
-    this._innerSetColor(color.hsva(), colorString, colorFormat, ColorPicker.Spectrum._ChangeSource.Input);
+    this._innerSetColor(
+        color.hsva(), colorString, undefined /* colorName */, colorFormat, ColorPicker.Spectrum._ChangeSource.Input);
   }
 
   /**
@@ -808,7 +822,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this.dragWidth = this._colorElement.offsetWidth;
     this.dragHeight = this._colorElement.offsetHeight;
     this._colorDragElementHeight = this._colorDragElement.offsetHeight / 2;
-    this._innerSetColor(undefined, undefined, undefined, ColorPicker.Spectrum._ChangeSource.Model);
+    this._innerSetColor(
+        undefined, undefined, undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Model);
     this._toggleColorPicker(true);
   }
 
@@ -844,7 +859,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
     const rgbColor = /** @type {!{r: number, g: number, b: number, a: number}} */ (event.data);
     const rgba = [rgbColor.r, rgbColor.g, rgbColor.b, (rgbColor.a / 2.55 | 0) / 100];
     const color = Common.Color.fromRGBA(rgba);
-    this._innerSetColor(color.hsva(), '', undefined, ColorPicker.Spectrum._ChangeSource.Other);
+    this._innerSetColor(
+        color.hsva(), '', undefined /* colorName */, undefined, ColorPicker.Spectrum._ChangeSource.Other);
     InspectorFrontendHost.bringToFront();
   }
 };
@@ -864,7 +880,7 @@ ColorPicker.Spectrum.Events = {
 ColorPicker.Spectrum._colorChipSize = 24;
 ColorPicker.Spectrum._itemsPerPaletteRow = 8;
 
-/** @typedef {{ title: string, colors: !Array.<string>, mutable: boolean }} */
+/** @typedef {{ title: string, colors: !Array<string>, colorNames: !Array<string>, mutable: boolean }} */
 ColorPicker.Spectrum.Palette;
 ColorPicker.Spectrum.GeneratedPaletteTitle = 'Page colors';
 
@@ -934,6 +950,7 @@ ColorPicker.Spectrum.PaletteGenerator = class {
     this._callback({
       title: ColorPicker.Spectrum.GeneratedPaletteTitle,
       colors: paletteColors.keysArray().sort(hueComparator),
+      colorNames: [],
       mutable: false
     });
   }
@@ -998,7 +1015,8 @@ ColorPicker.Spectrum.MaterialPalette = {
   title: 'Material',
   mutable: false,
   matchUserFormat: true,
-  colors: Object.keys(ColorPicker.Spectrum.MaterialPaletteShades)
+  colors: Object.keys(ColorPicker.Spectrum.MaterialPaletteShades),
+  colorNames: []
 };
 
 ColorPicker.Spectrum.Swatch = class {

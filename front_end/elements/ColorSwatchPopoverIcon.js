@@ -111,6 +111,30 @@ Elements.ColorSwatchPopoverIcon = class {
   }
 
   /**
+   * @return {!ColorPicker.Spectrum.Palette}
+   */
+  _generateCSSVariablesPalette() {
+    const matchedStyles = this._treeElement.matchedStyles();
+    const style = this._treeElement.property.ownerStyle;
+    const cssVariables = matchedStyles.availableCSSVariables(style);
+    const colors = [];
+    const colorNames = [];
+    for (const cssVariable of cssVariables) {
+      if (cssVariable === this._treeElement.property.name)
+        continue;
+      const value = matchedStyles.computeCSSVariable(style, cssVariable);
+      if (!value)
+        continue;
+      const color = Common.Color.parse(value);
+      if (!color)
+        continue;
+      colors.push(value);
+      colorNames.push(cssVariable);
+    }
+    return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors: colors, colorNames: colorNames};
+  }
+
+  /**
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @return {?Elements.ColorSwatchPopoverIcon}
    */
@@ -147,6 +171,7 @@ Elements.ColorSwatchPopoverIcon = class {
       format = color.format();
     this._spectrum = new ColorPicker.Spectrum();
     this._spectrum.setColor(color, format);
+    this._spectrum.addPalette(this._generateCSSVariablesPalette());
     if (this._contrastInfo)
       this._spectrum.setContrastInfo(this._contrastInfo);
 
@@ -179,6 +204,10 @@ Elements.ColorSwatchPopoverIcon = class {
     if (!color)
       return;
     this._swatch.setColor(color);
+    const colorName = this._spectrum.colorName();
+    if (colorName && colorName.startsWith('--'))
+      this._swatch.setText(`var(${colorName})`);
+
     this._treeElement.applyStyleText(this._treeElement.renderedPropertyText(), false);
   }
 

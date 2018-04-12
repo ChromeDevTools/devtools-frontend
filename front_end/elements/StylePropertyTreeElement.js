@@ -38,6 +38,13 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   /**
+   * @return {!SDK.CSSMatchedStyles}
+   */
+  matchedStyles() {
+    return this._matchedStyles;
+  }
+
+  /**
    * @return {boolean}
    */
   _editable() {

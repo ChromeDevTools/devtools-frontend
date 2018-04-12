@@ -221,8 +221,9 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
     fileSystemUISourceCode[this._bindingSymbol] = binding;
     Persistence.persistence.addBinding(binding);
     const uiSourceCodeOfTruth = networkUISourceCode[this._savingSymbol] ? networkUISourceCode : fileSystemUISourceCode;
-    const content = await uiSourceCodeOfTruth.requestContent();
-    Persistence.persistence.syncContent(uiSourceCodeOfTruth, content);
+    const [content, encoded] =
+        await Promise.all([uiSourceCodeOfTruth.requestContent(), uiSourceCodeOfTruth.contentEncoded()]);
+    Persistence.persistence.syncContent(uiSourceCodeOfTruth, content, encoded);
   }
 
   /**

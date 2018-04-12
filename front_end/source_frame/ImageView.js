@@ -99,10 +99,12 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     const contentEncoded = await this._contentProvider.contentEncoded();
     this._cachedContent = content;
     let imageSrc = 'data:' + this._mimeType + (contentEncoded ? ';base64,' : ',') + content;
-    if (imageSrc === null)
+    if (content === null)
       imageSrc = this._url;
+    const loadPromise = new Promise(x => this._imagePreviewElement.onload = x);
     this._imagePreviewElement.src = imageSrc;
     this._sizeLabel.setText(Number.bytesToString(this._base64ToSize(content)));
+    await loadPromise;
     this._dimensionsLabel.setText(
         Common.UIString('%d × %d', this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
   }

@@ -207,14 +207,15 @@ Persistence.Persistence = class extends Common.Object {
   _onWorkingCopyCommitted(event) {
     const uiSourceCode = /** @type {!Workspace.UISourceCode} */ (event.data.uiSourceCode);
     const newContent = /** @type {string} */ (event.data.content);
-    this.syncContent(uiSourceCode, newContent);
+    this.syncContent(uiSourceCode, newContent, event.data.encoded);
   }
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {string} newContent
+   * @param {boolean} encoded
    */
-  syncContent(uiSourceCode, newContent) {
+  syncContent(uiSourceCode, newContent, encoded) {
     const binding = uiSourceCode[Persistence.Persistence._binding];
     if (!binding || binding[Persistence.Persistence._muteCommit])
       return;
@@ -235,7 +236,7 @@ Persistence.Persistence = class extends Common.Object {
      */
     function setContent(newContent) {
       binding[Persistence.Persistence._muteCommit] = true;
-      other.addRevision(newContent);
+      other.setContent(newContent, encoded);
       binding[Persistence.Persistence._muteCommit] = false;
       this._contentSyncedForTest();
     }

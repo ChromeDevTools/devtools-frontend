@@ -760,9 +760,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     await new Promise(r => setTimeout(r, this._millisecondsToRecordAfterLoadEvent));
 
     // Check if we're still in the same recording session.
-    if (controller !== this._controller)
+    if (controller !== this._controller || this._state !== Timeline.TimelinePanel.State.Recording)
       return;
-    this._recordingPageReload = false;
     this._stopRecording();
   }
 

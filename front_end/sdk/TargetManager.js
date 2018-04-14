@@ -12,10 +12,10 @@ SDK.TargetManager = class extends Common.Object {
     /** @type {!Array.<!SDK.TargetManager.Observer>} */
     this._observers = [];
     this._observerCapabiliesMaskSymbol = Symbol('observerCapabilitiesMask');
-    /** @type {!Map<symbol, !Array<{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>>} */
-    this._modelListeners = new Map();
-    /** @type {!Map<function(new:SDK.SDKModel, !SDK.Target), !Array<!SDK.SDKModelObserver>>} */
-    this._modelObservers = new Map();
+    /** @type {!Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>} */
+    this._modelListeners = new Multimap();
+    /** @type {!Multimap<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModelObserver>} */
+    this._modelObservers = new Multimap();
     this._isSuspended = false;
   }
 
@@ -76,9 +76,7 @@ SDK.TargetManager = class extends Common.Object {
    * @template T
    */
   observeModels(modelClass, observer) {
-    if (!this._modelObservers.has(modelClass))
-      this._modelObservers.set(modelClass, []);
-    this._modelObservers.get(modelClass).push(observer);
+    this._modelObservers.set(modelClass, observer);
     for (const model of this.models(modelClass))
       observer.modelAdded(model);
   }
@@ -89,12 +87,7 @@ SDK.TargetManager = class extends Common.Object {
    * @template T
    */
   unobserveModels(modelClass, observer) {
-    if (!this._modelObservers.has(modelClass))
-      return;
-    const observers = this._modelObservers.get(modelClass);
-    observers.remove(observer);
-    if (!observers.length)
-      this._modelObservers.delete(modelClass);
+    this._modelObservers.delete(modelClass, observer);
   }
 
   /**
@@ -103,9 +96,7 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.SDKModel} model
    */
   modelAdded(target, modelClass, model) {
-    if (!this._modelObservers.has(modelClass))
-      return;
-    for (const observer of this._modelObservers.get(modelClass).slice())
+    for (const observer of this._modelObservers.get(modelClass).valuesArray())
       observer.modelAdded(model);
   }
 
@@ -115,9 +106,7 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.SDKModel} model
    */
   _modelRemoved(target, modelClass, model) {
-    if (!this._modelObservers.has(modelClass))
-      return;
-    for (const observer of this._modelObservers.get(modelClass).slice())
+    for (const observer of this._modelObservers.get(modelClass).valuesArray())
       observer.modelRemoved(model);
   }
 
@@ -133,9 +122,7 @@ SDK.TargetManager = class extends Common.Object {
       if (model)
         model.addEventListener(eventType, listener, thisObject);
     }
-    if (!this._modelListeners.has(eventType))
-      this._modelListeners.set(eventType, []);
-    this._modelListeners.get(eventType).push({modelClass: modelClass, thisObject: thisObject, listener: listener});
+    this._modelListeners.set(eventType, {modelClass: modelClass, thisObject: thisObject, listener: listener});
   }
 
   /**
@@ -154,14 +141,10 @@ SDK.TargetManager = class extends Common.Object {
         model.removeEventListener(eventType, listener, thisObject);
     }
 
-    const listeners = this._modelListeners.get(eventType);
-    for (let i = 0; i < listeners.length; ++i) {
-      if (listeners[i].modelClass === modelClass && listeners[i].listener === listener &&
-          listeners[i].thisObject === thisObject)
-        listeners.splice(i--, 1);
+    for (const info of this._modelListeners.get(eventType)) {
+      if (info.modelClass === modelClass && info.listener === listener && info.thisObject === thisObject)
+        this._modelListeners.delete(eventType, info);
     }
-    if (!listeners.length)
-      this._modelListeners.delete(eventType);
   }
 
   /**
@@ -194,7 +177,7 @@ SDK.TargetManager = class extends Common.Object {
    */
   createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget) {
     const target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget, this._isSuspended);
-    target.createModels(new Set(this._modelObservers.keys()));
+    target.createModels(new Set(this._modelObservers.keysArray()));
     this._targets.push(target);
 
     const copy = this._observersForTarget(target);
@@ -204,12 +187,11 @@ SDK.TargetManager = class extends Common.Object {
     for (const modelClass of target.models().keys())
       this.modelAdded(target, modelClass, target.models().get(modelClass));
 
-    for (const pair of this._modelListeners) {
-      const listeners = pair[1];
-      for (let i = 0; i < listeners.length; ++i) {
-        const model = target.model(listeners[i].modelClass);
+    for (const key of this._modelListeners.keysArray()) {
+      for (const info of this._modelListeners.get(key)) {
+        const model = target.model(info.modelClass);
         if (model)
-          model.addEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
+          model.addEventListener(key, info.listener, info.thisObject);
       }
     }
 
@@ -240,12 +222,11 @@ SDK.TargetManager = class extends Common.Object {
     for (let i = 0; i < copy.length; ++i)
       copy[i].targetRemoved(target);
 
-    for (const pair of this._modelListeners) {
-      const listeners = pair[1];
-      for (let i = 0; i < listeners.length; ++i) {
-        const model = target.model(listeners[i].modelClass);
+    for (const key of this._modelListeners.keysArray()) {
+      for (const info of this._modelListeners.get(key)) {
+        const model = target.model(info.modelClass);
         if (model)
-          model.removeEventListener(/** @type {symbol} */ (pair[0]), listeners[i].listener, listeners[i].thisObject);
+          model.removeEventListener(key, info.listener, info.thisObject);
       }
     }
   }
@@ -262,7 +243,6 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
-   *
    * @param {string} id
    * @return {?SDK.Target}
    */

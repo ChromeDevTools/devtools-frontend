@@ -274,7 +274,7 @@ Common.ResourceType._mimeTypeByExtension = new Map([
   ['dart', 'text/javascript'],
 
   // TypeScript
-  ['ts', 'text/typescript'], ['tsx', 'text/typescript'],
+  ['ts', 'text/typescript'], ['tsx', 'text/typescript-jsx'],
 
   // JSON
   ['json', 'application/json'], ['gyp', 'application/json'], ['gypi', 'application/json'],

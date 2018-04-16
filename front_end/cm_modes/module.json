@@ -85,7 +85,8 @@
             "className": "CmModes.DefaultCodeMirrorMimeMode",
             "fileName": "jsx.js",
             "mimeTypes": [
-                "text/jsx"
+                "text/jsx",
+                "text/typescript-jsx"
             ]
         },
         {

@@ -1221,7 +1221,7 @@ TestRunner.dumpLoadedModules = function(relativeTo) {
  * @return {boolean}
  */
 TestRunner.isDedicatedWorker = function(target) {
-  return target && !target.hasBrowserCapability() && target.hasJSCapability() && !target.hasTargetCapability();
+  return target && !target.hasBrowserCapability() && target.hasJSCapability() && target.hasLogCapability();
 };
 
 /**

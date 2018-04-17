@@ -66,8 +66,10 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @return {number}
    */
   _capabilitiesForType(type) {
-    if (type === 'worker')
-      return SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network;
+    if (type === 'worker') {
+      return SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+          SDK.Target.Capability.Target;
+    }
     if (type === 'service_worker')
       return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
     if (type === 'iframe') {

@@ -448,3 +448,7 @@
 .console-searchable-view {
     max-height: 100%;
 }
+
+.console-eager-preview {
+    height: 15px;
+}

@@ -12,6 +12,8 @@ Console.ConsolePrompt = class extends UI.Widget {
 
     this._initialText = '';
     this._editor = null;
+    this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
+    this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
 
     this.element.tabIndex = 0;
 
@@ -33,6 +35,8 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
+      if (this._isBelowPromptEnabled)
+        this.element.appendChild(this._eagerPreviewElement);
 
       this.setText(this._initialText);
       delete this._initialText;
@@ -42,6 +46,13 @@ Console.ConsolePrompt = class extends UI.Widget {
 
       this._editorSetForTest();
     }
+  }
+
+  /**
+   * @return {number}
+   */
+  heightBelowEditor() {
+    return this._eagerPreviewElement.offsetHeight;
   }
 
   _onTextChanged() {

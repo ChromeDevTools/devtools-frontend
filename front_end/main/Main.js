@@ -108,6 +108,7 @@ Main.Main = class {
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
+    Runtime.experiments.register('consoleBelowPrompt', 'Console below-prompt UI', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
@@ -138,6 +139,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('oopifInlineDOM');
       if (testPath.indexOf('network/') !== -1)
         Runtime.experiments.enableForTest('networkSearch');
+      if (testPath.indexOf('console/viewport-testing/') !== -1)
+        Runtime.experiments.enableForTest('consoleBelowPrompt');
     }
 
     Runtime.experiments.setDefaultExperiments(['colorContrastRatio', 'stepIntoAsync', 'oopifInlineDOM']);

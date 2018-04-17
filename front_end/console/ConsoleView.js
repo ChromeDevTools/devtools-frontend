@@ -47,6 +47,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
     this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
+    this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
 
     const toolbar = new UI.Toolbar('', this.element);
     this._splitWidget =
@@ -1132,7 +1133,7 @@ Console.ConsoleView = class extends UI.VBox {
     function updateViewportState() {
       this._muteViewportUpdates = false;
       if (this.isShowing())
-        this._viewport.setStickToBottom(this._messagesElement.isScrolledToBottom());
+        this._viewport.setStickToBottom(this._isScrolledToBottom());
       if (this._maybeDirtyWhileMuted) {
         this._scheduleViewportRefresh();
         delete this._maybeDirtyWhileMuted;
@@ -1152,12 +1153,23 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _promptTextChanged() {
-    this._viewport.setStickToBottom(this._messagesElement.isScrolledToBottom());
+    this._viewport.setStickToBottom(this._isScrolledToBottom());
     this._promptTextChangedForTest();
   }
 
   _promptTextChangedForTest() {
     // This method is sniffed in tests.
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _isScrolledToBottom() {
+    if (!this._isBelowPromptEnabled)
+      return this._messagesElement.isScrolledToBottom();
+    const distanceToPromptEditorBottom = this._messagesElement.scrollHeight - this._messagesElement.scrollTop -
+        this._messagesElement.clientHeight - this._prompt.heightBelowEditor();
+    return distanceToPromptEditorBottom <= 2;
   }
 };
 

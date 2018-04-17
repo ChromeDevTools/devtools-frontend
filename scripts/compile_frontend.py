@@ -334,8 +334,8 @@ def main():
         protocol_externs_file = args.protocol_externs_file
     else:
         generate_protocol_externs.generate_protocol_externs(protocol_externs_file,
-                                                            path.join(inspector_path, 'browser_protocol.json'),
-                                                            path.join(v8_inspector_path, 'js_protocol.json'))
+                                                            path.join(inspector_path, 'browser_protocol.pdl'),
+                                                            path.join(v8_inspector_path, 'js_protocol.pdl'))
     loader = modular_build.DescriptorLoader(devtools_frontend_path)
     descriptors = loader.load_applications(application_descriptors)
     modules_by_name = descriptors.modules

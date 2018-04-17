@@ -1279,8 +1279,9 @@ group("devtools_closure_compile") {
     "//testing/scripts/common.py",
     "//testing/scripts/run_devtools_check.py",
     "//testing/xvfb.py",
-    "//third_party/blink/renderer/core/inspector/browser_protocol.json",
-    "//v8/src/inspector/js_protocol.json",
+    "//third_party/blink/renderer/core/inspector/browser_protocol.pdl",
+    "//third_party/inspector_protocol/pdl.py",
+    "//v8/src/inspector/js_protocol.pdl",
   ]
 }
 

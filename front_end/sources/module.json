@@ -856,7 +856,7 @@
         "SourceMapNamesResolver.js",
         "JavaScriptBreakpointsSidebarPane.js",
         "UISourceCodeFrame.js",
-        "JavaScriptSourceFrame.js",
+        "DebuggerPlugin.js",
         "CSSPlugin.js",
         "SearchSourcesView.js",
         "NavigatorView.js",

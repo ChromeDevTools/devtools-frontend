@@ -3,14 +3,15 @@
 // found in the LICENSE file.
 
 /**
- * @implements {Sources.UISourceCodeFrame.Plugin}
+ * @unrestricted
  */
-Sources.SnippetsPlugin = class {
+Sources.SnippetsPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   constructor(textEditor, uiSourceCode) {
+    super();
     this._textEditor = textEditor;
     this._uiSourceCode = uiSourceCode;
   }
@@ -28,24 +29,10 @@ Sources.SnippetsPlugin = class {
    * @override
    * @return {!Array<!UI.ToolbarItem>}
    */
-  leftToolbarItems() {
-    return [];
-  }
-
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
   rightToolbarItems() {
     const runSnippet = UI.Toolbar.createActionButtonForId('debugger.run-snippet');
     runSnippet.setText(Host.isMac() ? Common.UIString('\u2318+Enter') : Common.UIString('Ctrl+Enter'));
 
     return [runSnippet];
-  }
-
-  /**
-   * @override
-   */
-  dispose() {
   }
 };

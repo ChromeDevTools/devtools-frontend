@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {Sources.UISourceCodeFrame.Plugin}
+ * @unrestricted
  */
-Sources.JavaScriptCompilerPlugin = class {
+Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
   constructor(textEditor, uiSourceCode) {
+    super();
     this._textEditor = textEditor;
     this._uiSourceCode = uiSourceCode;
     this._compiling = false;
@@ -100,22 +101,6 @@ Sources.JavaScriptCompilerPlugin = class {
   }
 
   _compilationFinishedForTest() {
-  }
-
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
-  rightToolbarItems() {
-    return [];
-  }
-
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
-  leftToolbarItems() {
-    return [];
   }
 
   /**

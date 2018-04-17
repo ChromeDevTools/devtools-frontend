@@ -29,14 +29,14 @@
  */
 
 /**
- * @implements {Sources.UISourceCodeFrame.Plugin}
  * @unrestricted
  */
-Sources.CSSPlugin = class {
+Sources.CSSPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
    */
   constructor(textEditor) {
+    super();
     this._textEditor = textEditor;
     this._swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper();
     this._muteSwatchProcessing = false;
@@ -376,22 +376,6 @@ Sources.CSSPlugin = class {
       tokenPosition = token.startColumn - 1;
     }
     return null;
-  }
-
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
-  rightToolbarItems() {
-    return [];
-  }
-
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
-  leftToolbarItems() {
-    return [];
   }
 
   /**

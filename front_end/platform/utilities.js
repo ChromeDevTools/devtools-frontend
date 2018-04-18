@@ -840,6 +840,8 @@ String.tokenizeFormatString = function(format, formatters) {
   let substitutionIndex = 0;
 
   function addStringToken(str) {
+    if (!str)
+      return;
     if (tokens.length && tokens[tokens.length - 1].type === 'string')
       tokens[tokens.length - 1].value += str;
     else

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 /**
+ * @implements {SDK.SDKModelObserver}
  * @unrestricted
  */
 PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
@@ -10,7 +11,6 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     super(true);
     this.registerRequiredCSS('performance_monitor/performanceMonitor.css');
     this.contentElement.classList.add('perfmon-pane');
-    this._model = SDK.targetManager.mainTarget().model(SDK.PerformanceMetricsModel);
     /** @type {!Array<!{timestamp: number, metrics: !Map<string, number>}>} */
     this._metricsBuffer = [];
     /** @const */
@@ -29,12 +29,15 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
         Common.UIString('Paused');
     this._controlPane.addEventListener(
         PerformanceMonitor.PerformanceMonitor.ControlPane.Events.MetricChanged, this._recalcChartHeight, this);
+    SDK.targetManager.observeModels(SDK.PerformanceMetricsModel, this);
   }
 
   /**
    * @override
    */
   wasShown() {
+    if (!this._model)
+      return;
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._model.enable();
     this._suspendStateChanged();
@@ -44,10 +47,36 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    * @override
    */
   willHide() {
+    if (!this._model)
+      return;
     SDK.targetManager.removeEventListener(
         SDK.TargetManager.Events.SuspendStateChanged, this._suspendStateChanged, this);
     this._stopPolling();
     this._model.disable();
+  }
+
+  /**
+   * @override
+   * @param {!SDK.PerformanceMetricsModel} model
+   */
+  modelAdded(model) {
+    if (this._model)
+      return;
+    this._model = model;
+    if (this.isShowing())
+      this.wasShown();
+  }
+
+  /**
+   * @override
+   * @param {!SDK.PerformanceMetricsModel} model
+   */
+  modelRemoved(model) {
+    if (this._model !== model)
+      return;
+    if (this.isShowing())
+      this.willHide();
+    this._model = null;
   }
 
   _suspendStateChanged() {

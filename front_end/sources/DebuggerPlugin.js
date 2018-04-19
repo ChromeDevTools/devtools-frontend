@@ -1412,6 +1412,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._sourceMapInfobar = UI.Infobar.create(
         UI.Infobar.Type.Info, Common.UIString('Source Map detected.'),
         Common.settings.createSetting('sourceMapInfobarDisabled', false));
+    if (!this._sourceMapInfobar)
+      return;
     this._sourceMapInfobar.createDetailsRowMessage(Common.UIString(
         'Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.'));
     this._sourceMapInfobar.createDetailsRowMessage(Common.UIString(

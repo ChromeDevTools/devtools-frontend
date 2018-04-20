@@ -679,7 +679,7 @@ SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
   return TestRunner.debuggerModel.evaluateOnSelectedCallFrame({expression: code, objectGroup: 'console'});
 };
 
-SourcesTestRunner.waitJavaScriptSourceFrameBreakpoints = function(sourceFrame) {
+SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
   return waitUpdate().then(checkIfReady);
 
   async function waitUpdate() {
@@ -696,7 +696,7 @@ SourcesTestRunner.waitJavaScriptSourceFrameBreakpoints = function(sourceFrame) {
   }
 };
 
-SourcesTestRunner.dumpJavaScriptSourceFrameBreakpoints = function(sourceFrame) {
+SourcesTestRunner.dumpDebuggerPluginBreakpoints = function(sourceFrame) {
   const textEditor = sourceFrame._textEditor;
 
   for (let lineNumber = 0; lineNumber < textEditor.linesCount; ++lineNumber) {
@@ -725,7 +725,7 @@ SourcesTestRunner.dumpJavaScriptSourceFrameBreakpoints = function(sourceFrame) {
   }
 };
 
-SourcesTestRunner.clickJavaScriptSourceFrameBreakpoint = function(sourceFrame, lineNumber, index, next) {
+SourcesTestRunner.clickDebuggerPluginBreakpoint = function(sourceFrame, lineNumber, index, next) {
   const textEditor = sourceFrame._textEditor;
   const lineLength = textEditor.line(lineNumber).length;
   const lineRange = new TextUtils.TextRange(lineNumber, 0, lineNumber, lineLength);

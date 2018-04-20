@@ -26,9 +26,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @unrestricted
- */
 Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
@@ -590,9 +587,6 @@ Sources.UISourceCodeFrame.RowMessage = class {
   }
 };
 
-/**
- * @unrestricted
- */
 Sources.UISourceCodeFrame.RowMessageBucket = class {
   /**
    * @param {!Sources.UISourceCodeFrame} sourceFrame
@@ -749,10 +743,6 @@ Workspace.UISourceCode.Message.messageLevelComparator = function(a, b) {
       Workspace.UISourceCode.Message._messageLevelPriority[b.level()];
 };
 
-
-/**
- * @unrestricted
- */
 Sources.UISourceCodeFrame.Plugin = class {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode

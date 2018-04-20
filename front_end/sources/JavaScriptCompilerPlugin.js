@@ -1,9 +1,6 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
 Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   /**
    * @param {!SourceFrame.SourcesTextEditor} textEditor
@@ -57,7 +54,6 @@ Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugi
    * @return {?SDK.RuntimeModel}
    */
   _findRuntimeModel() {
-    // TODO(dgozman): grab correct runtime model from JavaScriptSourceFrame instead.
     const debuggerModels = SDK.targetManager.models(SDK.DebuggerModel);
     for (let i = 0; i < debuggerModels.length; ++i) {
       const scriptFile = Bindings.debuggerWorkspaceBinding.scriptFile(this._uiSourceCode, debuggerModels[i]);

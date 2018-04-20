@@ -1297,6 +1297,9 @@ SDK.DebuggerModel.CallFrame = class {
         (runtimeModel.hasSideEffectSupport() === false ||
          (runtimeModel.hasSideEffectSupport() === null && !await runtimeModel.checkSideEffectSupport())))
       return {error: 'Side-effect checks not supported by backend.'};
+    // TODO(luoe): remove this check when evaluateOnCallFrame supports timeout.
+    if (typeof options.timeout !== 'undefined')
+      return {error: 'Evaluation with timeout on pause not supported by backend.'};
 
     const response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
       callFrameId: this.id,

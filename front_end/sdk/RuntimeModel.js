@@ -559,7 +559,8 @@ SDK.RuntimeModel.CompileScriptResult;
  *    silent: (boolean|undefined),
  *    returnByValue: (boolean|undefined),
  *    generatePreview: (boolean|undefined),
- *    throwOnSideEffect: (boolean|undefined)
+ *    throwOnSideEffect: (boolean|undefined),
+ *    timeout: (number|undefined)
  *  }}
  */
 SDK.RuntimeModel.EvaluationOptions;
@@ -738,7 +739,9 @@ SDK.ExecutionContext = class {
     // FIXME: It will be moved to separate ExecutionContext.
     if (this.debuggerModel.selectedCallFrame())
       return this.debuggerModel.evaluateOnSelectedCallFrame(options);
-    if (!options.throwOnSideEffect || this.runtimeModel.hasSideEffectSupport())
+    // Assume backends either support both throwOnSideEffect and timeout options or neither.
+    const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
+    if (!needsTerminationOptions || this.runtimeModel.hasSideEffectSupport())
       return this._evaluateGlobal(options, userGesture, awaitPromise);
 
     /** @type {!SDK.RuntimeModel.EvaluationResult} */
@@ -793,7 +796,8 @@ SDK.ExecutionContext = class {
       generatePreview: options.generatePreview,
       userGesture: userGesture,
       awaitPromise: awaitPromise,
-      throwOnSideEffect: options.throwOnSideEffect
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout
     });
 
     const error = response[Protocol.Error];

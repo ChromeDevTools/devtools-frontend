@@ -36,6 +36,12 @@ Sources.TabbedEditorContainerDelegate.prototype = {
    * @return {!UI.Widget}
    */
   viewForFile(uiSourceCode) {},
+
+  /**
+  * @param {!Sources.UISourceCodeFrame} sourceFrame
+  * @param {!Workspace.UISourceCode} uiSourceCode
+  */
+  recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {},
 };
 
 /**
@@ -92,10 +98,16 @@ Sources.TabbedEditorContainer = class extends Common.Object {
       return;
 
     if (!fileSystemTabId) {
+      const networkView = this._tabbedPane.tabView(networkTabId);
       const tabIndex = this._tabbedPane.tabIndex(networkTabId);
-      fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
-      const fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
-      this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+      if (networkView instanceof Sources.UISourceCodeFrame) {
+        this._delegate.recycleUISourceCodeFrame(networkView, binding.fileSystem);
+        fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex, networkView);
+      } else {
+        fileSystemTabId = this._appendFileTab(binding.fileSystem, false, tabIndex);
+        const fileSystemTabView = /** @type {!UI.Widget} */ (this._tabbedPane.tabView(fileSystemTabId));
+        this._restoreEditorProperties(fileSystemTabView, currentSelectionRange, currentScrollLineNumber);
+      }
     }
 
     this._closeTabs([networkTabId], true);
@@ -436,10 +448,11 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {boolean=} userGesture
    * @param {number=} index
+   * @param {!UI.Widget=} replaceView
    * @return {string}
    */
-  _appendFileTab(uiSourceCode, userGesture, index) {
-    const view = this._delegate.viewForFile(uiSourceCode);
+  _appendFileTab(uiSourceCode, userGesture, index, replaceView) {
+    const view = replaceView || this._delegate.viewForFile(uiSourceCode);
     const title = this._titleForFile(uiSourceCode);
     const tooltip = this._tooltipForFile(uiSourceCode);
 
@@ -447,9 +460,11 @@ Sources.TabbedEditorContainer = class extends Common.Object {
     this._tabIds.set(uiSourceCode, tabId);
     this._files[tabId] = uiSourceCode;
 
-    const savedSelectionRange = this._history.selectionRange(uiSourceCode.url());
-    const savedScrollLineNumber = this._history.scrollLineNumber(uiSourceCode.url());
-    this._restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
+    if (!replaceView) {
+      const savedSelectionRange = this._history.selectionRange(uiSourceCode.url());
+      const savedScrollLineNumber = this._history.scrollLineNumber(uiSourceCode.url());
+      this._restoreEditorProperties(view, savedSelectionRange, savedScrollLineNumber);
+    }
 
     this._tabbedPane.appendTab(tabId, title, view, tooltip, userGesture, undefined, index);
 

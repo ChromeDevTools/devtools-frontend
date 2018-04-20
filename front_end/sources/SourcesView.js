@@ -345,6 +345,17 @@ Sources.SourcesView = class extends UI.VBox {
 
   /**
    * @override
+   * @param {!Sources.UISourceCodeFrame} sourceFrame
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
+    this._sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
+    sourceFrame.setUISourceCode(uiSourceCode);
+    this._sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
+  }
+
+  /**
+   * @override
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!UI.Widget}
    */

@@ -230,6 +230,15 @@ Formatter.FormatterWorkerPool = class {
               rule => ({line: rule.lineNumber, column: rule.columnNumber, title: rule.selectorText || rule.atRule})));
     }
   }
+
+  /**
+   * @param {string} content
+   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>}
+   */
+  findLastExpression(content) {
+    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>} */ (
+        this._runTask('findLastExpression', {content}));
+  }
 };
 
 Formatter.FormatterWorkerPool.MaxWorkers = 2;

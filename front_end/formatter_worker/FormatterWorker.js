@@ -84,6 +84,9 @@ self.onmessage = function(event) {
     case 'preprocessTopLevelAwaitExpressions':
       FormatterWorker.preprocessTopLevelAwaitExpressions(params.content);
       break;
+    case 'findLastExpression':
+      postMessage(FormatterWorker.findLastExpression(params.content));
+      break;
     default:
       console.error('Unsupport method name: ' + method);
   }
@@ -315,6 +318,72 @@ FormatterWorker.format = function(mimeType, text, indentString) {
     result.content = text;
   }
   postMessage(result);
+};
+
+/**
+ * @param {string} content
+ * @return {?{baseExpression: string, possibleSideEffects:boolean}}
+ */
+FormatterWorker.findLastExpression = function(content) {
+  if (content.length > 10000)
+    return null;
+  try {
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
+    while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
+    }
+  } catch (e) {
+    return null;
+  }
+
+  /** @type {!ESTree.Node} */
+  let ast;
+  const suffix = '.DEVTOOLS';
+  try {
+    acorn.parse(content + suffix, {ecmaVersion: 9});
+  } catch (parseError) {
+    // If this is an invalid location for a '.', don't attempt to give autocomplete
+    if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length)
+      return null;
+  }
+  let parsedContent = '';
+  for (let i = 0; i < content.length; i++) {
+    try {
+      // Wrap content in paren to successfully parse object literals
+      parsedContent = content[i] === '{' ? `(${content.substring(i)})${suffix}` : `${content.substring(i)}${suffix}`;
+      ast = acorn.parse(parsedContent, {ecmaVersion: 9});
+      break;
+    } catch (e) {
+    }
+  }
+  if (!ast)
+    return null;
+  const types = new Set(['MemberExpression', 'Identifier']);
+  let baseNode = null;
+  const walker = new FormatterWorker.ESTreeWalker(node => {
+    if (baseNode || node.end < ast.end)
+      return FormatterWorker.ESTreeWalker.SkipSubtree;
+    if (types.has(node.type))
+      baseNode = node;
+  });
+  walker.walk(ast);
+  if (!baseNode)
+    return null;
+  let baseExpression = parsedContent.substring(baseNode.start, parsedContent.length - suffix.length);
+  if (baseExpression.startsWith('{'))
+    baseExpression = `(${baseExpression})`;
+  const sideEffectFreeTypes = new Set([
+    'MemberExpression', 'Identifier', 'BinaryExpression', 'Literal', 'TemplateLiteral', 'TemplateElement',
+    'ObjectExpression', 'ArrayExpression', 'Property'
+  ]);
+  let possibleSideEffects = false;
+  const sideEffectwalker = new FormatterWorker.ESTreeWalker(node => {
+    if (!possibleSideEffects && !sideEffectFreeTypes.has(node.type))
+      possibleSideEffects = true;
+    if (possibleSideEffects)
+      return FormatterWorker.ESTreeWalker.SkipSubtree;
+  });
+  sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
+  return {baseExpression, possibleSideEffects};
 };
 
 /**

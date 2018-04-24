@@ -14,6 +14,11 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._editor = null;
     this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
     this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
+    this._textChangeThrottler = new Common.Throttler(150);
+    this._formatter = new ObjectUI.RemoteObjectPreviewFormatter();
+    this._requestPreviewBound = this._requestPreview.bind(this);
+    this._innerPreviewElement = this._eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
+    this._eagerPreviewElement.appendChild(UI.Icon.create('smallicon-command-result', 'preview-result-icon'));
 
     this.element.tabIndex = 0;
 
@@ -56,7 +61,54 @@ Console.ConsolePrompt = class extends UI.Widget {
   }
 
   _onTextChanged() {
+    // ConsoleView and prompt both use a throttler, so we clear the preview
+    // ASAP to avoid inconsistency between a fresh viewport and stale preview.
+    if (this._isBelowPromptEnabled) {
+      const asSoonAsPossible = !this.text();
+      this._previewRequestForTest = this._textChangeThrottler.schedule(this._requestPreviewBound, asSoonAsPossible);
+    }
     this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  async _requestPreview() {
+    const text = this.text().trim();
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
+    if (!executionContext || !text || text.length > Console.ConsolePrompt._MaxLengthForEvaluation) {
+      this._innerPreviewElement.removeChildren();
+      return;
+    }
+
+    const options = {
+      expression: SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text),
+      includeCommandLineAPI: true,
+      generatePreview: true,
+      throwOnSideEffect: true,
+      timeout: 500
+    };
+    const result = await executionContext.evaluate(options, true /* userGesture */, false /* awaitPromise */);
+    this._innerPreviewElement.removeChildren();
+    if (result.error)
+      return;
+
+    if (result.exceptionDetails) {
+      const exception = result.exceptionDetails.exception.description;
+      if (exception.startsWith('TypeError: '))
+        this._innerPreviewElement.textContent = exception;
+      return;
+    }
+
+    const {preview, type, subtype, description} = result.object;
+    if (preview && type === 'object' && subtype !== 'node') {
+      this._formatter.appendObjectPreview(this._innerPreviewElement, preview, false /* isEntry */);
+    } else {
+      const nonObjectPreview = this._formatter.renderPropertyPreview(type, subtype, description.trimEnd(400));
+      this._innerPreviewElement.appendChild(nonObjectPreview);
+    }
+    if (this._innerPreviewElement.deepTextContent() === this.text().trim())
+      this._innerPreviewElement.removeChildren();
   }
 
   /**
@@ -310,6 +362,12 @@ Console.ConsolePrompt = class extends UI.Widget {
   _editorSetForTest() {
   }
 };
+
+/**
+ * @const
+ * @type {number}
+ */
+Console.ConsolePrompt._MaxLengthForEvaluation = 2000;
 
 /**
  * @unrestricted

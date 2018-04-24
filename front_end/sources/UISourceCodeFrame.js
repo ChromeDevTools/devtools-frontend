@@ -35,7 +35,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._uiSourceCode = uiSourceCode;
 
     if (Runtime.experiments.isEnabled('sourceDiff'))
-      this._diff = new SourceFrame.SourceCodeDiff(WorkspaceDiff.workspaceDiff(), this.textEditor);
+      this._diff = new SourceFrame.SourceCodeDiff(this.textEditor);
 
     this._muteSourceCodeEvents = false;
     this._isSettingContent = false;
@@ -164,7 +164,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._installMessageAndDecorationListeners();
     this._updateStyle();
     this._decorateAllTypes();
-    this._updateDiffUISourceCode();
     this._refreshHighlighterType();
     this._ensurePluginsLoaded();
   }
@@ -313,6 +312,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._plugins.push(new Sources.JavaScriptCompilerPlugin(this.textEditor, pluginUISourceCode));
     if (Sources.SnippetsPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.SnippetsPlugin(this.textEditor, pluginUISourceCode));
+    if (Runtime.experiments.isEnabled('sourceDiff') && Sources.GutterDiffPlugin.accepts(pluginUISourceCode))
+      this._plugins.push(new Sources.GutterDiffPlugin(this.textEditor, pluginUISourceCode));
 
     this.dispatchEventToListeners(Sources.UISourceCodeFrame.Events.ToolbarItemsChanged);
     for (const plugin of this._plugins)
@@ -332,17 +333,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._unloadUISourceCode();
     this._persistenceBinding = binding;
     this._initializeUISourceCode();
-  }
-
-  _updateDiffUISourceCode() {
-    if (!this._diff)
-      return;
-    if (this._persistenceBinding)
-      this._diff.setUISourceCode(this._persistenceBinding.network);
-    else if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network)
-      this._diff.setUISourceCode(this._uiSourceCode);
-    else
-      this._diff.setUISourceCode(null);
   }
 
   _updateStyle() {
@@ -378,8 +368,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   dispose() {
     this._errorPopoverHelper.dispose();
     this._unloadUISourceCode();
-    if (this._diff)
-      this._diff.dispose();
     this.textEditor.dispose();
     this.detach();
     Common.settings.moduleSetting('persistenceNetworkOverridesEnabled')

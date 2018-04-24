@@ -858,6 +858,7 @@
         "UISourceCodeFrame.js",
         "DebuggerPlugin.js",
         "CSSPlugin.js",
+        "GutterDiffPlugin.js",
         "SearchSourcesView.js",
         "NavigatorView.js",
         "ScopeChainSidebarPane.js",

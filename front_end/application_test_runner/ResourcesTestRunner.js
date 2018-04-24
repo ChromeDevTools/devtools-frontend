@@ -79,7 +79,7 @@ ApplicationTestRunner.showResource = function(resourceURL, callback) {
     if (sourceFrame.loaded)
       callbackWrapper(sourceFrame);
     else
-      TestRunner.addSniffer(sourceFrame, 'onTextEditorContentSet', callbackWrapper.bind(null, sourceFrame));
+      TestRunner.addSniffer(sourceFrame, 'setContent', callbackWrapper.bind(null, sourceFrame));
   }
 
   ApplicationTestRunner.runAfterResourcesAreFinished([resourceURL], showResourceCallback);

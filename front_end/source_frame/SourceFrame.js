@@ -379,10 +379,6 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._delayedFindSearchMatches = null;
     }
     this._muteChangeEventsForSetContent = false;
-    this.onTextEditorContentSet();
-  }
-
-  onTextEditorContentSet() {
   }
 
   /**
@@ -510,10 +506,6 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    */
   supportsRegexSearch() {
     return true;
-  }
-
-  get currentSearchResultIndex() {
-    return this._currentSearchResultIndex;
   }
 
   jumpToSearchResult(index) {

@@ -399,7 +399,7 @@ SourcesTestRunner.showUISourceCode = function(uiSourceCode, callback) {
   if (sourceFrame.loaded)
     callback(sourceFrame);
   else
-    TestRunner.addSniffer(sourceFrame, 'onTextEditorContentSet', callback && callback.bind(null, sourceFrame));
+    TestRunner.addSniffer(sourceFrame, 'setContent', callback && callback.bind(null, sourceFrame));
 };
 
 SourcesTestRunner.showUISourceCodePromise = function(uiSourceCode) {
@@ -747,7 +747,7 @@ SourcesTestRunner.debuggerPlugin = function(sourceFrame) {
 
 SourcesTestRunner.waitUntilDebuggerPluginLoaded = async function(sourceFrame) {
   while (!SourcesTestRunner.debuggerPlugin(sourceFrame))
-    await TestRunner.addSnifferPromise(sourceFrame, '_refreshPlugins');
+    await TestRunner.addSnifferPromise(sourceFrame, '_ensurePluginsLoaded');
   return SourcesTestRunner.debuggerPlugin(sourceFrame);
 };
 

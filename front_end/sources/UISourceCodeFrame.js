@@ -232,13 +232,15 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
   /**
    * @override
+   * @param {?string} content
    */
-  onTextEditorContentSet() {
-    super.onTextEditorContentSet();
+  setContent(content) {
+    this._disposePlugins();
+    super.setContent(content);
     for (const message of this._allMessages())
       this._addMessageToSource(message);
     this._decorateAllTypes();
-    this._refreshPlugins();
+    this._ensurePluginsLoaded();
   }
 
   /**
@@ -289,11 +291,6 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._innerSetContent(this._uiSourceCode.workingCopy());
     this.textEditor.markClean();
     this._updateStyle();
-  }
-
-  _refreshPlugins() {
-    this._disposePlugins();
-    this._ensurePluginsLoaded();
   }
 
   _ensurePluginsLoaded() {

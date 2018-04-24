@@ -275,7 +275,8 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       prevNodeId = nodeId;
       nodeId = nextNodeId;
     }
-    Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
+    if (count)
+      Common.console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`);
     /**
      * @param {!SDK.ProfileNode} node
      * @return {!SDK.ProfileNode}

@@ -2057,19 +2057,30 @@ Elements.KeyframePropertiesSection = class extends Elements.StylePropertiesSecti
 
 Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
   /**
-   * @param {!Array<string>} cssCompletions
-   * @param {!Array<string>} cssVariables
    * @param {!Elements.StylePropertyTreeElement} treeElement
    * @param {boolean} isEditingName
    */
-  constructor(cssCompletions, cssVariables, treeElement, isEditingName) {
+  constructor(treeElement, isEditingName) {
     // Use the same callback both for applyItemCallback and acceptItemCallback.
     super();
     this.initialize(this._buildPropertyCompletions.bind(this), UI.StyleValueDelimiters);
-    this._cssCompletions = cssCompletions;
-    this._cssVariables = cssVariables;
+    this._isColorAware = SDK.cssMetadata().isColorAwareProperty(treeElement.property.name);
+    this._cssCompletions = [];
+    if (isEditingName) {
+      this._cssCompletions = SDK.cssMetadata().allProperties();
+      if (!treeElement.node().isSVGNode())
+        this._cssCompletions = this._cssCompletions.filter(property => !SDK.cssMetadata().isSVGProperty(property));
+    } else {
+      this._cssCompletions = SDK.cssMetadata().propertyValues(treeElement.nameElement.textContent);
+    }
+
     this._treeElement = treeElement;
     this._isEditingName = isEditingName;
+    this._cssVariables = treeElement.matchedStyles().availableCSSVariables(treeElement.property.ownerStyle);
+    if (this._cssVariables.length < 1000)
+      this._cssVariables.sort(String.naturalOrderComparator);
+    else
+      this._cssVariables.sort();
 
     if (!isEditingName) {
       this.disableDefaultSuggestionForEmptyInput();
@@ -2205,9 +2216,9 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
     const prefixResults = [];
     const anywhereResults = [];
     if (!editingVariable)
-      this._cssCompletions.forEach(filterCompletions.bind(this));
+      this._cssCompletions.forEach(completion => filterCompletions.call(this, completion, false /* variable */));
     if (this._isEditingName || editingVariable)
-      this._cssVariables.forEach(filterCompletions.bind(this));
+      this._cssVariables.forEach(variable => filterCompletions.call(this, variable, true /* variable */));
 
     const results = prefixResults.concat(anywhereResults);
     if (!this._isEditingName && !results.length && query.length > 1 && '!important'.startsWith(lowerQuery))
@@ -2219,22 +2230,56 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
           results[i].text = results[i].text.toUpperCase();
       }
     }
-    if (editingVariable)
-      results.forEach(result => result.text += ')');
+    if (editingVariable) {
+      results.forEach(result => {
+        result.title = result.text;
+        result.text += ')';
+      });
+    }
+    if (this._isColorAware && !this._isEditingName) {
+      results.stableSort((a, b) => {
+        if (!!a.subtitleRenderer === !!b.subtitleRenderer)
+          return 0;
+        return a.subtitleRenderer ? -1 : 1;
+      });
+    }
     return Promise.resolve(results);
 
     /**
      * @param {string} completion
+     * @param {boolean} variable
      * @this {Elements.StylesSidebarPane.CSSPropertyPrompt}
      */
-    function filterCompletions(completion) {
+    function filterCompletions(completion, variable) {
       const index = completion.toLowerCase().indexOf(lowerQuery);
-      if (index === 0) {
-        const priority = this._isEditingName ? SDK.cssMetadata().propertyUsageWeight(completion) : 1;
-        prefixResults.push({text: completion, priority: priority});
-      } else if (index > -1) {
-        anywhereResults.push({text: completion});
+      const result = {text: completion};
+      if (variable) {
+        const computedValue =
+            this._treeElement.matchedStyles().computeCSSVariable(this._treeElement.property.ownerStyle, completion);
+        if (computedValue) {
+          const color = Common.Color.parse(computedValue);
+          if (color)
+            result.subtitleRenderer = swatchRenderer.bind(null, color);
+        }
       }
+      if (index === 0) {
+        result.priority = this._isEditingName ? SDK.cssMetadata().propertyUsageWeight(completion) : 1;
+        prefixResults.push(result);
+      } else if (index > -1) {
+        anywhereResults.push(result);
+      }
+    }
+
+    /**
+     * @param {!Common.Color} color
+     * @return {!Element}
+     */
+    function swatchRenderer(color) {
+      const swatch = InlineEditor.ColorSwatch.create();
+      swatch.hideText(true);
+      swatch.setColor(color);
+      swatch.style.pointerEvents = 'none';
+      return swatch;
     }
   }
 };

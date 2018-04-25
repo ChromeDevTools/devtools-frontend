@@ -18,6 +18,7 @@ InlineEditor.ColorSwatch = class extends HTMLSpanElement {
           UI.registerCustomElement('span', 'color-swatch', InlineEditor.ColorSwatch.prototype);
     }
 
+
     return /** @type {!InlineEditor.ColorSwatch} */ (new InlineEditor.ColorSwatch._constructor());
   }
 
@@ -178,6 +179,7 @@ InlineEditor.BezierSwatch = class extends HTMLSpanElement {
           UI.registerCustomElement('span', 'bezier-swatch', InlineEditor.BezierSwatch.prototype);
     }
 
+
     return /** @type {!InlineEditor.BezierSwatch} */ (new InlineEditor.BezierSwatch._constructor());
   }
 
@@ -220,7 +222,6 @@ InlineEditor.BezierSwatch = class extends HTMLSpanElement {
     root.createChild('content');
   }
 };
-
 
 /**
  * @unrestricted

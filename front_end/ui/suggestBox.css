@@ -105,7 +105,7 @@
 
 .user-has-interacted .suggest-box-content-item.selected > span {
    color: var(--selection-fg-color);
-}}
+}
 
 .suggest-box-content-item:hover:not(.selected) {
     background-color: rgba(56, 121, 217, 0.1);

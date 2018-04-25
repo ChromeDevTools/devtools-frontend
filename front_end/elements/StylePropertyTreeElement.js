@@ -609,19 +609,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (selectElement.parentElement)
       selectElement.parentElement.scrollIntoViewIfNeeded(false);
 
-    let cssCompletions = [];
-    if (isEditingName) {
-      cssCompletions = SDK.cssMetadata().allProperties();
-      if (!this.node().isSVGNode())
-        cssCompletions = cssCompletions.filter(property => !SDK.cssMetadata().isSVGProperty(property));
-    } else {
-      cssCompletions = SDK.cssMetadata().propertyValues(this.nameElement.textContent);
-    }
-
-    const cssVariables = this._matchedStyles.availableCSSVariables(this.property.ownerStyle);
-    cssVariables.sort(String.naturalOrderComparator);
-
-    this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(cssCompletions, cssVariables, this, isEditingName);
+    this._prompt = new Elements.StylesSidebarPane.CSSPropertyPrompt(this, isEditingName);
     this._prompt.setAutocompletionTimeout(0);
     if (section)
       section.startEditing();

@@ -39,8 +39,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   constructor(filters) {
     super();
     this.reset();
-    const font = '11px ' + Host.fontFamily();
-    this._font = font;
+    this._font = '11px ' + Host.fontFamily();
     this._filters = filters;
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
@@ -58,35 +57,35 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._extensionColorGenerator =
         new Common.Color.Generator({min: 210, max: 300}, {min: 70, max: 100, count: 6}, 70, 0.7);
 
-    /**
-     * @param {!Object} extra
-     * @return {!PerfUI.FlameChart.GroupStyle}
-     */
-    function buildGroupStyle(extra) {
-      const defaultGroupStyle = {
-        padding: 4,
-        height: 17,
-        collapsible: true,
-        color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
-        backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
-        font: font,
-        nestingLevel: 0,
-        shareHeaderLine: true
-      };
-      return /** @type {!PerfUI.FlameChart.GroupStyle} */ (Object.assign(defaultGroupStyle, extra));
-    }
-
-    this._headerLevel1 = buildGroupStyle({shareHeaderLine: false});
-    this._headerLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
-    this._staticHeader = buildGroupStyle({collapsible: false});
-    this._framesHeader = buildGroupStyle({useFirstLineForOverview: true});
+    this._headerLevel1 = this._buildGroupStyle({shareHeaderLine: false});
+    this._headerLevel2 = this._buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
+    this._staticHeader = this._buildGroupStyle({collapsible: false});
+    this._framesHeader = this._buildGroupStyle({useFirstLineForOverview: true});
     this._screenshotsHeader =
-        buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
-    this._interactionsHeaderLevel1 = buildGroupStyle({useFirstLineForOverview: true});
-    this._interactionsHeaderLevel2 = buildGroupStyle({padding: 2, nestingLevel: 1});
+        this._buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
+    this._interactionsHeaderLevel1 = this._buildGroupStyle({useFirstLineForOverview: true});
+    this._interactionsHeaderLevel2 = this._buildGroupStyle({padding: 2, nestingLevel: 1});
 
     /** @type {!Map<string, number>} */
     this._flowEventIndexById = new Map();
+  }
+
+  /**
+   * @param {!Object} extra
+   * @return {!PerfUI.FlameChart.GroupStyle}
+   */
+  _buildGroupStyle(extra) {
+    const defaultGroupStyle = {
+      padding: 4,
+      height: 17,
+      collapsible: true,
+      color: UI.themeSupport.patchColorText('#222', UI.ThemeSupport.ColorUsage.Foreground),
+      backgroundColor: UI.themeSupport.patchColorText('white', UI.ThemeSupport.ColorUsage.Background),
+      font: this._font,
+      nestingLevel: 0,
+      shareHeaderLine: true
+    };
+    return /** @type {!PerfUI.FlameChart.GroupStyle} */ (Object.assign(defaultGroupStyle, extra));
   }
 
   /**
@@ -205,13 +204,42 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       return this._timelineData;
 
     this._flowEventIndexById.clear();
-
     this._minimumBoundary = this._model.minimumRecordTime();
     this._timeSpan = this._model.isEmpty() ? 1000 : this._model.maximumRecordTime() - this._minimumBoundary;
     this._currentLevel = 0;
 
-    this._appendFrameBars();
+    if (this._model.isGenericTrace())
+      this._processGenericTrace();
+    else
+      this._processInspectorTrace();
 
+    return this._timelineData;
+  }
+
+  _processGenericTrace() {
+    const processGroupStyle = this._buildGroupStyle({shareHeaderLine: false});
+    const threadGroupStyle = this._buildGroupStyle({padding: 2, nestingLevel: 1, shareHeaderLine: false});
+    const eventEntryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
+    /** @type {!Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
+    const tracksByProcess = new Multimap();
+    for (const track of this._model.tracks())
+      tracksByProcess.set(track.thread.process(), track);
+    for (const process of tracksByProcess.keysArray()) {
+      if (tracksByProcess.size > 1) {
+        const name = `${process.name()} ${process.id()}`;
+        this._appendHeader(name, processGroupStyle, false /* selectable */);
+      }
+      for (const track of tracksByProcess.get(process)) {
+        const group = this._appendSyncEvents(
+            track, track.events, track.name, threadGroupStyle, eventEntryType, true /* selectable */);
+        if (!this._timelineData.selectedGroup || track.name === TimelineModel.TimelineModel.BrowserMainThreadName)
+          this._timelineData.selectedGroup = group;
+      }
+    }
+  }
+
+  _processInspectorTrace() {
+    this._appendFrameBars();
     this._appendInteractionRecords();
 
     const eventEntryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
@@ -309,8 +337,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     this._markers.sort((a, b) => a.startTime() - b.startTime());
     this._timelineData.markers = this._markers;
     this._flowEventIndexById.clear();
-
-    return this._timelineData;
   }
 
   /**
@@ -604,6 +630,8 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     const type = this._entryType(entryIndex);
     if (type === entryTypes.Event) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);
+      if (this._model.isGenericTrace())
+        return this._genericTraceEventColor(event);
       if (!SDK.TracingModel.isAsyncPhase(event.phase))
         return this._colorForEvent(event);
       if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
@@ -627,6 +655,15 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       return this._extensionColorGenerator.colorForID(event.name);
     }
     return '';
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
+   * @return {string}
+   */
+  _genericTraceEventColor(event) {
+    const key = event.categoriesString || event.name;
+    return key ? `hsl(${String.hashCode(key) % 300 + 30}, 40%, 70%)` : '#ccc';
   }
 
   /**

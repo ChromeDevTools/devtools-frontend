@@ -103,17 +103,18 @@ SDK.TracingModel = class {
     // Avoid warning for an empty model.
     if (!processes.length)
       return null;
+    const browserMainThreadName = 'CrBrowserMain';
     const browserProcesses = [];
-    const crRendererMainThreads = [];
+    const browserMainThreads = [];
     for (const process of processes) {
       if (process.name().toLowerCase().endsWith('browser'))
         browserProcesses.push(process);
-      crRendererMainThreads.push(...process.sortedThreads().filter(t => t.name() === 'CrBrowserMain'));
+      browserMainThreads.push(...process.sortedThreads().filter(t => t.name() === browserMainThreadName));
     }
-    if (crRendererMainThreads.length === 1)
-      return crRendererMainThreads[0];
+    if (browserMainThreads.length === 1)
+      return browserMainThreads[0];
     if (browserProcesses.length === 1)
-      return browserProcesses[0].threadByName('CrBrowserMain');
+      return browserProcesses[0].threadByName(browserMainThreadName);
     const tracingStartedInBrowser =
         tracingModel.devToolsMetadataEvents().filter(e => e.name === 'TracingStartedInBrowser');
     if (tracingStartedInBrowser.length === 1)

@@ -160,11 +160,11 @@ TimelineModel.TimelineModel = class {
 
   /**
    * @param {!SDK.TracingModel} tracingModel
-   * @param {boolean=} produceTraceStartedInPage
    */
-  setEvents(tracingModel, produceTraceStartedInPage) {
+  setEvents(tracingModel) {
     this._reset();
     this._resetProcessingState();
+    this._tracingModel = tracingModel;
 
     this._minimumRecordTime = tracingModel.minimumRecordTime();
     this._maximumRecordTime = tracingModel.maximumRecordTime();
@@ -173,11 +173,14 @@ TimelineModel.TimelineModel = class {
     if (this._browserFrameTracking) {
       this._processThreadsForBrowserFrames(tracingModel);
     } else {
-      const metadataEvents = this._processMetadataEvents(tracingModel, !!produceTraceStartedInPage);
-      if (Runtime.experiments.isEnabled('timelineShowAllProcesses'))
-        this._processAllThreads(tracingModel, /** @type {!SDK.TracingModel.Event} */ (metadataEvents.page.peekLast()));
-      else
+      // The next line is for loading legacy traces recorded before M67.
+      // TODO(alph): Drop the support at some point.
+      const metadataEvents = this._processMetadataEvents(tracingModel);
+      this._isGenericTrace = !metadataEvents;
+      if (metadataEvents)
         this._processMetadataAndThreads(tracingModel, metadataEvents);
+      else
+        this._processGenericTrace(tracingModel);
     }
     this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
     this._processAsyncBrowserEvents(tracingModel);
@@ -187,13 +190,14 @@ TimelineModel.TimelineModel = class {
 
   /**
    * @param {!SDK.TracingModel} tracingModel
-   * @param {!SDK.TracingModel.Event} lastPageMetaEvent
    */
-  _processAllThreads(tracingModel, lastPageMetaEvent) {
+  _processGenericTrace(tracingModel) {
+    const browserMainThread =
+        SDK.TracingModel.browserMainThread(tracingModel) || tracingModel.sortedProcesses()[0].sortedThreads()[0];
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
         this._processThreadEvents(
-            tracingModel, [{from: 0, to: Infinity}], thread, thread === lastPageMetaEvent.thread, false, true, null);
+            tracingModel, [{from: 0, to: Infinity}], thread, thread === browserMainThread, false, true, null);
       }
     }
   }
@@ -312,10 +316,9 @@ TimelineModel.TimelineModel = class {
 
   /**
    * @param {!SDK.TracingModel} tracingModel
-   * @param {boolean} produceTraceStartedInPage
-   * @return {!TimelineModel.TimelineModel.MetadataEvents}
+   * @return {?TimelineModel.TimelineModel.MetadataEvents}
    */
-  _processMetadataEvents(tracingModel, produceTraceStartedInPage) {
+  _processMetadataEvents(tracingModel) {
     const metadataEvents = tracingModel.devToolsMetadataEvents();
 
     const pageDevToolsMetadataEvents = [];
@@ -335,15 +338,9 @@ TimelineModel.TimelineModel = class {
         this._mainFrameNodeId = event.args['frameTreeNodeId'];
       }
     }
-    if (!pageDevToolsMetadataEvents.length) {
-      // The trace is probably coming not from DevTools. Make a mock Metadata event.
-      const pageMetaEvent = produceTraceStartedInPage ? this._makeMockPageMetadataEvent(tracingModel) : null;
-      if (!pageMetaEvent) {
-        console.error(TimelineModel.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage + ' event not found.');
-        return {page: [], workers: []};
-      }
-      pageDevToolsMetadataEvents.push(pageMetaEvent);
-    }
+    if (!pageDevToolsMetadataEvents.length)
+      return null;
+
     const sessionId =
         pageDevToolsMetadataEvents[0].args['sessionId'] || pageDevToolsMetadataEvents[0].args['data']['sessionId'];
     this._sessionId = sessionId;
@@ -378,28 +375,6 @@ TimelineModel.TimelineModel = class {
 
   /**
    * @param {!SDK.TracingModel} tracingModel
-   * @return {?SDK.TracingModel.Event}
-   */
-  _makeMockPageMetadataEvent(tracingModel) {
-    const rendererMainThreadName = TimelineModel.TimelineModel.RendererMainThreadName;
-    // TODO(alph): Support selection of process and thread.
-    const processes = tracingModel.sortedProcesses();
-    const process = processes.find(p => !!p.threadByName(rendererMainThreadName)) || processes[0];
-    if (!process)
-      return null;
-    const thread = process.threadByName(rendererMainThreadName) || process.sortedThreads()[0];
-    if (!thread)
-      return null;
-    const pageMetaEvent = new SDK.TracingModel.Event(
-        SDK.TracingModel.DevToolsMetadataEventCategory,
-        TimelineModel.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage, SDK.TracingModel.Phase.Metadata,
-        tracingModel.minimumRecordTime(), thread);
-    pageMetaEvent.addArgs({'data': {'sessionId': 'mockSessionId'}});
-    return pageMetaEvent;
-  }
-
-  /**
-   * @param {!SDK.TracingModel} tracingModel
    */
   _processSyncBrowserEvents(tracingModel) {
     const browserMain = SDK.TracingModel.browserMainThread(tracingModel);
@@ -413,7 +388,7 @@ TimelineModel.TimelineModel = class {
   _processAsyncBrowserEvents(tracingModel) {
     const browserMain = SDK.TracingModel.browserMainThread(tracingModel);
     if (browserMain)
-      this._processAsyncEvents(browserMain.asyncEvents(), [{from: 0, to: Infinity}]);
+      this._processAsyncEvents(browserMain, [{from: 0, to: Infinity}]);
   }
 
   /**
@@ -424,8 +399,9 @@ TimelineModel.TimelineModel = class {
     if (!thread)
       return;
     const gpuEventName = TimelineModel.TimelineModel.RecordType.GPUTask;
-    this._ensureNamedTrack(TimelineModel.TimelineModel.TrackType.GPU).events =
-        thread.events().filter(event => event.name === gpuEventName);
+    const track = this._ensureNamedTrack(TimelineModel.TimelineModel.TrackType.GPU);
+    track.thread = thread;
+    track.events = thread.events().filter(event => event.name === gpuEventName);
   }
 
   _resetProcessingState() {
@@ -535,6 +511,7 @@ TimelineModel.TimelineModel = class {
     const track = new TimelineModel.TimelineModel.Track();
     track.name = thread.name();
     track.type = TimelineModel.TimelineModel.TrackType.Other;
+    track.thread = thread;
     if (isMainThread) {
       track.type = TimelineModel.TimelineModel.TrackType.MainThread;
       track.url = url || null;
@@ -580,7 +557,7 @@ TimelineModel.TimelineModel = class {
         this._inspectedTargetEvents.push(event);
       }
     }
-    this._processAsyncEvents(thread.asyncEvents(), ranges);
+    this._processAsyncEvents(thread, ranges);
   }
 
   /**
@@ -598,10 +575,11 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @param {!Array<!SDK.TracingModel.AsyncEvent>} asyncEvents
+   * @param {!SDK.TracingModel.Thread} thread
    * @param {!Array<!{from: number, to: number}>} ranges
    */
-  _processAsyncEvents(asyncEvents, ranges) {
+  _processAsyncEvents(thread, ranges) {
+    const asyncEvents = thread.asyncEvents();
     const groups = new Map();
 
     /**
@@ -668,6 +646,7 @@ TimelineModel.TimelineModel = class {
 
     for (const [type, events] of groups) {
       const track = this._ensureNamedTrack(type);
+      track.thread = thread;
       track.asyncEvents = track.asyncEvents.mergeOrdered(events, SDK.TracingModel.Event.compareStartAndEndTime);
     }
   }
@@ -1038,6 +1017,7 @@ TimelineModel.TimelineModel = class {
   }
 
   _reset() {
+    this._isGenericTrace = false;
     /** @type {!Array<!TimelineModel.TimelineModel.Track>} */
     this._tracks = [];
     /** @type {!Map<!TimelineModel.TimelineModel.TrackType, !TimelineModel.TimelineModel.Track>} */
@@ -1060,6 +1040,20 @@ TimelineModel.TimelineModel = class {
 
     this._minimumRecordTime = 0;
     this._maximumRecordTime = 0;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isGenericTrace() {
+    return this._isGenericTrace;
+  }
+
+  /**
+   * @return {!SDK.TracingModel}
+   */
+  tracingModel() {
+    return this._tracingModel;
   }
 
   /**
@@ -1130,6 +1124,8 @@ TimelineModel.TimelineModel = class {
    * @return {!Array<!TimelineModel.TimelineModel.NetworkRequest>}
    */
   networkRequests() {
+    if (this.isGenericTrace())
+      return [];
     /** @type {!Map<string,!TimelineModel.TimelineModel.NetworkRequest>} */
     const requests = new Map();
     /** @type {!Array<!TimelineModel.TimelineModel.NetworkRequest>} */
@@ -1328,6 +1324,7 @@ TimelineModel.TimelineModel.WarningType = {
 TimelineModel.TimelineModel.WorkerThreadName = 'DedicatedWorker thread';
 TimelineModel.TimelineModel.WorkerThreadNameLegacy = 'DedicatedWorker Thread';
 TimelineModel.TimelineModel.RendererMainThreadName = 'CrRendererMain';
+TimelineModel.TimelineModel.BrowserMainThreadName = 'CrBrowserMain';
 
 TimelineModel.TimelineModel.DevToolsMetadataEvent = {
   TracingStartedInBrowser: 'TracingStartedInBrowser',
@@ -1360,6 +1357,8 @@ TimelineModel.TimelineModel.Track = class {
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this.tasks = [];
     this._syncEvents = null;
+    /** @type {?SDK.TracingModel.Thread} */
+    this.thread = null;
   }
 
   /**
@@ -1547,7 +1546,6 @@ TimelineModel.TimelineModel.NetworkRequest = class {
     return Math.min(this.startTime, this.timing && this.timing.pushStart * 1000 || Infinity);
   }
 };
-
 
 /**
  * @unrestricted

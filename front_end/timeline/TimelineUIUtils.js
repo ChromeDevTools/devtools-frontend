@@ -827,6 +827,17 @@ Timeline.TimelineUIUtils = class {
       contentHelper.appendTextRow(Common.UIString('Self Time'), Number.millisToString(event.selfTime, true));
     }
 
+    if (model.isGenericTrace()) {
+      for (const key in event.args) {
+        try {
+          contentHelper.appendTextRow(key, JSON.stringify(event.args[key]));
+        } catch (e) {
+          contentHelper.appendTextRow(key, `<${typeof event.args[key]}>`);
+        }
+      }
+      return contentHelper.fragment;
+    }
+
     switch (event.name) {
       case recordTypes.GCEvent:
       case recordTypes.MajorGC:

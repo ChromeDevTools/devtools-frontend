@@ -53,7 +53,7 @@ Timeline.PerformanceModel = class extends Common.Object {
    */
   setTracingModel(model) {
     this._tracingModel = model;
-    this._timelineModel.setEvents(model, !this._mainTarget);
+    this._timelineModel.setEvents(model);
 
     let inputEvents = null;
     let animationEvents = null;

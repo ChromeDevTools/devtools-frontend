@@ -164,6 +164,8 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     Common.EventTarget.removeEventListeners(this._eventListeners);
     this._model = model;
     this._selectedTrack = null;
+    this._mainDataProvider.setModel(this._model);
+    this._networkDataProvider.setModel(this._model);
     if (this._model) {
       this._eventListeners = [
         this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this),
@@ -176,8 +178,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
       this._networkDataProvider.setWindowTimes(window.left, window.right);
       this._updateSearchResults(false, false);
     }
-    this._mainDataProvider.setModel(this._model);
-    this._networkDataProvider.setModel(this._model);
     this._updateColorMapper();
     this._updateTrack();
     this._nextExtensionIndex = 0;

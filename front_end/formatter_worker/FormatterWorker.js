@@ -373,7 +373,7 @@ FormatterWorker.findLastExpression = function(content) {
     baseExpression = `(${baseExpression})`;
   const sideEffectFreeTypes = new Set([
     'MemberExpression', 'Identifier', 'BinaryExpression', 'Literal', 'TemplateLiteral', 'TemplateElement',
-    'ObjectExpression', 'ArrayExpression', 'Property'
+    'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression'
   ]);
   let possibleSideEffects = false;
   const sideEffectwalker = new FormatterWorker.ESTreeWalker(node => {

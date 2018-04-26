@@ -1204,10 +1204,13 @@ Multimap.prototype = {
 
   /**
    * @param {K} key
-   * @return {!Set<!V>}
+   * @return {!Set.<!V>}
    */
   get: function(key) {
-    return this._map.get(key) || new Set();
+    let result = this._map.get(key);
+    if (!result)
+      result = new Set();
+    return result;
   },
 
   /**

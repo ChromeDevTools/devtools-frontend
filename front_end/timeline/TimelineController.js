@@ -26,10 +26,6 @@ Timeline.TimelineController = class {
     SDK.targetManager.observeModels(SDK.CPUProfilerModel, this);
   }
 
-  dispose() {
-    SDK.targetManager.unobserveModels(SDK.CPUProfilerModel, this);
-  }
-
   /**
    * @return {!SDK.Target}
    */
@@ -228,74 +224,20 @@ Timeline.TimelineController = class {
     this._tracingModel.addEvents([cpuProfileEvent]);
   }
 
-  /**
-   * @return {?Map<string, number>}
-   */
-  _buildTargetToProcessIdMap() {
-    const metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
-    const metadataEvents = this._tracingModel.devToolsMetadataEvents();
-    const browserMetaEvent = metadataEvents.find(e => e.name === metadataEventTypes.TracingStartedInBrowser);
-    if (!browserMetaEvent)
-      return null;
-
-    /** @type {!Multimap<string, string>} */
-    const pseudoPidToFrames = new Multimap();
-    /** @type {!Map<string, number>} */
-    const targetIdToPid = new Map();
-    const frames = browserMetaEvent.args.data['frames'];
-    for (const frameInfo of frames)
-      targetIdToPid.set(frameInfo.frame, frameInfo.processId);
-    for (const event of metadataEvents) {
-      const data = event.args.data;
-      switch (event.name) {
-        case metadataEventTypes.FrameCommittedInBrowser:
-          if (data.processId)
-            targetIdToPid.set(data.frame, data.processId);
-          else
-            pseudoPidToFrames.set(data.processPseudoId, data.frame);
-          break;
-        case metadataEventTypes.ProcessReadyInBrowser:
-          for (const frame of pseudoPidToFrames.get(data.processPseudoId) || [])
-            targetIdToPid.set(frame, data.processId);
-          break;
-      }
-    }
-    const mainFrame = frames.find(frame => !frame.parent);
-    const mainRendererProcessId = mainFrame.processId;
-    const mainProcess = this._tracingModel.processById(mainRendererProcessId);
-    if (mainProcess)
-      targetIdToPid.set(SDK.targetManager.mainTarget().id(), mainProcess.id());
-    return targetIdToPid;
-  }
-
   _injectCpuProfileEvents() {
     if (!this._cpuProfiles)
       return;
 
     const metadataEventTypes = TimelineModel.TimelineModel.DevToolsMetadataEvent;
     const metadataEvents = this._tracingModel.devToolsMetadataEvents();
+    const mainMetaEvent =
+        metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage).peekLast();
+    if (!mainMetaEvent)
+      return;
 
-    const targetIdToPid = this._buildTargetToProcessIdMap();
-    if (targetIdToPid) {
-      for (const [id, profile] of this._cpuProfiles) {
-        const pid = targetIdToPid.get(id);
-        if (!pid)
-          continue;
-        const process = this._tracingModel.processById(pid);
-        const thread = process && process.threadByName(TimelineModel.TimelineModel.RendererMainThreadName);
-        if (thread)
-          this._injectCpuProfileEvent(pid, thread.id(), profile);
-      }
-    } else {
-      // Legacy backends support.
-      const mainMetaEvent =
-          metadataEvents.filter(event => event.name === metadataEventTypes.TracingStartedInPage).peekLast();
-      if (mainMetaEvent) {
-        const pid = mainMetaEvent.thread.process().id();
-        const mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
-        this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
-      }
-    }
+    const pid = mainMetaEvent.thread.process().id();
+    const mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
+    this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
 
     const workerMetaEvents =
         metadataEvents.filter(event => event.name === metadataEventTypes.TracingSessionIdForWorker);

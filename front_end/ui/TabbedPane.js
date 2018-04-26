@@ -56,6 +56,7 @@ UI.TabbedPane = class extends UI.VBox {
     this._currentTabLocked = false;
     this._autoSelectFirstItemOnShow = true;
 
+    this._triggerDropDownTimeout = null;
     this._dropDownButton = this._createDropDownButton();
     UI.zoomManager.addEventListener(UI.ZoomManager.Events.ZoomChanged, this._zoomChanged, this);
     this.makeTabSlider();
@@ -560,17 +561,25 @@ UI.TabbedPane = class extends UI.VBox {
     const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
     dropDownContainer.appendChild(chevronIcon);
-    dropDownContainer.addEventListener('click', this._onDropDownMouseDown.bind(this));
-    dropDownContainer.addEventListener('mousedown', this._onDropDownMouseDown.bind(this));
+    dropDownContainer.addEventListener('click', this._dropDownClicked.bind(this));
+    dropDownContainer.addEventListener('mousedown', event => {
+      if (event.which !== 1 || this._triggerDropDownTimeout)
+        return;
+      this._triggerDropDownTimeout = setTimeout(this._dropDownClicked.bind(this, event), 200);
+    });
     return dropDownContainer;
   }
 
   /**
    * @param {!Event} event
    */
-  _onDropDownMouseDown(event) {
+  _dropDownClicked(event) {
     if (event.which !== 1)
       return;
+    if (this._triggerDropDownTimeout) {
+      clearTimeout(this._triggerDropDownTimeout);
+      this._triggerDropDownTimeout = null;
+    }
     const rect = this._dropDownButton.getBoundingClientRect();
     const menu = new UI.ContextMenu(event, false, rect.left, rect.bottom);
     for (let i = 0; i < this._tabs.length; ++i) {

@@ -381,6 +381,8 @@ ObjectUI.JavaScriptAutocomplete = class {
       propertyGroups.push({title: Common.UIString('keywords'), items: keywords});
     }
 
+    /** @type {!Set<string>} */
+    const allProperties = new Set();
     let result = [];
     let lastGroupTitle;
     const regex = /^[a-zA-Z_$\u008F-\uFFFF][a-zA-Z0-9_$\u008F-\uFFFF]*$/;
@@ -402,6 +404,8 @@ ObjectUI.JavaScriptAutocomplete = class {
             property = quoteUsed + property.escapeCharacters(quoteUsed + '\\') + quoteUsed;
           property += ']';
         }
+        if (allProperties.has(property))
+          continue;
 
         if (property.length < query.length)
           continue;
@@ -409,6 +413,7 @@ ObjectUI.JavaScriptAutocomplete = class {
         if (query.length && lowerCaseProperty.indexOf(lowerCaseQuery) === -1)
           continue;
 
+        allProperties.add(property);
         if (property.startsWith(query))
           caseSensitivePrefix.push({text: property, priority: 4});
         else if (lowerCaseProperty.startsWith(lowerCaseQuery))

@@ -41,38 +41,16 @@ TimelineModel.TimelineFrameModel = class {
   }
 
   /**
-   * @return {!Array.<!TimelineModel.TimelineFrame>}
+   * @param {number=} startTime
+   * @param {number=} endTime
+   * @return {!Array<!TimelineModel.TimelineFrame>}
    */
-  frames() {
-    return this._frames;
-  }
-
-  /**
-   * @param {number} startTime
-   * @param {number} endTime
-   * @return {!Array.<!TimelineModel.TimelineFrame>}
-   */
-  filteredFrames(startTime, endTime) {
-    /**
-     * @param {number} value
-     * @param {!TimelineModel.TimelineFrame} object
-     * @return {number}
-     */
-    function compareStartTime(value, object) {
-      return value - object.startTime;
-    }
-    /**
-     * @param {number} value
-     * @param {!TimelineModel.TimelineFrame} object
-     * @return {number}
-     */
-    function compareEndTime(value, object) {
-      return value - object.endTime;
-    }
-    const frames = this._frames;
-    const firstFrame = frames.lowerBound(startTime, compareEndTime);
-    const lastFrame = frames.lowerBound(endTime, compareStartTime);
-    return frames.slice(firstFrame, lastFrame);
+  frames(startTime, endTime) {
+    if (!startTime && !endTime)
+      return this._frames;
+    const firstFrame = this._frames.lowerBound(startTime || 0, (time, frame) => time - frame.endTime);
+    const lastFrame = this._frames.lowerBound(endTime || Infinity, (time, frame) => time - frame.startTime);
+    return this._frames.slice(firstFrame, lastFrame);
   }
 
   /**

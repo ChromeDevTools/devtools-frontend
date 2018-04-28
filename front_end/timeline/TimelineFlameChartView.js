@@ -10,9 +10,8 @@
 Timeline.TimelineFlameChartView = class extends UI.VBox {
   /**
    * @param {!Timeline.TimelineModeViewDelegate} delegate
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
-  constructor(delegate, filters) {
+  constructor(delegate) {
     super();
     this.element.classList.add('timeline-flamechart');
     this._delegate = delegate;
@@ -20,7 +19,6 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._model = null;
     /** @type {!Array<number>|undefined} */
     this._searchResults;
-    this._filters = filters;
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventListeners = [];
 
@@ -30,7 +28,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     this._networkSplitWidget = new UI.SplitWidget(false, false, 'timelineFlamechartMainView', 150);
 
     const mainViewGroupExpansionSetting = Common.settings.createSetting('timelineFlamechartMainViewGroupExpansion', {});
-    this._mainDataProvider = new Timeline.TimelineFlameChartDataProvider(filters);
+    this._mainDataProvider = new Timeline.TimelineFlameChartDataProvider();
     this._mainDataProvider.addEventListener(
         Timeline.TimelineFlameChartDataProvider.Events.DataChanged, () => this._mainFlameChart.scheduleUpdate());
     this._mainFlameChart = new PerfUI.FlameChart(this._mainDataProvider, this, mainViewGroupExpansionSetting);
@@ -67,7 +65,7 @@ Timeline.TimelineFlameChartView = class extends UI.VBox {
     // Create top level properties splitter.
     this._detailsSplitWidget = new UI.SplitWidget(false, true, 'timelinePanelDetailsSplitViewState');
     this._detailsSplitWidget.element.classList.add('timeline-details-split');
-    this._detailsView = new Timeline.TimelineDetailsView(filters, delegate);
+    this._detailsView = new Timeline.TimelineDetailsView(delegate);
     this._detailsSplitWidget.installResizer(this._detailsView.headerElement());
     this._detailsSplitWidget.setMainWidget(this._chartSplitWidget);
     this._detailsSplitWidget.setSidebarWidget(this._detailsView);

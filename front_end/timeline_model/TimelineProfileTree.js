@@ -228,7 +228,7 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
     super('', null, null);
     this._root = this;
     this._events = events;
-    this._filter = e => TimelineModel.TimelineModel.isVisible(filters, e);
+    this._filter = e => filters.every(f => f.accept(e));
     this._startTime = startTime;
     this._endTime = endTime;
     this._eventGroupIdCallback = eventGroupIdCallback;
@@ -283,7 +283,7 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
     /** @type {?Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     this._children = null;
     this._events = events;
-    this._filter = e => TimelineModel.TimelineModel.isVisible(filters, e);
+    this._filter = e => filters.every(f => f.accept(e));
     this._startTime = startTime;
     this._endTime = endTime;
     this._eventGroupIdCallback = eventGroupIdCallback;

@@ -85,19 +85,6 @@ TimelineModel.TimelineModel = class {
   }
 
   /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  static isVisible(filters, event) {
-    for (let i = 0; i < filters.length; ++i) {
-      if (!filters[i].accept(event))
-        return false;
-    }
-    return true;
-  }
-
-  /**
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */

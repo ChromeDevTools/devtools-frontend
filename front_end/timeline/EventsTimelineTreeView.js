@@ -7,20 +7,27 @@
  */
 Timeline.EventsTimelineTreeView = class extends Timeline.TimelineTreeView {
   /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
-  constructor(filters, delegate) {
+  constructor(delegate) {
     super();
     this._filtersControl = new Timeline.EventsTimelineTreeView.Filters();
     this._filtersControl.addEventListener(
         Timeline.EventsTimelineTreeView.Filters.Events.FilterChanged, this._onFilterChanged, this);
-    this.init(filters);
+    this.init();
     this._delegate = delegate;
     this._badgePool = new ProductRegistry.BadgePool(true);
-    this._filters.push.apply(this._filters, this._filtersControl.filters());
     this._dataGrid.markColumnAsSortedBy('startTime', DataGrid.DataGrid.Order.Ascending);
     this._splitWidget.showBoth();
+  }
+
+  /**
+   * @override
+   * @protected
+   * @return {!Array<!TimelineModel.TimelineModelFilter>}
+   */
+  filters() {
+    return [...super.filters(), ...this._filtersControl.filters()];
   }
 
   /**

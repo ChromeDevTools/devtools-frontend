@@ -33,14 +33,10 @@
  * @unrestricted
  */
 Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
-  /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   */
-  constructor(filters) {
+  constructor() {
     super();
     this.reset();
     this._font = '11px ' + Host.fontFamily();
-    this._filters = filters;
     /** @type {?PerfUI.FlameChart.TimelineData} */
     this._timelineData = null;
     this._currentLevel = 0;
@@ -414,7 +410,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
           continue;
         if (SDK.TracingModel.isAsyncPhase(e.phase))
           continue;
-        if (!isExtension && !this._isVisible(e))
+        if (!isExtension && !this._performanceModel.isVisible(e))
           continue;
       }
       while (openEvents.length && openEvents.peekLast().endTime <= e.startTime)
@@ -486,7 +482,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     let group = null;
     for (let i = 0; i < events.length; ++i) {
       const asyncEvent = events[i];
-      if (!this._isVisible(asyncEvent))
+      if (!this._performanceModel.isVisible(asyncEvent))
         continue;
       if (!group) {
         group = this._appendHeader(header, style, selectable);
@@ -1012,14 +1008,6 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     if (index !== -1)
       this._lastSelection = new Timeline.TimelineFlameChartView.Selection(selection, index);
     return index;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  _isVisible(event) {
-    return this._filters.every(filter => filter.accept(event));
   }
 
   /**

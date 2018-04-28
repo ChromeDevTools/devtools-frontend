@@ -57,13 +57,11 @@ Timeline.TimelineTreeView = class extends UI.VBox {
 
   /**
    * @protected
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    */
-  init(filters) {
+  init() {
     this._linkifier = new Components.Linkifier();
 
     this._textFilter = new Timeline.TimelineFilters.RegExp();
-    this._filters = [...filters, this._textFilter];
 
     this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
     this._currentThreadSetting.addChangeListener(this.refreshTree, this);
@@ -119,6 +117,14 @@ Timeline.TimelineTreeView = class extends UI.VBox {
     this._startTime = startTime;
     this._endTime = endTime;
     this.refreshTree();
+  }
+
+  /**
+   * @protected
+   * @return {!Array<!TimelineModel.TimelineModelFilter>}
+   */
+  filters() {
+    return [this._textFilter, ...this._model.filters()];
   }
 
   /**
@@ -247,7 +253,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    */
   buildTopDownTree(doNotAggregate, groupIdCallback) {
     return new TimelineModel.TimelineProfileTree.TopDownRootNode(
-        this._modelEvents(), this._filters, this._startTime, this._endTime, doNotAggregate, groupIdCallback);
+        this._modelEvents(), this.filters(), this._startTime, this._endTime, doNotAggregate, groupIdCallback);
   }
 
   /**
@@ -603,15 +609,12 @@ Timeline.TimelineTreeView.TreeGridNode._gridNodeSymbol = Symbol('treeGridNode');
  * @unrestricted
  */
 Timeline.AggregatedTimelineTreeView = class extends Timeline.TimelineTreeView {
-  /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   */
-  constructor(filters) {
+  constructor() {
     super();
     this._groupBySetting =
         Common.settings.createSetting('timelineTreeGroupBy', Timeline.AggregatedTimelineTreeView.GroupBy.None);
     this._groupBySetting.addChangeListener(this.refreshTree.bind(this));
-    this.init(filters);
+    this.init();
     this._stackView = new Timeline.TimelineStackView(this);
     this._stackView.addEventListener(
         Timeline.TimelineStackView.Events.SelectionChanged, this._onStackViewSelectionChanged, this);
@@ -943,11 +946,8 @@ Timeline.AggregatedTimelineTreeView.GroupBy = {
  * @unrestricted
  */
 Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTreeView {
-  /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   */
-  constructor(filters) {
-    super(filters);
+  constructor() {
+    super();
     this._dataGrid.markColumnAsSortedBy('total', DataGrid.DataGrid.Order.Descending);
   }
 
@@ -965,11 +965,8 @@ Timeline.CallTreeTimelineTreeView = class extends Timeline.AggregatedTimelineTre
  * @unrestricted
  */
 Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTreeView {
-  /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
-   */
-  constructor(filters) {
-    super(filters);
+  constructor() {
+    super();
     this._dataGrid.markColumnAsSortedBy('self', DataGrid.DataGrid.Order.Descending);
   }
 
@@ -979,7 +976,7 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   _buildTree() {
     return new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-        this._modelEvents(), this._filters, this._startTime, this._endTime,
+        this._modelEvents(), this.filters(), this._startTime, this._endTime,
         this._groupingFunction(this._groupBySetting.get()));
   }
 };

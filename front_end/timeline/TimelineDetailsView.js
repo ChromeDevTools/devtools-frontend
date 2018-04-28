@@ -7,10 +7,9 @@
  */
 Timeline.TimelineDetailsView = class extends UI.VBox {
   /**
-   * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {!Timeline.TimelineModeViewDelegate} delegate
    */
-  constructor(filters, delegate) {
+  constructor(delegate) {
     super();
     this.element.classList.add('timeline-details');
 
@@ -34,15 +33,15 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
     /** @type Map<string, Timeline.TimelineTreeView> */
     this._rangeDetailViews = new Map();
 
-    const bottomUpView = new Timeline.BottomUpTimelineTreeView(filters);
+    const bottomUpView = new Timeline.BottomUpTimelineTreeView();
     this._appendTab(tabIds.BottomUp, Common.UIString('Bottom-Up'), bottomUpView);
     this._rangeDetailViews.set(tabIds.BottomUp, bottomUpView);
 
-    const callTreeView = new Timeline.CallTreeTimelineTreeView(filters);
+    const callTreeView = new Timeline.CallTreeTimelineTreeView();
     this._appendTab(tabIds.CallTree, Common.UIString('Call Tree'), callTreeView);
     this._rangeDetailViews.set(tabIds.CallTree, callTreeView);
 
-    const eventsView = new Timeline.EventsTimelineTreeView(filters, delegate);
+    const eventsView = new Timeline.EventsTimelineTreeView(delegate);
     this._appendTab(tabIds.EventLog, Common.UIString('Event Log'), eventsView);
     this._rangeDetailViews.set(tabIds.EventLog, eventsView);
 

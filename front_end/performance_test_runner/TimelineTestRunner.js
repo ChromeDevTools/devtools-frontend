@@ -123,6 +123,7 @@ PerformanceTestRunner.createPerformanceModelWithEvents = function(events) {
   const performanceModel = new Timeline.PerformanceModel();
   performanceModel.setTracingModel(tracingModel);
   UI.panels.timeline._performanceModel = performanceModel;
+  UI.panels.timeline._applyFilters(performanceModel);
   return performanceModel;
 };
 

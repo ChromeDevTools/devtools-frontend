@@ -1293,13 +1293,12 @@ SDK.DebuggerModel.CallFrame = class {
    */
   async evaluate(options) {
     const runtimeModel = this.debuggerModel.runtimeModel();
-    if (options.throwOnSideEffect &&
+    // Assume backends either support both throwOnSideEffect and timeout options or neither.
+    const needsTerminationOptions = !!options.throwOnSideEffect || options.timeout !== undefined;
+    if (needsTerminationOptions &&
         (runtimeModel.hasSideEffectSupport() === false ||
          (runtimeModel.hasSideEffectSupport() === null && !await runtimeModel.checkSideEffectSupport())))
       return {error: 'Side-effect checks not supported by backend.'};
-    // TODO(luoe): remove this check when evaluateOnCallFrame supports timeout.
-    if (typeof options.timeout !== 'undefined')
-      return {error: 'Evaluation with timeout on pause not supported by backend.'};
 
     const response = await this.debuggerModel._agent.invoke_evaluateOnCallFrame({
       callFrameId: this.id,
@@ -1309,7 +1308,8 @@ SDK.DebuggerModel.CallFrame = class {
       silent: options.silent,
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
-      throwOnSideEffect: options.throwOnSideEffect
+      throwOnSideEffect: options.throwOnSideEffect,
+      timeout: options.timeout
     });
     const error = response[Protocol.Error];
     if (error) {

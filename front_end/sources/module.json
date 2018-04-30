@@ -291,24 +291,6 @@
         {
             "type": "view",
             "location": "navigator-view",
-            "id": "navigator-overrides",
-            "title": "Overrides",
-            "order": 4,
-            "persistence": "permanent",
-            "className": "Sources.OverridesNavigatorView"
-        },
-        {
-            "type": "view",
-            "location": "navigator-view",
-            "id": "navigator-contentScripts",
-            "title": "Content scripts",
-            "order": 5,
-            "persistence": "permanent",
-            "className": "Sources.ContentScriptsNavigatorView"
-        },
-        {
-            "type": "view",
-            "location": "navigator-view",
             "id": "navigator-snippets",
             "title": "Snippets",
             "order": 6,
@@ -333,16 +315,6 @@
             "type": "@Sources.NavigatorView",
             "viewId": "navigator-files",
             "className": "Sources.FilesNavigatorView"
-        },
-        {
-            "type": "@Sources.NavigatorView",
-            "viewId": "navigator-overrides",
-            "className": "Sources.OverridesNavigatorView"
-        },
-        {
-            "type": "@Sources.NavigatorView",
-            "viewId": "navigator-contentScripts",
-            "className": "Sources.ContentScriptsNavigatorView"
         },
         {
             "type": "@Sources.NavigatorView",

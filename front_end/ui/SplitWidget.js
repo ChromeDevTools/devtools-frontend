@@ -747,7 +747,7 @@ UI.SplitWidget = class extends UI.Widget {
    */
   hideDefaultResizer(noSplitter) {
     this.uninstallResizer(this._resizerElement);
-    this._sidebarElement.classList.toggle('no-default-splitter', noSplitter);
+    this._sidebarElement.classList.toggle('no-default-splitter', !!noSplitter);
   }
 
   /**

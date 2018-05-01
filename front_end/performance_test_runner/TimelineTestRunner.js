@@ -207,7 +207,7 @@ PerformanceTestRunner.walkTimelineEventTreeUnderNode = function(callback, root, 
 };
 
 PerformanceTestRunner.printTimestampRecords = function(typeName) {
-  const dividers = PerformanceTestRunner.timelineModel().eventDividers();
+  const dividers = PerformanceTestRunner.timelineModel().timeMarkerEvents();
 
   for (const event of dividers) {
     if (event.name === typeName)

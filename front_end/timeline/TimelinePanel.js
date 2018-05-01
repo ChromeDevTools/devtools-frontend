@@ -745,7 +745,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     const zeroTime = timelineModel.minimumRecordTime();
     const filter = Timeline.TimelineUIUtils.paintEventsFilter();
-    for (const event of timelineModel.eventDividers()) {
+    for (const event of timelineModel.timeMarkerEvents()) {
       if (event.name === recordTypes.TimeStamp || event.name === recordTypes.ConsoleTime)
         continue;
       if (!filter.accept(event))

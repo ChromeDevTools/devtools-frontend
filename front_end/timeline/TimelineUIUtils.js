@@ -109,6 +109,8 @@ Timeline.TimelineUIUtils = class {
         new Timeline.TimelineRecordStyle(Common.UIString('Evaluate Module'), categories['scripting']);
     eventStyles[recordTypes.ParseScriptOnBackground] =
         new Timeline.TimelineRecordStyle(Common.UIString('Parse Script'), categories['scripting']);
+    eventStyles[recordTypes.FrameStartedLoading] =
+        new Timeline.TimelineRecordStyle(Common.UIString('Frame Started Loading'), categories['loading'], true);
     eventStyles[recordTypes.MarkLoad] =
         new Timeline.TimelineRecordStyle(Common.UIString('Load event'), categories['scripting'], true);
     eventStyles[recordTypes.MarkDOMContent] =
@@ -1778,8 +1780,12 @@ Timeline.TimelineUIUtils = class {
     }
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     let tall = false;
-    let color = 'green';
+    let color = 'grey';
     switch (event.name) {
+      case recordTypes.FrameStartedLoading:
+        color = 'green';
+        tall = true;
+        break;
       case recordTypes.MarkDOMContent:
         color = 'blue';
         tall = true;

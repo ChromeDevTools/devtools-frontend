@@ -91,6 +91,7 @@ TimelineModel.TimelineModel = class {
   static isMarkerEvent(event) {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
+      case recordTypes.FrameStartedLoading:
       case recordTypes.TimeStamp:
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
@@ -124,7 +125,7 @@ TimelineModel.TimelineModel = class {
    */
   static eventFrameId(event) {
     const data = event.args['data'] || event.args['beginData'];
-    return (data && data['frame']) || '';
+    return data && data['frame'] || '';
   }
 
   /**
@@ -538,7 +539,7 @@ TimelineModel.TimelineModel = class {
           eventStack.push(event);
         }
         if (TimelineModel.TimelineModel.isMarkerEvent(event))
-          this._eventDividers.push(event);
+          this._timeMarkerEvents.push(event);
 
         track.events.push(event);
         this._inspectedTargetEvents.push(event);
@@ -848,10 +849,15 @@ TimelineModel.TimelineModel = class {
         break;
       }
 
+      case recordTypes.FrameStartedLoading:
+        if (this._mainFrame.frameId !== event.args['frame'])
+          return false;
+        break;
+
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad: {
         const frameId = TimelineModel.TimelineModel.eventFrameId(event);
-        if (!this._pageFrames.get(frameId))
+        if (!this._pageFrames.has(frameId))
           return false;
         break;
       }
@@ -1012,7 +1018,7 @@ TimelineModel.TimelineModel = class {
     /** @type {!Array<!SDK.TracingModel.Event>} */
     this._inspectedTargetEvents = [];
     /** @type {!Array<!SDK.TracingModel.Event>} */
-    this._eventDividers = [];
+    this._timeMarkerEvents = [];
     /** @type {?string} */
     this._sessionId = null;
     /** @type {?number} */
@@ -1081,8 +1087,8 @@ TimelineModel.TimelineModel = class {
   /**
    * @return {!Array<!SDK.TracingModel.Event>}
    */
-  eventDividers() {
-    return this._eventDividers;
+  timeMarkerEvents() {
+    return this._timeMarkerEvents;
   }
 
   /**
@@ -1199,6 +1205,7 @@ TimelineModel.TimelineModel.RecordType = {
   CompileModule: 'v8.compileModule',
   EvaluateModule: 'v8.evaluateModule',
 
+  FrameStartedLoading: 'FrameStartedLoading',
   CommitLoad: 'CommitLoad',
   MarkLoad: 'MarkLoad',
   MarkDOMContent: 'MarkDOMContent',

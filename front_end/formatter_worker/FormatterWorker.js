@@ -87,6 +87,9 @@ self.onmessage = function(event) {
     case 'findLastExpression':
       postMessage(FormatterWorker.findLastExpression(params.content));
       break;
+    case 'hasPossibleSideEffects':
+      postMessage(FormatterWorker.hasPossibleSideEffects(params.content));
+      break;
     default:
       console.error('Unsupport method name: ' + method);
   }
@@ -371,9 +374,18 @@ FormatterWorker.findLastExpression = function(content) {
   let baseExpression = parsedContent.substring(baseNode.start, parsedContent.length - suffix.length);
   if (baseExpression.startsWith('{'))
     baseExpression = `(${baseExpression})`;
+  const possibleSideEffects = FormatterWorker._possibleSideEffects(/** @type {!ESTree.Node} */ (baseNode));
+  return {baseExpression, possibleSideEffects};
+};
+
+/**
+ * @param {!ESTree.Node} node
+ * @return {boolean}
+ */
+FormatterWorker._possibleSideEffects = function(node) {
   const sideEffectFreeTypes = new Set([
     'MemberExpression', 'Identifier', 'BinaryExpression', 'Literal', 'TemplateLiteral', 'TemplateElement',
-    'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression'
+    'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression', 'Program', 'ExpressionStatement'
   ]);
   let possibleSideEffects = false;
   const sideEffectwalker = new FormatterWorker.ESTreeWalker(node => {
@@ -382,8 +394,25 @@ FormatterWorker.findLastExpression = function(content) {
     if (possibleSideEffects)
       return FormatterWorker.ESTreeWalker.SkipSubtree;
   });
-  sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
-  return {baseExpression, possibleSideEffects};
+  sideEffectwalker.walk(node);
+  return possibleSideEffects;
+};
+
+/**
+ * @param {string} text
+ * @return {boolean}
+ */
+FormatterWorker.hasPossibleSideEffects = function(text) {
+  if (text.length > 10000)
+    return true;
+  let ast = null;
+  try {
+    ast = acorn.parse(text, {ecmaVersion: 9});
+  } catch (e) {
+  }
+  if (!ast)
+    return true;
+  return FormatterWorker._possibleSideEffects(ast);
 };
 
 /**

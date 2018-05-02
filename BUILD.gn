@@ -1127,7 +1127,7 @@ action("generate_devtools_grd") {
 
   # Bundle remote modules in ChromeOS.
   if (is_chromeos) {
-    grd_files += generated_remote_modules
+    grd_files += generated_remote_modules + devtools_emulated_devices_images
   }
 
   inputs = grd_files + devtools_image_files

@@ -239,7 +239,7 @@ Console.ConsoleContextSelector = class {
    * @param {!SDK.RuntimeModel} runtimeModel
    */
   modelRemoved(runtimeModel) {
-    for (let i = 0; i < this._items.length; i++) {
+    for (let i = this._items.length - 1; i >= 0; i--) {
       if (this._items.at(i).runtimeModel === runtimeModel)
         this._executionContextDestroyed(this._items.at(i));
     }

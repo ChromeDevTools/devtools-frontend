@@ -25,6 +25,8 @@ TextEditor.TextEditorAutocompleteController = class {
     this._mouseDown = this.clearAutocomplete.bind(this);
     this._codeMirror.on('changes', this._changes);
     this._lastHintText = '';
+    /** @type {?UI.SuggestBox} */
+    this._suggestBox = null;
     this._hintElement = createElementWithClass('span', 'auto-complete-text');
   }
 
@@ -246,10 +248,8 @@ TextEditor.TextEditorAutocompleteController = class {
         this._onSuggestionsShownForTest([]);
         return;
       }
-      if (!this._suggestBox) {
-        this._suggestBox = new UI.SuggestBox(this, 20, this._config.captureEnter);
-        this._suggestBox.setDefaultSelectionIsDimmed(!!this._config.captureEnter);
-      }
+      if (!this._suggestBox)
+        this._suggestBox = new UI.SuggestBox(this, 20);
 
       const oldQueryRange = this._queryRange;
       this._queryRange = queryRange;
@@ -320,7 +320,7 @@ TextEditor.TextEditorAutocompleteController = class {
   }
 
   /**
-   * @param {!Event} event
+   * @param {!KeyboardEvent} event
    * @return {boolean}
    */
   keyDown(event) {

@@ -52,14 +52,11 @@ UI.SuggestBox = class {
   /**
    * @param {!UI.SuggestBoxDelegate} suggestBoxDelegate
    * @param {number=} maxItemsHeight
-   * @param {boolean=} captureEnter
    */
-  constructor(suggestBoxDelegate, maxItemsHeight, captureEnter) {
+  constructor(suggestBoxDelegate, maxItemsHeight) {
     this._suggestBoxDelegate = suggestBoxDelegate;
     this._maxItemsHeight = maxItemsHeight;
-    this._captureEnter = captureEnter;
     this._rowHeight = 17;
-    this._userInteracted = false;
     this._userEnteredText = '';
     this._defaultSelectionIsDimmed = false;
 
@@ -80,22 +77,6 @@ UI.SuggestBox = class {
     this._glassPane.setOutsideClickCallback(this.hide.bind(this));
     const shadowRoot = UI.createShadowRootWithCoreStyles(this._glassPane.contentElement, 'ui/suggestBox.css');
     shadowRoot.appendChild(this._element);
-  }
-
-  /**
-   * @param {boolean} value
-   */
-  setDefaultSelectionIsDimmed(value) {
-    this._defaultSelectionIsDimmed = value;
-    this._element.classList.toggle('default-selection-is-dimmed', value);
-  }
-
-  /**
-   * @param {boolean} value
-   */
-  _setUserInteracted(value) {
-    this._userInteracted = value;
-    this._element.classList.toggle('user-has-interacted', value);
   }
 
   /**
@@ -158,7 +139,6 @@ UI.SuggestBox = class {
   hide() {
     if (!this.visible())
       return;
-    this._setUserInteracted(false);
     this._glassPane.hide();
   }
 
@@ -261,8 +241,7 @@ UI.SuggestBox = class {
       fromElement.classList.remove('selected', 'force-white-icons');
     if (toElement) {
       toElement.classList.add('selected');
-      if (fromElement || this._userInteracted || !this._defaultSelectionIsDimmed)
-        toElement.classList.add('force-white-icons');
+      toElement.classList.add('force-white-icons');
     }
     this._applySuggestion(true);
   }
@@ -276,29 +255,30 @@ UI.SuggestBox = class {
       return;
 
     this._list.selectItem(item);
-    this._setUserInteracted(true);
     this.acceptSuggestion();
     event.consume(true);
   }
 
   /**
    * @param {!UI.SuggestBox.Suggestions} completions
+   * @param {?UI.SuggestBox.Suggestion} highestPriorityItem
    * @param {boolean} canShowForSingleItem
    * @param {string} userEnteredText
    * @return {boolean}
    */
-  _canShowBox(completions, canShowForSingleItem, userEnteredText) {
+  _canShowBox(completions, highestPriorityItem, canShowForSingleItem, userEnteredText) {
     if (!completions || !completions.length)
       return false;
 
     if (completions.length > 1)
       return true;
 
-    if (!completions[0].text.startsWith(userEnteredText))
+    if (!highestPriorityItem || highestPriorityItem.isSecondary ||
+        !highestPriorityItem.text.startsWith(userEnteredText))
       return true;
 
     // Do not show a single suggestion if it is the same as user-entered query, even if allowed to show single-item suggest boxes.
-    return canShowForSingleItem && completions[0].text !== userEnteredText;
+    return canShowForSingleItem && highestPriorityItem.text !== userEnteredText;
   }
 
   /**
@@ -310,7 +290,9 @@ UI.SuggestBox = class {
    */
   updateSuggestions(anchorBox, completions, selectHighestPriority, canShowForSingleItem, userEnteredText) {
     this._onlyCompletion = null;
-    if (this._canShowBox(completions, canShowForSingleItem, userEnteredText)) {
+    const highestPriorityItem =
+        selectHighestPriority ? completions.reduce((a, b) => (a.priority || 0) >= (b.priority || 0) ? a : b) : null;
+    if (this._canShowBox(completions, highestPriorityItem, canShowForSingleItem, userEnteredText)) {
       this._userEnteredText = userEnteredText;
 
       this._show();
@@ -319,20 +301,10 @@ UI.SuggestBox = class {
       this._list.invalidateItemHeight();
       this._items.replaceAll(completions);
 
-      if (selectHighestPriority) {
-        let highestPriorityItem = completions[0];
-        let highestPriority = completions[0].priority || 0;
-        for (let i = 0; i < completions.length; i++) {
-          const priority = completions[i].priority || 0;
-          if (highestPriority < priority) {
-            highestPriority = priority;
-            highestPriorityItem = completions[i];
-          }
-        }
+      if (highestPriorityItem && !highestPriorityItem.isSecondary)
         this._list.selectItem(highestPriorityItem, true);
-      } else {
+      else
         this._list.selectItem(null);
-      }
     } else {
       if (completions.length === 1) {
         this._onlyCompletion = completions[0].text;
@@ -347,28 +319,17 @@ UI.SuggestBox = class {
    * @return {boolean}
    */
   keyPressed(event) {
-    let selected = false;
     switch (event.key) {
       case 'Enter':
         return this.enterKeyPressed();
       case 'ArrowUp':
-        selected = this._list.selectPreviousItem(true, false);
-        break;
+        return this._list.selectPreviousItem(true, false);
       case 'ArrowDown':
-        selected = this._list.selectNextItem(true, false);
-        break;
+        return this._list.selectNextItem(true, false);
       case 'PageUp':
-        selected = this._list.selectItemPreviousPage(false);
-        break;
+        return this._list.selectItemPreviousPage(false);
       case 'PageDown':
-        selected = this._list.selectItemNextPage(false);
-        break;
-      default:
-        return false;
-    }
-    if (selected) {
-      this._setUserInteracted(true);
-      return true;
+        return this._list.selectItemNextPage(false);
     }
     return false;
   }
@@ -377,9 +338,6 @@ UI.SuggestBox = class {
    * @return {boolean}
    */
   enterKeyPressed() {
-    if (!this._userInteracted && this._captureEnter)
-      return false;
-
     const hasSelectedItem = !!this._list.selectedItem() || !!this._onlyCompletion;
     this.acceptSuggestion();
 

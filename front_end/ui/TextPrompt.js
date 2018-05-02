@@ -125,7 +125,7 @@ UI.TextPrompt = class extends Common.Object {
     this._element.addEventListener('selectstart', this._boundClearAutocomplete, false);
     this._element.addEventListener('blur', this._boundClearAutocomplete, false);
 
-    this._suggestBox = new UI.SuggestBox(this, 20, true);
+    this._suggestBox = new UI.SuggestBox(this, 20);
 
     if (this._title)
       this._proxyElement.title = this._title;

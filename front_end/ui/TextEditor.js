@@ -111,8 +111,7 @@ UI.TextEditor.Options;
  * @typedef {{
  *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
  *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
- *     isWordChar: ((function(string):boolean)|undefined),
- *     captureEnter: (boolean|undefined)
+ *     isWordChar: ((function(string):boolean)|undefined)
  * }}
  */
 UI.AutocompleteConfig;

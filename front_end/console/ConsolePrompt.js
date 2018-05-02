@@ -35,7 +35,6 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.configureAutocomplete({
         substituteRangeCallback: this._substituteRange.bind(this),
         suggestionsCallback: this._wordsWithQuery.bind(this),
-        captureEnter: true
       });
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
@@ -286,10 +285,10 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @return {!UI.SuggestBox.Suggestions}
    */
   _historyCompletions(prefix, force) {
-    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!prefix && !force))
+    const text = this.text();
+    if (!this._addCompletionsFromHistory || !this._isCaretAtEndOfPrompt() || (!text && !force))
       return [];
     const result = [];
-    const text = this.text();
     const set = new Set();
     const data = this._history.historyData();
     for (let i = data.length - 1; i >= 0 && result.length < 50; --i) {

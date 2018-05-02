@@ -440,7 +440,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
    * @return {string}
    */
   _tooltipForFile(uiSourceCode) {
-    uiSourceCode = Persistence.persistence.fileSystem(uiSourceCode) || uiSourceCode;
+    uiSourceCode = Persistence.persistence.network(uiSourceCode) || uiSourceCode;
     return uiSourceCode.url();
   }
 

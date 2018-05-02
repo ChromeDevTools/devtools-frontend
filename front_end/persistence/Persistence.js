@@ -342,6 +342,15 @@ Persistence.Persistence = class extends Common.Object {
   }
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {?Workspace.UISourceCode}
+   */
+  network(uiSourceCode) {
+    const binding = this.binding(uiSourceCode);
+    return binding ? binding.network : null;
+  }
+
+  /**
    * @param {string} filePath
    */
   _addFilePathBindingPrefixes(filePath) {

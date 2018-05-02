@@ -11,8 +11,10 @@ Persistence.PersistenceUtils = class {
     const binding = Persistence.persistence.binding(uiSourceCode);
     if (!binding)
       return '';
-    if (uiSourceCode === binding.network)
-      return Common.UIString('Persisted to file system: %s', binding.fileSystem.url().trimMiddle(150));
+    if (uiSourceCode === binding.network) {
+      const path = Common.ParsedURL.urlToPlatformPath(binding.fileSystem.url(), Host.isWin()).trimMiddle(150);
+      return ls`Linked to ${path}`;
+    }
     if (binding.network.contentType().isFromSourceMap())
       return Common.UIString('Linked to source map: %s', binding.network.url().trimMiddle(150));
     return Common.UIString('Linked to %s', binding.network.url().trimMiddle(150));
@@ -26,7 +28,7 @@ Persistence.PersistenceUtils = class {
     const binding = Persistence.persistence.binding(uiSourceCode);
     if (binding) {
       const icon = UI.Icon.create('mediumicon-file-sync');
-      icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.fileSystem);
+      icon.title = Persistence.PersistenceUtils.tooltipForUISourceCode(binding.network);
       // TODO(allada) This will not work properly with dark theme.
       if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project())
         icon.style.filter = 'hue-rotate(160deg)';

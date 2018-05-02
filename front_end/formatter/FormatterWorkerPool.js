@@ -49,7 +49,7 @@ Formatter.FormatterWorkerPool = class {
 
     this._workerTasks.set(worker, null);
     this._processNextTask();
-    task.callback(event.data);
+    task.callback(event.data ? event.data : null);
   }
 
   /**
@@ -238,14 +238,6 @@ Formatter.FormatterWorkerPool = class {
   findLastExpression(content) {
     return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>} */ (
         this._runTask('findLastExpression', {content}));
-  }
-
-  /**
-   * @param {string} content
-   * @return {!Promise<boolean>}
-   */
-  hasPossibleSideEffects(content) {
-    return /** @type {!Promise<boolean>} */ (this._runTask('hasPossibleSideEffects', {content}));
   }
 };
 

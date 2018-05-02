@@ -81,14 +81,11 @@ Console.ConsolePrompt = class extends UI.Widget {
       return;
     }
 
-    // Checking for possible side effects uses the same logic as JavaScriptAutocomplete.
-    // This grows the set of previewable expressions without whitelisting.
-    const hasPossibleSideEffects = await Formatter.formatterWorkerPool().hasPossibleSideEffects(text);
     const options = {
       expression: SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text),
       includeCommandLineAPI: true,
       generatePreview: true,
-      throwOnSideEffect: hasPossibleSideEffects,
+      throwOnSideEffect: true,
       timeout: 500
     };
     const result = await executionContext.evaluate(options, true /* userGesture */, false /* awaitPromise */);

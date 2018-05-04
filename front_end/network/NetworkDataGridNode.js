@@ -855,6 +855,12 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         case Protocol.Network.BlockedReason.Inspector:
           reason = Common.UIString('devtools');
           break;
+        case Protocol.Network.BlockedReason.SubresourceFilter:
+          reason = Common.UIString('subresource-filter');
+          break;
+        case Protocol.Network.BlockedReason.ContentType:
+          reason = Common.UIString('content-type');
+          break;
         case Protocol.Network.BlockedReason.Other:
           reason = Common.UIString('other');
           break;

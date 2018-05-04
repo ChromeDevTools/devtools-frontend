@@ -116,9 +116,7 @@ FormatterWorker.HTMLFormatter = class {
     if (isBodyToken && element.name === 'script') {
       this._builder.addNewLine();
       this._builder.increaseNestingLevel();
-      const mimeType =
-          element.openTag.attributes.has('type') ? element.openTag.attributes.get('type').toLowerCase() : null;
-      if (!mimeType || FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes.has(mimeType)) {
+      if (this._scriptTagIsJavaScript(element)) {
         this._jsFormatter.format(this._text, this._lineEndings, token.startOffset, token.endOffset);
       } else {
         this._builder.addToken(token.value, token.startOffset);
@@ -133,10 +131,30 @@ FormatterWorker.HTMLFormatter = class {
 
     this._builder.addToken(token.value, token.startOffset);
   }
+
+  /**
+   * @param {!FormatterWorker.HTMLModel.Element} element
+   * @return {boolean}
+   */
+  _scriptTagIsJavaScript(element) {
+    if (!element.openTag.attributes.has('type'))
+      return true;
+    let type = element.openTag.attributes.get('type').toLowerCase();
+    if (!type)
+      return true;
+    const isWrappedInQuotes = /^(["\'])(.*)\1$/.exec(type.trim());
+    if (isWrappedInQuotes)
+      type = isWrappedInQuotes[2];
+    return FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes.has(type.trim());
+  }
 };
 
-FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes =
-    new Set(['text/javascript', 'text/ecmascript', 'application/javascript', 'application/ecmascript']);
+FormatterWorker.HTMLFormatter.SupportedJavaScriptMimeTypes = new Set([
+  'application/ecmascript', 'application/javascript', 'application/x-ecmascript', 'application/x-javascript',
+  'text/ecmascript', 'text/javascript', 'text/javascript1.0', 'text/javascript1.1', 'text/javascript1.2',
+  'text/javascript1.3', 'text/javascript1.4', 'text/javascript1.5', 'text/jscript', 'text/livescript',
+  'text/x-ecmascript', 'text/x-javascript'
+]);
 
 /**
  * @unrestricted

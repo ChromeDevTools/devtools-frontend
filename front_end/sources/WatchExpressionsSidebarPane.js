@@ -180,6 +180,23 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
   }
 
   /**
+   * @param {string} expression
+   */
+  _focusAndAddExpressionToWatch(expression) {
+    UI.viewManager.showView('sources.watch');
+    this.doUpdate();
+    this._addExpressionToWatch(expression);
+  }
+
+  /**
+   * @param {string} expression
+   */
+  _addExpressionToWatch(expression) {
+    this._createWatchExpression(expression);
+    this._saveExpressions();
+  }
+
+  /**
    * @override
    * @param {!UI.Context} context
    * @param {string} actionId
@@ -190,11 +207,15 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     if (!frame)
       return false;
     const text = frame.textEditor.text(frame.textEditor.selection());
-    UI.viewManager.showView('sources.watch');
-    this.doUpdate();
-    this._createWatchExpression(text);
-    this._saveExpressions();
+    this._focusAndAddExpressionToWatch(text);
     return true;
+  }
+
+  /**
+   * @param {!ObjectUI.ObjectPropertyTreeElement} target
+   */
+  _addPropertyPathToWatch(target) {
+    this._addExpressionToWatch(target.path());
   }
 
   /**
@@ -204,6 +225,11 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
+    if (target instanceof ObjectUI.ObjectPropertyTreeElement) {
+      contextMenu.debugSection().appendItem(
+          ls`Add property path to watch`, this._addPropertyPathToWatch.bind(this, target));
+    }
+
     const frame = UI.context.flavor(Sources.UISourceCodeFrame);
     if (!frame || frame.textEditor.selection().isEmpty())
       return;

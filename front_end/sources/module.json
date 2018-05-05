@@ -197,6 +197,15 @@
         },
         {
             "type": "@UI.ContextMenu.Provider",
+            "actionId": "sources.add-to-watch",
+            "className": "Sources.WatchExpressionsSidebarPane",
+            "title": "Add to watch",
+            "contextTypes": [
+                "ObjectUI.ObjectPropertyTreeElement"
+            ]
+        },
+        {
+            "type": "@UI.ContextMenu.Provider",
             "contextTypes": [
                 "TextEditor.CodeMirrorTextEditor"
             ],

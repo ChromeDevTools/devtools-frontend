@@ -833,9 +833,11 @@ Console.ConsoleView = class extends UI.VBox {
    * @param {!Event} event
    */
   _messagesClicked(event) {
+    const target = /** @type {?Node} */ (event.target);
     // Do not focus prompt if messages have selection.
     if (!this._messagesElement.hasSelection()) {
-      const clickedOutsideMessageList = event.target === this._messagesElement;
+      const clickedOutsideMessageList =
+          target === this._messagesElement || this._prompt.belowEditorElement().isSelfOrAncestor(target);
       if (clickedOutsideMessageList)
         this._prompt.moveCaretToEndOfPrompt();
       this.focus();
@@ -1168,7 +1170,7 @@ Console.ConsoleView = class extends UI.VBox {
     if (!this._isBelowPromptEnabled)
       return this._messagesElement.isScrolledToBottom();
     const distanceToPromptEditorBottom = this._messagesElement.scrollHeight - this._messagesElement.scrollTop -
-        this._messagesElement.clientHeight - this._prompt.heightBelowEditor();
+        this._messagesElement.clientHeight - this._prompt.belowEditorElement().offsetHeight;
     return distanceToPromptEditorBottom <= 2;
   }
 };

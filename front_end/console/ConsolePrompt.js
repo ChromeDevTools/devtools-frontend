@@ -46,17 +46,18 @@ Console.ConsolePrompt = class extends UI.Widget {
       delete this._initialText;
       if (this.hasFocus())
         this.focus();
-      this.element.tabIndex = -1;
+      this.element.removeAttribute('tabindex');
+      this._editor.widget().element.tabIndex = -1;
 
       this._editorSetForTest();
     }
   }
 
   /**
-   * @return {number}
+   * @return {!Element}
    */
-  heightBelowEditor() {
-    return this._eagerPreviewElement.offsetHeight;
+  belowEditorElement() {
+    return this._eagerPreviewElement;
   }
 
   _onTextChanged() {

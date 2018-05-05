@@ -526,7 +526,7 @@ CodeMirror.prototype = {
   setHistory: function(histData) {},
   setLine: function(line, text) {},
   setOption: function(option, value) {},
-  setSelection: function(anchor, head) {},
+  setSelection: function(anchor, head, options) {},
   /**
    * @param {number=} primaryIndex
    * @param {?Object=} config

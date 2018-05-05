@@ -110,12 +110,32 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._prettyToggle.setToggled(value);
     this._prettyToggle.setEnabled(false);
 
+    const wasLoaded = this.loaded;
     const selection = this.selection();
+    let newSelection;
     if (this._pretty && this._rawContent) {
       this.setContent(await this._requestFormattedContent());
       const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
       const end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
-      this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
+      newSelection = new TextUtils.TextRange(start[0], start[1], end[0], end[1]);
+    } else {
+      this.setContent(this._rawContent);
+      const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
+      const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
+      newSelection = new TextUtils.TextRange(start[0], start[1], end[0], end[1]);
+    }
+    if (wasLoaded) {
+      this.textEditor.revealPosition(newSelection.endLine, newSelection.endColumn, this._editable);
+      this.textEditor.setSelection(newSelection);
+    }
+    this._prettyToggle.setEnabled(true);
+    this._updatePrettyPrintState();
+  }
+
+  _updatePrettyPrintState() {
+    this._prettyToggle.setToggled(this._pretty);
+    this._textEditor.element.classList.toggle('pretty-printed', this._pretty);
+    if (this._pretty) {
       this._textEditor.setLineNumberFormatter(lineNumber => {
         const line = this._prettyToRawLocation(lineNumber - 1, 0)[0] + 1;
         if (lineNumber === 1)
@@ -128,12 +148,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._textEditor.setLineNumberFormatter(lineNumber => {
         return String(lineNumber);
       });
-      this.setContent(this._rawContent);
-      const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
-      const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
-      this.setSelection(new TextUtils.TextRange(start[0], start[1], end[0], end[1]));
     }
-    this._prettyToggle.setEnabled(true);
   }
 
   /**
@@ -294,7 +309,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
   _innerSetSelectionIfNeeded() {
     if (this._selectionToSet && this.loaded && this.isShowing()) {
-      this._textEditor.setSelection(this._selectionToSet);
+      this._textEditor.setSelection(this._selectionToSet, true);
       this._selectionToSet = null;
     }
   }

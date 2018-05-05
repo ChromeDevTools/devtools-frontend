@@ -1125,12 +1125,13 @@
     this.assertEquals(await evalCode(target2, 'localStorage.getItem("page1")'), null);
     this.assertEquals(await evalCode(target2, 'localStorage.getItem("page2")'), 'page2');
 
-    const removedTargets = [];
-    SDK.targetManager.observeTargets({targetAdded: () => {}, targetRemoved: target => removedTargets.push(target)});
-    await Promise.all([disposeBrowserContext(browserContextIds[0]), disposeBrowserContext(browserContextIds[1])]);
-    this.assertEquals(removedTargets.length, 2);
-    this.assertEquals(removedTargets.indexOf(target1) !== -1, true);
-    this.assertEquals(removedTargets.indexOf(target2) !== -1, true);
+    this.assertEquals(await disposeBrowserContext(browserContextIds[0]), false);
+    this.assertEquals(await disposeBrowserContext(browserContextIds[1]), false);
+
+    await closeTarget(target1);
+    await closeTarget(target2);
+    this.assertEquals(await disposeBrowserContext(browserContextIds[0]), true);
+    this.assertEquals(await disposeBrowserContext(browserContextIds[1]), true);
 
     this.releaseControl();
 
@@ -1153,9 +1154,15 @@
       return target;
     }
 
+    async function closeTarget(target) {
+      const targetAgent = SDK.targetManager.mainTarget().targetAgent();
+      await targetAgent.invoke_closeTarget({targetId: target.id()});
+    }
+
     async function disposeBrowserContext(browserContextId) {
       const targetAgent = SDK.targetManager.mainTarget().targetAgent();
-      await targetAgent.invoke_disposeBrowserContext({browserContextId});
+      const {success} = await targetAgent.invoke_disposeBrowserContext({browserContextId});
+      return success;
     }
 
     async function evalCode(target, code) {

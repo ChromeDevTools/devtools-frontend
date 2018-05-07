@@ -384,7 +384,8 @@ Main.Main = class {
     if (event.handled)
       return;
 
-    if (!UI.Dialog.hasInstance() && UI.inspectorView.currentPanelDeprecated()) {
+    if (!UI.Dialog.hasInstance() && UI.inspectorView.currentPanelDeprecated() &&
+        UI.inspectorView.currentPanelDeprecated().hasFocus()) {
       UI.inspectorView.currentPanelDeprecated().handleShortcut(event);
       if (event.handled) {
         event.consume(true);

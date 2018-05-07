@@ -315,6 +315,8 @@ TextEditor.TextEditorAutocompleteController = class {
     this._suggestBox = null;
     this._queryRange = null;
     this._anchorBox = null;
+    this._currentSuggestion = null;
+    this._textEditor.dispatchEventToListeners(UI.TextEditor.Events.SuggestionChanged);
     this._clearHint();
     this._onSuggestionsHiddenForTest();
   }
@@ -366,8 +368,11 @@ TextEditor.TextEditorAutocompleteController = class {
    * @param {boolean=} isIntermediateSuggestion
    */
   applySuggestion(suggestion, isIntermediateSuggestion) {
+    const oldSuggestion = this._currentSuggestion;
     this._currentSuggestion = suggestion;
     this._setHint(suggestion);
+    if (oldSuggestion !== suggestion)
+      this._textEditor.dispatchEventToListeners(UI.TextEditor.Events.SuggestionChanged);
   }
 
   /**
@@ -376,11 +381,37 @@ TextEditor.TextEditorAutocompleteController = class {
   acceptSuggestion() {
     const selections = this._codeMirror.listSelections().slice();
     const queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
-    for (let i = selections.length - 1; i >= 0; --i) {
-      const start = selections[i].head;
-      const end = new CodeMirror.Pos(start.line, start.ch - queryLength);
-      this._codeMirror.replaceRange(this._currentSuggestion, start, end, '+autocomplete');
+    const suggestion = this._currentSuggestion;
+    this._codeMirror.operation(() => {
+      for (let i = selections.length - 1; i >= 0; --i) {
+        const start = selections[i].head;
+        const end = new CodeMirror.Pos(start.line, start.ch - queryLength);
+        this._codeMirror.replaceRange(suggestion, start, end, '+autocomplete');
+      }
+    });
+  }
+
+  /**
+   * @return {string}
+   */
+  textWithCurrentSuggestion() {
+    if (!this._queryRange || this._currentSuggestion === null)
+      return this._codeMirror.getValue();
+
+    const selections = this._codeMirror.listSelections().slice();
+    let last = {line: 0, column: 0};
+    let text = '';
+    const queryLength = this._queryRange.endColumn - this._queryRange.startColumn;
+    for (const selection of selections) {
+      const range =
+          new TextUtils.TextRange(last.line, last.column, selection.head.line, selection.head.ch - queryLength);
+      text += this._textEditor.text(range);
+      text += this._currentSuggestion;
+      last = {line: selection.head.line, column: selection.head.ch};
     }
+    const range = new TextUtils.TextRange(last.line, last.column, Infinity, Infinity);
+    text += this._textEditor.text(range);
+    return text;
   }
 
   _onScroll() {

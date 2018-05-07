@@ -1232,6 +1232,16 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
   /**
    * @override
+   * @return {string}
+   */
+  textWithCurrentSuggestion() {
+    if (!this._autocompleteController)
+      return this.text();
+    return this._autocompleteController.textWithCurrentSuggestion();
+  }
+
+  /**
+   * @override
    * @return {!TextUtils.TextRange}
    */
   fullRange() {

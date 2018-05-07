@@ -39,6 +39,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
+      this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
       if (this._isBelowPromptEnabled)
         this.element.appendChild(this._eagerPreviewElement);
 
@@ -64,7 +65,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
     if (this._isBelowPromptEnabled) {
-      const asSoonAsPossible = !this.text();
+      const asSoonAsPossible = !this._editor.textWithCurrentSuggestion();
       this._previewRequestForTest = this._textChangeThrottler.schedule(this._requestPreviewBound, asSoonAsPossible);
     }
     this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
@@ -74,7 +75,7 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @return {!Promise}
    */
   async _requestPreview() {
-    const text = this.text().trim();
+    const text = this._editor.textWithCurrentSuggestion().trim();
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     if (!executionContext || !text || text.length > Console.ConsolePrompt._MaxLengthForEvaluation) {
       this._innerPreviewElement.removeChildren();
@@ -107,7 +108,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       const nonObjectPreview = this._formatter.renderPropertyPreview(type, subtype, description.trimEnd(400));
       this._innerPreviewElement.appendChild(nonObjectPreview);
     }
-    if (this._innerPreviewElement.deepTextContent() === this.text().trim())
+    if (this._innerPreviewElement.deepTextContent() === this._editor.textWithCurrentSuggestion().trim())
       this._innerPreviewElement.removeChildren();
   }
 

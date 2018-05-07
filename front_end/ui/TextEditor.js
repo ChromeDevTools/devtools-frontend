@@ -49,6 +49,11 @@ UI.TextEditor.prototype = {
   text(textRange) {},
 
   /**
+   * @return {string}
+   */
+  textWithCurrentSuggestion() {},
+
+  /**
    * @param {string} text
    */
   setText(text) {},
@@ -90,7 +95,8 @@ UI.TextEditor.prototype = {
 
 /** @enum {symbol} */
 UI.TextEditor.Events = {
-  TextChanged: Symbol('TextChanged')
+  TextChanged: Symbol('TextChanged'),
+  SuggestionChanged: Symbol('SuggestionChanged')
 };
 
 /**

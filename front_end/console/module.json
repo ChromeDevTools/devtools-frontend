@@ -157,6 +157,24 @@
                     "title": "Do not group similar messages in console"
                 }
             ]
+        },
+        {
+            "type": "setting",
+            "category": "Console",
+            "title": "Eager evaluation",
+            "settingName": "consoleEagerEval",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Eagerly evaluate console prompt text"
+                },
+                {
+                    "value": false,
+                    "title": "Do not eagerly evaluate console prompt text"
+                }
+            ]
         }
     ],
     "dependencies": [

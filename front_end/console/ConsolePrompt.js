@@ -20,6 +20,10 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._innerPreviewElement = this._eagerPreviewElement.createChild('div', 'console-eager-inner-preview');
     this._eagerPreviewElement.appendChild(UI.Icon.create('smallicon-command-result', 'preview-result-icon'));
 
+    this._eagerEvalSetting = Common.settings.moduleSetting('consoleEagerEval');
+    this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
+    this._eagerPreviewElement.classList.toggle('hidden', !this._eagerEvalSetting.get());
+
     this.element.tabIndex = 0;
 
     self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
@@ -54,6 +58,13 @@ Console.ConsolePrompt = class extends UI.Widget {
     }
   }
 
+  _eagerSettingChanged() {
+    const enabled = this._eagerEvalSetting.get();
+    this._eagerPreviewElement.classList.toggle('hidden', !enabled);
+    if (enabled)
+      this._requestPreview();
+  }
+
   /**
    * @return {!Element}
    */
@@ -64,7 +75,7 @@ Console.ConsolePrompt = class extends UI.Widget {
   _onTextChanged() {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
-    if (this._isBelowPromptEnabled) {
+    if (this._isBelowPromptEnabled && this._eagerEvalSetting.get()) {
       const asSoonAsPossible = !this._editor.textWithCurrentSuggestion();
       this._previewRequestForTest = this._textChangeThrottler.schedule(this._requestPreviewBound, asSoonAsPossible);
     }

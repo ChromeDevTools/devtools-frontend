@@ -140,7 +140,13 @@ Console.ConsoleView = class extends UI.VBox {
     const settingsToolbarRight = new UI.Toolbar('', settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(monitoringXHREnabledSetting));
-    settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._timestampsSetting));
+    if (this._isBelowPromptEnabled) {
+      const eagerEvalCheckbox = new UI.ToolbarSettingCheckbox(
+          Common.settings.moduleSetting('consoleEagerEval'), ls`Eagerly evaluate text in the prompt`);
+      settingsToolbarRight.appendToolbarItem(eagerEvalCheckbox);
+    } else {
+      settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._timestampsSetting));
+    }
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._consoleHistoryAutocompleteSetting));
     if (!this._showSettingsPaneSetting.get())
       settingsPane.element.classList.add('hidden');

@@ -27,6 +27,8 @@ TextEditor.TextEditorAutocompleteController = class {
     this._lastHintText = '';
     /** @type {?UI.SuggestBox} */
     this._suggestBox = null;
+    /** @type {?string} */
+    this._currentSuggestion = null;
     this._hintElement = createElementWithClass('span', 'auto-complete-text');
   }
 

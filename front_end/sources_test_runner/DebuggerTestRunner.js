@@ -219,6 +219,12 @@ SourcesTestRunner.stepInto = function() {
   });
 };
 
+SourcesTestRunner.stepIntoAsync = function() {
+  Promise.resolve().then(function() {
+    UI.panels.sources._stepIntoAsync();
+  });
+};
+
 SourcesTestRunner.stepOut = function() {
   Promise.resolve().then(function() {
     UI.panels.sources._stepOut();

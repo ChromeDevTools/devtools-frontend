@@ -195,18 +195,9 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   createRemoteObjectFromPrimitiveValue(value) {
     const type = typeof value;
     let unserializableValue = undefined;
-    if (type === 'number') {
-      const description = String(value);
-      if (value === 0 && 1 / value < 0)
-        unserializableValue = SDK.RemoteObject.UnserializableNumber.Negative0;
-      else if (
-          description === SDK.RemoteObject.UnserializableNumber.NaN ||
-          description === SDK.RemoteObject.UnserializableNumber.Infinity ||
-          description === SDK.RemoteObject.UnserializableNumber.NegativeInfinity)
-        unserializableValue = description;
-    }
-    if (type === 'bigint')
-      unserializableValue = /** @type {!Protocol.Runtime.UnserializableValue} */ (String(value) + 'n');
+    const unserializableDescription = SDK.RemoteObject.unserializableDescription(value);
+    if (unserializableDescription !== null)
+      unserializableValue = /** @type {!Protocol.Runtime.UnserializableValue} */ (unserializableDescription);
     if (typeof unserializableValue !== 'undefined')
       value = undefined;
     return new SDK.RemoteObjectImpl(this, undefined, type, undefined, value, unserializableValue);

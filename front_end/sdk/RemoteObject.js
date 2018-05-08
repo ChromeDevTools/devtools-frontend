@@ -84,6 +84,26 @@ SDK.RemoteObject = class {
   }
 
   /**
+   * @param {*} object
+   * @return {?string}
+   */
+  static unserializableDescription(object) {
+    const type = typeof object;
+    if (type === 'number') {
+      const description = String(object);
+      if (object === 0 && 1 / object < 0)
+        return SDK.RemoteObject.UnserializableNumber.Negative0;
+      if (description === SDK.RemoteObject.UnserializableNumber.NaN ||
+          description === SDK.RemoteObject.UnserializableNumber.Infinity ||
+          description === SDK.RemoteObject.UnserializableNumber.NegativeInfinity)
+        return description;
+    }
+    if (type === 'bigint')
+      return object + 'n';
+    return null;
+  }
+
+  /**
    * @param {!Protocol.Runtime.RemoteObject|!SDK.RemoteObject|number|string|boolean|undefined|null|bigint} object
    * @return {!Protocol.Runtime.CallArgument}
    */
@@ -91,31 +111,29 @@ SDK.RemoteObject = class {
     const type = typeof object;
     if (type === 'undefined')
       return {};
+    const unserializableDescription = SDK.RemoteObject.unserializableDescription(object);
     if (type === 'number') {
-      const description = String(object);
-      if (object === 0 && 1 / object < 0)
-        return {unserializableValue: SDK.RemoteObject.UnserializableNumber.Negative0};
-      if (description === SDK.RemoteObject.UnserializableNumber.NaN ||
-          description === SDK.RemoteObject.UnserializableNumber.Infinity ||
-          description === SDK.RemoteObject.UnserializableNumber.NegativeInfinity)
-        return {unserializableValue: description};
+      if (unserializableDescription !== null)
+        return {unserializableValue: unserializableDescription};
       return {value: object};
     }
-    if (type === 'bigint') {
-      const value = String(object) + 'n';
-      return {unserializableValue: /** @type {!Protocol.Runtime.UnserializableValue} */ (value)};
-    }
+    if (type === 'bigint')
+      return {unserializableValue: /** @type {!Protocol.Runtime.UnserializableValue} */ (unserializableDescription)};
     if (type === 'string' || type === 'boolean')
       return {value: object};
 
     if (!object)
       return {value: null};
 
-    const isSDKRemoteObject = object instanceof SDK.RemoteObjectImpl;
-    if (!isSDKRemoteObject && typeof object.unserializableValue !== 'undefined')
+    // The unserializableValue is a function on SDK.RemoteObject's and a simple property on
+    // Protocol.Runtime.RemoteObject's.
+    if (object instanceof SDK.RemoteObject) {
+      const unserializableValue = object.unserializableValue();
+      if (unserializableValue !== undefined)
+        return {unserializableValue: unserializableValue};
+    } else if (object.unserializableValue !== undefined) {
       return {unserializableValue: object.unserializableValue};
-    if (isSDKRemoteObject && typeof object._unserializableValue !== 'undefined')
-      return {unserializableValue: object._unserializableValue};
+    }
 
     if (typeof object.objectId !== 'undefined')
       return {objectId: object.objectId};
@@ -980,6 +998,15 @@ SDK.LocalJSONObject = class extends SDK.RemoteObject {
    */
   get value() {
     return this._value;
+  }
+
+  /**
+   * @override
+   * @return {string|undefined}
+   */
+  unserializableValue() {
+    const unserializableDescription = SDK.RemoteObject.unserializableDescription(this._value);
+    return unserializableDescription || undefined;
   }
 
   /**

@@ -1113,9 +1113,15 @@
   TestSuite.prototype.testCreateBrowserContext = async function(url) {
     this.takeControl();
     const browserContextIds = [];
+    const targetAgent = SDK.targetManager.mainTarget().targetAgent();
 
     const target1 = await createIsolatedTarget(url);
     const target2 = await createIsolatedTarget(url);
+
+    const response = await targetAgent.invoke_getBrowserContexts();
+    this.assertEquals(response.browserContextIds.length, 2);
+    this.assertTrue(response.browserContextIds.includes(browserContextIds[0]));
+    this.assertTrue(response.browserContextIds.includes(browserContextIds[1]));
 
     await evalCode(target1, 'localStorage.setItem("page1", "page1")');
     await evalCode(target2, 'localStorage.setItem("page2", "page2")');
@@ -1139,7 +1145,6 @@
      * @return {!Promise<!SDK.Target>}
      */
     async function createIsolatedTarget(url) {
-      const targetAgent = SDK.targetManager.mainTarget().targetAgent();
       const {browserContextId} = await targetAgent.invoke_createBrowserContext();
       browserContextIds.push(browserContextId);
 

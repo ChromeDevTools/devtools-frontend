@@ -1110,6 +1110,18 @@
     this.releaseControl();
   };
 
+  TestSuite.prototype.testDisposeEmptyBrowserContext = async function(url) {
+    this.takeControl();
+    const targetAgent = SDK.targetManager.mainTarget().targetAgent();
+    const {browserContextId} = await targetAgent.invoke_createBrowserContext();
+    const response1 = await targetAgent.invoke_getBrowserContexts();
+    this.assertEquals(response1.browserContextIds.length, 1);
+    await targetAgent.invoke_disposeBrowserContext({browserContextId});
+    const response2 = await targetAgent.invoke_getBrowserContexts();
+    this.assertEquals(response2.browserContextIds.length, 0);
+    this.releaseControl();
+  };
+
   TestSuite.prototype.testCreateBrowserContext = async function(url) {
     this.takeControl();
     const browserContextIds = [];

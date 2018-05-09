@@ -87,6 +87,12 @@ self.onmessage = function(event) {
     case 'findLastExpression':
       postMessage(FormatterWorker.findLastExpression(params.content));
       break;
+    case 'findLastFunctionCall':
+      postMessage(FormatterWorker.findLastFunctionCall(params.content));
+      break;
+    case 'argumentsList':
+      postMessage(FormatterWorker.argumentsList(params.content));
+      break;
     default:
       console.error('Unsupport method name: ' + method);
   }
@@ -322,6 +328,95 @@ FormatterWorker.format = function(mimeType, text, indentString) {
 
 /**
  * @param {string} content
+ * @return {?{baseExpression: string, possibleSideEffects:boolean, argumentIndex: number}}
+ */
+FormatterWorker.findLastFunctionCall = function(content) {
+  if (content.length > 10000)
+    return null;
+  try {
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
+    while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
+    }
+  } catch (e) {
+    return null;
+  }
+
+  const suffix = '000)';
+  const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['CallExpression', 'NewExpression']));
+  if (!base)
+    return null;
+  const callee = base.baseNode['callee'];
+  const argumentIndex = base.baseNode['arguments'].length - 1;
+  const baseExpression = base.baseExpression.substring(callee.start, callee.end);
+  const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(callee);
+  return {baseExpression, possibleSideEffects, argumentIndex};
+};
+
+/**
+ * @param {string} content
+ * @return {!Array<string>}
+ */
+FormatterWorker.argumentsList = function(content) {
+  if (content.length > 10000)
+    return [];
+  let parsed = null;
+  try {
+    // Try to parse as a function, anonymous function, or arrow function.
+    parsed = acorn.parse(`(${content})`, {ecmaVersion: 9});
+  } catch (e) {
+  }
+  if (!parsed) {
+    try {
+      // Try to parse as a method.
+      parsed = acorn.parse(`({${content}})`, {ecmaVersion: 9});
+    } catch (e) {
+    }
+  }
+  if (!parsed || !parsed.body || !parsed.body[0] || !parsed.body[0].expression)
+    return [];
+  const expression = parsed.body[0].expression;
+  let params = null;
+  switch (expression.type) {
+    case 'ClassExpression':
+      if (!expression.body.body)
+        break;
+      const constructor = expression.body.body.find(method => method.kind === 'constructor');
+      if (constructor)
+        params = constructor.value.params;
+      break;
+    case 'ObjectExpression':
+      if (!expression.properties[0] || !expression.properties[0].value)
+        break;
+      params = expression.properties[0].value.params;
+      break;
+    case 'FunctionExpression':
+    case 'ArrowFunctionExpression':
+      params = expression.params;
+      break;
+  }
+  if (!params)
+    return [];
+  return params.map(paramName);
+
+  function paramName(param) {
+    switch (param.type) {
+      case 'Identifier':
+        return param.name;
+      case 'AssignmentPattern':
+        return '?' + paramName(param.left);
+      case 'ObjectPattern':
+        return 'obj';
+      case 'ArrayPattern':
+        return 'arr';
+      case 'RestElement':
+        return '...' + paramName(param.argument);
+    }
+    return '?';
+  }
+};
+
+/**
+ * @param {string} content
  * @return {?{baseExpression: string, possibleSideEffects:boolean}}
  */
 FormatterWorker.findLastExpression = function(content) {
@@ -335,8 +430,6 @@ FormatterWorker.findLastExpression = function(content) {
     return null;
   }
 
-  /** @type {!ESTree.Node} */
-  let ast;
   const suffix = '.DEVTOOLS';
   try {
     acorn.parse(content + suffix, {ecmaVersion: 9});
@@ -345,6 +438,23 @@ FormatterWorker.findLastExpression = function(content) {
     if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length)
       return null;
   }
+  const base = FormatterWorker._lastCompleteExpression(content, suffix, new Set(['MemberExpression', 'Identifier']));
+  if (!base)
+    return null;
+  const {baseExpression, baseNode} = base;
+  const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(baseNode);
+  return {baseExpression, possibleSideEffects};
+};
+
+/**
+ * @param {string} content
+ * @param {string} suffix
+ * @param {!Set<string>} types
+ * @return {?{baseNode: !ESTree.Node, baseExpression: string}}
+ */
+FormatterWorker._lastCompleteExpression = function(content, suffix, types) {
+  /** @type {!ESTree.Node} */
+  let ast;
   let parsedContent = '';
   for (let i = 0; i < content.length; i++) {
     try {
@@ -357,7 +467,6 @@ FormatterWorker.findLastExpression = function(content) {
   }
   if (!ast)
     return null;
-  const types = new Set(['MemberExpression', 'Identifier']);
   let baseNode = null;
   const walker = new FormatterWorker.ESTreeWalker(node => {
     if (baseNode || node.end < ast.end)
@@ -371,6 +480,14 @@ FormatterWorker.findLastExpression = function(content) {
   let baseExpression = parsedContent.substring(baseNode.start, parsedContent.length - suffix.length);
   if (baseExpression.startsWith('{'))
     baseExpression = `(${baseExpression})`;
+  return {baseNode, baseExpression};
+};
+
+/**
+ * @param {!ESTree.Node} baseNode
+ * @return {boolean}
+ */
+FormatterWorker._nodeHasPossibleSideEffects = function(baseNode) {
   const sideEffectFreeTypes = new Set([
     'MemberExpression', 'Identifier', 'BinaryExpression', 'Literal', 'TemplateLiteral', 'TemplateElement',
     'ObjectExpression', 'ArrayExpression', 'Property', 'ThisExpression'
@@ -383,7 +500,7 @@ FormatterWorker.findLastExpression = function(content) {
       return FormatterWorker.ESTreeWalker.SkipSubtree;
   });
   sideEffectwalker.walk(/** @type {!ESTree.Node} */ (baseNode));
-  return {baseExpression, possibleSideEffects};
+  return possibleSideEffects;
 };
 
 /**

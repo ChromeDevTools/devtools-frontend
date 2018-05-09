@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2018 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+.autocomplete-tooltip {
+  background-color: #FFFFFF;
+  pointer-events: none;
+  margin-left: -3px;
+  box-shadow: var(--drop-shadow);
+  overflow-x: hidden;
+  height: 20px;
+}
+
+.autocomplete-tooltip > * {
+  padding: 0px 4px;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 20px;
+}

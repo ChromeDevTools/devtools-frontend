@@ -116,6 +116,7 @@ UI.TextEditor.Options;
 /**
  * @typedef {{
  *     substituteRangeCallback: ((function(number, number):?TextUtils.TextRange)|undefined),
+ *     tooltipCallback: ((function(number, number):?Element)|undefined),
  *     suggestionsCallback: ((function(!TextUtils.TextRange, !TextUtils.TextRange, boolean=):?Promise.<!UI.SuggestBox.Suggestions>)|undefined),
  *     isWordChar: ((function(string):boolean)|undefined)
  * }}

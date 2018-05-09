@@ -22,7 +22,10 @@ TextEditor.TextEditorAutocompleteController = class {
     this._changes = this._changes.bind(this);
     this._blur = this._blur.bind(this);
     this._beforeChange = this._beforeChange.bind(this);
-    this._mouseDown = this.clearAutocomplete.bind(this);
+    this._mouseDown = () => {
+      this.clearAutocomplete();
+      this._tooltipGlassPane.hide();
+    };
     this._codeMirror.on('changes', this._changes);
     this._lastHintText = '';
     /** @type {?UI.SuggestBox} */
@@ -30,6 +33,14 @@ TextEditor.TextEditorAutocompleteController = class {
     /** @type {?string} */
     this._currentSuggestion = null;
     this._hintElement = createElementWithClass('span', 'auto-complete-text');
+
+    this._tooltipGlassPane = new UI.GlassPane();
+    this._tooltipGlassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent);
+    this._tooltipGlassPane.setOutsideClickCallback(this._tooltipGlassPane.hide.bind(this._tooltipGlassPane));
+    this._tooltipElement = createElementWithClass('div', 'autocomplete-tooltip');
+    const shadowRoot =
+        UI.createShadowRootWithCoreStyles(this._tooltipGlassPane.contentElement, 'text_editor/autocompleteTooltip.css');
+    shadowRoot.appendChild(this._tooltipElement);
   }
 
   _initializeIfNeeded() {
@@ -220,14 +231,14 @@ TextEditor.TextEditorAutocompleteController = class {
   autocomplete(force) {
     this._initializeIfNeeded();
     if (this._codeMirror.somethingSelected()) {
-      this.clearAutocomplete();
+      this._hideSuggestBox();
       return;
     }
 
     const cursor = this._codeMirror.getCursor('head');
     const substituteRange = this._substituteRange(cursor.line, cursor.ch);
     if (!substituteRange || !this._validateSelectionsContexts(substituteRange)) {
-      this.clearAutocomplete();
+      this._hideSuggestBox();
       return;
     }
 
@@ -246,7 +257,7 @@ TextEditor.TextEditorAutocompleteController = class {
     function wordsAcquired(wordsWithQuery) {
       if (!wordsWithQuery.length || (wordsWithQuery.length === 1 && query === wordsWithQuery[0].text) ||
           (!this._suggestBox && hadSuggestBox)) {
-        this.clearAutocomplete();
+        this._hideSuggestBox();
         this._onSuggestionsShownForTest([]);
         return;
       }
@@ -259,6 +270,8 @@ TextEditor.TextEditorAutocompleteController = class {
           queryRange.startColumn !== oldQueryRange.startColumn)
         this._updateAnchorBox();
       this._suggestBox.updateSuggestions(this._anchorBox, wordsWithQuery, true, !this._isCursorAtEndOfLine(), query);
+      if (this._suggestBox.visible)
+        this._tooltipGlassPane.hide();
       this._onSuggestionsShownForTest(wordsWithQuery);
     }
   }
@@ -311,6 +324,11 @@ TextEditor.TextEditorAutocompleteController = class {
   }
 
   clearAutocomplete() {
+    this._tooltipGlassPane.hide();
+    this._hideSuggestBox();
+  }
+
+  _hideSuggestBox() {
     if (!this._suggestBox)
       return;
     this._suggestBox.hide();
@@ -328,6 +346,10 @@ TextEditor.TextEditorAutocompleteController = class {
    * @return {boolean}
    */
   keyDown(event) {
+    if (this._tooltipGlassPane.isShowing() && event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+      this._tooltipGlassPane.hide();
+      return true;
+    }
     if (!this._suggestBox)
       return false;
     switch (event.keyCode) {
@@ -417,6 +439,7 @@ TextEditor.TextEditorAutocompleteController = class {
   }
 
   _onScroll() {
+    this._tooltipGlassPane.hide();
     if (!this._suggestBox)
       return;
     const cursor = this._codeMirror.getCursor();
@@ -431,7 +454,34 @@ TextEditor.TextEditorAutocompleteController = class {
     }
   }
 
+  async _updateTooltip() {
+    const cursor = this._codeMirror.getCursor();
+    const tooltip = this._config.tooltipCallback ? await this._config.tooltipCallback(cursor.line, cursor.ch) : null;
+    const newCursor = this._codeMirror.getCursor();
+
+    if (newCursor.line !== cursor.line && newCursor.ch !== cursor.ch)
+      return;
+    if (this._suggestBox && this._suggestBox.visible)
+      return;
+
+    if (!tooltip) {
+      this._tooltipGlassPane.hide();
+      return;
+    }
+    const metrics = this._textEditor.cursorPositionToCoordinates(cursor.line, cursor.ch);
+    if (!metrics) {
+      this._tooltipGlassPane.hide();
+      return;
+    }
+
+    this._tooltipGlassPane.setContentAnchorBox(new AnchorBox(metrics.x, metrics.y, 0, metrics.height));
+    this._tooltipElement.removeChildren();
+    this._tooltipElement.appendChild(tooltip);
+    this._tooltipGlassPane.show(/** @type {!Document} */ (this._textEditor.element.ownerDocument));
+  }
+
   _onCursorActivity() {
+    this._updateTooltip();
     if (!this._suggestBox)
       return;
     const cursor = this._codeMirror.getCursor();

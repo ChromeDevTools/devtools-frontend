@@ -1,9 +1,7 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
+
 Console.ConsolePrompt = class extends UI.Widget {
   constructor() {
     super();
@@ -11,6 +9,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._history = new Console.ConsoleHistoryManager();
 
     this._initialText = '';
+    /** @type {?UI.TextEditor} */
     this._editor = null;
     this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
     this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
@@ -25,6 +24,8 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._eagerPreviewElement.classList.toggle('hidden', !this._eagerEvalSetting.get());
 
     this.element.tabIndex = 0;
+    /** @type {?Promise} */
+    this._previewRequestForTest = null;
 
     self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
 
@@ -39,6 +40,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.configureAutocomplete({
         substituteRangeCallback: this._substituteRange.bind(this),
         suggestionsCallback: this._wordsWithQuery.bind(this),
+        tooltipCallback: (lineNumber, columnNumber) => this._tooltipCallback(lineNumber, columnNumber)
       });
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
@@ -369,6 +371,35 @@ Console.ConsolePrompt = class extends UI.Widget {
     }
     return ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
         .then(words => words.concat(historyWords));
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {!Promise<?Element>}
+   */
+  async _tooltipCallback(lineNumber, columnNumber) {
+    const before = this._editor.text(new TextUtils.TextRange(0, 0, lineNumber, columnNumber));
+    const result = await ObjectUI.javaScriptAutocomplete.argumentsHint(before);
+    if (!result)
+      return null;
+    const argumentsElement = createElement('span');
+    for (let i = 0; i < result.args.length; i++) {
+      if (i === result.argumentIndex || (i < result.argumentIndex && result.args[i].startsWith('...'))) {
+        const boldElement = createElement('b');
+        boldElement.textContent = result.args[i];
+        argumentsElement.appendChild(boldElement);
+      } else {
+        argumentsElement.createTextChild(result.args[i]);
+      }
+      if (i < result.args.length - 1)
+        argumentsElement.createTextChild(', ');
+    }
+    const tooltip = createElementWithClass('span', 'source-code');
+    tooltip.createTextChild('\u0192(');
+    tooltip.appendChild(argumentsElement);
+    tooltip.createTextChild(')');
+    return tooltip;
   }
 
   _editorSetForTest() {

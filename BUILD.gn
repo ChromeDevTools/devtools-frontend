@@ -703,6 +703,7 @@ all_devtools_files = [
   "front_end/terminal/xterm.js/build/xterm.js",
   "front_end/test_runner/module.json",
   "front_end/test_runner/TestRunner.js",
+  "front_end/text_editor/autocompleteTooltip.css",
   "front_end/text_editor/cmdevtools.css",
   "front_end/text_editor/CodeMirrorTextEditor.js",
   "front_end/text_editor/CodeMirrorUtils.js",

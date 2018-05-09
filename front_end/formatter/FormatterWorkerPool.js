@@ -239,6 +239,23 @@ Formatter.FormatterWorkerPool = class {
     return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean}>} */ (
         this._runTask('findLastExpression', {content}));
   }
+
+  /**
+   * @param {string} content
+   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean, argumentIndex: number}>}
+   */
+  findLastFunctionCall(content) {
+    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean, argumentIndex: number}>} */ (
+        this._runTask('findLastFunctionCall', {content}));
+  }
+
+  /**
+   * @param {string} content
+   * @return {!Promise<!Array<string>>}
+   */
+  argumentsList(content) {
+    return /** @type {!Promise<!Array<string>>} */ (this._runTask('argumentsList', {content}));
+  }
 };
 
 Formatter.FormatterWorkerPool.MaxWorkers = 2;

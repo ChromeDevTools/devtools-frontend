@@ -24,6 +24,17 @@ Changes.ChangesSidebar = class extends UI.Widget {
   }
 
   /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   * @param {boolean=} omitFocus
+   */
+  selectUISourceCode(uiSourceCode, omitFocus) {
+    const treeElement = this._treeElements.get(uiSourceCode);
+    if (!treeElement)
+      return;
+    treeElement.select(omitFocus);
+  }
+
+  /**
    * @return {?Workspace.UISourceCode}
    */
   selectedUISourceCode() {

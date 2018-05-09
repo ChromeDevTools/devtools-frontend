@@ -212,6 +212,13 @@
             "className": "Sources.WatchExpressionsSidebarPane"
         },
         {
+            "type": "@UI.ContextMenu.Provider",
+            "contextTypes": [
+                "Workspace.UISourceCode"
+            ],
+            "className": "Sources.GutterDiffPlugin.ContextMenuProvider"
+        },
+        {
             "type": "action",
             "actionId": "debugger.evaluate-selection",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",

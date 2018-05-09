@@ -60,6 +60,14 @@ WorkspaceDiff.WorkspaceDiff = class extends Common.Object {
 
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
+   * @return {boolean}
+   */
+  isUISourceCodeModified(uiSourceCode) {
+    return this._modifiedUISourceCodes.has(uiSourceCode) || this._loadingUISourceCodes.has(uiSourceCode);
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
    * @return {!WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff}
    */
   _uiSourceCodeDiff(uiSourceCode) {
@@ -301,6 +309,15 @@ WorkspaceDiff.workspaceDiff = function() {
   if (!WorkspaceDiff.WorkspaceDiff._instance)
     WorkspaceDiff.WorkspaceDiff._instance = new WorkspaceDiff.WorkspaceDiff(Workspace.workspace);
   return WorkspaceDiff.WorkspaceDiff._instance;
+};
+
+WorkspaceDiff.DiffUILocation = class {
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
+  constructor(uiSourceCode) {
+    this.uiSourceCode = uiSourceCode;
+  }
 };
 
 WorkspaceDiff.WorkspaceDiff.UpdateTimeout = 200;

@@ -320,3 +320,23 @@ Changes.ChangesView.RowType = {
   Equal: 'equal',
   Spacer: 'spacer'
 };
+
+/**
+ * @implements {Common.Revealer}
+ */
+Changes.ChangesView.DiffUILocationRevealer = class {
+  /**
+   * @override
+   * @param {!Object} diffUILocation
+   * @param {boolean=} omitFocus
+   * @return {!Promise}
+   */
+  async reveal(diffUILocation, omitFocus) {
+    if (!(diffUILocation instanceof WorkspaceDiff.DiffUILocation))
+      throw new Error('Internal error: not a diff ui location');
+    /** @type {!Changes.ChangesView} */
+    const changesView = self.runtime.sharedInstance(Changes.ChangesView);
+    await UI.viewManager.showView('changes.changes');
+    changesView._changesSidebar.selectUISourceCode(diffUILocation.uiSourceCode, omitFocus);
+  }
+};

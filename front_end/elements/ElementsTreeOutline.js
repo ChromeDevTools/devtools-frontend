@@ -1154,7 +1154,10 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   populateTreeElement(treeElement) {
     if (treeElement.childCount() || !treeElement.isExpandable())
       return;
-    treeElement.node().getChildNodes(() => this._updateModifiedParentNode(treeElement.node()));
+    treeElement.node().getChildNodes(() => {
+      treeElement.populated = true;
+      this._updateModifiedParentNode(treeElement.node());
+    });
   }
 
   /**

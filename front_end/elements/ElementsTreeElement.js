@@ -287,7 +287,6 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
    * @override
    */
   onpopulate() {
-    this.populated = true;
     this.treeOutline.populateTreeElement(this);
   }
 

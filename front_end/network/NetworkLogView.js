@@ -159,7 +159,7 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _createSearchPrompt() {
-    const text = this._searchHint.contentElement.createChild('div', 'search-button');
+    const text = this._searchHint.contentElement.createChild('div', 'search-suggestion');
     text.createChild('span').textContent = ls`Search headers and response bodies for `;
     const filterString = text.createChild('strong');
     const button = UI.createTextButton('Find All', () => this._openSearchView());

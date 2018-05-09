@@ -137,6 +137,12 @@
     margin: 0 4px;
 }
 
+.open-search-view .search-suggestion {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .network-tabbed-pane {
     background-color: var(--toolbar-bg-color);
 }

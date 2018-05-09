@@ -59,16 +59,18 @@ Network.NetworkSearchScope = class {
     if (progress.isCanceled())
       return null;
     const locations = [];
+    if (stringMatchesQuery(request.url()))
+      locations.push(Network.UIRequestLocation.urlMatch(request));
     for (const header of request.requestHeaders()) {
       if (headerMatchesQuery(header))
-        locations.push(new Network.UIRequestLocation(request, header, null, null));
+        locations.push(Network.UIRequestLocation.requestHeaderMatch(request, header));
     }
     for (const header of request.responseHeaders) {
       if (headerMatchesQuery(header))
-        locations.push(new Network.UIRequestLocation(request, null, header, null));
+        locations.push(Network.UIRequestLocation.responseHeaderMatch(request, header));
     }
     for (const match of bodyMatches)
-      locations.push(new Network.UIRequestLocation(request, null, null, match));
+      locations.push(Network.UIRequestLocation.bodyMatch(request, match));
     progress.worked();
     return new Network.NetworkSearchResult(request, locations);
 
@@ -77,7 +79,14 @@ Network.NetworkSearchScope = class {
      * @return {boolean}
      */
     function headerMatchesQuery(header) {
-      const string = `${header.name}: ${header.value}`;
+      return stringMatchesQuery(`${header.name}: ${header.value}`);
+    }
+
+    /**
+     * @param {string} string
+     * @return {boolean}
+     */
+    function stringMatchesQuery(string) {
       const flags = searchConfig.ignoreCase() ? 'i' : '';
       const regExps = searchConfig.queries().map(query => new RegExp(query, flags));
       let pos = 0;
@@ -104,12 +113,45 @@ Network.UIRequestLocation = class {
    * @param {?SDK.NetworkRequest.NameValue} requestHeader
    * @param {?SDK.NetworkRequest.NameValue} responseHeader
    * @param {?Common.ContentProvider.SearchMatch} searchMatch
+   * @param {boolean} urlMatch
    */
-  constructor(request, requestHeader, responseHeader, searchMatch) {
+  constructor(request, requestHeader, responseHeader, searchMatch, urlMatch) {
     this.request = request;
     this.requestHeader = requestHeader;
     this.responseHeader = responseHeader;
     this.searchMatch = searchMatch;
+    this.isUrlMatch = urlMatch;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @param {?SDK.NetworkRequest.NameValue} header
+   */
+  static requestHeaderMatch(request, header) {
+    return new Network.UIRequestLocation(request, header, null, null, false);
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @param {?SDK.NetworkRequest.NameValue} header
+   */
+  static responseHeaderMatch(request, header) {
+    return new Network.UIRequestLocation(request, null, header, null, false);
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @param {?Common.ContentProvider.SearchMatch} searchMatch
+   */
+  static bodyMatch(request, searchMatch) {
+    return new Network.UIRequestLocation(request, null, null, searchMatch, false);
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} request
+   */
+  static urlMatch(request) {
+    return new Network.UIRequestLocation(request, null, null, null, true);
   }
 };
 
@@ -160,6 +202,8 @@ Network.NetworkSearchResult = class {
    */
   matchLineContent(index) {
     const location = this._locations[index];
+    if (location.isUrlMatch)
+      return this._request.url();
     const header = location.requestHeader || location.responseHeader;
     if (header)
       return header.value;
@@ -182,6 +226,8 @@ Network.NetworkSearchResult = class {
    */
   matchLabel(index) {
     const location = this._locations[index];
+    if (location.isUrlMatch)
+      return Common.UIString('URL');
     const header = location.requestHeader || location.responseHeader;
     if (header)
       return `${header.name}:`;

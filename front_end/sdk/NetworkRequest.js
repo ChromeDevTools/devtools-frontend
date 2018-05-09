@@ -72,6 +72,9 @@ SDK.NetworkRequest = class extends Common.Object {
     /** @type {?Protocol.Network.ResourcePriority} */
     this._currentPriority = null;
 
+    /** @type {?Protocol.Network.SignedExchangeInfo} */
+    this._signedExchangeInfo = null;
+
     /** @type {!Common.ResourceType} */
     this._resourceType = Common.resourceTypes.Other;
     /** @type {?Promise<!SDK.NetworkRequest.ContentData>} */
@@ -1020,6 +1023,20 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   priority() {
     return this._currentPriority || this._initialPriority || null;
+  }
+
+  /**
+   * @param {!Protocol.Network.SignedExchangeInfo} info
+   */
+  setSignedExchangeInfo(info) {
+    this._signedExchangeInfo = info;
+  }
+
+  /**
+   * @return {?Protocol.Network.SignedExchangeInfo}
+   */
+  signedExchangeInfo() {
+    return this._signedExchangeInfo;
   }
 
   /**

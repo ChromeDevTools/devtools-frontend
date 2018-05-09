@@ -402,6 +402,41 @@ SDK.NetworkDispatcher = class {
   /**
    * @override
    * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Protocol.Network.SignedExchangeInfo} info
+   */
+  signedExchangeReceived(requestId, info) {
+    // While loading a signed exchange, a signedExchangeReceived event is sent
+    // between two requestWillBeSent events.
+    // 1. The first requestWillBeSent is sent while starting the navigation (or
+    //    prefetching).
+    // 2. This signedExchangeReceived event is sent when the browser detects the
+    //    signed exchange.
+    // 3. The second requestWillBeSent is sent with the generated redirect
+    //    response and a new redirected request which URL is the inner request
+    //    URL of the signed exchange.
+    let networkRequest = this._inflightRequestsById[requestId];
+    // |requestId| is available only for navigation requests. If the request was
+    // sent from a renderer process for prefetching, it is not available. In the
+    // case, need to fallback to look for the URL.
+    // TODO(crbug/841076): Sends the request ID of prefetching to the browser
+    // process and DevTools to find the matching request.
+    if (!networkRequest) {
+      networkRequest = this._inflightRequestsByURL[info.outerResponse.url];
+      if (!networkRequest)
+        return;
+    }
+    networkRequest.setSignedExchangeInfo(info);
+    // TODO(crbug/830505): Introduce a new resource type for Signed Exchange.
+    networkRequest.setResourceType(Common.resourceTypes.Other);
+
+    this._updateNetworkRequestWithResponse(networkRequest, info.outerResponse);
+    this._updateNetworkRequest(networkRequest);
+    this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.ResponseReceived, networkRequest);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.LoaderId} loaderId
    * @param {string} documentURL
    * @param {!Protocol.Network.Request} request
@@ -419,7 +454,12 @@ SDK.NetworkDispatcher = class {
       // FIXME: move this check to the backend.
       if (!redirectResponse)
         return;
-      this.responseReceived(requestId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse, frameId);
+      // If signedExchangeReceived event has already been sent for the request,
+      // ignores the internally generated |redirectResponse|. The
+      // |outerResponse| of SignedExchangeInfo was set to |networkRequest| in
+      // signedExchangeReceived().
+      if (!networkRequest.signedExchangeInfo())
+        this.responseReceived(requestId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse, frameId);
       networkRequest = this._appendRedirect(requestId, time, request.url);
       this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestRedirected, networkRequest);
     } else {

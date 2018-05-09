@@ -1486,6 +1486,7 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {!SDK.NetworkRequest} request
    */
   selectRequest(request) {
+    this.setTextFilterValue('');
     const node = this._reveal(request);
     if (node)
       node.select();

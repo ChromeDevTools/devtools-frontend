@@ -20,7 +20,7 @@ MobileThrottling.NetworkPanelIndicator = class {
         icon.title = Common.UIString('Network throttling is enabled');
       } else if (SDK.multitargetNetworkManager.isIntercepting()) {
         icon = UI.Icon.create('smallicon-warning');
-        icon.title = Common.UIString('Requests may be rewritten');
+        icon.title = Common.UIString('Requests may be rewritten by local overrides');
       } else if (manager.isBlocking()) {
         icon = UI.Icon.create('smallicon-warning');
         icon.title = Common.UIString('Requests may be blocked');

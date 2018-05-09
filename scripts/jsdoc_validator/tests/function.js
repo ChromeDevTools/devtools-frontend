@@ -378,3 +378,9 @@ FuncInterface.prototype = {
      */
     returnNumber: function() { }
 }
+
+/**
+ * @param {string} a
+ * @param {...number} abc
+ */
+function funcParamsOK3(a, ...abc) {}

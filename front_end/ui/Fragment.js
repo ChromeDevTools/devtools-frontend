@@ -9,9 +9,6 @@ UI.Fragment = class {
   constructor(element) {
     this._element = element;
 
-    /** @type {!Map<string, !Array<!UI.Fragment._State>>} */
-    this._states = new Map();
-
     /** @type {!Map<string, !Element>} */
     this._elementsById = new Map();
   }
@@ -32,45 +29,20 @@ UI.Fragment = class {
   }
 
   /**
-   * @param {string} name
-   * @param {boolean} toggled
-   */
-  setState(name, toggled) {
-    const list = this._states.get(name);
-    if (list === undefined) {
-      console.error('Unknown state ' + name);
-      return;
-    }
-    for (const state of list) {
-      if (state.toggled === toggled)
-        continue;
-      state.toggled = toggled;
-      const value = state.attributeValue;
-      state.attributeValue = state.element.getAttribute(state.attributeName);
-      if (value === null)
-        state.element.removeAttribute(state.attributeName);
-      else
-        state.element.setAttribute(state.attributeName, value);
-    }
-  }
-
-  /**
    * @param {!Array<string>} strings
-   * @param {...*} vararg
+   * @param {...*} values
    * @return {!UI.Fragment}
    */
-  static build(strings, vararg) {
-    const values = Array.prototype.slice.call(arguments, 1);
+  static build(strings, ...values) {
     return UI.Fragment._render(UI.Fragment._template(strings), values);
   }
 
   /**
    * @param {!Array<string>} strings
-   * @param {...*} vararg
+   * @param {...*} values
    * @return {!UI.Fragment}
    */
-  static cached(strings, vararg) {
-    const values = Array.prototype.slice.call(arguments, 1);
+  static cached(strings, ...values) {
     let template = UI.Fragment._templateCache.get(strings);
     if (!template) {
       template = UI.Fragment._template(strings);
@@ -119,17 +91,7 @@ UI.Fragment = class {
 
         const attributesToRemove = [];
         for (let i = 0; i < node.attributes.length; i++) {
-          let name = node.attributes[i].name;
-
-          if (name.startsWith('s-')) {
-            attributesToRemove.push(name);
-            name = name.substring(2);
-            const state = name.substring(0, name.indexOf('-'));
-            const attr = name.substring(state.length + 1);
-            nodesToMark.push(node);
-            binds.push({state: {name: state, attribute: attr, value: node.attributes[i].value}});
-            continue;
-          }
+          const name = node.attributes[i].name;
 
           if (!UI.Fragment._attributeMarkerRegex.test(name) &&
               !UI.Fragment._attributeMarkerRegex.test(node.attributes[i].value))
@@ -186,7 +148,6 @@ UI.Fragment = class {
         /** @type {!Element} */ (content.firstChild === content.lastChild ? content.firstChild : content);
     const result = new UI.Fragment(resultElement);
 
-    const idByElement = new Map();
     const boundElements = [];
     for (let i = 0; i < template.binds.length; i++) {
       const className = UI.Fragment._class(i);
@@ -200,7 +161,6 @@ UI.Fragment = class {
       const element = boundElements[bindIndex];
       if ('elementId' in bind) {
         result._elementsById.set(/** @type {string} */ (bind.elementId), element);
-        idByElement.set(element, bind.elementId);
       } else if ('replaceNodeIndex' in bind) {
         const value = values[/** @type {number} */ (bind.replaceNodeIndex)];
         let node = null;
@@ -211,13 +171,7 @@ UI.Fragment = class {
         else
           node = createTextNode('' + value);
 
-        element.parentNode.insertBefore(node, element);
-        element.remove();
-      } else if ('state' in bind) {
-        const list = result._states.get(bind.state.name) || [];
-        list.push(
-            {attributeName: bind.state.attribute, attributeValue: bind.state.value, element: element, toggled: false});
-        result._states.set(bind.state.name, list);
+        element.parentNode.replaceChild(node, element);
       } else if ('attr' in bind) {
         if (bind.attr.names.length === 2 && bind.attr.values.length === 1 &&
             typeof values[bind.attr.index] === 'function') {
@@ -238,31 +192,9 @@ UI.Fragment = class {
           }
         }
       } else {
-        throw 'Unexpected bind';
+        throw new Error('Unexpected bind');
       }
     }
-
-    // We do this after binds so that querySelector works.
-    const shadows = result._element.querySelectorAll('x-shadow');
-    for (const shadow of shadows) {
-      if (!shadow.parentElement)
-        throw 'There must be a parent element here';
-      const shadowRoot = UI.createShadowRootWithCoreStyles(shadow.parentElement);
-      if (shadow.parentElement.tagName === 'X-WIDGET')
-        shadow.parentElement._shadowRoot = shadowRoot;
-      const children = [];
-      while (shadow.lastChild) {
-        children.push(shadow.lastChild);
-        shadow.lastChild.remove();
-      }
-      for (let i = children.length - 1; i >= 0; i--)
-        shadowRoot.appendChild(children[i]);
-      const id = idByElement.get(shadow);
-      if (id)
-        result._elementsById.set(id, /** @type {!Element} */ (/** @type {!Node} */ (shadowRoot)));
-      shadow.remove();
-    }
-
     return result;
   }
 };
@@ -277,23 +209,7 @@ UI.Fragment._Template;
 
 /**
  * @typedef {!{
- *   attributeName: string,
- *   attributeValue: string,
- *   element: !Element,
- *   toggled: boolean
- * }}
- */
-UI.Fragment._State;
-
-/**
- * @typedef {!{
  *   elementId: (string|undefined),
- *
- *   state: (!{
- *     name: string,
- *     attribute: string,
- *     value: string
- *   }|undefined),
  *
  *   attr: (!{
  *     index: number,
@@ -315,3 +231,12 @@ UI.Fragment._attributeMarkerRegex = /template-attribute\d+/;
 UI.Fragment._class = index => 'template-class-' + index;
 
 UI.Fragment._templateCache = new Map();
+
+/**
+ * @param {!Array<string>} strings
+ * @param {...*} vararg
+ * @return {!Element}
+ */
+UI.html = (strings, ...vararg) => {
+  return UI.Fragment.cached(strings, ...vararg).element();
+};

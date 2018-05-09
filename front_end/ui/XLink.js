@@ -19,9 +19,9 @@ UI.XLink = class extends UI.XElement {
     className = className || '';
     // clang-format off
     // TODO(dgozman): migrate css from 'devtools-link' to 'x-link'.
-    return (UI.Fragment.cached`
+    return UI.html`
         <x-link href='${url}' class='${className} devtools-link' ${preventClick ? 'no-click' : ''}
-        >${linkText.trimMiddle(UI.MaxLengthForDisplayedURLs)}</x-link>`).element();
+        >${linkText.trimMiddle(UI.MaxLengthForDisplayedURLs)}</x-link>`;
     // clang-format on
   }
 

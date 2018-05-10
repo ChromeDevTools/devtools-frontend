@@ -426,8 +426,7 @@ SDK.NetworkDispatcher = class {
         return;
     }
     networkRequest.setSignedExchangeInfo(info);
-    // TODO(crbug/830505): Introduce a new resource type for Signed Exchange.
-    networkRequest.setResourceType(Common.resourceTypes.Other);
+    networkRequest.setResourceType(Common.resourceTypes.SignedExchange);
 
     this._updateNetworkRequestWithResponse(networkRequest, info.outerResponse);
     this._updateNetworkRequest(networkRequest);

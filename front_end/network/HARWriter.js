@@ -68,15 +68,37 @@ Network.HARWriter = class {
       return '';
     return JSON.stringify({log: harLog}, null, Network.HARWriter._jsonIndent);
 
+    function isValidCharacter(code_point) {
+      // Excludes non-characters (U+FDD0..U+FDEF, and all codepoints ending in
+      // 0xFFFE or 0xFFFF) from the set of valid code points.
+      return code_point < 0xD800 || (code_point >= 0xE000 && code_point < 0xFDD0) ||
+          (code_point > 0xFDEF && code_point <= 0x10FFFF && (code_point & 0xFFFE) !== 0xFFFE);
+    }
+
+    function needsEncoding(content) {
+      for (let i = 0; i < content.length; i++) {
+        if (!isValidCharacter(content.charCodeAt(i)))
+          return true;
+      }
+      return false;
+    }
+
     /**
      * @param {!Object} entry
      * @param {!SDK.NetworkRequest.ContentData} contentData
      */
     function contentLoaded(entry, contentData) {
       progress.worked();
-      if (contentData.content !== null)
-        entry.response.content.text = contentData.content;
-      if (contentData.encoded)
+      let encoded = contentData.encoded;
+      if (contentData.content !== null) {
+        let content = contentData.content;
+        if (content && !encoded && needsEncoding(content)) {
+          content = content.toBase64();
+          encoded = true;
+        }
+        entry.response.content.text = content;
+      }
+      if (encoded)
         entry.response.content.encoding = 'base64';
     }
   }

@@ -972,8 +972,14 @@ SDK.NetworkRequest = class extends Common.Object {
    * @param {boolean} isRegex
    * @return {!Promise<!Array<!Common.ContentProvider.SearchMatch>>}
    */
-  searchInContent(query, caseSensitive, isRegex) {
-    return SDK.NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+  async searchInContent(query, caseSensitive, isRegex) {
+    if (!this._contentDataProvider)
+      return SDK.NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+
+    const content = await this.requestContent();
+    if (!content)
+      return [];
+    return Common.ContentProvider.performSearchInContent(content, query, caseSensitive, isRegex);
   }
 
   /**

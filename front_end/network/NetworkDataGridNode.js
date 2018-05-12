@@ -843,6 +843,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     } else if (this._request.wasBlocked()) {
       let reason = Common.UIString('other');
       switch (this._request.blockedReason()) {
+        case Protocol.Network.BlockedReason.Other:
+          reason = Common.UIString('other');
+          break;
         case Protocol.Network.BlockedReason.Csp:
           reason = Common.UIString('csp');
           break;
@@ -860,9 +863,6 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
           break;
         case Protocol.Network.BlockedReason.ContentType:
           reason = Common.UIString('content-type');
-          break;
-        case Protocol.Network.BlockedReason.Other:
-          reason = Common.UIString('other');
           break;
       }
       this._setTextAndTitle(cell, Common.UIString('(blocked:%s)', reason));

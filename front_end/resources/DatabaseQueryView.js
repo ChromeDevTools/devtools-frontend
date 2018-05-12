@@ -39,13 +39,15 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     this._promptContainer.appendChild(UI.Icon.create('smallicon-text-prompt', 'prompt-icon'));
     this._promptElement = this._promptContainer.createChild('div');
     this._promptElement.className = 'database-query-prompt';
-    this._promptElement.addEventListener('keydown', this._promptKeyDown.bind(this), true);
+    this._promptElement.addEventListener('keydown', this._promptKeyDown.bind(this));
 
     this._prompt = new UI.TextPrompt();
     this._prompt.initialize(this.completions.bind(this), ' ');
     this._proxyElement = this._prompt.attach(this._promptElement);
 
     this.element.addEventListener('click', this._messagesClicked.bind(this), true);
+    this.element.tabIndex = 0;
+    this.element.addEventListener('focus', this._prompt.focus.bind(this._prompt));
   }
 
   _messagesClicked() {
@@ -97,46 +99,57 @@ Resources.DatabaseQueryView = class extends UI.VBox {
     }
   }
 
-  _enterKeyPressed(event) {
-    event.consume();
+  async _enterKeyPressed(event) {
+    event.consume(true);
 
+    const query = this._prompt.textWithCurrentSuggestion();
     this._prompt.clearAutocomplete();
 
-    const query = this._prompt.text();
     if (!query.length)
       return;
 
+    this._prompt.setEnabled(false);
+    try {
+      const result = await new Promise((resolve, reject) => {
+        this.database.executeSql(
+            query, (columnNames, values) => resolve({columnNames, values}), errorText => reject(errorText));
+      });
+      this._queryFinished(query, result.columnNames, result.values);
+    } catch (e) {
+      this._appendErrorQueryResult(query, e);
+    }
+    this._prompt.setEnabled(true);
     this._prompt.setText('');
-
-    this.database.executeSql(query, this._queryFinished.bind(this, query), this._queryError.bind(this, query));
+    this._prompt.focus();
   }
 
   _queryFinished(query, columnNames, values) {
     const dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
     const trimmedQuery = query.trim();
 
+    let view = null;
     if (dataGrid) {
       dataGrid.setStriped(true);
       dataGrid.renderInline();
-      this._appendViewQueryResult(trimmedQuery, dataGrid.asWidget());
       dataGrid.autoSizeColumns(5);
+      view = dataGrid.asWidget();
     }
+    this._appendViewQueryResult(trimmedQuery, view);
 
     if (trimmedQuery.match(/^create /i) || trimmedQuery.match(/^drop table /i))
       this.dispatchEventToListeners(Resources.DatabaseQueryView.Events.SchemaUpdated, this.database);
   }
 
-  _queryError(query, errorMessage) {
-    this._appendErrorQueryResult(query, errorMessage);
-  }
-
   /**
    * @param {string} query
-   * @param {!UI.Widget} view
+   * @param {?UI.Widget} view
    */
   _appendViewQueryResult(query, view) {
     const resultElement = this._appendQueryResult(query);
-    view.show(resultElement);
+    if (view)
+      view.show(resultElement);
+    else
+      resultElement.remove();
     this._promptElement.scrollIntoView(false);
   }
 

@@ -261,8 +261,11 @@ TextEditor.TextEditorAutocompleteController = class {
         this._onSuggestionsShownForTest([]);
         return;
       }
-      if (!this._suggestBox)
+      if (!this._suggestBox) {
         this._suggestBox = new UI.SuggestBox(this, 20);
+        if (this._config.anchorBehavior)
+          this._suggestBox.setAnchorBehavior(this._config.anchorBehavior);
+      }
 
       const oldQueryRange = this._queryRange;
       this._queryRange = queryRange;

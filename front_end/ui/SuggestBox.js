@@ -94,6 +94,13 @@ UI.SuggestBox = class {
   }
 
   /**
+   * @param {!UI.GlassPane.AnchorBehavior} behavior
+   */
+  setAnchorBehavior(behavior) {
+    this._glassPane.setAnchorBehavior(behavior);
+  }
+
+  /**
    * @param {!UI.SuggestBox.Suggestions} items
    */
   _updateMaxSize(items) {

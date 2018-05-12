@@ -40,7 +40,9 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.configureAutocomplete({
         substituteRangeCallback: this._substituteRange.bind(this),
         suggestionsCallback: this._wordsWithQuery.bind(this),
-        tooltipCallback: (lineNumber, columnNumber) => this._tooltipCallback(lineNumber, columnNumber)
+        tooltipCallback: (lineNumber, columnNumber) => this._tooltipCallback(lineNumber, columnNumber),
+        anchorBehavior: this._isBelowPromptEnabled ? UI.GlassPane.AnchorBehavior.PreferTop :
+                                                     UI.GlassPane.AnchorBehavior.PreferBottom
       });
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);

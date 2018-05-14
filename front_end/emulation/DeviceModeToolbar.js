@@ -519,6 +519,12 @@ Emulation.DeviceModeToolbar = class {
       this._heightInput.disabled = this._model.type() !== Emulation.DeviceModeModel.Type.Responsive;
       this._deviceScaleItem.setEnabled(this._model.type() === Emulation.DeviceModeModel.Type.Responsive);
       this._uaItem.setEnabled(this._model.type() === Emulation.DeviceModeModel.Type.Responsive);
+      if (this._model.type() === Emulation.DeviceModeModel.Type.Responsive) {
+        this._modeButton.setEnabled(true);
+        this._modeButton.setTitle(ls`Rotate`);
+      } else {
+        this._modeButton.setEnabled(false);
+      }
     }
 
     const size = this._model.appliedDeviceSize();
@@ -559,11 +565,6 @@ Emulation.DeviceModeToolbar = class {
         const modeCount = device ? device.modes.length : 0;
         this._modeButton.setEnabled(modeCount >= 2);
         this._modeButton.setTitle(modeCount === 2 ? Common.UIString('Rotate') : Common.UIString('Screen options'));
-      } else if (this._model.type() === Emulation.DeviceModeModel.Type.Responsive) {
-        this._modeButton.setEnabled(true);
-        this._modeButton.setTitle(Common.UIString('Rotate'));
-      } else {
-        this._modeButton.setEnabled(false);
       }
       this._cachedModelDevice = device;
     }

@@ -256,6 +256,13 @@ SDK.RemoteObject = class {
   }
 
   /**
+   * @return {?string}
+   */
+  get className() {
+    return null;
+  }
+
+  /**
    * @return {number}
    */
   arrayLength() {
@@ -447,8 +454,11 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
    * @param {string=} description
    * @param {!Protocol.Runtime.ObjectPreview=} preview
    * @param {!Protocol.Runtime.CustomPreview=} customPreview
+   * @param {string=} className
    */
-  constructor(runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview, customPreview) {
+  constructor(
+      runtimeModel, objectId, type, subtype, value, unserializableValue, description, preview, customPreview,
+      className) {
     super();
 
     this._runtimeModel = runtimeModel;
@@ -486,6 +496,7 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       }
     }
     this._customPreview = customPreview || null;
+    this._className = typeof className === 'string' ? className : null;
   }
 
   /**
@@ -558,6 +569,14 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
    */
   get preview() {
     return this._preview;
+  }
+
+  /**
+   * @override
+   * @return {?string}
+   */
+  get className() {
+    return this._className;
   }
 
   /**

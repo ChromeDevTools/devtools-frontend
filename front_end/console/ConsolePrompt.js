@@ -385,22 +385,20 @@ Console.ConsolePrompt = class extends UI.Widget {
     const result = await ObjectUI.javaScriptAutocomplete.argumentsHint(before);
     if (!result)
       return null;
-    const argumentsElement = createElement('span');
-    for (let i = 0; i < result.args.length; i++) {
-      if (i === result.argumentIndex || (i < result.argumentIndex && result.args[i].startsWith('...'))) {
-        const boldElement = createElement('b');
-        boldElement.textContent = result.args[i];
-        argumentsElement.appendChild(boldElement);
-      } else {
-        argumentsElement.createTextChild(result.args[i]);
+    const {argumentIndex} = result;
+    const tooltip = createElement('div');
+    for (const args of result.args) {
+      const argumentsElement = createElement('span');
+      for (let i = 0; i < args.length; i++) {
+        if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...')))
+          argumentsElement.appendChild(UI.html`<b>${args[i]}</b>`);
+        else
+          argumentsElement.createTextChild(args[i]);
+        if (i < args.length - 1)
+          argumentsElement.createTextChild(', ');
       }
-      if (i < result.args.length - 1)
-        argumentsElement.createTextChild(', ');
+      tooltip.appendChild(UI.html`<div class='source-code'>\u0192(${argumentsElement})</div>`);
     }
-    const tooltip = createElementWithClass('span', 'source-code');
-    tooltip.createTextChild('\u0192(');
-    tooltip.appendChild(argumentsElement);
-    tooltip.createTextChild(')');
     return tooltip;
   }
 

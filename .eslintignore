@@ -11,4 +11,5 @@ front_end/diff/diff_match_patch.js
 front_end/formatter_worker/acorn/
 front_end/terminal/xterm.js/
 front_end/protocol_externs.js
+front_end/javascript_metadata/NativeFunctions.js
 scripts/

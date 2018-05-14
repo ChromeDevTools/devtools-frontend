@@ -154,3 +154,30 @@ Common.Linkifier.linkify = function(object, options) {
 
 /** @typedef {{tooltip: string}} */
 Common.Linkifier.Options;
+
+/**
+ * @interface
+ */
+Common.JavaScriptMetadata = function() {};
+Common.JavaScriptMetadata.prototype = {
+
+  /**
+   * @param {string} name
+   * @return {?Array<!Array<string>>}
+   */
+  signaturesForNativeFunction(name) {},
+
+  /**
+   * @param {string} name
+   * @param {string} receiverClassName
+   * @return {?Array<!Array<string>>}
+   */
+  signaturesForInstanceMethod(name, receiverClassName) {},
+
+  /**
+   * @param {string} name
+   * @param {string} receiverConstructorName
+   * @return {?Array<!Array<string>>}
+   */
+  signaturesForStaticMethod(name, receiverConstructorName) {}
+};

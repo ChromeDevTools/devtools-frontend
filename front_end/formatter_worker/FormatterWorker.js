@@ -328,7 +328,7 @@ FormatterWorker.format = function(mimeType, text, indentString) {
 
 /**
  * @param {string} content
- * @return {?{baseExpression: string, possibleSideEffects:boolean, argumentIndex: number}}
+ * @return {?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number}}
  */
 FormatterWorker.findLastFunctionCall = function(content) {
   if (content.length > 10000)
@@ -347,9 +347,16 @@ FormatterWorker.findLastFunctionCall = function(content) {
     return null;
   const callee = base.baseNode['callee'];
   const argumentIndex = base.baseNode['arguments'].length - 1;
-  const baseExpression = base.baseExpression.substring(callee.start, callee.end);
+  const baseExpression =
+      `(${base.baseExpression.substring(callee.start - base.baseNode.start, callee.end - base.baseNode.start)})`;
   const possibleSideEffects = FormatterWorker._nodeHasPossibleSideEffects(callee);
-  return {baseExpression, possibleSideEffects, argumentIndex};
+  let receiver = '(function(){return this})()';
+  if (callee.type === 'MemberExpression') {
+    const receiverBase = callee['object'];
+    receiver =
+        base.baseExpression.substring(receiverBase.start - base.baseNode.start, receiverBase.end - base.baseNode.start);
+  }
+  return {baseExpression, receiver, possibleSideEffects, argumentIndex};
 };
 
 /**

@@ -739,6 +739,7 @@ Runtime.Module = class {
       'browser_sdk': 'BrowserSDK',
       'ui': 'UI',
       'object_ui': 'ObjectUI',
+      'javascript_metadata': 'JavaScriptMetadata',
       'perf_ui': 'PerfUI',
       'har_importer': 'HARImporter',
       'sdk_test_runner': 'SDKTestRunner',

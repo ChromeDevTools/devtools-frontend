@@ -174,7 +174,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     console.assert(typeof payload === 'object', 'Remote object payload should only be an object');
     return new SDK.RemoteObjectImpl(
         this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue,
-        payload.description, payload.preview, payload.customPreview);
+        payload.description, payload.preview, payload.customPreview, payload.className);
   }
 
   /**

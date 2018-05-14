@@ -31,6 +31,7 @@
     { "name": "formatter" },
     { "name": "heap_snapshot_model" },
     { "name": "inline_editor" },
+    { "name": "javascript_metadata" },
     { "name": "object_ui" },
     { "name": "perf_ui" },
     { "name": "profiler" },

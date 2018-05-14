@@ -34,7 +34,7 @@ ObjectUI.JavaScriptAutocomplete = class {
 
   /**
    * @param {string} fullText
-   * @return {!Promise<?{args: !Array<string>, argumentIndex: number}>}
+   * @return {!Promise<?{args: !Array<!Array<string>>, argumentIndex: number}>}
    */
   async argumentsHint(fullText) {
     const functionCall = await Formatter.formatterWorkerPool().findLastFunctionCall(fullText);
@@ -55,18 +55,113 @@ ObjectUI.JavaScriptAutocomplete = class {
           timeout: functionCall.possibleSideEffects ? 500 : undefined
         },
         /* userGesture */ false, /* awaitPromise */ false);
-    if (!result || result.exceptionDetails || !result.object || result.object.type !== 'function')
+    if (!result || result.exceptionDetails || !result.object || result.object.type !== 'function') {
+      executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
       return null;
+    }
+
+    const args = await this._argumentsForFunction(result.object, async () => {
+      const result = await executionContext.evaluate(
+          {
+            expression: functionCall.receiver,
+            objectGroup: 'argumentsHint',
+            includeCommandLineAPI: true,
+            silent: true,
+            returnByValue: false,
+            generatePreview: false,
+            throwOnSideEffect: functionCall.possibleSideEffects,
+            timeout: functionCall.possibleSideEffects ? 500 : undefined
+          },
+          /* userGesture */ false, /* awaitPromise */ false);
+      return (result && !result.exceptionDetails) ? result.object : null;
+    });
     executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
-
-    const description = result.object.description;
-    if (description.endsWith('{ [native code] }'))
-      return null;  // TODO(einbinder) support native function argument hints
-    const args = await Formatter.formatterWorkerPool().argumentsList(description);
-
-    if (!args.length)
+    if (!args.length || (args.length === 1 && !args[0].length))
       return null;
     return {args, argumentIndex: functionCall.argumentIndex};
+  }
+
+  /**
+   * @param {!SDK.RemoteObject} functionObject
+   * @param {function():!Promise<?SDK.RemoteObject>} receiverObjGetter
+   * @return {!Promise<!Array<!Array<string>>>}
+   */
+  async _argumentsForFunction(functionObject, receiverObjGetter) {
+    const description = functionObject.description;
+    if (!description.endsWith('{ [native code] }'))
+      return [await Formatter.formatterWorkerPool().argumentsList(description)];
+
+    // Check if this is a bound function.
+    if (description === 'function () { [native code] }') {
+      const properties = await functionObject.getOwnPropertiesPromise(false);
+      const internalProperties = properties.internalProperties || [];
+      const targetProperty = internalProperties.find(property => property.name === '[[TargetFunction]]');
+      const argsProperty = internalProperties.find(property => property.name === '[[BoundArgs]]');
+      const thisProperty = internalProperties.find(property => property.name === '[[BoundThis]]');
+      if (!thisProperty || !targetProperty || !argsProperty)
+        return [];
+      const originalSignatures =
+          await this._argumentsForFunction(targetProperty.value, () => Promise.resolve(thisProperty.value));
+      const boundArgsLength = SDK.RemoteObject.arrayLength(argsProperty.value);
+      const clippedArgs = [];
+      for (const signature of originalSignatures) {
+        const restIndex = signature.slice(0, boundArgsLength).findIndex(arg => arg.startsWith('...'));
+        if (restIndex !== -1)
+          clippedArgs.push(signature.slice(restIndex));
+        else
+          clippedArgs.push(signature.slice(boundArgsLength));
+      }
+      return clippedArgs;
+    }
+    const javaScriptMetadata = await self.runtime.extension(Common.JavaScriptMetadata).instance();
+
+    const name = /^function ([^(]*)\(/.exec(description)[1];
+    const uniqueSignatures = javaScriptMetadata.signaturesForNativeFunction(name);
+    if (uniqueSignatures)
+      return uniqueSignatures;
+    const receiverObj = await receiverObjGetter();
+    const className = receiverObj.className;
+    if (javaScriptMetadata.signaturesForInstanceMethod(name, className))
+      return javaScriptMetadata.signaturesForInstanceMethod(name, className);
+
+    // Check for static methods on a constructor.
+    if (receiverObj.type === 'function' && receiverObj.description.endsWith('{ [native code] }')) {
+      const receiverName = /^function ([^(]*)\(/.exec(receiverObj.description)[1];
+      const staticSignatures = javaScriptMetadata.signaturesForStaticMethod(name, receiverName);
+      if (staticSignatures)
+        return staticSignatures;
+    }
+
+
+    let protoNames;
+    if (receiverObj.type === 'number') {
+      protoNames = ['Number', 'Object'];
+    } else if (receiverObj.type === 'string') {
+      protoNames = ['String', 'Object'];
+    } else if (receiverObj.type === 'symbol') {
+      protoNames = ['Symbol', 'Object'];
+    } else if (receiverObj.type === 'bigint') {
+      protoNames = ['BigInt', 'Object'];
+    } else if (receiverObj.type === 'boolean') {
+      protoNames = ['Boolean', 'Object'];
+    } else if (receiverObj.type === 'undefined' || receiverObj.subtype === 'null') {
+      protoNames = [];
+    } else {
+      protoNames = await receiverObj.callFunctionJSONPromise(function() {
+        const result = [];
+        for (let object = this; object; object = Object.getPrototypeOf(object)) {
+          if (typeof object === 'object' && object.constructor && object.constructor.name)
+            result[result.length] = object.constructor.name;
+        }
+        return result;
+      });
+    }
+    for (const proto of protoNames) {
+      const instanceSignatures = javaScriptMetadata.signaturesForInstanceMethod(name, proto);
+      if (instanceSignatures)
+        return instanceSignatures;
+    }
+    return [];
   }
 
   /**

@@ -56,4 +56,4 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Components.TargetDetachedDialog, 0, true);
+SDK.SDKModel.register(Components.TargetDetachedDialog, SDK.Target.Capability.Inspector, true);

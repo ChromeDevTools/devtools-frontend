@@ -44,7 +44,8 @@ InspectorMain.InspectorMain = class extends Common.Object {
     return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.DeviceEmulation |
         SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.JS |
         SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.ScreenCapture |
-        SDK.Target.Capability.Security | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing;
+        SDK.Target.Capability.Security | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing |
+        SDK.Target.Capability.Inspector;
   }
 
   /**

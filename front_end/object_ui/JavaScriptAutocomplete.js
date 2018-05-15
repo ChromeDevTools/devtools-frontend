@@ -506,12 +506,20 @@ ObjectUI.JavaScriptAutocomplete = class {
     const quoteUsed = (bracketNotation && query.startsWith('\'')) ? '\'' : '"';
 
     if (!expressionString) {
+      // See ES2017 spec: https://www.ecma-international.org/ecma-262/8.0/index.html
       const keywords = [
-        'break', 'case',     'catch',  'continue', 'default',    'delete', 'do',     'else',   'finally',
-        'for',   'function', 'if',     'in',       'instanceof', 'new',    'return', 'switch', 'this',
-        'throw', 'try',      'typeof', 'var',      'void',       'while',  'with'
+        // Section 11.6.2.1 Reserved keywords.
+        'await', 'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else',
+        'exports', 'extends', 'finally', 'for', 'function', 'if', 'import', 'in', 'instanceof', 'new', 'return',
+        'super', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void', 'while', 'with', 'yield',
+
+        // Section 11.6.2.1's note mentions words treated as reserved in certain cases.
+        'let', 'static',
+
+        // Other keywords not explicitly reserved by spec.
+        'async', 'of'
       ];
-      propertyGroups.push({title: Common.UIString('keywords'), items: keywords});
+      propertyGroups.push({title: ls`keywords`, items: keywords.sort()});
     }
 
     /** @type {!Set<string>} */

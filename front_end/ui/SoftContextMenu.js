@@ -71,11 +71,12 @@ UI.SoftContextMenu = class {
     this._focusRestorer = new UI.ElementFocusRestorer(this._contextMenuElement);
 
     if (!this._parentMenu) {
-      this._onBodyMouseDown = event => {
+      this._hideOnUserGesture = event => {
         this.discard();
         event.consume(true);
       };
-      this._document.body.addEventListener('mousedown', this._onBodyMouseDown, false);
+      this._document.body.addEventListener('mousedown', this._hideOnUserGesture, false);
+      this._document.defaultView.addEventListener('resize', this._hideOnUserGesture, false);
     }
   }
 
@@ -87,9 +88,10 @@ UI.SoftContextMenu = class {
     if (this._glassPane) {
       this._glassPane.hide();
       delete this._glassPane;
-      if (this._onBodyMouseDown) {
-        this._document.body.removeEventListener('mousedown', this._onBodyMouseDown, false);
-        delete this._onBodyMouseDown;
+      if (this._hideOnUserGesture) {
+        this._document.body.removeEventListener('mousedown', this._hideOnUserGesture, false);
+        this._document.defaultView.removeEventListener('resize', this._hideOnUserGesture, false);
+        delete this._hideOnUserGesture;
       }
     }
     if (this._parentMenu)

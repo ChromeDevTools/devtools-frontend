@@ -36,9 +36,10 @@ Sources.SourcesView = class extends UI.VBox {
     this._historyManager = new Sources.EditingLocationHistoryManager(this, this.currentSourceFrame.bind(this));
 
     this._toolbarContainerElement = this.element.createChild('div', 'sources-toolbar');
-    this._toolbarEditorActions = new UI.Toolbar('', this._toolbarContainerElement);
-
-    self.runtime.allInstances(Sources.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
+    if (!Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+      this._toolbarEditorActions = new UI.Toolbar('', this._toolbarContainerElement);
+      self.runtime.allInstances(Sources.SourcesView.EditorAction).then(appendButtonsForExtensions.bind(this));
+    }
     /**
      * @param {!Array.<!Sources.SourcesView.EditorAction>} actions
      * @this {Sources.SourcesView}

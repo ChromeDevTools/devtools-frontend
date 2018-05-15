@@ -410,6 +410,8 @@ CodeMirror.prototype = {
    */
   addOverlay: function(spec, options) {},
   addWidget: function(pos, node, scroll, vert, horiz) {},
+  /** @param {boolean=} isClosed bv */
+  changeGeneration: function(isClosed) {},
   charCoords: function(pos, mode) {},
   clearGutter: function(gutterID) {},
   clearHistory: function() {},
@@ -478,7 +480,8 @@ CodeMirror.prototype = {
   indentLine: function(n, dir, aggressive) {},
   indentSelection: function(how) {},
   indexFromPos: function(coords) {},
-  isClean: function() {},
+  /** @param {number=} generation */
+  isClean: function(generation) {},
   iterLinkedDocs: function(f) {},
   lastLine: function() {},
   lineCount: function() {},

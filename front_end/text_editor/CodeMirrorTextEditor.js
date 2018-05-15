@@ -636,14 +636,18 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
+   * @param {number} generation
    * @return {boolean}
    */
-  isClean() {
-    return this._codeMirror.isClean();
+  isClean(generation) {
+    return this._codeMirror.isClean(generation);
   }
 
+  /**
+   * @return {number}
+   */
   markClean() {
-    this._codeMirror.markClean();
+    return this._codeMirror.changeGeneration(true);
   }
 
   /**
@@ -1216,6 +1220,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       this._enableLongLinesMode();
     else
       this._disableLongLinesMode();
+
+    if (!this.isShowing())
+      this.refresh();
   }
 
   /**

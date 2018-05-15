@@ -165,6 +165,10 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     this._updateStyle();
     this._decorateAllTypes();
     this._refreshHighlighterType();
+    if (Runtime.experiments.isEnabled('sourcesPrettyPrint')) {
+      const supportedPrettyTypes = new Set(['text/html', 'text/css', 'text/javascript']);
+      this.setCanPrettyPrint(supportedPrettyTypes.has(this.highlighterType()), true);
+    }
     this._ensurePluginsLoaded();
   }
 
@@ -214,6 +218,9 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (this._uiSourceCode.project().type() === Workspace.projectTypes.Network &&
         Persistence.networkPersistenceManager.active())
       return true;
+    // Because live edit fails on large whitespace changes, pretty printed scripts are not editable.
+    if (this.pretty && this._uiSourceCode.contentType().hasScripts())
+      return false;
     return this._uiSourceCode.contentType() !== Common.resourceTypes.Document;
   }
 
@@ -236,6 +243,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    */
   setContent(content) {
     this._disposePlugins();
+    this._rowMessageBuckets.clear();
     super.setContent(content);
     for (const message of this._allMessages())
       this._addMessageToSource(message);
@@ -261,17 +269,23 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @param {!TextUtils.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
+    const wasPretty = this.pretty;
     super.onTextChanged(oldRange, newRange);
     this._errorPopoverHelper.hidePopover();
     if (this._isSettingContent)
       return;
     Sources.SourcesPanel.instance().updateLastModificationTime();
     this._muteSourceCodeEvents = true;
-    if (this.textEditor.isClean())
+    if (this.isClean())
       this._uiSourceCode.resetWorkingCopy();
     else
       this._uiSourceCode.setWorkingCopyGetter(this.textEditor.text.bind(this.textEditor));
     this._muteSourceCodeEvents = false;
+    if (wasPretty !== this.pretty) {
+      this._updateStyle();
+      this._disposePlugins();
+      this._ensurePluginsLoaded();
+    }
   }
 
   /**
@@ -289,7 +303,7 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _onWorkingCopyCommitted(event) {
     if (!this._muteSourceCodeEvents)
       this._innerSetContent(this._uiSourceCode.workingCopy());
-    this.textEditor.markClean();
+    this.contentCommitted();
     this._updateStyle();
   }
 
@@ -302,14 +316,15 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
 
     // The order of these plugins matters for toolbar items
     if (Sources.DebuggerPlugin.accepts(pluginUISourceCode))
-      this._plugins.push(new Sources.DebuggerPlugin(this.textEditor, pluginUISourceCode));
+      this._plugins.push(new Sources.DebuggerPlugin(this.textEditor, pluginUISourceCode, this.transformer()));
     if (Sources.CSSPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.CSSPlugin(this.textEditor));
-    if (Sources.JavaScriptCompilerPlugin.accepts(pluginUISourceCode))
+    if (!this.pretty && Sources.JavaScriptCompilerPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.JavaScriptCompilerPlugin(this.textEditor, pluginUISourceCode));
     if (Sources.SnippetsPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.SnippetsPlugin(this.textEditor, pluginUISourceCode));
-    if (Runtime.experiments.isEnabled('sourceDiff') && Sources.GutterDiffPlugin.accepts(pluginUISourceCode))
+    if (!this.pretty && Runtime.experiments.isEnabled('sourceDiff') &&
+        Sources.GutterDiffPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.GutterDiffPlugin(this.textEditor, pluginUISourceCode));
 
     this.dispatchEventToListeners(Sources.UISourceCodeFrame.Events.ToolbarItemsChanged);
@@ -318,8 +333,10 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   }
 
   _disposePlugins() {
-    for (const plugin of this._plugins)
-      plugin.dispose();
+    this.textEditor.operation(() => {
+      for (const plugin of this._plugins)
+        plugin.dispose();
+    });
     this._plugins = [];
   }
 
@@ -353,13 +370,14 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
    * @override
    * @return {!Promise}
    */
-  async populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
-    await super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
+  async populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber) {
+    await super.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
     contextMenu.appendApplicableItems(this._uiSourceCode);
-    contextMenu.appendApplicableItems(new Workspace.UILocation(this._uiSourceCode, lineNumber, columnNumber));
+    const location = this.transformer().editorToRawLocation(editorLineNumber, editorColumnNumber);
+    contextMenu.appendApplicableItems(new Workspace.UILocation(this._uiSourceCode, location[0], location[1]));
     contextMenu.appendApplicableItems(this);
     for (const plugin of this._plugins)
-      await plugin.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
+      await plugin.populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber);
   }
 
   dispose() {
@@ -385,16 +403,17 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   _addMessageToSource(message) {
     if (!this.loaded)
       return;
-    let lineNumber = message.lineNumber();
-    if (lineNumber >= this.textEditor.linesCount)
-      lineNumber = this.textEditor.linesCount - 1;
-    if (lineNumber < 0)
-      lineNumber = 0;
+    const editorLocation = this.transformer().rawToEditorLocation(message.lineNumber(), message.columnNumber());
+    let editorLineNumber = editorLocation[0];
+    if (editorLineNumber >= this.textEditor.linesCount)
+      editorLineNumber = this.textEditor.linesCount - 1;
+    if (editorLineNumber < 0)
+      editorLineNumber = 0;
 
-    let messageBucket = this._rowMessageBuckets.get(lineNumber);
+    let messageBucket = this._rowMessageBuckets.get(editorLineNumber);
     if (!messageBucket) {
-      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, lineNumber);
-      this._rowMessageBuckets.set(lineNumber, messageBucket);
+      messageBucket = new Sources.UISourceCodeFrame.RowMessageBucket(this, this.textEditor, editorLineNumber);
+      this._rowMessageBuckets.set(editorLineNumber, messageBucket);
     }
     messageBucket.addMessage(message);
   }
@@ -414,19 +433,20 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
     if (!this.loaded)
       return;
 
-    let lineNumber = message.lineNumber();
-    if (lineNumber >= this.textEditor.linesCount)
-      lineNumber = this.textEditor.linesCount - 1;
-    if (lineNumber < 0)
-      lineNumber = 0;
+    const editorLocation = this.transformer().rawToEditorLocation(message.lineNumber(), message.columnNumber());
+    let editorLineNumber = editorLocation[0];
+    if (editorLineNumber >= this.textEditor.linesCount)
+      editorLineNumber = this.textEditor.linesCount - 1;
+    if (editorLineNumber < 0)
+      editorLineNumber = 0;
 
-    const messageBucket = this._rowMessageBuckets.get(lineNumber);
+    const messageBucket = this._rowMessageBuckets.get(editorLineNumber);
     if (!messageBucket)
       return;
     messageBucket.removeMessage(message);
     if (!messageBucket.uniqueMessagesCount()) {
       messageBucket.detachFromEditor();
-      this._rowMessageBuckets.delete(lineNumber);
+      this._rowMessageBuckets.delete(editorLineNumber);
     }
   }
 
@@ -605,12 +625,12 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
   /**
    * @param {!Sources.UISourceCodeFrame} sourceFrame
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
-   * @param {number} lineNumber
+   * @param {number} editorLineNumber
    */
-  constructor(sourceFrame, textEditor, lineNumber) {
+  constructor(sourceFrame, textEditor, editorLineNumber) {
     this._sourceFrame = sourceFrame;
     this.textEditor = textEditor;
-    this._lineHandle = textEditor.textEditorPositionHandle(lineNumber, 0);
+    this._lineHandle = textEditor.textEditorPositionHandle(editorLineNumber, 0);
     this._decoration = createElementWithClass('div', 'text-editor-line-decoration');
     this._decoration._messageBucket = this;
     this._wave = this._decoration.createChild('div', 'text-editor-line-decoration-wave');
@@ -626,20 +646,20 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
   }
 
   /**
-   * @param {number} lineNumber
+   * @param {number} editorLineNumber
    * @param {number} columnNumber
    */
-  _updateWavePosition(lineNumber, columnNumber) {
-    lineNumber = Math.min(lineNumber, this.textEditor.linesCount - 1);
-    const lineText = this.textEditor.line(lineNumber);
+  _updateWavePosition(editorLineNumber, columnNumber) {
+    editorLineNumber = Math.min(editorLineNumber, this.textEditor.linesCount - 1);
+    const lineText = this.textEditor.line(editorLineNumber);
     columnNumber = Math.min(columnNumber, lineText.length);
     const lineIndent = TextUtils.TextUtils.lineIndent(lineText).length;
     const startColumn = Math.max(columnNumber - 1, lineIndent);
     if (this._decorationStartColumn === startColumn)
       return;
     if (this._decorationStartColumn !== null)
-      this.textEditor.removeDecoration(this._decoration, lineNumber);
-    this.textEditor.addDecoration(this._decoration, lineNumber, startColumn);
+      this.textEditor.removeDecoration(this._decoration, editorLineNumber);
+    this.textEditor.addDecoration(this._decoration, editorLineNumber, startColumn);
     this._decorationStartColumn = startColumn;
   }
 
@@ -659,11 +679,13 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     const position = this._lineHandle.resolve();
     if (!position)
       return;
-    const lineNumber = position.lineNumber;
-    if (this._level)
-      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+    const editorLineNumber = position.lineNumber;
+    if (this._level) {
+      this.textEditor.toggleLineClass(
+          editorLineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+    }
     if (this._decorationStartColumn !== null) {
-      this.textEditor.removeDecoration(this._decoration, lineNumber);
+      this.textEditor.removeDecoration(this._decoration, editorLineNumber);
       this._decorationStartColumn = null;
     }
   }
@@ -717,27 +739,30 @@ Sources.UISourceCodeFrame.RowMessageBucket = class {
     if (!position)
       return;
 
-    const lineNumber = position.lineNumber;
+    const editorLineNumber = position.lineNumber;
     let columnNumber = Number.MAX_VALUE;
     let maxMessage = null;
     for (let i = 0; i < this._messages.length; ++i) {
       const message = this._messages[i].message();
-      columnNumber = Math.min(columnNumber, message.columnNumber());
+      const editorLocation =
+          this._sourceFrame.transformer().rawToEditorLocation(editorLineNumber, message.columnNumber());
+      columnNumber = Math.min(columnNumber, editorLocation[1]);
       if (!maxMessage || Workspace.UISourceCode.Message.messageLevelComparator(maxMessage, message) < 0)
         maxMessage = message;
     }
-    this._updateWavePosition(lineNumber, columnNumber);
+    this._updateWavePosition(editorLineNumber, columnNumber);
 
     if (this._level === maxMessage.level())
       return;
     if (this._level) {
-      this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
+      this.textEditor.toggleLineClass(
+          editorLineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], false);
       this._icon.type = '';
     }
     this._level = maxMessage.level();
     if (!this._level)
       return;
-    this.textEditor.toggleLineClass(lineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], true);
+    this.textEditor.toggleLineClass(editorLineNumber, Sources.UISourceCodeFrame._lineClassPerLevel[this._level], true);
     this._icon.type = Sources.UISourceCodeFrame._iconClassPerLevel[this._level];
   }
 };

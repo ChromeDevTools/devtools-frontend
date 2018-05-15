@@ -43,8 +43,9 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._lazyContent = lazyContent;
 
     this._pretty = false;
-    this._rawContent = '';
-    /** @type {?Promise<string>} */
+    /** @type {?string} */
+    this._rawContent = null;
+    /** @type {?Promise<{content: string, map: !Formatter.FormatterSourceMapping}>} */
     this._formattedContentPromise = null;
     /** @type {?Formatter.FormatterSourceMapping} */
     this._formattedMap = null;
@@ -57,6 +58,10 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
     this._textEditor = new SourceFrame.SourcesTextEditor(this);
     this._textEditor.show(this.element);
+
+    /** @type {?number} */
+    this._prettyCleanGeneration = null;
+    this._cleanGeneration = 0;
 
     this._searchConfig = null;
     this._delayedFindSearchMatches = null;
@@ -91,6 +96,30 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._loaded = false;
     this._contentRequested = false;
     this._highlighterType = '';
+    /** @type {!SourceFrame.Transformer} */
+    this._transformer = {
+      /**
+       * @param {number} editorLineNumber
+       * @param {number=} editorColumnNumber
+       * @return {!Array<number>}
+       */
+      editorToRawLocation: (editorLineNumber, editorColumnNumber = 0) => {
+        if (!this._pretty)
+          return [editorLineNumber, editorColumnNumber];
+        return this._prettyToRawLocation(editorLineNumber, editorColumnNumber);
+      },
+
+      /**
+       * @param {number} lineNumber
+       * @param {number=} columnNumber
+       * @return {!Array<number>}
+       */
+      rawToEditorLocation: (lineNumber, columnNumber = 0) => {
+        if (!this._pretty)
+          return [lineNumber, columnNumber];
+        return this._rawToPrettyLocation(lineNumber, columnNumber);
+      }
+    };
   }
 
   /**
@@ -104,22 +133,26 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
 
   /**
    * @param {boolean} value
+   * @return {!Promise}
    */
   async _setPretty(value) {
     this._pretty = value;
-    this._prettyToggle.setToggled(value);
     this._prettyToggle.setEnabled(false);
 
     const wasLoaded = this.loaded;
     const selection = this.selection();
     let newSelection;
-    if (this._pretty && this._rawContent) {
-      this.setContent(await this._requestFormattedContent());
+    if (this._pretty) {
+      const formatInfo = await this._requestFormattedContent();
+      this._formattedMap = formatInfo.map;
+      this.setContent(formatInfo.content);
+      this._prettyCleanGeneration = this._textEditor.markClean();
       const start = this._rawToPrettyLocation(selection.startLine, selection.startColumn);
       const end = this._rawToPrettyLocation(selection.endLine, selection.endColumn);
       newSelection = new TextUtils.TextRange(start[0], start[1], end[0], end[1]);
     } else {
       this.setContent(this._rawContent);
+      this._cleanGeneration = this._textEditor.markClean();
       const start = this._prettyToRawLocation(selection.startLine, selection.startColumn);
       const end = this._prettyToRawLocation(selection.endLine, selection.endColumn);
       newSelection = new TextUtils.TextRange(start[0], start[1], end[0], end[1]);
@@ -150,6 +183,14 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       });
     }
   }
+
+  /**
+   * @return {!SourceFrame.Transformer}
+   */
+  transformer() {
+    return this._transformer;
+  }
+
 
   /**
    * @param {number} line
@@ -216,6 +257,13 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     return this._textEditor;
   }
 
+  /**
+   * @protected
+   */
+  get pretty() {
+    return this._pretty;
+  }
+
   async _ensureContentLoaded() {
     if (!this._contentRequested) {
       this._contentRequested = true;
@@ -223,7 +271,8 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
       this._rawContent = content || '';
       this._formattedContentPromise = null;
       this._formattedMap = null;
-      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(this._rawContent))
+      this._prettyToggle.setEnabled(true);
+      if (this._shouldAutoPrettyPrint && TextUtils.isMinified(content))
         await this._setPretty(true);
       else
         this.setContent(this._rawContent);
@@ -231,16 +280,15 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
   }
 
   /**
-   * @return {!Promise<string>}
+   * @return {!Promise<{content: string, map: !Formatter.FormatterSourceMapping}>}
    */
   _requestFormattedContent() {
     if (this._formattedContentPromise)
       return this._formattedContentPromise;
     let fulfill;
     this._formattedContentPromise = new Promise(x => fulfill = x);
-    new Formatter.ScriptFormatter(this._highlighterType, this._rawContent, (data, map) => {
-      this._formattedMap = map;
-      fulfill(data);
+    new Formatter.ScriptFormatter(this._highlighterType, this._rawContent || '', (content, map) => {
+      fulfill({content, map});
     });
     return this._formattedContentPromise;
   }
@@ -325,8 +373,35 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @param {!TextUtils.TextRange} newRange
    */
   onTextChanged(oldRange, newRange) {
+    const wasPretty = this.pretty;
+    this._pretty = this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration);
+    if (this._pretty !== wasPretty)
+      this._updatePrettyPrintState();
+    this._prettyToggle.setEnabled(this.isClean());
+
     if (this._searchConfig && this._searchableView)
       this.performSearch(this._searchConfig, false, false);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isClean() {
+    return this.textEditor.isClean(this._cleanGeneration) ||
+        (this._prettyCleanGeneration !== null && this.textEditor.isClean(this._prettyCleanGeneration));
+  }
+
+  contentCommitted() {
+    this._cleanGeneration = this._textEditor.markClean();
+    this._prettyCleanGeneration = null;
+    this._rawContent = this.textEditor.text();
+    this._formattedMap = null;
+    this._formattedContentPromise = null;
+    if (this._pretty) {
+      this._pretty = false;
+      this._updatePrettyPrintState();
+    }
+    this._prettyToggle.setEnabled(true);
   }
 
   /**
@@ -376,7 +451,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     if (!this._loaded) {
       this._loaded = true;
       this._textEditor.setText(content || '');
-      this._textEditor.markClean();
+      this._cleanGeneration = this._textEditor.markClean();
       this._textEditor.setReadOnly(!this._editable);
     } else {
       const scrollTop = this._textEditor.scrollTop();
@@ -625,7 +700,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @override
    * @return {!Promise}
    */
-  populateLineGutterContextMenu(contextMenu, lineNumber) {
+  populateLineGutterContextMenu(contextMenu, editorLineNumber) {
     return Promise.resolve();
   }
 
@@ -633,7 +708,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
    * @override
    * @return {!Promise}
    */
-  populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber) {
+  populateTextAreaContextMenu(contextMenu, editorLineNumber, editorColumnNumber) {
     return Promise.resolve();
   }
 
@@ -682,3 +757,11 @@ SourceFrame.LineDecorator.prototype = {
    */
   decorate(uiSourceCode, textEditor) {}
 };
+
+/**
+ * @typedef {{
+ *  editorToRawLocation: function(number, number=):!Array<number>,
+ *  rawToEditorLocation: function(number, number=):!Array<number>
+ * }}
+ */
+SourceFrame.Transformer;

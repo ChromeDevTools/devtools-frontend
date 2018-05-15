@@ -116,6 +116,7 @@ Main.Main = class {
     Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
     Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Runtime.experiments.register('sourceDiff', 'Source diff');
+    Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
     Runtime.experiments.register(
         'stepIntoAsync', 'Introduce separate step action, stepInto becomes powerful enough to go inside async call');
     Runtime.experiments.register('splitInDrawer', 'Split in drawer', true);

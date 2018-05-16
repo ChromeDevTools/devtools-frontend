@@ -136,8 +136,9 @@ function postProcess() {
         const smallerIndex = filteredSignatures.findIndex(smaller => startsThesame(smaller, signature));
         if (smallerIndex !== -1) {
           filteredSignatures[smallerIndex] = (signature.map((arg, index) => {
-            if (index < filteredSignatures[smallerIndex].length)
-              return arg;
+            const otherArg = filteredSignatures[smallerIndex][index];
+            if (otherArg)
+              return otherArg.length > arg.length ? otherArg : arg;
             if (arg.startsWith('?') || arg.startsWith('...'))
               return arg;
             return '?' + arg;
@@ -149,7 +150,8 @@ function postProcess() {
 
       function startsThesame(smaller, bigger) {
         for (let i = 0; i < smaller.length; i++) {
-          if (smaller[i] !== bigger[i])
+          const withoutQuestion = str => /[\?]?(.*)/.exec(str)[1];
+          if (withoutQuestion(smaller[i]) !== withoutQuestion(bigger[i]))
             return false;
         }
         return true;

@@ -356,7 +356,7 @@ Console.ConsolePrompt = class extends UI.Widget {
    * @param {boolean=} force
    * @return {!Promise<!UI.SuggestBox.Suggestions>}
    */
-  _wordsWithQuery(queryRange, substituteRange, force) {
+  async _wordsWithQuery(queryRange, substituteRange, force) {
     const query = this._editor.text(queryRange);
     const before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
     const historyWords = this._historyCompletions(query, force);
@@ -369,10 +369,15 @@ Console.ConsolePrompt = class extends UI.Widget {
       if (!trimmedBefore.endsWith('.'))
         excludedTokens.add('js-property');
       if (excludedTokens.has(token.type))
-        return Promise.resolve(historyWords);
+        return historyWords;
     }
-    return ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force)
-        .then(words => words.concat(historyWords));
+    const words = await ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force);
+    if (!force && !this._isCaretAtEndOfPrompt()) {
+      const queryAndAfter = this._editor.line(queryRange.startLine).substring(queryRange.startColumn);
+      if (queryAndAfter && words.some(word => queryAndAfter.startsWith(word.text) && query.length !== word.text.length))
+        return [];
+    }
+    return words.concat(historyWords);
   }
 
   /**

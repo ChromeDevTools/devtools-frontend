@@ -70,6 +70,33 @@ NetworkTestRunner.dumpNetworkRequests = function() {
     TestRunner.addResult(requests[i].url());
 };
 
+NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
+  for (const request of BrowserSDK.networkLog.requests()) {
+    TestRunner.addResult(`* ${request.url()}`);
+    TestRunner.addResult(`  failed: ${!!request.failed}`);
+    TestRunner.addResult(`  statusCode: ${request.statusCode}`);
+    TestRunner.addResult(`  resourceType: ${request.resourceType().name()}`);
+    if (request.signedExchangeInfo()) {
+      TestRunner.addResult('  SignedExchangeInfo');
+      if (request.signedExchangeInfo().header) {
+        const header = request.signedExchangeInfo().header;
+        TestRunner.addResult(`    Request URL: ${header.requestUrl}`);
+        for (const signature of header.signatures)
+          TestRunner.addResult(`    Certificate URL: ${signature.certUrl}`);
+      }
+      if (request.signedExchangeInfo().securityDetails) {
+        const securityDetails = request.signedExchangeInfo().securityDetails;
+        TestRunner.addResult(`    Certificate Subject: ${securityDetails.subjectName}`);
+        TestRunner.addResult(`    Certificate Issuer: ${securityDetails.issuer}`);
+      }
+      if (request.signedExchangeInfo().errors) {
+        for (const errorMessage of request.signedExchangeInfo().errors)
+          TestRunner.addResult(`    Error: ${errorMessage}`);
+      }
+    }
+  }
+};
+
 NetworkTestRunner.findRequestsByURLPattern = function(urlPattern) {
   return NetworkTestRunner.networkRequests().filter(function(value) {
     return urlPattern.test(value.url());

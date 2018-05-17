@@ -946,6 +946,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
     if (this._request.fetchedViaServiceWorker) {
       this._setTextAndTitle(cell, Common.UIString('(from ServiceWorker)'));
       cell.classList.add('network-dim-cell');
+    } else if (this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo()) {
+      this._setTextAndTitle(cell, Common.UIString('(from SignedExchange)'));
+      cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       if (this._request.cachedInMemory())
         this._setTextAndTitle(cell, Common.UIString('(from memory cache)'));

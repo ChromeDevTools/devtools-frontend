@@ -190,6 +190,7 @@
         "RequestPreviewView.js",
         "RequestTimingView.js",
         "ResourceWebSocketFrameView.js",
+        "SignedExchangeInfoView.js",
         "NetworkPanel.js"
     ],
     "resources": [
@@ -205,6 +206,8 @@
         "requestHeadersTree.css",
         "requestHeadersView.css",
         "requestHTMLView.css",
+        "signedExchangeInfoTree.css",
+        "signedExchangeInfoView.css",
         "webSocketFrameView.css"
     ]
 }

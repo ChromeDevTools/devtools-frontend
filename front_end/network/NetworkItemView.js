@@ -55,6 +55,12 @@ Network.NetworkItemView = class extends UI.TabbedPane {
       this._responseView = new Network.RequestResponseView(request);
       const previewView = new Network.RequestPreviewView(request);
       this.appendTab(Network.NetworkItemView.Tabs.Preview, Common.UIString('Preview'), previewView);
+      if (request.signedExchangeInfo() && request.signedExchangeInfo().errors &&
+          request.signedExchangeInfo().errors.length) {
+        const icon = UI.Icon.create('smallicon-error');
+        icon.title = Common.UIString('SignedExchange error');
+        this.setTabIcon(Network.NetworkItemView.Tabs.Preview, icon);
+      }
       this.appendTab(Network.NetworkItemView.Tabs.Response, Common.UIString('Response'), this._responseView);
     }
 

@@ -242,10 +242,10 @@ Formatter.FormatterWorkerPool = class {
 
   /**
    * @param {string} content
-   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number}>}
+   * @return {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}>}
    */
   findLastFunctionCall(content) {
-    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number}>} */ (
+    return /** @type {!Promise<?{baseExpression: string, possibleSideEffects:boolean, receiver: string, argumentIndex: number, functionName: string}>} */ (
         this._runTask('findLastFunctionCall', {content}));
   }
 

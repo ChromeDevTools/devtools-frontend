@@ -74,7 +74,7 @@ ObjectUI.JavaScriptAutocomplete = class {
           },
           /* userGesture */ false, /* awaitPromise */ false);
       return (result && !result.exceptionDetails) ? result.object : null;
-    });
+    }, functionCall.functionName);
     executionContext.runtimeModel.releaseObjectGroup('argumentsHint');
     if (!args.length || (args.length === 1 && !args[0].length))
       return null;
@@ -84,9 +84,10 @@ ObjectUI.JavaScriptAutocomplete = class {
   /**
    * @param {!SDK.RemoteObject} functionObject
    * @param {function():!Promise<?SDK.RemoteObject>} receiverObjGetter
+   * @param {string=} parsedFunctionName
    * @return {!Promise<!Array<!Array<string>>>}
    */
-  async _argumentsForFunction(functionObject, receiverObjGetter) {
+  async _argumentsForFunction(functionObject, receiverObjGetter, parsedFunctionName) {
     const description = functionObject.description;
     if (!description.endsWith('{ [native code] }'))
       return [await Formatter.formatterWorkerPool().argumentsList(description)];
@@ -98,24 +99,26 @@ ObjectUI.JavaScriptAutocomplete = class {
       const targetProperty = internalProperties.find(property => property.name === '[[TargetFunction]]');
       const argsProperty = internalProperties.find(property => property.name === '[[BoundArgs]]');
       const thisProperty = internalProperties.find(property => property.name === '[[BoundThis]]');
-      if (!thisProperty || !targetProperty || !argsProperty)
-        return [];
-      const originalSignatures =
-          await this._argumentsForFunction(targetProperty.value, () => Promise.resolve(thisProperty.value));
-      const boundArgsLength = SDK.RemoteObject.arrayLength(argsProperty.value);
-      const clippedArgs = [];
-      for (const signature of originalSignatures) {
-        const restIndex = signature.slice(0, boundArgsLength).findIndex(arg => arg.startsWith('...'));
-        if (restIndex !== -1)
-          clippedArgs.push(signature.slice(restIndex));
-        else
-          clippedArgs.push(signature.slice(boundArgsLength));
+      if (thisProperty && targetProperty && argsProperty) {
+        const originalSignatures =
+            await this._argumentsForFunction(targetProperty.value, () => Promise.resolve(thisProperty.value));
+        const boundArgsLength = SDK.RemoteObject.arrayLength(argsProperty.value);
+        const clippedArgs = [];
+        for (const signature of originalSignatures) {
+          const restIndex = signature.slice(0, boundArgsLength).findIndex(arg => arg.startsWith('...'));
+          if (restIndex !== -1)
+            clippedArgs.push(signature.slice(restIndex));
+          else
+            clippedArgs.push(signature.slice(boundArgsLength));
+        }
+        return clippedArgs;
       }
-      return clippedArgs;
     }
     const javaScriptMetadata = await self.runtime.extension(Common.JavaScriptMetadata).instance();
 
-    const name = /^function ([^(]*)\(/.exec(description)[1];
+    const name = /^function ([^(]*)\(/.exec(description)[1] || parsedFunctionName;
+    if (!name)
+      return [];
     const uniqueSignatures = javaScriptMetadata.signaturesForNativeFunction(name);
     if (uniqueSignatures)
       return uniqueSignatures;

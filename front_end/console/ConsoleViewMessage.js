@@ -850,27 +850,36 @@ Console.ConsoleViewMessage = class {
      * @param {!Element} a
      * @param {*} b
      * @this {!Console.ConsoleViewMessage}
+     * @return {!Element}
      */
     function append(a, b) {
       if (b instanceof Node) {
         a.appendChild(b);
-      } else if (typeof b !== 'undefined') {
-        let toAppend = Console.ConsoleViewMessage._linkifyStringAsFragment(String(b));
-        if (currentStyle) {
-          const wrapper = createElement('span');
-          wrapper.style.setProperty('contain', 'paint');
-          wrapper.style.setProperty('display', 'inline-block');
-          wrapper.appendChild(toAppend);
-          applyCurrentStyle(wrapper);
-          for (const child of wrapper.children) {
-            if (child.classList.contains('devtools-link'))
-              this._applyForcedVisibleStyle(child);
-            else
-              applyCurrentStyle(child);
-          }
-          toAppend = wrapper;
+        return a;
+      }
+      if (typeof b === 'undefined')
+        return a;
+      if (!currentStyle) {
+        a.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(String(b)));
+        return a;
+      }
+      const lines = String(b).split('\n');
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const lineFragment = Console.ConsoleViewMessage._linkifyStringAsFragment(line);
+        const wrapper = createElement('span');
+        wrapper.style.setProperty('contain', 'paint');
+        wrapper.style.setProperty('display', 'inline-block');
+        wrapper.style.setProperty('max-width', '100%');
+        wrapper.appendChild(lineFragment);
+        applyCurrentStyle(wrapper);
+        for (const child of wrapper.children) {
+          if (child.classList.contains('devtools-link'))
+            this._applyForcedVisibleStyle(child);
         }
-        a.appendChild(toAppend);
+        a.appendChild(wrapper);
+        if (i < lines.length - 1)
+          a.appendChild(createElement('br'));
       }
       return a;
     }

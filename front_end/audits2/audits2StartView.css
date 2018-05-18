@@ -1,0 +1,113 @@
+/*
+ * Copyright 2018 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.audits2-start-view {
+  font-family: Roboto, sans-serif;
+}
+
+.audits2-dialog-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: rgba(0,0,0,.3);
+  z-index: 100;
+}
+
+.in-progress .audits2-dialog-overlay {
+  display: block;
+}
+
+.audits2-start-view header {
+  padding: 10px;
+  display: flex;
+}
+
+.audits2-logo {
+    width: 150px;
+    height: 150px;
+    flex-shrink: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 18px;
+    background-image: url(Images/audits_logo.svg);
+}
+
+.audits2-start-view-text {
+  color: #757575;
+  margin-top: 24px;
+}
+
+.audits2-start-view-text h2 {
+  color: black;
+  font-weight: normal;
+}
+
+.audits2-form-section {
+  border-top: 1px solid #e8e8e8;
+  display: flex;
+  padding: 20px;
+}
+
+.audits2-form-section-label {
+  flex: 1;
+  display: flex;
+}
+
+.audits2-form-section-label i {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #e6e6e6;
+  display: block;
+  text-align: center;
+  padding-top: 3px;
+}
+
+.audits2-icon-label {
+  margin: 7px;
+  font-size: 1.2em;
+}
+
+.audits2-form-section-label span.largeicon-checkmark {
+  transform: scale(1.3);
+  position: relative;
+  right: -2px;
+}
+
+.audits2-form-elements {
+  flex: 3;
+}
+
+.audits2-start-button-container {
+  align-items: center;
+}
+
+.audits2-start-button {
+  max-width: 100px;
+}
+
+.audits2-start-view .toolbar-dropdown-arrow {
+  display: none;
+}
+
+.audits2-launcher-row {
+  padding-bottom: 10px;
+}
+
+.audits2-launcher-row:last-of-type {
+  padding-bottom: 0;
+}
+
+.audits2-launcher-row .dimmed {
+  padding-left: 22px;
+}
+
+.audits2-help-text {
+  color: red;
+  font-weight: bold;
+  padding-left: 10px;
+}

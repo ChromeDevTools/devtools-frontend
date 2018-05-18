@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 /**
- * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
 Audits2.Audits2Panel = class extends UI.Panel {
@@ -13,132 +12,43 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this.registerRequiredCSS('audits2/audits2Panel.css');
 
     this._protocolService = new Audits2.ProtocolService();
+    this._controller = new Audits2.AuditController(this._protocolService);
+    this._startView = new Audits2.StartView(this._controller);
+    this._statusView = new Audits2.StatusView(this._controller);
 
-    this._renderToolbar();
+    this._unauditableExplanation = null;
+    this._cachedRenderedReports = new Map();
 
-    this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
     this._dropTarget = new UI.DropTarget(
         this.contentElement, [UI.DropTarget.Type.File], Common.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
-    for (const preset of Audits2.Audits2Panel.Presets)
-      preset.setting.addChangeListener(this._refreshDialogUI.bind(this));
+    this._controller.addEventListener(Audits2.Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
+    this._controller.addEventListener(Audits2.Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
+    this._controller.addEventListener(Audits2.Events.RequestAuditStart, this._startAudit.bind(this));
+    this._controller.addEventListener(Audits2.Events.RequestAuditCancel, this._cancelAudit.bind(this));
 
-    this._showLandingPage();
-    SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
-    SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._refreshDialogUI, this);
+    this._renderToolbar();
+    this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
+    this._renderStartView();
+
+    this._controller.recomputePageAuditability();
   }
 
   /**
-   * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!Common.Event} evt
    */
-  modelAdded(serviceWorkerManager) {
-    if (this._manager)
-      return;
-
-    this._manager = serviceWorkerManager;
-    this._serviceWorkerListeners = [
-      this._manager.addEventListener(SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._refreshDialogUI, this),
-      this._manager.addEventListener(SDK.ServiceWorkerManager.Events.RegistrationDeleted, this._refreshDialogUI, this),
-    ];
-
-    this._refreshDialogUI();
+  _refreshStartAuditUI(evt) {
+    this._unauditableExplanation = evt.data.helpText;
+    this._startView.setUnauditableExplanation(evt.data.helpText);
+    this._startView.setStartButtonEnabled(!evt.data.helpText);
   }
 
   /**
-   * @override
-   * @param {!SDK.ServiceWorkerManager} serviceWorkerManager
+   * @param {!Common.Event} evt
    */
-  modelRemoved(serviceWorkerManager) {
-    if (!this._manager || this._manager !== serviceWorkerManager)
-      return;
-
-    Common.EventTarget.removeEventListeners(this._serviceWorkerListeners);
-    this._manager = null;
-    this._serviceWorkerListeners = null;
-    this._refreshDialogUI();
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _hasActiveServiceWorker() {
-    if (!this._manager)
-      return false;
-
-    const mainTarget = SDK.targetManager.mainTarget();
-    if (!mainTarget)
-      return false;
-
-    const inspectedURL = mainTarget.inspectedURL().asParsedURL();
-    const inspectedOrigin = inspectedURL && inspectedURL.securityOrigin();
-    for (const registration of this._manager.registrations().values()) {
-      if (registration.securityOrigin !== inspectedOrigin)
-        continue;
-
-      for (const version of registration.versions.values()) {
-        if (version.controlledClients.length > 1)
-          return true;
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _hasAtLeastOneCategory() {
-    return Audits2.Audits2Panel.Presets.some(preset => preset.setting.get());
-  }
-
-  /**
-   * @return {?string}
-   */
-  _unauditablePageMessage() {
-    if (!this._manager)
-      return null;
-
-    const mainTarget = SDK.targetManager.mainTarget();
-    const inspectedURL = mainTarget && mainTarget.inspectedURL();
-    if (inspectedURL && !/^(http|chrome-extension)/.test(inspectedURL)) {
-      return Common.UIString(
-          'Can only audit HTTP/HTTPS pages and Chrome extensions. ' +
-          'Navigate to a different page to start an audit.');
-    }
-
-    // Audits don't work on most undockable targets (extension popup pages, remote debugging, etc).
-    // However, the tests run in a content shell which is not dockable yet audits just fine,
-    // so disable this check when under test.
-    if (!Host.isUnderTest() && !Runtime.queryParam('can_dock'))
-      return Common.UIString('Can only audit tabs. Navigate to this page in a separate tab to start an audit.');
-
-    return null;
-  }
-
-  _refreshDialogUI() {
-    if (!this._dialog)
-      return;
-
-    const hasActiveServiceWorker = this._hasActiveServiceWorker();
-    const hasAtLeastOneCategory = this._hasAtLeastOneCategory();
-    const unauditablePageMessage = this._unauditablePageMessage();
-    const isDisabled = hasActiveServiceWorker || !hasAtLeastOneCategory || !!unauditablePageMessage;
-
-    let helpText = '';
-    if (hasActiveServiceWorker) {
-      helpText = Common.UIString(
-          'Multiple tabs are being controlled by the same service worker. ' +
-          'Close your other tabs on the same origin to audit this page.');
-    } else if (!hasAtLeastOneCategory) {
-      helpText = Common.UIString('At least one category must be selected.');
-    } else if (unauditablePageMessage) {
-      helpText = unauditablePageMessage;
-    }
-
-    this._dialog.setHelpText(helpText);
-    this._dialog.setStartEnabled(!isDisabled);
+  _refreshStatusUI(evt) {
+    this._statusView.updateStatus(evt.data.message);
   }
 
   _refreshToolbarUI() {
@@ -148,7 +58,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
   _clearAll() {
     this._reportSelector.clearAll();
-    this._showLandingPage();
+    this._renderStartView();
     this._refreshToolbarUI();
   }
 
@@ -161,7 +71,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     this._newButton = new UI.ToolbarButton(Common.UIString('Perform an audit\u2026'), 'largeicon-add');
     toolbar.appendToolbarItem(this._newButton);
-    this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._showDialog.bind(this));
+    this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._renderStartView.bind(this));
 
     this._downloadButton = new UI.ToolbarButton(Common.UIString('Download report'), 'largeicon-download');
     toolbar.appendToolbarItem(this._downloadButton);
@@ -169,62 +79,71 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     toolbar.appendSeparator();
 
-    this._reportSelector = new Audits2.ReportSelector();
+    this._reportSelector = new Audits2.ReportSelector(() => this._renderStartView());
     toolbar.appendToolbarItem(this._reportSelector.comboBox());
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
     toolbar.appendToolbarItem(this._clearButton);
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clearAll.bind(this));
 
-    toolbar.appendSeparator();
+    this._refreshToolbarUI();
+  }
 
-    toolbar.appendText(ls`Emulation: `);
-    for (const runtimeSetting of Audits2.Audits2Panel.RuntimeSettings) {
-      const control = new UI.ToolbarSettingComboBox(runtimeSetting.options, runtimeSetting.setting);
-      control.element.title = runtimeSetting.description;
-      toolbar.appendToolbarItem(control);
+  _renderStartView() {
+    this._auditResultsElement.removeChildren();
+    this._statusView.hide();
+
+    this._reportSelector.selectNewAudit();
+    this.contentElement.classList.toggle('in-progress', false);
+
+    this._startView.show(this.contentElement);
+    this._startView.setUnauditableExplanation(this._unauditableExplanation);
+    this._startView.setStartButtonEnabled(!this._unauditableExplanation);
+    this._refreshToolbarUI();
+  }
+
+  /**
+   * @param {string} inspectedURL
+   */
+  _renderStatusView(inspectedURL) {
+    this.contentElement.classList.toggle('in-progress', true);
+    this._statusView.setInspectedURL(inspectedURL);
+    this._statusView.show(this.contentElement);
+  }
+
+  /**
+   * @param {!ReportRenderer.ReportJSON} lighthouseResult
+   */
+  _renderReport(lighthouseResult) {
+    this.contentElement.classList.toggle('in-progress', false);
+    this._startView.hideWidget();
+    this._statusView.hide();
+    this._auditResultsElement.removeChildren();
+    this._refreshToolbarUI();
+
+    const cachedRenderedReport = this._cachedRenderedReports.get(lighthouseResult);
+    if (cachedRenderedReport) {
+      this._auditResultsElement.appendChild(cachedRenderedReport);
+      return;
     }
 
-    this._refreshToolbarUI();
-  }
+    const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
-  _showLandingPage() {
-    if (this._reportSelector.hasCurrentSelection())
+    const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
+    const detailsRenderer = new Audits2.DetailsRenderer(dom);
+    const categoryRenderer = new Audits2.CategoryRenderer(dom, detailsRenderer);
+    categoryRenderer.setTraceArtifact(lighthouseResult);
+    const renderer = new Audits2.ReportRenderer(dom, categoryRenderer);
+
+    const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
+    const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
+    if (!templatesDOM)
       return;
 
-    this._auditResultsElement.removeChildren();
-    const landingPage = this._auditResultsElement.createChild('div', 'vbox audits2-landing-page');
-    const landingCenter = landingPage.createChild('div', 'vbox audits2-landing-center');
-    landingCenter.createChild('div', 'audits2-logo');
-    const text = landingCenter.createChild('div', 'audits2-landing-text');
-    text.createChild('span', 'audits2-landing-bold-text').textContent = Common.UIString('Audits');
-    text.createChild('span').textContent = Common.UIString(
-        ' help you identify and fix common problems that affect' +
-        ' your site\'s performance, accessibility, and user experience. ');
-    const link = text.createChild('span', 'link');
-    link.textContent = Common.UIString('Learn more');
-    link.addEventListener(
-        'click', () => InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/lighthouse/'));
+    renderer.setTemplateContext(templatesDOM);
+    renderer.renderReport(lighthouseResult, reportContainer);
 
-    const newButton = UI.createTextButton(
-        Common.UIString('Perform an audit\u2026'), this._showDialog.bind(this), '', true /* primary */);
-    landingCenter.appendChild(newButton);
-    this.setDefaultFocusedElement(newButton);
-    this._refreshToolbarUI();
-  }
-
-  _showDialog() {
-    this._dialog = new Audits2.Audits2Dialog(result => this._buildReportUI(result), this._protocolService);
-    this._dialog.render(this._auditResultsElement);
-    this._refreshDialogUI();
-  }
-
-  _hideDialog() {
-    if (!this._dialog)
-      return;
-
-    this._dialog.hide();
-    delete this._dialog;
+    this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
 
   /**
@@ -234,11 +153,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
     if (lighthouseResult === null)
       return;
 
-    const optionElement =
-        new Audits2.ReportSelector.Item(lighthouseResult, this._auditResultsElement, this._showLandingPage.bind(this));
+    const optionElement = new Audits2.ReportSelector.Item(
+        lighthouseResult, () => this._renderReport(lighthouseResult), this._renderStartView.bind(this));
     this._reportSelector.prepend(optionElement);
-    this._hideDialog();
     this._refreshToolbarUI();
+    this._renderReport(lighthouseResult);
   }
 
   /**
@@ -262,377 +181,96 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   /**
-   * @param {string} profile
+   * @param {string} report
    */
-  _loadedFromFile(profile) {
-    const data = JSON.parse(profile);
+  _loadedFromFile(report) {
+    const data = JSON.parse(report);
     if (!data['lighthouseVersion'])
       return;
     this._buildReportUI(/** @type {!ReportRenderer.ReportJSON} */ (data));
   }
-};
 
-/**
- * @override
- */
-Audits2.Audits2Panel.ReportRenderer = class extends ReportRenderer {
-  /**
-   * Provides empty element for left nav
-   * @override
-   * @returns {!DocumentFragment}
-   */
-  _renderReportNav() {
-    return createDocumentFragment();
-  }
+  async _startAudit() {
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Started);
 
-  /**
-   * @param {!ReportRenderer.ReportJSON} report
-   * @override
-   * @return {!DocumentFragment}
-   */
-  _renderReportHeader(report) {
-    return createDocumentFragment();
-  }
-};
+    try {
+      const inspectedURL = await this._controller.getInspectedURL({force: true});
+      const categoryIDs = this._controller.getCategoryIDs();
+      const flags = this._controller.getFlags();
 
-class ReportUIFeatures {
-  /**
-   * @param {!ReportRenderer.ReportJSON} report
-   */
-  initFeatures(report) {
-  }
-}
+      await this._setupEmulationAndProtocolConnection();
 
-/** @typedef {{type: string, setting: !Common.Setting, configID: string, title: string, description: string}} */
-Audits2.Audits2Panel.Preset;
+      this._renderStatusView(inspectedURL);
 
-/** @type {!Array.<!Audits2.Audits2Panel.Preset>} */
-Audits2.Audits2Panel.Presets = [
-  // configID maps to Lighthouse's Object.keys(config.categories)[0] value
-  {
-    setting: Common.settings.createSetting('audits2.cat_perf', true),
-    configID: 'performance',
-    title: 'Performance',
-    description: 'How long does this app take to show content and become usable'
-  },
-  {
-    setting: Common.settings.createSetting('audits2.cat_pwa', true),
-    configID: 'pwa',
-    title: 'Progressive Web App',
-    description: 'Does this page meet the standard of a Progressive Web App'
-  },
-  {
-    setting: Common.settings.createSetting('audits2.cat_best_practices', true),
-    configID: 'best-practices',
-    title: 'Best practices',
-    description: 'Does this page follow best practices for modern web development'
-  },
-  {
-    setting: Common.settings.createSetting('audits2.cat_a11y', true),
-    configID: 'accessibility',
-    title: 'Accessibility',
-    description: 'Is this page usable by people with disabilities or impairments'
-  },
-  {
-    setting: Common.settings.createSetting('audits2.cat_seo', true),
-    configID: 'seo',
-    title: 'SEO',
-    description: 'Is this page optimized for search engine results ranking'
-  },
-];
+      const lighthouseResult = await this._protocolService.startLighthouse(inspectedURL, categoryIDs, flags);
 
-/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: !Array}} */
-Audits2.Audits2Panel.RuntimeSetting;
+      if (lighthouseResult && lighthouseResult.fatal) {
+        const error = new Error(lighthouseResult.message);
+        error.stack = lighthouseResult.stack;
+        throw error;
+      }
 
-/** @type {!Array.<!Audits2.Audits2Panel.RuntimeSetting>} */
-Audits2.Audits2Panel.RuntimeSettings = [
-  {
-    setting: Common.settings.createSetting('audits2.device_type', 'mobile'),
-    description: Common.UIString('Apply mobile emulation during auditing'),
-    setFlags: (flags, value) => {
-      flags.disableDeviceEmulation = value === 'desktop';
-    },
-    options: [
-      {label: Common.UIString('Mobile'), value: 'mobile'},
-      {label: Common.UIString('Desktop'), value: 'desktop'},
-    ],
-  },
-  {
-    setting: Common.settings.createSetting('audits2.throttling', 'default'),
-    description: Common.UIString('Apply network and CPU throttling during performance auditing'),
-    setFlags: (flags, value) => {
-      flags.disableNetworkThrottling = value === 'off';
-      flags.disableCpuThrottling = value === 'off';
-    },
-    options: [
-      {label: Common.UIString('3G w/ CPU slowdown'), value: 'default'},
-      {label: Common.UIString('No throttling'), value: 'off'},
-    ],
-  },
-  {
-    setting: Common.settings.createSetting('audits2.storage_reset', 'on'),
-    description: Common.UIString('Reset storage (localStorage, IndexedDB, etc) to a clean baseline before auditing'),
-    setFlags: (flags, value) => {
-      flags.disableStorageReset = value === 'off';
-    },
-    options: [
-      {label: Common.UIString('Clear storage'), value: 'on'},
-      {label: Common.UIString('Preserve storage'), value: 'off'},
-    ],
-  },
-];
+      if (!lighthouseResult)
+        throw new Error('Auditing failed to produce a result');
 
-Audits2.ReportSelector = class {
-  constructor() {
-    this._emptyItem = null;
-    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits2-report');
-    this._comboBox.setMaxWidth(180);
-    this._comboBox.setMinWidth(140);
-    this._itemByOptionElement = new Map();
-    this._setPlaceholderState();
-  }
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Finished);
 
-  _setPlaceholderState() {
-    this._comboBox.setEnabled(false);
-    this._emptyItem = createElement('option');
-    this._emptyItem.label = Common.UIString('(no reports)');
-    this._comboBox.selectElement().appendChild(this._emptyItem);
-    this._comboBox.select(this._emptyItem);
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _handleChange(event) {
-    const item = this._selectedItem();
-    if (item)
-      item.select();
-  }
-
-  /**
-   * @return {!Audits2.ReportSelector.Item}
-   */
-  _selectedItem() {
-    const option = this._comboBox.selectedOption();
-    return this._itemByOptionElement.get(option);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasCurrentSelection() {
-    return !!this._selectedItem();
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasItems() {
-    return this._itemByOptionElement.size > 0;
-  }
-
-  /**
-   * @return {!UI.ToolbarComboBox}
-   */
-  comboBox() {
-    return this._comboBox;
-  }
-
-  /**
-   * @param {!Audits2.ReportSelector.Item} item
-   */
-  prepend(item) {
-    if (this._emptyItem) {
-      this._emptyItem.remove();
-      delete this._emptyItem;
-    }
-
-    const optionEl = item.optionElement();
-    const selectEl = this._comboBox.selectElement();
-
-    this._itemByOptionElement.set(optionEl, item);
-    selectEl.insertBefore(optionEl, selectEl.firstElementChild);
-    this._comboBox.setEnabled(true);
-    this._comboBox.select(optionEl);
-    item.select();
-  }
-
-  clearAll() {
-    for (const elem of this._comboBox.options()) {
-      this._itemByOptionElement.get(elem).delete();
-      this._itemByOptionElement.delete(elem);
-    }
-
-    this._setPlaceholderState();
-  }
-
-  downloadSelected() {
-    const item = this._selectedItem();
-    item.download();
-  }
-};
-
-Audits2.ReportSelector.Item = class {
-  /**
-   * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {!Element} resultsView
-   * @param {function()} showLandingCallback
-   */
-  constructor(lighthouseResult, resultsView, showLandingCallback) {
-    this._lighthouseResult = lighthouseResult;
-    this._resultsView = resultsView;
-    this._showLandingCallback = showLandingCallback;
-    /** @type {?Element} */
-    this._reportContainer = null;
-
-
-    const url = new Common.ParsedURL(lighthouseResult.url);
-    const timestamp = lighthouseResult.generatedTime;
-    this._element = createElement('option');
-    this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
-  }
-
-  select() {
-    this._renderReport();
-  }
-
-  /**
-   * @return {!Element}
-   */
-  optionElement() {
-    return this._element;
-  }
-
-  delete() {
-    if (this._element)
-      this._element.remove();
-    this._showLandingCallback();
-  }
-
-  download() {
-    const url = new Common.ParsedURL(this._lighthouseResult.url).domain();
-    const timestamp = this._lighthouseResult.generatedTime;
-    const fileName = `${url}-${new Date(timestamp).toISO8601Compact()}.json`;
-    Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
-  }
-
-  _renderReport() {
-    this._resultsView.removeChildren();
-    if (this._reportContainer) {
-      this._resultsView.appendChild(this._reportContainer);
-      return;
-    }
-
-    this._reportContainer = this._resultsView.createChild('div', 'lh-vars lh-root lh-devtools');
-
-    const dom = new DOM(/** @type {!Document} */ (this._resultsView.ownerDocument));
-    const detailsRenderer = new Audits2.DetailsRenderer(dom);
-    const categoryRenderer = new Audits2.CategoryRenderer(dom, detailsRenderer);
-    categoryRenderer.setTraceArtifact(this._lighthouseResult);
-    const renderer = new Audits2.Audits2Panel.ReportRenderer(dom, categoryRenderer);
-
-    const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
-    const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
-    if (!templatesDOM)
-      return;
-
-    renderer.setTemplateContext(templatesDOM);
-    renderer.renderReport(this._lighthouseResult, this._reportContainer);
-  }
-};
-
-Audits2.CategoryRenderer = class extends CategoryRenderer {
-  /**
-   * @override
-   * @param {!DOM} dom
-   * @param {!DetailsRenderer} detailsRenderer
-   */
-  constructor(dom, detailsRenderer) {
-    super(dom, detailsRenderer);
-    this._defaultPassTrace = null;
-  }
-
-  /**
-   * @param {!ReportRenderer.ReportJSON} lhr
-   */
-  setTraceArtifact(lhr) {
-    if (!lhr.artifacts || !lhr.artifacts.traces || !lhr.artifacts.traces.defaultPass)
-      return;
-    this._defaultPassTrace = lhr.artifacts.traces.defaultPass;
-  }
-
-  /**
-   * @override
-   * @param {!ReportRenderer.CategoryJSON} category
-   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups
-   * @return {!Element}
-   */
-  renderPerformanceCategory(category, groups) {
-    const defaultPassTrace = this._defaultPassTrace;
-    const element = super.renderPerformanceCategory(category, groups);
-    if (!defaultPassTrace)
-      return element;
-
-    const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
-    element.querySelector('.lh-audit-group').prepend(timelineButton);
-    return element;
-
-    async function onViewTraceClick() {
-      await UI.inspectorView.showPanel('timeline');
-      Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
+      await this._resetEmulationAndProtocolConnection();
+      this._buildReportUI(lighthouseResult);
+    } catch (err) {
+      if (err instanceof Error)
+        this._statusView.renderBugReport(err);
     }
   }
-};
 
-Audits2.DetailsRenderer = class extends DetailsRenderer {
-  /**
-   * @param {!DOM} dom
-   */
-  constructor(dom) {
-    super(dom);
-    this._onLoadPromise = null;
+  async _cancelAudit() {
+    this._statusView.updateStatus(ls`Cancelling`);
+    await this._resetEmulationAndProtocolConnection();
+    this._renderStartView();
   }
 
-  /**
-   * @override
-   * @param {!DetailsRenderer.NodeDetailsJSON} item
-   * @return {!Element}
-   */
-  renderNode(item) {
-    const element = super.renderNode(item);
-    this._replaceWithDeferredNodeBlock(element, item);
-    return element;
-  }
+  async _setupEmulationAndProtocolConnection() {
+    const flags = this._controller.getFlags();
 
-  /**
-   * @param {!Element} origElement
-   * @param {!DetailsRenderer.NodeDetailsJSON} detailsItem
-   */
-  async _replaceWithDeferredNodeBlock(origElement, detailsItem) {
-    const mainTarget = SDK.targetManager.mainTarget();
-    if (!this._onLoadPromise) {
-      const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
-      this._onLoadPromise = resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
+    const emulationModel = self.singleton(Emulation.DeviceModeModel);
+    this._emulationEnabledBefore = emulationModel.enabledSetting().get();
+    this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
+    emulationModel.toolbarControlsEnabledSetting().set(false);
+
+    if (flags.disableDeviceEmulation) {
+      emulationModel.enabledSetting().set(false);
+      emulationModel.deviceOutlineSetting().set(false);
+      emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);
+    } else {
+      emulationModel.enabledSetting().set(true);
+      emulationModel.deviceOutlineSetting().set(true);
+
+      for (const device of Emulation.EmulatedDevicesList.instance().standard()) {
+        if (device.title === 'Nexus 5X')
+          emulationModel.emulate(Emulation.DeviceModeModel.Type.Device, device, device.modes[0], 1);
+      }
     }
 
-    await this._onLoadPromise;
+    await this._protocolService.attach();
+    this._isLHAttached = true;
+  }
 
-    const domModel = mainTarget.model(SDK.DOMModel);
-    if (!detailsItem.path)
+  async _resetEmulationAndProtocolConnection() {
+    if (!this._isLHAttached)
       return;
 
-    const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
+    this._isLHAttached = false;
+    await this._protocolService.detach();
 
-    if (!nodeId)
-      return;
-    const node = domModel.nodeForId(nodeId);
-    if (!node)
-      return;
+    const emulationModel = self.singleton(Emulation.DeviceModeModel);
+    emulationModel.enabledSetting().set(this._emulationEnabledBefore);
+    emulationModel.deviceOutlineSetting().set(this._emulationOutlineEnabledBefore);
+    emulationModel.toolbarControlsEnabledSetting().set(true);
+    Emulation.InspectedPagePlaceholder.instance().update(true);
 
-    const element =
-        await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));
-    origElement.title = '';
-    origElement.textContent = '';
-    origElement.appendChild(element);
+    const resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);
+    // reload to reset the page state
+    const inspectedURL = await this._controller.getInspectedURL();
+    await resourceTreeModel.navigate(inspectedURL);
   }
 };

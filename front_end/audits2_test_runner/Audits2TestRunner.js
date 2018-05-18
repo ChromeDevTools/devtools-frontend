@@ -17,6 +17,13 @@ Audits2TestRunner._panel = function() {
 /**
  * @return {?Element}
  */
+Audits2TestRunner.getContainerElement = function() {
+  return Audits2TestRunner._panel().contentElement;
+};
+
+/**
+ * @return {?Element}
+ */
 Audits2TestRunner.getResultsElement = function() {
   return Audits2TestRunner._panel()._auditResultsElement;
 };
@@ -25,14 +32,14 @@ Audits2TestRunner.getResultsElement = function() {
  * @return {?Element}
  */
 Audits2TestRunner.getDialogElement = function() {
-  return Audits2TestRunner._panel()._dialog._dialog.contentElement.shadowRoot.querySelector('.audits2-view');
+  return Audits2TestRunner._panel()._statusView._dialog.contentElement.shadowRoot.querySelector('.audits2-view');
 };
 
 /**
  * @return {?Element}
  */
 Audits2TestRunner.getRunButton = function() {
-  const dialog = Audits2TestRunner.getDialogElement();
+  const dialog = Audits2TestRunner.getContainerElement();
   return dialog && dialog.querySelectorAll('button')[0];
 };
 
@@ -41,19 +48,18 @@ Audits2TestRunner.getRunButton = function() {
  */
 Audits2TestRunner.getCancelButton = function() {
   const dialog = Audits2TestRunner.getDialogElement();
-  return dialog && dialog.querySelectorAll('button')[1];
+  return dialog && dialog.querySelectorAll('button')[0];
 };
 
-Audits2TestRunner.openDialog = function() {
-  const resultsElement = Audits2TestRunner.getResultsElement();
-  resultsElement.querySelector('button').click();
+Audits2TestRunner.openStartAudit = function() {
+  Audits2TestRunner._panel()._renderStartView();
 };
 
 /**
  * @param {function(string)} onMessage
  */
 Audits2TestRunner.addStatusListener = function(onMessage) {
-  TestRunner.addSniffer(Audits2.Audits2Dialog.prototype, '_updateStatus', onMessage, true);
+  TestRunner.addSniffer(Audits2.StatusView.prototype, 'updateStatus', onMessage, true);
 };
 
 /**
@@ -63,6 +69,10 @@ Audits2TestRunner.waitForResults = function() {
   return new Promise(resolve => {
     TestRunner.addSniffer(Audits2.Audits2Panel.prototype, '_buildReportUI', resolve);
   });
+};
+
+Audits2TestRunner.forcePageAuditabilityCheck = function() {
+  Audits2TestRunner._panel()._controller.recomputePageAuditability();
 };
 
 /**
@@ -91,23 +101,18 @@ Audits2TestRunner._buttonStateLabel = function(button) {
   return `${button.textContent}: ${enabledLabel} ${hiddenLabel}`;
 };
 
-Audits2TestRunner.dumpDialogState = function() {
-  TestRunner.addResult('\n========== Audits2 Dialog State ==========');
-  const dialog = Audits2TestRunner._panel()._dialog && Audits2TestRunner._panel()._dialog._dialog;
-  TestRunner.addResult(dialog ? 'Dialog is visible\n' : 'No dialog');
-  if (!dialog)
-    return;
+Audits2TestRunner.dumpStartAuditState = function() {
+  TestRunner.addResult('\n========== Audits2 Start Audit State ==========');
 
-  const dialogElement = Audits2TestRunner.getDialogElement();
-  const checkboxes = [...dialogElement.querySelectorAll('.checkbox')];
+  const containerElement = Audits2TestRunner.getContainerElement();
+  const checkboxes = [...containerElement.querySelectorAll('.checkbox')];
   checkboxes.forEach(element => {
     TestRunner.addResult(Audits2TestRunner._checkboxStateLabel(element));
   });
 
-  const helpText = dialogElement.querySelector('.audits2-dialog-help-text');
+  const helpText = containerElement.querySelector('.audits2-help-text');
   if (!helpText.classList.contains('hidden'))
     TestRunner.addResult(`Help text: ${helpText.textContent}`);
 
   TestRunner.addResult(Audits2TestRunner._buttonStateLabel(Audits2TestRunner.getRunButton()));
-  TestRunner.addResult(Audits2TestRunner._buttonStateLabel(Audits2TestRunner.getCancelButton()) + '\n');
 };

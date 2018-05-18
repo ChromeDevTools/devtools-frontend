@@ -2,53 +2,98 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits2.Audits2StatusView = class {
-  constructor() {
+Audits2.StatusView = class {
+  /**
+   * @param {!Audits2.AuditController} controller
+   */
+  constructor(controller) {
+    this._controller = controller;
+
     this._statusView = null;
+    this._statusHeader = null;
     this._progressWrapper = null;
     this._progressBar = null;
     this._statusText = null;
 
+    this._inspectedURL = '';
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits2.Audits2StatusView.FastFacts.slice();
+    this._fastFactsQueued = Audits2.StatusView.FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
+
+    this._dialog = new UI.Dialog();
+    this._dialog.setOutsideClickCallback(event => event.consume(true));
+    this._render();
   }
 
-  /**
-   * @param {!Element} parentElement
-   */
-  render(parentElement) {
-    this.reset();
+  _render() {
+    const dialogRoot = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits2/audits2Dialog.css');
+    const auditsViewElement = dialogRoot.createChild('div', 'audits2-view vbox');
 
-    this._statusView = parentElement.createChild('div', 'audits2-status vbox hidden');
-    this._progressWrapper = this._statusView.createChild('div', 'audits2-progress-wrapper');
-    this._progressBar = this._progressWrapper.createChild('div', 'audits2-progress-bar');
-    this._statusText = this._statusView.createChild('div', 'audits2-status-text');
+    const cancelButton = UI.createTextButton(ls`Cancel`, this._cancel.bind(this));
+    const fragment = UI.Fragment.build`
+      <div class="audits2-view vbox">
+        <h2 $="status-header">Auditing your web page\u2026</h2>
+        <div class="audits2-status vbox" $="status-view">
+          <div class="audits2-progress-wrapper" $="progress-wrapper">
+            <div class="audits2-progress-bar" $="progress-bar"></div>
+          </div>
+          <div class="audits2-status-text" $="status-text"></div>
+        </div>
+        ${cancelButton}
+      </div>
+    `;
 
-    this.updateStatus(Common.UIString('Loading...'));
+    auditsViewElement.appendChild(fragment.element());
+    auditsViewElement.tabIndex = 0;
+
+    this._statusView = fragment.$('status-view');
+    this._statusHeader = fragment.$('status-header');
+    this._progressWrapper = fragment.$('progress-wrapper');
+    this._progressBar = fragment.$('progress-bar');
+    this._statusText = fragment.$('status-text');
+
+    this._dialog.setDefaultFocusedElement(cancelButton);
+    this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);
+    this._dialog.setMaxContentSize(new UI.Size(500, 400));
   }
 
-  reset() {
+  _reset() {
     this._resetProgressBarClasses();
     clearTimeout(this._scheduledFastFactTimeout);
 
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits2.Audits2StatusView.FastFacts.slice();
+    this._fastFactsQueued = Audits2.StatusView.FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
   }
 
   /**
-   * @param {boolean} isVisible
+   * @param {!Element} dialogRenderElement
    */
-  setVisible(isVisible) {
-    this._statusView.classList.toggle('hidden', !isVisible);
+  show(dialogRenderElement) {
+    this._reset();
+    this.updateStatus(ls`Loading\u2026`);
 
-    if (!isVisible)
-      clearTimeout(this._scheduledFastFactTimeout);
+    const parsedURL = this._inspectedURL.asParsedURL();
+    const pageHost = parsedURL && parsedURL.host;
+    const statusHeader = pageHost ? ls`Auditing ${pageHost}` : ls`Auditing your web page`;
+    this._statusHeader.textContent = `${statusHeader}\u2026`;
+    this._dialog.show(dialogRenderElement);
+  }
+
+  hide() {
+    if (this._dialog.isShowing())
+      this._dialog.hide();
+  }
+
+  /**
+   * @param {string=} url
+   */
+  setInspectedURL(url = '') {
+    this._inspectedURL = url;
   }
 
   /**
@@ -77,19 +122,21 @@ Audits2.Audits2StatusView = class {
     }
   }
 
+  _cancel() {
+    this._controller.dispatchEventToListeners(Audits2.Events.RequestAuditCancel);
+  }
+
   /**
-   * @param {!Audits2.Audits2StatusView.StatusPhases} phase
+   * @param {!Audits2.StatusView.StatusPhases} phase
    * @return {string}
    */
   _getMessageForPhase(phase) {
     if (phase.message)
       return Common.UIString(phase.message);
 
-    const deviceType =
-        Audits2.Audits2Panel.RuntimeSettings.find(item => item.setting.name === 'audits2.device_type').setting.get();
-    const throttling =
-        Audits2.Audits2Panel.RuntimeSettings.find(item => item.setting.name === 'audits2.throttling').setting.get();
-    const match = Audits2.Audits2StatusView.LoadingMessages.find(item => {
+    const deviceType = Audits2.RuntimeSettings.find(item => item.setting.name === 'audits2.device_type').setting.get();
+    const throttling = Audits2.RuntimeSettings.find(item => item.setting.name === 'audits2.throttling').setting.get();
+    const match = Audits2.StatusView.LoadingMessages.find(item => {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
@@ -98,10 +145,10 @@ Audits2.Audits2StatusView = class {
 
   /**
    * @param {string} message
-   * @return {?Audits2.Audits2StatusView.StatusPhases}
+   * @return {?Audits2.StatusView.StatusPhases}
    */
   _getPhaseForMessage(message) {
-    return Audits2.Audits2StatusView.StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
+    return Audits2.StatusView.StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
   }
 
   _resetProgressBarClasses() {
@@ -125,7 +172,7 @@ Audits2.Audits2StatusView = class {
 
   _updateFastFactIfNecessary() {
     const now = performance.now();
-    if (now - this._textChangedAt < Audits2.Audits2StatusView.fastFactRotationInterval)
+    if (now - this._textChangedAt < Audits2.StatusView.fastFactRotationInterval)
       return;
     if (!this._fastFactsQueued.length)
       return;
@@ -153,7 +200,7 @@ Audits2.Audits2StatusView = class {
       clearTimeout(this._scheduledTextChangeTimeout);
 
     const msSinceLastChange = performance.now() - this._textChangedAt;
-    const msToTextChange = Audits2.Audits2StatusView.minimumTextVisibilityDuration - msSinceLastChange;
+    const msToTextChange = Audits2.StatusView.minimumTextVisibilityDuration - msSinceLastChange;
 
     this._scheduledTextChangeTimeout = setTimeout(() => {
       this._commitTextChange(text);
@@ -162,9 +209,8 @@ Audits2.Audits2StatusView = class {
 
   /**
    * @param {!Error} err
-   * @param {string} auditURL
    */
-  renderBugReport(err, auditURL) {
+  renderBugReport(err) {
     console.error(err);
     clearTimeout(this._scheduledFastFactTimeout);
     clearTimeout(this._scheduledTextChangeTimeout);
@@ -174,13 +220,13 @@ Audits2.Audits2StatusView = class {
     this._commitTextChange('');
     this._statusText.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
     this._statusText.createChild('em').createTextChild(err.message);
-    if (Audits2.Audits2StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
+    if (Audits2.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or ' +
           'extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
     } else {
-      this._renderBugReportLink(err, auditURL);
+      this._renderBugReportLink(err, this._inspectedURL);
     }
   }
 
@@ -210,7 +256,7 @@ ${err.stack}
 
 
 /** @type {!Array.<!RegExp>} */
-Audits2.Audits2StatusView.KnownBugPatterns = [
+Audits2.StatusView.KnownBugPatterns = [
   /PARSING_PROBLEM/,
   /DOCUMENT_REQUEST/,
   /READ_FAILED/,
@@ -220,7 +266,7 @@ Audits2.Audits2StatusView.KnownBugPatterns = [
 ];
 
 /** @typedef {{message: string, progressBarClass: string, order: number}} */
-Audits2.Audits2StatusView.StatusPhases = [
+Audits2.StatusView.StatusPhases = [
   {
     id: 'loading',
     progressBarClass: 'loading',
@@ -244,7 +290,7 @@ Audits2.Audits2StatusView.StatusPhases = [
 ];
 
 /** @typedef {{message: string, deviceType: string, throttling: string}} */
-Audits2.Audits2StatusView.LoadingMessages = [
+Audits2.StatusView.LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
@@ -267,7 +313,7 @@ Audits2.Audits2StatusView.LoadingMessages = [
   },
 ];
 
-Audits2.Audits2StatusView.FastFacts = [
+Audits2.StatusView.FastFacts = [
   '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].',
   'Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]',
   'BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]',
@@ -287,6 +333,6 @@ Audits2.Audits2StatusView.FastFacts = [
 ];
 
 /** @const */
-Audits2.Audits2StatusView.fastFactRotationInterval = 6000;
+Audits2.StatusView.fastFactRotationInterval = 6000;
 /** @const */
-Audits2.Audits2StatusView.minimumTextVisibilityDuration = 3000;
+Audits2.StatusView.minimumTextVisibilityDuration = 3000;

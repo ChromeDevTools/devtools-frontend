@@ -9,44 +9,6 @@
     border-bottom: var(--divider-border);
 }
 
-.audits2-logo {
-    width: 210px;
-    height: 200px;
-    flex-shrink: 0;
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-top: 10px;
-    background-image: url(Images/audits_logo.svg);
-}
-
-.audits2-landing-page {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-}
-
-
-.audits2-landing-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    max-width: 400px;
-    margin: 50px;
-}
-
-.audits2-landing-center > * {
-    flex-shrink: 0;
-}
-
-.audits2-landing-text {
-    color: #666;
-}
-
-.audits2-landing-bold-text {
-    font-weight: bold;
-}
-
 .lh-root {
   --report-menu-width: 0;
   user-select: initial;
@@ -80,10 +42,6 @@
 button.view-trace {
   position: absolute;
   right: 0;
-}
-
-.audits2-landing-center button {
-    margin-top: 20px;
 }
 
 .audits2-results-container {

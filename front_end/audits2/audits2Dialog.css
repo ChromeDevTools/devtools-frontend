@@ -13,37 +13,17 @@
     max-width: 500px;
 }
 
-.launcher-container {
-  width: 100%;
-}
-
-.audits2-view .dialog-close-button {
-    position: absolute;
-    top: 0px;
-    right: -14px;
-}
-
-header {
+.audits2-view h2 {
     color: #666;
     font-weight: bold;
     font-size: 14px;
     flex: none;
-}
-
-.audits2-form {
-  flex: auto;
-  overflow-y: auto;
-}
-
-.audits2-form label {
-    display: flex;
-}
-
-.audits2-form label div {
-    display: inline;
+    width: 100%;
+    text-align: left;
 }
 
 .audits2-status {
+    width: 100%;
     flex: auto;
     align-items: center;
     color: #666;
@@ -118,26 +98,4 @@ header {
 .audits2-report-error {
     display: block;
     margin-top: 5px;
-}
-
-button {
-    margin: 15px 10px;
-}
-
-.audits2-launcher-row {
-    padding: 6px;
-}
-
-.audits2-launcher-description {
-    padding: 3px 0 0 22px;
-}
-
-.audits2-dialog-help-text {
-    color: red;
-    margin-top: 10px;
-}
-
-.audits2-dialog-buttons {
-    justify-content: center;
-    min-height: 40px;
 }

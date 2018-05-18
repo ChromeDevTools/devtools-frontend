@@ -497,7 +497,7 @@ TimelineModel.TimelineModel = class {
    */
   _processThreadEvents(tracingModel, ranges, thread, isMainThread, isWorker, forMainFrame, url) {
     const track = new TimelineModel.TimelineModel.Track();
-    track.name = thread.name();
+    track.name = thread.name() || ls`Thread ${thread.id()}`;
     track.type = TimelineModel.TimelineModel.TrackType.Other;
     track.thread = thread;
     if (isMainThread) {

@@ -397,6 +397,10 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     const blackboxingEnabled = !isExtension && Runtime.experiments.isEnabled('blackboxJSFramesOnTimeline');
     let maxStackDepth = 0;
     let group = null;
+    if (track && track.type === TimelineModel.TimelineModel.TrackType.MainThread) {
+      group = this._appendHeader(title, style, selectable);
+      group._track = track;
+    }
     const markerEventsFilter = Timeline.TimelineUIUtils.paintEventsFilter();
     for (let i = 0; i < events.length; ++i) {
       const e = events[i];

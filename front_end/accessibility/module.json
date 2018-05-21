@@ -18,11 +18,11 @@
         "AccessibilityStrings.js",
         "ARIAAttributesView.js",
         "ARIAMetadata.js",
-        "ARIAConfig.js",
+        "ARIAProperties.js",
         "AXBreadcrumbsPane.js"
     ],
     "skip_compilation": [
-        "ARIAConfig.js"
+        "ARIAProperties.js"
     ],
     "resources": [
         "accessibilityNode.css",

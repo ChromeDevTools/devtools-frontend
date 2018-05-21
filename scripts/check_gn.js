@@ -71,7 +71,7 @@ function checkNonAutostartNonRemoteModules() {
  */
 function checkAllDevToolsFiles() {
   const errors = [];
-  const excludedFiles = ['InspectorBackendCommands.js', 'SupportedCSSProperties.js'];
+  const excludedFiles = ['InspectorBackendCommands.js', 'SupportedCSSProperties.js', 'ARIAProperties.js'];
   const gnVariable = 'all_devtools_files';
   const lines = selectGNLines(`${gnVariable} = [`, ']');
   if (!lines.length) {

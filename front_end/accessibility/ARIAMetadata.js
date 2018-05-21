@@ -23,15 +23,14 @@ Accessibility.ARIAMetadata = class {
     const attributes = config['attributes'];
 
     const booleanEnum = ['true', 'false'];
-    for (const name in attributes) {
-      const attributeConfig = attributes[name];
+    for (const attributeConfig of attributes) {
       if (attributeConfig.type === 'boolean')
         attributeConfig.enum = booleanEnum;
-      this._attributes.set(name, new Accessibility.ARIAMetadata.Attribute(attributeConfig));
+      this._attributes.set(attributeConfig.name, new Accessibility.ARIAMetadata.Attribute(attributeConfig));
     }
 
     /** @type {!Array<string>} */
-    this._roleNames = Object.keys(config['roles']);
+    this._roleNames = config['roles'].map(roleConfig => roleConfig.name);
   }
 
   /**

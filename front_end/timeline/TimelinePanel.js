@@ -498,7 +498,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._setState(Timeline.TimelinePanel.State.StopPending);
     this._performanceModel = await this._controller.stopRecording();
     this._setUIControlsEnabled(true);
-    this._controller.dispose();
     this._controller = null;
   }
 

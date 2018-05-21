@@ -79,9 +79,8 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
    * @return {!Promise<!UI.Widget>}
    */
   async createPreview() {
-    const signedExchangeInfo = this.request.signedExchangeInfo();
-    if (signedExchangeInfo)
-      return new Network.SignedExchangeInfoView(signedExchangeInfo);
+    if (this.request.signedExchangeInfo())
+      return new Network.SignedExchangeInfoView(this.request);
 
     const htmlErrorPreview = await this._htmlPreview();
     if (htmlErrorPreview)

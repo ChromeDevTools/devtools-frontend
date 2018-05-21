@@ -59,6 +59,18 @@
     margin-top: 1px;
 }
 
+.tree-outline .header-toggle {
+    display: inline;
+    margin-left: 30px;
+    font-weight: normal;
+    color: rgb(45%, 45%, 45%);
+}
+
+.tree-outline .header-toggle:hover {
+    color: rgb(20%, 20%, 45%);
+    cursor: pointer;
+}
+
 .tree-outline .error-log {
     color: red;
     display: inline-block;

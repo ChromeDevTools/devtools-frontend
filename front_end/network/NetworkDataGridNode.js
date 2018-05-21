@@ -932,6 +932,11 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         cell.appendChild(createTextNode(Common.UIString('Preload')));
         break;
 
+      case SDK.NetworkRequest.InitiatorType.SignedExchange:
+        cell.appendChild(Components.Linkifier.linkifyURL(initiator.url));
+        this._appendSubtitle(cell, Common.UIString('signed-exchange'));
+        break;
+
       default:
         cell.title = Common.UIString('Other');
         cell.classList.add('network-dim-cell');
@@ -947,7 +952,7 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       this._setTextAndTitle(cell, Common.UIString('(from ServiceWorker)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo()) {
-      this._setTextAndTitle(cell, Common.UIString('(from SignedExchange)'));
+      this._setTextAndTitle(cell, Common.UIString('(from signed-exchange)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       if (this._request.cachedInMemory())

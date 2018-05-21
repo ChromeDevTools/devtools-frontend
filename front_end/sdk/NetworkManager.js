@@ -786,6 +786,7 @@ SDK.NetworkDispatcher = class {
         requestId, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, redirectURL,
         originalNetworkRequest.documentURL, originalNetworkRequest.initiator());
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
+    originalNetworkRequest.setRedirectDestination(newNetworkRequest);
     return newNetworkRequest;
   }
 

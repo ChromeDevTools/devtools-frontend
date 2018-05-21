@@ -53,6 +53,8 @@ SDK.NetworkRequest = class extends Common.Object {
     this._initiator = initiator;
     /** @type {?SDK.NetworkRequest} */
     this._redirectSource = null;
+    /** @type {?SDK.NetworkRequest} */
+    this._redirectDestination = null;
     this._issueTime = -1;
     this._startTime = -1;
     this._endTime = -1;
@@ -623,6 +625,20 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
+   * @return {?SDK.NetworkRequest}
+   */
+  redirectDestination() {
+    return this._redirectDestination;
+  }
+
+  /**
+   * @param {?SDK.NetworkRequest} redirectDestination
+   */
+  setRedirectDestination(redirectDestination) {
+    this._redirectDestination = redirectDestination;
+  }
+
+  /**
    * @return {!Array.<!SDK.NetworkRequest.NameValue>}
    */
   requestHeaders() {
@@ -1167,7 +1183,8 @@ SDK.NetworkRequest.InitiatorType = {
   Parser: 'parser',
   Redirect: 'redirect',
   Script: 'script',
-  Preload: 'preload'
+  Preload: 'preload',
+  SignedExchange: 'signedExchange'
 };
 
 /** @typedef {!{name: string, value: string}} */

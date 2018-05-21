@@ -396,6 +396,9 @@ Network.RequestHeadersView = class extends UI.VBox {
       if (this._request.fetchedViaServiceWorker) {
         statusText += ' ' + Common.UIString('(from ServiceWorker)');
         statusTextElement.classList.add('status-from-cache');
+      } else if (this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo()) {
+        statusText += ' ' + Common.UIString('(from signed-exchange)');
+        statusTextElement.classList.add('status-from-cache');
       } else if (this._request.cached()) {
         if (this._request.cachedInMemory())
           statusText += ' ' + Common.UIString('(from memory cache)');

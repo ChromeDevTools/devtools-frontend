@@ -209,6 +209,9 @@ BrowserSDK.NetworkLog = class extends Common.Object {
           initiatorStack = initiator.stack || null;
       } else if (initiator.type === Protocol.Network.InitiatorType.Preload) {
         type = SDK.NetworkRequest.InitiatorType.Preload;
+      } else if (initiator.type === Protocol.Network.InitiatorType.SignedExchange) {
+        type = SDK.NetworkRequest.InitiatorType.SignedExchange;
+        url = initiator.url;
       }
     }
 

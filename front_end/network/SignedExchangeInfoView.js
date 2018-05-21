@@ -4,10 +4,13 @@
 
 Network.SignedExchangeInfoView = class extends UI.VBox {
   /**
-   * @param {!Protocol.Network.SignedExchangeInfo} signedExchangeInfo
+   * @param {!SDK.NetworkRequest} request
    */
-  constructor(signedExchangeInfo) {
+  constructor(request) {
     super();
+    const signedExchangeInfo = request.signedExchangeInfo();
+    console.assert(signedExchangeInfo);
+
     this.registerRequiredCSS('network/signedExchangeInfoView.css');
     this.element.classList.add('signed-exchange-info-view');
 
@@ -30,8 +33,21 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
     }
     if (signedExchangeInfo.header) {
       const header = signedExchangeInfo.header;
-      const headerCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Signed HTTP exchange'));
-      headerCategory.createLeaf(this._formatHeader(Common.UIString('Request URL'), header.requestUrl));
+      const titleElement = createDocumentFragment();
+      titleElement.createChild('div', 'header-name').textContent = Common.UIString('Signed HTTP exchange');
+      const learnMoreNode =
+          UI.XLink.create('https://github.com/WICG/webpackage', Common.UIString('Learn\xa0more'), 'header-toggle');
+      titleElement.appendChild(learnMoreNode);
+
+      const headerCategory = new Network.SignedExchangeInfoView.Category(root, titleElement);
+      const redirectDestination = request.redirectDestination();
+      const requestURLElement = this._formatHeader(Common.UIString('Request URL'), header.requestUrl);
+      if (redirectDestination) {
+        const viewRequestLink = Components.Linkifier.linkifyRevealable(redirectDestination, 'View request');
+        viewRequestLink.classList.add('header-toggle');
+        requestURLElement.appendChild(viewRequestLink);
+      }
+      headerCategory.createLeaf(requestURLElement);
       headerCategory.createLeaf(this._formatHeader(Common.UIString('Request method'), header.requestMethod));
       headerCategory.createLeaf(this._formatHeader(Common.UIString('Response code'), header.responseCode + ''));
 
@@ -90,7 +106,7 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
 Network.SignedExchangeInfoView.Category = class extends UI.TreeElement {
   /**
    * @param {!UI.TreeOutline} root
-   * @param {string} title
+   * @param {(string|!Node)=} title
    */
   constructor(root, title) {
     super(title, true);

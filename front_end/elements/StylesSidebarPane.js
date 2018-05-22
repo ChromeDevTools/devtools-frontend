@@ -993,7 +993,7 @@ Elements.StylePropertiesSection = class {
     for (let i = 0; i < items.length; ++i)
       sectionToolbar.appendToolbarItem(items[i]);
 
-    const menuButton = new UI.ToolbarButton(Common.UIString('More tools\u2026'), 'largeicon-menu');
+    const menuButton = new UI.ToolbarButton('', 'largeicon-menu');
     menuButton.element.tabIndex = -1;
     sectionToolbar.appendToolbarItem(menuButton);
     setItemsVisibility.call(this, items, false);

@@ -305,6 +305,8 @@ Emulation.DeviceModeToolbar = class {
         Common.UIString('Add device type'));
     contextMenu.appendItemsAtLocation('deviceModeMenu');
     contextMenu.footerSection().appendItem(Common.UIString('Reset to defaults'), this._reset.bind(this));
+    contextMenu.footerSection().appendItem(
+        ls`Close DevTools`, InspectorFrontendHost.closeWindow.bind(InspectorFrontendHost));
 
     /**
      * @param {!UI.ContextMenuSection} section

@@ -60,8 +60,12 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   }
   const nodeName = node.nodeNameInCorrectCase();
 
-  if (id)
-    return new Elements.DOMPath.Step(nodeName + idSelector(id), true);
+  if (id) {
+    const test = new Elements.DOMPath.Step(nodeName + idSelector(id), true);
+    if (document.querySelectorAll(test.value).length == 1) {
+      return test;
+    }
+  }
   const parent = node.parentNode;
   if (!parent || parent.nodeType() === Node.DOCUMENT_NODE)
     return new Elements.DOMPath.Step(nodeName, true);

@@ -341,3 +341,7 @@ input[is=history-input]:hover {
 input[is=history-input]:focus {
     box-shadow: var(--focus-ring-active-shadow);
 }
+
+.toolbar-item.warning {
+    background: hsl(0, 100%, 95%);
+}

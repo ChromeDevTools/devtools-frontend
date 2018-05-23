@@ -13,6 +13,33 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 11,
+    header: 'Highlights from the Chrome 68 update',
+    highlights: [
+      {
+        title: 'Eager evaluation',
+        subtitle: 'Preview return values in the Console without explicitly executing expressions.',
+        link: 'https://developers.google.com/web/updates/2018/05/devtools#eagerevaluation',
+      },
+      {
+        title: 'Argument hints',
+        subtitle: `View a function's expected arguments in the Console.`,
+        link: 'https://developers.google.com/web/updates/2018/05/devtools#hints',
+      },
+      {
+        title: 'Function autocompletion',
+        subtitle: 'View available properties and methods after calling a function in the Console.',
+        link: 'https://developers.google.com/web/updates/2018/05/devtools#autocomplete',
+      },
+      {
+        title: 'Audits panel updates',
+        subtitle: 'Faster, more consisent audits, a new UI, and new audits, thanks to Lighthouse 3.0.',
+        link: 'https://developers.google.com/web/updates/2018/05/devtools#lh3',
+      }
+    ],
+    link: 'https://developers.google.com/web/updates/2018/05/devtools',
+  },
+  {
     version: 10,
     header: 'Highlights from the Chrome 67 update',
     highlights: [

@@ -541,7 +541,8 @@ div.palette-preview {
     height: 100%;
 }
 
-.spectrum-contrast-line {
+.spectrum-contrast-line,
+:host-context(.-theme-with-dark-background) .spectrum-contrast-line {
     fill: none;
     stroke: white;
     opacity: 0.7;

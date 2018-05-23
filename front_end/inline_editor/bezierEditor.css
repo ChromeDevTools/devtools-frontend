@@ -56,10 +56,14 @@
 }
 
 .bezier-curve line.linear-line {
-    stroke: #eee;
+    stroke: rgb(238, 238, 238);
     stroke-width: 2;
     stroke-linecap: round;
     fill: none;
+}
+
+:host-context(.-theme-with-dark-background) .bezier-curve line.linear-line {
+    stroke: rgb(138, 138, 138);
 }
 
 .bezier-curve line.bezier-control-line {

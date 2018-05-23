@@ -1657,7 +1657,8 @@ UI.ThemeSupport = class {
     this._themeName = setting.get() || 'default';
     this._themableProperties = new Set([
       'color', 'box-shadow', 'text-shadow', 'outline-color', 'background-image', 'background-color',
-      'border-left-color', 'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image'
+      'border-left-color', 'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image',
+      'fill', 'stroke'
     ]);
     /** @type {!Map<string, string>} */
     this._cachedThemePatches = new Map();

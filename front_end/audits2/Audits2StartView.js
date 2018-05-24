@@ -20,10 +20,27 @@ Audits2.StartView = class extends UI.Widget {
    * @param {string} settingName
    * @param {!Element} parentElement
    */
-  _populateRuntimeSettingAsComboBox(settingName, parentElement) {
+  _populateRuntimeSettingAsRadio(settingName, parentElement) {
     const runtimeSetting = Audits2.RuntimeSettings.find(item => item.setting.name === settingName);
-    const control = new UI.ToolbarSettingComboBox(runtimeSetting.options, runtimeSetting.setting);
+    if (!runtimeSetting || !runtimeSetting.options)
+      throw new Error(`${settingName} is not a setting with options`);
+
+    const control = new Audits2.RadioSetting(runtimeSetting.options, runtimeSetting.setting);
     control.element.title = runtimeSetting.description;
+    parentElement.appendChild(control.element);
+  }
+
+  /**
+   * @param {string} settingName
+   * @param {!Element} parentElement
+   */
+  _populateRuntimeSettingAsCheckbox(settingName, parentElement) {
+    const runtimeSetting = Audits2.RuntimeSettings.find(item => item.setting.name === settingName);
+    if (!runtimeSetting || !runtimeSetting.title)
+      throw new Error(`${settingName} is not a setting with a title`);
+
+    runtimeSetting.setting.setTitle(runtimeSetting.title);
+    const control = new UI.ToolbarSettingCheckbox(runtimeSetting.setting, runtimeSetting.description);
     parentElement.appendChild(control.element);
   }
 
@@ -33,7 +50,7 @@ Audits2.StartView = class extends UI.Widget {
   _populateFormControls(fragment) {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
-    this._populateRuntimeSettingAsComboBox('audits2.device_type', deviceTypeFormElements);
+    this._populateRuntimeSettingAsRadio('audits2.device_type', deviceTypeFormElements);
 
     // Populate the audit categories
     const categoryFormElements = fragment.$('categories-form-elements');
@@ -41,38 +58,39 @@ Audits2.StartView = class extends UI.Widget {
       preset.setting.setTitle(preset.title);
       const checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
       const row = categoryFormElements.createChild('div', 'vbox audits2-launcher-row');
+      row.title = preset.description;
       row.appendChild(checkbox.element);
-      row.createChild('span', 'audits2-launcher-description dimmed').textContent = preset.description;
     }
 
     // Populate the throttling
     const throttlingFormElements = fragment.$('throttling-form-elements');
-    this._populateRuntimeSettingAsComboBox('audits2.throttling', throttlingFormElements);
+    this._populateRuntimeSettingAsRadio('audits2.throttling', throttlingFormElements);
 
 
     // Populate other settings
     const otherFormElements = fragment.$('other-form-elements');
-    this._populateRuntimeSettingAsComboBox('audits2.storage_reset', otherFormElements);
+    this._populateRuntimeSettingAsCheckbox('audits2.clear_storage', otherFormElements);
   }
 
   _render() {
     this._startButton = UI.createTextButton(
-        ls`Run audit`, () => this._controller.dispatchEventToListeners(Audits2.Events.RequestAuditStart),
+        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits2.Events.RequestAuditStart),
         'audits2-start-button', true /* primary */);
+    this.setDefaultFocusedElement(this._startButton);
+
     const deviceIcon = UI.Icon.create('largeicon-phone');
     const categoriesIcon = UI.Icon.create('largeicon-checkmark');
     const throttlingIcon = UI.Icon.create('largeicon-settings-gear');
 
     const fragment = UI.Fragment.build`
       <div class="vbox audits2-start-view">
-        <div class="audits2-dialog-overlay"></div>
         <header>
           <div class="audits2-logo"></div>
           <div class="audits2-start-view-text">
             <h2>Audits</h2>
             <p>
               Identify and fix common problems that affect your site's performance, accessibility, and user experience.
-              <span class="link" $="learn-more">Learn more.</a>
+              <span class="link" $="learn-more">Learn more</a>
             </p>
           </div>
         </header>

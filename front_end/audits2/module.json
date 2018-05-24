@@ -25,6 +25,7 @@
         "lighthouse/renderer/details-renderer.js",
         "lighthouse/renderer/crc-details-renderer.js",
         "lighthouse/renderer/report-renderer.js",
+        "RadioSetting.js",
         "Audits2Panel.js",
         "Audits2Controller.js",
         "Audits2ReportSelector.js",

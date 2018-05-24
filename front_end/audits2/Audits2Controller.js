@@ -198,7 +198,7 @@ Audits2.AuditController = class extends Common.Object {
 };
 
 
-/** @typedef {{type: string, setting: !Common.Setting, configID: string, title: string, description: string}} */
+/** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
 Audits2.Preset;
 
 /** @type {!Array.<!Audits2.Preset>} */
@@ -236,44 +236,41 @@ Audits2.Presets = [
   },
 ];
 
-/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: !Array}} */
+/** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
 Audits2.RuntimeSetting;
 
 /** @type {!Array.<!Audits2.RuntimeSetting>} */
 Audits2.RuntimeSettings = [
   {
     setting: Common.settings.createSetting('audits2.device_type', 'mobile'),
-    description: Common.UIString('Apply mobile emulation during auditing'),
+    description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
       flags.disableDeviceEmulation = value === 'desktop';
     },
     options: [
-      {label: Common.UIString('Mobile'), value: 'mobile'},
-      {label: Common.UIString('Desktop'), value: 'desktop'},
+      {label: ls`Mobile`, value: 'mobile'},
+      {label: ls`Desktop`, value: 'desktop'},
     ],
   },
   {
     setting: Common.settings.createSetting('audits2.throttling', 'default'),
-    description: Common.UIString('Apply network and CPU throttling during performance auditing'),
+    description: ls`Apply network and CPU throttling during performance auditing`,
     setFlags: (flags, value) => {
       flags.disableNetworkThrottling = value === 'off';
       flags.disableCpuThrottling = value === 'off';
     },
     options: [
-      {label: Common.UIString('3G w/ CPU slowdown'), value: 'default'},
-      {label: Common.UIString('No throttling'), value: 'off'},
+      {label: ls`Fast 3G with 4x CPU Slowdown`, value: 'default'},
+      {label: ls`No throttling`, value: 'off'},
     ],
   },
   {
-    setting: Common.settings.createSetting('audits2.storage_reset', 'on'),
-    description: Common.UIString('Reset storage (localStorage, IndexedDB, etc) to a clean baseline before auditing'),
+    setting: Common.settings.createSetting('audits2.clear_storage', true),
+    title: ls`Clear storage`,
+    description: ls`Reset storage (localStorage, IndexedDB, etc) to a clean baseline before auditing`,
     setFlags: (flags, value) => {
-      flags.disableStorageReset = value === 'off';
+      flags.disableStorageReset = !value;
     },
-    options: [
-      {label: Common.UIString('Clear storage'), value: 'on'},
-      {label: Common.UIString('Preserve storage'), value: 'off'},
-    ],
   },
 ];
 

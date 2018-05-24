@@ -6,10 +6,12 @@
 
 .audits2-start-view {
   font-family: Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
 }
 
 .audits2-dialog-overlay {
-  position: fixed;
+  position: absolute;
   width: 100%;
   height: 100%;
   display: none;
@@ -22,7 +24,7 @@
 }
 
 .audits2-start-view header {
-  padding: 10px;
+  padding: 0 16px;
   display: flex;
 }
 
@@ -32,7 +34,7 @@
     flex-shrink: 0;
     background-repeat: no-repeat;
     background-size: contain;
-    margin-right: 18px;
+    margin-right: 20px;
     background-image: url(Images/audits_logo.svg);
 }
 
@@ -44,42 +46,61 @@
 .audits2-start-view-text h2 {
   color: black;
   font-weight: normal;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.audits2-start-view-text p {
+  margin-top: 0;
+}
+
+.audits2-start-view form {
+  padding: 0 16px;
 }
 
 .audits2-form-section {
-  border-top: 1px solid #e8e8e8;
+  border-top: 1px solid #ebebeb;
   display: flex;
-  padding: 20px;
+  padding: 16px 8px;
+}
+
+.audits2-form-section:last-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .audits2-form-section-label {
-  flex: 1;
   display: flex;
+  width: 160px;
 }
 
 .audits2-form-section-label i {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: #e6e6e6;
+  width: 16px;
+  height: 16px;
   display: block;
   text-align: center;
-  padding-top: 3px;
 }
 
 .audits2-icon-label {
-  margin: 7px;
-  font-size: 1.2em;
+  margin: 0 14px;
+}
+
+.audits2-form-section-label i span {
+  position: relative;
+  top: -2px;
 }
 
 .audits2-form-section-label span.largeicon-checkmark {
-  transform: scale(1.3);
-  position: relative;
-  right: -2px;
+  top: -4px;
 }
 
-.audits2-form-elements {
-  flex: 3;
+.audits2-radio {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.audits2-radio:last-child {
+  margin-bottom: 0;
 }
 
 .audits2-start-button-container {
@@ -95,7 +116,7 @@
 }
 
 .audits2-launcher-row {
-  padding-bottom: 10px;
+  padding-bottom: 8px;
 }
 
 .audits2-launcher-row:last-of-type {

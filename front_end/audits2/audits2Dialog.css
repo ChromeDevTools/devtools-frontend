@@ -31,7 +31,8 @@
 
 .audits2-status-text {
     text-align: center;
-    height: 60px;
+    min-height: 50px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: center;
     flex-direction: column;

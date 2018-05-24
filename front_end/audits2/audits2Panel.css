@@ -40,8 +40,7 @@
   position: relative;
 }
 button.view-trace {
-  position: absolute;
-  right: 0;
+  margin: 10px;
 }
 
 .audits2-results-container {

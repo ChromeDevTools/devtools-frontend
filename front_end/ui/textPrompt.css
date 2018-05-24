@@ -46,6 +46,11 @@
 
 ::content .text-prompt {
     cursor: text;
+    overflow-x: visible;
+}
+
+::content .text-prompt::-webkit-scrollbar {
+    display: none;
 }
 
 ::content .text-prompt.disabled {

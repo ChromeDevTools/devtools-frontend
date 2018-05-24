@@ -149,11 +149,13 @@ UI.ARIAUtils.alert = function(message, element) {
     const alertElement = document.body.createChild('div');
     alertElement.style.position = 'absolute';
     alertElement.style.left = '-999em';
+    alertElement.style.width = '100em';
+    alertElement.style.overflow = 'hidden';
     alertElement.setAttribute('role', 'alert');
     alertElement.setAttribute('aria-atomic', 'true');
     document[UI.ARIAUtils.AlertElementSymbol] = alertElement;
   }
-  document[UI.ARIAUtils.AlertElementSymbol].textContent = message;
+  document[UI.ARIAUtils.AlertElementSymbol].textContent = message.trimEnd(10000);
 };
 
 UI.ARIAUtils.AlertElementSymbol = Symbol('AlertElementSybmol');

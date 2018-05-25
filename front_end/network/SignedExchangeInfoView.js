@@ -65,7 +65,17 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
         const signatureCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Signature'));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Label'), signature.label));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Integrity'), signature.integrity));
-        signatureCategory.createLeaf(this._formatHeader(Common.UIString('Certificate URL'), signature.certUrl));
+
+        if (signature.certUrl) {
+          const certURLElement = this._formatHeader(Common.UIString('Certificate URL'), signature.certUrl);
+          if (signature.certificates) {
+            const viewCertLink = certURLElement.createChild('span', 'devtools-link header-toggle');
+            viewCertLink.textContent = Common.UIString('View certificate');
+            viewCertLink.addEventListener(
+                'click', InspectorFrontendHost.showCertificateViewer.bind(null, signature.certificates), false);
+          }
+          signatureCategory.createLeaf(certURLElement);
+        }
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Validity URL'), signature.validityUrl));
         signatureCategory.createLeaf().title =
             this._formatHeader(Common.UIString('Date'), new Date(1000 * signature.date).toUTCString());

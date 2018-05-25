@@ -796,6 +796,18 @@ Common.VersionController = class {
     networkLogColumnsSetting.set(columns);
   }
 
+  _updateVersionFrom25To26() {
+    const oldSetting = Common.settings.createSetting('messageURLFilters', {});
+    const urls = Object.keys(oldSetting.get());
+    const textFilter = urls.map(url => `-url:${url}`).join(' ');
+    if (textFilter) {
+      const textFilterSetting = Common.settings.createSetting('console.textFilter', '');
+      const suffix = textFilterSetting.get() ? ` ${textFilterSetting.get()}` : '';
+      textFilterSetting.set(`${textFilter}${suffix}`);
+    }
+    oldSetting.remove();
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set([
@@ -828,7 +840,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 25;
+Common.VersionController.currentVersion = 26;
 
 /**
  * @type {!Common.Settings}

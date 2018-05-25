@@ -71,7 +71,6 @@ Console.ConsoleView = class extends UI.VBox {
 
     /** @type {!Array.<!Console.ConsoleViewMessage>} */
     this._visibleViewMessages = [];
-    this._urlToMessageCount = {};
     this._hiddenByFilterCount = 0;
     /** @type {!Set<!Console.ConsoleViewMessage>} */
     this._shouldBeHiddenCache = new Set();
@@ -477,11 +476,6 @@ Console.ConsoleView = class extends UI.VBox {
     const insertedInMiddle = insertAt < this._consoleMessages.length;
     this._consoleMessages.splice(insertAt, 0, viewMessage);
 
-    if (this._urlToMessageCount[message.url])
-      ++this._urlToMessageCount[message.url];
-    else
-      this._urlToMessageCount[message.url] = 1;
-
     this._filter.onMessageAdded(message);
     this._sidebar.onMessageAdded(viewMessage);
 
@@ -640,28 +634,11 @@ Console.ConsoleView = class extends UI.VBox {
     const sourceElement = event.target.enclosingNodeOrSelfWithClass('console-message-wrapper');
     const consoleMessage = sourceElement ? sourceElement.message.consoleMessage() : null;
 
-    const filterSubMenu = contextMenu.headerSection().appendSubMenuItem(Common.UIString('Filter'));
-
     if (consoleMessage && consoleMessage.url) {
-      const menuTitle = Common.UIString('Hide messages from %s', new Common.ParsedURL(consoleMessage.url).displayName);
-      filterSubMenu.headerSection().appendItem(
+      const menuTitle = ls`Hide messages from ${new Common.ParsedURL(consoleMessage.url).displayName}`;
+      contextMenu.headerSection().appendItem(
           menuTitle, this._filter.addMessageURLFilter.bind(this._filter, consoleMessage.url));
     }
-
-    const unhideAll = filterSubMenu.footerSection().appendItem(
-        Common.UIString('Unhide all'), this._filter.removeMessageURLFilter.bind(this._filter));
-
-    let hasFilters = false;
-
-    for (const url in this._filter.messageURLFilters()) {
-      filterSubMenu.defaultSection().appendCheckboxItem(
-          String.sprintf('%s (%d)', new Common.ParsedURL(url).displayName, this._urlToMessageCount[url]),
-          this._filter.removeMessageURLFilter.bind(this._filter, url), true);
-      hasFilters = true;
-    }
-
-    filterSubMenu.setEnabled(hasFilters || (consoleMessage && consoleMessage.url));
-    unhideAll.setEnabled(hasFilters);
 
     contextMenu.defaultSection().appendAction('console.clear');
     contextMenu.defaultSection().appendAction('console.clear.history');
@@ -1190,12 +1167,10 @@ Console.ConsoleViewFilter = class {
   constructor(filterChangedCallback) {
     this._filterChanged = filterChangedCallback;
 
-    this._messageURLFiltersSetting = Common.settings.createSetting('messageURLFilters', {});
     this._messageLevelFiltersSetting = Console.ConsoleViewFilter.levelFilterSetting();
     this._hideNetworkMessagesSetting = Common.moduleSetting('hideNetworkMessages');
     this._filterByExecutionContextSetting = Common.moduleSetting('selectedContextFilterEnabled');
 
-    this._messageURLFiltersSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._messageLevelFiltersSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._hideNetworkMessagesSetting.addChangeListener(this._onFilterChanged.bind(this));
     this._filterByExecutionContextSetting.addChangeListener(this._onFilterChanged.bind(this));
@@ -1254,8 +1229,7 @@ Console.ConsoleViewFilter = class {
   }
 
   _updateCurrentFilter() {
-    let parsedFilters = this._filterParser.parse(this._textFilterUI.value());
-
+    const parsedFilters = this._filterParser.parse(this._textFilterUI.value());
     if (this._hideNetworkMessagesSetting.get()) {
       parsedFilters.push({
         key: Console.ConsoleFilter.FilterType.Source,
@@ -1263,10 +1237,6 @@ Console.ConsoleViewFilter = class {
         negative: true
       });
     }
-
-    const blockedURLs = Object.keys(this._messageURLFiltersSetting.get());
-    const urlFilters = blockedURLs.map(url => ({key: Console.ConsoleFilter.FilterType.Url, text: url, negative: true}));
-    parsedFilters = parsedFilters.concat(urlFilters);
 
     this._currentFilter.executionContext =
         this._filterByExecutionContextSetting.get() ? UI.context.flavor(SDK.ExecutionContext) : null;
@@ -1335,30 +1305,12 @@ Console.ConsoleViewFilter = class {
    * @param {string} url
    */
   addMessageURLFilter(url) {
-    const value = this._messageURLFiltersSetting.get();
-    value[url] = true;
-    this._messageURLFiltersSetting.set(value);
-  }
-
-  /**
-   * @param {string} url
-   */
-  removeMessageURLFilter(url) {
-    let value;
-    if (url) {
-      value = this._messageURLFiltersSetting.get();
-      delete value[url];
-    } else {
-      value = {};
-    }
-    this._messageURLFiltersSetting.set(value);
-  }
-
-  /**
-   * @returns {!Object}
-   */
-  messageURLFilters() {
-    return this._messageURLFiltersSetting.get();
+    if (!url)
+      return;
+    const suffix = this._textFilterUI.value() ? ` ${this._textFilterUI.value()}` : '';
+    this._textFilterUI.setValue(`-url:${url}${suffix}`);
+    this._textFilterSetting.set(this._textFilterUI.value());
+    this._onFilterChanged();
   }
 
   /**
@@ -1374,7 +1326,6 @@ Console.ConsoleViewFilter = class {
   }
 
   reset() {
-    this._messageURLFiltersSetting.set({});
     this._messageLevelFiltersSetting.set(Console.ConsoleFilter.defaultLevelsFilterValue());
     this._filterByExecutionContextSetting.set(false);
     this._hideNetworkMessagesSetting.set(false);

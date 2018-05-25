@@ -64,6 +64,7 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
       for (const signature of header.signatures) {
         const signatureCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Signature'));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Label'), signature.label));
+        signatureCategory.createLeaf(this._formatHeaderForHexData(Common.UIString('Signature'), signature.signature));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Integrity'), signature.integrity));
 
         if (signature.certUrl) {
@@ -75,6 +76,10 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
                 'click', InspectorFrontendHost.showCertificateViewer.bind(null, signature.certificates), false);
           }
           signatureCategory.createLeaf(certURLElement);
+        }
+        if (signature.certSha256) {
+          signatureCategory.createLeaf(
+              this._formatHeaderForHexData(Common.UIString('Certificate SHA256'), signature.certSha256));
         }
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Validity URL'), signature.validityUrl));
         signatureCategory.createLeaf().title =
@@ -105,6 +110,19 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
     fragment.createChild('div', 'header-name').textContent = name + ': ';
     fragment.createChild('span', 'header-separator');
     fragment.createChild('div', 'header-value source-code').textContent = value;
+    return fragment;
+  }
+
+  /**
+   * @param {string} name
+   * @param {string} value
+   * @return {!DocumentFragment}
+   */
+  _formatHeaderForHexData(name, value) {
+    const fragment = createDocumentFragment();
+    fragment.createChild('div', 'header-name').textContent = name + ': ';
+    fragment.createChild('span', 'header-separator');
+    fragment.createChild('div', 'header-value source-code hex-data').textContent = value.replace(/(.{2})/g, '$1 ');
     return fragment;
   }
 };

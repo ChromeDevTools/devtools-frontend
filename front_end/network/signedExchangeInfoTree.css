@@ -80,3 +80,9 @@
     vertical-align: top;
     white-space: pre-wrap;
 }
+
+.tree-outline .hex-data {
+    display: block;
+    word-break: break-word;
+    margin-left: 20px;
+}

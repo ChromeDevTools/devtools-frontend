@@ -79,7 +79,7 @@
             "contextTypes": [
                 "Network.NetworkPanel"
             ],
-            "className": "Network.NetworkPanel.RecordActionDelegate",
+            "className": "Network.NetworkPanel.ActionDelegate",
             "options": [
                 {
                     "value": true,
@@ -98,6 +98,19 @@
                 {
                     "platform": "mac",
                     "shortcut": "Meta+E"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "network.hide-request-details",
+            "contextTypes": [
+                "Network.NetworkPanel"
+            ],
+            "className": "Network.NetworkPanel.ActionDelegate",
+            "bindings": [
+                {
+                    "shortcut": "Esc"
                 }
             ]
         },
@@ -138,7 +151,7 @@
             "type": "action",
             "actionId": "network.search",
             "title": "Search",
-            "className": "Network.NetworkPanel.SearchActionDelegate",
+            "className": "Network.NetworkPanel.ActionDelegate",
             "contextTypes": [
                 "Network.NetworkPanel"
             ],

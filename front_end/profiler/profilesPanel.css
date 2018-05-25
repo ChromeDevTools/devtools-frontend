@@ -112,9 +112,13 @@
     color: white;
 }
 
+
+.profile-launcher-view {
+    overflow: auto;
+}
+
 .profile-launcher-view-content {
     padding: 10px 16px;
-    overflow: auto;
 }
 
 .profile-launcher-view-content h1 {

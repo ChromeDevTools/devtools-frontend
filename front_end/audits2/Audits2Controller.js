@@ -254,50 +254,29 @@ Audits2.RuntimeSettings = [
   },
   {
     setting: Common.settings.createSetting('audits2.throttling', 'default'),
+    description: ls`Apply network and CPU throttling during performance auditing`,
     setFlags: (flags, value) => {
-  switch (value) {
-    case 'devtools':
-      flags.throttlingMethod = 'devtools';
-      break;
-    case 'off':
-      flags.throttlingMethod = 'provided';
-      break;
-    default:
-      flags.throttlingMethod = 'simulate';
-  }
+      flags.disableNetworkThrottling = value === 'off';
+      flags.disableCpuThrottling = value === 'off';
     },
     options: [
-      {
-        label: ls`Simulated Fast 3G, 4x CPU Slowdown`,
-        value: 'default',
-        title: 'Throttling is simulated, resulting in faster audit runs with similar measurement accuracy'
-      },
-      {
-        label: ls`Applied Fast 3G, 4x CPU Slowdown`,
-        value: 'devtools',
-        title: 'Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied'
-      },
-      {
-        label: ls`No throttling`,
-        value: 'off',
-        title: 'No network or CPU throttling used. (Useful when not evaluating performance)'
-      },
+      {label: ls`Fast 3G with 4x CPU Slowdown`, value: 'default'},
+      {label: ls`No throttling`, value: 'off'},
     ],
   },
   {
     setting: Common.settings.createSetting('audits2.clear_storage', true),
     title: ls`Clear storage`,
-    description: ls
-    `Reset storage (localStorage, IndexedDB, etc) before auditing. (Recommended for performance & PWA testing)`,
+    description: ls`Reset storage (localStorage, IndexedDB, etc) to a clean baseline before auditing`,
     setFlags: (flags, value) => {
       flags.disableStorageReset = !value;
     },
   },
 ];
 
-    Audits2.Events = {
-      PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
-      AuditProgressChanged: Symbol('AuditProgressChanged'),
-      RequestAuditStart: Symbol('RequestAuditStart'),
-      RequestAuditCancel: Symbol('RequestAuditCancel'),
-    };
+Audits2.Events = {
+  PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
+  AuditProgressChanged: Symbol('AuditProgressChanged'),
+  RequestAuditStart: Symbol('RequestAuditStart'),
+  RequestAuditCancel: Symbol('RequestAuditCancel'),
+};

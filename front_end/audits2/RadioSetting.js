@@ -16,15 +16,13 @@ Audits2.RadioSetting = class {
     this._radioElements = [];
     for (const option of this._options) {
       const fragment = UI.Fragment.build`
-        <label $="label" class="audits2-radio">
+        <label class="audits2-radio">
           <input $="input" type="radio" value=${option.value} name=${setting.name}>
           ${option.label}
         </label>
       `;
 
       this.element.appendChild(fragment.element());
-      if (option.title)
-        UI.Tooltip.install(fragment.$('label'), option.title);
       const radioElement = fragment.$('input');
       radioElement.addEventListener('change', this._valueChanged.bind(this));
       this._radioElements.push(radioElement);

@@ -7,104 +7,72 @@
 
 /* globals self CriticalRequestChainRenderer Util URL */
 
-/** @typedef {import('./dom.js')} DOM */
-/** @typedef {import('./crc-details-renderer.js')} CRCDetailsJSON */
-
 class DetailsRenderer {
   /**
-   * @param {DOM} dom
+   * @param {!DOM} dom
    */
   constructor(dom) {
-    /** @type {DOM} */
+    /** @private {!DOM} */
     this._dom = dom;
-    /** @type {ParentNode} */
+    /** @private {!Document|!Element} */
     this._templateContext; // eslint-disable-line no-unused-expressions
   }
 
   /**
-   * @param {ParentNode} context
+   * @param {!Document|!Element} context
    */
   setTemplateContext(context) {
     this._templateContext = context;
   }
 
   /**
-   * @param {DetailsJSON} details
-   * @return {Element}
+   * @param {!DetailsRenderer.DetailsJSON} details
+   * @return {!Node}
    */
   render(details) {
     switch (details.type) {
       case 'text':
-        return this._renderText(/** @type {StringDetailsJSON} */ (details));
+        return this._renderText(details);
       case 'url':
-        return this._renderTextURL(/** @type {StringDetailsJSON} */ (details));
-      case 'bytes':
-        return this._renderBytes(/** @type {NumericUnitDetailsJSON} */ (details));
-      case 'ms':
-        // eslint-disable-next-line max-len
-        return this._renderMilliseconds(/** @type {NumericUnitDetailsJSON} */ (details));
+        return this._renderTextURL(details);
       case 'link':
-        // @ts-ignore - TODO(bckenny): Fix type hierarchy
-        return this._renderLink(/** @type {LinkDetailsJSON} */ (details));
+        return this._renderLink(/** @type {!DetailsRenderer.LinkDetailsJSON} */ (details));
       case 'thumbnail':
-        return this._renderThumbnail(/** @type {ThumbnailDetails} */ (details));
+        return this._renderThumbnail(/** @type {!DetailsRenderer.ThumbnailDetails} */ (details));
       case 'filmstrip':
-        // @ts-ignore - TODO(bckenny): Fix type hierarchy
-        return this._renderFilmstrip(/** @type {FilmstripDetails} */ (details));
+        return this._renderFilmstrip(/** @type {!DetailsRenderer.FilmstripDetails} */ (details));
+      case 'cards':
+        return this._renderCards(/** @type {!DetailsRenderer.CardsDetailsJSON} */ (details));
       case 'table':
-        // @ts-ignore - TODO(bckenny): Fix type hierarchy
-        return this._renderTable(/** @type {TableDetailsJSON} */ (details));
+        return this._renderTable(/** @type {!DetailsRenderer.TableDetailsJSON} */ (details));
       case 'code':
         return this._renderCode(details);
       case 'node':
-        return this.renderNode(/** @type {NodeDetailsJSON} */(details));
+        return this.renderNode(/** @type {!DetailsRenderer.NodeDetailsJSON} */(details));
       case 'criticalrequestchain':
         return CriticalRequestChainRenderer.render(this._dom, this._templateContext,
-          // @ts-ignore - TODO(bckenny): Fix type hierarchy
-          /** @type {CRCDetailsJSON} */ (details));
-      default: {
+          /** @type {!CriticalRequestChainRenderer.CRCDetailsJSON} */ (details));
+      case 'list':
+        return this._renderList(/** @type {!DetailsRenderer.ListDetailsJSON} */ (details));
+      default:
         throw new Error(`Unknown type: ${details.type}`);
-      }
     }
   }
 
   /**
-   * @param {NumericUnitDetailsJSON} details
-   * @return {Element}
-   */
-  _renderBytes(details) {
-    // TODO: handle displayUnit once we have something other than 'kb'
-    const value = Util.formatBytesToKB(details.value, details.granularity);
-    return this._renderText({type: 'text', value});
-  }
-
-  /**
-   * @param {NumericUnitDetailsJSON} details
-   * @return {Element}
-   */
-  _renderMilliseconds(details) {
-    let value = Util.formatMilliseconds(details.value, details.granularity);
-    if (details.displayUnit === 'duration') {
-      value = Util.formatDuration(details.value);
-    }
-
-    return this._renderText({type: 'text', value});
-  }
-
-  /**
-   * @param {StringDetailsJSON} text
-   * @return {HTMLElement}
+   * @param {!DetailsRenderer.DetailsJSON} text
+   * @return {!Element}
    */
   _renderTextURL(text) {
-    const url = text.value;
+    const url = text.text || '';
 
     let displayedPath;
     let displayedHost;
     let title;
     try {
       const parsed = Util.parseURL(url);
-      displayedPath = parsed.file === '/' ? parsed.origin : parsed.file;
-      displayedHost = parsed.file === '/' ? '' : `(${parsed.hostname})`;
+      displayedPath = parsed.file;
+      displayedHost = `(${parsed.hostname})`;
       title = url;
     } catch (/** @type {!Error} */ e) {
       if (!(e instanceof TypeError)) {
@@ -113,15 +81,15 @@ class DetailsRenderer {
       displayedPath = url;
     }
 
-    const element = /** @type {HTMLElement} */ (this._dom.createElement('div', 'lh-text__url'));
+    const element = this._dom.createElement('div', 'lh-text__url');
     element.appendChild(this._renderText({
-      value: displayedPath,
+      text: displayedPath,
       type: 'text',
     }));
 
     if (displayedHost) {
       const hostElem = this._renderText({
-        value: displayedHost,
+        text: displayedHost,
         type: 'text',
       });
       hostElem.classList.add('lh-text__url-host');
@@ -133,21 +101,18 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {LinkDetailsJSON} details
-   * @return {Element}
+   * @param {!DetailsRenderer.LinkDetailsJSON} details
+   * @return {!Element}
    */
   _renderLink(details) {
     const allowedProtocols = ['https:', 'http:'];
     const url = new URL(details.url);
     if (!allowedProtocols.includes(url.protocol)) {
-      // Fall back to just the link text if protocol not allowed.
-      return this._renderText({
-        type: 'text',
-        value: details.text,
-      });
+      // Fall back to text if protocol not allowed.
+      return this._renderText(details);
     }
 
-    const a = /** @type {HTMLAnchorElement} */ (this._dom.createElement('a'));
+    const a = /** @type {!HTMLAnchorElement} */ (this._dom.createElement('a'));
     a.rel = 'noopener';
     a.target = '_blank';
     a.textContent = details.text;
@@ -157,104 +122,100 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {StringDetailsJSON} text
-   * @return {Element}
+   * @param {!DetailsRenderer.DetailsJSON} text
+   * @return {!Element}
    */
   _renderText(text) {
     const element = this._dom.createElement('div', 'lh-text');
-    element.textContent = text.value;
+    element.textContent = text.text;
     return element;
   }
 
   /**
    * Create small thumbnail with scaled down image asset.
    * If the supplied details doesn't have an image/* mimeType, then an empty span is returned.
-   * @param {ThumbnailDetails} details
-   * @return {Element}
+   * @param {!DetailsRenderer.ThumbnailDetails} value
+   * @return {!Element}
    */
-  _renderThumbnail(details) {
-    const element = /** @type {HTMLImageElement}*/ (this._dom.createElement('img', 'lh-thumbnail'));
-    /** @type {string} */
-    // @ts-ignore - type should have a value if we get here.
-    const strValue = details.value;
-    element.src = strValue;
-    element.title = strValue;
+  _renderThumbnail(value) {
+    if (/^image/.test(value.mimeType) === false) {
+      return this._dom.createElement('span');
+    }
+
+    const element = this._dom.createElement('img', 'lh-thumbnail');
+    element.src = value.url;
     element.alt = '';
+    element.title = value.url;
     return element;
   }
 
   /**
-   * @param {TableDetailsJSON} details
-   * @return {Element}
+   * @param {!DetailsRenderer.ListDetailsJSON} list
+   * @return {!Element}
+   */
+  _renderList(list) {
+    if (!list.items.length) return this._dom.createElement('span');
+
+    const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
+    if (list.header) {
+      const summary = this._dom.createElement('summary', 'lh-list__header');
+      summary.textContent = list.header.text;
+      element.appendChild(summary);
+    }
+
+    const itemsElem = this._dom.createChildOf(element, 'div', 'lh-list__items');
+    for (const item of list.items) {
+      const itemElem = this._dom.createChildOf(itemsElem, 'span', 'lh-list__item');
+      itemElem.appendChild(this.render(item));
+    }
+    return element;
+  }
+
+  /**
+   * @param {!DetailsRenderer.TableDetailsJSON} details
+   * @return {!Element}
    */
   _renderTable(details) {
     if (!details.items.length) return this._dom.createElement('span');
 
-    const tableElem = this._dom.createElement('table', 'lh-table');
+    const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
+    if (details.header) {
+      element.appendChild(this._dom.createElement('summary')).textContent = details.header;
+    }
+
+    const tableElem = this._dom.createChildOf(element, 'table', 'lh-table');
     const theadElem = this._dom.createChildOf(tableElem, 'thead');
     const theadTrElem = this._dom.createChildOf(theadElem, 'tr');
 
-    for (const heading of details.headings) {
+    for (const heading of details.itemHeaders) {
       const itemType = heading.itemType || 'text';
       const classes = `lh-table-column--${itemType}`;
-      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(this.render({
-        type: 'text',
-        value: heading.text || '',
-      }));
+      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(this.render(heading));
     }
 
     const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');
     for (const row of details.items) {
       const rowElem = this._dom.createChildOf(tbodyElem, 'tr');
-      for (const heading of details.headings) {
-        const key = /** @type {keyof DetailsJSON} */ (heading.key);
-        // TODO(bckenny): type should be naturally inferred here.
-        const value = /** @type {number|string|DetailsJSON|undefined} */ (row[key]);
-
-        if (typeof value === 'undefined' || value === null) {
-          this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
-          continue;
-        }
-        // handle nested types like code blocks in table rows.
-        // @ts-ignore - TODO(bckenny): narrow first
-        if (value.type) {
-          const valueAsDetails = /** @type {DetailsJSON} */ (value);
-          const classes = `lh-table-column--${valueAsDetails.type}`;
-          this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(valueAsDetails));
-          continue;
-        }
-
-        // build new details item to render
-        const item = {
-          value: /** @type {number|string} */ (value),
-          type: heading.itemType,
-          displayUnit: heading.displayUnit,
-          granularity: heading.granularity,
-        };
-
-        /** @type {string|undefined} */
-        // @ts-ignore - TODO(bckenny): handle with refactoring above
-        const valueType = value.type;
-        const classes = `lh-table-column--${valueType || heading.itemType}`;
-        this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(item));
+      for (const columnItem of row) {
+        const classes = `lh-table-column--${columnItem.type}`;
+        this._dom.createChildOf(rowElem, 'td', classes).appendChild(this.render(columnItem));
       }
     }
-    return tableElem;
+    return element;
   }
 
   /**
-   * @param {NodeDetailsJSON} item
-   * @return {Element}
+   * @param {!DetailsRenderer.NodeDetailsJSON} item
+   * @return {!Element}
    * @protected
    */
   renderNode(item) {
-    const element = /** @type {HTMLSpanElement} */ (this._dom.createElement('span', 'lh-node'));
-    if (item.snippet) {
-      element.textContent = item.snippet;
-    }
-    if (item.selector) {
-      element.title = item.selector;
-    }
+    const element = this._dom.createElement('span', 'lh-node');
+    element.textContent = item.snippet;
+    element.title = item.selector;
+    if (item.text) element.setAttribute('data-text', item.text);
     if (item.path) element.setAttribute('data-path', item.path);
     if (item.selector) element.setAttribute('data-selector', item.selector);
     if (item.snippet) element.setAttribute('data-snippet', item.snippet);
@@ -262,29 +223,71 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {FilmstripDetails} details
-   * @return {Element}
+   * @param {!DetailsRenderer.CardsDetailsJSON} details
+   * @return {!Element}
+   */
+  _renderCards(details) {
+    const element = this._dom.createElement('details', 'lh-details');
+    element.open = true;
+    if (details.header) {
+      element.appendChild(this._dom.createElement('summary')).textContent = details.header.text;
+    }
+
+    const cardsParent = this._dom.createElement('div', 'lh-scorecards');
+    for (const item of details.items) {
+      const card = cardsParent.appendChild(
+          this._dom.createElement('div', 'lh-scorecard', {title: item.snippet}));
+      const titleEl = this._dom.createElement('div', 'lh-scorecard__title');
+      const valueEl = this._dom.createElement('div', 'lh-scorecard__value');
+      const targetEl = this._dom.createElement('div', 'lh-scorecard__target');
+
+      card.appendChild(titleEl).textContent = item.title;
+      card.appendChild(valueEl).textContent = item.value;
+
+      if (item.target) {
+        card.appendChild(targetEl).textContent = `target: ${item.target}`;
+      }
+    }
+
+    element.appendChild(cardsParent);
+    return element;
+  }
+
+  /**
+   * @param {!DetailsRenderer.FilmstripDetails} details
+   * @return {!Element}
    */
   _renderFilmstrip(details) {
     const filmstripEl = this._dom.createElement('div', 'lh-filmstrip');
 
     for (const thumbnail of details.items) {
       const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');
+
+      let timing = Util.formatMilliseconds(thumbnail.timing, 1);
+      if (thumbnail.timing > 1000) {
+        timing = Util.formatNumber(thumbnail.timing / 1000) + ' s';
+      }
+
+      const timingEl = this._dom.createChildOf(frameEl, 'div', 'lh-filmstrip__timestamp');
+      timingEl.textContent = timing;
+
+      const base64data = thumbnail.data;
       this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {
-        src: `data:image/jpeg;base64,${thumbnail.data}`,
-        alt: `Screenshot`,
+        src: `data:image/jpeg;base64,${base64data}`,
+        alt: `Screenshot at ${timing}`,
       });
     }
+
     return filmstripEl;
   }
 
   /**
-   * @param {DetailsJSON} details
-   * @return {Element}
+   * @param {!DetailsRenderer.DetailsJSON} details
+   * @return {!Element}
    */
   _renderCode(details) {
     const pre = this._dom.createElement('pre', 'lh-code');
-    pre.textContent = /** @type {string} */ (details.value);
+    pre.textContent = details.text;
     return pre;
   }
 }
@@ -295,84 +298,91 @@ if (typeof module !== 'undefined' && module.exports) {
   self.DetailsRenderer = DetailsRenderer;
 }
 
-// TODO, what's the diff between DetailsJSON and NumericUnitDetailsJSON?
 /**
  * @typedef {{
-      type: string,
-      value: (string|number|undefined),
-      summary?: OpportunitySummary,
-      granularity?: number,
-      displayUnit?: string
-  }} DetailsJSON
+ *     type: string,
+ *     text: (string|undefined)
+ * }}
  */
+DetailsRenderer.DetailsJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
-      type: string,
-      value: string,
-      granularity?: number,
-      displayUnit?: string,
-  }} StringDetailsJSON
+ *     type: string,
+ *     header: ({text: string}|undefined),
+ *     items: !Array<{type: string, text: (string|undefined)}>
+ * }}
  */
+DetailsRenderer.ListDetailsJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
-      type: string,
-      value: number,
-      granularity?: number,
-      displayUnit?: string,
-  }} NumericUnitDetailsJSON
+ *     type: string,
+ *     text: (string|undefined),
+ *     path: (string|undefined),
+ *     selector: (string|undefined),
+ *     snippet:(string|undefined)
+ * }}
  */
+DetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions
+
+/** @typedef {{
+ *     type: string,
+ *     header: ({text: string}|undefined),
+ *     items: !Array<{title: string, value: string, snippet: (string|undefined), target: string}>
+ * }}
+ */
+DetailsRenderer.CardsDetailsJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
-      type: string,
-      path?: string,
-      selector?: string,
-      snippet?: string
-  }} NodeDetailsJSON
+ *     type: string,
+ *     itemType: (string|undefined),
+ *     text: (string|undefined)
+ * }}
  */
+DetailsRenderer.TableHeaderJSON; // eslint-disable-line no-unused-expressions
 
 /**
  * @typedef {{
-      itemType: string,
-      key: string,
-      text?: string,
-      granularity?: number,
-      displayUnit?: string,
-  }} TableHeaderJSON
+ *     type: string,
+ *     text: (string|undefined),
+ *     path: (string|undefined),
+ *     selector: (string|undefined),
+ *     snippet:(string|undefined)
+ * }}
  */
+DetailsRenderer.NodeDetailsJSON; // eslint-disable-line no-unused-expressions
 
 /** @typedef {{
-      type: string,
-      items: Array<DetailsJSON>,
-      headings: Array<TableHeaderJSON>
-  }} TableDetailsJSON
+ *     type: string,
+ *     header: ({text: string}|undefined),
+ *     items: !Array<!Array<!DetailsRenderer.DetailsJSON>>,
+ *     itemHeaders: !Array<!DetailsRenderer.TableHeaderJSON>
+ * }}
  */
+DetailsRenderer.TableDetailsJSON; // eslint-disable-line no-unused-expressions
 
 /** @typedef {{
-      type: string,
-      value?: string,
-  }} ThumbnailDetails
+ *     type: string,
+ *     url: ({text: string}|undefined),
+ *     mimeType: ({text: string}|undefined)
+ * }}
  */
+DetailsRenderer.ThumbnailDetails; // eslint-disable-line no-unused-expressions
 
 /** @typedef {{
-      type: string,
-      text: string,
-      url: string
-  }} LinkDetailsJSON
+ *     type: string,
+ *     url: string,
+ *     text: string
+ * }}
  */
+DetailsRenderer.LinkDetailsJSON; // eslint-disable-line no-unused-expressions
 
 /** @typedef {{
-      type: string,
-      scale: number,
-      items: Array<{timing: number, timestamp: number, data: string}>,
-  }} FilmstripDetails
+ *     type: string,
+ *     scale: number,
+ *     items: !Array<{timing: number, timestamp: number, data: string}>,
+ * }}
  */
-
-
-/** @typedef {{
-      wastedMs?: number,
-      wastedBytes?: number
-  }} OpportunitySummary
- */
+DetailsRenderer.FilmstripDetails; // eslint-disable-line no-unused-expressions

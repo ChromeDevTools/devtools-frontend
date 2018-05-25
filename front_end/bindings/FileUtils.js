@@ -143,7 +143,7 @@ Bindings.ChunkedFileReader = class {
     if (event.target.readyState !== FileReader.DONE)
       return;
 
-    const buffer = this._reader.result;
+    const buffer = event.target.result;
     this._loadedSize += buffer.byteLength;
     const endOfFile = this._loadedSize === this._fileSize;
     const decodedString = this._decoder.decode(buffer, {stream: !endOfFile});

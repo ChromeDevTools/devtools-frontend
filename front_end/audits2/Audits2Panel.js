@@ -116,9 +116,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
    */
-  _renderReport(lighthouseResult, artifacts) {
+  _renderReport(lighthouseResult) {
     this.contentElement.classList.toggle('in-progress', false);
     this._startView.hideWidget();
     this._statusView.hide();
@@ -136,7 +135,8 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
     const detailsRenderer = new Audits2.DetailsRenderer(dom);
-    const categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
+    const categoryRenderer = new Audits2.CategoryRenderer(dom, detailsRenderer);
+    categoryRenderer.setTraceArtifact(lighthouseResult);
     const renderer = new Audits2.ReportRenderer(dom, categoryRenderer);
 
     const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
@@ -145,22 +145,20 @@ Audits2.Audits2Panel = class extends UI.Panel {
       return;
 
     renderer.setTemplateContext(templatesDOM);
-    const el = renderer.renderReport(lighthouseResult, reportContainer);
-    Audits2.ReportRenderer.addViewTraceButton(el, artifacts);
+    renderer.renderReport(lighthouseResult, reportContainer);
 
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
 
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
    */
-  _buildReportUI(lighthouseResult, artifacts) {
+  _buildReportUI(lighthouseResult) {
     if (lighthouseResult === null)
       return;
 
     const optionElement = new Audits2.ReportSelector.Item(
-        lighthouseResult, () => this._renderReport(lighthouseResult, artifacts), this._renderStartView.bind(this));
+        lighthouseResult, () => this._renderReport(lighthouseResult), this._renderStartView.bind(this));
     this._reportSelector.prepend(optionElement);
     this._refreshToolbarUI();
     this._renderReport(lighthouseResult);
@@ -208,21 +206,21 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
       this._renderStatusView(inspectedURL);
 
-      const lighthouseResponse = await this._protocolService.startLighthouse(inspectedURL, categoryIDs, flags);
+      const lighthouseResult = await this._protocolService.startLighthouse(inspectedURL, categoryIDs, flags);
 
-      if (lighthouseResponse && lighthouseResponse.fatal) {
-        const error = new Error(lighthouseResponse.message);
-        error.stack = lighthouseResponse.stack;
+      if (lighthouseResult && lighthouseResult.fatal) {
+        const error = new Error(lighthouseResult.message);
+        error.stack = lighthouseResult.stack;
         throw error;
       }
 
-      if (!lighthouseResponse)
+      if (!lighthouseResult)
         throw new Error('Auditing failed to produce a result');
 
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Finished);
 
       await this._resetEmulationAndProtocolConnection();
-      this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
+      this._buildReportUI(lighthouseResult);
     } catch (err) {
       if (err instanceof Error)
         this._statusView.renderBugReport(err);

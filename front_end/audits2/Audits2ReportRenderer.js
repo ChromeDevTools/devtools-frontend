@@ -7,22 +7,21 @@
  */
 Audits2.ReportRenderer = class extends ReportRenderer {
   /**
-   * @param {!Element} el Parent element to render the report into.
-   * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
+   * Provides empty element for left nav
+   * @override
+   * @returns {!DocumentFragment}
    */
-  static addViewTraceButton(el, artifacts) {
-    if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass)
-      return;
+  _renderReportNav() {
+    return createDocumentFragment();
+  }
 
-    const defaultPassTrace = artifacts.traces.defaultPass;
-    const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
-    el.querySelector('.lh-metric-column').appendChild(timelineButton);
-    return el;
-
-    async function onViewTraceClick() {
-      await UI.inspectorView.showPanel('timeline');
-      Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
-    }
+  /**
+   * @param {!ReportRenderer.ReportJSON} report
+   * @override
+   * @return {!DocumentFragment}
+   */
+  _renderReportHeader(report) {
+    return createDocumentFragment();
   }
 };
 
@@ -34,6 +33,48 @@ class ReportUIFeatures {
   }
 }
 
+Audits2.CategoryRenderer = class extends CategoryRenderer {
+  /**
+   * @override
+   * @param {!DOM} dom
+   * @param {!DetailsRenderer} detailsRenderer
+   */
+  constructor(dom, detailsRenderer) {
+    super(dom, detailsRenderer);
+    this._defaultPassTrace = null;
+  }
+
+  /**
+   * @param {!ReportRenderer.ReportJSON} lhr
+   */
+  setTraceArtifact(lhr) {
+    if (!lhr.artifacts || !lhr.artifacts.traces || !lhr.artifacts.traces.defaultPass)
+      return;
+    this._defaultPassTrace = lhr.artifacts.traces.defaultPass;
+  }
+
+  /**
+   * @override
+   * @param {!ReportRenderer.CategoryJSON} category
+   * @param {!Object<string, !ReportRenderer.GroupJSON>} groups
+   * @return {!Element}
+   */
+  renderPerformanceCategory(category, groups) {
+    const defaultPassTrace = this._defaultPassTrace;
+    const element = super.renderPerformanceCategory(category, groups);
+    if (!defaultPassTrace)
+      return element;
+
+    const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
+    element.querySelector('.lh-audit-group').prepend(timelineButton);
+    return element;
+
+    async function onViewTraceClick() {
+      await UI.inspectorView.showPanel('timeline');
+      Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
+    }
+  }
+};
 
 Audits2.DetailsRenderer = class extends DetailsRenderer {
   /**

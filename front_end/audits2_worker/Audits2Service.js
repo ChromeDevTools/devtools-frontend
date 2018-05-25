@@ -37,7 +37,7 @@ var Audits2Service = class {  // eslint-disable-line
   }
 
   /**
-   * @return {!Promise<!ReportRenderer.RunnerResult>}
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   start(params) {
     if (Runtime.queryParam('isUnderTest'))
@@ -49,7 +49,7 @@ var Audits2Service = class {  // eslint-disable-line
 
     return Promise.resolve()
         .then(_ => self.runLighthouseInWorker(this, params.url, {flags: params.flags}, params.categoryIDs))
-        .then(/** @type {!ReportRenderer.RunnerResult} */ result => {
+        .then(/** @type {!ReportRenderer.ReportJSON} */ result => {
           // Keep all artifacts on the result, no trimming
           return result;
         })

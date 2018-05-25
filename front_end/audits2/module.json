@@ -22,7 +22,6 @@
         "lighthouse/renderer/util.js",
         "lighthouse/renderer/dom.js",
         "lighthouse/renderer/category-renderer.js",
-        "lighthouse/renderer/performance-category-renderer.js",
         "lighthouse/renderer/details-renderer.js",
         "lighthouse/renderer/crc-details-renderer.js",
         "lighthouse/renderer/report-renderer.js",
@@ -41,14 +40,5 @@
         "audits2Panel.css",
         "lighthouse/report-styles.css",
         "lighthouse/templates.html"
-    ],
-    "skip_compilation": [
-      "lighthouse/renderer/util.js",
-      "lighthouse/renderer/dom.js",
-      "lighthouse/renderer/category-renderer.js",
-      "lighthouse/renderer/performance-category-renderer.js",
-      "lighthouse/renderer/details-renderer.js",
-      "lighthouse/renderer/crc-details-renderer.js",
-      "lighthouse/renderer/report-renderer.js"
-  ]
+    ]
 }

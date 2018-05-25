@@ -28,7 +28,7 @@ Audits2.ProtocolService = class extends Common.Object {
    * @param {string} auditURL
    * @param {!Array<string>} categoryIDs
    * @param {!Object} flags
-   * @return {!Promise<!ReportRenderer.RunnerResult>}
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   startLighthouse(auditURL, categoryIDs, flags) {
     return this._send('start', {url: auditURL, categoryIDs, flags});
@@ -80,7 +80,7 @@ Audits2.ProtocolService = class extends Common.Object {
   /**
    * @param {string} method
    * @param {!Object=} params
-   * @return {!Promise<!ReportRenderer.RunnerResult>}
+   * @return {!Promise<!ReportRenderer.ReportJSON>}
    */
   _send(method, params) {
     if (!this._backendPromise)

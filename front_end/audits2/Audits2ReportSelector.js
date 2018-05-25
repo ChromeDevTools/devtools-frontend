@@ -111,8 +111,8 @@ Audits2.ReportSelector.Item = class {
     this._renderReport = renderReport;
     this._showLandingCallback = showLandingCallback;
 
-    const url = new Common.ParsedURL(lighthouseResult.finalUrl);
-    const timestamp = lighthouseResult.fetchTime;
+    const url = new Common.ParsedURL(lighthouseResult.url);
+    const timestamp = lighthouseResult.generatedTime;
     this._element = createElement('option');
     this._element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
@@ -135,8 +135,8 @@ Audits2.ReportSelector.Item = class {
   }
 
   download() {
-    const url = new Common.ParsedURL(this._lighthouseResult.finalUrl).domain();
-    const timestamp = this._lighthouseResult.fetchTime;
+    const url = new Common.ParsedURL(this._lighthouseResult.url).domain();
+    const timestamp = this._lighthouseResult.generatedTime;
     const fileName = `${url}-${new Date(timestamp).toISO8601Compact()}.json`;
     Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
   }

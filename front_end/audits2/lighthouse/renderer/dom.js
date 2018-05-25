@@ -9,21 +9,20 @@
 
 class DOM {
   /**
-   * @param {Document} document
+   * @param {!Document} document
    */
   constructor(document) {
-    /** @type {Document} */
+    /** @private {!Document} */
     this._document = document;
   }
 
-  // TODO(bckenny): can pass along `createElement`'s inferred type
   /**
    * @param {string} name
    * @param {string=} className
-   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
+   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
    *     Note: if an attribute key has an undefined value, this method does not
    *     set the attribute on the node.
-   * @return {Element}
+   * @return {!Element}
    */
   createElement(name, className, attrs = {}) {
     const element = this._document.createElement(name);
@@ -40,20 +39,13 @@ class DOM {
   }
 
   /**
-   * @return {DocumentFragment}
-   */
-  createFragment() {
-    return this._document.createDocumentFragment();
-  }
-
-  /**
-   * @param {Element} parentElem
+   * @param {!Element} parentElem
    * @param {string} elementName
    * @param {string=} className
-   * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
+   * @param {!Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
    *     Note: if an attribute key has an undefined value, this method does not
    *     set the attribute on the node.
-   * @return {Element}
+   * @return {!Element}
    */
   createChildOf(parentElem, elementName, className, attrs) {
     const element = this.createElement(elementName, className, attrs);
@@ -63,8 +55,8 @@ class DOM {
 
   /**
    * @param {string} selector
-   * @param {ParentNode} context
-   * @return {DocumentFragment} A clone of the template content.
+   * @param {!Node} context
+   * @return {!DocumentFragment} A clone of the template content.
    * @throws {Error}
    */
   cloneTemplate(selector, context) {
@@ -73,14 +65,15 @@ class DOM {
       throw new Error(`Template not found: template${selector}`);
     }
 
-    const clone = this._document.importNode(template.content, true);
+    const clone = /** @type {!DocumentFragment} */ (this._document.importNode(
+        template.content, true));
 
     // Prevent duplicate styles in the DOM. After a template has been stamped
     // for the first time, remove the clone's styles so they're not re-added.
     if (template.hasAttribute('data-stamped')) {
       this.findAll('style', clone).forEach(style => style.remove());
     }
-    template.setAttribute('data-stamped', 'true');
+    template.setAttribute('data-stamped', true);
 
     return clone;
   }
@@ -96,7 +89,7 @@ class DOM {
 
   /**
    * @param {string} text
-   * @return {Element}
+   * @return {!Element}
    */
   convertMarkdownLinkSnippets(text) {
     const element = this.createElement('span');
@@ -111,7 +104,7 @@ class DOM {
 
       // Append link if there are any.
       if (linkText && linkHref) {
-        const a = /** @type {HTMLAnchorElement} */ (this.createElement('a'));
+        const a = /** @type {!HTMLAnchorElement} */ (this.createElement('a'));
         a.rel = 'noopener';
         a.target = '_blank';
         a.textContent = linkText;
@@ -125,7 +118,7 @@ class DOM {
 
   /**
    * @param {string} text
-   * @return {Element}
+   * @return {!Element}
    */
   convertMarkdownCodeSnippets(text) {
     const element = this.createElement('span');
@@ -136,7 +129,7 @@ class DOM {
       const [preambleText, codeText] = parts.splice(0, 2);
       element.appendChild(this._document.createTextNode(preambleText));
       if (codeText) {
-        const pre = /** @type {HTMLPreElement} */ (this.createElement('code'));
+        const pre = /** @type {!HTMLPreElement} */ (this.createElement('code'));
         pre.textContent = codeText;
         element.appendChild(pre);
       }
@@ -146,29 +139,20 @@ class DOM {
   }
 
   /**
-   * @return {Document}
+   * @return {!Document}
    */
   document() {
     return this._document;
   }
 
   /**
-   * TODO(paulirish): import and conditionally apply the DevTools frontend subclasses instead of this
-   * @return {boolean}
-   */
-  isDevTools() {
-    return !!this._document.querySelector('.lh-devtools');
-  }
-
-  /**
    * Guaranteed context.querySelector. Always returns an element or throws if
    * nothing matches query.
    * @param {string} query
-   * @param {ParentNode} context
-   * @return {HTMLElement}
+   * @param {!Node} context
+   * @return {!Element}
    */
   find(query, context) {
-    /** @type {?HTMLElement} */
     const result = context.querySelector(query);
     if (result === null) {
       throw new Error(`query ${query} not found`);
@@ -179,8 +163,8 @@ class DOM {
   /**
    * Helper for context.querySelectorAll. Returns an Array instead of a NodeList.
    * @param {string} query
-   * @param {ParentNode} context
-   * @return {Array<HTMLElement>}
+   * @param {!Node} context
+   * @return {!Array<!Element>}
    */
   findAll(query, context) {
     return Array.from(context.querySelectorAll(query));

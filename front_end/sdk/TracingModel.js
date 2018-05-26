@@ -558,16 +558,6 @@ SDK.TracingModel.Event = class {
    * @param {!SDK.TracingModel.Event} b
    * @return {number}
    */
-  static compareStartAndEndTime(a, b) {
-    return a.startTime - b.startTime || (b.endTime !== undefined && a.endTime !== undefined && b.endTime - a.endTime) ||
-        0;
-  }
-
-  /**
-   * @param {!SDK.TracingModel.Event} a
-   * @param {!SDK.TracingModel.Event} b
-   * @return {number}
-   */
   static orderedCompareStartTime(a, b) {
     // Array.mergeOrdered coalesces objects if comparator returns 0.
     // To change this behavior this comparator return -1 in the case events
@@ -884,7 +874,7 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   }
 
   tracingComplete() {
-    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartAndEndTime);
+    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
     this._events.stableSort(SDK.TracingModel.Event.compareStartTime);
     const phases = SDK.TracingModel.Phase;
     const stack = [];

@@ -170,7 +170,7 @@ TimelineModel.TimelineModel = class {
       else
         this._processGenericTrace(tracingModel);
     }
-    this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
+    this._inspectedTargetEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
     this._processAsyncBrowserEvents(tracingModel);
     this._buildGPUEvents(tracingModel);
     this._resetProcessingState();
@@ -635,7 +635,7 @@ TimelineModel.TimelineModel = class {
     for (const [type, events] of groups) {
       const track = this._ensureNamedTrack(type);
       track.thread = thread;
-      track.asyncEvents = track.asyncEvents.mergeOrdered(events, SDK.TracingModel.Event.compareStartAndEndTime);
+      track.asyncEvents = track.asyncEvents.mergeOrdered(events, SDK.TracingModel.Event.compareStartTime);
     }
   }
 

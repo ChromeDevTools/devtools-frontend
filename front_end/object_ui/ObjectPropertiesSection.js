@@ -734,9 +734,9 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (!this.expandedValueElement)
       return;
     if (value)
-      this.listItemElement.replaceChild(this.expandedValueElement, this.valueElement);
+      this._rowContainer.replaceChild(this.expandedValueElement, this.valueElement);
     else
-      this.listItemElement.replaceChild(this.valueElement, this.expandedValueElement);
+      this._rowContainer.replaceChild(this.valueElement, this.expandedValueElement);
   }
 
   /**
@@ -768,9 +768,6 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     this._updatePropertyPath();
 
-    const separatorElement = createElementWithClass('span', 'object-properties-section-separator');
-    separatorElement.textContent = ': ';
-
     if (this.property.value) {
       const showPreview = this.property.name !== '__proto__';
       this.valueElement = ObjectUI.ObjectPropertiesSection.createValueElementWithCustomSupport(
@@ -789,7 +786,8 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       this.expandedValueElement = this._createExpandedValueElement(this.property.value);
 
     this.listItemElement.removeChildren();
-    this.listItemElement.appendChildren(this.nameElement, separatorElement, this.valueElement);
+    this._rowContainer = UI.html`<span>${this.nameElement}: ${this.valueElement}</span>`;
+    this.listItemElement.appendChild(this._rowContainer);
   }
 
   _updatePropertyPath() {
@@ -833,7 +831,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (this._prompt || !this.treeOutline._editable || this._readOnly)
       return;
 
-    this._editableDiv = this.listItemElement.createChild('span', 'editable-div');
+    this._editableDiv = this._rowContainer.createChild('span', 'editable-div');
 
     let text = this.property.value.description;
     if (this.property.value.type === 'string' && typeof text === 'string')

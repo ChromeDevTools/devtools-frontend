@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-.object-properties-section-separator {
-    flex-shrink: 0;
-    padding-right: 5px;
-}
-
 .object-properties-section-dimmed {
     opacity: 0.6;
 }

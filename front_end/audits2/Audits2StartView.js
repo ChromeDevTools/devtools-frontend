@@ -142,6 +142,10 @@ Audits2.StartView = class extends UI.Widget {
     this.contentElement.style.overflow = 'auto';
   }
 
+  focusStartButton() {
+    this._startButton.focus();
+  }
+
   /**
    * @param {boolean} isEnabled
    */

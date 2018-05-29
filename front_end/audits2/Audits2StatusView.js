@@ -23,6 +23,8 @@ Audits2.StatusView = class {
     this._scheduledFastFactTimeout = null;
 
     this._dialog = new UI.Dialog();
+    this._dialog.setDimmed(true);
+    this._dialog.setCloseOnEscape(false);
     this._dialog.setOutsideClickCallback(event => event.consume(true));
     this._render();
   }

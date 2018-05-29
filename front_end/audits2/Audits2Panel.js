@@ -29,7 +29,6 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._controller.addEventListener(Audits2.Events.RequestAuditCancel, this._cancelAudit.bind(this));
 
     this._renderToolbar();
-    this.contentElement.createChild('div', 'audits2-dialog-overlay');
     this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
     this._renderStartView();
 
@@ -100,6 +99,9 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._startView.show(this.contentElement);
     this._startView.setUnauditableExplanation(this._unauditableExplanation);
     this._startView.setStartButtonEnabled(!this._unauditableExplanation);
+    if (!this._unauditableExplanation)
+      this._startView.focusStartButton();
+
     this._newButton.setEnabled(false);
     this._refreshToolbarUI();
     this.setDefaultFocusedChild(this._startView);

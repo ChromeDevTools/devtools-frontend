@@ -10,19 +10,6 @@
   line-height: 18px;
 }
 
-.audits2-dialog-overlay {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: none;
-  background: rgba(0,0,0,.3);
-  z-index: 100;
-}
-
-.in-progress .audits2-dialog-overlay {
-  display: block;
-}
-
 .audits2-start-view header {
   padding: 0 16px;
   display: flex;

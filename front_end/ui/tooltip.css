@@ -25,6 +25,7 @@
     opacity: 0;
     text-overflow: ellipsis;
     overflow: hidden;
+    pointer-events: none;
 }
 
 .tooltip-breakword {

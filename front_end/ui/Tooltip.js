@@ -135,7 +135,7 @@ UI.Tooltip = class {
     if (!anchorTooltipAtElement) {
       tooltipY = event.y + cursorOffset + tooltipHeight < containerBox.y + containerBox.height ?
           event.y + cursorOffset :
-          event.y - tooltipHeight;
+          event.y - tooltipHeight - 1;
     } else {
       const onBottom =
           anchorBox.y + anchorOffset + anchorBox.height + tooltipHeight < containerBox.y + containerBox.height;

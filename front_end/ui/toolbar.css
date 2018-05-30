@@ -263,7 +263,7 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
 }
 
 .toolbar-input-clear-button:hover {
-    opacity: 1;
+    opacity: .99;
 }
 
 .toolbar-input-empty .toolbar-input-clear-button {

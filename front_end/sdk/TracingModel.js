@@ -293,6 +293,14 @@ SDK.TracingModel = class {
   }
 
   /**
+   * @param {number} pid
+   * @return {?SDK.TracingModel.Process}
+   */
+  processById(pid) {
+    return this._processById.get(pid) || null;
+  }
+
+  /**
    * @param {string} processName
    * @param {string} threadName
    * @return {?SDK.TracingModel.Thread}

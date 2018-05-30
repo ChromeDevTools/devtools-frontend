@@ -49,23 +49,32 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
 
     let classNames;
     if (dumpClassNames) {
-      classNames = [];
+      classNames = [''];
       for (let node = element.firstChild; node; node = node.traverseNextNode(element)) {
         if (node.nodeType === Node.ELEMENT_NODE && node.className) {
-          classNames.push(node.className.replace('platform-linux', 'platform-*')
-                              .replace('platform-mac', 'platform-*')
-                              .replace('platform-windows', 'platform-*'));
+          let depth = 0;
+          let depthTest = node;
+          while (depthTest !== element) {
+            if (depthTest.nodeType === Node.ELEMENT_NODE && depthTest.className)
+              depth++;
+            depthTest = depthTest.parentNodeOrShadowHost();
+          }
+          classNames.push(
+              '  '.repeat(depth) +
+              node.className.replace('platform-linux', 'platform-*')
+                  .replace('platform-mac', 'platform-*')
+                  .replace('platform-windows', 'platform-*'));
         }
       }
     }
 
     if (ConsoleTestRunner.dumpConsoleTableMessage(uiMessage, false, result)) {
       if (dumpClassNames)
-        result.push(classNames.join(' > '));
+        result.push(classNames.join('\n'));
     } else {
       let messageText = formatter(element, message);
       messageText = messageText.replace(/VM\d+/g, 'VM');
-      result.push(messageText + (dumpClassNames ? ' ' + classNames.join(' > ') : ''));
+      result.push(messageText + (dumpClassNames ? ' ' + classNames.join('\n') : ''));
     }
 
     if (printOriginatingCommand && uiMessage.consoleMessage().originatingMessage())

@@ -94,8 +94,8 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
     let lastTimeUsec = profile.startTime;
     const timestamps = new Array(profile.timeDeltas.length + 1);
     for (let i = 0; i < profile.timeDeltas.length; ++i) {
-      timestamps[i] = lastTimeUsec;
       lastTimeUsec += profile.timeDeltas[i];
+      timestamps[i] = lastTimeUsec;
     }
     timestamps[profile.timeDeltas.length] = lastTimeUsec;
     return timestamps;

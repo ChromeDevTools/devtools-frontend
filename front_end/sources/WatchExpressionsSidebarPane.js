@@ -83,8 +83,8 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     this._watchExpressionsSetting.set(toSave);
   }
 
-  _addButtonClicked() {
-    UI.viewManager.showView('sources.watch');
+  async _addButtonClicked() {
+    await UI.viewManager.showView('sources.watch');
     this._createWatchExpression(null).startEditing();
   }
 

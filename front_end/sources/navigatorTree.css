@@ -46,8 +46,8 @@
     background: linear-gradient(45deg, hsl(0, 0%, 50%), hsl(0, 0%, 70%));
 }
 
-.navigator-fs-tree-item:not(.has-mapped-files),
-.navigator-fs-folder-tree-item:not(.has-mapped-files) {
+.navigator-fs-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection),
+.navigator-fs-folder-tree-item:not(.has-mapped-files):not(.selected) > :not(.selection) {
     filter: grayscale(50%);
     opacity: 0.5;
 }

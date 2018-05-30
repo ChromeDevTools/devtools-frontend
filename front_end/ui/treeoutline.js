@@ -49,10 +49,6 @@ UI.TreeOutline = class extends Common.Object {
       this.contentElement.setAttribute('tabIndex', -1);
     this.element = this.contentElement;
     UI.ARIAUtils.markAsTree(this.element);
-
-    // Adjust to allow computing margin-left for the selection element.
-    // Check the padding-left for the li element for correct value.
-    this._paddingSize = 0;
   }
 
   _createRootElement() {
@@ -241,13 +237,6 @@ UI.TreeOutline = class extends Common.Object {
       return false;
     last.select(false, true);
     return true;
-  }
-
-  /**
-   * @param {number} paddingSize
-   */
-  setPaddingSize(paddingSize) {
-    this._paddingSize = paddingSize;
   }
 
   /**
@@ -787,27 +776,12 @@ UI.TreeElement = class {
     }
   }
 
-  /**
-   * @return {number}
-   */
-  computeLeftMargin() {
-    let treeElement = this.parent;
-    let depth = 0;
-    while (treeElement !== null) {
-      depth++;
-      treeElement = treeElement.parent;
-    }
-
-    return -(this.treeOutline._paddingSize * (depth - 1) + 4);
-  }
 
   _ensureSelection() {
     if (!this.treeOutline || !this.treeOutline._renderSelection)
       return;
     if (!this._selectionElement)
       this._selectionElement = createElementWithClass('div', 'selection fill');
-    if (this.treeOutline._paddingSize)
-      this._selectionElement.style.setProperty('margin-left', this.computeLeftMargin() + 'px');
     this._listItemNode.insertBefore(this._selectionElement, this.listItemElement.firstChild);
   }
 
@@ -1035,6 +1009,14 @@ UI.TreeElement = class {
   selectOnMouseDown(event) {
     if (this.select(false, true))
       event.consume(true);
+
+    if (this._listItemNode.draggable && this._selectionElement) {
+      const marginLeft =
+          this.treeOutline.element.getBoundingClientRect().left - this._listItemNode.getBoundingClientRect().left;
+      // By default the left margin extends far off screen. This is not a problem except when dragging an element.
+      // Setting the margin once here should be fine, because we believe the left margin should never change.
+      this._selectionElement.style.setProperty('margin-left', marginLeft + 'px');
+    }
   }
 
   /**

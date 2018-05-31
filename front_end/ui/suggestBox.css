@@ -59,6 +59,10 @@
     text-overflow: ellipsis;
 }
 
+.suggestion-title span {
+    white-space: pre;
+}
+
 .suggestion-subtitle {
     flex: auto;
     text-align: right;

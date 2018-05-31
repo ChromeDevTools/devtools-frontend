@@ -128,7 +128,9 @@ UI.SuggestBox = class {
       }
     }
     const element = this.createElementForItem(/** @type {!UI.SuggestBox.Suggestion} */ (maxItem));
-    return Math.min(kMaxWidth, UI.measurePreferredSize(element, this._element).width);
+    const preferredWidth =
+        UI.measurePreferredSize(element, this._element).width + UI.measuredScrollbarWidth(this._element.ownerDocument);
+    return Math.min(kMaxWidth, preferredWidth);
   }
 
   /**
@@ -197,7 +199,7 @@ UI.SuggestBox = class {
       element.classList.add('secondary');
     element.tabIndex = -1;
     const maxTextLength = 50 + query.length;
-    const displayText = (item.title || item.text).trimEnd(maxTextLength);
+    const displayText = (item.title || item.text).trim().trimEnd(maxTextLength).replace(/\n/g, '\u21B5');
 
     const titleElement = element.createChild('span', 'suggestion-title');
     const index = displayText.toLowerCase().indexOf(query.toLowerCase());

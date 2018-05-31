@@ -134,6 +134,8 @@ Network.NetworkLogView = class extends UI.VBox {
     this._dataGrid = this._columns.dataGrid();
     this._setupDataGrid();
     this._columns.sortByCurrentColumn();
+    filterBar.filterButton().addEventListener(
+        UI.ToolbarButton.Events.Click, this._dataGrid.scheduleUpdate.bind(this._dataGrid, true /* isFromUser */));
 
     this._summaryBarElement = this.element.createChild('div', 'network-summary-bar');
 

@@ -39,7 +39,6 @@ UI.Toolbar = class {
   constructor(className, parentElement) {
     /** @type {!Array.<!UI.ToolbarItem>} */
     this._items = [];
-    this._reverse = false;
     this.element = parentElement ? parentElement.createChild('div') : createElement('div');
     this.element.className = className;
     this.element.classList.add('toolbar');
@@ -201,14 +200,10 @@ UI.Toolbar = class {
   }
 
   /**
-   * @param {boolean=} reverse
    * @param {boolean=} growVertically
    */
-  makeWrappable(reverse, growVertically) {
+  makeWrappable(growVertically) {
     this._contentElement.classList.add('wrappable');
-    this._reverse = !!reverse;
-    if (reverse)
-      this._contentElement.classList.add('wrappable-reverse');
     if (growVertically)
       this._contentElement.classList.add('toolbar-grow-vertical');
   }
@@ -246,10 +241,7 @@ UI.Toolbar = class {
     item._toolbar = this;
     if (!this._enabled)
       item._applyEnabledState(false);
-    if (this._reverse)
-      this._contentElement.insertBefore(item.element, this._insertionPoint.nextSibling);
-    else
-      this._contentElement.insertBefore(item.element, this._insertionPoint);
+    this._contentElement.insertBefore(item.element, this._insertionPoint);
     this._hideSeparatorDupes();
   }
 

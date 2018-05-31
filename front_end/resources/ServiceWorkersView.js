@@ -16,7 +16,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._currentWorkersView.element.classList.add('service-workers-this-origin');
 
     this._toolbar = this._currentWorkersView.createToolbar();
-    this._toolbar.makeWrappable(false, true);
+    this._toolbar.makeWrappable(true /* growVertically */);
 
     /** @type {!Map<!SDK.ServiceWorkerRegistration, !Resources.ServiceWorkersView.Section>} */
     this._sections = new Map();

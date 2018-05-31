@@ -48,7 +48,7 @@ Emulation.DeviceModeToolbar = class {
     this._fillModeToolbar(modeToolbar);
     rightContainer.createChild('div', 'device-mode-toolbar-spacer');
     const optionsToolbar = new UI.Toolbar('device-mode-toolbar-options', rightContainer);
-    optionsToolbar.makeWrappable(true);
+    optionsToolbar.makeWrappable();
     this._fillOptionsToolbar(optionsToolbar);
 
     this._emulatedDevicesList = Emulation.EmulatedDevicesList.instance();
@@ -189,12 +189,11 @@ Emulation.DeviceModeToolbar = class {
    * @param {!UI.Toolbar} toolbar
    */
   _fillOptionsToolbar(toolbar) {
+    toolbar.appendToolbarItem(
+        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
     const moreOptionsButton = new UI.ToolbarMenuButton(this._appendOptionsMenuItems.bind(this));
     moreOptionsButton.setTitle(Common.UIString('More options'));
     toolbar.appendToolbarItem(moreOptionsButton);
-
-    toolbar.appendToolbarItem(
-        this._wrapToolbarItem(createElementWithClass('div', 'device-mode-empty-toolbar-element')));
   }
 
   /**

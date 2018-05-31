@@ -60,6 +60,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this._element.addEventListener('clipboard-copy', this._onCopyOrCut.bind(this, false), false);
     this._element.addEventListener('clipboard-cut', this._onCopyOrCut.bind(this, true), false);
     this._element.addEventListener('clipboard-paste', this._onPaste.bind(this), false);
+    this._element.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
     outlineDisclosureElement.appendChild(this._element);
     this.element = shadowContainer;
@@ -774,7 +775,13 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     this._updateModifiedNodes();
   }
 
-  handleShortcut(event) {
+  /**
+   * @param {!Event} event
+   */
+  _onKeyDown(event) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (UI.isEditing())
+      return;
     const node = this.selectedDOMNode();
     if (!node)
       return;
@@ -782,16 +789,16 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (!treeElement)
       return;
 
-    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && node.parentNode) {
-      if (event.key === 'ArrowUp' && node.previousSibling) {
+    if (UI.KeyboardShortcut.eventHasCtrlOrMeta(keyboardEvent) && node.parentNode) {
+      if (keyboardEvent.key === 'ArrowUp' && node.previousSibling) {
         node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        event.handled = true;
+        keyboardEvent.consume(true);
         return;
       }
-      if (event.key === 'ArrowDown' && node.nextSibling) {
+      if (keyboardEvent.key === 'ArrowDown' && node.nextSibling) {
         node.moveTo(
             node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        event.handled = true;
+        keyboardEvent.consume(true);
         return;
       }
     }

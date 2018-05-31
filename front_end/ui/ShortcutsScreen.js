@@ -52,9 +52,10 @@ UI.ShortcutsScreen = class {
     elementsSection.addAlternateKeys(
         UI.ShortcutsScreen.ElementsPanelShortcuts.EditAttribute, Common.UIString('Edit attribute'));
     elementsSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.HideElement, Common.UIString('Hide element'));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('elements.hide-element'), Common.UIString('Hide element'));
     elementsSection.addAlternateKeys(
-        UI.ShortcutsScreen.ElementsPanelShortcuts.ToggleEditAsHTML, Common.UIString('Toggle edit as HTML'));
+        UI.shortcutRegistry.shortcutDescriptorsForAction('elements.edit-as-html'),
+        Common.UIString('Toggle edit as HTML'));
 
     const stylesPaneSection = UI.shortcutsScreen.section(Common.UIString('Styles Pane'));
 
@@ -370,10 +371,6 @@ UI.ShortcutsScreen.ElementsPanelShortcuts = {
   Collapse: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Left)],
 
   EditAttribute: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Enter)],
-
-  HideElement: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.H)],
-
-  ToggleEditAsHTML: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.F2)],
 
   NextProperty: [UI.KeyboardShortcut.makeDescriptor(UI.KeyboardShortcut.Keys.Tab)],
 

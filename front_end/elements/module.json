@@ -192,6 +192,42 @@
             ]
         },
         {
+            "type": "action",
+            "actionId": "elements.undo",
+            "contextTypes": [
+                "Elements.ElementsPanel"
+            ],
+            "className": "Elements.ElementsActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Z"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Z"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "elements.redo",
+            "contextTypes": [
+                "Elements.ElementsPanel"
+            ],
+            "className": "Elements.ElementsActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+Y"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+Shift+Z"
+                }
+            ]
+        },
+        {
             "type": "@Elements.MarkerDecorator",
             "className": "Elements.ElementsPanel.PseudoStateMarkerDecorator",
             "marker": "pseudo-state-marker"

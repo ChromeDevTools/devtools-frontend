@@ -62,7 +62,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
 
   if (id) {
     const test = new Elements.DOMPath.Step(nodeName + idSelector(id), true);
-    if (document.querySelectorAll(test.value).length == 1) {
+    if (node.ownerDocument.querySelectorAll(test.value).length == 1) {
       return test;
     }
   }

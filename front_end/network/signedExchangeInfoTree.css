@@ -86,3 +86,7 @@
     word-break: break-word;
     margin-left: 20px;
 }
+
+.tree-outline .error-field {
+    color: red;
+}

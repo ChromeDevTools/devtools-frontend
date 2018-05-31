@@ -22,24 +22,35 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
     root.expandTreeElementsWhenArrowing = true;
     this.element.appendChild(root.element);
 
+    /** @type {!Map<number|undefined, !Set<string>>} */
+    const errorFieldSetMap = new Map();
+
     if (signedExchangeInfo.errors && signedExchangeInfo.errors.length) {
       const errorMessagesCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Errors'));
-      for (const errorMessage of signedExchangeInfo.errors) {
+      for (const error of signedExchangeInfo.errors) {
         const fragment = createDocumentFragment();
         fragment.appendChild(UI.Icon.create('smallicon-error', 'prompt-icon'));
-        fragment.createChild('div', 'error-log').textContent = errorMessage;
+        fragment.createChild('div', 'error-log').textContent = error.message;
         errorMessagesCategory.createLeaf(fragment);
+        if (error.errorField) {
+          let errorFieldSet = errorFieldSetMap.get(error.signatureIndex);
+          if (!errorFieldSet) {
+            errorFieldSet = new Set();
+            errorFieldSetMap.set(error.signatureIndex, errorFieldSet);
+          }
+          errorFieldSet.add(error.errorField);
+        }
       }
     }
+
+    const titleElement = createDocumentFragment();
+    titleElement.createChild('div', 'header-name').textContent = Common.UIString('Signed HTTP exchange');
+    const learnMoreNode =
+        UI.XLink.create('https://github.com/WICG/webpackage', Common.UIString('Learn\xa0more'), 'header-toggle');
+    titleElement.appendChild(learnMoreNode);
+    const headerCategory = new Network.SignedExchangeInfoView.Category(root, titleElement);
     if (signedExchangeInfo.header) {
       const header = signedExchangeInfo.header;
-      const titleElement = createDocumentFragment();
-      titleElement.createChild('div', 'header-name').textContent = Common.UIString('Signed HTTP exchange');
-      const learnMoreNode =
-          UI.XLink.create('https://github.com/WICG/webpackage', Common.UIString('Learn\xa0more'), 'header-toggle');
-      titleElement.appendChild(learnMoreNode);
-
-      const headerCategory = new Network.SignedExchangeInfoView.Category(root, titleElement);
       const redirectDestination = request.redirectDestination();
       const requestURLElement = this._formatHeader(Common.UIString('Request URL'), header.requestUrl);
       if (redirectDestination) {
@@ -61,14 +72,19 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
       }
       this._responseHeadersItem.expand();
 
-      for (const signature of header.signatures) {
+      for (let i = 0; i < header.signatures.length; ++i) {
+        const errorFieldSet = errorFieldSetMap.get(i) || new Set();
+        const signature = header.signatures[i];
         const signatureCategory = new Network.SignedExchangeInfoView.Category(root, Common.UIString('Signature'));
         signatureCategory.createLeaf(this._formatHeader(Common.UIString('Label'), signature.label));
-        signatureCategory.createLeaf(this._formatHeaderForHexData(Common.UIString('Signature'), signature.signature));
-        signatureCategory.createLeaf(this._formatHeader(Common.UIString('Integrity'), signature.integrity));
+        signatureCategory.createLeaf(this._formatHeaderForHexData(
+            Common.UIString('Signature'), signature.signature,
+            errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureSig)));
 
         if (signature.certUrl) {
-          const certURLElement = this._formatHeader(Common.UIString('Certificate URL'), signature.certUrl);
+          const certURLElement = this._formatHeader(
+              Common.UIString('Certificate URL'), signature.certUrl,
+              errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureCertUrl));
           if (signature.certificates) {
             const viewCertLink = certURLElement.createChild('span', 'devtools-link header-toggle');
             viewCertLink.textContent = Common.UIString('View certificate');
@@ -77,15 +93,23 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
           }
           signatureCategory.createLeaf(certURLElement);
         }
+        signatureCategory.createLeaf(this._formatHeader(
+            Common.UIString('Integrity'), signature.integrity,
+            errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureIntegrity)));
         if (signature.certSha256) {
-          signatureCategory.createLeaf(
-              this._formatHeaderForHexData(Common.UIString('Certificate SHA256'), signature.certSha256));
+          signatureCategory.createLeaf(this._formatHeaderForHexData(
+              Common.UIString('Certificate SHA256'), signature.certSha256,
+              errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureCertSha256)));
         }
-        signatureCategory.createLeaf(this._formatHeader(Common.UIString('Validity URL'), signature.validityUrl));
-        signatureCategory.createLeaf().title =
-            this._formatHeader(Common.UIString('Date'), new Date(1000 * signature.date).toUTCString());
-        signatureCategory.createLeaf().title =
-            this._formatHeader(Common.UIString('Expires'), new Date(1000 * signature.expires).toUTCString());
+        signatureCategory.createLeaf(this._formatHeader(
+            Common.UIString('Validity URL'), signature.validityUrl,
+            errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureValidityUrl)));
+        signatureCategory.createLeaf().title = this._formatHeader(
+            Common.UIString('Date'), new Date(1000 * signature.date).toUTCString(),
+            errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureTimestamps));
+        signatureCategory.createLeaf().title = this._formatHeader(
+            Common.UIString('Expires'), new Date(1000 * signature.expires).toUTCString(),
+            errorFieldSet.has(Protocol.Network.SignedExchangeErrorField.SignatureTimestamps));
       }
     }
     if (signedExchangeInfo.securityDetails) {
@@ -103,26 +127,40 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
   /**
    * @param {string} name
    * @param {string} value
+   * @param {boolean=} highlighted
    * @return {!DocumentFragment}
    */
-  _formatHeader(name, value) {
+  _formatHeader(name, value, highlighted) {
     const fragment = createDocumentFragment();
-    fragment.createChild('div', 'header-name').textContent = name + ': ';
+    const nameElement = fragment.createChild('div', 'header-name');
+    nameElement.textContent = name + ': ';
     fragment.createChild('span', 'header-separator');
-    fragment.createChild('div', 'header-value source-code').textContent = value;
+    const valueElement = fragment.createChild('div', 'header-value source-code');
+    valueElement.textContent = value;
+    if (highlighted) {
+      nameElement.classList.add('error-field');
+      valueElement.classList.add('error-field');
+    }
     return fragment;
   }
 
   /**
    * @param {string} name
    * @param {string} value
+   * @param {boolean=} highlighted
    * @return {!DocumentFragment}
    */
-  _formatHeaderForHexData(name, value) {
+  _formatHeaderForHexData(name, value, highlighted) {
     const fragment = createDocumentFragment();
-    fragment.createChild('div', 'header-name').textContent = name + ': ';
+    const nameElement = fragment.createChild('div', 'header-name');
+    nameElement.textContent = name + ': ';
     fragment.createChild('span', 'header-separator');
-    fragment.createChild('div', 'header-value source-code hex-data').textContent = value.replace(/(.{2})/g, '$1 ');
+    const valueElement = fragment.createChild('div', 'header-value source-code hex-data');
+    valueElement.textContent = value.replace(/(.{2})/g, '$1 ');
+    if (highlighted) {
+      nameElement.classList.add('error-field');
+      valueElement.classList.add('error-field');
+    }
     return fragment;
   }
 };

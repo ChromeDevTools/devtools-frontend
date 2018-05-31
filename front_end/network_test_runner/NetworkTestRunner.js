@@ -91,7 +91,7 @@ NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
       }
       if (request.signedExchangeInfo().errors) {
         for (const errorMessage of request.signedExchangeInfo().errors)
-          TestRunner.addResult(`    Error: ${errorMessage}`);
+          TestRunner.addResult(`    Error: ${JSON.stringify(errorMessage)}`);
       }
     }
   }

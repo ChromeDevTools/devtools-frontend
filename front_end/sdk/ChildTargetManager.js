@@ -107,6 +107,15 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     this._fireAvailableTargetsChanged();
   }
 
+  /**
+   * @override
+   * @param {string} targetId
+   * @param {string} status
+   * @param {number} errorCode
+   */
+  targetCrashed(targetId, status, errorCode) {
+  }
+
   _fireAvailableTargetsChanged() {
     SDK.targetManager.dispatchEventToListeners(
         SDK.TargetManager.Events.AvailableTargetsChanged, this._targetInfos.valuesArray());

@@ -78,8 +78,10 @@ TextEditor.TextEditorAutocompleteController = class {
    */
   _beforeChange(codeMirror, changeObject) {
     this._updatedLines = this._updatedLines || {};
-    for (let i = changeObject.from.line; i <= changeObject.to.line; ++i)
-      this._updatedLines[i] = this._codeMirror.getLine(i);
+    for (let i = changeObject.from.line; i <= changeObject.to.line; ++i) {
+      if (this._updatedLines[i] === undefined)
+        this._updatedLines[i] = this._codeMirror.getLine(i);
+    }
   }
 
   /**

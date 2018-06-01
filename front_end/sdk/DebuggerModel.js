@@ -968,7 +968,7 @@ SDK.DebuggerModel.ContinueToLocationTargetCallFrames = {
 SDK.DebuggerModel.SetBreakpointResult;
 
 /**
- * @implements {Protocol.DebuggerDispatcher}
+ * @extends {Protocol.DebuggerDispatcher}
  * @unrestricted
  */
 SDK.DebuggerDispatcher = class {

@@ -231,7 +231,10 @@ def generate_protocol_externs(output_path, file1, file2):
                     output_file.write("\n/** @typedef {%s} */\nProtocol.%s.%s;\n" %
                                       (type_traits[type["type"]], domain_name, type["id"]))
 
-        output_file.write("/** @interface */\n")
+        if domain_name in ["Runtime", "Debugger", "HeapProfiler"]:
+            output_file.write("/** @constructor */\n")
+        else:
+            output_file.write("/** @interface */\n")
         output_file.write("Protocol.%sDispatcher = function() {};\n" % domain_name)
         if "events" in domain:
             for event in domain["events"]:

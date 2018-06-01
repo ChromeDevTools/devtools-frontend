@@ -210,7 +210,7 @@ SDK.HeapProfilerModel.Events = {
 };
 
 /**
- * @implements {Protocol.HeapProfilerDispatcher}
+ * @extends {Protocol.HeapProfilerDispatcher}
  * @unrestricted
  */
 SDK.HeapProfilerDispatcher = class {

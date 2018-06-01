@@ -583,7 +583,7 @@ SDK.RuntimeModel.QueryObjectResult;
 SDK.RuntimeModel.ConsoleAPICall;
 
 /**
- * @implements {Protocol.RuntimeDispatcher}
+ * @extends {Protocol.RuntimeDispatcher}
  * @unrestricted
  */
 SDK.RuntimeDispatcher = class {

@@ -74,7 +74,9 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._showMemorySetting.setTitle(Common.UIString('Memory'));
     this._showMemorySetting.addChangeListener(this._onModeChanged, this);
 
-    this._panelToolbar = new UI.Toolbar('', this.element);
+    const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
+    this._panelToolbar = new UI.Toolbar('timeline-main-toolbar', timelineToolbarContainer);
+    this._panelRightToolbar = new UI.Toolbar('', timelineToolbarContainer);
     this._createSettingsPane();
     this._updateShowSettingsToolbarButton();
 
@@ -228,10 +230,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(UI.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     // Settings
-    this._panelToolbar.appendSpacer();
-    this._panelToolbar.appendText('');
-    this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(this._showSettingsPaneButton);
+    this._panelRightToolbar.appendSeparator();
+    this._panelRightToolbar.appendToolbarItem(this._showSettingsPaneButton);
   }
 
   _createSettingsPane() {
@@ -514,6 +514,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._historyManager.setEnabled(this._state === state.Idle);
     this._clearButton.setEnabled(this._state === state.Idle);
     this._panelToolbar.setEnabled(this._state !== state.Loading);
+    this._panelRightToolbar.setEnabled(this._state !== state.Loading);
     this._dropTarget.setEnabled(this._state === state.Idle);
     this._loadButton.setEnabled(this._state === state.Idle);
     this._saveButton.setEnabled(this._state === state.Idle && !!this._performanceModel);

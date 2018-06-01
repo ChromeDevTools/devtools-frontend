@@ -27,9 +27,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.panel.timeline > .toolbar {
+.timeline-toolbar-container {
+    display: flex;
+}
+
+.timeline-toolbar-container > .toolbar {
     background-color: var(--toolbar-bg-color);
     border-bottom: var(--divider-border);
+}
+
+.timeline-main-toolbar {
+    flex: 1 1 auto;
 }
 
 .timeline-settings-pane {

@@ -32,7 +32,15 @@
     overflow: hidden;
 }
 
-.console-view > .toolbar {
+.console-toolbar-container {
+    display: flex;
+}
+
+.console-main-toolbar {
+    flex: 1 1 auto;
+}
+
+.console-toolbar-container > .toolbar {
     background-color: var(--toolbar-bg-color);
     border-bottom: var(--divider-border);
 }

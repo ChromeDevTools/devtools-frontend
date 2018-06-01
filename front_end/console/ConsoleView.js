@@ -49,7 +49,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
     this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
 
-    const toolbar = new UI.Toolbar('', this.element);
+    const consoleToolbarContainer = this.element.createChild('div', 'console-toolbar-container');
     this._splitWidget =
         new UI.SplitWidget(true /* isVertical */, false /* secondIsSidebar */, 'console.sidebar.width', 100);
     this._splitWidget.setMainWidget(this._searchableView);
@@ -60,7 +60,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._isSidebarOpen = this._splitWidget.showMode() === UI.SplitWidget.ShowMode.Both;
     if (this._isSidebarOpen)
       this._filter._levelMenuButton.setEnabled(false);
-    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton('console sidebar'));
     this._splitWidget.addEventListener(UI.SplitWidget.Events.ShowModeChanged, event => {
       this._isSidebarOpen = event.data === UI.SplitWidget.ShowMode.Both;
       this._filter._levelMenuButton.setEnabled(!this._isSidebarOpen);
@@ -98,6 +97,9 @@ Console.ConsoleView = class extends UI.VBox {
     const groupSimilarToggle =
         new UI.ToolbarSettingCheckbox(this._groupSimilarSetting, Common.UIString('Group similar'));
 
+    const toolbar = new UI.Toolbar('console-main-toolbar', consoleToolbarContainer);
+    const rightToolbar = new UI.Toolbar('', consoleToolbarContainer);
+    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton('console sidebar'));
     toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.clear'))));
     toolbar.appendSeparator();
@@ -107,10 +109,9 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
     toolbar.appendToolbarItem(groupSimilarToggle);
     toolbar.appendToolbarItem(this._progressToolbarItem);
-    toolbar.appendSpacer();
-    toolbar.appendToolbarItem(this._filterStatusText);
-    toolbar.appendSeparator();
-    toolbar.appendToolbarItem(this._showSettingsPaneButton);
+    rightToolbar.appendSeparator();
+    rightToolbar.appendToolbarItem(this._filterStatusText);
+    rightToolbar.appendToolbarItem(this._showSettingsPaneButton);
 
     this._preserveLogCheckbox = new UI.ToolbarSettingCheckbox(
         Common.moduleSetting('preserveConsoleLog'), Common.UIString('Do not clear log on page reload / navigation'),

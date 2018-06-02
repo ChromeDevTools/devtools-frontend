@@ -163,15 +163,7 @@ UI.Fragment = class {
         result._elementsById.set(/** @type {string} */ (bind.elementId), element);
       } else if ('replaceNodeIndex' in bind) {
         const value = values[/** @type {number} */ (bind.replaceNodeIndex)];
-        let node = null;
-        if (value instanceof Node)
-          node = value;
-        else if (value instanceof UI.Fragment)
-          node = value._element;
-        else
-          node = createTextNode('' + value);
-
-        element.parentNode.replaceChild(node, element);
+        element.parentNode.replaceChild(this._nodeForValue(value), element);
       } else if ('attr' in bind) {
         if (bind.attr.names.length === 2 && bind.attr.values.length === 1 &&
             typeof values[bind.attr.index] === 'function') {
@@ -196,6 +188,24 @@ UI.Fragment = class {
       }
     }
     return result;
+  }
+
+  /**
+   * @param {*} value
+   * @return {!Node}
+   */
+  static _nodeForValue(value) {
+    if (value instanceof Node)
+      return value;
+    if (value instanceof UI.Fragment)
+      return value._element;
+    if (Array.isArray(value)) {
+      const node = createDocumentFragment();
+      for (const v of value)
+        node.appendChild(this._nodeForValue(v));
+      return node;
+    }
+    return createTextNode('' + value);
   }
 };
 

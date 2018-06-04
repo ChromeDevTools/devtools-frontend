@@ -262,8 +262,10 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       if (value.preview && showPreview) {
         const previewFormatter = new ObjectUI.RemoteObjectPreviewFormatter();
         previewFormatter.appendObjectPreview(valueElement, value.preview, false /* isEntry */);
+      } else if (description.length > ObjectUI.ObjectPropertiesSection._maxRenderableStringLength) {
+        valueElement.appendChild(UI.createExpandableText(description, 50));
       } else {
-        valueElement.setTextContentTruncatedIfNeeded(description);
+        valueElement.textContent = description;
       }
     }
 
@@ -292,8 +294,12 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
      */
     function createStringElement() {
       const valueElement = createElementWithClass('span', 'object-value-string');
+      const text = description.replace(/\n/g, '\u21B5');
       valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
-      valueElement.createTextChild('').setTextContentTruncatedIfNeeded(description.replace(/\n/g, '\u21B5'));
+      if (description.length > ObjectUI.ObjectPropertiesSection._maxRenderableStringLength)
+        valueElement.appendChild(UI.createExpandableText(text, 50));
+      else
+        valueElement.createTextChild(text);
       valueElement.createChild('span', 'object-value-string-quote').textContent = '"';
       valueElement.title = description || '';
       return valueElement;
@@ -404,6 +410,8 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
 
 /** @const */
 ObjectUI.ObjectPropertiesSection._arrayLoadThreshold = 100;
+/** @const */
+ObjectUI.ObjectPropertiesSection._maxRenderableStringLength = 10000;
 
 
 /**

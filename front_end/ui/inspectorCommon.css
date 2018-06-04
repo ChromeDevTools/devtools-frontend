@@ -396,3 +396,24 @@ label[is=dt-icon-label] {
     -webkit-mask-position: var(--spritesheet-position);
     background: #fafafa !important;
 }
+
+.expandable-inline-button {
+    background-color: #dedede;
+    padding: 2px 4px;
+    margin: 0 2px;
+    color: #333;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 12px;
+    font-family: sans-serif;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.expandable-inline-button::after {
+    content: attr(data-text);
+}
+
+.expandable-inline-button:hover {
+    background-color: #d5d5d5;
+}

@@ -380,6 +380,15 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
 };
 
 /**
+ * @param {function(!Element):boolean} deepFilter
+ * @param {function(!ObjectUI.ObjectPropertiesSection):boolean} sectionFilter
+ * @return {!Promise}
+ */
+ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFilter) {
+  return new Promise(fulfill => ConsoleTestRunner.expandConsoleMessages(fulfill, deepFilter, sectionFilter));
+};
+
+/**
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = function(callback) {

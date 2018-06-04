@@ -58,16 +58,15 @@ UI.Fragment = class {
    */
   static _template(strings) {
     let html = '';
-    let insideText = false;
+    let insideText = true;
     for (let i = 0; i < strings.length - 1; i++) {
       html += strings[i];
       const close = strings[i].lastIndexOf('>');
-      if (close !== -1) {
-        if (strings[i].indexOf('<', close + 1) === -1)
-          insideText = true;
-        else
-          insideText = false;
-      }
+      const open = strings[i].indexOf('<', close + 1);
+      if (close !== -1 && open === -1)
+        insideText = true;
+      else if (open !== -1)
+        insideText = false;
       html += insideText ? UI.Fragment._textMarker : UI.Fragment._attributeMarker(i);
     }
     html += strings[strings.length - 1];

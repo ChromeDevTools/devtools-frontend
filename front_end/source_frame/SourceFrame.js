@@ -312,8 +312,10 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     if (!this.loaded || !this.isShowing())
       return;
 
-    this._textEditor.revealPosition(
-        this._positionToReveal.line, this._positionToReveal.column, this._positionToReveal.shouldHighlight);
+    const [line, column] =
+        this._transformer.rawToEditorLocation(this._positionToReveal.line, this._positionToReveal.column);
+
+    this._textEditor.revealPosition(line, column, this._positionToReveal.shouldHighlight);
     this._positionToReveal = null;
   }
 

@@ -278,6 +278,7 @@ input {
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar,
 :host-context(:not(.platform-mac).-theme-with-dark-background) ::-webkit-scrollbar {
     width: 14px;
+    height: 14px;
 }
 
 :not(.platform-mac).-theme-with-dark-background ::-webkit-scrollbar-track,

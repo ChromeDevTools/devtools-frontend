@@ -544,7 +544,7 @@ CodeMirror.prototype = {
 };
 /** @type {!{cursorDiv: Element, lineSpace: Element}} */
 CodeMirror.prototype.display;
-/** @type {!{mode: string}} */
+/** @type {!{mode: string, lineWrapping: boolean}} */
 CodeMirror.prototype.options;
 /** @type {!Object} */
 CodeMirror.Pass;
@@ -557,6 +557,36 @@ CodeMirror.overlayMode = function(mode1, mode2, squashSpans) {};
 CodeMirror.defineMode = function(modeName, modeConstructor) {};
 CodeMirror.startState = function(mode) {};
 CodeMirror.copyState = function(mode, state) {};
+CodeMirror.inputStyles = {};
+CodeMirror.inputStyles.textarea = class {
+  constructor() {
+    /** @type {!HTMLTextAreaElement} */
+    this.textarea;
+    this.prevInput = '';
+    this.composing = false;
+    this.contextMenuPending = false;
+    /** @type {!CodeMirror} */
+    this.cm;
+  }
+  /**
+   * @param {!Object} display
+   */
+  init(display) {
+  }
+
+  /**
+   * @param {boolean=} typing
+   */
+  reset(typing) {
+  }
+
+  /**
+   * @return {boolean}
+   */
+  poll() {
+    return false;
+  }
+};
 
 /** @typedef {{canceled: boolean, from: !CodeMirror.Pos, to: !CodeMirror.Pos, text: string, origin: string, cancel: function()}} */
 CodeMirror.BeforeChangeObject;

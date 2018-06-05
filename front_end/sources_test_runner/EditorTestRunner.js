@@ -149,8 +149,16 @@ function fakeCodeMirrorKeyEvent(editor, eventType, code, charCode, modifiers) {
 }
 
 function fakeCodeMirrorInputEvent(editor, character) {
-  if (typeof character === 'string')
-    editor._codeMirror.display.input.textarea.value += character;
+  if (typeof character !== 'string')
+    return;
+  const input = editor._codeMirror.display.input;
+  const value = input.textarea.value;
+  const newValue =
+      value.substring(0, input.textarea.selectionStart) + character + value.substring(input.textarea.selectionEnd);
+  const caretPosition = input.textarea.selectionStart + character.length;
+  input.textarea.value = newValue;
+  input.textarea.setSelectionRange(caretPosition, caretPosition);
+  input.poll();
 }
 
 SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callback) {
@@ -186,15 +194,10 @@ SourcesTestRunner.fakeKeyEvent = function(editor, originalCode, modifiers, callb
     return;
   }
 
+  const inputReadPromise = new Promise(x => editor._codeMirror.on('inputRead', x));
   fakeCodeMirrorInputEvent(editor, originalCode);
   fakeCodeMirrorKeyEvent(editor, 'keyup', code, charCode, modifiers);
-
-  function callbackWrapper() {
-    editor._codeMirror.off('inputRead', callbackWrapper);
-    callback();
-  }
-
-  editor._codeMirror.on('inputRead', callbackWrapper);
+  inputReadPromise.then(callback);
 };
 
 SourcesTestRunner.dumpSelectionStats = function(textEditor) {

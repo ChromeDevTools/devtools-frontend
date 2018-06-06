@@ -571,15 +571,15 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.MonotonicTime} finishTime
    * @param {number} encodedDataLength
-   * @param {boolean=} blockedCrossSiteDocument
+   * @param {boolean=} shouldReportCorbBlocking
    */
-  loadingFinished(requestId, finishTime, encodedDataLength, blockedCrossSiteDocument) {
+  loadingFinished(requestId, finishTime, encodedDataLength, shouldReportCorbBlocking) {
     let networkRequest = this._inflightRequestsById[requestId];
     if (!networkRequest)
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     if (!networkRequest)
       return;
-    this._finishNetworkRequest(networkRequest, finishTime, encodedDataLength, blockedCrossSiteDocument);
+    this._finishNetworkRequest(networkRequest, finishTime, encodedDataLength, shouldReportCorbBlocking);
   }
 
   /**
@@ -834,9 +834,9 @@ SDK.NetworkDispatcher = class {
    * @param {!SDK.NetworkRequest} networkRequest
    * @param {!Protocol.Network.MonotonicTime} finishTime
    * @param {number} encodedDataLength
-   * @param {boolean=} blockedCrossSiteDocument
+   * @param {boolean=} shouldReportCorbBlocking
    */
-  _finishNetworkRequest(networkRequest, finishTime, encodedDataLength, blockedCrossSiteDocument) {
+  _finishNetworkRequest(networkRequest, finishTime, encodedDataLength, shouldReportCorbBlocking) {
     networkRequest.endTime = finishTime;
     networkRequest.finished = true;
     if (encodedDataLength >= 0)
@@ -846,7 +846,7 @@ SDK.NetworkDispatcher = class {
     delete this._inflightRequestsByURL[networkRequest.url()];
     SDK.multitargetNetworkManager._inflightMainResourceRequests.delete(networkRequest.requestId());
 
-    if (blockedCrossSiteDocument) {
+    if (shouldReportCorbBlocking) {
       const message = Common.UIString(
           `Cross-Origin Read Blocking (CORB) blocked cross-origin response %s with MIME type %s. ` +
               `See https://www.chromestatus.com/feature/5629709824032768 for more details.`,

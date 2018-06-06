@@ -157,9 +157,21 @@ Host.InspectorFrontendHostStub = class {
   /**
    * @override
    * @param {string} text
+   * @suppressGlobalPropertiesCheck
    */
   copyText(text) {
-    Common.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+    } else if (document.queryCommandSupported('copy')) {
+      const input = document.createElement('input');
+      input.value = text;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    } else {
+      Common.console.error('Clipboard is not enabled in hosted mode. Please inspect using chrome://inspect');
+    }
   }
 
   /**

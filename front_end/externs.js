@@ -1027,3 +1027,17 @@ DetailsRenderer.NodeDetailsJSON;
  * }}
  */
 DetailsRenderer.OpportunitySummary;
+
+
+// Clipboard API
+
+/** @constructor */
+const Clipboard = function() {};
+/**
+ * @param {string} data
+ * @return {!Promise}
+ */
+Clipboard.prototype.writeText = function(data) {};
+
+/** @type {Clipboard} */
+Navigator.prototype.clipboard;

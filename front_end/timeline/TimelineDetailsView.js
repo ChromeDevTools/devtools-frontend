@@ -53,11 +53,13 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
    * @param {?TimelineModel.TimelineModel.Track} track
    */
   setModel(model, track) {
-    if (this._model)
-      this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
-    this._model = model;
-    if (this._model)
-      this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+    if (this._model !== model) {
+      if (this._model)
+        this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+      this._model = model;
+      if (this._model)
+        this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+    }
     this._track = track;
     this._tabbedPane.closeTabs(
         [Timeline.TimelineDetailsView.Tab.PaintProfiler, Timeline.TimelineDetailsView.Tab.LayerViewer], false);

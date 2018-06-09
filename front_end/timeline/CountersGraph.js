@@ -90,11 +90,13 @@ Timeline.CountersGraph = class extends UI.VBox {
    * @param {?TimelineModel.TimelineModel.Track} track
    */
   setModel(model, track) {
-    if (this._model)
-      this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
-    this._model = model;
-    if (this._model)
-      this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+    if (this._model !== model) {
+      if (this._model)
+        this._model.removeEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+      this._model = model;
+      if (this._model)
+        this._model.addEventListener(Timeline.PerformanceModel.Events.WindowChanged, this._onWindowChanged, this);
+    }
     this._calculator.setZeroTime(model ? model.timelineModel().minimumRecordTime() : 0);
     for (let i = 0; i < this._counters.length; ++i) {
       this._counters[i].reset();

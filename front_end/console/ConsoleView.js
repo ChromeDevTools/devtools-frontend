@@ -207,7 +207,8 @@ Console.ConsoleView = class extends UI.VBox {
 
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
 
-    this._messagesElement.addEventListener('mousedown', this._updateStickToBottomOnMouseDown.bind(this), false);
+    this._messagesElement.addEventListener(
+        'mousedown', event => this._updateStickToBottomOnMouseDown(event.button === 2), false);
     this._messagesElement.addEventListener('mouseup', this._updateStickToBottomOnMouseUp.bind(this), false);
     this._messagesElement.addEventListener('mouseleave', this._updateStickToBottomOnMouseUp.bind(this), false);
     this._messagesElement.addEventListener('wheel', this._updateStickToBottomOnWheel.bind(this), false);
@@ -1095,8 +1096,11 @@ Console.ConsoleView = class extends UI.VBox {
     highlightNode.scrollIntoViewIfNeeded();
   }
 
-  _updateStickToBottomOnMouseDown() {
-    this._muteViewportUpdates = true;
+  /**
+   * @param {boolean=} isRightClick
+   */
+  _updateStickToBottomOnMouseDown(isRightClick) {
+    this._muteViewportUpdates = !isRightClick;
     this._viewport.setStickToBottom(false);
     if (this._waitForScrollTimeout) {
       clearTimeout(this._waitForScrollTimeout);

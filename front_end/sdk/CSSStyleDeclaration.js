@@ -63,9 +63,22 @@ SDK.CSSStyleDeclaration = class {
     }
 
     this._allProperties = [];
-    for (let i = 0; i < payload.cssProperties.length; ++i) {
-      const property = SDK.CSSProperty.parsePayload(this, i, payload.cssProperties[i]);
-      this._allProperties.push(property);
+
+    if (payload.cssText && this.range) {
+      const cssText = new TextUtils.Text(payload.cssText);
+      let start = {line: this.range.startLine, column: this.range.startColumn};
+      for (const cssProperty of payload.cssProperties) {
+        const range = cssProperty.range;
+        if (range) {
+          parseUnusedText.call(this, cssText, start.line, start.column, range.startLine, range.startColumn);
+          start = {line: range.endLine, column: range.endColumn};
+        }
+        this._allProperties.push(SDK.CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
+      }
+      parseUnusedText.call(this, cssText, start.line, start.column, this.range.endLine, this.range.endColumn);
+    } else {
+      for (const cssProperty of payload.cssProperties)
+        this._allProperties.push(SDK.CSSProperty.parsePayload(this, this._allProperties.length, cssProperty));
     }
 
     this._generateSyntheticPropertiesIfNeeded();
@@ -80,6 +93,72 @@ SDK.CSSStyleDeclaration = class {
 
     this.cssText = payload.cssText;
     this._leadingProperties = null;
+
+    /**
+     * @this {SDK.CSSStyleDeclaration}
+     * @param {!TextUtils.Text} cssText
+     * @param {number} startLine
+     * @param {number} startColumn
+     * @param {number} endLine
+     * @param {number} endColumn
+     */
+    function parseUnusedText(cssText, startLine, startColumn, endLine, endColumn) {
+      const tr = new TextUtils.TextRange(startLine, startColumn, endLine, endColumn);
+      const missingText = cssText.extract(tr.relativeTo(this.range.startLine, this.range.startColumn));
+
+      // Try to fit the malformed css into properties.
+      const lines = missingText.split('\n');
+      let lineNumber = 0;
+      let inComment = false;
+      for (const line of lines) {
+        let column = 0;
+        for (const property of line.split(';')) {
+          const strippedProperty = stripComments(property, inComment);
+          const trimmedProperty = strippedProperty.text.trim();
+          inComment = strippedProperty.inComment;
+
+          if (trimmedProperty) {
+            let name;
+            let value;
+            const colonIndex = trimmedProperty.indexOf(':');
+            if (colonIndex === -1) {
+              name = trimmedProperty;
+              value = '';
+            } else {
+              name = trimmedProperty.substring(0, colonIndex).trim();
+              value = trimmedProperty.substring(colonIndex + 1).trim();
+            }
+            const range = new TextUtils.TextRange(lineNumber, column, lineNumber, column + property.length);
+            this._allProperties.push(new SDK.CSSProperty(
+                this, this._allProperties.length, name, value, false, false, false, false, property,
+                range.relativeFrom(startLine, startColumn)));
+          }
+          column += property.length + 1;
+        }
+        lineNumber++;
+      }
+    }
+
+    /**
+     * @param {string} text
+     * @param {boolean} inComment
+     * @return {{text: string, inComment: boolean}}
+     */
+    function stripComments(text, inComment) {
+      let output = '';
+      for (let i = 0; i < text.length; i++) {
+        if (!inComment && text.substring(i, i + 2) === '/*') {
+          inComment = true;
+          i++;
+        } else if (inComment && text.substring(i, i + 2) === '*/') {
+          inComment = false;
+          i++;
+        } else if (!inComment) {
+          output += text[i];
+        }
+      }
+      return {text: output, inComment};
+    }
   }
 
   _generateSyntheticPropertiesIfNeeded() {

@@ -763,6 +763,8 @@ Console.ConsoleView = class extends UI.VBox {
   _addGroupableMessagesToEnd() {
     /** @type {!Set<!SDK.ConsoleMessage>} */
     const alreadyAdded = new Set();
+    /** @type {!Set<string>} */
+    const processedGroupKeys = new Set();
     for (let i = 0; i < this._consoleMessages.length; ++i) {
       const viewMessage = this._consoleMessages[i];
       const message = viewMessage.consoleMessage();
@@ -784,9 +786,13 @@ Console.ConsoleView = class extends UI.VBox {
         continue;
       }
 
+      if (processedGroupKeys.has(key))
+        continue;
+
       if (!viewMessagesInGroup.find(x => this._shouldMessageBeVisible(x))) {
         // Optimize for speed.
         alreadyAdded.addAll(viewMessagesInGroup);
+        processedGroupKeys.add(key);
         continue;
       }
 

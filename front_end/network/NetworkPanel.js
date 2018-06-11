@@ -247,6 +247,7 @@ Network.NetworkPanel = class extends UI.Panel {
    */
   _createThrottlingConditionsSelect() {
     const toolbarItem = new UI.ToolbarComboBox(null);
+    toolbarItem.setTitle(ls`Throttling`);
     toolbarItem.setMaxWidth(160);
     MobileThrottling.throttlingManager().decorateSelectWithNetworkThrottling(toolbarItem.selectElement());
     return toolbarItem;

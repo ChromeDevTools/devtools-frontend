@@ -58,7 +58,7 @@ Screencast.ScreencastView = class extends UI.VBox {
     this._glassPaneElement = this._canvasContainerElement.createChild('div', 'screencast-glasspane fill hidden');
 
     this._canvasElement = this._canvasContainerElement.createChild('canvas');
-    this._canvasElement.tabIndex = 1;
+    this._canvasElement.tabIndex = 0;
     this._canvasElement.addEventListener('mousedown', this._handleMouseEvent.bind(this), false);
     this._canvasElement.addEventListener('mouseup', this._handleMouseEvent.bind(this), false);
     this._canvasElement.addEventListener('mousemove', this._handleMouseEvent.bind(this), false);

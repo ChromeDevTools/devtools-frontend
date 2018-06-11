@@ -11,7 +11,7 @@ Network.NetworkWaterfallColumn = class extends UI.VBox {
     this.registerRequiredCSS('network/networkWaterfallColumn.css');
 
     this._canvas = this.contentElement.createChild('canvas');
-    this._canvas.tabIndex = 1;
+    this._canvas.tabIndex = 0;
     this.setDefaultFocusedElement(this._canvas);
     this._canvasPosition = this._canvas.getBoundingClientRect();
 

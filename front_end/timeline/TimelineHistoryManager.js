@@ -435,6 +435,7 @@ Timeline.TimelineHistoryManager.ToolbarButton = class extends UI.ToolbarItem {
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
     action.addEventListener(UI.Action.Events.Enabled, event => this.setEnabled(/** @type {boolean} */ (event.data)));
+    this.setTitle(action.title());
   }
 
   /**

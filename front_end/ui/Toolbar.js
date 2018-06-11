@@ -861,6 +861,15 @@ UI.ToolbarComboBox = class extends UI.ToolbarItem {
   }
 
   /**
+   * @override
+   * @param {string} title
+   */
+  setTitle(title) {
+    UI.ARIAUtils.setAccessibleName(this._selectElement, title);
+    super.setTitle(title);
+  }
+
+  /**
    * @return {!HTMLSelectElement}
    */
   selectElement() {

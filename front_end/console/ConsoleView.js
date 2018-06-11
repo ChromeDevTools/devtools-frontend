@@ -1209,7 +1209,7 @@ Console.ConsoleViewFilter = class {
     this._levelLabels[SDK.ConsoleMessage.MessageLevel.Warning] = Common.UIString('Warnings');
     this._levelLabels[SDK.ConsoleMessage.MessageLevel.Error] = Common.UIString('Errors');
 
-    this._levelMenuButton = new UI.ToolbarButton('');
+    this._levelMenuButton = new UI.ToolbarButton(ls`Log levels`);
     this._levelMenuButton.turnIntoSelect();
     this._levelMenuButton.addEventListener(UI.ToolbarButton.Events.Click, this._showLevelContextMenu.bind(this));
 

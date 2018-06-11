@@ -81,7 +81,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._viewportElement = this._chartViewport.viewportElement;
     this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas'));
 
-    this._canvas.tabIndex = 1;
+    this._canvas.tabIndex = 0;
     this.setDefaultFocusedElement(this._canvas);
     this._canvas.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._canvas.addEventListener('mouseout', this._onMouseOut.bind(this), false);

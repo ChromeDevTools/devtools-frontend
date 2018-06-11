@@ -56,9 +56,10 @@
     overflow: hidden;
     height: 24px;
     position: relative;
+    margin: 0;
 }
 
-.filter-bitset-filter li {
+.filter-bitset-filter span {
     display: inline-block;
     flex: none;
     margin: auto 2px;
@@ -77,22 +78,22 @@
     display: inline-block;
 }
 
-.filter-bitset-filter li.selected,
-.filter-bitset-filter li:hover,
-.filter-bitset-filter li:active {
+.filter-bitset-filter span.selected,
+.filter-bitset-filter span:hover,
+.filter-bitset-filter span:active {
     color: white;
     text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0;
 }
 
-.filter-bitset-filter li:hover {
+.filter-bitset-filter span:hover {
     background: rgba(0, 0, 0, 0.2);
 }
 
-.filter-bitset-filter li.selected {
+.filter-bitset-filter span.selected {
     background: rgba(0, 0, 0, 0.3);
 }
 
-.filter-bitset-filter li:active {
+.filter-bitset-filter span:active {
     background: rgba(0, 0, 0, 0.5);
 }
 

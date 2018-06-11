@@ -338,7 +338,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    * @param {string=} title
    */
   _addBit(name, label, title) {
-    const typeFilterElement = this._filtersElement.createChild('li', name);
+    const typeFilterElement = this._filtersElement.createChild('span', name);
     typeFilterElement.typeName = name;
     typeFilterElement.createTextChild(label);
     if (title)

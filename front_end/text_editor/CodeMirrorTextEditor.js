@@ -1709,6 +1709,7 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
    */
   init(display) {
     super.init(display);
+    UI.ARIAUtils.setAccessibleName(this.textarea, ls`Code editor`);
     this.textarea.addEventListener('compositionstart', this._onCompositionStart.bind(this));
   }
 

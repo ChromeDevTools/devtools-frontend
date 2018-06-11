@@ -43,6 +43,8 @@ const baseUrl = self.location ? self.location.origin + self.location.pathname : 
 self._importScriptPathPrefix = baseUrl.substring(0, baseUrl.lastIndexOf('/') + 1);
 })();
 
+const REMOTE_MODULE_FALLBACK_REVISION = '@010ddcfda246975d194964ccf20038ebbdec6084';
+
 /**
  * @unrestricted
  */
@@ -91,13 +93,30 @@ var Runtime = class {  // eslint-disable-line
         if (xhr.readyState !== XMLHttpRequest.DONE)
           return;
 
-        if ([0, 200, 304].indexOf(xhr.status) === -1)  // Testing harness file:/// results in 0.
-          reject(new Error('While loading from url ' + url + ' server responded with a status of ' + xhr.status));
+        // DevTools Proxy server can mask 404s as 200s, check the body to be sure
+        const status = /^HTTP\/1.1 404/.test(e.target.response) ? 404 : xhr.status;
+
+        if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
+          reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));
         else
           fulfill(e.target.response);
       }
       xhr.send(null);
     }
+  }
+
+  /**
+   * @param {string} url
+   * @return {!Promise.<string>}
+   */
+  static loadResourcePromiseWithFallback(url) {
+    return Runtime.loadResourcePromise(url).catch(err => {
+      const urlWithFallbackVersion = url.replace(/@[0-9a-f]{40}/, REMOTE_MODULE_FALLBACK_REVISION);
+      // TODO(phulce): mark fallbacks in module.json and modify build script instead
+      if (urlWithFallbackVersion === url || !url.includes('audits2_worker_module'))
+        throw err;
+      return Runtime.loadResourcePromise(urlWithFallbackVersion);
+    });
   }
 
   /**
@@ -157,8 +176,10 @@ var Runtime = class {  // eslint-disable-line
       if (_loadedScripts[sourceURL])
         continue;
       urls.push(sourceURL);
-      promises.push(Runtime.loadResourcePromise(sourceURL).then(
-          scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
+      const loadResourcePromise =
+          base ? Runtime.loadResourcePromiseWithFallback(sourceURL) : Runtime.loadResourcePromise(sourceURL);
+      promises.push(
+          loadResourcePromise.then(scriptSourceLoaded.bind(null, i), scriptSourceLoaded.bind(null, i, undefined)));
     }
     return Promise.all(promises).then(undefined);
 

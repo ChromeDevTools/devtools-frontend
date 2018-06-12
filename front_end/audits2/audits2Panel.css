@@ -17,6 +17,12 @@
 }
 
 .-theme-with-dark-background .lh-root {
+  --header-bg-color: hsl(0, 0%, 20%);
+  --lh-table-header-bg: hsl(0, 0%, 20%);
+  --display-value-gray: hsl(0, 0%, 66%);
+  --medium-75-gray: hsl(0, 0%, 66%);
+
+  --subheader-color: hsl(210, 15%, 80%);
   --lh-bg-color: hsl(0, 0%, 14%);
   --secondary-text-color: hsl(0, 0%, 66%);
   --report-secondary-border-color: hsl(0, 0%, 8%);
@@ -46,4 +52,31 @@ button.view-trace {
 .audits2-results-container {
     overflow-y: scroll;
     position: relative;
+}
+
+/* TODO(phulce): remove the below on next LH roll */
+
+.-theme-with-dark-background .lh-scores-wrapper__background, .-theme-with-dark-background .lh-scores-wrapper__shadow {
+  background: var(--lh-bg-color) !important;
+}
+
+.-theme-with-dark-background .lh-gauge__label {
+  color: hsl(210, 15%, 80%);
+}
+
+.-theme-with-dark-background .lh-root .lh-audit a, .-theme-with-dark-background .lh-footer a {
+  color: hsl(210, 90%, 60%);
+}
+
+.-theme-with-dark-background .lh-load-opportunity__header .lh-load-opportunity__col {
+  background: hsl(0, 0%, 20%);
+}
+
+.-theme-with-dark-background .lh-crc .crc-node__tree-hostname {
+  color: hsl(0, 0%, 66%);
+}
+
+.-theme-with-dark-background .lh-audit-group__header::before {
+  background-color: hsl(0, 0%, 80%);
+  filter: invert(1);
 }

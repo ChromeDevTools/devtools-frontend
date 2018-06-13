@@ -29,6 +29,7 @@
  */
 /**
  * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!Resources.DOMStorageModel>}
  * @unrestricted
  */
 Resources.ApplicationPanelSidebar = class extends UI.VBox {
@@ -197,12 +198,32 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     const resourceTreeModel = this._target.model(SDK.ResourceTreeModel);
     if (resourceTreeModel)
       this._populateApplicationCacheTree(resourceTreeModel);
-    const domStorageModel = this._target.model(Resources.DOMStorageModel);
-    if (domStorageModel)
-      this._populateDOMStorageTree(domStorageModel);
+    SDK.targetManager.observeModels(Resources.DOMStorageModel, this);
     this.indexedDBListTreeElement._initialize();
     const serviceWorkerCacheModel = this._target.model(SDK.ServiceWorkerCacheModel);
     this.cacheStorageListTreeElement._initialize(serviceWorkerCacheModel);
+  }
+
+  /**
+   * @override
+   * @param {!Resources.DOMStorageModel} domStorageModel
+   */
+  modelAdded(domStorageModel) {
+    domStorageModel.enable();
+    domStorageModel.storages().forEach(this._addDOMStorage.bind(this));
+    domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageAdded, this._domStorageAdded, this);
+    domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
+  }
+
+  /**
+   * @override
+   * @param {!Resources.DOMStorageModel} domStorageModel
+   */
+  modelRemoved(domStorageModel) {
+    domStorageModel.storages().forEach(this._removeDOMStorage.bind(this));
+    domStorageModel.removeEventListener(Resources.DOMStorageModel.Events.DOMStorageAdded, this._domStorageAdded, this);
+    domStorageModel.removeEventListener(
+        Resources.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
   }
 
   _resetWithFrames() {
@@ -440,16 +461,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       }
     }
     database.getTableNames(tableNamesCallback);
-  }
-
-  /**
-   * @param {!Resources.DOMStorageModel} domStorageModel
-   */
-  _populateDOMStorageTree(domStorageModel) {
-    domStorageModel.enable();
-    domStorageModel.storages().forEach(this._addDOMStorage.bind(this));
-    domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageAdded, this._domStorageAdded, this);
-    domStorageModel.addEventListener(Resources.DOMStorageModel.Events.DOMStorageRemoved, this._domStorageRemoved, this);
   }
 
   /**

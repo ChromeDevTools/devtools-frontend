@@ -76,8 +76,9 @@ SDK.TargetManager = class extends Common.Object {
    * @template T
    */
   observeModels(modelClass, observer) {
+    const models = this.models(modelClass);
     this._modelObservers.set(modelClass, observer);
-    for (const model of this.models(modelClass))
+    for (const model of models)
       observer.modelAdded(model);
   }
 

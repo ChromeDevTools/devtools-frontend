@@ -162,6 +162,11 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
    * @param {string} securityOrigin
    */
   _addOrigin(securityOrigin) {
+    const parsed = new Common.ParsedURL(securityOrigin);
+    // These are "opaque" origins which are not supposed to support DOM storage.
+    if (!parsed.isValid || parsed.scheme === 'data' || parsed.scheme === 'about' || parsed.scheme === 'javascript')
+      return;
+
     for (const isLocal of [true, false]) {
       const key = this._storageKey(securityOrigin, isLocal);
       console.assert(!this._storages[key]);
@@ -185,7 +190,8 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
     for (const isLocal of [true, false]) {
       const key = this._storageKey(securityOrigin, isLocal);
       const storage = this._storages[key];
-      console.assert(storage);
+      if (!storage)
+        continue;
       delete this._storages[key];
       this.dispatchEventToListeners(Resources.DOMStorageModel.Events.DOMStorageRemoved, storage);
     }
@@ -273,7 +279,7 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.DOMStorageModel, SDK.Target.Capability.None, false);
+SDK.SDKModel.register(Resources.DOMStorageModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
 Resources.DOMStorageModel.Events = {

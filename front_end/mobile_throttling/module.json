@@ -12,7 +12,23 @@
             "category": "Network",
             "title": "Go offline",
             "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
-            "tags": "device"
+            "tags": "device, throttling"
+        },
+        {
+            "type": "action",
+            "actionId": "network-conditions.network-low-end-mobile",
+            "category": "Network",
+            "title": "Enable slow 3G throttling",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
+            "tags": "device, throttling"
+        },
+        {
+            "type": "action",
+            "actionId": "network-conditions.network-mid-tier-mobile",
+            "category": "Network",
+            "title": "Enable fast 3G throttling",
+            "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
+            "tags": "device, throttling"
         },
         {
             "type": "action",
@@ -20,7 +36,7 @@
             "category": "Network",
             "title": "Go online",
             "className": "MobileThrottling.ThrottlingManager.ActionDelegate",
-            "tags": "device"
+            "tags": "device, throttling"
         },
         {
             "type": "view",

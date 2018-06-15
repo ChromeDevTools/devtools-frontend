@@ -251,6 +251,14 @@ MobileThrottling.ThrottlingManager.ActionDelegate = class {
       SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.NoThrottlingConditions);
       return true;
     }
+    if (actionId === 'network-conditions.network-low-end-mobile') {
+      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Slow3GConditions);
+      return true;
+    }
+    if (actionId === 'network-conditions.network-mid-tier-mobile') {
+      SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.Fast3GConditions);
+      return true;
+    }
     if (actionId === 'network-conditions.network-offline') {
       SDK.multitargetNetworkManager.setNetworkConditions(SDK.NetworkManager.OfflineConditions);
       return true;

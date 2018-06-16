@@ -97,9 +97,12 @@ Console.ConsoleContextSelector = class {
     if (executionContext.frameId) {
       const resourceTreeModel = target.model(SDK.ResourceTreeModel);
       let frame = resourceTreeModel && resourceTreeModel.frameForId(executionContext.frameId);
-      while (frame && frame.parentFrame) {
-        depth++;
-        frame = frame.parentFrame;
+      while (frame) {
+        frame = frame.parentFrame || frame.crossTargetParentFrame();
+        if (frame) {
+          depth++;
+          target = frame.resourceTreeModel().target();
+        }
       }
     }
     let targetDepth = 0;

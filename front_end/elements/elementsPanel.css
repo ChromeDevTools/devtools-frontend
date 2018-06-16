@@ -51,7 +51,7 @@
 }
 
 .style-panes-wrapper {
-    overflow: auto;
+    overflow: hidden auto;
 }
 
 .style-panes-wrapper > div:not(:first-child) {

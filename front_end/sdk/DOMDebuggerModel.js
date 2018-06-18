@@ -588,6 +588,9 @@ SDK.DOMDebuggerManager = class {
         Common.UIString('Timer'),
         ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'setTimeout.callback', 'setInterval.callback']);
     this._createInstrumentationBreakpoints(Common.UIString('Window'), ['DOMWindow.close']);
+    this._createInstrumentationBreakpoints(
+        Common.UIString('WebAudio'),
+        ['audioContextCreated', 'audioContextClosed', 'audioContextResumed', 'audioContextSuspended']);
 
     this._createEventListenerBreakpoints(
         Common.UIString('Media'),
@@ -669,6 +672,14 @@ SDK.DOMDebuggerManager = class {
     this._resolveEventListenerBreakpoint('instrumentation:Notification.requestPermission')._title = 'requestPermission';
     this._resolveEventListenerBreakpoint('instrumentation:DOMWindow.close')._title = 'window.close';
     this._resolveEventListenerBreakpoint('instrumentation:Document.write')._title = 'document.write';
+    this._resolveEventListenerBreakpoint('instrumentation:audioContextCreated')._title =
+        Common.UIString('Create AudioContext');
+    this._resolveEventListenerBreakpoint('instrumentation:audioContextClosed')._title =
+        Common.UIString('Close AudioContext');
+    this._resolveEventListenerBreakpoint('instrumentation:audioContextResumed')._title =
+        Common.UIString('Resume AudioContext');
+    this._resolveEventListenerBreakpoint('instrumentation:audioContextSuspended')._title =
+        Common.UIString('Suspend AudioContext');
 
     SDK.targetManager.observeModels(SDK.DOMDebuggerModel, this);
   }

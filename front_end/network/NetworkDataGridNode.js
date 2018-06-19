@@ -864,6 +864,9 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
         case Protocol.Network.BlockedReason.ContentType:
           reason = Common.UIString('content-type');
           break;
+        case Protocol.Network.BlockedReason.CollapsedByClient:
+          reason = Common.UIString('extension');
+          break;
       }
       this._setTextAndTitle(cell, Common.UIString('(blocked:%s)', reason));
     } else if (this._request.finished) {

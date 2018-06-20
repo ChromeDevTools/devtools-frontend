@@ -2118,12 +2118,9 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
         break;
       case 'Enter':
         // Accept any available autocompletions and advance to the next field.
-        if (this.textWithCurrentSuggestion() !== this.text()) {
-          this.tabKeyPressed();
-          event.preventDefault();
-          return;
-        }
-        break;
+        this.tabKeyPressed();
+        event.preventDefault();
+        return;
     }
 
     super.onKeyDown(event);

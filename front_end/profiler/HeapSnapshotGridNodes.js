@@ -525,15 +525,15 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
     switch (this._type) {
       case 'concatenated string':
       case 'string':
-        value = '"' + value + '"';
+        value = `"${value}"`;
         valueStyle = 'string';
         break;
       case 'regexp':
-        value = '/' + value + '/';
+        value = `/${value}/`;
         valueStyle = 'string';
         break;
       case 'closure':
-        value = value + '()';
+        value = `${value}()`;
         valueStyle = 'function';
         break;
       case 'bigint':
@@ -546,45 +546,43 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
         valueStyle = 'null';
         break;
       case 'array':
-        value = (value || '') + '[]';
+        value = (value || ls`(internal array)`) + '[]';
         break;
     }
-    if (this._reachableFromWindow && !this.detachedDOMTreeNode)
-      valueStyle += ' highlight';
-    if (value === 'Object')
-      value = '';
-    if (this.detachedDOMTreeNode)
-      valueStyle += ' detached-dom-tree-node';
     return this._createObjectCellWithValue(valueStyle, value);
   }
 
+  /**
+   * @param {string} valueStyle
+   * @param {string} value
+   * @return {!Element}
+   */
   _createObjectCellWithValue(valueStyle, value) {
-    const cell = createElement('td');
-    cell.className = 'object-column';
-    const div = createElement('div');
-    div.className = 'source-code event-properties';
-    div.style.overflow = 'visible';
-
+    const fragment = UI.Fragment.build`
+        <td class="object-column disclosure">
+          <div class="source-code event-properties" style="overflow: visible" $="container">
+            <span class="value object-value-${valueStyle}">${value}</span>
+            <span class="object-value-id">@${this.snapshotNodeId}</span>
+          </div>
+        </td>`;
+    const div = fragment.$('container');
     this._prefixObjectCell(div);
-
-    const valueSpan = createElement('span');
-    valueSpan.className = 'value object-value-' + valueStyle;
-    valueSpan.textContent = value;
-    div.appendChild(valueSpan);
-
-    const idSpan = createElement('span');
-    idSpan.className = 'object-value-id';
-    idSpan.textContent = ' @' + this.snapshotNodeId;
-    div.appendChild(idSpan);
-
-    cell.appendChild(div);
-    cell.classList.add('disclosure');
+    if (this._reachableFromWindow) {
+      div.appendChild(UI.html
+                      `<span class="heap-object-tag" title="${ls`User object reachable from window`}">🗖</span>`);
+    }
+    if (this.detachedDOMTreeNode)
+      div.appendChild(UI.html`<span class="heap-object-tag" title="${ls`Detached from DOM tree`}">✀</span>`);
+    const cell = fragment.element();
     if (this.depth)
       cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
     cell.heapSnapshotNode = this;
     return cell;
   }
 
+  /**
+   * @param {!Element} div
+   */
   _prefixObjectCell(div) {
   }
 
@@ -602,7 +600,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
      * @param {?SDK.RemoteObject} object
      */
     function onResult(object) {
-      fulfill(object || runtimeModel.createRemoteObjectFromPrimitiveValue(Common.UIString('Preview is not available')));
+      fulfill(object || runtimeModel.createRemoteObjectFromPrimitiveValue(ls`Preview is not available`));
     }
 
     const runtimeModel = heapProfilerModel.runtimeModel();
@@ -739,6 +737,7 @@ Profiler.HeapSnapshotObjectNode = class extends Profiler.HeapSnapshotGenericObje
 
   /**
    * @override
+   * @param {!Element} div
    */
   _prefixObjectCell(div) {
     let name = this._referenceName || '(empty)';
@@ -753,29 +752,20 @@ Profiler.HeapSnapshotObjectNode = class extends Profiler.HeapSnapshotGenericObje
         nameClass = 'object-value-null';
         break;
       case 'element':
-        name = '[' + name + ']';
+        name = `[${name}]`;
         break;
     }
-
     if (this._cycledWithAncestorGridNode)
-      div.className += ' cycled-ancessor-node';
-
-    const nameSpan = createElement('span');
-    nameSpan.className = nameClass;
-    nameSpan.textContent = name;
-    div.appendChild(nameSpan);
-
-    const separatorSpan = createElement('span');
-    separatorSpan.className = 'grayed';
-    separatorSpan.textContent = this._edgeNodeSeparator();
-    div.appendChild(separatorSpan);
+      div.classList.add('cycled-ancessor-node');
+    div.prepend(UI.html`<span class="${nameClass}">${name}</span>
+                        <span class="grayed">${this._edgeNodeSeparator()}</span>`);
   }
 
   /**
    * @return {string}
    */
   _edgeNodeSeparator() {
-    return ' :: ';
+    return '::';
   }
 };
 
@@ -815,7 +805,7 @@ Profiler.HeapSnapshotRetainingObjectNode = class extends Profiler.HeapSnapshotOb
    * @return {string}
    */
   _edgeNodeSeparator() {
-    return ' in ';
+    return ls`in`;
   }
 
   /**

@@ -52,10 +52,6 @@
     position: static;
 }
 
-.detached-dom-tree-node {
-    background-color: #FF9999;
-}
-
 .heap-snapshot-view .object-value-string {
     white-space: nowrap;
 }
@@ -99,7 +95,15 @@
 }
 
 .heap-snapshot-view tr:not(.selected) td.object-column span.highlight {
-    background-color: rgb(255, 255, 200);
+    background-color: inherit;
+}
+
+.heap-snapshot-view td.object-column span {
+    margin-right: 6px;
+}
+
+.heap-snapshot-view tr:not(.selected) td.object-column span.heap-object-tag {
+    color: #888;
 }
 
 .heap-snapshot-view td.object-column span.grayed {

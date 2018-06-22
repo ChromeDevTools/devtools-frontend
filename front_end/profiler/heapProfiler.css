@@ -56,6 +56,12 @@
     white-space: nowrap;
 }
 
+.heap-snapshot-view td.object-column .objects-count {
+    margin-left: 10px;
+    font-size: 11px;
+    color: grey;
+}
+
 .heap-snapshot-view tr:not(.selected) .object-value-id {
     color: grey;
 }

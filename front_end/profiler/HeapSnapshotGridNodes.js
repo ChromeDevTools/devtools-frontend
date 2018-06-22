@@ -192,19 +192,12 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
    * @return {!Element}
    */
   _createValueCell(columnId) {
-    const cell = createElement('td');
-    cell.className = 'numeric-column';
+    const cell = UI.html`<td class="numeric-column" />`;
     if (this.dataGrid.snapshot.totalSize !== 0) {
-      const div = createElement('div');
-      const valueSpan = createElement('span');
-      valueSpan.textContent = this.data[columnId];
-      div.appendChild(valueSpan);
+      const div = UI.html`<div><span>${this.data[columnId]}</span></div>`;
       const percentColumn = columnId + '-percent';
       if (percentColumn in this.data) {
-        const percentSpan = createElement('span');
-        percentSpan.className = 'percent-column';
-        percentSpan.textContent = this.data[percentColumn];
-        div.appendChild(percentSpan);
+        div.appendChild(UI.html`<span class="percent-column">${this.data[percentColumn]}</span>`);
         div.classList.add('profile-multiple-values');
       }
       cell.appendChild(div);
@@ -950,17 +943,14 @@ Profiler.HeapSnapshotConstructorNode = class extends Profiler.HeapSnapshotGridNo
     this._retainedSize = aggregate.maxRet;
 
     const snapshot = dataGrid.snapshot;
-    const countPercent = this._count / snapshot.nodeCount * 100.0;
     const retainedSizePercent = this._retainedSize / snapshot.totalSize * 100.0;
     const shallowSizePercent = this._shallowSize / snapshot.totalSize * 100.0;
-
     this.data = {
       'object': className,
       'count': Number.withThousandsSeparator(this._count),
       'distance': this._toUIDistance(this._distance),
       'shallowSize': Number.withThousandsSeparator(this._shallowSize),
       'retainedSize': Number.withThousandsSeparator(this._retainedSize),
-      'count-percent': this._toPercentString(countPercent),
       'shallowSize-percent': this._toPercentString(shallowSizePercent),
       'retainedSize-percent': this._toPercentString(retainedSizePercent)
     };
@@ -1008,7 +998,9 @@ Profiler.HeapSnapshotConstructorNode = class extends Profiler.HeapSnapshotGridNo
    * @return {!Element}
    */
   createCell(columnId) {
-    const cell = columnId !== 'object' ? this._createValueCell(columnId) : super.createCell(columnId);
+    const cell = columnId === 'object' ? super.createCell(columnId) : this._createValueCell(columnId);
+    if (columnId === 'object' && this._count > 1)
+      cell.appendChild(UI.html`<span class="objects-count">×${this._count}</span>`);
     if (this._searchMatched)
       cell.classList.add('highlight');
     return cell;
@@ -1031,7 +1023,6 @@ Profiler.HeapSnapshotConstructorNode = class extends Profiler.HeapSnapshotGridNo
     const sortFields = {
       object: ['name', sortAscending, 'id', true],
       distance: ['distance', sortAscending, 'retainedSize', false],
-      count: ['name', true, 'id', true],
       shallowSize: ['selfSize', sortAscending, 'id', true],
       retainedSize: ['retainedSize', sortAscending, 'id', true]
     }[sortColumnId];

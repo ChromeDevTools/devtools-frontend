@@ -68,7 +68,6 @@
 }
 
 .soft-context-menu-item-submenu-arrow {
-    color: #222;
     pointer-events: none;
     font-size: 11px;
     flex: 1 1 auto;

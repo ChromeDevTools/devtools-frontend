@@ -112,7 +112,7 @@ SDK.DOMNode = class {
     }
 
     if (payload.contentDocument) {
-      this._contentDocument = SDK.DOMNode.create(this._domModel, this.ownerDocument, true, payload.contentDocument);
+      this._contentDocument = new SDK.DOMDocument(this._domModel, payload.contentDocument);
       this._contentDocument.parentNode = this;
       this._children = [];
     } else if (payload.nodeName === 'IFRAME' && payload.frameId && Runtime.experiments.isEnabled('oopifInlineDOM')) {

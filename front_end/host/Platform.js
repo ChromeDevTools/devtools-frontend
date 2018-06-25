@@ -58,9 +58,9 @@ Host.isWin = function() {
  * @return {boolean}
  */
 Host.isCustomDevtoolsFrontend = function() {
-  if (typeof Host._isCustomDevtoolsFronend === 'undefined')
-    Host._isCustomDevtoolsFronend = window.location.toString().startsWith('chrome-devtools://devtools/custom/');
-  return Host._isCustomDevtoolsFronend;
+  if (typeof Host._isCustomDevtoolsFrontend === 'undefined')
+    Host._isCustomDevtoolsFrontend = window.location.toString().startsWith('chrome-devtools://devtools/custom/');
+  return Host._isCustomDevtoolsFrontend;
 };
 
 /**

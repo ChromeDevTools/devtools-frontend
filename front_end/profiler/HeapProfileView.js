@@ -40,7 +40,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
    * @return {!PerfUI.FlameChartDataProvider}
    */
   createFlameChartDataProvider() {
-    return new Profiler.HeapFlameChartDataProvider(this.profile, this._profileHeader._heapProfilerModel);
+    return new Profiler.HeapFlameChartDataProvider(this.profile, this._profileHeader.heapProfilerModel());
   }
 };
 
@@ -109,7 +109,7 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
 
   async stopRecordingProfile() {
     this._recording = false;
-    if (!this.profileBeingRecorded() || !this.profileBeingRecorded()._heapProfilerModel)
+    if (!this.profileBeingRecorded() || !this.profileBeingRecorded().heapProfilerModel())
       return;
 
     this.profileBeingRecorded().updateStatus(Common.UIString('Stopping\u2026'));
@@ -178,7 +178,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
    * @override
    */
   _startSampling() {
-    this.profileBeingRecorded()._heapProfilerModel.startSampling();
+    this.profileBeingRecorded().heapProfilerModel().startSampling();
   }
 
   /**
@@ -186,7 +186,7 @@ Profiler.SamplingHeapProfileType = class extends Profiler.SamplingHeapProfileTyp
    * return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   _stopSampling() {
-    return this.profileBeingRecorded()._heapProfilerModel.stopSampling();
+    return this.profileBeingRecorded().heapProfilerModel().stopSampling();
   }
 };
 
@@ -213,7 +213,7 @@ Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProf
    * @override
    */
   _startSampling() {
-    this.profileBeingRecorded()._heapProfilerModel.startNativeSampling();
+    this.profileBeingRecorded().heapProfilerModel().startNativeSampling();
   }
 
   /**
@@ -221,7 +221,7 @@ Profiler.SamplingNativeHeapProfileType = class extends Profiler.SamplingHeapProf
    * return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
   _stopSampling() {
-    return this.profileBeingRecorded()._heapProfilerModel.stopNativeSampling();
+    return this.profileBeingRecorded().heapProfilerModel().stopNativeSampling();
   }
 };
 
@@ -324,6 +324,13 @@ Profiler.SamplingHeapProfileHeader = class extends Profiler.WritableProfileHeade
   protocolProfile() {
     return this._protocolProfile;
   }
+
+  /**
+   * @return {?SDK.HeapProfilerModel}
+   */
+  heapProfilerModel() {
+    return this._heapProfilerModel;
+  }
 };
 
 /**
@@ -415,7 +422,7 @@ Profiler.HeapProfileView.NodeFormatter = class {
    * @return {?Element}
    */
   linkifyNode(node) {
-    const heapProfilerModel = this._profileView._profileHeader._heapProfilerModel;
+    const heapProfilerModel = this._profileView._profileHeader.heapProfilerModel();
     return this._profileView.linkifier().maybeLinkifyConsoleCallFrame(
         heapProfilerModel ? heapProfilerModel.target() : null, node.profileNode.callFrame, 'profile-node-file');
   }

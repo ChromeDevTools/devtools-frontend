@@ -244,5 +244,11 @@ Profiler.ProfileType.DataDisplayDelegate.prototype = {
    * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
    * @param {string} perspectiveName
    */
-  showObject(snapshotObjectId, perspectiveName) {}
+  showObject(snapshotObjectId, perspectiveName) {},
+
+  /**
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @return {!Promise<?Element>}
+   */
+  async linkifyObject(snapshotObjectId) {}
 };

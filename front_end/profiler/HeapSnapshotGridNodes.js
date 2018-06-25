@@ -566,6 +566,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
     }
     if (this.detachedDOMTreeNode)
       div.appendChild(UI.html`<span class="heap-object-tag" title="${ls`Detached from DOM tree`}">✀</span>`);
+    this._appendSourceLocation(div);
     const cell = fragment.element();
     if (this.depth)
       cell.style.setProperty('padding-left', (this.depth * this.dataGrid.indentWidth) + 'px');
@@ -580,30 +581,34 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
   }
 
   /**
+   * @param {!Element} div
+   */
+  async _appendSourceLocation(div) {
+    if (this._type !== 'closure')
+      return;
+    const linkContainer = UI.html`<span class="heap-object-source-link" />`;
+    div.appendChild(linkContainer);
+    const link = await this._dataGrid.dataDisplayDelegate().linkifyObject(String(this.snapshotNodeId));
+    if (link)
+      linkContainer.appendChild(link);
+    else
+      linkContainer.remove();
+  }
+
+  /**
    * @override
    * @param {!SDK.HeapProfilerModel} heapProfilerModel
    * @param {string} objectGroupName
    * @return {!Promise<!SDK.RemoteObject>}
    */
-  queryObjectContent(heapProfilerModel, objectGroupName) {
-    let fulfill;
-    const promise = new Promise(x => fulfill = x);
-
-    /**
-     * @param {?SDK.RemoteObject} object
-     */
-    function onResult(object) {
-      fulfill(object || runtimeModel.createRemoteObjectFromPrimitiveValue(ls`Preview is not available`));
-    }
-
+  async queryObjectContent(heapProfilerModel, objectGroupName) {
     const runtimeModel = heapProfilerModel.runtimeModel();
+    let result;
     if (this._type === 'string')
-      onResult(runtimeModel.createRemoteObjectFromPrimitiveValue(this._name));
-    else if (!heapProfilerModel || !runtimeModel)
-      onResult(null);
+      result = runtimeModel.createRemoteObjectFromPrimitiveValue(this._name);
     else
-      heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName).then(onResult);
-    return promise;
+      result = await heapProfilerModel.objectForSnapshotObjectId(String(this.snapshotNodeId), objectGroupName);
+    return result || runtimeModel.createRemoteObjectFromPrimitiveValue(ls`Preview is not available`);
   }
 
   async updateHasChildren() {

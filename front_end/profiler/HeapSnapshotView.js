@@ -43,6 +43,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
     this.element.classList.add('heap-snapshot-view');
     this._profile = profile;
+    this._linkifier = new Components.Linkifier();
 
     profile.profileType().addEventListener(
         Profiler.HeapSnapshotProfileType.SnapshotReceived, this._onReceiveSnapshot, this);
@@ -82,13 +83,13 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._diffWidget.setMinimumSize(50, 25);
 
     if (isHeapTimeline) {
-      this._allocationDataGrid = new Profiler.AllocationDataGrid(profile._heapProfilerModel, this);
+      this._allocationDataGrid = new Profiler.AllocationDataGrid(profile.heapProfilerModel(), this);
       this._allocationDataGrid.addEventListener(
           DataGrid.DataGrid.Events.SelectedNode, this._onSelectAllocationNode, this);
       this._allocationWidget = this._allocationDataGrid.asWidget();
       this._allocationWidget.setMinimumSize(50, 25);
 
-      this._allocationStackView = new Profiler.HeapAllocationStackView(profile._heapProfilerModel);
+      this._allocationStackView = new Profiler.HeapAllocationStackView(profile.heapProfilerModel());
       this._allocationStackView.setMinimumSize(50, 25);
 
       this._tabbedPane = new UI.TabbedPane();
@@ -199,6 +200,24 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       this.selectLiveObject(perspectiveName, snapshotObjectId);
     else
       this._parentDataDisplayDelegate.showObject(snapshotObjectId, perspectiveName);
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @return {!Promise<?Element>}
+   */
+  async linkifyObject(snapshotObjectId) {
+    const heapProfilerModel = this._profile.heapProfilerModel();
+    const remoteObject = await heapProfilerModel.objectForSnapshotObjectId(String(snapshotObjectId), 'link');
+    if (!remoteObject || remoteObject.type !== 'function')
+      return null;
+    const functionDetails = await remoteObject.debuggerModel().functionDetailsPromise(remoteObject);
+    if (!functionDetails || !functionDetails.location)
+      return null;
+    const rawLocation = functionDetails.location;
+    const sourceURL = rawLocation.script() && rawLocation.script().sourceURL;
+    return sourceURL && this._linkifier ? this._linkifier.linkifyRawLocation(rawLocation, sourceURL) : null;
   }
 
   async _populate() {
@@ -462,8 +481,9 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   _inspectedObjectChanged(event) {
     const selectedNode = /** @type {!DataGrid.DataGridNode} */ (event.data);
-    if (this._profile._heapProfilerModel && selectedNode instanceof Profiler.HeapSnapshotGenericObjectNode)
-      this._profile._heapProfilerModel.addInspectedHeapObject(String(selectedNode.snapshotNodeId));
+    const heapProfilerModel = this._profile.heapProfilerModel();
+    if (heapProfilerModel && selectedNode instanceof Profiler.HeapSnapshotGenericObjectNode)
+      heapProfilerModel.addInspectedHeapObject(String(selectedNode.snapshotNodeId));
   }
 
   /**
@@ -579,7 +599,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   _getPopoverRequest(event) {
     const span = event.target.enclosingNodeOrSelfWithNodeName('span');
     const row = event.target.enclosingNodeOrSelfWithNodeName('tr');
-    const heapProfilerModel = this._profile._heapProfilerModel;
+    const heapProfilerModel = this._profile.heapProfilerModel();
     if (!row || !span || !heapProfilerModel)
       return null;
     const node = row._dataGridNode;
@@ -679,6 +699,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
   }
 
   dispose() {
+    this._linkifier.dispose();
     this._popoverHelper.dispose();
     if (this._allocationStackView) {
       this._allocationStackView.clear();
@@ -1081,7 +1102,7 @@ Profiler.HeapSnapshotProfileType = class extends Profiler.ProfileType {
   _resetProfiles(event) {
     const heapProfilerModel = /** @type {!SDK.HeapProfilerModel} */ (event.data);
     for (const profile of this.getProfiles()) {
-      if (profile._heapProfilerModel === heapProfilerModel)
+      if (profile.heapProfilerModel() === heapProfilerModel)
         this.removeProfile(profile);
     }
   }
@@ -1228,7 +1249,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
 
   async _stopRecordingProfile() {
     this.profileBeingRecorded().updateStatus(Common.UIString('Snapshotting\u2026'));
-    const stopPromise = this.profileBeingRecorded()._heapProfilerModel.stopTrackingHeapObjects(true);
+    const stopPromise = this.profileBeingRecorded().heapProfilerModel().stopTrackingHeapObjects(true);
     this._recording = false;
     this.dispatchEventToListeners(Profiler.TrackingHeapSnapshotProfileType.TrackingStopped);
     await stopPromise;

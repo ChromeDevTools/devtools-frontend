@@ -123,9 +123,9 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
    * @param {string} objectGroupName
    * @return {!Promise<?SDK.RemoteObject>}
    */
-  objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
-    return this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName)
-        .then(result => result && result.type ? this._runtimeModel.createRemoteObject(result) : null);
+  async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
+    const result = await this._heapProfilerAgent.getObjectByHeapObjectId(snapshotObjectId, objectGroupName);
+    return result && result.type && this._runtimeModel.createRemoteObject(result) || null;
   }
 
   /**

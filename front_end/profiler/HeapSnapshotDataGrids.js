@@ -72,6 +72,13 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   }
 
   /**
+   * @return {!Profiler.ProfileType.DataDisplayDelegate}
+   */
+  dataDisplayDelegate() {
+    return this._dataDisplayDelegate;
+  }
+
+  /**
    * @return {!HeapSnapshotModel.NodeFilter}
    */
   nodeFilter() {
@@ -145,7 +152,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
   }
 
   /**
-   * @return {!Array.<!Profiler.HeapSnapshotGridNode>}
+   * @return {!Array<!Profiler.HeapSnapshotGridNode>}
    */
   topLevelNodes() {
     return this.rootNode().children;

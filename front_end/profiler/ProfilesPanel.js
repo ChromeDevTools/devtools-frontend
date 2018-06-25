@@ -383,6 +383,15 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
   }
 
   /**
+   * @override
+   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @return {!Promise<?Element>}
+   */
+  async linkifyObject(snapshotObjectId) {
+    return null;
+  }
+
+  /**
    * @param {!Profiler.ProfileHeader} profile
    * @return {!UI.Widget}
    */

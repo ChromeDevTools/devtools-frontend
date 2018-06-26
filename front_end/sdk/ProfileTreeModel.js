@@ -12,7 +12,7 @@ SDK.ProfileNode = class {
     /** @type {!Protocol.Runtime.CallFrame} */
     this.callFrame = callFrame;
     /** @type {string} */
-    this.callUID = `${this.callFrame.functionName}@${this.callFrame.scriptId}:${this.callFrame.lineNumber}`;
+    this.callUID = `${callFrame.functionName}@${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`;
     /** @type {number} */
     this.self = 0;
     /** @type {number} */

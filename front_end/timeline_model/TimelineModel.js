@@ -850,7 +850,7 @@ TimelineModel.TimelineModel = class {
       }
 
       case recordTypes.FrameStartedLoading:
-        if (this._mainFrame.frameId !== event.args['frame'])
+        if (timelineData.frameId !== event.args['frame'])
           return false;
         break;
 

@@ -579,6 +579,6 @@ TimelineModel.TimelineProfileTree._eventId = function(event) {
   const functionName = frame['functionName'];
   const name = TimelineModel.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame) ?
       TimelineModel.TimelineJSProfileProcessor.nativeGroup(functionName) || functionName :
-      `${functionName}:${frame['lineNumber']}`;
+      `${functionName}:${frame['lineNumber']}:${frame['columnNumber']}`;
   return `f:${name}@${location}`;
 };

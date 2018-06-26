@@ -225,7 +225,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Object} target
    */
   appendApplicableItems(event, contextMenu, target) {
-    if (target instanceof ObjectUI.ObjectPropertyTreeElement) {
+    if (target instanceof ObjectUI.ObjectPropertyTreeElement && !target.property.synthetic) {
       contextMenu.debugSection().appendItem(
           ls`Add property path to watch`, this._addPropertyPathToWatch.bind(this, target));
     }

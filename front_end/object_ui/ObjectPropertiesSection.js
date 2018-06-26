@@ -800,10 +800,19 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     if (this.nameElement.title)
       return;
 
+    const name = this.property.name;
+
+    if (this.property.synthetic) {
+      this.nameElement.title = name;
+      return;
+    }
+
     const useDotNotation = /^(_|\$|[A-Z])(_|\$|[A-Z]|\d)*$/i;
     const isInteger = /^[1-9]\d*$/;
-    const name = this.property.name;
-    const parentPath = this.parent.nameElement ? this.parent.nameElement.title : '';
+
+    const parentPath =
+        (this.parent.nameElement && !this.parent.property.synthetic) ? this.parent.nameElement.title : '';
+
     if (useDotNotation.test(name))
       this.nameElement.title = parentPath ? `${parentPath}.${name}` : name;
     else if (isInteger.test(name))
@@ -822,7 +831,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       contextMenu.appendApplicableItems(this.property.symbol);
     if (this.property.value)
       contextMenu.appendApplicableItems(this.property.value);
-    if (this.nameElement && this.nameElement.title) {
+    if (!this.property.synthetic && this.nameElement && this.nameElement.title) {
       const copyPathHandler = InspectorFrontendHost.copyText.bind(InspectorFrontendHost, this.nameElement.title);
       contextMenu.clipboardSection().appendItem(ls`Copy property path`, copyPathHandler);
     }

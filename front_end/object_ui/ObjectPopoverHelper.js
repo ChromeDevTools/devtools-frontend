@@ -50,84 +50,10 @@ ObjectUI.ObjectPopoverHelper = class {
    * @param {!UI.GlassPane} popover
    * @return {!Promise<?ObjectUI.ObjectPopoverHelper>}
    */
-  static buildObjectPopover(result, popover) {
-    let fulfill;
-    const promise = new Promise(x => fulfill = x);
-
-    /**
-     * @param {!SDK.RemoteObject} funcObject
-     * @param {!Element} popoverContentElement
-     * @param {!Element} popoverValueElement
-     * @param {?Array.<!SDK.RemoteObjectProperty>} properties
-     * @param {?Array.<!SDK.RemoteObjectProperty>} internalProperties
-     */
-    function didGetFunctionProperties(
-        funcObject, popoverContentElement, popoverValueElement, properties, internalProperties) {
-      if (internalProperties) {
-        for (let i = 0; i < internalProperties.length; i++) {
-          if (internalProperties[i].name === '[[TargetFunction]]') {
-            funcObject = internalProperties[i].value;
-            break;
-          }
-        }
-      }
-      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(funcObject, popoverValueElement, true);
-      funcObject.debuggerModel()
-          .functionDetailsPromise(funcObject)
-          .then(didGetFunctionDetails.bind(null, popoverContentElement));
-    }
-
-    /**
-     * @param {!Element} popoverContentElement
-     * @param {?SDK.DebuggerModel.FunctionDetails} response
-     */
-    function didGetFunctionDetails(popoverContentElement, response) {
-      if (!response) {
-        fulfill(null);
-        return;
-      }
-
-      const container = createElementWithClass('div', 'object-popover-container');
-      const title = container.createChild('div', 'function-popover-title source-code');
-      const functionName = title.createChild('span', 'function-name');
-      functionName.textContent = UI.beautifyFunctionName(response.functionName);
-
-      const rawLocation = response.location;
-      const linkContainer = title.createChild('div', 'function-title-link-container');
-      const sourceURL = rawLocation && rawLocation.script() ? rawLocation.script().sourceURL : null;
-      let linkifier = null;
-      if (rawLocation && sourceURL) {
-        linkifier = new Components.Linkifier();
-        linkContainer.appendChild(linkifier.linkifyRawLocation(rawLocation, sourceURL));
-      }
-      container.appendChild(popoverContentElement);
-      popover.contentElement.appendChild(container);
-      fulfill(new ObjectUI.ObjectPopoverHelper(linkifier, false));
-    }
-
+  static async buildObjectPopover(result, popover) {
     const description = result.description.trimEnd(ObjectUI.ObjectPopoverHelper.MaxPopoverTextLength);
     let popoverContentElement = null;
-    if (result.type !== 'object') {
-      popoverContentElement = createElement('span');
-      UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
-      UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
-      const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
-      valueElement.style.whiteSpace = 'pre';
-
-      if (result.type === 'string')
-        valueElement.createTextChildren('"', description, '"');
-      else if (result.type !== 'function')
-        valueElement.textContent = description;
-
-      if (result.type === 'function') {
-        result.getOwnProperties(
-            false /* generatePreview */,
-            didGetFunctionProperties.bind(null, result, popoverContentElement, valueElement));
-        return promise;
-      }
-      popover.contentElement.appendChild(popoverContentElement);
-      fulfill(new ObjectUI.ObjectPopoverHelper(null, false));
-    } else {
+    if (result.type === 'object') {
       let linkifier = null;
       let resultHighlightedAsDOM = false;
       if (result.subtype === 'node') {
@@ -153,9 +79,46 @@ ObjectUI.ObjectPopoverHelper = class {
       popover.setMaxContentSize(new UI.Size(300, 250));
       popover.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactSize);
       popover.contentElement.appendChild(popoverContentElement);
-      fulfill(new ObjectUI.ObjectPopoverHelper(linkifier, resultHighlightedAsDOM));
+      return new ObjectUI.ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
     }
-    return promise;
+
+    popoverContentElement = createElement('span');
+    UI.appendStyle(popoverContentElement, 'object_ui/objectValue.css');
+    UI.appendStyle(popoverContentElement, 'object_ui/objectPopover.css');
+    const valueElement = popoverContentElement.createChild('span', 'monospace object-value-' + result.type);
+    valueElement.style.whiteSpace = 'pre';
+
+    if (result.type === 'string')
+      valueElement.createTextChildren(`"${description}"`);
+    else if (result.type !== 'function')
+      valueElement.textContent = description;
+
+    if (result.type !== 'function') {
+      popover.contentElement.appendChild(popoverContentElement);
+      return new ObjectUI.ObjectPopoverHelper(null, false);
+    }
+
+    ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(result, valueElement, true);
+    const response = await result.debuggerModel().functionDetailsPromise(result);
+    if (!response)
+      return null;
+
+    const container = createElementWithClass('div', 'object-popover-container');
+    const title = container.createChild('div', 'function-popover-title source-code');
+    const functionName = title.createChild('span', 'function-name');
+    functionName.textContent = UI.beautifyFunctionName(response.functionName);
+
+    const rawLocation = response.location;
+    const linkContainer = title.createChild('div', 'function-title-link-container');
+    const sourceURL = rawLocation && rawLocation.script() && rawLocation.script().sourceURL;
+    let linkifier = null;
+    if (sourceURL) {
+      linkifier = new Components.Linkifier();
+      linkContainer.appendChild(linkifier.linkifyRawLocation(rawLocation, sourceURL));
+    }
+    container.appendChild(popoverContentElement);
+    popover.contentElement.appendChild(container);
+    return new ObjectUI.ObjectPopoverHelper(linkifier, false);
   }
 };
 

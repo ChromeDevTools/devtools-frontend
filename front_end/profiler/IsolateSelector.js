@@ -184,10 +184,13 @@ Profiler.IsolateSelector.ListItem = class {
     const heapStats = await this._models.values().next().value.heapUsage();
     if (!heapStats)
       return;
-    this._heapDiv.textContent =
-        `${Number.bytesToString(heapStats.usedSize)} / ${Number.bytesToString(heapStats.totalSize)}`;
-    const heapStatsUpdateIntervalMs = 2000;
-    this._updateTimer = setTimeout(() => this._updateStats(), heapStatsUpdateIntervalMs);
+    const usedTitle = ls`Heap size in use by live JS objects.`;
+    const totalTitle = ls`Total JS heap size including live objects, garbage, and reserved space.`;
+    this._heapDiv.removeChildren();
+    this._heapDiv.append(UI.html`
+        <span title="${usedTitle}">${Number.bytesToString(heapStats.usedSize)}</span>
+        <span> / </span>
+        <span title="${totalTitle}">${Number.bytesToString(heapStats.totalSize)}</span>`);
   }
 
   updateTitle() {

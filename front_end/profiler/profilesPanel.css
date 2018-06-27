@@ -133,11 +133,8 @@
 }
 
 .profile-launcher-control {
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
-}
-
-.profile-launcher-control {
     margin-top: 10px;
     margin-right: 6px;
 }

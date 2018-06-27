@@ -42,9 +42,9 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
 
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
-    const controlDiv = this._contentElement.createChild('div', 'hbox profile-launcher-control');
+    const controlDiv = this._contentElement.createChild('div', 'vbox profile-launcher-control');
     controlDiv.createChild('h1').textContent = ls`Select JavaScript VM instance`;
-    const targetDiv = controlDiv.createChild('div', 'hbox profile-launcher-target-list');
+    const targetDiv = controlDiv.createChild('div', 'vbox profile-launcher-target-list');
     new Profiler.IsolateSelector().show(targetDiv);
     this._controlButton =
         UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);

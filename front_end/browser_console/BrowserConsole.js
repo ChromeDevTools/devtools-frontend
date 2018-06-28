@@ -37,7 +37,12 @@ BrowserConsole.BrowserConsole = class {
       if (consoleMessage.level === SDK.ConsoleMessage.MessageLevel.Error) {
         messageElement.createTextChild(request.requestMethod + ' ');
         messageElement.appendChild(Components.Linkifier.linkifyRevealable(request, request.url(), request.url()));
-        messageElement.createTextChildren(' ', String(request.statusCode), ' (', request.statusText, ')');
+        if (request.failed)
+          messageElement.createTextChildren(' ', request.localizedFailDescription);
+        if (request.statusCode !== 0)
+          messageElement.createTextChildren(' ', String(request.statusCode));
+        if (request.statusText)
+          messageElement.createTextChildren(' (', request.statusText, ')');
       } else {
         const fragment = Console.ConsoleViewMessage.linkifyWithCustomLinkifier(
             consoleMessage.messageText,

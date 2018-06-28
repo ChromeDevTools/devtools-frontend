@@ -1535,18 +1535,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   async _createNewBreakpoint(editorLineNumber, condition, enabled) {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ScriptsBreakpointSet);
-
-    const origin = this._transformer.editorToRawLocation(editorLineNumber, 0);
-    const maxLengthToCheck = 1024;
-    let linesToCheck = 5;
-    for (; editorLineNumber < this._textEditor.linesCount && linesToCheck > 0; ++editorLineNumber) {
-      const lineLength = this._textEditor.line(editorLineNumber).length;
-      if (lineLength > maxLengthToCheck)
-        break;
-      if (lineLength === 0)
-        continue;
-      --linesToCheck;
-
+    if (editorLineNumber < this._textEditor.linesCount) {
+      const lineLength = Math.min(this._textEditor.line(editorLineNumber).length, 1024);
       const start = this._transformer.editorToRawLocation(editorLineNumber, 0);
       const end = this._transformer.editorToRawLocation(editorLineNumber, lineLength);
       const locations = await this._breakpointManager.possibleBreakpoints(
@@ -1556,7 +1546,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
         return;
       }
     }
-    this._setBreakpoint(origin[0], origin[1], condition, enabled);
+    const origin = this._transformer.editorToRawLocation(editorLineNumber, 0);
+    await this._setBreakpoint(origin[0], origin[1], condition, enabled);
   }
 
   /**

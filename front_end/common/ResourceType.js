@@ -242,7 +242,7 @@ Common.ResourceType._mimeTypeByName = new Map([
 ]);
 
 Common.ResourceType._resourceTypeByExtension = new Map([
-  ['js', Common.resourceTypes.Script],
+  ['js', Common.resourceTypes.Script], ['mjs', Common.resourceTypes.Script],
 
   ['css', Common.resourceTypes.Stylesheet], ['xsl', Common.resourceTypes.Stylesheet],
 
@@ -258,8 +258,8 @@ Common.ResourceType._resourceTypeByExtension = new Map([
 
 Common.ResourceType._mimeTypeByExtension = new Map([
   // Web extensions
-  ['js', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'], ['htm', 'text/html'],
-  ['mjs', 'text/javascript'], ['xml', 'application/xml'], ['xsl', 'application/xml'],
+  ['js', 'text/javascript'], ['mjs', 'text/javascript'], ['css', 'text/css'], ['html', 'text/html'],
+  ['htm', 'text/html'], ['xml', 'application/xml'], ['xsl', 'application/xml'],
 
   // HTML Embedded Scripts, ASP], JSP
   ['asp', 'application/x-aspx'], ['aspx', 'application/x-aspx'], ['jsp', 'application/x-jsp'],

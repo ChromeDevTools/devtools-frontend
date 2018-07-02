@@ -34,12 +34,10 @@
     background-color: hsl(215, 25%, 91%);
 }
 
-.styles-filter-engaged,
 .styles-section .simple-selector.filter-match {
     background-color: rgba(255, 255, 0, 0.5);
 }
 
-:host-context(.-theme-with-dark-background) .styles-filter-engaged,
 :host-context(.-theme-with-dark-background) .styles-section .simple-selector.filter-match {
     background-color: hsla(133, 100%, 30%, 0.5);
 }
@@ -179,7 +177,8 @@
     box-shadow: var(--focus-ring-inactive-shadow);
 }
 
-.styles-sidebar-pane-filter-box > input:focus {
+.styles-sidebar-pane-filter-box > input:focus,
+.styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
     box-shadow: var(--focus-ring-active-shadow);
 }
 

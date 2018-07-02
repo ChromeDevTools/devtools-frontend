@@ -151,6 +151,7 @@
     box-shadow: var(--focus-ring-inactive-shadow);
 }
 
-.filter-input-field:focus {
+.filter-input-field:focus,
+.filter-input-field:not(:empty) {
     box-shadow: var(--focus-ring-active-shadow);
 }

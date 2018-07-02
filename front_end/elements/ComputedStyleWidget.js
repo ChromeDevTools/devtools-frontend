@@ -47,8 +47,8 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
 
     const hbox = this.contentElement.createChild('div', 'hbox styles-sidebar-pane-toolbar');
     const filterContainerElement = hbox.createChild('div', 'styles-sidebar-pane-filter-box');
-    const filterInput = Elements.StylesSidebarPane.createPropertyFilterElement(
-        Common.UIString('Filter'), hbox, filterCallback.bind(this), 'styles-filter-engaged');
+    const filterInput =
+        Elements.StylesSidebarPane.createPropertyFilterElement(ls`Filter`, hbox, filterCallback.bind(this));
     UI.ARIAUtils.setAccessibleName(filterInput, Common.UIString('Filter Computed Styles'));
     filterContainerElement.appendChild(filterInput);
     this.setDefaultFocusedElement(filterInput);
@@ -56,6 +56,9 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     const toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
     toolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
         this._showInheritedComputedStylePropertiesSetting, undefined, Common.UIString('Show all')));
+
+    this._noMatchesElement = this.contentElement.createChild('div', 'gray-info-message');
+    this._noMatchesElement.textContent = ls`No matching property`;
 
     this._propertiesOutline = new UI.TreeOutlineInShadow();
     this._propertiesOutline.hideOverflow();
@@ -336,11 +339,14 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
    */
   _updateFilter(regex) {
     const children = this._propertiesOutline.rootElement().children();
+    let hasMatch = false;
     for (const child of children) {
       const property = child[Elements.ComputedStyleWidget._propertySymbol];
       const matched = !regex || regex.test(property.name) || regex.test(property.value);
       child.hidden = !matched;
+      hasMatch |= matched;
     }
+    this._noMatchesElement.classList.toggle('hidden', hasMatch);
   }
 };
 

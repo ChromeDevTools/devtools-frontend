@@ -242,7 +242,8 @@ select.toolbar-item[data-keyboard-focus="true"]:focus > * {
     box-shadow: var(--focus-ring-inactive-shadow);
 }
 
-.toolbar-input.focused {
+.toolbar-input.focused,
+.toolbar-input:not(.toolbar-input-empty) {
     box-shadow: var(--focus-ring-active-shadow);
 }
 
@@ -334,7 +335,8 @@ input[is=history-input]:hover {
     box-shadow: var(--focus-ring-inactive-shadow);
 }
 
-input[is=history-input]:focus {
+input[is=history-input]:focus,
+input[is=history-input]:not(:placeholder-shown) {
     box-shadow: var(--focus-ring-active-shadow);
 }
 

@@ -248,19 +248,20 @@ SDK.TracingModel = class {
    * @param {!SDK.TracingModel.Event} event
    */
   _addSampleEvent(event) {
-    const group = this._profileGroups.get(event.id);
+    const id = `${event.thread.process().id()}:${event.id}`;
+    const group = this._profileGroups.get(id);
     if (group)
       group._addChild(event);
     else
-      this._profileGroups.set(event.id, new SDK.TracingModel.ProfileEventsGroup(event));
+      this._profileGroups.set(id, new SDK.TracingModel.ProfileEventsGroup(event));
   }
 
   /**
-   * @param {string} id
+   * @param {!SDK.TracingModel.Event} event
    * @return {?SDK.TracingModel.ProfileEventsGroup}
    */
-  profileGroup(id) {
-    return this._profileGroups.get(id) || null;
+  profileGroup(event) {
+    return this._profileGroups.get(`${event.thread.process().id()}:${event.id}`) || null;
   }
 
   /**

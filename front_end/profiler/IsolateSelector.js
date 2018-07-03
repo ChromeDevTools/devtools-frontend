@@ -21,10 +21,25 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._isolateByModel = new Map();
     /** @type {!Map<string, !Profiler.IsolateSelector.ListItem>} */
     this._itemByIsolate = new Map();
+    this._updateTimer = null;
 
     SDK.targetManager.observeModels(SDK.RuntimeModel, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
+  }
+
+  /**
+   * @override
+   */
+  wasShown() {
+    this._updateStats();
+  }
+
+  /**
+   * @override
+   */
+  willHide() {
+    clearTimeout(this._updateTimer);
   }
 
   /**
@@ -137,6 +152,13 @@ Profiler.IsolateSelector = class extends UI.VBox {
   _update() {
     this._list.invalidateRange(0, this._items.length);
   }
+
+  _updateStats() {
+    for (const item of this._itemByIsolate.values())
+      item.updateStats();
+    const heapStatsUpdateIntervalMs = 2000;
+    this._updateTimer = setTimeout(() => this._updateStats(), heapStatsUpdateIntervalMs);
+  }
 };
 
 Profiler.IsolateSelector.ListItem = class {
@@ -149,9 +171,9 @@ Profiler.IsolateSelector.ListItem = class {
     this.element = createElementWithClass('div', 'profile-isolate-item hbox');
     this._heapDiv = this.element.createChild('div', 'profile-isolate-item-heap');
     this._nameDiv = this.element.createChild('div', 'profile-isolate-item-name');
-    this._updateTimer = null;
+    this._updatesDisabled = false;
     this.updateTitle();
-    this._updateStats();
+    this.updateStats();
   }
 
   /**
@@ -168,9 +190,6 @@ Profiler.IsolateSelector.ListItem = class {
   removeModel(model) {
     this._models.delete(model);
     this.updateTitle();
-    if (this._models.size)
-      return;
-    clearTimeout(this._updateTimer);
   }
 
   /**
@@ -180,10 +199,14 @@ Profiler.IsolateSelector.ListItem = class {
     return Array.from(this._models);
   }
 
-  async _updateStats() {
-    const heapStats = await this._models.values().next().value.heapUsage();
-    if (!heapStats)
+  async updateStats() {
+    if (this._updatesDisabled)
       return;
+    const heapStats = await this._models.values().next().value.heapUsage();
+    if (!heapStats) {
+      this._updatesDisabled = true;
+      return;
+    }
     const usedTitle = ls`Heap size in use by live JS objects.`;
     const totalTitle = ls`Total JS heap size including live objects, garbage, and reserved space.`;
     this._heapDiv.removeChildren();
@@ -206,10 +229,8 @@ Profiler.IsolateSelector.ListItem = class {
     }
     this._nameDiv.removeChildren();
     for (const [name, count] of modelCountByName) {
-      const lineDiv = this._nameDiv.createChild('div');
       const title = count > 1 ? `${name} (${count})` : name;
-      lineDiv.textContent = title;
-      lineDiv.setAttribute('title', title);
+      this._nameDiv.appendChild(UI.html`<div title="${title}">${title}</div>`);
     }
   }
 };

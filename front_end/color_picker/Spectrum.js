@@ -463,7 +463,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     /** @type {!ColorPicker.Spectrum.Palette} */
     const defaultCustomPalette = {title: 'Custom', colors: [], colorNames: [], mutable: true};
     this._customPaletteSetting = Common.settings.createSetting('customColorPalette', defaultCustomPalette);
-    this._palettes.set(this._customPaletteSetting.get().title, this._customPaletteSetting.get());
+    const customPalette = this._customPaletteSetting.get();
+    // Fallback case for custom palettes created pre-m67
+    customPalette.colorNames = customPalette.colorNames || [];
+    this._palettes.set(customPalette.title, customPalette);
 
     this._selectedColorPalette =
         Common.settings.createSetting('selectedColorPalette', ColorPicker.Spectrum.GeneratedPaletteTitle);

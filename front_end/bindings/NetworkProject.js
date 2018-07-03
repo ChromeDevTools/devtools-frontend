@@ -106,6 +106,8 @@ Bindings.NetworkProject = class {
    */
   static removeFrameAttribution(uiSourceCode, frameId) {
     const frameAttribution = uiSourceCode[Bindings.NetworkProject._frameAttributionSymbol];
+    if (!frameAttribution)
+      return;
     const attributionInfo = frameAttribution.get(frameId);
     console.assert(attributionInfo, 'Failed to remove frame attribution for url: ' + uiSourceCode.url());
     attributionInfo.count -= 1;

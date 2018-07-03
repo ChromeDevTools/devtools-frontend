@@ -27,6 +27,9 @@ Console.ConsolePrompt = class extends UI.Widget {
     /** @type {?Promise} */
     this._previewRequestForTest = null;
 
+    /** @type {?UI.AutocompleteConfig} */
+    this._defaultAutocompleteConfig = null;
+
     self.runtime.extension(UI.TextEditorFactory).instance().then(gotFactory.bind(this));
 
     /**
@@ -37,13 +40,12 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor =
           factory.createEditor({lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true});
 
-      this._editor.configureAutocomplete({
-        substituteRangeCallback: this._substituteRange.bind(this),
+      this._defaultAutocompleteConfig = ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
+      this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {
         suggestionsCallback: this._wordsWithQuery.bind(this),
-        tooltipCallback: (lineNumber, columnNumber) => this._tooltipCallback(lineNumber, columnNumber),
         anchorBehavior: this._isBelowPromptEnabled ? UI.GlassPane.AnchorBehavior.PreferTop :
                                                      UI.GlassPane.AnchorBehavior.PreferBottom
-      });
+      }));
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(this.element);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
@@ -332,25 +334,6 @@ Console.ConsolePrompt = class extends UI.Widget {
   }
 
   /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {?TextUtils.TextRange}
-   */
-  _substituteRange(lineNumber, columnNumber) {
-    const token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
-    if (token && token.type === 'js-string')
-      return new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
-
-    const lineText = this._editor.line(lineNumber);
-    let index;
-    for (index = columnNumber - 1; index >= 0; index--) {
-      if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
-        break;
-    }
-    return new TextUtils.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
-  }
-
-  /**
    * @param {!TextUtils.TextRange} queryRange
    * @param {!TextUtils.TextRange} substituteRange
    * @param {boolean=} force
@@ -358,53 +341,9 @@ Console.ConsolePrompt = class extends UI.Widget {
    */
   async _wordsWithQuery(queryRange, substituteRange, force) {
     const query = this._editor.text(queryRange);
-    const before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
+    const words = await this._defaultAutocompleteConfig.suggestionsCallback(queryRange, substituteRange, force);
     const historyWords = this._historyCompletions(query, force);
-    const token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
-    if (token) {
-      const excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
-      const trimmedBefore = before.trim();
-      if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
-        excludedTokens.add('js-string');
-      if (!trimmedBefore.endsWith('.'))
-        excludedTokens.add('js-property');
-      if (excludedTokens.has(token.type))
-        return historyWords;
-    }
-    const words = await ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force);
-    if (!force && !this._isCaretAtEndOfPrompt()) {
-      const queryAndAfter = this._editor.line(queryRange.startLine).substring(queryRange.startColumn);
-      if (queryAndAfter && words.some(word => queryAndAfter.startsWith(word.text) && query.length !== word.text.length))
-        return [];
-    }
     return words.concat(historyWords);
-  }
-
-  /**
-   * @param {number} lineNumber
-   * @param {number} columnNumber
-   * @return {!Promise<?Element>}
-   */
-  async _tooltipCallback(lineNumber, columnNumber) {
-    const before = this._editor.text(new TextUtils.TextRange(0, 0, lineNumber, columnNumber));
-    const result = await ObjectUI.javaScriptAutocomplete.argumentsHint(before);
-    if (!result)
-      return null;
-    const {argumentIndex} = result;
-    const tooltip = createElement('div');
-    for (const args of result.args) {
-      const argumentsElement = createElement('span');
-      for (let i = 0; i < args.length; i++) {
-        if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...')))
-          argumentsElement.appendChild(UI.html`<b>${args[i]}</b>`);
-        else
-          argumentsElement.createTextChild(args[i]);
-        if (i < args.length - 1)
-          argumentsElement.createTextChild(', ');
-      }
-      tooltip.appendChild(UI.html`<div class='source-code'>\u0192(${argumentsElement})</div>`);
-    }
-    return tooltip;
   }
 
   _editorSetForTest() {

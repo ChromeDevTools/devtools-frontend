@@ -602,3 +602,100 @@ ObjectUI.JavaScriptAutocomplete = class {
 ObjectUI.JavaScriptAutocomplete.CompletionGroup;
 
 ObjectUI.javaScriptAutocomplete = new ObjectUI.JavaScriptAutocomplete();
+
+ObjectUI.JavaScriptAutocompleteConfig = class {
+  /**
+   * @param {!UI.TextEditor} editor
+   */
+  constructor(editor) {
+    this._editor = editor;
+  }
+
+  /**
+   * @param {!UI.TextEditor} editor
+   * @return {!UI.AutocompleteConfig}
+   */
+  static createConfigForEditor(editor) {
+    const autocomplete = new ObjectUI.JavaScriptAutocompleteConfig(editor);
+    return {
+      substituteRangeCallback: autocomplete._substituteRange.bind(autocomplete),
+      suggestionsCallback: autocomplete._suggestionsCallback.bind(autocomplete),
+      tooltipCallback: autocomplete._tooltipCallback.bind(autocomplete),
+    };
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {?TextUtils.TextRange}
+   */
+  _substituteRange(lineNumber, columnNumber) {
+    const token = this._editor.tokenAtTextPosition(lineNumber, columnNumber);
+    if (token && token.type === 'js-string')
+      return new TextUtils.TextRange(lineNumber, token.startColumn, lineNumber, columnNumber);
+
+    const lineText = this._editor.line(lineNumber);
+    let index;
+    for (index = columnNumber - 1; index >= 0; index--) {
+      if (' =:[({;,!+-*/&|^<>.\t\r\n'.indexOf(lineText.charAt(index)) !== -1)
+        break;
+    }
+    return new TextUtils.TextRange(lineNumber, index + 1, lineNumber, columnNumber);
+  }
+
+  /**
+   * @param {!TextUtils.TextRange} queryRange
+   * @param {!TextUtils.TextRange} substituteRange
+   * @param {boolean=} force
+   * @return {!Promise<!UI.SuggestBox.Suggestions>}
+   */
+  async _suggestionsCallback(queryRange, substituteRange, force) {
+    const query = this._editor.text(queryRange);
+    const before = this._editor.text(new TextUtils.TextRange(0, 0, queryRange.startLine, queryRange.startColumn));
+    const token = this._editor.tokenAtTextPosition(substituteRange.startLine, substituteRange.startColumn);
+    if (token) {
+      const excludedTokens = new Set(['js-comment', 'js-string-2', 'js-def']);
+      const trimmedBefore = before.trim();
+      if (!trimmedBefore.endsWith('[') && !trimmedBefore.match(/\.\s*(get|set|delete)\s*\(\s*$/))
+        excludedTokens.add('js-string');
+      if (!trimmedBefore.endsWith('.'))
+        excludedTokens.add('js-property');
+      if (excludedTokens.has(token.type))
+        return [];
+    }
+    const queryAndAfter = this._editor.line(queryRange.startLine).substring(queryRange.startColumn);
+
+    const words = await ObjectUI.javaScriptAutocomplete.completionsForTextInCurrentContext(before, query, force);
+    if (!force && queryAndAfter && queryAndAfter !== query &&
+        words.some(word => queryAndAfter.startsWith(word.text) && query.length !== word.text.length))
+      return [];
+    return words;
+  }
+
+  /**
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   * @return {!Promise<?Element>}
+   */
+  async _tooltipCallback(lineNumber, columnNumber) {
+    const before = this._editor.text(new TextUtils.TextRange(0, 0, lineNumber, columnNumber));
+    const result = await ObjectUI.javaScriptAutocomplete.argumentsHint(before);
+    if (!result)
+      return null;
+    const argumentIndex = result.argumentIndex;
+    const tooltip = createElement('div');
+    for (const args of result.args) {
+      const argumentsElement = createElement('span');
+      for (let i = 0; i < args.length; i++) {
+        if (i === argumentIndex || (i < argumentIndex && args[i].startsWith('...')))
+          argumentsElement.appendChild(UI.html`<b>${args[i]}</b>`);
+        else
+          argumentsElement.createTextChild(args[i]);
+        if (i < args.length - 1)
+          argumentsElement.createTextChild(', ');
+      }
+      tooltip.appendChild(UI.html`<div class='source-code'>\u0192(${argumentsElement})</div>`);
+    }
+    return tooltip;
+  }
+};

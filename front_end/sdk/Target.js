@@ -46,12 +46,11 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {boolean}
    */
   isNodeJS() {
-    // TODO(lushnikov): this is an unreliable way to detect Node.js targets.
-    return this._capabilitiesMask === SDK.Target.Capability.JS || this._isNodeJSForTest;
+    return this._isNodeJS;
   }
 
-  setIsNodeJSForTest() {
-    this._isNodeJSForTest = true;
+  markAsNodeJS() {
+    this._isNodeJS = true;
   }
 
   /**

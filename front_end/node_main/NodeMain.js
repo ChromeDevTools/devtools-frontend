@@ -100,6 +100,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
     const target = this._targetManager.createTarget(
         targetInfo.targetId, Common.UIString('Node.js: %s', targetInfo.url), SDK.Target.Capability.JS,
         this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
+    target.markAsNodeJS();
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 

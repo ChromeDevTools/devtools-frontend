@@ -40,6 +40,8 @@ Network.NetworkLogViewColumns = class {
     this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Time, timeCalculator);
     this._calculatorsMap.set(Network.NetworkLogViewColumns._calculatorTypes.Duration, durationCalculator);
 
+    this._lastWheelTime = 0;
+
     this._setupDataGrid();
     this._setupWaterfall();
   }
@@ -166,8 +168,10 @@ Network.NetworkLogViewColumns = class {
   _onMouseWheel(shouldConsume, event) {
     if (shouldConsume)
       event.consume(true);
-    this._activeScroller.scrollTop -= event.wheelDeltaY;
+    const hasRecentWheel = Date.now() - this._lastWheelTime < 80;
+    this._activeScroller.scrollBy({top: -event.wheelDeltaY, behavior: hasRecentWheel ? 'instant' : 'smooth'});
     this._syncScrollers();
+    this._lastWheelTime = Date.now();
   }
 
   _syncScrollers() {

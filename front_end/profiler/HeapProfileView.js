@@ -267,9 +267,11 @@ Profiler.SamplingNativeHeapProfileType.TypeId = 'SamplingNativeHeapRecording';
  * @unrestricted
  */
 Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapProfileTypeBase {
-  constructor() {
-    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, ls`Native memory allocation snapshot`);
-    Profiler.SamplingNativeHeapSnapshotType.instance = this;
+  /**
+   * @param {string} processType
+   */
+  constructor(processType) {
+    super(Profiler.SamplingNativeHeapSnapshotType.TypeId, ls`Native memory allocation snapshot (${processType})`);
   }
 
   /**
@@ -309,13 +311,13 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
     if (!heapProfilerModel)
       return;
 
-    const profile = new Profiler.SamplingHeapProfileHeader(
-        heapProfilerModel, this, Common.UIString('Snapshot %d', this.nextProfileUid()));
+    const profile =
+        new Profiler.SamplingHeapProfileHeader(heapProfilerModel, this, ls`Snapshot ${this.nextProfileUid()}`);
     this.setProfileBeingRecorded(profile);
     this.addProfile(profile);
-    profile.updateStatus(Common.UIString('Snapshotting\u2026'));
+    profile.updateStatus(ls`Snapshotting\u2026`);
 
-    const protocolProfile = await heapProfilerModel.takeNativeSnapshot();
+    const protocolProfile = await this._takeNativeSnapshot(/** @type {!SDK.HeapProfilerModel} */ (heapProfilerModel));
     const recordedProfile = this.profileBeingRecorded();
     if (recordedProfile) {
       console.assert(protocolProfile);
@@ -326,9 +328,49 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
 
     this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
   }
+
+  /**
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  _takeNativeSnapshot(heapProfilerModel) {
+    throw 'Not implemented';
+  }
 };
 
 Profiler.SamplingNativeHeapSnapshotType.TypeId = 'SamplingNativeHeapSnapshot';
+
+Profiler.SamplingNativeHeapSnapshotBrowserType = class extends Profiler.SamplingNativeHeapSnapshotType {
+  constructor() {
+    super(ls`Browser`);
+    Profiler.SamplingNativeHeapSnapshotBrowserType.instance = this;
+  }
+
+  /**
+   * @override
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  _takeNativeSnapshot(heapProfilerModel) {
+    return heapProfilerModel.takeNativeBrowserSnapshot();
+  }
+};
+
+Profiler.SamplingNativeHeapSnapshotRendererType = class extends Profiler.SamplingNativeHeapSnapshotType {
+  constructor() {
+    super(ls`Renderer`);
+    Profiler.SamplingNativeHeapSnapshotRendererType.instance = this;
+  }
+
+  /**
+   * @override
+   * @param {!SDK.HeapProfilerModel} heapProfilerModel
+   * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
+   */
+  async _takeNativeSnapshot(heapProfilerModel) {
+    return await heapProfilerModel.takeNativeSnapshot();
+  }
+};
 
 /**
  * @unrestricted

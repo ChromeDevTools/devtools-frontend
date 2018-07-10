@@ -45,7 +45,6 @@
 
 .watch-expression {
     position: relative;
-    padding: 0 6px;
     flex: none;
     min-height: 20px;
 }
@@ -80,15 +79,18 @@
     overflow: hidden;
     white-space: nowrap;
     padding-left: 4px;
+    min-height: 18px;
+    line-height: 18px;
     -webkit-user-select: text;
 }
 
 .watch-expression-text-prompt-proxy {
-    margin-left: 12px;
+    margin: 2px 12px;
 }
 
 .watch-expression-header {
     flex: auto;
+    padding: 0 6px;
 }
 
 .watch-expression-object-header {

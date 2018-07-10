@@ -136,9 +136,10 @@ Audits2.ReportSelector.Item = class {
   }
 
   download() {
-    const url = new Common.ParsedURL(this._lighthouseResult.finalUrl).domain();
+    const domain = new Common.ParsedURL(this._lighthouseResult.finalUrl).domain();
+    const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
     const timestamp = this._lighthouseResult.fetchTime;
-    const fileName = `${url}-${new Date(timestamp).toISO8601Compact()}.json`;
+    const fileName = `${sanitizedDomain}-${new Date(timestamp).toISO8601Compact()}.json`;
     Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
   }
 };

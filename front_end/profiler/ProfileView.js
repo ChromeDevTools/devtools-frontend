@@ -75,9 +75,10 @@ Profiler.ProfileView = class extends UI.SimpleView {
     ];
 
     const optionNames = new Map([
-      [Profiler.ProfileView.ViewTypes.Flame, Common.UIString('Chart')],
-      [Profiler.ProfileView.ViewTypes.Heavy, Common.UIString('Heavy (Bottom Up)')],
-      [Profiler.ProfileView.ViewTypes.Tree, Common.UIString('Tree (Top Down)')],
+      [Profiler.ProfileView.ViewTypes.Flame, ls`Chart`],
+      [Profiler.ProfileView.ViewTypes.Heavy, ls`Heavy (Bottom Up)`],
+      [Profiler.ProfileView.ViewTypes.Tree, ls`Tree (Top Down)`],
+      [Profiler.ProfileView.ViewTypes.Text, ls`Text (Top Down)`],
     ]);
 
     const options =
@@ -240,6 +241,20 @@ Profiler.ProfileView = class extends UI.SimpleView {
     return this._linkifier;
   }
 
+  _ensureTextViewCreated() {
+    if (this._textView)
+      return;
+    this._textView = new UI.SimpleView(ls`Call tree`);
+    this._textView.registerRequiredCSS('profiler/profilesPanel.css');
+    this.populateTextView(this._textView);
+  }
+
+  /**
+   * @param {!UI.SimpleView} view
+   */
+  populateTextView(view) {
+  }
+
   /**
    * @return {!PerfUI.FlameChartDataProvider}
    */
@@ -299,6 +314,11 @@ Profiler.ProfileView = class extends UI.SimpleView {
         this._sortProfile();
         this._visibleView = this.dataGrid.asWidget();
         this._searchableElement = this.profileDataGridTree;
+        break;
+      case Profiler.ProfileView.ViewTypes.Text:
+        this._ensureTextViewCreated();
+        this._visibleView = this._textView;
+        this._searchableElement = this._textView;
         break;
     }
 
@@ -377,7 +397,8 @@ Profiler.ProfileView._maxLinkLength = 30;
 Profiler.ProfileView.ViewTypes = {
   Flame: 'Flame',
   Tree: 'Tree',
-  Heavy: 'Heavy'
+  Heavy: 'Heavy',
+  Text: 'Text'
 };
 
 

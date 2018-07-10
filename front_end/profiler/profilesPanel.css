@@ -237,3 +237,11 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
 .cpu-profile-flame-chart-overview-pane {
     flex: 0 0 80px !important;
 }
+
+.profile-text-view {
+    padding: 10px;
+    overflow: auto;
+    margin: 0;
+    user-select: text;
+    cursor: text;
+}

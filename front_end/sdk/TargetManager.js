@@ -174,10 +174,12 @@ SDK.TargetManager = class extends Common.Object {
    * @param {number} capabilitiesMask
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
+   * @param {boolean} isNodeJS
    * @return {!SDK.Target}
    */
-  createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget) {
-    const target = new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget, this._isSuspended);
+  createTarget(id, name, capabilitiesMask, connectionFactory, parentTarget, isNodeJS) {
+    const target =
+        new SDK.Target(this, id, name, capabilitiesMask, connectionFactory, parentTarget, this._isSuspended, isNodeJS);
     target.createModels(new Set(this._modelObservers.keysArray()));
     this._targets.push(target);
 

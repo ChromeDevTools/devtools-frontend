@@ -12,7 +12,8 @@ NodeMain.NodeMain = class extends Common.Object {
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
     const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), SDK.Target.Capability.Target, params => new SDK.MainConnection(params), null);
+        'main', Common.UIString('Main'), SDK.Target.Capability.Target, params => new SDK.MainConnection(params), null,
+        false /* isNodeJS */);
     target.setInspectedURL('Node.js');
     InspectorFrontendHost.connectionReady();
   }
@@ -99,8 +100,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
     const target = this._targetManager.createTarget(
         targetInfo.targetId, Common.UIString('Node.js: %s', targetInfo.url), SDK.Target.Capability.JS,
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
-    target.markAsNodeJS();
+        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget, true /* isNodeJS */);
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 

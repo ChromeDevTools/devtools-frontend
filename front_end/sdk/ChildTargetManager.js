@@ -136,7 +136,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     }
     const target = this._targetManager.createTarget(
         targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
+        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget, false /* isNodeJS */);
 
     if (SDK.ChildTargetManager._attachCallback)
       SDK.ChildTargetManager._attachCallback({target, waitingForDebugger});

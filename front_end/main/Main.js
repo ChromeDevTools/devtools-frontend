@@ -114,6 +114,7 @@ Main.Main = class {
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
     Runtime.experiments.register('networkSearch', 'Network search');
     Runtime.experiments.register('oopifInlineDOM', 'OOPIF: inline DOM ', true);
+    Runtime.experiments.register('pinnedExpressions', 'Pinned expressions in Console', true);
     Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');

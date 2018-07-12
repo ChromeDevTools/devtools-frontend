@@ -23,6 +23,10 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
     this._eagerPreviewElement.classList.toggle('hidden', !this._eagerEvalSetting.get());
 
+    // TODO(luoe): split out prompt styles into ConsolePrompt.css.
+    const pinsEnabled = Runtime.experiments.isEnabled('pinnedExpressions');
+    if (pinsEnabled)
+      this.element.style.marginRight = '20px';
     this.element.tabIndex = 0;
     /** @type {?Promise} */
     this._previewRequestForTest = null;
@@ -50,6 +54,13 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.widget().show(this.element);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
       this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
+      if (pinsEnabled) {
+        const pinButton = this.element.createChild('span', 'command-pin-button');
+        pinButton.title = ls`Pin expression`;
+        pinButton.addEventListener('click', () => {
+          this.dispatchEventToListeners(Console.ConsolePrompt.Events.ExpressionPinned, this.text());
+        });
+      }
       if (this._isBelowPromptEnabled)
         this.element.appendChild(this._eagerPreviewElement);
 
@@ -447,5 +458,6 @@ Console.ConsoleHistoryManager = class {
 };
 
 Console.ConsolePrompt.Events = {
+  ExpressionPinned: Symbol('ExpressionPinned'),
   TextChanged: Symbol('TextChanged')
 };

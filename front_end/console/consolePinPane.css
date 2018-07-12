@@ -1,0 +1,62 @@
+/*
+ * Copyright 2018 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.console-pins {
+  overflow-y: auto;
+  background: var(--toolbar-bg-color);
+}
+
+.console-pins:not(:empty) {
+  border-bottom: 1px solid var(--divider-color);
+  padding: 5px 28px 0 24px;
+}
+
+.console-pin {
+  margin-bottom: 2px;
+  position: relative;
+  user-select: text;
+  flex: none;
+  padding-bottom: 6px;
+}
+
+.console-pin:not(:last-child) {
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.console-pin-name {
+  margin-left: -4px;
+  margin-bottom: 1px;
+  height: auto;
+}
+
+.console-pin-name,
+.console-pin-preview {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.console-delete-pin {
+  position: absolute;
+  top: 6px;
+  left: -16px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.console-delete-pin:hover {
+  opacity: 1;
+}
+
+.console-pin-name:focus-within {
+  background: #fff;
+  box-shadow: var(--focus-ring-active-shadow);
+}
+
+.console-pin-name:not(:focus-within):not(:hover) {
+  opacity: 0.6;
+}

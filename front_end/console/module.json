@@ -188,6 +188,7 @@
     "scripts": [
         "ConsoleContextSelector.js",
         "ConsoleFilter.js",
+        "ConsolePinPane.js",
         "ConsoleSidebar.js",
         "ConsoleViewport.js",
         "ConsoleViewMessage.js",
@@ -197,6 +198,7 @@
     ],
     "resources": [
         "consoleContextSelector.css",
+        "consolePinPane.css",
         "consoleSidebar.css",
         "consoleView.css"
     ]

@@ -153,6 +153,12 @@ Console.ConsoleView = class extends UI.VBox {
     this._showSettingsPaneSetting.addChangeListener(
         () => settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get()));
 
+    if (Runtime.experiments.isEnabled('pinnedExpressions')) {
+      this._pinPane = new Console.ConsolePinPane();
+      this._pinPane.element.classList.add('console-view-pinpane');
+      this._pinPane.show(this._contentsElement);
+    }
+
     this._viewport = new Console.ConsoleViewport(this);
     this._viewport.setStickToBottom(true);
     this._viewport.contentElement().classList.add('console-group', 'console-group-messages');
@@ -192,6 +198,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt = new Console.ConsolePrompt();
     this._prompt.show(this._promptElement);
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
+    this._prompt.addEventListener(Console.ConsolePrompt.Events.ExpressionPinned, this._promptExpressionPinned, this);
     this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
 
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
@@ -1146,6 +1153,14 @@ Console.ConsoleView = class extends UI.VBox {
   _updateStickToBottomOnWheel() {
     this._updateStickToBottomOnMouseDown();
     this._updateStickToBottomOnMouseUp();
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _promptExpressionPinned(event) {
+    const text = /** @type {string} */ (event.data);
+    this._pinPane.addPin(text);
   }
 
   _promptTextChanged() {

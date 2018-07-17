@@ -144,8 +144,10 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     this._propertiesOutline.removeChildren();
     this._linkifier.reset();
     const cssModel = this._computedStyleModel.cssModel();
-    if (!nodeStyle || !matchedStyles || !cssModel)
+    if (!nodeStyle || !matchedStyles || !cssModel) {
+      this._noMatchesElement.classList.remove('hidden');
       return;
+    }
 
     const uniqueProperties = nodeStyle.computedStyle.keysArray();
     uniqueProperties.sort(propertySorter);

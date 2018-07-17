@@ -432,8 +432,10 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._sectionBlocks = [];
 
     const node = this.node();
-    if (!matchedStyles || !node)
+    if (!matchedStyles || !node) {
+      this._noMatchesElement.classList.remove('hidden');
       return;
+    }
 
     this._sectionBlocks =
         await this._rebuildSectionsForMatchedStyleRules(/** @type {!SDK.CSSMatchedStyles} */ (matchedStyles));
@@ -476,6 +478,8 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
     if (this._filterRegex)
       this._updateFilter();
+    else
+      this._noMatchesElement.classList.toggle('hidden', this._sectionBlocks.length > 0);
 
     this._nodeStylesUpdatedForTest(/** @type {!SDK.DOMNode} */ (node), true);
     if (this._decorator) {

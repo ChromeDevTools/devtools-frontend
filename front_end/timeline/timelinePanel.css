@@ -29,6 +29,7 @@
 
 .timeline-toolbar-container {
     display: flex;
+    flex: none;
 }
 
 .timeline-toolbar-container > .toolbar {

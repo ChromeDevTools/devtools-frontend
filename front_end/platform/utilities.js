@@ -837,7 +837,6 @@ String.sprintf = function(format, var_arg) {
  */
 String.tokenizeFormatString = function(format, formatters) {
   const tokens = [];
-  let substitutionIndex = 0;
 
   function addStringToken(str) {
     if (!str)
@@ -852,61 +851,51 @@ String.tokenizeFormatString = function(format, formatters) {
     tokens.push({type: 'specifier', specifier: specifier, precision: precision, substitutionIndex: substitutionIndex});
   }
 
-  let index = 0;
-  for (let precentIndex = format.indexOf('%', index); precentIndex !== -1; precentIndex = format.indexOf('%', index)) {
-    if (format.length === index)  // unescaped % sign at the end of the format string.
-      break;
-    addStringToken(format.substring(index, precentIndex));
-    index = precentIndex + 1;
-
-    if (format[index] === '%') {
-      // %% escape sequence.
-      addStringToken('%');
-      ++index;
-      continue;
-    }
-
-    if (String.isDigitAt(format, index)) {
-      // The first character is a number, it might be a substitution index.
-      const number = parseInt(format.substring(index), 10);
-      while (String.isDigitAt(format, index))
-        ++index;
-
-      // If the number is greater than zero and ends with a "$",
-      // then this is a substitution index.
-      if (number > 0 && format[index] === '$') {
-        substitutionIndex = (number - 1);
-        ++index;
-      }
-    }
-
-    let precision = -1;
-    if (format[index] === '.') {
-      // This is a precision specifier. If no digit follows the ".",
-      // then the precision should be zero.
-      ++index;
-      precision = parseInt(format.substring(index), 10);
-      if (isNaN(precision))
-        precision = 0;
-
-      while (String.isDigitAt(format, index))
-        ++index;
-    }
-
-    if (!(format[index] in formatters)) {
-      addStringToken(format.substring(precentIndex, index + 1));
-      ++index;
-      continue;
-    }
-
-    addSpecifierToken(format[index], precision, substitutionIndex);
-
-    ++substitutionIndex;
-    ++index;
+  function addAnsiColor(code) {
+    const types = {3: 'color', 9: 'colorLight', 4: 'bgColor', 10: 'bgColorLight'};
+    const colorCodes = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'lightGray', '', 'default'];
+    const colorCodesLight =
+        ['darkGray', 'lightRed', 'lightGreen', 'lightYellow', 'lightBlue', 'lightMagenta', 'lightCyan', 'white', ''];
+    const colors = {color: colorCodes, colorLight: colorCodesLight, bgColor: colorCodes, bgColorLight: colorCodesLight};
+    const type = types[Math.floor(code / 10)];
+    if (!type)
+      return;
+    const color = colors[type][code % 10];
+    if (!color)
+      return;
+    tokens.push({
+      type: 'specifier',
+      specifier: 'c',
+      value: {description: (type.startsWith('bg') ? 'background : ' : 'color: ') + color}
+    });
   }
 
-  addStringToken(format.substring(index));
+  let textStart = 0;
+  let substitutionIndex = 0;
+  const re =
+      new RegExp(`%%|%(?:(\\d+)\\$)?(?:\\.(\\d*))?([${Object.keys(formatters).join('')}])|\\u001b\\[(\\d+)m`, 'g');
+  for (let match = re.exec(format); !!match; match = re.exec(format)) {
+    const matchStart = match.index;
+    if (matchStart > textStart)
+      addStringToken(format.substring(textStart, matchStart));
 
+    if (match[0] === '%%') {
+      addStringToken('%');
+    } else if (match[0].startsWith('%')) {
+      // eslint-disable-next-line no-unused-vars
+      const [_, substitionString, precisionString, specifierString] = match;
+      if (substitionString && Number(substitionString) > 0)
+        substitutionIndex = Number(substitionString) - 1;
+      const precision = precisionString ? Number(precisionString) : -1;
+      addSpecifierToken(specifierString, precision, substitutionIndex);
+      ++substitutionIndex;
+    } else {
+      const code = Number(match[4]);
+      addAnsiColor(code);
+    }
+    textStart = matchStart + match[0].length;
+  }
+  addStringToken(format.substring(textStart));
   return tokens;
 };
 
@@ -961,7 +950,7 @@ String.vsprintf = function(format, substitutions) {
  * @template T, Q
  */
 String.format = function(format, substitutions, formatters, initialValue, append, tokenizedFormat) {
-  if (!format || !substitutions || !substitutions.length)
+  if (!format || ((!substitutions || !substitutions.length) && format.search(/\u001b\[(\d+)m/) === -1))
     return {formattedResult: append(initialValue, format), unusedSubstitutions: substitutions};
 
   function prettyFunctionName() {
@@ -993,7 +982,7 @@ String.format = function(format, substitutions, formatters, initialValue, append
       continue;
     }
 
-    if (token.substitutionIndex >= substitutions.length) {
+    if (!token.value && token.substitutionIndex >= substitutions.length) {
       // If there are not enough substitutions for the current substitutionIndex
       // just output the format specifier literally and move on.
       error(
@@ -1003,16 +992,17 @@ String.format = function(format, substitutions, formatters, initialValue, append
       continue;
     }
 
-    usedSubstitutionIndexes[token.substitutionIndex] = true;
+    if (!token.value)
+      usedSubstitutionIndexes[token.substitutionIndex] = true;
 
     if (!(token.specifier in formatters)) {
       // Encountered an unsupported format character, treat as a string.
       warn('unsupported format character \u201C' + token.specifier + '\u201D. Treating as a string.');
-      result = append(result, substitutions[token.substitutionIndex]);
+      result = append(result, token.value ? '' : substitutions[token.substitutionIndex]);
       continue;
     }
 
-    result = append(result, formatters[token.specifier](substitutions[token.substitutionIndex], token));
+    result = append(result, formatters[token.specifier](token.value || substitutions[token.substitutionIndex], token));
   }
 
   const unusedSubstitutions = [];

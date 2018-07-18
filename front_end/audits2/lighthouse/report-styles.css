@@ -127,10 +127,10 @@
   scroll-behavior: smooth;
 }
 
-.lh-root [data-keyboard-focus="true"]:focus {
+.lh-root :focus {
     outline: -webkit-focus-ring-color auto 3px;
 }
-.lh-root summary[data-keyboard-focus="true"]:focus {
+.lh-root summary:focus {
     outline: 1px solid hsl(217, 89%, 61%);
 }
 
@@ -864,6 +864,7 @@ summary.lh-passed-audits-summary {
 
 .lh-table-column--text,
 .lh-table-column--bytes,
+.lh-table-column--timespanMs,
 .lh-table-column--ms {
   text-align: right;
 }

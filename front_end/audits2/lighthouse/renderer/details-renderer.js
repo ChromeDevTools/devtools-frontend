@@ -9,6 +9,10 @@
 
 /** @typedef {import('./dom.js')} DOM */
 /** @typedef {import('./crc-details-renderer.js')} CRCDetailsJSON */
+/** @typedef {LH.Result.Audit.OpportunityDetails} OpportunityDetails */
+
+/** @type {Array<string>} */
+const URL_PREFIXES = ['http://', 'https://', 'data:'];
 
 class DetailsRenderer {
   /**
@@ -29,7 +33,7 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {DetailsJSON} details
+   * @param {DetailsJSON|OpportunityDetails} details
    * @return {Element}
    */
   render(details) {
@@ -55,13 +59,16 @@ class DetailsRenderer {
         // @ts-ignore - TODO(bckenny): Fix type hierarchy
         return this._renderTable(/** @type {TableDetailsJSON} */ (details));
       case 'code':
-        return this._renderCode(details);
+        return this._renderCode(/** @type {DetailsJSON} */ (details));
       case 'node':
         return this.renderNode(/** @type {NodeDetailsJSON} */(details));
       case 'criticalrequestchain':
         return CriticalRequestChainRenderer.render(this._dom, this._templateContext,
           // @ts-ignore - TODO(bckenny): Fix type hierarchy
           /** @type {CRCDetailsJSON} */ (details));
+      case 'opportunity':
+        // @ts-ignore - TODO(bckenny): Fix type hierarchy
+        return this._renderOpportunityTable(details);
       default: {
         throw new Error(`Unknown type: ${details.type}`);
       }
@@ -69,17 +76,17 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {NumericUnitDetailsJSON} details
+   * @param {{value: number, granularity?: number}} details
    * @return {Element}
    */
   _renderBytes(details) {
     // TODO: handle displayUnit once we have something other than 'kb'
     const value = Util.formatBytesToKB(details.value, details.granularity);
-    return this._renderText({type: 'text', value});
+    return this._renderText({value});
   }
 
   /**
-   * @param {NumericUnitDetailsJSON} details
+   * @param {{value: number, granularity?: number, displayUnit?: string}} details
    * @return {Element}
    */
   _renderMilliseconds(details) {
@@ -88,11 +95,11 @@ class DetailsRenderer {
       value = Util.formatDuration(details.value);
     }
 
-    return this._renderText({type: 'text', value});
+    return this._renderText({value});
   }
 
   /**
-   * @param {StringDetailsJSON} text
+   * @param {{value: string}} text
    * @return {HTMLElement}
    */
   _renderTextURL(text) {
@@ -107,7 +114,7 @@ class DetailsRenderer {
       displayedHost = parsed.file === '/' ? '' : `(${parsed.hostname})`;
       title = url;
     } catch (/** @type {!Error} */ e) {
-      if (!(e instanceof TypeError)) {
+      if (!e.name.startsWith('TypeError')) {
         throw e;
       }
       displayedPath = url;
@@ -116,13 +123,11 @@ class DetailsRenderer {
     const element = /** @type {HTMLElement} */ (this._dom.createElement('div', 'lh-text__url'));
     element.appendChild(this._renderText({
       value: displayedPath,
-      type: 'text',
     }));
 
     if (displayedHost) {
       const hostElem = this._renderText({
         value: displayedHost,
-        type: 'text',
       });
       hostElem.classList.add('lh-text__url-host');
       element.appendChild(hostElem);
@@ -142,7 +147,6 @@ class DetailsRenderer {
     if (!allowedProtocols.includes(url.protocol)) {
       // Fall back to just the link text if protocol not allowed.
       return this._renderText({
-        type: 'text',
         value: details.text,
       });
     }
@@ -157,7 +161,7 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {StringDetailsJSON} text
+   * @param {{value: string}} text
    * @return {Element}
    */
   _renderText(text) {
@@ -169,13 +173,11 @@ class DetailsRenderer {
   /**
    * Create small thumbnail with scaled down image asset.
    * If the supplied details doesn't have an image/* mimeType, then an empty span is returned.
-   * @param {ThumbnailDetails} details
+   * @param {{value: string}} details
    * @return {Element}
    */
   _renderThumbnail(details) {
     const element = /** @type {HTMLImageElement}*/ (this._dom.createElement('img', 'lh-thumbnail'));
-    /** @type {string} */
-    // @ts-ignore - type should have a value if we get here.
     const strValue = details.value;
     element.src = strValue;
     element.title = strValue;
@@ -243,6 +245,82 @@ class DetailsRenderer {
   }
 
   /**
+   * TODO(bckenny): migrate remaining table rendering to this function, then rename
+   * back to _renderTable and replace the original.
+   * @param {OpportunityDetails} details
+   * @return {Element}
+   */
+  _renderOpportunityTable(details) {
+    if (!details.items.length) return this._dom.createElement('span');
+
+    const tableElem = this._dom.createElement('table', 'lh-table');
+    const theadElem = this._dom.createChildOf(tableElem, 'thead');
+    const theadTrElem = this._dom.createChildOf(theadElem, 'tr');
+
+    for (const heading of details.headings) {
+      const valueType = heading.valueType || 'text';
+      const classes = `lh-table-column--${valueType}`;
+      const labelEl = this._dom.createElement('div', 'lh-text');
+      labelEl.textContent = heading.label;
+      this._dom.createChildOf(theadTrElem, 'th', classes).appendChild(labelEl);
+    }
+
+    const tbodyElem = this._dom.createChildOf(tableElem, 'tbody');
+    for (const row of details.items) {
+      const rowElem = this._dom.createChildOf(tbodyElem, 'tr');
+      for (const heading of details.headings) {
+        const key = /** @type {keyof LH.Result.Audit.OpportunityDetailsItem} */ (heading.key);
+        const value = row[key];
+
+        if (typeof value === 'undefined' || value === null) {
+          this._dom.createChildOf(rowElem, 'td', 'lh-table-column--empty');
+          continue;
+        }
+
+        const valueType = heading.valueType;
+        let itemElement;
+
+        // TODO(bckenny): as we add more table types, split out into _renderTableItem fn.
+        switch (valueType) {
+          case 'url': {
+            // Fall back to <pre> rendering if not actually a URL.
+            const strValue = /** @type {string} */ (value);
+            if (URL_PREFIXES.some(prefix => strValue.startsWith(prefix))) {
+              itemElement = this._renderTextURL({value: strValue});
+            } else {
+              const codeValue = /** @type {(number|string|undefined)} */ (value);
+              itemElement = this._renderCode({value: codeValue});
+            }
+            break;
+          }
+          case 'timespanMs': {
+            const numValue = /** @type {number} */ (value);
+            itemElement = this._renderMilliseconds({value: numValue});
+            break;
+          }
+          case 'bytes': {
+            const numValue = /** @type {number} */ (value);
+            itemElement = this._renderBytes({value: numValue, granularity: 1});
+            break;
+          }
+          case 'thumbnail': {
+            const strValue = /** @type {string} */ (value);
+            itemElement = this._renderThumbnail({value: strValue});
+            break;
+          }
+          default: {
+            throw new Error(`Unknown valueType: ${valueType}`);
+          }
+        }
+
+        const classes = `lh-table-column--${valueType}`;
+        this._dom.createChildOf(rowElem, 'td', classes).appendChild(itemElement);
+      }
+    }
+    return tableElem;
+  }
+
+  /**
    * @param {NodeDetailsJSON} item
    * @return {Element}
    * @protected
@@ -279,7 +357,7 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {DetailsJSON} details
+   * @param {{value?: string|number}} details
    * @return {Element}
    */
   _renderCode(details) {
@@ -300,7 +378,6 @@ if (typeof module !== 'undefined' && module.exports) {
  * @typedef {{
       type: string,
       value: (string|number|undefined),
-      summary?: OpportunitySummary,
       granularity?: number,
       displayUnit?: string
   }} DetailsJSON
@@ -352,7 +429,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /** @typedef {{
       type: string,
-      value?: string,
+      value: string,
   }} ThumbnailDetails
  */
 
@@ -368,11 +445,4 @@ if (typeof module !== 'undefined' && module.exports) {
       scale: number,
       items: Array<{timing: number, timestamp: number, data: string}>,
   }} FilmstripDetails
- */
-
-
-/** @typedef {{
-      wastedMs?: number,
-      wastedBytes?: number
-  }} OpportunitySummary
  */

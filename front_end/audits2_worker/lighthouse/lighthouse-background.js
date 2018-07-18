@@ -1,4 +1,4 @@
-// lighthouse, browserified. 3.0.0-beta.0 (a194e972771bcf85071a796142d50d5bfbe3cc7b)
+// lighthouse, browserified. 3.0.3 (d1cae24fda4182406e02d3f4df6309d48878fc50)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 
 
@@ -20,10 +20,10 @@ class Accesskeys extends AxeAudit{
 
 static get meta(){
 return{
-name:'accesskeys',
-description:'`[accesskey]` values are unique',
-failureDescription:'`[accesskey]` values are not unique',
-helpText:'Access keys let users quickly focus a part of the page. For proper '+
+id:'accesskeys',
+title:'`[accesskey]` values are unique',
+failureTitle:'`[accesskey]` values are not unique',
+description:'Access keys let users quickly focus a part of the page. For proper '+
 'navigation, each access key must be unique. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/accesskeys?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -54,10 +54,10 @@ class ARIAAllowedAttr extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-allowed-attr',
-description:'`[aria-*]` attributes match their roles',
-failureDescription:'`[aria-*]` attributes do not match their roles',
-helpText:'Each ARIA `role` supports a specific subset of `aria-*` attributes. '+
+id:'aria-allowed-attr',
+title:'`[aria-*]` attributes match their roles',
+failureTitle:'`[aria-*]` attributes do not match their roles',
+description:'Each ARIA `role` supports a specific subset of `aria-*` attributes. '+
 'Mismatching these invalidates the `aria-*` attributes. [Learn '+
 'more](https://dequeuniversity.com/rules/axe/2.2/aria-allowed-attr?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -88,10 +88,10 @@ class ARIARequiredAttr extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-required-attr',
-description:'`[role]`s have all required `[aria-*]` attributes',
-failureDescription:'`[role]`s do not have all required `[aria-*]` attributes',
-helpText:'Some ARIA roles have required attributes that describe the state '+
+id:'aria-required-attr',
+title:'`[role]`s have all required `[aria-*]` attributes',
+failureTitle:'`[role]`s do not have all required `[aria-*]` attributes',
+description:'Some ARIA roles have required attributes that describe the state '+
 'of the element to screen readers. [Learn more](https://dequeuniversity.com/rules/axe/2.2/aria-required-attr?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -122,11 +122,11 @@ class AriaRequiredChildren extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-required-children',
-description:'Elements with `[role]` that require specific children `[role]`s, are present',
-failureDescription:'Elements with `[role]` that require specific children `[role]`s, '+
+id:'aria-required-children',
+title:'Elements with `[role]` that require specific children `[role]`s, are present',
+failureTitle:'Elements with `[role]` that require specific children `[role]`s, '+
 'are missing.',
-helpText:'Some ARIA parent roles must contain specific child roles to perform '+
+description:'Some ARIA parent roles must contain specific child roles to perform '+
 'their intended accessibility functions. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/aria-required-children?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -158,10 +158,10 @@ class AriaRequiredParent extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-required-parent',
-description:'`[role]`s are contained by their required parent element',
-failureDescription:'`[role]`s are not contained by their required parent element',
-helpText:'Some ARIA child roles must be contained by specific parent roles to '+
+id:'aria-required-parent',
+title:'`[role]`s are contained by their required parent element',
+failureTitle:'`[role]`s are not contained by their required parent element',
+description:'Some ARIA child roles must be contained by specific parent roles to '+
 'properly perform their intended accessibility functions. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/aria-required-parent?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -192,10 +192,10 @@ class AriaRoles extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-roles',
-description:'`[role]` values are valid',
-failureDescription:'`[role]` values are not valid',
-helpText:'ARIA roles must have valid values in order to perform their '+
+id:'aria-roles',
+title:'`[role]` values are valid',
+failureTitle:'`[role]` values are not valid',
+description:'ARIA roles must have valid values in order to perform their '+
 'intended accessibility functions. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/aria-roles?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -226,10 +226,10 @@ class ARIAValidAttr extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-valid-attr-value',
-description:'`[aria-*]` attributes have valid values',
-failureDescription:'`[aria-*]` attributes do not have valid values',
-helpText:'Assistive technologies, like screen readers, can\'t interpret ARIA '+
+id:'aria-valid-attr-value',
+title:'`[aria-*]` attributes have valid values',
+failureTitle:'`[aria-*]` attributes do not have valid values',
+description:'Assistive technologies, like screen readers, can\'t interpret ARIA '+
 'attributes with invalid values. [Learn '+
 'more](https://dequeuniversity.com/rules/axe/2.2/aria-valid-attr-value?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -260,10 +260,10 @@ class ARIAValidAttr extends AxeAudit{
 
 static get meta(){
 return{
-name:'aria-valid-attr',
-description:'`[aria-*]` attributes are valid and not misspelled',
-failureDescription:'`[aria-*]` attributes are not valid or misspelled',
-helpText:'Assistive technologies, like screen readers, can\'t interpret ARIA '+
+id:'aria-valid-attr',
+title:'`[aria-*]` attributes are valid and not misspelled',
+failureTitle:'`[aria-*]` attributes are not valid or misspelled',
+description:'Assistive technologies, like screen readers, can\'t interpret ARIA '+
 'attributes with invalid names. [Learn '+
 'more](https://dequeuniversity.com/rules/axe/2.2/aria-valid-attr?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -294,11 +294,11 @@ class AudioCaption extends AxeAudit{
 
 static get meta(){
 return{
-name:'audio-caption',
-description:'`<audio>` elements contain a `<track>` element with `[kind="captions"]`',
-failureDescription:'`<audio>` elements are missing a `<track>` element with '+
+id:'audio-caption',
+title:'`<audio>` elements contain a `<track>` element with `[kind="captions"]`',
+failureTitle:'`<audio>` elements are missing a `<track>` element with '+
 '`[kind="captions"]`.',
-helpText:'Captions make audio elements usable for deaf or hearing-impaired users, '+
+description:'Captions make audio elements usable for deaf or hearing-impaired users, '+
 'providing critical information such as who is talking, what they\'re saying, '+
 'and other non-speech information. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/audio-caption?application=lighthouse).',
@@ -330,11 +330,11 @@ class ButtonName extends AxeAudit{
 
 static get meta(){
 return{
-name:'button-name',
-description:'Buttons have an accessible name',
-failureDescription:'Buttons do not have an accessible name',
-helpText:'When a button doesn\'t have an accessible name, screen readers announce it as '+
-'"button", making it unusable for users who rely on screen readers. '+
+id:'button-name',
+title:'Buttons have an accessible name',
+failureTitle:'Buttons do not have an accessible name',
+description:'When a button doesn\'t have an accessible name, screen readers announce it '+
+'as "button", making it unusable for users who rely on screen readers. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/button-name?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -365,11 +365,11 @@ class Bypass extends AxeAudit{
 
 static get meta(){
 return{
-name:'bypass',
-description:'The page contains a heading, skip link, or landmark region',
-failureDescription:'The page does not contain a heading, skip link, or landmark region',
-helpText:'Adding ways to bypass repetitive content lets keyboard users navigate the page '+
-'more efficiently. '+
+id:'bypass',
+title:'The page contains a heading, skip link, or landmark region',
+failureTitle:'The page does not contain a heading, skip link, or landmark region',
+description:'Adding ways to bypass repetitive content lets keyboard users navigate the '+
+'page more efficiently. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/bypass?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -400,11 +400,11 @@ class ColorContrast extends AxeAudit{
 
 static get meta(){
 return{
-name:'color-contrast',
-description:'Background and foreground colors have a sufficient contrast ratio',
-failureDescription:'Background and foreground colors do not have a '+
+id:'color-contrast',
+title:'Background and foreground colors have a sufficient contrast ratio',
+failureTitle:'Background and foreground colors do not have a '+
 'sufficient contrast ratio.',
-helpText:'Low-contrast text is difficult or impossible for many users to read. '+
+description:'Low-contrast text is difficult or impossible for many users to read. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/color-contrast?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -434,12 +434,12 @@ class DefinitionList extends AxeAudit{
 
 static get meta(){
 return{
-name:'definition-list',
-description:'`<dl>`\'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>` '+
+id:'definition-list',
+title:'`<dl>`\'s contain only properly-ordered `<dt>` and `<dd>` groups, `<script>` '+
 'or `<template>` elements.',
-failureDescription:'`<dl>`\'s do not contain only properly-ordered `<dt>` and `<dd>` '+
+failureTitle:'`<dl>`\'s do not contain only properly-ordered `<dt>` and `<dd>` '+
 'groups, `<script>` or `<template>` elements.',
-helpText:'When definition lists are not properly marked up, screen readers may produce '+
+description:'When definition lists are not properly marked up, screen readers may produce '+
 'confusing or inaccurate output. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/definition-list?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -470,10 +470,10 @@ class DLItem extends AxeAudit{
 
 static get meta(){
 return{
-name:'dlitem',
-description:'Definition list items are wrapped in `<dl>` elements',
-failureDescription:'Definition list items are not wrapped in `<dl>` elements',
-helpText:'Definition list items (`<dt>` and `<dd>`) must be wrapped in a '+
+id:'dlitem',
+title:'Definition list items are wrapped in `<dl>` elements',
+failureTitle:'Definition list items are not wrapped in `<dl>` elements',
+description:'Definition list items (`<dt>` and `<dd>`) must be wrapped in a '+
 'parent `<dl>` element to ensure that screen readers can properly announce them. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/dlitem?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -504,10 +504,10 @@ class DocumentTitle extends AxeAudit{
 
 static get meta(){
 return{
-name:'document-title',
-description:'Document has a `<title>` element',
-failureDescription:'Document doesn\'t have a `<title>` element',
-helpText:'The title gives screen reader users an overview of the page, and search '+
+id:'document-title',
+title:'Document has a `<title>` element',
+failureTitle:'Document doesn\'t have a `<title>` element',
+description:'The title gives screen reader users an overview of the page, and search '+
 'engine users rely on it heavily to determine if a page is relevant to their search. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/title).',
 requiredArtifacts:['Accessibility']};
@@ -538,10 +538,10 @@ class DuplicateId extends AxeAudit{
 
 static get meta(){
 return{
-name:'duplicate-id',
-description:'`[id]` attributes on the page are unique',
-failureDescription:'`[id]` attributes on the page are not unique',
-helpText:'The value of an id attribute must be unique to prevent '+
+id:'duplicate-id',
+title:'`[id]` attributes on the page are unique',
+failureTitle:'`[id]` attributes on the page are not unique',
+description:'The value of an id attribute must be unique to prevent '+
 'other instances from being overlooked by assistive technologies. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/duplicate-id?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -572,10 +572,10 @@ class FrameTitle extends AxeAudit{
 
 static get meta(){
 return{
-name:'frame-title',
-description:'`<frame>` or `<iframe>` elements have a title',
-failureDescription:'`<frame>` or `<iframe>` elements do not have a title',
-helpText:'Screen reader users rely on frame titles to describe the contents of frames. '+
+id:'frame-title',
+title:'`<frame>` or `<iframe>` elements have a title',
+failureTitle:'`<frame>` or `<iframe>` elements do not have a title',
+description:'Screen reader users rely on frame titles to describe the contents of frames. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/frame-title?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -605,10 +605,10 @@ class HTMLHasLang extends AxeAudit{
 
 static get meta(){
 return{
-name:'html-has-lang',
-description:'`<html>` element has a `[lang]` attribute',
-failureDescription:'`<html>` element does not have a `[lang]` attribute',
-helpText:'If a page doesn\'t specify a lang attribute, a screen reader assumes '+
+id:'html-has-lang',
+title:'`<html>` element has a `[lang]` attribute',
+failureTitle:'`<html>` element does not have a `[lang]` attribute',
+description:'If a page doesn\'t specify a lang attribute, a screen reader assumes '+
 'that the page is in the default language that the user chose when setting up the '+
 'screen reader. If the page isn\'t actually in the default language, then the screen '+
 'reader might not announce the page\'s text correctly. '+
@@ -641,11 +641,11 @@ class HTMLLangValid extends AxeAudit{
 
 static get meta(){
 return{
-name:'html-lang-valid',
-description:'`<html>` element has a valid value for its `[lang]` attribute',
-failureDescription:'`<html>` element does not have a valid value for '+
+id:'html-lang-valid',
+title:'`<html>` element has a valid value for its `[lang]` attribute',
+failureTitle:'`<html>` element does not have a valid value for '+
 'its `[lang]` attribute.',
-helpText:'Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) '+
+description:'Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) '+
 'helps screen readers announce text properly. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/valid-lang?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -676,10 +676,10 @@ class ImageAlt extends AxeAudit{
 
 static get meta(){
 return{
-name:'image-alt',
-description:'Image elements have `[alt]` attributes',
-failureDescription:'Image elements do not have `[alt]` attributes',
-helpText:'Informative elements should aim for short, descriptive alternate text. '+
+id:'image-alt',
+title:'Image elements have `[alt]` attributes',
+failureTitle:'Image elements do not have `[alt]` attributes',
+description:'Informative elements should aim for short, descriptive alternate text. '+
 'Decorative elements can be ignored with an empty alt attribute. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/image-alt?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -710,11 +710,11 @@ class InputImageAlt extends AxeAudit{
 
 static get meta(){
 return{
-name:'input-image-alt',
-description:'`<input type="image">` elements have `[alt]` text',
-failureDescription:'`<input type="image">` elements do not have `[alt]` text',
-helpText:'When an image is being used as an `<input>` button, providing alternative text '+
-'can help screen reader users understand the purpose of the button. '+
+id:'input-image-alt',
+title:'`<input type="image">` elements have `[alt]` text',
+failureTitle:'`<input type="image">` elements do not have `[alt]` text',
+description:'When an image is being used as an `<input>` button, providing alternative '+
+'text can help screen reader users understand the purpose of the button. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/input-image-alt?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -744,10 +744,10 @@ class Label extends AxeAudit{
 
 static get meta(){
 return{
-name:'label',
-description:'Form elements have associated labels',
-failureDescription:'Form elements do not have associated labels',
-helpText:'Labels ensure that form controls are announced properly by assistive '+
+id:'label',
+title:'Form elements have associated labels',
+failureTitle:'Form elements do not have associated labels',
+description:'Labels ensure that form controls are announced properly by assistive '+
 'technologies, like screen readers. [Learn '+
 'more](https://dequeuniversity.com/rules/axe/2.2/label?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -779,12 +779,12 @@ class LayoutTable extends AxeAudit{
 
 static get meta(){
 return{
-name:'layout-table',
-description:'Presentational `<table>` elements avoid using `<th>`, `<caption>` or the '+
+id:'layout-table',
+title:'Presentational `<table>` elements avoid using `<th>`, `<caption>` or the '+
 '`[summary]` attribute.',
-failureDescription:'Presentational `<table>` elements do not avoid using `<th>`, '+
+failureTitle:'Presentational `<table>` elements do not avoid using `<th>`, '+
 '`<caption>` or the `[summary]` attribute.',
-helpText:'A table being used for layout purposes should not include data elements, '+
+description:'A table being used for layout purposes should not include data elements, '+
 'such as the th or caption elements or the summary attribute, because this can '+
 'create a confusing experience for screen reader users. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/layout-table?application=lighthouse).',
@@ -816,10 +816,10 @@ class LinkName extends AxeAudit{
 
 static get meta(){
 return{
-name:'link-name',
-description:'Links have a discernible name',
-failureDescription:'Links do not have a discernible name',
-helpText:'Link text (and alternate text for images, when used as links) that is '+
+id:'link-name',
+title:'Links have a discernible name',
+failureTitle:'Links do not have a discernible name',
+description:'Link text (and alternate text for images, when used as links) that is '+
 'discernible, unique, and focusable improves the navigation experience for '+
 'screen reader users. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/link-name?application=lighthouse).',
@@ -851,11 +851,11 @@ class ListItem extends AxeAudit{
 
 static get meta(){
 return{
-name:'listitem',
-description:'List items (`<li>`) are contained within `<ul>` or `<ol>` parent elements',
-failureDescription:'List items (`<li>`) are not contained within `<ul>` '+
+id:'listitem',
+title:'List items (`<li>`) are contained within `<ul>` or `<ol>` parent elements',
+failureTitle:'List items (`<li>`) are not contained within `<ul>` '+
 'or `<ol>` parent elements.',
-helpText:'Screen readers require list items (`<li>`) to be contained within a '+
+description:'Screen readers require list items (`<li>`) to be contained within a '+
 'parent `<ul>` or `<ol>` to be announced properly. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/listitem?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -886,12 +886,12 @@ class List extends AxeAudit{
 
 static get meta(){
 return{
-name:'list',
-description:'Lists contain only `<li>` elements and script supporting elements '+
+id:'list',
+title:'Lists contain only `<li>` elements and script supporting elements '+
 '(`<script>` and `<template>`).',
-failureDescription:'Lists do not contain only `<li>` elements and script '+
+failureTitle:'Lists do not contain only `<li>` elements and script '+
 'supporting elements (`<script>` and `<template>`).',
-helpText:'Screen readers have a specific way of announcing lists. Ensuring proper list '+
+description:'Screen readers have a specific way of announcing lists. Ensuring proper list '+
 'structure aids screen reader output. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/list?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -922,9 +922,9 @@ class CustomControlsLabels extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'custom-controls-labels',
-helpText:'Custom interactive controls have associated labels, provided by aria-label or aria-labelledby. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
-description:'Custom controls have associated labels'},
+id:'custom-controls-labels',
+description:'Custom interactive controls have associated labels, provided by aria-label or aria-labelledby. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+title:'Custom controls have associated labels'},
 super.partialMeta);
 }}
 
@@ -952,9 +952,9 @@ class CustomControlsRoles extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'custom-controls-roles',
-helpText:'Custom interactive controls have appropriate ARIA roles. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
-description:'Custom controls have ARIA roles'},
+id:'custom-controls-roles',
+description:'Custom interactive controls have appropriate ARIA roles. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+title:'Custom controls have ARIA roles'},
 super.partialMeta);
 }}
 
@@ -982,9 +982,9 @@ class FocusTraps extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'focus-traps',
-helpText:'A user can tab into and out of any control or region without accidentally trapping their focus. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
-description:'User focus is not accidentally trapped in a region'},
+id:'focus-traps',
+description:'A user can tab into and out of any control or region without accidentally trapping their focus. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+title:'User focus is not accidentally trapped in a region'},
 super.partialMeta);
 }}
 
@@ -1012,9 +1012,9 @@ class FocusableControls extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'focusable-controls',
-helpText:'Custom interactive controls are keyboard focusable and display a focus indicator. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
-description:'Interactive controls are keyboard focusable'},
+id:'focusable-controls',
+description:'Custom interactive controls are keyboard focusable and display a focus indicator. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+title:'Interactive controls are keyboard focusable'},
 super.partialMeta);
 }}
 
@@ -1042,9 +1042,9 @@ class HeadingLevels extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'heading-levels',
-helpText:'Headings are used to create an outline for the page and heading levels are not skipped. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
-description:'Headings don\'t skip levels'},
+id:'heading-levels',
+description:'Headings are used to create an outline for the page and heading levels are not skipped. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
+title:'Headings don\'t skip levels'},
 super.partialMeta);
 }}
 
@@ -1072,9 +1072,9 @@ class LogicalTabOrder extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'logical-tab-order',
-helpText:'Tabbing through the page follows the visual layout. Users cannot focus elements that are offscreen. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
-description:'The page has a logical tab order'},
+id:'logical-tab-order',
+description:'Tabbing through the page follows the visual layout. Users cannot focus elements that are offscreen. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+title:'The page has a logical tab order'},
 super.partialMeta);
 }}
 
@@ -1102,9 +1102,9 @@ class ManagedFocus extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'managed-focus',
-helpText:'If new content, such as a dialog, is added to the page, the user\'s focus is directed to it. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
-description:'The user\'s focus is directed to new content added to the page'},
+id:'managed-focus',
+description:'If new content, such as a dialog, is added to the page, the user\'s focus is directed to it. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#start_with_the_keyboard).',
+title:'The user\'s focus is directed to new content added to the page'},
 super.partialMeta);
 }}
 
@@ -1133,9 +1133,9 @@ class OffscreenContentHidden extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'offscreen-content-hidden',
-helpText:'Offscreen content is hidden with display: none or aria-hidden=true. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
-description:'Offscreen content is hidden from assistive technology'},
+id:'offscreen-content-hidden',
+description:'Offscreen content is hidden with display: none or aria-hidden=true. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+title:'Offscreen content is hidden from assistive technology'},
 super.partialMeta);
 }}
 
@@ -1163,9 +1163,9 @@ class UseLandmarks extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'use-landmarks',
-helpText:'Landmark elements (<main>, <nav>, etc.) are used to improve the keyboard navigation of the page for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
-description:'HTML5 landmark elements are used to improve navigation'},
+id:'use-landmarks',
+description:'Landmark elements (<main>, <nav>, etc.) are used to improve the keyboard navigation of the page for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#take_advantage_of_headings_and_landmarks).',
+title:'HTML5 landmark elements are used to improve navigation'},
 super.partialMeta);
 }}
 
@@ -1193,9 +1193,9 @@ class VisualOrderFollowsDOM extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'visual-order-follows-dom',
-helpText:'DOM order matches the visual order, improving navigation for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
-description:'Visual order on the page follows DOM order'},
+id:'visual-order-follows-dom',
+description:'DOM order matches the visual order, improving navigation for assistive technology. [Learn more](https://developers.google.com/web/fundamentals/accessibility/how-to-review#try_it_with_a_screen_reader).',
+title:'Visual order on the page follows DOM order'},
 super.partialMeta);
 }}
 
@@ -1223,10 +1223,10 @@ class MetaRefresh extends AxeAudit{
 
 static get meta(){
 return{
-name:'meta-refresh',
-description:'The document does not use `<meta http-equiv="refresh">`',
-failureDescription:'The document uses `<meta http-equiv="refresh">`',
-helpText:'Users do not expect a page to refresh automatically, and doing so will move '+
+id:'meta-refresh',
+title:'The document does not use `<meta http-equiv="refresh">`',
+failureTitle:'The document uses `<meta http-equiv="refresh">`',
+description:'Users do not expect a page to refresh automatically, and doing so will move '+
 'focus back to the top of the page. This may create a frustrating or '+
 'confusing experience. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/meta-refresh?application=lighthouse).',
@@ -1258,13 +1258,13 @@ class MetaViewport extends AxeAudit{
 
 static get meta(){
 return{
-name:'meta-viewport',
-description:'`[user-scalable="no"]` is not used in the `<meta name="viewport">` '+
+id:'meta-viewport',
+title:'`[user-scalable="no"]` is not used in the `<meta name="viewport">` '+
 'element and the `[maximum-scale]` attribute is not less than 5.',
-failureDescription:'`[user-scalable="no"]` is used in the `<meta name="viewport">` '+
+failureTitle:'`[user-scalable="no"]` is used in the `<meta name="viewport">` '+
 'element or the `[maximum-scale]` attribute is less than 5.',
-helpText:'Disabling zooming is problematic for users with low vision who rely on screen '+
-'magnification to properly see the contents of a web page. '+
+description:'Disabling zooming is problematic for users with low vision who rely on '+
+'screen magnification to properly see the contents of a web page. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/meta-viewport?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -1294,11 +1294,11 @@ class ObjectAlt extends AxeAudit{
 
 static get meta(){
 return{
-name:'object-alt',
-description:'`<object>` elements have `[alt]` text',
-failureDescription:'`<object>` elements do not have `[alt]` text',
-helpText:'Screen readers cannot translate non-text content. Adding alt text to `<object>` '+
-'elements helps screen readers convey meaning to users. '+
+id:'object-alt',
+title:'`<object>` elements have `[alt]` text',
+failureTitle:'`<object>` elements do not have `[alt]` text',
+description:'Screen readers cannot translate non-text content. Adding alt text to '+
+'`<object>` elements helps screen readers convey meaning to users. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/object-alt?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -1328,10 +1328,10 @@ class TabIndex extends AxeAudit{
 
 static get meta(){
 return{
-name:'tabindex',
-description:'No element has a `[tabindex]` value greater than 0',
-failureDescription:'Some elements have a `[tabindex]` value greater than 0',
-helpText:'A value greater than 0 implies an explicit navigation ordering. '+
+id:'tabindex',
+title:'No element has a `[tabindex]` value greater than 0',
+failureTitle:'Some elements have a `[tabindex]` value greater than 0',
+description:'A value greater than 0 implies an explicit navigation ordering. '+
 'Although technically valid, this often creates frustrating experiences '+
 'for users who rely on assistive technologies. [Learn more](https://dequeuniversity.com/rules/axe/2.2/tabindex?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -1363,14 +1363,14 @@ class TDHeadersAttr extends AxeAudit{
 
 static get meta(){
 return{
-name:'td-headers-attr',
-description:'Cells in a `<table>` element that use the `[headers]` attribute only refer '+
+id:'td-headers-attr',
+title:'Cells in a `<table>` element that use the `[headers]` attribute only refer '+
 'to other cells of that same table.',
-failureDescription:'Cells in a `<table>` element that use the `[headers]` '+
+failureTitle:'Cells in a `<table>` element that use the `[headers]` '+
 'attribute refers to other cells of that same table.',
-helpText:'Screen readers have features to make navigating tables easier. Ensuring `<td>` '+
-'cells using the `[headers]` attribute only refer to other cells in the same table may '+
-'improve the experience for screen reader users. '+
+description:'Screen readers have features to make navigating tables easier. Ensuring '+
+'`<td>` cells using the `[headers]` attribute only refer to other cells in the same '+
+'table may improve the experience for screen reader users. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/td-headers-attr?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
 
@@ -1400,13 +1400,13 @@ class THHasDataCells extends AxeAudit{
 
 static get meta(){
 return{
-name:'th-has-data-cells',
-description:'`<th>` elements and elements with `[role="columnheader"/"rowheader"]` have '+
+id:'th-has-data-cells',
+title:'`<th>` elements and elements with `[role="columnheader"/"rowheader"]` have '+
 'data cells they describe.',
-failureDescription:'`<th>` elements and elements with '+
+failureTitle:'`<th>` elements and elements with '+
 '`[role="columnheader"/"rowheader"]` do not have data cells they describe.',
-helpText:'Screen readers have features to make navigating tables easier. Ensuring table '+
-'headers always refer to some set of cells may improve the experience for screen '+
+description:'Screen readers have features to make navigating tables easier. Ensuring '+
+'table headers always refer to some set of cells may improve the experience for screen '+
 'reader users. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/th-has-data-cells?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -1437,10 +1437,10 @@ class ValidLang extends AxeAudit{
 
 static get meta(){
 return{
-name:'valid-lang',
-description:'`[lang]` attributes have a valid value',
-failureDescription:'`[lang]` attributes do not have a valid value',
-helpText:'Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) '+
+id:'valid-lang',
+title:'`[lang]` attributes have a valid value',
+failureTitle:'`[lang]` attributes do not have a valid value',
+description:'Specifying a valid [BCP 47 language](https://www.w3.org/International/questions/qa-choosing-language-tags#question) '+
 'on elements helps ensure that text is pronounced correctly by a screen reader. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/valid-lang?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -1471,11 +1471,11 @@ class VideoCaption extends AxeAudit{
 
 static get meta(){
 return{
-name:'video-caption',
-description:'`<video>` elements contain a `<track>` element with `[kind="captions"]`',
-failureDescription:'`<video>` elements do not contain a `<track>` element '+
+id:'video-caption',
+title:'`<video>` elements contain a `<track>` element with `[kind="captions"]`',
+failureTitle:'`<video>` elements do not contain a `<track>` element '+
 'with `[kind="captions"]`.',
-helpText:'When a video provides a caption it is easier for deaf and hearing impaired '+
+description:'When a video provides a caption it is easier for deaf and hearing impaired '+
 'users to access its information. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/video-caption?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -1506,11 +1506,11 @@ class VideoDescription extends AxeAudit{
 
 static get meta(){
 return{
-name:'video-description',
-description:'`<video>` elements contain a `<track>` element with `[kind="description"]`',
-failureDescription:'`<video>` elements do not contain a `<track>` element with '+
+id:'video-description',
+title:'`<video>` elements contain a `<track>` element with `[kind="description"]`',
+failureTitle:'`<video>` elements do not contain a `<track>` element with '+
 '`[kind="description"]`.',
-helpText:'Audio descriptions provide relevant information for videos that dialogue '+
+description:'Audio descriptions provide relevant information for videos that dialogue '+
 'cannot, such as facial expressions and scenes. '+
 '[Learn more](https://dequeuniversity.com/rules/axe/2.2/video-description?application=lighthouse).',
 requiredArtifacts:['Accessibility']};
@@ -1529,9 +1529,9 @@ module.exports=VideoDescription;
 'use strict';
 
 const Audit=require('./audit');
-const WebInspector=require('../lib/web-inspector');
 const Util=require('../report/html/renderer/util');
-const{groupIdToName,taskToGroup}=require('../lib/task-groups');
+const NetworkRequest=require('../lib/network-request');
+const{taskGroups}=require('../lib/task-groups');
 
 class BootupTime extends Audit{
 
@@ -1539,11 +1539,11 @@ class BootupTime extends Audit{
 
 static get meta(){
 return{
-name:'bootup-time',
-description:'JavaScript boot-up time',
-failureDescription:'JavaScript boot-up time is too high',
+id:'bootup-time',
+title:'JavaScript boot-up time',
+failureTitle:'JavaScript boot-up time is too high',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-helpText:'Consider reducing the time spent parsing, compiling, and executing JS. '+
+description:'Consider reducing the time spent parsing, compiling, and executing JS. '+
 'You may find delivering smaller JS payloads helps with this. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/bootup).',
 requiredArtifacts:['traces']};
@@ -1566,31 +1566,38 @@ thresholdInMs:50};
 
 
 
+static getJavaScriptURLs(records){
 
+const urls=new Set();
+for(const record of records){
+if(record.resourceType===NetworkRequest.TYPES.Script){
+urls.add(record.url);
+}
+}
 
-static getExecutionTimingsByURL(timelineModel){
-const bottomUpByURL=timelineModel.bottomUpGroupBy('URL');
-
-const result=new Map();
-
-bottomUpByURL.children.forEach((perUrlNode,url)=>{
-
-if(!url||url==='about:blank'){
-return;
+return urls;
 }
 
 
-const taskGroups={};
-perUrlNode.children.forEach(perTaskPerUrlNode=>{
 
-const task=WebInspector.TimelineUIUtils.eventStyle(perTaskPerUrlNode.event);
 
-const groupName=taskToGroup[task.title]||groupIdToName.other;
-const groupTotal=taskGroups[groupName]||0;
-taskGroups[groupName]=groupTotal+(perTaskPerUrlNode.selfTime||0);
-});
-result.set(url,taskGroups);
-});
+
+
+static getExecutionTimingsByURL(tasks,jsURLs){
+
+const result=new Map();
+
+for(const task of tasks){
+const jsURL=task.attributableURLs.find(url=>jsURLs.has(url));
+const fallbackURL=task.attributableURLs[0];
+const attributableURL=jsURL||fallbackURL;
+if(!attributableURL||attributableURL==='about:blank')continue;
+
+const timingByGroupId=result.get(attributableURL)||{};
+const originalTime=timingByGroupId[task.group.id]||0;
+timingByGroupId[task.group.id]=originalTime+task.selfTime;
+result.set(attributableURL,timingByGroupId);
+}
 
 return result;
 }
@@ -1603,47 +1610,54 @@ return result;
 static async audit(artifacts,context){
 const settings=context.settings||{};
 const trace=artifacts.traces[BootupTime.DEFAULT_PASS];
-const devtoolsTimelineModel=await artifacts.requestDevtoolsTimelineModel(trace);
-const executionTimings=BootupTime.getExecutionTimingsByURL(devtoolsTimelineModel);
-let totalBootupTime=0;
-
-const extendedInfo={};
-
-const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{key:'scripting',granularity:1,itemType:'ms',text:groupIdToName.scripting},
-{key:'scriptParseCompile',granularity:1,itemType:'ms',
-text:groupIdToName.scriptParseCompile}];
-
-
+const devtoolsLog=artifacts.devtoolsLogs[BootupTime.DEFAULT_PASS];
+const networkRecords=await artifacts.requestNetworkRecords(devtoolsLog);
+const tasks=await artifacts.requestMainThreadTasks(trace);
 const multiplier=settings.throttlingMethod==='simulate'?
 settings.throttling.cpuSlowdownMultiplier:1;
 
-const results=Array.from(executionTimings).
-map(([url,groups])=>{
+const jsURLs=BootupTime.getJavaScriptURLs(networkRecords);
+const executionTimings=BootupTime.getExecutionTimingsByURL(tasks,jsURLs);
 
-for(const[name,value]of Object.entries(groups)){
-groups[name]=value*multiplier;
-totalBootupTime+=value*multiplier;
+let totalBootupTime=0;
+const results=Array.from(executionTimings).
+map(([url,timingByGroupId])=>{
+
+let bootupTimeForURL=0;
+for(const[groupId,timespanMs]of Object.entries(timingByGroupId)){
+timingByGroupId[groupId]=timespanMs*multiplier;
+bootupTimeForURL+=timespanMs*multiplier;
 }
 
-extendedInfo[url]=groups;
 
-const scriptingTotal=groups[groupIdToName.scripting]||0;
-const parseCompileTotal=groups[groupIdToName.scriptParseCompile]||0;
+if(bootupTimeForURL>=context.options.thresholdInMs){
+totalBootupTime+=bootupTimeForURL;
+}
+
+const scriptingTotal=timingByGroupId[taskGroups.scriptEvaluation.id]||0;
+const parseCompileTotal=timingByGroupId[taskGroups.scriptParseCompile.id]||0;
+
 return{
 url:url,
-sum:scriptingTotal+parseCompileTotal,
-
+total:bootupTimeForURL,
 
 scripting:scriptingTotal,
 scriptParseCompile:parseCompileTotal};
 
 }).
-filter(result=>result.sum>=context.options.thresholdInMs).
-sort((a,b)=>b.sum-a.sum);
+filter(result=>result.total>=context.options.thresholdInMs).
+sort((a,b)=>b.total-a.total);
 
 const summary={wastedMs:totalBootupTime};
+
+const headings=[
+{key:'url',itemType:'url',text:'URL'},
+{key:'total',granularity:1,itemType:'ms',text:'Total'},
+{key:'scripting',granularity:1,itemType:'ms',text:taskGroups.scriptEvaluation.label},
+{key:'scriptParseCompile',granularity:1,itemType:'ms',
+text:taskGroups.scriptParseCompile.label}];
+
+
 const details=BootupTime.makeTableDetails(headings,results,summary);
 
 const score=Audit.computeLogNormalScore(
@@ -1656,17 +1670,14 @@ return{
 score,
 rawValue:totalBootupTime,
 displayValue:[Util.MS_DISPLAY_VALUE,totalBootupTime],
-details,
-extendedInfo:{
-value:extendedInfo}};
-
+details};
 
 }}
 
 
 module.exports=BootupTime;
 
-},{"../lib/task-groups":42,"../lib/web-inspector":47,"../report/html/renderer/util":48,"./audit":2}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
+},{"../lib/network-request":38,"../lib/task-groups":43,"../report/html/renderer/util":48,"./audit":2}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
 
 
 
@@ -1677,7 +1688,7 @@ module.exports=BootupTime;
 
 'use strict';
 
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 const ByteEfficiencyAudit=require('./byte-efficiency-audit');
 
 
@@ -1690,10 +1701,10 @@ class EfficientAnimatedContent extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'efficient-animated-content',
+id:'efficient-animated-content',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-description:'Use video formats for animated content',
-helpText:'Large GIFs are inefficient for delivering animated content. Consider using '+
+title:'Use video formats for animated content',
+description:'Large GIFs are inefficient for delivering animated content. Consider using '+
 'MPEG4/WebM videos for animations and PNG/WebP for static images instead of GIF to save '+
 'network bytes. [Learn more](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/replace-animated-gifs-with-video/)',
 requiredArtifacts:['devtoolsLogs']};
@@ -1717,14 +1728,14 @@ return Math.round(29.1*Math.log10(bytes)-100.7)/100;
 
 static audit_(artifacts,networkRecords){
 const unoptimizedContent=networkRecords.filter(
-record=>record._mimeType==='image/gif'&&
-record._resourceType===WebInspector.resourceTypes.Image&&
-(record._resourceSize||0)>GIF_BYTE_THRESHOLD);
+record=>record.mimeType==='image/gif'&&
+record.resourceType===NetworkRequest.TYPES.Image&&
+(record.resourceSize||0)>GIF_BYTE_THRESHOLD);
 
 
 
-const results=unoptimizedContent.map(record=>{
-const resourceSize=record._resourceSize||0;
+const items=unoptimizedContent.map(record=>{
+const resourceSize=record.resourceSize||0;
 return{
 url:record.url,
 totalBytes:resourceSize,
@@ -1733,26 +1744,15 @@ EfficientAnimatedContent.getPercentSavings(resourceSize))};
 
 });
 
+
 const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{
-key:'totalBytes',
-itemType:'bytes',
-displayUnit:'kb',
-granularity:1,
-text:'Transfer Size'},
-
-{
-key:'wastedBytes',
-itemType:'bytes',
-displayUnit:'kb',
-granularity:1,
-text:'Byte Savings'}];
-
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Transfer Size'},
+{key:'wastedBytes',valueType:'bytes',label:'Byte Savings'}];
 
 
 return{
-results,
+items,
 headings};
 
 }}
@@ -1760,7 +1760,7 @@ headings};
 
 module.exports=EfficientAnimatedContent;
 
-},{"../../lib/web-inspector":47,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"../../lib/network-request":38,"./byte-efficiency-audit":3}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 
 
 
@@ -1781,6 +1781,7 @@ const ALLOWABLE_OFFSCREEN_Y=200;
 
 const IGNORE_THRESHOLD_IN_BYTES=2048;
 const IGNORE_THRESHOLD_IN_PERCENT=75;
+const IGNORE_THRESHOLD_IN_MS=50;
 
 
 
@@ -1790,10 +1791,10 @@ class OffscreenImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'offscreen-images',
-description:'Defer offscreen images',
+id:'offscreen-images',
+title:'Defer offscreen images',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:
+description:
 'Consider lazy-loading offscreen and hidden images after all critical resources have '+
 'finished loading to lower time to interactive. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/offscreen-images).',
@@ -1855,12 +1856,59 @@ wastedPercent:100*wastedRatio};
 
 
 
+static filterLanternResults(images,lanternMetricData){
+const nodeTimings=lanternMetricData.pessimisticEstimate.nodeTimings;
+
+
+let lastLongTaskStartTime=0;
+
+
+const startTimesByURL=new Map();
+for(const[node,timing]of nodeTimings){
+if(node.type==='cpu'&&timing.duration>=50){
+lastLongTaskStartTime=Math.max(lastLongTaskStartTime,timing.startTime);
+}else if(node.type==='network'){
+const networkNode=node;
+startTimesByURL.set(networkNode.record.url,timing.startTime);
+}
+}
+
+return images.filter(image=>{
+
+if(image.wastedBytes<IGNORE_THRESHOLD_IN_BYTES)return false;
+if(image.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT)return false;
+
+const imageRequestStartTime=startTimesByURL.get(image.url)||0;
+return imageRequestStartTime<lastLongTaskStartTime-IGNORE_THRESHOLD_IN_MS;
+});
+}
+
+
+
+
+
+
+
+static filterObservedResults(images,interactiveTimestamp){
+return images.filter(image=>{
+if(image.wastedBytes<IGNORE_THRESHOLD_IN_BYTES)return false;
+if(image.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT)return false;
+return image.requestStartTime<interactiveTimestamp/1e6-IGNORE_THRESHOLD_IN_MS/1000;
+});
+}
+
+
+
+
+
+
+
 
 
 
 
 static computeWasteWithTTIGraph(results,graph,simulator){
-return ByteEfficiencyAudit.computeWasteWithTTIGraph(results,graph,simulator,
+return super.computeWasteWithTTIGraph(results,graph,simulator,
 {includeLoad:false});
 }
 
@@ -1887,7 +1935,7 @@ return results;
 if(processed instanceof Error){
 warnings.push(processed.message);
 
-Sentry.captureException(processed,{tags:{audit:this.meta.name},level:'warning'});
+Sentry.captureException(processed,{tags:{audit:this.meta.id},level:'warning'});
 return results;
 }
 
@@ -1901,36 +1949,26 @@ return results;
 },new Map());
 
 const settings=context.settings;
-return artifacts.requestFirstCPUIdle({trace,devtoolsLog,settings}).then(firstInteractive=>{
+return artifacts.requestInteractive({trace,devtoolsLog,settings}).then(interactive=>{
+const unfilteredResults=Array.from(resultsMap.values());
+const lanternInteractive=interactive;
 
+const items=context.settings.throttlingMethod==='simulate'?
+OffscreenImages.filterLanternResults(unfilteredResults,lanternInteractive):
 
+OffscreenImages.filterObservedResults(unfilteredResults,interactive.timestamp);
 
-const ttiTimestamp=firstInteractive.timestamp?firstInteractive.timestamp/1e6:Infinity;
-
-const results=Array.from(resultsMap.values()).filter(item=>{
-const isWasteful=
-item.wastedBytes>IGNORE_THRESHOLD_IN_BYTES&&
-item.wastedPercent>IGNORE_THRESHOLD_IN_PERCENT;
-const loadedEarly=item.requestStartTime<ttiTimestamp;
-return isWasteful&&loadedEarly;
-});
 
 const headings=[
-{key:'url',itemType:'thumbnail',text:''},
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{
-key:'wastedBytes',
-itemType:'bytes',
-displayUnit:'kb',
-granularity:1,
-text:'Potential Savings'}];
-
+{key:'url',valueType:'thumbnail',label:''},
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}];
 
 
 return{
 warnings,
-results,
+items,
 headings};
 
 });
@@ -1939,7 +1977,7 @@ headings};
 
 module.exports=OffscreenImages;
 
-},{"../../lib/sentry":39,"../../lib/url-shim":"url","./byte-efficiency-audit":3}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
+},{"../../lib/sentry":40,"../../lib/url-shim":"url","./byte-efficiency-audit":3}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
 
 
 
@@ -1952,13 +1990,14 @@ module.exports=OffscreenImages;
 'use strict';
 
 const Audit=require('../audit');
-const Node=require('../../lib/dependency-graph/node');
+const BaseNode=require('../../lib/dependency-graph/base-node');
 const ByteEfficiencyAudit=require('./byte-efficiency-audit');
 const UnusedCSS=require('./unused-css-rules');
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 
-const Simulator=require('../../lib/dependency-graph/simulator/simulator');
-const NetworkNode=require('../../lib/dependency-graph/network-node.js');
+
+
+
 
 
 
@@ -1977,11 +2016,10 @@ const urlMap={};
 const nodes=Array.from(nodeTimings.keys());
 nodes.forEach(node=>{
 if(node.type!=='network')return;
-const networkNode=node;
 const nodeTiming=nodeTimings.get(node);
 if(!nodeTiming)return;
 
-urlMap[networkNode.record.url]={node,nodeTiming};
+urlMap[node.record.url]={node,nodeTiming};
 });
 
 return urlMap;
@@ -1993,10 +2031,10 @@ class RenderBlockingResources extends Audit{
 
 static get meta(){
 return{
-name:'render-blocking-resources',
-description:'Eliminate render-blocking resources',
+id:'render-blocking-resources',
+title:'Eliminate render-blocking resources',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-helpText:
+description:
 'Resources are blocking the first paint of your page. Consider '+
 'delivering critical JS/CSS inline and deferring all non-critical '+
 'JS/styles. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/blocking-resources).',
@@ -2044,8 +2082,7 @@ const{node,nodeTiming}=nodesByUrl[resource.tag.url];
 node.traverse(node=>deferredNodeIds.add(node.id));
 
 
-
-const wastedMs=Math.round(nodeTiming.endTime-nodeTiming.startTime);
+const wastedMs=Math.round(nodeTiming.duration);
 if(wastedMs<MINIMUM_WASTED_MS)continue;
 
 results.push({
@@ -2092,26 +2129,24 @@ let totalChildNetworkBytes=0;
 const minimalFCPGraph=fcpGraph.cloneWithRelationships(node=>{
 
 const canDeferRequest=deferredIds.has(node.id);
-if(node.type!==Node.TYPES.NETWORK)return!canDeferRequest;
-
-const networkNode=node;
+if(node.type!==BaseNode.TYPES.NETWORK)return!canDeferRequest;
 
 const isStylesheet=
-networkNode.record._resourceType===WebInspector.resourceTypes.Stylesheet;
+node.record.resourceType===NetworkRequest.TYPES.Stylesheet;
 if(canDeferRequest&&isStylesheet){
 
-const wastedBytes=wastedCssBytesByUrl.get(networkNode.record.url)||0;
-totalChildNetworkBytes+=(networkNode.record._transferSize||0)-wastedBytes;
+const wastedBytes=wastedCssBytesByUrl.get(node.record.url)||0;
+totalChildNetworkBytes+=(node.record.transferSize||0)-wastedBytes;
 }
 return!canDeferRequest;
 });
 
 
-const originalTransferSize=minimalFCPGraph.record._transferSize;
+const originalTransferSize=minimalFCPGraph.record.transferSize;
 const safeTransferSize=originalTransferSize||0;
-minimalFCPGraph.record._transferSize=safeTransferSize+totalChildNetworkBytes;
+minimalFCPGraph.record.transferSize=safeTransferSize+totalChildNetworkBytes;
 const estimateAfterInline=simulator.simulate(minimalFCPGraph).timeInMs;
-minimalFCPGraph.record._transferSize=originalTransferSize;
+minimalFCPGraph.record.transferSize=originalTransferSize;
 return Math.round(Math.max(originalEstimate-estimateAfterInline,0));
 }
 
@@ -2149,20 +2184,14 @@ displayValue=`${results.length} resources delayed first paint by ${wastedMs}ms`;
 displayValue=`${results.length} resource delayed first paint by ${wastedMs}ms`;
 }
 
+
 const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{
-key:'totalBytes',
-itemType:'bytes',
-displayUnit:'kb',
-granularity:0.01,
-text:'Size (KB)'},
-
-{key:'wastedMs',itemType:'ms',text:'Download Time (ms)',granularity:1}];
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Size (KB)'},
+{key:'wastedMs',valueType:'timespanMs',label:'Download Time (ms)'}];
 
 
-const summary={wastedMs};
-const details=Audit.makeTableDetails(headings,results,summary);
+const details=Audit.makeOpportunityDetails(headings,results,wastedMs);
 
 return{
 displayValue,
@@ -2175,7 +2204,7 @@ details};
 
 module.exports=RenderBlockingResources;
 
-},{"../../lib/dependency-graph/network-node.js":24,"../../lib/dependency-graph/node":25,"../../lib/dependency-graph/simulator/simulator":28,"../../lib/web-inspector":47,"../audit":2,"./byte-efficiency-audit":3,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node":22,"../../lib/network-request":38,"../audit":2,"./byte-efficiency-audit":3,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 
 
 
@@ -2191,11 +2220,11 @@ class TotalByteWeight extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'total-byte-weight',
-description:'Avoids enormous network payloads',
-failureDescription:'Has enormous network payloads',
+id:'total-byte-weight',
+title:'Avoids enormous network payloads',
+failureTitle:'Has enormous network payloads',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:
+description:
 'Large network payloads cost users real money and are highly correlated with '+
 'long load times. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/network-payloads).',
@@ -2310,11 +2339,11 @@ class UnminifiedCSS extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'unminified-css',
-description:'Minify CSS',
+id:'unminified-css',
+title:'Minify CSS',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Minifying CSS files can reduce network payload sizes. '+
-'[Learn more](https://developers.google.com/speed/docs/insights/MinifyResources).',
+description:'Minifying CSS files can reduce network payload sizes. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/minify-css).',
 requiredArtifacts:['CSSUsage','devtoolsLogs']};
 
 }
@@ -2390,15 +2419,14 @@ static computeWaste(stylesheet,networkRecord,pageUrl){
 const content=stylesheet.content;
 const totalTokenLength=UnminifiedCSS.computeTokenLength(content);
 
-
 let url=stylesheet.header.sourceURL;
 if(!url||url===pageUrl){
 const contentPreview=UnusedCSSRules.determineContentPreview(stylesheet.content);
-url={type:'code',value:contentPreview};
+url=contentPreview;
 }
 
 const totalBytes=ByteEfficiencyAudit.estimateTransferSize(networkRecord,content.length,
-'stylesheet');
+'Stylesheet');
 const wastedRatio=1-totalTokenLength/content.length;
 const wastedBytes=Math.round(totalBytes*wastedRatio);
 
@@ -2417,7 +2445,7 @@ wastedPercent:100*wastedRatio};
 
 static audit_(artifacts,networkRecords){
 const pageUrl=artifacts.URL.finalUrl;
-const results=[];
+const items=[];
 for(const stylesheet of artifacts.CSSUsage.stylesheets){
 const networkRecord=networkRecords.
 find(record=>record.url===stylesheet.header.sourceURL);
@@ -2430,16 +2458,15 @@ const result=UnminifiedCSS.computeWaste(stylesheet,networkRecord,pageUrl);
 if(result.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT||
 result.wastedBytes<IGNORE_THRESHOLD_IN_BYTES||
 !Number.isFinite(result.wastedBytes))continue;
-results.push(result);
+items.push(result);
 }
 
 return{
-results,
+items,
 headings:[
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}]};
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}]};
 
 
 }}
@@ -2478,11 +2505,11 @@ class UnminifiedJavaScript extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'unminified-javascript',
-description:'Minify JavaScript',
+id:'unminified-javascript',
+title:'Minify JavaScript',
 
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Minifying JavaScript files can reduce payload sizes and script parse time. '+
+description:'Minifying JavaScript files can reduce payload sizes and script parse time. '+
 '[Learn more](https://developers.google.com/speed/docs/insights/MinifyResources).',
 requiredArtifacts:['Scripts','devtoolsLogs']};
 
@@ -2507,7 +2534,7 @@ totalTokenLength+=token.value.length;
 }
 
 const totalBytes=ByteEfficiencyAudit.estimateTransferSize(networkRecord,contentLength,
-'script');
+'Script');
 const wastedRatio=1-totalTokenLength/contentLength;
 const wastedBytes=Math.round(totalBytes*wastedRatio);
 
@@ -2526,7 +2553,7 @@ wastedPercent:100*wastedRatio};
 
 static audit_(artifacts,networkRecords){
 
-const results=[];
+const items=[];
 const warnings=[];
 for(const requestId of Object.keys(artifacts.Scripts)){
 const scriptContent=artifacts.Scripts[requestId];
@@ -2540,20 +2567,19 @@ const result=UnminifiedJavaScript.computeWaste(scriptContent,networkRecord);
 if(result.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT||
 result.wastedBytes<IGNORE_THRESHOLD_IN_BYTES||
 !Number.isFinite(result.wastedBytes))continue;
-results.push(result);
+items.push(result);
 }catch(err){
-warnings.push(`Unable to process ${networkRecord._url}: ${err.message}`);
+warnings.push(`Unable to process ${networkRecord.url}: ${err.message}`);
 }
 }
 
 return{
-results,
+items,
 warnings,
 headings:[
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}]};
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}]};
 
 
 }}
@@ -2561,7 +2587,7 @@ text:'Potential Savings'}]};
 
 module.exports=UnminifiedJavaScript;
 
-},{"./byte-efficiency-audit":3,"esprima":136}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
+},{"./byte-efficiency-audit":3,"esprima":118}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
 
 
 
@@ -2582,10 +2608,10 @@ class UnusedCSSRules extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'unused-css-rules',
-description:'Defer unused CSS',
+id:'unused-css-rules',
+title:'Defer unused CSS',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Remove unused rules from stylesheets to reduce unnecessary '+
+description:'Remove unused rules from stylesheets to reduce unnecessary '+
 'bytes consumed by network activity. '+
 '[Learn more](https://developers.google.com/speed/docs/insights/OptimizeCSSDelivery).',
 requiredArtifacts:['CSSUsage','URL','devtoolsLogs']};
@@ -2645,7 +2671,7 @@ usedUncompressedBytes+=usedRule.endOffset-usedRule.startOffset;
 }
 
 const totalTransferredBytes=ByteEfficiencyAudit.estimateTransferSize(
-stylesheetInfo.networkRecord,totalUncompressedBytes,'stylesheet');
+stylesheetInfo.networkRecord,totalUncompressedBytes,'Stylesheet');
 const percentUnused=(totalUncompressedBytes-usedUncompressedBytes)/totalUncompressedBytes;
 const wastedBytes=Math.round(percentUnused*totalTransferredBytes);
 
@@ -2698,15 +2724,15 @@ return preview;
 
 
 static mapSheetToResult(stylesheetInfo,pageUrl){
-
 let url=stylesheetInfo.header.sourceURL;
 if(!url||url===pageUrl){
 const contentPreview=UnusedCSSRules.determineContentPreview(stylesheetInfo.content);
-url={type:'code',value:contentPreview};
+url=contentPreview;
 }
 
 const usage=UnusedCSSRules.computeUsage(stylesheetInfo);
-return Object.assign({url},usage);
+const result={url};
+return Object.assign(result,usage);
 }
 
 
@@ -2723,19 +2749,19 @@ return artifacts.requestNetworkRecords(devtoolsLogs).then(networkRecords=>{
 const indexedSheets=UnusedCSSRules.indexStylesheetsById(styles,networkRecords);
 UnusedCSSRules.indexUsedRules(usage,indexedSheets);
 
-const results=Object.keys(indexedSheets).
+const items=Object.keys(indexedSheets).
 map(sheetId=>UnusedCSSRules.mapSheetToResult(indexedSheets[sheetId],pageUrl)).
 filter(sheet=>sheet&&sheet.wastedBytes>IGNORE_THRESHOLD_IN_BYTES);
 
+
 const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}];
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}];
 
 
 return{
-results,
+items,
 headings};
 
 });
@@ -2762,10 +2788,10 @@ class UnusedJavaScript extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'unused-javascript',
-description:'Unused JavaScript',
+id:'unused-javascript',
+title:'Unused JavaScript',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Remove unused JavaScript to reduce bytes consumed by network activity.',
+description:'Remove unused JavaScript to reduce bytes consumed by network activity.',
 requiredArtifacts:['JsUsage','devtoolsLogs']};
 
 }
@@ -2820,7 +2846,7 @@ contentLength+=usage.contentLength;
 }
 
 const totalBytes=ByteEfficiencyAudit.estimateTransferSize(networkRecord,contentLength,
-'script');
+'Script');
 const wastedRatio=unusedLength/contentLength||0;
 const wastedBytes=Math.round(totalBytes*wastedRatio);
 
@@ -2846,24 +2872,22 @@ scripts.push(script);
 scriptsByUrl.set(script.url,scripts);
 }
 
-
-const results=[];
+const items=[];
 for(const[url,scripts]of scriptsByUrl.entries()){
 const networkRecord=networkRecords.find(record=>record.url===url);
 if(!networkRecord)continue;
 const wasteData=scripts.map(UnusedJavaScript.computeWaste);
-const result=UnusedJavaScript.mergeWaste(wasteData,networkRecord);
-if(result.wastedBytes<=IGNORE_THRESHOLD_IN_BYTES)continue;
-results.push(result);
+const item=UnusedJavaScript.mergeWaste(wasteData,networkRecord);
+if(item.wastedBytes<=IGNORE_THRESHOLD_IN_BYTES)continue;
+items.push(item);
 }
 
 return{
-results,
+items,
 headings:[
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}]};
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}]};
 
 
 }}
@@ -2883,8 +2907,9 @@ const assert=require('assert');
 
 const parseCacheControl=require('parse-cache-control');
 const Audit=require('../audit');
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 const URL=require('../../lib/url-shim');
+const linearInterpolation=require('../../lib/statistics').linearInterpolation;
 
 
 const IGNORE_THRESHOLD_IN_PERCENT=0.925;
@@ -2895,12 +2920,12 @@ class CacheHeaders extends Audit{
 
 static get meta(){
 return{
-name:'uses-long-cache-ttl',
-description:'Uses efficient cache policy on static assets',
-failureDescription:'Uses inefficient cache policy on static assets',
-helpText:
+id:'uses-long-cache-ttl',
+title:'Uses efficient cache policy on static assets',
+failureTitle:'Uses inefficient cache policy on static assets',
+description:
 'A long cache lifetime can speed up repeat visits to your page. '+
-'[Learn more](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#cache-control).',
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/cache-policy).',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
 requiredArtifacts:['devtoolsLogs']};
 
@@ -2917,20 +2942,6 @@ return{
 scorePODR:4*1024,
 scoreMedian:128*1024};
 
-}
-
-
-
-
-
-
-
-
-
-
-static linearInterpolation(x0,y0,x1,y1,x){
-const slope=(y1-y0)/(x1-x0);
-return y0+(x-x0)*slope;
 }
 
 
@@ -2964,7 +2975,7 @@ const upperDecile=upperDecileIndex/10;
 const lowerDecile=(upperDecileIndex-1)/10;
 
 
-return CacheHeaders.linearInterpolation(
+return linearInterpolation(
 lowerDecileValue,
 lowerDecile,
 upperDecileValue,
@@ -3022,17 +3033,17 @@ static isCacheableAsset(record){
 const CACHEABLE_STATUS_CODES=new Set([200,203,206]);
 
 const STATIC_RESOURCE_TYPES=new Set([
-WebInspector.resourceTypes.Font,
-WebInspector.resourceTypes.Image,
-WebInspector.resourceTypes.Media,
-WebInspector.resourceTypes.Script,
-WebInspector.resourceTypes.Stylesheet]);
+NetworkRequest.TYPES.Font,
+NetworkRequest.TYPES.Image,
+NetworkRequest.TYPES.Media,
+NetworkRequest.TYPES.Script,
+NetworkRequest.TYPES.Stylesheet]);
 
 
-const resourceUrl=record._url;
+const resourceUrl=record.url;
 return(
 CACHEABLE_STATUS_CODES.has(record.statusCode)&&
-STATIC_RESOURCE_TYPES.has(record._resourceType)&&
+STATIC_RESOURCE_TYPES.has(record.resourceType||'Other')&&
 !resourceUrl.includes('data:'));
 
 }
@@ -3054,7 +3065,7 @@ if(!CacheHeaders.isCacheableAsset(record))continue;
 
 
 const headers=new Map();
-for(const header of record._responseHeaders||[]){
+for(const header of record.responseHeaders||[]){
 headers.set(header.name.toLowerCase(),header.value);
 }
 
@@ -3071,8 +3082,8 @@ cacheLifetimeInSeconds=cacheLifetimeInSeconds||0;
 const cacheHitProbability=CacheHeaders.getCacheHitProbability(cacheLifetimeInSeconds);
 if(cacheHitProbability>IGNORE_THRESHOLD_IN_PERCENT)continue;
 
-const url=URL.elideDataURI(record._url);
-const totalBytes=record._transferSize||0;
+const url=URL.elideDataURI(record.url);
+const totalBytes=record.transferSize||0;
 const wastedBytes=(1-cacheHitProbability)*totalBytes;
 
 totalWastedBytes+=wastedBytes;
@@ -3126,7 +3137,7 @@ details};
 
 module.exports=CacheHeaders;
 
-},{"../../lib/url-shim":"url","../../lib/web-inspector":47,"../audit":2,"assert":53,"parse-cache-control":147}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"../../lib/network-request":38,"../../lib/statistics":41,"../../lib/url-shim":"url","../audit":2,"assert":53,"parse-cache-control":129}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 
 
 
@@ -3149,10 +3160,10 @@ class UsesOptimizedImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'uses-optimized-images',
-description:'Efficiently encode images',
+id:'uses-optimized-images',
+title:'Efficiently encode images',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Optimized images load faster and consume less cellular data. '+
+description:'Optimized images load faster and consume less cellular data. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/optimize-images).',
 requiredArtifacts:['OptimizedImages','devtoolsLogs']};
 
@@ -3176,7 +3187,7 @@ static audit_(artifacts){
 const images=artifacts.OptimizedImages;
 
 
-const results=[];
+const items=[];
 const warnings=[];
 for(const image of images){
 if(image.failed){
@@ -3190,7 +3201,7 @@ continue;
 const url=URL.elideDataURI(image.url);
 const jpegSavings=UsesOptimizedImages.computeSavings(image);
 
-results.push({
+items.push({
 url,
 fromProtocol:image.fromProtocol,
 isCrossOrigin:!image.isSameOrigin,
@@ -3199,17 +3210,17 @@ wastedBytes:jpegSavings.bytes});
 
 }
 
+
 const headings=[
-{key:'url',itemType:'thumbnail',text:''},
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}];
+{key:'url',valueType:'thumbnail',label:''},
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}];
 
 
 return{
 warnings,
-results,
+items,
 headings};
 
 }}
@@ -3245,10 +3256,10 @@ class UsesResponsiveImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'uses-responsive-images',
-description:'Properly size images',
+id:'uses-responsive-images',
+title:'Properly size images',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:
+description:
 'Serve images that are appropriately-sized to save cellular data '+
 'and improve load time. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/oversized-images).',
@@ -3316,7 +3327,7 @@ if(!processed)return;
 if(processed instanceof Error){
 warnings.push(processed.message);
 
-Sentry.captureException(processed,{tags:{audit:this.meta.name},level:'warning'});
+Sentry.captureException(processed,{tags:{audit:this.meta.id},level:'warning'});
 return;
 }
 
@@ -3327,20 +3338,20 @@ resultsMap.set(processed.url,processed);
 }
 });
 
-const results=Array.from(resultsMap.values()).
+const items=Array.from(resultsMap.values()).
 filter(item=>item.wastedBytes>IGNORE_THRESHOLD_IN_BYTES);
 
+
 const headings=[
-{key:'url',itemType:'thumbnail',text:''},
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}];
+{key:'url',valueType:'thumbnail',label:''},
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}];
 
 
 return{
 warnings,
-results,
+items,
 headings};
 
 }}
@@ -3348,7 +3359,7 @@ headings};
 
 module.exports=UsesResponsiveImages;
 
-},{"../../lib/sentry":39,"../../lib/url-shim":"url","./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
+},{"../../lib/sentry":40,"../../lib/url-shim":"url","./byte-efficiency-audit":3}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
 
 
 
@@ -3372,12 +3383,12 @@ class ResponsesAreCompressed extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'uses-text-compression',
+id:'uses-text-compression',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-description:'Enable text compression',
-helpText:'Text-based responses should be served with compression (gzip, deflate or brotli)'+
-' to minimize total network bytes.'+
-' [Learn more](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer).',
+title:'Enable text compression',
+description:'Text-based responses should be served with compression (gzip, deflate or'+
+' brotli) to minimize total network bytes.'+
+' [Learn more](https://developers.google.com/web/tools/lighthouse/audits/text-compression).',
 requiredArtifacts:['ResponseCompression','devtoolsLogs']};
 
 }
@@ -3390,8 +3401,11 @@ static audit_(artifacts){
 const uncompressedResponses=artifacts.ResponseCompression;
 
 
-const results=[];
+const items=[];
 uncompressedResponses.forEach(record=>{
+
+if(!record.gzipSize||record.gzipSize<0)return;
+
 const originalSize=record.resourceSize;
 const gzipSize=record.gzipSize;
 const gzipSavings=originalSize-gzipSize;
@@ -3407,28 +3421,28 @@ return;
 
 
 const url=URL.elideDataURI(record.url);
-const isDuplicate=results.find(res=>res.url===url&&
-res.totalBytes===record.resourceSize);
+const isDuplicate=items.find(item=>item.url===url&&
+item.totalBytes===record.resourceSize);
 if(isDuplicate){
 return;
 }
 
-results.push({
+items.push({
 url,
 totalBytes:originalSize,
 wastedBytes:gzipSavings});
 
 });
 
+
 const headings=[
-{key:'url',itemType:'url',text:'Uncompressed resource URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'GZIP Savings'}];
+{key:'url',valueType:'url',label:'Uncompressed resource URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'GZIP Savings'}];
 
 
 return{
-results,
+items,
 headings};
 
 }}
@@ -3458,10 +3472,10 @@ class UsesWebPImages extends ByteEfficiencyAudit{
 
 static get meta(){
 return{
-name:'uses-webp-images',
-description:'Serve images in next-gen formats',
+id:'uses-webp-images',
+title:'Serve images in next-gen formats',
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-helpText:'Image formats like JPEG 2000, JPEG XR, and WebP often provide better '+
+description:'Image formats like JPEG 2000, JPEG XR, and WebP often provide better '+
 'compression than PNG or JPEG, which means faster downloads and less data consumption. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/webp).',
 requiredArtifacts:['OptimizedImages','devtoolsLogs']};
@@ -3486,7 +3500,7 @@ static audit_(artifacts){
 const images=artifacts.OptimizedImages;
 
 
-const results=[];
+const items=[];
 const warnings=[];
 for(const image of images){
 if(image.failed){
@@ -3499,7 +3513,7 @@ continue;
 const url=URL.elideDataURI(image.url);
 const webpSavings=UsesWebPImages.computeSavings(image);
 
-results.push({
+items.push({
 url,
 fromProtocol:image.fromProtocol,
 isCrossOrigin:!image.isSameOrigin,
@@ -3508,17 +3522,17 @@ wastedBytes:webpSavings.bytes});
 
 }
 
+
 const headings=[
-{key:'url',itemType:'thumbnail',text:''},
-{key:'url',itemType:'url',text:'URL'},
-{key:'totalBytes',itemType:'bytes',displayUnit:'kb',granularity:1,text:'Original'},
-{key:'wastedBytes',itemType:'bytes',displayUnit:'kb',granularity:1,
-text:'Potential Savings'}];
+{key:'url',valueType:'thumbnail',label:''},
+{key:'url',valueType:'url',label:'URL'},
+{key:'totalBytes',valueType:'bytes',label:'Original'},
+{key:'wastedBytes',valueType:'bytes',label:'Potential Savings'}];
 
 
 return{
 warnings,
-results,
+items,
 headings};
 
 }}
@@ -3542,10 +3556,10 @@ class ContentWidth extends Audit{
 
 static get meta(){
 return{
-name:'content-width',
-description:'Content is sized correctly for the viewport',
-failureDescription:'Content is not sized correctly for the viewport',
-helpText:'If the width of your app\'s content doesn\'t match the width '+
+id:'content-width',
+title:'Content is sized correctly for the viewport',
+failureTitle:'Content is not sized correctly for the viewport',
+description:'If the width of your app\'s content doesn\'t match the width '+
 'of the viewport, your app might not be optimized for mobile screens. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport).',
 requiredArtifacts:['ViewportDimensions']};
@@ -3601,10 +3615,10 @@ class CriticalRequestChains extends Audit{
 
 static get meta(){
 return{
-name:'critical-request-chains',
-description:'Critical Request Chains',
+id:'critical-request-chains',
+title:'Critical Request Chains',
 scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-helpText:'The Critical Request Chains below show you what resources are '+
+description:'The Critical Request Chains below show you what resources are '+
 'issued with a high priority. Consider reducing '+
 'the length of chains, reducing the download size of resources, or '+
 'deferring the download of unnecessary resources to improve page load. '+
@@ -3695,7 +3709,7 @@ const simpleRequest={
 url:request.url,
 startTime:request.startTime,
 endTime:request.endTime,
-_responseReceivedTime:request._responseReceivedTime,
+responseReceivedTime:request.responseReceivedTime,
 transferSize:request.transferSize};
 
 
@@ -3814,10 +3828,10 @@ class Deprecations extends Audit{
 
 static get meta(){
 return{
-name:'deprecations',
-description:'Avoids deprecated APIs',
-failureDescription:'Uses deprecated API\'s',
-helpText:'Deprecated APIs will eventually be removed from the browser. '+
+id:'deprecations',
+title:'Avoids deprecated APIs',
+failureTitle:'Uses deprecated API\'s',
+description:'Deprecated APIs will eventually be removed from the browser. '+
 '[Learn more](https://www.chromestatus.com/features#deprecated).',
 requiredArtifacts:['ChromeConsoleMessages']};
 
@@ -3887,10 +3901,10 @@ class AppCacheManifestAttr extends Audit{
 
 static get meta(){
 return{
-name:'appcache-manifest',
-description:'Avoids Application Cache',
-failureDescription:'Uses Application Cache',
-helpText:'Application Cache is deprecated. '+
+id:'appcache-manifest',
+title:'Avoids Application Cache',
+failureTitle:'Uses Application Cache',
+description:'Application Cache is deprecated. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/appcache).',
 requiredArtifacts:['AppCacheManifest']};
 
@@ -3912,6 +3926,81 @@ displayValue};
 
 
 module.exports=AppCacheManifestAttr;
+
+},{"../audit":2}],"../audits/dobetterweb/doctype":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+
+class Doctype extends Audit{
+
+
+
+static get meta(){
+return{
+id:'doctype',
+title:'Page has the HTML doctype',
+failureTitle:'Page is missing the HTML doctype',
+description:'Specifying a doctype prevents the browser from switching to quirks-mode.'+
+'Read more on the '+
+'[MDN Web Docs page](https://developer.mozilla.org/en-US/docs/Glossary/Doctype)',
+requiredArtifacts:['Doctype']};
+
+}
+
+
+
+
+
+static audit(artifacts){
+if(!artifacts.Doctype){
+return{
+rawValue:false,
+explanation:'Document must contain a doctype'};
+
+}
+
+
+const doctypeName=artifacts.Doctype.name.trim();
+const doctypePublicId=artifacts.Doctype.publicId;
+const doctypeSystemId=artifacts.Doctype.systemId;
+
+if(doctypePublicId!==''){
+return{
+rawValue:false,
+explanation:'Expected publicId to be an empty string'};
+
+}
+
+if(doctypeSystemId!==''){
+return{
+rawValue:false,
+explanation:'Expected systemId to be an empty string'};
+
+}
+
+
+
+
+if(doctypeName==='html'){
+return{
+rawValue:true};
+
+}else{
+return{
+rawValue:false,
+explanation:'Doctype name must be the lowercase string `html`'};
+
+}
+}}
+
+
+module.exports=Doctype;
 
 },{"../audit":2}],"../audits/dobetterweb/dom-size":[function(require,module,exports){
 
@@ -3945,10 +4034,10 @@ return MAX_DOM_NODES;
 
 static get meta(){
 return{
-name:'dom-size',
-description:'Avoids an excessive DOM size',
-failureDescription:'Uses an excessive DOM size',
-helpText:'Browser engineers recommend pages contain fewer than '+
+id:'dom-size',
+title:'Avoids an excessive DOM size',
+failureTitle:'Uses an excessive DOM size',
+description:'Browser engineers recommend pages contain fewer than '+
 `~${Util.formatNumber(DOMSize.MAX_DOM_NODES)} DOM nodes. The sweet spot is a tree `+
 `depth < ${MAX_DOM_TREE_DEPTH} elements and fewer than ${MAX_DOM_TREE_WIDTH} `+
 'children/parent element. A large DOM can increase memory usage, cause longer '+
@@ -4043,10 +4132,10 @@ class ExternalAnchorsUseRelNoopenerAudit extends Audit{
 
 static get meta(){
 return{
-name:'external-anchors-use-rel-noopener',
-description:'Links to cross-origin destinations are safe',
-failureDescription:'Links to cross-origin destinations are unsafe',
-helpText:'Add `rel="noopener"` or `rel="noreferrer"` to any external links to improve '+
+id:'external-anchors-use-rel-noopener',
+title:'Links to cross-origin destinations are safe',
+failureTitle:'Links to cross-origin destinations are unsafe',
+description:'Add `rel="noopener"` or `rel="noreferrer"` to any external links to improve '+
 'performance and prevent security vulnerabilities. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/noopener).',
 requiredArtifacts:['URL','AnchorsWithNoRelNoopener']};
@@ -4134,10 +4223,10 @@ class GeolocationOnStart extends ViolationAudit{
 
 static get meta(){
 return{
-name:'geolocation-on-start',
-description:'Avoids requesting the geolocation permission on page load',
-failureDescription:'Requests the geolocation permission on page load',
-helpText:'Users are mistrustful of or confused by sites that request their '+
+id:'geolocation-on-start',
+title:'Avoids requesting the geolocation permission on page load',
+failureTitle:'Requests the geolocation permission on page load',
+description:'Users are mistrustful of or confused by sites that request their '+
 'location without context. Consider tying the request to user gestures instead. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/geolocation-on-load).',
 requiredArtifacts:['ChromeConsoleMessages']};
@@ -4193,10 +4282,10 @@ class NoDocWriteAudit extends ViolationAudit{
 
 static get meta(){
 return{
-name:'no-document-write',
-description:'Avoids `document.write()`',
-failureDescription:'Uses `document.write()`',
-helpText:'For users on slow connections, external scripts dynamically injected via '+
+id:'no-document-write',
+title:'Avoids `document.write()`',
+failureTitle:'Uses `document.write()`',
+description:'For users on slow connections, external scripts dynamically injected via '+
 '`document.write()` can delay page load by tens of seconds. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/document-write).',
 requiredArtifacts:['ChromeConsoleMessages']};
@@ -4229,101 +4318,7 @@ details};
 
 module.exports=NoDocWriteAudit;
 
-},{"../violation-audit":6}],"../audits/dobetterweb/no-mutation-events":[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-const URL=require('../../lib/url-shim');
-const Audit=require('../audit');
-const EventHelpers=require('../../lib/event-helpers');
-
-class NoMutationEventsAudit extends Audit{
-static get MUTATION_EVENTS(){
-return[
-'DOMAttrModified',
-'DOMAttributeNameChanged',
-'DOMCharacterDataModified',
-'DOMElementNameChanged',
-'DOMNodeInserted',
-'DOMNodeInsertedIntoDocument',
-'DOMNodeRemoved',
-'DOMNodeRemovedFromDocument',
-'DOMSubtreeModified'];
-
-}
-
-
-
-
-static get meta(){
-return{
-name:'no-mutation-events',
-description:'Avoids Mutation Events in its own scripts',
-failureDescription:'Uses Mutation Events in its own scripts',
-helpText:'Mutation Events are deprecated and harm performance. Consider using Mutation '+
-'Observers instead. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/mutation-events).',
-requiredArtifacts:['URL','EventListeners']};
-
-}
-
-
-
-
-
-static audit(artifacts){
-
-const warnings=[];
-const listeners=artifacts.EventListeners;
-
-const results=listeners.filter(loc=>{
-const isMutationEvent=this.MUTATION_EVENTS.includes(loc.type);
-let sameHost=URL.hostsMatch(artifacts.URL.finalUrl,loc.url);
-
-if(!URL.isValid(loc.url)&&isMutationEvent){
-sameHost=true;
-warnings.push(URL.INVALID_URL_DEBUG_STRING);
-}
-
-return sameHost&&isMutationEvent;
-}).map(EventHelpers.addFormattedCodeSnippet);
-
-const groupedResults=EventHelpers.groupCodeSnippetsByLocation(results);
-
-const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{key:'type',itemType:'code',text:'Event'},
-{key:'line',itemType:'text',text:'Line'},
-{key:'col',itemType:'text',text:'Col'},
-{key:'pre',itemType:'code',text:'Snippet'}];
-
-const details=NoMutationEventsAudit.makeTableDetails(headings,groupedResults);
-
-return{
-rawValue:groupedResults.length===0,
-extendedInfo:{
-value:{
-results:groupedResults}},
-
-
-details,
-warnings};
-
-}}
-
-
-module.exports=NoMutationEventsAudit;
-
-},{"../../lib/event-helpers":34,"../../lib/url-shim":"url","../audit":2}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
+},{"../violation-audit":6}],"../audits/dobetterweb/no-vulnerable-libraries":[function(require,module,exports){
 
 
 
@@ -4355,13 +4350,14 @@ class NoVulnerableLibrariesAudit extends Audit{
 
 static get meta(){
 return{
-name:'no-vulnerable-libraries',
-description:'Avoids front-end JavaScript libraries'+
+id:'no-vulnerable-libraries',
+title:'Avoids front-end JavaScript libraries'+
 ' with known security vulnerabilities',
-failureDescription:'Includes front-end JavaScript libraries'+
+failureTitle:'Includes front-end JavaScript libraries'+
 ' with known security vulnerabilities',
-helpText:'Some third-party scripts may contain known security vulnerabilities '+
-' that are easily identified and exploited by attackers.',
+description:'Some third-party scripts may contain known security vulnerabilities '+
+'that are easily identified and exploited by attackers. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/vulnerabilities).',
 requiredArtifacts:['JSLibraries']};
 
 }
@@ -4523,7 +4519,7 @@ details};
 
 module.exports=NoVulnerableLibrariesAudit;
 
-},{"../../../third-party/snyk/snapshot.json":155,"../../lib/sentry":39,"../audit":2,"semver":150}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":137,"../../lib/sentry":40,"../audit":2,"semver":132}],"../audits/dobetterweb/no-websql":[function(require,module,exports){
 
 
 
@@ -4545,10 +4541,10 @@ class NoWebSQLAudit extends Audit{
 
 static get meta(){
 return{
-name:'no-websql',
-description:'Avoids WebSQL DB',
-failureDescription:'Uses WebSQL DB',
-helpText:'Web SQL is deprecated. Consider using IndexedDB instead. '+
+id:'no-websql',
+title:'Avoids WebSQL DB',
+failureTitle:'Uses WebSQL DB',
+description:'Web SQL is deprecated. Consider using IndexedDB instead. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/web-sql).',
 requiredArtifacts:['WebSQL']};
 
@@ -4594,10 +4590,10 @@ class NotificationOnStart extends ViolationAudit{
 
 static get meta(){
 return{
-name:'notification-on-start',
-description:'Avoids requesting the notification permission on page load',
-failureDescription:'Requests the notification permission on page load',
-helpText:'Users are mistrustful of or confused by sites that request to send '+
+id:'notification-on-start',
+title:'Avoids requesting the notification permission on page load',
+failureTitle:'Requests the notification permission on page load',
+description:'Users are mistrustful of or confused by sites that request to send '+
 'notifications without context. Consider tying the request to user gestures '+
 'instead. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/notifications-on-load).',
 requiredArtifacts:['ChromeConsoleMessages']};
@@ -4646,11 +4642,11 @@ class PasswordInputsCanBePastedIntoAudit extends Audit{
 
 static get meta(){
 return{
-name:'password-inputs-can-be-pasted-into',
-description:'Allows users to paste into password fields',
-failureDescription:'Prevents users to paste into password fields',
-helpText:'Preventing password pasting undermines good security policy. '+
-'[Learn more](https://www.ncsc.gov.uk/blog-post/let-them-paste-passwords).',
+id:'password-inputs-can-be-pasted-into',
+title:'Allows users to paste into password fields',
+failureTitle:'Prevents users to paste into password fields',
+description:'Preventing password pasting undermines good security policy. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/password-pasting).',
 requiredArtifacts:['PasswordInputsWithPreventedPaste']};
 
 }
@@ -4710,10 +4706,10 @@ class UsesHTTP2Audit extends Audit{
 
 static get meta(){
 return{
-name:'uses-http2',
-description:'Uses HTTP/2 for its own resources',
-failureDescription:'Does not use HTTP/2 for all of its resources',
-helpText:'HTTP/2 offers many benefits over HTTP/1.1, including binary headers, '+
+id:'uses-http2',
+title:'Uses HTTP/2 for its own resources',
+failureTitle:'Does not use HTTP/2 for all of its resources',
+description:'HTTP/2 offers many benefits over HTTP/1.1, including binary headers, '+
 'multiplexing, and server push. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/http2).',
 requiredArtifacts:['URL','devtoolsLogs']};
 
@@ -4734,12 +4730,12 @@ const resources=networkRecords.filter(record=>{
 
 const isOldHttp=/HTTP\/[01][.\d]?/i.test(record.protocol);
 if(!isOldHttp)return false;
-const requestHost=new URL(record._url).host;
+const requestHost=new URL(record.url).host;
 return requestHost===finalHost;
 }).map(record=>{
 return{
 protocol:record.protocol,
-url:record._url};
+url:record.url};
 
 }).filter(record=>{
 if(seenURLs.has(record.url))return false;
@@ -4799,10 +4795,10 @@ class PassiveEventsAudit extends ViolationAudit{
 
 static get meta(){
 return{
-name:'uses-passive-event-listeners',
-description:'Uses passive listeners to improve scrolling performance',
-failureDescription:'Does not use passive listeners to improve scrolling performance',
-helpText:'Consider marking your touch and wheel event listeners as `passive` '+
+id:'uses-passive-event-listeners',
+title:'Uses passive listeners to improve scrolling performance',
+failureTitle:'Does not use passive listeners to improve scrolling performance',
+description:'Consider marking your touch and wheel event listeners as `passive` '+
 'to improve your page\'s scroll performance. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/passive-event-listeners).',
 requiredArtifacts:['ChromeConsoleMessages']};
@@ -4856,11 +4852,11 @@ class ErrorLogs extends Audit{
 
 static get meta(){
 return{
-name:'errors-in-console',
-description:'No browser errors logged to the console',
-helpText:'Errors logged to the console indicate unresolved problems. '+
+id:'errors-in-console',
+title:'No browser errors logged to the console',
+description:'Errors logged to the console indicate unresolved problems. '+
 'They can come from network request failures and other browser concerns.',
-failureDescription:'Browser errors were logged to the console',
+failureTitle:'Browser errors were logged to the console',
 requiredArtifacts:['ChromeConsoleMessages','RuntimeExceptions']};
 
 }
@@ -4916,7 +4912,7 @@ details};
 
 module.exports=ErrorLogs;
 
-},{"./audit":2}],"../audits/estimated-input-latency":[function(require,module,exports){
+},{"./audit":2}],"../audits/font-display":[function(require,module,exports){
 
 
 
@@ -4925,272 +4921,7 @@ module.exports=ErrorLogs;
 'use strict';
 
 const Audit=require('./audit');
-
-class EstimatedInputLatency extends Audit{
-
-
-
-static get meta(){
-return{
-name:'estimated-input-latency',
-description:'Estimated Input Latency',
-helpText:'The score above is an estimate of how long your app takes to respond to user '+
-'input, in milliseconds, during the busiest 5s window of page load. If your '+
-'latency is higher than 50 ms, users may perceive your app as laggy. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency).',
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-scorePODR:50,
-scoreMedian:100};
-
-}
-
-
-
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestEstimatedInputLatency(metricComputationData);
-
-return{
-score:Audit.computeLogNormalScore(
-metricResult.timing,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:metricResult.timing,
-displayValue:['%d\xa0ms',metricResult.timing]};
-
-}}
-
-
-module.exports=EstimatedInputLatency;
-
-},{"./audit":2}],"../audits/first-contentful-paint":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const Util=require('../report/html/renderer/util.js');
-
-class FirstContentfulPaint extends Audit{
-
-
-
-static get meta(){
-return{
-name:'first-contentful-paint',
-description:'First Contentful Paint',
-helpText:'First contentful paint marks the time at which the first text/image is painted. '+
-`[Learn more](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#first_paint_and_first_contentful_paint).`,
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-
-
-scorePODR:2900,
-scoreMedian:4000};
-
-}
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestFirstContentfulPaint(metricComputationData);
-
-return{
-score:Audit.computeLogNormalScore(
-metricResult.timing,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:metricResult.timing,
-displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
-
-}}
-
-
-module.exports=FirstContentfulPaint;
-
-},{"../report/html/renderer/util.js":48,"./audit":2}],"../audits/first-cpu-idle":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const Util=require('../report/html/renderer/util.js');
-
-class FirstCPUIdle extends Audit{
-
-
-
-static get meta(){
-return{
-name:'first-cpu-idle',
-description:'First CPU Idle',
-helpText:'First CPU Idle marks the first time at which the page\'s main thread is '+
-'quiet enough to handle input. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-interactive).',
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-
-
-scorePODR:2900,
-scoreMedian:6500};
-
-}
-
-
-
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestFirstCPUIdle(metricComputationData);
-
-return{
-score:Audit.computeLogNormalScore(
-metricResult.timing,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:metricResult.timing,
-displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
-
-}}
-
-
-module.exports=FirstCPUIdle;
-
-},{"../report/html/renderer/util.js":48,"./audit":2}],"../audits/first-meaningful-paint":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const Util=require('../report/html/renderer/util');
-
-class FirstMeaningfulPaint extends Audit{
-
-
-
-static get meta(){
-return{
-name:'first-meaningful-paint',
-description:'First Meaningful Paint',
-helpText:'First Meaningful Paint measures when the primary content of a page is visible. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint).',
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-
-
-scorePODR:2000,
-scoreMedian:4000};
-
-}
-
-
-
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestFirstMeaningfulPaint(metricComputationData);
-
-return{
-score:Audit.computeLogNormalScore(
-metricResult.timing,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:metricResult.timing,
-displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
-
-}}
-
-
-module.exports=FirstMeaningfulPaint;
-
-},{"../report/html/renderer/util":48,"./audit":2}],"../audits/font-display":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const WebInspector=require('../lib/web-inspector');
+const NetworkRequest=require('../lib/network-request');
 const allowedFontFaceDisplays=['block','fallback','optional','swap'];
 
 class FontDisplay extends Audit{
@@ -5199,10 +4930,10 @@ class FontDisplay extends Audit{
 
 static get meta(){
 return{
-name:'font-display',
-description:'All text remains visible during webfont loads',
-failureDescription:'Text is invisible while webfonts are loading',
-helpText:'Leverage the font-display CSS feature to ensure text is user-visible while '+
+id:'font-display',
+title:'All text remains visible during webfont loads',
+failureTitle:'Text is invisible while webfonts are loading',
+description:'Leverage the font-display CSS feature to ensure text is user-visible while '+
 'webfonts are loading. '+
 '[Learn more](https://developers.google.com/web/updates/2016/02/font-display).',
 requiredArtifacts:['devtoolsLogs','Fonts']};
@@ -5224,7 +4955,7 @@ const fontsWithoutProperDisplay=fontFaces.filter(fontFace=>
 
 return artifacts.requestNetworkRecords(devtoolsLogs).then(networkRecords=>{
 const results=networkRecords.filter(record=>{
-const isFont=record._resourceType===WebInspector.resourceTypes.Font;
+const isFont=record.resourceType===NetworkRequest.TYPES.Font;
 
 return isFont;
 }).
@@ -5263,7 +4994,7 @@ details};
 
 module.exports=FontDisplay;
 
-},{"../lib/web-inspector":47,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../lib/network-request":38,"./audit":2}],"../audits/image-aspect-ratio":[function(require,module,exports){
 
 
 
@@ -5280,7 +5011,7 @@ module.exports=FontDisplay;
 const Audit=require('./audit');
 
 const URL=require('../lib/url-shim');
-const THRESHOLD=0.05;
+const THRESHOLD_PX=2;
 
 
 
@@ -5290,10 +5021,11 @@ class ImageAspectRatio extends Audit{
 
 static get meta(){
 return{
-name:'image-aspect-ratio',
-description:'Displays images with correct aspect ratio',
-failureDescription:'Displays images with incorrect aspect ratio',
-helpText:'Image display dimensions should match natural aspect ratio.',
+id:'image-aspect-ratio',
+title:'Displays images with correct aspect ratio',
+failureTitle:'Displays images with incorrect aspect ratio',
+description:'Image display dimensions should match natural aspect ratio. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/aspect-ratio).',
 requiredArtifacts:['ImageUsage']};
 
 }
@@ -5306,7 +5038,9 @@ static computeAspectRatios(image){
 const url=URL.elideDataURI(image.src);
 const actualAspectRatio=image.naturalWidth/image.naturalHeight;
 const displayedAspectRatio=image.width/image.height;
-const doRatiosMatch=Math.abs(actualAspectRatio-displayedAspectRatio)<THRESHOLD;
+
+const targetDisplayHeight=image.width/actualAspectRatio;
+const doRatiosMatch=Math.abs(targetDisplayHeight-image.height)<THRESHOLD_PX;
 
 if(!Number.isFinite(actualAspectRatio)||
 !Number.isFinite(displayedAspectRatio)){
@@ -5371,89 +5105,7 @@ details:Audit.makeTableDetails(headings,results)};
 
 module.exports=ImageAspectRatio;
 
-},{"../lib/url-shim":"url","./audit":2}],"../audits/interactive":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const Util=require('../report/html/renderer/util');
-
-
-
-
-
-
-
-class InteractiveMetric extends Audit{
-
-
-
-static get meta(){
-return{
-name:'interactive',
-description:'Time to Interactive',
-helpText:'Interactive marks the time at which the page is fully interactive. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive).',
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-
-
-scorePODR:2900,
-scoreMedian:7300};
-
-}
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestInteractive(metricComputationData);
-const timeInMs=metricResult.timing;
-const extendedInfo={
-timeInMs,
-timestamp:metricResult.timestamp,
-
-optimistic:metricResult.optimisticEstimate&&metricResult.optimisticEstimate.timeInMs,
-
-pessimistic:metricResult.pessimisticEstimate&&metricResult.pessimisticEstimate.timeInMs};
-
-
-return{
-score:Audit.computeLogNormalScore(
-timeInMs,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:timeInMs,
-displayValue:[Util.MS_DISPLAY_VALUE,timeInMs],
-extendedInfo:{
-value:extendedInfo}};
-
-
-}}
-
-
-module.exports=InteractiveMetric;
-
-},{"../report/html/renderer/util":48,"./audit":2}],"../audits/is-on-https":[function(require,module,exports){
+},{"../lib/url-shim":"url","./audit":2}],"../audits/is-on-https":[function(require,module,exports){
 
 
 
@@ -5474,10 +5126,10 @@ class HTTPS extends Audit{
 
 static get meta(){
 return{
-name:'is-on-https',
-description:'Uses HTTPS',
-failureDescription:'Does not use HTTPS',
-helpText:'All sites should be protected with HTTPS, even ones that don\'t handle '+
+id:'is-on-https',
+title:'Uses HTTPS',
+failureTitle:'Does not use HTTPS',
+description:'All sites should be protected with HTTPS, even ones that don\'t handle '+
 'sensitive data. HTTPS prevents intruders from tampering with or passively listening '+
 'in on the communications between your app and your users, and is a prerequisite for '+
 'HTTP/2 and many new web platform APIs. '+
@@ -5562,10 +5214,10 @@ class LoadFastEnough4Pwa extends Audit{
 
 static get meta(){
 return{
-name:'load-fast-enough-for-pwa',
-description:'Page load is fast enough on 3G',
-failureDescription:'Page load is not fast enough on 3G',
-helpText:
+id:'load-fast-enough-for-pwa',
+title:'Page load is fast enough on 3G',
+failureTitle:'Page load is not fast enough on 3G',
+description:
 'A fast page load over a 3G network ensures a good mobile user experience. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/fast-3g).',
 requiredArtifacts:['traces','devtoolsLogs']};
@@ -5617,7 +5269,7 @@ rawValue:tti.timing};
 
 module.exports=LoadFastEnough4Pwa;
 
-},{"../config/constants":8,"./audit":2,"lodash.isequal":144}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
+},{"../config/constants":8,"./audit":2,"lodash.isequal":126}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
 
 
 
@@ -5632,8 +5284,7 @@ module.exports=LoadFastEnough4Pwa;
 
 const Audit=require('./audit');
 const Util=require('../report/html/renderer/util');
-
-const{taskToGroup}=require('../lib/task-groups');
+const{taskGroups}=require('../lib/task-groups');
 
 class MainThreadWorkBreakdown extends Audit{
 
@@ -5641,11 +5292,11 @@ class MainThreadWorkBreakdown extends Audit{
 
 static get meta(){
 return{
-name:'mainthread-work-breakdown',
-description:'Minimizes main thread work',
-failureDescription:'Has significant main thread work',
+id:'mainthread-work-breakdown',
+title:'Minimizes main thread work',
+failureTitle:'Has significant main thread work',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-helpText:'Consider reducing the time spent parsing, compiling and executing JS. '+
+description:'Consider reducing the time spent parsing, compiling and executing JS. '+
 'You may find delivering smaller JS payloads helps with this.',
 requiredArtifacts:['traces']};
 
@@ -5666,12 +5317,14 @@ scoreMedian:4000};
 
 
 
-static getExecutionTimingsByCategory(timelineModel){
-const bottomUpByName=timelineModel.bottomUpGroupBy('EventName');
+static getExecutionTimingsByGroup(tasks){
 
 const result=new Map();
-bottomUpByName.children.forEach((event,eventName)=>
-result.set(eventName,event.selfTime));
+
+for(const task of tasks){
+const originalTime=result.get(task.group.id)||0;
+result.set(task.group.id,originalTime+task.selfTime);
+}
 
 return result;
 }
@@ -5685,40 +5338,34 @@ static async audit(artifacts,context){
 const settings=context.settings||{};
 const trace=artifacts.traces[MainThreadWorkBreakdown.DEFAULT_PASS];
 
-const devtoolsTimelineModel=await artifacts.requestDevtoolsTimelineModel(trace);
-const executionTimings=MainThreadWorkBreakdown.getExecutionTimingsByCategory(
-devtoolsTimelineModel);
-
-let totalExecutionTime=0;
-
+const tasks=await artifacts.requestMainThreadTasks(trace);
 const multiplier=settings.throttlingMethod==='simulate'?
 settings.throttling.cpuSlowdownMultiplier:1;
 
-const extendedInfo={};
-const categoryTotals={};
-const results=Array.from(executionTimings).map(([eventName,duration])=>{
-duration*=multiplier;
-totalExecutionTime+=duration;
-extendedInfo[eventName]=duration;
-const groupName=taskToGroup[eventName];
+const executionTimings=MainThreadWorkBreakdown.getExecutionTimingsByGroup(tasks);
 
-const categoryTotal=categoryTotals[groupName]||0;
-categoryTotals[groupName]=categoryTotal+duration;
+let totalExecutionTime=0;
+const categoryTotals={};
+const results=Array.from(executionTimings).map(([groupId,rawDuration])=>{
+const duration=rawDuration*multiplier;
+totalExecutionTime+=duration;
+
+const categoryTotal=categoryTotals[groupId]||0;
+categoryTotals[groupId]=categoryTotal+duration;
 
 return{
-category:eventName,
-group:groupName,
+group:groupId,
+groupLabel:taskGroups[groupId].label,
 duration:duration};
 
 });
 
 const headings=[
-{key:'group',itemType:'text',text:'Category'},
-{key:'category',itemType:'text',text:'Work'},
-{key:'duration',itemType:'ms',granularity:1,text:'Time spent'}];
+{key:'groupLabel',itemType:'text',text:'Category'},
+{key:'duration',itemType:'ms',granularity:1,text:'Time Spent'}];
 
 
-results.stableSort((a,b)=>categoryTotals[b.group]-categoryTotals[a.group]);
+results.sort((a,b)=>categoryTotals[b.group]-categoryTotals[a.group]);
 const tableDetails=MainThreadWorkBreakdown.makeTableDetails(headings,results);
 
 const score=Audit.computeLogNormalScore(
@@ -5731,17 +5378,14 @@ return{
 score,
 rawValue:totalExecutionTime,
 displayValue:[Util.MS_DISPLAY_VALUE,totalExecutionTime],
-details:tableDetails,
-extendedInfo:{
-value:extendedInfo}};
-
+details:tableDetails};
 
 }}
 
 
 module.exports=MainThreadWorkBreakdown;
 
-},{"../lib/task-groups":42,"../report/html/renderer/util":48,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
+},{"../lib/task-groups":43,"../report/html/renderer/util":48,"./audit":2}],"../audits/manifest-short-name-length":[function(require,module,exports){
 
 
 
@@ -5757,11 +5401,10 @@ class ManifestShortNameLength extends Audit{
 
 static get meta(){
 return{
-name:'manifest-short-name-length',
-description:'Manifest\'s `short_name` won\'t be truncated when displayed on homescreen',
-failureDescription:'Manifest\'s `short_name` will be truncated when displayed '+
-'on homescreen',
-helpText:'Make your app\'s `short_name` fewer than 12 characters to '+
+id:'manifest-short-name-length',
+title:'The `short_name` won\'t be truncated on the homescreen',
+failureTitle:'The `short_name` will be truncated on the homescreen',
+description:'Make your app\'s `short_name` fewer than 12 characters to '+
 'ensure that it\'s not truncated on homescreens. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/manifest-short_name-is-not-truncated).',
 requiredArtifacts:['Manifest']};
@@ -5772,27 +5415,37 @@ requiredArtifacts:['Manifest']};
 
 
 
-static audit(artifacts){
-return artifacts.requestManifestValues(artifacts.Manifest).then(manifestValues=>{
+static async audit(artifacts){
+const manifestValues=await artifacts.requestManifestValues(artifacts.Manifest);
+
 if(manifestValues.isParseFailure){
 return{
-rawValue:false};
+rawValue:true,
+notApplicable:true};
 
 }
 
-const hasShortName=manifestValues.allChecks.find(i=>i.id==='hasShortName');
-if(!hasShortName||!hasShortName.passing){
+const shortNameCheck=manifestValues.allChecks.find(i=>i.id==='hasShortName');
+const shortNameLengthCheck=manifestValues.allChecks.find(i=>i.id==='shortNameLength');
+
+
+if(shortNameCheck&&!shortNameCheck.passing){
+return{
+rawValue:true,
+notApplicable:true};
+
+}
+
+if(shortNameLengthCheck&&!shortNameLengthCheck.passing){
 return{
 rawValue:false,
-explanation:'No short_name found in manifest.'};
+explanation:`Failure: ${shortNameLengthCheck.failureText}.`};
 
 }
 
-const isShortEnough=manifestValues.allChecks.find(i=>i.id==='shortNameLength');
 return{
-rawValue:!!isShortEnough&&isShortEnough.passing};
+rawValue:true};
 
-});
 }}
 
 
@@ -5819,10 +5472,10 @@ class PWACrossBrowser extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'pwa-cross-browser',
-helpText:'To reach the most number of users, sites should work across '+
+id:'pwa-cross-browser',
+description:'To reach the most number of users, sites should work across '+
 'every major browser. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#site-works-cross-browser).',
-description:'Site works cross-browser'},
+title:'Site works cross-browser'},
 super.partialMeta);
 }}
 
@@ -5849,10 +5502,10 @@ class PWAEachPageHasURL extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'pwa-each-page-has-url',
-helpText:'Ensure individual pages are deep linkable via the URLs and that URLs are '+
+id:'pwa-each-page-has-url',
+description:'Ensure individual pages are deep linkable via the URLs and that URLs are '+
 'unique for the purpose of shareability on social media. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#each-page-has-a-url).',
-description:'Each page has a URL'},
+title:'Each page has a URL'},
 super.partialMeta);
 }}
 
@@ -5879,17 +5532,430 @@ class PWAPageTransitions extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'pwa-page-transitions',
-helpText:'Transitions should feel snappy as you tap around, even on a slow network, a key '+
-'to perceived performance. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network).',
-description:'Page transitions don\'t feel like they block on the network'},
+id:'pwa-page-transitions',
+description:'Transitions should feel snappy as you tap around, even on a slow network, a '+
+'key to perceived performance. [Learn more](https://developers.google.com/web/progressive-web-apps/checklist#page-transitions-dont-feel-like-they-block-on-the-network).',
+title:'Page transitions don\'t feel like they block on the network'},
 super.partialMeta);
 }}
 
 
 module.exports=PWAPageTransitions;
 
-},{"./manual-audit":4}],"../audits/metrics":[function(require,module,exports){
+},{"./manual-audit":4}],"../audits/metrics/estimated-input-latency":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+
+class EstimatedInputLatency extends Audit{
+
+
+
+static get meta(){
+return{
+id:'estimated-input-latency',
+title:'Estimated Input Latency',
+description:'The score above is an estimate of how long your app takes to respond to user '+
+'input, in milliseconds, during the busiest 5s window of page load. If your '+
+'latency is higher than 50 ms, users may perceive your app as laggy. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/estimated-input-latency).',
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+scorePODR:50,
+scoreMedian:100};
+
+}
+
+
+
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestEstimatedInputLatency(metricComputationData);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:['%d\xa0ms',metricResult.timing]};
+
+}}
+
+
+module.exports=EstimatedInputLatency;
+
+},{"../audit":2}],"../audits/metrics/first-contentful-paint":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const Util=require('../../report/html/renderer/util.js');
+
+class FirstContentfulPaint extends Audit{
+
+
+
+static get meta(){
+return{
+id:'first-contentful-paint',
+title:'First Contentful Paint',
+description:'First contentful paint marks the time at which the first text/image is '+
+`painted. [Learn more](https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#first_paint_and_first_contentful_paint).`,
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces','devtoolsLogs']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+
+
+scorePODR:2000,
+scoreMedian:4000};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestFirstContentfulPaint(metricComputationData);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
+
+}}
+
+
+module.exports=FirstContentfulPaint;
+
+},{"../../report/html/renderer/util.js":48,"../audit":2}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const Util=require('../../report/html/renderer/util.js');
+
+class FirstCPUIdle extends Audit{
+
+
+
+static get meta(){
+return{
+id:'first-cpu-idle',
+title:'First CPU Idle',
+description:'First CPU Idle marks the first time at which the page\'s main thread is '+
+'quiet enough to handle input. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-interactive).',
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+
+
+scorePODR:2900,
+scoreMedian:6500};
+
+}
+
+
+
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestFirstCPUIdle(metricComputationData);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
+
+}}
+
+
+module.exports=FirstCPUIdle;
+
+},{"../../report/html/renderer/util.js":48,"../audit":2}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const Util=require('../../report/html/renderer/util');
+
+class FirstMeaningfulPaint extends Audit{
+
+
+
+static get meta(){
+return{
+id:'first-meaningful-paint',
+title:'First Meaningful Paint',
+description:'First Meaningful Paint measures when the primary content of a page is '+
+'visible. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint).',
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+
+
+scorePODR:2000,
+scoreMedian:4000};
+
+}
+
+
+
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestFirstMeaningfulPaint(metricComputationData);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
+
+}}
+
+
+module.exports=FirstMeaningfulPaint;
+
+},{"../../report/html/renderer/util":48,"../audit":2}],"../audits/metrics/interactive":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const Util=require('../../report/html/renderer/util');
+
+
+
+
+
+
+
+class InteractiveMetric extends Audit{
+
+
+
+static get meta(){
+return{
+id:'interactive',
+title:'Time to Interactive',
+description:'Interactive marks the time at which the page is fully interactive. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/consistently-interactive).',
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces','devtoolsLogs']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+
+
+scorePODR:2900,
+scoreMedian:7300};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestInteractive(metricComputationData);
+const timeInMs=metricResult.timing;
+const extendedInfo={
+timeInMs,
+timestamp:metricResult.timestamp,
+
+optimistic:metricResult.optimisticEstimate&&metricResult.optimisticEstimate.timeInMs,
+
+pessimistic:metricResult.pessimisticEstimate&&metricResult.pessimisticEstimate.timeInMs};
+
+
+return{
+score:Audit.computeLogNormalScore(
+timeInMs,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:timeInMs,
+displayValue:[Util.MS_DISPLAY_VALUE,timeInMs],
+extendedInfo:{
+value:extendedInfo}};
+
+
+}}
+
+
+module.exports=InteractiveMetric;
+
+},{"../../report/html/renderer/util":48,"../audit":2}],"../audits/metrics/speed-index":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const Util=require('../../report/html/renderer/util');
+
+class SpeedIndex extends Audit{
+
+
+
+static get meta(){
+return{
+id:'speed-index',
+title:'Speed Index',
+description:'Speed Index shows how quickly the contents of a page are visibly populated. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/speed-index).',
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces','devtoolsLogs']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+
+
+scorePODR:2900,
+scoreMedian:5800};
+
+}
+
+
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await artifacts.requestSpeedIndex(metricComputationData);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
+
+}}
+
+
+module.exports=SpeedIndex;
+
+},{"../../report/html/renderer/util":48,"../audit":2}],"../audits/metrics":[function(require,module,exports){
 
 
 
@@ -5905,10 +5971,10 @@ class Metrics extends Audit{
 
 static get meta(){
 return{
-name:'metrics',
+id:'metrics',
 scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-description:'Metrics',
-helpText:'Collects all available metrics.',
+title:'Metrics',
+description:'Collects all available metrics.',
 requiredArtifacts:['traces','devtoolsLogs']};
 
 }
@@ -6037,7 +6103,6 @@ module.exports=Metrics;
 
 
 
-
 'use strict';
 
 const Audit=require('./audit');
@@ -6056,26 +6121,14 @@ class MixedContent extends Audit{
 
 static get meta(){
 return{
-name:'mixed-content',
-description:'All resources loaded are secure',
-failureDescription:'Some insecure resources can be upgraded to HTTPS',
-helpText:`Mixed content warnings can prevent you from upgrading to HTTPS.
+id:'mixed-content',
+title:'All resources loaded are secure',
+failureTitle:'Some insecure resources can be upgraded to HTTPS',
+description:`Mixed content warnings can prevent you from upgrading to HTTPS.
       This audit shows which insecure resources this page uses that can be
       upgraded to HTTPS. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/mixed-content)`,
 requiredArtifacts:['devtoolsLogs','MixedContent']};
 
-}
-
-
-
-
-
-
-
-
-
-static isSecureRecord(record){
-return record.securityState()==='secure'||record.protocol==='data';
 }
 
 
@@ -6109,7 +6162,7 @@ return parsedURL.href;
 
 
 
-static displayURL(url){
+static displayURL(url=''){
 const displayOptions={
 numPathParts:4,
 preserveQuery:false,
@@ -6134,15 +6187,15 @@ artifacts.requestNetworkRecords(upgradeLogs)];
 
 return Promise.all(computedArtifacts).then(([defaultRecords,upgradedRecords])=>{
 const insecureRecords=defaultRecords.filter(
-record=>!MixedContent.isSecureRecord(record));
+record=>!record.isSecure);
 const secureRecords=defaultRecords.filter(
-record=>MixedContent.isSecureRecord(record));
+record=>record.isSecure);
 
 const upgradePassHosts=new Set();
 const upgradePassSecureHosts=new Set();
 upgradedRecords.forEach(record=>{
 upgradePassHosts.add(new URL(record.url).hostname);
-if(MixedContent.isSecureRecord(record)&&record.finished&&!record.failed){
+if(record.isSecure&&record.finished&&!record.failed){
 upgradePassSecureHosts.add(new URL(record.url).hostname);
 }
 });
@@ -6161,7 +6214,7 @@ seen.add(simpleUrl);
 const resource={
 host:new URL(record.url).hostname,
 fullUrl:record.url,
-referrerDocUrl:this.displayURL(record._documentURL)};
+referrerDocUrl:this.displayURL(record.documentURL)};
 
 
 if(!upgradePassSecureHosts.has(resource.host))continue;
@@ -6211,10 +6264,10 @@ class NetworkRequests extends Audit{
 
 static get meta(){
 return{
-name:'network-requests',
+id:'network-requests',
 scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-description:'Network Requests',
-helpText:'Lists the network requests that were made during page load.',
+title:'Network Requests',
+description:'Lists the network requests that were made during page load.',
 requiredArtifacts:['devtoolsLogs']};
 
 }
@@ -6231,15 +6284,19 @@ const earliestStartTime=records.reduce(
 Infinity);
 
 
+
+const timeToMs=time=>time<earliestStartTime||!Number.isFinite(time)?
+undefined:(time-earliestStartTime)*1000;
+
 const results=records.map(record=>{
 return{
 url:URL.elideDataURI(record.url),
-startTime:(record.startTime-earliestStartTime)*1000,
-endTime:(record.endTime-earliestStartTime)*1000,
+startTime:timeToMs(record.startTime),
+endTime:timeToMs(record.endTime),
 transferSize:record.transferSize,
 statusCode:record.statusCode,
-mimeType:record._mimeType,
-resourceType:record._resourceType&&record._resourceType._name};
+mimeType:record.mimeType,
+resourceType:record.resourceType};
 
 });
 
@@ -6264,7 +6321,6 @@ const tableDetails=Audit.makeTableDetails(headings,results);
 return{
 score:1,
 rawValue:results.length,
-extendedInfo:{value:results},
 details:tableDetails};
 
 });
@@ -6295,9 +6351,9 @@ class PredictivePerf extends Audit{
 
 static get meta(){
 return{
-name:'predictive-perf',
-description:'Predicted Performance (beta)',
-helpText:
+id:'predictive-perf',
+title:'Predicted Performance (beta)',
+description:
 'Predicted performance evaluates how your site will perform under '+
 'a 3G connection on a mobile device.',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
@@ -6381,11 +6437,11 @@ class RedirectsHTTP extends Audit{
 
 static get meta(){
 return{
-name:'redirects-http',
-description:'Redirects HTTP traffic to HTTPS',
-failureDescription:'Does not redirect HTTP traffic to HTTPS',
-helpText:'If you\'ve already set up HTTPS, make sure that you redirect all HTTP traffic '+
-'to HTTPS. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https).',
+id:'redirects-http',
+title:'Redirects HTTP traffic to HTTPS',
+failureTitle:'Does not redirect HTTP traffic to HTTPS',
+description:'If you\'ve already set up HTTPS, make sure that you redirect all HTTP '+
+'traffic to HTTPS. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/http-redirects-to-https).',
 requiredArtifacts:['HTTPRedirect']};
 
 }
@@ -6420,10 +6476,10 @@ class Redirects extends Audit{
 
 static get meta(){
 return{
-name:'redirects',
-description:'Avoid multiple page redirects',
+id:'redirects',
+title:'Avoid multiple page redirects',
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-helpText:'Redirects introduce additional delays before the page can be loaded. [Learn more](https://developers.google.com/speed/docs/insights/AvoidRedirects).',
+description:'Redirects introduce additional delays before the page can be loaded. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/redirects).',
 requiredArtifacts:['URL','devtoolsLogs','traces']};
 
 }
@@ -6481,7 +6537,6 @@ if(!initialTiming||!redirectedTiming){
 throw new Error('Could not find redirects in graph');
 }
 
-
 const wastedMs=redirectedTiming.startTime-initialTiming.startTime;
 totalWastedMs+=wastedMs;
 
@@ -6538,10 +6593,10 @@ class ScreenshotThumbnails extends Audit{
 
 static get meta(){
 return{
-name:'screenshot-thumbnails',
+id:'screenshot-thumbnails',
 scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-description:'Screenshot Thumbnails',
-helpText:'This is what the load of your site looked like.',
+title:'Screenshot Thumbnails',
+description:'This is what the load of your site looked like.',
 requiredArtifacts:['traces','devtoolsLogs']};
 
 }
@@ -6661,7 +6716,7 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"../lib/errors":33,"./audit":2,"jpeg-js":140}],"../audits/seo/canonical":[function(require,module,exports){
+},{"../lib/errors":33,"./audit":2,"jpeg-js":122}],"../audits/seo/canonical":[function(require,module,exports){
 
 
 
@@ -6724,10 +6779,10 @@ class Canonical extends Audit{
 
 static get meta(){
 return{
-name:'canonical',
-description:'Document has a valid `rel=canonical`',
-failureDescription:'Document does not have a valid `rel=canonical`',
-helpText:'Canonical links suggest which URL to show in search results. '+
+id:'canonical',
+title:'Document has a valid `rel=canonical`',
+failureTitle:'Document does not have a valid `rel=canonical`',
+description:'Canonical links suggest which URL to show in search results. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/canonical).',
 requiredArtifacts:['Canonical','Hreflang','URL']};
 
@@ -6748,7 +6803,7 @@ let canonicals=[];
 
 let hreflangs=[];
 
-mainResource._responseHeaders&&mainResource._responseHeaders.
+mainResource.responseHeaders&&mainResource.responseHeaders.
 filter(h=>h.name.toLowerCase()===LINK_HEADER).
 forEach(h=>{
 canonicals=canonicals.concat(getCanonicalLinksFromHeader(h.value));
@@ -6838,7 +6893,7 @@ rawValue:true};
 
 module.exports=Canonical;
 
-},{"../../lib/url-shim":"url","../audit":2,"http-link-header":137}],"../audits/seo/font-size":[function(require,module,exports){
+},{"../../lib/url-shim":"url","../audit":2,"http-link-header":119}],"../audits/seo/font-size":[function(require,module,exports){
 
 
 
@@ -7025,10 +7080,10 @@ class FontSize extends Audit{
 
 static get meta(){
 return{
-name:'font-size',
-description:'Document uses legible font sizes',
-failureDescription:'Document doesn\'t use legible font sizes',
-helpText:'Font sizes less than 12px are too small to be legible and require mobile '+
+id:'font-size',
+title:'Document uses legible font sizes',
+failureTitle:'Document doesn\'t use legible font sizes',
+description:'Font sizes less than 12px are too small to be legible and require mobile '+
 'visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/font-sizes).',
 requiredArtifacts:['FontSize','URL','Viewport']};
@@ -7206,10 +7261,10 @@ class Hreflang extends Audit{
 
 static get meta(){
 return{
-name:'hreflang',
-description:'Document has a valid `hreflang`',
-failureDescription:'Document doesn\'t have a valid `hreflang`',
-helpText:'hreflang links tell search engines what version of a page they should '+
+id:'hreflang',
+title:'Document has a valid `hreflang`',
+failureTitle:'Document doesn\'t have a valid `hreflang`',
+description:'hreflang links tell search engines what version of a page they should '+
 'list in search results for a given language or region. [Learn more]'+
 '(https://developers.google.com/web/tools/lighthouse/audits/hreflang).',
 requiredArtifacts:['Hreflang','URL']};
@@ -7242,7 +7297,7 @@ snippet:`<link name="alternate" hreflang="${hreflang}" href="${href}" />`}});
 });
 }
 
-mainResource._responseHeaders&&mainResource._responseHeaders.
+mainResource.responseHeaders&&mainResource.responseHeaders.
 filter(h=>h.name.toLowerCase()===LINK_HEADER&&!headerHasValidHreflangs(h.value)).
 forEach(h=>invalidHreflangs.push({source:`${h.name}: ${h.value}`}));
 
@@ -7262,7 +7317,7 @@ details};
 module.exports=Hreflang;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../audit":2,"axe-core/lib/commons/utils/valid-langs.js":98,"http-link-header":137}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"../audit":2,"axe-core/lib/commons/utils/valid-langs.js":98,"http-link-header":119}],"../audits/seo/http-status-code":[function(require,module,exports){
 
 
 
@@ -7280,10 +7335,10 @@ class HTTPStatusCode extends Audit{
 
 static get meta(){
 return{
-name:'http-status-code',
-description:'Page has successful HTTP status code',
-failureDescription:'Page has unsuccessful HTTP status code',
-helpText:'Pages with unsuccessful HTTP status codes may not be indexed properly. '+
+id:'http-status-code',
+title:'Page has successful HTTP status code',
+failureTitle:'Page has unsuccessful HTTP status code',
+description:'Pages with unsuccessful HTTP status codes may not be indexed properly. '+
 '[Learn more]'+
 '(https://developers.google.com/web/tools/lighthouse/audits/successful-http-code).',
 requiredArtifacts:['devtoolsLogs','URL']};
@@ -7384,10 +7439,10 @@ class IsCrawlable extends Audit{
 
 static get meta(){
 return{
-name:'is-crawlable',
-description:'Page isn’t blocked from indexing',
-failureDescription:'Page is blocked from indexing',
-helpText:'Search engines are unable to include your pages in search results '+
+id:'is-crawlable',
+title:'Page isn’t blocked from indexing',
+failureTitle:'Page is blocked from indexing',
+description:'Search engines are unable to include your pages in search results '+
 'if they don\'t have permission to crawl them. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/indexing).',
 requiredArtifacts:['MetaRobots','RobotsTxt','URL']};
@@ -7419,7 +7474,7 @@ snippet:`<meta name="robots" content="${artifacts.MetaRobots}" />`}});
 }
 }
 
-mainResource._responseHeaders&&mainResource._responseHeaders.
+mainResource.responseHeaders&&mainResource.responseHeaders.
 filter(h=>h.name.toLowerCase()===ROBOTS_HEADER&&!hasUserAgent(h.value)&&
 hasBlockingDirective(h.value)).
 forEach(h=>blockingDirectives.push({source:`${h.name}: ${h.value}`}));
@@ -7453,7 +7508,7 @@ details};
 
 module.exports=IsCrawlable;
 
-},{"../../lib/url-shim":"url","../audit":2,"robots-parser":149}],"../audits/seo/link-text":[function(require,module,exports){
+},{"../../lib/url-shim":"url","../audit":2,"robots-parser":131}],"../audits/seo/link-text":[function(require,module,exports){
 
 
 
@@ -7481,10 +7536,10 @@ class LinkText extends Audit{
 
 static get meta(){
 return{
-name:'link-text',
-description:'Links have descriptive text',
-failureDescription:'Links do not have descriptive text',
-helpText:'Descriptive link text helps search engines understand your content. '+
+id:'link-text',
+title:'Links have descriptive text',
+failureTitle:'Links do not have descriptive text',
+description:'Descriptive link text helps search engines understand your content. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/descriptive-link-text).',
 requiredArtifacts:['URL','CrawlableLinks']};
 
@@ -7550,9 +7605,9 @@ class MobileFriendly extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'mobile-friendly',
-helpText:'Take the [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) to check for audits not covered by Lighthouse, like sizing tap targets appropriately. [Learn more](https://developers.google.com/search/mobile-sites/).',
-description:'Page is mobile friendly'},
+id:'mobile-friendly',
+description:'Take the [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) to check for audits not covered by Lighthouse, like sizing tap targets appropriately. [Learn more](https://developers.google.com/search/mobile-sites/).',
+title:'Page is mobile friendly'},
 super.partialMeta);
 }}
 
@@ -7579,9 +7634,9 @@ class StructuredData extends ManualAudit{
 
 static get meta(){
 return Object.assign({
-name:'structured-data',
-helpText:'Run the [Structured Data Testing Tool](https://search.google.com/structured-data/testing-tool/) and the [Structured Data Linter](http://linter.structured-data.org/) to validate structured data. [Learn more](https://developers.google.com/search/docs/guides/mark-up-content).',
-description:'Structured data is valid'},
+id:'structured-data',
+description:'Run the [Structured Data Testing Tool](https://search.google.com/structured-data/testing-tool/) and the [Structured Data Linter](http://linter.structured-data.org/) to validate structured data. [Learn more](https://developers.google.com/search/docs/guides/mark-up-content).',
+title:'Structured data is valid'},
 super.partialMeta);
 }}
 
@@ -7604,10 +7659,10 @@ class Description extends Audit{
 
 static get meta(){
 return{
-name:'meta-description',
-description:'Document has a meta description',
-failureDescription:'Document does not have a meta description',
-helpText:'Meta descriptions may be included in search results to concisely summarize '+
+id:'meta-description',
+title:'Document has a meta description',
+failureTitle:'Document does not have a meta description',
+description:'Meta descriptions may be included in search results to concisely summarize '+
 'page content. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/description).',
 requiredArtifacts:['MetaDescription']};
@@ -7715,10 +7770,10 @@ class Plugins extends Audit{
 
 static get meta(){
 return{
-name:'plugins',
-description:'Document avoids plugins',
-failureDescription:'Document uses plugins',
-helpText:'Search engines can\'t index plugin content, and '+
+id:'plugins',
+title:'Document avoids plugins',
+failureTitle:'Document uses plugins',
+description:'Search engines can\'t index plugin content, and '+
 'many devices restrict plugins or don\'t support them. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/plugins).',
 requiredArtifacts:['EmbeddedContent']};
@@ -7961,10 +8016,10 @@ class RobotsTxt extends Audit{
 
 static get meta(){
 return{
-name:'robots-txt',
-description:'robots.txt is valid',
-failureDescription:'robots.txt is not valid',
-helpText:'If your robots.txt file is malformed, crawlers may not be able to understand '+
+id:'robots-txt',
+title:'robots.txt is valid',
+failureTitle:'robots.txt is not valid',
+description:'If your robots.txt file is malformed, crawlers may not be able to understand '+
 'how you want your website to be crawled or indexed.',
 requiredArtifacts:['RobotsTxt']};
 
@@ -8047,10 +8102,10 @@ class ServiceWorker extends Audit{
 
 static get meta(){
 return{
-name:'service-worker',
-description:'Registers a service worker',
-failureDescription:'Does not register a service worker',
-helpText:'The service worker is the technology that enables your app to use many '+
+id:'service-worker',
+title:'Registers a service worker',
+failureTitle:'Does not register a service worker',
+description:'The service worker is the technology that enables your app to use many '+
 'Progressive Web App features, such as offline, add to homescreen, and push '+
 'notifications. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker).',
 requiredArtifacts:['URL','ServiceWorker']};
@@ -8079,73 +8134,7 @@ rawValue:!!matchingSW};
 
 module.exports=ServiceWorker;
 
-},{"../lib/url-shim":"url","./audit":2}],"../audits/speed-index":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Audit=require('./audit');
-const Util=require('../report/html/renderer/util');
-
-class SpeedIndex extends Audit{
-
-
-
-static get meta(){
-return{
-name:'speed-index',
-description:'Speed Index',
-helpText:'Speed Index shows how quickly the contents of a page are visibly populated. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/speed-index).',
-scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['traces','devtoolsLogs']};
-
-}
-
-
-
-
-static get defaultOptions(){
-return{
-
-
-
-scorePODR:2900,
-scoreMedian:5800};
-
-}
-
-
-
-
-
-
-
-
-static async audit(artifacts,context){
-const trace=artifacts.traces[Audit.DEFAULT_PASS];
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const metricComputationData={trace,devtoolsLog,settings:context.settings};
-const metricResult=await artifacts.requestSpeedIndex(metricComputationData);
-
-return{
-score:Audit.computeLogNormalScore(
-metricResult.timing,
-context.options.scorePODR,
-context.options.scoreMedian),
-
-rawValue:metricResult.timing,
-displayValue:[Util.MS_DISPLAY_VALUE,metricResult.timing]};
-
-}}
-
-
-module.exports=SpeedIndex;
-
-},{"../report/html/renderer/util":48,"./audit":2}],"../audits/splash-screen":[function(require,module,exports){
+},{"../lib/url-shim":"url","./audit":2}],"../audits/splash-screen":[function(require,module,exports){
 
 
 
@@ -8174,10 +8163,10 @@ class SplashScreen extends MultiCheckAudit{
 
 static get meta(){
 return{
-name:'splash-screen',
-description:'Configured for a custom splash screen',
-failureDescription:'Is not configured for a custom splash screen',
-helpText:'A themed splash screen ensures a high-quality experience when '+
+id:'splash-screen',
+title:'Configured for a custom splash screen',
+failureTitle:'Is not configured for a custom splash screen',
+description:'A themed splash screen ensures a high-quality experience when '+
 'users launch your app from their homescreens. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen).',
 requiredArtifacts:['Manifest']};
@@ -8258,10 +8247,10 @@ class ThemedOmnibox extends MultiCheckAudit{
 
 static get meta(){
 return{
-name:'themed-omnibox',
-description:'Address bar matches brand colors',
-failureDescription:'Address bar does not match brand colors',
-helpText:'The browser address bar can be themed to match your site. '+
+id:'themed-omnibox',
+title:'Address bar matches brand colors',
+failureTitle:'Address bar does not match brand colors',
+description:'The browser address bar can be themed to match your site. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/address-bar).',
 requiredArtifacts:['Manifest','ThemeColor']};
 
@@ -8327,7 +8316,6 @@ module.exports=ThemedOmnibox;
 'use strict';
 
 const Audit=require('./audit');
-const Util=require('../report/html/renderer/util');
 
 const TTFB_THRESHOLD=600;
 
@@ -8337,10 +8325,10 @@ class TTFBMetric extends Audit{
 
 static get meta(){
 return{
-name:'time-to-first-byte',
-description:'Keep server response times low (TTFB)',
-helpText:'Time To First Byte identifies the time at which your server sends a response.'+
-' [Learn more](https://developers.google.com/web/tools/chrome-devtools/network-performance/issues).',
+id:'time-to-first-byte',
+title:'Keep server response times low (TTFB)',
+description:'Time To First Byte identifies the time at which your server sends a response.'+
+' [Learn more](https://developers.google.com/web/tools/lighthouse/audits/ttfb).',
 requiredArtifacts:['devtoolsLogs','URL']};
 
 }
@@ -8349,9 +8337,8 @@ requiredArtifacts:['devtoolsLogs','URL']};
 
 
 static caclulateTTFB(record){
-const timing=record._timing;
-
-return timing.receiveHeadersEnd-timing.sendEnd;
+const timing=record.timing;
+return timing?timing.receiveHeadersEnd-timing.sendEnd:0;
 }
 
 
@@ -8363,10 +8350,11 @@ const devtoolsLogs=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 
 return artifacts.requestNetworkRecords(devtoolsLogs).
 then(networkRecords=>{
+
 let displayValue='';
 
 const finalUrl=artifacts.URL.finalUrl;
-const finalUrlRequest=networkRecords.find(record=>record._url===finalUrl);
+const finalUrlRequest=networkRecords.find(record=>record.url===finalUrl);
 if(!finalUrlRequest){
 throw new Error(`finalUrl '${finalUrl} not found in network records.`);
 }
@@ -8374,18 +8362,22 @@ const ttfb=TTFBMetric.caclulateTTFB(finalUrlRequest);
 const passed=ttfb<TTFB_THRESHOLD;
 
 if(!passed){
-displayValue=`Root document took ${Util.formatMilliseconds(ttfb,1)} `;
+displayValue=['Root document took %10d',ttfb];
 }
+
+
+const details={
+type:'opportunity',
+overallSavingsMs:ttfb-TTFB_THRESHOLD,
+headings:[],
+items:[]};
+
 
 return{
 rawValue:ttfb,
 score:Number(passed),
 displayValue,
-details:{
-summary:{
-wastedMs:ttfb-TTFB_THRESHOLD}},
-
-
+details,
 extendedInfo:{
 value:{
 wastedMs:ttfb-TTFB_THRESHOLD}}};
@@ -8398,7 +8390,7 @@ wastedMs:ttfb-TTFB_THRESHOLD}}};
 
 module.exports=TTFBMetric;
 
-},{"../report/html/renderer/util":48,"./audit":2}],"../audits/user-timings":[function(require,module,exports){
+},{"./audit":2}],"../audits/user-timings":[function(require,module,exports){
 
 
 
@@ -8417,10 +8409,10 @@ class UserTimings extends Audit{
 
 static get meta(){
 return{
-name:'user-timings',
+id:'user-timings',
 scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
-description:'User Timing marks and measures',
-helpText:'Consider instrumenting your app with the User Timing API to create custom, '+
+title:'User Timing marks and measures',
+description:'Consider instrumenting your app with the User Timing API to create custom, '+
 'real-world measurements of key user experiences. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/user-timing).',
 requiredArtifacts:['traces']};
@@ -8516,16 +8508,16 @@ const trace=artifacts.traces[Audit.DEFAULT_PASS];
 return artifacts.requestTraceOfTab(trace).then(tabTrace=>{
 const userTimings=this.filterTrace(tabTrace).filter(UserTimings.excludeBlacklisted);
 const tableRows=userTimings.map(item=>{
-const time=item.isMark?item.startTime:item.duration;
 return{
 name:item.name,
-timingType:item.isMark?'Mark':'Measure',
-time};
+startTime:item.startTime,
+duration:item.isMark?undefined:item.duration,
+timingType:item.isMark?'Mark':'Measure'};
 
 }).sort((itemA,itemB)=>{
 if(itemA.timingType===itemB.timingType){
 
-return itemA.time-itemB.time;
+return itemA.startTime-itemB.startTime;
 }else if(itemA.timingType==='Measure'){
 
 return-1;
@@ -8537,16 +8529,26 @@ return 1;
 const headings=[
 {key:'name',itemType:'text',text:'Name'},
 {key:'timingType',itemType:'text',text:'Type'},
-{key:'time',itemType:'ms',granularity:0.01,text:'Time'}];
+{key:'startTime',itemType:'ms',granularity:0.01,text:'Start Time'},
+{key:'duration',itemType:'ms',granularity:0.01,text:'Duration'}];
 
 
 const details=Audit.makeTableDetails(headings,tableRows);
+
+
+let displayValue;
+if(userTimings.length){
+displayValue=[
+userTimings.length===1?'%d user timing':'%d user timings',
+userTimings.length];
+
+}
 
 return{
 
 rawValue:userTimings.length===0,
 notApplicable:userTimings.length===0,
-displayValue:userTimings.length?`${userTimings.length}`:'',
+displayValue,
 extendedInfo:{
 value:userTimings},
 
@@ -8583,9 +8585,9 @@ class UsesRelPreconnectAudit extends Audit{
 
 static get meta(){
 return{
-name:'uses-rel-preconnect',
-description:'Avoid multiple, costly round trips to any origin',
-helpText:
+id:'uses-rel-preconnect',
+title:'Avoid multiple, costly round trips to any origin',
+description:
 'Consider adding preconnect or dns-prefetch resource hints to establish early '+
 `connections to important third-party origins. [Learn more](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect).`,
 requiredArtifacts:['devtoolsLogs','URL'],
@@ -8599,7 +8601,7 @@ scoreDisplayMode:Audit.SCORING_MODES.NUMERIC};
 
 
 static hasValidTiming(record){
-return record._timing&&record._timing.connectEnd>0&&record._timing.connectStart>0;
+return!!record.timing&&record.timing.connectEnd>0&&record.timing.connectStart>0;
 }
 
 
@@ -8609,8 +8611,9 @@ return record._timing&&record._timing.connectEnd>0&&record._timing.connectStart>
 
 static hasAlreadyConnectedToOrigin(record){
 return(
-record._timing.dnsEnd-record._timing.dnsStart===0&&
-record._timing.connectEnd-record._timing.connectStart===0);
+!!record.timing&&
+record.timing.dnsEnd-record.timing.dnsStart===0&&
+record.timing.connectEnd-record.timing.connectStart===0);
 
 }
 
@@ -8651,11 +8654,11 @@ if(
 
 !UsesRelPreconnectAudit.hasValidTiming(record)||
 
-record.initiatorRequest()===mainResource||
+record.initiator.url===mainResource.url||
 
-!record.parsedURL||!record.parsedURL.securityOrigin()||
+!record.parsedURL||!record.parsedURL.securityOrigin||
 
-mainResource.parsedURL.securityOrigin()===record.parsedURL.securityOrigin()||
+mainResource.parsedURL.securityOrigin===record.parsedURL.securityOrigin||
 
 UsesRelPreconnectAudit.hasAlreadyConnectedToOrigin(record)||
 
@@ -8664,7 +8667,7 @@ UsesRelPreconnectAudit.hasAlreadyConnectedToOrigin(record)||
 return;
 }
 
-const securityOrigin=record.parsedURL.securityOrigin();
+const securityOrigin=record.parsedURL.securityOrigin;
 const records=origins.get(securityOrigin)||[];
 records.push(record);
 origins.set(securityOrigin,records);
@@ -8679,7 +8682,10 @@ const firstRecordOfOrigin=records.reduce((firstRecord,record)=>{
 return record.startTime<firstRecord.startTime?record:firstRecord;
 });
 
-const securityOrigin=firstRecordOfOrigin.parsedURL.securityOrigin();
+
+if(!firstRecordOfOrigin.timing)return;
+
+const securityOrigin=firstRecordOfOrigin.parsedURL.securityOrigin;
 
 
 
@@ -8692,7 +8698,7 @@ if(firstRecordOfOrigin.parsedURL.scheme==='https')connectionTime=connectionTime*
 const timeBetweenMainResourceAndDnsStart=
 firstRecordOfOrigin.startTime*1000-
 mainResource.endTime*1000+
-firstRecordOfOrigin._timing.dnsStart;
+firstRecordOfOrigin.timing.dnsStart;
 
 const wastedMs=Math.min(connectionTime,timeBetweenMainResourceAndDnsStart);
 if(wastedMs<IGNORE_THRESHOLD_IN_MS)return;
@@ -8707,12 +8713,12 @@ wastedMs:wastedMs});
 results=results.
 sort((a,b)=>b.wastedMs-a.wastedMs);
 
-const headings=[
-{key:'url',itemType:'url',text:'Origin'},
-{key:'wastedMs',itemType:'ms',text:'Potential Savings'}];
 
-const summary={wastedMs:maxWasted};
-const details=Audit.makeTableDetails(headings,results,summary);
+const headings=[
+{key:'url',valueType:'url',label:'Origin'},
+{key:'wastedMs',valueType:'timespanMs',label:'Potential Savings'}];
+
+const details=Audit.makeOpportunityDetails(headings,results,maxWasted);
 
 return{
 score:UnusedBytes.scoreForWastedMs(maxWasted),
@@ -8736,6 +8742,7 @@ module.exports=UsesRelPreconnectAudit;
 
 'use strict';
 
+const URL=require('../lib/url-shim');
 const Audit=require('./audit');
 const UnusedBytes=require('./byte-efficiency/byte-efficiency-audit');
 const THRESHOLD_IN_MS=100;
@@ -8746,10 +8753,10 @@ class UsesRelPreloadAudit extends Audit{
 
 static get meta(){
 return{
-name:'uses-rel-preload',
-description:'Preload key requests',
-helpText:'Consider using <link rel=preload> to prioritize fetching late-discovered '+
-'resources sooner. [Learn more](https://developers.google.com/web/updates/2016/03/link-rel-preload).',
+id:'uses-rel-preload',
+title:'Preload key requests',
+description:'Consider using <link rel=preload> to prioritize fetching late-discovered '+
+'resources sooner. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/preload).',
 requiredArtifacts:['devtoolsLogs','traces','URL'],
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC};
 
@@ -8786,6 +8793,20 @@ flatten(currentChain.children,level+1);
 flatten(chains,0);
 
 return requests;
+}
+
+
+
+
+
+
+
+static shouldPreload(request,mainResource){
+if(request.isLinkPreload||URL.NON_NETWORK_PROTOCOLS.includes(request.protocol)){
+return false;
+}
+
+return URL.rootDomainsMatch(request.url,mainResource.url);
 }
 
 
@@ -8843,6 +8864,7 @@ for(const node of nodesToPreload){
 const originalNode=originalNodesByRecord.get(node.record);
 const timingAfter=simulationAfterChanges.nodeTimings.get(node);
 const timingBefore=simulationBeforeChanges.nodeTimings.get(originalNode);
+if(!timingBefore||!timingAfter)throw new Error('Missing preload node');
 
 const wastedMs=Math.round(timingBefore.endTime-timingAfter.endTime);
 if(wastedMs<THRESHOLD_IN_MS)continue;
@@ -8889,8 +8911,8 @@ const criticalRequests=UsesRelPreloadAudit._flattenRequests(critChains,
 
 const urls=new Set();
 for(const networkRecord of criticalRequests){
-if(!networkRecord._isLinkPreload&&networkRecord.protocol!=='data'){
-urls.add(networkRecord._url);
+if(UsesRelPreloadAudit.shouldPreload(networkRecord,mainResource)){
+urls.add(networkRecord.url);
 }
 }
 
@@ -8898,12 +8920,12 @@ const{results,wastedMs}=UsesRelPreloadAudit.computeWasteWithGraph(urls,graph,sim
 
 results.sort((a,b)=>b.wastedMs-a.wastedMs);
 
-const headings=[
-{key:'url',itemType:'url',text:'URL'},
-{key:'wastedMs',itemType:'ms',text:'Potential Savings',granularity:10}];
 
-const summary={wastedMs};
-const details=Audit.makeTableDetails(headings,results,summary);
+const headings=[
+{key:'url',valueType:'url',label:'URL'},
+{key:'wastedMs',valueType:'timespanMs',label:'Potential Savings'}];
+
+const details=Audit.makeOpportunityDetails(headings,results,wastedMs);
 
 return{
 score:UnusedBytes.scoreForWastedMs(wastedMs),
@@ -8919,7 +8941,7 @@ details};
 
 module.exports=UsesRelPreloadAudit;
 
-},{"./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/viewport":[function(require,module,exports){
+},{"../lib/url-shim":"url","./audit":2,"./byte-efficiency/byte-efficiency-audit":3}],"../audits/viewport":[function(require,module,exports){
 
 
 
@@ -8936,11 +8958,11 @@ class Viewport extends Audit{
 
 static get meta(){
 return{
-name:'viewport',
-description:'Has a `<meta name="viewport">` tag with `width` or `initial-scale`',
-failureDescription:'Does not have a `<meta name="viewport">` tag with `width` '+
+id:'viewport',
+title:'Has a `<meta name="viewport">` tag with `width` or `initial-scale`',
+failureTitle:'Does not have a `<meta name="viewport">` tag with `width` '+
 'or `initial-scale`',
-helpText:'Add a viewport meta tag to optimize your app for mobile screens. '+
+description:'Add a viewport meta tag to optimize your app for mobile screens. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/has-viewport-meta-tag).',
 requiredArtifacts:['Viewport']};
 
@@ -8980,7 +9002,7 @@ warnings};
 
 module.exports=Viewport;
 
-},{"./audit":2,"metaviewport-parser":145}],"../audits/webapp-install-banner":[function(require,module,exports){
+},{"./audit":2,"metaviewport-parser":127}],"../audits/webapp-install-banner":[function(require,module,exports){
 
 
 
@@ -9017,10 +9039,10 @@ class WebappInstallBanner extends MultiCheckAudit{
 
 static get meta(){
 return{
-name:'webapp-install-banner',
-description:'User can be prompted to Install the Web App',
-failureDescription:'User will not be prompted to Install the Web App',
-helpText:'Browsers can proactively prompt users to add your app to their homescreen, '+
+id:'webapp-install-banner',
+title:'User can be prompted to Install the Web App',
+failureTitle:'User will not be prompted to Install the Web App',
+description:'Browsers can proactively prompt users to add your app to their homescreen, '+
 'which can lead to higher engagement. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/install-prompt).',
 requiredArtifacts:['URL','ServiceWorker','Manifest','StartUrl']};
@@ -9040,6 +9062,12 @@ return[manifestValues.parseFailureReason];
 const failures=[];
 const bannerCheckIds=[
 'hasName',
+
+
+
+
+
+
 'hasShortName',
 'hasStartUrl',
 'hasPWADisplayValue',
@@ -9144,11 +9172,11 @@ class WithoutJavaScript extends Audit{
 
 static get meta(){
 return{
-name:'without-javascript',
-description:'Contains some content when JavaScript is not available',
-failureDescription:'Does not provide fallback content when JavaScript is not available',
-helpText:'Your app should display some content when JavaScript is disabled, even if it\'s '+
-'just a warning to the user that JavaScript is required to use the app. '+
+id:'without-javascript',
+title:'Contains some content when JavaScript is not available',
+failureTitle:'Does not provide fallback content when JavaScript is not available',
+description:'Your app should display some content when JavaScript is disabled, even if '+
+'it\'s just a warning to the user that JavaScript is required to use the app. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/no-js).',
 requiredArtifacts:['HTMLWithoutJavaScript']};
 
@@ -9161,7 +9189,8 @@ requiredArtifacts:['HTMLWithoutJavaScript']};
 static audit(artifacts){
 const artifact=artifacts.HTMLWithoutJavaScript;
 
-if(artifact.value.trim()===''){
+
+if(artifact.bodyText.trim()===''&&!artifact.hasNoScript){
 return{
 rawValue:false,
 explanation:'The page body should render some content if its scripts are not available.'};
@@ -9193,11 +9222,11 @@ class WorksOffline extends Audit{
 
 static get meta(){
 return{
-name:'works-offline',
-description:'Responds with a 200 when offline',
-failureDescription:'Does not respond with a 200 when offline',
-helpText:'If you\'re building a Progressive Web App, consider using a service worker so '+
-'that your app can work offline. '+
+id:'works-offline',
+title:'Responds with a 200 when offline',
+failureTitle:'Does not respond with a 200 when offline',
+description:'If you\'re building a Progressive Web App, consider using a service worker '+
+'so that your app can work offline. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline).',
 requiredArtifacts:['Offline','URL']};
 
@@ -9531,156 +9560,7 @@ stylesheets:Array.from(dedupedStylesheets.values())};
 
 module.exports=CSSUsage;
 
-},{"./gatherer":19}],"../gather/gatherers/dobetterweb/all-event-listeners":[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('../gatherer');
-const Driver=require('../../driver.js');
-const Element=require('../../../lib/element.js');
-
-class EventListeners extends Gatherer{
-
-
-
-async listenForScriptParsedEvents(driver){
-
-const parsedScripts=new Map();
-
-const scriptListener=script=>{
-parsedScripts.set(script.scriptId,script);
-};
-
-
-driver.on('Debugger.scriptParsed',scriptListener);
-await driver.sendCommand('Debugger.enable');
-await driver.sendCommand('Debugger.disable');
-driver.off('Debugger.scriptParsed',scriptListener);
-
-return parsedScripts;
-}
-
-
-
-
-
-
-
-
-_listEventListeners(driver,nodeIdOrObject){
-let promise;
-
-if(typeof nodeIdOrObject==='string'){
-promise=driver.sendCommand('Runtime.evaluate',{
-expression:nodeIdOrObject,
-objectGroup:'event-listeners-gatherer'}).
-then(result=>result.result);
-}else{
-promise=driver.sendCommand('DOM.resolveNode',{
-nodeId:nodeIdOrObject,
-objectGroup:'event-listeners-gatherer'}).
-then(result=>result.object);
-}
-
-return promise.then(obj=>{
-const objectId=obj.objectId;
-const description=obj.description;
-if(!objectId||!description){
-return{listeners:[],tagName:''};
-}
-
-return driver.sendCommand('DOMDebugger.getEventListeners',{
-objectId}).
-then(results=>{
-return{listeners:results.listeners,tagName:description};
-});
-});
-}
-
-
-
-
-
-
-
-
-
-
-
-getEventListeners(driver,parsedScripts,nodeId){
-
-const matchedListeners=[];
-
-return this._listEventListeners(driver,nodeId).then(results=>{
-results.listeners.forEach(listener=>{
-
-
-const script=parsedScripts.get(listener.scriptId);
-if(script){
-
-
-
-matchedListeners.push({
-url:script.url,
-type:listener.type,
-handler:listener.handler,
-objectName:results.tagName,
-
-
-line:listener.lineNumber+1,
-col:listener.columnNumber+1});
-
-}
-});
-
-return matchedListeners;
-});
-}
-
-
-
-
-
-
-
-
-
-collectListeners(driver,parsedScripts,nodeIds){
-
-return Promise.all(nodeIds.map(node=>this.getEventListeners(driver,parsedScripts,node))).
-then(nestedListeners=>nestedListeners.reduce((prev,curr)=>prev.concat(curr)));
-}
-
-
-
-
-
-async afterPass(passContext){
-const driver=passContext.driver;
-await passContext.driver.sendCommand('DOM.enable');
-const parsedScripts=await this.listenForScriptParsedEvents(driver);
-
-const elements=await passContext.driver.getElementsInDocument();
-const elementIds=[...elements.map(el=>el.getNodeId()),'document','window'];
-
-const listeners=await this.collectListeners(driver,parsedScripts,elementIds);
-await passContext.driver.sendCommand('DOM.disable');
-return listeners;
-}}
-
-
-module.exports=EventListeners;
-
-},{"../../../lib/element.js":31,"../../driver.js":17,"../gatherer":19}],"../gather/gatherers/dobetterweb/anchors-with-no-rel-noopener":[function(require,module,exports){
+},{"./gatherer":19}],"../gather/gatherers/dobetterweb/anchors-with-no-rel-noopener":[function(require,module,exports){
 
 
 
@@ -9740,6 +9620,44 @@ then(node=>node&&node.getAttribute('manifest'));
 
 
 module.exports=AppCacheManifest;
+
+},{"../gatherer":19}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('../gatherer');
+
+
+
+
+
+
+function getDoctype(){
+
+if(!document.doctype){
+return null;
+}
+
+const{name,publicId,systemId}=document.doctype;
+return{name,publicId,systemId};
+}
+
+class Doctype extends Gatherer{
+
+
+
+
+afterPass(passContext){
+const driver=passContext.driver;
+return driver.evaluateAsync(`(${getDoctype.toString()}())`);
+}}
+
+
+module.exports=Doctype;
 
 },{"../gatherer":19}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
 
@@ -9990,6 +9908,7 @@ module.exports=JSLibraries;
 
 const Gatherer=require('../gatherer');
 const URL=require('../../../lib/url-shim');
+const NetworkRequest=require('../../../lib/network-request');
 const Sentry=require('../../../lib/sentry');
 const Driver=require('../../driver.js');
 
@@ -10058,25 +9977,24 @@ static filterImageRequests(pageUrl,networkRecords){
 
 const seenUrls=new Set();
 return networkRecords.reduce((prev,record)=>{
-if(seenUrls.has(record._url)||!record.finished){
+if(seenUrls.has(record.url)||!record.finished){
 return prev;
 }
 
-seenUrls.add(record._url);
-const isOptimizableImage=record._resourceType&&
-record._resourceType._name==='image'&&
-/image\/(png|bmp|jpeg)/.test(record._mimeType);
-const isSameOrigin=URL.originsMatch(pageUrl,record._url);
-const isBase64DataUri=/^data:.{2,40}base64\s*,/.test(record._url);
+seenUrls.add(record.url);
+const isOptimizableImage=record.resourceType===NetworkRequest.TYPES.Image&&
+/image\/(png|bmp|jpeg)/.test(record.mimeType);
+const isSameOrigin=URL.originsMatch(pageUrl,record.url);
+const isBase64DataUri=/^data:.{2,40}base64\s*,/.test(record.url);
 
-const actualResourceSize=Math.min(record._resourceSize||0,record._transferSize||0);
+const actualResourceSize=Math.min(record.resourceSize||0,record.transferSize||0);
 if(isOptimizableImage&&actualResourceSize>MINIMUM_IMAGE_SIZE){
 prev.push({
 isSameOrigin,
 isBase64DataUri,
-requestId:record._requestId,
-url:record._url,
-mimeType:record._mimeType,
+requestId:record.requestId,
+url:record.url,
+mimeType:record.mimeType,
 resourceSize:actualResourceSize});
 
 }
@@ -10092,6 +10010,8 @@ return prev;
 
 
 _getEncodedResponse(driver,requestId,encoding){
+requestId=NetworkRequest.getRequestIdForBackend(requestId);
+
 const quality=encoding==='jpeg'?JPEG_QUALITY:WEBP_QUALITY;
 const params={requestId,encoding,quality,sizeOnly:true};
 return driver.sendCommand('Audits.getEncodedResponse',params);
@@ -10163,8 +10083,7 @@ continue;
 }
 
 
-
-const image=Object.assign({failed:false},stats,record);
+const image={failed:false,...stats,...record};
 results.push(image);
 }catch(err){
 
@@ -10177,8 +10096,7 @@ level:'warning'});
 
 
 
-
-const imageError=Object.assign({failed:true,errMsg:err.message},record);
+const imageError={failed:true,errMsg:err.message,...record};
 results.push(imageError);
 }
 }
@@ -10210,7 +10128,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/sentry":39,"../../../lib/url-shim":"url","../../driver.js":17,"../gatherer":19}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/network-request":38,"../../../lib/sentry":40,"../../../lib/url-shim":"url","../../driver.js":17,"../gatherer":19}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -10281,12 +10199,23 @@ module.exports=PasswordInputsWithPreventedPaste;
 'use strict';
 
 const Gatherer=require('../gatherer');
+const URL=require('../../../lib/url-shim');
+const Sentry=require('../../../lib/sentry');
+const NetworkRequest=require('../../../lib/network-request');
 const gzip=require('zlib').gzip;
 
+const CHROME_EXTENSION_PROTOCOL='chrome-extension:';
 const compressionHeaders=['content-encoding','x-original-content-encoding'];
 const compressionTypes=['gzip','br','deflate'];
 const binaryMimeTypes=['image','audio','video'];
-const CHROME_EXTENSION_PROTOCOL='chrome-extension:';
+const textResourceTypes=[
+NetworkRequest.TYPES.Document,
+NetworkRequest.TYPES.Script,
+NetworkRequest.TYPES.Stylesheet,
+NetworkRequest.TYPES.XHR,
+NetworkRequest.TYPES.Fetch,
+NetworkRequest.TYPES.EventSource];
+
 
 class ResponseCompression extends Gatherer{
 
@@ -10298,20 +10227,20 @@ static filterUnoptimizedResponses(networkRecords){
 const unoptimizedResponses=[];
 
 networkRecords.forEach(record=>{
-const mimeType=record._mimeType;
-const resourceType=record._resourceType;
-const resourceSize=record._resourceSize;
+const mimeType=record.mimeType;
+const resourceType=record.resourceType||NetworkRequest.TYPES.Other;
+const resourceSize=record.resourceSize;
 
 const isBinaryResource=mimeType&&binaryMimeTypes.some(type=>mimeType.startsWith(type));
-const isTextBasedResource=!isBinaryResource&&resourceType&&resourceType.isTextType();
+const isTextResource=!isBinaryResource&&textResourceTypes.includes(resourceType);
 const isChromeExtensionResource=record.url.startsWith(CHROME_EXTENSION_PROTOCOL);
 
-if(!isTextBasedResource||!resourceSize||!record.finished||
+if(!isTextResource||!resourceSize||!record.finished||
 isChromeExtensionResource||!record.transferSize||record.statusCode===304){
 return;
 }
 
-const isContentEncoded=(record._responseHeaders||[]).find(header=>
+const isContentEncoded=(record.responseHeaders||[]).find(header=>
 compressionHeaders.includes(header.name.toLowerCase())&&
 compressionTypes.includes(header.value));
 
@@ -10360,6 +10289,16 @@ record.gzipSize=Buffer.byteLength(res,'utf8');
 resolve(record);
 });
 });
+}).catch(err=>{
+
+Sentry.captureException(err,{
+tags:{gatherer:'ResponseCompression'},
+extra:{url:URL.elideDataURI(record.url)},
+level:'warning'});
+
+
+record.gzipSize=undefined;
+return record;
 });
 }));
 }}
@@ -10368,7 +10307,7 @@ resolve(record);
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../gatherer":19,"buffer":60,"zlib":57}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../../../lib/network-request":38,"../../../lib/sentry":40,"../../../lib/url-shim":"url","../gatherer":19,"buffer":60,"zlib":57}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -10475,21 +10414,21 @@ if(!record.finished){
 return prev;
 }
 
-const isParserGenerated=record._initiator.type==='parser';
+const isParserGenerated=record.initiator.type==='parser';
 
 
-const isParserScriptOrStyle=/(css|script)/.test(record._mimeType)&&isParserGenerated;
+const isParserScriptOrStyle=/(css|script)/.test(record.mimeType)&&isParserGenerated;
 const isFailedRequest=record._failed;
-const isHtml=record._mimeType&&record._mimeType.includes('html');
+const isHtml=record.mimeType&&record.mimeType.includes('html');
 
 
 
 if(isHtml||isParserScriptOrStyle||isFailedRequest&&isParserGenerated){
-prev[record._url]={
-isLinkPreload:record.isLinkPreload,
-transferSize:record._transferSize,
-startTime:record._startTime,
-endTime:record._endTime};
+prev[record.url]={
+isLinkPreload:!!record.isLinkPreload,
+transferSize:record.transferSize,
+startTime:record.startTime,
+endTime:record.endTime};
 
 }
 
@@ -10504,7 +10443,7 @@ return prev;
 static findBlockingTags(driver,networkRecords){
 const scriptSrc=`(${collectTagsThatBlockFirstPaint.toString()}())`;
 const firstRequestEndTime=networkRecords.reduce(
-(min,record)=>Math.min(min,record._endTime),
+(min,record)=>Math.min(min,record.endTime),
 Infinity);
 
 return driver.evaluateAsync(scriptSrc).then(tags=>{
@@ -10545,7 +10484,7 @@ return prev;
 
 
 beforePass(passContext){
-return passContext.driver.evaluteScriptOnNewDocument(`(${installMediaListener.toString()})()`);
+return passContext.driver.evaluateScriptOnNewDocument(`(${installMediaListener.toString()})()`);
 }
 
 
@@ -10741,11 +10680,24 @@ const newNode=oldNode.cloneNode(true);
 return new Promise(resolve=>{
 newNode.addEventListener('load',function onload(){
 newNode.removeEventListener('load',onload);
-resolve(getFontFaceFromStylesheets());
+try{
+const stylesheet=Array.from(document.styleSheets).find(s=>s.ownerNode===newNode);
+if(stylesheet){
+const cssStylesheet=stylesheet;
+resolve(getSheetsFontFaces(cssStylesheet));
+}else{
+resolve([{err:{message:'Could not load stylesheet with CORS'}}]);
+}
+}catch(err){
+resolve([{err:{message:err.message,stack:err.stack}}]);
+}
 });
 newNode.crossOrigin='anonymous';
 oldNode.parentNode&&oldNode.parentNode.insertBefore(newNode,oldNode);
 oldNode.remove();
+
+
+setTimeout(()=>resolve([{err:{message:'Could not load stylesheet (timeout)'}}]),5000);
 });
 }
 
@@ -10755,19 +10707,28 @@ const data=[];
 const corsDataPromises=[];
 
 for(const stylesheet of Array.from(document.styleSheets)){
-try{
 const cssStylesheet=stylesheet;
 
-if(cssStylesheet.cssRules===null&&cssStylesheet.href&&cssStylesheet.ownerNode&&
+try{
 
-!cssStylesheet.ownerNode.crossOrigin){
+if(!cssStylesheet.cssRules){
+throw new Error('Failed to read cssRules');
+}
+
+data.push(...getSheetsFontFaces(cssStylesheet));
+}catch(err){
+const failedToReadRules=/Failed to read.*cssRules/.test(err.message);
+
+const alreadyCORS=!cssStylesheet.ownerNode||!!cssStylesheet.ownerNode.crossOrigin;
+
+if(failedToReadRules&&!alreadyCORS&&cssStylesheet.href){
+
 const ownerLinkEl=cssStylesheet.ownerNode;
 corsDataPromises.push(loadStylesheetWithCORS(ownerLinkEl));
 }else{
-data.push(...getSheetsFontFaces(cssStylesheet));
-}
-}catch(err){
+
 data.push({err:{message:err.message,stack:err.stack}});
+}
 }
 }
 
@@ -10811,7 +10772,7 @@ fontOrError=>{
 const dataError=fontOrError;
 if(dataError.err){
 const err=new Error(dataError.err.message);
-err.stack=dataError.err.stack;
+err.stack=dataError.err.stack||err.stack;
 
 Sentry.captureException(err,{tags:{gatherer:'Fonts'},level:'warning'});
 return false;
@@ -10831,7 +10792,7 @@ return loadedFont;
 
 module.exports=Fonts;
 
-},{"../../lib/sentry":39,"./gatherer":19}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
+},{"../../lib/sentry":40,"./gatherer":19}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -10852,7 +10813,10 @@ const Gatherer=require('./gatherer');
 function getBodyText(){
 
 const body=document.querySelector('body');
-return Promise.resolve(body?body.innerText:'');
+return Promise.resolve({
+bodyText:body?body.innerText:'',
+hasNoScript:!!document.querySelector('noscript')});
+
 }
 
 class HTMLWithoutJavaScript extends Gatherer{
@@ -10871,13 +10835,15 @@ async afterPass(passContext){
 
 passContext.disableJavaScript=false;
 
-const bodyText=await passContext.driver.evaluateAsync(`(${getBodyText.toString()}())`);
+const expression=`(${getBodyText.toString()}())`;
+const{bodyText,hasNoScript}=await passContext.driver.evaluateAsync(expression);
 if(typeof bodyText!=='string'){
 throw new Error('document body innerText returned by protocol was not a string');
 }
 
 return{
-value:bodyText};
+bodyText,
+hasNoScript};
 
 }}
 
@@ -11080,14 +11046,14 @@ return Object.assign(element,{naturalWidth:0,naturalHeight:0});
 async afterPass(passContext,loadData){
 const driver=passContext.driver;
 const indexedNetworkRecords=loadData.networkRecords.reduce((map,record)=>{
-if(/^image/.test(record._mimeType)&&record.finished){
-map[record._url]={
+if(/^image/.test(record.mimeType)&&record.finished){
+map[record.url]={
 url:record.url,
-resourceSize:Math.min(record._resourceSize||0,record.transferSize),
+resourceSize:Math.min(record.resourceSize||0,record.transferSize),
 startTime:record.startTime,
 endTime:record.endTime,
-responseReceivedTime:record._responseReceivedTime,
-mimeType:record._mimeType};
+responseReceivedTime:record.responseReceivedTime,
+mimeType:record.mimeType};
 
 }
 
@@ -11361,8 +11327,8 @@ return passContext.driver.goOffline();
 
 afterPass(passContext,loadData){
 const navigationRecord=loadData.networkRecords.filter(record=>{
-return URL.equalWithExcludedFragments(record._url,passContext.url)&&
-record._fetchedViaServiceWorker;
+return URL.equalWithExcludedFragments(record.url,passContext.url)&&
+record.fetchedViaServiceWorker;
 }).pop();
 
 return passContext.driver.goOnline(passContext).
@@ -11431,7 +11397,7 @@ module.exports=RuntimeExceptions;
 'use strict';
 
 const Gatherer=require('./gatherer');
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 
 
 
@@ -11448,7 +11414,7 @@ const driver=passContext.driver;
 
 const scriptContentMap={};
 const scriptRecords=loadData.networkRecords.
-filter(record=>record._resourceType===WebInspector.resourceTypes.Script);
+filter(record=>record.resourceType===NetworkRequest.TYPES.Script);
 
 for(const record of scriptRecords){
 try{
@@ -11465,7 +11431,7 @@ return scriptContentMap;
 
 module.exports=Scripts;
 
-},{"../../lib/web-inspector":47,"./gatherer":19}],"../gather/gatherers/seo/canonical":[function(require,module,exports){
+},{"../../lib/network-request":38,"./gatherer":19}],"../gather/gatherers/seo/canonical":[function(require,module,exports){
 
 
 
@@ -11823,7 +11789,7 @@ module.exports=FontSize;
 
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../../../lib/sentry.js":39,"../../../lib/web-inspector":47,"../../driver.js":17,"../gatherer":19}],"../gather/gatherers/seo/hreflang":[function(require,module,exports){
+},{"../../../lib/sentry.js":40,"../../../lib/web-inspector":47,"../../driver.js":17,"../gatherer":19}],"../gather/gatherers/seo/hreflang":[function(require,module,exports){
 
 
 
@@ -12196,7 +12162,7 @@ module.exports=Viewport;
 'use strict';
 
 const ComputedArtifact=require('./computed-artifact');
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 const assert=require('assert');
 
 class CriticalRequestChains extends ComputedArtifact{
@@ -12216,29 +12182,29 @@ static isCritical(request,mainResource){
 assert.ok(mainResource,'mainResource not provided');
 
 
-if(request._isLinkPreload){
+if(request.isLinkPreload){
 return false;
 }
 
-const resourceTypeCategory=request._resourceType&&request._resourceType._category;
 
-
-const isIframe=request._resourceType===WebInspector.resourceTypes.Document&&
-request._frameId!==mainResource._frameId;
+const isIframe=request.resourceType===NetworkRequest.TYPES.Document&&
+request.frameId!==mainResource.frameId;
 
 
 
 const nonCriticalResourceTypes=[
-WebInspector.resourceTypes.Image._category,
-WebInspector.resourceTypes.XHR._category];
+NetworkRequest.TYPES.Image,
+NetworkRequest.TYPES.XHR,
+NetworkRequest.TYPES.Fetch,
+NetworkRequest.TYPES.EventSource];
 
-if(nonCriticalResourceTypes.includes(resourceTypeCategory)||
+if(nonCriticalResourceTypes.includes(request.resourceType||'Other')||
 isIframe||
-request._mimeType&&request._mimeType.startsWith('image/')){
+request.mimeType&&request.mimeType.startsWith('image/')){
 return false;
 }
 
-return['VeryHigh','High','Medium'].includes(request.priority());
+return['VeryHigh','High','Medium'].includes(request.priority);
 }
 
 
@@ -12270,7 +12236,7 @@ for(const request of criticalRequests){
 
 
 const ancestors=[];
-let ancestorRequest=request.initiatorRequest();
+let ancestorRequest=request.initiatorRequest;
 
 let node=criticalRequestChains;
 while(ancestorRequest){
@@ -12288,7 +12254,7 @@ node=undefined;
 break;
 }
 ancestors.push(ancestorRequest.requestId);
-ancestorRequest=ancestorRequest.initiatorRequest();
+ancestorRequest=ancestorRequest.initiatorRequest;
 }
 
 
@@ -12349,34 +12315,7 @@ return CriticalRequestChains.extractChain(networkRecords,mainResource);
 
 module.exports=CriticalRequestChains;
 
-},{"../../lib/web-inspector":47,"./computed-artifact":11,"assert":53}],"./gather/computed/dtm-model":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const ComputedArtifact=require('./computed-artifact');
-const DTM=require('../../lib/traces/devtools-timeline-model');
-
-class DevtoolsTimelineModel extends ComputedArtifact{
-get name(){
-return'DevtoolsTimelineModel';
-}
-
-
-
-
-
-async compute_(trace){
-return new DTM(trace);
-}}
-
-
-module.exports=DevtoolsTimelineModel;
-
-},{"../../lib/traces/devtools-timeline-model":43,"./computed-artifact":11}],"./gather/computed/load-simulator":[function(require,module,exports){
+},{"../../lib/network-request":38,"./computed-artifact":11,"assert":53}],"./gather/computed/load-simulator":[function(require,module,exports){
 
 
 
@@ -12453,6 +12392,7 @@ module.exports=LoadSimulatorArtifact;
 'use strict';
 
 const ComputedArtifact=require('./computed-artifact');
+const URL=require('../../lib/url-shim');
 
 
 
@@ -12468,24 +12408,267 @@ return'MainResource';
 
 
 
-compute_(data,artifacts){
-const{URL,devtoolsLog}=data;
-return artifacts.requestNetworkRecords(devtoolsLog).
-then(requests=>{
-const mainResource=requests.find(request=>request.url===URL.finalUrl);
+async compute_(data,artifacts){
+const finalUrl=data.URL.finalUrl;
+const requests=await artifacts.requestNetworkRecords(data.devtoolsLog);
+
+const mainResource=requests.find(request=>finalUrl.startsWith(request.url)&&
+URL.equalWithExcludedFragments(request.url,finalUrl));
 
 if(!mainResource){
 throw new Error('Unable to identify the main resource');
 }
 
 return mainResource;
-});
 }}
 
 
 module.exports=MainResource;
 
-},{"./computed-artifact":11}],"./gather/computed/manifest-values":[function(require,module,exports){
+},{"../../lib/url-shim":"url","./computed-artifact":11}],"./gather/computed/main-thread-tasks":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const ComputedArtifact=require('./computed-artifact');
+const{taskGroups,taskNameToGroup}=require('../../lib/task-groups');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class MainThreadTasks extends ComputedArtifact{
+get name(){
+return'MainThreadTasks';
+}
+
+
+
+
+
+
+static _createNewTaskNode(event,parent){
+const newTask={
+event,
+startTime:event.ts,
+endTime:event.ph==='X'?event.ts+Number(event.dur||0):NaN,
+parent:parent,
+children:[],
+
+
+attributableURLs:[],
+group:taskGroups.other,
+duration:NaN,
+selfTime:NaN};
+
+
+if(parent){
+parent.children.push(newTask);
+}
+
+return newTask;
+}
+
+
+
+
+
+static _createTasksFromEvents(mainThreadEvents){
+
+const tasks=[];
+
+let currentTask;
+
+for(const event of mainThreadEvents){
+
+if(event.ph!=='X'&&event.ph!=='B'&&event.ph!=='E')continue;
+
+
+
+while(
+currentTask&&
+Number.isFinite(currentTask.endTime)&&
+currentTask.endTime<=event.ts)
+{
+currentTask=currentTask.parent;
+}
+
+
+if(!currentTask){
+
+if(event.ph==='E'){
+throw new Error('Fatal trace logic error');
+}
+
+currentTask=MainThreadTasks._createNewTaskNode(event);
+tasks.push(currentTask);
+
+continue;
+}
+
+if(event.ph==='X'||event.ph==='B'){
+
+const newTask=MainThreadTasks._createNewTaskNode(event,currentTask);
+tasks.push(newTask);
+currentTask=newTask;
+}else{
+if(currentTask.event.ph!=='B'){
+throw new Error('Fatal trace logic error');
+}
+
+
+currentTask.endTime=event.ts;
+currentTask=currentTask.parent;
+}
+}
+
+return tasks;
+}
+
+
+
+
+
+static _computeRecursiveSelfTime(task){
+const childTime=task.children.
+map(MainThreadTasks._computeRecursiveSelfTime).
+reduce((sum,child)=>sum+child,0);
+task.duration=task.endTime-task.startTime;
+task.selfTime=task.duration-childTime;
+return task.duration;
+}
+
+
+
+
+
+static _computeRecursiveAttributableURLs(task,parentURLs){
+const argsData=task.event.args.data||{};
+const stackFrameURLs=(argsData.stackTrace||[]).map(entry=>entry.url);
+
+let taskURLs=[];
+switch(task.event.name){
+
+
+
+
+
+case'v8.compile':
+case'EvaluateScript':
+case'FunctionCall':
+taskURLs=[argsData.url].concat(stackFrameURLs);
+break;
+case'v8.compileModule':
+taskURLs=[task.event.args.fileName].concat(stackFrameURLs);
+break;
+default:
+taskURLs=stackFrameURLs;
+break;}
+
+
+
+const attributableURLs=Array.from(parentURLs);
+for(const url of taskURLs){
+
+if(!url)continue;
+
+if(attributableURLs[attributableURLs.length-1]===url)continue;
+attributableURLs.push(url);
+}
+
+task.attributableURLs=attributableURLs;
+task.children.forEach(child=>
+MainThreadTasks._computeRecursiveAttributableURLs(child,attributableURLs));
+}
+
+
+
+
+
+static _computeRecursiveTaskGroup(task,parentGroup){
+const group=taskNameToGroup[task.event.name];
+task.group=group||parentGroup||taskGroups.other;
+task.children.forEach(child=>MainThreadTasks._computeRecursiveTaskGroup(child,task.group));
+}
+
+
+
+
+
+static getMainThreadTasks(traceEvents){
+const tasks=MainThreadTasks._createTasksFromEvents(traceEvents);
+
+
+for(const task of tasks){
+if(task.parent)continue;
+
+MainThreadTasks._computeRecursiveSelfTime(task);
+MainThreadTasks._computeRecursiveAttributableURLs(task,[]);
+MainThreadTasks._computeRecursiveTaskGroup(task);
+}
+
+
+const firstTs=(tasks[0]||{startTime:0}).startTime;
+for(const task of tasks){
+task.startTime=(task.startTime-firstTs)/1000;
+task.endTime=(task.endTime-firstTs)/1000;
+task.duration/=1000;
+task.selfTime/=1000;
+
+
+if(!Number.isFinite(task.selfTime)){
+throw new Error('Invalid task timing data');
+}
+}
+
+return tasks;
+}
+
+
+
+
+
+
+async compute_(trace,artifacts){
+const{mainThreadEvents}=await artifacts.requestTraceOfTab(trace);
+return MainThreadTasks.getMainThreadTasks(mainThreadEvents);
+}}
+
+
+module.exports=MainThreadTasks;
+
+},{"../../lib/task-groups":43,"./computed-artifact":11}],"./gather/computed/manifest-values":[function(require,module,exports){
 
 
 
@@ -12557,7 +12740,9 @@ validate:manifestValue=>!!manifestValue.short_name.value},
 
 {
 id:'shortNameLength',
-failureText:'Manifest `short_name` will be truncated when displayed on the homescreen',
+failureText:`Manifest's \`short_name\` is too long (>${SUGGESTED_SHORTNAME_LENGTH} `+
+`characters) to be displayed on a homescreen without truncation`,
+
 validate:manifestValue=>!!manifestValue.short_name.value&&
 manifestValue.short_name.value.length<=SUGGESTED_SHORTNAME_LENGTH},
 
@@ -12613,7 +12798,7 @@ allChecks:remainingChecks};
 
 module.exports=ManifestValues;
 
-},{"../../lib/icons":35,"./computed-artifact":11}],"./gather/computed/metrics/estimated-input-latency":[function(require,module,exports){
+},{"../../lib/icons":34,"./computed-artifact":11}],"./gather/computed/metrics/estimated-input-latency":[function(require,module,exports){
 
 
 
@@ -13156,8 +13341,10 @@ module.exports=Interactive;
 'use strict';
 
 const LanternMetricArtifact=require('./lantern-metric');
-const Node=require('../../../lib/dependency-graph/node');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
 const EstimatedInputLatency=require('./estimated-input-latency');
+
+
 
 class LanternEstimatedInputLatency extends LanternMetricArtifact{
 get name(){
@@ -13232,14 +13419,13 @@ static getEventsAfterFMP(nodeTimings,fmpTimeInMs){
 
 const events=[];
 for(const[node,timing]of nodeTimings.entries()){
-if(node.type!==Node.TYPES.CPU)continue;
-if(!timing.endTime||!timing.startTime)continue;
+if(node.type!==BaseNode.TYPES.CPU)continue;
 if(timing.endTime<fmpTimeInMs)continue;
 
 events.push({
 start:timing.startTime,
 end:timing.endTime,
-duration:timing.endTime-timing.startTime});
+duration:timing.duration});
 
 }
 
@@ -13249,7 +13435,7 @@ return events;
 
 module.exports=LanternEstimatedInputLatency;
 
-},{"../../../lib/dependency-graph/node":25,"./estimated-input-latency":"./gather/computed/metrics/estimated-input-latency","./lantern-metric":12}],"./gather/computed/metrics/lantern-first-contentful-paint":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"./estimated-input-latency":"./gather/computed/metrics/estimated-input-latency","./lantern-metric":12}],"./gather/computed/metrics/lantern-first-contentful-paint":[function(require,module,exports){
 
 
 
@@ -13258,9 +13444,9 @@ module.exports=LanternEstimatedInputLatency;
 'use strict';
 
 const MetricArtifact=require('./lantern-metric');
-const Node=require('../../../lib/dependency-graph/node');
-const CPUNode=require('../../../lib/dependency-graph/cpu-node');
-const NetworkNode=require('../../../lib/dependency-graph/network-node');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
+
+
 
 class FirstContentfulPaint extends MetricArtifact{
 get name(){
@@ -13272,8 +13458,8 @@ return'LanternFirstContentfulPaint';
 
 get COEFFICIENTS(){
 return{
-intercept:600,
-optimistic:0.6,
+intercept:0,
+optimistic:0.5,
 pessimistic:0.5};
 
 }
@@ -13294,13 +13480,12 @@ node.endTime<=fcp&&node.hasRenderBlockingPriority()&&node.initiatorType!=='scrip
 return dependencyGraph.cloneWithRelationships(node=>{
 if(node.endTime>fcp&&!node.isMainDocument())return false;
 
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 return node.isEvaluateScriptFor(blockingScriptUrls);
 }
 
-const asNetworkNode=node;
 
-return asNetworkNode.hasRenderBlockingPriority()&&asNetworkNode.initiatorType!=='script';
+return node.hasRenderBlockingPriority()&&node.initiatorType!=='script';
 });
 }
 
@@ -13318,7 +13503,7 @@ return node.endTime<=fcp&&node.hasRenderBlockingPriority();
 return dependencyGraph.cloneWithRelationships(node=>{
 if(node.endTime>fcp&&!node.isMainDocument())return false;
 
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 return node.isEvaluateScriptFor(blockingScriptUrls);
 }
 
@@ -13330,7 +13515,7 @@ return node.hasRenderBlockingPriority();
 
 module.exports=FirstContentfulPaint;
 
-},{"../../../lib/dependency-graph/cpu-node":23,"../../../lib/dependency-graph/network-node":24,"../../../lib/dependency-graph/node":25,"./lantern-metric":12}],"./gather/computed/metrics/lantern-first-cpu-idle":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"./lantern-metric":12}],"./gather/computed/metrics/lantern-first-cpu-idle":[function(require,module,exports){
 
 
 
@@ -13338,10 +13523,7 @@ module.exports=FirstContentfulPaint;
 
 'use strict';
 
-const Node=require('../../../lib/dependency-graph/node');
-const CPUNode=require('../../../lib/dependency-graph/cpu-node');
-const NetworkNode=require('../../../lib/dependency-graph/network-node');
-
+const BaseNode=require('../../../lib/dependency-graph/base-node');
 const FirstCPUIdle=require('./first-cpu-idle');
 const LanternInteractive=require('./lantern-interactive');
 
@@ -13349,6 +13531,18 @@ class LanternFirstCPUIdle extends LanternInteractive{
 get name(){
 return'LanternFirstCPUIdle';
 }
+
+
+
+
+get COEFFICIENTS(){
+return{
+intercept:0,
+optimistic:1,
+pessimistic:0};
+
+}
+
 
 
 
@@ -13375,9 +13569,8 @@ static getFirstCPUIdleWindowStart(nodeTimings,fmpTimeInMs,longTaskLength=50){
 
 const longTasks=[];
 for(const[node,timing]of nodeTimings.entries()){
-if(node.type!==Node.TYPES.CPU)continue;
-if(!timing.endTime||!timing.startTime)continue;
-if(timing.endTime-timing.startTime<longTaskLength)continue;
+if(node.type!==BaseNode.TYPES.CPU)continue;
+if(timing.duration<longTaskLength)continue;
 longTasks.push({start:timing.startTime,end:timing.endTime});
 }
 
@@ -13387,7 +13580,7 @@ return FirstCPUIdle.findQuietWindow(fmpTimeInMs,Infinity,longTasks);
 
 module.exports=LanternFirstCPUIdle;
 
-},{"../../../lib/dependency-graph/cpu-node":23,"../../../lib/dependency-graph/network-node":24,"../../../lib/dependency-graph/node":25,"./first-cpu-idle":"./gather/computed/metrics/first-cpu-idle","./lantern-interactive":"./gather/computed/metrics/lantern-interactive"}],"./gather/computed/metrics/lantern-first-meaningful-paint":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"./first-cpu-idle":"./gather/computed/metrics/first-cpu-idle","./lantern-interactive":"./gather/computed/metrics/lantern-interactive"}],"./gather/computed/metrics/lantern-first-meaningful-paint":[function(require,module,exports){
 
 
 
@@ -13396,9 +13589,9 @@ module.exports=LanternFirstCPUIdle;
 'use strict';
 
 const MetricArtifact=require('./lantern-metric');
-const Node=require('../../../lib/dependency-graph/node');
-const CPUNode=require('../../../lib/dependency-graph/cpu-node');
-const NetworkNode=require('../../../lib/dependency-graph/network-node');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
+
+
 
 class FirstMeaningfulPaint extends MetricArtifact{
 get name(){
@@ -13410,9 +13603,9 @@ return'LanternFirstMeaningfulPaint';
 
 get COEFFICIENTS(){
 return{
-intercept:900,
-optimistic:0.45,
-pessimistic:0.6};
+intercept:0,
+optimistic:0.5,
+pessimistic:0.5};
 
 }
 
@@ -13432,13 +13625,12 @@ node.endTime<=fmp&&node.hasRenderBlockingPriority()&&node.initiatorType!=='scrip
 return dependencyGraph.cloneWithRelationships(node=>{
 if(node.endTime>fmp&&!node.isMainDocument())return false;
 
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 return node.isEvaluateScriptFor(blockingScriptUrls);
 }
 
-const asNetworkNode=node;
 
-return asNetworkNode.hasRenderBlockingPriority()&&asNetworkNode.initiatorType!=='script';
+return node.hasRenderBlockingPriority()&&node.initiatorType!=='script';
 });
 }
 
@@ -13457,9 +13649,8 @@ return dependencyGraph.cloneWithRelationships(node=>{
 if(node.endTime>fmp&&!node.isMainDocument())return false;
 
 
-if(node.type===Node.TYPES.CPU){
-const asCpuNode=node;
-return asCpuNode.didPerformLayout()||asCpuNode.isEvaluateScriptFor(requiredScriptUrls);
+if(node.type===BaseNode.TYPES.CPU){
+return node.didPerformLayout()||node.isEvaluateScriptFor(requiredScriptUrls);
 }
 
 
@@ -13482,7 +13673,7 @@ return metricResult;
 
 module.exports=FirstMeaningfulPaint;
 
-},{"../../../lib/dependency-graph/cpu-node":23,"../../../lib/dependency-graph/network-node":24,"../../../lib/dependency-graph/node":25,"./lantern-metric":12}],"./gather/computed/metrics/lantern-interactive":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"./lantern-metric":12}],"./gather/computed/metrics/lantern-interactive":[function(require,module,exports){
 
 
 
@@ -13491,10 +13682,10 @@ module.exports=FirstMeaningfulPaint;
 'use strict';
 
 const MetricArtifact=require('./lantern-metric');
-const Node=require('../../../lib/dependency-graph/node');
-const CPUNode=require('../../../lib/dependency-graph/cpu-node');
-const NetworkNode=require('../../../lib/dependency-graph/network-node');
-const WebInspector=require('../../../lib/web-inspector');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
+const NetworkRequest=require('../../../lib/network-request');
+
+
 
 
 const CRITICAL_LONG_TASK_THRESHOLD=20;
@@ -13509,9 +13700,9 @@ return'LanternInteractive';
 
 get COEFFICIENTS(){
 return{
-intercept:1600,
-optimistic:0.6,
-pessimistic:0.45};
+intercept:0,
+optimistic:0.5,
+pessimistic:0.5};
 
 }
 
@@ -13525,19 +13716,18 @@ const minimumCpuTaskDuration=CRITICAL_LONG_TASK_THRESHOLD*1000;
 
 return dependencyGraph.cloneWithRelationships(node=>{
 
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 return node.event.dur>minimumCpuTaskDuration;
 }
 
-const asNetworkNode=node;
 
-const isImage=asNetworkNode.record._resourceType===WebInspector.resourceTypes.Image;
-const isScript=asNetworkNode.record._resourceType===WebInspector.resourceTypes.Script;
+const isImage=node.record.resourceType===NetworkRequest.TYPES.Image;
+const isScript=node.record.resourceType===NetworkRequest.TYPES.Script;
 return(
 !isImage&&(
 isScript||
-asNetworkNode.record.priority()==='High'||
-asNetworkNode.record.priority()==='VeryHigh'));
+node.record.priority==='High'||
+node.record.priority==='VeryHigh'));
 
 });
 }
@@ -13586,9 +13776,8 @@ static getLastLongTaskEndTime(nodeTimings,duration=50){
 
 return Array.from(nodeTimings.entries()).
 filter(([node,timing])=>{
-if(node.type!==Node.TYPES.CPU)return false;
-if(!timing.endTime||!timing.startTime)return false;
-return timing.endTime-timing.startTime>duration;
+if(node.type!==BaseNode.TYPES.CPU)return false;
+return timing.duration>duration;
 }).
 map(([_,timing])=>timing.endTime).
 reduce((max,x)=>Math.max(max||0,x||0),0);
@@ -13597,7 +13786,7 @@ reduce((max,x)=>Math.max(max||0,x||0),0);
 
 module.exports=Interactive;
 
-},{"../../../lib/dependency-graph/cpu-node":23,"../../../lib/dependency-graph/network-node":24,"../../../lib/dependency-graph/node":25,"../../../lib/web-inspector":47,"./lantern-metric":12}],"./gather/computed/metrics/lantern-speed-index":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"../../../lib/network-request":38,"./lantern-metric":12}],"./gather/computed/metrics/lantern-speed-index":[function(require,module,exports){
 
 
 
@@ -13606,8 +13795,9 @@ module.exports=Interactive;
 'use strict';
 
 const MetricArtifact=require('./lantern-metric');
-const Node=require('../../../lib/dependency-graph/node');
-const CPUNode=require('../../../lib/dependency-graph/cpu-node');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
+
+
 
 class SpeedIndex extends MetricArtifact{
 get name(){
@@ -13695,11 +13885,9 @@ static computeLayoutBasedSpeedIndex(nodeTimings,fcpTimeInMs){
 
 const layoutWeights=[];
 for(const[node,timing]of nodeTimings.entries()){
-if(node.type!==Node.TYPES.CPU)continue;
-if(!timing.startTime||!timing.endTime)continue;
+if(node.type!==BaseNode.TYPES.CPU)continue;
 
-const cpuNode=node;
-if(cpuNode.childEvents.some(x=>x.name==='Layout')){
+if(node.childEvents.some(x=>x.name==='Layout')){
 const timingWeight=Math.max(Math.log2(timing.endTime-timing.startTime),0);
 layoutWeights.push({time:timing.endTime,weight:timingWeight});
 }
@@ -13719,7 +13907,7 @@ return totalWeightedTime/totalWeight;
 
 module.exports=SpeedIndex;
 
-},{"../../../lib/dependency-graph/cpu-node":23,"../../../lib/dependency-graph/node":25,"./lantern-metric":12}],"./gather/computed/metrics/speed-index":[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"./lantern-metric":12}],"./gather/computed/metrics/speed-index":[function(require,module,exports){
 
 
 
@@ -13876,7 +14064,7 @@ return boundaries;
 }
 
 totalBytes+=record.transferSize;
-boundaries.push({time:record._responseReceivedTime,isStart:true});
+boundaries.push({time:record.responseReceivedTime,isStart:true});
 boundaries.push({time:record.endTime,isStart:false});
 return boundaries;
 },[]).sort((a,b)=>a.time-b.time);
@@ -13932,9 +14120,9 @@ const NetworkNode=require('../../lib/dependency-graph/network-node');
 const CPUNode=require('../../lib/dependency-graph/cpu-node');
 const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer');
 const TracingProcessor=require('../../lib/traces/tracing-processor');
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 
-const Node=require('../../lib/dependency-graph/node.js');
+
 
 
 const MINIMUM_TASK_DURATION_OF_INTEREST=10;
@@ -13952,10 +14140,10 @@ return'PageDependencyGraph';
 
 
 static getNetworkInitiators(record){
-if(!record._initiator)return[];
-if(record._initiator.url)return[record._initiator.url];
-if(record._initiator.type==='script'&&record._initiator.stack){
-const frames=record._initiator.stack.callFrames;
+if(!record.initiator)return[];
+if(record.initiator.url)return[record.initiator.url];
+if(record.initiator.type==='script'&&record.initiator.stack){
+const frames=record.initiator.stack.callFrames;
 return Array.from(new Set(frames.map(frame=>frame.url))).filter(Boolean);
 }
 
@@ -13973,12 +14161,14 @@ const idToNodeMap=new Map();
 const urlToNodeMap=new Map();
 
 networkRecords.forEach(record=>{
-if(IGNORED_MIME_TYPES_REGEX.test(record._mimeType))return;
+if(IGNORED_MIME_TYPES_REGEX.test(record.mimeType))return;
+
+
 
 
 
 while(idToNodeMap.has(record.requestId)){
-record._requestId+=':duplicate';
+record.requestId+=':duplicate';
 }
 
 const node=new NetworkNode(record);
@@ -14077,7 +14267,7 @@ function addDependentNetworkRequest(cpuNode,reqId){
 const networkNode=networkNodeOutput.idToNodeMap.get(reqId);
 if(!networkNode||
 
-networkNode.record._resourceType!==WebInspector.resourceTypes.XHR||
+networkNode.record.resourceType!==NetworkRequest.TYPES.XHR||
 
 
 networkNode.startTime<=cpuNode.startTime)return;
@@ -14236,7 +14426,7 @@ const length=Math.ceil((node.endTime-node.startTime)/timePerCharacter);
 const bar=padRight('',offset)+padRight('',length,'=');
 
 
-const displayName=node.record?node.record._url:node.type;
+const displayName=node.record?node.record.url:node.type;
 
 console.log(padRight(bar,widthInCharacters),`| ${displayName.slice(0,30)}`);
 });
@@ -14268,7 +14458,7 @@ module.exports=PageDependencyGraphArtifact;
 
 
 
-},{"../../lib/dependency-graph/cpu-node":23,"../../lib/dependency-graph/network-node":24,"../../lib/dependency-graph/node.js":25,"../../lib/dependency-graph/simulator/network-analyzer":27,"../../lib/traces/tracing-processor":46,"../../lib/web-inspector":47,"./computed-artifact":11}],"./gather/computed/pushed-requests":[function(require,module,exports){
+},{"../../lib/dependency-graph/cpu-node":23,"../../lib/dependency-graph/network-node":24,"../../lib/dependency-graph/simulator/network-analyzer":27,"../../lib/network-request":38,"../../lib/traces/tracing-processor":46,"./computed-artifact":11}],"./gather/computed/pushed-requests":[function(require,module,exports){
 
 
 
@@ -14291,7 +14481,7 @@ return'PushedRequests';
 
 compute_(devtoolsLog,artifacts){
 return artifacts.requestNetworkRecords(devtoolsLog).then(records=>{
-const pushedRecords=records.filter(r=>r._timing&&!!r._timing.pushStart);
+const pushedRecords=records.filter(r=>r.timing&&!!r.timing.pushStart);
 return pushedRecords;
 });
 }}
@@ -14309,6 +14499,8 @@ module.exports=PushedRequests;
 
 const ComputedArtifact=require('./computed-artifact');
 
+const SCREENSHOT_TRACE_NAME='Screenshot';
+
 class ScreenshotFilmstrip extends ComputedArtifact{
 get name(){
 return'Screenshots';
@@ -14318,29 +14510,14 @@ return'Screenshots';
 
 
 
-fetchScreenshot(frame){
-return frame.
-imageDataPromise().
-then(data=>'data:image/jpg;base64,'+data);
-}
+async compute_(trace){
+return trace.traceEvents.
+filter(evt=>evt.name===SCREENSHOT_TRACE_NAME).
+map(evt=>{
+return{
+timestamp:evt.ts/1000,
+datauri:`data:image/jpg;base64,${evt.args.snapshot}`};
 
-
-
-
-
-
-compute_(trace,computedArtifacts){
-return computedArtifacts.requestDevtoolsTimelineModel(trace).then(model=>{
-const filmStripFrames=model.filmStripModel().frames();
-const frameFetches=filmStripFrames.map(frame=>this.fetchScreenshot(frame));
-
-return Promise.all(frameFetches).then(images=>{
-const result=filmStripFrames.map((frame,i)=>({
-timestamp:frame.timestamp,
-datauri:images[i]}));
-
-return result;
-});
 });
 }}
 
@@ -14406,7 +14583,7 @@ return speedline;
 
 module.exports=Speedline;
 
-},{"../../lib/errors":33,"./computed-artifact":11,"speedline":152}],"./gather/computed/trace-of-tab":[function(require,module,exports){
+},{"../../lib/errors":33,"./computed-artifact":11,"speedline":134}],"./gather/computed/trace-of-tab":[function(require,module,exports){
 
 
 
@@ -14427,13 +14604,14 @@ module.exports=Speedline;
 
 const ComputedArtifact=require('./computed-artifact');
 const log=require('lighthouse-logger');
+const TracingProcessor=require('../../lib/traces/tracing-processor');
 const LHError=require('../../lib/errors');
 const Sentry=require('../../lib/sentry');
 
 
 
 
-const WebInspector=require('../../lib/web-inspector');
+const NetworkRequest=require('../../lib/network-request');
 
 class TraceOfTab extends ComputedArtifact{
 get name(){
@@ -14444,28 +14622,50 @@ return'TraceOfTab';
 
 
 
+static filteredStableSort(traceEvents,filter){
+
+const indices=[];
+for(let srcIndex=0;srcIndex<traceEvents.length;srcIndex++){
+if(filter(traceEvents[srcIndex])){
+indices.push(srcIndex);
+}
+}
+
+
+indices.sort((indexA,indexB)=>{
+const result=traceEvents[indexA].ts-traceEvents[indexB].ts;
+return result?result:indexA-indexB;
+});
+
+
+const sorted=[];
+for(let i=0;i<indices.length;i++){
+sorted.push(traceEvents[indices[i]]);
+}
+
+return sorted;
+}
+
+
+
+
+
+
 
 
 async compute_(trace){
 
 
-
-const keyEvents=trace.traceEvents.
-filter(e=>{
+const keyEvents=TraceOfTab.filteredStableSort(trace.traceEvents,e=>{
 return e.cat.includes('blink.user_timing')||
 e.cat.includes('loading')||
 e.cat.includes('devtools.timeline')||
-e.name==='TracingStartedInPage';
-}).
-
-stableSort((event0,event1)=>event0.ts-event1.ts);
+e.cat==='__metadata';
+});
 
 
+const{startedInPageEvt,frameId}=TracingProcessor.findTracingStartedEvt(keyEvents);
 
-const startedInPageEvt=keyEvents.find(e=>e.name==='TracingStartedInPage');
-if(!startedInPageEvt)throw new LHError(LHError.errors.NO_TRACING_STARTED);
-
-const frameId=startedInPageEvt.args.data.page;
 
 const frameEvents=keyEvents.filter(e=>e.args.frame===frameId);
 
@@ -14513,11 +14713,8 @@ e=>e.name==='domContentLoadedEventEnd'&&e.ts>navigationStart.ts);
 
 
 
-
-const processEvents=trace.traceEvents.
-filter(e=>e.pid===startedInPageEvt.pid).
-
-stableSort((event0,event1)=>event0.ts-event1.ts);
+const processEvents=TraceOfTab.
+filteredStableSort(trace.traceEvents,e=>e.pid===startedInPageEvt.pid);
 
 const mainThreadEvents=processEvents.
 filter(e=>e.tid===startedInPageEvt.tid);
@@ -14566,7 +14763,7 @@ fmpFellBack};
 
 module.exports=TraceOfTab;
 
-},{"../../lib/errors":33,"../../lib/sentry":39,"../../lib/web-inspector":47,"./computed-artifact":11,"lighthouse-logger":143}],1:[function(require,module,exports){
+},{"../../lib/errors":33,"../../lib/network-request":38,"../../lib/sentry":40,"../../lib/traces/tracing-processor":46,"./computed-artifact":11,"lighthouse-logger":125}],1:[function(require,module,exports){
 
 
 
@@ -14592,7 +14789,7 @@ static audit(artifacts){
 
 
 const notApplicables=artifacts.Accessibility.notApplicable||[];
-const isNotApplicable=notApplicables.find(result=>result.id===this.meta.name);
+const isNotApplicable=notApplicables.find(result=>result.id===this.meta.id);
 if(isNotApplicable){
 return{
 rawValue:true,
@@ -14601,7 +14798,9 @@ notApplicable:true};
 }
 
 const violations=artifacts.Accessibility.violations||[];
-const rule=violations.find(result=>result.id===this.meta.name);
+const rule=violations.find(result=>result.id===this.meta.id);
+const impact=rule&&rule.impact;
+const tags=rule&&rule.tags;
 
 
 let items=[];
@@ -14611,7 +14810,8 @@ node:{
 type:'node',
 selector:Array.isArray(node.target)?node.target.join(' '):'',
 path:node.path,
-snippet:node.snippet}}));
+snippet:node.html||node.snippet,
+explanation:node.failureSummary}}));
 
 
 }
@@ -14625,7 +14825,7 @@ rawValue:typeof rule==='undefined',
 extendedInfo:{
 value:rule},
 
-details:Audit.makeTableDetails(headings,items)};
+details:{...Audit.makeTableDetails(headings,items),impact,tags}};
 
 }}
 
@@ -14765,13 +14965,30 @@ summary};
 
 
 
+
+
+static makeOpportunityDetails(headings,items,overallSavingsMs,overallSavingsBytes){
+return{
+type:'opportunity',
+headings:items.length===0?[]:headings,
+items,
+overallSavingsMs,
+overallSavingsBytes};
+
+}
+
+
+
+
+
+
 static _normalizeAuditScore(audit,result){
 
 let score=result.score===undefined?Number(result.rawValue):result.score;
 
 if(!Number.isFinite(score))throw new Error(`Invalid score: ${score}`);
-if(score>1)throw new Error(`Audit score for ${audit.meta.name} is > 1`);
-if(score<0)throw new Error(`Audit score for ${audit.meta.name} is < 0`);
+if(score>1)throw new Error(`Audit score for ${audit.meta.id} is > 1`);
+if(score<0)throw new Error(`Audit score for ${audit.meta.id} is < 0`);
 
 score=clampTo2Decimals(score);
 
@@ -14806,10 +15023,10 @@ if(result.errorMessage){
 scoreDisplayMode=Audit.SCORING_MODES.ERROR;
 }
 
-let auditDescription=audit.meta.description;
-if(audit.meta.failureDescription){
+let auditTitle=audit.meta.title;
+if(audit.meta.failureTitle){
 if(Number(score)<Util.PASS_THRESHOLD){
-auditDescription=audit.meta.failureDescription;
+auditTitle=audit.meta.failureTitle;
 }
 }
 
@@ -14819,9 +15036,9 @@ score=null;
 }
 
 return{
-id:audit.meta.name,
-title:auditDescription,
-description:audit.meta.helpText,
+id:audit.meta.id,
+title:auditTitle,
+description:audit.meta.description,
 
 score,
 scoreDisplayMode,
@@ -14839,7 +15056,7 @@ details:result.details};
 
 module.exports=Audit;
 
-},{"../lib/statistics":40,"../report/html/renderer/util":48}],3:[function(require,module,exports){
+},{"../lib/statistics":41,"../report/html/renderer/util":48}],3:[function(require,module,exports){
 
 
 
@@ -14848,16 +15065,26 @@ module.exports=Audit;
 'use strict';
 
 const Audit=require('../audit');
+const linearInterpolation=require('../../lib/statistics').linearInterpolation;
 const Interactive=require('../../gather/computed/metrics/lantern-interactive');
-const Simulator=require('../../lib/dependency-graph/simulator/simulator');
-const Node=require('../../lib/dependency-graph/node.js');
 
-const NetworkNode=require('../../lib/dependency-graph/network-node.js');
+
+
 
 const KB_IN_BYTES=1024;
 
 const WASTED_MS_FOR_AVERAGE=300;
 const WASTED_MS_FOR_POOR=750;
+const WASTED_MS_FOR_SCORE_OF_ZERO=5000;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14868,11 +15095,21 @@ class UnusedBytes extends Audit{
 
 
 
+
+
 static scoreForWastedMs(wastedMs){
-if(wastedMs===0)return 1;else
-if(wastedMs<WASTED_MS_FOR_AVERAGE)return 0.9;else
-if(wastedMs<WASTED_MS_FOR_POOR)return 0.65;else
-return 0;
+if(wastedMs===0){
+return 1;
+}else if(wastedMs<WASTED_MS_FOR_AVERAGE){
+return linearInterpolation(0,1,WASTED_MS_FOR_AVERAGE,0.75,wastedMs);
+}else if(wastedMs<WASTED_MS_FOR_POOR){
+return linearInterpolation(WASTED_MS_FOR_AVERAGE,0.75,WASTED_MS_FOR_POOR,0.5,wastedMs);
+}else{
+return Math.max(
+0,
+linearInterpolation(WASTED_MS_FOR_POOR,0.5,WASTED_MS_FOR_SCORE_OF_ZERO,0,wastedMs));
+
+}
 }
 
 
@@ -14901,14 +15138,14 @@ if(!networkRecord){
 
 
 return Math.round(totalBytes*compressionRatio);
-}else if(networkRecord._resourceType&&networkRecord._resourceType._name===resourceType){
+}else if(networkRecord.resourceType===resourceType){
 
-return networkRecord._transferSize||0;
+return networkRecord.transferSize||0;
 }else{
 
 
-const transferSize=networkRecord._transferSize||0;
-const resourceSize=networkRecord._resourceSize;
+const transferSize=networkRecord.transferSize||0;
+const resourceSize=networkRecord.resourceSize;
 const compressionRatio=resourceSize!==undefined?transferSize/resourceSize:1;
 return Math.round(totalBytes*compressionRatio);
 }
@@ -14953,9 +15190,11 @@ then(([result,graph,simulator])=>this.createAuditProduct(result,graph,simulator)
 
 
 static computeWasteWithTTIGraph(results,graph,simulator,options){
-options=Object.assign({includeLoad:true},options);
+options=Object.assign({includeLoad:true,label:this.meta.id},options);
+const beforeLabel=`${options.label}-before`;
+const afterLabel=`${options.label}-after`;
 
-const simulationBeforeChanges=simulator.simulate(graph);
+const simulationBeforeChanges=simulator.simulate(graph,{label:beforeLabel});
 
 const resultsByUrl=new Map();
 for(const result of results){
@@ -14967,26 +15206,24 @@ resultsByUrl.set(result.url,result);
 const originalTransferSizes=new Map();
 graph.traverse(node=>{
 if(node.type!=='network')return;
-const networkNode=node;
-const result=resultsByUrl.get(networkNode.record.url);
+const result=resultsByUrl.get(node.record.url);
 if(!result)return;
-const original=networkNode.record.transferSize;
 
-originalTransferSizes.set(networkNode.record.requestId,original);
+const original=node.record.transferSize;
+originalTransferSizes.set(node.record.requestId,original);
 
 const wastedBytes=result.wastedBytes;
-networkNode.record._transferSize=Math.max(original-wastedBytes,0);
+node.record.transferSize=Math.max(original-wastedBytes,0);
 });
 
-const simulationAfterChanges=simulator.simulate(graph);
+const simulationAfterChanges=simulator.simulate(graph,{label:afterLabel});
 
 
 graph.traverse(node=>{
 if(node.type!=='network')return;
-const networkNode=node;
-const originalTransferSize=originalTransferSizes.get(networkNode.record.requestId);
+const originalTransferSize=originalTransferSizes.get(node.record.requestId);
 if(originalTransferSize===undefined)return;
-networkNode.record._transferSize=originalTransferSize;
+node.record.transferSize=originalTransferSize;
 });
 
 const savingsOnOverallLoad=simulationBeforeChanges.timeInMs-simulationAfterChanges.timeInMs;
@@ -15007,7 +15244,7 @@ return Math.round(Math.max(savings,0)/10)*10;
 
 
 static createAuditProduct(result,graph,simulator){
-const results=result.results.sort((itemA,itemB)=>itemB.wastedBytes-itemA.wastedBytes);
+const results=result.items.sort((itemA,itemB)=>itemB.wastedBytes-itemA.wastedBytes);
 
 const wastedBytes=results.reduce((sum,item)=>sum+item.wastedBytes,0);
 const wastedKb=Math.round(wastedBytes/KB_IN_BYTES);
@@ -15019,13 +15256,7 @@ if(typeof result.displayValue==='undefined'&&wastedKb){
 displayValue=['Potential savings of %d\xa0KB',wastedKb];
 }
 
-const summary={
-wastedMs,
-wastedBytes};
-
-
-
-const details=Audit.makeTableDetails(result.headings,results,summary);
+const details=Audit.makeOpportunityDetails(result.headings,results,wastedMs,wastedBytes);
 
 return{
 explanation:result.explanation,
@@ -15061,7 +15292,7 @@ throw new Error('audit_ unimplemented');
 
 module.exports=UnusedBytes;
 
-},{"../../gather/computed/metrics/lantern-interactive":"./gather/computed/metrics/lantern-interactive","../../lib/dependency-graph/network-node.js":24,"../../lib/dependency-graph/node.js":25,"../../lib/dependency-graph/simulator/simulator":28,"../audit":2}],4:[function(require,module,exports){
+},{"../../gather/computed/metrics/lantern-interactive":"./gather/computed/metrics/lantern-interactive","../../lib/statistics":41,"../audit":2}],4:[function(require,module,exports){
 
 
 
@@ -15128,23 +15359,36 @@ return Promise.resolve(this.audit_(artifacts)).then(result=>this.createAuditProd
 
 
 static createAuditProduct(result){
-const extendedInfo={
-value:result};
 
+const detailsItem={
+...result,
+...result.manifestValues,
+manifestValues:undefined,
+warnings:undefined,
+allChecks:undefined};
+
+
+if(result.manifestValues&&result.manifestValues.allChecks){
+result.manifestValues.allChecks.forEach(check=>{
+detailsItem[check.id]=check.passing;
+});
+}
+
+const details={items:[detailsItem]};
 
 
 if(result.failures.length>0){
 return{
 rawValue:false,
 explanation:`Failures: ${result.failures.join(',\n')}.`,
-extendedInfo};
+details};
 
 }
 
 
 return{
 rawValue:true,
-extendedInfo,
+details,
 warnings:result.warnings};
 
 }
@@ -15206,7 +15450,6 @@ module.exports=ViolationAudit;
 
 
 
-
 'use strict';
 
 const defaultConfigPath='./default-config.js';
@@ -15217,21 +15460,29 @@ const constants=require('./constants');
 const isDeepEqual=require('lodash.isequal');
 const log=require('lighthouse-logger');
 const path=require('path');
-const Audit=require('../audits/audit');
-const Runner=require('../runner');
+const Audit=require('../audits/audit.js');
+const Runner=require('../runner.js');
+
+
+
+
+
+
+
 
 function validatePasses(passes,audits){
 if(!Array.isArray(passes)){
 return;
 }
+
 const requiredGatherers=Config.getGatherersNeededByAudits(audits);
 
 
 passes.forEach(pass=>{
 pass.gatherers.forEach(gathererDefn=>{
-const gatherer=gathererDefn.instance||gathererDefn.implementation;
+const gatherer=gathererDefn.instance;
 const isGatherRequiredByAudits=requiredGatherers.has(gatherer.name);
-if(isGatherRequiredByAudits===false){
+if(!isGatherRequiredByAudits){
 const msg=`${gatherer.name} gatherer requested, however no audit requires it.`;
 log.warn('config',msg);
 }
@@ -15249,6 +15500,11 @@ usedNames.add(passName);
 });
 }
 
+
+
+
+
+
 function validateCategories(categories,audits,groups){
 if(!categories){
 return;
@@ -15260,7 +15516,7 @@ if(!auditRef.id){
 throw new Error(`missing an audit id at ${categoryId}[${index}]`);
 }
 
-const audit=audits.find(a=>a.implementation.meta.name===auditRef.id);
+const audit=audits&&audits.find(a=>a.implementation.meta.id===auditRef.id);
 if(!audit){
 throw new Error(`could not find ${auditRef.id} audit for category ${categoryId}`);
 }
@@ -15275,44 +15531,48 @@ if(auditRef.weight>0&&isManual){
 throw new Error(`${auditRef.id} is manual but has a positive weight`);
 }
 
-if(auditRef.group&&!groups[auditRef.group]){
+if(auditRef.group&&(!groups||!groups[auditRef.group])){
 throw new Error(`${auditRef.id} references unknown group ${auditRef.group}`);
 }
 });
 });
 }
 
+
+
+
+
 function assertValidAudit(auditDefinition,auditPath){
 const auditName=auditPath||
-auditDefinition&&auditDefinition.meta&&auditDefinition.meta.name;
+auditDefinition&&auditDefinition.meta&&auditDefinition.meta.id;
 
 if(typeof auditDefinition.audit!=='function'||auditDefinition.audit===Audit.audit){
 throw new Error(`${auditName} has no audit() method.`);
 }
 
-if(typeof auditDefinition.meta.name!=='string'){
-throw new Error(`${auditName} has no meta.name property, or the property is not a string.`);
+if(typeof auditDefinition.meta.id!=='string'){
+throw new Error(`${auditName} has no meta.id property, or the property is not a string.`);
+}
+
+if(typeof auditDefinition.meta.title!=='string'){
+throw new Error(
+`${auditName} has no meta.title property, or the property is not a string.`);
+
+}
+
+
+if(typeof auditDefinition.meta.failureTitle!=='string'&&
+auditDefinition.meta.scoreDisplayMode===Audit.SCORING_MODES.BINARY){
+throw new Error(`${auditName} has no failureTitle and should.`);
 }
 
 if(typeof auditDefinition.meta.description!=='string'){
 throw new Error(
 `${auditName} has no meta.description property, or the property is not a string.`);
 
-}
-
-
-if(typeof auditDefinition.meta.failureDescription!=='string'&&
-auditDefinition.meta.scoreDisplayMode===Audit.SCORING_MODES.BINARY){
-throw new Error(`${auditName} has no failureDescription and should.`);
-}
-
-if(typeof auditDefinition.meta.helpText!=='string'){
+}else if(auditDefinition.meta.description===''){
 throw new Error(
-`${auditName} has no meta.helpText property, or the property is not a string.`);
-
-}else if(auditDefinition.meta.helpText===''){
-throw new Error(
-`${auditName} has an empty meta.helpText string. Please add a description for the UI.`);
+`${auditName} has an empty meta.description string. Please add a description for the UI.`);
 
 }
 
@@ -15322,6 +15582,10 @@ throw new Error(
 
 }
 }
+
+
+
+
 
 function assertValidGatherer(gathererInstance,gathererName){
 gathererName=gathererName||gathererInstance.name||'gatherer';
@@ -15347,10 +15611,14 @@ throw new Error(`${gathererName} has no afterPass() method.`);
 
 
 function cleanFlagsForSettings(flags={}){
+
 const settings={};
+
 for(const key of Object.keys(flags)){
+
 if(typeof constants.defaultSettings[key]!=='undefined'){
-settings[key]=flags[key];
+const safekey=key;
+settings[safekey]=flags[safekey];
 }
 }
 
@@ -15358,7 +15626,13 @@ return settings;
 }
 
 
-function merge(base,extension,overwriteArrays=false){
+
+
+
+
+
+
+function _merge(base,extension,overwriteArrays=false){
 
 if(typeof base==='undefined'||base===null){
 return extension;
@@ -15375,10 +15649,11 @@ if(!merged.some(candidate=>isDeepEqual(candidate,item)))merged.push(item);
 return merged;
 }else if(typeof extension==='object'){
 if(typeof base!=='object')throw new TypeError(`Expected object but got ${typeof base}`);
+if(Array.isArray(base))throw new TypeError('Expected object but got Array');
 Object.keys(extension).forEach(key=>{
 const localOverwriteArrays=overwriteArrays||
 key==='settings'&&typeof base[key]==='object';
-base[key]=merge(base[key],extension[key],localOverwriteArrays);
+base[key]=_merge(base[key],extension[key],localOverwriteArrays);
 });
 return base;
 }
@@ -15386,21 +15661,61 @@ return base;
 return extension;
 }
 
+
+
+
+
+
+const merge=_merge;
+
+
+
+
+
+
 function cloneArrayWithPluginSafety(array){
 return array.map(item=>{
-return typeof item==='object'?Object.assign({},item):item;
+if(typeof item==='object'){
+
+return Object.assign(
+Object.create(
+Object.getPrototypeOf(item)),
+
+item);
+
+}
+
+return item;
 });
 }
 
+
+
+
+
+
+
+
 function deepClone(json){
-const cloned=JSON.parse(JSON.stringify(json));
+return JSON.parse(JSON.stringify(json));
+}
 
 
 
-if(Array.isArray(json.passes)){
-cloned.passes.forEach((pass,i)=>{
+
+
+
+
+function deepCloneConfigJson(json){
+const cloned=deepClone(json);
+
+
+
+if(Array.isArray(cloned.passes)&&Array.isArray(json.passes)){
+for(let i=0;i<cloned.passes.length;i++){
+const pass=cloned.passes[i];
 pass.gatherers=cloneArrayWithPluginSafety(json.passes[i].gatherers||[]);
-});
+}
 }
 
 if(Array.isArray(json.audits)){
@@ -15410,7 +15725,30 @@ cloned.audits=cloneArrayWithPluginSafety(json.audits);
 return cloned;
 }
 
+
+
+
+
+
+const mergeOptionsOfItems=function(items){
+
+const mergedItems=[];
+
+for(const item of items){
+const existingItem=item.path&&mergedItems.find(candidate=>candidate.path===item.path);
+if(!existingItem){
+mergedItems.push(item);
+continue;
+}
+
+existingItem.options=Object.assign({},existingItem.options,item.options);
+}
+
+return mergedItems;
+};
+
 class Config{
+
 
 
 
@@ -15429,52 +15767,46 @@ throw new Error('configPath must be an absolute path.');
 }
 
 
-configJSON=deepClone(configJSON);
+configJSON=deepCloneConfigJson(configJSON);
 
 
 if(configJSON.extends==='lighthouse:full'){
-const explodedFullConfig=Config.extendConfigJSON(deepClone(defaultConfig),
-deepClone(fullConfig));
+const explodedFullConfig=Config.extendConfigJSON(deepCloneConfigJson(defaultConfig),
+deepCloneConfigJson(fullConfig));
 configJSON=Config.extendConfigJSON(explodedFullConfig,configJSON);
 }else if(configJSON.extends){
-configJSON=Config.extendConfigJSON(deepClone(defaultConfig),configJSON);
+configJSON=Config.extendConfigJSON(deepCloneConfigJson(defaultConfig),configJSON);
 }
 
 
-configJSON=Config.augmentWithDefaults(configJSON);
+const configDir=configPath?path.dirname(configPath):undefined;
+
+const settings=Config.initSettings(configJSON.settings,flags);
 
 
-configJSON.audits=Config.expandAuditShorthandAndMergeOptions(configJSON.audits);
-configJSON.passes=Config.expandGathererShorthandAndMergeOptions(configJSON.passes);
+const passesWithDefaults=Config.augmentPassesWithDefaults(configJSON.passes);
+Config.adjustDefaultPassForThrottling(settings,passesWithDefaults);
+const passes=Config.requireGatherers(passesWithDefaults,configDir);
 
 
-configJSON.settings=merge(configJSON.settings||{},cleanFlagsForSettings(flags),true);
+this.settings=settings;
+
+this.passes=passes;
+
+this.audits=Config.requireAudits(configJSON.audits,configDir);
+
+this.categories=configJSON.categories||null;
+
+this.groups=configJSON.groups||null;
+
+Config.filterConfigIfNeeded(this);
+
+validatePasses(this.passes,this.audits);
+validateCategories(this.categories,this.audits,this.groups);
 
 
-if(Array.isArray(configJSON.settings.onlyCategories)||
-Array.isArray(configJSON.settings.onlyAudits)||
-Array.isArray(configJSON.settings.skipAudits)){
-const categoryIds=configJSON.settings.onlyCategories;
-const auditIds=configJSON.settings.onlyAudits;
-const skipAuditIds=configJSON.settings.skipAudits;
-configJSON=Config.generateNewFilteredConfig(configJSON,categoryIds,auditIds,
-skipAuditIds);
-}
 
-Config.adjustDefaultPassForThrottling(configJSON);
-
-
-this._configDir=configPath?path.dirname(configPath):undefined;
-
-this._passes=Config.requireGatherers(configJSON.passes,this._configDir);
-this._audits=Config.requireAudits(configJSON.audits,this._configDir);
-this._categories=configJSON.categories;
-this._groups=configJSON.groups;
-this._settings=configJSON.settings||{};
-
-
-validatePasses(configJSON.passes,this._audits);
-validateCategories(configJSON.categories,this._audits,this._groups);
+const configJson=this;
 }
 
 
@@ -15483,8 +15815,8 @@ validateCategories(configJSON.categories,this._audits,this._groups);
 
 
 static extendConfigJSON(baseJSON,extendJSON){
-if(extendJSON.passes){
-extendJSON.passes.forEach(pass=>{
+if(extendJSON.passes&&baseJSON.passes){
+for(const pass of extendJSON.passes){
 
 const passName=pass.passName||constants.defaultPassConfig.passName;
 const basePass=baseJSON.passes.find(candidate=>candidate.passName===passName);
@@ -15494,7 +15826,7 @@ baseJSON.passes.push(pass);
 }else{
 merge(basePass,pass);
 }
-});
+}
 
 delete extendJSON.passes;
 }
@@ -15506,14 +15838,13 @@ return merge(baseJSON,extendJSON);
 
 
 
-static augmentWithDefaults(config){
-const{defaultSettings,defaultPassConfig}=constants;
-config.settings=merge(deepClone(defaultSettings),config.settings,true);
-if(config.passes){
-config.passes=config.passes.map(pass=>merge(deepClone(defaultPassConfig),pass));
+static augmentPassesWithDefaults(passes){
+if(!passes){
+return null;
 }
 
-return config;
+const{defaultPassConfig}=constants;
+return passes.map(pass=>merge(deepClone(defaultPassConfig),pass));
 }
 
 
@@ -15521,23 +15852,46 @@ return config;
 
 
 
+static initSettings(settings={},flags){
 
-static expandAuditShorthandAndMergeOptions(audits){
+const{defaultSettings}=constants;
+const settingWithDefaults=merge(deepClone(defaultSettings),settings,true);
+
+
+const settingsWithFlags=merge(settingWithDefaults||{},cleanFlagsForSettings(flags),true);
+
+return settingsWithFlags;
+}
+
+
+
+
+
+
+static expandAuditShorthand(audits){
 if(!audits){
-return audits;
+return null;
 }
 
 const newAudits=audits.map(audit=>{
 if(typeof audit==='string'){
+
 return{path:audit,options:{}};
-}else if(audit&&typeof audit.audit==='function'){
+}else if('implementation'in audit&&typeof audit.implementation.audit==='function'){
+
+return audit;
+}else if('path'in audit&&typeof audit.path==='string'){
+
+return audit;
+}else if('audit'in audit&&typeof audit.audit==='function'){
+
 return{implementation:audit,options:{}};
 }else{
-return audit;
+throw new Error('Invalid Audit type '+JSON.stringify(audit));
 }
 });
 
-return Config._mergeOptionsOfItems(newAudits);
+return newAudits;
 }
 
 
@@ -15551,48 +15905,32 @@ return Config._mergeOptionsOfItems(newAudits);
 
 
 
-static expandGathererShorthandAndMergeOptions(passes){
-if(!passes){
-return passes;
-}
-
-passes.forEach(pass=>{
-pass.gatherers=pass.gatherers.map(gatherer=>{
+static expandGathererShorthand(gatherers){
+const expanded=gatherers.map(gatherer=>{
 if(typeof gatherer==='string'){
+
 return{path:gatherer,options:{}};
+}else if('implementation'in gatherer||'instance'in gatherer){
+
+return gatherer;
+}else if('path'in gatherer){
+
+if(typeof gatherer.path!=='string'){
+throw new Error('Invalid Gatherer type '+JSON.stringify(gatherer));
+}
+return gatherer;
 }else if(typeof gatherer==='function'){
+
 return{implementation:gatherer,options:{}};
 }else if(gatherer&&typeof gatherer.beforePass==='function'){
+
 return{instance:gatherer,options:{}};
 }else{
-return gatherer;
+throw new Error('Invalid Gatherer type '+JSON.stringify(gatherer));
 }
 });
 
-pass.gatherers=Config._mergeOptionsOfItems(pass.gatherers);
-});
-
-return passes;
-}
-
-
-
-
-
-static _mergeOptionsOfItems(items){
-const mergedItems=[];
-
-for(const item of items){
-const existingItem=item.path&&mergedItems.find(candidate=>candidate.path===item.path);
-if(!existingItem){
-mergedItems.push(item);
-continue;
-}
-
-existingItem.options=Object.assign({},existingItem.options,item.options);
-}
-
-return mergedItems;
+return expanded;
 }
 
 
@@ -15601,15 +15939,14 @@ return mergedItems;
 
 
 
-static adjustDefaultPassForThrottling(config){
-if(config.settings.throttlingMethod!=='devtools'&&
-config.settings.throttlingMethod!=='provided'){
+static adjustDefaultPassForThrottling(settings,passes){
+if(!passes||
+settings.throttlingMethod!=='devtools'&&settings.throttlingMethod!=='provided'){
 return;
 }
 
-const defaultPass=config.passes.find(pass=>pass.passName==='defaultPass');
+const defaultPass=passes.find(pass=>pass.passName==='defaultPass');
 if(!defaultPass)return;
-
 const overrides=constants.nonSimulatedPassConfigOverrides;
 defaultPass.pauseAfterLoadMs=
 Math.max(overrides.pauseAfterLoadMs,defaultPass.pauseAfterLoadMs);
@@ -15623,42 +15960,29 @@ Math.max(overrides.networkQuietThresholdMs,defaultPass.networkQuietThresholdMs);
 
 
 
+static filterConfigIfNeeded(config){
+const settings=config.settings;
+if(!settings.onlyCategories&&!settings.onlyAudits&&!settings.skipAudits){
+return;
+}
 
 
+const{categories,requestedAuditNames}=Config.filterCategoriesAndAudits(config.categories,
+settings);
 
 
-static generateNewFilteredConfig(oldConfig,categoryIds,auditIds,skipAuditIds){
-
-const config=deepClone(oldConfig);
-config.audits=Config.expandAuditShorthandAndMergeOptions(config.audits);
-config.passes=Config.expandGathererShorthandAndMergeOptions(config.passes);
-config.passes=Config.requireGatherers(config.passes);
+const audits=config.audits&&config.audits.filter(auditDefn=>
+requestedAuditNames.has(auditDefn.implementation.meta.id));
 
 
-const{categories,audits:requestedAuditNames}=Config.filterCategoriesAndAudits(
-config.categories,
-categoryIds,
-auditIds,
-skipAuditIds);
+const requiredGathererIds=Config.getGatherersNeededByAudits(audits);
 
+
+const passes=Config.generatePassesNeededByGatherers(config.passes,requiredGathererIds);
 
 config.categories=categories;
-
-
-const auditPathToNameMap=Config.getMapOfAuditPathToName(config);
-const getAuditName=auditDefn=>auditDefn.implementation?
-auditDefn.implementation.meta.name:
-auditPathToNameMap.get(auditDefn.path);
-config.audits=config.audits.filter(auditDefn=>
-requestedAuditNames.has(getAuditName(auditDefn)));
-
-
-const auditObjectsSelected=Config.requireAudits(config.audits);
-const requiredGatherers=Config.getGatherersNeededByAudits(auditObjectsSelected);
-
-
-config.passes=Config.generatePassesNeededByGatherers(config.passes,requiredGatherers);
-return config;
+config.audits=audits;
+config.passes=passes;
 }
 
 
@@ -15667,19 +15991,22 @@ return config;
 
 
 
+static filterCategoriesAndAudits(oldCategories,settings){
+if(!oldCategories){
+return{categories:null,requestedAuditNames:new Set()};
+}
 
-
-static filterCategoriesAndAudits(oldCategories,categoryIds,auditIds,skipAuditIds){
-if(auditIds&&skipAuditIds){
+if(settings.onlyAudits&&settings.skipAudits){
 throw new Error('Cannot set both skipAudits and onlyAudits');
 }
 
+
 const categories={};
-const filterByIncludedCategory=!!categoryIds;
-const filterByIncludedAudit=!!auditIds;
-categoryIds=categoryIds||[];
-auditIds=auditIds||[];
-skipAuditIds=skipAuditIds||[];
+const filterByIncludedCategory=!!settings.onlyCategories;
+const filterByIncludedAudit=!!settings.onlyAudits;
+const categoryIds=settings.onlyCategories||[];
+const auditIds=settings.onlyAudits||[];
+const skipAuditIds=settings.skipAudits||[];
 
 
 categoryIds.forEach(categoryId=>{
@@ -15693,15 +16020,13 @@ const auditsToValidate=new Set(auditIds.concat(skipAuditIds));
 for(const auditId of auditsToValidate){
 const foundCategory=Object.keys(oldCategories).find(categoryId=>{
 const auditRefs=oldCategories[categoryId].auditRefs;
-return auditRefs.find(candidate=>candidate.id===auditId);
+return!!auditRefs.find(candidate=>candidate.id===auditId);
 });
 
 if(!foundCategory){
 const parentKeyName=skipAuditIds.includes(auditId)?'skipAudits':'onlyAudits';
 log.warn('config',`unrecognized audit in '${parentKeyName}': ${auditId}`);
-}
-
-if(auditIds.includes(auditId)&&categoryIds.includes(foundCategory)){
+}else if(auditIds.includes(auditId)&&categoryIds.includes(foundCategory)){
 log.warn('config',`${auditId} in 'onlyAudits' is already included by `+
 `${foundCategory} in 'onlyCategories'`);
 }
@@ -15736,7 +16061,7 @@ category.auditRefs.forEach(audit=>includedAudits.add(audit.id));
 }
 });
 
-return{categories,audits:includedAudits};
+return{categories,requestedAuditNames:includedAudits};
 }
 
 
@@ -15744,26 +16069,15 @@ return{categories,audits:includedAudits};
 
 
 static getCategories(config){
-return Object.keys(config.categories).map(id=>{
-const title=config.categories[id].title;
-return{id,title};
-});
+const categories=config.categories;
+if(!categories){
+return[];
 }
 
-
-
-
-
-
-static getMapOfAuditPathToName(config){
-const auditObjectsAll=Config.requireAudits(config.audits);
-const auditPathToName=new Map(auditObjectsAll.map((auditDefn,index)=>{
-const AuditClass=auditDefn.implementation;
-const auditPath=config.audits[index];
-const auditName=AuditClass.meta.name;
-return[auditPath,auditName];
-}));
-return auditPathToName;
+return Object.keys(categories).map(id=>{
+const title=categories[id].title;
+return{id,title};
+});
 }
 
 
@@ -15791,11 +16105,15 @@ return list;
 
 
 static generatePassesNeededByGatherers(passes,requiredGatherers){
+if(!passes){
+return null;
+}
+
 const auditsNeedTrace=requiredGatherers.has('traces');
 const filteredPasses=passes.map(pass=>{
 
 pass.gatherers=pass.gatherers.filter(gathererDefn=>{
-const gatherer=gathererDefn.instance||gathererDefn.implementation;
+const gatherer=gathererDefn.instance;
 return requiredGatherers.has(gatherer.name);
 });
 
@@ -15826,29 +16144,67 @@ return filteredPasses;
 
 
 static requireAudits(audits,configPath){
-if(!audits){
+const expandedAudits=Config.expandAuditShorthand(audits);
+if(!expandedAudits){
 return null;
 }
 
 const coreList=Runner.getAuditList();
-return audits.map(auditDefn=>{
-if(!auditDefn.implementation){
-const path=auditDefn.path;
+const auditDefns=expandedAudits.map(audit=>{
+let implementation;
+if('implementation'in audit){
+implementation=audit.implementation;
+}else{
 
-const coreAudit=coreList.find(a=>a===`${path}.js`);
-let requirePath=`../audits/${path}`;
+const auditPathJs=`${audit.path}.js`;
+const coreAudit=coreList.find(a=>a===auditPathJs);
+let requirePath=`../audits/${audit.path}`;
 if(!coreAudit){
 
-requirePath=Runner.resolvePlugin(path,configPath,'audit');
+requirePath=Runner.resolvePlugin(audit.path,configPath,'audit');
+}
+implementation=require(requirePath);
 }
 
-auditDefn.implementation=require(requirePath);
-}
+return{
+implementation,
+path:audit.path,
+options:audit.options||{}};
 
-assertValidAudit(auditDefn.implementation,auditDefn.path);
-return auditDefn;
 });
+
+const mergedAuditDefns=mergeOptionsOfItems(auditDefns);
+mergedAuditDefns.forEach(audit=>assertValidAudit(audit.implementation,audit.path));
+return mergedAuditDefns;
 }
+
+
+
+
+
+
+
+
+static requireGathererFromPath(path,options,coreAuditList,configPath){
+const coreGatherer=coreAuditList.find(a=>a===`${path}.js`);
+
+let requirePath=`../gather/gatherers/${path}`;
+if(!coreGatherer){
+
+requirePath=Runner.resolvePlugin(path,configPath,'gatherer');
+}
+
+const GathererClass=require(requirePath);
+
+return{
+instance:new GathererClass(),
+implementation:GathererClass,
+path,
+options:options||{}};
+
+}
+
+
 
 
 
@@ -15862,85 +16218,46 @@ return null;
 }
 
 const coreList=Runner.getGathererList();
-passes.forEach(pass=>{
-pass.gatherers.forEach(gathererDefn=>{
-if(!gathererDefn.instance){
-let GathererClass=gathererDefn.implementation;
-if(!GathererClass){
+const fullPasses=passes.map(pass=>{
+const gathererDefns=Config.expandGathererShorthand(pass.gatherers).map(gathererDefn=>{
+if(gathererDefn.instance){
+return{
+instance:gathererDefn.instance,
+implementation:gathererDefn.implementation,
+path:gathererDefn.path,
+options:gathererDefn.options||{}};
 
-const name=gathererDefn.path;
-const coreGatherer=coreList.find(a=>a===`${name}.js`);
+}else if(gathererDefn.implementation){
+const GathererClass=gathererDefn.implementation;
+return{
+instance:new GathererClass(),
+implementation:gathererDefn.implementation,
+path:gathererDefn.path,
+options:gathererDefn.options||{}};
 
-let requirePath=`../gather/gatherers/${name}`;
-if(!coreGatherer){
-
-requirePath=Runner.resolvePlugin(name,configPath,'gatherer');
+}else if(gathererDefn.path){
+const path=gathererDefn.path;
+const options=gathererDefn.options;
+return Config.requireGathererFromPath(path,options,coreList,configPath);
+}else{
+throw new Error('Invalid expanded Gatherer: '+JSON.stringify(gathererDefn));
 }
-
-GathererClass=require(requirePath);
-}
-
-gathererDefn.implementation=GathererClass;
-gathererDefn.instance=new GathererClass();
-}
-
-assertValidGatherer(gathererDefn.instance,gathererDefn.path);
 });
+
+const mergedDefns=mergeOptionsOfItems(gathererDefns);
+mergedDefns.forEach(gatherer=>assertValidGatherer(gatherer.instance,gatherer.path));
+
+return Object.assign(pass,{gatherers:mergedDefns});
 });
 
-return passes;
-}
-
-
-get configDir(){
-return this._configDir;
-}
-
-
-get passes(){
-return this._passes;
-}
-
-
-get audits(){
-return this._audits;
-}
-
-
-get categories(){
-return this._categories;
-}
-
-
-get groups(){
-return this._groups;
-}
-
-
-get settings(){
-return this._settings;
+return fullPasses;
 }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 module.exports=Config;
 
 }).call(this,"/../lighthouse-core/config");
-},{"../audits/audit":2,"../runner":50,"./constants":8,"./default-config.js":9,"./full-config.js":10,"lighthouse-logger":143,"lodash.isequal":144,"path":75}],8:[function(require,module,exports){
+},{"../audits/audit.js":2,"../runner.js":50,"./constants":8,"./default-config.js":9,"./full-config.js":10,"lighthouse-logger":125,"lodash.isequal":126,"path":75}],8:[function(require,module,exports){
 
 
 
@@ -15988,6 +16305,7 @@ extraHeaders:null,
 onlyAudits:null,
 onlyCategories:null,
 skipAudits:null};
+
 
 
 const defaultPassConfig={
@@ -16048,9 +16366,9 @@ gatherers:[
 'chrome-console-messages',
 'image-usage',
 'accessibility',
-'dobetterweb/all-event-listeners',
 'dobetterweb/anchors-with-no-rel-noopener',
 'dobetterweb/appcache',
+'dobetterweb/doctype',
 'dobetterweb/domstats',
 'dobetterweb/js-libraries',
 'dobetterweb/optimized-images',
@@ -16093,16 +16411,16 @@ audits:[
 'works-offline',
 'viewport',
 'without-javascript',
-'first-contentful-paint',
-'first-meaningful-paint',
+'metrics/first-contentful-paint',
+'metrics/first-meaningful-paint',
 'load-fast-enough-for-pwa',
-'speed-index',
+'metrics/speed-index',
 'screenshot-thumbnails',
-'estimated-input-latency',
+'metrics/estimated-input-latency',
 'errors-in-console',
 'time-to-first-byte',
-'first-cpu-idle',
-'interactive',
+'metrics/first-cpu-idle',
+'metrics/interactive',
 'user-timings',
 'critical-request-chains',
 'redirects',
@@ -16181,11 +16499,11 @@ audits:[
 'byte-efficiency/uses-responsive-images',
 'byte-efficiency/efficient-animated-content',
 'dobetterweb/appcache-manifest',
+'dobetterweb/doctype',
 'dobetterweb/dom-size',
 'dobetterweb/external-anchors-use-rel-noopener',
 'dobetterweb/geolocation-on-start',
 'dobetterweb/no-document-write',
-'dobetterweb/no-mutation-events',
 'dobetterweb/no-vulnerable-libraries',
 'dobetterweb/no-websql',
 'dobetterweb/notification-on-start',
@@ -16308,17 +16626,22 @@ manualDescription:'These checks are required by the baseline '+
 '[PWA Checklist](https://developers.google.com/web/progressive-web-apps/checklist) but are '+
 'not automatically checked by Lighthouse. They do not affect your score but it\'s important that you verify them manually.',
 auditRefs:[
+
+{id:'load-fast-enough-for-pwa',weight:7},
+{id:'works-offline',weight:5},
+
+{id:'webapp-install-banner',weight:3},
+
+{id:'is-on-https',weight:2},
+{id:'redirects-http',weight:2},
+{id:'viewport',weight:2},
+
 {id:'service-worker',weight:1},
-{id:'works-offline',weight:1},
 {id:'without-javascript',weight:1},
-{id:'is-on-https',weight:1},
-{id:'redirects-http',weight:1},
-{id:'load-fast-enough-for-pwa',weight:1},
-{id:'webapp-install-banner',weight:1},
 {id:'splash-screen',weight:1},
 {id:'themed-omnibox',weight:1},
-{id:'viewport',weight:1},
 {id:'content-width',weight:1},
+{id:'manifest-short-name-length',weight:0},
 
 {id:'pwa-cross-browser',weight:0},
 {id:'pwa-page-transitions',weight:0},
@@ -16386,14 +16709,13 @@ auditRefs:[
 {id:'is-on-https',weight:1},
 {id:'uses-http2',weight:1},
 {id:'uses-passive-event-listeners',weight:1},
-{id:'no-mutation-events',weight:1},
 {id:'no-document-write',weight:1},
 {id:'external-anchors-use-rel-noopener',weight:1},
 {id:'geolocation-on-start',weight:1},
+{id:'doctype',weight:1},
 {id:'no-vulnerable-libraries',weight:1},
 {id:'notification-on-start',weight:1},
 {id:'deprecations',weight:1},
-{id:'manifest-short-name-length',weight:1},
 {id:'password-inputs-can-be-pasted-into',weight:1},
 {id:'errors-in-console',weight:1},
 {id:'image-aspect-ratio',weight:1}]},
@@ -16539,10 +16861,12 @@ module.exports=ComputedArtifact;
 'use strict';
 
 const ComputedArtifact=require('../computed-artifact');
-const Node=require('../../../lib/dependency-graph/node');
-const NetworkNode=require('../../../lib/dependency-graph/network-node');
-const Simulator=require('../../../lib/dependency-graph/simulator/simulator');
-const WebInspector=require('../../../lib/web-inspector');
+const BaseNode=require('../../../lib/dependency-graph/base-node');
+const NetworkRequest=require('../../../lib/network-request');
+
+
+
+
 
 class LanternMetricArtifact extends ComputedArtifact{
 
@@ -16551,14 +16875,14 @@ class LanternMetricArtifact extends ComputedArtifact{
 
 
 static getScriptUrls(dependencyGraph,condition){
+
 const scriptUrls=new Set();
 
 dependencyGraph.traverse(node=>{
-if(node.type===Node.TYPES.CPU)return;
-const asNetworkNode=node;
-if(asNetworkNode.record._resourceType!==WebInspector.resourceTypes.Script)return;
-if(condition&&!condition(asNetworkNode))return;
-scriptUrls.add(asNetworkNode.record.url);
+if(node.type===BaseNode.TYPES.CPU)return;
+if(node.record.resourceType!==NetworkRequest.TYPES.Script)return;
+if(condition&&!condition(node))return;
+scriptUrls.add(node.record.url);
 });
 
 return scriptUrls;
@@ -16606,6 +16930,7 @@ return simulationResult;
 
 async computeMetricWithGraphs(data,artifacts,extras){
 const{trace,devtoolsLog,settings}=data;
+const metricName=this.name.replace('Lantern','');
 const graph=await artifacts.requestPageDependencyGraph({trace,devtoolsLog});
 const traceOfTab=await artifacts.requestTraceOfTab(trace);
 
@@ -16615,9 +16940,14 @@ await artifacts.requestLoadSimulator({devtoolsLog,settings}));
 const optimisticGraph=this.getOptimisticGraph(graph,traceOfTab);
 const pessimisticGraph=this.getPessimisticGraph(graph,traceOfTab);
 
-const optimisticSimulation=simulator.simulate(optimisticGraph);
-const optimisticFlexSimulation=simulator.simulate(optimisticGraph,{flexibleOrdering:true});
-const pessimisticSimulation=simulator.simulate(pessimisticGraph);
+let simulateOptions={label:`optimistic${metricName}`};
+const optimisticSimulation=simulator.simulate(optimisticGraph,simulateOptions);
+
+simulateOptions={label:`optimisticFlex${metricName}`,flexibleOrdering:true};
+const optimisticFlexSimulation=simulator.simulate(optimisticGraph,simulateOptions);
+
+simulateOptions={label:`pessimistic${metricName}`};
+const pessimisticSimulation=simulator.simulate(pessimisticGraph,simulateOptions);
 
 const optimisticEstimate=this.getEstimateFromSimulation(
 optimisticSimulation.timeInMs<optimisticFlexSimulation.timeInMs?
@@ -16659,7 +16989,7 @@ return this.computeMetricWithGraphs(data,computedArtifacts);
 
 module.exports=LanternMetricArtifact;
 
-},{"../../../lib/dependency-graph/network-node":24,"../../../lib/dependency-graph/node":25,"../../../lib/dependency-graph/simulator/simulator":28,"../../../lib/web-inspector":47,"../computed-artifact":11}],13:[function(require,module,exports){
+},{"../../../lib/dependency-graph/base-node":22,"../../../lib/network-request":38,"../computed-artifact":11}],13:[function(require,module,exports){
 
 
 
@@ -16903,7 +17233,7 @@ Connection.prototype.sendCommand=_sendCommand;
 
 module.exports=Connection;
 
-},{"../../lib/errors":33,"events":62,"lighthouse-logger":143}],15:[function(require,module,exports){
+},{"../../lib/errors":33,"events":62,"lighthouse-logger":125}],15:[function(require,module,exports){
 
 
 
@@ -16918,19 +17248,8 @@ const Connection=require('./connection.js');
 
 
 
-class Port{
 
 
-
-
-on(eventName,cb){}
-
-
-
-
-send(message){}
-
-close(){}}
 
 
 
@@ -17043,6 +17362,7 @@ const NetworkRecorder=require('../lib/network-recorder');
 const emulation=require('../lib/emulation');
 const Element=require('../lib/element');
 const LHError=require('../lib/errors');
+const NetworkRequest=require('../lib/network-request');
 const EventEmitter=require('events').EventEmitter;
 const URL=require('../lib/url-shim');
 const TraceParser=require('../lib/traces/trace-parser');
@@ -17207,7 +17527,7 @@ return!!this._domainEnabledCounts.get(domain);
 
 
 
-evaluteScriptOnNewDocument(scriptSource){
+evaluateScriptOnNewDocument(scriptSource){
 return this.sendCommand('Page.addScriptToEvaluateOnLoad',{
 scriptSource});
 
@@ -17620,7 +17940,7 @@ cleanupFn();
 
 
 _beginNetworkStatusMonitoring(startingUrl){
-this._networkStatusMonitor=new NetworkRecorder([]);
+this._networkStatusMonitor=new NetworkRecorder();
 
 
 this._monitoredUrl=startingUrl;
@@ -17761,6 +18081,8 @@ return null;
 
 
 getRequestContent(requestId,timeout=1000){
+requestId=NetworkRequest.getRequestIdForBackend(requestId);
+
 return new Promise((resolve,reject)=>{
 
 
@@ -18098,7 +18420,7 @@ storageTypes:typesToClear});
 
 
 async cacheNatives(){
-await this.evaluteScriptOnNewDocument(`window.__nativePromise = Promise;
+await this.evaluateScriptOnNewDocument(`window.__nativePromise = Promise;
         window.__nativeError = Error;`);
 }
 
@@ -18108,39 +18430,7 @@ await this.evaluteScriptOnNewDocument(`window.__nativePromise = Promise;
 
 async registerPerformanceObserver(){
 const scriptStr=`(${pageFunctions.registerPerformanceObserverInPage.toString()})()`;
-await this.evaluteScriptOnNewDocument(scriptStr);
-}
-
-
-
-
-
-
-
-
-captureFunctionCallSites(funcName){
-const globalVarToPopulate=`window['__${funcName}StackTraces']`;
-const collectUsage=()=>{
-return this.evaluateAsync(
-`Array.from(${globalVarToPopulate}).map(item => JSON.parse(item))`).
-then(result=>{
-if(!Array.isArray(result)){
-throw new Error(
-'Driver failure: Expected evaluateAsync results to be an array '+
-`but got "${JSON.stringify(result)}" instead.`);
-}
-
-return result.filter(item=>!item.isExtension);
-});
-};
-
-const funcBody=pageFunctions.captureJSCallUsage.toString();
-
-this.evaluteScriptOnNewDocument(`
-        ${globalVarToPopulate} = new Set();
-        (${funcName} = ${funcBody}(${funcName}, ${globalVarToPopulate}))`);
-
-return collectUsage;
+await this.evaluateScriptOnNewDocument(scriptStr);
 }
 
 
@@ -18252,7 +18542,7 @@ Driver.prototype.sendCommand=_sendCommand;
 
 module.exports=Driver;
 
-},{"../config/constants":8,"../lib/element":31,"../lib/emulation":32,"../lib/errors":33,"../lib/network-recorder":37,"../lib/page-functions.js":38,"../lib/traces/trace-parser":45,"../lib/url-shim":"url","./connections/connection.js":14,"./devtools-log":16,"events":62,"lighthouse-logger":143}],18:[function(require,module,exports){
+},{"../config/constants":8,"../lib/element":31,"../lib/emulation":32,"../lib/errors":33,"../lib/network-recorder":37,"../lib/network-request":38,"../lib/page-functions.js":39,"../lib/traces/trace-parser":45,"../lib/url-shim":"url","./connections/connection.js":14,"./devtools-log":16,"events":62,"lighthouse-logger":125}],18:[function(require,module,exports){
 
 
 
@@ -18325,12 +18615,13 @@ class GatherRunner{
 
 
 
-static loadBlank(
+static async loadBlank(
 driver,
 url=constants.defaultPassConfig.blankPage,
 duration=constants.defaultPassConfig.blankDuration)
 {
-return driver.gotoURL(url).then(_=>new Promise(resolve=>setTimeout(resolve,duration)));
+await driver.gotoURL(url);
+await new Promise(resolve=>setTimeout(resolve,duration));
 }
 
 
@@ -18342,13 +18633,12 @@ return driver.gotoURL(url).then(_=>new Promise(resolve=>setTimeout(resolve,durat
 
 
 
-static loadPage(driver,passContext){
-return driver.gotoURL(passContext.url,{
+static async loadPage(driver,passContext){
+const finalUrl=await driver.gotoURL(passContext.url,{
 waitForLoad:true,
-passContext}).
-then(finalUrl=>{
+passContext});
+
 passContext.url=finalUrl;
-});
 }
 
 
@@ -18356,25 +18646,17 @@ passContext.url=finalUrl;
 
 
 
-
-static setupDriver(driver,gathererResults,options){
+static async setupDriver(driver,options){
 log.log('status','Initializing…');
 const resetStorage=!options.settings.disableStorageReset;
 
-return driver.assertNoSameOriginServiceWorkerClients(options.requestedUrl).
-then(_=>driver.getUserAgent()).
-then(userAgent=>{
-gathererResults.UserAgent=[userAgent];
-GatherRunner.warnOnHeadless(userAgent,gathererResults);
-}).
-then(_=>driver.beginEmulation(options.settings)).
-then(_=>driver.enableRuntimeEvents()).
-then(_=>driver.cacheNatives()).
-then(_=>driver.registerPerformanceObserver()).
-then(_=>driver.dismissJavaScriptDialogs()).
-then(_=>{
-if(resetStorage)return driver.clearDataForOrigin(options.requestedUrl);
-});
+await driver.assertNoSameOriginServiceWorkerClients(options.requestedUrl);
+await driver.beginEmulation(options.settings);
+await driver.enableRuntimeEvents();
+await driver.cacheNatives();
+await driver.registerPerformanceObserver();
+await driver.dismissJavaScriptDialogs();
+if(resetStorage)await driver.clearDataForOrigin(options.requestedUrl);
 }
 
 
@@ -18439,48 +18721,28 @@ return error;
 
 
 
-static warnOnHeadless(userAgent,gathererResults){
-const chromeVersion=userAgent.split(/HeadlessChrome\/(.*) /)[1];
 
 
-const minVersion='63.0.3239.0';
-if(chromeVersion&&chromeVersion<minVersion){
-gathererResults.LighthouseRunWarnings.push('Your site\'s mobile performance may be '+
-'worse than the numbers presented in this report. Lighthouse could not test on a '+
-'mobile connection because Headless Chrome does not support network throttling '+
-'prior to version '+minVersion+'. The version used was '+chromeVersion);
-}
-}
-
-
-
-
-
-
-
-
-static beforePass(passContext,gathererResults){
+static async beforePass(passContext,gathererResults){
 const blockedUrls=(passContext.passConfig.blockedUrlPatterns||[]).
 concat(passContext.settings.blockedUrlPatterns||[]);
 const blankPage=passContext.passConfig.blankPage;
 const blankDuration=passContext.passConfig.blankDuration;
-const pass=GatherRunner.loadBlank(passContext.driver,blankPage,blankDuration).
+await GatherRunner.loadBlank(passContext.driver,blankPage,blankDuration);
 
 
 
-then(()=>passContext.driver.blockUrlPatterns(blockedUrls)).
-then(()=>passContext.driver.setExtraHTTPHeaders(passContext.settings.extraHeaders));
+await passContext.driver.blockUrlPatterns(blockedUrls);
+await passContext.driver.setExtraHTTPHeaders(passContext.settings.extraHeaders);
 
-return passContext.passConfig.gatherers.reduce((chain,gathererDefn)=>{
-return chain.then(_=>{
+for(const gathererDefn of passContext.passConfig.gatherers){
 const gatherer=gathererDefn.instance;
 
 passContext.options=gathererDefn.options||{};
 const artifactPromise=Promise.resolve().then(_=>gatherer.beforePass(passContext));
 gathererResults[gatherer.name]=[artifactPromise];
-return GatherRunner.recoverOrThrow(artifactPromise);
-});
-},pass);
+await GatherRunner.recoverOrThrow(artifactPromise);
+}
 }
 
 
@@ -18490,7 +18752,7 @@ return GatherRunner.recoverOrThrow(artifactPromise);
 
 
 
-static pass(passContext,gathererResults){
+static async pass(passContext,gathererResults){
 const driver=passContext.driver;
 const config=passContext.passConfig;
 const settings=passContext.settings;
@@ -18503,31 +18765,28 @@ const gatherernames=gatherers.map(g=>g.instance.name).join(', ');
 const status='Loading page & waiting for onload';
 log.log('status',status,gatherernames);
 
-const pass=Promise.resolve().
 
-then(_=>{
-if(isPerfRun)driver.cleanBrowserCaches();
-}).
+if(isPerfRun)await driver.cleanBrowserCaches();
 
-then(_=>driver.beginDevtoolsLog()).
+await driver.beginDevtoolsLog();
 
-then(_=>{
-if(recordTrace)driver.beginTrace(settings);
-}).
+if(recordTrace)await driver.beginTrace(settings);
 
-then(_=>GatherRunner.loadPage(driver,passContext)).
-then(_=>log.log('statusEnd',status));
 
-return gatherers.reduce((chain,gathererDefn)=>{
-return chain.then(_=>{
+await GatherRunner.loadPage(driver,passContext);
+log.log('statusEnd',status);
+
+for(const gathererDefn of gatherers){
 const gatherer=gathererDefn.instance;
 
 passContext.options=gathererDefn.options||{};
 const artifactPromise=Promise.resolve().then(_=>gatherer.pass(passContext));
-gathererResults[gatherer.name].push(artifactPromise);
-return GatherRunner.recoverOrThrow(artifactPromise);
-});
-},pass);
+
+const gathererResult=gathererResults[gatherer.name]||[];
+gathererResult.push(artifactPromise);
+gathererResults[gatherer.name]=gathererResult;
+await GatherRunner.recoverOrThrow(artifactPromise);
+}
 }
 
 
@@ -18561,7 +18820,7 @@ let pageLoadError=GatherRunner.getPageLoadError(passContext.url,networkRecords);
 if(!driver.online)pageLoadError=undefined;
 
 if(pageLoadError){
-gathererResults.LighthouseRunWarnings.push('Lighthouse was unable to reliably load the '+
+passContext.LighthouseRunWarnings.push('Lighthouse was unable to reliably load the '+
 'page you requested. Make sure you are testing the correct URL and that the server is '+
 'properly responding to all requests.');
 }
@@ -18590,7 +18849,10 @@ const artifactPromise=pageLoadError?
 Promise.reject(pageLoadError):
 
 Promise.resolve().then(_=>gatherer.afterPass(passContext,passData));
-gathererResults[gatherer.name].push(artifactPromise);
+
+const gathererResult=gathererResults[gatherer.name]||[];
+gathererResult.push(artifactPromise);
+gathererResults[gatherer.name]=gathererResult;
 await GatherRunner.recoverOrThrow(artifactPromise);
 log.verbose('statusEnd',status);
 }
@@ -18608,48 +18870,61 @@ return passData;
 
 
 
+static async collectArtifacts(gathererResults,baseArtifacts){
 
-static async collectArtifacts(gathererResults,tracingData,settings){
-
-
-
-const artifacts={
-traces:tracingData.traces,
-devtoolsLogs:tracingData.devtoolsLogs,
-settings,
-
-LighthouseRunWarnings:Array.from(new Set(gathererResults.LighthouseRunWarnings))};
-
+const gathererArtifacts={};
 
 const pageLoadFailures=[];
-for(const[gathererName,phaseResultsPromises]of Object.entries(gathererResults)){
-if(artifacts[gathererName]!==undefined)continue;
+const resultsEntries=Object.entries(gathererResults);
+for(const[gathererName,phaseResultsPromises]of resultsEntries){
+if(gathererArtifacts[gathererName]!==undefined)continue;
 
 try{
 const phaseResults=await Promise.all(phaseResultsPromises);
 
 const definedResults=phaseResults.filter(element=>element!==undefined);
 const artifact=definedResults[definedResults.length-1];
-artifacts[gathererName]=artifact;
+
+gathererArtifacts[gathererName]=artifact;
 }catch(err){
 
 
-artifacts[gathererName]=err;
+gathererArtifacts[gathererName]=err;
 
 if(LHError.isPageLoadError(err))pageLoadFailures.push(err);
 }
 
-if(artifacts[gathererName]===undefined){
+if(gathererArtifacts[gathererName]===undefined){
 throw new Error(`${gathererName} failed to provide an artifact.`);
 }
 
 
-if(pageLoadFailures.length>Object.keys(artifacts).length*0.5){
+if(pageLoadFailures.length>Object.keys(gathererArtifacts).length*0.5){
 throw pageLoadFailures[0];
 }
 }
 
-return artifacts;
+
+baseArtifacts.LighthouseRunWarnings=Array.from(new Set(baseArtifacts.LighthouseRunWarnings));
+
+
+return{...baseArtifacts,...gathererArtifacts};
+}
+
+
+
+
+
+static async getBaseArtifacts(options){
+return{
+fetchTime:new Date().toJSON(),
+LighthouseRunWarnings:[],
+UserAgent:await options.driver.getUserAgent(),
+traces:{},
+devtoolsLogs:{},
+settings:options.settings,
+URL:{requestedUrl:options.requestedUrl,finalUrl:''}};
+
 }
 
 
@@ -18657,71 +18932,63 @@ return artifacts;
 
 
 
-static run(passes,options){
+static async run(passes,options){
 const driver=options.driver;
 
-const tracingData={
-traces:{},
-devtoolsLogs:{}};
+
+const gathererResults={};
+
+try{
+await driver.connect();
+const baseArtifacts=await GatherRunner.getBaseArtifacts(options);
+await GatherRunner.loadBlank(driver);
+await GatherRunner.setupDriver(driver,options);
 
 
-
-const gathererResults={
-LighthouseRunWarnings:[],
-fetchTime:[new Date().toJSON()],
-URL:[{requestedUrl:options.requestedUrl,finalUrl:''}]};
-
-
-return driver.connect().
-then(_=>GatherRunner.loadBlank(driver)).
-then(_=>GatherRunner.setupDriver(driver,gathererResults,options)).
-
-
-then(_=>{
-return passes.reduce((chain,passConfig,passIndex)=>{
+let firstPass=true;
+for(const passConfig of passes){
 const passContext={
 driver:options.driver,
 
 url:options.requestedUrl,
 settings:options.settings,
-passConfig};
+passConfig,
+
+LighthouseRunWarnings:baseArtifacts.LighthouseRunWarnings};
 
 
-return chain.
-then(_=>driver.setThrottling(options.settings,passConfig)).
-then(_=>GatherRunner.beforePass(passContext,gathererResults)).
-then(_=>GatherRunner.pass(passContext,gathererResults)).
-then(_=>GatherRunner.afterPass(passContext,gathererResults)).
-then(passData=>{
+await driver.setThrottling(options.settings,passConfig);
+await GatherRunner.beforePass(passContext,gathererResults);
+await GatherRunner.pass(passContext,gathererResults);
+const passData=await GatherRunner.afterPass(passContext,gathererResults);
 
-tracingData.devtoolsLogs[passConfig.passName]=passData.devtoolsLog;
+
+baseArtifacts.devtoolsLogs[passConfig.passName]=passData.devtoolsLog;
 
 
 if(passData.trace){
-tracingData.traces[passConfig.passName]=passData.trace;
+baseArtifacts.traces[passConfig.passName]=passData.trace;
 }
 
-if(passIndex===0){
+if(firstPass){
 
-gathererResults.URL[0].finalUrl=passContext.url;
+baseArtifacts.URL.finalUrl=passContext.url;
+firstPass=false;
 }
-});
-},Promise.resolve());
-}).
-then(_=>GatherRunner.disposeDriver(driver)).
-then(_=>GatherRunner.collectArtifacts(gathererResults,tracingData,options.settings)).
+}
+await GatherRunner.disposeDriver(driver);
+return GatherRunner.collectArtifacts(gathererResults,baseArtifacts);
+}catch(err){
 
-catch(err=>{
 GatherRunner.disposeDriver(driver);
-
 throw err;
-});
+}
 }}
 
 
 module.exports=GatherRunner;
 
-},{"../config/constants":8,"../gather/driver.js":17,"../lib/errors":33,"../lib/network-recorder.js":37,"../lib/url-shim":"url","lighthouse-logger":143}],19:[function(require,module,exports){
+},{"../config/constants":8,"../gather/driver.js":17,"../lib/errors":33,"../lib/network-recorder.js":37,"../lib/url-shim":"url","lighthouse-logger":125}],19:[function(require,module,exports){
 
 
 
@@ -18740,11 +19007,14 @@ module.exports=GatherRunner;
 
 
 
+
+
 class Gatherer{
 
 
 
 get name(){
+
 return this.constructor.name;
 }
 
@@ -18862,7 +19132,8 @@ return isEqual(objA,objB);
 }};
 
 
-},{"lodash.isequal":144}],21:[function(require,module,exports){
+},{"lodash.isequal":126}],21:[function(require,module,exports){
+(function(process){
 
 
 
@@ -18874,6 +19145,8 @@ return isEqual(objA,objB);
 const path=require('path');
 const log=require('lighthouse-logger');
 const stream=require('stream');
+const Simulator=require('./dependency-graph/simulator/simulator');
+const lanternTraceSaver=require('./lantern-trace-saver');
 const Metrics=require('./traces/pwmetrics-events');
 const TraceParser=require('./traces/trace-parser');
 const rimraf=require('rimraf');
@@ -19064,7 +19337,9 @@ return assets;
 
 
 
+
 function*traceJsonGenerator(traceData){
+const EVENTS_PER_ITERATION=500;
 const keys=Object.keys(traceData);
 
 yield'{\n';
@@ -19076,9 +19351,19 @@ const eventsIterator=traceData.traceEvents[Symbol.iterator]();
 
 const firstEvent=eventsIterator.next().value;
 yield`  ${JSON.stringify(firstEvent)}`;
+
+let eventsRemaining=EVENTS_PER_ITERATION;
+let eventsJSON='';
 for(const event of eventsIterator){
-yield`,\n  ${JSON.stringify(event)}`;
+eventsJSON+=`,\n  ${JSON.stringify(event)}`;
+eventsRemaining--;
+if(eventsRemaining===0){
+yield eventsJSON;
+eventsRemaining=EVENTS_PER_ITERATION;
+eventsJSON='';
 }
+}
+yield eventsJSON;
 }
 yield'\n]';
 
@@ -19124,6 +19409,22 @@ traceStream.pipe(writeStream);
 
 
 
+async function saveLanternDebugTraces(pathWithBasename){
+if(!process.env.LANTERN_DEBUG)return;
+
+for(const[label,nodeTimings]of Simulator.ALL_NODE_TIMINGS){
+if(lanternTraceSaver.simulationNamesToIgnore.includes(label))continue;
+
+const traceFilename=`${pathWithBasename}-${label}${traceSuffix}`;
+await saveTrace(lanternTraceSaver.convertNodeTimingsToTrace(nodeTimings),traceFilename);
+log.log('saveAssets',`${label} lantern trace file streamed to disk: ${traceFilename}`);
+}
+}
+
+
+
+
+
 
 
 
@@ -19149,6 +19450,7 @@ log.log('saveAssets','trace file streamed to disk: '+streamTraceFilename);
 });
 
 await Promise.all(saveAll);
+await saveLanternDebugTraces(pathWithBasename);
 }
 
 
@@ -19179,7 +19481,8 @@ saveTrace,
 logAssets};
 
 
-},{"../runner.js":50,"./traces/pwmetrics-events":44,"./traces/trace-parser":45,"lighthouse-logger":143,"mkdirp":58,"path":75,"rimraf":58,"stream":92}],22:[function(require,module,exports){
+}).call(this,require('_process'));
+},{"../runner.js":50,"./dependency-graph/simulator/simulator":28,"./lantern-trace-saver":35,"./traces/pwmetrics-events":44,"./traces/trace-parser":45,"_process":77,"lighthouse-logger":125,"mkdirp":58,"path":75,"rimraf":58,"stream":92}],22:[function(require,module,exports){
 
 
 
@@ -19189,244 +19492,23 @@ logAssets};
 
 
 
-const log=require('lighthouse-logger');
 
 
-let _logs=[];
 
-class ConsoleQuieter{
 
-static mute(opts){
-_logs=_logs||[];
 
 
-console.log=function(...args){
-_logs.push({type:'log',args,prefix:opts.prefix});
-};
 
-console.warn=function(...args){
-_logs.push({type:'warn',args,prefix:opts.prefix});
-};
 
-console.error=function(...args){
-_logs.push({type:'error',args,prefix:opts.prefix});
-};
-}
 
-static unmuteAndFlush(){
-console.log=ConsoleQuieter._consolelog;
-console.warn=ConsoleQuieter._consolewarn;
-console.error=ConsoleQuieter._consoleerror;
 
-_logs.forEach(entry=>{
-log.verbose(`${entry.prefix}-${entry.type}`,...entry.args);
-});
-_logs=[];
-}}
 
 
-ConsoleQuieter._consolelog=console.log.bind(console);
-ConsoleQuieter._consolewarn=console.warn.bind(console);
-ConsoleQuieter._consoleerror=console.error.bind(console);
 
-module.exports=ConsoleQuieter;
 
-},{"lighthouse-logger":143}],23:[function(require,module,exports){
 
 
-
-
-
-'use strict';
-
-const Node=require('./node');
-
-class CPUNode extends Node{
-
-
-
-
-constructor(parentEvent,childEvents=[]){
-const nodeId=`${parentEvent.tid}.${parentEvent.ts}`;
-super(nodeId);
-
-this._event=parentEvent;
-this._childEvents=childEvents;
-}
-
-
-
-
-get type(){
-return Node.TYPES.CPU;
-}
-
-
-
-
-get startTime(){
-return this._event.ts;
-}
-
-
-
-
-get endTime(){
-return this._event.ts+this._event.dur;
-}
-
-
-
-
-get event(){
-return this._event;
-}
-
-
-
-
-get childEvents(){
-return this._childEvents;
-}
-
-
-
-
-
-didPerformLayout(){
-return this._childEvents.some(evt=>evt.name==='Layout');
-}
-
-
-
-
-
-
-isEvaluateScriptFor(urls){
-return this._childEvents.some(evt=>{
-return evt.name==='EvaluateScript'&&
-!!evt.args.data&&!!evt.args.data.url&&
-urls.has(evt.args.data.url);
-});
-}
-
-
-
-
-cloneWithoutRelationships(){
-return new CPUNode(this._event,this._childEvents);
-}}
-
-
-module.exports=CPUNode;
-
-},{"./node":25}],24:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Node=require('./node');
-const WebInspector=require('../web-inspector');
-
-class NetworkNode extends Node{
-
-
-
-constructor(networkRecord){
-super(networkRecord.requestId);
-this._record=networkRecord;
-}
-
-
-
-
-get type(){
-return Node.TYPES.NETWORK;
-}
-
-
-
-
-get startTime(){
-return this._record.startTime*1000*1000;
-}
-
-
-
-
-get endTime(){
-return this._record.endTime*1000*1000;
-}
-
-
-
-
-get record(){
-return this._record;
-}
-
-
-
-
-get initiatorType(){
-return this._record._initiator&&this._record._initiator.type;
-}
-
-
-
-
-get fromDiskCache(){
-return!!this._record._fromDiskCache;
-}
-
-
-
-
-hasRenderBlockingPriority(){
-const priority=this._record.priority();
-const isScript=this._record._resourceType===WebInspector.resourceTypes.Script;
-const isDocument=this._record._resourceType===WebInspector.resourceTypes.Document;
-const isBlockingScript=priority==='High'&&isScript;
-const isBlockingHtmlImport=priority==='High'&&isDocument;
-return priority==='VeryHigh'||isBlockingScript||isBlockingHtmlImport;
-}
-
-
-
-
-cloneWithoutRelationships(){
-const node=new NetworkNode(this._record);
-node.setIsMainDocument(this._isMainDocument);
-return node;
-}}
-
-
-module.exports=NetworkNode;
-
-},{"../web-inspector":47,"./node":25}],25:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Node{
+class BaseNode{
 
 
 
@@ -19506,7 +19588,6 @@ return this._dependencies.length;
 
 
 getRootNode(){
-
 let rootNode=this;
 while(rootNode._dependencies.length){
 rootNode=rootNode._dependencies[0];
@@ -19549,7 +19630,8 @@ if(!this._dependencies.includes(node)){
 return;
 }
 
-node._dependents.splice(node._dependents.indexOf(this),1);
+const thisIndex=node._dependents.indexOf(this);
+node._dependents.splice(thisIndex,1);
 this._dependencies.splice(this._dependencies.indexOf(node),1);
 }
 
@@ -19564,7 +19646,7 @@ this.removeDependency(node);
 
 
 cloneWithoutRelationships(){
-const node=new Node(this.id);
+const node=new BaseNode(this.id);
 node.setIsMainDocument(this._isMainDocument);
 return node;
 }
@@ -19623,7 +19705,6 @@ return idToNodeMap.get(this.id);
 
 
 _traversePaths(iterator,getNext){
-
 const stack=[[this]];
 while(stack.length){
 
@@ -19673,7 +19754,7 @@ this._traversePaths(iterator,getNext);
 static hasCycle(node,direction='both'){
 
 if(direction==='both'){
-return Node.hasCycle(node,'dependents')||Node.hasCycle(node,'dependencies');
+return BaseNode.hasCycle(node,'dependents')||BaseNode.hasCycle(node,'dependencies');
 }
 
 const visited=new Set();
@@ -19717,14 +19798,184 @@ return false;
 }}
 
 
-Node.TYPES={
+BaseNode.TYPES={
 NETWORK:'network',
 CPU:'cpu'};
 
 
-module.exports=Node;
+module.exports=BaseNode;
 
-},{}],26:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const BaseNode=require('./base-node');
+
+class CPUNode extends BaseNode{
+
+
+
+
+constructor(parentEvent,childEvents=[]){
+const nodeId=`${parentEvent.tid}.${parentEvent.ts}`;
+super(nodeId);
+
+this._event=parentEvent;
+this._childEvents=childEvents;
+}
+
+get type(){
+return BaseNode.TYPES.CPU;
+}
+
+
+
+
+get startTime(){
+return this._event.ts;
+}
+
+
+
+
+get endTime(){
+return this._event.ts+this._event.dur;
+}
+
+
+
+
+get event(){
+return this._event;
+}
+
+
+
+
+get childEvents(){
+return this._childEvents;
+}
+
+
+
+
+
+didPerformLayout(){
+return this._childEvents.some(evt=>evt.name==='Layout');
+}
+
+
+
+
+
+
+isEvaluateScriptFor(urls){
+return this._childEvents.some(evt=>{
+return evt.name==='EvaluateScript'&&
+!!evt.args.data&&!!evt.args.data.url&&
+urls.has(evt.args.data.url);
+});
+}
+
+
+
+
+cloneWithoutRelationships(){
+return new CPUNode(this._event,this._childEvents);
+}}
+
+
+module.exports=CPUNode;
+
+},{"./base-node":22}],24:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const BaseNode=require('./base-node');
+const NetworkRequest=require('../network-request');
+
+class NetworkNode extends BaseNode{
+
+
+
+constructor(networkRecord){
+super(networkRecord.requestId);
+
+this._record=networkRecord;
+}
+
+get type(){
+return BaseNode.TYPES.NETWORK;
+}
+
+
+
+
+get startTime(){
+return this._record.startTime*1000*1000;
+}
+
+
+
+
+get endTime(){
+return this._record.endTime*1000*1000;
+}
+
+
+
+
+get record(){
+return this._record;
+}
+
+
+
+
+get initiatorType(){
+return this._record.initiator&&this._record.initiator.type;
+}
+
+
+
+
+get fromDiskCache(){
+return!!this._record.fromDiskCache;
+}
+
+
+
+
+hasRenderBlockingPriority(){
+const priority=this._record.priority;
+const isScript=this._record.resourceType===NetworkRequest.TYPES.Script;
+const isDocument=this._record.resourceType===NetworkRequest.TYPES.Document;
+const isBlockingScript=priority==='High'&&isScript;
+const isBlockingHtmlImport=priority==='High'&&isDocument;
+return priority==='VeryHigh'||isBlockingScript||isBlockingHtmlImport;
+}
+
+
+
+
+cloneWithoutRelationships(){
+const node=new NetworkNode(this._record);
+node.setIsMainDocument(this._isMainDocument);
+return node;
+}}
+
+
+module.exports=NetworkNode;
+
+},{"../network-request":38,"./base-node":22}],25:[function(require,module,exports){
 
 
 
@@ -19838,7 +20089,7 @@ if(this._connectionsByRecord.has(record)){
 return this._connectionsByRecord.get(record);
 }
 
-const origin=String(record.parsedURL.securityOrigin());
+const origin=String(record.parsedURL.securityOrigin);
 
 const connections=this._connectionsByOrigin.get(origin)||[];
 
@@ -19873,7 +20124,92 @@ this._connectionsInUse.delete(connection);
 }};
 
 
-},{"./network-analyzer":27,"./tcp-connection":29}],27:[function(require,module,exports){
+},{"./network-analyzer":27,"./tcp-connection":29}],26:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+const DNS_RESOLUTION_RTT_MULTIPLIER=2;
+
+class DNSCache{
+
+
+
+constructor(options){
+this._options=Object.assign(
+{
+rtt:undefined},
+
+options);
+
+
+if(!this._options.rtt){
+throw new Error('Cannot create DNS cache with no rtt');
+}
+
+this._rtt=this._options.rtt;
+
+this._resolvedDomainNames=new Map();
+}
+
+
+
+
+
+
+getTimeUntilResolution(request,options){
+const{requestedAt=0,shouldUpdateCache=false}=options||{};
+
+const domain=request.parsedURL.host;
+const cacheEntry=this._resolvedDomainNames.get(domain);
+let timeUntilResolved=this._rtt*DNSCache.RTT_MULTIPLIER;
+if(cacheEntry){
+const timeUntilCachedIsResolved=Math.max(cacheEntry.resolvedAt-requestedAt,0);
+timeUntilResolved=Math.min(timeUntilCachedIsResolved,timeUntilResolved);
+}
+
+const resolvedAt=requestedAt+timeUntilResolved;
+if(shouldUpdateCache)this._updateCacheResolvedAtIfNeeded(request,resolvedAt);
+
+return timeUntilResolved;
+}
+
+
+
+
+
+_updateCacheResolvedAtIfNeeded(request,resolvedAt){
+const domain=request.parsedURL.host;
+const cacheEntry=this._resolvedDomainNames.get(domain)||{resolvedAt};
+cacheEntry.resolvedAt=Math.min(cacheEntry.resolvedAt,resolvedAt);
+this._resolvedDomainNames.set(domain,cacheEntry);
+}
+
+
+
+
+
+
+
+
+setResolvedAt(domain,resolvedAt){
+this._resolvedDomainNames.set(domain,{resolvedAt});
+}}
+
+
+DNSCache.RTT_MULTIPLIER=DNS_RESOLUTION_RTT_MULTIPLIER;
+
+module.exports=DNSCache;
+
+},{}],27:[function(require,module,exports){
 
 
 
@@ -19882,7 +20218,7 @@ this._connectionsInUse.delete(connection);
 'use strict';
 
 const INITIAL_CWD=14*1024;
-const WebInspector=require('../../web-inspector');
+const NetworkRequest=require('../../network-request');
 
 class NetworkAnalyzer{
 
@@ -19899,7 +20235,7 @@ return'__SUMMARY__';
 static groupByOrigin(records){
 const grouped=new Map();
 records.forEach(item=>{
-const key=item.parsedURL.securityOrigin();
+const key=item.parsedURL.securityOrigin;
 const group=grouped.get(key)||[];
 group.push(item);
 grouped.set(key,group);
@@ -19953,7 +20289,7 @@ for(const[origin,originRecords]of groupedByOrigin.entries()){
 let originEstimates=[];
 
 for(const record of originRecords){
-const timing=record._timing;
+const timing=record.timing;
 if(!timing)continue;
 
 const value=iteratee({
@@ -20056,7 +20392,7 @@ if(!Number.isFinite(timing.receiveHeadersEnd)||timing.receiveHeadersEnd<0)return
 if(!Number.isFinite(timing.sendEnd)||timing.sendEnd<0)return;
 
 const ttfb=timing.receiveHeadersEnd-timing.sendEnd;
-const origin=record.parsedURL.securityOrigin();
+const origin=record.parsedURL.securityOrigin;
 const rtt=rttByOrigin.get(origin)||rttByOrigin.get(NetworkAnalyzer.SUMMARY)||0;
 return Math.max(ttfb-rtt,0);
 });
@@ -20203,8 +20539,8 @@ return NetworkAnalyzer.summarize(estimatesByOrigin);
 
 static findMainDocument(records){
 
-const documentRequests=records.filter(record=>record._resourceType===
-WebInspector.resourceTypes.Document);
+const documentRequests=records.filter(record=>record.resourceType===
+NetworkRequest.TYPES.Document);
 return documentRequests.sort((a,b)=>a.startTime-b.startTime)[0];
 }}
 
@@ -20219,7 +20555,7 @@ module.exports=NetworkAnalyzer;
 
 
 
-},{"../../web-inspector":47}],28:[function(require,module,exports){
+},{"../../network-request":38}],28:[function(require,module,exports){
 
 
 
@@ -20227,12 +20563,15 @@ module.exports=NetworkAnalyzer;
 
 'use strict';
 
-const Node=require('../node');
-const NetworkNode=require('../network-node');
-const CpuNode=require('../cpu-node');
+const BaseNode=require('../base-node');
 const TcpConnection=require('./tcp-connection');
 const ConnectionPool=require('./connection-pool');
+const DNSCache=require('./dns-cache');
 const mobile3G=require('../../../config/constants').throttling.mobile3G;
+
+
+
+
 
 
 const DEFAULT_MAXIMUM_CONCURRENT_REQUESTS=10;
@@ -20247,6 +20586,9 @@ ReadyToStart:1,
 InProgress:2,
 Complete:3};
 
+
+
+const ALL_SIMULATION_NODE_TIMINGS=new Map();
 
 class Simulator{
 
@@ -20278,9 +20620,12 @@ this._layoutTaskMultiplier=this._cpuSlowdownMultiplier*this._options.layoutTaskM
 
 
 this._flexibleOrdering=false;
+
 this._nodeTimings=new Map();
+
 this._numberInProgressByType=new Map();
 this._nodes={};
+this._dns=new DNSCache({rtt:this._rtt});
 
 this._connectionPool=null;
 }
@@ -20292,7 +20637,7 @@ _initializeConnectionPool(graph){
 
 const records=[];
 graph.getRootNode().traverse(node=>{
-if(node.type===Node.TYPES.NETWORK){
+if(node.type===BaseNode.TYPES.NETWORK){
 records.push(node.record);
 }
 });
@@ -20329,6 +20674,16 @@ _setTimingData(node,values){
 const timingData=this._nodeTimings.get(node)||{};
 Object.assign(timingData,values);
 this._nodeTimings.set(node,timingData);
+}
+
+
+
+
+
+_getTimingData(node){
+const timingData=this._nodeTimings.get(node);
+if(!timingData)throw new Error(`Unable to get timing data for node ${node.id}`);
+return timingData;
 }
 
 
@@ -20388,7 +20743,7 @@ ignoreConnectionReused:this._flexibleOrdering});
 
 
 _startNodeIfPossible(node,totalElapsedTime){
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 
 if(this._numberInProgress(node.type)===0){
 this._markNodeAsInProgress(node,totalElapsedTime);
@@ -20398,15 +20753,14 @@ this._setTimingData(node,{timeElapsed:0});
 return;
 }
 
-if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
+if(node.type!==BaseNode.TYPES.NETWORK)throw new Error('Unsupported');
 
-const networkNode=node;
 
-if(!networkNode.fromDiskCache){
+if(!node.fromDiskCache){
 
 const numberOfActiveRequests=this._numberInProgress(node.type);
 if(numberOfActiveRequests>=this._maximumConcurrentRequests)return;
-const connection=this._acquireConnection(networkNode.record);
+const connection=this._acquireConnection(node.record);
 if(!connection)return;
 }
 
@@ -20434,9 +20788,9 @@ connection.setThroughput(this._throughput/this._nodes[NodeState.InProgress].size
 
 
 _estimateTimeRemaining(node){
-if(node.type===Node.TYPES.CPU){
+if(node.type===BaseNode.TYPES.CPU){
 return this._estimateCPUTimeRemaining(node);
-}else if(node.type===Node.TYPES.NETWORK){
+}else if(node.type===BaseNode.TYPES.NETWORK){
 return this._estimateNetworkTimeRemaining(node);
 }else{
 throw new Error('Unsupported');
@@ -20448,7 +20802,7 @@ throw new Error('Unsupported');
 
 
 _estimateCPUTimeRemaining(cpuNode){
-const timingData=this._nodeTimings.get(cpuNode);
+const timingData=this._getTimingData(cpuNode);
 const multiplier=cpuNode.didPerformLayout()?
 this._layoutTaskMultiplier:
 this._cpuSlowdownMultiplier;
@@ -20466,20 +20820,26 @@ return estimatedTimeElapsed;
 
 
 _estimateNetworkTimeRemaining(networkNode){
-const timingData=this._nodeTimings.get(networkNode);
+const record=networkNode.record;
+const timingData=this._getTimingData(networkNode);
 
 let timeElapsed=0;
 if(networkNode.fromDiskCache){
 
 
-const sizeInMb=(networkNode.record._resourceSize||0)/1024/1024;
+const sizeInMb=(record.resourceSize||0)/1024/1024;
 timeElapsed=8+20*sizeInMb-timingData.timeElapsed;
 }else{
 
-const connection=this._acquireConnection(networkNode.record);
+const connection=this._acquireConnection(record);
+const dnsResolutionTime=this._dns.getTimeUntilResolution(record,{
+requestedAt:timingData.startTime,
+shouldUpdateCache:true});
+
+const timeAlreadyElapsed=timingData.timeElapsed;
 const calculation=connection.simulateDownloadUntil(
-networkNode.record.transferSize-timingData.bytesDownloaded,
-{timeAlreadyElapsed:timingData.timeElapsed,maximumTimeToElapse:Infinity});
+record.transferSize-timingData.bytesDownloaded,
+{timeAlreadyElapsed,dnsResolutionTime,maximumTimeToElapse:Infinity});
 
 
 timeElapsed=calculation.timeElapsed;
@@ -20510,25 +20870,28 @@ return minimumTime;
 
 
 _updateProgressMadeInTimePeriod(node,timePeriodLength,totalElapsedTime){
-const timingData=this._nodeTimings.get(node);
+const timingData=this._getTimingData(node);
 const isFinished=timingData.estimatedTimeElapsed===timePeriodLength;
 
-const networkNode=node;
-
-if(node.type===Node.TYPES.CPU||networkNode.fromDiskCache){
+if(node.type===BaseNode.TYPES.CPU||node.fromDiskCache){
 return isFinished?
 this._markNodeAsComplete(node,totalElapsedTime):
 timingData.timeElapsed+=timePeriodLength;
 }
 
-if(node.type!==Node.TYPES.NETWORK)throw new Error('Unsupported');
+if(node.type!==BaseNode.TYPES.NETWORK)throw new Error('Unsupported');
 
-const record=networkNode.record;
+const record=node.record;
 
 const connection=this._acquireConnection(record);
+const dnsResolutionTime=this._dns.getTimeUntilResolution(record,{
+requestedAt:timingData.startTime,
+shouldUpdateCache:true});
+
 const calculation=connection.simulateDownloadUntil(
 record.transferSize-timingData.bytesDownloaded,
 {
+dnsResolutionTime,
 timeAlreadyElapsed:timingData.timeElapsed,
 maximumTimeToElapse:timePeriodLength-timingData.timeElapsedOvershoot});
 
@@ -20546,6 +20909,20 @@ timingData.timeElapsed+=calculation.timeElapsed;
 timingData.timeElapsedOvershoot+=calculation.timeElapsed-timePeriodLength;
 timingData.bytesDownloaded+=calculation.bytesDownloaded;
 }
+}
+
+_computeFinalNodeTimings(){
+
+const nodeTimings=new Map();
+for(const[node,timing]of this._nodeTimings){
+nodeTimings.set(node,{
+startTime:timing.startTime,
+endTime:timing.endTime,
+duration:timing.endTime-timing.startTime});
+
+}
+
+return nodeTimings;
 }
 
 
@@ -20569,13 +20946,18 @@ return this._options;
 
 
 simulate(graph,options){
-if(Node.hasCycle(graph)){
+if(BaseNode.hasCycle(graph)){
 throw new Error('Cannot simulate graph with cycle');
 }
 
-options=Object.assign({flexibleOrdering:false},options);
+options=Object.assign({
+label:undefined,
+flexibleOrdering:false},
+options);
+
 
 this._flexibleOrdering=!!options.flexibleOrdering;
+this._dns=new DNSCache({rtt:this._rtt});
 this._initializeConnectionPool(graph);
 this._initializeAuxiliaryData();
 
@@ -20625,16 +21007,35 @@ this._updateProgressMadeInTimePeriod(node,minimumTime,totalElapsedTime);
 }
 }
 
+const nodeTimings=this._computeFinalNodeTimings();
+ALL_SIMULATION_NODE_TIMINGS.set(options.label||'unlabeled',nodeTimings);
+
 return{
 timeInMs:totalElapsedTime,
-nodeTimings:this._nodeTimings};
+nodeTimings};
 
+}
+
+
+static get ALL_NODE_TIMINGS(){
+return ALL_SIMULATION_NODE_TIMINGS;
 }}
 
 
 module.exports=Simulator;
 
-},{"../../../config/constants":8,"../cpu-node":23,"../network-node":24,"../node":25,"./connection-pool":26,"./tcp-connection":29}],29:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+},{"../../../config/constants":8,"../base-node":22,"./connection-pool":25,"./dns-cache":26,"./tcp-connection":29}],29:[function(require,module,exports){
 
 
 
@@ -20758,7 +21159,8 @@ return Object.assign(new TcpConnection(this._rtt,this._throughput),this);
 
 
 simulateDownloadUntil(bytesToDownload,options){
-const{timeAlreadyElapsed=0,maximumTimeToElapse=Infinity}=options||{};
+const{timeAlreadyElapsed=0,maximumTimeToElapse=Infinity,dnsResolutionTime=0}=
+options||{};
 
 if(this._warmed&&this._h2){
 bytesToDownload-=this._h2OverflowBytesDownloaded;
@@ -20770,6 +21172,8 @@ const maximumCongestionWindow=this._computeMaximumCongestionWindowInSegments();
 let handshakeAndRequest=oneWayLatency;
 if(!this._warmed){
 handshakeAndRequest=
+
+dnsResolutionTime+
 
 oneWayLatency+
 
@@ -20822,6 +21226,7 @@ congestionWindow};
 
 
 module.exports=TcpConnection;
+
 
 
 
@@ -20952,7 +21357,8 @@ if(!resp.object.objectId){
 return null;
 }
 return this.driver.getObjectProperty(resp.object.objectId,propName);
-});
+}).
+catch(()=>null);
 }}
 
 
@@ -21025,10 +21431,7 @@ driver.sendCommand('Emulation.setDeviceMetricsOverride',NEXUS5X_EMULATION_METRIC
 
 driver.sendCommand('Network.enable'),
 driver.sendCommand('Network.setUserAgentOverride',NEXUS5X_USERAGENT),
-driver.sendCommand('Emulation.setEmitTouchEventsForMouse',{
-enabled:true,
-configuration:'mobile'})]);
-
+driver.sendCommand('Emulation.setTouchEmulationEnabled',{enabled:true})]);
 
 }
 
@@ -21203,74 +21606,7 @@ LighthouseError.errors=ERRORS;
 module.exports=LighthouseError;
 
 
-},{"./strings":41}],34:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function addFormattedCodeSnippet(listener){
-const handler=listener.handler?listener.handler.description:'...';
-const objectName=listener.objectName.toLowerCase().replace('#document','document');
-return Object.assign({
-pre:`${objectName}.addEventListener('${listener.type}', ${handler})`},
-listener);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function groupCodeSnippetsByLocation(listeners){
-
-const locToListenerMap=new Map();
-
-
-listeners.forEach(loc=>{
-const accPre=loc.pre.trim()+'\n\n';
-const simplifiedLoc={line:loc.line,col:loc.col,url:loc.url,type:loc.type,pre:''};
-
-const key=JSON.stringify(simplifiedLoc);
-const accListener=locToListenerMap.get(key)||simplifiedLoc;
-accListener.pre+=accPre;
-locToListenerMap.set(key,accListener);
-});
-
-return[...locToListenerMap.values()];
-}
-
-module.exports={
-addFormattedCodeSnippet,
-groupCodeSnippetsByLocation};
-
-
-},{}],35:[function(require,module,exports){
+},{"./strings":42}],34:[function(require,module,exports){
 
 
 
@@ -21328,6 +21664,214 @@ return areIconsBigEnough&&areIconsSquare;
 module.exports={
 doExist,
 sizeAtLeast};
+
+
+},{}],35:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+function convertNodeTimingsToTrace(nodeTimings){
+
+const traceEvents=[];
+const baseTs=1e9;
+const baseEvent={pid:1,tid:1,cat:'devtools.timeline'};
+const frame='A00001';
+
+const toMicroseconds=ms=>baseTs+ms*1000;
+
+traceEvents.push(createFakeTracingStartedEvent());
+traceEvents.push({...createFakeTracingStartedEvent(),name:'TracingStartedInBrowser'});
+
+
+let requestId=1;
+let lastEventEndTime=0;
+for(const[node,timing]of nodeTimings.entries()){
+lastEventEndTime=Math.max(lastEventEndTime,timing.endTime);
+if(node.type==='cpu'){
+
+const cpuNode=node;
+traceEvents.push(...createFakeTaskEvents(cpuNode,timing));
+}else{
+const networkNode=node;
+
+if(/^data/.test(networkNode.record.url))continue;
+traceEvents.push(...createFakeNetworkEvents(networkNode.record,timing));
+}
+}
+
+
+traceEvents.push(
+...createFakeTaskEvents(
+
+{childEvents:[],event:{}},
+{
+startTime:lastEventEndTime+1000,
+endTime:lastEventEndTime+1001}));
+
+
+
+
+return{traceEvents};
+
+
+
+
+function createFakeTracingStartedEvent(){
+const argsData={
+frameTreeNodeId:1,
+sessionId:'1.1',
+page:frame,
+persistentIds:true,
+frames:[{frame,url:'about:blank',name:'',processId:1}]};
+
+
+return{
+...baseEvent,
+ts:baseTs-1e5,
+ph:'I',
+s:'t',
+cat:'disabled-by-default-devtools.timeline',
+name:'TracingStartedInPage',
+args:{data:argsData},
+dur:0};
+
+}
+
+
+
+
+
+
+function createFakeTaskEvents(cpuNode,timing){
+const argsData={
+url:'',
+frame,
+lineNumber:0,
+columnNumber:0};
+
+
+const eventTs=toMicroseconds(timing.startTime);
+
+
+const events=[
+{
+...baseEvent,
+ph:'X',
+name:'Task',
+ts:eventTs,
+dur:(timing.endTime-timing.startTime)*1000,
+args:{data:argsData}}];
+
+
+
+const nestedBaseTs=cpuNode.event.ts||0;
+const multiplier=(timing.endTime-timing.startTime)*1000/cpuNode.event.dur;
+
+const netReqEvents=new Set(['ResourceSendRequest','ResourceFinish',
+'ResourceReceiveResponse','ResourceReceivedData']);
+for(const event of cpuNode.childEvents){
+if(netReqEvents.has(event.name))continue;
+const ts=eventTs+(event.ts-nestedBaseTs)*multiplier;
+const newEvent={...event,...{pid:baseEvent.pid,tid:baseEvent.tid},ts};
+if(event.dur)newEvent.dur=event.dur*multiplier;
+events.push(newEvent);
+}
+
+return events;
+}
+
+
+
+
+
+
+function createFakeNetworkEvents(record,timing){
+requestId++;
+
+
+
+let{startTime,endTime}=timing;
+if(startTime===endTime)endTime+=0.3;
+
+const requestData={requestId:requestId.toString(),frame};
+
+const baseRequestEvent={...baseEvent,ph:'I',s:'t',dur:0};
+
+const sendRequestData={
+...requestData,
+requestMethod:record.requestMethod,
+url:record.url,
+priority:record.priority};
+
+
+const receiveResponseData={
+...requestData,
+statusCode:record.statusCode,
+mimeType:record.mimeType,
+encodedDataLength:record.transferSize,
+fromCache:record.fromDiskCache,
+fromServiceWorker:record.fetchedViaServiceWorker};
+
+
+const resourceFinishData={
+...requestData,
+decodedBodyLength:record.resourceSize,
+didFail:!!record.failed,
+finishTime:endTime};
+
+
+
+const events=[
+{
+...baseRequestEvent,
+name:'ResourceSendRequest',
+ts:toMicroseconds(startTime),
+args:{data:sendRequestData}},
+
+{
+...baseRequestEvent,
+name:'ResourceFinish',
+ts:toMicroseconds(endTime),
+args:{data:resourceFinishData}}];
+
+
+
+if(!record.failed){
+events.push({
+...baseRequestEvent,
+name:'ResourceReceiveResponse',
+ts:toMicroseconds((startTime+endTime)/2),
+args:{data:receiveResponseData}});
+
+}
+
+return events;
+}
+}
+
+module.exports={
+simulationNamesToIgnore:[
+'unlabeled',
+
+'optimisticFirstCPUIdle',
+'optimisticFlexFirstCPUIdle',
+'pessimisticFirstCPUIdle',
+'optimisticSpeedIndex',
+'optimisticFlexSpeedIndex',
+'pessimisticSpeedIndex',
+'optimisticEstimatedInputLatency',
+'optimisticFlexEstimatedInputLatency',
+'pessimisticEstimatedInputLatency'],
+
+convertNodeTimingsToTrace};
 
 
 },{}],36:[function(require,module,exports){
@@ -21795,6 +22339,7 @@ module.exports=parse;
 'use strict';
 
 const NetworkManager=require('./web-inspector').NetworkManager;
+const NetworkRequest=require('./network-request');
 const EventEmitter=require('events').EventEmitter;
 const log=require('lighthouse-logger');
 
@@ -21806,21 +22351,17 @@ class NetworkRecorder extends EventEmitter{
 
 
 
-
-constructor(recordArray){
+constructor(){
 super();
 
-this._records=recordArray;
-this.networkManager=NetworkManager.createWithFakeTarget();
 
-this.networkManager.addEventListener(
-this.EventTypes.RequestStarted,
-this.onRequestStarted.bind(this));
+this._records=[];
 
-this.networkManager.addEventListener(
-this.EventTypes.RequestFinished,
-this.onRequestFinished.bind(this));
+this._recordsById=new Map();
+}
 
+getRecords(){
+return Array.from(this._records);
 }
 
 
@@ -21885,9 +22426,9 @@ this.emit('networkbusy');
 
 
 static _isQUICAndFinished(record){
-const isQUIC=record._responseHeaders&&record._responseHeaders.
+const isQUIC=record.responseHeaders&&record.responseHeaders.
 some(header=>header.name.toLowerCase()==='alt-svc'&&/quic/.test(header.value));
-const receivedHeaders=record._timing&&record._timing.receiveHeadersEnd>0;
+const receivedHeaders=record.timing&&record.timing.receiveHeadersEnd>0;
 return!!(isQUIC&&receivedHeaders&&record.endTime);
 }
 
@@ -21955,7 +22496,9 @@ return quietPeriods.filter(period=>period.start!==period.end);
 
 
 onRequestStarted(request){
-this._records.push(request.data);
+this._records.push(request);
+this._recordsById.set(request.requestId,request);
+
 this._emitNetworkStatus();
 }
 
@@ -21966,7 +22509,7 @@ this._emitNetworkStatus();
 
 
 onRequestFinished(request){
-this.emit('requestloaded',request.data);
+this.emit('requestloaded',request);
 this._emitNetworkStatus();
 }
 
@@ -21976,66 +22519,97 @@ this._emitNetworkStatus();
 
 
 
-
 onRequestWillBeSent(data){
+const originalRequest=this._findRealRequest(data.requestId);
 
-this.networkManager._dispatcher.requestWillBeSent(data.requestId,
-data.frameId,data.loaderId,data.documentURL,data.request,
-data.timestamp,data.wallTime,data.initiator,data.redirectResponse,
-data.type);
+if(!originalRequest){
+const request=new NetworkRequest();
+request.onRequestWillBeSent(data);
+this.onRequestStarted(request);
+return;
+}
+
+
+if(!data.redirectResponse){
+return;
+}
+
+
+
+const modifiedData={
+...data,
+
+
+initiator:originalRequest.initiator,
+requestId:`${originalRequest.requestId}:redirect`};
+
+const redirectedRequest=new NetworkRequest();
+
+redirectedRequest.onRequestWillBeSent(modifiedData);
+originalRequest.onRedirectResponse(data);
+
+originalRequest.redirectDestination=redirectedRequest;
+redirectedRequest.redirectSource=originalRequest;
+
+
+this.onRequestStarted(redirectedRequest);
+this.onRequestFinished(originalRequest);
 }
 
 
 
 
 onRequestServedFromCache(data){
-this.networkManager._dispatcher.requestServedFromCache(data.requestId);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onRequestServedFromCache();
 }
 
 
 
 
 onResponseReceived(data){
-
-this.networkManager._dispatcher.responseReceived(data.requestId,
-data.frameId,data.loaderId,data.timestamp,data.type,data.response);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onResponseReceived(data);
 }
 
 
 
 
 onDataReceived(data){
-
-this.networkManager._dispatcher.dataReceived(data.requestId,data.timestamp,
-data.dataLength,data.encodedDataLength);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onDataReceived(data);
 }
 
 
 
 
 onLoadingFinished(data){
-
-this.networkManager._dispatcher.loadingFinished(data.requestId,
-data.timestamp,data.encodedDataLength);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onLoadingFinished(data);
+this.onRequestFinished(request);
 }
 
 
 
 
 onLoadingFailed(data){
-
-
-this.networkManager._dispatcher.loadingFailed(data.requestId,
-data.timestamp,data.type,data.errorText,data.canceled,
-data.blockedReason);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onLoadingFailed(data);
+this.onRequestFinished(request);
 }
 
 
 
 
 onResourceChangedPriority(data){
-this.networkManager._dispatcher.resourceChangedPriority(data.requestId,
-data.newPriority,data.timestamp);
+const request=this._findRealRequest(data.requestId);
+if(!request)return;
+request.onResourceChangedPriority(data);
 }
 
 
@@ -22064,21 +22638,73 @@ default:return;}
 
 
 
-static recordsFromLogs(devtoolsLog){
 
-const records=[];
-const nr=new NetworkRecorder(records);
-devtoolsLog.forEach(message=>{
-nr.dispatch(message);
-});
+
+
+
+_findRealRequest(requestId){
+let request=this._recordsById.get(requestId);
+if(!request)return undefined;
+
+while(request.redirectDestination){
+request=request.redirectDestination;
+}
+
+return request;
+}
+
+
+
+
+
+
+static recordsFromLogs(devtoolsLog){
+const networkRecorder=new NetworkRecorder();
+
+devtoolsLog.forEach(message=>networkRecorder.dispatch(message));
+
+
+const records=networkRecorder.getRecords();
+
+
+const recordsByURL=new Map();
+for(const record of records){
+if(recordsByURL.has(record.url))continue;
+recordsByURL.set(record.url,record);
+}
+
+
+for(const record of records){
+const stackFrames=record.initiator.stack&&record.initiator.stack.callFrames||[];
+const initiatorURL=record.initiator.url||stackFrames[0]&&stackFrames[0].url;
+const initiator=recordsByURL.get(initiatorURL)||record.redirectSource;
+if(initiator){
+record.setInitiatorRequest(initiator);
+}
+
+let finalRecord=record;
+while(finalRecord.redirectDestination)finalRecord=finalRecord.redirectDestination;
+if(finalRecord===record||finalRecord.redirects)continue;
+
+const redirects=[];
+for(
+let redirect=finalRecord.redirectSource;
+redirect;
+redirect=redirect.redirectSource)
+{
+redirects.unshift(redirect);
+}
+
+finalRecord.redirects=redirects;
+}
+
 return records;
 }}
 
 
 module.exports=NetworkRecorder;
 
-},{"./web-inspector":47,"events":62,"lighthouse-logger":143}],38:[function(require,module,exports){
-
+},{"./network-request":38,"./web-inspector":47,"events":62,"lighthouse-logger":125}],38:[function(require,module,exports){
 
 
 
@@ -22092,68 +22718,310 @@ module.exports=NetworkRecorder;
 
 
 
+const URL=require('./url-shim');
+
+const SECURE_SCHEMES=['data','https','wss','blob','chrome','chrome-extension','about'];
 
 
 
 
 
 
-function captureJSCallUsage(funcRef,set){
-
-const __nativeError=window.__nativeError||Error;
-const originalFunc=funcRef;
-const originalPrepareStackTrace=__nativeError.prepareStackTrace;
-
-return function(...args){
-
-
-
-__nativeError.prepareStackTrace=function(error,structStackTrace){
-
-
-const callFrame=structStackTrace[1];
-let url=callFrame.getFileName()||callFrame.getEvalOrigin();
-const line=callFrame.getLineNumber();
-const col=callFrame.getColumnNumber();
-const isEval=callFrame.isEval();
-let isExtension=false;
-const stackTrace=structStackTrace.slice(1).map(callsite=>callsite.toString());
 
 
 
 
 
-if(isEval){
-url=stackTrace[1];
+
+
+
+
+const RESOURCE_TYPES={
+XHR:'XHR',
+Fetch:'Fetch',
+EventSource:'EventSource',
+Script:'Script',
+Stylesheet:'Stylesheet',
+Image:'Image',
+Media:'Media',
+Font:'Font',
+Document:'Document',
+TextTrack:'TextTrack',
+WebSocket:'WebSocket',
+Other:'Other',
+Manifest:'Manifest'};
+
+
+module.exports=class NetworkRequest{
+constructor(){
+this.requestId='';
+
+this.connectionId='0';
+this.connectionReused=false;
+
+this.url='';
+this.protocol='';
+this.isSecure=false;
+this.parsedURL={scheme:''};
+this.documentURL='';
+
+this.startTime=-1;
+
+this.endTime=-1;
+
+this.responseReceivedTime=-1;
+
+this.transferSize=0;
+this.resourceSize=0;
+this.fromDiskCache=false;
+this.fromMemoryCache=false;
+
+this.finished=false;
+this.requestMethod='';
+this.statusCode=-1;
+
+this.redirectSource=undefined;
+
+this.redirectDestination=undefined;
+
+this.redirects=undefined;
+this.failed=false;
+this.localizedFailDescription='';
+
+this.initiator={type:'other'};
+
+this.timing=undefined;
+
+this.resourceType=undefined;
+this.mimeType='';
+
+this.priority='Low';
+
+this.initiatorRequest=undefined;
+
+this.responseHeaders=[];
+
+this.fetchedViaServiceWorker=false;
+
+this.frameId='';
+this.isLinkPreload=false;
 }
 
 
 
-if(stackTrace[0].startsWith('<anonymous>')){
+
+setInitiatorRequest(initiator){
+this.initiatorRequest=initiator;
+}
 
 
 
-url=stackTrace[0];
-isExtension=true;
+
+onRequestWillBeSent(data){
+this.requestId=data.requestId;
+
+const url=new URL(data.request.url);
+this.url=data.request.url;
+this.documentURL=data.documentURL;
+this.parsedURL={
+scheme:url.protocol.split(':')[0],
+
+host:url.hostname,
+securityOrigin:url.origin};
+
+this.isSecure=SECURE_SCHEMES.includes(this.parsedURL.scheme);
+
+this.startTime=data.timestamp;
+
+this.requestMethod=data.request.method;
+
+this.initiator=data.initiator;
+this.resourceType=data.type&&RESOURCE_TYPES[data.type];
+this.priority=data.request.initialPriority;
+
+this.frameId=data.frameId;
+this.isLinkPreload=data.initiator.type==='preload'||!!data.request.isLinkPreload;
+}
+
+onRequestServedFromCache(){
+this.fromMemoryCache=true;
+}
+
+
+
+
+onResponseReceived(data){
+this._onResponse(data.response,data.timestamp,data.type);
+this.frameId=data.frameId;
+}
+
+
+
+
+onDataReceived(data){
+this.resourceSize+=data.dataLength;
+if(data.encodedDataLength!==-1){
+this.transferSize+=data.encodedDataLength;
+}
+}
+
+
+
+
+onLoadingFinished(data){
+
+if(this.finished)return;
+
+this.finished=true;
+this.endTime=data.timestamp;
+if(data.encodedDataLength>=0){
+this.transferSize=data.encodedDataLength;
+}
+
+this._updateResponseReceivedTimeIfNecessary();
+}
+
+
+
+
+onLoadingFailed(data){
+
+if(this.finished)return;
+
+this.finished=true;
+this.endTime=data.timestamp;
+
+this.failed=true;
+this.resourceType=data.type&&RESOURCE_TYPES[data.type];
+this.localizedFailDescription=data.errorText;
+
+this._updateResponseReceivedTimeIfNecessary();
+}
+
+
+
+
+onResourceChangedPriority(data){
+this.priority=data.newPriority;
+}
+
+
+
+
+onRedirectResponse(data){
+if(!data.redirectResponse)throw new Error('Missing redirectResponse data');
+this._onResponse(data.redirectResponse,data.timestamp,data.type);
+this.resourceType=undefined;
+this.finished=true;
+this.endTime=data.timestamp;
+
+this._updateResponseReceivedTimeIfNecessary();
 }
 
 
 
 
 
-return{url,args,line,col,isEval,isExtension};
-};
-const e=new __nativeError(`__called ${funcRef.name}__`);
-set.add(JSON.stringify(e.stack));
 
+_onResponse(response,timestamp,resourceType){
+this.url=response.url;
 
+this.connectionId=String(response.connectionId);
+this.connectionReused=response.connectionReused;
 
-__nativeError.prepareStackTrace=originalPrepareStackTrace;
+if(response.protocol)this.protocol=response.protocol;
 
+this.responseReceivedTime=timestamp;
 
-return originalFunc.apply(this,args);
-};
+this.transferSize=response.encodedDataLength;
+if(typeof response.fromDiskCache==='boolean')this.fromDiskCache=response.fromDiskCache;
+
+this.statusCode=response.status;
+
+this.timing=response.timing;
+if(resourceType)this.resourceType=RESOURCE_TYPES[resourceType];
+this.mimeType=response.mimeType;
+this.responseHeaders=NetworkRequest._headersDictToHeadersArray(response.headers);
+
+this.fetchedViaServiceWorker=!!response.fromServiceWorker;
+
+if(this.fromMemoryCache)this.timing=undefined;
+if(this.timing)this._recomputeTimesWithResourceTiming(this.timing);
 }
+
+
+
+
+
+
+_recomputeTimesWithResourceTiming(timing){
+
+
+this.startTime=timing.requestTime;
+const headersReceivedTime=timing.requestTime+timing.receiveHeadersEnd/1000;
+if(!this.responseReceivedTime||this.responseReceivedTime<0){
+this.responseReceivedTime=headersReceivedTime;
+}
+
+this.responseReceivedTime=Math.min(this.responseReceivedTime,headersReceivedTime);
+this.responseReceivedTime=Math.max(this.responseReceivedTime,this.startTime);
+this.endTime=Math.max(this.endTime,this.responseReceivedTime);
+}
+
+
+
+
+
+_updateResponseReceivedTimeIfNecessary(){
+this.responseReceivedTime=Math.min(this.endTime,this.responseReceivedTime);
+}
+
+
+
+
+
+
+
+static getRequestIdForBackend(requestId){
+return requestId.replace(/(:redirect)+$/,'');
+}
+
+
+
+
+
+
+
+static _headersDictToHeadersArray(headersDict){
+const result=[];
+for(const name of Object.keys(headersDict)){
+const values=headersDict[name].split('\n');
+for(let i=0;i<values.length;++i){
+result.push({name:name,value:values[i]});
+}
+}
+return result;
+}
+
+static get TYPES(){
+return RESOURCE_TYPES;
+}};
+
+
+},{"./url-shim":"url"}],39:[function(require,module,exports){
+
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
 
 
 
@@ -22222,13 +23090,12 @@ resolve(timeSinceLongTask);
 }
 
 module.exports={
-captureJSCallUsage,
 wrapRuntimeEvalErrorInBrowser,
 registerPerformanceObserverInPage,
 checkTimeSinceLastLongTask};
 
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 
 
 
@@ -22257,6 +23124,7 @@ const SAMPLED_ERRORS=[
 {pattern:/(IDLE_PERIOD|FMP_TOO_LATE)/,rate:0.1},
 {pattern:/^NO_.*/,rate:0.1},
 
+{pattern:/Could not load stylesheet/,rate:0.01},
 {pattern:/Failed to decode/,rate:0.1},
 {pattern:/All image optimizations failed/,rate:0.1},
 {pattern:/No.*resource with given/,rate:0.01},
@@ -22325,7 +23193,7 @@ return context;
 
 module.exports=sentryDelegate;
 
-},{"lighthouse-logger":143,"raven":58}],40:[function(require,module,exports){
+},{"lighthouse-logger":125,"raven":58}],41:[function(require,module,exports){
 
 
 
@@ -22387,11 +23255,26 @@ return(1-erf(standardizedX))/2;
 
 }
 
+
+
+
+
+
+
+
+
+
+function linearInterpolation(x0,y0,x1,y1,x){
+const slope=(y1-y0)/(x1-x0);
+return y0+(x-x0)*slope;
+}
+
 module.exports={
+linearInterpolation,
 getLogNormalDistribution};
 
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 
 
 
@@ -22409,102 +23292,6 @@ internalChromeError:`An internal Chrome error occurred. Please restart Chrome an
 requestContentTimeout:'Fetching resource content has exceeded the allotted time'};
 
 
-},{}],42:[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const groupIdToName={
-loading:'Network request loading',
-parseHTML:'Parsing HTML & CSS',
-styleLayout:'Style & Layout',
-compositing:'Compositing',
-painting:'Paint',
-gpu:'GPU',
-scripting:'Script Evaluation',
-scriptParseCompile:'Script Parsing & Compile',
-scriptGC:'Garbage collection',
-other:'Other',
-images:'Images'};
-
-
-const taskToGroup={
-'Animation':groupIdToName.painting,
-'Async Task':groupIdToName.other,
-'Frame Start':groupIdToName.painting,
-'Frame Start (main thread)':groupIdToName.painting,
-'Cancel Animation Frame':groupIdToName.scripting,
-'Cancel Idle Callback':groupIdToName.scripting,
-'Compile Script':groupIdToName.scriptParseCompile,
-'Composite Layers':groupIdToName.compositing,
-'Console Time':groupIdToName.scripting,
-'Image Decode':groupIdToName.images,
-'Draw Frame':groupIdToName.painting,
-'Embedder Callback':groupIdToName.scripting,
-'Evaluate Script':groupIdToName.scripting,
-'Event':groupIdToName.scripting,
-'Animation Frame Fired':groupIdToName.scripting,
-'Fire Idle Callback':groupIdToName.scripting,
-'Function Call':groupIdToName.scripting,
-'DOM GC':groupIdToName.scriptGC,
-'GC Event':groupIdToName.scriptGC,
-'GPU':groupIdToName.gpu,
-'Hit Test':groupIdToName.compositing,
-'Invalidate Layout':groupIdToName.styleLayout,
-'JS Frame':groupIdToName.scripting,
-'Input Latency':groupIdToName.scripting,
-'Layout':groupIdToName.styleLayout,
-'Major GC':groupIdToName.scriptGC,
-'DOMContentLoaded event':groupIdToName.scripting,
-'First paint':groupIdToName.painting,
-'FMP':groupIdToName.painting,
-'FMP candidate':groupIdToName.painting,
-'Load event':groupIdToName.scripting,
-'Minor GC':groupIdToName.scriptGC,
-'Paint':groupIdToName.painting,
-'Paint Image':groupIdToName.images,
-'Paint Setup':groupIdToName.painting,
-'Parse Stylesheet':groupIdToName.parseHTML,
-'Parse HTML':groupIdToName.parseHTML,
-'Parse Script':groupIdToName.scriptParseCompile,
-'Other':groupIdToName.other,
-'Rasterize Paint':groupIdToName.painting,
-'Recalculate Style':groupIdToName.styleLayout,
-'Request Animation Frame':groupIdToName.scripting,
-'Request Idle Callback':groupIdToName.scripting,
-'Request Main Thread Frame':groupIdToName.painting,
-'Image Resize':groupIdToName.images,
-'Finish Loading':groupIdToName.loading,
-'Receive Data':groupIdToName.loading,
-'Receive Response':groupIdToName.loading,
-'Send Request':groupIdToName.loading,
-'Run Microtasks':groupIdToName.scripting,
-'Schedule Style Recalculation':groupIdToName.styleLayout,
-'Scroll':groupIdToName.compositing,
-'Task':groupIdToName.other,
-'Timer Fired':groupIdToName.scripting,
-'Install Timer':groupIdToName.scripting,
-'Remove Timer':groupIdToName.scripting,
-'Timestamp':groupIdToName.scripting,
-'Update Layer':groupIdToName.compositing,
-'Update Layer Tree':groupIdToName.compositing,
-'User Timing':groupIdToName.scripting,
-'Create WebSocket':groupIdToName.scripting,
-'Destroy WebSocket':groupIdToName.scripting,
-'Receive WebSocket Handshake':groupIdToName.scripting,
-'Send WebSocket Handshake':groupIdToName.scripting,
-'XHR Load':groupIdToName.scripting,
-'XHR Ready State Change':groupIdToName.scripting};
-
-
-module.exports={
-groupIdToName,
-taskToGroup};
-
-
 },{}],43:[function(require,module,exports){
 
 
@@ -22513,132 +23300,113 @@ taskToGroup};
 
 'use strict';
 
-const WebInspector=require('../web-inspector');
-const ConsoleQuieter=require('../console-quieter');
 
 
-const TimelineModelTreeView=
 
-require('devtools-timeline-model/lib/timeline-model-treeview.js')(WebInspector);
 
-class TimelineModel{
 
-constructor(events){
-this.init(events);
+
+
+
+
+
+
+
+const taskGroups={
+parseHTML:{
+id:'',
+label:'Parse HTML & CSS',
+traceEventNames:['ParseHTML','ParseAuthorStyleSheet']},
+
+styleLayout:{
+id:'',
+label:'Style & Layout',
+traceEventNames:[
+'ScheduleStyleRecalculation',
+'RecalculateStyles',
+'UpdateLayoutTree',
+'InvalidateLayout',
+'Layout']},
+
+
+paintCompositeRender:{
+id:'',
+label:'Rendering',
+traceEventNames:[
+'Animation',
+'RequestMainThreadFrame',
+'ActivateLayerTree',
+'DrawFrame',
+'HitTest',
+'PaintSetup',
+'Paint',
+'PaintImage',
+'Rasterize',
+'RasterTask',
+'ScrollLayer',
+'UpdateLayer',
+'UpdateLayerTree',
+'CompositeLayers']},
+
+
+scriptParseCompile:{
+id:'',
+label:'Script Parsing & Compilation',
+traceEventNames:['v8.compile','v8.compileModule','v8.parseOnBackground']},
+
+scriptEvaluation:{
+id:'',
+label:'Script Evaluation',
+traceEventNames:[
+'EventDispatch',
+'EvaluateScript',
+'v8.evaluateModule',
+'FunctionCall',
+'TimerFire',
+'FireIdleCallback',
+'FireAnimationFrame',
+'RunMicrotasks',
+'V8.Execute']},
+
+
+garbageCollection:{
+id:'',
+label:'Garbage Collection',
+traceEventNames:[
+'GCEvent',
+'MinorGC',
+'MajorGC',
+'ThreadState::performIdleLazySweep',
+'ThreadState::completeSweep',
+'BlinkGCMarking']},
+
+
+other:{
+id:'',
+label:'Other',
+traceEventNames:[
+'MessageLoop::RunTask',
+'TaskQueueManager::ProcessTaskFromWorkQueue',
+'ThreadControllerImpl::DoWork']}};
+
+
+
+
+
+const taskNameToGroup={};
+for(const[groupId,group]of Object.entries(taskGroups)){
+group.id=groupId;
+for(const traceEventName of group.traceEventNames){
+taskNameToGroup[traceEventName]=group;
+}
 }
 
-
-init(trace){
-
-this._tracingModel=
-new WebInspector.TracingModel(new WebInspector.TempFileBackingStorage('tracing'));
-
-this._timelineModel=
-new WebInspector.TimelineModel(WebInspector.TimelineUIUtils.visibleEventsFilter());
-
-let events;
-if(Array.isArray(trace)){
-events=trace;
-}
-if(typeof trace==='string'){
-events=JSON.parse(trace);
-}
-if(trace.hasOwnProperty('traceEvents')){
-events=trace.traceEvents;
-}
+module.exports={
+taskGroups,
+taskNameToGroup};
 
 
-this._tracingModel.reset();
-
-try{
-ConsoleQuieter.mute({prefix:'timelineModel'});
-this._tracingModel.addEvents(events);
-this._tracingModel.tracingComplete();
-this._timelineModel.setEvents(this._tracingModel);
-}finally{
-ConsoleQuieter.unmuteAndFlush();
-}
-
-return this;
-}
-
-_createAggregator(){
-return WebInspector.AggregatedTimelineTreeView.prototype._createAggregator();
-}
-
-timelineModel(){
-return this._timelineModel;
-}
-
-tracingModel(){
-return this._tracingModel;
-}
-
-topDown(){
-const filters=[];
-filters.push(WebInspector.TimelineUIUtils.visibleEventsFilter());
-filters.push(new WebInspector.ExcludeTopLevelFilter());
-const nonessentialEvents=[
-WebInspector.TimelineModel.RecordType.EventDispatch,
-WebInspector.TimelineModel.RecordType.FunctionCall,
-WebInspector.TimelineModel.RecordType.TimerFire];
-
-filters.push(new WebInspector.ExclusiveNameFilter(nonessentialEvents));
-
-const topDown=WebInspector.TimelineProfileTree.buildTopDown(
-this._timelineModel.mainThreadEvents(),
-filters,0,Infinity,
-WebInspector.TimelineAggregator.eventId);
-return topDown;
-}
-
-bottomUp(){
-const topDown=this.topDown();
-const noGrouping=WebInspector.TimelineAggregator.GroupBy.None;
-const noGroupAggregator=this._createAggregator().groupFunction(noGrouping);
-return WebInspector.TimelineProfileTree.buildBottomUp(topDown,noGroupAggregator);
-}
-
-
-
-
-bottomUpGroupBy(grouping){
-const topDown=this.topDown();
-
-const groupSetting=WebInspector.TimelineAggregator.GroupBy[grouping];
-const groupingAggregator=this._createAggregator().groupFunction(groupSetting);
-const bottomUpGrouped=
-WebInspector.TimelineProfileTree.buildBottomUp(topDown,groupingAggregator);
-
-
-new TimelineModelTreeView(bottomUpGrouped).sortingChanged('self','desc');
-return bottomUpGrouped;
-}
-
-frameModel(){
-
-const mapper=event=>WebInspector.TimelineUIUtils.eventStyle(event).category.name;
-const frameModel=new WebInspector.TimelineFrameModel(mapper);
-frameModel.addTraceEvents({},
-this._timelineModel.inspectedTargetEvents(),this._timelineModel.sessionId()||'');
-return frameModel;
-}
-
-
-filmStripModel(){
-return new WebInspector.FilmStripModel(this._tracingModel);
-}
-
-interactionModel(){
-const irModel=new WebInspector.TimelineIRModel();
-irModel.populate(this._timelineModel);
-return irModel;
-}}
-
-
-module.exports=TimelineModel;
-
-},{"../console-quieter":22,"../web-inspector":47,"devtools-timeline-model/lib/timeline-model-treeview.js":135}],44:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 
 
 
@@ -22839,7 +23607,7 @@ return fakeEvents;
 
 module.exports=Metrics;
 
-},{"lighthouse-logger":143}],45:[function(require,module,exports){
+},{"lighthouse-logger":125}],45:[function(require,module,exports){
 
 
 
@@ -22928,6 +23696,7 @@ module.exports=TraceParser;
 const BASE_RESPONSE_LATENCY=16;
 const SCHEDULABLE_TASK_TITLE='TaskQueueManager::ProcessTaskFromWorkQueue';
 const SCHEDULABLE_TASK_TITLE_ALT='ThreadControllerImpl::DoWork';
+const LHError=require('../errors');
 
 class TraceProcessor{
 
@@ -23101,6 +23870,43 @@ return topLevelEvents;
 
 
 
+static findTracingStartedEvt(events){
+
+let startedInPageEvt;
+
+
+const startedInBrowserEvt=events.find(e=>e.name==='TracingStartedInBrowser');
+if(startedInBrowserEvt&&startedInBrowserEvt.args.data&&
+startedInBrowserEvt.args.data.frames){
+const mainFrame=startedInBrowserEvt.args.data.frames.find(frame=>!frame.parent);
+const pid=mainFrame&&mainFrame.processId;
+const threadNameEvt=events.find(e=>e.pid===pid&&e.ph==='M'&&
+e.cat==='__metadata'&&e.name==='thread_name'&&e.args.name==='CrRendererMain');
+startedInPageEvt=mainFrame&&threadNameEvt?
+Object.assign({},startedInBrowserEvt,{
+pid,tid:threadNameEvt.tid,name:'TracingStartedInPage',
+args:{data:{page:mainFrame.frame}}}):
+undefined;
+}
+
+
+if(!startedInPageEvt){
+
+
+startedInPageEvt=events.find(e=>e.name==='TracingStartedInPage');
+}
+
+if(!startedInPageEvt)throw new LHError(LHError.errors.NO_TRACING_STARTED);
+
+
+const frameId=startedInPageEvt.args.data.page;
+return{startedInPageEvt,frameId};
+}
+
+
+
+
+
 static isScheduleableTask(evt){
 return evt.name===SCHEDULABLE_TASK_TITLE||evt.name===SCHEDULABLE_TASK_TITLE_ALT;
 }}
@@ -23115,7 +23921,7 @@ return evt.name===SCHEDULABLE_TASK_TITLE||evt.name===SCHEDULABLE_TASK_TITLE_ALT;
 
 module.exports=TraceProcessor;
 
-},{}],47:[function(require,module,exports){
+},{"../errors":33}],47:[function(require,module,exports){
 (function(global){
 
 
@@ -23220,66 +24026,13 @@ return this._moduleSettings[settingName];
 };
 
 
-global.NetworkAgent={
-RequestMixedContentType:{
-Blockable:'blockable',
-OptionallyBlockable:'optionally-blockable',
-None:'none'},
-
-BlockedReason:{
-CSP:'csp',
-MixedContent:'mixed-content',
-Origin:'origin',
-Inspector:'inspector',
-Other:'other'},
-
-InitiatorType:{
-Other:'other',
-Parser:'parser',
-Redirect:'redirect',
-Script:'script'}};
-
-
-
-
-global.SecurityAgent={
-SecurityState:{
-Unknown:'unknown',
-Neutral:'neutral',
-Insecure:'insecure',
-Warning:'warning',
-Secure:'secure',
-Info:'info'}};
-
-
-
-global.PageAgent={
-ResourceType:{
-Document:'document',
-Stylesheet:'stylesheet',
-Image:'image',
-Media:'media',
-Font:'font',
-Script:'script',
-TextTrack:'texttrack',
-XHR:'xhr',
-Fetch:'fetch',
-EventSource:'eventsource',
-WebSocket:'websocket',
-Manifest:'manifest',
-Other:'other'}};
-
-
-
 require('chrome-devtools-frontend/front_end/common/Object.js');
 require('chrome-devtools-frontend/front_end/common/ParsedURL.js');
-require('chrome-devtools-frontend/front_end/common/ResourceType.js');
 require('chrome-devtools-frontend/front_end/common/UIString.js');
+require('chrome-devtools-frontend/front_end/common/SegmentedRange.js');
 require('chrome-devtools-frontend/front_end/platform/utilities.js');
 require('chrome-devtools-frontend/front_end/sdk/Target.js');
 require('chrome-devtools-frontend/front_end/sdk/TargetManager.js');
-require('chrome-devtools-frontend/front_end/sdk/NetworkManager.js');
-require('chrome-devtools-frontend/front_end/sdk/NetworkRequest.js');
 
 
 WebInspector.targetManager={
@@ -23305,33 +24058,9 @@ WebInspector.ViewportDataGrid=function(){};
 WebInspector.ViewportDataGridNode=function(){};
 global.WorkerRuntime.Worker=function(){};
 
-require('chrome-devtools-frontend/front_end/common/SegmentedRange.js');
-require('chrome-devtools-frontend/front_end/bindings/TempFile.js');
-require('chrome-devtools-frontend/front_end/sdk/TracingModel.js');
-require('chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js');
-require('chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js');
-require('chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js');
-require('chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js');
-require('chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js');
-require('chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js');
-require('chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js');
-require('chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js');
-
 
 require('chrome-devtools-frontend/front_end/common/TextUtils.js');
 require('chrome-devtools-frontend/front_end/timeline/TimelineLoader.js');
-
-require('chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js');
-require('chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js');
-require('chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js');
-require('chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js');
-
-
-WebInspector.DeferredTempFile=function(){};
-WebInspector.DeferredTempFile.prototype={
-write:function(){},
-finishWriting:function(){}};
-
 
 
 WebInspector.ConsoleMessage=function(){};
@@ -23346,76 +24075,7 @@ Log:'log'};
 
 
 
-WebInspector.NetworkLog=function(target){
-this._requests=new Map();
-target.networkManager.addEventListener(
-WebInspector.NetworkManager.Events.RequestStarted,this._onRequestStarted,this);
-};
-
-WebInspector.NetworkLog.prototype={
-requestForURL:function(url){
-return this._requests.get(url)||null;
-},
-
-_onRequestStarted:function(event){
-const request=event.data;
-if(this._requests.has(request.url)){
-return;
-}
-this._requests.set(request.url,request);
-}};
-
-
-
 require('chrome-devtools-frontend/front_end/common/Color.js');
-
-
-
-const Dispatcher=WebInspector.NetworkDispatcher;
-const origUpdateRequest=Dispatcher.prototype._updateNetworkRequestWithRequest;
-Dispatcher.prototype._updateNetworkRequestWithRequest=function(netRecord,request){
-origUpdateRequest.apply(this,arguments);
-netRecord.isLinkPreload=Boolean(request.isLinkPreload);
-netRecord._isLinkPreload=Boolean(request.isLinkPreload);
-};
-
-
-
-
-
-WebInspector.NetworkManager.createWithFakeTarget=function(){
-
-const fakeNetworkAgent={
-enable(){},
-getResponseBody(){
-throw new Error('Use driver.getRequestContent() for network request content');
-}};
-
-const fakeConsoleModel={
-addMessage(){},
-target(){}};
-
-const fakeTarget={
-_modelByConstructor:new Map(),
-get consoleModel(){
-return fakeConsoleModel;
-},
-networkAgent(){
-return fakeNetworkAgent;
-},
-registerNetworkDispatcher(){},
-model(){}};
-
-
-fakeTarget.networkManager=new WebInspector.NetworkManager(fakeTarget);
-fakeTarget.networkLog=new WebInspector.NetworkLog(fakeTarget);
-
-WebInspector.NetworkLog.fromTarget=()=>{
-return fakeTarget.networkLog;
-};
-
-return fakeTarget.networkManager;
-};
 
 
 require('chrome-devtools-frontend/front_end/common/TextRange.js');
@@ -23440,7 +24100,7 @@ return WebInspector;
 }();
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"chrome-devtools-frontend/front_end/bindings/TempFile.js":99,"chrome-devtools-frontend/front_end/common/Color.js":100,"chrome-devtools-frontend/front_end/common/Object.js":101,"chrome-devtools-frontend/front_end/common/ParsedURL.js":102,"chrome-devtools-frontend/front_end/common/ResourceType.js":103,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":104,"chrome-devtools-frontend/front_end/common/TextRange.js":105,"chrome-devtools-frontend/front_end/common/TextUtils.js":106,"chrome-devtools-frontend/front_end/common/UIString.js":107,"chrome-devtools-frontend/front_end/components_lazy/FilmStripModel.js":108,"chrome-devtools-frontend/front_end/platform/utilities.js":109,"chrome-devtools-frontend/front_end/sdk/CPUProfileDataModel.js":110,"chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js":111,"chrome-devtools-frontend/front_end/sdk/CSSMedia.js":112,"chrome-devtools-frontend/front_end/sdk/CSSMetadata.js":113,"chrome-devtools-frontend/front_end/sdk/CSSProperty.js":114,"chrome-devtools-frontend/front_end/sdk/CSSRule.js":115,"chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js":116,"chrome-devtools-frontend/front_end/sdk/NetworkManager.js":117,"chrome-devtools-frontend/front_end/sdk/NetworkRequest.js":118,"chrome-devtools-frontend/front_end/sdk/ProfileTreeModel.js":119,"chrome-devtools-frontend/front_end/sdk/Target.js":120,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":121,"chrome-devtools-frontend/front_end/sdk/TracingModel.js":122,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":123,"chrome-devtools-frontend/front_end/timeline/TimelineTreeView.js":124,"chrome-devtools-frontend/front_end/timeline/TimelineUIUtils.js":125,"chrome-devtools-frontend/front_end/timeline_model/LayerTreeModel.js":126,"chrome-devtools-frontend/front_end/timeline_model/TimelineFrameModel.js":127,"chrome-devtools-frontend/front_end/timeline_model/TimelineIRModel.js":128,"chrome-devtools-frontend/front_end/timeline_model/TimelineJSProfile.js":129,"chrome-devtools-frontend/front_end/timeline_model/TimelineModel.js":130,"chrome-devtools-frontend/front_end/timeline_model/TimelineProfileTree.js":131,"chrome-devtools-frontend/front_end/ui_lazy/SortableDataGrid.js":132}],48:[function(require,module,exports){
+},{"chrome-devtools-frontend/front_end/common/Color.js":99,"chrome-devtools-frontend/front_end/common/Object.js":100,"chrome-devtools-frontend/front_end/common/ParsedURL.js":101,"chrome-devtools-frontend/front_end/common/SegmentedRange.js":102,"chrome-devtools-frontend/front_end/common/TextRange.js":103,"chrome-devtools-frontend/front_end/common/TextUtils.js":104,"chrome-devtools-frontend/front_end/common/UIString.js":105,"chrome-devtools-frontend/front_end/platform/utilities.js":106,"chrome-devtools-frontend/front_end/sdk/CSSMatchedStyles.js":107,"chrome-devtools-frontend/front_end/sdk/CSSMedia.js":108,"chrome-devtools-frontend/front_end/sdk/CSSMetadata.js":109,"chrome-devtools-frontend/front_end/sdk/CSSProperty.js":110,"chrome-devtools-frontend/front_end/sdk/CSSRule.js":111,"chrome-devtools-frontend/front_end/sdk/CSSStyleDeclaration.js":112,"chrome-devtools-frontend/front_end/sdk/Target.js":113,"chrome-devtools-frontend/front_end/sdk/TargetManager.js":114,"chrome-devtools-frontend/front_end/timeline/TimelineLoader.js":115}],48:[function(require,module,exports){
 
 
 
@@ -23970,7 +24630,8 @@ const URL=require('./lib/url-shim');
 const Sentry=require('./lib/sentry');
 const generateReport=require('./report/report-generator').generateReport;
 
-const Connection=require('./gather/connections/connection.js');
+
+
 
 class Runner{
 
@@ -23989,19 +24650,6 @@ const settings=opts.config.settings;
 
 const lighthouseRunWarnings=[];
 
-
-const rawRequestedUrl=opts.url;
-if(typeof rawRequestedUrl!=='string'||rawRequestedUrl.length===0){
-throw new Error(`You must provide a url to the runner. '${rawRequestedUrl}' provided.`);
-}
-
-let parsedURL;
-try{
-parsedURL=new URL(opts.url);
-}catch(e){
-throw new Error('The url provided should have a proper protocol and hostname.');
-}
-
 const sentryContext=Sentry.getContext();
 
 Sentry.captureBreadcrumb({
@@ -24012,26 +24660,37 @@ data:sentryContext&&sentryContext.extra});
 
 
 
-if(parsedURL.protocol!=='https:'&&parsedURL.hostname!=='localhost'){
-log.warn('Lighthouse','The URL provided should be on HTTPS');
-log.warn('Lighthouse','Performance stats will be skewed redirecting from HTTP to HTTPS.');
-}
-
-
-const requestedUrl=parsedURL.href;
-
-
 
 
 
 
 
 let artifacts;
+let requestedUrl;
 if(settings.auditMode&&!settings.gatherMode){
 
 const path=Runner._getArtifactsPath(settings);
 artifacts=await assetSaver.loadArtifacts(path);
+requestedUrl=artifacts.URL.requestedUrl;
+
+if(!requestedUrl){
+throw new Error('Cannot run audit mode on empty URL');
+}
+if(opts.url&&opts.url!==requestedUrl){
+throw new Error('Cannot run audit mode on different URL');
+}
 }else{
+if(typeof opts.url!=='string'||opts.url.length===0){
+throw new Error(`You must provide a url to the runner. '${opts.url}' provided.`);
+}
+
+try{
+
+requestedUrl=new URL(opts.url).href;
+}catch(e){
+throw new Error('The url provided should have a proper protocol and hostname.');
+}
+
 artifacts=await Runner._gatherArtifactsFromBrowser(requestedUrl,opts,connection);
 
 if(settings.gatherMode){
@@ -24083,7 +24742,7 @@ runWarnings:lighthouseRunWarnings,
 audits:resultsById,
 configSettings:settings,
 categories,
-categoryGroups:opts.config.groups,
+categoryGroups:opts.config.groups||undefined,
 timing:{total:Date.now()-startTime}};
 
 
@@ -24161,7 +24820,7 @@ return auditResults;
 
 static async _runAudit(auditDefn,artifacts,settings){
 const audit=auditDefn.implementation;
-const status=`Evaluating: ${audit.meta.description}`;
+const status=`Evaluating: ${audit.meta.title}`;
 
 log.log('status',status);
 let auditResult;
@@ -24176,7 +24835,7 @@ const noTrace=artifactName==='traces'&&!artifacts.traces[Audit.DEFAULT_PASS];
 
 if(noArtifact||noTrace){
 log.warn('Runner',
-`${artifactName} gatherer, required by audit ${audit.meta.name}, did not run.`);
+`${artifactName} gatherer, required by audit ${audit.meta.id}, did not run.`);
 throw new Error(`Required ${artifactName} gatherer did not run.`);
 }
 
@@ -24193,7 +24852,7 @@ tags:{gatherer:artifactName},
 level:'error'});
 
 
-log.warn('Runner',`${artifactName} gatherer, required by audit ${audit.meta.name},`+
+log.warn('Runner',`${artifactName} gatherer, required by audit ${audit.meta.id},`+
 ` encountered an error: ${artifactError.message}`);
 
 
@@ -24210,13 +24869,13 @@ const auditOptions=Object.assign({},audit.defaultOptions,auditDefn.options);
 const product=await audit.audit(artifacts,{options:auditOptions,settings:settings});
 auditResult=Audit.generateAuditResult(audit,product);
 }catch(err){
-log.warn(audit.meta.name,`Caught exception: ${err.message}`);
+log.warn(audit.meta.id,`Caught exception: ${err.message}`);
 if(err.fatal){
 throw err;
 }
 
 
-Sentry.captureException(err,{tags:{audit:audit.meta.name},level:'error'});
+Sentry.captureException(err,{tags:{audit:audit.meta.id},level:'error'});
 
 const errorMessage=err.friendlyMessage?
 `${err.friendlyMessage} (${err.message})`:
@@ -24243,8 +24902,9 @@ const ignoredFiles=[
 
 
 const fileList=[
-...["accessibility","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","estimated-input-latency.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","font-display.js","image-aspect-ratio.js","interactive.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manifest-short-name-length.js","manual","metrics.js","mixed-content.js","multi-check-audit.js","network-requests.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","speed-index.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
-...["appcache-manifest.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","no-document-write.js","no-mutation-events.js","no-vulnerable-libraries.js","no-websql.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
+...["accessibility","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","font-display.js","image-aspect-ratio.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manifest-short-name-length.js","manual","metrics","metrics.js","mixed-content.js","multi-check-audit.js","network-requests.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","webapp-install-banner.js","without-javascript.js","works-offline.js"],
+...["appcache-manifest.js","doctype.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","no-document-write.js","no-vulnerable-libraries.js","no-websql.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
+...["estimated-input-latency.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","speed-index.js"].map(f=>`metrics/${f}`),
 ...["canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js"].map(f=>`seo/${f}`),
 ...["mobile-friendly.js","structured-data.js"].map(f=>`seo/manual/${f}`),
 ...["accesskeys.js","aria-allowed-attr.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-valid-attr-value.js","aria-valid-attr.js","audio-caption.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id.js","frame-title.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","manual","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
@@ -24268,7 +24928,7 @@ static getGathererList(){
 const fileList=[
 ...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","fonts.js","gatherer.js","html-without-javascript.js","http-redirect.js","image-usage.js","js-usage.js","manifest.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","theme-color.js","viewport-dimensions.js","viewport.js"],
 ...["canonical.js","crawlable-links.js","embedded-content.js","font-size.js","hreflang.js","meta-description.js","meta-robots.js","robots-txt.js"].map(f=>`seo/${f}`),
-...["all-event-listeners.js","anchors-with-no-rel-noopener.js","appcache.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js","websql.js"].
+...["anchors-with-no-rel-noopener.js","appcache.js","doctype.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js","websql.js"].
 map(f=>`dobetterweb/${f}`)];
 
 return fileList.filter(f=>/\.js$/.test(f)&&f!=='gatherer.js').sort();
@@ -24287,7 +24947,7 @@ const filenamesToSkip=[
 
 
 const fileList=[
-...["computed-artifact.js","critical-request-chains.js","dtm-model.js","load-simulator.js","main-resource.js","manifest-values.js","metrics","network-analysis.js","network-records.js","network-throughput.js","page-dependency-graph.js","pushed-requests.js","screenshots.js","speedline.js","trace-of-tab.js"],
+...["computed-artifact.js","critical-request-chains.js","load-simulator.js","main-resource.js","main-thread-tasks.js","manifest-values.js","metrics","network-analysis.js","network-records.js","network-throughput.js","page-dependency-graph.js","pushed-requests.js","screenshots.js","speedline.js","trace-of-tab.js"],
 ...["estimated-input-latency.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","lantern-estimated-input-latency.js","lantern-first-contentful-paint.js","lantern-first-cpu-idle.js","lantern-first-meaningful-paint.js","lantern-interactive.js","lantern-metric.js","lantern-speed-index.js","metric.js","speed-index.js"].map(f=>`metrics/${f}`)];
 
 
@@ -24377,7 +25037,7 @@ return path.join(process.cwd(),'latest-run');
 module.exports=Runner;
 
 }).call(this,require('_process'),"/../lighthouse-core");
-},{"../package.json":154,"./audits/audit":2,"./gather/connections/connection.js":14,"./gather/driver.js":17,"./gather/gather-runner":18,"./lib/asset-saver":21,"./lib/sentry":39,"./lib/url-shim":"url","./report/report-generator":49,"./scoring":51,"_process":77,"lighthouse-logger":143,"lodash.isequal":144,"path":75}],51:[function(require,module,exports){
+},{"../package.json":136,"./audits/audit":2,"./gather/driver.js":17,"./gather/gather-runner":18,"./lib/asset-saver":21,"./lib/sentry":40,"./lib/url-shim":"url","./report/report-generator":49,"./scoring":51,"_process":77,"lighthouse-logger":125,"lodash.isequal":126,"path":75}],51:[function(require,module,exports){
 
 
 
@@ -24492,7 +25152,10 @@ const log=require('lighthouse-logger');
 
 
 
-window.runLighthouseForConnection=function(
+
+
+
+function runLighthouseForConnection(
 connection,url,options,categoryIDs,
 updateBadgeFn=function(){}){
 const config=new Config({
@@ -24513,7 +25176,7 @@ catch(err=>{
 updateBadgeFn();
 throw err;
 });
-};
+}
 
 
 
@@ -24522,26 +25185,45 @@ throw err;
 
 
 
-window.runLighthouseInWorker=function(port,url,options,categoryIDs){
+function runLighthouseInWorker(port,url,options,categoryIDs){
 
 log.setLevel('info');
 const connection=new RawProtocol(port);
-return window.runLighthouseForConnection(connection,url,options,categoryIDs);
-};
+return runLighthouseForConnection(connection,url,options,categoryIDs);
+}
 
 
 
 
 
-window.getDefaultCategories=function(){
+function getDefaultCategories(){
 return Config.getCategories(defaultConfig);
-};
+}
 
-window.listenForStatus=function(listenCallback){
+
+function listenForStatus(listenCallback){
 log.events.addListener('status',listenCallback);
-};
+}
 
-},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default-config.js":9,"../../../lighthouse-core/gather/connections/raw":15,"../../../lighthouse-core/runner":50,"lighthouse-logger":143}],53:[function(require,module,exports){
+if(typeof module!=='undefined'&&module.exports){
+
+module.exports={
+runLighthouseForConnection,
+runLighthouseInWorker,
+getDefaultCategories,
+listenForStatus};
+
+}
+
+if(typeof window!=='undefined'){
+
+
+window.runLighthouseInWorker=runLighthouseInWorker;
+
+window.listenForStatus=listenForStatus;
+}
+
+},{"../../../lighthouse-core/config/config":7,"../../../lighthouse-core/config/default-config.js":9,"../../../lighthouse-core/gather/connections/raw":15,"../../../lighthouse-core/runner":50,"lighthouse-logger":125}],53:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -44032,600 +44714,6 @@ return langs;
 
 
 
-window.requestFileSystem=window.requestFileSystem||window.webkitRequestFileSystem;
-
-
-
-
-WebInspector.TempFile=function()
-{
-this._fileEntry=null;
-this._writer=null;
-};
-
-
-
-
-
-
-WebInspector.TempFile.create=function(dirPath,name)
-{
-var file=new WebInspector.TempFile();
-
-function requestTempFileSystem()
-{
-return new Promise(window.requestFileSystem.bind(window,window.TEMPORARY,10));
-}
-
-
-
-
-function getDirectoryEntry(fs)
-{
-return new Promise(fs.root.getDirectory.bind(fs.root,dirPath,{create:true}));
-}
-
-
-
-
-function getFileEntry(dir)
-{
-return new Promise(dir.getFile.bind(dir,name,{create:true}));
-}
-
-
-
-
-function createFileWriter(fileEntry)
-{
-file._fileEntry=fileEntry;
-return new Promise(fileEntry.createWriter.bind(fileEntry));
-}
-
-
-
-
-function truncateFile(writer)
-{
-if(!writer.length){
-file._writer=writer;
-return Promise.resolve(file);
-}
-
-
-
-
-
-function truncate(fulfill,reject)
-{
-writer.onwriteend=fulfill;
-writer.onerror=reject;
-writer.truncate(0);
-}
-
-function didTruncate()
-{
-file._writer=writer;
-writer.onwriteend=null;
-writer.onerror=null;
-return Promise.resolve(file);
-}
-
-function onTruncateError(e)
-{
-writer.onwriteend=null;
-writer.onerror=null;
-throw e;
-}
-
-return new Promise(truncate).then(didTruncate,onTruncateError);
-}
-
-return WebInspector.TempFile.ensureTempStorageCleared().
-then(requestTempFileSystem).
-then(getDirectoryEntry).
-then(getFileEntry).
-then(createFileWriter).
-then(truncateFile);
-};
-
-WebInspector.TempFile.prototype={
-
-
-
-
-write:function(strings,callback)
-{
-var blob=new Blob(strings,{type:"text/plain"});
-this._writer.onerror=function(e)
-{
-WebInspector.console.error("Failed to write into a temp file: "+e.target.error.message);
-callback(-1);
-};
-this._writer.onwriteend=function(e)
-{
-callback(e.target.length);
-};
-this._writer.write(blob);
-},
-
-finishWriting:function()
-{
-this._writer=null;
-},
-
-
-
-
-read:function(callback)
-{
-this.readRange(undefined,undefined,callback);
-},
-
-
-
-
-
-
-readRange:function(startOffset,endOffset,callback)
-{
-
-
-
-function didGetFile(file)
-{
-var reader=new FileReader();
-
-if(typeof startOffset==="number"||typeof endOffset==="number")
-file=file.slice(startOffset,endOffset);
-
-
-
-reader.onloadend=function(e)
-{
-callback(this.result);
-};
-reader.onerror=function(error)
-{
-WebInspector.console.error("Failed to read from temp file: "+error.message);
-};
-reader.readAsText(file);
-}
-function didFailToGetFile(error)
-{
-WebInspector.console.error("Failed to load temp file: "+error.message);
-callback(null);
-}
-this._fileEntry.file(didGetFile,didFailToGetFile);
-},
-
-
-
-
-
-copyToOutputStream:function(outputStream,delegate)
-{
-
-
-
-function didGetFile(file)
-{
-var reader=new WebInspector.ChunkedFileReader(file,10*1000*1000,delegate);
-reader.start(outputStream);
-}
-
-function didFailToGetFile(error)
-{
-WebInspector.console.error("Failed to load temp file: "+error.message);
-outputStream.close();
-}
-
-this._fileEntry.file(didGetFile,didFailToGetFile);
-},
-
-remove:function()
-{
-if(this._fileEntry)
-this._fileEntry.remove(function(){});
-}};
-
-
-
-
-
-
-
-WebInspector.DeferredTempFile=function(dirPath,name)
-{
-
-this._chunks=[];
-this._tempFile=null;
-this._isWriting=false;
-this._finishCallback=null;
-this._finishedWriting=false;
-this._callsPendingOpen=[];
-this._pendingReads=[];
-WebInspector.TempFile.create(dirPath,name).
-then(this._didCreateTempFile.bind(this),this._failedToCreateTempFile.bind(this));
-};
-
-WebInspector.DeferredTempFile.prototype={
-
-
-
-
-write:function(strings,callback)
-{
-if(this._finishCallback)
-throw new Error("No writes are allowed after close.");
-this._chunks.push({strings:strings,callback:callback||null});
-if(this._tempFile&&!this._isWriting)
-this._writeNextChunk();
-},
-
-
-
-
-finishWriting:function(callback)
-{
-this._finishCallback=callback;
-if(this._finishedWriting)
-callback(this._tempFile);else
-if(!this._isWriting&&!this._chunks.length)
-this._notifyFinished();
-},
-
-
-
-
-_failedToCreateTempFile:function(e)
-{
-WebInspector.console.error("Failed to create temp file "+e.code+" : "+e.message);
-this._notifyFinished();
-},
-
-
-
-
-_didCreateTempFile:function(tempFile)
-{
-this._tempFile=tempFile;
-var callsPendingOpen=this._callsPendingOpen;
-this._callsPendingOpen=null;
-for(var i=0;i<callsPendingOpen.length;++i)
-callsPendingOpen[i]();
-if(this._chunks.length)
-this._writeNextChunk();
-},
-
-_writeNextChunk:function()
-{
-
-if(!this._tempFile)
-return;
-var chunk=this._chunks.shift();
-this._isWriting=true;
-this._tempFile.write(chunk.strings,this._didWriteChunk.bind(this,chunk.callback));
-},
-
-
-
-
-
-_didWriteChunk:function(callback,size)
-{
-this._isWriting=false;
-if(size===-1){
-this._tempFile=null;
-this._notifyFinished();
-return;
-}
-if(callback)
-callback(size);
-if(this._chunks.length)
-this._writeNextChunk();else
-if(this._finishCallback)
-this._notifyFinished();
-},
-
-_notifyFinished:function()
-{
-this._finishedWriting=true;
-if(this._tempFile)
-this._tempFile.finishWriting();
-var chunks=this._chunks;
-this._chunks=[];
-for(var i=0;i<chunks.length;++i){
-if(chunks[i].callback)
-chunks[i].callback(-1);
-}
-if(this._finishCallback)
-this._finishCallback(this._tempFile);
-var pendingReads=this._pendingReads;
-this._pendingReads=[];
-for(var i=0;i<pendingReads.length;++i)
-pendingReads[i]();
-},
-
-
-
-
-
-
-readRange:function(startOffset,endOffset,callback)
-{
-if(!this._finishedWriting){
-this._pendingReads.push(this.readRange.bind(this,startOffset,endOffset,callback));
-return;
-}
-if(!this._tempFile){
-callback(null);
-return;
-}
-this._tempFile.readRange(startOffset,endOffset,callback);
-},
-
-
-
-
-
-copyToOutputStream:function(outputStream,delegate)
-{
-if(!this._finishedWriting){
-this._pendingReads.push(this.copyToOutputStream.bind(this,outputStream,delegate));
-return;
-}
-if(this._tempFile)
-this._tempFile.copyToOutputStream(outputStream,delegate);
-},
-
-remove:function()
-{
-if(this._callsPendingOpen){
-this._callsPendingOpen.push(this.remove.bind(this));
-return;
-}
-if(this._tempFile)
-this._tempFile.remove();
-this._tempFile=null;
-}};
-
-
-
-
-
-
-WebInspector.TempFile._clearTempStorage=function(fulfill,reject)
-{
-
-
-
-function handleError(event)
-{
-WebInspector.console.error(WebInspector.UIString("Failed to clear temp storage: %s",event.data));
-reject(event.data);
-}
-
-
-
-
-function handleMessage(event)
-{
-if(event.data.type==="tempStorageCleared"){
-if(event.data.error)
-WebInspector.console.error(event.data.error);else
-
-fulfill(undefined);
-return;
-}
-reject(event.data);
-}
-
-try{
-var worker=new WebInspector.Worker("temp_storage_shared_worker","TempStorageCleaner");
-worker.onerror=handleError;
-worker.onmessage=handleMessage;
-}catch(e){
-if(e.name==="URLMismatchError")
-console.log("Shared worker wasn't started due to url difference. "+e);else
-
-throw e;
-}
-};
-
-
-
-
-WebInspector.TempFile.ensureTempStorageCleared=function()
-{
-if(!WebInspector.TempFile._storageCleanerPromise)
-WebInspector.TempFile._storageCleanerPromise=new Promise(WebInspector.TempFile._clearTempStorage);
-return WebInspector.TempFile._storageCleanerPromise;
-};
-
-
-
-
-
-
-WebInspector.TempFileBackingStorage=function(dirName)
-{
-this._dirName=dirName;
-this.reset();
-};
-
-
-
-
-
-
-
-
-WebInspector.TempFileBackingStorage.Chunk;
-
-WebInspector.TempFileBackingStorage.prototype={
-
-
-
-
-appendString:function(string)
-{
-this._strings.push(string);
-this._stringsLength+=string.length;
-var flushStringLength=10*1024*1024;
-if(this._stringsLength>flushStringLength)
-this._flush(false);
-},
-
-
-
-
-
-
-appendAccessibleString:function(string)
-{
-this._flush(false);
-this._strings.push(string);
-var chunk=this._flush(true);
-
-
-
-
-
-
-function readString(chunk,file)
-{
-if(chunk.string)
-return Promise.resolve(chunk.string);
-
-console.assert(chunk.endOffset);
-if(!chunk.endOffset)
-return Promise.reject("Nor string nor offset to the string in the file were found.");
-
-
-
-
-
-function readRange(fulfill,reject)
-{
-
-file.readRange(chunk.startOffset,chunk.endOffset,fulfill);
-}
-
-return new Promise(readRange);
-}
-
-return readString.bind(null,chunk,this._file);
-},
-
-
-
-
-
-_flush:function(createChunk)
-{
-if(!this._strings.length)
-return null;
-
-var chunk=null;
-if(createChunk){
-console.assert(this._strings.length===1);
-chunk={
-string:this._strings[0],
-startOffset:0,
-endOffset:0};
-
-}
-
-
-
-
-
-
-function didWrite(chunk,fileSize)
-{
-if(fileSize===-1)
-return;
-if(chunk){
-chunk.startOffset=this._fileSize;
-chunk.endOffset=fileSize;
-chunk.string=null;
-}
-this._fileSize=fileSize;
-}
-
-this._file.write(this._strings,didWrite.bind(this,chunk));
-this._strings=[];
-this._stringsLength=0;
-return chunk;
-},
-
-
-
-
-finishWriting:function()
-{
-this._flush(false);
-this._file.finishWriting(function(){});
-},
-
-
-
-
-reset:function()
-{
-if(this._file)
-this._file.remove();
-this._file=new WebInspector.DeferredTempFile(this._dirName,String(Date.now()));
-
-
-
-this._strings=[];
-this._stringsLength=0;
-this._fileSize=0;
-},
-
-
-
-
-
-writeToStream:function(outputStream,delegate)
-{
-this._file.copyToOutputStream(outputStream,delegate);
-}};
-
-
-},{}],100:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -45422,7 +45510,7 @@ format=cf.RGBA;
 return format;
 };
 
-},{}],101:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 
 
 
@@ -45643,7 +45731,7 @@ this.receiver=receiver;
 this.method=method;
 };
 
-},{}],102:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 
 
 
@@ -46006,317 +46094,7 @@ return parsedURL;
 return null;
 };
 
-},{}],103:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.ResourceType=function(name,title,category,isTextType)
-{
-this._name=name;
-this._title=title;
-this._category=category;
-this._isTextType=isTextType;
-};
-
-WebInspector.ResourceType.prototype={
-
-
-
-name:function()
-{
-return this._name;
-},
-
-
-
-
-title:function()
-{
-return this._title;
-},
-
-
-
-
-category:function()
-{
-return this._category;
-},
-
-
-
-
-isTextType:function()
-{
-return this._isTextType;
-},
-
-
-
-
-isScript:function()
-{
-return this._name==="script"||this._name==="sm-script";
-},
-
-
-
-
-hasScripts:function()
-{
-return this.isScript()||this.isDocument();
-},
-
-
-
-
-isStyleSheet:function()
-{
-return this._name==="stylesheet"||this._name==="sm-stylesheet";
-},
-
-
-
-
-isDocument:function()
-{
-return this._name==="document";
-},
-
-
-
-
-isDocumentOrScriptOrStyleSheet:function()
-{
-return this.isDocument()||this.isScript()||this.isStyleSheet();
-},
-
-
-
-
-isFromSourceMap:function()
-{
-return this._name.startsWith("sm-");
-},
-
-
-
-
-
-toString:function()
-{
-return this._name;
-},
-
-
-
-
-canonicalMimeType:function()
-{
-if(this.isDocument())
-return"text/html";
-if(this.isScript())
-return"text/javascript";
-if(this.isStyleSheet())
-return"text/css";
-return"";
-}};
-
-
-
-
-
-
-
-WebInspector.ResourceCategory=function(title,shortTitle)
-{
-this.title=title;
-this.shortTitle=shortTitle;
-};
-
-WebInspector.resourceCategories={
-XHR:new WebInspector.ResourceCategory("XHR and Fetch","XHR"),
-Script:new WebInspector.ResourceCategory("Scripts","JS"),
-Stylesheet:new WebInspector.ResourceCategory("Stylesheets","CSS"),
-Image:new WebInspector.ResourceCategory("Images","Img"),
-Media:new WebInspector.ResourceCategory("Media","Media"),
-Font:new WebInspector.ResourceCategory("Fonts","Font"),
-Document:new WebInspector.ResourceCategory("Documents","Doc"),
-WebSocket:new WebInspector.ResourceCategory("WebSockets","WS"),
-Manifest:new WebInspector.ResourceCategory("Manifest","Manifest"),
-Other:new WebInspector.ResourceCategory("Other","Other")};
-
-
-
-
-
-
-WebInspector.resourceTypes={
-XHR:new WebInspector.ResourceType("xhr","XHR",WebInspector.resourceCategories.XHR,true),
-Fetch:new WebInspector.ResourceType("fetch","Fetch",WebInspector.resourceCategories.XHR,true),
-EventSource:new WebInspector.ResourceType("eventsource","EventSource",WebInspector.resourceCategories.XHR,true),
-Script:new WebInspector.ResourceType("script","Script",WebInspector.resourceCategories.Script,true),
-Stylesheet:new WebInspector.ResourceType("stylesheet","Stylesheet",WebInspector.resourceCategories.Stylesheet,true),
-Image:new WebInspector.ResourceType("image","Image",WebInspector.resourceCategories.Image,false),
-Media:new WebInspector.ResourceType("media","Media",WebInspector.resourceCategories.Media,false),
-Font:new WebInspector.ResourceType("font","Font",WebInspector.resourceCategories.Font,false),
-Document:new WebInspector.ResourceType("document","Document",WebInspector.resourceCategories.Document,true),
-TextTrack:new WebInspector.ResourceType("texttrack","TextTrack",WebInspector.resourceCategories.Other,true),
-WebSocket:new WebInspector.ResourceType("websocket","WebSocket",WebInspector.resourceCategories.WebSocket,false),
-Other:new WebInspector.ResourceType("other","Other",WebInspector.resourceCategories.Other,false),
-SourceMapScript:new WebInspector.ResourceType("sm-script","Script",WebInspector.resourceCategories.Script,false),
-SourceMapStyleSheet:new WebInspector.ResourceType("sm-stylesheet","Stylesheet",WebInspector.resourceCategories.Stylesheet,false),
-Manifest:new WebInspector.ResourceType("manifest","Manifest",WebInspector.resourceCategories.Manifest,true)};
-
-
-
-
-
-
-WebInspector.ResourceType.mimeFromURL=function(url)
-{
-var name=WebInspector.ParsedURL.extractName(url);
-if(WebInspector.ResourceType._mimeTypeByName.has(name)){
-return WebInspector.ResourceType._mimeTypeByName.get(name);
-}
-var ext=WebInspector.ParsedURL.extractExtension(url).toLowerCase();
-return WebInspector.ResourceType._mimeTypeByExtension.get(ext);
-};
-
-WebInspector.ResourceType._mimeTypeByName=new Map([
-
-["Cakefile","text/x-coffeescript"]]);
-
-
-WebInspector.ResourceType._mimeTypeByExtension=new Map([
-
-["js","text/javascript"],
-["css","text/css"],
-["html","text/html"],
-["htm","text/html"],
-["xml","application/xml"],
-["xsl","application/xml"],
-
-
-["asp","application/x-aspx"],
-["aspx","application/x-aspx"],
-["jsp","application/x-jsp"],
-
-
-["c","text/x-c++src"],
-["cc","text/x-c++src"],
-["cpp","text/x-c++src"],
-["h","text/x-c++src"],
-["m","text/x-c++src"],
-["mm","text/x-c++src"],
-
-
-["coffee","text/x-coffeescript"],
-
-
-["dart","text/javascript"],
-
-
-["ts","text/typescript"],
-["tsx","text/typescript"],
-
-
-["json","application/json"],
-["gyp","application/json"],
-["gypi","application/json"],
-
-
-["cs","text/x-csharp"],
-
-
-["java","text/x-java"],
-
-
-["less","text/x-less"],
-
-
-["php","text/x-php"],
-["phtml","application/x-httpd-php"],
-
-
-["py","text/x-python"],
-
-
-["sh","text/x-sh"],
-
-
-["scss","text/x-scss"],
-
-
-["vtt","text/vtt"],
-
-
-["ls","text/x-livescript"],
-
-
-["cljs","text/x-clojure"],
-["cljc","text/x-clojure"],
-["cljx","text/x-clojure"],
-
-
-["styl","text/x-styl"],
-
-
-["jsx","text/jsx"],
-
-
-["jpeg","image/jpeg"],
-["jpg","image/jpeg"],
-["svg","image/svg"],
-["gif","image/gif"],
-["webp","image/webp"],
-["png","image/png"],
-["ico","image/ico"],
-["tiff","image/tiff"],
-["tif","image/tif"],
-["bmp","image/bmp"],
-
-
-["ttf","font/opentype"],
-["otf","font/opentype"],
-["ttc","font/opentype"],
-["woff","application/font-woff"]]);
-
-
-},{}],104:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 
 
 
@@ -46430,7 +46208,7 @@ return merged;
 }};
 
 
-},{}],105:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 
 
 
@@ -46777,7 +46555,7 @@ WebInspector.SourceEdit.comparator=function(edit1,edit2)
 return WebInspector.TextRange.comparator(edit1.oldRange,edit2.oldRange);
 };
 
-},{}],106:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 
 
 
@@ -47087,7 +46865,7 @@ WebInspector.TokenizerFactory.prototype={
 createTokenizer:function(mimeType){}};
 
 
-},{}],107:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 
 
 
@@ -47199,163 +46977,7 @@ String.standardFormatters,"",WebInspector.UIStringFormat._append,this._tokenized
 }};
 
 
-},{}],108:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.FilmStripModel=function(tracingModel,zeroTime)
-{
-this.reset(tracingModel,zeroTime);
-};
-
-WebInspector.FilmStripModel._category="disabled-by-default-devtools.screenshot";
-
-WebInspector.FilmStripModel.TraceEvents={
-CaptureFrame:"CaptureFrame",
-Screenshot:"Screenshot"};
-
-
-WebInspector.FilmStripModel.prototype={
-
-
-
-
-reset:function(tracingModel,zeroTime)
-{
-this._zeroTime=zeroTime||tracingModel.minimumRecordTime();
-this._spanTime=tracingModel.maximumRecordTime()-this._zeroTime;
-
-
-this._frames=[];
-var browserMain=WebInspector.TracingModel.browserMainThread(tracingModel);
-if(!browserMain)
-return;
-
-var events=browserMain.events();
-for(var i=0;i<events.length;++i){
-var event=events[i];
-if(event.startTime<this._zeroTime)
-continue;
-if(!event.hasCategory(WebInspector.FilmStripModel._category))
-continue;
-if(event.name===WebInspector.FilmStripModel.TraceEvents.CaptureFrame){
-var data=event.args["data"];
-if(data)
-this._frames.push(WebInspector.FilmStripModel.Frame._fromEvent(this,event,this._frames.length));
-}else if(event.name===WebInspector.FilmStripModel.TraceEvents.Screenshot){
-this._frames.push(WebInspector.FilmStripModel.Frame._fromSnapshot(this,event,this._frames.length));
-}
-}
-},
-
-
-
-
-frames:function()
-{
-return this._frames;
-},
-
-
-
-
-zeroTime:function()
-{
-return this._zeroTime;
-},
-
-
-
-
-spanTime:function()
-{
-return this._spanTime;
-},
-
-
-
-
-
-frameByTimestamp:function(timestamp)
-{
-var index=this._frames.upperBound(timestamp,(timestamp,frame)=>timestamp-frame.timestamp)-1;
-return index>=0?this._frames[index]:null;
-}};
-
-
-
-
-
-
-
-
-WebInspector.FilmStripModel.Frame=function(model,timestamp,index)
-{
-this._model=model;
-this.timestamp=timestamp;
-this.index=index;
-
-this._imageData=null;
-
-this._snapshot=null;
-};
-
-
-
-
-
-
-
-WebInspector.FilmStripModel.Frame._fromEvent=function(model,event,index)
-{
-var frame=new WebInspector.FilmStripModel.Frame(model,event.startTime,index);
-frame._imageData=event.args["data"];
-return frame;
-};
-
-
-
-
-
-
-
-WebInspector.FilmStripModel.Frame._fromSnapshot=function(model,snapshot,index)
-{
-var frame=new WebInspector.FilmStripModel.Frame(model,snapshot.startTime,index);
-frame._snapshot=snapshot;
-return frame;
-};
-
-WebInspector.FilmStripModel.Frame.prototype={
-
-
-
-model:function()
-{
-return this._model;
-},
-
-
-
-
-imageDataPromise:function()
-{
-if(this._imageData||!this._snapshot)
-return Promise.resolve(this._imageData);
-
-return this._snapshot.objectPromise();
-}};
-
-
-},{}],109:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 
 
 
@@ -48897,386 +48519,7 @@ equal:equal};
 
 };
 
-},{}],110:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-WebInspector.CPUProfileNode=function(node,sampleTime)
-{
-var callFrame=node.callFrame||{
-
-functionName:node["functionName"],
-scriptId:node["scriptId"],
-url:node["url"],
-lineNumber:node["lineNumber"]-1,
-columnNumber:node["columnNumber"]-1};
-
-WebInspector.ProfileNode.call(this,callFrame);
-this.id=node.id;
-this.self=node.hitCount*sampleTime;
-this.positionTicks=node.positionTicks;
-
-this.deoptReason=node.deoptReason&&node.deoptReason!=="no reason"?node.deoptReason:null;
-};
-
-WebInspector.CPUProfileNode.prototype={
-__proto__:WebInspector.ProfileNode.prototype};
-
-
-
-
-
-
-
-WebInspector.CPUProfileDataModel=function(profile)
-{
-var isLegacyFormat=!!profile["head"];
-if(isLegacyFormat){
-
-this.profileStartTime=profile.startTime*1000;
-this.profileEndTime=profile.endTime*1000;
-this.timestamps=profile.timestamps;
-this._compatibilityConversionHeadToNodes(profile);
-}else{
-
-this.profileStartTime=profile.startTime/1000;
-this.profileEndTime=profile.endTime/1000;
-this.timestamps=this._convertTimeDeltas(profile);
-}
-this.samples=profile.samples;
-this.totalHitCount=0;
-this.profileHead=this._translateProfileTree(profile.nodes);
-WebInspector.ProfileTreeModel.call(this,this.profileHead);
-this._extractMetaNodes();
-if(this.samples){
-this._buildIdToNodeMap();
-this._sortSamples();
-this._normalizeTimestamps();
-}
-};
-
-WebInspector.CPUProfileDataModel.prototype={
-
-
-
-_compatibilityConversionHeadToNodes:function(profile)
-{
-if(!profile.head||profile.nodes)
-return;
-
-var nodes=[];
-convertNodesTree(profile.head);
-profile.nodes=nodes;
-delete profile.head;
-
-
-
-
-function convertNodesTree(node)
-{
-nodes.push(node);
-node.children=node.children.map(convertNodesTree);
-return node.id;
-}
-},
-
-
-
-
-
-_convertTimeDeltas:function(profile)
-{
-if(!profile.timeDeltas)
-return null;
-var lastTimeUsec=profile.startTime;
-var timestamps=new Array(profile.timeDeltas.length);
-for(var i=0;i<timestamps.length;++i){
-lastTimeUsec+=profile.timeDeltas[i];
-timestamps[i]=lastTimeUsec;
-}
-return timestamps;
-},
-
-
-
-
-
-_translateProfileTree:function(nodes)
-{
-
-
-
-
-function isNativeNode(node)
-{
-if(node.callFrame)
-return!!node.callFrame.url&&node.callFrame.url.startsWith("native ");
-return!!node.url&&node.url.startsWith("native ");
-}
-
-
-
-function buildChildrenFromParents(nodes)
-{
-if(nodes[0].children)
-return;
-nodes[0].children=[];
-for(var i=1;i<nodes.length;++i){
-var node=nodes[i];
-var parentNode=nodeByIdMap.get(node.parent);
-if(parentNode.children)
-parentNode.children.push(node.id);else
-
-parentNode.children=[node.id];
-}
-}
-
-var nodeByIdMap=new Map();
-for(var i=0;i<nodes.length;++i){
-var node=nodes[i];
-nodeByIdMap.set(node.id,node);
-}
-buildChildrenFromParents(nodes);
-this.totalHitCount=nodes.reduce((acc,node)=>acc+node.hitCount,0);
-var sampleTime=(this.profileEndTime-this.profileStartTime)/this.totalHitCount;
-var keepNatives=!!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get();
-var root=nodes[0];
-
-var idMap=new Map([[root.id,root.id]]);
-var resultRoot=new WebInspector.CPUProfileNode(root,sampleTime);
-var parentNodeStack=root.children.map(()=>resultRoot);
-var sourceNodeStack=root.children.map(id=>nodeByIdMap.get(id));
-while(sourceNodeStack.length){
-var parentNode=parentNodeStack.pop();
-var sourceNode=sourceNodeStack.pop();
-if(!sourceNode.children)
-sourceNode.children=[];
-var targetNode=new WebInspector.CPUProfileNode(sourceNode,sampleTime);
-if(keepNatives||!isNativeNode(sourceNode)){
-parentNode.children.push(targetNode);
-parentNode=targetNode;
-}else{
-parentNode.self+=targetNode.self;
-}
-idMap.set(sourceNode.id,parentNode.id);
-parentNodeStack.push.apply(parentNodeStack,sourceNode.children.map(()=>parentNode));
-sourceNodeStack.push.apply(sourceNodeStack,sourceNode.children.map(id=>nodeByIdMap.get(id)));
-}
-if(this.samples)
-this.samples=this.samples.map(id=>idMap.get(id));
-return resultRoot;
-},
-
-_sortSamples:function()
-{
-var timestamps=this.timestamps;
-if(!timestamps)
-return;
-var samples=this.samples;
-var indices=timestamps.map((x,index)=>index);
-indices.sort((a,b)=>timestamps[a]-timestamps[b]);
-for(var i=0;i<timestamps.length;++i){
-var index=indices[i];
-if(index===i)
-continue;
-
-var savedTimestamp=timestamps[i];
-var savedSample=samples[i];
-var currentIndex=i;
-while(index!==i){
-samples[currentIndex]=samples[index];
-timestamps[currentIndex]=timestamps[index];
-currentIndex=index;
-index=indices[index];
-indices[currentIndex]=currentIndex;
-}
-samples[currentIndex]=savedSample;
-timestamps[currentIndex]=savedTimestamp;
-}
-},
-
-_normalizeTimestamps:function()
-{
-var timestamps=this.timestamps;
-if(!timestamps){
-
-
-var profileStartTime=this.profileStartTime;
-var interval=(this.profileEndTime-profileStartTime)/this.samples.length;
-timestamps=new Float64Array(this.samples.length+1);
-for(var i=0;i<timestamps.length;++i)
-timestamps[i]=profileStartTime+i*interval;
-this.timestamps=timestamps;
-return;
-}
-
-
-for(var i=0;i<timestamps.length;++i)
-timestamps[i]/=1000;
-var averageSample=(timestamps.peekLast()-timestamps[0])/(timestamps.length-1);
-
-this.timestamps.push(timestamps.peekLast()+averageSample);
-this.profileStartTime=timestamps[0];
-this.profileEndTime=timestamps.peekLast();
-},
-
-_buildIdToNodeMap:function()
-{
-
-this._idToNode=new Map();
-var idToNode=this._idToNode;
-var stack=[this.profileHead];
-while(stack.length){
-var node=stack.pop();
-idToNode.set(node.id,node);
-stack.push.apply(stack,node.children);
-}
-},
-
-_extractMetaNodes:function()
-{
-var topLevelNodes=this.profileHead.children;
-for(var i=0;i<topLevelNodes.length&&!(this.gcNode&&this.programNode&&this.idleNode);i++){
-var node=topLevelNodes[i];
-if(node.functionName==="(garbage collector)")
-this.gcNode=node;else
-if(node.functionName==="(program)")
-this.programNode=node;else
-if(node.functionName==="(idle)")
-this.idleNode=node;
-}
-},
-
-
-
-
-
-
-
-forEachFrame:function(openFrameCallback,closeFrameCallback,startTime,stopTime)
-{
-if(!this.profileHead||!this.samples)
-return;
-
-startTime=startTime||0;
-stopTime=stopTime||Infinity;
-var samples=this.samples;
-var timestamps=this.timestamps;
-var idToNode=this._idToNode;
-var gcNode=this.gcNode;
-var samplesCount=samples.length;
-var startIndex=timestamps.lowerBound(startTime);
-var stackTop=0;
-var stackNodes=[];
-var prevId=this.profileHead.id;
-var sampleTime=timestamps[samplesCount];
-var gcParentNode=null;
-
-if(!this._stackStartTimes)
-this._stackStartTimes=new Float64Array(this.maxDepth+2);
-var stackStartTimes=this._stackStartTimes;
-if(!this._stackChildrenDuration)
-this._stackChildrenDuration=new Float64Array(this.maxDepth+2);
-var stackChildrenDuration=this._stackChildrenDuration;
-
-for(var sampleIndex=startIndex;sampleIndex<samplesCount;sampleIndex++){
-sampleTime=timestamps[sampleIndex];
-if(sampleTime>=stopTime)
-break;
-var id=samples[sampleIndex];
-if(id===prevId)
-continue;
-var node=idToNode.get(id);
-var prevNode=idToNode.get(prevId);
-
-if(node===gcNode){
-
-gcParentNode=prevNode;
-openFrameCallback(gcParentNode.depth+1,gcNode,sampleTime);
-stackStartTimes[++stackTop]=sampleTime;
-stackChildrenDuration[stackTop]=0;
-prevId=id;
-continue;
-}
-if(prevNode===gcNode){
-
-var start=stackStartTimes[stackTop];
-var duration=sampleTime-start;
-stackChildrenDuration[stackTop-1]+=duration;
-closeFrameCallback(gcParentNode.depth+1,gcNode,start,duration,duration-stackChildrenDuration[stackTop]);
---stackTop;
-prevNode=gcParentNode;
-prevId=prevNode.id;
-gcParentNode=null;
-}
-
-while(node.depth>prevNode.depth){
-stackNodes.push(node);
-node=node.parent;
-}
-
-
-while(prevNode!==node){
-var start=stackStartTimes[stackTop];
-var duration=sampleTime-start;
-stackChildrenDuration[stackTop-1]+=duration;
-closeFrameCallback(prevNode.depth,prevNode,start,duration,duration-stackChildrenDuration[stackTop]);
---stackTop;
-if(node.depth===prevNode.depth){
-stackNodes.push(node);
-node=node.parent;
-}
-prevNode=prevNode.parent;
-}
-
-
-while(stackNodes.length){
-node=stackNodes.pop();
-openFrameCallback(node.depth,node,sampleTime);
-stackStartTimes[++stackTop]=sampleTime;
-stackChildrenDuration[stackTop]=0;
-}
-
-prevId=id;
-}
-
-if(idToNode.get(prevId)===gcNode){
-var start=stackStartTimes[stackTop];
-var duration=sampleTime-start;
-stackChildrenDuration[stackTop-1]+=duration;
-closeFrameCallback(gcParentNode.depth+1,node,start,duration,duration-stackChildrenDuration[stackTop]);
---stackTop;
-}
-
-for(var node=idToNode.get(prevId);node.parent;node=node.parent){
-var start=stackStartTimes[stackTop];
-var duration=sampleTime-start;
-stackChildrenDuration[stackTop-1]+=duration;
-closeFrameCallback(node.depth,node,start,duration,duration-stackChildrenDuration[stackTop]);
---stackTop;
-}
-},
-
-
-
-
-
-nodeByIndex:function(index)
-{
-return this._idToNode.get(this.samples[index])||null;
-},
-
-__proto__:WebInspector.ProfileTreeModel.prototype};
-
-
-},{}],111:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 
 
 
@@ -49722,7 +48965,7 @@ Active:"Active",
 Overloaded:"Overloaded"};
 
 
-},{}],112:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 
 
 
@@ -49976,7 +49219,7 @@ return new WebInspector.CSSLocation(header,lineNumber,this.columnNumberInSource(
 }};
 
 
-},{}],113:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 
 
@@ -50947,7 +50190,7 @@ WebInspector.CSSMetadata.Weight={
 "zoom":200};
 
 
-},{}],114:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 
 
 
@@ -51249,7 +50492,7 @@ return this.setText(text,true,true);
 }};
 
 
-},{}],115:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 
 
 
@@ -51575,7 +50818,7 @@ return this._cssModel.setKeyframeKey(styleSheetId,range,newKeyText);
 __proto__:WebInspector.CSSRule.prototype};
 
 
-},{}],116:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 
 
 
@@ -51890,2337 +51133,7 @@ this.insertPropertyAt(this.allProperties.length,name,value,userCallback);
 }};
 
 
-},{}],117:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.NetworkManager=function(target)
-{
-WebInspector.SDKModel.call(this,WebInspector.NetworkManager,target);
-this._dispatcher=new WebInspector.NetworkDispatcher(this);
-this._target=target;
-this._networkAgent=target.networkAgent();
-target.registerNetworkDispatcher(this._dispatcher);
-if(WebInspector.moduleSetting("cacheDisabled").get())
-this._networkAgent.setCacheDisabled(true);
-if(WebInspector.moduleSetting("monitoringXHREnabled").get())
-this._networkAgent.setMonitoringXHREnabled(true);
-
-
-if(Runtime.queryParam("remoteFrontend")||Runtime.queryParam("ws"))
-this._networkAgent.enable(10000000,5000000);else
-
-this._networkAgent.enable();
-
-this._bypassServiceWorkerSetting=WebInspector.settings.createSetting("bypassServiceWorker",false);
-if(this._bypassServiceWorkerSetting.get())
-this._bypassServiceWorkerChanged();
-this._bypassServiceWorkerSetting.addChangeListener(this._bypassServiceWorkerChanged,this);
-
-WebInspector.moduleSetting("cacheDisabled").addChangeListener(this._cacheDisabledSettingChanged,this);
-};
-
-
-WebInspector.NetworkManager.Events={
-RequestStarted:Symbol("RequestStarted"),
-RequestUpdated:Symbol("RequestUpdated"),
-RequestFinished:Symbol("RequestFinished"),
-RequestUpdateDropped:Symbol("RequestUpdateDropped"),
-ResponseReceived:Symbol("ResponseReceived")};
-
-
-WebInspector.NetworkManager._MIMETypes={
-"text/html":{"document":true},
-"text/xml":{"document":true},
-"text/plain":{"document":true},
-"application/xhtml+xml":{"document":true},
-"image/svg+xml":{"document":true},
-"text/css":{"stylesheet":true},
-"text/xsl":{"stylesheet":true},
-"text/vtt":{"texttrack":true}};
-
-
-
-
-
-
-WebInspector.NetworkManager.fromTarget=function(target)
-{
-return target.model(WebInspector.NetworkManager);
-};
-
-
-WebInspector.NetworkManager.Conditions;
-
-WebInspector.NetworkManager.NoThrottlingConditions={title:WebInspector.UIString("No throttling"),download:-1,upload:-1,latency:0};
-
-WebInspector.NetworkManager.OfflineConditions={title:WebInspector.UIString("Offline"),download:0,upload:0,latency:0};
-
-
-
-
-
-
-WebInspector.NetworkManager._connectionType=function(conditions)
-{
-if(!conditions.download&&!conditions.upload)
-return NetworkAgent.ConnectionType.None;
-var types=WebInspector.NetworkManager._connectionTypes;
-if(!types){
-WebInspector.NetworkManager._connectionTypes=[];
-types=WebInspector.NetworkManager._connectionTypes;
-types.push(["2g",NetworkAgent.ConnectionType.Cellular2g]);
-types.push(["3g",NetworkAgent.ConnectionType.Cellular3g]);
-types.push(["4g",NetworkAgent.ConnectionType.Cellular4g]);
-types.push(["bluetooth",NetworkAgent.ConnectionType.Bluetooth]);
-types.push(["wifi",NetworkAgent.ConnectionType.Wifi]);
-types.push(["wimax",NetworkAgent.ConnectionType.Wimax]);
-}
-for(var type of types){
-if(conditions.title.toLowerCase().indexOf(type[0])!==-1)
-return type[1];
-}
-return NetworkAgent.ConnectionType.Other;
-};
-
-WebInspector.NetworkManager.prototype={
-
-
-
-
-inflightRequestForURL:function(url)
-{
-return this._dispatcher._inflightRequestsByURL[url];
-},
-
-
-
-
-_cacheDisabledSettingChanged:function(event)
-{
-var enabled=event.data;
-this._networkAgent.setCacheDisabled(enabled);
-},
-
-dispose:function()
-{
-WebInspector.moduleSetting("cacheDisabled").removeChangeListener(this._cacheDisabledSettingChanged,this);
-},
-
-
-
-
-bypassServiceWorkerSetting:function()
-{
-return this._bypassServiceWorkerSetting;
-},
-
-_bypassServiceWorkerChanged:function()
-{
-this._networkAgent.setBypassServiceWorker(this._bypassServiceWorkerSetting.get());
-},
-
-__proto__:WebInspector.SDKModel.prototype};
-
-
-
-
-
-
-WebInspector.NetworkDispatcher=function(manager)
-{
-this._manager=manager;
-this._inflightRequestsById={};
-this._inflightRequestsByURL={};
-};
-
-WebInspector.NetworkDispatcher.prototype={
-
-
-
-
-_headersMapToHeadersArray:function(headersMap)
-{
-var result=[];
-for(var name in headersMap){
-var values=headersMap[name].split("\n");
-for(var i=0;i<values.length;++i)
-result.push({name:name,value:values[i]});
-}
-return result;
-},
-
-
-
-
-
-_updateNetworkRequestWithRequest:function(networkRequest,request)
-{
-networkRequest.requestMethod=request.method;
-networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
-networkRequest.requestFormData=request.postData;
-networkRequest.setInitialPriority(request.initialPriority);
-networkRequest.mixedContentType=request.mixedContentType||NetworkAgent.RequestMixedContentType.None;
-},
-
-
-
-
-
-_updateNetworkRequestWithResponse:function(networkRequest,response)
-{
-if(response.url&&networkRequest.url!==response.url)
-networkRequest.url=response.url;
-networkRequest.mimeType=response.mimeType;
-networkRequest.statusCode=response.status;
-networkRequest.statusText=response.statusText;
-networkRequest.responseHeaders=this._headersMapToHeadersArray(response.headers);
-if(response.encodedDataLength>=0)
-networkRequest.setTransferSize(response.encodedDataLength);
-if(response.headersText)
-networkRequest.responseHeadersText=response.headersText;
-if(response.requestHeaders){
-networkRequest.setRequestHeaders(this._headersMapToHeadersArray(response.requestHeaders));
-networkRequest.setRequestHeadersText(response.requestHeadersText||"");
-}
-
-networkRequest.connectionReused=response.connectionReused;
-networkRequest.connectionId=String(response.connectionId);
-if(response.remoteIPAddress)
-networkRequest.setRemoteAddress(response.remoteIPAddress,response.remotePort||-1);
-
-if(response.fromServiceWorker)
-networkRequest.fetchedViaServiceWorker=true;
-
-if(response.fromDiskCache)
-networkRequest.setFromDiskCache();
-networkRequest.timing=response.timing;
-
-networkRequest.protocol=response.protocol;
-
-networkRequest.setSecurityState(response.securityState);
-
-if(!this._mimeTypeIsConsistentWithType(networkRequest)){
-var consoleModel=this._manager._target.consoleModel;
-consoleModel.addMessage(new WebInspector.ConsoleMessage(consoleModel.target(),WebInspector.ConsoleMessage.MessageSource.Network,
-WebInspector.ConsoleMessage.MessageLevel.Log,
-WebInspector.UIString("Resource interpreted as %s but transferred with MIME type %s: \"%s\".",networkRequest.resourceType().title(),networkRequest.mimeType,networkRequest.url),
-WebInspector.ConsoleMessage.MessageType.Log,
-"",
-0,
-0,
-networkRequest.requestId));
-}
-
-if(response.securityDetails)
-networkRequest.setSecurityDetails(response.securityDetails);
-},
-
-
-
-
-
-_mimeTypeIsConsistentWithType:function(networkRequest)
-{
-
-
-
-
-
-
-if(networkRequest.hasErrorStatusCode()||networkRequest.statusCode===304||networkRequest.statusCode===204)
-return true;
-
-var resourceType=networkRequest.resourceType();
-if(resourceType!==WebInspector.resourceTypes.Stylesheet&&
-resourceType!==WebInspector.resourceTypes.Document&&
-resourceType!==WebInspector.resourceTypes.TextTrack){
-return true;
-}
-
-if(!networkRequest.mimeType)
-return true;
-
-if(networkRequest.mimeType in WebInspector.NetworkManager._MIMETypes)
-return resourceType.name()in WebInspector.NetworkManager._MIMETypes[networkRequest.mimeType];
-
-return false;
-},
-
-
-
-
-
-
-
-resourceChangedPriority:function(requestId,newPriority,timestamp)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(networkRequest)
-networkRequest.setPriority(newPriority);
-},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-requestWillBeSent:function(requestId,frameId,loaderId,documentURL,request,time,wallTime,initiator,redirectResponse,resourceType)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(networkRequest){
-
-if(!redirectResponse)
-return;
-this.responseReceived(requestId,frameId,loaderId,time,PageAgent.ResourceType.Other,redirectResponse);
-networkRequest=this._appendRedirect(requestId,time,request.url);
-}else
-networkRequest=this._createNetworkRequest(requestId,frameId,loaderId,request.url,documentURL,initiator);
-networkRequest.hasNetworkData=true;
-this._updateNetworkRequestWithRequest(networkRequest,request);
-networkRequest.setIssueTime(time,wallTime);
-networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
-
-this._startNetworkRequest(networkRequest);
-},
-
-
-
-
-
-requestServedFromCache:function(requestId)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.setFromMemoryCache();
-},
-
-
-
-
-
-
-
-
-
-
-responseReceived:function(requestId,frameId,loaderId,time,resourceType,response)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest){
-
-var eventData={};
-eventData.url=response.url;
-eventData.frameId=frameId;
-eventData.loaderId=loaderId;
-eventData.resourceType=resourceType;
-eventData.mimeType=response.mimeType;
-this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdateDropped,eventData);
-return;
-}
-
-networkRequest.responseReceivedTime=time;
-networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
-
-this._updateNetworkRequestWithResponse(networkRequest,response);
-
-this._updateNetworkRequest(networkRequest);
-this._manager.dispatchEventToListeners(WebInspector.NetworkManager.Events.ResponseReceived,networkRequest);
-},
-
-
-
-
-
-
-
-
-dataReceived:function(requestId,time,dataLength,encodedDataLength)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.resourceSize+=dataLength;
-if(encodedDataLength!==-1)
-networkRequest.increaseTransferSize(encodedDataLength);
-networkRequest.endTime=time;
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-loadingFinished:function(requestId,finishTime,encodedDataLength)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-this._finishNetworkRequest(networkRequest,finishTime,encodedDataLength);
-},
-
-
-
-
-
-
-
-
-
-
-loadingFailed:function(requestId,time,resourceType,localizedDescription,canceled,blockedReason)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.failed=true;
-networkRequest.setResourceType(WebInspector.resourceTypes[resourceType]);
-networkRequest.canceled=canceled;
-if(blockedReason){
-networkRequest.setBlockedReason(blockedReason);
-if(blockedReason===NetworkAgent.BlockedReason.Inspector){
-var consoleModel=this._manager._target.consoleModel;
-consoleModel.addMessage(new WebInspector.ConsoleMessage(consoleModel.target(),WebInspector.ConsoleMessage.MessageSource.Network,
-WebInspector.ConsoleMessage.MessageLevel.Warning,
-WebInspector.UIString("Request was blocked by DevTools: \"%s\".",networkRequest.url),
-WebInspector.ConsoleMessage.MessageType.Log,
-"",
-0,
-0,
-networkRequest.requestId));
-}
-}
-networkRequest.localizedFailDescription=localizedDescription;
-this._finishNetworkRequest(networkRequest,time,-1);
-},
-
-
-
-
-
-
-
-webSocketCreated:function(requestId,requestURL,initiator)
-{
-var networkRequest=new WebInspector.NetworkRequest(this._manager._target,requestId,requestURL,"","","",initiator||null);
-networkRequest.setResourceType(WebInspector.resourceTypes.WebSocket);
-this._startNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-
-webSocketWillSendHandshakeRequest:function(requestId,time,wallTime,request)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.requestMethod="GET";
-networkRequest.setRequestHeaders(this._headersMapToHeadersArray(request.headers));
-networkRequest.setIssueTime(time,wallTime);
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-webSocketHandshakeResponseReceived:function(requestId,time,response)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.statusCode=response.status;
-networkRequest.statusText=response.statusText;
-networkRequest.responseHeaders=this._headersMapToHeadersArray(response.headers);
-networkRequest.responseHeadersText=response.headersText;
-if(response.requestHeaders)
-networkRequest.setRequestHeaders(this._headersMapToHeadersArray(response.requestHeaders));
-if(response.requestHeadersText)
-networkRequest.setRequestHeadersText(response.requestHeadersText);
-networkRequest.responseReceivedTime=time;
-networkRequest.protocol="websocket";
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-webSocketFrameReceived:function(requestId,time,response)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.addFrame(response,time);
-networkRequest.responseReceivedTime=time;
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-webSocketFrameSent:function(requestId,time,response)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.addFrame(response,time,true);
-networkRequest.responseReceivedTime=time;
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-
-webSocketFrameError:function(requestId,time,errorMessage)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-
-networkRequest.addFrameError(errorMessage,time);
-networkRequest.responseReceivedTime=time;
-
-this._updateNetworkRequest(networkRequest);
-},
-
-
-
-
-
-
-webSocketClosed:function(requestId,time)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-this._finishNetworkRequest(networkRequest,time,-1);
-},
-
-
-
-
-
-
-
-
-
-eventSourceMessageReceived:function(requestId,time,eventName,eventId,data)
-{
-var networkRequest=this._inflightRequestsById[requestId];
-if(!networkRequest)
-return;
-networkRequest.addEventSourceMessage(time,eventName,eventId,data);
-},
-
-
-
-
-
-
-
-_appendRedirect:function(requestId,time,redirectURL)
-{
-var originalNetworkRequest=this._inflightRequestsById[requestId];
-var previousRedirects=originalNetworkRequest.redirects||[];
-originalNetworkRequest.requestId=requestId+":redirected."+previousRedirects.length;
-delete originalNetworkRequest.redirects;
-if(previousRedirects.length>0)
-originalNetworkRequest.redirectSource=previousRedirects[previousRedirects.length-1];
-this._finishNetworkRequest(originalNetworkRequest,time,-1);
-var newNetworkRequest=this._createNetworkRequest(requestId,originalNetworkRequest.frameId,originalNetworkRequest.loaderId,
-redirectURL,originalNetworkRequest.documentURL,originalNetworkRequest.initiator());
-newNetworkRequest.redirects=previousRedirects.concat(originalNetworkRequest);
-return newNetworkRequest;
-},
-
-
-
-
-_startNetworkRequest:function(networkRequest)
-{
-this._inflightRequestsById[networkRequest.requestId]=networkRequest;
-this._inflightRequestsByURL[networkRequest.url]=networkRequest;
-this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestStarted,networkRequest);
-},
-
-
-
-
-_updateNetworkRequest:function(networkRequest)
-{
-this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestUpdated,networkRequest);
-},
-
-
-
-
-
-
-_finishNetworkRequest:function(networkRequest,finishTime,encodedDataLength)
-{
-networkRequest.endTime=finishTime;
-networkRequest.finished=true;
-if(encodedDataLength>=0)
-networkRequest.setTransferSize(encodedDataLength);
-this._dispatchEventToListeners(WebInspector.NetworkManager.Events.RequestFinished,networkRequest);
-delete this._inflightRequestsById[networkRequest.requestId];
-delete this._inflightRequestsByURL[networkRequest.url];
-},
-
-
-
-
-
-_dispatchEventToListeners:function(eventType,networkRequest)
-{
-this._manager.dispatchEventToListeners(eventType,networkRequest);
-},
-
-
-
-
-
-
-
-
-
-_createNetworkRequest:function(requestId,frameId,loaderId,url,documentURL,initiator)
-{
-return new WebInspector.NetworkRequest(this._manager._target,requestId,url,documentURL,frameId,loaderId,initiator);
-}};
-
-
-
-
-
-
-
-
-WebInspector.MultitargetNetworkManager=function()
-{
-WebInspector.Object.call(this);
-WebInspector.targetManager.observeTargets(this);
-
-
-this._blockedURLs=new Set();
-this._blockedSetting=WebInspector.moduleSetting("blockedURLs");
-this._blockedSetting.addChangeListener(this._updateBlockedURLs,this);
-this._blockedSetting.set([]);
-this._updateBlockedURLs();
-
-this._userAgentOverride="";
-
-this._agents=new Set();
-
-this._networkConditions=WebInspector.NetworkManager.NoThrottlingConditions;
-};
-
-
-WebInspector.MultitargetNetworkManager.Events={
-ConditionsChanged:Symbol("ConditionsChanged"),
-UserAgentChanged:Symbol("UserAgentChanged")};
-
-
-
-
-
-
-WebInspector.MultitargetNetworkManager.patchUserAgentWithChromeVersion=function(uaString)
-{
-
-var chromeRegex=new RegExp("(?:^|\\W)Chrome/(\\S+)");
-var chromeMatch=navigator.userAgent.match(chromeRegex);
-if(chromeMatch&&chromeMatch.length>1)
-return String.sprintf(uaString,chromeMatch[1]);
-return uaString;
-};
-
-WebInspector.MultitargetNetworkManager.prototype={
-
-
-
-
-targetAdded:function(target)
-{
-var networkAgent=target.networkAgent();
-if(this._extraHeaders)
-networkAgent.setExtraHTTPHeaders(this._extraHeaders);
-if(this._currentUserAgent())
-networkAgent.setUserAgentOverride(this._currentUserAgent());
-for(var url of this._blockedURLs)
-networkAgent.addBlockedURL(url);
-this._agents.add(networkAgent);
-if(this.isThrottling())
-this._updateNetworkConditions(networkAgent);
-},
-
-
-
-
-
-targetRemoved:function(target)
-{
-this._agents.delete(target.networkAgent());
-},
-
-
-
-
-isThrottling:function()
-{
-return this._networkConditions.download>=0||this._networkConditions.upload>=0||this._networkConditions.latency>0;
-},
-
-
-
-
-isOffline:function()
-{
-return!this._networkConditions.download&&!this._networkConditions.upload;
-},
-
-
-
-
-setNetworkConditions:function(conditions)
-{
-this._networkConditions=conditions;
-for(var agent of this._agents)
-this._updateNetworkConditions(agent);
-this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.ConditionsChanged);
-},
-
-
-
-
-networkConditions:function()
-{
-return this._networkConditions;
-},
-
-
-
-
-_updateNetworkConditions:function(networkAgent)
-{
-var conditions=this._networkConditions;
-if(!this.isThrottling()){
-networkAgent.emulateNetworkConditions(false,0,0,0);
-}else{
-networkAgent.emulateNetworkConditions(this.isOffline(),conditions.latency,conditions.download<0?0:conditions.download,conditions.upload<0?0:conditions.upload,WebInspector.NetworkManager._connectionType(conditions));
-}
-},
-
-
-
-
-setExtraHTTPHeaders:function(headers)
-{
-this._extraHeaders=headers;
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().setExtraHTTPHeaders(this._extraHeaders);
-},
-
-
-
-
-_currentUserAgent:function()
-{
-return this._customUserAgent?this._customUserAgent:this._userAgentOverride;
-},
-
-_updateUserAgentOverride:function()
-{
-var userAgent=this._currentUserAgent();
-WebInspector.ResourceLoader.targetUserAgent=userAgent;
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().setUserAgentOverride(userAgent);
-},
-
-
-
-
-setUserAgentOverride:function(userAgent)
-{
-if(this._userAgentOverride===userAgent)
-return;
-this._userAgentOverride=userAgent;
-if(!this._customUserAgent)
-this._updateUserAgentOverride();
-this.dispatchEventToListeners(WebInspector.MultitargetNetworkManager.Events.UserAgentChanged);
-},
-
-
-
-
-userAgentOverride:function()
-{
-return this._userAgentOverride;
-},
-
-
-
-
-setCustomUserAgentOverride:function(userAgent)
-{
-this._customUserAgent=userAgent;
-this._updateUserAgentOverride();
-},
-
-_updateBlockedURLs:function()
-{
-var blocked=this._blockedSetting.get();
-for(var url of blocked){
-if(!this._blockedURLs.has(url))
-this._addBlockedURL(url);
-}
-for(var url of this._blockedURLs){
-if(blocked.indexOf(url)===-1)
-this._removeBlockedURL(url);
-}
-},
-
-
-
-
-_addBlockedURL:function(url)
-{
-this._blockedURLs.add(url);
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().addBlockedURL(url);
-},
-
-
-
-
-_removeBlockedURL:function(url)
-{
-this._blockedURLs.delete(url);
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().removeBlockedURL(url);
-},
-
-clearBrowserCache:function()
-{
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().clearBrowserCache();
-},
-
-clearBrowserCookies:function()
-{
-for(var target of WebInspector.targetManager.targets())
-target.networkAgent().clearBrowserCookies();
-},
-
-
-
-
-
-getCertificate:function(origin,callback)
-{
-var target=WebInspector.targetManager.mainTarget();
-target.networkAgent().getCertificate(origin,mycallback);
-
-
-
-
-
-function mycallback(error,certificate)
-{
-callback(error?[]:certificate);
-}
-},
-
-
-
-
-
-loadResource:function(url,callback)
-{
-var headers={};
-
-var currentUserAgent=this._currentUserAgent();
-if(currentUserAgent)
-headers["User-Agent"]=currentUserAgent;
-
-if(WebInspector.moduleSetting("cacheDisabled").get())
-headers["Cache-Control"]="no-cache";
-
-WebInspector.ResourceLoader.load(url,headers,callback);
-},
-
-__proto__:WebInspector.Object.prototype};
-
-
-
-
-
-WebInspector.multitargetNetworkManager;
-
-},{}],118:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.NetworkRequest=function(target,requestId,url,documentURL,frameId,loaderId,initiator)
-{
-WebInspector.SDKObject.call(this,target);
-
-this._networkLog=WebInspector.NetworkLog.fromTarget(target);
-this._networkManager=WebInspector.NetworkManager.fromTarget(target);
-this._requestId=requestId;
-this.url=url;
-this._documentURL=documentURL;
-this._frameId=frameId;
-this._loaderId=loaderId;
-
-this._initiator=initiator;
-this._issueTime=-1;
-this._startTime=-1;
-this._endTime=-1;
-
-this._blockedReason=undefined;
-
-this.statusCode=0;
-this.statusText="";
-this.requestMethod="";
-this.requestTime=0;
-this.protocol="";
-
-this.mixedContentType=NetworkAgent.RequestMixedContentType.None;
-
-
-this._initialPriority=null;
-
-this._currentPriority=null;
-
-
-this._resourceType=WebInspector.resourceTypes.Other;
-this._contentEncoded=false;
-this._pendingContentCallbacks=[];
-
-this._frames=[];
-
-this._eventSourceMessages=[];
-
-this._responseHeaderValues={};
-
-this._remoteAddress="";
-
-
-this._securityState=SecurityAgent.SecurityState.Unknown;
-
-this._securityDetails=null;
-
-
-this.connectionId="0";
-};
-
-
-WebInspector.NetworkRequest.Events={
-FinishedLoading:Symbol("FinishedLoading"),
-TimingChanged:Symbol("TimingChanged"),
-RemoteAddressChanged:Symbol("RemoteAddressChanged"),
-RequestHeadersChanged:Symbol("RequestHeadersChanged"),
-ResponseHeadersChanged:Symbol("ResponseHeadersChanged"),
-WebsocketFrameAdded:Symbol("WebsocketFrameAdded"),
-EventSourceMessageAdded:Symbol("EventSourceMessageAdded")};
-
-
-
-WebInspector.NetworkRequest.InitiatorType={
-Other:"other",
-Parser:"parser",
-Redirect:"redirect",
-Script:"script"};
-
-
-
-WebInspector.NetworkRequest.NameValue;
-
-
-WebInspector.NetworkRequest.WebSocketFrameType={
-Send:"send",
-Receive:"receive",
-Error:"error"};
-
-
-
-WebInspector.NetworkRequest.WebSocketFrame;
-
-
-WebInspector.NetworkRequest.EventSourceMessage;
-
-WebInspector.NetworkRequest.prototype={
-
-
-
-
-indentityCompare:function(other)
-{
-if(this._requestId>other._requestId)
-return 1;
-if(this._requestId<other._requestId)
-return-1;
-return 0;
-},
-
-
-
-
-get requestId()
-{
-return this._requestId;
-},
-
-set requestId(requestId)
-{
-this._requestId=requestId;
-},
-
-
-
-
-get url()
-{
-return this._url;
-},
-
-set url(x)
-{
-if(this._url===x)
-return;
-
-this._url=x;
-this._parsedURL=new WebInspector.ParsedURL(x);
-delete this._queryString;
-delete this._parsedQueryParameters;
-delete this._name;
-delete this._path;
-},
-
-
-
-
-get documentURL()
-{
-return this._documentURL;
-},
-
-get parsedURL()
-{
-return this._parsedURL;
-},
-
-
-
-
-get frameId()
-{
-return this._frameId;
-},
-
-
-
-
-get loaderId()
-{
-return this._loaderId;
-},
-
-
-
-
-
-setRemoteAddress:function(ip,port)
-{
-this._remoteAddress=ip+":"+port;
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RemoteAddressChanged,this);
-},
-
-
-
-
-remoteAddress:function()
-{
-return this._remoteAddress;
-},
-
-
-
-
-securityState:function()
-{
-return this._securityState;
-},
-
-
-
-
-setSecurityState:function(securityState)
-{
-this._securityState=securityState;
-},
-
-
-
-
-securityDetails:function()
-{
-return this._securityDetails;
-},
-
-
-
-
-setSecurityDetails:function(securityDetails)
-{
-this._securityDetails=securityDetails;
-},
-
-
-
-
-get startTime()
-{
-return this._startTime||-1;
-},
-
-
-
-
-
-setIssueTime:function(monotonicTime,wallTime)
-{
-this._issueTime=monotonicTime;
-this._wallIssueTime=wallTime;
-this._startTime=monotonicTime;
-},
-
-
-
-
-issueTime:function()
-{
-return this._issueTime;
-},
-
-
-
-
-
-pseudoWallTime:function(monotonicTime)
-{
-return this._wallIssueTime?this._wallIssueTime-this._issueTime+monotonicTime:monotonicTime;
-},
-
-
-
-
-get responseReceivedTime()
-{
-return this._responseReceivedTime||-1;
-},
-
-set responseReceivedTime(x)
-{
-this._responseReceivedTime=x;
-},
-
-
-
-
-get endTime()
-{
-return this._endTime||-1;
-},
-
-set endTime(x)
-{
-if(this.timing&&this.timing.requestTime){
-
-this._endTime=Math.max(x,this.responseReceivedTime);
-}else{
-
-this._endTime=x;
-if(this._responseReceivedTime>x)
-this._responseReceivedTime=x;
-}
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.TimingChanged,this);
-},
-
-
-
-
-get duration()
-{
-if(this._endTime===-1||this._startTime===-1)
-return-1;
-return this._endTime-this._startTime;
-},
-
-
-
-
-get latency()
-{
-if(this._responseReceivedTime===-1||this._startTime===-1)
-return-1;
-return this._responseReceivedTime-this._startTime;
-},
-
-
-
-
-get resourceSize()
-{
-return this._resourceSize||0;
-},
-
-set resourceSize(x)
-{
-this._resourceSize=x;
-},
-
-
-
-
-get transferSize()
-{
-return this._transferSize||0;
-},
-
-
-
-
-increaseTransferSize:function(x)
-{
-this._transferSize=(this._transferSize||0)+x;
-},
-
-
-
-
-setTransferSize:function(x)
-{
-this._transferSize=x;
-},
-
-
-
-
-get finished()
-{
-return this._finished;
-},
-
-set finished(x)
-{
-if(this._finished===x)
-return;
-
-this._finished=x;
-
-if(x){
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.FinishedLoading,this);
-if(this._pendingContentCallbacks.length)
-this._innerRequestContent();
-}
-},
-
-
-
-
-get failed()
-{
-return this._failed;
-},
-
-set failed(x)
-{
-this._failed=x;
-},
-
-
-
-
-get canceled()
-{
-return this._canceled;
-},
-
-set canceled(x)
-{
-this._canceled=x;
-},
-
-
-
-
-blockedReason:function()
-{
-return this._blockedReason;
-},
-
-
-
-
-setBlockedReason:function(reason)
-{
-this._blockedReason=reason;
-},
-
-
-
-
-wasBlocked:function()
-{
-return!!this._blockedReason;
-},
-
-
-
-
-cached:function()
-{
-return(!!this._fromMemoryCache||!!this._fromDiskCache)&&!this._transferSize;
-},
-
-
-
-
-cachedInMemory:function()
-{
-return!!this._fromMemoryCache&&!this._transferSize;
-},
-
-setFromMemoryCache:function()
-{
-this._fromMemoryCache=true;
-delete this._timing;
-},
-
-setFromDiskCache:function()
-{
-this._fromDiskCache=true;
-},
-
-
-
-
-get fetchedViaServiceWorker()
-{
-return this._fetchedViaServiceWorker;
-},
-
-set fetchedViaServiceWorker(x)
-{
-this._fetchedViaServiceWorker=x;
-},
-
-
-
-
-get timing()
-{
-return this._timing;
-},
-
-set timing(x)
-{
-if(x&&!this._fromMemoryCache){
-
-
-this._startTime=x.requestTime;
-this._responseReceivedTime=x.requestTime+x.receiveHeadersEnd/1000.0;
-
-this._timing=x;
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.TimingChanged,this);
-}
-},
-
-
-
-
-get mimeType()
-{
-return this._mimeType;
-},
-
-set mimeType(x)
-{
-this._mimeType=x;
-},
-
-
-
-
-get displayName()
-{
-return this._parsedURL.displayName;
-},
-
-
-
-
-name:function()
-{
-if(this._name)
-return this._name;
-this._parseNameAndPathFromURL();
-return this._name;
-},
-
-
-
-
-path:function()
-{
-if(this._path)
-return this._path;
-this._parseNameAndPathFromURL();
-return this._path;
-},
-
-_parseNameAndPathFromURL:function()
-{
-if(this._parsedURL.isDataURL()){
-this._name=this._parsedURL.dataURLDisplayName();
-this._path="";
-}else if(this._parsedURL.isAboutBlank()){
-this._name=this._parsedURL.url;
-this._path="";
-}else{
-this._path=this._parsedURL.host+this._parsedURL.folderPathComponents;
-
-var inspectedURL=this.target().inspectedURL().asParsedURL();
-this._path=this._path.trimURL(inspectedURL?inspectedURL.host:"");
-if(this._parsedURL.lastPathComponent||this._parsedURL.queryParams)
-this._name=this._parsedURL.lastPathComponent+(this._parsedURL.queryParams?"?"+this._parsedURL.queryParams:"");else
-if(this._parsedURL.folderPathComponents){
-this._name=this._parsedURL.folderPathComponents.substring(this._parsedURL.folderPathComponents.lastIndexOf("/")+1)+"/";
-this._path=this._path.substring(0,this._path.lastIndexOf("/"));
-}else{
-this._name=this._parsedURL.host;
-this._path="";
-}
-}
-},
-
-
-
-
-get folder()
-{
-var path=this._parsedURL.path;
-var indexOfQuery=path.indexOf("?");
-if(indexOfQuery!==-1)
-path=path.substring(0,indexOfQuery);
-var lastSlashIndex=path.lastIndexOf("/");
-return lastSlashIndex!==-1?path.substring(0,lastSlashIndex):"";
-},
-
-
-
-
-resourceType:function()
-{
-return this._resourceType;
-},
-
-
-
-
-setResourceType:function(resourceType)
-{
-this._resourceType=resourceType;
-},
-
-
-
-
-get domain()
-{
-return this._parsedURL.host;
-},
-
-
-
-
-get scheme()
-{
-return this._parsedURL.scheme;
-},
-
-
-
-
-get redirectSource()
-{
-if(this.redirects&&this.redirects.length>0)
-return this.redirects[this.redirects.length-1];
-return this._redirectSource;
-},
-
-set redirectSource(x)
-{
-this._redirectSource=x;
-delete this._initiatorInfo;
-},
-
-
-
-
-requestHeaders:function()
-{
-return this._requestHeaders||[];
-},
-
-
-
-
-setRequestHeaders:function(headers)
-{
-this._requestHeaders=headers;
-delete this._requestCookies;
-
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RequestHeadersChanged);
-},
-
-
-
-
-requestHeadersText:function()
-{
-return this._requestHeadersText;
-},
-
-
-
-
-setRequestHeadersText:function(text)
-{
-this._requestHeadersText=text;
-
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.RequestHeadersChanged);
-},
-
-
-
-
-
-requestHeaderValue:function(headerName)
-{
-return this._headerValue(this.requestHeaders(),headerName);
-},
-
-
-
-
-get requestCookies()
-{
-if(!this._requestCookies)
-this._requestCookies=WebInspector.CookieParser.parseCookie(this.target(),this.requestHeaderValue("Cookie"));
-return this._requestCookies;
-},
-
-
-
-
-get requestFormData()
-{
-return this._requestFormData;
-},
-
-set requestFormData(x)
-{
-this._requestFormData=x;
-delete this._parsedFormParameters;
-},
-
-
-
-
-requestHttpVersion:function()
-{
-var headersText=this.requestHeadersText();
-if(!headersText)
-return this.requestHeaderValue("version")||this.requestHeaderValue(":version")||"unknown";
-var firstLine=headersText.split(/\r\n/)[0];
-var match=firstLine.match(/(HTTP\/\d+\.\d+)$/);
-return match?match[1]:"HTTP/0.9";
-},
-
-
-
-
-get responseHeaders()
-{
-return this._responseHeaders||[];
-},
-
-set responseHeaders(x)
-{
-this._responseHeaders=x;
-delete this._sortedResponseHeaders;
-delete this._serverTimings;
-delete this._responseCookies;
-this._responseHeaderValues={};
-
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.ResponseHeadersChanged);
-},
-
-
-
-
-get responseHeadersText()
-{
-return this._responseHeadersText;
-},
-
-set responseHeadersText(x)
-{
-this._responseHeadersText=x;
-
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.ResponseHeadersChanged);
-},
-
-
-
-
-get sortedResponseHeaders()
-{
-if(this._sortedResponseHeaders!==undefined)
-return this._sortedResponseHeaders;
-
-this._sortedResponseHeaders=this.responseHeaders.slice();
-this._sortedResponseHeaders.sort(function(a,b){return a.name.toLowerCase().compareTo(b.name.toLowerCase());});
-return this._sortedResponseHeaders;
-},
-
-
-
-
-
-responseHeaderValue:function(headerName)
-{
-var value=this._responseHeaderValues[headerName];
-if(value===undefined){
-value=this._headerValue(this.responseHeaders,headerName);
-this._responseHeaderValues[headerName]=value!==undefined?value:null;
-}
-return value!==null?value:undefined;
-},
-
-
-
-
-get responseCookies()
-{
-if(!this._responseCookies)
-this._responseCookies=WebInspector.CookieParser.parseSetCookie(this.target(),this.responseHeaderValue("Set-Cookie"));
-return this._responseCookies;
-},
-
-
-
-
-get serverTimings()
-{
-if(typeof this._serverTimings==="undefined")
-this._serverTimings=WebInspector.ServerTiming.parseHeaders(this.responseHeaders);
-return this._serverTimings;
-},
-
-
-
-
-queryString:function()
-{
-if(this._queryString!==undefined)
-return this._queryString;
-
-var queryString=null;
-var url=this.url;
-var questionMarkPosition=url.indexOf("?");
-if(questionMarkPosition!==-1){
-queryString=url.substring(questionMarkPosition+1);
-var hashSignPosition=queryString.indexOf("#");
-if(hashSignPosition!==-1)
-queryString=queryString.substring(0,hashSignPosition);
-}
-this._queryString=queryString;
-return this._queryString;
-},
-
-
-
-
-get queryParameters()
-{
-if(this._parsedQueryParameters)
-return this._parsedQueryParameters;
-var queryString=this.queryString();
-if(!queryString)
-return null;
-this._parsedQueryParameters=this._parseParameters(queryString);
-return this._parsedQueryParameters;
-},
-
-
-
-
-get formParameters()
-{
-if(this._parsedFormParameters)
-return this._parsedFormParameters;
-if(!this.requestFormData)
-return null;
-var requestContentType=this.requestContentType();
-if(!requestContentType||!requestContentType.match(/^application\/x-www-form-urlencoded\s*(;.*)?$/i))
-return null;
-this._parsedFormParameters=this._parseParameters(this.requestFormData);
-return this._parsedFormParameters;
-},
-
-
-
-
-responseHttpVersion:function()
-{
-var headersText=this._responseHeadersText;
-if(!headersText)
-return this.responseHeaderValue("version")||this.responseHeaderValue(":version")||"unknown";
-var firstLine=headersText.split(/\r\n/)[0];
-var match=firstLine.match(/^(HTTP\/\d+\.\d+)/);
-return match?match[1]:"HTTP/0.9";
-},
-
-
-
-
-
-_parseParameters:function(queryString)
-{
-function parseNameValue(pair)
-{
-var position=pair.indexOf("=");
-if(position===-1)
-return{name:pair,value:""};else
-
-return{name:pair.substring(0,position),value:pair.substring(position+1)};
-}
-return queryString.split("&").map(parseNameValue);
-},
-
-
-
-
-
-
-_headerValue:function(headers,headerName)
-{
-headerName=headerName.toLowerCase();
-
-var values=[];
-for(var i=0;i<headers.length;++i){
-if(headers[i].name.toLowerCase()===headerName)
-values.push(headers[i].value);
-}
-if(!values.length)
-return undefined;
-
-if(headerName==="set-cookie")
-return values.join("\n");
-return values.join(", ");
-},
-
-
-
-
-get content()
-{
-return this._content;
-},
-
-
-
-
-contentError:function()
-{
-return this._contentError;
-},
-
-
-
-
-get contentEncoded()
-{
-return this._contentEncoded;
-},
-
-
-
-
-
-contentURL:function()
-{
-return this._url;
-},
-
-
-
-
-
-contentType:function()
-{
-return this._resourceType;
-},
-
-
-
-
-
-requestContent:function()
-{
-
-
-
-if(this._resourceType===WebInspector.resourceTypes.WebSocket)
-return Promise.resolve(null);
-if(typeof this._content!=="undefined")
-return Promise.resolve(this.content||null);
-var callback;
-var promise=new Promise(fulfill=>callback=fulfill);
-this._pendingContentCallbacks.push(callback);
-if(this.finished)
-this._innerRequestContent();
-return promise;
-},
-
-
-
-
-
-
-
-
-searchInContent:function(query,caseSensitive,isRegex,callback)
-{
-callback([]);
-},
-
-
-
-
-isHttpFamily:function()
-{
-return!!this.url.match(/^https?:/i);
-},
-
-
-
-
-requestContentType:function()
-{
-return this.requestHeaderValue("Content-Type");
-},
-
-
-
-
-hasErrorStatusCode:function()
-{
-return this.statusCode>=400;
-},
-
-
-
-
-setInitialPriority:function(priority)
-{
-this._initialPriority=priority;
-},
-
-
-
-
-initialPriority:function()
-{
-return this._initialPriority;
-},
-
-
-
-
-setPriority:function(priority)
-{
-this._currentPriority=priority;
-},
-
-
-
-
-priority:function()
-{
-return this._currentPriority||this._initialPriority||null;
-},
-
-
-
-
-populateImageSource:function(image)
-{
-
-
-
-
-function onResourceContent(content)
-{
-var imageSrc=WebInspector.ContentProvider.contentAsDataURL(content,this._mimeType,true);
-if(imageSrc===null)
-imageSrc=this._url;
-image.src=imageSrc;
-}
-
-this.requestContent().then(onResourceContent.bind(this));
-},
-
-
-
-
-asDataURL:function()
-{
-var content=this._content;
-var charset=null;
-if(!this._contentEncoded){
-content=content.toBase64();
-charset="utf-8";
-}
-return WebInspector.ContentProvider.contentAsDataURL(content,this.mimeType,true,charset);
-},
-
-_innerRequestContent:function()
-{
-if(this._contentRequested)
-return;
-this._contentRequested=true;
-
-
-
-
-
-
-
-function onResourceContent(error,content,contentEncoded)
-{
-this._content=error?null:content;
-this._contentError=error;
-this._contentEncoded=contentEncoded;
-var callbacks=this._pendingContentCallbacks.slice();
-for(var i=0;i<callbacks.length;++i)
-callbacks[i](this._content);
-this._pendingContentCallbacks.length=0;
-delete this._contentRequested;
-}
-this.target().networkAgent().getResponseBody(this._requestId,onResourceContent.bind(this));
-},
-
-
-
-
-initiator:function()
-{
-return this._initiator;
-},
-
-
-
-
-initiatorInfo:function()
-{
-if(this._initiatorInfo)
-return this._initiatorInfo;
-
-var type=WebInspector.NetworkRequest.InitiatorType.Other;
-var url="";
-var lineNumber=-Infinity;
-var columnNumber=-Infinity;
-var scriptId=null;
-var initiator=this._initiator;
-
-if(this.redirectSource){
-type=WebInspector.NetworkRequest.InitiatorType.Redirect;
-url=this.redirectSource.url;
-}else if(initiator){
-if(initiator.type===NetworkAgent.InitiatorType.Parser){
-type=WebInspector.NetworkRequest.InitiatorType.Parser;
-url=initiator.url?initiator.url:url;
-lineNumber=initiator.lineNumber?initiator.lineNumber:lineNumber;
-}else if(initiator.type===NetworkAgent.InitiatorType.Script){
-for(var stack=initiator.stack;stack;stack=stack.parent){
-var topFrame=stack.callFrames.length?stack.callFrames[0]:null;
-if(!topFrame)
-continue;
-type=WebInspector.NetworkRequest.InitiatorType.Script;
-url=topFrame.url||WebInspector.UIString("<anonymous>");
-lineNumber=topFrame.lineNumber;
-columnNumber=topFrame.columnNumber;
-scriptId=topFrame.scriptId;
-break;
-}
-}
-}
-
-this._initiatorInfo={type:type,url:url,lineNumber:lineNumber,columnNumber:columnNumber,scriptId:scriptId};
-return this._initiatorInfo;
-},
-
-
-
-
-initiatorRequest:function()
-{
-if(this._initiatorRequest===undefined)
-this._initiatorRequest=this._networkLog.requestForURL(this.initiatorInfo().url);
-return this._initiatorRequest;
-},
-
-
-
-
-initiatorChain:function()
-{
-if(this._initiatorChain)
-return this._initiatorChain;
-this._initiatorChain=new Set();
-var request=this;
-while(request){
-this._initiatorChain.add(request);
-request=request.initiatorRequest();
-}
-return this._initiatorChain;
-},
-
-
-
-
-frames:function()
-{
-return this._frames;
-},
-
-
-
-
-
-addFrameError:function(errorMessage,time)
-{
-this._addFrame({type:WebInspector.NetworkRequest.WebSocketFrameType.Error,text:errorMessage,time:this.pseudoWallTime(time),opCode:-1,mask:false});
-},
-
-
-
-
-
-
-addFrame:function(response,time,sent)
-{
-var type=sent?WebInspector.NetworkRequest.WebSocketFrameType.Send:WebInspector.NetworkRequest.WebSocketFrameType.Receive;
-this._addFrame({type:type,text:response.payloadData,time:this.pseudoWallTime(time),opCode:response.opcode,mask:response.mask});
-},
-
-
-
-
-_addFrame:function(frame)
-{
-this._frames.push(frame);
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.WebsocketFrameAdded,frame);
-},
-
-
-
-
-eventSourceMessages:function()
-{
-return this._eventSourceMessages;
-},
-
-
-
-
-
-
-
-addEventSourceMessage:function(time,eventName,eventId,data)
-{
-var message={time:this.pseudoWallTime(time),eventName:eventName,eventId:eventId,data:data};
-this._eventSourceMessages.push(message);
-this.dispatchEventToListeners(WebInspector.NetworkRequest.Events.EventSourceMessageAdded,message);
-},
-
-replayXHR:function()
-{
-this.target().networkAgent().replayXHR(this.requestId);
-},
-
-
-
-
-networkLog:function()
-{
-return this._networkLog;
-},
-
-
-
-
-networkManager:function()
-{
-return this._networkManager;
-},
-
-__proto__:WebInspector.SDKObject.prototype};
-
-
-},{}],119:[function(require,module,exports){
-
-
-
-
-
-
-
-
-WebInspector.ProfileNode=function(callFrame)
-{
-
-this.callFrame=callFrame;
-
-this.callUID=`${this.callFrame.functionName}@${this.callFrame.scriptId}:${this.callFrame.lineNumber}`;
-
-this.self=0;
-
-this.total=0;
-
-this.id=0;
-
-this.parent=null;
-
-this.children=[];
-};
-
-WebInspector.ProfileNode.prototype={
-
-
-
-get functionName()
-{
-return this.callFrame.functionName;
-},
-
-
-
-
-get scriptId()
-{
-return this.callFrame.scriptId;
-},
-
-
-
-
-get url()
-{
-return this.callFrame.url;
-},
-
-
-
-
-get lineNumber()
-{
-return this.callFrame.lineNumber;
-},
-
-
-
-
-get columnNumber()
-{
-return this.callFrame.columnNumber;
-}};
-
-
-
-
-
-
-WebInspector.ProfileTreeModel=function(root)
-{
-this.root=root;
-this._assignDepthsAndParents();
-this.total=this._calculateTotals(this.root);
-};
-
-WebInspector.ProfileTreeModel.prototype={
-_assignDepthsAndParents:function()
-{
-var root=this.root;
-root.depth=-1;
-root.parent=null;
-this.maxDepth=0;
-var nodesToTraverse=[root];
-while(nodesToTraverse.length){
-var parent=nodesToTraverse.pop();
-var depth=parent.depth+1;
-if(depth>this.maxDepth)
-this.maxDepth=depth;
-var children=parent.children;
-var length=children.length;
-for(var i=0;i<length;++i){
-var child=children[i];
-child.depth=depth;
-child.parent=parent;
-if(child.children.length)
-nodesToTraverse.push(child);
-}
-}
-},
-
-
-
-
-
-_calculateTotals:function(root)
-{
-var nodesToTraverse=[root];
-var dfsList=[];
-while(nodesToTraverse.length){
-var node=nodesToTraverse.pop();
-node.total=node.self;
-dfsList.push(node);
-nodesToTraverse.push(...node.children);
-}
-while(dfsList.length>1){
-var node=dfsList.pop();
-node.parent.total+=node.total;
-}
-return root.total;
-}};
-
-
-},{}],120:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 
 
 
@@ -54513,7 +51426,7 @@ WebInspector.targetManager.removeEventListener(WebInspector.TargetManager.Events
 __proto__:WebInspector.SDKObject.prototype};
 
 
-},{}],121:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 
 
 
@@ -54904,994 +51817,7 @@ targetRemoved:function(target){}};
 
 WebInspector.targetManager=new WebInspector.TargetManager();
 
-},{}],122:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-WebInspector.TracingModel=function(backingStorage)
-{
-this._backingStorage=backingStorage;
-
-this._firstWritePending=true;
-this.reset();
-};
-
-
-
-
-WebInspector.TracingModel.Phase={
-Begin:"B",
-End:"E",
-Complete:"X",
-Instant:"I",
-AsyncBegin:"S",
-AsyncStepInto:"T",
-AsyncStepPast:"p",
-AsyncEnd:"F",
-NestableAsyncBegin:"b",
-NestableAsyncEnd:"e",
-NestableAsyncInstant:"n",
-FlowBegin:"s",
-FlowStep:"t",
-FlowEnd:"f",
-Metadata:"M",
-Counter:"C",
-Sample:"P",
-CreateObject:"N",
-SnapshotObject:"O",
-DeleteObject:"D"};
-
-
-WebInspector.TracingModel.MetadataEvent={
-ProcessSortIndex:"process_sort_index",
-ProcessName:"process_name",
-ThreadSortIndex:"thread_sort_index",
-ThreadName:"thread_name"};
-
-
-WebInspector.TracingModel.TopLevelEventCategory="toplevel";
-WebInspector.TracingModel.DevToolsMetadataEventCategory="disabled-by-default-devtools.timeline";
-WebInspector.TracingModel.DevToolsTimelineEventCategory="disabled-by-default-devtools.timeline";
-
-WebInspector.TracingModel.FrameLifecycleEventCategory="cc,devtools";
-
-
-
-
-
-WebInspector.TracingModel.isNestableAsyncPhase=function(phase)
-{
-return phase==="b"||phase==="e"||phase==="n";
-};
-
-
-
-
-
-WebInspector.TracingModel.isAsyncBeginPhase=function(phase)
-{
-return phase==="S"||phase==="b";
-};
-
-
-
-
-
-WebInspector.TracingModel.isAsyncPhase=function(phase)
-{
-return WebInspector.TracingModel.isNestableAsyncPhase(phase)||phase==="S"||phase==="T"||phase==="F"||phase==="p";
-};
-
-
-
-
-
-WebInspector.TracingModel.isFlowPhase=function(phase)
-{
-return phase==="s"||phase==="t"||phase==="f";
-};
-
-
-
-
-
-WebInspector.TracingModel.isTopLevelEvent=function(event)
-{
-return event.hasCategory(WebInspector.TracingModel.TopLevelEventCategory)||
-event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory)&&event.name==="Program";
-};
-
-
-
-
-
-WebInspector.TracingModel._extractId=function(payload)
-{
-var scope=payload.scope||"";
-if(typeof payload.id2==="undefined")
-return scope&&payload.id?`${scope}@${payload.id}`:payload.id;
-var id2=payload.id2;
-if(typeof id2==="object"&&"global"in id2!=="local"in id2)
-return typeof id2["global"]!=="undefined"?`:${scope}:${id2["global"]}`:`:${scope}:${payload.pid}:${id2["local"]}`;
-console.error(`Unexpected id2 field at ${payload.ts/1000}, one and only one of 'local' and 'global' should be present.`);
-};
-
-
-
-
-
-
-
-
-
-WebInspector.TracingModel.browserMainThread=function(tracingModel)
-{
-var processes=tracingModel.sortedProcesses();
-var browserProcesses=[];
-var crRendererMainThreads=[];
-for(var process of processes){
-if(process.name().toLowerCase().endsWith("browser"))
-browserProcesses.push(process);
-crRendererMainThreads.push(...process.sortedThreads().filter(t=>t.name()==="CrBrowserMain"));
-}
-if(crRendererMainThreads.length===1)
-return crRendererMainThreads[0];
-if(browserProcesses.length===1)
-return browserProcesses[0].threadByName("CrBrowserMain");
-var tracingStartedInBrowser=tracingModel.devToolsMetadataEvents().filter(e=>e.name==="TracingStartedInBrowser");
-if(tracingStartedInBrowser.length===1)
-return tracingStartedInBrowser[0].thread;
-WebInspector.console.error("Failed to find browser main thread in trace, some timeline features may be unavailable");
-return null;
-};
-
-
-
-
-WebInspector.BackingStorage=function()
-{
-};
-
-WebInspector.BackingStorage.prototype={
-
-
-
-appendString:function(string){},
-
-
-
-
-
-appendAccessibleString:function(string){},
-
-finishWriting:function(){},
-
-reset:function(){}};
-
-
-
-WebInspector.TracingModel.prototype={
-
-
-
-devToolsMetadataEvents:function()
-{
-return this._devToolsMetadataEvents;
-},
-
-
-
-
-setEventsForTest:function(events)
-{
-this.reset();
-this.addEvents(events);
-this.tracingComplete();
-},
-
-
-
-
-addEvents:function(events)
-{
-for(var i=0;i<events.length;++i)
-this._addEvent(events[i]);
-},
-
-tracingComplete:function()
-{
-this._processPendingAsyncEvents();
-this._backingStorage.appendString(this._firstWritePending?"[]":"]");
-this._backingStorage.finishWriting();
-this._firstWritePending=false;
-for(var process of this._processById.values()){
-for(var thread of process._threads.values())
-thread.tracingComplete();
-}
-},
-
-reset:function()
-{
-
-this._processById=new Map();
-this._processByName=new Map();
-this._minimumRecordTime=0;
-this._maximumRecordTime=0;
-this._devToolsMetadataEvents=[];
-if(!this._firstWritePending)
-this._backingStorage.reset();
-
-this._firstWritePending=true;
-
-this._asyncEvents=[];
-
-this._openAsyncEvents=new Map();
-
-this._openNestableAsyncEvents=new Map();
-
-this._parsedCategories=new Map();
-},
-
-
-
-
-_addEvent:function(payload)
-{
-var process=this._processById.get(payload.pid);
-if(!process){
-process=new WebInspector.TracingModel.Process(this,payload.pid);
-this._processById.set(payload.pid,process);
-}
-
-var eventsDelimiter=",\n";
-this._backingStorage.appendString(this._firstWritePending?"[":eventsDelimiter);
-this._firstWritePending=false;
-var stringPayload=JSON.stringify(payload);
-var isAccessible=payload.ph===WebInspector.TracingModel.Phase.SnapshotObject;
-var backingStorage=null;
-var keepStringsLessThan=10000;
-if(isAccessible&&stringPayload.length>keepStringsLessThan)
-backingStorage=this._backingStorage.appendAccessibleString(stringPayload);else
-
-this._backingStorage.appendString(stringPayload);
-
-var timestamp=payload.ts/1000;
-
-
-if(timestamp&&(!this._minimumRecordTime||timestamp<this._minimumRecordTime))
-this._minimumRecordTime=timestamp;
-var endTimeStamp=(payload.ts+(payload.dur||0))/1000;
-this._maximumRecordTime=Math.max(this._maximumRecordTime,endTimeStamp);
-var event=process._addEvent(payload);
-if(!event)
-return;
-
-
-
-if(WebInspector.TracingModel.isAsyncPhase(payload.ph))
-this._asyncEvents.push(event);
-event._setBackingStorage(backingStorage);
-if(event.hasCategory(WebInspector.TracingModel.DevToolsMetadataEventCategory))
-this._devToolsMetadataEvents.push(event);
-
-if(payload.ph!==WebInspector.TracingModel.Phase.Metadata)
-return;
-
-switch(payload.name){
-case WebInspector.TracingModel.MetadataEvent.ProcessSortIndex:
-process._setSortIndex(payload.args["sort_index"]);
-break;
-case WebInspector.TracingModel.MetadataEvent.ProcessName:
-var processName=payload.args["name"];
-process._setName(processName);
-this._processByName.set(processName,process);
-break;
-case WebInspector.TracingModel.MetadataEvent.ThreadSortIndex:
-process.threadById(payload.tid)._setSortIndex(payload.args["sort_index"]);
-break;
-case WebInspector.TracingModel.MetadataEvent.ThreadName:
-process.threadById(payload.tid)._setName(payload.args["name"]);
-break;}
-
-},
-
-
-
-
-minimumRecordTime:function()
-{
-return this._minimumRecordTime;
-},
-
-
-
-
-maximumRecordTime:function()
-{
-return this._maximumRecordTime;
-},
-
-
-
-
-sortedProcesses:function()
-{
-return WebInspector.TracingModel.NamedObject._sort(this._processById.valuesArray());
-},
-
-
-
-
-
-processByName:function(name)
-{
-return this._processByName.get(name);
-},
-
-
-
-
-
-
-threadByName:function(processName,threadName)
-{
-var process=this.processByName(processName);
-return process&&process.threadByName(threadName);
-},
-
-_processPendingAsyncEvents:function()
-{
-this._asyncEvents.stableSort(WebInspector.TracingModel.Event.compareStartTime);
-for(var i=0;i<this._asyncEvents.length;++i){
-var event=this._asyncEvents[i];
-if(WebInspector.TracingModel.isNestableAsyncPhase(event.phase))
-this._addNestableAsyncEvent(event);else
-
-this._addAsyncEvent(event);
-}
-this._asyncEvents=[];
-this._closeOpenAsyncEvents();
-},
-
-_closeOpenAsyncEvents:function()
-{
-for(var event of this._openAsyncEvents.values()){
-event.setEndTime(this._maximumRecordTime);
-
-
-event.steps[0].setEndTime(this._maximumRecordTime);
-}
-this._openAsyncEvents.clear();
-
-for(var eventStack of this._openNestableAsyncEvents.values()){
-while(eventStack.length)
-eventStack.pop().setEndTime(this._maximumRecordTime);
-}
-this._openNestableAsyncEvents.clear();
-},
-
-
-
-
-_addNestableAsyncEvent:function(event)
-{
-var phase=WebInspector.TracingModel.Phase;
-var key=event.categoriesString+"."+event.id;
-var openEventsStack=this._openNestableAsyncEvents.get(key);
-
-switch(event.phase){
-case phase.NestableAsyncBegin:
-if(!openEventsStack){
-openEventsStack=[];
-this._openNestableAsyncEvents.set(key,openEventsStack);
-}
-var asyncEvent=new WebInspector.TracingModel.AsyncEvent(event);
-openEventsStack.push(asyncEvent);
-event.thread._addAsyncEvent(asyncEvent);
-break;
-
-case phase.NestableAsyncInstant:
-if(openEventsStack&&openEventsStack.length)
-openEventsStack.peekLast()._addStep(event);
-break;
-
-case phase.NestableAsyncEnd:
-if(!openEventsStack||!openEventsStack.length)
-break;
-var top=openEventsStack.pop();
-if(top.name!==event.name){
-console.error(`Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`);
-break;
-}
-top._addStep(event);}
-
-},
-
-
-
-
-_addAsyncEvent:function(event)
-{
-var phase=WebInspector.TracingModel.Phase;
-var key=event.categoriesString+"."+event.name+"."+event.id;
-var asyncEvent=this._openAsyncEvents.get(key);
-
-if(event.phase===phase.AsyncBegin){
-if(asyncEvent){
-console.error(`Event ${event.name} has already been started`);
-return;
-}
-asyncEvent=new WebInspector.TracingModel.AsyncEvent(event);
-this._openAsyncEvents.set(key,asyncEvent);
-event.thread._addAsyncEvent(asyncEvent);
-return;
-}
-if(!asyncEvent){
-
-return;
-}
-if(event.phase===phase.AsyncEnd){
-asyncEvent._addStep(event);
-this._openAsyncEvents.delete(key);
-return;
-}
-if(event.phase===phase.AsyncStepInto||event.phase===phase.AsyncStepPast){
-var lastStep=asyncEvent.steps.peekLast();
-if(lastStep.phase!==phase.AsyncBegin&&lastStep.phase!==event.phase){
-console.assert(false,"Async event step phase mismatch: "+lastStep.phase+" at "+lastStep.startTime+" vs. "+event.phase+" at "+event.startTime);
-return;
-}
-asyncEvent._addStep(event);
-return;
-}
-console.assert(false,"Invalid async event phase");
-},
-
-
-
-
-
-_parsedCategoriesForString:function(str)
-{
-var parsedCategories=this._parsedCategories.get(str);
-if(!parsedCategories){
-parsedCategories=new Set(str.split(","));
-this._parsedCategories.set(str,parsedCategories);
-}
-return parsedCategories;
-}};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TracingModel.Event=function(categories,name,phase,startTime,thread)
-{
-
-this.categoriesString=categories;
-
-this._parsedCategories=thread._model._parsedCategoriesForString(categories);
-
-this.name=name;
-
-this.phase=phase;
-
-this.startTime=startTime;
-
-this.thread=thread;
-
-this.args={};
-
-
-this.warning=null;
-
-this.initiator=null;
-
-this.stackTrace=null;
-
-this.previewElement=null;
-
-this.url=null;
-
-this.backendNodeId=0;
-
-
-this.selfTime=0;
-};
-
-
-
-
-
-
-WebInspector.TracingModel.Event.fromPayload=function(payload,thread)
-{
-var event=new WebInspector.TracingModel.Event(payload.cat,payload.name,payload.ph,payload.ts/1000,thread);
-if(payload.args)
-event.addArgs(payload.args);else
-
-console.error("Missing mandatory event argument 'args' at "+payload.ts/1000);
-if(typeof payload.dur==="number")
-event.setEndTime((payload.ts+payload.dur)/1000);
-var id=WebInspector.TracingModel._extractId(payload);
-if(typeof id!=="undefined")
-event.id=id;
-if(payload.bind_id)
-event.bind_id=payload.bind_id;
-
-return event;
-};
-
-WebInspector.TracingModel.Event.prototype={
-
-
-
-
-hasCategory:function(categoryName)
-{
-return this._parsedCategories.has(categoryName);
-},
-
-
-
-
-setEndTime:function(endTime)
-{
-if(endTime<this.startTime){
-console.assert(false,"Event out of order: "+this.name);
-return;
-}
-this.endTime=endTime;
-this.duration=endTime-this.startTime;
-},
-
-
-
-
-addArgs:function(args)
-{
-
-for(var name in args){
-if(name in this.args)
-console.error("Same argument name ("+name+") is used for begin and end phases of "+this.name);
-this.args[name]=args[name];
-}
-},
-
-
-
-
-_complete:function(endEvent)
-{
-if(endEvent.args)
-this.addArgs(endEvent.args);else
-
-console.error("Missing mandatory event argument 'args' at "+endEvent.startTime);
-this.setEndTime(endEvent.startTime);
-},
-
-
-
-
-_setBackingStorage:function(backingStorage)
-{
-}};
-
-
-
-
-
-
-
-WebInspector.TracingModel.Event.compareStartTime=function(a,b)
-{
-return a.startTime-b.startTime;
-};
-
-
-
-
-
-
-WebInspector.TracingModel.Event.compareStartAndEndTime=function(a,b)
-{
-return a.startTime-b.startTime||b.endTime!==undefined&&a.endTime!==undefined&&b.endTime-a.endTime||0;
-};
-
-
-
-
-
-
-WebInspector.TracingModel.Event.orderedCompareStartTime=function(a,b)
-{
-
-
-
-return a.startTime-b.startTime||a.ordinal-b.ordinal||-1;
-};
-
-
-
-
-
-
-
-
-
-WebInspector.TracingModel.ObjectSnapshot=function(category,name,startTime,thread)
-{
-WebInspector.TracingModel.Event.call(this,category,name,WebInspector.TracingModel.Phase.SnapshotObject,startTime,thread);
-};
-
-
-
-
-
-
-WebInspector.TracingModel.ObjectSnapshot.fromPayload=function(payload,thread)
-{
-var snapshot=new WebInspector.TracingModel.ObjectSnapshot(payload.cat,payload.name,payload.ts/1000,thread);
-var id=WebInspector.TracingModel._extractId(payload);
-if(typeof id!=="undefined")
-snapshot.id=id;
-if(!payload.args||!payload.args["snapshot"]){
-console.error("Missing mandatory 'snapshot' argument at "+payload.ts/1000);
-return snapshot;
-}
-if(payload.args)
-snapshot.addArgs(payload.args);
-return snapshot;
-};
-
-WebInspector.TracingModel.ObjectSnapshot.prototype={
-
-
-
-requestObject:function(callback)
-{
-var snapshot=this.args["snapshot"];
-if(snapshot){
-callback(snapshot);
-return;
-}
-this._backingStorage().then(onRead,callback.bind(null,null));
-
-
-
-function onRead(result)
-{
-if(!result){
-callback(null);
-return;
-}
-try{
-var payload=JSON.parse(result);
-callback(payload["args"]["snapshot"]);
-}catch(e){
-WebInspector.console.error("Malformed event data in backing storage");
-callback(null);
-}
-}
-},
-
-
-
-
-objectPromise:function()
-{
-if(!this._objectPromise)
-this._objectPromise=new Promise(this.requestObject.bind(this));
-return this._objectPromise;
-},
-
-
-
-
-
-_setBackingStorage:function(backingStorage)
-{
-if(!backingStorage)
-return;
-this._backingStorage=backingStorage;
-this.args={};
-},
-
-__proto__:WebInspector.TracingModel.Event.prototype};
-
-
-
-
-
-
-
-WebInspector.TracingModel.AsyncEvent=function(startEvent)
-{
-WebInspector.TracingModel.Event.call(this,startEvent.categoriesString,startEvent.name,startEvent.phase,startEvent.startTime,startEvent.thread);
-this.addArgs(startEvent.args);
-this.steps=[startEvent];
-};
-
-WebInspector.TracingModel.AsyncEvent.prototype={
-
-
-
-_addStep:function(event)
-{
-this.steps.push(event);
-if(event.phase===WebInspector.TracingModel.Phase.AsyncEnd||event.phase===WebInspector.TracingModel.Phase.NestableAsyncEnd){
-this.setEndTime(event.startTime);
-
-
-this.steps[0].setEndTime(event.startTime);
-}
-},
-
-__proto__:WebInspector.TracingModel.Event.prototype};
-
-
-
-
-
-WebInspector.TracingModel.NamedObject=function()
-{
-};
-
-WebInspector.TracingModel.NamedObject.prototype=
-{
-
-
-
-_setName:function(name)
-{
-this._name=name;
-},
-
-
-
-
-name:function()
-{
-return this._name;
-},
-
-
-
-
-_setSortIndex:function(sortIndex)
-{
-this._sortIndex=sortIndex;
-}};
-
-
-
-
-
-WebInspector.TracingModel.NamedObject._sort=function(array)
-{
-
-
-
-
-function comparator(a,b)
-{
-return a._sortIndex!==b._sortIndex?a._sortIndex-b._sortIndex:a.name().localeCompare(b.name());
-}
-return array.sort(comparator);
-};
-
-
-
-
-
-
-
-WebInspector.TracingModel.Process=function(model,id)
-{
-WebInspector.TracingModel.NamedObject.call(this);
-this._setName("Process "+id);
-this._id=id;
-
-this._threads=new Map();
-this._threadByName=new Map();
-this._model=model;
-};
-
-WebInspector.TracingModel.Process.prototype={
-
-
-
-id:function()
-{
-return this._id;
-},
-
-
-
-
-
-threadById:function(id)
-{
-var thread=this._threads.get(id);
-if(!thread){
-thread=new WebInspector.TracingModel.Thread(this,id);
-this._threads.set(id,thread);
-}
-return thread;
-},
-
-
-
-
-
-threadByName:function(name)
-{
-return this._threadByName.get(name)||null;
-},
-
-
-
-
-
-_setThreadByName:function(name,thread)
-{
-this._threadByName.set(name,thread);
-},
-
-
-
-
-
-_addEvent:function(payload)
-{
-return this.threadById(payload.tid)._addEvent(payload);
-},
-
-
-
-
-sortedThreads:function()
-{
-return WebInspector.TracingModel.NamedObject._sort(this._threads.valuesArray());
-},
-
-__proto__:WebInspector.TracingModel.NamedObject.prototype};
-
-
-
-
-
-
-
-
-WebInspector.TracingModel.Thread=function(process,id)
-{
-WebInspector.TracingModel.NamedObject.call(this);
-this._process=process;
-this._setName("Thread "+id);
-this._events=[];
-this._asyncEvents=[];
-this._id=id;
-this._model=process._model;
-};
-
-WebInspector.TracingModel.Thread.prototype={
-tracingComplete:function()
-{
-this._asyncEvents.stableSort(WebInspector.TracingModel.Event.compareStartAndEndTime);
-this._events.stableSort(WebInspector.TracingModel.Event.compareStartTime);
-var phases=WebInspector.TracingModel.Phase;
-var stack=[];
-for(var i=0;i<this._events.length;++i){
-var e=this._events[i];
-e.ordinal=i;
-switch(e.phase){
-case phases.End:
-this._events[i]=null;
-
-if(!stack.length)
-continue;
-var top=stack.pop();
-if(top.name!==e.name||top.categoriesString!==e.categoriesString)
-console.error("B/E events mismatch at "+top.startTime+" ("+top.name+") vs. "+e.startTime+" ("+e.name+")");else
-
-top._complete(e);
-break;
-case phases.Begin:
-stack.push(e);
-break;}
-
-}
-while(stack.length)
-stack.pop().setEndTime(this._model.maximumRecordTime());
-this._events.remove(null,false);
-},
-
-
-
-
-
-_addEvent:function(payload)
-{
-var event=payload.ph===WebInspector.TracingModel.Phase.SnapshotObject?
-WebInspector.TracingModel.ObjectSnapshot.fromPayload(payload,this):
-WebInspector.TracingModel.Event.fromPayload(payload,this);
-if(WebInspector.TracingModel.isTopLevelEvent(event)){
-
-if(this._lastTopLevelEvent&&this._lastTopLevelEvent.endTime>event.startTime)
-return null;
-this._lastTopLevelEvent=event;
-}
-this._events.push(event);
-return event;
-},
-
-
-
-
-_addAsyncEvent:function(asyncEvent)
-{
-this._asyncEvents.push(asyncEvent);
-},
-
-
-
-
-
-_setName:function(name)
-{
-WebInspector.TracingModel.NamedObject.prototype._setName.call(this,name);
-this._process._setThreadByName(name,this);
-},
-
-
-
-
-id:function()
-{
-return this._id;
-},
-
-
-
-
-process:function()
-{
-return this._process;
-},
-
-
-
-
-events:function()
-{
-return this._events;
-},
-
-
-
-
-asyncEvents:function()
-{
-return this._asyncEvents;
-},
-
-__proto__:WebInspector.TracingModel.NamedObject.prototype};
-
-
-},{}],123:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 
 
 
@@ -56172,8230 +52098,7 @@ WebInspector.console.error(WebInspector.UIString("Failed to save timeline: %s (%
 }};
 
 
-},{}],124:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineTreeView=function(model,filters)
-{
-WebInspector.VBox.call(this);
-this.element.classList.add("timeline-tree-view");
-
-this._model=model;
-this._linkifier=new WebInspector.Linkifier();
-
-this._filters=filters.slice();
-
-var columns=[];
-this._populateColumns(columns);
-
-var mainView=new WebInspector.VBox();
-this._populateToolbar(mainView.element);
-this._dataGrid=new WebInspector.SortableDataGrid(columns);
-this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged,this._sortingChanged,this);
-this._dataGrid.element.addEventListener("mousemove",this._onMouseMove.bind(this),true);
-this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
-this._dataGrid.asWidget().show(mainView.element);
-
-this._splitWidget=new WebInspector.SplitWidget(true,true,"timelineTreeViewDetailsSplitWidget");
-this._splitWidget.show(this.element);
-this._splitWidget.setMainWidget(mainView);
-
-this._detailsView=new WebInspector.VBox();
-this._detailsView.element.classList.add("timeline-details-view","timeline-details-view-body");
-this._splitWidget.setSidebarWidget(this._detailsView);
-this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode,this._updateDetailsForSelection,this);
-
-
-this._lastSelectedNode;
-};
-
-WebInspector.TimelineTreeView.prototype={
-
-
-
-updateContents:function(selection)
-{
-this.setRange(selection.startTime(),selection.endTime());
-},
-
-
-
-
-
-setRange:function(startTime,endTime)
-{
-this._startTime=startTime;
-this._endTime=endTime;
-this._refreshTree();
-},
-
-
-
-
-_exposePercentages:function()
-{
-return false;
-},
-
-
-
-
-_populateToolbar:function(parent){},
-
-
-
-
-_onHover:function(node){},
-
-
-
-
-
-_linkifyLocation:function(event)
-{
-var target=this._model.targetByEvent(event);
-if(!target)
-return null;
-var frame=WebInspector.TimelineProfileTree.eventStackFrame(event);
-if(!frame)
-return null;
-return this._linkifier.maybeLinkifyConsoleCallFrame(target,frame);
-},
-
-
-
-
-
-selectProfileNode:function(treeNode,suppressSelectedEvent)
-{
-var pathToRoot=[];
-for(var node=treeNode;node;node=node.parent)
-pathToRoot.push(node);
-for(var i=pathToRoot.length-1;i>0;--i){
-var gridNode=this._dataGridNodeForTreeNode(pathToRoot[i]);
-if(gridNode&&gridNode.dataGrid)
-gridNode.expand();
-}
-var gridNode=this._dataGridNodeForTreeNode(treeNode);
-if(gridNode.dataGrid){
-gridNode.reveal();
-gridNode.select(suppressSelectedEvent);
-}
-},
-
-_refreshTree:function()
-{
-this._linkifier.reset();
-this._dataGrid.rootNode().removeChildren();
-var tree=this._buildTree();
-if(!tree.children)
-return;
-var maxSelfTime=0;
-var maxTotalTime=0;
-for(var child of tree.children.values()){
-maxSelfTime=Math.max(maxSelfTime,child.selfTime);
-maxTotalTime=Math.max(maxTotalTime,child.totalTime);
-}
-for(var child of tree.children.values()){
-
-var gridNode=new WebInspector.TimelineTreeView.TreeGridNode(child,tree.totalTime,maxSelfTime,maxTotalTime,this);
-this._dataGrid.insertChild(gridNode);
-}
-this._sortingChanged();
-this._updateDetailsForSelection();
-},
-
-
-
-
-_buildTree:function()
-{
-throw new Error("Not Implemented");
-},
-
-
-
-
-
-_buildTopDownTree:function(eventIdCallback)
-{
-return WebInspector.TimelineProfileTree.buildTopDown(this._model.mainThreadEvents(),this._filters,this._startTime,this._endTime,eventIdCallback);
-},
-
-
-
-
-_populateColumns:function(columns)
-{
-columns.push({id:"self",title:WebInspector.UIString("Self Time"),width:"110px",fixedWidth:true,sortable:true});
-columns.push({id:"total",title:WebInspector.UIString("Total Time"),width:"110px",fixedWidth:true,sortable:true});
-columns.push({id:"activity",title:WebInspector.UIString("Activity"),disclosure:true,sortable:true});
-},
-
-_sortingChanged:function()
-{
-var columnIdentifier=this._dataGrid.sortColumnIdentifier();
-if(!columnIdentifier)
-return;
-var sortFunction;
-switch(columnIdentifier){
-case"startTime":
-sortFunction=compareStartTime;
-break;
-case"self":
-sortFunction=compareNumericField.bind(null,"selfTime");
-break;
-case"total":
-sortFunction=compareNumericField.bind(null,"totalTime");
-break;
-case"activity":
-sortFunction=compareName;
-break;
-default:
-console.assert(false,"Unknown sort field: "+columnIdentifier);
-return;}
-
-this._dataGrid.sortNodes(sortFunction,!this._dataGrid.isSortOrderAscending());
-
-
-
-
-
-
-
-function compareNumericField(field,a,b)
-{
-var nodeA=a;
-var nodeB=b;
-return nodeA._profileNode[field]-nodeB._profileNode[field];
-}
-
-
-
-
-
-
-function compareStartTime(a,b)
-{
-var nodeA=a;
-var nodeB=b;
-return nodeA._profileNode.event.startTime-nodeB._profileNode.event.startTime;
-}
-
-
-
-
-
-
-function compareName(a,b)
-{
-var nodeA=a;
-var nodeB=b;
-var nameA=WebInspector.TimelineTreeView.eventNameForSorting(nodeA._profileNode.event);
-var nameB=WebInspector.TimelineTreeView.eventNameForSorting(nodeB._profileNode.event);
-return nameA.localeCompare(nameB);
-}
-},
-
-_updateDetailsForSelection:function()
-{
-var selectedNode=this._dataGrid.selectedNode?this._dataGrid.selectedNode._profileNode:null;
-if(selectedNode===this._lastSelectedNode)
-return;
-this._lastSelectedNode=selectedNode;
-this._detailsView.detachChildWidgets();
-this._detailsView.element.removeChildren();
-if(!selectedNode||!this._showDetailsForNode(selectedNode)){
-var banner=this._detailsView.element.createChild("div","full-widget-dimmed-banner");
-banner.createTextChild(WebInspector.UIString("Select item for details."));
-}
-},
-
-
-
-
-
-_showDetailsForNode:function(node)
-{
-return false;
-},
-
-
-
-
-_onMouseMove:function(event)
-{
-var gridNode=event.target&&event.target instanceof Node?
-this._dataGrid.dataGridNodeFromNode(event.target):
-null;
-var profileNode=gridNode&&gridNode._profileNode;
-if(profileNode===this._lastHoveredProfileNode)
-return;
-this._lastHoveredProfileNode=profileNode;
-this._onHover(profileNode);
-},
-
-
-
-
-
-_dataGridNodeForTreeNode:function(treeNode)
-{
-return treeNode[WebInspector.TimelineTreeView.TreeGridNode._gridNodeSymbol]||null;
-},
-
-__proto__:WebInspector.VBox.prototype};
-
-
-
-
-
-
-WebInspector.TimelineTreeView.eventNameForSorting=function(event)
-{
-if(event.name===WebInspector.TimelineModel.RecordType.JSFrame){
-var data=event.args["data"];
-return data["functionName"]+"@"+(data["scriptId"]||data["url"]||"");
-}
-return event.name+":@"+WebInspector.TimelineProfileTree.eventURL(event);
-};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineTreeView.GridNode=function(profileNode,grandTotalTime,maxSelfTime,maxTotalTime,treeView)
-{
-this._populated=false;
-this._profileNode=profileNode;
-this._treeView=treeView;
-this._grandTotalTime=grandTotalTime;
-this._maxSelfTime=maxSelfTime;
-this._maxTotalTime=maxTotalTime;
-WebInspector.SortableDataGridNode.call(this,null,false);
-};
-
-WebInspector.TimelineTreeView.GridNode.prototype={
-
-
-
-
-
-createCell:function(columnIdentifier)
-{
-if(columnIdentifier==="activity")
-return this._createNameCell(columnIdentifier);
-return this._createValueCell(columnIdentifier)||WebInspector.DataGridNode.prototype.createCell.call(this,columnIdentifier);
-},
-
-
-
-
-
-_createNameCell:function(columnIdentifier)
-{
-var cell=this.createTD(columnIdentifier);
-var container=cell.createChild("div","name-container");
-var icon=container.createChild("div","activity-icon");
-var name=container.createChild("div","activity-name");
-var event=this._profileNode.event;
-if(this._profileNode.isGroupNode()){
-var treeView=this._treeView;
-var info=treeView._displayInfoForGroupNode(this._profileNode);
-name.textContent=info.name;
-icon.style.backgroundColor=info.color;
-}else if(event){
-var data=event.args["data"];
-var deoptReason=data&&data["deoptReason"];
-if(deoptReason)
-container.createChild("div","activity-warning").title=WebInspector.UIString("Not optimized: %s",deoptReason);
-name.textContent=event.name===WebInspector.TimelineModel.RecordType.JSFrame?
-WebInspector.beautifyFunctionName(event.args["data"]["functionName"]):
-WebInspector.TimelineUIUtils.eventTitle(event);
-var link=this._treeView._linkifyLocation(event);
-if(link)
-container.createChild("div","activity-link").appendChild(link);
-icon.style.backgroundColor=WebInspector.TimelineUIUtils.eventColor(event);
-}
-return cell;
-},
-
-
-
-
-
-_createValueCell:function(columnIdentifier)
-{
-if(columnIdentifier!=="self"&&columnIdentifier!=="total"&&columnIdentifier!=="startTime")
-return null;
-
-var showPercents=false;
-var value;
-var maxTime;
-switch(columnIdentifier){
-case"startTime":
-value=this._profileNode.event.startTime-this._treeView._model.minimumRecordTime();
-break;
-case"self":
-value=this._profileNode.selfTime;
-maxTime=this._maxSelfTime;
-showPercents=true;
-break;
-case"total":
-value=this._profileNode.totalTime;
-maxTime=this._maxTotalTime;
-showPercents=true;
-break;
-default:
-return null;}
-
-var cell=this.createTD(columnIdentifier);
-cell.className="numeric-column";
-var textDiv=cell.createChild("div");
-textDiv.createChild("span").textContent=WebInspector.UIString("%.1f\u2009ms",value);
-
-if(showPercents&&this._treeView._exposePercentages())
-textDiv.createChild("span","percent-column").textContent=WebInspector.UIString("%.1f\u2009%%",value/this._grandTotalTime*100);
-if(maxTime){
-textDiv.classList.add("background-percent-bar");
-cell.createChild("div","background-bar-container").createChild("div","background-bar").style.width=(value*100/maxTime).toFixed(1)+"%";
-}
-return cell;
-},
-
-__proto__:WebInspector.SortableDataGridNode.prototype};
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineTreeView.TreeGridNode=function(profileNode,grandTotalTime,maxSelfTime,maxTotalTime,treeView)
-{
-WebInspector.TimelineTreeView.GridNode.call(this,profileNode,grandTotalTime,maxSelfTime,maxTotalTime,treeView);
-this.hasChildren=this._profileNode.children?this._profileNode.children.size>0:false;
-profileNode[WebInspector.TimelineTreeView.TreeGridNode._gridNodeSymbol]=this;
-};
-
-WebInspector.TimelineTreeView.TreeGridNode._gridNodeSymbol=Symbol("treeGridNode");
-
-WebInspector.TimelineTreeView.TreeGridNode.prototype={
-
-
-
-populate:function()
-{
-if(this._populated)
-return;
-this._populated=true;
-if(!this._profileNode.children)
-return;
-for(var node of this._profileNode.children.values()){
-var gridNode=new WebInspector.TimelineTreeView.TreeGridNode(node,this._grandTotalTime,this._maxSelfTime,this._maxTotalTime,this._treeView);
-this.insertChildOrdered(gridNode);
-}
-},
-
-__proto__:WebInspector.TimelineTreeView.GridNode.prototype};
-
-
-
-
-
-
-
-
-
-WebInspector.AggregatedTimelineTreeView=function(model,filters)
-{
-this._groupBySetting=WebInspector.settings.createSetting("timelineTreeGroupBy",WebInspector.TimelineAggregator.GroupBy.Category);
-WebInspector.TimelineTreeView.call(this,model,filters);
-var nonessentialEvents=[
-WebInspector.TimelineModel.RecordType.EventDispatch,
-WebInspector.TimelineModel.RecordType.FunctionCall,
-WebInspector.TimelineModel.RecordType.TimerFire];
-
-this._filters.push(new WebInspector.ExclusiveNameFilter(nonessentialEvents));
-this._stackView=new WebInspector.TimelineStackView(this);
-this._stackView.addEventListener(WebInspector.TimelineStackView.Events.SelectionChanged,this._onStackViewSelectionChanged,this);
-};
-
-WebInspector.AggregatedTimelineTreeView.prototype={
-
-
-
-
-updateContents:function(selection)
-{
-this._updateExtensionResolver();
-WebInspector.TimelineTreeView.prototype.updateContents.call(this,selection);
-var rootNode=this._dataGrid.rootNode();
-if(rootNode.children.length)
-rootNode.children[0].revealAndSelect();
-},
-
-_updateExtensionResolver:function()
-{
-this._executionContextNamesByOrigin=new Map();
-for(var target of WebInspector.targetManager.targets()){
-for(var context of target.runtimeModel.executionContexts())
-this._executionContextNamesByOrigin.set(context.origin,context.name);
-}
-},
-
-
-
-
-
-_displayInfoForGroupNode:function(node)
-{
-var categories=WebInspector.TimelineUIUtils.categories();
-var color=node.id?WebInspector.TimelineUIUtils.eventColor(node.event):categories["other"].color;
-
-switch(this._groupBySetting.get()){
-case WebInspector.TimelineAggregator.GroupBy.Category:
-var category=categories[node.id]||categories["other"];
-return{name:category.title,color:category.color};
-
-case WebInspector.TimelineAggregator.GroupBy.Domain:
-case WebInspector.TimelineAggregator.GroupBy.Subdomain:
-var name=node.id;
-if(WebInspector.TimelineAggregator.isExtensionInternalURL(name))
-name=WebInspector.UIString("[Chrome extensions overhead]");else
-if(name.startsWith("chrome-extension"))
-name=this._executionContextNamesByOrigin.get(name)||name;
-return{
-name:name||WebInspector.UIString("unattributed"),
-color:color};
-
-
-case WebInspector.TimelineAggregator.GroupBy.EventName:
-var name=node.event.name===WebInspector.TimelineModel.RecordType.JSFrame?
-WebInspector.UIString("JavaScript"):WebInspector.TimelineUIUtils.eventTitle(node.event);
-return{
-name:name,
-color:node.event.name===WebInspector.TimelineModel.RecordType.JSFrame?
-WebInspector.TimelineUIUtils.eventStyle(node.event).category.color:color};
-
-
-case WebInspector.TimelineAggregator.GroupBy.URL:
-break;
-
-default:
-console.assert(false,"Unexpected aggregation type");}
-
-return{
-name:node.id||WebInspector.UIString("unattributed"),
-color:color};
-
-},
-
-
-
-
-
-_populateToolbar:function(parent)
-{
-var panelToolbar=new WebInspector.Toolbar("",parent);
-this._groupByCombobox=new WebInspector.ToolbarComboBox(this._onGroupByChanged.bind(this));
-
-
-
-
-
-function addGroupingOption(name,id)
-{
-var option=this._groupByCombobox.createOption(name,"",id);
-this._groupByCombobox.addOption(option);
-if(id===this._groupBySetting.get())
-this._groupByCombobox.select(option);
-}
-addGroupingOption.call(this,WebInspector.UIString("No Grouping"),WebInspector.TimelineAggregator.GroupBy.None);
-addGroupingOption.call(this,WebInspector.UIString("Group by Activity"),WebInspector.TimelineAggregator.GroupBy.EventName);
-addGroupingOption.call(this,WebInspector.UIString("Group by Category"),WebInspector.TimelineAggregator.GroupBy.Category);
-addGroupingOption.call(this,WebInspector.UIString("Group by Domain"),WebInspector.TimelineAggregator.GroupBy.Domain);
-addGroupingOption.call(this,WebInspector.UIString("Group by Subdomain"),WebInspector.TimelineAggregator.GroupBy.Subdomain);
-addGroupingOption.call(this,WebInspector.UIString("Group by URL"),WebInspector.TimelineAggregator.GroupBy.URL);
-panelToolbar.appendToolbarItem(this._groupByCombobox);
-},
-
-
-
-
-
-_buildHeaviestStack:function(treeNode)
-{
-console.assert(!!treeNode.parent,"Attempt to build stack for tree root");
-var result=[];
-
-for(var node=treeNode;node&&node.parent;node=node.parent)
-result.push(node);
-result=result.reverse();
-for(node=treeNode;node&&node.children&&node.children.size;){
-var children=Array.from(node.children.values());
-node=children.reduce((a,b)=>a.totalTime>b.totalTime?a:b);
-result.push(node);
-}
-return result;
-},
-
-
-
-
-
-_exposePercentages:function()
-{
-return true;
-},
-
-_onGroupByChanged:function()
-{
-this._groupBySetting.set(this._groupByCombobox.selectedOption().value);
-this._refreshTree();
-},
-
-_onStackViewSelectionChanged:function()
-{
-var treeNode=this._stackView.selectedTreeNode();
-if(treeNode)
-this.selectProfileNode(treeNode,true);
-},
-
-
-
-
-
-
-_showDetailsForNode:function(node)
-{
-var stack=this._buildHeaviestStack(node);
-this._stackView.setStack(stack,node);
-this._stackView.show(this._detailsView.element);
-return true;
-},
-
-
-
-
-_createAggregator:function()
-{
-return new WebInspector.TimelineAggregator(
-event=>WebInspector.TimelineUIUtils.eventStyle(event).title,
-event=>WebInspector.TimelineUIUtils.eventStyle(event).category.name);
-
-},
-
-__proto__:WebInspector.TimelineTreeView.prototype};
-
-
-
-
-
-
-
-
-WebInspector.CallTreeTimelineTreeView=function(model,filters)
-{
-WebInspector.AggregatedTimelineTreeView.call(this,model,filters);
-this._dataGrid.markColumnAsSortedBy("total",WebInspector.DataGrid.Order.Descending);
-};
-
-WebInspector.CallTreeTimelineTreeView.prototype={
-
-
-
-
-_buildTree:function()
-{
-var topDown=this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-return this._createAggregator().performGrouping(topDown,this._groupBySetting.get());
-},
-
-__proto__:WebInspector.AggregatedTimelineTreeView.prototype};
-
-
-
-
-
-
-
-
-WebInspector.BottomUpTimelineTreeView=function(model,filters)
-{
-WebInspector.AggregatedTimelineTreeView.call(this,model,filters);
-this._dataGrid.markColumnAsSortedBy("self",WebInspector.DataGrid.Order.Descending);
-};
-
-WebInspector.BottomUpTimelineTreeView.prototype={
-
-
-
-
-_buildTree:function()
-{
-var topDown=this._buildTopDownTree(WebInspector.TimelineAggregator.eventId);
-return WebInspector.TimelineProfileTree.buildBottomUp(topDown,this._createAggregator().groupFunction(this._groupBySetting.get()));
-},
-
-__proto__:WebInspector.AggregatedTimelineTreeView.prototype};
-
-
-
-
-
-
-
-
-
-WebInspector.EventsTimelineTreeView=function(model,filters,delegate)
-{
-this._filtersControl=new WebInspector.TimelineFilters();
-this._filtersControl.addEventListener(WebInspector.TimelineFilters.Events.FilterChanged,this._onFilterChanged,this);
-WebInspector.TimelineTreeView.call(this,model,filters);
-this._delegate=delegate;
-this._filters.push.apply(this._filters,this._filtersControl.filters());
-this._dataGrid.markColumnAsSortedBy("startTime",WebInspector.DataGrid.Order.Ascending);
-};
-
-WebInspector.EventsTimelineTreeView.prototype={
-
-
-
-
-updateContents:function(selection)
-{
-WebInspector.TimelineTreeView.prototype.updateContents.call(this,selection);
-if(selection.type()===WebInspector.TimelineSelection.Type.TraceEvent){
-var event=selection.object();
-this._selectEvent(event,true);
-}
-},
-
-
-
-
-
-_buildTree:function()
-{
-this._currentTree=this._buildTopDownTree();
-return this._currentTree;
-},
-
-_onFilterChanged:function()
-{
-var selectedEvent=this._lastSelectedNode&&this._lastSelectedNode.event;
-this._refreshTree();
-if(selectedEvent)
-this._selectEvent(selectedEvent,false);
-},
-
-
-
-
-
-_findNodeWithEvent:function(event)
-{
-var iterators=[this._currentTree.children.values()];
-
-while(iterators.length){
-var iterator=iterators.peekLast().next();
-if(iterator.done){
-iterators.pop();
-continue;
-}
-var child=iterator.value;
-if(child.event===event)
-return child;
-if(child.children)
-iterators.push(child.children.values());
-}
-return null;
-},
-
-
-
-
-
-_selectEvent:function(event,expand)
-{
-var node=this._findNodeWithEvent(event);
-if(!node)
-return;
-this.selectProfileNode(node,false);
-if(expand)
-this._dataGridNodeForTreeNode(node).expand();
-},
-
-
-
-
-
-_populateColumns:function(columns)
-{
-columns.push({id:"startTime",title:WebInspector.UIString("Start Time"),width:"110px",fixedWidth:true,sortable:true});
-WebInspector.TimelineTreeView.prototype._populateColumns.call(this,columns);
-},
-
-
-
-
-
-_populateToolbar:function(parent)
-{
-var filtersWidget=this._filtersControl.filtersWidget();
-filtersWidget.forceShowFilterBar();
-filtersWidget.show(parent);
-},
-
-
-
-
-
-
-_showDetailsForNode:function(node)
-{
-var traceEvent=node.event;
-if(!traceEvent)
-return false;
-WebInspector.TimelineUIUtils.buildTraceEventDetails(traceEvent,this._model,this._linkifier,false,showDetails.bind(this));
-return true;
-
-
-
-
-
-function showDetails(fragment)
-{
-this._detailsView.element.appendChild(fragment);
-}
-},
-
-
-
-
-
-_onHover:function(node)
-{
-this._delegate.highlightEvent(node&&node.event);
-},
-
-__proto__:WebInspector.TimelineTreeView.prototype};
-
-
-
-
-
-
-WebInspector.TimelineStackView=function(treeView)
-{
-WebInspector.VBox.call(this);
-var header=this.element.createChild("div","timeline-stack-view-header");
-header.textContent=WebInspector.UIString("Heaviest stack");
-this._treeView=treeView;
-var columns=[
-{id:"total",title:WebInspector.UIString("Total Time"),fixedWidth:true,width:"110px"},
-{id:"activity",title:WebInspector.UIString("Activity")}];
-
-this._dataGrid=new WebInspector.ViewportDataGrid(columns);
-this._dataGrid.setResizeMethod(WebInspector.DataGrid.ResizeMethod.Last);
-this._dataGrid.addEventListener(WebInspector.DataGrid.Events.SelectedNode,this._onSelectionChanged,this);
-this._dataGrid.asWidget().show(this.element);
-};
-
-
-WebInspector.TimelineStackView.Events={
-SelectionChanged:Symbol("SelectionChanged")};
-
-
-WebInspector.TimelineStackView.prototype={
-
-
-
-
-setStack:function(stack,selectedNode)
-{
-var rootNode=this._dataGrid.rootNode();
-rootNode.removeChildren();
-var nodeToReveal=null;
-var totalTime=Math.max.apply(Math,stack.map(node=>node.totalTime));
-for(var node of stack){
-var gridNode=new WebInspector.TimelineTreeView.GridNode(node,totalTime,totalTime,totalTime,this._treeView);
-rootNode.appendChild(gridNode);
-if(node===selectedNode)
-nodeToReveal=gridNode;
-}
-nodeToReveal.revealAndSelect();
-},
-
-
-
-
-selectedTreeNode:function()
-{
-var selectedNode=this._dataGrid.selectedNode;
-return selectedNode&&selectedNode._profileNode;
-},
-
-_onSelectionChanged:function()
-{
-this.dispatchEventToListeners(WebInspector.TimelineStackView.Events.SelectionChanged);
-},
-
-__proto__:WebInspector.VBox.prototype};
-
-
-},{}],125:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils=function(){};
-
-
-
-
-
-
-
-WebInspector.TimelineRecordStyle=function(title,category,hidden)
-{
-this.title=title;
-this.category=category;
-this.hidden=!!hidden;
-};
-
-
-
-
-WebInspector.TimelineUIUtils._initEventStyles=function()
-{
-if(WebInspector.TimelineUIUtils._eventStylesMap)
-return WebInspector.TimelineUIUtils._eventStylesMap;
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var categories=WebInspector.TimelineUIUtils.categories();
-
-var eventStyles={};
-eventStyles[recordTypes.Task]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Task"),categories["other"]);
-eventStyles[recordTypes.Program]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Other"),categories["other"]);
-eventStyles[recordTypes.Animation]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Animation"),categories["rendering"]);
-eventStyles[recordTypes.EventDispatch]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Event"),categories["scripting"]);
-eventStyles[recordTypes.RequestMainThreadFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Request Main Thread Frame"),categories["rendering"],true);
-eventStyles[recordTypes.BeginFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Frame Start"),categories["rendering"],true);
-eventStyles[recordTypes.BeginMainThreadFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Frame Start (main thread)"),categories["rendering"],true);
-eventStyles[recordTypes.DrawFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Draw Frame"),categories["rendering"],true);
-eventStyles[recordTypes.HitTest]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Hit Test"),categories["rendering"]);
-eventStyles[recordTypes.ScheduleStyleRecalculation]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Schedule Style Recalculation"),categories["rendering"],true);
-eventStyles[recordTypes.RecalculateStyles]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Recalculate Style"),categories["rendering"]);
-eventStyles[recordTypes.UpdateLayoutTree]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Recalculate Style"),categories["rendering"]);
-eventStyles[recordTypes.InvalidateLayout]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Invalidate Layout"),categories["rendering"],true);
-eventStyles[recordTypes.Layout]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Layout"),categories["rendering"]);
-eventStyles[recordTypes.PaintSetup]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Paint Setup"),categories["painting"]);
-eventStyles[recordTypes.PaintImage]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Paint Image"),categories["painting"],true);
-eventStyles[recordTypes.UpdateLayer]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Update Layer"),categories["painting"],true);
-eventStyles[recordTypes.UpdateLayerTree]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Update Layer Tree"),categories["rendering"]);
-eventStyles[recordTypes.Paint]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Paint"),categories["painting"]);
-eventStyles[recordTypes.RasterTask]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Rasterize Paint"),categories["painting"]);
-eventStyles[recordTypes.ScrollLayer]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Scroll"),categories["rendering"]);
-eventStyles[recordTypes.CompositeLayers]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Composite Layers"),categories["painting"]);
-eventStyles[recordTypes.ParseHTML]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Parse HTML"),categories["loading"]);
-eventStyles[recordTypes.ParseAuthorStyleSheet]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Parse Stylesheet"),categories["loading"]);
-eventStyles[recordTypes.TimerInstall]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Install Timer"),categories["scripting"]);
-eventStyles[recordTypes.TimerRemove]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Remove Timer"),categories["scripting"]);
-eventStyles[recordTypes.TimerFire]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Timer Fired"),categories["scripting"]);
-eventStyles[recordTypes.XHRReadyStateChange]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("XHR Ready State Change"),categories["scripting"]);
-eventStyles[recordTypes.XHRLoad]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("XHR Load"),categories["scripting"]);
-eventStyles[recordTypes.CompileScript]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Compile Script"),categories["scripting"]);
-eventStyles[recordTypes.EvaluateScript]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Evaluate Script"),categories["scripting"]);
-eventStyles[recordTypes.ParseScriptOnBackground]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Parse Script"),categories["scripting"]);
-eventStyles[recordTypes.MarkLoad]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Load event"),categories["scripting"],true);
-eventStyles[recordTypes.MarkDOMContent]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOMContentLoaded event"),categories["scripting"],true);
-eventStyles[recordTypes.MarkFirstPaint]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("First paint"),categories["painting"],true);
-eventStyles[recordTypes.TimeStamp]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Timestamp"),categories["scripting"]);
-eventStyles[recordTypes.ConsoleTime]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Console Time"),categories["scripting"]);
-eventStyles[recordTypes.UserTiming]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("User Timing"),categories["scripting"]);
-eventStyles[recordTypes.ResourceSendRequest]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Send Request"),categories["loading"]);
-eventStyles[recordTypes.ResourceReceiveResponse]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Receive Response"),categories["loading"]);
-eventStyles[recordTypes.ResourceFinish]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Finish Loading"),categories["loading"]);
-eventStyles[recordTypes.ResourceReceivedData]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Receive Data"),categories["loading"]);
-eventStyles[recordTypes.RunMicrotasks]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Run Microtasks"),categories["scripting"]);
-eventStyles[recordTypes.FunctionCall]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Function Call"),categories["scripting"]);
-eventStyles[recordTypes.GCEvent]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("GC Event"),categories["scripting"]);
-eventStyles[recordTypes.MajorGC]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Major GC"),categories["scripting"]);
-eventStyles[recordTypes.MinorGC]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Minor GC"),categories["scripting"]);
-eventStyles[recordTypes.JSFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("JS Frame"),categories["scripting"]);
-eventStyles[recordTypes.RequestAnimationFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Request Animation Frame"),categories["scripting"]);
-eventStyles[recordTypes.CancelAnimationFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Cancel Animation Frame"),categories["scripting"]);
-eventStyles[recordTypes.FireAnimationFrame]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Animation Frame Fired"),categories["scripting"]);
-eventStyles[recordTypes.RequestIdleCallback]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Request Idle Callback"),categories["scripting"]);
-eventStyles[recordTypes.CancelIdleCallback]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Cancel Idle Callback"),categories["scripting"]);
-eventStyles[recordTypes.FireIdleCallback]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Fire Idle Callback"),categories["scripting"]);
-eventStyles[recordTypes.WebSocketCreate]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Create WebSocket"),categories["scripting"]);
-eventStyles[recordTypes.WebSocketSendHandshakeRequest]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Send WebSocket Handshake"),categories["scripting"]);
-eventStyles[recordTypes.WebSocketReceiveHandshakeResponse]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Receive WebSocket Handshake"),categories["scripting"]);
-eventStyles[recordTypes.WebSocketDestroy]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Destroy WebSocket"),categories["scripting"]);
-eventStyles[recordTypes.EmbedderCallback]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Embedder Callback"),categories["scripting"]);
-eventStyles[recordTypes.DecodeImage]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Image Decode"),categories["painting"]);
-eventStyles[recordTypes.ResizeImage]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Image Resize"),categories["painting"]);
-eventStyles[recordTypes.GPUTask]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("GPU"),categories["gpu"]);
-eventStyles[recordTypes.LatencyInfo]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("Input Latency"),categories["scripting"]);
-
-eventStyles[recordTypes.GCIdleLazySweep]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"),categories["scripting"]);
-eventStyles[recordTypes.GCCompleteSweep]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"),categories["scripting"]);
-eventStyles[recordTypes.GCCollectGarbage]=new WebInspector.TimelineRecordStyle(WebInspector.UIString("DOM GC"),categories["scripting"]);
-
-WebInspector.TimelineUIUtils._eventStylesMap=eventStyles;
-return eventStyles;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.inputEventDisplayName=function(inputEventType)
-{
-if(!WebInspector.TimelineUIUtils._inputEventToDisplayName){
-var inputEvent=WebInspector.TimelineIRModel.InputEvents;
-
-
-WebInspector.TimelineUIUtils._inputEventToDisplayName=new Map([
-[inputEvent.Char,WebInspector.UIString("Key Character")],
-[inputEvent.KeyDown,WebInspector.UIString("Key Down")],
-[inputEvent.KeyDownRaw,WebInspector.UIString("Key Down")],
-[inputEvent.KeyUp,WebInspector.UIString("Key Up")],
-[inputEvent.Click,WebInspector.UIString("Click")],
-[inputEvent.ContextMenu,WebInspector.UIString("Context Menu")],
-[inputEvent.MouseDown,WebInspector.UIString("Mouse Down")],
-[inputEvent.MouseMove,WebInspector.UIString("Mouse Move")],
-[inputEvent.MouseUp,WebInspector.UIString("Mouse Up")],
-[inputEvent.MouseWheel,WebInspector.UIString("Mouse Wheel")],
-[inputEvent.ScrollBegin,WebInspector.UIString("Scroll Begin")],
-[inputEvent.ScrollEnd,WebInspector.UIString("Scroll End")],
-[inputEvent.ScrollUpdate,WebInspector.UIString("Scroll Update")],
-[inputEvent.FlingStart,WebInspector.UIString("Fling Start")],
-[inputEvent.FlingCancel,WebInspector.UIString("Fling Halt")],
-[inputEvent.Tap,WebInspector.UIString("Tap")],
-[inputEvent.TapCancel,WebInspector.UIString("Tap Halt")],
-[inputEvent.ShowPress,WebInspector.UIString("Tap Begin")],
-[inputEvent.TapDown,WebInspector.UIString("Tap Down")],
-[inputEvent.TouchCancel,WebInspector.UIString("Touch Cancel")],
-[inputEvent.TouchEnd,WebInspector.UIString("Touch End")],
-[inputEvent.TouchMove,WebInspector.UIString("Touch Move")],
-[inputEvent.TouchStart,WebInspector.UIString("Touch Start")],
-[inputEvent.PinchBegin,WebInspector.UIString("Pinch Begin")],
-[inputEvent.PinchEnd,WebInspector.UIString("Pinch End")],
-[inputEvent.PinchUpdate,WebInspector.UIString("Pinch Update")]]);
-
-}
-return WebInspector.TimelineUIUtils._inputEventToDisplayName.get(inputEventType)||null;
-};
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.testContentMatching=function(traceEvent,regExp)
-{
-var title=WebInspector.TimelineUIUtils.eventStyle(traceEvent).title;
-var tokens=[title];
-if(traceEvent.url)
-tokens.push(traceEvent.url);
-for(var argName in traceEvent.args){
-var argValue=traceEvent.args[argName];
-for(var key in argValue)
-tokens.push(argValue[key]);
-}
-return regExp.test(tokens.join("|"));
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.categoryForRecord=function(record)
-{
-return WebInspector.TimelineUIUtils.eventStyle(record.traceEvent()).category;
-};
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.eventStyle=function(event)
-{
-var eventStyles=WebInspector.TimelineUIUtils._initEventStyles();
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console)||event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
-return{title:event.name,category:WebInspector.TimelineUIUtils.categories()["scripting"]};
-
-if(event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)){
-
-var prefix="InputLatency::";
-var inputEventType=event.name.startsWith(prefix)?event.name.substr(prefix.length):event.name;
-var displayName=WebInspector.TimelineUIUtils.inputEventDisplayName(inputEventType);
-return{title:displayName||inputEventType,category:WebInspector.TimelineUIUtils.categories()["scripting"]};
-}
-var result=eventStyles[event.name];
-if(!result){
-result=new WebInspector.TimelineRecordStyle(event.name,WebInspector.TimelineUIUtils.categories()["other"],true);
-eventStyles[event.name]=result;
-}
-return result;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.eventColor=function(event)
-{
-if(event.name===WebInspector.TimelineModel.RecordType.JSFrame){
-var frame=event.args["data"];
-if(WebInspector.TimelineUIUtils.isUserFrame(frame))
-return WebInspector.TimelineUIUtils.colorForURL(frame.url);
-}
-return WebInspector.TimelineUIUtils.eventStyle(event).category.color;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.eventTitle=function(event)
-{
-var title=WebInspector.TimelineUIUtils.eventStyle(event).title;
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console))
-return title;
-if(event.name===WebInspector.TimelineModel.RecordType.TimeStamp)
-return WebInspector.UIString("%s: %s",title,event.args["data"]["message"]);
-if(event.name===WebInspector.TimelineModel.RecordType.Animation&&event.args["data"]&&event.args["data"]["name"])
-return WebInspector.UIString("%s: %s",title,event.args["data"]["name"]);
-return title;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.eventURL=function(event)
-{
-if(event.url)
-return event.url;
-var data=event.args["data"]||event.args["beginData"];
-return data&&data.url||null;
-};
-
-
-
-
-WebInspector.TimelineUIUtils._interactionPhaseStyles=function()
-{
-var map=WebInspector.TimelineUIUtils._interactionPhaseStylesMap;
-if(!map){
-map=new Map([
-[WebInspector.TimelineIRModel.Phases.Idle,{color:"white",label:"Idle"}],
-[WebInspector.TimelineIRModel.Phases.Response,{color:"hsl(43, 83%, 64%)",label:WebInspector.UIString("Response")}],
-[WebInspector.TimelineIRModel.Phases.Scroll,{color:"hsl(256, 67%, 70%)",label:WebInspector.UIString("Scroll")}],
-[WebInspector.TimelineIRModel.Phases.Fling,{color:"hsl(256, 67%, 70%)",label:WebInspector.UIString("Fling")}],
-[WebInspector.TimelineIRModel.Phases.Drag,{color:"hsl(256, 67%, 70%)",label:WebInspector.UIString("Drag")}],
-[WebInspector.TimelineIRModel.Phases.Animation,{color:"hsl(256, 67%, 70%)",label:WebInspector.UIString("Animation")}],
-[WebInspector.TimelineIRModel.Phases.Uncategorized,{color:"hsl(0, 0%, 87%)",label:WebInspector.UIString("Uncategorized")}]]);
-
-WebInspector.TimelineUIUtils._interactionPhaseStylesMap=map;
-}
-return map;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.interactionPhaseColor=function(phase)
-{
-return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).color;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.interactionPhaseLabel=function(phase)
-{
-return WebInspector.TimelineUIUtils._interactionPhaseStyles().get(phase).label;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.isUserFrame=function(frame)
-{
-return frame.scriptId!=="0"&&!(frame.url&&frame.url.startsWith("native "));
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.topStackFrame=function(event)
-{
-var stackTrace=event.stackTrace||event.initiator&&event.initiator.stackTrace;
-return stackTrace&&stackTrace.length?stackTrace[0]:null;
-};
-
-
-
-
-WebInspector.TimelineUIUtils.NetworkCategory={
-HTML:Symbol("HTML"),
-Script:Symbol("Script"),
-Style:Symbol("Style"),
-Media:Symbol("Media"),
-Other:Symbol("Other")};
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.networkRequestCategory=function(request)
-{
-var categories=WebInspector.TimelineUIUtils.NetworkCategory;
-switch(request.mimeType){
-case"text/html":
-return categories.HTML;
-case"application/javascript":
-case"application/x-javascript":
-case"text/javascript":
-return categories.Script;
-case"text/css":
-return categories.Style;
-case"audio/ogg":
-case"image/gif":
-case"image/jpeg":
-case"image/png":
-case"image/svg+xml":
-case"image/webp":
-case"image/x-icon":
-case"font/opentype":
-case"font/woff2":
-case"application/font-woff":
-return categories.Media;
-default:
-return categories.Other;}
-
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.networkCategoryColor=function(category)
-{
-var categories=WebInspector.TimelineUIUtils.NetworkCategory;
-switch(category){
-case categories.HTML:return"hsl(214, 67%, 66%)";
-case categories.Script:return"hsl(43, 83%, 64%)";
-case categories.Style:return"hsl(256, 67%, 70%)";
-case categories.Media:return"hsl(109, 33%, 55%)";
-default:return"hsl(0, 0%, 70%)";}
-
-};
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent=function(event,target)
-{
-var recordType=WebInspector.TimelineModel.RecordType;
-var detailsText;
-var eventData=event.args["data"];
-switch(event.name){
-case recordType.GCEvent:
-case recordType.MajorGC:
-case recordType.MinorGC:
-var delta=event.args["usedHeapSizeBefore"]-event.args["usedHeapSizeAfter"];
-detailsText=WebInspector.UIString("%s collected",Number.bytesToString(delta));
-break;
-case recordType.FunctionCall:
-
-if(eventData)
-detailsText=linkifyLocationAsText(eventData["scriptId"],eventData["lineNumber"],0);
-break;
-case recordType.JSFrame:
-detailsText=WebInspector.beautifyFunctionName(eventData["functionName"]);
-break;
-case recordType.EventDispatch:
-detailsText=eventData?eventData["type"]:null;
-break;
-case recordType.Paint:
-var width=WebInspector.TimelineUIUtils.quadWidth(eventData.clip);
-var height=WebInspector.TimelineUIUtils.quadHeight(eventData.clip);
-if(width&&height)
-detailsText=WebInspector.UIString("%d\u2009\u00d7\u2009%d",width,height);
-break;
-case recordType.ParseHTML:
-var endLine=event.args["endData"]&&event.args["endData"]["endLine"];
-var url=WebInspector.displayNameForURL(event.args["beginData"]["url"]);
-detailsText=WebInspector.UIString("%s [%s\u2026%s]",url,event.args["beginData"]["startLine"]+1,endLine>=0?endLine+1:"");
-break;
-
-case recordType.CompileScript:
-case recordType.EvaluateScript:
-var url=eventData["url"];
-if(url)
-detailsText=WebInspector.displayNameForURL(url)+":"+(eventData["lineNumber"]+1);
-break;
-case recordType.ParseScriptOnBackground:
-case recordType.XHRReadyStateChange:
-case recordType.XHRLoad:
-var url=eventData["url"];
-if(url)
-detailsText=WebInspector.displayNameForURL(url);
-break;
-case recordType.TimeStamp:
-detailsText=eventData["message"];
-break;
-
-case recordType.WebSocketCreate:
-case recordType.WebSocketSendHandshakeRequest:
-case recordType.WebSocketReceiveHandshakeResponse:
-case recordType.WebSocketDestroy:
-case recordType.ResourceSendRequest:
-case recordType.ResourceReceivedData:
-case recordType.ResourceReceiveResponse:
-case recordType.ResourceFinish:
-case recordType.PaintImage:
-case recordType.DecodeImage:
-case recordType.ResizeImage:
-case recordType.DecodeLazyPixelRef:
-if(event.url)
-detailsText=WebInspector.displayNameForURL(event.url);
-break;
-
-case recordType.EmbedderCallback:
-detailsText=eventData["callbackName"];
-break;
-
-case recordType.Animation:
-detailsText=eventData&&eventData["name"];
-break;
-
-case recordType.GCIdleLazySweep:
-detailsText=WebInspector.UIString("idle sweep");
-break;
-
-case recordType.GCCompleteSweep:
-detailsText=WebInspector.UIString("complete sweep");
-break;
-
-case recordType.GCCollectGarbage:
-detailsText=WebInspector.UIString("collect");
-break;
-
-default:
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console))
-detailsText=null;else
-
-detailsText=linkifyTopCallFrameAsText();
-break;}
-
-
-return detailsText;
-
-
-
-
-
-
-
-function linkifyLocationAsText(scriptId,lineNumber,columnNumber)
-{
-var debuggerModel=WebInspector.DebuggerModel.fromTarget(target);
-if(!target||target.isDetached()||!scriptId||!debuggerModel)
-return null;
-var rawLocation=debuggerModel.createRawLocationByScriptId(scriptId,lineNumber,columnNumber);
-if(!rawLocation)
-return null;
-var uiLocation=WebInspector.debuggerWorkspaceBinding.rawLocationToUILocation(rawLocation);
-return uiLocation.linkText();
-}
-
-
-
-
-function linkifyTopCallFrameAsText()
-{
-var frame=WebInspector.TimelineUIUtils.topStackFrame(event);
-if(!frame)
-return null;
-var text=linkifyLocationAsText(frame.scriptId,frame.lineNumber,frame.columnNumber);
-if(!text){
-text=frame.url;
-if(typeof frame.lineNumber==="number")
-text+=":"+(frame.lineNumber+1);
-}
-return text;
-}
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent=function(event,target,linkifier)
-{
-var recordType=WebInspector.TimelineModel.RecordType;
-var details=null;
-var detailsText;
-var eventData=event.args["data"];
-switch(event.name){
-case recordType.GCEvent:
-case recordType.MajorGC:
-case recordType.MinorGC:
-case recordType.EventDispatch:
-case recordType.Paint:
-case recordType.Animation:
-case recordType.EmbedderCallback:
-case recordType.ParseHTML:
-case recordType.WebSocketCreate:
-case recordType.WebSocketSendHandshakeRequest:
-case recordType.WebSocketReceiveHandshakeResponse:
-case recordType.WebSocketDestroy:
-case recordType.GCIdleLazySweep:
-case recordType.GCCompleteSweep:
-case recordType.GCCollectGarbage:
-detailsText=WebInspector.TimelineUIUtils.buildDetailsTextForTraceEvent(event,target);
-break;
-case recordType.PaintImage:
-case recordType.DecodeImage:
-case recordType.ResizeImage:
-case recordType.DecodeLazyPixelRef:
-case recordType.XHRReadyStateChange:
-case recordType.XHRLoad:
-case recordType.ResourceSendRequest:
-case recordType.ResourceReceivedData:
-case recordType.ResourceReceiveResponse:
-case recordType.ResourceFinish:
-if(event.url)
-details=WebInspector.linkifyResourceAsNode(event.url);
-break;
-case recordType.FunctionCall:
-case recordType.JSFrame:
-details=createElement("span");
-details.createTextChild(WebInspector.beautifyFunctionName(eventData["functionName"]));
-var location=linkifyLocation(eventData["scriptId"],eventData["url"],eventData["lineNumber"],eventData["columnNumber"]);
-if(location){
-details.createTextChild(" @ ");
-details.appendChild(location);
-}
-break;
-case recordType.CompileScript:
-case recordType.EvaluateScript:
-var url=eventData["url"];
-if(url)
-details=linkifyLocation("",url,eventData["lineNumber"],0);
-break;
-case recordType.ParseScriptOnBackground:
-var url=eventData["url"];
-if(url)
-details=linkifyLocation("",url,0,0);
-break;
-default:
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console))
-detailsText=null;else
-
-details=linkifyTopCallFrame();
-break;}
-
-
-if(!details&&detailsText)
-details=createTextNode(detailsText);
-return details;
-
-
-
-
-
-
-
-
-function linkifyLocation(scriptId,url,lineNumber,columnNumber)
-{
-return linkifier.linkifyScriptLocation(target,scriptId,url,lineNumber,columnNumber,"timeline-details");
-}
-
-
-
-
-function linkifyTopCallFrame()
-{
-var frame=WebInspector.TimelineUIUtils.topStackFrame(event);
-return frame?linkifier.maybeLinkifyConsoleCallFrame(target,frame,"timeline-details"):null;
-}
-};
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildTraceEventDetails=function(event,model,linkifier,detailed,callback)
-{
-var target=model.targetByEvent(event);
-if(!target){
-callbackWrapper();
-return;
-}
-var relatedNodes=null;
-var barrier=new CallbackBarrier();
-if(!event.previewElement){
-if(event.url)
-WebInspector.DOMPresentationUtils.buildImagePreviewContents(target,event.url,false,barrier.createCallback(saveImage));else
-if(event.picture)
-WebInspector.TimelineUIUtils.buildPicturePreviewContent(event,target,barrier.createCallback(saveImage));
-}
-var nodeIdsToResolve=new Set();
-if(event.backendNodeId)
-nodeIdsToResolve.add(event.backendNodeId);
-if(event.invalidationTrackingEvents)
-WebInspector.TimelineUIUtils._collectInvalidationNodeIds(nodeIdsToResolve,event.invalidationTrackingEvents);
-if(nodeIdsToResolve.size){
-var domModel=WebInspector.DOMModel.fromTarget(target);
-if(domModel)
-domModel.pushNodesByBackendIdsToFrontend(nodeIdsToResolve,barrier.createCallback(setRelatedNodeMap));
-}
-barrier.callWhenDone(callbackWrapper);
-
-
-
-
-function saveImage(element)
-{
-event.previewElement=element||null;
-}
-
-
-
-
-function setRelatedNodeMap(nodeMap)
-{
-relatedNodes=nodeMap;
-}
-
-function callbackWrapper()
-{
-callback(WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously(event,model,linkifier,detailed,relatedNodes));
-}
-};
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._buildTraceEventDetailsSynchronously=function(event,model,linkifier,detailed,relatedNodesMap)
-{
-var stats={};
-var recordTypes=WebInspector.TimelineModel.RecordType;
-
-
-var relatedNodeLabel;
-
-var contentHelper=new WebInspector.TimelineDetailsContentHelper(model.targetByEvent(event),linkifier);
-contentHelper.addSection(WebInspector.TimelineUIUtils.eventTitle(event),WebInspector.TimelineUIUtils.eventStyle(event).category);
-
-var eventData=event.args["data"];
-var initiator=event.initiator;
-
-if(event.warning)
-contentHelper.appendWarningRow(event);
-if(event.name===recordTypes.JSFrame&&eventData["deoptReason"])
-contentHelper.appendWarningRow(event,WebInspector.TimelineModel.WarningType.V8Deopt);
-
-if(detailed){
-contentHelper.appendTextRow(WebInspector.UIString("Self Time"),Number.millisToString(event.selfTime,true));
-contentHelper.appendTextRow(WebInspector.UIString("Total Time"),Number.millisToString(event.duration||0,true));
-}
-
-switch(event.name){
-case recordTypes.GCEvent:
-case recordTypes.MajorGC:
-case recordTypes.MinorGC:
-var delta=event.args["usedHeapSizeBefore"]-event.args["usedHeapSizeAfter"];
-contentHelper.appendTextRow(WebInspector.UIString("Collected"),Number.bytesToString(delta));
-break;
-case recordTypes.JSFrame:
-case recordTypes.FunctionCall:
-var detailsNode=WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent(event,model.targetByEvent(event),linkifier);
-if(detailsNode)
-contentHelper.appendElementRow(WebInspector.UIString("Function"),detailsNode);
-break;
-case recordTypes.TimerFire:
-case recordTypes.TimerInstall:
-case recordTypes.TimerRemove:
-contentHelper.appendTextRow(WebInspector.UIString("Timer ID"),eventData["timerId"]);
-if(event.name===recordTypes.TimerInstall){
-contentHelper.appendTextRow(WebInspector.UIString("Timeout"),Number.millisToString(eventData["timeout"]));
-contentHelper.appendTextRow(WebInspector.UIString("Repeats"),!eventData["singleShot"]);
-}
-break;
-case recordTypes.FireAnimationFrame:
-contentHelper.appendTextRow(WebInspector.UIString("Callback ID"),eventData["id"]);
-break;
-case recordTypes.ResourceSendRequest:
-case recordTypes.ResourceReceiveResponse:
-case recordTypes.ResourceReceivedData:
-case recordTypes.ResourceFinish:
-var url=event.name===recordTypes.ResourceSendRequest?eventData["url"]:initiator&&initiator.args["data"]["url"];
-if(url)
-contentHelper.appendElementRow(WebInspector.UIString("Resource"),WebInspector.linkifyResourceAsNode(url));
-if(eventData["requestMethod"])
-contentHelper.appendTextRow(WebInspector.UIString("Request Method"),eventData["requestMethod"]);
-if(typeof eventData["statusCode"]==="number")
-contentHelper.appendTextRow(WebInspector.UIString("Status Code"),eventData["statusCode"]);
-if(eventData["mimeType"])
-contentHelper.appendTextRow(WebInspector.UIString("MIME Type"),eventData["mimeType"]);
-if("priority"in eventData){
-var priority=WebInspector.uiLabelForPriority(eventData["priority"]);
-contentHelper.appendTextRow(WebInspector.UIString("Priority"),priority);
-}
-if(eventData["encodedDataLength"])
-contentHelper.appendTextRow(WebInspector.UIString("Encoded Data Length"),WebInspector.UIString("%d Bytes",eventData["encodedDataLength"]));
-break;
-case recordTypes.CompileScript:
-case recordTypes.EvaluateScript:
-var url=eventData["url"];
-if(url)
-contentHelper.appendLocationRow(WebInspector.UIString("Script"),url,eventData["lineNumber"],eventData["columnNumber"]);
-break;
-case recordTypes.Paint:
-var clip=eventData["clip"];
-contentHelper.appendTextRow(WebInspector.UIString("Location"),WebInspector.UIString("(%d, %d)",clip[0],clip[1]));
-var clipWidth=WebInspector.TimelineUIUtils.quadWidth(clip);
-var clipHeight=WebInspector.TimelineUIUtils.quadHeight(clip);
-contentHelper.appendTextRow(WebInspector.UIString("Dimensions"),WebInspector.UIString("%d × %d",clipWidth,clipHeight));
-
-
-case recordTypes.PaintSetup:
-case recordTypes.Rasterize:
-case recordTypes.ScrollLayer:
-relatedNodeLabel=WebInspector.UIString("Layer Root");
-break;
-case recordTypes.PaintImage:
-case recordTypes.DecodeLazyPixelRef:
-case recordTypes.DecodeImage:
-case recordTypes.ResizeImage:
-case recordTypes.DrawLazyPixelRef:
-relatedNodeLabel=WebInspector.UIString("Owner Element");
-if(event.url)
-contentHelper.appendElementRow(WebInspector.UIString("Image URL"),WebInspector.linkifyResourceAsNode(event.url));
-break;
-case recordTypes.ParseAuthorStyleSheet:
-var url=eventData["styleSheetUrl"];
-if(url)
-contentHelper.appendElementRow(WebInspector.UIString("Stylesheet URL"),WebInspector.linkifyResourceAsNode(url));
-break;
-case recordTypes.UpdateLayoutTree:
-case recordTypes.RecalculateStyles:
-contentHelper.appendTextRow(WebInspector.UIString("Elements Affected"),event.args["elementCount"]);
-break;
-case recordTypes.Layout:
-var beginData=event.args["beginData"];
-contentHelper.appendTextRow(WebInspector.UIString("Nodes That Need Layout"),WebInspector.UIString("%s of %s",beginData["dirtyObjects"],beginData["totalObjects"]));
-relatedNodeLabel=WebInspector.UIString("Layout root");
-break;
-case recordTypes.ConsoleTime:
-contentHelper.appendTextRow(WebInspector.UIString("Message"),event.name);
-break;
-case recordTypes.WebSocketCreate:
-case recordTypes.WebSocketSendHandshakeRequest:
-case recordTypes.WebSocketReceiveHandshakeResponse:
-case recordTypes.WebSocketDestroy:
-var initiatorData=initiator?initiator.args["data"]:eventData;
-if(typeof initiatorData["webSocketURL"]!=="undefined")
-contentHelper.appendTextRow(WebInspector.UIString("URL"),initiatorData["webSocketURL"]);
-if(typeof initiatorData["webSocketProtocol"]!=="undefined")
-contentHelper.appendTextRow(WebInspector.UIString("WebSocket Protocol"),initiatorData["webSocketProtocol"]);
-if(typeof eventData["message"]!=="undefined")
-contentHelper.appendTextRow(WebInspector.UIString("Message"),eventData["message"]);
-break;
-case recordTypes.EmbedderCallback:
-contentHelper.appendTextRow(WebInspector.UIString("Callback Function"),eventData["callbackName"]);
-break;
-case recordTypes.Animation:
-if(event.phase===WebInspector.TracingModel.Phase.NestableAsyncInstant)
-contentHelper.appendTextRow(WebInspector.UIString("State"),eventData["state"]);
-break;
-case recordTypes.ParseHTML:
-var beginData=event.args["beginData"];
-var url=beginData["url"];
-var startLine=beginData["startLine"]-1;
-var endLine=event.args["endData"]?event.args["endData"]["endLine"]-1:undefined;
-if(url)
-contentHelper.appendLocationRange(WebInspector.UIString("Range"),url,startLine,endLine);
-break;
-
-case recordTypes.FireIdleCallback:
-contentHelper.appendTextRow(WebInspector.UIString("Allotted Time"),Number.millisToString(eventData["allottedMilliseconds"]));
-contentHelper.appendTextRow(WebInspector.UIString("Invoked by Timeout"),eventData["timedOut"]);
-
-
-case recordTypes.RequestIdleCallback:
-case recordTypes.CancelIdleCallback:
-contentHelper.appendTextRow(WebInspector.UIString("Callback ID"),eventData["id"]);
-break;
-case recordTypes.EventDispatch:
-contentHelper.appendTextRow(WebInspector.UIString("Type"),eventData["type"]);
-break;
-
-default:
-var detailsNode=WebInspector.TimelineUIUtils.buildDetailsNodeForTraceEvent(event,model.targetByEvent(event),linkifier);
-if(detailsNode)
-contentHelper.appendElementRow(WebInspector.UIString("Details"),detailsNode);
-break;}
-
-
-if(event.timeWaitingForMainThread)
-contentHelper.appendTextRow(WebInspector.UIString("Time Waiting for Main Thread"),Number.millisToString(event.timeWaitingForMainThread,true));
-
-var relatedNode=relatedNodesMap&&relatedNodesMap.get(event.backendNodeId);
-if(relatedNode)
-contentHelper.appendElementRow(relatedNodeLabel||WebInspector.UIString("Related Node"),WebInspector.DOMPresentationUtils.linkifyNodeReference(relatedNode));
-
-if(event.previewElement){
-contentHelper.addSection(WebInspector.UIString("Preview"));
-contentHelper.appendElementRow("",event.previewElement);
-}
-
-if(event.stackTrace||event.initiator&&event.initiator.stackTrace||event.invalidationTrackingEvents)
-WebInspector.TimelineUIUtils._generateCauses(event,model.targetByEvent(event),relatedNodesMap,contentHelper);
-
-var showPieChart=detailed&&WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent(stats,model,event);
-if(showPieChart){
-contentHelper.addSection(WebInspector.UIString("Aggregated Time"));
-var pieChart=WebInspector.TimelineUIUtils.generatePieChart(stats,WebInspector.TimelineUIUtils.eventStyle(event).category,event.selfTime);
-contentHelper.appendElementRow("",pieChart);
-}
-
-return contentHelper.fragment;
-};
-
-WebInspector.TimelineUIUtils._aggregatedStatsKey=Symbol("aggregatedStats");
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildRangeStats=function(model,startTime,endTime)
-{
-var aggregatedStats={};
-
-
-
-
-
-
-function compareEndTime(value,task)
-{
-return value<task.endTime()?-1:1;
-}
-var mainThreadTasks=model.mainThreadTasks();
-var taskIndex=mainThreadTasks.lowerBound(startTime,compareEndTime);
-for(;taskIndex<mainThreadTasks.length;++taskIndex){
-var task=mainThreadTasks[taskIndex];
-if(task.startTime()>endTime)
-break;
-if(task.startTime()>startTime&&task.endTime()<endTime){
-
-var taskStats=task[WebInspector.TimelineUIUtils._aggregatedStatsKey];
-if(!taskStats){
-taskStats={};
-WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(task,startTime,endTime,taskStats);
-task[WebInspector.TimelineUIUtils._aggregatedStatsKey]=taskStats;
-}
-for(var key in taskStats)
-aggregatedStats[key]=(aggregatedStats[key]||0)+taskStats[key];
-continue;
-}
-WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(task,startTime,endTime,aggregatedStats);
-}
-
-var aggregatedTotal=0;
-for(var categoryName in aggregatedStats)
-aggregatedTotal+=aggregatedStats[categoryName];
-aggregatedStats["idle"]=Math.max(0,endTime-startTime-aggregatedTotal);
-
-var startOffset=startTime-model.minimumRecordTime();
-var endOffset=endTime-model.minimumRecordTime();
-
-var contentHelper=new WebInspector.TimelineDetailsContentHelper(null,null);
-contentHelper.addSection(WebInspector.UIString("Range:  %s \u2013 %s",Number.millisToString(startOffset),Number.millisToString(endOffset)));
-var pieChart=WebInspector.TimelineUIUtils.generatePieChart(aggregatedStats);
-contentHelper.appendElementRow("",pieChart);
-return contentHelper.fragment;
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord=function(record,startTime,endTime,aggregatedStats)
-{
-var records=[];
-
-if(!record.endTime()||record.endTime()<startTime||record.startTime()>endTime)
-return;
-
-var childrenTime=0;
-var children=record.children()||[];
-for(var i=0;i<children.length;++i){
-var child=children[i];
-if(!child.endTime()||child.endTime()<startTime||child.startTime()>endTime)
-continue;
-childrenTime+=Math.min(endTime,child.endTime())-Math.max(startTime,child.startTime());
-WebInspector.TimelineUIUtils._collectAggregatedStatsForRecord(child,startTime,endTime,aggregatedStats);
-}
-var categoryName=WebInspector.TimelineUIUtils.categoryForRecord(record).name;
-var ownTime=Math.min(endTime,record.endTime())-Math.max(startTime,record.startTime())-childrenTime;
-aggregatedStats[categoryName]=(aggregatedStats[categoryName]||0)+ownTime;
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildNetworkRequestDetails=function(request,model,linkifier)
-{
-var target=model.targetByEvent(request.children[0]);
-var contentHelper=new WebInspector.TimelineDetailsContentHelper(target,linkifier);
-
-var duration=request.endTime-(request.startTime||-Infinity);
-var items=[];
-if(request.url)
-contentHelper.appendElementRow(WebInspector.UIString("URL"),WebInspector.linkifyURLAsNode(request.url));
-if(isFinite(duration))
-contentHelper.appendTextRow(WebInspector.UIString("Duration"),Number.millisToString(duration,true));
-if(request.requestMethod)
-contentHelper.appendTextRow(WebInspector.UIString("Request Method"),request.requestMethod);
-if(typeof request.priority==="string"){
-var priority=WebInspector.uiLabelForPriority(request.priority);
-contentHelper.appendTextRow(WebInspector.UIString("Priority"),priority);
-}
-if(request.mimeType)
-contentHelper.appendTextRow(WebInspector.UIString("Mime Type"),request.mimeType);
-
-var title=WebInspector.UIString("Initiator");
-var sendRequest=request.children[0];
-var topFrame=WebInspector.TimelineUIUtils.topStackFrame(sendRequest);
-if(topFrame){
-var link=linkifier.maybeLinkifyConsoleCallFrame(target,topFrame);
-if(link)
-contentHelper.appendElementRow(title,link);
-}else if(sendRequest.initiator){
-var initiatorURL=WebInspector.TimelineUIUtils.eventURL(sendRequest.initiator);
-if(initiatorURL){
-var link=linkifier.maybeLinkifyScriptLocation(target,null,initiatorURL,0);
-if(link)
-contentHelper.appendElementRow(title,link);
-}
-}
-
-
-
-
-function action(fulfill)
-{
-WebInspector.DOMPresentationUtils.buildImagePreviewContents(target,request.url,false,saveImage);
-
-
-
-function saveImage(element)
-{
-request.previewElement=element||null;
-fulfill(request.previewElement);
-}
-}
-var previewPromise;
-if(request.previewElement)
-previewPromise=Promise.resolve(request.previewElement);else
-
-previewPromise=request.url&&target?new Promise(action):Promise.resolve(null);
-
-
-
-
-function appendPreview(element)
-{
-if(element)
-contentHelper.appendElementRow(WebInspector.UIString("Preview"),request.previewElement);
-return contentHelper.fragment;
-}
-return previewPromise.then(appendPreview);
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils._stackTraceFromCallFrames=function(callFrames)
-{
-return{callFrames:callFrames};
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._generateCauses=function(event,target,relatedNodesMap,contentHelper)
-{
-var recordTypes=WebInspector.TimelineModel.RecordType;
-
-var callSiteStackLabel;
-var stackLabel;
-var initiator=event.initiator;
-
-switch(event.name){
-case recordTypes.TimerFire:
-callSiteStackLabel=WebInspector.UIString("Timer Installed");
-break;
-case recordTypes.FireAnimationFrame:
-callSiteStackLabel=WebInspector.UIString("Animation Frame Requested");
-break;
-case recordTypes.FireIdleCallback:
-callSiteStackLabel=WebInspector.UIString("Idle Callback Requested");
-break;
-case recordTypes.UpdateLayoutTree:
-case recordTypes.RecalculateStyles:
-stackLabel=WebInspector.UIString("Recalculation Forced");
-break;
-case recordTypes.Layout:
-callSiteStackLabel=WebInspector.UIString("First Layout Invalidation");
-stackLabel=WebInspector.UIString("Layout Forced");
-break;}
-
-
-
-if(event.stackTrace&&event.stackTrace.length){
-contentHelper.addSection(WebInspector.UIString("Call Stacks"));
-contentHelper.appendStackTrace(stackLabel||WebInspector.UIString("Stack Trace"),WebInspector.TimelineUIUtils._stackTraceFromCallFrames(event.stackTrace));
-}
-
-
-if(event.invalidationTrackingEvents&&target){
-contentHelper.addSection(WebInspector.UIString("Invalidations"));
-WebInspector.TimelineUIUtils._generateInvalidations(event,target,relatedNodesMap,contentHelper);
-}else if(initiator&&initiator.stackTrace){
-contentHelper.appendStackTrace(callSiteStackLabel||WebInspector.UIString("First Invalidated"),WebInspector.TimelineUIUtils._stackTraceFromCallFrames(initiator.stackTrace));
-}
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._generateInvalidations=function(event,target,relatedNodesMap,contentHelper)
-{
-if(!event.invalidationTrackingEvents)
-return;
-
-var invalidations={};
-event.invalidationTrackingEvents.forEach(function(invalidation){
-if(!invalidations[invalidation.type])
-invalidations[invalidation.type]=[invalidation];else
-
-invalidations[invalidation.type].push(invalidation);
-});
-
-Object.keys(invalidations).forEach(function(type){
-WebInspector.TimelineUIUtils._generateInvalidationsForType(
-type,target,invalidations[type],relatedNodesMap,contentHelper);
-});
-};
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._generateInvalidationsForType=function(type,target,invalidations,relatedNodesMap,contentHelper)
-{
-var title;
-switch(type){
-case WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking:
-title=WebInspector.UIString("Style Invalidations");
-break;
-case WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking:
-title=WebInspector.UIString("Layout Invalidations");
-break;
-default:
-title=WebInspector.UIString("Other Invalidations");
-break;}
-
-
-var invalidationsTreeOutline=new TreeOutlineInShadow();
-invalidationsTreeOutline.registerRequiredCSS("timeline/invalidationsTree.css");
-invalidationsTreeOutline.element.classList.add("invalidations-tree");
-
-var invalidationGroups=groupInvalidationsByCause(invalidations);
-invalidationGroups.forEach(function(group){
-var groupElement=new WebInspector.TimelineUIUtils.InvalidationsGroupElement(target,relatedNodesMap,contentHelper,group);
-invalidationsTreeOutline.appendChild(groupElement);
-});
-contentHelper.appendElementRow(title,invalidationsTreeOutline.element,false,true);
-
-
-
-
-
-function groupInvalidationsByCause(invalidations)
-{
-
-var causeToInvalidationMap=new Map();
-for(var index=0;index<invalidations.length;index++){
-var invalidation=invalidations[index];
-var causeKey="";
-if(invalidation.cause.reason)
-causeKey+=invalidation.cause.reason+".";
-if(invalidation.cause.stackTrace){
-invalidation.cause.stackTrace.forEach(function(stackFrame){
-causeKey+=stackFrame["functionName"]+".";
-causeKey+=stackFrame["scriptId"]+".";
-causeKey+=stackFrame["url"]+".";
-causeKey+=stackFrame["lineNumber"]+".";
-causeKey+=stackFrame["columnNumber"]+".";
-});
-}
-
-if(causeToInvalidationMap.has(causeKey))
-causeToInvalidationMap.get(causeKey).push(invalidation);else
-
-causeToInvalidationMap.set(causeKey,[invalidation]);
-}
-return causeToInvalidationMap.valuesArray();
-}
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils._collectInvalidationNodeIds=function(nodeIds,invalidations)
-{
-for(var i=0;i<invalidations.length;++i){
-if(invalidations[i].nodeId)
-nodeIds.add(invalidations[i].nodeId);
-}
-};
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.InvalidationsGroupElement=function(target,relatedNodesMap,contentHelper,invalidations)
-{
-TreeElement.call(this,"",true);
-
-this.listItemElement.classList.add("header");
-this.selectable=false;
-this.toggleOnClick=true;
-
-this._relatedNodesMap=relatedNodesMap;
-this._contentHelper=contentHelper;
-this._invalidations=invalidations;
-this.title=this._createTitle(target);
-};
-
-WebInspector.TimelineUIUtils.InvalidationsGroupElement.prototype={
-
-
-
-
-
-_createTitle:function(target)
-{
-var first=this._invalidations[0];
-var reason=first.cause.reason;
-var topFrame=first.cause.stackTrace&&first.cause.stackTrace[0];
-
-var title=createElement("span");
-if(reason)
-title.createTextChild(WebInspector.UIString("%s for ",reason));else
-
-title.createTextChild(WebInspector.UIString("Unknown cause for "));
-
-this._appendTruncatedNodeList(title,this._invalidations);
-
-if(topFrame&&this._contentHelper.linkifier()){
-title.createTextChild(WebInspector.UIString(". "));
-var stack=title.createChild("span","monospace");
-stack.createChild("span").textContent=WebInspector.beautifyFunctionName(topFrame.functionName);
-var link=this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target,topFrame);
-if(link){
-stack.createChild("span").textContent=" @ ";
-stack.createChild("span").appendChild(link);
-}
-}
-
-return title;
-},
-
-
-
-
-onpopulate:function()
-{
-var content=createElementWithClass("div","content");
-
-var first=this._invalidations[0];
-if(first.cause.stackTrace){
-var stack=content.createChild("div");
-stack.createTextChild(WebInspector.UIString("Stack trace:"));
-this._contentHelper.createChildStackTraceElement(stack,WebInspector.TimelineUIUtils._stackTraceFromCallFrames(first.cause.stackTrace));
-}
-
-content.createTextChild(this._invalidations.length>1?WebInspector.UIString("Nodes:"):WebInspector.UIString("Node:"));
-var nodeList=content.createChild("div","node-list");
-var firstNode=true;
-for(var i=0;i<this._invalidations.length;i++){
-var invalidation=this._invalidations[i];
-var invalidationNode=this._createInvalidationNode(invalidation,true);
-if(invalidationNode){
-if(!firstNode)
-nodeList.createTextChild(WebInspector.UIString(", "));
-firstNode=false;
-
-nodeList.appendChild(invalidationNode);
-
-var extraData=invalidation.extraData?", "+invalidation.extraData:"";
-if(invalidation.changedId)
-nodeList.createTextChild(WebInspector.UIString("(changed id to \"%s\"%s)",invalidation.changedId,extraData));else
-if(invalidation.changedClass)
-nodeList.createTextChild(WebInspector.UIString("(changed class to \"%s\"%s)",invalidation.changedClass,extraData));else
-if(invalidation.changedAttribute)
-nodeList.createTextChild(WebInspector.UIString("(changed attribute to \"%s\"%s)",invalidation.changedAttribute,extraData));else
-if(invalidation.changedPseudo)
-nodeList.createTextChild(WebInspector.UIString("(changed pesudo to \"%s\"%s)",invalidation.changedPseudo,extraData));else
-if(invalidation.selectorPart)
-nodeList.createTextChild(WebInspector.UIString("(changed \"%s\"%s)",invalidation.selectorPart,extraData));
-}
-}
-
-var contentTreeElement=new TreeElement(content,false);
-contentTreeElement.selectable=false;
-this.appendChild(contentTreeElement);
-},
-
-
-
-
-
-_appendTruncatedNodeList:function(parentElement,invalidations)
-{
-var invalidationNodes=[];
-var invalidationNodeIdMap={};
-for(var i=0;i<invalidations.length;i++){
-var invalidation=invalidations[i];
-var invalidationNode=this._createInvalidationNode(invalidation,false);
-invalidationNode.addEventListener("click",consumeEvent,false);
-if(invalidationNode&&!invalidationNodeIdMap[invalidation.nodeId]){
-invalidationNodes.push(invalidationNode);
-invalidationNodeIdMap[invalidation.nodeId]=true;
-}
-}
-
-if(invalidationNodes.length===1){
-parentElement.appendChild(invalidationNodes[0]);
-}else if(invalidationNodes.length===2){
-parentElement.appendChild(invalidationNodes[0]);
-parentElement.createTextChild(WebInspector.UIString(" and "));
-parentElement.appendChild(invalidationNodes[1]);
-}else if(invalidationNodes.length>=3){
-parentElement.appendChild(invalidationNodes[0]);
-parentElement.createTextChild(WebInspector.UIString(", "));
-parentElement.appendChild(invalidationNodes[1]);
-parentElement.createTextChild(WebInspector.UIString(", and %s others",invalidationNodes.length-2));
-}
-},
-
-
-
-
-
-_createInvalidationNode:function(invalidation,showUnknownNodes)
-{
-var node=invalidation.nodeId&&this._relatedNodesMap?this._relatedNodesMap.get(invalidation.nodeId):null;
-if(node)
-return WebInspector.DOMPresentationUtils.linkifyNodeReference(node);
-if(invalidation.nodeName){
-var nodeSpan=createElement("span");
-nodeSpan.textContent=WebInspector.UIString("[ %s ]",invalidation.nodeName);
-return nodeSpan;
-}
-if(showUnknownNodes){
-var nodeSpan=createElement("span");
-return nodeSpan.createTextChild(WebInspector.UIString("[ unknown node ]"));
-}
-},
-
-__proto__:TreeElement.prototype};
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils._aggregatedStatsForTraceEvent=function(total,model,event)
-{
-var events=model.inspectedTargetEvents();
-
-
-
-
-
-function eventComparator(startTime,e)
-{
-return startTime-e.startTime;
-}
-var index=events.binaryIndexOf(event.startTime,eventComparator);
-
-if(index<0)
-return false;
-var hasChildren=false;
-var endTime=event.endTime;
-if(endTime){
-for(var i=index;i<events.length;i++){
-var nextEvent=events[i];
-if(nextEvent.startTime>=endTime)
-break;
-if(!nextEvent.selfTime)
-continue;
-if(nextEvent.thread!==event.thread)
-continue;
-if(i>index)
-hasChildren=true;
-var categoryName=WebInspector.TimelineUIUtils.eventStyle(nextEvent).category.name;
-total[categoryName]=(total[categoryName]||0)+nextEvent.selfTime;
-}
-}
-if(WebInspector.TracingModel.isAsyncPhase(event.phase)){
-if(event.endTime){
-var aggregatedTotal=0;
-for(var categoryName in total)
-aggregatedTotal+=total[categoryName];
-total["idle"]=Math.max(0,event.endTime-event.startTime-aggregatedTotal);
-}
-return false;
-}
-return hasChildren;
-};
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.buildPicturePreviewContent=function(event,target,callback)
-{
-new WebInspector.LayerPaintEvent(event,target).loadSnapshot(onSnapshotLoaded);
-
-
-
-
-function onSnapshotLoaded(rect,snapshot)
-{
-if(!snapshot){
-callback();
-return;
-}
-snapshot.requestImage(null,null,1,onGotImage);
-snapshot.dispose();
-}
-
-
-
-
-function onGotImage(imageURL)
-{
-if(!imageURL){
-callback();
-return;
-}
-var container=createElement("div");
-container.classList.add("image-preview-container","vbox","link");
-var img=container.createChild("img");
-img.src=imageURL;
-var paintProfilerButton=container.createChild("a");
-paintProfilerButton.textContent=WebInspector.UIString("Paint Profiler");
-container.addEventListener("click",showPaintProfiler,false);
-callback(container);
-}
-
-function showPaintProfiler()
-{
-WebInspector.TimelinePanel.instance().select(WebInspector.TimelineSelection.fromTraceEvent(event),WebInspector.TimelinePanel.DetailsTab.PaintProfiler);
-}
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.createEventDivider=function(recordType,title,position)
-{
-var eventDivider=createElement("div");
-eventDivider.className="resources-event-divider";
-var recordTypes=WebInspector.TimelineModel.RecordType;
-
-if(recordType===recordTypes.MarkDOMContent)
-eventDivider.className+=" resources-blue-divider";else
-if(recordType===recordTypes.MarkLoad)
-eventDivider.className+=" resources-red-divider";else
-if(recordType===recordTypes.MarkFirstPaint)
-eventDivider.className+=" resources-green-divider";else
-if(recordType===recordTypes.TimeStamp||recordType===recordTypes.ConsoleTime||recordType===recordTypes.UserTiming)
-eventDivider.className+=" resources-orange-divider";else
-if(recordType===recordTypes.BeginFrame)
-eventDivider.className+=" timeline-frame-divider";
-
-if(title)
-eventDivider.title=title;
-eventDivider.style.left=position+"px";
-return eventDivider;
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.createDividerForRecord=function(record,zeroTime,position)
-{
-var startTime=Number.millisToString(record.startTime()-zeroTime);
-var title=WebInspector.UIString("%s at %s",WebInspector.TimelineUIUtils.eventTitle(record.traceEvent()),startTime);
-return WebInspector.TimelineUIUtils.createEventDivider(record.type(),title,position);
-};
-
-
-
-
-WebInspector.TimelineUIUtils._visibleTypes=function()
-{
-var eventStyles=WebInspector.TimelineUIUtils._initEventStyles();
-var result=[];
-for(var name in eventStyles){
-if(!eventStyles[name].hidden)
-result.push(name);
-}
-return result;
-};
-
-
-
-
-WebInspector.TimelineUIUtils.visibleEventsFilter=function()
-{
-return new WebInspector.TimelineVisibleEventsFilter(WebInspector.TimelineUIUtils._visibleTypes());
-};
-
-
-
-
-WebInspector.TimelineUIUtils.categories=function()
-{
-if(WebInspector.TimelineUIUtils._categories)
-return WebInspector.TimelineUIUtils._categories;
-WebInspector.TimelineUIUtils._categories={
-loading:new WebInspector.TimelineCategory("loading",WebInspector.UIString("Loading"),true,"hsl(214, 67%, 74%)","hsl(214, 67%, 66%)"),
-scripting:new WebInspector.TimelineCategory("scripting",WebInspector.UIString("Scripting"),true,"hsl(43, 83%, 72%)","hsl(43, 83%, 64%) "),
-rendering:new WebInspector.TimelineCategory("rendering",WebInspector.UIString("Rendering"),true,"hsl(256, 67%, 76%)","hsl(256, 67%, 70%)"),
-painting:new WebInspector.TimelineCategory("painting",WebInspector.UIString("Painting"),true,"hsl(109, 33%, 64%)","hsl(109, 33%, 55%)"),
-gpu:new WebInspector.TimelineCategory("gpu",WebInspector.UIString("GPU"),false,"hsl(109, 33%, 64%)","hsl(109, 33%, 55%)"),
-other:new WebInspector.TimelineCategory("other",WebInspector.UIString("Other"),false,"hsl(0, 0%, 87%)","hsl(0, 0%, 79%)"),
-idle:new WebInspector.TimelineCategory("idle",WebInspector.UIString("Idle"),false,"hsl(0, 100%, 100%)","hsl(0, 100%, 100%)")};
-
-return WebInspector.TimelineUIUtils._categories;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.titleForAsyncEventGroup=function(group)
-{
-if(!WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap){
-var groups=WebInspector.TimelineModel.AsyncEventGroup;
-WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap=new Map([
-[groups.animation,WebInspector.UIString("Animation")],
-[groups.console,WebInspector.UIString("Console")],
-[groups.userTiming,WebInspector.UIString("User Timing")],
-[groups.input,WebInspector.UIString("Input")]]);
-
-}
-return WebInspector.TimelineUIUtils._titleForAsyncEventGroupMap.get(group)||"";
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.generatePieChart=function(aggregatedStats,selfCategory,selfTime)
-{
-var total=0;
-for(var categoryName in aggregatedStats)
-total+=aggregatedStats[categoryName];
-
-var element=createElementWithClass("div","timeline-details-view-pie-chart-wrapper hbox");
-var pieChart=new WebInspector.PieChart(100);
-pieChart.element.classList.add("timeline-details-view-pie-chart");
-pieChart.setTotal(total);
-var pieChartContainer=element.createChild("div","vbox");
-pieChartContainer.appendChild(pieChart.element);
-pieChartContainer.createChild("div","timeline-details-view-pie-chart-total").textContent=WebInspector.UIString("Total: %s",Number.millisToString(total,true));
-var footerElement=element.createChild("div","timeline-aggregated-info-legend");
-
-
-
-
-
-
-
-function appendLegendRow(name,title,value,color)
-{
-if(!value)
-return;
-pieChart.addSlice(value,color);
-var rowElement=footerElement.createChild("div");
-rowElement.createChild("span","timeline-aggregated-legend-value").textContent=Number.preciseMillisToString(value,1);
-rowElement.createChild("span","timeline-aggregated-legend-swatch").style.backgroundColor=color;
-rowElement.createChild("span","timeline-aggregated-legend-title").textContent=title;
-}
-
-
-if(selfCategory){
-if(selfTime)
-appendLegendRow(selfCategory.name,WebInspector.UIString("%s (self)",selfCategory.title),selfTime,selfCategory.color);
-
-var categoryTime=aggregatedStats[selfCategory.name];
-var value=categoryTime-selfTime;
-if(value>0)
-appendLegendRow(selfCategory.name,WebInspector.UIString("%s (children)",selfCategory.title),value,selfCategory.childColor);
-}
-
-
-for(var categoryName in WebInspector.TimelineUIUtils.categories()){
-var category=WebInspector.TimelineUIUtils.categories()[categoryName];
-if(category===selfCategory)
-continue;
-appendLegendRow(category.name,category.title,aggregatedStats[category.name],category.childColor);
-}
-return element;
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.generateDetailsContentForFrame=function(frameModel,frame,filmStripFrame)
-{
-var pieChart=WebInspector.TimelineUIUtils.generatePieChart(frame.timeByCategory);
-var contentHelper=new WebInspector.TimelineDetailsContentHelper(null,null);
-contentHelper.addSection(WebInspector.UIString("Frame"));
-
-var duration=WebInspector.TimelineUIUtils.frameDuration(frame);
-contentHelper.appendElementRow(WebInspector.UIString("Duration"),duration,frame.hasWarnings());
-if(filmStripFrame){
-var filmStripPreview=createElementWithClass("img","timeline-filmstrip-preview");
-filmStripFrame.imageDataPromise().then(onGotImageData.bind(null,filmStripPreview));
-contentHelper.appendElementRow("",filmStripPreview);
-filmStripPreview.addEventListener("click",frameClicked.bind(null,filmStripFrame),false);
-}
-var durationInMillis=frame.endTime-frame.startTime;
-contentHelper.appendTextRow(WebInspector.UIString("FPS"),Math.floor(1000/durationInMillis));
-contentHelper.appendTextRow(WebInspector.UIString("CPU time"),Number.millisToString(frame.cpuTime,true));
-
-if(Runtime.experiments.isEnabled("layersPanel")&&frame.layerTree){
-contentHelper.appendElementRow(WebInspector.UIString("Layer tree"),
-WebInspector.Linkifier.linkifyUsingRevealer(frame.layerTree,WebInspector.UIString("show")));
-}
-
-
-
-
-
-function onGotImageData(image,data)
-{
-if(data)
-image.src="data:image/jpg;base64,"+data;
-}
-
-
-
-
-function frameClicked(filmStripFrame)
-{
-new WebInspector.FilmStripView.Dialog(filmStripFrame,0);
-}
-
-return contentHelper.fragment;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.frameDuration=function(frame)
-{
-var durationText=WebInspector.UIString("%s (at %s)",Number.millisToString(frame.endTime-frame.startTime,true),
-Number.millisToString(frame.startTimeOffset,true));
-var element=createElement("span");
-element.createTextChild(durationText);
-if(!frame.hasWarnings())
-return element;
-element.createTextChild(WebInspector.UIString(". Long frame times are an indication of "));
-element.appendChild(WebInspector.linkifyURLAsNode("https://developers.google.com/web/fundamentals/performance/rendering/",
-WebInspector.UIString("jank"),undefined,true));
-element.createTextChild(".");
-return element;
-};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.createFillStyle=function(context,width,height,color0,color1,color2)
-{
-var gradient=context.createLinearGradient(0,0,width,height);
-gradient.addColorStop(0,color0);
-gradient.addColorStop(0.25,color1);
-gradient.addColorStop(0.75,color1);
-gradient.addColorStop(1,color2);
-return gradient;
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.quadWidth=function(quad)
-{
-return Math.round(Math.sqrt(Math.pow(quad[0]-quad[2],2)+Math.pow(quad[1]-quad[3],2)));
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.quadHeight=function(quad)
-{
-return Math.round(Math.sqrt(Math.pow(quad[0]-quad[6],2)+Math.pow(quad[1]-quad[7],2)));
-};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor=function(priority,color,eventTypes)
-{
-this.priority=priority;
-this.color=color;
-this.eventTypes=eventTypes;
-};
-
-
-
-
-WebInspector.TimelineUIUtils.eventDispatchDesciptors=function()
-{
-if(WebInspector.TimelineUIUtils._eventDispatchDesciptors)
-return WebInspector.TimelineUIUtils._eventDispatchDesciptors;
-var lightOrange="hsl(40,100%,80%)";
-var orange="hsl(40,100%,50%)";
-var green="hsl(90,100%,40%)";
-var purple="hsl(256,100%,75%)";
-WebInspector.TimelineUIUtils._eventDispatchDesciptors=[
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(1,lightOrange,["mousemove","mouseenter","mouseleave","mouseout","mouseover"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(1,lightOrange,["pointerover","pointerout","pointerenter","pointerleave","pointermove"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(2,green,["wheel"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3,orange,["click","mousedown","mouseup"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3,orange,["touchstart","touchend","touchmove","touchcancel"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3,orange,["pointerdown","pointerup","pointercancel","gotpointercapture","lostpointercapture"]),
-new WebInspector.TimelineUIUtils.EventDispatchTypeDescriptor(3,purple,["keydown","keyup","keypress"])];
-
-return WebInspector.TimelineUIUtils._eventDispatchDesciptors;
-};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineCategory=function(name,title,visible,childColor,color)
-{
-this.name=name;
-this.title=title;
-this.visible=visible;
-this.childColor=childColor;
-this.color=color;
-this.hidden=false;
-};
-
-
-WebInspector.TimelineCategory.Events={
-VisibilityChanged:Symbol("VisibilityChanged")};
-
-
-WebInspector.TimelineCategory.prototype={
-
-
-
-get hidden()
-{
-return this._hidden;
-},
-
-set hidden(hidden)
-{
-this._hidden=hidden;
-this.dispatchEventToListeners(WebInspector.TimelineCategory.Events.VisibilityChanged,this);
-},
-
-__proto__:WebInspector.Object.prototype};
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineMarkerStyle;
-
-
-
-
-
-WebInspector.TimelineUIUtils.markerStyleForEvent=function(event)
-{
-var red="rgb(255, 0, 0)";
-var blue="rgb(0, 0, 255)";
-var orange="rgb(255, 178, 23)";
-var green="rgb(0, 130, 0)";
-var tallMarkerDashStyle=[10,5];
-
-var title=WebInspector.TimelineUIUtils.eventTitle(event);
-
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console)||event.hasCategory(WebInspector.TimelineModel.Category.UserTiming)){
-return{
-title:title,
-dashStyle:tallMarkerDashStyle,
-lineWidth:0.5,
-color:orange,
-tall:false,
-lowPriority:false};
-
-}
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var tall=false;
-var color=green;
-switch(event.name){
-case recordTypes.MarkDOMContent:
-color=blue;
-tall=true;
-break;
-case recordTypes.MarkLoad:
-color=red;
-tall=true;
-break;
-case recordTypes.MarkFirstPaint:
-color=green;
-tall=true;
-break;
-case recordTypes.TimeStamp:
-color=orange;
-break;}
-
-return{
-title:title,
-dashStyle:tallMarkerDashStyle,
-lineWidth:0.5,
-color:color,
-tall:tall,
-lowPriority:false};
-
-};
-
-
-
-
-WebInspector.TimelineUIUtils.markerStyleForFrame=function()
-{
-return{
-title:WebInspector.UIString("Frame"),
-color:"rgba(100, 100, 100, 0.4)",
-lineWidth:3,
-dashStyle:[3],
-tall:true,
-lowPriority:true};
-
-};
-
-
-
-
-
-WebInspector.TimelineUIUtils.colorForURL=function(url)
-{
-if(!WebInspector.TimelineUIUtils.colorForURL._colorGenerator){
-WebInspector.TimelineUIUtils.colorForURL._colorGenerator=new WebInspector.FlameChart.ColorGenerator(
-{min:30,max:330},
-{min:50,max:80,count:3},
-85);
-}
-return WebInspector.TimelineUIUtils.colorForURL._colorGenerator.colorForID(url);
-};
-
-
-
-
-
-WebInspector.TimelinePopupContentHelper=function(title)
-{
-this._contentTable=createElement("table");
-var titleCell=this._createCell(WebInspector.UIString("%s - Details",title),"timeline-details-title");
-titleCell.colSpan=2;
-var titleRow=createElement("tr");
-titleRow.appendChild(titleCell);
-this._contentTable.appendChild(titleRow);
-};
-
-WebInspector.TimelinePopupContentHelper.prototype={
-
-
-
-contentTable:function()
-{
-return this._contentTable;
-},
-
-
-
-
-
-_createCell:function(content,styleName)
-{
-var text=createElement("label");
-text.createTextChild(String(content));
-var cell=createElement("td");
-cell.className="timeline-details";
-if(styleName)
-cell.className+=" "+styleName;
-cell.textContent=content;
-return cell;
-},
-
-
-
-
-
-appendTextRow:function(title,content)
-{
-var row=createElement("tr");
-row.appendChild(this._createCell(title,"timeline-details-row-title"));
-row.appendChild(this._createCell(content,"timeline-details-row-data"));
-this._contentTable.appendChild(row);
-},
-
-
-
-
-
-appendElementRow:function(title,content)
-{
-var row=createElement("tr");
-var titleCell=this._createCell(title,"timeline-details-row-title");
-row.appendChild(titleCell);
-var cell=createElement("td");
-cell.className="details";
-if(content instanceof Node)
-cell.appendChild(content);else
-
-cell.createTextChild(content||"");
-row.appendChild(cell);
-this._contentTable.appendChild(row);
-}};
-
-
-
-
-
-
-
-WebInspector.TimelineDetailsContentHelper=function(target,linkifier)
-{
-this.fragment=createDocumentFragment();
-
-this._linkifier=linkifier;
-this._target=target;
-
-this.element=createElementWithClass("div","timeline-details-view-block");
-this._tableElement=this.element.createChild("div","vbox timeline-details-chip-body");
-this.fragment.appendChild(this.element);
-};
-
-WebInspector.TimelineDetailsContentHelper.prototype={
-
-
-
-
-addSection:function(title,category)
-{
-if(!this._tableElement.hasChildNodes()){
-this.element.removeChildren();
-}else{
-this.element=createElementWithClass("div","timeline-details-view-block");
-this.fragment.appendChild(this.element);
-}
-
-if(title){
-var titleElement=this.element.createChild("div","timeline-details-chip-title");
-if(category)
-titleElement.createChild("div").style.backgroundColor=category.color;
-titleElement.createTextChild(title);
-}
-
-this._tableElement=this.element.createChild("div","vbox timeline-details-chip-body");
-this.fragment.appendChild(this.element);
-},
-
-
-
-
-linkifier:function()
-{
-return this._linkifier;
-},
-
-
-
-
-
-appendTextRow:function(title,value)
-{
-var rowElement=this._tableElement.createChild("div","timeline-details-view-row");
-rowElement.createChild("div","timeline-details-view-row-title").textContent=title;
-rowElement.createChild("div","timeline-details-view-row-value").textContent=value;
-},
-
-
-
-
-
-
-
-appendElementRow:function(title,content,isWarning,isStacked)
-{
-var rowElement=this._tableElement.createChild("div","timeline-details-view-row");
-if(isWarning)
-rowElement.classList.add("timeline-details-warning");
-if(isStacked)
-rowElement.classList.add("timeline-details-stack-values");
-var titleElement=rowElement.createChild("div","timeline-details-view-row-title");
-titleElement.textContent=title;
-var valueElement=rowElement.createChild("div","timeline-details-view-row-value");
-if(content instanceof Node)
-valueElement.appendChild(content);else
-
-valueElement.createTextChild(content||"");
-},
-
-
-
-
-
-
-
-appendLocationRow:function(title,url,startLine,startColumn)
-{
-if(!this._linkifier||!this._target)
-return;
-var link=this._linkifier.maybeLinkifyScriptLocation(this._target,null,url,startLine,startColumn);
-if(!link)
-return;
-this.appendElementRow(title,link);
-},
-
-
-
-
-
-
-
-appendLocationRange:function(title,url,startLine,endLine)
-{
-if(!this._linkifier||!this._target)
-return;
-var locationContent=createElement("span");
-var link=this._linkifier.maybeLinkifyScriptLocation(this._target,null,url,startLine);
-if(!link)
-return;
-locationContent.appendChild(link);
-locationContent.createTextChild(String.sprintf(" [%s\u2026%s]",startLine+1,endLine+1||""));
-this.appendElementRow(title,locationContent);
-},
-
-
-
-
-
-appendStackTrace:function(title,stackTrace)
-{
-if(!this._linkifier||!this._target)
-return;
-
-var rowElement=this._tableElement.createChild("div","timeline-details-view-row");
-rowElement.createChild("div","timeline-details-view-row-title").textContent=title;
-this.createChildStackTraceElement(rowElement,stackTrace);
-},
-
-
-
-
-
-createChildStackTraceElement:function(parentElement,stackTrace)
-{
-if(!this._linkifier||!this._target)
-return;
-parentElement.classList.add("timeline-details-stack-values");
-var stackTraceElement=parentElement.createChild("div","timeline-details-view-row-value timeline-details-view-row-stack-trace");
-var callFrameElem=WebInspector.DOMPresentationUtils.buildStackTracePreviewContents(this._target,this._linkifier,stackTrace);
-stackTraceElement.appendChild(callFrameElem);
-},
-
-
-
-
-
-appendWarningRow:function(event,warningType)
-{
-var warning=WebInspector.TimelineUIUtils.eventWarning(event,warningType);
-if(warning)
-this.appendElementRow(WebInspector.UIString("Warning"),warning,true);
-}};
-
-
-
-
-
-
-
-WebInspector.TimelineUIUtils.eventWarning=function(event,warningType)
-{
-var warning=warningType||event.warning;
-if(!warning)
-return null;
-var warnings=WebInspector.TimelineModel.WarningType;
-var span=createElement("span");
-var eventData=event.args["data"];
-
-switch(warning){
-case warnings.ForcedStyle:
-case warnings.ForcedLayout:
-span.appendChild(WebInspector.linkifyDocumentationURLAsNode("../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts",
-WebInspector.UIString("Forced reflow")));
-span.createTextChild(WebInspector.UIString(" is a likely performance bottleneck."));
-break;
-case warnings.IdleDeadlineExceeded:
-span.textContent=WebInspector.UIString("Idle callback execution extended beyond deadline by "+
-Number.millisToString(event.duration-eventData["allottedMilliseconds"],true));
-break;
-case warnings.V8Deopt:
-span.appendChild(WebInspector.linkifyURLAsNode("https://github.com/GoogleChrome/devtools-docs/issues/53",
-WebInspector.UIString("Not optimized"),undefined,true));
-span.createTextChild(WebInspector.UIString(": %s",eventData["deoptReason"]));
-break;
-default:
-console.assert(false,"Unhandled TimelineModel.WarningType");}
-
-return span;
-};
-
-},{}],126:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TracingLayerPayload;
-
-
-
-
-
-
-
-
-WebInspector.TracingLayerTile;
-
-
-
-
-
-WebInspector.LayerTreeModel=function(target)
-{
-WebInspector.SDKModel.call(this,WebInspector.LayerTreeModel,target);
-target.registerLayerTreeDispatcher(new WebInspector.LayerTreeDispatcher(this));
-WebInspector.targetManager.addEventListener(WebInspector.TargetManager.Events.MainFrameNavigated,this._onMainFrameNavigated,this);
-
-this._layerTree=null;
-};
-
-
-WebInspector.LayerTreeModel.Events={
-LayerTreeChanged:Symbol("LayerTreeChanged"),
-LayerPainted:Symbol("LayerPainted")};
-
-
-WebInspector.LayerTreeModel.ScrollRectType={
-NonFastScrollable:{name:"NonFastScrollable",description:"Non fast scrollable"},
-TouchEventHandler:{name:"TouchEventHandler",description:"Touch event handler"},
-WheelEventHandler:{name:"WheelEventHandler",description:"Wheel event handler"},
-RepaintsOnScroll:{name:"RepaintsOnScroll",description:"Repaints on scroll"}};
-
-
-WebInspector.LayerTreeModel.prototype={
-disable:function()
-{
-if(!this._enabled)
-return;
-this._enabled=false;
-this._layerTree=null;
-this.target().layerTreeAgent().disable();
-},
-
-enable:function()
-{
-if(this._enabled)
-return;
-this._enabled=true;
-this._forceEnable();
-},
-
-_forceEnable:function()
-{
-this._layerTree=new WebInspector.AgentLayerTree(this.target());
-this._lastPaintRectByLayerId={};
-this.target().layerTreeAgent().enable();
-},
-
-
-
-
-setLayerTree:function(layerTree)
-{
-this.disable();
-this._layerTree=layerTree;
-this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
-},
-
-
-
-
-layerTree:function()
-{
-return this._layerTree;
-},
-
-
-
-
-_layerTreeChanged:function(layers)
-{
-if(!this._enabled)
-return;
-var layerTree=this._layerTree;
-layerTree.setLayers(layers,onLayersSet.bind(this));
-
-
-
-
-function onLayersSet()
-{
-for(var layerId in this._lastPaintRectByLayerId){
-var lastPaintRect=this._lastPaintRectByLayerId[layerId];
-var layer=layerTree.layerById(layerId);
-if(layer)
-layer._lastPaintRect=lastPaintRect;
-}
-this._lastPaintRectByLayerId={};
-
-this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerTreeChanged);
-}
-},
-
-
-
-
-
-_layerPainted:function(layerId,clipRect)
-{
-if(!this._enabled)
-return;
-var layerTree=this._layerTree;
-var layer=layerTree.layerById(layerId);
-if(!layer){
-this._lastPaintRectByLayerId[layerId]=clipRect;
-return;
-}
-layer._didPaint(clipRect);
-this.dispatchEventToListeners(WebInspector.LayerTreeModel.Events.LayerPainted,layer);
-},
-
-_onMainFrameNavigated:function()
-{
-if(this._enabled)
-this._forceEnable();
-},
-
-__proto__:WebInspector.SDKModel.prototype};
-
-
-
-
-
-
-WebInspector.LayerTreeBase=function(target)
-{
-this._target=target;
-this._domModel=target?WebInspector.DOMModel.fromTarget(target):null;
-this._layersById={};
-
-this._backendNodeIdToNode=new Map();
-this._reset();
-};
-
-WebInspector.LayerTreeBase.prototype={
-_reset:function()
-{
-this._root=null;
-this._contentRoot=null;
-this._layers=null;
-},
-
-
-
-
-target:function()
-{
-return this._target;
-},
-
-
-
-
-root:function()
-{
-return this._root;
-},
-
-
-
-
-contentRoot:function()
-{
-return this._contentRoot;
-},
-
-
-
-
-layers:function()
-{
-return this._layers;
-},
-
-
-
-
-
-
-forEachLayer:function(callback,root)
-{
-if(!root){
-root=this.root();
-if(!root)
-return false;
-}
-return callback(root)||root.children().some(this.forEachLayer.bind(this,callback));
-},
-
-
-
-
-
-layerById:function(id)
-{
-return this._layersById[id]||null;
-},
-
-
-
-
-
-_resolveBackendNodeIds:function(requestedNodeIds,callback)
-{
-if(!requestedNodeIds.size||!this._domModel){
-callback();
-return;
-}
-if(this._domModel)
-this._domModel.pushNodesByBackendIdsToFrontend(requestedNodeIds,populateBackendNodeMap.bind(this));
-
-
-
-
-
-function populateBackendNodeMap(nodesMap)
-{
-if(nodesMap){
-for(var nodeId of nodesMap.keysArray())
-this._backendNodeIdToNode.set(nodeId,nodesMap.get(nodeId)||null);
-}
-callback();
-}
-},
-
-
-
-
-setViewportSize:function(viewportSize)
-{
-this._viewportSize=viewportSize;
-},
-
-
-
-
-viewportSize:function()
-{
-return this._viewportSize;
-},
-
-
-
-
-
-_nodeForId:function(id)
-{
-return this._domModel?this._domModel.nodeForId(id):null;
-}};
-
-
-
-
-
-
-
-WebInspector.TracingLayerTree=function(target)
-{
-WebInspector.LayerTreeBase.call(this,target);
-
-this._tileById=new Map();
-};
-
-WebInspector.TracingLayerTree.prototype={
-
-
-
-
-
-setLayers:function(root,layers,callback)
-{
-var idsToResolve=new Set();
-if(root){
-
-
-this._extractNodeIdsToResolve(idsToResolve,{},root);
-}else{
-for(var i=0;i<layers.length;++i)
-this._extractNodeIdsToResolve(idsToResolve,{},layers[i]);
-}
-this._resolveBackendNodeIds(idsToResolve,onBackendNodeIdsResolved.bind(this));
-
-
-
-
-function onBackendNodeIdsResolved()
-{
-var oldLayersById=this._layersById;
-this._layersById={};
-this._contentRoot=null;
-if(root){
-this._root=this._innerSetLayers(oldLayersById,root);
-}else{
-this._layers=layers.map(this._innerSetLayers.bind(this,oldLayersById));
-this._root=this._contentRoot;
-for(var i=0;i<this._layers.length;++i){
-if(this._layers[i].id()!==this._contentRoot.id()){
-this._contentRoot.addChild(this._layers[i]);
-}
-}
-}
-callback();
-}
-},
-
-
-
-
-setTiles:function(tiles)
-{
-this._tileById=new Map();
-for(var tile of tiles)
-this._tileById.set(tile.id,tile);
-},
-
-
-
-
-
-tileById:function(id)
-{
-return this._tileById.get(id)||null;
-},
-
-
-
-
-
-
-_innerSetLayers:function(oldLayersById,payload)
-{
-var layer=oldLayersById[payload.layer_id];
-if(layer)
-layer._reset(payload);else
-
-layer=new WebInspector.TracingLayer(payload);
-this._layersById[payload.layer_id]=layer;
-if(payload.owner_node)
-layer._setNode(this._backendNodeIdToNode.get(payload.owner_node)||null);
-if(!this._contentRoot&&layer.drawsContent())
-this._contentRoot=layer;
-for(var i=0;payload.children&&i<payload.children.length;++i)
-layer.addChild(this._innerSetLayers(oldLayersById,payload.children[i]));
-return layer;
-},
-
-
-
-
-
-
-_extractNodeIdsToResolve:function(nodeIdsToResolve,seenNodeIds,payload)
-{
-var backendNodeId=payload.owner_node;
-if(backendNodeId&&!this._backendNodeIdToNode.has(backendNodeId))
-nodeIdsToResolve.add(backendNodeId);
-for(var i=0;payload.children&&i<payload.children.length;++i)
-this._extractNodeIdsToResolve(nodeIdsToResolve,seenNodeIds,payload.children[i]);
-},
-
-__proto__:WebInspector.LayerTreeBase.prototype};
-
-
-
-
-
-
-
-WebInspector.AgentLayerTree=function(target)
-{
-WebInspector.LayerTreeBase.call(this,target);
-};
-
-WebInspector.AgentLayerTree.prototype={
-
-
-
-
-setLayers:function(payload,callback)
-{
-if(!payload){
-onBackendNodeIdsResolved.call(this);
-return;
-}
-
-var idsToResolve=new Set();
-for(var i=0;i<payload.length;++i){
-var backendNodeId=payload[i].backendNodeId;
-if(!backendNodeId||this._backendNodeIdToNode.has(backendNodeId))
-continue;
-idsToResolve.add(backendNodeId);
-}
-this._resolveBackendNodeIds(idsToResolve,onBackendNodeIdsResolved.bind(this));
-
-
-
-
-function onBackendNodeIdsResolved()
-{
-this._innerSetLayers(payload);
-callback();
-}
-},
-
-
-
-
-_innerSetLayers:function(layers)
-{
-this._reset();
-
-if(!layers)
-return;
-var oldLayersById=this._layersById;
-this._layersById={};
-for(var i=0;i<layers.length;++i){
-var layerId=layers[i].layerId;
-var layer=oldLayersById[layerId];
-if(layer)
-layer._reset(layers[i]);else
-
-layer=new WebInspector.AgentLayer(this._target,layers[i]);
-this._layersById[layerId]=layer;
-var backendNodeId=layers[i].backendNodeId;
-if(backendNodeId)
-layer._setNode(this._backendNodeIdToNode.get(backendNodeId));
-if(!this._contentRoot&&layer.drawsContent())
-this._contentRoot=layer;
-var parentId=layer.parentId();
-if(parentId){
-var parent=this._layersById[parentId];
-if(!parent)
-console.assert(parent,"missing parent "+parentId+" for layer "+layerId);
-parent.addChild(layer);
-}else{
-if(this._root)
-console.assert(false,"Multiple root layers");
-this._root=layer;
-}
-}
-if(this._root)
-this._root._calculateQuad(new WebKitCSSMatrix());
-},
-
-__proto__:WebInspector.LayerTreeBase.prototype};
-
-
-
-
-
-WebInspector.Layer=function()
-{
-};
-
-WebInspector.Layer.prototype={
-
-
-
-id:function(){},
-
-
-
-
-parentId:function(){},
-
-
-
-
-parent:function(){},
-
-
-
-
-isRoot:function(){},
-
-
-
-
-children:function(){},
-
-
-
-
-addChild:function(child){},
-
-
-
-
-node:function(){},
-
-
-
-
-nodeForSelfOrAncestor:function(){},
-
-
-
-
-offsetX:function(){},
-
-
-
-
-offsetY:function(){},
-
-
-
-
-width:function(){},
-
-
-
-
-height:function(){},
-
-
-
-
-transform:function(){},
-
-
-
-
-quad:function(){},
-
-
-
-
-anchorPoint:function(){},
-
-
-
-
-invisible:function(){},
-
-
-
-
-paintCount:function(){},
-
-
-
-
-lastPaintRect:function(){},
-
-
-
-
-scrollRects:function(){},
-
-
-
-
-gpuMemoryUsage:function(){},
-
-
-
-
-requestCompositingReasons:function(callback){},
-
-
-
-
-drawsContent:function(){}};
-
-
-
-
-
-
-
-
-WebInspector.AgentLayer=function(target,layerPayload)
-{
-this._target=target;
-this._reset(layerPayload);
-};
-
-WebInspector.AgentLayer.prototype={
-
-
-
-
-id:function()
-{
-return this._layerPayload.layerId;
-},
-
-
-
-
-
-parentId:function()
-{
-return this._layerPayload.parentLayerId;
-},
-
-
-
-
-
-parent:function()
-{
-return this._parent;
-},
-
-
-
-
-
-isRoot:function()
-{
-return!this.parentId();
-},
-
-
-
-
-
-children:function()
-{
-return this._children;
-},
-
-
-
-
-
-addChild:function(child)
-{
-if(child._parent)
-console.assert(false,"Child already has a parent");
-this._children.push(child);
-child._parent=this;
-},
-
-
-
-
-_setNode:function(node)
-{
-this._node=node;
-},
-
-
-
-
-
-node:function()
-{
-return this._node;
-},
-
-
-
-
-
-nodeForSelfOrAncestor:function()
-{
-for(var layer=this;layer;layer=layer._parent){
-if(layer._node)
-return layer._node;
-}
-return null;
-},
-
-
-
-
-
-offsetX:function()
-{
-return this._layerPayload.offsetX;
-},
-
-
-
-
-
-offsetY:function()
-{
-return this._layerPayload.offsetY;
-},
-
-
-
-
-
-width:function()
-{
-return this._layerPayload.width;
-},
-
-
-
-
-
-height:function()
-{
-return this._layerPayload.height;
-},
-
-
-
-
-
-transform:function()
-{
-return this._layerPayload.transform;
-},
-
-
-
-
-
-quad:function()
-{
-return this._quad;
-},
-
-
-
-
-
-anchorPoint:function()
-{
-return[
-this._layerPayload.anchorX||0,
-this._layerPayload.anchorY||0,
-this._layerPayload.anchorZ||0];
-
-},
-
-
-
-
-
-invisible:function()
-{
-return this._layerPayload.invisible;
-},
-
-
-
-
-
-paintCount:function()
-{
-return this._paintCount||this._layerPayload.paintCount;
-},
-
-
-
-
-
-lastPaintRect:function()
-{
-return this._lastPaintRect;
-},
-
-
-
-
-
-scrollRects:function()
-{
-return this._scrollRects;
-},
-
-
-
-
-
-requestCompositingReasons:function(callback)
-{
-if(!this._target){
-callback([]);
-return;
-}
-
-var wrappedCallback=InspectorBackend.wrapClientCallback(callback,"LayerTreeAgent.reasonsForCompositingLayer(): ",undefined,[]);
-this._target.layerTreeAgent().compositingReasons(this.id(),wrappedCallback);
-},
-
-
-
-
-
-drawsContent:function()
-{
-return this._layerPayload.drawsContent;
-},
-
-
-
-
-
-gpuMemoryUsage:function()
-{
-
-
-
-var bytesPerPixel=4;
-return this.drawsContent()?this.width()*this.height()*bytesPerPixel:0;
-},
-
-
-
-
-requestSnapshot:function(callback)
-{
-if(!this._target){
-callback();
-return;
-}
-
-var wrappedCallback=InspectorBackend.wrapClientCallback(callback,"LayerTreeAgent.makeSnapshot(): ",WebInspector.PaintProfilerSnapshot.bind(null,this._target));
-this._target.layerTreeAgent().makeSnapshot(this.id(),wrappedCallback);
-},
-
-
-
-
-_didPaint:function(rect)
-{
-this._lastPaintRect=rect;
-this._paintCount=this.paintCount()+1;
-this._image=null;
-},
-
-
-
-
-_reset:function(layerPayload)
-{
-
-this._node=null;
-this._children=[];
-this._parent=null;
-this._paintCount=0;
-this._layerPayload=layerPayload;
-this._image=null;
-this._scrollRects=this._layerPayload.scrollRects||[];
-},
-
-
-
-
-
-_matrixFromArray:function(a)
-{
-function toFixed9(x){return x.toFixed(9);}
-return new WebKitCSSMatrix("matrix3d("+a.map(toFixed9).join(",")+")");
-},
-
-
-
-
-
-_calculateTransformToViewport:function(parentTransform)
-{
-var offsetMatrix=new WebKitCSSMatrix().translate(this._layerPayload.offsetX,this._layerPayload.offsetY);
-var matrix=offsetMatrix;
-
-if(this._layerPayload.transform){
-var transformMatrix=this._matrixFromArray(this._layerPayload.transform);
-var anchorVector=new WebInspector.Geometry.Vector(this._layerPayload.width*this.anchorPoint()[0],this._layerPayload.height*this.anchorPoint()[1],this.anchorPoint()[2]);
-var anchorPoint=WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(anchorVector,matrix);
-var anchorMatrix=new WebKitCSSMatrix().translate(-anchorPoint.x,-anchorPoint.y,-anchorPoint.z);
-matrix=anchorMatrix.inverse().multiply(transformMatrix.multiply(anchorMatrix.multiply(matrix)));
-}
-
-matrix=parentTransform.multiply(matrix);
-return matrix;
-},
-
-
-
-
-
-
-_createVertexArrayForRect:function(width,height)
-{
-return[0,0,0,width,0,0,width,height,0,0,height,0];
-},
-
-
-
-
-_calculateQuad:function(parentTransform)
-{
-var matrix=this._calculateTransformToViewport(parentTransform);
-this._quad=[];
-var vertices=this._createVertexArrayForRect(this._layerPayload.width,this._layerPayload.height);
-for(var i=0;i<4;++i){
-var point=WebInspector.Geometry.multiplyVectorByMatrixAndNormalize(new WebInspector.Geometry.Vector(vertices[i*3],vertices[i*3+1],vertices[i*3+2]),matrix);
-this._quad.push(point.x,point.y);
-}
-
-function calculateQuadForLayer(layer)
-{
-layer._calculateQuad(matrix);
-}
-
-this._children.forEach(calculateQuadForLayer);
-}};
-
-
-
-
-
-
-
-WebInspector.TracingLayer=function(payload)
-{
-this._reset(payload);
-};
-
-WebInspector.TracingLayer.prototype={
-
-
-
-_reset:function(payload)
-{
-
-this._node=null;
-this._layerId=String(payload.layer_id);
-this._offsetX=payload.position[0];
-this._offsetY=payload.position[1];
-this._width=payload.bounds.width;
-this._height=payload.bounds.height;
-this._children=[];
-this._parentLayerId=null;
-this._parent=null;
-this._quad=payload.layer_quad||[];
-this._createScrollRects(payload);
-this._compositingReasons=payload.compositing_reasons||[];
-this._drawsContent=!!payload.draws_content;
-this._gpuMemoryUsage=payload.gpu_memory_usage;
-},
-
-
-
-
-
-id:function()
-{
-return this._layerId;
-},
-
-
-
-
-
-parentId:function()
-{
-return this._parentLayerId;
-},
-
-
-
-
-
-parent:function()
-{
-return this._parent;
-},
-
-
-
-
-
-isRoot:function()
-{
-return!this.parentId();
-},
-
-
-
-
-
-children:function()
-{
-return this._children;
-},
-
-
-
-
-
-addChild:function(child)
-{
-if(child._parent)
-console.assert(false,"Child already has a parent");
-this._children.push(child);
-child._parent=this;
-child._parentLayerId=this._layerId;
-},
-
-
-
-
-
-_setNode:function(node)
-{
-this._node=node;
-},
-
-
-
-
-
-node:function()
-{
-return this._node;
-},
-
-
-
-
-
-nodeForSelfOrAncestor:function()
-{
-for(var layer=this;layer;layer=layer._parent){
-if(layer._node)
-return layer._node;
-}
-return null;
-},
-
-
-
-
-
-offsetX:function()
-{
-return this._offsetX;
-},
-
-
-
-
-
-offsetY:function()
-{
-return this._offsetY;
-},
-
-
-
-
-
-width:function()
-{
-return this._width;
-},
-
-
-
-
-
-height:function()
-{
-return this._height;
-},
-
-
-
-
-
-transform:function()
-{
-return null;
-},
-
-
-
-
-
-quad:function()
-{
-return this._quad;
-},
-
-
-
-
-
-anchorPoint:function()
-{
-return[0.5,0.5,0];
-},
-
-
-
-
-
-invisible:function()
-{
-return false;
-},
-
-
-
-
-
-paintCount:function()
-{
-return 0;
-},
-
-
-
-
-
-lastPaintRect:function()
-{
-return null;
-},
-
-
-
-
-
-scrollRects:function()
-{
-return this._scrollRects;
-},
-
-
-
-
-
-gpuMemoryUsage:function()
-{
-return this._gpuMemoryUsage;
-},
-
-
-
-
-
-
-_scrollRectsFromParams:function(params,type)
-{
-return{rect:{x:params[0],y:params[1],width:params[2],height:params[3]},type:type};
-},
-
-
-
-
-_createScrollRects:function(payload)
-{
-this._scrollRects=[];
-if(payload.non_fast_scrollable_region)
-this._scrollRects.push(this._scrollRectsFromParams(payload.non_fast_scrollable_region,WebInspector.LayerTreeModel.ScrollRectType.NonFastScrollable.name));
-if(payload.touch_event_handler_region)
-this._scrollRects.push(this._scrollRectsFromParams(payload.touch_event_handler_region,WebInspector.LayerTreeModel.ScrollRectType.TouchEventHandler.name));
-if(payload.wheel_event_handler_region)
-this._scrollRects.push(this._scrollRectsFromParams(payload.wheel_event_handler_region,WebInspector.LayerTreeModel.ScrollRectType.WheelEventHandler.name));
-if(payload.scroll_event_handler_region)
-this._scrollRects.push(this._scrollRectsFromParams(payload.scroll_event_handler_region,WebInspector.LayerTreeModel.ScrollRectType.RepaintsOnScroll.name));
-},
-
-
-
-
-
-requestCompositingReasons:function(callback)
-{
-callback(this._compositingReasons);
-},
-
-
-
-
-
-drawsContent:function()
-{
-return this._drawsContent;
-}};
-
-
-
-
-
-
-WebInspector.DeferredLayerTree=function(target)
-{
-this._target=target;
-};
-
-WebInspector.DeferredLayerTree.prototype={
-
-
-
-resolve:function(callback){},
-
-
-
-
-target:function()
-{
-return this._target;
-}};
-
-
-
-
-
-
-
-WebInspector.LayerTreeDispatcher=function(layerTreeModel)
-{
-this._layerTreeModel=layerTreeModel;
-};
-
-WebInspector.LayerTreeDispatcher.prototype={
-
-
-
-
-layerTreeDidChange:function(layers)
-{
-this._layerTreeModel._layerTreeChanged(layers||null);
-},
-
-
-
-
-
-
-layerPainted:function(layerId,clipRect)
-{
-this._layerTreeModel._layerPainted(layerId,clipRect);
-}};
-
-
-
-
-
-
-WebInspector.LayerTreeModel.fromTarget=function(target)
-{
-if(!target.hasDOMCapability())
-return null;
-
-var model=target.model(WebInspector.LayerTreeModel);
-if(!model)
-model=new WebInspector.LayerTreeModel(target);
-return model;
-};
-
-},{}],127:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineFrameModel=function(categoryMapper)
-{
-this._categoryMapper=categoryMapper;
-this.reset();
-};
-
-WebInspector.TimelineFrameModel._mainFrameMarkers=[
-WebInspector.TimelineModel.RecordType.ScheduleStyleRecalculation,
-WebInspector.TimelineModel.RecordType.InvalidateLayout,
-WebInspector.TimelineModel.RecordType.BeginMainThreadFrame,
-WebInspector.TimelineModel.RecordType.ScrollLayer];
-
-
-WebInspector.TimelineFrameModel.prototype={
-
-
-
-frames:function()
-{
-return this._frames;
-},
-
-
-
-
-
-
-filteredFrames:function(startTime,endTime)
-{
-
-
-
-
-
-function compareStartTime(value,object)
-{
-return value-object.startTime;
-}
-
-
-
-
-
-function compareEndTime(value,object)
-{
-return value-object.endTime;
-}
-var frames=this._frames;
-var firstFrame=frames.lowerBound(startTime,compareEndTime);
-var lastFrame=frames.lowerBound(endTime,compareStartTime);
-return frames.slice(firstFrame,lastFrame);
-},
-
-
-
-
-
-hasRasterTile:function(rasterTask)
-{
-var data=rasterTask.args["tileData"];
-if(!data)
-return false;
-var frameId=data["sourceFrameNumber"];
-var frame=frameId&&this._frameById[frameId];
-if(!frame||!frame.layerTree)
-return false;
-return true;
-},
-
-
-
-
-
-requestRasterTile:function(rasterTask,callback)
-{
-var target=this._target;
-if(!target){
-callback(null,null);
-return;
-}
-var data=rasterTask.args["tileData"];
-var frameId=data["sourceFrameNumber"];
-var frame=frameId&&this._frameById[frameId];
-if(!frame||!frame.layerTree){
-callback(null,null);
-return;
-}
-
-var tileId=data["tileId"]&&data["tileId"]["id_ref"];
-
-var fragments=[];
-
-var tile=null;
-var x0=Infinity;
-var y0=Infinity;
-
-frame.layerTree.resolve(layerTreeResolved);
-
-
-
-function layerTreeResolved(layerTree)
-{
-tile=tileId&&layerTree.tileById("cc::Tile/"+tileId);
-if(!tile){
-console.error("Tile "+tileId+" missing in frame "+frameId);
-callback(null,null);
-return;
-}
-var fetchPictureFragmentsBarrier=new CallbackBarrier();
-for(var paint of frame.paints){
-if(tile.layer_id===paint.layerId())
-paint.loadPicture(fetchPictureFragmentsBarrier.createCallback(pictureLoaded));
-}
-fetchPictureFragmentsBarrier.callWhenDone(allPicturesLoaded);
-}
-
-
-
-
-
-
-
-
-function segmentsOverlap(a1,a2,b1,b2)
-{
-console.assert(a1<=a2&&b1<=b2,"segments should be specified as ordered pairs");
-return a2>b1&&a1<b2;
-}
-
-
-
-
-
-function rectsOverlap(a,b)
-{
-return segmentsOverlap(a[0],a[0]+a[2],b[0],b[0]+b[2])&&segmentsOverlap(a[1],a[1]+a[3],b[1],b[1]+b[3]);
-}
-
-
-
-
-
-function pictureLoaded(rect,picture)
-{
-if(!rect||!picture)
-return;
-if(!rectsOverlap(rect,tile.content_rect))
-return;
-var x=rect[0];
-var y=rect[1];
-x0=Math.min(x0,x);
-y0=Math.min(y0,y);
-fragments.push({x:x,y:y,picture:picture});
-}
-
-function allPicturesLoaded()
-{
-if(!fragments.length){
-callback(null,null);
-return;
-}
-var rectArray=tile.content_rect;
-
-var rect={x:rectArray[0]-x0,y:rectArray[1]-y0,width:rectArray[2],height:rectArray[3]};
-WebInspector.PaintProfilerSnapshot.loadFromFragments(target,fragments,callback.bind(null,rect));
-}
-},
-
-reset:function()
-{
-this._minimumRecordTime=Infinity;
-this._frames=[];
-this._frameById={};
-this._lastFrame=null;
-this._lastLayerTree=null;
-this._mainFrameCommitted=false;
-this._mainFrameRequested=false;
-this._framePendingCommit=null;
-this._lastBeginFrame=null;
-this._lastNeedsBeginFrame=null;
-this._framePendingActivation=null;
-this._lastTaskBeginTime=null;
-this._target=null;
-this._sessionId=null;
-this._currentTaskTimeByCategory={};
-},
-
-
-
-
-handleBeginFrame:function(startTime)
-{
-if(!this._lastFrame)
-this._startFrame(startTime);
-this._lastBeginFrame=startTime;
-},
-
-
-
-
-handleDrawFrame:function(startTime)
-{
-if(!this._lastFrame){
-this._startFrame(startTime);
-return;
-}
-
-
-
-if(this._mainFrameCommitted||!this._mainFrameRequested){
-if(this._lastNeedsBeginFrame){
-var idleTimeEnd=this._framePendingActivation?this._framePendingActivation.triggerTime:this._lastBeginFrame||this._lastNeedsBeginFrame;
-if(idleTimeEnd>this._lastFrame.startTime){
-this._lastFrame.idle=true;
-this._startFrame(idleTimeEnd);
-if(this._framePendingActivation)
-this._commitPendingFrame();
-this._lastBeginFrame=null;
-}
-this._lastNeedsBeginFrame=null;
-}
-this._startFrame(startTime);
-}
-this._mainFrameCommitted=false;
-},
-
-handleActivateLayerTree:function()
-{
-if(!this._lastFrame)
-return;
-if(this._framePendingActivation&&!this._lastNeedsBeginFrame)
-this._commitPendingFrame();
-},
-
-handleRequestMainThreadFrame:function()
-{
-if(!this._lastFrame)
-return;
-this._mainFrameRequested=true;
-},
-
-handleCompositeLayers:function()
-{
-if(!this._framePendingCommit)
-return;
-this._framePendingActivation=this._framePendingCommit;
-this._framePendingCommit=null;
-this._mainFrameRequested=false;
-this._mainFrameCommitted=true;
-},
-
-
-
-
-handleLayerTreeSnapshot:function(layerTree)
-{
-this._lastLayerTree=layerTree;
-},
-
-
-
-
-
-handleNeedFrameChanged:function(startTime,needsBeginFrame)
-{
-if(needsBeginFrame)
-this._lastNeedsBeginFrame=startTime;
-},
-
-
-
-
-_startFrame:function(startTime)
-{
-if(this._lastFrame)
-this._flushFrame(this._lastFrame,startTime);
-this._lastFrame=new WebInspector.TimelineFrame(startTime,startTime-this._minimumRecordTime);
-},
-
-
-
-
-
-_flushFrame:function(frame,endTime)
-{
-frame._setLayerTree(this._lastLayerTree);
-frame._setEndTime(endTime);
-if(this._frames.length&&(frame.startTime!==this._frames.peekLast().endTime||frame.startTime>frame.endTime))
-console.assert(false,`Inconsistent frame time for frame ${this._frames.length} (${frame.startTime} - ${frame.endTime})`);
-this._frames.push(frame);
-if(typeof frame._mainFrameId==="number")
-this._frameById[frame._mainFrameId]=frame;
-},
-
-_commitPendingFrame:function()
-{
-this._lastFrame._addTimeForCategories(this._framePendingActivation.timeByCategory);
-this._lastFrame.paints=this._framePendingActivation.paints;
-this._lastFrame._mainFrameId=this._framePendingActivation.mainFrameId;
-this._framePendingActivation=null;
-},
-
-
-
-
-
-
-_findRecordRecursively:function(types,record)
-{
-if(types.indexOf(record.type())>=0)
-return record;
-if(!record.children())
-return null;
-for(var i=0;i<record.children().length;++i){
-var result=this._findRecordRecursively(types,record.children()[i]);
-if(result)
-return result;
-}
-return null;
-},
-
-
-
-
-
-
-addTraceEvents:function(target,events,sessionId)
-{
-this._target=target;
-this._sessionId=sessionId;
-if(!events.length)
-return;
-if(events[0].startTime<this._minimumRecordTime)
-this._minimumRecordTime=events[0].startTime;
-for(var i=0;i<events.length;++i)
-this._addTraceEvent(events[i]);
-},
-
-
-
-
-_addTraceEvent:function(event)
-{
-var eventNames=WebInspector.TimelineModel.RecordType;
-
-if(event.name===eventNames.SetLayerTreeId){
-var sessionId=event.args["sessionId"]||event.args["data"]["sessionId"];
-if(this._sessionId===sessionId)
-this._layerTreeId=event.args["layerTreeId"]||event.args["data"]["layerTreeId"];
-}else if(event.name===eventNames.TracingStartedInPage){
-this._mainThread=event.thread;
-}else if(event.phase===WebInspector.TracingModel.Phase.SnapshotObject&&event.name===eventNames.LayerTreeHostImplSnapshot&&parseInt(event.id,0)===this._layerTreeId){
-var snapshot=event;
-this.handleLayerTreeSnapshot(new WebInspector.DeferredTracingLayerTree(snapshot,this._target));
-}else{
-this._processCompositorEvents(event);
-if(event.thread===this._mainThread)
-this._addMainThreadTraceEvent(event);else
-if(this._lastFrame&&event.selfTime&&!WebInspector.TracingModel.isTopLevelEvent(event))
-this._lastFrame._addTimeForCategory(this._categoryMapper(event),event.selfTime);
-}
-},
-
-
-
-
-_processCompositorEvents:function(event)
-{
-var eventNames=WebInspector.TimelineModel.RecordType;
-
-if(event.args["layerTreeId"]!==this._layerTreeId)
-return;
-
-var timestamp=event.startTime;
-if(event.name===eventNames.BeginFrame)
-this.handleBeginFrame(timestamp);else
-if(event.name===eventNames.DrawFrame)
-this.handleDrawFrame(timestamp);else
-if(event.name===eventNames.ActivateLayerTree)
-this.handleActivateLayerTree();else
-if(event.name===eventNames.RequestMainThreadFrame)
-this.handleRequestMainThreadFrame();else
-if(event.name===eventNames.NeedsBeginFrameChanged)
-this.handleNeedFrameChanged(timestamp,event.args["data"]&&event.args["data"]["needsBeginFrame"]);
-},
-
-
-
-
-_addMainThreadTraceEvent:function(event)
-{
-var eventNames=WebInspector.TimelineModel.RecordType;
-var timestamp=event.startTime;
-var selfTime=event.selfTime||0;
-
-if(WebInspector.TracingModel.isTopLevelEvent(event)){
-this._currentTaskTimeByCategory={};
-this._lastTaskBeginTime=event.startTime;
-}
-if(!this._framePendingCommit&&WebInspector.TimelineFrameModel._mainFrameMarkers.indexOf(event.name)>=0)
-this._framePendingCommit=new WebInspector.PendingFrame(this._lastTaskBeginTime||event.startTime,this._currentTaskTimeByCategory);
-if(!this._framePendingCommit){
-this._addTimeForCategory(this._currentTaskTimeByCategory,event);
-return;
-}
-this._addTimeForCategory(this._framePendingCommit.timeByCategory,event);
-
-if(event.name===eventNames.BeginMainThreadFrame&&event.args["data"]&&event.args["data"]["frameId"])
-this._framePendingCommit.mainFrameId=event.args["data"]["frameId"];
-if(event.name===eventNames.Paint&&event.args["data"]["layerId"]&&event.picture&&this._target)
-this._framePendingCommit.paints.push(new WebInspector.LayerPaintEvent(event,this._target));
-if(event.name===eventNames.CompositeLayers&&event.args["layerTreeId"]===this._layerTreeId)
-this.handleCompositeLayers();
-},
-
-
-
-
-
-_addTimeForCategory:function(timeByCategory,event)
-{
-if(!event.selfTime)
-return;
-var categoryName=this._categoryMapper(event);
-timeByCategory[categoryName]=(timeByCategory[categoryName]||0)+event.selfTime;
-}};
-
-
-
-
-
-
-
-
-WebInspector.DeferredTracingLayerTree=function(snapshot,target)
-{
-WebInspector.DeferredLayerTree.call(this,target);
-this._snapshot=snapshot;
-};
-
-WebInspector.DeferredTracingLayerTree.prototype={
-
-
-
-
-resolve:function(callback)
-{
-this._snapshot.requestObject(onGotObject.bind(this));
-
-
-
-
-function onGotObject(result)
-{
-if(!result)
-return;
-var viewport=result["device_viewport_size"];
-var tiles=result["active_tiles"];
-var rootLayer=result["active_tree"]["root_layer"];
-var layers=result["active_tree"]["layers"];
-var layerTree=new WebInspector.TracingLayerTree(this._target);
-layerTree.setViewportSize(viewport);
-layerTree.setTiles(tiles);
-layerTree.setLayers(rootLayer,layers,callback.bind(null,layerTree));
-}
-},
-
-__proto__:WebInspector.DeferredLayerTree.prototype};
-
-
-
-
-
-
-
-
-WebInspector.TimelineFrame=function(startTime,startTimeOffset)
-{
-this.startTime=startTime;
-this.startTimeOffset=startTimeOffset;
-this.endTime=this.startTime;
-this.duration=0;
-this.timeByCategory={};
-this.cpuTime=0;
-this.idle=false;
-
-this.layerTree=null;
-
-this.paints=[];
-
-this._mainFrameId=undefined;
-};
-
-WebInspector.TimelineFrame.prototype={
-
-
-
-hasWarnings:function()
-{
-var longFrameDurationThresholdMs=22;
-return!this.idle&&this.duration>longFrameDurationThresholdMs;
-},
-
-
-
-
-_setEndTime:function(endTime)
-{
-this.endTime=endTime;
-this.duration=this.endTime-this.startTime;
-},
-
-
-
-
-_setLayerTree:function(layerTree)
-{
-this.layerTree=layerTree;
-},
-
-
-
-
-_addTimeForCategories:function(timeByCategory)
-{
-for(var category in timeByCategory)
-this._addTimeForCategory(category,timeByCategory[category]);
-},
-
-
-
-
-
-_addTimeForCategory:function(category,time)
-{
-this.timeByCategory[category]=(this.timeByCategory[category]||0)+time;
-this.cpuTime+=time;
-}};
-
-
-
-
-
-
-
-WebInspector.LayerPaintEvent=function(event,target)
-{
-this._event=event;
-this._target=target;
-};
-
-WebInspector.LayerPaintEvent.prototype={
-
-
-
-layerId:function()
-{
-return this._event.args["data"]["layerId"];
-},
-
-
-
-
-event:function()
-{
-return this._event;
-},
-
-
-
-
-loadPicture:function(callback)
-{
-this._event.picture.requestObject(onGotObject);
-
-
-
-function onGotObject(result)
-{
-if(!result||!result["skp64"]){
-callback(null,null);
-return;
-}
-var rect=result["params"]&&result["params"]["layer_rect"];
-callback(rect,result["skp64"]);
-}
-},
-
-
-
-
-loadSnapshot:function(callback)
-{
-this.loadPicture(onGotPicture.bind(this));
-
-
-
-
-
-function onGotPicture(rect,picture)
-{
-if(!rect||!picture||!this._target){
-callback(null,null);
-return;
-}
-WebInspector.PaintProfilerSnapshot.load(this._target,picture,callback.bind(null,rect));
-}
-}};
-
-
-
-
-
-
-
-WebInspector.PendingFrame=function(triggerTime,timeByCategory)
-{
-
-this.timeByCategory=timeByCategory;
-
-this.paints=[];
-
-this.mainFrameId=undefined;
-this.triggerTime=triggerTime;
-};
-
-},{}],128:[function(require,module,exports){
-
-
-
-
-
-
-
-WebInspector.TimelineIRModel=function()
-{
-this.reset();
-};
-
-
-
-
-WebInspector.TimelineIRModel.Phases={
-Idle:"Idle",
-Response:"Response",
-Scroll:"Scroll",
-Fling:"Fling",
-Drag:"Drag",
-Animation:"Animation",
-Uncategorized:"Uncategorized"};
-
-
-
-
-
-WebInspector.TimelineIRModel.InputEvents={
-Char:"Char",
-Click:"GestureClick",
-ContextMenu:"ContextMenu",
-FlingCancel:"GestureFlingCancel",
-FlingStart:"GestureFlingStart",
-ImplSideFling:WebInspector.TimelineModel.RecordType.ImplSideFling,
-KeyDown:"KeyDown",
-KeyDownRaw:"RawKeyDown",
-KeyUp:"KeyUp",
-LatencyScrollUpdate:"ScrollUpdate",
-MouseDown:"MouseDown",
-MouseMove:"MouseMove",
-MouseUp:"MouseUp",
-MouseWheel:"MouseWheel",
-PinchBegin:"GesturePinchBegin",
-PinchEnd:"GesturePinchEnd",
-PinchUpdate:"GesturePinchUpdate",
-ScrollBegin:"GestureScrollBegin",
-ScrollEnd:"GestureScrollEnd",
-ScrollUpdate:"GestureScrollUpdate",
-ScrollUpdateRenderer:"ScrollUpdate",
-ShowPress:"GestureShowPress",
-Tap:"GestureTap",
-TapCancel:"GestureTapCancel",
-TapDown:"GestureTapDown",
-TouchCancel:"TouchCancel",
-TouchEnd:"TouchEnd",
-TouchMove:"TouchMove",
-TouchStart:"TouchStart"};
-
-
-WebInspector.TimelineIRModel._mergeThresholdsMs={
-animation:1,
-mouse:40};
-
-
-WebInspector.TimelineIRModel._eventIRPhase=Symbol("eventIRPhase");
-
-
-
-
-
-WebInspector.TimelineIRModel.phaseForEvent=function(event)
-{
-return event[WebInspector.TimelineIRModel._eventIRPhase];
-};
-
-WebInspector.TimelineIRModel.prototype={
-
-
-
-
-populate:function(inputLatencies,animations)
-{
-var eventTypes=WebInspector.TimelineIRModel.InputEvents;
-var phases=WebInspector.TimelineIRModel.Phases;
-
-this.reset();
-if(!inputLatencies)
-return;
-this._processInputLatencies(inputLatencies);
-if(animations)
-this._processAnimations(animations);
-var range=new WebInspector.SegmentedRange();
-range.appendRange(this._drags);
-range.appendRange(this._cssAnimations);
-range.appendRange(this._scrolls);
-range.appendRange(this._responses);
-this._segments=range.segments();
-},
-
-
-
-
-_processInputLatencies:function(events)
-{
-var eventTypes=WebInspector.TimelineIRModel.InputEvents;
-var phases=WebInspector.TimelineIRModel.Phases;
-var thresholdsMs=WebInspector.TimelineIRModel._mergeThresholdsMs;
-
-var scrollStart;
-var flingStart;
-var touchStart;
-var firstTouchMove;
-var mouseWheel;
-var mouseDown;
-var mouseMove;
-
-for(var i=0;i<events.length;++i){
-var event=events[i];
-if(i>0&&events[i].startTime<events[i-1].startTime)
-console.assert(false,"Unordered input events");
-var type=this._inputEventType(event.name);
-switch(type){
-
-case eventTypes.ScrollBegin:
-this._scrolls.append(this._segmentForEvent(event,phases.Scroll));
-scrollStart=event;
-break;
-
-case eventTypes.ScrollEnd:
-if(scrollStart)
-this._scrolls.append(this._segmentForEventRange(scrollStart,event,phases.Scroll));else
-
-this._scrolls.append(this._segmentForEvent(event,phases.Scroll));
-scrollStart=null;
-break;
-
-case eventTypes.ScrollUpdate:
-touchStart=null;
-this._scrolls.append(this._segmentForEvent(event,phases.Scroll));
-break;
-
-case eventTypes.FlingStart:
-if(flingStart){
-WebInspector.console.error(WebInspector.UIString("Two flings at the same time? %s vs %s",flingStart.startTime,event.startTime));
-break;
-}
-flingStart=event;
-break;
-
-case eventTypes.FlingCancel:
-
-if(!flingStart)
-break;
-this._scrolls.append(this._segmentForEventRange(flingStart,event,phases.Fling));
-flingStart=null;
-break;
-
-case eventTypes.ImplSideFling:
-this._scrolls.append(this._segmentForEvent(event,phases.Fling));
-break;
-
-case eventTypes.ShowPress:
-case eventTypes.Tap:
-case eventTypes.KeyDown:
-case eventTypes.KeyDownRaw:
-case eventTypes.KeyUp:
-case eventTypes.Char:
-case eventTypes.Click:
-case eventTypes.ContextMenu:
-this._responses.append(this._segmentForEvent(event,phases.Response));
-break;
-
-case eventTypes.TouchStart:
-
-
-if(touchStart){
-WebInspector.console.error(WebInspector.UIString("Two touches at the same time? %s vs %s",touchStart.startTime,event.startTime));
-break;
-}
-touchStart=event;
-event.steps[0][WebInspector.TimelineIRModel._eventIRPhase]=phases.Response;
-firstTouchMove=null;
-break;
-
-case eventTypes.TouchCancel:
-touchStart=null;
-break;
-
-case eventTypes.TouchMove:
-if(firstTouchMove){
-this._drags.append(this._segmentForEvent(event,phases.Drag));
-}else if(touchStart){
-firstTouchMove=event;
-this._responses.append(this._segmentForEventRange(touchStart,event,phases.Response));
-}
-break;
-
-case eventTypes.TouchEnd:
-touchStart=null;
-break;
-
-case eventTypes.MouseDown:
-mouseDown=event;
-mouseMove=null;
-break;
-
-case eventTypes.MouseMove:
-if(mouseDown&&!mouseMove&&mouseDown.startTime+thresholdsMs.mouse>event.startTime){
-this._responses.append(this._segmentForEvent(mouseDown,phases.Response));
-this._responses.append(this._segmentForEvent(event,phases.Response));
-}else if(mouseDown){
-this._drags.append(this._segmentForEvent(event,phases.Drag));
-}
-mouseMove=event;
-break;
-
-case eventTypes.MouseUp:
-this._responses.append(this._segmentForEvent(event,phases.Response));
-mouseDown=null;
-break;
-
-case eventTypes.MouseWheel:
-
-if(mouseWheel&&canMerge(thresholdsMs.mouse,mouseWheel,event))
-this._scrolls.append(this._segmentForEventRange(mouseWheel,event,phases.Scroll));else
-
-this._scrolls.append(this._segmentForEvent(event,phases.Scroll));
-mouseWheel=event;
-break;}
-
-}
-
-
-
-
-
-
-
-function canMerge(threshold,first,second)
-{
-return first.endTime<second.startTime&&second.startTime<first.endTime+threshold;
-}
-},
-
-
-
-
-_processAnimations:function(events)
-{
-for(var i=0;i<events.length;++i)
-this._cssAnimations.append(this._segmentForEvent(events[i],WebInspector.TimelineIRModel.Phases.Animation));
-},
-
-
-
-
-
-
-_segmentForEvent:function(event,phase)
-{
-this._setPhaseForEvent(event,phase);
-return new WebInspector.Segment(event.startTime,event.endTime,phase);
-},
-
-
-
-
-
-
-
-_segmentForEventRange:function(startEvent,endEvent,phase)
-{
-this._setPhaseForEvent(startEvent,phase);
-this._setPhaseForEvent(endEvent,phase);
-return new WebInspector.Segment(startEvent.startTime,endEvent.endTime,phase);
-},
-
-
-
-
-
-_setPhaseForEvent:function(asyncEvent,phase)
-{
-asyncEvent.steps[0][WebInspector.TimelineIRModel._eventIRPhase]=phase;
-},
-
-
-
-
-interactionRecords:function()
-{
-return this._segments;
-},
-
-reset:function()
-{
-var thresholdsMs=WebInspector.TimelineIRModel._mergeThresholdsMs;
-
-this._segments=[];
-this._drags=new WebInspector.SegmentedRange(merge.bind(null,thresholdsMs.mouse));
-this._cssAnimations=new WebInspector.SegmentedRange(merge.bind(null,thresholdsMs.animation));
-this._responses=new WebInspector.SegmentedRange(merge.bind(null,0));
-this._scrolls=new WebInspector.SegmentedRange(merge.bind(null,thresholdsMs.animation));
-
-
-
-
-
-
-function merge(threshold,first,second)
-{
-return first.end+threshold>=second.begin&&first.data===second.data?first:null;
-}
-},
-
-
-
-
-
-_inputEventType:function(eventName)
-{
-var prefix="InputLatency::";
-if(!eventName.startsWith(prefix)){
-if(eventName===WebInspector.TimelineIRModel.InputEvents.ImplSideFling)
-return eventName;
-console.error("Unrecognized input latency event: "+eventName);
-return null;
-}
-return eventName.substr(prefix.length);
-}};
-
-
-
-},{}],129:[function(require,module,exports){
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor={};
-
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile=function(jsProfileModel,thread)
-{
-var idleNode=jsProfileModel.idleNode;
-var programNode=jsProfileModel.programNode;
-var gcNode=jsProfileModel.gcNode;
-var samples=jsProfileModel.samples;
-var timestamps=jsProfileModel.timestamps;
-var jsEvents=[];
-
-var nodeToStackMap=new Map();
-nodeToStackMap.set(programNode,[]);
-for(var i=0;i<samples.length;++i){
-var node=jsProfileModel.nodeByIndex(i);
-if(!node){
-console.error(`Node with unknown id ${samples[i]} at index ${i}`);
-continue;
-}
-if(node===gcNode||node===idleNode)
-continue;
-var callFrames=nodeToStackMap.get(node);
-if(!callFrames){
-callFrames=new Array(node.depth+1);
-nodeToStackMap.set(node,callFrames);
-for(var j=0;node.parent;node=node.parent)
-callFrames[j++]=node;
-}
-var jsSampleEvent=new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory,
-WebInspector.TimelineModel.RecordType.JSSample,
-WebInspector.TracingModel.Phase.Instant,timestamps[i],thread);
-jsSampleEvent.args["data"]={stackTrace:callFrames};
-jsEvents.push(jsSampleEvent);
-}
-return jsEvents;
-};
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents=function(events)
-{
-
-
-
-
-
-function equalFrames(frame1,frame2)
-{
-return frame1.scriptId===frame2.scriptId&&frame1.functionName===frame2.functionName;
-}
-
-
-
-
-
-function eventEndTime(e)
-{
-return e.endTime||e.startTime;
-}
-
-
-
-
-
-function isJSInvocationEvent(e)
-{
-switch(e.name){
-case WebInspector.TimelineModel.RecordType.RunMicrotasks:
-case WebInspector.TimelineModel.RecordType.FunctionCall:
-case WebInspector.TimelineModel.RecordType.EvaluateScript:
-return true;}
-
-return false;
-}
-
-var jsFrameEvents=[];
-var jsFramesStack=[];
-var lockedJsStackDepth=[];
-var ordinal=0;
-var filterNativeFunctions=!WebInspector.moduleSetting("showNativeFunctionsInJSProfile").get();
-
-
-
-
-function onStartEvent(e)
-{
-e.ordinal=++ordinal;
-extractStackTrace(e);
-
-lockedJsStackDepth.push(jsFramesStack.length);
-}
-
-
-
-
-
-function onInstantEvent(e,parent)
-{
-e.ordinal=++ordinal;
-if(parent&&isJSInvocationEvent(parent))
-extractStackTrace(e);
-}
-
-
-
-
-function onEndEvent(e)
-{
-truncateJSStack(lockedJsStackDepth.pop(),e.endTime);
-}
-
-
-
-
-
-function truncateJSStack(depth,time)
-{
-if(lockedJsStackDepth.length){
-var lockedDepth=lockedJsStackDepth.peekLast();
-if(depth<lockedDepth){
-console.error("Child stack is shallower ("+depth+") than the parent stack ("+lockedDepth+") at "+time);
-depth=lockedDepth;
-}
-}
-if(jsFramesStack.length<depth){
-console.error("Trying to truncate higher than the current stack size at "+time);
-depth=jsFramesStack.length;
-}
-for(var k=0;k<jsFramesStack.length;++k)
-jsFramesStack[k].setEndTime(time);
-jsFramesStack.length=depth;
-}
-
-
-
-
-function filterStackFrames(stack)
-{
-for(var i=0,j=0;i<stack.length;++i){
-var url=stack[i].url;
-if(url&&url.startsWith("native "))
-continue;
-stack[j++]=stack[i];
-}
-stack.length=j;
-}
-
-
-
-
-function extractStackTrace(e)
-{
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var callFrames;
-if(e.name===recordTypes.JSSample){
-var eventData=e.args["data"]||e.args["beginData"];
-callFrames=eventData&&eventData["stackTrace"];
-}else{
-callFrames=jsFramesStack.map(frameEvent=>frameEvent.args["data"]).reverse();
-}
-if(filterNativeFunctions)
-filterStackFrames(callFrames);
-var endTime=eventEndTime(e);
-var numFrames=callFrames.length;
-var minFrames=Math.min(numFrames,jsFramesStack.length);
-var i;
-for(i=lockedJsStackDepth.peekLast()||0;i<minFrames;++i){
-var newFrame=callFrames[numFrames-1-i];
-var oldFrame=jsFramesStack[i].args["data"];
-if(!equalFrames(newFrame,oldFrame))
-break;
-jsFramesStack[i].setEndTime(Math.max(jsFramesStack[i].endTime,endTime));
-}
-truncateJSStack(i,e.startTime);
-for(;i<numFrames;++i){
-var frame=callFrames[numFrames-1-i];
-var jsFrameEvent=new WebInspector.TracingModel.Event(WebInspector.TracingModel.DevToolsTimelineEventCategory,recordTypes.JSFrame,
-WebInspector.TracingModel.Phase.Complete,e.startTime,e.thread);
-jsFrameEvent.ordinal=e.ordinal;
-jsFrameEvent.addArgs({data:frame});
-jsFrameEvent.setEndTime(endTime);
-jsFramesStack.push(jsFrameEvent);
-jsFrameEvents.push(jsFrameEvent);
-}
-}
-
-
-
-
-
-function findFirstTopLevelEvent(events)
-{
-for(var i=0;i<events.length;++i){
-if(WebInspector.TracingModel.isTopLevelEvent(events[i]))
-return events[i];
-}
-return null;
-}
-
-var firstTopLevelEvent=findFirstTopLevelEvent(events);
-if(firstTopLevelEvent)
-WebInspector.TimelineModel.forEachEvent(events,onStartEvent,onEndEvent,onInstantEvent,firstTopLevelEvent.startTime);
-return jsFrameEvents;
-};
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.CodeMap=function()
-{
-
-this._banks=new Map();
-};
-
-
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.CodeMap.Entry=function(address,size,callFrame)
-{
-this.address=address;
-this.size=size;
-this.callFrame=callFrame;
-};
-
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.CodeMap.comparator=function(address,entry)
-{
-return address-entry.address;
-};
-
-WebInspector.TimelineJSProfileProcessor.CodeMap.prototype={
-
-
-
-
-
-addEntry:function(addressHex,size,callFrame)
-{
-var entry=new WebInspector.TimelineJSProfileProcessor.CodeMap.Entry(this._getAddress(addressHex),size,callFrame);
-this._addEntry(addressHex,entry);
-},
-
-
-
-
-
-
-moveEntry:function(oldAddressHex,newAddressHex,size)
-{
-var entry=this._getBank(oldAddressHex).removeEntry(this._getAddress(oldAddressHex));
-if(!entry){
-console.error("Entry at address "+oldAddressHex+" not found");
-return;
-}
-entry.address=this._getAddress(newAddressHex);
-entry.size=size;
-this._addEntry(newAddressHex,entry);
-},
-
-
-
-
-
-lookupEntry:function(addressHex)
-{
-return this._getBank(addressHex).lookupEntry(this._getAddress(addressHex));
-},
-
-
-
-
-
-_addEntry:function(addressHex,entry)
-{
-
-this._getBank(addressHex).addEntry(entry);
-},
-
-
-
-
-
-_getBank:function(addressHex)
-{
-addressHex=addressHex.slice(2);
-
-var bankSizeHexDigits=13;
-var maxHexDigits=16;
-var bankName=addressHex.slice(-maxHexDigits,-bankSizeHexDigits);
-var bank=this._banks.get(bankName);
-if(!bank){
-bank=new WebInspector.TimelineJSProfileProcessor.CodeMap.Bank();
-this._banks.set(bankName,bank);
-}
-return bank;
-},
-
-
-
-
-
-_getAddress:function(addressHex)
-{
-
-var bankSizeHexDigits=13;
-addressHex=addressHex.slice(2);
-return parseInt(addressHex.slice(-bankSizeHexDigits),16);
-}};
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.CodeMap.Bank=function()
-{
-
-this._entries=[];
-};
-
-WebInspector.TimelineJSProfileProcessor.CodeMap.Bank.prototype={
-
-
-
-
-removeEntry:function(address)
-{
-var index=this._entries.lowerBound(address,WebInspector.TimelineJSProfileProcessor.CodeMap.comparator);
-var entry=this._entries[index];
-if(!entry||entry.address!==address)
-return null;
-this._entries.splice(index,1);
-return entry;
-},
-
-
-
-
-
-lookupEntry:function(address)
-{
-var index=this._entries.upperBound(address,WebInspector.TimelineJSProfileProcessor.CodeMap.comparator)-1;
-var entry=this._entries[index];
-return entry&&address<entry.address+entry.size?entry.callFrame:null;
-},
-
-
-
-
-addEntry:function(newEntry)
-{
-var endAddress=newEntry.address+newEntry.size;
-var lastIndex=this._entries.lowerBound(endAddress,WebInspector.TimelineJSProfileProcessor.CodeMap.comparator);
-var index;
-for(index=lastIndex-1;index>=0;--index){
-var entry=this._entries[index];
-var entryEndAddress=entry.address+entry.size;
-if(entryEndAddress<=newEntry.address)
-break;
-}
-++index;
-this._entries.splice(index,lastIndex-index,newEntry);
-}};
-
-
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor._buildCallFrame=function(name,scriptId)
-{
-
-
-
-
-
-
-
-
-
-function createFrame(functionName,url,scriptId,line,column,isNative)
-{
-return{
-"functionName":functionName,
-"url":url||"",
-"scriptId":scriptId||"0",
-"lineNumber":line||0,
-"columnNumber":column||0,
-"isNative":isNative||false};
-
-}
-
-
-
-
-
-var rePrefix=/^(\w*:)?[*~]?(.*)$/m;
-var tokens=rePrefix.exec(name);
-var prefix=tokens[1];
-var body=tokens[2];
-var rawName;
-var rawUrl;
-if(prefix==="Script:"){
-rawName="";
-rawUrl=body;
-}else{
-var spacePos=body.lastIndexOf(" ");
-rawName=spacePos!==-1?body.substr(0,spacePos):body;
-rawUrl=spacePos!==-1?body.substr(spacePos+1):"";
-}
-var nativeSuffix=" native";
-var isNative=rawName.endsWith(nativeSuffix);
-var functionName=isNative?rawName.slice(0,-nativeSuffix.length):rawName;
-var urlData=WebInspector.ParsedURL.splitLineAndColumn(rawUrl);
-var url=urlData.url||"";
-var line=urlData.lineNumber||0;
-var column=urlData.columnNumber||0;
-return createFrame(functionName,url,String(scriptId),line,column,isNative);
-};
-
-
-
-
-
-WebInspector.TimelineJSProfileProcessor.processRawV8Samples=function(events)
-{
-var missingAddesses=new Set();
-
-
-
-
-
-function convertRawFrame(address)
-{
-var entry=codeMap.lookupEntry(address);
-if(entry)
-return entry.isNative?null:entry;
-if(!missingAddesses.has(address)){
-missingAddesses.add(address);
-console.error("Address "+address+" has missing code entry");
-}
-return null;
-}
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var samples=[];
-var codeMap=new WebInspector.TimelineJSProfileProcessor.CodeMap();
-for(var i=0;i<events.length;++i){
-var e=events[i];
-var data=e.args["data"];
-switch(e.name){
-case recordTypes.JitCodeAdded:
-var frame=WebInspector.TimelineJSProfileProcessor._buildCallFrame(data["name"],data["script_id"]);
-codeMap.addEntry(data["code_start"],data["code_len"],frame);
-break;
-case recordTypes.JitCodeMoved:
-codeMap.moveEntry(data["code_start"],data["new_code_start"],data["code_len"]);
-break;
-case recordTypes.V8Sample:
-var rawStack=data["stack"];
-
-
-if(data["vm_state"]==="js"&&!rawStack.length)
-break;
-var stack=rawStack.map(convertRawFrame);
-stack.remove(null);
-var sampleEvent=new WebInspector.TracingModel.Event(
-WebInspector.TracingModel.DevToolsTimelineEventCategory,
-WebInspector.TimelineModel.RecordType.JSSample,
-WebInspector.TracingModel.Phase.Instant,e.startTime,e.thread);
-sampleEvent.ordinal=e.ordinal;
-sampleEvent.args={"data":{"stackTrace":stack}};
-samples.push(sampleEvent);
-break;}
-
-}
-
-return samples;
-};
-
-},{}],130:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineModel=function(eventFilter)
-{
-this._eventFilter=eventFilter;
-this.reset();
-};
-
-
-
-
-WebInspector.TimelineModel.RecordType={
-Task:"Task",
-Program:"Program",
-EventDispatch:"EventDispatch",
-
-GPUTask:"GPUTask",
-
-Animation:"Animation",
-RequestMainThreadFrame:"RequestMainThreadFrame",
-BeginFrame:"BeginFrame",
-NeedsBeginFrameChanged:"NeedsBeginFrameChanged",
-BeginMainThreadFrame:"BeginMainThreadFrame",
-ActivateLayerTree:"ActivateLayerTree",
-DrawFrame:"DrawFrame",
-HitTest:"HitTest",
-ScheduleStyleRecalculation:"ScheduleStyleRecalculation",
-RecalculateStyles:"RecalculateStyles",
-UpdateLayoutTree:"UpdateLayoutTree",
-InvalidateLayout:"InvalidateLayout",
-Layout:"Layout",
-UpdateLayer:"UpdateLayer",
-UpdateLayerTree:"UpdateLayerTree",
-PaintSetup:"PaintSetup",
-Paint:"Paint",
-PaintImage:"PaintImage",
-Rasterize:"Rasterize",
-RasterTask:"RasterTask",
-ScrollLayer:"ScrollLayer",
-CompositeLayers:"CompositeLayers",
-
-ScheduleStyleInvalidationTracking:"ScheduleStyleInvalidationTracking",
-StyleRecalcInvalidationTracking:"StyleRecalcInvalidationTracking",
-StyleInvalidatorInvalidationTracking:"StyleInvalidatorInvalidationTracking",
-LayoutInvalidationTracking:"LayoutInvalidationTracking",
-LayerInvalidationTracking:"LayerInvalidationTracking",
-PaintInvalidationTracking:"PaintInvalidationTracking",
-ScrollInvalidationTracking:"ScrollInvalidationTracking",
-
-ParseHTML:"ParseHTML",
-ParseAuthorStyleSheet:"ParseAuthorStyleSheet",
-
-TimerInstall:"TimerInstall",
-TimerRemove:"TimerRemove",
-TimerFire:"TimerFire",
-
-XHRReadyStateChange:"XHRReadyStateChange",
-XHRLoad:"XHRLoad",
-CompileScript:"v8.compile",
-EvaluateScript:"EvaluateScript",
-
-CommitLoad:"CommitLoad",
-MarkLoad:"MarkLoad",
-MarkDOMContent:"MarkDOMContent",
-MarkFirstPaint:"MarkFirstPaint",
-
-TimeStamp:"TimeStamp",
-ConsoleTime:"ConsoleTime",
-UserTiming:"UserTiming",
-
-ResourceSendRequest:"ResourceSendRequest",
-ResourceReceiveResponse:"ResourceReceiveResponse",
-ResourceReceivedData:"ResourceReceivedData",
-ResourceFinish:"ResourceFinish",
-
-RunMicrotasks:"RunMicrotasks",
-FunctionCall:"FunctionCall",
-GCEvent:"GCEvent",
-MajorGC:"MajorGC",
-MinorGC:"MinorGC",
-JSFrame:"JSFrame",
-JSSample:"JSSample",
-
-
-
-V8Sample:"V8Sample",
-JitCodeAdded:"JitCodeAdded",
-JitCodeMoved:"JitCodeMoved",
-ParseScriptOnBackground:"v8.parseOnBackground",
-
-UpdateCounters:"UpdateCounters",
-
-RequestAnimationFrame:"RequestAnimationFrame",
-CancelAnimationFrame:"CancelAnimationFrame",
-FireAnimationFrame:"FireAnimationFrame",
-
-RequestIdleCallback:"RequestIdleCallback",
-CancelIdleCallback:"CancelIdleCallback",
-FireIdleCallback:"FireIdleCallback",
-
-WebSocketCreate:"WebSocketCreate",
-WebSocketSendHandshakeRequest:"WebSocketSendHandshakeRequest",
-WebSocketReceiveHandshakeResponse:"WebSocketReceiveHandshakeResponse",
-WebSocketDestroy:"WebSocketDestroy",
-
-EmbedderCallback:"EmbedderCallback",
-
-SetLayerTreeId:"SetLayerTreeId",
-TracingStartedInPage:"TracingStartedInPage",
-TracingSessionIdForWorker:"TracingSessionIdForWorker",
-
-DecodeImage:"Decode Image",
-ResizeImage:"Resize Image",
-DrawLazyPixelRef:"Draw LazyPixelRef",
-DecodeLazyPixelRef:"Decode LazyPixelRef",
-
-LazyPixelRef:"LazyPixelRef",
-LayerTreeHostImplSnapshot:"cc::LayerTreeHostImpl",
-PictureSnapshot:"cc::Picture",
-DisplayItemListSnapshot:"cc::DisplayItemList",
-LatencyInfo:"LatencyInfo",
-LatencyInfoFlow:"LatencyInfo.Flow",
-InputLatencyMouseMove:"InputLatency::MouseMove",
-InputLatencyMouseWheel:"InputLatency::MouseWheel",
-ImplSideFling:"InputHandlerProxy::HandleGestureFling::started",
-GCIdleLazySweep:"ThreadState::performIdleLazySweep",
-GCCompleteSweep:"ThreadState::completeSweep",
-GCCollectGarbage:"BlinkGCMarking",
-
-
-
-CpuProfile:"CpuProfile"};
-
-
-WebInspector.TimelineModel.Category={
-Console:"blink.console",
-UserTiming:"blink.user_timing",
-LatencyInfo:"latencyInfo"};
-
-
-
-
-
-WebInspector.TimelineModel.WarningType={
-ForcedStyle:"ForcedStyle",
-ForcedLayout:"ForcedLayout",
-IdleDeadlineExceeded:"IdleDeadlineExceeded",
-V8Deopt:"V8Deopt"};
-
-
-WebInspector.TimelineModel.MainThreadName="main";
-WebInspector.TimelineModel.WorkerThreadName="DedicatedWorker Thread";
-WebInspector.TimelineModel.RendererMainThreadName="CrRendererMain";
-
-
-
-
-WebInspector.TimelineModel.AsyncEventGroup={
-animation:Symbol("animation"),
-console:Symbol("console"),
-userTiming:Symbol("userTiming"),
-input:Symbol("input")};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineModel.forEachEvent=function(events,onStartEvent,onEndEvent,onInstantEvent,startTime,endTime)
-{
-startTime=startTime||0;
-endTime=endTime||Infinity;
-var stack=[];
-for(var i=0;i<events.length;++i){
-var e=events[i];
-if((e.endTime||e.startTime)<startTime)
-continue;
-if(e.startTime>=endTime)
-break;
-if(WebInspector.TracingModel.isAsyncPhase(e.phase)||WebInspector.TracingModel.isFlowPhase(e.phase))
-continue;
-while(stack.length&&stack.peekLast().endTime<=e.startTime)
-onEndEvent(stack.pop());
-if(e.duration){
-onStartEvent(e);
-stack.push(e);
-}else{
-onInstantEvent&&onInstantEvent(e,stack.peekLast()||null);
-}
-}
-while(stack.length)
-onEndEvent(stack.pop());
-};
-
-WebInspector.TimelineModel.DevToolsMetadataEvent={
-TracingStartedInBrowser:"TracingStartedInBrowser",
-TracingStartedInPage:"TracingStartedInPage",
-TracingSessionIdForWorker:"TracingSessionIdForWorker"};
-
-
-
-
-
-
-WebInspector.TimelineModel.VirtualThread=function(name)
-{
-this.name=name;
-
-this.events=[];
-
-this.asyncEventsByGroup=new Map();
-};
-
-WebInspector.TimelineModel.VirtualThread.prototype={
-
-
-
-isWorker:function()
-{
-return this.name===WebInspector.TimelineModel.WorkerThreadName;
-}};
-
-
-
-
-
-
-WebInspector.TimelineModel.Record=function(traceEvent)
-{
-this._event=traceEvent;
-this._children=[];
-};
-
-
-
-
-
-
-WebInspector.TimelineModel.Record._compareStartTime=function(a,b)
-{
-
-return a.startTime()<=b.startTime()?-1:1;
-};
-
-WebInspector.TimelineModel.Record.prototype={
-
-
-
-target:function()
-{
-var threadName=this._event.thread.name();
-
-return threadName===WebInspector.TimelineModel.RendererMainThreadName?WebInspector.targetManager.targets()[0]||null:null;
-},
-
-
-
-
-children:function()
-{
-return this._children;
-},
-
-
-
-
-startTime:function()
-{
-return this._event.startTime;
-},
-
-
-
-
-endTime:function()
-{
-return this._event.endTime||this._event.startTime;
-},
-
-
-
-
-thread:function()
-{
-if(this._event.thread.name()===WebInspector.TimelineModel.RendererMainThreadName)
-return WebInspector.TimelineModel.MainThreadName;
-return this._event.thread.name();
-},
-
-
-
-
-type:function()
-{
-return WebInspector.TimelineModel._eventType(this._event);
-},
-
-
-
-
-
-getUserObject:function(key)
-{
-if(key==="TimelineUIUtils::preview-element")
-return this._event.previewElement;
-throw new Error("Unexpected key: "+key);
-},
-
-
-
-
-
-setUserObject:function(key,value)
-{
-if(key!=="TimelineUIUtils::preview-element")
-throw new Error("Unexpected key: "+key);
-this._event.previewElement=value;
-},
-
-
-
-
-traceEvent:function()
-{
-return this._event;
-},
-
-
-
-
-_addChild:function(child)
-{
-this._children.push(child);
-child.parent=this;
-}};
-
-
-
-WebInspector.TimelineModel.MetadataEvents;
-
-
-
-
-WebInspector.TimelineModel._eventType=function(event)
-{
-if(event.hasCategory(WebInspector.TimelineModel.Category.Console))
-return WebInspector.TimelineModel.RecordType.ConsoleTime;
-if(event.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
-return WebInspector.TimelineModel.RecordType.UserTiming;
-if(event.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo))
-return WebInspector.TimelineModel.RecordType.LatencyInfo;
-return event.name;
-};
-
-WebInspector.TimelineModel.prototype={
-
-
-
-
-
-
-forAllRecords:function(preOrderCallback,postOrderCallback)
-{
-
-
-
-
-
-function processRecords(records,depth)
-{
-for(var i=0;i<records.length;++i){
-var record=records[i];
-if(preOrderCallback&&preOrderCallback(record,depth))
-return true;
-if(processRecords(record.children(),depth+1))
-return true;
-if(postOrderCallback&&postOrderCallback(record,depth))
-return true;
-}
-return false;
-}
-return processRecords(this._records,0);
-},
-
-
-
-
-
-forAllFilteredRecords:function(filters,callback)
-{
-
-
-
-
-
-
-function processRecord(record,depth)
-{
-var visible=WebInspector.TimelineModel.isVisible(filters,record.traceEvent());
-if(visible&&callback(record,depth))
-return true;
-
-for(var i=0;i<record.children().length;++i){
-if(processRecord.call(this,record.children()[i],visible?depth+1:depth))
-return true;
-}
-return false;
-}
-
-for(var i=0;i<this._records.length;++i)
-processRecord.call(this,this._records[i],0);
-},
-
-
-
-
-records:function()
-{
-return this._records;
-},
-
-
-
-
-cpuProfiles:function()
-{
-return this._cpuProfiles;
-},
-
-
-
-
-sessionId:function()
-{
-return this._sessionId;
-},
-
-
-
-
-
-targetByEvent:function(event)
-{
-
-var workerId=this._workerIdByThread.get(event.thread);
-var mainTarget=WebInspector.targetManager.mainTarget();
-return workerId?mainTarget.workerManager.targetByWorkerId(workerId):mainTarget;
-},
-
-
-
-
-
-setEvents:function(tracingModel,produceTraceStartedInPage)
-{
-this.reset();
-this._resetProcessingState();
-
-this._minimumRecordTime=tracingModel.minimumRecordTime();
-this._maximumRecordTime=tracingModel.maximumRecordTime();
-
-var metadataEvents=this._processMetadataEvents(tracingModel,!!produceTraceStartedInPage);
-if(Runtime.experiments.isEnabled("timelineShowAllProcesses")){
-var lastPageMetaEvent=metadataEvents.page.peekLast();
-for(var process of tracingModel.sortedProcesses()){
-for(var thread of process.sortedThreads())
-this._processThreadEvents(0,Infinity,thread,thread===lastPageMetaEvent.thread);
-}
-}else{
-var startTime=0;
-for(var i=0,length=metadataEvents.page.length;i<length;i++){
-var metaEvent=metadataEvents.page[i];
-var process=metaEvent.thread.process();
-var endTime=i+1<length?metadataEvents.page[i+1].startTime:Infinity;
-this._currentPage=metaEvent.args["data"]&&metaEvent.args["data"]["page"];
-for(var thread of process.sortedThreads()){
-if(thread.name()===WebInspector.TimelineModel.WorkerThreadName){
-var workerMetaEvent=metadataEvents.workers.find(e=>e.args["data"]["workerThreadId"]===thread.id());
-if(!workerMetaEvent)
-continue;
-var workerId=workerMetaEvent.args["data"]["workerId"];
-if(workerId)
-this._workerIdByThread.set(thread,workerId);
-}
-this._processThreadEvents(startTime,endTime,thread,thread===metaEvent.thread);
-}
-startTime=endTime;
-}
-}
-this._inspectedTargetEvents.sort(WebInspector.TracingModel.Event.compareStartTime);
-
-this._processBrowserEvents(tracingModel);
-this._buildTimelineRecords();
-this._buildGPUEvents(tracingModel);
-this._insertFirstPaintEvent();
-this._resetProcessingState();
-},
-
-
-
-
-
-
-_processMetadataEvents:function(tracingModel,produceTraceStartedInPage)
-{
-var metadataEvents=tracingModel.devToolsMetadataEvents();
-
-var pageDevToolsMetadataEvents=[];
-var workersDevToolsMetadataEvents=[];
-for(var event of metadataEvents){
-if(event.name===WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage){
-pageDevToolsMetadataEvents.push(event);
-}else if(event.name===WebInspector.TimelineModel.DevToolsMetadataEvent.TracingSessionIdForWorker){
-workersDevToolsMetadataEvents.push(event);
-}else if(event.name===WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInBrowser){
-console.assert(!this._mainFrameNodeId,"Multiple sessions in trace");
-this._mainFrameNodeId=event.args["frameTreeNodeId"];
-}
-}
-if(!pageDevToolsMetadataEvents.length){
-
-var pageMetaEvent=produceTraceStartedInPage?this._makeMockPageMetadataEvent(tracingModel):null;
-if(!pageMetaEvent){
-console.error(WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage+" event not found.");
-return{page:[],workers:[]};
-}
-pageDevToolsMetadataEvents.push(pageMetaEvent);
-}
-var sessionId=pageDevToolsMetadataEvents[0].args["sessionId"]||pageDevToolsMetadataEvents[0].args["data"]["sessionId"];
-this._sessionId=sessionId;
-
-var mismatchingIds=new Set();
-
-
-
-
-function checkSessionId(event)
-{
-var args=event.args;
-
-if(args["data"])
-args=args["data"];
-var id=args["sessionId"];
-if(id===sessionId)
-return true;
-mismatchingIds.add(id);
-return false;
-}
-var result={
-page:pageDevToolsMetadataEvents.filter(checkSessionId).sort(WebInspector.TracingModel.Event.compareStartTime),
-workers:workersDevToolsMetadataEvents.filter(checkSessionId).sort(WebInspector.TracingModel.Event.compareStartTime)};
-
-if(mismatchingIds.size)
-WebInspector.console.error("Timeline recording was started in more than one page simultaneously. Session id mismatch: "+this._sessionId+" and "+mismatchingIds.valuesArray()+".");
-return result;
-},
-
-
-
-
-
-_makeMockPageMetadataEvent:function(tracingModel)
-{
-var rendererMainThreadName=WebInspector.TimelineModel.RendererMainThreadName;
-
-var process=tracingModel.sortedProcesses().filter(function(p){return p.threadByName(rendererMainThreadName);})[0];
-var thread=process&&process.threadByName(rendererMainThreadName);
-if(!thread)
-return null;
-var pageMetaEvent=new WebInspector.TracingModel.Event(
-WebInspector.TracingModel.DevToolsMetadataEventCategory,
-WebInspector.TimelineModel.DevToolsMetadataEvent.TracingStartedInPage,
-WebInspector.TracingModel.Phase.Metadata,
-tracingModel.minimumRecordTime(),thread);
-pageMetaEvent.addArgs({"data":{"sessionId":"mockSessionId"}});
-return pageMetaEvent;
-},
-
-_insertFirstPaintEvent:function()
-{
-if(!this._firstCompositeLayers)
-return;
-
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var i=this._inspectedTargetEvents.lowerBound(this._firstCompositeLayers,WebInspector.TracingModel.Event.compareStartTime);
-for(;i<this._inspectedTargetEvents.length&&this._inspectedTargetEvents[i].name!==recordTypes.DrawFrame;++i){}
-if(i>=this._inspectedTargetEvents.length)
-return;
-var drawFrameEvent=this._inspectedTargetEvents[i];
-var firstPaintEvent=new WebInspector.TracingModel.Event(drawFrameEvent.categoriesString,recordTypes.MarkFirstPaint,WebInspector.TracingModel.Phase.Instant,drawFrameEvent.startTime,drawFrameEvent.thread);
-this._mainThreadEvents.splice(this._mainThreadEvents.lowerBound(firstPaintEvent,WebInspector.TracingModel.Event.compareStartTime),0,firstPaintEvent);
-var firstPaintRecord=new WebInspector.TimelineModel.Record(firstPaintEvent);
-this._eventDividerRecords.splice(this._eventDividerRecords.lowerBound(firstPaintRecord,WebInspector.TimelineModel.Record._compareStartTime),0,firstPaintRecord);
-},
-
-
-
-
-_processBrowserEvents:function(tracingModel)
-{
-var browserMain=WebInspector.TracingModel.browserMainThread(tracingModel);
-if(!browserMain)
-return;
-
-
-browserMain.events().forEach(this._processBrowserEvent,this);
-
-var asyncEventsByGroup=new Map();
-this._processAsyncEvents(asyncEventsByGroup,browserMain.asyncEvents());
-this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup,asyncEventsByGroup);
-},
-
-_buildTimelineRecords:function()
-{
-var topLevelRecords=this._buildTimelineRecordsForThread(this.mainThreadEvents());
-for(var i=0;i<topLevelRecords.length;i++){
-var record=topLevelRecords[i];
-if(WebInspector.TracingModel.isTopLevelEvent(record.traceEvent()))
-this._mainThreadTasks.push(record);
-}
-
-
-
-
-
-function processVirtualThreadEvents(virtualThread)
-{
-var threadRecords=this._buildTimelineRecordsForThread(virtualThread.events);
-topLevelRecords=topLevelRecords.mergeOrdered(threadRecords,WebInspector.TimelineModel.Record._compareStartTime);
-}
-this.virtualThreads().forEach(processVirtualThreadEvents.bind(this));
-this._records=topLevelRecords;
-},
-
-
-
-
-_buildGPUEvents:function(tracingModel)
-{
-var thread=tracingModel.threadByName("GPU Process","CrGpuMain");
-if(!thread)
-return;
-var gpuEventName=WebInspector.TimelineModel.RecordType.GPUTask;
-this._gpuEvents=thread.events().filter(event=>event.name===gpuEventName);
-},
-
-
-
-
-
-_buildTimelineRecordsForThread:function(threadEvents)
-{
-var recordStack=[];
-var topLevelRecords=[];
-
-for(var i=0,size=threadEvents.length;i<size;++i){
-var event=threadEvents[i];
-for(var top=recordStack.peekLast();top&&top._event.endTime<=event.startTime;top=recordStack.peekLast())
-recordStack.pop();
-if(event.phase===WebInspector.TracingModel.Phase.AsyncEnd||event.phase===WebInspector.TracingModel.Phase.NestableAsyncEnd)
-continue;
-var parentRecord=recordStack.peekLast();
-
-if(WebInspector.TracingModel.isAsyncBeginPhase(event.phase)&&parentRecord&&event.endTime>parentRecord._event.endTime)
-continue;
-var record=new WebInspector.TimelineModel.Record(event);
-if(WebInspector.TimelineModel.isMarkerEvent(event))
-this._eventDividerRecords.push(record);
-if(!this._eventFilter.accept(event)&&!WebInspector.TracingModel.isTopLevelEvent(event))
-continue;
-if(parentRecord)
-parentRecord._addChild(record);else
-
-topLevelRecords.push(record);
-if(event.endTime)
-recordStack.push(record);
-}
-
-return topLevelRecords;
-},
-
-_resetProcessingState:function()
-{
-this._asyncEventTracker=new WebInspector.TimelineAsyncEventTracker();
-this._invalidationTracker=new WebInspector.InvalidationTracker();
-this._layoutInvalidate={};
-this._lastScheduleStyleRecalculation={};
-this._paintImageEventByPixelRefId={};
-this._lastPaintForLayer={};
-this._lastRecalculateStylesEvent=null;
-this._currentScriptEvent=null;
-this._eventStack=[];
-this._hadCommitLoad=false;
-this._firstCompositeLayers=null;
-
-this._knownInputEvents=new Set();
-this._currentPage=null;
-},
-
-
-
-
-
-
-
-_processThreadEvents:function(startTime,endTime,thread,isMainThread)
-{
-var events=thread.events();
-var asyncEvents=thread.asyncEvents();
-
-var jsSamples;
-if(Runtime.experiments.isEnabled("timelineTracingJSProfile")){
-jsSamples=WebInspector.TimelineJSProfileProcessor.processRawV8Samples(events);
-}else{
-var cpuProfileEvent=events.peekLast();
-if(cpuProfileEvent&&cpuProfileEvent.name===WebInspector.TimelineModel.RecordType.CpuProfile){
-var cpuProfile=cpuProfileEvent.args["data"]["cpuProfile"];
-if(cpuProfile){
-var jsProfileModel=new WebInspector.CPUProfileDataModel(cpuProfile);
-this._cpuProfiles.push(jsProfileModel);
-jsSamples=WebInspector.TimelineJSProfileProcessor.generateTracingEventsFromCpuProfile(jsProfileModel,thread);
-}
-}
-}
-
-if(jsSamples&&jsSamples.length)
-events=events.mergeOrdered(jsSamples,WebInspector.TracingModel.Event.orderedCompareStartTime);
-if(jsSamples||events.some(function(e){return e.name===WebInspector.TimelineModel.RecordType.JSSample;})){
-var jsFrameEvents=WebInspector.TimelineJSProfileProcessor.generateJSFrameEvents(events);
-if(jsFrameEvents&&jsFrameEvents.length)
-events=jsFrameEvents.mergeOrdered(events,WebInspector.TracingModel.Event.orderedCompareStartTime);
-}
-
-var threadEvents;
-var threadAsyncEventsByGroup;
-if(isMainThread){
-threadEvents=this._mainThreadEvents;
-threadAsyncEventsByGroup=this._mainThreadAsyncEventsByGroup;
-}else{
-var virtualThread=new WebInspector.TimelineModel.VirtualThread(thread.name());
-this._virtualThreads.push(virtualThread);
-threadEvents=virtualThread.events;
-threadAsyncEventsByGroup=virtualThread.asyncEventsByGroup;
-}
-
-this._eventStack=[];
-var i=events.lowerBound(startTime,function(time,event){return time-event.startTime;});
-var length=events.length;
-for(;i<length;i++){
-var event=events[i];
-if(endTime&&event.startTime>=endTime)
-break;
-if(!this._processEvent(event))
-continue;
-threadEvents.push(event);
-this._inspectedTargetEvents.push(event);
-}
-this._processAsyncEvents(threadAsyncEventsByGroup,asyncEvents,startTime,endTime);
-
-if(thread.name()==="Compositor"){
-this._mergeAsyncEvents(this._mainThreadAsyncEventsByGroup,threadAsyncEventsByGroup);
-threadAsyncEventsByGroup.clear();
-}
-},
-
-
-
-
-
-
-
-_processAsyncEvents:function(asyncEventsByGroup,asyncEvents,startTime,endTime)
-{
-var i=startTime?asyncEvents.lowerBound(startTime,function(time,asyncEvent){return time-asyncEvent.startTime;}):0;
-for(;i<asyncEvents.length;++i){
-var asyncEvent=asyncEvents[i];
-if(endTime&&asyncEvent.startTime>=endTime)
-break;
-var asyncGroup=this._processAsyncEvent(asyncEvent);
-if(!asyncGroup)
-continue;
-var groupAsyncEvents=asyncEventsByGroup.get(asyncGroup);
-if(!groupAsyncEvents){
-groupAsyncEvents=[];
-asyncEventsByGroup.set(asyncGroup,groupAsyncEvents);
-}
-groupAsyncEvents.push(asyncEvent);
-}
-},
-
-
-
-
-
-_processEvent:function(event)
-{
-var eventStack=this._eventStack;
-while(eventStack.length&&eventStack.peekLast().endTime<=event.startTime)
-eventStack.pop();
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-
-if(this._currentScriptEvent&&event.startTime>this._currentScriptEvent.endTime)
-this._currentScriptEvent=null;
-
-var eventData=event.args["data"]||event.args["beginData"]||{};
-if(eventData["stackTrace"])
-event.stackTrace=eventData["stackTrace"];
-if(event.stackTrace&&event.name!==recordTypes.JSSample){
-
-
-for(var i=0;i<event.stackTrace.length;++i){
---event.stackTrace[i].lineNumber;
---event.stackTrace[i].columnNumber;
-}
-}
-
-if(eventStack.length&&eventStack.peekLast().name===recordTypes.EventDispatch)
-eventStack.peekLast().hasChildren=true;
-this._asyncEventTracker.processEvent(event);
-if(event.initiator&&event.initiator.url)
-event.url=event.initiator.url;
-switch(event.name){
-case recordTypes.ResourceSendRequest:
-case recordTypes.WebSocketCreate:
-event.url=eventData["url"];
-event.initiator=eventStack.peekLast()||null;
-break;
-
-case recordTypes.ScheduleStyleRecalculation:
-this._lastScheduleStyleRecalculation[eventData["frame"]]=event;
-break;
-
-case recordTypes.UpdateLayoutTree:
-case recordTypes.RecalculateStyles:
-this._invalidationTracker.didRecalcStyle(event);
-if(event.args["beginData"])
-event.initiator=this._lastScheduleStyleRecalculation[event.args["beginData"]["frame"]];
-this._lastRecalculateStylesEvent=event;
-if(this._currentScriptEvent)
-event.warning=WebInspector.TimelineModel.WarningType.ForcedStyle;
-break;
-
-case recordTypes.ScheduleStyleInvalidationTracking:
-case recordTypes.StyleRecalcInvalidationTracking:
-case recordTypes.StyleInvalidatorInvalidationTracking:
-case recordTypes.LayoutInvalidationTracking:
-case recordTypes.LayerInvalidationTracking:
-case recordTypes.PaintInvalidationTracking:
-case recordTypes.ScrollInvalidationTracking:
-this._invalidationTracker.addInvalidation(new WebInspector.InvalidationTrackingEvent(event));
-break;
-
-case recordTypes.InvalidateLayout:
-
-
-var layoutInitator=event;
-var frameId=eventData["frame"];
-if(!this._layoutInvalidate[frameId]&&this._lastRecalculateStylesEvent&&this._lastRecalculateStylesEvent.endTime>event.startTime)
-layoutInitator=this._lastRecalculateStylesEvent.initiator;
-this._layoutInvalidate[frameId]=layoutInitator;
-break;
-
-case recordTypes.Layout:
-this._invalidationTracker.didLayout(event);
-var frameId=event.args["beginData"]["frame"];
-event.initiator=this._layoutInvalidate[frameId];
-
-if(event.args["endData"]){
-event.backendNodeId=event.args["endData"]["rootNode"];
-event.highlightQuad=event.args["endData"]["root"];
-}
-this._layoutInvalidate[frameId]=null;
-if(this._currentScriptEvent)
-event.warning=WebInspector.TimelineModel.WarningType.ForcedLayout;
-break;
-
-case recordTypes.FunctionCall:
-
-if(typeof eventData["scriptName"]==="string")
-eventData["url"]=eventData["scriptName"];
-if(typeof eventData["scriptLine"]==="number")
-eventData["lineNumber"]=eventData["scriptLine"];
-
-case recordTypes.EvaluateScript:
-case recordTypes.CompileScript:
-if(typeof eventData["lineNumber"]==="number")
---eventData["lineNumber"];
-if(typeof eventData["columnNumber"]==="number")
---eventData["columnNumber"];
-if(!this._currentScriptEvent)
-this._currentScriptEvent=event;
-break;
-
-case recordTypes.SetLayerTreeId:
-this._inspectedTargetLayerTreeId=event.args["layerTreeId"]||event.args["data"]["layerTreeId"];
-break;
-
-case recordTypes.Paint:
-this._invalidationTracker.didPaint(event);
-event.highlightQuad=eventData["clip"];
-event.backendNodeId=eventData["nodeId"];
-
-if(!eventData["layerId"])
-break;
-var layerId=eventData["layerId"];
-this._lastPaintForLayer[layerId]=event;
-break;
-
-case recordTypes.DisplayItemListSnapshot:
-case recordTypes.PictureSnapshot:
-var layerUpdateEvent=this._findAncestorEvent(recordTypes.UpdateLayer);
-if(!layerUpdateEvent||layerUpdateEvent.args["layerTreeId"]!==this._inspectedTargetLayerTreeId)
-break;
-var paintEvent=this._lastPaintForLayer[layerUpdateEvent.args["layerId"]];
-if(paintEvent)
-paintEvent.picture=event;
-break;
-
-case recordTypes.ScrollLayer:
-event.backendNodeId=eventData["nodeId"];
-break;
-
-case recordTypes.PaintImage:
-event.backendNodeId=eventData["nodeId"];
-event.url=eventData["url"];
-break;
-
-case recordTypes.DecodeImage:
-case recordTypes.ResizeImage:
-var paintImageEvent=this._findAncestorEvent(recordTypes.PaintImage);
-if(!paintImageEvent){
-var decodeLazyPixelRefEvent=this._findAncestorEvent(recordTypes.DecodeLazyPixelRef);
-paintImageEvent=decodeLazyPixelRefEvent&&this._paintImageEventByPixelRefId[decodeLazyPixelRefEvent.args["LazyPixelRef"]];
-}
-if(!paintImageEvent)
-break;
-event.backendNodeId=paintImageEvent.backendNodeId;
-event.url=paintImageEvent.url;
-break;
-
-case recordTypes.DrawLazyPixelRef:
-var paintImageEvent=this._findAncestorEvent(recordTypes.PaintImage);
-if(!paintImageEvent)
-break;
-this._paintImageEventByPixelRefId[event.args["LazyPixelRef"]]=paintImageEvent;
-event.backendNodeId=paintImageEvent.backendNodeId;
-event.url=paintImageEvent.url;
-break;
-
-case recordTypes.MarkDOMContent:
-case recordTypes.MarkLoad:
-var page=eventData["page"];
-if(page&&page!==this._currentPage)
-return false;
-break;
-
-case recordTypes.CommitLoad:
-var page=eventData["page"];
-if(page&&page!==this._currentPage)
-return false;
-if(!eventData["isMainFrame"])
-break;
-this._hadCommitLoad=true;
-this._firstCompositeLayers=null;
-break;
-
-case recordTypes.CompositeLayers:
-if(!this._firstCompositeLayers&&this._hadCommitLoad)
-this._firstCompositeLayers=event;
-break;
-
-case recordTypes.FireIdleCallback:
-if(event.duration>eventData["allottedMilliseconds"]){
-event.warning=WebInspector.TimelineModel.WarningType.IdleDeadlineExceeded;
-}
-break;}
-
-if(WebInspector.TracingModel.isAsyncPhase(event.phase))
-return true;
-var duration=event.duration;
-if(!duration)
-return true;
-if(eventStack.length){
-var parent=eventStack.peekLast();
-parent.selfTime-=duration;
-if(parent.selfTime<0){
-var epsilon=1e-3;
-if(parent.selfTime<-epsilon)
-console.error("Children are longer than parent at "+event.startTime+" ("+(event.startTime-this.minimumRecordTime()).toFixed(3)+") by "+parent.selfTime.toFixed(3));
-parent.selfTime=0;
-}
-}
-event.selfTime=duration;
-eventStack.push(event);
-return true;
-},
-
-
-
-
-_processBrowserEvent:function(event)
-{
-if(event.name!==WebInspector.TimelineModel.RecordType.LatencyInfoFlow)
-return;
-var frameId=event.args["frameTreeNodeId"];
-if(typeof frameId==="number"&&frameId===this._mainFrameNodeId)
-this._knownInputEvents.add(event.bind_id);
-},
-
-
-
-
-
-_processAsyncEvent:function(asyncEvent)
-{
-var groups=WebInspector.TimelineModel.AsyncEventGroup;
-if(asyncEvent.hasCategory(WebInspector.TimelineModel.Category.Console))
-return groups.console;
-if(asyncEvent.hasCategory(WebInspector.TimelineModel.Category.UserTiming))
-return groups.userTiming;
-if(asyncEvent.name===WebInspector.TimelineModel.RecordType.Animation)
-return groups.animation;
-if(asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)||asyncEvent.name===WebInspector.TimelineModel.RecordType.ImplSideFling){
-var lastStep=asyncEvent.steps.peekLast();
-
-if(lastStep.phase!==WebInspector.TracingModel.Phase.AsyncEnd)
-return null;
-var data=lastStep.args["data"];
-asyncEvent.causedFrame=!!(data&&data["INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT"]);
-if(asyncEvent.hasCategory(WebInspector.TimelineModel.Category.LatencyInfo)){
-if(!this._knownInputEvents.has(lastStep.id))
-return null;
-if(asyncEvent.name===WebInspector.TimelineModel.RecordType.InputLatencyMouseMove&&!asyncEvent.causedFrame)
-return null;
-var rendererMain=data["INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT"];
-if(rendererMain){
-var time=rendererMain["time"]/1000;
-asyncEvent.steps[0].timeWaitingForMainThread=time-asyncEvent.steps[0].startTime;
-}
-}
-return groups.input;
-}
-return null;
-},
-
-
-
-
-
-_findAncestorEvent:function(name)
-{
-for(var i=this._eventStack.length-1;i>=0;--i){
-var event=this._eventStack[i];
-if(event.name===name)
-return event;
-}
-return null;
-},
-
-
-
-
-
-_mergeAsyncEvents:function(target,source)
-{
-for(var group of source.keys()){
-var events=target.get(group)||[];
-events=events.mergeOrdered(source.get(group)||[],WebInspector.TracingModel.Event.compareStartAndEndTime);
-target.set(group,events);
-}
-},
-
-reset:function()
-{
-this._virtualThreads=[];
-
-this._mainThreadEvents=[];
-
-this._mainThreadAsyncEventsByGroup=new Map();
-
-this._inspectedTargetEvents=[];
-
-this._records=[];
-
-this._mainThreadTasks=[];
-
-this._gpuEvents=[];
-
-this._eventDividerRecords=[];
-
-this._sessionId=null;
-
-this._mainFrameNodeId=null;
-
-this._cpuProfiles=[];
-
-this._workerIdByThread=new WeakMap();
-this._minimumRecordTime=0;
-this._maximumRecordTime=0;
-},
-
-
-
-
-minimumRecordTime:function()
-{
-return this._minimumRecordTime;
-},
-
-
-
-
-maximumRecordTime:function()
-{
-return this._maximumRecordTime;
-},
-
-
-
-
-inspectedTargetEvents:function()
-{
-return this._inspectedTargetEvents;
-},
-
-
-
-
-mainThreadEvents:function()
-{
-return this._mainThreadEvents;
-},
-
-
-
-
-_setMainThreadEvents:function(events)
-{
-this._mainThreadEvents=events;
-},
-
-
-
-
-mainThreadAsyncEvents:function()
-{
-return this._mainThreadAsyncEventsByGroup;
-},
-
-
-
-
-virtualThreads:function()
-{
-return this._virtualThreads;
-},
-
-
-
-
-isEmpty:function()
-{
-return this.minimumRecordTime()===0&&this.maximumRecordTime()===0;
-},
-
-
-
-
-mainThreadTasks:function()
-{
-return this._mainThreadTasks;
-},
-
-
-
-
-gpuEvents:function()
-{
-return this._gpuEvents;
-},
-
-
-
-
-eventDividerRecords:function()
-{
-return this._eventDividerRecords;
-},
-
-
-
-
-networkRequests:function()
-{
-
-var requests=new Map();
-
-var requestsList=[];
-
-var zeroStartRequestsList=[];
-var types=WebInspector.TimelineModel.RecordType;
-var resourceTypes=new Set([
-types.ResourceSendRequest,
-types.ResourceReceiveResponse,
-types.ResourceReceivedData,
-types.ResourceFinish]);
-
-var events=this.mainThreadEvents();
-for(var i=0;i<events.length;++i){
-var e=events[i];
-if(!resourceTypes.has(e.name))
-continue;
-var id=e.args["data"]["requestId"];
-var request=requests.get(id);
-if(request){
-request.addEvent(e);
-}else{
-request=new WebInspector.TimelineModel.NetworkRequest(e);
-requests.set(id,request);
-if(request.startTime)
-requestsList.push(request);else
-
-zeroStartRequestsList.push(request);
-}
-}
-return zeroStartRequestsList.concat(requestsList);
-}};
-
-
-
-
-
-
-
-WebInspector.TimelineModel.isVisible=function(filters,event)
-{
-for(var i=0;i<filters.length;++i){
-if(!filters[i].accept(event))
-return false;
-}
-return true;
-};
-
-
-
-
-
-WebInspector.TimelineModel.isMarkerEvent=function(event)
-{
-var recordTypes=WebInspector.TimelineModel.RecordType;
-switch(event.name){
-case recordTypes.TimeStamp:
-case recordTypes.MarkFirstPaint:
-return true;
-case recordTypes.MarkDOMContent:
-case recordTypes.MarkLoad:
-return event.args["data"]["isMainFrame"];
-default:
-return false;}
-
-};
-
-
-
-
-
-WebInspector.TimelineModel.NetworkRequest=function(event)
-{
-this.startTime=event.name===WebInspector.TimelineModel.RecordType.ResourceSendRequest?event.startTime:0;
-this.endTime=Infinity;
-
-this.children=[];
-this.addEvent(event);
-};
-
-WebInspector.TimelineModel.NetworkRequest.prototype={
-
-
-
-addEvent:function(event)
-{
-this.children.push(event);
-var recordType=WebInspector.TimelineModel.RecordType;
-this.startTime=Math.min(this.startTime,event.startTime);
-var eventData=event.args["data"];
-if(eventData["mimeType"])
-this.mimeType=eventData["mimeType"];
-if("priority"in eventData)
-this.priority=eventData["priority"];
-if(event.name===recordType.ResourceFinish)
-this.endTime=event.startTime;
-if(!this.responseTime&&(event.name===recordType.ResourceReceiveResponse||event.name===recordType.ResourceReceivedData))
-this.responseTime=event.startTime;
-if(!this.url)
-this.url=eventData["url"];
-if(!this.requestMethod)
-this.requestMethod=eventData["requestMethod"];
-}};
-
-
-
-
-
-WebInspector.TimelineModel.Filter=function()
-{
-};
-
-WebInspector.TimelineModel.Filter.prototype={
-
-
-
-
-accept:function(event)
-{
-return true;
-}};
-
-
-
-
-
-
-
-WebInspector.TimelineVisibleEventsFilter=function(visibleTypes)
-{
-WebInspector.TimelineModel.Filter.call(this);
-this._visibleTypes=new Set(visibleTypes);
-};
-
-WebInspector.TimelineVisibleEventsFilter.prototype={
-
-
-
-
-
-accept:function(event)
-{
-return this._visibleTypes.has(WebInspector.TimelineModel._eventType(event));
-},
-
-__proto__:WebInspector.TimelineModel.Filter.prototype};
-
-
-
-
-
-
-
-WebInspector.ExclusiveNameFilter=function(excludeNames)
-{
-WebInspector.TimelineModel.Filter.call(this);
-this._excludeNames=new Set(excludeNames);
-};
-
-WebInspector.ExclusiveNameFilter.prototype={
-
-
-
-
-
-accept:function(event)
-{
-return!this._excludeNames.has(event.name);
-},
-
-__proto__:WebInspector.TimelineModel.Filter.prototype};
-
-
-
-
-
-
-WebInspector.ExcludeTopLevelFilter=function()
-{
-WebInspector.TimelineModel.Filter.call(this);
-};
-
-WebInspector.ExcludeTopLevelFilter.prototype={
-
-
-
-
-
-accept:function(event)
-{
-return!WebInspector.TracingModel.isTopLevelEvent(event);
-},
-
-__proto__:WebInspector.TimelineModel.Filter.prototype};
-
-
-
-
-
-
-WebInspector.InvalidationTrackingEvent=function(event)
-{
-
-this.type=event.name;
-
-this.startTime=event.startTime;
-
-this._tracingEvent=event;
-
-var eventData=event.args["data"];
-
-
-this.frame=eventData["frame"];
-
-this.nodeId=eventData["nodeId"];
-
-this.nodeName=eventData["nodeName"];
-
-this.paintId=eventData["paintId"];
-
-this.invalidationSet=eventData["invalidationSet"];
-
-this.invalidatedSelectorId=eventData["invalidatedSelectorId"];
-
-this.changedId=eventData["changedId"];
-
-this.changedClass=eventData["changedClass"];
-
-this.changedAttribute=eventData["changedAttribute"];
-
-this.changedPseudo=eventData["changedPseudo"];
-
-this.selectorPart=eventData["selectorPart"];
-
-this.extraData=eventData["extraData"];
-
-this.invalidationList=eventData["invalidationList"];
-
-this.cause={reason:eventData["reason"],stackTrace:eventData["stackTrace"]};
-
-
-if(!this.cause.reason&&this.cause.stackTrace&&this.type===WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking)
-this.cause.reason="Layout forced";
-};
-
-
-WebInspector.InvalidationCause;
-
-
-
-
-WebInspector.InvalidationTracker=function()
-{
-this._initializePerFrameState();
-};
-
-WebInspector.InvalidationTracker.prototype={
-
-
-
-addInvalidation:function(invalidation)
-{
-this._startNewFrameIfNeeded();
-
-if(!invalidation.nodeId&&!invalidation.paintId){
-console.error("Invalidation lacks node information.");
-console.error(invalidation);
-return;
-}
-
-
-
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-if(invalidation.type===recordTypes.PaintInvalidationTracking&&invalidation.nodeId){
-var invalidations=this._invalidationsByNodeId[invalidation.nodeId]||[];
-for(var i=0;i<invalidations.length;++i)
-invalidations[i].paintId=invalidation.paintId;
-
-
-return;
-}
-
-
-
-
-if(invalidation.type===recordTypes.StyleRecalcInvalidationTracking&&invalidation.cause.reason==="StyleInvalidator")
-return;
-
-
-
-
-var styleRecalcInvalidation=invalidation.type===recordTypes.ScheduleStyleInvalidationTracking||
-invalidation.type===recordTypes.StyleInvalidatorInvalidationTracking||
-invalidation.type===recordTypes.StyleRecalcInvalidationTracking;
-if(styleRecalcInvalidation){
-var duringRecalcStyle=invalidation.startTime&&this._lastRecalcStyle&&
-invalidation.startTime>=this._lastRecalcStyle.startTime&&
-invalidation.startTime<=this._lastRecalcStyle.endTime;
-if(duringRecalcStyle)
-this._associateWithLastRecalcStyleEvent(invalidation);
-}
-
-
-if(this._invalidations[invalidation.type])
-this._invalidations[invalidation.type].push(invalidation);else
-
-this._invalidations[invalidation.type]=[invalidation];
-if(invalidation.nodeId){
-if(this._invalidationsByNodeId[invalidation.nodeId])
-this._invalidationsByNodeId[invalidation.nodeId].push(invalidation);else
-
-this._invalidationsByNodeId[invalidation.nodeId]=[invalidation];
-}
-},
-
-
-
-
-didRecalcStyle:function(recalcStyleEvent)
-{
-this._lastRecalcStyle=recalcStyleEvent;
-var types=[WebInspector.TimelineModel.RecordType.ScheduleStyleInvalidationTracking,
-WebInspector.TimelineModel.RecordType.StyleInvalidatorInvalidationTracking,
-WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking];
-for(var invalidation of this._invalidationsOfTypes(types))
-this._associateWithLastRecalcStyleEvent(invalidation);
-},
-
-
-
-
-_associateWithLastRecalcStyleEvent:function(invalidation)
-{
-if(invalidation.linkedRecalcStyleEvent)
-return;
-
-var recordTypes=WebInspector.TimelineModel.RecordType;
-var recalcStyleFrameId=this._lastRecalcStyle.args["beginData"]["frame"];
-if(invalidation.type===recordTypes.StyleInvalidatorInvalidationTracking){
-
-
-this._addSyntheticStyleRecalcInvalidations(this._lastRecalcStyle,recalcStyleFrameId,invalidation);
-}else if(invalidation.type===recordTypes.ScheduleStyleInvalidationTracking){
-
-
-}else{
-this._addInvalidationToEvent(this._lastRecalcStyle,recalcStyleFrameId,invalidation);
-}
-
-invalidation.linkedRecalcStyleEvent=true;
-},
-
-
-
-
-
-
-_addSyntheticStyleRecalcInvalidations:function(event,frameId,styleInvalidatorInvalidation)
-{
-if(!styleInvalidatorInvalidation.invalidationList){
-this._addSyntheticStyleRecalcInvalidation(styleInvalidatorInvalidation._tracingEvent,styleInvalidatorInvalidation);
-return;
-}
-if(!styleInvalidatorInvalidation.nodeId){
-console.error("Invalidation lacks node information.");
-console.error(invalidation);
-return;
-}
-for(var i=0;i<styleInvalidatorInvalidation.invalidationList.length;i++){
-var setId=styleInvalidatorInvalidation.invalidationList[i]["id"];
-var lastScheduleStyleRecalculation;
-var nodeInvalidations=this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId]||[];
-for(var j=0;j<nodeInvalidations.length;j++){
-var invalidation=nodeInvalidations[j];
-if(invalidation.frame!==frameId||invalidation.invalidationSet!==setId||invalidation.type!==WebInspector.TimelineModel.RecordType.ScheduleStyleInvalidationTracking)
-continue;
-lastScheduleStyleRecalculation=invalidation;
-}
-if(!lastScheduleStyleRecalculation){
-console.error("Failed to lookup the event that scheduled a style invalidator invalidation.");
-continue;
-}
-this._addSyntheticStyleRecalcInvalidation(lastScheduleStyleRecalculation._tracingEvent,styleInvalidatorInvalidation);
-}
-},
-
-
-
-
-
-_addSyntheticStyleRecalcInvalidation:function(baseEvent,styleInvalidatorInvalidation)
-{
-var invalidation=new WebInspector.InvalidationTrackingEvent(baseEvent);
-invalidation.type=WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking;
-invalidation.synthetic=true;
-if(styleInvalidatorInvalidation.cause.reason)
-invalidation.cause.reason=styleInvalidatorInvalidation.cause.reason;
-if(styleInvalidatorInvalidation.selectorPart)
-invalidation.selectorPart=styleInvalidatorInvalidation.selectorPart;
-
-this.addInvalidation(invalidation);
-if(!invalidation.linkedRecalcStyleEvent)
-this._associateWithLastRecalcStyleEvent(invalidation);
-},
-
-
-
-
-didLayout:function(layoutEvent)
-{
-var layoutFrameId=layoutEvent.args["beginData"]["frame"];
-for(var invalidation of this._invalidationsOfTypes([WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking])){
-if(invalidation.linkedLayoutEvent)
-continue;
-this._addInvalidationToEvent(layoutEvent,layoutFrameId,invalidation);
-invalidation.linkedLayoutEvent=true;
-}
-},
-
-
-
-
-didPaint:function(paintEvent)
-{
-this._didPaint=true;
-
-
-
-var layerId=paintEvent.args["data"]["layerId"];
-if(layerId)
-this._lastPaintWithLayer=paintEvent;
-
-
-if(!this._lastPaintWithLayer)
-return;
-
-var effectivePaintId=this._lastPaintWithLayer.args["data"]["nodeId"];
-var paintFrameId=paintEvent.args["data"]["frame"];
-var types=[WebInspector.TimelineModel.RecordType.StyleRecalcInvalidationTracking,
-WebInspector.TimelineModel.RecordType.LayoutInvalidationTracking,
-WebInspector.TimelineModel.RecordType.PaintInvalidationTracking,
-WebInspector.TimelineModel.RecordType.ScrollInvalidationTracking];
-for(var invalidation of this._invalidationsOfTypes(types)){
-if(invalidation.paintId===effectivePaintId)
-this._addInvalidationToEvent(paintEvent,paintFrameId,invalidation);
-}
-},
-
-
-
-
-
-
-_addInvalidationToEvent:function(event,eventFrameId,invalidation)
-{
-if(eventFrameId!==invalidation.frame)
-return;
-if(!event.invalidationTrackingEvents)
-event.invalidationTrackingEvents=[invalidation];else
-
-event.invalidationTrackingEvents.push(invalidation);
-},
-
-
-
-
-
-_invalidationsOfTypes:function(types)
-{
-var invalidations=this._invalidations;
-if(!types)
-types=Object.keys(invalidations);
-function*generator()
-{
-for(var i=0;i<types.length;++i){
-var invalidationList=invalidations[types[i]]||[];
-for(var j=0;j<invalidationList.length;++j)
-yield invalidationList[j];
-}
-}
-return generator();
-},
-
-_startNewFrameIfNeeded:function()
-{
-if(!this._didPaint)
-return;
-
-this._initializePerFrameState();
-},
-
-_initializePerFrameState:function()
-{
-
-this._invalidations={};
-
-this._invalidationsByNodeId={};
-
-this._lastRecalcStyle=undefined;
-this._lastPaintWithLayer=undefined;
-this._didPaint=false;
-}};
-
-
-
-
-
-WebInspector.TimelineAsyncEventTracker=function()
-{
-WebInspector.TimelineAsyncEventTracker._initialize();
-
-this._initiatorByType=new Map();
-for(var initiator of WebInspector.TimelineAsyncEventTracker._asyncEvents.keys())
-this._initiatorByType.set(initiator,new Map());
-};
-
-WebInspector.TimelineAsyncEventTracker._initialize=function()
-{
-if(WebInspector.TimelineAsyncEventTracker._asyncEvents)
-return;
-var events=new Map();
-var type=WebInspector.TimelineModel.RecordType;
-
-events.set(type.TimerInstall,{causes:[type.TimerFire],joinBy:"timerId"});
-events.set(type.ResourceSendRequest,{causes:[type.ResourceReceiveResponse,type.ResourceReceivedData,type.ResourceFinish],joinBy:"requestId"});
-events.set(type.RequestAnimationFrame,{causes:[type.FireAnimationFrame],joinBy:"id"});
-events.set(type.RequestIdleCallback,{causes:[type.FireIdleCallback],joinBy:"id"});
-events.set(type.WebSocketCreate,{causes:[type.WebSocketSendHandshakeRequest,type.WebSocketReceiveHandshakeResponse,type.WebSocketDestroy],joinBy:"identifier"});
-
-WebInspector.TimelineAsyncEventTracker._asyncEvents=events;
-
-WebInspector.TimelineAsyncEventTracker._typeToInitiator=new Map();
-for(var entry of events){
-var types=entry[1].causes;
-for(type of types)
-WebInspector.TimelineAsyncEventTracker._typeToInitiator.set(type,entry[0]);
-}
-};
-
-WebInspector.TimelineAsyncEventTracker.prototype={
-
-
-
-processEvent:function(event)
-{
-var initiatorType=WebInspector.TimelineAsyncEventTracker._typeToInitiator.get(event.name);
-var isInitiator=!initiatorType;
-if(!initiatorType)
-initiatorType=event.name;
-var initiatorInfo=WebInspector.TimelineAsyncEventTracker._asyncEvents.get(initiatorType);
-if(!initiatorInfo)
-return;
-var id=event.args["data"][initiatorInfo.joinBy];
-if(!id)
-return;
-
-var initiatorMap=this._initiatorByType.get(initiatorType);
-if(isInitiator)
-initiatorMap.set(id,event);else
-
-event.initiator=initiatorMap.get(id)||null;
-}};
-
-
-},{}],131:[function(require,module,exports){
-
-
-
-
-WebInspector.TimelineProfileTree={};
-
-
-
-
-WebInspector.TimelineProfileTree.Node=function()
-{
-
-this.totalTime;
-
-this.selfTime;
-
-this.id;
-
-this.event;
-
-this.children;
-
-this.parent;
-this._isGroupNode=false;
-};
-
-WebInspector.TimelineProfileTree.Node.prototype={
-
-
-
-isGroupNode:function()
-{
-return this._isGroupNode;
-}};
-
-
-
-
-
-
-
-
-
-
-WebInspector.TimelineProfileTree.buildTopDown=function(events,filters,startTime,endTime,eventIdCallback)
-{
-
-var initialTime=1e7;
-var root=new WebInspector.TimelineProfileTree.Node();
-root.totalTime=initialTime;
-root.selfTime=initialTime;
-root.children=new Map();
-var parent=root;
-
-
-
-
-function onStartEvent(e)
-{
-if(!WebInspector.TimelineModel.isVisible(filters,e))
-return;
-var time=e.endTime?Math.min(endTime,e.endTime)-Math.max(startTime,e.startTime):0;
-var id=eventIdCallback?eventIdCallback(e):Symbol("uniqueEventId");
-if(!parent.children)
-parent.children=new Map();
-var node=parent.children.get(id);
-if(node){
-node.selfTime+=time;
-node.totalTime+=time;
-}else{
-node=new WebInspector.TimelineProfileTree.Node();
-node.totalTime=time;
-node.selfTime=time;
-node.parent=parent;
-node.id=id;
-node.event=e;
-parent.children.set(id,node);
-}
-parent.selfTime-=time;
-if(parent.selfTime<0){
-console.log("Error: Negative self of "+parent.selfTime,e);
-parent.selfTime=0;
-}
-if(e.endTime)
-parent=node;
-}
-
-
-
-
-function onEndEvent(e)
-{
-if(!WebInspector.TimelineModel.isVisible(filters,e))
-return;
-parent=parent.parent;
-}
-
-var instantEventCallback=eventIdCallback?undefined:onStartEvent;
-WebInspector.TimelineModel.forEachEvent(events,onStartEvent,onEndEvent,instantEventCallback,startTime,endTime);
-root.totalTime-=root.selfTime;
-root.selfTime=0;
-return root;
-};
-
-
-
-
-
-
-WebInspector.TimelineProfileTree.buildBottomUp=function(topDownTree,groupingCallback)
-{
-var buRoot=new WebInspector.TimelineProfileTree.Node();
-buRoot.selfTime=0;
-buRoot.totalTime=0;
-
-buRoot.children=new Map();
-var nodesOnStack=new Set();
-if(topDownTree.children)
-topDownTree.children.forEach(processNode);
-buRoot.totalTime=topDownTree.totalTime;
-
-
-
-
-function processNode(tdNode)
-{
-var buParent=groupingCallback&&groupingCallback(tdNode)||buRoot;
-if(buParent!==buRoot){
-buRoot.children.set(buParent.id,buParent);
-buParent.parent=buRoot;
-}
-appendNode(tdNode,buParent);
-var hadNode=nodesOnStack.has(tdNode.id);
-if(!hadNode)
-nodesOnStack.add(tdNode.id);
-if(tdNode.children)
-tdNode.children.forEach(processNode);
-if(!hadNode)
-nodesOnStack.delete(tdNode.id);
-}
-
-
-
-
-
-function appendNode(tdNode,buParent)
-{
-var selfTime=tdNode.selfTime;
-var totalTime=tdNode.totalTime;
-buParent.selfTime+=selfTime;
-buParent.totalTime+=selfTime;
-while(tdNode.parent){
-if(!buParent.children)
-buParent.children=new Map();
-var id=tdNode.id;
-var buNode=buParent.children.get(id);
-if(!buNode){
-buNode=new WebInspector.TimelineProfileTree.Node();
-buNode.selfTime=selfTime;
-buNode.totalTime=totalTime;
-buNode.event=tdNode.event;
-buNode.id=id;
-buNode.parent=buParent;
-buParent.children.set(id,buNode);
-}else{
-buNode.selfTime+=selfTime;
-if(!nodesOnStack.has(id))
-buNode.totalTime+=totalTime;
-}
-tdNode=tdNode.parent;
-buParent=buNode;
-}
-}
-
-
-var rootChildren=buRoot.children;
-for(var item of rootChildren.entries()){
-if(item[1].selfTime===0)
-rootChildren.delete(item[0]);
-}
-
-return buRoot;
-};
-
-
-
-
-
-WebInspector.TimelineProfileTree.eventURL=function(event)
-{
-var data=event.args["data"]||event.args["beginData"];
-if(data&&data["url"])
-return data["url"];
-var frame=WebInspector.TimelineProfileTree.eventStackFrame(event);
-while(frame){
-var url=frame["url"];
-if(url)
-return url;
-frame=frame.parent;
-}
-return null;
-};
-
-
-
-
-
-WebInspector.TimelineProfileTree.eventStackFrame=function(event)
-{
-if(event.name===WebInspector.TimelineModel.RecordType.JSFrame)
-return event.args["data"]||null;
-var topFrame=event.stackTrace&&event.stackTrace[0];
-if(topFrame)
-return topFrame;
-var initiator=event.initiator;
-return initiator&&initiator.stackTrace&&initiator.stackTrace[0]||null;
-};
-
-
-
-
-
-
-WebInspector.TimelineAggregator=function(titleMapper,categoryMapper)
-{
-this._titleMapper=titleMapper;
-this._categoryMapper=categoryMapper;
-
-this._groupNodes=new Map();
-};
-
-
-
-
-WebInspector.TimelineAggregator.GroupBy={
-None:"None",
-EventName:"EventName",
-Category:"Category",
-Domain:"Domain",
-Subdomain:"Subdomain",
-URL:"URL"};
-
-
-
-
-
-
-WebInspector.TimelineAggregator.eventId=function(event)
-{
-if(event.name===WebInspector.TimelineModel.RecordType.JSFrame){
-var data=event.args["data"];
-return"f:"+data["functionName"]+"@"+(data["scriptId"]||data["url"]||"");
-}
-return event.name+":@"+WebInspector.TimelineProfileTree.eventURL(event);
-};
-
-WebInspector.TimelineAggregator._extensionInternalPrefix="extensions::";
-WebInspector.TimelineAggregator._groupNodeFlag=Symbol("groupNode");
-
-
-
-
-
-WebInspector.TimelineAggregator.isExtensionInternalURL=function(url)
-{
-return url.startsWith(WebInspector.TimelineAggregator._extensionInternalPrefix);
-};
-
-WebInspector.TimelineAggregator.prototype={
-
-
-
-
-groupFunction:function(groupBy)
-{
-var idMapper=this._nodeToGroupIdFunction(groupBy);
-return idMapper&&this._nodeToGroupNode.bind(this,idMapper);
-},
-
-
-
-
-
-
-performGrouping:function(root,groupBy)
-{
-var nodeMapper=this.groupFunction(groupBy);
-if(!nodeMapper)
-return root;
-for(var node of root.children.values()){
-var groupNode=nodeMapper(node);
-groupNode.parent=root;
-groupNode.selfTime+=node.selfTime;
-groupNode.totalTime+=node.totalTime;
-groupNode.children.set(node.id,node);
-node.parent=root;
-}
-root.children=this._groupNodes;
-return root;
-},
-
-
-
-
-
-_nodeToGroupIdFunction:function(groupBy)
-{
-
-
-
-
-function groupByURL(node)
-{
-return WebInspector.TimelineProfileTree.eventURL(node.event)||"";
-}
-
-
-
-
-
-
-function groupByDomain(groupSubdomains,node)
-{
-var url=WebInspector.TimelineProfileTree.eventURL(node.event)||"";
-if(WebInspector.TimelineAggregator.isExtensionInternalURL(url))
-return WebInspector.TimelineAggregator._extensionInternalPrefix;
-var parsedURL=url.asParsedURL();
-if(!parsedURL)
-return"";
-if(parsedURL.scheme==="chrome-extension")
-return parsedURL.scheme+"://"+parsedURL.host;
-if(!groupSubdomains)
-return parsedURL.host;
-if(/^[.0-9]+$/.test(parsedURL.host))
-return parsedURL.host;
-var domainMatch=/([^.]*\.)?[^.]*$/.exec(parsedURL.host);
-return domainMatch&&domainMatch[0]||"";
-}
-
-switch(groupBy){
-case WebInspector.TimelineAggregator.GroupBy.None:return null;
-case WebInspector.TimelineAggregator.GroupBy.EventName:return node=>node.event?this._titleMapper(node.event):"";
-case WebInspector.TimelineAggregator.GroupBy.Category:return node=>node.event?this._categoryMapper(node.event):"";
-case WebInspector.TimelineAggregator.GroupBy.Subdomain:return groupByDomain.bind(null,false);
-case WebInspector.TimelineAggregator.GroupBy.Domain:return groupByDomain.bind(null,true);
-case WebInspector.TimelineAggregator.GroupBy.URL:return groupByURL;
-default:return null;}
-
-},
-
-
-
-
-
-
-_buildGroupNode:function(id,event)
-{
-var groupNode=new WebInspector.TimelineProfileTree.Node();
-groupNode.id=id;
-groupNode.selfTime=0;
-groupNode.totalTime=0;
-groupNode.children=new Map();
-groupNode.event=event;
-groupNode._isGroupNode=true;
-this._groupNodes.set(id,groupNode);
-return groupNode;
-},
-
-
-
-
-
-
-_nodeToGroupNode:function(nodeToGroupId,node)
-{
-var id=nodeToGroupId(node);
-return this._groupNodes.get(id)||this._buildGroupNode(id,node.event);
-}};
-
-
-},{}],132:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-WebInspector.SortableDataGrid=function(columnsArray,editCallback,deleteCallback,refreshCallback,contextMenuCallback)
-{
-WebInspector.ViewportDataGrid.call(this,columnsArray,editCallback,deleteCallback,refreshCallback,contextMenuCallback);
-
-this._sortingFunction=WebInspector.SortableDataGrid.TrivialComparator;
-this.setRootNode(new WebInspector.SortableDataGridNode());
-};
-
-
-WebInspector.SortableDataGrid.NodeComparator;
-
-
-
-
-
-
-WebInspector.SortableDataGrid.TrivialComparator=function(a,b)
-{
-return 0;
-};
-
-
-
-
-
-
-
-WebInspector.SortableDataGrid.NumericComparator=function(columnIdentifier,a,b)
-{
-var aValue=a.data[columnIdentifier];
-var bValue=b.data[columnIdentifier];
-var aNumber=Number(aValue instanceof Node?aValue.textContent:aValue);
-var bNumber=Number(bValue instanceof Node?bValue.textContent:bValue);
-return aNumber<bNumber?-1:aNumber>bNumber?1:0;
-};
-
-
-
-
-
-
-
-WebInspector.SortableDataGrid.StringComparator=function(columnIdentifier,a,b)
-{
-var aValue=a.data[columnIdentifier];
-var bValue=b.data[columnIdentifier];
-var aString=aValue instanceof Node?aValue.textContent:String(aValue);
-var bString=bValue instanceof Node?bValue.textContent:String(bValue);
-return aString<bString?-1:aString>bString?1:0;
-};
-
-
-
-
-
-
-
-
-WebInspector.SortableDataGrid.Comparator=function(comparator,reverseMode,a,b)
-{
-return reverseMode?comparator(b,a):comparator(a,b);
-};
-
-
-
-
-
-
-WebInspector.SortableDataGrid.create=function(columnNames,values)
-{
-var numColumns=columnNames.length;
-if(!numColumns)
-return null;
-
-var columns=[];
-for(var i=0;i<columnNames.length;++i)
-columns.push({title:columnNames[i],width:columnNames[i].length,sortable:true});
-
-var nodes=[];
-for(var i=0;i<values.length/numColumns;++i){
-var data={};
-for(var j=0;j<columnNames.length;++j)
-data[j]=values[numColumns*i+j];
-
-var node=new WebInspector.SortableDataGridNode(data);
-node.selectable=false;
-nodes.push(node);
-}
-
-var dataGrid=new WebInspector.SortableDataGrid(columns);
-var length=nodes.length;
-var rootNode=dataGrid.rootNode();
-for(var i=0;i<length;++i)
-rootNode.appendChild(nodes[i]);
-
-dataGrid.addEventListener(WebInspector.DataGrid.Events.SortingChanged,sortDataGrid);
-
-function sortDataGrid()
-{
-var nodes=dataGrid.rootNode().children;
-var sortColumnIdentifier=dataGrid.sortColumnIdentifier();
-if(!sortColumnIdentifier)
-return;
-
-var columnIsNumeric=true;
-for(var i=0;i<nodes.length;i++){
-var value=nodes[i].data[sortColumnIdentifier];
-if(isNaN(value instanceof Node?value.textContent:value)){
-columnIsNumeric=false;
-break;
-}
-}
-
-var comparator=columnIsNumeric?WebInspector.SortableDataGrid.NumericComparator:WebInspector.SortableDataGrid.StringComparator;
-dataGrid.sortNodes(comparator.bind(null,sortColumnIdentifier),!dataGrid.isSortOrderAscending());
-}
-return dataGrid;
-};
-
-WebInspector.SortableDataGrid.prototype={
-
-
-
-insertChild:function(node)
-{
-var root=this.rootNode();
-root.insertChildOrdered(node);
-},
-
-
-
-
-
-sortNodes:function(comparator,reverseMode)
-{
-this._sortingFunction=WebInspector.SortableDataGrid.Comparator.bind(null,comparator,reverseMode);
-this._rootNode._sortChildren(reverseMode);
-this.scheduleUpdateStructure();
-},
-
-__proto__:WebInspector.ViewportDataGrid.prototype};
-
-
-
-
-
-
-
-
-WebInspector.SortableDataGridNode=function(data,hasChildren)
-{
-WebInspector.ViewportDataGridNode.call(this,data,hasChildren);
-};
-
-WebInspector.SortableDataGridNode.prototype={
-
-
-
-insertChildOrdered:function(node)
-{
-this.insertChild(node,this.children.upperBound(node,this.dataGrid._sortingFunction));
-},
-
-_sortChildren:function()
-{
-this.children.sort(this.dataGrid._sortingFunction);
-for(var i=0;i<this.children.length;++i)
-this.children[i].recalculateSiblings(i);
-for(var child of this.children)
-child._sortChildren();
-},
-
-__proto__:WebInspector.ViewportDataGridNode.prototype};
-
-
-},{}],133:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 (function(process){
 
 
@@ -64584,7 +52287,7 @@ return window.localStorage;
 }
 
 }).call(this,require('_process'));
-},{"./debug":134,"_process":77}],134:[function(require,module,exports){
+},{"./debug":117,"_process":77}],117:[function(require,module,exports){
 
 
 
@@ -64788,104 +52491,7 @@ if(val instanceof Error)return val.stack||val.message;
 return val;
 }
 
-},{"ms":146}],135:[function(require,module,exports){
-
-
-
-
-module.exports=function(WebInspector){
-
-function TimelineModelTreeView(model){
-this._rootNode=model;
-}
-
-TimelineModelTreeView.prototype.sortingChanged=function(sortItem,sortOrder){
-if(!sortItem)
-return;
-var sortFunction;
-switch(sortItem){
-case'startTime':
-sortFunction=compareStartTime;
-break;
-case'self':
-sortFunction=compareNumericField.bind(null,'selfTime');
-break;
-case'total':
-sortFunction=compareNumericField.bind(null,'totalTime');
-break;
-case'activity':
-sortFunction=compareName;
-break;
-default:
-console.assert(false,'Unknown sort field: '+sortItem);
-return;}
-
-return this.sortNodes(sortFunction,sortOrder!=='asc');
-
-function compareNumericField(field,a,b){
-var nodeA=a[1];
-var nodeB=b[1];
-return nodeA[field]-nodeB[field];
-}
-
-function compareStartTime(a,b){
-var nodeA=a[1];
-var nodeB=b[1];
-return nodeA.event.startTime-nodeB.event.startTime;
-}
-
-function compareName(a,b){
-var nodeA=a[1];
-var nodeB=b[1];
-var nameA=WebInspector.TimelineTreeView.eventNameForSorting(nodeA.event);
-var nameB=WebInspector.TimelineTreeView.eventNameForSorting(nodeB.event);
-return nameA.localeCompare(nameB);
-}
-};
-
-TimelineModelTreeView.prototype.sortNodes=function(comparator,reverseMode){
-this._sortingFunction=WebInspector.SortableDataGrid.Comparator.bind(null,comparator,reverseMode);
-sortChildren(this._rootNode,this._sortingFunction,reverseMode);
-};
-
-
-
-
-
-
-function sortChildren(parent,sortingFunction){
-if(!parent.children)return;
-parent.children=new Map([...parent.children.entries()].sort(sortingFunction));
-for(var i=0;i<parent.children.length;++i)
-recalculateSiblings(parent.children[i],i);
-for(var child of parent.children.values())
-sortChildren(child,sortingFunction);
-}
-
-
-
-
-
-function recalculateSiblings(node,myIndex){
-if(!node.parent)
-return;
-
-var previousChild=node.parent.children[myIndex-1]||null;
-if(previousChild)
-previousChild.nextSibling=node;
-node.previousSibling=previousChild;
-
-var nextChild=node.parent.children[myIndex+1]||null;
-if(nextChild)
-nextChild.previousSibling=node;
-node.nextSibling=nextChild;
-}
-
-return TimelineModelTreeView;
-
-};
-
-},{}],136:[function(require,module,exports){
+},{"ms":128}],118:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root,factory){
 
 if(typeof exports==='object'&&typeof module==='object')
@@ -71586,7 +59192,7 @@ exports.Tokenizer=Tokenizer;
 
 });
 ;
-},{}],137:[function(require,module,exports){
+},{}],119:[function(require,module,exports){
 (function(Buffer){
 var querystring=require('querystring');
 var trim=require('./trim');
@@ -71893,12 +59499,12 @@ return refs.join(', ');
 module.exports=Link;
 
 }).call(this,{"isBuffer":require("../../../lighthouse-extension/node_modules/is-buffer/index.js")});
-},{"../../../lighthouse-extension/node_modules/is-buffer/index.js":65,"./trim":138,"querystring":80}],138:[function(require,module,exports){
+},{"../../../lighthouse-extension/node_modules/is-buffer/index.js":65,"./trim":120,"querystring":80}],120:[function(require,module,exports){
 module.exports=function trim(value){
 return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
 };
 
-},{}],139:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 
 
 
@@ -72043,7 +59649,7 @@ return sumLuma/lumaValues.length;
 })(ImageSSIM||(ImageSSIM={}));
 module.exports=ImageSSIM;
 
-},{}],140:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 var encode=require('./lib/encoder'),
 decode=require('./lib/decoder');
 
@@ -72052,7 +59658,7 @@ encode:encode,
 decode:decode};
 
 
-},{"./lib/decoder":141,"./lib/encoder":142}],141:[function(require,module,exports){
+},{"./lib/decoder":123,"./lib/encoder":124}],123:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -73042,7 +60648,7 @@ return image;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":60}],142:[function(require,module,exports){
+},{"buffer":60}],124:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -73812,7 +61418,7 @@ return ctx.getImageData(0,0,cvs.width,cvs.height);
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":60}],143:[function(require,module,exports){
+},{"buffer":60}],125:[function(require,module,exports){
 (function(process){
 
 
@@ -74028,7 +61634,7 @@ Log.events=new Emitter();
 module.exports=Log;
 
 }).call(this,require('_process'));
-},{"_process":77,"debug":133,"events":62}],144:[function(require,module,exports){
+},{"_process":77,"debug":116,"events":62}],126:[function(require,module,exports){
 (function(global){
 
 
@@ -75880,7 +63486,7 @@ return false;
 module.exports=isEqual;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],145:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -76223,7 +63829,7 @@ exports.expectedValues={
 "viewport-fit":["auto","cover"]};
 
 
-},{}],146:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 
 
 
@@ -76377,7 +63983,7 @@ return Math.floor(ms/n)+' '+name;
 return Math.ceil(ms/n)+' '+name+'s';
 }
 
-},{}],147:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 module.exports=function parseCacheControl(field){
 
 if(typeof field!=='string'){
@@ -76416,7 +64022,7 @@ catch(err){}
 return err?null:header;
 };
 
-},{}],148:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 var URL=require('url').URL;
 
 
@@ -76839,13 +64445,13 @@ return this._sitemaps.slice(0);
 
 module.exports=Robots;
 
-},{"url":"url"}],149:[function(require,module,exports){
+},{"url":"url"}],131:[function(require,module,exports){
 var Robots=require('./Robots');
 
 module.exports=function(url,contents){
 return new Robots(url,contents);
 };
-},{"./Robots":148}],150:[function(require,module,exports){
+},{"./Robots":130}],132:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -78052,7 +65658,7 @@ return parsed&&parsed.prerelease.length?parsed.prerelease:null;
 }
 
 }).call(this,require('_process'));
-},{"_process":77}],151:[function(require,module,exports){
+},{"_process":77}],133:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -78240,7 +65846,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":60,"jpeg-js":140}],152:[function(require,module,exports){
+},{"buffer":60,"jpeg-js":122}],134:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -78298,7 +65904,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":151,"./speed-index":153}],153:[function(require,module,exports){
+},{"./frame":133,"./speed-index":135}],135:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -78521,11 +66127,11 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":139}],154:[function(require,module,exports){
+},{"image-ssim":121}],136:[function(require,module,exports){
 module.exports={
-"version":"3.0.0-beta.0"};
+"version":"3.0.3"};
 
-},{}],155:[function(require,module,exports){
+},{}],137:[function(require,module,exports){
 module.exports={
 "npm":{
 "angular":[
@@ -78654,6 +66260,12 @@ require('url').URL;
 
 
 
+const listOfTlds=[
+'com','co','gov','edu','ac','org','go','gob','or','net','in','ne','nic','gouv',
+'web','spb','blog','jus','kiev','mil','wi','qc','ca','bel','on'];
+
+
+
 
 
 
@@ -78727,6 +66339,54 @@ return null;
 
 
 
+
+static getTld(hostname){
+const tlds=hostname.split('.').slice(-2);
+
+if(!listOfTlds.includes(tlds[0])){
+return`.${tlds[tlds.length-1]}`;
+}
+
+return`.${tlds.join('.')}`;
+}
+
+
+
+
+
+
+
+static rootDomainsMatch(urlA,urlB){
+let urlAInfo;
+let urlBInfo;
+try{
+urlAInfo=new URL(urlA);
+urlBInfo=new URL(urlB);
+}catch(err){
+return false;
+}
+
+if(!urlAInfo.hostname||!urlBInfo.hostname){
+return false;
+}
+
+const tldA=URLShim.getTld(urlAInfo.hostname);
+const tldB=URLShim.getTld(urlBInfo.hostname);
+
+
+const urlARootDomain=urlAInfo.hostname.replace(new RegExp(`${tldA}$`),'').
+split('.').splice(-1)[0];
+const urlBRootDomain=urlBInfo.hostname.replace(new RegExp(`${tldB}$`),'').
+split('.').splice(-1)[0];
+
+return urlARootDomain===urlBRootDomain;
+}
+
+
+
+
+
+
 static getURLDisplayName(url,options){
 return Util.getURLDisplayName(new URL(url),options);
 }
@@ -78770,6 +66430,8 @@ return false;
 URLShim.URL=URL;
 URLShim.URLSearchParams=typeof self!=='undefined'&&self.URLSearchParams||
 require('url').URLSearchParams;
+
+URLShim.NON_NETWORK_PROTOCOLS=['blob','data'];
 
 URLShim.INVALID_URL_DEBUG_STRING=
 'Lighthouse was unable to determine the URL of some script executions. '+

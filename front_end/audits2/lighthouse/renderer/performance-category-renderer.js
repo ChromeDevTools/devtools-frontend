@@ -8,15 +8,12 @@
 /* globals self, Util, CategoryRenderer */
 
 /** @typedef {import('./dom.js')} DOM */
-/** @typedef {import('./report-renderer.js').CategoryJSON} CategoryJSON */
-/** @typedef {import('./report-renderer.js').GroupJSON} GroupJSON */
-/** @typedef {import('./report-renderer.js').AuditJSON} AuditJSON */
-/** @typedef {import('./details-renderer.js').OpportunitySummary} OpportunitySummary */
 /** @typedef {import('./details-renderer.js').FilmstripDetails} FilmstripDetails */
+/** @typedef {LH.Result.Audit.OpportunityDetails} OpportunityDetails */
 
 class PerformanceCategoryRenderer extends CategoryRenderer {
   /**
-   * @param {AuditJSON} audit
+   * @param {LH.ReportResult.AuditRef} audit
    * @return {Element}
    */
   _renderMetric(audit) {
@@ -46,7 +43,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
   }
 
   /**
-   * @param {AuditJSON} audit
+   * @param {LH.ReportResult.AuditRef} audit
    * @param {number} index
    * @param {number} scale
    * @return {Element}
@@ -56,20 +53,20 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const element = this.populateAuditValues(audit, index, oppTmpl);
     element.id = audit.result.id;
 
-    const details = audit.result.details;
-    if (!details) {
+    if (!audit.result.details || audit.result.scoreDisplayMode === 'error') {
       return element;
     }
-    const summaryInfo = /** @type {OpportunitySummary} */ (details.summary);
-    if (!summaryInfo || !summaryInfo.wastedMs || audit.result.scoreDisplayMode === 'error') {
+    // TODO(bckenny): remove cast when details is fully discriminated based on `type`.
+    const details = /** @type {OpportunityDetails} */ (audit.result.details);
+    if (details.type !== 'opportunity') {
       return element;
     }
 
     // Overwrite the displayValue with opportunity's wastedMs
     const displayEl = this.dom.find('.lh-audit__display-text', element);
-    const sparklineWidthPct = `${summaryInfo.wastedMs / scale * 100}%`;
+    const sparklineWidthPct = `${details.overallSavingsMs / scale * 100}%`;
     this.dom.find('.lh-sparkline__bar', element).style.width = sparklineWidthPct;
-    displayEl.textContent = Util.formatSeconds(summaryInfo.wastedMs, 0.01);
+    displayEl.textContent = Util.formatSeconds(details.overallSavingsMs, 0.01);
 
     // Set [title] tooltips
     if (audit.result.displayValue) {
@@ -83,26 +80,27 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
   /**
    * Get an audit's wastedMs to sort the opportunity by, and scale the sparkline width
-   * Opportunties with an error won't have a summary object, so MIN_VALUE is returned to keep any
+   * Opportunties with an error won't have a details object, so MIN_VALUE is returned to keep any
    * erroring opportunities last in sort order.
-   * @param {AuditJSON} audit
+   * @param {LH.ReportResult.AuditRef} audit
    * @return {number}
    */
   _getWastedMs(audit) {
-    if (
-      audit.result.details &&
-      audit.result.details.summary &&
-      typeof audit.result.details.summary.wastedMs === 'number'
-    ) {
-      return audit.result.details.summary.wastedMs;
+    if (audit.result.details && audit.result.details.type === 'opportunity') {
+      // TODO(bckenny): remove cast when details is fully discriminated based on `type`.
+      const details = /** @type {OpportunityDetails} */ (audit.result.details);
+      if (typeof details.overallSavingsMs !== 'number') {
+        throw new Error('non-opportunity details passed to _getWastedMs');
+      }
+      return details.overallSavingsMs;
     } else {
       return Number.MIN_VALUE;
     }
   }
 
   /**
-   * @param {CategoryJSON} category
-   * @param {Object<string, GroupJSON>} groups
+   * @param {LH.ReportResult.Category} category
+   * @param {Object<string, LH.Result.ReportGroup>} groups
    * @return {Element}
    * @override
    */

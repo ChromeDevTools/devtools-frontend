@@ -29,12 +29,12 @@ class ReportRenderer {
   }
 
   /**
-   * @param {ReportJSON} report
+   * @param {LH.ReportResult} report
    * @param {Element} container Parent element to render the report into.
    */
   renderReport(report, container) {
     // If any mutations happen to the report within the renderers, we want the original object untouched
-    const clone = /** @type {ReportJSON} */ (JSON.parse(JSON.stringify(report)));
+    const clone = /** @type {LH.ReportResult} */ (JSON.parse(JSON.stringify(report)));
 
     // TODO(phulce): we all agree this is technical debt we should fix
     if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
@@ -56,7 +56,7 @@ class ReportRenderer {
   }
 
   /**
-   * @param {ReportJSON} report
+   * @param {LH.ReportResult} report
    * @return {DocumentFragment}
    */
   _renderReportHeader(report) {
@@ -90,7 +90,7 @@ class ReportRenderer {
 
 
   /**
-   * @param {ReportJSON} report
+   * @param {LH.ReportResult} report
    * @return {DocumentFragment}
    */
   _renderReportFooter(report) {
@@ -117,7 +117,7 @@ class ReportRenderer {
 
   /**
    * Returns a div with a list of top-level warnings, or an empty div if no warnings.
-   * @param {ReportJSON} report
+   * @param {LH.ReportResult} report
    * @return {Node}
    */
   _renderReportWarnings(report) {
@@ -136,7 +136,7 @@ class ReportRenderer {
   }
 
   /**
-   * @param {ReportJSON} report
+   * @param {LH.ReportResult} report
    * @return {DocumentFragment}
    */
   _renderReport(report) {
@@ -203,7 +203,7 @@ class ReportRenderer {
   /**
    * Place the AuditResult into the auditDfn (which has just weight & group)
    * @param {Object<string, LH.Audit.Result>} audits
-   * @param {Array<CategoryJSON>} reportCategories
+   * @param {Array<LH.ReportResult.Category>} reportCategories
    */
   static smooshAuditResultsIntoCategories(audits, reportCategories) {
     for (const category of reportCategories) {
@@ -220,49 +220,3 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   self.ReportRenderer = ReportRenderer;
 }
-
-/**
- * @typedef {{
-      id: string,
-      score: (number|null),
-      weight: number,
-      group?: string,
-      result: LH.Audit.Result
-  }} AuditJSON
- */
-
-/**
- * @typedef {{
-      title: string,
-      id: string,
-      score: (number|null),
-      description?: string,
-      manualDescription: string,
-      auditRefs: Array<AuditJSON>
-  }} CategoryJSON
- */
-
-/**
- * @typedef {{
-      title: string,
-      description?: string,
-  }} GroupJSON
- */
-
-/**
- * @typedef {{
-      lighthouseVersion: string,
-      userAgent: string,
-      fetchTime: string,
-      timing: {total: number},
-      requestedUrl: string,
-      finalUrl: string,
-      runWarnings?: Array<string>,
-      artifacts: {traces: {defaultPass: {traceEvents: Array}}},
-      audits: Object<string, LH.Audit.Result>,
-      categories: Object<string, CategoryJSON>,
-      reportCategories: Array<CategoryJSON>,
-      categoryGroups: Object<string, GroupJSON>,
-      configSettings: LH.Config.Settings,
-  }} ReportJSON
- */

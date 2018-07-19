@@ -942,4 +942,12 @@ SDK.PageDispatcher = class {
    */
   windowOpen(url, windowName, windowFeatures, userGesture) {
   }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} data
+   */
+  compilationCacheProduced(url, data) {
+  }
 };

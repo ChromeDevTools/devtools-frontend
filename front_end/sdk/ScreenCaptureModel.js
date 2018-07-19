@@ -216,6 +216,14 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   windowOpen(url, windowName, windowFeatures, userGesture) {
   }
+
+  /**
+   * @override
+   * @param {string} url
+   * @param {string} data
+   */
+  compilationCacheProduced(url, data) {
+  }
 };
 
 SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

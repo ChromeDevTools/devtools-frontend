@@ -99,3 +99,11 @@
     display: block;
 }
 
+:host-context(.-theme-with-dark-background) .blackboxed-message {
+    background-color: hsl(46, 98%, 22%);
+    color: #aaa;
+}
+
+:host-context(.-theme-with-dark-background) .blackboxed-message > .link {
+    color: hsl(0, 0%, 67%);
+}

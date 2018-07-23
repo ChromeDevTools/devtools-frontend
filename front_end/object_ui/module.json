@@ -19,6 +19,7 @@
         "ObjectPopoverHelper.js",
         "ObjectPropertiesSection.js",
         "JavaScriptAutocomplete.js",
+        "JavaScriptREPL.js",
         "RemoteObjectPreviewFormatter.js"
     ],
     "resources": [

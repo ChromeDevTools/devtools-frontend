@@ -918,7 +918,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
    */
   async _applyExpression(expression) {
     const property = SDK.RemoteObject.toCallArgument(this.property.symbol || this.property.name);
-    expression = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(expression.trim());
+    expression = ObjectUI.JavaScriptREPL.wrapObjectLiteral(expression.trim());
 
     if (this.property.synthetic) {
       let invalidate = false;

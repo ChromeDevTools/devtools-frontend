@@ -104,40 +104,10 @@ Console.ConsolePrompt = class extends UI.Widget {
    */
   async _requestPreview() {
     const text = this._editor.textWithCurrentSuggestion().trim();
-    const executionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!executionContext || !text || text.length > Console.ConsolePrompt._MaxLengthForEvaluation) {
-      this._innerPreviewElement.removeChildren();
-      return;
-    }
-
-    const options = {
-      expression: SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text),
-      includeCommandLineAPI: true,
-      generatePreview: true,
-      throwOnSideEffect: true,
-      timeout: 500
-    };
-    const result = await executionContext.evaluate(options, true /* userGesture */, false /* awaitPromise */);
+    const {preview} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
     this._innerPreviewElement.removeChildren();
-    if (result.error)
-      return;
-
-    if (result.exceptionDetails) {
-      const exception = result.exceptionDetails.exception.description;
-      if (exception.startsWith('TypeError: '))
-        this._innerPreviewElement.textContent = exception;
-      return;
-    }
-
-    const {preview, type, subtype, description} = result.object;
-    if (preview && type === 'object' && subtype !== 'node') {
-      this._formatter.appendObjectPreview(this._innerPreviewElement, preview, false /* isEntry */);
-    } else {
-      const nonObjectPreview = this._formatter.renderPropertyPreview(type, subtype, description.trimEnd(400));
-      this._innerPreviewElement.appendChild(nonObjectPreview);
-    }
-    if (this._innerPreviewElement.deepTextContent() === this._editor.textWithCurrentSuggestion().trim())
-      this._innerPreviewElement.removeChildren();
+    if (preview.deepTextContent() !== this._editor.textWithCurrentSuggestion().trim())
+      this._innerPreviewElement.appendChild(preview);
   }
 
   /**
@@ -292,15 +262,10 @@ Console.ConsolePrompt = class extends UI.Widget {
     if (currentExecutionContext) {
       const executionContext = currentExecutionContext;
       const message = SDK.consoleModel.addCommandMessage(executionContext, text);
-      text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
-      let preprocessed = false;
-      if (text.indexOf('await') !== -1) {
-        const preprocessedText = await Formatter.formatterWorkerPool().preprocessTopLevelAwaitExpressions(text);
-        preprocessed = !!preprocessedText;
-        text = preprocessedText || text;
-      }
+      const wrappedResult = await ObjectUI.JavaScriptREPL.preprocessExpression(text);
       SDK.consoleModel.evaluateCommandInConsole(
-          executionContext, message, text, useCommandLineAPI, /* awaitPromise */ preprocessed);
+          executionContext, message, wrappedResult.text, useCommandLineAPI,
+          /* awaitPromise */ wrappedResult.preprocessed);
       if (Console.ConsolePanel.instance().isShowing())
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.CommandEvaluatedInConsolePanel);
     }
@@ -360,12 +325,6 @@ Console.ConsolePrompt = class extends UI.Widget {
   _editorSetForTest() {
   }
 };
-
-/**
- * @const
- * @type {number}
- */
-Console.ConsolePrompt._MaxLengthForEvaluation = 2000;
 
 /**
  * @unrestricted

@@ -32,7 +32,7 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
   }
 
   /**
-   * @param {!Element} parentElement
+   * @param {!DocumentFragment|!Element} parentElement
    * @param {!Protocol.Runtime.ObjectPreview} preview
    * @param {boolean} isEntry
    */

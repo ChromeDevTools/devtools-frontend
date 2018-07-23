@@ -868,7 +868,7 @@ Sources.SourcesPanel = class extends UI.Panel {
       const executionContext = /** @type {!SDK.ExecutionContext} */ (currentExecutionContext);
       let text = /** @type {string} */ (callFunctionResult.object.value);
       const message = SDK.consoleModel.addCommandMessage(executionContext, text);
-      text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
+      text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);
       SDK.consoleModel.evaluateCommandInConsole(
           executionContext, message, text,
           /* useCommandLineAPI */ false, /* awaitPromise */ false);
@@ -1202,7 +1202,7 @@ Sources.SourcesPanel.DebuggingActionDelegate = class {
           const executionContext = UI.context.flavor(SDK.ExecutionContext);
           if (executionContext) {
             const message = SDK.consoleModel.addCommandMessage(executionContext, text);
-            text = SDK.RuntimeModel.wrapObjectLiteralExpressionIfNeeded(text);
+            text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);
             SDK.consoleModel.evaluateCommandInConsole(
                 executionContext, message, text, /* useCommandLineAPI */ true, /* awaitPromise */ false);
           }

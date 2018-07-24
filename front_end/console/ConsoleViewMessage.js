@@ -125,9 +125,9 @@ Console.ConsoleViewMessage = class {
    */
   _buildTableMessage() {
     const formattedMessage = createElementWithClass('span', 'source-code');
-    const anchorElement = this._buildMessageAnchor();
-    if (anchorElement)
-      formattedMessage.appendChild(anchorElement);
+    this._anchorElement = this._buildMessageAnchor();
+    if (this._anchorElement)
+      formattedMessage.appendChild(this._anchorElement);
     const badgeElement = this._buildMessageBadge();
     if (badgeElement)
       formattedMessage.appendChild(badgeElement);
@@ -279,9 +279,9 @@ Console.ConsoleViewMessage = class {
     messageElement.classList.add('console-message-text');
 
     const formattedMessage = createElementWithClass('span', 'source-code');
-    const anchorElement = this._buildMessageAnchor();
-    if (anchorElement)
-      formattedMessage.appendChild(anchorElement);
+    this._anchorElement = this._buildMessageAnchor();
+    if (this._anchorElement)
+      formattedMessage.appendChild(this._anchorElement);
     const badgeElement = this._buildMessageBadge();
     if (badgeElement)
       formattedMessage.appendChild(badgeElement);
@@ -921,8 +921,10 @@ Console.ConsoleViewMessage = class {
    */
   matchesFilterRegex(regexObject) {
     regexObject.lastIndex = 0;
-    const text = this.contentElement().deepTextContent();
-    return regexObject.test(text);
+    const contentElement = this.contentElement();
+    const anchorText = this._anchorElement ? this._anchorElement.deepTextContent() : '';
+    return (anchorText && regexObject.test(anchorText.trim())) ||
+        regexObject.test(contentElement.deepTextContent().slice(anchorText.length));
   }
 
   /**

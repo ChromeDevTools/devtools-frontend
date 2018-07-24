@@ -54,6 +54,16 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!SDK.RuntimeModel.EvaluationResult} response
+   */
+  static isSideEffectFailure(response) {
+    const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
+    return !!(
+        exceptionDetails && exceptionDetails.exception &&
+        exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
+  }
+
+  /**
    * @return {!SDK.DebuggerModel}
    */
   debuggerModel() {
@@ -469,12 +479,8 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     const response = await this._agent.invoke_evaluate(
         {expression: SDK.RuntimeModel._sideEffectTestExpression, contextId: testContext.id, throwOnSideEffect: true});
 
-    const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
-    const supports =
-        !!(exceptionDetails && exceptionDetails.exception &&
-           exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
-    this._hasSideEffectSupport = supports;
-    return supports;
+    this._hasSideEffectSupport = SDK.RuntimeModel.isSideEffectFailure(response);
+    return this._hasSideEffectSupport;
   }
 
   /**

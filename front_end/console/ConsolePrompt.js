@@ -56,7 +56,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
       if (pinsEnabled) {
         const pinButton = this.element.createChild('span', 'command-pin-button');
-        pinButton.title = ls`Pin expression`;
+        pinButton.title = ls`Pin expression and continuously evaluate`;
         pinButton.addEventListener('click', () => {
           this.dispatchEventToListeners(Console.ConsolePrompt.Events.ExpressionPinned, this.text());
         });

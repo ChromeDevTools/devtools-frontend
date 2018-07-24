@@ -143,6 +143,8 @@ Main.Main = class {
         Runtime.experiments.enableForTest('networkSearch');
       if (testPath.indexOf('console/viewport-testing/') !== -1)
         Runtime.experiments.enableForTest('consoleBelowPrompt');
+      if (testPath.indexOf('console/') !== -1)
+        Runtime.experiments.enableForTest('pinnedExpressions');
     }
 
     Runtime.experiments.setDefaultExperiments(

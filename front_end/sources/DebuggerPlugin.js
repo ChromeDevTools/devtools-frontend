@@ -40,10 +40,6 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._uiSourceCode = uiSourceCode;
     this._transformer = transformer;
 
-    /** @type {?Element} */
-    this._conditionEditorElement = null;
-    /** @type {?Element} */
-    this._conditionElement = null;
     /** @type {?Workspace.UILocation} */
     this._executionLocation = null;
     this._controlDown = false;
@@ -646,39 +642,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
    * @param {?{lineNumber: number, columnNumber: number}} location
    */
-  _editBreakpointCondition(editorLineNumber, breakpoint, location) {
-    this._conditionElement = this._createConditionElement(editorLineNumber);
-    this._textEditor.addDecoration(this._conditionElement, editorLineNumber);
-
-    /**
-     * @this {Sources.DebuggerPlugin}
-     */
-    function finishEditing(committed, element, newText) {
-      this._textEditor.removeDecoration(/** @type {!Element} */ (this._conditionElement), editorLineNumber);
-      this._conditionEditorElement = null;
-      this._conditionElement = null;
-      if (!committed)
-        return;
-
-      if (breakpoint)
-        breakpoint.setCondition(newText);
-      else if (location)
-        this._setBreakpoint(location.lineNumber, location.columnNumber, newText, true);
-      else
-        this._createNewBreakpoint(editorLineNumber, newText, true);
-    }
-
-    const config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
-    UI.InplaceEditor.startEditing(/** @type {!Element} */ (this._conditionEditorElement), config);
-    this._conditionEditorElement.value = breakpoint ? breakpoint.condition() : '';
-    this._conditionEditorElement.select();
-  }
-
-  /**
-   * @param {number} editorLineNumber
-   * @return {!Element}
-   */
-  _createConditionElement(editorLineNumber) {
+  async _editBreakpointCondition(editorLineNumber, breakpoint, location) {
     const conditionElement = createElementWithClass('div', 'source-frame-breakpoint-condition');
 
     const labelElement = conditionElement.createChild('label', 'source-frame-breakpoint-message');
@@ -686,12 +650,58 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     labelElement.createTextChild(
         Common.UIString('The breakpoint on line %d will stop only if this expression is true:', editorLineNumber + 1));
 
-    const editorElement = UI.createInput('monospace', 'text');
-    conditionElement.appendChild(editorElement);
-    editorElement.id = 'source-frame-breakpoint-condition';
-    this._conditionEditorElement = editorElement;
 
-    return conditionElement;
+    this._textEditor.addDecoration(conditionElement, editorLineNumber);
+
+    /** @type {!UI.TextEditorFactory} */
+    const factory = await self.runtime.extension(UI.TextEditorFactory).instance();
+    const editor =
+        factory.createEditor({lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true});
+    editor.widget().show(conditionElement);
+    if (breakpoint)
+      editor.setText(breakpoint.condition());
+    editor.setSelection(editor.fullRange());
+    editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(editor));
+    editor.widget().element.addEventListener('keydown', async event => {
+      if (isEnterKey(event) && !event.shiftKey) {
+        event.consume(true);
+        if (event.ctrlKey)
+
+          event.consume(true);
+        const expression = editor.text();
+        if (event.ctrlKey || await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(expression))
+          finishEditing.call(this, true);
+        else
+          editor.newlineAndIndent();
+      }
+      if (isEscKey(event))
+        finishEditing.call(this, false);
+    }, true);
+    editor.widget().focus();
+    editor.widget().element.id = 'source-frame-breakpoint-condition';
+    editor.widget().element.addEventListener('blur', event => {
+      finishEditing.call(this, true);
+    }, true);
+    let finished = false;
+    /**
+     * @this {Sources.DebuggerPlugin}
+     */
+    function finishEditing(committed) {
+      if (finished)
+        return;
+      finished = true;
+      editor.widget().detach();
+      this._textEditor.removeDecoration(/** @type {!Element} */ (conditionElement), editorLineNumber);
+      if (!committed)
+        return;
+
+      if (breakpoint)
+        breakpoint.setCondition(editor.text().trim());
+      else if (location)
+        this._setBreakpoint(location.lineNumber, location.columnNumber, editor.text().trim(), true);
+      else
+        this._createNewBreakpoint(editorLineNumber, editor.text().trim(), true);
+    }
   }
 
   /**

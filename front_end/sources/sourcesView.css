@@ -85,6 +85,7 @@
     width: 100%;
     box-shadow: none !important;
     outline: none !important;
+    background: white;
 }
 
 @-webkit-keyframes source-frame-value-update-highlight-animation {

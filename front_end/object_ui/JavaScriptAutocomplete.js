@@ -596,6 +596,23 @@ ObjectUI.JavaScriptAutocomplete = class {
       return -1;
     return String.naturalOrderComparator(a, b);
   }
+
+  /**
+   * @param {string} expression
+   * @return {!Promise<boolean>}
+   */
+  static async isExpressionComplete(expression) {
+    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    if (!currentExecutionContext)
+      return true;
+    const result =
+        await currentExecutionContext.runtimeModel.compileScript(expression, '', false, currentExecutionContext.id);
+    if (!result.exceptionDetails)
+      return true;
+    const description = result.exceptionDetails.exception.description;
+    return !description.startsWith('SyntaxError: Unexpected end of input') &&
+        !description.startsWith('SyntaxError: Unterminated template literal');
+  }
 };
 
 /** @typedef {{title:(string|undefined), items:Array<string>}} */

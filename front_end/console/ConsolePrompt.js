@@ -232,23 +232,15 @@ Console.ConsolePrompt = class extends UI.Widget {
     if (!str.length)
       return;
 
-    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!this._isCaretAtEndOfPrompt() || !currentExecutionContext) {
-      this._appendCommand(str, true);
+    if (!this._isCaretAtEndOfPrompt()) {
+      await this._appendCommand(str, true);
       return;
     }
-    const result = await currentExecutionContext.runtimeModel.compileScript(str, '', false, currentExecutionContext.id);
-    if (str !== this.text())
-      return;
-    const exceptionDetails = result.exceptionDetails;
-    if (exceptionDetails &&
-        (exceptionDetails.exception.description.startsWith('SyntaxError: Unexpected end of input') ||
-         exceptionDetails.exception.description.startsWith('SyntaxError: Unterminated template literal'))) {
+
+    if (await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(str))
+      await this._appendCommand(str, true);
+    else
       this._editor.newlineAndIndent();
-      this._enterProcessedForTest();
-      return;
-    }
-    await this._appendCommand(str, true);
     this._enterProcessedForTest();
   }
 

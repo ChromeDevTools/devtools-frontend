@@ -209,6 +209,9 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
    */
   async linkifyObject(snapshotObjectId) {
     const heapProfilerModel = this._profile.heapProfilerModel();
+    // heapProfilerModel is null if snapshot was loaded from file
+    if (!heapProfilerModel)
+      return null;
     const remoteObject = await heapProfilerModel.objectForSnapshotObjectId(String(snapshotObjectId), 'link');
     if (!remoteObject || remoteObject.type !== 'function')
       return null;

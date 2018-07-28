@@ -341,8 +341,6 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     this._path = Common.ParsedURL.extractPath(request.url());
     if (!this._path)
       this._path = request.url();
-    if (this._path.length > 1 && this._path.startsWith('/'))
-      this._path = this._path.substring(1);
     this._request = request;
   }
 

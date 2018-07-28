@@ -517,6 +517,13 @@
 
     /**
      * @override
+     * @param {string} url
+     */
+    close(url) {
+    }
+
+    /**
+     * @override
      * @param {string} message
      */
     sendMessageToBackend(message) {
@@ -809,59 +816,6 @@
      */
     supportsFileSystems() {
       return true;
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @return {boolean}
-     */
-    canInspectWorkers() {
-      return true;
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @return {boolean}
-     */
-    canSaveAs() {
-      return true;
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @return {boolean}
-     */
-    canSave() {
-      return true;
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     */
-    loaded() {
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @return {string}
-     */
-    hiddenPanels() {
-      return '';
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @return {string}
-     */
-    localizedStringsURL() {
-      return '';
-    }
-
-    /**
-     * Support for legacy front-ends (<M28).
-     * @param {string} url
-     */
-    close(url) {
     }
 
     /**

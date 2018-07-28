@@ -46,6 +46,10 @@ Host.InspectorFrontendHostStub = class {
         event.stopPropagation();
     }
     document.addEventListener('keydown', stopEventPropagation, true);
+    /**
+     * @type {!Map<string, !Array<string>>}
+     */
+    this._urlsBeingSaved = new Map();
   }
 
   /**
@@ -197,8 +201,13 @@ Host.InspectorFrontendHostStub = class {
    * @param {boolean} forceSaveAs
    */
   save(url, content, forceSaveAs) {
-    Common.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
-    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.CanceledSaveURL, url);
+    let buffer = this._urlsBeingSaved.get(url);
+    if (!buffer) {
+      buffer = [];
+      this._urlsBeingSaved.set(url, buffer);
+    }
+    buffer.push(content);
+    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.SavedURL, {url, fileSystemPath: url});
   }
 
   /**
@@ -207,7 +216,24 @@ Host.InspectorFrontendHostStub = class {
    * @param {string} content
    */
   append(url, content) {
-    Common.console.error('Saving files is not enabled in hosted mode. Please inspect using chrome://inspect');
+    const buffer = this._urlsBeingSaved.get(url);
+    buffer.push(content);
+    this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.AppendedToURL, url);
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   */
+  close(url) {
+    const buffer = this._urlsBeingSaved.get(url);
+    this._urlsBeingSaved.delete(url);
+    const fileName = url ? url.trimURL().removeURLFragment() : '';
+    const link = createElement('a');
+    link.download = fileName;
+    const blob = new Blob([buffer.join('')], {type: 'text/plain'});
+    link.href = URL.createObjectURL(blob);
+    link.click();
   }
 
   /**

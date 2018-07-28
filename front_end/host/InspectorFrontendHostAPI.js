@@ -100,12 +100,6 @@ InspectorFrontendHostAPI.prototype = {
    */
   addFileSystem(type) {},
 
-  /**
-   * @param {string} url
-   * @param {string} content
-   */
-  append(url, content) {},
-
   loadCompleted() {},
 
   /**
@@ -181,6 +175,17 @@ InspectorFrontendHostAPI.prototype = {
    * @param {boolean} forceSaveAs
    */
   save(url, content, forceSaveAs) {},
+
+  /**
+   * @param {string} url
+   * @param {string} content
+   */
+  append(url, content) {},
+
+  /**
+   * @param {string} url
+   */
+  close(url) {},
 
   /**
    * @param {number} requestId

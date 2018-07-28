@@ -35,6 +35,10 @@ Profiler.ProfileDataGridNode = class extends DataGrid.DataGridNode {
   constructor(profileNode, owningTree, hasChildren) {
     super(null, hasChildren);
 
+    this._searchMatchedSelfColumn = false;
+    this._searchMatchedTotalColumn = false;
+    this._searchMatchedFunctionColumn = false;
+
     this.profileNode = profileNode;
     this.tree = owningTree;
     /** @type {!Map<string, !Profiler.ProfileDataGridNode>} */
@@ -476,9 +480,9 @@ Profiler.ProfileDataGridTree = class {
      * @return {boolean}
      */
     function matchesQuery(profileDataGridNode) {
-      delete profileDataGridNode._searchMatchedSelfColumn;
-      delete profileDataGridNode._searchMatchedTotalColumn;
-      delete profileDataGridNode._searchMatchedFunctionColumn;
+      profileDataGridNode._searchMatchedSelfColumn = false;
+      profileDataGridNode._searchMatchedTotalColumn = false;
+      profileDataGridNode._searchMatchedFunctionColumn = false;
 
       if (percentUnits) {
         if (lessThan) {
@@ -565,9 +569,9 @@ Profiler.ProfileDataGridTree = class {
     if (this._searchResults) {
       for (let i = 0; i < this._searchResults.length; ++i) {
         const profileNode = this._searchResults[i].profileNode;
-        delete profileNode._searchMatchedSelfColumn;
-        delete profileNode._searchMatchedTotalColumn;
-        delete profileNode._searchMatchedFunctionColumn;
+        profileNode._searchMatchedSelfColumn = false;
+        profileNode._searchMatchedTotalColumn = false;
+        profileNode._searchMatchedFunctionColumn = false;
         profileNode.refresh();
       }
     }

@@ -190,7 +190,7 @@ SDKTestRunner.PageMock = class {
     return true;
   }
 
-  _dispatch(id, methodName, params, message) {
+  _dispatch(id, methodName, params) {
     const handler = (this._isSupportedDomain(methodName) ? this._dispatchMap[methodName] : null);
 
     if (handler)
@@ -230,9 +230,8 @@ MockPageConnection = class {
     setTimeout(() => this._onMessage.call(null, JSON.stringify(message)), 0);
   }
 
-  sendMessage(message) {
-    const json = JSON.parse(message);
-    this._page._dispatch(json.id, json.method, json.params, message);
+  sendMessage(domain, message) {
+    this._page._dispatch(message.id, message.method, message.params);
   }
 
   disconnect() {

@@ -180,21 +180,36 @@ Protocol.InspectorBackend.DevToolsStubErrorCode = -32015;
 Protocol.inspectorBackend = new Protocol.InspectorBackend();
 
 /**
- * @interface
+ * @unrestricted
  */
-Protocol.InspectorBackend.Connection = function() {};
+Protocol.InspectorBackend.Connection = class {
+  /**
+   * @param {string} domain
+   * @param {!Protocol.InspectorBackend.Connection.MessageObject} messageObject
+   */
+  sendMessage(domain, messageObject) {
+    this.sendRawMessage(JSON.stringify(messageObject));
+  }
 
-Protocol.InspectorBackend.Connection.prototype = {
   /**
    * @param {string} message
    */
-  sendMessage(message) {},
+  sendRawMessage(message) {}
 
   /**
    * @return {!Promise}
    */
-  disconnect() {},
+  disconnect() {}
 };
+
+/**
+ * @typedef {!{
+ *   id: number,
+ *   method: string,
+ *   params: (!Object|undefined)
+ * }}
+ */
+Protocol.InspectorBackend.Connection.MessageObject;
 
 /**
  * @typedef {!{
@@ -287,17 +302,16 @@ Protocol.TargetBase = class extends Common.Object {
       messageObject.params = params;
 
     const wrappedCallback = this._wrap(callback, domain, method);
-    const message = JSON.stringify(messageObject);
 
     if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
-      this._dumpProtocolMessage('frontend: ' + message, '[FE] ' + domain);
+      this._dumpProtocolMessage('frontend: ' + JSON.stringify(messageObject), '[FE] ' + domain);
     if (this.hasEventListeners(Protocol.TargetBase.Events.MessageSent)) {
       this.dispatchEventToListeners(
           Protocol.TargetBase.Events.MessageSent,
           {domain, method, params: JSON.parse(JSON.stringify(params)), id: messageId});
     }
 
-    this._connection.sendMessage(message);
+    this._connection.sendMessage(domain, messageObject);
     ++this._pendingResponsesCount;
     this._callbacks[messageId] = wrappedCallback;
   }

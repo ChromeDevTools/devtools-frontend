@@ -74,7 +74,7 @@ Audits2.ProtocolService = class extends Common.Object {
    * @param {string} message
    */
   _sendProtocolMessage(message) {
-    this._rawConnection.sendMessage(message);
+    this._rawConnection.sendRawMessage(message);
   }
 
   /**

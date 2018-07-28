@@ -1,15 +1,16 @@
 // Copyright (c) 2015 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
- * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
-SDK.MainConnection = class {
+SDK.MainConnection = class extends Protocol.InspectorBackend.Connection {
   /**
    * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(params) {
+    super();
     this._onMessage = params.onMessage;
     this._onDisconnect = params.onDisconnect;
     this._disconnected = false;
@@ -25,7 +26,7 @@ SDK.MainConnection = class {
    * @override
    * @param {string} message
    */
-  sendMessage(message) {
+  sendRawMessage(message) {
     if (!this._disconnected)
       InspectorFrontendHost.sendMessageToBackend(message);
   }
@@ -77,16 +78,16 @@ SDK.MainConnection = class {
 };
 
 /**
- * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
-SDK.WebSocketConnection = class {
+SDK.WebSocketConnection = class extends Protocol.InspectorBackend.Connection {
   /**
    * @param {string} url
    * @param {function()} onWebSocketDisconnect
    * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(url, onWebSocketDisconnect, params) {
+    super();
     this._socket = new WebSocket(url);
     this._socket.onerror = this._onError.bind(this);
     this._socket.onopen = this._onOpen.bind(this);
@@ -137,7 +138,7 @@ SDK.WebSocketConnection = class {
    * @override
    * @param {string} message
    */
-  sendMessage(message) {
+  sendRawMessage(message) {
     if (this._connected)
       this._socket.send(message);
     else
@@ -160,14 +161,14 @@ SDK.WebSocketConnection = class {
 };
 
 /**
- * @implements {Protocol.InspectorBackend.Connection}
  * @unrestricted
  */
-SDK.StubConnection = class {
+SDK.StubConnection = class extends Protocol.InspectorBackend.Connection {
   /**
    * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(params) {
+    super();
     this._onMessage = params.onMessage;
     this._onDisconnect = params.onDisconnect;
   }
@@ -176,7 +177,7 @@ SDK.StubConnection = class {
    * @override
    * @param {string} message
    */
-  sendMessage(message) {
+  sendRawMessage(message) {
     setTimeout(this._respondWithError.bind(this, message), 0);
   }
 
@@ -205,16 +206,14 @@ SDK.StubConnection = class {
   }
 };
 
-/**
- * @implements {Protocol.InspectorBackend.Connection}
- */
-SDK.ChildConnection = class {
+SDK.ChildConnection = class extends Protocol.InspectorBackend.Connection {
   /**
    * @param {!Protocol.TargetAgent} agent
    * @param {string} sessionId
    * @param {!Protocol.InspectorBackend.Connection.Params} params
    */
   constructor(agent, sessionId, params) {
+    super();
     this._agent = agent;
     this._sessionId = sessionId;
     this.onMessage = params.onMessage;
@@ -225,7 +224,7 @@ SDK.ChildConnection = class {
    * @override
    * @param {string} message
    */
-  sendMessage(message) {
+  sendRawMessage(message) {
     this._agent.sendMessageToTarget(message, this._sessionId);
   }
 

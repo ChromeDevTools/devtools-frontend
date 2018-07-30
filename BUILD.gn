@@ -179,6 +179,7 @@ all_devtools_files = [
   "front_end/console/consoleView.css",
   "front_end/console/consoleContextSelector.css",
   "front_end/console/consolePinPane.css",
+  "front_end/console/consolePrompt.css",
   "front_end/console/consoleSidebar.css",
   "front_end/console/ConsoleView.js",
   "front_end/console/ConsoleViewMessage.js",

@@ -199,6 +199,7 @@
     "resources": [
         "consoleContextSelector.css",
         "consolePinPane.css",
+        "consolePrompt.css",
         "consoleSidebar.css",
         "consoleView.css"
     ]

@@ -583,7 +583,7 @@ Console.ConsoleView = class extends UI.VBox {
     if (!this._currentGroup.messagesHidden()) {
       const originatingMessage = viewMessage.consoleMessage().originatingMessage();
       if (lastMessage && originatingMessage && lastMessage.consoleMessage() === originatingMessage)
-        lastMessage.toMessageElement().classList.add('console-adjacent-user-command-result');
+        viewMessage.toMessageElement().classList.add('console-adjacent-user-command-result');
 
       this._visibleViewMessages.push(viewMessage);
       this._searchMessage(this._visibleViewMessages.length - 1);

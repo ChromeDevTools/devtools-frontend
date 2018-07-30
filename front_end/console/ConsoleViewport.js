@@ -166,13 +166,22 @@ Console.ConsoleViewport = class {
   }
 
   _rebuildCumulativeHeightsIfNeeded() {
+    let totalCachedHeight = 0;
+    let totalMeasuredHeight = 0;
     // Check whether current items in DOM have changed heights. Tolerate 1-pixel
     // error due to double-to-integer rounding errors.
     for (let i = 0; i < this._renderedItems.length; ++i) {
       const cachedItemHeight = this._cachedItemHeight(this._firstActiveIndex + i);
-      if (Math.abs(cachedItemHeight - this._renderedItems[i].element().offsetHeight) > 1) {
+      const measuredHeight = this._renderedItems[i].element().offsetHeight;
+      if (Math.abs(cachedItemHeight - measuredHeight) > 1) {
         this._rebuildCumulativeHeights();
-        break;
+        return;
+      }
+      totalMeasuredHeight += measuredHeight;
+      totalCachedHeight += cachedItemHeight;
+      if (Math.abs(totalCachedHeight - totalMeasuredHeight) > 1) {
+        this._rebuildCumulativeHeights();
+        return;
       }
     }
   }
@@ -534,6 +543,9 @@ Console.ConsoleViewport = class {
     const lastVisibleIndex = this.lastVisibleIndex();
     if (index > firstVisibleIndex && index < lastVisibleIndex)
       return;
+    // If the prompt is visible, then the last item must be fully on screen.
+    if (index === lastVisibleIndex && this._cumulativeHeights[index] <= this.element.scrollTop + this._visibleHeight())
+      return;
     if (makeLast)
       this.forceScrollItemToBeLast(index);
     else if (index <= firstVisibleIndex)
@@ -553,6 +565,8 @@ Console.ConsoleViewport = class {
     if (this.element.isScrolledToBottom())
       this.setStickToBottom(true);
     this.refresh();
+    // After refresh, the item is in DOM, but may not be visible (items above were larger than expected).
+    this.renderedElementAt(index).scrollIntoView(true /* alignTop */);
   }
 
   /**
@@ -566,6 +580,8 @@ Console.ConsoleViewport = class {
     if (this.element.isScrolledToBottom())
       this.setStickToBottom(true);
     this.refresh();
+    // After refresh, the item is in DOM, but may not be visible (items above were larger than expected).
+    this.renderedElementAt(index).scrollIntoView(false /* alignTop */);
   }
 
   /**

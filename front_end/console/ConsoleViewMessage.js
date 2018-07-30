@@ -93,7 +93,7 @@ Console.ConsoleViewMessage = class {
    */
   willHide() {
     this._isVisible = false;
-    this._cachedHeight = this.contentElement().offsetHeight;
+    this._cachedHeight = this.element().offsetHeight;
   }
 
   /**

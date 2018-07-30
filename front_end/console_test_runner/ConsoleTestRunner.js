@@ -611,14 +611,12 @@ ConsoleTestRunner.dumpStackTraces = function() {
 };
 
 /**
- * Returns actual visible indices. Messages in the margin are treated as NOT visible.
  * @return {!{first: number, last: number, count: number}}
  */
 ConsoleTestRunner.visibleIndices = function() {
   const consoleView = Console.ConsoleView.instance();
   const viewport = consoleView._viewport;
   const viewportRect = viewport.element.getBoundingClientRect();
-  const viewportPadding = parseFloat(window.getComputedStyle(viewport.element).paddingTop);
   let first = -1;
   let last = -1;
   let count = 0;
@@ -628,8 +626,7 @@ ConsoleTestRunner.visibleIndices = function() {
     if (!item._element || !item._element.isConnected)
       continue;
     const itemRect = item._element.getBoundingClientRect();
-    const isVisible = (itemRect.bottom > viewportRect.top + viewportPadding + 1) &&
-        (itemRect.top <= viewportRect.bottom - viewportPadding - 1);
+    const isVisible = (itemRect.bottom > viewportRect.top + 1) && (itemRect.top <= viewportRect.bottom - 1);
     if (isVisible) {
       first = first === -1 ? i : first;
       last = i;

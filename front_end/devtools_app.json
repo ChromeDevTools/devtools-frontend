@@ -3,7 +3,6 @@
     { "name": "emulation", "type": "autostart" },
     { "name": "inspector_main", "type": "autostart" },
     { "name": "mobile_throttling", "type": "autostart" },
-    { "name": "browser_components", "type": "autostart" },
 
     { "name": "accessibility", "type": "remote" },
     { "name": "animation" },

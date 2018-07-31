@@ -7,11 +7,13 @@
     "scripts": [
         "JSPresentationUtils.js",
         "DockController.js",
+        "ImagePreview.js",
         "Linkifier.js",
         "Reload.js",
         "TargetDetachedDialog.js"
     ],
     "resources": [
+        "imagePreview.css",
         "jsUtils.css"
     ]
 }

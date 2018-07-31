@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-BrowserComponents.ImagePreview = class {
+Components.ImagePreview = class {
   /**
    * @param {!SDK.Target} target
    * @param {string} originalImageURL
@@ -41,7 +41,7 @@ BrowserComponents.ImagePreview = class {
 
     function buildContent() {
       const container = createElement('table');
-      UI.appendStyle(container, 'browser_components/imagePreview.css');
+      UI.appendStyle(container, 'components/imagePreview.css');
       container.className = 'image-preview-container';
       const naturalWidth = precomputedFeatures ? precomputedFeatures.naturalWidth : imageElement.naturalWidth;
       const naturalHeight = precomputedFeatures ? precomputedFeatures.naturalHeight : imageElement.naturalHeight;

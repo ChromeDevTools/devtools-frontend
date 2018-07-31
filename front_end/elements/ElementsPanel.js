@@ -483,7 +483,7 @@ Elements.ElementsPanel = class extends UI.Panel {
         const node = this.selectedDOMNode();
         if (!node)
           return false;
-        const preview = await BrowserComponents.ImagePreview.build(
+        const preview = await Components.ImagePreview.build(
             node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true);
         if (preview)
           popover.contentElement.appendChild(preview);

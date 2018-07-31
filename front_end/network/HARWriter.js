@@ -54,7 +54,7 @@ Network.HARWriter = class {
     progress.setTitle(Common.UIString('Collecting content\u2026'));
     progress.setTotalWork(requests.length);
 
-    const harLog = await BrowserSDK.HARLog.build(requests);
+    const harLog = await SDK.HARLog.build(requests);
     const promises = [];
     for (let i = 0; i < requests.length; i++) {
       const promise = requests[i].contentData();

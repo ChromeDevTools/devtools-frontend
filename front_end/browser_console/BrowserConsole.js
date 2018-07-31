@@ -15,7 +15,7 @@ BrowserConsole.BrowserConsole = class {
    */
   appendApplicableItems(event, contextMenu, object) {
     const consoleMessage = /** @type {!SDK.ConsoleMessage} */ (object);
-    const request = BrowserSDK.NetworkLog.requestForConsoleMessage(consoleMessage);
+    const request = SDK.NetworkLog.requestForConsoleMessage(consoleMessage);
     if (request && SDK.NetworkManager.canReplayRequest(request)) {
       contextMenu.debugSection().appendItem(
           Common.UIString('Replay XHR'), SDK.NetworkManager.replayRequest.bind(null, request));
@@ -30,7 +30,7 @@ BrowserConsole.BrowserConsole = class {
    */
   render(object, options) {
     const consoleMessage = /** @type {!SDK.ConsoleMessage} */ (object);
-    const request = BrowserSDK.NetworkLog.requestForConsoleMessage(consoleMessage);
+    const request = SDK.NetworkLog.requestForConsoleMessage(consoleMessage);
     let messageElement = null;
     if (request) {
       messageElement = createElement('span');

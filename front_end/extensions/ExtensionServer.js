@@ -378,7 +378,7 @@ Extensions.ExtensionServer = class extends Common.Object {
       return this._status.OK();
     }
 
-    const request = BrowserSDK.networkLog.requestForURL(message.url);
+    const request = SDK.networkLog.requestForURL(message.url);
     if (request) {
       Common.Revealer.reveal(request);
       return this._status.OK();
@@ -434,8 +434,8 @@ Extensions.ExtensionServer = class extends Common.Object {
   }
 
   async _onGetHAR() {
-    const requests = BrowserSDK.networkLog.requests();
-    const harLog = await BrowserSDK.HARLog.build(requests);
+    const requests = SDK.networkLog.requests();
+    const harLog = await SDK.HARLog.build(requests);
     for (let i = 0; i < harLog.entries.length; ++i)
       harLog.entries[i]._requestId = this._requestId(requests[i]);
     return harLog;
@@ -640,7 +640,7 @@ Extensions.ExtensionServer = class extends Common.Object {
 
   async _notifyRequestFinished(event) {
     const request = /** @type {!SDK.NetworkRequest} */ (event.data);
-    const entry = await BrowserSDK.HAREntry.build(request);
+    const entry = await SDK.HARLog.Entry.build(request);
     this._postNotification(Extensions.extensionAPI.Events.NetworkRequestFinished, this._requestId(request), entry);
   }
 

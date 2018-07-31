@@ -22,9 +22,7 @@
         }
     ],
     "scripts": [
-        "LogManager.js",
-        "NetworkLog.js",
-        "HAREntry.js"
+        "LogManager.js"
     ],
     "dependencies": [
         "sdk"

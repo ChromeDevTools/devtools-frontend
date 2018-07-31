@@ -54,7 +54,7 @@ NetworkTestRunner.networkWaterfallColumn = function() {
 };
 
 NetworkTestRunner.networkRequests = function() {
-  return Array.from(BrowserSDK.networkLog.requests());
+  return Array.from(SDK.networkLog.requests());
 };
 
 NetworkTestRunner.dumpNetworkRequests = function() {
@@ -71,7 +71,7 @@ NetworkTestRunner.dumpNetworkRequests = function() {
 };
 
 NetworkTestRunner.dumpNetworkRequestsWithSignedExchangeInfo = function() {
-  for (const request of BrowserSDK.networkLog.requests()) {
+  for (const request of SDK.networkLog.requests()) {
     TestRunner.addResult(`* ${request.url()}`);
     TestRunner.addResult(`  failed: ${!!request.failed}`);
     TestRunner.addResult(`  statusCode: ${request.statusCode}`);

@@ -36,7 +36,87 @@
 /**
  * @unrestricted
  */
-BrowserSDK.HAREntry = class {
+SDK.HARLog = class {
+  /**
+   * @param {!SDK.NetworkRequest} request
+   * @param {number} monotonicTime
+   * @return {!Date}
+   */
+  static pseudoWallTime(request, monotonicTime) {
+    return new Date(request.pseudoWallTime(monotonicTime) * 1000);
+  }
+
+  /**
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @return {!Promise<!Object>}
+   */
+  static async build(requests) {
+    const log = new SDK.HARLog();
+    const entryPromises = [];
+    for (const request of requests)
+      entryPromises.push(SDK.HARLog.Entry.build(request));
+    const entries = await Promise.all(entryPromises);
+    return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
+  }
+
+  _creator() {
+    const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
+
+    return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
+  }
+
+  /**
+   * @param {!Array.<!SDK.NetworkRequest>} requests
+   * @return {!Array.<!Object>}
+   */
+  _buildPages(requests) {
+    const seenIdentifiers = {};
+    const pages = [];
+    for (let i = 0; i < requests.length; ++i) {
+      const request = requests[i];
+      const page = SDK.NetworkLog.PageLoad.forRequest(request);
+      if (!page || seenIdentifiers[page.id])
+        continue;
+      seenIdentifiers[page.id] = true;
+      pages.push(this._convertPage(page, request));
+    }
+    return pages;
+  }
+
+  /**
+   * @param {!SDK.NetworkLog.PageLoad} page
+   * @param {!SDK.NetworkRequest} request
+   * @return {!Object}
+   */
+  _convertPage(page, request) {
+    return {
+      startedDateTime: SDK.HARLog.pseudoWallTime(request, page.startTime).toJSON(),
+      id: 'page_' + page.id,
+      title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
+      pageTimings: {
+        onContentLoad: this._pageEventTime(page, page.contentLoadTime),
+        onLoad: this._pageEventTime(page, page.loadTime)
+      }
+    };
+  }
+
+  /**
+   * @param {!SDK.NetworkLog.PageLoad} page
+   * @param {number} time
+   * @return {number}
+   */
+  _pageEventTime(page, time) {
+    const startTime = page.startTime;
+    if (time === -1 || startTime === -1)
+      return -1;
+    return SDK.HARLog.Entry._toMilliseconds(time - startTime);
+  }
+};
+
+/**
+ * @unrestricted
+ */
+SDK.HARLog.Entry = class {
   /**
    * @param {!SDK.NetworkRequest} request
    */
@@ -57,7 +137,7 @@ BrowserSDK.HAREntry = class {
    * @return {!Promise<!Object>}
    */
   static async build(request) {
-    const harEntry = new BrowserSDK.HAREntry(request);
+    const harEntry = new SDK.HARLog.Entry(request);
     let ipAddress = harEntry._request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
     if (portPositionInString !== -1)
@@ -70,7 +150,7 @@ BrowserSDK.HAREntry = class {
       time += Math.max(t, 0);
 
     const entry = {
-      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
+      startedDateTime: SDK.HARLog.pseudoWallTime(harEntry._request, harEntry._request.issueTime()).toJSON(),
       time: time,
       request: await harEntry._buildRequest(),
       response: harEntry._buildResponse(),
@@ -86,7 +166,7 @@ BrowserSDK.HAREntry = class {
 
     if (harEntry._request.connectionId !== '0')
       entry.connection = harEntry._request.connectionId;
-    const page = BrowserSDK.PageLoad.forRequest(harEntry._request);
+    const page = SDK.NetworkLog.PageLoad.forRequest(harEntry._request);
     if (page)
       entry.pageref = 'page_' + page.id;
     return entry;
@@ -150,7 +230,7 @@ BrowserSDK.HAREntry = class {
   }
 
   /**
-   * @return {!BrowserSDK.HAREntry.Timing}
+   * @return {!SDK.HARLog.Entry.Timing}
    */
   _buildTimings() {
     // Order of events: request_start = 0, [proxy], [dns], [connect [ssl]], [send], duration
@@ -162,7 +242,7 @@ BrowserSDK.HAREntry = class {
 
     const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
     result.blocked = queuedTime;
-    result._blocked_queueing = BrowserSDK.HAREntry._toMilliseconds(queuedTime);
+    result._blocked_queueing = SDK.HARLog.Entry._toMilliseconds(queuedTime);
 
     let highestTime = 0;
     if (timing) {
@@ -207,11 +287,11 @@ BrowserSDK.HAREntry = class {
 
     const requestTime = timing ? timing.requestTime : startTime;
     const waitStart = highestTime;
-    const waitEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.responseReceivedTime - requestTime);
+    const waitEnd = SDK.HARLog.Entry._toMilliseconds(this._request.responseReceivedTime - requestTime);
     result.wait = waitEnd - waitStart;
 
     const receiveStart = waitEnd;
-    const receiveEnd = BrowserSDK.HAREntry._toMilliseconds(this._request.endTime - issueTime);
+    const receiveEnd = SDK.HARLog.Entry._toMilliseconds(this._request.endTime - issueTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;
@@ -273,7 +353,7 @@ BrowserSDK.HAREntry = class {
       value: cookie.value(),
       path: cookie.path(),
       domain: cookie.domain(),
-      expires: cookie.expiresDate(BrowserSDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
+      expires: cookie.expiresDate(SDK.HARLog.pseudoWallTime(this._request, this._request.startTime)),
       httpOnly: cookie.httpOnly(),
       secure: cookie.secure()
     };
@@ -323,85 +403,4 @@ BrowserSDK.HAREntry = class {
   _blocked_queueing: number,
   _blocked_proxy: (number|undefined)
 }} */
-BrowserSDK.HAREntry.Timing;
-
-
-/**
- * @unrestricted
- */
-BrowserSDK.HARLog = class {
-  /**
-   * @param {!SDK.NetworkRequest} request
-   * @param {number} monotonicTime
-   * @return {!Date}
-   */
-  static pseudoWallTime(request, monotonicTime) {
-    return new Date(request.pseudoWallTime(monotonicTime) * 1000);
-  }
-
-  /**
-   * @param {!Array.<!SDK.NetworkRequest>} requests
-   * @return {!Promise<!Object>}
-   */
-  static async build(requests) {
-    const log = new BrowserSDK.HARLog();
-    const entryPromises = [];
-    for (const request of requests)
-      entryPromises.push(BrowserSDK.HAREntry.build(request));
-    const entries = await Promise.all(entryPromises);
-    return {version: '1.2', creator: log._creator(), pages: log._buildPages(requests), entries: entries};
-  }
-
-  _creator() {
-    const webKitVersion = /AppleWebKit\/([^ ]+)/.exec(window.navigator.userAgent);
-
-    return {name: 'WebInspector', version: webKitVersion ? webKitVersion[1] : 'n/a'};
-  }
-
-  /**
-   * @param {!Array.<!SDK.NetworkRequest>} requests
-   * @return {!Array.<!Object>}
-   */
-  _buildPages(requests) {
-    const seenIdentifiers = {};
-    const pages = [];
-    for (let i = 0; i < requests.length; ++i) {
-      const request = requests[i];
-      const page = BrowserSDK.PageLoad.forRequest(request);
-      if (!page || seenIdentifiers[page.id])
-        continue;
-      seenIdentifiers[page.id] = true;
-      pages.push(this._convertPage(page, request));
-    }
-    return pages;
-  }
-
-  /**
-   * @param {!BrowserSDK.PageLoad} page
-   * @param {!SDK.NetworkRequest} request
-   * @return {!Object}
-   */
-  _convertPage(page, request) {
-    return {
-      startedDateTime: BrowserSDK.HARLog.pseudoWallTime(request, page.startTime).toJSON(),
-      id: 'page_' + page.id,
-      title: page.url,  // We don't have actual page title here. URL is probably better than nothing.
-      pageTimings: {
-        onContentLoad: this._pageEventTime(page, page.contentLoadTime),
-        onLoad: this._pageEventTime(page, page.loadTime)
-      }
-    };
-  }
-
-  /**
-   * @param {!BrowserSDK.PageLoad} page
-   * @param {number} time
-   * @return {number}
-   */
-  _pageEventTime(page, time) {
-    const startTime = page.startTime;
-    if (time === -1 || startTime === -1)
-      return -1;
-    return BrowserSDK.HAREntry._toMilliseconds(time - startTime);
-  }
-};
+SDK.HARLog.Entry.Timing;

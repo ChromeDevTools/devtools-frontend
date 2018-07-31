@@ -24,8 +24,7 @@ Network.NetworkSearchScope = class {
    */
   async performSearch(searchConfig, progress, searchResultCallback, searchFinishedCallback) {
     const promises = [];
-    const requests =
-        BrowserSDK.networkLog.requests().filter(request => searchConfig.filePathMatchesFileQuery(request.url()));
+    const requests = SDK.networkLog.requests().filter(request => searchConfig.filePathMatchesFileQuery(request.url()));
     progress.setTotalWork(requests.length);
     for (const request of requests) {
       const promise = this._searchRequest(searchConfig, request, progress);

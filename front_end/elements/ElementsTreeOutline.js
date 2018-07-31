@@ -529,7 +529,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
         const listItem = link.enclosingNodeOrSelfWithNodeName('li');
         const node = /** @type {!Elements.ElementsTreeElement} */ (listItem.treeElement).node();
         const precomputedFeatures = await this._loadDimensionsForNode(node);
-        const preview = await BrowserComponents.ImagePreview.build(
+        const preview = await Components.ImagePreview.build(
             node.domModel().target(), link[Elements.ElementsTreeElement.HrefSymbol], true, precomputedFeatures);
         if (preview)
           popover.contentElement.appendChild(preview);

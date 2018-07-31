@@ -41,7 +41,7 @@ BrowserSDK.LogManager = class {
         data.entry.timestamp, undefined, undefined, data.entry.workerId);
 
     if (data.entry.networkRequestId)
-      BrowserSDK.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
+      SDK.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
     SDK.consoleModel.addMessage(consoleMessage);
   }
 };

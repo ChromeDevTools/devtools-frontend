@@ -785,7 +785,7 @@ Timeline.TimelineUIUtils = class {
         let previewElement = null;
         const url = TimelineModel.TimelineData.forEvent(event).url;
         if (url)
-          previewElement = await BrowserComponents.ImagePreview.build(target, url, false);
+          previewElement = await Components.ImagePreview.build(target, url, false);
         else if (TimelineModel.TimelineData.forEvent(event).picture)
           previewElement = await Timeline.TimelineUIUtils.buildPicturePreviewContent(event, target);
         event[Timeline.TimelineUIUtils._previewElementSymbol] = previewElement;
@@ -1256,7 +1256,7 @@ Timeline.TimelineUIUtils = class {
     }
 
     if (!request.previewElement && request.url && target)
-      request.previewElement = await BrowserComponents.ImagePreview.build(target, request.url, false);
+      request.previewElement = await Components.ImagePreview.build(target, request.url, false);
     if (request.previewElement)
       contentHelper.appendElementRow(Common.UIString('Preview'), request.previewElement);
     return contentHelper.fragment;
@@ -1496,7 +1496,7 @@ Timeline.TimelineUIUtils = class {
     if (!imageURL)
       return null;
     const container = createElement('div');
-    UI.appendStyle(container, 'browser_components/imagePreview.css');
+    UI.appendStyle(container, 'components/imagePreview.css');
     container.classList.add('image-preview-container', 'vbox', 'link');
     const img = container.createChild('img');
     img.src = imageURL;

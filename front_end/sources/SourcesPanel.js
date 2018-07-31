@@ -81,9 +81,10 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (UI.viewManager.hasViewsForLocation('run-view-sidebar')) {
       const navigatorSplitWidget = new UI.SplitWidget(false, true, 'sourcePanelNavigatorSidebarSplitViewState');
       navigatorSplitWidget.setMainWidget(tabbedPane);
-      navigatorSplitWidget.setSidebarWidget(
-          UI.viewManager.createTabbedLocation(this._revealNavigatorSidebar.bind(this), 'run-view-sidebar')
-              .tabbedPane());
+      const runViewTabbedPane =
+          UI.viewManager.createTabbedLocation(this._revealNavigatorSidebar.bind(this), 'run-view-sidebar').tabbedPane();
+      navigatorSplitWidget.setSidebarWidget(runViewTabbedPane);
+      navigatorSplitWidget.installResizer(runViewTabbedPane.headerElement());
       this.editorView.setSidebarWidget(navigatorSplitWidget);
     } else {
       this.editorView.setSidebarWidget(tabbedPane);

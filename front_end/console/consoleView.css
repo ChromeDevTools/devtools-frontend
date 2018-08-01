@@ -35,6 +35,12 @@
     --error-border-color: hsl(0, 100%, 92%);
 }
 
+.-theme-with-dark-background .console-view {
+    --message-border-color: rgb(58, 58, 58);
+    --warning-border-color: rgb(102, 85, 0);
+    --error-border-color: rgb(92, 0, 0);
+}
+
 .console-toolbar-container {
     display: flex;
     flex: none;

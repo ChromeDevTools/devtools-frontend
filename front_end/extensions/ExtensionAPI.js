@@ -89,11 +89,13 @@ function defineCommonExtensionSymbols(apiPrivate) {
  * @param {!ExtensionDescriptor} extensionInfo
  * @param {string} inspectedTabId
  * @param {string} themeName
+ * @param {!Array<number>} keysToForward
  * @param {number} injectedScriptId
  * @param {function(!Object, !Object)} testHook
  * @suppressGlobalPropertiesCheck
  */
-function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook, injectedScriptId) {
+function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId) {
+  const keysToForwardSet = new Set(keysToForward);
   const chrome = window.chrome || {};
   const devtools_descriptor = Object.getOwnPropertyDescriptor(chrome, 'devtools');
   if (devtools_descriptor)
@@ -637,14 +639,26 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
   let forwardTimer = null;
 
   function forwardKeyboardEvent(event) {
+    let modifiers = 0;
+    if (event.shiftKey)
+      modifiers |= 1;
+    if (event.ctrlKey)
+      modifiers |= 2;
+    if (event.altKey)
+      modifiers |= 4;
+    if (event.metaKey)
+      modifiers |= 8;
+    const num = (event.keyCode & 255) | (modifiers << 8);
     // We only care about global hotkeys, not about random text
-    if (!event.ctrlKey && !event.altKey && !event.metaKey && !/^F\d+$/.test(event.key) && event.key !== 'Escape')
+    if (!keysToForwardSet.has(num))
       return;
+    event.preventDefault();
     const requestPayload = {
       eventType: event.type,
       ctrlKey: event.ctrlKey,
       altKey: event.altKey,
       metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
       keyIdentifier: event.keyIdentifier,
       key: event.key,
       code: event.code,
@@ -795,11 +809,12 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, testHook
  * @param {!ExtensionDescriptor} extensionInfo
  * @param {string} inspectedTabId
  * @param {string} themeName
+ * @param {!Array<number>} keysToForward
  * @param {function(!Object, !Object)|undefined} testHook
  * @return {string}
  */
-function buildExtensionAPIInjectedScript(extensionInfo, inspectedTabId, themeName, testHook) {
-  const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName].map(_ => JSON.stringify(_)).join(',');
+function buildExtensionAPIInjectedScript(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
+  const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook)
     testHook = () => {};
   return '(function(injectedScriptId){ ' + defineCommonExtensionSymbols.toString() + ';' +

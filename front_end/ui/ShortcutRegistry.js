@@ -35,6 +35,20 @@ UI.ShortcutRegistry = class {
   }
 
   /**
+   * @return {!Array<number>}
+   */
+  globalShortcutKeys() {
+    const keys = [];
+    for (const key of this._defaultKeyToActions.keysArray()) {
+      const actions = this._defaultKeyToActions.get(key).valuesArray();
+      const applicableActions = this._actionRegistry.applicableActions(actions, new UI.Context());
+      if (applicableActions.length)
+        keys.push(Number(key));
+    }
+    return keys;
+  }
+
+  /**
    * @param {string} actionId
    * @return {!Array.<!UI.KeyboardShortcut.Descriptor>}
    */

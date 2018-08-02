@@ -40,12 +40,42 @@
             "type": "action",
             "category": "Drawer",
             "actionId": "main.toggle-drawer",
-            "className": "UI.InspectorView.DrawerToggleActionDelegate",
+            "className": "UI.InspectorView.ActionDelegate",
             "order": 101,
             "title": "Toggle drawer",
             "bindings": [
                 {
                     "shortcut": "Esc"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "main.next-tab",
+            "className": "UI.InspectorView.ActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+]"
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+]"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "main.previous-tab",
+            "className": "UI.InspectorView.ActionDelegate",
+            "bindings": [
+                {
+                    "platform": "windows,linux",
+                    "shortcut": "Ctrl+["
+                },
+                {
+                    "platform": "mac",
+                    "shortcut": "Meta+["
                 }
             ]
         },

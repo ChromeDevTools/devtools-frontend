@@ -560,8 +560,6 @@ Extensions.ExtensionServer = class extends Common.Object {
      * @suppressGlobalPropertiesCheck
      */
     function handleEventEntry(entry) {
-      if (!entry.ctrlKey && !entry.altKey && !entry.metaKey && !/^F\d+$/.test(entry.key) && entry.key !== 'Escape')
-        return;
       // Fool around closure compiler -- it has its own notion of both KeyboardEvent constructor
       // and initKeyboardEvent methods and overriding these in externs.js does not have effect.
       const event = new window.KeyboardEvent(entry.eventType, {
@@ -703,6 +701,7 @@ Extensions.ExtensionServer = class extends Common.Object {
         // See ExtensionAPI.js for details.
         const injectedAPI = buildExtensionAPIInjectedScript(
             extensionInfo, this._inspectedTabId, UI.themeSupport.themeName(),
+            UI.shortcutRegistry.globalShortcutKeys(),
             Extensions.extensionServer['_extensionAPITestHook']);
         InspectorFrontendHost.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
         this._registeredExtensions[extensionOrigin] = {name: name};

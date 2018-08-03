@@ -227,9 +227,10 @@ TimelineModel.TimelineJSProfileProcessor = class {
 
   /**
    * @param {*} profile
+   * @param {number} tid
    * @return {!Array<!SDK.TracingManager.EventPayload>}
    */
-  static buildTraceProfileFromCpuProfile(profile) {
+  static buildTraceProfileFromCpuProfile(profile, tid) {
     if (!profile)
       return [];
     const events = [];
@@ -294,7 +295,7 @@ TimelineModel.TimelineJSProfileProcessor = class {
         name: name,
         ph: ph || 'X',
         pid: 1,
-        tid: 1,
+        tid,
         ts: ts,
         args: {data: data}
       });

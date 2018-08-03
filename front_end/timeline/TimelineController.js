@@ -13,6 +13,7 @@ Timeline.TimelineController = class {
    * @param {!Timeline.TimelineController.Client} client
    */
   constructor(target, client) {
+    this._target = target;
     this._tracingManager = target.model(SDK.TracingManager);
     this._performanceModel = new Timeline.PerformanceModel();
     this._performanceModel.setMainTarget(target);
@@ -34,7 +35,7 @@ Timeline.TimelineController = class {
    * @return {!SDK.Target}
    */
   mainTarget() {
-    return this._tracingManager.target();
+    return this._target;
   }
 
   /**
@@ -93,9 +94,11 @@ Timeline.TimelineController = class {
    */
   async stopRecording() {
     const tracingStoppedPromises = [];
-    tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
+    if (this._tracingManager)
+      tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
-    this._tracingManager.stop();
+    if (this._tracingManager)
+      this._tracingManager.stop();
     tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
     this._client.loadingStarted();
@@ -171,14 +174,16 @@ Timeline.TimelineController = class {
    * @param {boolean=} enableJSSampling
    * @return {!Promise}
    */
-  _startRecordingWithCategories(categories, enableJSSampling) {
+  async _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();
-    const profilingStartedPromise = enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile') ?
-        this._startProfilingOnAllModels() :
-        Promise.resolve();
+    if (enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile'))
+      await this._startProfilingOnAllModels();
+    if (!this._tracingManager)
+      return;
+
     const samplingFrequencyHz = Common.moduleSetting('highResolutionCpuProfiling').get() ? 10000 : 1000;
     const options = 'sampling-frequency=' + samplingFrequencyHz;
-    return profilingStartedPromise.then(() => this._tracingManager.start(this, categories, options));
+    return this._tracingManager.start(this, categories, options);
   }
 
   /**
@@ -294,6 +299,20 @@ Timeline.TimelineController = class {
         const pid = mainMetaEvent.thread.process().id();
         const mainCpuProfile = this._cpuProfiles.get(this._tracingManager.target().id());
         this._injectCpuProfileEvent(pid, mainMetaEvent.thread.id(), mainCpuProfile);
+      } else {
+        // Or there was no tracing manager in the main target at all, in this case build the model full
+        // of cpu profiles.
+        // Assign tids equal to the target ordinals for the thread name lookup.
+        // This is a little shaky because targets can disappear, but we will read these tids sooner than
+        // that.
+        // TODO(pfeldman): resolve this.
+        let counter = 1000;
+        for (const pair of this._cpuProfiles) {
+          const target = SDK.targetManager.targetById(pair[0]);
+          const tid = target ? SDK.targetManager.targets().indexOf(target) : ++counter;
+          this._tracingModel.addEvents(
+              TimelineModel.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(pair[1], tid));
+        }
       }
     }
 

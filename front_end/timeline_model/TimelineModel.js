@@ -180,8 +180,9 @@ TimelineModel.TimelineModel = class {
    * @param {!SDK.TracingModel} tracingModel
    */
   _processGenericTrace(tracingModel) {
-    const browserMainThread =
-        SDK.TracingModel.browserMainThread(tracingModel) || tracingModel.sortedProcesses()[0].sortedThreads()[0];
+    let browserMainThread = SDK.TracingModel.browserMainThread(tracingModel);
+    if (!browserMainThread && tracingModel.sortedProcesses().length)
+      browserMainThread = tracingModel.sortedProcesses()[0].sortedThreads()[0];
     for (const process of tracingModel.sortedProcesses()) {
       for (const thread of process.sortedThreads()) {
         this._processThreadEvents(

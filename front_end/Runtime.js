@@ -971,7 +971,10 @@ Runtime.ExperimentsSupport = class {
    */
   isEnabled(experimentName) {
     this._checkExperiment(experimentName);
-
+    // Check for explicitly disabled experiments first - the code could call setEnable(false) on the experiment enabled
+    // by default and we should respect that.
+    if (Runtime._experimentsSetting()[experimentName] === false)
+      return false;
     if (this._enabledTransiently[experimentName])
       return true;
     if (!this.supportEnabled())

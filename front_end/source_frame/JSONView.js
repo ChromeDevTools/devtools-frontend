@@ -166,7 +166,8 @@ SourceFrame.JSONView = class extends UI.VBox {
 
     const obj = SDK.RemoteObject.fromLocalObject(this._parsedJSON.data);
     const title = this._parsedJSON.prefix + obj.description + this._parsedJSON.suffix;
-    this._treeOutline = new ObjectUI.ObjectPropertiesSection(obj, title);
+    this._treeOutline = new ObjectUI.ObjectPropertiesSection(
+        obj, title, undefined, undefined, undefined, undefined, true /* showOverflow */);
     this._treeOutline.enableContextMenu();
     this._treeOutline.setEditable(false);
     this._treeOutline.expand();

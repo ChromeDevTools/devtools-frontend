@@ -35,12 +35,14 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    * @param {?string=} emptyPlaceholder
    * @param {boolean=} ignoreHasOwnProperty
    * @param {!Array.<!SDK.RemoteObjectProperty>=} extraProperties
+   * @param {boolean=} showOverflow
    */
-  constructor(object, title, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties) {
+  constructor(object, title, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties, showOverflow) {
     super();
     this._object = object;
     this._editable = true;
-    this.hideOverflow();
+    if (!showOverflow)
+      this.hideOverflow();
     this.setFocusable(false);
     this._objectTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
         object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
@@ -792,7 +794,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
       this.expandedValueElement = this._createExpandedValueElement(this.property.value);
 
     this.listItemElement.removeChildren();
-    this._rowContainer = UI.html`<span>${this.nameElement}: ${this.valueElement}</span>`;
+    this._rowContainer = UI.html`<span class='name-and-value'>${this.nameElement}: ${this.valueElement}</span>`;
     this.listItemElement.appendChild(this._rowContainer);
   }
 
@@ -864,6 +866,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     const proxyElement =
         this._prompt.attachAndStartEditing(this._editableDiv, this._editingCommitted.bind(this, originalContent));
+    proxyElement.classList.add('property-prompt');
     this.listItemElement.getComponentSelection().selectAllChildren(this._editableDiv);
     proxyElement.addEventListener('keydown', this._promptKeyDown.bind(this, originalContent), false);
   }

@@ -50,3 +50,17 @@
 .object-properties-section .editable-div {
     overflow: hidden;
 }
+
+.name-and-value {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+}
+
+.editing-sub-part .name-and-value {
+    overflow: visible;
+    display: inline-flex;
+}
+
+.property-prompt {
+    margin-left: 4px;
+}

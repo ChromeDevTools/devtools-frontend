@@ -245,16 +245,6 @@ Bindings.CompilerScriptMapping = class {
   }
 
   /**
-   * @param {!SDK.Script} script
-   */
-  maybeLoadSourceMap(script) {
-    const sourceMap = this._sourceMapManager.sourceMapForClient(script);
-    if (!sourceMap)
-      return;
-    this._populateSourceMapSources(script, sourceMap);
-  }
-
-  /**
    * @param {?SDK.SourceMap} sourceMap
    */
   _sourceMapAttachedForTest(sourceMap) {

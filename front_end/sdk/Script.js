@@ -254,10 +254,7 @@ SDK.Script = class {
   async setBlackboxedRanges(positions) {
     const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
         {scriptId: this.scriptId, positions});
-    const error = response[Protocol.Error];
-    if (error)
-      console.error(error);
-    return !error;
+    return !response[Protocol.Error];
   }
 };
 

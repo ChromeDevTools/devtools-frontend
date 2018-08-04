@@ -51,8 +51,9 @@ Workspace.FileManager = class extends Common.Object {
    */
   save(url, content, forceSaveAs) {
     // Remove this url from the saved URLs while it is being saved.
+    const result = new Promise(resolve => this._saveCallbacks.set(url, resolve));
     InspectorFrontendHost.save(url, content, forceSaveAs);
-    return new Promise(resolve => this._saveCallbacks.set(url, resolve));
+    return result;
   }
 
   /**
@@ -89,7 +90,7 @@ Workspace.FileManager = class extends Common.Object {
    * @param {string} url
    */
   close(url) {
-    // Currently a no-op.
+    InspectorFrontendHost.close(url);
   }
 
   /**

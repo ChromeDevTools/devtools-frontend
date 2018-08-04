@@ -1544,8 +1544,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     const headers = {};
     for (const headerArray of headerData)
-      headers[headerArray[0]] = headers[headerArray[1]];
-
+      headers[headerArray[0]] = headerArray[1];
 
     const credentials =
         request.requestCookies || requestHeaders.some(({name}) => credentialHeaders[name.toLowerCase()]) ? 'include' :
@@ -1561,7 +1560,7 @@ Network.NetworkLogView = class extends UI.VBox {
 
     const fetchOptions = {
       credentials,
-      headers,
+      headers: Object.keys(headers).length ? headers : void 0,
       referrer,
       referrerPolicy,
       body: requestBody,

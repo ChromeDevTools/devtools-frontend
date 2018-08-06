@@ -146,8 +146,13 @@ UI.SoftContextMenu = class {
 
     menuItemElement.createTextChild(item.label);
 
-    const subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
-    subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
+    if (Host.isMac() && !UI.themeSupport.hasTheme()) {
+      const subMenuArrowElement = menuItemElement.createChild('span', 'soft-context-menu-item-submenu-arrow');
+      subMenuArrowElement.textContent = '\u25B6';  // BLACK RIGHT-POINTING TRIANGLE
+    } else {
+      const subMenuArrowElement = UI.Icon.create('smallicon-triangle-right', 'soft-context-menu-item-submenu-arrow');
+      menuItemElement.appendChild(subMenuArrowElement);
+    }
 
     menuItemElement.addEventListener('mousedown', this._menuItemMouseDown.bind(this), false);
     menuItemElement.addEventListener('mouseup', this._menuItemMouseUp.bind(this), false);
@@ -254,7 +259,8 @@ UI.SoftContextMenu = class {
     }
     this._highlightedMenuItemElement = menuItemElement;
     if (this._highlightedMenuItemElement) {
-      this._highlightedMenuItemElement.classList.add('force-white-icons');
+      if (UI.themeSupport.hasTheme() || Host.isMac())
+        this._highlightedMenuItemElement.classList.add('force-white-icons');
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
       this._contextMenuElement.focus();
       if (scheduleSubMenu && this._highlightedMenuItemElement._subItems &&

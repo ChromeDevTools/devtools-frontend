@@ -518,7 +518,8 @@ Main.Main.MainMenuItem = class {
           'Placement of DevTools relative to the page. (%s to restore last position)', toggleDockSideShorcuts[0].name);
       dockItemElement.appendChild(titleElement);
       const dockItemToolbar = new UI.Toolbar('', dockItemElement);
-      dockItemToolbar.makeBlueOnHover();
+      if (Host.isMac() && !UI.themeSupport.hasTheme())
+        dockItemToolbar.makeBlueOnHover();
       const undock = new UI.ToolbarToggle(Common.UIString('Undock into separate window'), 'largeicon-undock');
       const bottom = new UI.ToolbarToggle(Common.UIString('Dock to bottom'), 'largeicon-dock-to-bottom');
       const right = new UI.ToolbarToggle(Common.UIString('Dock to right'), 'largeicon-dock-to-right');

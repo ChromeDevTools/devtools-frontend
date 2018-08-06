@@ -152,8 +152,15 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
  */
 FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
   let wrapped = '(async () => {' + content + '})()';
-  const root = acorn.parse(wrapped, {ecmaVersion: 9});
-  const body = root.body[0].expression.callee.body;
+  let root;
+  let body;
+  try {
+    root = acorn.parse(wrapped, {ecmaVersion: 9});
+    body = root.body[0].expression.callee.body;
+  } catch (e) {
+    postMessage('');
+    return;
+  }
   const changes = [];
   let containsAwait = false;
   let containsReturn = false;
@@ -236,7 +243,11 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
  * @param {string} content
  */
 FormatterWorker.javaScriptIdentifiers = function(content) {
-  const root = acorn.parse(content, {ranges: false, ecmaVersion: 9});
+  let root = null;
+  try {
+    root = acorn.parse(content, {ranges: false, ecmaVersion: 9});
+  } catch (e) {
+  }
 
   /** @type {!Array<!ESTree.Node>} */
   const identifiers = [];

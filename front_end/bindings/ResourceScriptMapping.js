@@ -53,8 +53,6 @@ Bindings.ResourceScriptMapping = class {
     this._eventListeners = [
       this._debuggerModel.addEventListener(SDK.DebuggerModel.Events.ParsedScriptSource, this._parsedScriptSource, this),
       this._debuggerModel.addEventListener(
-          SDK.DebuggerModel.Events.FailedToParseScriptSource, this._parsedScriptSource, this),
-      this._debuggerModel.addEventListener(
           SDK.DebuggerModel.Events.GlobalObjectCleared, this._globalObjectCleared, this),
       runtimeModel.addEventListener(
           SDK.RuntimeModel.Events.ExecutionContextDestroyed, this._executionContextDestroyed, this),

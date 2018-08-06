@@ -571,10 +571,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
         this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length);
     this._registerScript(script);
-    if (!hasSyntaxError)
-      this.dispatchEventToListeners(SDK.DebuggerModel.Events.ParsedScriptSource, script);
-    else
-      this.dispatchEventToListeners(SDK.DebuggerModel.Events.FailedToParseScriptSource, script);
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.ParsedScriptSource, script);
 
     const sourceMapId =
         SDK.DebuggerModel._sourceMapId(script.executionContextId, script.sourceURL, script.sourceMapURL);

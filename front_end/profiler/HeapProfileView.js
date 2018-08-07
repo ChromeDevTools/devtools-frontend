@@ -57,8 +57,24 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
     let text = `Sampling memory profile.\n\nDate/Time:       ${new Date()}\n` +
         `Report Version:  7\nNode weight:     1 KiB\n----\n\nCall graph:\n`;
     const sortedChildren = this.profile.root.children.sort((a, b) => b.total - a.total);
+    const modules = this.profile.modules.map(
+        m => Object.assign({address: BigInt(m.baseAddress), endAddress: BigInt(m.baseAddress) + BigInt(m.size)}, m));
+    modules.sort((m1, m2) => m1.address - m2.address);
     for (const child of sortedChildren)
       printTree('    ', child !== sortedChildren.peekLast(), child);
+
+    text += '\nBinary Images:\n';
+    for (const module of modules) {
+      const fileName = /[^/\\]*$/.exec(module.name)[0];
+      const version = '1.0';
+      const formattedUuid = module.uuid.includes('-') ?
+          module.uuid :
+          module.uuid.replace(/(.{8})(.{4})(.{4})(.{4})(.{12}).*/, '$1-$2-$3-$4-$5');
+      text += `${('0x' + module.address.toString(16)).padStart(18)} - `;
+      text += `${('0x' + (module.endAddress - BigInt(1)).toString(16)).padStart(18)}`;
+      text += `  ${fileName} (${version}) <${formattedUuid}> ${module.name}\n`;
+    }
+
     view.contentElement.createChild('pre', 'profile-text-view monospace').textContent = text;
 
     /**
@@ -67,10 +83,27 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
      * @param {!SDK.ProfileNode} node
      */
     function printTree(padding, drawGuide, node) {
-      const isAddress = node.functionName.startsWith('0x');
-      const functionName = isAddress ? '???' : node.functionName;
-      const address = isAddress ? node.functionName : '???';
-      text += `${padding}${Math.round(node.total / 1024)}  ${functionName}  [${address}]\n`;
+      const addressText = /0x[0-9a-f]*|[0-9]*/.exec(node.functionName)[0] || '';
+      let module;
+      if (addressText) {
+        const address = BigInt(addressText);
+        const pos = modules.upperBound(address, (address, module) => address - module.address);
+        if (pos > 0 && address < modules[pos - 1].endAddress)
+          module = modules[pos - 1];
+      }
+      const functionName =
+          (addressText ? node.functionName.substr(addressText.length + 1) : node.functionName) || '???';
+      text += `${padding}${Math.round(node.total / 1024)}  ${functionName}  `;
+      if (module) {
+        const fileName = /[^/\\]*$/.exec(module.name);
+        if (fileName)
+          text += `(in ${fileName})  `;
+        const offset = BigInt(addressText) - module.address;
+        text += `load address ${module.baseAddress} + 0x${offset.toString(16)}  `;
+      }
+      if (addressText)
+        text += `[${addressText}]`;
+      text += '\n';
       const guideChar = drawGuide ? guides[padding.length / 2 % guides.length] : ' ';
       const nextPadding = padding + guideChar + ' ';
       const sortedChildren = node.children.sort((a, b) => b.total - a.total);
@@ -351,8 +384,8 @@ Profiler.SamplingNativeHeapSnapshotBrowserType = class extends Profiler.Sampling
    * @param {!SDK.HeapProfilerModel} heapProfilerModel
    * @return {!Promise<!Protocol.HeapProfiler.SamplingHeapProfile>}
    */
-  _takeNativeSnapshot(heapProfilerModel) {
-    return heapProfilerModel.takeNativeBrowserSnapshot();
+  async _takeNativeSnapshot(heapProfilerModel) {
+    return await heapProfilerModel.takeNativeBrowserSnapshot();
   }
 };
 
@@ -442,6 +475,7 @@ Profiler.SamplingHeapProfileModel = class extends SDK.ProfileTreeModel {
   constructor(profile) {
     super();
     this.initialize(translateProfileTree(profile.head));
+    this.modules = profile.modules || [];
 
     /**
      * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} root

@@ -228,22 +228,25 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
   if (!uiSourceCode.contentType().isFromSourceMap())
     return Promise.resolve('');
 
-  return Sources.SourceMapNamesResolver._allVariablesInCallFrame(callFrame).then(findCompiledName);
+  return Sources.SourceMapNamesResolver._allVariablesInCallFrame(callFrame).then(
+      reverseMapping => findCompiledName(callFrame.debuggerModel, reverseMapping));
 
   /**
+   * @param {!SDK.DebuggerModel} debuggerModel
    * @param {!Map<string, string>} reverseMapping
    * @return {!Promise<string>}
    */
-  function findCompiledName(reverseMapping) {
+  function findCompiledName(debuggerModel, reverseMapping) {
     if (reverseMapping.has(originalText))
       return Promise.resolve(reverseMapping.get(originalText) || '');
 
     return Sources.SourceMapNamesResolver._resolveExpression(
-        uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
+        debuggerModel, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber);
   }
 };
 
 /**
+ * @param {!SDK.DebuggerModel} debuggerModel
  * @param {!Workspace.UISourceCode} uiSourceCode
  * @param {number} lineNumber
  * @param {number} startColumnNumber
@@ -251,9 +254,10 @@ Sources.SourceMapNamesResolver.resolveExpression = function(
  * @return {!Promise<string>}
  */
 Sources.SourceMapNamesResolver._resolveExpression = function(
-    uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
-  const rawLocation =
-      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, startColumnNumber);
+    debuggerModel, uiSourceCode, lineNumber, startColumnNumber, endColumnNumber) {
+  const rawLocations =
+      Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, startColumnNumber);
+  const rawLocation = rawLocations.find(location => location.debuggerModel === debuggerModel);
   if (!rawLocation)
     return Promise.resolve('');
 

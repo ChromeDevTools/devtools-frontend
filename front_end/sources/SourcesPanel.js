@@ -673,9 +673,10 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!executionContext)
       return;
     // Always use 0 column.
-    const rawLocation =
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
-    if (!rawLocation || rawLocation.debuggerModel !== executionContext.debuggerModel)
+    const rawLocations =
+        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    const rawLocation = rawLocations.find(location => location.debuggerModel === executionContext.debuggerModel);
+    if (!rawLocation)
       return;
     if (!this._prepareToResume())
       return;

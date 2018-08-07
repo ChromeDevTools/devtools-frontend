@@ -131,21 +131,17 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    for (let i = 0; i < this._sourceMappings.length; ++i) {
-      const rawLocation = this._sourceMappings[i].uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-      if (rawLocation)
-        return rawLocation;
-    }
-
-    for (const modelData of this._debuggerModelToData.values()) {
-      const rawLocation = modelData._uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-      if (rawLocation)
-        return rawLocation;
-    }
-    return null;
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+    let locations = [];
+    for (let i = 0; i < this._sourceMappings.length && !locations.length; ++i)
+      locations = this._sourceMappings[i].uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    if (locations.length)
+      return locations;
+    for (const modelData of this._debuggerModelToData.values())
+      locations.push(...modelData._uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
+    return locations;
   }
 
   /**
@@ -153,10 +149,13 @@ Bindings.DebuggerWorkspaceBinding = class {
    * @return {!Workspace.UILocation}
    */
   normalizeUILocation(uiLocation) {
-    const rawLocation =
-        this.uiLocationToRawLocation(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
-    if (rawLocation)
-      return this.rawLocationToUILocation(rawLocation) || uiLocation;
+    const rawLocations =
+        this.uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber);
+    for (const location of rawLocations) {
+      const uiLocationCandidate = this.rawLocationToUILocation(location);
+      if (uiLocationCandidate)
+        return uiLocationCandidate;
+    }
     return uiLocation;
   }
 
@@ -319,16 +318,20 @@ Bindings.DebuggerWorkspaceBinding.ModelData = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  _uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    let rawLocation = null;
-    rawLocation = rawLocation || this._compilerMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-    rawLocation = rawLocation || this._resourceMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-    rawLocation =
-        rawLocation || Bindings.resourceMapping.uiLocationToJSLocation(uiSourceCode, lineNumber, columnNumber);
-    rawLocation = rawLocation || this._defaultMapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-    return rawLocation;
+  _uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+    let locations = this._compilerMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    locations = locations.length ?
+        locations :
+        this._resourceMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    locations = locations.length ?
+        locations :
+        Bindings.resourceMapping.uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber);
+    locations = locations.length ?
+        locations :
+        this._defaultMapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+    return locations;
   }
 
   /**
@@ -466,9 +469,9 @@ Bindings.DebuggerSourceMapping.prototype = {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {},
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {},
 };
 
 /**

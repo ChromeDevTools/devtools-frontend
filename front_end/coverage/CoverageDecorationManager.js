@@ -138,8 +138,9 @@ Coverage.CoverageDecorationManager = class {
     const result = [];
     const contentType = uiSourceCode.contentType();
     if (contentType.hasScripts()) {
-      let location = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, line, column);
-      if (location && location.script()) {
+      let locations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, line, column);
+      locations = locations.filter(location => !!location.script());
+      for (let location of locations) {
         const script = location.script();
         if (script.isInlineScript() && contentType.isDocument()) {
           if (comparePositions(script.lineOffset, script.columnOffset, location.lineNumber, location.columnNumber) >

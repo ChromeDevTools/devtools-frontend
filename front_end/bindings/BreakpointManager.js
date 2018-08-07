@@ -187,11 +187,24 @@ Bindings.BreakpointManager = class extends Common.Object {
    * @return {!Promise<!Array<!Workspace.UILocation>>}
    */
   possibleBreakpoints(uiSourceCode, textRange) {
-    const startLocation = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(
+    const startLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
         uiSourceCode, textRange.startLine, textRange.startColumn);
-    const endLocation =
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, textRange.endLine, textRange.endColumn);
-    if (!startLocation || !endLocation || startLocation.debuggerModel !== endLocation.debuggerModel)
+    const endLocations = Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(
+        uiSourceCode, textRange.endLine, textRange.endColumn);
+    const endLocationByModel = new Map();
+    for (const location of endLocations)
+      endLocationByModel.set(location.debuggerModel, location);
+    let startLocation = null;
+    let endLocation = null;
+    for (const location of startLocations) {
+      const endLocationCandidate = endLocationByModel.get(location.debuggerModel);
+      if (endLocationCandidate) {
+        startLocation = location;
+        endLocation = endLocationCandidate;
+        break;
+      }
+    }
+    if (!startLocation || !endLocation)
       return Promise.resolve([]);
 
     return startLocation.debuggerModel
@@ -715,10 +728,12 @@ Bindings.BreakpointManager.ModelBreakpoint = class {
     const columnNumber = this._breakpoint._columnNumber;
     const condition = this._breakpoint.condition();
 
-    let debuggerLocation = uiSourceCode &&
-        Bindings.debuggerWorkspaceBinding.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-    if (debuggerLocation && debuggerLocation.debuggerModel !== this._debuggerModel)
-      debuggerLocation = null;
+    let debuggerLocation = null;
+    if (uiSourceCode) {
+      const locations =
+          Bindings.debuggerWorkspaceBinding.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber);
+      debuggerLocation = locations.find(location => location.debuggerModel === this._debuggerModel);
+    }
     let newState;
     if (this._breakpoint._isRemoved || !this._breakpoint.enabled() || this._scriptDiverged()) {
       newState = null;

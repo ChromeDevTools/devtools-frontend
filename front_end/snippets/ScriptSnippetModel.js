@@ -87,15 +87,13 @@ Snippets.ScriptSnippetModel = class extends Common.Object {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
-    for (const mapping of this._mappingForDebuggerModel.values()) {
-      const rawLocation = mapping.uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber);
-      if (rawLocation)
-        return rawLocation;
-    }
-    return null;
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
+    const locations = [];
+    for (const mapping of this._mappingForDebuggerModel.values())
+      locations.push(...mapping.uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber));
+    return locations;
   }
 
   /**
@@ -429,14 +427,13 @@ Snippets.SnippetScriptMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToRawLocation(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToRawLocations(uiSourceCode, lineNumber, columnNumber) {
     const script = this._scriptForUISourceCode.get(uiSourceCode);
     if (!script)
-      return null;
-
-    return this._debuggerModel.createRawLocation(script, lineNumber, columnNumber);
+      return [];
+    return [this._debuggerModel.createRawLocation(script, lineNumber, columnNumber)];
   }
 
   /**

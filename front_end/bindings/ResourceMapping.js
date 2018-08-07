@@ -95,18 +95,19 @@ Bindings.ResourceMapping = class {
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {number} lineNumber
    * @param {number} columnNumber
-   * @return {?SDK.DebuggerModel.Location}
+   * @return {!Array<!SDK.DebuggerModel.Location>}
    */
-  uiLocationToJSLocation(uiSourceCode, lineNumber, columnNumber) {
+  uiLocationToJSLocations(uiSourceCode, lineNumber, columnNumber) {
     if (!uiSourceCode[Bindings.ResourceMapping._symbol])
-      return null;
+      return [];
     const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode);
     if (!target)
-      return null;
+      return [];
     const debuggerModel = target.model(SDK.DebuggerModel);
     if (!debuggerModel)
-      return null;
-    return debuggerModel.createRawLocationByURL(uiSourceCode.url(), lineNumber, columnNumber);
+      return [];
+    const location = debuggerModel.createRawLocationByURL(uiSourceCode.url(), lineNumber, columnNumber);
+    return location ? [location] : [];
   }
 
   /**

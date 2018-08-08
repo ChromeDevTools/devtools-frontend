@@ -179,6 +179,8 @@ Persistence.Automapping = class {
     async function validateStatus(status) {
       if (!status)
         return null;
+      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
+        return null;
       if (status.network.contentType().isFromSourceMap() || !status.fileSystem.contentType().isTextType())
         return status;
 

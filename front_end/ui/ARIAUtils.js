@@ -56,6 +56,20 @@ UI.ARIAUtils.markAsTextBox = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsMenu = function(element) {
+  element.setAttribute('role', 'menu');
+};
+
+/**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsMenuItem = function(element) {
+  element.setAttribute('role', 'menuitem');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsHidden = function(element) {
   element.setAttribute('aria-hidden', 'true');
 };

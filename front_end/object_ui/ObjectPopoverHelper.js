@@ -71,7 +71,8 @@ ObjectUI.ObjectPopoverHelper = class {
         const titleElement = popoverContentElement.createChild('div', 'monospace object-popover-title');
         titleElement.createChild('span').textContent = description;
         linkifier = new Components.Linkifier();
-        const section = new ObjectUI.ObjectPropertiesSection(result, '', linkifier);
+        const section = new ObjectUI.ObjectPropertiesSection(
+            result, '', linkifier, undefined, undefined, undefined, true /* showOverflow */);
         section.element.classList.add('object-popover-tree');
         section.titleLessMode();
         popoverContentElement.appendChild(section.element);

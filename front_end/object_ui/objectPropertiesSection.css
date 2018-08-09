@@ -54,6 +54,7 @@
 .name-and-value {
     overflow-x: hidden;
     text-overflow: ellipsis;
+    line-height: normal;
 }
 
 .editing-sub-part .name-and-value {

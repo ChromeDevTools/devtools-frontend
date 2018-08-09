@@ -434,8 +434,7 @@ UI.ContextMenu = class extends UI.ContextSubMenu {
 
   _innerShow() {
     const menuObject = this._buildMenuDescriptors();
-    if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode() ||
-        (UI.themeSupport.hasTheme() && menuObject.length)) {
+    if (this._useSoftMenu || UI.ContextMenu._useSoftMenu || InspectorFrontendHost.isHostedMode()) {
       this._softMenu = new UI.SoftContextMenu(menuObject, this._itemSelected.bind(this));
       this._softMenu.show(this._event.target.ownerDocument, new AnchorBox(this._x, this._y, 0, 0));
     } else {

@@ -299,7 +299,8 @@ SourcesTestRunner.captureStackTraceIntoString = function(callFrames, asyncStackT
       const location = locationFunction.call(frame);
       const script = location.script();
       const uiLocation = Bindings.debuggerWorkspaceBinding.rawLocationToUILocation(location);
-      const isFramework = Bindings.blackboxManager.isBlackboxedRawLocation(location);
+      const isFramework =
+          uiLocation ? Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
 
       if (options.dropFrameworkCallFrames && isFramework)
         continue;

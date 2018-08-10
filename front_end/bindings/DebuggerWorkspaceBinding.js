@@ -181,16 +181,6 @@ Bindings.DebuggerWorkspaceBinding = class {
   }
 
   /**
-   * @param {!SDK.Script} script
-   */
-  maybeLoadSourceMap(script) {
-    const modelData = this._debuggerModelToData.get(script.debuggerModel);
-    if (!modelData)
-      return;
-    modelData._compilerMapping.maybeLoadSourceMap(script);
-  }
-
-  /**
    * @param {!Common.Event} event
    */
   _globalObjectCleared(event) {
@@ -390,7 +380,8 @@ Bindings.DebuggerWorkspaceBinding.Location = class extends Bindings.LiveLocation
    * @return {boolean}
    */
   isBlackboxed() {
-    return Bindings.blackboxManager.isBlackboxedRawLocation(this._rawLocation);
+    const uiLocation = this.uiLocation();
+    return uiLocation ? Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode) : false;
   }
 };
 

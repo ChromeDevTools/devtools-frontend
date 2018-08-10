@@ -43,7 +43,6 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   element.style.display = 'inline-block';
   const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
-  const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
   let totalHiddenCallFramesCount = 0;
 
   /**
@@ -59,15 +58,11 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
       const link = linkifier.maybeLinkifyConsoleCallFrame(target, stackFrame);
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
-        if (debuggerModel) {
-          const location = debuggerModel.createRawLocationByScriptId(
-              stackFrame.scriptId, stackFrame.lineNumber, stackFrame.columnNumber);
-          if (location && Bindings.blackboxManager.isBlackboxedRawLocation(location)) {
-            row.classList.add('blackboxed');
-            ++hiddenCallFrames;
-          }
+        const uiLocation = Components.Linkifier.uiLocation(link);
+        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
+          row.classList.add('blackboxed');
+          ++hiddenCallFrames;
         }
-
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
       }

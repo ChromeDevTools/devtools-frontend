@@ -213,7 +213,6 @@ Bindings.CompilerScriptMapping = class {
 
     if (Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
       return;
-    Bindings.blackboxManager.sourceMapLoaded(script, sourceMap);
 
     this._populateSourceMapSources(script, sourceMap);
     this._sourceMapAttachedForTest(sourceMap);

@@ -46,6 +46,9 @@ Bindings.BlackboxManager = class {
    */
   modelAdded(debuggerModel) {
     this._setBlackboxPatterns(debuggerModel);
+    const sourceMapManager = debuggerModel.sourceMapManager();
+    sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this);
+    sourceMapManager.addEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this);
   }
 
   /**
@@ -54,6 +57,9 @@ Bindings.BlackboxManager = class {
    */
   modelRemoved(debuggerModel) {
     this._clearCacheIfNeeded();
+    const sourceMapManager = debuggerModel.sourceMapManager();
+    sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this._sourceMapAttached, this);
+    sourceMapManager.removeEventListener(SDK.SourceMapManager.Events.SourceMapDetached, this._sourceMapDetached, this);
   }
 
   _clearCacheIfNeeded() {
@@ -73,32 +79,6 @@ Bindings.BlackboxManager = class {
         patterns.push(item.pattern);
     }
     return debuggerModel.setBlackboxPatterns(patterns);
-  }
-
-  /**
-   * @param {!SDK.DebuggerModel.Location} location
-   * @return {boolean}
-   */
-  isBlackboxedRawLocation(location) {
-    const script = location.script();
-    if (!script)
-      return false;
-    const ranges = script[Bindings.BlackboxManager._blackboxedRanges];
-    if (!ranges)
-      return this.isBlackboxedURL(script.sourceURL, script.isContentScript());
-    const index = ranges.lowerBound(location, comparator);
-    return !!(index % 2);
-
-    /**
-     * @param {!SDK.DebuggerModel.Location} a
-     * @param {!Protocol.Debugger.ScriptPosition} b
-     * @return {number}
-     */
-    function comparator(a, b) {
-      if (a.lineNumber !== b.lineNumber)
-        return a.lineNumber - b.lineNumber;
-      return a.columnNumber - b.columnNumber;
-    }
   }
 
   /**
@@ -131,12 +111,31 @@ Bindings.BlackboxManager = class {
   }
 
   /**
+   * @param {!Common.Event} event
+   */
+  _sourceMapAttached(event) {
+    const script = /** @type {!SDK.Script} */ (event.data.client);
+    const sourceMap = /** @type {!SDK.SourceMap} */ (event.data.sourceMap);
+    this._updateScriptRanges(script, sourceMap);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _sourceMapDetached(event) {
+    const script = /** @type {!SDK.Script} */ (event.data.client);
+    this._updateScriptRanges(script, null);
+  }
+
+  /**
    * @param {!SDK.Script} script
    * @param {?SDK.SourceMap} sourceMap
    * @return {!Promise<undefined>}
    */
-  async sourceMapLoaded(script, sourceMap) {
-    const hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
+  async _updateScriptRanges(script, sourceMap) {
+    let hasBlackboxedMappings = false;
+    if (!Bindings.blackboxManager.isBlackboxedURL(script.sourceURL, script.isContentScript()))
+      hasBlackboxedMappings = sourceMap ? sourceMap.sourceURLs().some(url => this.isBlackboxedURL(url)) : false;
     if (!hasBlackboxedMappings) {
       if (script[Bindings.BlackboxManager._blackboxedRanges] && await script.setBlackboxedRanges([]))
         delete script[Bindings.BlackboxManager._blackboxedRanges];
@@ -274,8 +273,9 @@ Bindings.BlackboxManager = class {
     const promises = [];
     for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
+      const sourceMapManager = debuggerModel.sourceMapManager();
       for (const script of debuggerModel.scripts()) {
-        promises.push(this.sourceMapLoaded(script, this._debuggerWorkspaceBinding.sourceMapForScript(script))
+        promises.push(this._updateScriptRanges(script, sourceMapManager.sourceMapForClient(script))
                           .then(() => this._debuggerWorkspaceBinding.updateLocations(script)));
       }
     }

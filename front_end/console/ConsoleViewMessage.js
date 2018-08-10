@@ -796,6 +796,8 @@ Console.ConsoleViewMessage = class {
     }
 
     function integerFormatter(obj) {
+      if (obj.type === 'bigint')
+        return obj.description;
       if (typeof obj.value !== 'number')
         return 'NaN';
       return Math.floor(obj.value);

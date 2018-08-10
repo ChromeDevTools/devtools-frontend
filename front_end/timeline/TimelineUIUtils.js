@@ -179,10 +179,6 @@ Timeline.TimelineUIUtils = class {
     eventStyles[recordTypes.LatencyInfo] =
         new Timeline.TimelineRecordStyle(Common.UIString('Input Latency'), categories['scripting']);
 
-    eventStyles[recordTypes.GCIdleLazySweep] =
-        new Timeline.TimelineRecordStyle(Common.UIString('DOM GC'), categories['scripting']);
-    eventStyles[recordTypes.GCCompleteSweep] =
-        new Timeline.TimelineRecordStyle(Common.UIString('DOM GC'), categories['scripting']);
     eventStyles[recordTypes.GCCollectGarbage] =
         new Timeline.TimelineRecordStyle(Common.UIString('DOM GC'), categories['scripting']);
 
@@ -604,18 +600,6 @@ Timeline.TimelineUIUtils = class {
         detailsText = eventData && eventData['name'];
         break;
 
-      case recordType.GCIdleLazySweep:
-        detailsText = Common.UIString('idle sweep');
-        break;
-
-      case recordType.GCCompleteSweep:
-        detailsText = Common.UIString('complete sweep');
-        break;
-
-      case recordType.GCCollectGarbage:
-        detailsText = Common.UIString('collect');
-        break;
-
       case recordType.AsyncTask:
         detailsText = eventData ? eventData['name'] : null;
         break;
@@ -688,9 +672,6 @@ Timeline.TimelineUIUtils = class {
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
       case recordType.WebSocketDestroy:
-      case recordType.GCIdleLazySweep:
-      case recordType.GCCompleteSweep:
-      case recordType.GCCollectGarbage:
         detailsText = Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(event, target);
         break;
       case recordType.PaintImage:

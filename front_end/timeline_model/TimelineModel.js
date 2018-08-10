@@ -1275,9 +1275,7 @@ TimelineModel.TimelineModel.RecordType = {
   InputLatencyMouseMove: 'InputLatency::MouseMove',
   InputLatencyMouseWheel: 'InputLatency::MouseWheel',
   ImplSideFling: 'InputHandlerProxy::HandleGestureFling::started',
-  GCIdleLazySweep: 'ThreadState::performIdleLazySweep',
-  GCCompleteSweep: 'ThreadState::completeSweep',
-  GCCollectGarbage: 'BlinkGCMarking',
+  GCCollectGarbage: 'BlinkGC.AtomicPhase',
 
   CryptoDoEncrypt: 'DoEncrypt',
   CryptoDoEncryptReply: 'DoEncryptReply',

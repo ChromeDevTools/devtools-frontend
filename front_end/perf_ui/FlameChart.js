@@ -73,13 +73,18 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._groupExpansionState = groupExpansionSetting && groupExpansionSetting.get() || {};
     this._flameChartDelegate = flameChartDelegate;
 
+    this._useWebGL = Runtime.experiments.isEnabled('timelineWebGL');
     this._chartViewport = new PerfUI.ChartViewport(this);
     this._chartViewport.show(this.contentElement);
 
     this._dataProvider = dataProvider;
 
     this._viewportElement = this._chartViewport.viewportElement;
-    this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas'));
+    if (this._useWebGL) {
+      this._canvasGL = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas', 'fill'));
+      this._initWebGL();
+    }
+    this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas', 'fill'));
 
     this._canvas.tabIndex = 0;
     this.setDefaultFocusedElement(this._canvas);
@@ -204,6 +209,12 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._canvas.height = height;
     this._canvas.style.width = `${width / ratio}px`;
     this._canvas.style.height = `${height / ratio}px`;
+    if (this._useWebGL) {
+      this._canvasGL.width = width;
+      this._canvasGL.height = height;
+      this._canvasGL.style.width = `${width / ratio}px`;
+      this._canvasGL.style.height = `${height / ratio}px`;
+    }
   }
 
   /**
@@ -683,6 +694,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     const ratio = window.devicePixelRatio;
     const top = this._chartViewport.scrollOffset();
     context.scale(ratio, ratio);
+    context.fillStyle = 'rgba(0, 0, 0, 0)';
+    context.fillRect(0, 0, width, height);
     context.translate(0, -top);
     const defaultFont = '11px ' + Host.fontFamily();
     context.font = defaultFont;
@@ -696,16 +709,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     const markerIndices = [];
     const textPadding = this._textPadding;
     const minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
+    const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
     const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
-
-    context.save();
-    this._forEachGroup((offset, index, group, isFirst, groupHeight) => {
-      if (index === this._selectedGroup) {
-        context.fillStyle = this._selectedGroupBackroundColor;
-        context.fillRect(0, offset, width, groupHeight - group.style.padding);
-      }
-    });
-    context.restore();
 
     /** @type {!Map<string, !Array<number>>} */
     const colorBuckets = new Map();
@@ -724,10 +729,19 @@ PerfUI.FlameChart = class extends UI.VBox {
       let lastDrawOffset = Infinity;
       for (let entryIndexOnLevel = rightIndexOnLevel; entryIndexOnLevel >= 0; --entryIndexOnLevel) {
         const entryIndex = levelIndexes[entryIndexOnLevel];
+        let duration = entryTotalTimes[entryIndex];
+        if (isNaN(duration))
+          markerIndices.push(entryIndex);
+        duration = duration || 0;
+        if (duration >= minTextWidthDuration || this._forceDecorationCache[entryIndex])
+          titleIndices.push(entryIndex);
+
         const entryStartTime = entryStartTimes[entryIndex];
-        const entryOffsetRight = entryStartTime + (entryTotalTimes[entryIndex] || 0);
+        const entryOffsetRight = entryStartTime + duration;
         if (entryOffsetRight <= this._chartViewport.windowLeftTime())
           break;
+        if (this._useWebGL)
+          continue;
 
         const barX = this._timeToPositionClipped(entryStartTime);
         // Check if the entry entirely fits into an already drawn pixel, we can just skip drawing it.
@@ -745,37 +759,47 @@ PerfUI.FlameChart = class extends UI.VBox {
       }
     }
 
-    const colors = colorBuckets.keysArray();
-    // We don't use for-of here because it's slow.
-    for (let c = 0; c < colors.length; ++c) {
-      const color = colors[c];
-      const indexes = colorBuckets.get(color);
-      context.beginPath();
-      for (let i = 0; i < indexes.length; ++i) {
-        const entryIndex = indexes[i];
-        const entryStartTime = entryStartTimes[entryIndex];
-        const barX = this._timeToPositionClipped(entryStartTime);
-        const duration = entryTotalTimes[entryIndex];
-        const barLevel = entryLevels[entryIndex];
-        const barHeight = this._levelHeight(barLevel);
-        const barY = this._levelToOffset(barLevel);
-        if (isNaN(duration)) {
-          context.moveTo(barX + this._markerRadius, barY + barHeight / 2);
-          context.arc(barX, barY + barHeight / 2, this._markerRadius, 0, Math.PI * 2);
-          markerIndices.push(entryIndex);
-          continue;
+    if (this._useWebGL) {
+      this._drawGL();
+    } else {
+      context.save();
+      this._forEachGroup((offset, index, group, isFirst, groupHeight) => {
+        if (index === this._selectedGroup) {
+          context.fillStyle = this._selectedGroupBackroundColor;
+          context.fillRect(0, offset, width, groupHeight - group.style.padding);
         }
-        const barRight = this._timeToPositionClipped(entryStartTime + duration);
-        const barWidth = Math.max(barRight - barX, 1);
-        if (color)
-          context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
-        if (barWidth > minTextWidth || this._dataProvider.forceDecoration(entryIndex))
-          titleIndices.push(entryIndex);
+      });
+      context.restore();
+
+      const colors = colorBuckets.keysArray();
+      // We don't use for-of here because it's slow.
+      for (let c = 0; c < colors.length; ++c) {
+        const color = colors[c];
+        const indexes = colorBuckets.get(color);
+        context.beginPath();
+        for (let i = 0; i < indexes.length; ++i) {
+          const entryIndex = indexes[i];
+          const entryStartTime = entryStartTimes[entryIndex];
+          const barX = this._timeToPositionClipped(entryStartTime);
+          const duration = entryTotalTimes[entryIndex];
+          const barLevel = entryLevels[entryIndex];
+          const barHeight = this._levelHeight(barLevel);
+          const barY = this._levelToOffset(barLevel);
+          if (isNaN(duration)) {
+            context.moveTo(barX + this._markerRadius, barY + barHeight / 2);
+            context.arc(barX, barY + barHeight / 2, this._markerRadius, 0, Math.PI * 2);
+            continue;
+          }
+          const barRight = this._timeToPositionClipped(entryStartTime + duration);
+          const barWidth = Math.max(barRight - barX, 1);
+          if (color)
+            context.rect(barX, barY, barWidth - 0.4, barHeight - 1);
+        }
+        if (!color)
+          continue;
+        context.fillStyle = color;
+        context.fill();
       }
-      if (!color)
-        continue;
-      context.fillStyle = color;
-      context.fill();
     }
 
     context.beginPath();
@@ -832,6 +856,174 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._updateElementPosition(this._highlightElement, this._highlightedEntryIndex);
     this._updateElementPosition(this._selectedElement, this._selectedEntryIndex);
     this._updateMarkerHighlight();
+  }
+
+  _initWebGL() {
+    const gl = /** @type {?WebGLRenderingContext} */ (this._canvasGL.getContext('webgl'));
+    if (!gl) {
+      console.error('Failed to obtain WebGL context.');
+      this._useWebGL = false;  // Fallback to use canvas.
+      return;
+    }
+
+    const vertexShaderSource = `
+      attribute vec2 aVertexPosition;
+      attribute vec4 aVertexColor;
+
+      uniform vec2 uScalingFactor;
+      uniform vec2 uShiftVector;
+
+      varying lowp vec4 vColor;
+
+      void main() {
+        vec2 shiftedPosition = aVertexPosition - uShiftVector;
+        gl_Position = vec4(shiftedPosition * uScalingFactor + vec2(-1.0, 1.0), 0.0, 1.0);
+        vColor = aVertexColor;
+      }`;
+
+    const fragmentShaderSource = `
+      varying lowp vec4 vColor;
+
+      void main() {
+        gl_FragColor = vColor;
+      }`;
+
+    /**
+     * @param {!WebGLRenderingContext} gl
+     * @param {number} type
+     * @param {string} source
+     * @return {?WebGLShader}
+     */
+    function loadShader(gl, type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (gl.getShaderParameter(shader, gl.COMPILE_STATUS))
+        return shader;
+      console.error('Shader compile error: ' + gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+
+    const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
+    const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+    const shaderProgram = gl.createProgram();
+    gl.attachShader(shaderProgram, vertexShader);
+    gl.attachShader(shaderProgram, fragmentShader);
+    gl.linkProgram(shaderProgram);
+
+    if (gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+      this._shaderProgram = shaderProgram;
+      gl.useProgram(shaderProgram);
+    } else {
+      console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+      this._shaderProgram = null;
+    }
+  }
+
+  _setupGLGeometry() {
+    const gl = /** @type {?WebGLRenderingContext} */ (this._canvasGL.getContext('webgl'));
+    if (!gl)
+      return;
+
+    const timelineData = this._timelineData();
+    if (!timelineData)
+      return;
+
+    const entryTotalTimes = timelineData.entryTotalTimes;
+    const entryStartTimes = timelineData.entryStartTimes;
+    const entryLevels = timelineData.entryLevels;
+
+    // 2 triangles per bar x 3 points x 2 coordinates = 12.
+    const vertexArray = new Float32Array(entryTotalTimes.length * 12);
+    // 2 triangles x 3 points x 4 color values (RGBA) = 24.
+    const colorArray = new Float32Array(entryTotalTimes.length * 24);
+    let vertex = 0;
+    for (let i = 0; i < entryTotalTimes.length; ++i) {
+      const level = entryLevels[i];
+      if (!this._visibleLevels[level])
+        continue;
+      const color = this._dataProvider.entryColor(i);
+      if (!color)
+        continue;
+      const rgba = Common.Color.parse(color).rgba();
+      const cpos = vertex * 4;
+      for (let j = 0; j < 6; ++j)  // All of the bar vertices have the same color.
+        colorArray.set(rgba, cpos + j * 4);
+
+      const vpos = vertex * 2;
+      const x0 = entryStartTimes[i] - this._minimumBoundary;
+      const x1 = x0 + entryTotalTimes[i];
+      const y0 = this._levelToOffset(level);
+      const y1 = y0 + this._levelHeight(level) - 1;
+      vertexArray[vpos + 0] = x0;
+      vertexArray[vpos + 1] = y0;
+      vertexArray[vpos + 2] = x1;
+      vertexArray[vpos + 3] = y0;
+      vertexArray[vpos + 4] = x0;
+      vertexArray[vpos + 5] = y1;
+      vertexArray[vpos + 6] = x0;
+      vertexArray[vpos + 7] = y1;
+      vertexArray[vpos + 8] = x1;
+      vertexArray[vpos + 9] = y0;
+      vertexArray[vpos + 10] = x1;
+      vertexArray[vpos + 11] = y1;
+
+      vertex += 6;  // vertices per bar.
+    }
+
+    this._vertexCount = vertex;
+
+    const vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
+    const aVertexPosition = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition');
+    gl.enableVertexAttribArray(aVertexPosition);
+    gl.vertexAttribPointer(aVertexPosition, /* vertexComponents*/ 2, gl.FLOAT, false, 0, 0);
+
+    const colorBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, colorArray, gl.STATIC_DRAW);
+    const aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
+    gl.enableVertexAttribArray(aVertexColor);
+    gl.vertexAttribPointer(aVertexColor, /* colorComponents*/ 4, gl.FLOAT, false, 0, 0);
+  }
+
+  _drawGL() {
+    const gl = /** @type {?WebGLRenderingContext} */ (this._canvasGL.getContext('webgl'));
+    if (!gl)
+      return;
+
+    const timelineData = this._timelineData();
+    if (!timelineData)
+      return;
+
+    const width = this._canvasGL.width;
+    const height = this._canvasGL.height;
+
+    if (!this._prevTimelineData || timelineData.entryTotalTimes !== this._prevTimelineData.entryTotalTimes) {
+      this._prevTimelineData = timelineData;
+      this._setupGLGeometry();
+    }
+
+    const viewportScale = [2.0 / this.boundarySpan(), -2.0 * window.devicePixelRatio / height];
+    const viewportShift = [this.minimumBoundary() - this.zeroTime(), this._chartViewport.scrollOffset()];
+
+    gl.viewport(0, 0, width, height);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
+    if (!this._vertexCount)
+      return;
+
+    const uScalingFactor = gl.getUniformLocation(this._shaderProgram, 'uScalingFactor');
+    const uShiftVector = gl.getUniformLocation(this._shaderProgram, 'uShiftVector');
+
+    gl.uniform2fv(uScalingFactor, viewportScale);
+    gl.uniform2fv(uShiftVector, viewportShift);
+
+    gl.drawArrays(gl.TRIANGLES, 0, this._vertexCount);
   }
 
   /**
@@ -1197,6 +1389,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._visibleLevels = null;
       this._groupOffsets = null;
       this._rawTimelineData = null;
+      this._forceDecorationCache = null;
       this._rawTimelineDataLength = 0;
       this._selectedGroup = -1;
       this._flameChartDelegate.updateSelectedGroup(this, null);
@@ -1205,6 +1398,9 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     this._rawTimelineData = timelineData;
     this._rawTimelineDataLength = timelineData.entryStartTimes.length;
+    this._forceDecorationCache = new Int8Array(this._rawTimelineDataLength);
+    for (let i = 0; i < this._forceDecorationCache.length; ++i)
+      this._forceDecorationCache[i] = this._dataProvider.forceDecoration(i) ? 1 : 0;
 
     const entryCounters = new Uint32Array(this._dataProvider.maxStackDepth() + 1);
     for (let i = 0; i < timelineData.entryLevels.length; ++i)
@@ -1293,6 +1489,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     if (groupIndex >= 0)
       this._groupOffsets[groupIndex + 1] = currentOffset;
     this._visibleLevelOffsets[level] = currentOffset;
+    if (this._useWebGL)
+      this._setupGLGeometry();
   }
 
   /**

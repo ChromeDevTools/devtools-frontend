@@ -131,6 +131,7 @@ Main.Main = class {
     Runtime.experiments.register('timelineShowAllEvents', 'Timeline: show all events', true);
     Runtime.experiments.register('timelineTracingJSProfile', 'Timeline: tracing based JS profiler', true);
     Runtime.experiments.register('timelineV8RuntimeCallStats', 'Timeline: V8 Runtime Call Stats on Timeline', true);
+    Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
 
     Runtime.experiments.cleanUpStaleExperiments();
 

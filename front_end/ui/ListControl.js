@@ -136,6 +136,14 @@ UI.ListControl = class {
       console.error('Item to refresh is not present');
       return;
     }
+    this.refreshItemByIndex(index);
+  }
+
+  /**
+   * @param {number} index
+   */
+  refreshItemByIndex(index) {
+    const item = this._model.at(index);
     this._itemToElement.delete(item);
     this.invalidateRange(index, index + 1);
     if (this._selectedIndex !== -1)

@@ -164,7 +164,8 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
       this._muteActivateItem = true;
       if (!this._showBlackboxed && this._items.every(item => item.isBlackboxed)) {
         this._showBlackboxed = true;
-        this._items.replaceAll(Array.from(this._items));
+        for (let i = 0; i < this._items.length; ++i)
+          this._list.refreshItemByIndex(i);
         this._blackboxedMessageElement.classList.toggle('hidden', true);
       } else {
         const itemsSet = new Set(items);
@@ -172,7 +173,7 @@ Sources.CallStackSidebarPane = class extends UI.SimpleView {
         for (let i = 0; i < this._items.length; ++i) {
           const item = this._items.at(i);
           if (itemsSet.has(item))
-            this._items.replace(i, item);
+            this._list.refreshItemByIndex(i);
           hasBlackboxed = hasBlackboxed || item.isBlackboxed;
         }
         this._blackboxedMessageElement.classList.toggle('hidden', this._showBlackboxed || !hasBlackboxed);

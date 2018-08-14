@@ -136,18 +136,6 @@ SDK.SourceMap.prototype = {
    * @return {?SDK.SourceMapEntry}
    */
   findEntry(lineNumber, columnNumber) {},
-
-  /**
-   * @return {boolean}
-   */
-  editable() {},
-
-  /**
-   * @param {!Array<!TextUtils.TextRange>} ranges
-   * @param {!Array<string>} texts
-   * @return {!Promise<?SDK.SourceMap.EditResult>}
-   */
-  editCompiled(ranges, texts) {},
 };
 
 /**
@@ -164,20 +152,6 @@ SDK.SourceMap.EditResult = class {
     this.compiledEdits = compiledEdits;
     this.newSources = newSources;
   }
-};
-
-/**
- * @interface
- */
-SDK.SourceMapFactory = function() {};
-
-SDK.SourceMapFactory.prototype = {
-  /**
-   * @param {!SDK.Target} target
-   * @param {!SDK.SourceMap} sourceMap
-   * @return {!Promise<?SDK.SourceMap>}
-   */
-  editableSourceMap(target, sourceMap) {},
 };
 
 /**
@@ -294,24 +268,6 @@ SDK.TextSourceMap = class {
     if (!this._sourceInfos.has(sourceURL))
       return null;
     return this._sourceInfos.get(sourceURL).content;
-  }
-
-  /**
-   * @override
-   * @return {boolean}
-   */
-  editable() {
-    return false;
-  }
-
-  /**
-   * @override
-   * @param {!Array<!TextUtils.TextRange>} ranges
-   * @param {!Array<string>} texts
-   * @return {!Promise<?SDK.SourceMap.EditResult>}
-   */
-  editCompiled(ranges, texts) {
-    return Promise.resolve(/** @type {?SDK.SourceMap.EditResult} */ (null));
   }
 
   /**

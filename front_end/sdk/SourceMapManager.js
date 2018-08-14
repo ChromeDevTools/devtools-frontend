@@ -141,28 +141,9 @@ SDK.SourceMapManager = class extends Common.Object {
     }
     if (!this._sourceMapURLToLoadingClients.has(sourceMapURL)) {
       SDK.TextSourceMap.load(sourceMapURL, sourceURL)
-          .then(onTextSourceMapLoaded.bind(this, sourceMapURL))
           .then(onSourceMap.bind(this, sourceMapURL));
     }
     this._sourceMapURLToLoadingClients.set(sourceMapURL, client);
-
-    /**
-     * @param {string} sourceMapURL
-     * @param {?SDK.TextSourceMap} sourceMap
-     * @return {!Promise<?SDK.SourceMap>}
-     * @this {SDK.SourceMapManager}
-     */
-    function onTextSourceMapLoaded(sourceMapURL, sourceMap) {
-      if (!sourceMap)
-        return Promise.resolve(/** @type {?SDK.SourceMap} */ (null));
-      const factoryExtension = this._factoryForSourceMap(sourceMap);
-      if (!factoryExtension)
-        return Promise.resolve(/** @type {?SDK.SourceMap} */ (sourceMap));
-      return factoryExtension.instance()
-          .then(factory => factory.editableSourceMap(this._target, sourceMap))
-          .then(map => map || sourceMap)
-          .catchException(/** @type {?SDK.SourceMap} */ (null));
-    }
 
     /**
      * @param {string} sourceMapURL
@@ -196,22 +177,6 @@ SDK.SourceMapManager = class extends Common.Object {
       this.dispatchEventToListeners(
           SDK.SourceMapManager.Events.SourceMapAttached, {client: client, sourceMap: sourceMap});
     }
-  }
-
-  /**
-   * @param {!SDK.SourceMap} sourceMap
-   * @return {?Runtime.Extension}
-   */
-  _factoryForSourceMap(sourceMap) {
-    const sourceExtensions = new Set();
-    for (const url of sourceMap.sourceURLs())
-      sourceExtensions.add(Common.ParsedURL.extractExtension(url));
-    for (const runtimeExtension of self.runtime.extensions(SDK.SourceMapFactory)) {
-      const supportedExtensions = new Set(runtimeExtension.descriptor()['extensions']);
-      if (supportedExtensions.containsAll(sourceExtensions))
-        return runtimeExtension;
-    }
-    return null;
   }
 
   /**

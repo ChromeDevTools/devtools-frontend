@@ -1007,35 +1007,20 @@ Elements.StylePropertiesSection = class {
     const menuButton = new UI.ToolbarButton('', 'largeicon-menu');
     menuButton.element.tabIndex = -1;
     sectionToolbar.appendToolbarItem(menuButton);
-    setItemsVisibility.call(this, items, false);
-    sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(this, items, true));
-    sectionToolbar.element.addEventListener('mouseleave', setItemsVisibility.bind(this, items, false));
+    setItemsVisibility(items, false);
+    sectionToolbar.element.addEventListener('mouseenter', setItemsVisibility.bind(null, items, true));
+    sectionToolbar.element.addEventListener('mouseleave', setItemsVisibility.bind(null, items, false));
     UI.ARIAUtils.markAsHidden(sectionToolbar.element);
 
     /**
      * @param {!Array<!UI.ToolbarButton>} items
      * @param {boolean} value
-     * @this {Elements.StylePropertiesSection}
      */
     function setItemsVisibility(items, value) {
       for (let i = 0; i < items.length; ++i)
         items[i].setVisible(value);
       menuButton.setVisible(!value);
-      if (this._isSASSStyle())
-        newRuleButton.setVisible(false);
     }
-  }
-
-  /**
-   * @return {boolean}
-   */
-  _isSASSStyle() {
-    const header =
-        this._style.styleSheetId ? this._style.cssModel().styleSheetHeaderForId(this._style.styleSheetId) : null;
-    if (!header)
-      return false;
-    const sourceMap = header.cssModel().sourceMapManager().sourceMapForClient(header);
-    return sourceMap ? sourceMap.editable() : false;
   }
 
   /**
@@ -1561,7 +1546,7 @@ Elements.StylePropertiesSection = class {
       return;
     }
 
-    if (!this.editable || this._isSASSStyle())
+    if (!this.editable)
       return;
 
     const config = new UI.InplaceEditor.Config(
@@ -1675,7 +1660,7 @@ Elements.StylePropertiesSection = class {
   }
 
   _startEditingAtFirstPosition() {
-    if (!this.editable || this._isSASSStyle())
+    if (!this.editable)
       return;
 
     if (!this._style.parentRule) {

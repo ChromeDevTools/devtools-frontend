@@ -105,129 +105,18 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @param {boolean} majorChange
    * @return {!Promise<boolean>}
    */
-  setStyleText(styleSheetId, range, text, majorChange) {
-    const original = this._innerSetStyleTexts.bind(this, [styleSheetId], [range], [text], majorChange);
-    const header = this.styleSheetHeaderForId(styleSheetId);
-    if (!header)
-      return original();
-
-    const sourceMap = this._sourceMapManager.sourceMapForClient(header);
-    if (!sourceMap)
-      return original();
-
-    const originalAndDetach = originalAndDetachIfSuccess.bind(this, header);
-
-    if (!sourceMap.editable())
-      return original();
-
-    return /** @type {!Promise<boolean>} */ (
-        sourceMap.editCompiled([range], [text]).then(onEditingDone.bind(this)).catch(onError.bind(this, header)));
-
-    /**
-     * @param {?SDK.SourceMap.EditResult} editResult
-     * @return {!Promise<boolean>}
-     * @this {SDK.CSSModel}
-     */
-    function onEditingDone(editResult) {
-      if (!editResult)
-        return Promise.resolve(false);
-
-      let edits = editResult.compiledEdits;
-      if (!edits.length)
-        return onCSSPatched.call(this, editResult, true);
-
-      edits.sort(TextUtils.SourceEdit.comparator);
-      edits = edits.reverse();
-
-      const styleSheetIds = [];
-      const ranges = [];
-      const texts = [];
-      for (const edit of edits) {
-        styleSheetIds.push(header.id);
-        ranges.push(edit.oldRange);
-        texts.push(edit.newText);
-      }
-      return this._innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange)
-          .then(onCSSPatched.bind(this, editResult));
-    }
-
-    /**
-     * @param {!SDK.SourceMap.EditResult} editResult
-     * @param {boolean} success
-     * @return {!Promise<boolean>}
-     * @this {SDK.CSSModel}
-     */
-    function onCSSPatched(editResult, success) {
-      if (!success)
-        return originalAndDetach();
-
-      this._sourceMapManager.applySourceMapEdit(editResult);
-      return Promise.resolve(true);
-    }
-
-    /**
-     * @param {!SDK.CSSStyleSheetHeader} header
-     * @param {*} error
-     * @return {!Promise<boolean>}
-     * @this {SDK.CSSModel}
-     */
-    function onError(header, error) {
-      Common.console.error(Common.UIString('LiveSASS failed: %s', sourceMap.compiledURL()));
-      console.error(error);
-      this._sourceMapManager.detachSourceMap(header);
-      return original();
-    }
-
-    /**
-     * @param {!SDK.CSSStyleSheetHeader} header
-     * @return {!Promise<boolean>}
-     * @this {SDK.CSSModel}
-     */
-    function originalAndDetachIfSuccess(header) {
-      return this._innerSetStyleTexts([styleSheetId], [range], [text], majorChange).then(detachIfSuccess.bind(this));
-
-      /**
-       * @param {boolean} success
-       * @return {boolean}
-       * @this {SDK.CSSModel}
-       */
-      function detachIfSuccess(success) {
-        if (success)
-          this._sourceMapManager.detachSourceMap(header);
-        return success;
-      }
-    }
-  }
-
-  /**
-   * @param {!Array<!Protocol.CSS.StyleSheetId>} styleSheetIds
-   * @param {!Array<!TextUtils.TextRange>} ranges
-   * @param {!Array<string>} texts
-   * @param {boolean} majorChange
-   * @return {!Promise<boolean>}
-   */
-  async _innerSetStyleTexts(styleSheetIds, ranges, texts, majorChange) {
-    console.assert(
-        styleSheetIds.length === ranges.length && ranges.length === texts.length, 'Array lengths must be equal');
-    const edits = [];
-    const ensureContentPromises = [];
-    for (let i = 0; i < styleSheetIds.length; ++i) {
-      edits.push({styleSheetId: styleSheetIds[i], range: ranges[i].serializeToObject(), text: texts[i]});
-      ensureContentPromises.push(this._ensureOriginalStyleSheetText(styleSheetIds[i]));
-    }
-
+  async setStyleText(styleSheetId, range, text, majorChange) {
     try {
-      await Promise.all(ensureContentPromises);
-      const stylePayloads = await this._agent.setStyleTexts(edits);
+      await this._ensureOriginalStyleSheetText(styleSheetId);
 
-      if (!stylePayloads || stylePayloads.length !== ranges.length)
+      const stylePayloads =
+          await this._agent.setStyleTexts([{styleSheetId: styleSheetId, range: range.serializeToObject(), text: text}]);
+      if (!stylePayloads || stylePayloads.length !== 1)
         return false;
 
       this._domModel.markUndoableState(!majorChange);
-      for (let i = 0; i < ranges.length; ++i) {
-        const edit = new SDK.CSSModel.Edit(styleSheetIds[i], ranges[i], texts[i], stylePayloads[i]);
-        this._fireStyleSheetChanged(styleSheetIds[i], edit);
-      }
+      const edit = new SDK.CSSModel.Edit(styleSheetId, range, text, stylePayloads[0]);
+      this._fireStyleSheetChanged(styleSheetId, edit);
       return true;
     } catch (e) {
       return false;

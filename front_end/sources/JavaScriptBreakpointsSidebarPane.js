@@ -80,7 +80,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       const hasEnabled = locations.some(location => location.breakpoint.enabled());
       const hasDisabled = locations.some(location => !location.breakpoint.enabled());
       promises.push(this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled));
-
+      entry[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] = locations;
       if (isSelected)
         shouldShowView = true;
       entry = entry.nextSibling;
@@ -94,8 +94,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
       UI.viewManager.showView('sources.jsBreakpoints');
     this._listElement.classList.toggle(
         'breakpoints-list-deactivated', !Common.moduleSetting('breakpointsActive').get());
-    Promise.all(promises).then(() => this._didUpdateForTest());
-    return Promise.resolve();
+    return Promise.all(promises).then(() => this._didUpdateForTest());
   }
 
   /**
@@ -135,24 +134,20 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
   /**
    * @param {!Event} event
-   * @return {?Workspace.UILocation}
+   * @return {!Array<!Bindings.BreakpointManager.BreakpointLocation>}
    */
-  _uiLocationFromEvent(event) {
+  _breakpointLocations(event) {
     const node = event.target.enclosingNodeOrSelfWithClass('breakpoint-entry');
     if (!node)
-      return null;
-    return node[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] || null;
+      return [];
+    return node[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] || [];
   }
 
   /**
    * @param {!Event} event
    */
   _breakpointCheckboxClicked(event) {
-    const uiLocation = this._uiLocationFromEvent(event);
-    if (!uiLocation)
-      return;
-
-    const breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
+    const breakpoints = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.breakpoint);
     const newState = event.target.checkboxElement.checked;
     for (const breakpoint of breakpoints)
       breakpoint.setEnabled(newState);
@@ -163,7 +158,12 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _revealLocation(event) {
-    const uiLocation = this._uiLocationFromEvent(event);
+    const uiLocations = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.uiLocation);
+    let uiLocation = null;
+    for (const uiLocationCandidate of uiLocations) {
+      if (!uiLocation || uiLocationCandidate.columnNumber < uiLocation.columnNumber)
+        uiLocation = uiLocationCandidate;
+    }
     if (uiLocation)
       Common.Revealer.reveal(uiLocation);
   }
@@ -172,11 +172,7 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {!Event} event
    */
   _breakpointContextMenu(event) {
-    const uiLocation = this._uiLocationFromEvent(event);
-    if (!uiLocation)
-      return;
-
-    const breakpoints = this._breakpointManager.findBreakpoints(uiLocation.uiSourceCode, uiLocation.lineNumber);
+    const breakpoints = this._breakpointLocations(event).map(breakpointLocation => breakpointLocation.breakpoint);
 
     const contextMenu = new UI.ContextMenu(event);
     const removeEntryTitle = breakpoints.length > 1 ? Common.UIString('Remove all breakpoints in line') :
@@ -192,22 +188,41 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
     if (breakpoints.some(breakpoint => !breakpoint.enabled())) {
       const enableTitle = Common.UIString('Enable all breakpoints');
-      contextMenu.defaultSection().appendItem(
-          enableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, true));
+      contextMenu.defaultSection().appendItem(enableTitle, this._toggleAllBreakpoints.bind(this, true));
     }
     if (breakpoints.some(breakpoint => breakpoint.enabled())) {
       const disableTitle = Common.UIString('Disable all breakpoints');
-      contextMenu.defaultSection().appendItem(
-          disableTitle, this._breakpointManager.toggleAllBreakpoints.bind(this._breakpointManager, false));
+      contextMenu.defaultSection().appendItem(disableTitle, this._toggleAllBreakpoints.bind(this, false));
     }
     const removeAllTitle = Common.UIString('Remove all breakpoints');
-    contextMenu.defaultSection().appendItem(
-        removeAllTitle, this._breakpointManager.removeAllBreakpoints.bind(this._breakpointManager));
+    contextMenu.defaultSection().appendItem(removeAllTitle, this._removeAllBreakpoints.bind(this));
     const removeOtherTitle = Common.UIString('Remove other breakpoints');
     contextMenu.defaultSection().appendItem(
-        removeOtherTitle,
-        this._breakpointManager.removeOtherBreakpoints.bind(this._breakpointManager, new Set(breakpoints)));
+        removeOtherTitle, this._removeOtherBreakpoints.bind(this, new Set(breakpoints)));
     contextMenu.show();
+  }
+
+  /**
+   * @param {boolean} toggleState
+   */
+  _toggleAllBreakpoints(toggleState) {
+    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations())
+      breakpointLocation.breakpoint.setEnabled(toggleState);
+  }
+
+  _removeAllBreakpoints() {
+    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations())
+      breakpointLocation.breakpoint.remove(false /* keepInStorage */);
+  }
+
+  /**
+   * @param {!Set<!Bindings.BreakpointManager.Breakpoint>} selectedBreakpoints
+   */
+  _removeOtherBreakpoints(selectedBreakpoints) {
+    for (const breakpointLocation of this._breakpointManager.allBreakpointLocations()) {
+      if (!selectedBreakpoints.has(breakpointLocation.breakpoint))
+        breakpointLocation.breakpoint.remove(false /* keepInStorage */);
+    }
   }
 
   /**
@@ -225,3 +240,4 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 Sources.JavaScriptBreakpointsSidebarPane._locationSymbol = Symbol('location');
 Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol = Symbol('checkbox-label');
 Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol = Symbol('snippet-element');
+Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol = Symbol('locations');

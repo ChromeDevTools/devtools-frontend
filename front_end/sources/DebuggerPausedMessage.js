@@ -108,9 +108,7 @@ Sources.DebuggerPausedMessage = class {
       messageWrapper = buildWrapper(Common.UIString('Paused before potential out-of-memory crash'));
     } else if (details.callFrames.length) {
       const uiLocation = debuggerWorkspaceBinding.rawLocationToUILocation(details.callFrames[0].location());
-      const breakpoint = uiLocation ?
-          breakpointManager.findBreakpoint(uiLocation.uiSourceCode, uiLocation.lineNumber, uiLocation.columnNumber) :
-          null;
+      const breakpoint = uiLocation ? breakpointManager.findBreakpoint(uiLocation) : null;
       const defaultText = breakpoint ? Common.UIString('Paused on breakpoint') : Common.UIString('Debugger paused');
       messageWrapper = buildWrapper(defaultText);
     } else {

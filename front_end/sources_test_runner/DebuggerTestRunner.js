@@ -463,7 +463,11 @@ SourcesTestRunner.setBreakpoint = function(sourceFrame, lineNumber, condition, e
 
 SourcesTestRunner.removeBreakpoint = function(sourceFrame, lineNumber) {
   const debuggerPlugin = SourcesTestRunner.debuggerPlugin(sourceFrame);
-  debuggerPlugin._breakpointManager.findBreakpoints(sourceFrame._uiSourceCode, lineNumber)[0].remove();
+  const breakpointLocations = debuggerPlugin._breakpointManager.allBreakpointLocations();
+  const breakpointLocation = breakpointLocations.find(
+      breakpointLocation => breakpointLocation.uiLocation.uiSourceCode === sourceFrame._uiSourceCode &&
+          breakpointLocation.uiLocation.lineNumber === lineNumber);
+  breakpointLocation.breakpoint.remove();
 };
 
 SourcesTestRunner.createNewBreakpoint = function(sourceFrame, lineNumber, condition, enabled) {
@@ -490,7 +494,7 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
     if (!waitUntilResolved)
       return;
 
-    for (const breakpoint of Bindings.breakpointManager._allBreakpoints()) {
+    for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
       if (breakpoint._fakePrimaryLocation && breakpoint.enabled())
         return SourcesTestRunner.waitBreakpointSidebarPane();
     }
@@ -702,7 +706,7 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
   }
 
   function checkIfReady() {
-    for (const breakpoint of Bindings.breakpointManager._allBreakpoints()) {
+    for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
       if (breakpoint._fakePrimaryLocation && breakpoint.enabled())
         return waitUpdate().then(checkIfReady);
     }

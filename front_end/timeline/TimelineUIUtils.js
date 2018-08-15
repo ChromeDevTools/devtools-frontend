@@ -1057,36 +1057,38 @@ Timeline.TimelineUIUtils = class {
   static statsForTimeRange(events, startTime, endTime) {
     if (!events.length)
       return {'idle': endTime - startTime};
-    const symbol = Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol;
-    Timeline.TimelineUIUtils._buildRangeStatsCacheIfNeeded(events);
 
-    const before = findCachedStatsAfterTime(startTime);
-    const statsBefore =
-        subtractStats(before.stats, Timeline.TimelineUIUtils._slowStatsForTimeRange(events, startTime, before.time));
-
-    const after = findCachedStatsAfterTime(endTime);
-    const statsAfter =
-        subtractStats(after.stats, Timeline.TimelineUIUtils._slowStatsForTimeRange(events, endTime, after.time));
-
-    const aggregatedStats = subtractStats(statsAfter, statsBefore);
+    buildRangeStatsCacheIfNeeded(events);
+    const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime));
     const aggregatedTotal = Object.values(aggregatedStats).reduce((a, b) => a + b, 0);
     aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
     return aggregatedStats;
 
     /**
-     * @param {number} atTime
-     * @return {!{time: number, stats: !Object<string, number>}}
+     * @param {number} time
+     * @return {!Object}
      */
-    function findCachedStatsAfterTime(atTime) {
-      let index = events.lowerBound(atTime, (time, event) => time - (event.endTime || event.startTime));
-      while (index < events.length && !events[index][symbol])
-        index++;
-      if (index === events.length) {
-        const lastEvent = events.peekLast();
-        return {time: lastEvent.endTime || lastEvent.startTime, stats: events[symbol]};
+    function aggregatedStatsAtTime(time) {
+      const stats = {};
+      const cache = events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol];
+      for (const category in cache) {
+        const categoryCache = cache[category];
+        const index = categoryCache.time.upperBound(time);
+        let value;
+        if (index === 0) {
+          value = 0;
+        } else if (index === categoryCache.time.length) {
+          value = categoryCache.value.peekLast();
+        } else {
+          const t0 = categoryCache.time[index - 1];
+          const t1 = categoryCache.time[index];
+          const v0 = categoryCache.value[index - 1];
+          const v1 = categoryCache.value[index];
+          value = v0 + (v1 - v0) * (time - t0) / (t1 - t0);
+        }
+        stats[category] = value;
       }
-      const event = events[index];
-      return {time: event.endTime || event.startTime, stats: event[symbol]};
+      return stats;
     }
 
     /**
@@ -1100,82 +1102,84 @@ Timeline.TimelineUIUtils = class {
         result[key] -= b[key];
       return result;
     }
-  }
-
-  /**
-   * @param {!Array<!SDK.TracingModel.Event>} events
-   * @param {number} startTime
-   * @param {number} endTime
-   */
-  static _slowStatsForTimeRange(events, startTime, endTime) {
-    /** @type {!Object<string, number>} */
-    const stats = {};
-    const ownTimes = [];
-
-    TimelineModel.TimelineModel.forEachEvent(
-        events, onStartEvent, onEndEvent, undefined, startTime, endTime, Timeline.TimelineUIUtils._filterForStats());
 
     /**
-     * @param {!SDK.TracingModel.Event} e
+     * @param {!Array<!SDK.TracingModel.Event>} events
      */
-    function onStartEvent(e) {
-      const duration = Math.min(e.endTime, endTime) - Math.max(e.startTime, startTime);
-      if (ownTimes.length)
-        ownTimes[ownTimes.length - 1] -= duration;
-      ownTimes.push(duration);
+    function buildRangeStatsCacheIfNeeded(events) {
+      if (events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
+        return;
+
+      // aggeregatedStats is a map by categories. For each category there's an array
+      // containing sorted time points which records accumulated value of the category.
+      const aggregatedStats = {};
+      const categoryStack = [];
+      let lastTime = 0;
+      TimelineModel.TimelineModel.forEachEvent(
+          events, onStartEvent, onEndEvent, undefined, undefined, undefined, filterForStats());
+
+      /**
+       * @return {function(!SDK.TracingModel.Event):boolean}
+       */
+      function filterForStats() {
+        const visibleEventsFilter = Timeline.TimelineUIUtils.visibleEventsFilter();
+        return event => visibleEventsFilter.accept(event) || SDK.TracingModel.isTopLevelEvent(event);
+      }
+
+      /**
+       * @param {string} category
+       * @param {number} time
+       */
+      function updateCategory(category, time) {
+        let statsArrays = aggregatedStats[category];
+        if (!statsArrays) {
+          statsArrays = {time: [], value: []};
+          aggregatedStats[category] = statsArrays;
+        }
+        if (statsArrays.time.length && statsArrays.time.peekLast() === time)
+          return;
+        const lastValue = statsArrays.value.length ? statsArrays.value.peekLast() : 0;
+        statsArrays.value.push(lastValue + time - lastTime);
+        statsArrays.time.push(time);
+      }
+
+      /**
+       * @param {?string} from
+       * @param {?string} to
+       * @param {number} time
+       */
+      function categoryChange(from, to, time) {
+        if (from)
+          updateCategory(from, time);
+        lastTime = time;
+        if (to)
+          updateCategory(to, time);
+      }
+
+      /**
+       * @param {!SDK.TracingModel.Event} e
+       */
+      function onStartEvent(e) {
+        const category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
+        const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
+        if (category !== parentCategory)
+          categoryChange(parentCategory, category, e.startTime);
+        categoryStack.push(category);
+      }
+
+      /**
+       * @param {!SDK.TracingModel.Event} e
+       */
+      function onEndEvent(e) {
+        const category = categoryStack.pop();
+        const parentCategory = categoryStack.length ? categoryStack.peekLast() : null;
+        if (category !== parentCategory)
+          categoryChange(category, parentCategory, e.endTime);
+      }
+
+      const obj = /** @type {!Object} */ (events);
+      obj[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol] = aggregatedStats;
     }
-
-    /**
-     * @param {!SDK.TracingModel.Event} e
-     */
-    function onEndEvent(e) {
-      const category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
-      stats[category] = (stats[category] || 0) + ownTimes.pop();
-    }
-    return stats;
-  }
-
-  /**
-   * @return {function(!SDK.TracingModel.Event):boolean}
-   */
-  static _filterForStats() {
-    const visibleEventsFilter = Timeline.TimelineUIUtils.visibleEventsFilter();
-    return event => visibleEventsFilter.accept(event) || SDK.TracingModel.isTopLevelEvent(event);
-  }
-
-  /**
-   * @param {!Array<!SDK.TracingModel.Event>} events
-   */
-  static _buildRangeStatsCacheIfNeeded(events) {
-    if (events[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol])
-      return;
-
-    const aggregatedStats = {};
-    const ownTimes = [];
-    TimelineModel.TimelineModel.forEachEvent(
-        events, onStartEvent, onEndEvent, undefined, undefined, undefined, Timeline.TimelineUIUtils._filterForStats());
-
-    /**
-     * @param {!SDK.TracingModel.Event} e
-     */
-    function onStartEvent(e) {
-      if (ownTimes.length)
-        ownTimes[ownTimes.length - 1] -= e.duration;
-      ownTimes.push(e.duration);
-    }
-
-    /**
-     * @param {!SDK.TracingModel.Event} e
-     */
-    function onEndEvent(e) {
-      const category = Timeline.TimelineUIUtils.eventStyle(e).category.name;
-      aggregatedStats[category] = (aggregatedStats[category] || 0) + ownTimes.pop();
-      if (!ownTimes.length)
-        e[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol] = Object.assign({}, aggregatedStats);
-    }
-
-    const obj = /** @type {!Object} */ (events);
-    obj[Timeline.TimelineUIUtils._categoryBreakdownCacheSymbol] = Object.assign({}, aggregatedStats);
   }
 
   /**

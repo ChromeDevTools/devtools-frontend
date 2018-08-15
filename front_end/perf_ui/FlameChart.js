@@ -938,7 +938,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     // 2 triangles per bar x 3 points x 2 coordinates = 12.
     const vertexArray = new Float32Array(entryTotalTimes.length * 12);
     // 2 triangles x 3 points x 4 color values (RGBA) = 24.
-    const colorArray = new Float32Array(entryTotalTimes.length * 24);
+    const colorArray = new Uint8Array(entryTotalTimes.length * 24);
     let vertex = 0;
     for (let i = 0; i < entryTotalTimes.length; ++i) {
       const level = entryLevels[i];
@@ -947,7 +947,8 @@ PerfUI.FlameChart = class extends UI.VBox {
       const color = this._dataProvider.entryColor(i);
       if (!color)
         continue;
-      const rgba = Common.Color.parse(color).rgba();
+      const rgba = Common.Color.parse(color).canonicalRGBA();
+      rgba[3] = Math.round(rgba[3] * 255);
       const cpos = vertex * 4;
       for (let j = 0; j < 6; ++j)  // All of the bar vertices have the same color.
         colorArray.set(rgba, cpos + j * 4);
@@ -987,7 +988,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     gl.bufferData(gl.ARRAY_BUFFER, colorArray, gl.STATIC_DRAW);
     const aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
     gl.enableVertexAttribArray(aVertexColor);
-    gl.vertexAttribPointer(aVertexColor, /* colorComponents*/ 4, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(aVertexColor, /* colorComponents*/ 4, gl.UNSIGNED_BYTE, true, 0, 0);
   }
 
   _drawGL() {

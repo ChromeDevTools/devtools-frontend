@@ -472,6 +472,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
         const tokenBefore = this._textEditor.tokenAtTextPosition(editorLineNumber, startHighlight - 2);
         if (!tokenBefore || !tokenBefore.type)
           return null;
+        if (tokenBefore.type === 'js-meta')
+          break;
         startHighlight = tokenBefore.startColumn;
       }
     }

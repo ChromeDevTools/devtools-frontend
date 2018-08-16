@@ -1,4 +1,4 @@
-// lighthouse, browserified. 3.0.3 (d1cae24fda4182406e02d3f4df6309d48878fc50)
+// lighthouse, browserified. 3.0.3.1 (bf652a9fd8c04f445d820203960a905d6461277b)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 
 
@@ -23694,8 +23694,12 @@ module.exports=TraceParser;
 
 
 const BASE_RESPONSE_LATENCY=16;
+
 const SCHEDULABLE_TASK_TITLE='TaskQueueManager::ProcessTaskFromWorkQueue';
-const SCHEDULABLE_TASK_TITLE_ALT='ThreadControllerImpl::DoWork';
+
+const SCHEDULABLE_TASK_TITLE_ALT1='ThreadControllerImpl::DoWork';
+
+const SCHEDULABLE_TASK_TITLE_ALT2='ThreadControllerImpl::RunTask';
 const LHError=require('../errors');
 
 class TraceProcessor{
@@ -23908,7 +23912,9 @@ return{startedInPageEvt,frameId};
 
 
 static isScheduleableTask(evt){
-return evt.name===SCHEDULABLE_TASK_TITLE||evt.name===SCHEDULABLE_TASK_TITLE_ALT;
+return evt.name===SCHEDULABLE_TASK_TITLE||
+evt.name===SCHEDULABLE_TASK_TITLE_ALT1||
+evt.name===SCHEDULABLE_TASK_TITLE_ALT2;
 }}
 
 

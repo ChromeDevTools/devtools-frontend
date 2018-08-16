@@ -940,6 +940,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     // 2 triangles x 3 points x 4 color values (RGBA) = 24.
     const colorArray = new Uint8Array(entryTotalTimes.length * 24);
     let vertex = 0;
+    /** @type {!Map<string, !Array<number>>} */
+    const parsedColorCache = new Map();
     for (let i = 0; i < entryTotalTimes.length; ++i) {
       const level = entryLevels[i];
       if (!this._visibleLevels[level])
@@ -947,11 +949,19 @@ PerfUI.FlameChart = class extends UI.VBox {
       const color = this._dataProvider.entryColor(i);
       if (!color)
         continue;
-      const rgba = Common.Color.parse(color).canonicalRGBA();
-      rgba[3] = Math.round(rgba[3] * 255);
+      let rgba = parsedColorCache.get(color);
+      if (!rgba) {
+        rgba = Common.Color.parse(color).canonicalRGBA();
+        rgba[3] = Math.round(rgba[3] * 255);
+        parsedColorCache.set(color, rgba);
+      }
       const cpos = vertex * 4;
-      for (let j = 0; j < 6; ++j)  // All of the bar vertices have the same color.
-        colorArray.set(rgba, cpos + j * 4);
+      for (let j = 0; j < 6; ++j) {  // All of the bar vertices have the same color.
+        colorArray[cpos + j * 4 + 0] = rgba[0];
+        colorArray[cpos + j * 4 + 1] = rgba[1];
+        colorArray[cpos + j * 4 + 2] = rgba[2];
+        colorArray[cpos + j * 4 + 3] = rgba[3];
+      }
 
       const vpos = vertex * 2;
       const x0 = entryStartTimes[i] - this._minimumBoundary;
@@ -989,40 +999,35 @@ PerfUI.FlameChart = class extends UI.VBox {
     const aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
     gl.enableVertexAttribArray(aVertexColor);
     gl.vertexAttribPointer(aVertexColor, /* colorComponents*/ 4, gl.UNSIGNED_BYTE, true, 0, 0);
+
+    this._uScalingFactor = gl.getUniformLocation(this._shaderProgram, 'uScalingFactor');
+    this._uShiftVector = gl.getUniformLocation(this._shaderProgram, 'uShiftVector');
   }
 
   _drawGL() {
     const gl = /** @type {?WebGLRenderingContext} */ (this._canvasGL.getContext('webgl'));
     if (!gl)
       return;
-
     const timelineData = this._timelineData();
     if (!timelineData)
       return;
-
-    const width = this._canvasGL.width;
-    const height = this._canvasGL.height;
 
     if (!this._prevTimelineData || timelineData.entryTotalTimes !== this._prevTimelineData.entryTotalTimes) {
       this._prevTimelineData = timelineData;
       this._setupGLGeometry();
     }
 
-    const viewportScale = [2.0 / this.boundarySpan(), -2.0 * window.devicePixelRatio / height];
-    const viewportShift = [this.minimumBoundary() - this.zeroTime(), this._chartViewport.scrollOffset()];
-
-    gl.viewport(0, 0, width, height);
+    gl.viewport(0, 0, this._canvasGL.width, this._canvasGL.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
     if (!this._vertexCount)
       return;
 
-    const uScalingFactor = gl.getUniformLocation(this._shaderProgram, 'uScalingFactor');
-    const uShiftVector = gl.getUniformLocation(this._shaderProgram, 'uShiftVector');
-
-    gl.uniform2fv(uScalingFactor, viewportScale);
-    gl.uniform2fv(uShiftVector, viewportShift);
+    const viewportScale = [2.0 / this.boundarySpan(), -2.0 * window.devicePixelRatio / this._canvasGL.height];
+    const viewportShift = [this.minimumBoundary() - this.zeroTime(), this._chartViewport.scrollOffset()];
+    gl.uniform2fv(this._uScalingFactor, viewportScale);
+    gl.uniform2fv(this._uShiftVector, viewportShift);
 
     gl.drawArrays(gl.TRIANGLES, 0, this._vertexCount);
   }

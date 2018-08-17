@@ -25,7 +25,9 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @return {!Promise<?>}
    */
   doUpdate() {
-    const breakpointLocations = this._breakpointManager.allBreakpointLocations();
+    const breakpointLocations = this._breakpointManager.allBreakpointLocations().filter(
+        breakpointLocation =>
+            breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.projectTypes.Debugger);
     if (!breakpointLocations.length) {
       this._listElement = null;
       this.contentElement.removeChildren();

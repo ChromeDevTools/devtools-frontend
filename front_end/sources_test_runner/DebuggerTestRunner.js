@@ -495,7 +495,7 @@ SourcesTestRunner.waitBreakpointSidebarPane = function(waitUntilResolved) {
       return;
 
     for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
-      if (breakpoint._fakePrimaryLocation && breakpoint.enabled())
+      if (breakpoint._uiLocations.size === 0 && breakpoint.enabled())
         return SourcesTestRunner.waitBreakpointSidebarPane();
     }
   }
@@ -707,7 +707,7 @@ SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
 
   function checkIfReady() {
     for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
-      if (breakpoint._fakePrimaryLocation && breakpoint.enabled())
+      if (breakpoint._uiLocations.size === 0 && breakpoint.enabled())
         return waitUpdate().then(checkIfReady);
     }
 

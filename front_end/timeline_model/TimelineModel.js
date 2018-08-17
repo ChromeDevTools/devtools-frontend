@@ -201,6 +201,8 @@ TimelineModel.TimelineModel = class {
       const metaEvent = metadataEvents.page[i];
       const process = metaEvent.thread.process();
       const endTime = i + 1 < length ? metadataEvents.page[i + 1].startTime : Infinity;
+      if (startTime === endTime)
+        continue;
       this._legacyCurrentPage = metaEvent.args['data'] && metaEvent.args['data']['page'];
       for (const thread of process.sortedThreads()) {
         let workerUrl = null;

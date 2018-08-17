@@ -228,13 +228,19 @@ TimelineModel.TimelineJSProfileProcessor = class {
   /**
    * @param {*} profile
    * @param {number} tid
+   * @param {boolean} injectPageEvent
+   * @param {?string=} name
    * @return {!Array<!SDK.TracingManager.EventPayload>}
    */
-  static buildTraceProfileFromCpuProfile(profile, tid) {
-    if (!profile)
-      return [];
+  static buildTraceProfileFromCpuProfile(profile, tid, injectPageEvent, name) {
     const events = [];
-    appendEvent('TracingStartedInPage', {'sessionId': '1'}, 0, 0, 'M');
+    if (injectPageEvent)
+      appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, 'M');
+    if (!name)
+      name = ls`Thread ${tid}`;
+    appendEvent(SDK.TracingModel.MetadataEvent.ThreadName, {name}, 0, 0, 'M', '__metadata');
+    if (!profile)
+      return events;
     const idToNode = new Map();
     const nodes = profile['nodes'];
     for (let i = 0; i < nodes.length; ++i)
@@ -264,11 +270,11 @@ TimelineModel.TimelineJSProfileProcessor = class {
       } else {
         // A JS function.
         if (!functionEvent)
-          functionEvent = appendEvent('FunctionCall', {'sessionId': '1'}, currentTime);
+          functionEvent = appendEvent('FunctionCall', {data: {'sessionId': '1'}}, currentTime);
       }
     }
     closeEvents();
-    appendEvent('CpuProfile', {'cpuProfile': profile}, profile.endTime, 0, 'I');
+    appendEvent('CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0, 'I');
     return events;
 
     function closeEvents() {
@@ -282,23 +288,16 @@ TimelineModel.TimelineJSProfileProcessor = class {
 
     /**
      * @param {string} name
-     * @param {*} data
+     * @param {*} args
      * @param {number} ts
      * @param {number=} dur
      * @param {string=} ph
      * @param {string=} cat
      * @return {!SDK.TracingManager.EventPayload}
      */
-    function appendEvent(name, data, ts, dur, ph, cat) {
-      const event = /** @type {!SDK.TracingManager.EventPayload} */ ({
-        cat: cat || 'disabled-by-default-devtools.timeline',
-        name: name,
-        ph: ph || 'X',
-        pid: 1,
-        tid,
-        ts: ts,
-        args: {data: data}
-      });
+    function appendEvent(name, args, ts, dur, ph, cat) {
+      const event = /** @type {!SDK.TracingManager.EventPayload} */ (
+          {cat: cat || 'disabled-by-default-devtools.timeline', name, ph: ph || 'X', pid: 1, tid, ts, args});
       if (dur)
         event.dur = dur;
       events.push(event);

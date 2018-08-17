@@ -302,16 +302,12 @@ Timeline.TimelineController = class {
       } else {
         // Or there was no tracing manager in the main target at all, in this case build the model full
         // of cpu profiles.
-        // Assign tids equal to the target ordinals for the thread name lookup.
-        // This is a little shaky because targets can disappear, but we will read these tids sooner than
-        // that.
-        // TODO(pfeldman): resolve this.
-        let counter = 1000;
+        let tid = 0;
         for (const pair of this._cpuProfiles) {
           const target = SDK.targetManager.targetById(pair[0]);
-          const tid = target ? SDK.targetManager.targets().indexOf(target) : ++counter;
-          this._tracingModel.addEvents(
-              TimelineModel.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(pair[1], tid));
+          const name = target && target.name();
+          this._tracingModel.addEvents(TimelineModel.TimelineJSProfileProcessor.buildTraceProfileFromCpuProfile(
+              pair[1], ++tid, /* injectPageEvent */ tid === 1, name));
         }
       }
     }

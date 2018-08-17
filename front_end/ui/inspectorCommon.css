@@ -137,9 +137,8 @@ iframe.widget {
 
 .highlighted-search-result {
     border-radius: 1px;
-    padding: 1px;
-    margin: -1px;
     background-color: rgba(255, 255, 0, 0.8);
+    outline: 1px solid rgba(255, 255, 0, 0.8);
 }
 
 .-theme-with-dark-background .highlighted-search-result,

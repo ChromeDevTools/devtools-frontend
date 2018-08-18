@@ -868,24 +868,25 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     const vertexShaderSource = `
       attribute vec2 aVertexPosition;
-      attribute vec4 aVertexColor;
+      attribute float aVertexColor;
 
       uniform vec2 uScalingFactor;
       uniform vec2 uShiftVector;
 
-      varying lowp vec4 vColor;
+      varying mediump vec2 vPalettePosition;
 
       void main() {
         vec2 shiftedPosition = aVertexPosition - uShiftVector;
         gl_Position = vec4(shiftedPosition * uScalingFactor + vec2(-1.0, 1.0), 0.0, 1.0);
-        vColor = aVertexColor;
+        vPalettePosition = vec2(aVertexColor, 0.5);
       }`;
 
     const fragmentShaderSource = `
-      varying lowp vec4 vColor;
+      varying mediump vec2 vPalettePosition;
+      uniform sampler2D uSampler;
 
       void main() {
-        gl_FragColor = vColor;
+        gl_FragColor = texture2D(uSampler, vPalettePosition);
       }`;
 
     /**
@@ -920,6 +921,18 @@ PerfUI.FlameChart = class extends UI.VBox {
       console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
       this._shaderProgram = null;
     }
+
+    this._vertexBuffer = gl.createBuffer();
+    this._colorBuffer = gl.createBuffer();
+
+    this._uScalingFactor = gl.getUniformLocation(shaderProgram, 'uScalingFactor');
+    this._uShiftVector = gl.getUniformLocation(shaderProgram, 'uShiftVector');
+    const uSampler = gl.getUniformLocation(shaderProgram, 'uSampler');
+    gl.uniform1i(uSampler, 0);
+    this._aVertexPosition = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition');
+    this._aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
+    gl.enableVertexAttribArray(this._aVertexPosition);
+    gl.enableVertexAttribArray(this._aVertexColor);
   }
 
   _setupGLGeometry() {
@@ -935,13 +948,15 @@ PerfUI.FlameChart = class extends UI.VBox {
     const entryStartTimes = timelineData.entryStartTimes;
     const entryLevels = timelineData.entryLevels;
 
-    // 2 triangles per bar x 3 points x 2 coordinates = 12.
-    const vertexArray = new Float32Array(entryTotalTimes.length * 12);
-    // 2 triangles x 3 points x 4 color values (RGBA) = 24.
-    const colorArray = new Uint8Array(entryTotalTimes.length * 24);
+    const verticesPerBar = 6;
+    const vertexArray = new Float32Array(entryTotalTimes.length * verticesPerBar * 2);
+    let colorArray = new Uint8Array(entryTotalTimes.length * verticesPerBar);
     let vertex = 0;
-    /** @type {!Map<string, !Array<number>>} */
+    /** @type {!Map<string, number>} */
     const parsedColorCache = new Map();
+    /** @type {!Array<number>} */
+    const colors = [];
+
     for (let i = 0; i < entryTotalTimes.length; ++i) {
       const level = entryLevels[i];
       if (!this._visibleLevels[level])
@@ -949,19 +964,18 @@ PerfUI.FlameChart = class extends UI.VBox {
       const color = this._dataProvider.entryColor(i);
       if (!color)
         continue;
-      let rgba = parsedColorCache.get(color);
-      if (!rgba) {
-        rgba = Common.Color.parse(color).canonicalRGBA();
+      let colorIndex = parsedColorCache.get(color);
+      if (colorIndex === undefined) {
+        const rgba = Common.Color.parse(color).canonicalRGBA();
         rgba[3] = Math.round(rgba[3] * 255);
-        parsedColorCache.set(color, rgba);
+        colorIndex = colors.length / 4;
+        colors.push(...rgba);
+        if (colorIndex === 256)
+          colorArray = new Uint16Array(colorArray);
+        parsedColorCache.set(color, colorIndex);
       }
-      const cpos = vertex * 4;
-      for (let j = 0; j < 6; ++j) {  // All of the bar vertices have the same color.
-        colorArray[cpos + j * 4 + 0] = rgba[0];
-        colorArray[cpos + j * 4 + 1] = rgba[1];
-        colorArray[cpos + j * 4 + 2] = rgba[2];
-        colorArray[cpos + j * 4 + 3] = rgba[3];
-      }
+      for (let j = 0; j < verticesPerBar; ++j)
+        colorArray[vertex + j] = colorIndex;
 
       const vpos = vertex * 2;
       const x0 = entryStartTimes[i] - this._minimumBoundary;
@@ -981,27 +995,39 @@ PerfUI.FlameChart = class extends UI.VBox {
       vertexArray[vpos + 10] = x1;
       vertexArray[vpos + 11] = y1;
 
-      vertex += 6;  // vertices per bar.
+      vertex += verticesPerBar;
     }
-
     this._vertexCount = vertex;
 
-    const vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
+    const paletteTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, paletteTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.activeTexture(gl.TEXTURE0);
+
+    const numColors = colors.length / 4;
+    const useShortForColors = numColors >= 256;
+    const width = !useShortForColors ? 256 : Math.min(1 << 16, gl.getParameter(gl.MAX_TEXTURE_SIZE));
+    console.assert(numColors <= width, 'Too many colors');
+    const height = 1;
+    const colorIndexType = useShortForColors ? gl.UNSIGNED_SHORT : gl.UNSIGNED_BYTE;
+    if (useShortForColors) {
+      const factor = (1 << 16) / width;
+      for (let i = 0; i < vertex; ++i)
+        colorArray[i] *= factor;
+    }
+
+    const pixels = new Uint8Array(width * 4);
+    pixels.set(colors);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this._vertexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertexArray, gl.STATIC_DRAW);
-    const aVertexPosition = gl.getAttribLocation(this._shaderProgram, 'aVertexPosition');
-    gl.enableVertexAttribArray(aVertexPosition);
-    gl.vertexAttribPointer(aVertexPosition, /* vertexComponents*/ 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(this._aVertexPosition, /* vertexComponents */ 2, gl.FLOAT, false, 0, 0);
 
-    const colorBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this._colorBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, colorArray, gl.STATIC_DRAW);
-    const aVertexColor = gl.getAttribLocation(this._shaderProgram, 'aVertexColor');
-    gl.enableVertexAttribArray(aVertexColor);
-    gl.vertexAttribPointer(aVertexColor, /* colorComponents*/ 4, gl.UNSIGNED_BYTE, true, 0, 0);
-
-    this._uScalingFactor = gl.getUniformLocation(this._shaderProgram, 'uScalingFactor');
-    this._uShiftVector = gl.getUniformLocation(this._shaderProgram, 'uShiftVector');
+    gl.vertexAttribPointer(this._aVertexColor, /* colorComponents */ 1, colorIndexType, true, 0, 0);
   }
 
   _drawGL() {

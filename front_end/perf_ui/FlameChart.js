@@ -763,7 +763,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._drawGL();
     } else {
       context.save();
-      this._forEachGroup((offset, index, group, isFirst, groupHeight) => {
+      this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
         if (index === this._selectedGroup) {
           context.fillStyle = this._selectedGroupBackroundColor;
           context.fillRect(0, offset, width, groupHeight - group.style.padding);
@@ -957,9 +957,23 @@ PerfUI.FlameChart = class extends UI.VBox {
     /** @type {!Array<number>} */
     const colors = [];
 
+    const collapsedOverviewLevels = new Array(this._visibleLevels.length);
+    const groups = this._rawTimelineData.groups || [];
+    this._forEachGroup((offset, index, group) => {
+      if (group.style.useFirstLineForOverview || !this._isGroupCollapsible(index) || group.expanded)
+        return;
+      let nextGroup = index + 1;
+      while (nextGroup < groups.length && groups[nextGroup].style.nestingLevel > group.style.nestingLevel)
+        ++nextGroup;
+      const endLevel = nextGroup < groups.length ? groups[nextGroup].startLevel : this._dataProvider.maxStackDepth();
+      for (let i = group.startLevel; i < endLevel; ++i)
+        collapsedOverviewLevels[i] = offset;
+    });
+
     for (let i = 0; i < entryTotalTimes.length; ++i) {
       const level = entryLevels[i];
-      if (!this._visibleLevels[level])
+      const collapsedGroupOffset = collapsedOverviewLevels[level];
+      if (!this._visibleLevels[level] && !collapsedGroupOffset)
         continue;
       const color = this._entryColorsCache[i];
       if (!color)
@@ -980,7 +994,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       const vpos = vertex * 2;
       const x0 = entryStartTimes[i] - this._minimumBoundary;
       const x1 = x0 + entryTotalTimes[i];
-      const y0 = this._levelToOffset(level);
+      const y0 = collapsedGroupOffset || this._levelToOffset(level);
       const y1 = y0 + this._levelHeight(level) - 1;
       vertexArray[vpos + 0] = x0;
       vertexArray[vpos + 1] = y0;
@@ -1079,7 +1093,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     context.font = defaultFont;
 
     context.fillStyle = UI.themeSupport.patchColorText('#fff', colorUsage.Background);
-    this._forEachGroup((offset, index, group) => {
+    this._forEachGroupInViewport((offset, index, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5)
         return;
@@ -1090,7 +1104,7 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     context.strokeStyle = UI.themeSupport.patchColorText('#eee', colorUsage.Background);
     context.beginPath();
-    this._forEachGroup((offset, index, group, isFirst) => {
+    this._forEachGroupInViewport((offset, index, group, isFirst) => {
       if (isFirst || group.style.padding < 4)
         return;
       hLine(offset - 2.5);
@@ -1098,7 +1112,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     hLine(lastGroupOffset + 1.5);
     context.stroke();
 
-    this._forEachGroup((offset, index, group) => {
+    this._forEachGroupInViewport((offset, index, group) => {
       if (group.style.useFirstLineForOverview)
         return;
       if (!this._isGroupCollapsible(index) || group.expanded) {
@@ -1108,6 +1122,8 @@ PerfUI.FlameChart = class extends UI.VBox {
         }
         return;
       }
+      if (this._useWebGL)
+        return;
       let nextGroup = index + 1;
       while (nextGroup < groups.length && groups[nextGroup].style.nestingLevel > group.style.nestingLevel)
         nextGroup++;
@@ -1116,7 +1132,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     });
 
     context.save();
-    this._forEachGroup((offset, index, group) => {
+    this._forEachGroupInViewport((offset, index, group) => {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         const width = this._labelWidthForGroup(context, group) + 2;
@@ -1138,7 +1154,7 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     context.fillStyle = UI.themeSupport.patchColorText('#6e6e6e', colorUsage.Foreground);
     context.beginPath();
-    this._forEachGroup((offset, index, group) => {
+    this._forEachGroupInViewport((offset, index, group) => {
       if (this._isGroupCollapsible(index)) {
         drawExpansionArrow.call(
             this, this._expansionArrowIndent * (group.style.nestingLevel + 1),
@@ -1151,7 +1167,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     context.beginPath();
     context.stroke();
 
-    this._forEachGroup((offset, index, group, isFirst, groupHeight) => {
+    this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
       if (index === this._selectedGroup) {
         const lineWidth = 2;
         const bracketLength = 10;
@@ -1195,7 +1211,6 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {function(number, number, !PerfUI.FlameChart.Group, boolean, number)} callback
    */
   _forEachGroup(callback) {
-    const top = this._chartViewport.scrollOffset();
     const groups = this._rawTimelineData.groups || [];
     if (!groups.length)
       return;
@@ -1205,8 +1220,6 @@ PerfUI.FlameChart = class extends UI.VBox {
     for (let i = 0; i < groups.length; ++i) {
       const groupTop = groupOffsets[i];
       const group = groups[i];
-      if (groupTop - group.style.padding > top + this._offsetHeight)
-        break;
       let firstGroup = true;
       while (groupStack.peekLast().nestingLevel >= group.style.nestingLevel) {
         groupStack.pop();
@@ -1216,10 +1229,24 @@ PerfUI.FlameChart = class extends UI.VBox {
       const thisGroupVisible = parentGroupVisible && (!this._isGroupCollapsible(i) || group.expanded);
       groupStack.push({nestingLevel: group.style.nestingLevel, visible: thisGroupVisible});
       const nextOffset = i === groups.length - 1 ? groupOffsets[i + 1] + group.style.padding : groupOffsets[i + 1];
-      if (!parentGroupVisible || nextOffset < top)
+      if (!parentGroupVisible)
         continue;
       callback(groupTop, i, group, firstGroup, nextOffset - groupTop);
     }
+  }
+
+  /**
+   * @param {function(number, number, !PerfUI.FlameChart.Group, boolean, number)} callback
+   */
+  _forEachGroupInViewport(callback) {
+    const top = this._chartViewport.scrollOffset();
+    this._forEachGroup((groupTop, index, group, firstGroup, height) => {
+      if (groupTop - group.style.padding > top + this._offsetHeight)
+        return;
+      if (groupTop + height < top)
+        return;
+      callback(groupTop, index, group, firstGroup, height);
+    });
   }
 
   /**

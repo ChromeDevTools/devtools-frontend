@@ -1018,8 +1018,6 @@ PerfUI.FlameChart = class extends UI.VBox {
     }
 
     gl.viewport(0, 0, this._canvasGL.width, this._canvasGL.height);
-    gl.clearColor(1.0, 1.0, 1.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
 
     if (!this._vertexCount)
       return;

@@ -749,7 +749,7 @@ PerfUI.FlameChart = class extends UI.VBox {
           continue;
         lastDrawOffset = barX;
 
-        const color = this._dataProvider.entryColor(entryIndex);
+        const color = this._entryColorsCache[entryIndex];
         let bucket = colorBuckets.get(color);
         if (!bucket) {
           bucket = [];
@@ -961,7 +961,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       const level = entryLevels[i];
       if (!this._visibleLevels[level])
         continue;
-      const color = this._dataProvider.entryColor(i);
+      const color = this._entryColorsCache[i];
       if (!color)
         continue;
       let colorIndex = parsedColorCache.get(color);
@@ -1263,7 +1263,7 @@ PerfUI.FlameChart = class extends UI.VBox {
         if (entryEndTime <= timeWindowLeft)
           break;
         lastDrawOffset = barX;
-        const color = this._dataProvider.entryColor(entryIndex);
+        const color = this._entryColorsCache[entryIndex];
         const endBarX = this._timeToPositionClipped(entryEndTime);
         if (group.style.useDecoratorsForOverview && this._dataProvider.forceDecoration(entryIndex)) {
           const unclippedBarX = this._chartViewport.timeToPosition(entryStartTime);
@@ -1420,6 +1420,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._groupOffsets = null;
       this._rawTimelineData = null;
       this._forceDecorationCache = null;
+      this._entryColorsCache = null;
       this._rawTimelineDataLength = 0;
       this._selectedGroup = -1;
       this._flameChartDelegate.updateSelectedGroup(this, null);
@@ -1429,8 +1430,11 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._rawTimelineData = timelineData;
     this._rawTimelineDataLength = timelineData.entryStartTimes.length;
     this._forceDecorationCache = new Int8Array(this._rawTimelineDataLength);
-    for (let i = 0; i < this._forceDecorationCache.length; ++i)
+    this._entryColorsCache = new Array(this._rawTimelineDataLength);
+    for (let i = 0; i < this._rawTimelineDataLength; ++i) {
       this._forceDecorationCache[i] = this._dataProvider.forceDecoration(i) ? 1 : 0;
+      this._entryColorsCache[i] = this._dataProvider.entryColor(i);
+    }
 
     const entryCounters = new Uint32Array(this._dataProvider.maxStackDepth() + 1);
     for (let i = 0; i < timelineData.entryLevels.length; ++i)

@@ -667,9 +667,6 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     editor.widget().element.addEventListener('keydown', async event => {
       if (isEnterKey(event) && !event.shiftKey) {
         event.consume(true);
-        if (event.ctrlKey)
-
-          event.consume(true);
         const expression = editor.text();
         if (event.ctrlKey || await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(expression))
           finishEditing.call(this, true);
@@ -682,7 +679,8 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     editor.widget().focus();
     editor.widget().element.id = 'source-frame-breakpoint-condition';
     editor.widget().element.addEventListener('blur', event => {
-      finishEditing.call(this, true);
+      if (event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(editor.widget().element))
+        finishEditing.call(this, true);
     }, true);
     let finished = false;
     /**

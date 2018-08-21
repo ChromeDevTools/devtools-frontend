@@ -114,8 +114,7 @@ Persistence.Automapping = class {
   _onUISourceCodeAdded(uiSourceCode) {
     const project = uiSourceCode.project();
     if (project.type() === Workspace.projectTypes.FileSystem) {
-      // Never do bindings to filesystems that are typed to another client.
-      if (Persistence.FileSystemWorkspaceBinding.fileSystemType(project))
+      if (!Persistence.FileSystemWorkspaceBinding.fileSystemSupportsAutomapping(project))
         return;
       this._filesIndex.addPath(uiSourceCode.url());
       this._fileSystemUISourceCodes.set(uiSourceCode.url(), uiSourceCode);
@@ -299,7 +298,7 @@ Persistence.Automapping = class {
    * @return {!Promise<?Persistence.AutomappingStatus>}
    */
   _createBinding(networkSourceCode) {
-    if (networkSourceCode.url().startsWith('file://')) {
+    if (networkSourceCode.url().startsWith('file://') || networkSourceCode.url().startsWith('snippet://')) {
       const fileSourceCode = this._fileSystemUISourceCodes.get(networkSourceCode.url());
       const status =
           fileSourceCode ? new Persistence.AutomappingStatus(networkSourceCode, fileSourceCode, false) : null;

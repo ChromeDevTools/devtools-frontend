@@ -530,23 +530,11 @@ Sources.SourcesPanel = class extends UI.Panel {
     Common.moduleSetting('pauseOnExceptionEnabled').set(!this._pauseOnExceptionButton.toggled());
   }
 
-  /**
-   * @return {boolean}
-   */
   _runSnippet() {
     const uiSourceCode = this._sourcesView.currentUISourceCode();
     if (!uiSourceCode)
-      return false;
-
-    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!currentExecutionContext)
-      return false;
-
-    if (uiSourceCode.project().type() !== Workspace.projectTypes.Snippets)
-      return false;
-
-    Snippets.scriptSnippetModel.evaluateScriptSnippet(currentExecutionContext, uiSourceCode);
-    return true;
+      return;
+    Snippets.evaluateScriptSnippet(uiSourceCode);
   }
 
   /**

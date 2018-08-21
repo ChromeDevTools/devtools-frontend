@@ -31,7 +31,7 @@ Sources.JavaScriptCompilerPlugin = class extends Sources.UISourceCodeFrame.Plugi
   static accepts(uiSourceCode) {
     if (uiSourceCode.extension() === 'js')
       return true;
-    if (uiSourceCode.project().type() === Workspace.projectTypes.Snippets)
+    if (Snippets.isSnippetsUISourceCode(uiSourceCode))
       return true;
     for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       if (Bindings.debuggerWorkspaceBinding.scriptFile(uiSourceCode, debuggerModel))

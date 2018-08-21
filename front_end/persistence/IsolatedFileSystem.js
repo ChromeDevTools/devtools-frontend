@@ -27,11 +27,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 /**
  * @unrestricted
  */
-Persistence.IsolatedFileSystem = class {
+Persistence.IsolatedFileSystem = class extends Persistence.PlatformFileSystem {
   /**
    * @param {!Persistence.IsolatedFileSystemManager} manager
    * @param {string} path
@@ -40,11 +39,10 @@ Persistence.IsolatedFileSystem = class {
    * @param {string} type
    */
   constructor(manager, path, embedderPath, domFileSystem, type) {
+    super(path, type);
     this._manager = manager;
-    this._path = path;
     this._embedderPath = embedderPath;
     this._domFileSystem = domFileSystem;
-    this._type = type;
     this._excludedFoldersSetting = Common.settings.createLocalSetting('workspaceExcludedFolders', {});
     /** @type {!Set<string>} */
     this._excludedFolders = new Set(this._excludedFoldersSetting.get()[path] || []);
@@ -100,6 +98,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} path
    * @return {!Promise<?{modificationTime: !Date, size: number}>}
    */
@@ -127,6 +126,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @return {!Array<string>}
    */
   initialFilePaths() {
@@ -134,6 +134,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @return {!Array<string>}
    */
   initialGitFolders() {
@@ -141,24 +142,11 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
-   * @return {string}
-   */
-  path() {
-    return this._path;
-  }
-
-  /**
+   * @override
    * @return {string}
    */
   embedderPath() {
     return this._embedderPath;
-  }
-
-  /**
-   * @return {string}
-   */
-  type() {
-    return this._type;
   }
 
   /**
@@ -191,7 +179,7 @@ Persistence.IsolatedFileSystem = class {
           }
           if (this.isFileExcluded(entry.fullPath + '/')) {
             this._excludedEmbedderFolders.push(
-                Common.ParsedURL.urlToPlatformPath(this._path + entry.fullPath, Host.isWin()));
+                Common.ParsedURL.urlToPlatformPath(this.path() + entry.fullPath, Host.isWin()));
             continue;
           }
           ++pendingRequests;
@@ -239,6 +227,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} path
    * @param {?string} name
    * @return {!Promise<?string>}
@@ -268,7 +257,7 @@ Persistence.IsolatedFileSystem = class {
           }
           const errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
           console.error(
-              errorMessage + ' when testing if file exists \'' + (this._path + '/' + path + '/' + nameCandidate) +
+              errorMessage + ' when testing if file exists \'' + (this.path() + '/' + path + '/' + nameCandidate) +
               '\'');
           resolve(null);
         });
@@ -277,6 +266,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} path
    * @return {!Promise<boolean>}
    */
@@ -306,12 +296,13 @@ Persistence.IsolatedFileSystem = class {
      */
     function errorHandler(error) {
       const errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-      console.error(errorMessage + ' when deleting file \'' + (this._path + '/' + path) + '\'');
+      console.error(errorMessage + ' when deleting file \'' + (this.path() + '/' + path) + '\'');
       resolveCallback(false);
     }
   }
 
   /**
+   * @override
    * @param {string} path
    * @return {!Promise<?Blob>}
    */
@@ -331,13 +322,14 @@ Persistence.IsolatedFileSystem = class {
         }
 
         const errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-        console.error(errorMessage + ' when getting content for file \'' + (this._path + '/' + path) + '\'');
+        console.error(errorMessage + ' when getting content for file \'' + (this.path() + '/' + path) + '\'');
         resolve(null);
       }
     });
   }
 
   /**
+   * @override
    * @param {string} path
    * @param {function(?string,boolean)} callback
    */
@@ -381,6 +373,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} path
    * @param {string} content
    * @param {boolean} isBase64
@@ -429,12 +422,13 @@ Persistence.IsolatedFileSystem = class {
      */
     function errorHandler(error) {
       const errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-      console.error(errorMessage + ' when setting content for file \'' + (this._path + '/' + path) + '\'');
+      console.error(errorMessage + ' when setting content for file \'' + (this.path() + '/' + path) + '\'');
       callback();
     }
   }
 
   /**
+   * @override
    * @param {string} path
    * @param {string} newName
    * @param {function(boolean, string=)} callback
@@ -503,7 +497,7 @@ Persistence.IsolatedFileSystem = class {
      */
     function errorHandler(error) {
       const errorMessage = Persistence.IsolatedFileSystem.errorMessage(error);
-      console.error(errorMessage + ' when renaming file \'' + (this._path + '/' + path) + '\' to \'' + newName + '\'');
+      console.error(errorMessage + ' when renaming file \'' + (this.path() + '/' + path) + '\' to \'' + newName + '\'');
       callback(false);
     }
   }
@@ -562,11 +556,12 @@ Persistence.IsolatedFileSystem = class {
 
   _saveExcludedFolders() {
     const settingValue = this._excludedFoldersSetting.get();
-    settingValue[this._path] = this._excludedFolders.valuesArray();
+    settingValue[this.path()] = this._excludedFolders.valuesArray();
     this._excludedFoldersSetting.set(settingValue);
   }
 
   /**
+   * @override
    * @param {string} path
    */
   addExcludedFolder(path) {
@@ -576,6 +571,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} path
    */
   removeExcludedFolder(path) {
@@ -584,13 +580,17 @@ Persistence.IsolatedFileSystem = class {
     this._manager.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.ExcludedFolderRemoved, path);
   }
 
+  /**
+   * @override
+   */
   fileSystemRemoved() {
     const settingValue = this._excludedFoldersSetting.get();
-    delete settingValue[this._path];
+    delete settingValue[this.path()];
     this._excludedFoldersSetting.set(settingValue);
   }
 
   /**
+   * @override
    * @param {string} folderPath
    * @return {boolean}
    */
@@ -602,6 +602,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @return {!Set<string>}
    */
   excludedFolders() {
@@ -609,6 +610,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {string} query
    * @param {!Common.Progress} progress
    * @return {!Promise<!Array<string>>}
@@ -629,6 +631,7 @@ Persistence.IsolatedFileSystem = class {
   }
 
   /**
+   * @override
    * @param {!Common.Progress} progress
    */
   indexContent(progress) {
@@ -636,7 +639,69 @@ Persistence.IsolatedFileSystem = class {
     const requestId = this._manager.registerProgress(progress);
     InspectorFrontendHost.indexPath(requestId, this._embedderPath, JSON.stringify(this._excludedEmbedderFolders));
   }
+
+  /**
+   * @override
+   * @param {string} path
+   * @return {string}
+   */
+  mimeFromPath(path) {
+    return Common.ResourceType.mimeFromURL(path) || 'text/plain';
+  }
+
+  /**
+   * @override
+   * @param {string} path
+   * @return {boolean}
+   */
+  canExcludeFolder(path) {
+    return !!path && this.type() !== 'overrides';
+  }
+
+  /**
+   * @override
+   * @param {string} path
+   * @return {!Common.ResourceType}
+   */
+  contentType(path) {
+    const extension = Common.ParsedURL.extractExtension(path);
+    if (Persistence.IsolatedFileSystem._styleSheetExtensions.has(extension))
+      return Common.resourceTypes.Stylesheet;
+    if (Persistence.IsolatedFileSystem._documentExtensions.has(extension))
+      return Common.resourceTypes.Document;
+    if (Persistence.IsolatedFileSystem.ImageExtensions.has(extension))
+      return Common.resourceTypes.Image;
+    if (Persistence.IsolatedFileSystem._scriptExtensions.has(extension))
+      return Common.resourceTypes.Script;
+    return Persistence.IsolatedFileSystem.BinaryExtensions.has(extension) ? Common.resourceTypes.Other :
+                                                                            Common.resourceTypes.Document;
+  }
+
+  /**
+   * @override
+   * @param {string} url
+   * @return {string}
+   */
+  tooltipForURL(url) {
+    const path = Common.ParsedURL.urlToPlatformPath(url, Host.isWin()).trimMiddle(150);
+    return ls`Linked to ${path}`;
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  supportsAutomapping() {
+    return this.type() !== 'overrides';
+  }
 };
+
+Persistence.IsolatedFileSystem._styleSheetExtensions = new Set(['css', 'scss', 'sass', 'less']);
+Persistence.IsolatedFileSystem._documentExtensions = new Set(['htm', 'html', 'asp', 'aspx', 'phtml', 'jsp']);
+Persistence.IsolatedFileSystem._scriptExtensions = new Set([
+  'asp', 'aspx', 'c', 'cc', 'cljs', 'coffee', 'cpp', 'cs', 'dart', 'java', 'js',
+  'jsp', 'jsx',  'h', 'm',  'mjs',  'mm',     'py',  'sh', 'ts',   'tsx',  'ls'
+]);
 
 Persistence.IsolatedFileSystem.ImageExtensions =
     new Set(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);

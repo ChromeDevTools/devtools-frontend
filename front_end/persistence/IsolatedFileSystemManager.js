@@ -35,7 +35,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   constructor() {
     super();
 
-    /** @type {!Map<string, !Persistence.IsolatedFileSystem>} */
+    /** @type {!Map<string, !Persistence.PlatformFileSystem>} */
     this._fileSystems = new Map();
     /** @type {!Map<number, function(!Array.<string>)>} */
     this._callbacks = new Map();
@@ -107,7 +107,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   removeFileSystem(fileSystem) {
     InspectorFrontendHost.removeFileSystem(fileSystem.embedderPath());
@@ -133,7 +133,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
     return promise.then(storeFileSystem.bind(this));
 
     /**
-     * @param {?Persistence.IsolatedFileSystem} fileSystem
+     * @param {?Persistence.PlatformFileSystem} fileSystem
      * @this {Persistence.IsolatedFileSystemManager}
      */
     function storeFileSystem(fileSystem) {
@@ -144,6 +144,15 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
         this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
       return fileSystem;
     }
+  }
+
+  /**
+   * @param {string} fileSystemURL
+   * @param {!Persistence.PlatformFileSystem} fileSystem
+   */
+  addPlatformFileSystem(fileSystemURL, fileSystem) {
+    this._fileSystems.set(fileSystemURL, fileSystem);
+    this.dispatchEventToListeners(Persistence.IsolatedFileSystemManager.Events.FileSystemAdded, fileSystem);
   }
 
   /**
@@ -224,7 +233,7 @@ Persistence.IsolatedFileSystemManager = class extends Common.Object {
 
   /**
    * @param {string} fileSystemPath
-   * @return {?Persistence.IsolatedFileSystem}
+   * @return {?Persistence.PlatformFileSystem}
    */
   fileSystem(fileSystemPath) {
     return this._fileSystems.get(fileSystemPath) || null;

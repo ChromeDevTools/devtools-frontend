@@ -19,7 +19,7 @@ Sources.SnippetsPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @return {boolean}
    */
   static accepts(uiSourceCode) {
-    return uiSourceCode.project().type() === Workspace.projectTypes.Snippets;
+    return Snippets.isSnippetsUISourceCode(uiSourceCode);
   }
 
   /**

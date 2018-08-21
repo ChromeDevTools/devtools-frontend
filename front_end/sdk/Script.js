@@ -141,7 +141,10 @@ SDK.Script = class {
     if (!this.scriptId)
       return '';
     const source = await this.debuggerModel.target().debuggerAgent().getScriptSource(this.scriptId);
-    this._source = source ? SDK.Script._trimSourceURLComment(source) : '';
+    if (source && this.hasSourceURL)
+      this._source = SDK.Script._trimSourceURLComment(source);
+    else
+      this._source = source || '';
     if (this._originalSource === null)
       this._originalSource = this._source;
     return this._source;

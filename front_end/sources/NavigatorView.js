@@ -345,7 +345,7 @@ Sources.NavigatorView = class extends UI.VBox {
    */
   _projectAdded(project) {
     if (!this.acceptProject(project) || project.type() !== Workspace.projectTypes.FileSystem ||
-        this._rootNode.child(project.id()))
+        Snippets.isSnippetsProject(project) || this._rootNode.child(project.id()))
       return;
     this._rootNode.appendChild(new Sources.NavigatorGroupTreeNode(
         this, project, project.id(), Sources.NavigatorView.Types.FileSystem, project.displayName()));
@@ -418,7 +418,7 @@ Sources.NavigatorView = class extends UI.VBox {
    * @return {!Sources.NavigatorTreeNode}
    */
   _folderNode(uiSourceCode, project, target, frame, projectOrigin, path, fromSourceMap) {
-    if (project.type() === Workspace.projectTypes.Snippets)
+    if (Snippets.isSnippetsUISourceCode(uiSourceCode))
       return this._rootNode;
 
     if (target && !this._groupByFolder && !fromSourceMap)
@@ -581,12 +581,6 @@ Sources.NavigatorView = class extends UI.VBox {
   _sourceSelected(uiSourceCode, focusSource) {
     this._lastSelectedUISourceCode = uiSourceCode;
     Common.Revealer.reveal(uiSourceCode, !focusSource);
-  }
-
-  /**
-   * @param {!Workspace.UISourceCode} uiSourceCode
-   */
-  sourceDeleted(uiSourceCode) {
   }
 
   /**
@@ -997,7 +991,10 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
     const binding = Persistence.persistence.binding(this._uiSourceCode);
     if (binding) {
       const container = createElementWithClass('span', 'icon-stack');
-      const icon = UI.Icon.create('largeicon-navigator-file-sync', 'icon');
+      let iconType = 'largeicon-navigator-file-sync';
+      if (Snippets.isSnippetsUISourceCode(binding.fileSystem))
+        iconType = 'largeicon-navigator-snippet';
+      const icon = UI.Icon.create(iconType, 'icon');
       const badge = UI.Icon.create('badge-navigator-file-sync', 'icon-badge');
       // TODO(allada) This does not play well with dark theme. Add an actual icon and use it.
       if (Persistence.networkPersistenceManager.project() === binding.fileSystem.project())
@@ -1008,7 +1005,7 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
       this.setLeadingIcons([container]);
     } else {
       let iconType = 'largeicon-navigator-file';
-      if (this._uiSourceCode.contentType() === Common.resourceTypes.Snippet)
+      if (Snippets.isSnippetsUISourceCode(this._uiSourceCode))
         iconType = 'largeicon-navigator-snippet';
       const defaultIcon = UI.Icon.create(iconType, 'icon');
       this.setLeadingIcons([defaultIcon]);
@@ -1106,7 +1103,6 @@ Sources.NavigatorSourceTreeElement = class extends UI.TreeElement {
    * @return {boolean}
    */
   ondelete() {
-    this._navigatorView.sourceDeleted(this.uiSourceCode);
     return true;
   }
 

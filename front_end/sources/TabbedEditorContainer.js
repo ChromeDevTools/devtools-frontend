@@ -379,11 +379,10 @@ Sources.TabbedEditorContainer = class extends Common.Object {
 
     if (!this._currentFile)
       return;
-    const currentProjectType = this._currentFile.project().type();
-    const addedProjectType = uiSourceCode.project().type();
-    const snippetsProjectType = Workspace.projectTypes.Snippets;
-    if (this._history.index(this._currentFile.url()) && currentProjectType === snippetsProjectType &&
-        addedProjectType !== snippetsProjectType)
+
+    const currentProjectIsSnippets = Snippets.isSnippetsUISourceCode(this._currentFile);
+    const addedProjectIsSnippets = Snippets.isSnippetsUISourceCode(uiSourceCode);
+    if (this._history.index(this._currentFile.url()) && currentProjectIsSnippets && !addedProjectIsSnippets)
       this._innerShowFile(uiSourceCode, false);
   }
 

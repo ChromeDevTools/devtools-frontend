@@ -92,6 +92,14 @@ Common.ResourceType = class {
   }
 
   /**
+   * @param {string} ext
+   * @return {string|undefined}
+   */
+  static mimeFromExtension(ext) {
+    return Common.ResourceType._mimeTypeByExtension.get(ext);
+  }
+
+  /**
    * @return {string}
    */
   name() {
@@ -123,7 +131,7 @@ Common.ResourceType = class {
    * @return {boolean}
    */
   isScript() {
-    return this._name === 'script' || this._name === 'sm-script' || this._name === 'snippet';
+    return this._name === 'script' || this._name === 'sm-script';
   }
 
   /**
@@ -219,7 +227,6 @@ Common.resourceTypes = {
   Fetch: new Common.ResourceType('fetch', 'Fetch', Common.resourceCategories.XHR, true),
   EventSource: new Common.ResourceType('eventsource', 'EventSource', Common.resourceCategories.XHR, true),
   Script: new Common.ResourceType('script', 'Script', Common.resourceCategories.Script, true),
-  Snippet: new Common.ResourceType('snippet', 'Snippet', Common.resourceCategories.Script, true),
   Stylesheet: new Common.ResourceType('stylesheet', 'Stylesheet', Common.resourceCategories.Stylesheet, true),
   Image: new Common.ResourceType('image', 'Image', Common.resourceCategories.Image, false),
   Media: new Common.ResourceType('media', 'Media', Common.resourceCategories.Media, false),

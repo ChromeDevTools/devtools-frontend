@@ -116,7 +116,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
 
     this._updateScriptFiles();
 
-    if (this._uiSourceCode.isDirty() && !this._supportsEnabledBreakpointsWhileEditing()) {
+    if (this._uiSourceCode.isDirty()) {
       this._muted = true;
       this._mutedFromStart = true;
     } else {
@@ -330,7 +330,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
   }
 
   _workingCopyChanged() {
-    if (this._supportsEnabledBreakpointsWhileEditing() || this._scriptFileForDebuggerModel.size)
+    if (this._scriptFileForDebuggerModel.size)
       return;
 
     if (this._uiSourceCode.isDirty())
@@ -344,22 +344,15 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    */
   _workingCopyCommitted(event) {
     this._scriptsPanel.updateLastModificationTime();
-    if (this._supportsEnabledBreakpointsWhileEditing())
-      return;
-
     if (!this._scriptFileForDebuggerModel.size)
       this._restoreBreakpointsAfterEditing();
   }
 
   _didMergeToVM() {
-    if (this._supportsEnabledBreakpointsWhileEditing())
-      return;
     this._restoreBreakpointsIfConsistentScripts();
   }
 
   _didDivergeFromVM() {
-    if (this._supportsEnabledBreakpointsWhileEditing())
-      return;
     this._muteBreakpointsWhileEditing();
   }
 
@@ -369,10 +362,6 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     for (const decoration of this._breakpointDecorations)
       this._updateBreakpointDecoration(decoration);
     this._muted = true;
-  }
-
-  _supportsEnabledBreakpointsWhileEditing() {
-    return this._uiSourceCode.project().type() === Workspace.projectTypes.Snippets;
   }
 
   _restoreBreakpointsIfConsistentScripts() {
@@ -1275,8 +1264,6 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     const uiLocation = /** @type {!Workspace.UILocation} */ (event.data.uiLocation);
     if (uiLocation.uiSourceCode !== this._uiSourceCode)
       return true;
-    if (this._supportsEnabledBreakpointsWhileEditing())
-      return false;
     if (this._muted)
       return true;
     const scriptFiles = this._scriptFileForDebuggerModel.valuesArray();

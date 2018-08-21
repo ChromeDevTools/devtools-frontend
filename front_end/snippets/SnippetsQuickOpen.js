@@ -16,9 +16,7 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
   selectItem(itemIndex, promptValue) {
     if (itemIndex === null)
       return;
-    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (currentExecutionContext)
-      Snippets.scriptSnippetModel.evaluateScriptSnippet(currentExecutionContext, this._snippets[itemIndex]);
+    Snippets.evaluateScriptSnippet(this._snippets[itemIndex]);
   }
 
   /**
@@ -34,7 +32,7 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
    * @override
    */
   attach() {
-    this._snippets = Snippets.scriptSnippetModel.project().uiSourceCodes();
+    this._snippets = Snippets.project.uiSourceCodes();
   }
 
   /**
@@ -70,7 +68,7 @@ Snippets.SnippetsQuickOpen = class extends QuickOpen.FilteredListWidget.Provider
    * @param {!Element} subtitleElement
    */
   renderItem(itemIndex, query, titleElement, subtitleElement) {
-    titleElement.textContent = this._snippets[itemIndex].name();
+    titleElement.textContent = unescape(this._snippets[itemIndex].name());
     titleElement.classList.add('monospace');
     QuickOpen.FilteredListWidget.highlightRanges(titleElement, query, true);
   }

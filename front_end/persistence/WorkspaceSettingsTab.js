@@ -15,10 +15,10 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
 
     Persistence.isolatedFileSystemManager.addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemAdded,
-        event => this._fileSystemAdded(/** @type {!Persistence.IsolatedFileSystem} */ (event.data)), this);
+        event => this._fileSystemAdded(/** @type {!Persistence.PlatformFileSystem} */ (event.data)), this);
     Persistence.isolatedFileSystemManager.addEventListener(
         Persistence.IsolatedFileSystemManager.Events.FileSystemRemoved,
-        event => this._fileSystemRemoved(/** @type {!Persistence.IsolatedFileSystem} */ (event.data)), this);
+        event => this._fileSystemRemoved(/** @type {!Persistence.PlatformFileSystem} */ (event.data)), this);
 
     const folderExcludePatternInput = this._createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
@@ -79,7 +79,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _addItem(fileSystem) {
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
@@ -98,7 +98,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    * @return {!Element}
    */
   _renderFileSystem(fileSystem) {
@@ -124,7 +124,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _removeFileSystemClicked(fileSystem) {
     Persistence.isolatedFileSystemManager.removeFileSystem(fileSystem);
@@ -135,14 +135,14 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _fileSystemAdded(fileSystem) {
     this._addItem(fileSystem);
   }
 
   /**
-   * @param {!Persistence.IsolatedFileSystem} fileSystem
+   * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _fileSystemRemoved(fileSystem) {
     const mappingView = this._mappingViewByPath.get(fileSystem.path());

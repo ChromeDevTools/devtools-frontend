@@ -1630,23 +1630,19 @@ Network.NetworkLogView = class extends UI.VBox {
        * @return {string}
        */
       function escapeCharacter(x) {
-        let code = x.charCodeAt(0);
-        if (code < 256) {
-          // Add leading zero when needed to not care about the next character.
-          return code < 16 ? '\\x0' + code.toString(16) : '\\x' + code.toString(16);
-        }
-        code = code.toString(16);
-        return '\\u' + ('0000' + code).substr(code.length, 4);
+        const code = x.charCodeAt(0);
+        // Add leading zero when needed to not care about the next character.
+        return code < 16 ? '\\u0' + code.toString(16) : '\\u' + code.toString(16);
       }
 
-      if (/[^\x20-\x7E]|\'/.test(str)) {
+      if (/[\u0000-\u001f\u007f-\u009f]|\'/.test(str)) {
         // Use ANSI-C quoting syntax.
         return '$\'' +
             str.replace(/\\/g, '\\\\')
                 .replace(/\'/g, '\\\'')
                 .replace(/\n/g, '\\n')
                 .replace(/\r/g, '\\r')
-                .replace(/[^\x20-\x7E]/g, escapeCharacter) +
+                .replace(/[\u0000-\u001f\u007f-\u009f]/g, escapeCharacter) +
             '\'';
       } else {
         // Use single quote syntax.

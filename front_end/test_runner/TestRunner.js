@@ -326,6 +326,7 @@ TestRunner.textContentWithoutStyles = function(node) {
  * @param {!SDK.Target} target
  */
 TestRunner._setupTestHelpers = function(target) {
+  TestRunner.BrowserAgent = target.browserAgent();
   TestRunner.CSSAgent = target.cssAgent();
   TestRunner.DeviceOrientationAgent = target.deviceOrientationAgent();
   TestRunner.DOMAgent = target.domAgent();

@@ -560,6 +560,8 @@ UI.TabbedPane = class extends UI.VBox {
   _createDropDownButton() {
     const dropDownContainer = createElementWithClass('div', 'tabbed-pane-header-tabs-drop-down-container');
     const chevronIcon = UI.Icon.create('largeicon-chevron', 'chevron-icon');
+    UI.ARIAUtils.markAsButton(dropDownContainer);
+    UI.ARIAUtils.setAccessibleName(dropDownContainer, ls`More tabs`);
     dropDownContainer.appendChild(chevronIcon);
     dropDownContainer.addEventListener('click', this._dropDownClicked.bind(this));
     dropDownContainer.addEventListener('mousedown', event => {

@@ -404,8 +404,10 @@ Resources.ServiceWorkersView.Section = class {
       errorsLabel.addEventListener('click', () => Common.console.show());
       name.appendChild(errorsLabel);
     }
-    this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =
-        Common.UIString('Received %s', new Date(version.scriptResponseTime * 1000).toLocaleString());
+    if (version.scriptResponseTime) {
+      this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =
+          Common.UIString('Received %s', new Date(version.scriptResponseTime * 1000).toLocaleString());
+    }
   }
 
   /**
@@ -458,16 +460,20 @@ Resources.ServiceWorkersView.Section = class {
       const waitingEntry = this._addVersion(
           versionsStack, 'service-worker-waiting-circle', Common.UIString('#%s waiting to activate', waiting.id));
       createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
-      waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
+      if (waiting.scriptResponseTime) {
+        waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
+            Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
+      }
       if (!this._targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
         createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
     }
     if (installing) {
       const installingEntry = this._addVersion(
           versionsStack, 'service-worker-installing-circle', Common.UIString('#%s installing', installing.id));
-      installingEntry.createChild('div', 'service-worker-subtitle').textContent =
-          Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
+      if (installing.scriptResponseTime) {
+        installingEntry.createChild('div', 'service-worker-subtitle').textContent =
+            Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
+      }
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
         createLink(installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
     }

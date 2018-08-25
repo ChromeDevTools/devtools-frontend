@@ -139,6 +139,7 @@ Bindings.BlackboxManager = class {
     if (!hasBlackboxedMappings) {
       if (script[Bindings.BlackboxManager._blackboxedRanges] && await script.setBlackboxedRanges([]))
         delete script[Bindings.BlackboxManager._blackboxedRanges];
+      this._debuggerWorkspaceBinding.updateLocations(script);
       return;
     }
 
@@ -159,6 +160,7 @@ Bindings.BlackboxManager = class {
     const oldRanges = script[Bindings.BlackboxManager._blackboxedRanges] || [];
     if (!isEqual(oldRanges, newRanges) && await script.setBlackboxedRanges(newRanges))
       script[Bindings.BlackboxManager._blackboxedRanges] = newRanges;
+    this._debuggerWorkspaceBinding.updateLocations(script);
 
     /**
      * @param {!Array<!{lineNumber: number, columnNumber: number}>} rangesA
@@ -274,10 +276,8 @@ Bindings.BlackboxManager = class {
     for (const debuggerModel of SDK.targetManager.models(SDK.DebuggerModel)) {
       promises.push(this._setBlackboxPatterns(debuggerModel));
       const sourceMapManager = debuggerModel.sourceMapManager();
-      for (const script of debuggerModel.scripts()) {
-        promises.push(this._updateScriptRanges(script, sourceMapManager.sourceMapForClient(script))
-                          .then(() => this._debuggerWorkspaceBinding.updateLocations(script)));
-      }
+      for (const script of debuggerModel.scripts())
+        promises.push(this._updateScriptRanges(script, sourceMapManager.sourceMapForClient(script)));
     }
     await Promise.all(promises);
     const listeners = Array.from(this._listeners);

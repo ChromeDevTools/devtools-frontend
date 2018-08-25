@@ -157,6 +157,10 @@ Console.ConsoleView = class extends UI.VBox {
       this._pinPane = new Console.ConsolePinPane();
       this._pinPane.element.classList.add('console-view-pinpane');
       this._pinPane.show(this._contentsElement);
+      this._pinPane.element.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && event.ctrlKey)
+          this._prompt.focus();
+      });
     }
 
     this._viewport = new Console.ConsoleViewport(this);
@@ -1162,7 +1166,7 @@ Console.ConsoleView = class extends UI.VBox {
    */
   _promptExpressionPinned(event) {
     const text = /** @type {string} */ (event.data);
-    this._pinPane.addPin(text);
+    this._pinPane.addPin(text, true /* userGesture */);
   }
 
   _promptTextChanged() {
@@ -1507,6 +1511,11 @@ Console.ConsoleView.ActionDelegate = class {
       case 'console.clear.history':
         Console.ConsoleView.instance()._clearHistory();
         return true;
+      case 'console.create-pin':
+        if (Runtime.experiments.isEnabled('pinnedExpressions')) {
+          Console.ConsoleView.instance()._pinPane.addPin('', true /* userGesture */);
+          return true;
+        }
     }
     return false;
   }

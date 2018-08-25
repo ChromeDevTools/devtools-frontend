@@ -57,6 +57,7 @@ Console.ConsolePrompt = class extends UI.Widget {
         pinButton.title = ls`Pin expression and continuously evaluate`;
         pinButton.addEventListener('click', () => {
           this.dispatchEventToListeners(Console.ConsolePrompt.Events.ExpressionPinned, this.text());
+          this.setText('');
         });
       }
       if (this._isBelowPromptEnabled)

@@ -59,7 +59,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
   static isSideEffectFailure(response) {
     const exceptionDetails = !response[Protocol.Error] && response.exceptionDetails;
     return !!(
-        exceptionDetails && exceptionDetails.exception &&
+        exceptionDetails && exceptionDetails.exception && exceptionDetails.exception.description &&
         exceptionDetails.exception.description.startsWith('EvalError: Possible side-effect in debug-evaluate'));
   }
 

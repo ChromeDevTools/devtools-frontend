@@ -12,6 +12,14 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
 
     /** @type {!Set<!Console.ConsolePin>} */
     this._pins = new Set();
+    this._pinsSetting = Common.settings.createLocalSetting('consolePins', []);
+    for (const expression of this._pinsSetting.get())
+      this.addPin(expression);
+  }
+
+  _savePins() {
+    const toSave = Array.from(this._pins).map(pin => pin.expression());
+    this._pinsSetting.set(toSave);
   }
 
   /**
@@ -44,16 +52,20 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
   _removePin(pin) {
     pin.element().remove();
     this._pins.delete(pin);
+    this._savePins();
   }
 
   /**
    * @param {string} expression
+   * @param {boolean=} userGesture
    */
-  addPin(expression) {
-    const pin = new Console.ConsolePin(expression, this._removePin.bind(this));
+  addPin(expression, userGesture) {
+    const pin = new Console.ConsolePin(expression, this);
     this.contentElement.appendChild(pin.element());
     this._pins.add(pin);
-    pin.focus();
+    this._savePins();
+    if (userGesture)
+      pin.focus();
     this.update();
   }
 
@@ -61,7 +73,7 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
    * @override
    */
   doUpdate() {
-    if (!this._pins.size)
+    if (!this._pins.size || !this.isShowing())
       return Promise.resolve();
     if (this.isShowing())
       this.update();
@@ -73,14 +85,15 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
   }
 };
 
-Console.ConsolePin = class {
+Console.ConsolePin = class extends Common.Object {
   /**
    * @param {string} expression
-   * @param {function(!Console.ConsolePin)} onRemove
+   * @param {!Console.ConsolePinPane} pinPane
    */
-  constructor(expression, onRemove) {
+  constructor(expression, pinPane) {
+    super();
     const deletePinIcon = UI.Icon.create('smallicon-cross', 'console-delete-pin');
-    deletePinIcon.addEventListener('click', () => onRemove(this));
+    deletePinIcon.addEventListener('click', () => pinPane._removePin(this));
 
     const fragment = UI.Fragment.build`
     <div class='console-pin'>
@@ -98,6 +111,7 @@ Console.ConsolePin = class {
     this._resultObject = null;
     /** @type {?UI.TextEditor} */
     this._editor = null;
+    this._committedExpression = expression;
 
     this._editorPromise = self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
       this._editor = factory.createEditor({
@@ -113,10 +127,25 @@ Console.ConsolePin = class {
       this._editor.widget().element.tabIndex = -1;
       this._editor.setText(expression);
       this._editor.widget().element.addEventListener('keydown', event => {
-        if (event.key === 'Tab')
+        if (event.key === 'Tab' && !this._editor.text())
           event.consume();
       }, true);
+      this._editor.widget().element.addEventListener('focusout', event => {
+        const text = this._editor.text();
+        const trimmedText = text.trim();
+        if (text.length !== trimmedText.length)
+          this._editor.setText(trimmedText);
+        this._committedExpression = trimmedText;
+        pinPane._savePins();
+      });
     });
+  }
+
+  /**
+   * @return {string}
+   */
+  expression() {
+    return this._committedExpression;
   }
 
   /**
@@ -148,17 +177,28 @@ Console.ConsolePin = class {
       return;
     const text = this._editor.textWithCurrentSuggestion().trim();
     const isEditing = this._pinElement.hasFocus();
-    const timeout = isEditing ? 250 : undefined;
-    const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(text, isEditing, timeout);
+    const throwOnSideEffect = isEditing && text !== this._committedExpression;
+    const timeout = throwOnSideEffect ? 250 : undefined;
+    const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(
+        text, throwOnSideEffect, timeout, !isEditing /* allowErrors */);
     this._resultObject = result ? (result.object || null) : null;
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this._pinPreview.deepTextContent()) {
       this._pinPreview.removeChildren();
-      if (result && SDK.RuntimeModel.isSideEffectFailure(result))
-        this._pinPreview.appendChild(createTextNode(`(...)`));
-      else
-        this._pinPreview.appendChild(previewText ? preview : createTextNode(ls`not available`));
+      if (result && SDK.RuntimeModel.isSideEffectFailure(result)) {
+        const sideEffectLabel = this._pinPreview.createChild('span', 'object-value-calculate-value-button');
+        sideEffectLabel.textContent = `(...)`;
+        sideEffectLabel.title = ls`Evaluate, allowing side effects`;
+      } else if (previewText) {
+        this._pinPreview.appendChild(preview);
+      } else if (!isEditing) {
+        this._pinPreview.createTextChild(ls`not available`);
+      }
+      this._pinPreview.title = previewText;
     }
+
+    const isError = result && result.exceptionDetails && !SDK.RuntimeModel.isSideEffectFailure(result);
+    this._pinElement.classList.toggle('error-level', isError);
   }
 };
 

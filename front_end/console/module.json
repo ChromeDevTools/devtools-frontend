@@ -60,6 +60,13 @@
             "className": "Console.ConsoleView.ActionDelegate"
         },
         {
+            "type": "action",
+            "category": "Console",
+            "actionId": "console.create-pin",
+            "className": "Console.ConsoleView.ActionDelegate",
+            "title": "Create new pinned expression"
+        },
+        {
             "type": "setting",
             "category": "Console",
             "title": "Hide network messages",

@@ -46,9 +46,10 @@ ObjectUI.JavaScriptREPL = class {
    * @param {string} text
    * @param {boolean} throwOnSideEffect
    * @param {number=} timeout
+   * @param {boolean=} allowErrors
    * @return {!Promise<!{preview: !DocumentFragment, result: ?SDK.RuntimeModel.EvaluationResult}>}
    */
-  static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout) {
+  static async evaluateAndBuildPreview(text, throwOnSideEffect, timeout, allowErrors) {
     const executionContext = UI.context.flavor(SDK.ExecutionContext);
     const isTextLong = text.length > ObjectUI.JavaScriptREPL._MaxLengthForEvaluation;
     if (!text || !executionContext || (throwOnSideEffect && isTextLong))
@@ -64,23 +65,24 @@ ObjectUI.JavaScriptREPL = class {
     };
     const result = await executionContext.evaluate(
         options, false /* userGesture */, wrappedResult.preprocessed /* awaitPromise */);
-    const preview = ObjectUI.JavaScriptREPL._buildEvaluationPreview(result);
+    const preview = ObjectUI.JavaScriptREPL._buildEvaluationPreview(result, allowErrors);
     return {preview, result};
   }
 
   /**
    * @param {!SDK.RuntimeModel.EvaluationResult} result
+   * @param {boolean=} allowErrors
    * @return {!DocumentFragment}
    */
-  static _buildEvaluationPreview(result) {
+  static _buildEvaluationPreview(result, allowErrors) {
     const fragment = createDocumentFragment();
     if (result.error)
       return fragment;
 
-    if (result.exceptionDetails) {
+    if (result.exceptionDetails && result.exceptionDetails.exception && result.exceptionDetails.exception.description) {
       const exception = result.exceptionDetails.exception.description;
-      if (exception.startsWith('TypeError: '))
-        fragment.createChild('span').textContent = exception;
+      if (exception.startsWith('TypeError: ') || allowErrors)
+        fragment.createChild('span').textContent = result.exceptionDetails.text + ' ' + exception;
       return fragment;
     }
 

@@ -43,12 +43,21 @@ UI.TreeOutline = class extends Common.Object {
     this.contentElement = this._rootElement._childrenListNode;
     this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), true);
 
+    this._showSelectionOnKeyboardFocus = false;
     this._focusable = true;
     this.setFocusable(this._focusable);
     if (this._focusable)
       this.contentElement.setAttribute('tabIndex', -1);
     this.element = this.contentElement;
     UI.ARIAUtils.markAsTree(this.element);
+  }
+
+  /**
+   * @param {boolean} show
+   */
+  setShowSelectionOnKeyboardFocus(show) {
+    this.contentElement.classList.toggle('hide-selection-when-blurred', show);
+    this._showSelectionOnKeyboardFocus = show;
   }
 
   _createRootElement() {
@@ -793,7 +802,9 @@ UI.TreeElement = class {
     if (element.treeElement !== this || element.hasSelection())
       return;
 
-    const toggleOnClick = this.toggleOnClick && !this.selectable;
+    console.assert(!!this.treeOutline);
+    const showSelectionOnKeyboardFocus = this.treeOutline ? this.treeOutline._showSelectionOnKeyboardFocus : false;
+    const toggleOnClick = this.toggleOnClick && (showSelectionOnKeyboardFocus || !this.selectable);
     const isInTriangle = this.isEventWithinDisclosureTriangle(event);
     if (!toggleOnClick && !isInTriangle)
       return;
@@ -1068,11 +1079,13 @@ UI.TreeElement = class {
   }
 
   _onFocus() {
-    this._listItemNode.classList.add('force-white-icons');
+    if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred'))
+      this._listItemNode.classList.add('force-white-icons');
   }
 
   _onBlur() {
-    this._listItemNode.classList.remove('force-white-icons');
+    if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred'))
+      this._listItemNode.classList.remove('force-white-icons');
   }
 
   /**

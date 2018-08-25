@@ -21,7 +21,7 @@
     position: relative;
 }
 
-.tree-outline li.hovered:not(.selected) .selection {
+.tree-outline:not(.hide-selection-when-blurred) li.hovered:not(.selected) .selection {
     display: block;
     left: 3px;
     right: 3px;
@@ -35,27 +35,27 @@
     margin-left: -10000px;
 }
 
-.tree-outline li.selected .selection {
+.tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
     display: block;
     background-color: var(--selection-inactive-bg-color);
 }
 
-.tree-outline li.in-clipboard .highlight {
+.tree-outline:not(.hide-selection-when-blurred) li.in-clipboard .highlight {
     outline: 1px dotted darkgrey;
 }
 
-.tree-outline li.elements-drag-over .selection {
+.tree-outline:not(.hide-selection-when-blurred) li.elements-drag-over .selection {
     display: block;
     margin-top: -2px;
     border-top: 2px solid;
     border-top-color: var(--selection-bg-color);
 }
 
-ol.tree-outline li.selected:focus .selection {
+ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     background-color: var(--selection-bg-color);
 }
 
-ol.tree-outline li.parent.selected:focus::before {
+ol.tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before {
     background-color: var(--selection-fg-color);
 }
 
@@ -81,11 +81,11 @@ ol.tree-outline,
     min-height: 16px;
 }
 
-ol.tree-outline li.selected:focus {
+ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     color: var(--selection-fg-color);
 }
 
-ol.tree-outline li.selected:focus * {
+ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     color: inherit;
 }
 
@@ -107,11 +107,11 @@ ol.tree-outline li.selected:focus * {
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/treeoutlineTriangles.png);
     -webkit-mask-size: 32px 24px;
-    content: "aa";
-    color: transparent;
+    content: "\00a0\00a0";
     text-shadow: none;
     margin-right: -2px;
     height: 12px;
+    width: 13px;
 }
 
 .tree-outline li:not(.parent)::before {
@@ -156,4 +156,14 @@ ol.tree-outline li.selected:focus * {
 
 .tree-outline.tree-outline-dense ol {
     padding-left: 10px;
+}
+
+.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
+}
+
+.tree-outline-disclosure:not(.tree-outline-disclosure-hide-overflow) .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+    width: fit-content;
+    padding-right: 3px;
 }

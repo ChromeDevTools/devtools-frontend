@@ -43,7 +43,8 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
     this._editable = true;
     if (!showOverflow)
       this.hideOverflow();
-    this.setFocusable(false);
+    this.setFocusable(true);
+    this.setShowSelectionOnKeyboardFocus(true);
     this._objectTreeElement = new ObjectUI.ObjectPropertiesSection.RootElement(
         object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties);
     this.appendChild(this._objectTreeElement);
@@ -437,7 +438,7 @@ ObjectUI.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
     this._emptyPlaceholder = emptyPlaceholder;
 
     this.setExpandable(true);
-    this.selectable = false;
+    this.selectable = true;
     this.toggleOnClick = true;
     this.listItemElement.classList.add('object-properties-section-root-element');
     this._linkifier = linkifier;
@@ -492,7 +493,6 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
     this.property = property;
     this.toggleOnClick = true;
-    this.selectable = false;
     /** @type {!Array.<!Object>} */
     this._highlightChanges = [];
     this._linkifier = linkifier;
@@ -1003,7 +1003,6 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
   constructor(object, fromIndex, toIndex, propertyCount, linkifier) {
     super(String.sprintf('[%d \u2026 %d]', fromIndex, toIndex), true);
     this.toggleOnClick = true;
-    this.selectable = false;
     this._fromIndex = fromIndex;
     this._toIndex = toIndex;
     this._object = object;

@@ -22,6 +22,8 @@ EventListeners.EventListenersView = class extends UI.VBox {
     this._treeOutline.registerRequiredCSS('event_listeners/eventListenersView.css');
     this._treeOutline.setComparator(EventListeners.EventListenersTreeElement.comparator);
     this._treeOutline.element.classList.add('monospace');
+    this._treeOutline.setShowSelectionOnKeyboardFocus(true);
+    this._treeOutline.setFocusable(true);
     this.element.appendChild(this._treeOutline.element);
     this._emptyHolder = createElementWithClass('div', 'gray-info-message');
     this._emptyHolder.textContent = Common.UIString('No event listeners');
@@ -182,12 +184,17 @@ EventListeners.EventListenersView = class extends UI.VBox {
 
   addEmptyHolderIfNeeded() {
     let allHidden = true;
+    let firstVisibleChild = null;
     for (const eventType of this._treeOutline.rootElement().children()) {
       eventType.hidden = !eventType.firstChild();
       allHidden = allHidden && eventType.hidden;
+      if (!firstVisibleChild && !eventType.hidden)
+        firstVisibleChild = eventType;
     }
     if (allHidden && !this._emptyHolder.parentNode)
       this.element.appendChild(this._emptyHolder);
+    if (firstVisibleChild)
+      firstVisibleChild.select(true /* omitFocus */);
   }
 
   reset() {
@@ -213,7 +220,6 @@ EventListeners.EventListenersTreeElement = class extends UI.TreeElement {
   constructor(type, linkifier, changeCallback) {
     super(type);
     this.toggleOnClick = true;
-    this.selectable = false;
     this._linkifier = linkifier;
     this._changeCallback = changeCallback;
   }
@@ -255,7 +261,6 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
     super('', true);
     this._eventListener = eventListener;
     this.editable = false;
-    this.selectable = false;
     this._setTitle(object, linkifier);
     this._changeCallback = changeCallback;
   }

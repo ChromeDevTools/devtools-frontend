@@ -323,6 +323,8 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
       this._plugins.push(new Sources.JavaScriptCompilerPlugin(this.textEditor, pluginUISourceCode));
     if (Sources.SnippetsPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.SnippetsPlugin(this.textEditor, pluginUISourceCode));
+    if (Sources.ScriptOriginPlugin.accepts(pluginUISourceCode))
+      this._plugins.push(new Sources.ScriptOriginPlugin(this.textEditor, pluginUISourceCode));
     if (!this.pretty && Runtime.experiments.isEnabled('sourceDiff') &&
         Sources.GutterDiffPlugin.accepts(pluginUISourceCode))
       this._plugins.push(new Sources.GutterDiffPlugin(this.textEditor, pluginUISourceCode));

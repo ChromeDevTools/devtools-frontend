@@ -863,7 +863,8 @@
         "SourcesSearchScope.js",
         "SourcesPanel.js",
         "JavaScriptCompilerPlugin.js",
-        "SnippetsPlugin.js"
+        "SnippetsPlugin.js",
+        "ScriptOriginPlugin.js"
     ],
     "resources": [
         "callStackSidebarPane.css",

@@ -451,6 +451,14 @@ Profiler.HeapSnapshotProxy = class extends Profiler.HeapSnapshotProxyObject {
   }
 
   /**
+   * @param {number} nodeIndex
+   * @return {!Promise<?HeapSnapshotModel.Location>}
+   */
+  getLocation(nodeIndex) {
+    return this._callMethodPromise('getLocation', nodeIndex);
+  }
+
+  /**
    * @return {!Promise.<?HeapSnapshotModel.Samples>}
    */
   getSamples() {

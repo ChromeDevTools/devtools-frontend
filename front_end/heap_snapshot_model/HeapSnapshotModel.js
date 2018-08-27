@@ -411,3 +411,19 @@ HeapSnapshotModel.Samples = class {
     this.sizes = sizes;
   }
 };
+
+/**
+ * @unrestricted
+ */
+HeapSnapshotModel.Location = class {
+  /**
+   * @param {number} scriptId
+   * @param {number} lineNumber
+   * @param {number} columnNumber
+   */
+  constructor(scriptId, lineNumber, columnNumber) {
+    this.scriptId = scriptId;
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+  }
+};

@@ -204,21 +204,22 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
 
   /**
    * @override
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @param {number} nodeIndex
    * @return {!Promise<?Element>}
    */
-  async linkifyObject(snapshotObjectId) {
+  async linkifyObject(nodeIndex) {
     const heapProfilerModel = this._profile.heapProfilerModel();
     // heapProfilerModel is null if snapshot was loaded from file
     if (!heapProfilerModel)
       return null;
-    const remoteObject = await heapProfilerModel.objectForSnapshotObjectId(String(snapshotObjectId), 'link');
-    if (!remoteObject || remoteObject.type !== 'function')
+    const location = await this._profile.getLocation(nodeIndex);
+    if (!location)
       return null;
-    const functionDetails = await remoteObject.debuggerModel().functionDetailsPromise(remoteObject);
-    if (!functionDetails || !functionDetails.location)
+    const debuggerModel = heapProfilerModel.runtimeModel().debuggerModel();
+    const rawLocation = debuggerModel.createRawLocationByScriptId(
+        String(location.scriptId), location.lineNumber, location.columnNumber);
+    if (!rawLocation)
       return null;
-    const rawLocation = functionDetails.location;
     const sourceURL = rawLocation.script() && rawLocation.script().sourceURL;
     return sourceURL && this._linkifier ? this._linkifier.linkifyRawLocation(rawLocation, sourceURL) : null;
   }
@@ -1373,6 +1374,14 @@ Profiler.HeapProfileHeader = class extends Profiler.ProfileHeader {
    */
   heapProfilerModel() {
     return this._heapProfilerModel;
+  }
+
+  /**
+   * @param {number} nodeIndex
+   * @return {!Promise<?HeapSnapshotModel.Location>}
+   */
+  getLocation(nodeIndex) {
+    return this._snapshotProxy.getLocation(nodeIndex);
   }
 
   /**

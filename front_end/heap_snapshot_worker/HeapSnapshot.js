@@ -838,6 +838,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this._samples = null;
     /** @type {!Array.<string>} */
     this.strings = profile.strings;
+    /** @type {!Array.<number>} */
+    this._locations = profile.locations;
     this._progress = progress;
 
     this._noDistance = -5;
@@ -890,6 +892,14 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this._edgeWeakType = this._edgeTypes.indexOf('weak');
     this._edgeInvisibleType = this._edgeTypes.indexOf('invisible');
 
+    const location_fields = meta.location_fields || [];
+
+    this._locationIndexOffset = location_fields.indexOf('object_index');
+    this._locationScriptIdOffset = location_fields.indexOf('script_id');
+    this._locationLineOffset = location_fields.indexOf('line');
+    this._locationColumnOffset = location_fields.indexOf('column');
+    this._locationFieldCount = location_fields.length;
+
     this.nodeCount = this.nodes.length / this._nodeFieldCount;
     this._edgeCount = this.containmentEdges.length / this._edgeFieldsCount;
 
@@ -924,6 +934,8 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this.calculateStatistics();
     this._progress.updateStatus('Calculating samples\u2026');
     this._buildSamples();
+    this._progress.updateStatus('Building locations\u2026');
+    this._buildLocationMap();
     this._progress.updateStatus('Finished processing.');
 
     if (this._profile.snapshot.trace_function_count) {
@@ -1868,6 +1880,30 @@ HeapSnapshotWorker.HeapSnapshot = class {
       sizeForRange[rangeIndex] += node.selfSize();
     }
     this._samples = new HeapSnapshotModel.Samples(timestamps, lastAssignedIds, sizeForRange);
+  }
+
+  _buildLocationMap() {
+    /** @type {!Map<number, !HeapSnapshotModel.Location>} */
+    const map = new Map();
+    const locations = this._locations;
+
+    for (let i = 0; i < locations.length; i += this._locationFieldCount) {
+      const nodeIndex = locations[i + this._locationIndexOffset];
+      const scriptId = locations[i + this._locationScriptIdOffset];
+      const line = locations[i + this._locationLineOffset];
+      const col = locations[i + this._locationColumnOffset];
+      map.set(nodeIndex, new HeapSnapshotModel.Location(scriptId, line, col));
+    }
+
+    this._locationMap = map;
+  }
+
+  /**
+   * @param {number} nodeIndex
+   * @return {?HeapSnapshotModel.Location}
+   */
+  getLocation(nodeIndex) {
+    return this._locationMap.get(nodeIndex) || null;
   }
 
   /**

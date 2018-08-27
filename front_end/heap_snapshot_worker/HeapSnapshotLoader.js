@@ -107,7 +107,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   _parseStringsArray() {
     this._progress.updateStatus('Parsing strings\u2026');
     const closingBracketIndex = this._json.lastIndexOf(']');
-    if (closingBracketIndex === -1)
+    if (closingBracketIndex === -1 || this._state !== 'accumulate-strings')
       throw new Error('Incomplete JSON');
     this._json = this._json.slice(0, closingBracketIndex + 1);
     this._snapshot.strings = JSON.parse(this._json);
@@ -198,7 +198,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
             this._state = 'find-samples';
             this._progress.updateStatus('Loading samples\u2026');
           } else {
-            this._state = 'find-strings';
+            this._state = 'find-locations';
           }
           break;
         }
@@ -276,6 +276,39 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
           if (this._parseUintArray())
             return;
           this._snapshot.samples = this._array;
+          this._array = null;
+          this._state = 'find-locations';
+          this._progress.updateStatus('Loading locations\u2026');
+          break;
+        }
+        case 'find-locations': {
+          if (!this._snapshot.snapshot.meta.location_fields) {
+            // The property `locations` was added retroactively, so older
+            // snapshots might not contain it. In this case just expect `strings`
+            // as next property.
+            this._snapshot.locations = [];
+            this._array = null;
+            this._state = 'find-strings';
+            break;
+          }
+
+          const locationsToken = '"locations"';
+          const locationsTokenIndex = this._json.indexOf(locationsToken);
+          if (locationsTokenIndex === -1)
+            return;
+          const bracketIndex = this._json.indexOf('[', locationsTokenIndex);
+          if (bracketIndex === -1)
+            return;
+          this._json = this._json.slice(bracketIndex + 1);
+          this._array = [];
+          this._arrayIndex = 0;
+          this._state = 'parse-locations';
+          break;
+        }
+        case 'parse-locations': {
+          if (this._parseUintArray())
+            return;
+          this._snapshot.locations = this._array;
           this._array = null;
           this._state = 'find-strings';
           this._progress.updateStatus('Loading strings\u2026');

@@ -384,10 +384,10 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @override
-   * @param {!Protocol.HeapProfiler.HeapSnapshotObjectId} snapshotObjectId
+   * @param {number} nodeIndex
    * @return {!Promise<?Element>}
    */
-  async linkifyObject(snapshotObjectId) {
+  async linkifyObject(nodeIndex) {
     return null;
   }
 

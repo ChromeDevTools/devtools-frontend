@@ -86,8 +86,8 @@ InlineEditor.CSSShadowEditor = class extends UI.VBox {
    */
   setModel(model) {
     this._model = model;
-    this._typeField.hidden = !model.isBoxShadow();
-    this._spreadField.hidden = !model.isBoxShadow();
+    this._typeField.classList.toggle('hidden', !model.isBoxShadow());
+    this._spreadField.classList.toggle('hidden', !model.isBoxShadow());
     this._updateUI();
   }
 

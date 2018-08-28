@@ -63,8 +63,9 @@
             "type": "action",
             "category": "Console",
             "actionId": "console.create-pin",
+            "iconClass": "largeicon-visibility",
             "className": "Console.ConsoleView.ActionDelegate",
-            "title": "Create new pinned expression"
+            "title": "Create watch expression"
         },
         {
             "type": "setting",

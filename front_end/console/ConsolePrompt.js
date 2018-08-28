@@ -51,15 +51,6 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.widget().show(this.element);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
       this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
-      if (Runtime.experiments.isEnabled('pinnedExpressions')) {
-        this.element.classList.add('console-pins-enabled');
-        const pinButton = this.element.createChild('span', 'command-pin-button');
-        pinButton.title = ls`Pin expression and continuously evaluate`;
-        pinButton.addEventListener('click', () => {
-          this.dispatchEventToListeners(Console.ConsolePrompt.Events.ExpressionPinned, this.text());
-          this.setText('');
-        });
-      }
       if (this._isBelowPromptEnabled)
         this.element.appendChild(this._eagerPreviewElement);
 
@@ -408,6 +399,5 @@ Console.ConsoleHistoryManager = class {
 };
 
 Console.ConsolePrompt.Events = {
-  ExpressionPinned: Symbol('ExpressionPinned'),
   TextChanged: Symbol('TextChanged')
 };

@@ -107,7 +107,10 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
-    toolbar.appendToolbarItem(groupSimilarToggle);
+    if (Runtime.experiments.isEnabled('pinnedExpressions')) {
+      toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
+          /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin'))));
+    }
     toolbar.appendToolbarItem(this._progressToolbarItem);
     rightToolbar.appendSeparator();
     rightToolbar.appendToolbarItem(this._filterStatusText);
@@ -136,6 +139,7 @@ Console.ConsoleView = class extends UI.VBox {
     settingsToolbarLeft.appendToolbarItem(this._hideNetworkMessagesCheckbox);
     settingsToolbarLeft.appendToolbarItem(this._preserveLogCheckbox);
     settingsToolbarLeft.appendToolbarItem(filterByExecutionContextCheckbox);
+    settingsToolbarLeft.appendToolbarItem(groupSimilarToggle);
 
     const settingsToolbarRight = new UI.Toolbar('', settingsPane.element);
     settingsToolbarRight.makeVertical();
@@ -202,7 +206,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt = new Console.ConsolePrompt();
     this._prompt.show(this._promptElement);
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
-    this._prompt.addEventListener(Console.ConsolePrompt.Events.ExpressionPinned, this._promptExpressionPinned, this);
     this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
 
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
@@ -1159,14 +1162,6 @@ Console.ConsoleView = class extends UI.VBox {
   _updateStickToBottomOnWheel() {
     this._updateStickToBottomOnMouseDown();
     this._updateStickToBottomOnMouseUp();
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _promptExpressionPinned(event) {
-    const text = /** @type {string} */ (event.data);
-    this._pinPane.addPin(text, true /* userGesture */);
   }
 
   _promptTextChanged() {

@@ -65,7 +65,7 @@
             "actionId": "console.create-pin",
             "iconClass": "largeicon-visibility",
             "className": "Console.ConsoleView.ActionDelegate",
-            "title": "Create watch expression"
+            "title": "Create live expression"
         },
         {
             "type": "setting",

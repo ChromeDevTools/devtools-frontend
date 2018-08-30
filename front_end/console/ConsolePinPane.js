@@ -32,12 +32,12 @@ Console.ConsolePinPane = class extends UI.ThrottledWidget {
       const targetPinElement = target.enclosingNodeOrSelfWithClass('console-pin');
       if (targetPinElement) {
         const targetPin = targetPinElement[Console.ConsolePin._PinSymbol];
-        contextMenu.editSection().appendItem(ls`Edit pin`, targetPin.focus.bind(targetPin));
-        contextMenu.editSection().appendItem(ls`Remove pin`, this._removePin.bind(this, targetPin));
+        contextMenu.editSection().appendItem(ls`Edit expression`, targetPin.focus.bind(targetPin));
+        contextMenu.editSection().appendItem(ls`Remove expression`, this._removePin.bind(this, targetPin));
         targetPin.appendToContextMenu(contextMenu);
       }
     }
-    contextMenu.editSection().appendItem(ls`Remove all pins`, this._removeAllPins.bind(this));
+    contextMenu.editSection().appendItem(ls`Remove all expressions`, this._removeAllPins.bind(this));
     contextMenu.show();
   }
 

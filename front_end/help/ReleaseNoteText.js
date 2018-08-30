@@ -13,6 +13,44 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 12,
+    header: 'Highlights from the Chrome 70 update',
+    highlights: [
+      {
+        title: 'Live Expressions in the Console',
+        subtitle: 'Pin expressions to the top of the Console to monitor their values in real-time.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#watch',
+      },
+      {
+        title: 'Highlight DOM nodes during Eager Evaluation',
+        subtitle: 'Type an expression that evaluates to a node to highlight that node in the viewport.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#nodes',
+      },
+      {
+        title: 'Autocomplete Conditional Breakpoints',
+        subtitle: 'Type expressions quickly and accurately.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#autocomplete',
+      },
+      {
+        title: 'Performance panel optimizations',
+        subtitle: 'Faster loading and processing of Performance recordings.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#performance',
+      },
+      {
+        title: 'More reliable debugging',
+        subtitle: 'Bug fixes for sourcemaps and blackboxing.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#debugging',
+      },
+      {
+        title: 'Debug Node.js apps with ndb',
+        subtitle:
+            'Detect and attach to child processes, place breakpoints before modules are required, edit files within DevTools, and more.',
+        link: 'https://developers.google.com/web/updates/2018/08/devtools#ndb',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2018/08/devtools',
+  },
+  {
     version: 11,
     header: 'Highlights from the Chrome 68 update',
     highlights: [

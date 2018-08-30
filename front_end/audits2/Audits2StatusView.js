@@ -285,7 +285,7 @@ Audits2.StatusView.StatusPhases = [
   {
     id: 'auditing',
     progressBarClass: 'auditing',
-    message: 'Almost there! Lighthouse is now generating your own special pretty report!',
+    message: 'Almost there! Lighthouse is now generating your report.',
     statusMessagePrefix: 'Evaluating',
     order: 30,
   }

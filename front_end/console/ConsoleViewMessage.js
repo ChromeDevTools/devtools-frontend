@@ -1069,6 +1069,7 @@ Console.ConsoleViewMessage = class {
       return this._element;
 
     this._element = createElement('div');
+    this._element.tabIndex = -1;
     this.updateMessageElement();
     return this._element;
   }

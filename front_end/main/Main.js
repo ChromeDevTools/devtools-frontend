@@ -108,7 +108,8 @@ Main.Main = class {
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
-    Runtime.experiments.register('consoleBelowPrompt', 'Eager evaluation');
+    Runtime.experiments.register('consoleBelowPrompt', 'Console eager evaluation');
+    Runtime.experiments.register('consoleKeyboardNavigation', 'Console keyboard navigation', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
@@ -143,7 +144,7 @@ Main.Main = class {
       if (testPath.indexOf('network/') !== -1)
         Runtime.experiments.enableForTest('networkSearch');
       if (testPath.indexOf('console/viewport-testing/') !== -1)
-        Runtime.experiments.enableForTest('consoleBelowPrompt');
+        Runtime.experiments.enableForTest('consoleKeyboardNavigation');
       if (testPath.indexOf('console/') !== -1)
         Runtime.experiments.enableForTest('pinnedExpressions');
     }

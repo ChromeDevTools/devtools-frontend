@@ -627,6 +627,7 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _consoleCleared() {
+    const hadFocus = this._viewport.element.hasFocus();
     this._cancelBuildHiddenCache();
     this._currentMatchRangeIndex = -1;
     this._consoleMessages = [];
@@ -639,6 +640,8 @@ Console.ConsoleView = class extends UI.VBox {
     this._linkifier.reset();
     this._badgePool.reset();
     this._filter.clear();
+    if (hadFocus)
+      this._prompt.focus();
   }
 
   _handleContextMenuEvent(event) {

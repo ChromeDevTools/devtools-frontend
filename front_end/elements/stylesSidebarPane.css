@@ -27,11 +27,11 @@
 }
 
 .styles-section[data-keyboard-focus="true"]:focus {
-    background-color: hsl(214, 67%, 95%);
+    background-color: hsl(214, 48%, 95%);
 }
 
 .styles-section.read-only[data-keyboard-focus="true"]:focus {
-    background-color: hsl(215, 25%, 91%);
+    background-color: hsl(215, 25%, 87%);
 }
 
 .styles-section .simple-selector.filter-match {

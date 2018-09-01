@@ -33,12 +33,14 @@
     --message-border-color: rgb(240, 240, 240);
     --warning-border-color: hsl(50, 100%, 88%);
     --error-border-color: hsl(0, 100%, 92%);
+    --error-text-color: red;
 }
 
 .-theme-with-dark-background .console-view {
     --message-border-color: rgb(58, 58, 58);
     --warning-border-color: rgb(102, 85, 0);
     --error-border-color: rgb(92, 0, 0);
+    --error-text-color: hsl(0, 100%, 75%);
 }
 
 .console-toolbar-container {
@@ -197,16 +199,16 @@
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level) {
-    border-top: none;
+    border-top-width: 0px;
 }
 
 .console-message-wrapper.console-error-level,
-.console-message-wrapper.console-error-level + .console-message-wrapper:not(.console-warning-level) {
+.console-message-wrapper.console-error-level:not(.console-selected) + .console-message-wrapper:not(.console-warning-level):not(.console-selected) {
     border-top-color: var(--error-border-color);
 }
 
 .console-message-wrapper.console-warning-level,
-.console-message-wrapper.console-warning-level + .console-message-wrapper:not(.console-error-level) {
+.console-message-wrapper.console-warning-level:not(.console-selected) + .console-message-wrapper:not(.console-error-level):not(.console-selected) {
     border-top-color: var(--warning-border-color);
 }
 
@@ -220,6 +222,47 @@
 
 .console-message-wrapper.console-warning-level:last-of-type {
     border-bottom-color: var(--warning-border-color);
+}
+
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus {
+    border-top-width: 1px;
+}
+
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus .console-message {
+    padding-top: 2px;
+    min-height: 16px;
+}
+
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus .command-result-icon {
+    top: 3px;
+}
+
+.console-message-wrapper.console-selected:focus,
+.console-message-wrapper.console-selected:focus:last-of-type {
+    border-top-color: hsl(214, 67%, 88%);
+    border-bottom-color: hsl(214, 67%, 88%);
+    background-color: hsl(214, 48%, 95%);
+}
+
+.console-message-wrapper.console-error-level.console-selected:focus,
+.console-message-wrapper.console-error-level.console-selected:focus:last-of-type {
+    --error-text-color: rgb(200, 0, 0);
+}
+
+.-theme-with-dark-background .console-message-wrapper.console-error-level.console-selected:focus,
+.-theme-with-dark-background .console-message-wrapper.console-error-level.console-selected:focus:last-of-type {
+    --error-text-color: hsl(0, 100%, 75%);
+}
+
+.-theme-with-dark-background .console-message-wrapper.console-selected:focus,
+.-theme-with-dark-background .console-message-wrapper.console-selected:focus:last-of-type {
+    border-top-color: hsl(214, 47%, 48%);
+    border-bottom-color: hsl(214, 47%, 48%);
+    background-color: hsl(214, 19%, 20%);
+}
+
+.console-message-wrapper.console-selected:focus + .console-message-wrapper {
+    border-top-color: transparent;
 }
 
 .console-message-wrapper .nesting-level-marker {
@@ -268,16 +311,11 @@
 
 .console-error-level .console-message-text,
 .console-error-level .console-view-object-properties-section {
-    color: red !important;
+    color: var(--error-text-color) !important;
 }
 
 .console-system-type.console-info-level {
     color: blue;
-}
-
-.-theme-with-dark-background .console-error-level .console-message-text,
-.-theme-with-dark-background .console-error-level .console-view-object-properties-section {
-    color: hsl(0, 100%, 75%) !important;
 }
 
 .-theme-with-dark-background .console-verbose-level:not(.console-warning-level) .console-message-text,

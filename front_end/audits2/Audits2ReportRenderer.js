@@ -20,6 +20,7 @@ Audits2.ReportRenderer = class extends ReportRenderer {
     return el;
 
     async function onViewTraceClick() {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2ViewTrace);
       await UI.inspectorView.showPanel('timeline');
       Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }

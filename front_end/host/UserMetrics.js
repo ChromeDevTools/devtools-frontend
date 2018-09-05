@@ -94,6 +94,7 @@ Host.UserMetrics.Action = {
   Audits2Started: 29,
   Audits2Finished: 30,
   ShowedThirdPartyBadges: 31,
+  Audits2ViewTrace: 32,
 };
 
 Host.UserMetrics._PanelCodes = {

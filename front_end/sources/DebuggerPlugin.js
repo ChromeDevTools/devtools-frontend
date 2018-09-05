@@ -75,7 +75,7 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     this._boundBlur = this._onBlur.bind(this);
     this._textEditor.element.addEventListener('focusout', this._boundBlur, false);
     this._boundWheel = event => {
-      if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
+      if (this._executionLocation && UI.KeyboardShortcut.eventHasCtrlOrMeta(event))
         event.preventDefault();
     };
     this._textEditor.element.addEventListener('wheel', this._boundWheel, true);

@@ -558,6 +558,8 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
       executionContextAuxData, isLiveEdit, sourceMapURL, hasSourceURLComment, hasSyntaxError, length,
       originStackTrace) {
+    if (this._scripts.has(scriptId))
+      return this._scripts.get(scriptId);
     let isContentScript = false;
     if (executionContextAuxData && ('isDefault' in executionContextAuxData))
       isContentScript = !executionContextAuxData['isDefault'];

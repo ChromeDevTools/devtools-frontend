@@ -559,7 +559,7 @@ ObjectUI.JavaScriptAutocomplete = class {
 
         allProperties.add(property);
         if (property.startsWith(query))
-          caseSensitivePrefix.push({text: property, priority: 4});
+          caseSensitivePrefix.push({text: property, priority: property === query ? 5 : 4});
         else if (lowerCaseProperty.startsWith(lowerCaseQuery))
           caseInsensitivePrefix.push({text: property, priority: 3});
         else if (property.indexOf(query) !== -1)

@@ -443,7 +443,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.TimeSinceEpoch} wallTime
    * @param {!Protocol.Network.Initiator} initiator
    * @param {!Protocol.Network.Response=} redirectResponse
-   * @param {!Protocol.Page.ResourceType=} resourceType
+   * @param {!Protocol.Network.ResourceType=} resourceType
    * @param {!Protocol.Page.FrameId=} frameId
    */
   requestWillBeSent(
@@ -457,8 +457,10 @@ SDK.NetworkDispatcher = class {
       // ignores the internally generated |redirectResponse|. The
       // |outerResponse| of SignedExchangeInfo was set to |networkRequest| in
       // signedExchangeReceived().
-      if (!networkRequest.signedExchangeInfo())
-        this.responseReceived(requestId, loaderId, time, Protocol.Page.ResourceType.Other, redirectResponse, frameId);
+      if (!networkRequest.signedExchangeInfo()) {
+        this.responseReceived(
+            requestId, loaderId, time, Protocol.Network.ResourceType.Other, redirectResponse, frameId);
+      }
       networkRequest = this._appendRedirect(requestId, time, request.url);
       this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestRedirected, networkRequest);
     } else {
@@ -469,7 +471,7 @@ SDK.NetworkDispatcher = class {
     this._updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(time, wallTime);
     networkRequest.setResourceType(
-        resourceType ? Common.resourceTypes[resourceType] : Protocol.Page.ResourceType.Other);
+        resourceType ? Common.resourceTypes[resourceType] : Protocol.Network.ResourceType.Other);
 
     this._startNetworkRequest(networkRequest);
   }
@@ -491,7 +493,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.LoaderId} loaderId
    * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Page.ResourceType} resourceType
+   * @param {!Protocol.Network.ResourceType} resourceType
    * @param {!Protocol.Network.Response} response
    * @param {!Protocol.Page.FrameId=} frameId
    */
@@ -586,7 +588,7 @@ SDK.NetworkDispatcher = class {
    * @override
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.MonotonicTime} time
-   * @param {!Protocol.Page.ResourceType} resourceType
+   * @param {!Protocol.Network.ResourceType} resourceType
    * @param {string} localizedDescription
    * @param {boolean=} canceled
    * @param {!Protocol.Network.BlockedReason=} blockedReason
@@ -751,7 +753,7 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.InterceptionId} interceptionId
    * @param {!Protocol.Network.Request} request
    * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Page.ResourceType} resourceType
+   * @param {!Protocol.Network.ResourceType} resourceType
    * @param {boolean} isNavigationRequest
    * @param {boolean=} isDownload
    * @param {string=} redirectUrl
@@ -1219,7 +1221,7 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
    * @param {!Protocol.Network.InterceptionId} interceptionId
    * @param {!Protocol.Network.Request} request
    * @param {!Protocol.Page.FrameId} frameId
-   * @param {!Protocol.Page.ResourceType} resourceType
+   * @param {!Protocol.Network.ResourceType} resourceType
    * @param {boolean} isNavigationRequest
    * @param {boolean=} isDownload
    * @param {string=} redirectUrl

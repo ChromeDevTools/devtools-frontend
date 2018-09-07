@@ -14,6 +14,7 @@
         {
             "type": "action",
             "actionId": "commandMenu.show",
+            "title": "Run command",
             "className": "QuickOpen.CommandMenu.ShowActionDelegate",
             "bindings": [
                 {
@@ -25,6 +26,11 @@
                     "shortcut": "Meta+Shift+P"
                 }
             ]
+        },
+        {
+            "type": "context-menu-item",
+            "location": "mainMenu/default",
+            "actionId": "commandMenu.show"
         },
         {
             "type": "action",

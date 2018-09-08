@@ -55,11 +55,15 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
   populateTextView(view) {
     const guides = '+!:|';
     let text = `Sampling memory profile.\n\nDate/Time:       ${new Date()}\n` +
-        `Report Version:  7\nNode weight:     1 KiB\n----\n\nCall graph:\n`;
+        `Report Version:  7\n` +
+        `App Version:     ${/Chrom\S*/.exec(navigator.appVersion)[0] || 'Unknown'}\n` +
+        `Node Weight:     1 KiB\n` +
+        `Total Size:      ${Math.round(this.profile.root.total / 1024)} KiB\n` +
+        `----\n\nCall graph:\n`;
     const sortedChildren = this.profile.root.children.sort((a, b) => b.total - a.total);
     const modules = this.profile.modules.map(
         m => Object.assign({address: BigInt(m.baseAddress), endAddress: BigInt(m.baseAddress) + BigInt(m.size)}, m));
-    modules.sort((m1, m2) => m1.address - m2.address);
+    modules.sort((m1, m2) => m1.address > m2.address ? 1 : m1.address < m2.address ? -1 : 0);
     for (const child of sortedChildren)
       printTree('    ', child !== sortedChildren.peekLast(), child);
 

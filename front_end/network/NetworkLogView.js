@@ -1146,22 +1146,26 @@ Network.NetworkLogView = class extends UI.VBox {
             Common.UIString('Copy response'), Network.NetworkLogView._copyResponse.bind(null, request));
       }
 
+      const disableIfBlob = request.isBlobRequest();
       if (Host.isWin()) {
         footerSection.appendItem(
-            Common.UIString('Copy as PowerShell'), this._copyPowerShellCommand.bind(this, request));
-        footerSection.appendItem(Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request));
+            Common.UIString('Copy as PowerShell'), this._copyPowerShellCommand.bind(this, request), disableIfBlob);
         footerSection.appendItem(
-            Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'));
+            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request), disableIfBlob);
         footerSection.appendItem(
-            Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'));
+            Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'), disableIfBlob);
+        footerSection.appendItem(
+            Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
         footerSection.appendItem(Common.UIString('Copy all as PowerShell'), this._copyAllPowerShellCommand.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
         footerSection.appendItem(
             Common.UIString('Copy all as cURL (bash)'), this._copyAllCurlCommand.bind(this, 'unix'));
       } else {
-        footerSection.appendItem(Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request));
-        footerSection.appendItem(Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'));
+        footerSection.appendItem(
+            Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request), disableIfBlob);
+        footerSection.appendItem(
+            Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
         footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
@@ -1250,12 +1254,8 @@ Network.NetworkLogView = class extends UI.VBox {
    * @param {string} platform
    */
   async _copyAllCurlCommand(platform) {
-    const requests = SDK.networkLog.requests();
-    const commands = await Promise.all(requests.map(request => this._generateCurlCommand(request, platform)));
-    if (platform === 'win')
-      InspectorFrontendHost.copyText(commands.join(' &\r\n'));
-    else
-      InspectorFrontendHost.copyText(commands.join(' ;\n'));
+    const commands = await this._generateAllCurlCommand(SDK.networkLog.requests(), platform);
+    InspectorFrontendHost.copyText(commands);
   }
 
   /**
@@ -1268,9 +1268,8 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   async _copyAllFetchCall() {
-    const requests = SDK.networkLog.requests();
-    const commands = await Promise.all(requests.map(request => this._generateFetchCall(request)));
-    InspectorFrontendHost.copyText(commands.join(' ;\n'));
+    const commands = await this._generateAllFetchCall(SDK.networkLog.requests());
+    InspectorFrontendHost.copyText(commands);
   }
 
   /**
@@ -1282,9 +1281,8 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   async _copyAllPowerShellCommand() {
-    const requests = SDK.networkLog.requests();
-    const commands = await Promise.all(requests.map(request => this._generatePowerShellCommand(request)));
-    InspectorFrontendHost.copyText(commands.join(';\r\n'));
+    const commands = this._generateAllPowerShellCommand(SDK.networkLog.requests());
+    InspectorFrontendHost.copyText(commands);
   }
 
   async _exportAll() {
@@ -1491,6 +1489,14 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   * @return {!Array<!SDK.NetworkRequest>}
+   */
+  _filterOutBlobRequests(requests) {
+    return requests.filter(request => !request.isBlobRequest());
+  }
+
+  /**
    * @param {!SDK.NetworkRequest} request
    * @return {!Promise<string>}
    */
@@ -1570,6 +1576,16 @@ Network.NetworkLogView = class extends UI.VBox {
 
     const options = JSON.stringify(fetchOptions);
     return `fetch(${url}, ${options});`;
+  }
+
+  /**
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   * @return {!Promise<string>}
+   */
+  async _generateAllFetchCall(requests) {
+    const nonBlobRequests = this._filterOutBlobRequests(requests);
+    const commands = await Promise.all(nonBlobRequests.map(request => this._generateFetchCall(request)));
+    return commands.join(' ;\n');
   }
 
   /**
@@ -1695,6 +1711,20 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   * @param {string} platform
+   * @return {!Promise<string>}
+   */
+  async _generateAllCurlCommand(requests, platform) {
+    const nonBlobRequests = this._filterOutBlobRequests(requests);
+    const commands = await Promise.all(nonBlobRequests.map(request => this._generateCurlCommand(request, platform)));
+    if (platform === 'win')
+      return commands.join(' &\r\n');
+    else
+      return commands.join(' ;\n');
+  }
+
+  /**
    * @param {!SDK.NetworkRequest} request
    * @return {!Promise<string>}
    */
@@ -1750,6 +1780,16 @@ Network.NetworkLogView = class extends UI.VBox {
     }
 
     return command.join(' ');
+  }
+
+  /**
+   * @param {!Array<!SDK.NetworkRequest>} requests
+   * @return {!Promise<string>}
+   */
+  async _generateAllPowerShellCommand(requests) {
+    const nonBlobRequests = this._filterOutBlobRequests(requests);
+    const commands = await Promise.all(nonBlobRequests.map(request => this._generatePowerShellCommand(request)));
+    return commands.join(';\r\n');
   }
 };
 

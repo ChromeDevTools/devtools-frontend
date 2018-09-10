@@ -150,6 +150,13 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
+   * @return {boolean}
+   */
+  isBlobRequest() {
+    return this._url.startsWith('blob:');
+  }
+
+  /**
    * @param {string} x
    */
   setUrl(x) {

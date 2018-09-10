@@ -107,8 +107,10 @@ Console.ConsolePin = class extends Common.Object {
     nameElement.title = expression;
     this._pinElement[Console.ConsolePin._PinSymbol] = this;
 
-    /** @type {?SDK.RemoteObject} */
-    this._resultObject = null;
+    /** @type {?SDK.RuntimeModel.EvaluationResult} */
+    this._lastResult = null;
+    /** @type {?SDK.ExecutionContext} */
+    this._lastExecutionContext = null;
     /** @type {?UI.TextEditor} */
     this._editor = null;
     this._committedExpression = expression;
@@ -165,8 +167,8 @@ Console.ConsolePin = class extends Common.Object {
    * @param {!UI.ContextMenu} contextMenu
    */
   appendToContextMenu(contextMenu) {
-    if (this._resultObject)
-      contextMenu.appendApplicableItems(this._resultObject);
+    if (this._lastResult && this._lastResult.object)
+      contextMenu.appendApplicableItems(this._lastResult.object);
   }
 
   /**
@@ -179,9 +181,12 @@ Console.ConsolePin = class extends Common.Object {
     const isEditing = this._pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
+    this._lastExecutionContext = UI.context.flavor(SDK.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(
         text, throwOnSideEffect, timeout, !isEditing /* allowErrors */);
-    this._resultObject = result ? (result.object || null) : null;
+    if (this._lastResult)
+      this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
+    this._lastResult = result || null;
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this._pinPreview.deepTextContent()) {
       this._pinPreview.removeChildren();

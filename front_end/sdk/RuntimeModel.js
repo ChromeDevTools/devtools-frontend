@@ -209,6 +209,19 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     this._agent.releaseObjectGroup(objectGroupName);
   }
 
+  /**
+   * @param {!SDK.RuntimeModel.EvaluationResult} result
+   */
+  releaseEvaluationResult(result) {
+    if (result.object)
+      result.object.release();
+    if (result.exceptionDetails && result.exceptionDetails.exception) {
+      const exception = result.exceptionDetails.exception;
+      const exceptionObject = this.createRemoteObject({type: exception.type, objectId: exception.objectId});
+      exceptionObject.release();
+    }
+  }
+
   runIfWaitingForDebugger() {
     this._agent.runIfWaitingForDebugger();
   }

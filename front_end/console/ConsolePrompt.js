@@ -96,6 +96,7 @@ Console.ConsolePrompt = class extends UI.Widget {
    */
   async _requestPreview() {
     const text = this._editor.textWithCurrentSuggestion().trim();
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
     const {preview, result} =
         await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(text, true /* throwOnSideEffect */, 500);
     this._innerPreviewElement.removeChildren();
@@ -108,6 +109,8 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._highlightingNode = false;
       SDK.OverlayModel.hideDOMNodeHighlight();
     }
+    if (result)
+      executionContext.runtimeModel.releaseEvaluationResult(result);
   }
 
   /**

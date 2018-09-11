@@ -53,7 +53,9 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
 
     this._previewPanel = new UI.VBox();
     const resizer = this._previewPanel.element.createChild('div', 'preview-panel-resizer');
-    this._splitWidget.setMainWidget(this._dataGrid.asWidget());
+    const dataGridWidget = this._dataGrid.asWidget();
+    dataGridWidget.setMinimumSize(0, 50);
+    this._splitWidget.setMainWidget(dataGridWidget);
     this._splitWidget.setSidebarWidget(this._previewPanel);
     this._splitWidget.installResizer(resizer);
 

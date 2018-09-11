@@ -208,6 +208,9 @@ InspectorMain.BackendSettingsSync = class {
     this._adBlockEnabledSetting = Common.settings.moduleSetting('network.adBlockingEnabled');
     this._adBlockEnabledSetting.addChangeListener(this._update, this);
 
+    this._emulatePageFocusSetting = Common.settings.moduleSetting('emulatePageFocus');
+    this._emulatePageFocusSetting.addChangeListener(this._update, this);
+
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
   }
 
@@ -215,8 +218,10 @@ InspectorMain.BackendSettingsSync = class {
    * @param {!SDK.Target} target
    */
   _updateTarget(target) {
-    if (!target.parentTarget())
-      target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
+    if (target.parentTarget())
+      return;
+    target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
+    target.emulationAgent().setFocusEmulationEnabled(this._emulatePageFocusSetting.get());
   }
 
   _updateAutoAttach() {

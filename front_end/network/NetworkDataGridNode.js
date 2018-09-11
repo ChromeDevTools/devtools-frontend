@@ -951,17 +951,17 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
    * @param {!Element} cell
    */
   _renderSizeCell(cell) {
-    if (this._request.fetchedViaServiceWorker) {
+    if (this._request.cachedInMemory()) {
+      this._setTextAndTitle(cell, Common.UIString('(from memory cache)'));
+      cell.classList.add('network-dim-cell');
+    } else if (this._request.fetchedViaServiceWorker) {
       this._setTextAndTitle(cell, Common.UIString('(from ServiceWorker)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo()) {
       this._setTextAndTitle(cell, Common.UIString('(from signed-exchange)'));
       cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
-      if (this._request.cachedInMemory())
-        this._setTextAndTitle(cell, Common.UIString('(from memory cache)'));
-      else
-        this._setTextAndTitle(cell, Common.UIString('(from disk cache)'));
+      this._setTextAndTitle(cell, Common.UIString('(from disk cache)'));
       cell.classList.add('network-dim-cell');
     } else {
       const resourceSize = Number.bytesToString(this._request.resourceSize);

@@ -393,17 +393,17 @@ Network.RequestHeadersView = class extends UI.VBox {
 
       const statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
       let statusText = this._request.statusCode + ' ' + this._request.statusText;
-      if (this._request.fetchedViaServiceWorker) {
+      if (this._request.cachedInMemory()) {
+        statusText += ' ' + Common.UIString('(from memory cache)');
+        statusTextElement.classList.add('status-from-cache');
+      } else if (this._request.fetchedViaServiceWorker) {
         statusText += ' ' + Common.UIString('(from ServiceWorker)');
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo()) {
         statusText += ' ' + Common.UIString('(from signed-exchange)');
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.cached()) {
-        if (this._request.cachedInMemory())
-          statusText += ' ' + Common.UIString('(from memory cache)');
-        else
-          statusText += ' ' + Common.UIString('(from disk cache)');
+        statusText += ' ' + Common.UIString('(from disk cache)');
         statusTextElement.classList.add('status-from-cache');
       }
       statusTextElement.textContent = statusText;

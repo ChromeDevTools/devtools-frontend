@@ -811,11 +811,12 @@ Sources.SourcesPanel = class extends UI.Panel {
     if (!(target instanceof SDK.RemoteObject))
       return;
     const remoteObject = /** @type {!SDK.RemoteObject} */ (target);
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
     contextMenu.debugSection().appendItem(
-        Common.UIString('Store as global variable'), this._saveToTempVariable.bind(this, remoteObject));
+        ls`Store as global variable`, () => SDK.consoleModel.saveToTempVariable(executionContext, remoteObject));
     if (remoteObject.type === 'function') {
       contextMenu.debugSection().appendItem(
-          Common.UIString('Show function definition'), this._showFunctionDefinition.bind(this, remoteObject));
+          ls`Show function definition`, this._showFunctionDefinition.bind(this, remoteObject));
     }
   }
 
@@ -832,63 +833,6 @@ Sources.SourcesPanel = class extends UI.Panel {
       return;
     const openText = Common.UIString('Open in Sources panel');
     contextMenu.revealSection().appendItem(openText, this.showUILocation.bind(this, uiSourceCode.uiLocation(0, 0)));
-  }
-
-  /**
-   * @param {!SDK.RemoteObject} remoteObject
-   */
-  async _saveToTempVariable(remoteObject) {
-    const currentExecutionContext = UI.context.flavor(SDK.ExecutionContext);
-    if (!currentExecutionContext)
-      return;
-
-    const result = await currentExecutionContext.globalObject(/* objectGroup */ '', /* generatePreview */ false);
-    if (!!result.exceptionDetails || !result.object) {
-      failedToSave(result.object || null);
-      return;
-    }
-
-    const globalObject = result.object;
-    const callFunctionResult =
-        await globalObject.callFunctionPromise(saveVariable, [SDK.RemoteObject.toCallArgument(remoteObject)]);
-    globalObject.release();
-    if (callFunctionResult.wasThrown || !callFunctionResult.object || callFunctionResult.object.type !== 'string') {
-      failedToSave(callFunctionResult.object || null);
-    } else {
-      const executionContext = /** @type {!SDK.ExecutionContext} */ (currentExecutionContext);
-      let text = /** @type {string} */ (callFunctionResult.object.value);
-      const message = SDK.consoleModel.addCommandMessage(executionContext, text);
-      text = ObjectUI.JavaScriptREPL.wrapObjectLiteral(text);
-      SDK.consoleModel.evaluateCommandInConsole(
-          executionContext, message, text,
-          /* useCommandLineAPI */ false, /* awaitPromise */ false);
-    }
-    if (callFunctionResult.object)
-      callFunctionResult.object.release();
-
-    /**
-     * @suppressReceiverCheck
-     * @this {Window}
-     */
-    function saveVariable(value) {
-      const prefix = 'temp';
-      let index = 1;
-      while ((prefix + index) in this)
-        ++index;
-      const name = prefix + index;
-      this[name] = value;
-      return name;
-    }
-
-    /**
-     * @param {?SDK.RemoteObject} result
-     */
-    function failedToSave(result) {
-      let message = Common.UIString('Failed to save to temp variable.');
-      if (result)
-        message += ' ' + result.description;
-      Common.console.error(message);
-    }
   }
 
   /**

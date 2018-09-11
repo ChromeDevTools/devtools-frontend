@@ -758,6 +758,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (textNode && textNode.classList.contains('bogus'))
       textNode = null;
     const commentNode = event.target.enclosingNodeOrSelfWithClass('webkit-html-comment');
+    contextMenu.saveSection().appendItem(
+        ls`Store as global variable`, this._saveNodeToTempVariable.bind(this, treeElement.node()));
     if (textNode)
       treeElement.populateTextContextMenu(contextMenu, textNode);
     else if (isTag)
@@ -769,6 +771,14 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     contextMenu.appendApplicableItems(treeElement.node());
     contextMenu.show();
+  }
+
+  /**
+   * @param {!SDK.DOMNode} node
+   */
+  async _saveNodeToTempVariable(node) {
+    const remoteObjectForConsole = await node.resolveToObject();
+    await SDK.consoleModel.saveToTempVariable(UI.context.flavor(SDK.ExecutionContext), remoteObjectForConsole);
   }
 
   runPendingUpdates() {

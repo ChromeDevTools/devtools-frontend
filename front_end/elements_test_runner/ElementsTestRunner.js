@@ -36,6 +36,14 @@ ElementsTestRunner.nodeWithId = function(idValue, callback) {
 };
 
 /**
+ * @param {string} idValue
+ * @param {!Function} callback
+ */
+ElementsTestRunner.nodeWithIdPromise = function(idValue) {
+  return new Promise(resolve => ElementsTestRunner.findNode(node => node.getAttribute('id') === idValue, resolve));
+};
+
+/**
  * @param {function(!Element): boolean} matchFunction
  * @param {!Function} callback
  */

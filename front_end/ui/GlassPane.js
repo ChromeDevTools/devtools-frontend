@@ -192,12 +192,11 @@ UI.GlassPane = class {
     }
 
     if (this._sizeBehavior === UI.GlassPane.SizeBehavior.MeasureContent) {
-      const measuredWidth = this.contentElement.offsetWidth;
-      const measuredHeight = this.contentElement.offsetHeight;
-      const widthOverflow = height < measuredHeight ? scrollbarSize : 0;
-      const heightOverflow = width < measuredWidth ? scrollbarSize : 0;
-      width = Math.min(width, measuredWidth + widthOverflow);
-      height = Math.min(height, measuredHeight + heightOverflow);
+      const measuredRect = this.contentElement.getBoundingClientRect();
+      const widthOverflow = height < measuredRect.height ? scrollbarSize : 0;
+      const heightOverflow = width < measuredRect.width ? scrollbarSize : 0;
+      width = Math.min(width, measuredRect.width + widthOverflow);
+      height = Math.min(height, measuredRect.height + heightOverflow);
     }
 
     if (this._anchorBox) {

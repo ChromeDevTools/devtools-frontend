@@ -99,7 +99,6 @@ Timeline.TimelineController = class {
     tracingStoppedPromises.push(this._stopProfilingOnAllModels());
     if (this._tracingManager)
       this._tracingManager.stop();
-    tracingStoppedPromises.push(SDK.targetManager.resumeAllTargets());
 
     this._client.loadingStarted();
 
@@ -207,8 +206,12 @@ Timeline.TimelineController = class {
     setTimeout(() => this._finalizeTrace(), 0);
   }
 
-  _finalizeTrace() {
+  /**
+   * @return {!Promise<undefined>}
+   */
+  async _finalizeTrace() {
     this._injectCpuProfileEvents();
+    await SDK.targetManager.resumeAllTargets();
     this._tracingModel.tracingComplete();
     this._client.loadingComplete(this._tracingModel);
   }

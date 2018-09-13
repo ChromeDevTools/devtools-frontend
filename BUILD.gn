@@ -527,6 +527,7 @@ all_devtools_files = [
   "front_end/profiler/ProfileTypeRegistry.js",
   "front_end/profiler/ProfileView.js",
   "front_end/profiler/TopDownProfileDataGrid.js",
+  "front_end/protocol/NodeURL.js",
   "front_end/protocol/InspectorBackend.js",
   "front_end/protocol/module.json",
   "front_end/quick_open/CommandMenu.js",

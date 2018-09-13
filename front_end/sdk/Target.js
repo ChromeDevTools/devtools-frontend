@@ -19,7 +19,7 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {boolean} isNodeJS
    */
   constructor(targetManager, id, name, capabilitiesMask, connectionFactory, parentTarget, suspended, isNodeJS) {
-    super(connectionFactory);
+    super(connectionFactory, isNodeJS);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
@@ -28,7 +28,6 @@ SDK.Target = class extends Protocol.TargetBase {
     this._id = id;
     this._modelByConstructor = new Map();
     this._isSuspended = suspended;
-    this._isNodeJS = isNodeJS;
   }
 
   createModels(required) {
@@ -42,17 +41,6 @@ SDK.Target = class extends Protocol.TargetBase {
         this.model(modelClass);
     }
     this._creatingModels = false;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  isNodeJS() {
-    return this._isNodeJS;
-  }
-
-  markAsNodeJSForTest() {
-    this._isNodeJS = true;
   }
 
   /**

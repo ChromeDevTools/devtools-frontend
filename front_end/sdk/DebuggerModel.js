@@ -563,14 +563,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
     let isContentScript = false;
     if (executionContextAuxData && ('isDefault' in executionContextAuxData))
       isContentScript = !executionContextAuxData['isDefault'];
-    // Support file URL for node.js.
-    if (this.target().isNodeJS() && sourceURL && !hasSourceURLComment) {
-      const nodeJSPath = sourceURL;
-      sourceURL = Common.ParsedURL.platformPathToURL(nodeJSPath);
-      sourceURL = this._internString(sourceURL);
-    } else {
-      sourceURL = this._internString(sourceURL);
-    }
+    sourceURL = this._internString(sourceURL);
     const script = new SDK.Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId,
         this._internString(hash), isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length,

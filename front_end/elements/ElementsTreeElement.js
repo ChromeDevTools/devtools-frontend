@@ -251,6 +251,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
     if (this.listItemElement && !this._hintElement) {
       this._hintElement = this.listItemElement.createChild('span', 'selected-hint');
       this._hintElement.title = Common.UIString('Use $0 in the console to refer to this element.');
+      UI.ARIAUtils.markAsHidden(this._hintElement);
     }
   }
 

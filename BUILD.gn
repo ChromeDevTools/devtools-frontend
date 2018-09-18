@@ -1194,7 +1194,7 @@ action("supported_css_properties") {
   script = "scripts/build/generate_supported_css.py"
 
   inputs = [
-    "../core/css/CSSProperties.json5",
+    "../core/css/css_properties.json5",
   ]
 
   outputs = [

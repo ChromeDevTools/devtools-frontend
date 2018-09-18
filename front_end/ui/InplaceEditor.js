@@ -32,6 +32,10 @@ UI.InplaceEditor = class {
     element.classList.add('editing');
     element.setAttribute('contenteditable', 'plaintext-only');
 
+    const oldRole = element.getAttribute('role');
+    UI.ARIAUtils.markAsTextBox(element);
+    editingContext.oldRole = oldRole;
+
     const oldTabIndex = element.getAttribute('tabIndex');
     if (typeof oldTabIndex !== 'number' || oldTabIndex < 0)
       element.tabIndex = 0;
@@ -43,6 +47,11 @@ UI.InplaceEditor = class {
     const element = editingContext.element;
     element.classList.remove('editing');
     element.removeAttribute('contenteditable');
+
+    if (typeof editingContext.oldRole !== 'string')
+      element.removeAttribute('role');
+    else
+      element.role = editingContext.oldRole;
 
     if (typeof editingContext.oldTabIndex !== 'number')
       element.removeAttribute('tabIndex');

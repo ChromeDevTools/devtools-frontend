@@ -56,7 +56,7 @@
     --toolbar-bg-color: #333333;
     --toolbar-hover-bg-color: #202020;
     --selection-fg-color: #cdcdcd;
-    --selection-inactive-bg-color: #333333;
+    --selection-inactive-bg-color: hsl(0, 0%, 28%);
     --tab-selected-fg-color: #eaeaea;
     --tab-selected-bg-color: black;
     --drop-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2),

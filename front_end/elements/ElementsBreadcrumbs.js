@@ -13,6 +13,8 @@ Elements.ElementsBreadcrumbs = class extends UI.HBox {
     this.crumbsElement.addEventListener('mousemove', this._mouseMovedInCrumbs.bind(this), false);
     this.crumbsElement.addEventListener('mouseleave', this._mouseMovedOutOfCrumbs.bind(this), false);
     this._nodeSymbol = Symbol('node');
+
+    UI.ARIAUtils.markAsHidden(this.element);
   }
 
   /**

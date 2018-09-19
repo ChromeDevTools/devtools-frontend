@@ -251,8 +251,11 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
    */
   async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
     // Convert file url to node-js path.
-    if (this.target().isNodeJS())
-      url = Common.ParsedURL.urlToPlatformPath(url, Host.isWin());
+    let urlRegex;
+    if (this.target().isNodeJS()) {
+      const platformPath = Common.ParsedURL.urlToPlatformPath(url, Host.isWin());
+      urlRegex = `${platformPath.escapeForRegExp()}|${url.escapeForRegExp()}`;
+    }
     // Adjust column if needed.
     let minColumnNumber = 0;
     const scripts = this._scriptsBySourceURL.get(url) || [];
@@ -262,8 +265,13 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
         minColumnNumber = minColumnNumber ? Math.min(minColumnNumber, script.columnOffset) : script.columnOffset;
     }
     columnNumber = Math.max(columnNumber, minColumnNumber);
-    const response = await this._agent.invoke_setBreakpointByUrl(
-        {lineNumber: lineNumber, url: url, columnNumber: columnNumber, condition: condition});
+    const response = await this._agent.invoke_setBreakpointByUrl({
+      lineNumber: lineNumber,
+      url: urlRegex ? undefined : url,
+      urlRegex: urlRegex,
+      columnNumber: columnNumber,
+      condition: condition
+    });
     if (response[Protocol.Error])
       return {locations: [], breakpointId: null};
     let locations;

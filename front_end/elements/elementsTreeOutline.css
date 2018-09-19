@@ -315,6 +315,10 @@ ol li.selected:focus .devtools-link {
     height: 15px;
 }
 
+.elements-hide-gutter .gutter-container {
+    display: none;
+}
+
 .gutter-menu-icon {
     display: none;
     transform: rotate(-90deg) scale(0.8);

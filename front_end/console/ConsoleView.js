@@ -175,7 +175,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._messagesElement = this._viewport.element;
     this._messagesElement.id = 'console-messages';
     this._messagesElement.classList.add('monospace');
-    this._messagesElement.addEventListener('click', this._messagesClicked.bind(this), true);
+    this._messagesElement.addEventListener('click', this._messagesClicked.bind(this), false);
     this._messagesElement.addEventListener('paste', this._messagesPasted.bind(this), true);
 
     this._viewportThrottler = new Common.Throttler(50);

@@ -35,8 +35,9 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   /**
    * @param {boolean=} omitRootDOMNode
    * @param {boolean=} selectEnabled
+   * @param {boolean=} hideGutter
    */
-  constructor(omitRootDOMNode, selectEnabled) {
+  constructor(omitRootDOMNode, selectEnabled, hideGutter) {
     super();
 
     this._treeElementSymbol = Symbol('treeElement');
@@ -46,6 +47,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     this._element = this.element;
     this._element.classList.add('elements-tree-outline', 'source-code');
+    if (hideGutter)
+      this._element.classList.add('elements-hide-gutter');
     UI.ARIAUtils.setAccessibleName(this._element, Common.UIString('Page DOM'));
     this._element.addEventListener('mousedown', this._onmousedown.bind(this), false);
     this._element.addEventListener('mousemove', this._onmousemove.bind(this), false);
@@ -1595,7 +1598,7 @@ Elements.ElementsTreeOutline.Renderer = class {
           reject(new Error('Could not resolve node.'));
           return;
         }
-        const treeOutline = new Elements.ElementsTreeOutline(false, false);
+        const treeOutline = new Elements.ElementsTreeOutline(false, false, true /* hideGutter */);
         treeOutline.rootDOMNode = node;
         if (!treeOutline.firstChild().isExpandable())
           treeOutline._element.classList.add('single-node');

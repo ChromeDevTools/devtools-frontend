@@ -55,6 +55,8 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       this.titleElement = title;
       this.element.appendChild(title);
     }
+    if (!this.titleElement.hasAttribute('tabIndex'))
+      this.titleElement.tabIndex = -1;
 
     this.element._section = this;
     this.registerRequiredCSS('object_ui/objectValue.css');

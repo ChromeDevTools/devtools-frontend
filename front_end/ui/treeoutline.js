@@ -41,7 +41,7 @@ UI.TreeOutline = class extends Common.Object {
     this._comparator = null;
 
     this.contentElement = this._rootElement._childrenListNode;
-    this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), true);
+    this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), false);
 
     this._showSelectionOnKeyboardFocus = false;
     this._focusable = true;
@@ -252,8 +252,7 @@ UI.TreeOutline = class extends Common.Object {
    * @param {!Event} event
    */
   _treeKeyDown(event) {
-    if (!this.selectedTreeElement || event.target !== this.selectedTreeElement.listItemElement || event.shiftKey ||
-        event.metaKey || event.ctrlKey)
+    if (!this.selectedTreeElement || event.shiftKey || event.metaKey || event.ctrlKey || UI.isEditing())
       return;
 
     let handled = false;

@@ -1105,6 +1105,7 @@ group("devtools_frontend_resources") {
     ":build_release_devtools",
     ":copy_embedder_scripts",
     ":copy_emulated_devices_images",
+    ":copy_htaccess",
     ":copy_inspector_images",
     ":devtools_extension_api",
     ":frontend_protocol_sources",
@@ -1122,6 +1123,15 @@ copy("copy_embedder_scripts") {
   sources = devtools_embedder_scripts
   outputs = [
     "$resources_out_dir/{{source_file_part}}",
+  ]
+}
+
+copy("copy_htaccess") {
+  sources = [
+    "htaccess",
+  ]
+  outputs = [
+    "$resources_out_dir/.htaccess",
   ]
 }
 

@@ -1,0 +1,3 @@
+# devtools tests request http[s] resources from file:// origin. Let
+# the tests access the resources.
+Header set Access-Control-Allow-Origin "*"

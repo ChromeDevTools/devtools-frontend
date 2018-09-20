@@ -180,6 +180,7 @@ Console.ConsoleView = class extends UI.VBox {
     this._messagesElement.classList.add('monospace');
     this._messagesElement.addEventListener('click', this._messagesClicked.bind(this), false);
     this._messagesElement.addEventListener('paste', this._messagesPasted.bind(this), true);
+    this._messagesElement.addEventListener('clipboard-paste', this._messagesPasted.bind(this), true);
 
     this._viewportThrottler = new Common.Throttler(50);
 
@@ -212,6 +213,10 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt.show(this._promptElement);
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
     this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
+
+    this._keyboardNavigationEnabled = Runtime.experiments.isEnabled('consoleKeyboardNavigation');
+    if (this._keyboardNavigationEnabled)
+      this._messagesElement.addEventListener('keydown', this._messagesKeyDown.bind(this), false);
 
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
 
@@ -853,9 +858,16 @@ Console.ConsoleView = class extends UI.VBox {
     if (!this._messagesElement.hasSelection()) {
       const clickedOutsideMessageList =
           target === this._messagesElement || this._prompt.belowEditorElement().isSelfOrAncestor(target);
-      if (clickedOutsideMessageList)
-        this._prompt.moveCaretToEndOfPrompt();
-      this.focus();
+      if (this._keyboardNavigationEnabled) {
+        if (clickedOutsideMessageList) {
+          this._prompt.moveCaretToEndOfPrompt();
+          this.focus();
+        }
+      } else {
+        if (clickedOutsideMessageList)
+          this._prompt.moveCaretToEndOfPrompt();
+        this.focus();
+      }
     }
     // TODO: fix this.
     const groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
@@ -864,6 +876,17 @@ Console.ConsoleView = class extends UI.VBox {
     const consoleGroupViewMessage = groupMessage.message;
     consoleGroupViewMessage.setCollapsed(!consoleGroupViewMessage.collapsed());
     this._updateMessageList();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _messagesKeyDown(event) {
+    const hasActionModifier = event.ctrlKey || event.altKey || event.metaKey;
+    if (hasActionModifier || event.key.length !== 1 || UI.isEditing() || this._messagesElement.hasSelection())
+      return;
+    this._prompt.moveCaretToEndOfPrompt();
+    this.focus();
   }
 
   /**

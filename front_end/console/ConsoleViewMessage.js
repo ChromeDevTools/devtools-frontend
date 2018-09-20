@@ -368,6 +368,8 @@ Console.ConsoleViewMessage = class {
     const icon = UI.Icon.create('smallicon-triangle-right', 'console-message-expand-icon');
     const clickableElement = contentElement.createChild('div');
     clickableElement.appendChild(icon);
+    // Intercept focus to avoid highlight on click.
+    clickableElement.tabIndex = -1;
 
     clickableElement.appendChild(messageElement);
     const stackTraceElement = contentElement.createChild('div');
@@ -388,7 +390,7 @@ Console.ConsoleViewMessage = class {
      * @param {?Event} event
      */
     function toggleStackTrace(event) {
-      if (event.target.hasSelection())
+      if (UI.isEditing() || contentElement.hasSelection())
         return;
       expandStackTrace(stackTraceElement.classList.contains('hidden'));
       event.consume();
@@ -1069,7 +1071,8 @@ Console.ConsoleViewMessage = class {
       return this._element;
 
     this._element = createElement('div');
-    this._element.tabIndex = -1;
+    if (Runtime.experiments.isEnabled('consoleKeyboardNavigation'))
+      this._element.tabIndex = -1;
     this.updateMessageElement();
     return this._element;
   }
@@ -1514,6 +1517,8 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
     if (!this._element) {
       super.toMessageElement();
       this._expandGroupIcon = UI.Icon.create('', 'expand-group-icon');
+      // Intercept focus to avoid highlight on click.
+      this._contentElement.tabIndex = -1;
       if (this._repeatCountElement)
         this._repeatCountElement.insertBefore(this._expandGroupIcon, this._repeatCountElement.firstChild);
       else

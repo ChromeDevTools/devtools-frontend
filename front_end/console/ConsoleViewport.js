@@ -60,12 +60,12 @@ Console.ConsoleViewport = class {
     this.element.addEventListener('dragstart', this._onDragStart.bind(this), false);
     this._keyboardNavigationEnabled = Runtime.experiments.isEnabled('consoleKeyboardNavigation');
     if (this._keyboardNavigationEnabled) {
-      this.element.addEventListener('focusin', this._onFocusIn.bind(this), false);
-      this.element.addEventListener('focusout', this._onFocusOut.bind(this), false);
-      this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+      this._contentElement.addEventListener('focusin', this._onFocusIn.bind(this), false);
+      this._contentElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
+      this._contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     }
     this._virtualSelectedIndex = -1;
-    this.element.tabIndex = -1;
+    this._contentElement.tabIndex = -1;
 
     this._firstActiveIndex = -1;
     this._lastActiveIndex = -1;
@@ -124,9 +124,12 @@ Console.ConsoleViewport = class {
    * @param {!Event} event
    */
   _onFocusIn(event) {
+    const renderedIndex = this._renderedItems.findIndex(item => item.element().isSelfOrAncestor(event.target));
+    if (renderedIndex !== -1)
+      this._virtualSelectedIndex = this._firstActiveIndex + renderedIndex;
     // Make default selection when moving from external (e.g. prompt) to the container.
     if (this._virtualSelectedIndex === -1 && this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget)) &&
-        event.target === this.element)
+        event.target === this._contentElement)
       this._virtualSelectedIndex = this._itemCount - 1;
     this._updateFocusedItem();
   }
@@ -146,7 +149,7 @@ Console.ConsoleViewport = class {
    * @return {boolean}
    */
   _isOutsideViewport(element) {
-    return !!element && (element !== this.element && !element.isDescendant(this._contentElement));
+    return !!element && !element.isSelfOrDescendant(this._contentElement);
   }
 
   /**
@@ -166,7 +169,7 @@ Console.ConsoleViewport = class {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (UI.isEditing() || !this._itemCount || this.element.hasSelection())
+    if (UI.isEditing() || !this._itemCount || event.shiftKey)
       return;
     switch (event.key) {
       case 'ArrowUp':
@@ -196,17 +199,19 @@ Console.ConsoleViewport = class {
   _updateFocusedItem() {
     const selectedElement = this.renderedElementAt(this._virtualSelectedIndex);
     const changed = this._lastSelectedElement !== selectedElement;
-    const containerHasFocus = this.element === this.element.ownerDocument.deepActiveElement();
+    const containerHasFocus = this._contentElement === this.element.ownerDocument.deepActiveElement();
     if (this._lastSelectedElement && changed)
       this._lastSelectedElement.classList.remove('console-selected');
     if (selectedElement && (changed || containerHasFocus)) {
       selectedElement.classList.add('console-selected');
-      focusWithoutScroll(selectedElement);
+      // Do not focus the message if something within holds focus (e.g. object).
+      if (!selectedElement.hasFocus())
+        focusWithoutScroll(selectedElement);
     }
     if (this._itemCount && !this._contentElement.hasFocus())
-      this.element.tabIndex = 0;
+      this._contentElement.tabIndex = 0;
     else
-      this.element.tabIndex = -1;
+      this._contentElement.tabIndex = -1;
     this._lastSelectedElement = selectedElement;
 
     /**
@@ -528,7 +533,7 @@ Console.ConsoleViewport = class {
 
     if (this._keyboardNavigationEnabled) {
       if (hadFocus)
-        this.element.focus();
+        this._contentElement.focus();
       this._updateFocusedItem();
     }
   }

@@ -203,12 +203,12 @@
 }
 
 .console-message-wrapper.console-error-level,
-.console-message-wrapper.console-error-level:not(.console-selected) + .console-message-wrapper:not(.console-warning-level):not(.console-selected) {
+.console-message-wrapper.console-error-level:not(:focus) + .console-message-wrapper:not(.console-warning-level):not(:focus) {
     border-top-color: var(--error-border-color);
 }
 
 .console-message-wrapper.console-warning-level,
-.console-message-wrapper.console-warning-level:not(.console-selected) + .console-message-wrapper:not(.console-error-level):not(.console-selected) {
+.console-message-wrapper.console-warning-level:not(:focus) + .console-message-wrapper:not(.console-error-level):not(:focus) {
     border-top-color: var(--warning-border-color);
 }
 
@@ -224,44 +224,44 @@
     border-bottom-color: var(--warning-border-color);
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus {
     border-top-width: 1px;
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus .console-message {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus .console-message {
     padding-top: 2px;
     min-height: 16px;
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level).console-selected:focus .command-result-icon {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus .command-result-icon {
     top: 3px;
 }
 
-.console-message-wrapper.console-selected:focus,
-.console-message-wrapper.console-selected:focus:last-of-type {
+.console-message-wrapper:focus,
+.console-message-wrapper:focus:last-of-type {
     border-top-color: hsl(214, 67%, 88%);
     border-bottom-color: hsl(214, 67%, 88%);
     background-color: hsl(214, 48%, 95%);
 }
 
-.console-message-wrapper.console-error-level.console-selected:focus,
-.console-message-wrapper.console-error-level.console-selected:focus:last-of-type {
+.console-message-wrapper.console-error-level:focus,
+.console-message-wrapper.console-error-level:focus:last-of-type {
     --error-text-color: rgb(200, 0, 0);
 }
 
-.-theme-with-dark-background .console-message-wrapper.console-error-level.console-selected:focus,
-.-theme-with-dark-background .console-message-wrapper.console-error-level.console-selected:focus:last-of-type {
+.-theme-with-dark-background .console-message-wrapper.console-error-level:focus,
+.-theme-with-dark-background .console-message-wrapper.console-error-level:focus:last-of-type {
     --error-text-color: hsl(0, 100%, 75%);
 }
 
-.-theme-with-dark-background .console-message-wrapper.console-selected:focus,
-.-theme-with-dark-background .console-message-wrapper.console-selected:focus:last-of-type {
+.-theme-with-dark-background .console-message-wrapper:focus,
+.-theme-with-dark-background .console-message-wrapper:focus:last-of-type {
     border-top-color: hsl(214, 47%, 48%);
     border-bottom-color: hsl(214, 47%, 48%);
     background-color: hsl(214, 19%, 20%);
 }
 
-.console-message-wrapper.console-selected:focus + .console-message-wrapper {
+.console-message-wrapper:focus + .console-message-wrapper {
     border-top-color: transparent;
 }
 

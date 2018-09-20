@@ -678,7 +678,6 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
   }
 
   document.addEventListener('keydown', forwardKeyboardEvent, false);
-  document.addEventListener('keypress', forwardKeyboardEvent, false);
 
   /**
    * @constructor

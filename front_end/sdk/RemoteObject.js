@@ -678,6 +678,8 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
           const property = internalProperties[i];
           if (!property.value)
             continue;
+          if (property.name === '[[StableObjectId]]')
+            continue;
           const propertyValue = this._runtimeModel.createRemoteObject(property.value);
           internalPropertiesResult.push(new SDK.RemoteObjectProperty(
               property.name, propertyValue, true, false, undefined, undefined, undefined, true));

@@ -163,8 +163,11 @@ Console.ConsoleView = class extends UI.VBox {
       this._pinPane.element.classList.add('console-view-pinpane');
       this._pinPane.show(this._contentsElement);
       this._pinPane.element.addEventListener('keydown', event => {
-        if (event.key === 'Enter' && event.ctrlKey)
+        if ((event.key === 'Enter' && UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!KeyboardEvent} */ (event))) ||
+            event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
           this._prompt.focus();
+          event.consume();
+        }
       });
     }
 

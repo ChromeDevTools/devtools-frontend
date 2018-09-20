@@ -129,8 +129,12 @@ Console.ConsolePin = class extends Common.Object {
       this._editor.widget().element.tabIndex = -1;
       this._editor.setText(expression);
       this._editor.widget().element.addEventListener('keydown', event => {
-        if (event.key === 'Tab' && !this._editor.text())
+        if (event.key === 'Tab' && !this._editor.text()) {
           event.consume();
+          return;
+        }
+        if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code)
+          this._editor.setText(this._committedExpression);
       }, true);
       this._editor.widget().element.addEventListener('focusout', event => {
         const text = this._editor.text();

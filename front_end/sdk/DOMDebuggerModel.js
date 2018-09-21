@@ -400,14 +400,14 @@ SDK.EventListener = class {
           this['on' + type] = undefined;
       }
 
-      return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunctionPromise(removeListener, [
+      return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(removeListener, [
         SDK.RemoteObject.toCallArgument(this._type), SDK.RemoteObject.toCallArgument(this._originalHandler),
         SDK.RemoteObject.toCallArgument(this._useCapture)
       ]));
     }
 
     return this._customRemoveFunction
-        .callFunctionPromise(
+        .callFunction(
             callCustomRemove,
             [
               SDK.RemoteObject.toCallArgument(this._type),
@@ -441,7 +441,7 @@ SDK.EventListener = class {
    * @return {!Promise<undefined>}
    */
   togglePassive() {
-    return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunctionPromise(callTogglePassive, [
+    return /** @type {!Promise<undefined>} */ (this._eventTarget.callFunction(callTogglePassive, [
       SDK.RemoteObject.toCallArgument(this._type),
       SDK.RemoteObject.toCallArgument(this._originalHandler),
       SDK.RemoteObject.toCallArgument(this._useCapture),

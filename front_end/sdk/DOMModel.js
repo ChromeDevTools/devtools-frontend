@@ -947,7 +947,7 @@ SDK.DOMNode = class {
     const object = await node.resolveToObject();
     if (!object)
       return;
-    await object.callFunctionPromise(focusInPage);
+    await object.callFunction(focusInPage);
     object.release();
     node.highlightForTwoSeconds();
     this._domModel.target().pageAgent().bringToFront();

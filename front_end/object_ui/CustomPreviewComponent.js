@@ -183,7 +183,7 @@ ObjectUI.CustomPreviewSection = class {
     const args = [{objectId: customPreview.bindRemoteObjectFunctionId}, {objectId: customPreview.formatterObjectId}];
     if (customPreview.configObjectId)
       args.push({objectId: customPreview.configObjectId});
-    this._object.callFunctionJSON(load, args, onBodyLoaded.bind(this));
+    this._object.callFunctionJSON(load, args).then(onBodyLoaded.bind(this));
 
     /**
      * @param {*} bodyJsonML

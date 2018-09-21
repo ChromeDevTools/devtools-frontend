@@ -735,31 +735,32 @@ Console.ConsoleViewMessage = class {
         object, propertyPath, onInvokeGetterClick.bind(this));
 
     /**
-     * @param {?SDK.RemoteObject} result
-     * @param {boolean=} wasThrown
+     * @param {!SDK.CallFunctionResult} result
      * @this {Console.ConsoleViewMessage}
      */
-    function onInvokeGetterClick(result, wasThrown) {
-      if (!result)
+    function onInvokeGetterClick(result) {
+      const wasThrown = result.wasThrown;
+      const object = result.object;
+      if (!object)
         return;
       rootElement.removeChildren();
       if (wasThrown) {
         const element = rootElement.createChild('span');
         element.textContent = Common.UIString('<exception>');
-        element.title = /** @type {string} */ (result.description);
+        element.title = /** @type {string} */ (object.description);
       } else if (isArrayEntry) {
-        rootElement.appendChild(this._formatAsArrayEntry(result));
+        rootElement.appendChild(this._formatAsArrayEntry(object));
       } else {
         // Make a PropertyPreview from the RemoteObject similar to the backend logic.
         const maxLength = 100;
-        const type = result.type;
-        const subtype = result.subtype;
+        const type = object.type;
+        const subtype = object.subtype;
         let description = '';
-        if (type !== 'function' && result.description) {
+        if (type !== 'function' && object.description) {
           if (type === 'string' || subtype === 'regexp')
-            description = result.description.trimMiddle(maxLength);
+            description = object.description.trimMiddle(maxLength);
           else
-            description = result.description.trimEnd(maxLength);
+            description = object.description.trimEnd(maxLength);
         }
         rootElement.appendChild(this._previewFormatter.renderPropertyPreview(type, subtype, description));
       }

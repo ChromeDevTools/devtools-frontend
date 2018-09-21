@@ -554,9 +554,9 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (!object)
       return;
 
-    const promise = object.callFunctionJSONPromise(features, undefined);
+    const featuresObject = await object.callFunctionJSON(features, undefined);
     object.release();
-    return promise;
+    return featuresObject;
 
     /**
      * @return {!{offsetWidth: number, offsetHeight: number, naturalWidth: number, naturalHeight: number, currentSrc: (string|undefined)}}
@@ -909,10 +909,9 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     if (!object)
       return;
 
-    const result = object.callFunction(toggleClassAndInjectStyleRule, [{value: pseudoType}, {value: !hidden}]);
+    await object.callFunction(toggleClassAndInjectStyleRule, [{value: pseudoType}, {value: !hidden}]);
     object.release();
     node.setMarker('hidden-marker', hidden ? null : true);
-    return result;
 
     /**
      * @param {?string} pseudoType

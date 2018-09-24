@@ -86,14 +86,10 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
     if (htmlErrorPreview)
       return htmlErrorPreview;
 
-    // Try provider before the source view - so JSON and XML are not shown in generic editor
     const provided = await SourceFrame.PreviewFactory.createPreview(this.request, this.request.mimeType);
     if (provided)
       return provided;
 
-    const sourceView = await Network.RequestResponseView.sourceViewForRequest(this.request);
-    if (sourceView)
-      return sourceView;
     return new UI.EmptyWidget(Common.UIString('Preview not available'));
   }
 };

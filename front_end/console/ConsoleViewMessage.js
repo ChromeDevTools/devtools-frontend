@@ -1102,7 +1102,6 @@ Console.ConsoleViewMessage = class {
     switch (this._message.level) {
       case SDK.ConsoleMessage.MessageLevel.Verbose:
         this._element.classList.add('console-verbose-level');
-        this._updateMessageLevelIcon('');
         break;
       case SDK.ConsoleMessage.MessageLevel.Info:
         this._element.classList.add('console-info-level');
@@ -1111,13 +1110,12 @@ Console.ConsoleViewMessage = class {
         break;
       case SDK.ConsoleMessage.MessageLevel.Warning:
         this._element.classList.add('console-warning-level');
-        this._updateMessageLevelIcon('smallicon-warning');
         break;
       case SDK.ConsoleMessage.MessageLevel.Error:
         this._element.classList.add('console-error-level');
-        this._updateMessageLevelIcon('smallicon-error');
         break;
     }
+    this._updateMessageLevelIcon();
     if (this._shouldRenderAsWarning())
       this._element.classList.add('console-warning-level');
 
@@ -1138,10 +1136,16 @@ Console.ConsoleViewMessage = class {
          this._message.source === SDK.ConsoleMessage.MessageSource.Recommendation);
   }
 
-  /**
-   * @param {string} iconType
-   */
-  _updateMessageLevelIcon(iconType) {
+  _updateMessageLevelIcon() {
+    let iconType = '';
+    let accessibleName = '';
+    if (this._message.level === SDK.ConsoleMessage.MessageLevel.Warning) {
+      iconType = 'smallicon-warning';
+      accessibleName = ls`Warning`;
+    } else if (this._message.level === SDK.ConsoleMessage.MessageLevel.Error) {
+      iconType = 'smallicon-error';
+      accessibleName = ls`Error`;
+    }
     if (!iconType && !this._messageLevelIcon)
       return;
     if (iconType && !this._messageLevelIcon) {
@@ -1150,6 +1154,7 @@ Console.ConsoleViewMessage = class {
         this._contentElement.insertBefore(this._messageLevelIcon, this._contentElement.firstChild);
     }
     this._messageLevelIcon.setIconType(iconType);
+    UI.ARIAUtils.setAccessibleName(this._messageLevelIcon, accessibleName);
   }
 
   /**
@@ -1209,6 +1214,12 @@ Console.ConsoleViewMessage = class {
       this._contentElement.classList.add('repeated-message');
     }
     this._repeatCountElement.textContent = this._repeatCount;
+    let accessibleName = ls`Repeat ${this._repeatCount}`;
+    if (this._message.level === SDK.ConsoleMessage.MessageLevel.Warning)
+      accessibleName = ls`Warning ${accessibleName}`;
+    else if (this._message.level === SDK.ConsoleMessage.MessageLevel.Error)
+      accessibleName = ls`Error ${accessibleName}`;
+    UI.ARIAUtils.setAccessibleName(this._repeatCountElement, accessibleName);
   }
 
   get text() {

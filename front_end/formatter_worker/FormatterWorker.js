@@ -151,11 +151,11 @@ FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
  * @param {string} content
  */
 FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
-  let wrapped = '(async () => {' + content + '})()';
+  let wrapped = '(async () => {' + content + '\n})()';
   let root;
   let body;
   try {
-    root = acorn.parse(wrapped, {ecmaVersion: 9});
+    root = acorn.parse(wrapped, {ecmaVersion: 10});
     body = root.body[0].expression.callee.body;
   } catch (e) {
     postMessage('');
@@ -184,6 +184,10 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
     }
     AwaitExpression(node) {
       containsAwait = true;
+    }
+    ForOfStatement(node) {
+      if (node.await)
+        containsAwait = true;
     }
     ReturnStatement(node) {
       containsReturn = true;

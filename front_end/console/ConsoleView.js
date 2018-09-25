@@ -629,7 +629,8 @@ Console.ConsoleView = class extends UI.VBox {
         return new Console.ConsoleCommandResult(message, this._linkifier, this._badgePool, nestingLevel);
       case SDK.ConsoleMessage.MessageType.StartGroupCollapsed:
       case SDK.ConsoleMessage.MessageType.StartGroup:
-        return new Console.ConsoleGroupViewMessage(message, this._linkifier, this._badgePool, nestingLevel);
+        return new Console.ConsoleGroupViewMessage(
+            message, this._linkifier, this._badgePool, nestingLevel, this._updateMessageList.bind(this));
       default:
         return new Console.ConsoleViewMessage(message, this._linkifier, this._badgePool, nestingLevel);
     }
@@ -869,13 +870,6 @@ Console.ConsoleView = class extends UI.VBox {
         this.focus();
       }
     }
-    // TODO: fix this.
-    const groupMessage = event.target.enclosingNodeOrSelfWithClass('console-group-title');
-    if (!groupMessage)
-      return;
-    const consoleGroupViewMessage = groupMessage.message;
-    consoleGroupViewMessage.setCollapsed(!consoleGroupViewMessage.collapsed());
-    this._updateMessageList();
   }
 
   /**

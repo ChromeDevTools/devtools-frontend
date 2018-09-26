@@ -173,9 +173,13 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
       return;
     const profile = new Profiler.SamplingHeapProfileHeader(heapProfilerModel, this);
     this.setProfileBeingRecorded(profile);
-    SDK.targetManager.suspendAllTargets();
     this.addProfile(profile);
     profile.updateStatus(Common.UIString('Recording\u2026'));
+
+    const icon = UI.Icon.create('smallicon-warning');
+    icon.title = Common.UIString('Heap profiler is recording');
+    UI.inspectorView.setPanelIcon('heap_profiler', icon);
+
     this._recording = true;
     this._startSampling();
   }
@@ -194,8 +198,7 @@ Profiler.SamplingHeapProfileTypeBase = class extends Profiler.ProfileType {
       recordedProfile.updateStatus('');
       this.setProfileBeingRecorded(null);
     }
-
-    await SDK.targetManager.resumeAllTargets();
+    UI.inspectorView.setPanelIcon('heap_profiler', null);
     this.dispatchEventToListeners(Profiler.ProfileType.Events.ProfileComplete, recordedProfile);
   }
 

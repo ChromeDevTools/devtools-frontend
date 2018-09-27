@@ -195,6 +195,8 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
     VariableDeclaration(node) {
       if (node.kind !== 'var' && node.parent !== body)
         return;
+      if (node.parent.type === 'ForOfStatement' && node.parent.left === node)
+        return;
       const onlyOneDeclaration = node.declarations.length === 1;
       changes.push(
           {text: onlyOneDeclaration ? 'void' : 'void (', start: node.start, end: node.start + node.kind.length});

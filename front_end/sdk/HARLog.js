@@ -253,7 +253,7 @@ SDK.HARLog.Entry = class {
     const result = {blocked: -1, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0, _blocked_queueing: -1};
 
     const queuedTime = (issueTime < startTime) ? startTime - issueTime : -1;
-    result.blocked = queuedTime;
+    result.blocked = SDK.HARLog.Entry._toMilliseconds(queuedTime);
     result._blocked_queueing = SDK.HARLog.Entry._toMilliseconds(queuedTime);
 
     let highestTime = 0;

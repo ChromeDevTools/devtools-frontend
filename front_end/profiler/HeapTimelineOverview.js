@@ -6,10 +6,7 @@
  * @unrestricted
  */
 Profiler.HeapTimelineOverview = class extends UI.VBox {
-  /**
-   * @param {!Profiler.HeapProfileHeader} heapProfileHeader
-   */
-  constructor(heapProfileHeader) {
+  constructor() {
     super();
     this.element.id = 'heap-recording-view';
     this.element.classList.add('heap-tracking-overview');
@@ -23,55 +20,20 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._overviewCalculator = new Profiler.HeapTimelineOverview.OverviewCalculator();
     this._overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WindowChanged, this._onWindowChanged, this);
 
-    this._profileSamples = heapProfileHeader.fromFile() ? new Profiler.TrackingHeapSnapshotProfileType.Samples() :
-                                                          heapProfileHeader._profileSamples;
-    this._profileType = heapProfileHeader.profileType();
-    if (!heapProfileHeader.fromFile() && heapProfileHeader.profileType().profileBeingRecorded() === heapProfileHeader) {
-      this._profileType.addEventListener(
-          Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
-      this._profileType.addEventListener(
-          Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
-    }
     this._windowLeft = 0.0;
     this._windowRight = 1.0;
     this._overviewGrid.setWindow(this._windowLeft, this._windowRight);
     this._yScale = new Profiler.HeapTimelineOverview.SmoothScale();
     this._xScale = new Profiler.HeapTimelineOverview.SmoothScale();
-  }
 
-  dispose() {
-    this._onStopTracking();
-  }
-
-  _onStopTracking() {
-    this._profileType.removeEventListener(
-        Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
-    this._profileType.removeEventListener(
-        Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
+    this._profileSamples = new Profiler.HeapTimelineOverview.Samples();
   }
 
   /**
-   * @param {!Common.Event} event
-   */
-  _onHeapStatsUpdate(event) {
-    this._profileSamples = event.data;
-    this._scheduleUpdate();
-  }
-
-  /**
-   * @param {?HeapSnapshotModel.Samples} samples
+   * @param {!Profiler.HeapTimelineOverview.Samples} samples
    */
   setSamples(samples) {
-    if (!samples)
-      return;
-    console.assert(!this._profileSamples.timestamps.length, 'Should only call this method when loading from file.');
-    console.assert(samples.timestamps.length);
-    this._profileSamples = new Profiler.TrackingHeapSnapshotProfileType.Samples();
-    this._profileSamples.sizes = samples.sizes;
-    this._profileSamples.ids = samples.lastAssignedIds;
-    this._profileSamples.timestamps = samples.timestamps;
-    this._profileSamples.max = samples.sizes;
-    this._profileSamples.totalTime = /** @type{number} */ (samples.timestamps.peekLast());
+    this._profileSamples = samples;
     this.update();
   }
 
@@ -295,6 +257,24 @@ Profiler.HeapTimelineOverview.SmoothScale = class {
       this._currentScale = target;
     }
     return this._currentScale;
+  }
+};
+
+/**
+ * @unrestricted
+ */
+Profiler.HeapTimelineOverview.Samples = class {
+  constructor() {
+    /** @type {!Array<number>} */
+    this.sizes = [];
+    /** @type {!Array<number>} */
+    this.ids = [];
+    /** @type {!Array<number>} */
+    this.timestamps = [];
+    /** @type {!Array<number>} */
+    this.max = [];
+    /** @type {number} */
+    this.totalTime = 30000;
   }
 };
 

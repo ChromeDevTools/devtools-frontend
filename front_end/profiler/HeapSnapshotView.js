@@ -44,18 +44,14 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this.element.classList.add('heap-snapshot-view');
     this._profile = profile;
     this._linkifier = new Components.Linkifier();
+    const profileType = profile.profileType();
 
-    profile.profileType().addEventListener(
-        Profiler.HeapSnapshotProfileType.SnapshotReceived, this._onReceiveSnapshot, this);
-    profile.profileType().addEventListener(
-        Profiler.ProfileType.Events.RemoveProfileHeader, this._onProfileHeaderRemoved, this);
+    profileType.addEventListener(Profiler.HeapSnapshotProfileType.SnapshotReceived, this._onReceiveSnapshot, this);
+    profileType.addEventListener(Profiler.ProfileType.Events.RemoveProfileHeader, this._onProfileHeaderRemoved, this);
 
-    const isHeapTimeline = profile.profileType().id === Profiler.TrackingHeapSnapshotProfileType.TypeId;
-    if (isHeapTimeline) {
-      this._trackingOverviewGrid = new Profiler.HeapTimelineOverview(profile);
-      this._trackingOverviewGrid.addEventListener(
-          Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
-    }
+    const isHeapTimeline = profileType.id === Profiler.TrackingHeapSnapshotProfileType.TypeId;
+    if (isHeapTimeline)
+      this._createOverview();
 
     this._parentDataDisplayDelegate = dataDisplayDelegate;
 
@@ -174,6 +170,35 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       existingProfile.addEventListener(Profiler.ProfileHeader.Events.ProfileTitleChanged, this._updateControls, this);
   }
 
+  _createOverview() {
+    const profileType = this._profile.profileType();
+    this._trackingOverviewGrid = new Profiler.HeapTimelineOverview();
+    this._trackingOverviewGrid.addEventListener(
+        Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
+    if (!this._profile.fromFile() && profileType.profileBeingRecorded() === this._profile) {
+      profileType.addEventListener(
+          Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
+      profileType.addEventListener(
+          Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
+    }
+  }
+
+  _onStopTracking() {
+    this._profile.profileType().removeEventListener(
+        Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
+    this._profile.profileType().removeEventListener(
+        Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onHeapStatsUpdate(event) {
+    const samples = event.data;
+    if (samples)
+      this._trackingOverviewGrid.setSamples(event.data);
+  }
+
   /**
    * @return {!UI.SearchableView}
    */
@@ -233,7 +258,16 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     if (this._profile.profileType().id === Profiler.TrackingHeapSnapshotProfileType.TypeId &&
         this._profile.fromFile()) {
       const samples = await heapSnapshotProxy.getSamples();
-      this._trackingOverviewGrid.setSamples(samples);
+      if (samples) {
+        console.assert(samples.timestamps.length);
+        const profileSamples = new Profiler.HeapTimelineOverview.Samples();
+        profileSamples.sizes = samples.sizes;
+        profileSamples.ids = samples.lastAssignedIds;
+        profileSamples.timestamps = samples.timestamps;
+        profileSamples.max = samples.sizes;
+        profileSamples.totalTime = Math.max(samples.timestamps.peekLast(), 10000);
+        this._trackingOverviewGrid.setSamples(profileSamples);
+      }
     }
 
     const list = this._profiles();
@@ -709,8 +743,11 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
       this._allocationStackView.clear();
       this._allocationDataGrid.dispose();
     }
-    if (this._trackingOverviewGrid)
-      this._trackingOverviewGrid.dispose();
+    this._onStopTracking();
+    if (this._trackingOverviewGrid) {
+      this._trackingOverviewGrid.removeEventListener(
+          Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
+    }
   }
 };
 
@@ -1242,7 +1279,7 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
     if (!heapProfilerModel)
       return null;
     this.setProfileBeingRecorded(new Profiler.HeapProfileHeader(heapProfilerModel, this, undefined));
-    this._profileSamples = new Profiler.TrackingHeapSnapshotProfileType.Samples();
+    this._profileSamples = new Profiler.HeapTimelineOverview.Samples();
     this.profileBeingRecorded()._profileSamples = this._profileSamples;
     this._recording = true;
     this.addProfile(/** @type {!Profiler.ProfileHeader} */ (this.profileBeingRecorded()));
@@ -1323,24 +1360,6 @@ Profiler.TrackingHeapSnapshotProfileType.TypeId = 'HEAP-RECORD';
 Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate = 'HeapStatsUpdate';
 Profiler.TrackingHeapSnapshotProfileType.TrackingStarted = 'TrackingStarted';
 Profiler.TrackingHeapSnapshotProfileType.TrackingStopped = 'TrackingStopped';
-
-/**
- * @unrestricted
- */
-Profiler.TrackingHeapSnapshotProfileType.Samples = class {
-  constructor() {
-    /** @type {!Array.<number>} */
-    this.sizes = [];
-    /** @type {!Array.<number>} */
-    this.ids = [];
-    /** @type {!Array.<number>} */
-    this.timestamps = [];
-    /** @type {!Array.<number>} */
-    this.max = [];
-    /** @type {number} */
-    this.totalTime = 30000;
-  }
-};
 
 /**
  * @unrestricted

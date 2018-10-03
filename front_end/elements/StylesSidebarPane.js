@@ -2107,7 +2107,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
       case 'ArrowDown':
       case 'PageUp':
       case 'PageDown':
-        if (this._handleNameOrValueUpDown(event)) {
+        if (!this.isSuggestBoxVisible() && this._handleNameOrValueUpDown(event)) {
           event.preventDefault();
           return;
         }

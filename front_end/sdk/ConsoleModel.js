@@ -203,7 +203,7 @@ SDK.ConsoleModel = class extends Common.Object {
     if (!exceptionMessage)
       return;
     this._errors--;
-    exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Info;
+    exceptionMessage.level = SDK.ConsoleMessage.MessageLevel.Verbose;
     this.dispatchEventToListeners(SDK.ConsoleModel.Events.MessageUpdated, exceptionMessage);
   }
 

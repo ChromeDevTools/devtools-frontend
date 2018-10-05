@@ -303,7 +303,7 @@ SDK.HARLog.Entry = class {
     result.wait = waitEnd - waitStart;
 
     const receiveStart = waitEnd;
-    const receiveEnd = SDK.HARLog.Entry._toMilliseconds(this._request.endTime - issueTime);
+    const receiveEnd = SDK.HARLog.Entry._toMilliseconds(this._request.endTime - requestTime);
     result.receive = Math.max(receiveEnd - receiveStart, 0);
 
     return result;

@@ -133,7 +133,7 @@
             "category": "Mobile",
             "actionId": "components.request-app-banner",
             "className": "InspectorMain.RequestAppBannerActionDelegate",
-            "title": "Add to homescreen"
+            "title": "Trigger beforeinstallprompt"
         }
     ],
     "dependencies": [

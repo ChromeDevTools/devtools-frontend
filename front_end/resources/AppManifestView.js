@@ -14,8 +14,10 @@ Resources.AppManifestView = class extends UI.VBox {
     const p = this._emptyView.appendParagraph();
     const linkElement = UI.XLink.create(
         'https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/?utm_source=devtools',
-        Common.UIString('Read more about the web manifest'));
-    p.appendChild(UI.formatLocalized('A web manifest allows you to control how your app behaves when launched and displayed to the user. %s', [linkElement]));
+        Common.UIString('Read more about the web app manifest'));
+    p.appendChild(UI.formatLocalized(
+        'A web app manifest allows you to control how your app behaves when launched and displayed to the user. %s',
+        [linkElement]));
 
     this._emptyView.show(this.contentElement);
     this._emptyView.hideWidget();
@@ -28,10 +30,10 @@ Resources.AppManifestView = class extends UI.VBox {
     this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
     const toolbar = this._identitySection.createToolbar();
     toolbar.renderAsLinks();
-    const addToHomeScreen =
-        new UI.ToolbarButton(Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
-    addToHomeScreen.addEventListener(UI.ToolbarButton.Events.Click, this._addToHomescreen, this);
-    toolbar.appendToolbarItem(addToHomeScreen);
+    const triggerBeforeInstallPrompt = new UI.ToolbarButton(
+        Common.UIString('Trigger beforeinstallprompt'), undefined, Common.UIString('Trigger beforeinstallprompt'));
+    triggerBeforeInstallPrompt.addEventListener(UI.ToolbarButton.Events.Click, this._triggerBeforeInstallPrompt, this);
+    toolbar.appendToolbarItem(triggerBeforeInstallPrompt);
 
     this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
     this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'));
@@ -157,7 +159,7 @@ Resources.AppManifestView = class extends UI.VBox {
   /**
    * @param {!Common.Event} event
    */
-  _addToHomescreen(event) {
+  _triggerBeforeInstallPrompt(event) {
     const target = SDK.targetManager.mainTarget();
     if (target && target.hasBrowserCapability()) {
       target.pageAgent().requestAppBanner();

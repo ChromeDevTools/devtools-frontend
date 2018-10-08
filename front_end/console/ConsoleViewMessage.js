@@ -45,6 +45,8 @@ Console.ConsoleViewMessage = class {
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
+    /** @type {!Array<!ObjectUI.ObjectPropertiesSection>} */
+    this._focusableChildren = [];
 
     /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
@@ -608,6 +610,7 @@ Console.ConsoleViewMessage = class {
     const section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
+    this._focusableChildren.push(section);
     return section.element;
   }
 
@@ -1035,6 +1038,15 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
+   * @return {number}
+   */
+  _focusedChildIndex() {
+    if (!this._focusableChildren.length)
+      return -1;
+    return this._focusableChildren.findIndex(child => child.element.hasFocus());
+  }
+
+  /**
    * @param {!Event} event
    */
   _onKeyDown(event) {
@@ -1050,13 +1062,63 @@ Console.ConsoleViewMessage = class {
    */
   maybeHandleOnKeyDown(event) {
     // Handle trace expansion.
-    if (this._expandTrace) {
+    const focusedChildIndex = this._focusedChildIndex();
+    const isWrapperFocused = focusedChildIndex === -1;
+    if (this._expandTrace && isWrapperFocused) {
       if ((event.key === 'ArrowLeft' && this._traceExpanded) || (event.key === 'ArrowRight' && !this._traceExpanded)) {
         this._expandTrace(!this._traceExpanded);
         return true;
       }
     }
+    if (!this._focusableChildren.length)
+      return false;
+
+    if (event.key === 'ArrowLeft') {
+      this._element.focus();
+      return true;
+    }
+    if (event.key === 'ArrowRight') {
+      if (isWrapperFocused) {
+        this._focusChild(0);
+        return true;
+      }
+    }
+    if (event.key === 'ArrowUp') {
+      if (focusedChildIndex === 0) {
+        this._element.focus();
+        return true;
+      } else if (focusedChildIndex > 0) {
+        this._focusChild(focusedChildIndex - 1);
+        return true;
+      }
+    }
+    if (event.key === 'ArrowDown') {
+      if (isWrapperFocused) {
+        this._focusChild(0);
+        return true;
+      } else if (focusedChildIndex < this._focusableChildren.length - 1) {
+        this._focusChild(focusedChildIndex + 1);
+        return true;
+      }
+    }
     return false;
+  }
+
+  /**
+   * @param {number} index
+   */
+  _focusChild(index) {
+    const section = this._focusableChildren[index];
+    if (!section.objectTreeElement().selected)
+      section.objectTreeElement().select();
+    section.focus();
+  }
+
+  focusLastChildOrSelf() {
+    if (this._focusableChildren.length)
+      this._focusChild(this._focusableChildren.length - 1);
+    else if (this._element)
+      this._element.focus();
   }
 
   /**
@@ -1557,9 +1619,12 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
    * @param {!Event} event
    */
   maybeHandleOnKeyDown(event) {
-    if ((event.key === 'ArrowLeft' && !this._collapsed) || (event.key === 'ArrowRight' && this._collapsed)) {
-      this._setCollapsed(!this._collapsed);
-      return true;
+    const focusedChildIndex = this._focusedChildIndex();
+    if (focusedChildIndex === -1) {
+      if ((event.key === 'ArrowLeft' && !this._collapsed) || (event.key === 'ArrowRight' && this._collapsed)) {
+        this._setCollapsed(!this._collapsed);
+        return true;
+      }
     }
     return super.maybeHandleOnKeyDown(event);
   }

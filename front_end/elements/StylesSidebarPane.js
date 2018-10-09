@@ -1639,6 +1639,8 @@ Elements.StylePropertiesSection = class {
       event.consume(true);
       return;
     }
+    if (this.element.hasSelection())
+      return;
     this._startEditingAtFirstPosition();
     event.consume(true);
   }

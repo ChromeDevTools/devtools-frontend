@@ -602,9 +602,6 @@ SDK.DOMDebuggerManager = class {
         ],
         ['audio', 'video']);
     this._createEventListenerBreakpoints(
-        Common.UIString('Picture-in-Picture'), ['enterpictureinpicture', 'leavepictureinpicture'], ['video']);
-    this._createEventListenerBreakpoints(Common.UIString('Picture-in-Picture'), ['resize'], ['PictureInPictureWindow']);
-    this._createEventListenerBreakpoints(
         Common.UIString('Clipboard'), ['copy', 'cut', 'paste', 'beforecopy', 'beforecut', 'beforepaste'], ['*']);
     this._createEventListenerBreakpoints(
         Common.UIString('Control'),

@@ -412,12 +412,10 @@ TestRunner._evaluateInPage = async function(code) {
  * Doesn't append sourceURL to snippets evaluated in inspected page
  * to avoid churning test expectations
  * @param {string} code
- * @param {boolean=} userGesture
  * @return {!Promise<*>}
  */
-TestRunner.evaluateInPageAnonymously = async function(code, userGesture) {
-  const response =
-      await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console', userGesture});
+TestRunner.evaluateInPageAnonymously = async function(code) {
+  const response = await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
   if (!response[Protocol.Error])
     return response.result.value;
   TestRunner.addResult(
@@ -463,11 +461,10 @@ TestRunner.callFunctionInPageAsync = function(name, args) {
 
 /**
  * @param {string} code
- * @param {boolean=} userGesture
  */
-TestRunner.evaluateInPageWithTimeout = function(code, userGesture) {
+TestRunner.evaluateInPageWithTimeout = function(code) {
   // FIXME: we need a better way of waiting for chromium events to happen
-  TestRunner.evaluateInPageAnonymously('setTimeout(unescape(\'' + escape(code) + '\'), 1)', userGesture);
+  TestRunner.evaluateInPageAnonymously('setTimeout(unescape(\'' + escape(code) + '\'), 1)');
 };
 
 /**

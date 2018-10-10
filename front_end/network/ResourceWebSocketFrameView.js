@@ -168,7 +168,9 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     const selectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
     this._currentSelectedNode = selectedNode;
     const contentProvider = selectedNode.contentProvider();
-    const content = await contentProvider.requestContent();
+    let content = await contentProvider.requestContent();
+    if (await contentProvider.contentEncoded())
+      content = window.atob(content);
     const jsonView = await SourceFrame.JSONView.createView(content);
     if (this._currentSelectedNode !== selectedNode)
       return;

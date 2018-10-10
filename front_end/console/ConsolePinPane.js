@@ -219,12 +219,13 @@ Console.ConsolePin = class extends Common.Object {
     const isEditing = this._pinElement.hasFocus();
     const throwOnSideEffect = isEditing && text !== this._committedExpression;
     const timeout = throwOnSideEffect ? 250 : undefined;
-    this._lastExecutionContext = UI.context.flavor(SDK.ExecutionContext);
+    const executionContext = UI.context.flavor(SDK.ExecutionContext);
     const {preview, result} = await ObjectUI.JavaScriptREPL.evaluateAndBuildPreview(
         text, throwOnSideEffect, timeout, !isEditing /* allowErrors */, 'console');
-    if (this._lastResult)
+    if (this._lastResult && this._lastExecutionContext)
       this._lastExecutionContext.runtimeModel.releaseEvaluationResult(this._lastResult);
     this._lastResult = result || null;
+    this._lastExecutionContext = executionContext || null;
 
     const previewText = preview.deepTextContent();
     if (!previewText || previewText !== this._pinPreview.deepTextContent()) {

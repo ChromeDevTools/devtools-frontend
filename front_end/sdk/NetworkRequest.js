@@ -1151,12 +1151,13 @@ SDK.NetworkRequest = class extends Common.Object {
   async populateImageSource(image) {
     const {content, encoded} = await this.contentData();
     let imageSrc = Common.ContentProvider.contentAsDataURL(content, this._mimeType, encoded);
-    if (imageSrc === null) {
+    if (imageSrc === null && !this._failed) {
       const cacheControl = this.responseHeaderValue('cache-control') || '';
       if (!cacheControl.includes('no-cache'))
         imageSrc = this._url;
     }
-    image.src = imageSrc;
+    if (imageSrc !== null)
+      image.src = imageSrc;
   }
 
   /**

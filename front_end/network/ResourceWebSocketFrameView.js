@@ -81,6 +81,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     const mainContainer = new UI.VBox();
     mainContainer.element.appendChild(this._mainToolbar.element);
     this._dataGrid.asWidget().show(mainContainer.element);
+    mainContainer.setMinimumSize(0, 72);
     this._splitWidget.setMainWidget(mainContainer);
 
     this._frameEmptyWidget = new UI.EmptyWidget(Common.UIString('Select frame to browse its content.'));

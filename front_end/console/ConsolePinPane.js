@@ -163,6 +163,7 @@ Console.ConsolePin = class extends Common.Object {
           this._editor.setText(trimmedText);
         this._committedExpression = trimmedText;
         pinPane._savePins();
+        this._editor.setSelection(TextUtils.TextRange.createFromLocation(Infinity, Infinity));
       });
     });
   }

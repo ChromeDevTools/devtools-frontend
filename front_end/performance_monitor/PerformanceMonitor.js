@@ -517,13 +517,19 @@ PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
    * @return {string}
    */
   static _formatNumber(value, info) {
+    if (!PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter) {
+      PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter =
+          new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+      PerformanceMonitor.PerformanceMonitor.MetricIndicator._percentFormatter =
+          new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
+    }
     switch (info.format) {
       case PerformanceMonitor.PerformanceMonitor.Format.Percent:
-        return value.toLocaleString('en-US', {maximumFractionDigits: 1, style: 'percent'});
+        return PerformanceMonitor.PerformanceMonitor.MetricIndicator._percentFormatter.format(value);
       case PerformanceMonitor.PerformanceMonitor.Format.Bytes:
         return Number.bytesToString(value);
       default:
-        return value.toLocaleString('en-US', {maximumFractionDigits: 1});
+        return PerformanceMonitor.PerformanceMonitor.MetricIndicator._numberFormatter.format(value);
     }
   }
 

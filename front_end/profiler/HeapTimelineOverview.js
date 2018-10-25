@@ -204,30 +204,23 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._updateGridTimerId = 0;
     this._updateBoundaries();
     const ids = this._profileSamples.ids;
+    if (!ids.length)
+      return;
     const timestamps = this._profileSamples.timestamps;
     const sizes = this._profileSamples.sizes;
     const startTime = timestamps[0];
     const totalTime = this._profileSamples.totalTime;
     const timeLeft = startTime + totalTime * this._windowLeft;
     const timeRight = startTime + totalTime * this._windowRight;
-    let minId = 0;
-    let maxId = ids[ids.length - 1] + 1;
+    const minIndex = timestamps.lowerBound(timeLeft);
+    const maxIndex = timestamps.upperBound(timeRight);
     let size = 0;
-    for (let i = 0; i < timestamps.length; ++i) {
-      if (!timestamps[i])
-        continue;
-      if (timestamps[i] > timeRight)
-        break;
-      maxId = ids[i];
-      if (timestamps[i] < timeLeft) {
-        minId = ids[i];
-        continue;
-      }
+    for (let i = minIndex; i < maxIndex; ++i)
       size += sizes[i];
-    }
+    const minId = minIndex < ids.length ? ids[minIndex] : Infinity;
+    const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 
-    this.dispatchEventToListeners(
-        Profiler.HeapTimelineOverview.IdsRangeChanged, {minId: minId, maxId: maxId, size: size});
+    this.dispatchEventToListeners(Profiler.HeapTimelineOverview.IdsRangeChanged, {minId, maxId, size});
   }
 };
 

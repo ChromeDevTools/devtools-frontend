@@ -173,3 +173,11 @@
 .security-mixed-content {
     margin-top: 8px;
 }
+
+.security-explanation-recommendations {
+    padding-inline-start: 16px;
+}
+
+.security-explanation-recommendations > li {
+    margin-bottom: 4px;
+}

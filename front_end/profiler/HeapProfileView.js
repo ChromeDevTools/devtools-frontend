@@ -36,12 +36,14 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
       this._timelineOverview.addEventListener(
           Profiler.HeapTimelineOverview.IdsRangeChanged, this._onIdsRangeChanged.bind(this));
       this._timelineOverview.show(this.element, this.element.firstChild);
+      this._timelineOverview.start();
 
       this._profileType.addEventListener(
           Profiler.SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
       this._profileType.once(Profiler.ProfileType.Events.ProfileComplete).then(() => {
         this._profileType.removeEventListener(
             Profiler.SamplingHeapProfileType.Events.StatsUpdate, this._onStatsUpdate, this);
+        this._timelineOverview.stop();
         this._timelineOverview.updateGrid();
       });
     }
@@ -82,8 +84,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
   _onStatsUpdate(event) {
     const profile = event.data;
 
-    if (!this._startTime) {
-      this._startTime = Date.now();
+    if (!this._totalTime) {
       this._timestamps = [];
       this._sizes = [];
       this._max = [];
@@ -94,7 +95,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
 
     this._sizes.fill(0);
     this._sizes.push(0);
-    this._timestamps.push(Date.now() - this._startTime);
+    this._timestamps.push(Date.now());
     this._ordinals.push(this._lastOrdinal + 1);
     this._lastOrdinal = profile.samples.reduce((res, sample) => Math.max(res, sample.ordinal), this._lastOrdinal);
     for (const sample of profile.samples) {
@@ -103,7 +104,7 @@ Profiler.HeapProfileView = class extends Profiler.ProfileView {
     }
     this._max.push(this._sizes.peekLast());
 
-    if (this._timestamps.peekLast() > this._totalTime)
+    if (this._timestamps.peekLast() - this._timestamps[0] > this._totalTime)
       this._totalTime *= 2;
 
     const samples = /** @type {!Profiler.HeapTimelineOverview.Samples} */ ({

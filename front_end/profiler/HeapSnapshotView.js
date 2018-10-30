@@ -180,6 +180,7 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
           Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
       profileType.addEventListener(
           Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
+      this._trackingOverviewGrid.start();
     }
   }
 
@@ -188,6 +189,8 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
         Profiler.TrackingHeapSnapshotProfileType.HeapStatsUpdate, this._onHeapStatsUpdate, this);
     this._profile.profileType().removeEventListener(
         Profiler.TrackingHeapSnapshotProfileType.TrackingStopped, this._onStopTracking, this);
+    if (this._trackingOverviewGrid)
+      this._trackingOverviewGrid.stop();
   }
 
   /**

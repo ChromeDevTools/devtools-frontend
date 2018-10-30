@@ -29,12 +29,27 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     this._profileSamples = new Profiler.HeapTimelineOverview.Samples();
   }
 
+  start() {
+    this._running = true;
+    const drawFrame = () => {
+      this.update();
+      if (this._running)
+        this.element.window().requestAnimationFrame(drawFrame);
+    };
+    drawFrame();
+  }
+
+  stop() {
+    this._running = false;
+  }
+
   /**
    * @param {!Profiler.HeapTimelineOverview.Samples} samples
    */
   setSamples(samples) {
     this._profileSamples = samples;
-    this.update();
+    if (!this._running)
+      this.update();
   }
 
   /**
@@ -49,7 +64,6 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     const topSizes = profileSamples.max;
     const timestamps = profileSamples.timestamps;
     const startTime = timestamps[0];
-    const endTime = timestamps[timestamps.length - 1];
 
     const scaleFactor = this._xScale.nextScale(width / profileSamples.totalTime);
     let maxSize = 0;
@@ -93,14 +107,16 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     const context = this._overviewCanvas.getContext('2d');
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
 
-    context.beginPath();
-    context.lineWidth = 2;
-    context.strokeStyle = 'rgba(192, 192, 192, 0.6)';
-    const currentX = (endTime - startTime) * scaleFactor;
-    context.moveTo(currentX, height - 1);
-    context.lineTo(currentX, 0);
-    context.stroke();
-    context.closePath();
+    if (this._running) {
+      context.beginPath();
+      context.lineWidth = 2;
+      context.strokeStyle = 'rgba(192, 192, 192, 0.6)';
+      const currentX = (Date.now() - startTime) * scaleFactor;
+      context.moveTo(currentX, height - 1);
+      context.lineTo(currentX, 0);
+      context.stroke();
+      context.closePath();
+    }
 
     let gridY;
     let gridValue;

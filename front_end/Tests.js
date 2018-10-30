@@ -591,6 +591,15 @@
     }
   };
 
+  TestSuite.prototype.testSharedWorkerNetworkPanel = function() {
+    this.takeControl();
+    this.showPanel('network').then(() => {
+      if (!document.querySelector('#network-container'))
+        this.fail('unable to find #network-container');
+      this.releaseControl();
+    });
+  };
+
   TestSuite.prototype.enableTouchEmulation = function() {
     const deviceModeModel = new Emulation.DeviceModeModel(function() {});
     deviceModeModel._target = SDK.targetManager.mainTarget();

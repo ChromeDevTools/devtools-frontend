@@ -592,20 +592,31 @@ Network.NetworkLogView = class extends UI.VBox {
     this._hideRecordingHint();
     this._recordingHint = this.element.createChild('div', 'network-status-pane fill');
     const hintText = this._recordingHint.createChild('div', 'recording-hint');
-    const reloadShortcutNode = this._recordingHint.createChild('b');
-    reloadShortcutNode.textContent = UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0].name;
+
+    let reloadShortcutNode = null;
+    const reloadShortcutDescriptor = UI.shortcutRegistry.shortcutDescriptorsForAction('inspector_main.reload')[0];
+    if (reloadShortcutDescriptor) {
+      reloadShortcutNode = this._recordingHint.createChild('b');
+      reloadShortcutNode.textContent = reloadShortcutDescriptor.name;
+    }
 
     if (this._recording) {
       const recordingText = hintText.createChild('span');
       recordingText.textContent = Common.UIString('Recording network activity\u2026');
-      hintText.createChild('br');
-      hintText.appendChild(
-          UI.formatLocalized('Perform a request or hit %s to record the reload.', [reloadShortcutNode]));
+      if (reloadShortcutNode) {
+        hintText.createChild('br');
+        hintText.appendChild(
+            UI.formatLocalized('Perform a request or hit %s to record the reload.', [reloadShortcutNode]));
+      }
     } else {
       const recordNode = hintText.createChild('b');
       recordNode.textContent = UI.shortcutRegistry.shortcutTitleForAction('network.toggle-recording');
-      hintText.appendChild(UI.formatLocalized(
-          'Record (%s) or reload (%s) to display network activity.', [recordNode, reloadShortcutNode]));
+      if (reloadShortcutNode) {
+        hintText.appendChild(UI.formatLocalized(
+            'Record (%s) or reload (%s) to display network activity.', [recordNode, reloadShortcutNode]));
+      } else {
+        hintText.appendChild(UI.formatLocalized('Record (%s) to display network activity.', [recordNode]));
+      }
     }
   }
 

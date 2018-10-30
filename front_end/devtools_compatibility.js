@@ -1166,30 +1166,34 @@
   }
 
   function installBackwardsCompatibility() {
-    if (window.location.href.indexOf('/remote/') === -1)
+    const majorVersion = getRemoteMajorVersion();
+    if (!majorVersion)
       return;
 
-    // Support for legacy (<M65) frontends.
-    /** @type {(!function(number, number):Element|undefined)} */
-    ShadowRoot.prototype.__originalShadowRootElementFromPoint;
+    /** @type {!Array<string>} */
+    const styleRules = [];
 
-    if (!ShadowRoot.prototype.__originalShadowRootElementFromPoint) {
-      ShadowRoot.prototype.__originalShadowRootElementFromPoint = ShadowRoot.prototype.elementFromPoint;
-      /**
-       *  @param {number} x
-       *  @param {number} y
-       *  @return {Element}
-       */
-      ShadowRoot.prototype.elementFromPoint = function(x, y) {
-        const originalResult = ShadowRoot.prototype.__originalShadowRootElementFromPoint.apply(this, arguments);
-        if (this.host && originalResult === this.host)
-          return null;
-        return originalResult;
-      };
+    if (majorVersion <= 66) {
+      /** @type {(!function(number, number):Element|undefined)} */
+      ShadowRoot.prototype.__originalShadowRootElementFromPoint;
+
+      if (!ShadowRoot.prototype.__originalShadowRootElementFromPoint) {
+        ShadowRoot.prototype.__originalShadowRootElementFromPoint = ShadowRoot.prototype.elementFromPoint;
+        /**
+         *  @param {number} x
+         *  @param {number} y
+         *  @return {Element}
+         */
+        ShadowRoot.prototype.elementFromPoint = function(x, y) {
+          const originalResult = ShadowRoot.prototype.__originalShadowRootElementFromPoint.apply(this, arguments);
+          if (this.host && originalResult === this.host)
+            return null;
+          return originalResult;
+        };
+      }
     }
 
-    // Support for legacy (<M53) frontends.
-    if (!window.KeyboardEvent.prototype.hasOwnProperty('keyIdentifier')) {
+    if (majorVersion <= 53) {
       Object.defineProperty(window.KeyboardEvent.prototype, 'keyIdentifier', {
         /**
          * @return {string}
@@ -1201,63 +1205,108 @@
       });
     }
 
-    // Support for legacy (<M50) frontends.
-    installObjectObserve();
+    if (majorVersion <= 50)
+      installObjectObserve();
 
-    /**
-     * @param {string} property
-     * @return {!CSSValue|null}
-     * @this {CSSStyleDeclaration}
-     */
-    function getValue(property) {
-      // Note that |property| comes from another context, so we can't use === here.
-      // eslint-disable-next-line eqeqeq
-      if (property == 'padding-left') {
-        return /** @type {!CSSValue} */ ({
-          /**
-           * @return {number}
-           * @this {!{__paddingLeft: number}}
-           */
-          getFloatValue: function() {
-            return this.__paddingLeft;
-          },
-          __paddingLeft: parseFloat(this.paddingLeft)
-        });
+    if (majorVersion <= 45) {
+      /**
+       * @param {string} property
+       * @return {!CSSValue|null}
+       * @this {CSSStyleDeclaration}
+       */
+      function getValue(property) {
+        // Note that |property| comes from another context, so we can't use === here.
+        // eslint-disable-next-line eqeqeq
+        if (property == 'padding-left') {
+          return /** @type {!CSSValue} */ ({
+            /**
+             * @return {number}
+             * @this {!{__paddingLeft: number}}
+             */
+            getFloatValue: function() {
+              return this.__paddingLeft;
+            },
+            __paddingLeft: parseFloat(this.paddingLeft)
+          });
+        }
+        throw new Error('getPropertyCSSValue is undefined');
       }
-      throw new Error('getPropertyCSSValue is undefined');
+
+      window.CSSStyleDeclaration.prototype.getPropertyCSSValue = getValue;
+
+      function CSSPrimitiveValue() {
+      }
+      CSSPrimitiveValue.CSS_PX = 5;
+      window.CSSPrimitiveValue = CSSPrimitiveValue;
     }
 
-    // Support for legacy (<M41) frontends.
-    window.CSSStyleDeclaration.prototype.getPropertyCSSValue = getValue;
+    if (majorVersion <= 45)
+      styleRules.push('* { min-width: 0; min-height: 0; }');
 
-    function CSSPrimitiveValue() {
+    if (majorVersion <= 51) {
+      // Support for quirky border-image behavior (<M51), see:
+      // https://bugs.chromium.org/p/chromium/issues/detail?id=559258
+      styleRules.push('.cm-breakpoint .CodeMirror-linenumber { border-style: solid !important; }');
+      styleRules.push(
+          '.cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber { border-style: solid !important; }');
     }
-    CSSPrimitiveValue.CSS_PX = 5;
-    window.CSSPrimitiveValue = CSSPrimitiveValue;
 
-    // Support for legacy (<M44) frontends.
-    const styleElement = window.document.createElement('style');
-    styleElement.type = 'text/css';
-    styleElement.textContent = 'html /deep/ * { min-width: 0; min-height: 0; }';
+    if (majorVersion <= 50)
+      Event.prototype.deepPath = undefined;
 
-    // Support for quirky border-image behavior (<M51), see:
-    // https://bugs.chromium.org/p/chromium/issues/detail?id=559258
-    styleElement.textContent +=
-        '\nhtml /deep/ .cm-breakpoint .CodeMirror-linenumber { border-style: solid !important; }';
-    styleElement.textContent +=
-        '\nhtml /deep/ .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber { border-style: solid !important; }';
-    window.document.head.appendChild(styleElement);
+    if (majorVersion <= 54) {
+      window.FileError = /** @type {!function (new: FileError) : ?} */ ({
+        NOT_FOUND_ERR: DOMException.NOT_FOUND_ERR,
+        ABORT_ERR: DOMException.ABORT_ERR,
+        INVALID_MODIFICATION_ERR: DOMException.INVALID_MODIFICATION_ERR,
+        NOT_READABLE_ERR: 0  // No matching DOMException, so code will be 0.
+      });
+    }
 
-    // Support for legacy (<M49) frontends.
-    Event.prototype.deepPath = undefined;
+    installExtraStyleRules(styleRules);
+  }
 
-    // Support for legacy (<53) frontends.
-    window.FileError = /** @type {!function (new: FileError) : ?} */ ({
-      NOT_FOUND_ERR: DOMException.NOT_FOUND_ERR,
-      ABORT_ERR: DOMException.ABORT_ERR,
-      INVALID_MODIFICATION_ERR: DOMException.INVALID_MODIFICATION_ERR,
-      NOT_READABLE_ERR: 0  // No matching DOMException, so code will be 0.
-    });
+  /**
+   * @return {?number}
+   */
+  function getRemoteMajorVersion() {
+    try {
+      const remoteVersion = new URLSearchParams(window.location.href).get('remoteVersion');
+      if (!remoteVersion)
+        return null;
+      const majorVersion = parseInt(remoteVersion.split('.')[0], 10);
+      return majorVersion;
+    } finally {
+      return null;
+    }
+  }
+
+  /**
+   * @param {!Array<string>} styleRules
+   */
+  function installExtraStyleRules(styleRules) {
+    if (!styleRules.length)
+      return;
+    const styleText = styleRules.join('\n');
+    document.head.appendChild(createStyleElement(styleText));
+
+    const origCreateShadowRoot = HTMLElement.prototype.createShadowRoot;
+    HTMLElement.prototype.createShadowRoot = function(...args) {
+      const shadowRoot = origCreateShadowRoot.call(this, ...args);
+      shadowRoot.appendChild(createStyleElement(styleText));
+      return shadowRoot;
+    };
+  }
+
+  /**
+   * @param {string} styleText
+   * @return {!Element}
+   */
+  function createStyleElement(styleText) {
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.textContent = styleText;
+    return style;
   }
 
   function windowLoaded() {

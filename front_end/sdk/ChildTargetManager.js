@@ -62,25 +62,6 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} type
-   * @return {number}
-   */
-  _capabilitiesForType(type) {
-    if (type === 'worker') {
-      return SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-          SDK.Target.Capability.Target;
-    }
-    if (type === 'service_worker')
-      return SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
-    if (type === 'iframe') {
-      return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
-          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-          SDK.Target.Capability.Tracing | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input;
-    }
-    return 0;
-  }
-
-  /**
    * @override
    * @param {!Protocol.Target.TargetInfo} targetInfo
    */
@@ -134,9 +115,29 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() :
                                '#' + (++SDK.ChildTargetManager._lastAnonymousTargetId);
     }
+
+    let type = SDK.Target.Type.Browser;
+    let capabilities = 0;
+
+    if (targetInfo.type === 'iframe') {
+      type = SDK.Target.Type.Frame;
+      capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
+          SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
+          SDK.Target.Capability.Tracing | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input;
+    }
+    if (targetInfo.type === 'worker') {
+      type = SDK.Target.Type.Worker;
+      capabilities = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+          SDK.Target.Capability.Target;
+    }
+    if (targetInfo.type === 'service_worker') {
+      type = SDK.Target.Type.ServiceWorker;
+      capabilities = SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+    }
+
     const target = this._targetManager.createTarget(
-        targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget, false /* isNodeJS */);
+        targetInfo.targetId, targetName, capabilities, type,
+        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
 
     if (SDK.ChildTargetManager._attachCallback) {
       SDK.ChildTargetManager._attachCallback({target, waitingForDebugger}).then(() => {

@@ -4,12 +4,10 @@
 
 Protocol.NodeURL = class {
   /**
-   * @param {!Protocol.TargetBase} target
    * @param {!Object} object
    */
-  static patch(target, object) {
-    if (target.isNodeJS())
-      process(object, '');
+  static patch(object) {
+    process(object, '');
 
     /**
      * @param {!Object} object

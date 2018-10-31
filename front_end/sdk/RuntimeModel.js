@@ -695,10 +695,12 @@ SDK.ExecutionContext = class {
      */
     function targetWeight(target) {
       if (!target.parentTarget())
+        return 5;
+      if (target.type() === SDK.Target.Type.Frame)
         return 4;
-      if (target.hasBrowserCapability())
+      if (target.type() === SDK.Target.Type.ServiceWorker)
         return 3;
-      if (target.hasJSCapability())
+      if (target.type() === SDK.Target.Type.Worker)
         return 2;
       return 1;
     }

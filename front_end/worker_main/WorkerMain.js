@@ -13,7 +13,8 @@ WorkerMain.WorkerMain = class extends Common.Object {
     const capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
         SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
     SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), capabilities, this._createMainConnection.bind(this), null, false /* isNodeJS */);
+        'main', Common.UIString('Main'), capabilities, SDK.Target.Type.ServiceWorker,
+        this._createMainConnection.bind(this), null);
     InspectorFrontendHost.connectionReady();
     new MobileThrottling.NetworkPanelIndicator();
   }
@@ -28,9 +29,8 @@ WorkerMain.WorkerMain = class extends Common.Object {
 };
 
 SDK.ChildTargetManager.install(async ({target, waitingForDebugger}) => {
-  const parentTarget = target.parentTarget();
   // Only pause the new worker if debugging SW - we are going through the pause on start checkbox.
-  if (parentTarget.parentTarget() || !waitingForDebugger)
+  if (target.parentTarget().type() !== SDK.Target.Type.ServiceWorker || !waitingForDebugger)
     return;
   const debuggerModel = target.model(SDK.DebuggerModel);
   if (!debuggerModel)

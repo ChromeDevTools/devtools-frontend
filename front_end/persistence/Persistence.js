@@ -178,7 +178,7 @@ Persistence.Persistence = class extends Common.Object {
     }
 
     const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.isNodeJS()) {
+    if (target.type() === SDK.Target.Type.Node) {
       const newContent = uiSourceCode.workingCopy();
       other.requestContent().then(() => {
         const nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, other.workingCopy(), newContent);
@@ -221,7 +221,7 @@ Persistence.Persistence = class extends Common.Object {
       return;
     const other = binding.network === uiSourceCode ? binding.fileSystem : binding.network;
     const target = Bindings.NetworkProject.targetForUISourceCode(binding.network);
-    if (target.isNodeJS()) {
+    if (target.type() === SDK.Target.Type.Node) {
       other.requestContent().then(currentContent => {
         const nodeJSContent = Persistence.Persistence.rewrapNodeJSContent(other, currentContent, newContent);
         setContent.call(this, nodeJSContent);

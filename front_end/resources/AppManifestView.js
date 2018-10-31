@@ -159,7 +159,7 @@ Resources.AppManifestView = class extends UI.VBox {
    */
   _addToHomescreen(event) {
     const target = SDK.targetManager.mainTarget();
-    if (target && target.hasBrowserCapability()) {
+    if (target && target.type() === SDK.Target.Type.Frame) {
       target.pageAgent().requestAppBanner();
       Common.console.show();
     }

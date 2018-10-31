@@ -15,7 +15,8 @@ function nextId(prefix) {
 
 SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
   const mockTarget = SDK.targetManager.createTarget(
-      nextId('mock-target-'), targetName, pageMock.capabilities(), params => pageMock.createConnection(params));
+      nextId('mock-target-'), targetName, pageMock.capabilities(), SDK.Target.Type.Frame,
+      params => pageMock.createConnection(params));
 
   if (makeMainTarget) {
     SDK.targetManager._targets = SDK.targetManager._targets.filter(target => target !== mockTarget);

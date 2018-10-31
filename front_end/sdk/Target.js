@@ -13,17 +13,20 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {string} id
    * @param {string} name
    * @param {number} capabilitiesMask
+   * @param {!SDK.Target.Type} type
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    * @param {boolean} suspended
-   * @param {boolean} isNodeJS
    */
-  constructor(targetManager, id, name, capabilitiesMask, connectionFactory, parentTarget, suspended, isNodeJS) {
-    super(connectionFactory, isNodeJS);
+  constructor(targetManager, id, name, capabilitiesMask, type, connectionFactory, parentTarget, suspended) {
+    const needsNodeJSPatching = type === SDK.Target.Type.Node;
+    super(connectionFactory, needsNodeJSPatching);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
+    // TODO(dgozman): specify capabilities per type here, instead of passing them.
     this._capabilitiesMask = capabilitiesMask;
+    this._type = type;
     this._parentTarget = parentTarget;
     this._id = id;
     this._modelByConstructor = new Map();
@@ -58,6 +61,21 @@ SDK.Target = class extends Protocol.TargetBase {
   }
 
   /**
+   * @return {!SDK.Target.Type}
+   */
+  type() {
+    return this._type;
+  }
+
+  /**
+   * @override
+   */
+  markAsNodeJSForTest() {
+    super.markAsNodeJSForTest();
+    this._type = SDK.Target.Type.Node;
+  }
+
+  /**
    * @return {!SDK.TargetManager}
    */
   targetManager() {
@@ -69,6 +87,8 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {boolean}
    */
   hasAllCapabilities(capabilitiesMask) {
+    // TODO(dgozman): get rid of this method, once we never observe targets with
+    // capability mask.
     return (this._capabilitiesMask & capabilitiesMask) === capabilitiesMask;
   }
 
@@ -77,49 +97,8 @@ SDK.Target = class extends Protocol.TargetBase {
    * @return {string}
    */
   decorateLabel(label) {
-    return !this.hasBrowserCapability() ? '\u2699 ' + label : label;
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasBrowserCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.Browser);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasJSCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.JS);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasLogCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.Log);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasNetworkCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.Network);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasTargetCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.Target);
-  }
-
-  /**
-   * @return {boolean}
-   */
-  hasDOMCapability() {
-    return this.hasAllCapabilities(SDK.Target.Capability.DOM);
+    return (this._type === SDK.Target.Type.Worker || this._type === SDK.Target.Type.ServiceWorker) ? '\u2699 ' + label :
+                                                                                                     label;
   }
 
   /**
@@ -243,6 +222,17 @@ SDK.Target.Capability = {
   None: 0,
 
   AllForTests: (1 << 13) - 1
+};
+
+/**
+ * @enum {string}
+ */
+SDK.Target.Type = {
+  Frame: 'frame',
+  ServiceWorker: 'service-worker',
+  Worker: 'worker',
+  Node: 'node',
+  Browser: 'browser',
 };
 
 /**

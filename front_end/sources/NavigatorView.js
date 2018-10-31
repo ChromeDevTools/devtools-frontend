@@ -527,7 +527,8 @@ Sources.NavigatorView = class extends UI.VBox {
     if (!targetNode) {
       targetNode = new Sources.NavigatorGroupTreeNode(
           this, project, 'target:' + target.id(),
-          !target.hasBrowserCapability() ? Sources.NavigatorView.Types.Worker : Sources.NavigatorView.Types.Frame,
+          target.type() === SDK.Target.Type.Frame ? Sources.NavigatorView.Types.Frame :
+                                                    Sources.NavigatorView.Types.Worker,
           target.name());
       this._rootNode.appendChild(targetNode);
     }

@@ -12,7 +12,8 @@ JsMain.JsMain = class extends Common.Object {
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
     const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), SDK.Target.Capability.JS, this._createMainConnection.bind(this), null, true /* isNodeJS */);
+        'main', Common.UIString('Main'), SDK.Target.Capability.JS, SDK.Target.Type.Node,
+        this._createMainConnection.bind(this), null);
     target.runtimeAgent().runIfWaitingForDebugger();
     InspectorFrontendHost.connectionReady();
   }

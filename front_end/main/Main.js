@@ -561,7 +561,7 @@ Main.Main.MainMenuItem = class {
     }
 
     if (Components.dockController.dockSide() === Components.DockController.State.Undocked &&
-        SDK.targetManager.mainTarget() && SDK.targetManager.mainTarget().hasBrowserCapability())
+        SDK.targetManager.mainTarget() && SDK.targetManager.mainTarget().type() === SDK.Target.Type.Frame)
       contextMenu.defaultSection().appendAction('inspector_main.focus-debuggee', Common.UIString('Focus debuggee'));
 
     contextMenu.defaultSection().appendAction(

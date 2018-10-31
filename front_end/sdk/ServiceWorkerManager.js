@@ -580,7 +580,7 @@ SDK.ServiceWorkerContextNamer = class {
     const parent = target.parentTarget();
     if (!parent || parent.parentTarget() !== this._target)
       return null;
-    return parent.id();
+    return parent.type() === SDK.Target.Type.ServiceWorker ? parent.id() : null;
   }
 
   _updateAllContextLabels() {

@@ -260,7 +260,7 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   async setBreakpointByURL(url, lineNumber, columnNumber, condition) {
     // Convert file url to node-js path.
     let urlRegex;
-    if (this.target().isNodeJS()) {
+    if (this.target().type() === SDK.Target.Type.Node) {
       const platformPath = Common.ParsedURL.urlToPlatformPath(url, Host.isWin());
       urlRegex = `${platformPath.escapeForRegExp()}|${url.escapeForRegExp()}`;
     }

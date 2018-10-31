@@ -31,24 +31,16 @@ InspectorMain.InspectorMain = class extends Common.Object {
   }
 
   _connectAndCreateMainTarget() {
-    const isNodeJS = !!Runtime.queryParam('v8only');
+    const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
+    const capabilities = Runtime.queryParam('v8only') ? SDK.Target.Capability.JS :
+                                                        SDK.Target.Capability.Browser | SDK.Target.Capability.DOM |
+            SDK.Target.Capability.DeviceEmulation | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input |
+            SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+            SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Security | SDK.Target.Capability.Target |
+            SDK.Target.Capability.Tracing | SDK.Target.Capability.Inspector;
     const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), this._capabilitiesForMainTarget(), this._createMainConnection.bind(this), null,
-        isNodeJS);
+        'main', Common.UIString('Main'), capabilities, type, this._createMainConnection.bind(this), null);
     target.runtimeAgent().runIfWaitingForDebugger();
-  }
-
-  /**
-   * @return {number}
-   */
-  _capabilitiesForMainTarget() {
-    if (Runtime.queryParam('v8only'))
-      return SDK.Target.Capability.JS;
-    return SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.DeviceEmulation |
-        SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.JS |
-        SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.ScreenCapture |
-        SDK.Target.Capability.Security | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing |
-        SDK.Target.Capability.Inspector;
   }
 
   /**
@@ -218,7 +210,7 @@ InspectorMain.BackendSettingsSync = class {
    * @param {!SDK.Target} target
    */
   _updateTarget(target) {
-    if (target.parentTarget())
+    if (target.type() !== SDK.Target.Type.Frame || target.parentTarget())
       return;
     target.pageAgent().setAdBlockingEnabled(this._adBlockEnabledSetting.get());
     target.emulationAgent().setFocusEmulationEnabled(this._emulatePageFocusSetting.get());

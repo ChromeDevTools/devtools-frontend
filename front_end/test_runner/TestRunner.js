@@ -1225,7 +1225,7 @@ TestRunner.dumpLoadedModules = function(relativeTo) {
  * @return {boolean}
  */
 TestRunner.isDedicatedWorker = function(target) {
-  return target && !target.hasBrowserCapability() && target.hasJSCapability() && target.hasLogCapability();
+  return target && target.type() === SDK.Target.Type.Worker;
 };
 
 /**
@@ -1233,8 +1233,7 @@ TestRunner.isDedicatedWorker = function(target) {
  * @return {boolean}
  */
 TestRunner.isServiceWorker = function(target) {
-  return target && !target.hasBrowserCapability() && !target.hasJSCapability() && target.hasNetworkCapability() &&
-      target.hasTargetCapability();
+  return target && target.type() === SDK.Target.Type.ServiceWorker;
 };
 
 /**
@@ -1242,13 +1241,17 @@ TestRunner.isServiceWorker = function(target) {
  * @return {string}
  */
 TestRunner.describeTargetType = function(target) {
-  if (TestRunner.isDedicatedWorker(target))
+  if (!target)
+    return 'browser';
+  if (target.type() === SDK.Target.Type.Worker)
     return 'worker';
-  if (TestRunner.isServiceWorker(target))
+  if (target.type() === SDK.Target.Type.ServiceWorker)
     return 'service-worker';
-  if (!target.parentTarget())
-    return 'page';
-  return 'frame';
+  if (target.type() === SDK.Target.Type.Frame)
+    return target.parentTarget() ? 'frame' : 'page';
+  if (target.type() === SDK.Target.Type.Node)
+    return 'node';
+  return 'browser';
 };
 
 /**

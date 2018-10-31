@@ -30,7 +30,7 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {function({target: !SDK.Target, waitingForDebugger: boolean})=} attachCallback
+   * @param {function({target: !SDK.Target, waitingForDebugger: boolean}):!Promise=} attachCallback
    */
   static install(attachCallback) {
     SDK.ChildTargetManager._attachCallback = attachCallback;
@@ -138,9 +138,13 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
         targetInfo.targetId, targetName, this._capabilitiesForType(targetInfo.type),
         this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget, false /* isNodeJS */);
 
-    if (SDK.ChildTargetManager._attachCallback)
-      SDK.ChildTargetManager._attachCallback({target, waitingForDebugger});
-    target.runtimeAgent().runIfWaitingForDebugger();
+    if (SDK.ChildTargetManager._attachCallback) {
+      SDK.ChildTargetManager._attachCallback({target, waitingForDebugger}).then(() => {
+        target.runtimeAgent().runIfWaitingForDebugger();
+      });
+    } else {
+      target.runtimeAgent().runIfWaitingForDebugger();
+    }
   }
 
   /**

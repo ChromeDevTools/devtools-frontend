@@ -136,6 +136,14 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
       return;
     SDK.DebuggerModel._debuggerIdToModel.set(debuggerId, this);
     this._debuggerId = debuggerId;
+    this.dispatchEventToListeners(SDK.DebuggerModel.Events.DebuggerIsReadyToPause, this);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isReadyToPause() {
+    return !!this._debuggerId;
   }
 
   /**
@@ -929,7 +937,8 @@ SDK.DebuggerModel.Events = {
   DiscardedAnonymousScriptSource: Symbol('DiscardedAnonymousScriptSource'),
   GlobalObjectCleared: Symbol('GlobalObjectCleared'),
   CallFrameSelected: Symbol('CallFrameSelected'),
-  ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame')
+  ConsoleCommandEvaluatedInSelectedCallFrame: Symbol('ConsoleCommandEvaluatedInSelectedCallFrame'),
+  DebuggerIsReadyToPause: Symbol('DebuggerIsReadyToPause'),
 };
 
 /** @enum {string} */

@@ -439,6 +439,10 @@ Bindings.BreakpointManager.Breakpoint = class {
   }
 
   _updateBreakpoint() {
+    if (this._uiLocations.size === 0 && this._defaultUILocation)
+      this._breakpointManager._uiLocationRemoved(this, this._defaultUILocation);
+    if (this._uiLocations.size === 0 && this._defaultUILocation && !this._isRemoved)
+      this._breakpointManager._uiLocationAdded(this, this._defaultUILocation);
     const modelBreakpoints = this._modelBreakpoints.valuesArray();
     for (let i = 0; i < modelBreakpoints.length; ++i)
       modelBreakpoints[i]._scheduleUpdateInDebugger();

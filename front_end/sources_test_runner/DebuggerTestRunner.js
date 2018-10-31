@@ -698,17 +698,17 @@ SourcesTestRunner.evaluateOnCurrentCallFrame = function(code) {
   return TestRunner.debuggerModel.evaluateOnSelectedCallFrame({expression: code, objectGroup: 'console'});
 };
 
-SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
-  return waitUpdate().then(checkIfReady);
+SourcesTestRunner.waitDebuggerPluginDecorations = function(sourceFrame) {
+  return TestRunner.addSnifferPromise(Sources.DebuggerPlugin.prototype, '_breakpointDecorationsUpdatedForTest');
+};
 
-  async function waitUpdate() {
-    await TestRunner.addSnifferPromise(Sources.DebuggerPlugin.prototype, '_breakpointDecorationsUpdatedForTest');
-  }
+SourcesTestRunner.waitDebuggerPluginBreakpoints = function(sourceFrame) {
+  return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfReady);
 
   function checkIfReady() {
     for (const {breakpoint} of Bindings.breakpointManager.allBreakpointLocations()) {
       if (breakpoint._uiLocations.size === 0 && breakpoint.enabled())
-        return waitUpdate().then(checkIfReady);
+        return SourcesTestRunner.waitDebuggerPluginDecorations().then(checkIfReady);
     }
 
     return Promise.resolve();

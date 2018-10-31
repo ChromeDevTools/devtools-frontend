@@ -44,6 +44,10 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     usageBreakdownRow.appendChild(this._pieChart.element);
     usageBreakdownRow.appendChild(this._pieChartLegend);
 
+    const clearButtonSection = this._reportView.appendSection('', 'clear-storage-button').appendRow();
+    this._clearButton = UI.createTextButton(ls`Clear site data`, this._clear.bind(this));
+    clearButtonSection.appendChild(this._clearButton);
+
     const application = this._reportView.appendSection(Common.UIString('Application'));
     this._appendItem(application, Common.UIString('Unregister service workers'), 'service_workers');
 
@@ -58,10 +62,6 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
 
     SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
-    const footer = this._reportView.appendSection('', 'clear-storage-button').appendRow();
-    this._clearButton = UI.createTextButton(
-        Common.UIString('Clear site data'), this._clear.bind(this), Common.UIString('Clear site data'));
-    footer.appendChild(this._clearButton);
   }
 
   /**

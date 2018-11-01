@@ -107,6 +107,22 @@
     min-width: 80px;
 }
 
+.report-field-value-filename,
+.service-worker-client-string {
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.service-worker-client {
+    display: flex;
+}
+
+.service-worker-client-focus-link {
+    flex: none;
+    margin-right: 5px;
+}
+
 .service-worker-notification-editor.source-code {
     /** Simulate CodeMirror that is shown above */
     padding: 4px;

@@ -936,7 +936,7 @@ UI.TreeElement = class {
    * @return {boolean}
    */
   collapseOrAscend(altKey) {
-    if (this.expanded) {
+    if (this.expanded && this._collapsible) {
       if (altKey)
         this.collapseRecursively();
       else
@@ -1035,8 +1035,11 @@ UI.TreeElement = class {
    * @return {boolean}
    */
   select(omitFocus, selectedByUser) {
-    if (!this.treeOutline || !this.selectable || this.selected)
+    if (!this.treeOutline || !this.selectable || this.selected) {
+      if (!omitFocus)
+        this.listItemElement.focus();
       return false;
+    }
     // Wait to deselect this element so that focus only changes once
     const lastSelected = this.treeOutline.selectedTreeElement;
     this.treeOutline.selectedTreeElement = null;
@@ -1044,6 +1047,8 @@ UI.TreeElement = class {
     if (this.treeOutline._rootElement === this) {
       if (lastSelected)
         lastSelected.deselect();
+      if (!omitFocus)
+        this.listItemElement.focus();
       return false;
     }
 

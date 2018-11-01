@@ -338,10 +338,8 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
   onselect(selectedByUser) {
     this.treeOutline.suppressRevealAndSelect = true;
     this.treeOutline.selectDOMNode(this._node, selectedByUser);
-    if (selectedByUser) {
-      this._node.highlight();
+    if (selectedByUser)
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.ChangeInspectedNodeInElementsPanel);
-    }
     this._createSelection();
     this._createHint();
     this.treeOutline.suppressRevealAndSelect = false;

@@ -5,37 +5,6 @@
 /**
  * @interface
  */
-Common.Renderer = function() {};
-
-Common.Renderer.prototype = {
-  /**
-   * @param {!Object} object
-   * @param {!Common.Renderer.Options} options
-   * @return {!Promise.<?Node>}
-   */
-  render(object, options) {}
-};
-
-/**
- * @param {?Object} object
- * @param {!Common.Renderer.Options=} options
- * @return {!Promise.<?Node>}
- */
-Common.Renderer.render = function(object, options) {
-  if (!object)
-    return Promise.reject(new Error('Can\'t render ' + object));
-  return self.runtime.extension(Common.Renderer, object)
-      .instance()
-      .then(renderer => renderer.render(object, options || {}));
-};
-
-/** @typedef {!{title: (string|!Element|undefined), expanded: (boolean|undefined),
- *    editable: (boolean|undefined) }} */
-Common.Renderer.Options;
-
-/**
- * @interface
- */
 Common.Revealer = function() {};
 
 /**

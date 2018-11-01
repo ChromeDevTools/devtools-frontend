@@ -8,7 +8,7 @@
             "className": "BrowserConsole.BrowserConsole"
         },
         {
-            "type": "@Common.Renderer",
+            "type": "@UI.Renderer",
             "contextTypes": [
                 "SDK.ConsoleMessage"
             ],

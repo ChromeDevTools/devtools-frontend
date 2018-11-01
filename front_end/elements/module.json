@@ -18,7 +18,7 @@
             "className": "Elements.ElementsPanel.ContextMenuProvider"
         },
         {
-            "type": "@Common.Renderer",
+            "type": "@UI.Renderer",
             "contextTypes": [
                 "SDK.DOMNode",
                 "SDK.DeferredDOMNode"

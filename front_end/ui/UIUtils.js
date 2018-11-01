@@ -2045,3 +2045,32 @@ UI.createExpandableText = function(text, maxLength) {
   });
   return fragment;
 };
+
+/**
+ * @interface
+ */
+UI.Renderer = function() {};
+
+UI.Renderer.prototype = {
+  /**
+   * @param {!Object} object
+   * @param {!UI.Renderer.Options=} options
+   * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
+   */
+  render(object, options) {}
+};
+
+/**
+ * @param {?Object} object
+ * @param {!UI.Renderer.Options=} options
+ * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
+ */
+UI.Renderer.render = async function(object, options) {
+  if (!object)
+    throw new Error('Can\'t render ' + object);
+  const renderer = await self.runtime.extension(UI.Renderer, object).instance();
+  return renderer ? renderer.render(object, options || {}) : null;
+};
+
+/** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
+UI.Renderer.Options;

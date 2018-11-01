@@ -1,7 +1,7 @@
 {
     "extensions": [
         {
-            "type": "@Common.Renderer",
+            "type": "@UI.Renderer",
             "contextTypes": [
                 "SDK.RemoteObject"
             ],

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * @implements {Common.Renderer}
+ * @implements {UI.Renderer}
  * @implements {UI.ContextMenu.Provider}
  */
 BrowserConsole.BrowserConsole = class {
@@ -25,10 +25,9 @@ BrowserConsole.BrowserConsole = class {
   /**
    * @override
    * @param {!Object} object
-   * @param {!Common.Renderer.Options} options
-   * @return {!Promise.<?Node>}
+   * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
    */
-  render(object, options) {
+  render(object) {
     const consoleMessage = /** @type {!SDK.ConsoleMessage} */ (object);
     const request = SDK.NetworkLog.requestForConsoleMessage(consoleMessage);
     let messageElement = null;
@@ -51,6 +50,7 @@ BrowserConsole.BrowserConsole = class {
         messageElement.appendChild(fragment);
       }
     }
-    return Promise.resolve(/** @type {?Node} */ (messageElement));
+    const result = messageElement ? {node: messageElement, tree: null} : null;
+    return Promise.resolve(/** @type {?{node: !Node, tree: ?UI.TreeOutline}} */ (result));
   }
 };

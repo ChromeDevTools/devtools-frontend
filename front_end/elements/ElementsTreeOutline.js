@@ -1532,19 +1532,19 @@ Elements.ElementsTreeOutline.UpdateRecord = class {
 };
 
 /**
- * @implements {Common.Renderer}
+ * @implements {UI.Renderer}
  */
 Elements.ElementsTreeOutline.Renderer = class {
   /**
    * @override
    * @param {!Object} object
-   * @return {!Promise.<?Node>}
+   * @return {!Promise<?{node: !Node, tree: ?UI.TreeOutline}>}
    */
   render(object) {
     return new Promise(renderPromise);
 
     /**
-     * @param {function(!Element)} resolve
+     * @param {function(!{node: !Node, tree: ?UI.TreeOutline})} resolve
      * @param {function(!Error)} reject
      */
     function renderPromise(resolve, reject) {
@@ -1570,7 +1570,7 @@ Elements.ElementsTreeOutline.Renderer = class {
           treeOutline._element.classList.add('single-node');
         treeOutline.setVisible(true);
         treeOutline.element.treeElementForTest = treeOutline.firstChild();
-        resolve(treeOutline.element);
+        resolve({node: treeOutline.element, tree: treeOutline});
       }
     }
   }

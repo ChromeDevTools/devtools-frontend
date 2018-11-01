@@ -252,14 +252,17 @@ Console.ConsoleViewMessage = class {
     } else {
       let rendered = false;
       this._completeElementForTestPromise = null;
-      for (const extension of self.runtime.extensions(Common.Renderer, this._message)) {
+      for (const extension of self.runtime.extensions(UI.Renderer, this._message)) {
         if (extension.descriptor()['source'] === this._message.source) {
           messageElement = createElement('span');
           let callback;
           this._completeElementForTestPromise = new Promise(fulfill => callback = fulfill);
           extension.instance().then(renderer => {
             renderer.render(this._message)
-                .then(element => messageElement.appendChild(element || this._format([messageText])))
+                .then(result => {
+                  const renderedNode = result ? result.node : null;
+                  messageElement.appendChild(renderedNode || this._format([messageText]));
+                })
                 .then(callback);
           });
           rendered = true;
@@ -673,18 +676,15 @@ Console.ConsoleViewMessage = class {
     const domModel = remoteObject.runtimeModel().target().model(SDK.DOMModel);
     if (!domModel)
       return result;
-    domModel.pushObjectAsNodeToFrontend(remoteObject).then(node => {
+    domModel.pushObjectAsNodeToFrontend(remoteObject).then(async node => {
       if (!node) {
         result.appendChild(this._formatParameterAsObject(remoteObject, false));
         return;
       }
-      Common.Renderer.render(node).then(rendererNode => {
-        if (rendererNode)
-          result.appendChild(rendererNode);
-        else
-          result.appendChild(this._formatParameterAsObject(remoteObject, false));
-        this._formattedParameterAsNodeForTest();
-      });
+      const renderResult = await UI.Renderer.render(/** @type {!Object} */ (node));
+      const renderedNode = renderResult ? renderResult.node : null;
+      result.appendChild(renderedNode || this._formatParameterAsObject(remoteObject, false));
+      this._formattedParameterAsNodeForTest();
     });
 
     return result;

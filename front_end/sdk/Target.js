@@ -12,20 +12,45 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {!SDK.TargetManager} targetManager
    * @param {string} id
    * @param {string} name
-   * @param {number} capabilitiesMask
    * @param {!SDK.Target.Type} type
    * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
    * @param {boolean} suspended
    */
-  constructor(targetManager, id, name, capabilitiesMask, type, connectionFactory, parentTarget, suspended) {
+  constructor(targetManager, id, name, type, connectionFactory, parentTarget, suspended) {
     const needsNodeJSPatching = type === SDK.Target.Type.Node;
     super(connectionFactory, needsNodeJSPatching);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
-    // TODO(dgozman): specify capabilities per type here, instead of passing them.
-    this._capabilitiesMask = capabilitiesMask;
+    this._capabilitiesMask = 0;
+    switch (type) {
+      case SDK.Target.Type.Frame:
+        this._capabilitiesMask = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
+            SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
+            SDK.Target.Capability.Tracing | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input;
+        if (!parentTarget) {
+          this._capabilitiesMask |= SDK.Target.Capability.DeviceEmulation | SDK.Target.Capability.ScreenCapture |
+              SDK.Target.Capability.Security | SDK.Target.Capability.Inspector;
+        }
+        break;
+      case SDK.Target.Type.ServiceWorker:
+        this._capabilitiesMask =
+            SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+        if (!parentTarget)
+          this._capabilitiesMask |= SDK.Target.Capability.Browser | SDK.Target.Capability.Inspector;
+        break;
+      case SDK.Target.Type.Worker:
+        this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+            SDK.Target.Capability.Target;
+        break;
+      case SDK.Target.Type.Node:
+        this._capabilitiesMask = SDK.Target.Capability.JS;
+        break;
+      case SDK.Target.Type.Browser:
+        this._capabilitiesMask = SDK.Target.Capability.Target;
+        break;
+    }
     this._type = type;
     this._parentTarget = parentTarget;
     this._id = id;
@@ -220,8 +245,6 @@ SDK.Target.Capability = {
   DeviceEmulation: 1 << 12,
 
   None: 0,
-
-  AllForTests: (1 << 13) - 1
 };
 
 /**

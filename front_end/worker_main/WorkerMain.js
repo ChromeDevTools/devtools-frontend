@@ -10,11 +10,8 @@ WorkerMain.WorkerMain = class extends Common.Object {
    * @override
    */
   run() {
-    const capabilities = SDK.Target.Capability.Browser | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-        SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
     SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), capabilities, SDK.Target.Type.ServiceWorker,
-        this._createMainConnection.bind(this), null);
+        'main', Common.UIString('Main'), SDK.Target.Type.ServiceWorker, this._createMainConnection.bind(this), null);
     InspectorFrontendHost.connectionReady();
     new MobileThrottling.NetworkPanelIndicator();
   }

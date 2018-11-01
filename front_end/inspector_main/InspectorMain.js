@@ -32,14 +32,8 @@ InspectorMain.InspectorMain = class extends Common.Object {
 
   _connectAndCreateMainTarget() {
     const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
-    const capabilities = Runtime.queryParam('v8only') ? SDK.Target.Capability.JS :
-                                                        SDK.Target.Capability.Browser | SDK.Target.Capability.DOM |
-            SDK.Target.Capability.DeviceEmulation | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input |
-            SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
-            SDK.Target.Capability.ScreenCapture | SDK.Target.Capability.Security | SDK.Target.Capability.Target |
-            SDK.Target.Capability.Tracing | SDK.Target.Capability.Inspector;
     const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), capabilities, type, this._createMainConnection.bind(this), null);
+        'main', Common.UIString('Main'), type, this._createMainConnection.bind(this), null);
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 

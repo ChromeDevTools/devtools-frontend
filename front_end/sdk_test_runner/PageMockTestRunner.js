@@ -15,8 +15,7 @@ function nextId(prefix) {
 
 SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
   const mockTarget = SDK.targetManager.createTarget(
-      nextId('mock-target-'), targetName, pageMock.capabilities(), SDK.Target.Type.Frame,
-      params => pageMock.createConnection(params));
+      nextId('mock-target-'), targetName, pageMock._type, params => pageMock.createConnection(params));
 
   if (makeMainTarget) {
     SDK.targetManager._targets = SDK.targetManager._targets.filter(target => target !== mockTarget);
@@ -29,7 +28,7 @@ SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
 SDKTestRunner.PageMock = class {
   constructor(url) {
     this._url = url;
-    this._capabilities = SDK.Target.Capability.DOM | SDK.Target.Capability.JS | SDK.Target.Capability.Browser;
+    this._type = SDK.Target.Type.Frame;
     this._enabledDomains = new Set();
 
     this._mainFrame =
@@ -50,12 +49,8 @@ SDKTestRunner.PageMock = class {
     };
   }
 
-  capabilities() {
-    return this._capabilities;
-  }
-
-  disableDOMCapability() {
-    this._capabilities = this._capabilities & ~SDK.Target.Capability.DOM;
+  turnIntoWorker() {
+    this._type = SDK.Target.Type.Worker;
   }
 
   createConnection(params) {
@@ -186,7 +181,7 @@ SDKTestRunner.PageMock = class {
     const domain = methodName.split('.')[0];
 
     if (domain === 'Page')
-      return !!(this._capabilities & SDK.Target.Capability.DOM);
+      return this._type === SDK.Target.Type.Frame;
 
     return true;
   }

@@ -1221,40 +1221,6 @@ TestRunner.dumpLoadedModules = function(relativeTo) {
 };
 
 /**
- * @param {!SDK.Target} target
- * @return {boolean}
- */
-TestRunner.isDedicatedWorker = function(target) {
-  return target && target.type() === SDK.Target.Type.Worker;
-};
-
-/**
- * @param {!SDK.Target} target
- * @return {boolean}
- */
-TestRunner.isServiceWorker = function(target) {
-  return target && target.type() === SDK.Target.Type.ServiceWorker;
-};
-
-/**
- * @param {!SDK.Target} target
- * @return {string}
- */
-TestRunner.describeTargetType = function(target) {
-  if (!target)
-    return 'browser';
-  if (target.type() === SDK.Target.Type.Worker)
-    return 'worker';
-  if (target.type() === SDK.Target.Type.ServiceWorker)
-    return 'service-worker';
-  if (target.type() === SDK.Target.Type.Frame)
-    return target.parentTarget() ? 'frame' : 'page';
-  if (target.type() === SDK.Target.Type.Node)
-    return 'node';
-  return 'browser';
-};
-
-/**
  * @param {string} urlSuffix
  * @param {!Workspace.projectTypes=} projectType
  * @return {!Promise}

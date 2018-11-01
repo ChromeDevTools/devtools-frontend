@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.TargetManager.Observer}
+ * @implements {SDK.SDKModelObserver<!SDK.RuntimeModel>}
  * @unrestricted
  */
 Main.ExecutionContextSelector = class {
@@ -11,7 +11,6 @@ Main.ExecutionContextSelector = class {
    * @param {!UI.Context} context
    */
   constructor(targetManager, context) {
-    targetManager.observeTargets(this, SDK.Target.Capability.JS);
     context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
     context.addFlavorChangeListener(SDK.Target, this._targetChanged, this);
 
@@ -24,13 +23,14 @@ Main.ExecutionContextSelector = class {
         this);
     this._targetManager = targetManager;
     this._context = context;
+    targetManager.observeModels(SDK.RuntimeModel, this);
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    */
-  targetAdded(target) {
+  modelAdded(runtimeModel) {
     // Defer selecting default target since we need all clients to get their
     // targetAdded notifications first.
     setImmediate(deferred.bind(this));
@@ -41,22 +41,22 @@ Main.ExecutionContextSelector = class {
     function deferred() {
       // We always want the second context for the service worker targets.
       if (!this._context.flavor(SDK.Target))
-        this._context.setFlavor(SDK.Target, target);
+        this._context.setFlavor(SDK.Target, runtimeModel.target());
     }
   }
 
   /**
    * @override
-   * @param {!SDK.Target} target
+   * @param {!SDK.RuntimeModel} runtimeModel
    */
-  targetRemoved(target) {
+  modelRemoved(runtimeModel) {
     const currentExecutionContext = this._context.flavor(SDK.ExecutionContext);
-    if (currentExecutionContext && currentExecutionContext.target() === target)
+    if (currentExecutionContext && currentExecutionContext.runtimeModel === runtimeModel)
       this._currentExecutionContextGone();
 
-    const targets = this._targetManager.targets(SDK.Target.Capability.JS);
-    if (this._context.flavor(SDK.Target) === target && targets.length)
-      this._context.setFlavor(SDK.Target, targets[0]);
+    const models = this._targetManager.models(SDK.RuntimeModel);
+    if (this._context.flavor(SDK.Target) === runtimeModel.target() && models.length)
+      this._context.setFlavor(SDK.Target, models[0].target());
   }
 
   /**

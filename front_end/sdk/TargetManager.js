@@ -11,7 +11,6 @@ SDK.TargetManager = class extends Common.Object {
     this._targets = [];
     /** @type {!Array.<!SDK.TargetManager.Observer>} */
     this._observers = [];
-    this._observerCapabiliesMaskSymbol = Symbol('observerCapabilitiesMask');
     /** @type {!Multimap<symbol, !{modelClass: !Function, thisObject: (!Object|undefined), listener: function(!Common.Event)}>} */
     this._modelListeners = new Multimap();
     /** @type {!Multimap<function(new:SDK.SDKModel, !SDK.Target), !SDK.SDKModelObserver>} */
@@ -150,13 +149,12 @@ SDK.TargetManager = class extends Common.Object {
 
   /**
    * @param {!SDK.TargetManager.Observer} targetObserver
-   * @param {number=} capabilitiesMask
    */
-  observeTargets(targetObserver, capabilitiesMask) {
-    if (this._observerCapabiliesMaskSymbol in targetObserver)
+  observeTargets(targetObserver) {
+    if (this._observers.indexOf(targetObserver) !== -1)
       throw new Error('Observer can only be registered once');
-    targetObserver[this._observerCapabiliesMaskSymbol] = capabilitiesMask || 0;
-    this.targets(capabilitiesMask).forEach(targetObserver.targetAdded.bind(targetObserver));
+    for (const target of this._targets)
+      targetObserver.targetAdded(target);
     this._observers.push(targetObserver);
   }
 
@@ -164,7 +162,6 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.TargetManager.Observer} targetObserver
    */
   unobserveTargets(targetObserver) {
-    delete targetObserver[this._observerCapabiliesMaskSymbol];
     this._observers.remove(targetObserver);
   }
 
@@ -181,9 +178,9 @@ SDK.TargetManager = class extends Common.Object {
     target.createModels(new Set(this._modelObservers.keysArray()));
     this._targets.push(target);
 
-    const copy = this._observersForTarget(target);
-    for (let i = 0; i < copy.length; ++i)
-      copy[i].targetAdded(target);
+    const copy = this._observers.slice(0);
+    for (const observer of copy)
+      observer.targetAdded(target);
 
     for (const modelClass of target.models().keys())
       this.modelAdded(target, modelClass, target.models().get(modelClass));
@@ -201,15 +198,6 @@ SDK.TargetManager = class extends Common.Object {
 
   /**
    * @param {!SDK.Target} target
-   * @return {!Array<!SDK.TargetManager.Observer>}
-   */
-  _observersForTarget(target) {
-    return this._observers.filter(
-        observer => target.hasAllCapabilities(observer[this._observerCapabiliesMaskSymbol] || 0));
-  }
-
-  /**
-   * @param {!SDK.Target} target
    */
   removeTarget(target) {
     if (!this._targets.includes(target))
@@ -219,9 +207,9 @@ SDK.TargetManager = class extends Common.Object {
     for (const modelClass of target.models().keys())
       this._modelRemoved(target, modelClass, target.models().get(modelClass));
 
-    const copy = this._observersForTarget(target);
-    for (let i = 0; i < copy.length; ++i)
-      copy[i].targetRemoved(target);
+    const copy = this._observers.slice(0);
+    for (const observer of copy)
+      observer.targetRemoved(target);
 
     for (const key of this._modelListeners.keysArray()) {
       for (const info of this._modelListeners.get(key)) {
@@ -233,14 +221,10 @@ SDK.TargetManager = class extends Common.Object {
   }
 
   /**
-   * @param {number=} capabilitiesMask
    * @return {!Array.<!SDK.Target>}
    */
-  targets(capabilitiesMask) {
-    if (!capabilitiesMask)
-      return this._targets.slice();
-    else
-      return this._targets.filter(target => target.hasAllCapabilities(capabilitiesMask || 0));
+  targets() {
+    return this._targets.slice();
   }
 
   /**

@@ -197,7 +197,7 @@ InspectorMain.BackendSettingsSync = class {
     this._emulatePageFocusSetting = Common.settings.moduleSetting('emulatePageFocus');
     this._emulatePageFocusSetting.addChangeListener(this._update, this);
 
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
@@ -215,7 +215,8 @@ InspectorMain.BackendSettingsSync = class {
   }
 
   _update() {
-    SDK.targetManager.targets(SDK.Target.Capability.Browser).forEach(this._updateTarget, this);
+    for (const target of SDK.targetManager.targets())
+      this._updateTarget(target);
   }
 
   /**

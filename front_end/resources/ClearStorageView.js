@@ -61,7 +61,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this._appendItem(caches, Common.UIString('Cache storage'), 'cache_storage');
     this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
 
-    SDK.targetManager.observeTargets(this, SDK.Target.Capability.Browser);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**

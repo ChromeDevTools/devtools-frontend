@@ -1276,7 +1276,7 @@
         return null;
       const majorVersion = parseInt(remoteVersion.split('.')[0], 10);
       return majorVersion;
-    } finally {
+    } catch (e) {
       return null;
     }
   }

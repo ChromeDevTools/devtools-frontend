@@ -34,6 +34,8 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.setAttribute('role', 'switch');
     this._otherSWFilter.setAttribute('aria-checked', false);
     this._otherSWFilter.addEventListener('keydown', event => {
+      if (event.target !== this._otherSWFilter)
+        return;
       if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
         this._toggleFilter();
     });

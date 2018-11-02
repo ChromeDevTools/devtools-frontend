@@ -225,7 +225,7 @@ UI.TreeOutline = class extends Common.Object {
   /**
    * @return {boolean}
    */
-  _selectFirst() {
+  selectFirst() {
     let first = this.firstChild();
     while (first && !first.selectable)
       first = first.traverseNextTreeElement(true);
@@ -276,7 +276,7 @@ UI.TreeOutline = class extends Common.Object {
     } else if (event.keyCode === UI.KeyboardShortcut.Keys.Space.code) {
       handled = this.selectedTreeElement.onspace();
     } else if (event.key === 'Home') {
-      handled = this._selectFirst();
+      handled = this.selectFirst();
     } else if (event.key === 'End') {
       handled = this._selectLast();
     }

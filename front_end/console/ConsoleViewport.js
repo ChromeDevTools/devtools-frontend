@@ -127,11 +127,14 @@ Console.ConsoleViewport = class {
     const renderedIndex = this._renderedItems.findIndex(item => item.element().isSelfOrAncestor(event.target));
     if (renderedIndex !== -1)
       this._virtualSelectedIndex = this._firstActiveIndex + renderedIndex;
+    let focusLastChild = false;
     // Make default selection when moving from external (e.g. prompt) to the container.
     if (this._virtualSelectedIndex === -1 && this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget)) &&
-        event.target === this._contentElement)
+        event.target === this._contentElement) {
+      focusLastChild = true;
       this._virtualSelectedIndex = this._itemCount - 1;
-    this._updateFocusedItem();
+    }
+    this._updateFocusedItem(focusLastChild);
   }
 
   /**

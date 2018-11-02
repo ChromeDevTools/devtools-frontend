@@ -34,7 +34,7 @@
     white-space: pre;
 }
 
-.elements-disclosure li.selected .selected-hint:before {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .selected-hint:before {
     opacity: 0.6;
     color: var(--selection-inactive-fg-color);
 }
@@ -91,7 +91,15 @@
 
 .elements-disclosure li.selected .selection {
     display: block;
+}
+
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
     background-color: var(--selection-inactive-bg-color);
+}
+
+.elements-disclosure .elements-tree-outline.hide-selection-when-blurred li.selected:focus[data-keyboard-focus="true"] .selection {
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 2px;
 }
 
 .elements-disclosure ol {
@@ -122,19 +130,19 @@
     padding-left: 2px;
 }
 
-.elements-disclosure ol li.selected:focus {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     color: var(--selection-fg-color);
 }
 
-.elements-disclosure ol li.parent.selected:focus::before {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.parent.selected:focus::before {
     background-color: var(--selection-fg-color);
 }
 
-.elements-disclosure ol li.selected:focus * {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
     color: inherit;
 }
 
-.elements-disclosure ol li.selected:focus .selection {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     background-color: var(--selection-bg-color);
 }
 
@@ -299,10 +307,10 @@ ol:hover > li > .elements-tree-shortcut-link {
     display: none;
 }
 
-ol li.selected:focus .webkit-html-tag-name,
-ol li.selected:focus .webkit-html-close-tag-name,
-ol li.selected:focus .webkit-html-attribute-value,
-ol li.selected:focus .devtools-link {
+.elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .webkit-html-tag-name,
+.elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .webkit-html-close-tag-name,
+.elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .webkit-html-attribute-value,
+.elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .devtools-link {
     color: var(--selection-fg-color);
 }
 

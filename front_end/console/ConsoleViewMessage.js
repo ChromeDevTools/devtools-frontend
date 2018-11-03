@@ -613,6 +613,7 @@ Console.ConsoleViewMessage = class {
     const section = new ObjectUI.ObjectPropertiesSection(obj, titleElement, this._linkifier);
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
+    section.setShowSelectionOnKeyboardFocus(true, true);
     this._treeOutlines.push(section);
     return section.element;
   }

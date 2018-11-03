@@ -1596,7 +1596,7 @@ Elements.ElementsTreeOutline.Renderer = class {
           treeOutline._element.classList.add('single-node');
         treeOutline.setVisible(true);
         treeOutline.element.treeElementForTest = treeOutline.firstChild();
-        treeOutline.setShowSelectionOnKeyboardFocus(true);
+        treeOutline.setShowSelectionOnKeyboardFocus(true, true);
         resolve({node: treeOutline.element, tree: treeOutline});
       }
     }

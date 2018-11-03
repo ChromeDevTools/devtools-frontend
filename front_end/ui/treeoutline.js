@@ -43,6 +43,7 @@ UI.TreeOutline = class extends Common.Object {
     this.contentElement = this._rootElement._childrenListNode;
     this.contentElement.addEventListener('keydown', this._treeKeyDown.bind(this), false);
 
+    this._preventTabOrder = false;
     this._showSelectionOnKeyboardFocus = false;
     this._focusable = true;
     this.setFocusable(this._focusable);
@@ -54,9 +55,11 @@ UI.TreeOutline = class extends Common.Object {
 
   /**
    * @param {boolean} show
+   * @param {boolean=} preventTabOrder
    */
-  setShowSelectionOnKeyboardFocus(show) {
+  setShowSelectionOnKeyboardFocus(show, preventTabOrder) {
     this.contentElement.classList.toggle('hide-selection-when-blurred', show);
+    this._preventTabOrder = !!preventTabOrder;
     this._showSelectionOnKeyboardFocus = show;
   }
 
@@ -1072,7 +1075,7 @@ UI.TreeElement = class {
    */
   _setFocusable(focusable) {
     if (focusable) {
-      this._listItemNode.setAttribute('tabIndex', 0);
+      this._listItemNode.setAttribute('tabIndex', this.treeOutline && this.treeOutline._preventTabOrder ? -1 : 0);
       this._listItemNode.addEventListener('focus', this._boundOnFocus, false);
       this._listItemNode.addEventListener('blur', this._boundOnBlur, false);
     } else {

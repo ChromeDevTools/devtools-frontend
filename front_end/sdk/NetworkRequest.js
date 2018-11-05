@@ -1245,6 +1245,24 @@ SDK.NetworkRequest = class extends Common.Object {
     this._backendRequestId = requestId;
     this._requestId = requestId;
   }
+
+  /**
+   * @return {?string}
+   */
+  charset() {
+    const contentTypeHeader = this.responseHeaderValue('content-type');
+    if (!contentTypeHeader)
+      return null;
+
+    const responseCharsets = contentTypeHeader.replace(/ /g, '')
+                                 .split(';')
+                                 .filter(parameter => parameter.toLowerCase().startsWith('charset='))
+                                 .map(parameter => parameter.slice('charset='.length));
+    if (responseCharsets.length)
+      return responseCharsets[0];
+
+    return null;
+  }
 };
 
 /** @enum {symbol} */

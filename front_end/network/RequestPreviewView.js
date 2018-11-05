@@ -71,7 +71,7 @@ Network.RequestPreviewView = class extends Network.RequestResponseView {
       return jsonView;
 
     const dataURL = Common.ContentProvider.contentAsDataURL(
-        contentData.content, this.request.mimeType, contentData.encoded, contentData.encoded ? 'utf-8' : null);
+        contentData.content, this.request.mimeType, contentData.encoded, this.request.charset());
     return dataURL ? new Network.RequestHTMLView(dataURL) : null;
   }
 

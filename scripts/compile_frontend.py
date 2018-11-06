@@ -216,7 +216,7 @@ def find_java():
     if match:
         major = int(match.group(1))
         minor = int(match.group(2))
-        is_ok = major >= required_major and minor >= required_minor
+        is_ok = major > required_major or major == required_major and minor >= required_minor
     if is_ok:
         exec_command = [java_path, '-Xms1024m', '-server', '-XX:+TieredCompilation']
         check_server_proc = popen(exec_command + ['-version'])

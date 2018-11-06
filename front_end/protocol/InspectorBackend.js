@@ -360,7 +360,6 @@ Protocol.TargetBase = class extends Common.Object {
       });
     }
 
-
     const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
     if (this._needsNodeJSPatching)

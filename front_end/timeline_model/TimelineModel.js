@@ -91,16 +91,14 @@ TimelineModel.TimelineModel = class {
   static isMarkerEvent(event) {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
-      case recordTypes.FrameStartedLoading:
       case recordTypes.TimeStamp:
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
       case recordTypes.MarkFMP:
-      case recordTypes.MarkFMPCandidate:
         return true;
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
-        return event.args['data']['isMainFrame'];
+        return !!event.args['data']['isMainFrame'];
       default:
         return false;
     }
@@ -599,7 +597,7 @@ TimelineModel.TimelineModel = class {
         }
 
         if (asyncEvent.hasCategory(TimelineModel.TimelineModel.Category.UserTiming)) {
-          group(TimelineModel.TimelineModel.TrackType.UserTiming).push(asyncEvent);
+          group(TimelineModel.TimelineModel.TrackType.Timings).push(asyncEvent);
           continue;
         }
 
@@ -685,6 +683,10 @@ TimelineModel.TimelineModel = class {
       pageFrameId = TimelineModel.TimelineData.forEvent(eventStack.peekLast()).frameId;
     timelineData.frameId = pageFrameId || (this._mainFrame && this._mainFrame.frameId) || '';
     this._asyncEventTracker.processEvent(event);
+
+    if (TimelineModel.TimelineModel.isMarkerEvent(event))
+      this._ensureNamedTrack(TimelineModel.TimelineModel.TrackType.Timings);
+
     switch (event.name) {
       case recordTypes.ResourceSendRequest:
       case recordTypes.WebSocketCreate:
@@ -1215,7 +1217,6 @@ TimelineModel.TimelineModel.RecordType = {
   MarkFirstPaint: 'MarkFirstPaint',
   MarkFCP: 'firstContentfulPaint',
   MarkFMP: 'firstMeaningfulPaint',
-  MarkFMPCandidate: 'firstMeaningfulPaintCandidate',
 
   TimeStamp: 'TimeStamp',
   ConsoleTime: 'ConsoleTime',
@@ -1396,7 +1397,7 @@ TimelineModel.TimelineModel.TrackType = {
   Worker: Symbol('Worker'),
   Input: Symbol('Input'),
   Animation: Symbol('Animation'),
-  UserTiming: Symbol('UserTiming'),
+  Timings: Symbol('Timings'),
   Console: Symbol('Console'),
   Raster: Symbol('Raster'),
   GPU: Symbol('GPU'),

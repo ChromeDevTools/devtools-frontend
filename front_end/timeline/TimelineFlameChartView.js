@@ -463,11 +463,13 @@ Timeline.TimelineFlameChartMarker = class {
 
   /**
    * @override
-   * @return {string}
+   * @return {?string}
    */
   title() {
+    if (this._style.lowPriority)
+      return null;
     const startTime = Number.millisToString(this._startOffset);
-    return Common.UIString('%s at %s', this._style.title, startTime);
+    return ls`${this._style.title} at ${startTime}`;
   }
 
   /**
@@ -484,7 +486,7 @@ Timeline.TimelineFlameChartMarker = class {
       return;
     context.save();
 
-    if (!this._style.lowPriority) {
+    if (!this._style.lowPriority && !Runtime.experiments.isEnabled('timelinePaintTimingMarkers')) {
       context.strokeStyle = this._style.color;
       context.lineWidth = 2;
       context.beginPath();

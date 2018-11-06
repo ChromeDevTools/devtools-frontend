@@ -110,19 +110,17 @@ Timeline.TimelineUIUtils = class {
     eventStyles[recordTypes.ParseScriptOnBackground] =
         new Timeline.TimelineRecordStyle(Common.UIString('Parse Script'), categories['scripting']);
     eventStyles[recordTypes.FrameStartedLoading] =
-        new Timeline.TimelineRecordStyle(Common.UIString('Frame Started Loading'), categories['loading'], true);
+        new Timeline.TimelineRecordStyle(ls`Frame Started Loading`, categories['loading'], true);
     eventStyles[recordTypes.MarkLoad] =
-        new Timeline.TimelineRecordStyle(Common.UIString('Load event'), categories['scripting'], true);
+        new Timeline.TimelineRecordStyle(ls`Onload Event`, categories['scripting'], true);
     eventStyles[recordTypes.MarkDOMContent] =
-        new Timeline.TimelineRecordStyle(Common.UIString('DOMContentLoaded event'), categories['scripting'], true);
+        new Timeline.TimelineRecordStyle(ls`DOMContentLoaded Event`, categories['scripting'], true);
     eventStyles[recordTypes.MarkFirstPaint] =
-        new Timeline.TimelineRecordStyle(Common.UIString('First paint'), categories['painting'], true);
+        new Timeline.TimelineRecordStyle(ls`First Paint`, categories['painting'], true);
     eventStyles[recordTypes.MarkFCP] =
-        new Timeline.TimelineRecordStyle(Common.UIString('First contentful paint'), categories['rendering'], true);
+        new Timeline.TimelineRecordStyle(ls`First Contentful Paint`, categories['rendering'], true);
     eventStyles[recordTypes.MarkFMP] =
-        new Timeline.TimelineRecordStyle(Common.UIString('First meaningful paint'), categories['rendering'], true);
-    eventStyles[recordTypes.MarkFMPCandidate] =
-        new Timeline.TimelineRecordStyle(Common.UIString('Meaningful paint candidate'), categories['rendering'], true);
+        new Timeline.TimelineRecordStyle(ls`First Meaningful Paint`, categories['rendering'], true);
     eventStyles[recordTypes.TimeStamp] =
         new Timeline.TimelineRecordStyle(Common.UIString('Timestamp'), categories['scripting']);
     eventStyles[recordTypes.ConsoleTime] =
@@ -1534,9 +1532,7 @@ Timeline.TimelineUIUtils = class {
   static paintEventsFilter() {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     return new TimelineModel.TimelineInvisibleEventsFilter(
-        !Runtime.experiments.isEnabled('timelinePaintTimingMarkers') ?
-            [recordTypes.MarkFCP, recordTypes.MarkFMP, recordTypes.MarkFMPCandidate] :
-            []);
+        Runtime.experiments.isEnabled('timelinePaintTimingMarkers') ? [] : [recordTypes.MarkFCP, recordTypes.MarkFMP]);
   }
 
   /**
@@ -1746,10 +1742,31 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
+   * @return {?string}
+   */
+  static markerShortTitle(event) {
+    const recordTypes = TimelineModel.TimelineModel.RecordType;
+    switch (event.name) {
+      case recordTypes.MarkDOMContent:
+        return ls`DCL`;
+      case recordTypes.MarkLoad:
+        return ls`OL`;
+      case recordTypes.MarkFirstPaint:
+        return ls`FP`;
+      case recordTypes.MarkFCP:
+        return ls`FCP`;
+      case recordTypes.MarkFMP:
+        return ls`FMP`;
+    }
+    return null;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
    * @return {!Timeline.TimelineMarkerStyle}
    */
   static markerStyleForEvent(event) {
-    const tallMarkerDashStyle = [10, 5];
+    const tallMarkerDashStyle = [6, 4];
     const title = Timeline.TimelineUIUtils.eventTitle(event);
 
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console) ||
@@ -1785,10 +1802,6 @@ Timeline.TimelineUIUtils = class {
         break;
       case recordTypes.MarkFCP:
         color = 'hsl(160, 43%, 58%)';
-        tall = true;
-        break;
-      case recordTypes.MarkFMPCandidate:
-        color = 'hsl(146, 57%, 40%)';
         tall = true;
         break;
       case recordTypes.MarkFMP:

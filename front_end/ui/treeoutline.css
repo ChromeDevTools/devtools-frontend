@@ -5,7 +5,7 @@
  */
 
 :host {
-    flex: 1 1;
+    flex: 1 1 auto;
     padding: 2px 0 0 0;
 }
 

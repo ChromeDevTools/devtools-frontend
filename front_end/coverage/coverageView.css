@@ -11,7 +11,7 @@
 .coverage-toolbar-container {
     display: flex;
     border-bottom: 1px solid #ccc;
-    flex: 0 0;
+    flex: 0 0 auto;
 }
 
 .coverage-toolbar {

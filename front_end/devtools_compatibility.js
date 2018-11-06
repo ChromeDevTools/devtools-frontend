@@ -1250,6 +1250,10 @@
       styleRules.push(
           '.cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber { border-style: solid !important; }');
     }
+    if (majorVersion <= 71) {
+      styleRules.push(
+          '.coverage-toolbar-container, .animation-timeline-toolbar-container, .computed-properties { flex-basis: auto; }');
+    }
 
     if (majorVersion <= 50)
       Event.prototype.deepPath = undefined;

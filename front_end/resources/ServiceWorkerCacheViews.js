@@ -360,7 +360,7 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     } else if (columnId === 'responseType') {
       if (this._responseType === 'opaqueResponse') {
         const opaque = UI.XLink.create(
-            'https://developers.google.com/web/tools/workbox/guides/storage-quota#beware_of_opaque_responses',
+            'https://developers.google.com/web/tools/chrome-devtools/progressive-web-apps#opaque-responses',
             ls`opaque`);
         opaque.title = ls`As a security consideration, an opaque response potentially takes ` +
             ls`up far more cache space than its content length`;

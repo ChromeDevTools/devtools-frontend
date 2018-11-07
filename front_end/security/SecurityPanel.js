@@ -15,6 +15,7 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     title.textContent = Common.UIString('Overview');
     this._sidebarMainViewElement = new Security.SecurityPanelSidebarTreeElement(
         title, this._setVisibleView.bind(this, this._mainView), 'security-main-view-sidebar-tree-item', 'lock-icon');
+    this._sidebarMainViewElement.tooltip = title.textContent;
     this._sidebarTree = new Security.SecurityPanelSidebarTree(this._sidebarMainViewElement, this.showOrigin.bind(this));
     this.panelSidebarElement().appendChild(this._sidebarTree.element);
 
@@ -445,6 +446,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     const originElement = new Security.SecurityPanelSidebarTreeElement(
         Security.SecurityPanel.createHighlightedUrl(origin, securityState), this._showOriginInPanel.bind(this, origin),
         'security-sidebar-tree-item', 'security-property');
+    originElement.tooltip = origin;
     this._elementsByOrigin.set(origin, originElement);
     this.updateOrigin(origin, securityState);
   }

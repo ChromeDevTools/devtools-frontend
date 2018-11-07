@@ -88,14 +88,15 @@ TimelineModel.TimelineModel = class {
    * @param {!SDK.TracingModel.Event} event
    * @return {boolean}
    */
-  static isMarkerEvent(event) {
+  isMarkerEvent(event) {
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     switch (event.name) {
       case recordTypes.TimeStamp:
+        return true;
       case recordTypes.MarkFirstPaint:
       case recordTypes.MarkFCP:
       case recordTypes.MarkFMP:
-        return true;
+        return event.args.frame === this._mainFrame.frameId;
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
         return !!event.args['data']['isMainFrame'];
@@ -539,7 +540,7 @@ TimelineModel.TimelineModel = class {
             track.tasks.push(event);
           eventStack.push(event);
         }
-        if (TimelineModel.TimelineModel.isMarkerEvent(event))
+        if (this.isMarkerEvent(event))
           this._timeMarkerEvents.push(event);
 
         track.events.push(event);
@@ -684,7 +685,7 @@ TimelineModel.TimelineModel = class {
     timelineData.frameId = pageFrameId || (this._mainFrame && this._mainFrame.frameId) || '';
     this._asyncEventTracker.processEvent(event);
 
-    if (TimelineModel.TimelineModel.isMarkerEvent(event))
+    if (this.isMarkerEvent(event))
       this._ensureNamedTrack(TimelineModel.TimelineModel.TrackType.Timings);
 
     switch (event.name) {

@@ -402,10 +402,18 @@ Components.Linkifier = class {
       revealable: null,
       fallback: null
     };
-    if (!preventClick)
-      link.addEventListener('click', Components.Linkifier._handleClick, false);
-    else
+    if (!preventClick) {
+      link.addEventListener('click', event => {
+        if (Components.Linkifier._handleClick(event))
+          event.consume(true);
+      }, false);
+      link.addEventListener('keydown', event => {
+        if (isEnterKey(event) && Components.Linkifier._handleClick(event))
+          event.consume(true);
+      }, false);
+    } else {
       link.classList.add('devtools-link-prevent-click');
+    }
     return link;
   }
 
@@ -486,15 +494,18 @@ Components.Linkifier = class {
 
   /**
    * @param {!Event} event
+   * @return {boolean}
    */
   static _handleClick(event) {
     const link = /** @type {!Element} */ (event.currentTarget);
-    event.consume(true);
     if (UI.isBeingEdited(/** @type {!Node} */ (event.target)) || link.hasSelection())
-      return;
+      return false;
     const actions = Components.Linkifier._linkActions(link);
-    if (actions.length)
+    if (actions.length) {
       actions[0].handler.call(null);
+      return true;
+    }
+    return false;
   }
 
   /**

@@ -45,8 +45,8 @@ Console.ConsoleViewMessage = class {
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
-    /** @type {!Array<!UI.TreeOutline>} */
-    this._treeOutlines = [];
+    /** @type {!Array<{element: !Element, selectFirst: function()}>} */
+    this._selectableChildren = [];
 
     /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
@@ -498,7 +498,7 @@ Console.ConsoleViewMessage = class {
     for (let i = 0; i < parameters.length; ++i) {
       // Inline strings when formatting.
       if (shouldFormatMessage && parameters[i].type === 'string')
-        formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(parameters[i].description));
+        formattedResult.appendChild(this._linkifyStringAsFragment(parameters[i].description));
       else
         formattedResult.appendChild(this._formatParameter(parameters[i], false, true));
       if (i < parameters.length - 1)
@@ -614,7 +614,7 @@ Console.ConsoleViewMessage = class {
     section.element.classList.add('console-view-object-properties-section');
     section.enableContextMenu();
     section.setShowSelectionOnKeyboardFocus(true, true);
-    this._treeOutlines.push(section);
+    this._selectableChildren.push(section);
     return section.element;
   }
 
@@ -685,7 +685,7 @@ Console.ConsoleViewMessage = class {
       const renderResult = await UI.Renderer.render(/** @type {!Object} */ (node));
       if (renderResult) {
         if (renderResult.tree)
-          this._treeOutlines.push(renderResult.tree);
+          this._selectableChildren.push(renderResult.tree);
         result.appendChild(renderResult.node);
       } else {
         result.appendChild(this._formatParameterAsObject(remoteObject, false));
@@ -705,7 +705,7 @@ Console.ConsoleViewMessage = class {
    */
   _formatParameterAsString(output) {
     const span = createElement('span');
-    span.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
+    span.appendChild(this._linkifyStringAsFragment(output.description || ''));
 
     const result = createElement('span');
     result.createChild('span', 'object-value-string-quote').textContent = '"';
@@ -721,8 +721,7 @@ Console.ConsoleViewMessage = class {
   _formatParameterAsError(output) {
     const result = createElement('span');
     const errorSpan = this._tryFormatAsError(output.description || '');
-    result.appendChild(
-        errorSpan ? errorSpan : Console.ConsoleViewMessage._linkifyStringAsFragment(output.description || ''));
+    result.appendChild(errorSpan ? errorSpan : this._linkifyStringAsFragment(output.description || ''));
     return result;
   }
 
@@ -875,13 +874,13 @@ Console.ConsoleViewMessage = class {
       if (typeof b === 'undefined')
         return a;
       if (!currentStyle) {
-        a.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(String(b)));
+        a.appendChild(this._linkifyStringAsFragment(String(b)));
         return a;
       }
       const lines = String(b).split('\n');
       for (let i = 0; i < lines.length; i++) {
         const line = lines[i];
-        const lineFragment = Console.ConsoleViewMessage._linkifyStringAsFragment(line);
+        const lineFragment = this._linkifyStringAsFragment(line);
         const wrapper = createElement('span');
         wrapper.style.setProperty('contain', 'paint');
         wrapper.style.setProperty('display', 'inline-block');
@@ -1047,9 +1046,9 @@ Console.ConsoleViewMessage = class {
    * @return {number}
    */
   _focusedChildIndex() {
-    if (!this._treeOutlines.length)
+    if (!this._selectableChildren.length)
       return -1;
-    return this._treeOutlines.findIndex(child => child.element.hasFocus());
+    return this._selectableChildren.findIndex(child => child.element.hasFocus());
   }
 
   /**
@@ -1076,7 +1075,7 @@ Console.ConsoleViewMessage = class {
         return true;
       }
     }
-    if (!this._treeOutlines.length)
+    if (!this._selectableChildren.length)
       return false;
 
     if (event.key === 'ArrowLeft') {
@@ -1085,7 +1084,7 @@ Console.ConsoleViewMessage = class {
     }
     if (event.key === 'ArrowRight') {
       if (isWrapperFocused) {
-        this._treeOutlines[0].selectFirst();
+        this._selectableChildren[0].selectFirst();
         return true;
       }
     }
@@ -1094,16 +1093,16 @@ Console.ConsoleViewMessage = class {
         this._element.focus();
         return true;
       } else if (focusedChildIndex > 0) {
-        this._treeOutlines[focusedChildIndex - 1].selectFirst();
+        this._selectableChildren[focusedChildIndex - 1].selectFirst();
         return true;
       }
     }
     if (event.key === 'ArrowDown') {
       if (isWrapperFocused) {
-        this._treeOutlines[0].selectFirst();
+        this._selectableChildren[0].selectFirst();
         return true;
-      } else if (focusedChildIndex < this._treeOutlines.length - 1) {
-        this._treeOutlines[focusedChildIndex + 1].selectFirst();
+      } else if (focusedChildIndex < this._selectableChildren.length - 1) {
+        this._selectableChildren[focusedChildIndex + 1].selectFirst();
         return true;
       }
     }
@@ -1111,8 +1110,8 @@ Console.ConsoleViewMessage = class {
   }
 
   focusLastChildOrSelf() {
-    if (this._treeOutlines.length)
-      this._treeOutlines[this._treeOutlines.length - 1].selectFirst();
+    if (this._selectableChildren.length)
+      this._selectableChildren[this._selectableChildren.length - 1].selectFirst();
     else if (this._element)
       this._element.focus();
   }
@@ -1439,15 +1438,14 @@ Console.ConsoleViewMessage = class {
     const formattedResult = createElement('span');
     let start = 0;
     for (let i = 0; i < links.length; ++i) {
-      formattedResult.appendChild(
-          Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
+      formattedResult.appendChild(this._linkifyStringAsFragment(string.substring(start, links[i].positionLeft)));
       formattedResult.appendChild(this._linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, links[i].url, links[i].lineNumber, links[i].columnNumber));
       start = links[i].positionRight;
     }
 
     if (start !== string.length)
-      formattedResult.appendChild(Console.ConsoleViewMessage._linkifyStringAsFragment(string.substring(start)));
+      formattedResult.appendChild(this._linkifyStringAsFragment(string.substring(start)));
 
     return formattedResult;
 
@@ -1502,9 +1500,12 @@ Console.ConsoleViewMessage = class {
    * @param {string} string
    * @return {!DocumentFragment}
    */
-  static _linkifyStringAsFragment(string) {
+  _linkifyStringAsFragment(string) {
     return Console.ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
-      return Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
+      const linkElement = Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
+      linkElement.tabIndex = -1;
+      this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});
+      return linkElement;
     });
   }
 

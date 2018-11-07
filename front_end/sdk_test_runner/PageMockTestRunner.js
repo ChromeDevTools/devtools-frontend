@@ -13,18 +13,6 @@ function nextId(prefix) {
   return (prefix || '') + ++id;
 }
 
-SDKTestRunner.connectToPage = function(targetName, pageMock, makeMainTarget) {
-  const mockTarget = SDK.targetManager.createTarget(
-      nextId('mock-target-'), targetName, pageMock._type, params => pageMock.createConnection(params));
-
-  if (makeMainTarget) {
-    SDK.targetManager._targets = SDK.targetManager._targets.filter(target => target !== mockTarget);
-    SDK.targetManager._targets.unshift(mockTarget);
-  }
-
-  return mockTarget;
-};
-
 SDKTestRunner.PageMock = class {
   constructor(url) {
     this._url = url;
@@ -53,10 +41,17 @@ SDKTestRunner.PageMock = class {
     this._type = SDK.Target.Type.Worker;
   }
 
-  createConnection(params) {
-    this._enabledDomains.clear();
-    this._connection = new MockPageConnection(this, params);
-    return this._connection;
+  connectAsMainTarget(targetName) {
+    Bindings.debuggerWorkspaceBinding._resetForTest(TestRunner.mainTarget);
+    Bindings.resourceMapping._resetForTest(TestRunner.mainTarget);
+
+    SDK.targetManager._targets = [];
+    const target = SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this._type, params => {
+      this._enabledDomains.clear();
+      this._connection = new MockPageConnection(this, params);
+      return this._connection;
+    });
+    return target;
   }
 
   evalScript(url, content, isContentScript) {

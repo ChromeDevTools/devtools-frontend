@@ -88,7 +88,10 @@
     clear: right;
     position: relative;
     margin: 0 22px 0 20px;
-    min-height: 18px;  /* Sync with ConsoleViewMessage.js */
+}
+
+.console-prompt-editor-container {
+    min-height: 21px;
 }
 
 .console-message,

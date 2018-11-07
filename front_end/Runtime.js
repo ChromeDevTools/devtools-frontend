@@ -309,7 +309,7 @@ var Runtime = class {  // eslint-disable-line
    * @return {?string}
    */
   static queryParam(name) {
-    return Runtime._queryParamsObject[name] || null;
+    return Runtime._queryParamsObject.get(name);
   }
 
   /**
@@ -564,12 +564,8 @@ var Runtime = class {  // eslint-disable-line
   }
 };
 
-/**
- * @type {!Object.<string, string>}
- */
-Runtime._queryParamsObject = {
-  __proto__: null
-};
+/** @type {!URLSearchParams} */
+Runtime._queryParamsObject = new URLSearchParams(Runtime.queryParamsString());
 
 Runtime._instanceSymbol = Symbol('instance');
 
@@ -1068,20 +1064,6 @@ Runtime.Experiment = class {
     this._experiments.setEnabled(this.name, enabled);
   }
 };
-
-{
-  (function parseQueryParameters() {
-    const queryParams = Runtime.queryParamsString();
-    if (!queryParams)
-      return;
-    const params = queryParams.substring(1).split('&');
-    for (let i = 0; i < params.length; ++i) {
-      const pair = params[i].split('=');
-      const name = pair.shift();
-      Runtime._queryParamsObject[name] = pair.join('=');
-    }
-  })();
-}
 
 // This must be constructed after the query parameters have been parsed.
 Runtime.experiments = new Runtime.ExperimentsSupport();

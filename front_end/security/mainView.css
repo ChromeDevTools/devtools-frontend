@@ -87,18 +87,12 @@
 
     background: #fff;
     border-color: rgb(217, 217, 217);
-    color: rgba(0, 0, 0, 36);
 }
 
 .security-summary-secure .triangle-pointer,
 .security-summary-secure .security-summary-text,
 .security-explanation-title-secure {
     color: #0b8043;
-}
-
-.security-summary-neutral .triangle-pointer,
-.security-summary-neutral .security-summary-text {
-    color: rgb(253, 177, 48);
 }
 
 .security-summary-insecure .triangle-pointer,

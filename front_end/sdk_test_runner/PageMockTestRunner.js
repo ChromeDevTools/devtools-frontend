@@ -51,7 +51,24 @@ SDKTestRunner.PageMock = class {
       this._connection = new MockPageConnection(this, params);
       return this._connection;
     });
+
+    this._target = target;
     return target;
+  }
+
+  connectAsChildTarget(targetName, parentMock) {
+    const target = SDK.targetManager.createTarget(nextId('mock-target-'), targetName, this._type, params => {
+      this._enabledDomains.clear();
+      this._connection = new MockPageConnection(this, params);
+      return this._connection;
+    }, parentMock._target);
+
+    this._target = target;
+    return target;
+  }
+
+  disconnect() {
+    this._connection.disconnect();
   }
 
   evalScript(url, content, isContentScript) {
@@ -62,6 +79,7 @@ SDKTestRunner.PageMock = class {
 
     if (!context) {
       context = this._createExecutionContext(this._mainFrame, isContentScript);
+      this._executionContexts.push(context);
 
       this._fireEvent('Runtime.executionContextCreated', {context: context});
     }
@@ -87,6 +105,14 @@ SDKTestRunner.PageMock = class {
 
     this._scripts.push(script);
     this._fireEvent('Debugger.scriptParsed', script);
+  }
+
+  removeContentScripts() {
+    const index = this._executionContexts.findIndex(context => !context.auxData.isDefault);
+    if (index !== -1) {
+      this._fireEvent('Runtime.executionContextDestroyed', {executionContextId: this._executionContexts[index].id});
+      this._executionContexts.splice(index, 1);
+    }
   }
 
   reload() {
@@ -129,7 +155,7 @@ SDKTestRunner.PageMock = class {
       auxData: {isDefault: !isContentScript, frameId: frame.id},
 
       origin: frame.securityOrigin,
-      name: ''
+      name: isContentScript ? 'content-script-context' : ''
     };
   }
 

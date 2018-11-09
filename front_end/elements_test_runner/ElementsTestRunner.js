@@ -93,6 +93,14 @@ ElementsTestRunner.findNode = async function(matchFunction, callback) {
 };
 
 /**
+ * @param {function(!Element): boolean} matchFunction
+ * @param {!Promise}
+ */
+ElementsTestRunner.findNodePromise = function(matchFunction) {
+  return new Promise(resolve => ElementsTestRunner.findNode(matchFunction, resolve));
+};
+
+/**
  * @param {!EventListeners.EventListenersView} eventListenersView
  * @param {function():void} callback
  * @param {boolean=} force

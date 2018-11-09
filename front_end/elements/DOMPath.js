@@ -42,6 +42,46 @@ Elements.DOMPath.cssPath = function(node, optimized) {
 
 /**
  * @param {!SDK.DOMNode} node
+ * @return {boolean}
+ */
+Elements.DOMPath.canGetJSPath = function(node) {
+  let wp = node;
+  while (wp) {
+    if (wp.ancestorShadowRoot() && wp.ancestorShadowRoot().shadowRootType() !== SDK.DOMNode.ShadowRootTypes.Open)
+      return false;
+    wp = wp.ancestorShadowHost();
+  }
+  return true;
+};
+
+/**
+ * @param {!SDK.DOMNode} node
+ * @param {boolean=} optimized
+ * @return {string}
+ */
+Elements.DOMPath.jsPath = function(node, optimized) {
+  if (node.nodeType() !== Node.ELEMENT_NODE)
+    return '';
+
+  const path = [];
+  let wp = node;
+  while (wp) {
+    path.push(Elements.DOMPath.cssPath(wp, optimized));
+    wp = wp.ancestorShadowHost();
+  }
+  path.reverse();
+  let result = '';
+  for (let i = 0; i < path.length; ++i) {
+    if (i)
+      result += `.shadowRoot.querySelector('${path[i]}')`;
+    else
+      result += `document.querySelector('${path[i]}')`;
+  }
+  return result;
+};
+
+/**
+ * @param {!SDK.DOMNode} node
  * @param {boolean} optimized
  * @param {boolean} isTargetNode
  * @return {?Elements.DOMPath.Step}

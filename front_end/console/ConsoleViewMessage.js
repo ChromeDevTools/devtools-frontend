@@ -141,7 +141,7 @@ Console.ConsoleViewMessage = class {
     if (table)
       table = this._parameterToRemoteObject(table);
     if (!table || !table.preview)
-      return formattedMessage;
+      return this._buildMessage();
 
     const rawValueColumnSymbol = Symbol('rawValueColumn');
     const columnNames = [];

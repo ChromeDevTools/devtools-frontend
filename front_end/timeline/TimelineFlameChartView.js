@@ -500,7 +500,7 @@ Timeline.TimelineFlameChartMarker = class {
       context.lineWidth = this._style.lineWidth;
       context.translate(this._style.lineWidth < 1 || (this._style.lineWidth & 1) ? 0.5 : 0, 0.5);
       context.beginPath();
-      context.moveTo(x, height);
+      context.moveTo(x, 0);
       context.setLineDash(this._style.dashStyle);
       context.lineTo(x, context.canvas.height);
       context.stroke();

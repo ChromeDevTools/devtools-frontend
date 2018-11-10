@@ -129,8 +129,8 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._rawTimelineDataLength = 0;
     /** @type {!Map<string, !Map<string,number>>} */
     this._textWidth = new Map();
-    /** @type {!Map<number, number>} */
-    this._instantEventWidth = new Map();
+    /** @type {!Map<number, !{x: number, width: number}>} */
+    this._markerPositions = new Map();
 
     this._lastMouseOffsetX = 0;
     this._selectedGroup = -1;
@@ -577,22 +577,24 @@ PerfUI.FlameChart = class extends UI.VBox {
     const offsetFromLevel = y - this._visibleLevelOffsets[cursorLevel];
     if (offsetFromLevel > this._levelHeight(cursorLevel))
       return -1;
+
+    // Check markers first.
+    for (const [index, pos] of this._markerPositions) {
+      if (timelineData.entryLevels[index] !== cursorLevel)
+        continue;
+      if (pos.x <= x && x < pos.x + pos.width)
+        return /** @type {number} */ (index);
+    }
+
+    // Check regular entries.
     const entryStartTimes = timelineData.entryStartTimes;
-    const entryTotalTimes = timelineData.entryTotalTimes;
-    const entryIndexes = this._timelineLevels[cursorLevel];
-    if (!entryIndexes || !entryIndexes.length)
+    const entriesOnLevel = this._timelineLevels[cursorLevel];
+    if (!entriesOnLevel || !entriesOnLevel.length)
       return -1;
 
-    /**
-     * @param {number} time
-     * @param {number} entryIndex
-     * @return {number}
-     */
-    function comparator(time, entryIndex) {
-      return time - entryStartTimes[entryIndex];
-    }
     const cursorTime = this._chartViewport.pixelToTime(x);
-    const indexOnLevel = Math.max(entryIndexes.upperBound(cursorTime, comparator) - 1, 0);
+    const indexOnLevel = Math.max(
+        entriesOnLevel.upperBound(cursorTime, (time, entryIndex) => time - entryStartTimes[entryIndex]) - 1, 0);
 
     /**
      * @this {PerfUI.FlameChart}
@@ -603,18 +605,17 @@ PerfUI.FlameChart = class extends UI.VBox {
       if (entryIndex === undefined)
         return false;
       const startTime = entryStartTimes[entryIndex];
+      const duration = timelineData.entryTotalTimes[entryIndex];
       const startX = this._chartViewport.timeToPosition(startTime);
-      const duration = entryTotalTimes[entryIndex];
-      const endX = isNaN(duration) ? startX + this._instantEventWidth.get(entryIndex) :
-                                     this._chartViewport.timeToPosition(startTime + duration);
-      const /** @const */ barThresholdPx = 3;
+      const endX = this._chartViewport.timeToPosition(startTime + duration);
+      const barThresholdPx = 3;
       return startX - barThresholdPx < x && x < endX + barThresholdPx;
     }
 
-    let entryIndex = entryIndexes[indexOnLevel];
+    let entryIndex = entriesOnLevel[indexOnLevel];
     if (checkEntryHit.call(this, entryIndex))
       return entryIndex;
-    entryIndex = entryIndexes[indexOnLevel + 1];
+    entryIndex = entriesOnLevel[indexOnLevel + 1];
     if (checkEntryHit.call(this, entryIndex))
       return entryIndex;
     return -1;
@@ -714,7 +715,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     const minTextWidth = 2 * textPadding + UI.measureTextWidth(context, '\u2026');
     const minTextWidthDuration = this._chartViewport.pixelToTimeOffset(minTextWidth);
     const minVisibleBarLevel = Math.max(this._visibleLevelOffsets.upperBound(top) - 1, 0);
-    this._instantEventWidth.clear();
+    this._markerPositions.clear();
 
     /** @type {!Map<string, !Array<number>>} */
     const colorBuckets = new Map();
@@ -799,19 +800,26 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     context.textBaseline = 'alphabetic';
     context.beginPath();
+    let lastMarkerLevel = -1;
+    let lastMarkerX = -Infinity;
+    // Markers are sorted top to bottom, right to left.
     for (let m = markerIndices.length - 1; m >= 0; --m) {
       const entryIndex = markerIndices[m];
-      const entryStartTime = entryStartTimes[entryIndex];
-      const x = this._chartViewport.timeToPosition(entryStartTime);
-      const barLevel = entryLevels[entryIndex];
-      const y = this._levelToOffset(barLevel);
-      const h = this._levelHeight(barLevel);
-      const padding = 4;
       const title = this._dataProvider.entryTitle(entryIndex);
       if (!title)
         continue;
+      const entryStartTime = entryStartTimes[entryIndex];
+      const level = entryLevels[entryIndex];
+      if (lastMarkerLevel !== level)
+        lastMarkerX = -Infinity;
+      const x = Math.max(this._chartViewport.timeToPosition(entryStartTime), lastMarkerX);
+      const y = this._levelToOffset(level);
+      const h = this._levelHeight(level);
+      const padding = 4;
       const width = Math.ceil(UI.measureTextWidth(context, title)) + 2 * padding;
-      this._instantEventWidth.set(entryIndex, width);
+      lastMarkerX = x + width - 1;
+      lastMarkerLevel = level;
+      this._markerPositions.set(entryIndex, {x, width});
       context.fillStyle = this._dataProvider.entryColor(entryIndex);
       context.fillRect(x, y, width, h - 1);
       context.fillStyle = 'white';
@@ -1604,9 +1612,15 @@ PerfUI.FlameChart = class extends UI.VBox {
     const timelineData = this._timelineData();
     const startTime = timelineData.entryStartTimes[entryIndex];
     const duration = timelineData.entryTotalTimes[entryIndex];
-    let barX = this._chartViewport.timeToPosition(startTime);
-    let barWidth =
-        isNaN(duration) ? this._instantEventWidth.get(entryIndex) : duration * this._chartViewport.timeToPixel();
+    let barX, barWidth;
+    if (Number.isNaN(duration)) {
+      const position = this._markerPositions.get(entryIndex);
+      barX = position.x;
+      barWidth = position.width;
+    } else {
+      barX = this._chartViewport.timeToPosition(startTime);
+      barWidth = duration * this._chartViewport.timeToPixel();
+    }
     if (barX + barWidth <= 0 || barX >= this._offsetWidth)
       return;
     const barCenter = barX + barWidth / 2;

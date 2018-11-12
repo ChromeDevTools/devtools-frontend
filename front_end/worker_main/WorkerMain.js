@@ -10,18 +10,10 @@ WorkerMain.WorkerMain = class extends Common.Object {
    * @override
    */
   run() {
-    SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), SDK.Target.Type.ServiceWorker, this._createMainConnection.bind(this), null);
-    InspectorFrontendHost.connectionReady();
+    SDK.initMainConnection(() => {
+      SDK.targetManager.createTarget('main', ls`Main`, SDK.Target.Type.ServiceWorker, null);
+    }, Components.TargetDetachedDialog.webSocketConnectionLost);
     new MobileThrottling.NetworkPanelIndicator();
-  }
-
-  /**
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createMainConnection(params) {
-    return SDK.createMainConnection(params, () => Components.TargetDetachedDialog.webSocketConnectionLost());
   }
 };
 

@@ -6,7 +6,6 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
   constructor() {
     super(true);
     this._nodes = [];
-    this._recordingListeners = null;
     this._started = false;
     this._startTime = 0;
     this._nodeForId = {};
@@ -151,22 +150,16 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
    * @param {boolean} recording
    */
   _setRecording(recording) {
-    if (this._recordingListeners) {
-      Common.EventTarget.removeEventListeners(this._recordingListeners);
-      this._recordingListeners = null;
-    }
-
     if (recording) {
-      this._recordingListeners = [
-        SDK.targetManager.mainTarget().addEventListener(
-            Protocol.TargetBase.Events.MessageReceived, this._messageRecieved, this),
-        SDK.targetManager.mainTarget().addEventListener(Protocol.TargetBase.Events.MessageSent, this._messageSent, this)
-      ];
+      Protocol.test.onMessageSent = this._messageSent.bind(this);
+      Protocol.test.onMessageReceived = this._messageRecieved.bind(this);
+    } else {
+      Protocol.test.onMessageSent = null;
+      Protocol.test.onMessageReceived = null;
     }
   }
 
-  _messageRecieved(event) {
-    const message = event.data.message;
+  _messageRecieved(message) {
     if ('id' in message) {
       const node = this._nodeForId[message.id];
       if (!node)
@@ -189,8 +182,7 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       this._dataGrid.insertChild(node);
   }
 
-  _messageSent(event) {
-    const message = event.data;
+  _messageSent(message) {
     const node = new ProtocolMonitor.ProtocolMonitor.ProtocolNode({
       method: message.method,
       direction: 'sent',

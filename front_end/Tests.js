@@ -565,7 +565,7 @@
     this._waitForTargets(2, callback.bind(this));
 
     function callback() {
-      Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
+      Protocol.test.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
     }
   };
 
@@ -1178,7 +1178,7 @@
       browserContextIds.push(browserContextId);
 
       const {targetId} = await targetAgent.invoke_createTarget({url: 'about:blank', browserContextId});
-      await targetAgent.invoke_attachToTarget({targetId});
+      await targetAgent.invoke_attachToTarget({targetId, flatten: true});
 
       const target = SDK.targetManager.targets().find(target => target.id() === targetId);
       const pageAgent = target.pageAgent();

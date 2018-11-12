@@ -504,9 +504,7 @@ TestRunner.check = function(passCondition, failureText) {
  * @param {!Function} callback
  */
 TestRunner.deprecatedRunAfterPendingDispatches = function(callback) {
-  const targets = SDK.targetManager.targets();
-  const promises = targets.map(target => new Promise(resolve => target._deprecatedRunAfterPendingDispatches(resolve)));
-  Promise.all(promises).then(TestRunner.safeWrap(callback));
+  Protocol.test.deprecatedRunAfterPendingDispatches(callback);
 };
 
 /**
@@ -641,11 +639,7 @@ TestRunner.markStep = function(title) {
 };
 
 TestRunner.startDumpingProtocolMessages = function() {
-  // TODO(chenwilliam): stop abusing Closure interface which is why
-  // we need to opt out of type checking here
-  const untypedConnection = /** @type {*} */ (Protocol.InspectorBackend.Connection);
-  untypedConnection.prototype._dumpProtocolMessage = self.testRunner.logToStderr.bind(self.testRunner);
-  Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages = 1;
+  Protocol.test.dumpProtocol = self.testRunner.logToStderr.bind(self.testRunner);
 };
 
 /**

@@ -11,10 +11,10 @@ NodeMain.NodeMain = class extends Common.Object {
    */
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSFromFrontend);
-    const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), SDK.Target.Type.Browser, params => new SDK.MainConnection(params), null);
-    target.setInspectedURL('Node.js');
-    InspectorFrontendHost.connectionReady();
+    SDK.initMainConnection(() => {
+      const target = SDK.targetManager.createTarget('main', Common.UIString('Main'), SDK.Target.Type.Browser, null);
+      target.setInspectedURL('Node.js');
+    }, Components.TargetDetachedDialog.webSocketConnectionLost);
   }
 };
 
@@ -30,8 +30,8 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
     this._targetManager = parentTarget.targetManager();
     this._parentTarget = parentTarget;
     this._targetAgent = parentTarget.targetAgent();
-    /** @type {!Map<string, !SDK.ChildConnection>} */
-    this._childConnections = new Map();
+    /** @type {!Map<string, !SDK.Target>} */
+    this._childTargets = new Map();
 
     parentTarget.registerTargetDispatcher(this);
     this._targetAgent.setDiscoverTargets(true);
@@ -63,7 +63,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
     InspectorFrontendHost.events.removeEventListener(
         InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
 
-    for (const sessionId of this._childConnections.keys())
+    for (const sessionId of this._childTargets.keys())
       this.detachedFromTarget(sessionId, undefined);
   }
 
@@ -73,7 +73,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
    */
   targetCreated(targetInfo) {
     if (targetInfo.type === 'node' && !targetInfo.attached)
-      this._targetAgent.attachToTarget(targetInfo.targetId);
+      this._targetAgent.attachToTarget(targetInfo.targetId, true /* flatten */);
   }
 
   /**
@@ -97,9 +97,10 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
+    const name = ls`Node.js: ${targetInfo.url}`;
     const target = this._targetManager.createTarget(
-        targetInfo.targetId, Common.UIString('Node.js: %s', targetInfo.url), SDK.Target.Type.Node,
-        this._createChildConnection.bind(this, this._targetAgent, sessionId), this._parentTarget);
+        targetInfo.targetId, name, SDK.Target.Type.Node, this._parentTarget, sessionId);
+    this._childTargets.set(sessionId, target);
     target.runtimeAgent().runIfWaitingForDebugger();
   }
 
@@ -109,8 +110,8 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
    * @param {string=} childTargetId
    */
   detachedFromTarget(sessionId, childTargetId) {
-    this._childConnections.get(sessionId).onDisconnect.call(null, 'target terminated');
-    this._childConnections.delete(sessionId);
+    this._childTargets.get(sessionId).dispose('target terminated');
+    this._childTargets.delete(sessionId);
   }
 
   /**
@@ -120,21 +121,7 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
    * @param {string=} childTargetId
    */
   receivedMessageFromTarget(sessionId, message, childTargetId) {
-    const connection = this._childConnections.get(sessionId);
-    if (connection)
-      connection.onMessage.call(null, message);
-  }
-
-  /**
-   * @param {!Protocol.TargetAgent} agent
-   * @param {string} sessionId
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createChildConnection(agent, sessionId, params) {
-    const connection = new SDK.ChildConnection(agent, sessionId, params);
-    this._childConnections.set(sessionId, connection);
-    return connection;
+    // We use flatten protocol.
   }
 };
 

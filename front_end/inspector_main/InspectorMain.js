@@ -6,18 +6,15 @@
  * @implements {Common.Runnable}
  */
 InspectorMain.InspectorMain = class extends Common.Object {
-  constructor() {
-    super();
-    /** @type {!Protocol.InspectorBackend.Connection} */
-    this._mainConnection;
-  }
-
   /**
    * @override
    */
   run() {
-    this._connectAndCreateMainTarget();
-    InspectorFrontendHost.connectionReady();
+    SDK.initMainConnection(() => {
+      const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
+      const target = SDK.targetManager.createTarget('main', Common.UIString('Main'), type, null);
+      target.runtimeAgent().runIfWaitingForDebugger();
+    }, Components.TargetDetachedDialog.webSocketConnectionLost);
 
     new InspectorMain.InspectedNodeRevealer();
     new InspectorMain.SourcesPanelIndicator();
@@ -29,40 +26,6 @@ InspectorMain.InspectorMain = class extends Common.Object {
       SDK.ResourceTreeModel.reloadAllPages(hard);
     });
   }
-
-  _connectAndCreateMainTarget() {
-    const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
-    const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), type, this._createMainConnection.bind(this), null);
-    target.runtimeAgent().runIfWaitingForDebugger();
-  }
-
-  /**
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createMainConnection(params) {
-    this._mainConnection =
-        SDK.createMainConnection(params, () => Components.TargetDetachedDialog.webSocketConnectionLost());
-    return this._mainConnection;
-  }
-
-  /**
-   * @param {function(string)} onMessage
-   * @return {!Promise<!Protocol.InspectorBackend.Connection>}
-   */
-  _interceptMainConnection(onMessage) {
-    const params = {onMessage: onMessage, onDisconnect: this._connectAndCreateMainTarget.bind(this)};
-    return this._mainConnection.disconnect().then(this._createMainConnection.bind(this, params));
-  }
-};
-
-/**
- * @param {function(string)} onMessage
- * @return {!Promise<!Protocol.InspectorBackend.Connection>}
- */
-InspectorMain.interceptMainConnection = function(onMessage) {
-  return self.runtime.sharedInstance(InspectorMain.InspectorMain)._interceptMainConnection(onMessage);
 };
 
 /**

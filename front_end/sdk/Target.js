@@ -13,13 +13,13 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {string} id
    * @param {string} name
    * @param {!SDK.Target.Type} type
-   * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
    * @param {?SDK.Target} parentTarget
+   * @param {string} sessionId
    * @param {boolean} suspended
    */
-  constructor(targetManager, id, name, type, connectionFactory, parentTarget, suspended) {
+  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended) {
     const needsNodeJSPatching = type === SDK.Target.Type.Node;
-    super(connectionFactory, needsNodeJSPatching);
+    super(needsNodeJSPatching, parentTarget, sessionId);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';
@@ -135,8 +135,10 @@ SDK.Target = class extends Protocol.TargetBase {
 
   /**
    * @override
+   * @param {string} reason
    */
-  dispose() {
+  dispose(reason) {
+    super.dispose(reason);
     this._targetManager.removeTarget(this);
     for (const model of this._modelByConstructor.valuesArray())
       model.dispose();

@@ -36,8 +36,10 @@ Protocol.Error = Symbol('Protocol.Error');
  */
 Protocol.InspectorBackend = class {
   constructor() {
-    this._agentPrototypes = {};
-    this._dispatcherPrototypes = {};
+    /** @type {!Map<string, !Protocol.InspectorBackend._AgentPrototype>} */
+    this._agentPrototypes = new Map();
+    /** @type {!Map<string, !Protocol.InspectorBackend._DispatcherPrototype>} */
+    this._dispatcherPrototypes = new Map();
     this._initialized = false;
   }
 
@@ -90,12 +92,12 @@ Protocol.InspectorBackend = class {
    * @return {!Protocol.InspectorBackend._AgentPrototype}
    */
   _agentPrototype(domain) {
-    if (!this._agentPrototypes[domain]) {
-      this._agentPrototypes[domain] = new Protocol.InspectorBackend._AgentPrototype(domain);
+    if (!this._agentPrototypes.has(domain)) {
+      this._agentPrototypes.set(domain, new Protocol.InspectorBackend._AgentPrototype(domain));
       this._addAgentGetterMethodToProtocolTargetPrototype(domain);
     }
 
-    return this._agentPrototypes[domain];
+    return this._agentPrototypes.get(domain);
   }
 
   /**
@@ -103,9 +105,9 @@ Protocol.InspectorBackend = class {
    * @return {!Protocol.InspectorBackend._DispatcherPrototype}
    */
   _dispatcherPrototype(domain) {
-    if (!this._dispatcherPrototypes[domain])
-      this._dispatcherPrototypes[domain] = new Protocol.InspectorBackend._DispatcherPrototype();
-    return this._dispatcherPrototypes[domain];
+    if (!this._dispatcherPrototypes.has(domain))
+      this._dispatcherPrototypes.set(domain, new Protocol.InspectorBackend._DispatcherPrototype());
+    return this._dispatcherPrototypes.get(domain);
   }
 
   /**
@@ -173,99 +175,139 @@ Protocol.InspectorBackend = class {
   }
 };
 
-Protocol.InspectorBackend._ConnectionClosedErrorCode = -32000;
-Protocol.InspectorBackend.DevToolsStubErrorCode = -32015;
-
+Protocol.DevToolsStubErrorCode = -32015;
 
 Protocol.inspectorBackend = new Protocol.InspectorBackend();
 
 /**
- * @unrestricted
+ * @interface
  */
-Protocol.InspectorBackend.Connection = class {
+Protocol.Connection = function() {};
+
+Protocol.Connection.prototype = {
   /**
-   * @param {string} domain
-   * @param {!Protocol.InspectorBackend.Connection.MessageObject} messageObject
+   * @param {function((!Object|string))} onMessage
    */
-  sendMessage(domain, messageObject) {
-    this.sendRawMessage(JSON.stringify(messageObject));
-  }
+  setOnMessage(onMessage) {},
+
+  /**
+   * @param {function(string)} onDisconnect
+   */
+  setOnDisconnect(onDisconnect) {},
 
   /**
    * @param {string} message
    */
-  sendRawMessage(message) {}
+  sendRawMessage(message) {},
 
   /**
    * @return {!Promise}
    */
-  disconnect() {}
+  disconnect() {},
+};
+
+Protocol.test = {
+  /**
+   * This will get called for every protocol message.
+   * Protocol.test.dumpProtocol = console.log
+   * @type {?function(string)}
+   */
+  dumpProtocol: null,
+
+  /**
+   * Runs a function when no protocol activity is present.
+   * Protocol.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
+   * @type {?function(function()=)}
+   */
+  deprecatedRunAfterPendingDispatches: null,
+
+  /**
+   * Sends a raw message over main connection.
+   * Protocol.test.sendRawMessage('Page.enable', {}, console.log)
+   */
+  sendRawMessage: null,
+
+  /**
+   * Set to true to not log any errors.
+   */
+  suppressRequestErrors: false,
+
+  /**
+   * Set to get notified about any messages sent over protocol.
+   * @type {?function({domain: string, method: string, params: !Object, id: number})}
+   */
+  onMessageSent: null,
+
+  /**
+   * Set to get notified about any messages received over protocol.
+   * @type {?function(!Object)}
+   */
+  onMessageReceived: null,
 };
 
 /**
- * @typedef {!{
- *   id: number,
- *   method: string,
- *   params: (!Object|undefined)
- * }}
+ * @param {function():!Protocol.Connection} factory
  */
-Protocol.InspectorBackend.Connection.MessageObject;
+Protocol.Connection.setFactory = function(factory) {
+  Protocol.Connection._factory = factory;
+};
+
+
+/** @type {function():!Protocol.Connection} */
+Protocol.Connection._factory;
 
 /**
- * @typedef {!{
- *   onMessage: function((!Object|string)),
- *   onDisconnect: function(string)
- * }}
+ * Takes error and result.
+ * @typedef {function(?Object, ?Object)}
  */
-Protocol.InspectorBackend.Connection.Params;
+Protocol._Callback;
 
-/**
- * @typedef {function(!Protocol.InspectorBackend.Connection.Params):!Protocol.InspectorBackend.Connection}
- */
-Protocol.InspectorBackend.Connection.Factory;
+// TODO(dgozman): we are not reporting generic errors in tests, but we should
+// instead report them and just have some expected errors in test expectations.
+Protocol._GenericError = -32000;
+Protocol._ConnectionClosedErrorCode = -32001;
 
-/**
- * @unrestricted
- */
-Protocol.TargetBase = class extends Common.Object {
-  /**
-   * @param {!Protocol.InspectorBackend.Connection.Factory} connectionFactory
-   * @param {boolean} needsNodeJSPatching
-   */
-  constructor(connectionFactory, needsNodeJSPatching) {
-    super();
-    this._connection =
-        connectionFactory({onMessage: this._onMessage.bind(this), onDisconnect: this._onDisconnect.bind(this)});
+Protocol.SessionRouter = class {
+  constructor() {
+    this._connection = Protocol.Connection._factory();
     this._lastMessageId = 1;
     this._pendingResponsesCount = 0;
-    this._agents = {};
-    this._dispatchers = {};
-    this._callbacks = {};
-    this._initialize(Protocol.inspectorBackend._agentPrototypes, Protocol.inspectorBackend._dispatcherPrototypes);
     this._domainToLogger = new Map();
-    if (!Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches) {
-      Protocol.InspectorBackend.deprecatedRunAfterPendingDispatches =
-          this._deprecatedRunAfterPendingDispatches.bind(this);
-    }
-    if (!Protocol.InspectorBackend.sendRawMessageForTesting)
-      Protocol.InspectorBackend.sendRawMessageForTesting = this._sendRawMessageForTesting.bind(this);
-    this._needsNodeJSPatching = needsNodeJSPatching;
+
+    /** @type {!Map<string, {target: !Protocol.TargetBase, callbacks: !Map<number, !Protocol._Callback>}>} */
+    this._sessions = new Map();
+
+    /** @type {!Array<function()>} */
+    this._pendingScripts = [];
+
+    Protocol.test.deprecatedRunAfterPendingDispatches = this._deprecatedRunAfterPendingDispatches.bind(this);
+    Protocol.test.sendRawMessage = this._sendRawMessageForTesting.bind(this);
+
+    this._connection.setOnMessage(this._onMessage.bind(this));
+
+    this._connection.setOnDisconnect(reason => {
+      const session = this._sessions.get('');
+      if (session)
+        session.target.dispose(reason);
+    });
   }
 
   /**
-   * @param {!Object.<string, !Protocol.InspectorBackend._AgentPrototype>} agentPrototypes
-   * @param {!Object.<string, !Protocol.InspectorBackend._DispatcherPrototype>} dispatcherPrototypes
+   * @param {!Protocol.TargetBase} target
+   * @param {string} sessionId
    */
-  _initialize(agentPrototypes, dispatcherPrototypes) {
-    for (const domain in agentPrototypes) {
-      this._agents[domain] = Object.create(agentPrototypes[domain]);
-      this._agents[domain].setTarget(this);
-    }
+  registerSession(target, sessionId) {
+    this._sessions.set(sessionId, {target, callbacks: new Map()});
+  }
 
-    for (const domain in dispatcherPrototypes) {
-      this._dispatchers[domain] = Object.create(dispatcherPrototypes[domain]);
-      this._dispatchers[domain].initialize();
-    }
+  /**
+   * @param {string} sessionId
+   */
+  unregisterSession(sessionId) {
+    const session = this._sessions.get(sessionId);
+    for (const callback of session.callbacks.values())
+      Protocol.SessionRouter.dispatchConnectionError(callback);
+    this._sessions.delete(sessionId);
   }
 
   /**
@@ -276,64 +318,33 @@ Protocol.TargetBase = class extends Common.Object {
   }
 
   /**
-   * @param {string} domain
-   * @return {!Protocol.InspectorBackend._AgentPrototype}
-   */
-  _agent(domain) {
-    return this._agents[domain];
-  }
-
-  /**
+   * @param {string} sessionId
    * @param {string} domain
    * @param {string} method
    * @param {?Object} params
-   * @param {?function(*)} callback
+   * @param {!Protocol._Callback} callback
    */
-  _wrapCallbackAndSendMessageObject(domain, method, params, callback) {
-    if (!this._connection) {
-      if (callback)
-        this._dispatchConnectionErrorResponse(domain, method, callback);
-      return;
-    }
-
+  sendMessage(sessionId, domain, method, params, callback) {
     const messageObject = {};
     const messageId = this._nextMessageId();
     messageObject.id = messageId;
     messageObject.method = method;
     if (params)
       messageObject.params = params;
+    if (sessionId)
+      messageObject.sessionId = sessionId;
 
-    const wrappedCallback = this._wrap(callback, domain, method);
+    if (Protocol.test.dumpProtocol)
+      Protocol.test.dumpProtocol('frontend: ' + JSON.stringify(messageObject));
 
-    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages)
-      this._dumpProtocolMessage('frontend: ' + JSON.stringify(messageObject), '[FE] ' + domain);
-    if (this.hasEventListeners(Protocol.TargetBase.Events.MessageSent)) {
-      this.dispatchEventToListeners(
-          Protocol.TargetBase.Events.MessageSent,
-          {domain, method, params: JSON.parse(JSON.stringify(params)), id: messageId});
+    if (Protocol.test.onMessageSent) {
+      const paramsObject = JSON.parse(JSON.stringify(params || {}));
+      Protocol.test.onMessageSent({domain, method, params: /** @type {!Object} */ (paramsObject), id: messageId});
     }
 
-    this._connection.sendMessage(domain, messageObject);
     ++this._pendingResponsesCount;
-    this._callbacks[messageId] = wrappedCallback;
-  }
-
-  /**
-   * @param {?function(*)} callback
-   * @param {string} method
-   * @param {string} domain
-   * @return {function(*)}
-   */
-  _wrap(callback, domain, method) {
-    if (!callback)
-      callback = function() {};
-
-    callback.methodName = method;
-    callback.domain = domain;
-    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-      callback.sendRequestTime = Date.now();
-
-    return callback;
+    this._sessions.get(sessionId).callbacks.set(messageId, callback);
+    this._connection.sendRawMessage(JSON.stringify(messageObject));
   }
 
   /**
@@ -343,47 +354,45 @@ Protocol.TargetBase = class extends Common.Object {
    */
   _sendRawMessageForTesting(method, params, callback) {
     const domain = method.split('.')[0];
-    this._wrapCallbackAndSendMessageObject(domain, method, params, callback);
+    this.sendMessage('', domain, method, params, callback || (() => {}));
   }
 
   /**
    * @param {!Object|string} message
    */
   _onMessage(message) {
-    if (Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages) {
-      this._dumpProtocolMessage(
-          'backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)), 'Backend');
-    }
-    if (this.hasEventListeners(Protocol.TargetBase.Events.MessageReceived)) {
-      this.dispatchEventToListeners(Protocol.TargetBase.Events.MessageReceived, {
-        message: JSON.parse((typeof message === 'string') ? message : JSON.stringify(message)),
-      });
+    if (Protocol.test.dumpProtocol)
+      Protocol.test.dumpProtocol('backend: ' + ((typeof message === 'string') ? message : JSON.stringify(message)));
+
+    if (Protocol.test.onMessageReceived) {
+      const messageObjectCopy = JSON.parse((typeof message === 'string') ? message : JSON.stringify(message));
+      Protocol.test.onMessageReceived(/** @type {!Object} */ (messageObjectCopy));
     }
 
     const messageObject = /** @type {!Object} */ ((typeof message === 'string') ? JSON.parse(message) : message);
 
-    if (this._needsNodeJSPatching)
+    const sessionId = messageObject.sessionId || '';
+    const session = this._sessions.get(sessionId);
+    if (!session) {
+      Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong session id', messageObject);
+      return;
+    }
+
+    if (session.target._needsNodeJSPatching)
       Protocol.NodeURL.patch(messageObject);
 
     if ('id' in messageObject) {  // just a response for some request
-      const callback = this._callbacks[messageObject.id];
+      const callback = session.callbacks.get(messageObject.id);
+      session.callbacks.delete(messageObject.id);
       if (!callback) {
         Protocol.InspectorBackend.reportProtocolError('Protocol Error: the message with wrong id', messageObject);
         return;
       }
 
-      const timingLabel = 'time-stats: ' + callback.methodName;
-      if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-        Protocol.InspectorBackend._timeLogger.time(timingLabel);
-
-      this._agent(callback.domain).dispatchResponse(messageObject, callback.methodName, callback);
+      callback(messageObject.error, messageObject.result);
       --this._pendingResponsesCount;
-      delete this._callbacks[messageObject.id];
 
-      if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-        Protocol.InspectorBackend._timeLogger.timeEnd(timingLabel);
-
-      if (this._scripts && !this._pendingResponsesCount)
+      if (this._pendingScripts.length && !this._pendingResponsesCount)
         this._deprecatedRunAfterPendingDispatches();
     } else {
       if (!('method' in messageObject)) {
@@ -393,14 +402,82 @@ Protocol.TargetBase = class extends Common.Object {
 
       const method = messageObject.method.split('.');
       const domainName = method[0];
-      if (!(domainName in this._dispatchers)) {
+      if (!(domainName in session.target._dispatchers)) {
         Protocol.InspectorBackend.reportProtocolError(
             `Protocol Error: the message ${messageObject.method} is for non-existing domain '${domainName}'`,
             messageObject);
         return;
       }
 
-      this._dispatchers[domainName].dispatch(method[1], messageObject);
+      session.target._dispatchers[domainName].dispatch(method[1], messageObject);
+    }
+  }
+
+  /**
+   * @param {function()=} script
+   */
+  _deprecatedRunAfterPendingDispatches(script) {
+    if (script)
+      this._pendingScripts.push(script);
+
+    // Execute all promises.
+    setTimeout(() => {
+      if (!this._pendingResponsesCount)
+        this._executeAfterPendingDispatches();
+      else
+        this._deprecatedRunAfterPendingDispatches();
+    }, 0);
+  }
+
+  _executeAfterPendingDispatches() {
+    if (!this._pendingResponsesCount) {
+      const scripts = this._pendingScripts;
+      this._pendingScripts = [];
+      for (let id = 0; id < scripts.length; ++id)
+        scripts[id]();
+    }
+  }
+
+  /**
+   * @param {!Protocol._Callback} callback
+   */
+  static dispatchConnectionError(callback) {
+    const error = {
+      message: 'Connection is closed, can\'t dispatch pending call',
+      code: Protocol._ConnectionClosedErrorCode,
+      data: null
+    };
+    setTimeout(() => callback(error, null), 0);
+  }
+};
+
+/**
+ * @unrestricted
+ */
+Protocol.TargetBase = class {
+  /**
+   * @param {boolean} needsNodeJSPatching
+   * @param {?Protocol.TargetBase} parentTarget
+   * @param {string} sessionId
+   */
+  constructor(needsNodeJSPatching, parentTarget, sessionId) {
+    this._needsNodeJSPatching = needsNodeJSPatching;
+    this._sessionId = sessionId;
+
+    this._router = parentTarget ? parentTarget._router : new Protocol.SessionRouter();
+    this._router.registerSession(this, this._sessionId);
+
+    this._agents = {};
+    for (const [domain, agentPrototype] of Protocol.inspectorBackend._agentPrototypes) {
+      this._agents[domain] = Object.create(/** @type {!Protocol.InspectorBackend._AgentPrototype} */ (agentPrototype));
+      this._agents[domain]._target = this;
+    }
+
+    this._dispatchers = {};
+    for (const [domain, dispatcherPrototype] of Protocol.inspectorBackend._dispatcherPrototypes) {
+      this._dispatchers[domain] =
+          Object.create(/** @type {!Protocol.InspectorBackend._DispatcherPrototype} */ (dispatcherPrototype));
+      this._dispatchers[domain]._dispatchers = [];
     }
   }
 
@@ -411,108 +488,27 @@ Protocol.TargetBase = class extends Common.Object {
   registerDispatcher(domain, dispatcher) {
     if (!this._dispatchers[domain])
       return;
-
     this._dispatchers[domain].addDomainDispatcher(dispatcher);
-  }
-
-  /**
-   * @param {function()=} script
-   */
-  _deprecatedRunAfterPendingDispatches(script) {
-    if (!this._scripts)
-      this._scripts = [];
-
-    if (script)
-      this._scripts.push(script);
-
-    // Execute all promises.
-    setTimeout(function() {
-      if (!this._pendingResponsesCount)
-        this._executeAfterPendingDispatches();
-      else
-        this._deprecatedRunAfterPendingDispatches();
-    }.bind(this), 0);
-  }
-
-  _executeAfterPendingDispatches() {
-    if (!this._pendingResponsesCount) {
-      const scripts = this._scripts;
-      this._scripts = [];
-      for (let id = 0; id < scripts.length; ++id)
-        scripts[id].call(this);
-    }
-  }
-
-  /**
-   * @param {string} message
-   * @param {string} context
-   */
-  _dumpProtocolMessage(message, context) {
-    if (!this._domainToLogger.get(context))
-      this._domainToLogger.set(context, console.context ? console.context(context) : console);
-    const logger = this._domainToLogger.get(context);
-    logger.log(message);
   }
 
   /**
    * @param {string} reason
    */
-  _onDisconnect(reason) {
-    this._connection = null;
-    this._runPendingCallbacks();
-    this.dispose();
-  }
-
-  /**
-   * @protected
-   */
-  dispose() {
+  dispose(reason) {
+    this._router.unregisterSession(this._sessionId);
+    this._router = null;
   }
 
   /**
    * @return {boolean}
    */
   isDisposed() {
-    return !this._connection;
-  }
-
-  _runPendingCallbacks() {
-    const keys = Object.keys(this._callbacks).map(function(num) {
-      return parseInt(num, 10);
-    });
-    for (let i = 0; i < keys.length; ++i) {
-      const callback = this._callbacks[keys[i]];
-      this._dispatchConnectionErrorResponse(callback.domain, callback.methodName, callback);
-    }
-    this._callbacks = {};
-  }
-
-  /**
-   * @param {string} domain
-   * @param {string} methodName
-   * @param {function(*)} callback
-   */
-  _dispatchConnectionErrorResponse(domain, methodName, callback) {
-    const error = {
-      message: 'Connection is closed, can\'t dispatch pending ' + methodName,
-      code: Protocol.InspectorBackend._ConnectionClosedErrorCode,
-      data: null
-    };
-    const messageObject = {error: error};
-    setTimeout(
-        Protocol.InspectorBackend._AgentPrototype.prototype.dispatchResponse.bind(
-            this._agent(domain), messageObject, methodName, callback),
-        0);
+    return !this._router;
   }
 
   markAsNodeJSForTest() {
     this._needsNodeJSPatching = true;
   }
-};
-
-Protocol.TargetBase.Events = {
-  MessageSent: Symbol('MessageSent'),
-  MessageReceived: Symbol('MessageReceived')
 };
 
 /**
@@ -526,13 +522,6 @@ Protocol.InspectorBackend._AgentPrototype = class {
     this._replyArgs = {};
     this._hasErrorData = {};
     this._domain = domain;
-  }
-
-  /**
-   * @param {!Protocol.TargetBase} target
-   */
-  setTarget(target) {
-    this._target = target;
   }
 
   /**
@@ -639,14 +628,24 @@ Protocol.InspectorBackend._AgentPrototype = class {
       return Promise.resolve(null);
 
     return new Promise(resolve => {
-      this._target._wrapCallbackAndSendMessageObject(this._domain, method, params, (error, result) => {
+      const callback = (error, result) => {
+        if (error && !Protocol.test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
+            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode)
+          console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+
+
         if (error) {
           resolve(null);
           return;
         }
         const args = this._replyArgs[method];
         resolve(result && args.length ? result[args[0]] : undefined);
-      });
+      };
+
+      if (!this._target._router)
+        Protocol.SessionRouter.dispatchConnectionError(callback);
+      else
+        this._target._router.sendMessage(this._target._sessionId, this._domain, method, params, callback);
     });
   }
 
@@ -657,30 +656,24 @@ Protocol.InspectorBackend._AgentPrototype = class {
    */
   _invoke(method, request) {
     return new Promise(fulfill => {
-      this._target._wrapCallbackAndSendMessageObject(this._domain, method, request, (error, result) => {
+      const callback = (error, result) => {
+        if (error && !Protocol.test.suppressRequestErrors && error.code !== Protocol.DevToolsStubErrorCode &&
+            error.code !== Protocol._GenericError && error.code !== Protocol._ConnectionClosedErrorCode)
+          console.error('Request ' + method + ' failed. ' + JSON.stringify(error));
+
+
         if (!result)
           result = {};
         if (error)
           result[Protocol.Error] = error.message;
         fulfill(result);
-      });
-    });
-  }
+      };
 
-  /**
-   * @param {!Object} messageObject
-   * @param {string} methodName
-   * @param {function(?Protocol.Error, ?Object)} callback
-   */
-  dispatchResponse(messageObject, methodName, callback) {
-    if (messageObject.error && messageObject.error.code !== Protocol.InspectorBackend._ConnectionClosedErrorCode &&
-        messageObject.error.code !== Protocol.InspectorBackend.DevToolsStubErrorCode &&
-        !Protocol.InspectorBackend.Options.suppressRequestErrors) {
-      const id =
-          Protocol.InspectorBackend.Options.dumpInspectorProtocolMessages ? ' with id = ' + messageObject.id : '';
-      console.error('Request ' + methodName + id + ' failed. ' + JSON.stringify(messageObject.error));
-    }
-    callback(messageObject.error, messageObject.result);
+      if (!this._target._router)
+        Protocol.SessionRouter.dispatchConnectionError(callback);
+      else
+        this._target._router.sendMessage(this._target._sessionId, this._domain, method, request, callback);
+    });
   }
 };
 
@@ -698,10 +691,6 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
    */
   registerEvent(eventName, params) {
     this._eventArgs[eventName] = params;
-  }
-
-  initialize() {
-    this._dispatchers = [];
   }
 
   /**
@@ -732,25 +721,10 @@ Protocol.InspectorBackend._DispatcherPrototype = class {
         params.push(messageObject.params[paramNames[i]]);
     }
 
-    const timingLabel = 'time-stats: ' + messageObject.method;
-    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-      Protocol.InspectorBackend._timeLogger.time(timingLabel);
-
     for (let index = 0; index < this._dispatchers.length; ++index) {
       const dispatcher = this._dispatchers[index];
       if (functionName in dispatcher)
         dispatcher[functionName].apply(dispatcher, params);
     }
-
-    if (Protocol.InspectorBackend.Options.dumpInspectorTimeStats)
-      Protocol.InspectorBackend._timeLogger.timeEnd(timingLabel);
   }
 };
-
-Protocol.InspectorBackend.Options = {
-  dumpInspectorTimeStats: false,
-  dumpInspectorProtocolMessages: false,
-  suppressRequestErrors: false
-};
-
-Protocol.InspectorBackend._timeLogger = console.context ? console.context('Protocol timing') : console;

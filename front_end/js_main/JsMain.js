@@ -11,17 +11,9 @@ JsMain.JsMain = class extends Common.Object {
    */
   run() {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConnectToNodeJSDirectly);
-    const target = SDK.targetManager.createTarget(
-        'main', Common.UIString('Main'), SDK.Target.Type.Node, this._createMainConnection.bind(this), null);
-    target.runtimeAgent().runIfWaitingForDebugger();
-    InspectorFrontendHost.connectionReady();
-  }
-
-  /**
-   * @param {!Protocol.InspectorBackend.Connection.Params} params
-   * @return {!Protocol.InspectorBackend.Connection}
-   */
-  _createMainConnection(params) {
-    return SDK.createMainConnection(params, () => Components.TargetDetachedDialog.webSocketConnectionLost());
+    SDK.initMainConnection(() => {
+      const target = SDK.targetManager.createTarget('main', ls`Main`, SDK.Target.Type.Node, null);
+      target.runtimeAgent().runIfWaitingForDebugger();
+    }, Components.TargetDetachedDialog.webSocketConnectionLost);
   }
 };

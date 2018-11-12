@@ -5,7 +5,7 @@
 Audits2.ProtocolService = class extends Common.Object {
   constructor() {
     super();
-    /** @type {?Protocol.InspectorBackend.Connection} */
+    /** @type {?Protocol.Connection} */
     this._rawConnection = null;
     /** @type {?Services.ServiceManager.Service} */
     this._backend = null;
@@ -19,7 +19,7 @@ Audits2.ProtocolService = class extends Common.Object {
    * @return {!Promise<undefined>}
    */
   attach() {
-    return InspectorMain.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
+    return SDK.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
       this._rawConnection = rawConnection;
     });
   }
@@ -53,7 +53,7 @@ Audits2.ProtocolService = class extends Common.Object {
   }
 
   /**
-   * @param {string} message
+   * @param {!Object|string} message
    */
   _dispatchProtocolMessage(message) {
     this._send('dispatchProtocolMessage', {message: message});

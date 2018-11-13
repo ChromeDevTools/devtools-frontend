@@ -817,14 +817,12 @@ PerfUI.FlameChart = class extends UI.VBox {
       const h = this._levelHeight(level);
       const padding = 4;
       const width = Math.ceil(UI.measureTextWidth(context, title)) + 2 * padding;
-      lastMarkerX = x + width - 1;
+      lastMarkerX = x + width + 1;
       lastMarkerLevel = level;
       this._markerPositions.set(entryIndex, {x, width});
       context.fillStyle = this._dataProvider.entryColor(entryIndex);
       context.fillRect(x, y, width, h - 1);
       context.fillStyle = 'white';
-      context.fillRect(x + 1, y + 1, width - 2, h - 3);
-      context.fillStyle = this._dataProvider.textColor(entryIndex);
       context.fillText(title, x + padding, y + h - this._textBaseline);
     }
     context.strokeStyle = 'rgba(0, 0, 0, 0.2)';

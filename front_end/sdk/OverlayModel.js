@@ -58,6 +58,13 @@ SDK.OverlayModel = class extends SDK.SDKModel {
         () => this._overlayAgent.setShowScrollBottleneckRects(this._showScrollBottleneckRectsSetting.get()));
     if (this._showScrollBottleneckRectsSetting.get())
       this._overlayAgent.setShowScrollBottleneckRects(true);
+
+    this._showHitTestBordersSetting = Common.moduleSetting('showHitTestBorders');
+    this._showHitTestBordersSetting.addChangeListener(
+        () => this._overlayAgent.setShowHitTestBorders(this._showHitTestBordersSetting.get()));
+    if (this._showHitTestBordersSetting.get())
+      this._overlayAgent.setShowHitTestBorders(true);
+
     if (target.suspended())
       this._overlayAgent.setSuspended(true);
   }

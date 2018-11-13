@@ -49,6 +49,9 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
         Common.UIString(
             'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.'),
         Common.moduleSetting('showScrollBottleneckRects'));
+    this._appendCheckbox(
+        Common.UIString('Hit-test borders'), Common.UIString('Shows borders around hit-test regions'),
+        Common.moduleSetting('showHitTestBorders'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');
 
     const mediaSetting = Common.moduleSetting('emulatedCSSMedia');

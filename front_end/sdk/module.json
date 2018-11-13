@@ -189,6 +189,24 @@
         {
             "type": "setting",
             "category": "Rendering",
+            "settingName": "showHitTestBorders",
+            "settingType": "boolean",
+            "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show hit-test borders"
+                },
+                {
+                    "value": false,
+                    "title": "Hide hit-test borders"
+                }
+            ],
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Rendering",
             "settingName": "emulatedCSSMedia",
             "settingType": "enum",
             "storageType": "session",

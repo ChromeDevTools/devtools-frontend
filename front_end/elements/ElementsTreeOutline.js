@@ -1229,7 +1229,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
       visibleChildren.push(beforePseudoElement);
 
     if (node.childNodeCount()) {
-      let children = node.children();
+      // Children may be stale when the outline is not wired to receive DOMModel updates.
+      let children = node.children() || [];
       if (!this._showHTMLCommentsSetting.get())
         children = children.filter(n => n.nodeType() !== Node.COMMENT_NODE);
       visibleChildren = visibleChildren.concat(children);

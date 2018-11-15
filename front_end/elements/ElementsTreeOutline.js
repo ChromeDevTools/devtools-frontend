@@ -550,7 +550,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
     const listItem = event.target.enclosingNodeOrSelfWithNodeName('li');
     if (!listItem || !listItem.treeElement || !listItem.treeElement.selected)
       return;
-    this._highlightTreeElement(/** @type {!UI.TreeElement} */ (listItem.treeElement), true /* showInfo */);
+    if (event.relatedTarget)
+      this._highlightTreeElement(/** @type {!UI.TreeElement} */ (listItem.treeElement), true /* showInfo */);
   }
 
   /**

@@ -6,7 +6,8 @@
             "id": "audits2",
             "title": "Audits",
             "order": 90,
-            "className": "Audits2.Audits2Panel"
+            "className": "Audits2.Audits2Panel",
+            "tags": "lighthouse, pwa"
         }
     ],
     "dependencies": [

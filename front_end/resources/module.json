@@ -6,7 +6,8 @@
             "id": "resources",
             "title": "Application",
             "order": 70,
-            "className": "Resources.ResourcesPanel"
+            "className": "Resources.ResourcesPanel",
+            "tags": "pwa"
         },
         {
             "type": "@Common.Revealer",

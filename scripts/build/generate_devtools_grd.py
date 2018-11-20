@@ -54,7 +54,7 @@ kGrdTemplate = '''<?xml version="1.0" encoding="UTF-8"?>
   </outputs>
   <release seq="1">
     <includes>
-      <include name="COMPRESSED_PROTOCOL_JSON" file="${compressed_protocol_file}" use_base_dir="false" type="BINDATA" />
+      <include name="COMPRESSED_PROTOCOL_JSON" file="${compressed_protocol_file}" use_base_dir="false" type="BINDATA" skip_in_resource_map = "true"/>
     </includes>
   </release>
 </grit>

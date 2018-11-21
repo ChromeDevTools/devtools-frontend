@@ -68,16 +68,6 @@ Console.ConsoleViewMessage = class {
   }
 
   /**
-   * @return {!Promise<!Element>}
-   */
-  async completeElementForTest() {
-    const element = this.toMessageElement();
-    if (this._completeElementForTestPromise)
-      await this._completeElementForTestPromise;
-    return element;
-  }
-
-  /**
    * @override
    */
   wasShown() {
@@ -250,26 +240,9 @@ Console.ConsoleViewMessage = class {
         }
       }
     } else {
-      let rendered = false;
-      this._completeElementForTestPromise = null;
-      for (const extension of self.runtime.extensions(UI.Renderer, this._message)) {
-        if (extension.descriptor()['source'] === this._message.source) {
-          messageElement = createElement('span');
-          let callback;
-          this._completeElementForTestPromise = new Promise(fulfill => callback = fulfill);
-          extension.instance().then(renderer => {
-            renderer.render(this._message)
-                .then(result => {
-                  const renderedNode = result ? result.node : null;
-                  messageElement.appendChild(renderedNode || this._format([messageText]));
-                })
-                .then(callback);
-          });
-          rendered = true;
-          break;
-        }
-      }
-      if (!rendered) {
+      if (this._message.source === SDK.ConsoleMessage.MessageSource.Network) {
+        messageElement = this._formatAsNetworkRequest() || this._format([messageText]);
+      } else {
         const messageInParameters =
             this._message.parameters && messageText === /** @type {string} */ (this._message.parameters[0]);
         if (this._message.source === SDK.ConsoleMessage.MessageSource.Violation)
@@ -295,6 +268,33 @@ Console.ConsoleViewMessage = class {
       formattedMessage.appendChild(badgeElement);
     formattedMessage.appendChild(messageElement);
     return formattedMessage;
+  }
+
+  /**
+   * @return {?Element}
+   */
+  _formatAsNetworkRequest() {
+    const request = SDK.NetworkLog.requestForConsoleMessage(this._message);
+    if (!request)
+      return null;
+    const messageElement = createElement('span');
+    if (this._message.level === SDK.ConsoleMessage.MessageLevel.Error) {
+      messageElement.createTextChild(request.requestMethod + ' ');
+      messageElement.appendChild(Components.Linkifier.linkifyRevealable(request, request.url(), request.url()));
+      if (request.failed)
+        messageElement.createTextChildren(' ', request.localizedFailDescription);
+      if (request.statusCode !== 0)
+        messageElement.createTextChildren(' ', String(request.statusCode));
+      if (request.statusText)
+        messageElement.createTextChildren(' (', request.statusText, ')');
+    } else {
+      const fragment = this._linkifyWithCustomLinkifier(
+          this._message.messageText,
+          title => Components.Linkifier.linkifyRevealable(
+              /** @type {!SDK.NetworkRequest} */ (request), title, request.url()));
+      messageElement.appendChild(fragment);
+    }
+    return messageElement;
   }
 
   /**
@@ -1470,12 +1470,14 @@ Console.ConsoleViewMessage = class {
    * @param {function(string,string,number=,number=):!Node} linkifier
    * @return {!DocumentFragment}
    */
-  static linkifyWithCustomLinkifier(string, linkifier) {
+  _linkifyWithCustomLinkifier(string, linkifier) {
     if (string.length > Console.ConsoleViewMessage._MaxTokenizableStringLength)
       return UI.createExpandableText(string, Console.ConsoleViewMessage._LongStringVisibleLength);
     const container = createDocumentFragment();
-    const tokens = this._tokenizeMessageText(string);
+    const tokens = Console.ConsoleViewMessage._tokenizeMessageText(string);
     for (const token of tokens) {
+      if (!token.text)
+        continue;
       switch (token.type) {
         case 'url': {
           const realURL = (token.text.startsWith('www.') ? 'http://' + token.text : token.text);
@@ -1501,7 +1503,7 @@ Console.ConsoleViewMessage = class {
    * @return {!DocumentFragment}
    */
   _linkifyStringAsFragment(string) {
-    return Console.ConsoleViewMessage.linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
+    return this._linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const linkElement = Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
       linkElement.tabIndex = -1;
       this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});

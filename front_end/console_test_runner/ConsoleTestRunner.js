@@ -20,14 +20,6 @@ ConsoleTestRunner.dumpConsoleMessages = function(printOriginatingCommand, dumpCl
       ConsoleTestRunner.dumpConsoleMessagesIntoArray(printOriginatingCommand, dumpClassNames, formatter));
 };
 
-ConsoleTestRunner.renderCompleteMessages = async function() {
-  const consoleView = Console.ConsoleView.instance();
-  if (consoleView._needsFullUpdate)
-    consoleView._updateMessageList();
-  const viewMessages = consoleView._visibleViewMessages;
-  await Promise.all(viewMessages.map(uiMessage => uiMessage.completeElementForTest()));
-};
-
 /**
  * @param {boolean=} printOriginatingCommand
  * @param {boolean=} dumpClassNames
@@ -536,7 +528,7 @@ ConsoleTestRunner.waitForConsoleMessages = function(expectedCount, callback) {
  */
 ConsoleTestRunner.waitForConsoleMessagesPromise = async function(expectedCount) {
   await new Promise(fulfill => ConsoleTestRunner.waitForConsoleMessages(expectedCount, fulfill));
-  return ConsoleTestRunner.renderCompleteMessages();
+  return ConsoleTestRunner.waitForPendingViewportUpdates();
 };
 
 /**

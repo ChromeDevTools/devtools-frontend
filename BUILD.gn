@@ -87,8 +87,6 @@ all_devtools_files = [
   "front_end/bindings_test_runner/module.json",
   "front_end/bindings_test_runner/PersistenceTestRunner.js",
   "front_end/bindings_test_runner/OverridesTestRunner.js",
-  "front_end/browser_console/BrowserConsole.js",
-  "front_end/browser_console/module.json",
   "front_end/browser_debugger/DOMBreakpointsSidebarPane.js",
   "front_end/browser_debugger/EventListenerBreakpointsSidebarPane.js",
   "front_end/browser_debugger/ObjectEventListenersSidebarPane.js",
@@ -1028,7 +1026,6 @@ generated_applications = [
 generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/animation/animation_module.js",
   "$resources_out_dir/audits2/audits2_module.js",
-  "$resources_out_dir/browser_console/browser_console_module.js",
   "$resources_out_dir/browser_debugger/browser_debugger_module.js",
   "$resources_out_dir/changes/changes_module.js",
   "$resources_out_dir/protocol_monitor/protocol_monitor_module.js",

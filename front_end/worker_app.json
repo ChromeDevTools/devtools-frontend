@@ -3,7 +3,6 @@
     { "name": "mobile_throttling", "type": "autostart"  },
     { "name": "worker_main", "type": "autostart" },
 
-    { "name": "browser_console" },
     { "name": "browser_debugger" },
     { "name": "cookie_table" },
     { "name": "elements" },

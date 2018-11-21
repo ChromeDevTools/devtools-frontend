@@ -662,6 +662,8 @@ all_devtools_files = [
   "front_end/source_frame/xmlView.css",
   "front_end/source_frame/XMLView.js",
   "front_end/sources/AddSourceMapURLDialog.js",
+  "front_end/sources/breakpointEditDialog.css",
+  "front_end/sources/BreakpointEditDialog.js",
   "front_end/sources/callStackSidebarPane.css",
   "front_end/sources/CallStackSidebarPane.js",
   "front_end/sources/CSSPlugin.js",

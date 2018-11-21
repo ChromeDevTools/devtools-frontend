@@ -59,35 +59,6 @@
     background-color: #444;
 }
 
-.source-frame-breakpoint-condition {
-    z-index: 30;
-    padding: 4px;
-    background-color: #e6e6e6;
-    border-radius: 7px;
-    border: 2px solid #bababa;
-    width: 90%;
-    pointer-events: auto;
-}
-
-.source-frame-breakpoint-message {
-    background-color: transparent;
-    font-weight: normal;
-    text-align: left;
-    text-shadow: none;
-    color: rgb(85, 85, 85);
-    cursor: default;
-    margin: 0 0 2px 0;
-}
-
-#source-frame-breakpoint-condition {
-    margin: 0;
-    border: 1px inset rgb(190, 190, 190) !important;
-    width: 100%;
-    box-shadow: none !important;
-    outline: none !important;
-    background: white;
-}
-
 @-webkit-keyframes source-frame-value-update-highlight-animation {
     from {
         background-color: inherit;

@@ -834,6 +834,7 @@
     ],
     "scripts": [
         "AddSourceMapURLDialog.js",
+        "BreakpointEditDialog.js",
         "CallStackSidebarPane.js",
         "DebuggerPausedMessage.js",
         "SimpleHistoryManager.js",
@@ -867,6 +868,7 @@
         "ScriptOriginPlugin.js"
     ],
     "resources": [
+        "breakpointEditDialog.css",
         "callStackSidebarPane.css",
         "debuggerPausedMessage.css",
         "javaScriptBreakpointsSidebarPane.css",

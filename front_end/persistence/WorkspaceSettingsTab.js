@@ -78,6 +78,9 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    * @param {!Persistence.PlatformFileSystem} fileSystem
    */
   _addItem(fileSystem) {
+    // Support managing only instances of IsolatedFileSystem.
+    if (!(fileSystem instanceof Persistence.IsolatedFileSystem))
+      return;
     const networkPersistenceProject = Persistence.networkPersistenceManager.project();
     if (networkPersistenceProject &&
         Persistence.isolatedFileSystemManager.fileSystem(networkPersistenceProject.fileSystemPath()) === fileSystem)

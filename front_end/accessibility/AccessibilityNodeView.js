@@ -507,7 +507,9 @@ Accessibility.AXRelatedNodeElement = class {
     if (this._deferredNode) {
       valueElement = createElement('span');
       element.appendChild(valueElement);
-      Common.Linkifier.linkify(this._deferredNode).then(linkfied => valueElement.appendChild(linkfied));
+      this._deferredNode.resolvePromise().then(node => {
+        Common.Linkifier.linkify(node).then(linkfied => valueElement.appendChild(linkfied));
+      });
     } else if (this._idref) {
       element.classList.add('invalid');
       valueElement = Accessibility.AXNodePropertyTreeElement.createExclamationMark(ls`No node with this ID.`);

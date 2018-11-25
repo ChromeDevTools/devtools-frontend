@@ -66,8 +66,6 @@ var Runtime = class {  // eslint-disable-line
 
     for (let i = 0; i < descriptors.length; ++i)
       this._registerModule(descriptors[i]);
-
-    Runtime._runtimeReadyPromiseCallback();
   }
 
   /**
@@ -237,8 +235,8 @@ var Runtime = class {  // eslint-disable-line
   /**
    * @return {!Promise}
    */
-  static async runtimeReady() {
-    return Runtime._runtimeReadyPromise;
+  static async appStarted() {
+    return Runtime._appStartedPromise;
   }
 
   /**
@@ -289,7 +287,8 @@ var Runtime = class {  // eslint-disable-line
     }
     self.runtime = new Runtime(moduleDescriptors);
     if (coreModuleNames)
-      return /** @type {!Promise<undefined>} */ (self.runtime._loadAutoStartModules(coreModuleNames));
+      await self.runtime._loadAutoStartModules(coreModuleNames);
+    Runtime._appStartedPromiseCallback();
   }
 
   /**
@@ -1069,8 +1068,8 @@ Runtime.Experiment = class {
 Runtime.experiments = new Runtime.ExperimentsSupport();
 
 /** @type {Function} */
-Runtime._runtimeReadyPromiseCallback;
-Runtime._runtimeReadyPromise = new Promise(fulfil => Runtime._runtimeReadyPromiseCallback = fulfil);
+Runtime._appStartedPromiseCallback;
+Runtime._appStartedPromise = new Promise(fulfil => Runtime._appStartedPromiseCallback = fulfil);
 /**
  * @type {?string}
  */

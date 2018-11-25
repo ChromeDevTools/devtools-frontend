@@ -60,7 +60,7 @@ Main.Main = class {
 
   async _loaded() {
     console.timeStamp('Main._loaded');
-    await Runtime.runtimeReady();
+    await Runtime.appStarted();
     Runtime.setPlatform(Host.platform());
     InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
   }

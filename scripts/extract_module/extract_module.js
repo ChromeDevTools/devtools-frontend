@@ -385,9 +385,9 @@ function mapIdentifiers(identifiersByFile, cssFilesMapping) {
 function renameIdentifiers(identifierMap) {
   walkSync('front_end', write, true);
 
-  walkSync('../../LayoutTests/http/tests/devtools', write, false);
-  walkSync('../../LayoutTests/http/tests/inspector-protocol', write, false);
-  walkSync('../../LayoutTests/inspector-protocol', write, false);
+  walkSync('../../web_tests/http/tests/devtools', write, false);
+  walkSync('../../web_tests/http/tests/inspector-protocol', write, false);
+  walkSync('../../web_tests/inspector-protocol', write, false);
 
   function walkSync(currentDirPath, process, json) {
     fs.readdirSync(currentDirPath).forEach(function(name) {

@@ -13,7 +13,7 @@
 self.testRunner;
 
 /**
- * Only tests in /LayoutTests/http/tests/devtools/startup/ need to call
+ * Only tests in web_tests/http/tests/devtools/startup/ need to call
  * this method because these tests need certain activities to be exercised
  * in the inspected page prior to the DevTools session.
  * @param {string} path

@@ -14,7 +14,7 @@ construction. This is needed to support in web workers.
 
 ## Testing
 DevTools wrap CodeMirror via `CodeMirrorTextEditor.js` and `cmdevtools.css` files.
-Although there are a couple of automated tests (LayoutTests/inspector/editor/) to verify overall sanity of the setup, a manual testing is mandatory before
+Although there are a couple of automated tests (web_tests/inspector/editor/) to verify overall sanity of the setup, a manual testing is mandatory before
 landing a roll. Here is a rough testing scenario outline:
 1. Create a new snippet and type in a small function with a few nested for-loops. (The author suggests a bubble-sort). Make sure that:
    * Words `function`, `for`, `var` are highlighted

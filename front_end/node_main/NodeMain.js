@@ -36,9 +36,10 @@ NodeMain.NodeChildTargetManager = class extends SDK.SDKModel {
     parentTarget.registerTargetDispatcher(this);
     this._targetAgent.setDiscoverTargets(true);
 
-    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
     InspectorFrontendHost.events.addEventListener(
         InspectorFrontendHostAPI.Events.DevicesDiscoveryConfigChanged, this._devicesDiscoveryConfigChanged, this);
+    InspectorFrontendHost.setDevicesUpdatesEnabled(false);
+    InspectorFrontendHost.setDevicesUpdatesEnabled(true);
   }
 
   /**

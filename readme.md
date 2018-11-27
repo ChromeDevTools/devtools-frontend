@@ -91,7 +91,7 @@ npm test -- -f --child-processes=16
 npm test -- --time-out-ms=6000000 <test_path>
 ```
 
-> **Tip**: [Learn about the test harness flags](https://chromium.googlesource.com/chromium/src/+/master/docs/testing/layout_tests.md#Test-Harness-Options)
+> **Tip**: [Learn about the test harness flags](https://chromium.googlesource.com/chromium/src/+/master/docs/testing/web_tests.md#Test-Harness-Options)
 
 #### `--fetch-content-shell`
 ```

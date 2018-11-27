@@ -137,9 +137,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
-    const detailsRenderer = new Audits2.DetailsRenderer(dom);
-    const categoryRenderer = new CategoryRenderer(dom, detailsRenderer);
-    const renderer = new Audits2.ReportRenderer(dom, categoryRenderer);
+    const renderer = new Audits2.ReportRenderer(dom);
 
     const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
@@ -149,6 +147,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
     Audits2.ReportRenderer.addViewTraceButton(el, artifacts);
+    Audits2.ReportRenderer.linkifyNodeDetails(el);
 
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }

@@ -25,6 +25,38 @@ Audits2.ReportRenderer = class extends ReportRenderer {
       Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }
   }
+
+  /**
+   * @param {!Element} el
+   */
+  static async linkifyNodeDetails(el) {
+    const mainTarget = SDK.targetManager.mainTarget();
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
+    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
+
+    const domModel = mainTarget.model(SDK.DOMModel);
+
+    for (const origElement of el.getElementsByClassName('lh-node')) {
+      /** @type {!DetailsRenderer.NodeDetailsJSON} */
+      const detailsItem = origElement.dataset;
+      if (!detailsItem.path)
+        return;
+
+      const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
+
+      if (!nodeId)
+        return;
+      const node = domModel.nodeForId(nodeId);
+      if (!node)
+        return;
+
+      const element =
+          await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));
+      origElement.title = '';
+      origElement.textContent = '';
+      origElement.appendChild(element);
+    }
+  }
 };
 
 class ReportUIFeatures {
@@ -34,57 +66,3 @@ class ReportUIFeatures {
   initFeatures(report) {
   }
 }
-
-
-Audits2.DetailsRenderer = class extends DetailsRenderer {
-  /**
-   * @param {!DOM} dom
-   */
-  constructor(dom) {
-    super(dom);
-    this._onLoadPromise = null;
-  }
-
-  /**
-   * @override
-   * @param {!DetailsRenderer.NodeDetailsJSON} item
-   * @return {!Element}
-   */
-  renderNode(item) {
-    const element = super.renderNode(item);
-    this._replaceWithDeferredNodeBlock(element, item);
-    return element;
-  }
-
-  /**
-   * @param {!Element} origElement
-   * @param {!DetailsRenderer.NodeDetailsJSON} detailsItem
-   */
-  async _replaceWithDeferredNodeBlock(origElement, detailsItem) {
-    const mainTarget = SDK.targetManager.mainTarget();
-    if (!this._onLoadPromise) {
-      const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
-      this._onLoadPromise = resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
-    }
-
-    await this._onLoadPromise;
-
-    const domModel = mainTarget.model(SDK.DOMModel);
-    if (!detailsItem.path)
-      return;
-
-    const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
-
-    if (!nodeId)
-      return;
-    const node = domModel.nodeForId(nodeId);
-    if (!node)
-      return;
-
-    const element =
-        await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));
-    origElement.title = '';
-    origElement.textContent = '';
-    origElement.appendChild(element);
-  }
-};

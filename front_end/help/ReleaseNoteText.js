@@ -13,6 +13,36 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 14,
+    header: 'Highlights from the Chrome 72 update',
+    highlights: [
+      {
+        title: 'Visualize performance metrics',
+        subtitle:
+            'Performance metrics like DOMContentLoaded and First Meaningful Paint are now marked in the Timings section of the Performance panel.',
+        link: 'https://developers.google.com/web/updates/2018/11/devtools#metrics',
+      },
+      {
+        title: 'Highlight text nodes',
+        subtitle: 'Hover over a text node in the DOM Tree to highlight it in the viewport.',
+        link: 'https://developers.google.com/web/updates/2018/11/devtools#highlight',
+      },
+      {
+        title: 'Copy JS path',
+        subtitle:
+            'Right-click a DOM node and select "Copy" > "Copy JS path" to quickly get a JavaScript expression that points to that node.',
+        link: 'https://developers.google.com/web/updates/2018/11/devtools#copy',
+      },
+      {
+        title: 'Audits panel updates',
+        subtitle:
+            'A new audit that lists detected JS libraries and new keywords for accessing the Audits panel from the Command Menu.',
+        link: 'https://developers.google.com/web/updates/2018/11/devtools#audits',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2018/11/devtools',
+  },
+  {
     version: 13,
     header: 'Highlights from the Chrome 71 update',
     highlights: [

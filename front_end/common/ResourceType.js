@@ -79,6 +79,19 @@ Common.ResourceType = class {
   }
 
   /**
+   * @param {string} name
+   * @return {?Common.ResourceType}
+   */
+  static fromName(name) {
+    for (const resourceTypeId in Common.resourceTypes) {
+      const resourceType = Common.resourceTypes[resourceTypeId];
+      if (resourceType.name() === name)
+        return resourceType;
+    }
+    return null;
+  }
+
+  /**
    * @param {string} url
    * @return {string|undefined}
    */

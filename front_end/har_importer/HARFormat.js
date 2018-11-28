@@ -163,6 +163,7 @@ HARImporter.HAREntry = class extends HARImporter.HARBase {
     if (data['_initiator'])
       this._initiator = new HARImporter.HARInitiator(data['_initiator']);
     this._priority = HARImporter.HARBase._optionalString(data['_priority']);
+    this._resourceType = HARImporter.HARBase._optionalString(data['_resourceType']);
   }
 };
 

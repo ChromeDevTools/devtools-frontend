@@ -169,7 +169,8 @@ SDK.HARLog.Entry = class {
       // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
       serverIPAddress: ipAddress.replace(/\[\]/g, ''),
       _initiator: exportedInitiator,
-      _priority: harEntry._request.priority()
+      _priority: harEntry._request.priority(),
+      _resourceType: harEntry._request.resourceType().name()
     };
 
     // Chrome specific.

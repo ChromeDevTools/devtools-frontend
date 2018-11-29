@@ -36,6 +36,11 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
 
     const quota = this._reportView.appendSection(Common.UIString('Usage'));
     this._quotaRow = quota.appendRow();
+    const learnMoreRow = quota.appendRow();
+    const learnMore = UI.XLink.create(
+        'https://developers.google.com/web/tools/chrome-devtools/progressive-web-apps#opaque-responses',
+        ls`Learn more`);
+    learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
     this._pieChart = new PerfUI.PieChart(110, Number.bytesToString, true);
     this._pieChartLegend = createElement('div');

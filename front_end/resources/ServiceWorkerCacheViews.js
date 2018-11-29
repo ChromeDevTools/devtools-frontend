@@ -358,19 +358,12 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     if (columnId === 'path') {
       value = this._path;
     } else if (columnId === 'responseType') {
-      if (this._responseType === 'opaqueResponse') {
-        const opaque = UI.XLink.create(
-            'https://developers.google.com/web/tools/chrome-devtools/progressive-web-apps#opaque-responses',
-            ls`opaque`);
-        opaque.title = ls`As a security consideration, an opaque response potentially takes ` +
-            ls`up far more cache space than its content length`;
-        cell.appendChild(opaque);
-        return cell;
-      } else if (this._responseType === 'opaqueRedirect') {
+      if (this._responseType === 'opaqueResponse')
+        value = 'opaque';
+      else if (this._responseType === 'opaqueRedirect')
         value = 'opaqueredirect';
-      } else {
+      else
         value = this._responseType;
-      }
     } else if (columnId === 'contentType') {
       value = this._request.mimeType;
     } else if (columnId === 'contentLength') {

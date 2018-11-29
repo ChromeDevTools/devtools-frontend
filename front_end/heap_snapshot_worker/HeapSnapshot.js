@@ -1282,18 +1282,6 @@ HeapSnapshotWorker.HeapSnapshot = class {
   }
 
   /**
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode)} action
-   * @param {boolean=} userRootsOnly
-   */
-  forEachRoot(action, userRootsOnly) {
-    for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next()) {
-      const node = iter.edge.node();
-      if (!userRootsOnly || this.isUserRoot(node))
-        action(node);
-    }
-  }
-
-  /**
    * @param {function(!HeapSnapshotWorker.HeapSnapshotNode,!HeapSnapshotWorker.HeapSnapshotEdge):boolean=} filter
    */
   calculateDistances(filter) {
@@ -1306,24 +1294,20 @@ HeapSnapshotWorker.HeapSnapshot = class {
     const nodesToVisit = new Uint32Array(this.nodeCount);
     let nodesToVisitLength = 0;
 
-    /**
-     * @param {number} distance
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
-     */
-    function enqueueNode(distance, node) {
-      const ordinal = node.ordinal();
-      if (distances[ordinal] !== noDistance)
-        return;
-      distances[ordinal] = distance;
-      nodesToVisit[nodesToVisitLength++] = node.nodeIndex;
+    // BFS for user root objects.
+    for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next()) {
+      const node = iter.edge.node();
+      if (this.isUserRoot(node)) {
+        distances[node.ordinal()] = 1;
+        nodesToVisit[nodesToVisitLength++] = node.nodeIndex;
+      }
     }
-
-    this.forEachRoot(enqueueNode.bind(null, 1), true);
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
 
-    // bfs for the rest of objects
-    nodesToVisitLength = 0;
-    this.forEachRoot(enqueueNode.bind(null, HeapSnapshotModel.baseSystemDistance), false);
+    // BFS for objects not reached from user roots.
+    distances[this.rootNode().ordinal()] = HeapSnapshotModel.baseSystemDistance;
+    nodesToVisit[0] = this.rootNode().nodeIndex;
+    nodesToVisitLength = 1;
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
   }
 
@@ -2579,60 +2563,6 @@ HeapSnapshotWorker.JSHeapSnapshot = class extends HeapSnapshotWorker.HeapSnapsho
    */
   isUserRoot(node) {
     return node.isUserRoot() || node.isDocumentDOMTreesRoot();
-  }
-
-  /**
-   * @override
-   * @param {function(!HeapSnapshotWorker.HeapSnapshotNode)} action
-   * @param {boolean=} userRootsOnly
-   */
-  forEachRoot(action, userRootsOnly) {
-    /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
-     * @param {string} name
-     * @return {?HeapSnapshotWorker.HeapSnapshotNode}
-     */
-    function getChildNodeByName(node, name) {
-      for (let iter = node.edges(); iter.hasNext(); iter.next()) {
-        const child = iter.edge.node();
-        if (child.name() === name)
-          return child;
-      }
-      return null;
-    }
-
-    const visitedNodes = {};
-    /**
-     * @param {!HeapSnapshotWorker.HeapSnapshotNode} node
-     */
-    function doAction(node) {
-      const ordinal = node.ordinal();
-      if (!visitedNodes[ordinal]) {
-        action(node);
-        visitedNodes[ordinal] = true;
-      }
-    }
-
-    const gcRoots = getChildNodeByName(this.rootNode(), '(GC roots)');
-    if (!gcRoots)
-      return;
-
-    if (userRootsOnly) {
-      for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next()) {
-        const node = iter.edge.node();
-        if (this.isUserRoot(node))
-          doAction(node);
-      }
-    } else {
-      for (let iter = gcRoots.edges(); iter.hasNext(); iter.next()) {
-        const subRoot = iter.edge.node();
-        for (let iter2 = subRoot.edges(); iter2.hasNext(); iter2.next())
-          doAction(iter2.edge.node());
-        doAction(subRoot);
-      }
-      for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next())
-        doAction(iter.edge.node());
-    }
   }
 
   /**

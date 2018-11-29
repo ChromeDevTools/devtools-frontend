@@ -803,9 +803,9 @@ Timeline.TimelineUIUtils = class {
     if (event.name === recordTypes.JSFrame && eventData['deoptReason'])
       contentHelper.appendWarningRow(event, TimelineModel.TimelineModel.WarningType.V8Deopt);
 
-    if (detailed) {
-      contentHelper.appendTextRow(Common.UIString('Total Time'), Number.millisToString(event.duration || 0, true));
-      contentHelper.appendTextRow(Common.UIString('Self Time'), Number.millisToString(event.selfTime, true));
+    if (detailed && !Number.isNaN(event.duration + 0)) {
+      contentHelper.appendTextRow(ls`Total Time`, Number.millisToString(event.duration, true));
+      contentHelper.appendTextRow(ls`Self Time`, Number.millisToString(event.selfTime, true));
     }
 
     if (model.isGenericTrace()) {
@@ -824,26 +824,26 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.MajorGC:
       case recordTypes.MinorGC:
         const delta = event.args['usedHeapSizeBefore'] - event.args['usedHeapSizeAfter'];
-        contentHelper.appendTextRow(Common.UIString('Collected'), Number.bytesToString(delta));
+        contentHelper.appendTextRow(ls`Collected`, Number.bytesToString(delta));
         break;
       case recordTypes.JSFrame:
       case recordTypes.FunctionCall:
         const detailsNode =
             Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode)
-          contentHelper.appendElementRow(Common.UIString('Function'), detailsNode);
+          contentHelper.appendElementRow(ls`Function`, detailsNode);
         break;
       case recordTypes.TimerFire:
       case recordTypes.TimerInstall:
       case recordTypes.TimerRemove:
-        contentHelper.appendTextRow(Common.UIString('Timer ID'), eventData['timerId']);
+        contentHelper.appendTextRow(ls`Timer ID`, eventData['timerId']);
         if (event.name === recordTypes.TimerInstall) {
-          contentHelper.appendTextRow(Common.UIString('Timeout'), Number.millisToString(eventData['timeout']));
-          contentHelper.appendTextRow(Common.UIString('Repeats'), !eventData['singleShot']);
+          contentHelper.appendTextRow(ls`Timeout`, Number.millisToString(eventData['timeout']));
+          contentHelper.appendTextRow(ls`Repeats`, !eventData['singleShot']);
         }
         break;
       case recordTypes.FireAnimationFrame:
-        contentHelper.appendTextRow(Common.UIString('Callback ID'), eventData['id']);
+        contentHelper.appendTextRow(ls`Callback ID`, eventData['id']);
         break;
       case recordTypes.ResourceSendRequest:
       case recordTypes.ResourceReceiveResponse:
@@ -851,101 +851,87 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.ResourceFinish:
         url = timelineData.url;
         if (url)
-          contentHelper.appendElementRow(Common.UIString('Resource'), Components.Linkifier.linkifyURL(url));
+          contentHelper.appendElementRow(ls`Resource`, Components.Linkifier.linkifyURL(url));
         if (eventData['requestMethod'])
-          contentHelper.appendTextRow(Common.UIString('Request Method'), eventData['requestMethod']);
+          contentHelper.appendTextRow(ls`Request Method`, eventData['requestMethod']);
         if (typeof eventData['statusCode'] === 'number')
-          contentHelper.appendTextRow(Common.UIString('Status Code'), eventData['statusCode']);
+          contentHelper.appendTextRow(ls`Status Code`, eventData['statusCode']);
         if (eventData['mimeType'])
-          contentHelper.appendTextRow(Common.UIString('MIME Type'), eventData['mimeType']);
+          contentHelper.appendTextRow(ls`MIME Type`, eventData['mimeType']);
         if ('priority' in eventData) {
           const priority = PerfUI.uiLabelForNetworkPriority(eventData['priority']);
-          contentHelper.appendTextRow(Common.UIString('Priority'), priority);
+          contentHelper.appendTextRow(ls`Priority`, priority);
         }
-        if (eventData['encodedDataLength']) {
-          contentHelper.appendTextRow(
-              Common.UIString('Encoded Data'), Common.UIString('%d Bytes', eventData['encodedDataLength']));
-        }
-        if (eventData['decodedBodyLength']) {
-          contentHelper.appendTextRow(
-              Common.UIString('Decoded Body'), Common.UIString('%d Bytes', eventData['decodedBodyLength']));
-        }
+        if (eventData['encodedDataLength'])
+          contentHelper.appendTextRow(ls`Encoded Data`, ls`${eventData['encodedDataLength']} Bytes`);
+        if (eventData['decodedBodyLength'])
+          contentHelper.appendTextRow(ls`Decoded Body`, ls`${eventData['decodedBodyLength']} Bytes`);
         break;
       case recordTypes.CompileModule:
-        contentHelper.appendLocationRow(Common.UIString('Module'), event.args['fileName'], 0);
+        contentHelper.appendLocationRow(ls`Module`, event.args['fileName'], 0);
         break;
       case recordTypes.CompileScript:
         url = eventData && eventData['url'];
-        if (url) {
-          contentHelper.appendLocationRow(
-              Common.UIString('Script'), url, eventData['lineNumber'], eventData['columnNumber']);
-        }
-        contentHelper.appendTextRow(Common.UIString('Streamed'), Common.UIString('%s', eventData['streamed']));
+        if (url)
+          contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
+        contentHelper.appendTextRow(ls`Streamed`, eventData['streamed']);
         const cacheProduceOptions = eventData && eventData['cacheProduceOptions'];
         if (cacheProduceOptions) {
-          contentHelper.appendTextRow(
-              Common.UIString('Cache Produce Options'), Common.UIString('%s', cacheProduceOptions));
-          contentHelper.appendTextRow(
-              Common.UIString('Produced Cache Size'), Common.UIString('%d', eventData['producedCacheSize']));
+          contentHelper.appendTextRow(ls`Cache Produce Options`, cacheProduceOptions);
+          contentHelper.appendTextRow(ls`Produced Cache Size`, eventData['producedCacheSize']);
         }
         const cacheConsumeOptions = eventData && eventData['cacheConsumeOptions'];
         if (cacheConsumeOptions) {
-          contentHelper.appendTextRow(
-              Common.UIString('Cache Consume Options'), Common.UIString('%s', cacheConsumeOptions));
-          contentHelper.appendTextRow(
-              Common.UIString('Consumed Cache Size'), Common.UIString('%d', eventData['consumedCacheSize']));
-          contentHelper.appendTextRow(
-              Common.UIString('Cache Rejected'), Common.UIString('%s', eventData['cacheRejected']));
+          contentHelper.appendTextRow(ls`Cache Consume Options`, cacheConsumeOptions);
+          contentHelper.appendTextRow(ls`Consumed Cache Size`, eventData['consumedCacheSize']);
+          contentHelper.appendTextRow(ls`Cache Rejected`, eventData['cacheRejected']);
         }
         break;
       case recordTypes.EvaluateScript:
         url = eventData && eventData['url'];
-        if (url) {
-          contentHelper.appendLocationRow(
-              Common.UIString('Script'), url, eventData['lineNumber'], eventData['columnNumber']);
-        }
+        if (url)
+          contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
         break;
       case recordTypes.Paint:
         const clip = eventData['clip'];
-        contentHelper.appendTextRow(Common.UIString('Location'), Common.UIString('(%d, %d)', clip[0], clip[1]));
+        contentHelper.appendTextRow(ls`Location`, ls`(${clip[0]}, ${clip[1]})`);
         const clipWidth = Timeline.TimelineUIUtils.quadWidth(clip);
         const clipHeight = Timeline.TimelineUIUtils.quadHeight(clip);
-        contentHelper.appendTextRow(Common.UIString('Dimensions'), Common.UIString('%d × %d', clipWidth, clipHeight));
-      // Fall-through intended.
+        contentHelper.appendTextRow(ls`Dimensions`, ls`${clipWidth} × ${clipHeight}`);
+        // Fall-through intended.
 
       case recordTypes.PaintSetup:
       case recordTypes.Rasterize:
       case recordTypes.ScrollLayer:
-        relatedNodeLabel = Common.UIString('Layer Root');
+        relatedNodeLabel = ls`Layer Root`;
         break;
       case recordTypes.PaintImage:
       case recordTypes.DecodeLazyPixelRef:
       case recordTypes.DecodeImage:
       case recordTypes.ResizeImage:
       case recordTypes.DrawLazyPixelRef:
-        relatedNodeLabel = Common.UIString('Owner Element');
+        relatedNodeLabel = ls`Owner Element`;
         url = timelineData.url;
         if (url)
-          contentHelper.appendElementRow(Common.UIString('Image URL'), Components.Linkifier.linkifyURL(url));
+          contentHelper.appendElementRow(ls`Image URL`, Components.Linkifier.linkifyURL(url));
         break;
       case recordTypes.ParseAuthorStyleSheet:
         url = eventData['styleSheetUrl'];
         if (url)
-          contentHelper.appendElementRow(Common.UIString('Stylesheet URL'), Components.Linkifier.linkifyURL(url));
+          contentHelper.appendElementRow(ls`Stylesheet URL`, Components.Linkifier.linkifyURL(url));
         break;
       case recordTypes.UpdateLayoutTree:  // We don't want to see default details.
       case recordTypes.RecalculateStyles:
-        contentHelper.appendTextRow(Common.UIString('Elements Affected'), event.args['elementCount']);
+        contentHelper.appendTextRow(ls`Elements Affected`, event.args['elementCount']);
         break;
       case recordTypes.Layout:
         const beginData = event.args['beginData'];
         contentHelper.appendTextRow(
-            Common.UIString('Nodes That Need Layout'),
-            Common.UIString('%s of %s', beginData['dirtyObjects'], beginData['totalObjects']));
-        relatedNodeLabel = Common.UIString('Layout root');
+            ls`Nodes That Need Layout`, ls`${beginData['dirtyObjects']} of ${beginData['totalObjects']}`);
+        relatedNodeLabel = ls`Layout root`;
         break;
       case recordTypes.ConsoleTime:
-        contentHelper.appendTextRow(Common.UIString('Message'), event.name);
+        contentHelper.appendTextRow(ls`Message`, event.name);
         break;
       case recordTypes.WebSocketCreate:
       case recordTypes.WebSocketSendHandshakeRequest:
@@ -953,18 +939,18 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.WebSocketDestroy:
         const initiatorData = initiator ? initiator.args['data'] : eventData;
         if (typeof initiatorData['webSocketURL'] !== 'undefined')
-          contentHelper.appendTextRow(Common.UIString('URL'), initiatorData['webSocketURL']);
+          contentHelper.appendTextRow(ls`URL`, initiatorData['webSocketURL']);
         if (typeof initiatorData['webSocketProtocol'] !== 'undefined')
-          contentHelper.appendTextRow(Common.UIString('WebSocket Protocol'), initiatorData['webSocketProtocol']);
+          contentHelper.appendTextRow(ls`WebSocket Protocol`, initiatorData['webSocketProtocol']);
         if (typeof eventData['message'] !== 'undefined')
-          contentHelper.appendTextRow(Common.UIString('Message'), eventData['message']);
+          contentHelper.appendTextRow(ls`Message`, eventData['message']);
         break;
       case recordTypes.EmbedderCallback:
-        contentHelper.appendTextRow(Common.UIString('Callback Function'), eventData['callbackName']);
+        contentHelper.appendTextRow(ls`Callback Function`, eventData['callbackName']);
         break;
       case recordTypes.Animation:
         if (event.phase === SDK.TracingModel.Phase.NestableAsyncInstant)
-          contentHelper.appendTextRow(Common.UIString('State'), eventData['state']);
+          contentHelper.appendTextRow(ls`State`, eventData['state']);
         break;
       case recordTypes.ParseHTML: {
         const beginData = event.args['beginData'];
@@ -972,29 +958,41 @@ Timeline.TimelineUIUtils = class {
         const endLine = event.args['endData'] ? event.args['endData']['endLine'] - 1 : undefined;
         url = beginData['url'];
         if (url)
-          contentHelper.appendLocationRange(Common.UIString('Range'), url, startLine, endLine);
+          contentHelper.appendLocationRange(ls`Range`, url, startLine, endLine);
         break;
       }
 
       case recordTypes.FireIdleCallback:
-        contentHelper.appendTextRow(
-            Common.UIString('Allotted Time'), Number.millisToString(eventData['allottedMilliseconds']));
-        contentHelper.appendTextRow(Common.UIString('Invoked by Timeout'), eventData['timedOut']);
-      // Fall-through intended.
+        contentHelper.appendTextRow(ls`Allotted Time`, Number.millisToString(eventData['allottedMilliseconds']));
+        contentHelper.appendTextRow(ls`Invoked by Timeout`, eventData['timedOut']);
+        // Fall-through intended.
 
       case recordTypes.RequestIdleCallback:
       case recordTypes.CancelIdleCallback:
-        contentHelper.appendTextRow(Common.UIString('Callback ID'), eventData['id']);
+        contentHelper.appendTextRow(ls`Callback ID`, eventData['id']);
         break;
       case recordTypes.EventDispatch:
-        contentHelper.appendTextRow(Common.UIString('Type'), eventData['type']);
+        contentHelper.appendTextRow(ls`Type`, eventData['type']);
+        break;
+
+      case recordTypes.MarkFCP:
+      case recordTypes.MarkFMP:
+      case recordTypes.MarkLoad:
+      case recordTypes.MarkDOMContent:
+        contentHelper.appendTextRow(
+            ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
+        const learnMoreLink = UI.XLink.create(
+            'https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#user-centric_performance_metrics',
+            ls`Learn more`);
+        const linkDiv = UI.html`<div>${learnMoreLink} about page performance metrics.</div>`;
+        contentHelper.appendElementRow(ls`Details`, linkDiv);
         break;
 
       default: {
         const detailsNode =
             Timeline.TimelineUIUtils.buildDetailsNodeForTraceEvent(event, model.targetByEvent(event), linkifier);
         if (detailsNode)
-          contentHelper.appendElementRow(Common.UIString('Details'), detailsNode);
+          contentHelper.appendElementRow(ls`Details`, detailsNode);
         break;
       }
     }
@@ -1004,18 +1002,17 @@ Timeline.TimelineUIUtils = class {
 
     if (timelineData.timeWaitingForMainThread) {
       contentHelper.appendTextRow(
-          Common.UIString('Time Waiting for Main Thread'),
-          Number.millisToString(timelineData.timeWaitingForMainThread, true));
+          ls`Time Waiting for Main Thread`, Number.millisToString(timelineData.timeWaitingForMainThread, true));
     }
 
     const relatedNode = relatedNodesMap && relatedNodesMap.get(timelineData.backendNodeId);
     if (relatedNode) {
       const nodeSpan = await Common.Linkifier.linkify(relatedNode);
-      contentHelper.appendElementRow(relatedNodeLabel || Common.UIString('Related Node'), nodeSpan);
+      contentHelper.appendElementRow(relatedNodeLabel || ls`Related Node`, nodeSpan);
     }
 
     if (event[Timeline.TimelineUIUtils._previewElementSymbol]) {
-      contentHelper.addSection(Common.UIString('Preview'));
+      contentHelper.addSection(ls`Preview`);
       contentHelper.appendElementRow('', event[Timeline.TimelineUIUtils._previewElementSymbol]);
     }
 
@@ -1026,7 +1023,7 @@ Timeline.TimelineUIUtils = class {
     const stats = {};
     const showPieChart = detailed && Timeline.TimelineUIUtils._aggregatedStatsForTraceEvent(stats, model, event);
     if (showPieChart) {
-      contentHelper.addSection(Common.UIString('Aggregated Time'));
+      contentHelper.addSection(ls`Aggregated Time`);
       const pieChart = Timeline.TimelineUIUtils.generatePieChart(
           stats, Timeline.TimelineUIUtils.eventStyle(event).category, event.selfTime);
       contentHelper.appendElementRow('', pieChart);

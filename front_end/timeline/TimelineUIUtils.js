@@ -2372,9 +2372,9 @@ Timeline.TimelineDetailsContentHelper = class {
     parentElement.classList.add('timeline-details-stack-values');
     const stackTraceElement =
         parentElement.createChild('div', 'timeline-details-view-row-value timeline-details-view-row-stack-trace');
-    const callFrameElem =
+    const callFrameContents =
         Components.JSPresentationUtils.buildStackTracePreviewContents(this._target, this._linkifier, stackTrace);
-    stackTraceElement.appendChild(callFrameElem);
+    stackTraceElement.appendChild(callFrameContents.element);
   }
 
   /**

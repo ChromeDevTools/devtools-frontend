@@ -35,7 +35,7 @@ Components.JSPresentationUtils = {};
  * @param {!Components.Linkifier} linkifier
  * @param {!Protocol.Runtime.StackTrace=} stackTrace
  * @param {function()=} contentUpdated
- * @return {!Element}
+ * @return {{element: !Element, links: !Array<!Element>}}
  */
 Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     target, linkifier, stackTrace, contentUpdated) {
@@ -44,6 +44,8 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
+  /** @type {!Array<!Element>} */
+  const links = [];
 
   /**
    * @param {!Protocol.Runtime.StackTrace} stackTrace
@@ -65,6 +67,7 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
         }
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
+        links.push(link);
       }
       contentElement.appendChild(row);
     }
@@ -94,7 +97,7 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   }
 
   if (!stackTrace)
-    return element;
+    return {element, links};
 
   appendStackTrace(stackTrace);
 
@@ -132,5 +135,5 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     }, false);
   }
 
-  return element;
+  return {element, links};
 };

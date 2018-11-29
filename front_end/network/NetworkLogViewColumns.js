@@ -549,7 +549,7 @@ Network.NetworkLogViewColumns = class {
         const content = Components.JSPresentationUtils.buildStackTracePreviewContents(
             manager ? manager.target() : null, this._popupLinkifier, initiator.stack,
             () => popover.setSizeBehavior(UI.GlassPane.SizeBehavior.MeasureContent));
-        popover.contentElement.appendChild(content);
+        popover.contentElement.appendChild(content.element);
         return Promise.resolve(true);
       },
       hide: this._popupLinkifier.reset.bind(this._popupLinkifier)

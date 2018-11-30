@@ -49,8 +49,8 @@ Network.NetworkItemView = class extends UI.TabbedPane {
     if (request.resourceType() === Common.resourceTypes.WebSocket) {
       const frameView = new Network.ResourceWebSocketFrameView(request);
       this.appendTab(
-          Network.NetworkItemView.Tabs.WsFrames, Common.UIString('Frames'), frameView,
-          Common.UIString('WebSocket frames'));
+          Network.NetworkItemView.Tabs.WsFrames, Common.UIString('Messages'), frameView,
+          Common.UIString('WebSocket messages'));
     } else if (request.mimeType === 'text/event-stream') {
       this.appendTab(
           Network.NetworkItemView.Tabs.EventSource, Common.UIString('EventStream'),

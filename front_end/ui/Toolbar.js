@@ -52,10 +52,13 @@ UI.Toolbar = class {
    * @param {!UI.Action} action
    * @param {!Array<!UI.ToolbarButton>=} toggledOptions
    * @param {!Array<!UI.ToolbarButton>=} untoggledOptions
+   * @param {boolean=} showLabel
    * @return {!UI.ToolbarToggle}
    */
-  static createActionButton(action, toggledOptions, untoggledOptions) {
+  static createActionButton(action, toggledOptions, untoggledOptions, showLabel) {
     const button = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+    if (showLabel)
+      button.setText(action.title());
     button.setToggleWithRedColor(action.toggleWithRedColor());
     button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
     action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
@@ -185,11 +188,13 @@ UI.Toolbar = class {
 
   /**
    * @param {string} actionId
+   * @param {boolean=} showLabel
    * @return {!UI.ToolbarToggle}
    */
-  static createActionButtonForId(actionId) {
+  static createActionButtonForId(actionId, showLabel) {
     const action = UI.actionRegistry.action(actionId);
-    return UI.Toolbar.createActionButton(/** @type {!UI.Action} */ (action));
+    return UI.Toolbar.createActionButton(
+        /** @type {!UI.Action} */ (action), undefined, undefined, showLabel);
   }
 
   /**
@@ -222,6 +227,13 @@ UI.Toolbar = class {
 
   renderAsLinks() {
     this._contentElement.classList.add('toolbar-render-as-links');
+  }
+
+  /**
+   * @return {boolean}
+   */
+  empty() {
+    return !this._items.length;
   }
 
   /**
@@ -315,50 +327,20 @@ UI.Toolbar = class {
 
   /**
    * @param {string} location
+   * @return {!Promise}
    */
-  appendLocationItems(location) {
+  async appendItemsAtLocation(location) {
     const extensions = self.runtime.extensions(UI.ToolbarItem.Provider);
-    const promises = [];
-    for (let i = 0; i < extensions.length; ++i) {
-      if (extensions[i].descriptor()['location'] === location)
-        promises.push(resolveItem(extensions[i]));
-    }
-    Promise.all(promises).then(appendItemsInOrder.bind(this));
-
-    /**
-     * @param {!Runtime.Extension} extension
-     * @return {!Promise<?UI.ToolbarItem>}
-     */
-    function resolveItem(extension) {
+    const filtered = extensions.filter(e => e.descriptor()['location'] === location);
+    const items = await Promise.all(filtered.map(extension => {
       const descriptor = extension.descriptor();
       if (descriptor['separator'])
-        return Promise.resolve(/** @type {?UI.ToolbarItem} */ (new UI.ToolbarSeparator()));
-      if (descriptor['actionId']) {
-        return Promise.resolve(
-            /** @type {?UI.ToolbarItem} */ (UI.Toolbar.createActionButtonForId(descriptor['actionId'])));
-      }
-      return extension.instance().then(fetchItemFromProvider);
-
-      /**
-       * @param {!Object} provider
-       * @return {?UI.ToolbarItem}
-       */
-      function fetchItemFromProvider(provider) {
-        return /** @type {!UI.ToolbarItem.Provider} */ (provider).item();
-      }
-    }
-
-    /**
-     * @param {!Array.<?UI.ToolbarItem>} items
-     * @this {UI.Toolbar}
-     */
-    function appendItemsInOrder(items) {
-      for (let i = 0; i < items.length; ++i) {
-        const item = items[i];
-        if (item)
-          this.appendToolbarItem(item);
-      }
-    }
+        return new UI.ToolbarSeparator();
+      if (descriptor['actionId'])
+        return UI.Toolbar.createActionButtonForId(descriptor['actionId'], descriptor['showLabel']);
+      return extension.instance().then(p => p.item());
+    }));
+    items.filter(item => item).forEach(item => this.appendToolbarItem(item));
   }
 };
 

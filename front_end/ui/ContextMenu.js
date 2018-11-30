@@ -145,11 +145,13 @@ UI.ContextMenuSection = class {
   /**
    * @param {string} actionId
    * @param {string=} label
+   * @param {boolean=} optional
    */
-  appendAction(actionId, label) {
+  appendAction(actionId, label, optional) {
     const action = UI.actionRegistry.action(actionId);
     if (!action) {
-      console.error(`Action ${actionId} was not defined`);
+      if (!optional)
+        console.error(`Action ${actionId} was not defined`);
       return;
     }
     if (!label)

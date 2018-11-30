@@ -693,15 +693,24 @@
             "type": "action",
             "category": "Sources",
             "actionId": "sources.create-snippet",
-            "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",
+            "className": "Sources.ActionDelegate",
             "title": "Create new snippet"
         },
         {
             "type": "action",
             "category": "Sources",
             "actionId": "sources.add-folder-to-workspace",
-            "className": "Sources.SnippetsNavigatorView.CreatingActionDelegate",
-            "title": "Add folder to workspace"
+            "className": "Sources.ActionDelegate",
+            "iconClass": "largeicon-add",
+            "title": "Add folder to workspace",
+            "condition": "!sources.hide_add_folder"
+        },
+        {
+            "type": "@UI.ToolbarItem.Provider",
+            "actionId": "sources.add-folder-to-workspace",
+            "location": "files-navigator-toolbar",
+            "showLabel": true,
+            "condition": "!sources.hide_add_folder"
         },
         {
             "type": "@UI.ViewLocationResolver",

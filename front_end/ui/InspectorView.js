@@ -138,8 +138,8 @@ UI.InspectorView = class extends UI.VBox {
   }
 
   createToolbars() {
-    this._tabbedPane.leftToolbar().appendLocationItems('main-toolbar-left');
-    this._tabbedPane.rightToolbar().appendLocationItems('main-toolbar-right');
+    this._tabbedPane.leftToolbar().appendItemsAtLocation('main-toolbar-left');
+    this._tabbedPane.rightToolbar().appendItemsAtLocation('main-toolbar-right');
   }
 
   /**

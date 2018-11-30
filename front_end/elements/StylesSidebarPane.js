@@ -628,7 +628,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     filterContainerElement.appendChild(filterInput);
     const toolbar = new UI.Toolbar('styles-pane-toolbar', hbox);
     toolbar.makeToggledGray();
-    toolbar.appendLocationItems('styles-sidebarpane-toolbar');
+    toolbar.appendItemsAtLocation('styles-sidebarpane-toolbar');
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
     const toolbarPaneContent = toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane');
 

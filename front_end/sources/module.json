@@ -728,7 +728,8 @@
             "id": "sources.threads",
             "title": "Threads",
             "persistence": "permanent",
-            "className": "Sources.ThreadsSidebarPane"
+            "className": "Sources.ThreadsSidebarPane",
+            "condition": "!sources.hide_thread_sidebar"
         },
         {
             "type": "view",

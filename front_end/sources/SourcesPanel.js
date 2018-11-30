@@ -177,13 +177,12 @@ Sources.SourcesPanel = class extends UI.Panel {
   _showThreadsIfNeeded() {
     if (Sources.ThreadsSidebarPane.shouldBeShown() && !this._threadsSidebarPane) {
       this._threadsSidebarPane = /** @type {!UI.View} */ (UI.viewManager.view('sources.threads'));
-      if (this._sidebarPaneStack) {
+      if (this._sidebarPaneStack && this._threadsSidebarPane) {
         this._sidebarPaneStack.showView(
             this._threadsSidebarPane, this._splitWidget.isVertical() ? this._watchSidebarPane : this._callstackPane);
       }
     }
   }
-
 
   /**
    * @param {?SDK.Target} target

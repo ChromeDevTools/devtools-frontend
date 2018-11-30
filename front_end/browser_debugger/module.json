@@ -2,7 +2,7 @@
     "extensions": [
         {
             "type": "view",
-            "location": "sources-sidebar",
+            "location": "sources.sidebar-bottom",
             "id": "sources.eventListenerBreakpoints",
             "title": "Event Listener Breakpoints",
             "order": 9,
@@ -18,7 +18,7 @@
         },
         {
             "type": "view",
-            "location": "sources-sidebar",
+            "location": "sources.sidebar-bottom",
             "id": "sources.xhrBreakpoints",
             "title": "XHR/fetch Breakpoints",
             "order": 5,
@@ -28,7 +28,7 @@
         },
         {
             "type": "view",
-            "location": "sources-sidebar",
+            "location": "sources.sidebar-bottom",
             "id": "sources.domBreakpoints",
             "title": "DOM Breakpoints",
             "order": 7,
@@ -67,7 +67,7 @@
         },
         {
             "type": "view",
-            "location": "sources-sidebar",
+            "location": "sources.sidebar-bottom",
             "id": "sources.globalListeners",
             "title": "Global Listeners",
             "order": 8,

@@ -1,5 +1,9 @@
 # Chrome DevTools frontend
 
+<!-- [START badges] -->
+[![NPM package](https://img.shields.io/npm/v/chrome-devtools-frontend.svg)](https://npmjs.org/package/chrome-devtools-frontend)
+<!-- [END badges] -->
+
 The client-side of the Chrome DevTools, including all JS & CSS to run the DevTools webapp.
 
 It is available on NPM as the [chrome-devtools-frontend](https://www.npmjs.com/package/chrome-devtools-frontend) package. It's not currently available via CJS or ES2015 modules, so consuming this package in other tools may require [some effort](https://github.com/paulirish/devtools-timeline-model/blob/master/index.js).

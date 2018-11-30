@@ -345,18 +345,7 @@ PerfUI.FlameChart = class extends UI.VBox {
   }
 
   _updateHighlight() {
-    let entryIndex;
-    if (!Runtime.experiments.isEnabled('timelinePaintTimingMarkers')) {
-      const inDividersBar = this._lastMouseOffsetY < PerfUI.FlameChart.HeaderHeight;
-      this._highlightedMarkerIndex = inDividersBar ? this._markerIndexAtPosition(this._lastMouseOffsetX) : -1;
-      this._updateMarkerHighlight();
-
-      entryIndex = this._highlightedMarkerIndex === -1 ?
-          this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY) :
-          -1;
-    } else {
-      entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
-    }
+    const entryIndex = this._coordinatesToEntryIndex(this._lastMouseOffsetX, this._lastMouseOffsetY);
     if (entryIndex === -1) {
       this.hideHighlight();
       const group =

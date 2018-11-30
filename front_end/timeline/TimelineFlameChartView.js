@@ -484,17 +484,8 @@ Timeline.TimelineFlameChartMarker = class {
 
     if (this._style.lowPriority && pixelsPerMillisecond < lowPriorityVisibilityThresholdInPixelsPerMs)
       return;
+
     context.save();
-
-    if (!this._style.lowPriority && !Runtime.experiments.isEnabled('timelinePaintTimingMarkers')) {
-      context.strokeStyle = this._style.color;
-      context.lineWidth = 2;
-      context.beginPath();
-      context.moveTo(x, 0);
-      context.lineTo(x, height);
-      context.stroke();
-    }
-
     if (this._style.tall) {
       context.strokeStyle = this._style.color;
       context.lineWidth = this._style.lineWidth;

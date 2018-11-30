@@ -1524,15 +1524,6 @@ Timeline.TimelineUIUtils = class {
   }
 
   /**
-   * @return {!TimelineModel.TimelineModelFilter}
-   */
-  static paintEventsFilter() {
-    const recordTypes = TimelineModel.TimelineModel.RecordType;
-    return new TimelineModel.TimelineInvisibleEventsFilter(
-        Runtime.experiments.isEnabled('timelinePaintTimingMarkers') ? [] : [recordTypes.MarkFCP, recordTypes.MarkFMP]);
-  }
-
-  /**
    * @return {!Object.<string, !Timeline.TimelineCategory>}
    */
   static categories() {

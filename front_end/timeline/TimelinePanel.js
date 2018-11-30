@@ -746,11 +746,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
     const markers = new Map();
     const recordTypes = TimelineModel.TimelineModel.RecordType;
     const zeroTime = timelineModel.minimumRecordTime();
-    const filter = Timeline.TimelineUIUtils.paintEventsFilter();
     for (const event of timelineModel.timeMarkerEvents()) {
       if (event.name === recordTypes.TimeStamp || event.name === recordTypes.ConsoleTime)
-        continue;
-      if (!filter.accept(event))
         continue;
       markers.set(event.startTime, Timeline.TimelineUIUtils.createEventDivider(event, zeroTime));
     }

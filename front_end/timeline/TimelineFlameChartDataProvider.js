@@ -406,10 +406,9 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       group = this._appendHeader(title, style, selectable);
       group._track = track;
     }
-    const markerEventsFilter = Timeline.TimelineUIUtils.paintEventsFilter();
     for (let i = 0; i < events.length; ++i) {
       const e = events[i];
-      if (!isExtension && this._performanceModel.timelineModel().isMarkerEvent(e) && markerEventsFilter.accept(e)) {
+      if (!isExtension && this._performanceModel.timelineModel().isMarkerEvent(e)) {
         this._markers.push(new Timeline.TimelineFlameChartMarker(
             e.startTime, e.startTime - this._model.minimumRecordTime(),
             Timeline.TimelineUIUtils.markerStyleForEvent(e)));
@@ -528,16 +527,13 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
   }
 
   _appendPageMetrics() {
-    if (!Runtime.experiments.isEnabled('timelinePaintTimingMarkers'))
-      return;
     this._entryTypeByLevel[this._currentLevel] = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
 
-    const metricsEventFilter = Timeline.TimelineUIUtils.paintEventsFilter();
     /** @type {!Array<!SDK.TracingModel.Event>} */
     const metricEvents = [];
     for (const track of this._model.tracks()) {
       for (const event of track.events) {
-        if (!this._performanceModel.timelineModel().isMarkerEvent(event) || !metricsEventFilter.accept(event))
+        if (!this._performanceModel.timelineModel().isMarkerEvent(event))
           continue;
         metricEvents.push(event);
       }

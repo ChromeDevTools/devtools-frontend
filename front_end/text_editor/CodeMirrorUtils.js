@@ -153,19 +153,3 @@ TextEditor.CodeMirrorUtils.TokenizerFactory = class {
     return tokenize;
   }
 };
-
-/**
- * @unrestricted
- */
-TextEditor.CodeMirrorCSSLoadView = class extends UI.VBox {
-  /**
-   * This bogus view is needed to load/unload CodeMirror-related CSS on demand.
-   */
-  constructor() {
-    super();
-    this.element.classList.add('hidden');
-    this.registerRequiredCSS('cm/codemirror.css');
-    this.registerRequiredCSS('text_editor/cmdevtools.css');
-    TextEditor.CodeMirrorUtils.appendThemeStyle(this.element);
-  }
-};

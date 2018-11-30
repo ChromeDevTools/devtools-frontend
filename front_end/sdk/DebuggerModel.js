@@ -228,9 +228,6 @@ SDK.DebuggerModel = class extends SDK.SDKModel {
   }
 
   scheduleStepIntoAsync() {
-    // Node v8.x does not support breakOnAsyncCall flag but supports old style schdeuleStepIntoAsync.
-    // End-of-life of Node 8.x is around December 2019.
-    this._agent.scheduleStepIntoAsync();
     this._agent.invoke_stepInto({breakOnAsyncCall: true});
   }
 

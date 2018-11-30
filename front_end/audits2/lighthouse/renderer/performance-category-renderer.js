@@ -188,7 +188,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       groupEl.appendChild(headerEl);
       opportunityAudits.forEach((item, i) =>
           groupEl.appendChild(this._renderOpportunity(item, i, scale)));
-      groupEl.classList.add('lh-audit-group--opportunities');
+      groupEl.classList.add('lh-audit-group--load-opportunities');
       element.appendChild(groupEl);
     }
 
@@ -209,14 +209,17 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     // Passed audits
-    const passedElements = category.auditRefs
+    const passedAudits = category.auditRefs
         .filter(audit => (audit.group === 'load-opportunities' || audit.group === 'diagnostics') &&
-            Util.showAsPassed(audit.result))
-        .map((audit, i) => this.renderAudit(audit, i));
+            Util.showAsPassed(audit.result));
 
-    if (!passedElements.length) return element;
+    if (!passedAudits.length) return element;
 
-    const passedElem = this.renderPassedAuditsSection(passedElements);
+    const clumpOpts = {
+      auditRefs: passedAudits,
+      groupDefinitions: groups,
+    };
+    const passedElem = this.renderClump('passed', clumpOpts);
     element.appendChild(passedElem);
     return element;
   }

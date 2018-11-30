@@ -24,6 +24,7 @@
         "lighthouse/renderer/dom.js",
         "lighthouse/renderer/category-renderer.js",
         "lighthouse/renderer/performance-category-renderer.js",
+        "lighthouse/renderer/pwa-category-renderer.js",
         "lighthouse/renderer/details-renderer.js",
         "lighthouse/renderer/crc-details-renderer.js",
         "lighthouse/renderer/report-renderer.js",
@@ -48,6 +49,7 @@
       "lighthouse/renderer/dom.js",
       "lighthouse/renderer/category-renderer.js",
       "lighthouse/renderer/performance-category-renderer.js",
+      "lighthouse/renderer/pwa-category-renderer.js",
       "lighthouse/renderer/details-renderer.js",
       "lighthouse/renderer/crc-details-renderer.js",
       "lighthouse/renderer/report-renderer.js"

@@ -10,10 +10,10 @@
         }
     ],
     "scripts": [
-        "lighthouse/lighthouse-background.js",
+        "lighthouse/lighthouse-dt-bundle.js",
         "Audits2Service.js"
     ],
     "skip_compilation": [
-        "lighthouse/lighthouse-background.js"
+        "lighthouse/lighthouse-dt-bundle.js"
     ]
 }

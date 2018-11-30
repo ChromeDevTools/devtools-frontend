@@ -18,6 +18,8 @@
 
 /* globals URL self */
 
+/** @typedef {HTMLElementTagNameMap & {[id: string]: HTMLElement}} HTMLElmentByTagName */
+
 class DOM {
   /**
    * @param {Document} document
@@ -27,14 +29,14 @@ class DOM {
     this._document = document;
   }
 
-  // TODO(bckenny): can pass along `createElement`'s inferred type
   /**
-   * @param {string} name
+   * @template {string} T
+   * @param {T} name
    * @param {string=} className
    * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
    *     Note: if an attribute key has an undefined value, this method does not
    *     set the attribute on the node.
-   * @return {Element}
+   * @return {HTMLElmentByTagName[T]}
    */
   createElement(name, className, attrs = {}) {
     const element = this._document.createElement(name);
@@ -58,13 +60,14 @@ class DOM {
   }
 
   /**
+   * @template {string} T
    * @param {Element} parentElem
-   * @param {string} elementName
+   * @param {T} elementName
    * @param {string=} className
    * @param {Object<string, (string|undefined)>=} attrs Attribute key/val pairs.
    *     Note: if an attribute key has an undefined value, this method does not
    *     set the attribute on the node.
-   * @return {Element}
+   * @return {HTMLElmentByTagName[T]}
    */
   createChildOf(parentElem, elementName, className, attrs) {
     const element = this.createElement(elementName, className, attrs);
@@ -122,7 +125,7 @@ class DOM {
 
       // Append link if there are any.
       if (linkText && linkHref) {
-        const a = /** @type {HTMLAnchorElement} */ (this.createElement('a'));
+        const a = this.createElement('a');
         a.rel = 'noopener';
         a.target = '_blank';
         a.textContent = linkText;
@@ -147,7 +150,7 @@ class DOM {
       const [preambleText, codeText] = parts.splice(0, 2);
       element.appendChild(this._document.createTextNode(preambleText));
       if (codeText) {
-        const pre = /** @type {HTMLPreElement} */ (this.createElement('code'));
+        const pre = this.createElement('code');
         pre.textContent = codeText;
         element.appendChild(pre);
       }

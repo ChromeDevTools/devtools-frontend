@@ -399,7 +399,7 @@ function renameIdentifiers(identifierMap) {
           return;
         if (filePath.includes('externs.js'))
           return;
-        if (filePath.includes('eslint') || filePath.includes('lighthouse-background.js') || filePath.includes('/cm/') ||
+        if (filePath.includes('eslint') || filePath.includes('lighthouse-dt-bundle.js') || filePath.includes('/cm/') ||
             filePath.includes('/xterm.js/') || filePath.includes('/acorn/'))
           return;
         if (filePath.includes('/cm_modes/') && !filePath.includes('DefaultCodeMirror') &&

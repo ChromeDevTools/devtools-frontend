@@ -59,7 +59,7 @@ class CriticalRequestChainRenderer {
     const node = parent[id];
     const siblings = Object.keys(parent);
     const isLastChild = siblings.indexOf(id) === (siblings.length - 1);
-    const hasChildren = Object.keys(node.children).length > 0;
+    const hasChildren = !!node.children && Object.keys(node.children).length > 0;
 
     // Copy the tree markers so that we don't change by reference.
     const newTreeMarkers = Array.isArray(treeMarkers) ? treeMarkers.slice(0) : [];
@@ -149,11 +149,12 @@ class CriticalRequestChainRenderer {
    */
   static buildTree(dom, tmpl, segment, elem, details) {
     elem.appendChild(CriticalRequestChainRenderer.createChainNode(dom, tmpl, segment));
-
-    for (const key of Object.keys(segment.node.children)) {
-      const childSegment = CriticalRequestChainRenderer.createSegment(segment.node.children, key,
-         segment.startTime, segment.transferSize, segment.treeMarkers, segment.isLastChild);
-      CriticalRequestChainRenderer.buildTree(dom, tmpl, childSegment, elem, details);
+    if (segment.node.children) {
+      for (const key of Object.keys(segment.node.children)) {
+        const childSegment = CriticalRequestChainRenderer.createSegment(segment.node.children, key,
+          segment.startTime, segment.transferSize, segment.treeMarkers, segment.isLastChild);
+        CriticalRequestChainRenderer.buildTree(dom, tmpl, childSegment, elem, details);
+      }
     }
   }
 

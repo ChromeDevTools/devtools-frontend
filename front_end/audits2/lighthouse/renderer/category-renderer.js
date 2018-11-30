@@ -22,6 +22,7 @@
 /** @typedef {import('./report-renderer.js')} ReportRenderer */
 /** @typedef {import('./details-renderer.js')} DetailsRenderer */
 /** @typedef {import('./util.js')} Util */
+/** @typedef {'failed'|'manual'|'passed'|'not-applicable'} TopLevelClumpId */
 
 class CategoryRenderer {
   /**
@@ -37,6 +38,29 @@ class CategoryRenderer {
     this.templateContext = this.dom.document();
 
     this.detailsRenderer.setTemplateContext(this.templateContext);
+  }
+
+  /**
+   * Display info per top-level clump. Define on class to avoid race with Util init.
+   */
+  get _clumpDisplayInfo() {
+    return {
+      'failed': {
+        className: 'lh-clump--failed',
+      },
+      'manual': {
+        title: Util.UIStrings.manualAuditsGroupTitle,
+        className: 'lh-clump--manual',
+      },
+      'passed': {
+        title: Util.UIStrings.passedAuditsGroupTitle,
+        className: 'lh-clump--passed',
+      },
+      'not-applicable': {
+        title: Util.UIStrings.notApplicableAuditsGroupTitle,
+        className: 'lh-clump--not-applicable',
+      },
+    };
   }
 
   /**
@@ -164,11 +188,12 @@ class CategoryRenderer {
   renderAuditGroup(group, opts) {
     const expandable = opts.expandable;
     const groupEl = this.dom.createElement(expandable ? 'details' : 'div', 'lh-audit-group');
-    const summmaryEl = this.dom.createChildOf(groupEl, 'summary', 'lh-audit-group__summary');
-    const headerEl = this.dom.createChildOf(summmaryEl, 'div', 'lh-audit-group__header');
-    const itemCountEl = this.dom.createChildOf(summmaryEl, 'div', 'lh-audit-group__itemcount');
+    const summaryEl = this.dom.createChildOf(groupEl, expandable ? 'summary' : 'div');
+    const summaryInnerEl = this.dom.createChildOf(summaryEl, 'div', 'lh-audit-group__summary');
+    const headerEl = this.dom.createChildOf(summaryInnerEl, 'div', 'lh-audit-group__header');
+    const itemCountEl = this.dom.createChildOf(summaryInnerEl, 'div', 'lh-audit-group__itemcount');
     if (expandable) {
-      const chevronEl = summmaryEl.appendChild(this._createChevron());
+      const chevronEl = summaryInnerEl.appendChild(this._createChevron());
       chevronEl.title = Util.UIStrings.auditGroupExpandTooltip;
     }
 
@@ -187,76 +212,111 @@ class CategoryRenderer {
   }
 
   /**
-   * Find the total number of audits contained within a section.
-   * Accounts for nested subsections like Accessibility.
-   * @param {Array<Element>} elements
-   * @return {number}
+   * Takes an array of auditRefs, groups them if requested, then returns an
+   * array of audit and audit-group elements.
+   * @param {Array<LH.ReportResult.AuditRef>} auditRefs
+   * @param {Object<string, LH.Result.ReportGroup>} groupDefinitions
+   * @param {{expandable: boolean}} opts
+   * @return {Array<Element>}
    */
-  _getTotalAuditsLength(elements) {
-    // Create a scratch element to append sections to so we can reuse querySelectorAll().
-    const scratch = this.dom.createElement('div');
-    elements.forEach(function(element) {
-      scratch.appendChild(element);
-    });
-    const subAudits = scratch.querySelectorAll('.lh-audit');
-    if (subAudits.length) {
-      return subAudits.length;
-    } else {
-      return elements.length;
+  _renderGroupedAudits(auditRefs, groupDefinitions, opts) {
+    // Audits grouped by their group (or under notAGroup).
+    /** @type {Map<string, Array<LH.ReportResult.AuditRef>>} */
+    const grouped = new Map();
+
+    // Add audits without a group first so they will appear first.
+    const notAGroup = 'NotAGroup';
+    grouped.set(notAGroup, []);
+
+    for (const auditRef of auditRefs) {
+      const groupId = auditRef.group || notAGroup;
+      const groupAuditRefs = grouped.get(groupId) || [];
+      groupAuditRefs.push(auditRef);
+      grouped.set(groupId, groupAuditRefs);
     }
+
+    /** @type {Array<Element>} */
+    const auditElements = [];
+    // Continuous numbering across all groups.
+    let index = 0;
+
+    for (const [groupId, groupAuditRefs] of grouped) {
+      if (groupId === notAGroup) {
+        // Push not-grouped audits individually.
+        for (const auditRef of groupAuditRefs) {
+          auditElements.push(this.renderAudit(auditRef, index++));
+        }
+        continue;
+      }
+
+      // Push grouped audits as a group.
+      const groupDef = groupDefinitions[groupId];
+      const auditGroupElem = this.renderAuditGroup(groupDef, opts);
+      for (const auditRef of groupAuditRefs) {
+        auditGroupElem.appendChild(this.renderAudit(auditRef, index++));
+      }
+      auditGroupElem.classList.add(`lh-audit-group--${groupId}`);
+      auditElements.push(auditGroupElem);
+    }
+
+    return auditElements;
   }
 
   /**
-   * @param {Array<Element>} elements
+   * Take a set of audits, group them if they have groups, then render in a top-level
+   * clump that can't be expanded/collapsed.
+   * @param {Array<LH.ReportResult.AuditRef>} auditRefs
+   * @param {Object<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {Element}
    */
-  _renderFailedAuditsSection(elements) {
-    const failedElem = this.dom.createElement('div');
-    failedElem.classList.add('lh-failed-audits');
-    elements.forEach(elem => failedElem.appendChild(elem));
-    return failedElem;
+  renderUnexpandableClump(auditRefs, groupDefinitions) {
+    const clumpElement = this.dom.createElement('div');
+    const elements = this._renderGroupedAudits(auditRefs, groupDefinitions, {expandable: false});
+    elements.forEach(elem => clumpElement.appendChild(elem));
+    return clumpElement;
   }
 
   /**
-   * @param {Array<Element>} elements
+   * Renders a clump (a grouping of groups), under a status of failed, manual,
+   * passed, or not-applicable. The result ends up something like:
+   *
+   * clump (e.g. 'failed')
+   *   ├── audit 1 (w/o group)
+   *   ├── audit 2 (w/o group)
+   *   ├── audit group
+   *   |  ├── audit 3
+   *   |  └── audit 4
+   *   └── audit group
+   *      ├── audit 5
+   *      └── audit 6
+   * clump (e.g. 'manual')
+   *   ├── …
+   *   ⋮
+   * @param {TopLevelClumpId} clumpId
+   * @param {{auditRefs: Array<LH.ReportResult.AuditRef>, groupDefinitions: Object<string, LH.Result.ReportGroup>, description?: string}} clumpOpts
    * @return {Element}
    */
-  renderPassedAuditsSection(elements) {
-    const passedElem = this.renderAuditGroup({
-      title: Util.UIStrings.passedAuditsGroupTitle,
-    }, {expandable: true, itemCount: this._getTotalAuditsLength(elements)});
-    passedElem.classList.add('lh-passed-audits');
-    elements.forEach(elem => passedElem.appendChild(elem));
-    return passedElem;
-  }
+  renderClump(clumpId, {auditRefs, groupDefinitions, description}) {
+    if (clumpId === 'failed') {
+      // Failed audit clump is always expanded and not nested in an lh-audit-group.
+      const failedElem = this.renderUnexpandableClump(auditRefs, groupDefinitions);
+      failedElem.classList.add('lh-clump', this._clumpDisplayInfo.failed.className);
+      return failedElem;
+    }
 
-  /**
-   * @param {Array<Element>} elements
-   * @return {Element}
-   */
-  _renderNotApplicableAuditsSection(elements) {
-    const notApplicableElem = this.renderAuditGroup({
-      title: Util.UIStrings.notApplicableAuditsGroupTitle,
-    }, {expandable: true, itemCount: this._getTotalAuditsLength(elements)});
-    notApplicableElem.classList.add('lh-audit-group--not-applicable');
-    elements.forEach(elem => notApplicableElem.appendChild(elem));
-    return notApplicableElem;
-  }
+    const expandable = true;
+    const elements = this._renderGroupedAudits(auditRefs, groupDefinitions, {expandable});
 
-  /**
-   * @param {Array<LH.ReportResult.AuditRef>} manualAudits
-   * @param {string} [manualDescription]
-   * @return {Element}
-   */
-  _renderManualAudits(manualAudits, manualDescription) {
-    const group = {title: Util.UIStrings.manualAuditsGroupTitle, description: manualDescription};
-    const auditGroupElem = this.renderAuditGroup(group,
-        {expandable: true, itemCount: manualAudits.length});
-    auditGroupElem.classList.add('lh-audit-group--manual');
-    manualAudits.forEach((audit, i) => {
-      auditGroupElem.appendChild(this.renderAudit(audit, i));
-    });
-    return auditGroupElem;
+    const clumpInfo = this._clumpDisplayInfo[clumpId];
+    // TODO: renderAuditGroup shouldn't be used to render a clump (since it *contains* audit groups).
+    const groupDef = {title: clumpInfo.title, description};
+    const opts = {expandable, itemCount: auditRefs.length};
+    const clumpElem = this.renderAuditGroup(groupDef, opts);
+    clumpElem.classList.add('lh-clump', clumpInfo.className);
+
+    elements.forEach(elem => clumpElem.appendChild(elem));
+
+    return clumpElem;
   }
 
   /**
@@ -302,104 +362,57 @@ class CategoryRenderer {
   }
 
   /**
+   * Returns the id of the top-level clump to put this audit in.
+   * @param {LH.ReportResult.AuditRef} auditRef
+   * @return {TopLevelClumpId}
+   */
+  _getClumpIdForAuditRef(auditRef) {
+    const scoreDisplayMode = auditRef.result.scoreDisplayMode;
+    if (scoreDisplayMode === 'manual' || scoreDisplayMode === 'not-applicable') {
+      return scoreDisplayMode;
+    }
+
+    if (Util.showAsPassed(auditRef.result)) {
+      return 'passed';
+    } else {
+      return 'failed';
+    }
+  }
+
+  /**
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} [groupDefinitions]
    * @return {Element}
    */
-  render(category, groupDefinitions) {
+  render(category, groupDefinitions = {}) {
     const element = this.dom.createElement('div', 'lh-category');
     this.createPermalinkSpan(element, category.id);
     element.appendChild(this.renderCategoryHeader(category));
 
-    const auditRefs = category.auditRefs;
-    const manualAudits = auditRefs.filter(audit => audit.result.scoreDisplayMode === 'manual');
-    const nonManualAudits = auditRefs.filter(audit => !manualAudits.includes(audit));
+    // Top level clumps for audits, in order they will appear in the report.
+    /** @type {Map<TopLevelClumpId, Array<LH.ReportResult.AuditRef>>} */
+    const clumps = new Map();
+    clumps.set('failed', []);
+    clumps.set('manual', []);
+    clumps.set('passed', []);
+    clumps.set('not-applicable', []);
 
-    /** @type {Object<string, {passed: Array<LH.ReportResult.AuditRef>, failed: Array<LH.ReportResult.AuditRef>, notApplicable: Array<LH.ReportResult.AuditRef>}>} */
-    const auditsGroupedByGroup = {};
-    const auditsUngrouped = {passed: [], failed: [], notApplicable: []};
-
-    nonManualAudits.forEach(auditRef => {
-      let group;
-
-      if (auditRef.group) {
-        const groupId = auditRef.group;
-
-        if (auditsGroupedByGroup[groupId]) {
-          group = auditsGroupedByGroup[groupId];
-        } else {
-          group = {passed: [], failed: [], notApplicable: []};
-          auditsGroupedByGroup[groupId] = group;
-        }
-      } else {
-        group = auditsUngrouped;
-      }
-
-      if (auditRef.result.scoreDisplayMode === 'not-applicable') {
-        group.notApplicable.push(auditRef);
-      } else if (Util.showAsPassed(auditRef.result)) {
-        group.passed.push(auditRef);
-      } else {
-        group.failed.push(auditRef);
-      }
-    });
-
-    const failedElements = /** @type {Array<Element>} */ ([]);
-    const passedElements = /** @type {Array<Element>} */ ([]);
-    const notApplicableElements = /** @type {Array<Element>} */ ([]);
-
-    auditsUngrouped.failed.forEach((audit, i) => failedElements.push(this.renderAudit(audit, i)));
-    auditsUngrouped.passed.forEach((audit, i) => passedElements.push(this.renderAudit(audit, i)));
-    auditsUngrouped.notApplicable.forEach((audit, i) => notApplicableElements.push(
-        this.renderAudit(audit, i)));
-
-    Object.keys(auditsGroupedByGroup).forEach(groupId => {
-      if (!groupDefinitions) return; // We never reach here if there aren't groups, but TSC needs convincing
-
-      const group = groupDefinitions[groupId];
-      const groups = auditsGroupedByGroup[groupId];
-
-      if (groups.failed.length) {
-        const auditGroupElem = this.renderAuditGroup(group, {expandable: false});
-        groups.failed.forEach((item, i) => auditGroupElem.appendChild(this.renderAudit(item, i)));
-        auditGroupElem.classList.add('lh-audit-group--unadorned');
-        failedElements.push(auditGroupElem);
-      }
-
-      if (groups.passed.length) {
-        const auditGroupElem = this.renderAuditGroup(group, {expandable: true});
-        groups.passed.forEach((item, i) => auditGroupElem.appendChild(this.renderAudit(item, i)));
-        auditGroupElem.classList.add('lh-audit-group--unadorned');
-        passedElements.push(auditGroupElem);
-      }
-
-      if (groups.notApplicable.length) {
-        const auditGroupElem = this.renderAuditGroup(group, {expandable: true});
-        groups.notApplicable.forEach((item, i) =>
-            auditGroupElem.appendChild(this.renderAudit(item, i)));
-        auditGroupElem.classList.add('lh-audit-group--unadorned');
-        notApplicableElements.push(auditGroupElem);
-      }
-    });
-
-    if (failedElements.length) {
-      const failedElem = this._renderFailedAuditsSection(failedElements);
-      element.appendChild(failedElem);
+    // Sort audits into clumps.
+    for (const auditRef of category.auditRefs) {
+      const clumpId = this._getClumpIdForAuditRef(auditRef);
+      const clump = /** @type {Array<LH.ReportResult.AuditRef>} */ (clumps.get(clumpId)); // already defined
+      clump.push(auditRef);
+      clumps.set(clumpId, clump);
     }
 
-    if (manualAudits.length) {
-      const manualEl = this._renderManualAudits(manualAudits, category.manualDescription);
-      element.appendChild(manualEl);
-    }
+    // Render each clump.
+    for (const [clumpId, clumpRefs] of clumps) {
+      if (clumpRefs.length === 0) continue;
 
-    if (passedElements.length) {
-      const passedElem = this.renderPassedAuditsSection(passedElements);
-      element.appendChild(passedElem);
-    }
-
-    if (notApplicableElements.length) {
-      const notApplicableElem = this._renderNotApplicableAuditsSection(notApplicableElements);
-      element.appendChild(notApplicableElem);
+      const description = clumpId === 'manual' ? category.manualDescription : undefined;
+      const clumpElem = this.renderClump(clumpId, {auditRefs: clumpRefs, groupDefinitions,
+        description});
+      element.appendChild(clumpElem);
     }
 
     return element;

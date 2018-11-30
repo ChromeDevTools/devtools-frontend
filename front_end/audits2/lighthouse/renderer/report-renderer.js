@@ -26,7 +26,7 @@
 /** @typedef {import('./dom.js')} DOM */
 /** @typedef {import('./details-renderer.js').DetailsJSON} DetailsJSON */
 
-/* globals self, Util, DetailsRenderer, CategoryRenderer, PerformanceCategoryRenderer */
+/* globals self, Util, DetailsRenderer, CategoryRenderer, PerformanceCategoryRenderer, PwaCategoryRenderer */
 
 class ReportRenderer {
   /**
@@ -42,6 +42,7 @@ class ReportRenderer {
   /**
    * @param {LH.Result} result
    * @param {Element} container Parent element to render the report into.
+   * @return {Element}
    */
   renderReport(result, container) {
     // Mutate the UIStrings if necessary (while saving originals)
@@ -55,7 +56,7 @@ class ReportRenderer {
     // put the UIStrings back into original state
     Util.updateAllUIStrings(originalUIStrings);
 
-    return /** @type {Element} **/ (container);
+    return container;
   }
 
   /**
@@ -188,24 +189,39 @@ class ReportRenderer {
     const detailsRenderer = new DetailsRenderer(this._dom);
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
-    const perfCategoryRenderer = new PerformanceCategoryRenderer(this._dom, detailsRenderer);
-    perfCategoryRenderer.setTemplateContext(this._templateContext);
+
+    /** @type {Record<string, CategoryRenderer>} */
+    const specificCategoryRenderers = {
+      performance: new PerformanceCategoryRenderer(this._dom, detailsRenderer),
+      pwa: new PwaCategoryRenderer(this._dom, detailsRenderer),
+    };
+    Object.values(specificCategoryRenderers).forEach(renderer => {
+      renderer.setTemplateContext(this._templateContext);
+    });
 
     const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
 
     for (const category of report.reportCategories) {
-      if (scoreHeader) {
-        scoreHeader.appendChild(categoryRenderer.renderScoreGauge(category));
-      }
-
-      let renderer = categoryRenderer;
-      if (category.id === 'performance') {
-        renderer = perfCategoryRenderer;
-      }
+      const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
       categories.appendChild(renderer.render(category, report.categoryGroups));
     }
 
     if (scoreHeader) {
+      const defaultGauges = [];
+      const customGauges = [];
+      for (const category of report.reportCategories) {
+        const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
+        const categoryGauge = renderer.renderScoreGauge(category);
+
+        // Group gauges that aren't default at the end of the header
+        if (renderer.renderScoreGauge === categoryRenderer.renderScoreGauge) {
+          defaultGauges.push(categoryGauge);
+        } else {
+          customGauges.push(categoryGauge);
+        }
+      }
+      scoreHeader.append(...defaultGauges, ...customGauges);
+
       const scoreScale = this._dom.cloneTemplate('#tmpl-lh-scorescale', this._templateContext);
       this._dom.find('.lh-scorescale-label', scoreScale).textContent =
         Util.UIStrings.scorescaleLabel;

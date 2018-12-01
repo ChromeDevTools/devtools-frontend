@@ -365,7 +365,8 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       return 1;
     if (aRequest.cached() && !bRequest.cached())
       return -1;
-    return (aRequest.transferSize - bRequest.transferSize) || aRequest.indentityCompare(bRequest);
+    return (aRequest.transferSize - bRequest.transferSize) || (aRequest.resourceSize - bRequest.resourceSize) ||
+        aRequest.indentityCompare(bRequest);
   }
 
   /**

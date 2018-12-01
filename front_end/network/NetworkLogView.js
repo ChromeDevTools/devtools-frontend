@@ -696,8 +696,10 @@ Network.NetworkLogView = class extends UI.VBox {
     this._hideRecordingHint();
 
     let transferSize = 0;
+    let resourceSize = 0;
     let selectedNodeNumber = 0;
     let selectedTransferSize = 0;
+    let selectedResourceSize = 0;
     let baseTime = -1;
     let maxTime = -1;
 
@@ -709,9 +711,12 @@ Network.NetworkLogView = class extends UI.VBox {
       nodeCount++;
       const requestTransferSize = request.transferSize;
       transferSize += requestTransferSize;
+      const requestResourceSize = request.resourceSize;
+      resourceSize += requestResourceSize;
       if (!node[Network.NetworkLogView._isFilteredOutSymbol]) {
         selectedNodeNumber++;
         selectedTransferSize += requestTransferSize;
+        selectedResourceSize += requestResourceSize;
       }
       const networkManager = SDK.NetworkManager.forRequest(request);
       // TODO(allada) inspectedURL should be stored in PageLoad used instead of target so HAR requests can have an
@@ -748,11 +753,17 @@ Network.NetworkLogView = class extends UI.VBox {
       appendChunk(separator);
       appendChunk(Common.UIString(
           '%s / %s transferred', Number.bytesToString(selectedTransferSize), Number.bytesToString(transferSize)));
+      appendChunk(separator);
+      appendChunk(Common.UIString(
+          '%s / %s resources', Number.bytesToString(selectedResourceSize), Number.bytesToString(resourceSize)));
     } else {
       appendChunk(Common.UIString('%d requests', nodeCount));
       appendChunk(separator);
       appendChunk(Common.UIString('%s transferred', Number.bytesToString(transferSize)));
+      appendChunk(separator);
+      appendChunk(Common.UIString('%s resources', Number.bytesToString(resourceSize)));
     }
+
     if (baseTime !== -1 && maxTime !== -1) {
       appendChunk(separator);
       appendChunk(Common.UIString('Finish: %s', Number.secondsToString(maxTime - baseTime)));

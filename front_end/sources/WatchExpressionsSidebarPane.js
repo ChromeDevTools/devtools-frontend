@@ -365,9 +365,10 @@ Sources.WatchExpression = class extends Common.Object {
     this._result = result || null;
 
     const headerElement = createElementWithClass('div', 'watch-expression-header');
-    const deleteButton = headerElement.createChild('button', 'watch-expression-delete-button');
-    deleteButton.title = Common.UIString('Delete watch expression');
+    const deleteButton = UI.Icon.create('smallicon-cross', 'watch-expression-delete-button');
+    deleteButton.title = ls`Delete watch expression`;
     deleteButton.addEventListener('click', this._deleteWatchExpression.bind(this), false);
+    headerElement.appendChild(deleteButton);
 
     const titleElement = headerElement.createChild('div', 'watch-expression-title');
     this._nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this._expression);
@@ -389,6 +390,7 @@ Sources.WatchExpression = class extends Common.Object {
       headerElement.classList.add('watch-expression-object-header');
       this._objectPropertiesSection = new ObjectUI.ObjectPropertiesSection(result, headerElement, this._linkifier);
       this._objectPresentationElement = this._objectPropertiesSection.element;
+      this._objectPresentationElement.classList.add('watch-expression-object');
       this._expandController.watchSection(/** @type {string} */ (this._expression), this._objectPropertiesSection);
       const objectTreeElement = this._objectPropertiesSection.objectTreeElement();
       objectTreeElement.toggleOnClick = false;

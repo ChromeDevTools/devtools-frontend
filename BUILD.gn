@@ -939,7 +939,6 @@ devtools_image_files = [
   "front_end/Images/chromeRight.png",
   "front_end/Images/chromeSelect.png",
   "front_end/Images/chromeSelect_2x.png",
-  "front_end/Images/deleteIcon.png",
   "front_end/Images/errorWave.png",
   "front_end/Images/errorWave_2x.png",
   "front_end/Images/ic_info_black_18dp.svg",

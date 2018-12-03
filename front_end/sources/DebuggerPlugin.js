@@ -253,6 +253,11 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
         contextMenu.debugSection().appendItem(
             Common.UIString('Add conditional breakpoint\u2026'),
             this._editBreakpointCondition.bind(this, editorLineNumber, null, null));
+        if (Runtime.experiments.isEnabled('sourcesLogpoints')) {
+          contextMenu.debugSection().appendItem(
+              ls`Add logpoint\u2026`,
+              this._editBreakpointCondition.bind(this, editorLineNumber, null, null, true /* preferLogpoint */));
+        }
         contextMenu.debugSection().appendItem(
             Common.UIString('Never pause here'), this._createNewBreakpoint.bind(this, editorLineNumber, 'false', true));
       } else {
@@ -632,11 +637,12 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
    * @param {number} editorLineNumber
    * @param {?Bindings.BreakpointManager.Breakpoint} breakpoint
    * @param {?{lineNumber: number, columnNumber: number}} location
+   * @param {boolean=} preferLogpoint
    */
-  async _editBreakpointCondition(editorLineNumber, breakpoint, location) {
+  async _editBreakpointCondition(editorLineNumber, breakpoint, location, preferLogpoint) {
     const oldCondition = breakpoint ? breakpoint.condition() : '';
     const decorationElement = createElement('div');
-    const dialog = new Sources.BreakpointEditDialog(editorLineNumber, oldCondition, result => {
+    const dialog = new Sources.BreakpointEditDialog(editorLineNumber, oldCondition, !!preferLogpoint, result => {
       dialog.detach();
       this._textEditor.removeDecoration(decorationElement, editorLineNumber);
       if (!result.committed)
@@ -1210,6 +1216,12 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
       contextMenu.debugSection().appendItem(
           Common.UIString('Add conditional breakpoint\u2026'),
           this._editBreakpointCondition.bind(this, editorLocation.lineNumber, null, editorLocation));
+      if (Runtime.experiments.isEnabled('sourcesLogpoints')) {
+        contextMenu.debugSection().appendItem(
+            ls`Add logpoint\u2026`,
+            this._editBreakpointCondition.bind(
+                this, editorLocation.lineNumber, null, editorLocation, true /* preferLogpoint */));
+      }
       contextMenu.debugSection().appendItem(
           Common.UIString('Never pause here'), this._setBreakpoint.bind(this, location[0], location[1], 'false', true));
     }

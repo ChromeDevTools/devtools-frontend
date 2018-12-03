@@ -8,9 +8,10 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
   /**
    * @param {number} editorLineNumber
    * @param {string} oldCondition
+   * @param {boolean} preferLogpoint
    * @param {function({committed: boolean, condition: string})} onFinish
    */
-  constructor(editorLineNumber, oldCondition, onFinish) {
+  constructor(editorLineNumber, oldCondition, preferLogpoint, onFinish) {
     super(true);
     this.registerRequiredCSS('sources/breakpointEditDialog.css');
     this._onFinish = onFinish;
@@ -18,10 +19,18 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     /** @type {?UI.TextEditor} */
     this._editor = null;
 
+    const logpointPrefix = Sources.BreakpointEditDialog._LogpointPrefix;
+    const logpointSuffix = Sources.BreakpointEditDialog._LogpointSuffix;
+    this._isLogpoint = oldCondition.startsWith(logpointPrefix) && oldCondition.endsWith(logpointSuffix);
+    if (this._isLogpoint)
+      oldCondition = oldCondition.substring(logpointPrefix.length, oldCondition.length - logpointSuffix.length);
+    this._isLogpoint = this._isLogpoint || preferLogpoint;
+
     const labelElement = this.contentElement.createChild('label', 'source-frame-breakpoint-message');
     labelElement.htmlFor = 'source-frame-breakpoint-condition';
-    labelElement.createTextChild(
-        Common.UIString('The breakpoint on line %d will stop only if this expression is true:', editorLineNumber + 1));
+    const labelText = this._isLogpoint ? ls`On line ${editorLineNumber + 1}, log to the Console:` : ls
+    `The breakpoint on line ${editorLineNumber + 1} will stop only if this expression is true:`;
+    labelElement.createTextChild(labelText);
 
     self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
       this._editor =
@@ -42,6 +51,14 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
   }
 
   /**
+   * @param {string} condition
+   * @return {string}
+   */
+  static _conditionForLogpoint(condition) {
+    return `${Sources.BreakpointEditDialog._LogpointPrefix}${condition}${Sources.BreakpointEditDialog._LogpointSuffix}`;
+  }
+
+  /**
    * @param {boolean} committed
    */
   _finishEditing(committed) {
@@ -49,7 +66,9 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
       return;
     this._finished = true;
     this._editor.widget().detach();
-    const condition = this._editor.text();
+    let condition = this._editor.text();
+    if (this._isLogpoint)
+      condition = Sources.BreakpointEditDialog._conditionForLogpoint(condition);
     this._onFinish({committed, condition});
   }
 
@@ -69,3 +88,6 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
       this._finishEditing(false);
   }
 };
+
+Sources.BreakpointEditDialog._LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
+Sources.BreakpointEditDialog._LogpointSuffix = ')';

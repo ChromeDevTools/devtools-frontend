@@ -251,7 +251,8 @@ Sources.SourcesPanel = class extends UI.Panel {
    * @return {?UI.ViewLocation}
    */
   resolveLocation(locationName) {
-    if (locationName === 'sources-sidebar')
+    if (locationName === 'sources.sidebar-top' || locationName === 'sources.sidebar-bottom' ||
+        locationName === 'sources.sidebar-tabs')
       return this._sidebarPaneStack;
     else
       return this._navigatorTabbedLocation;
@@ -899,6 +900,7 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._sidebarPaneStack.widget().element.classList.add('overflow-auto');
     this._sidebarPaneStack.widget().show(vbox.element);
     this._sidebarPaneStack.widget().element.appendChild(this._debuggerPausedMessage.element());
+    this._sidebarPaneStack.appendApplicableItems('sources.sidebar-top');
     vbox.element.appendChild(this._debugToolbar.element);
 
     if (this._threadsSidebarPane)
@@ -937,11 +939,12 @@ Sources.SourcesPanel = class extends UI.Panel {
       this._splitWidget.installResizer(this._debugToolbar.gripElementForResize());
       tabbedLocation.appendView(scopeChainView);
       tabbedLocation.appendView(this._watchSidebarPane);
+      tabbedLocation.appendApplicableItems('sources.sidebar-tabs');
       this._extensionSidebarPanesContainer = tabbedLocation;
       this.sidebarPaneView = splitWidget;
     }
 
-    this._sidebarPaneStack.appendApplicableItems('sources-sidebar');
+    this._sidebarPaneStack.appendApplicableItems('sources.sidebar-bottom');
     const extensionSidebarPanes = Extensions.extensionServer.sidebarPanes();
     for (let i = 0; i < extensionSidebarPanes.length; ++i)
       this._addExtensionSidebarPane(extensionSidebarPanes[i]);

@@ -55,10 +55,30 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._deleteSelectedButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._deleteButtonClicked(null));
     editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
+    const entryPathFilterBox = new UI.ToolbarInput(ls`Filter by Path`, 1);
+    editorToolbar.appendToolbarItem(entryPathFilterBox);
+    const entryPathFilterThrottler = new Common.Throttler(300);
+    this._entryPathFilter = '';
+    entryPathFilterBox.addEventListener(UI.ToolbarInput.Event.TextChanged, () => {
+      entryPathFilterThrottler.schedule(() => {
+        this._entryPathFilter = entryPathFilterBox.value();
+        this._skipCount = 0;
+        return this._updateData(true);
+      });
+    });
+
     this._pageSize = 50;
     this._skipCount = 0;
 
     this.update(cache);
+  }
+
+  _resetDataGrid() {
+    if (this._dataGrid)
+      this._dataGrid.asWidget().detach();
+    this._dataGrid = this._createDataGrid();
+    this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
+    this._skipCount = 0;
   }
 
   /**
@@ -185,12 +205,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   update(cache) {
     this._cache = cache;
-
-    if (this._dataGrid)
-      this._dataGrid.asWidget().detach();
-    this._dataGrid = this._createDataGrid();
-    this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
-    this._skipCount = 0;
+    this._resetDataGrid();
     this._updateData(true);
   }
 
@@ -247,7 +262,13 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     }
     this._lastPageSize = pageSize;
     this._lastSkipCount = skipCount;
-    this._model.loadCacheData(this._cache, skipCount, pageSize, this._updateDataCallback.bind(this, skipCount));
+
+    return new Promise(resolve => {
+      this._model.loadCacheData(this._cache, skipCount, pageSize, this._entryPathFilter, (entries, hasMore) => {
+        this._updateDataCallback(skipCount, entries, hasMore);
+        resolve();
+      });
+    });
   }
 
   /**

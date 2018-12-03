@@ -715,24 +715,11 @@
         {
             "type": "@UI.ViewLocationResolver",
             "name": "navigator-view",
-            "category": "Sources",
             "className": "Sources.SourcesPanel"
         },
         {
             "type": "@UI.ViewLocationResolver",
-            "name": "sources.sidebar-top",
-            "category": "Sources",
-            "className": "Sources.SourcesPanel"
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "sources.sidebar-bottom",
-            "category": "Sources",
-            "className": "Sources.SourcesPanel"
-        },
-        {
-            "type": "@UI.ViewLocationResolver",
-            "name": "sources.sidebar-tabs",
+            "name": "sources-sidebar",
             "category": "Sources",
             "className": "Sources.SourcesPanel"
         },

@@ -29,8 +29,10 @@ ConsoleTestRunner.dumpConsoleMessages = function(printOriginatingCommand, dumpCl
 ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingCommand, dumpClassNames, formatter) {
   formatter = formatter || ConsoleTestRunner.prepareConsoleMessageText;
   const result = [];
-  ConsoleTestRunner.disableConsoleViewport();
   const consoleView = Console.ConsoleView.instance();
+  const originalViewportStyle = consoleView._viewport.element.style;
+  const originalSize = {width: originalViewportStyle.width, height: originalViewportStyle.height};
+  ConsoleTestRunner.disableConsoleViewport();
   if (consoleView._needsFullUpdate)
     consoleView._updateMessageList();
   const viewMessages = consoleView._visibleViewMessages;
@@ -72,6 +74,8 @@ ConsoleTestRunner.dumpConsoleMessagesIntoArray = function(printOriginatingComman
     if (printOriginatingCommand && uiMessage.consoleMessage().originatingMessage())
       result.push('Originating from: ' + uiMessage.consoleMessage().originatingMessage().messageText);
   }
+  consoleView._viewport.element.style.width = originalSize.width;
+  consoleView._viewport.element.style.height = originalSize.height;
   return result;
 };
 

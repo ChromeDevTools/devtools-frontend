@@ -37,8 +37,9 @@ Console.ConsoleViewMessage = class {
    * @param {!Components.Linkifier} linkifier
    * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
+   * @param {function(!Common.Event)} onResize
    */
-  constructor(consoleMessage, linkifier, badgePool, nestingLevel) {
+  constructor(consoleMessage, linkifier, badgePool, nestingLevel, onResize) {
     this._message = consoleMessage;
     this._linkifier = linkifier;
     this._badgePool = badgePool;
@@ -47,6 +48,7 @@ Console.ConsoleViewMessage = class {
     this._nestingLevel = nestingLevel;
     /** @type {!Array<{element: !Element, selectFirst: function()}>} */
     this._selectableChildren = [];
+    this._messageResized = onResize;
 
     /** @type {?DataGrid.DataGrid} */
     this._dataGrid = null;
@@ -626,6 +628,9 @@ Console.ConsoleViewMessage = class {
     section.enableContextMenu();
     section.setShowSelectionOnKeyboardFocus(true, true);
     this._selectableChildren.push(section);
+    section.addEventListener(UI.TreeOutline.Events.ElementAttached, this._messageResized);
+    section.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._messageResized);
+    section.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._messageResized);
     return section.element;
   }
 
@@ -695,8 +700,12 @@ Console.ConsoleViewMessage = class {
       }
       const renderResult = await UI.Renderer.render(/** @type {!Object} */ (node));
       if (renderResult) {
-        if (renderResult.tree)
+        if (renderResult.tree) {
           this._selectableChildren.push(renderResult.tree);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementAttached, this._messageResized);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementExpanded, this._messageResized);
+          renderResult.tree.addEventListener(UI.TreeOutline.Events.ElementCollapsed, this._messageResized);
+        }
         result.appendChild(renderResult.node);
       } else {
         result.appendChild(this._formatParameterAsObject(remoteObject, false));
@@ -1627,10 +1636,11 @@ Console.ConsoleGroupViewMessage = class extends Console.ConsoleViewMessage {
    * @param {!ProductRegistry.BadgePool} badgePool
    * @param {number} nestingLevel
    * @param {function()} onToggle
+   * @param {function(!Common.Event)} onResize
    */
-  constructor(consoleMessage, linkifier, badgePool, nestingLevel, onToggle) {
+  constructor(consoleMessage, linkifier, badgePool, nestingLevel, onToggle, onResize) {
     console.assert(consoleMessage.isGroupStartMessage());
-    super(consoleMessage, linkifier, badgePool, nestingLevel);
+    super(consoleMessage, linkifier, badgePool, nestingLevel, onResize);
     this._collapsed = consoleMessage.type === SDK.ConsoleMessage.MessageType.StartGroupCollapsed;
     /** @type {?UI.Icon} */
     this._expandGroupIcon = null;

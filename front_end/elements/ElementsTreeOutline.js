@@ -441,9 +441,13 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     // Walk down to populate each ancestor's children, to fill in the tree and the cache.
     for (let i = ancestors.length - 1; i >= 0; --i) {
+      const child = ancestors[i - 1] || node;
       const treeElement = ancestors[i][this._treeElementSymbol];
-      if (treeElement)
+      if (treeElement) {
         treeElement.onpopulate();  // fill the cache with the children of treeElement
+        if (child.index >= treeElement.expandedChildrenLimit())
+          this.setExpandedChildrenLimit(treeElement, child.index + 1);
+      }
     }
 
     return node[this._treeElementSymbol];

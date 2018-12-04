@@ -299,6 +299,7 @@ SDK.NetworkLog = class extends Common.Object {
     if (!manager || mainFrame.resourceTreeModel().target().parentTarget())
       return;
 
+    const oldRequests = this._requests;
     const oldManagerRequests = this._requests.filter(request => SDK.NetworkManager.forRequest(request) === manager);
     const oldRequestsSet = this._requestsSet;
     this._requests = [];
@@ -321,6 +322,24 @@ SDK.NetworkLog = class extends Common.Object {
       }
       requestsToAdd.push(request);
     }
+
+    // Preserve service worker requests from the new session.
+    const serviceWorkerRequestsToAdd = [];
+    for (const swRequest of oldRequests) {
+      const networkManager = SDK.NetworkManager.forRequest(swRequest);
+      if (!networkManager)
+        continue;
+      const target = networkManager.target();
+      if (!(target.type() === SDK.Target.Type.Worker && target.parentTarget().type() === SDK.Target.Type.ServiceWorker))
+        continue;
+
+      // If there is a matching request that came before this one, keep it.
+      const keepRequest = requestsToAdd.some(
+          request => request.url() === swRequest.url() && request.issueTime() <= swRequest.issueTime());
+      if (keepRequest)
+        serviceWorkerRequestsToAdd.push(swRequest);
+    }
+    requestsToAdd.push(...serviceWorkerRequestsToAdd);
 
     for (const request of requestsToAdd) {
       oldRequestsSet.delete(request);

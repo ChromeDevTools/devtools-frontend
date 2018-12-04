@@ -52,6 +52,12 @@ Sources.SourcesSearchScope = class {
       return -1;
     if (!uiSourceCode1.isDirty() && uiSourceCode2.isDirty())
       return 1;
+    const isFileSystem1 = uiSourceCode1.project().type() === Workspace.projectTypes.FileSystem &&
+        !Persistence.persistence.binding(uiSourceCode1);
+    const isFileSystem2 = uiSourceCode2.project().type() === Workspace.projectTypes.FileSystem &&
+        !Persistence.persistence.binding(uiSourceCode2);
+    if (isFileSystem1 !== isFileSystem2)
+      return isFileSystem1 ? 1 : -1;
     const url1 = uiSourceCode1.url();
     const url2 = uiSourceCode2.url();
     if (url1 && !url2)

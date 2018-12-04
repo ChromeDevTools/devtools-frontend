@@ -40,15 +40,15 @@ Audits2.ReportRenderer = class extends ReportRenderer {
       /** @type {!DetailsRenderer.NodeDetailsJSON} */
       const detailsItem = origElement.dataset;
       if (!detailsItem.path)
-        return;
+        continue;
 
       const nodeId = await domModel.pushNodeByPathToFrontend(detailsItem.path);
 
       if (!nodeId)
-        return;
+        continue;
       const node = domModel.nodeForId(nodeId);
       if (!node)
-        return;
+        continue;
 
       const element =
           await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));

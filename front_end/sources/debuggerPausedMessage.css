@@ -39,6 +39,7 @@
     color: red;
     line-height: 11px;
     max-height: 27px;
+    -webkit-user-select: text;
 }
 
 .status-icon {

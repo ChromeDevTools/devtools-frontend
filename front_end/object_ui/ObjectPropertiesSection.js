@@ -344,9 +344,10 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
    * @param {!Element} element
    * @param {boolean} linkify
    * @param {boolean=} includePreview
+   * @return {!Promise}
    */
   static formatObjectAsFunction(func, element, linkify, includePreview) {
-    func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
+    return func.debuggerModel().functionDetailsPromise(func).then(didGetDetails);
 
     /**
      * @param {?SDK.DebuggerModel.FunctionDetails} response

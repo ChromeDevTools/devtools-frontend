@@ -168,33 +168,33 @@ Snippets.evaluateScriptSnippet = async function(uiSourceCode) {
   Common.console.show();
 
   const url = uiSourceCode.url();
-  let scriptId;
-  {
-    const result = await runtimeModel.compileScript(expression, url, true, executionContext.id);
-    if (!result.scriptId && !result.exceptionDetails)
-      return;
-    if (!result.scriptId) {
-      SDK.consoleModel.addMessage(SDK.ConsoleMessage.fromException(
-          runtimeModel, result.exceptionDetails, /* messageType */ undefined, /* timestamp */ undefined, url));
-      return;
-    }
-    scriptId = result.scriptId;
-  }
-  const result = await runtimeModel.runScript(
-      scriptId, executionContext.id, 'console', /* silent */ false, /* includeCommandLineAPI */ true,
-      /* returnByValue */ false, /* generatePreview */ true);
-  if (!result.object && !result.exceptionDetails)
+
+  const result = await executionContext.evaluate(
+      {
+        expression: `${expression}\n//# sourceURL=${url}`,
+        objectGroup: 'console',
+        silent: false,
+        includeCommandLineAPI: true,
+        returnByValue: false,
+        generatePreview: true,
+      },
+      /* userGesture */ false,
+      /* awaitPromise */ true);
+
+  if (result.exceptionDetails) {
+    SDK.consoleModel.addMessage(SDK.ConsoleMessage.fromException(
+        runtimeModel, result.exceptionDetails, /* messageType */ undefined, /* timestamp */ undefined, url));
     return;
-  if (result.object) {
-    const consoleMessage = new SDK.ConsoleMessage(
-        runtimeModel, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Info, '',
-        SDK.ConsoleMessage.MessageType.Result, url, undefined, undefined, [result.object], undefined, undefined,
-        executionContext.id, scriptId);
-    SDK.consoleModel.addMessage(consoleMessage);
-  } else {
-    SDK.consoleModel.addMessage(
-        SDK.ConsoleMessage.fromException(runtimeModel, result.exceptionDetails, undefined, undefined, url));
   }
+  if (!result.object)
+    return;
+
+  const scripts = executionContext.debuggerModel.scriptsForSourceURL(url);
+  const scriptId = scripts[scripts.length - 1].scriptId;
+  SDK.consoleModel.addMessage(new SDK.ConsoleMessage(
+      runtimeModel, SDK.ConsoleMessage.MessageSource.JS, SDK.ConsoleMessage.MessageLevel.Info, '',
+      SDK.ConsoleMessage.MessageType.Result, url, undefined, undefined, [result.object], undefined, undefined,
+      executionContext.id, scriptId));
 };
 
 /**

@@ -650,14 +650,19 @@ Console.ConsoleViewMessage = class {
      */
     function formatTargetFunction(targetFunction) {
       const functionElement = createElement('span');
-      ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(targetFunction, functionElement, true, includePreview);
+      const promise = ObjectUI.ObjectPropertiesSection.formatObjectAsFunction(
+          targetFunction, functionElement, true, includePreview);
       result.appendChild(functionElement);
       if (targetFunction !== func) {
         const note = result.createChild('span', 'object-info-state-note');
         note.title = Common.UIString('Function was resolved from bound function.');
       }
       result.addEventListener('contextmenu', this._contextMenuEventFired.bind(this, targetFunction), false);
+      promise.then(() => this._formattedParameterAsFunctionForTest());
     }
+  }
+
+  _formattedParameterAsFunctionForTest() {
   }
 
   /**

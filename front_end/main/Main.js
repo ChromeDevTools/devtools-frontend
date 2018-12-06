@@ -152,7 +152,7 @@ Main.Main = class {
 
     Runtime.experiments.setDefaultExperiments([
       'colorContrastRatio', 'stepIntoAsync', 'oopifInlineDOM', 'consoleBelowPrompt', 'timelineTracingJSProfile',
-      'pinnedExpressions'
+      'pinnedExpressions', 'consoleKeyboardNavigation'
     ]);
   }
 

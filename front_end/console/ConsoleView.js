@@ -395,9 +395,22 @@ Console.ConsoleView = class extends UI.VBox {
    * @override
    */
   focus() {
+    if (!this._keyboardNavigationEnabled) {
+      this._focusPrompt();
+      return;
+    }
+    if (this._viewport.hasVirtualSelection())
+      this._viewport.contentElement().focus();
+    else
+      this._focusPrompt();
+  }
+
+  _focusPrompt() {
     if (!this._prompt.hasFocus()) {
+      const oldStickToBottom = this._viewport.stickToBottom();
       const oldScrollTop = this._viewport.element.scrollTop;
       this._prompt.focus();
+      this._viewport.setStickToBottom(oldStickToBottom);
       this._viewport.element.scrollTop = oldScrollTop;
     }
   }
@@ -898,12 +911,12 @@ Console.ConsoleView = class extends UI.VBox {
       if (this._keyboardNavigationEnabled) {
         if (clickedOutsideMessageList) {
           this._prompt.moveCaretToEndOfPrompt();
-          this.focus();
+          this._focusPrompt();
         }
       } else {
         if (clickedOutsideMessageList)
           this._prompt.moveCaretToEndOfPrompt();
-        this.focus();
+        this._focusPrompt();
       }
     }
   }
@@ -916,7 +929,7 @@ Console.ConsoleView = class extends UI.VBox {
     if (hasActionModifier || event.key.length !== 1 || UI.isEditing() || this._messagesElement.hasSelection())
       return;
     this._prompt.moveCaretToEndOfPrompt();
-    this.focus();
+    this._focusPrompt();
   }
 
   /**
@@ -1226,7 +1239,11 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _promptTextChanged() {
-    this._viewport.setStickToBottom(this._isScrolledToBottom());
+    const oldStickToBottom = this._viewport.stickToBottom();
+    const willStickToBottom = this._isScrolledToBottom();
+    this._viewport.setStickToBottom(willStickToBottom);
+    if (willStickToBottom && !oldStickToBottom)
+      this._scheduleViewportRefresh();
     this._promptTextChangedForTest();
   }
 
@@ -1540,6 +1557,7 @@ Console.ConsoleView.ActionDelegate = class {
       case 'console.show':
         InspectorFrontendHost.bringToFront();
         Common.console.show();
+        Console.ConsoleView.instance()._focusPrompt();
         return true;
       case 'console.clear':
         Console.ConsoleView.clearConsole();

@@ -101,6 +101,13 @@ Console.ConsoleViewport = class {
       this._observer.disconnect();
   }
 
+  /**
+   * @return {boolean}
+   */
+  hasVirtualSelection() {
+    return this._virtualSelectedIndex !== -1;
+  }
+
   copyWithStyles() {
     this._muteCopyHandler = true;
     this.element.ownerDocument.execCommand('copy');
@@ -130,7 +137,7 @@ Console.ConsoleViewport = class {
     let focusLastChild = false;
     // Make default selection when moving from external (e.g. prompt) to the container.
     if (this._virtualSelectedIndex === -1 && this._isOutsideViewport(/** @type {?Element} */ (event.relatedTarget)) &&
-        event.target === this._contentElement) {
+        event.target === this._contentElement && this._itemCount) {
       focusLastChild = true;
       this._virtualSelectedIndex = this._itemCount - 1;
 

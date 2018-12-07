@@ -42,7 +42,22 @@ BrowserSDK.LogManager = class {
 
     if (data.entry.networkRequestId)
       SDK.networkLog.associateConsoleMessageWithRequest(consoleMessage, data.entry.networkRequestId);
-    SDK.consoleModel.addMessage(consoleMessage);
+
+    if (consoleMessage.source === SDK.ConsoleMessage.MessageSource.Worker) {
+      const workerId = consoleMessage.workerId || '';
+      // We have a copy of worker messages reported through the page, so that
+      // user can see messages from the worker which has been already destroyed.
+      // When opening DevTools, give us some time to connect to the worker and
+      // not report the message twice if the worker is still alive.
+      if (SDK.targetManager.targetById(workerId))
+        return;
+      setTimeout(() => {
+        if (!SDK.targetManager.targetById(workerId))
+          SDK.consoleModel.addMessage(consoleMessage);
+      }, 1000);
+    } else {
+      SDK.consoleModel.addMessage(consoleMessage);
+    }
   }
 };
 

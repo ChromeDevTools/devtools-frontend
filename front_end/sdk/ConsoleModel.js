@@ -159,9 +159,6 @@ SDK.ConsoleModel = class extends Common.Object {
    * @param {!SDK.ConsoleMessage} msg
    */
   addMessage(msg) {
-    if (msg.source === SDK.ConsoleMessage.MessageSource.Worker && SDK.targetManager.targetById(msg.workerId))
-      return;
-
     msg._pageLoadSequenceNumber = this._pageLoadSequenceNumber;
     if (msg.source === SDK.ConsoleMessage.MessageSource.ConsoleAPI && msg.type === SDK.ConsoleMessage.MessageType.Clear)
       this._clearIfNecessary();

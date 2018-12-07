@@ -875,6 +875,71 @@ all_devtools_files = [
   "front_end/workspace_diff/module.json",
 ]
 
+devtools_test_files = [
+  "front_end/accessibility_test_runner/AccessibilityPaneTestRunner.js",
+  "front_end/accessibility_test_runner/module.json",
+  "front_end/application_test_runner/AppcacheTestRunner.js",
+  "front_end/application_test_runner/CacheStorageTestRunner.js",
+  "front_end/application_test_runner/IndexedDBTestRunner.js",
+  "front_end/application_test_runner/module.json",
+  "front_end/application_test_runner/ResourcesTestRunner.js",
+  "front_end/application_test_runner/ResourceTreeTestRunner.js",
+  "front_end/application_test_runner/ServiceWorkersTestRunner.js",
+  "front_end/audits2_test_runner/Audits2TestRunner.js",
+  "front_end/audits2_test_runner/module.json",
+  "front_end/bindings_test_runner/AutomappingTestRunner.js",
+  "front_end/bindings_test_runner/BindingsTestRunner.js",
+  "front_end/bindings_test_runner/IsolatedFilesystemTestRunner.js",
+  "front_end/bindings_test_runner/module.json",
+  "front_end/bindings_test_runner/OverridesTestRunner.js",
+  "front_end/bindings_test_runner/PersistenceTestRunner.js",
+  "front_end/console_test_runner/ConsoleTestRunner.js",
+  "front_end/console_test_runner/module.json",
+  "front_end/coverage_test_runner/CoverageTestRunner.js",
+  "front_end/coverage_test_runner/module.json",
+  "front_end/cpu_profiler_test_runner/module.json",
+  "front_end/cpu_profiler_test_runner/ProfilerTestRunner.js",
+  "front_end/data_grid_test_runner/DataGridTestRunner.js",
+  "front_end/data_grid_test_runner/module.json",
+  "front_end/device_mode_test_runner/DeviceModeTestRunner.js",
+  "front_end/device_mode_test_runner/module.json",
+  "front_end/elements_test_runner/EditDOMTestRunner.js",
+  "front_end/elements_test_runner/ElementsPanelShadowSelectionOnRefreshTestRunner.js",
+  "front_end/elements_test_runner/ElementsTestRunner.js",
+  "front_end/elements_test_runner/module.json",
+  "front_end/elements_test_runner/SetOuterHTMLTestRunner.js",
+  "front_end/elements_test_runner/StylesUpdateLinksTestRunner.js",
+  "front_end/extensions_test_runner/ExtensionsNetworkTestRunner.js",
+  "front_end/extensions_test_runner/ExtensionsTestRunner.js",
+  "front_end/extensions_test_runner/module.json",
+  "front_end/heap_profiler_test_runner/HeapProfilerTestRunner.js",
+  "front_end/heap_profiler_test_runner/module.json",
+  "front_end/integration_test_runner.html",
+  "front_end/integration_test_runner.js",
+  "front_end/integration_test_runner.json",
+  "front_end/layers_test_runner/LayersTestRunner.js",
+  "front_end/layers_test_runner/module.json",
+  "front_end/network_test_runner/module.json",
+  "front_end/network_test_runner/NetworkTestRunner.js",
+  "front_end/network_test_runner/ProductRegistryTestRunner.js",
+  "front_end/performance_test_runner/module.json",
+  "front_end/performance_test_runner/TimelineDataTestRunner.js",
+  "front_end/performance_test_runner/TimelineTestRunner.js",
+  "front_end/sdk_test_runner/module.json",
+  "front_end/sdk_test_runner/PageMockTestRunner.js",
+  "front_end/security_test_runner/module.json",
+  "front_end/security_test_runner/SecurityTestRunner.js",
+  "front_end/sources_test_runner/AutocompleteTestRunner.js",
+  "front_end/sources_test_runner/DebuggerTestRunner.js",
+  "front_end/sources_test_runner/EditorTestRunner.js",
+  "front_end/sources_test_runner/LiveEditTestRunner.js",
+  "front_end/sources_test_runner/module.json",
+  "front_end/sources_test_runner/SearchTestRunner.js",
+  "front_end/sources_test_runner/SourcesTestRunner.js",
+  "front_end/test_runner/module.json",
+  "front_end/test_runner/TestRunner.js",
+]
+
 devtools_embedder_scripts = [
   "front_end/devtools_compatibility.js",
   "front_end/Tests.js",
@@ -1076,6 +1141,30 @@ generated_remote_modules = [
   "$resources_out_dir/product_registry_impl/product_registry_impl_module.js",
 ]
 
+generated_test_modules = [
+  "$resources_out_dir/accessibility_test_runner/accessibility_test_runner_module.js",
+  "$resources_out_dir/application_test_runner/application_test_runner_module.js",
+  "$resources_out_dir/audits2_test_runner/audits2_test_runner_module.js",
+  "$resources_out_dir/bindings_test_runner/bindings_test_runner_module.js",
+  "$resources_out_dir/console_test_runner/console_test_runner_module.js",
+  "$resources_out_dir/coverage_test_runner/coverage_test_runner_module.js",
+  "$resources_out_dir/cpu_profiler_test_runner/cpu_profiler_test_runner_module.js",
+  "$resources_out_dir/data_grid_test_runner/data_grid_test_runner_module.js",
+  "$resources_out_dir/device_mode_test_runner/device_mode_test_runner_module.js",
+  "$resources_out_dir/elements_test_runner/elements_test_runner_module.js",
+  "$resources_out_dir/extensions_test_runner/extensions_test_runner_module.js",
+  "$resources_out_dir/heap_profiler_test_runner/heap_profiler_test_runner_module.js",
+  "$resources_out_dir/heap_snapshot_worker/heap_snapshot_worker_module.js",
+  "$resources_out_dir/integration_test_runner.html",
+  "$resources_out_dir/integration_test_runner.js",
+  "$resources_out_dir/layers_test_runner/layers_test_runner_module.js",
+  "$resources_out_dir/network_test_runner/network_test_runner_module.js",
+  "$resources_out_dir/performance_test_runner/performance_test_runner_module.js",
+  "$resources_out_dir/sdk_test_runner/sdk_test_runner_module.js",
+  "$resources_out_dir/security_test_runner/security_test_runner_module.js",
+  "$resources_out_dir/sources_test_runner/sources_test_runner_module.js",
+]
+
 devtools_applications = [
   "audits2_worker",
   "devtools_app",
@@ -1124,6 +1213,7 @@ copy("copy_embedder_scripts") {
   outputs = [
     "$resources_out_dir/{{source_file_part}}",
   ]
+  data = process_file_template(sources, outputs)
 }
 
 copy("copy_htaccess") {
@@ -1133,6 +1223,7 @@ copy("copy_htaccess") {
   outputs = [
     "$resources_out_dir/.htaccess",
   ]
+  data = outputs
 }
 
 copy("copy_inspector_images") {
@@ -1140,6 +1231,7 @@ copy("copy_inspector_images") {
   outputs = [
     "$resources_out_dir/Images/{{source_file_part}}",
   ]
+  data = process_file_template(sources, outputs)
 }
 
 copy("copy_emulated_devices_images") {
@@ -1147,6 +1239,7 @@ copy("copy_emulated_devices_images") {
   outputs = [
     "$resources_out_dir/emulated_devices/{{source_file_part}}",
   ]
+  data = process_file_template(sources, outputs)
 }
 
 action("generate_devtools_grd") {
@@ -1195,6 +1288,7 @@ action("devtools_extension_api") {
   outputs = [
     "$resources_out_dir/devtools_extension_api.js",
   ]
+  data = outputs
 
   args = rebase_path(outputs, root_build_dir) +
          rebase_path(devtools_extension_api_files, root_build_dir)
@@ -1210,6 +1304,7 @@ action("supported_css_properties") {
   outputs = [
     "$resources_out_dir/SupportedCSSProperties.js",
   ]
+  data = outputs
 
   args =
       rebase_path(inputs, root_build_dir) + rebase_path(outputs, root_build_dir)
@@ -1225,6 +1320,7 @@ action("aria_properties") {
   outputs = [
     "$resources_out_dir/accessibility/ARIAProperties.js",
   ]
+  data = outputs
 
   args =
       rebase_path(inputs, root_build_dir) + rebase_path(outputs, root_build_dir)
@@ -1241,6 +1337,7 @@ action("frontend_protocol_sources") {
   outputs = [
     "$resources_out_dir/InspectorBackendCommands.js",
   ]
+  data = outputs
 
   args = rebase_path(inputs, root_build_dir) + [
            "--output_js_dir",
@@ -1262,11 +1359,12 @@ action("build_release_devtools") {
     "scripts/build/rjsmin.py",
   ]
 
-  inputs = helper_scripts + all_devtools_files + generated_scripts +
-           generated_aria_properties + application_templates
+  inputs = helper_scripts + all_devtools_files + devtools_test_files +
+           generated_scripts + generated_aria_properties + application_templates
   outputs =
       generated_applications + generated_non_autostart_non_remote_modules +
-      generated_remote_modules
+      generated_remote_modules + generated_test_modules
+  data = outputs
 
   args = devtools_applications + [
            "--input_path",
@@ -1297,6 +1395,7 @@ if (debug_devtools) {
       "$resources_out_debug_dir/toolbox.html",
       "$resources_out_debug_dir/worker_app.html",
     ]
+    data = outputs
 
     args = devtools_applications + [
              "--input_path",
@@ -1315,6 +1414,7 @@ if (debug_devtools) {
     outputs = [
       "$resources_out_debug_dir/{{source_file_part}}",
     ]
+    data = process_file_template(sources, outputs)
   }
 
   copy("copy_aria_properties") {
@@ -1328,6 +1428,7 @@ if (debug_devtools) {
     outputs = [
       "$resources_out_debug_dir/accessibility/{{source_file_part}}",
     ]
+    data = process_file_template(sources, outputs)
   }
 }
 

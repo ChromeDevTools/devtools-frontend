@@ -222,7 +222,7 @@
             "type": "action",
             "actionId": "debugger.evaluate-selection",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
-            "title": "Evaluate in console",
+            "title": "Evaluate selected text in console",
             "contextTypes": [
                 "Sources.UISourceCodeFrame"
             ],

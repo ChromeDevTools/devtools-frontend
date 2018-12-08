@@ -767,7 +767,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   _appendUISourceCodeFrameItems(event, contextMenu, target) {
     if (!(target instanceof Sources.UISourceCodeFrame))
       return;
-    if (target.uiSourceCode().contentType().isFromSourceMap())
+    if (target.uiSourceCode().contentType().isFromSourceMap() || target.textEditor.selection().isEmpty())
       return;
     contextMenu.debugSection().appendAction('debugger.evaluate-selection');
   }

@@ -98,6 +98,8 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
     this.contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.SuspendStateChanged, this._onSuspendStateChanged, this);
+    UI.context.addFlavorChangeListener(SDK.CPUProfilerModel, this._updateProfileTypeSpecificUI, this);
+    UI.context.addFlavorChangeListener(SDK.HeapProfilerModel, this._updateProfileTypeSpecificUI, this);
   }
 
   /**
@@ -189,7 +191,8 @@ Profiler.ProfilesPanel = class extends UI.PanelWithSidebar {
    * @param {boolean} toggled
    */
   _updateToggleRecordAction(toggled) {
-    const enable = toggled || !SDK.targetManager.allTargetsSuspended();
+    const hasSelectedTarget = !!(UI.context.flavor(SDK.CPUProfilerModel) || UI.context.flavor(SDK.HeapProfilerModel));
+    const enable = toggled || (!SDK.targetManager.allTargetsSuspended() && hasSelectedTarget);
     this._toggleRecordAction.setEnabled(enable);
     this._toggleRecordAction.setToggled(toggled);
     if (enable)

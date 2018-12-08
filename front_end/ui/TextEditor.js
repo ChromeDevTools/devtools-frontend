@@ -90,7 +90,12 @@ UI.TextEditor.prototype = {
    * @param {number} columnNumber
    * @return {?{startColumn: number, endColumn: number, type: string}}
    */
-  tokenAtTextPosition(lineNumber, columnNumber) {}
+  tokenAtTextPosition(lineNumber, columnNumber) {},
+
+  /**
+   * @param {string} placeholder
+   */
+  setPlaceholder(placeholder) {}
 };
 
 /** @enum {symbol} */

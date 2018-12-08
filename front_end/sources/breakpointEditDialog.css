@@ -32,3 +32,31 @@
   outline: none !important;
   background: white;
 }
+
+:host(.sources-edit-breakpoint-dialog) {
+  border: none;
+  border-radius: 0;
+  z-index: 30;
+  background-color: var(--toolbar-bg-color);
+  width: 100%;
+  max-width: 600px;
+  pointer-events: auto;
+  margin-bottom: 5px;
+  padding: 0 10px 10px 5px;
+  border-left: 3px solid var(--divider-color);
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .condition-editor {
+  background-color: #fff;
+  margin-left: 3px;
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-toolbar {
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+:host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-editor:hover,
+:host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-editor:focus-within {
+  box-shadow: var(--focus-ring-inactive-shadow);
+}

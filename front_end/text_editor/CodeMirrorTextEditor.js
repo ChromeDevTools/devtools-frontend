@@ -374,6 +374,19 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
+   * @override
+   * @param {string} placeholder
+   */
+  setPlaceholder(placeholder) {
+    if (!this._placeholderElement) {
+      this._placeholderElement = createElement('pre');
+      this._placeholderElement.classList.add('placeholder-text');
+    }
+    this._placeholderElement.textContent = placeholder || '';
+    this._updatePlaceholder();
+  }
+
+  /**
    * @param {number} lineNumber
    * @param {number} lineLength
    * @param {number} charNumber

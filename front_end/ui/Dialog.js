@@ -120,7 +120,8 @@ UI.Dialog = class extends UI.GlassPane {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (this._closeOnEscape && event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+    if (this._closeOnEscape && event.keyCode === UI.KeyboardShortcut.Keys.Esc.code &&
+        UI.KeyboardShortcut.hasNoModifiers(event)) {
       event.consume(true);
       this.hide();
     }

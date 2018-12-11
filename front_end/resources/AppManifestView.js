@@ -25,13 +25,8 @@ Resources.AppManifestView = class extends UI.VBox {
     this._reportView.hideWidget();
 
     this._errorsSection = this._reportView.appendSection(Common.UIString('Errors and warnings'));
+    this._installabilitySection = this._reportView.appendSection(Common.UIString('Installability'));
     this._identitySection = this._reportView.appendSection(Common.UIString('Identity'));
-    const toolbar = this._identitySection.createToolbar();
-    toolbar.renderAsLinks();
-    const addToHomeScreen =
-        new UI.ToolbarButton(Common.UIString('Add to homescreen'), undefined, Common.UIString('Add to homescreen'));
-    addToHomeScreen.addEventListener(UI.ToolbarButton.Events.Click, this._addToHomescreen, this);
-    toolbar.appendToolbarItem(addToHomeScreen);
 
     this._presentationSection = this._reportView.appendSection(Common.UIString('Presentation'));
     this._iconsSection = this._reportView.appendSection(Common.UIString('Icons'));
@@ -64,7 +59,7 @@ Resources.AppManifestView = class extends UI.VBox {
       return;
     this._resourceTreeModel = resourceTreeModel;
     this._updateManifest();
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest, this);
   }
 
   /**
@@ -74,7 +69,7 @@ Resources.AppManifestView = class extends UI.VBox {
   modelRemoved(resourceTreeModel) {
     if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
       return;
-    resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.MainFrameNavigated, this._updateManifest, this);
+    resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest, this);
     delete this._resourceTreeModel;
   }
 
@@ -107,17 +102,24 @@ Resources.AppManifestView = class extends UI.VBox {
     if (!data)
       return;
 
+    const installabilityErrors = [];
+
     if (data.charCodeAt(0) === 0xFEFF)
       data = data.slice(1);  // Trim the BOM as per https://tools.ietf.org/html/rfc7159#section-8.1.
 
     const parsedManifest = JSON.parse(data);
     this._nameField.textContent = stringProperty('name');
     this._shortNameField.textContent = stringProperty('short_name');
+    if (!this._nameField.textContent && !this._shortNameField.textContent)
+      installabilityErrors.push(ls`Either 'name' or 'short_name' is required`);
+
     this._startURLField.removeChildren();
     const startURL = stringProperty('start_url');
     if (startURL) {
       const completeURL = /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL));
       this._startURLField.appendChild(Components.Linkifier.linkifyURL(completeURL, {text: startURL}));
+    } else {
+      installabilityErrors.push(ls`'start_url' needs to be a valid URL`);
     }
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
@@ -129,18 +131,36 @@ Resources.AppManifestView = class extends UI.VBox {
     this._backgroundColorSwatch.setColor(/** @type {!Common.Color} */ (backgroundColor));
 
     this._orientationField.textContent = stringProperty('orientation');
-    this._displayField.textContent = stringProperty('display');
+    const displayType = stringProperty('display');
+    this._displayField.textContent = displayType;
+    if (!['minimal-ui', 'standalone', 'fullscreen'].includes(displayType))
+      installabilityErrors.push(ls`'display' property must be set to 'standalone', 'fullscreen' or 'minimal-ui'`);
 
     const icons = parsedManifest['icons'] || [];
+    let hasInstallableIcon = false;
     this._iconsSection.clearContent();
     for (const icon of icons) {
+      if (!icon.sizes)
+        hasInstallableIcon = true;  // any
       const title = (icon['sizes'] || '') + '\n' + (icon['type'] || '');
+      try {
+        const widthHeight = icon['sizes'].split('x');
+        if (parseInt(widthHeight[0], 10) >= 144 && parseInt(widthHeight[1], 10) >= 144)
+          hasInstallableIcon = true;
+      } catch (e) {
+      }
       const field = this._iconsSection.appendField(title);
       const imageElement = field.createChild('img');
       imageElement.style.maxWidth = '200px';
       imageElement.style.maxHeight = '200px';
       imageElement.src = Common.ParsedURL.completeURL(url, icon['src']);
     }
+    if (!hasInstallableIcon)
+      installabilityErrors.push(ls`An icon at least 144px x 144px large is required`);
+    this._installabilitySection.clearContent();
+    this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
+    for (const error of installabilityErrors)
+      this._installabilitySection.appendRow().appendChild(UI.createLabel(error, 'smallicon-warning'));
 
     /**
      * @param {string} name
@@ -151,17 +171,6 @@ Resources.AppManifestView = class extends UI.VBox {
       if (typeof value !== 'string')
         return '';
       return value;
-    }
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _addToHomescreen(event) {
-    const target = SDK.targetManager.mainTarget();
-    if (target && target.type() === SDK.Target.Type.Frame) {
-      target.pageAgent().requestAppBanner();
-      Common.console.show();
     }
   }
 };

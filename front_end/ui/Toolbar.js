@@ -578,7 +578,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
     const clearButton = this.element.createChild('div', 'toolbar-input-clear-button');
     clearButton.appendChild(UI.Icon.create('mediumicon-gray-cross-hover', 'search-cancel-button'));
     clearButton.addEventListener('click', () => {
-      this._internalSetValue('', true);
+      this.setValue('', true);
       this._prompt.focus();
     });
 
@@ -595,16 +595,9 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
 
   /**
    * @param {string} value
+   * @param {boolean=} notify
    */
-  setValue(value) {
-    this._internalSetValue(value, false);
-  }
-
-  /**
-   * @param {string} value
-   * @param {boolean} notify
-   */
-  _internalSetValue(value, notify) {
+  setValue(value, notify) {
     this._prompt.setText(value);
     if (notify)
       this._onChangeCallback();
@@ -624,7 +617,7 @@ UI.ToolbarInput = class extends UI.ToolbarItem {
   _onKeydownCallback(event) {
     if (!isEscKey(event) || !this._prompt.text())
       return;
-    this._internalSetValue('', true);
+    this.setValue('', true);
     event.consume(true);
   }
 

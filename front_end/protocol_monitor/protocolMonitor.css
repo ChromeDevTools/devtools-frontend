@@ -30,3 +30,8 @@
 .protocol-monitor-toolbar {
     border-bottom:var(--divider-border);
 }
+
+.error {
+    background-color: hsl(0, 100%, 97%);
+    color: red;
+}

@@ -48,6 +48,8 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
         DataGrid.DataGrid.Events.SelectedNode, event => this._infoWidget.render(event.data.data));
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.DeselectedNode, event => this._infoWidget.render(null));
     this._dataGrid.setHeaderContextMenuCallback(this._innerHeaderContextMenu.bind(this));
+    this._dataGrid.setRowContextMenuCallback(this._innerRowContextMenu.bind(this));
+
 
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortDataGrid.bind(this));
     this._dataGrid.setStickToBottom(true);
@@ -65,9 +67,12 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       const filters = this._filterParser.parse(query);
       this._filter = node => {
         for (const {key, text, negative} of filters) {
-          if (!(key in node.data) || !text)
+          if (!text)
             continue;
-          const found = JSON.stringify(node.data[key]).indexOf(text) !== -1;
+          const data = key ? node.data[key] : node.data;
+          if (!data)
+            continue;
+          const found = JSON.stringify(data).toLowerCase().indexOf(text.toLowerCase()) !== -1;
           if (found === negative)
             return false;
         }
@@ -99,6 +104,22 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
           columnConfig.title, this._toggleColumnVisibility.bind(this, columnConfig), columnConfig.visible);
     }
     contextMenu.show();
+  }
+
+  /**
+   * @param {!UI.ContextMenu} contextMenu
+   * @param {!ProtocolMonitor.ProtocolMonitor.ProtocolNode} node
+   */
+  _innerRowContextMenu(contextMenu, node) {
+    contextMenu.defaultSection().appendItem(ls`Filter`, () => {
+      this._textFilterUI.setValue(`method:${node.data.method}`, true);
+    });
+    contextMenu.defaultSection().appendItem(ls`Documentation`, () => {
+      const [domain, method] = node.data.method.split('.');
+      const type = node.data.direction === 'sent' ? 'method' : 'event';
+      InspectorFrontendHost.openInNewTab(
+          `https://chromedevtools.github.io/devtools-protocol/tot/${domain}#${type}-${method}`);
+    });
   }
 
   /**
@@ -164,7 +185,8 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
       const node = this._nodeForId[message.id];
       if (!node)
         return;
-      node.data.response = message.result;
+      node.data.response = message.result || message.error;
+      node.hasError = !!message.error;
       node.refresh();
       if (this._dataGrid.selectedNode === node)
         this._infoWidget.render(node.data);
@@ -201,6 +223,7 @@ ProtocolMonitor.ProtocolMonitor = class extends UI.VBox {
 ProtocolMonitor.ProtocolMonitor.ProtocolNode = class extends DataGrid.SortableDataGridNode {
   constructor(data) {
     super(data);
+    this.hasError = false;
   }
 
   /**
@@ -241,6 +264,7 @@ ProtocolMonitor.ProtocolMonitor.ProtocolNode = class extends DataGrid.SortableDa
     const element = super.element();
     element.classList.toggle('protocol-message-sent', this.data.direction === 'sent');
     element.classList.toggle('protocol-message-recieved', this.data.direction !== 'sent');
+    element.classList.toggle('error', this.hasError);
     return element;
   }
 };

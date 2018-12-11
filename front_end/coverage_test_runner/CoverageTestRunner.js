@@ -30,6 +30,16 @@ CoverageTestRunner.pollCoverage = function() {
 };
 
 /**
+ * @return {!Promise<string>}
+ */
+CoverageTestRunner.exportReport = async function() {
+  const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
+  let data;
+  await coverageView._model.exportReport({write: d => data = d, close: _ => 0});
+  return data;
+};
+
+/**
  * @return {!Promise<!SourceFrame.SourceFrame>}
  */
 CoverageTestRunner.sourceDecorated = async function(source) {

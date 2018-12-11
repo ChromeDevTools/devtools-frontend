@@ -36,9 +36,13 @@ Coverage.CoverageView = class extends UI.VBox {
     this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._clear.bind(this));
     toolbar.appendToolbarItem(this._clearButton);
 
+    toolbar.appendSeparator();
+    const saveButton = new UI.ToolbarButton(Common.UIString('Export...'), 'largeicon-download');
+    saveButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._exportReport());
+    toolbar.appendToolbarItem(saveButton);
+
     /** @type {?RegExp} */
     this._textFilterRegExp = null;
-
     toolbar.appendSeparator();
     this._filterInput = new UI.ToolbarInput(Common.UIString('URL filter'), 0.4, 1);
     this._filterInput.setEnabled(false);
@@ -221,6 +225,15 @@ Coverage.CoverageView = class extends UI.VBox {
     if (coverageInfo.isContentScript() && !this._showContentScriptsSetting.get())
       return false;
     return ignoreTextFilter || !this._textFilterRegExp || this._textFilterRegExp.test(url);
+  }
+
+  async _exportReport() {
+    const fos = new Bindings.FileOutputStream();
+    const fileName = `Coverage-${new Date().toISO8601Compact()}.json`;
+    const accepted = await fos.open(fileName);
+    if (!accepted)
+      return;
+    this._model.exportReport(fos);
   }
 };
 

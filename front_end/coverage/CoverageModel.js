@@ -274,6 +274,65 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
     urlCoverage._usedSize += coverageInfo._usedSize - oldUsedSize;
     return coverageInfo;
   }
+
+  /**
+   * @param {!Bindings.FileOutputStream} fos
+   */
+  async exportReport(fos) {
+    const result = [];
+    for (const urlInfo of this._coverageByURL.values()) {
+      const url = urlInfo.url();
+      if (url.startsWith('extensions::') || url.startsWith('chrome-extension://'))
+        continue;
+
+      // For .html resources, multiple scripts share URL, but have different offsets.
+      let useFullText = false;
+      for (const info of urlInfo._coverageInfoByLocation.values()) {
+        if (info._lineOffset || info._columnOffset) {
+          useFullText = !!url;
+          break;
+        }
+      }
+
+      let fullText = null;
+      if (useFullText) {
+        const resource = SDK.ResourceTreeModel.resourceForURL(url);
+        fullText = resource ? new TextUtils.Text(await resource.requestContent()) : null;
+      }
+
+      // We have full text for this resource, resolve the offsets using the text line endings.
+      if (fullText) {
+        const entry = {url, ranges: [], text: fullText.value()};
+        for (const info of urlInfo._coverageInfoByLocation.values()) {
+          const offset = fullText ? fullText.offsetFromPosition(info._lineOffset, info._columnOffset) : 0;
+          let start = 0;
+          for (const segment of info._segments) {
+            if (segment.count)
+              entry.ranges.push({start: start + offset, end: segment.end + offset});
+            else
+              start = segment.end;
+          }
+        }
+        result.push(entry);
+        continue;
+      }
+
+      // Fall back to the per-script operation.
+      for (const info of urlInfo._coverageInfoByLocation.values()) {
+        const entry = {url, ranges: [], text: await info.contentProvider().requestContent()};
+        let start = 0;
+        for (const segment of info._segments) {
+          if (segment.count)
+            entry.ranges.push({start: start, end: segment.end});
+          else
+            start = segment.end;
+        }
+        result.push(entry);
+      }
+    }
+    await fos.write(JSON.stringify(result, undefined, 2));
+    fos.close();
+  }
 };
 
 Coverage.URLCoverageInfo = class {
@@ -357,7 +416,7 @@ Coverage.URLCoverageInfo = class {
     if ((type & Coverage.CoverageType.JavaScript) && !this._coverageInfoByLocation.size)
       this._isContentScript = /** @type {!SDK.Script} */ (contentProvider).isContentScript();
 
-    entry = new Coverage.CoverageInfo(contentProvider, contentLength, type);
+    entry = new Coverage.CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type);
     this._coverageInfoByLocation.set(key, entry);
     this._size += contentLength;
 
@@ -369,12 +428,16 @@ Coverage.CoverageInfo = class {
   /**
    * @param {!Common.ContentProvider} contentProvider
    * @param {number} size
+   * @param {number} lineOffset
+   * @param {number} columnOffset
    * @param {!Coverage.CoverageType} type
    */
-  constructor(contentProvider, size, type) {
+  constructor(contentProvider, size, lineOffset, columnOffset, type) {
     this._contentProvider = contentProvider;
     this._size = size;
     this._usedSize = 0;
+    this._lineOffset = lineOffset;
+    this._columnOffset = columnOffset;
     this._coverageType = type;
 
     /** !Array<!Coverage.CoverageSegment> */

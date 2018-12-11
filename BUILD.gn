@@ -270,6 +270,8 @@ all_devtools_files = [
   "front_end/emulation/devicesSettingsTab.css",
   "front_end/emulation/DevicesSettingsTab.js",
   "front_end/emulation/EmulatedDevices.js",
+  "front_end/emulation/geolocationsSettingsTab.css",
+  "front_end/emulation/GeolocationsSettingsTab.js",
   "front_end/emulation/inspectedPagePlaceholder.css",
   "front_end/emulation/InspectedPagePlaceholder.js",
   "front_end/emulation/mediaQueryInspector.css",
@@ -985,9 +987,9 @@ devtools_emulated_devices_images = [
 ]
 
 devtools_image_files = [
-  "front_end/Images/accelerometer-back.png",
+  "front_end/Images/accelerometer-back.svg",
   "front_end/Images/accelerometer-bottom.png",
-  "front_end/Images/accelerometer-front.png",
+  "front_end/Images/accelerometer-front.svg",
   "front_end/Images/accelerometer-left.png",
   "front_end/Images/accelerometer-right.png",
   "front_end/Images/accelerometer-top.png",

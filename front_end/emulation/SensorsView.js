@@ -48,24 +48,38 @@ Emulation.SensorsView = class extends UI.VBox {
       title: Common.UIString('No override'),
       location: Emulation.SensorsView.NonPresetOptions.NoOverride
     };
+
+    this._locationSelectElement = fields.createChild('select', 'chrome-select');
+
+    // No override
+    this._locationSelectElement.appendChild(new Option(noOverrideOption.title, noOverrideOption.location));
+
+    // Locations
+    this._customLocationsGroup = this._locationSelectElement.createChild('optgroup');
+    this._customLocationsGroup.label = ls`Overrides`;
+    const customGeolocations = Common.moduleSetting('emulation.geolocations');
+    fields.appendChild(UI.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations)));
+    const fillCustomSettings = () => {
+      this._customLocationsGroup.removeChildren();
+      for (const geolocation of customGeolocations.get())
+        this._customLocationsGroup.appendChild(new Option(geolocation.title, JSON.stringify(geolocation)));
+    };
+    customGeolocations.addChangeListener(fillCustomSettings);
+    fillCustomSettings();
+
+    // Other location
     const customLocationOption = {
-      title: Common.UIString('Custom location...'),
+      title: Common.UIString('Other\u2026'),
       location: Emulation.SensorsView.NonPresetOptions.Custom
     };
-    this._locationSelectElement = this.contentElement.createChild('select', 'chrome-select');
-    this._locationSelectElement.appendChild(new Option(noOverrideOption.title, noOverrideOption.location));
     this._locationSelectElement.appendChild(new Option(customLocationOption.title, customLocationOption.location));
 
-    const locationGroups = Emulation.SensorsView.PresetLocations;
-    for (let i = 0; i < locationGroups.length; ++i) {
-      const group = locationGroups[i].value;
-      const groupElement = this._locationSelectElement.createChild('optgroup');
-      groupElement.label = locationGroups[i].title;
-      for (let j = 0; j < group.length; ++j)
-        groupElement.appendChild(new Option(group[j].title, group[j].location));
-    }
+    // Error location.
+    const group = this._locationSelectElement.createChild('optgroup');
+    group.label = ls`Error`;
+    group.appendChild(new Option(ls`Location unavailable`, Emulation.SensorsView.NonPresetOptions.Unavailable));
+
     this._locationSelectElement.selectedIndex = 0;
-    fields.appendChild(this._locationSelectElement);
     this._locationSelectElement.addEventListener('change', this._geolocationSelectChanged.bind(this));
 
     // Validated input fieldset.
@@ -117,9 +131,9 @@ Emulation.SensorsView = class extends UI.VBox {
     } else {
       this._geolocationOverrideEnabled = true;
       const coordinates = JSON.parse(value);
-      this._geolocation = new SDK.EmulationModel.Geolocation(coordinates[0], coordinates[1], false);
-      this._latitudeSetter(coordinates[0]);
-      this._longitudeSetter(coordinates[1]);
+      this._geolocation = new SDK.EmulationModel.Geolocation(coordinates.lat, coordinates.long, false);
+      this._latitudeSetter(coordinates.lat);
+      this._longitudeSetter(coordinates.long);
     }
 
     this._applyGeolocation();
@@ -462,34 +476,10 @@ Emulation.SensorsView.DeviceOrientationModificationSource = {
 
 /** {string} */
 Emulation.SensorsView.NonPresetOptions = {
-  'NoOverride': 'noOverride',
-  'Custom': 'custom',
-  'Unavailable': 'unavailable'
+  NoOverride: 'noOverride',
+  Custom: 'custom',
+  Unavailable: 'unavailable'
 };
-
-/** @type {!Array.<{title: string, value: !Array.<{title: string, location: string}>}>} */
-Emulation.SensorsView.PresetLocations = [
-  {
-    title: 'Presets',
-    value: [
-      {title: Common.UIString('Berlin'), location: '[52.520007, 13.404954]'},
-      {title: Common.UIString('London'), location: '[51.507351, -0.127758]'},
-      {title: Common.UIString('Moscow'), location: '[55.755826, 37.617300]'},
-      {title: Common.UIString('Mountain View'), location: '[37.386052, -122.083851]'},
-      {title: Common.UIString('Mumbai'), location: '[19.075984, 72.877656]'},
-      {title: Common.UIString('San Francisco'), location: '[37.774929, -122.419416]'},
-      {title: Common.UIString('Shanghai'), location: '[31.230416, 121.473701]'},
-      {title: Common.UIString('São Paulo'), location: '[-23.550520, -46.633309]'},
-      {title: Common.UIString('Tokyo'), location: '[35.689487, 139.691706]'},
-    ]
-  },
-  {
-    title: 'Error',
-    value: [
-      {title: Common.UIString('Location unavailable'), location: Emulation.SensorsView.NonPresetOptions.Unavailable}
-    ]
-  }
-];
 
 /** @type {!Array.<{title: string, value: !Array.<{title: string, orientation: string}>}>} */
 Emulation.SensorsView.PresetOrientations = [{

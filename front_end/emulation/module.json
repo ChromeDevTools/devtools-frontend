@@ -149,6 +149,33 @@
             "order": 100,
             "className": "Emulation.SensorsView",
             "tags": "geolocation, accelerometer, device orientation"
+        },
+        {
+            "type": "setting",
+            "settingName": "emulation.geolocations",
+            "settingType": "array",
+            "defaultValue": [
+              {"title": "Berlin", "lat": 52.520007, "long": 13.404954},
+              {"title": "London", "lat": 51.507351, "long": -0.127758},
+              {"title": "Moscow", "lat": 55.755826, "long": 37.617300},
+              {"title": "Mountain View", "lat": 37.386052, "long": -122.083851},
+              {"title": "Mumbai", "lat": 19.075984, "long": 72.877656},
+              {"title": "San Francisco", "lat": 37.774929, "long": -122.419416},
+              {"title": "Shanghai", "lat": 31.230416, "long": 121.473701},
+              {"title": "São Paulo", "lat": -23.550520, "long": -46.633309},
+              {"title": "Tokyo", "lat": 35.689487, "long": 139.691706}
+            ]
+        },
+        {
+            "type": "view",
+            "location": "settings-view",
+            "id": "emulation-geolocations",
+            "title": "Geolocations",
+            "order": 40,
+            "className": "Emulation.GeolocationsSettingsTab",
+            "settings": [
+                "emulation.geolocations"
+            ]
         }
     ],
     "dependencies": [
@@ -168,12 +195,14 @@
         "DeviceModeModel.js",
         "DeviceModeToolbar.js",
         "DeviceModeView.js",
-        "DeviceModeWrapper.js"
+        "DeviceModeWrapper.js",
+        "GeolocationsSettingsTab.js"
     ],
     "resources": [
         "devicesSettingsTab.css",
         "deviceModeToolbar.css",
         "deviceModeView.css",
+        "geolocationsSettingsTab.css",
         "inspectedPagePlaceholder.css",
         "mediaQueryInspector.css",
         "sensors.css"

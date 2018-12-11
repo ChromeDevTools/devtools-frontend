@@ -113,7 +113,7 @@
 }
 
 .orientation-box {
-    width: 66px;
+    width: 62px;
     height: 122px;
     left: 0;
     right: 0;
@@ -136,31 +136,31 @@
 .orientation-front,
 .orientation-back
 {
-    width: 66px;
+    width: 62px;
     height: 122px;
     border-radius: 8px;
 }
 
 .orientation-front {
-    background-image: url(Images/accelerometer-front.png);
+    background-image: url(Images/accelerometer-front.svg);
 }
 
 .orientation-back {
-    transform: rotateY(180deg) translateZ(12px);
-    background-image: url(Images/accelerometer-back.png);
+    transform: rotateY(180deg) translateZ(8px);
+    background-image: url(Images/accelerometer-back.svg);
 }
 
 
 .orientation-left,
 .orientation-right {
-    width: 12px;
+    width: 8px;
     height: 106px;
     top: 8px;
     background-position: center center;
 }
 
 .orientation-left {
-    left: -12px;
+    left: -8px;
     transform-origin: right center;
     transform: rotateY(-90deg);
     background-image: url(Images/accelerometer-left.png);
@@ -168,7 +168,7 @@
 
 
 .orientation-right {
-    right: -12px;
+    right: -8px;
     transform-origin: left center;
     transform: rotateY(90deg);
     background-image: url(Images/accelerometer-right.png);
@@ -180,7 +180,7 @@
 .orientation-right::after
 {
     content: '';
-    width: 12px;
+    width: 8px;
     height: 6px;
 }
 
@@ -215,13 +215,13 @@
 .orientation-top,
 .orientation-bottom {
     width: 50px;
-    height: 12px;
+    height: 8px;
     left: 8px;
     background-position: center center;
 }
 
 .orientation-top {
-    top: -12px;
+    top: -8px;
     transform-origin: center bottom;
     transform: rotateX(90deg);
     background-image: url(Images/accelerometer-top.png);
@@ -229,7 +229,7 @@
 
 
 .orientation-bottom {
-    bottom: -12px;
+    bottom: -8px;
     transform-origin: center top;
     transform: rotateX(-90deg);
     background-image: url(Images/accelerometer-bottom.png);
@@ -243,7 +243,7 @@
 {
     content: '';
     width: 8px;
-    height: 12px;
+    height: 8px;
 }
 
 .orientation-top::before,
@@ -301,11 +301,15 @@ fieldset.device-orientation-override-section {
 
 .panel-section-separator {
     height: 2px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     background: #f1f1f1;
 }
 
 .reload-warning {
     align-self: center;
     margin-left: 10px;
+}
+
+button[is=text-button] {
+    margin: 0 10px;
 }

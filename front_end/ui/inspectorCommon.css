@@ -50,6 +50,10 @@
     outline-width: 0;
 }
 
+input[type=radio]:focus {
+    outline: auto 5px -webkit-focus-ring-color;
+}
+
 img {
     -webkit-user-drag: none;
 }

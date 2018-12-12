@@ -43,13 +43,18 @@ Extensions.ExtensionView = class extends UI.Widget {
     this.setHideOnDetach();
     this.element.className = 'vbox flex-auto';  // Override
 
+    // TODO(crbug.com/872438): remove once we can use this._iframe instead
+    this.element.tabIndex = -1;
+
     this._server = server;
     this._id = id;
     this._iframe = createElement('iframe');
     this._iframe.addEventListener('load', this._onLoad.bind(this), false);
     this._iframe.src = src;
     this._iframe.className = className;
-    this.setDefaultFocusedElement(this._iframe);
+
+    // TODO(crbug.com/872438): make this._iframe the default focused element
+    this.setDefaultFocusedElement(this.element);
 
     this.element.appendChild(this._iframe);
   }

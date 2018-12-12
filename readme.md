@@ -74,7 +74,7 @@ Formats your Python code using [yapf](https://github.com/google/yapf)
 > Note: Yapf is a command line tool. You will have to install this manually, either from PyPi through `pip install yapf` or if you want to enable multiprocessing in Python 2.7, `pip install futures`
 
 #### `npm test`
-Builds devtools and runs all inspector/devtools layout tests.
+Builds devtools and runs all inspector/devtools web tests.
 
 > Note: If you're using a full chromium checkout and compiled content shell in out/Release, then `npm test` uses that. Otherwise, with only a front-end checkout (i.e. cloning from GitHub), then `npm test` will fetch a previously compiled content shell from the cloud (and cache it for future test runs).
 

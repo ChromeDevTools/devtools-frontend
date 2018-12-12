@@ -97,9 +97,10 @@
     background-color: var(--selection-inactive-bg-color);
 }
 
-.elements-disclosure .elements-tree-outline.hide-selection-when-blurred li.selected:focus[data-keyboard-focus="true"] .selection {
-    background: rgba(0, 0, 0, 0.08);
+.elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .highlight > * {
+    background: var(--focus-bg-color);
     border-radius: 2px;
+    box-shadow: 0px 0px 0px 2px var(--focus-bg-color);
 }
 
 .elements-disclosure ol {

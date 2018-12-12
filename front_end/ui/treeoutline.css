@@ -159,7 +159,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
-    background: rgba(0, 0, 0, 0.08);
+    background: var(--focus-bg-color);
     border-radius: 2px;
 }
 

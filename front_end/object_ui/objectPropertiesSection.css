@@ -65,3 +65,14 @@
 .property-prompt {
     margin-left: 4px;
 }
+
+.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] {
+    background: none;
+}
+
+.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] ::content > *,
+.tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .name-and-value {
+    background: var(--focus-bg-color);
+    border-radius: 2px;
+    box-shadow: 0px 0px 0px 2px var(--focus-bg-color);
+}

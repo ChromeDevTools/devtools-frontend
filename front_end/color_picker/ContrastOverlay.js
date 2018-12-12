@@ -13,15 +13,19 @@ ColorPicker.ContrastOverlay = class {
 
     this._visible = false;
 
-    const contrastRatioSVG = colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
-    this._contrastRatioLine = contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line');
+    this._contrastRatioSVG = colorElement.createSVGChild('svg', 'spectrum-contrast-container fill');
+    this._contrastRatioLines = {
+      aa: this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line'),
+      aaa: this._contrastRatioSVG.createSVGChild('path', 'spectrum-contrast-line')
+    };
 
     this._width = 0;
     this._height = 0;
 
     this._contrastRatioLineBuilder = new ColorPicker.ContrastRatioLineBuilder(this._contrastInfo);
-    this._contrastRatioLineThrottler = new Common.Throttler(0);
-    this._drawContrastRatioLineBound = this._drawContrastRatioLine.bind(this);
+
+    this._contrastRatioLinesThrottler = new Common.Throttler(0);
+    this._drawContrastRatioLinesBound = this._drawContrastRatioLines.bind(this);
 
     this._contrastInfo.addEventListener(ColorPicker.ContrastInfo.Events.ContrastInfoUpdated, this._update.bind(this));
   }
@@ -30,7 +34,7 @@ ColorPicker.ContrastOverlay = class {
     if (!this._visible || this._contrastInfo.isNull() || !this._contrastInfo.contrastRatio())
       return;
 
-    this._contrastRatioLineThrottler.schedule(this._drawContrastRatioLineBound);
+    this._contrastRatioLinesThrottler.schedule(this._drawContrastRatioLinesBound);
   }
 
   /**
@@ -48,18 +52,18 @@ ColorPicker.ContrastOverlay = class {
    */
   setVisible(visible) {
     this._visible = visible;
-    this._contrastRatioLine.classList.toggle('hidden', !visible);
+    this._contrastRatioSVG.classList.toggle('hidden', !visible);
     this._update();
   }
 
-  /**
-   * @return {!Promise}
-   */
-  _drawContrastRatioLine() {
-    const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height);
-    if (path)
-      this._contrastRatioLine.setAttribute('d', path);
-    return Promise.resolve();
+  async _drawContrastRatioLines() {
+    for (const level in this._contrastRatioLines) {
+      const path = this._contrastRatioLineBuilder.drawContrastRatioLine(this._width, this._height, level);
+      if (path)
+        this._contrastRatioLines[level].setAttribute('d', path);
+      else
+        this._contrastRatioLines[level].removeAttribute('d');
+    }
   }
 };
 
@@ -70,21 +74,16 @@ ColorPicker.ContrastRatioLineBuilder = class {
   constructor(contrastInfo) {
     /** @type {!ColorPicker.ContrastInfo} */
     this._contrastInfo = contrastInfo;
-
-    /** @type {?string} */
-    this._bgColorForPreviousLine = null;
-
-    this._hueForPreviousLine = 0;
-    this._alphaForPreviousLine = 0;
   }
 
   /**
    * @param {number} width
    * @param {number} height
+   * @param {string} level
    * @return {?string}
    */
-  drawContrastRatioLine(width, height) {
-    const requiredContrast = this._contrastInfo.contrastRatioThreshold('aa');
+  drawContrastRatioLine(width, height, level) {
+    const requiredContrast = this._contrastInfo.contrastRatioThreshold(level);
     if (!width || !height || !requiredContrast)
       return null;
 
@@ -98,13 +97,6 @@ ColorPicker.ContrastRatioLineBuilder = class {
     const hsva = this._contrastInfo.hsva();
     const bgColor = this._contrastInfo.bgColor();
     if (!hsva || !bgColor)
-      return null;
-
-    const bgColorString = bgColor.asString(Common.Color.Format.RGBA);
-
-    // Don't compute a new line if it would be identical to the previous line.
-    if (hsva[H] === this._hueForPreviousLine && hsva[A] === this._alphaForPreviousLine &&
-        bgColorString === this._bgColorForPreviousLine)
       return null;
 
     const fgRGBA = [];
@@ -209,11 +201,8 @@ ColorPicker.ContrastRatioLineBuilder = class {
       if (s !== null)
         pathBuilder = pathBuilder.concat(['L', (s * width).toFixed(2), '-0.1']);
     }
-
-    this._bgColorForPreviousLine = bgColorString;
-    this._hueForPreviousLine = hsva[H];
-    this._alphaForPreviousLine = hsva[A];
-
+    if (pathBuilder.length === 0)
+      return null;
     return pathBuilder.join(' ');
   }
 };

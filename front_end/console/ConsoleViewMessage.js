@@ -46,7 +46,7 @@ Console.ConsoleViewMessage = class {
     this._repeatCount = 1;
     this._closeGroupDecorationCount = 0;
     this._nestingLevel = nestingLevel;
-    /** @type {!Array<{element: !Element, selectFirst: function()}>} */
+    /** @type {!Array<{element: !Element, forceSelect: function()}>} */
     this._selectableChildren = [];
     this._messageResized = onResize;
 
@@ -285,7 +285,7 @@ Console.ConsoleViewMessage = class {
       const linkElement = Components.Linkifier.linkifyRevealable(request, request.url(), request.url());
       // Focus is handled by the viewport.
       linkElement.tabIndex = -1;
-      this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});
+      this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       messageElement.appendChild(linkElement);
       if (request.failed)
         messageElement.createTextChildren(' ', request.localizedFailDescription);
@@ -298,7 +298,7 @@ Console.ConsoleViewMessage = class {
         const linkElement = Components.Linkifier.linkifyRevealable(
             /** @type {!SDK.NetworkRequest} */ (request), title, request.url());
         linkElement.tabIndex = -1;
-        this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});
+        this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
         return linkElement;
       });
       messageElement.appendChild(fragment);
@@ -395,7 +395,7 @@ Console.ConsoleViewMessage = class {
     stackTraceElement.appendChild(stackTracePreview.element);
     for (const linkElement of stackTracePreview.links) {
       linkElement.tabIndex = -1;
-      this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});
+      this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
     }
     stackTraceElement.classList.add('hidden');
     this._expandTrace = expand => {
@@ -1137,7 +1137,7 @@ Console.ConsoleViewMessage = class {
   _selectNearestVisibleChild(fromIndex, backwards) {
     const nearestChild = this._nearestVisibleChild(fromIndex, backwards);
     if (nearestChild) {
-      nearestChild.selectFirst();
+      nearestChild.forceSelect();
       return true;
     }
     return false;
@@ -1146,7 +1146,7 @@ Console.ConsoleViewMessage = class {
   /**
    * @param {number} fromIndex
    * @param {boolean=} backwards
-   * @return {?{element: !Element, selectFirst: function()}}
+   * @return {?{element: !Element, forceSelect: function()}}
    */
   _nearestVisibleChild(fromIndex, backwards) {
     const childCount = this._selectableChildren.length;
@@ -1494,7 +1494,7 @@ Console.ConsoleViewMessage = class {
       const scriptLocationLink = this._linkifier.linkifyScriptLocation(
           debuggerModel.target(), null, links[i].url, links[i].lineNumber, links[i].columnNumber);
       scriptLocationLink.tabIndex = -1;
-      this._selectableChildren.push({element: scriptLocationLink, selectFirst: () => scriptLocationLink.focus()});
+      this._selectableChildren.push({element: scriptLocationLink, forceSelect: () => scriptLocationLink.focus()});
       formattedResult.appendChild(scriptLocationLink);
       start = links[i].positionRight;
     }
@@ -1561,7 +1561,7 @@ Console.ConsoleViewMessage = class {
     return this._linkifyWithCustomLinkifier(string, (text, url, lineNumber, columnNumber) => {
       const linkElement = Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
       linkElement.tabIndex = -1;
-      this._selectableChildren.push({element: linkElement, selectFirst: () => linkElement.focus()});
+      this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
       return linkElement;
     });
   }

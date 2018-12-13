@@ -171,10 +171,13 @@ SDK.TargetManager = class extends Common.Object {
    * @param {!SDK.Target.Type} type
    * @param {?SDK.Target} parentTarget
    * @param {string=} sessionId
+   * @param {boolean=} waitForDebuggerInPage
    * @return {!SDK.Target}
    */
-  createTarget(id, name, type, parentTarget, sessionId) {
+  createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage) {
     const target = new SDK.Target(this, id, name, type, parentTarget, sessionId || '', this._isSuspended);
+    if (waitForDebuggerInPage)
+      target.pageAgent().waitForDebugger();
     target.createModels(new Set(this._modelObservers.keysArray()));
     this._targets.push(target);
 

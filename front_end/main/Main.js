@@ -275,7 +275,7 @@ Main.Main = class {
     const instances =
         await Promise.all(self.runtime.extensions('early-initialization').map(extension => extension.instance()));
     for (const instance of instances)
-      /** @type {!Common.Runnable} */ (instance).run();
+      await /** @type {!Common.Runnable} */ (instance).run();
     // Used for browser tests.
     InspectorFrontendHost.readyForTest();
     // Asynchronously run the extensions.

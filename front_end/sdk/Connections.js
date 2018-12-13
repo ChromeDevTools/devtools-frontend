@@ -256,13 +256,15 @@ SDK.StubConnection = class {
 /**
  * @param {function()} createMainTarget
  * @param {function()} websocketConnectionLost
+ * @return {!Promise}
  */
-SDK.initMainConnection = function(createMainTarget, websocketConnectionLost) {
+SDK.initMainConnection = async function(createMainTarget, websocketConnectionLost) {
   SDK._websocketConnectionLost = websocketConnectionLost;
   SDK._createMainTarget = createMainTarget;
   Protocol.Connection.setFactory(SDK._createMainConnection);
-  SDK._createMainTarget();
+  await SDK._createMainTarget();
   InspectorFrontendHost.connectionReady();
+  return Promise.resolve();
 };
 
 /**

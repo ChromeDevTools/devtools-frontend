@@ -592,7 +592,7 @@ DataGrid.DataGrid = class extends Common.Object {
     for (let i = 0; i < children.length; ++i) {
       const node = children[i];
       for (let j = 0; j < this._columnsArray.length; ++j) {
-        const text = node.data[this._columnsArray[j].id];
+        const text = String(node.data[this._columnsArray[j].id]);
         if (text.length > widths[j])
           widths[j] = text.length;
       }

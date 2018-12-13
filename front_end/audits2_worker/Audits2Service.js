@@ -48,7 +48,7 @@ var Audits2Service = class {  // eslint-disable-line
     });
 
     return Promise.resolve()
-        .then(_ => self.runLighthouseInWorker(this, params.url, {flags: params.flags}, params.categoryIDs))
+        .then(_ => self.runLighthouseInWorker(this, params.url, params.flags, params.categoryIDs))
         .then(/** @type {!ReportRenderer.RunnerResult} */ result => {
           // Keep all artifacts on the result, no trimming
           return result;

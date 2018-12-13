@@ -40,8 +40,8 @@ BrowserDebugger.XHRBreakpointsSidebarPane = class extends UI.VBox {
     contextMenu.show();
   }
 
-  _addButtonClicked() {
-    UI.viewManager.showView('sources.xhrBreakpoints');
+  async _addButtonClicked() {
+    await UI.viewManager.showView('sources.xhrBreakpoints');
 
     const inputElementContainer = createElementWithClass('p', 'breakpoint-condition');
     inputElementContainer.textContent = Common.UIString('Break when URL contains:');

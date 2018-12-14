@@ -1262,6 +1262,17 @@
           return fakeConstructor();
         return origCreateElement.call(this, tagName, fakeCustomElementType);
       };
+
+      // DevTools front-ends mistakenly assume that
+      //   classList.toggle('a', undefined) works as
+      //   classList.toggle('a', false) rather than as
+      //   classList.toggle('a');
+      const originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
+      DOMTokenList.prototype.toggle = function(token, force) {
+        if (arguments.length === 1)
+          force = !this.contains(token);
+        return originalDOMTokenListToggle.call(this, token, !!force);
+      };
     }
 
     if (majorVersion <= 66) {
@@ -1405,22 +1416,5 @@
   }
 
   installBackwardsCompatibility();
-
-  /** @type {(!function(string, boolean=):boolean)|undefined} */
-  DOMTokenList.prototype.__originalDOMTokenListToggle;
-
-  if (!DOMTokenList.prototype.__originalDOMTokenListToggle) {
-    DOMTokenList.prototype.__originalDOMTokenListToggle = DOMTokenList.prototype.toggle;
-    /**
-     * @param {string} token
-     * @param {boolean=} force
-     * @return {boolean}
-     */
-    DOMTokenList.prototype.toggle = function(token, force) {
-      if (arguments.length === 1)
-        force = !this.contains(token);
-      return this.__originalDOMTokenListToggle(token, !!force);
-    };
-  }
 
 })(window);

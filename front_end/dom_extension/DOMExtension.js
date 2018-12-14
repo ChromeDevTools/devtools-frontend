@@ -811,3 +811,16 @@ function isEnterKey(event) {
 function isEscKey(event) {
   return event.keyCode === 27;
 }
+
+// DevTools front-end still assumes that
+//   classList.toggle('a', undefined) works as
+//   classList.toggle('a', false) rather than as
+//   classList.toggle('a');
+(function() {
+const originalToggle = DOMTokenList.prototype.toggle;
+DOMTokenList.prototype['toggle'] = function(token, force) {
+  if (arguments.length === 1)
+    force = !this.contains(token);
+  return originalToggle.call(this, token, !!force);
+};
+})();

@@ -47,6 +47,8 @@ ApplicationTestRunner.dumpServiceWorkersView = function() {
   return swView._currentWorkersView._sectionList.childTextNodes()
       .concat(swView._otherWorkersView._sectionList.childTextNodes())
       .map(function(node) {
+        if (node.textContent === 'Received ' + (new Date(0)).toLocaleString())
+          return 'Invalid scriptResponseTime (unix epoch)';
         return node.textContent.replace(/Received.*/, 'Received').replace(/#\d+/, '#N');
       })
       .join('\n');

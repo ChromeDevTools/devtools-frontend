@@ -268,15 +268,6 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   /**
-   * @return {!Array.<string>}
-   */
-  allTabs() {
-    return this._tabs.map(function(tab) {
-      return tab.id;
-    });
-  }
-
-  /**
    * @param {string} id
    * @return {!Array.<string>}
    */
@@ -844,7 +835,7 @@ UI.TabbedPane = class extends UI.VBox {
     if (oldIndex < index)
       --index;
     this._tabs.splice(index, 0, tab);
-    this.dispatchEventToListeners(UI.TabbedPane.Events.TabOrderChanged, this._tabs);
+    this.dispatchEventToListeners(UI.TabbedPane.Events.TabOrderChanged, {tabId: tab.id});
   }
 
   /**
@@ -1194,7 +1185,7 @@ UI.TabbedPaneTab = class {
      * @this {UI.TabbedPaneTab}
      */
     function closeAll() {
-      this._closeTabs(this._tabbedPane.allTabs());
+      this._closeTabs(this._tabbedPane.tabIds());
     }
 
     /**

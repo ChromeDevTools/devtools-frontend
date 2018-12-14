@@ -185,7 +185,7 @@ Sources.TabbedEditorContainer = class extends Common.Object {
   }
 
   closeAllFiles() {
-    this._closeTabs(this._tabbedPane.allTabs());
+    this._closeTabs(this._tabbedPane.tabIds());
   }
 
   /**

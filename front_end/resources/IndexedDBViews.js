@@ -209,8 +209,6 @@ Resources.IDBDataView = class extends UI.SimpleView {
     const editorToolbar = new UI.Toolbar('data-view-toolbar', this.element);
 
     editorToolbar.appendToolbarItem(this._refreshButton);
-    editorToolbar.appendToolbarItem(this._clearButton);
-    editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
     editorToolbar.appendToolbarItem(new UI.ToolbarSeparator());
 
@@ -226,6 +224,9 @@ Resources.IDBDataView = class extends UI.SimpleView {
     this._keyInput = new UI.ToolbarInput(ls`Start from key`, 0.5);
     this._keyInput.addEventListener(UI.ToolbarInput.Event.TextChanged, this._updateData.bind(this, false));
     editorToolbar.appendToolbarItem(this._keyInput);
+    editorToolbar.appendToolbarItem(new UI.ToolbarSeparator());
+    editorToolbar.appendToolbarItem(this._clearButton);
+    editorToolbar.appendToolbarItem(this._deleteSelectedButton);
 
     editorToolbar.appendToolbarItem(this._needsRefresh);
   }

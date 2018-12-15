@@ -12,9 +12,6 @@ Resources.StorageItemsView = class extends UI.VBox {
     /** @type {?RegExp} */
     this._filterRegex = null;
 
-    this._deleteAllButton = this._addButton(Common.UIString('Clear All'), 'largeicon-clear', this.deleteAllItems);
-    this._deleteSelectedButton =
-        this._addButton(Common.UIString('Delete Selected'), 'largeicon-delete', this.deleteSelectedItem);
     this._refreshButton = this._addButton(Common.UIString('Refresh'), 'largeicon-refresh', this.refreshItems);
 
     this._mainToolbar = new UI.Toolbar('top-resources-toolbar', this.element);
@@ -22,7 +19,13 @@ Resources.StorageItemsView = class extends UI.VBox {
     this._filterItem = new UI.ToolbarInput(Common.UIString('Filter'), 0.4);
     this._filterItem.addEventListener(UI.ToolbarInput.Event.TextChanged, this._filterChanged, this);
 
-    const toolbarItems = [this._refreshButton, this._deleteAllButton, this._deleteSelectedButton, this._filterItem];
+    const toolbarSeparator = new UI.ToolbarSeparator();
+    this._deleteAllButton = this._addButton(Common.UIString('Clear All'), 'largeicon-clear', this.deleteAllItems);
+    this._deleteSelectedButton =
+        this._addButton(Common.UIString('Delete Selected'), 'largeicon-delete', this.deleteSelectedItem);
+
+    const toolbarItems =
+        [this._refreshButton, this._filterItem, toolbarSeparator, this._deleteAllButton, this._deleteSelectedButton];
     for (const item of toolbarItems)
       this._mainToolbar.appendToolbarItem(item);
 

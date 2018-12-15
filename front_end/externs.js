@@ -542,7 +542,7 @@ CodeMirror.prototype = {
   undo: function() {},
   unlinkDoc: function(other) {}
 };
-/** @type {!{cursorDiv: Element, lineSpace: Element}} */
+/** @type {!{cursorDiv: Element, lineSpace: Element, gutters: Element}} */
 CodeMirror.prototype.display;
 /** @type {!{mode: string, lineWrapping: boolean}} */
 CodeMirror.prototype.options;

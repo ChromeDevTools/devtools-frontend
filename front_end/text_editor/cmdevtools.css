@@ -105,7 +105,8 @@
 .CodeMirror-gutters {
     border-right: 1px solid var(--divider-color);
     white-space: nowrap;
-    background-color: white;
+    background-color: transparent;
+    z-index: 5;
 }
 
 .CodeMirror-linenumber {
@@ -312,7 +313,12 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
     background-color: rgb(171, 191, 254);
 }
 
-.cm-execution-line .CodeMirror-linenumber {
+.cm-execution-line .CodeMirror-linenumber::after {
+    position: absolute;
+    top:-1px;
+    bottom:-1px;
+    right:-1.5em;
+    content:"";
     border-right: 1px solid rgb(64, 115, 244);
 }
 
@@ -567,4 +573,57 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .pretty-printed .CodeMirror-linenumber {
     color: var(--accent-color-b);
+}
+
+.CodeMirror-foldmarker {
+    cursor: pointer;
+    font-size: 0;
+    line-height: 0;
+    height:0px;
+}
+
+.CodeMirror-foldmarker::before {
+    content: '\2026';
+    font-size: 13px;
+    color: #666;
+}
+
+.CodeMirror-foldgutter {
+    width: 1.5em;
+    background-color: white;
+    transition: background-color .2s;
+}
+
+.CodeMirror-gutters:hover .CodeMirror-foldgutter {
+    background-color: transparent;
+}
+
+.CodeMirror-foldgutter-open,
+.CodeMirror-foldgutter-folded {
+    cursor: pointer;
+    position: relative;
+}
+
+.CodeMirror-foldgutter-open::before,
+.CodeMirror-foldgutter-folded::before {
+    background-color: #727272;
+    -webkit-user-select: none;
+    -webkit-mask-image: url(Images/treeoutlineTriangles.png);
+    -webkit-mask-size: 32px 24px;
+    content: "";
+    display:block;
+    width: 8px;
+    color: transparent;
+    text-shadow: none;
+    height: 12px;
+    position: absolute;
+    right: 4px;
+}
+
+.CodeMirror-foldgutter-open::before {
+    -webkit-mask-position: -16px 0;
+}
+
+.CodeMirror-foldgutter-folded::before {
+    -webkit-mask-position: 0 0;
 }

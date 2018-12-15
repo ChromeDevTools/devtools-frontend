@@ -55,6 +55,8 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
       lineWrapping: options.lineWrapping,
       lineWiseCopyCut: false,
       tabIndex: 0,
+      foldGutter: options.lineNumbers,
+      foldOptions: {minFoldSize: 1},
       pollInterval: Math.pow(2, 31) - 1,  // ~25 days
       inputStyle: 'devToolsAccessibleTextArea'
     });

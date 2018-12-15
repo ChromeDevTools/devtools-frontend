@@ -50,6 +50,8 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     Common.moduleSetting('textEditorIndent').addChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('textEditorAutoDetectIndent').addChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('showWhitespacesInEditor').addChangeListener(this._updateWhitespace, this);
+    Common.moduleSetting('textEditorCodeFolding').addChangeListener(this._updateCodeFolding, this);
+    this._updateCodeFolding();
 
     /** @type {?UI.AutocompleteConfig} */
     this._autocompleteConfig = {isWordChar: TextUtils.TextUtils.isWordChar};
@@ -308,6 +310,8 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   }
 
   _gutterClick(instance, lineNumber, gutter, event) {
+    if (gutter !== 'CodeMirror-linenumbers')
+      return;
     this.dispatchEventToListeners(
         SourceFrame.SourcesTextEditor.Events.GutterClick, {lineNumber: lineNumber, event: event});
   }
@@ -469,6 +473,7 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
     Common.moduleSetting('textEditorIndent').removeChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('textEditorAutoDetectIndent').removeChangeListener(this._onUpdateEditorIndentation, this);
     Common.moduleSetting('showWhitespacesInEditor').removeChangeListener(this._updateWhitespace, this);
+    Common.moduleSetting('textEditorCodeFolding').removeChangeListener(this._updateCodeFolding, this);
   }
 
   /**
@@ -483,6 +488,15 @@ SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
 
   _updateWhitespace() {
     this.setMimeType(this.mimeType());
+  }
+
+  _updateCodeFolding() {
+    if (Common.moduleSetting('textEditorCodeFolding').get()) {
+      this.installGutter('CodeMirror-foldgutter', false);
+    } else {
+      this.codeMirror().execCommand('unfoldAll');
+      this.uninstallGutter('CodeMirror-foldgutter');
+    }
   }
 
   /**

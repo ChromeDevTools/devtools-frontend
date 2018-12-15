@@ -481,6 +481,24 @@
         {
             "type": "setting",
             "category": "Sources",
+            "title": "Code folding",
+            "settingName": "textEditorCodeFolding",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Enable code folding"
+                },
+                {
+                    "value": false,
+                    "title": "Disable code folding"
+                }
+            ]
+        },
+        {
+            "type": "setting",
+            "category": "Sources",
             "title": "Show whitespace characters:",
             "settingName": "showWhitespacesInEditor",
             "settingType": "enum",

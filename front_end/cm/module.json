@@ -7,7 +7,10 @@
         "markselection.js",
         "comment.js",
         "overlay.js",
-        "activeline.js"
+        "activeline.js",
+        "foldcode.js",
+        "foldgutter.js",
+        "brace-fold.js"
     ],
     "skip_compilation": [
         "codemirror.js",
@@ -17,7 +20,10 @@
         "markselection.js",
         "comment.js",
         "overlay.js",
-        "activeline.js"
+        "activeline.js",
+        "foldcode.js",
+        "foldgutter.js",
+        "brace-fold.js"
     ],
     "resources": [
         "codemirror.css"

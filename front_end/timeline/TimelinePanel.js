@@ -410,7 +410,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._overviewControls.push(new Timeline.TimelineEventOverviewCPUActivity());
     this._overviewControls.push(new Timeline.TimelineEventOverviewNetwork());
     if (this._showScreenshotsSetting.get() && this._performanceModel &&
-        this._performanceModel.frameModel().frames().length)
+        this._performanceModel.filmStripModel().frames().length)
       this._overviewControls.push(new Timeline.TimelineFilmStripOverview());
     if (this._showMemorySetting.get())
       this._overviewControls.push(new Timeline.TimelineEventOverviewMemory());

@@ -769,14 +769,14 @@ Network.NetworkLogView = class extends UI.VBox {
       appendChunk(Common.UIString('Finish: %s', Number.secondsToString(maxTime - baseTime)));
       if (this._mainRequestDOMContentLoadedTime !== -1 && this._mainRequestDOMContentLoadedTime > baseTime) {
         appendChunk(separator);
-        const domContentLoadedText = Common.UIString(
-            'DOMContentLoaded: %s', Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime));
-        appendChunk(domContentLoadedText).classList.add('summary-blue');
+        const domContentLoadedText =
+            ls`DOMContentLoaded: ${Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime)}`;
+        appendChunk(domContentLoadedText).classList.add('summary-dcl-event');
       }
       if (this._mainRequestLoadTime !== -1) {
         appendChunk(separator);
-        const loadText = Common.UIString('Load: %s', Number.secondsToString(this._mainRequestLoadTime - baseTime));
-        appendChunk(loadText).classList.add('summary-red');
+        const loadText = ls`Load: ${Number.secondsToString(this._mainRequestLoadTime - baseTime)}`;
+        appendChunk(loadText).classList.add('summary-load-event');
       }
     }
     summaryBar.title = text;
@@ -871,7 +871,7 @@ Network.NetworkLogView = class extends UI.VBox {
     const time = /** @type {number} */ (event.data.loadTime);
     if (time) {
       this._mainRequestLoadTime = time;
-      this._columns.addEventDividers([time], 'network-red-divider');
+      this._columns.addEventDividers([time], 'network-load-divider');
     }
   }
 
@@ -884,7 +884,7 @@ Network.NetworkLogView = class extends UI.VBox {
     const data = /** @type {number} */ (event.data);
     if (data) {
       this._mainRequestDOMContentLoadedTime = data;
-      this._columns.addEventDividers([data], 'network-blue-divider');
+      this._columns.addEventDividers([data], 'network-dcl-divider');
     }
   }
 

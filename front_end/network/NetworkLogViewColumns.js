@@ -564,11 +564,11 @@ Network.NetworkLogViewColumns = class {
     // TODO(allada) Remove this and pass in the color.
     let color = 'transparent';
     switch (className) {
-      case 'network-blue-divider':
-        color = 'hsla(240, 100%, 80%, 0.7)';
+      case 'network-dcl-divider':
+        color = '#0867CB';
         break;
-      case 'network-red-divider':
-        color = 'rgba(255, 0, 0, 0.5)';
+      case 'network-load-divider':
+        color = '#B31412';
         break;
       default:
         return;

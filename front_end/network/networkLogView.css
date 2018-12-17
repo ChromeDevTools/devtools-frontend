@@ -264,8 +264,8 @@
     color: grey;
 }
 
-.network-summary-bar .summary-red {
-    color: red;
+.network-summary-bar .summary-load-event {
+    color: #B31412;
 }
 
 .network-frame-divider {
@@ -279,11 +279,11 @@
     overflow: hidden;
 }
 
-.network-summary-bar .summary-blue {
-    color: blue;
+.network-summary-bar .summary-dcl-event {
+    color: #0867CB;
 }
 
-.-theme-with-dark-background .network-summary-bar .summary-blue {
+.-theme-with-dark-background .network-summary-bar .summary-dcl-event {
     color: #03A9F4;
 }
 

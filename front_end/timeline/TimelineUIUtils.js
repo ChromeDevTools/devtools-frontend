@@ -790,8 +790,9 @@ Timeline.TimelineUIUtils = class {
     let relatedNodeLabel;
 
     const contentHelper = new Timeline.TimelineDetailsContentHelper(model.targetByEvent(event), linkifier);
-    contentHelper.addSection(
-        Timeline.TimelineUIUtils.eventTitle(event), Timeline.TimelineUIUtils.eventStyle(event).category.color);
+    const color = model.isMarkerEvent(event) ? Timeline.TimelineUIUtils.markerStyleForEvent(event).color :
+                                               Timeline.TimelineUIUtils.eventStyle(event).category.color;
+    contentHelper.addSection(Timeline.TimelineUIUtils.eventTitle(event), color);
 
     const eventData = event.args['data'];
     const timelineData = TimelineModel.TimelineData.forEvent(event);
@@ -1738,7 +1739,7 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.MarkDOMContent:
         return ls`DCL`;
       case recordTypes.MarkLoad:
-        return ls`OL`;
+        return ls`L`;
       case recordTypes.MarkFirstPaint:
         return ls`FP`;
       case recordTypes.MarkFCP:
@@ -1777,11 +1778,11 @@ Timeline.TimelineUIUtils = class {
         tall = true;
         break;
       case recordTypes.MarkDOMContent:
-        color = 'blue';
+        color = '#0867CB';
         tall = true;
         break;
       case recordTypes.MarkLoad:
-        color = 'red';
+        color = '#B31412';
         tall = true;
         break;
       case recordTypes.MarkFirstPaint:
@@ -1789,11 +1790,11 @@ Timeline.TimelineUIUtils = class {
         tall = true;
         break;
       case recordTypes.MarkFCP:
-        color = 'hsl(160, 43%, 58%)';
+        color = '#208043';
         tall = true;
         break;
       case recordTypes.MarkFMP:
-        color = 'hsl(144, 100%, 21%)';
+        color = '#14522B';
         tall = true;
         break;
       case recordTypes.TimeStamp:

@@ -38,6 +38,10 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   constructor(dispatcher) {
     this._reset();
     this._progress = new HeapSnapshotWorker.HeapSnapshotProgress(dispatcher);
+    this._buffer = '';
+    this._dataCallback = null;
+    this._done = false;
+    this._parseInput();
   }
 
   dispose() {
@@ -46,20 +50,20 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
 
   _reset() {
     this._json = '';
-    this._state = 'find-snapshot-info';
     this._snapshot = {};
   }
 
   close() {
-    if (this._json)
-      this._parseStringsArray();
+    this._done = true;
+    if (this._dataCallback)
+      this._dataCallback('');
   }
 
   /**
    * @return {!HeapSnapshotWorker.JSHeapSnapshot}
    */
   buildSnapshot() {
-    this._progress.updateStatus('Processing snapshot\u2026');
+    this._progress.updateStatus(ls`Processing snapshot\u2026`);
     const result = new HeapSnapshotWorker.JSHeapSnapshot(this._snapshot, this._progress);
     this._reset();
     return result;
@@ -107,7 +111,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
   _parseStringsArray() {
     this._progress.updateStatus('Parsing strings\u2026');
     const closingBracketIndex = this._json.lastIndexOf(']');
-    if (closingBracketIndex === -1 || this._state !== 'accumulate-strings')
+    if (closingBracketIndex === -1)
       throw new Error('Incomplete JSON');
     this._json = this._json.slice(0, closingBracketIndex + 1);
     this._snapshot.strings = JSON.parse(this._json);
@@ -117,228 +121,110 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
    * @param {string} chunk
    */
   write(chunk) {
-    if (this._json !== null)
-      this._json += chunk;
+    this._buffer += chunk;
+    if (!this._dataCallback)
+      return;
+    this._dataCallback(this._buffer);
+    this._dataCallback = null;
+    this._buffer = '';
+  }
+
+  /**
+   * @return {!Promise<string>}
+   */
+  _fetchChunk() {
+    return this._done ? Promise.resolve(this._buffer) : new Promise(r => this._dataCallback = r);
+  }
+
+  /**
+   * @param {string} token
+   * @param {number=} startIndex
+   * @return {!Promise<number>}
+   */
+  async _findToken(token, startIndex) {
     while (true) {
-      switch (this._state) {
-        case 'find-snapshot-info': {
-          const snapshotToken = '"snapshot"';
-          const snapshotTokenIndex = this._json.indexOf(snapshotToken);
-          if (snapshotTokenIndex === -1)
-            throw new Error('Snapshot token not found');
-
-          const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
-          this._state = 'parse-snapshot-info';
-          this._progress.updateStatus('Loading snapshot info\u2026');
-          this._json = null;  // tokenizer takes over input.
-          this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(this._writeBalancedJSON.bind(this));
-          // Fall through with adjusted payload.
-          chunk = json;
-        }
-        case 'parse-snapshot-info': {
-          this._jsonTokenizer.write(chunk);
-          if (this._jsonTokenizer)
-            return;  // no remainder to process.
-          break;
-        }
-        case 'find-nodes': {
-          const nodesToken = '"nodes"';
-          const nodesTokenIndex = this._json.indexOf(nodesToken);
-          if (nodesTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', nodesTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex + 1);
-          const node_fields_count = this._snapshot.snapshot.meta.node_fields.length;
-          const nodes_length = this._snapshot.snapshot.node_count * node_fields_count;
-          this._array = new Uint32Array(nodes_length);
-          this._arrayIndex = 0;
-          this._state = 'parse-nodes';
-          break;
-        }
-        case 'parse-nodes': {
-          const hasMoreData = this._parseUintArray();
-          this._progress.updateProgress('Loading nodes\u2026 %d%%', this._arrayIndex, this._array.length);
-          if (hasMoreData)
-            return;
-          this._snapshot.nodes = this._array;
-          this._state = 'find-edges';
-          this._array = null;
-          break;
-        }
-        case 'find-edges': {
-          const edgesToken = '"edges"';
-          const edgesTokenIndex = this._json.indexOf(edgesToken);
-          if (edgesTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', edgesTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex + 1);
-          const edge_fields_count = this._snapshot.snapshot.meta.edge_fields.length;
-          const edges_length = this._snapshot.snapshot.edge_count * edge_fields_count;
-          this._array = new Uint32Array(edges_length);
-          this._arrayIndex = 0;
-          this._state = 'parse-edges';
-          break;
-        }
-        case 'parse-edges': {
-          const hasMoreData = this._parseUintArray();
-          this._progress.updateProgress('Loading edges\u2026 %d%%', this._arrayIndex, this._array.length);
-          if (hasMoreData)
-            return;
-          this._snapshot.edges = this._array;
-          this._array = null;
-          // If there is allocation info parse it, otherwise jump straight to strings.
-          if (this._snapshot.snapshot.trace_function_count) {
-            this._state = 'find-trace-function-infos';
-            this._progress.updateStatus('Loading allocation traces\u2026');
-          } else if (this._snapshot.snapshot.meta.sample_fields) {
-            this._state = 'find-samples';
-            this._progress.updateStatus('Loading samples\u2026');
-          } else {
-            this._state = 'find-locations';
-          }
-          break;
-        }
-        case 'find-trace-function-infos': {
-          const tracesToken = '"trace_function_infos"';
-          const tracesTokenIndex = this._json.indexOf(tracesToken);
-          if (tracesTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', tracesTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex + 1);
-
-          const trace_function_info_field_count = this._snapshot.snapshot.meta.trace_function_info_fields.length;
-          const trace_function_info_length =
-              this._snapshot.snapshot.trace_function_count * trace_function_info_field_count;
-          this._array = new Uint32Array(trace_function_info_length);
-          this._arrayIndex = 0;
-          this._state = 'parse-trace-function-infos';
-          break;
-        }
-        case 'parse-trace-function-infos': {
-          if (this._parseUintArray())
-            return;
-          this._snapshot.trace_function_infos = this._array;
-          this._array = null;
-          this._state = 'find-trace-tree';
-          break;
-        }
-        case 'find-trace-tree': {
-          const tracesToken = '"trace_tree"';
-          const tracesTokenIndex = this._json.indexOf(tracesToken);
-          if (tracesTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', tracesTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex);
-          this._state = 'parse-trace-tree';
-          break;
-        }
-        case 'parse-trace-tree': {
-          // If there is samples array parse it, otherwise jump straight to strings.
-          const nextToken = this._snapshot.snapshot.meta.sample_fields ? '"samples"' : '"strings"';
-          const nextTokenIndex = this._json.indexOf(nextToken);
-          if (nextTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
-          this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
-          this._json = this._json.slice(bracketIndex + 1);
-          if (this._snapshot.snapshot.meta.sample_fields) {
-            this._state = 'find-samples';
-            this._progress.updateStatus('Loading samples\u2026');
-          } else {
-            this._state = 'find-strings';
-            this._progress.updateStatus('Loading strings\u2026');
-          }
-          break;
-        }
-        case 'find-samples': {
-          const samplesToken = '"samples"';
-          const samplesTokenIndex = this._json.indexOf(samplesToken);
-          if (samplesTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', samplesTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex + 1);
-          this._array = [];
-          this._arrayIndex = 0;
-          this._state = 'parse-samples';
-          break;
-        }
-        case 'parse-samples': {
-          if (this._parseUintArray())
-            return;
-          this._snapshot.samples = this._array;
-          this._array = null;
-          this._state = 'find-locations';
-          this._progress.updateStatus('Loading locations\u2026');
-          break;
-        }
-        case 'find-locations': {
-          if (!this._snapshot.snapshot.meta.location_fields) {
-            // The property `locations` was added retroactively, so older
-            // snapshots might not contain it. In this case just expect `strings`
-            // as next property.
-            this._snapshot.locations = [];
-            this._array = null;
-            this._state = 'find-strings';
-            break;
-          }
-
-          const locationsToken = '"locations"';
-          const locationsTokenIndex = this._json.indexOf(locationsToken);
-          if (locationsTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', locationsTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex + 1);
-          this._array = [];
-          this._arrayIndex = 0;
-          this._state = 'parse-locations';
-          break;
-        }
-        case 'parse-locations': {
-          if (this._parseUintArray())
-            return;
-          this._snapshot.locations = this._array;
-          this._array = null;
-          this._state = 'find-strings';
-          this._progress.updateStatus('Loading strings\u2026');
-          break;
-        }
-        case 'find-strings': {
-          const stringsToken = '"strings"';
-          const stringsTokenIndex = this._json.indexOf(stringsToken);
-          if (stringsTokenIndex === -1)
-            return;
-          const bracketIndex = this._json.indexOf('[', stringsTokenIndex);
-          if (bracketIndex === -1)
-            return;
-          this._json = this._json.slice(bracketIndex);
-          this._state = 'accumulate-strings';
-          break;
-        }
-        case 'accumulate-strings':
-          return;
-      }
+      const pos = this._json.indexOf(token, startIndex || 0);
+      if (pos !== -1)
+        return pos;
+      startIndex = this._json.length - token.length + 1;
+      this._json += await this._fetchChunk();
     }
   }
 
   /**
-   * @param {string} data
+   * @param {string} name
+   * @param {string} title
+   * @param {number=} length
+   * @return {!Promise<!Uint32Array|!Array<number>>}
    */
-  _writeBalancedJSON(data) {
-    this._json = this._jsonTokenizer.remainder();  // tokenizer releases input.
-    this._jsonTokenizer = null;
-    this._state = 'find-nodes';
-    this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(data));
+  async _parseArray(name, title, length) {
+    const nameIndex = await this._findToken(name);
+    const bracketIndex = await this._findToken('[', nameIndex);
+    this._json = this._json.slice(bracketIndex + 1);
+    this._array = length ? new Uint32Array(length) : [];
+    this._arrayIndex = 0;
+    while (this._parseUintArray()) {
+      this._progress.updateProgress(title, this._arrayIndex, this._array.length);
+      this._json += await this._fetchChunk();
+    }
+    const result = this._array;
+    this._array = null;
+    return result;
+  }
+
+  async _parseInput() {
+    const snapshotToken = '"snapshot"';
+    const snapshotTokenIndex = await this._findToken(snapshotToken);
+    if (snapshotTokenIndex === -1)
+      throw new Error('Snapshot token not found');
+
+    this._progress.updateStatus(ls`Loading snapshot info\u2026`);
+    const json = this._json.slice(snapshotTokenIndex + snapshotToken.length + 1);
+    this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
+      this._json = this._jsonTokenizer.remainder();
+      this._jsonTokenizer = null;
+      this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(metaJSON));
+    });
+    this._jsonTokenizer.write(json);
+    while (this._jsonTokenizer)
+      this._jsonTokenizer.write(await this._fetchChunk());
+
+    this._snapshot.nodes = await this._parseArray(
+        '"nodes"', ls`Loading nodes\u2026 %d%%`,
+        this._snapshot.snapshot.meta.node_fields.length * this._snapshot.snapshot.node_count);
+
+    this._snapshot.edges = await this._parseArray(
+        '"edges"', ls`Loading edges\u2026 %d%%`,
+        this._snapshot.snapshot.meta.edge_fields.length * this._snapshot.snapshot.edge_count);
+
+    // If there is allocation info parse it, otherwise jump straight to strings.
+    if (this._snapshot.snapshot.trace_function_count) {
+      this._snapshot.trace_function_infos = await this._parseArray(
+          '"trace_function_infos"', ls`Loading allocation traces\u2026 %d%%`,
+          this._snapshot.snapshot.meta.trace_function_info_fields.length *
+              this._snapshot.snapshot.trace_function_count);
+
+      const nextToken = this._snapshot.snapshot.meta.sample_fields ? '"samples"' : '"strings"';
+      const nextTokenIndex = await this._findToken(nextToken);
+      const bracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
+      this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
+      this._json = this._json.slice(bracketIndex + 1);
+    }
+
+    if (this._snapshot.snapshot.meta.sample_fields)
+      this._snapshot.samples = await this._parseArray('"samples"', ls`Loading samples\u2026`);
+
+    if (this._snapshot.snapshot.meta['location_fields'])
+      this._snapshot.locations = await this._parseArray('"locations"', ls`Loading locations\u2026`);
+    else
+      this._snapshot.locations = [];
+
+    this._progress.updateStatus(ls`Loading strings\u2026`);
+    const stringsTokenIndex = await this._findToken('"strings"');
+    const bracketIndex = await this._findToken('[', stringsTokenIndex);
+    this._json = this._json.slice(bracketIndex);
+    while (!this._done)
+      this._json += await this._fetchChunk();
+    this._parseStringsArray();
   }
 };

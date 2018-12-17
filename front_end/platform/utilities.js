@@ -144,6 +144,32 @@ String.filterRegex = function(query) {
 };
 
 /**
+  * @param {string} text
+  * @return {string}
+  */
+String.escapeInvalidUnicodeCharacters = function(text) {
+  if (!String._invalidCharactersRegExp) {
+    // Escape orphan surrogates and invalid characters.
+    let invalidCharacters = '';
+    for (let i = 0xfffe; i <= 0x10ffff; i += 0x10000)
+      invalidCharacters += String.fromCodePoint(i, i + 1);
+    String._invalidCharactersRegExp = new RegExp(`[${invalidCharacters}\uD800-\uDFFF\uFDD0-\uFDEF]`, 'gu');
+  }
+  let result = '';
+  let lastPos = 0;
+  while (true) {
+    const match = String._invalidCharactersRegExp.exec(text);
+    if (!match)
+      break;
+    result += text.substring(lastPos, match.index) + '\\u' + text.charCodeAt(match.index).toString(16);
+    if (match.index + 1 < String._invalidCharactersRegExp.lastIndex)
+      result += '\\u' + text.charCodeAt(match.index + 1).toString(16);
+    lastPos = String._invalidCharactersRegExp.lastIndex;
+  }
+  return result + text.substring(lastPos);
+};
+
+/**
  * @return {string}
  */
 String.prototype.escapeHTML = function() {

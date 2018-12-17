@@ -243,7 +243,7 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
    */
   async compileScript(expression, sourceURL, persistScript, executionContextId) {
     const response = await this._agent.invoke_compileScript({
-      expression: expression,
+      expression: String.escapeInvalidUnicodeCharacters(expression),
       sourceURL: sourceURL,
       persistScript: persistScript,
       executionContextId: executionContextId
@@ -489,8 +489,11 @@ SDK.RuntimeModel = class extends SDK.SDKModel {
     if (!testContext)
       return false;
     // Check for a positive throwOnSideEffect response without triggering side effects.
-    const response = await this._agent.invoke_evaluate(
-        {expression: SDK.RuntimeModel._sideEffectTestExpression, contextId: testContext.id, throwOnSideEffect: true});
+    const response = await this._agent.invoke_evaluate({
+      expression: String.escapeInvalidUnicodeCharacters(SDK.RuntimeModel._sideEffectTestExpression),
+      contextId: testContext.id,
+      throwOnSideEffect: true
+    });
 
     this._hasSideEffectSupport = SDK.RuntimeModel.isSideEffectFailure(response);
     return this._hasSideEffectSupport;
@@ -775,7 +778,7 @@ SDK.ExecutionContext = class {
     }
 
     const response = await this.runtimeModel._agent.invoke_evaluate({
-      expression: options.expression,
+      expression: String.escapeInvalidUnicodeCharacters(options.expression),
       objectGroup: options.objectGroup,
       includeCommandLineAPI: options.includeCommandLineAPI,
       silent: options.silent,

@@ -97,7 +97,7 @@ TimelineModel.TimelineModel = class {
       case recordTypes.MarkFCP:
       case recordTypes.MarkFMP:
         // TODO(alph): There are duplicate FMP events coming from the backend. Keep the one having 'data' property.
-        return event.args.frame === this._mainFrame.frameId && !!event.args.data;
+        return this._mainFrame && event.args.frame === this._mainFrame.frameId && !!event.args.data;
       case recordTypes.MarkDOMContent:
       case recordTypes.MarkLoad:
         return !!event.args['data']['isMainFrame'];

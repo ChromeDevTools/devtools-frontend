@@ -105,8 +105,7 @@
 .CodeMirror-gutters {
     border-right: 1px solid var(--divider-color);
     white-space: nowrap;
-    background-color: transparent;
-    z-index: 5;
+    background-color: white;
 }
 
 .CodeMirror-linenumber {
@@ -590,8 +589,6 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter {
     width: 1.5em;
-    background-color: white;
-    transition: background-color .2s;
 }
 
 .CodeMirror-gutters:hover .CodeMirror-foldgutter {
@@ -602,6 +599,15 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 .CodeMirror-foldgutter-folded {
     cursor: pointer;
     position: relative;
+}
+
+.CodeMirror-foldgutter-open {
+    transition: opacity .2s;
+    opacity: 0;
+}
+
+.CodeMirror-gutter-hovered .CodeMirror-foldgutter-open {
+    opacity: 1;
 }
 
 .CodeMirror-foldgutter-open::before,

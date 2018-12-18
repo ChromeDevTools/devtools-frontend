@@ -93,7 +93,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @param {number} status
    */
   _frameManifestUpdated(frameId, manifestURL, status) {
-    if (status === applicationCache.UNCACHED) {
+    if (status === Resources.ApplicationCacheModel.UNCACHED) {
       this._frameManifestRemoved(frameId);
       return;
     }
@@ -142,7 +142,7 @@ Resources.ApplicationCacheModel = class extends SDK.SDKModel {
    * @return {number}
    */
   frameManifestStatus(frameId) {
-    return this._statuses[frameId] || applicationCache.UNCACHED;
+    return this._statuses[frameId] || Resources.ApplicationCacheModel.UNCACHED;
   }
 
   /**
@@ -216,3 +216,5 @@ Resources.ApplicationCacheDispatcher = class {
     this._applicationCacheModel._networkStateUpdated(isNowOnline);
   }
 };
+
+Resources.ApplicationCacheModel.UNCACHED = 0;

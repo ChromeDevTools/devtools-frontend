@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /**
- * @implements {SDK.SDKModelObserver<!SDK.ResourceTreeModel>}
+ * @implements {SDK.TargetManager.Observer}
  * @unrestricted
  */
 Resources.AppManifestView = class extends UI.VBox {
@@ -47,34 +47,53 @@ Resources.AppManifestView = class extends UI.VBox {
     this._orientationField = this._presentationSection.appendField(Common.UIString('Orientation'));
     this._displayField = this._presentationSection.appendField(Common.UIString('Display'));
 
-    SDK.targetManager.observeModels(SDK.ResourceTreeModel, this);
+    this._throttler = new Common.Throttler(1000);
+    SDK.targetManager.observeTargets(this);
   }
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.Target} target
    */
-  modelAdded(resourceTreeModel) {
-    if (this._resourceTreeModel)
+  targetAdded(target) {
+    if (this._target)
       return;
-    this._resourceTreeModel = resourceTreeModel;
-    this._updateManifest();
-    resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest, this);
+    this._target = target;
+    this._resourceTreeModel = target.model(SDK.ResourceTreeModel);
+    this._serviceWorkerManager = target.model(SDK.ServiceWorkerManager);
+    if (!this._resourceTreeModel || !this._serviceWorkerManager)
+      return;
+
+    this._updateManifest(true);
+
+    this._registeredListeners = [
+      this._resourceTreeModel.addEventListener(
+          SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest.bind(this, true)),
+      this._serviceWorkerManager.addEventListener(
+          SDK.ServiceWorkerManager.Events.RegistrationUpdated, this._updateManifest.bind(this, false))
+    ];
   }
 
   /**
    * @override
-   * @param {!SDK.ResourceTreeModel} resourceTreeModel
+   * @param {!SDK.Target} target
    */
-  modelRemoved(resourceTreeModel) {
-    if (!this._resourceTreeModel || this._resourceTreeModel !== resourceTreeModel)
+  targetRemoved(target) {
+    if (this._target !== target)
       return;
-    resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.DOMContentLoaded, this._updateManifest, this);
+    if (!this._resourceTreeModel || !this._serviceWorkerManager)
+      return;
     delete this._resourceTreeModel;
+    delete this._serviceWorkerManager;
+    Common.EventTarget.removeEventListeners(this._registeredListeners);
   }
 
-  _updateManifest() {
-    this._resourceTreeModel.fetchAppManifest(this._renderManifest.bind(this));
+  /**
+   * @param {boolean} immediately
+   */
+  async _updateManifest(immediately) {
+    const {url, data, errors} = await this._resourceTreeModel.fetchAppManifest();
+    this._throttler.schedule(() => this._renderManifest(url, data, errors), immediately);
   }
 
   /**
@@ -82,7 +101,7 @@ Resources.AppManifestView = class extends UI.VBox {
    * @param {?string} data
    * @param {!Array<!Protocol.Page.AppManifestError>} errors
    */
-  _renderManifest(url, data, errors) {
+  async _renderManifest(url, data, errors) {
     if (!data && !errors.length) {
       this._emptyView.showWidget();
       this._reportView.hideWidget();
@@ -118,9 +137,14 @@ Resources.AppManifestView = class extends UI.VBox {
     if (startURL) {
       const completeURL = /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL));
       this._startURLField.appendChild(Components.Linkifier.linkifyURL(completeURL, {text: startURL}));
+      if (!this._serviceWorkerManager.hasRegistrationForURLs([completeURL, this._target.inspectedURL()]))
+        installabilityErrors.push(ls`Service worker is not registered or does not control the Start URL`);
+      else if (!await this._swHasFetchHandler())
+        installabilityErrors.push(ls`Service worker does not have the 'fetch' handler`);
     } else {
       installabilityErrors.push(ls`'start_url' needs to be a valid URL`);
     }
+
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
@@ -139,6 +163,7 @@ Resources.AppManifestView = class extends UI.VBox {
     const icons = parsedManifest['icons'] || [];
     let hasInstallableIcon = false;
     this._iconsSection.clearContent();
+
     for (const icon of icons) {
       if (!icon.sizes)
         hasInstallableIcon = true;  // any
@@ -149,14 +174,17 @@ Resources.AppManifestView = class extends UI.VBox {
           hasInstallableIcon = true;
       } catch (e) {
       }
+
       const field = this._iconsSection.appendField(title);
-      const imageElement = field.createChild('img');
-      imageElement.style.maxWidth = '200px';
-      imageElement.style.maxHeight = '200px';
-      imageElement.src = Common.ParsedURL.completeURL(url, icon['src']);
+      const image = await this._loadImage(Common.ParsedURL.completeURL(url, icon['src']));
+      if (image)
+        field.appendChild(image);
+      else
+        installabilityErrors.push(ls`Some of the icons could not be loaded`);
     }
     if (!hasInstallableIcon)
       installabilityErrors.push(ls`An icon at least 144px x 144px large is required`);
+
     this._installabilitySection.clearContent();
     this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     for (const error of installabilityErrors)
@@ -172,5 +200,52 @@ Resources.AppManifestView = class extends UI.VBox {
         return '';
       return value;
     }
+  }
+
+  /**
+   * @return {!Promise<boolean>}
+   */
+  async _swHasFetchHandler() {
+    for (const target of SDK.targetManager.targets()) {
+      if (target.type() !== SDK.Target.Type.Worker)
+        continue;
+      if (!target.parentTarget() || target.parentTarget().type() !== SDK.Target.Type.ServiceWorker)
+        continue;
+
+      const ec = target.model(SDK.RuntimeModel).defaultExecutionContext();
+      const result = await ec.evaluate(
+          {
+            expression: `'fetch' in getEventListeners(self)`,
+            includeCommandLineAPI: true,
+            silent: true,
+            returnByValue: true
+          },
+          false, false);
+      if (!result.object || !result.object.value)
+        continue;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * @param {?string} url
+   * @return {!Promise<?Image>}
+   */
+  async _loadImage(url) {
+    const image = createElement('img');
+    image.style.maxWidth = '200px';
+    image.style.maxHeight = '200px';
+    const result = new Promise((f, r) => {
+      image.onload = f;
+      image.onerror = r;
+    });
+    image.src = url;
+    try {
+      await result;
+      return image;
+    } catch (e) {
+    }
+    return null;
   }
 };

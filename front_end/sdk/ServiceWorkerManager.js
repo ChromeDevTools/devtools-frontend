@@ -73,6 +73,18 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Array<string>} urls
+   * @return {boolean}
+   */
+  hasRegistrationForURLs(urls) {
+    for (const registration of this._registrations.values()) {
+      if (urls.filter(url => url && url.startsWith(registration.scopeURL)).length === urls.length)
+        return true;
+    }
+    return false;
+  }
+
+  /**
    * @param {string} versionId
    * @return {?SDK.ServiceWorkerVersion}
    */

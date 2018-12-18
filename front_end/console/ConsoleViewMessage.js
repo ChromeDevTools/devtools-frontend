@@ -216,13 +216,6 @@ Console.ConsoleViewMessage = class {
           messageElement.title =
               Common.UIString('Clear all messages with ' + UI.shortcutRegistry.shortcutTitleForAction('console.clear'));
           break;
-        case SDK.ConsoleMessage.MessageType.Assert: {
-          let args = [Common.UIString('Assertion failed:')];
-          if (this._message.parameters)
-            args = args.concat(this._message.parameters);
-          messageElement = this._format(args);
-          break;
-        }
         case SDK.ConsoleMessage.MessageType.Dir: {
           const obj = this._message.parameters ? this._message.parameters[0] : undefined;
           const args = ['%O', obj];
@@ -233,6 +226,9 @@ Console.ConsoleViewMessage = class {
         case SDK.ConsoleMessage.MessageType.ProfileEnd:
           messageElement = this._format([messageText]);
           break;
+        case SDK.ConsoleMessage.MessageType.Assert:
+          this._messagePrefix = ls`Assertion failed: `;
+          // Fall through.
         default: {
           if (this._message.parameters && this._message.parameters.length === 1 &&
               this._message.parameters[0].type === 'string')
@@ -482,6 +478,8 @@ Console.ConsoleViewMessage = class {
   _format(rawParameters) {
     // This node is used like a Builder. Values are continually appended onto it.
     const formattedResult = createElement('span');
+    if (this._messagePrefix)
+      formattedResult.createChild('span').textContent = this._messagePrefix;
     if (!rawParameters.length)
       return formattedResult;
 

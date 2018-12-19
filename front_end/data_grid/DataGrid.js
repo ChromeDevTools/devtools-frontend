@@ -810,7 +810,7 @@ DataGrid.DataGrid = class extends Common.Object {
    * @param {!Event} event
    */
   _keyDown(event) {
-    if (!this.selectedNode || event.shiftKey || event.metaKey || event.ctrlKey || this._editing)
+    if (!this.selectedNode || event.shiftKey || event.metaKey || event.ctrlKey || this._editing || UI.isEditing())
       return;
 
     let handled = false;

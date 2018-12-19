@@ -99,7 +99,7 @@
 }
 
 .timeline.panel .status-pane-container.tinted {
-    background-color: hsla(0, 0%, 90%, 0.8);
+    background-color: lightgray;
     pointer-events: auto;
 }
 

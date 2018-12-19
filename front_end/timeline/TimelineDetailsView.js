@@ -126,8 +126,10 @@ Timeline.TimelineDetailsView = class extends UI.VBox {
   }
 
   _updateContentsFromWindow() {
-    if (!this._model)
+    if (!this._model) {
+      this._setContent(UI.html`<div/>`);
       return;
+    }
     const window = this._model.window();
     this._updateSelectedRangeStats(window.left, window.right);
     this._updateContents();

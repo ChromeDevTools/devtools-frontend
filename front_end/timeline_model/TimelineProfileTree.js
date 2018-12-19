@@ -345,7 +345,7 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
       const id = TimelineModel.TimelineProfileTree._eventId(e);
       let node = nodeById.get(id);
       if (!node) {
-        node = new TimelineModel.TimelineProfileTree.BottomUpNode(root, id, e, true, root);
+        node = new TimelineModel.TimelineProfileTree.BottomUpNode(root, id, e, false, root);
         nodeById.set(id, node);
       }
       node.selfTime += selfTimeStack.pop();
@@ -353,6 +353,8 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
         node.totalTime += totalTimeById.get(id);
         totalTimeById.delete(id);
       }
+      if (firstNodeStack.length)
+        node.setHasChildren();
     }
 
     this.selfTime = selfTimeStack.pop();
@@ -445,6 +447,10 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
     this._depth = (parent._depth || 0) + 1;
     this._cachedChildren = null;
     this._hasChildren = hasChildren;
+  }
+
+  setHasChildren() {
+    this._hasChildren = true;
   }
 
   /**

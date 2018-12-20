@@ -44,6 +44,7 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   const shadowRoot = UI.createShadowRootWithCoreStyles(element, 'components/jsUtils.css');
   const contentElement = shadowRoot.createChild('table', 'stack-preview-container');
   let totalHiddenCallFramesCount = 0;
+  let totalCallFramesCount = 0;
   /** @type {!Array<!Element>} */
   const links = [];
 
@@ -54,6 +55,8 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
   function appendStackTrace(stackTrace) {
     let hiddenCallFrames = 0;
     for (const stackFrame of stackTrace.callFrames) {
+      totalCallFramesCount++;
+      let shouldHide = totalCallFramesCount > 30 && stackTrace.callFrames.length > 31;
       const row = createElement('tr');
       row.createChild('td').textContent = '\n';
       row.createChild('td', 'function-name').textContent = UI.beautifyFunctionName(stackFrame.functionName);
@@ -61,13 +64,15 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
       if (link) {
         link.addEventListener('contextmenu', populateContextMenu.bind(null, link));
         const uiLocation = Components.Linkifier.uiLocation(link);
-        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode)) {
-          row.classList.add('blackboxed');
-          ++hiddenCallFrames;
-        }
+        if (uiLocation && Bindings.blackboxManager.isBlackboxedUISourceCode(uiLocation.uiSourceCode))
+          shouldHide = true;
         row.createChild('td').textContent = ' @ ';
         row.createChild('td').appendChild(link);
         links.push(link);
+      }
+      if (shouldHide) {
+        row.classList.add('blackboxed');
+        ++hiddenCallFrames;
       }
       contentElement.appendChild(row);
     }
@@ -125,9 +130,9 @@ Components.JSPresentationUtils.buildStackTracePreviewContents = function(
     cell.colSpan = 4;
     const showAllLink = cell.createChild('span', 'link');
     if (totalHiddenCallFramesCount === 1)
-      showAllLink.textContent = ls`Show 1 more blackboxed frame`;
+      showAllLink.textContent = ls`Show 1 more frame`;
     else
-      showAllLink.textContent = ls`Show ${totalHiddenCallFramesCount} more blackboxed frames`;
+      showAllLink.textContent = ls`Show ${totalHiddenCallFramesCount} more frames`;
     showAllLink.addEventListener('click', () => {
       contentElement.classList.add('show-blackboxed');
       if (contentUpdated)

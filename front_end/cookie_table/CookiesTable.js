@@ -349,12 +349,16 @@ CookieTable.CookiesTable = class extends UI.VBox {
     } else {
       data.domain = cookie.domain() || '';
       data.path = cookie.path() || '';
-      if (cookie.maxAge())
+      if (cookie.maxAge()) {
         data.expires = Number.secondsToString(parseInt(cookie.maxAge(), 10));
-      else if (cookie.expires())
-        data.expires = new Date(cookie.expires()).toISOString();
-      else
+      } else if (cookie.expires()) {
+        if (cookie.expires() < 0)
+          data.expires = 'N/A';
+        else
+          data.expires = new Date(cookie.expires()).toISOString();
+      } else {
         data.expires = CookieTable.CookiesTable._expiresSessionValue;
+      }
     }
     data.size = cookie.size();
     const checkmark = '\u2713';

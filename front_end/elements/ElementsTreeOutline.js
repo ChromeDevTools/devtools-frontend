@@ -560,6 +560,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
       return;
 
     element.select();
+    event.consume(true);
   }
 
   /**

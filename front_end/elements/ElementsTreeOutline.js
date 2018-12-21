@@ -290,6 +290,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    * @param {boolean} visible
    */
   setVisible(visible) {
+    if (visible === this._visible)
+      return;
     this._visible = visible;
     if (!this._visible) {
       this._popoverHelper.hidePopover();

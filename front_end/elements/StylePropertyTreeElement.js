@@ -604,7 +604,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     this._originalPropertyText = this.property.propertyText;
 
-    this._parentPane.setEditingStyle(true);
+    this._parentPane.setEditingStyle(true, this);
     if (selectElement.parentElement)
       selectElement.parentElement.scrollIntoViewIfNeeded(false);
 

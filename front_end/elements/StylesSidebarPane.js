@@ -378,12 +378,35 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
   /**
    * @param {boolean} editing
+   * @param {!Elements.StylePropertyTreeElement=} treeElement
    */
-  setEditingStyle(editing) {
+  setEditingStyle(editing, treeElement) {
     if (this._isEditingStyle === editing)
       return;
     this.contentElement.classList.toggle('is-editing-style', editing);
     this._isEditingStyle = editing;
+    this._setActiveProperty(editing ? treeElement || null : null);
+  }
+
+  /**
+   * @param {?Elements.StylePropertyTreeElement} treeElement
+   */
+  _setActiveProperty(treeElement) {
+    if (!this.node())
+      return;
+
+    SDK.OverlayModel.hideDOMNodeHighlight();
+    if (!treeElement || treeElement.overloaded() || treeElement.inherited())
+      return;
+
+    const rule = treeElement.property.ownerStyle.parentRule;
+    const selectors = rule ? rule.selectorText() : undefined;
+    for (const mode of ['padding', 'border', 'margin']) {
+      if (!treeElement.name.startsWith(mode))
+        continue;
+      this.node().domModel().overlayModel().highlightDOMNodeWithConfig(this.node().id, {mode, selectors});
+      break;
+    }
   }
 
   /**
@@ -813,6 +836,7 @@ Elements.StylePropertiesSection = class {
     this._selectorElement.textContent = this._headerText();
     selectorContainer.appendChild(this._selectorElement);
     this._selectorElement.addEventListener('mouseenter', this._onMouseEnterSelector.bind(this), false);
+    this._selectorElement.addEventListener('mousemove', event => event.consume(), false);
     this._selectorElement.addEventListener('mouseleave', this._onMouseOutSelector.bind(this), false);
 
     const openBrace = createElement('span');
@@ -830,7 +854,7 @@ Elements.StylePropertiesSection = class {
     this.element.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener('click', this._handleEmptySpaceClick.bind(this), false);
     this.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-    this.element.addEventListener('mouseleave', this._setSectionHovered.bind(this, false), false);
+    this.element.addEventListener('mouseleave', this._onMouseLeave.bind(this), false);
 
     if (rule) {
       // Prevent editing the user agent and user rules.
@@ -956,9 +980,23 @@ Elements.StylePropertiesSection = class {
   /**
    * @param {!Event} event
    */
+  _onMouseLeave(event) {
+    this._setSectionHovered(false);
+    this._parentPane._setActiveProperty(null);
+  }
+
+  /**
+   * @param {!Event} event
+   */
   _onMouseMove(event) {
     const hasCtrlOrMeta = UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!MouseEvent} */ (event));
     this._setSectionHovered(hasCtrlOrMeta);
+
+    const treeElement = this.propertiesTreeOutline.treeElementFromEvent(event);
+    if (treeElement instanceof Elements.StylePropertyTreeElement)
+      this._parentPane._setActiveProperty(/** @type {!Elements.StylePropertyTreeElement} */ (treeElement));
+    else
+      this._parentPane._setActiveProperty(null);
   }
 
   /**
@@ -1054,14 +1092,16 @@ Elements.StylePropertiesSection = class {
     this._hoverTimer = setTimeout(this._highlight.bind(this), 300);
   }
 
-  _highlight() {
+  /**
+   * @param {string=} mode
+   */
+  _highlight(mode = 'all') {
     SDK.OverlayModel.hideDOMNodeHighlight();
     const node = this._parentPane.node();
     if (!node)
       return;
     const selectors = this._style.parentRule ? this._style.parentRule.selectorText() : undefined;
-    node.domModel().overlayModel().highlightDOMNodeWithConfig(
-        node.id, {mode: 'all', showInfo: undefined, selectors: selectors});
+    node.domModel().overlayModel().highlightDOMNodeWithConfig(node.id, {mode, showInfo: undefined, selectors});
   }
 
   /**
@@ -1331,6 +1371,7 @@ Elements.StylePropertiesSection = class {
   }
 
   onpopulate() {
+    this._parentPane._setActiveProperty(null);
     this.propertiesTreeOutline.removeChildren();
     const style = this._style;
     let count = 0;

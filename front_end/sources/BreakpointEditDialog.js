@@ -19,6 +19,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     /** @type {?UI.TextEditor} */
     this._editor = null;
     const isNewBreakpointsEnabled = Runtime.experiments.isEnabled('sourcesLogpoints');
+    this.element.tabIndex = -1;
 
     const logpointPrefix = Sources.BreakpointEditDialog._LogpointPrefix;
     const logpointSuffix = Sources.BreakpointEditDialog._LogpointSuffix;

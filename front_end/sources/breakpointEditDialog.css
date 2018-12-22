@@ -38,12 +38,11 @@
   border-radius: 0;
   z-index: 30;
   background-color: var(--toolbar-bg-color);
-  width: 100%;
-  max-width: 600px;
+  width: 555px;
   pointer-events: auto;
-  margin-bottom: 5px;
+  margin: 2px 0 2px -1px;
   padding: 0 10px 10px 5px;
-  border-left: 3px solid var(--divider-color);
+  border: 1px solid var(--divider-color);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {

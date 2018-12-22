@@ -117,7 +117,7 @@
 }
 
 .pretty-printed .CodeMirror-linenumber {
-    color: var( --accent-color-b);
+    color: var(--accent-color);
 }
 
 .cm-highlight {
@@ -571,7 +571,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .pretty-printed .CodeMirror-linenumber {
-    color: var(--accent-color-b);
+    color: var(--accent-color);
 }
 
 .CodeMirror-foldmarker {
@@ -632,4 +632,18 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 
 .CodeMirror-foldgutter-folded::before {
     -webkit-mask-position: 0 0;
+}
+
+.CodeMirror .CodeMirror-selected {
+    background-color: var(--editor-selection-inactive-bg-color);
+}
+
+.CodeMirror-focused .CodeMirror-selected {
+    background-color: var(--editor-selection-bg-color);
+}
+
+.CodeMirror .CodeMirror-line::selection,
+.CodeMirror .CodeMirror-line > span::selection,
+.CodeMirror .CodeMirror-line > span > span::selection {
+    background: var(--editor-selection-bg-color);
 }

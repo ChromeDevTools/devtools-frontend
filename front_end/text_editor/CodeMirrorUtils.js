@@ -89,46 +89,6 @@ TextEditor.CodeMirrorUtils.pullLines = function(codeMirror, linesCount) {
 };
 
 /**
- * @param {!Element} element
- */
-TextEditor.CodeMirrorUtils.appendThemeStyle = function(element) {
-  if (UI.themeSupport.hasTheme())
-    return;
-
-  const backgroundColor = InspectorFrontendHost.getSelectionBackgroundColor();
-  const foregroundColor = InspectorFrontendHost.getSelectionForegroundColor();
-  const inactiveBackgroundColor = InspectorFrontendHost.getInactiveSelectionBackgroundColor();
-  const inactiveForegroundColor = InspectorFrontendHost.getInactiveSelectionForegroundColor();
-  const style = createElement('style');
-  style.textContent = `
-    .CodeMirror .CodeMirror-selected {
-      background-color: ${inactiveBackgroundColor};
-    }
-
-    .CodeMirror .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
-      color: ${inactiveForegroundColor} !important;
-    }
-
-    .CodeMirror-focused .CodeMirror-selected {
-      background-color: ${backgroundColor};
-    }
-
-    .CodeMirror-focused .CodeMirror-selectedtext:not(.CodeMirror-persist-highlight) {
-      color: ${foregroundColor} !important;
-    }
-
-    .CodeMirror .CodeMirror-line::selection,
-    .CodeMirror .CodeMirror-line > span::selection,
-    .CodeMirror .CodeMirror-line > span > span::selection {
-      background: ${backgroundColor};
-      color: ${foregroundColor} !important;
-    }
-  `;
-  element.appendChild(style);
-};
-
-
-/**
  * @implements {TextUtils.TokenizerFactory}
  * @unrestricted
  */

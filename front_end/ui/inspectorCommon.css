@@ -420,3 +420,11 @@ label[is=dt-icon-label] {
 .expandable-inline-button:hover {
     background-color: #d5d5d5;
 }
+
+::selection {
+    background-color: #bbdefb;
+}
+
+.-theme-with-dark-background *::selection {
+    background-color: #9e9e9e;;
+}

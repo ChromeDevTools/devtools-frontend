@@ -320,35 +320,31 @@
    */
   const InspectorFrontendHostImpl = class {
     /**
-     * @override
      * @return {string}
      */
     getSelectionBackgroundColor() {
-      return DevToolsHost.getSelectionBackgroundColor();
+      return '#6e86ff';
     }
 
     /**
-     * @override
      * @return {string}
      */
     getSelectionForegroundColor() {
-      return DevToolsHost.getSelectionForegroundColor();
+      return '#ffffff';
     }
 
     /**
-     * @override
      * @return {string}
      */
     getInactiveSelectionBackgroundColor() {
-      return DevToolsHost.getInactiveSelectionBackgroundColor();
+      return '#c9c8c8';
     }
 
     /**
-     * @override
      * @return {string}
      */
     getInactiveSelectionForegroundColor() {
-      return DevToolsHost.getInactiveSelectionForegroundColor();
+      return '#323232';
     }
 
     /**

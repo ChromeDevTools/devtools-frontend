@@ -144,12 +144,12 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 .toolbar-button.toolbar-state-on .toolbar-glyph,
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover:not(:active),
 .-theme-selection-color {
-    background-color: var(--accent-color-b);
+    background-color: var(--accent-color);
 }
 
 .toolbar-button.toolbar-state-on .toolbar-text,
 .-theme-selection-color {
-    color: var(--accent-color-b);
+    color: var(--accent-color);
 }
 
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:hover .toolbar-glyph {
@@ -163,12 +163,12 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-glyph,
 .toolbar-blue-on-hover .toolbar-button:not(.toolbar-state-on):enabled:active:hover,
 .-theme-selection-color {
-    background-color: var(--accent-color-b);
+    background-color: var(--accent-color);
 }
 
 .toolbar-button.toolbar-state-on:enabled:hover:not(:active) .toolbar-text,
 .-theme-selection-color {
-    color: var(--accent-color-b);
+    color: var(--accent-color);
 }
 
 .toolbar-toggled-gray .toolbar-button.toolbar-state-on {

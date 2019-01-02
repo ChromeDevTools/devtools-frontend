@@ -2028,15 +2028,20 @@ UI.createInlineButton = function(toolbarButton) {
 UI.createExpandableText = function(text, maxLength) {
   const fragment = createDocumentFragment();
   fragment.textContent = text.slice(0, maxLength);
-  const hiddenText = text.slice(maxLength);
-
-  const expandButton = fragment.createChild('span', 'expandable-inline-button');
-  expandButton.setAttribute('data-text', ls`Show ${Number.withThousandsSeparator(hiddenText.length)} more`);
-  expandButton.addEventListener('click', () => {
-    if (expandButton.parentElement)
-      expandButton.parentElement.insertBefore(createTextNode(hiddenText), expandButton);
-    expandButton.remove();
-  });
+  const expandElement = fragment.createChild('span');
+  const totalBytes = Number.bytesToString(2 * text.length);
+  if (text.length < 10000000) {
+    expandElement.setAttribute('data-text', ls`Show more (${totalBytes})`);
+    expandElement.classList.add('expandable-inline-button');
+    expandElement.addEventListener('click', () => {
+      if (expandElement.parentElement)
+        expandElement.parentElement.insertBefore(createTextNode(text.slice(maxLength)), expandElement);
+      expandElement.remove();
+    });
+  } else {
+    expandElement.setAttribute('data-text', ls`long text was truncated (${totalBytes})`);
+    expandElement.classList.add('undisplayable-text');
+  }
 
   const copyButton = fragment.createChild('span', 'expandable-inline-button');
   copyButton.setAttribute('data-text', ls`Copy`);

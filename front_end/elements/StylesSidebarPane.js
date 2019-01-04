@@ -64,6 +64,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
     this._isEditingStyle = false;
     /** @type {?RegExp} */
     this._filterRegex = null;
+    this._isActivePropertyHighlighted = false;
 
     this.contentElement.classList.add('styles-pane');
 
@@ -392,10 +393,13 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @param {?Elements.StylePropertyTreeElement} treeElement
    */
   _setActiveProperty(treeElement) {
+    if (this._isActivePropertyHighlighted)
+      SDK.OverlayModel.hideDOMNodeHighlight();
+    this._isActivePropertyHighlighted = false;
+
     if (!this.node())
       return;
 
-    SDK.OverlayModel.hideDOMNodeHighlight();
     if (!treeElement || treeElement.overloaded() || treeElement.inherited())
       return;
 
@@ -405,6 +409,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
       if (!treeElement.name.startsWith(mode))
         continue;
       this.node().domModel().overlayModel().highlightDOMNodeWithConfig(this.node().id, {mode, selectors});
+      this._isActivePropertyHighlighted = true;
       break;
     }
   }

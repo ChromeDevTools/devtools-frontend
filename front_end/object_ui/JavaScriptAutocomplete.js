@@ -489,7 +489,9 @@ ObjectUI.JavaScriptAutocomplete = class {
         'queryObjects',
         '$',
         '$$',
-        '$x'
+        '$x',
+        '$0',
+        '$_'
       ];
       propertyGroups.push({items: commandLineAPI});
     }

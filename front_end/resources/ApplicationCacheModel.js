@@ -218,3 +218,8 @@ Resources.ApplicationCacheDispatcher = class {
 };
 
 Resources.ApplicationCacheModel.UNCACHED = 0;
+Resources.ApplicationCacheModel.IDLE = 1;
+Resources.ApplicationCacheModel.CHECKING = 2;
+Resources.ApplicationCacheModel.DOWNLOADING = 3;
+Resources.ApplicationCacheModel.UPDATEREADY = 4;
+Resources.ApplicationCacheModel.OBSOLETE = 5;

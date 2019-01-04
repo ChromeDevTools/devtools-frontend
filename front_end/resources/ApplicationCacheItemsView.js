@@ -105,20 +105,26 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
 
     const statusInformation = {};
     // We should never have UNCACHED status, since we remove frames with UNCACHED application cache status from the tree.
-    statusInformation[applicationCache.UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
-    statusInformation[applicationCache.IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
-    statusInformation[applicationCache.CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
-    statusInformation[applicationCache.DOWNLOADING] = {type: 'smallicon-orange-ball', text: 'DOWNLOADING'};
-    statusInformation[applicationCache.UPDATEREADY] = {type: 'smallicon-green-ball', text: 'UPDATEREADY'};
-    statusInformation[applicationCache.OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
+    statusInformation[Resources.ApplicationCacheModel.UNCACHED] = {type: 'smallicon-red-ball', text: 'UNCACHED'};
+    statusInformation[Resources.ApplicationCacheModel.IDLE] = {type: 'smallicon-green-ball', text: 'IDLE'};
+    statusInformation[Resources.ApplicationCacheModel.CHECKING] = {type: 'smallicon-orange-ball', text: 'CHECKING'};
+    statusInformation[Resources.ApplicationCacheModel.DOWNLOADING] = {
+      type: 'smallicon-orange-ball',
+      text: 'DOWNLOADING'
+    };
+    statusInformation[Resources.ApplicationCacheModel.UPDATEREADY] = {
+      type: 'smallicon-green-ball',
+      text: 'UPDATEREADY'
+    };
+    statusInformation[Resources.ApplicationCacheModel.OBSOLETE] = {type: 'smallicon-red-ball', text: 'OBSOLETE'};
 
-    const info = statusInformation[status] || statusInformation[applicationCache.UNCACHED];
+    const info = statusInformation[status] || statusInformation[Resources.ApplicationCacheModel.UNCACHED];
 
     this._statusIcon.type = info.type;
     this._statusIcon.textContent = info.text;
 
-    if (this.isShowing() && this._status === applicationCache.IDLE &&
-        (oldStatus === applicationCache.UPDATEREADY || !this._resources))
+    if (this.isShowing() && this._status === Resources.ApplicationCacheModel.IDLE &&
+        (oldStatus === Resources.ApplicationCacheModel.UPDATEREADY || !this._resources))
       this._markDirty();
     this._maybeUpdate();
   }

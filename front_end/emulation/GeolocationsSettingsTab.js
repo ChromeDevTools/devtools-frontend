@@ -146,7 +146,6 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
 
     cell = fields.createChild('div', 'geolocations-list-text');
     cell.appendChild(editor.createInput('long', 'text', '', longValidator));
-    fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
 
     return editor;
 

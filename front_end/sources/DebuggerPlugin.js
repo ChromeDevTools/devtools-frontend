@@ -151,21 +151,6 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
     return uiSourceCode.contentType().hasScripts();
   }
 
-  /**
-   * @override
-   * @return {!Array<!UI.ToolbarItem>}
-   */
-  rightToolbarItems() {
-    const originURL = Bindings.CompilerScriptMapping.uiSourceCodeOrigin(this._uiSourceCode);
-    if (originURL) {
-      const parsedURL = originURL.asParsedURL();
-      if (parsedURL)
-        return [new UI.ToolbarText(Common.UIString('(source mapped from %s)', parsedURL.displayName))];
-    }
-
-    return [];
-  }
-
   _showBlackboxInfobarIfNeeded() {
     const uiSourceCode = this._uiSourceCode;
     if (!uiSourceCode.contentType().hasScripts())

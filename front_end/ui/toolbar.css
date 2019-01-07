@@ -45,6 +45,11 @@
     padding: 0;
     height: 26px;
     border: none;
+    white-space: pre;
+}
+
+.toolbar-item,
+.toolbar-item .devtools-link {
     color: #5a5a5a;
 }
 

@@ -69,7 +69,7 @@
 }
 
 :root {
-    --focus-ring-active-shadow: 0 0 0 1px #bef7ff;
+    --focus-ring-active-shadow: 0 0 0 1px var(--accent-color);
     --selection-bg-color: var(--accent-color);
     --divider-border: 1px solid var(--divider-color);
 }

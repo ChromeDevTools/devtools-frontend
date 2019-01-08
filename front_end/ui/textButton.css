@@ -9,10 +9,10 @@
     height: 24px;
     font-size: 12px;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 0px 12px;
-    font-weight: 500;
-    color: #333;
+    font-weight: 600;
+    color: var(--accent-fg-color);
     background-color: #fff;
     flex: none;
     white-space: nowrap;
@@ -39,18 +39,15 @@
 }
 
 :host(.primary-button), -theme-preserve {
-    background-color: #4285F4;
+    background-color: var(--accent-color);
     border: none;
     color: #fff;
 }
 
 :host(.primary-button:not(:disabled):focus),
-:host(.primary-button:not(:disabled):hover), -theme-preserve {
-    background-color: #3B78E7;
-}
-
+:host(.primary-button:not(:disabled):hover),
 :host(.primary-button:not(:disabled):active), -theme-preserve {
-    background-color: #3367D6;
+    background-color: var(--accent-color-hover);
 }
 
 :host-context(.-theme-with-dark-background):host(:not(.primary-button):not(:disabled):focus),

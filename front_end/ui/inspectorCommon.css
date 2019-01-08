@@ -157,14 +157,6 @@ iframe.widget {
     color: rgb(17, 85, 204);
 }
 
-button,
-input,
-select {
-    font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-}
-
 input {
     background-color: white;
 }

@@ -89,6 +89,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
     this._showHTMLCommentsSetting = Common.moduleSetting('showHTMLComments');
     this._showHTMLCommentsSetting.addChangeListener(this._onShowHTMLCommentsChange.bind(this));
+    this.useLightSelectionColor();
   }
 
   /**

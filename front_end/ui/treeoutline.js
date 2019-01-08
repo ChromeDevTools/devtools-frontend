@@ -177,6 +177,10 @@ UI.TreeOutline = class extends Common.Object {
       this.contentElement.focus();
   }
 
+  useLightSelectionColor() {
+    this._useLightSelectionColor = true;
+  }
+
   /**
    * @param {!UI.TreeElement} element
    */
@@ -1092,11 +1096,15 @@ UI.TreeElement = class {
   }
 
   _onFocus() {
+    if (this.treeOutline._useLightSelectionColor)
+      return;
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred'))
       this._listItemNode.classList.add('force-white-icons');
   }
 
   _onBlur() {
+    if (this.treeOutline._useLightSelectionColor)
+      return;
     if (!this.treeOutline.contentElement.classList.contains('hide-selection-when-blurred'))
       this._listItemNode.classList.remove('force-white-icons');
   }

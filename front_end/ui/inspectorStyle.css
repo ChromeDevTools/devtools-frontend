@@ -33,7 +33,9 @@
 }
 
 :root {
-    --accent-color: #42a5f5;
+    --accent-color: #1a73e8;
+    --accent-fg-color: #1a73e8;
+    --accent-color-hover: #3b86e8;
     --focus-bg-color: hsl(214, 40%, 92%);
     --toolbar-bg-color: #f3f3f3;
     --toolbar-hover-bg-color: #eaeaea;
@@ -51,7 +53,9 @@
 }
 
 .-theme-with-dark-background {
-    --accent-color: #2f84da;
+    --accent-color: #0e639c;
+    --accent-fg-color: #cccccc;
+    --accent-color-hover: rgb(17, 119, 187);
     --focus-bg-color: hsl(214, 19%, 27%);
     --toolbar-bg-color: #333333;
     --toolbar-hover-bg-color: #202020;

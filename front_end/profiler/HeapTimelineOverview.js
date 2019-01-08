@@ -231,9 +231,9 @@ Profiler.HeapTimelineOverview = class extends UI.VBox {
     const minIndex = timestamps.lowerBound(timeLeft);
     const maxIndex = timestamps.upperBound(timeRight);
     let size = 0;
-    for (let i = minIndex; i < maxIndex; ++i)
+    for (let i = minIndex; i <= maxIndex; ++i)
       size += sizes[i];
-    const minId = minIndex < ids.length ? ids[minIndex] : Infinity;
+    const minId = minIndex > 0 ? ids[minIndex - 1] : 0;
     const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 
     this.dispatchEventToListeners(Profiler.HeapTimelineOverview.IdsRangeChanged, {minId, maxId, size});

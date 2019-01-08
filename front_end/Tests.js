@@ -1287,6 +1287,14 @@
     });
     await testCase(baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=Bar');
 
+    await SDK.targetManager.mainTarget().runtimeAgent().invoke_evaluate({
+      expression: `fetch("/set-cookie?devtools-test-cookie=same-site-cookie;SameSite=Lax",
+                         {credentials: 'include'})`,
+      awaitPromise: true
+    });
+    await testCase(
+        baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=same-site-cookie');
+
     this.releaseControl();
   };
 

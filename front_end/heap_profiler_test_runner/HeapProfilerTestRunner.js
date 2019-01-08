@@ -43,9 +43,10 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
           node_types: [['hidden', 'object'], '', '', '', '', '', ''],
           edge_fields: ['type', 'name_or_index', 'to_node'],
           edge_types: [['element', 'property', 'shortcut'], '', ''],
-          location_fields: ['object_index', 'script_id', 'line', 'column']
+          location_fields: ['object_index', 'script_id', 'line', 'column'],
+          trace_function_info_fields: ['function_id', 'name', 'script_name', 'script_id', 'line', 'column'],
+          trace_node_fields: ['id', 'function_info_index', 'count', 'size', 'children']
         },
-
         node_count: 6,
         edge_count: 7
       },
@@ -56,6 +57,10 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
       ],
 
       edges: [1, 6, 7, 1, 7, 14, 0, 1, 14, 1, 8, 21, 1, 9, 21, 1, 10, 28, 1, 11, 35],
+
+      trace_function_infos: [0, 2, 1, 0, 0, 0],
+
+      trace_tree: [1, 0, 0, 0, []],
 
       locations: [0, 1, 2, 3, 18, 2, 3, 4],
 

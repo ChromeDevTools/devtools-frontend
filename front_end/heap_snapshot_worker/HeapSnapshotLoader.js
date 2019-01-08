@@ -197,18 +197,18 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
         '"edges"', ls`Loading edges\u2026 %d%%`,
         this._snapshot.snapshot.meta.edge_fields.length * this._snapshot.snapshot.edge_count);
 
-    // If there is allocation info parse it, otherwise jump straight to strings.
     if (this._snapshot.snapshot.trace_function_count) {
       this._snapshot.trace_function_infos = await this._parseArray(
           '"trace_function_infos"', ls`Loading allocation traces\u2026 %d%%`,
           this._snapshot.snapshot.meta.trace_function_info_fields.length *
               this._snapshot.snapshot.trace_function_count);
 
-      const nextToken = this._snapshot.snapshot.meta.sample_fields ? '"samples"' : '"strings"';
-      const nextTokenIndex = await this._findToken(nextToken);
-      const bracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
-      this._snapshot.trace_tree = JSON.parse(this._json.substring(0, bracketIndex + 1));
-      this._json = this._json.slice(bracketIndex + 1);
+      const thisTokenEndIndex = await this._findToken(':');
+      const nextTokenIndex = await this._findToken('"', thisTokenEndIndex);
+      const openBracketIndex = this._json.indexOf('[');
+      const closeBracketIndex = this._json.lastIndexOf(']', nextTokenIndex);
+      this._snapshot.trace_tree = JSON.parse(this._json.substring(openBracketIndex, closeBracketIndex + 1));
+      this._json = this._json.slice(closeBracketIndex + 1);
     }
 
     if (this._snapshot.snapshot.meta.sample_fields)

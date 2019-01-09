@@ -376,7 +376,6 @@ Security.SecurityPanel.Origin;
  * @typedef {Object}
  * @property {!Protocol.Security.SecurityState} securityState
  * @property {?Protocol.Network.SecurityDetails} securityDetails
- * @property {?Promise<>} certificateDetailsPromise
  * @property {?bool} loadedFromCache
  * @property {?Security.SecurityOriginView} originView
  */

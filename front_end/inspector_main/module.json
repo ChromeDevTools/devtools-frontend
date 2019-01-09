@@ -127,13 +127,6 @@
             "persistence": "closeable",
             "order": 50,
             "className": "InspectorMain.RenderingOptionsView"
-        },
-        {
-            "type": "action",
-            "category": "Mobile",
-            "actionId": "components.request-app-banner",
-            "className": "InspectorMain.RequestAppBannerActionDelegate",
-            "title": "Add to homescreen"
         }
     ],
     "dependencies": [
@@ -142,7 +135,6 @@
     ],
     "scripts": [
         "RenderingOptions.js",
-        "RequestAppBannerActionDelegate.js",
         "InspectorMain.js"
     ],
     "resources": [

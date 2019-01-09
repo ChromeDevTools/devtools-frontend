@@ -361,7 +361,6 @@ all_devtools_files = [
   "front_end/inspector_main/nodeIcon.css",
   "front_end/inspector_main/renderingOptions.css",
   "front_end/inspector_main/RenderingOptions.js",
-  "front_end/inspector_main/RequestAppBannerActionDelegate.js",
   "front_end/integration_test_runner.js",
   "front_end/integration_test_runner.json",
   "front_end/javascript_metadata/module.json",

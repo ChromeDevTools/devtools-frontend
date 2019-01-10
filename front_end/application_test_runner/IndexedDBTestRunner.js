@@ -104,6 +104,10 @@ ApplicationTestRunner.createDatabase = function(frameId, databaseName, callback)
   ApplicationTestRunner.evaluateWithCallback(frameId, 'createDatabase', [databaseName], callback);
 };
 
+ApplicationTestRunner.createDatabaseWithVersion = function(frameId, databaseName, version, callback) {
+  ApplicationTestRunner.evaluateWithCallback(frameId, 'createDatabaseWithVersion', [databaseName, version], callback);
+};
+
 ApplicationTestRunner.deleteDatabase = function(frameId, databaseName, callback) {
   ApplicationTestRunner.evaluateWithCallback(frameId, 'deleteDatabase', [databaseName], callback);
 };
@@ -247,6 +251,17 @@ const __indexedDBHelpers = `
 
   function createDatabase(callback, databaseName) {
     let request = indexedDB.open(databaseName);
+    request.onerror = onIndexedDBError;
+    request.onsuccess = closeDatabase;
+
+    function closeDatabase() {
+      request.result.close();
+      callback();
+    }
+  }
+
+  function createDatabaseWithVersion(callback, databaseName, version) {
+    let request = indexedDB.open(databaseName, version);
     request.onerror = onIndexedDBError;
     request.onsuccess = closeDatabase;
 

@@ -134,7 +134,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     await this._domModel.requestDocument();
     this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
     this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectModeWillBeToggled, this);
-    this._highlighter.setInspectMode(mode, this._buildHighlightConfig());
+    this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', true));
   }
 
   /**
@@ -203,12 +203,13 @@ SDK.OverlayModel = class extends SDK.SDKModel {
 
   /**
    * @param {string=} mode
+   * @param {boolean=} showStyles
    * @return {!Protocol.Overlay.HighlightConfig}
    */
-  _buildHighlightConfig(mode) {
-    mode = mode || 'all';
+  _buildHighlightConfig(mode = 'all', showStyles = false) {
     const showRulers = Common.moduleSetting('showMetricsRulers').get();
-    const highlightConfig = {showInfo: mode === 'all', showRulers: showRulers, showExtensionLines: showRulers};
+    const highlightConfig =
+        {showInfo: mode === 'all', showRulers: showRulers, showStyles, showExtensionLines: showRulers};
     if (mode === 'all' || mode === 'content')
       highlightConfig.contentColor = Common.Color.PageHighlight.Content.toProtocolRGBA();
 
@@ -225,7 +226,6 @@ SDK.OverlayModel = class extends SDK.SDKModel {
       highlightConfig.eventTargetColor = Common.Color.PageHighlight.EventTarget.toProtocolRGBA();
       highlightConfig.shapeColor = Common.Color.PageHighlight.Shape.toProtocolRGBA();
       highlightConfig.shapeMarginColor = Common.Color.PageHighlight.ShapeMargin.toProtocolRGBA();
-      highlightConfig.displayAsMaterial = true;
     }
 
     if (mode === 'all')

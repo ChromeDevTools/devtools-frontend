@@ -60,12 +60,12 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     const updateOnReloadSetting = Common.settings.createSetting('serviceWorkerUpdateOnReload', false);
     updateOnReloadSetting.setTitle(Common.UIString('Update on reload'));
     const forceUpdate = new UI.ToolbarSettingCheckbox(
-        updateOnReloadSetting, Common.UIString('Force update Service Worker on page reload'));
+        updateOnReloadSetting, ls`On page reload, force the service worker to update, and activate it`);
     this._toolbar.appendToolbarItem(forceUpdate);
     const bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
     bypassServiceWorkerSetting.setTitle(Common.UIString('Bypass for network'));
     const fallbackToNetwork = new UI.ToolbarSettingCheckbox(
-        bypassServiceWorkerSetting, Common.UIString('Bypass Service Worker and load resources from the network'));
+        bypassServiceWorkerSetting, ls`Bypass service worker and load resources from the network`);
     this._toolbar.appendToolbarItem(fallbackToNetwork);
 
     /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/

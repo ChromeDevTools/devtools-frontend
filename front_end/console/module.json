@@ -37,6 +37,9 @@
         {
             "type": "action",
             "category": "Console",
+            "contextTypes": [
+                "Console.ConsoleView"
+            ],
             "actionId": "console.clear",
             "title": "Clear console",
             "iconClass": "largeicon-clear",

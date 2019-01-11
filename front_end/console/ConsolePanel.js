@@ -42,6 +42,11 @@ Console.ConsolePanel = class extends UI.Panel {
     return /** @type {!Console.ConsolePanel} */ (self.runtime.sharedInstance(Console.ConsolePanel));
   }
 
+  static _updateContextFlavor() {
+    const consoleView = Console.ConsolePanel.instance()._view;
+    UI.context.setFlavor(Console.ConsoleView, consoleView.isShowing() ? consoleView : null);
+  }
+
   /**
    * @override
    */
@@ -51,6 +56,7 @@ Console.ConsolePanel = class extends UI.Panel {
     if (wrapper && wrapper.isShowing())
       UI.inspectorView.setDrawerMinimized(true);
     this._view.show(this.element);
+    Console.ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -63,6 +69,7 @@ Console.ConsolePanel = class extends UI.Panel {
     UI.inspectorView.setDrawerMinimized(false);
     if (Console.ConsolePanel.WrapperView._instance)
       Console.ConsolePanel.WrapperView._instance._showViewInWrapper();
+    Console.ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -95,6 +102,7 @@ Console.ConsolePanel.WrapperView = class extends UI.VBox {
       this._showViewInWrapper();
     else
       UI.inspectorView.setDrawerMinimized(true);
+    Console.ConsolePanel._updateContextFlavor();
   }
 
   /**
@@ -102,6 +110,7 @@ Console.ConsolePanel.WrapperView = class extends UI.VBox {
    */
   willHide() {
     UI.inspectorView.setDrawerMinimized(false);
+    Console.ConsolePanel._updateContextFlavor();
   }
 
   _showViewInWrapper() {

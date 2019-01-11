@@ -271,6 +271,7 @@ Elements.ElementsPanel = class extends UI.Panel {
     if (this._popoverHelper)
       this._popoverHelper.hidePopover();
     super.willHide();
+    UI.context.setFlavor(Elements.ElementsPanel, null);
   }
 
   /**

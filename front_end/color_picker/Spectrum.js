@@ -126,6 +126,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
+    this._palettePanel.tabIndex = -1;
     this._palettePanelShowing = false;
     this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
     this._paletteContainer = this._paletteSectionContainer.createChild('div', 'spectrum-palette');
@@ -236,13 +237,21 @@ ColorPicker.Spectrum = class extends UI.VBox {
       return;
     if (show)
       this._updatePalettePanel();
-    this._focus();
     this._palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
+    this._focus();
   }
 
+  /**
+   * (Suppress warning about preventScroll)
+   * @suppress {checkTypes}
+   */
   _focus() {
-    if (this.isShowing())
+    if (!this.isShowing())
+      return;
+    if (this._palettePanelShowing)
+      this._palettePanel.focus({preventScroll: true});
+    else
       this.contentElement.focus();
   }
 

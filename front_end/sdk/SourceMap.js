@@ -183,6 +183,11 @@ SDK.TextSourceMap = class {
     this._mappings = null;
     /** @type {!Map<string, !SDK.TextSourceMap.SourceInfo>} */
     this._sourceInfos = new Map();
+    if (this._json.sections) {
+      const sectionWithURL = !!this._json.sections.find(section => !!section.url);
+      if (sectionWithURL)
+        Common.console.warn(`SourceMap "${sourceMappingURL}" contains unsupported "URL" field in one of its sections.`);
+    }
     this._eachSection(this._parseSources.bind(this));
   }
 

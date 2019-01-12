@@ -65,7 +65,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     const bypassServiceWorkerSetting = Common.settings.createSetting('bypassServiceWorker', false);
     bypassServiceWorkerSetting.setTitle(Common.UIString('Bypass for network'));
     const fallbackToNetwork = new UI.ToolbarSettingCheckbox(
-        bypassServiceWorkerSetting, ls`Bypass service worker and load resources from the network`);
+        bypassServiceWorkerSetting, ls`Bypass the service worker and load resources from the network`);
     this._toolbar.appendToolbarItem(fallbackToNetwork);
 
     /** @type {!Map<!SDK.ServiceWorkerManager, !Array<!Common.EventTarget.EventDescriptor>>}*/

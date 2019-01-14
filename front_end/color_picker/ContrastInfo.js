@@ -37,10 +37,10 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     this._contrastRatioThresholds = null;
     this._bgColor = null;
 
-    if (contrastInfo.computedFontSize && contrastInfo.computedFontWeight && contrastInfo.computedBodyFontSize) {
+    if (contrastInfo.computedFontSize && contrastInfo.computedFontWeight) {
       this._isNull = false;
-      const isLargeFont = ColorPicker.ContrastInfo.computeIsLargeFont(
-          contrastInfo.computedFontSize, contrastInfo.computedFontWeight, contrastInfo.computedBodyFontSize);
+      const isLargeFont =
+          ColorPicker.ContrastInfo.computeIsLargeFont(contrastInfo.computedFontSize, contrastInfo.computedFontWeight);
 
       this._contrastRatioThresholds =
           ColorPicker.ContrastInfo._ContrastThresholds[(isLargeFont ? 'largeFont' : 'normalFont')];
@@ -118,7 +118,7 @@ ColorPicker.ContrastInfo = class extends Common.Object {
     // If we have a semi-transparent background color over an unknown
     // background, draw the line for the "worst case" scenario: where
     // the unknown background is the same color as the text.
-    if (bgColor.hasAlpha) {
+    if (bgColor.hasAlpha()) {
       const blendedRGBA = [];
       Common.Color.blendColors(bgColor.rgba(), fgRGBA, blendedRGBA);
       this._bgColor = new Common.Color(blendedRGBA, Common.Color.Format.RGBA);
@@ -153,10 +153,9 @@ ColorPicker.ContrastInfo = class extends Common.Object {
   /**
    * @param {string} fontSize
    * @param {string} fontWeight
-   * @param {?string} bodyFontSize
    * @return {boolean}
    */
-  static computeIsLargeFont(fontSize, fontWeight, bodyFontSize) {
+  static computeIsLargeFont(fontSize, fontWeight) {
     const boldWeights = ['bold', 'bolder', '600', '700', '800', '900'];
 
     const fontSizePx = parseFloat(fontSize.replace('px', ''));

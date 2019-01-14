@@ -641,7 +641,7 @@ SDK.SDKModel.register(SDK.CSSModel, SDK.Target.Capability.DOM, true);
 /** @typedef {!{range: !Protocol.CSS.SourceRange, styleSheetId: !Protocol.CSS.StyleSheetId, wasUsed: boolean}} */
 SDK.CSSModel.RuleUsage;
 
-/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeights: string, computedBodyFontSize: string}} */
+/** @typedef {{backgroundColors: ?Array<string>, computedFontSize: string, computedFontWeights: string}} */
 SDK.CSSModel.ContrastInfo;
 
 /** @enum {symbol} */

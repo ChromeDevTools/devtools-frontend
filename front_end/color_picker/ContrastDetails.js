@@ -99,8 +99,9 @@ ColorPicker.ContrastDetails = class {
     this.setVisible(true);
 
     const contrastRatio = this._contrastInfo.contrastRatio();
+    const fgColor = this._contrastInfo.color();
     const bgColor = this._contrastInfo.bgColor();
-    if (!contrastRatio || !bgColor) {
+    if (!contrastRatio || !bgColor || !fgColor) {
       this._contrastUnknown = true;
       this._contrastValue.textContent = '';
       this._contrastValueBubble.classList.add('contrast-unknown');
@@ -115,8 +116,7 @@ ColorPicker.ContrastDetails = class {
     this._contrastValueBubble.classList.remove('contrast-unknown');
     this._contrastValue.textContent = contrastRatio.toFixed(2);
 
-    this._bgColorSwatch.setBackgroundColor(bgColor);
-    this._bgColorSwatch.setTextColor(this._contrastInfo.colorString());
+    this._bgColorSwatch.setColors(fgColor, bgColor);
 
     const aa = this._contrastInfo.contrastRatioThreshold('aa');
     this._passesAA = this._contrastInfo.contrastRatio() >= aa;
@@ -265,19 +265,14 @@ ColorPicker.ContrastDetails.Swatch = class {
   }
 
   /**
-   * @param {!Common.Color} color
+   * @param {!Common.Color} fgColor
+   * @param {!Common.Color} bgColor
    */
-  setBackgroundColor(color) {
-    this._swatchInnerElement.style.background =
-        /** @type {string} */ (color.asString(Common.Color.Format.RGBA));
+  setColors(fgColor, bgColor) {
+    this._textPreview.style.color = /** @type {string} */ (fgColor.asString(Common.Color.Format.RGBA));
+    this._swatchInnerElement.style.backgroundColor =
+        /** @type {string} */ (bgColor.asString(Common.Color.Format.RGBA));
     // Show border if the swatch is white.
-    this._swatchElement.classList.toggle('swatch-inner-white', color.hsla()[2] > 0.9);
-  }
-
-  /**
-   * @param {string} colorString
-   */
-  setTextColor(colorString) {
-    this._textPreview.style.color = colorString;
+    this._swatchElement.classList.toggle('swatch-inner-white', bgColor.hsla()[2] > 0.9);
   }
 };

@@ -94,13 +94,13 @@ ColorPicker.ContrastRatioLineBuilder = class {
     const V = 2;
     const A = 3;
 
-    const hsva = this._contrastInfo.hsva();
+    const color = this._contrastInfo.color();
     const bgColor = this._contrastInfo.bgColor();
-    if (!hsva || !bgColor)
+    if (!color || !bgColor)
       return null;
 
-    const fgRGBA = [];
-    Common.Color.hsva2rgba(hsva, fgRGBA);
+    const fgRGBA = color.rgba();
+    const fgHSVA = color.hsva();
     const bgRGBA = bgColor.rgba();
     const bgLuminance = Common.Color.luminance(bgRGBA);
     const blendedRGBA = [];
@@ -109,9 +109,9 @@ ColorPicker.ContrastRatioLineBuilder = class {
     const fgIsLighter = fgLuminance > bgLuminance;
     const desiredLuminance = Common.Color.desiredLuminance(bgLuminance, requiredContrast, fgIsLighter);
 
-    let lastV = hsva[V];
+    let lastV = fgHSVA[V];
     let currentSlope = 0;
-    const candidateHSVA = [hsva[H], 0, 0, hsva[A]];
+    const candidateHSVA = [fgHSVA[H], 0, 0, fgHSVA[A]];
     let pathBuilder = [];
     const candidateRGBA = [];
     Common.Color.hsva2rgba(candidateHSVA, candidateRGBA);

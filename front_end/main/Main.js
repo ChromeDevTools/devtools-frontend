@@ -107,7 +107,6 @@ Main.Main = class {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
-    Runtime.experiments.register('colorContrastRatio', 'Color contrast ratio line in color picker', true);
     Runtime.experiments.register('consoleBelowPrompt', 'Console eager evaluation');
     Runtime.experiments.register('consoleKeyboardNavigation', 'Console keyboard navigation', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
@@ -151,8 +150,8 @@ Main.Main = class {
     }
 
     Runtime.experiments.setDefaultExperiments([
-      'colorContrastRatio', 'stepIntoAsync', 'oopifInlineDOM', 'consoleBelowPrompt', 'timelineTracingJSProfile',
-      'pinnedExpressions', 'consoleKeyboardNavigation', 'sourcesLogpoints'
+      'stepIntoAsync', 'oopifInlineDOM', 'consoleBelowPrompt', 'timelineTracingJSProfile', 'pinnedExpressions',
+      'consoleKeyboardNavigation', 'sourcesLogpoints'
     ]);
   }
 

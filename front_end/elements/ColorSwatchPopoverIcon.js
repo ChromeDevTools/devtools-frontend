@@ -143,12 +143,10 @@ Elements.ColorSwatchPopoverIcon = class {
   }
 
   /**
-   * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
+   * @param {!ColorPicker.ContrastInfo} contrastInfo
    */
   setContrastInfo(contrastInfo) {
     this._contrastInfo = contrastInfo;
-    if (this._spectrum)
-      this._spectrum.setContrastInfo(contrastInfo);
   }
 
   /**
@@ -169,11 +167,9 @@ Elements.ColorSwatchPopoverIcon = class {
     let format = this._swatch.format();
     if (format === Common.Color.Format.Original)
       format = color.format();
-    this._spectrum = new ColorPicker.Spectrum();
+    this._spectrum = new ColorPicker.Spectrum(this._contrastInfo);
     this._spectrum.setColor(color, format);
     this._spectrum.addPalette(this._generateCSSVariablesPalette());
-    if (this._contrastInfo)
-      this._spectrum.setContrastInfo(this._contrastInfo);
 
     this._spectrum.addEventListener(ColorPicker.Spectrum.Events.SizeChanged, this._spectrumResized, this);
     this._spectrum.addEventListener(ColorPicker.Spectrum.Events.ColorChanged, this._boundSpectrumChanged);

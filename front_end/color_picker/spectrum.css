@@ -1,13 +1,9 @@
 /* https://github.com/bgrins/spectrum */
 :host {
     width: 232px;
-    height: 240px;
+    height: 319px;
     -webkit-user-select: none;
     overflow: hidden;
-}
-
-:host-context(.palettes-enabled) {
-    height: 319px;
 }
 
 :selection {

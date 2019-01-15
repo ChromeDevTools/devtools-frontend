@@ -126,11 +126,10 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return swatch;
     }
 
-    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
-    this._addColorContrastInfo(new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch));
+    this._addColorContrastInfo(swatch);
 
     return swatch;
   }
@@ -157,24 +156,24 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return swatch;
     }
 
-    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
     const swatch = InlineEditor.ColorSwatch.create();
     swatch.setColor(color);
     swatch.setFormat(Common.Color.detectColorFormat(swatch.color()));
     swatch.setText(text, computedValue);
-    this._addColorContrastInfo(new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch));
+    this._addColorContrastInfo(swatch);
     return swatch;
   }
 
   /**
-   * @param {!Elements.ColorSwatchPopoverIcon} swatchIcon
+   * @param {!InlineEditor.ColorSwatch} swatch
    */
-  async _addColorContrastInfo(swatchIcon) {
-    if (!Runtime.experiments.isEnabled('colorContrastRatio') || this.property.name !== 'color' ||
-        !this._parentPane.cssModel() || !this.node())
+  async _addColorContrastInfo(swatch) {
+    const swatchPopoverHelper = this._parentPane.swatchPopoverHelper();
+    const swatchIcon = new Elements.ColorSwatchPopoverIcon(this, swatchPopoverHelper, swatch);
+    if (this.property.name !== 'color' || !this._parentPane.cssModel() || !this.node())
       return;
     const cssModel = this._parentPane.cssModel();
-    const contrastInfo = await cssModel.backgroundColorsPromise(this.node().id);
+    const contrastInfo = new ColorPicker.ContrastInfo(await cssModel.backgroundColorsPromise(this.node().id));
     swatchIcon.setContrastInfo(contrastInfo);
   }
 

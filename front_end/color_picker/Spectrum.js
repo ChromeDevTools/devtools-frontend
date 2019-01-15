@@ -30,7 +30,10 @@
  * @unrestricted
  */
 ColorPicker.Spectrum = class extends UI.VBox {
-  constructor() {
+  /**
+   * @param {?ColorPicker.ContrastInfo=} contrastInfo
+   */
+  constructor(contrastInfo) {
     /**
      * @param {!Element} parentElement
      */
@@ -112,17 +115,16 @@ ColorPicker.Spectrum = class extends UI.VBox {
         this._colorElement, dragStart.bind(this, positionColor.bind(this)), positionColor.bind(this), null, 'pointer',
         'default');
 
-    if (Runtime.experiments.isEnabled('colorContrastRatio')) {
-      const boundToggleColorPicker = this._toggleColorPicker.bind(this);
-      const boundContrastPanelExpanded = this._contrastPanelExpanded.bind(this);
-      /** @type {!ColorPicker.ContrastInfo} */
-      this._contrastInfo = new ColorPicker.ContrastInfo();
+    // Color contrast business.
+    if (contrastInfo) {
+      this._contrastInfo = contrastInfo;
       this._contrastOverlay = new ColorPicker.ContrastOverlay(this._contrastInfo, this._colorElement);
       this._contrastDetails = new ColorPicker.ContrastDetails(
-          this._contrastInfo, this.contentElement, boundToggleColorPicker, boundContrastPanelExpanded);
+          this._contrastInfo, this.contentElement, this._toggleColorPicker.bind(this),
+          this._contrastPanelExpanded.bind(this));
     }
 
-    this.element.classList.add('palettes-enabled', 'flex-none');
+    this.element.classList.add('flex-none');
     /** @type {!Map.<string, !ColorPicker.Spectrum.Palette>} */
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
@@ -210,10 +212,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
   }
 
   _contrastPanelExpanded() {
-    if (this._contrastDetails.expanded())
-      this._contrastOverlay.setVisible(true);
-    else
-      this._contrastOverlay.setVisible(false);
+    this._contrastOverlay.setVisible(this._contrastDetails.expanded());
     this._resizeForSelectedPalette(true);
   }
 
@@ -339,7 +338,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
         [{transform: 'scaleY(0)', opacity: '0'}, {transform: 'scaleY(1)', opacity: '1'}],
         {duration: 200, easing: 'cubic-bezier(0.4, 0, 0.2, 1)'});
     let shadesTop = this._paletteContainer.offsetTop + colorElement.offsetTop + colorElement.parentElement.offsetTop;
-    if (this._contrastDetails && this._contrastDetails.visible())
+    if (this._contrastDetails)
       shadesTop += this._contrastDetails.element().offsetHeight;
     this._shadesContainer.style.top = shadesTop + 'px';
     this._shadesContainer.style.left = colorElement.offsetLeft + 'px';
@@ -536,7 +535,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     const paletteColorHeight = 12;
     const paletteMargin = 12;
     let paletteTop = 236;
-    if (this._contrastDetails && this._contrastDetails.visible()) {
+    if (this._contrastDetails) {
       if (this._contrastDetails.expanded())
         paletteTop += 78;
       else
@@ -614,20 +613,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
   }
 
   /**
-   * @param {?SDK.CSSModel.ContrastInfo} contrastInfo
-   */
-  setContrastInfo(contrastInfo) {
-    if (!this._contrastInfo)
-      return;
-
-    this._contrastInfo.update(contrastInfo);
-
-    // Contrast info may cause contrast details to become visible.
-    if (this._contrastDetails.visible())
-      this._resizeForSelectedPalette(true);
-  }
-
-  /**
    * @param {!Array<number>|undefined} hsva
    * @param {string|undefined} colorString
    * @param {string|undefined} colorName
@@ -655,7 +640,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     }
 
     if (hsva && this._contrastInfo)
-      this._contrastInfo.setColor(hsva, this.colorString());
+      this._contrastInfo.setColor(Common.Color.fromHSVA(hsva));
 
     this._updateHelperLocations();
     this._updateUI();

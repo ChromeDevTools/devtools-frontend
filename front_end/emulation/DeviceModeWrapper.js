@@ -118,6 +118,12 @@ Emulation.DeviceModeWrapper.ActionDelegate = class {
               });
             });
             const clip = /** @type {!Protocol.Page.Viewport} */ (JSON.parse(result.object.value));
+            const response = await node.domModel().target().pageAgent().invoke_getLayoutMetrics({});
+            const page_zoom = !response[Protocol.Error] && response.visualViewport.zoom || 1;
+            clip.x *= page_zoom;
+            clip.y *= page_zoom;
+            clip.width *= page_zoom;
+            clip.height *= page_zoom;
             Emulation.DeviceModeView._wrapperInstance._captureScreenshot(false, clip);
           }
           captureClip();

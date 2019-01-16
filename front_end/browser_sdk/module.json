@@ -3,7 +3,6 @@
         {
             "type": "setting",
             "category": "Network",
-            "storageType": "session",
             "title": "Preserve log",
             "settingName": "network_log.preserve-log",
             "settingType": "boolean",

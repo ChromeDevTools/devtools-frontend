@@ -11,7 +11,7 @@
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 4px;
     padding: 0px 12px;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--accent-fg-color);
     background-color: #fff;
     flex: none;

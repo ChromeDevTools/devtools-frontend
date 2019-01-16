@@ -157,8 +157,17 @@ iframe.widget {
     color: rgb(17, 85, 204);
 }
 
+button,
+input,
+select {
+    /* Form elements do not automatically inherit font style from ancestors. */
+    font-family: inherit;
+    font-size: inherit;
+}
+
 input {
     background-color: white;
+    color: inherit;
 }
 
 :host-context(.-theme-with-dark-background) input[type="checkbox"]::not(.-theme-preserve) {
@@ -427,6 +436,7 @@ label[is=dt-icon-label] {
     background-color: #bbdefb;
 }
 
-.-theme-with-dark-background *::selection {
-    background-color: #9e9e9e;;
+.-theme-with-dark-background *::selection,
+:host-context(.-theme-with-dark-background) *::selection {
+    background-color: #9e9e9e;
 }

@@ -1211,7 +1211,8 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
   update(database, entriesUpdated) {
     this._database = database;
     const objectStoreNames = {};
-    for (const objectStoreName in this._database.objectStores) {
+    const objectStoreNamesSorted = Object.keys(this._database.objectStores).sort();
+    for (const objectStoreName of objectStoreNamesSorted) {
       const objectStore = this._database.objectStores[objectStoreName];
       objectStoreNames[objectStore.name] = true;
       if (!this._idbObjectStoreTreeElements[objectStore.name]) {

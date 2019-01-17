@@ -125,6 +125,11 @@ Emulation.SensorsView = class extends UI.VBox {
       this._fieldsetElement.disabled = true;
     } else if (value === Emulation.SensorsView.NonPresetOptions.Custom) {
       this._geolocationOverrideEnabled = true;
+      const geolocation = SDK.EmulationModel.Geolocation.parseUserInput(
+          this._latitudeInput.value.trim(), this._longitudeInput.value.trim(), '');
+      if (!geolocation)
+        return;
+      this._geolocation = geolocation;
     } else if (value === Emulation.SensorsView.NonPresetOptions.Unavailable) {
       this._geolocationOverrideEnabled = true;
       this._geolocation = new SDK.EmulationModel.Geolocation(0, 0, true);

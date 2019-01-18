@@ -50,6 +50,9 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
             'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.'),
         Common.moduleSetting('showScrollBottleneckRects'));
     this._appendCheckbox(
+        Common.UIString('Highlight ad frames'), Common.UIString('Highlights frames (red) detected to be ads.'),
+        Common.moduleSetting('showAdHighlights'));
+    this._appendCheckbox(
         Common.UIString('Hit-test borders'), Common.UIString('Shows borders around hit-test regions'),
         Common.moduleSetting('showHitTestBorders'));
     this.contentElement.createChild('div').classList.add('panel-section-separator');

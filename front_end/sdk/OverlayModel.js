@@ -41,6 +41,12 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     if (this._showPaintRectsSetting.get())
       this._overlayAgent.setShowPaintRects(true);
 
+    this._showAdHighlightsSetting = Common.moduleSetting('showAdHighlights');
+    this._showAdHighlightsSetting.addChangeListener(
+        () => this._overlayAgent.setShowAdHighlights(this._showAdHighlightsSetting.get()));
+    if (this._showAdHighlightsSetting.get())
+      this._overlayAgent.setShowAdHighlights(true);
+
     this._showDebugBordersSetting = Common.moduleSetting('showDebugBorders');
     this._showDebugBordersSetting.addChangeListener(
         () => this._overlayAgent.setShowDebugBorders(this._showDebugBordersSetting.get()));

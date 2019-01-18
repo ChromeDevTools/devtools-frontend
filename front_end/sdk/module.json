@@ -135,6 +135,24 @@
         {
             "type": "setting",
             "category": "Rendering",
+            "settingName": "showAdHighlights",
+            "settingType": "boolean",
+            "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Highlight ad frames"
+                },
+                {
+                    "value": false,
+                    "title": "Do not highlight ad frames"
+                }
+            ],
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Rendering",
             "settingName": "showDebugBorders",
             "settingType": "boolean",
             "storageType": "session",

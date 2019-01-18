@@ -34,7 +34,6 @@ InspectorMain.InspectorMain = class extends Common.Object {
       target.runtimeAgent().runIfWaitingForDebugger();
     }, Components.TargetDetachedDialog.webSocketConnectionLost);
 
-    new InspectorMain.InspectedNodeRevealer();
     new InspectorMain.SourcesPanelIndicator();
     new InspectorMain.BackendSettingsSync();
     new MobileThrottling.NetworkPanelIndicator();
@@ -141,24 +140,6 @@ InspectorMain.SourcesPanelIndicator = class {
       }
       UI.inspectorView.setPanelIcon('sources', icon);
     }
-  }
-};
-
-/**
- * @unrestricted
- */
-InspectorMain.InspectedNodeRevealer = class {
-  constructor() {
-    SDK.targetManager.addModelListener(
-        SDK.OverlayModel, SDK.OverlayModel.Events.InspectNodeRequested, this._inspectNode, this);
-  }
-
-  /**
-   * @param {!Common.Event} event
-   */
-  _inspectNode(event) {
-    const deferredNode = /** @type {!SDK.DeferredDOMNode} */ (event.data);
-    Common.Revealer.reveal(deferredNode);
   }
 };
 

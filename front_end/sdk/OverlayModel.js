@@ -92,10 +92,14 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   static muteHighlight() {
     SDK.OverlayModel.hideDOMNodeHighlight();
     SDK.OverlayModel._highlightDisabled = true;
+    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
+      overlayModel._updatePausedInDebuggerMessage();
   }
 
   static unmuteHighlight() {
     SDK.OverlayModel._highlightDisabled = false;
+    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
+      overlayModel._updatePausedInDebuggerMessage();
   }
 
   /**
@@ -119,7 +123,8 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   }
 
   _updatePausedInDebuggerMessage() {
-    const message = this._debuggerModel.isPaused() && !Common.moduleSetting('disablePausedStateOverlay').get() ?
+    const message = this._debuggerModel.isPaused() && !Common.moduleSetting('disablePausedStateOverlay').get() &&
+            !SDK.OverlayModel._highlightDisabled ?
         Common.UIString('Paused in debugger') :
         undefined;
     this._overlayAgent.setPausedInDebuggerMessage(message);
@@ -251,12 +256,27 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {function(!SDK.DOMNode)} handler
+   */
+  static setInspectNodeHandler(handler) {
+    SDK.OverlayModel._inspectNodeHandler = handler;
+  }
+
+  /**
    * @override
    * @param {!Protocol.DOM.BackendNodeId} backendNodeId
    */
   inspectNodeRequested(backendNodeId) {
     const deferredNode = new SDK.DeferredDOMNode(this.target(), backendNodeId);
-    this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectNodeRequested, deferredNode);
+    if (SDK.OverlayModel._inspectNodeHandler) {
+      deferredNode.resolvePromise().then(node => {
+        if (node)
+          SDK.OverlayModel._inspectNodeHandler(node);
+      });
+    } else {
+      Common.Revealer.reveal(deferredNode);
+    }
+    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
   }
 
   /**
@@ -265,6 +285,14 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    */
   screenshotRequested(viewport) {
     this.dispatchEventToListeners(SDK.OverlayModel.Events.ScreenshotRequested, viewport);
+    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
+  }
+
+  /**
+   * @override
+   */
+  inspectModeCanceled() {
+    this.dispatchEventToListeners(SDK.OverlayModel.Events.ExitedInspectMode);
   }
 };
 
@@ -273,8 +301,8 @@ SDK.SDKModel.register(SDK.OverlayModel, SDK.Target.Capability.DOM, true);
 /** @enum {symbol} */
 SDK.OverlayModel.Events = {
   InspectModeWillBeToggled: Symbol('InspectModeWillBeToggled'),
+  ExitedInspectMode: Symbol('InspectModeExited'),
   HighlightNodeRequested: Symbol('HighlightNodeRequested'),
-  InspectNodeRequested: Symbol('InspectNodeRequested'),
   ScreenshotRequested: Symbol('ScreenshotRequested'),
 };
 

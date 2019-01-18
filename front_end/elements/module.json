@@ -257,6 +257,13 @@
             ]
         },
         {
+            "type": "action",
+            "actionId": "elements.capture-area-screenshot",
+            "className": "Elements.InspectElementModeController.ToggleSearchActionDelegate",
+            "title": "Capture area screenshot",
+            "category": "Screenshot"
+        },
+        {
             "type": "@UI.ToolbarItem.Provider",
             "actionId": "elements.toggle-element-search",
             "location": "main-toolbar-left",

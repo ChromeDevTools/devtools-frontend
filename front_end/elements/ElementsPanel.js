@@ -648,16 +648,15 @@ Elements.ElementsPanel = class extends UI.Panel {
   /**
    * @param {!SDK.DOMNode} node
    * @param {boolean} focus
+   * @param {boolean=} omitHighlight
    * @return {!Promise}
    */
-  revealAndSelectNode(node, focus) {
-    if (Elements.inspectElementModeController && Elements.inspectElementModeController.isInInspectElementMode())
-      Elements.inspectElementModeController.stopInspection();
-
+  revealAndSelectNode(node, focus, omitHighlight) {
     this._omitDefaultSelection = true;
 
     node = Common.moduleSetting('showUAShadowDOM').get() ? node : this._leaveUserAgentShadowDOM(node);
-    node.highlightForTwoSeconds();
+    if (!omitHighlight)
+      node.highlightForTwoSeconds();
 
     return UI.viewManager.showView('elements', false, !focus).then(() => {
       this.selectDOMNode(node, focus);

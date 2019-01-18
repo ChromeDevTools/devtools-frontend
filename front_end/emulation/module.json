@@ -28,10 +28,9 @@
         {
             "type": "action",
             "actionId": "emulation.capture-screenshot",
-            "category": "Mobile",
+            "category": "Screenshot",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-            "title": "Capture screenshot",
-            "tags": "device"
+            "title": "Capture screenshot"
         },
         {
             "type": "context-menu-item",
@@ -49,18 +48,16 @@
         {
             "type": "action",
             "actionId": "emulation.capture-full-height-screenshot",
-            "category": "Mobile",
+            "category": "Screenshot",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-            "title": "Capture full size screenshot",
-            "tags": "device"
+            "title": "Capture full size screenshot"
         },
         {
             "type": "action",
             "actionId": "emulation.capture-node-screenshot",
-            "category": "Mobile",
+            "category": "Screenshot",
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
-            "title": "Capture node screenshot",
-            "tags": "device"
+            "title": "Capture node screenshot"
         },
         {
             "type": "context-menu-item",

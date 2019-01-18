@@ -310,6 +310,6 @@ fieldset.device-orientation-override-section {
     margin-left: 10px;
 }
 
-button[is=text-button] {
+button.text-button {
     margin: 0 10px;
 }

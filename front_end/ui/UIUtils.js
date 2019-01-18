@@ -674,9 +674,7 @@ UI.asyncStackTraceLabel = function(description) {
  * @param {!Element} element
  */
 UI.installComponentRootStyles = function(element) {
-  UI.appendStyle(element, 'ui/inspectorCommon.css');
-  UI.themeSupport.injectHighlightStyleSheets(element);
-  UI.themeSupport.injectCustomStyleSheets(element);
+  UI._injectCoreStyles(element);
   element.classList.add('platform-' + Host.platform());
 
   // Detect overlay scrollbar enable by checking for nonzero scrollbar width.
@@ -708,13 +706,21 @@ UI.measuredScrollbarWidth = function(document) {
  */
 UI.createShadowRootWithCoreStyles = function(element, cssFile) {
   const shadowRoot = element.createShadowRoot();
-  UI.appendStyle(shadowRoot, 'ui/inspectorCommon.css');
-  UI.themeSupport.injectHighlightStyleSheets(shadowRoot);
-  UI.themeSupport.injectCustomStyleSheets(shadowRoot);
+  UI._injectCoreStyles(shadowRoot);
   if (cssFile)
     UI.appendStyle(shadowRoot, cssFile);
   shadowRoot.addEventListener('focus', UI._focusChanged.bind(UI), true);
   return shadowRoot;
+};
+
+/**
+ * @param {!Element|!ShadowRoot} root
+ */
+UI._injectCoreStyles = function(root) {
+  UI.appendStyle(root, 'ui/inspectorCommon.css');
+  UI.appendStyle(root, 'ui/textButton.css');
+  UI.themeSupport.injectHighlightStyleSheets(root);
+  UI.themeSupport.injectCustomStyleSheets(root);
 };
 
 /**
@@ -1183,12 +1189,14 @@ UI.registerCustomElement = function(localName, typeExtension, prototype) {
  * @return {!Element}
  */
 UI.createTextButton = function(text, clickHandler, className, primary) {
-  const element = createElementWithClass('button', className || '', 'text-button');
+  const element = createElementWithClass('button', className || '');
   element.textContent = text;
+  element.classList.add('text-button');
   if (primary)
     element.classList.add('primary-button');
   if (clickHandler)
     element.addEventListener('click', clickHandler, false);
+  element.type = 'button';
   return element;
 };
 
@@ -1350,19 +1358,6 @@ UI.CheckboxLabel = class extends HTMLLabelElement {
 };
 
 (function() {
-  UI.registerCustomElement('button', 'text-button', {
-    /**
-     * @this {Element}
-     */
-    createdCallback: function() {
-      this.type = 'button';
-      const root = UI.createShadowRootWithCoreStyles(this, 'ui/textButton.css');
-      root.createChild('content');
-    },
-
-    __proto__: HTMLButtonElement.prototype
-  });
-
   UI.registerCustomElement('label', 'dt-radio', {
     /**
      * @this {Element}
@@ -1681,7 +1676,7 @@ UI.ThemeSupport = class {
   }
 
   /**
-   * @param {!Element} element
+   * @param {!Element|!ShadowRoot} element
    */
   injectHighlightStyleSheets(element) {
     this._injectingStyleSheet = true;

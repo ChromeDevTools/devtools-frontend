@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.text-prompt-root {
+ .text-prompt-root {
     display: flex;
     align-items: center;
 }
@@ -22,46 +22,45 @@
     opacity: 1.0 !important;
 }
 
-.text-prompt-editing,
-.text-prompt-editing ::content * {
+.text-prompt-editing > .text-prompt {
     color: #222 !important;
     text-decoration: none !important;
     white-space: pre;
 }
 
-::content .auto-complete-text {
+.text-prompt > .auto-complete-text {
     color: rgb(128, 128, 128) !important;
 }
 
-::content .text-prompt[data-placeholder]:empty::before {
+.text-prompt[data-placeholder]:empty::before {
     content: attr(data-placeholder);
     color: rgb(128, 128, 128);
 }
 
-::content .text-prompt:not([data-placeholder]):empty::after {
+.text-prompt:not([data-placeholder]):empty::after {
     content: '\00A0';
     width: 0;
     display: block;
 }
 
-::content .text-prompt {
+.text-prompt {
     cursor: text;
     overflow-x: visible;
 }
 
-::content .text-prompt::-webkit-scrollbar {
+.text-prompt::-webkit-scrollbar {
     display: none;
 }
 
-::content .text-prompt.disabled {
+.text-prompt.disabled {
     opacity: 0.5;
     cursor: default;
 }
 
-.text-prompt-editing ::content br {
+.text-prompt-editing br {
     display: none;
 }
 
-:host-context(:not(:focus-within)) ::content ::selection {
+.text-prompt-root:not(:focus-within) ::selection {
     background: transparent;
 }

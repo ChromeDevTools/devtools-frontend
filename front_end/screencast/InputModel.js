@@ -94,7 +94,7 @@ Screencast.InputModel = class extends SDK.SDKModel {
   }
 
   cancelTouch() {
-    if (this._activeTouchOffsetTop !== null) {
+    if (this._activeTouchParams !== null) {
       const params = this._activeTouchParams;
       this._activeTouchParams = null;
       params.type = 'mouseReleased';

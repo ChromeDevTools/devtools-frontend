@@ -404,11 +404,12 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
       return;
 
     const rule = treeElement.property.ownerStyle.parentRule;
-    const selectors = rule ? rule.selectorText() : undefined;
+    const selectorList = rule ? rule.selectorText() : undefined;
     for (const mode of ['padding', 'border', 'margin']) {
       if (!treeElement.name.startsWith(mode))
         continue;
-      this.node().domModel().overlayModel().highlightDOMNodeWithConfig(this.node().id, {mode, selectors});
+      this.node().domModel().overlayModel().highlightInOverlay(
+          {node: /** @type {!SDK.DOMNode} */ (this.node()), selectorList}, mode);
       this._isActivePropertyHighlighted = true;
       break;
     }
@@ -1105,8 +1106,8 @@ Elements.StylePropertiesSection = class {
     const node = this._parentPane.node();
     if (!node)
       return;
-    const selectors = this._style.parentRule ? this._style.parentRule.selectorText() : undefined;
-    node.domModel().overlayModel().highlightDOMNodeWithConfig(node.id, {mode, showInfo: undefined, selectors});
+    const selectorList = this._style.parentRule ? this._style.parentRule.selectorText() : undefined;
+    node.domModel().overlayModel().highlightInOverlay({node, selectorList}, mode);
   }
 
   /**

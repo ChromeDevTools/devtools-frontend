@@ -870,14 +870,13 @@ SDK.DOMNode = class {
 
   /**
    * @param {string=} mode
-   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
-  highlight(mode, objectId) {
-    this._domModel.overlayModel().highlightDOMNode(this.id, mode, undefined, objectId);
+  highlight(mode) {
+    this._domModel.overlayModel().highlightInOverlay({node: this}, mode);
   }
 
   highlightForTwoSeconds() {
-    this._domModel.overlayModel().highlightDOMNodeForTwoSeconds(this.id);
+    this._domModel.overlayModel().highlightInOverlayForTwoSeconds({node: this});
   }
 
   /**
@@ -1044,7 +1043,7 @@ SDK.DeferredDOMNode = class {
   }
 
   highlight() {
-    this._domModel.overlayModel().highlightDOMNode(undefined, undefined, this._backendNodeId);
+    this._domModel.overlayModel().highlightInOverlay({deferredNode: this});
   }
 };
 

@@ -151,13 +151,6 @@ Accessibility.AccessibilityNode = class {
 
     // Highlight node in page.
     this.deferredDOMNode().highlight();
-
-    // Highlight node in Elements tree.
-    this.deferredDOMNode().resolvePromise().then(node => {
-      if (!node)
-        return;
-      node.domModel().overlayModel().nodeHighlightRequested(node.id);
-    });
   }
 
   /**

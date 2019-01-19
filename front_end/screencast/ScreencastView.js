@@ -172,7 +172,7 @@ Screencast.ScreencastView = class extends UI.VBox {
       this._viewportElement.style.width = metadata.deviceWidth * this._screenZoom + bordersSize + 'px';
       this._viewportElement.style.height = metadata.deviceHeight * this._screenZoom + bordersSize + 'px';
 
-      this.highlightDOMNode(this._highlightNode, this._highlightConfig);
+      this.highlightInOverlay({node: this._highlightNode}, this._highlightConfig);
     };
     this._imageElement.src = 'data:image/jpg;base64,' + base64Data;
   }
@@ -243,10 +243,10 @@ Screencast.ScreencastView = class extends UI.VBox {
     if (!node)
       return;
     if (event.type === 'mousemove') {
-      this.highlightDOMNode(node, this._inspectModeConfig);
+      this.highlightInOverlay({node}, this._inspectModeConfig);
       this._domModel.overlayModel().nodeHighlightRequested(node.id);
     } else if (event.type === 'click') {
-      Common.Revealer.reveal(node);
+      this._domModel.overlayModel().inspectNodeRequested(node.backendNodeId());
     }
   }
 
@@ -313,12 +313,28 @@ Screencast.ScreencastView = class extends UI.VBox {
 
   /**
    * @override
-   * @param {?SDK.DOMNode} node
+   * @param {!SDK.OverlayModel.HighlightData} data
    * @param {?Protocol.Overlay.HighlightConfig} config
-   * @param {!Protocol.DOM.BackendNodeId=} backendNodeId
-   * @param {!Protocol.Runtime.RemoteObjectId=} objectId
    */
-  highlightDOMNode(node, config, backendNodeId, objectId) {
+  highlightInOverlay(data, config) {
+    this._highlightInOverlay(data, config);
+  }
+
+  /**
+   * @param {!SDK.OverlayModel.HighlightData} data
+   * @param {?Protocol.Overlay.HighlightConfig} config
+   */
+  async _highlightInOverlay(data, config) {
+    const {node: n, deferredNode, object} = data;
+    let node = n;
+    if (!node && deferredNode)
+      node = await deferredNode.resolvePromise();
+    if (!node && object) {
+      const domModel = object.runtimeModel().target().model(SDK.DOMModel);
+      if (domModel)
+        node = await domModel.pushObjectAsNodeToFrontend(object);
+    }
+
     this._highlightNode = node;
     this._highlightConfig = config;
     if (!node) {

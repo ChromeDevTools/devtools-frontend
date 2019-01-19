@@ -600,14 +600,12 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    */
   _highlightTreeElement(element, showInfo) {
     if (element instanceof Elements.ElementsTreeElement) {
-      element.node().domModel().overlayModel().highlightDOMNodeWithConfig(element.node().id, {mode: 'all', showInfo});
+      element.node().domModel().overlayModel().highlightInOverlay({node: element.node()}, 'all', showInfo);
       return;
     }
 
-    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement) {
-      element.domModel().overlayModel().highlightDOMNodeWithConfig(
-          undefined, {mode: 'all', showInfo}, element.backendNodeId());
-    }
+    if (element instanceof Elements.ElementsTreeOutline.ShortcutTreeElement)
+      element.domModel().overlayModel().highlightInOverlay({deferredNode: element.deferredNode()}, 'all', showInfo);
   }
 
   _onmouseleave(event) {
@@ -1643,10 +1641,10 @@ Elements.ElementsTreeOutline.ShortcutTreeElement = class extends UI.TreeElement 
   }
 
   /**
-   * @return {number}
+   * @return {!SDK.DeferredDOMNode}
    */
-  backendNodeId() {
-    return this._nodeShortcut.deferredNode.backendNodeId();
+  deferredNode() {
+    return this._nodeShortcut.deferredNode;
   }
 
   /**

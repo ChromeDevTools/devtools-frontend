@@ -13,6 +13,45 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 15,
+    header: 'Highlights from the Chrome 73 update',
+    highlights: [
+      {
+        title: 'Logpoints',
+        subtitle: 'Log messages to the Console without cluttering up your code with console.log() calls.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#logpoints',
+      },
+      {
+        title: 'Detailed tooltips in Inspect Mode',
+        subtitle: 'When inspecting a node, DevTools now shows an expanded tooltip containing text, ' +
+            'color contrast, and box model information.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#inspect',
+      },
+      {
+        title: 'Export code coverage data',
+        subtitle: 'The Coverage tab now supports exporting coverage data as JSON.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#coverage',
+      },
+      {
+        title: 'Navigate the Console with the keyboard',
+        subtitle: 'Press Shift+Tab to focus the last message and then use the arrow keys to navigate.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#keyboard',
+      },
+      {
+        title: 'Save custom geolocation overrides',
+        subtitle: 'Click Manage in the Sensors tab or open Settings > Geolocations.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#geolocation',
+      },
+      {
+        title: 'Code folding',
+        subtitle: 'Go to Settings > Preferences > Sources and enable Code Folding to fold ' +
+            'code in the Sources panel.',
+        link: 'https://developers.google.com/web/updates/2019/01/devtools#folding',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/01/devtools',
+  },
+  {
     version: 14,
     header: 'Highlights from the Chrome 72 update',
     highlights: [

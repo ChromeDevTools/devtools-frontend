@@ -151,7 +151,7 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
    * @return {!Element}
    */
   static createExclamationMark(tooltip) {
-    const exclamationElement = createElement('label', 'dt-icon-label');
+    const exclamationElement = createElement('span', 'dt-icon-label');
     exclamationElement.type = 'smallicon-warning';
     exclamationElement.title = tooltip;
     return exclamationElement;

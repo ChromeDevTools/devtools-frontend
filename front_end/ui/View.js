@@ -506,7 +506,7 @@ UI.ViewManager._ExpandableContainerWidget = class extends UI.VBox {
     this._titleElement.addEventListener('keydown', this._onTitleKeyDown.bind(this), false);
     this.contentElement.insertBefore(this._titleElement, this.contentElement.firstChild);
 
-    this.contentElement.createChild('content');
+    this.contentElement.createChild('slot');
     this._view = view;
     view[UI.ViewManager._ExpandableContainerWidget._symbol] = this;
   }

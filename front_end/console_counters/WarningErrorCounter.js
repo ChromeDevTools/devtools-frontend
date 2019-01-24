@@ -39,7 +39,7 @@ ConsoleCounters.WarningErrorCounter = class {
    */
   _createItem(shadowRoot, iconType) {
     const item = createElementWithClass('span', 'counter-item');
-    const icon = item.createChild('label', '', 'dt-icon-label');
+    const icon = item.createChild('span', '', 'dt-icon-label');
     icon.type = iconType;
     const text = icon.createChild('span');
     shadowRoot.appendChild(item);

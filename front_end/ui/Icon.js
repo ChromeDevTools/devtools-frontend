@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @constructor
- * @extends {HTMLSpanElement}
- */
 UI.Icon = class extends HTMLSpanElement {
   constructor() {
     super();
-    throw new Error('icon must be created via factory method.');
+    /** @type {?UI.Icon.Descriptor} */
+    this._descriptor = null;
+    /** @type {?UI.Icon.SpriteSheet} */
+    this._spriteSheet = null;
+    /** @type {string} */
+    this._iconType = '';
   }
 
   /**
@@ -19,26 +20,14 @@ UI.Icon = class extends HTMLSpanElement {
    */
   static create(iconType, className) {
     if (!UI.Icon._constructor)
-      UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon.prototype);
+      UI.Icon._constructor = UI.registerCustomElement('span', 'ui-icon', UI.Icon);
 
-    const icon = /** @type {!UI.Icon} */ (new UI.Icon._constructor());
+    const icon = /** @type {!UI.Icon} */ (UI.Icon._constructor());
     if (className)
       icon.className = className;
     if (iconType)
       icon.setIconType(iconType);
     return icon;
-  }
-
-  /**
-   * @override
-   */
-  createdCallback() {
-    /** @type {?UI.Icon.Descriptor} */
-    this._descriptor = null;
-    /** @type {?UI.Icon.SpriteSheet} */
-    this._spriteSheet = null;
-    /** @type {string} */
-    this._iconType = '';
   }
 
   /**

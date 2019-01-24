@@ -310,7 +310,7 @@ input {
     white-space: nowrap;
 }
 
-label[is=dt-icon-label] {
+span[is=dt-icon-label] {
     flex: none;
 }
 

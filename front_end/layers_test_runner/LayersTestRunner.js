@@ -106,7 +106,8 @@ LayersTestRunner.dispatchMouseEvent = function(eventType, button, element, offse
     screenY: totalOffset.top - element.scrollTop + offsetY,
     clientX: totalOffset.left + offsetX,
     clientY: totalOffset.top + offsetY,
-    button: button
+    button: button,
+    composed: true
   };
 
   if (eventType === 'mouseout') {

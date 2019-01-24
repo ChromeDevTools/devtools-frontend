@@ -270,10 +270,12 @@ Node.prototype.getComponentSelection = function() {
  */
 Node.prototype.hasSelection = function() {
   // TODO(luoe): use contains(node, {includeShadow: true}) when it is fixed for shadow dom.
-  const contents = this.querySelectorAll('content');
-  for (const content of contents) {
-    if (Array.prototype.some.call(content.getDistributedNodes(), node => node.hasSelection()))
-      return true;
+  if (this instanceof Element) {
+    const slots = this.querySelectorAll('slot');
+    for (const slot of slots) {
+      if (Array.prototype.some.call(slot.assignedNodes(), node => node.hasSelection()))
+        return true;
+    }
   }
 
   const selection = this.getComponentSelection();
@@ -299,10 +301,11 @@ Element.prototype.removeChildren = function() {
  * @param {string} tagName
  * @param {string=} customElementType
  * @return {!Element}
+ * @suppress {checkTypes}
  * @suppressGlobalPropertiesCheck
  */
 function createElement(tagName, customElementType) {
-  return document.createElement(tagName, customElementType || '');
+  return document.createElement(tagName, {is: customElementType});
 }
 
 /**
@@ -318,10 +321,11 @@ function createTextNode(data) {
  * @param {string} elementName
  * @param {string=} className
  * @param {string=} customElementType
+ * @suppress {checkTypes}
  * @return {!Element}
  */
 Document.prototype.createElementWithClass = function(elementName, className, customElementType) {
-  const element = this.createElement(elementName, customElementType || '');
+  const element = this.createElement(elementName, {is: customElementType});
   if (className)
     element.className = className;
   return element;
@@ -651,7 +655,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
   if (this.shadowRoot)
     return this.shadowRoot;
 
-  const distributedNodes = this.getDistributedNodes ? this.getDistributedNodes() : [];
+  const distributedNodes = this instanceof HTMLSlotElement ? this.assignedNodes() : [];
 
   if (distributedNodes.length)
     return distributedNodes[0];
@@ -668,7 +672,7 @@ Node.prototype.traverseNextNode = function(stayWithin) {
     if (sibling)
       return sibling;
 
-    node = insertionPoint(node) || node.parentNodeOrShadowHost();
+    node = node.assignedSlot || node.parentNodeOrShadowHost();
   }
 
   /**
@@ -676,24 +680,14 @@ Node.prototype.traverseNextNode = function(stayWithin) {
    * @return {?Node}
    */
   function nextSibling(node) {
-    const parent = insertionPoint(node);
-    if (!parent)
+    if (!node.assignedSlot)
       return node.nextSibling;
-    const distributedNodes = parent.getDistributedNodes ? parent.getDistributedNodes() : [];
+    const distributedNodes = node.assignedSlot.assignedNodes();
 
     const position = Array.prototype.indexOf.call(distributedNodes, node);
     if (position + 1 < distributedNodes.length)
       return distributedNodes[position + 1];
     return null;
-  }
-
-  /**
-   * @param {!Node} node
-   * @return {?Node}
-   */
-  function insertionPoint(node) {
-    const insertionPoints = node.getDestinationInsertionPoints ? node.getDestinationInsertionPoints() : [];
-    return insertionPoints.length > 0 ? insertionPoints[insertionPoints.length - 1] : null;
   }
 
   return null;

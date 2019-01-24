@@ -379,7 +379,7 @@ Network.RequestHeadersView = class extends UI.VBox {
       statusCodeFragment.createChild('div', 'header-name').textContent = Common.UIString('Status Code') + ': ';
       statusCodeFragment.createChild('span', 'header-separator');
 
-      const statusCodeImage = statusCodeFragment.createChild('label', 'resource-status-image', 'dt-icon-label');
+      const statusCodeImage = statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label');
       statusCodeImage.title = this._request.statusCode + ' ' + this._request.statusText;
 
       if (this._request.statusCode < 300 || this._request.statusCode === 304)
@@ -442,7 +442,7 @@ Network.RequestHeadersView = class extends UI.VBox {
     if (provisionalHeaders) {
       const cautionText = Common.UIString('Provisional headers are shown');
       const cautionFragment = createDocumentFragment();
-      cautionFragment.createChild('label', '', 'dt-icon-label').type = 'smallicon-warning';
+      cautionFragment.createChild('span', '', 'dt-icon-label').type = 'smallicon-warning';
       cautionFragment.createChild('div', 'caution').textContent = cautionText;
       const cautionTreeElement = new UI.TreeElement(cautionFragment);
       cautionTreeElement.selectable = false;

@@ -46,10 +46,6 @@
     align-items: center;
 }
 
-.filter-text-filter label {
-    margin: auto 0;
-}
-
 .filter-bitset-filter {
     padding: 2px;
     display: inline-flex;
@@ -116,7 +112,7 @@
     position: relative;
 }
 
-.filter-checkbox-filter > label {
+.filter-checkbox-filter > [is=dt-checkbox] {
     display: flex;
     margin: auto 0;
 }

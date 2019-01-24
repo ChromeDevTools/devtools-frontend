@@ -112,7 +112,7 @@ Accessibility.AXBreadcrumbsPane = class extends Accessibility.AccessibilitySubPa
   _onKeyDown(event) {
     if (!this._preselectedBreadcrumb)
       return;
-    if (!event.path.some(element => element === this._preselectedBreadcrumb.element()))
+    if (!event.composedPath().some(element => element === this._preselectedBreadcrumb.element()))
       return;
     if (event.shiftKey || event.metaKey || event.ctrlKey)
       return;

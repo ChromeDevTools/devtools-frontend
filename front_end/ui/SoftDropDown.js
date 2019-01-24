@@ -16,10 +16,10 @@ UI.SoftDropDown = class {
     this._model = model;
 
     this.element = createElementWithClass('button', 'soft-dropdown');
-    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/softDropDownButton.css');
-    this._titleElement = shadowRoot.createChild('span', 'title');
+    UI.appendStyle(this.element, 'ui/softDropDownButton.css');
+    this._titleElement = this.element.createChild('span', 'title');
     const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
-    shadowRoot.appendChild(dropdownArrowIcon);
+    this.element.appendChild(dropdownArrowIcon);
 
     this._glassPane = new UI.GlassPane();
     this._glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.NoMargin);

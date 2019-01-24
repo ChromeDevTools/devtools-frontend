@@ -5,8 +5,11 @@
  * @unrestricted
  */
 Elements.ElementsSidebarPane = class extends UI.VBox {
-  constructor() {
-    super(true);
+  /**
+   * @param {boolean=} delegatesFocus
+   */
+  constructor(delegatesFocus) {
+    super(true, delegatesFocus);
     this.element.classList.add('flex-none');
     this._computedStyleModel = new Elements.ComputedStyleModel();
     this._computedStyleModel.addEventListener(

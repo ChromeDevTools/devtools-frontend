@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-::content .dt-radio-button {
+::slotted(input.dt-radio-button) {
     height: 17px;
     width: 17px;
     min-width: 17px;
@@ -16,16 +16,16 @@
     margin: 0 5px 5px 0;
 }
 
-::content .dt-radio-button:active:not(:disabled) {
+::slotted(input.dt-radio-button:active:not(:disabled)) {
     background-image: linear-gradient(to bottom, rgb(194, 194, 194), rgb(239, 239, 239));
 }
 
-::content .dt-radio-button:checked {
+::slotted(input.dt-radio-button:checked) {
     background: url(Images/radioDot.png) center no-repeat,
                 linear-gradient(to bottom, rgb(252, 252, 252), rgb(223, 223, 223));
 }
 
-::content .dt-radio-button:checked:active {
+::slotted(input.dt-radio-button:checked:active) {
     background: url(Images/radioDot.png) center no-repeat,
                 linear-gradient(to bottom, rgb(194, 194, 194), rgb(239, 239, 239));
 }

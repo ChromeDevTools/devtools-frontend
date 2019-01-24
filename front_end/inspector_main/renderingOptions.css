@@ -8,7 +8,7 @@
     padding: 12px;
  }
 
-label {
+[is=dt-checkbox] {
     margin: 0px 0px 10px 0px;
     flex: none;
 }

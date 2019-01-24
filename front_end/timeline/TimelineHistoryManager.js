@@ -426,12 +426,11 @@ Timeline.TimelineHistoryManager.ToolbarButton = class extends UI.ToolbarItem {
    * @param {!UI.Action} action
    */
   constructor(action) {
-    super(createElementWithClass('button', 'dropdown-button'));
-    const shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'timeline/historyToolbarButton.css');
-
-    this._contentElement = shadowRoot.createChild('span', 'content');
+    super(createElementWithClass('button', 'history-dropdown-button'));
+    UI.appendStyle(this.element, 'timeline/historyToolbarButton.css');
+    this._contentElement = this.element.createChild('span', 'content');
     const dropdownArrowIcon = UI.Icon.create('smallicon-triangle-down');
-    shadowRoot.appendChild(dropdownArrowIcon);
+    this.element.appendChild(dropdownArrowIcon);
     this.element.addEventListener('click', () => void action.execute(), false);
     this.setEnabled(action.enabled());
     action.addEventListener(UI.Action.Events.Enabled, event => this.setEnabled(/** @type {boolean} */ (event.data)));

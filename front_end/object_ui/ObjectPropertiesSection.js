@@ -432,7 +432,7 @@ ObjectUI.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
    * @param {!Array.<!SDK.RemoteObjectProperty>=} extraProperties
    */
   constructor(object, linkifier, emptyPlaceholder, ignoreHasOwnProperty, extraProperties) {
-    const contentElement = createElement('content');
+    const contentElement = createElement('slot');
     super(contentElement);
 
     this._object = object;

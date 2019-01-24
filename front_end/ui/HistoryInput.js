@@ -5,24 +5,21 @@
  * @unrestricted
  */
 UI.HistoryInput = class extends HTMLInputElement {
+  constructor() {
+    super();
+    this._history = [''];
+    this._historyPosition = 0;
+    this.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    this.addEventListener('input', this._onInput.bind(this), false);
+  }
   /**
    * @return {!UI.HistoryInput}
    */
   static create() {
     if (!UI.HistoryInput._constructor)
-      UI.HistoryInput._constructor = UI.registerCustomElement('input', 'history-input', UI.HistoryInput.prototype);
+      UI.HistoryInput._constructor = UI.registerCustomElement('input', 'history-input', UI.HistoryInput);
 
-    return /** @type {!UI.HistoryInput} */ (new UI.HistoryInput._constructor());
-  }
-
-  /**
-   * @override
-   */
-  createdCallback() {
-    this._history = [''];
-    this._historyPosition = 0;
-    this.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this.addEventListener('input', this._onInput.bind(this), false);
+    return /** @type {!UI.HistoryInput} */ (UI.HistoryInput._constructor());
   }
 
   /**

@@ -9,12 +9,11 @@ UI.ListWidget = class extends UI.VBox {
    * @param {!UI.ListWidget.Delegate<T>} delegate
    */
   constructor(delegate) {
-    super(true);
+    super(true, true /* delegatesFocus */);
     this.registerRequiredCSS('ui/listWidget.css');
     this._delegate = delegate;
 
     this._list = this.contentElement.createChild('div', 'list');
-    this.element.tabIndex = -1;
 
     this._lastSeparator = false;
     /** @type {?UI.ElementFocusRestorer} */

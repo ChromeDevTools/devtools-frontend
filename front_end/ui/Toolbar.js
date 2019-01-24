@@ -45,7 +45,7 @@ UI.Toolbar = class {
     this._enabled = true;
     this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, 'ui/toolbar.css');
     this._contentElement = this._shadowRoot.createChild('div', 'toolbar-shadow');
-    this._insertionPoint = this._contentElement.createChild('content');
+    this._insertionPoint = this._contentElement.createChild('slot');
   }
 
   /**
@@ -277,7 +277,7 @@ UI.Toolbar = class {
       delete item._toolbar;
     this._items = [];
     this._contentElement.removeChildren();
-    this._insertionPoint = this._contentElement.createChild('content');
+    this._insertionPoint = this._contentElement.createChild('slot');
   }
 
   /**

@@ -30,13 +30,14 @@
 UI.Widget = class extends Common.Object {
   /**
    * @param {boolean=} isWebComponent
+   * @param {boolean=} delegatesFocus
    */
-  constructor(isWebComponent) {
+  constructor(isWebComponent, delegatesFocus) {
     super();
     this.contentElement = createElementWithClass('div', 'widget');
     if (isWebComponent) {
       this.element = createElementWithClass('div', 'vbox flex-auto');
-      this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element);
+      this._shadowRoot = UI.createShadowRootWithCoreStyles(this.element, undefined, delegatesFocus);
       this._shadowRoot.appendChild(this.contentElement);
     } else {
       this.element = this.contentElement;
@@ -599,9 +600,10 @@ UI.Widget._originalRemoveChildren = Element.prototype.removeChildren;
 UI.VBox = class extends UI.Widget {
   /**
    * @param {boolean=} isWebComponent
+   * @param {boolean=} delegatesFocus
    */
-  constructor(isWebComponent) {
-    super(isWebComponent);
+  constructor(isWebComponent, delegatesFocus) {
+    super(isWebComponent, delegatesFocus);
     this.contentElement.classList.add('vbox');
   }
 

@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
-:host {
+button.soft-dropdown {
     height: 26px;
     text-align: left;
     position: relative;
@@ -11,18 +11,18 @@
     background: none;
 }
 
-:host([disabled]) {
+button.soft-dropdown[disabled] {
     opacity: .5;
 }
 
-:host .title {
+button.soft-dropdown > .title {
     padding-right: 5px;
     width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-:host([data-keyboard-focus="true"]:focus)::before {
+button.soft-dropdown[data-keyboard-focus="true"]:focus::before {
     content: "";
     position: absolute;
     top: 2px;

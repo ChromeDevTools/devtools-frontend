@@ -44,7 +44,7 @@
     overflow: hidden;
 }
 
-.network-summary-bar label[is=dt-icon-label] {
+.network-summary-bar span[is=dt-icon-label] {
     margin-right: 6px;
 }
 

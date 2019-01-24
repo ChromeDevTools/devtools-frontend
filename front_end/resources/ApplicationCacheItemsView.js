@@ -38,9 +38,9 @@ Resources.ApplicationCacheItemsView = class extends UI.SimpleView {
     this._deleteButton.setVisible(false);
     this._deleteButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteButtonClicked, this);
 
-    this._connectivityIcon = createElement('label', 'dt-icon-label');
+    this._connectivityIcon = createElement('span', 'dt-icon-label');
     this._connectivityIcon.style.margin = '0 2px 0 5px';
-    this._statusIcon = createElement('label', 'dt-icon-label');
+    this._statusIcon = createElement('span', 'dt-icon-label');
     this._statusIcon.style.margin = '0 2px 0 5px';
 
     this._frameId = frameId;

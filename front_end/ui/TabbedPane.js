@@ -46,7 +46,7 @@ UI.TabbedPane = class extends UI.VBox {
     this._tabsElement.addEventListener('keydown', this._keyDown.bind(this), false);
     this._contentElement = this.contentElement.createChild('div', 'tabbed-pane-content');
     this._contentElement.setAttribute('role', 'tabpanel');
-    this._contentElement.createChild('content');
+    this._contentElement.createChild('slot');
     /** @type {!Array.<!UI.TabbedPaneTab>} */
     this._tabs = [];
     /** @type {!Array.<!UI.TabbedPaneTab>} */

@@ -50,7 +50,7 @@
     margin-top: 0;
 }
 
-.scripts-debug-toolbar-drawer > label {
+.scripts-debug-toolbar-drawer > [is=dt-checkbox] {
     display: flex;
     padding-left: 3px;
     height: 28px;

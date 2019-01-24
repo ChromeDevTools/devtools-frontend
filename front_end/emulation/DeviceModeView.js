@@ -74,7 +74,7 @@ Emulation.DeviceModeView = class extends UI.VBox {
     this._bottomResizerElement.title = Common.UIString('Double-click for full height');
 
     this._pageArea = this._screenArea.createChild('div', 'device-mode-page-area');
-    this._pageArea.createChild('content');
+    this._pageArea.createChild('slot');
   }
 
   _populatePresetsContainer() {

@@ -29,10 +29,9 @@
 
 Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   constructor() {
-    super();
+    super(true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerRequiredCSS('elements/stylesSidebarPane.css');
-    this.element.tabIndex = -1;
 
     Common.moduleSetting('colorFormat').addChangeListener(this.update.bind(this));
     Common.moduleSetting('textEditorIndent').addChangeListener(this.update.bind(this));
@@ -95,7 +94,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @return {!Element}
    */
   static createExclamationMark(property) {
-    const exclamationElement = createElement('label', 'dt-icon-label');
+    const exclamationElement = createElement('span', 'dt-icon-label');
     exclamationElement.className = 'exclamation-mark';
     if (!Elements.StylesSidebarPane.ignoreErrorsForProperty(property))
       exclamationElement.type = 'smallicon-warning';

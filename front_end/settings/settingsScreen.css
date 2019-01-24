@@ -211,15 +211,11 @@ fieldset {
     margin-left: 10px;
 }
 
-.settings-indent-labels label {
-    padding-left: 10px;
-}
-
 .settings-experiment-hidden {
     display: none;
 }
 
-.settings-experiment-hidden label {
+.settings-experiment-hidden [is=dt-checkbox] {
     background-color: #ddd;
 }
 

@@ -4,18 +4,18 @@
  * found in the LICENSE file.
  */
 
-:host {
+.history-dropdown-button {
   width: 160px;
   height: 26px;
   text-align: left;
   display: flex;
 }
 
-:host([disabled]) {
+.history-dropdown-button[disabled] {
   opacity: .5;
 }
 
-.content {
+.history-dropdown-button > .content {
   padding-right: 5px;
   overflow: hidden;
   text-overflow: ellipsis;

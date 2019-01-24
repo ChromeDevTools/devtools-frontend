@@ -54,7 +54,7 @@ UI.Tooltip = class {
    */
   _mouseMove(event) {
     const mouseEvent = /** @type {!MouseEvent} */ (event);
-    const path = mouseEvent.path;
+    const path = mouseEvent.composedPath();
     if (!path || mouseEvent.buttons !== 0 || (mouseEvent.movementX === 0 && mouseEvent.movementY === 0))
       return;
 
@@ -63,7 +63,8 @@ UI.Tooltip = class {
 
     for (const element of path) {
       // The offsetParent is null when the element or an ancestor has 'display: none'.
-      if (element === this._anchorElement || (element.nodeName !== 'CONTENT' && element.offsetParent === null)) {
+      if (!(element instanceof Element) || element === this._anchorElement ||
+          (element.nodeName !== 'SLOT' && element.offsetParent === null)) {
         return;
       } else if (element[UI.Tooltip._symbol]) {
         this._show(element, mouseEvent);

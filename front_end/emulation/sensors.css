@@ -9,10 +9,6 @@
     display: block;
 }
 
-.sensors-view label {
-    margin-bottom: 10px;
-}
-
 .sensors-view input {
     width: 100%;
     max-width: 100px;

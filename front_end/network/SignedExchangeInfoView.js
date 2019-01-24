@@ -59,7 +59,6 @@ Network.SignedExchangeInfoView = class extends UI.VBox {
         requestURLElement.appendChild(viewRequestLink);
       }
       headerCategory.createLeaf(requestURLElement);
-      headerCategory.createLeaf(this._formatHeader(Common.UIString('Request method'), header.requestMethod));
       headerCategory.createLeaf(this._formatHeader(Common.UIString('Response code'), header.responseCode + ''));
 
       this._responseHeadersItem =

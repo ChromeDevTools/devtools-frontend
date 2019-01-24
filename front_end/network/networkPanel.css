@@ -37,7 +37,7 @@
 }
 
 .network-details-view-tall-header {
-    margin-top: 4px;
+    border-top: 4px solid var(--toolbar-bg-color);
 }
 
 .network-item-view {

@@ -206,12 +206,21 @@ class ReportRenderer {
       categories.appendChild(renderer.render(category, report.categoryGroups));
     }
 
+    // Fireworks
+    const scoresAll100 = report.reportCategories.every(cat => cat.score === 1);
+    if (scoresAll100 && !this._dom.isDevTools()) {
+      headerContainer.classList.add('score100');
+      this._dom.find('.lh-header', headerContainer).addEventListener('click', _ => {
+        headerContainer.classList.toggle('fireworks-paused');
+      });
+    }
+
     if (scoreHeader) {
       const defaultGauges = [];
       const customGauges = [];
       for (const category of report.reportCategories) {
         const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
-        const categoryGauge = renderer.renderScoreGauge(category);
+        const categoryGauge = renderer.renderScoreGauge(category, report.categoryGroups || {});
 
         // Group gauges that aren't default at the end of the header
         if (renderer.renderScoreGauge === categoryRenderer.renderScoreGauge) {

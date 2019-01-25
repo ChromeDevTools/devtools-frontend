@@ -27,11 +27,11 @@ class PwaCategoryRenderer extends CategoryRenderer {
   render(category, groupDefinitions = {}) {
     const categoryElem = this.dom.createElement('div', 'lh-category');
     this.createPermalinkSpan(categoryElem, category.id);
-    categoryElem.appendChild(this.renderCategoryHeader(category));
+    categoryElem.appendChild(this.renderCategoryHeader(category, groupDefinitions));
 
     const auditRefs = category.auditRefs;
 
-    // Regular audits aren't split up into pass/fail/not-applicable clumps, they're
+    // Regular audits aren't split up into pass/fail/notApplicable clumps, they're
     // all put in a top-level clump that isn't expandable/collapsable.
     const regularAuditRefs = auditRefs.filter(ref => ref.result.scoreDisplayMode !== 'manual');
     const auditsElem = this._renderAudits(regularAuditRefs, groupDefinitions);
@@ -40,7 +40,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     // Manual audits are still in a manual clump.
     const manualAuditRefs = auditRefs.filter(ref => ref.result.scoreDisplayMode === 'manual');
     const manualElem = this.renderClump('manual',
-      {auditRefs: manualAuditRefs, groupDefinitions, description: category.manualDescription});
+      {auditRefs: manualAuditRefs, description: category.manualDescription});
     categoryElem.appendChild(manualElem);
 
     return categoryElem;
@@ -48,12 +48,13 @@ class PwaCategoryRenderer extends CategoryRenderer {
 
   /**
    * @param {LH.ReportResult.Category} category
+   * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
    * @return {DocumentFragment}
    */
-  renderScoreGauge(category) {
+  renderScoreGauge(category, groupDefinitions) {
     // Defer to parent-gauge style if category error.
     if (category.score === null) {
-      return super.renderScoreGauge(category);
+      return super.renderScoreGauge(category, groupDefinitions);
     }
 
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-gauge--pwa', this.templateContext);
@@ -73,6 +74,7 @@ class PwaCategoryRenderer extends CategoryRenderer {
     }
 
     this.dom.find('.lh-gauge__label', tmpl).textContent = category.title;
+    wrapper.title = this._getGaugeTooltip(category.auditRefs, groupDefinitions);
     return tmpl;
   }
 
@@ -102,6 +104,28 @@ class PwaCategoryRenderer extends CategoryRenderer {
     }
 
     return uniqueGroupIds;
+  }
+
+  /**
+   * Returns a tooltip string summarizing group pass rates.
+   * @param {Array<LH.ReportResult.AuditRef>} auditRefs
+   * @param {Record<string, LH.Result.ReportGroup>} groupDefinitions
+   * @return {string}
+   */
+  _getGaugeTooltip(auditRefs, groupDefinitions) {
+    const groupIds = this._getGroupIds(auditRefs);
+
+    const tips = [];
+    for (const groupId of groupIds) {
+      const groupAuditRefs = auditRefs.filter(ref => ref.group === groupId);
+      const auditCount = groupAuditRefs.length;
+      const passedCount = groupAuditRefs.filter(ref => Util.showAsPassed(ref.result)).length;
+
+      const title = groupDefinitions[groupId].title;
+      tips.push(`${title}: ${passedCount}/${auditCount}`);
+    }
+
+    return tips.join(', ');
   }
 
   /**

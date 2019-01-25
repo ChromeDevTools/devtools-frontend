@@ -120,16 +120,16 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     const element = this.dom.createElement('div', 'lh-category');
     if (environment === 'PSI') {
       const gaugeEl = this.dom.createElement('div', 'lh-score__gauge');
-      gaugeEl.appendChild(this.renderScoreGauge(category));
+      gaugeEl.appendChild(this.renderScoreGauge(category, groups));
       element.appendChild(gaugeEl);
     } else {
       this.createPermalinkSpan(element, category.id);
-      element.appendChild(this.renderCategoryHeader(category));
+      element.appendChild(this.renderCategoryHeader(category, groups));
     }
 
     // Metrics
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
-    const metricAuditsEl = this.renderAuditGroup(groups.metrics, {expandable: false});
+    const metricAuditsEl = this.renderAuditGroup(groups.metrics);
 
     const keyMetrics = metricAudits.filter(a => a.weight >= 3);
     const otherMetrics = metricAudits.filter(a => a.weight < 3);
@@ -176,7 +176,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       const wastedMsValues = opportunityAudits.map(audit => this._getWastedMs(audit));
       const maxWaste = Math.max(...wastedMsValues);
       const scale = Math.max(Math.ceil(maxWaste / 1000) * 1000, minimumScale);
-      const groupEl = this.renderAuditGroup(groups['load-opportunities'], {expandable: false});
+      const groupEl = this.renderAuditGroup(groups['load-opportunities']);
       const tmpl = this.dom.cloneTemplate('#tmpl-lh-opportunity-header', this.templateContext);
 
       this.dom.find('.lh-load-opportunity__col--one', tmpl).textContent =
@@ -202,7 +202,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
         });
 
     if (diagnosticAudits.length) {
-      const groupEl = this.renderAuditGroup(groups['diagnostics'], {expandable: false});
+      const groupEl = this.renderAuditGroup(groups['diagnostics']);
       diagnosticAudits.forEach((item, i) => groupEl.appendChild(this.renderAudit(item, i)));
       groupEl.classList.add('lh-audit-group--diagnostics');
       element.appendChild(groupEl);

@@ -408,7 +408,6 @@ Protocol.SessionRouter = class {
             messageObject);
         return;
       }
-
       session.target._dispatchers[domainName].dispatch(method[1], messageObject);
     }
   }

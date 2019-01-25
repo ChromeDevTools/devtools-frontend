@@ -1673,14 +1673,14 @@ Network.NetworkLogView = class extends UI.VBox {
         return code < 16 ? '\\u0' + code.toString(16) : '\\u' + code.toString(16);
       }
 
-      if (/[\u0000-\u001f\u007f-\u009f]|\'/.test(str)) {
+      if (/[\u0000-\u001f\u007f-\u009f!]|\'/.test(str)) {
         // Use ANSI-C quoting syntax.
         return '$\'' +
             str.replace(/\\/g, '\\\\')
                 .replace(/\'/g, '\\\'')
                 .replace(/\n/g, '\\n')
                 .replace(/\r/g, '\\r')
-                .replace(/[\u0000-\u001f\u007f-\u009f]/g, escapeCharacter) +
+                .replace(/[\u0000-\u001f\u007f-\u009f!]/g, escapeCharacter) +
             '\'';
       } else {
         // Use single quote syntax.

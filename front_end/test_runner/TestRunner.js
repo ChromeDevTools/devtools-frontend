@@ -896,6 +896,25 @@ TestRunner.waitForTarget = function(filter) {
 };
 
 /**
+ * @param {!SDK.Target} targetToRemove
+ * @return {!Promise<!SDK.Target>}
+ */
+TestRunner.waitForTargetRemoved = function(targetToRemove) {
+  return new Promise(fulfill => {
+    const observer = /** @type {!SDK.TargetManager.Observer} */ ({
+      targetRemoved: function(target) {
+        if (target === targetToRemove) {
+          SDK.targetManager.unobserveTargets(observer);
+          fulfill(target);
+        }
+      },
+      targetAdded: function() {},
+    });
+    SDK.targetManager.observeTargets(observer);
+  });
+};
+
+/**
  * @param {!SDK.RuntimeModel} runtimeModel
  * @return {!Promise}
  */

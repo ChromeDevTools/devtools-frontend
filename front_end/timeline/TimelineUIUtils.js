@@ -109,16 +109,6 @@ Timeline.TimelineUIUtils = class {
         new Timeline.TimelineRecordStyle(Common.UIString('Evaluate Module'), categories['scripting']);
     eventStyles[recordTypes.ParseScriptOnBackground] =
         new Timeline.TimelineRecordStyle(Common.UIString('Parse Script'), categories['scripting']);
-    eventStyles[recordTypes.WasmStreamFromResponseCallback] =
-        new Timeline.TimelineRecordStyle(Common.UIString(ls`Streaming Wasm Response`), categories['scripting']);
-    eventStyles[recordTypes.WasmCompiledModule] =
-        new Timeline.TimelineRecordStyle(Common.UIString(ls`Compiled Wasm Module`), categories['scripting']);
-    eventStyles[recordTypes.WasmCachedModule] =
-        new Timeline.TimelineRecordStyle(Common.UIString(ls`Cached Wasm Module`), categories['scripting']);
-    eventStyles[recordTypes.WasmModuleCacheHit] =
-        new Timeline.TimelineRecordStyle(Common.UIString(ls`Wasm Module Cache Hit`), categories['scripting']);
-    eventStyles[recordTypes.WasmModuleCacheInvalid] =
-        new Timeline.TimelineRecordStyle(Common.UIString(ls`Wasm Module Cache Invalid`), categories['scripting']);
     eventStyles[recordTypes.FrameStartedLoading] =
         new Timeline.TimelineRecordStyle(ls`Frame Started Loading`, categories['loading'], true);
     eventStyles[recordTypes.MarkLoad] =
@@ -570,14 +560,6 @@ Timeline.TimelineUIUtils = class {
           detailsText = Bindings.displayNameForURL(url) + ':' + (eventData['lineNumber'] + 1);
         break;
       }
-      case recordType.WasmCompiledModule:
-      case recordType.WasmModuleCacheHit: {
-        const url = event.args['url'];
-        if (url)
-          detailsText = Bindings.displayNameForURL(url);
-        break;
-      }
-
       case recordType.ParseScriptOnBackground:
       case recordType.XHRReadyStateChange:
       case recordType.XHRLoad: {
@@ -684,11 +666,6 @@ Timeline.TimelineUIUtils = class {
       case recordType.Animation:
       case recordType.EmbedderCallback:
       case recordType.ParseHTML:
-      case recordType.WasmStreamFromResponseCallback:
-      case recordType.WasmCompiledModule:
-      case recordType.WasmModuleCacheHit:
-      case recordType.WasmCachedModule:
-      case recordType.WasmModuleCacheInvalid:
       case recordType.WebSocketCreate:
       case recordType.WebSocketSendHandshakeRequest:
       case recordType.WebSocketReceiveHandshakeResponse:
@@ -915,23 +892,6 @@ Timeline.TimelineUIUtils = class {
         url = eventData && eventData['url'];
         if (url)
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
-        break;
-      case recordTypes.WasmStreamFromResponseCallback:
-      case recordTypes.WasmCompiledModule:
-      case recordTypes.WasmCachedModule:
-      case recordTypes.WasmModuleCacheHit:
-      case recordTypes.WasmModuleCacheInvalid:
-        if (eventData) {
-          url = event.args['url'];
-          if (url)
-            contentHelper.appendTextRow(ls`Url`, url);
-          const producedCachedSize = event.args['producedCachedSize'];
-          if (producedCachedSize)
-            contentHelper.appendTextRow(ls`Produced Cache Size`, producedCachedSize);
-          const consumedCachedSize = event.args['consumedCachedSize'];
-          if (consumedCachedSize)
-            contentHelper.appendTextRow(ls`Consumed Cache Size`, consumedCachedSize);
-        }
         break;
       case recordTypes.Paint:
         const clip = eventData['clip'];

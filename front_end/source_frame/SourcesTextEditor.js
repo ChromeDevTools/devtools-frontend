@@ -7,14 +7,19 @@
 SourceFrame.SourcesTextEditor = class extends TextEditor.CodeMirrorTextEditor {
   /**
    * @param {!SourceFrame.SourcesTextEditorDelegate} delegate
+   * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
-  constructor(delegate) {
-    super({
+  constructor(delegate, codeMirrorOptions) {
+    const defaultCodeMirrorOptions = {
       lineNumbers: true,
       lineWrapping: false,
       bracketMatchingSetting: Common.moduleSetting('textEditorBracketMatching'),
       padBottom: true
-    });
+    };
+    if (codeMirrorOptions)
+      Object.assign(defaultCodeMirrorOptions, codeMirrorOptions);
+
+    super(defaultCodeMirrorOptions);
 
     this.codeMirror().addKeyMap({'Enter': 'smartNewlineAndIndent', 'Esc': 'sourcesDismiss'});
 

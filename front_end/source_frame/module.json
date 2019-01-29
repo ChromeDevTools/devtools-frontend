@@ -41,6 +41,7 @@
         "workspace_diff"
     ],
     "scripts": [
+        "BinaryResourceViewFactory.js",
         "SourcesTextEditor.js",
         "FontView.js",
         "ImageView.js",

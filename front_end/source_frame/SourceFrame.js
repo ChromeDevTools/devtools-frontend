@@ -36,8 +36,9 @@
 SourceFrame.SourceFrame = class extends UI.SimpleView {
   /**
    * @param {function(): !Promise<?string>} lazyContent
+   * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
-  constructor(lazyContent) {
+  constructor(lazyContent, codeMirrorOptions) {
     super(Common.UIString('Source'));
 
     this._lazyContent = lazyContent;
@@ -56,7 +57,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     this._shouldAutoPrettyPrint = false;
     this._prettyToggle.setVisible(false);
 
-    this._textEditor = new SourceFrame.SourcesTextEditor(this);
+    this._textEditor = new SourceFrame.SourcesTextEditor(this, codeMirrorOptions);
     this._textEditor.show(this.element);
 
     /** @type {?number} */

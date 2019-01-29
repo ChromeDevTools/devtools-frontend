@@ -103,26 +103,11 @@ SourceFrame.ImageView = class extends UI.SimpleView {
       imageSrc = this._url;
     const loadPromise = new Promise(x => this._imagePreviewElement.onload = x);
     this._imagePreviewElement.src = imageSrc;
-    const size = content && !contentEncoded ? content.length : this._base64ToSize(content);
+    const size = content && !contentEncoded ? content.length : base64ToSize(content);
     this._sizeLabel.setText(Number.bytesToString(size));
     await loadPromise;
     this._dimensionsLabel.setText(
         Common.UIString('%d × %d', this._imagePreviewElement.naturalWidth, this._imagePreviewElement.naturalHeight));
-  }
-
-  /**
-   * @param {?string} content
-   * @return {number}
-   */
-  _base64ToSize(content) {
-    if (!content)
-      return 0;
-    let size = content.length * 3 / 4;
-    if (content[content.length - 1] === '=')
-      size--;
-    if (content.length > 1 && content[content.length - 2] === '=')
-      size--;
-    return size;
   }
 
   _contextMenu(event) {

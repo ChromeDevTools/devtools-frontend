@@ -1446,3 +1446,18 @@ function singleton(constructorFunction) {
   constructorFunction[_singletonSymbol] = instance;
   return instance;
 }
+
+/**
+ * @param {?string} content
+ * @return {number}
+ */
+function base64ToSize(content) {
+  if (!content)
+    return 0;
+  let size = content.length * 3 / 4;
+  if (content[content.length - 1] === '=')
+    size--;
+  if (content.length > 1 && content[content.length - 2] === '=')
+    size--;
+  return size;
+}

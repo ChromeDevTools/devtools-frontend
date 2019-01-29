@@ -182,6 +182,7 @@
         "persistence"
     ],
     "scripts": [
+        "BinaryResourceView.js",
         "BlockedURLsPane.js",
         "EventSourceMessagesView.js",
         "HARWriter.js",

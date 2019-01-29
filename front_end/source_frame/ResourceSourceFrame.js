@@ -34,14 +34,15 @@ SourceFrame.ResourceSourceFrame = class extends SourceFrame.SourceFrame {
   /**
    * @param {!Common.ContentProvider} resource
    * @param {boolean=} autoPrettyPrint
+   * @param {!UI.TextEditor.Options=} codeMirrorOptions
    */
-  constructor(resource, autoPrettyPrint) {
+  constructor(resource, autoPrettyPrint, codeMirrorOptions) {
     super(async () => {
       let content = await resource.requestContent();
       if (await resource.contentEncoded())
         content = window.atob(content);
       return content;
-    });
+    }, codeMirrorOptions);
     this._resource = resource;
     this.setCanPrettyPrint(this._resource.contentType().isDocumentOrScriptOrStyleSheet(), autoPrettyPrint);
   }

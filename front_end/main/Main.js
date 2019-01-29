@@ -106,6 +106,7 @@ Main.Main = class {
   _initializeExperiments() {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
+    Runtime.experiments.register('binaryWebsocketViewer', 'Binary WebSocket Message Viewer');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('consoleBelowPrompt', 'Console eager evaluation');
     Runtime.experiments.register('consoleKeyboardNavigation', 'Console keyboard navigation', true);

@@ -12,7 +12,6 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._initialText = '';
     /** @type {?UI.TextEditor} */
     this._editor = null;
-    this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
     this._eagerPreviewElement = createElementWithClass('div', 'console-eager-preview');
     this._textChangeThrottler = new Common.Throttler(150);
     this._formatter = new ObjectUI.RemoteObjectPreviewFormatter();
@@ -21,8 +20,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     this._eagerPreviewElement.appendChild(UI.Icon.create('smallicon-command-result', 'preview-result-icon'));
 
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
-    if (this._isBelowPromptEnabled)
-      this.element.appendChild(this._eagerPreviewElement);
+    this.element.appendChild(this._eagerPreviewElement);
 
     this._eagerEvalSetting = Common.settings.moduleSetting('consoleEagerEval');
     this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
@@ -50,8 +48,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._defaultAutocompleteConfig = ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
       this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {
         suggestionsCallback: this._wordsWithQuery.bind(this),
-        anchorBehavior: this._isBelowPromptEnabled ? UI.GlassPane.AnchorBehavior.PreferTop :
-                                                     UI.GlassPane.AnchorBehavior.PreferBottom
+        anchorBehavior: UI.GlassPane.AnchorBehavior.PreferTop
       }));
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(editorContainerElement);
@@ -86,7 +83,7 @@ Console.ConsolePrompt = class extends UI.Widget {
   _onTextChanged() {
     // ConsoleView and prompt both use a throttler, so we clear the preview
     // ASAP to avoid inconsistency between a fresh viewport and stale preview.
-    if (this._isBelowPromptEnabled && this._eagerEvalSetting.get()) {
+    if (this._eagerEvalSetting.get()) {
       const asSoonAsPossible = !this._editor.textWithCurrentSuggestion();
       this._previewRequestForTest = this._textChangeThrottler.schedule(this._requestPreviewBound, asSoonAsPossible);
     }

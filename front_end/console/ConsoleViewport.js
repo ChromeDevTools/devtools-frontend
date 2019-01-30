@@ -58,12 +58,9 @@ Console.ConsoleViewport = class {
     this.element.addEventListener('scroll', this._onScroll.bind(this), false);
     this.element.addEventListener('copy', this._onCopy.bind(this), false);
     this.element.addEventListener('dragstart', this._onDragStart.bind(this), false);
-    this._keyboardNavigationEnabled = Runtime.experiments.isEnabled('consoleKeyboardNavigation');
-    if (this._keyboardNavigationEnabled) {
-      this._contentElement.addEventListener('focusin', this._onFocusIn.bind(this), false);
-      this._contentElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
-      this._contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    }
+    this._contentElement.addEventListener('focusin', this._onFocusIn.bind(this), false);
+    this._contentElement.addEventListener('focusout', this._onFocusOut.bind(this), false);
+    this._contentElement.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this._virtualSelectedIndex = -1;
     this._contentElement.tabIndex = -1;
 
@@ -470,8 +467,7 @@ Console.ConsoleViewport = class {
       this._bottomGapElement.style.height = '0px';
       this._firstActiveIndex = -1;
       this._lastActiveIndex = -1;
-      if (this._keyboardNavigationEnabled)
-        this._updateFocusedItem();
+      this._updateFocusedItem();
       return;
     }
 
@@ -535,8 +531,7 @@ Console.ConsoleViewport = class {
     prepare();
     let hadFocus = false;
     for (let i = 0; i < willBeHidden.length; ++i) {
-      if (this._keyboardNavigationEnabled)
-        hadFocus = hadFocus || willBeHidden[i].element().hasFocus();
+      hadFocus = hadFocus || willBeHidden[i].element().hasFocus();
       willBeHidden[i].element().remove();
     }
 
@@ -557,11 +552,9 @@ Console.ConsoleViewport = class {
       wasShown[i].wasShown();
     this._renderedItems = Array.from(itemsToRender);
 
-    if (this._keyboardNavigationEnabled) {
-      if (hadFocus)
-        this._contentElement.focus();
-      this._updateFocusedItem();
-    }
+    if (hadFocus)
+      this._contentElement.focus();
+    this._updateFocusedItem();
   }
 
   /**

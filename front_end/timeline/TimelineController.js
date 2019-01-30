@@ -65,7 +65,7 @@ Timeline.TimelineController = class {
 
     if (Runtime.experiments.isEnabled('timelineV8RuntimeCallStats') && options.enableJSSampling)
       categoriesArray.push(disabledByDefault('v8.runtime_stats_sampling'));
-    if (Runtime.experiments.isEnabled('timelineTracingJSProfile') && options.enableJSSampling) {
+    if (Runtime.queryParam('timelineTracingJSProfile') && options.enableJSSampling) {
       categoriesArray.push(disabledByDefault('v8.cpu_profiler'));
       if (Common.moduleSetting('highResolutionCpuProfiling').get())
         categoriesArray.push(disabledByDefault('v8.cpu_profiler.hires'));
@@ -175,7 +175,7 @@ Timeline.TimelineController = class {
    */
   async _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();
-    if (enableJSSampling && !Runtime.experiments.isEnabled('timelineTracingJSProfile'))
+    if (enableJSSampling && !Runtime.queryParam('timelineTracingJSProfile'))
       await this._startProfilingOnAllModels();
     if (!this._tracingManager)
       return;

@@ -1243,7 +1243,7 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
    * @return {boolean}
    */
   _hasVisibleChildren(node) {
-    if (node.isIframe() && Runtime.experiments.isEnabled('oopifInlineDOM'))
+    if (node.isIframe())
       return true;
     if (node.contentDocument())
       return true;

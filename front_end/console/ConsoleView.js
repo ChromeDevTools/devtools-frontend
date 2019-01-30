@@ -47,7 +47,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._sidebar.addEventListener(Console.ConsoleSidebar.Events.FilterSelected, this._onFilterChanged.bind(this));
     this._isSidebarOpen = false;
     this._filter = new Console.ConsoleViewFilter(this._onFilterChanged.bind(this));
-    this._isBelowPromptEnabled = Runtime.experiments.isEnabled('consoleBelowPrompt');
 
     const consoleToolbarContainer = this.element.createChild('div', 'console-toolbar-container');
     this._splitWidget =
@@ -105,10 +104,8 @@ Console.ConsoleView = class extends UI.VBox {
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._consoleContextSelector.toolbarItem());
     toolbar.appendSeparator();
-    if (Runtime.experiments.isEnabled('pinnedExpressions')) {
-      toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
-          /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin'))));
-    }
+    toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.create-pin'))));
     toolbar.appendSeparator();
     toolbar.appendToolbarItem(this._filter._textFilterUI);
     toolbar.appendToolbarItem(this._filter._levelMenuButton);
@@ -145,31 +142,25 @@ Console.ConsoleView = class extends UI.VBox {
     const settingsToolbarRight = new UI.Toolbar('', settingsPane.element);
     settingsToolbarRight.makeVertical();
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(monitoringXHREnabledSetting));
-    if (this._isBelowPromptEnabled) {
-      const eagerEvalCheckbox = new UI.ToolbarSettingCheckbox(
-          Common.settings.moduleSetting('consoleEagerEval'), ls`Eagerly evaluate text in the prompt`);
-      settingsToolbarRight.appendToolbarItem(eagerEvalCheckbox);
-    } else {
-      settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._timestampsSetting));
-    }
+    const eagerEvalCheckbox = new UI.ToolbarSettingCheckbox(
+        Common.settings.moduleSetting('consoleEagerEval'), ls`Eagerly evaluate text in the prompt`);
+    settingsToolbarRight.appendToolbarItem(eagerEvalCheckbox);
     settingsToolbarRight.appendToolbarItem(new UI.ToolbarSettingCheckbox(this._consoleHistoryAutocompleteSetting));
     if (!this._showSettingsPaneSetting.get())
       settingsPane.element.classList.add('hidden');
     this._showSettingsPaneSetting.addChangeListener(
         () => settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get()));
 
-    if (Runtime.experiments.isEnabled('pinnedExpressions')) {
-      this._pinPane = new Console.ConsolePinPane();
-      this._pinPane.element.classList.add('console-view-pinpane');
-      this._pinPane.show(this._contentsElement);
-      this._pinPane.element.addEventListener('keydown', event => {
-        if ((event.key === 'Enter' && UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!KeyboardEvent} */ (event))) ||
-            event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
-          this._prompt.focus();
-          event.consume();
-        }
-      });
-    }
+    this._pinPane = new Console.ConsolePinPane();
+    this._pinPane.element.classList.add('console-view-pinpane');
+    this._pinPane.show(this._contentsElement);
+    this._pinPane.element.addEventListener('keydown', event => {
+      if ((event.key === 'Enter' && UI.KeyboardShortcut.eventHasCtrlOrMeta(/** @type {!KeyboardEvent} */ (event))) ||
+          event.keyCode === UI.KeyboardShortcut.Keys.Esc.code) {
+        this._prompt.focus();
+        event.consume();
+      }
+    });
 
     this._viewport = new Console.ConsoleViewport(this);
     this._viewport.setStickToBottom(true);
@@ -216,14 +207,11 @@ Console.ConsoleView = class extends UI.VBox {
     this._prompt.element.addEventListener('keydown', this._promptKeyDown.bind(this), true);
     this._prompt.addEventListener(Console.ConsolePrompt.Events.TextChanged, this._promptTextChanged, this);
 
-    this._keyboardNavigationEnabled = Runtime.experiments.isEnabled('consoleKeyboardNavigation');
-    if (this._keyboardNavigationEnabled) {
-      this._messagesElement.addEventListener('keydown', this._messagesKeyDown.bind(this), false);
-      this._prompt.element.addEventListener('focusin', () => {
-        if (this._isScrolledToBottom())
-          this._viewport.setStickToBottom(true);
-      });
-    }
+    this._messagesElement.addEventListener('keydown', this._messagesKeyDown.bind(this), false);
+    this._prompt.element.addEventListener('focusin', () => {
+      if (this._isScrolledToBottom())
+        this._viewport.setStickToBottom(true);
+    });
 
     this._consoleHistoryAutocompleteSetting.addChangeListener(this._consoleHistoryAutocompleteChanged, this);
 
@@ -395,10 +383,6 @@ Console.ConsoleView = class extends UI.VBox {
    * @override
    */
   focus() {
-    if (!this._keyboardNavigationEnabled) {
-      this._focusPrompt();
-      return;
-    }
     if (this._viewport.hasVirtualSelection())
       this._viewport.contentElement().focus();
     else
@@ -666,8 +650,6 @@ Console.ConsoleView = class extends UI.VBox {
    * @return {!Promise}
    */
   async _onMessageResized(event) {
-    if (!this._keyboardNavigationEnabled)
-      return;
     const treeElement = /** @type {!UI.TreeElement} */ (event.data);
     if (this._pendingBatchResize || !treeElement.treeOutline)
       return;
@@ -908,14 +890,8 @@ Console.ConsoleView = class extends UI.VBox {
     if (!this._messagesElement.hasSelection()) {
       const clickedOutsideMessageList =
           target === this._messagesElement || this._prompt.belowEditorElement().isSelfOrAncestor(target);
-      if (this._keyboardNavigationEnabled) {
-        if (clickedOutsideMessageList) {
-          this._prompt.moveCaretToEndOfPrompt();
-          this._focusPrompt();
-        }
-      } else {
-        if (clickedOutsideMessageList)
-          this._prompt.moveCaretToEndOfPrompt();
+      if (clickedOutsideMessageList) {
+        this._prompt.moveCaretToEndOfPrompt();
         this._focusPrompt();
       }
     }
@@ -1255,8 +1231,6 @@ Console.ConsoleView = class extends UI.VBox {
    * @return {boolean}
    */
   _isScrolledToBottom() {
-    if (!this._isBelowPromptEnabled)
-      return this._messagesElement.isScrolledToBottom();
     const distanceToPromptEditorBottom = this._messagesElement.scrollHeight - this._messagesElement.scrollTop -
         this._messagesElement.clientHeight - this._prompt.belowEditorElement().offsetHeight;
     return distanceToPromptEditorBottom <= 2;
@@ -1566,10 +1540,8 @@ Console.ConsoleView.ActionDelegate = class {
         Console.ConsoleView.instance()._clearHistory();
         return true;
       case 'console.create-pin':
-        if (Runtime.experiments.isEnabled('pinnedExpressions')) {
-          Console.ConsoleView.instance()._pinPane.addPin('', true /* userGesture */);
-          return true;
-        }
+        Console.ConsoleView.instance()._pinPane.addPin('', true /* userGesture */);
+        return true;
     }
     return false;
   }

@@ -18,7 +18,6 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     this._finished = false;
     /** @type {?UI.TextEditor} */
     this._editor = null;
-    const isNewBreakpointsEnabled = Runtime.experiments.isEnabled('sourcesLogpoints');
     this.element.tabIndex = -1;
 
     const logpointPrefix = Sources.BreakpointEditDialog._LogpointPrefix;
@@ -28,37 +27,24 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
       oldCondition = oldCondition.substring(logpointPrefix.length, oldCondition.length - logpointSuffix.length);
     this._isLogpoint = this._isLogpoint || preferLogpoint;
 
-    if (isNewBreakpointsEnabled) {
-      this.element.classList.add('sources-edit-breakpoint-dialog');
-      const toolbar = new UI.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
-      toolbar.appendText(`Line ${editorLineNumber + 1}:`);
+    this.element.classList.add('sources-edit-breakpoint-dialog');
+    const toolbar = new UI.Toolbar('source-frame-breakpoint-toolbar', this.contentElement);
+    toolbar.appendText(`Line ${editorLineNumber + 1}:`);
 
-      this._typeSelector = new UI.ToolbarComboBox(this._onTypeChanged.bind(this));
-      this._typeSelector.createOption(ls`Breakpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Breakpoint);
-      const conditionalOption = this._typeSelector.createOption(
-          ls`Conditional breakpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Conditional);
-      const logpointOption =
-          this._typeSelector.createOption(ls`Logpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Logpoint);
-      this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
-      toolbar.appendToolbarItem(this._typeSelector);
-
-    } else {
-      const labelElement = this.contentElement.createChild('label', 'source-frame-breakpoint-message');
-      labelElement.htmlFor = 'source-frame-breakpoint-condition';
-      const labelText = this._isLogpoint ? ls`On line ${editorLineNumber + 1}, log to the Console:` : ls
-      `The breakpoint on line ${editorLineNumber + 1} will stop only if this expression is true:`;
-      labelElement.createTextChild(labelText);
-    }
+    this._typeSelector = new UI.ToolbarComboBox(this._onTypeChanged.bind(this));
+    this._typeSelector.createOption(ls`Breakpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Breakpoint);
+    const conditionalOption = this._typeSelector.createOption(
+        ls`Conditional breakpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Conditional);
+    const logpointOption =
+        this._typeSelector.createOption(ls`Logpoint`, '', Sources.BreakpointEditDialog.BreakpointType.Logpoint);
+    this._typeSelector.select(this._isLogpoint ? logpointOption : conditionalOption);
+    toolbar.appendToolbarItem(this._typeSelector);
 
     self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
       const editorOptions = {lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true};
       this._editor = factory.createEditor(editorOptions);
-      if (isNewBreakpointsEnabled) {
-        this._updatePlaceholder();
-        this._editor.widget().element.classList.add('condition-editor');
-      } else {
-        this._editor.widget().element.id = 'source-frame-breakpoint-condition';
-      }
+      this._updatePlaceholder();
+      this._editor.widget().element.classList.add('condition-editor');
       this._editor.configureAutocomplete(ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor));
       if (oldCondition)
         this._editor.setText(oldCondition);

@@ -1205,10 +1205,8 @@ Console.ConsoleViewMessage = class {
       return this._element;
 
     this._element = createElement('div');
-    if (Runtime.experiments.isEnabled('consoleKeyboardNavigation')) {
-      this._element.tabIndex = -1;
-      this._element.addEventListener('keydown', this._onKeyDown.bind(this));
-    }
+    this._element.tabIndex = -1;
+    this._element.addEventListener('keydown', this._onKeyDown.bind(this));
     this.updateMessageElement();
     return this._element;
   }

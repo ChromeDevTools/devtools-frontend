@@ -115,7 +115,7 @@ SDK.DOMNode = class {
       this._contentDocument = new SDK.DOMDocument(this._domModel, payload.contentDocument);
       this._contentDocument.parentNode = this;
       this._children = [];
-    } else if (payload.nodeName === 'IFRAME' && payload.frameId && Runtime.experiments.isEnabled('oopifInlineDOM')) {
+    } else if (payload.nodeName === 'IFRAME' && payload.frameId) {
       const childTarget = SDK.targetManager.targetById(payload.frameId);
       const childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
       if (childModel)
@@ -1635,8 +1635,6 @@ SDK.DOMModel = class extends SDK.SDKModel {
    * @return {?SDK.DOMModel}
    */
   parentModel() {
-    if (!Runtime.experiments.isEnabled('oopifInlineDOM'))
-      return null;
     const parentTarget = this.target().parentTarget();
     return parentTarget ? parentTarget.model(SDK.DOMModel) : null;
   }

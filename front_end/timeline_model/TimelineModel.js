@@ -1211,6 +1211,11 @@ TimelineModel.TimelineModel.RecordType = {
   EvaluateScript: 'EvaluateScript',
   CompileModule: 'v8.compileModule',
   EvaluateModule: 'v8.evaluateModule',
+  WasmStreamFromResponseCallback: 'v8.wasm.streamFromResponseCallback',
+  WasmCompiledModule: 'v8.wasm.compiledModule',
+  WasmCachedModule: 'v8.wasm.cachedModule',
+  WasmModuleCacheHit: 'v8.wasm.moduleCacheHit',
+  WasmModuleCacheInvalid: 'v8.wasm.moduleCacheInvalid',
 
   FrameStartedLoading: 'FrameStartedLoading',
   CommitLoad: 'CommitLoad',

@@ -111,7 +111,6 @@ Main.Main = class {
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);
     Runtime.experiments.register('nativeHeapProfiler', 'Native memory sampling heap profiler', true);
-    Runtime.experiments.register('networkSearch', 'Network search');
     Runtime.experiments.register('protocolMonitor', 'Protocol Monitor');
     Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
@@ -128,14 +127,6 @@ Main.Main = class {
     Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
 
     Runtime.experiments.cleanUpStaleExperiments();
-
-    if (Host.isUnderTest()) {
-      const testPath = Runtime.queryParam('test');
-      // Enable experiments for testing.
-      if (testPath.indexOf('network/') !== -1)
-        Runtime.experiments.enableForTest('networkSearch');
-    }
-
     Runtime.experiments.setDefaultExperiments([]);
   }
 

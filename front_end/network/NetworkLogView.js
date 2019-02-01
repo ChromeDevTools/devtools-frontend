@@ -116,6 +116,7 @@ Network.NetworkLogView = class extends UI.VBox {
     this._dataURLFilterUI = new UI.CheckboxFilterUI(
         'hide-data-url', Common.UIString('Hide data URLs'), true, this._networkHideDataURLSetting);
     this._dataURLFilterUI.addEventListener(UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
+    this._dataURLFilterUI.element().title = ls`Hides data: and blob: URLs`;
     filterBar.addFilter(this._dataURLFilterUI);
 
     const filterItems =
@@ -1351,7 +1352,7 @@ Network.NetworkLogView = class extends UI.VBox {
     const categoryName = request.resourceType().category().title;
     if (!this._resourceCategoryFilterUI.accept(categoryName))
       return false;
-    if (this._dataURLFilterUI.checked() && request.parsedURL.isDataURL())
+    if (this._dataURLFilterUI.checked() && (request.parsedURL.isDataURL() || request.parsedURL.isBlobURL()))
       return false;
     if (request.statusText === 'Service Worker Fallback Required')
       return false;

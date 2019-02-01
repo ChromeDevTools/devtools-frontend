@@ -553,6 +553,9 @@ SDK.NetworkRequest = class extends Common.Object {
     if (this._parsedURL.isDataURL()) {
       this._name = this._parsedURL.dataURLDisplayName();
       this._path = '';
+    } else if (this._parsedURL.isBlobURL()) {
+      this._name = this._parsedURL.url;
+      this._path = '';
     } else if (this._parsedURL.isAboutBlank()) {
       this._name = this._parsedURL.url;
       this._path = '';

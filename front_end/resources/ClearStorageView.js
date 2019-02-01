@@ -117,7 +117,14 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {string} url
    */
   _updateOrigin(url) {
-    this._securityOrigin = new Common.ParsedURL(url).securityOrigin();
+    const parsedURL = new Common.ParsedURL(url);
+    if (!parsedURL.isValid) {
+      this._clearButton.disabled = true;
+      this._securityOrigin = '';
+    } else {
+      this._clearButton.disabled = false;
+      this._securityOrigin = parsedURL.securityOrigin();
+    }
     this._reportView.setSubtitle(this._securityOrigin);
     this.doUpdate();
   }

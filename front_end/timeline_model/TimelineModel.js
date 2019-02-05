@@ -716,7 +716,6 @@ TimelineModel.TimelineModel = class {
       case recordTypes.LayoutInvalidationTracking:
       case recordTypes.LayerInvalidationTracking:
       case recordTypes.PaintInvalidationTracking:
-      case recordTypes.ScrollInvalidationTracking:
         this._invalidationTracker.addInvalidation(new TimelineModel.InvalidationTrackingEvent(event));
         break;
 
@@ -1196,7 +1195,6 @@ TimelineModel.TimelineModel.RecordType = {
   LayoutInvalidationTracking: 'LayoutInvalidationTracking',
   LayerInvalidationTracking: 'LayerInvalidationTracking',
   PaintInvalidationTracking: 'PaintInvalidationTracking',
-  ScrollInvalidationTracking: 'ScrollInvalidationTracking',
 
   ParseHTML: 'ParseHTML',
   ParseAuthorStyleSheet: 'ParseAuthorStyleSheet',
@@ -1809,8 +1807,7 @@ TimelineModel.InvalidationTracker = class {
     const types = [
       TimelineModel.TimelineModel.RecordType.StyleRecalcInvalidationTracking,
       TimelineModel.TimelineModel.RecordType.LayoutInvalidationTracking,
-      TimelineModel.TimelineModel.RecordType.PaintInvalidationTracking,
-      TimelineModel.TimelineModel.RecordType.ScrollInvalidationTracking
+      TimelineModel.TimelineModel.RecordType.PaintInvalidationTracking
     ];
     for (const invalidation of this._invalidationsOfTypes(types)) {
       if (invalidation.paintId === effectivePaintId)

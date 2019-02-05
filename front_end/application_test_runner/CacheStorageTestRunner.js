@@ -134,7 +134,11 @@ ApplicationTestRunner.createCache = function(cacheName) {
 };
 
 ApplicationTestRunner.addCacheEntry = function(cacheName, requestUrl, responseText) {
-  return TestRunner.callFunctionInPageAsync('addCacheEntry', [cacheName, requestUrl, responseText]);
+  return TestRunner.callFunctionInPageAsync('addCacheEntryImpl', [cacheName, requestUrl, responseText, 'text/plain']);
+};
+
+ApplicationTestRunner.addCacheEntryWithBlobType = function(cacheName, requestUrl, blobType) {
+  return TestRunner.callFunctionInPageAsync('addCacheEntryImpl', [cacheName, requestUrl, 'OK', blobType]);
 };
 
 ApplicationTestRunner.addCacheEntryWithNoCorsRequest = function(cacheName, requestUrl) {
@@ -162,10 +166,10 @@ TestRunner.deprecatedInitAsync(`
     return caches.open(cacheName).catch(onCacheStorageError);
   }
 
-  function addCacheEntry(cacheName, requestUrl, responseText) {
+  function addCacheEntryImpl(cacheName, requestUrl, responseText, blobType) {
     return caches.open(cacheName).then(function(cache) {
       let request = new Request(requestUrl);
-      let myBlob = new Blob();
+      let myBlob = new Blob(['Y'], { "type": blobType });
 
       let init = {
         'status': 200,

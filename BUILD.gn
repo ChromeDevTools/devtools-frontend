@@ -401,6 +401,7 @@ all_devtools_files = [
   "front_end/mobile_throttling/throttlingSettingsTab.css",
   "front_end/mobile_throttling/ThrottlingSettingsTab.js",
   "front_end/ndb_app.json",
+  "front_end/network/binaryResourceView.css",
   "front_end/network/blockedURLsPane.css",
   "front_end/network/BinaryResourceView.js",
   "front_end/network/BlockedURLsPane.js",

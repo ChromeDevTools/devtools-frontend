@@ -106,7 +106,6 @@ Main.Main = class {
   _initializeExperiments() {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
-    Runtime.experiments.register('binaryWebsocketViewer', 'Binary WebSocket Message Viewer');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);

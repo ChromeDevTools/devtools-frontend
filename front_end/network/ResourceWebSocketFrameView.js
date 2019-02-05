@@ -92,12 +92,19 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
 
     /**
      * @param {!UI.ContextMenu} contextMenu
-     * @param {!DataGrid.DataGridNode} node
+     * @param {!DataGrid.DataGridNode} genericNode
      * @this {Network.ResourceWebSocketFrameView}
      */
-    function onRowContextMenu(contextMenu, node) {
-      contextMenu.clipboardSection().appendItem(
-          Common.UIString('Copy message'), InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
+    function onRowContextMenu(contextMenu, genericNode) {
+      const node = /** @type {!Network.ResourceWebSocketFrameNode} */ (genericNode);
+      const binaryView = node.binaryView();
+      if (binaryView) {
+        binaryView.addCopyToContextMenu(contextMenu, ls`Copy message...`);
+      } else {
+        contextMenu.clipboardSection().appendItem(
+            Common.UIString('Copy message'),
+            InspectorFrontendHost.copyText.bind(InspectorFrontendHost, node.data.data));
+      }
       contextMenu.footerSection().appendItem(Common.UIString('Clear all'), this._clearFrames.bind(this));
     }
   }
@@ -169,12 +176,10 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._currentSelectedNode = /** @type {!Network.ResourceWebSocketFrameNode} */ (event.data);
     const content = this._currentSelectedNode.dataText();
 
-    if (Runtime.experiments.isEnabled('binaryWebsocketViewer')) {
-      if (this._currentSelectedNode.opCode() === Network.ResourceWebSocketFrameView.OpCodes.BinaryFrame) {
-        this._splitWidget.setSidebarWidget(
-            new Network.BinaryResourceView(content, this._request.url(), Common.resourceTypes.WebSocket));
-        return;
-      }
+    const binaryView = this._currentSelectedNode.binaryView();
+    if (binaryView) {
+      this._splitWidget.setSidebarWidget(binaryView);
+      return;
     }
 
     const jsonView = await SourceFrame.JSONView.createView(content);
@@ -265,10 +270,8 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
     if (isTextFrame) {
       description = dataText;
 
-    } else if (
-        Runtime.experiments.isEnabled('binaryWebsocketViewer') &&
-        frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.BinaryFrame) {
-      length = base64ToSize(frame.text) + ' bytes';
+    } else if (frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.BinaryFrame) {
+      length = Number.bytesToString(base64ToSize(frame.text));
       description = 'Binary Message';
 
     } else {
@@ -318,6 +321,18 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
    */
   opCode() {
     return /** @type {!Network.ResourceWebSocketFrameView.OpCodes} */ (this._frame.opCode);
+  }
+
+  /**
+   * @return {?Network.BinaryResourceView}
+   */
+  binaryView() {
+    if (this._isTextFrame)
+      return null;
+
+    if (!this._binaryView)
+      this._binaryView = new Network.BinaryResourceView(this._dataText, /* url */ '', Common.resourceTypes.WebSocket);
+    return this._binaryView;
   }
 };
 

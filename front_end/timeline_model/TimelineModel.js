@@ -1219,7 +1219,7 @@ TimelineModel.TimelineModel.RecordType = {
   CommitLoad: 'CommitLoad',
   MarkLoad: 'MarkLoad',
   MarkDOMContent: 'MarkDOMContent',
-  MarkFirstPaint: 'MarkFirstPaint',
+  MarkFirstPaint: 'firstPaint',
   MarkFCP: 'firstContentfulPaint',
   MarkFMP: 'firstMeaningfulPaint',
 

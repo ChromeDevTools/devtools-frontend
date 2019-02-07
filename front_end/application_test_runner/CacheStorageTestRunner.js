@@ -71,6 +71,55 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
   }
 };
 
+ApplicationTestRunner.dumpCachedEntryContent = async function(cacheName, requestUrl, withHeader) {
+  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+  const promise = TestRunner.addSnifferPromise(SDK.ServiceWorkerCacheModel.prototype, '_updateCacheNames');
+  UI.panels.resources._sidebar.cacheStorageListTreeElement._refreshCaches();
+  await promise;
+  await ApplicationTestRunner.dumpCachedEntryContentNoRefresh(cacheName, requestUrl, withHeader);
+};
+
+ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName, requestUrl, withHeader) {
+  UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
+
+  TestRunner.addResult('Dumping ' + cacheName + '\'s entry with request URL: ' + requestUrl);
+
+  const cachesTreeElement = UI.panels.resources._sidebar.cacheStorageListTreeElement;
+
+  for (let i = 0; i < cachesTreeElement.childCount(); ++i) {
+    const cacheTreeElement = cachesTreeElement.childAt(i);
+    if (cacheTreeElement.title.split(' ')[0] !== cacheName)
+      continue;
+
+    let view = cacheTreeElement._view;
+    if (!view)
+      cacheTreeElement.onselect(false);
+    view = cacheTreeElement._view;
+    await view._updateData(true);
+
+    const promiseDumpContent = new Promise(resolve => {
+      view._model.loadCacheData(view._cache, 0, 50, '', async function(entries, hasMore) {
+        for (const entry of entries) {
+          if (entry.requestURL !== requestUrl)
+            continue;
+
+          const request = view._createRequest(entry);
+          if (request.requestHeaders().length) {
+            TestRunner.addResult('    the original request has headers; query with headers? ' + withHeader);
+            if (!withHeader)
+              request.setRequestHeaders([]);
+          }
+          const contentObject = await view._requestContent(request);
+          const content = contentObject.content;
+          TestRunner.addResult(' '.repeat(8) + (content ? content : '(nothing to preview)'));
+        }
+        resolve();
+      });
+    });
+    await promiseDumpContent;
+  }
+};
+
 ApplicationTestRunner.deleteCacheFromInspector = async function(cacheName, optionalEntry) {
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
 
@@ -141,6 +190,10 @@ ApplicationTestRunner.addCacheEntryWithBlobType = function(cacheName, requestUrl
   return TestRunner.callFunctionInPageAsync('addCacheEntryImpl', [cacheName, requestUrl, 'OK', blobType]);
 };
 
+ApplicationTestRunner.addCacheEntryWithVarsResponse = function(cacheName, requestUrl) {
+  return TestRunner.callFunctionInPageAsync('addCacheEntryWithVarsResponse', [cacheName, requestUrl]);
+};
+
 ApplicationTestRunner.addCacheEntryWithNoCorsRequest = function(cacheName, requestUrl) {
   return TestRunner.callFunctionInPageAsync('addCacheEntryWithNoCorsRequest', [cacheName, requestUrl]);
 };
@@ -169,11 +222,27 @@ TestRunner.deprecatedInitAsync(`
   function addCacheEntryImpl(cacheName, requestUrl, responseText, blobType) {
     return caches.open(cacheName).then(function(cache) {
       let request = new Request(requestUrl);
-      let myBlob = new Blob(['Y'], { "type": blobType });
+      let myBlob = new Blob(['Y'], { 'type': blobType });
 
       let init = {
         'status': 200,
         'statusText': responseText
+      };
+
+      let response = new Response(myBlob, init);
+      return cache.put(request, response);
+    }).catch(onCacheStorageError);
+  }
+
+  function addCacheEntryWithVarsResponse(cacheName, requestUrl) {
+    return caches.open(cacheName).then(function(cache) {
+      let request = new Request(requestUrl, {
+        headers: { 'Accept': '*/*' }
+      });
+      let myBlob = new Blob(['Z'], { "type": 'text/plain' });
+
+      let init = {
+        'headers': { 'Vary': 'Accept' },
       };
 
       let response = new Response(myBlob, init);

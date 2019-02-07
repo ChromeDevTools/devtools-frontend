@@ -332,9 +332,10 @@ SDK.ServiceWorkerCacheModel.Cache = class {
 
   /**
    * @param {string} url
+   * @param {!Array.<!SDK.NetworkRequest.NameValue>} requestHeaders
    * @return {!Promise<?Protocol.CacheStorage.CachedResponse>}
    */
-  requestCachedResponse(url) {
-    return this._model._cacheAgent.requestCachedResponse(this.cacheId, url);
+  requestCachedResponse(url, requestHeaders) {
+    return this._model._cacheAgent.requestCachedResponse(this.cacheId, url, requestHeaders);
   }
 };

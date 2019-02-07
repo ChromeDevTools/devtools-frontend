@@ -1912,6 +1912,11 @@ Timeline.TimelineUIUtils = class {
       case warnings.LongRecurringHandler:
         span.textContent = Common.UIString('Recurring handler took %s', Number.millisToString(event.duration, true));
         break;
+      case warnings.LongTask:
+        span.appendChild(
+            UI.createDocumentationLink('../../fundamentals/performance/rail#goals-and-guidelines', ls`Long task`));
+        span.createTextChild(ls` took ${Number.millisToString(event.duration, true)}.`);
+        break;
       case warnings.V8Deopt:
         span.appendChild(UI.XLink.create(
             'https://github.com/GoogleChrome/devtools-docs/issues/53', Common.UIString('Not optimized')));

@@ -744,6 +744,11 @@ TimelineModel.TimelineModel = class {
         break;
       }
 
+      case recordTypes.Task:
+        if (event.duration > TimelineModel.TimelineModel.Thresholds.LongTask)
+          timelineData.warning = TimelineModel.TimelineModel.WarningType.LongTask;
+        break;
+
       case recordTypes.EventDispatch:
         if (event.duration > TimelineModel.TimelineModel.Thresholds.RecurringHandler)
           timelineData.warning = TimelineModel.TimelineModel.WarningType.LongHandler;
@@ -1314,6 +1319,7 @@ TimelineModel.TimelineModel.Category = {
  * @enum {string}
  */
 TimelineModel.TimelineModel.WarningType = {
+  LongTask: 'LongTask',
   ForcedStyle: 'ForcedStyle',
   ForcedLayout: 'ForcedLayout',
   IdleDeadlineExceeded: 'IdleDeadlineExceeded',
@@ -1337,6 +1343,7 @@ TimelineModel.TimelineModel.DevToolsMetadataEvent = {
 };
 
 TimelineModel.TimelineModel.Thresholds = {
+  LongTask: 200,
   Handler: 150,
   RecurringHandler: 50,
   ForcedLayout: 30,

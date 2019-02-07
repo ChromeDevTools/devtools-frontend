@@ -37,7 +37,7 @@
   height: 100%;
 }
 
-.console-eager-inner-preview * {
+.console-eager-inner-preview {
   white-space: nowrap;
 }
 

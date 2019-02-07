@@ -821,6 +821,43 @@
         },
         {
             "type": "emulated-device",
+            "order": 1,
+            "device": {
+                "show-by-default": false,
+                "title": "JioPhone 2",
+                "screen": {
+                    "horizontal": {
+                        "width": 320,
+                        "height": 240
+                    },
+                    "device-pixel-ratio": 1,
+                    "vertical": {
+                        "width": 240,
+                        "height": 320
+                    }
+                },
+                "capabilities": [
+                    "touch",
+                    "mobile"
+                ],
+                "user-agent": "Mozilla/5.0 (Mobile; LYF/F300B/LYF-F300B-001-01-15-130718-i;Android; rv:48.0) Gecko/48.0 Firefox/48.0 KAIOS/2.5",
+                "type": "phone",
+                "modes": [
+                    {
+                        "title": "default",
+                        "orientation": "vertical",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    },
+                    {
+                        "title": "default",
+                        "orientation": "horizontal",
+                        "insets": { "left": 0, "top": 0, "right": 0, "bottom": 0 }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "emulated-device",
             "device": {
                 "show-by-default": false,
                 "title": "Kindle Fire HDX",

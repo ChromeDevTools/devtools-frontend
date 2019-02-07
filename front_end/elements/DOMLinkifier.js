@@ -89,7 +89,7 @@ Elements.DOMLinkifier.linkifyDeferredNodeReference = function(deferredNode) {
   const root = createElement('div');
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
-  link.createChild('content');
+  link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
   link.addEventListener('mousedown', e => e.consume(), false);
 

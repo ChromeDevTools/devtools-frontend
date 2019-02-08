@@ -452,7 +452,6 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
     super(createElementWithClass('button', 'toolbar-button'));
     this.element.addEventListener('click', this._clicked.bind(this), false);
     this.element.addEventListener('mousedown', this._mouseDown.bind(this), false);
-    this.element.addEventListener('mouseup', this._mouseUp.bind(this), false);
 
     this._glyphElement = UI.Icon.create('', 'toolbar-glyph hidden');
     this.element.appendChild(this._glyphElement);
@@ -528,21 +527,11 @@ UI.ToolbarButton = class extends UI.ToolbarItem {
       return;
     this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseDown, event);
   }
-
-  /**
-   * @param {!Event} event
-   */
-  _mouseUp(event) {
-    if (!this._enabled)
-      return;
-    this.dispatchEventToListeners(UI.ToolbarButton.Events.MouseUp, event);
-  }
 };
 
 UI.ToolbarButton.Events = {
   Click: Symbol('Click'),
-  MouseDown: Symbol('MouseDown'),
-  MouseUp: Symbol('MouseUp')
+  MouseDown: Symbol('MouseDown')
 };
 
 UI.ToolbarInput = class extends UI.ToolbarItem {

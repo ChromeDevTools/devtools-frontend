@@ -489,6 +489,7 @@ Main.Main.MainMenuItem = class {
   _handleContextMenu(contextMenu) {
     if (Components.dockController.canDock()) {
       const dockItemElement = createElementWithClass('div', 'flex-centered flex-auto');
+      dockItemElement.tabIndex = -1;
       const titleElement = dockItemElement.createChild('span', 'flex-auto');
       titleElement.textContent = Common.UIString('Dock side');
       const toggleDockSideShorcuts = UI.shortcutRegistry.shortcutDescriptorsForAction('main.toggle-dock');
@@ -507,13 +508,13 @@ Main.Main.MainMenuItem = class {
       right.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
       left.addEventListener(UI.ToolbarButton.Events.MouseDown, event => event.data.consume());
       undock.addEventListener(
-          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.Undocked));
+          UI.ToolbarButton.Events.Click, setDockSide.bind(null, Components.DockController.State.Undocked));
       bottom.addEventListener(
-          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.DockedToBottom));
+          UI.ToolbarButton.Events.Click, setDockSide.bind(null, Components.DockController.State.DockedToBottom));
       right.addEventListener(
-          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.DockedToRight));
+          UI.ToolbarButton.Events.Click, setDockSide.bind(null, Components.DockController.State.DockedToRight));
       left.addEventListener(
-          UI.ToolbarButton.Events.MouseUp, setDockSide.bind(null, Components.DockController.State.DockedToLeft));
+          UI.ToolbarButton.Events.Click, setDockSide.bind(null, Components.DockController.State.DockedToLeft));
       undock.setToggled(Components.dockController.dockSide() === Components.DockController.State.Undocked);
       bottom.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToBottom);
       right.setToggled(Components.dockController.dockSide() === Components.DockController.State.DockedToRight);
@@ -522,6 +523,22 @@ Main.Main.MainMenuItem = class {
       dockItemToolbar.appendToolbarItem(left);
       dockItemToolbar.appendToolbarItem(bottom);
       dockItemToolbar.appendToolbarItem(right);
+      dockItemElement.addEventListener('keydown', event => {
+        let dir = 0;
+        if (event.key === 'ArrowLeft')
+          dir = -1;
+        else if (event.key === 'ArrowRight')
+          dir = 1;
+        else
+          return;
+
+        const buttons = [undock, left, bottom, right];
+        let index = buttons.findIndex(button => button.element.hasFocus());
+        index = Number.constrain(index + dir, 0, buttons.length - 1);
+
+        buttons[index].element.focus();
+        event.consume(true);
+      });
       contextMenu.headerSection().appendCustomItem(dockItemElement);
     }
 

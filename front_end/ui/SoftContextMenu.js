@@ -119,7 +119,7 @@ UI.SoftContextMenu = class {
     if (item.element) {
       const wrapper = menuItemElement.createChild('div', 'soft-context-menu-custom-item');
       wrapper.appendChild(item.element);
-      menuItemElement._isCustom = true;
+      menuItemElement._customElement = item.element;
       return menuItemElement;
     }
 
@@ -277,7 +277,10 @@ UI.SoftContextMenu = class {
       if (UI.themeSupport.hasTheme() || Host.isMac())
         this._highlightedMenuItemElement.classList.add('force-white-icons');
       this._highlightedMenuItemElement.classList.add('soft-context-menu-item-mouse-over');
-      this._highlightedMenuItemElement.focus();
+      if (this._highlightedMenuItemElement._customElement)
+        this._highlightedMenuItemElement._customElement.focus();
+      else
+        this._highlightedMenuItemElement.focus();
       if (scheduleSubMenu && this._highlightedMenuItemElement._subItems &&
           !this._highlightedMenuItemElement._subMenuTimer) {
         this._highlightedMenuItemElement._subMenuTimer =
@@ -290,8 +293,7 @@ UI.SoftContextMenu = class {
     let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.previousSibling :
                                                              this._contextMenuElement.lastChild;
     while (menuItemElement &&
-           (menuItemElement._isSeparator || menuItemElement._isCustom ||
-            menuItemElement.classList.contains('soft-context-menu-disabled')))
+           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled')))
       menuItemElement = menuItemElement.previousSibling;
     if (menuItemElement)
       this._highlightMenuItem(menuItemElement, false);
@@ -301,8 +303,7 @@ UI.SoftContextMenu = class {
     let menuItemElement = this._highlightedMenuItemElement ? this._highlightedMenuItemElement.nextSibling :
                                                              this._contextMenuElement.firstChild;
     while (menuItemElement &&
-           (menuItemElement._isSeparator || menuItemElement._isCustom ||
-            menuItemElement.classList.contains('soft-context-menu-disabled')))
+           (menuItemElement._isSeparator || menuItemElement.classList.contains('soft-context-menu-disabled')))
       menuItemElement = menuItemElement.nextSibling;
     if (menuItemElement)
       this._highlightMenuItem(menuItemElement, false);
@@ -335,11 +336,12 @@ UI.SoftContextMenu = class {
         break;
       case 'Enter':
         if (!isEnterKey(event))
-          break;
+          return;
       // Fall through
       case ' ':  // Space
-        if (this._highlightedMenuItemElement)
-          this._triggerAction(this._highlightedMenuItemElement, event);
+        if (!this._highlightedMenuItemElement || this._highlightedMenuItemElement._customElement)
+          return;
+        this._triggerAction(this._highlightedMenuItemElement, event);
         if (this._highlightedMenuItemElement._subItems)
           this._subMenu._highlightNext();
         break;

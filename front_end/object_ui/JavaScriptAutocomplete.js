@@ -413,7 +413,8 @@ ObjectUI.JavaScriptAutocomplete = class {
 
             const group = {items: [], __proto__: null};
             try {
-              if (typeof o === 'object' && o.constructor && o.constructor.name)
+              if (typeof o === 'object' && Object.prototype.hasOwnProperty.call(o, 'constructor') && o.constructor &&
+                  o.constructor.name)
                 group.title = o.constructor.name;
             } catch (ee) {
               // we could break upon cross origin check.

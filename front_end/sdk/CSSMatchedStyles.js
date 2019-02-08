@@ -122,6 +122,8 @@ SDK.CSSMatchedStyles = class {
         this._addMatchingSelectors(parentNode, inheritedRule, inheritedMatchedCSSRules[j].matchingSelectors);
         if (!this._containsInherited(inheritedRule.style))
           continue;
+        if (containsStyle(nodeStyles, inheritedRule.style) || containsStyle(this._inheritedStyles, inheritedRule.style))
+          continue;
         this._nodeForStyle.set(inheritedRule.style, parentNode);
         inheritedStyles.push(inheritedRule.style);
         this._inheritedStyles.add(inheritedRule.style);
@@ -131,6 +133,21 @@ SDK.CSSMatchedStyles = class {
     }
 
     return new SDK.CSSMatchedStyles.DOMInheritanceCascade(nodeCascades);
+
+    /**
+     * @param {!Array<!SDK.CSSStyleDeclaration>|!Set<!SDK.CSSStyleDeclaration>} styles
+     * @param {!SDK.CSSStyleDeclaration} query
+     * @return {boolean}
+     */
+    function containsStyle(styles, query) {
+      if (!query.styleSheetId || !query.range)
+        return false;
+      for (const style of styles) {
+        if (query.styleSheetId === style.styleSheetId && style.range && query.range.equal(style.range))
+          return true;
+      }
+      return false;
+    }
   }
 
   /**

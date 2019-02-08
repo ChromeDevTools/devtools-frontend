@@ -5,27 +5,22 @@
  */
 
 .computed-style-property {
-    display: flex;
     overflow: hidden;
     flex: auto;
+    text-overflow: ellipsis;
 }
 
 .computed-style-property .property-name {
-    min-width: 5em;
+    width: 16em;
     text-overflow: ellipsis;
     overflow: hidden;
-    flex-shrink: 1;
-    flex-basis: 16em;
-    flex-grow: 1;
+    max-width: 55%;
+    display: inline-block;
 }
 
 .computed-style-property .property-value {
     margin-left: 2em;
     position: relative;
-    display: flex;
-    flex-shrink: 0;
-    flex-basis: 5em;
-    flex-grow: 10;
 }
 
 .computed-style-property .property-value-text {
@@ -43,6 +38,7 @@
     display: none;
     position: absolute;
     left: -16px;
+    top: 0;
 }
 
 .goto-source-icon:hover {

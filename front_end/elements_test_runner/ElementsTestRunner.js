@@ -163,7 +163,6 @@ ElementsTestRunner.dumpComputedStyle = function(doNotAutoExpand) {
 
     let dumpText = '';
     dumpText += treeElement.title.querySelector('.property-name').textContent;
-    dumpText += ' ';
     dumpText += treeElement.title.querySelector('.property-value').textContent;
     TestRunner.addResult(dumpText);
 

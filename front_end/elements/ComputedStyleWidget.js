@@ -181,7 +181,7 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       propertyElement.appendChild(propertyNameElement);
 
       const colon = createElementWithClass('span', 'delimeter');
-      colon.textContent = ':';
+      colon.textContent = ': ';
       propertyNameElement.appendChild(colon);
 
       const propertyValueElement = propertyElement.createChild('span', 'property-value');

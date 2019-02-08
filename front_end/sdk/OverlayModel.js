@@ -195,6 +195,10 @@ SDK.OverlayModel = class extends SDK.SDKModel {
   highlightFrame(frameId) {
     if (SDK.OverlayModel._highlightDisabled)
       return;
+    if (this._hideHighlightTimeout) {
+      clearTimeout(this._hideHighlightTimeout);
+      this._hideHighlightTimeout = null;
+    }
     this._highlighter.highlightFrame(frameId);
   }
 

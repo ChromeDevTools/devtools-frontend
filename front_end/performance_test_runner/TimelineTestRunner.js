@@ -83,7 +83,7 @@ PerformanceTestRunner.tracingModel = function() {
 
 PerformanceTestRunner.invokeWithTracing = function(functionName, callback, additionalCategories, enableJSSampling) {
   let categories = '-*,disabled-by-default-devtools.timeline*,devtools.timeline,blink.user_timing,' +
-      SDK.TracingModel.TopLevelEventCategory;
+      SDK.TracingModel.LegacyTopLevelEventCategory;
 
   if (additionalCategories)
     categories += ',' + additionalCategories;

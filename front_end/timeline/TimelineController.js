@@ -54,9 +54,8 @@ Timeline.TimelineController = class {
       return 'disabled-by-default-' + category;
     }
     const categoriesArray = [
-      '-*', 'devtools.timeline', 'v8.execute', disabledByDefault('devtools.timeline'),
-      disabledByDefault('devtools.timeline.frame'), SDK.TracingModel.TopLevelEventCategory,
-      TimelineModel.TimelineModel.Category.Console, TimelineModel.TimelineModel.Category.UserTiming
+      '-*', 'devtools.timeline', disabledByDefault('devtools.timeline'), disabledByDefault('devtools.timeline.frame'),
+      'v8.execute', TimelineModel.TimelineModel.Category.Console, TimelineModel.TimelineModel.Category.UserTiming
     ];
     categoriesArray.push(TimelineModel.TimelineModel.Category.LatencyInfo);
 

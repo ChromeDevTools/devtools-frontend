@@ -81,18 +81,3 @@ TimelineModel.ExclusiveNameFilter = class extends TimelineModel.TimelineModelFil
     return !this._excludeNames.has(event.name);
   }
 };
-
-TimelineModel.ExcludeTopLevelFilter = class extends TimelineModel.TimelineModelFilter {
-  constructor() {
-    super();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.TracingModel.Event} event
-   * @return {boolean}
-   */
-  accept(event) {
-    return !SDK.TracingModel.isTopLevelEvent(event);
-  }
-};

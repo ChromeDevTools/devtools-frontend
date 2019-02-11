@@ -68,7 +68,8 @@ SDK.TracingModel = class {
    * @return {boolean}
    */
   static isTopLevelEvent(event) {
-    return event.hasCategory(SDK.TracingModel.TopLevelEventCategory) ||
+    return event.hasCategory(SDK.TracingModel.DevToolsTimelineEventCategory) && event.name === 'RunTask' ||
+        event.hasCategory(SDK.TracingModel.LegacyTopLevelEventCategory) ||
         event.hasCategory(SDK.TracingModel.DevToolsMetadataEventCategory) &&
         event.name === 'Program';  // Older timelines may have this instead of toplevel.
   }
@@ -472,12 +473,12 @@ SDK.TracingModel.MetadataEvent = {
   ThreadName: 'thread_name'
 };
 
-SDK.TracingModel.TopLevelEventCategory = 'toplevel';
+// TODO(alph): LegacyTopLevelEventCategory is not recorded since M74 and used for loading
+// legacy profiles. Drop at some point.
+SDK.TracingModel.LegacyTopLevelEventCategory = 'toplevel';
 SDK.TracingModel.DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline';
 SDK.TracingModel.DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline';
-
 SDK.TracingModel.FrameLifecycleEventCategory = 'cc,devtools';
-
 
 /**
  * @interface

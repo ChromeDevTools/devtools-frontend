@@ -559,7 +559,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _applyFilters(model) {
     if (model.timelineModel().isGenericTrace() || Runtime.experiments.isEnabled('timelineShowAllEvents'))
       return;
-    model.setFilters([Timeline.TimelineUIUtils.visibleEventsFilter(), new TimelineModel.ExcludeTopLevelFilter()]);
+    model.setFilters([Timeline.TimelineUIUtils.visibleEventsFilter()]);
   }
 
   /**

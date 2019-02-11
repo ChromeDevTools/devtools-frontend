@@ -1165,7 +1165,7 @@ TimelineModel.TimelineModel = class {
  * @enum {string}
  */
 TimelineModel.TimelineModel.RecordType = {
-  Task: 'Task',
+  Task: 'RunTask',
   Program: 'Program',
   EventDispatch: 'EventDispatch',
 

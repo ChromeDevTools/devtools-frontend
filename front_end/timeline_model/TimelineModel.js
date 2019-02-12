@@ -437,8 +437,14 @@ TimelineModel.TimelineModel = class {
         Common.console.error('Invalid CPU profile format.');
         return null;
       }
-      cpuProfile = /** @type {!Protocol.Profiler.Profile} */ (
-          {startTime: cpuProfileEvent.args['data']['startTime'], endTime: 0, nodes: [], samples: [], timeDeltas: []});
+      cpuProfile = /** @type {!Protocol.Profiler.Profile} */ ({
+        startTime: cpuProfileEvent.args['data']['startTime'],
+        endTime: 0,
+        nodes: [],
+        samples: [],
+        timeDeltas: [],
+        lines: []
+      });
       for (const profileEvent of profileGroup.children) {
         const eventData = profileEvent.args['data'];
         if ('startTime' in eventData)
@@ -446,8 +452,11 @@ TimelineModel.TimelineModel = class {
         if ('endTime' in eventData)
           cpuProfile.endTime = eventData['endTime'];
         const nodesAndSamples = eventData['cpuProfile'] || {};
+        const samples = nodesAndSamples['samples'] || [];
+        const lines = eventData['lines'] || Array(samples.length).fill(0);
         cpuProfile.nodes.pushAll(nodesAndSamples['nodes'] || []);
-        cpuProfile.samples.pushAll(nodesAndSamples['samples'] || []);
+        cpuProfile.lines.pushAll(lines);
+        cpuProfile.samples.pushAll(samples);
         cpuProfile.timeDeltas.pushAll(eventData['timeDeltas'] || []);
         if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
           Common.console.error('Failed to parse CPU profile.');

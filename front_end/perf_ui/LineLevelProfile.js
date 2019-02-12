@@ -22,7 +22,7 @@ PerfUI.LineLevelProfile = class {
   /**
    * @param {!SDK.CPUProfileDataModel} profile
    */
-  appendCPUProfile(profile) {
+  _appendLegacyCPUProfile(profile) {
     const nodesToGo = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
@@ -43,6 +43,31 @@ PerfUI.LineLevelProfile = class {
           const time = lineInfo.ticks * sampleDuration;
           fileInfo.set(line, (fileInfo.get(line) || 0) + time);
         }
+      }
+    }
+  }
+
+  /**
+   * @param {!SDK.CPUProfileDataModel} profile
+   */
+  appendCPUProfile(profile) {
+    if (!profile.lines) {
+      this._appendLegacyCPUProfile(profile);
+    } else {
+      for (let i = 1; i < profile.samples.length; ++i) {
+        const line = profile.lines[i];
+        if (!line)
+          continue;
+        const node = profile.nodeByIndex(i);
+        if (!node.url)
+          continue;
+        let fileInfo = this._files.get(node.url);
+        if (!fileInfo) {
+          fileInfo = new Map();
+          this._files.set(node.url, fileInfo);
+        }
+        const time = profile.timestamps[i] - profile.timestamps[i - 1];
+        fileInfo.set(line, (fileInfo.get(line) || 0) + time);
       }
     }
     this._scheduleUpdate();

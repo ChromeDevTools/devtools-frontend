@@ -50,6 +50,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       this.timestamps = this._convertTimeDeltas(profile);
     }
     this.samples = profile.samples;
+    this.lines = profile.lines;
     this.totalHitCount = 0;
     this.profileHead = this._translateProfileTree(profile.nodes);
     this.initialize(this.profileHead);

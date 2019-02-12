@@ -14,8 +14,9 @@
     width: 16em;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 55%;
+    max-width: 52%;
     display: inline-block;
+    vertical-align: text-top;
 }
 
 .computed-style-property .property-value {
@@ -71,7 +72,7 @@
 .property-trace-value {
     position: relative;
     display: inline-block;
-    margin-left: 2em;
+    margin-left: 16px;
 }
 
 .property-trace-inactive .property-trace-value::before {
@@ -108,4 +109,23 @@
 
 .delimeter::selection {
     color: transparent;
+}
+
+.computed-narrow .computed-style-property .property-name,
+.computed-narrow .computed-style-property .property-value {
+    display: inline-block;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    white-space: nowrap;
+}
+
+.computed-narrow .computed-style-property {
+    padding: 2px 0;
+    display: block;
+    white-space: normal;
+}
+
+.computed-narrow.tree-outline li::before {
+    margin-top: -14px;
 }

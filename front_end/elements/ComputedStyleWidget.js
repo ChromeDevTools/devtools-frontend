@@ -83,6 +83,14 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
     fontsWidget.show(this.contentElement);
   }
 
+  /**
+   * @override
+   */
+  onResize() {
+    const isNarrow = this.contentElement.offsetWidth < 260;
+    this._propertiesOutline.contentElement.classList.toggle('computed-narrow', isNarrow);
+  }
+
   _showInheritedComputedStyleChanged() {
     this.update();
   }

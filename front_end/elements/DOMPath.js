@@ -72,10 +72,11 @@ Elements.DOMPath.jsPath = function(node, optimized) {
   path.reverse();
   let result = '';
   for (let i = 0; i < path.length; ++i) {
+    const string = JSON.stringify(path[i]);
     if (i)
-      result += `.shadowRoot.querySelector('${path[i]}')`;
+      result += `.shadowRoot.querySelector(${string})`;
     else
-      result += `document.querySelector('${path[i]}')`;
+      result += `document.querySelector(${string})`;
   }
   return result;
 };
@@ -126,59 +127,7 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
    * @return {string}
    */
   function idSelector(id) {
-    return '#' + escapeIdentifierIfNeeded(id);
-  }
-
-  /**
-   * @param {string} ident
-   * @return {string}
-   */
-  function escapeIdentifierIfNeeded(ident) {
-    if (isCSSIdentifier(ident))
-      return ident;
-    const shouldEscapeFirst = /^(?:[0-9]|-[0-9-]?)/.test(ident);
-    const lastIndex = ident.length - 1;
-    return ident.replace(/./g, function(c, i) {
-      return ((shouldEscapeFirst && i === 0) || !isCSSIdentChar(c)) ? escapeAsciiChar(c, i === lastIndex) : c;
-    });
-  }
-
-  /**
-   * @param {string} c
-   * @param {boolean} isLast
-   * @return {string}
-   */
-  function escapeAsciiChar(c, isLast) {
-    return '\\' + toHexByte(c) + (isLast ? '' : ' ');
-  }
-
-  /**
-   * @param {string} c
-   */
-  function toHexByte(c) {
-    let hexByte = c.charCodeAt(0).toString(16);
-    if (hexByte.length === 1)
-      hexByte = '0' + hexByte;
-    return hexByte;
-  }
-
-  /**
-   * @param {string} c
-   * @return {boolean}
-   */
-  function isCSSIdentChar(c) {
-    if (/[a-zA-Z0-9_-]/.test(c))
-      return true;
-    return c.charCodeAt(0) >= 0xA0;
-  }
-
-  /**
-   * @param {string} value
-   * @return {boolean}
-   */
-  function isCSSIdentifier(value) {
-    // Double hyphen prefixes are not allowed by specification, but many sites use it.
-    return /^-{0,2}[a-zA-Z_][a-zA-Z0-9_-]*$/.test(value);
+    return '#' + CSS.escape(id);
   }
 
   const prefixedOwnClassNamesArray = prefixedElementClassNames(node);
@@ -223,12 +172,12 @@ Elements.DOMPath._cssPathStep = function(node, optimized, isTargetNode) {
   let result = nodeName;
   if (isTargetNode && nodeName.toLowerCase() === 'input' && node.getAttribute('type') && !node.getAttribute('id') &&
       !node.getAttribute('class'))
-    result += '[type="' + node.getAttribute('type') + '"]';
+    result += '[type=' + CSS.escape(node.getAttribute('type')) + ']';
   if (needsNthChild) {
     result += ':nth-child(' + (ownIndex + 1) + ')';
   } else if (needsClassNames) {
     for (const prefixedName of prefixedOwnClassNamesArray)
-      result += '.' + escapeIdentifierIfNeeded(prefixedName.substr(1));
+      result += '.' + CSS.escape(prefixedName.slice(1));
   }
 
   return new Elements.DOMPath.Step(result, false);

@@ -1325,7 +1325,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       //     `indexOfSpace - 1` as a URL and repeat step 1).
       // 2b) Else, collect the preceding characters as a URL.
       // 3) Collect the characters from `indexOfSpace` up to the next comma as the size descriptor and repeat step 1).
-      // https://html.spec.whatwg.org/multipage/embedded-content.html#parse-a-srcset-attribute
+      // https://html.spec.whatwg.org/C/#parse-a-srcset-attribute
       const fragment = createDocumentFragment();
       let i = 0;
       while (value.length) {

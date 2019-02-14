@@ -330,7 +330,8 @@ SDK.NetworkLog = class extends Common.Object {
       if (!networkManager)
         continue;
       const target = networkManager.target();
-      if (!(target.type() === SDK.Target.Type.Worker && target.parentTarget().type() === SDK.Target.Type.ServiceWorker))
+      if (!(target.type() === SDK.Target.Type.Worker && target.parentTarget() &&
+            target.parentTarget().type() === SDK.Target.Type.ServiceWorker))
         continue;
 
       // If there is a matching request that came before this one, keep it.

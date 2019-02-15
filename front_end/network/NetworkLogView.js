@@ -619,6 +619,10 @@ Network.NetworkLogView = class extends UI.VBox {
         hintText.appendChild(UI.formatLocalized('Record (%s) to display network activity.', [recordNode]));
       }
     }
+    hintText.createChild('br');
+    hintText.appendChild(UI.XLink.create(
+        'https://developers.google.com/web/tools/chrome-devtools/network/?utm_source=devtools&utm_campaign=2019Q1',
+        'Learn more'));
   }
 
   _hideRecordingHint() {

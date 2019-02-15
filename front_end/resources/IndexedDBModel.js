@@ -428,6 +428,27 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {!Resources.IndexedDBModel.DatabaseId} databaseId
+   * @param {!Resources.IndexedDBModel.ObjectStore} objectStore
+   * @return {!Promise<?number>}
+   */
+  async getKeyGeneratorValue(databaseId, objectStore) {
+    if (!objectStore.autoIncrement)
+      return null;
+    const databaseOrigin = databaseId.securityOrigin;
+    const databaseName = databaseId.name;
+    const objectStoreName = objectStore.name;
+    const response = await this._indexedDBAgent.invoke_getKeyGeneratorCurrentNumber(
+        {securityOrigin: databaseOrigin, databaseName, objectStoreName});
+
+    if (response[Protocol.Error]) {
+      console.error('IndexedDBAgent error: ' + response[Protocol.Error]);
+      return null;
+    }
+    return response.currentNumber;
+  }
+
+  /**
    * @param {string} securityOrigin
    */
   async _refreshDatabaseList(securityOrigin) {

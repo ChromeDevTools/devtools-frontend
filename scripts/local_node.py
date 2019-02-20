@@ -11,8 +11,7 @@ import sys
 SCRIPTS_PATH = path.dirname(path.abspath(__file__))
 THIRD_PARTY_PATH = path.join(SCRIPTS_PATH, '..', '..', '..', '..')
 NODE_PATH = path.join(THIRD_PARTY_PATH, 'node')
-ESLINT_PATH = path.join(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party',
-                        'node_modules', '.bin', 'eslint')
+ESLINT_PATH = path.join(THIRD_PARTY_PATH, 'devtools-node-modules', 'third_party', 'node_modules', 'eslint', 'bin', 'eslint.js')
 
 try:
     old_sys_path = sys.path[:]

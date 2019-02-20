@@ -73,7 +73,7 @@ function checkAllDevToolsFiles() {
   const errors = [];
   const excludedFiles = ['InspectorBackendCommands.js', 'SupportedCSSProperties.js', 'ARIAProperties.js'];
   const gnVariable = 'all_devtools_files';
-  const lines = selectGNLines(`${gnVariable} = [`, ']');
+  const lines = selectGNLines(`${gnVariable} = [`, ']').map(path.normalize);
   if (!lines.length) {
     return [
       'Could not identify all_devtools_files list in gn file',

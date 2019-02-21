@@ -56,6 +56,14 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this._applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
     const clearStorageTreeElement = new Resources.ClearStorageTreeElement(panel);
     this._applicationTreeElement.appendChild(clearStorageTreeElement);
+    if (Runtime.experiments.isEnabled('backgroundServices')) {
+      this.backgroundFetchTreeElement =
+          new Resources.BackgroundServiceTreeElement(panel, Common.UIString('Background Fetch'));
+      this._applicationTreeElement.appendChild(this.backgroundFetchTreeElement);
+      this.backgroundSyncTreeElement =
+          new Resources.BackgroundServiceTreeElement(panel, Common.UIString('Background Sync'));
+      this._applicationTreeElement.appendChild(this.backgroundSyncTreeElement);
+    }
 
     const storageTreeElement = this._addSidebarSection(Common.UIString('Storage'));
     this.localStorageListTreeElement =
@@ -669,6 +677,44 @@ Resources.StorageCategoryTreeElement = class extends Resources.BaseStorageTreeEl
    */
   oncollapse() {
     this._expandedSetting.set(false);
+  }
+};
+
+Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTreeElement {
+  /**
+   * @param {!Resources.ResourcesPanel} storagePanel
+   * @param {string} serviceName
+   */
+  constructor(storagePanel, serviceName) {
+    super(storagePanel, serviceName, false);
+
+    /** @const {string} */
+    this._serviceName = serviceName;
+
+    /** @type {?Resources.BackgroundServiceView} */
+    this._view = null;
+
+    const backgroundServiceIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
+    this.setLeadingIcons([backgroundServiceIcon]);
+  }
+
+  /**
+   * @return {string}
+   */
+  get itemURL() {
+    return `background-service://${this._serviceName}`;
+  }
+
+  /**
+   * @override
+   * @return {boolean}
+   */
+  onselect(selectedByUser) {
+    super.onselect(selectedByUser);
+    if (!this._view)
+      this._view = new Resources.BackgroundServiceView(this._serviceName);
+    this.showView(this._view);
+    return false;
   }
 };
 

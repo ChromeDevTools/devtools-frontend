@@ -34,6 +34,7 @@
         "ApplicationCacheModel.js",
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",
+        "BackgroundServiceView.js",
         "ClearStorageView.js",
         "StorageItemsView.js",
         "CookieItemsView.js",
@@ -52,6 +53,7 @@
     ],
     "resources": [
         "appManifestView.css",
+        "backgroundServiceView.css",
         "clearStorageView.css",
         "indexedDBViews.css",
         "resourcesPanel.css",

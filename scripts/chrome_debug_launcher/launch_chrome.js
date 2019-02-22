@@ -48,15 +48,19 @@ throw new Error(`Unrecognized platform detected: ${process.platform}`);
 
 function launchChromeWindows() {
   var chromeCanaryPath;
-  var suffix = '\\Google\\Chrome SxS\\Application\\chrome.exe';
-  var prefixes = [process.env.LOCALAPPDATA, process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)']];
-  for (var i = 0; i < prefixes.length; i++) {
-    var prefix = prefixes[i];
-    try {
-      chromeCanaryPath = path.join(prefix, suffix);
-      fs.accessSync(chromeCanaryPath);
-      break;
-    } catch (e) {
+  if (utils.isFile(process.env.CHROMIUM_PATH)) {
+    chromeCanaryPath = process.env.CHROMIUM_PATH;
+  } else {
+    var suffix = '\\Google\\Chrome SxS\\Application\\chrome.exe';
+    var prefixes = [process.env.LOCALAPPDATA, process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)']];
+    for (var i = 0; i < prefixes.length; i++) {
+      var prefix = prefixes[i];
+      try {
+        chromeCanaryPath = path.join(prefix, suffix);
+        fs.accessSync(chromeCanaryPath);
+        break;
+      } catch (e) {
+      }
     }
   }
   launchChrome(chromeCanaryPath, chromeArgs);

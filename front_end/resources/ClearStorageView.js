@@ -183,6 +183,20 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
         appcacheModel.reset();
     }
 
+    if (set.has(Protocol.Storage.StorageType.Service_workers) || hasAll) {
+      for (const serviceWorkerManager of SDK.targetManager.models(SDK.ServiceWorkerManager)) {
+        const securityOriginManager = serviceWorkerManager.target().model(SDK.SecurityOriginManager);
+        for (const registration of serviceWorkerManager.registrations().values()) {
+          if (!securityOriginManager.securityOrigins().includes(registration.securityOrigin))
+            continue;
+          const activeVersion = registration.versionsByMode().get(SDK.ServiceWorkerVersion.Modes.Active);
+          if (!activeVersion)
+            continue;
+          serviceWorkerManager.stopWorker(activeVersion.id);
+        }
+      }
+    }
+
     this._clearButton.disabled = true;
     const label = this._clearButton.textContent;
     this._clearButton.textContent = Common.UIString('Clearing...');

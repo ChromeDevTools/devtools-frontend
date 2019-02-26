@@ -58,8 +58,11 @@ SDK.TracingManager = class extends SDK.SDKModel {
   _eventsCollected(events) {
     this._activeClient.traceEventsCollected(events);
     this._eventsRetrieved += events.length;
-    if (!this._eventBufferSize)
+    if (!this._eventBufferSize) {
+      this._activeClient.eventsRetrievalProgress(0);
       return;
+    }
+
     if (this._eventsRetrieved > this._eventBufferSize)
       this._eventsRetrieved = this._eventBufferSize;
     this._activeClient.eventsRetrievalProgress(this._eventsRetrieved / this._eventBufferSize);

@@ -79,7 +79,6 @@ Network.NetworkPanel = class extends UI.Panel {
     const splitWidget = new UI.SplitWidget(true, false, 'networkPanelSidebarState', initialSidebarWidth);
     splitWidget.hideSidebar();
     splitWidget.enableShowModeSaving();
-    splitWidget.element.tabIndex = 0;
     splitWidget.show(this.element);
     this._sidebarLocation = UI.viewManager.createTabbedLocation(async () => {
       UI.viewManager.showView('network');

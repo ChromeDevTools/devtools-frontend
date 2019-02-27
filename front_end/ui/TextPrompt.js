@@ -415,7 +415,7 @@ UI.TextPrompt = class extends Common.Object {
 
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);
-    expressionRange.setStartBefore(this._proxyElement);
+    expressionRange.setStartBefore(this._element);
     const completionRequestId = ++this._completionRequestId;
     const completions = await this._loadCompletions(expressionRange.toString(), wordQueryRange.toString(), !!force);
     this._completionsReady(completionRequestId, selection, wordQueryRange, !!force, completions);

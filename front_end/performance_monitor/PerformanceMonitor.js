@@ -25,6 +25,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     this._controlPane = new PerformanceMonitor.PerformanceMonitor.ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
     this._canvas = /** @type {!HTMLCanvasElement} */ (chartContainer.createChild('canvas'));
+    this._canvas.tabIndex = -1;
+    UI.ARIAUtils.setAccessibleName(
+        this._canvas, Common.UIString('Graphs displaying a real-time view of performance metrics'));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         Common.UIString('Paused');
     this._controlPane.addEventListener(
@@ -147,7 +150,7 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     const labelDistanceSeconds = 10;
     const lightGray = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.02)', UI.ThemeSupport.ColorUsage.Foreground);
     ctx.font = '10px ' + Host.fontFamily();
-    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
     const currentTime = Date.now() / 1000;
     for (let sec = Math.ceil(currentTime);; --sec) {
       const x = this._width - ((currentTime - sec) * 1000 - this._pollIntervalMs) * this._pixelsPerMs;
@@ -197,6 +200,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
       ctx.stroke(path.path);
       ctx.restore();
     }
+    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.font = `10px  ${Host.fontFamily()}`;
+    ctx.fillText(chartInfo.title, 8, 10);
     this._drawVerticalGrid(ctx, height - bottomPadding, max, chartInfo);
     ctx.restore();
   }
@@ -245,9 +251,9 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
     let scaleValue = Math.floor(max / base) * base;
 
     const span = max;
-    const topPadding = 5;
+    const topPadding = 18;
     const visibleHeight = height - topPadding;
-    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.3)', UI.ThemeSupport.ColorUsage.Foreground);
+    ctx.fillStyle = UI.themeSupport.patchColorText('rgba(0, 0, 0, 0.55)', UI.ThemeSupport.ColorUsage.Foreground);
     ctx.strokeStyle = this._gridColor;
     ctx.beginPath();
     for (let i = 0; i < 2; ++i) {
@@ -285,7 +291,7 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
    */
   _buildMetricPath(chartInfo, metricInfo, height, scaleMax, stackedChartBaseLandscape) {
     const path = new Path2D();
-    const topPadding = 5;
+    const topPadding = 18;
     const visibleHeight = height - topPadding;
     if (visibleHeight < 1)
       return path;
@@ -509,7 +515,11 @@ PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
     this._valueElement = this.element.createChild('div', 'perfmon-indicator-value');
     this._valueElement.style.color = color;
     this.element.addEventListener('click', () => this._toggleIndicator());
+    this.element.addEventListener('keypress', event => this._handleKeypress(event));
     this.element.classList.toggle('active', active);
+    UI.ARIAUtils.markAsCheckbox(this.element);
+    UI.ARIAUtils.setChecked(this.element, this._active);
+    this.element.tabIndex = 0;
   }
 
   /**
@@ -545,7 +555,17 @@ PerformanceMonitor.PerformanceMonitor.MetricIndicator = class {
   _toggleIndicator() {
     this._active = !this._active;
     this.element.classList.toggle('active', this._active);
+    UI.ARIAUtils.setChecked(this.element, this._active);
     this._onToggle(this._active);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _handleKeypress(event) {
+    const keyboardEvent = /** @type {!KeyboardEvent} */ (event);
+    if (keyboardEvent.key === ' ' || keyboardEvent.key === 'Enter')
+      this._toggleIndicator();
   }
 };
 

@@ -55,6 +55,10 @@
   background-color: #f8f8f8;
 }
 
+.perfmon-indicator[data-keyboard-focus="true"]:focus {
+  background-color: #f8f8f8;
+}
+
 .perfmon-indicator-swatch {
   margin-right: 6px;
 }

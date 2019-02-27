@@ -14,6 +14,13 @@ UI.ARIAUtils.markAsButton = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsCheckbox = function(element) {
+  element.setAttribute('role', 'checkbox');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsGroup = function(element) {
   element.setAttribute('role', 'group');
 };
@@ -106,6 +113,14 @@ UI.ARIAUtils.setControls = function(element, controlledElement) {
     throw new Error('Controlled element must have ID');
 
   element.setAttribute('aria-controls', controlledElement.id);
+};
+
+/**
+ * @param {!Element} element
+ * @param {boolean} value
+ */
+UI.ARIAUtils.setChecked = function(element, value) {
+  element.setAttribute('aria-checked', !!value);
 };
 
 /**

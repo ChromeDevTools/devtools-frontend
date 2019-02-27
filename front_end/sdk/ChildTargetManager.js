@@ -110,7 +110,9 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    */
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
     let targetName = '';
-    if (targetInfo.type !== 'iframe') {
+    if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
+      targetName = targetInfo.title;
+    } else if (targetInfo.type !== 'iframe') {
       const parsedURL = targetInfo.url.asParsedURL();
       targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() :
                                '#' + (++SDK.ChildTargetManager._lastAnonymousTargetId);

@@ -229,7 +229,7 @@ SDK.NetworkManager.Conditions;
 
 /** @type {!SDK.NetworkManager.Conditions} */
 SDK.NetworkManager.NoThrottlingConditions = {
-  title: Common.UIString('Online'),
+  title: Common.UIString('No throttling'),
   download: -1,
   upload: -1,
   latency: 0

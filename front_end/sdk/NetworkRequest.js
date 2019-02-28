@@ -469,10 +469,12 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
+   * Returns true if the request was intercepted by a service worker and it
+   * provided its own response.
    * @return {boolean}
    */
   get fetchedViaServiceWorker() {
-    return this._fetchedViaServiceWorker;
+    return !!this._fetchedViaServiceWorker;
   }
 
   /**
@@ -480,6 +482,18 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   set fetchedViaServiceWorker(x) {
     this._fetchedViaServiceWorker = x;
+  }
+
+  /**
+   * Returns true if the request was sent by a service worker.
+   * @return {boolean}
+   */
+  initiatedByServiceWorker() {
+    const networkManager = SDK.NetworkManager.forRequest(this);
+    if (!networkManager)
+      return false;
+    return networkManager.target().type() === SDK.Target.Type.Worker && !!networkManager.target().parentTarget() &&
+        networkManager.target().parentTarget().type() === SDK.Target.Type.ServiceWorker;
   }
 
   /**

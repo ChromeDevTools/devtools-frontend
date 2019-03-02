@@ -438,7 +438,7 @@ Resources.ServiceWorkersView.Section = class {
     const name = this._sourceField.createChild('div', 'report-field-value-filename');
     name.appendChild(Components.Linkifier.linkifyURL(version.scriptURL, {text: fileName}));
     if (this._registration.errors.length) {
-      const errorsLabel = UI.createLabel(String(this._registration.errors.length), 'smallicon-error');
+      const errorsLabel = UI.createIconLabel(String(this._registration.errors.length), 'smallicon-error');
       errorsLabel.classList.add('link');
       errorsLabel.addEventListener('click', () => Common.console.show());
       name.appendChild(errorsLabel);

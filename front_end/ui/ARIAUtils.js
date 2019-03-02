@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 UI.ARIAUtils = {};
+UI.ARIAUtils._id = 0;
 
 /**
  * @param {!Element} element
@@ -97,6 +98,14 @@ UI.ARIAUtils.setPlaceholder = function(element, placeholder) {
  */
 UI.ARIAUtils.markAsPresentation = function(element) {
   element.setAttribute('role', 'presentation');
+};
+
+/**
+ * @param {string} prefix
+ * @return {string}
+ */
+UI.ARIAUtils.nextId = function(prefix) {
+  return (prefix || '') + ++UI.ARIAUtils._id;
 };
 
 /**

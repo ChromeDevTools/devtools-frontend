@@ -115,7 +115,7 @@ Resources.AppManifestView = class extends UI.VBox {
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (const error of errors) {
       this._errorsSection.appendRow().appendChild(
-          UI.createLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
+          UI.createIconLabel(error.message, error.critical ? 'smallicon-error' : 'smallicon-warning'));
     }
 
     if (!data)
@@ -188,7 +188,7 @@ Resources.AppManifestView = class extends UI.VBox {
     this._installabilitySection.clearContent();
     this._installabilitySection.element.classList.toggle('hidden', !installabilityErrors.length);
     for (const error of installabilityErrors)
-      this._installabilitySection.appendRow().appendChild(UI.createLabel(error, 'smallicon-warning'));
+      this._installabilitySection.appendRow().appendChild(UI.createIconLabel(error, 'smallicon-warning'));
 
     /**
      * @param {string} name

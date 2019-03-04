@@ -34,6 +34,7 @@
         "ApplicationCacheModel.js",
         "AppManifestView.js",
         "ApplicationCacheItemsView.js",
+        "BackgroundServiceModel.js",
         "BackgroundServiceView.js",
         "ClearStorageView.js",
         "StorageItemsView.js",

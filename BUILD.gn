@@ -547,6 +547,7 @@ all_devtools_files = [
   "front_end/resources/ApplicationPanelSidebar.js",
   "front_end/resources/appManifestView.css",
   "front_end/resources/AppManifestView.js",
+  "front_end/resources/BackgroundServiceModel.js",
   "front_end/resources/backgroundServiceView.css",
   "front_end/resources/BackgroundServiceView.js",
   "front_end/resources/clearStorageView.css",

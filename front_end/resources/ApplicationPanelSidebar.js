@@ -58,10 +58,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this._applicationTreeElement.appendChild(clearStorageTreeElement);
     if (Runtime.experiments.isEnabled('backgroundServices')) {
       this.backgroundFetchTreeElement =
-          new Resources.BackgroundServiceTreeElement(panel, Common.UIString('Background Fetch'));
+          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
       this._applicationTreeElement.appendChild(this.backgroundFetchTreeElement);
       this.backgroundSyncTreeElement =
-          new Resources.BackgroundServiceTreeElement(panel, Common.UIString('Background Sync'));
+          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
       this._applicationTreeElement.appendChild(this.backgroundSyncTreeElement);
     }
 
@@ -210,6 +210,11 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this.indexedDBListTreeElement._initialize();
     const serviceWorkerCacheModel = this._target.model(SDK.ServiceWorkerCacheModel);
     this.cacheStorageListTreeElement._initialize(serviceWorkerCacheModel);
+    const backgroundServiceModel = this._target.model(Resources.BackgroundServiceModel);
+    if (Runtime.experiments.isEnabled('backgroundServices')) {
+      this.backgroundFetchTreeElement._initialize(backgroundServiceModel);
+      this.backgroundSyncTreeElement._initialize(backgroundServiceModel);
+    }
   }
 
   /**
@@ -683,19 +688,50 @@ Resources.StorageCategoryTreeElement = class extends Resources.BaseStorageTreeEl
 Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTreeElement {
   /**
    * @param {!Resources.ResourcesPanel} storagePanel
-   * @param {string} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} serviceName
    */
   constructor(storagePanel, serviceName) {
-    super(storagePanel, serviceName, false);
+    super(storagePanel, Resources.BackgroundServiceTreeElement._getUIString(serviceName), false);
 
-    /** @const {string} */
+    /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;
+
+    /** @type {boolean} Whether the element has been selected. */
+    this._selected = false;
 
     /** @type {?Resources.BackgroundServiceView} */
     this._view = null;
 
+    /** @private {?Resources.BackgroundServiceModel} */
+    this._model = null;
+
     const backgroundServiceIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([backgroundServiceIcon]);
+  }
+
+  /**
+   * @param {string} serviceName The name of the background service.
+   * @return {string} The UI String to display.
+   */
+  static _getUIString(serviceName) {
+    switch (serviceName) {
+      case Protocol.BackgroundService.ServiceName.BackgroundFetch:
+        return Common.UIString('Background Fetch');
+      case Protocol.BackgroundService.ServiceName.BackgroundSync:
+        return Common.UIString('Background Sync');
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * @param {?Resources.BackgroundServiceModel} model
+   */
+  _initialize(model) {
+    this._model = model;
+    // Show the view if the model was initialized after selection.
+    if (this._selected && !this._view)
+      this.onselect(false);
   }
 
   /**
@@ -711,8 +747,13 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
+    this._selected = true;
+
+    if (!this._model)
+      return false;
+
     if (!this._view)
-      this._view = new Resources.BackgroundServiceView(this._serviceName);
+      this._view = new Resources.BackgroundServiceView(this._serviceName, this._model);
     this.showView(this._view);
     return false;
   }

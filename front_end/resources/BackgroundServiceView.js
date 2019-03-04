@@ -4,14 +4,24 @@
 
 Resources.BackgroundServiceView = class extends UI.VBox {
   /**
-   * @param {string} serviceName
+   * @param {!Protocol.BackgroundService.ServiceName} serviceName
+   * @param {!Resources.BackgroundServiceModel} model
    */
-  constructor(serviceName) {
+  constructor(serviceName, model) {
     super(true);
     this.registerRequiredCSS('resources/backgroundServiceView.css');
 
-    /** @const {string} */
+    /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;
+
+    /** @const {!Resources.BackgroundServiceModel} */
+    this._model = model;
+    this._model.addEventListener(
+        Resources.BackgroundServiceModel.Events.RecordingStateChanged, this._onRecordingStateChanged, this);
+    this._model.enable(this._serviceName);
+
+    /** @type {?UI.ToolbarToggle} */
+    this._recordButton = null;
 
     /** @const {!UI.Toolbar} */
     this._toolbar = new UI.Toolbar('background-service-toolbar', this.contentElement);
@@ -21,13 +31,12 @@ Resources.BackgroundServiceView = class extends UI.VBox {
   /**
    * Creates the toolbar UI element.
    */
-  _setupToolbar() {
-    const recordButton =
+  async _setupToolbar() {
+    this._recordButton =
         new UI.ToolbarToggle(Common.UIString('Toggle Record'), 'largeicon-start-recording', 'largeicon-stop-recording');
-    recordButton.addEventListener(
-        UI.ToolbarButton.Events.Click, () => recordButton.setToggled(!recordButton.toggled()));
-    recordButton.setToggleWithRedColor(true);
-    this._toolbar.appendToolbarItem(recordButton);
+    this._recordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording());
+    this._recordButton.setToggleWithRedColor(true);
+    this._toolbar.appendToolbarItem(this._recordButton);
 
     const refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
     refreshButton.addEventListener(UI.ToolbarButton.Events.Click, () => {});
@@ -42,5 +51,22 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-trash-bin');
     deleteButton.addEventListener(UI.ToolbarButton.Events.Click, () => {});
     this._toolbar.appendToolbarItem(deleteButton);
+  }
+
+  /**
+   * Called when the `Toggle Record` button is clicked.
+   */
+  _toggleRecording() {
+    this._model.setRecording(!this._recordButton.toggled(), this._serviceName);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onRecordingStateChanged(event) {
+    const state = /** @type {!Resources.BackgroundServiceModel.RecordingState} */ (event.data);
+    if (state.serviceName !== this._serviceName)
+      return;
+    this._recordButton.setToggled(state.isRecording);
   }
 };

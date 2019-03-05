@@ -899,11 +899,9 @@ Timeline.TimelineUIUtils = class {
         if (url)
           contentHelper.appendLocationRow(ls`Script`, url, eventData['lineNumber'], eventData['columnNumber']);
         contentHelper.appendTextRow(ls`Streamed`, eventData['streamed']);
-        const cacheProduceOptions = eventData && eventData['cacheProduceOptions'];
-        if (cacheProduceOptions) {
-          contentHelper.appendTextRow(ls`Cache Produce Options`, cacheProduceOptions);
-          contentHelper.appendTextRow(ls`Produced Cache Size`, eventData['producedCacheSize']);
-        }
+        const producedCacheSize = eventData && eventData['producedCacheSize'];
+        if (producedCacheSize)
+          contentHelper.appendTextRow(ls`Produced Cache Size`, producedCacheSize);
         const cacheConsumeOptions = eventData && eventData['cacheConsumeOptions'];
         if (cacheConsumeOptions) {
           contentHelper.appendTextRow(ls`Cache Consume Options`, cacheConsumeOptions);

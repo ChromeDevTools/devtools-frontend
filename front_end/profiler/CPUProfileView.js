@@ -242,7 +242,8 @@ Profiler.CPUProfileHeader = class extends Profiler.WritableProfileHeader {
    * @param {!Protocol.Profiler.Profile} profile
    */
   setProfile(profile) {
-    this._profileModel = new SDK.CPUProfileDataModel(profile);
+    const target = this._cpuProfilerModel && this._cpuProfilerModel.target() || null;
+    this._profileModel = new SDK.CPUProfileDataModel(profile, target);
   }
 };
 

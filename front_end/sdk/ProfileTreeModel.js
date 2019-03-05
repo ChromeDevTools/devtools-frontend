@@ -66,6 +66,13 @@ SDK.ProfileNode = class {
  */
 SDK.ProfileTreeModel = class {
   /**
+   * @param {?SDK.Target=} target
+   */
+  constructor(target) {
+    this._target = target || null;
+  }
+
+  /**
    * @param {!SDK.ProfileNode} root
    * @protected
    */
@@ -116,5 +123,12 @@ SDK.ProfileTreeModel = class {
       node.parent.total += node.total;
     }
     return root.total;
+  }
+
+  /**
+   * @return {?SDK.Target}
+   */
+  target() {
+    return this._target;
   }
 };

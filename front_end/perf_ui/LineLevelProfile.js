@@ -1,13 +1,19 @@
 // Copyright 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/**
- * @unrestricted
- */
+
 PerfUI.LineLevelProfile = class {
   constructor() {
     this._locationPool = new Bindings.LiveLocationPool();
+    this._updateTimer = null;
     this.reset();
+  }
+
+  reset() {
+    // The second map uses string keys for script URLs and numbers for scriptId.
+    /** @type {!Map<?SDK.Target, !Map<string|number, !Map<number, number>>>} */
+    this._lineData = new Map();
+    this._scheduleUpdate();
   }
 
   /**
@@ -23,6 +29,12 @@ PerfUI.LineLevelProfile = class {
    * @param {!SDK.CPUProfileDataModel} profile
    */
   _appendLegacyCPUProfile(profile) {
+    const target = profile.target();
+    let dataByTarget = this._lineData.get(target);
+    if (!dataByTarget) {
+      dataByTarget = new Map();
+      this._lineData.set(target, dataByTarget);
+    }
     const nodesToGo = [profile.profileHead];
     const sampleDuration = (profile.profileEndTime - profile.profileStartTime) / profile.totalHitCount;
     while (nodesToGo.length) {
@@ -32,10 +44,10 @@ PerfUI.LineLevelProfile = class {
         nodesToGo.push(node);
         if (!node.url || !node.positionTicks)
           continue;
-        let fileInfo = this._files.get(node.url);
+        let fileInfo = dataByTarget.get(node.url);
         if (!fileInfo) {
           fileInfo = new Map();
-          this._files.set(node.url, fileInfo);
+          dataByTarget.set(node.url, fileInfo);
         }
         for (let j = 0; j < node.positionTicks.length; ++j) {
           const lineInfo = node.positionTicks[j];
@@ -53,29 +65,31 @@ PerfUI.LineLevelProfile = class {
   appendCPUProfile(profile) {
     if (!profile.lines) {
       this._appendLegacyCPUProfile(profile);
-    } else {
-      for (let i = 1; i < profile.samples.length; ++i) {
-        const line = profile.lines[i];
-        if (!line)
-          continue;
-        const node = profile.nodeByIndex(i);
-        if (!node.url)
-          continue;
-        let fileInfo = this._files.get(node.url);
-        if (!fileInfo) {
-          fileInfo = new Map();
-          this._files.set(node.url, fileInfo);
-        }
-        const time = profile.timestamps[i] - profile.timestamps[i - 1];
-        fileInfo.set(line, (fileInfo.get(line) || 0) + time);
-      }
+      this._scheduleUpdate();
+      return;
     }
-    this._scheduleUpdate();
-  }
-
-  reset() {
-    /** @type {!Map<string, !Map<number, number>>} */
-    this._files = new Map();
+    const target = profile.target();
+    let dataByTarget = this._lineData.get(target);
+    if (!dataByTarget) {
+      dataByTarget = new Map();
+      this._lineData.set(target, dataByTarget);
+    }
+    for (let i = 1; i < profile.samples.length; ++i) {
+      const line = profile.lines[i];
+      if (!line)
+        continue;
+      const node = profile.nodeByIndex(i);
+      const scriptIdOrUrl = node.scriptId || node.url;
+      if (!scriptIdOrUrl)
+        continue;
+      let dataByScript = dataByTarget.get(scriptIdOrUrl);
+      if (!dataByScript) {
+        dataByScript = new Map();
+        dataByTarget.set(scriptIdOrUrl, dataByScript);
+      }
+      const time = profile.timestamps[i] - profile.timestamps[i - 1];
+      dataByScript.set(line, (dataByScript.get(line) || 0) + time);
+    }
     this._scheduleUpdate();
   }
 
@@ -89,32 +103,40 @@ PerfUI.LineLevelProfile = class {
   }
 
   _doUpdate() {
-    // TODO(alph): use scriptId instead of urls for the target.
     this._locationPool.disposeAll();
     Workspace.workspace.uiSourceCodes().forEach(
         uiSourceCode => uiSourceCode.removeDecorationsForType(PerfUI.LineLevelProfile.LineDecorator.type));
-    for (const fileInfo of this._files) {
-      const url = /** @type {string} */ (fileInfo[0]);
-      const uiSourceCode = Workspace.workspace.uiSourceCodeForURL(url);
-      if (!uiSourceCode)
-        continue;
-      const target = Bindings.NetworkProject.targetForUISourceCode(uiSourceCode) || SDK.targetManager.mainTarget();
+    for (const targetToScript of this._lineData) {
+      const target = /** @type {?SDK.Target} */ (targetToScript[0]);
       const debuggerModel = target ? target.model(SDK.DebuggerModel) : null;
-      if (!debuggerModel)
-        continue;
-      for (const lineInfo of fileInfo[1]) {
-        const line = lineInfo[0] - 1;
-        const time = lineInfo[1];
-        const rawLocation = debuggerModel.createRawLocationByURL(url, line, 0);
-        if (rawLocation)
-          new PerfUI.LineLevelProfile.Presentation(rawLocation, time, this._locationPool);
-        else if (uiSourceCode)
-          uiSourceCode.addLineDecoration(line, PerfUI.LineLevelProfile.LineDecorator.type, time);
+      const scriptToLineMap = /** @type {!Map<string|number, !Map<number, number>>} */ (targetToScript[1]);
+      for (const scriptToLine of scriptToLineMap) {
+        const scriptIdOrUrl = /** @type {string|number} */ (scriptToLine[0]);
+        const lineToDataMap = /** @type {!Map<number, number>} */ (scriptToLine[1]);
+        // debuggerModel is null when the profile is loaded from file.
+        // Try to get UISourceCode by the URL in this case.
+        const uiSourceCode = !debuggerModel && typeof scriptIdOrUrl === 'string' ?
+            Workspace.workspace.uiSourceCodeForURL(scriptIdOrUrl) :
+            null;
+        if (!debuggerModel && !uiSourceCode)
+          continue;
+        for (const lineToData of lineToDataMap) {
+          const line = /** @type {number} */ (lineToData[0]) - 1;
+          const data = /** @type {number} */ (lineToData[1]);
+          if (uiSourceCode) {
+            uiSourceCode.addLineDecoration(line, PerfUI.LineLevelProfile.LineDecorator.type, data);
+            continue;
+          }
+          const rawLocation = typeof scriptIdOrUrl === 'string' ?
+              debuggerModel.createRawLocationByURL(scriptIdOrUrl, line, 0) :
+              debuggerModel.createRawLocationByScriptId(String(scriptIdOrUrl), line, 0);
+          if (rawLocation)
+            new PerfUI.LineLevelProfile.Presentation(rawLocation, data, this._locationPool);
+        }
       }
     }
   }
 };
-
 
 /**
  * @unrestricted

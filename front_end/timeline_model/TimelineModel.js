@@ -420,18 +420,21 @@ TimelineModel.TimelineModel = class {
   _extractCpuProfile(tracingModel, thread) {
     const events = thread.events();
     let cpuProfile;
+    let target = null;
 
     // Check for legacy CpuProfile event format first.
     let cpuProfileEvent = events.peekLast();
     if (cpuProfileEvent && cpuProfileEvent.name === TimelineModel.TimelineModel.RecordType.CpuProfile) {
       const eventData = cpuProfileEvent.args['data'];
       cpuProfile = /** @type {?Protocol.Profiler.Profile} */ (eventData && eventData['cpuProfile']);
+      target = this.targetByEvent(cpuProfileEvent);
     }
 
     if (!cpuProfile) {
       cpuProfileEvent = events.find(e => e.name === TimelineModel.TimelineModel.RecordType.Profile);
       if (!cpuProfileEvent)
         return null;
+      target = this.targetByEvent(cpuProfileEvent);
       const profileGroup = tracingModel.profileGroup(cpuProfileEvent);
       if (!profileGroup) {
         Common.console.error('Invalid CPU profile format.');
@@ -468,7 +471,7 @@ TimelineModel.TimelineModel = class {
     }
 
     try {
-      const jsProfileModel = new SDK.CPUProfileDataModel(cpuProfile);
+      const jsProfileModel = new SDK.CPUProfileDataModel(cpuProfile, target);
       this._cpuProfiles.push(jsProfileModel);
       return jsProfileModel;
     } catch (e) {

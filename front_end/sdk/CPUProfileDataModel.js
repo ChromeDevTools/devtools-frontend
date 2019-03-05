@@ -33,9 +33,10 @@ SDK.CPUProfileNode = class extends SDK.ProfileNode {
 SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
   /**
    * @param {!Protocol.Profiler.Profile} profile
+   * @param {?SDK.Target} target
    */
-  constructor(profile) {
-    super();
+  constructor(profile, target) {
+    super(target);
     const isLegacyFormat = !!profile['head'];
     if (isLegacyFormat) {
       // Legacy format contains raw timestamps and start/stop times are in seconds.

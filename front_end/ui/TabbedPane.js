@@ -300,8 +300,8 @@ UI.TabbedPane = class extends UI.VBox {
   }
 
   _viewHasFocus() {
-    if (this.visibleView)
-      return this.visibleView.hasFocus();
+    if (this.visibleView && this.visibleView.hasFocus())
+      return true;
     return this.contentElement === this.contentElement.getComponentRoot().activeElement;
   }
 

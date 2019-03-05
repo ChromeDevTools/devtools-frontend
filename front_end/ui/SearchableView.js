@@ -374,7 +374,7 @@ UI.SearchableView = class extends UI.VBox {
    * @param {boolean=} isBackwardSearch
    */
   _jumpToNextSearchResult(isBackwardSearch) {
-    if (!this._currentQuery || !this._searchNavigationPrevElement.classList.contains('enabled'))
+    if (!this._currentQuery)
       return;
 
     if (isBackwardSearch)

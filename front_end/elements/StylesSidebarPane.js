@@ -385,7 +385,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
       return;
     this.contentElement.classList.toggle('is-editing-style', editing);
     this._isEditingStyle = editing;
-    this._setActiveProperty(editing ? treeElement || null : null);
+    this._setActiveProperty(null);
   }
 
   /**

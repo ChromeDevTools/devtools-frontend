@@ -419,6 +419,7 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   _executionContextComparator(a, b) {
     /**
      * @param {!SDK.ResourceTreeFrame} frame
+     * @return {!Array<!SDK.ResourceTreeFrame>}
      */
     function framePath(frame) {
       let currentFrame = frame;

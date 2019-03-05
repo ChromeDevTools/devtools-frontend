@@ -708,9 +708,43 @@ SDK.ExecutionContext = class {
       return 1;
     }
 
-    const weightDiff = targetWeight(a.target()) - targetWeight(b.target());
-    if (weightDiff)
-      return -weightDiff;
+    /**
+     * @param {!SDK.Target} target
+     * @return {!Array<!SDK.Target>}
+     */
+    function targetPath(target) {
+      let currentTarget = target;
+      const parents = [];
+      while (currentTarget) {
+        parents.push(currentTarget);
+        currentTarget = currentTarget.parentTarget();
+      }
+      return parents.reverse();
+    }
+
+    const tagetsA = targetPath(a.target());
+    const targetsB = targetPath(b.target());
+    let targetA;
+    let targetB;
+    for (let i = 0;; i++) {
+      if (!tagetsA[i] || !targetsB[i] || (tagetsA[i] !== targetsB[i])) {
+        targetA = tagetsA[i];
+        targetB = targetsB[i];
+        break;
+      }
+    }
+    if (!targetA && targetB)
+      return -1;
+
+    if (!targetB && targetA)
+      return 1;
+
+    if (targetA && targetB) {
+      const weightDiff = targetWeight(targetA) - targetWeight(targetB);
+      if (weightDiff)
+        return -weightDiff;
+      return targetA.id().localeCompare(targetB.id());
+    }
 
     // Main world context should always go first.
     if (a.isDefault)

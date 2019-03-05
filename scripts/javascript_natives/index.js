@@ -178,7 +178,7 @@ function postProcess() {
     } else {
       for (const parent in methods[name]) {
         if (parent.endsWith('Constructor'))
-          functions.push({name, signatures: methods[name][parent], static: true, receiver: constructor});
+          functions.push({name, signatures: methods[name][parent], static: true, receiver: parent.substring(0, parent.length - 'Constructor'.length)});
         else
           functions.push({name, signatures: methods[name][parent], receiver: parent});
       }

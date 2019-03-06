@@ -549,7 +549,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
   }
 
   _reset() {
-    PerfUI.LineLevelProfile.instance().reset();
+    PerfUI.LineLevelProfile.Performance.instance().reset();
     this._setModel(null);
   }
 
@@ -582,8 +582,10 @@ Timeline.TimelinePanel = class extends UI.Panel {
           Timeline.PerformanceModel.Events.WindowChanged, this._onModelWindowChanged, this);
       this._overviewPane.setBounds(
           model.timelineModel().minimumRecordTime(), model.timelineModel().maximumRecordTime());
+      const lineLevelProfile = PerfUI.LineLevelProfile.Performance.instance();
+      lineLevelProfile.reset();
       for (const profile of model.timelineModel().cpuProfiles())
-        PerfUI.LineLevelProfile.instance().appendCPUProfile(profile);
+        lineLevelProfile.appendCPUProfile(profile);
       this._setMarkers(model.timelineModel());
       this._flameChart.setSelection(null);
       this._overviewPane.setWindowTimes(model.window().left, model.window().right);

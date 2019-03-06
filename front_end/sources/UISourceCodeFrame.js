@@ -499,20 +499,18 @@ Sources.UISourceCodeFrame = class extends SourceFrame.SourceFrame {
   /**
    * @param {string} type
    */
-  _decorateTypeThrottled(type) {
+  async _decorateTypeThrottled(type) {
     if (this._typeDecorationsPending.has(type))
       return;
     this._typeDecorationsPending.add(type);
-    self.runtime.extensions(SourceFrame.LineDecorator)
-        .find(extension => extension.descriptor()['decoratorType'] === type)
-        .instance()
-        .then(decorator => {
-          this._typeDecorationsPending.delete(type);
-          this.textEditor.codeMirror().operation(() => {
-            decorator.decorate(
-                this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor);
-          });
-        });
+    const decorator = await self.runtime.extensions(SourceFrame.LineDecorator)
+                          .find(extension => extension.descriptor()['decoratorType'] === type)
+                          .instance();
+    this._typeDecorationsPending.delete(type);
+    this.textEditor.codeMirror().operation(() => {
+      decorator.decorate(
+          this._persistenceBinding ? this._persistenceBinding.network : this.uiSourceCode(), this.textEditor, type);
+    });
   }
 
   _decorateAllTypes() {

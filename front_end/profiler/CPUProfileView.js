@@ -46,7 +46,7 @@ Profiler.CPUProfileView = class extends Profiler.ProfileView {
    */
   wasShown() {
     super.wasShown();
-    const lineLevelProfile = PerfUI.LineLevelProfile.instance();
+    const lineLevelProfile = PerfUI.LineLevelProfile.Performance.instance();
     lineLevelProfile.reset();
     lineLevelProfile.appendCPUProfile(this._profileHeader.profileModel());
   }

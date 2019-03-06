@@ -36,9 +36,12 @@ SDK.HeapProfilerModel = class extends SDK.SDKModel {
     this._heapProfilerAgent.enable();
   }
 
-  startSampling() {
+  /**
+   * @param {number=} samplingRateInBytes
+   */
+  startSampling(samplingRateInBytes) {
     const defaultSamplingIntervalInBytes = 16384;
-    this._heapProfilerAgent.startSampling(defaultSamplingIntervalInBytes);
+    this._heapProfilerAgent.startSampling(samplingRateInBytes || defaultSamplingIntervalInBytes);
   }
 
   /**

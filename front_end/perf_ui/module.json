@@ -6,6 +6,11 @@
             "decoratorType": "performance"
         },
         {
+            "type": "@SourceFrame.LineDecorator",
+            "className": "PerfUI.LineLevelProfile.LineDecorator",
+            "decoratorType": "memory"
+        },
+        {
             "type": "setting",
             "category": "Performance",
             "title": "Flamechart mouse wheel action:",

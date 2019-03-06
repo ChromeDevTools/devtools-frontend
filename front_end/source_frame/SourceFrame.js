@@ -757,8 +757,9 @@ SourceFrame.LineDecorator.prototype = {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    * @param {!TextEditor.CodeMirrorTextEditor} textEditor
+   * @param {string} type
    */
-  decorate(uiSourceCode, textEditor) {}
+  decorate(uiSourceCode, textEditor, type) {}
 };
 
 /**

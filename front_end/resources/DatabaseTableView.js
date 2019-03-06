@@ -79,7 +79,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
     this._dataGrid = DataGrid.SortableDataGrid.create(columnNames, values);
     this._visibleColumnsInput.setVisible(!!this._dataGrid);
     if (!this._dataGrid) {
-      this._emptyWidget = new UI.EmptyWidget(Common.UIString('The “%s”\ntable is empty.', this.tableName));
+      this._emptyWidget = new UI.EmptyWidget(ls`The "${this.tableName}"\ntable is empty.`);
       this._emptyWidget.show(this.element);
       return;
     }
@@ -131,7 +131,7 @@ Resources.DatabaseTableView = class extends UI.SimpleView {
 
     const errorMsgElement = createElement('div');
     errorMsgElement.className = 'storage-table-error';
-    errorMsgElement.textContent = Common.UIString('An error occurred trying to\nread the “%s” table.', this.tableName);
+    errorMsgElement.textContent = ls`An error occurred trying to\nread the "${this.tableName}" table.`;
     this.element.appendChild(errorMsgElement);
   }
 

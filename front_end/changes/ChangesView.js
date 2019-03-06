@@ -180,9 +180,19 @@ Changes.ChangesView = class extends UI.VBox {
 
     this._maxLineDigits = Math.ceil(Math.log10(Math.max(currentLineNumber, baselineLineNumber)));
 
-    this._diffStats.setText(Common.UIString(
-        '%d insertion%s (+), %d deletion%s (-)', insertions, insertions !== 1 ? 's' : '', deletions,
-        deletions !== 1 ? 's' : ''));
+    let insertionText = '';
+    if (insertions === 1)
+      insertionText = ls`${insertions} insertion (+),`;
+    else
+      insertionText = ls`${insertions} insertions (+),`;
+
+    let deletionText = '';
+    if (deletions === 1)
+      deletionText = ls`${deletions} deletion (-)`;
+    else
+      deletionText = ls`${deletions} deletions (-)`;
+
+    this._diffStats.setText(`${insertionText} ${deletionText}`);
     this._toolbar.setEnabled(true);
     this._emptyWidget.hideWidget();
 
@@ -212,8 +222,7 @@ Changes.ChangesView = class extends UI.VBox {
           equalRows.push(createRow(lines[i], Changes.ChangesView.RowType.Equal));
         if (lines.length > paddingLines * 2 + 1 && !atEnd) {
           equalRows.push(createRow(
-              Common.UIString('( \u2026 Skipping ') + (lines.length - paddingLines * 2) +
-                  Common.UIString(' matching lines \u2026 )'),
+              Common.UIString('( \u2026 Skipping %d matching lines \u2026 )', lines.length - paddingLines * 2),
               Changes.ChangesView.RowType.Spacer));
         }
       }

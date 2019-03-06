@@ -368,7 +368,7 @@ Resources.IDBDataView = class extends UI.SimpleView {
       this._summaryBarElement = this.element.createChild('div', 'object-store-summary-bar');
     this._summaryBarElement.removeChildren();
     const span = this._summaryBarElement.createChild('span');
-    span.textContent = ls`key generator value: ` + String(this._keyGeneratorValue);
+    span.textContent = ls`key generator value: ${String(this._keyGeneratorValue)}`;
   }
 
   _updatedDataForTests() {

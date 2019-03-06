@@ -574,7 +574,7 @@ Resources.ServiceWorkersView.Section = class {
   _updateClientInfo(element, targetInfo) {
     if (targetInfo.type !== 'page' && targetInfo.type === 'iframe') {
       const clientString = element.createChild('span', 'service-worker-client-string');
-      clientString.createTextChild(ls`Worker: ` + targetInfo.url);
+      clientString.createTextChild(ls`Worker: ${targetInfo.url}`);
       return;
     }
     element.removeChildren();

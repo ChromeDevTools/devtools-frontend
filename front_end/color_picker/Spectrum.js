@@ -293,7 +293,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
         shadow.style.background = palette.colors[i];
         shadow = colorElement.createChild('div', 'spectrum-palette-color spectrum-palette-color-shadow');
         shadow.style.background = palette.colors[i];
-        colorElement.title = Common.UIString(palette.colors[i] + '. Long-click to show alternate shades.');
+        colorElement.title = ls`${palette.colors[i]}. Long-click to show alternate shades.`;
         new UI.LongClickController(colorElement, this._showLightnessShades.bind(this, colorElement, palette.colors[i]));
       }
       this._paletteContainer.appendChild(colorElement);

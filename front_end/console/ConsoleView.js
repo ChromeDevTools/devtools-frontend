@@ -469,7 +469,7 @@ Console.ConsoleView = class extends UI.VBox {
   _updateFilterStatus() {
     if (this._hiddenByFilterCount === this._lastShownHiddenByFilterCount)
       return;
-    this._filterStatusText.setText(Common.UIString(this._hiddenByFilterCount + ' hidden'));
+    this._filterStatusText.setText(ls`${this._hiddenByFilterCount} hidden`);
     this._filterStatusText.setVisible(!!this._hiddenByFilterCount);
     this._lastShownHiddenByFilterCount = this._hiddenByFilterCount;
   }

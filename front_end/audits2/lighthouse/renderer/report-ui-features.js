@@ -30,7 +30,7 @@ class ReportUIFeatures {
    * @param {DOM} dom
    */
   constructor(dom) {
-    /** @type {LH.ReportResult} */
+    /** @type {LH.Result} */
     this.json; // eslint-disable-line no-unused-expressions
     /** @type {DOM} */
     this._dom = dom;
@@ -80,7 +80,7 @@ class ReportUIFeatures {
   /**
    * Adds export button, print, and other functionality to the report. The method
    * should be called whenever the report needs to be re-rendered.
-   * @param {LH.ReportResult} report
+   * @param {LH.Result} report
    */
   initFeatures(report) {
     if (this._dom.isDevTools()) return;
@@ -358,7 +358,7 @@ class ReportUIFeatures {
   /**
    * Opens a new tab to the online viewer and sends the local page's JSON results
    * to the online viewer using postMessage.
-   * @param {LH.ReportResult} reportJson
+   * @param {LH.Result} reportJson
    * @param {string} viewerPath
    * @protected
    */

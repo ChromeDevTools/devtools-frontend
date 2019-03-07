@@ -9,12 +9,7 @@
     overflow: visible !important;
 }
 
-.CodeMirror-gutter-performance {
-    width: 60px;
-    background-color: white;
-    margin-left: 3px;
-}
-
+.CodeMirror-gutter-performance,
 .CodeMirror-gutter-memory {
     width: 60px;
     background-color: white;
@@ -437,7 +432,8 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-marker-text span.line-marker-units {
-    color: #999;
+    color: #555;
+    font-size: 75%;
     margin-left: 3px;
 }
 

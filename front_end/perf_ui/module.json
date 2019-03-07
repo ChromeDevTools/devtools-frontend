@@ -1,6 +1,11 @@
 {
     "extensions": [
         {
+            "type": "late-initialization",
+            "className": "PerfUI.LiveHeapProfile",
+            "experiment": "liveHeapProfile"
+        },
+        {
             "type": "@SourceFrame.LineDecorator",
             "className": "PerfUI.LineLevelProfile.LineDecorator",
             "decoratorType": "performance"
@@ -51,6 +56,7 @@
         "FlameChart.js",
         "GCActionDelegate.js",
         "LineLevelProfile.js",
+        "LiveHeapProfile.js",
         "NetworkPriorities.js",
         "OverviewGrid.js",
         "PieChart.js",

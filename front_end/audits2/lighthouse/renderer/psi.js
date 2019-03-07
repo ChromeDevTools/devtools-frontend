@@ -74,7 +74,7 @@ function prepareLabData(LHResult, document) {
 function _getFinalScreenshot(perfCategory) {
   const auditRef = perfCategory.auditRefs.find(audit => audit.id === 'final-screenshot');
   if (!auditRef || !auditRef.result || auditRef.result.scoreDisplayMode === 'error') return null;
-  return auditRef.result.details.data;
+  return /** @type {LH.Audit.Details.Screenshot} */ (auditRef.result.details).data;
 }
 
 if (typeof module !== 'undefined' && module.exports) {

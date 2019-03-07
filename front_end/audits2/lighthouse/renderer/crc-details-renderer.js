@@ -145,7 +145,7 @@ class CriticalRequestChainRenderer {
    * @param {DocumentFragment} tmpl
    * @param {CRCSegment} segment
    * @param {Element} elem Parent element.
-   * @param {CRCDetailsJSON} details
+   * @param {LH.Audit.Details.CriticalRequestChain} details
    */
   static buildTree(dom, tmpl, segment, elem, details) {
     elem.appendChild(CriticalRequestChainRenderer.createChainNode(dom, tmpl, segment));
@@ -161,7 +161,7 @@ class CriticalRequestChainRenderer {
   /**
    * @param {DOM} dom
    * @param {ParentNode} templateContext
-   * @param {CRCDetailsJSON} details
+   * @param {LH.Audit.Details.CriticalRequestChain} details
    * @return {Element}
    */
   static render(dom, templateContext, details) {
@@ -193,14 +193,6 @@ if (typeof module !== 'undefined' && module.exports) {
 } else {
   self.CriticalRequestChainRenderer = CriticalRequestChainRenderer;
 }
-
-/** @typedef {{
-      type: string,
-      header: {text: string},
-      longestChain: {duration: number, length: number, transferSize: number},
-      chains: LH.Audit.SimpleCriticalRequestNode
-  }} CRCDetailsJSON
- */
 
 /** @typedef {{
       node: LH.Audit.SimpleCriticalRequestNode[string],

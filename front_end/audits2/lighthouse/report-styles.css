@@ -725,6 +725,10 @@
   margin-top: var(--section-padding);
 }
 
+.lh-list > div:not(:last-child) {
+  padding-bottom: 20px;
+}
+
 .lh-header-container {
   display: block;
   margin: 0 auto;

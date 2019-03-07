@@ -1,5 +1,54 @@
-// lighthouse, browserified. 4.1.0 (aa68eaec9838afbdec549df12225fd7d71e0dfeb)
-require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
+// lighthouse, browserified. 4.2.0 (35b285b87d681905777ed2545e48292312910485)
+require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+
+const AxeAudit=require('./axe-audit.js');
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'`[accesskey]` values are unique',
+
+failureTitle:'`[accesskey]` values are not unique',
+
+description:'Access keys let users quickly focus a part of the page. For proper '+
+'navigation, each access key must be unique. '+
+'[Learn more](https://dequeuniversity.com/rules/axe/3.1/accesskeys?application=lighthouse).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+class Accesskeys extends AxeAudit{
+
+
+
+static get meta(){
+return{
+id:'accesskeys',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['Accessibility']};
+
+}}
+
+
+module.exports=Accesskeys;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/accessibility/accesskeys.js");
+},{"../../lib/i18n/i18n.js":63,"./axe-audit.js":2}],"../audits/accessibility/aria-allowed-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -48,7 +97,7 @@ module.exports=ARIAAllowedAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-allowed-attr.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-required-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -96,7 +145,7 @@ module.exports=ARIARequiredAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-attr.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-required-children":[function(require,module,exports){
 (function(__filename){
 
 
@@ -147,7 +196,7 @@ module.exports=AriaRequiredChildren;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-children.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-required-parent":[function(require,module,exports){
 (function(__filename){
 
 
@@ -197,7 +246,7 @@ module.exports=AriaRequiredParent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-required-parent.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-roles":[function(require,module,exports){
 (function(__filename){
 
 
@@ -246,7 +295,7 @@ module.exports=AriaRoles;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-roles.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-valid-attr-value":[function(require,module,exports){
 (function(__filename){
 
 
@@ -295,7 +344,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr-value.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/aria-valid-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -344,7 +393,7 @@ module.exports=ARIAValidAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/aria-valid-attr.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/audio-caption":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/audio-caption":[function(require,module,exports){
 (function(__filename){
 
 
@@ -395,7 +444,7 @@ module.exports=AudioCaption;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/audio-caption.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/button-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/button-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -444,7 +493,7 @@ module.exports=ButtonName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/button-name.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/bypass":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/bypass":[function(require,module,exports){
 (function(__filename){
 
 
@@ -494,7 +543,7 @@ module.exports=Bypass;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/bypass.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/color-contrast":[function(require,module,exports){
 (function(__filename){
 
 
@@ -544,7 +593,7 @@ module.exports=ColorContrast;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/color-contrast.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/definition-list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -595,7 +644,7 @@ module.exports=DefinitionList;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/definition-list.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/dlitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -644,7 +693,7 @@ module.exports=DLItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/dlitem.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/document-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/document-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -693,7 +742,7 @@ module.exports=DocumentTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/document-title.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/duplicate-id":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/duplicate-id":[function(require,module,exports){
 (function(__filename){
 
 
@@ -742,7 +791,7 @@ module.exports=DuplicateId;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/duplicate-id.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/frame-title":[function(require,module,exports){
 (function(__filename){
 
 
@@ -790,7 +839,7 @@ module.exports=FrameTitle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/frame-title.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/html-has-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -841,7 +890,7 @@ module.exports=HTMLHasLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-has-lang.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/html-lang-valid":[function(require,module,exports){
 (function(__filename){
 
 
@@ -891,7 +940,7 @@ module.exports=HTMLLangValid;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/html-lang-valid.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -940,7 +989,7 @@ module.exports=ImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/image-alt.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/input-image-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -989,7 +1038,7 @@ module.exports=InputImageAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/input-image-alt.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/label":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/label":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1038,7 +1087,7 @@ module.exports=Label;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/label.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/layout-table":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1091,7 +1140,7 @@ module.exports=LayoutTable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/layout-table.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/link-name":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/link-name":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1141,7 +1190,7 @@ module.exports=LinkName;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/link-name.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/listitem":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/listitem":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1191,7 +1240,7 @@ module.exports=ListItem;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/listitem.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/list":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/list":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1242,60 +1291,7 @@ module.exports=List;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/list.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/manual/accesskeys":[function(require,module,exports){
-(function(__filename){
-
-
-
-
-
-'use strict';
-
-
-
-
-
-const Audit=require('../../audit.js');
-const i18n=require('../../../lib/i18n/i18n.js');
-
-const UIStrings={
-
-title:'`[accesskey]` values are unique',
-
-description:'Access keys let users quickly focus a part of the page. For proper '+
-'navigation, each access key must be unique. '+
-'[Learn more](https://dequeuniversity.com/rules/axe/3.1/accesskeys?application=lighthouse).'};
-
-
-const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
-
-class Accesskeys extends Audit{
-
-
-
-static get meta(){
-return{
-id:'accesskeys',
-title:str_(UIStrings.title),
-description:str_(UIStrings.description),
-scoreDisplayMode:Audit.SCORING_MODES.MANUAL,
-requiredArtifacts:[]};
-
-}
-
-
-
-
-static audit(){
-return{rawValue:false};
-}}
-
-
-module.exports=Accesskeys;
-module.exports.UIStrings=UIStrings;
-
-}).call(this,"/lighthouse-core/audits/accessibility/manual/accesskeys.js");
-},{"../../../lib/i18n/i18n.js":60,"../../audit.js":3}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/manual/custom-controls-labels":[function(require,module,exports){
 
 
 
@@ -1676,7 +1672,7 @@ module.exports=MetaRefresh;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-refresh.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/meta-viewport":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1727,7 +1723,7 @@ module.exports=MetaViewport;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/meta-viewport.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/object-alt":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1776,7 +1772,7 @@ module.exports=ObjectAlt;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/object-alt.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/tabindex":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1825,7 +1821,7 @@ module.exports=TabIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/tabindex.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/td-headers-attr":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1878,7 +1874,7 @@ module.exports=TDHeadersAttr;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/td-headers-attr.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/th-has-data-cells":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1930,7 +1926,7 @@ module.exports=THHasDataCells;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/th-has-data-cells.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/valid-lang":[function(require,module,exports){
 (function(__filename){
 
 
@@ -1979,7 +1975,7 @@ module.exports=ValidLang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/valid-lang.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/video-caption":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2029,7 +2025,7 @@ module.exports=VideoCaption;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-caption.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/accessibility/video-description":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/accessibility/video-description":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2079,7 +2075,7 @@ module.exports=VideoDescription;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/video-description.js");
-},{"../../lib/i18n/i18n.js":60,"./axe-audit":2}],"../audits/bootup-time":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./axe-audit":2}],"../audits/bootup-time":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2105,7 +2101,7 @@ description:'Consider reducing the time spent parsing, compiling, and executing 
 'You may find delivering smaller JS payloads helps with this. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/bootup).',
 
-columnTotal:'Total',
+columnTotal:'Total CPU Time',
 
 columnScriptEval:'Script Evaluation',
 
@@ -2172,8 +2168,9 @@ const result=new Map();
 for(const task of tasks){
 const jsURL=task.attributableURLs.find(url=>jsURLs.has(url));
 const fallbackURL=task.attributableURLs[0];
-const attributableURL=jsURL||fallbackURL;
-if(!attributableURL||attributableURL==='about:blank')continue;
+let attributableURL=jsURL||fallbackURL;
+
+if(!attributableURL||attributableURL==='about:blank')attributableURL='Other';
 
 const timingByGroupId=result.get(attributableURL)||{};
 const originalTime=timingByGroupId[task.group.id]||0;
@@ -2206,26 +2203,26 @@ let totalBootupTime=0;
 const results=Array.from(executionTimings).
 map(([url,timingByGroupId])=>{
 
-let bootupTimeForURL=0;
+let totalExecutionTimeForURL=0;
 for(const[groupId,timespanMs]of Object.entries(timingByGroupId)){
 timingByGroupId[groupId]=timespanMs*multiplier;
-bootupTimeForURL+=timespanMs*multiplier;
-}
-
-
-if(bootupTimeForURL>=context.options.thresholdInMs){
-totalBootupTime+=bootupTimeForURL;
+totalExecutionTimeForURL+=timespanMs*multiplier;
 }
 
 const scriptingTotal=timingByGroupId[taskGroups.scriptEvaluation.id]||0;
 const parseCompileTotal=timingByGroupId[taskGroups.scriptParseCompile.id]||0;
+
+
+if(totalExecutionTimeForURL>=context.options.thresholdInMs){
+totalBootupTime+=scriptingTotal+parseCompileTotal;
+}
 
 hadExcessiveChromeExtension=hadExcessiveChromeExtension||
 url.startsWith('chrome-extension:')&&scriptingTotal>100;
 
 return{
 url:url,
-total:bootupTimeForURL,
+total:totalExecutionTimeForURL,
 
 scripting:scriptingTotal,
 scriptParseCompile:parseCompileTotal};
@@ -2241,6 +2238,7 @@ context.LighthouseRunWarnings.push(str_(UIStrings.chromeExtensionsWarning));
 }
 
 const summary={wastedMs:totalBootupTime};
+
 
 const headings=[
 {key:'url',itemType:'url',text:str_(i18n.UIStrings.columnURL)},
@@ -2272,7 +2270,7 @@ module.exports=BootupTime;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/bootup-time.js");
-},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":29,"../lib/i18n/i18n.js":60,"../lib/network-request":68,"../lib/task-groups":72,"./audit":3}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../computed/network-records.js":31,"../lib/i18n/i18n.js":63,"../lib/network-request":71,"../lib/task-groups":77,"./audit":3}],"../audits/byte-efficiency/efficient-animated-content":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2368,7 +2366,7 @@ module.exports=EfficientAnimatedContent;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/efficient-animated-content.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/network-request":68,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/network-request":71,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/offscreen-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2615,7 +2613,7 @@ module.exports=OffscreenImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/offscreen-images.js");
-},{"../../computed/metrics/interactive.js":18,"../../computed/trace-of-tab.js":33,"../../lib/i18n/i18n.js":60,"../../lib/sentry":70,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":18,"../../computed/trace-of-tab.js":35,"../../lib/i18n/i18n.js":63,"../../lib/sentry":74,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/render-blocking-resources":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2808,9 +2806,10 @@ static async computeWastedCSSBytes(artifacts,context){
 const wastedBytesByUrl=new Map();
 try{
 const results=await UnusedCSS.audit(artifacts,context);
-
+if(results.details&&results.details.type==='opportunity'){
 for(const item of results.details.items){
 wastedBytesByUrl.set(item.url,item.wastedBytes);
+}
 }
 }catch(_){}
 
@@ -2852,7 +2851,7 @@ module.exports=RenderBlockingResources;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/render-blocking-resources.js");
-},{"../../computed/load-simulator.js":10,"../../computed/metrics/first-contentful-paint.js":15,"../../computed/trace-of-tab.js":33,"../../lib/dependency-graph/base-node":49,"../../lib/i18n/i18n.js":60,"../../lib/network-request":68,"../audit":3,"./byte-efficiency-audit":4,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
+},{"../../computed/load-simulator.js":10,"../../computed/metrics/first-contentful-paint.js":15,"../../computed/trace-of-tab.js":35,"../../lib/dependency-graph/base-node":52,"../../lib/i18n/i18n.js":63,"../../lib/network-request":71,"../audit":3,"./byte-efficiency-audit":4,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/total-byte-weight":[function(require,module,exports){
 (function(__filename){
 
 
@@ -2934,12 +2933,16 @@ totalBytes+=result.totalBytes;
 results.push(result);
 });
 const totalCompletedRequests=results.length;
-results=results.sort((itemA,itemB)=>itemB.totalBytes-itemA.totalBytes).slice(0,10);
+results=results.sort((itemA,itemB)=>{
+return itemB.totalBytes-itemA.totalBytes||
+itemA.url.localeCompare(itemB.url);
+}).slice(0,10);
 
 const score=ByteEfficiencyAudit.computeLogNormalScore(
 totalBytes,
 context.options.scorePODR,
 context.options.scoreMedian);
+
 
 
 const headings=[
@@ -2968,7 +2971,7 @@ module.exports=TotalByteWeight;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/total-byte-weight.js");
-},{"../../computed/network-records.js":29,"../../lib/i18n/i18n.js":60,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
+},{"../../computed/network-records.js":31,"../../lib/i18n/i18n.js":63,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unminified-css":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3089,7 +3092,7 @@ module.exports=UnminifiedCSS;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-css.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/minification-estimator":66,"./byte-efficiency-audit":4,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/minification-estimator":69,"./byte-efficiency-audit":4,"./unused-css-rules":"../audits/byte-efficiency/unused-css-rules"}],"../audits/byte-efficiency/unminified-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3144,7 +3147,8 @@ requiredArtifacts:['Scripts','devtoolsLogs','traces']};
 
 
 
-static computeWaste(scriptContent,networkRecord){
+
+static computeWaste(scriptContent,displayUrl,networkRecord){
 const contentLength=scriptContent.length;
 const totalTokenLength=computeTokenLength(scriptContent);
 
@@ -3154,7 +3158,7 @@ const wastedRatio=1-totalTokenLength/contentLength;
 const wastedBytes=Math.round(totalBytes*wastedRatio);
 
 return{
-url:networkRecord.url,
+url:displayUrl,
 totalBytes,
 wastedBytes,
 wastedPercent:100*wastedRatio};
@@ -3170,13 +3174,14 @@ static audit_(artifacts,networkRecords){
 
 const items=[];
 const warnings=[];
-for(const requestId of Object.keys(artifacts.Scripts)){
-const scriptContent=artifacts.Scripts[requestId];
+for(const{requestId,inline,content}of artifacts.Scripts){
+if(!content)continue;
 const networkRecord=networkRecords.find(record=>record.requestId===requestId);
-if(!networkRecord||!scriptContent)continue;
-
+const displayUrl=inline||!networkRecord?
+`inline: ${content.substr(0,40)}...`:
+networkRecord.url;
 try{
-const result=UnminifiedJavaScript.computeWaste(scriptContent,networkRecord);
+const result=UnminifiedJavaScript.computeWaste(content,displayUrl,networkRecord);
 
 
 if(result.wastedPercent<IGNORE_THRESHOLD_IN_PERCENT||
@@ -3184,7 +3189,8 @@ result.wastedBytes<IGNORE_THRESHOLD_IN_BYTES||
 !Number.isFinite(result.wastedBytes))continue;
 items.push(result);
 }catch(err){
-warnings.push(`Unable to process ${networkRecord.url}: ${err.message}`);
+const url=networkRecord?networkRecord.url:'?';
+warnings.push(`Unable to process script ${url}: ${err.message}`);
 }
 }
 
@@ -3207,7 +3213,7 @@ module.exports=UnminifiedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unminified-javascript.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/minification-estimator":66,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/minification-estimator":69,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unused-css-rules":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3221,10 +3227,10 @@ const i18n=require('../../lib/i18n/i18n.js');
 
 const UIStrings={
 
-title:'Defer unused CSS',
+title:'Remove unused CSS',
 
-description:'Remove unused rules from stylesheets to reduce unnecessary '+
-'bytes consumed by network activity. '+
+description:'Remove dead rules from stylesheets and defer the loading of CSS not used for '+
+'above-the-fold content to reduce unnecessary bytes consumed by network activity. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/unused-css).'};
 
 
@@ -3362,8 +3368,7 @@ url=contentPreview;
 }
 
 const usage=UnusedCSSRules.computeUsage(stylesheetInfo);
-
-return Object.assign({url},usage);
+return{url,...usage};
 }
 
 
@@ -3403,7 +3408,7 @@ module.exports=UnusedCSSRules;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-css-rules.js");
-},{"../../lib/i18n/i18n.js":60,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/unused-javascript":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3541,7 +3546,7 @@ module.exports=UnusedJavaScript;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/unused-javascript.js");
-},{"../../lib/i18n/i18n.js":60,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-long-cache-ttl":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3720,7 +3725,7 @@ return true;
 
 if(cacheControl&&(
 
-cacheControl['must-validate']||
+cacheControl['must-revalidate']||
 cacheControl['no-cache']||
 cacheControl['no-store']||
 cacheControl['private'])){
@@ -3782,12 +3787,19 @@ const wastedBytes=(1-cacheHitProbability)*totalBytes;
 totalWastedBytes+=wastedBytes;
 if(url.includes('?'))queryStringCount++;
 
+
+
+let diagnostic;
+if(cacheControl){
+diagnostic={
+type:'diagnostic',
+...cacheControl};
+
+}
+
 results.push({
 url,
-
-
-
-cacheControl:cacheControl,
+diagnostic,
 cacheLifetimeMs:cacheLifetimeInSeconds*1000,
 cacheHitProbability,
 totalBytes,
@@ -3795,14 +3807,17 @@ wastedBytes});
 
 }
 
-results.sort(
-(a,b)=>a.cacheLifetimeMs-b.cacheLifetimeMs||b.totalBytes-a.totalBytes);
-
+results.sort((a,b)=>{
+return a.cacheLifetimeMs-b.cacheLifetimeMs||
+b.totalBytes-a.totalBytes||
+a.url.localeCompare(b.url);
+});
 
 const score=Audit.computeLogNormalScore(
 totalWastedBytes,
 context.options.scorePODR,
 context.options.scoreMedian);
+
 
 
 const headings=[
@@ -3837,7 +3852,7 @@ module.exports=CacheHeaders;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-long-cache-ttl.js");
-},{"../../computed/network-records.js":29,"../../lib/i18n/i18n.js":60,"../../lib/network-request":68,"../../lib/statistics":71,"../../lib/url-shim":"url","../audit":3,"assert":79,"parse-cache-control":128}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
+},{"../../computed/network-records.js":31,"../../lib/i18n/i18n.js":63,"../../lib/network-request":71,"../../lib/statistics":75,"../../lib/url-shim":"url","../audit":3,"assert":84,"parse-cache-control":134}],"../audits/byte-efficiency/uses-optimized-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -3941,7 +3956,7 @@ module.exports=UsesOptimizedImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-optimized-images.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-responsive-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4084,7 +4099,7 @@ module.exports=UsesResponsiveImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-responsive-images.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/sentry":70,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/sentry":74,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-text-compression":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4188,7 +4203,7 @@ module.exports=ResponsesAreCompressed;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-text-compression.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/byte-efficiency/uses-webp-images":[function(require,module,exports){
 (function(__filename){
 
 
@@ -4291,7 +4306,7 @@ module.exports=UsesWebPImages;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/uses-webp-images.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/content-width":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","./byte-efficiency-audit":4}],"../audits/content-width":[function(require,module,exports){
 
 
 
@@ -4313,7 +4328,7 @@ failureTitle:'Content is not sized correctly for the viewport',
 description:'If the width of your app\'s content doesn\'t match the width '+
 'of the viewport, your app might not be optimized for mobile screens. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/content-sized-correctly-for-viewport).',
-requiredArtifacts:['ViewportDimensions','HostUserAgent']};
+requiredArtifacts:['ViewportDimensions','TestedAsMobileDevice']};
 
 }
 
@@ -4321,18 +4336,13 @@ requiredArtifacts:['ViewportDimensions','HostUserAgent']};
 
 
 
-
-static audit(artifacts,context){
-const userAgent=artifacts.HostUserAgent;
+static audit(artifacts){
+const IsMobile=artifacts.TestedAsMobileDevice;
 const viewportWidth=artifacts.ViewportDimensions.innerWidth;
 const windowWidth=artifacts.ViewportDimensions.outerWidth;
 const widthsMatch=viewportWidth===windowWidth;
 
-const isMobileHost=userAgent.includes('Android')||userAgent.includes('Mobile');
-const isMobile=context.settings.emulatedFormFactor==='mobile'||
-context.settings.emulatedFormFactor!=='desktop'&&isMobileHost;
-
-if(isMobile){
+if(IsMobile){
 return{
 rawValue:widthsMatch,
 explanation:this.createExplanation(widthsMatch,artifacts.ViewportDimensions)};
@@ -4590,7 +4600,7 @@ module.exports=CriticalRequestChains;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/critical-request-chains.js");
-},{"../computed/critical-request-chains.js":9,"../lib/i18n/i18n.js":60,"./audit":3}],"../audits/deprecations":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":9,"../lib/i18n/i18n.js":63,"./audit":3}],"../audits/deprecations":[function(require,module,exports){
 
 
 
@@ -4638,6 +4648,7 @@ lineNumber:log.entry.lineNumber};
 
 });
 
+
 const headings=[
 {key:'value',itemType:'code',text:'Deprecation / Warning'},
 {key:'url',itemType:'url',text:'URL'},
@@ -4665,7 +4676,88 @@ details};
 
 module.exports=Deprecations;
 
-},{"../report/html/renderer/util":75,"./audit":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
+},{"../report/html/renderer/util":80,"./audit":3}],"../audits/diagnostics":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const MainThreadTasksComputed=require('../computed/main-thread-tasks.js');
+const NetworkRecordsComputed=require('../computed/network-records.js');
+const NetworkAnalysisComputed=require('../computed/network-analysis.js');
+const NetworkAnalyzer=require('../lib/dependency-graph/simulator/network-analyzer.js');
+
+class Diagnostics extends Audit{
+
+
+
+static get meta(){
+return{
+id:'diagnostics',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:'Diagnostics',
+description:'Collection of useful page vitals.',
+requiredArtifacts:['traces','devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const tasks=await MainThreadTasksComputed.request(trace,context);
+const records=await NetworkRecordsComputed.request(devtoolsLog,context);
+const analysis=await NetworkAnalysisComputed.request(devtoolsLog,context);
+
+const toplevelTasks=tasks.filter(t=>!t.parent);
+const mainDocumentTransferSize=NetworkAnalyzer.findMainDocument(records).transferSize;
+const totalByteWeight=records.reduce((sum,r)=>sum+(r.transferSize||0),0);
+const totalTaskTime=toplevelTasks.reduce((sum,t)=>sum+(t.duration||0),0);
+const maxRtt=Math.max(...analysis.additionalRttByOrigin.values())+analysis.rtt;
+const maxServerLatency=Math.max(...analysis.serverResponseTimeByOrigin.values());
+
+const diagnostics={
+numRequests:records.length,
+numScripts:records.filter(r=>r.resourceType==='Script').length,
+numStylesheets:records.filter(r=>r.resourceType==='Stylesheet').length,
+numFonts:records.filter(r=>r.resourceType==='Font').length,
+numTasks:toplevelTasks.length,
+numTasksOver10ms:toplevelTasks.filter(t=>t.duration>10).length,
+numTasksOver25ms:toplevelTasks.filter(t=>t.duration>25).length,
+numTasksOver50ms:toplevelTasks.filter(t=>t.duration>50).length,
+numTasksOver100ms:toplevelTasks.filter(t=>t.duration>100).length,
+numTasksOver500ms:toplevelTasks.filter(t=>t.duration>500).length,
+rtt:analysis.rtt,
+throughput:analysis.throughput,
+maxRtt,
+maxServerLatency,
+totalByteWeight,
+totalTaskTime,
+mainDocumentTransferSize};
+
+
+return{
+score:1,
+rawValue:1,
+details:{
+type:'diagnostic',
+
+items:[diagnostics]}};
+
+
+}}
+
+
+module.exports=Diagnostics;
+
+},{"../computed/main-thread-tasks.js":12,"../computed/network-analysis.js":30,"../computed/network-records.js":31,"../lib/dependency-graph/simulator/network-analyzer.js":57,"./audit.js":3}],"../audits/dobetterweb/appcache-manifest":[function(require,module,exports){
 
 
 
@@ -4892,6 +4984,7 @@ context.options.scorePODR,
 context.options.scoreMedian);
 
 
+
 const headings=[
 {key:'statistic',itemType:'text',text:str_(UIStrings.columnStatistic)},
 {key:'element',itemType:'code',text:str_(UIStrings.columnElement)},
@@ -4939,7 +5032,7 @@ module.exports=DOMSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/dobetterweb/dom-size.js");
-},{"../../lib/i18n/i18n.js":60,"../../report/html/renderer/util.js":75,"../audit":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../../report/html/renderer/util.js":80,"../audit":3}],"../audits/dobetterweb/external-anchors-use-rel-noopener":[function(require,module,exports){
 
 
 
@@ -4962,7 +5055,7 @@ failureTitle:'Links to cross-origin destinations are unsafe',
 description:'Add `rel="noopener"` or `rel="noreferrer"` to any external links to improve '+
 'performance and prevent security vulnerabilities. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/noopener).',
-requiredArtifacts:['URL','AnchorsWithNoRelNoopener']};
+requiredArtifacts:['URL','AnchorElements']};
 
 }
 
@@ -4974,8 +5067,10 @@ static audit(artifacts){
 
 const warnings=[];
 const pageHost=new URL(artifacts.URL.finalUrl).host;
+const failingAnchors=artifacts.AnchorElements.
+filter(anchor=>anchor.target==='_blank'&&!anchor.rel.includes('noopener')&&
+!anchor.rel.includes('noreferrer')).
 
-const failingAnchors=artifacts.AnchorsWithNoRelNoopener.
 filter(anchor=>{
 try{
 return new URL(anchor.href).host!==pageHost;
@@ -4996,6 +5091,7 @@ rel:anchor.rel||'',
 outerHTML:anchor.outerHTML||''};
 
 });
+
 
 const headings=[
 {key:'href',itemType:'url',text:'URL'},
@@ -5058,6 +5154,7 @@ static audit(artifacts){
 
 const results=ViolationAudit.getViolationResults(artifacts,/geolocation/);
 
+
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
 {key:'label',itemType:'text',text:'Location'}];
@@ -5113,8 +5210,9 @@ requiredArtifacts:['JSLibraries']};
 static audit(artifacts){
 const libDetails=artifacts.JSLibraries.map(lib=>({
 name:lib.name,
-version:lib.version,
-npm:lib.npmPkgName||null}));
+version:lib.version||undefined,
+npm:lib.npmPkgName||undefined}));
+
 
 
 const headings=[
@@ -5169,6 +5267,7 @@ requiredArtifacts:['ChromeConsoleMessages']};
 
 static audit(artifacts){
 const results=ViolationAudit.getViolationResults(artifacts,/document\.write/);
+
 
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
@@ -5367,6 +5466,7 @@ displayValue=`${totalVulns} vulnerabilities detected`;
 displayValue=`${totalVulns} vulnerability detected`;
 }
 
+
 const headings=[
 {key:'detectedLib',itemType:'link',text:'Library Version'},
 {key:'vulnCount',itemType:'text',text:'Vulnerability Count'},
@@ -5388,7 +5488,7 @@ details};
 
 module.exports=NoVulnerableLibrariesAudit;
 
-},{"../../../third-party/snyk/snapshot.json":162,"../../lib/sentry":70,"../audit":3,"semver":152}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":168,"../../lib/sentry":74,"../audit":3,"semver":144}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
 
 
 
@@ -5426,6 +5526,7 @@ requiredArtifacts:['ChromeConsoleMessages']};
 
 static audit(artifacts){
 const results=ViolationAudit.getViolationResults(artifacts,/notification permission/);
+
 
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
@@ -5485,6 +5586,7 @@ items.push({
 node:{type:'node',snippet:input.snippet}});
 
 });
+
 
 const headings=[
 {key:'node',itemType:'node',text:'Failing Elements'}];
@@ -5573,6 +5675,7 @@ displayValue=
 displayValue=`${resources.length} request not served via HTTP/2`;
 }
 
+
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
 {key:'protocol',itemType:'text',text:'Protocol'}];
@@ -5595,7 +5698,7 @@ details};
 
 module.exports=UsesHTTP2Audit;
 
-},{"../../computed/network-records.js":29,"../../lib/url-shim":"url","../../report/html/renderer/util.js":75,"../audit":3}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
+},{"../../computed/network-records.js":31,"../../lib/url-shim":"url","../../report/html/renderer/util.js":80,"../audit":3}],"../audits/dobetterweb/uses-passive-event-listeners":[function(require,module,exports){
 
 
 
@@ -5633,6 +5736,7 @@ requiredArtifacts:['ChromeConsoleMessages']};
 
 static audit(artifacts){
 const results=ViolationAudit.getViolationResults(artifacts,/passive event listener/);
+
 
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
@@ -5716,6 +5820,7 @@ url:entry.exceptionDetails.url};
 
 const tableRows=consoleRows.concat(runtimeExRows);
 
+
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
 {key:'description',itemType:'code',text:'Description'}];
@@ -5787,7 +5892,7 @@ data:finalScreenshot.datauri}};
 
 module.exports=FinalScreenshot;
 
-},{"../computed/screenshots.js":31,"../lib/lh-error":64,"./audit":3}],"../audits/font-display":[function(require,module,exports){
+},{"../computed/screenshots.js":33,"../lib/lh-error":67,"./audit":3}],"../audits/font-display":[function(require,module,exports){
 (function(__filename){
 
 
@@ -5798,7 +5903,7 @@ module.exports=FinalScreenshot;
 
 const Audit=require('./audit');
 const URL=require('../lib/url-shim').URL;
-const PASSING_FONT_DISPLAY_REGEX=/block|fallback|optional|swap/;
+const PASSING_FONT_DISPLAY_REGEX=/^(block|fallback|optional|swap)$/;
 const CSS_URL_REGEX=/url\((.*?)\)/;
 const CSS_URL_GLOBAL_REGEX=new RegExp(CSS_URL_REGEX,'g');
 const i18n=require('../lib/i18n/i18n.js');
@@ -5848,11 +5953,13 @@ const newlinesStripped=stylesheet.content.replace(/\n/g,' ');
 const fontFaceDeclarations=newlinesStripped.match(/@font-face\s*{(.*?)}/g)||[];
 
 for(const declaration of fontFaceDeclarations){
-const rawFontDisplay=declaration.match(/font-display:(.*?);/);
+
+
+const rawFontDisplay=declaration.match(/font-display\s*:\s*(\w+)\s*(;|\})/);
 
 if(!rawFontDisplay)continue;
 
-const hasPassingFontDisplay=PASSING_FONT_DISPLAY_REGEX.test(rawFontDisplay[0]);
+const hasPassingFontDisplay=PASSING_FONT_DISPLAY_REGEX.test(rawFontDisplay[1]);
 if(!hasPassingFontDisplay)continue;
 
 
@@ -5914,6 +6021,7 @@ wastedMs};
 
 });
 
+
 const headings=[
 {key:'url',itemType:'url',text:str_(i18n.UIStrings.columnURL)},
 {key:'wastedMs',itemType:'ms',text:str_(i18n.UIStrings.columnWastedMs)}];
@@ -5933,7 +6041,7 @@ module.exports=FontDisplay;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/font-display.js");
-},{"../computed/network-records.js":29,"../lib/i18n/i18n.js":60,"../lib/sentry.js":70,"../lib/url-shim":"url","./audit":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
+},{"../computed/network-records.js":31,"../lib/i18n/i18n.js":63,"../lib/sentry.js":74,"../lib/url-shim":"url","./audit":3}],"../audits/image-aspect-ratio":[function(require,module,exports){
 
 
 
@@ -6029,6 +6137,7 @@ return;
 if(!processed.doRatiosMatch)results.push(processed);
 });
 
+
 const headings=[
 {key:'url',itemType:'thumbnail',text:''},
 {key:'url',itemType:'url',text:'URL'},
@@ -6083,7 +6192,7 @@ failureTitle:'Web app manifest does not meet the installability requirements',
 description:'Browsers can proactively prompt users to add your app to their homescreen, '+
 'which can lead to higher engagement. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/install-prompt).',
-requiredArtifacts:['URL','Manifest']};
+requiredArtifacts:['URL','WebAppManifest']};
 
 }
 
@@ -6128,7 +6237,7 @@ return failures;
 
 
 static async audit_(artifacts,context){
-const manifestValues=await ManifestValues.request(artifacts.Manifest,context);
+const manifestValues=await ManifestValues.request(artifacts.WebAppManifest,context);
 const manifestFailures=InstallableManifest.assessManifest(manifestValues);
 
 return{
@@ -6207,6 +6316,7 @@ displayValue=`${insecureURLs.length} insecure request found`;
 
 const items=Array.from(new Set(insecureURLs)).map(url=>({url}));
 
+
 const headings=[
 {key:'url',itemType:'url',text:'Insecure URL'}];
 
@@ -6225,7 +6335,7 @@ details:Audit.makeTableDetails(headings,items)};
 
 module.exports=HTTPS;
 
-},{"../computed/network-records.js":29,"../lib/url-shim":"url","../report/html/renderer/util":75,"./audit":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
+},{"../computed/network-records.js":31,"../lib/url-shim":"url","../report/html/renderer/util":80,"./audit":3}],"../audits/load-fast-enough-for-pwa":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6333,7 +6443,70 @@ module.exports=LoadFastEnough4Pwa;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/load-fast-enough-for-pwa.js");
-},{"../computed/metrics/interactive.js":18,"../config/constants":37,"../lib/i18n/i18n.js":60,"./audit":3,"lodash.isequal":115}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":18,"../config/constants":40,"../lib/i18n/i18n.js":63,"./audit":3,"lodash.isequal":121}],"../audits/main-thread-tasks":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const MainThreadTasksComputed=require('../computed/main-thread-tasks.js');
+
+class MainThreadTasks extends Audit{
+
+
+
+static get meta(){
+return{
+id:'main-thread-tasks',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:'Tasks',
+description:'Lists the toplevel main thread tasks that executed during page load.',
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const tasks=await MainThreadTasksComputed.request(trace,context);
+
+const results=tasks.
+filter(task=>task.duration>5&&task.parent).
+map(task=>{
+return{
+type:task.group.id,
+duration:task.duration,
+startTime:task.startTime};
+
+});
+
+
+const headings=[
+{key:'type',itemType:'text',text:'Task Type'},
+{key:'startTime',itemType:'ms',granularity:1,text:'Start Time'},
+{key:'duration',itemType:'ms',granularity:1,text:'End Time'}];
+
+
+const tableDetails=Audit.makeTableDetails(headings,results);
+
+return{
+score:1,
+rawValue:results.length,
+details:tableDetails};
+
+}}
+
+
+module.exports=MainThreadTasks;
+
+},{"../computed/main-thread-tasks.js":12,"./audit.js":3}],"../audits/mainthread-work-breakdown":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6442,6 +6615,7 @@ duration:duration};
 
 });
 
+
 const headings=[
 {key:'groupLabel',itemType:'text',text:str_(UIStrings.columnCategory)},
 {key:'duration',itemType:'ms',granularity:1,text:str_(i18n.UIStrings.columnTimeSpent)}];
@@ -6469,7 +6643,7 @@ module.exports=MainThreadWorkBreakdown;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/mainthread-work-breakdown.js");
-},{"../computed/main-thread-tasks.js":12,"../lib/i18n/i18n.js":60,"../lib/task-groups":72,"./audit":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
+},{"../computed/main-thread-tasks.js":12,"../lib/i18n/i18n.js":63,"../lib/task-groups":77,"./audit":3}],"../audits/manual/pwa-cross-browser":[function(require,module,exports){
 
 
 
@@ -6640,7 +6814,7 @@ module.exports=EstimatedInputLatency;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/estimated-input-latency.js");
-},{"../../computed/metrics/estimated-input-latency.js":14,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
+},{"../../computed/metrics/estimated-input-latency.js":14,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics/first-contentful-paint-3g":[function(require,module,exports){
 
 
 
@@ -6650,12 +6824,7 @@ module.exports.UIStrings=UIStrings;
 
 const Audit=require('../audit.js');
 const regular3G=require('../../config/constants.js').throttling.mobileRegluar3G;
-const i18n=require('../../lib/i18n/i18n.js');
-const FCP=require('./first-contentful-paint.js');
 const ComputedFcp=require('../../computed/metrics/first-contentful-paint.js');
-
-const i18nFilename=require.resolve('./first-contentful-paint.js');
-const str_=i18n.createMessageInstanceIdFn(i18nFilename,FCP.UIStrings);
 
 class FirstContentfulPaint3G extends Audit{
 
@@ -6664,8 +6833,9 @@ class FirstContentfulPaint3G extends Audit{
 static get meta(){
 return{
 id:'first-contentful-paint-3g',
-title:str_(FCP.UIStrings.title),
-description:str_(FCP.UIStrings.description),
+title:'First Contentful Paint (3G)',
+description:'First Contentful Paint 3G marks the time at which the first text or image is '+
+`painted while on a 3G network. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/first-contentful-paint).`,
 scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
 requiredArtifacts:['traces','devtoolsLogs']};
 
@@ -6703,14 +6873,14 @@ context.options.scorePODR,
 context.options.scoreMedian),
 
 rawValue:metricResult.timing,
-displayValue:str_(i18n.UIStrings.seconds,{timeInMs:metricResult.timing})};
+displayValue:`${metricResult.timing}\xa0ms`};
 
 }}
 
 
 module.exports=FirstContentfulPaint3G;
 
-},{"../../computed/metrics/first-contentful-paint.js":15,"../../config/constants.js":37,"../../lib/i18n/i18n.js":60,"../audit.js":3,"./first-contentful-paint.js":"../audits/metrics/first-contentful-paint"}],"../audits/metrics/first-contentful-paint":[function(require,module,exports){
+},{"../../computed/metrics/first-contentful-paint.js":15,"../../config/constants.js":40,"../audit.js":3}],"../audits/metrics/first-contentful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6787,7 +6957,7 @@ module.exports=FirstContentfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-contentful-paint.js");
-},{"../../computed/metrics/first-contentful-paint.js":15,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
+},{"../../computed/metrics/first-contentful-paint.js":15,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics/first-cpu-idle":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6868,7 +7038,7 @@ module.exports=FirstCPUIdle;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-cpu-idle.js");
-},{"../../computed/metrics/first-cpu-idle.js":16,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
+},{"../../computed/metrics/first-cpu-idle.js":16,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics/first-meaningful-paint":[function(require,module,exports){
 (function(__filename){
 
 
@@ -6948,7 +7118,7 @@ module.exports=FirstMeaningfulPaint;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/first-meaningful-paint.js");
-},{"../../computed/metrics/first-meaningful-paint.js":17,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics/interactive":[function(require,module,exports){
+},{"../../computed/metrics/first-meaningful-paint.js":17,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics/interactive":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7043,7 +7213,87 @@ module.exports=InteractiveMetric;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/interactive.js");
-},{"../../computed/metrics/interactive.js":18,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics/speed-index":[function(require,module,exports){
+},{"../../computed/metrics/interactive.js":18,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics/max-potential-fid":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+const Audit=require('../audit');
+const ComputedFid=require('../../computed/metrics/max-potential-fid.js');
+const i18n=require('../../lib/i18n/i18n');
+
+const UIStrings={
+
+title:'Max Potential FID',
+
+description:'The potential First Input Delay that your users could experience is the '+
+'duration, in milliseconds, of the longest task.'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+
+
+
+
+
+class MaxPotentialFID extends Audit{
+
+
+
+static get meta(){
+return{
+id:'max-potential-fid',
+title:str_(UIStrings.title),
+description:str_(UIStrings.description),
+scoreDisplayMode:Audit.SCORING_MODES.NUMERIC,
+requiredArtifacts:['traces']};
+
+}
+
+
+
+
+static get defaultOptions(){
+return{
+
+scorePODR:100,
+scoreMedian:250};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const trace=artifacts.traces[Audit.DEFAULT_PASS];
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const metricComputationData={trace,devtoolsLog,settings:context.settings};
+const metricResult=await ComputedFid.request(metricComputationData,context);
+
+return{
+score:Audit.computeLogNormalScore(
+metricResult.timing,
+context.options.scorePODR,
+context.options.scoreMedian),
+
+rawValue:metricResult.timing,
+displayValue:str_(i18n.UIStrings.ms,{timeInMs:metricResult.timing})};
+
+}}
+
+
+module.exports=MaxPotentialFID;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/metrics/max-potential-fid.js");
+},{"../../computed/metrics/max-potential-fid.js":27,"../../lib/i18n/i18n":63,"../audit":3}],"../audits/metrics/speed-index":[function(require,module,exports){
 (function(__filename){
 
 
@@ -7122,7 +7372,7 @@ module.exports=SpeedIndex;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/metrics/speed-index.js");
-},{"../../computed/metrics/speed-index.js":27,"../../lib/i18n/i18n.js":60,"../audit":3}],"../audits/metrics":[function(require,module,exports){
+},{"../../computed/metrics/speed-index.js":29,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/metrics":[function(require,module,exports){
 
 
 
@@ -7164,13 +7414,25 @@ const trace=artifacts.traces[Audit.DEFAULT_PASS];
 const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
 const metricComputationData={trace,devtoolsLog,settings:context.settings};
 
+
+
+
+
+
+
+
+
+const requestOrUndefined=(Artifact,artifact)=>{
+return Artifact.request(artifact,context).catch(_=>undefined);
+};
+
 const traceOfTab=await TraceOfTab.request(trace,context);
 const speedline=await Speedline.request(trace,context);
 const firstContentfulPaint=await FirstContentfulPaint.request(metricComputationData,context);
 const firstMeaningfulPaint=await FirstMeaningfulPaint.request(metricComputationData,context);
-const firstCPUIdle=await FirstCPUIdle.request(metricComputationData,context);
-const interactive=await Interactive.request(metricComputationData,context);
-const speedIndex=await SpeedIndex.request(metricComputationData,context);
+const firstCPUIdle=await requestOrUndefined(FirstCPUIdle,metricComputationData);
+const interactive=await requestOrUndefined(Interactive,metricComputationData);
+const speedIndex=await requestOrUndefined(SpeedIndex,metricComputationData);
 const estimatedInputLatency=await EstimatedInputLatency.request(metricComputationData,context);
 
 
@@ -7180,12 +7442,12 @@ firstContentfulPaint:firstContentfulPaint.timing,
 firstContentfulPaintTs:firstContentfulPaint.timestamp,
 firstMeaningfulPaint:firstMeaningfulPaint.timing,
 firstMeaningfulPaintTs:firstMeaningfulPaint.timestamp,
-firstCPUIdle:firstCPUIdle.timing,
-firstCPUIdleTs:firstCPUIdle.timestamp,
-interactive:interactive.timing,
-interactiveTs:interactive.timestamp,
-speedIndex:speedIndex.timing,
-speedIndexTs:speedIndex.timestamp,
+firstCPUIdle:firstCPUIdle&&firstCPUIdle.timing,
+firstCPUIdleTs:firstCPUIdle&&firstCPUIdle.timestamp,
+interactive:interactive&&interactive.timing,
+interactiveTs:interactive&&interactive.timestamp,
+speedIndex:speedIndex&&speedIndex.timing,
+speedIndexTs:speedIndex&&speedIndex.timestamp,
 estimatedInputLatency:estimatedInputLatency.timing,
 estimatedInputLatencyTs:estimatedInputLatency.timestamp,
 
@@ -7222,11 +7484,15 @@ metrics[key]=Math.round(value);
 }
 
 
-const details={items:[metrics]};
+const details={
+type:'diagnostic',
+
+items:[metrics]};
+
 
 return{
 score:1,
-rawValue:interactive.timing,
+rawValue:interactive&&interactive.timing||0,
 details};
 
 }}
@@ -7268,11 +7534,9 @@ details};
 
 
 
-
-
 module.exports=Metrics;
 
-},{"../computed/metrics/estimated-input-latency.js":14,"../computed/metrics/first-contentful-paint.js":15,"../computed/metrics/first-cpu-idle.js":16,"../computed/metrics/first-meaningful-paint.js":17,"../computed/metrics/interactive.js":18,"../computed/metrics/speed-index.js":27,"../computed/speedline.js":32,"../computed/trace-of-tab.js":33,"./audit":3}],"../audits/mixed-content":[function(require,module,exports){
+},{"../computed/metrics/estimated-input-latency.js":14,"../computed/metrics/first-contentful-paint.js":15,"../computed/metrics/first-cpu-idle.js":16,"../computed/metrics/first-meaningful-paint.js":17,"../computed/metrics/interactive.js":18,"../computed/metrics/speed-index.js":29,"../computed/speedline.js":34,"../computed/trace-of-tab.js":35,"./audit":3}],"../audits/mixed-content":[function(require,module,exports){
 
 
 
@@ -7404,6 +7668,7 @@ upgradeableResources.push(resource);
 const displayValue=`${Util.formatNumber(upgradeableResources.length)}
           ${upgradeableResources.length===1?'request':'requests'}`;
 
+
 const headings=[
 {key:'fullUrl',itemType:'url',text:'URL'}];
 
@@ -7424,7 +7689,7 @@ details};
 
 module.exports=MixedContent;
 
-},{"../computed/network-records.js":29,"../lib/url-shim":"url","../report/html/renderer/util":75,"./audit":3}],"../audits/network-requests":[function(require,module,exports){
+},{"../computed/network-records.js":31,"../lib/url-shim":"url","../report/html/renderer/util":80,"./audit":3}],"../audits/network-requests":[function(require,module,exports){
 
 
 
@@ -7473,11 +7738,13 @@ url:URL.elideDataURI(record.url),
 startTime:timeToMs(record.startTime),
 endTime:timeToMs(record.endTime),
 transferSize:record.transferSize,
+resourceSize:record.resourceSize,
 statusCode:record.statusCode,
 mimeType:record.mimeType,
 resourceType:record.resourceType};
 
 });
+
 
 const headings=[
 {key:'url',itemType:'url',text:'URL'},
@@ -7489,6 +7756,13 @@ itemType:'bytes',
 displayUnit:'kb',
 granularity:1,
 text:'Transfer Size'},
+
+{
+key:'resourceSize',
+itemType:'bytes',
+displayUnit:'kb',
+granularity:1,
+text:'Resource Size'},
 
 {key:'statusCode',itemType:'text',text:'Status Code'},
 {key:'mimeType',itemType:'text',text:'MIME Type'},
@@ -7508,7 +7782,174 @@ details:tableDetails};
 
 module.exports=NetworkRequests;
 
-},{"../computed/network-records.js":29,"../lib/url-shim":"url","./audit":3}],"../audits/offline-start-url":[function(require,module,exports){
+},{"../computed/network-records.js":31,"../lib/url-shim":"url","./audit":3}],"../audits/network-rtt":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit.js');
+const i18n=require('../lib/i18n/i18n.js');
+const NetworkAnalysisComputed=require('../computed/network-analysis.js');
+
+const UIStrings={
+
+title:'Network Round Trip Times',
+
+description:'Network round trip times (RTT) have a large impact on performance. '+
+'If the RTT to an origin is high, it\'s an indication that servers closer to the user could '+
+'improve performance. [Learn more](https://hpbn.co/primer-on-latency-and-bandwidth/).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+class NetworkRTT extends Audit{
+
+
+
+static get meta(){
+return{
+id:'network-rtt',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:str_(UIStrings.title),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const analysis=await NetworkAnalysisComputed.request(devtoolsLog,context);
+
+
+let maxRtt=0;
+const baseRtt=analysis.rtt;
+
+const results=[];
+for(const[origin,additionalRtt]of analysis.additionalRttByOrigin.entries()){
+
+if(!origin.startsWith('http'))continue;
+
+const rtt=additionalRtt+baseRtt;
+results.push({origin,rtt});
+maxRtt=Number.isFinite(rtt)?Math.max(rtt,maxRtt):maxRtt;
+}
+
+results.sort((a,b)=>b.rtt-a.rtt);
+
+
+const headings=[
+{key:'origin',itemType:'text',text:str_(i18n.UIStrings.columnURL)},
+{key:'rtt',itemType:'ms',granularity:1,text:str_(i18n.UIStrings.columnTimeSpent)}];
+
+
+const tableDetails=Audit.makeTableDetails(headings,results);
+
+return{
+score:1,
+rawValue:maxRtt,
+displayValue:str_(i18n.UIStrings.ms,{timeInMs:maxRtt}),
+details:tableDetails};
+
+}}
+
+
+module.exports=NetworkRTT;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/network-rtt.js");
+},{"../computed/network-analysis.js":30,"../lib/i18n/i18n.js":63,"./audit.js":3}],"../audits/network-server-latency":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+const Audit=require('./audit');
+const i18n=require('../lib/i18n/i18n.js');
+const NetworkAnalysisComputed=require('../computed/network-analysis.js');
+
+const UIStrings={
+
+title:'Server Backend Latencies',
+
+description:'Server latencies can impact web performance. '+
+'If the server latency of an origin is high, it\'s an indication the server is overloaded '+
+'or has poor backend performance. [Learn more](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+class NetworkServerLatency extends Audit{
+
+
+
+static get meta(){
+return{
+id:'network-server-latency',
+scoreDisplayMode:Audit.SCORING_MODES.INFORMATIVE,
+title:str_(UIStrings.title),
+description:str_(UIStrings.description),
+requiredArtifacts:['devtoolsLogs']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const analysis=await NetworkAnalysisComputed.request(devtoolsLog,context);
+
+
+let maxLatency=0;
+
+const results=[];
+for(const[origin,serverReponseTime]of analysis.serverResponseTimeByOrigin.entries()){
+
+if(!origin.startsWith('http'))continue;
+
+maxLatency=Math.max(serverReponseTime,maxLatency);
+results.push({origin,serverReponseTime});
+}
+
+results.sort((a,b)=>b.serverReponseTime-a.serverReponseTime);
+
+
+const headings=[
+{key:'origin',itemType:'text',text:str_(i18n.UIStrings.columnURL)},
+{key:'serverReponseTime',itemType:'ms',granularity:1,
+text:str_(i18n.UIStrings.columnTimeSpent)}];
+
+
+const tableDetails=Audit.makeTableDetails(headings,results);
+
+return{
+score:Math.max(1-maxLatency/500,0),
+rawValue:maxLatency,
+displayValue:str_(i18n.UIStrings.ms,{timeInMs:maxLatency}),
+details:tableDetails};
+
+}}
+
+
+module.exports=NetworkServerLatency;
+module.exports.UIStrings=UIStrings;
+
+}).call(this,"/lighthouse-core/audits/network-server-latency.js");
+},{"../computed/network-analysis.js":30,"../lib/i18n/i18n.js":63,"./audit":3}],"../audits/offline-start-url":[function(require,module,exports){
 
 
 
@@ -7528,7 +7969,7 @@ id:'offline-start-url',
 title:'start_url responds with a 200 when offline',
 failureTitle:'start_url does not respond with a 200 when offline',
 description:'A service worker enables your web app to be reliable in unpredictable network conditions. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/http-200-when-offline).',
-requiredArtifacts:['Manifest','StartUrl']};
+requiredArtifacts:['WebAppManifest','StartUrl']};
 
 }
 
@@ -7540,7 +7981,7 @@ static audit(artifacts){
 
 
 const warnings=[];
-const manifest=artifacts.Manifest;
+const manifest=artifacts.WebAppManifest;
 if(manifest&&manifest.value&&manifest.value.start_url.warning){
 const manifestWarning=manifest.value.start_url.warning;
 warnings.push('We couldn\'t read the start_url from the manifest. As a result, the '+
@@ -7652,14 +8093,18 @@ return{
 score,
 rawValue:values.roughEstimateOfTTI,
 displayValue:Util.formatMilliseconds(values.roughEstimateOfTTI),
-details:{items:[values]}};
+details:{
+type:'diagnostic',
+
+items:[values]}};
+
 
 }}
 
 
 module.exports=PredictivePerf;
 
-},{"../computed/metrics/lantern-estimated-input-latency.js":19,"../computed/metrics/lantern-first-contentful-paint.js":20,"../computed/metrics/lantern-first-cpu-idle.js":21,"../computed/metrics/lantern-first-meaningful-paint.js":22,"../computed/metrics/lantern-interactive.js":23,"../computed/metrics/lantern-speed-index.js":25,"../report/html/renderer/util":75,"./audit":3}],"../audits/redirects-http":[function(require,module,exports){
+},{"../computed/metrics/lantern-estimated-input-latency.js":19,"../computed/metrics/lantern-first-contentful-paint.js":20,"../computed/metrics/lantern-first-cpu-idle.js":21,"../computed/metrics/lantern-first-meaningful-paint.js":22,"../computed/metrics/lantern-interactive.js":23,"../computed/metrics/lantern-speed-index.js":26,"../report/html/renderer/util":80,"./audit":3}],"../audits/redirects-http":[function(require,module,exports){
 
 
 
@@ -7827,7 +8272,7 @@ module.exports=Redirects;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/redirects.js");
-},{"../computed/main-resource.js":11,"../computed/metrics/lantern-interactive.js":23,"../computed/network-records.js":29,"../computed/trace-of-tab.js":33,"../lib/i18n/i18n.js":60,"./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/screenshot-thumbnails":[function(require,module,exports){
+},{"../computed/main-resource.js":11,"../computed/metrics/lantern-interactive.js":23,"../computed/network-records.js":31,"../computed/trace-of-tab.js":35,"../lib/i18n/i18n.js":63,"./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/screenshot-thumbnails":[function(require,module,exports){
 
 
 
@@ -7947,8 +8392,9 @@ frameForTimestamp=frame;
 });
 }
 let base64Data;
-if(cachedThumbnails.has(frameForTimestamp)){
-base64Data=cachedThumbnails.get(frameForTimestamp);
+const cachedThumbnail=cachedThumbnails.get(frameForTimestamp);
+if(cachedThumbnail){
+base64Data=cachedThumbnail;
 }else{
 const imageData=frameForTimestamp.getParsedImage();
 const thumbnailImageData=ScreenshotThumbnails.scaleImageToThumbnail(imageData);
@@ -7976,7 +8422,8 @@ items:thumbnails}};
 
 module.exports=ScreenshotThumbnails;
 
-},{"../computed/metrics/interactive.js":18,"../computed/speedline.js":32,"../lib/lh-error":64,"./audit":3,"jpeg-js":111}],"../audits/seo/canonical":[function(require,module,exports){
+},{"../computed/metrics/interactive.js":18,"../computed/speedline.js":34,"../lib/lh-error":67,"./audit":3,"jpeg-js":117}],"../audits/seo/canonical":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -7989,6 +8436,32 @@ const LinkHeader=require('http-link-header');
 const URL=require('../../lib/url-shim');
 const MainResource=require('../../computed/main-resource.js');
 const LINK_HEADER='link';
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Document has a valid `rel=canonical`',
+
+failureTitle:'Document does not have a valid `rel=canonical`',
+
+description:'Canonical links suggest which URL to show in search results. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/canonical).',
+
+explanationConflict:'Multiple conflicting URLs ({urlList})',
+
+explanationInvalid:'Invalid URL ({url})',
+
+explanationRelative:'Relative URL ({url})',
+
+explanationPointsElsewhere:'Points to another `hreflang` location ({url})',
+
+explanationDifferentDomain:'Points to a different domain ({url})',
+
+explanationRoot:'Points to the domain\'s root URL (the homepage), '+
+'instead of an equivalent page of content'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -8041,10 +8514,9 @@ class Canonical extends Audit{
 static get meta(){
 return{
 id:'canonical',
-title:'Document has a valid `rel=canonical`',
-failureTitle:'Document does not have a valid `rel=canonical`',
-description:'Canonical links suggest which URL to show in search results. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/canonical).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['Canonical','Hreflang','URL']};
 
 }
@@ -8097,7 +8569,7 @@ notApplicable:true};
 if(canonicals.length>1){
 return{
 rawValue:false,
-explanation:`Multiple conflicting URLs (${canonicals.join(', ')})`};
+explanation:str_(UIStrings.explanationConflict,{urlList:canonicals.join(', ')})};
 
 }
 
@@ -8106,14 +8578,14 @@ const canonical=canonicals[0];
 if(!isValidRelativeOrAbsoluteURL(canonical)){
 return{
 rawValue:false,
-explanation:`Invalid URL (${canonical})`};
+explanation:str_(UIStrings.explanationInvalid,{url:canonical})};
 
 }
 
 if(!URL.isValid(canonical)){
 return{
 rawValue:false,
-explanation:`Relative URL (${canonical})`};
+explanation:str_(UIStrings.explanationRelative,{url:canonical})};
 
 }
 
@@ -8124,7 +8596,7 @@ if(hreflangs.includes(baseURL.href)&&hreflangs.includes(canonicalURL.href)&&
 baseURL.href!==canonicalURL.href){
 return{
 rawValue:false,
-explanation:`Points to another hreflang location (${baseURL.href})`};
+explanation:str_(UIStrings.explanationPointsElsewhere,{url:baseURL.href})};
 
 }
 
@@ -8133,7 +8605,7 @@ explanation:`Points to another hreflang location (${baseURL.href})`};
 if(getPrimaryDomain(canonicalURL)!==getPrimaryDomain(baseURL)){
 return{
 rawValue:false,
-explanation:`Points to a different domain (${canonicalURL})`};
+explanation:str_(UIStrings.explanationDifferentDomain,{url:canonicalURL})};
 
 }
 
@@ -8142,7 +8614,7 @@ if(canonicalURL.origin===baseURL.origin&&
 canonicalURL.pathname==='/'&&baseURL.pathname!=='/'){
 return{
 rawValue:false,
-explanation:'Points to a root of the same origin'};
+explanation:str_(UIStrings.explanationRoot)};
 
 }
 
@@ -8154,8 +8626,10 @@ rawValue:true};
 
 
 module.exports=Canonical;
+module.exports.UIStrings=UIStrings;
 
-},{"../../computed/main-resource.js":11,"../../lib/url-shim":"url","../audit":3,"http-link-header":95}],"../audits/seo/font-size":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/canonical.js");
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3,"http-link-header":101}],"../audits/seo/font-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8169,7 +8643,7 @@ module.exports=Canonical;
 const URL=require('../../lib/url-shim');
 const i18n=require('../../lib/i18n/i18n.js');
 const Audit=require('../audit');
-const ViewportAudit=require('../viewport');
+const ComputedViewportMeta=require('../../computed/viewport-meta.js');
 const MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT=60;
 
 const UIStrings={
@@ -8180,7 +8654,15 @@ failureTitle:'Document doesn\'t use legible font sizes',
 
 description:'Font sizes less than 12px are too small to be legible and require mobile visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/font-sizes).',
 
-displayValue:'{decimalProportion, number, extendedPercent} legible text'};
+displayValue:'{decimalProportion, number, extendedPercent} legible text',
+
+explanationViewport:'Text is illegible because there\'s no viewport meta tag optimized '+
+'for mobile screens.',
+
+explanation:'{decimalProportion, number, extendedPercent} of text is too small.',
+
+explanationWithDisclaimer:'{decimalProportion, number, extendedPercent} of text is too '+
+'small (based on {decimalProportionVisited, number, extendedPercent} sample).'};
 
 
 const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
@@ -8358,7 +8840,7 @@ id:'font-size',
 title:str_(UIStrings.title),
 failureTitle:str_(UIStrings.failureTitle),
 description:str_(UIStrings.description),
-requiredArtifacts:['FontSize','URL','MetaElements']};
+requiredArtifacts:['FontSize','URL','MetaElements','TestedAsMobileDevice']};
 
 }
 
@@ -8366,12 +8848,21 @@ requiredArtifacts:['FontSize','URL','MetaElements']};
 
 
 
-static audit(artifacts){
-const hasViewportSet=ViewportAudit.audit(artifacts).rawValue;
-if(!hasViewportSet){
+
+static async audit(artifacts,context){
+if(!artifacts.TestedAsMobileDevice){
+
+return{
+rawValue:true,
+notApplicable:true};
+
+}
+
+const viewportMeta=await ComputedViewportMeta.request(artifacts,context);
+if(!viewportMeta.isMobileOptimized){
 return{
 rawValue:false,
-explanation:'Text is illegible because of a missing viewport config'};
+explanation:str_(UIStrings.explanationViewport)};
 
 }
 
@@ -8393,6 +8884,7 @@ const failingRules=getUniqueFailingRules(analyzedFailingNodesData);
 const percentageOfPassingText=
 (visitedTextLength-failingTextLength)/visitedTextLength*100;
 const pageUrl=artifacts.URL.finalUrl;
+
 
 const headings=[
 {key:'source',itemType:'url',text:'Source'},
@@ -8444,16 +8936,20 @@ const passed=percentageOfPassingText>=MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT;
 
 let explanation;
 if(!passed){
-const percentageOfFailingText=parseFloat((100-percentageOfPassingText).toFixed(2));
-let disclaimer='';
+const percentageOfFailingText=(100-percentageOfPassingText)/100;
 
 
 if(visitedTextLength<totalTextLength){
-const percentageOfVisitedText=visitedTextLength/totalTextLength*100;
-disclaimer=` (based on ${percentageOfVisitedText.toFixed()}% sample)`;
-}
+const percentageOfVisitedText=visitedTextLength/totalTextLength;
+explanation=str_(UIStrings.explanationWithDisclaimer,
+{
+decimalProportion:percentageOfFailingText,
+decimalProportionVisited:percentageOfVisitedText});
 
-explanation=`${percentageOfFailingText}% of text is too small${disclaimer}.`;
+}else{
+explanation=str_(UIStrings.explanation,
+{decimalProportion:percentageOfFailingText});
+}
 }
 
 return{
@@ -8469,8 +8965,8 @@ module.exports=FontSize;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/font-size.js");
-},{"../../lib/i18n/i18n.js":60,"../../lib/url-shim":"url","../audit":3,"../viewport":"../audits/viewport"}],"../audits/seo/hreflang":[function(require,module,exports){
-(function(global){
+},{"../../computed/viewport-meta.js":37,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3}],"../audits/seo/hreflang":[function(require,module,exports){
+(function(global,__filename){
 
 
 
@@ -8484,6 +8980,20 @@ const MainResource=require('../../computed/main-resource.js');
 const VALID_LANGS=importValidLangs();
 const LINK_HEADER='link';
 const NO_LANGUAGE='x-default';
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Document has a valid `hreflang`',
+
+failureTitle:'Document doesn\'t have a valid `hreflang`',
+
+description:'hreflang links tell search engines what version of a page they should '+
+'list in search results for a given language or region. [Learn more]'+
+'(https://developers.google.com/web/tools/lighthouse/audits/hreflang).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -8538,11 +9048,9 @@ class Hreflang extends Audit{
 static get meta(){
 return{
 id:'hreflang',
-title:'Document has a valid `hreflang`',
-failureTitle:'Document doesn\'t have a valid `hreflang`',
-description:'hreflang links tell search engines what version of a page they should '+
-'list in search results for a given language or region. [Learn more]'+
-'(https://developers.google.com/web/tools/lighthouse/audits/hreflang).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['Hreflang','URL']};
 
 }
@@ -8578,6 +9086,7 @@ mainResource.responseHeaders&&mainResource.responseHeaders.
 filter(h=>h.name.toLowerCase()===LINK_HEADER&&!headerHasValidHreflangs(h.value)).
 forEach(h=>invalidHreflangs.push({source:`${h.name}: ${h.value}`}));
 
+
 const headings=[
 {key:'source',itemType:'code',text:'Source'}];
 
@@ -8592,9 +9101,11 @@ details};
 
 
 module.exports=Hreflang;
+module.exports.UIStrings=UIStrings;
 
-}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"../../computed/main-resource.js":11,"../audit":3,"axe-core/lib/commons/utils/valid-langs.js":83,"http-link-header":95}],"../audits/seo/http-status-code":[function(require,module,exports){
+}).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/audits/seo/hreflang.js");
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../audit":3,"axe-core/lib/commons/utils/valid-langs.js":88,"http-link-header":101}],"../audits/seo/http-status-code":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -8606,6 +9117,20 @@ const Audit=require('../audit');
 const MainResource=require('../../computed/main-resource.js');
 const HTTP_UNSUCCESSFUL_CODE_LOW=400;
 const HTTP_UNSUCCESSFUL_CODE_HIGH=599;
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Page has successful HTTP status code',
+
+failureTitle:'Page has unsuccessful HTTP status code',
+
+description:'Pages with unsuccessful HTTP status codes may not be indexed properly. '+
+'[Learn more]'+
+'(https://developers.google.com/web/tools/lighthouse/audits/successful-http-code).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 class HTTPStatusCode extends Audit{
 
@@ -8614,11 +9139,9 @@ class HTTPStatusCode extends Audit{
 static get meta(){
 return{
 id:'http-status-code',
-title:'Page has successful HTTP status code',
-failureTitle:'Page has unsuccessful HTTP status code',
-description:'Pages with unsuccessful HTTP status codes may not be indexed properly. '+
-'[Learn more]'+
-'(https://developers.google.com/web/tools/lighthouse/audits/successful-http-code).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['devtoolsLogs','URL']};
 
 }
@@ -8652,8 +9175,11 @@ rawValue:true};
 
 
 module.exports=HTTPStatusCode;
+module.exports.UIStrings=UIStrings;
 
-},{"../../computed/main-resource.js":11,"../audit":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/http-status-code.js");
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/seo/is-crawlable":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -8671,6 +9197,20 @@ const BLOCKLIST=new Set([
 
 const ROBOTS_HEADER='x-robots-tag';
 const UNAVAILABLE_AFTER='unavailable_after';
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Page isn’t blocked from indexing',
+
+failureTitle:'Page is blocked from indexing',
+
+description:'Search engines are unable to include your pages in search results '+
+'if they don\'t have permission to crawl them. [Learn '+
+'more](https://developers.google.com/web/tools/lighthouse/audits/indexing).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -8720,11 +9260,9 @@ class IsCrawlable extends Audit{
 static get meta(){
 return{
 id:'is-crawlable',
-title:'Page isn’t blocked from indexing',
-failureTitle:'Page is blocked from indexing',
-description:'Search engines are unable to include your pages in search results '+
-'if they don\'t have permission to crawl them. [Learn '+
-'more](https://developers.google.com/web/tools/lighthouse/audits/indexing).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['MetaElements','RobotsTxt','URL']};
 
 }
@@ -8776,6 +9314,7 @@ value:robotsFileUrl.href}});
 }
 }
 
+
 const headings=[
 {key:'source',itemType:'code',text:'Blocking Directive Source'}];
 
@@ -8790,8 +9329,11 @@ details};
 
 
 module.exports=IsCrawlable;
+module.exports.UIStrings=UIStrings;
 
-},{"../../computed/main-resource.js":11,"../../lib/url-shim":"url","../audit":3,"robots-parser":150}],"../audits/seo/link-text":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/is-crawlable.js");
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3,"robots-parser":142}],"../audits/seo/link-text":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -8812,6 +9354,24 @@ const BLOCKLIST=new Set([
 'more',
 'learn more']);
 
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Links have descriptive text',
+
+failureTitle:'Links do not have descriptive text',
+
+description:'Descriptive link text helps search engines understand your content. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/descriptive-link-text).',
+
+displayValue:`{itemCount, plural,
+    =1 {1 link found}
+    other {# links found}
+    }`};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 class LinkText extends Audit{
 
@@ -8820,11 +9380,10 @@ class LinkText extends Audit{
 static get meta(){
 return{
 id:'link-text',
-title:'Links have descriptive text',
-failureTitle:'Links do not have descriptive text',
-description:'Descriptive link text helps search engines understand your content. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/descriptive-link-text).',
-requiredArtifacts:['URL','CrawlableLinks']};
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['URL','AnchorElements']};
 
 }
 
@@ -8833,7 +9392,8 @@ requiredArtifacts:['URL','CrawlableLinks']};
 
 
 static audit(artifacts){
-const failingLinks=artifacts.CrawlableLinks.
+const failingLinks=artifacts.AnchorElements.
+filter(link=>link.href&&!link.rel.includes('nofollow')).
 filter(link=>{
 const href=link.href.toLowerCase();
 if(
@@ -8853,6 +9413,7 @@ text:link.text.trim()};
 
 });
 
+
 const headings=[
 {key:'href',itemType:'url',text:'Link destination'},
 {key:'text',itemType:'text',text:'Link Text'}];
@@ -8862,8 +9423,7 @@ const details=Audit.makeTableDetails(headings,failingLinks,{});
 let displayValue;
 
 if(failingLinks.length){
-displayValue=failingLinks.length>1?
-`${failingLinks.length} links found`:'1 link found';
+displayValue=str_(UIStrings.displayValue,{itemCount:failingLinks.length});
 }
 
 return{
@@ -8875,37 +9435,11 @@ displayValue};
 
 
 module.exports=LinkText;
+module.exports.UIStrings=UIStrings;
 
-},{"../../lib/url-shim":"url","../audit":3}],"../audits/seo/manual/mobile-friendly":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const ManualAudit=require('../../manual/manual-audit');
-
-
-
-
-
-class MobileFriendly extends ManualAudit{
-
-
-
-static get meta(){
-return Object.assign({
-id:'mobile-friendly',
-description:'Take the [Mobile-Friendly Test](https://search.google.com/test/mobile-friendly) to check for audits not covered by Lighthouse, like sizing tap targets appropriately. [Learn more](https://developers.google.com/search/mobile-sites/).',
-title:'Page is mobile friendly'},
-super.partialMeta);
-}}
-
-
-module.exports=MobileFriendly;
-
-},{"../../manual/manual-audit":5}],"../audits/seo/manual/structured-data":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/link-text.js");
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3}],"../audits/seo/manual/structured-data":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -8914,6 +9448,16 @@ module.exports=MobileFriendly;
 'use strict';
 
 const ManualAudit=require('../../manual/manual-audit');
+const i18n=require('../../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+description:'Run the [Structured Data Testing Tool](https://search.google.com/structured-data/testing-tool/) and the [Structured Data Linter](http://linter.structured-data.org/) to validate structured data. [Learn more](https://developers.google.com/search/docs/guides/mark-up-content).',
+
+title:'Structured data is valid'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -8926,15 +9470,18 @@ class StructuredData extends ManualAudit{
 static get meta(){
 return Object.assign({
 id:'structured-data',
-description:'Run the [Structured Data Testing Tool](https://search.google.com/structured-data/testing-tool/) and the [Structured Data Linter](http://linter.structured-data.org/) to validate structured data. [Learn more](https://developers.google.com/search/docs/guides/mark-up-content).',
-title:'Structured data is valid'},
+description:str_(UIStrings.description),
+title:str_(UIStrings.title)},
 super.partialMeta);
 }}
 
 
 module.exports=StructuredData;
+module.exports.UIStrings=UIStrings;
 
-},{"../../manual/manual-audit":5}],"../audits/seo/meta-description":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/manual/structured-data.js");
+},{"../../../lib/i18n/i18n.js":63,"../../manual/manual-audit":5}],"../audits/seo/meta-description":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -8943,6 +9490,22 @@ module.exports=StructuredData;
 'use strict';
 
 const Audit=require('../audit');
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Document has a meta description',
+
+failureTitle:'Document does not have a meta description',
+
+description:'Meta descriptions may be included in search results to concisely summarize '+
+'page content. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/description).',
+
+explanation:'Description text is empty.'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 class Description extends Audit{
 
@@ -8951,11 +9514,9 @@ class Description extends Audit{
 static get meta(){
 return{
 id:'meta-description',
-title:'Document has a meta description',
-failureTitle:'Document does not have a meta description',
-description:'Meta descriptions may be included in search results to concisely summarize '+
-'page content. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/description).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['MetaElements']};
 
 }
@@ -8976,7 +9537,7 @@ const description=metaDescription.content||'';
 if(description.trim().length===0){
 return{
 rawValue:false,
-explanation:'Description text is empty.'};
+explanation:str_(UIStrings.explanation)};
 
 }
 
@@ -8987,8 +9548,11 @@ rawValue:true};
 
 
 module.exports=Description;
+module.exports.UIStrings=UIStrings;
 
-},{"../audit":3}],"../audits/seo/plugins":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/meta-description.js");
+},{"../../lib/i18n/i18n.js":63,"../audit":3}],"../audits/seo/plugins":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -9022,6 +9586,20 @@ const SOURCE_PARAMS=new Set([
 'source',
 'src']);
 
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Document avoids plugins',
+
+failureTitle:'Document uses plugins',
+
+description:'Search engines can\'t index plugin content, and '+
+'many devices restrict plugins or don\'t support them. '+
+'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/plugins).'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -9064,11 +9642,9 @@ class Plugins extends Audit{
 static get meta(){
 return{
 id:'plugins',
-title:'Document avoids plugins',
-failureTitle:'Document uses plugins',
-description:'Search engines can\'t index plugin content, and '+
-'many devices restrict plugins or don\'t support them. '+
-'[Learn more](https://developers.google.com/web/tools/lighthouse/audits/plugins).',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['EmbeddedContent']};
 
 }
@@ -9131,6 +9707,7 @@ snippet:`<${tagName}${attributes}>${params}</${tagName}>`}};
 
 });
 
+
 const headings=[
 {key:'source',itemType:'code',text:'Element source'}];
 
@@ -9145,8 +9722,11 @@ details};
 
 
 module.exports=Plugins;
+module.exports.UIStrings=UIStrings;
 
-},{"../../lib/url-shim":"url","../audit":3}],"../audits/seo/robots-txt":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/plugins.js");
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3}],"../audits/seo/robots-txt":[function(require,module,exports){
+(function(__filename){
 
 
 
@@ -9180,6 +9760,28 @@ DIRECTIVE_ALLOW,DIRECTIVE_SITEMAP,
 'request-rate','visit-time','noindex']);
 
 const SITEMAP_VALID_PROTOCOLS=new Set(['https:','http:','ftp:']);
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'robots.txt is valid',
+
+failureTitle:'robots.txt is not valid',
+
+description:'If your robots.txt file is malformed, crawlers may not be able to understand '+
+'how you want your website to be crawled or indexed.',
+
+displayValueHttpBadCode:'request for robots.txt returned HTTP status: {statusCode}',
+
+displayValueValidationError:`{itemCount, plural,
+    =1 {1 error found}
+    other {# errors found}
+    }`,
+
+explanation:'Lighthouse was unable to download a robots.txt file'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
@@ -9310,10 +9912,9 @@ class RobotsTxt extends Audit{
 static get meta(){
 return{
 id:'robots-txt',
-title:'robots.txt is valid',
-failureTitle:'robots.txt is not valid',
-description:'If your robots.txt file is malformed, crawlers may not be able to understand '+
-'how you want your website to be crawled or indexed.',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
 requiredArtifacts:['RobotsTxt']};
 
 }
@@ -9331,14 +9932,14 @@ artifacts.RobotsTxt;
 if(!status){
 return{
 rawValue:false,
-explanation:'Lighthouse was unable to download your robots.txt file'};
+explanation:str_(UIStrings.explanation)};
 
 }
 
 if(status>=HTTP_SERVER_ERROR_CODE_LOW){
 return{
 rawValue:false,
-displayValue:`request for robots.txt returned HTTP${status}`};
+displayValue:str_(UIStrings.displayValueHttpBadCode,{statusCode:status})};
 
 }else if(status>=HTTP_CLIENT_ERROR_CODE_LOW||content===''){
 return{
@@ -9354,6 +9955,7 @@ throw new Error(`Status ${status} was valid, but content was null`);
 
 const validationErrors=validateRobots(content);
 
+
 const headings=[
 {key:'index',itemType:'text',text:'Line #'},
 {key:'line',itemType:'code',text:'Content'},
@@ -9364,8 +9966,8 @@ const details=Audit.makeTableDetails(headings,validationErrors,{});
 let displayValue;
 
 if(validationErrors.length){
-displayValue=validationErrors.length>1?
-`${validationErrors.length} errors found`:'1 error found';
+displayValue=
+str_(UIStrings.displayValueValidationError,{itemCount:validationErrors.length});
 }
 
 return{
@@ -9377,8 +9979,382 @@ displayValue};
 
 
 module.exports=RobotsTxt;
+module.exports.UIStrings=UIStrings;
 
-},{"../../lib/url-shim":"url","../audit":3}],"../audits/service-worker":[function(require,module,exports){
+}).call(this,"/lighthouse-core/audits/seo/robots-txt.js");
+},{"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3}],"../audits/seo/tap-targets":[function(require,module,exports){
+(function(__filename){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+const Audit=require('../audit');
+const ComputedViewportMeta=require('../../computed/viewport-meta.js');
+const{
+rectsTouchOrOverlap,
+getRectOverlapArea,
+getRectAtCenter,
+allRectsContainedWithinEachOther,
+getLargestRect,
+getBoundingRectWithPadding}=
+require('../../lib/rect-helpers');
+const{getTappableRectsFromClientRects}=require('../../lib/tappable-rects');
+const i18n=require('../../lib/i18n/i18n.js');
+
+const UIStrings={
+
+title:'Tap targets are sized appropriately',
+
+failureTitle:'Tap targets are not sized appropriately',
+
+description:'Interactive elements like buttons and links should be large enough (48x48px), and have enough space around them, to be easy enough to tap without overlapping onto other elements. [Learn more](https://developers.google.com/web/fundamentals/accessibility/accessible-styles#multi-device_responsive_design).',
+
+tapTargetHeader:'Tap Target',
+
+sizeHeader:'Size',
+
+overlappingTargetHeader:'Overlapping Target',
+
+
+explanationViewportMetaNotOptimized:'Tap targets are too small because there\'s no viewport meta tag optimized for mobile screens',
+
+displayValue:'{decimalProportion, number, percent} appropriately sized tap targets'};
+
+
+const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
+
+const FINGER_SIZE_PX=48;
+
+
+const MAX_ACCEPTABLE_OVERLAP_SCORE_RATIO=0.25;
+
+
+
+
+
+
+
+function getBoundedTapTargets(targets){
+return targets.map(tapTarget=>{
+return{
+tapTarget,
+paddedBoundsRect:getBoundingRectWithPadding(tapTarget.clientRects,FINGER_SIZE_PX)};
+
+});
+}
+
+
+
+
+function clientRectBelowMinimumSize(cr){
+return cr.width<FINGER_SIZE_PX||cr.height<FINGER_SIZE_PX;
+}
+
+
+
+
+
+
+function getTooSmallTargets(targets){
+return targets.filter(target=>{
+return target.tapTarget.clientRects.every(clientRectBelowMinimumSize);
+});
+}
+
+
+
+
+
+
+function getAllOverlapFailures(tooSmallTargets,allTargets){
+
+const failures=[];
+
+tooSmallTargets.forEach(target=>{
+
+const tappableRects=getTappableRectsFromClientRects(target.tapTarget.clientRects);
+
+for(const maybeOverlappingTarget of allTargets){
+if(maybeOverlappingTarget===target){
+
+continue;
+}
+
+if(!rectsTouchOrOverlap(target.paddedBoundsRect,maybeOverlappingTarget.paddedBoundsRect)){
+
+continue;
+}
+
+if(target.tapTarget.href===maybeOverlappingTarget.tapTarget.href){
+const isHttpOrHttpsLink=/https?:\/\//.test(target.tapTarget.href);
+if(isHttpOrHttpsLink){
+
+continue;
+}
+}
+
+const maybeOverlappingRects=maybeOverlappingTarget.tapTarget.clientRects;
+if(allRectsContainedWithinEachOther(tappableRects,maybeOverlappingRects)){
+
+
+
+
+continue;
+}
+
+const rectFailure=getOverlapFailureForTargetPair(tappableRects,maybeOverlappingRects);
+if(rectFailure){
+failures.push({
+...rectFailure,
+tapTarget:target.tapTarget,
+overlappingTarget:maybeOverlappingTarget.tapTarget});
+
+}
+}
+});
+
+return failures;
+}
+
+
+
+
+
+
+function getOverlapFailureForTargetPair(tappableRects,maybeOverlappingRects){
+
+let greatestFailure=null;
+
+for(const targetCR of tappableRects){
+const fingerRect=getRectAtCenter(targetCR,FINGER_SIZE_PX);
+
+
+const tapTargetScore=getRectOverlapArea(fingerRect,targetCR);
+
+for(const maybeOverlappingCR of maybeOverlappingRects){
+const overlappingTargetScore=getRectOverlapArea(fingerRect,maybeOverlappingCR);
+
+const overlapScoreRatio=overlappingTargetScore/tapTargetScore;
+if(overlapScoreRatio<MAX_ACCEPTABLE_OVERLAP_SCORE_RATIO){
+
+
+continue;
+}
+
+
+if(!greatestFailure||overlapScoreRatio>greatestFailure.overlapScoreRatio){
+greatestFailure={
+overlapScoreRatio,
+tapTargetScore,
+overlappingTargetScore};
+
+}
+}
+}
+return greatestFailure;
+}
+
+
+
+
+
+
+function mergeSymmetricFailures(overlapFailures){
+
+const failuresAfterMerging=[];
+
+overlapFailures.forEach((failure,overlapFailureIndex)=>{
+const symmetricFailure=overlapFailures.find(f=>
+f.tapTarget===failure.overlappingTarget&&
+f.overlappingTarget===failure.tapTarget);
+
+
+if(!symmetricFailure){
+failuresAfterMerging.push(failure);
+return;
+}
+
+const{overlapScoreRatio:failureOSR}=failure;
+const{overlapScoreRatio:symmetricOSR}=symmetricFailure;
+
+
+
+
+if(failureOSR>symmetricOSR||
+failureOSR===symmetricOSR&&
+overlapFailureIndex<overlapFailures.indexOf(symmetricFailure))
+{
+failuresAfterMerging.push(failure);
+}
+});
+
+return failuresAfterMerging;
+}
+
+
+
+
+
+function getTableItems(overlapFailures){
+const tableItems=overlapFailures.map(failure=>{
+const largestCR=getLargestRect(failure.tapTarget.clientRects);
+const width=Math.floor(largestCR.width);
+const height=Math.floor(largestCR.height);
+const size=width+'x'+height;
+return{
+tapTarget:targetToTableNode(failure.tapTarget),
+overlappingTarget:targetToTableNode(failure.overlappingTarget),
+tapTargetScore:failure.tapTargetScore,
+overlappingTargetScore:failure.overlappingTargetScore,
+overlapScoreRatio:failure.overlapScoreRatio,
+size,
+width,
+height};
+
+});
+
+tableItems.sort((a,b)=>{
+return b.overlapScoreRatio-a.overlapScoreRatio;
+});
+
+return tableItems;
+}
+
+
+
+
+
+function targetToTableNode(target){
+return{
+type:'node',
+snippet:target.snippet,
+path:target.path,
+selector:target.selector};
+
+}
+
+class TapTargets extends Audit{
+
+
+
+static get meta(){
+return{
+id:'tap-targets',
+title:str_(UIStrings.title),
+failureTitle:str_(UIStrings.failureTitle),
+description:str_(UIStrings.description),
+requiredArtifacts:['MetaElements','TapTargets','TestedAsMobileDevice']};
+
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+if(!artifacts.TestedAsMobileDevice){
+
+
+return{
+rawValue:true,
+notApplicable:true};
+
+}
+
+const viewportMeta=await ComputedViewportMeta.request(artifacts,context);
+if(!viewportMeta.isMobileOptimized){
+return{
+rawValue:false,
+explanation:str_(UIStrings.explanationViewportMetaNotOptimized)};
+
+}
+
+
+const boundedTapTargets=getBoundedTapTargets(artifacts.TapTargets);
+
+const tooSmallTargets=getTooSmallTargets(boundedTapTargets);
+const overlapFailures=getAllOverlapFailures(tooSmallTargets,boundedTapTargets);
+const overlapFailuresForDisplay=mergeSymmetricFailures(overlapFailures);
+const tableItems=getTableItems(overlapFailuresForDisplay);
+
+
+const headings=[
+{key:'tapTarget',itemType:'node',text:str_(UIStrings.tapTargetHeader)},
+{key:'size',itemType:'text',text:str_(UIStrings.sizeHeader)},
+{key:'overlappingTarget',itemType:'node',text:str_(UIStrings.overlappingTargetHeader)}];
+
+
+const details=Audit.makeTableDetails(headings,tableItems);
+
+const tapTargetCount=artifacts.TapTargets.length;
+const failingTapTargetCount=new Set(overlapFailures.map(f=>f.tapTarget)).size;
+const passingTapTargetCount=tapTargetCount-failingTapTargetCount;
+
+let score=1;
+let passingTapTargetRatio=1;
+if(failingTapTargetCount>0){
+passingTapTargetRatio=passingTapTargetCount/tapTargetCount;
+
+
+score=passingTapTargetRatio*0.89;
+}
+const displayValue=str_(UIStrings.displayValue,{decimalProportion:passingTapTargetRatio});
+
+return{
+rawValue:tableItems.length===0,
+score,
+details,
+displayValue};
+
+}}
+
+
+TapTargets.FINGER_SIZE_PX=FINGER_SIZE_PX;
+
+module.exports=TapTargets;
+module.exports.UIStrings=UIStrings;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}).call(this,"/lighthouse-core/audits/seo/tap-targets.js");
+},{"../../computed/viewport-meta.js":37,"../../lib/i18n/i18n.js":63,"../../lib/rect-helpers":73,"../../lib/tappable-rects":76,"../audit":3}],"../audits/service-worker":[function(require,module,exports){
 
 
 
@@ -9401,7 +10377,7 @@ failureTitle:'Does not register a service worker that controls page and start_ur
 description:'The service worker is the technology that enables your app to use many '+
 'Progressive Web App features, such as offline, add to homescreen, and push '+
 'notifications. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/registered-service-worker).',
-requiredArtifacts:['URL','ServiceWorker','Manifest']};
+requiredArtifacts:['URL','ServiceWorker','WebAppManifest']};
 
 }
 
@@ -9488,7 +10464,8 @@ explanation:`This origin has one or more service workers, however the page ("${p
 
 }
 
-const startUrlFailure=ServiceWorker.checkStartUrl(artifacts.Manifest,controllingScopeUrl);
+const startUrlFailure=ServiceWorker.checkStartUrl(artifacts.WebAppManifest,
+controllingScopeUrl);
 if(startUrlFailure){
 return{
 rawValue:false,
@@ -9541,7 +10518,7 @@ failureTitle:'Is not configured for a custom splash screen',
 description:'A themed splash screen ensures a high-quality experience when '+
 'users launch your app from their homescreens. [Learn '+
 'more](https://developers.google.com/web/tools/lighthouse/audits/custom-splash-screen).',
-requiredArtifacts:['Manifest']};
+requiredArtifacts:['WebAppManifest']};
 
 }
 
@@ -9580,7 +10557,7 @@ static async audit_(artifacts,context){
 
 const failures=[];
 
-const manifestValues=await ManifestValues.request(artifacts.Manifest,context);
+const manifestValues=await ManifestValues.request(artifacts.WebAppManifest,context);
 SplashScreen.assessManifest(manifestValues,failures);
 
 return{
@@ -9625,7 +10602,7 @@ title:'Sets an address-bar theme color',
 failureTitle:'Does not set an address-bar theme color',
 description:'The browser address bar can be themed to match your site. '+
 '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/address-bar).',
-requiredArtifacts:['Manifest','MetaElements']};
+requiredArtifacts:['WebAppManifest','MetaElements']};
 
 }
 
@@ -9675,7 +10652,7 @@ static async audit_(artifacts,context){
 const failures=[];
 
 const themeColorMeta=artifacts.MetaElements.find(meta=>meta.name==='theme-color');
-const manifestValues=await ManifestValues.request(artifacts.Manifest,context);
+const manifestValues=await ManifestValues.request(artifacts.WebAppManifest,context);
 ThemedOmnibox.assessManifest(manifestValues,failures);
 ThemedOmnibox.assessMetaThemecolor(themeColorMeta,failures);
 
@@ -9689,7 +10666,7 @@ themeColor:themeColorMeta&&themeColorMeta.content||null};
 
 module.exports=ThemedOmnibox;
 
-},{"../computed/manifest-values.js":13,"./multi-check-audit":6,"cssstyle/lib/parsers":91}],"../audits/time-to-first-byte":[function(require,module,exports){
+},{"../computed/manifest-values.js":13,"./multi-check-audit":6,"cssstyle/lib/parsers":97}],"../audits/time-to-first-byte":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9779,7 +10756,7 @@ module.exports=TTFBMetric;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/time-to-first-byte.js");
-},{"../computed/main-resource.js":11,"../lib/i18n/i18n.js":60,"./audit":3}],"../audits/user-timings":[function(require,module,exports){
+},{"../computed/main-resource.js":11,"../lib/i18n/i18n.js":63,"./audit":3}],"../audits/user-timings":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9877,6 +10854,7 @@ return 1;
 }
 });
 
+
 const headings=[
 {key:'name',itemType:'text',text:str_(UIStrings.columnName)},
 {key:'timingType',itemType:'text',text:str_(UIStrings.columnType)},
@@ -9911,7 +10889,7 @@ module.exports=UserTimings;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/user-timings.js");
-},{"../computed/user-timings.js":34,"../lib/i18n/i18n.js":60,"./audit":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
+},{"../computed/user-timings.js":36,"../lib/i18n/i18n.js":63,"./audit":3}],"../audits/uses-rel-preconnect":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10120,7 +11098,7 @@ module.exports=UsesRelPreconnectAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preconnect.js");
-},{"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/network-records.js":29,"../lib/i18n/i18n.js":60,"../lib/url-shim.js":"url","./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/uses-rel-preload":[function(require,module,exports){
+},{"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/network-records.js":31,"../lib/i18n/i18n.js":63,"../lib/url-shim.js":"url","./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/uses-rel-preload":[function(require,module,exports){
 (function(__filename){
 
 
@@ -10363,7 +11341,7 @@ module.exports=UsesRelPreloadAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/uses-rel-preload.js");
-},{"../computed/critical-request-chains.js":9,"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/page-dependency-graph.js":30,"../lib/i18n/i18n.js":60,"../lib/url-shim":"url","./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/viewport":[function(require,module,exports){
+},{"../computed/critical-request-chains.js":9,"../computed/load-simulator.js":10,"../computed/main-resource.js":11,"../computed/page-dependency-graph.js":32,"../lib/i18n/i18n.js":63,"../lib/url-shim":"url","./audit":3,"./byte-efficiency/byte-efficiency-audit":4}],"../audits/viewport":[function(require,module,exports){
 
 
 
@@ -10372,7 +11350,7 @@ module.exports.UIStrings=UIStrings;
 'use strict';
 
 const Audit=require('./audit');
-const Parser=require('metaviewport-parser');
+const ComputedViewportMeta=require('../computed/viewport-meta.js');
 
 class Viewport extends Audit{
 
@@ -10394,38 +11372,27 @@ requiredArtifacts:['MetaElements']};
 
 
 
-static audit(artifacts){
-const viewportMeta=artifacts.MetaElements.find(meta=>meta.name==='viewport');
-if(!viewportMeta){
+
+static async audit(artifacts,context){
+const viewportMeta=await ComputedViewportMeta.request(artifacts,context);
+
+if(!viewportMeta.hasViewportTag){
 return{
-explanation:'No viewport meta tag found',
-rawValue:false};
+rawValue:false,
+explanation:'No viewport meta tag found'};
 
 }
-
-const warnings=[];
-const parsedProps=Parser.parseMetaViewPortContent(viewportMeta.content||'');
-
-if(Object.keys(parsedProps.unknownProperties).length){
-warnings.push(`Invalid properties found: ${JSON.stringify(parsedProps.unknownProperties)}`);
-}
-if(Object.keys(parsedProps.invalidValues).length){
-warnings.push(`Invalid values found: ${JSON.stringify(parsedProps.invalidValues)}`);
-}
-
-const viewportProps=parsedProps.validProperties;
-const hasMobileViewport=viewportProps.width||viewportProps['initial-scale'];
 
 return{
-rawValue:!!hasMobileViewport,
-warnings};
+rawValue:viewportMeta.isMobileOptimized,
+warnings:viewportMeta.parserWarnings};
 
 }}
 
 
 module.exports=Viewport;
 
-},{"./audit":3,"metaviewport-parser":118}],"../audits/without-javascript":[function(require,module,exports){
+},{"../computed/viewport-meta.js":37,"./audit":3}],"../audits/without-javascript":[function(require,module,exports){
 
 
 
@@ -10560,6 +11527,7 @@ values:[
 resultTypes:['violations','inapplicable'],
 rules:{
 'tabindex':{enabled:true},
+'accesskeys':{enabled:true},
 'table-fake-caption':{enabled:false},
 'td-has-header':{enabled:false},
 'marquee':{enabled:false},
@@ -10614,7 +11582,89 @@ return returnedValue;
 
 module.exports=Accessibility;
 
-},{"../../lib/page-functions":69,"./gatherer":45}],"../gather/gatherers/cache-contents":[function(require,module,exports){
+},{"../../lib/page-functions":72,"./gatherer":48}],"../gather/gatherers/anchor-elements":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Gatherer=require('./gatherer.js');
+const pageFunctions=require('../../lib/page-functions.js');
+
+
+
+
+
+
+
+
+
+
+
+
+
+function collectAnchorElements(){
+
+const resolveURLOrEmpty=url=>{
+try{
+return new URL(url,window.location.href).href;
+}catch(_){
+return'';
+}
+};
+
+
+
+const anchorElements=getElementsInDocument('a');
+
+return anchorElements.map(node=>{
+
+const outerHTML=getOuterHTMLSnippet(node);
+
+if(node instanceof HTMLAnchorElement){
+return{
+href:node.href,
+text:node.innerText,
+rel:node.rel,
+target:node.target,
+outerHTML};
+
+}
+
+return{
+href:resolveURLOrEmpty(node.href.baseVal),
+text:node.textContent||'',
+rel:'',
+target:node.target.baseVal||'',
+outerHTML};
+
+});
+}
+
+class AnchorElements extends Gatherer{
+
+
+
+
+async afterPass(passContext){
+const driver=passContext.driver;
+const expression=`(() => {
+      ${pageFunctions.getOuterHTMLSnippetString};
+      ${pageFunctions.getElementsInDocumentString};
+
+      return (${collectAnchorElements})();
+    })()`;
+
+
+return driver.evaluateAsync(expression,{useIsolation:true});
+}}
+
+
+module.exports=AnchorElements;
+
+},{"../../lib/page-functions.js":72,"./gatherer.js":48}],"../gather/gatherers/cache-contents":[function(require,module,exports){
 
 
 
@@ -10675,7 +11725,7 @@ return cacheUrls;
 
 module.exports=CacheContents;
 
-},{"./gatherer":45}],"../gather/gatherers/chrome-console-messages":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/chrome-console-messages":[function(require,module,exports){
 
 
 
@@ -10731,7 +11781,7 @@ return this._logEntries;
 
 module.exports=ChromeConsoleMessages;
 
-},{"./gatherer":45}],"../gather/gatherers/css-usage":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/css-usage":[function(require,module,exports){
 
 
 
@@ -10792,43 +11842,7 @@ stylesheets:Array.from(dedupedStylesheets.values())};
 
 module.exports=CSSUsage;
 
-},{"./gatherer":45}],"../gather/gatherers/dobetterweb/anchors-with-no-rel-noopener":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('../gatherer');
-const pageFunctions=require('../../../lib/page-functions.js');
-
-class AnchorsWithNoRelNoopener extends Gatherer{
-
-
-
-
-afterPass(passContext){
-const expression=`(function() {
-      ${pageFunctions.getOuterHTMLSnippetString};
-      ${pageFunctions.getElementsInDocumentString}; // define function on page
-      const selector = 'a[target="_blank"]:not([rel~="noopener"]):not([rel~="noreferrer"])';
-      const elements = getElementsInDocument(selector);
-      return elements.map(node => ({
-        href: node.href,
-        rel: node.getAttribute('rel'),
-        target: node.getAttribute('target'),
-        outerHTML: getOuterHTMLSnippet(node),
-      }));
-    })()`;
-
-return passContext.driver.evaluateAsync(expression);
-}}
-
-
-module.exports=AnchorsWithNoRelNoopener;
-
-},{"../../../lib/page-functions.js":69,"../gatherer":45}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/dobetterweb/appcache":[function(require,module,exports){
 
 
 
@@ -10855,7 +11869,7 @@ then(node=>node&&node.getAttribute('manifest'));
 
 module.exports=AppCacheManifest;
 
-},{"../gatherer":45}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/dobetterweb/doctype":[function(require,module,exports){
 
 
 
@@ -10893,7 +11907,7 @@ return driver.evaluateAsync(`(${getDoctype.toString()}())`);
 
 module.exports=Doctype;
 
-},{"../gatherer":45}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/dobetterweb/domstats":[function(require,module,exports){
 
 
 
@@ -11053,7 +12067,7 @@ return passContext.driver.sendCommand('DOM.disable').then(()=>results);
 
 module.exports=DOMStats;
 
-},{"../../../lib/page-functions":69,"../gatherer":45}],"../gather/gatherers/dobetterweb/js-libraries":[function(require,module,exports){
+},{"../../../lib/page-functions":72,"../gatherer":48}],"../gather/gatherers/dobetterweb/js-libraries":[function(require,module,exports){
 
 
 
@@ -11117,7 +12131,7 @@ return passContext.driver.evaluateAsync(expression);
 
 module.exports=JSLibraries;
 
-},{"../gatherer":45}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/dobetterweb/optimized-images":[function(require,module,exports){
 
 
 
@@ -11351,7 +12365,7 @@ return results;
 
 module.exports=OptimizedImages;
 
-},{"../../../lib/network-request":68,"../../../lib/sentry":70,"../../../lib/url-shim":"url","../../driver.js":43,"../gatherer":45}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
+},{"../../../lib/network-request":71,"../../../lib/sentry":74,"../../../lib/url-shim":"url","../../driver.js":46,"../gatherer":48}],"../gather/gatherers/dobetterweb/password-inputs-with-prevented-paste":[function(require,module,exports){
 
 
 
@@ -11398,7 +12412,7 @@ return passContext.driver.evaluateAsync(`(() => {
 
 module.exports=PasswordInputsWithPreventedPaste;
 
-},{"../../../lib/page-functions":69,"../gatherer":45}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
+},{"../../../lib/page-functions":72,"../gatherer":48}],"../gather/gatherers/dobetterweb/response-compression":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -11521,7 +12535,7 @@ return record;
 module.exports=ResponseCompression;
 
 }).call(this,require("buffer").Buffer);
-},{"../../../lib/network-request":68,"../../../lib/sentry":70,"../../../lib/url-shim":"url","../gatherer":45,"buffer":89,"zlib":87}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
+},{"../../../lib/network-request":71,"../../../lib/sentry":74,"../../../lib/url-shim":"url","../gatherer":48,"buffer":94,"zlib":92}],"../gather/gatherers/dobetterweb/tags-blocking-first-paint":[function(require,module,exports){
 
 
 
@@ -11713,7 +12727,7 @@ return TagsBlockingFirstPaint.findBlockingTags(passContext.driver,loadData.netwo
 
 module.exports=TagsBlockingFirstPaint;
 
-},{"../../driver.js":43,"../gatherer":45}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
+},{"../../driver.js":46,"../gatherer":48}],"../gather/gatherers/html-without-javascript":[function(require,module,exports){
 
 
 
@@ -11771,7 +12785,7 @@ hasNoScript};
 
 module.exports=HTMLWithoutJavaScript;
 
-},{"./gatherer":45}],"../gather/gatherers/http-redirect":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/http-redirect":[function(require,module,exports){
 
 
 
@@ -11818,7 +12832,7 @@ value:isHttps};
 
 module.exports=HTTPRedirect;
 
-},{"./gatherer":45}],"../gather/gatherers/image-elements":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/image-elements":[function(require,module,exports){
 
 
 
@@ -11908,8 +12922,8 @@ displayedWidth:element.clientWidth,
 displayedHeight:element.clientHeight,
 clientRect:getClientRect(element),
 
-naturalWidth:Number.MAX_VALUE,
-naturalHeight:Number.MAX_VALUE,
+naturalWidth:0,
+naturalHeight:0,
 isCss:true,
 isPicture:false,
 usesObjectFit:false,
@@ -11952,11 +12966,13 @@ async fetchElementWithSizeInformation(driver,element){
 const url=JSON.stringify(element.src);
 try{
 
+driver.setNextProtocolTimeout(250);
+
 const size=await driver.evaluateAsync(`(${determineNaturalSize.toString()})(${url})`);
 return Object.assign(element,size);
 }catch(_){
 
-return Object.assign(element,{naturalWidth:0,naturalHeight:0});
+return element;
 }
 }
 
@@ -11968,7 +12984,9 @@ return Object.assign(element,{naturalWidth:0,naturalHeight:0});
 async afterPass(passContext,loadData){
 const driver=passContext.driver;
 const indexedNetworkRecords=loadData.networkRecords.reduce((map,record)=>{
-if(/^image/.test(record.mimeType)&&record.finished){
+
+
+if(/^image/.test(record.mimeType)&&record.finished&&record.statusCode===200){
 map[record.url]=record;
 }
 
@@ -11984,6 +13002,9 @@ const expression=`(function() {
 const elements=await driver.evaluateAsync(expression);
 
 const imageUsage=[];
+const top50Images=Object.values(indexedNetworkRecords).
+sort((a,b)=>b.resourceSize-a.resourceSize).
+slice(0,50);
 for(let element of elements){
 
 const networkRecord=indexedNetworkRecords[element.src]||{};
@@ -11999,7 +13020,12 @@ element.resourceSize=Math.min(resourceSize,transferSize);
 
 
 
-if((element.isPicture||element.isCss)&&networkRecord){
+
+if(
+(element.isPicture||element.isCss)&&
+networkRecord&&
+top50Images.includes(networkRecord))
+{
 element=await this.fetchElementWithSizeInformation(driver,element);
 }
 
@@ -12012,7 +13038,7 @@ return imageUsage;
 
 module.exports=ImageElements;
 
-},{"../../lib/page-functions.js":69,"../driver.js":43,"./gatherer":45}],"../gather/gatherers/js-usage":[function(require,module,exports){
+},{"../../lib/page-functions.js":72,"../driver.js":46,"./gatherer":48}],"../gather/gatherers/js-usage":[function(require,module,exports){
 
 
 
@@ -12050,7 +13076,7 @@ return coverageResponse.result;
 
 module.exports=JsUsage;
 
-},{"./gatherer":45}],"../gather/gatherers/link-elements":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/link-elements":[function(require,module,exports){
 
 
 
@@ -12088,32 +13114,7 @@ return driver.evaluateAsync(`(() => {
 
 module.exports=LinkElements;
 
-},{"../../lib/page-functions.js":69,"./gatherer.js":45}],"../gather/gatherers/manifest":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('./gatherer');
-
-
-
-
-class Manifest extends Gatherer{
-
-
-
-
-async afterPass(passContext){
-return passContext.baseArtifacts.WebAppManifest;
-}}
-
-
-module.exports=Manifest;
-
-},{"./gatherer":45}],"../gather/gatherers/meta-elements":[function(require,module,exports){
+},{"../../lib/page-functions.js":72,"./gatherer.js":48}],"../gather/gatherers/meta-elements":[function(require,module,exports){
 
 
 
@@ -12149,7 +13150,7 @@ return driver.evaluateAsync(`(() => {
 
 module.exports=MetaElements;
 
-},{"../../lib/page-functions.js":69,"./gatherer.js":45}],"../gather/gatherers/mixed-content":[function(require,module,exports){
+},{"../../lib/page-functions.js":72,"./gatherer.js":48}],"../gather/gatherers/mixed-content":[function(require,module,exports){
 (function(Buffer){
 
 
@@ -12273,7 +13274,7 @@ return{url:passContext.url};
 module.exports=MixedContent;
 
 }).call(this,require("buffer").Buffer);
-},{"../../lib/url-shim":"url","../driver.js":43,"./gatherer":45,"buffer":89}],"../gather/gatherers/offline":[function(require,module,exports){
+},{"../../lib/url-shim":"url","../driver.js":46,"./gatherer":48,"buffer":94}],"../gather/gatherers/offline":[function(require,module,exports){
 
 
 
@@ -12310,7 +13311,7 @@ then(_=>navigationRecord?navigationRecord.statusCode:-1);
 
 module.exports=Offline;
 
-},{"../../lib/url-shim":"url","./gatherer":45}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
+},{"../../lib/url-shim":"url","./gatherer":48}],"../gather/gatherers/runtime-exceptions":[function(require,module,exports){
 
 
 
@@ -12360,7 +13361,7 @@ return this._exceptions;
 
 module.exports=RuntimeExceptions;
 
-},{"./gatherer":45}],"../gather/gatherers/scripts":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/scripts":[function(require,module,exports){
 
 
 
@@ -12368,8 +13369,11 @@ module.exports=RuntimeExceptions;
 
 'use strict';
 
+const log=require('lighthouse-logger');
 const Gatherer=require('./gatherer');
 const NetworkRequest=require('../../lib/network-request');
+const getElementsInDocumentString=require('../../lib/page-functions.js').getElementsInDocumentString;
+const URL=require('../../lib/url-shim.js');
 
 
 
@@ -12384,7 +13388,39 @@ async afterPass(passContext,loadData){
 const driver=passContext.driver;
 
 
-const scriptContentMap={};
+const scripts=[];
+
+
+const inlineScripts=await driver.evaluateAsync(`(() => {
+      ${getElementsInDocumentString};
+
+      return getElementsInDocument('script')
+        .filter(script => !script.src && script.text.trim())
+        .map(script => script.text);
+    })()`,{useIsolation:true});
+
+if(inlineScripts.length){
+
+
+
+const mainResource=loadData.networkRecords.find(request=>
+passContext.url.startsWith(request.url)&&
+URL.equalWithExcludedFragments(request.url,passContext.url));
+if(!mainResource){
+log.warn('Scripts','could not locate mainResource');
+}
+const requestId=mainResource?mainResource.requestId:undefined;
+scripts.push(
+...inlineScripts.map(content=>{
+return{
+content,
+inline:true,
+requestId};
+
+}));
+
+}
+
 const scriptRecords=loadData.networkRecords.
 filter(record=>record.resourceType===NetworkRequest.TYPES.Script);
 
@@ -12392,18 +13428,22 @@ for(const record of scriptRecords){
 try{
 const content=await driver.getRequestContent(record.requestId);
 if(content){
-scriptContentMap[record.requestId]=content;
+scripts.push({
+content,
+inline:false,
+requestId:record.requestId});
+
 }
 }catch(e){}
 }
 
-return scriptContentMap;
+return scripts;
 }}
 
 
 module.exports=Scripts;
 
-},{"../../lib/network-request":68,"./gatherer":45}],"../gather/gatherers/seo/canonical":[function(require,module,exports){
+},{"../../lib/network-request":71,"../../lib/page-functions.js":72,"../../lib/url-shim.js":"url","./gatherer":48,"lighthouse-logger":120}],"../gather/gatherers/seo/canonical":[function(require,module,exports){
 
 
 
@@ -12429,53 +13469,7 @@ then(nodes=>Promise.all(nodes.map(node=>node.getAttribute('href'))));
 module.exports=Canonical;
 
 
-},{"../gatherer":45}],"../gather/gatherers/seo/crawlable-links":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('../gatherer');
-const pageFunctions=require('../../../lib/page-functions.js');
-
-class CrawlableLinks extends Gatherer{
-
-
-
-
-async afterPass(passContext){
-const expression=`(function() {
-      ${pageFunctions.getElementsInDocumentString}; // define function on page
-      const resolveURLOrNull = url => {
-        try { return new URL(url, window.location.href).href; }
-        catch (_) { return null; }
-      };
-
-      const selector = 'a[href]:not([rel~="nofollow"])';
-      const elements = getElementsInDocument(selector);
-      return elements
-        .map(node => ({
-          href: node.href instanceof SVGAnimatedString ?
-            resolveURLOrNull(node.href.baseVal) :
-            node.href,
-          text: node.href instanceof SVGAnimatedString ?
-            node.textContent :
-            node.innerText,
-        }));
-    })()`;
-
-
-const links=await passContext.driver.evaluateAsync(expression,{useIsolation:true});
-return links.filter(link=>typeof link.href==='string'&&link.href);
-}}
-
-
-module.exports=CrawlableLinks;
-
-
-},{"../../../lib/page-functions.js":69,"../gatherer":45}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -12518,7 +13512,7 @@ return passContext.driver.evaluateAsync(expression);
 
 module.exports=EmbeddedContent;
 
-},{"../../../lib/page-functions.js":69,"../gatherer":45}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
+},{"../../../lib/page-functions.js":72,"../gatherer":48}],"../gather/gatherers/seo/font-size":[function(require,module,exports){
 
 
 
@@ -12881,7 +13875,7 @@ module.exports.TEXT_NODE_TYPE=TEXT_NODE_TYPE;
 module.exports.computeSelectorSpecificity=computeSelectorSpecificity;
 module.exports.getEffectiveFontRule=getEffectiveFontRule;
 
-},{"../../../lib/sentry.js":70,"../gatherer":45}],"../gather/gatherers/seo/hreflang":[function(require,module,exports){
+},{"../../../lib/sentry.js":74,"../gatherer":48}],"../gather/gatherers/seo/hreflang":[function(require,module,exports){
 
 
 
@@ -12918,7 +13912,7 @@ hreflang:hreflang||''};
 module.exports=Hreflang;
 
 
-},{"../gatherer":45}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
 
 
 
@@ -12959,7 +13953,344 @@ return passContext.driver.evaluateAsync(`(${getRobotsTxtContent.toString()}())`)
 
 module.exports=RobotsTxt;
 
-},{"../gatherer":45}],"../gather/gatherers/service-worker":[function(require,module,exports){
+},{"../gatherer":48}],"../gather/gatherers/seo/tap-targets":[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+const Gatherer=require('../gatherer');
+const pageFunctions=require('../../../lib/page-functions.js');
+const{rectContainsString,rectContains}=require('../../../lib/rect-helpers');
+
+const TARGET_SELECTORS=[
+'button',
+'a',
+'input',
+'textarea',
+'select',
+'option',
+'[role=button]',
+'[role=checkbox]',
+'[role=link]',
+'[role=menuitem]',
+'[role=menuitemcheckbox]',
+'[role=menuitemradio]',
+'[role=option]',
+'[role=scrollbar]',
+'[role=slider]',
+'[role=spinbutton]'];
+
+const tapTargetsSelector=TARGET_SELECTORS.join(',');
+
+
+
+
+
+
+function elementIsVisible(element){
+const{overflowX,overflowY,display,visibility}=getComputedStyle(element);
+
+if(
+display==='none'||
+visibility==='collapse'&&['TR','TBODY','COL','COLGROUP'].includes(element.tagName))
+{
+
+return false;
+}
+
+
+if(display==='block'||display==='inline-block'){
+
+
+if(element.clientWidth===0&&overflowX==='hidden'||
+element.clientHeight===0&&overflowY==='hidden'){
+return false;
+}
+}
+
+const parent=element.parentElement;
+if(parent&&parent.tagName!=='BODY'){
+
+return elementIsVisible(parent);
+}
+
+return true;
+}
+
+
+
+
+
+function allClientRectsEmpty(clientRects){
+return clientRects.every(cr=>cr.width===0&&cr.height===0);
+}
+
+
+
+
+
+function getVisibleClientRects(element){
+if(!elementIsVisible(element)){
+return[];
+}
+
+let clientRects=getClientRects(element);
+
+if(allClientRectsEmpty(clientRects)){
+return[];
+}
+
+
+
+
+
+
+clientRects=filterClientRectsWithinAncestorsVisibleScrollArea(element,clientRects);
+
+return clientRects;
+}
+
+
+
+
+
+
+
+
+function filterClientRectsWithinAncestorsVisibleScrollArea(element,clientRects){
+const parent=element.parentElement;
+if(!parent){
+return clientRects;
+}
+if(getComputedStyle(parent).overflowY!=='visible'){
+const parentBCR=parent.getBoundingClientRect();
+clientRects=clientRects.filter(cr=>rectContains(parentBCR,cr));
+}
+if(parent.parentElement&&parent.parentElement.tagName!=='BODY'){
+return filterClientRectsWithinAncestorsVisibleScrollArea(
+parent,
+clientRects);
+
+}
+return clientRects;
+}
+
+
+
+
+
+
+function getClientRects(element){
+const clientRects=Array.from(
+element.getClientRects()).
+map(clientRect=>{
+
+
+const{width,height,left,top,right,bottom}=clientRect;
+return{width,height,left,top,right,bottom};
+});
+
+for(const child of element.children){
+clientRects.push(...getClientRects(child));
+}
+
+return clientRects;
+}
+
+
+
+
+
+
+function elementHasAncestorTapTarget(element){
+if(!element.parentElement){
+return false;
+}
+if(element.parentElement.matches(tapTargetsSelector)){
+return true;
+}
+return elementHasAncestorTapTarget(element.parentElement);
+}
+
+
+
+
+
+function hasTextNodeSiblingsFormingTextBlock(element){
+if(!element.parentElement){
+return false;
+}
+
+const parentElement=element.parentElement;
+
+const nodeText=element.textContent||'';
+const parentText=parentElement.textContent||'';
+if(parentText.length-nodeText.length<5){
+
+
+return false;
+}
+
+for(const sibling of element.parentElement.childNodes){
+if(sibling===element){
+continue;
+}
+const siblingTextContent=(sibling.textContent||'').trim();
+
+
+
+
+if(sibling.nodeType===Node.TEXT_NODE&&siblingTextContent.length>0){
+return true;
+}
+}
+
+return false;
+}
+
+
+
+
+
+
+
+
+
+function elementIsInTextBlock(element){
+const{display}=getComputedStyle(element);
+if(display!=='inline'&&display!=='inline-block'){
+return false;
+}
+
+if(hasTextNodeSiblingsFormingTextBlock(element)){
+return true;
+}else if(element.parentElement){
+return elementIsInTextBlock(element.parentElement);
+}else{
+return false;
+}
+}
+
+
+
+
+
+
+function elementIsPositionFixedOrAbsolute(element){
+const{position}=getComputedStyle(element);
+if(position==='fixed'||position==='absolute'){
+return true;
+}
+if(element.parentElement){
+return elementIsPositionFixedOrAbsolute(element.parentElement);
+}
+return false;
+}
+
+
+
+
+
+
+
+function truncate(str,maxLength){
+if(str.length<=maxLength){
+return str;
+}
+return str.slice(0,maxLength-1)+'…';
+}
+
+
+
+
+
+function gatherTapTargets(){
+
+const targets=[];
+
+
+
+const tapTargetElements=getElementsInDocument(tapTargetsSelector);
+
+tapTargetElements.forEach(tapTargetElement=>{
+
+if(elementHasAncestorTapTarget(tapTargetElement)){
+
+
+return;
+}
+if(elementIsInTextBlock(tapTargetElement)){
+
+
+return;
+}
+if(elementIsPositionFixedOrAbsolute(tapTargetElement)){
+
+
+
+
+
+return;
+}
+
+const visibleClientRects=getVisibleClientRects(tapTargetElement);
+if(visibleClientRects.length===0){
+return;
+}
+
+targets.push({
+clientRects:visibleClientRects,
+snippet:truncate(tapTargetElement.outerHTML,300),
+
+path:getNodePath(tapTargetElement),
+
+selector:getNodeSelector(tapTargetElement),
+href:tapTargetElement['href']||''});
+
+});
+
+return targets;
+}
+
+class TapTargets extends Gatherer{
+
+
+
+
+afterPass(passContext){
+const expression=`(function() {
+      const tapTargetsSelector = "${tapTargetsSelector}";
+      ${pageFunctions.getElementsInDocumentString};
+      ${filterClientRectsWithinAncestorsVisibleScrollArea.toString()};
+      ${elementIsPositionFixedOrAbsolute.toString()};
+      ${elementIsVisible.toString()};
+      ${elementHasAncestorTapTarget.toString()};
+      ${getVisibleClientRects.toString()};
+      ${truncate.toString()};
+      ${getClientRects.toString()};
+      ${hasTextNodeSiblingsFormingTextBlock.toString()};
+      ${elementIsInTextBlock.toString()};
+      ${allClientRectsEmpty.toString()};
+      ${rectContainsString};
+      ${pageFunctions.getNodePathString};
+      ${pageFunctions.getNodeSelectorString};
+      ${gatherTapTargets.toString()};
+
+      return gatherTapTargets();
+    })()`;
+
+return passContext.driver.evaluateAsync(expression,{useIsolation:true});
+}}
+
+
+module.exports=TapTargets;
+
+},{"../../../lib/page-functions.js":72,"../../../lib/rect-helpers":73,"../gatherer":48}],"../gather/gatherers/service-worker":[function(require,module,exports){
 
 
 
@@ -12987,7 +14318,7 @@ registrations};
 
 module.exports=ServiceWorker;
 
-},{"./gatherer":45}],"../gather/gatherers/start-url":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/start-url":[function(require,module,exports){
 
 
 
@@ -13083,7 +14414,7 @@ then(()=>Promise.race([fetchPromise,timeoutPromise]));
 
 module.exports=StartUrl;
 
-},{"./gatherer":45}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/viewport-dimensions":[function(require,module,exports){
 
 
 
@@ -13136,7 +14467,7 @@ return dimensions;
 
 module.exports=ViewportDimensions;
 
-},{"./gatherer":45}],1:[function(require,module,exports){
+},{"./gatherer":48}],1:[function(require,module,exports){
 
 
 
@@ -13203,7 +14534,7 @@ self.runLighthouseInWorker=runLighthouseInWorker;
 self.listenForStatus=listenForStatus;
 }
 
-},{"../lighthouse-core/gather/connections/raw.js":41,"../lighthouse-core/index.js":46,"lighthouse-logger":114}],2:[function(require,module,exports){
+},{"../lighthouse-core/gather/connections/raw.js":44,"../lighthouse-core/index.js":49,"lighthouse-logger":120}],2:[function(require,module,exports){
 (function(__filename){
 
 
@@ -13265,16 +14596,27 @@ explanation:node.failureSummary}}));
 
 }
 
+
 const headings=[
 {key:'node',itemType:'node',text:str_(UIStrings.failingElementsHeader)}];
 
+
+
+let diagnostic;
+if(impact||tags){
+diagnostic={
+type:'diagnostic',
+impact,
+tags};
+
+}
 
 return{
 rawValue:typeof rule==='undefined',
 extendedInfo:{
 value:rule},
 
-details:{...Audit.makeTableDetails(headings,items),impact,tags}};
+details:{...Audit.makeTableDetails(headings,items),diagnostic}};
 
 }}
 
@@ -13283,7 +14625,7 @@ module.exports=AxeAudit;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/accessibility/axe-audit.js");
-},{"../../lib/i18n/i18n.js":60,"../audit":3}],3:[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../audit":3}],3:[function(require,module,exports){
 
 
 
@@ -13415,6 +14757,72 @@ summary};
 
 
 
+static makeListDetails(items){
+return{
+type:'list',
+items:items};
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static makeSnippetDetails({
+content,
+title,
+lineMessages,
+generalMessages,
+node,
+maxLineLength=200,
+maxLinesAroundMessage=20})
+{
+const allLines=Audit._makeSnippetLinesArray(content,maxLineLength);
+const lines=Util.filterRelevantLines(allLines,lineMessages,maxLinesAroundMessage);
+return{
+type:'snippet',
+lines,
+title,
+lineMessages,
+generalMessages,
+lineCount:allLines.length,
+node};
+
+}
+
+
+
+
+
+
+static _makeSnippetLinesArray(content,maxLineLength){
+return content.split('\n').map((line,lineIndex)=>{
+const lineNumber=lineIndex+1;
+
+const lineDetail={
+content:line.slice(0,maxLineLength),
+lineNumber};
+
+if(line.length>maxLineLength){
+lineDetail.truncated=true;
+}
+return lineDetail;
+});
+}
+
+
+
+
+
 
 
 
@@ -13507,7 +14915,7 @@ details:result.details};
 
 module.exports=Audit;
 
-},{"../lib/statistics":71,"../report/html/renderer/util":75}],4:[function(require,module,exports){
+},{"../lib/statistics":75,"../report/html/renderer/util":80}],4:[function(require,module,exports){
 (function(__filename){
 
 
@@ -13579,13 +14987,24 @@ linearInterpolation(WASTED_MS_FOR_POOR,0.5,WASTED_MS_FOR_SCORE_OF_ZERO,0,wastedM
 
 
 
-
-static estimateTransferSize(networkRecord,totalBytes,resourceType,compressionRatio=0.5){
+static estimateTransferSize(networkRecord,totalBytes,resourceType){
 if(!networkRecord){
 
 
 
-return Math.round(totalBytes*compressionRatio);
+
+switch(resourceType){
+case'Stylesheet':
+
+return Math.round(totalBytes*0.2);
+case'Script':
+case'Document':
+
+return Math.round(totalBytes*0.33);
+default:
+
+return Math.round(totalBytes*0.5);}
+
 }else if(networkRecord.resourceType===resourceType){
 
 return networkRecord.transferSize||0;
@@ -13740,7 +15159,7 @@ throw new Error('audit_ unimplemented');
 module.exports=UnusedBytes;
 
 }).call(this,"/lighthouse-core/audits/byte-efficiency/byte-efficiency-audit.js");
-},{"../../computed/load-simulator.js":10,"../../computed/metrics/lantern-interactive.js":23,"../../computed/network-records.js":29,"../../computed/page-dependency-graph.js":30,"../../lib/i18n/i18n.js":60,"../../lib/statistics":71,"../audit":3}],5:[function(require,module,exports){
+},{"../../computed/load-simulator.js":10,"../../computed/metrics/lantern-interactive.js":23,"../../computed/network-records.js":31,"../../computed/page-dependency-graph.js":32,"../../lib/i18n/i18n.js":63,"../../lib/statistics":75,"../audit":3}],5:[function(require,module,exports){
 
 
 
@@ -13823,7 +15242,13 @@ detailsItem[check.id]=check.passing;
 });
 }
 
-const details={items:[detailsItem]};
+
+
+const details={
+type:'diagnostic',
+
+items:[detailsItem]};
+
 
 
 if(result.failures.length>0){
@@ -13948,7 +15373,7 @@ return Object.assign(computableArtifact,{request});
 
 module.exports=makeComputedArtifact;
 
-},{"../lib/arbitrary-equality-map.js":47,"lighthouse-logger":114}],9:[function(require,module,exports){
+},{"../lib/arbitrary-equality-map.js":50,"lighthouse-logger":120}],9:[function(require,module,exports){
 
 
 
@@ -14109,7 +15534,7 @@ return CriticalRequestChains.extractChain(networkRecords,mainResource);
 
 module.exports=makeComputedArtifact(CriticalRequestChains);
 
-},{"../lib/network-request.js":68,"./computed-artifact.js":8,"./main-resource.js":11,"./network-records.js":29,"assert":79}],10:[function(require,module,exports){
+},{"../lib/network-request.js":71,"./computed-artifact.js":8,"./main-resource.js":11,"./network-records.js":31,"assert":84}],10:[function(require,module,exports){
 
 
 
@@ -14129,7 +15554,7 @@ class LoadSimulator{
 
 
 static async compute_(data,context){
-const{throttlingMethod,throttling}=data.settings;
+const{throttlingMethod,throttling,precomputedLanternData}=data.settings;
 const networkAnalysis=await NetworkAnalysis.request(data.devtoolsLog,context);
 
 
@@ -14137,6 +15562,15 @@ const options={
 additionalRttByOrigin:networkAnalysis.additionalRttByOrigin,
 serverResponseTimeByOrigin:networkAnalysis.serverResponseTimeByOrigin};
 
+
+
+
+if(precomputedLanternData){
+options.additionalRttByOrigin=new Map(Object.entries(
+precomputedLanternData.additionalRttByOrigin));
+options.serverResponseTimeByOrigin=new Map(Object.entries(
+precomputedLanternData.serverResponseTimeByOrigin));
+}
 
 switch(throttlingMethod){
 case'provided':
@@ -14170,12 +15604,30 @@ break;}
 
 
 return new Simulator(options);
+}
+
+
+
+
+
+static convertAnalysisToSaveableLanternData(networkAnalysis){
+
+const lanternData={additionalRttByOrigin:{},serverResponseTimeByOrigin:{}};
+for(const[origin,value]of networkAnalysis.additionalRttByOrigin.entries()){
+if(origin.startsWith('http'))lanternData.additionalRttByOrigin[origin]=value;
+}
+
+for(const[origin,value]of networkAnalysis.serverResponseTimeByOrigin.entries()){
+if(origin.startsWith('http'))lanternData.serverResponseTimeByOrigin[origin]=value;
+}
+
+return lanternData;
 }}
 
 
 module.exports=makeComputedArtifact(LoadSimulator);
 
-},{"../config/constants.js":37,"../lib/dependency-graph/simulator/simulator.js":55,"./computed-artifact.js":8,"./network-analysis.js":28}],11:[function(require,module,exports){
+},{"../config/constants.js":40,"../lib/dependency-graph/simulator/simulator.js":58,"./computed-artifact.js":8,"./network-analysis.js":30}],11:[function(require,module,exports){
 
 
 
@@ -14214,7 +15666,7 @@ return mainResource;
 
 module.exports=makeComputedArtifact(MainResource);
 
-},{"../lib/url-shim.js":"url","./computed-artifact.js":8,"./network-records.js":29}],12:[function(require,module,exports){
+},{"../lib/url-shim.js":"url","./computed-artifact.js":8,"./network-records.js":31}],12:[function(require,module,exports){
 
 
 
@@ -14225,6 +15677,8 @@ module.exports=makeComputedArtifact(MainResource);
 const makeComputedArtifact=require('./computed-artifact.js');
 const{taskGroups,taskNameToGroup}=require('../lib/task-groups.js');
 const TraceOfTab=require('./trace-of-tab.js');
+
+
 
 
 
@@ -14290,13 +15744,22 @@ return newTask;
 
 
 
-static _createTasksFromEvents(mainThreadEvents){
+
+static _createTasksFromEvents(mainThreadEvents,priorTaskData){
 
 const tasks=[];
 
 let currentTask;
 
 for(const event of mainThreadEvents){
+
+if(event.name==='TimerInstall'&&currentTask){
+
+
+const timerId=event.args.data.timerId;
+priorTaskData.timers.set(timerId,currentTask);
+}
+
 
 if(event.ph!=='X'&&event.ph!=='B'&&event.ph!=='E')continue;
 
@@ -14359,9 +15822,11 @@ return task.duration;
 
 
 
-static _computeRecursiveAttributableURLs(task,parentURLs){
+
+static _computeRecursiveAttributableURLs(task,parentURLs,priorTaskData){
 const argsData=task.event.args.data||{};
 const stackFrameURLs=(argsData.stackTrace||[]).map(entry=>entry.url);
+
 
 let taskURLs=[];
 switch(task.event.name){
@@ -14378,6 +15843,15 @@ break;
 case'v8.compileModule':
 taskURLs=[task.event.args.fileName].concat(stackFrameURLs);
 break;
+case'TimerFire':{
+
+
+const timerId=task.event.args.data.timerId;
+const timerInstallerTaskNode=priorTaskData.timers.get(timerId);
+if(!timerInstallerTaskNode)break;
+taskURLs=timerInstallerTaskNode.attributableURLs.concat(stackFrameURLs);
+break;
+}
 default:
 taskURLs=stackFrameURLs;
 break;}
@@ -14395,7 +15869,7 @@ attributableURLs.push(url);
 
 task.attributableURLs=attributableURLs;
 task.children.forEach(child=>
-MainThreadTasks._computeRecursiveAttributableURLs(child,attributableURLs));
+MainThreadTasks._computeRecursiveAttributableURLs(child,attributableURLs,priorTaskData));
 }
 
 
@@ -14413,14 +15887,16 @@ task.children.forEach(child=>MainThreadTasks._computeRecursiveTaskGroup(child,ta
 
 
 static getMainThreadTasks(traceEvents){
-const tasks=MainThreadTasks._createTasksFromEvents(traceEvents);
+const timers=new Map();
+const priorTaskData={timers};
+const tasks=MainThreadTasks._createTasksFromEvents(traceEvents,priorTaskData);
 
 
 for(const task of tasks){
 if(task.parent)continue;
 
 MainThreadTasks._computeRecursiveSelfTime(task);
-MainThreadTasks._computeRecursiveAttributableURLs(task,[]);
+MainThreadTasks._computeRecursiveAttributableURLs(task,[],priorTaskData);
 MainThreadTasks._computeRecursiveTaskGroup(task);
 }
 
@@ -14454,7 +15930,7 @@ return MainThreadTasks.getMainThreadTasks(mainThreadEvents);
 
 module.exports=makeComputedArtifact(MainThreadTasks);
 
-},{"../lib/task-groups.js":72,"./computed-artifact.js":8,"./trace-of-tab.js":33}],13:[function(require,module,exports){
+},{"../lib/task-groups.js":77,"./computed-artifact.js":8,"./trace-of-tab.js":35}],13:[function(require,module,exports){
 
 
 
@@ -14573,7 +16049,7 @@ allChecks:remainingChecks};
 
 module.exports=makeComputedArtifact(ManifestValues);
 
-},{"../lib/icons.js":62,"./computed-artifact.js":8}],14:[function(require,module,exports){
+},{"../lib/icons.js":65,"./computed-artifact.js":8}],14:[function(require,module,exports){
 
 
 
@@ -14649,7 +16125,7 @@ timing:EstimatedInputLatency.calculateRollingWindowEIL(events)});
 
 module.exports=makeComputedArtifact(EstimatedInputLatency);
 
-},{"../../lib/lh-error.js":64,"../../lib/traces/tracing-processor.js":74,"../computed-artifact.js":8,"./lantern-estimated-input-latency.js":19,"./metric.js":26}],15:[function(require,module,exports){
+},{"../../lib/lh-error.js":67,"../../lib/traces/tracing-processor.js":79,"../computed-artifact.js":8,"./lantern-estimated-input-latency.js":19,"./metric.js":28}],15:[function(require,module,exports){
 
 
 
@@ -14687,7 +16163,7 @@ timestamp:traceOfTab.timestamps.firstContentfulPaint};
 
 module.exports=makeComputedArtifact(FirstContentfulPaint);
 
-},{"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./metric.js":26}],16:[function(require,module,exports){
+},{"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./metric.js":28}],16:[function(require,module,exports){
 
 
 
@@ -14903,7 +16379,7 @@ timestamp:valueInMs*1000+navStart});
 
 module.exports=makeComputedArtifact(FirstCPUIdle);
 
-},{"../../lib/lh-error.js":64,"../../lib/traces/tracing-processor.js":74,"../computed-artifact.js":8,"./lantern-first-cpu-idle.js":21,"./metric.js":26}],17:[function(require,module,exports){
+},{"../../lib/lh-error.js":67,"../../lib/traces/tracing-processor.js":79,"../computed-artifact.js":8,"./lantern-first-cpu-idle.js":21,"./metric.js":28}],17:[function(require,module,exports){
 
 
 
@@ -14946,7 +16422,7 @@ timestamp:traceOfTab.timestamps.firstMeaningfulPaint};
 
 module.exports=makeComputedArtifact(FirstMeaningfulPaint);
 
-},{"../../lib/lh-error.js":64,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./metric.js":26}],18:[function(require,module,exports){
+},{"../../lib/lh-error.js":67,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./metric.js":28}],18:[function(require,module,exports){
 
 
 
@@ -15137,7 +16613,7 @@ module.exports=makeComputedArtifact(Interactive);
 
 
 
-},{"../../lib/lh-error.js":64,"../../lib/network-recorder.js":67,"../../lib/traces/tracing-processor.js":74,"../computed-artifact.js":8,"./lantern-interactive.js":23,"./metric.js":26}],19:[function(require,module,exports){
+},{"../../lib/lh-error.js":67,"../../lib/network-recorder.js":70,"../../lib/traces/tracing-processor.js":79,"../computed-artifact.js":8,"./lantern-interactive.js":23,"./metric.js":28}],19:[function(require,module,exports){
 
 
 
@@ -15240,7 +16716,7 @@ return events.sort((a,b)=>a.start-b.start);
 
 module.exports=makeComputedArtifact(LanternEstimatedInputLatency);
 
-},{"../../lib/dependency-graph/base-node.js":49,"../computed-artifact.js":8,"./estimated-input-latency.js":14,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":24}],20:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../computed-artifact.js":8,"./estimated-input-latency.js":14,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],20:[function(require,module,exports){
 
 
 
@@ -15317,7 +16793,7 @@ return node.hasRenderBlockingPriority();
 
 module.exports=makeComputedArtifact(LanternFirstContentfulPaint);
 
-},{"../../lib/dependency-graph/base-node.js":49,"../computed-artifact.js":8,"./lantern-metric.js":24}],21:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../computed-artifact.js":8,"./lantern-metric.js":25}],21:[function(require,module,exports){
 
 
 
@@ -15390,7 +16866,7 @@ return super.compute_(data,context);
 
 module.exports=makeComputedArtifact(LanternFirstCPUIdle);
 
-},{"../../lib/dependency-graph/base-node.js":49,"../computed-artifact.js":8,"./first-cpu-idle":16,"./lantern-interactive.js":23}],22:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../computed-artifact.js":8,"./first-cpu-idle":16,"./lantern-interactive.js":23}],22:[function(require,module,exports){
 
 
 
@@ -15490,7 +16966,7 @@ return metricResult;
 
 module.exports=makeComputedArtifact(LanternFirstMeaningfulPaint);
 
-},{"../../lib/dependency-graph/base-node.js":49,"../../lib/lh-error.js":64,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":24}],23:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../../lib/lh-error.js":67,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],23:[function(require,module,exports){
 
 
 
@@ -15600,7 +17076,97 @@ reduce((max,x)=>Math.max(max||0,x||0),0);
 
 module.exports=makeComputedArtifact(LanternInteractive);
 
-},{"../../lib/dependency-graph/base-node.js":49,"../../lib/network-request.js":68,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":24}],24:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../../lib/network-request.js":71,"../computed-artifact.js":8,"./lantern-first-meaningful-paint.js":22,"./lantern-metric.js":25}],24:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const makeComputedArtifact=require('../computed-artifact.js');
+const LanternMetricArtifact=require('./lantern-metric');
+const BaseNode=require('../../lib/dependency-graph/base-node');
+const LanternFirstContentfulPaint=require('./lantern-first-contentful-paint.js');
+
+
+
+class LanternMaxPotentialFID extends LanternMetricArtifact{
+
+
+
+static get COEFFICIENTS(){
+return{
+intercept:0,
+optimistic:0.5,
+pessimistic:0.5};
+
+}
+
+
+
+
+
+static getOptimisticGraph(dependencyGraph){
+return dependencyGraph;
+}
+
+
+
+
+
+static getPessimisticGraph(dependencyGraph){
+return dependencyGraph;
+}
+
+
+
+
+
+
+static getEstimateFromSimulation(simulation,extras){
+
+
+const fcpTimeInMs=extras.optimistic?
+extras.fcpResult.pessimisticEstimate.timeInMs:
+extras.fcpResult.optimisticEstimate.timeInMs;
+
+const timings=LanternMaxPotentialFID.getTimingsAfterFCP(
+simulation.nodeTimings,
+fcpTimeInMs);
+
+
+return{
+timeInMs:Math.max(...timings.map(timing=>timing.duration),16),
+nodeTimings:simulation.nodeTimings};
+
+}
+
+
+
+
+
+
+static async compute_(data,context){
+const fcpResult=await LanternFirstContentfulPaint.request(data,context);
+return super.computeMetricWithGraphs(data,context,{fcpResult});
+}
+
+
+
+
+
+
+static getTimingsAfterFCP(nodeTimings,fcpTimeInMs){
+return Array.from(nodeTimings.entries()).
+filter(([node,timing])=>node.type===BaseNode.TYPES.CPU&&timing.endTime>fcpTimeInMs).
+map(([_,timing])=>timing);
+}}
+
+
+module.exports=makeComputedArtifact(LanternMaxPotentialFID);
+
+},{"../../lib/dependency-graph/base-node":52,"../computed-artifact.js":8,"./lantern-first-contentful-paint.js":20,"./lantern-metric":25}],25:[function(require,module,exports){
 
 
 
@@ -15753,7 +17319,7 @@ return this.computeMetricWithGraphs(data,context);
 
 module.exports=LanternMetricArtifact;
 
-},{"../../lib/dependency-graph/base-node.js":49,"../../lib/network-request.js":68,"../load-simulator.js":10,"../page-dependency-graph.js":30,"../trace-of-tab.js":33}],25:[function(require,module,exports){
+},{"../../lib/dependency-graph/base-node.js":52,"../../lib/network-request.js":71,"../load-simulator.js":10,"../page-dependency-graph.js":32,"../trace-of-tab.js":35}],26:[function(require,module,exports){
 
 
 
@@ -15901,7 +17467,54 @@ return totalWeightedTime/totalWeight;
 
 module.exports=makeComputedArtifact(LanternSpeedIndex);
 
-},{"../../config/constants.js":37,"../../lib/dependency-graph/base-node.js":49,"../computed-artifact.js":8,"../speedline.js":32,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":24}],26:[function(require,module,exports){
+},{"../../config/constants.js":40,"../../lib/dependency-graph/base-node.js":52,"../computed-artifact.js":8,"../speedline.js":34,"./lantern-first-contentful-paint.js":20,"./lantern-metric.js":25}],27:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const makeComputedArtifact=require('../computed-artifact.js');
+const MetricArtifact=require('./metric');
+const LanternMaxPotentialFID=require('./lantern-max-potential-fid.js');
+const LHError=require('../../lib/lh-error');
+const TracingProcessor=require('../../lib/traces/tracing-processor');
+
+class MaxPotentialFID extends MetricArtifact{
+
+
+
+
+
+static computeSimulatedMetric(data,context){
+return LanternMaxPotentialFID.request(data,context);
+}
+
+
+
+
+
+static computeObservedMetric(data){
+const{firstContentfulPaint}=data.traceOfTab.timings;
+if(!firstContentfulPaint){
+throw new LHError(LHError.errors.NO_FCP);
+}
+
+const events=TracingProcessor.getMainThreadTopLevelEvents(
+data.traceOfTab,
+firstContentfulPaint).
+filter(evt=>evt.duration>=1);
+
+return Promise.resolve({
+timing:Math.max(...events.map(evt=>evt.duration),16)});
+
+}}
+
+
+module.exports=makeComputedArtifact(MaxPotentialFID);
+
+},{"../../lib/lh-error":67,"../../lib/traces/tracing-processor":79,"../computed-artifact.js":8,"./lantern-max-potential-fid.js":24,"./metric":28}],28:[function(require,module,exports){
 
 
 
@@ -15975,7 +17588,7 @@ throw new TypeError(`Unrecognized throttling method: ${settings.throttlingMethod
 
 module.exports=ComputedMetric;
 
-},{"../../lib/traces/tracing-processor.js":74,"../network-records.js":29,"../trace-of-tab.js":33}],27:[function(require,module,exports){
+},{"../../lib/traces/tracing-processor.js":79,"../network-records.js":31,"../trace-of-tab.js":35}],29:[function(require,module,exports){
 
 
 
@@ -16013,7 +17626,7 @@ return Promise.resolve({timing,timestamp});
 
 module.exports=makeComputedArtifact(SpeedIndex);
 
-},{"../computed-artifact.js":8,"../speedline.js":32,"./lantern-speed-index.js":25,"./metric.js":26}],28:[function(require,module,exports){
+},{"../computed-artifact.js":8,"../speedline.js":34,"./lantern-speed-index.js":26,"./metric.js":28}],30:[function(require,module,exports){
 
 
 
@@ -16052,8 +17665,7 @@ const additionalRttByOrigin=new Map();
 const serverResponseTimeByOrigin=new Map();
 for(const[origin,summary]of responseTimeSummaries.entries()){
 
-
-const rttForOrigin=rttByOrigin.get(origin);
+const rttForOrigin=rttByOrigin.get(origin)||minimumRtt;
 additionalRttByOrigin.set(origin,rttForOrigin-minimumRtt);
 serverResponseTimeByOrigin.set(origin,summary.median);
 }
@@ -16080,7 +17692,7 @@ return{records,throughput,...rttAndServerResponseTime};
 
 module.exports=makeComputedArtifact(NetworkAnalysis);
 
-},{"../lib/dependency-graph/simulator/network-analyzer.js":54,"./computed-artifact.js":8,"./network-records.js":29}],29:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":57,"./computed-artifact.js":8,"./network-records.js":31}],31:[function(require,module,exports){
 
 
 
@@ -16103,7 +17715,7 @@ return NetworkRecorder.recordsFromLogs(devtoolsLog);
 
 module.exports=makeComputedArtifact(NetworkRecords);
 
-},{"../lib/network-recorder.js":67,"./computed-artifact.js":8}],30:[function(require,module,exports){
+},{"../lib/network-recorder.js":70,"./computed-artifact.js":8}],32:[function(require,module,exports){
 
 
 
@@ -16463,7 +18075,7 @@ module.exports=makeComputedArtifact(PageDependencyGraph);
 
 
 
-},{"../lib/dependency-graph/cpu-node.js":50,"../lib/dependency-graph/network-node.js":51,"../lib/dependency-graph/simulator/network-analyzer.js":54,"../lib/network-request.js":68,"../lib/traces/tracing-processor.js":74,"./computed-artifact.js":8,"./network-records.js":29,"./trace-of-tab.js":33}],31:[function(require,module,exports){
+},{"../lib/dependency-graph/cpu-node.js":53,"../lib/dependency-graph/network-node.js":54,"../lib/dependency-graph/simulator/network-analyzer.js":57,"../lib/network-request.js":71,"../lib/traces/tracing-processor.js":79,"./computed-artifact.js":8,"./network-records.js":31,"./trace-of-tab.js":35}],33:[function(require,module,exports){
 
 
 
@@ -16494,7 +18106,7 @@ datauri:`data:image/jpeg;base64,${evt.args.snapshot}`};
 
 module.exports=makeComputedArtifact(Screenshots);
 
-},{"./computed-artifact.js":8}],32:[function(require,module,exports){
+},{"./computed-artifact.js":8}],34:[function(require,module,exports){
 
 
 
@@ -16550,7 +18162,7 @@ return speedline;
 
 module.exports=makeComputedArtifact(Speedline);
 
-},{"../lib/lh-error.js":64,"./computed-artifact.js":8,"./trace-of-tab.js":33,"speedline-core":154}],33:[function(require,module,exports){
+},{"../lib/lh-error.js":67,"./computed-artifact.js":8,"./trace-of-tab.js":35,"speedline-core":146}],35:[function(require,module,exports){
 
 
 
@@ -16744,7 +18356,7 @@ fmpFellBack};
 
 module.exports=makeComputedArtifact(TraceOfTab);
 
-},{"../lib/lh-error.js":64,"../lib/sentry.js":70,"../lib/traces/tracing-processor.js":74,"./computed-artifact.js":8,"lighthouse-logger":114}],34:[function(require,module,exports){
+},{"../lib/lh-error.js":67,"../lib/sentry.js":74,"../lib/traces/tracing-processor.js":79,"./computed-artifact.js":8,"lighthouse-logger":120}],36:[function(require,module,exports){
 
 
 
@@ -16829,7 +18441,65 @@ return userTimings;
 
 module.exports=makeComputedArtifact(UserTimings);
 
-},{"./computed-artifact.js":8,"./trace-of-tab.js":33}],35:[function(require,module,exports){
+},{"./computed-artifact.js":8,"./trace-of-tab.js":35}],37:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const Parser=require('metaviewport-parser');
+
+const makeComputedArtifact=require('./computed-artifact.js');
+
+class ViewportMeta{
+
+
+
+
+static async compute_({MetaElements}){
+const viewportMeta=MetaElements.find(meta=>meta.name==='viewport');
+
+if(!viewportMeta){
+return{
+hasViewportTag:false,
+isMobileOptimized:false,
+parserWarnings:[]};
+
+}
+
+const warnings=[];
+const parsedProps=Parser.parseMetaViewPortContent(viewportMeta.content||'');
+
+if(Object.keys(parsedProps.unknownProperties).length){
+warnings.push(`Invalid properties found: ${JSON.stringify(parsedProps.unknownProperties)}`);
+}
+if(Object.keys(parsedProps.invalidValues).length){
+warnings.push(`Invalid values found: ${JSON.stringify(parsedProps.invalidValues)}`);
+}
+
+const viewportProps=parsedProps.validProperties;
+const isMobileOptimized=Boolean(viewportProps.width||viewportProps['initial-scale']);
+
+return{
+hasViewportTag:true,
+isMobileOptimized,
+parserWarnings:warnings};
+
+}}
+
+
+module.exports=makeComputedArtifact(ViewportMeta);
+
+
+
+
+
+
+
+
+},{"./computed-artifact.js":8,"metaviewport-parser":124}],38:[function(require,module,exports){
 
 
 
@@ -16916,7 +18586,7 @@ throw new Error(`${pluginName} has no valid auditsRefs.`);
 }
 
 return auditRefsJson.map(auditRefJson=>{
-const{id,weight,...invalidRest}=auditRefJson;
+const{id,weight,group,...invalidRest}=auditRefJson;
 assertNoExcessProperties(invalidRest,pluginName,'auditRef');
 
 if(typeof id!=='string'){
@@ -16925,10 +18595,15 @@ throw new Error(`${pluginName} has an invalid auditRef id.`);
 if(typeof weight!=='number'){
 throw new Error(`${pluginName} has an invalid auditRef weight.`);
 }
+if(typeof group!=='string'&&typeof group!=='undefined'){
+throw new Error(`${pluginName} has an invalid auditRef group.`);
+}
 
+const prependedGroup=group?`${pluginName}-${group}`:group;
 return{
 id,
-weight};
+weight,
+group:prependedGroup};
 
 });
 }
@@ -16980,6 +18655,47 @@ manualDescription:manualDescription};
 
 
 
+static _parseGroups(groupsJson,pluginName){
+if(groupsJson===undefined){
+return undefined;
+}
+
+if(!isObjectOfUnknownProperties(groupsJson)){
+throw new Error(`${pluginName} groups json is not defined as an object.`);
+}
+
+const groups=Object.entries(groupsJson);
+
+
+const parsedGroupsJson={};
+groups.forEach(([groupId,groupJson])=>{
+if(!isObjectOfUnknownProperties(groupJson)){
+throw new Error(`${pluginName} has a group not defined as an object.`);
+}
+const{title,description,...invalidRest}=groupJson;
+assertNoExcessProperties(invalidRest,pluginName,'group');
+
+if(typeof title!=='string'){
+throw new Error(`${pluginName} has an invalid group title.`);
+}
+if(typeof description!=='string'&&typeof description!=='undefined'){
+throw new Error(`${pluginName} has an invalid group description.`);
+}
+parsedGroupsJson[`${pluginName}-${groupId}`]={
+title,
+description};
+
+});
+return parsedGroupsJson;
+}
+
+
+
+
+
+
+
+
 static parsePlugin(pluginJson,pluginName){
 
 pluginJson=JSON.parse(JSON.stringify(pluginJson));
@@ -16990,6 +18706,7 @@ throw new Error(`${pluginName} is not defined as an object.`);
 const{
 audits:pluginAuditsJson,
 category:pluginCategoryJson,
+groups:pluginGroupsJson,
 ...invalidRest}=
 pluginJson;
 
@@ -16998,15 +18715,16 @@ assertNoExcessProperties(invalidRest,pluginName);
 return{
 audits:ConfigPlugin._parseAuditsList(pluginAuditsJson,pluginName),
 categories:{
-[pluginName]:ConfigPlugin._parseCategory(pluginCategoryJson,pluginName)}};
+[pluginName]:ConfigPlugin._parseCategory(pluginCategoryJson,pluginName)},
 
+groups:ConfigPlugin._parseGroups(pluginGroupsJson,pluginName)};
 
 }}
 
 
 module.exports=ConfigPlugin;
 
-},{}],36:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function(process,__dirname){
 
 
@@ -17972,13 +19690,14 @@ throw new Error(errorString+` and '${relativePath}')`);
 module.exports=Config;
 
 }).call(this,require('_process'),"/lighthouse-core/config");
-},{"../audits/audit.js":3,"../runner.js":77,"./../lib/i18n/i18n.js":60,"./config-plugin.js":35,"./constants.js":37,"./default-config.js":38,"./full-config.js":39,"_process":131,"lighthouse-logger":114,"lodash.isequal":115,"path":129}],37:[function(require,module,exports){
+},{"../audits/audit.js":3,"../runner.js":82,"./../lib/i18n/i18n.js":63,"./config-plugin.js":38,"./constants.js":40,"./default-config.js":41,"./full-config.js":42,"_process":137,"lighthouse-logger":120,"lodash.isequal":121,"path":135}],40:[function(require,module,exports){
 
 
 
 
 
 'use strict';
+
 
 
 
@@ -18017,6 +19736,7 @@ cpuSlowdownMultiplier:4}};
 
 const defaultSettings={
 output:'json',
+maxWaitForFcp:15*1000,
 maxWaitForLoad:45*1000,
 throttlingMethod:'simulate',
 throttling:throttling.mobileSlow4G,
@@ -18032,6 +19752,7 @@ locale:'en-US',
 blockedUrlPatterns:null,
 additionalTraceCategories:null,
 extraHeaders:null,
+precomputedLanternData:null,
 onlyAudits:null,
 onlyCategories:null,
 skipAudits:null};
@@ -18063,7 +19784,7 @@ defaultPassConfig,
 nonSimulatedPassConfigOverrides};
 
 
-},{}],38:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 (function(__filename){
 
 
@@ -18099,37 +19820,51 @@ diagnosticsGroupTitle:'Diagnostics',
 
 diagnosticsGroupDescription:'More information about the performance of your application.',
 
-a11yColorContrastGroupTitle:'Color Contrast Is Satisfactory',
+a11yCategoryTitle:'Accessibility',
+
+a11yCategoryDescription:'These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.',
+
+a11yCategoryManualDescription:'These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review).',
+
+a11yBestPracticesGroupTitle:'Best practices',
+
+a11yBestPracticesGroupDescription:'These items highlight common accessibility best practices.',
+
+a11yColorContrastGroupTitle:'Contrast',
 
 a11yColorContrastGroupDescription:'These are opportunities to improve the legibility of your content.',
 
-a11yDescribeContentsGroupTitle:'Elements Describe Contents Well',
+a11yNamesLabelsGroupTitle:'Names and labels',
 
-a11yDescribeContentsGroupDescription:'These are opportunities to make your content easier to understand for a user of assistive technology, like a screen reader.',
+a11yNamesLabelsGroupDescription:'These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.',
 
-a11yWellStructuredGroupTitle:'Elements Are Well Structured',
+a11yNavigationGroupTitle:'Navigation',
 
-a11yWellStructuredGroupDescription:'These are opportunities to make sure your HTML is appropriately structured.',
+a11yNavigationGroupDescription:'These are opportunities to improve keyboard navigation in your application.',
 
-a11yAriaGroupTitle:'ARIA Attributes Follow Best Practices',
+a11yAriaGroupTitle:'ARIA',
 
 a11yAriaGroupDescription:'These are opportunities to improve the usage of ARIA in your application which may enhance the experience for users of assistive technology, like a screen reader.',
 
-a11yCorrectAttributesGroupTitle:'Elements Use Attributes Correctly',
-
-a11yCorrectAttributesGroupDescription:'These are opportunities to improve the configuration of your HTML elements.',
-
-a11yElementNamesGroupTitle:'Elements Have Discernible Names',
-
-a11yElementNamesGroupDescription:'These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.',
-
-a11yLanguageGroupTitle:'Page Specifies Valid Language',
+a11yLanguageGroupTitle:'Internationalization and localization',
 
 a11yLanguageGroupDescription:'These are opportunities to improve the interpretation of your content by users in different locales.',
 
-a11yMetaGroupTitle:'Meta Tags Used Properly',
+a11yAudioVideoGroupTitle:'Audio and video',
 
-a11yMetaGroupDescription:'These are opportunities to improve the user experience of your site.',
+a11yAudioVideoGroupDescription:'These are opportunities to provide alternative content for audio and video. This may improve the experience for users with hearing or vision impairments.',
+
+a11yTablesListsVideoGroupTitle:'Tables and lists',
+
+a11yTablesListsVideoGroupDescription:'These are opportunities to to improve the experience of reading tabular or list data using assistive technology, like a screen reader.',
+
+seoCategoryTitle:'SEO',
+
+seoCategoryDescription:'These checks ensure that your page is optimized for search engine results ranking. '+
+'There are additional factors Lighthouse does not check that may affect your search ranking. '+
+'[Learn more](https://support.google.com/webmasters/answer/35769).',
+
+seoCategoryManualDescription:'Run these additional validators on your site to check additional SEO best practices.',
 
 pwaFastReliableGroupTitle:'Fast and reliable',
 
@@ -18154,14 +19889,13 @@ gatherers:[
 'scripts',
 'css-usage',
 'viewport-dimensions',
-'manifest',
 'runtime-exceptions',
 'chrome-console-messages',
 'accessibility',
+'anchor-elements',
 'image-elements',
 'link-elements',
 'meta-elements',
-'dobetterweb/anchors-with-no-rel-noopener',
 'dobetterweb/appcache',
 'dobetterweb/doctype',
 'dobetterweb/domstats',
@@ -18171,11 +19905,11 @@ gatherers:[
 'dobetterweb/response-compression',
 'dobetterweb/tags-blocking-first-paint',
 'seo/font-size',
-'seo/crawlable-links',
 'seo/hreflang',
 'seo/embedded-content',
 'seo/canonical',
-'seo/robots-txt']},
+'seo/robots-txt',
+'seo/tap-targets']},
 
 
 {
@@ -18209,6 +19943,7 @@ audits:[
 'screenshot-thumbnails',
 'final-screenshot',
 'metrics/estimated-input-latency',
+'metrics/max-potential-fid',
 'errors-in-console',
 'time-to-first-byte',
 'metrics/first-cpu-idle',
@@ -18227,12 +19962,17 @@ audits:[
 'uses-rel-preload',
 'uses-rel-preconnect',
 'font-display',
+'diagnostics',
 'network-requests',
+'network-rtt',
+'network-server-latency',
+'main-thread-tasks',
 'metrics',
 'offline-start-url',
 'manual/pwa-cross-browser',
 'manual/pwa-page-transitions',
 'manual/pwa-each-page-has-url',
+'accessibility/accesskeys',
 'accessibility/aria-allowed-attr',
 'accessibility/aria-required-attr',
 'accessibility/aria-required-children',
@@ -18267,7 +20007,6 @@ audits:[
 'accessibility/valid-lang',
 'accessibility/video-caption',
 'accessibility/video-description',
-'accessibility/manual/accesskeys',
 'accessibility/manual/custom-controls-labels',
 'accessibility/manual/custom-controls-roles',
 'accessibility/manual/focus-traps',
@@ -18309,10 +20048,10 @@ audits:[
 'seo/link-text',
 'seo/is-crawlable',
 'seo/robots-txt',
+'seo/tap-targets',
 'seo/hreflang',
 'seo/plugins',
 'seo/canonical',
-'seo/manual/mobile-friendly',
 'seo/manual/structured-data'],
 
 
@@ -18337,37 +20076,37 @@ title:str_(UIStrings.pwaInstallableGroupTitle)},
 'pwa-optimized':{
 title:str_(UIStrings.pwaOptimizedGroupTitle)},
 
+'a11y-best-practices':{
+title:str_(UIStrings.a11yBestPracticesGroupTitle),
+description:str_(UIStrings.a11yBestPracticesGroupDescription)},
+
 'a11y-color-contrast':{
 title:str_(UIStrings.a11yColorContrastGroupTitle),
 description:str_(UIStrings.a11yColorContrastGroupDescription)},
 
-'a11y-describe-contents':{
-title:str_(UIStrings.a11yDescribeContentsGroupTitle),
-description:str_(UIStrings.a11yDescribeContentsGroupDescription)},
+'a11y-names-labels':{
+title:str_(UIStrings.a11yNamesLabelsGroupTitle),
+description:str_(UIStrings.a11yNamesLabelsGroupDescription)},
 
-'a11y-well-structured':{
-title:str_(UIStrings.a11yWellStructuredGroupTitle),
-description:str_(UIStrings.a11yWellStructuredGroupDescription)},
+'a11y-navigation':{
+title:str_(UIStrings.a11yNavigationGroupTitle),
+description:str_(UIStrings.a11yNavigationGroupDescription)},
 
 'a11y-aria':{
 title:str_(UIStrings.a11yAriaGroupTitle),
 description:str_(UIStrings.a11yAriaGroupDescription)},
 
-'a11y-correct-attributes':{
-title:str_(UIStrings.a11yCorrectAttributesGroupTitle),
-description:str_(UIStrings.a11yCorrectAttributesGroupDescription)},
-
-'a11y-element-names':{
-title:str_(UIStrings.a11yElementNamesGroupTitle),
-description:str_(UIStrings.a11yElementNamesGroupDescription)},
-
 'a11y-language':{
 title:str_(UIStrings.a11yLanguageGroupTitle),
 description:str_(UIStrings.a11yLanguageGroupDescription)},
 
-'a11y-meta':{
-title:str_(UIStrings.a11yMetaGroupTitle),
-description:str_(UIStrings.a11yMetaGroupDescription)},
+'a11y-audio-video':{
+title:str_(UIStrings.a11yAudioVideoGroupTitle),
+description:str_(UIStrings.a11yAudioVideoGroupDescription)},
+
+'a11y-tables-lists':{
+title:str_(UIStrings.a11yTablesListsVideoGroupTitle),
+description:str_(UIStrings.a11yTablesListsVideoGroupDescription)},
 
 'seo-mobile':{
 title:'Mobile Friendly',
@@ -18393,6 +20132,7 @@ auditRefs:[
 {id:'interactive',weight:5,group:'metrics'},
 {id:'first-cpu-idle',weight:2,group:'metrics'},
 {id:'estimated-input-latency',weight:0,group:'metrics'},
+{id:'max-potential-fid',weight:0},
 
 {id:'render-blocking-resources',weight:0,group:'load-opportunities'},
 {id:'uses-responsive-images',weight:0,group:'load-opportunities'},
@@ -18412,21 +20152,27 @@ auditRefs:[
 {id:'uses-long-cache-ttl',weight:0,group:'diagnostics'},
 {id:'dom-size',weight:0,group:'diagnostics'},
 {id:'critical-request-chains',weight:0,group:'diagnostics'},
-{id:'network-requests',weight:0},
-{id:'metrics',weight:0},
 {id:'user-timings',weight:0,group:'diagnostics'},
 {id:'bootup-time',weight:0,group:'diagnostics'},
-{id:'screenshot-thumbnails',weight:0},
-{id:'final-screenshot',weight:0},
 {id:'mainthread-work-breakdown',weight:0,group:'diagnostics'},
-{id:'font-display',weight:0,group:'diagnostics'}]},
+{id:'font-display',weight:0,group:'diagnostics'},
+
+{id:'network-requests',weight:0},
+{id:'network-rtt',weight:0},
+{id:'network-server-latency',weight:0},
+{id:'main-thread-tasks',weight:0},
+{id:'diagnostics',weight:0},
+{id:'metrics',weight:0},
+{id:'screenshot-thumbnails',weight:0},
+{id:'final-screenshot',weight:0}]},
 
 
 'accessibility':{
-title:'Accessibility',
-description:'These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.',
-manualDescription:'These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review).',
+title:str_(UIStrings.a11yCategoryTitle),
+description:str_(UIStrings.a11yCategoryDescription),
+manualDescription:str_(UIStrings.a11yCategoryManualDescription),
 auditRefs:[
+{id:'accesskeys',weight:3,group:'a11y-navigation'},
 {id:'aria-allowed-attr',weight:3,group:'a11y-aria'},
 {id:'aria-required-attr',weight:2,group:'a11y-aria'},
 {id:'aria-required-children',weight:5,group:'a11y-aria'},
@@ -18434,35 +20180,34 @@ auditRefs:[
 {id:'aria-roles',weight:3,group:'a11y-aria'},
 {id:'aria-valid-attr-value',weight:2,group:'a11y-aria'},
 {id:'aria-valid-attr',weight:5,group:'a11y-aria'},
-{id:'audio-caption',weight:4,group:'a11y-correct-attributes'},
-{id:'button-name',weight:10,group:'a11y-element-names'},
-{id:'bypass',weight:10,group:'a11y-describe-contents'},
+{id:'audio-caption',weight:4,group:'a11y-audio-video'},
+{id:'button-name',weight:10,group:'a11y-names-labels'},
+{id:'bypass',weight:10,group:'a11y-navigation'},
 {id:'color-contrast',weight:6,group:'a11y-color-contrast'},
-{id:'definition-list',weight:1,group:'a11y-well-structured'},
-{id:'dlitem',weight:1,group:'a11y-well-structured'},
-{id:'document-title',weight:2,group:'a11y-describe-contents'},
-{id:'duplicate-id',weight:5,group:'a11y-well-structured'},
-{id:'frame-title',weight:5,group:'a11y-describe-contents'},
+{id:'definition-list',weight:1,group:'a11y-tables-lists'},
+{id:'dlitem',weight:1,group:'a11y-tables-lists'},
+{id:'document-title',weight:2,group:'a11y-names-labels'},
+{id:'duplicate-id',weight:5,group:'a11y-best-practices'},
+{id:'frame-title',weight:5,group:'a11y-names-labels'},
 {id:'html-has-lang',weight:4,group:'a11y-language'},
 {id:'html-lang-valid',weight:1,group:'a11y-language'},
-{id:'image-alt',weight:8,group:'a11y-correct-attributes'},
-{id:'input-image-alt',weight:1,group:'a11y-correct-attributes'},
-{id:'label',weight:10,group:'a11y-describe-contents'},
-{id:'layout-table',weight:1,group:'a11y-describe-contents'},
-{id:'link-name',weight:9,group:'a11y-element-names'},
-{id:'list',weight:5,group:'a11y-well-structured'},
-{id:'listitem',weight:4,group:'a11y-well-structured'},
-{id:'meta-refresh',weight:1,group:'a11y-meta'},
-{id:'meta-viewport',weight:3,group:'a11y-meta'},
-{id:'object-alt',weight:4,group:'a11y-describe-contents'},
-{id:'tabindex',weight:4,group:'a11y-correct-attributes'},
-{id:'td-headers-attr',weight:1,group:'a11y-correct-attributes'},
-{id:'th-has-data-cells',weight:1,group:'a11y-correct-attributes'},
+{id:'image-alt',weight:8,group:'a11y-names-labels'},
+{id:'input-image-alt',weight:1,group:'a11y-names-labels'},
+{id:'label',weight:10,group:'a11y-names-labels'},
+{id:'layout-table',weight:1,group:'a11y-tables-lists'},
+{id:'link-name',weight:9,group:'a11y-names-labels'},
+{id:'list',weight:5,group:'a11y-tables-lists'},
+{id:'listitem',weight:4,group:'a11y-tables-lists'},
+{id:'meta-refresh',weight:1,group:'a11y-best-practices'},
+{id:'meta-viewport',weight:3,group:'a11y-best-practices'},
+{id:'object-alt',weight:4,group:'a11y-names-labels'},
+{id:'tabindex',weight:4,group:'a11y-navigation'},
+{id:'td-headers-attr',weight:1,group:'a11y-tables-lists'},
+{id:'th-has-data-cells',weight:1,group:'a11y-tables-lists'},
 {id:'valid-lang',weight:1,group:'a11y-language'},
-{id:'video-caption',weight:4,group:'a11y-describe-contents'},
-{id:'video-description',weight:3,group:'a11y-describe-contents'},
+{id:'video-caption',weight:4,group:'a11y-audio-video'},
+{id:'video-description',weight:3,group:'a11y-audio-video'},
 
-{id:'accesskeys',weight:0},
 {id:'logical-tab-order',weight:0},
 {id:'focusable-controls',weight:0},
 {id:'interactive-element-affordance',weight:0},
@@ -18497,11 +20242,9 @@ auditRefs:[
 
 
 'seo':{
-title:'SEO',
-description:'These checks ensure that your page is optimized for search engine results ranking. '+
-'There are additional factors Lighthouse does not check that may affect your search ranking. '+
-'[Learn more](https://support.google.com/webmasters/answer/35769).',
-manualDescription:'Run these additional validators on your site to check additional SEO best practices.',
+title:str_(UIStrings.seoCategoryTitle),
+description:str_(UIStrings.seoCategoryDescription),
+manualDescription:str_(UIStrings.seoCategoryManualDescription),
 auditRefs:[
 {id:'viewport',weight:1,group:'seo-mobile'},
 {id:'document-title',weight:1,group:'seo-content'},
@@ -18514,8 +20257,8 @@ auditRefs:[
 {id:'canonical',weight:1,group:'seo-content'},
 {id:'font-size',weight:1,group:'seo-mobile'},
 {id:'plugins',weight:1,group:'seo-content'},
+{id:'tap-targets',weight:1,group:'seo-mobile'},
 
-{id:'mobile-friendly',weight:0},
 {id:'structured-data',weight:0}]},
 
 
@@ -18559,7 +20302,7 @@ get:()=>UIStrings});
 
 
 }).call(this,"/lighthouse-core/config/default-config.js");
-},{"../lib/i18n/i18n.js":60,"./constants":37}],39:[function(require,module,exports){
+},{"../lib/i18n/i18n.js":63,"./constants":40}],42:[function(require,module,exports){
 
 
 
@@ -18594,7 +20337,7 @@ auditRefs:[
 
 module.exports=fullConfig;
 
-},{}],40:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 
 
 
@@ -18757,7 +20500,7 @@ this._eventEmitter=null;
 
 module.exports=Connection;
 
-},{"../../lib/lh-error":64,"events":94,"lighthouse-logger":114}],41:[function(require,module,exports){
+},{"../../lib/lh-error":67,"events":100,"lighthouse-logger":120}],44:[function(require,module,exports){
 
 
 
@@ -18817,7 +20560,7 @@ this._port.send(message);
 
 module.exports=RawConnection;
 
-},{"./connection.js":40}],42:[function(require,module,exports){
+},{"./connection.js":43}],45:[function(require,module,exports){
 
 
 
@@ -18874,7 +20617,7 @@ this._messages.push(message);
 
 module.exports=DevtoolsLog;
 
-},{}],43:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -18926,7 +20669,7 @@ this._traceCategories=Driver.traceCategories;
 this._eventEmitter=new EventEmitter();
 this._connection=connection;
 
-this._devtoolsLog=new DevtoolsLog(/^(Page|Network)\./);
+this._devtoolsLog=new DevtoolsLog(/^(Page|Network|Target)\./);
 this.online=true;
 
 this._domainEnabledCounts=new Map();
@@ -18946,6 +20689,20 @@ this._networkStatusMonitor=null;
 
 
 this._monitoredUrl=null;
+
+let targetProxyMessageId=0;
+this.on('Target.attachedToTarget',event=>{
+targetProxyMessageId++;
+
+if(event.targetInfo.type!=='iframe')return;
+
+
+
+this.sendCommand('Target.sendMessageToTarget',{
+message:JSON.stringify({id:targetProxyMessageId,method:'Network.enable'}),
+sessionId:event.sessionId});
+
+});
 
 connection.on('protocolevent',event=>{
 this._devtoolsLog.record(event);
@@ -19231,6 +20988,10 @@ return this._evaluateInContext(expression,contextId);
 
 
 async _evaluateInContext(expression,contextId){
+
+
+const timeout=this._nextProtocolTimeout===DEFAULT_PROTOCOL_TIMEOUT?
+60000:this._nextProtocolTimeout;
 const evaluationParams={
 
 
@@ -19250,11 +21011,11 @@ expression:`(function wrapInNativePromise() {
 includeCommandLineAPI:true,
 awaitPromise:true,
 returnByValue:true,
-timeout:60000,
+timeout,
 contextId};
 
 
-this.setNextProtocolTimeout(60000);
+this.setNextProtocolTimeout(timeout);
 const response=await this.sendCommand('Runtime.evaluate',evaluationParams);
 if(response.exceptionDetails){
 
@@ -19278,7 +21039,20 @@ return value;
 
 async getAppManifest(){
 this.setNextProtocolTimeout(3000);
-const response=await this.sendCommand('Page.getAppManifest');
+let response;
+try{
+response=await this.sendCommand('Page.getAppManifest');
+}catch(err){
+if(err.code==='PROTOCOL_TIMEOUT'){
+
+
+log.error('Driver','Failed fetching manifest',err);
+return null;
+}
+
+throw err;
+}
+
 let data=response.data;
 
 
@@ -19411,18 +21185,23 @@ this.once('Page.frameNavigated',resolve);
 
 
 
-_waitForFCP(){
+
+_waitForFCP(maxWaitForFCPMs){
 
 let cancel=()=>{
 throw new Error('_waitForFCP.cancel() called before it was defined');
 };
 
-const promise=new Promise(resolve=>{
+const promise=new Promise((resolve,reject)=>{
+const maxWaitTimeout=setTimeout(()=>{
+reject(new LHError(LHError.errors.NO_FCP));
+},maxWaitForFCPMs);
+
 
 const lifecycleListener=e=>{
 if(e.name==='firstContentfulPaint'){
-cancel();
 resolve();
+cancel();
 }
 };
 
@@ -19433,6 +21212,8 @@ cancel=()=>{
 if(canceled)return;
 canceled=true;
 this.off('Page.lifecycleEvent',lifecycleListener);
+maxWaitTimeout&&clearTimeout(maxWaitTimeout);
+reject(new Error('Wait for FCP canceled'));
 };
 });
 
@@ -19709,12 +21490,12 @@ return true;
 
 
 async _waitForFullyLoaded(pauseAfterLoadMs,networkQuietThresholdMs,cpuQuietThresholdMs,
-maxWaitForLoadedMs,shouldWaitForFCP){
+maxWaitForLoadedMs,maxWaitForFCPMs){
 
 let maxTimeoutHandle;
 
 
-const waitForFCP=shouldWaitForFCP?this._waitForFCP():this._waitForNothing();
+const waitForFCP=maxWaitForFCPMs?this._waitForFCP(maxWaitForFCPMs):this._waitForNothing();
 
 const waitForLoadEvent=this._waitForLoadEvent(pauseAfterLoadMs);
 
@@ -19741,6 +21522,11 @@ return waitForCPUIdle.promise;
 }).then(()=>{
 return function(){
 log.verbose('Driver','loadEventFired and network considered idle');
+};
+}).catch(err=>{
+
+return function(){
+throw err;
 };
 });
 
@@ -19876,6 +21662,12 @@ throw new Error('Cannot use both waitForNavigated and another event, pick just o
 await this._beginNetworkStatusMonitoring(url);
 await this._clearIsolatedContextId();
 
+
+await this.sendCommand('Target.setAutoAttach',{
+autoAttach:true,
+waitForDebuggerOnStart:false});
+
+
 await this.sendCommand('Page.enable');
 await this.sendCommand('Page.setLifecycleEventsEnabled',{enabled:true});
 await this.sendCommand('Emulation.setScriptExecutionDisabled',{value:disableJS});
@@ -19888,16 +21680,19 @@ await this._waitForFrameNavigated();
 const passConfig=passContext.passConfig||{};
 let{pauseAfterLoadMs,networkQuietThresholdMs,cpuQuietThresholdMs}=passConfig;
 let maxWaitMs=passContext.settings&&passContext.settings.maxWaitForLoad;
+let maxFCPMs=passContext.settings&&passContext.settings.maxWaitForFcp;
 
 
 if(typeof pauseAfterLoadMs!=='number')pauseAfterLoadMs=DEFAULT_PAUSE_AFTER_LOAD;
 if(typeof networkQuietThresholdMs!=='number')networkQuietThresholdMs=DEFAULT_NETWORK_QUIET_THRESHOLD;
 if(typeof cpuQuietThresholdMs!=='number')cpuQuietThresholdMs=DEFAULT_CPU_QUIET_THRESHOLD;
 if(typeof maxWaitMs!=='number')maxWaitMs=constants.defaultSettings.maxWaitForLoad;
+if(typeof maxFCPMs!=='number')maxFCPMs=constants.defaultSettings.maxWaitForFcp;
 
 
+if(!waitForFCP)maxFCPMs=undefined;
 await this._waitForFullyLoaded(pauseAfterLoadMs,networkQuietThresholdMs,cpuQuietThresholdMs,
-maxWaitMs,waitForFCP);
+maxWaitMs,maxFCPMs);
 }
 
 
@@ -20285,7 +22080,7 @@ await this.sendCommand('Page.enable');
 module.exports=Driver;
 
 }).call(this,require("buffer").Buffer);
-},{"../config/constants":37,"../lib/element":57,"../lib/emulation":58,"../lib/lh-error":64,"../lib/network-recorder":67,"../lib/network-request":68,"../lib/page-functions.js":69,"../lib/url-shim":"url","./connections/connection.js":40,"./devtools-log":42,"buffer":89,"events":94,"lighthouse-logger":114}],44:[function(require,module,exports){
+},{"../config/constants":40,"../lib/element":60,"../lib/emulation":61,"../lib/lh-error":67,"../lib/network-recorder":70,"../lib/network-request":71,"../lib/page-functions.js":72,"../lib/url-shim":"url","./connections/connection.js":43,"./devtools-log":45,"buffer":94,"events":100,"lighthouse-logger":120}],47:[function(require,module,exports){
 
 
 
@@ -20683,10 +22478,19 @@ return{...baseArtifacts,...gathererArtifacts};
 
 
 static async getBaseArtifacts(options){
+const hostUserAgent=(await options.driver.getBrowserVersion()).userAgent;
+
+const{emulatedFormFactor}=options.settings;
+
+const IsMobileHost=hostUserAgent.includes('Android')||hostUserAgent.includes('Mobile');
+const TestedAsMobileDevice=emulatedFormFactor==='mobile'||
+emulatedFormFactor!=='desktop'&&IsMobileHost;
+
 return{
 fetchTime:new Date().toJSON(),
 LighthouseRunWarnings:[],
-HostUserAgent:(await options.driver.getBrowserVersion()).userAgent,
+TestedAsMobileDevice,
+HostUserAgent:hostUserAgent,
 NetworkUserAgent:'',
 BenchmarkIndex:0,
 WebAppManifest:null,
@@ -20800,7 +22604,7 @@ throw err;
 
 module.exports=GatherRunner;
 
-},{"../config/constants.js":37,"../gather/driver.js":43,"../lib/lh-error.js":64,"../lib/manifest-parser.js":65,"../lib/network-recorder.js":67,"../lib/url-shim.js":"url","lighthouse-logger":114}],45:[function(require,module,exports){
+},{"../config/constants.js":40,"../gather/driver.js":46,"../lib/lh-error.js":67,"../lib/manifest-parser.js":68,"../lib/network-recorder.js":70,"../lib/url-shim.js":"url","lighthouse-logger":120}],48:[function(require,module,exports){
 
 
 
@@ -20861,7 +22665,7 @@ afterPass(passContext,loadData){}}
 
 module.exports=Gatherer;
 
-},{}],46:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 
 
 
@@ -20940,7 +22744,7 @@ lighthouse.Gatherer=require('./gather/gatherers/gatherer');
 
 module.exports=lighthouse;
 
-},{"./audits/audit":3,"./config/config":36,"./gather/connections/cri.js":88,"./gather/driver":43,"./gather/gatherers/gatherer":45,"./lib/lh-error.js":64,"./lib/url-shim.js":"url","./runner":77,"lighthouse-logger":114}],47:[function(require,module,exports){
+},{"./audits/audit":3,"./config/config":39,"./gather/connections/cri.js":93,"./gather/driver":46,"./gather/gatherers/gatherer":48,"./lib/lh-error.js":67,"./lib/url-shim.js":"url","./runner":82,"lighthouse-logger":120}],50:[function(require,module,exports){
 
 
 
@@ -21023,7 +22827,7 @@ return isEqual(objA,objB);
 
 module.exports=ArbitraryEqualityMap;
 
-},{"lodash.isequal":115}],48:[function(require,module,exports){
+},{"lodash.isequal":121}],51:[function(require,module,exports){
 (function(process){
 
 
@@ -21036,11 +22840,13 @@ module.exports=ArbitraryEqualityMap;
 const path=require('path');
 const log=require('lighthouse-logger');
 const stream=require('stream');
-const Simulator=require('./dependency-graph/simulator/simulator');
-const lanternTraceSaver=require('./lantern-trace-saver');
-const Metrics=require('./traces/pwmetrics-events');
+const Simulator=require('./dependency-graph/simulator/simulator.js');
+const lanternTraceSaver=require('./lantern-trace-saver.js');
+const Metrics=require('./traces/pwmetrics-events.js');
 const rimraf=require('rimraf');
 const mkdirp=require('mkdirp');
+const NetworkAnalysisComputed=require('../computed/network-analysis.js');
+const LoadSimulatorComputed=require('../computed/load-simulator.js');
 
 const artifactsFilename='artifacts.json';
 const traceSuffix='.trace.json';
@@ -21299,17 +23105,31 @@ console.log(`loggedAsset %%% trace-${passAssets.passName}.json %%% ${traceJson}`
 });
 }
 
+
+
+
+
+
+async function saveLanternNetworkData(devtoolsLog,outputPath){
+const context={computedCache:new Map()};
+const networkAnalysis=await NetworkAnalysisComputed.request(devtoolsLog,context);
+const lanternData=LoadSimulatorComputed.convertAnalysisToSaveableLanternData(networkAnalysis);
+
+fs.writeFileSync(outputPath,JSON.stringify(lanternData));
+}
+
 module.exports={
 saveArtifacts,
 loadArtifacts,
 saveAssets,
 prepareAssets,
 saveTrace,
-logAssets};
+logAssets,
+saveLanternNetworkData};
 
 
 }).call(this,require('_process'));
-},{"./dependency-graph/simulator/simulator":55,"./lantern-trace-saver":63,"./traces/pwmetrics-events":73,"_process":131,"lighthouse-logger":114,"mkdirp":88,"path":129,"rimraf":88,"stream":156}],49:[function(require,module,exports){
+},{"../computed/load-simulator.js":10,"../computed/network-analysis.js":30,"./dependency-graph/simulator/simulator.js":58,"./lantern-trace-saver.js":66,"./traces/pwmetrics-events.js":78,"_process":137,"lighthouse-logger":120,"mkdirp":93,"path":135,"rimraf":93,"stream":148}],52:[function(require,module,exports){
 
 
 
@@ -21632,7 +23452,7 @@ CPU:'cpu'};
 
 module.exports=BaseNode;
 
-},{}],50:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 
 
 
@@ -21718,7 +23538,7 @@ return new CPUNode(this._event,this._childEvents);
 
 module.exports=CPUNode;
 
-},{"./base-node":49}],51:[function(require,module,exports){
+},{"./base-node":52}],54:[function(require,module,exports){
 
 
 
@@ -21802,7 +23622,7 @@ return node;
 
 module.exports=NetworkNode;
 
-},{"../network-request":68,"./base-node":49}],52:[function(require,module,exports){
+},{"../network-request":71,"./base-node":52}],55:[function(require,module,exports){
 
 
 
@@ -21975,7 +23795,7 @@ this._connectionsInUse.delete(connection);
 }};
 
 
-},{"./network-analyzer":54,"./tcp-connection":56}],53:[function(require,module,exports){
+},{"./network-analyzer":57,"./tcp-connection":59}],56:[function(require,module,exports){
 
 
 
@@ -22060,7 +23880,7 @@ DNSCache.RTT_MULTIPLIER=DNS_RESOLUTION_RTT_MULTIPLIER;
 
 module.exports=DNSCache;
 
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 
 
 
@@ -22526,7 +24346,7 @@ module.exports=NetworkAnalyzer;
 
 
 
-},{"../../network-request":68}],55:[function(require,module,exports){
+},{"../../network-request":71}],58:[function(require,module,exports){
 
 
 
@@ -23039,7 +24859,7 @@ module.exports=Simulator;
 
 
 
-},{"../../../config/constants":37,"../base-node":49,"./connection-pool":52,"./dns-cache":53,"./tcp-connection":56}],56:[function(require,module,exports){
+},{"../../../config/constants":40,"../base-node":52,"./connection-pool":55,"./dns-cache":56,"./tcp-connection":59}],59:[function(require,module,exports){
 
 
 
@@ -23247,7 +25067,7 @@ module.exports=TcpConnection;
 
 
 
-},{}],57:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 
 
 
@@ -23320,7 +25140,7 @@ catch(()=>null);
 
 module.exports=Element;
 
-},{"../gather/driver.js":43}],58:[function(require,module,exports){
+},{"../gather/driver.js":46}],61:[function(require,module,exports){
 
 
 
@@ -23361,15 +25181,10 @@ height:940,
 deviceScaleFactor:1};
 
 
-const NEXUS5X_USERAGENT={
 
-userAgent:'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3559.0 Mobile Safari/537.36'};
+const NEXUS5X_USERAGENT='Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3694.0 Mobile Safari/537.36 Chrome-Lighthouse';
 
-
-const DESKTOP_USERAGENT={
-
-userAgent:'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3559.0 Safari/537.36'};
-
+const DESKTOP_USERAGENT='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3694.0 Safari/537.36 Chrome-Lighthouse';
 
 const OFFLINE_METRICS={
 offline:true,
@@ -23399,7 +25214,7 @@ await Promise.all([
 driver.sendCommand('Emulation.setDeviceMetricsOverride',NEXUS5X_EMULATION_METRICS),
 
 driver.sendCommand('Network.enable'),
-driver.sendCommand('Network.setUserAgentOverride',NEXUS5X_USERAGENT),
+driver.sendCommand('Network.setUserAgentOverride',{userAgent:NEXUS5X_USERAGENT}),
 driver.sendCommand('Emulation.setTouchEmulationEnabled',{enabled:true})]);
 
 }
@@ -23413,7 +25228,7 @@ await Promise.all([
 driver.sendCommand('Emulation.setDeviceMetricsOverride',DESKTOP_EMULATION_METRICS),
 
 driver.sendCommand('Network.enable'),
-driver.sendCommand('Network.setUserAgentOverride',DESKTOP_USERAGENT),
+driver.sendCommand('Network.setUserAgentOverride',{userAgent:DESKTOP_USERAGENT}),
 driver.sendCommand('Emulation.setTouchEmulationEnabled',{enabled:false})]);
 
 }
@@ -23479,11 +25294,25 @@ enableNetworkThrottling,
 clearAllNetworkEmulation,
 enableCPUThrottling,
 disableCPUThrottling,
-goOffline};
+goOffline,
+MOBILE_USERAGENT:NEXUS5X_USERAGENT,
+DESKTOP_USERAGENT};
 
 
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports={
+"lighthouse-core/audits/accessibility/accesskeys.js | description":{
+"message":"Access keys let users quickly focus a part of the page. For proper navigation, each access key must be unique. [Learn more](https://dequeuniversity.com/rules/axe/3.1/accesskeys?application=lighthouse).",
+"description":"Description of a Lighthouse audit that tells the user *why* they should try to pass. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/accessibility/accesskeys.js | failureTitle":{
+"message":"`[accesskey]` values are not unique",
+"description":"Title of an accesibility audit that evaluates if the ARIA HTML attributes are misaligned with the aria-role HTML attribute specificed on the element, such mismatches are invalid. This title is descriptive of the failing state and is shown to users when there is a failure that needs to be addressed."},
+
+"lighthouse-core/audits/accessibility/accesskeys.js | title":{
+"message":"`[accesskey]` values are unique",
+"description":"Title of an accesibility audit that evaluates if the accesskey HTML attribute values are unique across all elements. This title is descriptive of the successful state and is shown to users when no user action is required."},
+
 "lighthouse-core/audits/accessibility/aria-allowed-attr.js | description":{
 "message":"Each ARIA `role` supports a specific subset of `aria-*` attributes. Mismatching these invalidates the `aria-*` attributes. [Learn more](https://dequeuniversity.com/rules/axe/3.1/aria-allowed-attr?application=lighthouse).",
 "description":"Description of a Lighthouse audit that tells the user *why* they should try to pass. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
@@ -23788,14 +25617,6 @@ module.exports={
 "message":"List items (`<li>`) are contained within `<ul>` or `<ol>` parent elements",
 "description":"Title of an accesibility audit that evaluates if any list item elements do not have list parent elements. This title is descriptive of the successful state and is shown to users when no user action is required."},
 
-"lighthouse-core/audits/accessibility/manual/accesskeys.js | description":{
-"message":"Access keys let users quickly focus a part of the page. For proper navigation, each access key must be unique. [Learn more](https://dequeuniversity.com/rules/axe/3.1/accesskeys?application=lighthouse).",
-"description":"Description of a Lighthouse audit that tells the user *why* they should try to pass. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
-
-"lighthouse-core/audits/accessibility/manual/accesskeys.js | title":{
-"message":"`[accesskey]` values are unique",
-"description":"Title of an accesibility audit that evaluates if the accesskey HTML attribute values are unique across all elements. This title is descriptive of the successful state and is shown to users when no user action is required."},
-
 "lighthouse-core/audits/accessibility/meta-refresh.js | description":{
 "message":"Users do not expect a page to refresh automatically, and doing so will move focus back to the top of the page. This may create a frustrating or confusing experience. [Learn more](https://dequeuniversity.com/rules/axe/3.1/meta-refresh?application=lighthouse).",
 "description":"Description of a Lighthouse audit that tells the user *why* they should try to pass. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
@@ -23917,7 +25738,7 @@ module.exports={
 "description":"Label for a time column in a data table; entries will be the number of milliseconds spent parsing script files for every script loaded by the page."},
 
 "lighthouse-core/audits/bootup-time.js | columnTotal":{
-"message":"Total",
+"message":"Total CPU Time",
 "description":"Label for the total time column in a data table; entries will be the number of milliseconds spent executing per resource loaded by the page."},
 
 "lighthouse-core/audits/bootup-time.js | description":{
@@ -23989,11 +25810,11 @@ module.exports={
 "description":"Imperative title of a Lighthouse audit that tells the user to minify the page’s JS code to reduce file size. This is displayed in a list of audit titles that Lighthouse generates."},
 
 "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | description":{
-"message":"Remove unused rules from stylesheets to reduce unnecessary bytes consumed by network activity. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/unused-css).",
+"message":"Remove dead rules from stylesheets and defer the loading of CSS not used for above-the-fold content to reduce unnecessary bytes consumed by network activity. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/unused-css).",
 "description":"Description of a Lighthouse audit that tells the user *why* they should defer loading any content in CSS that isn’t needed at page load. This is displayed after a user expands the section to see more. No word length limits. 'Learn More' becomes link text to additional documentation."},
 
 "lighthouse-core/audits/byte-efficiency/unused-css-rules.js | title":{
-"message":"Defer unused CSS",
+"message":"Remove unused CSS",
 "description":"Imperative title of a Lighthouse audit that tells the user to remove content from their CSS that isn’t needed immediately and instead load that content at a later time. This is displayed in a list of audit titles that Lighthouse generates."},
 
 "lighthouse-core/audits/byte-efficiency/unused-javascript.js | description":{
@@ -24122,11 +25943,11 @@ module.exports={
 
 "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueText":{
 "message":"Interactive at {timeInMs, number, seconds} s",
-"description":"[ICU Syntax] Label for the audit identifying the time it took for the page to become interactive."},
+"description":"Label for the audit identifying the time it took for the page to become interactive."},
 
 "lighthouse-core/audits/load-fast-enough-for-pwa.js | displayValueTextWithOverride":{
 "message":"Interactive on simulated mobile network at {timeInMs, number, seconds} s",
-"description":"[ICU Syntax] Label for the audit identifying the time it took for the page to become interactive on a mobile network."},
+"description":"Label for the audit identifying the time it took for the page to become interactive on a mobile network."},
 
 "lighthouse-core/audits/load-fast-enough-for-pwa.js | failureTitle":{
 "message":"Page load is not fast enough on mobile networks",
@@ -24192,6 +26013,14 @@ module.exports={
 "message":"Time to Interactive",
 "description":"The name of the metric that marks the time at which the page is fully loaded and is able to quickly respond to user input (clicks, taps, and keypresses feel responsive). Shown to users as the label for the numeric metric value. Ideally fits within a ~40 character limit."},
 
+"lighthouse-core/audits/metrics/max-potential-fid.js | description":{
+"message":"The potential First Input Delay that your users could experience is the duration, in milliseconds, of the longest task.",
+"description":"Description of the Maximum Potential First Input Delay metric that marks the maximum estimated time between the page receiving input (a user clicking, tapping, or typing) and the page responding. This description is displayed within a tooltip when the user hovers on the metric name to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/metrics/max-potential-fid.js | title":{
+"message":"Max Potential FID",
+"description":"The name of the metric \"Maximum Potential First Input Delay\" that marks the maximum estimated time between the page receiving input (a user clicking, tapping, or typing) and the page responding. Shown to users as the label for the numeric metric value. Ideally fits within a ~40 character limit."},
+
 "lighthouse-core/audits/metrics/speed-index.js | description":{
 "message":"Speed Index shows how quickly the contents of a page are visibly populated. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/speed-index).",
 "description":"Description of the Speed Index metric, which summarizes how quickly the page looked visually complete. This is displayed within a tooltip when the user hovers on the metric name to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
@@ -24199,6 +26028,22 @@ module.exports={
 "lighthouse-core/audits/metrics/speed-index.js | title":{
 "message":"Speed Index",
 "description":"The name of the metric that summarizes how quickly the page looked visually complete. The name of this metric is largely abstract and can be loosely translated. Shown to users as the label for the numeric metric value. Ideally fits within a ~40 character limit."},
+
+"lighthouse-core/audits/network-rtt.js | description":{
+"message":"Network round trip times (RTT) have a large impact on performance. If the RTT to an origin is high, it's an indication that servers closer to the user could improve performance. [Learn more](https://hpbn.co/primer-on-latency-and-bandwidth/).",
+"description":"Description of a Lighthouse audit that tells the user that a high network round trip time (RTT) can effect their website's performance because the server is physically far away from them thus making the RTT high. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/network-rtt.js | title":{
+"message":"Network Round Trip Times",
+"description":"Descriptive title of a Lighthouse audit that tells the user the round trip times to each origin the page connected to. This is displayed in a list of audit titles that Lighthouse generates."},
+
+"lighthouse-core/audits/network-server-latency.js | description":{
+"message":"Server latencies can impact web performance. If the server latency of an origin is high, it's an indication the server is overloaded or has poor backend performance. [Learn more](https://hpbn.co/primer-on-web-performance/#analyzing-the-resource-waterfall).",
+"description":"Description of a Lighthouse audit that tells the user that server latency can effect their website's performance negatively. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/network-server-latency.js | title":{
+"message":"Server Backend Latencies",
+"description":"Descriptive title of a Lighthouse audit that tells the user the server latencies observed from each origin the page connected to. This is displayed in a list of audit titles that Lighthouse generates."},
 
 "lighthouse-core/audits/redirects.js | description":{
 "message":"Redirects introduce additional delays before the page can be loaded. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/redirects).",
@@ -24208,21 +26053,213 @@ module.exports={
 "message":"Avoid multiple page redirects",
 "description":"Imperative title of a Lighthouse audit that tells the user to eliminate the redirects taken through multiple URLs to load the page. This is shown in a list of audits that Lighthouse generates."},
 
+"lighthouse-core/audits/seo/canonical.js | description":{
+"message":"Canonical links suggest which URL to show in search results. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/canonical).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to have a valid rel=canonical link. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationConflict":{
+"message":"Multiple conflicting URLs ({urlList})",
+"description":"Explanatory message stating that there was a failure in an audit caused by multiple URLs conflicting with each other. \"urlList\" will be replaced by a list of URLs (e.g. https://example.com, https://example2.com, etc )."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationDifferentDomain":{
+"message":"Points to a different domain ({url})",
+"description":"Explanatory message stating that there was a failure in an audit caused by a URL pointing to a different domain. \"url\" will be replaced by the invalid URL (e.g. https://example.com)."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationInvalid":{
+"message":"Invalid URL ({url})",
+"description":"Explanatory message stating that there was a failure in an audit caused by a URL being invalid. \"url\" will be replaced by the invalid URL (e.g. https://example.com)."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationPointsElsewhere":{
+"message":"Points to another `hreflang` location ({url})",
+"description":"Explanatory message stating that there was a failure in an audit caused by a URL pointing to a different hreflang than the current context. \"url\" will be replaced by the invalid URL (e.g. https://example.com). 'hreflang' is an HTML attribute and should not be translated."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationRelative":{
+"message":"Relative URL ({url})",
+"description":"Explanatory message stating that there was a failure in an audit caused by a URL being relative instead of absolute. \"url\" will be replaced by the invalid URL (e.g. https://example.com)."},
+
+"lighthouse-core/audits/seo/canonical.js | explanationRoot":{
+"message":"Points to the domain's root URL (the homepage), instead of an equivalent page of content",
+"description":"Explanatory message stating that the page's canonical URL was pointing to the domain's root URL, which is a common mistake. \"points\" refers to the action of the 'rel=canonical' referencing another link. \"root\" refers to the starting/home page of the website. \"domain\" refers to the registered domain name of the website."},
+
+"lighthouse-core/audits/seo/canonical.js | failureTitle":{
+"message":"Document does not have a valid `rel=canonical`",
+"description":"Title of a Lighthouse audit that provides detail on a page's rel=canonical link. This descriptive title is shown to users when the rel=canonical link is invalid and should be fixed. \"rel=canonical\" is an HTML attribute and value and so should not be translated."},
+
+"lighthouse-core/audits/seo/canonical.js | title":{
+"message":"Document has a valid `rel=canonical`",
+"description":"Title of a Lighthouse audit that provides detail on a page's rel=canonical link. This descriptive title is shown to users when the rel=canonical link is valid. \"rel=canonical\" is an HTML attribute and value and so should not be translated."},
+
 "lighthouse-core/audits/seo/font-size.js | description":{
 "message":"Font sizes less than 12px are too small to be legible and require mobile visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/font-sizes).",
 "description":"Description of a Lighthouse audit that tells the user *why* they need to use a larger font size. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
 
 "lighthouse-core/audits/seo/font-size.js | displayValue":{
 "message":"{decimalProportion, number, extendedPercent} legible text",
-"description":"[ICU Syntax] Label for the audit identifying font sizes that are too small."},
+"description":"Label for the audit identifying font sizes that are too small."},
+
+"lighthouse-core/audits/seo/font-size.js | explanation":{
+"message":"{decimalProportion, number, extendedPercent} of text is too small.",
+"description":"Explanatory message stating that there was a failure in an audit caused by a certain percentage of the text on the page being too small. \"decimalProportion\" will be replaced by a percentage between 0 and 100%."},
+
+"lighthouse-core/audits/seo/font-size.js | explanationViewport":{
+"message":"Text is illegible because there's no viewport meta tag optimized for mobile screens.",
+"description":"Explanatory message stating that there was a failure in an audit caused by a missing page viewport meta tag configuration. \"viewport\" and \"meta\" are HTML terms and should not be translated."},
+
+"lighthouse-core/audits/seo/font-size.js | explanationWithDisclaimer":{
+"message":"{decimalProportion, number, extendedPercent} of text is too small (based on {decimalProportionVisited, number, extendedPercent} sample).",
+"description":"Explanatory message stating that there was a failure in an audit caused by a certain percentage of the text on the page being too small, based on a sample size of text that was less than 100% of the text on the page. \"decimalProportion\" will be replaced by a percentage between 0 and 100%."},
 
 "lighthouse-core/audits/seo/font-size.js | failureTitle":{
 "message":"Document doesn't use legible font sizes",
-"description":"Imperative title of a Lighthouse audit that tells the user that they should use font sizes that are easily read by the user. This imperative title is shown to users when there is a font that is too small to be read by the user."},
+"description":"Title of a Lighthouse audit that provides detail on the font sizes used on the page. This descriptive title is shown to users when there is a font that may be too small to be read by users."},
 
 "lighthouse-core/audits/seo/font-size.js | title":{
 "message":"Document uses legible font sizes",
-"description":"Imperative title of a Lighthouse audit that tells the user that they should use font sizes that are easily read by the user. This is displayed in a list of audit titles that Lighthouse generates."},
+"description":"Title of a Lighthouse audit that provides detail on the font sizes used on the page. This descriptive title is shown to users when the fonts used on the page are large enough to be considered legible."},
+
+"lighthouse-core/audits/seo/hreflang.js | description":{
+"message":"hreflang links tell search engines what version of a page they should list in search results for a given language or region. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/hreflang).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to have an hreflang link on their page. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation. \"hreflang\" is an HTML attribute and should not be translated."},
+
+"lighthouse-core/audits/seo/hreflang.js | failureTitle":{
+"message":"Document doesn't have a valid `hreflang`",
+"description":"Title of a Lighthouse audit that provides detail on the `hreflang` attribute on a page. This descriptive title is shown when the page's `hreflang` attribute is not valid and needs to be fixed. \"hreflang\" is an HTML attribute and should not be translated."},
+
+"lighthouse-core/audits/seo/hreflang.js | title":{
+"message":"Document has a valid `hreflang`",
+"description":"Title of a Lighthouse audit that provides detail on the `hreflang` attribute on a page. This descriptive title is shown when the page's `hreflang` attribute is configured correctly. \"hreflang\" is an HTML attribute and should not be translated."},
+
+"lighthouse-core/audits/seo/http-status-code.js | description":{
+"message":"Pages with unsuccessful HTTP status codes may not be indexed properly. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/successful-http-code).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to serve pages with a valid HTTP status code. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/http-status-code.js | failureTitle":{
+"message":"Page has unsuccessful HTTP status code",
+"description":"Descriptive title of a Lighthouse audit that provides detail on the HTTP status code a page responds with. This descriptive title is shown when the page responds to requests with an HTTP status code that indicates the request was unsuccessful."},
+
+"lighthouse-core/audits/seo/http-status-code.js | title":{
+"message":"Page has successful HTTP status code",
+"description":"Title of a Lighthouse audit that provides detail on the HTTP status code a page responds with. This descriptive title is shown when the page has responded with a valid HTTP status code."},
+
+"lighthouse-core/audits/seo/is-crawlable.js | description":{
+"message":"Search engines are unable to include your pages in search results if they don't have permission to crawl them. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/indexing).",
+"description":"Description of a Lighthouse audit that tells the user *why* allowing search-engine crawling of their page is beneficial. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/is-crawlable.js | failureTitle":{
+"message":"Page is blocked from indexing",
+"description":"Title of a Lighthouse audit that provides detail on if search-engine crawlers are blocked from indexing the page. This title is shown when the page has been configured to block indexing and therefore cannot be indexed by search engines."},
+
+"lighthouse-core/audits/seo/is-crawlable.js | title":{
+"message":"Page isn’t blocked from indexing",
+"description":"Title of a Lighthouse audit that provides detail on if search-engine crawlers are blocked from indexing the page. This title is shown when the page is not blocked from indexing and can be crawled."},
+
+"lighthouse-core/audits/seo/link-text.js | description":{
+"message":"Descriptive link text helps search engines understand your content. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/descriptive-link-text).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to have descriptive text on the links in their page. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/link-text.js | displayValue":{
+"message":"{itemCount, plural,\n    =1 {1 link found}\n    other {# links found}\n    }",
+"description":"[ICU Syntax] Label for the audit identifying the number of links found. \"link\" here refers to the links in a web page to other web pages."},
+
+"lighthouse-core/audits/seo/link-text.js | failureTitle":{
+"message":"Links do not have descriptive text",
+"description":"Title of a Lighthouse audit that tests if each link on a page contains a sufficient description of what a user will find when they click it. Generic, non-descriptive text like \"click here\" doesn't give an indication of what the link leads to. This descriptive title is shown when one or more links on the page contain generic, non-descriptive text."},
+
+"lighthouse-core/audits/seo/link-text.js | title":{
+"message":"Links have descriptive text",
+"description":"Title of a Lighthouse audit that tests if each link on a page contains a sufficient description of what a user will find when they click it. Generic, non-descriptive text like \"click here\" doesn't give an indication of what the link leads to. This descriptive title is shown when all links on the page have sufficient textual descriptions."},
+
+"lighthouse-core/audits/seo/manual/structured-data.js | description":{
+"message":"Run the [Structured Data Testing Tool](https://search.google.com/structured-data/testing-tool/) and the [Structured Data Linter](http://linter.structured-data.org/) to validate structured data. [Learn more](https://developers.google.com/search/docs/guides/mark-up-content).",
+"description":"Description of a Lighthouse audit that provides detail on the structured data in a page. \"Structured data\" is a standardized data format on a page that helps a search engine categorize and understand its contents. This description is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/manual/structured-data.js | title":{
+"message":"Structured data is valid",
+"description":"Title of a Lighthouse audit that prompts users to manually check their page for valid structured data. \"Structured data\" is a standardized data format on a page that helps a search engine categorize and understand its contents."},
+
+"lighthouse-core/audits/seo/meta-description.js | description":{
+"message":"Meta descriptions may be included in search results to concisely summarize page content. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/description).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to have meta descriptions on their page. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/meta-description.js | explanation":{
+"message":"Description text is empty.",
+"description":"Explanatory message stating that there was a failure in an audit caused by the page's meta description text being empty."},
+
+"lighthouse-core/audits/seo/meta-description.js | failureTitle":{
+"message":"Document does not have a meta description",
+"description":"Title of a Lighthouse audit that provides detail on the web page's document meta description. This descriptive title is shown when the document does not have a meta description. \"meta\" should be left untranslated because it refers to an HTML element."},
+
+"lighthouse-core/audits/seo/meta-description.js | title":{
+"message":"Document has a meta description",
+"description":"Title of a Lighthouse audit that provides detail on the web page's document meta description. This descriptive title is shown when the document has a meta description. \"meta\" should be left untranslated because it refers to an HTML element."},
+
+"lighthouse-core/audits/seo/plugins.js | description":{
+"message":"Search engines can't index plugin content, and many devices restrict plugins or don't support them. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/plugins).",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to avoid using browser plugins in their content. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/plugins.js | failureTitle":{
+"message":"Document uses plugins",
+"description":"Descriptive title of a Lighthouse audit that provides detail on the browser plugins used by the page. This title is shown when there is plugin content on the page."},
+
+"lighthouse-core/audits/seo/plugins.js | title":{
+"message":"Document avoids plugins",
+"description":"Title of a Lighthouse audit that provides detail on the browser plugins used by the page. This descriptive title is shown when there is no plugin content on the page that would restrict search indexing."},
+
+"lighthouse-core/audits/seo/robots-txt.js | description":{
+"message":"If your robots.txt file is malformed, crawlers may not be able to understand how you want your website to be crawled or indexed.",
+"description":"Description of a Lighthouse audit that tells the user *why* they need to have a valid robots.txt file. Note: \"robots.txt\" is a canonical filename and should not be translated. This is displayed after a user expands the section to see more. No character length limits."},
+
+"lighthouse-core/audits/seo/robots-txt.js | displayValueHttpBadCode":{
+"message":"request for robots.txt returned HTTP status: {statusCode}",
+"description":"Label for the audit identifying that the robots.txt request has returned a specific HTTP status code. Note: \"robots.txt\" is a canonical filename and should not be translated. \"statusCode\" will be replaced with a 3 digit integer which represents the status of the HTTP connectiong for this page."},
+
+"lighthouse-core/audits/seo/robots-txt.js | displayValueValidationError":{
+"message":"{itemCount, plural,\n    =1 {1 error found}\n    other {# errors found}\n    }",
+"description":"[ICU Syntax] Label for the audit identifying the number of errors that occured while validating the robots.txt file. \"itemCount\" will be replaced by the integer count of errors encountered."},
+
+"lighthouse-core/audits/seo/robots-txt.js | explanation":{
+"message":"Lighthouse was unable to download a robots.txt file",
+"description":"Explanatory message stating that there was a failure in an audit caused by Lighthouse not being able to download the robots.txt file for the site.  Note: \"robots.txt\" is a canonical filename and should not be translated."},
+
+"lighthouse-core/audits/seo/robots-txt.js | failureTitle":{
+"message":"robots.txt is not valid",
+"description":"Title of a Lighthouse audit that provides detail on the site's robots.txt file. Note: \"robots.txt\" is a canonical filename and should not be translated. This descriptive title is shown when the robots.txt file is misconfigured, which makes the page hard or impossible to scan via web crawler."},
+
+"lighthouse-core/audits/seo/robots-txt.js | title":{
+"message":"robots.txt is valid",
+"description":"Title of a Lighthouse audit that provides detail on the site's robots.txt file. Note: \"robots.txt\" is a canonical filename and should not be translated. This descriptive title is shown when the robots.txt file is present and configured correctly."},
+
+"lighthouse-core/audits/seo/tap-targets.js | description":{
+"message":"Interactive elements like buttons and links should be large enough (48x48px), and have enough space around them, to be easy enough to tap without overlapping onto other elements. [Learn more](https://developers.google.com/web/fundamentals/accessibility/accessible-styles#multi-device_responsive_design).",
+"description":"Description of a Lighthouse audit that tells the user why buttons and links need to be big enough and what 'big enough' means. This is displayed after a user expands the section to see more. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/audits/seo/tap-targets.js | displayValue":{
+"message":"{decimalProportion, number, percent} appropriately sized tap targets",
+"description":"Explanatory message stating that a certain percentage of the tap targets (like buttons and links) on the page are of an appropriately large size."},
+
+"lighthouse-core/audits/seo/tap-targets.js | explanationViewportMetaNotOptimized":{
+"message":"Tap targets are too small because there's no viewport meta tag optimized for mobile screens",
+"description":"Explanatory message stating that there was a failure in an audit caused by the viewport meta tag not being optimized for mobile screens, which caused tap targets like buttons and links to be too small to tap on."},
+
+"lighthouse-core/audits/seo/tap-targets.js | failureTitle":{
+"message":"Tap targets are not sized appropriately",
+"description":"Descriptive title of a Lighthouse audit that provides detail on whether tap targets (like buttons and links) on a page are big enough so they can easily be tapped on a mobile device. This descriptive title is shown when tap targets are not easy to tap on."},
+
+"lighthouse-core/audits/seo/tap-targets.js | overlappingTargetHeader":{
+"message":"Overlapping Target",
+"description":"Label of a table column that identifies a tap target (like a link or button) that overlaps with another tap target."},
+
+"lighthouse-core/audits/seo/tap-targets.js | sizeHeader":{
+"message":"Size",
+"description":"Label of a table column that specifies the size of tap targets like buttons and links."},
+
+"lighthouse-core/audits/seo/tap-targets.js | tapTargetHeader":{
+"message":"Tap Target",
+"description":"Label of a table column that identifies tap targets (like buttons and links) that have failed the audit and aren't easy to tap on."},
+
+"lighthouse-core/audits/seo/tap-targets.js | title":{
+"message":"Tap targets are sized appropriately",
+"description":"Title of a Lighthouse audit that provides detail on whether tap targets (like buttons and links) on a page are big enough so they can easily be tapped on a mobile device. This descriptive title is shown when tap targets are easy to tap on."},
 
 "lighthouse-core/audits/time-to-first-byte.js | description":{
 "message":"Time To First Byte identifies the time at which your server sends a response. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/ttfb).",
@@ -24297,64 +26334,76 @@ module.exports={
 "description":"Description of the ARIA validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight if whether all the aria- HTML attributes have been used properly."},
 
 "lighthouse-core/config/default-config.js | a11yAriaGroupTitle":{
-"message":"ARIA Attributes Follow Best Practices",
+"message":"ARIA",
 "description":"Title of the ARIA validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight if whether all the aria- HTML attributes have been used properly."},
+
+"lighthouse-core/config/default-config.js | a11yAudioVideoGroupDescription":{
+"message":"These are opportunities to provide alternative content for audio and video. This may improve the experience for users with hearing or vision impairments.",
+"description":"Description of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to provide alternative content for audio and video."},
+
+"lighthouse-core/config/default-config.js | a11yAudioVideoGroupTitle":{
+"message":"Audio and video",
+"description":"Title of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to provide alternative content for audio and video."},
+
+"lighthouse-core/config/default-config.js | a11yBestPracticesGroupDescription":{
+"message":"These items highlight common accessibility best practices.",
+"description":"Description of the best practices section within the Accessibility category. Within this section are audits with descriptive titles that highlight common accessibility best practices."},
+
+"lighthouse-core/config/default-config.js | a11yBestPracticesGroupTitle":{
+"message":"Best practices",
+"description":"Title of the best practices section of the Accessibility category. Within this section are audits with descriptive titles that highlight common accessibility best practices."},
+
+"lighthouse-core/config/default-config.js | a11yCategoryDescription":{
+"message":"These checks highlight opportunities to [improve the accessibility of your web app](https://developers.google.com/web/fundamentals/accessibility). Only a subset of accessibility issues can be automatically detected so manual testing is also encouraged.",
+"description":"Description of the Accessibility category. This is displayed at the top of a list of audits focused on making web content accessible to all users. No character length limits. 'improve the accessibility of your web app' becomes link text to additional documentation."},
+
+"lighthouse-core/config/default-config.js | a11yCategoryManualDescription":{
+"message":"These items address areas which an automated testing tool cannot cover. Learn more in our guide on [conducting an accessibility review](https://developers.google.com/web/fundamentals/accessibility/how-to-review).",
+"description":"Description of the Accessibility manual checks category. This description is displayed above a list of accessibility audits that currently have no automated test and so must be verified manually by the user. No character length limits. 'conducting an accessibility review' becomes link text to additional documentation."},
+
+"lighthouse-core/config/default-config.js | a11yCategoryTitle":{
+"message":"Accessibility",
+"description":"Title of the Accessibility category of audits. This section contains audits focused on making web content accessible to all users. Also used as a label of a score gauge; try to limit to 20 characters."},
 
 "lighthouse-core/config/default-config.js | a11yColorContrastGroupDescription":{
 "message":"These are opportunities to improve the legibility of your content.",
 "description":"Description of the color contrast section within the Accessibility category. Within this section are audits with descriptive titles that highlight the color and vision aspects of the page's accessibility that are passing or failing."},
 
 "lighthouse-core/config/default-config.js | a11yColorContrastGroupTitle":{
-"message":"Color Contrast Is Satisfactory",
+"message":"Contrast",
 "description":"Title of the color contrast section within the Accessibility category. Within this section are audits with descriptive titles that highlight the color and vision aspects of the page's accessibility that are passing or failing."},
-
-"lighthouse-core/config/default-config.js | a11yCorrectAttributesGroupDescription":{
-"message":"These are opportunities to improve the configuration of your HTML elements.",
-"description":"Description of the HTML attribute validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the HTML attribute values on the page are used correctly."},
-
-"lighthouse-core/config/default-config.js | a11yCorrectAttributesGroupTitle":{
-"message":"Elements Use Attributes Correctly",
-"description":"Title of the HTML attribute validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the HTML attribute values on the page are used correctly. 'Elements' refers to HTML elements."},
-
-"lighthouse-core/config/default-config.js | a11yDescribeContentsGroupDescription":{
-"message":"These are opportunities to make your content easier to understand for a user of assistive technology, like a screen reader.",
-"description":"Description of the screen reader annotation section within the Accessibility category. Within this section are audits with descriptive titles that highlight the screen reader readability aspects of the page's accessibility that are passing or failing."},
-
-"lighthouse-core/config/default-config.js | a11yDescribeContentsGroupTitle":{
-"message":"Elements Describe Contents Well",
-"description":"Title of the screen reader annotation section within the Accessibility category. Within this section are audits with descriptive titles that highlight the screen reader readability aspects of the page's accessibility that are passing or failing. 'Elements' refers to HTML elements."},
-
-"lighthouse-core/config/default-config.js | a11yElementNamesGroupDescription":{
-"message":"These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.",
-"description":"Description of the HTML element naming section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the non-textual HTML elements on the page have names discernible by a screen reader."},
-
-"lighthouse-core/config/default-config.js | a11yElementNamesGroupTitle":{
-"message":"Elements Have Discernible Names",
-"description":"Title of the HTML element naming section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the non-textual HTML elements on the page have names discernible by a screen reader."},
 
 "lighthouse-core/config/default-config.js | a11yLanguageGroupDescription":{
 "message":"These are opportunities to improve the interpretation of your content by users in different locales.",
 "description":"Description of the language section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the language has been annotated in the correct HTML attributes on the page."},
 
 "lighthouse-core/config/default-config.js | a11yLanguageGroupTitle":{
-"message":"Page Specifies Valid Language",
+"message":"Internationalization and localization",
 "description":"Title of the language section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the language has been annotated in the correct HTML attributes on the page."},
 
-"lighthouse-core/config/default-config.js | a11yMetaGroupDescription":{
-"message":"These are opportunities to improve the user experience of your site.",
-"description":"Description of the meta tag section within the Accessibility category. Within this section are audits with descriptive titles that highlight if meta tags on the page have been used properly and if any important ones are missing."},
+"lighthouse-core/config/default-config.js | a11yNamesLabelsGroupDescription":{
+"message":"These are opportunities to improve the semantics of the controls in your application. This may enhance the experience for users of assistive technology, like a screen reader.",
+"description":"Description of the HTML element naming section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the non-textual HTML elements on the page have names discernible by a screen reader."},
 
-"lighthouse-core/config/default-config.js | a11yMetaGroupTitle":{
-"message":"Meta Tags Used Properly",
-"description":"Title of the meta tag section within the Accessibility category. Within this section are audits with descriptive titles that highlight if meta tags on the page have been used properly and if any important ones are missing."},
+"lighthouse-core/config/default-config.js | a11yNamesLabelsGroupTitle":{
+"message":"Names and labels",
+"description":"Title of the HTML element naming section within the Accessibility category. Within this section are audits with descriptive titles that highlight if the non-textual HTML elements on the page have names discernible by a screen reader."},
 
-"lighthouse-core/config/default-config.js | a11yWellStructuredGroupDescription":{
-"message":"These are opportunities to make sure your HTML is appropriately structured.",
-"description":"Description of the HTML validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight structural HTML aspects of the page's accessibility that are passing or failing."},
+"lighthouse-core/config/default-config.js | a11yNavigationGroupDescription":{
+"message":"These are opportunities to improve keyboard navigation in your application.",
+"description":"Description of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to improve keyboard navigation."},
 
-"lighthouse-core/config/default-config.js | a11yWellStructuredGroupTitle":{
-"message":"Elements Are Well Structured",
-"description":"Title of the HTML validity section within the Accessibility category. Within this section are audits with descriptive titles that highlight structural HTML aspects of the page's accessibility that are passing or failing (i.e. that list items are contained within list parents, etc). 'Elements' refers to HTML elements."},
+"lighthouse-core/config/default-config.js | a11yNavigationGroupTitle":{
+"message":"Navigation",
+"description":"Title of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to improve keyboard navigation."},
+
+"lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupDescription":{
+"message":"These are opportunities to to improve the experience of reading tabular or list data using assistive technology, like a screen reader.",
+"description":"Description of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to improve the experience of reading tabular or list data using assistive technology."},
+
+"lighthouse-core/config/default-config.js | a11yTablesListsVideoGroupTitle":{
+"message":"Tables and lists",
+"description":"Title of the navigation section within the Accessibility category. Within this section are audits with descriptive titles that highlight opportunities to improve the experience of reading tabular or list data using assistive technology."},
 
 "lighthouse-core/config/default-config.js | diagnosticsGroupDescription":{
 "message":"More information about the performance of your application.",
@@ -24407,6 +26456,18 @@ module.exports={
 "lighthouse-core/config/default-config.js | pwaOptimizedGroupTitle":{
 "message":"PWA Optimized",
 "description":"Title of the \"PWA Optimized\" section of the web app category. Within this section are audits that check if the developer has taken advantage of features to make their web page more enjoyable and engaging for the user."},
+
+"lighthouse-core/config/default-config.js | seoCategoryDescription":{
+"message":"These checks ensure that your page is optimized for search engine results ranking. There are additional factors Lighthouse does not check that may affect your search ranking. [Learn more](https://support.google.com/webmasters/answer/35769).",
+"description":"Description of the Search Engine Optimization (SEO) category. This is displayed at the top of a list of audits focused on optimizing a website for indexing by search engines. No character length limits. 'Learn More' becomes link text to additional documentation."},
+
+"lighthouse-core/config/default-config.js | seoCategoryManualDescription":{
+"message":"Run these additional validators on your site to check additional SEO best practices.",
+"description":"Description of the Search Engine Optimization (SEO) manual checks category, the additional validators must be run by hand in order to check all SEO best practices. This is displayed at the top of a list of manually run audits focused on optimizing a website for indexing by search engines. No character length limits."},
+
+"lighthouse-core/config/default-config.js | seoCategoryTitle":{
+"message":"SEO",
+"description":"Title of the Search Engine Optimization (SEO) category of audits. This is displayed at the top of a list of audits focused on topics related to optimizing a website for indexing by search engines. Also used as a label of a score gauge; try to limit to 20 characters."},
 
 "lighthouse-core/lib/i18n/i18n.js | columnCacheTTL":{
 "message":"Cache TTL",
@@ -24552,6 +26613,14 @@ module.exports={
 "message":"Score scale:",
 "description":"Label preceding a pictorial explanation of the scoring scale: 0-50 is red (bad), 50-90 is orange (ok), 90-100 is green (good). These colors are used throughout the report to provide context for how good/bad a particular result is."},
 
+"lighthouse-core/report/html/renderer/util.js | snippetCollapseButtonLabel":{
+"message":"Collapse snippet",
+"description":"Label for button that only shows a few lines of the snippet when clicked"},
+
+"lighthouse-core/report/html/renderer/util.js | snippetExpandButtonLabel":{
+"message":"Expand snippet",
+"description":"Label for button that shows all lines of the snippet when clicked"},
+
 "lighthouse-core/report/html/renderer/util.js | toplevelWarningsMessage":{
 "message":"There were issues affecting this run of Lighthouse:",
 "description":"Label shown preceding any important warnings that may have invalidated the entire report. For example, if the user has Chrome extensions installed, they may add enough performance overhead that Lighthouse's performance metrics are unreliable. If shown, this will be displayed at the top of the report UI."},
@@ -24570,7 +26639,7 @@ module.exports={
 
 
 
-},{}],60:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 (function(__filename,__dirname){
 
 
@@ -24910,7 +26979,7 @@ isIcuMessage};
 
 
 }).call(this,"/lighthouse-core/lib/i18n/i18n.js","/lighthouse-core/lib/i18n");
-},{"./locales.js":61,"intl":88,"intl-messageformat":103,"intl-messageformat-parser":101,"lighthouse-logger":114,"lodash.isequal":115,"lookup-closest-locale":116,"path":129}],61:[function(require,module,exports){
+},{"./locales.js":64,"intl":93,"intl-messageformat":109,"intl-messageformat-parser":107,"lighthouse-logger":120,"lodash.isequal":121,"lookup-closest-locale":122,"path":135}],64:[function(require,module,exports){
 
 
 
@@ -24998,7 +27067,7 @@ const locales={
 
 module.exports=locales;
 
-},{"./en-US.json":59,"./locales/ar-XB.json":88,"./locales/ar.json":88,"./locales/bg.json":88,"./locales/ca.json":88,"./locales/cs.json":88,"./locales/da.json":88,"./locales/de.json":88,"./locales/el.json":88,"./locales/en-GB.json":88,"./locales/en-XA.json":88,"./locales/es.json":88,"./locales/fi.json":88,"./locales/fil.json":88,"./locales/fr.json":88,"./locales/he.json":88,"./locales/hi.json":88,"./locales/hr.json":88,"./locales/hu.json":88,"./locales/id.json":88,"./locales/it.json":88,"./locales/ja.json":88,"./locales/ko.json":88,"./locales/lt.json":88,"./locales/lv.json":88,"./locales/nl.json":88,"./locales/no.json":88,"./locales/pl.json":88,"./locales/pt-PT.json":88,"./locales/pt.json":88,"./locales/ro.json":88,"./locales/ru.json":88,"./locales/sk.json":88,"./locales/sl.json":88,"./locales/sr-Latn.json":88,"./locales/sr.json":88,"./locales/sv.json":88,"./locales/ta.json":88,"./locales/te.json":88,"./locales/th.json":88,"./locales/tr.json":88,"./locales/uk.json":88,"./locales/vi.json":88,"./locales/zh-HK.json":88,"./locales/zh-TW.json":88,"./locales/zh.json":88}],62:[function(require,module,exports){
+},{"./en-US.json":62,"./locales/ar-XB.json":93,"./locales/ar.json":93,"./locales/bg.json":93,"./locales/ca.json":93,"./locales/cs.json":93,"./locales/da.json":93,"./locales/de.json":93,"./locales/el.json":93,"./locales/en-GB.json":93,"./locales/en-XA.json":93,"./locales/es.json":93,"./locales/fi.json":93,"./locales/fil.json":93,"./locales/fr.json":93,"./locales/he.json":93,"./locales/hi.json":93,"./locales/hr.json":93,"./locales/hu.json":93,"./locales/id.json":93,"./locales/it.json":93,"./locales/ja.json":93,"./locales/ko.json":93,"./locales/lt.json":93,"./locales/lv.json":93,"./locales/nl.json":93,"./locales/no.json":93,"./locales/pl.json":93,"./locales/pt-PT.json":93,"./locales/pt.json":93,"./locales/ro.json":93,"./locales/ru.json":93,"./locales/sk.json":93,"./locales/sl.json":93,"./locales/sr-Latn.json":93,"./locales/sr.json":93,"./locales/sv.json":93,"./locales/ta.json":93,"./locales/te.json":93,"./locales/th.json":93,"./locales/tr.json":93,"./locales/uk.json":93,"./locales/vi.json":93,"./locales/zh-HK.json":93,"./locales/zh-TW.json":93,"./locales/zh.json":93}],65:[function(require,module,exports){
 
 
 
@@ -25072,7 +27141,7 @@ doExist,
 pngSizedAtLeast};
 
 
-},{"./url-shim.js":"url"}],63:[function(require,module,exports){
+},{"./url-shim.js":"url"}],66:[function(require,module,exports){
 
 
 
@@ -25280,7 +27349,7 @@ simulationNamesToIgnore:[
 convertNodeTimingsToTrace};
 
 
-},{}],64:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 (function(__filename){
 
 
@@ -25522,7 +27591,7 @@ module.exports=LighthouseError;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/lib/lh-error.js");
-},{"./i18n/i18n.js":60}],65:[function(require,module,exports){
+},{"./i18n/i18n.js":63}],68:[function(require,module,exports){
 
 
 
@@ -25994,7 +28063,7 @@ warning:undefined};
 
 module.exports=parse;
 
-},{"./url-shim":"url","cssstyle/lib/parsers":91}],66:[function(require,module,exports){
+},{"./url-shim":"url","cssstyle/lib/parsers":97}],69:[function(require,module,exports){
 
 
 
@@ -26165,7 +28234,7 @@ return computeTokenLength(content,{singlelineComments:false,regex:false});
 
 module.exports={computeJSTokenLength,computeCSSTokenLength};
 
-},{}],67:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 
 
 
@@ -26475,11 +28544,22 @@ request.onResourceChangedPriority(data);
 
 
 
-dispatch(event){
-if(!event.method.startsWith('Network.')){
-return;
+
+onReceivedMessageFromTarget(data){
+
+const protocolMessage=JSON.parse(data.message);
+
+
+if('id'in protocolMessage)return;
+
+this.dispatch(protocolMessage);
 }
 
+
+
+
+
+dispatch(event){
 switch(event.method){
 case'Network.requestWillBeSent':return this.onRequestWillBeSent(event.params);
 case'Network.requestServedFromCache':return this.onRequestServedFromCache(event.params);
@@ -26488,6 +28568,7 @@ case'Network.dataReceived':return this.onDataReceived(event.params);
 case'Network.loadingFinished':return this.onLoadingFinished(event.params);
 case'Network.loadingFailed':return this.onLoadingFailed(event.params);
 case'Network.resourceChangedPriority':return this.onResourceChangedPriority(event.params);
+case'Target.receivedMessageFromTarget':return this.onReceivedMessageFromTarget(event.params);
 default:return;}
 
 }
@@ -26536,7 +28617,9 @@ recordsByURL.set(record.url,record);
 for(const record of records){
 const stackFrames=record.initiator.stack&&record.initiator.stack.callFrames||[];
 const initiatorURL=record.initiator.url||stackFrames[0]&&stackFrames[0].url;
-const initiator=recordsByURL.get(initiatorURL)||record.redirectSource;
+
+
+const initiator=record.redirectSource||recordsByURL.get(initiatorURL);
 if(initiator){
 record.setInitiatorRequest(initiator);
 }
@@ -26563,7 +28646,7 @@ return records;
 
 module.exports=NetworkRecorder;
 
-},{"./network-request":68,"events":94,"lighthouse-logger":114}],68:[function(require,module,exports){
+},{"./network-request":71,"events":100,"lighthouse-logger":120}],71:[function(require,module,exports){
 (function(global){
 
 
@@ -26910,7 +28993,7 @@ return RESOURCE_TYPES;
 
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./url-shim":"url"}],69:[function(require,module,exports){
+},{"./url-shim":"url"}],72:[function(require,module,exports){
 
 
 
@@ -27145,7 +29228,269 @@ getNodeSelectorString:getNodeSelector.toString(),
 getNodeSelector:getNodeSelector};
 
 
-},{}],70:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+
+
+
+
+function rectContainsPoint(rect,{x,y}){
+return rect.left<=x&&rect.right>=x&&rect.top<=y&&rect.bottom>=y;
+}
+
+
+
+
+
+
+
+
+
+
+function rectContains(rect1,rect2){
+return rect2.top>=rect1.top&&
+rect2.right<=rect1.right&&
+rect2.bottom<=rect1.bottom&&
+rect2.left>=rect1.left;
+}
+
+
+const rectContainsString=`
+  ${rectContains.toString()};
+`;
+
+
+
+
+
+function filterOutTinyRects(rects){
+return rects.filter(
+rect=>rect.width>1&&rect.height>1);
+
+}
+
+
+
+
+
+function filterOutRectsContainedByOthers(rects){
+const rectsToKeep=new Set(rects);
+
+for(const rect of rects){
+for(const possiblyContainingRect of rects){
+if(rect===possiblyContainingRect)continue;
+if(!rectsToKeep.has(possiblyContainingRect))continue;
+if(rectContains(possiblyContainingRect,rect)){
+rectsToKeep.delete(rect);
+break;
+}
+}
+}
+
+return Array.from(rectsToKeep);
+}
+
+
+
+
+function getRectCenterPoint(rect){
+return{
+x:rect.left+rect.width/2,
+y:rect.top+rect.height/2};
+
+}
+
+
+
+
+
+
+function rectsTouchOrOverlap(rectA,rectB){
+
+return(
+rectA.left<=rectB.right&&
+rectB.left<=rectA.right&&
+rectA.top<=rectB.bottom&&
+rectB.top<=rectA.bottom);
+
+}
+
+
+
+
+
+
+
+
+function getBoundingRectWithPadding(rects,minimumSize){
+if(rects.length===0){
+throw new Error('No rects to take bounds of');
+}
+
+let left=Number.MAX_VALUE;
+let right=-Number.MAX_VALUE;
+let top=Number.MAX_VALUE;
+let bottom=-Number.MAX_VALUE;
+for(const rect of rects){
+left=Math.min(left,rect.left);
+right=Math.max(right,rect.right);
+top=Math.min(top,rect.top);
+bottom=Math.max(bottom,rect.bottom);
+}
+
+
+const halfMinSize=minimumSize/2;
+left-=halfMinSize;
+right+=halfMinSize;
+top-=halfMinSize;
+bottom+=halfMinSize;
+
+return{
+left,
+right,
+top,
+bottom,
+width:right-left,
+height:bottom-top};
+
+}
+
+
+
+
+
+function getBoundingRect(rectA,rectB){
+const left=Math.min(rectA.left,rectB.left);
+const right=Math.max(rectA.right,rectB.right);
+const top=Math.min(rectA.top,rectB.top);
+const bottom=Math.max(rectA.bottom,rectB.bottom);
+return addRectWidthAndHeight({
+left,
+right,
+top,
+bottom});
+
+}
+
+
+
+
+
+function addRectWidthAndHeight({left,top,right,bottom}){
+return{
+left,
+top,
+right,
+bottom,
+width:right-left,
+height:bottom-top};
+
+}
+
+
+
+
+
+function addRectTopAndBottom({x,y,width,height}){
+return{
+left:x,
+top:y,
+right:x+width,
+bottom:y+height,
+width,
+height};
+
+}
+
+
+
+
+
+function getRectOverlapArea(rect1,rect2){
+
+const rectYOverlap=Math.min(rect1.bottom,rect2.bottom)-Math.max(rect1.top,rect2.top);
+if(rectYOverlap<=0)return 0;
+
+const rectXOverlap=Math.min(rect1.right,rect2.right)-Math.max(rect1.left,rect2.left);
+if(rectXOverlap<=0)return 0;
+
+return rectXOverlap*rectYOverlap;
+}
+
+
+
+
+
+function getRectAtCenter(rect,centerRectSize){
+return addRectWidthAndHeight({
+left:rect.left+rect.width/2-centerRectSize/2,
+top:rect.top+rect.height/2-centerRectSize/2,
+right:rect.right-rect.width/2+centerRectSize/2,
+bottom:rect.bottom-rect.height/2+centerRectSize/2});
+
+}
+
+
+
+
+function getRectArea(rect){
+return rect.width*rect.height;
+}
+
+
+
+
+function getLargestRect(rects){
+let largestRect=rects[0];
+for(const rect of rects){
+if(getRectArea(rect)>getRectArea(largestRect)){
+largestRect=rect;
+}
+}
+return largestRect;
+}
+
+
+
+
+
+
+function allRectsContainedWithinEachOther(rectListA,rectListB){
+for(const rectA of rectListA){
+for(const rectB of rectListB){
+if(!rectContains(rectA,rectB)&&!rectContains(rectB,rectA)){
+return false;
+}
+}
+}
+return true;
+}
+
+module.exports={
+rectContainsPoint,
+rectContains,
+rectContainsString,
+addRectWidthAndHeight,
+addRectTopAndBottom,
+getRectOverlapArea,
+getRectAtCenter,
+getLargestRect,
+getRectCenterPoint,
+getBoundingRect,
+getBoundingRectWithPadding,
+rectsTouchOrOverlap,
+allRectsContainedWithinEachOther,
+filterOutRectsContainedByOthers,
+filterOutTinyRects};
+
+
+},{}],74:[function(require,module,exports){
 
 
 
@@ -27273,7 +29618,7 @@ log.warn(
 
 module.exports=sentryDelegate;
 
-},{"lighthouse-logger":114,"raven":88}],71:[function(require,module,exports){
+},{"lighthouse-logger":120,"raven":93}],75:[function(require,module,exports){
 
 
 
@@ -27354,7 +29699,115 @@ linearInterpolation,
 getLogNormalDistribution};
 
 
-},{}],72:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
+
+
+
+
+
+'use strict';
+
+const{
+filterOutRectsContainedByOthers,
+filterOutTinyRects,
+rectsTouchOrOverlap,
+rectContainsPoint,
+getBoundingRect,
+getRectCenterPoint}=
+require('./rect-helpers');
+
+
+
+
+
+
+
+function getTappableRectsFromClientRects(clientRects){
+
+
+clientRects=filterOutTinyRects(clientRects);
+clientRects=filterOutRectsContainedByOthers(clientRects);
+clientRects=mergeTouchingClientRects(clientRects);
+return clientRects;
+}
+
+
+
+
+
+
+
+
+
+function almostEqual(a,b){
+return Math.abs(a-b)<=10;
+}
+
+
+
+
+
+
+function mergeTouchingClientRects(clientRects){
+for(let i=0;i<clientRects.length;i++){
+for(let j=i+1;j<clientRects.length;j++){
+const crA=clientRects[i];
+const crB=clientRects[j];
+
+
+
+
+
+
+
+
+
+
+
+
+const rectsLineUpHorizontally=
+almostEqual(crA.top,crB.top)||almostEqual(crA.bottom,crB.bottom);
+const rectsLineUpVertically=
+almostEqual(crA.left,crB.left)||almostEqual(crA.right,crB.right);
+const canMerge=
+rectsTouchOrOverlap(crA,crB)&&(
+rectsLineUpHorizontally||rectsLineUpVertically);
+
+if(canMerge){
+const replacementClientRect=getBoundingRect(crA,crB);
+const mergedRectCenter=getRectCenterPoint(replacementClientRect);
+
+if(
+!(
+rectContainsPoint(crA,mergedRectCenter)||
+rectContainsPoint(crB,mergedRectCenter)))
+
+{
+
+
+
+continue;
+}
+
+
+clientRects=clientRects.filter(cr=>cr!==crA&&cr!==crB);
+clientRects.push(replacementClientRect);
+
+
+
+return mergeTouchingClientRects(clientRects);
+}
+}
+}
+
+return clientRects;
+}
+
+module.exports={
+getTappableRectsFromClientRects};
+
+
+},{"./rect-helpers":73}],77:[function(require,module,exports){
 
 
 
@@ -27467,7 +29920,7 @@ taskGroups,
 taskNameToGroup};
 
 
-},{}],73:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 
 
 
@@ -27485,7 +29938,7 @@ const log=require('lighthouse-logger');
 
 function getUberMetrics(auditResults){
 const metricsAudit=auditResults.metrics;
-if(!metricsAudit||!metricsAudit.details||!metricsAudit.details.items)return;
+if(!metricsAudit||!metricsAudit.details||!('items'in metricsAudit.details))return;
 
 return metricsAudit.details.items[0];
 }
@@ -27672,7 +30125,7 @@ return fakeEvents;
 
 module.exports=Metrics;
 
-},{"lighthouse-logger":114}],74:[function(require,module,exports){
+},{"lighthouse-logger":120}],79:[function(require,module,exports){
 
 
 
@@ -27936,7 +30389,7 @@ evt.name===SCHEDULABLE_TASK_TITLE_ALT3;
 
 module.exports=TraceProcessor;
 
-},{"../lh-error":64}],75:[function(require,module,exports){
+},{"../lh-error":67}],80:[function(require,module,exports){
 
 
 
@@ -28387,6 +30840,48 @@ Util.numberDateLocale=locale;
 
 
 if(Util.numberDateLocale==='en-XA')Util.numberDateLocale='de';
+}
+
+
+
+
+
+
+
+
+
+static filterRelevantLines(lines,lineMessages,surroundingLineCount){
+if(lineMessages.length===0){
+
+return lines.slice(0,surroundingLineCount*2+1);
+}
+
+const minGapSize=3;
+const lineNumbersToKeep=new Set();
+
+
+lineMessages=lineMessages.sort((a,b)=>(a.lineNumber||0)-(b.lineNumber||0));
+lineMessages.forEach(({lineNumber})=>{
+let firstSurroundingLineNumber=lineNumber-surroundingLineCount;
+let lastSurroundingLineNumber=lineNumber+surroundingLineCount;
+
+while(firstSurroundingLineNumber<1){
+
+firstSurroundingLineNumber++;
+lastSurroundingLineNumber++;
+}
+
+
+if(lineNumbersToKeep.has(firstSurroundingLineNumber-minGapSize-1)){
+firstSurroundingLineNumber-=minGapSize;
+}
+for(let i=firstSurroundingLineNumber;i<=lastSurroundingLineNumber;i++){
+const surroundingLineNumber=i;
+lineNumbersToKeep.add(surroundingLineNumber);
+}
+});
+
+return lines.filter(line=>lineNumbersToKeep.has(line.lineNumber));
 }}
 
 
@@ -28436,6 +30931,11 @@ crcInitialNavigation:'Initial Navigation',
 crcLongestDurationLabel:'Maximum critical path latency:',
 
 
+snippetExpandButtonLabel:'Expand snippet',
+
+snippetCollapseButtonLabel:'Collapse snippet',
+
+
 lsPerformanceCategoryDescription:'[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.',
 
 labDataTitle:'Lab Data'};
@@ -28447,7 +30947,7 @@ module.exports=Util;
 self.Util=Util;
 }
 
-},{}],76:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 
 
 
@@ -28567,7 +31067,7 @@ return outputAsArray?output:output[0];
 
 module.exports=ReportGenerator;
 
-},{"./html/html-report-assets":88}],77:[function(require,module,exports){
+},{"./html/html-report-assets":93}],82:[function(require,module,exports){
 (function(process){
 
 
@@ -28916,10 +31416,7 @@ message:errorMessage};
 }
 }
 
-return{
-code:LHError.NO_ERROR,
-message:''};
-
+return undefined;
 }
 
 
@@ -28937,14 +31434,14 @@ const ignoredFiles=[
 
 
 const fileList=[
-...["accessibility","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","dobetterweb","errors-in-console.js","final-screenshot.js","font-display.js","image-aspect-ratio.js","installable-manifest.js","is-on-https.js","load-fast-enough-for-pwa.js","mainthread-work-breakdown.js","manual","metrics","metrics.js","mixed-content.js","multi-check-audit.js","network-requests.js","offline-start-url.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","without-javascript.js","works-offline.js"],
+...["accessibility","audit.js","bootup-time.js","byte-efficiency","content-width.js","critical-request-chains.js","deprecations.js","diagnostics.js","dobetterweb","errors-in-console.js","final-screenshot.js","font-display.js","image-aspect-ratio.js","installable-manifest.js","is-on-https.js","load-fast-enough-for-pwa.js","main-thread-tasks.js","mainthread-work-breakdown.js","manual","metrics","metrics.js","mixed-content.js","multi-check-audit.js","network-requests.js","network-rtt.js","network-server-latency.js","offline-start-url.js","predictive-perf.js","redirects-http.js","redirects.js","screenshot-thumbnails.js","seo","service-worker.js","splash-screen.js","themed-omnibox.js","time-to-first-byte.js","user-timings.js","uses-rel-preconnect.js","uses-rel-preload.js","viewport.js","violation-audit.js","without-javascript.js","works-offline.js"],
 ...["appcache-manifest.js","doctype.js","dom-size.js","external-anchors-use-rel-noopener.js","geolocation-on-start.js","js-libraries.js","no-document-write.js","no-vulnerable-libraries.js","notification-on-start.js","password-inputs-can-be-pasted-into.js","uses-http2.js","uses-passive-event-listeners.js"].map(f=>`dobetterweb/${f}`),
-...["estimated-input-latency.js","first-contentful-paint-3g.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","speed-index.js"].map(f=>`metrics/${f}`),
-...["canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js"].map(f=>`seo/${f}`),
-...["mobile-friendly.js","structured-data.js"].map(f=>`seo/manual/${f}`),
-...["aria-allowed-attr.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-valid-attr-value.js","aria-valid-attr.js","audio-caption.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id.js","frame-title.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","manual","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
+...["estimated-input-latency.js","first-contentful-paint-3g.js","first-contentful-paint.js","first-cpu-idle.js","first-meaningful-paint.js","interactive.js","max-potential-fid.js","speed-index.js"].map(f=>`metrics/${f}`),
+...["canonical.js","font-size.js","hreflang.js","http-status-code.js","is-crawlable.js","link-text.js","manual","meta-description.js","plugins.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
+...["structured-data.js"].map(f=>`seo/manual/${f}`),
+...["accesskeys.js","aria-allowed-attr.js","aria-required-attr.js","aria-required-children.js","aria-required-parent.js","aria-roles.js","aria-valid-attr-value.js","aria-valid-attr.js","audio-caption.js","axe-audit.js","button-name.js","bypass.js","color-contrast.js","definition-list.js","dlitem.js","document-title.js","duplicate-id.js","frame-title.js","html-has-lang.js","html-lang-valid.js","image-alt.js","input-image-alt.js","label.js","layout-table.js","link-name.js","list.js","listitem.js","manual","meta-refresh.js","meta-viewport.js","object-alt.js","tabindex.js","td-headers-attr.js","th-has-data-cells.js","valid-lang.js","video-caption.js","video-description.js"].
 map(f=>`accessibility/${f}`),
-...["accesskeys.js","custom-controls-labels.js","custom-controls-roles.js","focus-traps.js","focusable-controls.js","heading-levels.js","interactive-element-affordance.js","logical-tab-order.js","managed-focus.js","offscreen-content-hidden.js","use-landmarks.js","visual-order-follows-dom.js"].
+...["custom-controls-labels.js","custom-controls-roles.js","focus-traps.js","focusable-controls.js","heading-levels.js","interactive-element-affordance.js","logical-tab-order.js","managed-focus.js","offscreen-content-hidden.js","use-landmarks.js","visual-order-follows-dom.js"].
 map(f=>`accessibility/manual/${f}`),
 ...["byte-efficiency-audit.js","efficient-animated-content.js","offscreen-images.js","render-blocking-resources.js","total-byte-weight.js","unminified-css.js","unminified-javascript.js","unused-css-rules.js","unused-javascript.js","uses-long-cache-ttl.js","uses-optimized-images.js","uses-responsive-images.js","uses-text-compression.js","uses-webp-images.js"].
 map(f=>`byte-efficiency/${f}`),
@@ -28961,9 +31458,9 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 
 static getGathererList(){
 const fileList=[
-...["accessibility.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-elements.js","js-usage.js","link-elements.js","manifest.js","meta-elements.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","viewport-dimensions.js"],
-...["canonical.js","crawlable-links.js","embedded-content.js","font-size.js","hreflang.js","robots-txt.js"].map(f=>`seo/${f}`),
-...["anchors-with-no-rel-noopener.js","appcache.js","doctype.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js"].
+...["accessibility.js","anchor-elements.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-elements.js","js-usage.js","link-elements.js","meta-elements.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","viewport-dimensions.js"],
+...["canonical.js","embedded-content.js","font-size.js","hreflang.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
+...["appcache.js","doctype.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js"].
 map(f=>`dobetterweb/${f}`)];
 
 return fileList.filter(f=>/\.js$/.test(f)&&f!=='gatherer.js').sort();
@@ -28988,7 +31485,7 @@ return path.join(process.cwd(),'latest-run');
 module.exports=Runner;
 
 }).call(this,require('_process'));
-},{"../package.json":161,"./audits/audit":3,"./gather/driver.js":43,"./gather/gather-runner":44,"./lib/asset-saver":48,"./lib/i18n/i18n.js":60,"./lib/lh-error.js":64,"./lib/sentry":70,"./lib/url-shim":"url","./report/report-generator":76,"./scoring":78,"_process":131,"lighthouse-logger":114,"lodash.isequal":115,"path":129}],78:[function(require,module,exports){
+},{"../package.json":167,"./audits/audit":3,"./gather/driver.js":46,"./gather/gather-runner":47,"./lib/asset-saver":51,"./lib/i18n/i18n.js":63,"./lib/lh-error.js":67,"./lib/sentry":74,"./lib/url-shim":"url","./report/report-generator":81,"./scoring":83,"_process":137,"lighthouse-logger":120,"lodash.isequal":121,"path":135}],83:[function(require,module,exports){
 
 
 
@@ -29083,7 +31580,7 @@ return scoredCategories;
 
 module.exports=ReportScoring;
 
-},{"./audits/audit":3}],79:[function(require,module,exports){
+},{"./audits/audit":3}],84:[function(require,module,exports){
 (function(global){
 'use strict';
 
@@ -29577,7 +32074,7 @@ return keys;
 };
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"util/":82}],80:[function(require,module,exports){
+},{"util/":87}],85:[function(require,module,exports){
 if(typeof Object.create==='function'){
 
 module.exports=function inherits(ctor,superCtor){
@@ -29602,14 +32099,14 @@ ctor.prototype.constructor=ctor;
 };
 }
 
-},{}],81:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 module.exports=function isBuffer(arg){
 return arg&&typeof arg==='object'&&
 typeof arg.copy==='function'&&
 typeof arg.fill==='function'&&
 typeof arg.readUInt8==='function';
 };
-},{}],82:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 (function(process,global){
 
 
@@ -30199,7 +32696,7 @@ return Object.prototype.hasOwnProperty.call(obj,prop);
 }
 
 }).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./support/isBuffer":81,"_process":131,"inherits":80}],83:[function(require,module,exports){
+},{"./support/isBuffer":86,"_process":137,"inherits":85}],88:[function(require,module,exports){
 
 
 var langs=[
@@ -38355,7 +40852,7 @@ axe.utils.validLangs=function(){
 return langs;
 };
 
-},{}],84:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 'use strict';
 
 exports.byteLength=byteLength;
@@ -38508,9 +41005,9 @@ lookup[tmp<<2&0x3F]+
 return parts.join('');
 }
 
-},{}],85:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 
-},{}],86:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 (function(process,Buffer){
 'use strict';
 
@@ -38922,7 +41419,7 @@ this._error('Failed to reset stream');
 
 exports.Zlib=Zlib;
 }).call(this,require('_process'),require("buffer").Buffer);
-},{"_process":131,"assert":79,"buffer":89,"pako/lib/zlib/constants":122,"pako/lib/zlib/deflate.js":124,"pako/lib/zlib/inflate.js":88,"pako/lib/zlib/zstream":127}],87:[function(require,module,exports){
+},{"_process":137,"assert":84,"buffer":94,"pako/lib/zlib/constants":128,"pako/lib/zlib/deflate.js":130,"pako/lib/zlib/inflate.js":93,"pako/lib/zlib/zstream":133}],92:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -39534,9 +42031,10 @@ util.inherits(DeflateRaw,Zlib);
 util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 }).call(this,require('_process'));
-},{"./binding":86,"_process":131,"assert":79,"buffer":89,"stream":156,"util":160}],88:[function(require,module,exports){
-arguments[4][85][0].apply(exports,arguments);
-},{"dup":85}],89:[function(require,module,exports){
+},{"./binding":91,"_process":137,"assert":84,"buffer":94,"stream":148,"util":166}],93:[function(require,module,exports){
+arguments[4][90][0].apply(exports,arguments);
+},{"dup":90}],94:[function(require,module,exports){
+(function(Buffer){
 
 
 
@@ -41315,7 +43813,8 @@ function numberIsNaN(obj){
 return obj!==obj;
 }
 
-},{"base64-js":84,"ieee754":97}],90:[function(require,module,exports){
+}).call(this,require("buffer").Buffer);
+},{"base64-js":89,"buffer":94,"ieee754":103}],95:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -41426,12 +43925,166 @@ return Object.prototype.toString.call(o);
 }
 
 }).call(this,{"isBuffer":require("../../insert-module-globals/node_modules/is-buffer/index.js")});
-},{"../../insert-module-globals/node_modules/is-buffer/index.js":100}],91:[function(require,module,exports){
+},{"../../insert-module-globals/node_modules/is-buffer/index.js":106}],96:[function(require,module,exports){
+module.exports=[
+"aliceblue",
+"antiquewhite",
+"aqua",
+"aquamarine",
+"azure",
+"beige",
+"bisque",
+"black",
+"blanchedalmond",
+"blue",
+"blueviolet",
+"brown",
+"burlywood",
+"cadetblue",
+"chartreuse",
+"chocolate",
+"coral",
+"cornflowerblue",
+"cornsilk",
+"crimson",
+"cyan",
+"darkblue",
+"darkcyan",
+"darkgoldenrod",
+"darkgray",
+"darkgreen",
+"darkgrey",
+"darkkhaki",
+"darkmagenta",
+"darkolivegreen",
+"darkorange",
+"darkorchid",
+"darkred",
+"darksalmon",
+"darkseagreen",
+"darkslateblue",
+"darkslategray",
+"darkslategrey",
+"darkturquoise",
+"darkviolet",
+"deeppink",
+"deepskyblue",
+"dimgray",
+"dimgrey",
+"dodgerblue",
+"firebrick",
+"floralwhite",
+"forestgreen",
+"fuchsia",
+"gainsboro",
+"ghostwhite",
+"gold",
+"goldenrod",
+"gray",
+"green",
+"greenyellow",
+"grey",
+"honeydew",
+"hotpink",
+"indianred",
+"indigo",
+"ivory",
+"khaki",
+"lavender",
+"lavenderblush",
+"lawngreen",
+"lemonchiffon",
+"lightblue",
+"lightcoral",
+"lightcyan",
+"lightgoldenrodyellow",
+"lightgray",
+"lightgreen",
+"lightgrey",
+"lightpink",
+"lightsalmon",
+"lightseagreen",
+"lightskyblue",
+"lightslategray",
+"lightslategrey",
+"lightsteelblue",
+"lightyellow",
+"lime",
+"limegreen",
+"linen",
+"magenta",
+"maroon",
+"mediumaquamarine",
+"mediumblue",
+"mediumorchid",
+"mediumpurple",
+"mediumseagreen",
+"mediumslateblue",
+"mediumspringgreen",
+"mediumturquoise",
+"mediumvioletred",
+"midnightblue",
+"mintcream",
+"mistyrose",
+"moccasin",
+"navajowhite",
+"navy",
+"oldlace",
+"olive",
+"olivedrab",
+"orange",
+"orangered",
+"orchid",
+"palegoldenrod",
+"palegreen",
+"paleturquoise",
+"palevioletred",
+"papayawhip",
+"peachpuff",
+"peru",
+"pink",
+"plum",
+"powderblue",
+"purple",
+"rebeccapurple",
+"red",
+"rosybrown",
+"royalblue",
+"saddlebrown",
+"salmon",
+"sandybrown",
+"seagreen",
+"seashell",
+"sienna",
+"silver",
+"skyblue",
+"slateblue",
+"slategray",
+"slategrey",
+"snow",
+"springgreen",
+"steelblue",
+"tan",
+"teal",
+"thistle",
+"tomato",
+"turquoise",
+"violet",
+"wheat",
+"white",
+"whitesmoke",
+"yellow",
+"yellowgreen"];
+
+
+},{}],97:[function(require,module,exports){
 
 
 
 
 'use strict';
+
+const namedColors=require('./named_colors.json');
 
 exports.TYPES={
 INTEGER:1,
@@ -41447,18 +44100,17 @@ NULL_OR_EMPTY_STR:10};
 
 
 
-
-var integerRegEx=/^[\-+]?[0-9]+$/;
-var numberRegEx=/^[\-+]?[0-9]*\.[0-9]+$/;
-var lengthRegEx=/^(0|[\-+]?[0-9]*\.?[0-9]+(in|cm|em|mm|pt|pc|px|ex|rem|vh|vw))$/;
-var percentRegEx=/^[\-+]?[0-9]*\.?[0-9]+%$/;
-var urlRegEx=/^url\(\s*([^\)]*)\s*\)$/;
-var stringRegEx=/^(\"[^\"]*\"|\'[^\']*\')$/;
+var integerRegEx=/^[-+]?[0-9]+$/;
+var numberRegEx=/^[-+]?[0-9]*\.[0-9]+$/;
+var lengthRegEx=/^(0|[-+]?[0-9]*\.?[0-9]+(in|cm|em|mm|pt|pc|px|ex|rem|vh|vw))$/;
+var percentRegEx=/^[-+]?[0-9]*\.?[0-9]+%$/;
+var urlRegEx=/^url\(\s*([^)]*)\s*\)$/;
+var stringRegEx=/^("[^"]*"|'[^']*')$/;
 var colorRegEx1=/^#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]([0-9a-fA-F][0-9a-fA-F][0-9a-fA-F])?$/;
-var colorRegEx2=/^rgb\(([^\)]*)\)$/;
-var colorRegEx3=/^rgba\(([^\)]*)\)$/;
-var angleRegEx=/^([\-+]?[0-9]*\.?[0-9]+)(deg|grad|rad)$/;
-
+var colorRegEx2=/^rgb\(([^)]*)\)$/;
+var colorRegEx3=/^rgba\(([^)]*)\)$/;
+var colorRegEx4=/^hsla?\(\s*(-?\d+|-?\d*.\d+)\s*,\s*(-?\d+|-?\d*.\d+)%\s*,\s*(-?\d+|-?\d*.\d+)%\s*(,\s*(-?\d+|-?\d*.\d+)\s*)?\)/;
+var angleRegEx=/^([-+]?[0-9]*\.?[0-9]+)(deg|grad|rad)$/;
 
 
 exports.valueType=function valueType(val){
@@ -41504,7 +44156,10 @@ parts=res[1].split(/\s*,\s*/);
 if(parts.length!==3){
 return undefined;
 }
-if(parts.every(percentRegEx.test.bind(percentRegEx))||parts.every(integerRegEx.test.bind(integerRegEx))){
+if(
+parts.every(percentRegEx.test.bind(percentRegEx))||
+parts.every(integerRegEx.test.bind(integerRegEx)))
+{
 return exports.TYPES.COLOR;
 }
 return undefined;
@@ -41515,7 +44170,10 @@ parts=res[1].split(/\s*,\s*/);
 if(parts.length!==4){
 return undefined;
 }
-if(parts.slice(0,3).every(percentRegEx.test.bind(percentRegEx))||parts.every(integerRegEx.test.bind(integerRegEx))){
+if(
+parts.slice(0,3).every(percentRegEx.test.bind(percentRegEx))||
+parts.every(integerRegEx.test.bind(integerRegEx)))
+{
 if(numberRegEx.test(parts[3])){
 return exports.TYPES.COLOR;
 }
@@ -41523,26 +44181,18 @@ return exports.TYPES.COLOR;
 return undefined;
 }
 
+if(colorRegEx4.test(val)){
+return exports.TYPES.COLOR;
+}
+
 
 val=val.toLowerCase();
+
+if(namedColors.includes(val)){
+return exports.TYPES.COLOR;
+}
+
 switch(val){
-case'maroon':
-case'red':
-case'orange':
-case'yellow':
-case'olive':
-case'purple':
-case'fuchsia':
-case'white':
-case'lime':
-case'green':
-case'navy':
-case'blue':
-case'aqua':
-case'teal':
-case'black':
-case'silver':
-case'gray':
 
 case'activeborder':
 case'activecaption':
@@ -41708,7 +44358,13 @@ var type=exports.valueType(val);
 if(type===exports.TYPES.NULL_OR_EMPTY_STR){
 return val;
 }
-var red,green,blue,alpha=1;
+var red,
+green,
+blue,
+hue,
+saturation,
+lightness,
+alpha=1;
 var parts;
 var res=colorRegEx1.exec(val);
 
@@ -41778,6 +44434,25 @@ return'rgb('+red+', '+green+', '+blue+')';
 return'rgba('+red+', '+green+', '+blue+', '+alpha+')';
 }
 
+res=colorRegEx4.exec(val);
+if(res){
+const[,_hue,_saturation,_lightness,_alphaString='']=res;
+const _alpha=parseFloat(_alphaString.replace(',','').trim());
+if(!_hue||!_saturation||!_lightness){
+return undefined;
+}
+hue=parseFloat(_hue);
+saturation=parseInt(_saturation,10);
+lightness=parseInt(_lightness,10);
+if(_alpha&&numberRegEx.test(_alpha)){
+alpha=parseFloat(_alpha);
+}
+if(!_alphaString||alpha===1){
+return'hsl('+hue+', '+saturation+'%, '+lightness+'%)';
+}
+return'hsla('+hue+', '+saturation+'%, '+lightness+'%, '+alpha+')';
+}
+
 if(type===exports.TYPES.COLOR){
 return val;
 }
@@ -41845,8 +44520,8 @@ return camel;
 exports.dashedToCamelCase=dashedToCamelCase;
 
 var is_space=/\s/;
-var opening_deliminators=['"','\'','('];
-var closing_deliminators=['"','\'',')'];
+var opening_deliminators=['"',"'",'('];
+var closing_deliminators=['"',"'",')'];
 
 var getParts=function(str){
 var deliminator_stack=[];
@@ -41874,7 +44549,10 @@ i++;
 current_part+=str[i];
 }else{
 current_part+=str[i];
-if(closing_index!==-1&&closing_index===deliminator_stack[deliminator_stack.length-1]){
+if(
+closing_index!==-1&&
+closing_index===deliminator_stack[deliminator_stack.length-1])
+{
 deliminator_stack.pop();
 }else if(opening_index!==-1){
 deliminator_stack.push(opening_index);
@@ -41917,10 +44595,10 @@ return{};
 }
 var parts=getParts(v);
 var valid=true;
-parts.forEach(function(part){
+parts.forEach(function(part,i){
 var part_valid=false;
 Object.keys(shorthand_for).forEach(function(property){
-if(shorthand_for[property].isValid(part)){
+if(shorthand_for[property].isValid(part,i)){
 part_valid=true;
 obj[property]=part;
 }
@@ -41976,11 +44654,14 @@ return function(){
 if(this._values[property]!==undefined){
 return this.getPropertyValue(property);
 }
-return Object.keys(shorthand_for).map(function(subprop){
+return Object.keys(shorthand_for).
+map(function(subprop){
 return this.getPropertyValue(subprop);
-},this).filter(function(value){
+},this).
+filter(function(value){
 return value!=='';
-}).join(' ');
+}).
+join(' ');
 };
 };
 
@@ -41994,7 +44675,7 @@ property_after=property_after||'';
 if(property_after!==''){
 property_after='-'+property_after;
 }
-var part_names=["top","right","bottom","left"];
+var part_names=['top','right','bottom','left'];
 
 return function(v){
 if(typeof v==='number'){
@@ -42032,7 +44713,7 @@ parts[3]=parts[1];
 }
 
 for(var i=0;i<4;i++){
-var property=property_before+"-"+part_names[i]+property_after;
+var property=property_before+'-'+part_names[i]+property_after;
 this.removeProperty(property);
 if(parts[i]!==''){
 this._values[property]=parts[i];
@@ -42050,7 +44731,7 @@ return v;
 
 exports.subImplicitSetter=function(prefix,part,isValid,parser){
 var property=prefix+'-'+part;
-var subparts=[prefix+"-top",prefix+"-right",prefix+"-bottom",prefix+"-left"];
+var subparts=[prefix+'-top',prefix+'-right',prefix+'-bottom',prefix+'-left'];
 
 return function(v){
 if(typeof v==='number'){
@@ -42076,17 +44757,14 @@ for(i=0;i<4;i++){
 this.removeProperty(subparts[i]);
 this._values[subparts[i]]=parts[i];
 }
-this._setProperty(prefix,parts.join(" "));
+this._setProperty(prefix,parts.join(' '));
 }
 return v;
 };
 };
 
-
 var camel_to_dashed=/[A-Z]/g;
-
-var first_segment=/^\([^\-]\)-/;
-
+var first_segment=/^\([^-]\)-/;
 var vendor_prefixes=['o','moz','ms','webkit'];
 exports.camelToDashed=function(camel_case){
 var match;
@@ -42098,7 +44776,7 @@ dashed='-'+dashed;
 return dashed;
 };
 
-},{}],92:[function(require,module,exports){
+},{"./named_colors.json":96}],98:[function(require,module,exports){
 (function(process){
 
 
@@ -42287,7 +44965,7 @@ return window.localStorage;
 }
 
 }).call(this,require('_process'));
-},{"./debug":93,"_process":131}],93:[function(require,module,exports){
+},{"./debug":99,"_process":137}],99:[function(require,module,exports){
 
 
 
@@ -42491,7 +45169,7 @@ if(val instanceof Error)return val.stack||val.message;
 return val;
 }
 
-},{"ms":119}],94:[function(require,module,exports){
+},{"ms":125}],100:[function(require,module,exports){
 
 
 
@@ -43016,7 +45694,7 @@ return fn.apply(context,arguments);
 };
 }
 
-},{}],95:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 (function(Buffer){
 var querystring=require('querystring');
 var trim=require('./trim');
@@ -43323,12 +46001,12 @@ return refs.join(', ');
 module.exports=Link;
 
 }).call(this,{"isBuffer":require("../../insert-module-globals/node_modules/is-buffer/index.js")});
-},{"../../insert-module-globals/node_modules/is-buffer/index.js":100,"./trim":96,"querystring":134}],96:[function(require,module,exports){
+},{"../../insert-module-globals/node_modules/is-buffer/index.js":106,"./trim":102,"querystring":140}],102:[function(require,module,exports){
 module.exports=function trim(value){
 return value.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,'');
 };
 
-},{}],97:[function(require,module,exports){
+},{}],103:[function(require,module,exports){
 exports.read=function(buffer,offset,isLE,mLen,nBytes){
 var e,m;
 var eLen=nBytes*8-mLen-1;
@@ -43414,7 +46092,7 @@ for(;eLen>0;buffer[offset+i]=e&0xff,i+=d,e/=256,eLen-=8){}
 buffer[offset+i-d]|=s*128;
 };
 
-},{}],98:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 
 
 
@@ -43559,9 +46237,9 @@ return sumLuma/lumaValues.length;
 })(ImageSSIM||(ImageSSIM={}));
 module.exports=ImageSSIM;
 
-},{}],99:[function(require,module,exports){
-arguments[4][80][0].apply(exports,arguments);
-},{"dup":80}],100:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
+arguments[4][85][0].apply(exports,arguments);
+},{"dup":85}],106:[function(require,module,exports){
 
 
 
@@ -43584,13 +46262,13 @@ function isSlowBuffer(obj){
 return typeof obj.readFloatLE==='function'&&typeof obj.slice==='function'&&isBuffer(obj.slice(0,0));
 }
 
-},{}],101:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 'use strict';
 
 exports=module.exports=require('./lib/parser')['default'];
 exports['default']=exports;
 
-},{"./lib/parser":102}],102:[function(require,module,exports){
+},{"./lib/parser":108}],108:[function(require,module,exports){
 "use strict";
 
 exports["default"]=function(){
@@ -44992,7 +47670,7 @@ parse:peg$parse};
 }();
 
 
-},{}],103:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 
 
 'use strict';
@@ -45009,7 +47687,7 @@ require('./lib/locales');
 exports=module.exports=IntlMessageFormat;
 exports['default']=exports;
 
-},{"./lib/locales":85,"./lib/main":108}],104:[function(require,module,exports){
+},{"./lib/locales":90,"./lib/main":114}],110:[function(require,module,exports){
 
 
 
@@ -45219,7 +47897,7 @@ return options[value]||options.other;
 };
 
 
-},{}],105:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 
 
 
@@ -45497,13 +48175,13 @@ locales.join(', ')+', or the default locale: '+defaultLocale);
 };
 
 
-},{"./compiler":104,"./es5":107,"./utils":109,"intl-messageformat-parser":101}],106:[function(require,module,exports){
+},{"./compiler":110,"./es5":113,"./utils":115,"intl-messageformat-parser":107}],112:[function(require,module,exports){
 
 "use strict";
 exports["default"]={"locale":"en","pluralRuleFunction":function(n,ord){var s=String(n).split("."),v0=!s[1],t0=Number(s[0])==n,n10=t0&&s[0].slice(-1),n100=t0&&s[0].slice(-2);if(ord)return n10==1&&n100!=11?"one":n10==2&&n100!=12?"two":n10==3&&n100!=13?"few":"other";return n==1&&v0?"one":"other";}};
 
 
-},{}],107:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 
 
 
@@ -45554,7 +48232,7 @@ return obj;
 exports.defineProperty=defineProperty,exports.objCreate=objCreate;
 
 
-},{"./utils":109}],108:[function(require,module,exports){
+},{"./utils":115}],114:[function(require,module,exports){
 
 
 "use strict";
@@ -45566,7 +48244,7 @@ src$core$$["default"].defaultLocale='en';
 exports["default"]=src$core$$["default"];
 
 
-},{"./core":105,"./en":106}],109:[function(require,module,exports){
+},{"./core":111,"./en":112}],115:[function(require,module,exports){
 
 
 
@@ -45599,14 +48277,14 @@ return obj;
 exports.hop=hop;
 
 
-},{}],110:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 var toString={}.toString;
 
 module.exports=Array.isArray||function(arr){
 return toString.call(arr)=='[object Array]';
 };
 
-},{}],111:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 var encode=require('./lib/encoder'),
 decode=require('./lib/decoder');
 
@@ -45615,7 +48293,7 @@ encode:encode,
 decode:decode};
 
 
-},{"./lib/decoder":112,"./lib/encoder":113}],112:[function(require,module,exports){
+},{"./lib/decoder":118,"./lib/encoder":119}],118:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -46605,7 +49283,7 @@ return image;
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":89}],113:[function(require,module,exports){
+},{"buffer":94}],119:[function(require,module,exports){
 (function(Buffer){
 
 
@@ -47375,7 +50053,7 @@ return ctx.getImageData(0,0,cvs.width,cvs.height);
 }
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":89}],114:[function(require,module,exports){
+},{"buffer":94}],120:[function(require,module,exports){
 (function(process){
 
 
@@ -47620,7 +50298,7 @@ Log.getTimeEntries=()=>marky.getEntries();
 module.exports=Log;
 
 }).call(this,require('_process'));
-},{"_process":131,"debug":92,"events":94,"marky":117}],115:[function(require,module,exports){
+},{"_process":137,"debug":98,"events":100,"marky":123}],121:[function(require,module,exports){
 (function(global){
 
 
@@ -49472,7 +52150,7 @@ return false;
 module.exports=isEqual;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],116:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 
 
 
@@ -49489,7 +52167,7 @@ current.pop();
 }
 };
 
-},{}],117:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports,'__esModule',{value:true});
@@ -49569,7 +52247,7 @@ exports.getEntries=function(){return entries;};
 exports.clear=function(){entries=[];};
 }
 
-},{}],118:[function(require,module,exports){
+},{}],124:[function(require,module,exports){
 exports.getRenderingDataFromViewport=function(viewportProperties,uaDeviceWidth,uaDeviceHeight,uaMaxZoom,uaMinZoom){
 
 var vw=uaDeviceWidth/100;
@@ -49912,7 +52590,7 @@ exports.expectedValues={
 "viewport-fit":["auto","cover"]};
 
 
-},{}],119:[function(require,module,exports){
+},{}],125:[function(require,module,exports){
 
 
 
@@ -50066,7 +52744,7 @@ return Math.floor(ms/n)+' '+name;
 return Math.ceil(ms/n)+' '+name+'s';
 }
 
-},{}],120:[function(require,module,exports){
+},{}],126:[function(require,module,exports){
 'use strict';
 
 
@@ -50173,7 +52851,7 @@ exports.assign(exports,fnUntyped);
 
 exports.setTyped(TYPED_OK);
 
-},{}],121:[function(require,module,exports){
+},{}],127:[function(require,module,exports){
 'use strict';
 
 
@@ -50226,7 +52904,7 @@ return s1|s2<<16|0;
 
 module.exports=adler32;
 
-},{}],122:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 'use strict';
 
 
@@ -50296,7 +52974,7 @@ Z_DEFLATED:8};
 
 
 
-},{}],123:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 'use strict';
 
 
@@ -50357,7 +53035,7 @@ return crc^-1;
 
 module.exports=crc32;
 
-},{}],124:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 'use strict';
 
 
@@ -52233,7 +54911,7 @@ exports.deflateInfo='pako deflate (from Nodeca project)';
 
 
 
-},{"../utils/common":120,"./adler32":121,"./crc32":123,"./messages":125,"./trees":126}],125:[function(require,module,exports){
+},{"../utils/common":126,"./adler32":127,"./crc32":129,"./messages":131,"./trees":132}],131:[function(require,module,exports){
 'use strict';
 
 
@@ -52267,8 +54945,10 @@ module.exports={
 '-6':'incompatible version'};
 
 
-},{}],126:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 'use strict';
+
+
 
 
 
@@ -53489,7 +56169,7 @@ exports._tr_flush_block=_tr_flush_block;
 exports._tr_tally=_tr_tally;
 exports._tr_align=_tr_align;
 
-},{"../utils/common":120}],127:[function(require,module,exports){
+},{"../utils/common":126}],133:[function(require,module,exports){
 'use strict';
 
 
@@ -53538,7 +56218,7 @@ this.adler=0;
 
 module.exports=ZStream;
 
-},{}],128:[function(require,module,exports){
+},{}],134:[function(require,module,exports){
 module.exports=function parseCacheControl(field){
 
 if(typeof field!=='string'){
@@ -53577,7 +56257,7 @@ catch(err){}
 return err?null:header;
 };
 
-},{}],129:[function(require,module,exports){
+},{}],135:[function(require,module,exports){
 (function(process){
 
 
@@ -53883,7 +56563,7 @@ return str.substr(start,len);
 
 
 }).call(this,require('_process'));
-},{"_process":131}],130:[function(require,module,exports){
+},{"_process":137}],136:[function(require,module,exports){
 (function(process){
 'use strict';
 
@@ -53930,7 +56610,7 @@ fn.apply(null,args);
 }
 
 }).call(this,require('_process'));
-},{"_process":131}],131:[function(require,module,exports){
+},{"_process":137}],137:[function(require,module,exports){
 
 var process=module.exports={};
 
@@ -54116,7 +56796,7 @@ throw new Error('process.chdir is not supported');
 };
 process.umask=function(){return 0;};
 
-},{}],132:[function(require,module,exports){
+},{}],138:[function(require,module,exports){
 
 
 
@@ -54202,7 +56882,7 @@ var isArray=Array.isArray||function(xs){
 return Object.prototype.toString.call(xs)==='[object Array]';
 };
 
-},{}],133:[function(require,module,exports){
+},{}],139:[function(require,module,exports){
 
 
 
@@ -54289,2523 +56969,13 @@ if(Object.prototype.hasOwnProperty.call(obj,key))res.push(key);
 return res;
 };
 
-},{}],134:[function(require,module,exports){
+},{}],140:[function(require,module,exports){
 'use strict';
 
 exports.decode=exports.parse=require('./decode');
 exports.encode=exports.stringify=require('./encode');
 
-},{"./decode":132,"./encode":133}],135:[function(require,module,exports){
-module.exports=require('./lib/_stream_duplex.js');
-
-},{"./lib/_stream_duplex.js":136}],136:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-
-var objectKeys=Object.keys||function(obj){
-var keys=[];
-for(var key in obj){
-keys.push(key);
-}return keys;
-};
-
-
-module.exports=Duplex;
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-var Readable=require('./_stream_readable');
-var Writable=require('./_stream_writable');
-
-util.inherits(Duplex,Readable);
-
-var keys=objectKeys(Writable.prototype);
-for(var v=0;v<keys.length;v++){
-var method=keys[v];
-if(!Duplex.prototype[method])Duplex.prototype[method]=Writable.prototype[method];
-}
-
-function Duplex(options){
-if(!(this instanceof Duplex))return new Duplex(options);
-
-Readable.call(this,options);
-Writable.call(this,options);
-
-if(options&&options.readable===false)this.readable=false;
-
-if(options&&options.writable===false)this.writable=false;
-
-this.allowHalfOpen=true;
-if(options&&options.allowHalfOpen===false)this.allowHalfOpen=false;
-
-this.once('end',onend);
-}
-
-
-function onend(){
-
-
-if(this.allowHalfOpen||this._writableState.ended)return;
-
-
-
-processNextTick(onEndNT,this);
-}
-
-function onEndNT(self){
-self.end();
-}
-
-Object.defineProperty(Duplex.prototype,'destroyed',{
-get:function(){
-if(this._readableState===undefined||this._writableState===undefined){
-return false;
-}
-return this._readableState.destroyed&&this._writableState.destroyed;
-},
-set:function(value){
-
-
-if(this._readableState===undefined||this._writableState===undefined){
-return;
-}
-
-
-
-this._readableState.destroyed=value;
-this._writableState.destroyed=value;
-}});
-
-
-Duplex.prototype._destroy=function(err,cb){
-this.push(null);
-this.end();
-
-processNextTick(cb,err);
-};
-
-function forEach(xs,f){
-for(var i=0,l=xs.length;i<l;i++){
-f(xs[i],i);
-}
-}
-},{"./_stream_readable":138,"./_stream_writable":140,"core-util-is":90,"inherits":99,"process-nextick-args":130}],137:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-module.exports=PassThrough;
-
-var Transform=require('./_stream_transform');
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-util.inherits(PassThrough,Transform);
-
-function PassThrough(options){
-if(!(this instanceof PassThrough))return new PassThrough(options);
-
-Transform.call(this,options);
-}
-
-PassThrough.prototype._transform=function(chunk,encoding,cb){
-cb(null,chunk);
-};
-},{"./_stream_transform":139,"core-util-is":90,"inherits":99}],138:[function(require,module,exports){
-(function(process,global){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-module.exports=Readable;
-
-
-var isArray=require('isarray');
-
-
-
-var Duplex;
-
-
-Readable.ReadableState=ReadableState;
-
-
-var EE=require('events').EventEmitter;
-
-var EElistenerCount=function(emitter,type){
-return emitter.listeners(type).length;
-};
-
-
-
-var Stream=require('./internal/streams/stream');
-
-
-
-
-
-var Buffer=require('safe-buffer').Buffer;
-var OurUint8Array=global.Uint8Array||function(){};
-function _uint8ArrayToBuffer(chunk){
-return Buffer.from(chunk);
-}
-function _isUint8Array(obj){
-return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
-}
-
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-
-var debugUtil=require('util');
-var debug=void 0;
-if(debugUtil&&debugUtil.debuglog){
-debug=debugUtil.debuglog('stream');
-}else{
-debug=function(){};
-}
-
-
-var BufferList=require('./internal/streams/BufferList');
-var destroyImpl=require('./internal/streams/destroy');
-var StringDecoder;
-
-util.inherits(Readable,Stream);
-
-var kProxyEvents=['error','close','destroy','pause','resume'];
-
-function prependListener(emitter,event,fn){
-
-
-if(typeof emitter.prependListener==='function'){
-return emitter.prependListener(event,fn);
-}else{
-
-
-
-
-if(!emitter._events||!emitter._events[event])emitter.on(event,fn);else if(isArray(emitter._events[event]))emitter._events[event].unshift(fn);else emitter._events[event]=[fn,emitter._events[event]];
-}
-}
-
-function ReadableState(options,stream){
-Duplex=Duplex||require('./_stream_duplex');
-
-options=options||{};
-
-
-
-this.objectMode=!!options.objectMode;
-
-if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.readableObjectMode;
-
-
-
-var hwm=options.highWaterMark;
-var defaultHwm=this.objectMode?16:16*1024;
-this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
-
-
-this.highWaterMark=Math.floor(this.highWaterMark);
-
-
-
-
-this.buffer=new BufferList();
-this.length=0;
-this.pipes=null;
-this.pipesCount=0;
-this.flowing=null;
-this.ended=false;
-this.endEmitted=false;
-this.reading=false;
-
-
-
-
-
-this.sync=true;
-
-
-
-this.needReadable=false;
-this.emittedReadable=false;
-this.readableListening=false;
-this.resumeScheduled=false;
-
-
-this.destroyed=false;
-
-
-
-
-this.defaultEncoding=options.defaultEncoding||'utf8';
-
-
-this.awaitDrain=0;
-
-
-this.readingMore=false;
-
-this.decoder=null;
-this.encoding=null;
-if(options.encoding){
-if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
-this.decoder=new StringDecoder(options.encoding);
-this.encoding=options.encoding;
-}
-}
-
-function Readable(options){
-Duplex=Duplex||require('./_stream_duplex');
-
-if(!(this instanceof Readable))return new Readable(options);
-
-this._readableState=new ReadableState(options,this);
-
-
-this.readable=true;
-
-if(options){
-if(typeof options.read==='function')this._read=options.read;
-
-if(typeof options.destroy==='function')this._destroy=options.destroy;
-}
-
-Stream.call(this);
-}
-
-Object.defineProperty(Readable.prototype,'destroyed',{
-get:function(){
-if(this._readableState===undefined){
-return false;
-}
-return this._readableState.destroyed;
-},
-set:function(value){
-
-
-if(!this._readableState){
-return;
-}
-
-
-
-this._readableState.destroyed=value;
-}});
-
-
-Readable.prototype.destroy=destroyImpl.destroy;
-Readable.prototype._undestroy=destroyImpl.undestroy;
-Readable.prototype._destroy=function(err,cb){
-this.push(null);
-cb(err);
-};
-
-
-
-
-
-Readable.prototype.push=function(chunk,encoding){
-var state=this._readableState;
-var skipChunkCheck;
-
-if(!state.objectMode){
-if(typeof chunk==='string'){
-encoding=encoding||state.defaultEncoding;
-if(encoding!==state.encoding){
-chunk=Buffer.from(chunk,encoding);
-encoding='';
-}
-skipChunkCheck=true;
-}
-}else{
-skipChunkCheck=true;
-}
-
-return readableAddChunk(this,chunk,encoding,false,skipChunkCheck);
-};
-
-
-Readable.prototype.unshift=function(chunk){
-return readableAddChunk(this,chunk,null,true,false);
-};
-
-function readableAddChunk(stream,chunk,encoding,addToFront,skipChunkCheck){
-var state=stream._readableState;
-if(chunk===null){
-state.reading=false;
-onEofChunk(stream,state);
-}else{
-var er;
-if(!skipChunkCheck)er=chunkInvalid(state,chunk);
-if(er){
-stream.emit('error',er);
-}else if(state.objectMode||chunk&&chunk.length>0){
-if(typeof chunk!=='string'&&!state.objectMode&&Object.getPrototypeOf(chunk)!==Buffer.prototype){
-chunk=_uint8ArrayToBuffer(chunk);
-}
-
-if(addToFront){
-if(state.endEmitted)stream.emit('error',new Error('stream.unshift() after end event'));else addChunk(stream,state,chunk,true);
-}else if(state.ended){
-stream.emit('error',new Error('stream.push() after EOF'));
-}else{
-state.reading=false;
-if(state.decoder&&!encoding){
-chunk=state.decoder.write(chunk);
-if(state.objectMode||chunk.length!==0)addChunk(stream,state,chunk,false);else maybeReadMore(stream,state);
-}else{
-addChunk(stream,state,chunk,false);
-}
-}
-}else if(!addToFront){
-state.reading=false;
-}
-}
-
-return needMoreData(state);
-}
-
-function addChunk(stream,state,chunk,addToFront){
-if(state.flowing&&state.length===0&&!state.sync){
-stream.emit('data',chunk);
-stream.read(0);
-}else{
-
-state.length+=state.objectMode?1:chunk.length;
-if(addToFront)state.buffer.unshift(chunk);else state.buffer.push(chunk);
-
-if(state.needReadable)emitReadable(stream);
-}
-maybeReadMore(stream,state);
-}
-
-function chunkInvalid(state,chunk){
-var er;
-if(!_isUint8Array(chunk)&&typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
-er=new TypeError('Invalid non-string/buffer chunk');
-}
-return er;
-}
-
-
-
-
-
-
-
-
-function needMoreData(state){
-return!state.ended&&(state.needReadable||state.length<state.highWaterMark||state.length===0);
-}
-
-Readable.prototype.isPaused=function(){
-return this._readableState.flowing===false;
-};
-
-
-Readable.prototype.setEncoding=function(enc){
-if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
-this._readableState.decoder=new StringDecoder(enc);
-this._readableState.encoding=enc;
-return this;
-};
-
-
-var MAX_HWM=0x800000;
-function computeNewHighWaterMark(n){
-if(n>=MAX_HWM){
-n=MAX_HWM;
-}else{
-
-
-n--;
-n|=n>>>1;
-n|=n>>>2;
-n|=n>>>4;
-n|=n>>>8;
-n|=n>>>16;
-n++;
-}
-return n;
-}
-
-
-
-function howMuchToRead(n,state){
-if(n<=0||state.length===0&&state.ended)return 0;
-if(state.objectMode)return 1;
-if(n!==n){
-
-if(state.flowing&&state.length)return state.buffer.head.data.length;else return state.length;
-}
-
-if(n>state.highWaterMark)state.highWaterMark=computeNewHighWaterMark(n);
-if(n<=state.length)return n;
-
-if(!state.ended){
-state.needReadable=true;
-return 0;
-}
-return state.length;
-}
-
-
-Readable.prototype.read=function(n){
-debug('read',n);
-n=parseInt(n,10);
-var state=this._readableState;
-var nOrig=n;
-
-if(n!==0)state.emittedReadable=false;
-
-
-
-
-if(n===0&&state.needReadable&&(state.length>=state.highWaterMark||state.ended)){
-debug('read: emitReadable',state.length,state.ended);
-if(state.length===0&&state.ended)endReadable(this);else emitReadable(this);
-return null;
-}
-
-n=howMuchToRead(n,state);
-
-
-if(n===0&&state.ended){
-if(state.length===0)endReadable(this);
-return null;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var doRead=state.needReadable;
-debug('need readable',doRead);
-
-
-if(state.length===0||state.length-n<state.highWaterMark){
-doRead=true;
-debug('length less than watermark',doRead);
-}
-
-
-
-if(state.ended||state.reading){
-doRead=false;
-debug('reading or ended',doRead);
-}else if(doRead){
-debug('do read');
-state.reading=true;
-state.sync=true;
-
-if(state.length===0)state.needReadable=true;
-
-this._read(state.highWaterMark);
-state.sync=false;
-
-
-if(!state.reading)n=howMuchToRead(nOrig,state);
-}
-
-var ret;
-if(n>0)ret=fromList(n,state);else ret=null;
-
-if(ret===null){
-state.needReadable=true;
-n=0;
-}else{
-state.length-=n;
-}
-
-if(state.length===0){
-
-
-if(!state.ended)state.needReadable=true;
-
-
-if(nOrig!==n&&state.ended)endReadable(this);
-}
-
-if(ret!==null)this.emit('data',ret);
-
-return ret;
-};
-
-function onEofChunk(stream,state){
-if(state.ended)return;
-if(state.decoder){
-var chunk=state.decoder.end();
-if(chunk&&chunk.length){
-state.buffer.push(chunk);
-state.length+=state.objectMode?1:chunk.length;
-}
-}
-state.ended=true;
-
-
-emitReadable(stream);
-}
-
-
-
-
-function emitReadable(stream){
-var state=stream._readableState;
-state.needReadable=false;
-if(!state.emittedReadable){
-debug('emitReadable',state.flowing);
-state.emittedReadable=true;
-if(state.sync)processNextTick(emitReadable_,stream);else emitReadable_(stream);
-}
-}
-
-function emitReadable_(stream){
-debug('emit readable');
-stream.emit('readable');
-flow(stream);
-}
-
-
-
-
-
-
-
-function maybeReadMore(stream,state){
-if(!state.readingMore){
-state.readingMore=true;
-processNextTick(maybeReadMore_,stream,state);
-}
-}
-
-function maybeReadMore_(stream,state){
-var len=state.length;
-while(!state.reading&&!state.flowing&&!state.ended&&state.length<state.highWaterMark){
-debug('maybeReadMore read 0');
-stream.read(0);
-if(len===state.length)
-
-break;else len=state.length;
-}
-state.readingMore=false;
-}
-
-
-
-
-
-Readable.prototype._read=function(n){
-this.emit('error',new Error('_read() is not implemented'));
-};
-
-Readable.prototype.pipe=function(dest,pipeOpts){
-var src=this;
-var state=this._readableState;
-
-switch(state.pipesCount){
-case 0:
-state.pipes=dest;
-break;
-case 1:
-state.pipes=[state.pipes,dest];
-break;
-default:
-state.pipes.push(dest);
-break;}
-
-state.pipesCount+=1;
-debug('pipe count=%d opts=%j',state.pipesCount,pipeOpts);
-
-var doEnd=(!pipeOpts||pipeOpts.end!==false)&&dest!==process.stdout&&dest!==process.stderr;
-
-var endFn=doEnd?onend:unpipe;
-if(state.endEmitted)processNextTick(endFn);else src.once('end',endFn);
-
-dest.on('unpipe',onunpipe);
-function onunpipe(readable,unpipeInfo){
-debug('onunpipe');
-if(readable===src){
-if(unpipeInfo&&unpipeInfo.hasUnpiped===false){
-unpipeInfo.hasUnpiped=true;
-cleanup();
-}
-}
-}
-
-function onend(){
-debug('onend');
-dest.end();
-}
-
-
-
-
-
-var ondrain=pipeOnDrain(src);
-dest.on('drain',ondrain);
-
-var cleanedUp=false;
-function cleanup(){
-debug('cleanup');
-
-dest.removeListener('close',onclose);
-dest.removeListener('finish',onfinish);
-dest.removeListener('drain',ondrain);
-dest.removeListener('error',onerror);
-dest.removeListener('unpipe',onunpipe);
-src.removeListener('end',onend);
-src.removeListener('end',unpipe);
-src.removeListener('data',ondata);
-
-cleanedUp=true;
-
-
-
-
-
-
-if(state.awaitDrain&&(!dest._writableState||dest._writableState.needDrain))ondrain();
-}
-
-
-
-
-
-var increasedAwaitDrain=false;
-src.on('data',ondata);
-function ondata(chunk){
-debug('ondata');
-increasedAwaitDrain=false;
-var ret=dest.write(chunk);
-if(false===ret&&!increasedAwaitDrain){
-
-
-
-
-if((state.pipesCount===1&&state.pipes===dest||state.pipesCount>1&&indexOf(state.pipes,dest)!==-1)&&!cleanedUp){
-debug('false write response, pause',src._readableState.awaitDrain);
-src._readableState.awaitDrain++;
-increasedAwaitDrain=true;
-}
-src.pause();
-}
-}
-
-
-
-function onerror(er){
-debug('onerror',er);
-unpipe();
-dest.removeListener('error',onerror);
-if(EElistenerCount(dest,'error')===0)dest.emit('error',er);
-}
-
-
-prependListener(dest,'error',onerror);
-
-
-function onclose(){
-dest.removeListener('finish',onfinish);
-unpipe();
-}
-dest.once('close',onclose);
-function onfinish(){
-debug('onfinish');
-dest.removeListener('close',onclose);
-unpipe();
-}
-dest.once('finish',onfinish);
-
-function unpipe(){
-debug('unpipe');
-src.unpipe(dest);
-}
-
-
-dest.emit('pipe',src);
-
-
-if(!state.flowing){
-debug('pipe resume');
-src.resume();
-}
-
-return dest;
-};
-
-function pipeOnDrain(src){
-return function(){
-var state=src._readableState;
-debug('pipeOnDrain',state.awaitDrain);
-if(state.awaitDrain)state.awaitDrain--;
-if(state.awaitDrain===0&&EElistenerCount(src,'data')){
-state.flowing=true;
-flow(src);
-}
-};
-}
-
-Readable.prototype.unpipe=function(dest){
-var state=this._readableState;
-var unpipeInfo={hasUnpiped:false};
-
-
-if(state.pipesCount===0)return this;
-
-
-if(state.pipesCount===1){
-
-if(dest&&dest!==state.pipes)return this;
-
-if(!dest)dest=state.pipes;
-
-
-state.pipes=null;
-state.pipesCount=0;
-state.flowing=false;
-if(dest)dest.emit('unpipe',this,unpipeInfo);
-return this;
-}
-
-
-
-if(!dest){
-
-var dests=state.pipes;
-var len=state.pipesCount;
-state.pipes=null;
-state.pipesCount=0;
-state.flowing=false;
-
-for(var i=0;i<len;i++){
-dests[i].emit('unpipe',this,unpipeInfo);
-}return this;
-}
-
-
-var index=indexOf(state.pipes,dest);
-if(index===-1)return this;
-
-state.pipes.splice(index,1);
-state.pipesCount-=1;
-if(state.pipesCount===1)state.pipes=state.pipes[0];
-
-dest.emit('unpipe',this,unpipeInfo);
-
-return this;
-};
-
-
-
-Readable.prototype.on=function(ev,fn){
-var res=Stream.prototype.on.call(this,ev,fn);
-
-if(ev==='data'){
-
-if(this._readableState.flowing!==false)this.resume();
-}else if(ev==='readable'){
-var state=this._readableState;
-if(!state.endEmitted&&!state.readableListening){
-state.readableListening=state.needReadable=true;
-state.emittedReadable=false;
-if(!state.reading){
-processNextTick(nReadingNextTick,this);
-}else if(state.length){
-emitReadable(this);
-}
-}
-}
-
-return res;
-};
-Readable.prototype.addListener=Readable.prototype.on;
-
-function nReadingNextTick(self){
-debug('readable nexttick read 0');
-self.read(0);
-}
-
-
-
-Readable.prototype.resume=function(){
-var state=this._readableState;
-if(!state.flowing){
-debug('resume');
-state.flowing=true;
-resume(this,state);
-}
-return this;
-};
-
-function resume(stream,state){
-if(!state.resumeScheduled){
-state.resumeScheduled=true;
-processNextTick(resume_,stream,state);
-}
-}
-
-function resume_(stream,state){
-if(!state.reading){
-debug('resume read 0');
-stream.read(0);
-}
-
-state.resumeScheduled=false;
-state.awaitDrain=0;
-stream.emit('resume');
-flow(stream);
-if(state.flowing&&!state.reading)stream.read(0);
-}
-
-Readable.prototype.pause=function(){
-debug('call pause flowing=%j',this._readableState.flowing);
-if(false!==this._readableState.flowing){
-debug('pause');
-this._readableState.flowing=false;
-this.emit('pause');
-}
-return this;
-};
-
-function flow(stream){
-var state=stream._readableState;
-debug('flow',state.flowing);
-while(state.flowing&&stream.read()!==null){}
-}
-
-
-
-
-Readable.prototype.wrap=function(stream){
-var state=this._readableState;
-var paused=false;
-
-var self=this;
-stream.on('end',function(){
-debug('wrapped end');
-if(state.decoder&&!state.ended){
-var chunk=state.decoder.end();
-if(chunk&&chunk.length)self.push(chunk);
-}
-
-self.push(null);
-});
-
-stream.on('data',function(chunk){
-debug('wrapped data');
-if(state.decoder)chunk=state.decoder.write(chunk);
-
-
-if(state.objectMode&&(chunk===null||chunk===undefined))return;else if(!state.objectMode&&(!chunk||!chunk.length))return;
-
-var ret=self.push(chunk);
-if(!ret){
-paused=true;
-stream.pause();
-}
-});
-
-
-
-for(var i in stream){
-if(this[i]===undefined&&typeof stream[i]==='function'){
-this[i]=function(method){
-return function(){
-return stream[method].apply(stream,arguments);
-};
-}(i);
-}
-}
-
-
-for(var n=0;n<kProxyEvents.length;n++){
-stream.on(kProxyEvents[n],self.emit.bind(self,kProxyEvents[n]));
-}
-
-
-
-self._read=function(n){
-debug('wrapped _read',n);
-if(paused){
-paused=false;
-stream.resume();
-}
-};
-
-return self;
-};
-
-
-Readable._fromList=fromList;
-
-
-
-
-
-function fromList(n,state){
-
-if(state.length===0)return null;
-
-var ret;
-if(state.objectMode)ret=state.buffer.shift();else if(!n||n>=state.length){
-
-if(state.decoder)ret=state.buffer.join('');else if(state.buffer.length===1)ret=state.buffer.head.data;else ret=state.buffer.concat(state.length);
-state.buffer.clear();
-}else{
-
-ret=fromListPartial(n,state.buffer,state.decoder);
-}
-
-return ret;
-}
-
-
-
-
-function fromListPartial(n,list,hasStrings){
-var ret;
-if(n<list.head.data.length){
-
-ret=list.head.data.slice(0,n);
-list.head.data=list.head.data.slice(n);
-}else if(n===list.head.data.length){
-
-ret=list.shift();
-}else{
-
-ret=hasStrings?copyFromBufferString(n,list):copyFromBuffer(n,list);
-}
-return ret;
-}
-
-
-
-
-
-function copyFromBufferString(n,list){
-var p=list.head;
-var c=1;
-var ret=p.data;
-n-=ret.length;
-while(p=p.next){
-var str=p.data;
-var nb=n>str.length?str.length:n;
-if(nb===str.length)ret+=str;else ret+=str.slice(0,n);
-n-=nb;
-if(n===0){
-if(nb===str.length){
-++c;
-if(p.next)list.head=p.next;else list.head=list.tail=null;
-}else{
-list.head=p;
-p.data=str.slice(nb);
-}
-break;
-}
-++c;
-}
-list.length-=c;
-return ret;
-}
-
-
-
-
-function copyFromBuffer(n,list){
-var ret=Buffer.allocUnsafe(n);
-var p=list.head;
-var c=1;
-p.data.copy(ret);
-n-=p.data.length;
-while(p=p.next){
-var buf=p.data;
-var nb=n>buf.length?buf.length:n;
-buf.copy(ret,ret.length-n,0,nb);
-n-=nb;
-if(n===0){
-if(nb===buf.length){
-++c;
-if(p.next)list.head=p.next;else list.head=list.tail=null;
-}else{
-list.head=p;
-p.data=buf.slice(nb);
-}
-break;
-}
-++c;
-}
-list.length-=c;
-return ret;
-}
-
-function endReadable(stream){
-var state=stream._readableState;
-
-
-
-if(state.length>0)throw new Error('"endReadable()" called on non-empty stream');
-
-if(!state.endEmitted){
-state.ended=true;
-processNextTick(endReadableNT,state,stream);
-}
-}
-
-function endReadableNT(state,stream){
-
-if(!state.endEmitted&&state.length===0){
-state.endEmitted=true;
-stream.readable=false;
-stream.emit('end');
-}
-}
-
-function forEach(xs,f){
-for(var i=0,l=xs.length;i<l;i++){
-f(xs[i],i);
-}
-}
-
-function indexOf(xs,x){
-for(var i=0,l=xs.length;i<l;i++){
-if(xs[i]===x)return i;
-}
-return-1;
-}
-}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./_stream_duplex":136,"./internal/streams/BufferList":141,"./internal/streams/destroy":142,"./internal/streams/stream":143,"_process":131,"core-util-is":90,"events":94,"inherits":99,"isarray":110,"process-nextick-args":130,"safe-buffer":151,"string_decoder/":144,"util":85}],139:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-module.exports=Transform;
-
-var Duplex=require('./_stream_duplex');
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-util.inherits(Transform,Duplex);
-
-function TransformState(stream){
-this.afterTransform=function(er,data){
-return afterTransform(stream,er,data);
-};
-
-this.needTransform=false;
-this.transforming=false;
-this.writecb=null;
-this.writechunk=null;
-this.writeencoding=null;
-}
-
-function afterTransform(stream,er,data){
-var ts=stream._transformState;
-ts.transforming=false;
-
-var cb=ts.writecb;
-
-if(!cb){
-return stream.emit('error',new Error('write callback called multiple times'));
-}
-
-ts.writechunk=null;
-ts.writecb=null;
-
-if(data!==null&&data!==undefined)stream.push(data);
-
-cb(er);
-
-var rs=stream._readableState;
-rs.reading=false;
-if(rs.needReadable||rs.length<rs.highWaterMark){
-stream._read(rs.highWaterMark);
-}
-}
-
-function Transform(options){
-if(!(this instanceof Transform))return new Transform(options);
-
-Duplex.call(this,options);
-
-this._transformState=new TransformState(this);
-
-var stream=this;
-
-
-this._readableState.needReadable=true;
-
-
-
-
-this._readableState.sync=false;
-
-if(options){
-if(typeof options.transform==='function')this._transform=options.transform;
-
-if(typeof options.flush==='function')this._flush=options.flush;
-}
-
-
-this.once('prefinish',function(){
-if(typeof this._flush==='function')this._flush(function(er,data){
-done(stream,er,data);
-});else done(stream);
-});
-}
-
-Transform.prototype.push=function(chunk,encoding){
-this._transformState.needTransform=false;
-return Duplex.prototype.push.call(this,chunk,encoding);
-};
-
-
-
-
-
-
-
-
-
-
-
-Transform.prototype._transform=function(chunk,encoding,cb){
-throw new Error('_transform() is not implemented');
-};
-
-Transform.prototype._write=function(chunk,encoding,cb){
-var ts=this._transformState;
-ts.writecb=cb;
-ts.writechunk=chunk;
-ts.writeencoding=encoding;
-if(!ts.transforming){
-var rs=this._readableState;
-if(ts.needTransform||rs.needReadable||rs.length<rs.highWaterMark)this._read(rs.highWaterMark);
-}
-};
-
-
-
-
-Transform.prototype._read=function(n){
-var ts=this._transformState;
-
-if(ts.writechunk!==null&&ts.writecb&&!ts.transforming){
-ts.transforming=true;
-this._transform(ts.writechunk,ts.writeencoding,ts.afterTransform);
-}else{
-
-
-ts.needTransform=true;
-}
-};
-
-Transform.prototype._destroy=function(err,cb){
-var _this=this;
-
-Duplex.prototype._destroy.call(this,err,function(err2){
-cb(err2);
-_this.emit('close');
-});
-};
-
-function done(stream,er,data){
-if(er)return stream.emit('error',er);
-
-if(data!==null&&data!==undefined)stream.push(data);
-
-
-
-var ws=stream._writableState;
-var ts=stream._transformState;
-
-if(ws.length)throw new Error('Calling transform done when ws.length != 0');
-
-if(ts.transforming)throw new Error('Calling transform done when still transforming');
-
-return stream.push(null);
-}
-},{"./_stream_duplex":136,"core-util-is":90,"inherits":99}],140:[function(require,module,exports){
-(function(process,global,setImmediate){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-module.exports=Writable;
-
-
-function WriteReq(chunk,encoding,cb){
-this.chunk=chunk;
-this.encoding=encoding;
-this.callback=cb;
-this.next=null;
-}
-
-
-
-function CorkedRequest(state){
-var _this=this;
-
-this.next=null;
-this.entry=null;
-this.finish=function(){
-onCorkedFinish(_this,state);
-};
-}
-
-
-
-var asyncWrite=!process.browser&&['v0.10','v0.9.'].indexOf(process.version.slice(0,5))>-1?setImmediate:processNextTick;
-
-
-
-var Duplex;
-
-
-Writable.WritableState=WritableState;
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-
-var internalUtil={
-deprecate:require('util-deprecate')};
-
-
-
-
-var Stream=require('./internal/streams/stream');
-
-
-
-var Buffer=require('safe-buffer').Buffer;
-var OurUint8Array=global.Uint8Array||function(){};
-function _uint8ArrayToBuffer(chunk){
-return Buffer.from(chunk);
-}
-function _isUint8Array(obj){
-return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
-}
-
-
-var destroyImpl=require('./internal/streams/destroy');
-
-util.inherits(Writable,Stream);
-
-function nop(){}
-
-function WritableState(options,stream){
-Duplex=Duplex||require('./_stream_duplex');
-
-options=options||{};
-
-
-
-this.objectMode=!!options.objectMode;
-
-if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.writableObjectMode;
-
-
-
-
-var hwm=options.highWaterMark;
-var defaultHwm=this.objectMode?16:16*1024;
-this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
-
-
-this.highWaterMark=Math.floor(this.highWaterMark);
-
-
-this.finalCalled=false;
-
-
-this.needDrain=false;
-
-this.ending=false;
-
-this.ended=false;
-
-this.finished=false;
-
-
-this.destroyed=false;
-
-
-
-
-var noDecode=options.decodeStrings===false;
-this.decodeStrings=!noDecode;
-
-
-
-
-this.defaultEncoding=options.defaultEncoding||'utf8';
-
-
-
-
-this.length=0;
-
-
-this.writing=false;
-
-
-this.corked=0;
-
-
-
-
-
-this.sync=true;
-
-
-
-
-this.bufferProcessing=false;
-
-
-this.onwrite=function(er){
-onwrite(stream,er);
-};
-
-
-this.writecb=null;
-
-
-this.writelen=0;
-
-this.bufferedRequest=null;
-this.lastBufferedRequest=null;
-
-
-
-this.pendingcb=0;
-
-
-
-this.prefinished=false;
-
-
-this.errorEmitted=false;
-
-
-this.bufferedRequestCount=0;
-
-
-
-this.corkedRequestsFree=new CorkedRequest(this);
-}
-
-WritableState.prototype.getBuffer=function getBuffer(){
-var current=this.bufferedRequest;
-var out=[];
-while(current){
-out.push(current);
-current=current.next;
-}
-return out;
-};
-
-(function(){
-try{
-Object.defineProperty(WritableState.prototype,'buffer',{
-get:internalUtil.deprecate(function(){
-return this.getBuffer();
-},'_writableState.buffer is deprecated. Use _writableState.getBuffer '+'instead.','DEP0003')});
-
-}catch(_){}
-})();
-
-
-
-var realHasInstance;
-if(typeof Symbol==='function'&&Symbol.hasInstance&&typeof Function.prototype[Symbol.hasInstance]==='function'){
-realHasInstance=Function.prototype[Symbol.hasInstance];
-Object.defineProperty(Writable,Symbol.hasInstance,{
-value:function(object){
-if(realHasInstance.call(this,object))return true;
-
-return object&&object._writableState instanceof WritableState;
-}});
-
-}else{
-realHasInstance=function(object){
-return object instanceof this;
-};
-}
-
-function Writable(options){
-Duplex=Duplex||require('./_stream_duplex');
-
-
-
-
-
-
-
-
-if(!realHasInstance.call(Writable,this)&&!(this instanceof Duplex)){
-return new Writable(options);
-}
-
-this._writableState=new WritableState(options,this);
-
-
-this.writable=true;
-
-if(options){
-if(typeof options.write==='function')this._write=options.write;
-
-if(typeof options.writev==='function')this._writev=options.writev;
-
-if(typeof options.destroy==='function')this._destroy=options.destroy;
-
-if(typeof options.final==='function')this._final=options.final;
-}
-
-Stream.call(this);
-}
-
-
-Writable.prototype.pipe=function(){
-this.emit('error',new Error('Cannot pipe, not readable'));
-};
-
-function writeAfterEnd(stream,cb){
-var er=new Error('write after end');
-
-stream.emit('error',er);
-processNextTick(cb,er);
-}
-
-
-
-
-function validChunk(stream,state,chunk,cb){
-var valid=true;
-var er=false;
-
-if(chunk===null){
-er=new TypeError('May not write null values to stream');
-}else if(typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
-er=new TypeError('Invalid non-string/buffer chunk');
-}
-if(er){
-stream.emit('error',er);
-processNextTick(cb,er);
-valid=false;
-}
-return valid;
-}
-
-Writable.prototype.write=function(chunk,encoding,cb){
-var state=this._writableState;
-var ret=false;
-var isBuf=_isUint8Array(chunk)&&!state.objectMode;
-
-if(isBuf&&!Buffer.isBuffer(chunk)){
-chunk=_uint8ArrayToBuffer(chunk);
-}
-
-if(typeof encoding==='function'){
-cb=encoding;
-encoding=null;
-}
-
-if(isBuf)encoding='buffer';else if(!encoding)encoding=state.defaultEncoding;
-
-if(typeof cb!=='function')cb=nop;
-
-if(state.ended)writeAfterEnd(this,cb);else if(isBuf||validChunk(this,state,chunk,cb)){
-state.pendingcb++;
-ret=writeOrBuffer(this,state,isBuf,chunk,encoding,cb);
-}
-
-return ret;
-};
-
-Writable.prototype.cork=function(){
-var state=this._writableState;
-
-state.corked++;
-};
-
-Writable.prototype.uncork=function(){
-var state=this._writableState;
-
-if(state.corked){
-state.corked--;
-
-if(!state.writing&&!state.corked&&!state.finished&&!state.bufferProcessing&&state.bufferedRequest)clearBuffer(this,state);
-}
-};
-
-Writable.prototype.setDefaultEncoding=function setDefaultEncoding(encoding){
-
-if(typeof encoding==='string')encoding=encoding.toLowerCase();
-if(!(['hex','utf8','utf-8','ascii','binary','base64','ucs2','ucs-2','utf16le','utf-16le','raw'].indexOf((encoding+'').toLowerCase())>-1))throw new TypeError('Unknown encoding: '+encoding);
-this._writableState.defaultEncoding=encoding;
-return this;
-};
-
-function decodeChunk(state,chunk,encoding){
-if(!state.objectMode&&state.decodeStrings!==false&&typeof chunk==='string'){
-chunk=Buffer.from(chunk,encoding);
-}
-return chunk;
-}
-
-
-
-
-function writeOrBuffer(stream,state,isBuf,chunk,encoding,cb){
-if(!isBuf){
-var newChunk=decodeChunk(state,chunk,encoding);
-if(chunk!==newChunk){
-isBuf=true;
-encoding='buffer';
-chunk=newChunk;
-}
-}
-var len=state.objectMode?1:chunk.length;
-
-state.length+=len;
-
-var ret=state.length<state.highWaterMark;
-
-if(!ret)state.needDrain=true;
-
-if(state.writing||state.corked){
-var last=state.lastBufferedRequest;
-state.lastBufferedRequest={
-chunk:chunk,
-encoding:encoding,
-isBuf:isBuf,
-callback:cb,
-next:null};
-
-if(last){
-last.next=state.lastBufferedRequest;
-}else{
-state.bufferedRequest=state.lastBufferedRequest;
-}
-state.bufferedRequestCount+=1;
-}else{
-doWrite(stream,state,false,len,chunk,encoding,cb);
-}
-
-return ret;
-}
-
-function doWrite(stream,state,writev,len,chunk,encoding,cb){
-state.writelen=len;
-state.writecb=cb;
-state.writing=true;
-state.sync=true;
-if(writev)stream._writev(chunk,state.onwrite);else stream._write(chunk,encoding,state.onwrite);
-state.sync=false;
-}
-
-function onwriteError(stream,state,sync,er,cb){
---state.pendingcb;
-
-if(sync){
-
-
-processNextTick(cb,er);
-
-
-processNextTick(finishMaybe,stream,state);
-stream._writableState.errorEmitted=true;
-stream.emit('error',er);
-}else{
-
-
-cb(er);
-stream._writableState.errorEmitted=true;
-stream.emit('error',er);
-
-
-finishMaybe(stream,state);
-}
-}
-
-function onwriteStateUpdate(state){
-state.writing=false;
-state.writecb=null;
-state.length-=state.writelen;
-state.writelen=0;
-}
-
-function onwrite(stream,er){
-var state=stream._writableState;
-var sync=state.sync;
-var cb=state.writecb;
-
-onwriteStateUpdate(state);
-
-if(er)onwriteError(stream,state,sync,er,cb);else{
-
-var finished=needFinish(state);
-
-if(!finished&&!state.corked&&!state.bufferProcessing&&state.bufferedRequest){
-clearBuffer(stream,state);
-}
-
-if(sync){
-
-asyncWrite(afterWrite,stream,state,finished,cb);
-
-}else{
-afterWrite(stream,state,finished,cb);
-}
-}
-}
-
-function afterWrite(stream,state,finished,cb){
-if(!finished)onwriteDrain(stream,state);
-state.pendingcb--;
-cb();
-finishMaybe(stream,state);
-}
-
-
-
-
-function onwriteDrain(stream,state){
-if(state.length===0&&state.needDrain){
-state.needDrain=false;
-stream.emit('drain');
-}
-}
-
-
-function clearBuffer(stream,state){
-state.bufferProcessing=true;
-var entry=state.bufferedRequest;
-
-if(stream._writev&&entry&&entry.next){
-
-var l=state.bufferedRequestCount;
-var buffer=new Array(l);
-var holder=state.corkedRequestsFree;
-holder.entry=entry;
-
-var count=0;
-var allBuffers=true;
-while(entry){
-buffer[count]=entry;
-if(!entry.isBuf)allBuffers=false;
-entry=entry.next;
-count+=1;
-}
-buffer.allBuffers=allBuffers;
-
-doWrite(stream,state,true,state.length,buffer,'',holder.finish);
-
-
-
-state.pendingcb++;
-state.lastBufferedRequest=null;
-if(holder.next){
-state.corkedRequestsFree=holder.next;
-holder.next=null;
-}else{
-state.corkedRequestsFree=new CorkedRequest(state);
-}
-}else{
-
-while(entry){
-var chunk=entry.chunk;
-var encoding=entry.encoding;
-var cb=entry.callback;
-var len=state.objectMode?1:chunk.length;
-
-doWrite(stream,state,false,len,chunk,encoding,cb);
-entry=entry.next;
-
-
-
-
-if(state.writing){
-break;
-}
-}
-
-if(entry===null)state.lastBufferedRequest=null;
-}
-
-state.bufferedRequestCount=0;
-state.bufferedRequest=entry;
-state.bufferProcessing=false;
-}
-
-Writable.prototype._write=function(chunk,encoding,cb){
-cb(new Error('_write() is not implemented'));
-};
-
-Writable.prototype._writev=null;
-
-Writable.prototype.end=function(chunk,encoding,cb){
-var state=this._writableState;
-
-if(typeof chunk==='function'){
-cb=chunk;
-chunk=null;
-encoding=null;
-}else if(typeof encoding==='function'){
-cb=encoding;
-encoding=null;
-}
-
-if(chunk!==null&&chunk!==undefined)this.write(chunk,encoding);
-
-
-if(state.corked){
-state.corked=1;
-this.uncork();
-}
-
-
-if(!state.ending&&!state.finished)endWritable(this,state,cb);
-};
-
-function needFinish(state){
-return state.ending&&state.length===0&&state.bufferedRequest===null&&!state.finished&&!state.writing;
-}
-function callFinal(stream,state){
-stream._final(function(err){
-state.pendingcb--;
-if(err){
-stream.emit('error',err);
-}
-state.prefinished=true;
-stream.emit('prefinish');
-finishMaybe(stream,state);
-});
-}
-function prefinish(stream,state){
-if(!state.prefinished&&!state.finalCalled){
-if(typeof stream._final==='function'){
-state.pendingcb++;
-state.finalCalled=true;
-processNextTick(callFinal,stream,state);
-}else{
-state.prefinished=true;
-stream.emit('prefinish');
-}
-}
-}
-
-function finishMaybe(stream,state){
-var need=needFinish(state);
-if(need){
-prefinish(stream,state);
-if(state.pendingcb===0){
-state.finished=true;
-stream.emit('finish');
-}
-}
-return need;
-}
-
-function endWritable(stream,state,cb){
-state.ending=true;
-finishMaybe(stream,state);
-if(cb){
-if(state.finished)processNextTick(cb);else stream.once('finish',cb);
-}
-state.ended=true;
-stream.writable=false;
-}
-
-function onCorkedFinish(corkReq,state,err){
-var entry=corkReq.entry;
-corkReq.entry=null;
-while(entry){
-var cb=entry.callback;
-state.pendingcb--;
-cb(err);
-entry=entry.next;
-}
-if(state.corkedRequestsFree){
-state.corkedRequestsFree.next=corkReq;
-}else{
-state.corkedRequestsFree=corkReq;
-}
-}
-
-Object.defineProperty(Writable.prototype,'destroyed',{
-get:function(){
-if(this._writableState===undefined){
-return false;
-}
-return this._writableState.destroyed;
-},
-set:function(value){
-
-
-if(!this._writableState){
-return;
-}
-
-
-
-this._writableState.destroyed=value;
-}});
-
-
-Writable.prototype.destroy=destroyImpl.destroy;
-Writable.prototype._undestroy=destroyImpl.undestroy;
-Writable.prototype._destroy=function(err,cb){
-this.end();
-cb(err);
-};
-}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
-},{"./_stream_duplex":136,"./internal/streams/destroy":142,"./internal/streams/stream":143,"_process":131,"core-util-is":90,"inherits":99,"process-nextick-args":130,"safe-buffer":151,"timers":157,"util-deprecate":158}],141:[function(require,module,exports){
-'use strict';
-
-
-
-function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
-
-var Buffer=require('safe-buffer').Buffer;
-
-
-function copyBuffer(src,target,offset){
-src.copy(target,offset);
-}
-
-module.exports=function(){
-function BufferList(){
-_classCallCheck(this,BufferList);
-
-this.head=null;
-this.tail=null;
-this.length=0;
-}
-
-BufferList.prototype.push=function push(v){
-var entry={data:v,next:null};
-if(this.length>0)this.tail.next=entry;else this.head=entry;
-this.tail=entry;
-++this.length;
-};
-
-BufferList.prototype.unshift=function unshift(v){
-var entry={data:v,next:this.head};
-if(this.length===0)this.tail=entry;
-this.head=entry;
-++this.length;
-};
-
-BufferList.prototype.shift=function shift(){
-if(this.length===0)return;
-var ret=this.head.data;
-if(this.length===1)this.head=this.tail=null;else this.head=this.head.next;
---this.length;
-return ret;
-};
-
-BufferList.prototype.clear=function clear(){
-this.head=this.tail=null;
-this.length=0;
-};
-
-BufferList.prototype.join=function join(s){
-if(this.length===0)return'';
-var p=this.head;
-var ret=''+p.data;
-while(p=p.next){
-ret+=s+p.data;
-}return ret;
-};
-
-BufferList.prototype.concat=function concat(n){
-if(this.length===0)return Buffer.alloc(0);
-if(this.length===1)return this.head.data;
-var ret=Buffer.allocUnsafe(n>>>0);
-var p=this.head;
-var i=0;
-while(p){
-copyBuffer(p.data,ret,i);
-i+=p.data.length;
-p=p.next;
-}
-return ret;
-};
-
-return BufferList;
-}();
-},{"safe-buffer":151}],142:[function(require,module,exports){
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-
-function destroy(err,cb){
-var _this=this;
-
-var readableDestroyed=this._readableState&&this._readableState.destroyed;
-var writableDestroyed=this._writableState&&this._writableState.destroyed;
-
-if(readableDestroyed||writableDestroyed){
-if(cb){
-cb(err);
-}else if(err&&(!this._writableState||!this._writableState.errorEmitted)){
-processNextTick(emitErrorNT,this,err);
-}
-return;
-}
-
-
-
-
-if(this._readableState){
-this._readableState.destroyed=true;
-}
-
-
-if(this._writableState){
-this._writableState.destroyed=true;
-}
-
-this._destroy(err||null,function(err){
-if(!cb&&err){
-processNextTick(emitErrorNT,_this,err);
-if(_this._writableState){
-_this._writableState.errorEmitted=true;
-}
-}else if(cb){
-cb(err);
-}
-});
-}
-
-function undestroy(){
-if(this._readableState){
-this._readableState.destroyed=false;
-this._readableState.reading=false;
-this._readableState.ended=false;
-this._readableState.endEmitted=false;
-}
-
-if(this._writableState){
-this._writableState.destroyed=false;
-this._writableState.ended=false;
-this._writableState.ending=false;
-this._writableState.finished=false;
-this._writableState.errorEmitted=false;
-}
-}
-
-function emitErrorNT(self,err){
-self.emit('error',err);
-}
-
-module.exports={
-destroy:destroy,
-undestroy:undestroy};
-
-},{"process-nextick-args":130}],143:[function(require,module,exports){
-module.exports=require('events').EventEmitter;
-
-},{"events":94}],144:[function(require,module,exports){
-'use strict';
-
-var Buffer=require('safe-buffer').Buffer;
-
-var isEncoding=Buffer.isEncoding||function(encoding){
-encoding=''+encoding;
-switch(encoding&&encoding.toLowerCase()){
-case'hex':case'utf8':case'utf-8':case'ascii':case'binary':case'base64':case'ucs2':case'ucs-2':case'utf16le':case'utf-16le':case'raw':
-return true;
-default:
-return false;}
-
-};
-
-function _normalizeEncoding(enc){
-if(!enc)return'utf8';
-var retried;
-while(true){
-switch(enc){
-case'utf8':
-case'utf-8':
-return'utf8';
-case'ucs2':
-case'ucs-2':
-case'utf16le':
-case'utf-16le':
-return'utf16le';
-case'latin1':
-case'binary':
-return'latin1';
-case'base64':
-case'ascii':
-case'hex':
-return enc;
-default:
-if(retried)return;
-enc=(''+enc).toLowerCase();
-retried=true;}
-
-}
-};
-
-
-
-function normalizeEncoding(enc){
-var nenc=_normalizeEncoding(enc);
-if(typeof nenc!=='string'&&(Buffer.isEncoding===isEncoding||!isEncoding(enc)))throw new Error('Unknown encoding: '+enc);
-return nenc||enc;
-}
-
-
-
-
-exports.StringDecoder=StringDecoder;
-function StringDecoder(encoding){
-this.encoding=normalizeEncoding(encoding);
-var nb;
-switch(this.encoding){
-case'utf16le':
-this.text=utf16Text;
-this.end=utf16End;
-nb=4;
-break;
-case'utf8':
-this.fillLast=utf8FillLast;
-nb=4;
-break;
-case'base64':
-this.text=base64Text;
-this.end=base64End;
-nb=3;
-break;
-default:
-this.write=simpleWrite;
-this.end=simpleEnd;
-return;}
-
-this.lastNeed=0;
-this.lastTotal=0;
-this.lastChar=Buffer.allocUnsafe(nb);
-}
-
-StringDecoder.prototype.write=function(buf){
-if(buf.length===0)return'';
-var r;
-var i;
-if(this.lastNeed){
-r=this.fillLast(buf);
-if(r===undefined)return'';
-i=this.lastNeed;
-this.lastNeed=0;
-}else{
-i=0;
-}
-if(i<buf.length)return r?r+this.text(buf,i):this.text(buf,i);
-return r||'';
-};
-
-StringDecoder.prototype.end=utf8End;
-
-
-StringDecoder.prototype.text=utf8Text;
-
-
-StringDecoder.prototype.fillLast=function(buf){
-if(this.lastNeed<=buf.length){
-buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,this.lastNeed);
-return this.lastChar.toString(this.encoding,0,this.lastTotal);
-}
-buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,buf.length);
-this.lastNeed-=buf.length;
-};
-
-
-
-function utf8CheckByte(byte){
-if(byte<=0x7F)return 0;else if(byte>>5===0x06)return 2;else if(byte>>4===0x0E)return 3;else if(byte>>3===0x1E)return 4;
-return-1;
-}
-
-
-
-
-function utf8CheckIncomplete(self,buf,i){
-var j=buf.length-1;
-if(j<i)return 0;
-var nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0)self.lastNeed=nb-1;
-return nb;
-}
-if(--j<i)return 0;
-nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0)self.lastNeed=nb-2;
-return nb;
-}
-if(--j<i)return 0;
-nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0){
-if(nb===2)nb=0;else self.lastNeed=nb-3;
-}
-return nb;
-}
-return 0;
-}
-
-
-
-
-
-
-
-
-
-function utf8CheckExtraBytes(self,buf,p){
-if((buf[0]&0xC0)!==0x80){
-self.lastNeed=0;
-return'\ufffd'.repeat(p);
-}
-if(self.lastNeed>1&&buf.length>1){
-if((buf[1]&0xC0)!==0x80){
-self.lastNeed=1;
-return'\ufffd'.repeat(p+1);
-}
-if(self.lastNeed>2&&buf.length>2){
-if((buf[2]&0xC0)!==0x80){
-self.lastNeed=2;
-return'\ufffd'.repeat(p+2);
-}
-}
-}
-}
-
-
-function utf8FillLast(buf){
-var p=this.lastTotal-this.lastNeed;
-var r=utf8CheckExtraBytes(this,buf,p);
-if(r!==undefined)return r;
-if(this.lastNeed<=buf.length){
-buf.copy(this.lastChar,p,0,this.lastNeed);
-return this.lastChar.toString(this.encoding,0,this.lastTotal);
-}
-buf.copy(this.lastChar,p,0,buf.length);
-this.lastNeed-=buf.length;
-}
-
-
-
-
-function utf8Text(buf,i){
-var total=utf8CheckIncomplete(this,buf,i);
-if(!this.lastNeed)return buf.toString('utf8',i);
-this.lastTotal=total;
-var end=buf.length-(total-this.lastNeed);
-buf.copy(this.lastChar,0,end);
-return buf.toString('utf8',i,end);
-}
-
-
-
-function utf8End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed)return r+'\ufffd'.repeat(this.lastTotal-this.lastNeed);
-return r;
-}
-
-
-
-
-
-function utf16Text(buf,i){
-if((buf.length-i)%2===0){
-var r=buf.toString('utf16le',i);
-if(r){
-var c=r.charCodeAt(r.length-1);
-if(c>=0xD800&&c<=0xDBFF){
-this.lastNeed=2;
-this.lastTotal=4;
-this.lastChar[0]=buf[buf.length-2];
-this.lastChar[1]=buf[buf.length-1];
-return r.slice(0,-1);
-}
-}
-return r;
-}
-this.lastNeed=1;
-this.lastTotal=2;
-this.lastChar[0]=buf[buf.length-1];
-return buf.toString('utf16le',i,buf.length-1);
-}
-
-
-
-function utf16End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed){
-var end=this.lastTotal-this.lastNeed;
-return r+this.lastChar.toString('utf16le',0,end);
-}
-return r;
-}
-
-function base64Text(buf,i){
-var n=(buf.length-i)%3;
-if(n===0)return buf.toString('base64',i);
-this.lastNeed=3-n;
-this.lastTotal=3;
-if(n===1){
-this.lastChar[0]=buf[buf.length-1];
-}else{
-this.lastChar[0]=buf[buf.length-2];
-this.lastChar[1]=buf[buf.length-1];
-}
-return buf.toString('base64',i,buf.length-n);
-}
-
-function base64End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed)return r+this.lastChar.toString('base64',0,3-this.lastNeed);
-return r;
-}
-
-
-function simpleWrite(buf){
-return buf.toString(this.encoding);
-}
-
-function simpleEnd(buf){
-return buf&&buf.length?this.write(buf):'';
-}
-},{"safe-buffer":151}],145:[function(require,module,exports){
-module.exports=require('./readable').PassThrough;
-
-},{"./readable":146}],146:[function(require,module,exports){
-exports=module.exports=require('./lib/_stream_readable.js');
-exports.Stream=exports;
-exports.Readable=exports;
-exports.Writable=require('./lib/_stream_writable.js');
-exports.Duplex=require('./lib/_stream_duplex.js');
-exports.Transform=require('./lib/_stream_transform.js');
-exports.PassThrough=require('./lib/_stream_passthrough.js');
-
-},{"./lib/_stream_duplex.js":136,"./lib/_stream_passthrough.js":137,"./lib/_stream_readable.js":138,"./lib/_stream_transform.js":139,"./lib/_stream_writable.js":140}],147:[function(require,module,exports){
-module.exports=require('./readable').Transform;
-
-},{"./readable":146}],148:[function(require,module,exports){
-module.exports=require('./lib/_stream_writable.js');
-
-},{"./lib/_stream_writable.js":140}],149:[function(require,module,exports){
+},{"./decode":138,"./encode":139}],141:[function(require,module,exports){
 var URL=require('url').URL;
 
 
@@ -57228,13 +57398,13 @@ return this._sitemaps.slice(0);
 
 module.exports=Robots;
 
-},{"url":"url"}],150:[function(require,module,exports){
+},{"url":"url"}],142:[function(require,module,exports){
 var Robots=require('./Robots');
 
 module.exports=function(url,contents){
 return new Robots(url,contents);
 };
-},{"./Robots":149}],151:[function(require,module,exports){
+},{"./Robots":141}],143:[function(require,module,exports){
 
 var buffer=require('buffer');
 var Buffer=buffer.Buffer;
@@ -57298,7 +57468,7 @@ throw new TypeError('Argument must be a number');
 return buffer.SlowBuffer(size);
 };
 
-},{"buffer":89}],152:[function(require,module,exports){
+},{"buffer":94}],144:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -58505,7 +58675,7 @@ return parsed&&parsed.prerelease.length?parsed.prerelease:null;
 }
 
 }).call(this,require('_process'));
-},{"_process":131}],153:[function(require,module,exports){
+},{"_process":137}],145:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -58747,7 +58917,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":89,"jpeg-js":111}],154:[function(require,module,exports){
+},{"buffer":94,"jpeg-js":117}],146:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -58817,7 +58987,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":153,"./speed-index":155}],155:[function(require,module,exports){
+},{"./frame":145,"./speed-index":147}],147:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -59089,7 +59259,7 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":98}],156:[function(require,module,exports){
+},{"image-ssim":104}],148:[function(require,module,exports){
 
 
 
@@ -59218,7 +59388,2517 @@ dest.emit('pipe',source);
 return dest;
 };
 
-},{"events":94,"inherits":99,"readable-stream/duplex.js":135,"readable-stream/passthrough.js":145,"readable-stream/readable.js":146,"readable-stream/transform.js":147,"readable-stream/writable.js":148}],157:[function(require,module,exports){
+},{"events":100,"inherits":105,"readable-stream/duplex.js":149,"readable-stream/passthrough.js":158,"readable-stream/readable.js":159,"readable-stream/transform.js":160,"readable-stream/writable.js":161}],149:[function(require,module,exports){
+module.exports=require('./lib/_stream_duplex.js');
+
+},{"./lib/_stream_duplex.js":150}],150:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+
+var objectKeys=Object.keys||function(obj){
+var keys=[];
+for(var key in obj){
+keys.push(key);
+}return keys;
+};
+
+
+module.exports=Duplex;
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+var Readable=require('./_stream_readable');
+var Writable=require('./_stream_writable');
+
+util.inherits(Duplex,Readable);
+
+var keys=objectKeys(Writable.prototype);
+for(var v=0;v<keys.length;v++){
+var method=keys[v];
+if(!Duplex.prototype[method])Duplex.prototype[method]=Writable.prototype[method];
+}
+
+function Duplex(options){
+if(!(this instanceof Duplex))return new Duplex(options);
+
+Readable.call(this,options);
+Writable.call(this,options);
+
+if(options&&options.readable===false)this.readable=false;
+
+if(options&&options.writable===false)this.writable=false;
+
+this.allowHalfOpen=true;
+if(options&&options.allowHalfOpen===false)this.allowHalfOpen=false;
+
+this.once('end',onend);
+}
+
+
+function onend(){
+
+
+if(this.allowHalfOpen||this._writableState.ended)return;
+
+
+
+processNextTick(onEndNT,this);
+}
+
+function onEndNT(self){
+self.end();
+}
+
+Object.defineProperty(Duplex.prototype,'destroyed',{
+get:function(){
+if(this._readableState===undefined||this._writableState===undefined){
+return false;
+}
+return this._readableState.destroyed&&this._writableState.destroyed;
+},
+set:function(value){
+
+
+if(this._readableState===undefined||this._writableState===undefined){
+return;
+}
+
+
+
+this._readableState.destroyed=value;
+this._writableState.destroyed=value;
+}});
+
+
+Duplex.prototype._destroy=function(err,cb){
+this.push(null);
+this.end();
+
+processNextTick(cb,err);
+};
+
+function forEach(xs,f){
+for(var i=0,l=xs.length;i<l;i++){
+f(xs[i],i);
+}
+}
+},{"./_stream_readable":152,"./_stream_writable":154,"core-util-is":95,"inherits":105,"process-nextick-args":136}],151:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+module.exports=PassThrough;
+
+var Transform=require('./_stream_transform');
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+util.inherits(PassThrough,Transform);
+
+function PassThrough(options){
+if(!(this instanceof PassThrough))return new PassThrough(options);
+
+Transform.call(this,options);
+}
+
+PassThrough.prototype._transform=function(chunk,encoding,cb){
+cb(null,chunk);
+};
+},{"./_stream_transform":153,"core-util-is":95,"inherits":105}],152:[function(require,module,exports){
+(function(process,global){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+module.exports=Readable;
+
+
+var isArray=require('isarray');
+
+
+
+var Duplex;
+
+
+Readable.ReadableState=ReadableState;
+
+
+var EE=require('events').EventEmitter;
+
+var EElistenerCount=function(emitter,type){
+return emitter.listeners(type).length;
+};
+
+
+
+var Stream=require('./internal/streams/stream');
+
+
+
+
+
+var Buffer=require('safe-buffer').Buffer;
+var OurUint8Array=global.Uint8Array||function(){};
+function _uint8ArrayToBuffer(chunk){
+return Buffer.from(chunk);
+}
+function _isUint8Array(obj){
+return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
+}
+
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+
+var debugUtil=require('util');
+var debug=void 0;
+if(debugUtil&&debugUtil.debuglog){
+debug=debugUtil.debuglog('stream');
+}else{
+debug=function(){};
+}
+
+
+var BufferList=require('./internal/streams/BufferList');
+var destroyImpl=require('./internal/streams/destroy');
+var StringDecoder;
+
+util.inherits(Readable,Stream);
+
+var kProxyEvents=['error','close','destroy','pause','resume'];
+
+function prependListener(emitter,event,fn){
+
+
+if(typeof emitter.prependListener==='function'){
+return emitter.prependListener(event,fn);
+}else{
+
+
+
+
+if(!emitter._events||!emitter._events[event])emitter.on(event,fn);else if(isArray(emitter._events[event]))emitter._events[event].unshift(fn);else emitter._events[event]=[fn,emitter._events[event]];
+}
+}
+
+function ReadableState(options,stream){
+Duplex=Duplex||require('./_stream_duplex');
+
+options=options||{};
+
+
+
+this.objectMode=!!options.objectMode;
+
+if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.readableObjectMode;
+
+
+
+var hwm=options.highWaterMark;
+var defaultHwm=this.objectMode?16:16*1024;
+this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
+
+
+this.highWaterMark=Math.floor(this.highWaterMark);
+
+
+
+
+this.buffer=new BufferList();
+this.length=0;
+this.pipes=null;
+this.pipesCount=0;
+this.flowing=null;
+this.ended=false;
+this.endEmitted=false;
+this.reading=false;
+
+
+
+
+
+this.sync=true;
+
+
+
+this.needReadable=false;
+this.emittedReadable=false;
+this.readableListening=false;
+this.resumeScheduled=false;
+
+
+this.destroyed=false;
+
+
+
+
+this.defaultEncoding=options.defaultEncoding||'utf8';
+
+
+this.awaitDrain=0;
+
+
+this.readingMore=false;
+
+this.decoder=null;
+this.encoding=null;
+if(options.encoding){
+if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
+this.decoder=new StringDecoder(options.encoding);
+this.encoding=options.encoding;
+}
+}
+
+function Readable(options){
+Duplex=Duplex||require('./_stream_duplex');
+
+if(!(this instanceof Readable))return new Readable(options);
+
+this._readableState=new ReadableState(options,this);
+
+
+this.readable=true;
+
+if(options){
+if(typeof options.read==='function')this._read=options.read;
+
+if(typeof options.destroy==='function')this._destroy=options.destroy;
+}
+
+Stream.call(this);
+}
+
+Object.defineProperty(Readable.prototype,'destroyed',{
+get:function(){
+if(this._readableState===undefined){
+return false;
+}
+return this._readableState.destroyed;
+},
+set:function(value){
+
+
+if(!this._readableState){
+return;
+}
+
+
+
+this._readableState.destroyed=value;
+}});
+
+
+Readable.prototype.destroy=destroyImpl.destroy;
+Readable.prototype._undestroy=destroyImpl.undestroy;
+Readable.prototype._destroy=function(err,cb){
+this.push(null);
+cb(err);
+};
+
+
+
+
+
+Readable.prototype.push=function(chunk,encoding){
+var state=this._readableState;
+var skipChunkCheck;
+
+if(!state.objectMode){
+if(typeof chunk==='string'){
+encoding=encoding||state.defaultEncoding;
+if(encoding!==state.encoding){
+chunk=Buffer.from(chunk,encoding);
+encoding='';
+}
+skipChunkCheck=true;
+}
+}else{
+skipChunkCheck=true;
+}
+
+return readableAddChunk(this,chunk,encoding,false,skipChunkCheck);
+};
+
+
+Readable.prototype.unshift=function(chunk){
+return readableAddChunk(this,chunk,null,true,false);
+};
+
+function readableAddChunk(stream,chunk,encoding,addToFront,skipChunkCheck){
+var state=stream._readableState;
+if(chunk===null){
+state.reading=false;
+onEofChunk(stream,state);
+}else{
+var er;
+if(!skipChunkCheck)er=chunkInvalid(state,chunk);
+if(er){
+stream.emit('error',er);
+}else if(state.objectMode||chunk&&chunk.length>0){
+if(typeof chunk!=='string'&&!state.objectMode&&Object.getPrototypeOf(chunk)!==Buffer.prototype){
+chunk=_uint8ArrayToBuffer(chunk);
+}
+
+if(addToFront){
+if(state.endEmitted)stream.emit('error',new Error('stream.unshift() after end event'));else addChunk(stream,state,chunk,true);
+}else if(state.ended){
+stream.emit('error',new Error('stream.push() after EOF'));
+}else{
+state.reading=false;
+if(state.decoder&&!encoding){
+chunk=state.decoder.write(chunk);
+if(state.objectMode||chunk.length!==0)addChunk(stream,state,chunk,false);else maybeReadMore(stream,state);
+}else{
+addChunk(stream,state,chunk,false);
+}
+}
+}else if(!addToFront){
+state.reading=false;
+}
+}
+
+return needMoreData(state);
+}
+
+function addChunk(stream,state,chunk,addToFront){
+if(state.flowing&&state.length===0&&!state.sync){
+stream.emit('data',chunk);
+stream.read(0);
+}else{
+
+state.length+=state.objectMode?1:chunk.length;
+if(addToFront)state.buffer.unshift(chunk);else state.buffer.push(chunk);
+
+if(state.needReadable)emitReadable(stream);
+}
+maybeReadMore(stream,state);
+}
+
+function chunkInvalid(state,chunk){
+var er;
+if(!_isUint8Array(chunk)&&typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
+er=new TypeError('Invalid non-string/buffer chunk');
+}
+return er;
+}
+
+
+
+
+
+
+
+
+function needMoreData(state){
+return!state.ended&&(state.needReadable||state.length<state.highWaterMark||state.length===0);
+}
+
+Readable.prototype.isPaused=function(){
+return this._readableState.flowing===false;
+};
+
+
+Readable.prototype.setEncoding=function(enc){
+if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
+this._readableState.decoder=new StringDecoder(enc);
+this._readableState.encoding=enc;
+return this;
+};
+
+
+var MAX_HWM=0x800000;
+function computeNewHighWaterMark(n){
+if(n>=MAX_HWM){
+n=MAX_HWM;
+}else{
+
+
+n--;
+n|=n>>>1;
+n|=n>>>2;
+n|=n>>>4;
+n|=n>>>8;
+n|=n>>>16;
+n++;
+}
+return n;
+}
+
+
+
+function howMuchToRead(n,state){
+if(n<=0||state.length===0&&state.ended)return 0;
+if(state.objectMode)return 1;
+if(n!==n){
+
+if(state.flowing&&state.length)return state.buffer.head.data.length;else return state.length;
+}
+
+if(n>state.highWaterMark)state.highWaterMark=computeNewHighWaterMark(n);
+if(n<=state.length)return n;
+
+if(!state.ended){
+state.needReadable=true;
+return 0;
+}
+return state.length;
+}
+
+
+Readable.prototype.read=function(n){
+debug('read',n);
+n=parseInt(n,10);
+var state=this._readableState;
+var nOrig=n;
+
+if(n!==0)state.emittedReadable=false;
+
+
+
+
+if(n===0&&state.needReadable&&(state.length>=state.highWaterMark||state.ended)){
+debug('read: emitReadable',state.length,state.ended);
+if(state.length===0&&state.ended)endReadable(this);else emitReadable(this);
+return null;
+}
+
+n=howMuchToRead(n,state);
+
+
+if(n===0&&state.ended){
+if(state.length===0)endReadable(this);
+return null;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var doRead=state.needReadable;
+debug('need readable',doRead);
+
+
+if(state.length===0||state.length-n<state.highWaterMark){
+doRead=true;
+debug('length less than watermark',doRead);
+}
+
+
+
+if(state.ended||state.reading){
+doRead=false;
+debug('reading or ended',doRead);
+}else if(doRead){
+debug('do read');
+state.reading=true;
+state.sync=true;
+
+if(state.length===0)state.needReadable=true;
+
+this._read(state.highWaterMark);
+state.sync=false;
+
+
+if(!state.reading)n=howMuchToRead(nOrig,state);
+}
+
+var ret;
+if(n>0)ret=fromList(n,state);else ret=null;
+
+if(ret===null){
+state.needReadable=true;
+n=0;
+}else{
+state.length-=n;
+}
+
+if(state.length===0){
+
+
+if(!state.ended)state.needReadable=true;
+
+
+if(nOrig!==n&&state.ended)endReadable(this);
+}
+
+if(ret!==null)this.emit('data',ret);
+
+return ret;
+};
+
+function onEofChunk(stream,state){
+if(state.ended)return;
+if(state.decoder){
+var chunk=state.decoder.end();
+if(chunk&&chunk.length){
+state.buffer.push(chunk);
+state.length+=state.objectMode?1:chunk.length;
+}
+}
+state.ended=true;
+
+
+emitReadable(stream);
+}
+
+
+
+
+function emitReadable(stream){
+var state=stream._readableState;
+state.needReadable=false;
+if(!state.emittedReadable){
+debug('emitReadable',state.flowing);
+state.emittedReadable=true;
+if(state.sync)processNextTick(emitReadable_,stream);else emitReadable_(stream);
+}
+}
+
+function emitReadable_(stream){
+debug('emit readable');
+stream.emit('readable');
+flow(stream);
+}
+
+
+
+
+
+
+
+function maybeReadMore(stream,state){
+if(!state.readingMore){
+state.readingMore=true;
+processNextTick(maybeReadMore_,stream,state);
+}
+}
+
+function maybeReadMore_(stream,state){
+var len=state.length;
+while(!state.reading&&!state.flowing&&!state.ended&&state.length<state.highWaterMark){
+debug('maybeReadMore read 0');
+stream.read(0);
+if(len===state.length)
+
+break;else len=state.length;
+}
+state.readingMore=false;
+}
+
+
+
+
+
+Readable.prototype._read=function(n){
+this.emit('error',new Error('_read() is not implemented'));
+};
+
+Readable.prototype.pipe=function(dest,pipeOpts){
+var src=this;
+var state=this._readableState;
+
+switch(state.pipesCount){
+case 0:
+state.pipes=dest;
+break;
+case 1:
+state.pipes=[state.pipes,dest];
+break;
+default:
+state.pipes.push(dest);
+break;}
+
+state.pipesCount+=1;
+debug('pipe count=%d opts=%j',state.pipesCount,pipeOpts);
+
+var doEnd=(!pipeOpts||pipeOpts.end!==false)&&dest!==process.stdout&&dest!==process.stderr;
+
+var endFn=doEnd?onend:unpipe;
+if(state.endEmitted)processNextTick(endFn);else src.once('end',endFn);
+
+dest.on('unpipe',onunpipe);
+function onunpipe(readable,unpipeInfo){
+debug('onunpipe');
+if(readable===src){
+if(unpipeInfo&&unpipeInfo.hasUnpiped===false){
+unpipeInfo.hasUnpiped=true;
+cleanup();
+}
+}
+}
+
+function onend(){
+debug('onend');
+dest.end();
+}
+
+
+
+
+
+var ondrain=pipeOnDrain(src);
+dest.on('drain',ondrain);
+
+var cleanedUp=false;
+function cleanup(){
+debug('cleanup');
+
+dest.removeListener('close',onclose);
+dest.removeListener('finish',onfinish);
+dest.removeListener('drain',ondrain);
+dest.removeListener('error',onerror);
+dest.removeListener('unpipe',onunpipe);
+src.removeListener('end',onend);
+src.removeListener('end',unpipe);
+src.removeListener('data',ondata);
+
+cleanedUp=true;
+
+
+
+
+
+
+if(state.awaitDrain&&(!dest._writableState||dest._writableState.needDrain))ondrain();
+}
+
+
+
+
+
+var increasedAwaitDrain=false;
+src.on('data',ondata);
+function ondata(chunk){
+debug('ondata');
+increasedAwaitDrain=false;
+var ret=dest.write(chunk);
+if(false===ret&&!increasedAwaitDrain){
+
+
+
+
+if((state.pipesCount===1&&state.pipes===dest||state.pipesCount>1&&indexOf(state.pipes,dest)!==-1)&&!cleanedUp){
+debug('false write response, pause',src._readableState.awaitDrain);
+src._readableState.awaitDrain++;
+increasedAwaitDrain=true;
+}
+src.pause();
+}
+}
+
+
+
+function onerror(er){
+debug('onerror',er);
+unpipe();
+dest.removeListener('error',onerror);
+if(EElistenerCount(dest,'error')===0)dest.emit('error',er);
+}
+
+
+prependListener(dest,'error',onerror);
+
+
+function onclose(){
+dest.removeListener('finish',onfinish);
+unpipe();
+}
+dest.once('close',onclose);
+function onfinish(){
+debug('onfinish');
+dest.removeListener('close',onclose);
+unpipe();
+}
+dest.once('finish',onfinish);
+
+function unpipe(){
+debug('unpipe');
+src.unpipe(dest);
+}
+
+
+dest.emit('pipe',src);
+
+
+if(!state.flowing){
+debug('pipe resume');
+src.resume();
+}
+
+return dest;
+};
+
+function pipeOnDrain(src){
+return function(){
+var state=src._readableState;
+debug('pipeOnDrain',state.awaitDrain);
+if(state.awaitDrain)state.awaitDrain--;
+if(state.awaitDrain===0&&EElistenerCount(src,'data')){
+state.flowing=true;
+flow(src);
+}
+};
+}
+
+Readable.prototype.unpipe=function(dest){
+var state=this._readableState;
+var unpipeInfo={hasUnpiped:false};
+
+
+if(state.pipesCount===0)return this;
+
+
+if(state.pipesCount===1){
+
+if(dest&&dest!==state.pipes)return this;
+
+if(!dest)dest=state.pipes;
+
+
+state.pipes=null;
+state.pipesCount=0;
+state.flowing=false;
+if(dest)dest.emit('unpipe',this,unpipeInfo);
+return this;
+}
+
+
+
+if(!dest){
+
+var dests=state.pipes;
+var len=state.pipesCount;
+state.pipes=null;
+state.pipesCount=0;
+state.flowing=false;
+
+for(var i=0;i<len;i++){
+dests[i].emit('unpipe',this,unpipeInfo);
+}return this;
+}
+
+
+var index=indexOf(state.pipes,dest);
+if(index===-1)return this;
+
+state.pipes.splice(index,1);
+state.pipesCount-=1;
+if(state.pipesCount===1)state.pipes=state.pipes[0];
+
+dest.emit('unpipe',this,unpipeInfo);
+
+return this;
+};
+
+
+
+Readable.prototype.on=function(ev,fn){
+var res=Stream.prototype.on.call(this,ev,fn);
+
+if(ev==='data'){
+
+if(this._readableState.flowing!==false)this.resume();
+}else if(ev==='readable'){
+var state=this._readableState;
+if(!state.endEmitted&&!state.readableListening){
+state.readableListening=state.needReadable=true;
+state.emittedReadable=false;
+if(!state.reading){
+processNextTick(nReadingNextTick,this);
+}else if(state.length){
+emitReadable(this);
+}
+}
+}
+
+return res;
+};
+Readable.prototype.addListener=Readable.prototype.on;
+
+function nReadingNextTick(self){
+debug('readable nexttick read 0');
+self.read(0);
+}
+
+
+
+Readable.prototype.resume=function(){
+var state=this._readableState;
+if(!state.flowing){
+debug('resume');
+state.flowing=true;
+resume(this,state);
+}
+return this;
+};
+
+function resume(stream,state){
+if(!state.resumeScheduled){
+state.resumeScheduled=true;
+processNextTick(resume_,stream,state);
+}
+}
+
+function resume_(stream,state){
+if(!state.reading){
+debug('resume read 0');
+stream.read(0);
+}
+
+state.resumeScheduled=false;
+state.awaitDrain=0;
+stream.emit('resume');
+flow(stream);
+if(state.flowing&&!state.reading)stream.read(0);
+}
+
+Readable.prototype.pause=function(){
+debug('call pause flowing=%j',this._readableState.flowing);
+if(false!==this._readableState.flowing){
+debug('pause');
+this._readableState.flowing=false;
+this.emit('pause');
+}
+return this;
+};
+
+function flow(stream){
+var state=stream._readableState;
+debug('flow',state.flowing);
+while(state.flowing&&stream.read()!==null){}
+}
+
+
+
+
+Readable.prototype.wrap=function(stream){
+var state=this._readableState;
+var paused=false;
+
+var self=this;
+stream.on('end',function(){
+debug('wrapped end');
+if(state.decoder&&!state.ended){
+var chunk=state.decoder.end();
+if(chunk&&chunk.length)self.push(chunk);
+}
+
+self.push(null);
+});
+
+stream.on('data',function(chunk){
+debug('wrapped data');
+if(state.decoder)chunk=state.decoder.write(chunk);
+
+
+if(state.objectMode&&(chunk===null||chunk===undefined))return;else if(!state.objectMode&&(!chunk||!chunk.length))return;
+
+var ret=self.push(chunk);
+if(!ret){
+paused=true;
+stream.pause();
+}
+});
+
+
+
+for(var i in stream){
+if(this[i]===undefined&&typeof stream[i]==='function'){
+this[i]=function(method){
+return function(){
+return stream[method].apply(stream,arguments);
+};
+}(i);
+}
+}
+
+
+for(var n=0;n<kProxyEvents.length;n++){
+stream.on(kProxyEvents[n],self.emit.bind(self,kProxyEvents[n]));
+}
+
+
+
+self._read=function(n){
+debug('wrapped _read',n);
+if(paused){
+paused=false;
+stream.resume();
+}
+};
+
+return self;
+};
+
+
+Readable._fromList=fromList;
+
+
+
+
+
+function fromList(n,state){
+
+if(state.length===0)return null;
+
+var ret;
+if(state.objectMode)ret=state.buffer.shift();else if(!n||n>=state.length){
+
+if(state.decoder)ret=state.buffer.join('');else if(state.buffer.length===1)ret=state.buffer.head.data;else ret=state.buffer.concat(state.length);
+state.buffer.clear();
+}else{
+
+ret=fromListPartial(n,state.buffer,state.decoder);
+}
+
+return ret;
+}
+
+
+
+
+function fromListPartial(n,list,hasStrings){
+var ret;
+if(n<list.head.data.length){
+
+ret=list.head.data.slice(0,n);
+list.head.data=list.head.data.slice(n);
+}else if(n===list.head.data.length){
+
+ret=list.shift();
+}else{
+
+ret=hasStrings?copyFromBufferString(n,list):copyFromBuffer(n,list);
+}
+return ret;
+}
+
+
+
+
+
+function copyFromBufferString(n,list){
+var p=list.head;
+var c=1;
+var ret=p.data;
+n-=ret.length;
+while(p=p.next){
+var str=p.data;
+var nb=n>str.length?str.length:n;
+if(nb===str.length)ret+=str;else ret+=str.slice(0,n);
+n-=nb;
+if(n===0){
+if(nb===str.length){
+++c;
+if(p.next)list.head=p.next;else list.head=list.tail=null;
+}else{
+list.head=p;
+p.data=str.slice(nb);
+}
+break;
+}
+++c;
+}
+list.length-=c;
+return ret;
+}
+
+
+
+
+function copyFromBuffer(n,list){
+var ret=Buffer.allocUnsafe(n);
+var p=list.head;
+var c=1;
+p.data.copy(ret);
+n-=p.data.length;
+while(p=p.next){
+var buf=p.data;
+var nb=n>buf.length?buf.length:n;
+buf.copy(ret,ret.length-n,0,nb);
+n-=nb;
+if(n===0){
+if(nb===buf.length){
+++c;
+if(p.next)list.head=p.next;else list.head=list.tail=null;
+}else{
+list.head=p;
+p.data=buf.slice(nb);
+}
+break;
+}
+++c;
+}
+list.length-=c;
+return ret;
+}
+
+function endReadable(stream){
+var state=stream._readableState;
+
+
+
+if(state.length>0)throw new Error('"endReadable()" called on non-empty stream');
+
+if(!state.endEmitted){
+state.ended=true;
+processNextTick(endReadableNT,state,stream);
+}
+}
+
+function endReadableNT(state,stream){
+
+if(!state.endEmitted&&state.length===0){
+state.endEmitted=true;
+stream.readable=false;
+stream.emit('end');
+}
+}
+
+function forEach(xs,f){
+for(var i=0,l=xs.length;i<l;i++){
+f(xs[i],i);
+}
+}
+
+function indexOf(xs,x){
+for(var i=0,l=xs.length;i<l;i++){
+if(xs[i]===x)return i;
+}
+return-1;
+}
+}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"./_stream_duplex":150,"./internal/streams/BufferList":155,"./internal/streams/destroy":156,"./internal/streams/stream":157,"_process":137,"core-util-is":95,"events":100,"inherits":105,"isarray":116,"process-nextick-args":136,"safe-buffer":143,"string_decoder/":162,"util":90}],153:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+module.exports=Transform;
+
+var Duplex=require('./_stream_duplex');
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+util.inherits(Transform,Duplex);
+
+function TransformState(stream){
+this.afterTransform=function(er,data){
+return afterTransform(stream,er,data);
+};
+
+this.needTransform=false;
+this.transforming=false;
+this.writecb=null;
+this.writechunk=null;
+this.writeencoding=null;
+}
+
+function afterTransform(stream,er,data){
+var ts=stream._transformState;
+ts.transforming=false;
+
+var cb=ts.writecb;
+
+if(!cb){
+return stream.emit('error',new Error('write callback called multiple times'));
+}
+
+ts.writechunk=null;
+ts.writecb=null;
+
+if(data!==null&&data!==undefined)stream.push(data);
+
+cb(er);
+
+var rs=stream._readableState;
+rs.reading=false;
+if(rs.needReadable||rs.length<rs.highWaterMark){
+stream._read(rs.highWaterMark);
+}
+}
+
+function Transform(options){
+if(!(this instanceof Transform))return new Transform(options);
+
+Duplex.call(this,options);
+
+this._transformState=new TransformState(this);
+
+var stream=this;
+
+
+this._readableState.needReadable=true;
+
+
+
+
+this._readableState.sync=false;
+
+if(options){
+if(typeof options.transform==='function')this._transform=options.transform;
+
+if(typeof options.flush==='function')this._flush=options.flush;
+}
+
+
+this.once('prefinish',function(){
+if(typeof this._flush==='function')this._flush(function(er,data){
+done(stream,er,data);
+});else done(stream);
+});
+}
+
+Transform.prototype.push=function(chunk,encoding){
+this._transformState.needTransform=false;
+return Duplex.prototype.push.call(this,chunk,encoding);
+};
+
+
+
+
+
+
+
+
+
+
+
+Transform.prototype._transform=function(chunk,encoding,cb){
+throw new Error('_transform() is not implemented');
+};
+
+Transform.prototype._write=function(chunk,encoding,cb){
+var ts=this._transformState;
+ts.writecb=cb;
+ts.writechunk=chunk;
+ts.writeencoding=encoding;
+if(!ts.transforming){
+var rs=this._readableState;
+if(ts.needTransform||rs.needReadable||rs.length<rs.highWaterMark)this._read(rs.highWaterMark);
+}
+};
+
+
+
+
+Transform.prototype._read=function(n){
+var ts=this._transformState;
+
+if(ts.writechunk!==null&&ts.writecb&&!ts.transforming){
+ts.transforming=true;
+this._transform(ts.writechunk,ts.writeencoding,ts.afterTransform);
+}else{
+
+
+ts.needTransform=true;
+}
+};
+
+Transform.prototype._destroy=function(err,cb){
+var _this=this;
+
+Duplex.prototype._destroy.call(this,err,function(err2){
+cb(err2);
+_this.emit('close');
+});
+};
+
+function done(stream,er,data){
+if(er)return stream.emit('error',er);
+
+if(data!==null&&data!==undefined)stream.push(data);
+
+
+
+var ws=stream._writableState;
+var ts=stream._transformState;
+
+if(ws.length)throw new Error('Calling transform done when ws.length != 0');
+
+if(ts.transforming)throw new Error('Calling transform done when still transforming');
+
+return stream.push(null);
+}
+},{"./_stream_duplex":150,"core-util-is":95,"inherits":105}],154:[function(require,module,exports){
+(function(process,global,setImmediate){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+module.exports=Writable;
+
+
+function WriteReq(chunk,encoding,cb){
+this.chunk=chunk;
+this.encoding=encoding;
+this.callback=cb;
+this.next=null;
+}
+
+
+
+function CorkedRequest(state){
+var _this=this;
+
+this.next=null;
+this.entry=null;
+this.finish=function(){
+onCorkedFinish(_this,state);
+};
+}
+
+
+
+var asyncWrite=!process.browser&&['v0.10','v0.9.'].indexOf(process.version.slice(0,5))>-1?setImmediate:processNextTick;
+
+
+
+var Duplex;
+
+
+Writable.WritableState=WritableState;
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+
+var internalUtil={
+deprecate:require('util-deprecate')};
+
+
+
+
+var Stream=require('./internal/streams/stream');
+
+
+
+var Buffer=require('safe-buffer').Buffer;
+var OurUint8Array=global.Uint8Array||function(){};
+function _uint8ArrayToBuffer(chunk){
+return Buffer.from(chunk);
+}
+function _isUint8Array(obj){
+return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
+}
+
+
+var destroyImpl=require('./internal/streams/destroy');
+
+util.inherits(Writable,Stream);
+
+function nop(){}
+
+function WritableState(options,stream){
+Duplex=Duplex||require('./_stream_duplex');
+
+options=options||{};
+
+
+
+this.objectMode=!!options.objectMode;
+
+if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.writableObjectMode;
+
+
+
+
+var hwm=options.highWaterMark;
+var defaultHwm=this.objectMode?16:16*1024;
+this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
+
+
+this.highWaterMark=Math.floor(this.highWaterMark);
+
+
+this.finalCalled=false;
+
+
+this.needDrain=false;
+
+this.ending=false;
+
+this.ended=false;
+
+this.finished=false;
+
+
+this.destroyed=false;
+
+
+
+
+var noDecode=options.decodeStrings===false;
+this.decodeStrings=!noDecode;
+
+
+
+
+this.defaultEncoding=options.defaultEncoding||'utf8';
+
+
+
+
+this.length=0;
+
+
+this.writing=false;
+
+
+this.corked=0;
+
+
+
+
+
+this.sync=true;
+
+
+
+
+this.bufferProcessing=false;
+
+
+this.onwrite=function(er){
+onwrite(stream,er);
+};
+
+
+this.writecb=null;
+
+
+this.writelen=0;
+
+this.bufferedRequest=null;
+this.lastBufferedRequest=null;
+
+
+
+this.pendingcb=0;
+
+
+
+this.prefinished=false;
+
+
+this.errorEmitted=false;
+
+
+this.bufferedRequestCount=0;
+
+
+
+this.corkedRequestsFree=new CorkedRequest(this);
+}
+
+WritableState.prototype.getBuffer=function getBuffer(){
+var current=this.bufferedRequest;
+var out=[];
+while(current){
+out.push(current);
+current=current.next;
+}
+return out;
+};
+
+(function(){
+try{
+Object.defineProperty(WritableState.prototype,'buffer',{
+get:internalUtil.deprecate(function(){
+return this.getBuffer();
+},'_writableState.buffer is deprecated. Use _writableState.getBuffer '+'instead.','DEP0003')});
+
+}catch(_){}
+})();
+
+
+
+var realHasInstance;
+if(typeof Symbol==='function'&&Symbol.hasInstance&&typeof Function.prototype[Symbol.hasInstance]==='function'){
+realHasInstance=Function.prototype[Symbol.hasInstance];
+Object.defineProperty(Writable,Symbol.hasInstance,{
+value:function(object){
+if(realHasInstance.call(this,object))return true;
+
+return object&&object._writableState instanceof WritableState;
+}});
+
+}else{
+realHasInstance=function(object){
+return object instanceof this;
+};
+}
+
+function Writable(options){
+Duplex=Duplex||require('./_stream_duplex');
+
+
+
+
+
+
+
+
+if(!realHasInstance.call(Writable,this)&&!(this instanceof Duplex)){
+return new Writable(options);
+}
+
+this._writableState=new WritableState(options,this);
+
+
+this.writable=true;
+
+if(options){
+if(typeof options.write==='function')this._write=options.write;
+
+if(typeof options.writev==='function')this._writev=options.writev;
+
+if(typeof options.destroy==='function')this._destroy=options.destroy;
+
+if(typeof options.final==='function')this._final=options.final;
+}
+
+Stream.call(this);
+}
+
+
+Writable.prototype.pipe=function(){
+this.emit('error',new Error('Cannot pipe, not readable'));
+};
+
+function writeAfterEnd(stream,cb){
+var er=new Error('write after end');
+
+stream.emit('error',er);
+processNextTick(cb,er);
+}
+
+
+
+
+function validChunk(stream,state,chunk,cb){
+var valid=true;
+var er=false;
+
+if(chunk===null){
+er=new TypeError('May not write null values to stream');
+}else if(typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
+er=new TypeError('Invalid non-string/buffer chunk');
+}
+if(er){
+stream.emit('error',er);
+processNextTick(cb,er);
+valid=false;
+}
+return valid;
+}
+
+Writable.prototype.write=function(chunk,encoding,cb){
+var state=this._writableState;
+var ret=false;
+var isBuf=_isUint8Array(chunk)&&!state.objectMode;
+
+if(isBuf&&!Buffer.isBuffer(chunk)){
+chunk=_uint8ArrayToBuffer(chunk);
+}
+
+if(typeof encoding==='function'){
+cb=encoding;
+encoding=null;
+}
+
+if(isBuf)encoding='buffer';else if(!encoding)encoding=state.defaultEncoding;
+
+if(typeof cb!=='function')cb=nop;
+
+if(state.ended)writeAfterEnd(this,cb);else if(isBuf||validChunk(this,state,chunk,cb)){
+state.pendingcb++;
+ret=writeOrBuffer(this,state,isBuf,chunk,encoding,cb);
+}
+
+return ret;
+};
+
+Writable.prototype.cork=function(){
+var state=this._writableState;
+
+state.corked++;
+};
+
+Writable.prototype.uncork=function(){
+var state=this._writableState;
+
+if(state.corked){
+state.corked--;
+
+if(!state.writing&&!state.corked&&!state.finished&&!state.bufferProcessing&&state.bufferedRequest)clearBuffer(this,state);
+}
+};
+
+Writable.prototype.setDefaultEncoding=function setDefaultEncoding(encoding){
+
+if(typeof encoding==='string')encoding=encoding.toLowerCase();
+if(!(['hex','utf8','utf-8','ascii','binary','base64','ucs2','ucs-2','utf16le','utf-16le','raw'].indexOf((encoding+'').toLowerCase())>-1))throw new TypeError('Unknown encoding: '+encoding);
+this._writableState.defaultEncoding=encoding;
+return this;
+};
+
+function decodeChunk(state,chunk,encoding){
+if(!state.objectMode&&state.decodeStrings!==false&&typeof chunk==='string'){
+chunk=Buffer.from(chunk,encoding);
+}
+return chunk;
+}
+
+
+
+
+function writeOrBuffer(stream,state,isBuf,chunk,encoding,cb){
+if(!isBuf){
+var newChunk=decodeChunk(state,chunk,encoding);
+if(chunk!==newChunk){
+isBuf=true;
+encoding='buffer';
+chunk=newChunk;
+}
+}
+var len=state.objectMode?1:chunk.length;
+
+state.length+=len;
+
+var ret=state.length<state.highWaterMark;
+
+if(!ret)state.needDrain=true;
+
+if(state.writing||state.corked){
+var last=state.lastBufferedRequest;
+state.lastBufferedRequest={
+chunk:chunk,
+encoding:encoding,
+isBuf:isBuf,
+callback:cb,
+next:null};
+
+if(last){
+last.next=state.lastBufferedRequest;
+}else{
+state.bufferedRequest=state.lastBufferedRequest;
+}
+state.bufferedRequestCount+=1;
+}else{
+doWrite(stream,state,false,len,chunk,encoding,cb);
+}
+
+return ret;
+}
+
+function doWrite(stream,state,writev,len,chunk,encoding,cb){
+state.writelen=len;
+state.writecb=cb;
+state.writing=true;
+state.sync=true;
+if(writev)stream._writev(chunk,state.onwrite);else stream._write(chunk,encoding,state.onwrite);
+state.sync=false;
+}
+
+function onwriteError(stream,state,sync,er,cb){
+--state.pendingcb;
+
+if(sync){
+
+
+processNextTick(cb,er);
+
+
+processNextTick(finishMaybe,stream,state);
+stream._writableState.errorEmitted=true;
+stream.emit('error',er);
+}else{
+
+
+cb(er);
+stream._writableState.errorEmitted=true;
+stream.emit('error',er);
+
+
+finishMaybe(stream,state);
+}
+}
+
+function onwriteStateUpdate(state){
+state.writing=false;
+state.writecb=null;
+state.length-=state.writelen;
+state.writelen=0;
+}
+
+function onwrite(stream,er){
+var state=stream._writableState;
+var sync=state.sync;
+var cb=state.writecb;
+
+onwriteStateUpdate(state);
+
+if(er)onwriteError(stream,state,sync,er,cb);else{
+
+var finished=needFinish(state);
+
+if(!finished&&!state.corked&&!state.bufferProcessing&&state.bufferedRequest){
+clearBuffer(stream,state);
+}
+
+if(sync){
+
+asyncWrite(afterWrite,stream,state,finished,cb);
+
+}else{
+afterWrite(stream,state,finished,cb);
+}
+}
+}
+
+function afterWrite(stream,state,finished,cb){
+if(!finished)onwriteDrain(stream,state);
+state.pendingcb--;
+cb();
+finishMaybe(stream,state);
+}
+
+
+
+
+function onwriteDrain(stream,state){
+if(state.length===0&&state.needDrain){
+state.needDrain=false;
+stream.emit('drain');
+}
+}
+
+
+function clearBuffer(stream,state){
+state.bufferProcessing=true;
+var entry=state.bufferedRequest;
+
+if(stream._writev&&entry&&entry.next){
+
+var l=state.bufferedRequestCount;
+var buffer=new Array(l);
+var holder=state.corkedRequestsFree;
+holder.entry=entry;
+
+var count=0;
+var allBuffers=true;
+while(entry){
+buffer[count]=entry;
+if(!entry.isBuf)allBuffers=false;
+entry=entry.next;
+count+=1;
+}
+buffer.allBuffers=allBuffers;
+
+doWrite(stream,state,true,state.length,buffer,'',holder.finish);
+
+
+
+state.pendingcb++;
+state.lastBufferedRequest=null;
+if(holder.next){
+state.corkedRequestsFree=holder.next;
+holder.next=null;
+}else{
+state.corkedRequestsFree=new CorkedRequest(state);
+}
+}else{
+
+while(entry){
+var chunk=entry.chunk;
+var encoding=entry.encoding;
+var cb=entry.callback;
+var len=state.objectMode?1:chunk.length;
+
+doWrite(stream,state,false,len,chunk,encoding,cb);
+entry=entry.next;
+
+
+
+
+if(state.writing){
+break;
+}
+}
+
+if(entry===null)state.lastBufferedRequest=null;
+}
+
+state.bufferedRequestCount=0;
+state.bufferedRequest=entry;
+state.bufferProcessing=false;
+}
+
+Writable.prototype._write=function(chunk,encoding,cb){
+cb(new Error('_write() is not implemented'));
+};
+
+Writable.prototype._writev=null;
+
+Writable.prototype.end=function(chunk,encoding,cb){
+var state=this._writableState;
+
+if(typeof chunk==='function'){
+cb=chunk;
+chunk=null;
+encoding=null;
+}else if(typeof encoding==='function'){
+cb=encoding;
+encoding=null;
+}
+
+if(chunk!==null&&chunk!==undefined)this.write(chunk,encoding);
+
+
+if(state.corked){
+state.corked=1;
+this.uncork();
+}
+
+
+if(!state.ending&&!state.finished)endWritable(this,state,cb);
+};
+
+function needFinish(state){
+return state.ending&&state.length===0&&state.bufferedRequest===null&&!state.finished&&!state.writing;
+}
+function callFinal(stream,state){
+stream._final(function(err){
+state.pendingcb--;
+if(err){
+stream.emit('error',err);
+}
+state.prefinished=true;
+stream.emit('prefinish');
+finishMaybe(stream,state);
+});
+}
+function prefinish(stream,state){
+if(!state.prefinished&&!state.finalCalled){
+if(typeof stream._final==='function'){
+state.pendingcb++;
+state.finalCalled=true;
+processNextTick(callFinal,stream,state);
+}else{
+state.prefinished=true;
+stream.emit('prefinish');
+}
+}
+}
+
+function finishMaybe(stream,state){
+var need=needFinish(state);
+if(need){
+prefinish(stream,state);
+if(state.pendingcb===0){
+state.finished=true;
+stream.emit('finish');
+}
+}
+return need;
+}
+
+function endWritable(stream,state,cb){
+state.ending=true;
+finishMaybe(stream,state);
+if(cb){
+if(state.finished)processNextTick(cb);else stream.once('finish',cb);
+}
+state.ended=true;
+stream.writable=false;
+}
+
+function onCorkedFinish(corkReq,state,err){
+var entry=corkReq.entry;
+corkReq.entry=null;
+while(entry){
+var cb=entry.callback;
+state.pendingcb--;
+cb(err);
+entry=entry.next;
+}
+if(state.corkedRequestsFree){
+state.corkedRequestsFree.next=corkReq;
+}else{
+state.corkedRequestsFree=corkReq;
+}
+}
+
+Object.defineProperty(Writable.prototype,'destroyed',{
+get:function(){
+if(this._writableState===undefined){
+return false;
+}
+return this._writableState.destroyed;
+},
+set:function(value){
+
+
+if(!this._writableState){
+return;
+}
+
+
+
+this._writableState.destroyed=value;
+}});
+
+
+Writable.prototype.destroy=destroyImpl.destroy;
+Writable.prototype._undestroy=destroyImpl.undestroy;
+Writable.prototype._destroy=function(err,cb){
+this.end();
+cb(err);
+};
+}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
+},{"./_stream_duplex":150,"./internal/streams/destroy":156,"./internal/streams/stream":157,"_process":137,"core-util-is":95,"inherits":105,"process-nextick-args":136,"safe-buffer":143,"timers":163,"util-deprecate":164}],155:[function(require,module,exports){
+'use strict';
+
+
+
+function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
+
+var Buffer=require('safe-buffer').Buffer;
+
+
+function copyBuffer(src,target,offset){
+src.copy(target,offset);
+}
+
+module.exports=function(){
+function BufferList(){
+_classCallCheck(this,BufferList);
+
+this.head=null;
+this.tail=null;
+this.length=0;
+}
+
+BufferList.prototype.push=function push(v){
+var entry={data:v,next:null};
+if(this.length>0)this.tail.next=entry;else this.head=entry;
+this.tail=entry;
+++this.length;
+};
+
+BufferList.prototype.unshift=function unshift(v){
+var entry={data:v,next:this.head};
+if(this.length===0)this.tail=entry;
+this.head=entry;
+++this.length;
+};
+
+BufferList.prototype.shift=function shift(){
+if(this.length===0)return;
+var ret=this.head.data;
+if(this.length===1)this.head=this.tail=null;else this.head=this.head.next;
+--this.length;
+return ret;
+};
+
+BufferList.prototype.clear=function clear(){
+this.head=this.tail=null;
+this.length=0;
+};
+
+BufferList.prototype.join=function join(s){
+if(this.length===0)return'';
+var p=this.head;
+var ret=''+p.data;
+while(p=p.next){
+ret+=s+p.data;
+}return ret;
+};
+
+BufferList.prototype.concat=function concat(n){
+if(this.length===0)return Buffer.alloc(0);
+if(this.length===1)return this.head.data;
+var ret=Buffer.allocUnsafe(n>>>0);
+var p=this.head;
+var i=0;
+while(p){
+copyBuffer(p.data,ret,i);
+i+=p.data.length;
+p=p.next;
+}
+return ret;
+};
+
+return BufferList;
+}();
+},{"safe-buffer":143}],156:[function(require,module,exports){
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+
+function destroy(err,cb){
+var _this=this;
+
+var readableDestroyed=this._readableState&&this._readableState.destroyed;
+var writableDestroyed=this._writableState&&this._writableState.destroyed;
+
+if(readableDestroyed||writableDestroyed){
+if(cb){
+cb(err);
+}else if(err&&(!this._writableState||!this._writableState.errorEmitted)){
+processNextTick(emitErrorNT,this,err);
+}
+return;
+}
+
+
+
+
+if(this._readableState){
+this._readableState.destroyed=true;
+}
+
+
+if(this._writableState){
+this._writableState.destroyed=true;
+}
+
+this._destroy(err||null,function(err){
+if(!cb&&err){
+processNextTick(emitErrorNT,_this,err);
+if(_this._writableState){
+_this._writableState.errorEmitted=true;
+}
+}else if(cb){
+cb(err);
+}
+});
+}
+
+function undestroy(){
+if(this._readableState){
+this._readableState.destroyed=false;
+this._readableState.reading=false;
+this._readableState.ended=false;
+this._readableState.endEmitted=false;
+}
+
+if(this._writableState){
+this._writableState.destroyed=false;
+this._writableState.ended=false;
+this._writableState.ending=false;
+this._writableState.finished=false;
+this._writableState.errorEmitted=false;
+}
+}
+
+function emitErrorNT(self,err){
+self.emit('error',err);
+}
+
+module.exports={
+destroy:destroy,
+undestroy:undestroy};
+
+},{"process-nextick-args":136}],157:[function(require,module,exports){
+module.exports=require('events').EventEmitter;
+
+},{"events":100}],158:[function(require,module,exports){
+module.exports=require('./readable').PassThrough;
+
+},{"./readable":159}],159:[function(require,module,exports){
+exports=module.exports=require('./lib/_stream_readable.js');
+exports.Stream=exports;
+exports.Readable=exports;
+exports.Writable=require('./lib/_stream_writable.js');
+exports.Duplex=require('./lib/_stream_duplex.js');
+exports.Transform=require('./lib/_stream_transform.js');
+exports.PassThrough=require('./lib/_stream_passthrough.js');
+
+},{"./lib/_stream_duplex.js":150,"./lib/_stream_passthrough.js":151,"./lib/_stream_readable.js":152,"./lib/_stream_transform.js":153,"./lib/_stream_writable.js":154}],160:[function(require,module,exports){
+module.exports=require('./readable').Transform;
+
+},{"./readable":159}],161:[function(require,module,exports){
+module.exports=require('./lib/_stream_writable.js');
+
+},{"./lib/_stream_writable.js":154}],162:[function(require,module,exports){
+'use strict';
+
+var Buffer=require('safe-buffer').Buffer;
+
+var isEncoding=Buffer.isEncoding||function(encoding){
+encoding=''+encoding;
+switch(encoding&&encoding.toLowerCase()){
+case'hex':case'utf8':case'utf-8':case'ascii':case'binary':case'base64':case'ucs2':case'ucs-2':case'utf16le':case'utf-16le':case'raw':
+return true;
+default:
+return false;}
+
+};
+
+function _normalizeEncoding(enc){
+if(!enc)return'utf8';
+var retried;
+while(true){
+switch(enc){
+case'utf8':
+case'utf-8':
+return'utf8';
+case'ucs2':
+case'ucs-2':
+case'utf16le':
+case'utf-16le':
+return'utf16le';
+case'latin1':
+case'binary':
+return'latin1';
+case'base64':
+case'ascii':
+case'hex':
+return enc;
+default:
+if(retried)return;
+enc=(''+enc).toLowerCase();
+retried=true;}
+
+}
+};
+
+
+
+function normalizeEncoding(enc){
+var nenc=_normalizeEncoding(enc);
+if(typeof nenc!=='string'&&(Buffer.isEncoding===isEncoding||!isEncoding(enc)))throw new Error('Unknown encoding: '+enc);
+return nenc||enc;
+}
+
+
+
+
+exports.StringDecoder=StringDecoder;
+function StringDecoder(encoding){
+this.encoding=normalizeEncoding(encoding);
+var nb;
+switch(this.encoding){
+case'utf16le':
+this.text=utf16Text;
+this.end=utf16End;
+nb=4;
+break;
+case'utf8':
+this.fillLast=utf8FillLast;
+nb=4;
+break;
+case'base64':
+this.text=base64Text;
+this.end=base64End;
+nb=3;
+break;
+default:
+this.write=simpleWrite;
+this.end=simpleEnd;
+return;}
+
+this.lastNeed=0;
+this.lastTotal=0;
+this.lastChar=Buffer.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write=function(buf){
+if(buf.length===0)return'';
+var r;
+var i;
+if(this.lastNeed){
+r=this.fillLast(buf);
+if(r===undefined)return'';
+i=this.lastNeed;
+this.lastNeed=0;
+}else{
+i=0;
+}
+if(i<buf.length)return r?r+this.text(buf,i):this.text(buf,i);
+return r||'';
+};
+
+StringDecoder.prototype.end=utf8End;
+
+
+StringDecoder.prototype.text=utf8Text;
+
+
+StringDecoder.prototype.fillLast=function(buf){
+if(this.lastNeed<=buf.length){
+buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,this.lastNeed);
+return this.lastChar.toString(this.encoding,0,this.lastTotal);
+}
+buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,buf.length);
+this.lastNeed-=buf.length;
+};
+
+
+
+function utf8CheckByte(byte){
+if(byte<=0x7F)return 0;else if(byte>>5===0x06)return 2;else if(byte>>4===0x0E)return 3;else if(byte>>3===0x1E)return 4;
+return-1;
+}
+
+
+
+
+function utf8CheckIncomplete(self,buf,i){
+var j=buf.length-1;
+if(j<i)return 0;
+var nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0)self.lastNeed=nb-1;
+return nb;
+}
+if(--j<i)return 0;
+nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0)self.lastNeed=nb-2;
+return nb;
+}
+if(--j<i)return 0;
+nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0){
+if(nb===2)nb=0;else self.lastNeed=nb-3;
+}
+return nb;
+}
+return 0;
+}
+
+
+
+
+
+
+
+
+
+function utf8CheckExtraBytes(self,buf,p){
+if((buf[0]&0xC0)!==0x80){
+self.lastNeed=0;
+return'\ufffd'.repeat(p);
+}
+if(self.lastNeed>1&&buf.length>1){
+if((buf[1]&0xC0)!==0x80){
+self.lastNeed=1;
+return'\ufffd'.repeat(p+1);
+}
+if(self.lastNeed>2&&buf.length>2){
+if((buf[2]&0xC0)!==0x80){
+self.lastNeed=2;
+return'\ufffd'.repeat(p+2);
+}
+}
+}
+}
+
+
+function utf8FillLast(buf){
+var p=this.lastTotal-this.lastNeed;
+var r=utf8CheckExtraBytes(this,buf,p);
+if(r!==undefined)return r;
+if(this.lastNeed<=buf.length){
+buf.copy(this.lastChar,p,0,this.lastNeed);
+return this.lastChar.toString(this.encoding,0,this.lastTotal);
+}
+buf.copy(this.lastChar,p,0,buf.length);
+this.lastNeed-=buf.length;
+}
+
+
+
+
+function utf8Text(buf,i){
+var total=utf8CheckIncomplete(this,buf,i);
+if(!this.lastNeed)return buf.toString('utf8',i);
+this.lastTotal=total;
+var end=buf.length-(total-this.lastNeed);
+buf.copy(this.lastChar,0,end);
+return buf.toString('utf8',i,end);
+}
+
+
+
+function utf8End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed)return r+'\ufffd'.repeat(this.lastTotal-this.lastNeed);
+return r;
+}
+
+
+
+
+
+function utf16Text(buf,i){
+if((buf.length-i)%2===0){
+var r=buf.toString('utf16le',i);
+if(r){
+var c=r.charCodeAt(r.length-1);
+if(c>=0xD800&&c<=0xDBFF){
+this.lastNeed=2;
+this.lastTotal=4;
+this.lastChar[0]=buf[buf.length-2];
+this.lastChar[1]=buf[buf.length-1];
+return r.slice(0,-1);
+}
+}
+return r;
+}
+this.lastNeed=1;
+this.lastTotal=2;
+this.lastChar[0]=buf[buf.length-1];
+return buf.toString('utf16le',i,buf.length-1);
+}
+
+
+
+function utf16End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed){
+var end=this.lastTotal-this.lastNeed;
+return r+this.lastChar.toString('utf16le',0,end);
+}
+return r;
+}
+
+function base64Text(buf,i){
+var n=(buf.length-i)%3;
+if(n===0)return buf.toString('base64',i);
+this.lastNeed=3-n;
+this.lastTotal=3;
+if(n===1){
+this.lastChar[0]=buf[buf.length-1];
+}else{
+this.lastChar[0]=buf[buf.length-2];
+this.lastChar[1]=buf[buf.length-1];
+}
+return buf.toString('base64',i,buf.length-n);
+}
+
+function base64End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed)return r+this.lastChar.toString('base64',0,3-this.lastNeed);
+return r;
+}
+
+
+function simpleWrite(buf){
+return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf){
+return buf&&buf.length?this.write(buf):'';
+}
+},{"safe-buffer":143}],163:[function(require,module,exports){
 (function(setImmediate,clearImmediate){
 var nextTick=require('process/browser.js').nextTick;
 var apply=Function.prototype.apply;
@@ -59297,7 +61977,7 @@ exports.clearImmediate=typeof clearImmediate==="function"?clearImmediate:functio
 delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate);
-},{"process/browser.js":131,"timers":157}],158:[function(require,module,exports){
+},{"process/browser.js":137,"timers":163}],164:[function(require,module,exports){
 (function(global){
 
 
@@ -59368,15 +62048,15 @@ return String(val).toLowerCase()==='true';
 }
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{}],159:[function(require,module,exports){
-arguments[4][81][0].apply(exports,arguments);
-},{"dup":81}],160:[function(require,module,exports){
-arguments[4][82][0].apply(exports,arguments);
-},{"./support/isBuffer":159,"_process":131,"dup":82,"inherits":99}],161:[function(require,module,exports){
+},{}],165:[function(require,module,exports){
+arguments[4][86][0].apply(exports,arguments);
+},{"dup":86}],166:[function(require,module,exports){
+arguments[4][87][0].apply(exports,arguments);
+},{"./support/isBuffer":165,"_process":137,"dup":87,"inherits":105}],167:[function(require,module,exports){
 module.exports={
-"version":"4.1.0"};
+"version":"4.2.0"};
 
-},{}],162:[function(require,module,exports){
+},{}],168:[function(require,module,exports){
 module.exports={
 "npm":{
 "angular":[
@@ -59406,10 +62086,12 @@ module.exports={
 {"id":"npm:backbone:20110701","severity":"medium","semver":{"vulnerable":["<0.5.0"]}}],
 
 "bootstrap":[
+{"id":"SNYK-JS-BOOTSTRAP-173700","severity":"medium","semver":{"vulnerable":["<3.4.1",">=4.0.0 <4.3.1"]}},
+{"id":"SNYK-JS-BOOTSTRAP-73560","severity":"medium","semver":{"vulnerable":[">=4.0.0 <4.1.2"]}},
 {"id":"SNYK-JS-BOOTSTRAP-72890","severity":"medium","semver":{"vulnerable":["<3.4.0"]}},
 {"id":"SNYK-JS-BOOTSTRAP-72889","severity":"medium","semver":{"vulnerable":["<3.4.0"]}},
 {"id":"npm:bootstrap:20180529","severity":"medium","semver":{"vulnerable":["<3.4.0",">=4.0.0 <4.1.2"]}},
-{"id":"npm:bootstrap:20160627","severity":"medium","semver":{"vulnerable":["<3.4.0",">=4.0.0 <=4.0.0"]}},
+{"id":"npm:bootstrap:20160627","severity":"medium","semver":{"vulnerable":["<3.4.0",">=4.0.0-alpha <4.0.0-beta.2"]}},
 {"id":"npm:bootstrap:20120510","severity":"medium","semver":{"vulnerable":["<2.1.0"]}}],
 
 "dojo":[
@@ -59426,11 +62108,12 @@ module.exports={
 {"id":"npm:foundation-sites:20120717","severity":"medium","semver":{"vulnerable":["<3.0.6 >=3.0.0"]}}],
 
 "handlebars":[
+{"id":"SNYK-JS-HANDLEBARS-173692","severity":"high","semver":{"vulnerable":["<4.0.13"]}},
 {"id":"npm:handlebars:20151207","severity":"medium","semver":{"vulnerable":["<4.0.0"]}},
 {"id":"npm:handlebars:20110425","severity":"medium","semver":{"vulnerable":["<=1.0.0-beta.3"]}}],
 
 "highcharts":[
-{"id":"npm:highcharts:20180225","severity":"low","semver":{"vulnerable":["<6.1.0"]}}],
+{"id":"npm:highcharts:20180225","severity":"high","semver":{"vulnerable":["<6.1.0"]}}],
 
 "jquery":[
 {"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":["=3.0.0-rc.1"]}},
@@ -59452,12 +62135,14 @@ module.exports={
 {"id":"npm:knockout:20130701","severity":"medium","semver":{"vulnerable":["<3.0.0 >=2.1.0-pre"]}}],
 
 "lodash":[
+{"id":"SNYK-JS-LODASH-73639","severity":"medium","semver":{"vulnerable":["<4.17.11"]}},
+{"id":"SNYK-JS-LODASH-73638","severity":"low","semver":{"vulnerable":["<4.17.11"]}},
 {"id":"npm:lodash:20180130","severity":"low","semver":{"vulnerable":["<4.17.5"]}}],
 
 "moment":[
 {"id":"npm:moment:20170905","severity":"low","semver":{"vulnerable":["<2.19.3"]}},
 {"id":"npm:moment:20161019","severity":"medium","semver":{"vulnerable":["<2.15.2"]}},
-{"id":"npm:moment:20160126","severity":"low","semver":{"vulnerable":["<=2.11.1"]}}],
+{"id":"npm:moment:20160126","severity":"medium","semver":{"vulnerable":["<=2.11.1"]}}],
 
 "mustache":[
 {"id":"npm:mustache:20151207","severity":"medium","semver":{"vulnerable":["<2.2.1"]}},
@@ -59707,4 +62392,4 @@ URLShim.INVALID_URL_DEBUG_STRING=
 
 module.exports=URLShim;
 
-},{"../report/html/renderer/util.js":75,"url":"url"}]},{},[1]);
+},{"../report/html/renderer/util.js":80,"url":"url"}]},{},[1]);

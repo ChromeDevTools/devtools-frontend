@@ -447,7 +447,6 @@ class ReportUIFeatures {
    */
   getReportHtml() {
     this._resetUIState();
-    // @ts-ignore - technically documentElement can be null, but that's dumb - https://dom.spec.whatwg.org/#document-element
     return this._document.documentElement.outerHTML;
   }
 

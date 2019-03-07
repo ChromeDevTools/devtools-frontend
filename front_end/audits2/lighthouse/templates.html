@@ -206,6 +206,7 @@ limitations under the License.
     .lh-metadata__results {
       text-overflow: ellipsis;
       white-space: nowrap;
+      overflow: hidden;
     }
     .lh-metadata__url {
       color: currentColor;
@@ -891,3 +892,142 @@ limitations under the License.
     </div>
   </div>
 </template>
+
+
+<!-- Lighthouse snippet component -->
+<template id="tmpl-lh-snippet">
+    <div class="lh-snippet">
+      <style>
+          :root {
+            --snippet-highlight-light: #fbf1f2;
+            --snippet-highlight-dark: #ffd6d8;
+          }
+          
+         .lh-snippet__header {
+          position: relative;
+          overflow: hidden;
+          padding: 10px;
+          border-bottom: none;
+          color: var(--subheader-color);
+          background: var(--medium-50-gray);
+          border: 1px solid var(--report-secondary-border-color);
+        }
+        .lh-snippet__title {
+          font-weight: bold;
+          float: left;
+        }
+        .lh-snippet__node {
+          float: left;
+          margin-left: 4px;
+        }
+        .lh-snippet__toggle-expand {
+          padding: 1px 7px;
+          margin-top: -1px;
+          margin-right: -7px;
+          float: right;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          font-size: 14px;
+          color: #0c50c7;
+        }
+
+        .lh-snippet__snippet {
+          overflow: auto;
+          border: 1px solid var(--report-secondary-border-color);
+        }
+        /* Container needed so that all children grow to the width of the scroll container */
+        .lh-snippet__snippet-inner {
+          display: inline-block;
+          min-width: 100%;
+        }
+
+        .lh-snippet:not(.lh-snippet--expanded) .lh-snippet__show-if-expanded {
+          display: none;
+        }
+        .lh-snippet.lh-snippet--expanded .lh-snippet__show-if-collapsed {
+          display: none;
+        }
+
+        .lh-snippet__line {
+          background: white;
+          white-space: pre;
+          display: flex;
+        }        
+        .lh-snippet__line:not(.lh-snippet__line--message):first-child {
+          padding-top: 4px;
+        }
+        .lh-snippet__line:not(.lh-snippet__line--message):last-child {
+          padding-bottom: 4px;
+        }
+        .lh-snippet__line--content-highlighted {
+          background: var(--snippet-highlight-dark);
+        }
+        .lh-snippet__line--message {
+          background: var(--snippet-highlight-light);
+        }
+        .lh-snippet__line--message .lh-snippet__line-number {
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
+        .lh-snippet__line--message code {
+          padding: 10px;
+          padding-left: 5px;
+          color: var(--fail-color);
+          font-family: var(--text-font-family);
+        }
+        .lh-snippet__line--message code {
+          white-space: normal;
+        }
+        .lh-snippet__line-icon {
+          padding-top: 10px;
+          display: none;
+        }
+        .lh-snippet__line--message .lh-snippet__line-icon {
+          display: block;
+        }
+        .lh-snippet__line-icon:before {
+          content: "";
+          display: inline-block;
+          vertical-align: middle;
+          margin-right: 4px;
+          width: var(--lh-score-icon-width);
+          height: var(--lh-score-icon-width);
+          background-image: var(--fail-icon-url);
+        }
+        .lh-snippet__line-number {
+          flex-shrink: 0;
+          width: 40px;
+          text-align: right;
+          font-family: monospace;
+          padding-right: 5px;
+          margin-right: 5px;
+          color: var(--medium-75-gray);
+          user-select: none;
+        }
+      </style>
+      <template id="tmpl-lh-snippet__header">
+        <div class="lh-snippet__header">
+          <div class="lh-snippet__title"></div>
+          <div class="lh-snippet__node"></div>
+          <button class="lh-snippet__toggle-expand">
+            <span class="lh-snippet__btn-label-collapse lh-snippet__show-if-expanded"></span>
+            <span class="lh-snippet__btn-label-expand lh-snippet__show-if-collapsed"></span>
+          </button>
+        </div>
+      </template>
+      <template id="tmpl-lh-snippet__content">
+        <div class="lh-snippet__snippet">
+          <div class="lh-snippet__snippet-inner"></div>
+        </div>
+      </template>
+      <template id="tmpl-lh-snippet__line">
+          <div class="lh-snippet__line">
+            <div class="lh-snippet__line-number"></div>
+            <div class="lh-snippet__line-icon"></div>
+            <code></code>
+          </div>
+        </template>   
+    </div>
+  </template>
+  

@@ -24,7 +24,6 @@
  */
 
 /** @typedef {import('./dom.js')} DOM */
-/** @typedef {import('./details-renderer.js').DetailsJSON} DetailsJSON */
 
 /* globals self, Util, DetailsRenderer, CategoryRenderer, PerformanceCategoryRenderer, PwaCategoryRenderer */
 

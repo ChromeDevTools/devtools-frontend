@@ -1394,6 +1394,8 @@ Elements.StylePropertiesSection = class {
       const isShorthand = !!style.longhandProperties(property.name).length;
       const inherited = this.isPropertyInherited(property.name);
       const overloaded = this._isPropertyOverloaded(property);
+      if (style.parentRule && style.parentRule.isUserAgent() && inherited)
+        continue;
       const item = new Elements.StylePropertyTreeElement(
           this._parentPane, this._matchedStyles, property, isShorthand, inherited, overloaded, false);
       this.propertiesTreeOutline.appendChild(item);

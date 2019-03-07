@@ -38,6 +38,14 @@ SDK.CSSMatchedStyles = class {
     this._nodeForStyle = new Map();
     /** @type {!Set<!SDK.CSSStyleDeclaration>} */
     this._inheritedStyles = new Set();
+
+    for (const result of matchedPayload)
+      cleanUserAgentSelectors(result);
+    for (const inheritedResult of inheritedPayload) {
+      for (const result of inheritedResult.matchedCSSRules)
+        cleanUserAgentSelectors(result);
+    }
+
     this._mainDOMCascade = this._buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
     this._pseudoDOMCascades = this._buildPseudoCascades(pseudoPayload);
 
@@ -46,6 +54,18 @@ SDK.CSSMatchedStyles = class {
     for (const domCascade of Array.from(this._pseudoDOMCascades.values()).concat(this._mainDOMCascade)) {
       for (const style of domCascade.styles())
         this._styleToDOMCascade.set(style, domCascade);
+    }
+
+    /**
+     * @param {!Protocol.CSS.RuleMatch} ruleMatch
+     */
+    function cleanUserAgentSelectors(ruleMatch) {
+      const {matchingSelectors, rule} = ruleMatch;
+      if (rule.origin !== 'user-agent' || !matchingSelectors.length)
+        return;
+      rule.selectorList.selectors = rule.selectorList.selectors.filter((item, i) => matchingSelectors.includes(i));
+      rule.selectorList.text = rule.selectorList.selectors.map(item => item.text).join(', ');
+      ruleMatch.matchingSelectors = matchingSelectors.map((item, i) => i);
     }
   }
 

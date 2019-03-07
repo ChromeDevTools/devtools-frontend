@@ -13,6 +13,44 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 16,
+    header: 'Highlights from the Chrome 74 update',
+    highlights: [
+      {
+        title: 'Highlight all nodes affected by CSS property',
+        subtitle:
+            'Hover over a CSS property like padding or margin in the Styles pane to highlight all nodes affected by that declaration.',
+        link: 'https://developers.google.com/web/updates/2019/03/devtools#highlight',
+      },
+
+      {
+        title: 'Lighthouse v4 in the Audits panel',
+        subtitle:
+            'Featuring a new "tap targets" audit for checking that mobile links and buttons are properly sized, and a new UI for PWA reports.',
+        link: 'https://developers.google.com/web/updates/2019/03/devtools#lighthouse',
+      },
+      {
+        title: 'WebSocket binary message viewer',
+        subtitle:
+            'Click a WebSocket connection in the Network Log, go to the Messages tab, then click a binary message to view its contents.',
+        link: 'https://developers.google.com/web/updates/2019/03/devtools#binary',
+      },
+      {
+        title: 'Capture area screenshot in the Command Menu',
+        subtitle: 'Press ' + commandMenuShortcut +
+            ', run the "Capture area screenshot" command, and then drag your mouse to take a screenshot of part of the viewport.',
+        link: 'https://developers.google.com/web/updates/2019/03/devtools#screenshot',
+      },
+      {
+        title: 'Service worker filters in the Network panel',
+        subtitle:
+            'Type "is:service-worker-initiated" or "is:service-worker-intercepted" to only show service worker activity.',
+        link: 'https://developers.google.com/web/updates/2019/03/devtools#swfilters',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/03/devtools',
+  },
+  {
     version: 15,
     header: 'Highlights from the Chrome 73 update',
     highlights: [

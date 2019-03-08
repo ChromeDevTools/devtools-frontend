@@ -458,18 +458,27 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
   }
 
   _updateSecurityOrigins() {
+    /** @type {!Set<string>} */
     const securityOrigins = new Set();
+
     let mainSecurityOrigin = null;
+    let unreachableMainSecurityOrigin = null;
     for (const frame of this._frames.values()) {
       const origin = frame.securityOrigin;
       if (!origin)
         continue;
+
       securityOrigins.add(origin);
-      if (frame.isMainFrame())
+      if (frame.isMainFrame()) {
         mainSecurityOrigin = origin;
+        if (frame.unreachableUrl()) {
+          const unreachableParsed = new Common.ParsedURL(frame.unreachableUrl());
+          unreachableMainSecurityOrigin = unreachableParsed.securityOrigin();
+        }
+      }
     }
+    this._securityOriginManager.setMainSecurityOrigin(mainSecurityOrigin || '', unreachableMainSecurityOrigin || '');
     this._securityOriginManager.updateSecurityOrigins(securityOrigins);
-    this._securityOriginManager.setMainSecurityOrigin(mainSecurityOrigin || '');
   }
 };
 
@@ -520,6 +529,7 @@ SDK.ResourceTreeFrame = class {
       this._url = payload.url;
       this._securityOrigin = payload.securityOrigin;
       this._mimeType = payload.mimeType;
+      this._unreachableUrl = payload.unreachableUrl || '';
     }
 
     this._creationStackTrace = creationStackTrace;
@@ -536,6 +546,24 @@ SDK.ResourceTreeFrame = class {
 
     if (this._parentFrame)
       this._parentFrame._childFrames.push(this);
+  }
+
+
+  /**
+   * @param {!Protocol.Page.Frame} framePayload
+   */
+  _navigate(framePayload) {
+    this._loaderId = framePayload.loaderId;
+    this._name = framePayload.name;
+    this._url = framePayload.url;
+    this._securityOrigin = framePayload.securityOrigin;
+    this._mimeType = framePayload.mimeType;
+    this._unreachableUrl = framePayload.unreachableUrl || '';
+    const mainResource = this._resourcesMap[this._url];
+    this._resourcesMap = {};
+    this._removeChildFrames();
+    if (mainResource && mainResource.loaderId === this._loaderId)
+      this.addResource(mainResource);
   }
 
   /**
@@ -571,6 +599,13 @@ SDK.ResourceTreeFrame = class {
    */
   get securityOrigin() {
     return this._securityOrigin;
+  }
+
+  /**
+   * @return {string}
+   */
+  unreachableUrl() {
+    return this._unreachableUrl;
   }
 
   /**
@@ -638,23 +673,6 @@ SDK.ResourceTreeFrame = class {
 
   isTopFrame() {
     return !this._parentFrame && !this._crossTargetParentFrameId;
-  }
-
-  /**
-   * @param {!Protocol.Page.Frame} framePayload
-   */
-  _navigate(framePayload) {
-    this._loaderId = framePayload.loaderId;
-    this._name = framePayload.name;
-    this._url = framePayload.url;
-    this._securityOrigin = framePayload.securityOrigin;
-    this._mimeType = framePayload.mimeType;
-
-    const mainResource = this._resourcesMap[this._url];
-    this._resourcesMap = {};
-    this._removeChildFrames();
-    if (mainResource && mainResource.loaderId === this._loaderId)
-      this.addResource(mainResource);
   }
 
   /**

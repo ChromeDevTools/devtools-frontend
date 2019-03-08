@@ -88,7 +88,8 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
       return;
     this._target = target;
     const securityOriginManager = target.model(SDK.SecurityOriginManager);
-    this._updateOrigin(securityOriginManager.mainSecurityOrigin());
+    this._updateOrigin(
+        securityOriginManager.mainSecurityOrigin(), securityOriginManager.unreachableMainSecurityOrigin());
     securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, this._originChanged, this);
   }
@@ -109,23 +110,24 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {!Common.Event} event
    */
   _originChanged(event) {
-    const origin = /** *@type {string} */ (event.data);
-    this._updateOrigin(origin);
+    const mainOrigin = /** *@type {string} */ (event.data.mainSecurityOrigin);
+    const unreachableMainOrigin = /** @type {string} */ (event.data.unreachableMainSecurityOrigin);
+    this._updateOrigin(mainOrigin, unreachableMainOrigin);
   }
 
   /**
-   * @param {string} url
+   * @param {string} mainOrigin
+   * @param {string} unreachableMainOrigin
    */
-  _updateOrigin(url) {
-    const parsedURL = new Common.ParsedURL(url);
-    if (!parsedURL.isValid) {
-      this._clearButton.disabled = true;
-      this._securityOrigin = '';
+  _updateOrigin(mainOrigin, unreachableMainOrigin) {
+    if (unreachableMainOrigin) {
+      this._securityOrigin = unreachableMainOrigin;
+      this._reportView.setSubtitle(ls`${unreachableMainOrigin} (failed to load)`);
     } else {
-      this._clearButton.disabled = false;
-      this._securityOrigin = parsedURL.securityOrigin();
+      this._securityOrigin = mainOrigin;
+      this._reportView.setSubtitle(mainOrigin);
     }
-    this._reportView.setSubtitle(this._securityOrigin);
+
     this.doUpdate();
   }
 

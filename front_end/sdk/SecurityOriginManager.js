@@ -11,9 +11,15 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   constructor(target) {
     super(target);
 
+    // if a URL is unreachable, the browser will jump to an error page at
+    // 'chrome-error://chromewebdata/', and |this._mainSecurityOrigin| stores
+    // its origin. In this situation, the original unreachable URL's security
+    // origin will be stored in |this._unreachableMainSecurityOrigin|.
+    this._mainSecurityOrigin = '';
+    this._unreachableMainSecurityOrigin = '';
+
     /** @type {!Set<string>} */
     this._securityOrigins = new Set();
-    this._mainSecurityOrigin = '';
   }
 
   /**
@@ -49,11 +55,23 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string} securityOrigin
+   * @return {string}
    */
-  setMainSecurityOrigin(securityOrigin) {
+  unreachableMainSecurityOrigin() {
+    return this._unreachableMainSecurityOrigin;
+  }
+
+  /**
+   * @param {string} securityOrigin
+   * @param {string} unreachableSecurityOrigin
+   */
+  setMainSecurityOrigin(securityOrigin, unreachableSecurityOrigin) {
     this._mainSecurityOrigin = securityOrigin;
-    this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, securityOrigin);
+    this._unreachableMainSecurityOrigin = unreachableSecurityOrigin || null;
+    this.dispatchEventToListeners(SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, {
+      mainSecurityOrigin: this._mainSecurityOrigin,
+      unreachableMainSecurityOrigin: this._unreachableMainSecurityOrigin
+    });
   }
 };
 

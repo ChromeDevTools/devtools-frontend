@@ -254,7 +254,7 @@ PerfUI.LineLevelProfile.LineDecorator = class {
   _createElement(type, value) {
     const element = createElementWithClass('div', 'text-editor-line-marker-text');
     if (type === 'performance') {
-      const intensity = Number.constrain(Math.log10(1 + 10 * value) / 5, 0.02, 1);
+      const intensity = Number.constrain(Math.log10(1 + 2 * value) / 5, 0.02, 1);
       element.textContent = Common.UIString('%.1f', value);
       element.style.backgroundColor = `hsla(44, 100%, 50%, ${intensity.toFixed(3)})`;
       element.createChild('span', 'line-marker-units').textContent = ls`ms`;

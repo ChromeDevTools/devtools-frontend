@@ -60,8 +60,7 @@ Help.HelpLateInitialization = class {
    * @override
    */
   run() {
-    if (!Host.isUnderTest())
-      Help._showReleaseNoteIfNeeded();
+    Help._showReleaseNoteIfNeeded();
   }
 };
 

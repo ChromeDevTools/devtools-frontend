@@ -1210,7 +1210,6 @@ TestRunner.MockSetting = class {
  */
 TestRunner.loadedModules = function() {
   return self.runtime._modules.filter(module => module._loadedForTest)
-      .filter(module => module.name() !== 'help')
       .filter(module => module.name().indexOf('test_runner') === -1);
 };
 

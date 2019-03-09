@@ -466,6 +466,7 @@ all_devtools_files = [
   "front_end/perf_ui/FlameChart.js",
   "front_end/perf_ui/GCActionDelegate.js",
   "front_end/perf_ui/LineLevelProfile.js",
+  "front_end/perf_ui/LiveHeapProfile.js",
   "front_end/perf_ui/NetworkPriorities.js",
   "front_end/perf_ui/OverviewGrid.js",
   "front_end/perf_ui/PieChart.js",

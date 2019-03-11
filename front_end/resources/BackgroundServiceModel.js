@@ -19,7 +19,7 @@ Resources.BackgroundServiceModel = class extends SDK.SDKModel {
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
    */
   enable(serviceName) {
-    this._backgroundServiceAgent.enable(serviceName);
+    this._backgroundServiceAgent.startObserving(serviceName);
   }
 
   /**
@@ -38,6 +38,13 @@ Resources.BackgroundServiceModel = class extends SDK.SDKModel {
   recordingStateChanged(isRecording, serviceName) {
     this.dispatchEventToListeners(
         Resources.BackgroundServiceModel.Events.RecordingStateChanged, {isRecording, serviceName});
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.BackgroundService.BackgroundServiceEvent} backgroundServiceEvent
+   */
+  backgroundServiceEventReceived(backgroundServiceEvent) {
   }
 };
 

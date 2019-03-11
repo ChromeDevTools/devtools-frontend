@@ -18,6 +18,8 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     this._model = model;
     this._model.addEventListener(
         Resources.BackgroundServiceModel.Events.RecordingStateChanged, this._onRecordingStateChanged, this);
+    this._model.addEventListener(
+        Resources.BackgroundServiceModel.Events.BackgroundServiceEventReceived, this._onEventReceived, this);
     this._model.enable(this._serviceName);
 
     /** @type {?UI.ToolbarToggle} */
@@ -49,7 +51,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     this._toolbar.appendSeparator();
 
     const deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-trash-bin');
-    deleteButton.addEventListener(UI.ToolbarButton.Events.Click, () => {});
+    deleteButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._model.clearEvents(this._serviceName));
     this._toolbar.appendToolbarItem(deleteButton);
   }
 
@@ -68,5 +70,14 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     if (state.serviceName !== this._serviceName)
       return;
     this._recordButton.setToggled(state.isRecording);
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _onEventReceived(event) {
+    const serviceEvent = /** @type {!Protocol.BackgroundService.BackgroundServiceEvent} */ (event.data);
+    if (serviceEvent.service !== this._serviceName)
+      return;
   }
 };

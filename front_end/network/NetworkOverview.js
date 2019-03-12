@@ -242,7 +242,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
     const height = this.element.offsetHeight;
     context.lineWidth = 1;
     context.beginPath();
-    context.strokeStyle = '#0867CB';  // Keep in sync with .summary-dcl-event CSS rule.
+    context.strokeStyle = Network.NetworkLogView.getDCLEventColor();
     for (let i = this._domContentLoadedEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this._domContentLoadedEvents[i])) + 0.5;
       context.moveTo(x, 0);
@@ -251,7 +251,7 @@ Network.NetworkOverview = class extends PerfUI.TimelineOverviewBase {
     context.stroke();
 
     context.beginPath();
-    context.strokeStyle = '#B31412';  // Keep in sync with .summary-load-event CSS rule.
+    context.strokeStyle = Network.NetworkLogView.getLoadEventColor();
     for (let i = this._loadEvents.length - 1; i >= 0; --i) {
       const x = Math.round(calculator.computePosition(this._loadEvents[i])) + 0.5;
       context.moveTo(x, 0);

@@ -138,7 +138,7 @@ Network.NetworkLogView = class extends UI.VBox {
     filterBar.filterButton().addEventListener(
         UI.ToolbarButton.Events.Click, this._dataGrid.scheduleUpdate.bind(this._dataGrid, true /* isFromUser */));
 
-    this._summaryBarElement = this.element.createChild('div', 'network-summary-bar');
+    this._summaryToolbar = new UI.Toolbar('network-summary-bar', this.element);
 
     new UI.DropTarget(
         this.element, [UI.DropTarget.Type.File], Common.UIString('Drop HAR files here'), this._handleDrop.bind(this));
@@ -758,53 +758,52 @@ Network.NetworkLogView = class extends UI.VBox {
       return;
     }
 
-    const summaryBar = this._summaryBarElement;
-    summaryBar.removeChildren();
-    const separator = '\u2002\u2758\u2002';
-    let text = '';
+    this._summaryToolbar.removeToolbarItems();
     /**
      * @param {string} chunk
+     * @param {string=} title
      * @return {!Element}
      */
-    function appendChunk(chunk) {
-      const span = summaryBar.createChild('span');
-      span.textContent = chunk;
-      text += chunk;
-      return span;
-    }
+    const appendChunk = (chunk, title) => {
+      const toolbarText = new UI.ToolbarText(chunk);
+      toolbarText.setTitle(title ? title : chunk);
+      this._summaryToolbar.appendToolbarItem(toolbarText);
+      return toolbarText.element;
+    };
 
     if (selectedNodeNumber !== nodeCount) {
-      appendChunk(Common.UIString('%d / %d requests', selectedNodeNumber, nodeCount));
-      appendChunk(separator);
-      appendChunk(Common.UIString(
-          '%s / %s transferred', Number.bytesToString(selectedTransferSize), Number.bytesToString(transferSize)));
-      appendChunk(separator);
-      appendChunk(Common.UIString(
-          '%s / %s resources', Number.bytesToString(selectedResourceSize), Number.bytesToString(resourceSize)));
+      appendChunk(ls`${selectedNodeNumber} / ${nodeCount} requests`);
+      this._summaryToolbar.appendSeparator();
+      appendChunk(
+          ls`${Number.bytesToString(selectedTransferSize)} / ${Number.bytesToString(transferSize)} transferred`,
+          ls`${selectedTransferSize} B / ${transferSize} B transferred`);
+      this._summaryToolbar.appendSeparator();
+      appendChunk(
+          ls`${Number.bytesToString(selectedResourceSize)} / ${Number.bytesToString(resourceSize)} resources`,
+          ls`${selectedResourceSize} B / ${resourceSize} B resources`);
     } else {
-      appendChunk(Common.UIString('%d requests', nodeCount));
-      appendChunk(separator);
-      appendChunk(Common.UIString('%s transferred', Number.bytesToString(transferSize)));
-      appendChunk(separator);
-      appendChunk(Common.UIString('%s resources', Number.bytesToString(resourceSize)));
+      appendChunk(ls`${nodeCount} requests`);
+      this._summaryToolbar.appendSeparator();
+      appendChunk(ls`${Number.bytesToString(transferSize)} transferred`, ls`${transferSize} B transferred`);
+      this._summaryToolbar.appendSeparator();
+      appendChunk(ls`${Number.bytesToString(resourceSize)} resources`, ls`${resourceSize} B resources`);
     }
 
     if (baseTime !== -1 && maxTime !== -1) {
-      appendChunk(separator);
-      appendChunk(Common.UIString('Finish: %s', Number.secondsToString(maxTime - baseTime)));
+      this._summaryToolbar.appendSeparator();
+      appendChunk(ls`Finish: ${Number.secondsToString(maxTime - baseTime)}`);
       if (this._mainRequestDOMContentLoadedTime !== -1 && this._mainRequestDOMContentLoadedTime > baseTime) {
-        appendChunk(separator);
+        this._summaryToolbar.appendSeparator();
         const domContentLoadedText =
             ls`DOMContentLoaded: ${Number.secondsToString(this._mainRequestDOMContentLoadedTime - baseTime)}`;
-        appendChunk(domContentLoadedText).classList.add('summary-dcl-event');
+        appendChunk(domContentLoadedText).style.color = Network.NetworkLogView.getDCLEventColor();
       }
       if (this._mainRequestLoadTime !== -1) {
-        appendChunk(separator);
+        this._summaryToolbar.appendSeparator();
         const loadText = ls`Load: ${Number.secondsToString(this._mainRequestLoadTime - baseTime)}`;
-        appendChunk(loadText).classList.add('summary-load-event');
+        appendChunk(loadText).style.color = Network.NetworkLogView.getLoadEventColor();
       }
     }
-    summaryBar.title = text;
   }
 
   scheduleRefresh() {
@@ -1841,6 +1840,22 @@ Network.NetworkLogView = class extends UI.VBox {
     const nonBlobRequests = this._filterOutBlobRequests(requests);
     const commands = await Promise.all(nonBlobRequests.map(request => this._generatePowerShellCommand(request)));
     return commands.join(';\r\n');
+  }
+
+  /**
+   * @return {string}
+   */
+  static getDCLEventColor() {
+    if (UI.themeSupport.themeName() === 'dark')
+      return '#03A9F4';
+    return '#0867CB';
+  }
+
+  /**
+   * @return {string}
+   */
+  static getLoadEventColor() {
+    return UI.themeSupport.patchColorText('#B31412', UI.ThemeSupport.ColorUsage.Foreground);
   }
 };
 

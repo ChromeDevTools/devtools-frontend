@@ -44,6 +44,10 @@
     overflow: hidden;
 }
 
+.panel.network .toolbar.network-summary-bar {
+    border-bottom: 0px;
+}
+
 .network-summary-bar span[is=dt-icon-label] {
     margin-right: 6px;
 }
@@ -264,10 +268,6 @@
     color: grey;
 }
 
-.network-summary-bar .summary-load-event {
-    color: #B31412;
-}
-
 .network-frame-divider {
     width: 2px;
     background-color: #FCCC49;
@@ -277,14 +277,6 @@
 
 #network-container:not(.brief-mode) .data-container {
     overflow: hidden;
-}
-
-.network-summary-bar .summary-dcl-event {
-    color: #0867CB;
-}
-
-.-theme-with-dark-background .network-summary-bar .summary-dcl-event {
-    color: #03A9F4;
 }
 
 .network-log-grid.data-grid .resources-dividers {

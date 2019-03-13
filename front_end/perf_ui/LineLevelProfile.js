@@ -260,9 +260,20 @@ PerfUI.LineLevelProfile.LineDecorator = class {
       element.createChild('span', 'line-marker-units').textContent = ls`ms`;
     } else {
       const intensity = Number.constrain(Math.log10(1 + 2e-3 * value) / 5, 0.02, 1);
-      element.textContent = Common.UIString('%.0f', value / 1024);
       element.style.backgroundColor = `hsla(217, 100%, 70%, ${intensity.toFixed(3)})`;
-      element.createChild('span', 'line-marker-units').textContent = ls`KB`;
+      value /= 1e3;
+      let units;
+      let fractionDigits;
+      if (value >= 1e3) {
+        units = ls`MB`;
+        value /= 1e3;
+        fractionDigits = value >= 20 ? 0 : 1;
+      } else {
+        units = ls`KB`;
+        fractionDigits = 0;
+      }
+      element.textContent = Common.UIString(`%.${fractionDigits}f`, value);
+      element.createChild('span', 'line-marker-units').textContent = units;
     }
     return element;
   }

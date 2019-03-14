@@ -2278,12 +2278,19 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
           results[i].text = results[i].text.toUpperCase();
       }
     }
-    if (editingVariable) {
-      results.forEach(result => {
+    results.forEach(result => {
+      if (editingVariable) {
         result.title = result.text;
         result.text += ')';
-      });
-    }
+        return;
+      }
+      const valuePreset = SDK.cssMetadata().getValuePreset(this._treeElement.name, result.text);
+      if (!this._isEditingName && valuePreset) {
+        result.title = result.text;
+        result.text = valuePreset.text;
+        result.selectionRange = {startColumn: valuePreset.startColumn, endColumn: valuePreset.endColumn};
+      }
+    });
     if (this._isColorAware && !this._isEditingName) {
       results.stableSort((a, b) => {
         if (!!a.subtitleRenderer === !!b.subtitleRenderer)

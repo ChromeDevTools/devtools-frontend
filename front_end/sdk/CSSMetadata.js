@@ -215,6 +215,27 @@ SDK.CSSMetadata = class {
   propertyUsageWeight(property) {
     return SDK.CSSMetadata.Weight[property] || SDK.CSSMetadata.Weight[this.canonicalPropertyName(property)] || 0;
   }
+
+  /**
+   * @param {string} key
+   * @param {string} value
+   * @return {?{text: string, startColumn: number, endColumn: number}}
+   */
+  getValuePreset(key, value) {
+    const values = SDK.CSSMetadata._valuePresets.get(key);
+    let text = values ? values.get(value) : null;
+    if (!text)
+      return null;
+    let startColumn = text.length;
+    let endColumn = text.length;
+    if (text) {
+      startColumn = text.indexOf('|');
+      endColumn = text.lastIndexOf('|');
+      endColumn = startColumn === endColumn ? endColumn : endColumn - 1;
+      text = text.replace(/\|/g, '');
+    }
+    return {text, startColumn, endColumn};
+  }
 };
 
 SDK.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
@@ -228,6 +249,61 @@ SDK.cssMetadata = function() {
     SDK.CSSMetadata._instance = new SDK.CSSMetadata(SDK.CSSMetadata._generatedProperties || []);
   return SDK.CSSMetadata._instance;
 };
+
+/**
+ * The pipe character '|' indicates where text selection should be set.
+ */
+SDK.CSSMetadata._imageValuePresetMap = new Map([
+  ['linear-gradient', 'linear-gradient(|45deg, black, transparent|)'],
+  ['radial-gradient', 'radial-gradient(|black, transparent|)'],
+  ['repeating-linear-gradient', 'repeating-linear-gradient(|45deg, black, transparent 100px|)'],
+  ['repeating-radial-gradient', 'repeating-radial-gradient(|black, transparent 100px|)'],
+  ['url', 'url(||)'],
+]);
+
+SDK.CSSMetadata._valuePresets = new Map([
+  [
+    'filter', new Map([
+      ['blur', 'blur(|1px|)'],
+      ['brightness', 'brightness(|0.5|)'],
+      ['contrast', 'contrast(|0.5|)'],
+      ['drop-shadow', 'drop-shadow(|2px 4px 6px black|)'],
+      ['grayscale', 'grayscale(|1|)'],
+      ['hue-rotate', 'hue-rotate(|45deg|)'],
+      ['invert', 'invert(|1|)'],
+      ['opacity', 'opacity(|0.5|)'],
+      ['saturate', 'saturate(|0.5|)'],
+      ['sepia', 'sepia(|1|)'],
+      ['url', 'url(||)'],
+    ])
+  ],
+  ['background', SDK.CSSMetadata._imageValuePresetMap], ['background-image', SDK.CSSMetadata._imageValuePresetMap],
+  ['-webkit-mask-image', SDK.CSSMetadata._imageValuePresetMap],
+  [
+    'transform', new Map([
+      ['scale', 'scale(|1.5|)'],
+      ['scaleX', 'scaleX(|1.5|)'],
+      ['scaleY', 'scaleY(|1.5|)'],
+      ['scale3d', 'scale3d(|1.5, 1.5, 1.5|)'],
+      ['rotate', 'rotate(|45deg|)'],
+      ['rotateX', 'rotateX(|45deg|)'],
+      ['rotateY', 'rotateY(|45deg|)'],
+      ['rotateZ', 'rotateZ(|45deg|)'],
+      ['rotate3d', 'rotate3d(|1, 1, 1, 45deg|)'],
+      ['skew', 'skew(|10deg, 10deg|)'],
+      ['skewX', 'skewX(|10deg|)'],
+      ['skewY', 'skewY(|10deg|)'],
+      ['translate', 'translate(|10px, 10px|)'],
+      ['translateX', 'translateX(|10px|)'],
+      ['translateY', 'translateY(|10px|)'],
+      ['translateZ', 'translateZ(|10px|)'],
+      ['translate3d', 'translate3d(|10px, 10px, 10px|)'],
+      ['matrix', 'matrix(|1, 0, 0, 1, 0, 0|)'],
+      ['matrix3d', 'matrix3d(|1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1|)'],
+      ['perspective', 'perspective(|10px|)']
+    ])
+  ]
+]);
 
 SDK.CSSMetadata._distanceProperties = new Set([
   'background-position', 'border-spacing', 'bottom', 'font-size', 'height', 'left', 'letter-spacing', 'max-height',
@@ -792,11 +868,33 @@ SDK.CSSMetadata._propertyDataMap = {
   'backface-visibility': {values: ['hidden', 'visible']},
   'background': {
     values: [
-      'repeat', 'repeat-x', 'repeat-y', 'no-repeat', 'top', 'bottom', 'left', 'right', 'center', 'fixed', 'local',
-      'scroll', 'space', 'round', 'border-box', 'content-box', 'padding-box'
+      'repeat',
+      'repeat-x',
+      'repeat-y',
+      'no-repeat',
+      'top',
+      'bottom',
+      'left',
+      'right',
+      'center',
+      'fixed',
+      'local',
+      'scroll',
+      'space',
+      'round',
+      'border-box',
+      'content-box',
+      'padding-box',
+      'linear-gradient',
+      'radial-gradient',
+      'repeating-linear-gradient',
+      'repeating-radial-gradient',
+      'url'
     ]
   },
   'background-attachment': {values: ['fixed', 'local', 'scroll']},
+  'background-image':
+      {values: ['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'url']},
   'background-position': {values: ['top', 'bottom', 'left', 'right', 'center']},
   'background-position-x': {values: ['left', 'right', 'center']},
   'background-position-y': {values: ['top', 'bottom', 'center']},
@@ -1038,6 +1136,8 @@ SDK.CSSMetadata._propertyDataMap = {
       'destination-out', 'destination-atop', 'xor', 'plus-lighter'
     ]
   },
+  '-webkit-mask-image':
+      {values: ['linear-gradient', 'radial-gradient', 'repeating-linear-gradient', 'repeating-radial-gradient', 'url']},
   '-webkit-mask-origin': {values: ['border', 'border-box', 'content', 'content-box', 'padding', 'padding-box']},
   '-webkit-mask-position': {values: ['top', 'bottom', 'left', 'right', 'center']},
   '-webkit-mask-position-x': {values: ['left', 'right', 'center']},

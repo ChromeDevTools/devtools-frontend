@@ -177,7 +177,7 @@ Accessibility.ARIAAttributesTreeElement = class extends UI.TreeElement {
       return;
     }
 
-    if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.keyIdentifier === 'U+001B') {
+    if (isEscKey(event)) {
       this._editingCancelled();
       event.consume();
       return;

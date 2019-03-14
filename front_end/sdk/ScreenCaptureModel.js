@@ -46,8 +46,11 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    * @param {!Protocol.Page.Viewport=} clip
    * @return {!Promise<?string>}
    */
-  captureScreenshot(format, quality, clip) {
-    return this._agent.captureScreenshot(format, quality, clip, true);
+  async captureScreenshot(format, quality, clip) {
+    await SDK.OverlayModel.muteHighlight();
+    const result = await this._agent.captureScreenshot(format, quality, clip, true);
+    await SDK.OverlayModel.unmuteHighlight();
+    return result;
   }
 
   /**

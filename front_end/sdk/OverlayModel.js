@@ -15,8 +15,6 @@ SDK.OverlayModel = class extends SDK.SDKModel {
 
     target.registerOverlayDispatcher(this);
     this._overlayAgent = target.overlayAgent();
-    this._overlayAgent.enable();
-    this._overlayAgent.setShowViewportSizeOnResize(true);
 
     this._debuggerModel = target.model(SDK.DebuggerModel);
     if (this._debuggerModel) {
@@ -36,43 +34,18 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     this._highlighter = this._defaultHighlighter;
 
     this._showPaintRectsSetting = Common.moduleSetting('showPaintRects');
-    this._showPaintRectsSetting.addChangeListener(
-        () => this._overlayAgent.setShowPaintRects(this._showPaintRectsSetting.get()));
-    if (this._showPaintRectsSetting.get())
-      this._overlayAgent.setShowPaintRects(true);
-
     this._showAdHighlightsSetting = Common.moduleSetting('showAdHighlights');
-    this._showAdHighlightsSetting.addChangeListener(
-        () => this._overlayAgent.setShowAdHighlights(this._showAdHighlightsSetting.get()));
-    if (this._showAdHighlightsSetting.get())
-      this._overlayAgent.setShowAdHighlights(true);
-
     this._showDebugBordersSetting = Common.moduleSetting('showDebugBorders');
-    this._showDebugBordersSetting.addChangeListener(
-        () => this._overlayAgent.setShowDebugBorders(this._showDebugBordersSetting.get()));
-    if (this._showDebugBordersSetting.get())
-      this._overlayAgent.setShowDebugBorders(true);
-
     this._showFPSCounterSetting = Common.moduleSetting('showFPSCounter');
-    this._showFPSCounterSetting.addChangeListener(
-        () => this._overlayAgent.setShowFPSCounter(this._showFPSCounterSetting.get()));
-    if (this._showFPSCounterSetting.get())
-      this._overlayAgent.setShowFPSCounter(true);
-
     this._showScrollBottleneckRectsSetting = Common.moduleSetting('showScrollBottleneckRects');
-    this._showScrollBottleneckRectsSetting.addChangeListener(
-        () => this._overlayAgent.setShowScrollBottleneckRects(this._showScrollBottleneckRectsSetting.get()));
-    if (this._showScrollBottleneckRectsSetting.get())
-      this._overlayAgent.setShowScrollBottleneckRects(true);
-
     this._showHitTestBordersSetting = Common.moduleSetting('showHitTestBorders');
-    this._showHitTestBordersSetting.addChangeListener(
-        () => this._overlayAgent.setShowHitTestBorders(this._showHitTestBordersSetting.get()));
-    if (this._showHitTestBordersSetting.get())
-      this._overlayAgent.setShowHitTestBorders(true);
 
-    if (target.suspended())
-      this._overlayAgent.setSuspended(true);
+    this._registeredListeners = [];
+    this._showViewportSizeOnResize = true;
+    if (!target.suspended()) {
+      this._overlayAgent.enable();
+      this._wireAgentToSettings();
+    }
   }
 
   /**
@@ -89,17 +62,48 @@ SDK.OverlayModel = class extends SDK.SDKModel {
       overlayModel._delayedHideHighlight(0);
   }
 
-  static muteHighlight() {
-    SDK.OverlayModel.hideDOMNodeHighlight();
-    SDK.OverlayModel._highlightDisabled = true;
-    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
-      overlayModel._updatePausedInDebuggerMessage();
+  static async muteHighlight() {
+    return Promise.all(SDK.targetManager.models(SDK.OverlayModel).map(model => model.suspendModel()));
   }
 
-  static unmuteHighlight() {
-    SDK.OverlayModel._highlightDisabled = false;
-    for (const overlayModel of SDK.targetManager.models(SDK.OverlayModel))
-      overlayModel._updatePausedInDebuggerMessage();
+  static async unmuteHighlight() {
+    return Promise.all(SDK.targetManager.models(SDK.OverlayModel).map(model => model.resumeModel()));
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  _wireAgentToSettings() {
+    this._registeredListeners = [
+      this._showPaintRectsSetting.addChangeListener(
+          () => this._overlayAgent.setShowPaintRects(this._showPaintRectsSetting.get())),
+      this._showAdHighlightsSetting.addChangeListener(
+          () => this._overlayAgent.setShowAdHighlights(this._showAdHighlightsSetting.get())),
+      this._showDebugBordersSetting.addChangeListener(
+          () => this._overlayAgent.setShowDebugBorders(this._showDebugBordersSetting.get())),
+      this._showFPSCounterSetting.addChangeListener(
+          () => this._overlayAgent.setShowFPSCounter(this._showFPSCounterSetting.get())),
+      this._showScrollBottleneckRectsSetting.addChangeListener(
+          () => this._overlayAgent.setShowScrollBottleneckRects(this._showScrollBottleneckRectsSetting.get())),
+      this._showHitTestBordersSetting.addChangeListener(
+          () => this._overlayAgent.setShowHitTestBorders(this._showHitTestBordersSetting.get()))
+    ];
+
+    if (this._showPaintRectsSetting.get())
+      this._overlayAgent.setShowPaintRects(true);
+    if (this._showAdHighlightsSetting.get())
+      this._overlayAgent.setShowAdHighlights(true);
+    if (this._showDebugBordersSetting.get())
+      this._overlayAgent.setShowDebugBorders(true);
+    if (this._showFPSCounterSetting.get())
+      this._overlayAgent.setShowFPSCounter(true);
+    if (this._showScrollBottleneckRectsSetting.get())
+      this._overlayAgent.setShowScrollBottleneckRects(true);
+    if (this._showHitTestBordersSetting.get())
+      this._overlayAgent.setShowHitTestBorders(true);
+    if (this._debuggerModel.isPaused())
+      this._updatePausedInDebuggerMessage();
+    return this._overlayAgent.setShowViewportSizeOnResize(this._showViewportSizeOnResize);
   }
 
   /**
@@ -107,7 +111,8 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   suspendModel() {
-    return this._overlayAgent.setSuspended(true);
+    Common.EventTarget.removeEventListeners(this._registeredListeners);
+    return this._overlayAgent.disable();
   }
 
   /**
@@ -115,19 +120,30 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   resumeModel() {
-    return this._overlayAgent.setSuspended(false);
+    this._overlayAgent.enable();
+    return this._wireAgentToSettings();
   }
 
+  /**
+   * @param {boolean} show
+   */
   setShowViewportSizeOnResize(show) {
+    this._showViewportSizeOnResize = show;
+    if (this.target().suspended())
+      return;
     this._overlayAgent.setShowViewportSizeOnResize(show);
   }
 
+  /**
+   * @return {!Promise}
+   */
   _updatePausedInDebuggerMessage() {
-    const message = this._debuggerModel.isPaused() && !Common.moduleSetting('disablePausedStateOverlay').get() &&
-            !SDK.OverlayModel._highlightDisabled ?
+    if (this.target().suspended())
+      return Promise.resolve();
+    const message = this._debuggerModel.isPaused() && !Common.moduleSetting('disablePausedStateOverlay').get() ?
         Common.UIString('Paused in debugger') :
         undefined;
-    this._overlayAgent.setPausedInDebuggerMessage(message);
+    return this._overlayAgent.setPausedInDebuggerMessage(message);
   }
 
   /**
@@ -161,8 +177,6 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {boolean=} showInfo
    */
   highlightInOverlay(data, mode, showInfo) {
-    if (SDK.OverlayModel._highlightDisabled)
-      return;
     if (this._hideHighlightTimeout) {
       clearTimeout(this._hideHighlightTimeout);
       this._hideHighlightTimeout = null;
@@ -193,8 +207,6 @@ SDK.OverlayModel = class extends SDK.SDKModel {
    * @param {!Protocol.Page.FrameId} frameId
    */
   highlightFrame(frameId) {
-    if (SDK.OverlayModel._highlightDisabled)
-      return;
     if (this._hideHighlightTimeout) {
       clearTimeout(this._hideHighlightTimeout);
       this._hideHighlightTimeout = null;

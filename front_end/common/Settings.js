@@ -272,9 +272,10 @@ Common.Setting = class {
   /**
    * @param {function(!Common.Event)} listener
    * @param {!Object=} thisObject
+   * @return {!Common.EventTarget.EventDescriptor}
    */
   addChangeListener(listener, thisObject) {
-    this._eventSupport.addEventListener(this._name, listener, thisObject);
+    return this._eventSupport.addEventListener(this._name, listener, thisObject);
   }
 
   /**

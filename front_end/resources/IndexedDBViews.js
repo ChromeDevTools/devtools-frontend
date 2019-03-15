@@ -134,8 +134,6 @@ Resources.IDBDataView = class extends UI.SimpleView {
 
     this._pageSize = 50;
     this._skipCount = 0;
-    /** @type {?number} */
-    this._keyGeneratorValue = null;
 
     this.update(objectStore, index);
     this._entries = [];
@@ -339,15 +337,6 @@ Resources.IDBDataView = class extends UI.SimpleView {
       this._updatedDataForTests();
     }
 
-    /**
-     * @param {?number} number
-     * @this {Resources.IDBDataView}
-     */
-    function callbackKeyGeneratorValue(number) {
-      this._keyGeneratorValue = number;
-      this._updateSummaryBar();
-    }
-
     const idbKeyRange = key ? window.IDBKeyRange.lowerBound(key) : null;
     if (this._isIndex) {
       this._model.loadIndexData(
@@ -357,18 +346,28 @@ Resources.IDBDataView = class extends UI.SimpleView {
       this._model.loadObjectStoreData(
           this._databaseId, this._objectStore.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
     }
-    this._model.getKeyGeneratorValue(this._databaseId, this._objectStore).then(callbackKeyGeneratorValue.bind(this));
-    this._updateSummaryBar();
+    this._model.getMetadata(this._databaseId, this._objectStore).then(this._updateSummaryBar.bind(this));
   }
 
-  _updateSummaryBar() {
-    if (this._keyGeneratorValue === null)
-      return;
+  /**
+   * @param {?Resources.IndexedDBModel.ObjectStoreMetadata} metadata
+   */
+  _updateSummaryBar(metadata) {
     if (!this._summaryBarElement)
       this._summaryBarElement = this.element.createChild('div', 'object-store-summary-bar');
     this._summaryBarElement.removeChildren();
+    if (!metadata)
+      return;
+
+    const separator = '\u2002\u2758\u2002';
+
     const span = this._summaryBarElement.createChild('span');
-    span.textContent = ls`key generator value: ${String(this._keyGeneratorValue)}`;
+    span.textContent = ls`Total entries: ${String(metadata.entriesCount)}`;
+
+    if (this._objectStore.autoIncrement) {
+      span.textContent += separator;
+      span.textContent += ls`Key generator value: ${String(metadata.keyGeneratorValue)}`;
+    }
   }
 
   _updatedDataForTests() {

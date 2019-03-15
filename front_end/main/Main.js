@@ -117,6 +117,7 @@ Main.Main = class {
     Runtime.experiments.register('samplingHeapProfilerTimeline', 'Sampling heap profiler timeline', true);
     Runtime.experiments.register('sourceDiff', 'Source diff');
     Runtime.experiments.register('splitInDrawer', 'Split in drawer', true);
+    Runtime.experiments.register('spotlight', 'Spotlight', true);
     Runtime.experiments.register('terminalInDrawer', 'Terminal in drawer', true);
 
     // Timeline

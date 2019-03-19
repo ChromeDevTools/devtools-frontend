@@ -142,7 +142,7 @@ SDK.CSSProperty = class {
    * @param {boolean=} overwrite
    * @return {!Promise.<boolean>}
    */
-  setText(propertyText, majorChange, overwrite) {
+  async setText(propertyText, majorChange, overwrite) {
     if (!this.ownerStyle)
       return Promise.reject(new Error('No ownerStyle for property'));
 
@@ -167,19 +167,9 @@ SDK.CSSProperty = class {
     const text = new TextUtils.Text(this.ownerStyle.cssText || '');
     const newStyleText = text.replaceRange(range, String.sprintf(';%s;', propertyText));
 
-    return self.runtime.extension(TextUtils.TokenizerFactory)
-        .instance()
-        .then(this._formatStyle.bind(this, newStyleText, indentation, endIndentation))
-        .then(setStyleText.bind(this));
-
-    /**
-     * @param {string} styleText
-     * @this {SDK.CSSProperty}
-     * @return {!Promise.<boolean>}
-     */
-    function setStyleText(styleText) {
-      return this.ownerStyle.setText(styleText, majorChange);
-    }
+    const tokenizerFactory = await self.runtime.extension(TextUtils.TokenizerFactory).instance();
+    const styleText = SDK.CSSProperty._formatStyle(newStyleText, indentation, endIndentation, tokenizerFactory);
+    return this.ownerStyle.setText(styleText, majorChange);
   }
 
   /**
@@ -189,12 +179,13 @@ SDK.CSSProperty = class {
    * @param {!TextUtils.TokenizerFactory} tokenizerFactory
    * @return {string}
    */
-  _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
+  static _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
     if (indentation)
       indentation = '\n' + indentation;
     let result = '';
     let propertyText;
     let insideProperty = false;
+    let needsSemi = false;
     const tokenize = tokenizerFactory.createTokenizer('text/css');
 
     tokenize('*{' + styleText + '}', processToken);
@@ -220,14 +211,19 @@ SDK.CSSProperty = class {
         } else if (isPropertyStart) {
           insideProperty = true;
           propertyText = token;
-        } else if (token !== ';') {
+        } else if (token !== ';' || needsSemi) {
           result += token;
+          if (token.trim() && !(tokenType && tokenType.includes('css-comment')))
+            needsSemi = token !== ';';
         }
+        if (token === '{' && !tokenType)
+          needsSemi = false;
         return;
       }
 
       if (token === '}' || token === ';') {
         result = result.trimRight() + indentation + propertyText.trim() + ';';
+        needsSemi = false;
         insideProperty = false;
         if (token === '}')
           result += '}';

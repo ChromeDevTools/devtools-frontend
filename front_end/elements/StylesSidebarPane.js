@@ -732,7 +732,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 };
 
-Elements.StylesSidebarPane._maxLinkLength = 23;
+Elements.StylesSidebarPane._maxLinkLength = 30;
 
 Elements.SectionBlock = class {
   /**
@@ -844,8 +844,9 @@ Elements.StylePropertiesSection = class {
     this._selectorElement.addEventListener('mousemove', event => event.consume(), false);
     this._selectorElement.addEventListener('mouseleave', this._onMouseOutSelector.bind(this), false);
 
-    const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
+    const openBrace = createElement('span');
     openBrace.textContent = ' {';
+    selectorContainer.appendChild(openBrace);
     selectorContainer.addEventListener('mousedown', this._handleEmptySpaceMouseDown.bind(this), false);
     selectorContainer.addEventListener('click', this._handleSelectorContainerClick.bind(this), false);
 
@@ -928,7 +929,7 @@ Elements.StylePropertiesSection = class {
 
     if (header && header.ownerNode) {
       const link = Elements.DOMLinkifier.linkifyDeferredNodeReference(header.ownerNode);
-      link.textContent = '<style>';
+      link.textContent = '<style>…</style>';
       return link;
     }
 

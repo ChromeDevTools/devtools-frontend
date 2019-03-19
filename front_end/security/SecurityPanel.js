@@ -922,6 +922,13 @@ Security.SecurityOriginView = class extends UI.VBox {
       }
       noteSection.createChild('div').textContent =
           Common.UIString('The security details above are from the first inspected response.');
+    } else if (originState.securityState === Protocol.Security.SecurityState.Secure) {
+      // If the security state is secure but there are no security details,
+      // this means that the origin is a non-cryptographic secure origin, e.g.
+      // chrome:// or about:.
+      const secureSection = this.element.createChild('div', 'origin-view-section');
+      secureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Secure');
+      secureSection.createChild('div').textContent = Common.UIString('This origin is a non-HTTPS secure origin.');
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       const notSecureSection = this.element.createChild('div', 'origin-view-section');
       notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not secure');

@@ -39,12 +39,9 @@ SDK.CSSMatchedStyles = class {
     /** @type {!Set<!SDK.CSSStyleDeclaration>} */
     this._inheritedStyles = new Set();
 
-    for (const result of matchedPayload)
-      cleanUserAgentSelectors(result);
-    for (const inheritedResult of inheritedPayload) {
-      for (const result of inheritedResult.matchedCSSRules)
-        cleanUserAgentSelectors(result);
-    }
+    matchedPayload = cleanUserAgentPayload(matchedPayload);
+    for (const inheritedResult of inheritedPayload)
+      inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
 
     this._mainDOMCascade = this._buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload);
     this._pseudoDOMCascades = this._buildPseudoCascades(pseudoPayload);
@@ -57,15 +54,67 @@ SDK.CSSMatchedStyles = class {
     }
 
     /**
-     * @param {!Protocol.CSS.RuleMatch} ruleMatch
+     * @param {!Array<!Protocol.CSS.RuleMatch>} payload
+     * @return {!Array<!Protocol.CSS.RuleMatch>}
      */
-    function cleanUserAgentSelectors(ruleMatch) {
-      const {matchingSelectors, rule} = ruleMatch;
-      if (rule.origin !== 'user-agent' || !matchingSelectors.length)
-        return;
-      rule.selectorList.selectors = rule.selectorList.selectors.filter((item, i) => matchingSelectors.includes(i));
-      rule.selectorList.text = rule.selectorList.selectors.map(item => item.text).join(', ');
-      ruleMatch.matchingSelectors = matchingSelectors.map((item, i) => i);
+    function cleanUserAgentPayload(payload) {
+      for (const ruleMatch of payload)
+        cleanUserAgentSelectors(ruleMatch);
+
+      // Merge UA rules that are sequential and have similar selector/media.
+      const cleanMatchedPayload = [];
+      for (const ruleMatch of payload) {
+        const lastMatch = cleanMatchedPayload.peekLast();
+        if (!lastMatch || ruleMatch.rule.origin !== 'user-agent' || lastMatch.rule.origin !== 'user-agent' ||
+            ruleMatch.rule.selectorList.text !== lastMatch.rule.selectorList.text ||
+            mediaText(ruleMatch) !== mediaText(lastMatch)) {
+          cleanMatchedPayload.push(ruleMatch);
+          continue;
+        }
+        mergeRule(ruleMatch, lastMatch);
+      }
+      return cleanMatchedPayload;
+
+      /**
+       * @param {!Protocol.CSS.RuleMatch} from
+       * @param {!Protocol.CSS.RuleMatch} to
+       */
+      function mergeRule(from, to) {
+        const shorthands = /** @type {!Map<string, string>} */ (new Map());
+        const properties = /** @type {!Map<string, string>} */ (new Map());
+        for (const entry of to.rule.style.shorthandEntries)
+          shorthands.set(entry.name, entry.value);
+        for (const entry of to.rule.style.cssProperties)
+          properties.set(entry.name, entry.value);
+        for (const entry of from.rule.style.shorthandEntries)
+          shorthands.set(entry.name, entry.value);
+        for (const entry of from.rule.style.cssProperties)
+          properties.set(entry.name, entry.value);
+        to.rule.style.shorthandEntries = shorthands.keysArray().map(name => ({name, value: shorthands.get(name)}));
+        to.rule.style.cssProperties = properties.keysArray().map(name => ({name, value: properties.get(name)}));
+      }
+
+      /**
+       * @param {!Protocol.CSS.RuleMatch} ruleMatch
+       * @return {?string}
+       */
+      function mediaText(ruleMatch) {
+        if (!ruleMatch.rule.media)
+          return null;
+        return ruleMatch.rule.media.map(media => media.text).join(', ');
+      }
+
+      /**
+       * @param {!Protocol.CSS.RuleMatch} ruleMatch
+       */
+      function cleanUserAgentSelectors(ruleMatch) {
+        const {matchingSelectors, rule} = ruleMatch;
+        if (rule.origin !== 'user-agent' || !matchingSelectors.length)
+          return;
+        rule.selectorList.selectors = rule.selectorList.selectors.filter((item, i) => matchingSelectors.includes(i));
+        rule.selectorList.text = rule.selectorList.selectors.map(item => item.text).join(', ');
+        ruleMatch.matchingSelectors = matchingSelectors.map((item, i) => i);
+      }
     }
   }
 

@@ -93,3 +93,7 @@
     border: 0;
     border-right: 1px solid var(--divider-color);
 }
+
+:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+    pointer-events: none;
+}

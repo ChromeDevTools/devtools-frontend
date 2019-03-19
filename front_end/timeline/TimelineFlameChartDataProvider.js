@@ -220,8 +220,14 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     const eventEntryType = Timeline.TimelineFlameChartDataProvider.EntryType.Event;
     /** @type {!Multimap<!SDK.TracingModel.Process, !TimelineModel.TimelineModel.Track>} */
     const tracksByProcess = new Multimap();
-    for (const track of this._model.tracks())
-      tracksByProcess.set(track.thread.process(), track);
+    for (const track of this._model.tracks()) {
+      if (track.thread !== null) {
+        tracksByProcess.set(track.thread.process(), track);
+      } else {
+        // The Timings track can reach this point, so we should probably do something more useful.
+        console.error('Failed to process track');
+      }
+    }
     for (const process of tracksByProcess.keysArray()) {
       if (tracksByProcess.size > 1) {
         const name = `${process.name()} ${process.id()}`;

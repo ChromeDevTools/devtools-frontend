@@ -161,6 +161,14 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
   /**
    * @override
    * @param {!Protocol.Page.FrameId} frameId
+   */
+  frameRequestedNavigation(frameId) {
+  }
+
+
+  /**
+   * @override
+   * @param {!Protocol.Page.FrameId} frameId
    * @param {number} delay
    */
   frameScheduledNavigation(frameId, delay) {

@@ -1250,7 +1250,7 @@
     this.releaseControl();
   };
 
-  TestSuite.prototype.testLoadResourceForFrontend = async function(baseURL) {
+  TestSuite.prototype.testLoadResourceForFrontend = async function(baseURL, fileURL) {
     const test = this;
     const loggedHeaders = new Set(['cache-control', 'pragma']);
     function testCase(url, headers, expectedStatus, expectedHeaders, expectedContent) {
@@ -1294,6 +1294,8 @@
     });
     await testCase(
         baseURL + 'echoheader?Cookie', undefined, 200, ['cache-control'], 'devtools-test-cookie=same-site-cookie');
+    await testCase('data:text/html,<body>hello</body>', undefined, 200, [], '<body>hello</body>');
+    await testCase(fileURL, undefined, 200, [], '<html>\n<body>\nDummy page.\n</body>\n</html>\n');
 
     this.releaseControl();
   };

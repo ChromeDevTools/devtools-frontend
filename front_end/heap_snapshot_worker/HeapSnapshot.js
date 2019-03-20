@@ -1305,7 +1305,7 @@ HeapSnapshotWorker.HeapSnapshot = class {
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);
 
     // BFS for objects not reached from user roots.
-    distances[this.rootNode().ordinal()] = HeapSnapshotModel.baseSystemDistance;
+    distances[this.rootNode().ordinal()] = nodesToVisitLength > 0 ? HeapSnapshotModel.baseSystemDistance : 0;
     nodesToVisit[0] = this.rootNode().nodeIndex;
     nodesToVisitLength = 1;
     this._bfs(nodesToVisit, nodesToVisitLength, distances, filter);

@@ -14,6 +14,7 @@
     "extract": "node scripts/extract_module/extract_module.js",
     "check-gn": "node scripts/check_gn.js",
     "check-json": "node scripts/json_validator/validate_module_json.js",
+    "check-loc": "node scripts/check_localizability.js -a",
     "generate-jsconfig": "node scripts/generate_jsconfig.js"
   },
   "repository": {

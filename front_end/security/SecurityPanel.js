@@ -90,21 +90,6 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     return highlightedUrl;
   }
 
-
-  /**
-   * @param {!Protocol.Security.SecurityState} securityState
-   */
-  setRanInsecureContentStyle(securityState) {
-    this._ranInsecureContentStyle = securityState;
-  }
-
-  /**
-   * @param {!Protocol.Security.SecurityState} securityState
-   */
-  setDisplayedInsecureContentStyle(securityState) {
-    this._displayedInsecureContentStyle = securityState;
-  }
-
   /**
    * @param {!Protocol.Security.SecurityState} newSecurityState
    * @param {boolean} schemeIsCryptographic
@@ -200,12 +185,9 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
 
     let securityState = /** @type {!Protocol.Security.SecurityState} */ (request.securityState());
 
-    if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable && this._ranInsecureContentStyle)
-      securityState = this._ranInsecureContentStyle;
-    else if (
-        request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable &&
-        this._displayedInsecureContentStyle)
-      securityState = this._displayedInsecureContentStyle;
+    if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable ||
+        request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable)
+      securityState = Protocol.Security.SecurityState.Insecure;
 
     if (this._origins.has(origin)) {
       const originState = this._origins.get(origin);
@@ -686,9 +668,6 @@ Security.SecurityMainView = class extends UI.VBox {
 
     this._explanations = explanations, this._insecureContentStatus = insecureContentStatus;
     this._schemeIsCryptographic = schemeIsCryptographic;
-
-    this._panel.setRanInsecureContentStyle(insecureContentStatus.ranInsecureContentStyle);
-    this._panel.setDisplayedInsecureContentStyle(insecureContentStatus.displayedInsecureContentStyle);
 
     this.refreshExplanations();
   }

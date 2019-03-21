@@ -45,7 +45,7 @@ Common.ResourceType = class {
   }
 
   /**
-   * @param {?string} mimeType
+   * @param {string} mimeType
    * @return {!Common.ResourceType}
    */
   static fromMimeType(mimeType) {

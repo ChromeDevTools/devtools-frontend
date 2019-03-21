@@ -47,7 +47,7 @@ Network.RequestResponseView = class extends UI.VBox {
    * @return {boolean}
    */
   static _hasTextContent(request, contentData) {
-    const mimeType = request.mimeType;
+    const mimeType = request.mimeType || '';
     let resourceType = Common.ResourceType.fromMimeType(mimeType);
     if (resourceType === Common.resourceTypes.Other)
       resourceType = request.contentType();

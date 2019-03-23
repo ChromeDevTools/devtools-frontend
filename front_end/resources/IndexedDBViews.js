@@ -40,23 +40,22 @@ Resources.IDBDatabaseView = class extends UI.VBox {
     super();
 
     this._model = model;
-    const databaseName = database ? database.databaseId.name : Common.UIString('Loading\u2026');
+    const databaseName = database ? database.databaseId.name : ls`Loading\u2026`;
 
     this._reportView = new UI.ReportView(databaseName);
     this._reportView.show(this.contentElement);
 
     const bodySection = this._reportView.appendSection('');
-    this._securityOriginElement = bodySection.appendField(Common.UIString('Security origin'));
-    this._versionElement = bodySection.appendField(Common.UIString('Version'));
+    this._securityOriginElement = bodySection.appendField(ls`Security origin`);
+    this._versionElement = bodySection.appendField(ls`Version`);
+    this._objectStoreCountElement = bodySection.appendField(ls`Object stores`);
 
     const footer = this._reportView.appendSection('').appendRow();
-    this._clearButton = UI.createTextButton(
-        Common.UIString('Delete database'), () => this._deleteDatabase(), Common.UIString('Delete database'));
+    this._clearButton = UI.createTextButton(ls`Delete database`, () => this._deleteDatabase(), ls`Delete database`);
     footer.appendChild(this._clearButton);
 
-    this._refreshButton = UI.createTextButton(
-        Common.UIString('Refresh database'), () => this._refreshDatabaseButtonClicked(),
-        Common.UIString('Refresh database'));
+    this._refreshButton =
+        UI.createTextButton(ls`Refresh database`, () => this._refreshDatabaseButtonClicked(), ls`Refresh database`);
     footer.appendChild(this._refreshButton);
 
     if (database)
@@ -66,6 +65,7 @@ Resources.IDBDatabaseView = class extends UI.VBox {
   _refreshDatabase() {
     this._securityOriginElement.textContent = this._database.databaseId.securityOrigin;
     this._versionElement.textContent = this._database.version;
+    this._objectStoreCountElement.textContent = Object.keys(this._database.objectStores).length;
   }
 
   _refreshDatabaseButtonClicked() {

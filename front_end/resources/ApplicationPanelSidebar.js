@@ -1323,6 +1323,8 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
 
   _updateTooltip() {
     this.tooltip = Common.UIString('Version') + ': ' + this._database.version;
+    if (Object.keys(this._idbObjectStoreTreeElements).length === 0)
+      this.tooltip += ls` (empty)`;
   }
 
   /**
@@ -1346,6 +1348,7 @@ Resources.IDBDatabaseTreeElement = class extends Resources.BaseStorageTreeElemen
     objectStoreTreeElement.clear();
     this.removeChild(objectStoreTreeElement);
     delete this._idbObjectStoreTreeElements[objectStoreName];
+    this._updateTooltip();
   }
 
   clear() {

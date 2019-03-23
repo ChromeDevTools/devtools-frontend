@@ -200,8 +200,10 @@ Host.InspectorFrontendHostStub = class {
     const link = createElement('a');
     link.download = fileName;
     const blob = new Blob([buffer.join('')], {type: 'text/plain'});
-    link.href = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
+    link.href = blobUrl;
     link.click();
+    URL.revokeObjectURL(blobUrl);
   }
 
   /**

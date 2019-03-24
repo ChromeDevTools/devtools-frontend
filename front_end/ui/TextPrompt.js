@@ -555,9 +555,10 @@ UI.TextPrompt = class extends Common.Object {
     if (!this._queryRange)
       return false;
 
+    const suggestionLength = this._currentSuggestion ? this._currentSuggestion.text.length : 0;
     const selectionRange = this._currentSuggestion ? this._currentSuggestion.selectionRange : null;
-    const endColumn = selectionRange ? selectionRange.endColumn : this._currentSuggestion.text.length;
-    const startColumn = selectionRange ? selectionRange.startColumn : this._currentSuggestion.text.length;
+    const endColumn = selectionRange ? selectionRange.endColumn : suggestionLength;
+    const startColumn = selectionRange ? selectionRange.startColumn : suggestionLength;
     this._element.textContent = this.textWithCurrentSuggestion();
     this.setDOMSelection(this._queryRange.startColumn + startColumn, this._queryRange.startColumn + endColumn);
 

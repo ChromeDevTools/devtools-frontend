@@ -42,6 +42,13 @@
     flex-direction: column;
 }
 
+.audits2-status-text code {
+    user-select: text;
+    text-align: left;
+    white-space: pre-wrap;
+    overflow: auto;
+}
+
 .audits2-progress-wrapper {
     width: calc(100% + 2 * var(--view-horizontal-margin));
     height: 2px;

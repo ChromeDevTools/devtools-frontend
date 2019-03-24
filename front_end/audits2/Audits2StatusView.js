@@ -220,15 +220,14 @@ Audits2.StatusView = class {
     this._progressBar.classList.add('errored');
 
     this._commitTextChange('');
-    this._statusText.createTextChild(Common.UIString('Ah, sorry! We ran into an error: '));
-    this._statusText.createChild('em').createTextChild(err.message);
+    this._statusText.createChild('p').createTextChild(Common.UIString('Ah, sorry! We ran into an error.'));
     if (Audits2.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or ' +
           'extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
     } else {
-      this._renderBugReportLink(err, this._inspectedURL);
+      this._renderBugReportBody(err, this._inspectedURL);
     }
   }
 
@@ -236,23 +235,19 @@ Audits2.StatusView = class {
    * @param {!Error} err
    * @param {string} auditURL
    */
-  _renderBugReportLink(err, auditURL) {
-    const baseURI = 'https://github.com/GoogleChrome/lighthouse/issues/new?';
-    const title = encodeURI('title=DevTools Error: ' + err.message.substring(0, 60));
-
+  _renderBugReportBody(err, auditURL) {
     const issueBody = `
-**Initial URL**: ${auditURL}
-**Chrome Version**: ${navigator.userAgent.match(/Chrome\/(\S+)/)[1]}
-**Error Message**: ${err.message}
-**Stack Trace**:
+${err.message}
 \`\`\`
-${err.stack}
+Channel: DevTools
+Initial URL: ${auditURL}
+Chrome Version: ${navigator.userAgent.match(/Chrome\/(\S+)/)[1]}
+Stack Trace: ${err.stack}
 \`\`\`
-    `;
-    const body = '&body=' + encodeURIComponent(issueBody.trim());
-    const reportErrorEl = UI.XLink.create(
-        baseURI + title + body, Common.UIString('Report this bug'), 'audits2-link audits2-report-error');
-    this._statusText.appendChild(reportErrorEl);
+`;
+    this._statusText.createChild('p').createTextChild(
+        ls`If this issue is reproducible, please report it at the Lighthouse GitHub repo.`);
+    this._statusText.createChild('code', 'monospace').createTextChild(issueBody.trim());
   }
 };
 

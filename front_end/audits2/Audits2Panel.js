@@ -225,6 +225,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
       await this._resetEmulationAndProtocolConnection();
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);
     } catch (err) {
+      await this._resetEmulationAndProtocolConnection();
       if (err instanceof Error)
         this._statusView.renderBugReport(err);
     }

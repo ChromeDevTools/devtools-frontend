@@ -522,6 +522,8 @@ all_devtools_files = [
   "front_end/profiler/HeapSnapshotView.js",
   "front_end/profiler/HeapTimelineOverview.js",
   "front_end/profiler/IsolateSelector.js",
+  "front_end/profiler/LiveHeapProfileView.js",
+  "front_end/profiler/liveHeapProfile.css",
   "front_end/profiler/module.json",
   "front_end/profiler/ProfileDataGrid.js",
   "front_end/profiler/ProfileHeader.js",
@@ -1197,7 +1199,9 @@ visibility = [ "//third_party/blink/*" ]
 
 group("devtools_all_files") {
   data = all_devtools_files
-  deps = [":devtools_frontend_resources_data"]
+  deps = [
+    ":devtools_frontend_resources_data",
+  ]
 }
 
 devtools_frontend_resources_deps = [

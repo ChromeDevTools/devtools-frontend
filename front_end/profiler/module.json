@@ -9,6 +9,16 @@
             "className": "Profiler.HeapProfilerPanel"
         },
         {
+            "type": "view",
+            "location": "drawer-view",
+            "id": "live_heap_profile",
+            "title": "Live Heap Profile",
+            "persistence": "closeable",
+            "className": "Profiler.LiveHeapProfileView",
+            "order": 100,
+            "experiment": "liveHeapProfile"
+        },
+        {
             "type": "@UI.ContextMenu.Provider",
             "contextTypes": [
                 "SDK.RemoteObject"
@@ -99,11 +109,13 @@
         "HeapSnapshotView.js",
         "HeapTimelineOverview.js",
         "IsolateSelector.js",
+        "LiveHeapProfileView.js",
         "ProfileLauncherView.js",
         "ProfileTypeRegistry.js"
     ],
     "resources": [
         "heapProfiler.css",
+        "liveHeapProfile.css",
         "profileLauncherView.css",
         "profilesPanel.css",
         "profilesSidebarTree.css"

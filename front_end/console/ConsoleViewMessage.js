@@ -290,9 +290,15 @@ Console.ConsoleViewMessage = class {
       if (request.statusText)
         messageElement.createTextChildren(' (', request.statusText, ')');
     } else {
-      const fragment = this._linkifyWithCustomLinkifier(this._message.messageText, title => {
-        const linkElement = Components.Linkifier.linkifyRevealable(
-            /** @type {!SDK.NetworkRequest} */ (request), title, request.url());
+      const messageText = this._message.messageText;
+      const fragment = this._linkifyWithCustomLinkifier(messageText, (text, url, lineNumber, columnNumber) => {
+        let linkElement;
+        if (url === request.url()) {
+          linkElement = Components.Linkifier.linkifyRevealable(
+              /** @type {!SDK.NetworkRequest} */ (request), url, request.url());
+        } else {
+          linkElement = Components.Linkifier.linkifyURL(url, {text, lineNumber, columnNumber});
+        }
         linkElement.tabIndex = -1;
         this._selectableChildren.push({element: linkElement, forceSelect: () => linkElement.focus()});
         return linkElement;

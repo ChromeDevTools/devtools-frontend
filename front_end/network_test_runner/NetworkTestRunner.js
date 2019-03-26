@@ -111,18 +111,29 @@ NetworkTestRunner.makeSimpleXHRWithPayload = function(method, url, async, payloa
   NetworkTestRunner.makeXHR(method, url, async, undefined, undefined, [], false, payload, undefined, callback);
 };
 
+NetworkTestRunner.makeXHRWithTypedArrayPayload = function(method, url, async, payload, callback) {
+  const args = {};
+  args.typedArrayPayload = new TextDecoder('utf-8').decode(payload);
+  NetworkTestRunner.makeXHRImpl(method, url, async, args, callback);
+};
+
 NetworkTestRunner.makeXHR = function(
     method, url, async, user, password, headers, withCredentials, payload, type, callback) {
   const args = {};
-  args.method = method;
-  args.url = TestRunner.url(url);
-  args.async = async;
   args.user = user;
   args.password = password;
   args.headers = headers;
   args.withCredentials = withCredentials;
   args.payload = payload;
   args.type = type;
+  NetworkTestRunner.makeXHRImpl(method, url, async, args, callback);
+};
+
+NetworkTestRunner.makeXHRImpl = function(method, url, async, args, callback) {
+  args.method = method;
+  args.url = TestRunner.url(url);
+  args.async = async;
+
   const jsonArgs = JSON.stringify(args).replace(/\"/g, '\\"');
 
   function innerCallback(msg) {
@@ -219,6 +230,10 @@ TestRunner.deprecatedInitAsync(`
 
   function makeXHRForJSONArguments(jsonArgs) {
     let args = JSON.parse(jsonArgs);
+    let payload = args.payload;
+
+    if (args.typedArrayPayload)
+      payload = new TextEncoder('utf-8').encode(args.typedArrayPayload);
 
     makeXHR(
       args.method,
@@ -228,7 +243,7 @@ TestRunner.deprecatedInitAsync(`
       args.password,
       args.headers || [],
       args.withCredentials,
-      args.payload,
+      payload,
       args.type,
       xhrLoadedCallback
     );

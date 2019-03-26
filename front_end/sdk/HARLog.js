@@ -325,7 +325,7 @@ SDK.HARLog.Entry = class {
     const postData = await this._request.requestFormData();
     if (!postData)
       return null;
-    const res = {mimeType: this._request.requestContentType(), text: postData};
+    const res = {mimeType: this._request.requestContentType() || '', text: postData};
     const formParameters = await this._request.formParameters();
     if (formParameters)
       res.params = this._buildParameters(formParameters);

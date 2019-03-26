@@ -61,3 +61,14 @@
     height: 4px;
     border-bottom: 1px solid rgb(64%, 64%, 64%);
 }
+
+.cache-storage-summary-bar {
+    flex: 0 0 27px;
+    line-height: 27px;
+    padding-left: 5px;
+    background-color: #eee;
+    border-top: 1px solid #ccc;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

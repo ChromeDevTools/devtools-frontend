@@ -16,7 +16,7 @@ ApplicationTestRunner.dumpCacheTree = async function(pathFilter) {
 };
 
 ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
-  function _dumpDataGrid(dataGrid, indentSpaces) {
+  function _dumpDataGrid(dataGrid) {
     for (const node of dataGrid.rootNode().children) {
       const children = Array.from(node.element().children).filter(function(element) {
         return !element.classList.contains('responseTime-column');
@@ -57,6 +57,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
 
     if (!pathFilter) {
       _dumpDataGrid(view._dataGrid);
+      TestRunner.addResult('        totalCount: ' + String(view._returnCount));
       continue;
     }
 
@@ -68,6 +69,7 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
     }
 
     _dumpDataGrid(cacheTreeElement._view._dataGrid);
+    TestRunner.addResult('        totalCount: ' + String(view._returnCount));
   }
 };
 
@@ -98,7 +100,7 @@ ApplicationTestRunner.dumpCachedEntryContentNoRefresh = async function(cacheName
     await view._updateData(true);
 
     const promiseDumpContent = new Promise(resolve => {
-      view._model.loadCacheData(view._cache, 0, 50, '', async function(entries, hasMore) {
+      view._model.loadCacheData(view._cache, 0, 50, '', async function(entries, totalCount) {
         for (const entry of entries) {
           if (entry.requestURL !== requestUrl)
             continue;

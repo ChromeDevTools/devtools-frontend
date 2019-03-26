@@ -69,6 +69,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
 
     this._pageSize = 50;
     this._skipCount = 0;
+    this._returnCount = /** @type {?number} */ (null);
+    this._summaryBarElement = /** @type {?Element} */ (null);
 
     this.update(cache);
   }
@@ -77,7 +79,9 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     if (this._dataGrid)
       this._dataGrid.asWidget().detach();
     this._dataGrid = this._createDataGrid();
-    this._splitWidget.setSidebarWidget(this._dataGrid.asWidget());
+    const dataGridWidget = this._dataGrid.asWidget();
+    this._splitWidget.setSidebarWidget(dataGridWidget);
+    dataGridWidget.setMinimumSize(0, 250);
     this._skipCount = 0;
   }
 
@@ -102,7 +106,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    * @param {?UI.Widget} preview
    */
   _showPreview(preview) {
-    if (this._preview === preview)
+    if (preview && this._preview === preview)
       return;
     if (this._preview)
       this._preview.detach();
@@ -117,6 +121,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
    */
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
+      {id: 'number', title: '#', sortable: false, width: '3px'},
       {id: 'path', title: Common.UIString('Path'), weight: 4, sortable: true},
       {id: 'responseType', title: ls`Response-Type`, weight: 1, align: DataGrid.DataGrid.Align.Right, sortable: true},
       {id: 'contentType', title: Common.UIString('Content-Type'), weight: 1, sortable: true}, {
@@ -209,16 +214,31 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._updateData(true);
   }
 
+  _updateSummaryBar() {
+    if (!this._summaryBarElement)
+      this._summaryBarElement = this.element.createChild('div', 'cache-storage-summary-bar');
+    this._summaryBarElement.removeChildren();
+
+    const span = this._summaryBarElement.createChild('span');
+    if (this._entryPathFilter)
+      span.textContent = ls`Matching entries: ${this._returnCount}`;
+    else
+      span.textContent = ls`Total entries: ${this._returnCount}`;
+  }
+
   /**
    * @param {number} skipCount
    * @param {!Array<!Protocol.CacheStorage.DataEntry>} entries
-   * @param {boolean} hasMore
+   * @param {number} returnCount
    * @this {Resources.ServiceWorkerCacheView}
    */
-  _updateDataCallback(skipCount, entries, hasMore) {
+  _updateDataCallback(skipCount, entries, returnCount) {
     const selected = this._dataGrid.selectedNode && this._dataGrid.selectedNode.data.url();
     this._refreshButton.setEnabled(true);
     this._entriesForTest = entries;
+    this._returnCount = returnCount;
+    this._updateSummaryBar();
+    const hasMore = (this._skipCount + this._pageSize) < returnCount;
 
     /** @type {!Map<string, !DataGrid.DataGridNode>} */
     const oldEntries = new Map();
@@ -227,11 +247,15 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       oldEntries.set(node.data.url, node);
     rootNode.removeChildren();
     let selectedNode = null;
-    for (const entry of entries) {
+    for (let i = 0; i < entries.length; ++i) {
+      const entry = entries[i];
       let node = oldEntries.get(entry.requestURL);
       if (!node || node.data.responseTime !== entry.responseTime) {
-        node = new Resources.ServiceWorkerCacheView.DataGridNode(this._createRequest(entry), entry.responseType);
+        node = new Resources.ServiceWorkerCacheView.DataGridNode(
+            i + this._skipCount, this._createRequest(entry), entry.responseType);
         node.selectable = true;
+      } else {
+        node.data.number = i + this._skipCount;
       }
       rootNode.appendChild(node);
       if (entry.requestURL === selected)
@@ -264,8 +288,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     this._lastSkipCount = skipCount;
 
     return new Promise(resolve => {
-      this._model.loadCacheData(this._cache, skipCount, pageSize, this._entryPathFilter, (entries, hasMore) => {
-        this._updateDataCallback(skipCount, entries, hasMore);
+      this._model.loadCacheData(this._cache, skipCount, pageSize, this._entryPathFilter, (entries, returnCount) => {
+        this._updateDataCallback(skipCount, entries, returnCount);
         resolve();
       });
     });
@@ -356,11 +380,13 @@ Resources.ServiceWorkerCacheView._RESPONSE_CACHE_SIZE = 10;
 
 Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridNode {
   /**
+   * @param {number} number
    * @param {!SDK.NetworkRequest} request
    * @param {!Protocol.CacheStorage.CachedResponseType} responseType
    */
-  constructor(request, responseType) {
+  constructor(number, request, responseType) {
     super(request);
+    this._number = number;
     this._path = Common.ParsedURL.extractPath(request.url());
     if (!this._path)
       this._path = request.url();
@@ -376,7 +402,9 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
   createCell(columnId) {
     const cell = this.createTD(columnId);
     let value;
-    if (columnId === 'path') {
+    if (columnId === 'number') {
+      value = String(this._number);
+    } else if (columnId === 'path') {
       value = this._path;
     } else if (columnId === 'responseType') {
       if (this._responseType === 'opaqueResponse')

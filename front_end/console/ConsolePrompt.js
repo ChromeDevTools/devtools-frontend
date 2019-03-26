@@ -63,6 +63,9 @@ Console.ConsolePrompt = class extends UI.Widget {
       this._editor.widget().element.tabIndex = -1;
 
       this._editorSetForTest();
+
+      // Record the console tool load time after the console prompt constructor is complete.
+      Host.userMetrics.panelLoaded('console', 'DevTools.Launch.Console');
     }
   }
 

@@ -241,6 +241,12 @@ InspectorFrontendHostAPI.prototype = {
   recordEnumeratedHistogram(actionName, actionCode, bucketSize) {},
 
   /**
+   * @param {string} histogramName
+   * @param {number} duration
+   */
+  recordPerformanceHistogram(histogramName, duration) {},
+
+  /**
    * @param {string} message
    */
   sendMessageToBackend(message) {},

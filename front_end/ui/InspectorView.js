@@ -84,6 +84,9 @@ UI.InspectorView = class extends UI.VBox {
     this._tabbedPane.addEventListener(UI.TabbedPane.Events.TabSelected, this._tabSelected, this);
     this._tabbedPane.setAccessibleName(Common.UIString('Panels'));
 
+    // Store the initial selected panel for use in launch histograms
+    Host.userMetrics.setLaunchPanel(this._tabbedPane.selectedTabId);
+
     if (Host.isUnderTest())
       this._tabbedPane.setAutoSelectFirstItemOnShow(false);
     this._drawerSplitWidget.setMainWidget(this._tabbedPane);

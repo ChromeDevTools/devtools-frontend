@@ -222,6 +222,14 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
+   * @param {string} histogramName
+   * @param {number} duration
+   */
+  recordPerformanceHistogram(histogramName, duration) {
+  }
+
+  /**
+   * @override
    */
   requestFileSystems() {
     this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);

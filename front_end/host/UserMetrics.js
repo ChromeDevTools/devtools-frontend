@@ -39,6 +39,8 @@ Host.UserMetrics = class {
     const code = Host.UserMetrics._PanelCodes[panelName] || 0;
     const size = Object.keys(Host.UserMetrics._PanelCodes).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.PanelShown', code, size);
+    // Store that the user has changed the panel so we know launch histograms should not be fired.
+    this._panelChangedSinceLaunch = true;
   }
 
   /**
@@ -54,6 +56,42 @@ Host.UserMetrics = class {
   actionTaken(action) {
     const size = Object.keys(Host.UserMetrics.Action).length + 1;
     InspectorFrontendHost.recordEnumeratedHistogram('DevTools.ActionTaken', action, size);
+  }
+
+  /**
+   * @param {string} panelName
+   * @param {string} histogramName
+   * @suppressGlobalPropertiesCheck
+   */
+  panelLoaded(panelName, histogramName) {
+    if (this._firedLaunchHistogram || panelName !== this._launchPanelName)
+      return;
+
+    this._firedLaunchHistogram = true;
+    // Use rAF and setTimeout to ensure the marker is fired after layout and rendering.
+    // This will give the most accurate representation of the tool being ready for a user.
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        // Mark the load time so that we can pinpoint it more easily in a trace.
+        performance.mark(histogramName);
+        // If the user has switched panel before we finished loading, ignore the histogram,
+        // since the launch timings will have been affected and are no longer valid.
+        if (this._panelChangedSinceLaunch)
+          return;
+        // This fires the event for the appropriate launch histogram.
+        // The duration is measured as the time elapsed since the time origin of the document.
+        InspectorFrontendHost.recordPerformanceHistogram(histogramName, performance.now());
+      }, 0);
+    });
+  }
+
+  /**
+   * @param {?string} panelName
+   */
+  setLaunchPanel(panelName) {
+    // Store the panel name that we should use for the launch histogram.
+    // Other calls to panelLoaded will be ignored if the name does not match the one set here.
+    this._launchPanelName = panelName;
   }
 };
 

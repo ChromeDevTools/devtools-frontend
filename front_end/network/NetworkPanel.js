@@ -389,6 +389,9 @@ Network.NetworkPanel = class extends UI.Panel {
    */
   wasShown() {
     UI.context.setFlavor(Network.NetworkPanel, this);
+
+    // Record the network tool load time after the panel has loaded.
+    Host.userMetrics.panelLoaded('network', 'DevTools.Launch.Network');
   }
 
   /**

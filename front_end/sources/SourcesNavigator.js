@@ -33,6 +33,9 @@ Sources.NetworkNavigatorView = class extends Sources.NavigatorView {
   constructor() {
     super();
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
+
+    // Record the sources tool load time after the file navigator has loaded.
+    Host.userMetrics.panelLoaded('sources', 'DevTools.Launch.Sources');
   }
 
   /**

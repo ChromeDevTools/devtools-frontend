@@ -2081,3 +2081,27 @@ UI.Renderer.render = async function(object, options) {
 
 /** @typedef {!{title: (string|!Element|undefined), editable: (boolean|undefined) }} */
 UI.Renderer.Options;
+
+/**
+ * @param {number} timestamp
+ * @param {boolean} full
+ * @return {string}
+ */
+UI.formatTimestamp = function(timestamp, full) {
+  const date = new Date(timestamp);
+  const yymmdd = date.getFullYear() + '-' + leadZero(date.getMonth() + 1, 2) + '-' + leadZero(date.getDate(), 2);
+  const hhmmssfff = leadZero(date.getHours(), 2) + ':' + leadZero(date.getMinutes(), 2) + ':' +
+      leadZero(date.getSeconds(), 2) + '.' + leadZero(date.getMilliseconds(), 3);
+  return full ? (yymmdd + ' ' + hhmmssfff) : hhmmssfff;
+
+  /**
+   * @param {number} value
+   * @param {number} length
+   * @return {string}
+   */
+  function leadZero(value, length) {
+    const valueString = value.toString();
+    const padding = length - valueString.length;
+    return padding <= 0 ? valueString : '0'.repeat(padding) + valueString;
+  }
+};

@@ -22,8 +22,19 @@ Resources.BackgroundServiceView = class extends UI.VBox {
         Resources.BackgroundServiceModel.Events.BackgroundServiceEventReceived, this._onEventReceived, this);
     this._model.enable(this._serviceName);
 
+    /** @const {?SDK.ServiceWorkerManager} */
+    this._serviceWorkerManager = this._model.target().model(SDK.ServiceWorkerManager);
+
+    /** @const {?SDK.SecurityOriginManager} */
+    this._securityOriginManager = this._model.target().model(SDK.SecurityOriginManager);
+    this._securityOriginManager.addEventListener(
+        SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this._onOriginChanged());
+
     /** @type {?UI.ToolbarToggle} */
     this._recordButton = null;
+
+    /** @type {?UI.ToolbarCheckbox} */
+    this._originCheckbox = null;
 
     /** @const {!UI.Toolbar} */
     this._toolbar = new UI.Toolbar('background-service-toolbar', this.contentElement);
@@ -57,6 +68,12 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const deleteButton = new UI.ToolbarButton(Common.UIString('Delete'), 'largeicon-trash-bin');
     deleteButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._deleteEvents());
     this._toolbar.appendToolbarItem(deleteButton);
+
+    this._toolbar.appendSeparator();
+
+    this._originCheckbox =
+        new UI.ToolbarCheckbox(Common.UIString('Show events from other domains'), undefined, () => this._refreshView());
+    this._toolbar.appendToolbarItem(this._originCheckbox);
   }
 
   /**
@@ -111,12 +128,19 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     this._addEvent(serviceEvent);
   }
 
+  _onOriginChanged() {
+    // No need to refresh the view if we are already showing all events.
+    if (this._originCheckbox.checked())
+      return;
+    this._refreshView();
+  }
+
   /**
    * @param {!Protocol.BackgroundService.BackgroundServiceEvent} serviceEvent
    */
   _addEvent(serviceEvent) {
-    const numEvents = this._dataGrid.rootNode().children.length;
-    const dataNode = new Resources.BackgroundServiceView.EventDataNode(numEvents, serviceEvent);
+    const data = this._createEventData(serviceEvent);
+    const dataNode = new Resources.BackgroundServiceView.EventDataNode(data, serviceEvent.eventMetadata);
     this._dataGrid.rootNode().appendChild(dataNode);
   }
 
@@ -128,7 +152,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       {id: 'id', title: Common.UIString('#'), weight: 1},
       {id: 'timestamp', title: Common.UIString('Timestamp'), weight: 8},
       {id: 'origin', title: Common.UIString('Origin'), weight: 10},
-      {id: 'swid', title: Common.UIString('SW ID'), weight: 2},
+      {id: 'swSource', title: Common.UIString('SW Source'), weight: 4},
       {id: 'eventName', title: Common.UIString('Event'), weight: 10},
       {id: 'instanceId', title: Common.UIString('Instance ID'), weight: 10},
     ]);
@@ -138,44 +162,76 @@ Resources.BackgroundServiceView = class extends UI.VBox {
   }
 
   /**
+   * Creates the data object to pass to the DataGrid Node.
+   * @param {!Protocol.BackgroundService.BackgroundServiceEvent} serviceEvent
+   * @return {!Resources.BackgroundServiceView.EventData}
+   */
+  _createEventData(serviceEvent) {
+    let swSource = '';
+
+    // Try to get the script name of the Service Worker registration to be more user-friendly.
+    const registrations = this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId);
+    if (registrations && registrations.versions.size) {
+      // Any version will do since we care about the script URL.
+      const version = registrations.versions.values().next().value;
+      // Get the relative path.
+      swSource = version.scriptURL.substr(version.securityOrigin.length);
+    }
+
+    return {
+      id: this._dataGrid.rootNode().children.length,
+      timestamp: UI.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
+      origin: serviceEvent.origin,
+      swSource,
+      eventName: serviceEvent.eventName,
+      instanceId: serviceEvent.instanceId,
+    };
+  }
+
+  /**
    * Filtration function to know whether event should be shown or not.
    * @param {!Protocol.BackgroundService.BackgroundServiceEvent} event
    * @return {boolean}
    */
   _acceptEvent(event) {
-    return event.service === this._serviceName;
+    if (event.service !== this._serviceName)
+      return false;
+
+    if (this._originCheckbox.checked())
+      return true;
+
+    // Trim the trailing '/'.
+    const origin = event.origin.substr(0, event.origin.length - 1);
+
+    return this._securityOriginManager.securityOrigins().includes(origin);
   }
 };
 
+/**
+ * @typedef {{
+ *    id: number,
+ *    timestamp: string,
+ *    origin: string,
+ *    swSource: string,
+ *    eventName: string,
+ *    instanceId: string,
+ * }}
+ */
+Resources.BackgroundServiceView.EventData;
+
 Resources.BackgroundServiceView.EventDataNode = class extends DataGrid.DataGridNode {
   /**
-   * @param {number} eventId
-   * @param {!Protocol.BackgroundService.BackgroundServiceEvent} serviceEvent
+   * @param {!Object<string, string>} data
+   * @param {!Array<!Protocol.BackgroundService.EventMetadata>} eventMetadata
    */
-  constructor(eventId, serviceEvent) {
-    super(Resources.BackgroundServiceView.EventDataNode._createGridData(eventId, serviceEvent));
+  constructor(data, eventMetadata) {
+    super(data);
 
     /** @const {!Array<!Protocol.BackgroundService.EventMetadata>} */
-    this._eventMetadata = serviceEvent.eventMetadata;
+    this._eventMetadata = eventMetadata;
 
     /** @type {?UI.PopoverHelper} */
     this._popoverHelper = null;
-  }
-
-  /**
-   * @param {number} eventId
-   * @param {!Protocol.BackgroundService.BackgroundServiceEvent} serviceEvent
-   * @return {!Object<string, string>}
-   */
-  static _createGridData(eventId, serviceEvent) {
-    return {
-      id: eventId,
-      timestamp: new Date(serviceEvent.timestamp * 1000).toLocaleString(),
-      origin: serviceEvent.origin,
-      swid: serviceEvent.serviceWorkerRegistrationId,
-      eventName: serviceEvent.eventName,
-      instanceId: serviceEvent.instanceId,
-    };
   }
 
   /**

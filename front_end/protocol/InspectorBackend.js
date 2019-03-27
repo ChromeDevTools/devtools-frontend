@@ -268,8 +268,11 @@ Protocol._GenericError = -32000;
 Protocol._ConnectionClosedErrorCode = -32001;
 
 Protocol.SessionRouter = class {
-  constructor() {
-    this._connection = Protocol.Connection._factory();
+  /**
+   * @param {!Protocol.Connection} connection
+   */
+  constructor(connection) {
+    this._connection = connection;
     this._lastMessageId = 1;
     this._pendingResponsesCount = 0;
     this._domainToLogger = new Map();
@@ -458,12 +461,21 @@ Protocol.TargetBase = class {
    * @param {boolean} needsNodeJSPatching
    * @param {?Protocol.TargetBase} parentTarget
    * @param {string} sessionId
+   * @param {?Protocol.Connection} connection
    */
-  constructor(needsNodeJSPatching, parentTarget, sessionId) {
+  constructor(needsNodeJSPatching, parentTarget, sessionId, connection) {
     this._needsNodeJSPatching = needsNodeJSPatching;
     this._sessionId = sessionId;
 
-    this._router = parentTarget ? parentTarget._router : new Protocol.SessionRouter();
+    if ((!parentTarget && connection) || (!parentTarget && sessionId) || (connection && sessionId))
+      throw new Error('Either connection or sessionId (but not both) must be supplied for a child target');
+    if (sessionId)
+      this._router = parentTarget._router;
+    else if (connection)
+      this._router = new Protocol.SessionRouter(connection);
+    else
+      this._router = new Protocol.SessionRouter(Protocol.Connection._factory());
+
     this._router.registerSession(this, this._sessionId);
 
     this._agents = {};

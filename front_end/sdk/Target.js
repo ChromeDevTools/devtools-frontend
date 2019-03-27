@@ -16,10 +16,11 @@ SDK.Target = class extends Protocol.TargetBase {
    * @param {?SDK.Target} parentTarget
    * @param {string} sessionId
    * @param {boolean} suspended
+   * @param {?Protocol.Connection} connection
    */
-  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended) {
+  constructor(targetManager, id, name, type, parentTarget, sessionId, suspended, connection) {
     const needsNodeJSPatching = type === SDK.Target.Type.Node;
-    super(needsNodeJSPatching, parentTarget, sessionId);
+    super(needsNodeJSPatching, parentTarget, sessionId, connection);
     this._targetManager = targetManager;
     this._name = name;
     this._inspectedURL = '';

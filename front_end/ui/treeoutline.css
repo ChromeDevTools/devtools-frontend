@@ -35,6 +35,10 @@
     margin-left: -10000px;
 }
 
+.tree-outline:not(.hide-selection-when-blurred) li.selected {
+    color: var(--selection-inactive-fg-color);
+}
+
 .tree-outline:not(.hide-selection-when-blurred) li.selected .selection {
     display: block;
     background-color: var(--selection-inactive-bg-color);

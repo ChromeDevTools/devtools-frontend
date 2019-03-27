@@ -40,6 +40,7 @@
     --toolbar-bg-color: #f3f3f3;
     --toolbar-hover-bg-color: #eaeaea;
     --selection-fg-color: white;
+    --selection-inactive-fg-color: #5a5a5a;
     --selection-inactive-bg-color: #dadada;
     --tab-selected-fg-color: #333;
     --tab-selected-bg-color: var(--toolbar-bg-color);
@@ -60,6 +61,7 @@
     --toolbar-bg-color: #333333;
     --toolbar-hover-bg-color: #202020;
     --selection-fg-color: #cdcdcd;
+    --selection-inactive-fg-color: #cdcdcd;
     --selection-inactive-bg-color: hsl(0, 0%, 28%);
     --tab-selected-fg-color: #eaeaea;
     --tab-selected-bg-color: black;

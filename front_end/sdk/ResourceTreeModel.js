@@ -457,7 +457,10 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
     return SDK.ExecutionContext.comparator(a, b);
   }
 
-  _updateSecurityOrigins() {
+  /**
+   * @return {!SDK.ResourceTreeModel.SecurityOriginData}
+   */
+  _getSecurityOriginData() {
     /** @type {!Set<string>} */
     const securityOrigins = new Set();
 
@@ -477,12 +480,40 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
         }
       }
     }
-    this._securityOriginManager.setMainSecurityOrigin(mainSecurityOrigin || '', unreachableMainSecurityOrigin || '');
-    this._securityOriginManager.updateSecurityOrigins(securityOrigins);
+    return {
+      securityOrigins: securityOrigins,
+      mainSecurityOrigin: mainSecurityOrigin,
+      unreachableMainSecurityOrigin: unreachableMainSecurityOrigin
+    };
+  }
+
+  _updateSecurityOrigins() {
+    const data = this._getSecurityOriginData();
+    this._securityOriginManager.setMainSecurityOrigin(
+        data.mainSecurityOrigin || '', data.unreachableMainSecurityOrigin || '');
+    this._securityOriginManager.updateSecurityOrigins(data.securityOrigins);
+  }
+
+  /**
+   * @return {?string}
+   */
+  getMainSecurityOrigin() {
+    const data = this._getSecurityOriginData();
+    return data.mainSecurityOrigin || data.unreachableMainSecurityOrigin;
   }
 };
 
 SDK.SDKModel.register(SDK.ResourceTreeModel, SDK.Target.Capability.DOM, true);
+
+
+/**
+ * @typedef {{
+ *      securityOrigins: !Set<string>,
+ *      mainSecurityOrigin: ?string,
+ *      unreachableMainSecurityOrigin: ?string
+ * }}
+ */
+SDK.ResourceTreeModel.SecurityOriginData;
 
 /** @enum {symbol} */
 SDK.ResourceTreeModel.Events = {

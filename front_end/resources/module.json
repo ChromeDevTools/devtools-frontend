@@ -16,6 +16,13 @@
             ],
             "destination": "Application panel",
             "className": "Resources.ResourcesPanel.ResourceRevealer"
+        },
+        {
+            "type": "action",
+            "category": "Resources",
+            "actionId": "resources.clear",
+            "title": "Clear site data",
+            "className": "Resources.ClearStorageView.ActionDelegate"
         }
     ],
     "dependencies": [

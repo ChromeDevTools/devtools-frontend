@@ -407,9 +407,11 @@ Timeline.TimelineUIUtils = class {
     if (event.hasCategory(TimelineModel.TimelineModel.Category.Console))
       return title;
     if (event.name === recordType.TimeStamp)
-      return Common.UIString('%s: %s', title, eventData['message']);
+      return ls`${title}: ${eventData['message']}`;
     if (event.name === recordType.Animation && eventData && eventData['name'])
-      return Common.UIString('%s: %s', title, eventData['name']);
+      return ls`${title}: ${eventData['name']}`;
+    if (event.name === recordType.EventDispatch && eventData && eventData['type'])
+      return ls`${title}: ${eventData['type']}`;
     return title;
   }
 

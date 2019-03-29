@@ -61,6 +61,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   init() {
     this._linkifier = new Components.Linkifier();
 
+    this._taskFilter = new TimelineModel.ExclusiveNameFilter([TimelineModel.TimelineModel.RecordType.Task]);
     this._textFilter = new Timeline.TimelineFilters.RegExp();
 
     this._currentThreadSetting = Common.settings.createSetting('timelineTreeCurrentThread', 0);
@@ -124,7 +125,7 @@ Timeline.TimelineTreeView = class extends UI.VBox {
    * @return {!Array<!TimelineModel.TimelineModelFilter>}
    */
   filters() {
-    return [this._textFilter, ...this._model.filters()];
+    return [this._taskFilter, this._textFilter, ...this._model.filters()];
   }
 
   /**

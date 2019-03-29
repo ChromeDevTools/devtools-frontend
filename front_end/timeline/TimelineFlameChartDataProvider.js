@@ -118,12 +118,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
         return Common.UIString('Blackboxed');
       if (this._performanceModel.timelineModel().isMarkerEvent(event))
         return Timeline.TimelineUIUtils.markerShortTitle(event);
-      const name = Timeline.TimelineUIUtils.eventStyle(event).title;
-      const detailsText =
-          Timeline.TimelineUIUtils.buildDetailsTextForTraceEvent(event, this._model.targetByEvent(event));
-      if (event.name === TimelineModel.TimelineModel.RecordType.JSFrame && detailsText)
-        return detailsText;
-      return detailsText ? Common.UIString('%s (%s)', name, detailsText) : name;
+      return Timeline.TimelineUIUtils.eventTitle(event);
     }
     if (entryType === entryTypes.ExtensionEvent) {
       const event = /** @type {!SDK.TracingModel.Event} */ (this._entryData[entryIndex]);

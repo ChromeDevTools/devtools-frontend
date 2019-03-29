@@ -587,6 +587,9 @@ TestRunner.addHTMLImport = function(path) {
 };
 
 /**
+ * NOTE you should manually ensure the path is correct. There
+ * is no error event triggered if it is incorrect, and this is
+ * in line with the standard (crbug 365457).
  * @param {string} path
  * @param {!Object|undefined} options
  * @return {!Promise<*>}

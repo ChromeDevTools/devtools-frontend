@@ -1,0 +1,13 @@
+{
+    "dependencies": [
+      "test_runner"
+    ],
+    "scripts": [
+      "../../../../../axe-core/axe.js",
+      "AxeCoreTestRunner.js"
+    ],
+    "skip_compilation": [
+      "../../../../../axe-core/axe.js",
+      "AxeCoreTestRunner.js"
+    ]
+  }

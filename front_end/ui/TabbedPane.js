@@ -890,7 +890,7 @@ UI.TabbedPane = class extends UI.VBox {
           nextTabElement = this._currentTab.tabElement.parentElement.firstElementChild;
         break;
       case 'Enter':
-      case 'Space':
+      case ' ':
         this._currentTab.view.focus();
         return;
       default:
@@ -1090,6 +1090,7 @@ UI.TabbedPaneTab = class {
     tabElement.id = 'tab-' + this._id;
     UI.ARIAUtils.markAsTab(tabElement);
     UI.ARIAUtils.setSelected(tabElement, false);
+    UI.ARIAUtils.setAccessibleName(tabElement, this.title);
 
     const titleElement = tabElement.createChild('span', 'tabbed-pane-header-tab-title');
     titleElement.textContent = this.title;
@@ -1099,7 +1100,9 @@ UI.TabbedPaneTab = class {
       this._titleElement = titleElement;
 
     if (this._closeable) {
-      tabElement.createChild('div', 'tabbed-pane-close-button', 'dt-close-button').gray = true;
+      const closeButton = tabElement.createChild('div', 'tabbed-pane-close-button', 'dt-close-button');
+      closeButton.gray = true;
+      closeButton.setAccessibleName(ls`Close ${this.title}`);
       tabElement.classList.add('closeable');
     }
 

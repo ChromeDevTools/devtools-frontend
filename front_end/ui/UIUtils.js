@@ -1476,6 +1476,7 @@ UI.registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement 
     super();
     const root = UI.createShadowRootWithCoreStyles(this, 'ui/closeButton.css');
     this._buttonElement = root.createChild('div', 'close-button');
+    UI.ARIAUtils.markAsButton(this._buttonElement);
     const regularIcon = UI.Icon.create('smallicon-cross', 'default-icon');
     this._hoverIcon = UI.Icon.create('mediumicon-red-cross-hover', 'hover-icon');
     this._activeIcon = UI.Icon.create('mediumicon-red-cross-active', 'active-icon');
@@ -1496,6 +1497,14 @@ UI.registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement 
       this._hoverIcon.setIconType('mediumicon-red-cross-hover');
       this._activeIcon.setIconType('mediumicon-red-cross-active');
     }
+  }
+
+  /**
+   * @param {string} name
+   * @this {Element}
+   */
+  setAccessibleName(name) {
+    UI.ARIAUtils.setAccessibleName(this._buttonElement, name);
   }
 });
 })();

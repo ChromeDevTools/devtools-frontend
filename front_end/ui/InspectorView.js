@@ -57,7 +57,8 @@ UI.InspectorView = class extends UI.VBox {
     // Create drawer tabbed pane.
     this._drawerTabbedLocation =
         UI.viewManager.createTabbedLocation(this._showDrawer.bind(this, false), 'drawer-view', true, true);
-    this._drawerTabbedLocation.enableMoreTabsButton();
+    const moreTabsButton = this._drawerTabbedLocation.enableMoreTabsButton();
+    moreTabsButton.setTitle(ls`More Tools`);
     this._drawerTabbedPane = this._drawerTabbedLocation.tabbedPane();
     this._drawerTabbedPane.setMinimumSize(0, 27);
     const closeDrawerButton = new UI.ToolbarButton(Common.UIString('Close drawer'), 'largeicon-delete');

@@ -353,7 +353,7 @@ CookieTable.CookiesTable = class extends UI.VBox {
         data.expires = Number.secondsToString(parseInt(cookie.maxAge(), 10));
       } else if (cookie.expires()) {
         if (cookie.expires() < 0)
-          data.expires = 'N/A';
+          data.expires = CookieTable.CookiesTable._expiresSessionValue;
         else
           data.expires = new Date(cookie.expires()).toISOString();
       } else {

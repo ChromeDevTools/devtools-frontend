@@ -523,6 +523,7 @@ all_devtools_files = [
   "front_end/profiler/HeapSnapshotProxy.js",
   "front_end/profiler/HeapSnapshotView.js",
   "front_end/profiler/HeapTimelineOverview.js",
+  "front_end/profiler/IsolateManager.js",
   "front_end/profiler/IsolateSelector.js",
   "front_end/profiler/LiveHeapProfileView.js",
   "front_end/profiler/liveHeapProfile.css",

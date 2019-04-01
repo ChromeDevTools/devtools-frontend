@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 /**
- * @implements {SDK.SDKModelObserver<!SDK.RuntimeModel>}
  * @implements {UI.ListDelegate<!Profiler.IsolateSelector.ListItem>}
  */
 Profiler.IsolateSelector = class extends UI.VBox {
@@ -17,13 +16,15 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this.contentElement.appendChild(this._list.element);
 
     this.registerRequiredCSS('profiler/profileLauncherView.css');
-    /** @type {!Map<!SDK.RuntimeModel, !Promise<string>>} */
-    this._isolateByModel = new Map();
-    /** @type {!Map<string, !Profiler.IsolateSelector.ListItem>} */
+    /** @type {!Map<!Profiler.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
     this._itemByIsolate = new Map();
     this._updateTimer = null;
 
-    SDK.targetManager.observeModels(SDK.RuntimeModel, this);
+    this._isolateManager = new Profiler.IsolateManager();
+    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateAdded, this._isolateAdded, this);
+    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateRemoved, this._isolateRemoved, this);
+    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateChanged, this._isolateChanged, this);
+
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
   }
@@ -43,64 +44,49 @@ Profiler.IsolateSelector = class extends UI.VBox {
   }
 
   /**
-   * @override
-   * @param {!SDK.RuntimeModel} model
+   * @param {!Common.Event} event
    */
-  modelAdded(model) {
-    this._modelAdded(model);
-  }
-
-  /**
-   * @param {!SDK.RuntimeModel} model
-   */
-  async _modelAdded(model) {
-    const isolatePromise = model.isolateId();
-    this._isolateByModel.set(model, isolatePromise);
-    const isolate = await isolatePromise;
-    let item = this._itemByIsolate.get(isolate);
-    if (!item) {
-      item = new Profiler.IsolateSelector.ListItem(model);
-      const index = model.target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
-      this._items.insert(index, item);
-      this._itemByIsolate.set(isolate, item);
-      if (this._items.length === 1)
-        this._list.selectItem(item);
-    } else {
-      item.addModel(model);
-    }
-    this._update();
-  }
-
-  /**
-   * @override
-   * @param {!SDK.RuntimeModel} model
-   */
-  modelRemoved(model) {
-    this._modelRemoved(model);
-  }
-
-  /**
-   * @param {!SDK.RuntimeModel} model
-   */
-  async _modelRemoved(model) {
-    const isolate = await this._isolateByModel.get(model);
-    this._isolateByModel.delete(model);
-    const item = this._itemByIsolate.get(isolate);
-    item.removeModel(model);
-    if (!item.models().length) {
-      this._items.remove(this._items.indexOf(item));
-      this._itemByIsolate.delete(isolate);
-    }
+  _isolateAdded(event) {
+    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const item = new Profiler.IsolateSelector.ListItem(isolate);
+    const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
+    this._items.insert(index, item);
+    this._itemByIsolate.set(isolate, item);
+    if (this._items.length === 1)
+      this._list.selectItem(item);
     this._update();
   }
 
   /**
    * @param {!Common.Event} event
    */
-  async _targetChanged(event) {
+  _isolateChanged(event) {
+    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const item = this._itemByIsolate.get(isolate);
+    item.updateTitle();
+    this._update();
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _isolateRemoved(event) {
+    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const item = this._itemByIsolate.get(isolate);
+    this._items.remove(this._items.indexOf(item));
+    this._itemByIsolate.delete(isolate);
+    this._update();
+  }
+
+  /**
+   * @param {!Common.Event} event
+   */
+  _targetChanged(event) {
     const target = /** @type {!SDK.Target} */ (event.data);
     const model = target.model(SDK.RuntimeModel);
-    const isolate = model && await this._isolateByModel.get(model);
+    if (!model)
+      return;
+    const isolate = this._isolateManager.isolateByModel(model);
     const item = isolate && this._itemByIsolate.get(isolate);
     if (item)
       item.updateTitle();
@@ -144,7 +130,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
       fromElement.classList.remove('selected');
     if (toElement)
       toElement.classList.add('selected');
-    const model = to && to.models()[0];
+    const model = to && to.model();
     UI.context.setFlavor(SDK.HeapProfilerModel, model && model.heapProfilerModel());
     UI.context.setFlavor(SDK.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel));
   }
@@ -163,11 +149,10 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
 Profiler.IsolateSelector.ListItem = class {
   /**
-   * @param {!SDK.RuntimeModel} model
+   * @param {!Profiler.IsolateManager.Isolate} isolateInfo
    */
-  constructor(model) {
-    /** @type {!Set<!SDK.RuntimeModel>} */
-    this._models = new Set([model]);
+  constructor(isolateInfo) {
+    this._isolateInfo = isolateInfo;
     this.element = createElementWithClass('div', 'profile-isolate-item hbox');
     this._heapDiv = this.element.createChild('div', 'profile-isolate-item-heap');
     this._nameDiv = this.element.createChild('div', 'profile-isolate-item-name');
@@ -177,32 +162,23 @@ Profiler.IsolateSelector.ListItem = class {
   }
 
   /**
-   * @param {!SDK.RuntimeModel} model
-   */
-  addModel(model) {
-    this._models.add(model);
-    this.updateTitle();
-  }
-
-  /**
-   * @param {!SDK.RuntimeModel} model
-   */
-  removeModel(model) {
-    this._models.delete(model);
-    this.updateTitle();
-  }
-
-  /**
-   * @return {!Array<!SDK.RuntimeModel>}
+   * @return {!Set<!SDK.RuntimeModel>}
    */
   models() {
-    return Array.from(this._models);
+    return this._isolateInfo.models();
+  }
+
+  /**
+   * @return {!SDK.RuntimeModel}
+   */
+  model() {
+    return this.models().values().next().value;
   }
 
   async updateStats() {
     if (this._updatesDisabled)
       return;
-    const heapStats = await this._models.values().next().value.heapUsage();
+    const heapStats = await this.model().heapUsage();
     if (!heapStats) {
       this._updatesDisabled = true;
       return;
@@ -219,7 +195,7 @@ Profiler.IsolateSelector.ListItem = class {
   updateTitle() {
     /** @type {!Map<string, number>} */
     const modelCountByName = new Map();
-    for (const model of this._models.values()) {
+    for (const model of this.models()) {
       const target = model.target();
       const name = SDK.targetManager.mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL(target.inspectedURL());

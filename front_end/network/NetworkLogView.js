@@ -1202,6 +1202,7 @@ Network.NetworkLogView = class extends UI.VBox {
             Common.UIString('Copy as cURL (cmd)'), this._copyCurlCommand.bind(this, request, 'win'), disableIfBlob);
         footerSection.appendItem(
             Common.UIString('Copy as cURL (bash)'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
+        footerSection.appendItem(UI.copyLinkAddressWithCredentialsLabel(), this._copyLinkAddressWithCredentials.bind(this,request));
         footerSection.appendItem(Common.UIString('Copy all as PowerShell'), this._copyAllPowerShellCommand.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as cURL (cmd)'), this._copyAllCurlCommand.bind(this, 'win'));
@@ -1212,6 +1213,7 @@ Network.NetworkLogView = class extends UI.VBox {
             Common.UIString('Copy as fetch'), this._copyFetchCall.bind(this, request), disableIfBlob);
         footerSection.appendItem(
             Common.UIString('Copy as cURL'), this._copyCurlCommand.bind(this, request, 'unix'), disableIfBlob);
+        footerSection.appendItem(UI.copyLinkAddressWithCredentialsLabel(), this._copyLinkAddressWithCredentials.bind(this,request));
         footerSection.appendItem(Common.UIString('Copy all as fetch'), this._copyAllFetchCall.bind(this));
         footerSection.appendItem(Common.UIString('Copy all as cURL'), this._copyAllCurlCommand.bind(this, 'unix'));
       }
@@ -1302,6 +1304,28 @@ Network.NetworkLogView = class extends UI.VBox {
   async _copyAllCurlCommand(platform) {
     const commands = await this._generateAllCurlCommand(SDK.networkLog.requests(), platform);
     InspectorFrontendHost.copyText(commands);
+  }
+
+  /**
+   *
+   * @param request
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _copyLinkAddressWithCredentials(request) {
+    const commands = await this.getQueryParameters(request);
+    InspectorFrontendHost.copyText(commands);
+  }
+
+  /**
+   *
+   * @param request
+   * @returns {Promise<string>}
+   */
+  getQueryParameters(request) {
+    return request.requestFormData().then(function (data) {
+      return request._url +"?"+ data;
+    });
   }
 
   /**

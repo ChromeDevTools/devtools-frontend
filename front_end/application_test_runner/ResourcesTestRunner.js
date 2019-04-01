@@ -12,10 +12,12 @@
  * doesn't get reset between tests.
  */
 ApplicationTestRunner.resetState = async function() {
-  const securityOrigin = new Common.ParsedURL(TestRunner.url()).securityOrigin();
-  const storageTypes =
-      ['appcache', 'cache_storage', 'cookies', 'indexeddb', 'local_storage', 'service_workers', 'websql'];
-  await TestRunner.mainTarget.storageAgent().clearDataForOrigin(securityOrigin, storageTypes.join(','));
+  const targets = SDK.targetManager.targets();
+  for (const target of targets) {
+    const securityOrigin = new Common.ParsedURL(target.inspectedURL()).securityOrigin();
+    await target.storageAgent().clearDataForOrigin(
+        securityOrigin, Resources.ClearStorageView.AllStorageTypes.join(','));
+  }
 };
 
 ApplicationTestRunner.createWebSQLDatabase = function(name) {

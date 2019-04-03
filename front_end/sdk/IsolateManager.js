@@ -6,10 +6,10 @@
  * @extends {Common.Object}
  * @implements {SDK.SDKModelObserver}
  */
-Profiler.IsolateManager = class extends Common.Object {
+SDK.IsolateManager = class extends Common.Object {
   constructor() {
     super();
-    /** @type {!Map<string, !Profiler.IsolateManager.Isolate>} */
+    /** @type {!Map<string, !SDK.IsolateManager.Isolate>} */
     this._isolates = new Map();
     // _isolateIdByModel contains null while the isolateId is being retrieved.
     /** @type {!Map<!SDK.RuntimeModel, ?string>} */
@@ -41,11 +41,11 @@ Profiler.IsolateManager = class extends Common.Object {
     this._isolateIdByModel.set(model, isolateId);
     let isolate = this._isolates.get(isolateId);
     if (!isolate) {
-      isolate = new Profiler.IsolateManager.Isolate(isolateId);
+      isolate = new SDK.IsolateManager.Isolate(isolateId);
       this._isolates.set(isolateId, isolate);
     }
-    const event = !isolate._models.size ? Profiler.IsolateManager.Events.IsolateAdded :
-                                          Profiler.IsolateManager.Events.IsolateChanged;
+    const event =
+        !isolate._models.size ? SDK.IsolateManager.Events.IsolateAdded : SDK.IsolateManager.Events.IsolateChanged;
     isolate._models.add(model);
     this.dispatchEventToListeners(event, isolate);
   }
@@ -62,16 +62,16 @@ Profiler.IsolateManager = class extends Common.Object {
     const isolate = this._isolates.get(isolateId);
     isolate._models.delete(model);
     if (isolate._models.size) {
-      this.dispatchEventToListeners(Profiler.IsolateManager.Events.IsolateChanged, isolate);
+      this.dispatchEventToListeners(SDK.IsolateManager.Events.IsolateChanged, isolate);
     } else {
-      this.dispatchEventToListeners(Profiler.IsolateManager.Events.IsolateRemoved, isolate);
+      this.dispatchEventToListeners(SDK.IsolateManager.Events.IsolateRemoved, isolate);
       this._isolates.delete(isolateId);
     }
   }
 
   /**
    * @param {!SDK.RuntimeModel} model
-   * @return {?Profiler.IsolateManager.Isolate}
+   * @return {?SDK.IsolateManager.Isolate}
    */
   isolateByModel(model) {
     return this._isolates.get(this._isolateIdByModel.get(model) || '') || null;
@@ -79,13 +79,13 @@ Profiler.IsolateManager = class extends Common.Object {
 };
 
 /** @enum {symbol} */
-Profiler.IsolateManager.Events = {
+SDK.IsolateManager.Events = {
   IsolateAdded: Symbol('IsolateAdded'),
   IsolateRemoved: Symbol('IsolateRemoved'),
   IsolateChanged: Symbol('IsolateChanged')
 };
 
-Profiler.IsolateManager.Isolate = class {
+SDK.IsolateManager.Isolate = class {
   /**
    * @param {string} id
    */

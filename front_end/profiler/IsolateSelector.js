@@ -16,14 +16,14 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this.contentElement.appendChild(this._list.element);
 
     this.registerRequiredCSS('profiler/profileLauncherView.css');
-    /** @type {!Map<!Profiler.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
+    /** @type {!Map<!SDK.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
     this._itemByIsolate = new Map();
     this._updateTimer = null;
 
-    this._isolateManager = new Profiler.IsolateManager();
-    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateAdded, this._isolateAdded, this);
-    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateRemoved, this._isolateRemoved, this);
-    this._isolateManager.addEventListener(Profiler.IsolateManager.Events.IsolateChanged, this._isolateChanged, this);
+    this._isolateManager = new SDK.IsolateManager();
+    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateAdded, this._isolateAdded, this);
+    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateRemoved, this._isolateRemoved, this);
+    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateChanged, this._isolateChanged, this);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
@@ -47,7 +47,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _isolateAdded(event) {
-    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
     const item = new Profiler.IsolateSelector.ListItem(isolate);
     const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
@@ -61,7 +61,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _isolateChanged(event) {
-    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
     const item = this._itemByIsolate.get(isolate);
     item.updateTitle();
     this._update();
@@ -71,7 +71,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @param {!Common.Event} event
    */
   _isolateRemoved(event) {
-    const isolate = /** @type {!Profiler.IsolateManager.Isolate} */ (event.data);
+    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
     const item = this._itemByIsolate.get(isolate);
     this._items.remove(this._items.indexOf(item));
     this._itemByIsolate.delete(isolate);
@@ -149,7 +149,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
 
 Profiler.IsolateSelector.ListItem = class {
   /**
-   * @param {!Profiler.IsolateManager.Isolate} isolateInfo
+   * @param {!SDK.IsolateManager.Isolate} isolateInfo
    */
   constructor(isolateInfo) {
     this._isolateInfo = isolateInfo;

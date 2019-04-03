@@ -108,7 +108,6 @@
         "HeapSnapshotGridNodes.js",
         "HeapSnapshotView.js",
         "HeapTimelineOverview.js",
-        "IsolateManager.js",
         "IsolateSelector.js",
         "LiveHeapProfileView.js",
         "ProfileLauncherView.js",

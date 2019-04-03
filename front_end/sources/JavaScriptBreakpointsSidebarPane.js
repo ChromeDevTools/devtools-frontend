@@ -46,12 +46,17 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
 
     breakpointLocations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
 
+    /** @type {!Multimap<string, string>} */
+    const breakpointEntriesForLine = new Multimap();
+
     /** @type {!Multimap<string, !{breakpoint: !Bindings.BreakpointManager.Breakpoint, uiLocation: !Workspace.UILocation}>} */
     const locationForEntry = new Multimap();
     for (const breakpointLocation of breakpointLocations) {
       const uiLocation = breakpointLocation.uiLocation;
-      const entryDescriptor = uiLocation.uiSourceCode.url() + ':' + uiLocation.lineNumber;
+      const entryDescriptor = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}:${uiLocation.columnNumber}`;
       locationForEntry.set(entryDescriptor, breakpointLocation);
+      const lineDescriptor = `${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`;
+      breakpointEntriesForLine.set(lineDescriptor, entryDescriptor);
     }
 
     const details = UI.context.flavor(SDK.DebuggerPausedDetails);
@@ -81,7 +86,10 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
           !!selectedUILocation && locations.some(location => location.uiLocation.id() === selectedUILocation.id());
       const hasEnabled = locations.some(location => location.breakpoint.enabled());
       const hasDisabled = locations.some(location => !location.breakpoint.enabled());
-      promises.push(this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled));
+      const showCoumn =
+          breakpointEntriesForLine.get(`${uiLocation.uiSourceCode.url()}:${uiLocation.lineNumber}`).size > 1;
+      promises.push(
+          this._resetEntry(/** @type {!Element}*/ (entry), uiLocation, isSelected, hasEnabled, hasDisabled, showCoumn));
       entry[Sources.JavaScriptBreakpointsSidebarPane._breakpointLocationsSymbol] = locations;
       if (isSelected)
         shouldShowView = true;
@@ -105,32 +113,28 @@ Sources.JavaScriptBreakpointsSidebarPane = class extends UI.ThrottledWidget {
    * @param {boolean} isSelected
    * @param {boolean} hasEnabled
    * @param {boolean} hasDisabled
-   * @return {!Promise<undefined>}
+   * @param {boolean} showColumn
+   * @return {!Promise}
    */
-  _resetEntry(element, uiLocation, isSelected, hasEnabled, hasDisabled) {
+  async _resetEntry(element, uiLocation, isSelected, hasEnabled, hasDisabled, showColumn) {
     element[Sources.JavaScriptBreakpointsSidebarPane._locationSymbol] = uiLocation;
     element.classList.toggle('breakpoint-hit', isSelected);
 
     const checkboxLabel = element[Sources.JavaScriptBreakpointsSidebarPane._checkboxLabelSymbol];
-    checkboxLabel.textElement.textContent = uiLocation.linkText();
+    checkboxLabel.textElement.textContent =
+        uiLocation.linkText() + (showColumn ? ':' + (uiLocation.columnNumber + 1) : '');
     checkboxLabel.checkboxElement.checked = hasEnabled;
     checkboxLabel.checkboxElement.indeterminate = hasEnabled && hasDisabled;
 
     const snippetElement = element[Sources.JavaScriptBreakpointsSidebarPane._snippetElementSymbol];
-    return uiLocation.uiSourceCode.requestContent().then(fillSnippetElement.bind(null, snippetElement));
-
-    /**
-     * @param {!Element} snippetElement
-     * @param {?string} content
-     */
-    function fillSnippetElement(snippetElement, content) {
-      const lineNumber = uiLocation.lineNumber;
-      const text = new TextUtils.Text(content || '');
-      if (lineNumber < text.lineCount()) {
-        const lineText = text.lineAt(lineNumber);
-        const maxSnippetLength = 200;
-        snippetElement.textContent = lineText.trimEnd(maxSnippetLength);
-      }
+    const content = await uiLocation.uiSourceCode.requestContent();
+    const lineNumber = uiLocation.lineNumber;
+    const text = new TextUtils.Text(content || '');
+    if (lineNumber < text.lineCount()) {
+      const lineText = text.lineAt(lineNumber);
+      const maxSnippetLength = 200;
+      snippetElement.textContent =
+          lineText.substring(showColumn ? uiLocation.columnNumber : 0).trimEnd(maxSnippetLength);
     }
   }
 

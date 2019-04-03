@@ -223,8 +223,7 @@ Audits2.StatusView = class {
     this._statusText.createChild('p').createTextChild(Common.UIString('Ah, sorry! We ran into an error.'));
     if (Audits2.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString(
-          'Try to navigate to the URL in a fresh Chrome profile without any other tabs or ' +
-          'extensions open and try again.');
+          'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
     } else {
       this._renderBugReportBody(err, this._inspectedURL);

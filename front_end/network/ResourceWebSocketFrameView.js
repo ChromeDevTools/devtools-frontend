@@ -115,9 +115,10 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
    * @return {string}
    */
   static opCodeDescription(opCode, mask) {
-    const rawDescription = Network.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || '';
-    const localizedDescription = Common.UIString(rawDescription);
-    return Common.UIString('%s (Opcode %d%s)', localizedDescription, opCode, (mask ? ', mask' : ''));
+    const localizedDescription = Network.ResourceWebSocketFrameView.opCodeDescriptions[opCode] || '';
+    if (mask)
+      return ls`${localizedDescription} (Opcode ${opCode}, mask)`;
+    return ls`${localizedDescription} (Opcode ${opCode})`;
   }
 
   /**
@@ -230,12 +231,12 @@ Network.ResourceWebSocketFrameView.OpCodes = {
 Network.ResourceWebSocketFrameView.opCodeDescriptions = (function() {
   const opCodes = Network.ResourceWebSocketFrameView.OpCodes;
   const map = [];
-  map[opCodes.ContinuationFrame] = 'Continuation Frame';
-  map[opCodes.TextFrame] = 'Text Message';
-  map[opCodes.BinaryFrame] = 'Binary Message';
-  map[opCodes.ContinuationFrame] = 'Connection Close Message';
-  map[opCodes.PingFrame] = 'Ping Message';
-  map[opCodes.PongFrame] = 'Pong Message';
+  map[opCodes.ContinuationFrame] = ls`Continuation Frame`;
+  map[opCodes.TextFrame] = ls`Text Message`;
+  map[opCodes.BinaryFrame] = ls`Binary Message`;
+  map[opCodes.ContinuationFrame] = ls`Connection Close Message`;
+  map[opCodes.PingFrame] = ls`Ping Message`;
+  map[opCodes.PongFrame] = ls`Pong Message`;
   return map;
 })();
 
@@ -272,7 +273,7 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
 
     } else if (frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.BinaryFrame) {
       length = Number.bytesToString(base64ToSize(frame.text));
-      description = 'Binary Message';
+      description = Network.ResourceWebSocketFrameView.opCodeDescriptions[frame.opCode];
 
     } else {
       dataText = description;

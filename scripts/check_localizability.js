@@ -153,19 +153,48 @@ function getLocation(node) {
   return '';
 }
 
+function buildConcatenatedNodesList(node, nodes) {
+  if (!node)
+    return;
+  if (node.left === undefined && node.right === undefined) {
+    nodes.push(node);
+    return;
+  }
+  buildConcatenatedNodesList(node.left, nodes);
+  buildConcatenatedNodesList(node.right, nodes);
+}
+
 /**
  * Recursively check if there is concatenation to localization call.
+ * Concatenation is allowed between localized strings and non-alphabetic strings.
+ * It is not allowed between a localized string and a word.
+ * Example (allowed): ls`Status Code` + ": "
+ * Example (disallowed): ls`Status` + " Code" + ": "
  */
-function checkConcatenation(node, filePath, errors) {
-  if (node !== undefined && node.type === esprimaTypes.BI_EXPR && node.operator === '+') {
-    const code = escodegen.generate(node);
-    if (isLocalizationCall(node.left) || isLocalizationCall(node.right)) {
-      addError(
-          `${filePath}${getLocation(node)}: string concatenation should be changed to variable substitution with ls: ${
-              code}`,
-          errors);
-    } else {
-      [node.left, node.right].forEach(node => checkConcatenation(node, filePath, errors));
+function checkConcatenation(parentNode, node, filePath, errors) {
+  function isWord(node) {
+    return (node.type === 'Literal' && !!node.value.match(/[a-z]/i));
+  }
+  function isConcatenation(node) {
+    return (node !== undefined && node.type === esprimaTypes.BI_EXPR && node.operator === '+');
+  }
+
+  if (isConcatenation(parentNode))
+    return;
+
+  if (isConcatenation(node)) {
+    let concatenatedNodes = [];
+    buildConcatenatedNodesList(node, concatenatedNodes);
+    const hasLocalizationCall = !!concatenatedNodes.find(currentNode => isLocalizationCall(currentNode));
+    if (hasLocalizationCall) {
+      const hasAlphabeticLiteral = !!concatenatedNodes.find(currentNode => isWord(currentNode));
+      if (hasAlphabeticLiteral) {
+        const code = escodegen.generate(node);
+        addError(
+            `${filePath}${
+                getLocation(node)}: string concatenation should be changed to variable substitution with ls: ${code}`,
+            errors);
+      }
     }
   }
 }
@@ -186,6 +215,10 @@ function checkFunctionArgument(functionName, argumentIndex, node, filePath, erro
   if (node !== undefined && node.type === esprimaTypes.CALL_EXPR && verifyFunctionCallee(node.callee, functionName) &&
       node.arguments !== undefined && node.arguments.length > argumentIndex) {
     const arg = node.arguments[argumentIndex];
+    // No need to localize empty strings.
+    if (arg.type == 'Literal' && arg.value === '')
+      return;
+
     if (!isLocalizationCall(arg)) {
       let order = '';
       switch (argumentIndex) {
@@ -213,13 +246,13 @@ function checkFunctionArgument(functionName, argumentIndex, node, filePath, erro
  * Check esprima node object that represents the AST of code
  * to see if there is any localization error.
  */
-function analyzeNode(node, filePath, errors) {
+function analyzeNode(parentNode, node, filePath, errors) {
   if (node === undefined || node === null)
     return;
 
   if (node instanceof Array) {
     for (const child of node)
-      analyzeNode(child, filePath, errors);
+      analyzeNode(node, child, filePath, errors);
 
     return;
   }
@@ -260,7 +293,7 @@ function analyzeNode(node, filePath, errors) {
       break;
     default:
       // String concatenation to localization call(s) should be changed
-      checkConcatenation(node, filePath, errors);
+      checkConcatenation(parentNode, node, filePath, errors);
       // 3rd argument to createInput() should be localized
       checkFunctionArgument('createInput', 2, node, filePath, errors);
       break;
@@ -268,7 +301,7 @@ function analyzeNode(node, filePath, errors) {
 
   for (const key of objKeys) {
     // recursively parse all the child nodes
-    analyzeNode(node[key], filePath, errors);
+    analyzeNode(node, node[key], filePath, errors);
   }
 }
 
@@ -282,7 +315,7 @@ async function auditFileForLocalizability(filePath, errors) {
 
   const relativeFilePath = getRelativeFilePathFromSrc(filePath);
   for (const node of ast.body)
-    analyzeNode(node, relativeFilePath, errors);
+    analyzeNode(undefined, node, relativeFilePath, errors);
 }
 
 function shouldParseDirectory(directoryName) {

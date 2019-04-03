@@ -655,13 +655,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     const reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('timeline.record-reload'));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
-        'Click the record button %s or hit %s to start a new recording.\n' +
-            'Click the reload button %s or hit %s to record the page load.',
+        'Click the record button %s or hit %s to start a new recording.\nClick the reload button %s or hit %s to record the page load.',
         [recordButton, recordKey, reloadButton, reloadKey]));
 
     centered.createChild('p').appendChild(UI.formatLocalized(
-        'After recording, select an area of interest in the overview by dragging.\n' +
-        'Then, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
+        'After recording, select an area of interest in the overview by dragging.\nThen, zoom and pan the timeline with the mousewheel or %s keys.\n%s',
         [navigateNode, learnMoreNode]));
 
     this._landingPage.show(this._statusPaneContainer);

@@ -29,11 +29,9 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
     const position = this._parsePosition(query);
     if (!position)
       return Common.UIString('Type a number to go to that line.');
-    let text = Common.UIString('Go to line ') + position.line;
     if (position.column && position.column > 1)
-      text += Common.UIString(' and column ') + position.column;
-    text += '.';
-    return text;
+      return ls`Go to line ${position.line} and column ${position.column}.`;
+    return ls`Go to line ${position.line}.`;
   }
 
   /**

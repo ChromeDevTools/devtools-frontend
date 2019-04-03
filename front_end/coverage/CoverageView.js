@@ -76,8 +76,7 @@ Coverage.CoverageView = class extends UI.VBox {
     if (this._startWithReloadButton) {
       const reloadButton = UI.createInlineButton(UI.Toolbar.createActionButtonForId('coverage.start-with-reload'));
       message = UI.formatLocalized(
-          'Click the record button %s to start capturing coverage.\n' +
-              'Click the reload button %s to reload and start capturing coverage.',
+          'Click the record button %s to start capturing coverage.\nClick the reload button %s to reload and start capturing coverage.',
           [recordButton, reloadButton]);
     } else {
       message = UI.formatLocalized('Click the record button %s to start capturing coverage.', [recordButton]);

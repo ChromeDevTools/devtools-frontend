@@ -202,7 +202,7 @@ def CheckChangeOnUpload(input_api, output_api):
     results = []
     results.extend(_CheckBuildGN(input_api, output_api))
     results.extend(_CheckFormat(input_api, output_api))
-    # results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
     results.extend(_CheckDevtoolsStyle(input_api, output_api))
     results.extend(_CompileDevtoolsFrontend(input_api, output_api))
     results.extend(_CheckConvertSVGToPNGHashes(input_api, output_api))

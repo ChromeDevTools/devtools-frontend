@@ -460,8 +460,7 @@ Sources.SourcesPanel = class extends UI.Panel {
   _pauseOnExceptionEnabledChanged() {
     const enabled = Common.moduleSetting('pauseOnExceptionEnabled').get();
     this._pauseOnExceptionButton.setToggled(enabled);
-    this._pauseOnExceptionButton.setTitle(
-        Common.UIString(enabled ? 'Don\'t pause on exceptions' : 'Pause on exceptions'));
+    this._pauseOnExceptionButton.setTitle(enabled ? ls`Don't pause on exceptions` : ls`Pause on exceptions`);
     this._debugToolbarDrawer.classList.toggle('expanded', enabled);
   }
 

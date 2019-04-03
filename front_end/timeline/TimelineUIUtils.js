@@ -556,10 +556,13 @@ Timeline.TimelineUIUtils = class {
         break;
       }
       case recordType.ParseHTML: {
+        const startLine = event.args['beginData']['startLine'];
         const endLine = event.args['endData'] && event.args['endData']['endLine'];
         const url = Bindings.displayNameForURL(event.args['beginData']['url']);
-        detailsText = Common.UIString(
-            '%s [%s\u2026%s]', url, event.args['beginData']['startLine'] + 1, endLine >= 0 ? endLine + 1 : '');
+        if (endLine >= 0)
+          detailsText = Common.UIString('%s [%s\u2026%s]', url, startLine + 1, endLine + 1);
+        else
+          detailsText = Common.UIString('%s [%s\u2026]', url, startLine + 1);
         break;
       }
       case recordType.CompileModule:

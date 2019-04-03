@@ -7,10 +7,7 @@
  * @implements {SDK.SDKModelObserver<!SDK.HeapProfilerModel>}
  */
 PerfUI.LiveHeapProfile = class {
-  /**
-   * @override
-   */
-  run() {
+  constructor() {
     SDK.targetManager.observeModels(SDK.HeapProfilerModel, this);
     requestIdleCallback(() => this.onUpdateProfiles(), {timeout: 100});
     PerfUI.LiveHeapProfile.hasStartedForTest(true);
@@ -30,10 +27,16 @@ PerfUI.LiveHeapProfile = class {
 
   /**
    * @override
+   */
+  run() {
+  }
+
+  /**
+   * @override
    * @param {!SDK.HeapProfilerModel} model
    */
   modelAdded(model) {
-    model.startSampling(1024);
+    model.startSampling(1e4);
   }
 
   /**

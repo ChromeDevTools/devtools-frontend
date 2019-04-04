@@ -60,15 +60,6 @@ PerfUI.LineLevelProfile.Performance = class {
     }
     this._helper.scheduleUpdate();
   }
-
-  /**
-   * @return {!PerfUI.LineLevelProfile.Performance}
-   */
-  static instance() {
-    if (!PerfUI.LineLevelProfile.Performance._instance)
-      PerfUI.LineLevelProfile.Performance._instance = new PerfUI.LineLevelProfile.Performance();
-    return PerfUI.LineLevelProfile.Performance._instance;
-  }
 };
 
 PerfUI.LineLevelProfile.Memory = class {
@@ -102,15 +93,6 @@ PerfUI.LineLevelProfile.Memory = class {
       const line = node.callFrame.lineNumber + 1;
       helper.addLineData(target, script, line, node.selfSize);
     }
-  }
-
-  /**
-   * @return {!PerfUI.LineLevelProfile.Memory}
-   */
-  static instance() {
-    if (!PerfUI.LineLevelProfile.Memory._instance)
-      PerfUI.LineLevelProfile.Memory._instance = new PerfUI.LineLevelProfile.Memory();
-    return PerfUI.LineLevelProfile.Memory._instance;
   }
 };
 

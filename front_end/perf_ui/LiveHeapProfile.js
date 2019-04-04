@@ -50,7 +50,7 @@ PerfUI.LiveHeapProfile = class {
   async onUpdateProfiles() {
     const models = SDK.targetManager.models(SDK.HeapProfilerModel);
     const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
-    const lineLevelProfile = PerfUI.LineLevelProfile.Memory.instance();
+    const lineLevelProfile = self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory);
     lineLevelProfile.reset();
     for (let i = 0; i < profiles.length; ++i) {
       if (profiles[i])

@@ -5,20 +5,5 @@
 
 .data-grid {
     flex: auto;
-}
-
-.background-service-popover-container {
-    padding: 12px 16px 0px 16px;
-}
-
-.background-service-metadata-entry {
-    margin-bottom: 12px;
-}
-
-.background-service-metadata-key {
-    font-weight: bold;
-}
-
-.background-service-metadata-value {
-    font-family: monospace;
+    border: none;
 }

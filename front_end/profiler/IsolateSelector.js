@@ -4,6 +4,7 @@
 
 /**
  * @implements {UI.ListDelegate<!Profiler.IsolateSelector.ListItem>}
+ * @implements {SDK.IsolateManager.Observer}
  */
 Profiler.IsolateSelector = class extends UI.VBox {
   constructor() {
@@ -20,10 +21,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._itemByIsolate = new Map();
     this._updateTimer = null;
 
-    this._isolateManager = new SDK.IsolateManager();
-    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateAdded, this._isolateAdded, this);
-    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateRemoved, this._isolateRemoved, this);
-    this._isolateManager.addEventListener(SDK.IsolateManager.Events.IsolateChanged, this._isolateChanged, this);
+    SDK.isolateManager.observeIsolates(this);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.NameChanged, this._targetChanged, this);
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._targetChanged, this);
@@ -44,10 +42,10 @@ Profiler.IsolateSelector = class extends UI.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @override
+   * @param {!SDK.IsolateManager.Isolate} isolate
    */
-  _isolateAdded(event) {
-    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
+  isolateAdded(isolate) {
     const item = new Profiler.IsolateSelector.ListItem(isolate);
     const index = item.model().target() === SDK.targetManager.mainTarget() ? 0 : this._items.length;
     this._items.insert(index, item);
@@ -58,20 +56,20 @@ Profiler.IsolateSelector = class extends UI.VBox {
   }
 
   /**
-   * @param {!Common.Event} event
+   * @override
+   * @param {!SDK.IsolateManager.Isolate} isolate
    */
-  _isolateChanged(event) {
-    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
+  isolateChanged(isolate) {
     const item = this._itemByIsolate.get(isolate);
     item.updateTitle();
     this._update();
   }
 
   /**
-   * @param {!Common.Event} event
+   * @override
+   * @param {!SDK.IsolateManager.Isolate} isolate
    */
-  _isolateRemoved(event) {
-    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
+  isolateRemoved(isolate) {
     const item = this._itemByIsolate.get(isolate);
     this._items.remove(this._items.indexOf(item));
     this._itemByIsolate.delete(isolate);
@@ -86,7 +84,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
     const model = target.model(SDK.RuntimeModel);
     if (!model)
       return;
-    const isolate = this._isolateManager.isolateByModel(model);
+    const isolate = SDK.isolateManager.isolateByModel(model);
     const item = isolate && this._itemByIsolate.get(isolate);
     if (item)
       item.updateTitle();
@@ -142,10 +140,11 @@ Profiler.IsolateSelector = class extends UI.VBox {
   _updateStats() {
     for (const item of this._itemByIsolate.values())
       item.updateStats();
-    const heapStatsUpdateIntervalMs = 2000;
-    this._updateTimer = setTimeout(() => this._updateStats(), heapStatsUpdateIntervalMs);
+    this._updateTimer = setTimeout(() => this._updateStats(), Profiler.IsolateSelector._heapStatsUpdateIntervalMs);
   }
 };
+
+Profiler.IsolateSelector._heapStatsUpdateIntervalMs = 2000;
 
 Profiler.IsolateSelector.ListItem = class {
   /**

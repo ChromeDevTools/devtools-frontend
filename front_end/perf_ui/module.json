@@ -36,6 +36,25 @@
             ]
         },
         {
+            "type": "setting",
+            "category": "Memory",
+            "experiment": "liveHeapProfile",
+            "title": "Live memory allocation annotations",
+            "settingName": "memoryLiveHeapProfile",
+            "settingType": "boolean",
+            "defaultValue": false,
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show live memory allocation annotations"
+                },
+                {
+                    "value": false,
+                    "title": "Hide live memory allocation annotations"
+                }
+            ]
+        },
+        {
             "type": "action",
             "actionId": "components.collect-garbage",
             "title": "Collect garbage",

@@ -761,13 +761,14 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.ErrorReason=} responseErrorReason
    * @param {number=} responseStatusCode
    * @param {!Protocol.Network.Headers=} responseHeaders
+   * @param {!Protocol.Network.RequestId=} requestId
    */
   requestIntercepted(
       interceptionId, request, frameId, resourceType, isNavigationRequest, isDownload, redirectUrl, authChallenge,
-      responseErrorReason, responseStatusCode, responseHeaders) {
+      responseErrorReason, responseStatusCode, responseHeaders, requestId) {
     SDK.multitargetNetworkManager._requestIntercepted(new SDK.MultitargetNetworkManager.InterceptedRequest(
         this._manager.target().networkAgent(), interceptionId, request, frameId, resourceType, isNavigationRequest,
-        isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders));
+        isDownload, redirectUrl, authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId));
   }
 
   /**
@@ -1244,10 +1245,11 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
    * @param {!Protocol.Network.ErrorReason=} responseErrorReason
    * @param {number=} responseStatusCode
    * @param {!Protocol.Network.Headers=} responseHeaders
+   * @param {!Protocol.Network.RequestId=} requestId
    */
   constructor(
       networkAgent, interceptionId, request, frameId, resourceType, isNavigationRequest, isDownload, redirectUrl,
-      authChallenge, responseErrorReason, responseStatusCode, responseHeaders) {
+      authChallenge, responseErrorReason, responseStatusCode, responseHeaders, requestId) {
     this._networkAgent = networkAgent;
     this._interceptionId = interceptionId;
     this._hasResponded = false;
@@ -1261,6 +1263,7 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
     this.responseErrorReason = responseErrorReason;
     this.responseStatusCode = responseStatusCode;
     this.responseHeaders = responseHeaders;
+    this.requestId = requestId;
   }
 
   /**

@@ -143,6 +143,15 @@
         },
         {
             "type": "setting",
+            "category": "Elements",
+            "order": 5,
+            "title": "Show detailed inspect tooltip",
+            "settingName": "showDetailedInspectTooltip",
+            "settingType": "boolean",
+            "defaultValue": true
+        },
+        {
+            "type": "setting",
             "settingName": "showEventListenersForAncestors",
             "settingType": "boolean",
             "defaultValue": true

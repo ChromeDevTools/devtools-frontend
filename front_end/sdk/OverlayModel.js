@@ -155,13 +155,14 @@ SDK.OverlayModel = class extends SDK.SDKModel {
 
   /**
    * @param {!Protocol.Overlay.InspectMode} mode
+   * @param {boolean=} showStyles
    * @return {!Promise}
    */
-  async setInspectMode(mode) {
+  async setInspectMode(mode, showStyles = true) {
     await this._domModel.requestDocument();
     this._inspectModeEnabled = mode !== Protocol.Overlay.InspectMode.None;
     this.dispatchEventToListeners(SDK.OverlayModel.Events.InspectModeWillBeToggled, this);
-    this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', true));
+    this._highlighter.setInspectMode(mode, this._buildHighlightConfig('all', showStyles));
   }
 
   /**

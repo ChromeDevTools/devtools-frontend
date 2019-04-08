@@ -36,6 +36,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     /** @type {?UI.ToolbarCheckbox} */
     this._originCheckbox = null;
 
+    /** @type {?UI.ToolbarButton} */
+    this._saveButton = null;
+
     /** @const {!UI.Toolbar} */
     this._toolbar = new UI.Toolbar('background-service-toolbar', this.contentElement);
     this._setupToolbar();
@@ -68,20 +71,27 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    */
   async _setupToolbar() {
     this._recordButton =
-        new UI.ToolbarToggle(Common.UIString('Toggle Record'), 'largeicon-start-recording', 'largeicon-stop-recording');
+        new UI.ToolbarToggle(ls`Toggle Record`, 'largeicon-start-recording', 'largeicon-stop-recording');
     this._recordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording());
     this._recordButton.setToggleWithRedColor(true);
     this._toolbar.appendToolbarItem(this._recordButton);
 
-    const clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    const clearButton = new UI.ToolbarButton(ls`Clear`, 'largeicon-clear');
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._clearEvents());
     this._toolbar.appendToolbarItem(clearButton);
 
     this._toolbar.appendSeparator();
 
     this._originCheckbox =
-        new UI.ToolbarCheckbox(Common.UIString('Show events from other domains'), undefined, () => this._refreshView());
+        new UI.ToolbarCheckbox(ls`Show events from other domains`, undefined, () => this._refreshView());
     this._toolbar.appendToolbarItem(this._originCheckbox);
+
+    this._toolbar.appendSeparator();
+
+    this._saveButton = new UI.ToolbarButton(ls`Save events`, 'largeicon-download');
+    this._saveButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._saveToFile());
+    this._saveButton.setEnabled(false);
+    this._toolbar.appendToolbarItem(this._saveButton);
   }
 
   /**
@@ -100,6 +110,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
   _clearView() {
     this._dataGrid.rootNode().removeChildren();
     this._showPreview(null);
+    this._saveButton.setEnabled(false);
   }
 
   /**
@@ -151,6 +162,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const data = this._createEventData(serviceEvent);
     const dataNode = new Resources.BackgroundServiceView.EventDataNode(data, serviceEvent.eventMetadata);
     this._dataGrid.rootNode().appendChild(dataNode);
+
+    // There's at least one event. So we can allow saving the events.
+    this._saveButton.setEnabled(true);
   }
 
   /**
@@ -158,12 +172,12 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    */
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
-      {id: 'id', title: Common.UIString('#'), weight: 1},
-      {id: 'timestamp', title: Common.UIString('Timestamp'), weight: 8},
-      {id: 'origin', title: Common.UIString('Origin'), weight: 10},
-      {id: 'swSource', title: Common.UIString('SW Source'), weight: 4},
-      {id: 'eventName', title: Common.UIString('Event'), weight: 10},
-      {id: 'instanceId', title: Common.UIString('Instance ID'), weight: 10},
+      {id: 'id', title: ls`#`, weight: 1},
+      {id: 'timestamp', title: ls`Timestamp`, weight: 8},
+      {id: 'origin', title: ls`Origin`, weight: 10},
+      {id: 'swSource', title: ls`SW Source`, weight: 4},
+      {id: 'eventName', title: ls`Event`, weight: 10},
+      {id: 'instanceId', title: ls`Instance ID`, weight: 10},
     ]);
     const dataGrid = new DataGrid.DataGrid(columns);
     dataGrid.setStriped(true);
@@ -233,6 +247,22 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       this._preview = new UI.EmptyWidget(ls`Select a value to preview`);
 
     this._preview.show(this._previewPanel.contentElement);
+  }
+
+  /**
+   * Saves all currently displayed events in a file (JSON format).
+   */
+  async _saveToFile() {
+    const fileName = `${this._serviceName}-${new Date().toISO8601Compact()}.json`;
+    const stream = new Bindings.FileOutputStream();
+
+    const accepted = await stream.open(fileName);
+    if (!accepted)
+      return;
+
+    const events = this._model.getEvents(this._serviceName).filter(event => this._acceptEvent(event));
+    await stream.write(JSON.stringify(events, undefined, 2));
+    stream.close();
   }
 };
 

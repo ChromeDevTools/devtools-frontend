@@ -801,7 +801,9 @@
 }
 
 .lh-scores-header .lh-gauge--pwa__wrapper {
-  border-left: 1px solid var(--report-secondary-border-color)
+  border-left: 1px solid var(--report-secondary-border-color);
+  /* Can remove when this bug is resolved: https://bugs.chromium.org/p/chromium/issues/detail?id=942097 */
+  will-change: transform;
 }
 
 .lh-scorescale {

@@ -8,7 +8,7 @@
 Audits2.Audits2Panel = class extends UI.Panel {
   constructor() {
     super('audits2');
-    this.registerRequiredCSS('audits2/lighthouse/report-styles.css');
+    this.registerRequiredCSS('audits2/lighthouse/report.css');
     this.registerRequiredCSS('audits2/audits2Panel.css');
 
     this._protocolService = new Audits2.ProtocolService();

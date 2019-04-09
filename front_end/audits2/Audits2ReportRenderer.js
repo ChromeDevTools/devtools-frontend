@@ -58,11 +58,3 @@ Audits2.ReportRenderer = class extends ReportRenderer {
     }
   }
 };
-
-class ReportUIFeatures {
-  /**
-   * @param {!ReportRenderer.ReportJSON} report
-   */
-  initFeatures(report) {
-  }
-}

@@ -1,4 +1,4 @@
-// lighthouse, browserified. 4.2.0 (35b285b87d681905777ed2545e48292312910485)
+// lighthouse, browserified. 4.2.0 (9790337f9873710c3fd38bafdec819337c8367be)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
 
@@ -3891,7 +3891,7 @@ id:'uses-optimized-images',
 title:str_(UIStrings.title),
 description:str_(UIStrings.description),
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['OptimizedImages','devtoolsLogs','traces']};
+requiredArtifacts:['OptimizedImages','ImageElements','devtoolsLogs','traces']};
 
 }
 
@@ -3909,8 +3909,27 @@ return{bytes,percent};
 
 
 
+static estimateJPEGSizeFromDimensions(imageElement){
+const totalPixels=imageElement.naturalWidth*imageElement.naturalHeight;
+
+
+
+
+const expectedBytesPerPixel=2*1/8;
+return Math.round(totalPixels*expectedBytesPerPixel);
+}
+
+
+
+
+
 static audit_(artifacts){
+const pageURL=artifacts.URL.finalUrl;
 const images=artifacts.OptimizedImages;
+const imageElements=artifacts.ImageElements;
+
+const imageElementsByURL=new Map();
+imageElements.forEach(img=>imageElementsByURL.set(img.src,img));
 
 
 const items=[];
@@ -3919,18 +3938,34 @@ for(const image of images){
 if(image.failed){
 warnings.push(`Unable to decode ${URL.getURLDisplayName(image.url)}`);
 continue;
-}else if(/(jpeg|bmp)/.test(image.mimeType)===false||
-image.originalSize<image.jpegSize+IGNORE_THRESHOLD_IN_BYTES){
+}else if(/(jpeg|bmp)/.test(image.mimeType)===false){
 continue;
 }
 
+let jpegSize=image.jpegSize;
+let fromProtocol=true;
+
+if(typeof jpegSize==='undefined'){
+const imageElement=imageElementsByURL.get(image.url);
+if(!imageElement){
+warnings.push(`Unable to locate resource ${URL.getURLDisplayName(image.url)}`);
+continue;
+}
+
+jpegSize=UsesOptimizedImages.estimateJPEGSizeFromDimensions(imageElement);
+fromProtocol=false;
+}
+
+if(image.originalSize<jpegSize+IGNORE_THRESHOLD_IN_BYTES)continue;
+
 const url=URL.elideDataURI(image.url);
-const jpegSavings=UsesOptimizedImages.computeSavings(image);
+const isCrossOrigin=!URL.originsMatch(pageURL,image.url);
+const jpegSavings=UsesOptimizedImages.computeSavings({...image,jpegSize});
 
 items.push({
 url,
-fromProtocol:image.fromProtocol,
-isCrossOrigin:!image.isSameOrigin,
+fromProtocol,
+isCrossOrigin,
 totalBytes:image.originalSize,
 wastedBytes:jpegSavings.bytes});
 
@@ -4260,8 +4295,28 @@ return{bytes,percent};
 
 
 
+static estimateWebPSizeFromDimensions(imageElement){
+const totalPixels=imageElement.naturalWidth*imageElement.naturalHeight;
+
+
+
+
+
+const expectedBytesPerPixel=2*1/10;
+return Math.round(totalPixels*expectedBytesPerPixel);
+}
+
+
+
+
+
 static audit_(artifacts){
+const pageURL=artifacts.URL.finalUrl;
 const images=artifacts.OptimizedImages;
+const imageElements=artifacts.ImageElements;
+
+const imageElementsByURL=new Map();
+imageElements.forEach(img=>imageElementsByURL.set(img.src,img));
 
 
 const items=[];
@@ -4270,17 +4325,32 @@ for(const image of images){
 if(image.failed){
 warnings.push(`Unable to decode ${URL.getURLDisplayName(image.url)}`);
 continue;
-}else if(image.originalSize<image.webpSize+IGNORE_THRESHOLD_IN_BYTES){
+}
+
+let webpSize=image.webpSize;
+let fromProtocol=true;
+
+if(typeof webpSize==='undefined'){
+const imageElement=imageElementsByURL.get(image.url);
+if(!imageElement){
+warnings.push(`Unable to locate resource ${URL.getURLDisplayName(image.url)}`);
 continue;
 }
 
+webpSize=UsesWebPImages.estimateWebPSizeFromDimensions(imageElement);
+fromProtocol=false;
+}
+
+if(image.originalSize<webpSize+IGNORE_THRESHOLD_IN_BYTES)continue;
+
 const url=URL.elideDataURI(image.url);
-const webpSavings=UsesWebPImages.computeSavings(image);
+const isCrossOrigin=!URL.originsMatch(pageURL,image.url);
+const webpSavings=UsesWebPImages.computeSavings({...image,webpSize:webpSize});
 
 items.push({
 url,
-fromProtocol:image.fromProtocol,
-isCrossOrigin:!image.isSameOrigin,
+fromProtocol,
+isCrossOrigin,
 totalBytes:image.originalSize,
 wastedBytes:webpSavings.bytes});
 
@@ -5372,11 +5442,12 @@ return version;
 
 
 
-static getVulnerabilities(normalizedVersion,lib){
-const snykDB=NoVulnerableLibrariesAudit.snykDB;
+
+static getVulnerabilities(normalizedVersion,lib,snykDB){
 if(!lib.npmPkgName||!snykDB.npm[lib.npmPkgName]){
 return[];
 }
+
 
 try{
 semver.satisfies(normalizedVersion,'*');
@@ -5387,11 +5458,18 @@ Sentry.captureException(err,{level:'warning'});
 return[];
 }
 
-const snykInfo=snykDB.npm[lib.npmPkgName];
-const vulns=snykInfo.
-filter(vuln=>semver.satisfies(normalizedVersion,vuln.semver.vulnerable[0])).
 
-map(vuln=>{
+const vulnCandidatesForLib=snykDB.npm[lib.npmPkgName];
+const matchingVulns=vulnCandidatesForLib.filter(vulnCandidate=>{
+
+
+const hasMatchingVersion=vulnCandidate.semver.vulnerable.some(vulnSemverRange=>
+semver.satisfies(normalizedVersion,vulnSemverRange));
+
+return hasMatchingVersion;
+});
+
+const vulns=matchingVulns.map(vuln=>{
 return{
 severity:vuln.severity,
 numericSeverity:this.severityMap[vuln.severity],
@@ -5419,6 +5497,8 @@ return sortedVulns[0].severity;
 
 static audit(artifacts){
 const foundLibraries=artifacts.JSLibraries;
+const snykDB=NoVulnerableLibrariesAudit.snykDB;
+
 if(!foundLibraries.length){
 return{
 rawValue:true};
@@ -5431,7 +5511,7 @@ const vulnerabilityResults=[];
 
 const libraryVulns=foundLibraries.map(lib=>{
 const version=this.normalizeVersion(lib.version)||'';
-const vulns=this.getVulnerabilities(version,lib);
+const vulns=this.getVulnerabilities(version,lib,snykDB);
 const vulnCount=vulns.length;
 totalVulns+=vulnCount;
 
@@ -5488,7 +5568,7 @@ details};
 
 module.exports=NoVulnerableLibrariesAudit;
 
-},{"../../../third-party/snyk/snapshot.json":168,"../../lib/sentry":74,"../audit":3,"semver":144}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
+},{"../../../third-party/snyk/snapshot.json":168,"../../lib/sentry":74,"../audit":3,"semver":158}],"../audits/dobetterweb/notification-on-start":[function(require,module,exports){
 
 
 
@@ -5651,6 +5731,9 @@ const finalHost=new URL(artifacts.URL.finalUrl).host;
 const seenURLs=new Set();
 
 const resources=networkRecords.filter(record=>{
+
+
+if(record.fetchedViaServiceWorker)return false;
 
 const isOldHttp=/HTTP\/[01][.\d]?/i.test(record.protocol);
 if(!isOldHttp)return false;
@@ -6010,6 +6093,8 @@ const results=networkRecords.
 filter(record=>record.resourceType==='Font').
 
 filter(record=>!passingFontURLs.has(record.url)).
+
+filter(record=>!/^data:/.test(record.url)).
 map(record=>{
 
 
@@ -6119,7 +6204,10 @@ images.filter(image=>{
 
 
 
-return image.mimeType&&
+
+
+return!image.isCss&&
+image.mimeType&&
 image.mimeType!=='image/svg+xml'&&
 image.naturalHeight>5&&
 image.naturalWidth>5&&
@@ -8432,10 +8520,8 @@ module.exports=ScreenshotThumbnails;
 'use strict';
 
 const Audit=require('../audit');
-const LinkHeader=require('http-link-header');
 const URL=require('../../lib/url-shim');
 const MainResource=require('../../computed/main-resource.js');
-const LINK_HEADER='link';
 const i18n=require('../../lib/i18n/i18n.js');
 
 const UIStrings={
@@ -8467,45 +8553,22 @@ const str_=i18n.createMessageInstanceIdFn(__filename,UIStrings);
 
 
 
-function getCanonicalLinksFromHeader(headerValue){
-const linkHeader=LinkHeader.parse(headerValue);
-
-return linkHeader.get('rel','canonical').map(c=>c.uri);
-}
-
-
-
-
-
-function getHreflangsFromHeader(headerValue){
-const linkHeader=LinkHeader.parse(headerValue);
-
-return linkHeader.get('rel','alternate').map(h=>h.uri);
-}
-
-
-
-
-
-
-function isValidRelativeOrAbsoluteURL(url){
-try{
-new URL(url,'https://example.com/');
-return true;
-}catch(e){
-return false;
-}
-}
-
-
-
-
-
 
 
 function getPrimaryDomain(url){
-return url.hostname.split('.').slice(-2).join('.');
+return url.hostname.
+split('.').
+slice(-2).
+join('.');
 }
+
+
+
+
+
+
+
+
 
 class Canonical extends Audit{
 
@@ -8517,7 +8580,7 @@ id:'canonical',
 title:str_(UIStrings.title),
 failureTitle:str_(UIStrings.failureTitle),
 description:str_(UIStrings.description),
-requiredArtifacts:['Canonical','Hreflang','URL']};
+requiredArtifacts:['LinkElements','URL']};
 
 }
 
@@ -8525,75 +8588,97 @@ requiredArtifacts:['Canonical','Hreflang','URL']};
 
 
 
+static collectCanonicalURLs(linkElements){
 
-static audit(artifacts,context){
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+const uniqueCanonicalURLs=new Set();
 
-return MainResource.request({devtoolsLog,URL:artifacts.URL},context).
-then(mainResource=>{
-const baseURL=new URL(mainResource.url);
+const hreflangURLs=new Set();
 
-let canonicals=[];
 
-let hreflangs=[];
+let invalidCanonicalLink;
 
-mainResource.responseHeaders&&mainResource.responseHeaders.
-filter(h=>h.name.toLowerCase()===LINK_HEADER).
-forEach(h=>{
-canonicals=canonicals.concat(getCanonicalLinksFromHeader(h.value));
-hreflangs=hreflangs.concat(getHreflangsFromHeader(h.value));
-});
+let relativeCanonicallink;
+for(const link of linkElements){
 
-for(const canonical of artifacts.Canonical){
-if(canonical!==null){
-canonicals.push(canonical);
+
+if(link.source==='body')continue;
+
+if(link.rel==='canonical'){
+
+if(!link.hrefRaw)continue;
+
+
+if(!link.href)invalidCanonicalLink=link;else
+
+if(!URL.isValid(link.hrefRaw))relativeCanonicallink=link;else
+
+uniqueCanonicalURLs.add(link.href);
+}else if(link.rel==='alternate'){
+if(link.href&&link.hreflang)hreflangURLs.add(link.href);
 }
 }
 
+return{uniqueCanonicalURLs,hreflangURLs,invalidCanonicalLink,relativeCanonicallink};
+}
 
-canonicals=Array.from(new Set(canonicals));
 
-artifacts.Hreflang.forEach(({href})=>hreflangs.push(href));
 
-hreflangs=hreflangs.
-filter(href=>isValidRelativeOrAbsoluteURL(href)).
-map(href=>new URL(href,baseURL).href);
 
-if(canonicals.length===0){
+
+static findInvalidCanonicalURLReason(canonicalURLData){
+const{uniqueCanonicalURLs,invalidCanonicalLink,relativeCanonicallink}=canonicalURLData;
+
+
+if(invalidCanonicalLink){
+return{
+rawValue:false,
+explanation:str_(UIStrings.explanationInvalid,{url:invalidCanonicalLink.hrefRaw})};
+
+}
+
+
+if(relativeCanonicallink){
+return{
+rawValue:false,
+explanation:str_(UIStrings.explanationRelative,{url:relativeCanonicallink.hrefRaw})};
+
+}
+
+
+const canonicalURLs=Array.from(uniqueCanonicalURLs);
+
+
+if(canonicalURLs.length===0){
 return{
 rawValue:true,
 notApplicable:true};
 
 }
 
-if(canonicals.length>1){
+
+if(canonicalURLs.length>1){
 return{
 rawValue:false,
-explanation:str_(UIStrings.explanationConflict,{urlList:canonicals.join(', ')})};
+explanation:str_(UIStrings.explanationConflict,{urlList:canonicalURLs.join(', ')})};
 
 }
-
-const canonical=canonicals[0];
-
-if(!isValidRelativeOrAbsoluteURL(canonical)){
-return{
-rawValue:false,
-explanation:str_(UIStrings.explanationInvalid,{url:canonical})};
-
 }
 
-if(!URL.isValid(canonical)){
-return{
-rawValue:false,
-explanation:str_(UIStrings.explanationRelative,{url:canonical})};
-
-}
-
-const canonicalURL=new URL(canonical);
 
 
-if(hreflangs.includes(baseURL.href)&&hreflangs.includes(canonicalURL.href)&&
-baseURL.href!==canonicalURL.href){
+
+
+
+
+static findCommonCanonicalURLMistakes(canonicalURLData,canonicalURL,baseURL){
+const{hreflangURLs}=canonicalURLData;
+
+
+if(
+hreflangURLs.has(baseURL.href)&&
+hreflangURLs.has(canonicalURL.href)&&
+baseURL.href!==canonicalURL.href)
+{
 return{
 rawValue:false,
 explanation:str_(UIStrings.explanationPointsElsewhere,{url:baseURL.href})};
@@ -8610,18 +8695,47 @@ explanation:str_(UIStrings.explanationDifferentDomain,{url:canonicalURL})};
 }
 
 
-if(canonicalURL.origin===baseURL.origin&&
-canonicalURL.pathname==='/'&&baseURL.pathname!=='/'){
+if(
+canonicalURL.origin===baseURL.origin&&
+canonicalURL.pathname==='/'&&
+baseURL.pathname!=='/')
+{
 return{
 rawValue:false,
 explanation:str_(UIStrings.explanationRoot)};
 
 }
+}
+
+
+
+
+
+
+static async audit(artifacts,context){
+const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
+
+const mainResource=await MainResource.request({devtoolsLog,URL:artifacts.URL},context);
+const baseURL=new URL(mainResource.url);
+const canonicalURLData=Canonical.collectCanonicalURLs(artifacts.LinkElements);
+
+
+const invalidURLAuditProduct=Canonical.findInvalidCanonicalURLReason(canonicalURLData);
+if(invalidURLAuditProduct)return invalidURLAuditProduct;
+
+
+const canonicalURL=new URL([...canonicalURLData.uniqueCanonicalURLs][0]);
+const mistakeAuditProduct=Canonical.findCommonCanonicalURLMistakes(
+canonicalURLData,
+canonicalURL,
+baseURL);
+
+
+if(mistakeAuditProduct)return mistakeAuditProduct;
 
 return{
 rawValue:true};
 
-});
 }}
 
 
@@ -8629,7 +8743,7 @@ module.exports=Canonical;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/canonical.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3,"http-link-header":101}],"../audits/seo/font-size":[function(require,module,exports){
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3}],"../audits/seo/font-size":[function(require,module,exports){
 (function(__filename){
 
 
@@ -8929,7 +9043,6 @@ fontSize:'≥ 12px'});
 }
 
 const decimalProportion=percentageOfPassingText/100;
-
 const displayValue=str_(UIStrings.displayValue,{decimalProportion});
 const details=Audit.makeTableDetails(headings,tableData);
 const passed=percentageOfPassingText>=MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT;
@@ -8975,10 +9088,7 @@ module.exports.UIStrings=UIStrings;
 'use strict';
 
 const Audit=require('../audit');
-const LinkHeader=require('http-link-header');
-const MainResource=require('../../computed/main-resource.js');
 const VALID_LANGS=importValidLangs();
-const LINK_HEADER='link';
 const NO_LANGUAGE='x-default';
 const i18n=require('../../lib/i18n/i18n.js');
 
@@ -9030,17 +9140,6 @@ const[lang]=hreflang.split('-');
 return VALID_LANGS.includes(lang.toLowerCase());
 }
 
-
-
-
-
-function headerHasValidHreflangs(headerValue){
-const linkHeader=LinkHeader.parse(headerValue);
-
-return linkHeader.get('rel','alternate').
-every(link=>!!link.hreflang&&isValidHreflang(link.hreflang));
-}
-
 class Hreflang extends Audit{
 
 
@@ -9051,7 +9150,7 @@ id:'hreflang',
 title:str_(UIStrings.title),
 failureTitle:str_(UIStrings.failureTitle),
 description:str_(UIStrings.description),
-requiredArtifacts:['Hreflang','URL']};
+requiredArtifacts:['LinkElements','URL']};
 
 }
 
@@ -9059,32 +9158,28 @@ requiredArtifacts:['Hreflang','URL']};
 
 
 
-
-static audit(artifacts,context){
-const devtoolsLog=artifacts.devtoolsLogs[Audit.DEFAULT_PASS];
-const URL=artifacts.URL;
-
-return MainResource.request({devtoolsLog,URL},context).
-then(mainResource=>{
+static audit(artifacts){
 
 const invalidHreflangs=[];
 
-if(artifacts.Hreflang){
-artifacts.Hreflang.forEach(({href,hreflang})=>{
-if(!isValidHreflang(hreflang)){
+for(const link of artifacts.LinkElements){
+if(link.rel!=='alternate')continue;
+if(!link.hreflang||isValidHreflang(link.hreflang))continue;
+if(link.source==='body')continue;
+
+if(link.source==='head'){
 invalidHreflangs.push({
 source:{
 type:'node',
-snippet:`<link name="alternate" hreflang="${hreflang}" href="${href}" />`}});
+snippet:`<link rel="alternate" hreflang="${link.hreflang}" href="${link.href}" />`}});
 
+
+}else if(link.source==='headers'){
+invalidHreflangs.push({
+source:`Link: <${link.href}>; rel="alternate"; hreflang="${link.hreflang}"`});
 
 }
-});
 }
-
-mainResource.responseHeaders&&mainResource.responseHeaders.
-filter(h=>h.name.toLowerCase()===LINK_HEADER&&!headerHasValidHreflangs(h.value)).
-forEach(h=>invalidHreflangs.push({source:`${h.name}: ${h.value}`}));
 
 
 const headings=[
@@ -9096,7 +9191,6 @@ return{
 rawValue:invalidHreflangs.length===0,
 details};
 
-});
 }}
 
 
@@ -9104,7 +9198,7 @@ module.exports=Hreflang;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},"/lighthouse-core/audits/seo/hreflang.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../audit":3,"axe-core/lib/commons/utils/valid-langs.js":88,"http-link-header":101}],"../audits/seo/http-status-code":[function(require,module,exports){
+},{"../../lib/i18n/i18n.js":63,"../audit":3,"axe-core/lib/commons/utils/valid-langs.js":88}],"../audits/seo/http-status-code":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9332,7 +9426,7 @@ module.exports=IsCrawlable;
 module.exports.UIStrings=UIStrings;
 
 }).call(this,"/lighthouse-core/audits/seo/is-crawlable.js");
-},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3,"robots-parser":142}],"../audits/seo/link-text":[function(require,module,exports){
+},{"../../computed/main-resource.js":11,"../../lib/i18n/i18n.js":63,"../../lib/url-shim":"url","../audit":3,"robots-parser":156}],"../audits/seo/link-text":[function(require,module,exports){
 (function(__filename){
 
 
@@ -9344,6 +9438,7 @@ module.exports.UIStrings=UIStrings;
 const Audit=require('../audit');
 const URL=require('../../lib/url-shim');
 const BLOCKLIST=new Set([
+
 'click here',
 'click this',
 'go',
@@ -9352,7 +9447,14 @@ const BLOCKLIST=new Set([
 'start',
 'right here',
 'more',
-'learn more']);
+'learn more',
+
+'ここをクリック',
+'こちらをクリック',
+'リンク',
+'続きを読む',
+'続く',
+'全文表示']);
 
 const i18n=require('../../lib/i18n/i18n.js');
 
@@ -12150,6 +12252,12 @@ const NetworkRequest=require('../../../lib/network-request');
 const Sentry=require('../../../lib/sentry');
 const Driver=require('../../driver.js');
 
+
+
+const MAX_TIME_TO_SPEND_ENCODING=5000;
+
+const MAX_RESOURCE_SIZE_TO_ENCODE=2000*1024;
+
 const JPEG_QUALITY=0.92;
 const WEBP_QUALITY=0.85;
 
@@ -12159,61 +12267,17 @@ const IMAGE_REGEX=/^image\/((x|ms|x-ms)-)?(png|bmp|jpeg)$/;
 
 
 
-
-
-
-
-
-
-
-
-function getOptimizedNumBytes(url){
-return new Promise(function(resolve,reject){
-const img=new Image();
-const canvas=document.createElement('canvas');
-const context=canvas.getContext('2d');
-if(!context){
-return reject(new Error('unable to create canvas context'));
-}
-
-
-
-
-
-
-function getTypeStats(type,quality){
-const dataURI=canvas.toDataURL(type,quality);
-const base64=dataURI.slice(dataURI.indexOf(',')+1);
-return{base64:base64.length,binary:atob(base64).length};
-}
-
-img.addEventListener('error',reject);
-img.addEventListener('load',()=>{
-try{
-canvas.height=img.height;
-canvas.width=img.width;
-context.drawImage(img,0,0);
-
-const jpeg=getTypeStats('image/jpeg',0.92);
-const webp=getTypeStats('image/webp',0.85);
-
-resolve({jpeg,webp});
-}catch(err){
-reject(err);
-}
-},false);
-
-img.src=url;
-});
-}
-
 class OptimizedImages extends Gatherer{
+constructor(){
+super();
+this._encodingStartAt=0;
+}
 
 
 
 
 
-static filterImageRequests(pageUrl,networkRecords){
+static filterImageRequests(networkRecords){
 
 const seenUrls=new Set();
 return networkRecords.reduce((prev,record)=>{
@@ -12224,14 +12288,10 @@ return prev;
 seenUrls.add(record.url);
 const isOptimizableImage=record.resourceType===NetworkRequest.TYPES.Image&&
 IMAGE_REGEX.test(record.mimeType);
-const isSameOrigin=URL.originsMatch(pageUrl,record.url);
-const isBase64DataUri=/^data:.{2,40}base64\s*,/.test(record.url);
 
 const actualResourceSize=Math.min(record.resourceSize||0,record.transferSize||0);
 if(isOptimizableImage&&actualResourceSize>MINIMUM_IMAGE_SIZE){
 prev.push({
-isSameOrigin,
-isBase64DataUri,
 requestId:record.requestId,
 url:record.url,
 mimeType:record.mimeType,
@@ -12262,46 +12322,23 @@ return driver.sendCommand('Audits.getEncodedResponse',params);
 
 
 
-calculateImageStats(driver,networkRecord){
-return Promise.resolve(networkRecord.requestId).then(requestId=>{
-if(this._getEncodedResponseUnsupported)return;
-return this._getEncodedResponse(driver,requestId,'jpeg').then(jpegData=>{
-return this._getEncodedResponse(driver,requestId,'webp').then(webpData=>{
+async calculateImageStats(driver,networkRecord){
+const originalSize=networkRecord.resourceSize;
+
+
+if(Date.now()-this._encodingStartAt>MAX_TIME_TO_SPEND_ENCODING||
+originalSize>MAX_RESOURCE_SIZE_TO_ENCODE){
+return{originalSize,jpegSize:undefined,webpSize:undefined};
+}
+
+const jpegData=await this._getEncodedResponse(driver,networkRecord.requestId,'jpeg');
+const webpData=await this._getEncodedResponse(driver,networkRecord.requestId,'webp');
+
 return{
-fromProtocol:true,
-originalSize:networkRecord.resourceSize,
+originalSize,
 jpegSize:jpegData.encodedSize,
 webpSize:webpData.encodedSize};
 
-});
-}).catch(err=>{
-if(/wasn't found/.test(err.message)){
-
-this._getEncodedResponseUnsupported=true;
-}else{
-throw err;
-}
-});
-}).then(result=>{
-if(result)return result;
-
-
-
-if(!networkRecord.isSameOrigin&&!networkRecord.isBase64DataUri)return null;
-
-const script=`(${getOptimizedNumBytes.toString()})(${JSON.stringify(networkRecord.url)})`;
-return driver.evaluateAsync(script).then(stats=>{
-if(!stats)return null;
-const isBase64DataUri=networkRecord.isBase64DataUri;
-const base64Length=networkRecord.url.length-networkRecord.url.indexOf(',')-1;
-return{
-fromProtocol:false,
-originalSize:isBase64DataUri?base64Length:networkRecord.resourceSize,
-jpegSize:isBase64DataUri?stats.jpeg.base64:stats.jpeg.binary,
-webpSize:isBase64DataUri?stats.webp.base64:stats.webp.binary};
-
-});
-});
 }
 
 
@@ -12310,16 +12347,14 @@ webpSize:isBase64DataUri?stats.webp.base64:stats.webp.binary};
 
 
 async computeOptimizedImages(driver,imageRecords){
+this._encodingStartAt=Date.now();
+
 
 const results=[];
 
 for(const record of imageRecords){
 try{
 const stats=await this.calculateImageStats(driver,record);
-if(stats===null){
-continue;
-}
-
 
 const image={failed:false,...stats,...record};
 results.push(image);
@@ -12348,7 +12383,9 @@ return results;
 
 afterPass(passContext,loadData){
 const networkRecords=loadData.networkRecords;
-const imageRecords=OptimizedImages.filterImageRequests(passContext.url,networkRecords);
+const imageRecords=OptimizedImages.
+filterImageRequests(networkRecords).
+sort((a,b)=>b.resourceSize-a.resourceSize);
 
 return Promise.resolve().
 then(_=>this.computeOptimizedImages(passContext.driver,imageRecords)).
@@ -13085,36 +13122,121 @@ module.exports=JsUsage;
 'use strict';
 
 const Gatherer=require('./gatherer.js');
-const getElementsInDocumentString=require('../../lib/page-functions.js').getElementsInDocumentString;
+const URL=require('../../lib/url-shim.js').URL;
+const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer.js');
+const LinkHeader=require('http-link-header');
+const getElementsInDocumentString=require('../../lib/page-functions.js').
+getElementsInDocumentString;
+
+
+
+
+
+
+
+
+
+
+
+
+
+function normalizeUrlOrNull(url,finalUrl){
+try{
+return new URL(url,finalUrl).href;
+}catch(_){
+return null;
+}
+}
+
+
+
+
+
+function getCrossoriginFromHeader(value){
+if(value==='anonymous')return'anonymous';
+if(value==='use-credentials')return'use-credentials';
+return null;
+}
 
 class LinkElements extends Gatherer{
 
 
 
 
-async afterPass(passContext){
-const driver=passContext.driver;
+static getLinkElementsInDOM(passContext){
 
 
-
-return driver.evaluateAsync(`(() => {
+return passContext.driver.evaluateAsync(`(() => {
       ${getElementsInDocumentString};
 
       return getElementsInDocument('link').map(link => {
         return {
           rel: link.rel,
           href: link.href,
+          hrefRaw: link.href,
+          hreflang: link.hreflang,
           as: link.as,
           crossOrigin: link.crossOrigin,
+          source: link.closest('head') ? 'head' : 'body',
         };
       });
     })()`,{useIsolation:true});
+}
+
+
+
+
+
+
+static getLinkElementsInHeaders(passContext,loadData){
+const finalUrl=passContext.url;
+const records=loadData.networkRecords;
+const mainDocument=NetworkAnalyzer.findMainDocument(records,finalUrl);
+
+
+const linkElements=[];
+
+for(const header of mainDocument.responseHeaders){
+if(header.name.toLowerCase()!=='link')continue;
+
+for(const link of LinkHeader.parse(header.value).refs){
+linkElements.push({
+rel:link.rel||'',
+href:normalizeUrlOrNull(link.uri,finalUrl),
+hrefRaw:link.uri||'',
+hreflang:link.hreflang||'',
+as:link.as||'',
+crossOrigin:getCrossoriginFromHeader(link.crossorigin),
+source:'headers'});
+
+}
+}
+
+return linkElements;
+}
+
+
+
+
+
+
+async afterPass(passContext,loadData){
+const fromDOM=await LinkElements.getLinkElementsInDOM(passContext);
+const fromHeaders=LinkElements.getLinkElementsInHeaders(passContext,loadData);
+const linkElements=fromDOM.concat(fromHeaders);
+
+for(const link of linkElements){
+
+link.rel=link.rel.toLowerCase();
+}
+
+return linkElements;
 }}
 
 
 module.exports=LinkElements;
 
-},{"../../lib/page-functions.js":72,"./gatherer.js":48}],"../gather/gatherers/meta-elements":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":57,"../../lib/page-functions.js":72,"../../lib/url-shim.js":"url","./gatherer.js":48,"http-link-header":101}],"../gather/gatherers/meta-elements":[function(require,module,exports){
 
 
 
@@ -13443,33 +13565,7 @@ return scripts;
 
 module.exports=Scripts;
 
-},{"../../lib/network-request":71,"../../lib/page-functions.js":72,"../../lib/url-shim.js":"url","./gatherer":48,"lighthouse-logger":120}],"../gather/gatherers/seo/canonical":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('../gatherer');
-
-class Canonical extends Gatherer{
-
-
-
-
-afterPass(passContext){
-const driver=passContext.driver;
-
-return driver.querySelectorAll('head link[rel="canonical" i]').
-then(nodes=>Promise.all(nodes.map(node=>node.getAttribute('href'))));
-}}
-
-
-module.exports=Canonical;
-
-
-},{"../gatherer":48}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../../lib/network-request":71,"../../lib/page-functions.js":72,"../../lib/url-shim.js":"url","./gatherer":48,"lighthouse-logger":120}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -13875,44 +13971,7 @@ module.exports.TEXT_NODE_TYPE=TEXT_NODE_TYPE;
 module.exports.computeSelectorSpecificity=computeSelectorSpecificity;
 module.exports.getEffectiveFontRule=getEffectiveFontRule;
 
-},{"../../../lib/sentry.js":74,"../gatherer":48}],"../gather/gatherers/seo/hreflang":[function(require,module,exports){
-
-
-
-
-
-'use strict';
-
-const Gatherer=require('../gatherer');
-
-class Hreflang extends Gatherer{
-
-
-
-
-afterPass(passContext){
-const driver=passContext.driver;
-
-return driver.querySelectorAll('head link[rel="alternate" i][hreflang]').
-then(nodes=>Promise.all(nodes.map(node=>
-Promise.all([node.getAttribute('href'),node.getAttribute('hreflang')])))).
-
-then(attributeValues=>attributeValues&&
-attributeValues.map(values=>{
-const[href,hreflang]=values;
-return{
-href:href||'',
-hreflang:hreflang||''};
-
-}));
-
-}}
-
-
-module.exports=Hreflang;
-
-
-},{"../gatherer":48}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
+},{"../../../lib/sentry.js":74,"../gatherer":48}],"../gather/gatherers/seo/robots-txt":[function(require,module,exports){
 
 
 
@@ -14181,13 +14240,13 @@ return false;
 
 
 
-function elementIsPositionFixedOrAbsolute(element){
+function elementIsPositionFixedStickyOrAbsolute(element){
 const{position}=getComputedStyle(element);
-if(position==='fixed'||position==='absolute'){
+if(position==='fixed'||position==='absolute'||position==='sticky'){
 return true;
 }
 if(element.parentElement){
-return elementIsPositionFixedOrAbsolute(element.parentElement);
+return elementIsPositionFixedStickyOrAbsolute(element.parentElement);
 }
 return false;
 }
@@ -14229,7 +14288,7 @@ if(elementIsInTextBlock(tapTargetElement)){
 
 return;
 }
-if(elementIsPositionFixedOrAbsolute(tapTargetElement)){
+if(elementIsPositionFixedStickyOrAbsolute(tapTargetElement)){
 
 
 
@@ -14267,7 +14326,7 @@ const expression=`(function() {
       const tapTargetsSelector = "${tapTargetsSelector}";
       ${pageFunctions.getElementsInDocumentString};
       ${filterClientRectsWithinAncestorsVisibleScrollArea.toString()};
-      ${elementIsPositionFixedOrAbsolute.toString()};
+      ${elementIsPositionFixedStickyOrAbsolute.toString()};
       ${elementIsVisible.toString()};
       ${elementHasAncestorTapTarget.toString()};
       ${getVisibleClientRects.toString()};
@@ -14506,6 +14565,7 @@ onlyCategories:categoryIDs}};
 function runLighthouseInWorker(port,url,flags,categoryIDs){
 
 flags.logLevel=flags.logLevel||'info';
+flags.channel='devtools';
 const config=getDefaultConfigForCategories(categoryIDs);
 const connection=new RawProtocol(port);
 
@@ -15116,7 +15176,6 @@ const wastedBytes=results.reduce((sum,item)=>sum+item.wastedBytes,0);
 const wastedKb=Math.round(wastedBytes/KB_IN_BYTES);
 const wastedMs=this.computeWasteWithTTIGraph(results,graph,simulator);
 
-
 let displayValue=result.displayValue||'';
 if(typeof result.displayValue==='undefined'&&wastedBytes){
 displayValue=str_(i18n.UIStrings.displayValueByteSavings,{wastedBytes});
@@ -15636,7 +15695,7 @@ module.exports=makeComputedArtifact(LoadSimulator);
 'use strict';
 
 const makeComputedArtifact=require('./computed-artifact.js');
-const URL=require('../lib/url-shim.js');
+const NetworkAnalyzer=require('../lib/dependency-graph/simulator/network-analyzer.js');
 const NetworkRecords=require('./network-records.js');
 
 
@@ -15652,10 +15711,7 @@ class MainResource{
 static async compute_(data,context){
 const finalUrl=data.URL.finalUrl;
 const requests=await NetworkRecords.request(data.devtoolsLog,context);
-
-const mainResource=requests.find(request=>finalUrl.startsWith(request.url)&&
-URL.equalWithExcludedFragments(request.url,finalUrl));
-
+const mainResource=NetworkAnalyzer.findMainDocument(requests,finalUrl);
 if(!mainResource){
 throw new Error('Unable to identify the main resource');
 }
@@ -15666,7 +15722,7 @@ return mainResource;
 
 module.exports=makeComputedArtifact(MainResource);
 
-},{"../lib/url-shim.js":"url","./computed-artifact.js":8,"./network-records.js":31}],12:[function(require,module,exports){
+},{"../lib/dependency-graph/simulator/network-analyzer.js":57,"./computed-artifact.js":8,"./network-records.js":31}],12:[function(require,module,exports){
 
 
 
@@ -18162,7 +18218,7 @@ return speedline;
 
 module.exports=makeComputedArtifact(Speedline);
 
-},{"../lib/lh-error.js":67,"./computed-artifact.js":8,"./trace-of-tab.js":35,"speedline-core":146}],35:[function(require,module,exports){
+},{"../lib/lh-error.js":67,"./computed-artifact.js":8,"./trace-of-tab.js":35,"speedline-core":160}],35:[function(require,module,exports){
 
 
 
@@ -19090,7 +19146,7 @@ configJSON=Config.extendConfigJSON(deepCloneConfigJson(defaultConfig),configJSON
 const configDir=configPath?path.dirname(configPath):undefined;
 
 
-configJSON=Config.mergePlugins(configJSON,configDir);
+configJSON=Config.mergePlugins(configJSON,flags,configDir);
 
 const settings=Config.initSettings(configJSON.settings,flags);
 
@@ -19190,10 +19246,12 @@ return merge(baseJSON,extendJSON);
 
 
 
-static mergePlugins(configJSON,configDir){
-const pluginNames=configJSON.plugins;
 
-if(pluginNames){
+static mergePlugins(configJSON,flags,configDir){
+const configPlugins=configJSON.plugins||[];
+const flagPlugins=flags&&flags.plugins||[];
+const pluginNames=new Set([...configPlugins,...flagPlugins]);
+
 for(const pluginName of pluginNames){
 assertValidPluginName(configJSON,pluginName);
 
@@ -19202,7 +19260,6 @@ const rawPluginJson=require(pluginPath);
 const pluginJson=ConfigPlugin.parsePlugin(rawPluginJson,pluginName);
 
 configJSON=Config.extendConfigJSON(configJSON,pluginJson);
-}
 }
 
 return configJSON;
@@ -19745,6 +19802,7 @@ gatherMode:false,
 disableStorageReset:false,
 disableDeviceEmulation:false,
 emulatedFormFactor:'mobile',
+channel:'node',
 
 
 
@@ -19905,9 +19963,7 @@ gatherers:[
 'dobetterweb/response-compression',
 'dobetterweb/tags-blocking-first-paint',
 'seo/font-size',
-'seo/hreflang',
 'seo/embedded-content',
-'seo/canonical',
 'seo/robots-txt',
 'seo/tap-targets']},
 
@@ -20669,7 +20725,7 @@ this._traceCategories=Driver.traceCategories;
 this._eventEmitter=new EventEmitter();
 this._connection=connection;
 
-this._devtoolsLog=new DevtoolsLog(/^(Page|Network|Target)\./);
+this._devtoolsLog=new DevtoolsLog(/^(Page|Network)\./);
 this.online=true;
 
 this._domainEnabledCounts=new Map();
@@ -20690,31 +20746,24 @@ this._networkStatusMonitor=null;
 
 this._monitoredUrl=null;
 
-let targetProxyMessageId=0;
+
+
+
+
+
+
+
+this._targetProxyMessageId=0;
+
 this.on('Target.attachedToTarget',event=>{
-targetProxyMessageId++;
-
-if(event.targetInfo.type!=='iframe')return;
-
-
-
-this.sendCommand('Target.sendMessageToTarget',{
-message:JSON.stringify({id:targetProxyMessageId,method:'Network.enable'}),
-sessionId:event.sessionId});
-
+this._handleTargetAttached(event,[]).catch(this._handleEventError);
 });
 
-connection.on('protocolevent',event=>{
-this._devtoolsLog.record(event);
-if(this._networkStatusMonitor){
-this._networkStatusMonitor.dispatch(event);
-}
-
-
-
-
-this._eventEmitter.emit(event.method,event.params);
+this.on('Target.receivedMessageFromTarget',event=>{
+this._handleReceivedMessageFromTarget(event,[]).catch(this._handleEventError);
 });
+
+connection.on('protocolevent',this._handleProtocolEvent.bind(this));
 
 
 
@@ -20894,6 +20943,121 @@ return false;
 
 setNextProtocolTimeout(timeout){
 this._nextProtocolTimeout=timeout;
+}
+
+
+
+
+_handleProtocolEvent(event){
+this._devtoolsLog.record(event);
+if(this._networkStatusMonitor){
+this._networkStatusMonitor.dispatch(event);
+}
+
+
+
+
+this._eventEmitter.emit(event.method,event.params);
+}
+
+
+
+
+_handleEventError(error){
+log.error('Driver','Unhandled event error',error.message);
+}
+
+
+
+
+
+async _handleReceivedMessageFromTarget(event,parentSessionIds){
+const{sessionId,message}=event;
+
+const protocolMessage=JSON.parse(message);
+
+
+if('id'in protocolMessage)return;
+
+
+
+const sessionIdPath=[sessionId,...parentSessionIds];
+
+if(protocolMessage.method==='Target.receivedMessageFromTarget'){
+
+await this._handleReceivedMessageFromTarget(protocolMessage.params,sessionIdPath);
+}
+
+if(protocolMessage.method==='Target.attachedToTarget'){
+
+await this._handleTargetAttached(protocolMessage.params,sessionIdPath);
+}
+
+if(protocolMessage.method.startsWith('Network')){
+this._handleProtocolEvent(protocolMessage);
+}
+}
+
+
+
+
+
+async _handleTargetAttached(event,parentSessionIds){
+const sessionIdPath=[event.sessionId,...parentSessionIds];
+
+
+
+if(event.targetInfo.type!=='iframe'){
+
+await this.sendMessageToTarget(sessionIdPath,'Runtime.runIfWaitingForDebugger');
+return;
+}
+
+
+
+await this.sendMessageToTarget(sessionIdPath,'Network.enable');
+
+await this.sendMessageToTarget(sessionIdPath,'Target.setAutoAttach',{
+autoAttach:true,
+
+waitForDebuggerOnStart:true});
+
+
+
+await this.sendMessageToTarget(sessionIdPath,'Runtime.runIfWaitingForDebugger');
+}
+
+
+
+
+
+
+
+
+
+
+
+sendMessageToTarget(sessionIdPath,method,...params){
+this._targetProxyMessageId++;
+
+let payload={
+sessionId:sessionIdPath[0],
+message:JSON.stringify({id:this._targetProxyMessageId,method,params:params[0]})};
+
+
+for(const sessionId of sessionIdPath.slice(1)){
+this._targetProxyMessageId++;
+payload={
+sessionId,
+message:JSON.stringify({
+id:this._targetProxyMessageId,
+method:'Target.sendMessageToTarget',
+params:payload})};
+
+
+}
+
+return this.sendCommand('Target.sendMessageToTarget',payload);
 }
 
 
@@ -21665,7 +21829,8 @@ await this._clearIsolatedContextId();
 
 await this.sendCommand('Target.setAutoAttach',{
 autoAttach:true,
-waitForDebuggerOnStart:false});
+
+waitForDebuggerOnStart:true});
 
 
 await this.sendCommand('Page.enable');
@@ -22211,7 +22376,7 @@ await driver.disconnect();
 }catch(err){
 
 
-if(!/close\/.*status: 500$/.test(err.message)){
+if(!/close\/.*status: (500|404)$/.test(err.message)){
 log.error('GatherRunner disconnect',err.message);
 }
 }
@@ -23129,7 +23294,7 @@ saveLanternNetworkData};
 
 
 }).call(this,require('_process'));
-},{"../computed/load-simulator.js":10,"../computed/network-analysis.js":30,"./dependency-graph/simulator/simulator.js":58,"./lantern-trace-saver.js":66,"./traces/pwmetrics-events.js":78,"_process":137,"lighthouse-logger":120,"mkdirp":93,"path":135,"rimraf":93,"stream":148}],52:[function(require,module,exports){
+},{"../computed/load-simulator.js":10,"../computed/network-analysis.js":30,"./dependency-graph/simulator/simulator.js":58,"./lantern-trace-saver.js":66,"./traces/pwmetrics-events.js":78,"_process":137,"lighthouse-logger":120,"mkdirp":93,"path":135,"rimraf":93,"stream":162}],52:[function(require,module,exports){
 
 
 
@@ -23889,7 +24054,8 @@ module.exports=DNSCache;
 'use strict';
 
 const INITIAL_CWD=14*1024;
-const NetworkRequest=require('../../network-request');
+const NetworkRequest=require('../../network-request.js');
+const URL=require('../../url-shim.js');
 
 
 const DEFAULT_SERVER_RESPONSE_PERCENTAGE=0.4;
@@ -24328,9 +24494,20 @@ return totalBytes*8/totalDuration;
 
 
 
-static findMainDocument(records){
+
+static findMainDocument(records,finalURL){
+
+if(finalURL){
+
+const mainResource=records.find(request=>finalURL.startsWith(request.url)&&
+URL.equalWithExcludedFragments(request.url,finalURL));
+if(mainResource)return mainResource;
+
+}
+
 const documentRequests=records.filter(record=>record.resourceType===
 NetworkRequest.TYPES.Document);
+if(!documentRequests.length)throw new Error('Unable to identify the main resource');
 
 return documentRequests.reduce((min,r)=>r.startTime<min.startTime?r:min);
 }}
@@ -24346,7 +24523,7 @@ module.exports=NetworkAnalyzer;
 
 
 
-},{"../../network-request":71}],58:[function(require,module,exports){
+},{"../../network-request.js":71,"../../url-shim.js":"url"}],58:[function(require,module,exports){
 
 
 
@@ -28342,22 +28519,9 @@ return!!(isQUIC&&receivedHeaders&&record.endTime);
 
 
 
-
-
-static _isFrameRootRequestAndFinished(record){
-const isFrameRootRequest=record.url===record.documentURL;
-const responseReceived=record.responseReceivedTime>0;
-return!!(isFrameRootRequest&&responseReceived&&record.endTime);
-}
-
-
-
-
-
 static isNetworkRecordFinished(record){
 return record.finished||
-NetworkRecorder._isQUICAndFinished(record)||
-NetworkRecorder._isFrameRootRequestAndFinished(record);
+NetworkRecorder._isQUICAndFinished(record);
 }
 
 
@@ -28544,21 +28708,6 @@ request.onResourceChangedPriority(data);
 
 
 
-
-onReceivedMessageFromTarget(data){
-
-const protocolMessage=JSON.parse(data.message);
-
-
-if('id'in protocolMessage)return;
-
-this.dispatch(protocolMessage);
-}
-
-
-
-
-
 dispatch(event){
 switch(event.method){
 case'Network.requestWillBeSent':return this.onRequestWillBeSent(event.params);
@@ -28568,7 +28717,6 @@ case'Network.dataReceived':return this.onDataReceived(event.params);
 case'Network.loadingFinished':return this.onLoadingFinished(event.params);
 case'Network.loadingFailed':return this.onLoadingFailed(event.params);
 case'Network.resourceChangedPriority':return this.onResourceChangedPriority(event.params);
-case'Target.receivedMessageFromTarget':return this.onReceivedMessageFromTarget(event.params);
 default:return;}
 
 }
@@ -28717,6 +28865,7 @@ this.endTime=-1;
 
 this.responseReceivedTime=-1;
 
+
 this.transferSize=0;
 this.resourceSize=0;
 this.fromDiskCache=false;
@@ -28841,7 +28990,7 @@ this.transferSize=data.encodedDataLength;
 }
 
 this._updateResponseReceivedTimeIfNecessary();
-this._updateTransferSizeForLightRiderIfNecessary();
+this._updateTransferSizeForLightrider();
 }
 
 
@@ -28859,6 +29008,7 @@ this.resourceType=data.type&&RESOURCE_TYPES[data.type];
 this.localizedFailDescription=data.errorText;
 
 this._updateResponseReceivedTimeIfNecessary();
+this._updateTransferSizeForLightrider();
 }
 
 
@@ -28911,8 +29061,6 @@ this.fetchedViaServiceWorker=!!response.fromServiceWorker;
 
 if(this.fromMemoryCache)this.timing=undefined;
 if(this.timing)this._recomputeTimesWithResourceTiming(this.timing);
-
-this._updateTransferSizeForLightRiderIfNecessary();
 }
 
 
@@ -28948,11 +29096,23 @@ this.responseReceivedTime=Math.min(this.endTime,this.responseReceivedTime);
 
 
 
-_updateTransferSizeForLightRiderIfNecessary(){
 
-if(!global.isLightRider)return;
 
-if(this.transferSize)return;
+
+
+
+
+
+
+
+
+
+
+
+
+_updateTransferSizeForLightrider(){
+
+if(!global.isLightrider)return;
 
 const totalFetchedSize=this.responseHeaders.find(item=>item.name==='X-TotalFetchedSize');
 
@@ -30490,46 +30650,6 @@ Util.UIStrings[key]=value;
 
 
 
-static formatDisplayValue(displayValue){
-if(typeof displayValue==='string')return displayValue;
-if(!displayValue)return'';
-
-const replacementRegex=/%([0-9]*(\.[0-9]+)?d|s)/;
-const template=displayValue[0];
-if(typeof template!=='string'){
-
-
-return'UNKNOWN';
-}
-
-let output=template;
-for(const replacement of displayValue.slice(1)){
-if(!replacementRegex.test(output)){
-
-console.warn('Too many replacements given');
-break;
-}
-
-output=output.replace(replacementRegex,match=>{
-const granularity=Number(match.match(/[0-9.]+/))||1;
-return match==='%s'?
-replacement.toLocaleString():
-(Math.round(Number(replacement)/granularity)*granularity).toLocaleString();
-});
-}
-
-if(replacementRegex.test(output)){
-
-console.warn('Not enough replacements given');
-}
-
-return output;
-}
-
-
-
-
-
 
 
 
@@ -31459,7 +31579,7 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 static getGathererList(){
 const fileList=[
 ...["accessibility.js","anchor-elements.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-elements.js","js-usage.js","link-elements.js","meta-elements.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","viewport-dimensions.js"],
-...["canonical.js","embedded-content.js","font-size.js","hreflang.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
+...["embedded-content.js","font-size.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
 ...["appcache.js","doctype.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js"].
 map(f=>`dobetterweb/${f}`)];
 
@@ -42031,7 +42151,7 @@ util.inherits(DeflateRaw,Zlib);
 util.inherits(InflateRaw,Zlib);
 util.inherits(Unzip,Zlib);
 }).call(this,require('_process'));
-},{"./binding":91,"_process":137,"assert":84,"buffer":94,"stream":148,"util":166}],93:[function(require,module,exports){
+},{"./binding":91,"_process":137,"assert":84,"buffer":94,"stream":162,"util":166}],93:[function(require,module,exports){
 arguments[4][90][0].apply(exports,arguments);
 },{"dup":90}],94:[function(require,module,exports){
 (function(Buffer){
@@ -56976,6 +57096,2516 @@ exports.decode=exports.parse=require('./decode');
 exports.encode=exports.stringify=require('./encode');
 
 },{"./decode":138,"./encode":139}],141:[function(require,module,exports){
+module.exports=require('./lib/_stream_duplex.js');
+
+},{"./lib/_stream_duplex.js":142}],142:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+
+var objectKeys=Object.keys||function(obj){
+var keys=[];
+for(var key in obj){
+keys.push(key);
+}return keys;
+};
+
+
+module.exports=Duplex;
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+var Readable=require('./_stream_readable');
+var Writable=require('./_stream_writable');
+
+util.inherits(Duplex,Readable);
+
+var keys=objectKeys(Writable.prototype);
+for(var v=0;v<keys.length;v++){
+var method=keys[v];
+if(!Duplex.prototype[method])Duplex.prototype[method]=Writable.prototype[method];
+}
+
+function Duplex(options){
+if(!(this instanceof Duplex))return new Duplex(options);
+
+Readable.call(this,options);
+Writable.call(this,options);
+
+if(options&&options.readable===false)this.readable=false;
+
+if(options&&options.writable===false)this.writable=false;
+
+this.allowHalfOpen=true;
+if(options&&options.allowHalfOpen===false)this.allowHalfOpen=false;
+
+this.once('end',onend);
+}
+
+
+function onend(){
+
+
+if(this.allowHalfOpen||this._writableState.ended)return;
+
+
+
+processNextTick(onEndNT,this);
+}
+
+function onEndNT(self){
+self.end();
+}
+
+Object.defineProperty(Duplex.prototype,'destroyed',{
+get:function(){
+if(this._readableState===undefined||this._writableState===undefined){
+return false;
+}
+return this._readableState.destroyed&&this._writableState.destroyed;
+},
+set:function(value){
+
+
+if(this._readableState===undefined||this._writableState===undefined){
+return;
+}
+
+
+
+this._readableState.destroyed=value;
+this._writableState.destroyed=value;
+}});
+
+
+Duplex.prototype._destroy=function(err,cb){
+this.push(null);
+this.end();
+
+processNextTick(cb,err);
+};
+
+function forEach(xs,f){
+for(var i=0,l=xs.length;i<l;i++){
+f(xs[i],i);
+}
+}
+},{"./_stream_readable":144,"./_stream_writable":146,"core-util-is":95,"inherits":105,"process-nextick-args":136}],143:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+module.exports=PassThrough;
+
+var Transform=require('./_stream_transform');
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+util.inherits(PassThrough,Transform);
+
+function PassThrough(options){
+if(!(this instanceof PassThrough))return new PassThrough(options);
+
+Transform.call(this,options);
+}
+
+PassThrough.prototype._transform=function(chunk,encoding,cb){
+cb(null,chunk);
+};
+},{"./_stream_transform":145,"core-util-is":95,"inherits":105}],144:[function(require,module,exports){
+(function(process,global){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+module.exports=Readable;
+
+
+var isArray=require('isarray');
+
+
+
+var Duplex;
+
+
+Readable.ReadableState=ReadableState;
+
+
+var EE=require('events').EventEmitter;
+
+var EElistenerCount=function(emitter,type){
+return emitter.listeners(type).length;
+};
+
+
+
+var Stream=require('./internal/streams/stream');
+
+
+
+
+
+var Buffer=require('safe-buffer').Buffer;
+var OurUint8Array=global.Uint8Array||function(){};
+function _uint8ArrayToBuffer(chunk){
+return Buffer.from(chunk);
+}
+function _isUint8Array(obj){
+return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
+}
+
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+
+var debugUtil=require('util');
+var debug=void 0;
+if(debugUtil&&debugUtil.debuglog){
+debug=debugUtil.debuglog('stream');
+}else{
+debug=function(){};
+}
+
+
+var BufferList=require('./internal/streams/BufferList');
+var destroyImpl=require('./internal/streams/destroy');
+var StringDecoder;
+
+util.inherits(Readable,Stream);
+
+var kProxyEvents=['error','close','destroy','pause','resume'];
+
+function prependListener(emitter,event,fn){
+
+
+if(typeof emitter.prependListener==='function'){
+return emitter.prependListener(event,fn);
+}else{
+
+
+
+
+if(!emitter._events||!emitter._events[event])emitter.on(event,fn);else if(isArray(emitter._events[event]))emitter._events[event].unshift(fn);else emitter._events[event]=[fn,emitter._events[event]];
+}
+}
+
+function ReadableState(options,stream){
+Duplex=Duplex||require('./_stream_duplex');
+
+options=options||{};
+
+
+
+this.objectMode=!!options.objectMode;
+
+if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.readableObjectMode;
+
+
+
+var hwm=options.highWaterMark;
+var defaultHwm=this.objectMode?16:16*1024;
+this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
+
+
+this.highWaterMark=Math.floor(this.highWaterMark);
+
+
+
+
+this.buffer=new BufferList();
+this.length=0;
+this.pipes=null;
+this.pipesCount=0;
+this.flowing=null;
+this.ended=false;
+this.endEmitted=false;
+this.reading=false;
+
+
+
+
+
+this.sync=true;
+
+
+
+this.needReadable=false;
+this.emittedReadable=false;
+this.readableListening=false;
+this.resumeScheduled=false;
+
+
+this.destroyed=false;
+
+
+
+
+this.defaultEncoding=options.defaultEncoding||'utf8';
+
+
+this.awaitDrain=0;
+
+
+this.readingMore=false;
+
+this.decoder=null;
+this.encoding=null;
+if(options.encoding){
+if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
+this.decoder=new StringDecoder(options.encoding);
+this.encoding=options.encoding;
+}
+}
+
+function Readable(options){
+Duplex=Duplex||require('./_stream_duplex');
+
+if(!(this instanceof Readable))return new Readable(options);
+
+this._readableState=new ReadableState(options,this);
+
+
+this.readable=true;
+
+if(options){
+if(typeof options.read==='function')this._read=options.read;
+
+if(typeof options.destroy==='function')this._destroy=options.destroy;
+}
+
+Stream.call(this);
+}
+
+Object.defineProperty(Readable.prototype,'destroyed',{
+get:function(){
+if(this._readableState===undefined){
+return false;
+}
+return this._readableState.destroyed;
+},
+set:function(value){
+
+
+if(!this._readableState){
+return;
+}
+
+
+
+this._readableState.destroyed=value;
+}});
+
+
+Readable.prototype.destroy=destroyImpl.destroy;
+Readable.prototype._undestroy=destroyImpl.undestroy;
+Readable.prototype._destroy=function(err,cb){
+this.push(null);
+cb(err);
+};
+
+
+
+
+
+Readable.prototype.push=function(chunk,encoding){
+var state=this._readableState;
+var skipChunkCheck;
+
+if(!state.objectMode){
+if(typeof chunk==='string'){
+encoding=encoding||state.defaultEncoding;
+if(encoding!==state.encoding){
+chunk=Buffer.from(chunk,encoding);
+encoding='';
+}
+skipChunkCheck=true;
+}
+}else{
+skipChunkCheck=true;
+}
+
+return readableAddChunk(this,chunk,encoding,false,skipChunkCheck);
+};
+
+
+Readable.prototype.unshift=function(chunk){
+return readableAddChunk(this,chunk,null,true,false);
+};
+
+function readableAddChunk(stream,chunk,encoding,addToFront,skipChunkCheck){
+var state=stream._readableState;
+if(chunk===null){
+state.reading=false;
+onEofChunk(stream,state);
+}else{
+var er;
+if(!skipChunkCheck)er=chunkInvalid(state,chunk);
+if(er){
+stream.emit('error',er);
+}else if(state.objectMode||chunk&&chunk.length>0){
+if(typeof chunk!=='string'&&!state.objectMode&&Object.getPrototypeOf(chunk)!==Buffer.prototype){
+chunk=_uint8ArrayToBuffer(chunk);
+}
+
+if(addToFront){
+if(state.endEmitted)stream.emit('error',new Error('stream.unshift() after end event'));else addChunk(stream,state,chunk,true);
+}else if(state.ended){
+stream.emit('error',new Error('stream.push() after EOF'));
+}else{
+state.reading=false;
+if(state.decoder&&!encoding){
+chunk=state.decoder.write(chunk);
+if(state.objectMode||chunk.length!==0)addChunk(stream,state,chunk,false);else maybeReadMore(stream,state);
+}else{
+addChunk(stream,state,chunk,false);
+}
+}
+}else if(!addToFront){
+state.reading=false;
+}
+}
+
+return needMoreData(state);
+}
+
+function addChunk(stream,state,chunk,addToFront){
+if(state.flowing&&state.length===0&&!state.sync){
+stream.emit('data',chunk);
+stream.read(0);
+}else{
+
+state.length+=state.objectMode?1:chunk.length;
+if(addToFront)state.buffer.unshift(chunk);else state.buffer.push(chunk);
+
+if(state.needReadable)emitReadable(stream);
+}
+maybeReadMore(stream,state);
+}
+
+function chunkInvalid(state,chunk){
+var er;
+if(!_isUint8Array(chunk)&&typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
+er=new TypeError('Invalid non-string/buffer chunk');
+}
+return er;
+}
+
+
+
+
+
+
+
+
+function needMoreData(state){
+return!state.ended&&(state.needReadable||state.length<state.highWaterMark||state.length===0);
+}
+
+Readable.prototype.isPaused=function(){
+return this._readableState.flowing===false;
+};
+
+
+Readable.prototype.setEncoding=function(enc){
+if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
+this._readableState.decoder=new StringDecoder(enc);
+this._readableState.encoding=enc;
+return this;
+};
+
+
+var MAX_HWM=0x800000;
+function computeNewHighWaterMark(n){
+if(n>=MAX_HWM){
+n=MAX_HWM;
+}else{
+
+
+n--;
+n|=n>>>1;
+n|=n>>>2;
+n|=n>>>4;
+n|=n>>>8;
+n|=n>>>16;
+n++;
+}
+return n;
+}
+
+
+
+function howMuchToRead(n,state){
+if(n<=0||state.length===0&&state.ended)return 0;
+if(state.objectMode)return 1;
+if(n!==n){
+
+if(state.flowing&&state.length)return state.buffer.head.data.length;else return state.length;
+}
+
+if(n>state.highWaterMark)state.highWaterMark=computeNewHighWaterMark(n);
+if(n<=state.length)return n;
+
+if(!state.ended){
+state.needReadable=true;
+return 0;
+}
+return state.length;
+}
+
+
+Readable.prototype.read=function(n){
+debug('read',n);
+n=parseInt(n,10);
+var state=this._readableState;
+var nOrig=n;
+
+if(n!==0)state.emittedReadable=false;
+
+
+
+
+if(n===0&&state.needReadable&&(state.length>=state.highWaterMark||state.ended)){
+debug('read: emitReadable',state.length,state.ended);
+if(state.length===0&&state.ended)endReadable(this);else emitReadable(this);
+return null;
+}
+
+n=howMuchToRead(n,state);
+
+
+if(n===0&&state.ended){
+if(state.length===0)endReadable(this);
+return null;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var doRead=state.needReadable;
+debug('need readable',doRead);
+
+
+if(state.length===0||state.length-n<state.highWaterMark){
+doRead=true;
+debug('length less than watermark',doRead);
+}
+
+
+
+if(state.ended||state.reading){
+doRead=false;
+debug('reading or ended',doRead);
+}else if(doRead){
+debug('do read');
+state.reading=true;
+state.sync=true;
+
+if(state.length===0)state.needReadable=true;
+
+this._read(state.highWaterMark);
+state.sync=false;
+
+
+if(!state.reading)n=howMuchToRead(nOrig,state);
+}
+
+var ret;
+if(n>0)ret=fromList(n,state);else ret=null;
+
+if(ret===null){
+state.needReadable=true;
+n=0;
+}else{
+state.length-=n;
+}
+
+if(state.length===0){
+
+
+if(!state.ended)state.needReadable=true;
+
+
+if(nOrig!==n&&state.ended)endReadable(this);
+}
+
+if(ret!==null)this.emit('data',ret);
+
+return ret;
+};
+
+function onEofChunk(stream,state){
+if(state.ended)return;
+if(state.decoder){
+var chunk=state.decoder.end();
+if(chunk&&chunk.length){
+state.buffer.push(chunk);
+state.length+=state.objectMode?1:chunk.length;
+}
+}
+state.ended=true;
+
+
+emitReadable(stream);
+}
+
+
+
+
+function emitReadable(stream){
+var state=stream._readableState;
+state.needReadable=false;
+if(!state.emittedReadable){
+debug('emitReadable',state.flowing);
+state.emittedReadable=true;
+if(state.sync)processNextTick(emitReadable_,stream);else emitReadable_(stream);
+}
+}
+
+function emitReadable_(stream){
+debug('emit readable');
+stream.emit('readable');
+flow(stream);
+}
+
+
+
+
+
+
+
+function maybeReadMore(stream,state){
+if(!state.readingMore){
+state.readingMore=true;
+processNextTick(maybeReadMore_,stream,state);
+}
+}
+
+function maybeReadMore_(stream,state){
+var len=state.length;
+while(!state.reading&&!state.flowing&&!state.ended&&state.length<state.highWaterMark){
+debug('maybeReadMore read 0');
+stream.read(0);
+if(len===state.length)
+
+break;else len=state.length;
+}
+state.readingMore=false;
+}
+
+
+
+
+
+Readable.prototype._read=function(n){
+this.emit('error',new Error('_read() is not implemented'));
+};
+
+Readable.prototype.pipe=function(dest,pipeOpts){
+var src=this;
+var state=this._readableState;
+
+switch(state.pipesCount){
+case 0:
+state.pipes=dest;
+break;
+case 1:
+state.pipes=[state.pipes,dest];
+break;
+default:
+state.pipes.push(dest);
+break;}
+
+state.pipesCount+=1;
+debug('pipe count=%d opts=%j',state.pipesCount,pipeOpts);
+
+var doEnd=(!pipeOpts||pipeOpts.end!==false)&&dest!==process.stdout&&dest!==process.stderr;
+
+var endFn=doEnd?onend:unpipe;
+if(state.endEmitted)processNextTick(endFn);else src.once('end',endFn);
+
+dest.on('unpipe',onunpipe);
+function onunpipe(readable,unpipeInfo){
+debug('onunpipe');
+if(readable===src){
+if(unpipeInfo&&unpipeInfo.hasUnpiped===false){
+unpipeInfo.hasUnpiped=true;
+cleanup();
+}
+}
+}
+
+function onend(){
+debug('onend');
+dest.end();
+}
+
+
+
+
+
+var ondrain=pipeOnDrain(src);
+dest.on('drain',ondrain);
+
+var cleanedUp=false;
+function cleanup(){
+debug('cleanup');
+
+dest.removeListener('close',onclose);
+dest.removeListener('finish',onfinish);
+dest.removeListener('drain',ondrain);
+dest.removeListener('error',onerror);
+dest.removeListener('unpipe',onunpipe);
+src.removeListener('end',onend);
+src.removeListener('end',unpipe);
+src.removeListener('data',ondata);
+
+cleanedUp=true;
+
+
+
+
+
+
+if(state.awaitDrain&&(!dest._writableState||dest._writableState.needDrain))ondrain();
+}
+
+
+
+
+
+var increasedAwaitDrain=false;
+src.on('data',ondata);
+function ondata(chunk){
+debug('ondata');
+increasedAwaitDrain=false;
+var ret=dest.write(chunk);
+if(false===ret&&!increasedAwaitDrain){
+
+
+
+
+if((state.pipesCount===1&&state.pipes===dest||state.pipesCount>1&&indexOf(state.pipes,dest)!==-1)&&!cleanedUp){
+debug('false write response, pause',src._readableState.awaitDrain);
+src._readableState.awaitDrain++;
+increasedAwaitDrain=true;
+}
+src.pause();
+}
+}
+
+
+
+function onerror(er){
+debug('onerror',er);
+unpipe();
+dest.removeListener('error',onerror);
+if(EElistenerCount(dest,'error')===0)dest.emit('error',er);
+}
+
+
+prependListener(dest,'error',onerror);
+
+
+function onclose(){
+dest.removeListener('finish',onfinish);
+unpipe();
+}
+dest.once('close',onclose);
+function onfinish(){
+debug('onfinish');
+dest.removeListener('close',onclose);
+unpipe();
+}
+dest.once('finish',onfinish);
+
+function unpipe(){
+debug('unpipe');
+src.unpipe(dest);
+}
+
+
+dest.emit('pipe',src);
+
+
+if(!state.flowing){
+debug('pipe resume');
+src.resume();
+}
+
+return dest;
+};
+
+function pipeOnDrain(src){
+return function(){
+var state=src._readableState;
+debug('pipeOnDrain',state.awaitDrain);
+if(state.awaitDrain)state.awaitDrain--;
+if(state.awaitDrain===0&&EElistenerCount(src,'data')){
+state.flowing=true;
+flow(src);
+}
+};
+}
+
+Readable.prototype.unpipe=function(dest){
+var state=this._readableState;
+var unpipeInfo={hasUnpiped:false};
+
+
+if(state.pipesCount===0)return this;
+
+
+if(state.pipesCount===1){
+
+if(dest&&dest!==state.pipes)return this;
+
+if(!dest)dest=state.pipes;
+
+
+state.pipes=null;
+state.pipesCount=0;
+state.flowing=false;
+if(dest)dest.emit('unpipe',this,unpipeInfo);
+return this;
+}
+
+
+
+if(!dest){
+
+var dests=state.pipes;
+var len=state.pipesCount;
+state.pipes=null;
+state.pipesCount=0;
+state.flowing=false;
+
+for(var i=0;i<len;i++){
+dests[i].emit('unpipe',this,unpipeInfo);
+}return this;
+}
+
+
+var index=indexOf(state.pipes,dest);
+if(index===-1)return this;
+
+state.pipes.splice(index,1);
+state.pipesCount-=1;
+if(state.pipesCount===1)state.pipes=state.pipes[0];
+
+dest.emit('unpipe',this,unpipeInfo);
+
+return this;
+};
+
+
+
+Readable.prototype.on=function(ev,fn){
+var res=Stream.prototype.on.call(this,ev,fn);
+
+if(ev==='data'){
+
+if(this._readableState.flowing!==false)this.resume();
+}else if(ev==='readable'){
+var state=this._readableState;
+if(!state.endEmitted&&!state.readableListening){
+state.readableListening=state.needReadable=true;
+state.emittedReadable=false;
+if(!state.reading){
+processNextTick(nReadingNextTick,this);
+}else if(state.length){
+emitReadable(this);
+}
+}
+}
+
+return res;
+};
+Readable.prototype.addListener=Readable.prototype.on;
+
+function nReadingNextTick(self){
+debug('readable nexttick read 0');
+self.read(0);
+}
+
+
+
+Readable.prototype.resume=function(){
+var state=this._readableState;
+if(!state.flowing){
+debug('resume');
+state.flowing=true;
+resume(this,state);
+}
+return this;
+};
+
+function resume(stream,state){
+if(!state.resumeScheduled){
+state.resumeScheduled=true;
+processNextTick(resume_,stream,state);
+}
+}
+
+function resume_(stream,state){
+if(!state.reading){
+debug('resume read 0');
+stream.read(0);
+}
+
+state.resumeScheduled=false;
+state.awaitDrain=0;
+stream.emit('resume');
+flow(stream);
+if(state.flowing&&!state.reading)stream.read(0);
+}
+
+Readable.prototype.pause=function(){
+debug('call pause flowing=%j',this._readableState.flowing);
+if(false!==this._readableState.flowing){
+debug('pause');
+this._readableState.flowing=false;
+this.emit('pause');
+}
+return this;
+};
+
+function flow(stream){
+var state=stream._readableState;
+debug('flow',state.flowing);
+while(state.flowing&&stream.read()!==null){}
+}
+
+
+
+
+Readable.prototype.wrap=function(stream){
+var state=this._readableState;
+var paused=false;
+
+var self=this;
+stream.on('end',function(){
+debug('wrapped end');
+if(state.decoder&&!state.ended){
+var chunk=state.decoder.end();
+if(chunk&&chunk.length)self.push(chunk);
+}
+
+self.push(null);
+});
+
+stream.on('data',function(chunk){
+debug('wrapped data');
+if(state.decoder)chunk=state.decoder.write(chunk);
+
+
+if(state.objectMode&&(chunk===null||chunk===undefined))return;else if(!state.objectMode&&(!chunk||!chunk.length))return;
+
+var ret=self.push(chunk);
+if(!ret){
+paused=true;
+stream.pause();
+}
+});
+
+
+
+for(var i in stream){
+if(this[i]===undefined&&typeof stream[i]==='function'){
+this[i]=function(method){
+return function(){
+return stream[method].apply(stream,arguments);
+};
+}(i);
+}
+}
+
+
+for(var n=0;n<kProxyEvents.length;n++){
+stream.on(kProxyEvents[n],self.emit.bind(self,kProxyEvents[n]));
+}
+
+
+
+self._read=function(n){
+debug('wrapped _read',n);
+if(paused){
+paused=false;
+stream.resume();
+}
+};
+
+return self;
+};
+
+
+Readable._fromList=fromList;
+
+
+
+
+
+function fromList(n,state){
+
+if(state.length===0)return null;
+
+var ret;
+if(state.objectMode)ret=state.buffer.shift();else if(!n||n>=state.length){
+
+if(state.decoder)ret=state.buffer.join('');else if(state.buffer.length===1)ret=state.buffer.head.data;else ret=state.buffer.concat(state.length);
+state.buffer.clear();
+}else{
+
+ret=fromListPartial(n,state.buffer,state.decoder);
+}
+
+return ret;
+}
+
+
+
+
+function fromListPartial(n,list,hasStrings){
+var ret;
+if(n<list.head.data.length){
+
+ret=list.head.data.slice(0,n);
+list.head.data=list.head.data.slice(n);
+}else if(n===list.head.data.length){
+
+ret=list.shift();
+}else{
+
+ret=hasStrings?copyFromBufferString(n,list):copyFromBuffer(n,list);
+}
+return ret;
+}
+
+
+
+
+
+function copyFromBufferString(n,list){
+var p=list.head;
+var c=1;
+var ret=p.data;
+n-=ret.length;
+while(p=p.next){
+var str=p.data;
+var nb=n>str.length?str.length:n;
+if(nb===str.length)ret+=str;else ret+=str.slice(0,n);
+n-=nb;
+if(n===0){
+if(nb===str.length){
+++c;
+if(p.next)list.head=p.next;else list.head=list.tail=null;
+}else{
+list.head=p;
+p.data=str.slice(nb);
+}
+break;
+}
+++c;
+}
+list.length-=c;
+return ret;
+}
+
+
+
+
+function copyFromBuffer(n,list){
+var ret=Buffer.allocUnsafe(n);
+var p=list.head;
+var c=1;
+p.data.copy(ret);
+n-=p.data.length;
+while(p=p.next){
+var buf=p.data;
+var nb=n>buf.length?buf.length:n;
+buf.copy(ret,ret.length-n,0,nb);
+n-=nb;
+if(n===0){
+if(nb===buf.length){
+++c;
+if(p.next)list.head=p.next;else list.head=list.tail=null;
+}else{
+list.head=p;
+p.data=buf.slice(nb);
+}
+break;
+}
+++c;
+}
+list.length-=c;
+return ret;
+}
+
+function endReadable(stream){
+var state=stream._readableState;
+
+
+
+if(state.length>0)throw new Error('"endReadable()" called on non-empty stream');
+
+if(!state.endEmitted){
+state.ended=true;
+processNextTick(endReadableNT,state,stream);
+}
+}
+
+function endReadableNT(state,stream){
+
+if(!state.endEmitted&&state.length===0){
+state.endEmitted=true;
+stream.readable=false;
+stream.emit('end');
+}
+}
+
+function forEach(xs,f){
+for(var i=0,l=xs.length;i<l;i++){
+f(xs[i],i);
+}
+}
+
+function indexOf(xs,x){
+for(var i=0,l=xs.length;i<l;i++){
+if(xs[i]===x)return i;
+}
+return-1;
+}
+}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
+},{"./_stream_duplex":142,"./internal/streams/BufferList":147,"./internal/streams/destroy":148,"./internal/streams/stream":149,"_process":137,"core-util-is":95,"events":100,"inherits":105,"isarray":116,"process-nextick-args":136,"safe-buffer":157,"string_decoder/":150,"util":90}],145:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+module.exports=Transform;
+
+var Duplex=require('./_stream_duplex');
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+util.inherits(Transform,Duplex);
+
+function TransformState(stream){
+this.afterTransform=function(er,data){
+return afterTransform(stream,er,data);
+};
+
+this.needTransform=false;
+this.transforming=false;
+this.writecb=null;
+this.writechunk=null;
+this.writeencoding=null;
+}
+
+function afterTransform(stream,er,data){
+var ts=stream._transformState;
+ts.transforming=false;
+
+var cb=ts.writecb;
+
+if(!cb){
+return stream.emit('error',new Error('write callback called multiple times'));
+}
+
+ts.writechunk=null;
+ts.writecb=null;
+
+if(data!==null&&data!==undefined)stream.push(data);
+
+cb(er);
+
+var rs=stream._readableState;
+rs.reading=false;
+if(rs.needReadable||rs.length<rs.highWaterMark){
+stream._read(rs.highWaterMark);
+}
+}
+
+function Transform(options){
+if(!(this instanceof Transform))return new Transform(options);
+
+Duplex.call(this,options);
+
+this._transformState=new TransformState(this);
+
+var stream=this;
+
+
+this._readableState.needReadable=true;
+
+
+
+
+this._readableState.sync=false;
+
+if(options){
+if(typeof options.transform==='function')this._transform=options.transform;
+
+if(typeof options.flush==='function')this._flush=options.flush;
+}
+
+
+this.once('prefinish',function(){
+if(typeof this._flush==='function')this._flush(function(er,data){
+done(stream,er,data);
+});else done(stream);
+});
+}
+
+Transform.prototype.push=function(chunk,encoding){
+this._transformState.needTransform=false;
+return Duplex.prototype.push.call(this,chunk,encoding);
+};
+
+
+
+
+
+
+
+
+
+
+
+Transform.prototype._transform=function(chunk,encoding,cb){
+throw new Error('_transform() is not implemented');
+};
+
+Transform.prototype._write=function(chunk,encoding,cb){
+var ts=this._transformState;
+ts.writecb=cb;
+ts.writechunk=chunk;
+ts.writeencoding=encoding;
+if(!ts.transforming){
+var rs=this._readableState;
+if(ts.needTransform||rs.needReadable||rs.length<rs.highWaterMark)this._read(rs.highWaterMark);
+}
+};
+
+
+
+
+Transform.prototype._read=function(n){
+var ts=this._transformState;
+
+if(ts.writechunk!==null&&ts.writecb&&!ts.transforming){
+ts.transforming=true;
+this._transform(ts.writechunk,ts.writeencoding,ts.afterTransform);
+}else{
+
+
+ts.needTransform=true;
+}
+};
+
+Transform.prototype._destroy=function(err,cb){
+var _this=this;
+
+Duplex.prototype._destroy.call(this,err,function(err2){
+cb(err2);
+_this.emit('close');
+});
+};
+
+function done(stream,er,data){
+if(er)return stream.emit('error',er);
+
+if(data!==null&&data!==undefined)stream.push(data);
+
+
+
+var ws=stream._writableState;
+var ts=stream._transformState;
+
+if(ws.length)throw new Error('Calling transform done when ws.length != 0');
+
+if(ts.transforming)throw new Error('Calling transform done when still transforming');
+
+return stream.push(null);
+}
+},{"./_stream_duplex":142,"core-util-is":95,"inherits":105}],146:[function(require,module,exports){
+(function(process,global,setImmediate){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+module.exports=Writable;
+
+
+function WriteReq(chunk,encoding,cb){
+this.chunk=chunk;
+this.encoding=encoding;
+this.callback=cb;
+this.next=null;
+}
+
+
+
+function CorkedRequest(state){
+var _this=this;
+
+this.next=null;
+this.entry=null;
+this.finish=function(){
+onCorkedFinish(_this,state);
+};
+}
+
+
+
+var asyncWrite=!process.browser&&['v0.10','v0.9.'].indexOf(process.version.slice(0,5))>-1?setImmediate:processNextTick;
+
+
+
+var Duplex;
+
+
+Writable.WritableState=WritableState;
+
+
+var util=require('core-util-is');
+util.inherits=require('inherits');
+
+
+
+var internalUtil={
+deprecate:require('util-deprecate')};
+
+
+
+
+var Stream=require('./internal/streams/stream');
+
+
+
+var Buffer=require('safe-buffer').Buffer;
+var OurUint8Array=global.Uint8Array||function(){};
+function _uint8ArrayToBuffer(chunk){
+return Buffer.from(chunk);
+}
+function _isUint8Array(obj){
+return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
+}
+
+
+var destroyImpl=require('./internal/streams/destroy');
+
+util.inherits(Writable,Stream);
+
+function nop(){}
+
+function WritableState(options,stream){
+Duplex=Duplex||require('./_stream_duplex');
+
+options=options||{};
+
+
+
+this.objectMode=!!options.objectMode;
+
+if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.writableObjectMode;
+
+
+
+
+var hwm=options.highWaterMark;
+var defaultHwm=this.objectMode?16:16*1024;
+this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
+
+
+this.highWaterMark=Math.floor(this.highWaterMark);
+
+
+this.finalCalled=false;
+
+
+this.needDrain=false;
+
+this.ending=false;
+
+this.ended=false;
+
+this.finished=false;
+
+
+this.destroyed=false;
+
+
+
+
+var noDecode=options.decodeStrings===false;
+this.decodeStrings=!noDecode;
+
+
+
+
+this.defaultEncoding=options.defaultEncoding||'utf8';
+
+
+
+
+this.length=0;
+
+
+this.writing=false;
+
+
+this.corked=0;
+
+
+
+
+
+this.sync=true;
+
+
+
+
+this.bufferProcessing=false;
+
+
+this.onwrite=function(er){
+onwrite(stream,er);
+};
+
+
+this.writecb=null;
+
+
+this.writelen=0;
+
+this.bufferedRequest=null;
+this.lastBufferedRequest=null;
+
+
+
+this.pendingcb=0;
+
+
+
+this.prefinished=false;
+
+
+this.errorEmitted=false;
+
+
+this.bufferedRequestCount=0;
+
+
+
+this.corkedRequestsFree=new CorkedRequest(this);
+}
+
+WritableState.prototype.getBuffer=function getBuffer(){
+var current=this.bufferedRequest;
+var out=[];
+while(current){
+out.push(current);
+current=current.next;
+}
+return out;
+};
+
+(function(){
+try{
+Object.defineProperty(WritableState.prototype,'buffer',{
+get:internalUtil.deprecate(function(){
+return this.getBuffer();
+},'_writableState.buffer is deprecated. Use _writableState.getBuffer '+'instead.','DEP0003')});
+
+}catch(_){}
+})();
+
+
+
+var realHasInstance;
+if(typeof Symbol==='function'&&Symbol.hasInstance&&typeof Function.prototype[Symbol.hasInstance]==='function'){
+realHasInstance=Function.prototype[Symbol.hasInstance];
+Object.defineProperty(Writable,Symbol.hasInstance,{
+value:function(object){
+if(realHasInstance.call(this,object))return true;
+
+return object&&object._writableState instanceof WritableState;
+}});
+
+}else{
+realHasInstance=function(object){
+return object instanceof this;
+};
+}
+
+function Writable(options){
+Duplex=Duplex||require('./_stream_duplex');
+
+
+
+
+
+
+
+
+if(!realHasInstance.call(Writable,this)&&!(this instanceof Duplex)){
+return new Writable(options);
+}
+
+this._writableState=new WritableState(options,this);
+
+
+this.writable=true;
+
+if(options){
+if(typeof options.write==='function')this._write=options.write;
+
+if(typeof options.writev==='function')this._writev=options.writev;
+
+if(typeof options.destroy==='function')this._destroy=options.destroy;
+
+if(typeof options.final==='function')this._final=options.final;
+}
+
+Stream.call(this);
+}
+
+
+Writable.prototype.pipe=function(){
+this.emit('error',new Error('Cannot pipe, not readable'));
+};
+
+function writeAfterEnd(stream,cb){
+var er=new Error('write after end');
+
+stream.emit('error',er);
+processNextTick(cb,er);
+}
+
+
+
+
+function validChunk(stream,state,chunk,cb){
+var valid=true;
+var er=false;
+
+if(chunk===null){
+er=new TypeError('May not write null values to stream');
+}else if(typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
+er=new TypeError('Invalid non-string/buffer chunk');
+}
+if(er){
+stream.emit('error',er);
+processNextTick(cb,er);
+valid=false;
+}
+return valid;
+}
+
+Writable.prototype.write=function(chunk,encoding,cb){
+var state=this._writableState;
+var ret=false;
+var isBuf=_isUint8Array(chunk)&&!state.objectMode;
+
+if(isBuf&&!Buffer.isBuffer(chunk)){
+chunk=_uint8ArrayToBuffer(chunk);
+}
+
+if(typeof encoding==='function'){
+cb=encoding;
+encoding=null;
+}
+
+if(isBuf)encoding='buffer';else if(!encoding)encoding=state.defaultEncoding;
+
+if(typeof cb!=='function')cb=nop;
+
+if(state.ended)writeAfterEnd(this,cb);else if(isBuf||validChunk(this,state,chunk,cb)){
+state.pendingcb++;
+ret=writeOrBuffer(this,state,isBuf,chunk,encoding,cb);
+}
+
+return ret;
+};
+
+Writable.prototype.cork=function(){
+var state=this._writableState;
+
+state.corked++;
+};
+
+Writable.prototype.uncork=function(){
+var state=this._writableState;
+
+if(state.corked){
+state.corked--;
+
+if(!state.writing&&!state.corked&&!state.finished&&!state.bufferProcessing&&state.bufferedRequest)clearBuffer(this,state);
+}
+};
+
+Writable.prototype.setDefaultEncoding=function setDefaultEncoding(encoding){
+
+if(typeof encoding==='string')encoding=encoding.toLowerCase();
+if(!(['hex','utf8','utf-8','ascii','binary','base64','ucs2','ucs-2','utf16le','utf-16le','raw'].indexOf((encoding+'').toLowerCase())>-1))throw new TypeError('Unknown encoding: '+encoding);
+this._writableState.defaultEncoding=encoding;
+return this;
+};
+
+function decodeChunk(state,chunk,encoding){
+if(!state.objectMode&&state.decodeStrings!==false&&typeof chunk==='string'){
+chunk=Buffer.from(chunk,encoding);
+}
+return chunk;
+}
+
+
+
+
+function writeOrBuffer(stream,state,isBuf,chunk,encoding,cb){
+if(!isBuf){
+var newChunk=decodeChunk(state,chunk,encoding);
+if(chunk!==newChunk){
+isBuf=true;
+encoding='buffer';
+chunk=newChunk;
+}
+}
+var len=state.objectMode?1:chunk.length;
+
+state.length+=len;
+
+var ret=state.length<state.highWaterMark;
+
+if(!ret)state.needDrain=true;
+
+if(state.writing||state.corked){
+var last=state.lastBufferedRequest;
+state.lastBufferedRequest={
+chunk:chunk,
+encoding:encoding,
+isBuf:isBuf,
+callback:cb,
+next:null};
+
+if(last){
+last.next=state.lastBufferedRequest;
+}else{
+state.bufferedRequest=state.lastBufferedRequest;
+}
+state.bufferedRequestCount+=1;
+}else{
+doWrite(stream,state,false,len,chunk,encoding,cb);
+}
+
+return ret;
+}
+
+function doWrite(stream,state,writev,len,chunk,encoding,cb){
+state.writelen=len;
+state.writecb=cb;
+state.writing=true;
+state.sync=true;
+if(writev)stream._writev(chunk,state.onwrite);else stream._write(chunk,encoding,state.onwrite);
+state.sync=false;
+}
+
+function onwriteError(stream,state,sync,er,cb){
+--state.pendingcb;
+
+if(sync){
+
+
+processNextTick(cb,er);
+
+
+processNextTick(finishMaybe,stream,state);
+stream._writableState.errorEmitted=true;
+stream.emit('error',er);
+}else{
+
+
+cb(er);
+stream._writableState.errorEmitted=true;
+stream.emit('error',er);
+
+
+finishMaybe(stream,state);
+}
+}
+
+function onwriteStateUpdate(state){
+state.writing=false;
+state.writecb=null;
+state.length-=state.writelen;
+state.writelen=0;
+}
+
+function onwrite(stream,er){
+var state=stream._writableState;
+var sync=state.sync;
+var cb=state.writecb;
+
+onwriteStateUpdate(state);
+
+if(er)onwriteError(stream,state,sync,er,cb);else{
+
+var finished=needFinish(state);
+
+if(!finished&&!state.corked&&!state.bufferProcessing&&state.bufferedRequest){
+clearBuffer(stream,state);
+}
+
+if(sync){
+
+asyncWrite(afterWrite,stream,state,finished,cb);
+
+}else{
+afterWrite(stream,state,finished,cb);
+}
+}
+}
+
+function afterWrite(stream,state,finished,cb){
+if(!finished)onwriteDrain(stream,state);
+state.pendingcb--;
+cb();
+finishMaybe(stream,state);
+}
+
+
+
+
+function onwriteDrain(stream,state){
+if(state.length===0&&state.needDrain){
+state.needDrain=false;
+stream.emit('drain');
+}
+}
+
+
+function clearBuffer(stream,state){
+state.bufferProcessing=true;
+var entry=state.bufferedRequest;
+
+if(stream._writev&&entry&&entry.next){
+
+var l=state.bufferedRequestCount;
+var buffer=new Array(l);
+var holder=state.corkedRequestsFree;
+holder.entry=entry;
+
+var count=0;
+var allBuffers=true;
+while(entry){
+buffer[count]=entry;
+if(!entry.isBuf)allBuffers=false;
+entry=entry.next;
+count+=1;
+}
+buffer.allBuffers=allBuffers;
+
+doWrite(stream,state,true,state.length,buffer,'',holder.finish);
+
+
+
+state.pendingcb++;
+state.lastBufferedRequest=null;
+if(holder.next){
+state.corkedRequestsFree=holder.next;
+holder.next=null;
+}else{
+state.corkedRequestsFree=new CorkedRequest(state);
+}
+}else{
+
+while(entry){
+var chunk=entry.chunk;
+var encoding=entry.encoding;
+var cb=entry.callback;
+var len=state.objectMode?1:chunk.length;
+
+doWrite(stream,state,false,len,chunk,encoding,cb);
+entry=entry.next;
+
+
+
+
+if(state.writing){
+break;
+}
+}
+
+if(entry===null)state.lastBufferedRequest=null;
+}
+
+state.bufferedRequestCount=0;
+state.bufferedRequest=entry;
+state.bufferProcessing=false;
+}
+
+Writable.prototype._write=function(chunk,encoding,cb){
+cb(new Error('_write() is not implemented'));
+};
+
+Writable.prototype._writev=null;
+
+Writable.prototype.end=function(chunk,encoding,cb){
+var state=this._writableState;
+
+if(typeof chunk==='function'){
+cb=chunk;
+chunk=null;
+encoding=null;
+}else if(typeof encoding==='function'){
+cb=encoding;
+encoding=null;
+}
+
+if(chunk!==null&&chunk!==undefined)this.write(chunk,encoding);
+
+
+if(state.corked){
+state.corked=1;
+this.uncork();
+}
+
+
+if(!state.ending&&!state.finished)endWritable(this,state,cb);
+};
+
+function needFinish(state){
+return state.ending&&state.length===0&&state.bufferedRequest===null&&!state.finished&&!state.writing;
+}
+function callFinal(stream,state){
+stream._final(function(err){
+state.pendingcb--;
+if(err){
+stream.emit('error',err);
+}
+state.prefinished=true;
+stream.emit('prefinish');
+finishMaybe(stream,state);
+});
+}
+function prefinish(stream,state){
+if(!state.prefinished&&!state.finalCalled){
+if(typeof stream._final==='function'){
+state.pendingcb++;
+state.finalCalled=true;
+processNextTick(callFinal,stream,state);
+}else{
+state.prefinished=true;
+stream.emit('prefinish');
+}
+}
+}
+
+function finishMaybe(stream,state){
+var need=needFinish(state);
+if(need){
+prefinish(stream,state);
+if(state.pendingcb===0){
+state.finished=true;
+stream.emit('finish');
+}
+}
+return need;
+}
+
+function endWritable(stream,state,cb){
+state.ending=true;
+finishMaybe(stream,state);
+if(cb){
+if(state.finished)processNextTick(cb);else stream.once('finish',cb);
+}
+state.ended=true;
+stream.writable=false;
+}
+
+function onCorkedFinish(corkReq,state,err){
+var entry=corkReq.entry;
+corkReq.entry=null;
+while(entry){
+var cb=entry.callback;
+state.pendingcb--;
+cb(err);
+entry=entry.next;
+}
+if(state.corkedRequestsFree){
+state.corkedRequestsFree.next=corkReq;
+}else{
+state.corkedRequestsFree=corkReq;
+}
+}
+
+Object.defineProperty(Writable.prototype,'destroyed',{
+get:function(){
+if(this._writableState===undefined){
+return false;
+}
+return this._writableState.destroyed;
+},
+set:function(value){
+
+
+if(!this._writableState){
+return;
+}
+
+
+
+this._writableState.destroyed=value;
+}});
+
+
+Writable.prototype.destroy=destroyImpl.destroy;
+Writable.prototype._undestroy=destroyImpl.undestroy;
+Writable.prototype._destroy=function(err,cb){
+this.end();
+cb(err);
+};
+}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
+},{"./_stream_duplex":142,"./internal/streams/destroy":148,"./internal/streams/stream":149,"_process":137,"core-util-is":95,"inherits":105,"process-nextick-args":136,"safe-buffer":157,"timers":163,"util-deprecate":164}],147:[function(require,module,exports){
+'use strict';
+
+
+
+function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
+
+var Buffer=require('safe-buffer').Buffer;
+
+
+function copyBuffer(src,target,offset){
+src.copy(target,offset);
+}
+
+module.exports=function(){
+function BufferList(){
+_classCallCheck(this,BufferList);
+
+this.head=null;
+this.tail=null;
+this.length=0;
+}
+
+BufferList.prototype.push=function push(v){
+var entry={data:v,next:null};
+if(this.length>0)this.tail.next=entry;else this.head=entry;
+this.tail=entry;
+++this.length;
+};
+
+BufferList.prototype.unshift=function unshift(v){
+var entry={data:v,next:this.head};
+if(this.length===0)this.tail=entry;
+this.head=entry;
+++this.length;
+};
+
+BufferList.prototype.shift=function shift(){
+if(this.length===0)return;
+var ret=this.head.data;
+if(this.length===1)this.head=this.tail=null;else this.head=this.head.next;
+--this.length;
+return ret;
+};
+
+BufferList.prototype.clear=function clear(){
+this.head=this.tail=null;
+this.length=0;
+};
+
+BufferList.prototype.join=function join(s){
+if(this.length===0)return'';
+var p=this.head;
+var ret=''+p.data;
+while(p=p.next){
+ret+=s+p.data;
+}return ret;
+};
+
+BufferList.prototype.concat=function concat(n){
+if(this.length===0)return Buffer.alloc(0);
+if(this.length===1)return this.head.data;
+var ret=Buffer.allocUnsafe(n>>>0);
+var p=this.head;
+var i=0;
+while(p){
+copyBuffer(p.data,ret,i);
+i+=p.data.length;
+p=p.next;
+}
+return ret;
+};
+
+return BufferList;
+}();
+},{"safe-buffer":157}],148:[function(require,module,exports){
+'use strict';
+
+
+
+var processNextTick=require('process-nextick-args');
+
+
+
+function destroy(err,cb){
+var _this=this;
+
+var readableDestroyed=this._readableState&&this._readableState.destroyed;
+var writableDestroyed=this._writableState&&this._writableState.destroyed;
+
+if(readableDestroyed||writableDestroyed){
+if(cb){
+cb(err);
+}else if(err&&(!this._writableState||!this._writableState.errorEmitted)){
+processNextTick(emitErrorNT,this,err);
+}
+return;
+}
+
+
+
+
+if(this._readableState){
+this._readableState.destroyed=true;
+}
+
+
+if(this._writableState){
+this._writableState.destroyed=true;
+}
+
+this._destroy(err||null,function(err){
+if(!cb&&err){
+processNextTick(emitErrorNT,_this,err);
+if(_this._writableState){
+_this._writableState.errorEmitted=true;
+}
+}else if(cb){
+cb(err);
+}
+});
+}
+
+function undestroy(){
+if(this._readableState){
+this._readableState.destroyed=false;
+this._readableState.reading=false;
+this._readableState.ended=false;
+this._readableState.endEmitted=false;
+}
+
+if(this._writableState){
+this._writableState.destroyed=false;
+this._writableState.ended=false;
+this._writableState.ending=false;
+this._writableState.finished=false;
+this._writableState.errorEmitted=false;
+}
+}
+
+function emitErrorNT(self,err){
+self.emit('error',err);
+}
+
+module.exports={
+destroy:destroy,
+undestroy:undestroy};
+
+},{"process-nextick-args":136}],149:[function(require,module,exports){
+module.exports=require('events').EventEmitter;
+
+},{"events":100}],150:[function(require,module,exports){
+'use strict';
+
+var Buffer=require('safe-buffer').Buffer;
+
+var isEncoding=Buffer.isEncoding||function(encoding){
+encoding=''+encoding;
+switch(encoding&&encoding.toLowerCase()){
+case'hex':case'utf8':case'utf-8':case'ascii':case'binary':case'base64':case'ucs2':case'ucs-2':case'utf16le':case'utf-16le':case'raw':
+return true;
+default:
+return false;}
+
+};
+
+function _normalizeEncoding(enc){
+if(!enc)return'utf8';
+var retried;
+while(true){
+switch(enc){
+case'utf8':
+case'utf-8':
+return'utf8';
+case'ucs2':
+case'ucs-2':
+case'utf16le':
+case'utf-16le':
+return'utf16le';
+case'latin1':
+case'binary':
+return'latin1';
+case'base64':
+case'ascii':
+case'hex':
+return enc;
+default:
+if(retried)return;
+enc=(''+enc).toLowerCase();
+retried=true;}
+
+}
+};
+
+
+
+function normalizeEncoding(enc){
+var nenc=_normalizeEncoding(enc);
+if(typeof nenc!=='string'&&(Buffer.isEncoding===isEncoding||!isEncoding(enc)))throw new Error('Unknown encoding: '+enc);
+return nenc||enc;
+}
+
+
+
+
+exports.StringDecoder=StringDecoder;
+function StringDecoder(encoding){
+this.encoding=normalizeEncoding(encoding);
+var nb;
+switch(this.encoding){
+case'utf16le':
+this.text=utf16Text;
+this.end=utf16End;
+nb=4;
+break;
+case'utf8':
+this.fillLast=utf8FillLast;
+nb=4;
+break;
+case'base64':
+this.text=base64Text;
+this.end=base64End;
+nb=3;
+break;
+default:
+this.write=simpleWrite;
+this.end=simpleEnd;
+return;}
+
+this.lastNeed=0;
+this.lastTotal=0;
+this.lastChar=Buffer.allocUnsafe(nb);
+}
+
+StringDecoder.prototype.write=function(buf){
+if(buf.length===0)return'';
+var r;
+var i;
+if(this.lastNeed){
+r=this.fillLast(buf);
+if(r===undefined)return'';
+i=this.lastNeed;
+this.lastNeed=0;
+}else{
+i=0;
+}
+if(i<buf.length)return r?r+this.text(buf,i):this.text(buf,i);
+return r||'';
+};
+
+StringDecoder.prototype.end=utf8End;
+
+
+StringDecoder.prototype.text=utf8Text;
+
+
+StringDecoder.prototype.fillLast=function(buf){
+if(this.lastNeed<=buf.length){
+buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,this.lastNeed);
+return this.lastChar.toString(this.encoding,0,this.lastTotal);
+}
+buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,buf.length);
+this.lastNeed-=buf.length;
+};
+
+
+
+function utf8CheckByte(byte){
+if(byte<=0x7F)return 0;else if(byte>>5===0x06)return 2;else if(byte>>4===0x0E)return 3;else if(byte>>3===0x1E)return 4;
+return-1;
+}
+
+
+
+
+function utf8CheckIncomplete(self,buf,i){
+var j=buf.length-1;
+if(j<i)return 0;
+var nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0)self.lastNeed=nb-1;
+return nb;
+}
+if(--j<i)return 0;
+nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0)self.lastNeed=nb-2;
+return nb;
+}
+if(--j<i)return 0;
+nb=utf8CheckByte(buf[j]);
+if(nb>=0){
+if(nb>0){
+if(nb===2)nb=0;else self.lastNeed=nb-3;
+}
+return nb;
+}
+return 0;
+}
+
+
+
+
+
+
+
+
+
+function utf8CheckExtraBytes(self,buf,p){
+if((buf[0]&0xC0)!==0x80){
+self.lastNeed=0;
+return'\ufffd'.repeat(p);
+}
+if(self.lastNeed>1&&buf.length>1){
+if((buf[1]&0xC0)!==0x80){
+self.lastNeed=1;
+return'\ufffd'.repeat(p+1);
+}
+if(self.lastNeed>2&&buf.length>2){
+if((buf[2]&0xC0)!==0x80){
+self.lastNeed=2;
+return'\ufffd'.repeat(p+2);
+}
+}
+}
+}
+
+
+function utf8FillLast(buf){
+var p=this.lastTotal-this.lastNeed;
+var r=utf8CheckExtraBytes(this,buf,p);
+if(r!==undefined)return r;
+if(this.lastNeed<=buf.length){
+buf.copy(this.lastChar,p,0,this.lastNeed);
+return this.lastChar.toString(this.encoding,0,this.lastTotal);
+}
+buf.copy(this.lastChar,p,0,buf.length);
+this.lastNeed-=buf.length;
+}
+
+
+
+
+function utf8Text(buf,i){
+var total=utf8CheckIncomplete(this,buf,i);
+if(!this.lastNeed)return buf.toString('utf8',i);
+this.lastTotal=total;
+var end=buf.length-(total-this.lastNeed);
+buf.copy(this.lastChar,0,end);
+return buf.toString('utf8',i,end);
+}
+
+
+
+function utf8End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed)return r+'\ufffd'.repeat(this.lastTotal-this.lastNeed);
+return r;
+}
+
+
+
+
+
+function utf16Text(buf,i){
+if((buf.length-i)%2===0){
+var r=buf.toString('utf16le',i);
+if(r){
+var c=r.charCodeAt(r.length-1);
+if(c>=0xD800&&c<=0xDBFF){
+this.lastNeed=2;
+this.lastTotal=4;
+this.lastChar[0]=buf[buf.length-2];
+this.lastChar[1]=buf[buf.length-1];
+return r.slice(0,-1);
+}
+}
+return r;
+}
+this.lastNeed=1;
+this.lastTotal=2;
+this.lastChar[0]=buf[buf.length-1];
+return buf.toString('utf16le',i,buf.length-1);
+}
+
+
+
+function utf16End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed){
+var end=this.lastTotal-this.lastNeed;
+return r+this.lastChar.toString('utf16le',0,end);
+}
+return r;
+}
+
+function base64Text(buf,i){
+var n=(buf.length-i)%3;
+if(n===0)return buf.toString('base64',i);
+this.lastNeed=3-n;
+this.lastTotal=3;
+if(n===1){
+this.lastChar[0]=buf[buf.length-1];
+}else{
+this.lastChar[0]=buf[buf.length-2];
+this.lastChar[1]=buf[buf.length-1];
+}
+return buf.toString('base64',i,buf.length-n);
+}
+
+function base64End(buf){
+var r=buf&&buf.length?this.write(buf):'';
+if(this.lastNeed)return r+this.lastChar.toString('base64',0,3-this.lastNeed);
+return r;
+}
+
+
+function simpleWrite(buf){
+return buf.toString(this.encoding);
+}
+
+function simpleEnd(buf){
+return buf&&buf.length?this.write(buf):'';
+}
+},{"safe-buffer":157}],151:[function(require,module,exports){
+module.exports=require('./readable').PassThrough;
+
+},{"./readable":152}],152:[function(require,module,exports){
+exports=module.exports=require('./lib/_stream_readable.js');
+exports.Stream=exports;
+exports.Readable=exports;
+exports.Writable=require('./lib/_stream_writable.js');
+exports.Duplex=require('./lib/_stream_duplex.js');
+exports.Transform=require('./lib/_stream_transform.js');
+exports.PassThrough=require('./lib/_stream_passthrough.js');
+
+},{"./lib/_stream_duplex.js":142,"./lib/_stream_passthrough.js":143,"./lib/_stream_readable.js":144,"./lib/_stream_transform.js":145,"./lib/_stream_writable.js":146}],153:[function(require,module,exports){
+module.exports=require('./readable').Transform;
+
+},{"./readable":152}],154:[function(require,module,exports){
+module.exports=require('./lib/_stream_writable.js');
+
+},{"./lib/_stream_writable.js":146}],155:[function(require,module,exports){
 var URL=require('url').URL;
 
 
@@ -57398,13 +60028,13 @@ return this._sitemaps.slice(0);
 
 module.exports=Robots;
 
-},{"url":"url"}],142:[function(require,module,exports){
+},{"url":"url"}],156:[function(require,module,exports){
 var Robots=require('./Robots');
 
 module.exports=function(url,contents){
 return new Robots(url,contents);
 };
-},{"./Robots":141}],143:[function(require,module,exports){
+},{"./Robots":155}],157:[function(require,module,exports){
 
 var buffer=require('buffer');
 var Buffer=buffer.Buffer;
@@ -57468,7 +60098,7 @@ throw new TypeError('Argument must be a number');
 return buffer.SlowBuffer(size);
 };
 
-},{"buffer":94}],144:[function(require,module,exports){
+},{"buffer":94}],158:[function(require,module,exports){
 (function(process){
 exports=module.exports=SemVer;
 
@@ -58675,7 +61305,7 @@ return parsed&&parsed.prerelease.length?parsed.prerelease:null;
 }
 
 }).call(this,require('_process'));
-},{"_process":137}],145:[function(require,module,exports){
+},{"_process":137}],159:[function(require,module,exports){
 (function(Buffer){
 'use strict';
 
@@ -58917,7 +61547,7 @@ create:frame};
 
 
 }).call(this,require("buffer").Buffer);
-},{"buffer":94,"jpeg-js":117}],146:[function(require,module,exports){
+},{"buffer":94,"jpeg-js":117}],160:[function(require,module,exports){
 'use strict';
 
 const frame=require('./frame');
@@ -58987,7 +61617,7 @@ return calculateValues(frames,data);
 });
 };
 
-},{"./frame":145,"./speed-index":147}],147:[function(require,module,exports){
+},{"./frame":159,"./speed-index":161}],161:[function(require,module,exports){
 'use strict';
 
 const imageSSIM=require('image-ssim');
@@ -59259,7 +61889,7 @@ calculatePerceptualProgress,
 calculateSpeedIndexes};
 
 
-},{"image-ssim":104}],148:[function(require,module,exports){
+},{"image-ssim":104}],162:[function(require,module,exports){
 
 
 
@@ -59388,2517 +62018,7 @@ dest.emit('pipe',source);
 return dest;
 };
 
-},{"events":100,"inherits":105,"readable-stream/duplex.js":149,"readable-stream/passthrough.js":158,"readable-stream/readable.js":159,"readable-stream/transform.js":160,"readable-stream/writable.js":161}],149:[function(require,module,exports){
-module.exports=require('./lib/_stream_duplex.js');
-
-},{"./lib/_stream_duplex.js":150}],150:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-
-var objectKeys=Object.keys||function(obj){
-var keys=[];
-for(var key in obj){
-keys.push(key);
-}return keys;
-};
-
-
-module.exports=Duplex;
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-var Readable=require('./_stream_readable');
-var Writable=require('./_stream_writable');
-
-util.inherits(Duplex,Readable);
-
-var keys=objectKeys(Writable.prototype);
-for(var v=0;v<keys.length;v++){
-var method=keys[v];
-if(!Duplex.prototype[method])Duplex.prototype[method]=Writable.prototype[method];
-}
-
-function Duplex(options){
-if(!(this instanceof Duplex))return new Duplex(options);
-
-Readable.call(this,options);
-Writable.call(this,options);
-
-if(options&&options.readable===false)this.readable=false;
-
-if(options&&options.writable===false)this.writable=false;
-
-this.allowHalfOpen=true;
-if(options&&options.allowHalfOpen===false)this.allowHalfOpen=false;
-
-this.once('end',onend);
-}
-
-
-function onend(){
-
-
-if(this.allowHalfOpen||this._writableState.ended)return;
-
-
-
-processNextTick(onEndNT,this);
-}
-
-function onEndNT(self){
-self.end();
-}
-
-Object.defineProperty(Duplex.prototype,'destroyed',{
-get:function(){
-if(this._readableState===undefined||this._writableState===undefined){
-return false;
-}
-return this._readableState.destroyed&&this._writableState.destroyed;
-},
-set:function(value){
-
-
-if(this._readableState===undefined||this._writableState===undefined){
-return;
-}
-
-
-
-this._readableState.destroyed=value;
-this._writableState.destroyed=value;
-}});
-
-
-Duplex.prototype._destroy=function(err,cb){
-this.push(null);
-this.end();
-
-processNextTick(cb,err);
-};
-
-function forEach(xs,f){
-for(var i=0,l=xs.length;i<l;i++){
-f(xs[i],i);
-}
-}
-},{"./_stream_readable":152,"./_stream_writable":154,"core-util-is":95,"inherits":105,"process-nextick-args":136}],151:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-module.exports=PassThrough;
-
-var Transform=require('./_stream_transform');
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-util.inherits(PassThrough,Transform);
-
-function PassThrough(options){
-if(!(this instanceof PassThrough))return new PassThrough(options);
-
-Transform.call(this,options);
-}
-
-PassThrough.prototype._transform=function(chunk,encoding,cb){
-cb(null,chunk);
-};
-},{"./_stream_transform":153,"core-util-is":95,"inherits":105}],152:[function(require,module,exports){
-(function(process,global){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-module.exports=Readable;
-
-
-var isArray=require('isarray');
-
-
-
-var Duplex;
-
-
-Readable.ReadableState=ReadableState;
-
-
-var EE=require('events').EventEmitter;
-
-var EElistenerCount=function(emitter,type){
-return emitter.listeners(type).length;
-};
-
-
-
-var Stream=require('./internal/streams/stream');
-
-
-
-
-
-var Buffer=require('safe-buffer').Buffer;
-var OurUint8Array=global.Uint8Array||function(){};
-function _uint8ArrayToBuffer(chunk){
-return Buffer.from(chunk);
-}
-function _isUint8Array(obj){
-return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
-}
-
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-
-var debugUtil=require('util');
-var debug=void 0;
-if(debugUtil&&debugUtil.debuglog){
-debug=debugUtil.debuglog('stream');
-}else{
-debug=function(){};
-}
-
-
-var BufferList=require('./internal/streams/BufferList');
-var destroyImpl=require('./internal/streams/destroy');
-var StringDecoder;
-
-util.inherits(Readable,Stream);
-
-var kProxyEvents=['error','close','destroy','pause','resume'];
-
-function prependListener(emitter,event,fn){
-
-
-if(typeof emitter.prependListener==='function'){
-return emitter.prependListener(event,fn);
-}else{
-
-
-
-
-if(!emitter._events||!emitter._events[event])emitter.on(event,fn);else if(isArray(emitter._events[event]))emitter._events[event].unshift(fn);else emitter._events[event]=[fn,emitter._events[event]];
-}
-}
-
-function ReadableState(options,stream){
-Duplex=Duplex||require('./_stream_duplex');
-
-options=options||{};
-
-
-
-this.objectMode=!!options.objectMode;
-
-if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.readableObjectMode;
-
-
-
-var hwm=options.highWaterMark;
-var defaultHwm=this.objectMode?16:16*1024;
-this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
-
-
-this.highWaterMark=Math.floor(this.highWaterMark);
-
-
-
-
-this.buffer=new BufferList();
-this.length=0;
-this.pipes=null;
-this.pipesCount=0;
-this.flowing=null;
-this.ended=false;
-this.endEmitted=false;
-this.reading=false;
-
-
-
-
-
-this.sync=true;
-
-
-
-this.needReadable=false;
-this.emittedReadable=false;
-this.readableListening=false;
-this.resumeScheduled=false;
-
-
-this.destroyed=false;
-
-
-
-
-this.defaultEncoding=options.defaultEncoding||'utf8';
-
-
-this.awaitDrain=0;
-
-
-this.readingMore=false;
-
-this.decoder=null;
-this.encoding=null;
-if(options.encoding){
-if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
-this.decoder=new StringDecoder(options.encoding);
-this.encoding=options.encoding;
-}
-}
-
-function Readable(options){
-Duplex=Duplex||require('./_stream_duplex');
-
-if(!(this instanceof Readable))return new Readable(options);
-
-this._readableState=new ReadableState(options,this);
-
-
-this.readable=true;
-
-if(options){
-if(typeof options.read==='function')this._read=options.read;
-
-if(typeof options.destroy==='function')this._destroy=options.destroy;
-}
-
-Stream.call(this);
-}
-
-Object.defineProperty(Readable.prototype,'destroyed',{
-get:function(){
-if(this._readableState===undefined){
-return false;
-}
-return this._readableState.destroyed;
-},
-set:function(value){
-
-
-if(!this._readableState){
-return;
-}
-
-
-
-this._readableState.destroyed=value;
-}});
-
-
-Readable.prototype.destroy=destroyImpl.destroy;
-Readable.prototype._undestroy=destroyImpl.undestroy;
-Readable.prototype._destroy=function(err,cb){
-this.push(null);
-cb(err);
-};
-
-
-
-
-
-Readable.prototype.push=function(chunk,encoding){
-var state=this._readableState;
-var skipChunkCheck;
-
-if(!state.objectMode){
-if(typeof chunk==='string'){
-encoding=encoding||state.defaultEncoding;
-if(encoding!==state.encoding){
-chunk=Buffer.from(chunk,encoding);
-encoding='';
-}
-skipChunkCheck=true;
-}
-}else{
-skipChunkCheck=true;
-}
-
-return readableAddChunk(this,chunk,encoding,false,skipChunkCheck);
-};
-
-
-Readable.prototype.unshift=function(chunk){
-return readableAddChunk(this,chunk,null,true,false);
-};
-
-function readableAddChunk(stream,chunk,encoding,addToFront,skipChunkCheck){
-var state=stream._readableState;
-if(chunk===null){
-state.reading=false;
-onEofChunk(stream,state);
-}else{
-var er;
-if(!skipChunkCheck)er=chunkInvalid(state,chunk);
-if(er){
-stream.emit('error',er);
-}else if(state.objectMode||chunk&&chunk.length>0){
-if(typeof chunk!=='string'&&!state.objectMode&&Object.getPrototypeOf(chunk)!==Buffer.prototype){
-chunk=_uint8ArrayToBuffer(chunk);
-}
-
-if(addToFront){
-if(state.endEmitted)stream.emit('error',new Error('stream.unshift() after end event'));else addChunk(stream,state,chunk,true);
-}else if(state.ended){
-stream.emit('error',new Error('stream.push() after EOF'));
-}else{
-state.reading=false;
-if(state.decoder&&!encoding){
-chunk=state.decoder.write(chunk);
-if(state.objectMode||chunk.length!==0)addChunk(stream,state,chunk,false);else maybeReadMore(stream,state);
-}else{
-addChunk(stream,state,chunk,false);
-}
-}
-}else if(!addToFront){
-state.reading=false;
-}
-}
-
-return needMoreData(state);
-}
-
-function addChunk(stream,state,chunk,addToFront){
-if(state.flowing&&state.length===0&&!state.sync){
-stream.emit('data',chunk);
-stream.read(0);
-}else{
-
-state.length+=state.objectMode?1:chunk.length;
-if(addToFront)state.buffer.unshift(chunk);else state.buffer.push(chunk);
-
-if(state.needReadable)emitReadable(stream);
-}
-maybeReadMore(stream,state);
-}
-
-function chunkInvalid(state,chunk){
-var er;
-if(!_isUint8Array(chunk)&&typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
-er=new TypeError('Invalid non-string/buffer chunk');
-}
-return er;
-}
-
-
-
-
-
-
-
-
-function needMoreData(state){
-return!state.ended&&(state.needReadable||state.length<state.highWaterMark||state.length===0);
-}
-
-Readable.prototype.isPaused=function(){
-return this._readableState.flowing===false;
-};
-
-
-Readable.prototype.setEncoding=function(enc){
-if(!StringDecoder)StringDecoder=require('string_decoder/').StringDecoder;
-this._readableState.decoder=new StringDecoder(enc);
-this._readableState.encoding=enc;
-return this;
-};
-
-
-var MAX_HWM=0x800000;
-function computeNewHighWaterMark(n){
-if(n>=MAX_HWM){
-n=MAX_HWM;
-}else{
-
-
-n--;
-n|=n>>>1;
-n|=n>>>2;
-n|=n>>>4;
-n|=n>>>8;
-n|=n>>>16;
-n++;
-}
-return n;
-}
-
-
-
-function howMuchToRead(n,state){
-if(n<=0||state.length===0&&state.ended)return 0;
-if(state.objectMode)return 1;
-if(n!==n){
-
-if(state.flowing&&state.length)return state.buffer.head.data.length;else return state.length;
-}
-
-if(n>state.highWaterMark)state.highWaterMark=computeNewHighWaterMark(n);
-if(n<=state.length)return n;
-
-if(!state.ended){
-state.needReadable=true;
-return 0;
-}
-return state.length;
-}
-
-
-Readable.prototype.read=function(n){
-debug('read',n);
-n=parseInt(n,10);
-var state=this._readableState;
-var nOrig=n;
-
-if(n!==0)state.emittedReadable=false;
-
-
-
-
-if(n===0&&state.needReadable&&(state.length>=state.highWaterMark||state.ended)){
-debug('read: emitReadable',state.length,state.ended);
-if(state.length===0&&state.ended)endReadable(this);else emitReadable(this);
-return null;
-}
-
-n=howMuchToRead(n,state);
-
-
-if(n===0&&state.ended){
-if(state.length===0)endReadable(this);
-return null;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var doRead=state.needReadable;
-debug('need readable',doRead);
-
-
-if(state.length===0||state.length-n<state.highWaterMark){
-doRead=true;
-debug('length less than watermark',doRead);
-}
-
-
-
-if(state.ended||state.reading){
-doRead=false;
-debug('reading or ended',doRead);
-}else if(doRead){
-debug('do read');
-state.reading=true;
-state.sync=true;
-
-if(state.length===0)state.needReadable=true;
-
-this._read(state.highWaterMark);
-state.sync=false;
-
-
-if(!state.reading)n=howMuchToRead(nOrig,state);
-}
-
-var ret;
-if(n>0)ret=fromList(n,state);else ret=null;
-
-if(ret===null){
-state.needReadable=true;
-n=0;
-}else{
-state.length-=n;
-}
-
-if(state.length===0){
-
-
-if(!state.ended)state.needReadable=true;
-
-
-if(nOrig!==n&&state.ended)endReadable(this);
-}
-
-if(ret!==null)this.emit('data',ret);
-
-return ret;
-};
-
-function onEofChunk(stream,state){
-if(state.ended)return;
-if(state.decoder){
-var chunk=state.decoder.end();
-if(chunk&&chunk.length){
-state.buffer.push(chunk);
-state.length+=state.objectMode?1:chunk.length;
-}
-}
-state.ended=true;
-
-
-emitReadable(stream);
-}
-
-
-
-
-function emitReadable(stream){
-var state=stream._readableState;
-state.needReadable=false;
-if(!state.emittedReadable){
-debug('emitReadable',state.flowing);
-state.emittedReadable=true;
-if(state.sync)processNextTick(emitReadable_,stream);else emitReadable_(stream);
-}
-}
-
-function emitReadable_(stream){
-debug('emit readable');
-stream.emit('readable');
-flow(stream);
-}
-
-
-
-
-
-
-
-function maybeReadMore(stream,state){
-if(!state.readingMore){
-state.readingMore=true;
-processNextTick(maybeReadMore_,stream,state);
-}
-}
-
-function maybeReadMore_(stream,state){
-var len=state.length;
-while(!state.reading&&!state.flowing&&!state.ended&&state.length<state.highWaterMark){
-debug('maybeReadMore read 0');
-stream.read(0);
-if(len===state.length)
-
-break;else len=state.length;
-}
-state.readingMore=false;
-}
-
-
-
-
-
-Readable.prototype._read=function(n){
-this.emit('error',new Error('_read() is not implemented'));
-};
-
-Readable.prototype.pipe=function(dest,pipeOpts){
-var src=this;
-var state=this._readableState;
-
-switch(state.pipesCount){
-case 0:
-state.pipes=dest;
-break;
-case 1:
-state.pipes=[state.pipes,dest];
-break;
-default:
-state.pipes.push(dest);
-break;}
-
-state.pipesCount+=1;
-debug('pipe count=%d opts=%j',state.pipesCount,pipeOpts);
-
-var doEnd=(!pipeOpts||pipeOpts.end!==false)&&dest!==process.stdout&&dest!==process.stderr;
-
-var endFn=doEnd?onend:unpipe;
-if(state.endEmitted)processNextTick(endFn);else src.once('end',endFn);
-
-dest.on('unpipe',onunpipe);
-function onunpipe(readable,unpipeInfo){
-debug('onunpipe');
-if(readable===src){
-if(unpipeInfo&&unpipeInfo.hasUnpiped===false){
-unpipeInfo.hasUnpiped=true;
-cleanup();
-}
-}
-}
-
-function onend(){
-debug('onend');
-dest.end();
-}
-
-
-
-
-
-var ondrain=pipeOnDrain(src);
-dest.on('drain',ondrain);
-
-var cleanedUp=false;
-function cleanup(){
-debug('cleanup');
-
-dest.removeListener('close',onclose);
-dest.removeListener('finish',onfinish);
-dest.removeListener('drain',ondrain);
-dest.removeListener('error',onerror);
-dest.removeListener('unpipe',onunpipe);
-src.removeListener('end',onend);
-src.removeListener('end',unpipe);
-src.removeListener('data',ondata);
-
-cleanedUp=true;
-
-
-
-
-
-
-if(state.awaitDrain&&(!dest._writableState||dest._writableState.needDrain))ondrain();
-}
-
-
-
-
-
-var increasedAwaitDrain=false;
-src.on('data',ondata);
-function ondata(chunk){
-debug('ondata');
-increasedAwaitDrain=false;
-var ret=dest.write(chunk);
-if(false===ret&&!increasedAwaitDrain){
-
-
-
-
-if((state.pipesCount===1&&state.pipes===dest||state.pipesCount>1&&indexOf(state.pipes,dest)!==-1)&&!cleanedUp){
-debug('false write response, pause',src._readableState.awaitDrain);
-src._readableState.awaitDrain++;
-increasedAwaitDrain=true;
-}
-src.pause();
-}
-}
-
-
-
-function onerror(er){
-debug('onerror',er);
-unpipe();
-dest.removeListener('error',onerror);
-if(EElistenerCount(dest,'error')===0)dest.emit('error',er);
-}
-
-
-prependListener(dest,'error',onerror);
-
-
-function onclose(){
-dest.removeListener('finish',onfinish);
-unpipe();
-}
-dest.once('close',onclose);
-function onfinish(){
-debug('onfinish');
-dest.removeListener('close',onclose);
-unpipe();
-}
-dest.once('finish',onfinish);
-
-function unpipe(){
-debug('unpipe');
-src.unpipe(dest);
-}
-
-
-dest.emit('pipe',src);
-
-
-if(!state.flowing){
-debug('pipe resume');
-src.resume();
-}
-
-return dest;
-};
-
-function pipeOnDrain(src){
-return function(){
-var state=src._readableState;
-debug('pipeOnDrain',state.awaitDrain);
-if(state.awaitDrain)state.awaitDrain--;
-if(state.awaitDrain===0&&EElistenerCount(src,'data')){
-state.flowing=true;
-flow(src);
-}
-};
-}
-
-Readable.prototype.unpipe=function(dest){
-var state=this._readableState;
-var unpipeInfo={hasUnpiped:false};
-
-
-if(state.pipesCount===0)return this;
-
-
-if(state.pipesCount===1){
-
-if(dest&&dest!==state.pipes)return this;
-
-if(!dest)dest=state.pipes;
-
-
-state.pipes=null;
-state.pipesCount=0;
-state.flowing=false;
-if(dest)dest.emit('unpipe',this,unpipeInfo);
-return this;
-}
-
-
-
-if(!dest){
-
-var dests=state.pipes;
-var len=state.pipesCount;
-state.pipes=null;
-state.pipesCount=0;
-state.flowing=false;
-
-for(var i=0;i<len;i++){
-dests[i].emit('unpipe',this,unpipeInfo);
-}return this;
-}
-
-
-var index=indexOf(state.pipes,dest);
-if(index===-1)return this;
-
-state.pipes.splice(index,1);
-state.pipesCount-=1;
-if(state.pipesCount===1)state.pipes=state.pipes[0];
-
-dest.emit('unpipe',this,unpipeInfo);
-
-return this;
-};
-
-
-
-Readable.prototype.on=function(ev,fn){
-var res=Stream.prototype.on.call(this,ev,fn);
-
-if(ev==='data'){
-
-if(this._readableState.flowing!==false)this.resume();
-}else if(ev==='readable'){
-var state=this._readableState;
-if(!state.endEmitted&&!state.readableListening){
-state.readableListening=state.needReadable=true;
-state.emittedReadable=false;
-if(!state.reading){
-processNextTick(nReadingNextTick,this);
-}else if(state.length){
-emitReadable(this);
-}
-}
-}
-
-return res;
-};
-Readable.prototype.addListener=Readable.prototype.on;
-
-function nReadingNextTick(self){
-debug('readable nexttick read 0');
-self.read(0);
-}
-
-
-
-Readable.prototype.resume=function(){
-var state=this._readableState;
-if(!state.flowing){
-debug('resume');
-state.flowing=true;
-resume(this,state);
-}
-return this;
-};
-
-function resume(stream,state){
-if(!state.resumeScheduled){
-state.resumeScheduled=true;
-processNextTick(resume_,stream,state);
-}
-}
-
-function resume_(stream,state){
-if(!state.reading){
-debug('resume read 0');
-stream.read(0);
-}
-
-state.resumeScheduled=false;
-state.awaitDrain=0;
-stream.emit('resume');
-flow(stream);
-if(state.flowing&&!state.reading)stream.read(0);
-}
-
-Readable.prototype.pause=function(){
-debug('call pause flowing=%j',this._readableState.flowing);
-if(false!==this._readableState.flowing){
-debug('pause');
-this._readableState.flowing=false;
-this.emit('pause');
-}
-return this;
-};
-
-function flow(stream){
-var state=stream._readableState;
-debug('flow',state.flowing);
-while(state.flowing&&stream.read()!==null){}
-}
-
-
-
-
-Readable.prototype.wrap=function(stream){
-var state=this._readableState;
-var paused=false;
-
-var self=this;
-stream.on('end',function(){
-debug('wrapped end');
-if(state.decoder&&!state.ended){
-var chunk=state.decoder.end();
-if(chunk&&chunk.length)self.push(chunk);
-}
-
-self.push(null);
-});
-
-stream.on('data',function(chunk){
-debug('wrapped data');
-if(state.decoder)chunk=state.decoder.write(chunk);
-
-
-if(state.objectMode&&(chunk===null||chunk===undefined))return;else if(!state.objectMode&&(!chunk||!chunk.length))return;
-
-var ret=self.push(chunk);
-if(!ret){
-paused=true;
-stream.pause();
-}
-});
-
-
-
-for(var i in stream){
-if(this[i]===undefined&&typeof stream[i]==='function'){
-this[i]=function(method){
-return function(){
-return stream[method].apply(stream,arguments);
-};
-}(i);
-}
-}
-
-
-for(var n=0;n<kProxyEvents.length;n++){
-stream.on(kProxyEvents[n],self.emit.bind(self,kProxyEvents[n]));
-}
-
-
-
-self._read=function(n){
-debug('wrapped _read',n);
-if(paused){
-paused=false;
-stream.resume();
-}
-};
-
-return self;
-};
-
-
-Readable._fromList=fromList;
-
-
-
-
-
-function fromList(n,state){
-
-if(state.length===0)return null;
-
-var ret;
-if(state.objectMode)ret=state.buffer.shift();else if(!n||n>=state.length){
-
-if(state.decoder)ret=state.buffer.join('');else if(state.buffer.length===1)ret=state.buffer.head.data;else ret=state.buffer.concat(state.length);
-state.buffer.clear();
-}else{
-
-ret=fromListPartial(n,state.buffer,state.decoder);
-}
-
-return ret;
-}
-
-
-
-
-function fromListPartial(n,list,hasStrings){
-var ret;
-if(n<list.head.data.length){
-
-ret=list.head.data.slice(0,n);
-list.head.data=list.head.data.slice(n);
-}else if(n===list.head.data.length){
-
-ret=list.shift();
-}else{
-
-ret=hasStrings?copyFromBufferString(n,list):copyFromBuffer(n,list);
-}
-return ret;
-}
-
-
-
-
-
-function copyFromBufferString(n,list){
-var p=list.head;
-var c=1;
-var ret=p.data;
-n-=ret.length;
-while(p=p.next){
-var str=p.data;
-var nb=n>str.length?str.length:n;
-if(nb===str.length)ret+=str;else ret+=str.slice(0,n);
-n-=nb;
-if(n===0){
-if(nb===str.length){
-++c;
-if(p.next)list.head=p.next;else list.head=list.tail=null;
-}else{
-list.head=p;
-p.data=str.slice(nb);
-}
-break;
-}
-++c;
-}
-list.length-=c;
-return ret;
-}
-
-
-
-
-function copyFromBuffer(n,list){
-var ret=Buffer.allocUnsafe(n);
-var p=list.head;
-var c=1;
-p.data.copy(ret);
-n-=p.data.length;
-while(p=p.next){
-var buf=p.data;
-var nb=n>buf.length?buf.length:n;
-buf.copy(ret,ret.length-n,0,nb);
-n-=nb;
-if(n===0){
-if(nb===buf.length){
-++c;
-if(p.next)list.head=p.next;else list.head=list.tail=null;
-}else{
-list.head=p;
-p.data=buf.slice(nb);
-}
-break;
-}
-++c;
-}
-list.length-=c;
-return ret;
-}
-
-function endReadable(stream){
-var state=stream._readableState;
-
-
-
-if(state.length>0)throw new Error('"endReadable()" called on non-empty stream');
-
-if(!state.endEmitted){
-state.ended=true;
-processNextTick(endReadableNT,state,stream);
-}
-}
-
-function endReadableNT(state,stream){
-
-if(!state.endEmitted&&state.length===0){
-state.endEmitted=true;
-stream.readable=false;
-stream.emit('end');
-}
-}
-
-function forEach(xs,f){
-for(var i=0,l=xs.length;i<l;i++){
-f(xs[i],i);
-}
-}
-
-function indexOf(xs,x){
-for(var i=0,l=xs.length;i<l;i++){
-if(xs[i]===x)return i;
-}
-return-1;
-}
-}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
-},{"./_stream_duplex":150,"./internal/streams/BufferList":155,"./internal/streams/destroy":156,"./internal/streams/stream":157,"_process":137,"core-util-is":95,"events":100,"inherits":105,"isarray":116,"process-nextick-args":136,"safe-buffer":143,"string_decoder/":162,"util":90}],153:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-module.exports=Transform;
-
-var Duplex=require('./_stream_duplex');
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-util.inherits(Transform,Duplex);
-
-function TransformState(stream){
-this.afterTransform=function(er,data){
-return afterTransform(stream,er,data);
-};
-
-this.needTransform=false;
-this.transforming=false;
-this.writecb=null;
-this.writechunk=null;
-this.writeencoding=null;
-}
-
-function afterTransform(stream,er,data){
-var ts=stream._transformState;
-ts.transforming=false;
-
-var cb=ts.writecb;
-
-if(!cb){
-return stream.emit('error',new Error('write callback called multiple times'));
-}
-
-ts.writechunk=null;
-ts.writecb=null;
-
-if(data!==null&&data!==undefined)stream.push(data);
-
-cb(er);
-
-var rs=stream._readableState;
-rs.reading=false;
-if(rs.needReadable||rs.length<rs.highWaterMark){
-stream._read(rs.highWaterMark);
-}
-}
-
-function Transform(options){
-if(!(this instanceof Transform))return new Transform(options);
-
-Duplex.call(this,options);
-
-this._transformState=new TransformState(this);
-
-var stream=this;
-
-
-this._readableState.needReadable=true;
-
-
-
-
-this._readableState.sync=false;
-
-if(options){
-if(typeof options.transform==='function')this._transform=options.transform;
-
-if(typeof options.flush==='function')this._flush=options.flush;
-}
-
-
-this.once('prefinish',function(){
-if(typeof this._flush==='function')this._flush(function(er,data){
-done(stream,er,data);
-});else done(stream);
-});
-}
-
-Transform.prototype.push=function(chunk,encoding){
-this._transformState.needTransform=false;
-return Duplex.prototype.push.call(this,chunk,encoding);
-};
-
-
-
-
-
-
-
-
-
-
-
-Transform.prototype._transform=function(chunk,encoding,cb){
-throw new Error('_transform() is not implemented');
-};
-
-Transform.prototype._write=function(chunk,encoding,cb){
-var ts=this._transformState;
-ts.writecb=cb;
-ts.writechunk=chunk;
-ts.writeencoding=encoding;
-if(!ts.transforming){
-var rs=this._readableState;
-if(ts.needTransform||rs.needReadable||rs.length<rs.highWaterMark)this._read(rs.highWaterMark);
-}
-};
-
-
-
-
-Transform.prototype._read=function(n){
-var ts=this._transformState;
-
-if(ts.writechunk!==null&&ts.writecb&&!ts.transforming){
-ts.transforming=true;
-this._transform(ts.writechunk,ts.writeencoding,ts.afterTransform);
-}else{
-
-
-ts.needTransform=true;
-}
-};
-
-Transform.prototype._destroy=function(err,cb){
-var _this=this;
-
-Duplex.prototype._destroy.call(this,err,function(err2){
-cb(err2);
-_this.emit('close');
-});
-};
-
-function done(stream,er,data){
-if(er)return stream.emit('error',er);
-
-if(data!==null&&data!==undefined)stream.push(data);
-
-
-
-var ws=stream._writableState;
-var ts=stream._transformState;
-
-if(ws.length)throw new Error('Calling transform done when ws.length != 0');
-
-if(ts.transforming)throw new Error('Calling transform done when still transforming');
-
-return stream.push(null);
-}
-},{"./_stream_duplex":150,"core-util-is":95,"inherits":105}],154:[function(require,module,exports){
-(function(process,global,setImmediate){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-module.exports=Writable;
-
-
-function WriteReq(chunk,encoding,cb){
-this.chunk=chunk;
-this.encoding=encoding;
-this.callback=cb;
-this.next=null;
-}
-
-
-
-function CorkedRequest(state){
-var _this=this;
-
-this.next=null;
-this.entry=null;
-this.finish=function(){
-onCorkedFinish(_this,state);
-};
-}
-
-
-
-var asyncWrite=!process.browser&&['v0.10','v0.9.'].indexOf(process.version.slice(0,5))>-1?setImmediate:processNextTick;
-
-
-
-var Duplex;
-
-
-Writable.WritableState=WritableState;
-
-
-var util=require('core-util-is');
-util.inherits=require('inherits');
-
-
-
-var internalUtil={
-deprecate:require('util-deprecate')};
-
-
-
-
-var Stream=require('./internal/streams/stream');
-
-
-
-var Buffer=require('safe-buffer').Buffer;
-var OurUint8Array=global.Uint8Array||function(){};
-function _uint8ArrayToBuffer(chunk){
-return Buffer.from(chunk);
-}
-function _isUint8Array(obj){
-return Buffer.isBuffer(obj)||obj instanceof OurUint8Array;
-}
-
-
-var destroyImpl=require('./internal/streams/destroy');
-
-util.inherits(Writable,Stream);
-
-function nop(){}
-
-function WritableState(options,stream){
-Duplex=Duplex||require('./_stream_duplex');
-
-options=options||{};
-
-
-
-this.objectMode=!!options.objectMode;
-
-if(stream instanceof Duplex)this.objectMode=this.objectMode||!!options.writableObjectMode;
-
-
-
-
-var hwm=options.highWaterMark;
-var defaultHwm=this.objectMode?16:16*1024;
-this.highWaterMark=hwm||hwm===0?hwm:defaultHwm;
-
-
-this.highWaterMark=Math.floor(this.highWaterMark);
-
-
-this.finalCalled=false;
-
-
-this.needDrain=false;
-
-this.ending=false;
-
-this.ended=false;
-
-this.finished=false;
-
-
-this.destroyed=false;
-
-
-
-
-var noDecode=options.decodeStrings===false;
-this.decodeStrings=!noDecode;
-
-
-
-
-this.defaultEncoding=options.defaultEncoding||'utf8';
-
-
-
-
-this.length=0;
-
-
-this.writing=false;
-
-
-this.corked=0;
-
-
-
-
-
-this.sync=true;
-
-
-
-
-this.bufferProcessing=false;
-
-
-this.onwrite=function(er){
-onwrite(stream,er);
-};
-
-
-this.writecb=null;
-
-
-this.writelen=0;
-
-this.bufferedRequest=null;
-this.lastBufferedRequest=null;
-
-
-
-this.pendingcb=0;
-
-
-
-this.prefinished=false;
-
-
-this.errorEmitted=false;
-
-
-this.bufferedRequestCount=0;
-
-
-
-this.corkedRequestsFree=new CorkedRequest(this);
-}
-
-WritableState.prototype.getBuffer=function getBuffer(){
-var current=this.bufferedRequest;
-var out=[];
-while(current){
-out.push(current);
-current=current.next;
-}
-return out;
-};
-
-(function(){
-try{
-Object.defineProperty(WritableState.prototype,'buffer',{
-get:internalUtil.deprecate(function(){
-return this.getBuffer();
-},'_writableState.buffer is deprecated. Use _writableState.getBuffer '+'instead.','DEP0003')});
-
-}catch(_){}
-})();
-
-
-
-var realHasInstance;
-if(typeof Symbol==='function'&&Symbol.hasInstance&&typeof Function.prototype[Symbol.hasInstance]==='function'){
-realHasInstance=Function.prototype[Symbol.hasInstance];
-Object.defineProperty(Writable,Symbol.hasInstance,{
-value:function(object){
-if(realHasInstance.call(this,object))return true;
-
-return object&&object._writableState instanceof WritableState;
-}});
-
-}else{
-realHasInstance=function(object){
-return object instanceof this;
-};
-}
-
-function Writable(options){
-Duplex=Duplex||require('./_stream_duplex');
-
-
-
-
-
-
-
-
-if(!realHasInstance.call(Writable,this)&&!(this instanceof Duplex)){
-return new Writable(options);
-}
-
-this._writableState=new WritableState(options,this);
-
-
-this.writable=true;
-
-if(options){
-if(typeof options.write==='function')this._write=options.write;
-
-if(typeof options.writev==='function')this._writev=options.writev;
-
-if(typeof options.destroy==='function')this._destroy=options.destroy;
-
-if(typeof options.final==='function')this._final=options.final;
-}
-
-Stream.call(this);
-}
-
-
-Writable.prototype.pipe=function(){
-this.emit('error',new Error('Cannot pipe, not readable'));
-};
-
-function writeAfterEnd(stream,cb){
-var er=new Error('write after end');
-
-stream.emit('error',er);
-processNextTick(cb,er);
-}
-
-
-
-
-function validChunk(stream,state,chunk,cb){
-var valid=true;
-var er=false;
-
-if(chunk===null){
-er=new TypeError('May not write null values to stream');
-}else if(typeof chunk!=='string'&&chunk!==undefined&&!state.objectMode){
-er=new TypeError('Invalid non-string/buffer chunk');
-}
-if(er){
-stream.emit('error',er);
-processNextTick(cb,er);
-valid=false;
-}
-return valid;
-}
-
-Writable.prototype.write=function(chunk,encoding,cb){
-var state=this._writableState;
-var ret=false;
-var isBuf=_isUint8Array(chunk)&&!state.objectMode;
-
-if(isBuf&&!Buffer.isBuffer(chunk)){
-chunk=_uint8ArrayToBuffer(chunk);
-}
-
-if(typeof encoding==='function'){
-cb=encoding;
-encoding=null;
-}
-
-if(isBuf)encoding='buffer';else if(!encoding)encoding=state.defaultEncoding;
-
-if(typeof cb!=='function')cb=nop;
-
-if(state.ended)writeAfterEnd(this,cb);else if(isBuf||validChunk(this,state,chunk,cb)){
-state.pendingcb++;
-ret=writeOrBuffer(this,state,isBuf,chunk,encoding,cb);
-}
-
-return ret;
-};
-
-Writable.prototype.cork=function(){
-var state=this._writableState;
-
-state.corked++;
-};
-
-Writable.prototype.uncork=function(){
-var state=this._writableState;
-
-if(state.corked){
-state.corked--;
-
-if(!state.writing&&!state.corked&&!state.finished&&!state.bufferProcessing&&state.bufferedRequest)clearBuffer(this,state);
-}
-};
-
-Writable.prototype.setDefaultEncoding=function setDefaultEncoding(encoding){
-
-if(typeof encoding==='string')encoding=encoding.toLowerCase();
-if(!(['hex','utf8','utf-8','ascii','binary','base64','ucs2','ucs-2','utf16le','utf-16le','raw'].indexOf((encoding+'').toLowerCase())>-1))throw new TypeError('Unknown encoding: '+encoding);
-this._writableState.defaultEncoding=encoding;
-return this;
-};
-
-function decodeChunk(state,chunk,encoding){
-if(!state.objectMode&&state.decodeStrings!==false&&typeof chunk==='string'){
-chunk=Buffer.from(chunk,encoding);
-}
-return chunk;
-}
-
-
-
-
-function writeOrBuffer(stream,state,isBuf,chunk,encoding,cb){
-if(!isBuf){
-var newChunk=decodeChunk(state,chunk,encoding);
-if(chunk!==newChunk){
-isBuf=true;
-encoding='buffer';
-chunk=newChunk;
-}
-}
-var len=state.objectMode?1:chunk.length;
-
-state.length+=len;
-
-var ret=state.length<state.highWaterMark;
-
-if(!ret)state.needDrain=true;
-
-if(state.writing||state.corked){
-var last=state.lastBufferedRequest;
-state.lastBufferedRequest={
-chunk:chunk,
-encoding:encoding,
-isBuf:isBuf,
-callback:cb,
-next:null};
-
-if(last){
-last.next=state.lastBufferedRequest;
-}else{
-state.bufferedRequest=state.lastBufferedRequest;
-}
-state.bufferedRequestCount+=1;
-}else{
-doWrite(stream,state,false,len,chunk,encoding,cb);
-}
-
-return ret;
-}
-
-function doWrite(stream,state,writev,len,chunk,encoding,cb){
-state.writelen=len;
-state.writecb=cb;
-state.writing=true;
-state.sync=true;
-if(writev)stream._writev(chunk,state.onwrite);else stream._write(chunk,encoding,state.onwrite);
-state.sync=false;
-}
-
-function onwriteError(stream,state,sync,er,cb){
---state.pendingcb;
-
-if(sync){
-
-
-processNextTick(cb,er);
-
-
-processNextTick(finishMaybe,stream,state);
-stream._writableState.errorEmitted=true;
-stream.emit('error',er);
-}else{
-
-
-cb(er);
-stream._writableState.errorEmitted=true;
-stream.emit('error',er);
-
-
-finishMaybe(stream,state);
-}
-}
-
-function onwriteStateUpdate(state){
-state.writing=false;
-state.writecb=null;
-state.length-=state.writelen;
-state.writelen=0;
-}
-
-function onwrite(stream,er){
-var state=stream._writableState;
-var sync=state.sync;
-var cb=state.writecb;
-
-onwriteStateUpdate(state);
-
-if(er)onwriteError(stream,state,sync,er,cb);else{
-
-var finished=needFinish(state);
-
-if(!finished&&!state.corked&&!state.bufferProcessing&&state.bufferedRequest){
-clearBuffer(stream,state);
-}
-
-if(sync){
-
-asyncWrite(afterWrite,stream,state,finished,cb);
-
-}else{
-afterWrite(stream,state,finished,cb);
-}
-}
-}
-
-function afterWrite(stream,state,finished,cb){
-if(!finished)onwriteDrain(stream,state);
-state.pendingcb--;
-cb();
-finishMaybe(stream,state);
-}
-
-
-
-
-function onwriteDrain(stream,state){
-if(state.length===0&&state.needDrain){
-state.needDrain=false;
-stream.emit('drain');
-}
-}
-
-
-function clearBuffer(stream,state){
-state.bufferProcessing=true;
-var entry=state.bufferedRequest;
-
-if(stream._writev&&entry&&entry.next){
-
-var l=state.bufferedRequestCount;
-var buffer=new Array(l);
-var holder=state.corkedRequestsFree;
-holder.entry=entry;
-
-var count=0;
-var allBuffers=true;
-while(entry){
-buffer[count]=entry;
-if(!entry.isBuf)allBuffers=false;
-entry=entry.next;
-count+=1;
-}
-buffer.allBuffers=allBuffers;
-
-doWrite(stream,state,true,state.length,buffer,'',holder.finish);
-
-
-
-state.pendingcb++;
-state.lastBufferedRequest=null;
-if(holder.next){
-state.corkedRequestsFree=holder.next;
-holder.next=null;
-}else{
-state.corkedRequestsFree=new CorkedRequest(state);
-}
-}else{
-
-while(entry){
-var chunk=entry.chunk;
-var encoding=entry.encoding;
-var cb=entry.callback;
-var len=state.objectMode?1:chunk.length;
-
-doWrite(stream,state,false,len,chunk,encoding,cb);
-entry=entry.next;
-
-
-
-
-if(state.writing){
-break;
-}
-}
-
-if(entry===null)state.lastBufferedRequest=null;
-}
-
-state.bufferedRequestCount=0;
-state.bufferedRequest=entry;
-state.bufferProcessing=false;
-}
-
-Writable.prototype._write=function(chunk,encoding,cb){
-cb(new Error('_write() is not implemented'));
-};
-
-Writable.prototype._writev=null;
-
-Writable.prototype.end=function(chunk,encoding,cb){
-var state=this._writableState;
-
-if(typeof chunk==='function'){
-cb=chunk;
-chunk=null;
-encoding=null;
-}else if(typeof encoding==='function'){
-cb=encoding;
-encoding=null;
-}
-
-if(chunk!==null&&chunk!==undefined)this.write(chunk,encoding);
-
-
-if(state.corked){
-state.corked=1;
-this.uncork();
-}
-
-
-if(!state.ending&&!state.finished)endWritable(this,state,cb);
-};
-
-function needFinish(state){
-return state.ending&&state.length===0&&state.bufferedRequest===null&&!state.finished&&!state.writing;
-}
-function callFinal(stream,state){
-stream._final(function(err){
-state.pendingcb--;
-if(err){
-stream.emit('error',err);
-}
-state.prefinished=true;
-stream.emit('prefinish');
-finishMaybe(stream,state);
-});
-}
-function prefinish(stream,state){
-if(!state.prefinished&&!state.finalCalled){
-if(typeof stream._final==='function'){
-state.pendingcb++;
-state.finalCalled=true;
-processNextTick(callFinal,stream,state);
-}else{
-state.prefinished=true;
-stream.emit('prefinish');
-}
-}
-}
-
-function finishMaybe(stream,state){
-var need=needFinish(state);
-if(need){
-prefinish(stream,state);
-if(state.pendingcb===0){
-state.finished=true;
-stream.emit('finish');
-}
-}
-return need;
-}
-
-function endWritable(stream,state,cb){
-state.ending=true;
-finishMaybe(stream,state);
-if(cb){
-if(state.finished)processNextTick(cb);else stream.once('finish',cb);
-}
-state.ended=true;
-stream.writable=false;
-}
-
-function onCorkedFinish(corkReq,state,err){
-var entry=corkReq.entry;
-corkReq.entry=null;
-while(entry){
-var cb=entry.callback;
-state.pendingcb--;
-cb(err);
-entry=entry.next;
-}
-if(state.corkedRequestsFree){
-state.corkedRequestsFree.next=corkReq;
-}else{
-state.corkedRequestsFree=corkReq;
-}
-}
-
-Object.defineProperty(Writable.prototype,'destroyed',{
-get:function(){
-if(this._writableState===undefined){
-return false;
-}
-return this._writableState.destroyed;
-},
-set:function(value){
-
-
-if(!this._writableState){
-return;
-}
-
-
-
-this._writableState.destroyed=value;
-}});
-
-
-Writable.prototype.destroy=destroyImpl.destroy;
-Writable.prototype._undestroy=destroyImpl.undestroy;
-Writable.prototype._destroy=function(err,cb){
-this.end();
-cb(err);
-};
-}).call(this,require('_process'),typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{},require("timers").setImmediate);
-},{"./_stream_duplex":150,"./internal/streams/destroy":156,"./internal/streams/stream":157,"_process":137,"core-util-is":95,"inherits":105,"process-nextick-args":136,"safe-buffer":143,"timers":163,"util-deprecate":164}],155:[function(require,module,exports){
-'use strict';
-
-
-
-function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}
-
-var Buffer=require('safe-buffer').Buffer;
-
-
-function copyBuffer(src,target,offset){
-src.copy(target,offset);
-}
-
-module.exports=function(){
-function BufferList(){
-_classCallCheck(this,BufferList);
-
-this.head=null;
-this.tail=null;
-this.length=0;
-}
-
-BufferList.prototype.push=function push(v){
-var entry={data:v,next:null};
-if(this.length>0)this.tail.next=entry;else this.head=entry;
-this.tail=entry;
-++this.length;
-};
-
-BufferList.prototype.unshift=function unshift(v){
-var entry={data:v,next:this.head};
-if(this.length===0)this.tail=entry;
-this.head=entry;
-++this.length;
-};
-
-BufferList.prototype.shift=function shift(){
-if(this.length===0)return;
-var ret=this.head.data;
-if(this.length===1)this.head=this.tail=null;else this.head=this.head.next;
---this.length;
-return ret;
-};
-
-BufferList.prototype.clear=function clear(){
-this.head=this.tail=null;
-this.length=0;
-};
-
-BufferList.prototype.join=function join(s){
-if(this.length===0)return'';
-var p=this.head;
-var ret=''+p.data;
-while(p=p.next){
-ret+=s+p.data;
-}return ret;
-};
-
-BufferList.prototype.concat=function concat(n){
-if(this.length===0)return Buffer.alloc(0);
-if(this.length===1)return this.head.data;
-var ret=Buffer.allocUnsafe(n>>>0);
-var p=this.head;
-var i=0;
-while(p){
-copyBuffer(p.data,ret,i);
-i+=p.data.length;
-p=p.next;
-}
-return ret;
-};
-
-return BufferList;
-}();
-},{"safe-buffer":143}],156:[function(require,module,exports){
-'use strict';
-
-
-
-var processNextTick=require('process-nextick-args');
-
-
-
-function destroy(err,cb){
-var _this=this;
-
-var readableDestroyed=this._readableState&&this._readableState.destroyed;
-var writableDestroyed=this._writableState&&this._writableState.destroyed;
-
-if(readableDestroyed||writableDestroyed){
-if(cb){
-cb(err);
-}else if(err&&(!this._writableState||!this._writableState.errorEmitted)){
-processNextTick(emitErrorNT,this,err);
-}
-return;
-}
-
-
-
-
-if(this._readableState){
-this._readableState.destroyed=true;
-}
-
-
-if(this._writableState){
-this._writableState.destroyed=true;
-}
-
-this._destroy(err||null,function(err){
-if(!cb&&err){
-processNextTick(emitErrorNT,_this,err);
-if(_this._writableState){
-_this._writableState.errorEmitted=true;
-}
-}else if(cb){
-cb(err);
-}
-});
-}
-
-function undestroy(){
-if(this._readableState){
-this._readableState.destroyed=false;
-this._readableState.reading=false;
-this._readableState.ended=false;
-this._readableState.endEmitted=false;
-}
-
-if(this._writableState){
-this._writableState.destroyed=false;
-this._writableState.ended=false;
-this._writableState.ending=false;
-this._writableState.finished=false;
-this._writableState.errorEmitted=false;
-}
-}
-
-function emitErrorNT(self,err){
-self.emit('error',err);
-}
-
-module.exports={
-destroy:destroy,
-undestroy:undestroy};
-
-},{"process-nextick-args":136}],157:[function(require,module,exports){
-module.exports=require('events').EventEmitter;
-
-},{"events":100}],158:[function(require,module,exports){
-module.exports=require('./readable').PassThrough;
-
-},{"./readable":159}],159:[function(require,module,exports){
-exports=module.exports=require('./lib/_stream_readable.js');
-exports.Stream=exports;
-exports.Readable=exports;
-exports.Writable=require('./lib/_stream_writable.js');
-exports.Duplex=require('./lib/_stream_duplex.js');
-exports.Transform=require('./lib/_stream_transform.js');
-exports.PassThrough=require('./lib/_stream_passthrough.js');
-
-},{"./lib/_stream_duplex.js":150,"./lib/_stream_passthrough.js":151,"./lib/_stream_readable.js":152,"./lib/_stream_transform.js":153,"./lib/_stream_writable.js":154}],160:[function(require,module,exports){
-module.exports=require('./readable').Transform;
-
-},{"./readable":159}],161:[function(require,module,exports){
-module.exports=require('./lib/_stream_writable.js');
-
-},{"./lib/_stream_writable.js":154}],162:[function(require,module,exports){
-'use strict';
-
-var Buffer=require('safe-buffer').Buffer;
-
-var isEncoding=Buffer.isEncoding||function(encoding){
-encoding=''+encoding;
-switch(encoding&&encoding.toLowerCase()){
-case'hex':case'utf8':case'utf-8':case'ascii':case'binary':case'base64':case'ucs2':case'ucs-2':case'utf16le':case'utf-16le':case'raw':
-return true;
-default:
-return false;}
-
-};
-
-function _normalizeEncoding(enc){
-if(!enc)return'utf8';
-var retried;
-while(true){
-switch(enc){
-case'utf8':
-case'utf-8':
-return'utf8';
-case'ucs2':
-case'ucs-2':
-case'utf16le':
-case'utf-16le':
-return'utf16le';
-case'latin1':
-case'binary':
-return'latin1';
-case'base64':
-case'ascii':
-case'hex':
-return enc;
-default:
-if(retried)return;
-enc=(''+enc).toLowerCase();
-retried=true;}
-
-}
-};
-
-
-
-function normalizeEncoding(enc){
-var nenc=_normalizeEncoding(enc);
-if(typeof nenc!=='string'&&(Buffer.isEncoding===isEncoding||!isEncoding(enc)))throw new Error('Unknown encoding: '+enc);
-return nenc||enc;
-}
-
-
-
-
-exports.StringDecoder=StringDecoder;
-function StringDecoder(encoding){
-this.encoding=normalizeEncoding(encoding);
-var nb;
-switch(this.encoding){
-case'utf16le':
-this.text=utf16Text;
-this.end=utf16End;
-nb=4;
-break;
-case'utf8':
-this.fillLast=utf8FillLast;
-nb=4;
-break;
-case'base64':
-this.text=base64Text;
-this.end=base64End;
-nb=3;
-break;
-default:
-this.write=simpleWrite;
-this.end=simpleEnd;
-return;}
-
-this.lastNeed=0;
-this.lastTotal=0;
-this.lastChar=Buffer.allocUnsafe(nb);
-}
-
-StringDecoder.prototype.write=function(buf){
-if(buf.length===0)return'';
-var r;
-var i;
-if(this.lastNeed){
-r=this.fillLast(buf);
-if(r===undefined)return'';
-i=this.lastNeed;
-this.lastNeed=0;
-}else{
-i=0;
-}
-if(i<buf.length)return r?r+this.text(buf,i):this.text(buf,i);
-return r||'';
-};
-
-StringDecoder.prototype.end=utf8End;
-
-
-StringDecoder.prototype.text=utf8Text;
-
-
-StringDecoder.prototype.fillLast=function(buf){
-if(this.lastNeed<=buf.length){
-buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,this.lastNeed);
-return this.lastChar.toString(this.encoding,0,this.lastTotal);
-}
-buf.copy(this.lastChar,this.lastTotal-this.lastNeed,0,buf.length);
-this.lastNeed-=buf.length;
-};
-
-
-
-function utf8CheckByte(byte){
-if(byte<=0x7F)return 0;else if(byte>>5===0x06)return 2;else if(byte>>4===0x0E)return 3;else if(byte>>3===0x1E)return 4;
-return-1;
-}
-
-
-
-
-function utf8CheckIncomplete(self,buf,i){
-var j=buf.length-1;
-if(j<i)return 0;
-var nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0)self.lastNeed=nb-1;
-return nb;
-}
-if(--j<i)return 0;
-nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0)self.lastNeed=nb-2;
-return nb;
-}
-if(--j<i)return 0;
-nb=utf8CheckByte(buf[j]);
-if(nb>=0){
-if(nb>0){
-if(nb===2)nb=0;else self.lastNeed=nb-3;
-}
-return nb;
-}
-return 0;
-}
-
-
-
-
-
-
-
-
-
-function utf8CheckExtraBytes(self,buf,p){
-if((buf[0]&0xC0)!==0x80){
-self.lastNeed=0;
-return'\ufffd'.repeat(p);
-}
-if(self.lastNeed>1&&buf.length>1){
-if((buf[1]&0xC0)!==0x80){
-self.lastNeed=1;
-return'\ufffd'.repeat(p+1);
-}
-if(self.lastNeed>2&&buf.length>2){
-if((buf[2]&0xC0)!==0x80){
-self.lastNeed=2;
-return'\ufffd'.repeat(p+2);
-}
-}
-}
-}
-
-
-function utf8FillLast(buf){
-var p=this.lastTotal-this.lastNeed;
-var r=utf8CheckExtraBytes(this,buf,p);
-if(r!==undefined)return r;
-if(this.lastNeed<=buf.length){
-buf.copy(this.lastChar,p,0,this.lastNeed);
-return this.lastChar.toString(this.encoding,0,this.lastTotal);
-}
-buf.copy(this.lastChar,p,0,buf.length);
-this.lastNeed-=buf.length;
-}
-
-
-
-
-function utf8Text(buf,i){
-var total=utf8CheckIncomplete(this,buf,i);
-if(!this.lastNeed)return buf.toString('utf8',i);
-this.lastTotal=total;
-var end=buf.length-(total-this.lastNeed);
-buf.copy(this.lastChar,0,end);
-return buf.toString('utf8',i,end);
-}
-
-
-
-function utf8End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed)return r+'\ufffd'.repeat(this.lastTotal-this.lastNeed);
-return r;
-}
-
-
-
-
-
-function utf16Text(buf,i){
-if((buf.length-i)%2===0){
-var r=buf.toString('utf16le',i);
-if(r){
-var c=r.charCodeAt(r.length-1);
-if(c>=0xD800&&c<=0xDBFF){
-this.lastNeed=2;
-this.lastTotal=4;
-this.lastChar[0]=buf[buf.length-2];
-this.lastChar[1]=buf[buf.length-1];
-return r.slice(0,-1);
-}
-}
-return r;
-}
-this.lastNeed=1;
-this.lastTotal=2;
-this.lastChar[0]=buf[buf.length-1];
-return buf.toString('utf16le',i,buf.length-1);
-}
-
-
-
-function utf16End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed){
-var end=this.lastTotal-this.lastNeed;
-return r+this.lastChar.toString('utf16le',0,end);
-}
-return r;
-}
-
-function base64Text(buf,i){
-var n=(buf.length-i)%3;
-if(n===0)return buf.toString('base64',i);
-this.lastNeed=3-n;
-this.lastTotal=3;
-if(n===1){
-this.lastChar[0]=buf[buf.length-1];
-}else{
-this.lastChar[0]=buf[buf.length-2];
-this.lastChar[1]=buf[buf.length-1];
-}
-return buf.toString('base64',i,buf.length-n);
-}
-
-function base64End(buf){
-var r=buf&&buf.length?this.write(buf):'';
-if(this.lastNeed)return r+this.lastChar.toString('base64',0,3-this.lastNeed);
-return r;
-}
-
-
-function simpleWrite(buf){
-return buf.toString(this.encoding);
-}
-
-function simpleEnd(buf){
-return buf&&buf.length?this.write(buf):'';
-}
-},{"safe-buffer":143}],163:[function(require,module,exports){
+},{"events":100,"inherits":105,"readable-stream/duplex.js":141,"readable-stream/passthrough.js":151,"readable-stream/readable.js":152,"readable-stream/transform.js":153,"readable-stream/writable.js":154}],163:[function(require,module,exports){
 (function(setImmediate,clearImmediate){
 var nextTick=require('process/browser.js').nextTick;
 var apply=Function.prototype.apply;
@@ -62099,7 +62219,7 @@ module.exports={
 {"id":"npm:dojo:20180818","severity":"medium","semver":{"vulnerable":["<1.10.10 || >=1.11.0 <1.11.6 || >=1.12.0 <1.12.4 || >=1.13.0 <1.13.1"]}},
 {"id":"npm:dojo:20160523","severity":"medium","semver":{"vulnerable":["<= 1.0.0"]}},
 {"id":"npm:dojo:20100614-6","severity":"medium","semver":{"vulnerable":["<1.4.2"]}},
-{"id":"npm:dojo:20100614-1","severity":"high","semver":{"vulnerable":[">=0.4 <0.4.4 || >=1.0 <1.0.3 || >=1.1 <1.1.2 || >=1.2 <1.2.4 || >=1.3 <1.3.3 || >=1.4 <1.4.2"]}},
+{"id":"npm:dojo:20100614","severity":"high","semver":{"vulnerable":[">=0.4 <0.4.4 || >=1.0 <1.0.3 || >=1.1 <1.1.2 || >=1.2 <1.2.4 || >=1.3 <1.3.3 || >=1.4 <1.4.2"]}},
 {"id":"npm:dojo:20090409","severity":"medium","semver":{"vulnerable":["<1.1"]}}],
 
 "foundation-sites":[
@@ -62116,8 +62236,8 @@ module.exports={
 {"id":"npm:highcharts:20180225","severity":"high","semver":{"vulnerable":["<6.1.0"]}}],
 
 "jquery":[
-{"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":["=3.0.0-rc.1"]}},
-{"id":"npm:jquery:20150627","severity":"medium","semver":{"vulnerable":["<3.0.0-beta1 >1.12.3 || <1.12.0 >=1.4.0"]}},
+{"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":["=3.0.0-rc1"]}},
+{"id":"npm:jquery:20150627","severity":"medium","semver":{"vulnerable":["<1.12.2",">=1.12.3 <2.2.2",">=2.2.3 <3.0.0"]}},
 {"id":"npm:jquery:20140902","severity":"medium","semver":{"vulnerable":[">=1.4.2 <1.6.2"]}},
 {"id":"npm:jquery:20120206","severity":"medium","semver":{"vulnerable":["<1.9.0 >=1.7.1"]}},
 {"id":"npm:jquery:20110606","severity":"medium","semver":{"vulnerable":["<1.6.3"]}}],
@@ -62193,6 +62313,7 @@ const Util=require('../report/html/renderer/util.js');
 
 const URL=typeof self!=='undefined'&&self.URL||
 require('url').URL;
+
 
 
 

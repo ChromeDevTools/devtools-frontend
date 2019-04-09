@@ -1563,7 +1563,9 @@ TimelineModel.TimelineModel.NetworkRequest = class {
    * @return {number}
    */
   beginTime() {
-    return Math.min(this.startTime, this.timing && this.timing.pushStart * 1000 || Infinity);
+    return Math.min(
+        this.startTime, this.timing && this.timing.requestTime * 1000 || Infinity,
+        this.timing && this.timing.pushStart * 1000 || Infinity);
   }
 };
 

@@ -499,7 +499,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.None, false);
+SDK.SDKModel.register(Resources.IndexedDBModel, SDK.Target.Capability.DOM, false);
 
 Resources.IndexedDBModel.KeyTypes = {
   NumberType: 'number',

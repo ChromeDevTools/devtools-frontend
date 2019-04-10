@@ -26,7 +26,6 @@ ApplicationTestRunner.dumpCacheTreeNoRefresh = async function(pathFilter) {
       TestRunner.addResult(' '.repeat(8) + entries.join(', '));
     }
   }
-
   UI.panels.resources._sidebar.cacheStorageListTreeElement.expand();
 
   if (!pathFilter)

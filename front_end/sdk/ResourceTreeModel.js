@@ -411,6 +411,15 @@ SDK.ResourceTreeModel = class extends SDK.SDKModel {
       return {url: response.url, data: null, errors: []};
     return {url: response.url, data: response.data || null, errors: response.errors};
   }
+
+  /**
+   * @return {!Promise<!Array<string>>}
+   */
+  async getInstallabilityErrors() {
+    const response = await this._agent.invoke_getInstallabilityErrors({});
+    return response.errors || [];
+  }
+
   /**
    * @param {!SDK.ExecutionContext} a
    * @param {!SDK.ExecutionContext} b

@@ -180,8 +180,7 @@ svg.bezier-preset-modify.bezier-preset-plus {
     margin-top: 16px;
 }
 
-svg.bezier-preset-modify:active,
-.-theme-selection-color {
+svg.bezier-preset-modify:active {
     transform: scale(1.1);
     background-color: var(--selection-bg-color);
 }

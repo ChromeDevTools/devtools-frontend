@@ -62,8 +62,7 @@
     pointer-events: none;
 }
 
-.soft-context-menu-item-mouse-over,
-.-theme-selection-color {
+.soft-context-menu-item-mouse-over {
     border-top: 1px solid var(--context-menu-hover-bg);
     border-bottom: 1px solid var(--context-menu-hover-bg);
     background-color: var(--context-menu-hover-bg);

@@ -561,6 +561,10 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
    * @param {!Event} e
    */
   _handleKeyDown(e) {
+    if (e.key === 'Tab' && Common.moduleSetting('textEditorTabMovesFocus').get()) {
+      e.consume(false);
+      return;
+    }
     if (this._autocompleteController && this._autocompleteController.keyDown(e))
       e.consume(true);
   }

@@ -992,6 +992,7 @@
       'textEditorAutoDetectIndent',
       'textEditorBracketMatching',
       'textEditorIndent',
+      'textEditorTabMovesFocus',
       'timelineCaptureFilmStrip',
       'timelineCaptureLayersAndPictures',
       'timelineCaptureMemory',

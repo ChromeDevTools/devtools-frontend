@@ -181,8 +181,6 @@ Console.ConsoleView = class extends UI.VBox {
     this._currentGroup = this._topGroup;
 
     this._promptElement = this._messagesElement.createChild('div', 'source-code');
-    const promptIcon = UI.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
-    this._promptElement.appendChild(promptIcon);
     this._promptElement.id = 'console-prompt';
 
     // FIXME: This is a workaround for the selection machinery bug. See crbug.com/410899

@@ -22,6 +22,10 @@ Console.ConsolePrompt = class extends UI.Widget {
     const editorContainerElement = this.element.createChild('div', 'console-prompt-editor-container');
     this.element.appendChild(this._eagerPreviewElement);
 
+    this._promptIcon = UI.Icon.create('smallicon-text-prompt', 'console-prompt-icon');
+    this.element.appendChild(this._promptIcon);
+    this._iconThrottler = new Common.Throttler(0);
+
     this._eagerEvalSetting = Common.settings.moduleSetting('consoleEagerEval');
     this._eagerEvalSetting.addChangeListener(this._eagerSettingChanged.bind(this));
     this._eagerPreviewElement.classList.toggle('hidden', !this._eagerEvalSetting.get());
@@ -52,6 +56,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       }));
       this._editor.widget().element.addEventListener('keydown', this._editorKeyDown.bind(this), true);
       this._editor.widget().show(editorContainerElement);
+      this._editor.addEventListener(UI.TextEditor.Events.CursorChanged, this._updatePromptIcon, this);
       this._editor.addEventListener(UI.TextEditor.Events.TextChanged, this._onTextChanged, this);
       this._editor.addEventListener(UI.TextEditor.Events.SuggestionChanged, this._onTextChanged, this);
 
@@ -90,6 +95,7 @@ Console.ConsolePrompt = class extends UI.Widget {
       const asSoonAsPossible = !this._editor.textWithCurrentSuggestion();
       this._previewRequestForTest = this._textChangeThrottler.schedule(this._requestPreviewBound, asSoonAsPossible);
     }
+    this._updatePromptIcon();
     this.dispatchEventToListeners(Console.ConsolePrompt.Events.TextChanged);
   }
 
@@ -233,6 +239,22 @@ Console.ConsolePrompt = class extends UI.Widget {
   }
 
   /**
+   * @return {!Promise<boolean>}
+   */
+  async _enterWillEvaluate() {
+    if (!this._isCaretAtEndOfPrompt())
+      return true;
+    return await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(this.text());
+  }
+
+  _updatePromptIcon() {
+    this._iconThrottler.schedule(async () => {
+      const canComplete = await this._enterWillEvaluate();
+      this._promptIcon.classList.toggle('console-prompt-incomplete', !canComplete);
+    });
+  }
+
+  /**
    * @param {!KeyboardEvent} event
    */
   async _enterKeyPressed(event) {
@@ -249,12 +271,7 @@ Console.ConsolePrompt = class extends UI.Widget {
     if (!str.length)
       return;
 
-    if (!this._isCaretAtEndOfPrompt()) {
-      await this._appendCommand(str, true);
-      return;
-    }
-
-    if (await ObjectUI.JavaScriptAutocomplete.isExpressionComplete(str))
+    if (await this._enterWillEvaluate())
       await this._appendCommand(str, true);
     else
       this._editor.newlineAndIndent();

@@ -160,6 +160,9 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
 
     this._codeMirror.on('changes', this._changes.bind(this));
     this._codeMirror.on('beforeSelectionChange', this._beforeSelectionChange.bind(this));
+    this._codeMirror.on('cursorActivity', () => {
+      this.dispatchEventToListeners(UI.TextEditor.Events.CursorChanged);
+    });
 
     this.element.style.overflow = 'hidden';
     this._codeMirrorElement.classList.add('source-code');

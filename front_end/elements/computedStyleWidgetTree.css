@@ -85,6 +85,11 @@
     right: 0;
 }
 
+.tree-outline li.odd-row {
+    position: relative;
+    background-color: #F5F5F5;
+}
+
 .tree-outline, .tree-outline ol {
     padding-left: 0;
 }

@@ -160,25 +160,70 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       return;
     }
 
-    const traces = this._computePropertyTraces(matchedStyles);
+    const uniqueProperties = nodeStyle.computedStyle.keysArray();
+    uniqueProperties.sort(propertySorter);
+
+    const propertyTraces = this._computePropertyTraces(matchedStyles);
     const inhertiedProperties = this._computeInheritedProperties(matchedStyles);
-    const uniqueProperties = nodeStyle.computedStyle.keysArray().sort(propertySorter);
-    /** @type {!Array<!UI.TreeElement>} */
-    const elementsToAppend = [];
-    for (const propertyName of uniqueProperties) {
-      const inherited = !inhertiedProperties.has(SDK.cssMetadata().canonicalPropertyName(propertyName));
-      const trace = traces.get(propertyName) || null;
-      const treeElement = this._buildProperty(propertyName, nodeStyle, matchedStyles, inherited, trace);
-      if (treeElement) {
+    const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
+    for (let i = 0; i < uniqueProperties.length; ++i) {
+      const propertyName = uniqueProperties[i];
+      const propertyValue = nodeStyle.computedStyle.get(propertyName);
+      const canonicalName = SDK.cssMetadata().canonicalPropertyName(propertyName);
+      const inherited = !inhertiedProperties.has(canonicalName);
+      if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties))
+        continue;
+      if (!showInherited && propertyName.startsWith('--'))
+        continue;
+      if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName))
+        continue;
+
+      const propertyElement = createElement('div');
+      propertyElement.classList.add('computed-style-property');
+      propertyElement.classList.toggle('computed-style-property-inherited', inherited);
+      const renderer = new Elements.StylesSidebarPropertyRenderer(
+          null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
+      renderer.setColorHandler(this._processColor.bind(this));
+      const propertyNameElement = renderer.renderName();
+      propertyNameElement.classList.add('property-name');
+      propertyElement.appendChild(propertyNameElement);
+
+      const colon = createElementWithClass('span', 'delimeter');
+      colon.textContent = ': ';
+      propertyNameElement.appendChild(colon);
+
+      const propertyValueElement = propertyElement.createChild('span', 'property-value');
+
+      const propertyValueText = renderer.renderValue();
+      propertyValueText.classList.add('property-value-text');
+      propertyValueElement.appendChild(propertyValueText);
+
+      const semicolon = createElementWithClass('span', 'delimeter');
+      semicolon.textContent = ';';
+      propertyValueElement.appendChild(semicolon);
+
+      const treeElement = new UI.TreeElement();
+      treeElement.title = propertyElement;
+      treeElement[Elements.ComputedStyleWidget._propertySymbol] = {name: propertyName, value: propertyValue};
+      const isOdd = this._propertiesOutline.rootElement().children().length % 2 === 0;
+      treeElement.listItemElement.classList.toggle('odd-row', isOdd);
+      this._propertiesOutline.appendChild(treeElement);
+      if (!this._propertiesOutline.selectedTreeElement)
+        treeElement.select(!hadFocus);
+
+      const trace = propertyTraces.get(propertyName);
+      if (trace) {
+        const activeProperty = this._renderPropertyTrace(cssModel, matchedStyles, nodeStyle.node, treeElement, trace);
+        treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
+        treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
+        treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
+        const gotoSourceElement = UI.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
+        gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, activeProperty));
+        propertyValueElement.appendChild(gotoSourceElement);
         if (expandedProperties.has(propertyName))
           treeElement.expand();
-        elementsToAppend.push(treeElement);
       }
     }
-    for (const treeElement of elementsToAppend)
-      this._propertiesOutline.appendChild(treeElement);
-    if (!this._propertiesOutline.selectedTreeElement && elementsToAppend.length)
-      elementsToAppend[0].select(!hadFocus);
 
     this._updateFilter(this._filterRegex);
 
@@ -196,65 +241,6 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
       const canonical2 = SDK.cssMetadata().canonicalPropertyName(b);
       return canonical1.compareTo(canonical2);
     }
-  }
-
-  /**
-   * @param {string} propertyName
-   * @param {!Elements.ComputedStyleModel.ComputedStyle} nodeStyle
-   * @param {!SDK.CSSMatchedStyles} matchedStyles
-   * @param {boolean} inherited
-   * @param {?Array<!SDK.CSSProperty>} trace
-   * @return {?UI.TreeElement}
-   */
-  _buildProperty(propertyName, nodeStyle, matchedStyles, inherited, trace) {
-    const showInherited = this._showInheritedComputedStylePropertiesSetting.get();
-    const propertyValue = nodeStyle.computedStyle.get(propertyName);
-    const canonicalName = SDK.cssMetadata().canonicalPropertyName(propertyName);
-    if (!showInherited && inherited && !(propertyName in this._alwaysShowComputedProperties))
-      return null;
-    if (!showInherited && propertyName.startsWith('--'))
-      return null;
-    if (propertyName !== canonicalName && propertyValue === nodeStyle.computedStyle.get(canonicalName))
-      return null;
-
-    const propertyElement = createElement('div');
-    propertyElement.classList.add('computed-style-property');
-    propertyElement.classList.toggle('computed-style-property-inherited', inherited);
-    const renderer = new Elements.StylesSidebarPropertyRenderer(
-        null, nodeStyle.node, propertyName, /** @type {string} */ (propertyValue));
-    renderer.setColorHandler(this._processColor.bind(this));
-    const propertyNameElement = renderer.renderName();
-    propertyNameElement.classList.add('property-name');
-    propertyElement.appendChild(propertyNameElement);
-
-    const colon = createElementWithClass('span', 'delimeter');
-    colon.textContent = ': ';
-    propertyNameElement.appendChild(colon);
-
-    const propertyValueElement = propertyElement.createChild('span', 'property-value');
-
-    const propertyValueText = renderer.renderValue();
-    propertyValueText.classList.add('property-value-text');
-    propertyValueElement.appendChild(propertyValueText);
-
-    const semicolon = createElementWithClass('span', 'delimeter');
-    semicolon.textContent = ';';
-    propertyValueElement.appendChild(semicolon);
-
-    const treeElement = new UI.TreeElement();
-    treeElement.title = propertyElement;
-    treeElement[Elements.ComputedStyleWidget._propertySymbol] = {name: propertyName, value: propertyValue};
-
-    if (trace) {
-      const activeProperty = this._renderPropertyTrace(matchedStyles, nodeStyle.node, treeElement, trace);
-      treeElement.listItemElement.addEventListener('mousedown', e => e.consume(), false);
-      treeElement.listItemElement.addEventListener('dblclick', e => e.consume(), false);
-      treeElement.listItemElement.addEventListener('click', handleClick.bind(null, treeElement), false);
-      const gotoSourceElement = UI.Icon.create('mediumicon-arrow-in-circle', 'goto-source-icon');
-      gotoSourceElement.addEventListener('click', this._navigateToSource.bind(this, activeProperty));
-      propertyValueElement.appendChild(gotoSourceElement);
-    }
-    return treeElement;
 
     /**
      * @param {!UI.TreeElement} treeElement
@@ -279,13 +265,14 @@ Elements.ComputedStyleWidget = class extends UI.ThrottledWidget {
   }
 
   /**
+   * @param {!SDK.CSSModel} cssModel
    * @param {!SDK.CSSMatchedStyles} matchedStyles
    * @param {!SDK.DOMNode} node
    * @param {!UI.TreeElement} rootTreeElement
    * @param {!Array<!SDK.CSSProperty>} tracedProperties
    * @return {!SDK.CSSProperty}
    */
-  _renderPropertyTrace(matchedStyles, node, rootTreeElement, tracedProperties) {
+  _renderPropertyTrace(cssModel, matchedStyles, node, rootTreeElement, tracedProperties) {
     let activeProperty = null;
     for (const property of tracedProperties) {
       const trace = createElement('div');

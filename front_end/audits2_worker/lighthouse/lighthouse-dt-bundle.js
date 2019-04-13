@@ -1,4 +1,4 @@
-// lighthouse, browserified. 4.2.0 (9790337f9873710c3fd38bafdec819337c8367be)
+// lighthouse, browserified. 4.3.0 (01b217be64ddff7ca500ad0f787f914fa9900b73)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
 
@@ -3138,7 +3138,7 @@ id:'unminified-javascript',
 title:str_(UIStrings.title),
 description:str_(UIStrings.description),
 scoreDisplayMode:ByteEfficiencyAudit.SCORING_MODES.NUMERIC,
-requiredArtifacts:['Scripts','devtoolsLogs','traces']};
+requiredArtifacts:['ScriptElements','devtoolsLogs','traces']};
 
 }
 
@@ -3174,10 +3174,11 @@ static audit_(artifacts,networkRecords){
 
 const items=[];
 const warnings=[];
-for(const{requestId,inline,content}of artifacts.Scripts){
+for(const{requestId,src,content}of artifacts.ScriptElements){
 if(!content)continue;
+
 const networkRecord=networkRecords.find(record=>record.requestId===requestId);
-const displayUrl=inline||!networkRecord?
+const displayUrl=!src||!networkRecord?
 `inline: ${content.substr(0,40)}...`:
 networkRecord.url;
 try{
@@ -6031,7 +6032,7 @@ const passingURLs=new Set();
 
 for(const stylesheet of artifacts.CSSUsage.stylesheets){
 
-const newlinesStripped=stylesheet.content.replace(/\n/g,' ');
+const newlinesStripped=stylesheet.content.replace(/(\r|\n)+/g,' ');
 
 const fontFaceDeclarations=newlinesStripped.match(/@font-face\s*{(.*?)}/g)||[];
 
@@ -6566,10 +6567,10 @@ const trace=artifacts.traces[Audit.DEFAULT_PASS];
 const tasks=await MainThreadTasksComputed.request(trace,context);
 
 const results=tasks.
-filter(task=>task.duration>5&&task.parent).
+
+filter(task=>task.duration>5&&!task.parent).
 map(task=>{
 return{
-type:task.group.id,
 duration:task.duration,
 startTime:task.startTime};
 
@@ -6577,7 +6578,6 @@ startTime:task.startTime};
 
 
 const headings=[
-{key:'type',itemType:'text',text:'Task Type'},
 {key:'startTime',itemType:'ms',granularity:1,text:'Start Time'},
 {key:'duration',itemType:'ms',granularity:1,text:'End Time'}];
 
@@ -7821,6 +7821,11 @@ const timeToMs=time=>time<earliestStartTime||!Number.isFinite(time)?
 undefined:(time-earliestStartTime)*1000;
 
 const results=records.map(record=>{
+const endTimeDeltaMs=record.lrStatistics&&record.lrStatistics.endTimeDeltaMs;
+const TCPMs=record.lrStatistics&&record.lrStatistics.TCPMs;
+const requestMs=record.lrStatistics&&record.lrStatistics.requestMs;
+const responseMs=record.lrStatistics&&record.lrStatistics.responseMs;
+
 return{
 url:URL.elideDataURI(record.url),
 startTime:timeToMs(record.startTime),
@@ -7829,7 +7834,11 @@ transferSize:record.transferSize,
 resourceSize:record.resourceSize,
 statusCode:record.statusCode,
 mimeType:record.mimeType,
-resourceType:record.resourceType};
+resourceType:record.resourceType,
+lrEndTimeDeltaMs:endTimeDeltaMs,
+lrTCPMs:TCPMs,
+lrRequestMs:requestMs,
+lrResponseMs:responseMs};
 
 });
 
@@ -12281,7 +12290,8 @@ static filterImageRequests(networkRecords){
 
 const seenUrls=new Set();
 return networkRecords.reduce((prev,record)=>{
-if(seenUrls.has(record.url)||!record.finished){
+
+if(seenUrls.has(record.url)||!record.finished||record.sessionId){
 return prev;
 }
 
@@ -12493,6 +12503,9 @@ static filterUnoptimizedResponses(networkRecords){
 const unoptimizedResponses=[];
 
 networkRecords.forEach(record=>{
+
+if(record.sessionId)return;
+
 const mimeType=record.mimeType;
 const resourceType=record.resourceType||NetworkRequest.TYPES.Other;
 const resourceSize=record.resourceSize;
@@ -13483,7 +13496,7 @@ return this._exceptions;
 
 module.exports=RuntimeExceptions;
 
-},{"./gatherer":48}],"../gather/gatherers/scripts":[function(require,module,exports){
+},{"./gatherer":48}],"../gather/gatherers/script-elements":[function(require,module,exports){
 
 
 
@@ -13491,16 +13504,37 @@ module.exports=RuntimeExceptions;
 
 'use strict';
 
-const log=require('lighthouse-logger');
-const Gatherer=require('./gatherer');
-const NetworkRequest=require('../../lib/network-request');
+const Gatherer=require('./gatherer.js');
+const NetworkAnalyzer=require('../../lib/dependency-graph/simulator/network-analyzer.js');
+const NetworkRequest=require('../../lib/network-request.js');
 const getElementsInDocumentString=require('../../lib/page-functions.js').getElementsInDocumentString;
-const URL=require('../../lib/url-shim.js');
 
 
 
 
-class Scripts extends Gatherer{
+
+function collectAllScriptElements(){
+
+
+const scripts=getElementsInDocument('script');
+
+return scripts.map(script=>{
+return{
+type:script.type||null,
+src:script.src||null,
+async:script.async,
+defer:script.defer,
+source:script.closest('head')?'head':'body',
+content:script.src?null:script.text,
+requestId:null};
+
+});
+}
+
+
+
+
+class ScriptElements extends Gatherer{
 
 
 
@@ -13508,52 +13542,42 @@ class Scripts extends Gatherer{
 
 async afterPass(passContext,loadData){
 const driver=passContext.driver;
+const mainResource=NetworkAnalyzer.findMainDocument(loadData.networkRecords,passContext.url);
 
 
-const scripts=[];
-
-
-const inlineScripts=await driver.evaluateAsync(`(() => {
-      ${getElementsInDocumentString};
-
-      return getElementsInDocument('script')
-        .filter(script => !script.src && script.text.trim())
-        .map(script => script.text);
+const scripts=await driver.evaluateAsync(`(() => {
+      ${getElementsInDocumentString}
+      return (${collectAllScriptElements.toString()})();
     })()`,{useIsolation:true});
 
-if(inlineScripts.length){
-
-
-
-const mainResource=loadData.networkRecords.find(request=>
-passContext.url.startsWith(request.url)&&
-URL.equalWithExcludedFragments(request.url,passContext.url));
-if(!mainResource){
-log.warn('Scripts','could not locate mainResource');
-}
-const requestId=mainResource?mainResource.requestId:undefined;
-scripts.push(
-...inlineScripts.map(content=>{
-return{
-content,
-inline:true,
-requestId};
-
-}));
-
+for(const script of scripts){
+if(script.content)script.requestId=mainResource.requestId;
 }
 
 const scriptRecords=loadData.networkRecords.
+
+filter(record=>!record.sessionId).
+
 filter(record=>record.resourceType===NetworkRequest.TYPES.Script);
 
 for(const record of scriptRecords){
 try{
 const content=await driver.getRequestContent(record.requestId);
-if(content){
+if(!content)continue;
+
+const matchedScriptElement=scripts.find(script=>script.src===record.url);
+if(matchedScriptElement){
+matchedScriptElement.requestId=record.requestId;
+matchedScriptElement.content=content;
+}else{
 scripts.push({
-content,
-inline:false,
-requestId:record.requestId});
+type:null,
+src:record.url,
+async:false,
+defer:false,
+source:'network',
+requestId:record.requestId,
+content});
 
 }
 }catch(e){}
@@ -13563,9 +13587,9 @@ return scripts;
 }}
 
 
-module.exports=Scripts;
+module.exports=ScriptElements;
 
-},{"../../lib/network-request":71,"../../lib/page-functions.js":72,"../../lib/url-shim.js":"url","./gatherer":48,"lighthouse-logger":120}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
+},{"../../lib/dependency-graph/simulator/network-analyzer.js":57,"../../lib/network-request.js":71,"../../lib/page-functions.js":72,"./gatherer.js":48}],"../gather/gatherers/seo/embedded-content":[function(require,module,exports){
 
 
 
@@ -15801,7 +15825,8 @@ return newTask;
 
 
 
-static _createTasksFromEvents(mainThreadEvents,priorTaskData){
+
+static _createTasksFromEvents(mainThreadEvents,priorTaskData,traceEndTs){
 
 const tasks=[];
 
@@ -15833,7 +15858,7 @@ currentTask=currentTask.parent;
 if(!currentTask){
 
 if(event.ph==='E'){
-throw new Error('Fatal trace logic error');
+throw new Error('Fatal trace logic error - unexpected end event');
 }
 
 currentTask=MainThreadTasks._createNewTaskNode(event);
@@ -15849,7 +15874,8 @@ tasks.push(newTask);
 currentTask=newTask;
 }else{
 if(currentTask.event.ph!=='B'){
-throw new Error('Fatal trace logic error');
+throw new Error(
+`Fatal trace logic error - expected start event, got ${currentTask.event.ph}`);
 }
 
 
@@ -15858,6 +15884,14 @@ currentTask=currentTask.parent;
 }
 }
 
+
+while(currentTask&&!Number.isFinite(currentTask.endTime)){
+
+currentTask.endTime=traceEndTs;
+currentTask=currentTask.parent;
+}
+
+
 return tasks;
 }
 
@@ -15865,9 +15899,14 @@ return tasks;
 
 
 
-static _computeRecursiveSelfTime(task){
+
+static _computeRecursiveSelfTime(task,parent){
+if(parent&&task.endTime>parent.endTime){
+throw new Error('Fatal trace logic error - child cannot end after parent');
+}
+
 const childTime=task.children.
-map(MainThreadTasks._computeRecursiveSelfTime).
+map(child=>MainThreadTasks._computeRecursiveSelfTime(child,task)).
 reduce((sum,child)=>sum+child,0);
 task.duration=task.endTime-task.startTime;
 task.selfTime=task.duration-childTime;
@@ -15942,16 +15981,17 @@ task.children.forEach(child=>MainThreadTasks._computeRecursiveTaskGroup(child,ta
 
 
 
-static getMainThreadTasks(traceEvents){
+
+static getMainThreadTasks(traceEvents,traceEndTs){
 const timers=new Map();
 const priorTaskData={timers};
-const tasks=MainThreadTasks._createTasksFromEvents(traceEvents,priorTaskData);
+const tasks=MainThreadTasks._createTasksFromEvents(traceEvents,priorTaskData,traceEndTs);
 
 
 for(const task of tasks){
 if(task.parent)continue;
 
-MainThreadTasks._computeRecursiveSelfTime(task);
+MainThreadTasks._computeRecursiveSelfTime(task,undefined);
 MainThreadTasks._computeRecursiveAttributableURLs(task,[],priorTaskData);
 MainThreadTasks._computeRecursiveTaskGroup(task);
 }
@@ -15979,8 +16019,8 @@ return tasks;
 
 
 static async compute_(trace,context){
-const{mainThreadEvents}=await TraceOfTab.request(trace,context);
-return MainThreadTasks.getMainThreadTasks(mainThreadEvents);
+const{mainThreadEvents,timestamps}=await TraceOfTab.request(trace,context);
+return MainThreadTasks.getMainThreadTasks(mainThreadEvents,timestamps.traceEnd);
 }}
 
 
@@ -17742,7 +17782,7 @@ static async compute_(devtoolsLog,context){
 const records=await NetworkRecords.request(devtoolsLog,context);
 const throughput=NetworkAnalyzer.estimateThroughput(records);
 const rttAndServerResponseTime=NetworkAnalysis.computeRTTAndServerResponseTime(records);
-return{records,throughput,...rttAndServerResponseTime};
+return{throughput,...rttAndServerResponseTime};
 }}
 
 
@@ -17907,9 +17947,9 @@ node.addDependency(parent);
 rootNode.addDependent(node);
 }
 
-const redirects=Array.from(node.record.redirects||[]);
-redirects.push(node.record);
+if(!node.record.redirects)return;
 
+const redirects=[...node.record.redirects,node.record];
 for(let i=1;i<redirects.length;i++){
 const redirectNode=networkNodeOutput.idToNodeMap.get(redirects[i-1].requestId);
 const actualNode=networkNodeOutput.idToNodeMap.get(redirects[i].requestId);
@@ -19944,7 +19984,6 @@ pauseAfterLoadMs:1000,
 networkQuietThresholdMs:1000,
 cpuQuietThresholdMs:1000,
 gatherers:[
-'scripts',
 'css-usage',
 'viewport-dimensions',
 'runtime-exceptions',
@@ -19954,6 +19993,7 @@ gatherers:[
 'image-elements',
 'link-elements',
 'meta-elements',
+'script-elements',
 'dobetterweb/appcache',
 'dobetterweb/doctype',
 'dobetterweb/domstats',
@@ -20972,7 +21012,7 @@ log.error('Driver','Unhandled event error',error.message);
 
 
 async _handleReceivedMessageFromTarget(event,parentSessionIds){
-const{sessionId,message}=event;
+const{targetId,sessionId,message}=event;
 
 const protocolMessage=JSON.parse(message);
 
@@ -20994,7 +21034,7 @@ await this._handleTargetAttached(protocolMessage.params,sessionIdPath);
 }
 
 if(protocolMessage.method.startsWith('Network')){
-this._handleProtocolEvent(protocolMessage);
+this._handleProtocolEvent({...protocolMessage,source:{targetId,sessionId}});
 }
 }
 
@@ -23474,40 +23514,43 @@ cloneWithRelationships(predicate){
 const rootNode=this.getRootNode();
 
 
-let shouldIncludeNode=()=>true;
-if(predicate){
-const idsToInclude=new Set();
+const idsToIncludedClones=new Map();
+
+
 rootNode.traverse(node=>{
+if(idsToIncludedClones.has(node.id))return;
+
+if(predicate===undefined){
+
+idsToIncludedClones.set(node.id,node.cloneWithoutRelationships());
+return;
+}
+
 if(predicate(node)){
+
 node.traverse(
-node=>idsToInclude.add(node.id),
-node=>node._dependencies.filter(parent=>!idsToInclude.has(parent)));
+node=>idsToIncludedClones.set(node.id,node.cloneWithoutRelationships()),
+
+node=>node._dependencies.filter(parent=>!idsToIncludedClones.has(parent.id)));
 
 }
 });
 
-shouldIncludeNode=node=>idsToInclude.has(node.id);
-}
-
-const idToNodeMap=new Map();
-rootNode.traverse(originalNode=>{
-if(!shouldIncludeNode(originalNode))return;
-const clonedNode=originalNode.cloneWithoutRelationships();
-idToNodeMap.set(clonedNode.id,clonedNode);
-});
 
 rootNode.traverse(originalNode=>{
-if(!shouldIncludeNode(originalNode))return;
-const clonedNode=idToNodeMap.get(originalNode.id);
+const clonedNode=idsToIncludedClones.get(originalNode.id);
+if(!clonedNode)return;
 
 for(const dependency of originalNode._dependencies){
-const clonedDependency=idToNodeMap.get(dependency.id);
+const clonedDependency=idsToIncludedClones.get(dependency.id);
+if(!clonedDependency)throw new Error('Dependency somehow not cloned');
 clonedNode.addDependency(clonedDependency);
 }
 });
 
-if(!idToNodeMap.has(this.id))throw new Error('Cloned graph missing node');
-return idToNodeMap.get(this.id);
+const clonedThisNode=idsToIncludedClones.get(this.id);
+if(!clonedThisNode)throw new Error('Cloned graph missing node');
+return clonedThisNode;
 }
 
 
@@ -23516,45 +23559,34 @@ return idToNodeMap.get(this.id);
 
 
 
-_traversePaths(iterator,getNext){
-const stack=[[this]];
-while(stack.length){
 
 
-const path=stack.shift();
-const node=path[0];
-iterator(node,path);
 
-const nodesToAdd=getNext(node);
-for(const nextNode of nodesToAdd){
-stack.push([nextNode].concat(path));
-}
-}
+
+traverse(callback,getNextNodes){
+if(!getNextNodes){
+getNextNodes=node=>node.getDependents();
 }
 
 
 
+const queue=[[this]];
+const visited=new Set([this.id]);
+
+while(queue.length){
 
 
+const traversalPath=queue.shift();
+const node=traversalPath[0];
+callback(node,traversalPath);
 
+for(const nextNode of getNextNodes(node)){
+if(visited.has(nextNode.id))continue;
+visited.add(nextNode.id);
 
-traverse(iterator,getNext){
-if(!getNext){
-getNext=node=>node.getDependents();
+queue.push([nextNode,...traversalPath]);
 }
-
-const visited=new Set();
-const originalGetNext=getNext;
-
-getNext=node=>{
-visited.add(node.id);
-const allNodesToVisit=originalGetNext(node);
-const nodesToVisit=allNodesToVisit.filter(nextNode=>!visited.has(nextNode.id));
-nodesToVisit.forEach(nextNode=>visited.add(nextNode.id));
-return nodesToVisit;
-};
-
-this._traversePaths(iterator,getNext);
+}
 }
 
 
@@ -23811,19 +23843,7 @@ module.exports=class ConnectionPool{
 
 
 constructor(records,options){
-this._options=Object.assign(
-{
-rtt:undefined,
-throughput:undefined,
-additionalRttByOrigin:new Map(),
-serverResponseTimeByOrigin:new Map()},
-
-options);
-
-
-if(!this._options.rtt||!this._options.throughput){
-throw new Error('Cannot create pool with no rtt or throughput');
-}
+this._options=options;
 
 this._records=records;
 
@@ -23929,14 +23949,10 @@ return maxConnection;
 
 
 acquire(record,options={}){
-if(this._connectionsByRecord.has(record)){
+if(this._connectionsByRecord.has(record))throw new Error('Record already has a connection');
 
-return this._connectionsByRecord.get(record);
-}
-
-const origin=String(record.parsedURL.securityOrigin);
+const origin=record.parsedURL.securityOrigin;
 const observedConnectionWasReused=!!this._connectionReusedByRequestId.get(record.requestId);
-
 const connections=this._connectionsByOrigin.get(origin)||[];
 const connectionToUse=this._findAvailableConnectionWithLargestCongestionWindow(connections,{
 ignoreConnectionReused:options.ignoreConnectionReused,
@@ -23948,6 +23964,20 @@ if(!connectionToUse)return null;
 this._connectionsInUse.add(connectionToUse);
 this._connectionsByRecord.set(record,connectionToUse);
 return connectionToUse;
+}
+
+
+
+
+
+
+
+
+acquireActiveConnectionFromRecord(record){
+const activeConnection=this._connectionsByRecord.get(record);
+if(!activeConnection)throw new Error('Could not find an active connection for record');
+
+return activeConnection;
 }
 
 
@@ -23979,19 +24009,9 @@ class DNSCache{
 
 
 
-constructor(options){
-this._options=Object.assign(
-{
-rtt:undefined},
+constructor({rtt}){
+this._rtt=rtt;
 
-options);
-
-
-if(!this._options.rtt){
-throw new Error('Cannot create DNS cache with no rtt');
-}
-
-this._rtt=this._options.rtt;
 
 this._resolvedDomainNames=new Map();
 }
@@ -24312,10 +24332,10 @@ return Array.from(connectionIdWasStarted.values()).every(started=>started);
 
 
 static estimateIfConnectionWasReused(records,options){
-options=Object.assign({forceCoarseEstimates:false},options);
+const{forceCoarseEstimates=false}=options||{};
 
 
-if(!options.forceCoarseEstimates&&NetworkAnalyzer.canTrustConnectionInformation(records)){
+if(!forceCoarseEstimates&&NetworkAnalyzer.canTrustConnectionInformation(records)){
 
 return new Map(records.map(record=>[record.requestId,!!record.connectionReused]));
 }
@@ -24355,48 +24375,42 @@ return connectionWasReused;
 
 
 static estimateRTTByOrigin(records,options){
-options=Object.assign(
-{
+const{
+forceCoarseEstimates=false,
 
 
-forceCoarseEstimates:false,
-
-
-coarseEstimateMultiplier:0.3,
-
-useDownloadEstimates:true,
-useSendStartEstimates:true,
-useHeadersEndEstimates:true},
-
-options);
-
+coarseEstimateMultiplier=0.3,
+useDownloadEstimates=true,
+useSendStartEstimates=true,
+useHeadersEndEstimates=true}=
+options||{};
 
 let estimatesByOrigin=NetworkAnalyzer._estimateRTTByOriginViaTCPTiming(records);
-if(!estimatesByOrigin.size||options.forceCoarseEstimates){
+if(!estimatesByOrigin.size||forceCoarseEstimates){
 estimatesByOrigin=new Map();
 const estimatesViaDownload=NetworkAnalyzer._estimateRTTByOriginViaDownloadTiming(records);
 const estimatesViaSendStart=NetworkAnalyzer._estimateRTTByOriginViaSendStartTiming(records);
 const estimatesViaTTFB=NetworkAnalyzer._estimateRTTByOriginViaHeadersEndTiming(records);
 
 for(const[origin,estimates]of estimatesViaDownload.entries()){
-if(!options.useDownloadEstimates)continue;
+if(!useDownloadEstimates)continue;
 estimatesByOrigin.set(origin,estimates);
 }
 
 for(const[origin,estimates]of estimatesViaSendStart.entries()){
-if(!options.useSendStartEstimates)continue;
+if(!useSendStartEstimates)continue;
 const existing=estimatesByOrigin.get(origin)||[];
 estimatesByOrigin.set(origin,existing.concat(estimates));
 }
 
 for(const[origin,estimates]of estimatesViaTTFB.entries()){
-if(!options.useHeadersEndEstimates)continue;
+if(!useHeadersEndEstimates)continue;
 const existing=estimatesByOrigin.get(origin)||[];
 estimatesByOrigin.set(origin,existing.concat(estimates));
 }
 
 for(const estimates of estimatesByOrigin.values()){
-estimates.forEach((x,i)=>estimates[i]=x*options.coarseEstimateMultiplier);
+estimates.forEach((x,i)=>estimates[i]=x*coarseEstimateMultiplier);
 }
 }
 
@@ -24413,17 +24427,13 @@ return NetworkAnalyzer.summarize(estimatesByOrigin);
 
 
 static estimateServerResponseTimeByOrigin(records,options){
-options=Object.assign(
-{
-rttByOrigin:null},
-
-options);
-
-
-let rttByOrigin=options.rttByOrigin;
+let rttByOrigin=(options||{}).rttByOrigin;
 if(!rttByOrigin){
-rttByOrigin=NetworkAnalyzer.estimateRTTByOrigin(records,options);
-for(const[origin,summary]of rttByOrigin.entries()){
+
+rttByOrigin=new Map();
+
+const rttSummaryByOrigin=NetworkAnalyzer.estimateRTTByOrigin(records,options);
+for(const[origin,summary]of rttSummaryByOrigin.entries()){
 rttByOrigin.set(origin,summary.min);
 }
 }
@@ -24514,6 +24524,15 @@ return documentRequests.reduce((min,r)=>r.startTime<min.startTime?r:min);
 
 
 module.exports=NetworkAnalyzer;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24826,8 +24845,7 @@ if(networkNode.fromDiskCache){
 const sizeInMb=(record.resourceSize||0)/1024/1024;
 timeElapsed=8+20*sizeInMb-timingData.timeElapsed;
 }else{
-
-const connection=this._acquireConnection(record);
+const connection=this._connectionPool.acquireActiveConnectionFromRecord(record);
 const dnsResolutionTime=this._dns.getTimeUntilResolution(record,{
 requestedAt:timingData.startTime,
 shouldUpdateCache:true});
@@ -24878,8 +24896,7 @@ timingData.timeElapsed+=timePeriodLength;
 if(node.type!==BaseNode.TYPES.NETWORK)throw new Error('Unsupported');
 
 const record=node.record;
-
-const connection=this._acquireConnection(record);
+const connection=this._connectionPool.acquireActiveConnectionFromRecord(record);
 const dnsResolutionTime=this._dns.getTimeUntilResolution(record,{
 requestedAt:timingData.startTime,
 shouldUpdateCache:true});
@@ -28612,8 +28629,9 @@ this._emitNetworkStatus();
 
 
 
-onRequestWillBeSent(data){
-const originalRequest=this._findRealRequest(data.requestId);
+onRequestWillBeSent(event){
+const data=event.params;
+const originalRequest=this._findRealRequestAndSetSource(data.requestId,event.source);
 
 if(!originalRequest){
 const request=new NetworkRequest();
@@ -28651,8 +28669,9 @@ this.onRequestFinished(originalRequest);
 
 
 
-onRequestServedFromCache(data){
-const request=this._findRealRequest(data.requestId);
+onRequestServedFromCache(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onRequestServedFromCache();
 }
@@ -28660,8 +28679,9 @@ request.onRequestServedFromCache();
 
 
 
-onResponseReceived(data){
-const request=this._findRealRequest(data.requestId);
+onResponseReceived(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onResponseReceived(data);
 }
@@ -28669,8 +28689,9 @@ request.onResponseReceived(data);
 
 
 
-onDataReceived(data){
-const request=this._findRealRequest(data.requestId);
+onDataReceived(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onDataReceived(data);
 }
@@ -28678,8 +28699,9 @@ request.onDataReceived(data);
 
 
 
-onLoadingFinished(data){
-const request=this._findRealRequest(data.requestId);
+onLoadingFinished(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onLoadingFinished(data);
 this.onRequestFinished(request);
@@ -28688,8 +28710,9 @@ this.onRequestFinished(request);
 
 
 
-onLoadingFailed(data){
-const request=this._findRealRequest(data.requestId);
+onLoadingFailed(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onLoadingFailed(data);
 this.onRequestFinished(request);
@@ -28698,8 +28721,9 @@ this.onRequestFinished(request);
 
 
 
-onResourceChangedPriority(data){
-const request=this._findRealRequest(data.requestId);
+onResourceChangedPriority(event){
+const data=event.params;
+const request=this._findRealRequestAndSetSource(data.requestId,event.source);
 if(!request)return;
 request.onResourceChangedPriority(data);
 }
@@ -28710,13 +28734,13 @@ request.onResourceChangedPriority(data);
 
 dispatch(event){
 switch(event.method){
-case'Network.requestWillBeSent':return this.onRequestWillBeSent(event.params);
-case'Network.requestServedFromCache':return this.onRequestServedFromCache(event.params);
-case'Network.responseReceived':return this.onResponseReceived(event.params);
-case'Network.dataReceived':return this.onDataReceived(event.params);
-case'Network.loadingFinished':return this.onLoadingFinished(event.params);
-case'Network.loadingFailed':return this.onLoadingFailed(event.params);
-case'Network.resourceChangedPriority':return this.onResourceChangedPriority(event.params);
+case'Network.requestWillBeSent':return this.onRequestWillBeSent(event);
+case'Network.requestServedFromCache':return this.onRequestServedFromCache(event);
+case'Network.responseReceived':return this.onResponseReceived(event);
+case'Network.dataReceived':return this.onDataReceived(event);
+case'Network.loadingFinished':return this.onLoadingFinished(event);
+case'Network.loadingFailed':return this.onLoadingFailed(event);
+case'Network.resourceChangedPriority':return this.onResourceChangedPriority(event);
 default:return;}
 
 }
@@ -28730,7 +28754,8 @@ default:return;}
 
 
 
-_findRealRequest(requestId){
+
+_findRealRequestAndSetSource(requestId,source){
 let request=this._recordsById.get(requestId);
 if(!request||!request.isValid)return undefined;
 
@@ -28738,6 +28763,7 @@ while(request.redirectDestination){
 request=request.redirectDestination;
 }
 
+request.setSource(source);
 return request;
 }
 
@@ -28815,6 +28841,27 @@ const SECURE_SCHEMES=['data','https','wss','blob','chrome','chrome-extension','a
 
 
 
+const HEADER_TCP='X-TCPMs';
+const HEADER_SSL='X-SSLMs';
+const HEADER_REQ='X-RequestMs';
+const HEADER_RES='X-ResponseMs';
+const HEADER_TOTAL='X-TotalMs';
+const HEADER_FETCHED_SIZE='X-TotalFetchedSize';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -28846,7 +28893,7 @@ Ping:'Ping',
 CSPViolationReport:'CSPViolationReport'};
 
 
-module.exports=class NetworkRequest{
+class NetworkRequest{
 constructor(){
 this.requestId='';
 this.connectionId='0';
@@ -28870,6 +28917,9 @@ this.transferSize=0;
 this.resourceSize=0;
 this.fromDiskCache=false;
 this.fromMemoryCache=false;
+
+
+this.lrStatistics=undefined;
 
 this.finished=false;
 this.requestMethod='';
@@ -28901,6 +28951,18 @@ this.responseHeadersText='';
 this.fetchedViaServiceWorker=false;
 
 this.frameId='';
+
+
+
+
+
+this.targetId=undefined;
+
+
+
+
+
+this.sessionId=undefined;
 this.isLinkPreload=false;
 }
 
@@ -28991,6 +29053,7 @@ this.transferSize=data.encodedDataLength;
 
 this._updateResponseReceivedTimeIfNecessary();
 this._updateTransferSizeForLightrider();
+this._updateTimingsForLightrider();
 }
 
 
@@ -29009,6 +29072,7 @@ this.localizedFailDescription=data.errorText;
 
 this._updateResponseReceivedTimeIfNecessary();
 this._updateTransferSizeForLightrider();
+this._updateTimingsForLightrider();
 }
 
 
@@ -29029,6 +29093,19 @@ this.finished=true;
 this.endTime=data.timestamp;
 
 this._updateResponseReceivedTimeIfNecessary();
+}
+
+
+
+
+setSource(source){
+if(source){
+this.targetId=source.targetId;
+this.sessionId=source.sessionId;
+}else{
+this.targetId=undefined;
+this.sessionId=undefined;
+}
 }
 
 
@@ -29082,6 +29159,8 @@ this.responseReceivedTime=headersReceivedTime;
 
 this.responseReceivedTime=Math.min(this.responseReceivedTime,headersReceivedTime);
 this.responseReceivedTime=Math.max(this.responseReceivedTime,this.startTime);
+
+
 this.endTime=Math.max(this.endTime,this.responseReceivedTime);
 }
 
@@ -29114,10 +29193,71 @@ _updateTransferSizeForLightrider(){
 
 if(!global.isLightrider)return;
 
-const totalFetchedSize=this.responseHeaders.find(item=>item.name==='X-TotalFetchedSize');
+const totalFetchedSize=this.responseHeaders.find(item=>item.name===HEADER_FETCHED_SIZE);
 
 if(!totalFetchedSize)return;
-this.transferSize=parseFloat(totalFetchedSize.value);
+const floatValue=parseFloat(totalFetchedSize.value);
+
+if(isNaN(floatValue))return;
+this.transferSize=floatValue;
+}
+
+
+
+
+
+_updateTimingsForLightrider(){
+
+if(!global.isLightrider)return;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const totalHeader=this.responseHeaders.find(item=>item.name===HEADER_TOTAL);
+
+if(!totalHeader)return;
+
+const totalMs=parseInt(totalHeader.value);
+const TCPMsHeader=this.responseHeaders.find(item=>item.name===HEADER_TCP);
+const SSLMsHeader=this.responseHeaders.find(item=>item.name===HEADER_SSL);
+const requestMsHeader=this.responseHeaders.find(item=>item.name===HEADER_REQ);
+const responseMsHeader=this.responseHeaders.find(item=>item.name===HEADER_RES);
+
+
+const TCPMs=TCPMsHeader?Math.max(0,parseInt(TCPMsHeader.value)):0;
+const SSLMs=SSLMsHeader?Math.max(0,parseInt(SSLMsHeader.value)):0;
+const requestMs=requestMsHeader?Math.max(0,parseInt(requestMsHeader.value)):0;
+const responseMs=responseMsHeader?Math.max(0,parseInt(responseMsHeader.value)):0;
+
+
+if(TCPMs+requestMs+responseMs!==totalMs){
+return;
+}
+
+
+if(SSLMs>TCPMs){
+return;
+}
+
+this.lrStatistics={
+endTimeDeltaMs:(this.endTime-(this.startTime+totalMs/1000))*1000,
+TCPMs:TCPMs,
+requestMs:requestMs,
+responseMs:responseMs};
+
 }
 
 
@@ -29149,8 +29289,17 @@ return result;
 
 static get TYPES(){
 return RESOURCE_TYPES;
-}};
+}}
 
+
+NetworkRequest.HEADER_TCP=HEADER_TCP;
+NetworkRequest.HEADER_SSL=HEADER_SSL;
+NetworkRequest.HEADER_REQ=HEADER_REQ;
+NetworkRequest.HEADER_RES=HEADER_RES;
+NetworkRequest.HEADER_TOTAL=HEADER_TOTAL;
+NetworkRequest.HEADER_FETCHED_SIZE=HEADER_FETCHED_SIZE;
+
+module.exports=NetworkRequest;
 
 }).call(this,typeof global!=="undefined"?global:typeof self!=="undefined"?self:typeof window!=="undefined"?window:{});
 },{"./url-shim":"url"}],72:[function(require,module,exports){
@@ -31370,7 +31519,16 @@ const timingEntriesKeyValues=[
 ...timingEntriesFromRunner].
 
 map(entry=>[entry.startTime,entry]);
-const timingEntries=Array.from(new Map(timingEntriesKeyValues).values());
+const timingEntries=Array.from(new Map(timingEntriesKeyValues).values()).
+
+
+map(entry=>{
+return{
+...entry,
+duration:parseFloat(entry.duration.toFixed(2)),
+startTime:parseFloat(entry.startTime.toFixed(2))};
+
+});
 const runnerEntry=timingEntries.find(e=>e.name==='lh:runner:run');
 return{entries:timingEntries,total:runnerEntry&&runnerEntry.duration||0};
 }
@@ -31578,7 +31736,7 @@ return /\.js$/.test(f)&&!ignoredFiles.includes(f);
 
 static getGathererList(){
 const fileList=[
-...["accessibility.js","anchor-elements.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-elements.js","js-usage.js","link-elements.js","meta-elements.js","mixed-content.js","offline.js","runtime-exceptions.js","scripts.js","seo","service-worker.js","start-url.js","viewport-dimensions.js"],
+...["accessibility.js","anchor-elements.js","cache-contents.js","chrome-console-messages.js","css-usage.js","dobetterweb","gatherer.js","html-without-javascript.js","http-redirect.js","image-elements.js","js-usage.js","link-elements.js","meta-elements.js","mixed-content.js","offline.js","runtime-exceptions.js","script-elements.js","seo","service-worker.js","start-url.js","viewport-dimensions.js"],
 ...["embedded-content.js","font-size.js","robots-txt.js","tap-targets.js"].map(f=>`seo/${f}`),
 ...["appcache.js","doctype.js","domstats.js","js-libraries.js","optimized-images.js","password-inputs-with-prevented-paste.js","response-compression.js","tags-blocking-first-paint.js"].
 map(f=>`dobetterweb/${f}`)];
@@ -62174,7 +62332,7 @@ arguments[4][86][0].apply(exports,arguments);
 arguments[4][87][0].apply(exports,arguments);
 },{"./support/isBuffer":165,"_process":137,"dup":87,"inherits":105}],167:[function(require,module,exports){
 module.exports={
-"version":"4.2.0"};
+"version":"4.3.0"};
 
 },{}],168:[function(require,module,exports){
 module.exports={
@@ -62236,10 +62394,11 @@ module.exports={
 {"id":"npm:highcharts:20180225","severity":"high","semver":{"vulnerable":["<6.1.0"]}}],
 
 "jquery":[
+{"id":"SNYK-JS-JQUERY-174006","severity":"medium","semver":{"vulnerable":["*"]}},
 {"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":["=3.0.0-rc1"]}},
 {"id":"npm:jquery:20150627","severity":"medium","semver":{"vulnerable":["<1.12.2",">=1.12.3 <2.2.2",">=2.2.3 <3.0.0"]}},
 {"id":"npm:jquery:20140902","severity":"medium","semver":{"vulnerable":[">=1.4.2 <1.6.2"]}},
-{"id":"npm:jquery:20120206","severity":"medium","semver":{"vulnerable":["<1.9.0 >=1.7.1"]}},
+{"id":"npm:jquery:20120206","severity":"medium","semver":{"vulnerable":[">=1.7.1 <1.9.0"]}},
 {"id":"npm:jquery:20110606","severity":"medium","semver":{"vulnerable":["<1.6.3"]}}],
 
 "jquery-mobile":[

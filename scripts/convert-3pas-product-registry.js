@@ -36,20 +36,20 @@ data = data.substr(headerLine.length);
 var columnNames = Array.from(csvUnmarshaller(headerLine)).map(v => v[0]);
 var lineObjs = [];
 
-var blacklistData = fs.readFileSync('3pas-blacklist.csv', 'utf8');
-var blacklistHeaderLine = blacklistData.split('\n', 1)[0];
-blacklistData = blacklistData.substr(blacklistHeaderLine.length);
-var blacklistColumnNames = Array.from(csvUnmarshaller(blacklistHeaderLine)).map(v => v[0]);
-var blacklistDomainColumnIndex = blacklistColumnNames.findIndex(name => name === 'domain');
-console.assert(blacklistDomainColumnIndex !== undefined, '"domain" column not found in blacklist file.');
+var blocklistData = fs.readFileSync('3pas-blocklist.csv', 'utf8');
+var blocklistHeaderLine = blocklistData.split('\n', 1)[0];
+blocklistData = blocklistData.substr(blocklistHeaderLine.length);
+var blocklistColumnNames = Array.from(csvUnmarshaller(blocklistHeaderLine)).map(v => v[0]);
+var blocklistDomainColumnIndex = blocklistColumnNames.findIndex(name => name === 'domain');
+console.assert(blocklistDomainColumnIndex !== undefined, '"domain" column not found in blocklist file.');
 
-var marshaller = csvUnmarshaller(blacklistData, 2);
-var blacklistDomains = new Set();
+var marshaller = csvUnmarshaller(blocklistData, 2);
+var blocklistDomains = new Set();
 var colIndex = 0;
 for (var [colData, isEnding] of marshaller) {
-  // extracts just the 'domain' column from blacklist file
-  if (colIndex === blacklistDomainColumnIndex)
-    blacklistDomains.add(colData);
+  // extracts just the 'domain' column from blocklist file
+  if (colIndex === blocklistDomainColumnIndex)
+    blocklistDomains.add(colData);
   colIndex++;
   if (isEnding)
     colIndex = 0;
@@ -69,8 +69,8 @@ for (var [colData, isEnding] of marshaller) {
   }
 }
 
-// Removes blacklist items.
-lineObjs = lineObjs.filter(lineObj => !blacklistDomains.has(lineObj.domain));
+// Removes blocklist items.
+lineObjs = lineObjs.filter(lineObj => !blocklistDomains.has(lineObj.domain));
 
 var map = new Map();
 for (var lineObj of lineObjs) {

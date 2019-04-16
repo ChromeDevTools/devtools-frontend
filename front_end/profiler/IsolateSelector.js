@@ -19,7 +19,6 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this.registerRequiredCSS('profiler/profileLauncherView.css');
     /** @type {!Map<!SDK.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
     this._itemByIsolate = new Map();
-    this._updateTimer = null;
 
     SDK.isolateManager.observeIsolates(this);
 
@@ -31,14 +30,14 @@ Profiler.IsolateSelector = class extends UI.VBox {
    * @override
    */
   wasShown() {
-    this._updateStats();
+    SDK.isolateManager.addEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
    * @override
    */
   willHide() {
-    clearTimeout(this._updateTimer);
+    SDK.isolateManager.removeEventListener(SDK.IsolateManager.Events.MemoryChanged, this._heapStatsChanged, this);
   }
 
   /**
@@ -91,6 +90,16 @@ Profiler.IsolateSelector = class extends UI.VBox {
   }
 
   /**
+   * @param {!Common.Event} event
+   */
+  _heapStatsChanged(event) {
+    const isolate = /** @type {!SDK.IsolateManager.Isolate} */ (event.data);
+    const listItem = this._itemByIsolate.get(isolate);
+    if (listItem)
+      listItem.updateStats();
+  }
+
+  /**
    * @override
    * @param {!Profiler.IsolateSelector.ListItem} item
    * @return {!Element}
@@ -136,65 +145,50 @@ Profiler.IsolateSelector = class extends UI.VBox {
   _update() {
     this._list.invalidateRange(0, this._items.length);
   }
-
-  _updateStats() {
-    for (const item of this._itemByIsolate.values())
-      item.updateStats();
-    this._updateTimer = setTimeout(() => this._updateStats(), Profiler.IsolateSelector._heapStatsUpdateIntervalMs);
-  }
 };
-
-Profiler.IsolateSelector._heapStatsUpdateIntervalMs = 2000;
 
 Profiler.IsolateSelector.ListItem = class {
   /**
-   * @param {!SDK.IsolateManager.Isolate} isolateInfo
+   * @param {!SDK.IsolateManager.Isolate} isolate
    */
-  constructor(isolateInfo) {
-    this._isolateInfo = isolateInfo;
+  constructor(isolate) {
+    this._isolate = isolate;
+    const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
     this.element = createElementWithClass('div', 'profile-isolate-item hbox');
     this._heapDiv = this.element.createChild('div', 'profile-isolate-item-heap');
+    this._trendDiv = this.element.createChild('div', 'profile-isolate-item-trend');
+    this._trendDiv.setAttribute('title', ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`);
     this._nameDiv = this.element.createChild('div', 'profile-isolate-item-name');
-    this._updatesDisabled = false;
+    this._heapDiv.setAttribute('title', ls`Heap size in use by live JS objects.`);
     this.updateTitle();
-    this.updateStats();
-  }
-
-  /**
-   * @return {!Set<!SDK.RuntimeModel>}
-   */
-  models() {
-    return this._isolateInfo.models();
   }
 
   /**
    * @return {!SDK.RuntimeModel}
    */
   model() {
-    return this.models().values().next().value;
+    return this._isolate.models().values().next().value;
   }
 
-  async updateStats() {
-    if (this._updatesDisabled)
-      return;
-    const heapStats = await this.model().heapUsage();
-    if (!heapStats) {
-      this._updatesDisabled = true;
-      return;
-    }
-    const usedTitle = ls`Heap size in use by live JS objects.`;
-    const totalTitle = ls`Total JS heap size including live objects, garbage, and reserved space.`;
+  updateStats() {
     this._heapDiv.removeChildren();
-    this._heapDiv.append(UI.html`
-        <span title="${usedTitle}">${Number.bytesToString(heapStats.usedSize)}</span>
-        <span> / </span>
-        <span title="${totalTitle}">${Number.bytesToString(heapStats.totalSize)}</span>`);
+    this._heapDiv.textContent = Number.bytesToString(this._isolate.usedHeapSize());
+
+    const changeRateBytesPerSecond = this._isolate.usedHeapSizeGrowRate() * 1e3;
+    const changeRateThresholdBytesPerSecond = 1024;
+    if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond || this._isolate.samplesCount() < 5)
+      return;
+    const changeRateText = changeRateBytesPerSecond > 0 ?
+        ls`\u2B06${Number.bytesToString(changeRateBytesPerSecond)}/s` :
+        ls`\u2B07${Number.bytesToString(-changeRateBytesPerSecond)}/s`;
+    this._trendDiv.classList.toggle('increasing', changeRateBytesPerSecond > 0);
+    this._trendDiv.textContent = changeRateText;
   }
 
   updateTitle() {
     /** @type {!Map<string, number>} */
     const modelCountByName = new Map();
-    for (const model of this.models()) {
+    for (const model of this._isolate.models()) {
       const target = model.target();
       const name = SDK.targetManager.mainTarget() !== target ? target.name() : '';
       const parsedURL = new Common.ParsedURL(target.inspectedURL());

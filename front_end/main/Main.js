@@ -266,9 +266,34 @@ Main.Main = class {
     Main.Main.time('Main._lateInitialization');
     this._registerShortcuts();
     Extensions.extensionServer.initializeExtensions();
-    for (const extension of self.runtime.extensions('late-initialization'))
-      extension.instance().then(instance => (/** @type {!Common.Runnable} */ (instance)).run());
+    const extensions = self.runtime.extensions('late-initialization');
+    const promises = [];
+    for (const extension of extensions) {
+      const setting = extension.descriptor()['setting'];
+      if (!setting || Common.settings.moduleSetting(setting).get()) {
+        promises.push(extension.instance().then(instance => (/** @type {!Common.Runnable} */ (instance)).run()));
+        continue;
+      }
+      /**
+       * @param {!Common.Event} event
+       */
+      async function changeListener(event) {
+        if (!event.data)
+          return;
+        Common.settings.moduleSetting(setting).removeChangeListener(changeListener);
+        (/** @type {!Common.Runnable} */ (await extension.instance())).run();
+      }
+      Common.settings.moduleSetting(setting).addChangeListener(changeListener);
+    }
+    this._lateInitDonePromise = Promise.all(promises);
     Main.Main.timeEnd('Main._lateInitialization');
+  }
+
+  /**
+   * @return {!Promise}
+   */
+  lateInitDonePromiseForTest() {
+    return this._lateInitDonePromise;
   }
 
   _registerForwardedShortcuts() {

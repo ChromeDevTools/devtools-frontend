@@ -3,7 +3,8 @@
         {
             "type": "late-initialization",
             "className": "PerfUI.LiveHeapProfile",
-            "experiment": "liveHeapProfile"
+            "experiment": "liveHeapProfile",
+            "setting": "memoryLiveHeapProfile"
         },
         {
             "type": "@SourceFrame.LineDecorator",

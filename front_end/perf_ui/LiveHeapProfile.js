@@ -15,19 +15,6 @@ PerfUI.LiveHeapProfile = class {
     this._setting.addChangeListener(event => event.data ? this._startProfiling() : this._stopProfiling());
     if (this._setting.get())
       this._startProfiling();
-    PerfUI.LiveHeapProfile.hasStartedForTest(true);
-  }
-
-  /**
-   * @param {boolean=} started
-   * @return {!Promise}
-   */
-  static hasStartedForTest(started) {
-    if (!PerfUI.LiveHeapProfile._startedPromise)
-      PerfUI.LiveHeapProfile._startedPromise = new Promise(r => PerfUI.LiveHeapProfile._startedCallback = r);
-    if (started)
-      PerfUI.LiveHeapProfile._startedCallback();
-    return PerfUI.LiveHeapProfile._startedPromise;
   }
 
   /**
@@ -82,7 +69,7 @@ PerfUI.LiveHeapProfile = class {
         SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.Load, this._loadEventFired, this);
     for (const model of SDK.targetManager.models(SDK.HeapProfilerModel))
       model.stopSampling();
-    PerfUI.LineLevelProfile.Memory.instance().reset();
+    self.runtime.sharedInstance(PerfUI.LineLevelProfile.Memory).reset();
   }
 
   _stopProfiling() {

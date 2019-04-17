@@ -61,7 +61,7 @@ Timeline.TimelineUIUtils = class {
     eventStyles[type.DrawFrame] = new Timeline.TimelineRecordStyle(ls`Draw Frame`, rendering, true);
     eventStyles[type.HitTest] = new Timeline.TimelineRecordStyle(ls`Hit Test`, rendering);
     eventStyles[type.ScheduleStyleRecalculation] =
-        new Timeline.TimelineRecordStyle(ls`Schedule Style Recalculation`, rendering, true);
+        new Timeline.TimelineRecordStyle(ls`Schedule Style Recalculation`, rendering);
     eventStyles[type.RecalculateStyles] = new Timeline.TimelineRecordStyle(ls`Recalculate Style`, rendering);
     eventStyles[type.UpdateLayoutTree] = new Timeline.TimelineRecordStyle(ls`Recalculate Style`, rendering);
     eventStyles[type.InvalidateLayout] = new Timeline.TimelineRecordStyle(ls`Invalidate Layout`, rendering, true);

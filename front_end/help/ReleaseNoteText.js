@@ -13,6 +13,41 @@ const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Sh
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 17,
+    header: 'Highlights from the Chrome 75 update',
+    highlights: [
+      {
+        title: 'Meaningful preset values when autocompleting CSS functions',
+        subtitle:
+            'Properties like "filter" that take functions for values now autocomplete to previewable values in the Styles pane.',
+        link: 'https://developers.google.com/web/updates/2019/04/devtools#presets',
+      },
+      {
+        title: 'Clear site data from the Command Menu',
+        subtitle:
+            `Press ${commandMenuShortcut} and run the "Clear Site Data" command to clear cookies, storage, and more.`,
+        link: 'https://developers.google.com/web/updates/2019/04/devtools#clear',
+      },
+      {
+        title: 'View all IndexedDB databases',
+        subtitle: 'The IndexedDB pane now shows databases for all origins rather than just the main origin.',
+        link: 'https://developers.google.com/web/updates/2019/04/devtools#indexeddb',
+      },
+      {
+        title: 'View a resource\'s uncompressed size on hover',
+        subtitle: 'Hover over the Size column in the Network panel to view a resource\'s full size.',
+        link: 'https://developers.google.com/web/updates/2019/04/devtools#uncompressed',
+      },
+      {
+        title: 'Inline breakpoints in the Breakpoints pane',
+        subtitle:
+            'When you\'ve got multiple breakpoints on a single line of code, the Breakpoints pane now lets you manage each one independently.',
+        link: 'https://developers.google.com/web/updates/2019/04/devtools#inline',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/04/devtools',
+  },
+  {
     version: 16,
     header: 'Highlights from the Chrome 74 update',
     highlights: [

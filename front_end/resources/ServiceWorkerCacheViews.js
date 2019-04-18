@@ -122,7 +122,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
   _createDataGrid() {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'number', title: '#', sortable: false, width: '3px'},
-      {id: 'path', title: Common.UIString('Path'), weight: 4, sortable: true},
+      {id: 'name', title: Common.UIString('Name'), weight: 4, sortable: true},
       {id: 'responseType', title: ls`Response-Type`, weight: 1, align: DataGrid.DataGrid.Align.Right, sortable: true},
       {id: 'contentType', title: Common.UIString('Content-Type'), weight: 1, sortable: true}, {
         id: 'contentLength',
@@ -158,7 +158,7 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
     const accending = this._dataGrid.isSortOrderAscending();
     const columnId = this._dataGrid.sortColumnId();
     let comparator;
-    if (columnId === 'path')
+    if (columnId === 'name')
       comparator = (a, b) => a._path.localeCompare(b._path);
     else if (columnId === 'contentType')
       comparator = (a, b) => a.data.mimeType.localeCompare(b.data.mimeType);
@@ -387,9 +387,11 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
   constructor(number, request, responseType) {
     super(request);
     this._number = number;
-    this._path = Common.ParsedURL.extractPath(request.url());
-    if (!this._path)
-      this._path = request.url();
+    const parsed = new Common.ParsedURL(request.url());
+    if (parsed.isValid)
+      this._name = request.url().trimURL(parsed.domain());
+    else
+      this._name = request.url();
     this._request = request;
     this._responseType = responseType;
   }
@@ -404,8 +406,8 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
     let value;
     if (columnId === 'number') {
       value = String(this._number);
-    } else if (columnId === 'path') {
-      value = this._path;
+    } else if (columnId === 'name') {
+      value = this._name;
     } else if (columnId === 'responseType') {
       if (this._responseType === 'opaqueResponse')
         value = 'opaque';
@@ -421,6 +423,7 @@ Resources.ServiceWorkerCacheView.DataGridNode = class extends DataGrid.DataGridN
       value = new Date(this._request.endTime * 1000).toLocaleString();
     }
     DataGrid.DataGrid.setElementText(cell, value || '', true);
+    cell.title = this._request.url();
     return cell;
   }
 };

@@ -34,7 +34,6 @@
     height: 8px;
     background-color: #f4f4f4;
     display: inline-block;
-    margin: 0 10px 0 0;
 }
 
 .timeline-status-dialog .progress .indicator {
@@ -47,7 +46,7 @@
 .timeline-status-dialog .stop-button {
     margin-top: 8px;
     height: 100%;
-    align-self: center;
+    align-self: flex-end;
 }
 
 .timeline-status-dialog .stop-button button {

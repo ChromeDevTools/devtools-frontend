@@ -24,6 +24,8 @@
 
 .audits2-view button {
     z-index: 10;
+    margin-left: auto;
+    margin-right: 0px;
 }
 
 .audits2-status {

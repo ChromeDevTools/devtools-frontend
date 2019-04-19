@@ -819,7 +819,6 @@ Elements.StylePropertiesSection = class {
     this.element = createElementWithClass('div', 'styles-section matched-styles monospace');
     this.element.tabIndex = -1;
     UI.ARIAUtils.markAsTreeitem(this.element);
-    this._editing = false;
     this.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
     this.element._section = this;
     this._innerElement = this.element.createChild('div');
@@ -889,9 +888,6 @@ Elements.StylePropertiesSection = class {
       this.propertiesTreeOutline.element.classList.add('read-only');
     }
 
-    const throttler = new Common.Throttler(100);
-    this._scheduleHeightUpdate = () => throttler.schedule(this._manuallySetHeight.bind(this));
-
     this._hoverableSelectorsMode = false;
     this._markSelectorMatches();
     this.onpopulate();
@@ -954,7 +950,7 @@ Elements.StylePropertiesSection = class {
    * @param {!Event} event
    */
   _onKeyDown(event) {
-    if (this._editing || !this.editable || event.altKey || event.ctrlKey || event.metaKey)
+    if (UI.isEditing() || !this.editable || event.altKey || event.ctrlKey || event.metaKey)
       return;
     switch (event.key) {
       case 'Enter':
@@ -1604,7 +1600,6 @@ Elements.StylePropertiesSection = class {
         this._editingMediaCommitted.bind(this, media), this._editingMediaCancelled.bind(this, element), undefined,
         this._editingMediaBlurHandler.bind(this));
     UI.InplaceEditor.startEditing(element, config);
-    this.startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1621,7 +1616,6 @@ Elements.StylePropertiesSection = class {
     this._parentPane.setEditingStyle(false);
     const parentMediaElement = element.enclosingNodeOrSelfWithClass('media');
     parentMediaElement.classList.remove('editing-media');
-    this.stopEditing();
   }
 
   /**
@@ -1736,7 +1730,6 @@ Elements.StylePropertiesSection = class {
     const config =
         new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
     UI.InplaceEditor.startEditing(this._selectorElement, config);
-    this.startEditing();
 
     element.getComponentSelection().selectAllChildren(element);
     this._parentPane.setEditingStyle(true);
@@ -1853,7 +1846,6 @@ Elements.StylePropertiesSection = class {
 
   _editingSelectorEnded() {
     this._parentPane.setEditingStyle(false);
-    this.stopEditing();
   }
 
   editingSelectorCancelled() {
@@ -1862,30 +1854,6 @@ Elements.StylePropertiesSection = class {
     // Mark the selectors in group if necessary.
     // This is overridden by BlankStylePropertiesSection.
     this._markSelectorMatches();
-  }
-
-  startEditing() {
-    this._manuallySetHeight();
-    this.element.addEventListener('input', this._scheduleHeightUpdate, true);
-    this._editing = true;
-  }
-
-  /**
-   * @return {!Promise}
-   */
-  _manuallySetHeight() {
-    this.element.style.height = (this._innerElement.clientHeight + 1) + 'px';
-    this.element.style.contain = 'strict';
-    return Promise.resolve();
-  }
-
-  stopEditing() {
-    this.element.style.removeProperty('height');
-    this.element.style.removeProperty('contain');
-    this.element.removeEventListener('input', this._scheduleHeightUpdate, true);
-    this._editing = false;
-    if (this._parentPane.element === this._parentPane.element.ownerDocument.deepActiveElement())
-      this.element.focus();
   }
 };
 

@@ -525,6 +525,15 @@ ElementsTestRunner.showEventListenersWidget = function() {
   return UI.viewManager.showView('elements.eventListeners');
 };
 
+/**
+ * @return {Promise}
+ */
+ElementsTestRunner.showComputedStyles = function() {
+  UI.panels.elements.sidebarPaneView.tabbedPane().selectTab('Computed', true);
+  return ElementsTestRunner.computedStyleWidget().doUpdate();
+};
+
+
 ElementsTestRunner.expandAndDumpSelectedElementEventListeners = function(callback, force) {
   ElementsTestRunner.expandAndDumpEventListeners(
       ElementsTestRunner.eventListenersWidget()._eventListenersView, callback, force);

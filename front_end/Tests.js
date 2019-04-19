@@ -1329,6 +1329,33 @@
     this.releaseControl();
   };
 
+  TestSuite.prototype.testExtensionWebSocketUserAgentOverride = async function(websocketPort) {
+    this.takeControl();
+
+    const testUserAgent = 'test user agent';
+    SDK.multitargetNetworkManager.setUserAgentOverride(testUserAgent);
+
+    function onRequestUpdated(event) {
+      const request = event.data;
+      if (request.resourceType() !== Common.resourceTypes.WebSocket)
+        return;
+      if (!request.requestHeadersText())
+        return;
+
+      let actualUserAgent = 'no user-agent header';
+      for (const {name, value} of request.requestHeaders()) {
+        if (name.toLowerCase() === 'user-agent')
+          actualUserAgent = value;
+      }
+      this.assertEquals(testUserAgent, actualUserAgent);
+      this.releaseControl();
+    }
+    SDK.targetManager.addModelListener(
+        SDK.NetworkManager, SDK.NetworkManager.Events.RequestUpdated, onRequestUpdated.bind(this));
+
+    this.evaluateInConsole_(`new WebSocket('ws://127.0.0.1:${websocketPort}')`, () => {});
+  };
+
   /**
    * Serializes array of uiSourceCodes to string.
    * @param {!Array.<!Workspace.UISourceCode>} uiSourceCodes

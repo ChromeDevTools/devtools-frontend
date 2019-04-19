@@ -55,6 +55,7 @@ Elements.EventListenersWidget = class extends UI.ThrottledWidget {
         this._showForAncestorsSetting, Common.UIString('Show listeners on the ancestors'),
         Common.UIString('Ancestors')));
     const dispatchFilter = new UI.ToolbarComboBox(this._onDispatchFilterTypeChanged.bind(this));
+    dispatchFilter.setTitle(ls`Event listeners category`);
 
     /**
      * @param {string} name

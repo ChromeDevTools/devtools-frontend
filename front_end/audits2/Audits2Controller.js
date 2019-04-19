@@ -260,12 +260,12 @@ Audits2.RuntimeSettings = [
     },
     options: [
       {
-        label: ls`Simulated Fast 3G, 4x CPU Slowdown`,
+        label: ls`Simulated Slow 4G, 4x CPU Slowdown`,
         value: 'default',
         title: 'Throttling is simulated, resulting in faster audit runs with similar measurement accuracy'
       },
       {
-        label: ls`Applied Fast 3G, 4x CPU Slowdown`,
+        label: ls`Applied Slow 4G, 4x CPU Slowdown`,
         value: 'devtools',
         title: 'Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied'
       },

@@ -733,7 +733,7 @@ SourceFrame.SourceFrame = class extends UI.SimpleView {
     let textRange = selections[0];
     if (textRange.isEmpty()) {
       const location = this._prettyToRawLocation(textRange.endLine, textRange.endColumn);
-      this._sourcePosition.setText(`Line ${location[0] + 1}, Column ${location[1] + 1}`);
+      this._sourcePosition.setText(ls`Line ${location[0] + 1}, Column ${location[1] + 1}`);
       return;
     }
     textRange = textRange.normalize();

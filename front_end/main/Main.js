@@ -62,6 +62,7 @@ Main.Main = class {
     console.timeStamp('Main._loaded');
     await Runtime.appStarted();
     Runtime.setPlatform(Host.platform());
+    Runtime.setL10nCallback(ls);
     InspectorFrontendHost.getPreferences(this._gotPreferences.bind(this));
   }
 

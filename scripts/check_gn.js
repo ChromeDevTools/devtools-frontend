@@ -88,7 +88,9 @@ function checkAllDevToolsFiles() {
       const moduleJSON = require(moduleJSONPath);
       const scripts = moduleJSON.scripts || [];
       const resources = moduleJSON.resources || [];
-      const files = scripts.concat(resources)
+      const files = ['module.json']
+                        .concat(scripts)
+                        .concat(resources)
                         .map(relativePathFromBuildGN)
                         .filter(file => excludedFiles.every(excludedFile => !file.includes(excludedFile)));
       moduleFiles = moduleFiles.concat(files);

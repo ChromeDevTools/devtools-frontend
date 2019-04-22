@@ -8,15 +8,15 @@
  */
 
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
-  for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-    const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-    const originGroup = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroupName);
+  for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
+    const originGroup = Security.SecurityPanelSidebarTree.OriginGroup[key];
+    const element = Security.SecurityPanel._instance()._sidebarTree._originGroups.get(originGroup);
 
-    if (originGroup.hidden)
+    if (element.hidden)
       continue;
 
-    TestRunner.addResult('Group: ' + originGroupName);
-    const originTitles = originGroup.childrenListElement.getElementsByTagName('span');
+    TestRunner.addResult('Group: ' + element.title);
+    const originTitles = element.childrenListElement.getElementsByTagName('span');
 
     for (const originTitle of originTitles) {
       if (originTitle.className !== 'tree-element-title')

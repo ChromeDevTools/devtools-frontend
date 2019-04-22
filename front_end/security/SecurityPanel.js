@@ -378,42 +378,55 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     this._showOriginInPanel = showOriginInPanel;
     this._mainOrigin = null;
 
-    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroupName, !UI.TreeElement>} */
+    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroup, !UI.TreeElement>} */
     this._originGroups = new Map();
 
-    for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-      const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-      const originGroup = new UI.TreeElement(originGroupName, true);
-      originGroup.selectable = false;
-      originGroup.setCollapsible(false);
-      originGroup.expand();
-      originGroup.listItemElement.classList.add('security-sidebar-origins');
-      this._originGroups.set(originGroupName, originGroup);
-      this.appendChild(originGroup);
+    /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroup, string>} */
+    const originGroupTitles = new Map([
+      [Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin, ls`Main origin`],
+      [Security.SecurityPanelSidebarTree.OriginGroup.NonSecure, ls`Non-secure origins`],
+      [Security.SecurityPanelSidebarTree.OriginGroup.Secure, ls`Secure origins`],
+      [Security.SecurityPanelSidebarTree.OriginGroup.Unknown, ls`Unknown / canceled`],
+    ]);
+
+    for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
+      const group = Security.SecurityPanelSidebarTree.OriginGroup[key];
+      const element = this._createOriginGroupElement(originGroupTitles.get(group));
+      this._originGroups.set(group, element);
+      this.appendChild(element);
     }
+
     this._clearOriginGroups();
 
     // This message will be removed by clearOrigins() during the first new page load after the panel was opened.
     const mainViewReloadMessage = new UI.TreeElement(Common.UIString('Reload to view details'));
     mainViewReloadMessage.selectable = false;
     mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
-    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin)
-        .appendChild(mainViewReloadMessage);
+    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin).appendChild(mainViewReloadMessage);
 
     /** @type {!Map<!Security.SecurityPanel.Origin, !Security.SecurityPanelSidebarTreeElement>} */
     this._elementsByOrigin = new Map();
   }
 
   /**
+   * @param {string} originGroupTitle
+   * @return {!UI.TreeElement}
+   */
+  _createOriginGroupElement(originGroupTitle) {
+    const originGroup = new UI.TreeElement(originGroupTitle, true);
+    originGroup.selectable = false;
+    originGroup.setCollapsible(false);
+    originGroup.expand();
+    originGroup.listItemElement.classList.add('security-sidebar-origins');
+    return originGroup;
+  }
+
+  /**
    * @param {boolean} hidden
    */
   toggleOriginsList(hidden) {
-    for (const key in Security.SecurityPanelSidebarTree.OriginGroupName) {
-      const originGroupName = Security.SecurityPanelSidebarTree.OriginGroupName[key];
-      const group = this._originGroups.get(originGroupName);
-      if (group)
-        group.hidden = hidden;
-    }
+    for (const element of this._originGroups.values())
+      element.hidden = hidden;
   }
 
   /**
@@ -447,17 +460,17 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
 
     let newParent;
     if (origin === this._mainOrigin) {
-      newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin);
+      newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.Secure);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.Secure);
           break;
         case Protocol.Security.SecurityState.Unknown:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.Unknown);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.Unknown);
           break;
         default:
-          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.NonSecure);
+          newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.NonSecure);
           break;
       }
     }
@@ -479,7 +492,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
       originGroup.removeChildren();
       originGroup.hidden = true;
     }
-    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroupName.MainOrigin).hidden = false;
+    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin).hidden = false;
   }
 
   clearOrigins() {
@@ -488,16 +501,12 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
   }
 };
 
-/**
- * A mapping from Javascript key IDs to names (sidebar section titles).
- * Note: The names are used as keys into a map, so they must be distinct from each other.
- * @enum {string}
- */
-Security.SecurityPanelSidebarTree.OriginGroupName = {
-  MainOrigin: Common.UIString('Main origin'),
-  NonSecure: Common.UIString('Non-secure origins'),
-  Secure: Common.UIString('Secure origins'),
-  Unknown: Common.UIString('Unknown / canceled')
+/** @enum */
+Security.SecurityPanelSidebarTree.OriginGroup = {
+  MainOrigin: Symbol('MainOrigin'),
+  NonSecure: Symbol('NonSecure'),
+  Secure: Symbol('Secure'),
+  Unknown: Symbol('Unknown')
 };
 
 /**

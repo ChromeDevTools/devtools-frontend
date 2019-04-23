@@ -382,7 +382,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     this._originGroups = new Map();
 
     /** @type {!Map<!Security.SecurityPanelSidebarTree.OriginGroup, string>} */
-    const originGroupTitles = new Map([
+    this._originGroupTitles = new Map([
       [Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin, ls`Main origin`],
       [Security.SecurityPanelSidebarTree.OriginGroup.NonSecure, ls`Non-secure origins`],
       [Security.SecurityPanelSidebarTree.OriginGroup.Secure, ls`Secure origins`],
@@ -391,7 +391,7 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
 
     for (const key in Security.SecurityPanelSidebarTree.OriginGroup) {
       const group = Security.SecurityPanelSidebarTree.OriginGroup[key];
-      const element = this._createOriginGroupElement(originGroupTitles.get(group));
+      const element = this._createOriginGroupElement(this._originGroupTitles.get(group));
       this._originGroups.set(group, element);
       this.appendChild(element);
     }
@@ -461,6 +461,10 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
     let newParent;
     if (origin === this._mainOrigin) {
       newParent = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
+      if (securityState === Protocol.Security.SecurityState.Secure)
+        newParent.title = ls`Main origin (secure)`;
+      else
+        newParent.title = ls`Main origin (non-secure)`;
     } else {
       switch (securityState) {
         case Protocol.Security.SecurityState.Secure:
@@ -492,7 +496,9 @@ Security.SecurityPanelSidebarTree = class extends UI.TreeOutlineInShadow {
       originGroup.removeChildren();
       originGroup.hidden = true;
     }
-    this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin).hidden = false;
+    const mainOrigin = this._originGroups.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
+    mainOrigin.title = this._originGroupTitles.get(Security.SecurityPanelSidebarTree.OriginGroup.MainOrigin);
+    mainOrigin.hidden = false;
   }
 
   clearOrigins() {

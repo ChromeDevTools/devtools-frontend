@@ -402,14 +402,6 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   /**
-   * @param {!SDK.NetworkRequest} request
-   * @return {boolean}
-   */
-  static FinishedRequestsFilter(request) {
-    return request.finished;
-  }
-
-  /**
    * @param {number} windowStart
    * @param {number} windowEnd
    * @param {!SDK.NetworkRequest} request
@@ -1278,8 +1270,10 @@ Network.NetworkLogView = class extends UI.VBox {
   }
 
   _harRequests() {
-    const httpRequests = SDK.networkLog.requests().filter(Network.NetworkLogView.HTTPRequestsFilter);
-    return httpRequests.filter(Network.NetworkLogView.FinishedRequestsFilter);
+    return SDK.networkLog.requests().filter(Network.NetworkLogView.HTTPRequestsFilter).filter(request => {
+      return request.finished ||
+          (request.resourceType() === Common.resourceTypes.WebSocket && request.responseReceivedTime);
+    });
   }
 
   async _copyAll() {

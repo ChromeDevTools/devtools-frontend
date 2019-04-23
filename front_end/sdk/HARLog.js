@@ -174,14 +174,24 @@ SDK.HARLog.Entry = class {
     };
 
     // Chrome specific.
+
     if (harEntry._request.cached())
       entry._fromCache = harEntry._request.cachedInMemory() ? 'memory' : 'disk';
 
     if (harEntry._request.connectionId !== '0')
       entry.connection = harEntry._request.connectionId;
+
     const page = SDK.NetworkLog.PageLoad.forRequest(harEntry._request);
     if (page)
       entry.pageref = 'page_' + page.id;
+
+    if (harEntry._request.resourceType() === Common.resourceTypes.WebSocket) {
+      const messages = [];
+      for (const message of harEntry._request.frames())
+        messages.push({type: message.type, time: message.time, opcode: message.opCode, data: message.text});
+      entry._webSocketMessages = messages;
+    }
+
     return entry;
   }
 

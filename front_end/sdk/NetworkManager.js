@@ -681,7 +681,7 @@ SDK.NetworkDispatcher = class {
     if (!networkRequest)
       return;
 
-    networkRequest.addFrame(response, time, false);
+    networkRequest.addProtocolFrame(response, time, false);
     networkRequest.responseReceivedTime = time;
 
     this._updateNetworkRequest(networkRequest);
@@ -698,7 +698,7 @@ SDK.NetworkDispatcher = class {
     if (!networkRequest)
       return;
 
-    networkRequest.addFrame(response, time, true);
+    networkRequest.addProtocolFrame(response, time, true);
     networkRequest.responseReceivedTime = time;
 
     this._updateNetworkRequest(networkRequest);
@@ -715,7 +715,7 @@ SDK.NetworkDispatcher = class {
     if (!networkRequest)
       return;
 
-    networkRequest.addFrameError(errorMessage, time);
+    networkRequest.addProtocolFrameError(errorMessage, time);
     networkRequest.responseReceivedTime = time;
 
     this._updateNetworkRequest(networkRequest);

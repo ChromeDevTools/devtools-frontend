@@ -122,6 +122,24 @@ HARImporter.Importer = class {
     if (Protocol.Network.ResourcePriority.hasOwnProperty(priority))
       request.setPriority(/** @type {!Protocol.Network.ResourcePriority} */ (priority));
 
+    const messages = entry.customAsArray('webSocketMessages');
+    if (messages) {
+      for (const message of messages) {
+        if (message.time === undefined)
+          continue;
+        if (!Object.values(SDK.NetworkRequest.WebSocketFrameType).includes(message.type))
+          continue;
+        if (message.opcode === undefined)
+          continue;
+        if (message.data === undefined)
+          continue;
+
+        const mask = message.type === SDK.NetworkRequest.WebSocketFrameType.Send;
+        request.addFrame(
+            {time: message.time, text: message.data, opCode: message.opcode, mask: mask, type: message.type});
+      }
+    }
+
     request.finished = true;
   }
 

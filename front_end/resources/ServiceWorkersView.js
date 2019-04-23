@@ -38,16 +38,15 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.addEventListener('keydown', event => {
       if (event.target !== this._otherSWFilter)
         return;
-      if (isEnterKey(event) || event.keyCode === UI.KeyboardShortcut.Keys.Space.code)
+      if (isEnterKey(event) || event.key === ' ')
         this._toggleFilter();
     });
     const filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
     filterLabel.textContent = Common.UIString('Service workers from other domains');
-    filterLabel.setAttribute('for', 'expand-all');
     filterLabel.addEventListener('click', () => this._toggleFilter());
 
     const toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
-    this._filter = new UI.ToolbarInput('Filter', 1);
+    this._filter = new UI.ToolbarInput(ls`Filter service worker`, 1);
     this._filter.addEventListener(UI.ToolbarInput.Event.TextChanged, () => this._filterChanged());
     toolbar.appendToolbarItem(this._filter);
 
@@ -375,6 +374,7 @@ Resources.ServiceWorkersView.Section = class {
 
     editor.value = initialValue;
     editor.placeholder = placeholder;
+    UI.ARIAUtils.setAccessibleName(editor, label);
 
     form.addEventListener('submit', e => {
       callback(editor.value || '');
@@ -437,11 +437,19 @@ Resources.ServiceWorkersView.Section = class {
     this._sourceField.removeChildren();
     const fileName = Common.ParsedURL.extractName(version.scriptURL);
     const name = this._sourceField.createChild('div', 'report-field-value-filename');
-    name.appendChild(Components.Linkifier.linkifyURL(version.scriptURL, {text: fileName}));
+    const link = Components.Linkifier.linkifyURL(version.scriptURL, {text: fileName});
+    link.tabIndex = 0;
+    name.appendChild(link);
     if (this._registration.errors.length) {
       const errorsLabel = UI.createIconLabel(String(this._registration.errors.length), 'smallicon-error');
       errorsLabel.classList.add('link');
+      errorsLabel.tabIndex = 0;
+      UI.ARIAUtils.setAccessibleName(errorsLabel, ls`${this._registration.errors.length} registration errors`);
       errorsLabel.addEventListener('click', () => Common.console.show());
+      errorsLabel.addEventListener('keydown', event => {
+        if (isEnterKey(event) || event.key === ' ')
+          Common.console.show();
+      });
       name.appendChild(errorsLabel);
     }
     this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =
@@ -480,11 +488,11 @@ Resources.ServiceWorkersView.Section = class {
           Common.UIString('#%s activated and is %s', active.id, active.runningStatus));
 
       if (active.isRunning() || active.isStarting()) {
-        createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
+        this._createLink(activeEntry, Common.UIString('stop'), this._stopButtonClicked.bind(this, active.id));
         if (!this._targetForVersionId(active.id))
-          createLink(activeEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
+          this._createLink(activeEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, active.id));
       } else if (active.isStartable()) {
-        createLink(activeEntry, Common.UIString('start'), this._startButtonClicked.bind(this));
+        this._createLink(activeEntry, Common.UIString('start'), this._startButtonClicked.bind(this));
       }
       this._updateClientsField(active);
     } else if (redundant) {
@@ -497,34 +505,40 @@ Resources.ServiceWorkersView.Section = class {
     if (waiting) {
       const waitingEntry = this._addVersion(
           versionsStack, 'service-worker-waiting-circle', Common.UIString('#%s waiting to activate', waiting.id));
-      createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
+      this._createLink(waitingEntry, Common.UIString('skipWaiting'), this._skipButtonClicked.bind(this));
       waitingEntry.createChild('div', 'service-worker-subtitle').textContent =
           Common.UIString('Received %s', new Date(waiting.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(waiting.id) && (waiting.isRunning() || waiting.isStarting()))
-        createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
+        this._createLink(waitingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, waiting.id));
     }
     if (installing) {
       const installingEntry = this._addVersion(
           versionsStack, 'service-worker-installing-circle', Common.UIString('#%s installing', installing.id));
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
           Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
-      if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting()))
-        createLink(installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
-    }
-
-    /**
-     * @param {!Element} parent
-     * @param {string} title
-     * @param {function()} listener
-     * @return {!Element}
-     */
-    function createLink(parent, title, listener) {
-      const span = parent.createChild('span', 'link');
-      span.textContent = title;
-      span.addEventListener('click', listener, false);
-      return span;
+      if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting())) {
+        this._createLink(
+            installingEntry, Common.UIString('inspect'), this._inspectButtonClicked.bind(this, installing.id));
+      }
     }
     return Promise.resolve();
+  }
+
+  /**
+   * @param {!Element} parent
+   * @param {string} title
+   * @param {function()} listener
+   * @param {string=} className
+   * @param {boolean=} useCapture
+   * @return {!Element}
+   */
+  _createLink(parent, title, listener, className, useCapture) {
+    const button = parent.createChild('button', className);
+    button.classList.add('link');
+    button.textContent = title;
+    button.tabIndex = 0;
+    button.addEventListener('click', listener, useCapture);
+    return button;
   }
 
   /**
@@ -581,9 +595,8 @@ Resources.ServiceWorkersView.Section = class {
     element.removeChildren();
     const clientString = element.createChild('span', 'service-worker-client-string');
     clientString.createTextChild(targetInfo.url);
-    const focusLabel = element.createChild('label', 'link service-worker-client-focus-link');
-    focusLabel.createTextChild('focus');
-    focusLabel.addEventListener('click', this._activateTarget.bind(this, targetInfo.targetId), true);
+    this._createLink(
+        element, ls`focus`, this._activateTarget.bind(this, targetInfo.targetId), 'service-worker-client-focus-link');
   }
 
   /**

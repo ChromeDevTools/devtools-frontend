@@ -16,6 +16,7 @@ UI.ReportView = class extends UI.VBox {
     this._headerElement = this._contentBox.createChild('div', 'report-header vbox');
     this._titleElement = this._headerElement.createChild('div', 'report-title');
     this._titleElement.textContent = title;
+    UI.ARIAUtils.markAsHeading(this._titleElement, 1);
 
     this._sectionList = this._contentBox.createChild('div', 'vbox');
   }
@@ -118,6 +119,7 @@ UI.ReportView.Section = class extends UI.VBox {
     this._headerElement = this.element.createChild('div', 'report-section-header');
     this._titleElement = this._headerElement.createChild('div', 'report-section-title');
     this._titleElement.textContent = title;
+    UI.ARIAUtils.markAsHeading(this._titleElement, 2);
     this._fieldList = this.element.createChild('div', 'vbox');
     /** @type {!Map.<string, !Element>} */
     this._fieldMap = new Map();

@@ -90,7 +90,7 @@
 }
 
 .link {
-    margin-left: 10px;
+    margin-left: 7px;
 }
 
 .service-worker-editor-with-button {
@@ -120,7 +120,8 @@
 
 .service-worker-client-focus-link {
     flex: none;
-    margin-right: 5px;
+    margin-right: 2px;
+    align-self: center;
 }
 
 .service-worker-notification-editor.source-code {
@@ -166,15 +167,21 @@
     margin-left: 4px;
 }
 
+.service-worker-filter[data-keyboard-focus="true"]:focus {
+    background-color: var(--toolbar-bg-color);
+}
+
 .service-worker-filter-label::before {
     -webkit-user-select: none;
     -webkit-mask-image: url(Images/treeoutlineTriangles.png);
     -webkit-mask-size: 32px 24px;
-    content: "aa";
+    content: '';
     color: transparent;
     background-color: rgb(110, 110, 110);
     text-shadow: none;
     height: 12px;
+    width: 10px;
+    display: inline-block;
 }
 
 @media (-webkit-min-device-pixel-ratio: 1.1) {

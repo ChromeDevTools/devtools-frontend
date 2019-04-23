@@ -414,6 +414,7 @@ Components.Linkifier = class {
     } else {
       link.classList.add('devtools-link-prevent-click');
     }
+    UI.ARIAUtils.markAsLink(link);
     return link;
   }
 

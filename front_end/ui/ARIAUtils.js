@@ -84,6 +84,15 @@ UI.ARIAUtils.markAsHidden = function(element) {
 
 /**
  * @param {!Element} element
+ * @param {number} level
+ */
+UI.ARIAUtils.markAsHeading = function(element, level) {
+  element.setAttribute('role', 'heading');
+  element.setAttribute('aria-level', level);
+};
+
+/**
+ * @param {!Element} element
  * @param {?string} placeholder
  */
 UI.ARIAUtils.setPlaceholder = function(element, placeholder) {

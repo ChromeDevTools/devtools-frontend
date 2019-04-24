@@ -7,3 +7,44 @@
     flex: auto;
     border: none;
 }
+
+.background-service-landing-page {
+    justify-content: center;
+    align-items: center;
+    font-size: 13px;
+    color: #777;
+}
+
+.background-service-landing-page > div {
+    max-width: 450px;
+    margin: 10px;
+}
+
+.background-service-landing-page > div > p {
+    flex: none;
+    white-space: pre-line;
+}
+
+.background-service-metadata {
+    padding-left: 5px;
+    padding-top: 10px;
+}
+
+.background-service-metadata-entry {
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+
+.background-service-metadata-name {
+    color: rgb(33%, 33%, 33%);
+    display: inline-block;
+    margin-right: 0.25em;
+    font-weight: bold;
+}
+
+.background-service-metadata-value {
+    display: inline;
+    margin-right: 1em;
+    white-space: pre-wrap;
+    word-break: break-all;
+}

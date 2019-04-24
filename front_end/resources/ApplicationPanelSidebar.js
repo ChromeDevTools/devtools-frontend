@@ -694,7 +694,7 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
    */
   constructor(storagePanel, serviceName) {
-    super(storagePanel, Resources.BackgroundServiceTreeElement._getUIString(serviceName), false);
+    super(storagePanel, Resources.BackgroundServiceView.getUIString(serviceName), false);
 
     /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;
@@ -710,21 +710,6 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
 
     const backgroundServiceIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.setLeadingIcons([backgroundServiceIcon]);
-  }
-
-  /**
-   * @param {string} serviceName The name of the background service.
-   * @return {string} The UI String to display.
-   */
-  static _getUIString(serviceName) {
-    switch (serviceName) {
-      case Protocol.BackgroundService.ServiceName.BackgroundFetch:
-        return Common.UIString('Background Fetch');
-      case Protocol.BackgroundService.ServiceName.BackgroundSync:
-        return Common.UIString('Background Sync');
-      default:
-        return '';
-    }
   }
 
   /**

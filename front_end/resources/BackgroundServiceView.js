@@ -4,6 +4,21 @@
 
 Resources.BackgroundServiceView = class extends UI.VBox {
   /**
+   * @param {string} serviceName The name of the background service.
+   * @return {string} The UI String to display.
+   */
+  static getUIString(serviceName) {
+    switch (serviceName) {
+      case Protocol.BackgroundService.ServiceName.BackgroundFetch:
+        return ls`Background Fetch`;
+      case Protocol.BackgroundService.ServiceName.BackgroundSync:
+        return ls`Background Sync`;
+      default:
+        return '';
+    }
+  }
+
+  /**
    * @param {!Protocol.BackgroundService.ServiceName} serviceName
    * @param {!Resources.BackgroundServiceModel} model
    */
@@ -57,6 +72,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     /** @const {!UI.VBox} */
     this._previewPanel = new UI.VBox();
 
+    /** @type {?Resources.BackgroundServiceView.EventDataNode} */
+    this._selectedEventNode = null;
+
     /** @type {?UI.Widget} */
     this._preview = null;
 
@@ -82,16 +100,16 @@ Resources.BackgroundServiceView = class extends UI.VBox {
 
     this._toolbar.appendSeparator();
 
-    this._originCheckbox =
-        new UI.ToolbarCheckbox(ls`Show events from other domains`, undefined, () => this._refreshView());
-    this._toolbar.appendToolbarItem(this._originCheckbox);
-
-    this._toolbar.appendSeparator();
-
     this._saveButton = new UI.ToolbarButton(ls`Save events`, 'largeicon-download');
     this._saveButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._saveToFile());
     this._saveButton.setEnabled(false);
     this._toolbar.appendToolbarItem(this._saveButton);
+
+    this._toolbar.appendSeparator();
+
+    this._originCheckbox =
+        new UI.ToolbarCheckbox(ls`Show events from other domains`, undefined, () => this._refreshView());
+    this._toolbar.appendToolbarItem(this._originCheckbox);
   }
 
   /**
@@ -108,9 +126,10 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * Clears the grid and panel.
    */
   _clearView() {
+    this._selectedEventNode = null;
     this._dataGrid.rootNode().removeChildren();
-    this._showPreview(null);
     this._saveButton.setEnabled(false);
+    this._showPreview(null);
   }
 
   /**
@@ -135,7 +154,12 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const state = /** @type {!Resources.BackgroundServiceModel.RecordingState} */ (event.data);
     if (state.serviceName !== this._serviceName)
       return;
+
+    if (state.isRecording === this._recordButton.toggled())
+      return;
+
     this._recordButton.setToggled(state.isRecording);
+    this._showPreview(this._selectedEventNode);
   }
 
   /**
@@ -163,8 +187,10 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const dataNode = new Resources.BackgroundServiceView.EventDataNode(data, serviceEvent.eventMetadata);
     this._dataGrid.rootNode().appendChild(dataNode);
 
-    // There's at least one event. So we can allow saving the events.
-    this._saveButton.setEnabled(true);
+    if (this._dataGrid.rootNode().children.length === 1) {
+      this._saveButton.setEnabled(true);
+      this._showPreview(this._selectedEventNode);
+    }
   }
 
   /**
@@ -174,9 +200,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     const columns = /** @type {!Array<!DataGrid.DataGrid.ColumnDescriptor>} */ ([
       {id: 'id', title: ls`#`, weight: 1},
       {id: 'timestamp', title: ls`Timestamp`, weight: 8},
+      {id: 'eventName', title: ls`Event`, weight: 10},
       {id: 'origin', title: ls`Origin`, weight: 10},
       {id: 'swSource', title: ls`SW Source`, weight: 4},
-      {id: 'eventName', title: ls`Event`, weight: 10},
       {id: 'instanceId', title: ls`Instance ID`, weight: 10},
     ]);
     const dataGrid = new DataGrid.DataGrid(columns);
@@ -238,13 +264,36 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * @param {?Resources.BackgroundServiceView.EventDataNode} dataNode
    */
   _showPreview(dataNode) {
+    if (this._selectedEventNode && this._selectedEventNode === dataNode)
+      return;
+
+    this._selectedEventNode = dataNode;
+
     if (this._preview)
       this._preview.detach();
 
-    if (dataNode)
-      this._preview = dataNode.createPreview();
-    else
-      this._preview = new UI.EmptyWidget(ls`Select a value to preview`);
+    if (this._selectedEventNode) {
+      this._preview = this._selectedEventNode.createPreview();
+    } else if (this._dataGrid.rootNode().children.length) {
+      // Inform users that grid entries are clickable.
+      this._preview = new UI.EmptyWidget(ls`Select an entry to view metadata`);
+    } else if (this._recordButton.toggled()) {
+      // Inform users that we are recording/waiting for events.
+      this._preview = new UI.EmptyWidget(
+          ls`Recording ${Resources.BackgroundServiceView.getUIString(this._serviceName)} activity...`);
+    } else {
+      this._preview = new UI.VBox();
+      this._preview.contentElement.classList.add('background-service-landing-page');
+      const centered = this._preview.contentElement.createChild('div');
+
+      const landingRecordButton =
+          new UI.ToolbarToggle(ls`Toggle Record`, 'largeicon-start-recording', 'largeicon-stop-recording');
+      landingRecordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording());
+
+      // TODO(rayankans): Add a keyboard shortcut.
+      centered.createChild('p').appendChild(UI.formatLocalized(
+          'Click the record button %s to start recording.', [UI.createInlineButton(landingRecordButton)]));
+    }
 
     this._preview.show(this._previewPanel.contentElement);
   }
@@ -291,12 +340,25 @@ Resources.BackgroundServiceView.EventDataNode = class extends DataGrid.DataGridN
   }
 
   /**
-   * @return {!UI.SearchableView}
+   * @return {!UI.VBox}
    */
   createPreview() {
-    const metadata = {};
-    for (const entry of this._eventMetadata)
-      metadata[entry.key] = entry.value;
-    return SourceFrame.JSONView.createViewSync(metadata);
+    const preview = new UI.VBox();
+    preview.element.classList.add('background-service-metadata');
+
+    for (const entry of this._eventMetadata) {
+      const div = createElementWithClass('div', 'background-service-metadata-entry');
+      div.createChild('div', 'background-service-metadata-name').textContent = entry.key + ': ';
+      div.createChild('div', 'background-service-metadata-value source-code').textContent = entry.value;
+      preview.element.appendChild(div);
+    }
+
+    if (!preview.element.children.length) {
+      const div = createElementWithClass('div', 'background-service-metadata-entry');
+      div.createChild('div', 'background-service-metadata-name').textContent = ls`No metadata for this event`;
+      preview.element.appendChild(div);
+    }
+
+    return preview;
   }
 };

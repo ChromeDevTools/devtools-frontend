@@ -69,6 +69,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
 
     /** @type {!Array<!Elements.SectionBlock>} */
     this._sectionBlocks = [];
+    this._needsForceUpdate = false;
     Elements.StylesSidebarPane._instance = this;
     UI.context.addFlavorChangeListener(SDK.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener('copy', this._clipboardCopy.bind(this));
@@ -195,6 +196,7 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
   }
 
   forceUpdate() {
+    this._needsForceUpdate = true;
     this._swatchPopoverHelper.hide();
     this._resetCache();
     this.update();
@@ -453,6 +455,13 @@ Elements.StylesSidebarPane = class extends Elements.ElementsSidebarPane {
    * @return {!Promise}
    */
   async _innerRebuildUpdate(matchedStyles) {
+    // Elements.ElementsSidebarPane's throttler schedules this method. Usually,
+    // rebuild is suppressed while editing (see onCSSModelChanged()), but we need a
+    // 'force' flag since the currently running throttler process cannot be canceled.
+    if (this._needsForceUpdate)
+      this._needsForceUpdate = false;
+    else if (this._isEditingStyle || this._userOperation)
+      return;
     const focusedIndex = this._focusedSectionIndex();
 
     this._linkifier.reset();

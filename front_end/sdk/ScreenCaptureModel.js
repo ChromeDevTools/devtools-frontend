@@ -235,6 +235,14 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
    */
   compilationCacheProduced(url, data) {
   }
+
+  /**
+   * @override
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {string} url
+   */
+  downloadWillBegin(frameId, url) {
+  }
 };
 
 SDK.SDKModel.register(SDK.ScreenCaptureModel, SDK.Target.Capability.ScreenCapture, false);

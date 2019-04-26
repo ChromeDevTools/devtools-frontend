@@ -1015,4 +1015,12 @@ SDK.PageDispatcher = class {
    */
   compilationCacheProduced(url, data) {
   }
+
+  /**
+   * @override
+   * @param {!Protocol.Page.FrameId} frameId
+   * @param {string} url
+   */
+  downloadWillBegin(frameId, url) {
+  }
 };

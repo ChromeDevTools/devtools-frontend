@@ -453,8 +453,7 @@ Profiler.SamplingNativeHeapSnapshotType = class extends Profiler.SamplingHeapPro
 
   get description() {
     return ls`Native memory snapshots show sampled native allocations in the renderer process since start up.
-              Chrome has to be started with --sampling-heap-profiler flag.
-              Check flags at chrome://flags`;
+              Chrome has to be started with --memlog=all flag. Check flags at chrome://flags`;
   }
 
   /**

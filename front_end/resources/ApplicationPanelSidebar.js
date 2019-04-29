@@ -708,8 +708,23 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
     /** @private {?Resources.BackgroundServiceModel} */
     this._model = null;
 
-    const backgroundServiceIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
+    const backgroundServiceIcon = UI.Icon.create(this._getIconType(), 'resource-tree-item');
     this.setLeadingIcons([backgroundServiceIcon]);
+  }
+
+  /**
+   * @return {string}
+   */
+  _getIconType() {
+    switch (this._serviceName) {
+      case Protocol.BackgroundService.ServiceName.BackgroundFetch:
+        return 'mediumicon-fetch';
+      case Protocol.BackgroundService.ServiceName.BackgroundSync:
+        return 'mediumicon-sync';
+      default:
+        console.error(`Service ${this._serviceName} does not have a dedicated icon`);
+        return 'mediumicon-table';
+    }
   }
 
   /**

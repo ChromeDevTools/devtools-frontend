@@ -12,7 +12,7 @@
    height="80"
    id="svg4775"
    version="1.1"
-   inkscape:version="0.92.2pre0 (973e216, 2017-07-25)"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
    sodipodi:docname="mediumIcons.svg"
    inkscape:export-filename="/Users/pfeldman/code/chromium/src/third_party/WebKit/Source/devtools/front_end/Images/mediumIcons.png"
    inkscape:export-xdpi="90"
@@ -95,12 +95,12 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="2714"
-     inkscape:window-height="1732"
+     inkscape:window-width="2558"
+     inkscape:window-height="1378"
      id="namedview4913"
      showgrid="true"
      inkscape:zoom="5.2149126"
-     inkscape:cx="-45.52086"
+     inkscape:cx="-45.137344"
      inkscape:cy="72.509528"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -760,4 +760,75 @@
      id="path448"
      inkscape:connector-curvature="0"
      sodipodi:nodetypes="ccccccc" />
+  <g
+     id="BackgroundSyncIcon"
+     style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1"
+     transform="scale(0.32)">
+    <g
+       id="Sync-Icon">
+      <rect
+         height="50"
+         width="50"
+         y="0"
+         x="0"
+         id="Mask" />
+      <g
+         transform="translate(8,2)"
+         id="Group"
+         style="fill:#000000;fill-rule:nonzero">
+        <path
+           id="Combined-Shape"
+           d="m 21.939098,33.353403 4.42699,4.044699 C 23.680429,39.200531 20.460997,40.25 17,40.25 7.6111592,40.25 0,32.526912 0,23 c 0,-2.865443 0.68854129,-5.567703 1.9068985,-7.945722 3.722e-4,-7.26e-4 7.445e-4,-0.0015 0.00112,-0.0022 L 6.335865,19.097583 C 5.9027264,20.316125 5.6666667,21.63009 5.6666667,23 c 0,6.351275 5.0741063,11.5 11.3333333,11.5 1.770533,0 3.446239,-0.411971 4.939098,-1.146597 z m 5.704636,-6.394068 C 28.08984,25.724919 28.333333,24.391313 28.333333,23 28.333333,16.648725 23.259227,11.5 17,11.5 c -1.791763,0 -3.486411,0.42191 -4.992721,1.173162 L 7.5863091,8.6339629 C 10.281491,6.811921 13.518531,5.75 17,5.75 c 9.388841,0 17,7.723088 17,17.25 0,2.886982 -0.698932,5.60832 -1.934464,7.999293 z"
+           inkscape:connector-curvature="0" />
+        <polygon
+           points="26.444444,28.75 17,37.375 26.444444,46 "
+           transform="rotate(180,21.722222,37.375)"
+           id="Shape" />
+        <polygon
+           points="17,0 7.5555556,8.625 17,17.25 "
+           id="polygon4215" />
+      </g>
+    </g>
+  </g>
+  <g
+     id="Page-1"
+     style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1"
+     transform="matrix(0.66666667,0,0,0.66666667,17.333333,0.66666659)">
+    <g
+       transform="translate(-2,-1)"
+       id="3px-Fetch">
+      <g
+         id="Fetch">
+        <rect
+           height="9"
+           width="3"
+           y="6"
+           x="6"
+           id="Rectangle"
+           style="fill:#000000" />
+        <rect
+           height="9"
+           width="3"
+           y="9"
+           x="15"
+           id="rect4301"
+           style="fill:#000000" />
+        <polygon
+           points="7.5,1 2,7 6.125,7 8.875,7 13,7 "
+           id="Path"
+           style="fill:#000000;fill-rule:nonzero" />
+        <polygon
+           points="16.5,17 11,23 15.125,23 17.875,23 22,23 "
+           transform="rotate(-180,16.5,20)"
+           id="polygon4304"
+           style="fill:#000000;fill-rule:nonzero" />
+        <rect
+           height="24"
+           width="24"
+           y="0"
+           x="0"
+           id="rect4306" />
+      </g>
+    </g>
+  </g>
 </svg>

@@ -550,6 +550,14 @@
 
     /**
      * @override
+     * @param {string} umaName
+     */
+    recordUserMetricsAction(umaName) {
+      DevToolsAPI.sendMessageToEmbedder('recordUserMetricsAction', [umaName], null);
+    }
+
+    /**
+     * @override
      */
     requestFileSystems() {
       DevToolsAPI.sendMessageToEmbedder('requestFileSystems', [], null);

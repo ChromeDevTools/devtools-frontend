@@ -230,6 +230,13 @@ Host.InspectorFrontendHostStub = class {
 
   /**
    * @override
+   * @param {string} umaName
+   */
+  recordUserMetricsAction(umaName) {
+  }
+
+  /**
+   * @override
    */
   requestFileSystems() {
     this.events.dispatchEventToListeners(InspectorFrontendHostAPI.Events.FileSystemsLoaded, []);

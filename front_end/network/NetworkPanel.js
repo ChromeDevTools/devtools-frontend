@@ -52,9 +52,19 @@ Network.NetworkPanel = class extends UI.Panel {
 
     const panel = new UI.VBox();
 
-    this._panelToolbar = new UI.Toolbar('', panel.contentElement);
+    const networkToolbarContainer = panel.contentElement.createChild('div', 'network-toolbar-container');
+    this._panelToolbar = new UI.Toolbar('', networkToolbarContainer);
+    this._rightToolbar = new UI.Toolbar('', networkToolbarContainer);
+
     this._filterBar = new UI.FilterBar('networkPanel', true);
     this._filterBar.show(panel.contentElement);
+
+    this._settingsPane = new UI.HBox();
+    this._settingsPane.element.classList.add('network-settings-pane');
+    this._settingsPane.show(panel.contentElement);
+    this._showSettingsPaneSetting = Common.settings.createSetting('networkShowSettingsToolbar', false);
+    this._showSettingsPaneSetting.addChangeListener(this._updateSettingsPaneVisibility.bind(this));
+    this._updateSettingsPaneVisibility();
 
     this._filmStripPlaceholderElement = panel.contentElement.createChild('div', 'network-film-strip-placeholder');
 
@@ -122,7 +132,6 @@ Network.NetworkPanel = class extends UI.Panel {
 
     this._preserveLogSetting = Common.moduleSetting('network_log.preserve-log');
 
-    this._offlineCheckbox = MobileThrottling.throttlingManager().createOfflineToolbarCheckbox();
     this._throttlingSelect = this._createThrottlingConditionsSelect();
     this._setupToolbarButtons(splitWidget);
 
@@ -161,13 +170,6 @@ Network.NetworkPanel = class extends UI.Panel {
   }
 
   /**
-   * @return {!UI.ToolbarCheckbox}
-   */
-  offlineCheckboxForTest() {
-    return this._offlineCheckbox;
-  }
-
-  /**
    * @return {!UI.ToolbarComboBox}
    */
   throttlingSelectForTest() {
@@ -193,9 +195,6 @@ Network.NetworkPanel = class extends UI.Panel {
     clearButton.addEventListener(UI.ToolbarButton.Events.Click, () => SDK.networkLog.reset(), this);
     this._panelToolbar.appendToolbarItem(clearButton);
     this._panelToolbar.appendSeparator();
-    const recordFilmStripButton = new UI.ToolbarSettingToggle(
-        this._networkRecordFilmStripSetting, 'largeicon-camera', Common.UIString('Capture screenshots'));
-    this._panelToolbar.appendToolbarItem(recordFilmStripButton);
 
     this._panelToolbar.appendToolbarItem(this._filterBar.filterButton());
     updateSidebarToggle();
@@ -209,22 +208,6 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(searchToggle);
     this._panelToolbar.appendSeparator();
 
-    this._panelToolbar.appendText(Common.UIString('View:'));
-
-    const largerRequestsButton = new UI.ToolbarSettingToggle(
-        this._networkLogLargeRowsSetting, 'largeicon-large-list', Common.UIString('Use large request rows'),
-        Common.UIString('Use small request rows'));
-    this._panelToolbar.appendToolbarItem(largerRequestsButton);
-
-    const showOverviewButton = new UI.ToolbarSettingToggle(
-        this._networkLogShowOverviewSetting, 'largeicon-waterfall', Common.UIString('Show overview'),
-        Common.UIString('Hide overview'));
-    this._panelToolbar.appendToolbarItem(showOverviewButton);
-
-    this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
-        Common.moduleSetting('network.group-by-frame'), '', Common.UIString('Group by frame')));
-
-    this._panelToolbar.appendSeparator();
     this._panelToolbar.appendToolbarItem(new UI.ToolbarSettingCheckbox(
         this._preserveLogSetting, Common.UIString('Do not clear log on page reload / navigation'),
         Common.UIString('Preserve log')));
@@ -235,10 +218,30 @@ Network.NetworkPanel = class extends UI.Panel {
     this._panelToolbar.appendToolbarItem(disableCacheCheckbox);
 
     this._panelToolbar.appendSeparator();
-    this._panelToolbar.appendToolbarItem(this._offlineCheckbox);
     this._panelToolbar.appendToolbarItem(this._throttlingSelect);
 
-    this._panelToolbar.appendToolbarItem(new UI.ToolbarItem(this._progressBarContainer));
+    this._rightToolbar.appendToolbarItem(new UI.ToolbarItem(this._progressBarContainer));
+    this._rightToolbar.appendSeparator();
+    this._rightToolbar.appendToolbarItem(
+        new UI.ToolbarSettingToggle(this._showSettingsPaneSetting, 'largeicon-settings-gear', ls`Network settings`));
+
+    const settingsToolbarLeft = new UI.Toolbar('', this._settingsPane.element);
+    settingsToolbarLeft.makeVertical();
+    settingsToolbarLeft.appendToolbarItem(
+        new UI.ToolbarSettingCheckbox(this._networkLogLargeRowsSetting, '', ls`Use large request rows`));
+    settingsToolbarLeft.appendToolbarItem(
+        new UI.ToolbarSettingCheckbox(this._networkLogShowOverviewSetting, '', ls`Show overview`));
+
+    const settingsToolbarRight = new UI.Toolbar('', this._settingsPane.element);
+    settingsToolbarRight.makeVertical();
+    settingsToolbarRight.appendToolbarItem(
+        new UI.ToolbarSettingCheckbox(Common.moduleSetting('network.group-by-frame'), '', ls`Group by frame`));
+    settingsToolbarRight.appendToolbarItem(
+        new UI.ToolbarSettingCheckbox(this._networkRecordFilmStripSetting, '', ls`Capture screenshots`));
+  }
+
+  _updateSettingsPaneVisibility() {
+    this._settingsPane.element.classList.toggle('hidden', !this._showSettingsPaneSetting.get());
   }
 
   /**

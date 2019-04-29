@@ -27,7 +27,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.panel.network .toolbar {
+ .panel.network .toolbar {
     background-color: var(--toolbar-bg-color);
     border-bottom: var(--divider-border);
 }
@@ -145,4 +145,22 @@
 
 .network-tabbed-pane {
     background-color: var(--toolbar-bg-color);
+}
+
+.network-settings-pane {
+    flex: none;
+    background-color: var(--toolbar-bg-color);
+}
+
+.network-settings-pane .toolbar {
+    flex: 1 1;
+}
+
+.network-toolbar-container {
+    display: flex;
+    flex: none;
+}
+
+.network-toolbar-container > :first-child {
+    flex: 1 1 auto;
 }

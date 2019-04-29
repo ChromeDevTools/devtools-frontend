@@ -8,21 +8,8 @@
     border: none;
 }
 
-.background-service-landing-page {
-    justify-content: center;
-    align-items: center;
-    font-size: 13px;
-    color: #777;
-}
-
-.background-service-landing-page > div {
-    max-width: 450px;
-    margin: 10px;
-}
-
-.background-service-landing-page > div > p {
-    flex: none;
-    white-space: pre-line;
+.background-service-shortcut {
+    color: hsla(0, 0%, 50%, 1);
 }
 
 .background-service-metadata {

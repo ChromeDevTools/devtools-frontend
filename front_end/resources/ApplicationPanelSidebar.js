@@ -758,6 +758,7 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
     if (!this._view)
       this._view = new Resources.BackgroundServiceView(this._serviceName, this._model);
     this.showView(this._view);
+    UI.context.setFlavor(Resources.BackgroundServiceView, this._view);
     return false;
   }
 };

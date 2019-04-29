@@ -25,6 +25,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
   constructor(serviceName, model) {
     super(true);
     this.registerRequiredCSS('resources/backgroundServiceView.css');
+    this.registerRequiredCSS('ui/emptyWidget.css');
 
     /** @const {!Protocol.BackgroundService.ServiceName} */
     this._serviceName = serviceName;
@@ -88,10 +89,8 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * Creates the toolbar UI element.
    */
   async _setupToolbar() {
-    this._recordButton =
-        new UI.ToolbarToggle(ls`Toggle Record`, 'largeicon-start-recording', 'largeicon-stop-recording');
-    this._recordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording());
-    this._recordButton.setToggleWithRedColor(true);
+    const action = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
+    this._recordButton = UI.Toolbar.createActionButton(action);
     this._toolbar.appendToolbarItem(this._recordButton);
 
     const clearButton = new UI.ToolbarButton(ls`Clear`, 'largeicon-clear');
@@ -283,16 +282,19 @@ Resources.BackgroundServiceView = class extends UI.VBox {
           ls`Recording ${Resources.BackgroundServiceView.getUIString(this._serviceName)} activity...`);
     } else {
       this._preview = new UI.VBox();
-      this._preview.contentElement.classList.add('background-service-landing-page');
-      const centered = this._preview.contentElement.createChild('div');
+      this._preview.contentElement.classList.add('empty-view-scroller');
+      const centered = this._preview.contentElement.createChild('div', 'empty-view');
 
-      const landingRecordButton =
-          new UI.ToolbarToggle(ls`Toggle Record`, 'largeicon-start-recording', 'largeicon-stop-recording');
-      landingRecordButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._toggleRecording());
+      const action = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
+      const landingRecordButton = UI.Toolbar.createActionButton(action);
 
-      // TODO(rayankans): Add a keyboard shortcut.
-      centered.createChild('p').appendChild(UI.formatLocalized(
-          'Click the record button %s to start recording.', [UI.createInlineButton(landingRecordButton)]));
+      const recordKey = createElementWithClass('b', 'background-service-shortcut');
+      recordKey.textContent =
+          UI.shortcutRegistry.shortcutDescriptorsForAction('background-service.toggle-recording')[0].name;
+
+      centered.createChild('h2').appendChild(UI.formatLocalized(
+          'Click the record button %s or hit %s to start recording.',
+          [UI.createInlineButton(landingRecordButton), recordKey]));
     }
 
     this._preview.show(this._previewPanel.contentElement);
@@ -360,5 +362,27 @@ Resources.BackgroundServiceView.EventDataNode = class extends DataGrid.DataGridN
     }
 
     return preview;
+  }
+};
+
+/**
+ * @implements {UI.ActionDelegate}
+ * @unrestricted
+ */
+Resources.BackgroundServiceView.ActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    const view = context.flavor(Resources.BackgroundServiceView);
+    switch (actionId) {
+      case 'background-service.toggle-recording':
+        view._toggleRecording();
+        return true;
+    }
+    return false;
   }
 };

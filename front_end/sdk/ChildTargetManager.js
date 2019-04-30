@@ -121,6 +121,9 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     let type = SDK.Target.Type.Browser;
     if (targetInfo.type === 'iframe')
       type = SDK.Target.Type.Frame;
+    // TODO(lfg): ensure proper capabilities for child pages (e.g. portals).
+    else if (targetInfo.type === 'page')
+      type = SDK.Target.Type.Frame;
     else if (targetInfo.type === 'worker')
       type = SDK.Target.Type.Worker;
     else if (targetInfo.type === 'service_worker')

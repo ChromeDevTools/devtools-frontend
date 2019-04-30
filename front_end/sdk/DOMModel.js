@@ -115,7 +115,7 @@ SDK.DOMNode = class {
       this._contentDocument = new SDK.DOMDocument(this._domModel, payload.contentDocument);
       this._contentDocument.parentNode = this;
       this._children = [];
-    } else if (payload.nodeName === 'IFRAME' && payload.frameId) {
+    } else if ((payload.nodeName === 'IFRAME' || payload.nodeName === 'PORTAL') && payload.frameId) {
       const childTarget = SDK.targetManager.targetById(payload.frameId);
       const childModel = childTarget ? childTarget.model(SDK.DOMModel) : null;
       if (childModel)
@@ -228,6 +228,13 @@ SDK.DOMNode = class {
    */
   isIframe() {
     return this._nodeName === 'IFRAME';
+  }
+
+  /**
+   * @return {boolean}
+   */
+  isPortal() {
+    return this._nodeName === 'PORTAL';
   }
 
   /**

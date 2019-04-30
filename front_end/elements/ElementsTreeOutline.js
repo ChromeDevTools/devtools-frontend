@@ -1244,6 +1244,8 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
   _hasVisibleChildren(node) {
     if (node.isIframe())
       return true;
+    if (node.isPortal())
+      return true;
     if (node.contentDocument())
       return true;
     if (node.importedDocument())

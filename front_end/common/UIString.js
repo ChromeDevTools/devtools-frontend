@@ -84,6 +84,8 @@ Common.UIStringFormat = class {
   }
 };
 
+/** @type {!WeakMap<!Array<string>, string>} */
+Common._substitutionStrings = new WeakMap();
 
 /**
  * @param {!Array<string>|string} strings
@@ -93,13 +95,10 @@ Common.UIStringFormat = class {
 self.ls = function(strings, vararg) {
   if (typeof strings === 'string')
     return strings;
-  const values = Array.prototype.slice.call(arguments, 1);
-  if (!values.length)
-    return strings[0];
-  let result = '';
-  for (let i = 0; i < values.length; i++) {
-    result += strings[i];
-    result += '' + values[i];
+  let substitutionString = Common._substitutionStrings.get(strings);
+  if (!substitutionString) {
+    substitutionString = strings.join('%s');
+    Common._substitutionStrings.set(strings, substitutionString);
   }
-  return result + strings[values.length];
+  return Common.UIString(substitutionString, ...Array.prototype.slice.call(arguments, 1));
 };

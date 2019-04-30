@@ -30,8 +30,7 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this._revealSourceForSelectedNode, this);
     this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
     this._dataGrid.asWidget().show(this.contentElement);
-
-    this._pollTimer = setTimeout(() => this._poll());
+    this._currentPollId = 0;
   }
 
   /**
@@ -45,18 +44,20 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
    * @override
    */
   willHide() {
-    clearTimeout(this._pollTimer);
-    this._pollTimer = 0;
+    ++this._currentPollId;
   }
 
   async _poll() {
-    const models = SDK.targetManager.models(SDK.HeapProfilerModel);
-    const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
-    if (!this._pollTimer)
-      return;
-    profiles.remove(null);
-    this._update(profiles);
-    this._pollTimer = setTimeout(() => this._poll(), 3000);
+    const pollId = this._currentPollId;
+    do {
+      const models = SDK.targetManager.models(SDK.HeapProfilerModel);
+      const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
+      if (this._currentPollId !== pollId)
+        return;
+      profiles.remove(null);
+      this._update(profiles);
+      await new Promise(r => setTimeout(r, 3000));
+    } while (this._currentPollId === pollId);
   }
 
   /**

@@ -118,11 +118,13 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
 
   /**
    * @param {string} categoryName
+   * @param {string|null} categoryLink
    */
-  showCategoryView(categoryName) {
+  showCategoryView(categoryName, categoryLink) {
     if (!this._categoryView)
       this._categoryView = new Resources.StorageCategoryView();
     this._categoryView.setText(categoryName);
+    this._categoryView.setLink(categoryLink);
     this.showView(this._categoryView);
   }
 
@@ -153,17 +155,6 @@ Resources.ResourcesPanel = class extends UI.PanelWithSidebar {
     else
       this._cookieView.setCookiesDomain(model, cookieDomain);
     this.showView(this._cookieView);
-  }
-
-  /**
-   * @param {string} text
-   */
-  showEmptyWidget(text) {
-    if (!this._emptyWidget)
-      this._emptyWidget = new UI.EmptyWidget(text);
-    else
-      this._emptyWidget.text = text;
-    this.showView(this._emptyWidget);
   }
 
   /**

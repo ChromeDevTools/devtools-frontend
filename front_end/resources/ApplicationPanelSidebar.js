@@ -67,25 +67,35 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     const storageTreeElement = this._addSidebarSection(Common.UIString('Storage'));
     this.localStorageListTreeElement =
         new Resources.StorageCategoryTreeElement(panel, Common.UIString('Local Storage'), 'LocalStorage');
+    this.localStorageListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/localstorage?utm_source=devtools');
     const localStorageIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
 
     storageTreeElement.appendChild(this.localStorageListTreeElement);
     this.sessionStorageListTreeElement =
         new Resources.StorageCategoryTreeElement(panel, Common.UIString('Session Storage'), 'SessionStorage');
+    this.sessionStorageListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/sessionstorage?utm_source=devtools');
     const sessionStorageIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
     this.indexedDBListTreeElement = new Resources.IndexedDBTreeElement(panel);
+    this.indexedDBListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/indexeddb?utm_source=devtools');
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
     this.databasesListTreeElement =
         new Resources.StorageCategoryTreeElement(panel, Common.UIString('Web SQL'), 'Databases');
+    this.databasesListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/websql?utm_source=devtools');
     const databaseIcon = UI.Icon.create('mediumicon-database', 'resource-tree-item');
     this.databasesListTreeElement.setLeadingIcons([databaseIcon]);
 
     storageTreeElement.appendChild(this.databasesListTreeElement);
     this.cookieListTreeElement = new Resources.StorageCategoryTreeElement(panel, Common.UIString('Cookies'), 'Cookies');
+    this.cookieListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/cookies?utm_source=devtools');
     const cookieIcon = UI.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
@@ -95,6 +105,8 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     cacheTreeElement.appendChild(this.cacheStorageListTreeElement);
     this.applicationCacheListTreeElement =
         new Resources.StorageCategoryTreeElement(panel, Common.UIString('Application Cache'), 'ApplicationCache');
+    this.applicationCacheListTreeElement.setLink(
+        'https://developers.google.com/web/tools/chrome-devtools/storage/applicationcache?utm_source=devtools');
     const applicationCacheIcon = UI.Icon.create('mediumicon-table', 'resource-tree-item');
     this.applicationCacheListTreeElement.setLeadingIcons([applicationCacheIcon]);
 
@@ -647,11 +659,18 @@ Resources.StorageCategoryTreeElement = class extends Resources.BaseStorageTreeEl
     this._expandedSetting =
         Common.settings.createSetting('resources' + settingsKey + 'Expanded', settingsKey === 'Frames');
     this._categoryName = categoryName;
+    this._categoryLink = null;
   }
-
 
   get itemURL() {
     return 'category://' + this._categoryName;
+  }
+
+  /**
+   * @param {string} link
+   */
+  setLink(link) {
+    this._categoryLink = link;
   }
 
   /**
@@ -660,7 +679,7 @@ Resources.StorageCategoryTreeElement = class extends Resources.BaseStorageTreeEl
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showCategoryView(this._categoryName);
+    this._storagePanel.showCategoryView(this._categoryName, this._categoryLink);
     return false;
   }
 
@@ -1708,7 +1727,7 @@ Resources.ApplicationCacheManifestTreeElement = class extends Resources.BaseStor
    */
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this._storagePanel.showCategoryView(this._manifestURL);
+    this._storagePanel.showCategoryView(this._manifestURL, null);
     return false;
   }
 };
@@ -1780,10 +1799,22 @@ Resources.StorageCategoryView = class extends UI.VBox {
 
     this.element.classList.add('storage-view');
     this._emptyWidget = new UI.EmptyWidget('');
+    this._linkElement = null;
     this._emptyWidget.show(this.element);
   }
 
   setText(text) {
     this._emptyWidget.text = text;
+  }
+
+  setLink(link) {
+    if (link && !this._linkElement)
+      this._linkElement = this._emptyWidget.appendLink(link);
+    if (!link && this._linkElement)
+      this._linkElement.classList.add('hidden');
+    if (link && this._linkElement) {
+      this._linkElement.setAttribute('href', link);
+      this._linkElement.classList.remove('hidden');
+    }
   }
 };

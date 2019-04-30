@@ -52,6 +52,14 @@ UI.EmptyWidget = class extends UI.VBox {
   }
 
   /**
+   * @param {string} link
+   * @return {!Node}
+   */
+  appendLink(link) {
+    return this._contentElement.appendChild(UI.XLink.create(link, 'Learn more'));
+  }
+
+  /**
    * @param {string} text
    */
   set text(text) {

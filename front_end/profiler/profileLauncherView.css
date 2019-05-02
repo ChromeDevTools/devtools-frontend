@@ -4,37 +4,42 @@
  * found in the LICENSE file.
  */
 
-.profile-isolate-item {
+.profile-memory-usage-item {
     padding: 4px;
     line-height: 16px;
     border-left: 2px solid transparent;
     overflow-x: hidden;
 }
 
-.profile-isolate-item:hover {
+.profile-launcher-target-list .profile-memory-usage-item:hover {
     background-color: hsla(0, 0%, 0%, 0.05);
 }
 
-.profile-isolate-item.selected {
+.profile-memory-usage-item.selected {
     border-color: #4285f4;
     background-color: #4285f420;
 }
 
-.profile-isolate-item > div {
+.profile-memory-usage-item > div {
     flex-shrink: 0;
     margin-right: 12px;
 }
 
-.profile-isolate-item-heap {
+.profile-memory-usage-item-size {
     width: 60px;
     text-align: right;
 }
 
-.profile-isolate-item-trend {
+.profile-memory-usage-item-trend {
     width: 80px;
     color: green;
 }
 
-.profile-isolate-item-trend.increasing {
+.profile-memory-usage-item-trend.increasing {
     color: red;
+}
+
+.profile-launcher-control > .profile-memory-usage-item {
+    margin-left: 1px;
+    margin-bottom: 6px;
 }

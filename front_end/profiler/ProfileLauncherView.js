@@ -37,15 +37,20 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
    */
   constructor(profilesPanel) {
     super();
+    this.registerRequiredCSS('profiler/profileLauncherView.css');
+
     this._panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
 
+    const isolateSelector = new Profiler.IsolateSelector();
     this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
     this._innerContentElement = this._contentElement.createChild('div');
     const controlDiv = this._contentElement.createChild('div', 'vbox profile-launcher-control');
     controlDiv.createChild('h1').textContent = ls`Select JavaScript VM instance`;
+    controlDiv.appendChild(isolateSelector.totalMemoryElement());
     const targetDiv = controlDiv.createChild('div', 'vbox profile-launcher-target-list');
-    new Profiler.IsolateSelector().show(targetDiv);
+    isolateSelector.show(targetDiv);
+
     this._controlButton =
         UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);
     this._contentElement.appendChild(this._controlButton);

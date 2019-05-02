@@ -55,14 +55,6 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this._applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
     const clearStorageTreeElement = new Resources.ClearStorageTreeElement(panel);
     this._applicationTreeElement.appendChild(clearStorageTreeElement);
-    if (Runtime.experiments.isEnabled('backgroundServices')) {
-      this.backgroundFetchTreeElement =
-          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
-      this._applicationTreeElement.appendChild(this.backgroundFetchTreeElement);
-      this.backgroundSyncTreeElement =
-          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
-      this._applicationTreeElement.appendChild(this.backgroundSyncTreeElement);
-    }
 
     const storageTreeElement = this._addSidebarSection(Common.UIString('Storage'));
     this.localStorageListTreeElement =
@@ -111,6 +103,17 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     this.applicationCacheListTreeElement.setLeadingIcons([applicationCacheIcon]);
 
     cacheTreeElement.appendChild(this.applicationCacheListTreeElement);
+
+    if (Runtime.experiments.isEnabled('backgroundServices')) {
+      const backgroundServiceTreeElement = this._addSidebarSection(ls`Background Services`);
+
+      this.backgroundFetchTreeElement =
+          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundFetch);
+      backgroundServiceTreeElement.appendChild(this.backgroundFetchTreeElement);
+      this.backgroundSyncTreeElement =
+          new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
+      backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
+    }
 
     this._resourcesSection = new Resources.ResourcesSection(panel, this._addSidebarSection(Common.UIString('Frames')));
 

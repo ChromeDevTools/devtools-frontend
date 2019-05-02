@@ -34,6 +34,17 @@
               "Resources.BackgroundServiceView"
           ],
           "className": "Resources.BackgroundServiceView.ActionDelegate",
+          "category": "Background Services",
+          "options": [
+              {
+                  "value": true,
+                  "title": "Start recording events"
+              },
+              {
+                  "value": false,
+                  "title": "Stop recording events"
+              }
+          ],
           "bindings": [
               {
                   "platform": "windows,linux",

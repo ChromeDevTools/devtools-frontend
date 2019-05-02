@@ -46,6 +46,9 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     this._securityOriginManager.addEventListener(
         SDK.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this._onOriginChanged());
 
+
+    /** @const {!UI.Action} */
+    this._recordAction = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
     /** @type {?UI.ToolbarToggle} */
     this._recordButton = null;
 
@@ -89,8 +92,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * Creates the toolbar UI element.
    */
   async _setupToolbar() {
-    const action = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
-    this._recordButton = UI.Toolbar.createActionButton(action);
+    this._recordButton = UI.Toolbar.createActionButton(this._recordAction);
     this._toolbar.appendToolbarItem(this._recordButton);
 
     const clearButton = new UI.ToolbarButton(ls`Clear`, 'largeicon-clear');
@@ -157,7 +159,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     if (state.isRecording === this._recordButton.toggled())
       return;
 
-    this._recordButton.setToggled(state.isRecording);
+    this._recordAction.setToggled(state.isRecording);
     this._showPreview(this._selectedEventNode);
   }
 
@@ -201,7 +203,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       {id: 'timestamp', title: ls`Timestamp`, weight: 8},
       {id: 'eventName', title: ls`Event`, weight: 10},
       {id: 'origin', title: ls`Origin`, weight: 10},
-      {id: 'swSource', title: ls`SW Source`, weight: 4},
+      {id: 'swScope', title: ls`SW Scope`, weight: 2},
       {id: 'instanceId', title: ls`Instance ID`, weight: 10},
     ]);
     const dataGrid = new DataGrid.DataGrid(columns);
@@ -220,22 +222,18 @@ Resources.BackgroundServiceView = class extends UI.VBox {
    * @return {!Resources.BackgroundServiceView.EventData}
    */
   _createEventData(serviceEvent) {
-    let swSource = '';
+    let swScope = '';
 
-    // Try to get the script name of the Service Worker registration to be more user-friendly.
-    const registrations = this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId);
-    if (registrations && registrations.versions.size) {
-      // Any version will do since we care about the script URL.
-      const version = registrations.versions.values().next().value;
-      // Get the relative path.
-      swSource = version.scriptURL.substr(version.securityOrigin.length);
-    }
+    // Try to get the scope of the Service Worker registration to be more user-friendly.
+    const registration = this._serviceWorkerManager.registrations().get(serviceEvent.serviceWorkerRegistrationId);
+    if (registration)
+      swScope = registration.scopeURL.substr(registration.securityOrigin.length);
 
     return {
       id: this._dataGrid.rootNode().children.length,
       timestamp: UI.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
       origin: serviceEvent.origin,
-      swSource,
+      swScope,
       eventName: serviceEvent.eventName,
       instanceId: serviceEvent.instanceId,
     };
@@ -285,8 +283,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       this._preview.contentElement.classList.add('empty-view-scroller');
       const centered = this._preview.contentElement.createChild('div', 'empty-view');
 
-      const action = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
-      const landingRecordButton = UI.Toolbar.createActionButton(action);
+      const landingRecordButton = UI.Toolbar.createActionButton(this._recordAction);
 
       const recordKey = createElementWithClass('b', 'background-service-shortcut');
       recordKey.textContent =
@@ -322,7 +319,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
  *    id: number,
  *    timestamp: string,
  *    origin: string,
- *    swSource: string,
+ *    swScope: string,
  *    eventName: string,
  *    instanceId: string,
  * }}

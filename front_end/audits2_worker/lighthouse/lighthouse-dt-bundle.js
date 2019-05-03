@@ -1,4 +1,4 @@
-// lighthouse, browserified. 4.3.0 (01b217be64ddff7ca500ad0f787f914fa9900b73)
+// lighthouse, browserified. 4.3.1 (5c48bb8eaff9a9a3709d6253d3cacdccf11a139a)
 require=function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a;}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r);},p,p.exports,r,e,n,t);}return n[i].exports;}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o;}return r;}()({"../audits/accessibility/accesskeys":[function(require,module,exports){
 (function(__filename){
 
@@ -21629,8 +21629,12 @@ const promise=new Promise((resolve,reject)=>{
 
 
 
-const securityStateChangedListener=({securityState,explanations})=>{
-if(securityState==='insecure'){
+const securityStateChangedListener=({
+securityState,
+explanations,
+schemeIsCryptographic})=>
+{
+if(securityState==='insecure'&&schemeIsCryptographic){
 cancel();
 const insecureDescriptions=explanations.
 filter(exp=>exp.securityState==='insecure').
@@ -30669,6 +30673,29 @@ if(frameId){
 return{
 pid:startedInPageEvt.pid,
 tid:startedInPageEvt.tid,
+frameId};
+
+}
+}
+
+
+
+
+
+const navStartEvt=events.find(e=>Boolean(e.name==='navigationStart'&&e.args&&
+e.args.data&&e.args.data.isLoadingMainFrame&&e.args.data.documentLoaderURL));
+
+const firstResourceSendEvt=events.find(e=>e.name==='ResourceSendRequest');
+
+if(navStartEvt&&navStartEvt.args&&navStartEvt.args.data&&
+firstResourceSendEvt&&
+firstResourceSendEvt.pid===navStartEvt.pid&&
+firstResourceSendEvt.tid===navStartEvt.tid){
+const frameId=navStartEvt.args.frame;
+if(frameId){
+return{
+pid:navStartEvt.pid,
+tid:navStartEvt.tid,
 frameId};
 
 }
@@ -62332,7 +62359,7 @@ arguments[4][86][0].apply(exports,arguments);
 arguments[4][87][0].apply(exports,arguments);
 },{"./support/isBuffer":165,"_process":137,"dup":87,"inherits":105}],167:[function(require,module,exports){
 module.exports={
-"version":"4.3.0"};
+"version":"4.3.1"};
 
 },{}],168:[function(require,module,exports){
 module.exports={
@@ -62386,6 +62413,7 @@ module.exports={
 {"id":"npm:foundation-sites:20120717","severity":"medium","semver":{"vulnerable":["<3.0.6 >=3.0.0"]}}],
 
 "handlebars":[
+{"id":"SNYK-JS-HANDLEBARS-174183","severity":"high","semver":{"vulnerable":[">=4.1.0 <4.1.2","<4.0.14"]}},
 {"id":"SNYK-JS-HANDLEBARS-173692","severity":"high","semver":{"vulnerable":["<4.0.13"]}},
 {"id":"npm:handlebars:20151207","severity":"medium","semver":{"vulnerable":["<4.0.0"]}},
 {"id":"npm:handlebars:20110425","severity":"medium","semver":{"vulnerable":["<=1.0.0-beta.3"]}}],
@@ -62394,7 +62422,7 @@ module.exports={
 {"id":"npm:highcharts:20180225","severity":"high","semver":{"vulnerable":["<6.1.0"]}}],
 
 "jquery":[
-{"id":"SNYK-JS-JQUERY-174006","severity":"medium","semver":{"vulnerable":["*"]}},
+{"id":"SNYK-JS-JQUERY-174006","severity":"medium","semver":{"vulnerable":["<3.4.0"]}},
 {"id":"npm:jquery:20160529","severity":"low","semver":{"vulnerable":["=3.0.0-rc1"]}},
 {"id":"npm:jquery:20150627","severity":"medium","semver":{"vulnerable":["<1.12.2",">=1.12.3 <2.2.2",">=2.2.3 <3.0.0"]}},
 {"id":"npm:jquery:20140902","severity":"medium","semver":{"vulnerable":[">=1.4.2 <1.6.2"]}},
@@ -62415,8 +62443,8 @@ module.exports={
 
 "lodash":[
 {"id":"SNYK-JS-LODASH-73639","severity":"medium","semver":{"vulnerable":["<4.17.11"]}},
-{"id":"SNYK-JS-LODASH-73638","severity":"low","semver":{"vulnerable":["<4.17.11"]}},
-{"id":"npm:lodash:20180130","severity":"low","semver":{"vulnerable":["<4.17.5"]}}],
+{"id":"SNYK-JS-LODASH-73638","severity":"high","semver":{"vulnerable":["<4.17.11"]}},
+{"id":"npm:lodash:20180130","severity":"medium","semver":{"vulnerable":["<4.17.5"]}}],
 
 "moment":[
 {"id":"npm:moment:20170905","severity":"low","semver":{"vulnerable":["<2.19.3"]}},

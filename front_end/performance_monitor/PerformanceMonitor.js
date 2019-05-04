@@ -157,10 +157,10 @@ PerformanceMonitor.PerformanceMonitor = class extends UI.HBox {
       if (x < -50)
         break;
       ctx.beginPath();
-      ctx.moveTo(Math.round(x) + 0.5, 0);
-      ctx.lineTo(Math.round(x) + 0.5, this._height);
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this._height);
       if (sec >= 0 && sec % labelDistanceSeconds === 0)
-        ctx.fillText(new Date(sec * 1000).toLocaleTimeString(), Math.round(x) + 4, 12);
+        ctx.fillText(new Date(sec * 1000).toLocaleTimeString(), x + 4, 12);
       ctx.strokeStyle = sec % labelDistanceSeconds ? lightGray : this._gridColor;
       ctx.stroke();
     }

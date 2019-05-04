@@ -4,10 +4,69 @@
  * found in the LICENSE file.
  */
 
+.profile-launcher-view {
+    overflow: auto;
+}
+
+.profile-launcher-view-content {
+    margin: 10px 16px;
+    flex: auto 1 0;
+}
+
+.profile-launcher-view-content h1 {
+    font-size: 15px;
+    font-weight: normal;
+    margin: 6px 0 10px 0;
+}
+
+.profile-launcher-view-content [is=dt-radio] {
+    font-size: 13px;
+}
+
+.profile-launcher-view-content p {
+    color: grey;
+    margin-top: 1px;
+    margin-left: 22px;
+}
+
+.profile-launcher-view-content p [is=dt-checkbox] {
+    display: flex;
+}
+
+.profile-launcher-view-content button.running {
+    color: hsl(0, 100%, 58%);
+}
+
+.profile-launcher-view-content button.running:hover {
+    color: hsl(0, 100%, 42%);
+}
+
+body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
+    color: rgb(220, 130, 130);
+}
+
+.profile-launcher-view-content > div {
+    flex: auto 0 0;
+}
+
+.profile-launcher-view-content > .profile-isolate-selector-block {
+    flex: auto 1 0;
+}
+
+.profile-isolate-selector-block button {
+    min-width: 110px;
+}
+
+.profile-launcher-target-list {
+    margin-bottom: 6px;
+    border: 1px solid #ddd;
+    flex: 150px 1 0;
+}
+
 .profile-memory-usage-item {
     padding: 4px;
     line-height: 16px;
-    border-left: 2px solid transparent;
+    border-left: 3px solid transparent;
     overflow-x: hidden;
 }
 
@@ -39,7 +98,18 @@
     color: red;
 }
 
-.profile-launcher-control > .profile-memory-usage-item {
+.profile-isolate-selector-block > .profile-memory-usage-item {
     margin-left: 1px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
+    font-weight: bolder;
+}
+
+.profile-launcher-buttons {
+    flex-wrap: wrap;
+}
+
+.profile-launcher-buttons button {
+    min-width: 120px;
+    height: 28px;
+    margin: 4px 16px 4px 0;
 }

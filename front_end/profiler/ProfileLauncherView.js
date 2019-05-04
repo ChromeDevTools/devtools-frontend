@@ -41,28 +41,26 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
 
     this._panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
+    this._contentElement = this.element.createChild('div', 'profile-launcher-view-content vbox');
 
-    const isolateSelector = new Profiler.IsolateSelector();
-    this._contentElement = this.element.createChild('div', 'profile-launcher-view-content');
-    this._innerContentElement = this._contentElement.createChild('div');
-    const controlDiv = this._contentElement.createChild('div', 'vbox profile-launcher-control');
-    controlDiv.createChild('h1').textContent = ls`Select JavaScript VM instance`;
-    controlDiv.appendChild(isolateSelector.totalMemoryElement());
-    const targetDiv = controlDiv.createChild('div', 'vbox profile-launcher-target-list');
-    isolateSelector.show(targetDiv);
-
-    this._controlButton =
-        UI.createTextButton('', this._controlButtonClicked.bind(this), 'profile-launcher-button', true /* primary */);
-    this._contentElement.appendChild(this._controlButton);
-    this._recordButtonEnabled = true;
-    this._loadButton =
-        UI.createTextButton(Common.UIString('Load'), this._loadButtonClicked.bind(this), 'profile-launcher-button');
-    this._contentElement.appendChild(this._loadButton);
-
+    const profileTypeSelectorElement = this._contentElement.createChild('div', 'vbox');
     this._selectedProfileTypeSetting = Common.settings.createSetting('selectedProfileType', 'CPU');
-    this._header = this._innerContentElement.createChild('h1');
-    this._profileTypeSelectorForm = this._innerContentElement.createChild('form');
-    this._innerContentElement.createChild('div', 'flexible-space');
+    this._profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
+    this._profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
+
+    const isolateSelectorElement = this._contentElement.createChild('div', 'vbox profile-isolate-selector-block');
+    isolateSelectorElement.createChild('h1').textContent = ls`Select JavaScript VM instance`;
+    const isolateSelector = new Profiler.IsolateSelector();
+    isolateSelector.show(isolateSelectorElement.createChild('div', 'vbox profile-launcher-target-list'));
+    isolateSelectorElement.appendChild(isolateSelector.totalMemoryElement());
+
+    const buttonsDiv = this._contentElement.createChild('div', 'hbox profile-launcher-buttons');
+    this._controlButton = UI.createTextButton('', this._controlButtonClicked.bind(this), '', /* primary */ true);
+    this._loadButton = UI.createTextButton(ls`Load`, this._loadButtonClicked.bind(this), '');
+    buttonsDiv.appendChild(this._controlButton);
+    buttonsDiv.appendChild(this._loadButton);
+    this._recordButtonEnabled = true;
+
     /** @type {!Map<string, !HTMLOptionElement>} */
     this._typeIdToOptionElement = new Map();
   }
@@ -132,9 +130,9 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     if (customContent)
       this._profileTypeSelectorForm.createChild('p').appendChild(customContent);
     if (this._typeIdToOptionElement.size > 1)
-      this._header.textContent = ls`Select profiling type`;
+      this._profileTypeHeaderElement.textContent = ls`Select profiling type`;
     else
-      this._header.textContent = profileType.name;
+      this._profileTypeHeaderElement.textContent = profileType.name;
   }
 
   restoreSelectedProfileType() {

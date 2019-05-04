@@ -15,6 +15,8 @@ UI.SoftDropDown = class {
     this._selectedItem = null;
     this._model = model;
 
+    this._placeholderText = ls`(no item selected)`;
+
     this.element = createElementWithClass('button', 'soft-dropdown');
     UI.appendStyle(this.element, 'ui/softDropDownButton.css');
     this._titleElement = this.element.createChild('span', 'title');
@@ -183,6 +185,15 @@ UI.SoftDropDown = class {
   }
 
   /**
+   * @param {string} text
+   */
+  setPlaceholderText(text) {
+    this._placeholderText = text;
+    if (!this._selectedItem)
+      this._titleElement.textContent = this._placeholderText;
+  }
+
+  /**
    * @param {!Common.Event} event
    */
   _itemsReplaced(event) {
@@ -202,7 +213,7 @@ UI.SoftDropDown = class {
     if (this._selectedItem)
       this._titleElement.textContent = this._delegate.titleFor(this._selectedItem);
     else
-      this._titleElement.textContent = '';
+      this._titleElement.textContent = this._placeholderText;
     this._delegate.itemSelected(this._selectedItem);
   }
 

@@ -225,10 +225,14 @@ Console.ConsoleView = class extends UI.VBox {
     UI.context.addFlavorChangeListener(SDK.ExecutionContext, this._executionContextChanged, this);
 
     this._messagesElement.addEventListener(
-        'mousedown', event => this._updateStickToBottomOnMouseDown(event.button === 2), false);
-    this._messagesElement.addEventListener('mouseup', this._updateStickToBottomOnMouseUp.bind(this), false);
-    this._messagesElement.addEventListener('mouseleave', this._updateStickToBottomOnMouseUp.bind(this), false);
+        'mousedown', event => this._updateStickToBottomOnPointerDown(event.button === 2), false);
+    this._messagesElement.addEventListener('mouseup', this._updateStickToBottomOnPointerUp.bind(this), false);
+    this._messagesElement.addEventListener('mouseleave', this._updateStickToBottomOnPointerUp.bind(this), false);
     this._messagesElement.addEventListener('wheel', this._updateStickToBottomOnWheel.bind(this), false);
+    this._messagesElement.addEventListener(
+        'touchstart', this._updateStickToBottomOnPointerDown.bind(this, false), false);
+    this._messagesElement.addEventListener('touchend', this._updateStickToBottomOnPointerUp.bind(this), false);
+    this._messagesElement.addEventListener('touchcancel', this._updateStickToBottomOnPointerUp.bind(this), false);
 
     SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.ConsoleCleared, this._consoleCleared, this);
     SDK.consoleModel.addEventListener(SDK.ConsoleModel.Events.MessageAdded, this._onConsoleMessageAdded, this);
@@ -1169,7 +1173,7 @@ Console.ConsoleView = class extends UI.VBox {
   /**
    * @param {boolean=} isRightClick
    */
-  _updateStickToBottomOnMouseDown(isRightClick) {
+  _updateStickToBottomOnPointerDown(isRightClick) {
     this._muteViewportUpdates = !isRightClick;
     this._viewport.setStickToBottom(false);
     if (this._waitForScrollTimeout) {
@@ -1178,7 +1182,7 @@ Console.ConsoleView = class extends UI.VBox {
     }
   }
 
-  _updateStickToBottomOnMouseUp() {
+  _updateStickToBottomOnPointerUp() {
     if (!this._muteViewportUpdates)
       return;
 
@@ -1208,8 +1212,8 @@ Console.ConsoleView = class extends UI.VBox {
   }
 
   _updateStickToBottomOnWheel() {
-    this._updateStickToBottomOnMouseDown();
-    this._updateStickToBottomOnMouseUp();
+    this._updateStickToBottomOnPointerDown();
+    this._updateStickToBottomOnPointerUp();
   }
 
   _promptTextChanged() {

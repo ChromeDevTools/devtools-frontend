@@ -763,6 +763,89 @@
         {type: 'keyUp', windowsVirtualKeyCode: 0x23, key: 'End'});
   };
 
+  // Check that showing the certificate viewer does not crash, crbug.com/954874
+  TestSuite.prototype.testShowCertificate = function() {
+    InspectorFrontendHost.showCertificateViewer([
+      'MIIFIDCCBAigAwIBAgIQE0TsEu6R8FUHQv+9fE7j8TANBgkqhkiG9w0BAQsF' +
+          'ADBUMQswCQYDVQQGEwJVUzEeMBwGA1UEChMVR29vZ2xlIFRydXN0IFNlcnZp' +
+          'Y2VzMSUwIwYDVQQDExxHb29nbGUgSW50ZXJuZXQgQXV0aG9yaXR5IEczMB4X' +
+          'DTE5MDMyNjEzNDEwMVoXDTE5MDYxODEzMjQwMFowZzELMAkGA1UEBhMCVVMx' +
+          'EzARBgNVBAgMCkNhbGlmb3JuaWExFjAUBgNVBAcMDU1vdW50YWluIFZpZXcx' +
+          'EzARBgNVBAoMCkdvb2dsZSBMTEMxFjAUBgNVBAMMDSouYXBwc3BvdC5jb20w' +
+          'ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCwca7hj0kyoJVxcvyA' +
+          'a8zNKMIXcoPM3aU1KVe7mxZITtwC6/D/D/q4Oe8fBQLeZ3c6qR5Sr3M+611k' +
+          'Ab15AcGUgh1Xi0jZqERvd/5+P0aVCFJYeoLrPBzwSMZBStkoiO2CwtV8x06e' +
+          'X7qUz7Hvr3oeG+Ma9OUMmIebl//zHtC82mE0mCRBQAW0MWEgT5nOWey74tJR' +
+          'GRqUEI8ftV9grAshD5gY8kxxUoMfqrreaXVqcRF58ZPiwUJ0+SbtC5q9cJ+K' +
+          'MuYM4TCetEuk/WQsa+1EnSa40dhGRtZjxbwEwQAJ1vLOcIA7AVR/Ck22Uj8X' +
+          'UOECercjUrKdDyaAPcLp2TThAgMBAAGjggHZMIIB1TATBgNVHSUEDDAKBggr' +
+          'BgEFBQcDATCBrwYDVR0RBIGnMIGkgg0qLmFwcHNwb3QuY29tggsqLmEucnVu' +
+          'LmFwcIIVKi50aGlua3dpdGhnb29nbGUuY29tghAqLndpdGhnb29nbGUuY29t' +
+          'ghEqLndpdGh5b3V0dWJlLmNvbYILYXBwc3BvdC5jb22CB3J1bi5hcHCCE3Ro' +
+          'aW5rd2l0aGdvb2dsZS5jb22CDndpdGhnb29nbGUuY29tgg93aXRoeW91dHVi' +
+          'ZS5jb20waAYIKwYBBQUHAQEEXDBaMC0GCCsGAQUFBzAChiFodHRwOi8vcGtp' +
+          'Lmdvb2cvZ3NyMi9HVFNHSUFHMy5jcnQwKQYIKwYBBQUHMAGGHWh0dHA6Ly9v' +
+          'Y3NwLnBraS5nb29nL0dUU0dJQUczMB0GA1UdDgQWBBTGkpE5o0H9+Wjc05rF' +
+          'hNQiYDjBFjAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFHfCuFCaZ3Z2sS3C' +
+          'htCDoH6mfrpLMCEGA1UdIAQaMBgwDAYKKwYBBAHWeQIFAzAIBgZngQwBAgIw' +
+          'MQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL2NybC5wa2kuZ29vZy9HVFNHSUFH' +
+          'My5jcmwwDQYJKoZIhvcNAQELBQADggEBALqoYGqWtJW/6obEzY+ehsgfyXb+' +
+          'qNIuV09wt95cRF93HlLbBlSZ/Iz8HXX44ZT1/tGAkwKnW0gDKSSab3I8U+e9' +
+          'LHbC9VXrgAFENzu89MNKNmK5prwv+MPA2HUQPu4Pad3qXmd4+nKc/EUjtg1d' +
+          '/xKGK1Vn6JX3i5ly/rduowez3LxpSAJuIwseum331aQaKC2z2ri++96B8MPU' +
+          'KFXzvV2gVGOe3ZYqmwPaG8y38Tba+OzEh59ygl8ydJJhoI6+R3itPSy0aXUU' +
+          'lMvvAbfCobXD5kBRQ28ysgbDSDOPs3fraXpAKL92QUjsABs58XBz5vka4swu' +
+          'gg/u+ZxaKOqfIm8=',
+      'MIIEXDCCA0SgAwIBAgINAeOpMBz8cgY4P5pTHTANBgkqhkiG9w0BAQsFADBM' +
+          'MSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMjETMBEGA1UEChMK' +
+          'R2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjAeFw0xNzA2MTUwMDAw' +
+          'NDJaFw0yMTEyMTUwMDAwNDJaMFQxCzAJBgNVBAYTAlVTMR4wHAYDVQQKExVH' +
+          'b29nbGUgVHJ1c3QgU2VydmljZXMxJTAjBgNVBAMTHEdvb2dsZSBJbnRlcm5l' +
+          'dCBBdXRob3JpdHkgRzMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB' +
+          'AQDKUkvqHv/OJGuo2nIYaNVWXQ5IWi01CXZaz6TIHLGp/lOJ+600/4hbn7vn' +
+          '6AAB3DVzdQOts7G5pH0rJnnOFUAK71G4nzKMfHCGUksW/mona+Y2emJQ2N+a' +
+          'icwJKetPKRSIgAuPOB6Aahh8Hb2XO3h9RUk2T0HNouB2VzxoMXlkyW7XUR5m' +
+          'w6JkLHnA52XDVoRTWkNty5oCINLvGmnRsJ1zouAqYGVQMc/7sy+/EYhALrVJ' +
+          'EA8KbtyX+r8snwU5C1hUrwaW6MWOARa8qBpNQcWTkaIeoYvy/sGIJEmjR0vF' +
+          'EwHdp1cSaWIr6/4g72n7OqXwfinu7ZYW97EfoOSQJeAzAgMBAAGjggEzMIIB' +
+          'LzAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUF' +
+          'BwMCMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHfCuFCaZ3Z2sS3C' +
+          'htCDoH6mfrpLMB8GA1UdIwQYMBaAFJviB1dnHB7AagbeWbSaLd/cGYYuMDUG' +
+          'CCsGAQUFBwEBBCkwJzAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AucGtpLmdv' +
+          'b2cvZ3NyMjAyBgNVHR8EKzApMCegJaAjhiFodHRwOi8vY3JsLnBraS5nb29n' +
+          'L2dzcjIvZ3NyMi5jcmwwPwYDVR0gBDgwNjA0BgZngQwBAgIwKjAoBggrBgEF' +
+          'BQcCARYcaHR0cHM6Ly9wa2kuZ29vZy9yZXBvc2l0b3J5LzANBgkqhkiG9w0B' +
+          'AQsFAAOCAQEAHLeJluRT7bvs26gyAZ8so81trUISd7O45skDUmAge1cnxhG1' +
+          'P2cNmSxbWsoiCt2eux9LSD+PAj2LIYRFHW31/6xoic1k4tbWXkDCjir37xTT' +
+          'NqRAMPUyFRWSdvt+nlPqwnb8Oa2I/maSJukcxDjNSfpDh/Bd1lZNgdd/8cLd' +
+          'sE3+wypufJ9uXO1iQpnh9zbuFIwsIONGl1p3A8CgxkqI/UAih3JaGOqcpcda' +
+          'CIzkBaR9uYQ1X4k2Vg5APRLouzVy7a8IVk6wuy6pm+T7HT4LY8ibS5FEZlfA' +
+          'FLSW8NwsVz9SBK2Vqn1N0PIMn5xA6NZVc7o835DLAFshEWfC7TIe3g==',
+      'MIIDujCCAqKgAwIBAgILBAAAAAABD4Ym5g0wDQYJKoZIhvcNAQEFBQAwTDEg' +
+          'MB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjIxEzARBgNVBAoTCkds' +
+          'b2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDYxMjE1MDgwMDAw' +
+          'WhcNMjExMjE1MDgwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3Qg' +
+          'Q0EgLSBSMjETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFs' +
+          'U2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKbPJA6+Lm8o' +
+          'mUVCxKs+IVSbC9N/hHD6ErPLv4dfxn+G07IwXNb9rfF73OX4YJYJkhD10FPe' +
+          '+3t+c4isUoh7SqbKSaZeqKeMWhG8eoLrvozps6yWJQeXSpkqBy+0Hne/ig+1' +
+          'AnwblrjFuTosvNYSuetZfeLQBoZfXklqtTleiDTsvHgMCJiEbKjNS7SgfQx5' +
+          'TfC4LcshytVsW33hoCmEofnTlEnLJGKRILzdC9XZzPnqJworc5HGnRusyMvo' +
+          '4KD0L5CLTfuwNhv2GXqF4G3yYROIXJ/gkwpRl4pazq+r1feqCapgvdzZX99y' +
+          'qWATXgAByUr6P6TqBwMhAo6CygPCm48CAwEAAaOBnDCBmTAOBgNVHQ8BAf8E' +
+          'BAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUm+IHV2ccHsBqBt5Z' +
+          'tJot39wZhi4wNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxz' +
+          'aWduLm5ldC9yb290LXIyLmNybDAfBgNVHSMEGDAWgBSb4gdXZxwewGoG3lm0' +
+          'mi3f3BmGLjANBgkqhkiG9w0BAQUFAAOCAQEAmYFThxxol4aR7OBKuEQLq4Gs' +
+          'J0/WwbgcQ3izDJr86iw8bmEbTUsp9Z8FHSbBuOmDAGJFtqkIk7mpM0sYmsL4' +
+          'h4hO291xNBrBVNpGP+DTKqttVCL1OmLNIG+6KYnX3ZHu01yiPqFbQfXf5WRD' +
+          'LenVOavSot+3i9DAgBkcRcAtjOj4LaR0VknFBbVPFd5uRHg5h6h+u/N5GJG7' +
+          '9G+dwfCMNYxdAfvDbbnvRG15RjF+Cv6pgsH/76tuIMRQyV+dTZsXjAzlAcmg' +
+          'QWpzU/qlULRuJQ/7TBj0/VLZjmmx6BEP3ojY+x1J96relc8geMJgEtslQIxq' +
+          '/H5COEBkEveegeGTLg=='
+    ]);
+  };
+
   // Simple sanity check to make sure network throttling is wired up
   // See crbug.com/747724
   TestSuite.prototype.testOfflineNetworkConditions = async function() {

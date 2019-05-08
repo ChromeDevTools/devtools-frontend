@@ -199,32 +199,32 @@ Audits2.Presets = [
   {
     setting: Common.settings.createSetting('audits2.cat_perf', true),
     configID: 'performance',
-    title: 'Performance',
-    description: 'How long does this app take to show content and become usable'
+    title: ls`Performance`,
+    description: ls`How long does this app take to show content and become usable`
   },
   {
     setting: Common.settings.createSetting('audits2.cat_pwa', true),
     configID: 'pwa',
-    title: 'Progressive Web App',
-    description: 'Does this page meet the standard of a Progressive Web App'
+    title: ls`Progressive Web App`,
+    description: ls`Does this page meet the standard of a Progressive Web App`
   },
   {
     setting: Common.settings.createSetting('audits2.cat_best_practices', true),
     configID: 'best-practices',
-    title: 'Best practices',
-    description: 'Does this page follow best practices for modern web development'
+    title: ls`Best practices`,
+    description: ls`Does this page follow best practices for modern web development`
   },
   {
     setting: Common.settings.createSetting('audits2.cat_a11y', true),
     configID: 'accessibility',
-    title: 'Accessibility',
-    description: 'Is this page usable by people with disabilities or impairments'
+    title: ls`Accessibility`,
+    description: ls`Is this page usable by people with disabilities or impairments`
   },
   {
     setting: Common.settings.createSetting('audits2.cat_seo', true),
     configID: 'seo',
-    title: 'SEO',
-    description: 'Is this page optimized for search engine results ranking'
+    title: ls`SEO`,
+    description: ls`Is this page optimized for search engine results ranking`
   },
 ];
 
@@ -262,17 +262,17 @@ Audits2.RuntimeSettings = [
       {
         label: ls`Simulated Slow 4G, 4x CPU Slowdown`,
         value: 'default',
-        title: 'Throttling is simulated, resulting in faster audit runs with similar measurement accuracy'
+        title: ls`Throttling is simulated, resulting in faster audit runs with similar measurement accuracy`
       },
       {
         label: ls`Applied Slow 4G, 4x CPU Slowdown`,
         value: 'devtools',
-        title: 'Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied'
+        title: ls`Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied`
       },
       {
         label: ls`No throttling`,
         value: 'off',
-        title: 'No network or CPU throttling used. (Useful when not evaluating performance)'
+        title: ls`No network or CPU throttling used. (Useful when not evaluating performance)`
       },
     ],
   },

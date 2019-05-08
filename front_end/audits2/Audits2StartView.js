@@ -87,10 +87,11 @@ Audits2.StartView = class extends UI.Widget {
         <header>
           <div class="audits2-logo"></div>
           <div class="audits2-start-view-text">
-            <h2>Audits</h2>
+            <h2>${ls`Audits`}</h2>
             <p>
-              Identify and fix common problems that affect your site's performance, accessibility, and user experience.
-              <span class="link" $="learn-more">Learn more</a>
+              ${ls`Identify and fix common problems that affect your site's performance,
+                accessibility, and user experience.`}
+              <span class="link" $="learn-more">${ls`Learn more`}</a>
             </p>
           </div>
         </header>
@@ -98,21 +99,21 @@ Audits2.StartView = class extends UI.Widget {
           <div class="audits2-form-section">
             <div class="audits2-form-section-label">
               <i>${deviceIcon}</i>
-              <div class="audits2-icon-label">Device</div>
+              <div class="audits2-icon-label">${ls`Device`}</div>
             </div>
             <div class="audits2-form-elements" $="device-type-form-elements"></div>
           </div>
           <div class="audits2-form-section">
             <div class="audits2-form-section-label">
               <i>${categoriesIcon}</i>
-              <div class="audits2-icon-label">Audits</div>
+              <div class="audits2-icon-label">${ls`Audits`}</div>
             </div>
             <div class="audits2-form-elements" $="categories-form-elements"></div>
           </div>
           <div class="audits2-form-section">
             <div class="audits2-form-section-label">
               <i>${throttlingIcon}</i>
-              <div class="audits2-icon-label">Throttling</div>
+              <div class="audits2-icon-label">${ls`Throttling`}</div>
             </div>
             <div class="audits2-form-elements" $="throttling-form-elements"></div>
           </div>

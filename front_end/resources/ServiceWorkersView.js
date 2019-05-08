@@ -42,7 +42,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
         this._toggleFilter();
     });
     const filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
-    filterLabel.textContent = Common.UIString('Service workers from other domains');
+    filterLabel.textContent = Common.UIString('Service workers from other origins');
     filterLabel.addEventListener('click', () => this._toggleFilter());
 
     const toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
@@ -302,7 +302,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     let path = parsedURL.path;
     if (path.endsWith('/'))
       path = path.substring(0, path.length - 1);
-    return parsedURL.host + path;
+    return parsedURL.domain() + path;
   }
 
   _updateListVisibility() {

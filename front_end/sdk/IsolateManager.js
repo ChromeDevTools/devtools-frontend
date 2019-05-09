@@ -176,8 +176,24 @@ SDK.IsolateManager.Isolate = class {
     return this._models;
   }
 
+  /**
+   * @return {?SDK.RuntimeModel}
+   */
+  runtimeModel() {
+    return this._models.values().next().value || null;
+  }
+
+  /**
+   * @return {?SDK.HeapProfilerModel}
+   */
+  heapProfilerModel() {
+    const runtimeModel = this.runtimeModel();
+    return runtimeModel && runtimeModel.heapProfilerModel();
+  }
+
   async _update() {
-    const usage = await this._models.values().next().value.heapUsage();
+    const model = this.runtimeModel();
+    const usage = model && await model.heapUsage();
     if (!usage)
       return;
     this._usedHeapSize = usage.usedSize;

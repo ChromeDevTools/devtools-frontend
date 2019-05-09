@@ -21,6 +21,7 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
         align: DataGrid.DataGrid.Align.Right,
         sort: DataGrid.DataGrid.Order.Descending
       },
+      {id: 'isolates', title: ls`VMs`, width: '40px', fixedWidth: true, align: DataGrid.DataGrid.Align.Right},
       {id: 'url', title: ls`Script URL`, fixedWidth: false, sortable: true}
     ];
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
@@ -50,39 +51,43 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
   async _poll() {
     const pollId = this._currentPollId;
     do {
-      const models = SDK.targetManager.models(SDK.HeapProfilerModel);
-      const profiles = await Promise.all(models.map(model => model.getSamplingProfile()));
+      const isolates = Array.from(SDK.isolateManager.isolates());
+      const profiles = await Promise.all(
+          isolates.map(isolate => isolate.heapProfilerModel() && isolate.heapProfilerModel().getSamplingProfile()));
       if (this._currentPollId !== pollId)
         return;
-      profiles.remove(null);
-      this._update(profiles);
+      this._update(isolates, profiles);
       await new Promise(r => setTimeout(r, 3000));
     } while (this._currentPollId === pollId);
   }
 
   /**
-   * @param {!Array<!Protocol.HeapProfiler.SamplingHeapProfile>} profiles
+   * @param {!Array<!SDK.IsolateManager.Isolate>} isolates
+   * @param {!Array<?Protocol.HeapProfiler.SamplingHeapProfile>} profiles
    */
-  _update(profiles) {
-    /** @type {!Map<string, number>} */
-    const sizeByUrl = new Map();
-    for (const profile of profiles)
-      processNode('', profile.head);
+  _update(isolates, profiles) {
+    /** @type {!Map<string, !{size: number, isolates: !Set<!SDK.IsolateManager.Isolate>}>} */
+    const dataByUrl = new Map();
+    profiles.forEach((profile, index) => {
+      if (profile)
+        processNodeTree(isolates[index], '', profile.head);
+    });
 
     const rootNode = this._dataGrid.rootNode();
     const exisitingNodes = new Set();
-    for (const pair of sizeByUrl) {
+    for (const pair of dataByUrl) {
       const url = /** @type {string} */ (pair[0]);
-      const size = /** @type {number} */ (pair[1]);
+      const size = /** @type {number} */ (pair[1].size);
+      const isolateCount = /** @type {number} */ (pair[1].isolates.size);
       if (!url) {
         console.info(`Node with empty URL: ${size} bytes`);  // eslint-disable-line no-console
         continue;
       }
       let node = this._gridNodeByUrl.get(url);
       if (node) {
-        node.updateSize(size);
+        node.updateNode(size, isolateCount);
       } else {
-        node = new Profiler.LiveHeapProfileView.GridNode(url, size);
+        node = new Profiler.LiveHeapProfileView.GridNode(url, size, isolateCount);
         this._gridNodeByUrl.set(url, node);
         rootNode.appendChild(node);
       }
@@ -98,14 +103,22 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     this._sortingChanged();
 
     /**
+     * @param {!SDK.IsolateManager.Isolate} isolate
      * @param {string} parentUrl
      * @param {!Protocol.HeapProfiler.SamplingHeapProfileNode} node
      */
-    function processNode(parentUrl, node) {
+    function processNodeTree(isolate, parentUrl, node) {
       const url = node.callFrame.url || parentUrl || systemNodeName(node) || anonymousScriptName(node);
-      if (node.selfSize)
-        sizeByUrl.set(url, (sizeByUrl.get(url) || 0) + node.selfSize);
-      node.children.forEach(child => processNode(url, child));
+      node.children.forEach(processNodeTree.bind(null, isolate, url));
+      if (!node.selfSize)
+        return;
+      let data = dataByUrl.get(url);
+      if (!data) {
+        data = {size: 0, isolates: new Set()};
+        dataByUrl.set(url, data);
+      }
+      data.size += node.selfSize;
+      data.isolates.add(isolate);
     }
 
     /**
@@ -160,20 +173,24 @@ Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridN
   /**
    * @param {string} url
    * @param {number} size
+   * @param {number} isolateCount
    */
-  constructor(url, size) {
+  constructor(url, size, isolateCount) {
     super();
     this._url = url;
     this._size = size;
+    this._isolateCount = isolateCount;
   }
 
   /**
    * @param {number} size
+   * @param {number} isolateCount
    */
-  updateSize(size) {
-    if (this._size === size)
+  updateNode(size, isolateCount) {
+    if (this._size === size && this._isolateCount === isolateCount)
       return;
     this._size = size;
+    this._isolateCount = isolateCount;
     this.refresh();
   }
 
@@ -186,12 +203,14 @@ Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridN
     const cell = this.createTD(columnId);
     switch (columnId) {
       case 'url':
-        cell.title = this._url;
         cell.textContent = this._url;
         break;
       case 'size':
         cell.textContent = Number.withThousandsSeparator(Math.round(this._size / 1e3));
         cell.createChild('span', 'size-units').textContent = ls`KB`;
+        break;
+      case 'isolates':
+        cell.textContent = this._isolateCount;
         break;
     }
     return cell;

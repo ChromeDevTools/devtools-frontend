@@ -205,10 +205,10 @@ Profiler.IsolateSelector.ListItem = class {
   }
 
   /**
-   * @return {!SDK.RuntimeModel}
+   * @return {?SDK.RuntimeModel}
    */
   model() {
-    return this._isolate.models().values().next().value;
+    return this._isolate.runtimeModel();
   }
 
   updateStats() {

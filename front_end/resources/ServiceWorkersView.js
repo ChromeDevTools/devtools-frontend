@@ -513,7 +513,7 @@ Resources.ServiceWorkersView.Section = class {
     }
     if (installing) {
       const installingEntry = this._addVersion(
-          versionsStack, 'service-worker-installing-circle', Common.UIString('#%s installing', installing.id));
+          versionsStack, 'service-worker-installing-circle', Common.UIString('#%s trying to install', installing.id));
       installingEntry.createChild('div', 'service-worker-subtitle').textContent =
           Common.UIString('Received %s', new Date(installing.scriptResponseTime * 1000).toLocaleString());
       if (!this._targetForVersionId(installing.id) && (installing.isRunning() || installing.isStarting())) {

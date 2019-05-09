@@ -62,11 +62,12 @@ UI.Tooltip = class {
       this._hide(false);
 
     for (const element of path) {
-      // The offsetParent is null when the element or an ancestor has 'display: none'.
-      if (!(element instanceof Element) || element === this._anchorElement ||
-          (element.nodeName !== 'SLOT' && element.offsetParent === null)) {
+      if (element === this._anchorElement)
         return;
-      } else if (element[UI.Tooltip._symbol]) {
+      // The offsetParent is null when the element or an ancestor has 'display: none'.
+      if (!(element instanceof Element) || element.offsetParent === null)
+        continue;
+      if (element[UI.Tooltip._symbol]) {
         this._show(element, mouseEvent);
         return;
       }

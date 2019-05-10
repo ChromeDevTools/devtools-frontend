@@ -1117,6 +1117,23 @@ ElementsTestRunner.dumpInspectorHighlightJSON = function(idValue, callback) {
   }
 };
 
+ElementsTestRunner.dumpInspectorDistanceJSON = function(idValue, callback) {
+  ElementsTestRunner.nodeWithId(idValue, nodeResolved);
+
+  async function nodeResolved(node) {
+    const result = await TestRunner.OverlayAgent.getHighlightObjectForTest(node.id, true);
+    const info = result['distanceInfo'];
+    if (!info) {
+      TestRunner.addResult(`${idValue}: No distance info`);
+    } else {
+      if (info['style'])
+        info['style'] = '<style data>';
+      TestRunner.addResult(idValue + JSON.stringify(info, null, 2));
+    }
+    callback();
+  }
+};
+
 ElementsTestRunner.waitForAnimationAdded = function(callback) {
   TestRunner.addSniffer(Animation.AnimationTimeline.prototype, '_addAnimationGroup', callback);
 };

@@ -130,7 +130,7 @@ Main.Main = class {
     Runtime.experiments.register('timelineWebGL', 'Timeline: WebGL-based flamechart');
 
     Runtime.experiments.cleanUpStaleExperiments();
-    Runtime.experiments.setDefaultExperiments([]);
+    Runtime.experiments.setDefaultExperiments(['backgroundServices']);
 
     if (Host.isUnderTest() && Runtime.queryParam('test').includes('live-line-level-heap-profile.js'))
       Runtime.experiments.enableForTest('liveHeapProfile');

@@ -878,6 +878,13 @@ all_devtools_files = [
   "front_end/ui/XLink.js",
   "front_end/ui/XWidget.js",
   "front_end/ui/ZoomManager.js",
+  "front_end/web_audio/AudioContextContentBuilder.js",
+  "front_end/web_audio/audioContextSelector.css",
+  "front_end/web_audio/AudioContextSelector.js",
+  "front_end/web_audio/module.json",
+  "front_end/web_audio/webAudio.css",
+  "front_end/web_audio/WebAudioModel.js",
+  "front_end/web_audio/WebAudioView.js",
   "front_end/worker_main/WorkerMain.js",
   "front_end/worker_main/module.json",
   "front_end/worker_service/module.json",
@@ -1147,6 +1154,7 @@ generated_non_autostart_non_remote_modules = [
   "$resources_out_dir/text_editor/text_editor_module.js",
   "$resources_out_dir/timeline_model/timeline_model_module.js",
   "$resources_out_dir/timeline/timeline_module.js",
+  "$resources_out_dir/web_audio/web_audio_module.js",
   "$resources_out_dir/workspace_diff/workspace_diff_module.js",
 ]
 

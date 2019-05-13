@@ -1,0 +1,97 @@
+/*
+ * Copyright 2019 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  overflow: hidden;
+}
+
+.web-audio-toolbar-container {
+  background-color: var(--toolbar-bg-color);
+  border-bottom: var(--divider-border);
+}
+
+.web-audio-toolbar {
+  display: inline-block;
+}
+
+.web-audio-landing-page {
+  position: absolute;
+  background-color: white;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  font-size: 13px;
+  color: #777;
+}
+
+.web-audio-landing-page > div {
+  max-width: 500px;
+  margin: 10px;
+}
+
+.web-audio-landing-page > div > p {
+  flex: none;
+  white-space: pre-line;
+}
+
+.context-detail-container {
+  flex: none;
+  display: flex;
+  background-color: white;
+  flex-direction: column;
+}
+
+.context-detail-header {
+  border-bottom: 1px solid rgb(230, 230, 230);
+  padding: 12px 24px;
+  margin-bottom: 10px;
+}
+
+.context-detail-title {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.context-detail-subtitle {
+  font-size: 12px;
+  margin-top: 10px;
+  user-select: text;
+}
+
+.context-detail-row {
+  flex-direction: row;
+  display: flex;
+  line-height: 18px;
+  padding-left: 24px;
+}
+
+.context-detail-row-entry:not(:empty) {
+  color: hsla(0, 0%, 46%, 1);
+  overflow: hidden;
+  width: 130px;
+}
+
+.context-detail-row-value {
+  user-select: text;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.context-summary-container {
+  flex: 0 0 27px;
+  line-height: 27px;
+  padding-left: 5px;
+  background-color: #eee;
+  border-top: 1px solid #ccc;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.context-summary-container span {
+  margin-right: 6px;
+}

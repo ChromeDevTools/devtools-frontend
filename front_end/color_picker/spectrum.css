@@ -282,7 +282,7 @@
     background-color: rgba(0, 0, 0, .5);
 }
 
-.copy-color-icon {
+[is=ui-icon].icon-mask.copy-color-icon {
     background-color: white;
 }
 

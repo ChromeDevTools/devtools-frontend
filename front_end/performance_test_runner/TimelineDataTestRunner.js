@@ -5236,7 +5236,7 @@ PerformanceTestRunner.timelineData = function() {
           'frame': '0x176b9c2a8000',
           'scriptId': '65',
           'scriptLine': 939,
-          'scriptName': 'chrome-devtools://devtools/bundled/ui/UIUtils.js'
+          'scriptName': 'devtools://devtools/bundled/ui/UIUtils.js'
         }
       },
 

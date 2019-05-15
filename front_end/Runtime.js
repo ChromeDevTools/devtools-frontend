@@ -1089,7 +1089,7 @@ Runtime._l10nCallback;
  */
 Runtime._remoteBase;
 (function validateRemoteBase() {
-  if (location.href.startsWith('chrome-devtools://devtools/bundled/') && Runtime.queryParam('remoteBase')) {
+  if (location.href.startsWith('devtools://devtools/bundled/') && Runtime.queryParam('remoteBase')) {
     const versionMatch = /\/serve_file\/(@[0-9a-zA-Z]+)\/?$/.exec(Runtime.queryParam('remoteBase'));
     if (versionMatch)
       Runtime._remoteBase = `${location.origin}/remote/serve_file/${versionMatch[1]}/`;

@@ -37,7 +37,8 @@ const CHROMIUM_DEFAULT_PATH = path.resolve(__dirname, '..', '..', '..', '..', '.
   await page.waitForSelector('a');
   const realURL = await page.evaluate(() => document.querySelector('a').href);
 
-  const url = `chrome-devtools://devtools/custom/${realURL.substring('http://localhost:9227/devtools/'.length)}&remoteVersion=${chromeVersion}`;
+  const path = realURL.substring('http://localhost:9227/devtools/'.length);
+  const url = `devtools://devtools/custom/${path}&remoteVersion=${chromeVersion}`;
 
   await page.goto(url);
 })();

@@ -132,7 +132,7 @@ SDK.ConsoleModel = class extends Common.Object {
           returnByValue: false,
           generatePreview: true
         },
-        /* userGesture */ true, awaitPromise);
+        Common.settings.moduleSetting('consoleUserActivationEval').get(), awaitPromise);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.ConsoleEvaluated);
     if (result.error)
       return;

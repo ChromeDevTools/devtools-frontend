@@ -159,7 +159,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
     if (state.isRecording === this._recordButton.toggled())
       return;
 
-    this._recordAction.setToggled(state.isRecording);
+    this._recordButton.setToggled(state.isRecording);
     this._showPreview(this._selectedEventNode);
   }
 

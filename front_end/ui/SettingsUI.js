@@ -61,8 +61,12 @@ UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphEleme
  */
 UI.SettingsUI.createSettingSelect = function(name, options, setting) {
   const p = createElement('p');
-  p.createChild('label').textContent = name;
+  const label = p.createChild('label');
+  label.textContent = name;
   const select = p.createChild('select', 'chrome-select');
+  const selectId = UI.ARIAUtils.nextId('chrome-select');
+  select.setAttribute('id', selectId);
+  label.setAttribute('for', selectId);
 
   for (let i = 0; i < options.length; ++i) {
     // The "raw" flag indicates text is non-i18n-izable.
@@ -117,7 +121,11 @@ UI.SettingsUI.bindCheckbox = function(input, setting) {
 UI.SettingsUI.createCustomSetting = function(name, element) {
   const p = createElement('p');
   const fieldsetElement = p.createChild('fieldset');
-  fieldsetElement.createChild('label').textContent = name;
+  const label = fieldsetElement.createChild('label');
+  label.textContent = name;
+  const elementId = UI.ARIAUtils.nextId('setting-element');
+  element.setAttribute('id', elementId);
+  label.setAttribute('for', elementId);
   fieldsetElement.appendChild(element);
   return p;
 };

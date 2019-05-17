@@ -46,7 +46,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.setCellClass('websocket-frame-view-td');
+    this._dataGrid.setStriped(true);
     this._timeComparator =
         /** @type {function(!Network.ResourceWebSocketFrameNode, !Network.ResourceWebSocketFrameNode):number} */ (
             Network.ResourceWebSocketFrameNodeTimeComparator);
@@ -268,7 +268,11 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
     let description = Network.ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
     const isTextFrame = frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.TextFrame;
 
-    if (isTextFrame) {
+    if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
+      description = dataText;
+      length = ls`N/A`;
+
+    } else if (isTextFrame) {
       description = dataText;
 
     } else if (frame.opCode === Network.ResourceWebSocketFrameView.OpCodes.BinaryFrame) {
@@ -298,7 +302,6 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
         'websocket-frame-view-row-send', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Send);
     element.classList.toggle(
         'websocket-frame-view-row-receive', this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Receive);
-    element.classList.toggle('websocket-frame-view-row-opcode', !this._isTextFrame);
     super.createCells(element);
   }
 
@@ -328,7 +331,7 @@ Network.ResourceWebSocketFrameNode = class extends DataGrid.SortableDataGridNode
    * @return {?Network.BinaryResourceView}
    */
   binaryView() {
-    if (this._isTextFrame)
+    if (this._isTextFrame || this._frame.type === SDK.NetworkRequest.WebSocketFrameType.Error)
       return null;
 
     if (!this._binaryView)

@@ -17,10 +17,6 @@
     background-image: none;
 }
 
-.websocket-frame-view-td {
-    border-bottom: 1px solid #ccc;
-}
-
 .websocket-frame-view .data-grid tr.selected {
     background-color: #def;
 }
@@ -31,13 +27,15 @@
 }
 
 .websocket-frame-view-row-send td:first-child::before {
-    content: "\2B06 ";
+    content: "\2B06";
     color: #080;
+    padding-right: 4px;
 }
 
 .websocket-frame-view-row-receive td:first-child::before {
-    content: "\2B07 ";
+    content: "\2B07";
     color: #E65100;
+    padding-right: 4px;
 }
 
 .data-grid:focus .websocket-frame-view-row-send.selected td:first-child::before,
@@ -45,17 +43,7 @@
     color: white;
 }
 
-.websocket-frame-view-row-send {
-    background-color: rgb(226, 247, 218);
-}
-
-.websocket-frame-view-row-opcode {
-    background-color: rgb(255, 255, 232);
-    color: rgb(170, 111, 71);
-}
-
 .websocket-frame-view-row-error {
-    background-color: rgb(255, 237, 237);
     color: rgb(182, 0, 0);
 }
 

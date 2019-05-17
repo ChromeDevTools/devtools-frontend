@@ -622,3 +622,4 @@ button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mas
 
 button.background-color-picker:hover [is=ui-icon].largeicon-eyedropper.icon-mask {
     background-color: #333;
+}

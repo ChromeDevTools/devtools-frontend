@@ -109,8 +109,6 @@ Main.Main = class {
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
     Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
     Runtime.experiments.register('backgroundServices', 'Background web platform feature events', true);
-    Runtime.experiments.register('backgroundServicesNotifications', 'Background services section for Notifications');
-    Runtime.experiments.register('backgroundServicesPushMessaging', 'Background services section for Push Messaging');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);

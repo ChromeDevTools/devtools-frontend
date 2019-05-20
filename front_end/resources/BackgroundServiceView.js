@@ -13,10 +13,6 @@ Resources.BackgroundServiceView = class extends UI.VBox {
         return ls`Background Fetch`;
       case Protocol.BackgroundService.ServiceName.BackgroundSync:
         return ls`Background Sync`;
-      case Protocol.BackgroundService.ServiceName.PushMessaging:
-        return ls`Push Messaging`;
-      case Protocol.BackgroundService.ServiceName.Notifications:
-        return ls`Notifications`;
       default:
         return '';
     }

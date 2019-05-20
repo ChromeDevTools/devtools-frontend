@@ -42,6 +42,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    user-select: text;
 }
 
 .panel.network .toolbar.network-summary-bar {

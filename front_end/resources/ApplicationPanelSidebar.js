@@ -113,6 +113,17 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       this.backgroundSyncTreeElement =
           new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.BackgroundSync);
       backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
+
+      if (Runtime.experiments.isEnabled('backgroundServicesNotifications')) {
+        this.notificationsTreeElement =
+            new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);
+        backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
+      }
+      if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
+        this.pushMessagingTreeElement =
+            new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
+        backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
+      }
     }
 
     this._resourcesSection = new Resources.ResourcesSection(panel, this._addSidebarSection(Common.UIString('Frames')));
@@ -232,6 +243,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
     if (Runtime.experiments.isEnabled('backgroundServices')) {
       this.backgroundFetchTreeElement._initialize(backgroundServiceModel);
       this.backgroundSyncTreeElement._initialize(backgroundServiceModel);
+      if (Runtime.experiments.isEnabled('backgroundServicesNotifications'))
+        this.notificationsTreeElement._initialize(backgroundServiceModel);
+      if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging'))
+        this.pushMessagingTreeElement._initialize(backgroundServiceModel);
     }
   }
 
@@ -743,6 +758,10 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
         return 'mediumicon-fetch';
       case Protocol.BackgroundService.ServiceName.BackgroundSync:
         return 'mediumicon-sync';
+      case Protocol.BackgroundService.ServiceName.PushMessaging:
+        return 'mediumicon-cloud';
+      case Protocol.BackgroundService.ServiceName.Notifications:
+        return 'mediumicon-bell';
       default:
         console.error(`Service ${this._serviceName} does not have a dedicated icon`);
         return 'mediumicon-table';

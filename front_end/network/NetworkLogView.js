@@ -1691,8 +1691,13 @@ Network.NetworkLogView = class extends UI.VBox {
        */
       function escapeCharacter(x) {
         const code = x.charCodeAt(0);
-        // Add leading zero when needed to not care about the next character.
-        return code < 16 ? '\\u0' + code.toString(16) : '\\u' + code.toString(16);
+        let hexString = code.toString(16);
+        // Zero pad to four digits to comply with ANSI-C Quoting:
+        // http://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
+        while (hexString.length < 4)
+          hexString = '0' + hexString;
+
+        return '\\u' + hexString;
       }
 
       if (/[\u0000-\u001f\u007f-\u009f!]|\'/.test(str)) {

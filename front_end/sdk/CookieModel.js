@@ -102,6 +102,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
   }
 
   /**
+   * Returns cookies needed by current page's frames whose security origins are |domain|.
    * @param {?string} domain
    * @return {!Promise<!Array<!SDK.Cookie>>}
    */
@@ -111,8 +112,8 @@ SDK.CookieModel = class extends SDK.SDKModel {
      * @param {!SDK.Resource} resource
      */
     function populateResourceURLs(resource) {
-      const url = resource.documentURL.asParsedURL();
-      if (url && (!domain || url.securityOrigin() === domain))
+      const documentURL = resource.documentURL.asParsedURL();
+      if (documentURL && (!domain || documentURL.securityOrigin() === domain))
         resourceURLs.push(resource.url);
     }
     const resourceTreeModel = this.target().model(SDK.ResourceTreeModel);

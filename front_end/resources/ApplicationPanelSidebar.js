@@ -1687,6 +1687,7 @@ Resources.CookieTreeElement = class extends Resources.BaseStorageTreeElement {
     super(storagePanel, cookieDomain ? cookieDomain : Common.UIString('Local Files'), false);
     this._target = frame.resourceTreeModel().target();
     this._cookieDomain = cookieDomain;
+    this.tooltip = ls`cookies used by frames from ` + cookieDomain;
     const icon = UI.Icon.create('mediumicon-cookie', 'resource-tree-item');
     this.setLeadingIcons([icon]);
   }
@@ -1825,10 +1826,16 @@ Resources.StorageCategoryView = class extends UI.VBox {
     this._emptyWidget.show(this.element);
   }
 
+  /**
+   * @param {string} text
+   */
   setText(text) {
     this._emptyWidget.text = text;
   }
 
+  /**
+   * @param {?string} link
+   */
   setLink(link) {
     if (link && !this._linkElement)
       this._linkElement = this._emptyWidget.appendLink(link);

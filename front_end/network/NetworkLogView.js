@@ -453,13 +453,13 @@ Network.NetworkLogView = class extends UI.VBox {
     if (entry.isDirectory)
       return;
 
-    entry.file(this._onLoadFromFile.bind(this));
+    entry.file(this.onLoadFromFile.bind(this));
   }
 
   /**
    * @param {!File} file
    */
-  async _onLoadFromFile(file) {
+  async onLoadFromFile(file) {
     const outputStream = new Common.StringOutputStream();
     const reader = new Bindings.ChunkedFileReader(file, /* chunkSize */ 10000000);
     const success = await reader.read(outputStream);
@@ -1212,7 +1212,7 @@ Network.NetworkLogView = class extends UI.VBox {
     }
     footerSection.appendItem(Common.UIString('Copy all as HAR'), this._copyAll.bind(this));
 
-    contextMenu.saveSection().appendItem(Common.UIString('Save all as HAR with content'), this._exportAll.bind(this));
+    contextMenu.saveSection().appendItem(ls`Save all as HAR with content`, this.exportAll.bind(this));
 
     contextMenu.editSection().appendItem(Common.UIString('Clear browser cache'), this._clearBrowserCache.bind(this));
     contextMenu.editSection().appendItem(
@@ -1325,7 +1325,7 @@ Network.NetworkLogView = class extends UI.VBox {
     InspectorFrontendHost.copyText(commands);
   }
 
-  async _exportAll() {
+  async exportAll() {
     const url = SDK.targetManager.mainTarget().inspectedURL();
     const parsedURL = url.asParsedURL();
     const filename = parsedURL ? parsedURL.host : 'network-log';

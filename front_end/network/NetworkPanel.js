@@ -118,6 +118,10 @@ Network.NetworkPanel = class extends UI.Panel {
         new Network.NetworkLogView(this._filterBar, this._progressBarContainer, this._networkLogLargeRowsSetting);
     this._splitWidget.setSidebarWidget(this._networkLogView);
 
+    this._fileSelectorElement =
+        UI.createFileSelectorElement(this._networkLogView.onLoadFromFile.bind(this._networkLogView));
+    panel.element.appendChild(this._fileSelectorElement);
+
     this._detailsWidget = new UI.VBox();
     this._detailsWidget.element.classList.add('network-details-view');
     this._splitWidget.setMainWidget(this._detailsWidget);
@@ -238,6 +242,14 @@ Network.NetworkPanel = class extends UI.Panel {
         new UI.ToolbarSettingCheckbox(Common.moduleSetting('network.group-by-frame'), '', ls`Group by frame`));
     settingsToolbarRight.appendToolbarItem(
         new UI.ToolbarSettingCheckbox(this._networkRecordFilmStripSetting, '', ls`Capture screenshots`));
+
+    this._panelToolbar.appendSeparator();
+    const importHarButton = new UI.ToolbarButton(ls`Import HAR file...`, 'largeicon-load');
+    importHarButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._fileSelectorElement.click(), this);
+    this._panelToolbar.appendToolbarItem(importHarButton);
+    const exportHarButton = new UI.ToolbarButton(ls`Export all as HAR with content...`, 'largeicon-download');
+    exportHarButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._networkLogView.exportAll(), this);
+    this._panelToolbar.appendToolbarItem(exportHarButton);
   }
 
   _updateSettingsPaneVisibility() {

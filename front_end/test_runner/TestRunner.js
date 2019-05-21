@@ -242,6 +242,8 @@ TestRunner.createKeyEvent = function(key, ctrlKey, altKey, shiftKey, metaKey) {
 };
 
 /**
+ * Wraps a test function with an exception filter. Does not work
+ * correctly for async functions; use safeAsyncWrap instead.
  * @param {!Function|undefined} func
  * @param {!Function=} onexception
  * @return {!Function}
@@ -262,6 +264,31 @@ TestRunner.safeWrap = function(func, onexception) {
         TestRunner.safeWrap(onexception)();
       else
         TestRunner.completeTest();
+    }
+  }
+  return result;
+};
+
+/**
+ * Wraps a test function that returns a Promise with an exception
+ * filter. Does not work correctly for functions which don't return
+ * a Promise; use safeWrap instead.
+ * @param {function(...):Promise<*>} func
+ * @return {function(...):Promise<*>}
+ */
+TestRunner.safeAsyncWrap = function(func) {
+  /**
+   * @this {*}
+   */
+  async function result() {
+    if (!func)
+      return;
+    const wrapThis = this;
+    try {
+      return await func.apply(wrapThis, arguments);
+    } catch (e) {
+      TestRunner.addResult('Exception while running: ' + func + '\n' + (e.stack || e));
+      TestRunner.completeTest();
     }
   }
   return result;
@@ -1073,6 +1100,21 @@ TestRunner.runTestSuite = function(testSuite) {
     TestRunner.safeWrap(nextTest)(runner);
   }
   runner();
+};
+
+/**
+ * @param {!Array<function():Promise<*>>} testSuite
+ */
+TestRunner.runAsyncTestSuite = async function(testSuite) {
+  for (const nextTest of testSuite) {
+    TestRunner.addResult('');
+    TestRunner.addResult(
+        'Running: ' +
+        /function\s([^(]*)/.exec(nextTest)[1]);
+    await TestRunner.safeAsyncWrap(nextTest)();
+  }
+
+  TestRunner.completeTest();
 };
 
 /**

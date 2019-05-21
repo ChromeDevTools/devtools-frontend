@@ -102,10 +102,6 @@ iframe.fill {
     flex: auto;
 }
 
-.flex-auto-important {
-    flex: auto !important;
-}
-
 .flex-none {
     flex: none;
 }

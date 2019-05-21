@@ -108,8 +108,3 @@
   0% { width: var(--progress-bar-auditing-percent); }
   100% { width: 99%; }
 }
-
-.audits2-report-error {
-    display: block;
-    margin-top: 5px;
-}

@@ -84,15 +84,3 @@
 .perfmon-indicator:not(.active) .perfmon-indicator-value {
   opacity: 0;
 }
-
-.perfmon-indicator-close {
-  padding-left: 4px;
-}
-
-.perfmon-indicator:not(:hover) .perfmon-indicator-close {
-  opacity: 0;
-}
-
-.perfmon-add-button:not(:hover) {
-  color: #bbb;
-}

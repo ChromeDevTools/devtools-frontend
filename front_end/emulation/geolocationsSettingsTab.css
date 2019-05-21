@@ -86,9 +86,3 @@
     text-align: inherit;
 }
 
-.geolocations-edit-optional {
-    position: absolute;
-    bottom: -20px;
-    right: 0;
-    color: rgb(128, 128, 128);
-}

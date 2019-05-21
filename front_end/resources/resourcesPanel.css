@@ -37,16 +37,6 @@
     background-color: var(--toolbar-bg-color);
 }
 
-li.selected .base-storage-tree-element-subtitle {
-    color: white;
-}
-
-.base-storage-tree-element-subtitle {
-    padding-left: 2px;
-    color: rgb(80, 80, 80);
-    text-shadow: none;
-}
-
 .resources.panel .status {
     float: right;
     height: 16px;
@@ -137,31 +127,6 @@ li.selected .base-storage-tree-element-subtitle {
 .database-query-result.error {
     color: red;
     -webkit-user-select: text;
-}
-
-.resource-sidebar-tree-item .icon {
-    content: url(Images/resourcePlainIconSmall.png);
-}
-
-.resource-sidebar-tree-item.resources-type-image .icon {
-    position: relative;
-    background-image: url(Images/resourcePlainIcon.png);
-    background-repeat: no-repeat;
-    content: "";
-}
-
-.resources-type-image .image-resource-icon-preview {
-    position: absolute;
-    margin: auto;
-    min-width: 1px;
-    min-height: 1px;
-    top: 2px;
-    bottom: 1px;
-    left: 3px;
-    right: 3px;
-    max-width: 8px;
-    max-height: 11px;
-    overflow: hidden;
 }
 
 .resources-sidebar {

@@ -32,10 +32,6 @@
     opacity: 0.5;
 }
 
-.sensors-view .field-error-message {
-    display: none;
-}
-
 .sensors-view input:focus::-webkit-input-placeholder {
     color: transparent !important;
 }
@@ -285,14 +281,6 @@
 fieldset.device-orientation-override-section {
     margin: 0;
     display: flex;
-}
-
-.touch-label {
-    margin-top: 10px;
-}
-
-.touch-label select {
-    margin-left: 10px;
 }
 
 .panel-section-separator {

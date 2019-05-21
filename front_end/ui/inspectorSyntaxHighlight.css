@@ -134,12 +134,6 @@
     color: hsl(0, 0%, 67%);
 }
 
-.webkit-html-end-of-file {
-    /* Keep this in sync with view-source.css (.webkit-html-end-of-file) */
-    color: rgb(255, 0, 0);
-    font-weight: bold;
-}
-
 /* Default CodeMirror Theme */
 .cm-negative {color: #d44;}
 .cm-positive {color: #292;}

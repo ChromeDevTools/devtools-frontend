@@ -4,38 +4,6 @@
  * found in the LICENSE file.
  */
 
-.service-worker-error-stack {
-    max-height: 200px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    background-color: #fff0f0;
-    color: red;
-    line-height: 18px;
-    margin: 10px 2px 0 -14px;
-    white-space: initial;
-}
-
-.service-worker-error-stack > div {
-    flex: none;
-    padding: 3px 4px;
-}
-
-.service-worker-error-stack > div:not(:last-child) {
-    border-bottom: 1px solid #ffd7d7;
-}
-
-.service-worker-error-stack label {
-    flex: auto;
-}
-
-.service-worker-error-stack .devtools-link {
-    float: right;
-    color: rgb(33%, 33%, 33%);
-    cursor: pointer;
-}
-
 .service-worker-version-stack {
     position: relative;
 }

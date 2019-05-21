@@ -152,18 +152,6 @@
     margin-bottom: 8px;
 }
 
-.security-explanation-neutral .security-section-title,
-.security-explanation-warning .security-section-title
-{
-    color: #cb3626;
-    font-weight: bold;
-}
-.security-explanation-insecure .security-section-title
-{
-    color: rgb(216, 71, 60);
-    font-weight: bold;
-}
-
 .security-mixed-content {
     margin-top: 8px;
 }

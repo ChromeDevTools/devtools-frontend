@@ -29,12 +29,6 @@
     width: 100%;
 }
 
-.paint-profiler-canvas-container .overview-grid-dividers-background,
-.paint-profiler-canvas-container .overview-grid-window {
-    bottom: 0;
-    height: auto;
-}
-
 .paint-profiler-canvas-container .overview-grid-window-resizer {
     z-index: 2000;
 }

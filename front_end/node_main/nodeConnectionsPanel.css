@@ -4,13 +4,6 @@
  * found in the LICENSE file.
  */
 
-.network-discovery-header {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    margin-top: 5px;
-}
-
 .add-network-target-button {
     margin: 10px 25px;
     align-self: flex-start;
@@ -72,10 +65,6 @@
 
 .network-discovery-footer > * {
     white-space: pre-wrap;
-}
-
-.network-discovery-header {
-    display: none;
 }
 
 .node-panel {

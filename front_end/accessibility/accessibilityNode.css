@@ -4,18 +4,9 @@
  * found in the LICENSE file.
  */
 
-.sidebar-pane.accessibility-computed {
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
 .widget.ax-subpane {
     overflow-x: hidden;
     -webkit-user-select: text;
-}
-
-div.ax-text-alternatives {
-    margin-bottom: 3px;
-    border-bottom: 1px solid #BFBFBF;
 }
 
 .ax-ignored-info {
@@ -41,10 +32,6 @@ span.ax-value-undefined {
 .ax-value-source-superseded,
 .ax-value-source-invalid {
     text-decoration: line-through;
-}
-
-.sidebar-pane-stack .sidebar-pane {
-    padding-left: 4px;
 }
 
 .tree-outline span[is=dt-icon-label] {

@@ -44,11 +44,6 @@
     margin-left: 20px;
 }
 
-.settings-tab .field-error-message {
-    color: DarkRed;
-    height: 0; /* Avoid changing element height when content is set. */
-}
-
 .settings-line {
     padding-bottom: 5px;
     margin-bottom: 5px;
@@ -115,16 +110,8 @@ fieldset {
     flex-shrink: 0;
 }
 
-#general-tab-content .settings-block fieldset legend {
-    font-size: 14px;
-}
-
 .settings-block p p {
     padding-left: 30px;
-}
-
-.settings-content p.settings-section {
-    margin: 0 0 15px 0;
 }
 
 .settings-experiments-warning-subsection-warning {
@@ -158,10 +145,6 @@ fieldset {
 .settings-tab.settings-content {
     margin: 0;
     padding: 0;
-}
-
-.settings-tab input.numeric {
-    text-align: right;
 }
 
 .settings-tab-container {

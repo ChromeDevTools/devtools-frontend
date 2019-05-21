@@ -59,16 +59,7 @@
 .webkit-html-css-node{color:rgb(207, 208, 208);}
 .webkit-html-js-node{color:rgb(207, 208, 208);}
 .webkit-html-pseudo-element{color:rgb(93, 175, 215);}
-.webkit-css-selector{color:rgb(255, 163, 79);}
-.webkit-css-at-rule{color:rgb(188, 164, 197);}
-.webkit-css-color{color:rgb(255, 163, 79);}
-.webkit-css-comment{color:rgb(116, 116, 116);}
-.webkit-css-important{color:rgb(255, 26, 26);}
-.webkit-css-keyword{color:rgb(255, 163, 79);}
-.webkit-css-number{color:rgb(217, 217, 217);}
 .webkit-css-property{color: rgb(53, 212, 199);}
-.webkit-css-string{color:rgb(231, 194, 111);}
-.webkit-css-url{color:rgb(231, 194, 111);}
 
 .cm-def{color:var(--dom-tag-name-color);}
 .cm-header{color:var(--dom-tag-name-color);}

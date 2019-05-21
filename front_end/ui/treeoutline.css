@@ -68,10 +68,6 @@ ol.tree-outline,
     list-style-type: none;
 }
 
-.tree-outline-no-padding {
-    padding: 0;
-}
-
 .tree-outline ol {
     padding-left: 12px;
 }

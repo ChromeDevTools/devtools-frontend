@@ -27,10 +27,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-.sidebar-hidden-override {
-    display: none !important;
-}
-
 .expandable-view-title {
     display: flex;
     align-items: center;
@@ -72,10 +68,3 @@
     top: 0;
 }
 
-.sidebar-pane-container .toolbar {
-    border-bottom: 1px solid #eee;
-}
-
-.sidebar-pane-container .toolbar > * {
-    pointer-events: auto;
-}

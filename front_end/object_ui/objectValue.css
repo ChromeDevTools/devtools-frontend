@@ -69,12 +69,6 @@
     color: rgb(128, 128, 128);
 }
 
-.object-value {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    -webkit-user-select: text;
-}
-
 .object-value-calculate-value-button:hover {
     text-decoration: underline;
 }

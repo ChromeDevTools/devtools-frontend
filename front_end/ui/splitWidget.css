@@ -66,10 +66,6 @@
     z-index: 500;
 }
 
-.shadow-split-widget-resizer-border {
-    pointer-events: none;
-}
-
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
     border: 0 !important;
 }

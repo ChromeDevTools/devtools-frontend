@@ -30,15 +30,6 @@
     cursor: pointer;
 }
 
-.film-strip-view .frame-limit-reached {
-    font-size: 24px;
-    color: #888;
-    justify-content: center;
-    display: inline-flex;
-    flex-direction: column;
-    flex: none;
-}
-
 .film-strip-view .frame .thumbnail {
     min-width: 24px;
     display: flex;

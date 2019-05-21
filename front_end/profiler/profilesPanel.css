@@ -121,20 +121,6 @@
     to { background-color: rgba(255, 255, 120, 0); }
 }
 
-.profile-canvas-decoration span[is=dt-icon-label] {
-    margin-right: 4px;
-}
-
-.profile-canvas-decoration {
-    color: red;
-    margin: -14px 0 13px 22px;
-    padding-left: 14px;
-}
-
-.profile-canvas-decoration button {
-    margin: 0 0 0 10px !important;
-}
-
 .cpu-profile-flame-chart-overview-container {
     overflow: hidden;
     position: absolute;

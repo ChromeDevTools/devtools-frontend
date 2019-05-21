@@ -1,0 +1,11 @@
+{
+  "name": "unused_css",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "acorn": "^6.1.1",
+    "css": "^2.2.4",
+    "css-what": "^2.1.3"
+  }
+}

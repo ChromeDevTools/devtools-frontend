@@ -12,12 +12,6 @@
     margin: 0;
 }
 
-.devices-settings-tab .devices-title {
-    font-size: 120%;
-    color: #222;
-    flex: none;
-}
-
 .devices-settings-tab .devices-button-row {
     flex: none;
     display: flex;

@@ -27,12 +27,6 @@
     flex: none;
 }
 
-.spectrum-display-value {
-    -webkit-user-select: text;
-    display: inline-block;
-    padding-left: 2px;
-}
-
 .spectrum-hue {
     top: 16px;
 }
@@ -186,14 +180,6 @@
     left: auto;
 }
 
-.contrast-threshold-value {
-    font-weight: bold;
-}
-
-.contrast-link {
-    margin-left: 0.5em;
-}
-
 .contrast-details-value {
     color: #333;
     margin: 1px 5px;
@@ -322,16 +308,6 @@
     letter-spacing: normal;
     margin-left: 0px;
     text-align: center;
-}
-
-.spectrum-palette-value {
-    background-color: rgb(65, 75, 217);
-    border-radius: 2px;
-    margin-top: 12px;
-    margin-left: 12px;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
 }
 
 .spectrum-switcher {
@@ -606,20 +582,4 @@ div.palette-preview {
 
 .swatch.contrast [is=ui-icon] {
     margin: -2px;
-}
-
-button.background-color-picker {
-    border: 0;
-    padding:  0;
-    background: none;
-    position: relative;
-    margin: 0;
-}
-
-button.background-color-picker.active [is=ui-icon].largeicon-eyedropper.icon-mask {
-    background-color: hsl(218, 81%, 59%);
-}
-
-button.background-color-picker:hover [is=ui-icon].largeicon-eyedropper.icon-mask {
-    background-color: #333;
 }

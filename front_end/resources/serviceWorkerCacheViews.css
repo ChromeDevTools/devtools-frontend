@@ -11,11 +11,6 @@
     padding-right: 10px;
 }
 
-.service-worker-cache-data-view .data-view-toolbar .key-input {
-    margin: auto 0;
-    width: 200px;
-}
-
 .service-worker-cache-data-view .data-grid {
     flex: auto;
 }
@@ -44,10 +39,6 @@
     margin: 0;
     min-height: inherit;
     line-height: inherit;
-}
-
-.service-worker-cache-data-view .primitive-value {
-    padding-top: 1px;
 }
 
 .service-worker-cache-data-view .data-grid .data-container td .section .header .title {

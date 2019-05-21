@@ -87,11 +87,6 @@
     flex: 0 0 60px;
 }
 
-.network-overview .overview-grid-window,
-.network-overview .overview-grid-dividers-background {
-    height: 100%;
-}
-
 .network-overview .resources-dividers-label-bar {
     background-color: rgba(255, 255, 255, 0.95);
 }
@@ -117,30 +112,6 @@
 
 .network-film-strip-placeholder {
     flex-shrink: 0;
-}
-
-.network-blocked-urls {
-    border-top: var(--divider-border);
-    flex: 104px 0 0;
-}
-
-.open-search-view {
-    align-items: center;
-    background-color: hsl(50, 100%, 88%);
-    border-bottom: var(--divider-border);
-    cursor: pointer;
-    flex-grow: 0;
-    padding: 4px;
-}
-
-.open-search-view > * {
-    margin: 0 4px;
-}
-
-.open-search-view .search-suggestion {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .network-tabbed-pane {

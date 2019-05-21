@@ -14,12 +14,3 @@
 .service-worker:last-child {
     border-bottom: none;
 }
-
-.service-worker-scope {
-    color: #777;
-    flex: auto;
-    margin: 5px 5px 0 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}

@@ -83,10 +83,10 @@
     display: block;
 }
 
-.network-config-ua-auto, .network-config-ua-custom {
+.network-config-ua-custom {
     opacity: 0.5;
 }
 
-.network-config-ua-auto.checked, .network-config-ua-custom.checked {
+.network-config-ua-custom.checked {
     opacity: 1;
 }

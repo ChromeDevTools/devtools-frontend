@@ -519,11 +519,16 @@ SDK.NetworkDispatcher = class {
 
     // net::ParsedCookie::kMaxCookieSize = 4096 (net/cookies/parsed_cookie.h)
     if ('set-cookie' in lowercaseHeaders && lowercaseHeaders['set-cookie'].length > 4096) {
-      const message = Common.UIString(
-          'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
-          response.url);
-      this._manager.dispatchEventToListeners(
-          SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
+      const values = lowercaseHeaders['set-cookie'].split('\n');
+      for (let i = 0; i < values.length; ++i) {
+        if (values[i].length <= 4096)
+          continue;
+        const message = Common.UIString(
+            'Set-Cookie header is ignored in response from url: %s. Cookie length should be less than or equal to 4096 characters.',
+            response.url);
+        this._manager.dispatchEventToListeners(
+            SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
+      }
     }
 
     if ('public-key-pins' in lowercaseHeaders || 'public-key-pins-report-only' in lowercaseHeaders) {

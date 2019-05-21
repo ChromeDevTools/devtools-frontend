@@ -182,38 +182,6 @@
     flex-shrink: 0;
 }
 
-.heap-snapshot-stats-legend {
-    margin-left: 24px;
-    flex-shrink: 0;
-}
-
-.heap-snapshot-stats-legend > div {
-    margin-top: 1px;
-    width: 170px;
-}
-
-.heap-snapshot-stats-swatch {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border: 1px solid rgba(100, 100, 100, 0.3);
-}
-
-.heap-snapshot-stats-swatch.heap-snapshot-stats-empty-swatch {
-    border: none;
-}
-
-.heap-snapshot-stats-name,
-.heap-snapshot-stats-size {
-    display: inline-block;
-    margin-left: 6px;
-}
-
-.heap-snapshot-stats-size {
-    float: right;
-    text-align: right;
-}
-
 .heap-allocation-stack .stack-frame {
     display: flex;
     justify-content: space-between;

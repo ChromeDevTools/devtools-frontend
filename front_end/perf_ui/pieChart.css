@@ -5,9 +5,15 @@
  */
 
 .root {
+    align-items: center;
+    display: flex;
+    min-width: fit-content;
+    white-space: nowrap;
+}
+
+.chart-root {
     position: relative;
-    width: 100%;
-    height: 100%;
+    overflow: hidden;
 }
 
 .pie-chart-foreground {
@@ -17,10 +23,45 @@
     z-index: 10;
     top: 0;
     display: flex;
+    pointer-events: none;
 }
 
 .pie-chart-total {
     margin: auto;
     padding: 2px 5px;
     background-color: rgba(255, 255, 255, 0.6);
+    pointer-events: auto;
+}
+
+.pie-chart-legend {
+    margin-left: 30px;
+}
+
+.pie-chart-legend-row {
+    margin: 5px auto;
+    padding-right: 25px;
+}
+
+.pie-chart-swatch {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    margin: 0 6px;
+    top: 1px;
+    position: relative;
+    border: 1px solid rgba(100, 100, 100, 0.2);
+}
+
+.pie-chart-swatch.pie-chart-empty-swatch {
+    border: none;
+}
+
+.pie-chart-name {
+    display: inline-block;
+}
+
+.pie-chart-size {
+    display: inline-block;
+    text-align: right;
+    width: 70px;
 }

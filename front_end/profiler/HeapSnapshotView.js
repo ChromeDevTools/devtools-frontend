@@ -292,7 +292,6 @@ Profiler.HeapSnapshotView = class extends UI.SimpleView {
     this._statisticsView.addRecord(statistics.jsArrays, Common.UIString('JS Arrays'), '#7af');
     this._statisticsView.addRecord(statistics.native, Common.UIString('Typed Arrays'), '#fc5');
     this._statisticsView.addRecord(statistics.system, Common.UIString('System Objects'), '#98f');
-    this._statisticsView.addRecord(statistics.total, Common.UIString('Total'));
     return statistics;
   }
 
@@ -1611,10 +1610,14 @@ Profiler.HeapSnapshotStatisticsView = class extends UI.VBox {
   constructor() {
     super();
     this.element.classList.add('heap-snapshot-statistics-view');
-    this._pieChart = new PerfUI.PieChart(150, Profiler.HeapSnapshotStatisticsView._valueFormatter, true);
+    this._pieChart = new PerfUI.PieChart({
+      chartName: ls`Heap memory usage`,
+      size: 150,
+      formatter: Profiler.HeapSnapshotStatisticsView._valueFormatter,
+      showLegend: true
+    });
     this._pieChart.element.classList.add('heap-snapshot-stats-pie-chart');
     this.element.appendChild(this._pieChart.element);
-    this._labels = this.element.createChild('div', 'heap-snapshot-stats-legend');
   }
 
   /**
@@ -1635,22 +1638,10 @@ Profiler.HeapSnapshotStatisticsView = class extends UI.VBox {
   /**
    * @param {number} value
    * @param {string} name
-   * @param {string=} color
+   * @param {string} color
    */
   addRecord(value, name, color) {
-    if (color)
-      this._pieChart.addSlice(value, color);
-
-    const node = this._labels.createChild('div');
-    const swatchDiv = node.createChild('div', 'heap-snapshot-stats-swatch');
-    const nameDiv = node.createChild('div', 'heap-snapshot-stats-name');
-    const sizeDiv = node.createChild('div', 'heap-snapshot-stats-size');
-    if (color)
-      swatchDiv.style.backgroundColor = color;
-    else
-      swatchDiv.classList.add('heap-snapshot-stats-empty-swatch');
-    nameDiv.textContent = name;
-    sizeDiv.textContent = Profiler.HeapSnapshotStatisticsView._valueFormatter(value);
+    this._pieChart.addSlice(value, color, name);
   }
 };
 

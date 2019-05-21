@@ -110,6 +110,14 @@ UI.ARIAUtils.markAsPresentation = function(element) {
 };
 
 /**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.ensureId = function(element) {
+  if (!element.id)
+    element.id = UI.ARIAUtils.nextId('ariaElement');
+};
+
+/**
  * @param {string} prefix
  * @return {string}
  */
@@ -184,6 +192,15 @@ UI.ARIAUtils.setPressed = function(element, value) {
  */
 UI.ARIAUtils.setAccessibleName = function(element, name) {
   element.setAttribute('aria-label', name);
+};
+
+/**
+ * @param {!Element} element
+ * @param {!Element} labelElement
+ */
+UI.ARIAUtils.setLabelledBy = function(element, labelElement) {
+  UI.ARIAUtils.ensureId(labelElement);
+  element.setAttribute('aria-labelledby', labelElement.id);
 };
 
 /**

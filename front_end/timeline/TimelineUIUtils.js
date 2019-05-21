@@ -1523,12 +1523,16 @@ Timeline.TimelineUIUtils = class {
       total += aggregatedStats[categoryName];
 
     const element = createElementWithClass('div', 'timeline-details-view-pie-chart-wrapper hbox');
-    const pieChart = new PerfUI.PieChart(110, value => Number.preciseMillisToString(value), true);
+    const pieChart = new PerfUI.PieChart({
+      chartName: ls`Time spent in rendering`,
+      size: 110,
+      formatter: value => Number.preciseMillisToString(value),
+      showLegend: true,
+    });
     pieChart.element.classList.add('timeline-details-view-pie-chart');
     pieChart.setTotal(total);
     const pieChartContainer = element.createChild('div', 'vbox');
     pieChartContainer.appendChild(pieChart.element);
-    const footerElement = element.createChild('div', 'timeline-aggregated-info-legend');
 
     /**
      * @param {string} name
@@ -1539,12 +1543,7 @@ Timeline.TimelineUIUtils = class {
     function appendLegendRow(name, title, value, color) {
       if (!value)
         return;
-      pieChart.addSlice(value, color);
-      const rowElement = footerElement.createChild('div');
-      rowElement.createChild('span', 'timeline-aggregated-legend-value').textContent =
-          Number.preciseMillisToString(value, 1);
-      rowElement.createChild('span', 'timeline-aggregated-legend-swatch').style.backgroundColor = color;
-      rowElement.createChild('span', 'timeline-aggregated-legend-title').textContent = title;
+      pieChart.addSlice(value, color, title);
     }
 
     // In case of self time, first add self, then children of the same category.

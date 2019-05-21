@@ -42,7 +42,8 @@ LayerViewer.PaintProfilerView = class extends UI.HBox {
     this._canvasContainer = this.contentElement.createChild('div', 'paint-profiler-canvas-container');
     this._progressBanner = this.contentElement.createChild('div', 'full-widget-dimmed-banner hidden');
     this._progressBanner.textContent = Common.UIString('Profiling\u2026');
-    this._pieChart = new PerfUI.PieChart(55, this._formatPieChartTime.bind(this), true);
+    this._pieChart = new PerfUI.PieChart(
+        {chartName: ls`Profiling Results`, size: 55, formatter: this._formatPieChartTime.bind(this)});
     this._pieChart.element.classList.add('paint-profiler-pie-chart');
     this.contentElement.appendChild(this._pieChart.element);
 

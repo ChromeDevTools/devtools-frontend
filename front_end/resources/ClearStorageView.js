@@ -40,12 +40,11 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
         ls`Learn more`);
     learnMoreRow.appendChild(learnMore);
     this._quotaUsage = null;
-    this._pieChart = new PerfUI.PieChart(110, Number.bytesToString, true);
-    this._pieChartLegend = createElement('div');
+    this._pieChart = new PerfUI.PieChart(
+        {chartName: ls`Storage Usage`, size: 110, formatter: Number.bytesToString, showLegend: true});
     const usageBreakdownRow = quota.appendRow();
     usageBreakdownRow.classList.add('usage-breakdown-row');
     usageBreakdownRow.appendChild(this._pieChart.element);
-    usageBreakdownRow.appendChild(this._pieChartLegend);
 
     const clearButtonSection = this._reportView.appendSection('', 'clear-storage-button').appendRow();
     this._clearButton = UI.createTextButton(ls`Clear site data`, this._clear.bind(this));
@@ -234,11 +233,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
           continue;
         const title = this._getStorageTypeName(usageForType.storageType);
         const color = this._pieColors.get(usageForType.storageType) || '#ccc';
-        this._pieChart.addSlice(value, color);
-        const rowElement = this._pieChartLegend.createChild('div', 'usage-breakdown-legend-row');
-        rowElement.createChild('span', 'usage-breakdown-legend-value').textContent = Number.bytesToString(value);
-        rowElement.createChild('span', 'usage-breakdown-legend-swatch').style.backgroundColor = color;
-        rowElement.createChild('span', 'usage-breakdown-legend-title').textContent = title;
+        this._pieChart.addSlice(value, color, title);
       }
     }
 
@@ -251,7 +246,6 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    */
   _resetPieChart(total) {
     this._pieChart.setTotal(total);
-    this._pieChartLegend.removeChildren();
   }
 
   /**

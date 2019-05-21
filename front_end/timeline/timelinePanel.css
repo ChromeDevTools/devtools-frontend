@@ -172,26 +172,6 @@
     height: 100%;
 }
 
-.timeline-aggregated-legend-title {
-    display: inline-block;
-}
-
-.timeline-aggregated-legend-value {
-    display: inline-block;
-    width: 70px;
-    text-align: right;
-}
-
-.timeline-aggregated-legend-swatch {
-    display: inline-block;
-    width: 11px;
-    height: 11px;
-    margin: 0 6px;
-    position: relative;
-    top: 1px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
 .popover ul {
     margin: 0;
     padding: 0;
@@ -383,12 +363,6 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     line-height: 12px;
-}
-
-.timeline-aggregated-info-legend > div {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 
 .timeline-flamechart {

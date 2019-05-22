@@ -163,7 +163,7 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
     this._editor = editor;
     const content = editor.contentElement();
     const fields = content.createChild('div', 'network-discovery-edit-row');
-    const input = editor.createInput('address', 'text', 'Network address (e.g. localhost:9229)', addressValidator);
+    const input = editor.createInput('address', 'text', ls`Network address (e.g. localhost:9229)`, addressValidator);
     fields.createChild('div', 'network-discovery-value network-discovery-address').appendChild(input);
     return editor;
 

@@ -376,10 +376,11 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     const content = editor.contentElement();
     const fields = content.createChild('div', 'port-forwarding-edit-row');
     fields.createChild('div', 'port-forwarding-value port-forwarding-port')
-        .appendChild(editor.createInput('port', 'text', 'Device port (3333)', portValidator.bind(this)));
+        .appendChild(editor.createInput('port', 'text', ls`Device port (3333)`, portValidator.bind(this)));
     fields.createChild('div', 'port-forwarding-separator port-forwarding-separator-invisible');
     fields.createChild('div', 'port-forwarding-value')
-        .appendChild(editor.createInput('address', 'text', 'Local address (dev.example.corp:3333)', addressValidator));
+        .appendChild(
+            editor.createInput('address', 'text', ls`Local address (dev.example.corp:3333)`, addressValidator));
     return editor;
 
     /**

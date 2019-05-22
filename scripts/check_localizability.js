@@ -294,8 +294,6 @@ function analyzeNode(parentNode, node, filePath, errors) {
     default:
       // String concatenation to localization call(s) should be changed
       checkConcatenation(parentNode, node, filePath, errors);
-      // 3rd argument to createInput() should be localized
-      checkFunctionArgument('createInput', 2, node, filePath, errors);
       break;
   }
 

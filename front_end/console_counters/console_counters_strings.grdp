@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_5415b9709f6fda34d7148558bbf4e36b" desc="">
+    <ph name="WARNINGS">$1s</ph> warning
+  </message>
+  <message name="IDS_DEVTOOLS_8e8fda2f7538782b27f82f8ec3c160eb" desc="">
+    <ph name="WARNINGS">$1s</ph> warnings
+  </message>
+  <message name="IDS_DEVTOOLS_9a075279073f00bab27c1c7612bb9fc0" desc="">
+    <ph name="ERRORS">$1s</ph> errors
+  </message>
+  <message name="IDS_DEVTOOLS_a1c00c8d8c543411f73883be7ecfb01b" desc="">
+    <ph name="ERRORS">$1s</ph> error
+  </message>
+  <message name="IDS_DEVTOOLS_dac90a385f9ee1c4d4cac02579d68185" desc="">
+    <ph name="VIOLATIONS">$1s</ph> violation
+  </message>
+  <message name="IDS_DEVTOOLS_de292077f92bbd36f5b8bd7131f2ef5a" desc="">
+    <ph name="VIOLATIONS">$1s</ph> violations
+  </message>
+</grit-part>

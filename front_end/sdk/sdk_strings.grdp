@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_07553a11db31a4433684be32cc4716e3" desc="">
+    Cross-Origin Read Blocking (CORB) blocked cross-origin response <ph name="NETWORKREQUEST_URL__">$1s</ph> with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s</ph>. See https://www.chromestatus.com/feature/5629709824032768 for more details.
+  </message>
+  <message name="IDS_DEVTOOLS_07ba1c48fc0b478df5462700f993fa5e" desc="">
+    <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s</ph> failed loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s</ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_09cdd6a7321c64bae05b8cca859f1461" desc="">
+    Enable cache
+  </message>
+  <message name="IDS_DEVTOOLS_0fe1f9158e2f164da1332501f9e65702" desc="">
+    Navigated to <ph name="EVENT_DATA_URL">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1023bf87beb1d2947824df00fa0898ad" desc="">
+    Disable async stack traces
+  </message>
+  <message name="IDS_DEVTOOLS_150fa516787b5e5d1d2723c84574dbee" desc="">
+    HTTP-Based Public Key Pinning is deprecated. Chrome 69 and later will ignore HPKP response headers. (Host: <ph name="PARSED_HOST">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_185bf49541541933dc3fd1fb89d3fea3" desc="">
+    Enable custom formatters
+  </message>
+  <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="">
+    &lt;anonymous&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_21070fd87b02611a5426d726a70a5502" desc="">
+    No value found for parameter &quot;<ph name="PARAMNAME">$1s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_212af9ab36fa426a9e52bc1ebfd8665b" desc="">
+    Drag / drop
+  </message>
+  <message name="IDS_DEVTOOLS_23e5a7b7976e412ece233ceaf8257bc2" desc="">
+    Clipboard
+  </message>
+  <message name="IDS_DEVTOOLS_23e8e5daea7e9dc939ae4298a6f74e36" desc="">
+    ServerTiming: <ph name="MSG">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="">
+    Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s</ph>. Cookie length should be less than or equal to 4096 characters.
+  </message>
+  <message name="IDS_DEVTOOLS_2973958e77629e3a167a1a4c60dd5c5f" desc="">
+    Slow 3G
+  </message>
+  <message name="IDS_DEVTOOLS_3034e08ec0b14678ddb50284eef02ee4" desc="">
+    Do not preserve log upon navigation
+  </message>
+  <message name="IDS_DEVTOOLS_328d7fa69bbeeeefd8b3db6e1f06a17b" desc="">
+    With Block
+  </message>
+  <message name="IDS_DEVTOOLS_3437f1aa3e12219221092a45e62c9d4f" desc="">
+    Profile &apos;<ph name="DATA_TITLE">$1s</ph>&apos; finished.
+  </message>
+  <message name="IDS_DEVTOOLS_365e0172a2e97b0a26274c5bd2e4bad0" desc="">
+    Script Blocked by Content Security Policy
+  </message>
+  <message name="IDS_DEVTOOLS_38fe155e13d77298cfd5688c3378fa85" desc="">
+    Emulate CSS screen media type
+  </message>
+  <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="">
+    Media
+  </message>
+  <message name="IDS_DEVTOOLS_3d9320c6e796b65a6c91fcd64e27fa88" desc="">
+    Hide frames per second (FPS) meter
+  </message>
+  <message name="IDS_DEVTOOLS_3ff9f750075f426831f71818a8f4ff12" desc="">
+    Request was blocked by DevTools: &quot;<ph name="NETWORKREQUEST_URL__">$1s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_40dba446b661ae69dea3a8e026f76dfd" desc="">
+    Hide paint flashing rectangles
+  </message>
+  <message name="IDS_DEVTOOLS_4249b3308a0ed3e1e90e0a91ca11cf21" desc="">
+    WebGL Error Fired
+  </message>
+  <message name="IDS_DEVTOOLS_4636cded1f8a4578c9e8e7f2fd9cfdee" desc="">
+    (binary)
+  </message>
+  <message name="IDS_DEVTOOLS_4a2c6d480468877dd33d9a5bae54b549" desc="">
+    WebGL Warning Fired
+  </message>
+  <message name="IDS_DEVTOOLS_4bfca2e69ec73893d36ebcdcce35cf36" desc="">
+    Suspend AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_4cc00b9253c692417d3b0765d5ae5e79" desc="">
+    Unable to parse &quot;<ph name="PARAMNAME">$1s</ph>&quot; value &quot;<ph name="PARAMVALUE">$2s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="">
+    Global
+  </message>
+  <message name="IDS_DEVTOOLS_509820290d57f333403f490dde7316f4" desc="">
+    Local
+  </message>
+  <message name="IDS_DEVTOOLS_509a7f125ba127d220887938738af707" desc="">
+    Failed to save to temp variable.
+  </message>
+  <message name="IDS_DEVTOOLS_52da3e7fcf6abefc2a8807df4b759ef8" desc="">
+    setInterval fired
+  </message>
+  <message name="IDS_DEVTOOLS_599eba19aa93a929cb8589f148b8a6c4" desc="">
+    screen
+  </message>
+  <message name="IDS_DEVTOOLS_5c63ad6312d0451b3d1012e5ea8fd08f" desc="">
+    Emulate CSS print media type
+  </message>
+  <message name="IDS_DEVTOOLS_5fe9d4f417e5f34919b0b6e5f0431ec1" desc="">
+    Hide hit-test borders
+  </message>
+  <message name="IDS_DEVTOOLS_61cf8510205077b6f5491d38cd44c0f7" desc="">
+    Pointer
+  </message>
+  <message name="IDS_DEVTOOLS_62efb9ec331e364b96efe68c8b03ca20" desc="">
+    Worker
+  </message>
+  <message name="IDS_DEVTOOLS_62fce3f916fe47f75c391fd5e4fc3eca" desc="">
+    Consider disabling <ph name="COMMON_UISTRING__CHROME_DATA_SAVER__">$1s</ph> while debugging. For more info see: <ph name="_HTTPS___SUPPORT_GOOGLE_COM_CHROME__P_DATASAVER_">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6617a779f50f7afb7949c7ea3ad52b28" desc="">
+    Show hit-test borders
+  </message>
+  <message name="IDS_DEVTOOLS_6948a469c79f7dd5426e4f291cba3db1" desc="">
+    Chrome Data Saver
+  </message>
+  <message name="IDS_DEVTOOLS_6ce4d85a628a88bbdb3ac24a8e5a9c2e" desc="">
+    Keyboard
+  </message>
+  <message name="IDS_DEVTOOLS_6e2e8696272b40b7a9745c998a39b177" desc="">
+    Close AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_6ea5359e01a41842884943125518289b" desc="">
+    Canvas
+  </message>
+  <message name="IDS_DEVTOOLS_6fdb8f0232e380cf106312e7b880d8d2" desc="">
+    Preserve log upon navigation
+  </message>
+  <message name="IDS_DEVTOOLS_7121afd196f5c52bef488d5a0f4c097b" desc="">
+    Script First Statement
+  </message>
+  <message name="IDS_DEVTOOLS_794f64c7f20487f6e13679201deeab3d" desc="">
+    Picture-in-Picture
+  </message>
+  <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="">
+    Show frames per second (FPS) meter
+  </message>
+  <message name="IDS_DEVTOOLS_81961fe251f4d1cb4df131561dedf319" desc="">
+    Hide layer borders
+  </message>
+  <message name="IDS_DEVTOOLS_83f2229658949472d34f78e19475fcdd" desc="">
+    Show layer borders
+  </message>
+  <message name="IDS_DEVTOOLS_9028784c589c0c809700c7fbc66a5d96" desc="">
+    Resource interpreted as <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s</ph> but transferred with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s</ph>: &quot;<ph name="NETWORKREQUEST_URL__">$3s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_90da6f38945a1c7e7ba11e3adcbe6919" desc="">
+    Pause on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_9108ae673b7efa9620aec771edc9d4de" desc="">
+    setTimeout fired
+  </message>
+  <message name="IDS_DEVTOOLS_930c85a96d7227c515891c4f86a17c30" desc="">
+    Disable JavaScript
+  </message>
+  <message name="IDS_DEVTOOLS_93dee6366d66361f36985cf5c88346aa" desc="">
+    Create AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_95bbad55f11c237ed89546e748093ba7" desc="">
+    Request Animation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_96d008db67fc0b5551a926842bbb6a71" desc="">
+    Notification
+  </message>
+  <message name="IDS_DEVTOOLS_9850063efe194af1c63d2aa61ef94c62" desc="">
+    Create canvas context
+  </message>
+  <message name="IDS_DEVTOOLS_9dd7b9f5cc1c19a830f153c3e8f1ad89" desc="">
+    Fast 3G
+  </message>
+  <message name="IDS_DEVTOOLS_9f7d4cb9fefed9daf0e9e4aad0620497" desc="">
+    Do not highlight ad frames
+  </message>
+  <message name="IDS_DEVTOOLS_a155bce1e541d9234013102c2e613941" desc="">
+    ServiceWorkerCacheAgent error deleting cache entry <ph name="CACHE_TOSTRING__">$1s</ph> in cache: <ph name="RESPONSE_PROTOCOL_ERROR_">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_a1595abbb4c3a326636dd178757cd6c1" desc="">
+    Control
+  </message>
+  <message name="IDS_DEVTOOLS_a720fc15eb9ec85751969e8615ace9e1" desc="">
+    Duplicate parameter &quot;<ph name="PARAMNAME">$1s</ph>&quot; ignored.
+  </message>
+  <message name="IDS_DEVTOOLS_ac4aac1ba23d844f4976e9fcd1fd4a61" desc="">
+    WebGL Error Fired (<ph name="ERRORNAME">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="">
+    Closure
+  </message>
+  <message name="IDS_DEVTOOLS_b28354b543375bfa94dabaeda722927f" desc="">
+    top
+  </message>
+  <message name="IDS_DEVTOOLS_b43356cdb7bdec437e117bb1ed5625bc" desc="">
+    Capture async stack traces
+  </message>
+  <message name="IDS_DEVTOOLS_b50ec339cd40d39d5ff4ca56379e61c6" desc="">
+    Paused in debugger
+  </message>
+  <message name="IDS_DEVTOOLS_b600e0facf21b7d4a9a769a60b236ba1" desc="">
+    Enable JavaScript
+  </message>
+  <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="">
+    Do not capture async stack traces
+  </message>
+  <message name="IDS_DEVTOOLS_ba5b676ccf658f863ef2e3df082ee262" desc="">
+    Animation Frame Fired
+  </message>
+  <message name="IDS_DEVTOOLS_bc955333ff170762be4971a8fde558cf" desc="">
+    WebAudio
+  </message>
+  <message name="IDS_DEVTOOLS_c432f4e5fdec5760a2f06b38f646168e" desc="">
+    Profile &apos;<ph name="DATA_TITLE">$1s</ph>&apos; started.
+  </message>
+  <message name="IDS_DEVTOOLS_c5d59568835d0760e318829b800ee06d" desc="">
+    Catch
+  </message>
+  <message name="IDS_DEVTOOLS_c64d5c0d5233c7d6e85a41c6dd3c3a3f" desc="">
+    Resume AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_c89686a387d2b12b3c729ce35a0bcb5b" desc="">
+    Window
+  </message>
+  <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="">
+    Parse
+  </message>
+  <message name="IDS_DEVTOOLS_cedab6b9e4e794e93bba797e8aff218a" desc="">
+    <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s</ph> finished loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s</ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s</ph>&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_d24a22fef757966373800aa9795458dc" desc="">
+    ? [sm]
+  </message>
+  <message name="IDS_DEVTOOLS_d31827f0a164d52b636bb1f71ca4a351" desc="">
+    Cancel Animation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_d4fad802fc7bf0248d34c685533bd56f" desc="">
+    Disable request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_d6b6b668dbca9d4fe774bb654226ebe3" desc="">
+    Animation
+  </message>
+  <message name="IDS_DEVTOOLS_dcd9c13c4f8ae68ea7ae92edf9191264" desc="">
+    Deprecated syntax found. Please use: &lt;name&gt;;dur=&lt;duration&gt;;desc=&lt;description&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_df9f4292c1d025cbada13b25744d34e5" desc="">
+    Do not emulate CSS media type
+  </message>
+  <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="">
+    Block
+  </message>
+  <message name="IDS_DEVTOOLS_e2b60c37530e144372a7943df0f6017d" desc="">
+    &lt;iframe&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_e402c138065e7eece783dc30c6079192" desc="">
+    XHR
+  </message>
+  <message name="IDS_DEVTOOLS_e485c975c1d6c17d9dfd81128b83f63a" desc="">
+    Set innerHTML
+  </message>
+  <message name="IDS_DEVTOOLS_e55f75a29310d7b60f7ac1d390c8ae42" desc="">
+    Module
+  </message>
+  <message name="IDS_DEVTOOLS_e69d85cd1acdf030f0cede48b61d7720" desc="">
+    Hide scroll performance bottlenecks
+  </message>
+  <message name="IDS_DEVTOOLS_edb020d2175281d94054136e09a3e132" desc="">
+    Do not pause on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_efa547f7d0b9924fdc7b301838c99fad" desc="">
+    No emulation
+  </message>
+  <message name="IDS_DEVTOOLS_efb4777327e6f704fb1519c1882f93ec" desc="">
+    Timer
+  </message>
+  <message name="IDS_DEVTOOLS_eff8d530f562a22a45fbf1ee83299353" desc="">
+    Show scroll performance bottlenecks
+  </message>
+  <message name="IDS_DEVTOOLS_f107ac919ab14339cdb22cd00fccd215" desc="">
+    Show paint flashing rectangles
+  </message>
+  <message name="IDS_DEVTOOLS_f2a47c6809d88e175dade0ef7b16aa13" desc="">
+    Mouse
+  </message>
+  <message name="IDS_DEVTOOLS_f6137609f4decf877ede5bd3a3125629" desc="">
+    DevTools: CPU profile parser is fixing <ph name="COUNT">$1s</ph> missing samples.
+  </message>
+  <message name="IDS_DEVTOOLS_f7531e2d0ea27233ce00b5f01c5bf335" desc="">
+    print
+  </message>
+  <message name="IDS_DEVTOOLS_f9778c8e7464e4bb037ec2463879588f" desc="">
+    DOM Mutation
+  </message>
+  <message name="IDS_DEVTOOLS_f99d691018d8f37dda14a9cd29c1d1ee" desc="">
+    Script blocked due to Content Security Policy directive: <ph name="AUXDATA__DIRECTIVETEXT__">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_fa79cdac06c8d2166fd5cda17ccbc0ce" desc="">
+    Extraneous trailing characters.
+  </message>
+  <message name="IDS_DEVTOOLS_ff92304ed0236a5f972fd90e9b47fae4" desc="">
+    Unrecognized parameter &quot;<ph name="PARAMNAME">$1s</ph>&quot;.
+  </message>
+</grit-part>

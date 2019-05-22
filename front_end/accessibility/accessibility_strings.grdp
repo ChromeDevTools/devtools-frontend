@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_185551542d4a950d6ed4a90e0875dfde" desc="">
+    Computed Properties
+  </message>
+  <message name="IDS_DEVTOOLS_191abc41f8f74fb8c9671ca8f21b7433" desc="">
+    Element not interesting for accessibility.
+  </message>
+  <message name="IDS_DEVTOOLS_1c2be4cda7b85620e6dca5fb505feedc" desc="">
+    Element has empty alt text.
+  </message>
+  <message name="IDS_DEVTOOLS_3b1afa99cd297c96939424e1438e12f2" desc="">
+    Element inherits presentational role from 
+  </message>
+  <message name="IDS_DEVTOOLS_4ada42850cc2d4e41f3da5254ec2feee" desc="">
+    Element is inert.
+  </message>
+  <message name="IDS_DEVTOOLS_52886045a6932b0bbb56620fe5c584bf" desc="">
+    Ancestor&apos;s children are all presentational: 
+  </message>
+  <message name="IDS_DEVTOOLS_5a51e4de1a235f3f67e816cb561d3d5a" desc="">
+    Element is <ph name="ARIAHIDDENSPAN">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_5cd2b4477fa05212ce32e073702b6938" desc="">
+    No ARIA attributes
+  </message>
+  <message name="IDS_DEVTOOLS_5d910721a6256ce42c8c6308dc60ff40" desc="">
+    Static text node is used as name for 
+  </message>
+  <message name="IDS_DEVTOOLS_5f05a00053834655de812d3447545a17" desc="">
+    No node with this ID.
+  </message>
+  <message name="IDS_DEVTOOLS_7d615068dd4fb142c11a29553b9b83bf" desc="">
+    Element is presentational.
+  </message>
+  <message name="IDS_DEVTOOLS_80c9f4e5b244cf617075b8ce23a3ed27" desc="">
+    ARIA Attributes
+  </message>
+  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="">
+    Scroll into view
+  </message>
+  <message name="IDS_DEVTOOLS_970e14ef4e4d726d36b6ed0ea92bef83" desc="">
+    Accessibility node not exposed
+  </message>
+  <message name="IDS_DEVTOOLS_98b6f72f9b4c1883deddc61bc62d71eb" desc="">
+    Element is not visible.
+  </message>
+  <message name="IDS_DEVTOOLS_a4853b77c462337ed9fecc32e4d44d7b" desc="">
+    Accessibility Tree
+  </message>
+  <message name="IDS_DEVTOOLS_a858dfbc32e2169e89668adf8e997f6f" desc="">
+    No accessibility node
+  </message>
+  <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="">
+    Part of label element: 
+  </message>
+  <message name="IDS_DEVTOOLS_b05cf8cea038a89494e9e232e65af3f3" desc="">
+    Element is not rendered.
+  </message>
+  <message name="IDS_DEVTOOLS_cd9da90ce06215f24f648786501e4073" desc="">
+    Element is hidden by active modal dialog: 
+  </message>
+  <message name="IDS_DEVTOOLS_cfa5234b2737df4bc3dc737484605c39" desc="">
+    <ph name="ARIAHIDDENSPAN">$1s</ph> is <ph name="TRUESPAN">$2s</ph> on ancestor: 
+  </message>
+  <message name="IDS_DEVTOOLS_d7dff47e75bfd5f107407eded09ee6f0" desc="">
+    Element has <ph name="ROLEPRESENTATIONSPAN">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="">
+    Ignored
+  </message>
+  <message name="IDS_DEVTOOLS_dd3195ced9c1810388e28ca2b4eb921f" desc="">
+    Not specified
+  </message>
+  <message name="IDS_DEVTOOLS_e0dcc9aef6db5e61e4102efdf5d54378" desc="">
+    Invalid source.
+  </message>
+  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="">
+    Accessibility
+  </message>
+  <message name="IDS_DEVTOOLS_e71c63b8e5a312662941ee8606e8c43a" desc="">
+    Label for 
+  </message>
+  <message name="IDS_DEVTOOLS_e7be8f80bd8db0b8ca6bb2dee175b623" desc="">
+    Element is in an inert subtree from 
+  </message>
+  <message name="IDS_DEVTOOLS_fc6dc044799975f19c864e9b31e3bb76" desc="">
+    No text content.
+  </message>
+</grit-part>

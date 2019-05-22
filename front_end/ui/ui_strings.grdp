@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_00618c7a664449da0ec12190348c685a" desc="">
+    Switch between files with the same name and different extensions.
+  </message>
+  <message name="IDS_DEVTOOLS_0118d8300f0ad71843ef9f47acca779f" desc="">
+    Close others
+  </message>
+  <message name="IDS_DEVTOOLS_02b411e36e8eaa1f554ca176a106a79d" desc="">
+    <ph name="MEGABYTES">$1.0f</ph> MB
+  </message>
+  <message name="IDS_DEVTOOLS_0c89face91afb1a048a34349404d11c0" desc="">
+    Add selection to watch
+  </message>
+  <message name="IDS_DEVTOOLS_0cbca9a34ab68b4be10dd4d09dd61bfd" desc="">
+    Search previous
+  </message>
+  <message name="IDS_DEVTOOLS_0d76841780a2811f3c24a4f8faf129d0" desc="">
+    Show previous/next recording
+  </message>
+  <message name="IDS_DEVTOOLS_0ebe6df8a3ac338e0512acc741823fdb" desc="">
+    Replace
+  </message>
+  <message name="IDS_DEVTOOLS_0f8854fb5bc175b0cd33a1e8518b366f" desc="">
+    Switch to pan mode
+  </message>
+  <message name="IDS_DEVTOOLS_10f0bad7213cafe18fb1cf55180a11da" desc="">
+    (async)
+  </message>
+  <message name="IDS_DEVTOOLS_1299e7f10b9d0110e7fa5368d1307500" desc="">
+    long text was truncated (<ph name="TOTALBYTES">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_16d0b9499edfdb8274382a91686ae1ae" desc="">
+    Performance Panel
+  </message>
+  <message name="IDS_DEVTOOLS_17d440bf27df66479f0fb39cb4f4ad09" desc="">
+    Reset view
+  </message>
+  <message name="IDS_DEVTOOLS_1d5f9d3b8b2be8824c18022f024a43a0" desc="">
+    Decrement value
+  </message>
+  <message name="IDS_DEVTOOLS_21e2320215eb46d452e7494f3dd1c798" desc="">
+    Next/previous property
+  </message>
+  <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="">
+    Step into
+  </message>
+  <message name="IDS_DEVTOOLS_2dfef1e9ae6e4da36eb0bbeea94742b9" desc="">
+    <ph name="MEGABYTES">$1.1f</ph> MB
+  </message>
+  <message name="IDS_DEVTOOLS_2ea54663ae9e3a586132a34a98d85ccf" desc="">
+    Async Call
+  </message>
+  <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="">
+    Open in new tab
+  </message>
+  <message name="IDS_DEVTOOLS_3b41735478b3a3fd8bcc06f6c7a6b56c" desc="">
+    Copy link address
+  </message>
+  <message name="IDS_DEVTOOLS_3b5f1c7ab5345e75ee764983f8091933" desc="">
+    Pan or rotate up/down
+  </message>
+  <message name="IDS_DEVTOOLS_3b9dc6454ee96394b3d853e8d597ebc6" desc="">
+    Increment value
+  </message>
+  <message name="IDS_DEVTOOLS_3f0b6654f9648ab6331823837c2b9f73" desc="">
+    Step over
+  </message>
+  <message name="IDS_DEVTOOLS_3f9eccbca028a6949c39933d13f82e56" desc="">
+    Step out
+  </message>
+  <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="">
+    Reconnect when ready by reopening DevTools.
+  </message>
+  <message name="IDS_DEVTOOLS_47df0ee8f6dc4f553c907c49e686216c" desc="">
+    Memory Panel
+  </message>
+  <message name="IDS_DEVTOOLS_47e0270ab1827aab8faa1c85d89bd48f" desc="">
+    <ph name="UI_KEYBOARDSHORTCUT_SHORTCUTTOSTRING_____UI_KEYBOARDSHORTCUT_MODIFIERS_CTRLORMETA_">$1s</ph>Click to select multiple types
+  </message>
+  <message name="IDS_DEVTOOLS_4819fdb79641baf4a4c8a2ca2159a312" desc="">
+    <ph name="BYTES">$1.0f</ph> B
+  </message>
+  <message name="IDS_DEVTOOLS_48f12760504bf8e958a4bdde56d4fa46" desc="">
+    1 match
+  </message>
+  <message name="IDS_DEVTOOLS_4b50fa6fd1a6a30c9b16f71dd2600574" desc="">
+    Jump to next editing location
+  </message>
+  <message name="IDS_DEVTOOLS_4c4306efb0e40e97e5f8693613b1fcfd" desc="">
+    Go to matching bracket
+  </message>
+  <message name="IDS_DEVTOOLS_4f348d8d1f134f0980102a4a6508cd5e" desc="">
+    Pan or rotate left/right
+  </message>
+  <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="">
+    Zoom out
+  </message>
+  <message name="IDS_DEVTOOLS_534d1b2eaff704d4888de7c4a5e282c0" desc="">
+    Debugging connection was closed. Reason: 
+  </message>
+  <message name="IDS_DEVTOOLS_5372591390f99dcf8e0467c671abbc23" desc="">
+    Switch to rotate mode
+  </message>
+  <message name="IDS_DEVTOOLS_56797cefb1efc9130f7c48a7d1db0f0c" desc="">
+    Panels
+  </message>
+  <message name="IDS_DEVTOOLS_5ccb2f9327ce0aba7567b62e9e1d15a5" desc="">
+    Close tabs to the right
+  </message>
+  <message name="IDS_DEVTOOLS_5d3d95cb74ad59528ab385023f8a2a39" desc="">
+    Save profile
+  </message>
+  <message name="IDS_DEVTOOLS_63e29f78b2e7788d9234a5790897fa71" desc="">
+    DevTools was disconnected from the page.
+  </message>
+  <message name="IDS_DEVTOOLS_650654cb12c12b00e68b4384e0aede82" desc="">
+    <ph name="THIS__ONLYCOMPLETION_TEXT">$1s</ph>, suggestion
+  </message>
+  <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="">
+    Full list of DevTools keyboard shortcuts and gestures
+  </message>
+  <message name="IDS_DEVTOOLS_6a5fa3625d6317cd74f686720d9c411e" desc="">
+    Promise rejected
+  </message>
+  <message name="IDS_DEVTOOLS_6e0e121820384f135321cb766273f4da" desc="">
+    Soft undo
+  </message>
+  <message name="IDS_DEVTOOLS_6ed5ccb02cd39be4a7a98739f5696d43" desc="">
+    Record page reload
+  </message>
+  <message name="IDS_DEVTOOLS_7102e4c0bf381bdbaa934e3dccb5b283" desc="">
+    (anonymous)
+  </message>
+  <message name="IDS_DEVTOOLS_71fc9f874ad2b8e691e9e797eda7d353" desc="">
+    Expand/collapse
+  </message>
+  <message name="IDS_DEVTOOLS_728618db1e2c850d3f7363ff2768d6b6" desc="">
+    Increment CSS unit by 10
+  </message>
+  <message name="IDS_DEVTOOLS_7423ba80f2fff2568d2c642c6be84ede" desc="">
+    Close drawer
+  </message>
+  <message name="IDS_DEVTOOLS_75cfe68daf4ccd62d15e9e0fb5ec1097" desc="">
+    Increment CSS unit by 1
+  </message>
+  <message name="IDS_DEVTOOLS_76f8c7ad696be0b330b46afe79ac279d" desc="">
+    Start/stop recording
+  </message>
+  <message name="IDS_DEVTOOLS_79fb17b82d0adb283dc78efc0d7f73e8" desc="">
+    Temporarily toggle pan/rotate mode while held
+  </message>
+  <message name="IDS_DEVTOOLS_7b91156d64b76a5dda815937fce9119d" desc="">
+    Zoom in
+  </message>
+  <message name="IDS_DEVTOOLS_7cf206a681131cf4d86fc190f2d9ad27" desc="">
+    Reconnect DevTools
+  </message>
+  <message name="IDS_DEVTOOLS_7dce122004969d56ae2e0245cb754d35" desc="">
+    Edit
+  </message>
+  <message name="IDS_DEVTOOLS_84e1d403df34bad00840ee636021698c" desc="">
+    Close <ph name="THIS_TITLE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_860429066968657205b314b6b4143da7" desc="">
+    Layers Panel
+  </message>
+  <message name="IDS_DEVTOOLS_86e8f8f8327d28b74e5bd3ab581f77ee" desc="">
+    e.g. /small[\d]+/ url:a.com/b
+  </message>
+  <message name="IDS_DEVTOOLS_89345110b204ed302eddff2ddbd0f4d9" desc="">
+    Toggle breakpoint enabled
+  </message>
+  <message name="IDS_DEVTOOLS_894dab8359b886762113f6b64ce9f107" desc="">
+    Replace all
+  </message>
+  <message name="IDS_DEVTOOLS_8e44b2127a4fb456a78feced6731a496" desc="">
+    <ph name="CURRENTMATCHINDEX____">$1d</ph> of <ph name="MATCHES">$2d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_925f3a6eef3896d617fc0ab413f9c123" desc="">
+    <ph name="MATCHES">$1d</ph> matches
+  </message>
+  <message name="IDS_DEVTOOLS_92d347b9338f3ffaa227ee482078bbb7" desc="">
+    Toggle comment
+  </message>
+  <message name="IDS_DEVTOOLS_966f6f045ff62d8c920c755930f4fd7b" desc="">
+    Toggle edit as HTML
+  </message>
+  <message name="IDS_DEVTOOLS_96ec2a08daf01bc10adc6e4ac4c76ceb" desc="">
+    Decrement CSS unit by 10
+  </message>
+  <message name="IDS_DEVTOOLS_96fb9e0d650af5b1fc4ec6c7bc11b49b" desc="">
+    More Tools
+  </message>
+  <message name="IDS_DEVTOOLS_9f52d2760e4266c7904c59fd9d3e7321" desc="">
+    Pick a recording from history
+  </message>
+  <message name="IDS_DEVTOOLS_9f98ff6e7e9fd0475daeb2005234ab5d" desc="">
+    <ph name="KILOBYTES">$1.0f</ph> KB
+  </message>
+  <message name="IDS_DEVTOOLS_a7659dc1b20557ca85c11efc57ace59f" desc="">
+    Toggle all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="">
+    Once page is reloaded, DevTools will automatically reconnect.
+  </message>
+  <message name="IDS_DEVTOOLS_addec426932e71323700afa1911f8f1c" desc="">
+    more
+  </message>
+  <message name="IDS_DEVTOOLS_ae240dc70adad29732bb1fdf0c746b84" desc="">
+    <ph name="KILOBYTES">$1.1f</ph> KB
+  </message>
+  <message name="IDS_DEVTOOLS_b014fff4db17dba07ddb6ea5efafd32e" desc="">
+    Jump to previous/next frame
+  </message>
+  <message name="IDS_DEVTOOLS_b1402575685f74c0c38dabac64e95cc0" desc="">
+    Navigate elements
+  </message>
+  <message name="IDS_DEVTOOLS_b228e7bd736e688236ab3aa37996bf8f" desc="">
+    Decrement by <ph name="__">$1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b79165bf6163186253ed04568e1aee11" desc="">
+    Pause/ Continue
+  </message>
+  <message name="IDS_DEVTOOLS_b79f0c59be8253d3acb4515071312bda" desc="">
+    Hide <ph name="THIS__SHOWHIDESIDEBARBUTTONTITLE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b7ad6a024765bbfbff22dedf9afe0d17" desc="">
+    Jump to previous editing location
+  </message>
+  <message name="IDS_DEVTOOLS_bc39d641a1e16fb73f2ce5520d250ed0" desc="">
+    Go to member
+  </message>
+  <message name="IDS_DEVTOOLS_bd474df0d4b1bb32aac1b31560b962fb" desc="">
+    Next/previous call frame
+  </message>
+  <message name="IDS_DEVTOOLS_c449b64ade0e464abfc5cb5368775233" desc="">
+    Decrement CSS unit by 1
+  </message>
+  <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="">
+    More tabs
+  </message>
+  <message name="IDS_DEVTOOLS_d2923d7d060c61c17d06c22166b2be41" desc="">
+    Promise resolved
+  </message>
+  <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="">
+    Evaluate selection in console
+  </message>
+  <message name="IDS_DEVTOOLS_dd73c24f4702950125e2fcb7d26ca5fe" desc="">
+    Show more (<ph name="TOTALBYTES">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_dd92c3884d43902407a4c2f0d8cc0eb1" desc="">
+    Toggle breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_e0aa021e21dddbd6d8cecec71e9cf564" desc="">
+    OK
+  </message>
+  <message name="IDS_DEVTOOLS_e0f1691bdb67d9859e5a6a8d7c26e6a1" desc="">
+    Text Editor
+  </message>
+  <message name="IDS_DEVTOOLS_e118bd20c49240fd8387f3bd901cb4f1" desc="">
+    Load profile
+  </message>
+  <message name="IDS_DEVTOOLS_e6290b661dba9591e4c505fb50257d0c" desc="">
+    Search next
+  </message>
+  <message name="IDS_DEVTOOLS_e7a555523728cc11719011fa5a7e77ba" desc="">
+    Select next occurrence
+  </message>
+  <message name="IDS_DEVTOOLS_e81c4e4f2b7b93b481e13a8553c2ae1b" desc="">
+    or
+  </message>
+  <message name="IDS_DEVTOOLS_e9947a82726be2fb77368eb27c082402" desc="">
+    (no item selected)
+  </message>
+  <message name="IDS_DEVTOOLS_f68d3333dcde01f3ef29184f1bcdf1c5" desc="">
+    never show
+  </message>
+  <message name="IDS_DEVTOOLS_f6c46678b34ad4b4c0241c9487a26b59" desc="">
+    Increment by <ph name="__">$1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f8fbc6412a360fc4f854f34a776e2af2" desc="">
+    Another profiler is already active
+  </message>
+  <message name="IDS_DEVTOOLS_fa66e32280e1ee04b8e8cd36626b65f0" desc="">
+    Close editor tab
+  </message>
+  <message name="IDS_DEVTOOLS_fbbbb283efc814825613301c22951ba7" desc="">
+    Close all
+  </message>
+</grit-part>

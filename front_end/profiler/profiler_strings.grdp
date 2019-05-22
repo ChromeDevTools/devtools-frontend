@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_00018e8c8fc32e1ec073c0cdbadb5575" desc="">
+    <ph name="NUMBER_WITHTHOUSANDSSEPARATOR_VALUE________">$1s</ph> KB
+  </message>
+  <message name="IDS_DEVTOOLS_007c41a9025be2c8e14b496ed3ee00f8" desc="">
+    Save…
+  </message>
+  <message name="IDS_DEVTOOLS_02184526968aa861a744df910647fcf0" desc="">
+    Freed Size
+  </message>
+  <message name="IDS_DEVTOOLS_0257542bea15eb6baa3fc0364cd3ba24" desc="">
+    <ph name="NUMBER_WITHTHOUSANDSSEPARATOR_MATH_ROUND_VALUE_________">$1s</ph> KB
+  </message>
+  <message name="IDS_DEVTOOLS_030361ea56fa177ebcbefe708a45b0f2" desc="">
+    # Deleted
+  </message>
+  <message name="IDS_DEVTOOLS_04042b5589b3d4fd4e1e7e44265ad247" desc="">
+    Total page JS heap size change trend over the last <ph name="TRENDINTERVALMINUTES">$1s</ph> minutes.
+  </message>
+  <message name="IDS_DEVTOOLS_05ce989cc1015cd221844376fc4cf206" desc="">
+    Snapshot <ph name="PROFILE_UID">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_07b20ae970048fc2002d756f27acc863" desc="">
+    Renderer
+  </message>
+  <message name="IDS_DEVTOOLS_07d2bff541ce0f9ec4389e93a97997ee" desc="">
+    Objects allocated between <ph name="LIST_I______TITLE">$1s</ph> and <ph name="LIST_I__TITLE">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0a63e0039bb8cb9846ad74ace8e1e5de" desc="">
+    Call tree
+  </message>
+  <message name="IDS_DEVTOOLS_0aa6f4210bf373c95eda00232e93cd98" desc="">
+    Distance
+  </message>
+  <message name="IDS_DEVTOOLS_11a755d598c0c417f9a36758c3da7481" desc="">
+    Stop
+  </message>
+  <message name="IDS_DEVTOOLS_13b5bfe96f3e2fe411c9f66f4a582adf" desc="">
+    in
+  </message>
+  <message name="IDS_DEVTOOLS_164c4aca31febd73a41b50c4a9c406be" desc="">
+    Snapshotting…
+  </message>
+  <message name="IDS_DEVTOOLS_17321b102f09de9aaa68f2b16a530247" desc="">
+    Total JS heap size
+  </message>
+  <message name="IDS_DEVTOOLS_17c34fb9ce9a7a20604a5f10e447edce" desc="">
+    Heap size change trend over the last <ph name="TRENDINTERVALMINUTES">$1s</ph> minutes.
+  </message>
+  <message name="IDS_DEVTOOLS_1816452291df3cd48db5667463361f25" desc="">
+    Focus selected function
+  </message>
+  <message name="IDS_DEVTOOLS_1d36783e12317ed400ebeddeb072a27b" desc="">
+    Chart
+  </message>
+  <message name="IDS_DEVTOOLS_1eaeeaeb638fdf7f6eeb047abbfd0f1a" desc="">
+    Self Time
+  </message>
+  <message name="IDS_DEVTOOLS_1f1e990a1d2ba8ab4dd873a192237c30" desc="">
+    <ph name="VALUE">$1.1f</ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_27c0ad7a8ff8f9df8e13bb2d974c95d0" desc="">
+    Allocation
+  </message>
+  <message name="IDS_DEVTOOLS_290612199861c31d1036b185b4e69b75" desc="">
+    Summary
+  </message>
+  <message name="IDS_DEVTOOLS_2d7b69664bc4226fb198124fb707e57c" desc="">
+    Snapshot <ph name="THIS_NEXTPROFILEUID__">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2db1f9be46028cfdf9b8f96a0110e637" desc="">
+    <ph name="VALUE">$1.2f</ph> %%
+  </message>
+  <message name="IDS_DEVTOOLS_2def01e5dee6051b68f5b1e5e2fc8ad4" desc="">
+    System Objects
+  </message>
+  <message name="IDS_DEVTOOLS_2f318b400ebcb22420251535452efef0" desc="">
+    Containment
+  </message>
+  <message name="IDS_DEVTOOLS_32e679bdbd5dd7a0bacf024bc30e8a75" desc="">
+    Recording…
+  </message>
+  <message name="IDS_DEVTOOLS_35066690e799cd4e59123262e41b29c5" desc="">
+    Stop CPU profiling
+  </message>
+  <message name="IDS_DEVTOOLS_36917e785bd31d786ab9dd7790a9a4c2" desc="">
+    JS Heap
+  </message>
+  <message name="IDS_DEVTOOLS_3a9619400e054970a7ab8b67c4ce5109" desc="">
+    Restore all functions
+  </message>
+  <message name="IDS_DEVTOOLS_3ae3895607d1203d8e73e18dd4c4551c" desc="">
+    Allocation profiles show sampled native memory allocations from the renderer process.
+  </message>
+  <message name="IDS_DEVTOOLS_3b6077563702806850baeddff55ee1c6" desc="">
+    Preview is not available
+  </message>
+  <message name="IDS_DEVTOOLS_3ce9ab6602763824b2f317965c6a1a20" desc="">
+    Heap size in use by live JS objects.
+  </message>
+  <message name="IDS_DEVTOOLS_3e6defd685231cdd12065add41996c89" desc="">
+    All objects
+  </message>
+  <message name="IDS_DEVTOOLS_3eea5ef5cf936633884b33c458451013" desc="">
+    Show native functions in JS Profile
+  </message>
+  <message name="IDS_DEVTOOLS_412ec4c9168f10f6e2061f65f0358079" desc="">
+    Typed Arrays
+  </message>
+  <message name="IDS_DEVTOOLS_41a813362d7dc28fd247f233f620cb7b" desc="">
+    Can&apos;t load profile while another profile is being recorded.
+  </message>
+  <message name="IDS_DEVTOOLS_42db600672cae99246e499a23827146b" desc="">
+    Heap snapshot profiles show memory distribution among your page&apos;s JavaScript objects and related DOM nodes.
+  </message>
+  <message name="IDS_DEVTOOLS_4307cf6e92b003765b9f493109f8fa51" desc="">
+    Native memory allocation sampling
+  </message>
+  <message name="IDS_DEVTOOLS_43190a68dbd847e2f98a7ddd04b2eec5" desc="">
+    Live Size
+  </message>
+  <message name="IDS_DEVTOOLS_433660c1f9743978edc4ca196b5b9f19" desc="">
+    Find by cost (&gt;50ms), name or file
+  </message>
+  <message name="IDS_DEVTOOLS_435eaeed5b69a2dfb7f343e28d109ce6" desc="">
+    Distance from window object
+  </message>
+  <message name="IDS_DEVTOOLS_4715ae2a2790290ba123375faa3a53f2" desc="">
+    High resolution CPU profiling
+  </message>
+  <message name="IDS_DEVTOOLS_497031794414a552435f90151ac3b54b" desc="">
+    Object
+  </message>
+  <message name="IDS_DEVTOOLS_4b08055cf5445d820914943222d4910c" desc="">
+    Script URL
+  </message>
+  <message name="IDS_DEVTOOLS_4ca19c06c6e03c07bced1d97ca861cf0" desc="">
+    # Delta
+  </message>
+  <message name="IDS_DEVTOOLS_4d4d76db5d9ef72b504f83d89af5b6dd" desc="">
+    Selected size: <ph name="NUMBER_BYTESTOSTRING_EVENT_DATA_SIZE_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4d8aa0a7e336e08bad365b81a197f184" desc="">
+    NATIVE SAMPLING PROFILES
+  </message>
+  <message name="IDS_DEVTOOLS_4daace4b0bc45c13739427cfc06cf7b7" desc="">
+    Text (Top Down)
+  </message>
+  <message name="IDS_DEVTOOLS_5209fac92c957988ce1453bb139790ce" desc="">
+    Failed to read file
+  </message>
+  <message name="IDS_DEVTOOLS_54a238e21ab577ca9c3100d0ed4cd02d" desc="">
+    Retained Size
+  </message>
+  <message name="IDS_DEVTOOLS_54ae9758deaa74226306072bea256c3c" desc="">
+    Stop heap profiling
+  </message>
+  <message name="IDS_DEVTOOLS_54afafa921428eed23978f633af4ce99" desc="">
+    Allocation sampling
+  </message>
+  <message name="IDS_DEVTOOLS_57b1250c3cbec60c67810ac83afb2c64" desc="">
+    (internal array)
+  </message>
+  <message name="IDS_DEVTOOLS_5dd1d9f5baa173ae9267b3631da17a83" desc="">
+    Self size
+  </message>
+  <message name="IDS_DEVTOOLS_5e0ebd581894697a7ae357bea6b7e590" desc="">
+    Start CPU profiling
+  </message>
+  <message name="IDS_DEVTOOLS_60dcffb26f0ed1b0c73f8cea5d5d9772" desc="">
+    Native memory allocation snapshot (<ph name="PROCESSTYPE">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_61b4b76027d49142c386737a0e94cedb" desc="">
+    NATIVE SNAPSHOTS
+  </message>
+  <message name="IDS_DEVTOOLS_62b96ca53ee08544d8d96269112df323" desc="">
+    JS Arrays
+  </message>
+  <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="">
+    Constructor
+  </message>
+  <message name="IDS_DEVTOOLS_6b59ba1fcfd868474cae169876f9cbfa" desc="">
+    Native memory snapshots show sampled native allocations in the renderer process since start up.
+              Chrome has to be started with --memlog=all flag. Check flags at chrome://flags
+  </message>
+  <message name="IDS_DEVTOOLS_6bb61b1a929f2a0186f2671cd8258bd9" desc="">
+    Not optimized: <ph name="THIS__DEOPTREASON">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6d27e30b2f09c2a451a6d123c1a35805" desc="">
+    Run <ph name="_">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6db0d0f1832acb4a56fc82f2317e61e6" desc="">
+    Parsing…
+  </message>
+  <message name="IDS_DEVTOOLS_6e9dd9cf5419fd65f433f1e4bbc5e6ad" desc="">
+    SAMPLING PROFILES
+  </message>
+  <message name="IDS_DEVTOOLS_710686e22674bcc79ef72c2485ca96b9" desc="">
+    Alloc. Size
+  </message>
+  <message name="IDS_DEVTOOLS_7327aea04bd0403771340a3fe03aa42b" desc="">
+    Stopping…
+  </message>
+  <message name="IDS_DEVTOOLS_7381d487d18845b379422325c0a768d6" desc="">
+    Loaded
+  </message>
+  <message name="IDS_DEVTOOLS_75d436b4fd4142db941be900a86b9b3e" desc="">
+    Allocation stack
+  </message>
+  <message name="IDS_DEVTOOLS_7602c7108888133a3e00de63256ae444" desc="">
+    Shallow Size
+  </message>
+  <message name="IDS_DEVTOOLS_7806c2199c12b018327832bcb3ae20ce" desc="">
+    Detached from DOM tree
+  </message>
+  <message name="IDS_DEVTOOLS_78a1e5aee115faf6ebf8f2a38ce553d4" desc="">
+    Clear all profiles
+  </message>
+  <message name="IDS_DEVTOOLS_7ae47a5ac9257db8c7bb89c7afa4db7c" desc="">
+    Take snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_7cb94d94002a34c350cad72e6649c5fe" desc="">
+    Stack was not recorded for this object because it had been allocated before this profile recording started.
+  </message>
+  <message name="IDS_DEVTOOLS_7d3d3a2b500a662396911596807715d0" desc="">
+    Tree (Top Down)
+  </message>
+  <message name="IDS_DEVTOOLS_7e2586c09a41264908762549314a94c0" desc="">
+    CPU PROFILES
+  </message>
+  <message name="IDS_DEVTOOLS_85000e6433d4ac4033e6d7f5a3466f92" desc="">
+    Reveal in Summary view
+  </message>
+  <message name="IDS_DEVTOOLS_86408593c34af77fdd90df932f8b5261" desc="">
+    Function
+  </message>
+  <message name="IDS_DEVTOOLS_86a699c935e3e7e36e334bb61a336f02" desc="">
+    Start heap profiling
+  </message>
+  <message name="IDS_DEVTOOLS_86de9c70eae18dbd7e1f99cc73f5ce43" desc="">
+    # New
+  </message>
+  <message name="IDS_DEVTOOLS_89be9433646f5939040a78971a5d103a" desc="">
+    Strings
+  </message>
+  <message name="IDS_DEVTOOLS_8b8561904173cf8ded80c66eb9628bc3" desc="">
+    ⬇<ph name="CHANGERATETEXT">$1s</ph>/s
+  </message>
+  <message name="IDS_DEVTOOLS_8df507632e20dff27e88902c825db002" desc="">
+    Heap profiler is recording
+  </message>
+  <message name="IDS_DEVTOOLS_8e77c83fffc021286d4790b1a28bd695" desc="">
+    Select profiling type
+  </message>
+  <message name="IDS_DEVTOOLS_9075bd476d18e24259dc388a4569b723" desc="">
+    Record memory allocations using sampling method.
+              This profile type has minimal performance overhead and can be used for long running operations.
+              It provides good approximation of allocations broken down by JavaScript execution stack.
+  </message>
+  <message name="IDS_DEVTOOLS_9206de0db462c24e8a56433e2f7b7c75" desc="">
+    Heap Snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_959f661cf87130eea5c8e5671c013741" desc="">
+    Objects allocated before <ph name="LIST_I__TITLE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_967d1bd7c21531622e5edfa6c5bf320a" desc="">
+    Take heap snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_974eabe9dfc86e52b41b310218ac7d05" desc="">
+    Total size
+  </message>
+  <message name="IDS_DEVTOOLS_9794a8cf80d4f6b67dca3c7381847486" desc="">
+    Self Size (bytes)
+  </message>
+  <message name="IDS_DEVTOOLS_9d247d9b5e90f2c983240d32113d06d2" desc="">
+    Load…
+  </message>
+  <message name="IDS_DEVTOOLS_9e854bf5f75e670228f33f9fe857793d" desc="">
+    Size of the object plus the graph it retains in bytes
+  </message>
+  <message name="IDS_DEVTOOLS_9f29da220ed82809ec5dd70af4e52904" desc="">
+    Total Time
+  </message>
+  <message name="IDS_DEVTOOLS_a6122a65eaa676f700ae68d393054a37" desc="">
+    Start
+  </message>
+  <message name="IDS_DEVTOOLS_a73538b7cd30c19b094438e16da9403d" desc="">
+    Exclude selected function
+  </message>
+  <message name="IDS_DEVTOOLS_a7bd935a88c629dc11c52e0c16c2a8a0" desc="">
+    <ph name="DISTANCE">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_a8445619abd08f3ba0ebfcb31183f7f9" desc="">
+    −
+  </message>
+  <message name="IDS_DEVTOOLS_a92758ee94689bc49f2d6b891e746737" desc="">
+    HEAP SNAPSHOTS
+  </message>
+  <message name="IDS_DEVTOOLS_a97cce5b0a66cd7d7b7b7d2e06b7605c" desc="">
+    Can&apos;t load file. Supported file extensions: &apos;<ph name="ARRAY_FROM_EXTENSIONS__JOIN________">$1s</ph>&apos;.
+  </message>
+  <message name="IDS_DEVTOOLS_aab112fba39c10ed5df335ae0e47f329" desc="">
+    Not optimized
+  </message>
+  <message name="IDS_DEVTOOLS_ad49e602302b1ca117245c4f19ef4450" desc="">
+    Retainers
+  </message>
+  <message name="IDS_DEVTOOLS_ad857c29fb46afef4e17d658f34ead22" desc="">
+    An error occurred when a call to method &apos;<ph name="DATA_ERRORMETHODNAME">$1s</ph>&apos; was requested
+  </message>
+  <message name="IDS_DEVTOOLS_aebc3d61d99dd094fd29afc12dcd8e1f" desc="">
+    Allocation instrumentation on timeline
+  </message>
+  <message name="IDS_DEVTOOLS_b59674dba88cebbb4b94a32066ad3dd0" desc="">
+    Loading… <ph name="NUMBER_BYTESTOSTRING_THIS__JSONIFIEDPROFILE_LENGTH_">$1d</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_b8e4045b98241a124561c4d2a69731b8" desc="">
+    Heavy (Bottom Up)
+  </message>
+  <message name="IDS_DEVTOOLS_bc033a16b36d2d313489933a63a938cf" desc="">
+    Live Heap Profile
+  </message>
+  <message name="IDS_DEVTOOLS_bd0a5e31e9b3c87eb2d3c19b00cedfc3" desc="">
+    Heap memory usage
+  </message>
+  <message name="IDS_DEVTOOLS_c22d30084d8ddc9a571512ddee6a83e9" desc="">
+    Total time
+  </message>
+  <message name="IDS_DEVTOOLS_c2b9b79ea4770ae01a139fe953310039" desc="">
+    Live Count
+  </message>
+  <message name="IDS_DEVTOOLS_c33e404a441c6ba9648f88af3c68a1ca" desc="">
+    Statistics
+  </message>
+  <message name="IDS_DEVTOOLS_c9cc8cce247e49bae79f15173ce97354" desc="">
+    Save
+  </message>
+  <message name="IDS_DEVTOOLS_ca0dbad92a874b2f69b549293387925e" desc="">
+    Code
+  </message>
+  <message name="IDS_DEVTOOLS_ca425f84afc5ad77fc9c4d75eed8113f" desc="">
+    ⬆<ph name="CHANGERATETEXT">$1s</ph>/s
+  </message>
+  <message name="IDS_DEVTOOLS_cce99c598cfdb9773ab041d54c3d973a" desc="">
+    Profile
+  </message>
+  <message name="IDS_DEVTOOLS_d06bb9eb4ee32f700ffc1c9f8e5c0a25" desc="">
+    Aggregated self time
+  </message>
+  <message name="IDS_DEVTOOLS_d0f25115288c15321ecf672f0d6a83ea" desc="">
+    Profiles
+  </message>
+  <message name="IDS_DEVTOOLS_d1c7c250869b52eefda57caa7e6eda20" desc="">
+    Stop recording heap profile
+  </message>
+  <message name="IDS_DEVTOOLS_d3d9fdef0e91fc4aba18e57475fd74ea" desc="">
+    VMs
+  </message>
+  <message name="IDS_DEVTOOLS_d46b0b413885c920720180d0af60ff54" desc="">
+    Record JavaScript CPU Profile
+  </message>
+  <message name="IDS_DEVTOOLS_d4bbbe0308b348c609eb4cab28150f80" desc="">
+    Heap snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_d5a263d11105678cc9ae7d29efc4ccc8" desc="">
+    
+        Allocation timelines show instrumented JavaScript memory allocations over time.
+        Once profile is recorded you can select a time interval to see objects that
+        were allocated within it and still alive by the end of recording.
+        Use this profile type to isolate memory leaks.
+  </message>
+  <message name="IDS_DEVTOOLS_d5e5683e3f616ed72e310476bb97f33f" desc="">
+    Size of the object itself in bytes
+  </message>
+  <message name="IDS_DEVTOOLS_d9319f0a43aaf399eebd2d28713e823a" desc="">
+    Select JavaScript VM instance
+  </message>
+  <message name="IDS_DEVTOOLS_d9c86ffece4f8636e406975843aa7b4d" desc="">
+    Live objects
+  </message>
+  <message name="IDS_DEVTOOLS_da9157d11966e9225d29d4f1f0ca3d75" desc="">
+    Total page JS heap size across all VM instances.
+  </message>
+  <message name="IDS_DEVTOOLS_dc1270259e986e0406259be39a53c8ad" desc="">
+    Record allocation stacks (extra performance overhead)
+  </message>
+  <message name="IDS_DEVTOOLS_dce00dbf94282d9be42f7d6a4ebc2c41" desc="">
+    Self time
+  </message>
+  <message name="IDS_DEVTOOLS_ddacdca2bfda777bb0cb7668d76df5f4" desc="">
+    (Anonymous Script <ph name="NODE_CALLFRAME_SCRIPTID">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_df3b67aec764dd36b2a1e94d7f205051" desc="">
+    ALLOCATION TIMELINES
+  </message>
+  <message name="IDS_DEVTOOLS_e098faba9dade304f660aed30940747a" desc="">
+    Start recording heap profile
+  </message>
+  <message name="IDS_DEVTOOLS_e93f994f01c537c4e2f7d8528c3eb5e9" desc="">
+    Count
+  </message>
+  <message name="IDS_DEVTOOLS_ea1c7351fd540546f03ac089a7b41eb3" desc="">
+    Profile loading failed: <ph name="ERROR_MESSAGE">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_ed195e39f2d26aed511b5c86c75935d8" desc="">
+    Size Delta
+  </message>
+  <message name="IDS_DEVTOOLS_eec806d119a5eddd61e2ccd21bfd9b20" desc="">
+    Aggregated total time
+  </message>
+  <message name="IDS_DEVTOOLS_ef15fd2f45e6bb5ce57587895ba64f93" desc="">
+    Browser
+  </message>
+  <message name="IDS_DEVTOOLS_f19dbf2edb3a0bd74b0524d960ff21eb" desc="">
+    Load
+  </message>
+  <message name="IDS_DEVTOOLS_f3e40bc520cf1f22e4d36d5c5f8d2618" desc="">
+    User object reachable from window
+  </message>
+  <message name="IDS_DEVTOOLS_f4dab52bcaa99b605451620178a1ee4e" desc="">
+    File &apos;<ph name="READER_FILENAME__">$1s</ph>&apos; read error: <ph name="READER_ERROR___MESSAGE">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f6c0e3a1c3cfabd32ae8d3ae741fcf0a" desc="">
+    Comparison
+  </message>
+  <message name="IDS_DEVTOOLS_f6ff777632b4b524d2f203c78359eed2" desc="">
+    Saving… <ph name="PERCENTVALUE">$1d</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_fbbe8b507083defdbfe14a341551c77b" desc="">
+    CPU profiles show where the execution time is spent in your page&apos;s JavaScript functions.
+  </message>
+  <message name="IDS_DEVTOOLS_fdbd92f0c6b67291ca954b74885d434e" desc="">
+    Profile <ph name="TYPE_NEXTPROFILEUID__">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_ffd4ebcdf9ad139d4cd2c84d853f4f34" desc="">
+    Total Size (bytes)
+  </message>
+</grit-part>

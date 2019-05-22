@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0818b6e40afc14684d727176bd222aa0" desc="">
+    Set indentation to 2 spaces
+  </message>
+  <message name="IDS_DEVTOOLS_194f5394ae2e9c74dc3c441b92862d1d" desc="">
+    Font
+  </message>
+  <message name="IDS_DEVTOOLS_22a4f3a07431f171506336782f211c61" desc="">
+    Drop image file here
+  </message>
+  <message name="IDS_DEVTOOLS_261e3ec3b2545f38725d7bfe67146cc6" desc="">
+    Set indentation to 8 spaces
+  </message>
+  <message name="IDS_DEVTOOLS_33443fc55632401a517b16878389f2f6" desc="">
+    Set indentation to 4 spaces
+  </message>
+  <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="">
+    Find
+  </message>
+  <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="">
+    Pretty print
+  </message>
+  <message name="IDS_DEVTOOLS_5ada9c9e1dad2e7e20aaa7688d7bd6c7" desc="">
+    Line <ph name="LOCATION_______">$1s</ph>, Column <ph name="LOCATION_______">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6efb3f8d955fc3395726044acec66129" desc="">
+    <ph name="THIS__IMAGEPREVIEWELEMENT_NATURALWIDTH">$1d</ph> × <ph name="THIS__IMAGEPREVIEWELEMENT_NATURALHEIGHT">$2d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_700a6fe957fe2782a2412e4397bce276" desc="">
+    Open image in new tab
+  </message>
+  <message name="IDS_DEVTOOLS_70a0a440eed4f94a3632d346b03d9a53" desc="">
+    2 spaces
+  </message>
+  <message name="IDS_DEVTOOLS_7894a953b2e5c818b263e862929417f3" desc="">
+    Tab character
+  </message>
+  <message name="IDS_DEVTOOLS_84ce71f0603df8984b0adcf5248189e3" desc="">
+    Copy image URL
+  </message>
+  <message name="IDS_DEVTOOLS_89733eed06340faa760afff3b68a90ba" desc="">
+    <ph name="SELECTEDTEXT_LENGTH">$1d</ph> characters selected
+  </message>
+  <message name="IDS_DEVTOOLS_a04563146775acda156e27c41a068e65" desc="">
+    Nothing to preview
+  </message>
+  <message name="IDS_DEVTOOLS_abd971c026bf77d9ed737cebeed94889" desc="">
+    Default indentation:
+  </message>
+  <message name="IDS_DEVTOOLS_af70cf4b9f56cd69eb56ae32f21e8416" desc="">
+    <ph name="SELECTIONS_LENGTH">$1d</ph> selection regions
+  </message>
+  <message name="IDS_DEVTOOLS_be53a0541a6d36f6ecb879fa2c584b08" desc="">
+    Image
+  </message>
+  <message name="IDS_DEVTOOLS_c144a6b9ff31ca0302b1cf94d4d540a0" desc="">
+    <ph name="TEXTRANGE_ENDLINE___TEXTRANGE_STARTLINE____">$1d</ph> lines, <ph name="SELECTEDTEXT_LENGTH">$2d</ph> characters selected
+  </message>
+  <message name="IDS_DEVTOOLS_d7c4338058e90b2cad7c9ff93588c1ec" desc="">
+    8 spaces
+  </message>
+  <message name="IDS_DEVTOOLS_ea1fe1846b8a6d69ebf101a05a5fc194" desc="">
+    Copy image as data URI
+  </message>
+  <message name="IDS_DEVTOOLS_fb49df2db96d183474fb9e954a9f0e52" desc="">
+    Set indentation to tab character
+  </message>
+  <message name="IDS_DEVTOOLS_fb61758d0f0fda4ba867c3d5a46c16a7" desc="">
+    Sources
+  </message>
+  <message name="IDS_DEVTOOLS_fe81050cdc3adc7c1912fc08b7aec77f" desc="">
+    4 spaces
+  </message>
+</grit-part>

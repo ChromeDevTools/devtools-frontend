@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_146ffe2fd9fa5bec3b63b52543793ec7" desc="">
+    Show more
+  </message>
+  <message name="IDS_DEVTOOLS_158eabad9d23e8a99bbcfd6f411c575f" desc="">
+    Remove color
+  </message>
+  <message name="IDS_DEVTOOLS_1690e1c6a6b4c615cc36ab66570996b4" desc="">
+    Toggle color picker
+  </message>
+  <message name="IDS_DEVTOOLS_19dcdfb6d075db15609e75214f67189f" desc="">
+    Remove all to the right
+  </message>
+  <message name="IDS_DEVTOOLS_2e8882b1e1deaa1bb50cbdfe188755f6" desc="">
+    Copy color to clipboard
+  </message>
+  <message name="IDS_DEVTOOLS_38d7dc102a918c3b0031c9fde807308a" desc="">
+    Pick background color
+  </message>
+  <message name="IDS_DEVTOOLS_39186fc9ea0f3ccf697b31a288e0723f" desc="">
+    Toggle background color picker
+  </message>
+  <message name="IDS_DEVTOOLS_3b98e2dffc6cb06a89dcb0d5c60a0206" desc="">
+    AA
+  </message>
+  <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="">
+    Contrast ratio
+  </message>
+  <message name="IDS_DEVTOOLS_b201b2e7e7a20df48b625f20c2f0933e" desc="">
+    Color Palettes
+  </message>
+  <message name="IDS_DEVTOOLS_b74447172f9edfe492a21feee374c1fd" desc="">
+    Clear palette
+  </message>
+  <message name="IDS_DEVTOOLS_bbe0cb0a04956e97e8fc70f519d10e0d" desc="">
+    <ph name="PALETTE_COLORS_I_">$1s</ph>. Long-click to show alternate shades.
+  </message>
+  <message name="IDS_DEVTOOLS_c74ea6dbff701bfa23819583c52ebd97" desc="">
+    Show less
+  </message>
+  <message name="IDS_DEVTOOLS_ce82e07fa1f0521f5cee30e368fe2e73" desc="">
+    : <ph name="AA_TOFIXED___">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d1e2107b34fa404fabd54bcce4fd858f" desc="">
+    Add to palette
+  </message>
+  <message name="IDS_DEVTOOLS_e1faffb3e614e6c2fba74296962386b7" desc="">
+    AAA
+  </message>
+</grit-part>

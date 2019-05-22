@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_02969932cf572213e2401893f4182af2" desc="">
+    Remove all expressions
+  </message>
+  <message name="IDS_DEVTOOLS_03342349032c8ef8f5898c49a088de55" desc="">
+    Accept suggestion
+  </message>
+  <message name="IDS_DEVTOOLS_047e62ee63b0c14a249a79bc6be0a493" desc="">
+    Do not group similar messages in console
+  </message>
+  <message name="IDS_DEVTOOLS_04c247c2ba261c7511e4f479728bd7ea" desc="">
+    Do not treat evaluation as user activation
+  </message>
+  <message name="IDS_DEVTOOLS_0511551e6cf7d61acd9b62f9304efa93" desc="">
+    Do not clear log on page reload / navigation
+  </message>
+  <message name="IDS_DEVTOOLS_07213a0161f52846ab198be103b5ab43" desc="">
+    errors
+  </message>
+  <message name="IDS_DEVTOOLS_0a2f561bf52ee6d8cd2dda123c8f74fe" desc="">
+    Default levels
+  </message>
+  <message name="IDS_DEVTOOLS_0b03bf8af8380330766ad55ff2004a95" desc="">
+    Selected context only
+  </message>
+  <message name="IDS_DEVTOOLS_0bafe921e13474bf5fc3f1ad62496905" desc="">
+    [Intervention] <ph name="MESSAGETEXT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0bbce02e304562c295a1d57d66c296d3" desc="">
+    &lt;URL&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_0eaadb4fcb48a0a0ed7bc9868be9fbaa" desc="">
+    Warning
+  </message>
+  <message name="IDS_DEVTOOLS_0fa06588bd5c83bd6f3b1734eefc6b16" desc="">
+    Hide messages from <ph name="NEW_COMMON_PARSEDURL_CONSOLEMESSAGE_URL__DISPLAYNAME">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_142329f312b9f9a97f9726342813dec2" desc="">
+    Next/previous line
+  </message>
+  <message name="IDS_DEVTOOLS_1a37d25ba6689d174f51ba8e2425fde6" desc="">
+    &lt;other&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_1ebc7540a5327b857144f04cf1435b4e" desc="">
+    Replay XHR
+  </message>
+  <message name="IDS_DEVTOOLS_26649c8f3cadc9c0170f2443e6fc0252" desc="">
+    &lt;attribute&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_278cf66841e1d342f3115006e82c5dd9" desc="">
+    Repeat <ph name="THIS__REPEATCOUNT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2a5a5a712c2bfb6c506cb669b8d81709" desc="">
+    Clear console history
+  </message>
+  <message name="IDS_DEVTOOLS_2b76cfdf5b790de0a27ba7fc58a919c8" desc="">
+    Warning <ph name="ACCESSIBLENAME">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2b918231caba2d08f2223246ac06222c" desc="">
+    Copy visible styled selection
+  </message>
+  <message name="IDS_DEVTOOLS_2c7aea4237e25b4f8ee3b0bf77d6fed0" desc="">
+    verbose
+  </message>
+  <message name="IDS_DEVTOOLS_2d82fe5a069854a35204b4e64e8e08ae" desc="">
+    Console settings
+  </message>
+  <message name="IDS_DEVTOOLS_2f20693f226f0545a8b68ef4f59fb02e" desc="">
+    [Violation] <ph name="MESSAGETEXT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_375855385115b292f160b5131495003d" desc="">
+    console.clear() was prevented due to &apos;Preserve log&apos;
+  </message>
+  <message name="IDS_DEVTOOLS_383b1deb90603a79d86f3ae82e55a9e2" desc="">
+    <ph name="THIS__HIDDENBYFILTERCOUNT">$1s</ph> hidden
+  </message>
+  <message name="IDS_DEVTOOLS_3879149292f9af4469cec013785d6dfd" desc="">
+    warnings
+  </message>
+  <message name="IDS_DEVTOOLS_388024c56c38c3d1c635b09a2b28b8ac" desc="">
+    Value below was evaluated just now.
+  </message>
+  <message name="IDS_DEVTOOLS_3cec12c2368b11d9585823ac9d631edb" desc="">
+    Hide all
+  </message>
+  <message name="IDS_DEVTOOLS_4059b0251f66a18cb56f544728796875" desc="">
+    Info
+  </message>
+  <message name="IDS_DEVTOOLS_405b66a12f196edc715fe9f3f2c84b04" desc="">
+    Hide timestamps
+  </message>
+  <message name="IDS_DEVTOOLS_411f3a865d83fba7f4772925666cfa7c" desc="">
+    Hide network messages
+  </message>
+  <message name="IDS_DEVTOOLS_468312e6ff2ebf1b104e5d7f489de74d" desc="">
+    Eagerly evaluate text in the prompt
+  </message>
+  <message name="IDS_DEVTOOLS_4c8b530161336f95d0c2f13337556954" desc="">
+    Show network messages
+  </message>
+  <message name="IDS_DEVTOOLS_4cad9e20fde3f8991c5dd1d6a0fe13e7" desc="">
+    Remove expression
+  </message>
+  <message name="IDS_DEVTOOLS_4d1b0b75a9737b7dcdc3a15a84fe856b" desc="">
+    Searching…
+  </message>
+  <message name="IDS_DEVTOOLS_4f9afe303d0e8c68e3518756e1734924" desc="">
+    Clear console prompt
+  </message>
+  <message name="IDS_DEVTOOLS_53f0fca28a013c116a1df533d9bdf764" desc="">
+    [Deprecation] <ph name="MESSAGETEXT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_5ef0c737746fae2ca90e66c39333f8f6" desc="">
+    Errors
+  </message>
+  <message name="IDS_DEVTOOLS_5f8442a46861496e9d2a3d11be13692b" desc="">
+    Writing file…
+  </message>
+  <message name="IDS_DEVTOOLS_6047a6c9fb775557639afb3fbc90b4e7" desc="">
+    Log levels
+  </message>
+  <message name="IDS_DEVTOOLS_63e4e92bb7d207ca577b11c07f827279" desc="">
+    Extension
+  </message>
+  <message name="IDS_DEVTOOLS_650140bd73628d283d870d4648ae3324" desc="">
+    Find string in logs
+  </message>
+  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="">
+    Value
+  </message>
+  <message name="IDS_DEVTOOLS_6cdd8769d46bb96331ac4a96d3ea84b8" desc="">
+    Clear all messages with <ph name="UI_SHORTCUTREGISTRY_SHORTCUTTITLEFORACTION__CONSOLE_CLEAR__">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_6eed4ce2d5859b11dc44a5e3bd91af20" desc="">
+    Eager evaluation
+  </message>
+  <message name="IDS_DEVTOOLS_78e731027d8fd50ed642340b7c9a63b3" desc="">
+    message
+  </message>
+  <message name="IDS_DEVTOOLS_7a1920d61156abc05a60135aefe8bc67" desc="">
+    Default
+  </message>
+  <message name="IDS_DEVTOOLS_7b83d3f08fa392b79e3f553b585971cd" desc="">
+    warning
+  </message>
+  <message name="IDS_DEVTOOLS_7be1a30a7758269755609f1f7434d828" desc="">
+    Group similar messages in console
+  </message>
+  <message name="IDS_DEVTOOLS_84d0c431d1472a0609d69b39dcb3a287" desc="">
+    (index)
+  </message>
+  <message name="IDS_DEVTOOLS_902b0d55fddef6f8d651fe1035b7d4bd" desc="">
+    Error
+  </message>
+  <message name="IDS_DEVTOOLS_93977f1310f482395375a9950b512462" desc="">
+    Eagerly evaluate console prompt text
+  </message>
+  <message name="IDS_DEVTOOLS_95c74dafb449d894014c2eb1d80ded01" desc="">
+    Edit expression
+  </message>
+  <message name="IDS_DEVTOOLS_988aa266ba49ce9da4c7e10f4b477ec4" desc="">
+    Next/previous command
+  </message>
+  <message name="IDS_DEVTOOLS_9aae9fe27dbf2db0ad90762b5b59d3a7" desc="">
+    Clear console
+  </message>
+  <message name="IDS_DEVTOOLS_9d8c209e49e328528c39c273798e98c9" desc="">
+    Save as...
+  </message>
+  <message name="IDS_DEVTOOLS_a092483ed730ed040e5df5776dca49e5" desc="">
+    Log XMLHttpRequests
+  </message>
+  <message name="IDS_DEVTOOLS_a1948ddb50d0bbd31e36f1fbc45479a0" desc="">
+    Autocomplete from history
+  </message>
+  <message name="IDS_DEVTOOLS_a1a6657be79cc0fc1e9b23b9e108f043" desc="">
+    Expression
+  </message>
+  <message name="IDS_DEVTOOLS_a3eb3c95c4cb8e06fd3682c1f0d70bc0" desc="">
+    Only show messages from the current context (top, iframe, worker, extension)
+  </message>
+  <message name="IDS_DEVTOOLS_abba8787b900565790eae8ceceed3c2b" desc="">
+    Do not autocomplete from history
+  </message>
+  <message name="IDS_DEVTOOLS_ac17bdcb3f6c8d86ccb64aff1ab8db7c" desc="">
+    Console was cleared
+  </message>
+  <message name="IDS_DEVTOOLS_ac2671ba859591dd83845c680aaa144e" desc="">
+    user messages
+  </message>
+  <message name="IDS_DEVTOOLS_ace3e0307b2ce23a81b18747fc5f555f" desc="">
+    Function was resolved from bound function.
+  </message>
+  <message name="IDS_DEVTOOLS_b184e7a44bed11a41d9c104529010e23" desc="">
+    <ph name="THIS__LEVELLABELS_NAME_">$1s</ph> only
+  </message>
+  <message name="IDS_DEVTOOLS_b2f8489bbd55a4e9b9edbbbfe49edf70" desc="">
+    not available
+  </message>
+  <message name="IDS_DEVTOOLS_b5735f8c6deff6306a2216612ca80f0e" desc="">
+    JavaScript contexts
+  </message>
+  <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="">
+    No
+  </message>
+  <message name="IDS_DEVTOOLS_bb63b17b21e67aa2cc30cf01bae36695" desc="">
+    Execute command
+  </message>
+  <message name="IDS_DEVTOOLS_bccaa4aa80831b76c11240a16447975f" desc="">
+    Console
+  </message>
+  <message name="IDS_DEVTOOLS_c0274fa278f2e0dfef862234e0eb9b8b" desc="">
+    &lt;exception&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_c9818b2c0890a205d294a2b31354f8b4" desc="">
+    All levels
+  </message>
+  <message name="IDS_DEVTOOLS_ca3c4b269c23985d3c1204c203ad84d8" desc="">
+    Group similar
+  </message>
+  <message name="IDS_DEVTOOLS_ca6ceb8e597abb1298b84b1aaadc229b" desc="">
+    Show timestamps
+  </message>
+  <message name="IDS_DEVTOOLS_caf037034c3205725511c1216f772402" desc="">
+    &lt;some&gt; event
+  </message>
+  <message name="IDS_DEVTOOLS_caf9b6b99962bf5c2264824231d7a40c" desc="">
+    info
+  </message>
+  <message name="IDS_DEVTOOLS_cb5e100e5a9a3e7f6d1fd97512215282" desc="">
+    error
+  </message>
+  <message name="IDS_DEVTOOLS_cf3eed6aa30c47cec1321a835dc7b1ac" desc="">
+    Treat evaluation as user activation
+  </message>
+  <message name="IDS_DEVTOOLS_d0990066fbdfd3753fb45300d57e4364" desc="">
+    Hide network
+  </message>
+  <message name="IDS_DEVTOOLS_d35866a5d1161b48670e28e8c8550e89" desc="">
+    Assertion failed: 
+  </message>
+  <message name="IDS_DEVTOOLS_d3f526e5326c06d47ab12240d604f87a" desc="">
+    took &lt;N&gt;ms
+  </message>
+  <message name="IDS_DEVTOOLS_d4a9fa383ab700c5bdd6f31cf7df0faf" desc="">
+    Verbose
+  </message>
+  <message name="IDS_DEVTOOLS_d61de8e8b9dfdf0e7a52bf2e4fd23e72" desc="">
+     M&lt;XX&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_d7746aa6b562c73487a4015eef3244e9" desc="">
+    IFrame
+  </message>
+  <message name="IDS_DEVTOOLS_d7778d0c64b6ba21494c97f77a66885a" desc="">
+    Filter
+  </message>
+  <message name="IDS_DEVTOOLS_d779282283c011149d163edbcd5e5f11" desc="">
+    Evaluate, allowing side effects
+  </message>
+  <message name="IDS_DEVTOOLS_de6fc8cb2d1b20158aeda5cd1cb2e03c" desc="">
+    Show messages from all contexts
+  </message>
+  <message name="IDS_DEVTOOLS_de70938849b75d3db63bba421c93e018" desc="">
+    messages
+  </message>
+  <message name="IDS_DEVTOOLS_dfcc689f6e70e39a408b78912822cec9" desc="">
+    Error <ph name="ACCESSIBLENAME">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e178ba306750ffbfdba284f60a3743b0" desc="">
+    Do not eagerly evaluate console prompt text
+  </message>
+  <message name="IDS_DEVTOOLS_e17fdb615452f440c793b5ddad90dd5e" desc="">
+    Warnings
+  </message>
+  <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="">
+    Create live expression
+  </message>
+  <message name="IDS_DEVTOOLS_eacaf2bd1c1414e5086cf04573e154ef" desc="">
+    e.g. /event\d/ -cdn url:a.com
+  </message>
+  <message name="IDS_DEVTOOLS_ebfab4df1bb91688c62d4523eba870a5" desc="">
+    Evaluate triggers user activation
+  </message>
+  <message name="IDS_DEVTOOLS_f8ec55cf268ca6106fb23a98523b7549" desc="">
+    user message
+  </message>
+  <message name="IDS_DEVTOOLS_fb554075057f4d116097df434bcef393" desc="">
+    This value will not be collected until console is cleared.
+  </message>
+  <message name="IDS_DEVTOOLS_fbb5dc83cad4daf746720c90bfb8d306" desc="">
+    Custom levels
+  </message>
+</grit-part>

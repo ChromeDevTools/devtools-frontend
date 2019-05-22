@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_043d2f0a7edca94cae1cfbf3f90b3b68" desc="">
+    Animations
+  </message>
+  <message name="IDS_DEVTOOLS_105b296a83f9c105355403f3332af50f" desc="">
+    Pause
+  </message>
+  <message name="IDS_DEVTOOLS_31fb6ba50d7a98f1650f282ecc45af77" desc="">
+    Set speed to <ph name="BUTTON_TEXTCONTENT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4008ed4e30be53588254064e9bca502e" desc="">
+    Pause timeline
+  </message>
+  <message name="IDS_DEVTOOLS_5fe41afb268c87f4f56027023d3e6406" desc="">
+    <ph name="PLAYBACKRATE______">$1s</ph>%
+  </message>
+  <message name="IDS_DEVTOOLS_81aa2078d1eceede831b2976dbf32e62" desc="">
+    Clear all
+  </message>
+  <message name="IDS_DEVTOOLS_96952fa958a61d47ed4dee3f2c3dee64" desc="">
+    Pause all
+  </message>
+  <message name="IDS_DEVTOOLS_96b5ffa6e4c4b57e832f8e26229ed786" desc="">
+    Play timeline
+  </message>
+  <message name="IDS_DEVTOOLS_9ea575b416c0fb4d80772ab08ce039f8" desc="">
+    Select an effect above to inspect and modify.
+  </message>
+  <message name="IDS_DEVTOOLS_ba5ef3fb1e406e7707dc5f449adaa176" desc="">
+    Listening for animations...
+  </message>
+  <message name="IDS_DEVTOOLS_bdf578b505f481a1dbb4555c16dd9a51" desc="">
+    Replay timeline
+  </message>
+  <message name="IDS_DEVTOOLS_bffa3e523792264bd31830c746b6d388" desc="">
+    Resume all
+  </message>
+</grit-part>

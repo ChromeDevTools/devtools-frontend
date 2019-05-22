@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0975cd80b6efbfa27546aa1567bc8143" desc="">
+    Instrument coverage
+  </message>
+  <message name="IDS_DEVTOOLS_140f5ed61f8c7390c3e38d7f6af6bd4b" desc="">
+    Click the record button <ph name="RECORDBUTTON">$1s</ph> to start capturing coverage.
+Click the reload button <ph name="RELOADBUTTON">$2s</ph> to reload and start capturing coverage.
+  </message>
+  <message name="IDS_DEVTOOLS_1a49594b5f00e4f511ae8935c027cd8e" desc="">
+    Unused Bytes
+  </message>
+  <message name="IDS_DEVTOOLS_2adbfb69a37aa4a29ca846736d2111db" desc="">
+    JS (coarse)
+  </message>
+  <message name="IDS_DEVTOOLS_2c56c360580420d293172f42d85dfbed" desc="">
+    CSS
+  </message>
+  <message name="IDS_DEVTOOLS_5bc06f5800d415cc95e1349edbaca425" desc="">
+    JS
+  </message>
+  <message name="IDS_DEVTOOLS_6525b37c568c526bde7c02fac8195c73" desc="">
+    <ph name="UNUSEDSIZE___THIS__COVERAGEINFO_SIZE________">$1.1f</ph> %%
+  </message>
+  <message name="IDS_DEVTOOLS_73af525212a812236f1a3618e9cfa717" desc="">
+    Export...
+  </message>
+  <message name="IDS_DEVTOOLS_8324d82d6d4baaa0405621a1a15f365a" desc="">
+    Stop instrumenting coverage and show results
+  </message>
+  <message name="IDS_DEVTOOLS_832e506a71f4a57ed15ecbcd771f9247" desc="">
+    Total Bytes
+  </message>
+  <message name="IDS_DEVTOOLS_8e8c9f0a8c3469d9900728e8b1d451cb" desc="">
+    URL filter
+  </message>
+  <message name="IDS_DEVTOOLS_95dd3a82779cda9791819969c51c97d3" desc="">
+    Click the record button <ph name="RECORDBUTTON">$1s</ph> to start capturing coverage.
+  </message>
+  <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="">
+    Coverage
+  </message>
+  <message name="IDS_DEVTOOLS_a1fa27779242b4902f7ae3bdd5c6d508" desc="">
+    Type
+  </message>
+  <message name="IDS_DEVTOOLS_bca27ccb808f436cd1ce828dd47604b7" desc="">
+    Start instrumenting coverage and reload page
+  </message>
+  <message name="IDS_DEVTOOLS_c4ba5b981ea7d2c17178a6c879cc03bd" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$1s</ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s</ph> bytes are not used. (<ph name="PERCENTUNUSED">$3d</ph>%%)
+  </message>
+  <message name="IDS_DEVTOOLS_d95b97f3bac1a32fc1f27686f74b97de" desc="">
+    JS coverage is function-level only. Reload the page for block-level coverage.
+  </message>
+  <message name="IDS_DEVTOOLS_d98bd5257b9f29c266777264411735a3" desc="">
+    Include extension content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_e6b391a8d2c4d45902a23a8b6585703d" desc="">
+    URL
+  </message>
+</grit-part>

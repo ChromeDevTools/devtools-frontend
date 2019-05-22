@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_180bc3b1c5619aaef40e803f49921012" desc="">
+    Spread
+  </message>
+  <message name="IDS_DEVTOOLS_2134e3ae0c489ce87a007a082d6a9a29" desc="">
+    X offset
+  </message>
+  <message name="IDS_DEVTOOLS_575ed851c8964c290e73055ffdc085a6" desc="">
+    Y offset
+  </message>
+  <message name="IDS_DEVTOOLS_5e9fb94d2ec46e6f829196c229e2b194" desc="">
+    Outset
+  </message>
+  <message name="IDS_DEVTOOLS_8b52de510bc5497ac43abfe566be48ab" desc="">
+    Blur
+  </message>
+  <message name="IDS_DEVTOOLS_b56d315e49178ba86341ff3b4e337c6b" desc="">
+    Inset
+  </message>
+  <message name="IDS_DEVTOOLS_d65b5983f317c42c6f6dff5678e628ca" desc="">
+    Shift-click to change color format
+  </message>
+</grit-part>

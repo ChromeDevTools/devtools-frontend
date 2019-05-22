@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_07a573e3035e9f8a7380a801df3a920f" desc="">
+    Slow 3G &amp; 6x CPU slowdown
+  </message>
+  <message name="IDS_DEVTOOLS_0936559ca32dc012bcc81444bec17ea4" desc="">
+    Force disconnected from network
+  </message>
+  <message name="IDS_DEVTOOLS_1363b7d2b4c0a3ac3a89b3ba69d59be7" desc="">
+    Network throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_17f66753218a6a1e2762c6a60db3d7c4" desc="">
+    Mid-tier mobile
+  </message>
+  <message name="IDS_DEVTOOLS_26ae7bdd1d6fb8c4886e6fde8d12601c" desc="">
+    Latency
+  </message>
+  <message name="IDS_DEVTOOLS_275e2c1079aeffdb5f4e22580127b95b" desc="">
+    <ph name="CONDITIONS_LATENCY">$1d</ph>ms
+  </message>
+  <message name="IDS_DEVTOOLS_3602f195c0823b75591b5546c3d5df00" desc="">
+    Requests may be rewritten by local overrides
+  </message>
+  <message name="IDS_DEVTOOLS_37234a1bcbabe4e8e7448f4bbcf5c2b4" desc="">
+    <ph name="THROUGHPUTINKBPS">$1d</ph><ph name="DELIMITER">$2s</ph>kb/s
+  </message>
+  <message name="IDS_DEVTOOLS_38c8cb828795cd6ff1cddda9b4ffcfa8" desc="">
+    <ph name="THROUGHPUTINKBPS___________">$1d</ph><ph name="DELIMITER">$2s</ph>Mb/s
+  </message>
+  <message name="IDS_DEVTOOLS_4fafba98ddd8a8663d8775a928f2450e" desc="">
+    Requests may be blocked
+  </message>
+  <message name="IDS_DEVTOOLS_56d7a17ecb7d30faf8daf8a6eb57e3bb" desc="">
+    Go offline
+  </message>
+  <message name="IDS_DEVTOOLS_6ba7dc45786c25d1e5879b2166894fc5" desc="">
+    Go online
+  </message>
+  <message name="IDS_DEVTOOLS_801ab24683a4a8c433c6eb40c48bcd9d" desc="">
+    Download
+  </message>
+  <message name="IDS_DEVTOOLS_8493534a13107469ea63be99410bebfa" desc="">
+    Enable slow 3G throttling
+  </message>
+  <message name="IDS_DEVTOOLS_8d9da4bc0e49a50e09ac9f7e56789d39" desc="">
+    Offline
+  </message>
+  <message name="IDS_DEVTOOLS_8fd93ea382b6642f13ff291b76f5bc85" desc="">
+    Profile Name
+  </message>
+  <message name="IDS_DEVTOOLS_90589c47f06eb971d548591f23c285af" desc="">
+    Custom
+  </message>
+  <message name="IDS_DEVTOOLS_91412465ea9169dfd901dd5e7c96dd99" desc="">
+    Upload
+  </message>
+  <message name="IDS_DEVTOOLS_9b6545e4cea9b4ad4979d41bb9170e2b" desc="">
+    Advanced
+  </message>
+  <message name="IDS_DEVTOOLS_a808cbcba081a943f4faedda831298b5" desc="">
+    kb/s
+  </message>
+  <message name="IDS_DEVTOOLS_b27fdc01c81857f96f3d5d37d323bcb6" desc="">
+    Enable fast 3G throttling
+  </message>
+  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="">
+    Disabled
+  </message>
+  <message name="IDS_DEVTOOLS_c47c85f963782364d32f428fcf7631ff" desc="">
+    No internet connectivity
+  </message>
+  <message name="IDS_DEVTOOLS_c939c288fa6bfab8b8bfb9b86593be20" desc="">
+    Add custom profile...
+  </message>
+  <message name="IDS_DEVTOOLS_c96084dae377c53ea7e233fc8255e6d5" desc="">
+    Fast 3G &amp; 4x CPU slowdown
+  </message>
+  <message name="IDS_DEVTOOLS_cb67c2b6640235af7393ca5970c1e887" desc="">
+    <ph name="RATE">$1d</ph>× slowdown
+  </message>
+  <message name="IDS_DEVTOOLS_d33468989239f9d3c708d05dcd7824f3" desc="">
+    <ph name="THROUGHPUTINKBPS_______">$1.1f</ph><ph name="DELIMITER">$2s</ph>Mb/s
+  </message>
+  <message name="IDS_DEVTOOLS_d49429dd3e92758c218f94ed0219d620" desc="">
+    CPU throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_d57c24f3fe52d16e7169b912dd647f0d" desc="">
+    optional
+  </message>
+  <message name="IDS_DEVTOOLS_eb81441fe20963ff9e8e69c5b32fc625" desc="">
+    Presets
+  </message>
+  <message name="IDS_DEVTOOLS_ee33e909372d935d190f4fcb2a92d542" desc="">
+    ms
+  </message>
+  <message name="IDS_DEVTOOLS_f410c3f1a07f566591283f599701e4ab" desc="">
+    Add…
+  </message>
+  <message name="IDS_DEVTOOLS_fa481f0018f093f34f49bd0f555653f3" desc="">
+    Check Network and Performance panels
+  </message>
+  <message name="IDS_DEVTOOLS_fcd5c08df997867efb2d80f45c4e1a6c" desc="">
+    Low-end mobile
+  </message>
+  <message name="IDS_DEVTOOLS_ff45c788a49f2900f274da0c350dcd1d" desc="">
+    Network Throttling Profiles
+  </message>
+</grit-part>

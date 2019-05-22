@@ -1,0 +1,942 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0007333f80790cc7ef6b97ce5e0ac297" desc="">
+    Layout Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_0060636b449d1da5a8581bfee180f0c2" desc="">
+     and 
+  </message>
+  <message name="IDS_DEVTOOLS_00c3783a786856df24fd85e1093ef516" desc="">
+    DCL
+  </message>
+  <message name="IDS_DEVTOOLS_00eeb588b8336923c7a236079c87c908" desc="">
+    Install Timer
+  </message>
+  <message name="IDS_DEVTOOLS_01b26724a7b11aab03f175512e2c9f0f" desc="">
+    Show recent timeline sessions
+  </message>
+  <message name="IDS_DEVTOOLS_01da20cf88fba2246309c541bddac1b1" desc="">
+    Documents: <ph name="PH1">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_01ea16e89d02c33ef2a6a5db67665e0a" desc="">
+    Main — <ph name="TRACK_URL">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_02a3a357710cc2a5dfdfb74ed012fb59" desc="">
+    Url
+  </message>
+  <message name="IDS_DEVTOOLS_04cbdd8baeb482d9ff2e48b186479a06" desc="">
+    Streaming Wasm Response
+  </message>
+  <message name="IDS_DEVTOOLS_05b8804bd8a147740eb7a35786c71a3c" desc="">
+    Node:
+  </message>
+  <message name="IDS_DEVTOOLS_0638b5f626aa994ad5da95ce95288a66" desc="">
+    [ unknown node ]
+  </message>
+  <message name="IDS_DEVTOOLS_064866c00b4298761dd36ec9df9be72f" desc="">
+    Hit Test
+  </message>
+  <message name="IDS_DEVTOOLS_06a83455a448479eb950ea190d815439" desc="">
+    Malformed CPU profile format
+  </message>
+  <message name="IDS_DEVTOOLS_06b8c6c83d552c894d01ad5c418e566b" desc="">
+    Receive Response
+  </message>
+  <message name="IDS_DEVTOOLS_0712dbe6e0a2a72e3c3bd1fc42b8ccb3" desc="">
+    Style Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_07535d965500993cdde8e7d0c686c993" desc="">
+    Onload Event
+  </message>
+  <message name="IDS_DEVTOOLS_077569834980c53bd3805bb49d62d910" desc="">
+    - Network throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_07f0007f9cefa79303d1093070975149" desc="">
+    - JavaScript sampling is disabled
+  </message>
+  <message name="IDS_DEVTOOLS_07fa8e7d7b4634db5e410fc35dba40f4" desc="">
+    Long frame
+  </message>
+  <message name="IDS_DEVTOOLS_0877b8db99f11ff69875bf025df75c7f" desc="">
+    Animation Frame Requested
+  </message>
+  <message name="IDS_DEVTOOLS_08790b919dc10c98ef4f4678e4a4cc98" desc="">
+    Fire Idle Callback
+  </message>
+  <message name="IDS_DEVTOOLS_08c1f153a1c6f21e1064581df9b05ee8" desc="">
+    Layer tree
+  </message>
+  <message name="IDS_DEVTOOLS_08d5a8363f4ad65b14c8f9a32dd93944" desc="">
+    JS Frame
+  </message>
+  <message name="IDS_DEVTOOLS_08db5f30f625a406882862b8a29b1bc6" desc="">
+    Major GC
+  </message>
+  <message name="IDS_DEVTOOLS_09d66464ad53e6080988ad30824ea023" desc="">
+    Frame — <ph name="TRACK_URL">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0d015d96f63a8c12d96b8399482b593f" desc="">
+    Uncategorized
+  </message>
+  <message name="IDS_DEVTOOLS_0d43b55b13285fd05236204c9a884f18" desc="">
+    (<ph name="TIMELINE_TIMELINEHISTORYMANAGER__COARSEAGE_STARTEDAT_">$1s</ph> ago)
+  </message>
+  <message name="IDS_DEVTOOLS_0d58f3789fa2779bb4b2b86f90cab764" desc="">
+    Nodes That Need Layout
+  </message>
+  <message name="IDS_DEVTOOLS_0e6dea9a8306a3ef170cb8c78263debe" desc="">
+    Click the record button <ph name="RECORDBUTTON">$1s</ph> or hit <ph name="RECORDKEY">$2s</ph> to start a new recording.
+Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOADKEY">$4s</ph> to record the page load.
+  </message>
+  <message name="IDS_DEVTOOLS_0e8dfe937d359c7df31b16ea7e9cca81" desc="">
+    Hide chrome frame in Layers view
+  </message>
+  <message name="IDS_DEVTOOLS_10aab9f12eca6bca3a6215914bab2745" desc="">
+    Allotted Time
+  </message>
+  <message name="IDS_DEVTOOLS_121ee86db6c7660edb3864de279ef742" desc="">
+    <ph name="ELAPSED_TOFIXED_PRECISE_________">$1s</ph> sec
+  </message>
+  <message name="IDS_DEVTOOLS_12ddabfc2210fb123f96a03f03816024" desc="">
+    Recurring handler took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1572a49e8ab36a669016c48d7fca5d76" desc="">
+    Cache Consume Options
+  </message>
+  <message name="IDS_DEVTOOLS_16bfbf9c462762cf1cba4134ec53c504" desc="">
+    Loading
+  </message>
+  <message name="IDS_DEVTOOLS_177845b60fde99c43c2af204188dd7c6" desc="">
+    No Grouping
+  </message>
+  <message name="IDS_DEVTOOLS_17f2327f2e0ec63f2a2e6300fc1b70a7" desc="">
+    Show memory timeline
+  </message>
+  <message name="IDS_DEVTOOLS_187c6ad3a74cc93ac6c2229d398e383e" desc="">
+    Nodes
+  </message>
+  <message name="IDS_DEVTOOLS_18fe96f0c47fa8c62afe3be31d97b880" desc="">
+    Finish Loading
+  </message>
+  <message name="IDS_DEVTOOLS_1b01d1ef7772f8e0c0e0427e4faad653" desc="">
+    Listeners: <ph name="PH1">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1b2c363066d5912ae8b27a1527f3d45e" desc="">
+    Group by Domain
+  </message>
+  <message name="IDS_DEVTOOLS_1e3eaaac8d3c9cffea8ee7f03a8a6121" desc="">
+    DOMContentLoaded Event
+  </message>
+  <message name="IDS_DEVTOOLS_205fd38626b73da9d837e61b2c7af71f" desc="">
+    Evaluate Script
+  </message>
+  <message name="IDS_DEVTOOLS_20ec6a94230f361368789ddd8bec855c" desc="">
+    Malformed timeline input, wrong JSON brackets balance
+  </message>
+  <message name="IDS_DEVTOOLS_21263b6755fb99797d30820fd4d2b4f0" desc="">
+    <ph name="URL">$1s</ph> [<ph name="STARTLINE____">$2s</ph>…<ph name="ENDLINE____">$3s</ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_217b22459b85349fbfbb7e797719cc37" desc="">
+    Receive WebSocket Handshake
+  </message>
+  <message name="IDS_DEVTOOLS_2267d2f9ecae3136874e6017d01f4574" desc="">
+    Group by Activity
+  </message>
+  <message name="IDS_DEVTOOLS_232e59f3380381caf0634ab2f035dbf2" desc="">
+     (from service worker)
+  </message>
+  <message name="IDS_DEVTOOLS_237f26bfdd9351cd363bca657ff35551" desc="">
+    . Long frame times are an indication of 
+  </message>
+  <message name="IDS_DEVTOOLS_2383a71629ce9189cb494c3fb8af7ac4" desc="">
+    Heaviest stack
+  </message>
+  <message name="IDS_DEVTOOLS_23ca9d66c8f521090421155382ef94b9" desc="">
+    Key Down
+  </message>
+  <message name="IDS_DEVTOOLS_248307dc00d11b9b67fdbfd34507f0aa" desc="">
+    XHR Load
+  </message>
+  <message name="IDS_DEVTOOLS_24aa4117da86c41684ad25742832dfa6" desc="">
+    Async
+  </message>
+  <message name="IDS_DEVTOOLS_25a5e1f05232eae2d3a9c1ff4cb83869" desc="">
+    Function Call
+  </message>
+  <message name="IDS_DEVTOOLS_277b749cfb8e0389d1b89e7cb671753a" desc="">
+    Context Menu
+  </message>
+  <message name="IDS_DEVTOOLS_2875ec54afbd9922e0553f4b441aa54b" desc="">
+    Painting
+  </message>
+  <message name="IDS_DEVTOOLS_2a0e96bf571559add541036a25ca1d36" desc="">
+    Call Stacks
+  </message>
+  <message name="IDS_DEVTOOLS_2a5021aea912316167342b34cbf358b4" desc="">
+    Compile Module
+  </message>
+  <message name="IDS_DEVTOOLS_2ae3330084b44abd37672d0ca603471e" desc="">
+    <ph name="BEGINDATA__DIRTYOBJECTS__">$1s</ph> of <ph name="BEGINDATA__TOTALOBJECTS__">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2b2195634ae5a0d7c6dada694bdcdc65" desc="">
+    Callback ID
+  </message>
+  <message name="IDS_DEVTOOLS_2b55387dd066c5bac646ac61543d152d" desc="">
+    CPU
+  </message>
+  <message name="IDS_DEVTOOLS_2b66d07a14b9e6da66cde6baab473e92" desc="">
+    <ph name="SELFCATEGORY_TITLE">$1s</ph> (children)
+  </message>
+  <message name="IDS_DEVTOOLS_2d2af0b530003b552681f91e29c509d1" desc="">
+    Recalculation Forced
+  </message>
+  <message name="IDS_DEVTOOLS_2da2415714a5e7450a9a127431c02a41" desc="">
+    Send Request
+  </message>
+  <message name="IDS_DEVTOOLS_2f3e2f48b161c9cadd45dcdffd726c79" desc="">
+    JS Heap: <ph name="PH1">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2f709c2af7d47a610e3c48a87d1ec429" desc="">
+    Invalidate Layout
+  </message>
+  <message name="IDS_DEVTOOLS_2fc3f5e968c02091e3ba9863088f0651" desc="">
+    Callback Function
+  </message>
+  <message name="IDS_DEVTOOLS_31084046e4a000cc4ac980dc68ea9ce9" desc="">
+    Parse Script
+  </message>
+  <message name="IDS_DEVTOOLS_316853cc3718335f11c048e33b9be98a" desc="">
+    Click
+  </message>
+  <message name="IDS_DEVTOOLS_31c6b3fdfaaa80dba2dbf92a4600524c" desc="">
+    Sign
+  </message>
+  <message name="IDS_DEVTOOLS_3227e479f6541c685b08023affdc8c69" desc="">
+    Consumed Cache Size
+  </message>
+  <message name="IDS_DEVTOOLS_324118a6721dd6b8a9b9f4e327df2bf5" desc="">
+    Input
+  </message>
+  <message name="IDS_DEVTOOLS_33991558a089f674da1c5c26fd0a6161" desc="">
+    jank
+  </message>
+  <message name="IDS_DEVTOOLS_347aadfc505a4bc6b2f9d81363d2331c" desc="">
+    NET
+  </message>
+  <message name="IDS_DEVTOOLS_3581b739d9d4895d0f69d9a897b02a3f" desc="">
+    Verify Reply
+  </message>
+  <message name="IDS_DEVTOOLS_359783360b8522c55aa7a9c7d5593d5d" desc="">
+    Pinch End
+  </message>
+  <message name="IDS_DEVTOOLS_361beede47de122bfb91fe1da6e3f1a7" desc="">
+    Legacy Timeline format is not supported.
+  </message>
+  <message name="IDS_DEVTOOLS_38108192a74ae7b3deda8762ff299109" desc="">
+    <ph name="TITLE">$1s</ph> - Details
+  </message>
+  <message name="IDS_DEVTOOLS_390afae8f87b5024e0c32c4e6ce3e2da" desc="">
+    Run Microtasks
+  </message>
+  <message name="IDS_DEVTOOLS_3b419ceb25fddb807ea9483f65fded06" desc="">
+    Capture settings
+  </message>
+  <message name="IDS_DEVTOOLS_3d1f92a565d3b1a61880236e33c49bf3" desc="">
+    Timeline
+  </message>
+  <message name="IDS_DEVTOOLS_3de9387fc230ce74214446e58c4fefde" desc="">
+    Compile
+  </message>
+  <message name="IDS_DEVTOOLS_3df7062234c9e55d49648289c5b2c80f" desc="">
+    Time spent in rendering
+  </message>
+  <message name="IDS_DEVTOOLS_3e8e23cb13898f3f9760a0f1d9203bd1" desc="">
+    Stack trace:
+  </message>
+  <message name="IDS_DEVTOOLS_3eec15d0ba9a93d3176bab9218bb2570" desc="">
+    Failed to save timeline: <ph name="ERROR_MESSAGE">$1s</ph> (<ph name="ERROR_NAME">$2s</ph>, <ph name="ERROR_CODE">$3s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_3f978efb26e66c6c9af5db34268ccf41" desc="">
+    Compiled Wasm Module
+  </message>
+  <message name="IDS_DEVTOOLS_40a15f22bd3574304d7843344006e0b6" desc="">
+    First Contentful Paint
+  </message>
+  <message name="IDS_DEVTOOLS_41b1478092e85f8c8fa1f98e5efc9b35" desc="">
+    Layout Forced
+  </message>
+  <message name="IDS_DEVTOOLS_427b6d816d7fdd86cabe48d8180a3cc9" desc="">
+    Image URL
+  </message>
+  <message name="IDS_DEVTOOLS_44ff4e8748811d0661f820aeb28ecaf4" desc="">
+    XHR Ready State Change
+  </message>
+  <message name="IDS_DEVTOOLS_46a2a41cc6e552044816a2d04634545d" desc="">
+    State
+  </message>
+  <message name="IDS_DEVTOOLS_46fa564bb1eed5cd3992cac85e8f094b" desc="">
+    Screenshots
+  </message>
+  <message name="IDS_DEVTOOLS_476f68367f02309b39daf298981e30c5" desc="">
+    Minor GC
+  </message>
+  <message name="IDS_DEVTOOLS_4802a5ac6005a6ab9c68a2fb29e30a3e" desc="">
+    Paint
+  </message>
+  <message name="IDS_DEVTOOLS_485ee6de8f9a0e36c182bb56a05b2ca2" desc="">
+    Mouse Wheel
+  </message>
+  <message name="IDS_DEVTOOLS_48c84951d13f2944b6003832cd4ffcba" desc="">
+    <ph name="EVENTDATA__ENCODEDDATALENGTH__">$1s</ph> Bytes
+  </message>
+  <message name="IDS_DEVTOOLS_498f79c4c5bbde77f1bceb6c86fd0f6d" desc="">
+    Show
+  </message>
+  <message name="IDS_DEVTOOLS_4bbc0d1543b5258061fd5c8590fdbe9e" desc="">
+    Encoded Data
+  </message>
+  <message name="IDS_DEVTOOLS_4c2a8fe7eaf24721cc7a9f0175115bd4" desc="">
+    Message
+  </message>
+  <message name="IDS_DEVTOOLS_4dab9fd6bdee5285598246c6ea7cc88f" desc="">
+    Fling Halt
+  </message>
+  <message name="IDS_DEVTOOLS_4ebada6a2af2bcba53ded1d7b414f081" desc="">
+    FP
+  </message>
+  <message name="IDS_DEVTOOLS_4fec5edf718a9ca2c6245167b78f029a" desc="">
+    Scroll End
+  </message>
+  <message name="IDS_DEVTOOLS_50294a317f78ab6caf9ad2558a4b7484" desc="">
+    Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_504d75604f56770c3c513de2c49ecbe8" desc="">
+    Wasm Module Cache Hit
+  </message>
+  <message name="IDS_DEVTOOLS_5288680dbe452673259047491b87d17d" desc="">
+    CPU time
+  </message>
+  <message name="IDS_DEVTOOLS_52f9ec21735243ad9917cda3ca077d32" desc="">
+    GPU
+  </message>
+  <message name="IDS_DEVTOOLS_53081d6225e780e0f0d94351251be91c" desc="">
+    (changed &quot;<ph name="INVALIDATION_SELECTORPART">$1s</ph>&quot;<ph name="EXTRADATA">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="">
+    Stack Trace
+  </message>
+  <message name="IDS_DEVTOOLS_5402f18025999ebf70fd56d8ca1b1909" desc="">
+    GC Event
+  </message>
+  <message name="IDS_DEVTOOLS_5481039ec867c9ad2d5a313287124961" desc="">
+    Fling Start
+  </message>
+  <message name="IDS_DEVTOOLS_548babdfd161a8fc2d4b634b682a456d" desc="">
+    (changed attribute to &quot;<ph name="INVALIDATION_CHANGEDATTRIBUTE">$1s</ph>&quot;<ph name="EXTRADATA">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_54fd6de66ec40dc89ec90ba5429094d7" desc="">
+    Group by Category
+  </message>
+  <message name="IDS_DEVTOOLS_5564c00b6210082e536c897014f72361" desc="">
+    Start profiling and reload page
+  </message>
+  <message name="IDS_DEVTOOLS_55b4b48b80795ee9b6a3220ca415786d" desc="">
+    Schedule Style Recalculation
+  </message>
+  <message name="IDS_DEVTOOLS_57f06e0eceb273507ade79baf8d3a2d4" desc="">
+    Tap Begin
+  </message>
+  <message name="IDS_DEVTOOLS_585bc08ce62507965db6ec748c5a251e" desc="">
+    Timer ID
+  </message>
+  <message name="IDS_DEVTOOLS_5878904937ecbc1d0556f79782ab03cd" desc="">
+    Scroll Update
+  </message>
+  <message name="IDS_DEVTOOLS_59cf59caeba8075dec6a745b083edd0c" desc="">
+    Time Waiting for Main Thread
+  </message>
+  <message name="IDS_DEVTOOLS_5a750f86ef41f22f852c43351e3ff383" desc="">
+    Verify
+  </message>
+  <message name="IDS_DEVTOOLS_5af8622e730a34a15962fb8f46df1b5e" desc="">
+    Captures advanced paint instrumentation, introduces significant performance overhead
+  </message>
+  <message name="IDS_DEVTOOLS_5bcd94bc1f71db5659b35ad5deeb94c7" desc="">
+    Fling
+  </message>
+  <message name="IDS_DEVTOOLS_5c593b83b0fca15af4b50ca95c9d3e87" desc="">
+    Sign Reply
+  </message>
+  <message name="IDS_DEVTOOLS_5e8170b28aaa693ca9170bb0d65b3043" desc="">
+    Destroy WebSocket
+  </message>
+  <message name="IDS_DEVTOOLS_5faec6160efeed8f7d29c081b92e8890" desc="">
+    User Timing
+  </message>
+  <message name="IDS_DEVTOOLS_5fbceaa309bba91ee916d46e06ac0080" desc="">
+    Touch Move
+  </message>
+  <message name="IDS_DEVTOOLS_5fe7053d3a0e35c2a3242996e690e160" desc="">
+    Update Layer
+  </message>
+  <message name="IDS_DEVTOOLS_60c21f78ce2dcd2da001fa3221c8ca15" desc="">
+    Nodes:
+  </message>
+  <message name="IDS_DEVTOOLS_60f718c3ba644a198920a74083ccb80f" desc="">
+    Blackboxed
+  </message>
+  <message name="IDS_DEVTOOLS_611d29c748a7931c825a247fcf3f290e" desc="">
+    Encrypt
+  </message>
+  <message name="IDS_DEVTOOLS_61b67ca7c1d8eea5b55d23bbb615d944" desc="">
+    Recalculate Style
+  </message>
+  <message name="IDS_DEVTOOLS_6347d5359bdee6d82717b4ad73aee504" desc="">
+    Frame Started Loading
+  </message>
+  <message name="IDS_DEVTOOLS_63b8e6041614e4130722f79ab66087e6" desc="">
+    Send WebSocket Handshake
+  </message>
+  <message name="IDS_DEVTOOLS_63e467c0720678aa503a5f0c022d56c5" desc="">
+    First Invalidated
+  </message>
+  <message name="IDS_DEVTOOLS_640d76ebf7917e7353ea0444790c9794" desc="">
+    Image Resize
+  </message>
+  <message name="IDS_DEVTOOLS_66f1aed235ade25269a561e81cbbb43a" desc="">
+    Scripting
+  </message>
+  <message name="IDS_DEVTOOLS_67eed98f4bc75c4ab261b79a0e2c52cd" desc="">
+    Cache Rejected
+  </message>
+  <message name="IDS_DEVTOOLS_686155af75a60a0f6e9d80c1f7edd3e9" desc="">
+    JavaScript
+  </message>
+  <message name="IDS_DEVTOOLS_6978c23868116ca3eccb809bc699742e" desc="">
+    - Significant overhead due to paint instrumentation
+  </message>
+  <message name="IDS_DEVTOOLS_6a389f626da11df07508bf251de59c23" desc="">
+    Frame Start
+  </message>
+  <message name="IDS_DEVTOOLS_6aafe894685594a908a8996d68e88028" desc="">
+    Hide records shorter than <ph name="DURATIONMS">$1d</ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_6c906c5f560faeb38f51683bc22fb212" desc="">
+    Group by Subdomain
+  </message>
+  <message name="IDS_DEVTOOLS_6d12d9901547700bfcefb2a3e5cff2b6" desc="">
+    heaviest stack
+  </message>
+  <message name="IDS_DEVTOOLS_6d1b752b6cdcfb71d098cc271bc133aa" desc="">
+    Embedder Callback
+  </message>
+  <message name="IDS_DEVTOOLS_6d555ca89f5ca9fc68e5d418b4cf732b" desc="">
+    Draw Frame
+  </message>
+  <message name="IDS_DEVTOOLS_6d8a59067ffe0498f3f5f2c03025b799" desc="">
+    Group by URL
+  </message>
+  <message name="IDS_DEVTOOLS_70582905817c902e7a334c24718cba88" desc="">
+    Touch End
+  </message>
+  <message name="IDS_DEVTOOLS_70bac6f11765f731510b0ac659fd26a1" desc="">
+    Malformed timeline data: <ph name="E_TOSTRING__">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_70d68501018d9d6496e55cad8a2c3ba1" desc="">
+    Load profile...
+  </message>
+  <message name="IDS_DEVTOOLS_7125f394de382b13a7e7a5a4b6d23364" desc="">
+    Raster
+  </message>
+  <message name="IDS_DEVTOOLS_71613aba6474d2e2dc12d00cc46743f0" desc="">
+    Touch Start
+  </message>
+  <message name="IDS_DEVTOOLS_7363d05ecc1497f2f8ae05b334b45651" desc="">
+    Disable JavaScript samples
+  </message>
+  <message name="IDS_DEVTOOLS_73cf2f244bc0cb0d205b99c04fa13978" desc="">
+    Tap
+  </message>
+  <message name="IDS_DEVTOOLS_762e3a77ecdd773da2b859e6807529a2" desc="">
+    Decrypt
+  </message>
+  <message name="IDS_DEVTOOLS_76e815d5323a5f3c80a3d186c416e92b" desc="">
+    [Chrome extensions overhead]
+  </message>
+  <message name="IDS_DEVTOOLS_76ecb02d1f339c2dd6f14c41ead368c1" desc="">
+    Handler took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_77c18a89217b2a9a2553ac9a0598b99a" desc="">
+    Rasterizer Thread <ph name="RASTERCOUNT">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7820708244a842157c5fc8186e7b2bfa" desc="">
+    Wasm Module Cache Invalid
+  </message>
+  <message name="IDS_DEVTOOLS_787ddae3fd4c1a93cc28af8bb3940bdc" desc="">
+    Image Decode
+  </message>
+  <message name="IDS_DEVTOOLS_798afebf1a5e9d795a96f0c82cccaae2" desc="">
+    Cached Wasm Module
+  </message>
+  <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="">
+    Thread <ph name="__THREADINDEX">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="">
+    <ph name="TITLE">$1s</ph>: <ph name="EVENTDATA__MESSAGE__">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="">
+    <ph name="SELFCATEGORY_TITLE">$1s</ph> (self)
+  </message>
+  <message name="IDS_DEVTOOLS_81e91be8db96be69e372f0c715ec7444" desc="">
+    Collected
+  </message>
+  <message name="IDS_DEVTOOLS_81ff3427527105233469f158360d8b02" desc="">
+    Select item for details.
+  </message>
+  <message name="IDS_DEVTOOLS_83561bf6ac8333e0d1627887d533907c" desc="">
+    Drop timeline file or URL here
+  </message>
+  <message name="IDS_DEVTOOLS_83e393be9178c404eb013bca48782312" desc="">
+    <ph name="CLIPWIDTH">$1s</ph> × <ph name="CLIPHEIGHT">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="">
+    Decoded Body
+  </message>
+  <message name="IDS_DEVTOOLS_871646cb17b6936aa29df33b8d550051" desc="">
+    Update Layer Tree
+  </message>
+  <message name="IDS_DEVTOOLS_87644f7e0957c4bf2990aedfe046b71e" desc="">
+    GPU Memory [KB]: <ph name="PH1">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_87ba2ecc8b6915e8bd6f5089918229fd" desc="">
+    Range
+  </message>
+  <message name="IDS_DEVTOOLS_883b293ae308d8e3caf1614c8a2fda61" desc="">
+    Group by Frame
+  </message>
+  <message name="IDS_DEVTOOLS_88d982014902936a7e7ab24058c88ed0" desc="">
+    Unknown cause for 
+  </message>
+  <message name="IDS_DEVTOOLS_89be1120d42e0cbacbf46eee77766b76" desc="">
+    . 
+  </message>
+  <message name="IDS_DEVTOOLS_8a51f964740c2a7cb6e68404bda36ef1" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_DELTA_">$1s</ph> collected
+  </message>
+  <message name="IDS_DEVTOOLS_8af5f76068f881acfad9d2880a4e2310" desc="">
+    Input Latency
+  </message>
+  <message name="IDS_DEVTOOLS_8b8747bfcec728cdf8d54030e4d28451" desc="">
+    Processing profile…
+  </message>
+  <message name="IDS_DEVTOOLS_8b92f105e7b7e01e4c7ed00d415318f3" desc="">
+    Stylesheet URL
+  </message>
+  <message name="IDS_DEVTOOLS_8c311ee6ad411f13da478e4996907ffa" desc="">
+    After recording, select an area of interest in the overview by dragging.
+Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$1s</ph> keys.
+<ph name="LEARNMORENODE">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8cd016d3ad1e59b37133d6c993455d70" desc="">
+    Timer Installed
+  </message>
+  <message name="IDS_DEVTOOLS_8cda3116eb86d6a743edfebd3c2eda15" desc="">
+    Request Idle Callback
+  </message>
+  <message name="IDS_DEVTOOLS_8d98af06b412f3f2455c2786e88aabdb" desc="">
+    Nodes: <ph name="PH1">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8dc1f1afb0dcd5282b146c8cf5d758e1" desc="">
+    Unexpected entryIndex <ph name="ENTRYINDEX">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8f25fae98e6ef6ff87364e590df8cee5" desc="">
+    Long task
+  </message>
+  <message name="IDS_DEVTOOLS_8f27b153047f3da699b39221b47b3217" desc="">
+    Initializing profiler…
+  </message>
+  <message name="IDS_DEVTOOLS_91412421a30e87ce15a4f10ea39f6682" desc="">
+    WASD
+  </message>
+  <message name="IDS_DEVTOOLS_920fd776137a582939eac4fc07808754" desc="">
+    <ph name="NUMBER_MILLISTOSTRING_FRAME_ENDTIME___FRAME_STARTTIME__TRUE_">$1s</ph> (at <ph name="NUMBER_MILLISTOSTRING_FRAME_STARTTIMEOFFSET__TRUE_">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_92f0ea95e53565026335b840b8788bf4" desc="">
+    <ph name="NUMBER_MILLISTOSTRING_TOTALTIME__TRUE_">$1s</ph> (self <ph name="NUMBER_MILLISTOSTRING_SELFTIME__TRUE_">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_932cc5549fb2d58c13ce13653469d309" desc="">
+    Mouse Down
+  </message>
+  <message name="IDS_DEVTOOLS_9352d706112654ca7c3f2595bc529cf5" desc="">
+    Paint Image
+  </message>
+  <message name="IDS_DEVTOOLS_9399a34c7d7f4a7c046016e38f80e046" desc="">
+     is a likely performance bottleneck.
+  </message>
+  <message name="IDS_DEVTOOLS_93c8e71d1b0e18d58736d3e255a14533" desc="">
+    Buffer usage
+  </message>
+  <message name="IDS_DEVTOOLS_956f8281d37fdceec7698094b6236870" desc="">
+     (from cache)
+  </message>
+  <message name="IDS_DEVTOOLS_9669f96ca9d2e20feda07d349d3cac86" desc="">
+    Key Up
+  </message>
+  <message name="IDS_DEVTOOLS_976e665bbff13a2a2a2eb4a83b8bb602" desc="">
+    Save profile...
+  </message>
+  <message name="IDS_DEVTOOLS_97c091732895087b8900d81105e54446" desc="">
+    Frame Start (main thread)
+  </message>
+  <message name="IDS_DEVTOOLS_997a8c473db4f81c5fb3d5900030d44d" desc="">
+    (no recordings)
+  </message>
+  <message name="IDS_DEVTOOLS_9a2837081f4b4cd67f625bd8e7567383" desc="">
+    Compile Script
+  </message>
+  <message name="IDS_DEVTOOLS_9a4a3be092449d965b794e48c6f6163c" desc="">
+    Rasterize Paint
+  </message>
+  <message name="IDS_DEVTOOLS_9bedd08947719ccd339c3493e6701d4b" desc="">
+    Request Main Thread Frame
+  </message>
+  <message name="IDS_DEVTOOLS_9c80c1f042e925ffbb94db9a17eb03df" desc="">
+    Dedicated Worker
+  </message>
+  <message name="IDS_DEVTOOLS_9d07f3bb674a88ea26f10e6b7589e000" desc="">
+    Aggregated Time
+  </message>
+  <message name="IDS_DEVTOOLS_9d2ee5f9ab058df4d72a137e13bd4df2" desc="">
+    [ <ph name="INVALIDATION_NODENAME">$1s</ph> ]
+  </message>
+  <message name="IDS_DEVTOOLS_a10717d996573373c8f9a01c49bbb6a5" desc="">
+    Loading profile…
+  </message>
+  <message name="IDS_DEVTOOLS_a3b61900010aa9472919c6c7ac247fed" desc="">
+    (changed id to &quot;<ph name="INVALIDATION_CHANGEDID">$1s</ph>&quot;<ph name="EXTRADATA">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_a45da96d0bf6575970f2d27af22be28a" desc="">
+    System
+  </message>
+  <message name="IDS_DEVTOOLS_a580a76abe8b0912889d80f5c4cb9559" desc="">
+    Group by Product
+  </message>
+  <message name="IDS_DEVTOOLS_a6f22a2373839a1d417d7a4078f0383a" desc="">
+    - CPU throttling is enabled
+  </message>
+  <message name="IDS_DEVTOOLS_a7c815fafe60ae637d38216fa6300395" desc="">
+    FCP
+  </message>
+  <message name="IDS_DEVTOOLS_aa40d845ecb78d5bd01ff8b0cc9e213e" desc="">
+    Receive Data
+  </message>
+  <message name="IDS_DEVTOOLS_aa49e59ec25c5938e9629495e54b913a" desc="">
+    Worker — <ph name="TRACK_URL">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_ab0b54125d50a09e75f3829e7e90b8ea" desc="">
+    WebSocket Protocol
+  </message>
+  <message name="IDS_DEVTOOLS_ac3b5b333d7529f2d6e178a1d326315c" desc="">
+    Disables JavaScript sampling, reduces overhead when running against mobile devices
+  </message>
+  <message name="IDS_DEVTOOLS_ac5bb077c33753116b5e91ff1766e7bc" desc="">
+    Received
+  </message>
+  <message name="IDS_DEVTOOLS_aed0e2bd848c2ac9dddb03d8c21c67b6" desc="">
+    Touch Cancel
+  </message>
+  <message name="IDS_DEVTOOLS_b030f7d30297555390c6d2d23af55fa1" desc="">
+    moments
+  </message>
+  <message name="IDS_DEVTOOLS_b06f8ae307ae18937eff67f286f45a20" desc="">
+    Repeats
+  </message>
+  <message name="IDS_DEVTOOLS_b0f2106d388ba5a6a92ac83146df9770" desc="">
+    Idle callback execution extended beyond deadline by <ph name="EXCEEDEDMS">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b14bde4124700a984f3840be64c98bf2" desc="">
+    Invoked by Timeout
+  </message>
+  <message name="IDS_DEVTOOLS_b24dc7fd5bcbe91ffc080f0220f50dfe" desc="">
+    DOM GC
+  </message>
+  <message name="IDS_DEVTOOLS_b2ef7b20ebc78fa300ef24c1965033bc" desc="">
+    Pending for
+  </message>
+  <message name="IDS_DEVTOOLS_b357598ce3db447b0138d1a5ea6b76cc" desc="">
+    Layout root
+  </message>
+  <message name="IDS_DEVTOOLS_b3bfefedfa27aa11e79f637b22b16d09" desc="">
+    [V8 Runtime]
+  </message>
+  <message name="IDS_DEVTOOLS_b49fe3f49a656887d446c2da3851a88a" desc="">
+    Network request
+  </message>
+  <message name="IDS_DEVTOOLS_b4c7087912916a68642000d8759baec2" desc="">
+    Scroll Begin
+  </message>
+  <message name="IDS_DEVTOOLS_b53fbbb58656447400f07904e68c0f12" desc="">
+    Create WebSocket
+  </message>
+  <message name="IDS_DEVTOOLS_b59387e4d62a4e3fe4285a1311dcd272" desc="">
+    Event Log
+  </message>
+  <message name="IDS_DEVTOOLS_b6722804f5872cdd88347da194d42087" desc="">
+    HEAP
+  </message>
+  <message name="IDS_DEVTOOLS_b8a4d4c7e6bb7b5534b856ce7a9ccde0" desc="">
+    Drag
+  </message>
+  <message name="IDS_DEVTOOLS_b9048f8879ceb809dd8d8bc0866306b5" desc="">
+    , and <ph name="INVALIDATIONNODES_LENGTH____">$1s</ph> others
+  </message>
+  <message name="IDS_DEVTOOLS_b94c9f4242a696995ec1a85feeb138e2" desc="">
+    Layer Root
+  </message>
+  <message name="IDS_DEVTOOLS_b9749b1e497d9193cd4307bb9e341287" desc="">
+    Decrypt Reply
+  </message>
+  <message name="IDS_DEVTOOLS_b9f3a3a888d3796e0248b3f65b14349e" desc="">
+    Bottom-Up
+  </message>
+  <message name="IDS_DEVTOOLS_bd03acccca092608aac93f5fadb091d5" desc="">
+    Streamed
+  </message>
+  <message name="IDS_DEVTOOLS_be7e368875c5373b1cfbc3b97abc8742" desc="">
+    ≥ <ph name="DURATIONMS">$1d</ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_be85f6b3661854c85ddbde4c1429b2a2" desc="">
+    (<ph name="CLIP___">$1s</ph>, <ph name="CLIP___">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_be97c5beb33f5316b2c221bfbb95852b" desc="">
+    MIME Type
+  </message>
+  <message name="IDS_DEVTOOLS_bea8bf1ee3b28d900843d6ea1e0440db" desc="">
+    Tap Halt
+  </message>
+  <message name="IDS_DEVTOOLS_bf4bbfdff02c062ac1a0badec650946d" desc="">
+    Async Task
+  </message>
+  <message name="IDS_DEVTOOLS_c123b11aa670647408778a3b81a21d70" desc="">
+    FPS
+  </message>
+  <message name="IDS_DEVTOOLS_c26f31b8ab9b92198caf6894823b14f7" desc="">
+    <ph name="HOURS">$1s</ph> h
+  </message>
+  <message name="IDS_DEVTOOLS_c4030781aba9b3bf12bc9d7c031b586d" desc="">
+    [unattributed]
+  </message>
+  <message name="IDS_DEVTOOLS_c472e98c996b5d0a818722fcbe0af52d" desc="">
+    Key Character
+  </message>
+  <message name="IDS_DEVTOOLS_c5374020999c64f3332f04b296f61a19" desc="">
+    <ph name="WIDTH">$1d</ph> × <ph name="HEIGHT">$2d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_c5c7073f423645e437dd5d02419a911a" desc="">
+    Mouse Up
+  </message>
+  <message name="IDS_DEVTOOLS_c85a251cc457840f1e032f1b733e9398" desc="">
+    Timeout
+  </message>
+  <message name="IDS_DEVTOOLS_c86fd16c7ad825ebab7026a3e8fa7c4e" desc="">
+    Parse Stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_c91e491bb45df4c3796656945c4b86a2" desc="">
+    (changed pesudo to &quot;<ph name="INVALIDATION_CHANGEDPSEUDO">$1s</ph>&quot;<ph name="EXTRADATA">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_cba3eb593893730dfd61ce641be2502a" desc="">
+    Network:
+  </message>
+  <message name="IDS_DEVTOOLS_cbacb5bbda9c8eeb8e3a7e8e53fbcc59" desc="">
+    Timer Fired
+  </message>
+  <message name="IDS_DEVTOOLS_cbf04be3b9563f7d53998e76488efb4a" desc="">
+    Mouse Move
+  </message>
+  <message name="IDS_DEVTOOLS_cc4950eab5e0aaef9820cc6388a97640" desc="">
+    Related Node
+  </message>
+  <message name="IDS_DEVTOOLS_cdcf2d0d2f648704b8223f9a96ad0b14" desc="">
+    Parse HTML
+  </message>
+  <message name="IDS_DEVTOOLS_cdfb064314e94077caa817714d943c6f" desc="">
+    Elements Affected
+  </message>
+  <message name="IDS_DEVTOOLS_ce5bf551379459c1c61d2a204061c455" desc="">
+    Location
+  </message>
+  <message name="IDS_DEVTOOLS_cf56f8ebb3727b1d4d5a17fb18d4df74" desc="">
+    Paint Setup
+  </message>
+  <message name="IDS_DEVTOOLS_d0369e883465f2849df8b38966901bbf" desc="">
+    CPU:
+  </message>
+  <message name="IDS_DEVTOOLS_d07a2a1ecbb76d84f08a686e6c9639ea" desc="">
+    Evaluate Module
+  </message>
+  <message name="IDS_DEVTOOLS_d0c91aff68287a1a0003af56b91cadde" desc="">
+    [<ph name="MIN">$1s</ph> – <ph name="MAX">$2s</ph>]
+  </message>
+  <message name="IDS_DEVTOOLS_d14e91fe7abe33fc8a05c193fc812d68" desc="">
+    Mime Type
+  </message>
+  <message name="IDS_DEVTOOLS_d20caec3b48a1eef164cb4ca81ba2587" desc="">
+    L
+  </message>
+  <message name="IDS_DEVTOOLS_d24cdb5cd4bcfa9bab80d1fd5dc08b91" desc="">
+    <ph name="URL">$1s</ph> [<ph name="STARTLINE____">$2s</ph>…]
+  </message>
+  <message name="IDS_DEVTOOLS_d3064df90a9cacec6d462ba65032fd08" desc="">
+    CPU profile for a target is not available.
+  </message>
+  <message name="IDS_DEVTOOLS_d47c9bd21b8b13b29cb0757777f54d04" desc="">
+    Idle Callback Requested
+  </message>
+  <message name="IDS_DEVTOOLS_d49a276b363c437fe2446074595fd325" desc="">
+    <ph name="REASON">$1s</ph> for 
+  </message>
+  <message name="IDS_DEVTOOLS_d5b4c38ebb6e58f520e8d1e816ad841e" desc="">
+    Stopping timeline…
+  </message>
+  <message name="IDS_DEVTOOLS_d5e3345f0d0b507c8993b1ca0e0ac2c4" desc="">
+    First Paint
+  </message>
+  <message name="IDS_DEVTOOLS_d84fe3f1d290e4855cc0487b5ea18a4a" desc="">
+    Pinch Begin
+  </message>
+  <message name="IDS_DEVTOOLS_d88a137b62e15eece2884fa04bc36099" desc="">
+    <ph name="THIS__STYLE_TITLE">$1s</ph> at <ph name="STARTTIME">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d97477d6d8a838ead9348185bb5b6742" desc="">
+    Thread
+  </message>
+  <message name="IDS_DEVTOOLS_da3c710f68f0c891ecad19dcbf2ab349" desc="">
+    Console Time
+  </message>
+  <message name="IDS_DEVTOOLS_da5b09b6bbef223b458f5a5318c1261d" desc="">
+    First Meaningful Paint
+  </message>
+  <message name="IDS_DEVTOOLS_dbcc430b9ebc8e22dc874b108f77e4a9" desc="">
+    Timings
+  </message>
+  <message name="IDS_DEVTOOLS_dc1085228e13a69521f0d08a4f03c304" desc="">
+    Call Tree
+  </message>
+  <message name="IDS_DEVTOOLS_dc16531c312e4d4c024ffd577d123887" desc="">
+    Listeners
+  </message>
+  <message name="IDS_DEVTOOLS_dc63e2b8b0f6f66d3dd2dc5d49483eec" desc="">
+    Show all records
+  </message>
+  <message name="IDS_DEVTOOLS_dd694dc279a5fbefed6a8323c15f4e67" desc="">
+    Cancel Idle Callback
+  </message>
+  <message name="IDS_DEVTOOLS_dd810137d5737309d18208a7be75773f" desc="">
+    Malformed timeline data: Unknown JSON format
+  </message>
+  <message name="IDS_DEVTOOLS_dde38f333e095c2293593f504fd701a2" desc="">
+    JavaScript Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_de1ec1ac3add3d69ffedffd437af7056" desc="">
+    Pinch Update
+  </message>
+  <message name="IDS_DEVTOOLS_df2c48ebe0a4927e0f33ce3adeaa265b" desc="">
+    Range:  <ph name="NUMBER_MILLISTOSTRING_STARTOFFSET_">$1s</ph> – <ph name="NUMBER_MILLISTOSTRING_ENDOFFSET_">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_df839b886d238c3ce6de2fa9f9615518" desc="">
+    FMP
+  </message>
+  <message name="IDS_DEVTOOLS_dfe67b764ba5e3f6b674f049db64e165" desc="">
+    First Layout Invalidation
+  </message>
+  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="">
+    Duration
+  </message>
+  <message name="IDS_DEVTOOLS_e0c70bcb54d7f58615eb895c232049ce" desc="">
+    Composite Layers
+  </message>
+  <message name="IDS_DEVTOOLS_e1851406e1e939d1ddaf625e577d6731" desc="">
+    <ph name="MINUTES">$1s</ph> m
+  </message>
+  <message name="IDS_DEVTOOLS_e2daed94bbd6483ac087b1da9a06e3fd" desc="">
+    <ph name="NUMBER_PRECISEMILLISTOSTRING_FRAME_DURATION____">$1s</ph> ~ <ph name="_______FRAME_DURATION">$2.0f</ph> fps
+  </message>
+  <message name="IDS_DEVTOOLS_e599161956d626eda4cb0a5ffb85271c" desc="">
+    Idle
+  </message>
+  <message name="IDS_DEVTOOLS_e5cfc515f312c9e85f367e9854d9963e" desc="">
+    Digest
+  </message>
+  <message name="IDS_DEVTOOLS_e6dd8524d6da96536b22201a9a46285a" desc="">
+    GPU Memory
+  </message>
+  <message name="IDS_DEVTOOLS_e77edad5ae632de2e062ef4bb6c80d8a" desc="">
+     took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_e88587c08bb701308040c1d45394ecad" desc="">
+    Tap Down
+  </message>
+  <message name="IDS_DEVTOOLS_ea972b3952b64289353946d365786435" desc="">
+    Encrypt Reply
+  </message>
+  <message name="IDS_DEVTOOLS_eaeb30f9f18e0c50b178676f3eaef45f" desc="">
+    Task
+  </message>
+  <message name="IDS_DEVTOOLS_ebd9bec4d70abc789d439c1f136b0538" desc="">
+    Layout
+  </message>
+  <message name="IDS_DEVTOOLS_ec21eddec143497cea80ab45444a5dab" desc="">
+    Owner Element
+  </message>
+  <message name="IDS_DEVTOOLS_ecfc2dffe568c10a67dbc6d3724cfde2" desc="">
+    Activity
+  </message>
+  <message name="IDS_DEVTOOLS_ed3fec59c125d9d20096de997602a46d" desc="">
+    Remove Timer
+  </message>
+  <message name="IDS_DEVTOOLS_ee1532a0110d6e08d330eca2f822a8c1" desc="">
+    Interactions
+  </message>
+  <message name="IDS_DEVTOOLS_eecac07978e7842e41f7dbc578482368" desc="">
+    Produced Cache Size
+  </message>
+  <message name="IDS_DEVTOOLS_ef5db075f5ef10fbe063c7108aa49b25" desc="">
+    <ph name="DOMAIN">$1s</ph> #<ph name="SEQUENCENUMBER">$2d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f17085a56d199cb15adf7c101d611bcc" desc="">
+    (changed class to &quot;<ph name="INVALIDATION_CHANGEDCLASS">$1s</ph>&quot;<ph name="EXTRADATA">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_f34ebd9ed4156c54fbd77bb3a5b3107a" desc="">
+    Save profile…
+  </message>
+  <message name="IDS_DEVTOOLS_f466ef0697891303497dfbf951a14b1d" desc="">
+    Idle Frame
+  </message>
+  <message name="IDS_DEVTOOLS_f4843c1c797abf1a256c8802b6cd9f51" desc="">
+    Dimensions
+  </message>
+  <message name="IDS_DEVTOOLS_f4af86c1492aed890460419da6d5e5e9" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_MINUSEDHEAPSIZE_">$1s</ph> – <ph name="NUMBER_BYTESTOSTRING_MAXUSEDHEAPSIZE_">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f5baffc95ebfe1ede488388589db922b" desc="">
+    Other Invalidations
+  </message>
+  <message name="IDS_DEVTOOLS_fa7c73b6eb5f3c3b77e47d8a4557af3e" desc="">
+    Load profile…
+  </message>
+  <message name="IDS_DEVTOOLS_faa313428f0d69de3acffbd44c3df1ec" desc="">
+    Enable advanced paint instrumentation (slow)
+  </message>
+  <message name="IDS_DEVTOOLS_fb29a86861ace71b3d0203222b687dc0" desc="">
+    Digest Reply
+  </message>
+  <message name="IDS_DEVTOOLS_fc763cb31e9938f37737394681228f83" desc="">
+    , 
+  </message>
+  <message name="IDS_DEVTOOLS_fd87735db5aee919b6f95f0413a5f542" desc="">
+    Forced reflow
+  </message>
+  <message name="IDS_DEVTOOLS_feab2dfada0f566072a2a5c3268c2b02" desc="">
+    Subframe
+  </message>
+</grit-part>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_514d8a494f087c0d549b9536c2ef3bd9" desc="">
+    Terminal
+  </message>
+  <message name="IDS_DEVTOOLS_69685b2a57646d0d0bc125b5f94f3931" desc="">
+    Terminal service is not available
+  </message>
+</grit-part>

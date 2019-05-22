@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_07c7413a65777a3d70e32ea32dafa509" desc="">
+    Do not preserve log on page reload / navigation
+  </message>
+  <message name="IDS_DEVTOOLS_6aed54027cf3a260de904a43cf439cc9" desc="">
+    Preserve log on page reload / navigation
+  </message>
+  <message name="IDS_DEVTOOLS_edd24cce7afedea5a1b2f90675880687" desc="">
+    Preserve log
+  </message>
+  <message name="IDS_DEVTOOLS_eec89088ee408b80387155272b113256" desc="">
+    Network
+  </message>
+</grit-part>

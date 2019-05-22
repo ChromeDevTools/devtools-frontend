@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_013cf261f9ccf5d4f027bc001d0d1d0c" desc="">
+    (unknown)
+  </message>
+  <message name="IDS_DEVTOOLS_0b484cfcf50c8fabff48c0aad426f544" desc="">
+    Dock to left
+  </message>
+  <message name="IDS_DEVTOOLS_131c97f8ba5bc0277386d660a18f13b6" desc="">
+    Reveal in <ph name="DESTINATION">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_393c3f5ea8ad35c02691d507bdbb31b0" desc="">
+    Reveal
+  </message>
+  <message name="IDS_DEVTOOLS_7f52f5f786eb8d9bf9e56ce89fb3db3a" desc="">
+    Show 1 more frame
+  </message>
+  <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="">
+    Blackbox script
+  </message>
+  <message name="IDS_DEVTOOLS_9df22f196a33acd0b372fe502de51211" desc="">
+    auto
+  </message>
+  <message name="IDS_DEVTOOLS_a498f0751d1221223efb0defc71cc804" desc="">
+    <ph name="RENDEREDWIDTH">$1s</ph> × <ph name="RENDEREDHEIGHT">$2s</ph> pixels
+  </message>
+  <message name="IDS_DEVTOOLS_b836d99a391a4d2baf6624f8f4acbfc0" desc="">
+     (intrinsic: <ph name="INTRINSICWIDTH">$1s</ph> × <ph name="INTRINSICHEIGHT">$2s</ph> pixels)
+  </message>
+  <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="">
+    Dock to bottom
+  </message>
+  <message name="IDS_DEVTOOLS_c3fe109bf99ade2d76a55e5737015e3e" desc="">
+    Stop blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_c850ae12703fa2b00eeaf8445ecf00ef" desc="">
+    Show <ph name="TOTALHIDDENCALLFRAMESCOUNT">$1s</ph> more frames
+  </message>
+  <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="">
+    Close
+  </message>
+  <message name="IDS_DEVTOOLS_e48081c5f0698efee665fbf8e9d123f9" desc="">
+    Open using <ph name="TITLE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e6cd0f8a4fe4fb9e08505b784e48caa2" desc="">
+    Link handling:
+  </message>
+  <message name="IDS_DEVTOOLS_f53944c3a55bdb5ad65c6226e358a626" desc="">
+    Undock into separate window
+  </message>
+  <message name="IDS_DEVTOOLS_fe7fb037b290768d6a6be30b237e183d" desc="">
+    Dock to right
+  </message>
+</grit-part>

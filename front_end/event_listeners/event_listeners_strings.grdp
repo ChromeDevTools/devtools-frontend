@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0b9c1def3b0d84fe6234388ff8dfa8b7" desc="">
+    Toggle whether event listener is passive or blocking
+  </message>
+  <message name="IDS_DEVTOOLS_1063e38cb53d94d386f21227fcd84717" desc="">
+    Remove
+  </message>
+  <message name="IDS_DEVTOOLS_7667495b756ef15210cd60285d8de58a" desc="">
+    No event listeners
+  </message>
+  <message name="IDS_DEVTOOLS_8d036bf35b7274602d923724afeb7878" desc="">
+    Toggle Passive
+  </message>
+  <message name="IDS_DEVTOOLS_ba54da0de85f689f31c5e48b3e4c0de3" desc="">
+    Delete event listener
+  </message>
+</grit-part>

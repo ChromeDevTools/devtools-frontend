@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_06f884351ae9dbaaca31602b74d0ed4e" desc="">
+    Type &apos;?&apos; to see available commands
+  </message>
+  <message name="IDS_DEVTOOLS_22b6fe30dec1ae9c09480cce01cd4065" desc="">
+    Run command
+  </message>
+  <message name="IDS_DEVTOOLS_74540c79e377bea903e1023a46df5574" desc="">
+    Open file
+  </message>
+  <message name="IDS_DEVTOOLS_8bb9829a676055080c3d4507e0b5f201" desc="">
+    No commands found
+  </message>
+  <message name="IDS_DEVTOOLS_af9ccba3ec4346e3acf785f9bea514d8" desc="">
+    Show <ph name="EXTENSION_TITLE__">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e576c23d915755d83e2d1f47bd9f6c22" desc="">
+    No results found
+  </message>
+</grit-part>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_02674a4ef33e11c879283629996c8ff8" desc="">
+    Direction
+  </message>
+  <message name="IDS_DEVTOOLS_15c2d85f1fae22a3c3a0594510a1f611" desc="">
+    Request
+  </message>
+  <message name="IDS_DEVTOOLS_2448f896f98bcda2db043a999a00e1d2" desc="">
+    <ph name="THIS_DATA_COLUMNID_">$1s</ph> ms
+  </message>
+  <message name="IDS_DEVTOOLS_5b6cf869265c13af8566f192b4ab3d2a" desc="">
+    Documentation
+  </message>
+  <message name="IDS_DEVTOOLS_6a0d9eaee314c567fd72fb97ee707a36" desc="">
+    Record
+  </message>
+  <message name="IDS_DEVTOOLS_a3d5de3eac8bb00ae86fd1a1005f1500" desc="">
+    Timestamp
+  </message>
+  <message name="IDS_DEVTOOLS_a854885880458e27324853c6f46e28f7" desc="">
+    No message selected
+  </message>
+  <message name="IDS_DEVTOOLS_c2474d3f42e95aac175f984da6d91cf5" desc="">
+    Protocol monitor
+  </message>
+</grit-part>

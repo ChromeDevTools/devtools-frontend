@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_012528cb9fb45d278755f9fec090ed11" desc="">
+    Laptop with MDPI screen
+  </message>
+  <message name="IDS_DEVTOOLS_079a3d134d2387adc52b2b3895f85e55" desc="">
+    iPhone X
+  </message>
+  <message name="IDS_DEVTOOLS_0d1160fe394d87ddbc2ca8e7cc25379d" desc="">
+    Laptop with touch
+  </message>
+  <message name="IDS_DEVTOOLS_0e5aeadd53726e96d7d9faa671b423ae" desc="">
+    Kindle Fire HDX
+  </message>
+  <message name="IDS_DEVTOOLS_1b9018182a49e16ba85bb095f224867c" desc="">
+    iPad
+  </message>
+  <message name="IDS_DEVTOOLS_2235bd527cc1684230b1db146c570a9d" desc="">
+    Pixel 2
+  </message>
+  <message name="IDS_DEVTOOLS_2c17ed2506add59c15ea763801cfafb1" desc="">
+    Nexus 6
+  </message>
+  <message name="IDS_DEVTOOLS_2d1fbe61c136940101281ec1df805c01" desc="">
+    Nexus 5
+  </message>
+  <message name="IDS_DEVTOOLS_2d9a25096b47a022c95787ab90308d6b" desc="">
+    LG Optimus L70
+  </message>
+  <message name="IDS_DEVTOOLS_4a321c67ad4bac0f3386f5e257b1fba3" desc="">
+    Laptop with HiDPI screen
+  </message>
+  <message name="IDS_DEVTOOLS_6247fa438881677e5f910b89db1974a7" desc="">
+    Nokia N9
+  </message>
+  <message name="IDS_DEVTOOLS_659810deafc0279869114daf8446ef4a" desc="">
+    Nexus 10
+  </message>
+  <message name="IDS_DEVTOOLS_6d9131a4a569108e7d19038b27111c86" desc="">
+    Nexus 5X
+  </message>
+  <message name="IDS_DEVTOOLS_71e3580e3c3a03f17798ebccaad9e6cb" desc="">
+    Nexus 7
+  </message>
+  <message name="IDS_DEVTOOLS_71f859515e31ad9bb417977247315f0a" desc="">
+    iPad Pro
+  </message>
+  <message name="IDS_DEVTOOLS_76c4064f51952f873baa0f9a201b49a3" desc="">
+    Nokia Lumia 520
+  </message>
+  <message name="IDS_DEVTOOLS_8be08fbcf1f787159e451a97a7c1cc90" desc="">
+    iPhone 6/7/8 Plus
+  </message>
+  <message name="IDS_DEVTOOLS_8d0c6a99bcfbb75724c123476d683d3f" desc="">
+    iPhone 4
+  </message>
+  <message name="IDS_DEVTOOLS_99d1a0f994cdce14eea8b6ae823d5a76" desc="">
+    Galaxy S III
+  </message>
+  <message name="IDS_DEVTOOLS_a75624548994321c1cc7173b9933438b" desc="">
+    Microsoft Lumia 550
+  </message>
+  <message name="IDS_DEVTOOLS_aa5fa1bdadb078da054c34752031a5e9" desc="">
+    iPhone 6/7/8
+  </message>
+  <message name="IDS_DEVTOOLS_b9e5554cdd9d9f2d3df1f30914b617c2" desc="">
+    Galaxy Note 3
+  </message>
+  <message name="IDS_DEVTOOLS_be6a9d69eff86af39e5a73345c585da6" desc="">
+    iPad Mini
+  </message>
+  <message name="IDS_DEVTOOLS_c99b8431589c0273278e87ebf44a7fd6" desc="">
+    iPhone 5/SE
+  </message>
+  <message name="IDS_DEVTOOLS_cc810fb8b8bc7c7d6a8327f0e7b2aead" desc="">
+    Nexus 6P
+  </message>
+  <message name="IDS_DEVTOOLS_d4f2f5453f28c5fd35c68f52e4da07cd" desc="">
+    BlackBerry Z30
+  </message>
+  <message name="IDS_DEVTOOLS_d6162eb3dd4dc5a9bc67222e24f19b25" desc="">
+    Nexus 4
+  </message>
+  <message name="IDS_DEVTOOLS_d8860bf736e83cfb5c13ee82a8f61a43" desc="">
+    Microsoft Lumia 950
+  </message>
+  <message name="IDS_DEVTOOLS_dfd6e576e036db4f857c8c03c977d975" desc="">
+    Galaxy Note II
+  </message>
+  <message name="IDS_DEVTOOLS_e0261d2f1730ebff89bbde9a4bc74ac5" desc="">
+    JioPhone 2
+  </message>
+  <message name="IDS_DEVTOOLS_e770076f957c87605ff906d0ed2c4b52" desc="">
+    Blackberry PlayBook
+  </message>
+  <message name="IDS_DEVTOOLS_eb850446088fbc75e974788cc2b39caa" desc="">
+    Pixel 2 XL
+  </message>
+  <message name="IDS_DEVTOOLS_f8896f769d62b6102e48039154c4ca5e" desc="">
+    Galaxy S5
+  </message>
+</grit-part>

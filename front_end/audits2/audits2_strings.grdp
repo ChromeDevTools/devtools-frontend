@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_026d213afe4c17e37ac8306b77e9f870" desc="">
+    Auditing your web page
+  </message>
+  <message name="IDS_DEVTOOLS_0503ffa75a95f35877fe7420d061b6a9" desc="">
+    Progressive Web App
+  </message>
+  <message name="IDS_DEVTOOLS_070716fc9cd3859f51f3860a349bad2f" desc="">
+    Simulated Slow 4G, 4x CPU Slowdown
+  </message>
+  <message name="IDS_DEVTOOLS_0f39dfdd740bf99080ca83e56e2cfb4c" desc="">
+    💡 <ph name="THIS__FASTFACTSQUEUED_FASTFACTINDEX_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_1421c82f3616812789ac346b1638e39d" desc="">
+    Run audits
+  </message>
+  <message name="IDS_DEVTOOLS_1583d36995134f9120fac115c08e0174" desc="">
+    Loading…
+  </message>
+  <message name="IDS_DEVTOOLS_15a895a381c23eff5397d8b1f318a726" desc="">
+    No network or CPU throttling used. (Useful when not evaluating performance)
+  </message>
+  <message name="IDS_DEVTOOLS_161bf73e31de6b8e3d856815473cbe1c" desc="">
+    View Trace
+  </message>
+  <message name="IDS_DEVTOOLS_17de62900ceac9101c8814b4c4874328" desc="">
+    Apply mobile emulation during auditing
+  </message>
+  <message name="IDS_DEVTOOLS_193c4edb3ab576449959f6710e017a49" desc="">
+    Typical DevTools throttling, with actual traffic shaping and CPU slowdown applied
+  </message>
+  <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="">
+    <ph name="MATCH_MESSAGE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="">
+    Desktop
+  </message>
+  <message name="IDS_DEVTOOLS_2a96c07a6c11ca7add2b1ffde86efe25" desc="">
+    Can only audit HTTP/HTTPS pages and Chrome extensions. Navigate to a different page to start an audit.
+  </message>
+  <message name="IDS_DEVTOOLS_39680b3025b1f8d881f9d983623bf071" desc="">
+    Lighthouse is loading your page
+  </message>
+  <message name="IDS_DEVTOOLS_3b7e043f46813f1d8ffbd462eb77fb6c" desc="">
+    How long does this app take to show content and become usable
+  </message>
+  <message name="IDS_DEVTOOLS_3e3f8a3abd60f2389b744ca8ed0aa4d9" desc="">
+    No throttling
+  </message>
+  <message name="IDS_DEVTOOLS_3ee3aab0791156ff1d5e0481ed4589b2" desc="">
+    Applied Slow 4G, 4x CPU Slowdown
+  </message>
+  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="">
+    Throttling
+  </message>
+  <message name="IDS_DEVTOOLS_48d24d11c7c71282366fe2007d4cee3b" desc="">
+    Throttling is simulated, resulting in faster audit runs with similar measurement accuracy
+  </message>
+  <message name="IDS_DEVTOOLS_4ab5093468559edd5940ac59f1c6ac02" desc="">
+    Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.
+  </message>
+  <message name="IDS_DEVTOOLS_55f562701dc2cc775f9adc0478644b2a" desc="">
+    Perform an audit…
+  </message>
+  <message name="IDS_DEVTOOLS_56395991012586c2067aa7bcb5905b50" desc="">
+    Cancelling
+  </message>
+  <message name="IDS_DEVTOOLS_64a64ca70e7a909a5a96c07082070bfc" desc="">
+    Ah, sorry! We ran into an error.
+  </message>
+  <message name="IDS_DEVTOOLS_64d266bad80369458003a71a9e04dd50" desc="">
+    Cancelling…
+  </message>
+  <message name="IDS_DEVTOOLS_6556b7f666de143f5a9826e048d5dcd8" desc="">
+    Is this page usable by people with disabilities or impairments
+  </message>
+  <message name="IDS_DEVTOOLS_6565973a762b83f476e9a76a0015b539" desc="">
+    At least one category must be selected.
+  </message>
+  <message name="IDS_DEVTOOLS_671b3beee69d9180412202b6528ec8f7" desc="">
+    Download report
+  </message>
+  <message name="IDS_DEVTOOLS_67aa731132e0e7bbabb1b3d3c363e7d6" desc="">
+    Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.
+  </message>
+  <message name="IDS_DEVTOOLS_72c4a2e545d220fd8c9ead876a59a89d" desc="">
+    Is this page optimized for search engine results ranking
+  </message>
+  <message name="IDS_DEVTOOLS_7bd1e4f7363173e2c8329551ca4d38cc" desc="">
+    (new audit)
+  </message>
+  <message name="IDS_DEVTOOLS_87d17f4624a514e81dc7c8e016a7405c" desc="">
+    Mobile
+  </message>
+  <message name="IDS_DEVTOOLS_88450f419690173d62fb0a30fb29a951" desc="">
+    Auditing <ph name="PAGEHOST">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8eb7115e5b4ba55f56931ec24c789f9e" desc="">
+    Lighthouse is warming up…
+  </message>
+  <message name="IDS_DEVTOOLS_8fe967af0fb77d0261a6ead91bcd607f" desc="">
+    Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance &amp; PWA testing)
+  </message>
+  <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="">
+    Performance
+  </message>
+  <message name="IDS_DEVTOOLS_b06c94565d768dd75535120f2f8482a7" desc="">
+    Audits
+  </message>
+  <message name="IDS_DEVTOOLS_b1b01acb63f79615b05f6d816705d7d3" desc="">
+    Does this page meet the standard of a Progressive Web App
+  </message>
+  <message name="IDS_DEVTOOLS_bc28aa52ba5b534ad9d198157c375d67" desc="">
+    Clear storage
+  </message>
+  <message name="IDS_DEVTOOLS_bcf2457dd80557dd7ebdc1504b6149e6" desc="">
+    Does this page follow best practices for modern web development
+  </message>
+  <message name="IDS_DEVTOOLS_c2ffe02d76c4f089648f1647b43e4ee5" desc="">
+    Best practices
+  </message>
+  <message name="IDS_DEVTOOLS_c3669fa42d4becdd2831b9685cf607bb" desc="">
+    Identify and fix common problems that affect your site&apos;s performance,
+                accessibility, and user experience.
+  </message>
+  <message name="IDS_DEVTOOLS_c91c7b93c28cd18741b71f727ee81ee3" desc="">
+    Reports
+  </message>
+  <message name="IDS_DEVTOOLS_d59048f21fd887ad520398ce677be586" desc="">
+    Learn more
+  </message>
+  <message name="IDS_DEVTOOLS_d88946b678e4c2f251d4e292e8142291" desc="">
+    SEO
+  </message>
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="">
+    Device
+  </message>
+  <message name="IDS_DEVTOOLS_e499f5109f685235e6280179fe22beec" desc="">
+    Drop audit file here
+  </message>
+  <message name="IDS_DEVTOOLS_ea4788705e6873b424c65e91c2846b19" desc="">
+    Cancel
+  </message>
+  <message name="IDS_DEVTOOLS_ea60ba1496b05c6a5816fb75d0665c8d" desc="">
+    If this issue is reproducible, please report it at the Lighthouse GitHub repo.
+  </message>
+</grit-part>

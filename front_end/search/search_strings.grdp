@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_2f04f3e6eee339eeb0ddb6c39606424d" desc="">
+    Use Regular Expression
+  </message>
+  <message name="IDS_DEVTOOLS_44b4e531d5b06deb40b631e4aa3c7e36" desc="">
+    Show <ph name="MATCHESLEFTCOUNT">$1d</ph> more
+  </message>
+  <message name="IDS_DEVTOOLS_617778f774bc264b169dde60f223285f" desc="">
+    Indexing…
+  </message>
+  <message name="IDS_DEVTOOLS_9fc52b55092ab8a92303e86722013b36" desc="">
+    Search interrupted.
+  </message>
+  <message name="IDS_DEVTOOLS_ab29eba562fe20ebb94fed224813c109" desc="">
+    Search finished.
+  </message>
+  <message name="IDS_DEVTOOLS_b20aa447d2e9b2d5065ac0ac4ed7bcc2" desc="">
+    Found <ph name="THIS__SEARCHMATCHESCOUNT">$1d</ph> matching lines in <ph name="THIS__NONEMPTYSEARCHRESULTSCOUNT">$2d</ph> files.
+  </message>
+  <message name="IDS_DEVTOOLS_c440d4f6fc7dd9239ada58277b900249" desc="">
+    Found <ph name="THIS__SEARCHMATCHESCOUNT">$1d</ph> matching lines in 1 file.
+  </message>
+  <message name="IDS_DEVTOOLS_c949475bc69a57c419ac976fe8870652" desc="">
+    Match Case
+  </message>
+  <message name="IDS_DEVTOOLS_d1e64da6074bf343a0a6bd2cd6515189" desc="">
+    Indexing interrupted.
+  </message>
+  <message name="IDS_DEVTOOLS_f4c8ff50c8f0b548e3297aeaf3b304b4" desc="">
+    Found 1 matching line in 1 file.
+  </message>
+  <message name="IDS_DEVTOOLS_f7e2fe044011a710d68a3c4e165ef7bf" desc="">
+    No matches found.
+  </message>
+</grit-part>

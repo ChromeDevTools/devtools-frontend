@@ -365,7 +365,8 @@ UI.SuggestBox = class {
  *      priority: (number|undefined),
  *      isSecondary: (boolean|undefined),
  *      subtitleRenderer: (function():!Element|undefined),
- *      selectionRange: ({startColumn: number, endColumn: number}|undefined)
+ *      selectionRange: ({startColumn: number, endColumn: number}|undefined),
+ *      hideGhostText: (boolean|undefined)
  * }}
  */
 UI.SuggestBox.Suggestion;

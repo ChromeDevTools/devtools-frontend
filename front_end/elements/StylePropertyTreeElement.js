@@ -715,15 +715,34 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   async _applyFreeFlowStyleTextEdit(context) {
     if (!this._prompt || !this._parentPane.node())
       return;
-    const valueText = this._prompt.textWithCurrentSuggestion();
-    if (context.isEditingName || valueText.includes(';'))
-      return;
-    // Do not live-edit "content" property of pseudo elements. crbug.com/433889
-    const isPseudo = !!this._parentPane.node().pseudoType();
-    if (isPseudo && this.name === 'content')
-      return;
 
-    await this.applyStyleText(this.nameElement.textContent + ': ' + valueText, false);
+    const enteredText = this._prompt.text();
+    if (context.isEditingName && enteredText.includes(':')) {
+      this._editingCommitted(enteredText, context, 'forward');
+      return;
+    }
+
+    const valueText = this._prompt.textWithCurrentSuggestion();
+    if (valueText.includes(';'))
+      return;
+    // Prevent destructive side-effects during live-edit. crbug.com/433889
+    const isPseudo = !!this._parentPane.node().pseudoType();
+    if (isPseudo) {
+      if (this.name.toLowerCase() === 'content')
+        return;
+      const lowerValueText = valueText.trim().toLowerCase();
+      if (lowerValueText.startsWith('content:') || lowerValueText === 'display: none')
+        return;
+    }
+
+    if (context.isEditingName) {
+      if (valueText.includes(':'))
+        await this.applyStyleText(valueText, false);
+      else if (this._hasBeenEditedIncrementally())
+        await this._applyOriginalStyle(context);
+    } else {
+      await this.applyStyleText(`${this.nameElement.textContent}: ${valueText}`, false);
+    }
   }
 
   /**
@@ -802,6 +821,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this._removePrompt();
     this.editingEnded(context);
     const isEditingName = context.isEditingName;
+    const nameValueEntered = isEditingName && this.nameElement.textContent.includes(':');
 
     // Determine where to move to before making changes
     let createNewProperty, moveToSelector;
@@ -829,11 +849,14 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     let moveToIndex = moveTo && this.treeOutline ? this.treeOutline.rootElement().indexOfChild(moveTo) : -1;
     const blankInput = userInput.isWhitespace();
     const shouldCommitNewProperty = this._newProperty &&
-        (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput));
+        (isPropertySplitPaste || moveToOther || (!moveDirection && !isEditingName) || (isEditingName && blankInput) ||
+         nameValueEntered);
     const section = /** @type {!Elements.StylePropertiesSection} */ (this.section());
     if (((userInput !== context.previousContent || isDirtyViaPaste) && !this._newProperty) || shouldCommitNewProperty) {
       let propertyText;
-      if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {
+      if (nameValueEntered) {
+        propertyText = this.nameElement.textContent;
+      } else if (blankInput || (this._newProperty && this.valueElement.textContent.isWhitespace())) {
         propertyText = '';
       } else {
         if (isEditingName)
@@ -1021,6 +1044,15 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 };
 
-/** @typedef {{expanded: boolean, hasChildren: boolean, isEditingName: boolean, previousContent: string}} */
+/** @typedef {{
+ *    expanded: boolean,
+ *    hasChildren: boolean,
+ *    isEditingName: boolean,
+ *    originalProperty: (!SDK.CSSProperty|undefined),
+ *    originalName: (string|undefined),
+ *    originalValue: (string|undefined),
+ *    previousContent: string
+ *  }}
+ */
 Elements.StylePropertyTreeElement.Context;
 Elements.StylePropertyTreeElement.ActiveSymbol = Symbol('ActiveSymbol');

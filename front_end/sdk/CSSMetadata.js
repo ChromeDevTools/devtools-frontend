@@ -73,8 +73,36 @@ SDK.CSSMetadata = class {
         }
       }
     }
-    this._values.sort();
+    this._values.sort(SDK.CSSMetadata._sortPrefixesToEnd);
     this._valuesSet = new Set(this._values);
+
+    /** @type {!Array<string>} */
+    this._nameValuePresets = [];
+    /** @type {!Array<string>} */
+    this._nameValuePresetsIncludingSVG = [];
+    for (const name of this._valuesSet) {
+      const values = this._specificPropertyValues(name)
+                         .filter(value => CSS.supports(name, value))
+                         .sort(SDK.CSSMetadata._sortPrefixesToEnd);
+      const presets = values.map(value => `${name}: ${value}`);
+      if (!this.isSVGProperty(name))
+        this._nameValuePresets.pushAll(presets);
+      this._nameValuePresetsIncludingSVG.pushAll(presets);
+    }
+  }
+
+  /**
+   * @param {string} a
+   * @param {string} b
+   */
+  static _sortPrefixesToEnd(a, b) {
+    const aIsPrefixed = a.startsWith('-webkit-');
+    const bIsPrefixed = b.startsWith('-webkit-');
+    if (aIsPrefixed && !bIsPrefixed)
+      return 1;
+    if (!aIsPrefixed && bIsPrefixed)
+      return -1;
+    return a < b ? -1 : (a > b ? 1 : 0);
   }
 
   /**
@@ -82,6 +110,14 @@ SDK.CSSMetadata = class {
    */
   allProperties() {
     return this._values;
+  }
+
+  /**
+   * @param {boolean=} includeSVG
+   * @return {!Array<string>}
+   */
+  nameValuePresets(includeSVG) {
+    return includeSVG ? this._nameValuePresetsIncludingSVG : this._nameValuePresets;
   }
 
   /**
@@ -188,24 +224,31 @@ SDK.CSSMetadata = class {
    * @param {string} propertyName
    * @return {!Array<string>}
    */
+  _specificPropertyValues(propertyName) {
+    const unprefixedName = propertyName.replace(/^-webkit-/, '');
+    const entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
+    const keywords = entry && entry.values ? entry.values.slice() : [];
+    for (const commonKeyword of ['auto', 'none']) {
+      if (CSS.supports(propertyName, commonKeyword))
+        keywords.push(commonKeyword);
+    }
+    return keywords;
+  }
+
+  /**
+   * @param {string} propertyName
+   * @return {!Array<string>}
+   */
   propertyValues(propertyName) {
     const acceptedKeywords = ['inherit', 'initial', 'unset'];
     propertyName = propertyName.toLowerCase();
-    const unprefixedName = propertyName.replace(/^-webkit-/, '');
-    const entry = SDK.CSSMetadata._propertyDataMap[propertyName] || SDK.CSSMetadata._propertyDataMap[unprefixedName];
-    if (entry && entry.values)
-      acceptedKeywords.pushAll(entry.values);
-    const commonKeywords = ['auto', 'none'];
-    for (const commonKeyword of commonKeywords) {
-      if (CSS.supports(propertyName, commonKeyword))
-        acceptedKeywords.push(commonKeyword);
-    }
+    acceptedKeywords.pushAll(this._specificPropertyValues(propertyName));
     if (this.isColorAwareProperty(propertyName)) {
       acceptedKeywords.push('currentColor');
       for (const color in Common.Color.Nicknames)
         acceptedKeywords.push(color);
     }
-    return acceptedKeywords.sort();
+    return acceptedKeywords.sort(SDK.CSSMetadata._sortPrefixesToEnd);
   }
 
   /**

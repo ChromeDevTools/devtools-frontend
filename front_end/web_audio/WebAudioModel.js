@@ -19,6 +19,22 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
 
     this._agent = target.webAudioAgent();
     target.registerWebAudioDispatcher(this);
+
+    // TODO(crbug.com/963510): Some OfflineAudioContexts are not uninitialized
+    // properly because LifeCycleObserver::ContextDestroyed() is not fired for
+    // unknown reasons. This creates inconsistency in BaseAudioContextTracker
+    // and AudioContextSelector in DevTools.
+    //
+    // To resolve this inconsistency, we flush the leftover from the previous
+    // frame when the current page is loaded. This call can be omitted when the
+    // bug is fixed.
+    SDK.targetManager.addModelListener(
+        SDK.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated, this._flushContexts, this);
+  }
+
+  _flushContexts() {
+    this._contextMapById.clear();
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ModelReset);
   }
 
   /**
@@ -95,4 +111,5 @@ WebAudio.WebAudioModel.Events = {
   ContextCreated: Symbol('ContextCreated'),
   ContextDestroyed: Symbol('ContextDestroyed'),
   ContextChanged: Symbol('ContextChanged'),
+  ModelReset: Symbol('ModelReset'),
 };

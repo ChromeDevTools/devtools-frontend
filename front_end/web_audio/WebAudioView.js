@@ -96,6 +96,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
     webAudioModel.addEventListener(WebAudio.WebAudioModel.Events.ContextCreated, this._contextCreated, this);
     webAudioModel.addEventListener(WebAudio.WebAudioModel.Events.ContextDestroyed, this._contextDestroyed, this);
     webAudioModel.addEventListener(WebAudio.WebAudioModel.Events.ContextChanged, this._contextChanged, this);
+    webAudioModel.addEventListener(WebAudio.WebAudioModel.Events.ModelReset, this._reset, this);
   }
 
   /**
@@ -105,6 +106,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
     webAudioModel.removeEventListener(WebAudio.WebAudioModel.Events.ContextCreated, this._contextCreated, this);
     webAudioModel.removeEventListener(WebAudio.WebAudioModel.Events.ContextDestroyed, this._contextDestroyed, this);
     webAudioModel.removeEventListener(WebAudio.WebAudioModel.Events.ContextChanged, this._contextChanged, this);
+    webAudioModel.removeEventListener(WebAudio.WebAudioModel.Events.ModelReset, this._reset, this);
   }
 
   /**

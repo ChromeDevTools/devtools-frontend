@@ -52,16 +52,19 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
 
     const application = this._reportView.appendSection(Common.UIString('Application'));
     this._appendItem(application, Common.UIString('Unregister service workers'), 'service_workers');
+    application.markFieldListAsGroup();
 
     const storage = this._reportView.appendSection(Common.UIString('Storage'));
     this._appendItem(storage, Common.UIString('Local and session storage'), 'local_storage');
     this._appendItem(storage, Common.UIString('IndexedDB'), 'indexeddb');
     this._appendItem(storage, Common.UIString('Web SQL'), 'websql');
     this._appendItem(storage, Common.UIString('Cookies'), 'cookies');
+    storage.markFieldListAsGroup();
 
     const caches = this._reportView.appendSection(Common.UIString('Cache'));
     this._appendItem(caches, Common.UIString('Cache storage'), 'cache_storage');
     this._appendItem(caches, Common.UIString('Application cache'), 'appcache');
+    caches.markFieldListAsGroup();
 
     SDK.targetManager.observeTargets(this);
   }

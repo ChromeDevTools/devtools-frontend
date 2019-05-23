@@ -12,10 +12,14 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Framework Blackbox Patterns');
-    this.contentElement.createChild('div', 'blackbox-content-scripts')
-        .appendChild(UI.SettingsUI.createSettingCheckbox(
-            Common.UIString('Blackbox content scripts'), Common.moduleSetting('skipContentScripts'), true));
+    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Framework Blackboxing');
+    this.contentElement.createChild('div', 'intro').textContent =
+        ls`Debugger will skip through the scripts and will not stop on exceptions thrown by them.`;
+
+    const blackboxContentScripts = this.contentElement.createChild('div', 'blackbox-content-scripts');
+    blackboxContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
+        ls`Blackbox content scripts`, Common.moduleSetting('skipContentScripts'), true));
+    blackboxContentScripts.title = ls`Blackbox content scripts (extension scripts in the page)`;
 
     this._blackboxLabel = Common.UIString('Blackbox');
     this._disabledLabel = Common.UIString('Disabled');
@@ -68,7 +72,8 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     const element = createElementWithClass('div', 'blackbox-list-item');
     const pattern = element.createChild('div', 'blackbox-pattern');
     pattern.textContent = item.pattern;
-    pattern.title = item.pattern;
+    pattern.title = ls`Blackbox scripts whose names match` +
+        ' \'' + item.pattern + '\'';
     element.createChild('div', 'blackbox-separator');
     element.createChild('div', 'blackbox-behavior').textContent =
         item.disabled ? this._disabledLabel : this._blackboxLabel;

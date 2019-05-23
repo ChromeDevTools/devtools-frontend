@@ -16,6 +16,10 @@
     flex: none;
 }
 
+.intro {
+    margin-top: 10px;
+}
+
 .blackbox-content-scripts {
     margin-top: 10px;
     flex: none;

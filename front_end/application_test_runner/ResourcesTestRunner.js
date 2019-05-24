@@ -128,6 +128,63 @@ ApplicationTestRunner.dumpCookies = function() {
   }
 };
 
+/**
+ * @param {string} label
+ */
+ApplicationTestRunner.dumpCurrentState = function(label) {
+  TestRunner.addResult(label);
+
+  const types = new Map([
+    [SourceFrame.ImageView, 'image'], [SourceFrame.JSONView, 'json'],
+    [SourceFrame.ResourceSourceFrame.SearchableContainer, 'source'], [SourceFrame.XMLView, 'xml']
+  ]);
+
+  const view = UI.panels.resources;
+  dump(view._sidebar._sidebarTree.rootElement(), '');
+
+  const visibleView = view.visibleView instanceof UI.SearchableView ? view.visibleView.children()[0] : view.visibleView;
+  let typeLabel = 'unknown';
+  for (const [typeObject, typeString] of types) {
+    if (visibleView instanceof typeObject) {
+      typeLabel = typeString;
+      break;
+    }
+  }
+
+  TestRunner.addResult(`visible view: ${typeLabel}`);
+
+  function dump(node, prefix) {
+    for (const child of node.children()) {
+      TestRunner.addResult(`${prefix}${child.listItemElement.textContent}${child.selected ? ' (selected)' : ''}`);
+      dump(child, `${prefix}  `);
+    }
+  }
+};
+
+/**
+ * @param {string} name
+ * @returns {!Promise<void>}
+ */
+ApplicationTestRunner.revealResourceWithDisplayName = async function(name) {
+  const target = SDK.targetManager.mainTarget();
+  const model = target.model(SDK.ResourceTreeModel);
+  const resource = model.mainFrame.resources().find(r => r.displayName === name);
+
+  if (!resource) {
+    await waitForResource(name);
+    return ApplicationTestRunner.revealResourceWithDisplayName(name);
+  }
+
+  await Common.Revealer.reveal(resource);
+  ApplicationTestRunner.dumpCurrentState(`Revealed ${name}:`);
+
+  async function waitForResource(n) {
+    return new Promise(resolve => {
+      TestRunner.addSniffer(Resources.FrameTreeElement.prototype, 'appendResource', resolve);
+    });
+  }
+};
+
 ApplicationTestRunner.databaseModel = function() {
   return TestRunner.mainTarget.model(Resources.DatabaseModel);
 };

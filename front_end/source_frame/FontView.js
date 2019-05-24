@@ -39,6 +39,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
     this.registerRequiredCSS('source_frame/fontView.css');
     this.element.classList.add('font-view');
     this._url = contentProvider.contentURL();
+    UI.ARIAUtils.setAccessibleName(this.element, ls`Preview of font from ${this._url}`);
     this._mimeType = mimeType;
     this._contentProvider = contentProvider;
     this._mimeTypeLabel = new UI.ToolbarText(mimeType);
@@ -79,6 +80,7 @@ SourceFrame.FontView = class extends UI.SimpleView {
       fontPreview.createTextChild(SourceFrame.FontView._fontPreviewLines[i]);
     }
     this.fontPreviewElement = fontPreview.cloneNode(true);
+    UI.ARIAUtils.markAsHidden(this.fontPreviewElement);
     this.fontPreviewElement.style.overflow = 'hidden';
     this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
     this.fontPreviewElement.style.setProperty('visibility', 'hidden');

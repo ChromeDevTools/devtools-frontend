@@ -68,7 +68,6 @@ SourceFrame.JSONView = class extends UI.VBox {
     searchableView.setPlaceholder(Common.UIString('Find'));
     jsonView._searchableView = searchableView;
     jsonView.show(searchableView.element);
-    jsonView.element.setAttribute('tabIndex', 0);
     return searchableView;
   }
 
@@ -172,6 +171,7 @@ SourceFrame.JSONView = class extends UI.VBox {
     this._treeOutline.setEditable(false);
     this._treeOutline.expand();
     this.element.appendChild(this._treeOutline.element);
+    this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
   }
 
   /**

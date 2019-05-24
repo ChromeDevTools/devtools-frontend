@@ -27,6 +27,7 @@ SourceFrame.XMLView = class extends UI.Widget {
     this._searchConfig;
 
     SourceFrame.XMLView.Node.populate(this._treeOutline, parsedXML, this);
+    this._treeOutline.firstChild().select(true /* omitFocus */, false /* selectedByUser */);
   }
 
   /**
@@ -39,7 +40,6 @@ SourceFrame.XMLView = class extends UI.Widget {
     searchableView.setPlaceholder(Common.UIString('Find'));
     xmlView._searchableView = searchableView;
     xmlView.show(searchableView.element);
-    xmlView.contentElement.setAttribute('tabIndex', 0);
     return searchableView;
   }
 
@@ -223,7 +223,7 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
     super('', !closeTag && !!node.childElementCount);
     this._node = node;
     this._closeTag = closeTag;
-    this.selectable = false;
+    this.selectable = true;
     /** @type {!Array.<!Object>} */
     this._highlightChanges = [];
     this._xmlView = xmlView;

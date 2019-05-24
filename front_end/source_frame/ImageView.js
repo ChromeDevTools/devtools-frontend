@@ -37,6 +37,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
   constructor(mimeType, contentProvider) {
     super(Common.UIString('Image'));
     this.registerRequiredCSS('source_frame/imageView.css');
+    this.element.tabIndex = 0;
     this.element.classList.add('image-view');
     this._url = contentProvider.contentURL();
     this._parsedURL = new Common.ParsedURL(this._url);
@@ -58,6 +59,7 @@ SourceFrame.ImageView = class extends UI.SimpleView {
     this._container = this.element.createChild('div', 'image');
     this._imagePreviewElement = this._container.createChild('img', 'resource-image-view');
     this._imagePreviewElement.addEventListener('contextmenu', this._contextMenu.bind(this), true);
+    this._imagePreviewElement.alt = ls`Image from ${this._url}`;
   }
 
   /**

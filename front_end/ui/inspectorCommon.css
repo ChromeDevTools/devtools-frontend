@@ -428,6 +428,10 @@ span[is=dt-icon-label] {
     background-color: #d5d5d5;
 }
 
+.expandable-inline-button[data-keyboard-focus="true"] {
+    background-color: #bbbbbb;
+}
+
 ::selection {
     background-color: #bbdefb;
 }

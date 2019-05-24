@@ -376,7 +376,8 @@ Network.RequestHeadersView = class extends UI.VBox {
 
     if (this._request.statusCode) {
       const statusCodeFragment = createDocumentFragment();
-      statusCodeFragment.createChild('div', 'header-name').textContent = Common.UIString('Status Code') + ': ';
+      statusCodeFragment.createChild('div', 'header-name').textContent = ls`Status Code` +
+          ': ';
       statusCodeFragment.createChild('span', 'header-separator');
 
       const statusCodeImage = statusCodeFragment.createChild('span', 'resource-status-image', 'dt-icon-label');
@@ -389,23 +390,26 @@ Network.RequestHeadersView = class extends UI.VBox {
       else
         statusCodeImage.type = 'smallicon-red-ball';
 
-      requestMethodElement.title = this._formatHeader(Common.UIString('Request Method'), this._request.requestMethod);
+      requestMethodElement.title = this._formatHeader(ls`Request Method`, this._request.requestMethod);
 
       const statusTextElement = statusCodeFragment.createChild('div', 'header-value source-code');
       let statusText = this._request.statusCode + ' ' + this._request.statusText;
       if (this._request.cachedInMemory()) {
-        statusText += ' ' + Common.UIString('(from memory cache)');
+        statusText += ' ' + ls`(from memory cache)`;
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.fetchedViaServiceWorker) {
-        statusText += ' ' + Common.UIString('(from ServiceWorker)');
+        statusText += ' ' + ls`(from ServiceWorker)`;
         statusTextElement.classList.add('status-from-cache');
       } else if (
           this._request.redirectSource() && this._request.redirectSource().signedExchangeInfo() &&
           !this._request.redirectSource().signedExchangeInfo().errors) {
-        statusText += ' ' + Common.UIString('(from signed-exchange)');
+        statusText += ' ' + ls`(from signed-exchange)`;
+        statusTextElement.classList.add('status-from-cache');
+      } else if (this._request.fromPrefetchCache()) {
+        statusText += ' ' + ls`(from prefetch cache)`;
         statusTextElement.classList.add('status-from-cache');
       } else if (this._request.cached()) {
-        statusText += ' ' + Common.UIString('(from disk cache)');
+        statusText += ' ' + ls`(from disk cache)`;
         statusTextElement.classList.add('status-from-cache');
       }
       statusTextElement.textContent = statusText;

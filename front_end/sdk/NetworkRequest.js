@@ -459,6 +459,13 @@ SDK.NetworkRequest = class extends Common.Object {
     return !!this._fromMemoryCache && !this._transferSize;
   }
 
+  /**
+   * @return {boolean}
+   */
+  fromPrefetchCache() {
+    return !!this._fromPrefetchCache;
+  }
+
   setFromMemoryCache() {
     this._fromMemoryCache = true;
     delete this._timing;
@@ -466,6 +473,10 @@ SDK.NetworkRequest = class extends Common.Object {
 
   setFromDiskCache() {
     this._fromDiskCache = true;
+  }
+
+  setFromPrefetchCache() {
+    this._fromPrefetchCache = true;
   }
 
   /**

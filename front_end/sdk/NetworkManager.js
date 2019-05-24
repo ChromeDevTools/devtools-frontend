@@ -339,6 +339,10 @@ SDK.NetworkDispatcher = class {
 
     if (response.fromDiskCache)
       networkRequest.setFromDiskCache();
+
+    if (response.fromPrefetchCache)
+      networkRequest.setFromPrefetchCache();
+
     networkRequest.timing = response.timing;
 
     networkRequest.protocol = response.protocol;

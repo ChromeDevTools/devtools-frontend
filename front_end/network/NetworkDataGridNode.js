@@ -969,6 +969,10 @@ Network.NetworkRequestNode = class extends Network.NetworkNode {
       cell.createTextChild(ls`(signed-exchange)`);
       cell.title = ls`Served from Signed HTTP Exchange, resource size: ${resourceSize}`;
       cell.classList.add('network-dim-cell');
+    } else if (this._request.fromPrefetchCache()) {
+      cell.createTextChild(ls`(prefetch cache)`);
+      cell.title = ls`Served from prefetch cache, resource size: ${resourceSize}`;
+      cell.classList.add('network-dim-cell');
     } else if (this._request.cached()) {
       cell.createTextChild(ls`(disk cache)`);
       cell.title = ls`Served from disk cache, resource size: ${resourceSize}`;

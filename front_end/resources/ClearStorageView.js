@@ -33,7 +33,7 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
       this._settings.set(type, Common.settings.createSetting('clear-storage-' + type, true));
 
     const quota = this._reportView.appendSection(Common.UIString('Usage'));
-    this._quotaRow = quota.appendRow();
+    this._quotaRow = quota.appendSelectableRow();
     const learnMoreRow = quota.appendRow();
     const learnMore = UI.XLink.create(
         'https://developers.google.com/web/tools/chrome-devtools/progressive-web-apps#opaque-responses',

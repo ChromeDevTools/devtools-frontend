@@ -204,6 +204,13 @@ UI.ReportView.Section = class extends UI.VBox {
     return this._fieldList.createChild('div', 'report-row');
   }
 
+  /**
+   * @return {!Element}
+   */
+  appendSelectableRow() {
+    return this._fieldList.createChild('div', 'report-row report-row-selectable');
+  }
+
   clearContent() {
     this._fieldList.removeChildren();
     this._fieldMap.clear();

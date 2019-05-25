@@ -91,3 +91,7 @@
     color: #888;
     line-height: 14px;
 }
+
+.report-row-selectable {
+    user-select: text;
+}

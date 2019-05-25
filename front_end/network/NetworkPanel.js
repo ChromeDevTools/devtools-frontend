@@ -247,7 +247,7 @@ Network.NetworkPanel = class extends UI.Panel {
     const importHarButton = new UI.ToolbarButton(ls`Import HAR file...`, 'largeicon-load');
     importHarButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._fileSelectorElement.click(), this);
     this._panelToolbar.appendToolbarItem(importHarButton);
-    const exportHarButton = new UI.ToolbarButton(ls`Export all as HAR with content...`, 'largeicon-download');
+    const exportHarButton = new UI.ToolbarButton(ls`Export HAR...`, 'largeicon-download');
     exportHarButton.addEventListener(UI.ToolbarButton.Events.Click, () => this._networkLogView.exportAll(), this);
     this._panelToolbar.appendToolbarItem(exportHarButton);
   }

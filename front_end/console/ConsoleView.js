@@ -924,35 +924,8 @@ Console.ConsoleView = class extends UI.VBox {
 
   _registerShortcuts() {
     this._shortcuts = {};
-
-    const shortcut = UI.KeyboardShortcut;
-    const section = UI.shortcutsScreen.section(Common.UIString('Console'));
-
-    const shortcutL = shortcut.makeDescriptor('l', UI.KeyboardShortcut.Modifiers.Ctrl);
-    let keys = [shortcutL];
-    if (Host.isMac()) {
-      const shortcutK = shortcut.makeDescriptor('k', UI.KeyboardShortcut.Modifiers.Meta);
-      keys.unshift(shortcutK);
-    }
-    section.addAlternateKeys(keys, Common.UIString('Clear console'));
-
-    keys = [shortcut.makeDescriptor(shortcut.Keys.Tab), shortcut.makeDescriptor(shortcut.Keys.Right)];
-    section.addRelatedKeys(keys, Common.UIString('Accept suggestion'));
-
-    const shortcutU = shortcut.makeDescriptor('u', UI.KeyboardShortcut.Modifiers.Ctrl);
-    this._shortcuts[shortcutU.key] = this._clearPromptBackwards.bind(this);
-    section.addAlternateKeys([shortcutU], Common.UIString('Clear console prompt'));
-
-    keys = [shortcut.makeDescriptor(shortcut.Keys.Down), shortcut.makeDescriptor(shortcut.Keys.Up)];
-    section.addRelatedKeys(keys, Common.UIString('Next/previous line'));
-
-    if (Host.isMac()) {
-      keys =
-          [shortcut.makeDescriptor('N', shortcut.Modifiers.Alt), shortcut.makeDescriptor('P', shortcut.Modifiers.Alt)];
-      section.addRelatedKeys(keys, Common.UIString('Next/previous command'));
-    }
-
-    section.addKey(shortcut.makeDescriptor(shortcut.Keys.Enter), Common.UIString('Execute command'));
+    this._shortcuts[UI.KeyboardShortcut.makeKey('u', UI.KeyboardShortcut.Modifiers.Ctrl)] =
+        this._clearPromptBackwards.bind(this);
   }
 
   _clearPromptBackwards() {

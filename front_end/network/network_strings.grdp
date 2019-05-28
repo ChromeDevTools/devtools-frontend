@@ -1,0 +1,768 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0194336f90a2b1de65553e3bec01becd" desc="">
+    Copy as fetch
+  </message>
+  <message name="IDS_DEVTOOLS_01a8f976083c550f4d5ba8452ec80efb" desc="">
+    No custom headers
+  </message>
+  <message name="IDS_DEVTOOLS_02d56cf7754ce16d7ce0193fbca7c90a" desc="">
+    Caching
+  </message>
+  <message name="IDS_DEVTOOLS_040c4b52a3c06c6067fac76c4c7c3a2c" desc="">
+    Network conditions
+  </message>
+  <message name="IDS_DEVTOOLS_059f48d76d79fe0727740d75dc81fa94" desc="">
+    <ph name="SELECTEDTRANSFERSIZE">$1s</ph> B / <ph name="TRANSFERSIZE">$2s</ph> B transferred
+  </message>
+  <message name="IDS_DEVTOOLS_06337a0bc6e91b2adb10567bee4d6f14" desc="">
+    Copy all as HAR
+  </message>
+  <message name="IDS_DEVTOOLS_079accf18103a0f8b9a76ce09cb147d7" desc="">
+    Add pattern
+  </message>
+  <message name="IDS_DEVTOOLS_08af23a4affc4689447d59935ba3b3b3" desc="">
+    Hit <ph name="RELOADSHORTCUTDESCRIPTOR_NAME">$1s</ph> to reload and capture filmstrip.
+  </message>
+  <message name="IDS_DEVTOOLS_09bad44011fa6a5a64ada3424ad85f03" desc="">
+    <ph name="LOCALIZEDDESCRIPTION">$1s</ph> (Opcode <ph name="OPCODE">$2s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_09c9ea004b0c0822b75bdec322b90ff4" desc="">
+    Waterfall
+  </message>
+  <message name="IDS_DEVTOOLS_0bcc4ec10c2e4cee4b9bbabd48501304" desc="">
+    Select message to browse its content.
+  </message>
+  <message name="IDS_DEVTOOLS_0db377921f4ce762c62526131097968f" desc="">
+    General
+  </message>
+  <message name="IDS_DEVTOOLS_0f44e9e39cbe2f22bd1bd7b6070cf13d" desc="">
+    Enable request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_0f591b1d87c91e77d4fa11dc6e44288c" desc="">
+    Request and response timeline
+  </message>
+  <message name="IDS_DEVTOOLS_117068a6e55846888cbb60978fe82ca2" desc="">
+    Stalled
+  </message>
+  <message name="IDS_DEVTOOLS_11803f40c277b679b08ce0b8d38fdefa" desc="">
+    Preload
+  </message>
+  <message name="IDS_DEVTOOLS_12881f9e98bb240671bc3e1787d64a03" desc="">
+    Color code by resource type
+  </message>
+  <message name="IDS_DEVTOOLS_16f78b9465f03f7ec5a03c24918fbde3" desc="">
+    Status Code
+  </message>
+  <message name="IDS_DEVTOOLS_1854180b02f297deebed0ec452090842" desc="">
+    Served from memory cache, resource size: <ph name="RESOURCESIZE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_197d4c4eb38925e0c8ab3f2998cd893f" desc="">
+    Perform a request or hit <ph name="RELOADSHORTCUTNODE">$1s</ph> to record the reload.
+  </message>
+  <message name="IDS_DEVTOOLS_1a0534b264da645e89fcf2cc86ec4cb5" desc="">
+    (from prefetch cache)
+  </message>
+  <message name="IDS_DEVTOOLS_1a8b6125c4be73210788e4fad96bdbdb" desc="">
+    Server Push
+  </message>
+  <message name="IDS_DEVTOOLS_1b581452e4e1158b75e514c99a760431" desc="">
+    Request Payload
+  </message>
+  <message name="IDS_DEVTOOLS_1c047e32d57295a9f0319976c543162e" desc="">
+    (blocked:<ph name="REASON">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_1cb07ce276f37ba2acdfb8605aaefbb8" desc="">
+    <ph name="RESOURCESIZE">$1s</ph> B resources
+  </message>
+  <message name="IDS_DEVTOOLS_1dc4a71b18d2c3a1442267136158128e" desc="">
+    Copy all as cURL (cmd)
+  </message>
+  <message name="IDS_DEVTOOLS_1eb445fa6bd078346bf63ecac35fa77c" desc="">
+    Base64
+  </message>
+  <message name="IDS_DEVTOOLS_2537b3e6907e17001b7cdf121cd39dc0" desc="">
+    (from ServiceWorker)
+  </message>
+  <message name="IDS_DEVTOOLS_26b6b5ae2c6e2575b2a451c35e94df23" desc="">
+    Waiting (TTFB)
+  </message>
+  <message name="IDS_DEVTOOLS_296d9aa276c7b25db8cf45733d8d4042" desc="">
+    Signed HTTP exchange
+  </message>
+  <message name="IDS_DEVTOOLS_29d37bdcfeb74d25d56bcf841866ae32" desc="">
+    Served from ServiceWorker, resource size: <ph name="RESOURCESIZE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2bbc845892f400626baab5af687527c5" desc="">
+    Start Time
+  </message>
+  <message name="IDS_DEVTOOLS_2d13df6f8b5e4c5af9f87e0dc39df69d" desc="">
+    Pending
+  </message>
+  <message name="IDS_DEVTOOLS_2ef0ae0c4d76a87b28176de205d7d346" desc="">
+    Recording frames...
+  </message>
+  <message name="IDS_DEVTOOLS_2f618132e0f9cadb9eb3759327b70e74" desc="">
+    Import HAR file...
+  </message>
+  <message name="IDS_DEVTOOLS_30ad3ea5e350075c1c0a1171c5006ed7" desc="">
+    Fetching frames...
+  </message>
+  <message name="IDS_DEVTOOLS_3136ed000d43bebb4ca53a9312fbd32c" desc="">
+    Add pattern.
+  </message>
+  <message name="IDS_DEVTOOLS_31977081ea2c828cc70e6151ab5d7da8" desc="">
+    view decoded
+  </message>
+  <message name="IDS_DEVTOOLS_31fde7b05ac8952dacf4af8a704074ec" desc="">
+    Preview
+  </message>
+  <message name="IDS_DEVTOOLS_336439019ce67912717a20d54298bf24" desc="">
+    Receiving Push
+  </message>
+  <message name="IDS_DEVTOOLS_346ff32eaa3c09983fb2ec057816d352" desc="">
+    TIME
+  </message>
+  <message name="IDS_DEVTOOLS_3681a6c01fa5b440938e8112bfc13996" desc="">
+    ServiceWorker Preparation
+  </message>
+  <message name="IDS_DEVTOOLS_36d95f430159f0ac7a477e4ee6c5ad21" desc="">
+    Remove all patterns
+  </message>
+  <message name="IDS_DEVTOOLS_376815607a4b79934f79305216a8048c" desc="">
+    Record (<ph name="RECORDNODE">$1s</ph>) or reload (<ph name="RELOADSHORTCUTNODE">$2s</ph>) to display network activity.
+  </message>
+  <message name="IDS_DEVTOOLS_37bb3bd9caf5dafb7c8f9eccb3b9800e" desc="">
+    (unable to decode value)
+  </message>
+  <message name="IDS_DEVTOOLS_383fc50a38f1666adc3f06d0bdf71467" desc="">
+    Are you sure you want to clear browser cookies?
+  </message>
+  <message name="IDS_DEVTOOLS_3b5904efd4efd03d09ee9a8f964f39d6" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_RESOURCESIZE_">$1s</ph> resources
+  </message>
+  <message name="IDS_DEVTOOLS_3b83f6ae91bb21147fd97b8b8229287f" desc="">
+    Certificate URL
+  </message>
+  <message name="IDS_DEVTOOLS_3c06899dae839e1ca3051475a2b8fa05" desc="">
+    Preview not available
+  </message>
+  <message name="IDS_DEVTOOLS_3c2f5decde47940c8baf3b80dea449bd" desc="">
+    csp
+  </message>
+  <message name="IDS_DEVTOOLS_3c309d9a9f7ff31319c7ecb0a19b2b3f" desc="">
+    Select automatically
+  </message>
+  <message name="IDS_DEVTOOLS_3dab30e9b9adf193562ff9a09dcd41a5" desc="">
+    Remote Address
+  </message>
+  <message name="IDS_DEVTOOLS_3e0dc7bd31f5ad41b900fef5b7aba791" desc="">
+    Don&apos;t group network log items by frame
+  </message>
+  <message name="IDS_DEVTOOLS_41de6d6cfb8953c021bbe4ba0701c8a1" desc="">
+    Messages
+  </message>
+  <message name="IDS_DEVTOOLS_41e85145baafb89d0b709ae827218084" desc="">
+    Clear browser cache
+  </message>
+  <message name="IDS_DEVTOOLS_4202ef115ebede37eb22297113f5fb32" desc="">
+    Redirect
+  </message>
+  <message name="IDS_DEVTOOLS_42d61b587a0123390822777d84e0f6bd" desc="">
+    Response code
+  </message>
+  <message name="IDS_DEVTOOLS_44749712dbec183e983dcd78a7736c41" desc="">
+    Date
+  </message>
+  <message name="IDS_DEVTOOLS_4566ce384ed4a889beb6f6432d5906d7" desc="">
+    Network panel
+  </message>
+  <message name="IDS_DEVTOOLS_459c830504806e5747ddc40008ccbade" desc="">
+    Add custom header…
+  </message>
+  <message name="IDS_DEVTOOLS_46ff2c7bbdbb02687287512c874d391f" desc="">
+    signed-exchange
+  </message>
+  <message name="IDS_DEVTOOLS_490aa6e856ccf208a054389e47ce0d06" desc="">
+    Id
+  </message>
+  <message name="IDS_DEVTOOLS_4a5a4b959ef84dd7b7ee73e837b6a54e" desc="">
+    Reveal in Network panel
+  </message>
+  <message name="IDS_DEVTOOLS_4a7ba0d17eafde708ca8f5f34debcfef" desc="">
+    <ph name="TRANSFERSIZE">$1s</ph> B transferred
+  </message>
+  <message name="IDS_DEVTOOLS_4bd7c2ff07dcc66801a9368957d4bff8" desc="">
+    Initiator
+  </message>
+  <message name="IDS_DEVTOOLS_4c3880bb027f159e801041b1021e88e8" desc="">
+    Method
+  </message>
+  <message name="IDS_DEVTOOLS_4dea2ac78e9450e62e96c166ef9f5d4c" desc="">
+    Manage Header Columns…
+  </message>
+  <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="">
+    Connection Start
+  </message>
+  <message name="IDS_DEVTOOLS_5023e5b1d1c02cf168a9a67dda6d2d87" desc="">
+    Show overview
+  </message>
+  <message name="IDS_DEVTOOLS_502996d9790340c5fd7b86a5b93b1c9f" desc="">
+    Priority
+  </message>
+  <message name="IDS_DEVTOOLS_5101cdda28ea3097ac00cdbfdcedc353" desc="">
+    Use default colors
+  </message>
+  <message name="IDS_DEVTOOLS_51360304ea03557e79bdf5ff9cd2e234" desc="">
+    Issuer
+  </message>
+  <message name="IDS_DEVTOOLS_53fa249ce3d02c8a686b657b31d02ee7" desc="">
+    Copy response
+  </message>
+  <message name="IDS_DEVTOOLS_5639d3df5aea3d9e78027b843ee3cbb2" desc="">
+    Receive
+  </message>
+  <message name="IDS_DEVTOOLS_566bbee0f961ad71b54c3c2fd36db053" desc="">
+    extension
+  </message>
+  <message name="IDS_DEVTOOLS_56ecb97c626815b7f982c04e736f624b" desc="">
+    Response headers
+  </message>
+  <message name="IDS_DEVTOOLS_57db0f3677bfe1e5af2f568c71369e9e" desc="">
+    Save all as HAR with content
+  </message>
+  <message name="IDS_DEVTOOLS_58f6ae6f525fa723c603752e682be6a7" desc="">
+    This request has no response data available.
+  </message>
+  <message name="IDS_DEVTOOLS_59535aed1e49266dfd0b93172f5a7242" desc="">
+    Group by frame
+  </message>
+  <message name="IDS_DEVTOOLS_597b56e53847cd6a4712ac183f61fa68" desc="">
+    Cookies
+  </message>
+  <message name="IDS_DEVTOOLS_5cb98890f19c13e5fce52287187d9803" desc="">
+    <ph name="SELECTEDNODENUMBER">$1s</ph> / <ph name="NODECOUNT">$2s</ph> requests
+  </message>
+  <message name="IDS_DEVTOOLS_5e2f683aacb9d5f3635b3f88583dec80" desc="">
+    Custom...
+  </message>
+  <message name="IDS_DEVTOOLS_5f0ea62e5bc9f795512ef292ff162a2a" desc="">
+    Disable cache (while DevTools is open)
+  </message>
+  <message name="IDS_DEVTOOLS_5f903b8316b9649547e1b3ceef934183" desc="">
+    Stop recording network log
+  </message>
+  <message name="IDS_DEVTOOLS_611a2b5dcde004cf68ffd56345584d40" desc="">
+    ETag
+  </message>
+  <message name="IDS_DEVTOOLS_619d32de7168c6e770464dfc43e374d1" desc="">
+    Request Headers
+  </message>
+  <message name="IDS_DEVTOOLS_6311ae17c1ee52b36e68aaf4ad066387" desc="">
+    Other
+  </message>
+  <message name="IDS_DEVTOOLS_6490fac2ddb40e1e2a7e0c43fb661c7b" desc="">
+    Failed to load response data
+  </message>
+  <message name="IDS_DEVTOOLS_649635a49f102b60bd81884f3e2fd3ca" desc="">
+    Collecting content…
+  </message>
+  <message name="IDS_DEVTOOLS_65a9d5faea2e8027d9a96544c579e312" desc="">
+    Certificate SHA256
+  </message>
+  <message name="IDS_DEVTOOLS_6638d1cbb8be347d80370bc5bb58a0d1" desc="">
+    Copy as UTF-8
+  </message>
+  <message name="IDS_DEVTOOLS_6a7c804797a8bb913c82824a6465ede1" desc="">
+    Header Name
+  </message>
+  <message name="IDS_DEVTOOLS_6a98894cd6b4628f0b5117412aab083e" desc="">
+    Cache-Control
+  </message>
+  <message name="IDS_DEVTOOLS_6c2a1bf87fb84c91fc7e1120f4e3d0c7" desc="">
+    Content Download
+  </message>
+  <message name="IDS_DEVTOOLS_6c3ae60298916e218f26a95f4ff21085" desc="">
+    Response Cookies
+  </message>
+  <message name="IDS_DEVTOOLS_6dd7482f131dc036ea08395a7f3f5e08" desc="">
+    Enter a custom user agent
+  </message>
+  <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="">
+    Record network log
+  </message>
+  <message name="IDS_DEVTOOLS_71fb2761cd2a446400a8069fe16cd45e" desc="">
+    Block request domain
+  </message>
+  <message name="IDS_DEVTOOLS_722e6ea747a62b7f93bb017d3dd04cbd" desc="">
+    Continuation Frame
+  </message>
+  <message name="IDS_DEVTOOLS_72d569ab3718d10a89315f80cf05cc73" desc="">
+    Group network log by frame
+  </message>
+  <message name="IDS_DEVTOOLS_73c1ba64f0484588be030de81de469ae" desc="">
+    Initial connection
+  </message>
+  <message name="IDS_DEVTOOLS_7543ba96bb16a5f17f8fb25bdd995d3f" desc="">
+    Copy as Base64
+  </message>
+  <message name="IDS_DEVTOOLS_76669aaf74dda2a59e3c363da10c3faf" desc="">
+    Reading Push
+  </message>
+  <message name="IDS_DEVTOOLS_77f02f5047451625e1c6bb24884cdfe6" desc="">
+    Copied as Hex
+  </message>
+  <message name="IDS_DEVTOOLS_79307e20670213e6f99203c2d81bbbaf" desc="">
+    (ServiceWorker)
+  </message>
+  <message name="IDS_DEVTOOLS_7954bc50e461d57fa640f77741cea491" desc="">
+    Resource Scheduling
+  </message>
+  <message name="IDS_DEVTOOLS_795f3202b17cb6bc3d4b771d8c6c9eaf" desc="">
+    other
+  </message>
+  <message name="IDS_DEVTOOLS_7b5bea45778433caf34b0ba556a7d93b" desc="">
+    (failed)
+  </message>
+  <message name="IDS_DEVTOOLS_7c49b153d4b59f8c0cf8c3e18dc80cb7" desc="">
+    origin
+  </message>
+  <message name="IDS_DEVTOOLS_7de2b6840dd6a1683f809daaf2d95fb0" desc="">
+    Hex Viewer
+  </message>
+  <message name="IDS_DEVTOOLS_7e1c4c7b01e0fd0ad1e89ca7512f353e" desc="">
+    Ping Message
+  </message>
+  <message name="IDS_DEVTOOLS_804910399e8d26511871e33416ccd127" desc="">
+    Served from disk cache, resource size: <ph name="RESOURCESIZE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_814f9c3c7e7aa04c21f2e61f5b2dcf18" desc="">
+    Copy response headers
+  </message>
+  <message name="IDS_DEVTOOLS_8166a4b3fb4979da3a24ed21ced7fdf7" desc="">
+    Learn more
+  </message>
+  <message name="IDS_DEVTOOLS_827452688eed02a12178e96f924ac529" desc="">
+    Scheme
+  </message>
+  <message name="IDS_DEVTOOLS_838c672414343cdd527a63d910fb132c" desc="">
+    Hide data URLs
+  </message>
+  <message name="IDS_DEVTOOLS_850985cd851d0fe440f03f77762e2590" desc="">
+    Content-Length
+  </message>
+  <message name="IDS_DEVTOOLS_8644fe7afb1a31ea7274f5ee90dff50b" desc="">
+    view URL encoded
+  </message>
+  <message name="IDS_DEVTOOLS_878ff0bac714397ab62012691efc2087" desc="">
+    Text Message
+  </message>
+  <message name="IDS_DEVTOOLS_881e9a305ce80960413ab7f227ef879e" desc="">
+    User agent
+  </message>
+  <message name="IDS_DEVTOOLS_883d7615c4d2de3fa1218f1298c46d0e" desc="">
+    Headers
+  </message>
+  <message name="IDS_DEVTOOLS_884680dd63eae99eab1a407133df66b7" desc="">
+    View certificate
+  </message>
+  <message name="IDS_DEVTOOLS_888a77f5ac0748b6c8001822417df8b6" desc="">
+    Protocol
+  </message>
+  <message name="IDS_DEVTOOLS_889f316cd1f0ac68f8ea3052e8568061" desc="">
+    Copy as PowerShell
+  </message>
+  <message name="IDS_DEVTOOLS_896ef2edb423627350de605744e10385" desc="">
+    Set Cookies
+  </message>
+  <message name="IDS_DEVTOOLS_8c074f405ad9737b1b59d35d6aab7cab" desc="">
+    Last-Modified
+  </message>
+  <message name="IDS_DEVTOOLS_8c09001c99ecb6fdd8d6023fcf039054" desc="">
+    Signature
+  </message>
+  <message name="IDS_DEVTOOLS_8c2297c17712046f3a7ffd65c2c5ad50" desc="">
+    Validity URL
+  </message>
+  <message name="IDS_DEVTOOLS_8e40e89c8c95a050dcadea2d7e4d40cc" desc="">
+    devtools
+  </message>
+  <message name="IDS_DEVTOOLS_8eb2a485218c2fd5b53651ec35337858" desc="">
+    Use large request rows
+  </message>
+  <message name="IDS_DEVTOOLS_8eed70a0dcf3e8f43d0548cd1e8f22ed" desc="">
+    Hides data: and blob: URLs
+  </message>
+  <message name="IDS_DEVTOOLS_8f32afe4e92699a3c6923a66815f5e16" desc="">
+    Request sent
+  </message>
+  <message name="IDS_DEVTOOLS_8f3d10eb21bd36347c258679eba9e92b" desc="">
+    Finished
+  </message>
+  <message name="IDS_DEVTOOLS_90198f1c07c67e3a44ccc6853651ca2c" desc="">
+    Response Headers
+  </message>
+  <message name="IDS_DEVTOOLS_9146d056f26c33effdc2f83dd9e79395" desc="">
+    Copy all as cURL (bash)
+  </message>
+  <message name="IDS_DEVTOOLS_91d92a76f6e3919419b019b07889c73b" desc="">
+    Clear browser cookies
+  </message>
+  <message name="IDS_DEVTOOLS_92480c24ad37b4f15c6a43fd54ec2376" desc="">
+    WebSocket messages
+  </message>
+  <message name="IDS_DEVTOOLS_9254e453e41bb4058ee1e8c1a2b81a4d" desc="">
+    Queueing
+  </message>
+  <message name="IDS_DEVTOOLS_935f218785830f964d0c537b23027045" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_SELECTEDTRANSFERSIZE_">$1s</ph> / <ph name="NUMBER_BYTESTOSTRING_TRANSFERSIZE_">$2s</ph> transferred
+  </message>
+  <message name="IDS_DEVTOOLS_948ff4d0d124f02ff1dc0a9c56ef8ade" desc="">
+    Recording network activity…
+  </message>
+  <message name="IDS_DEVTOOLS_94966d90747b97d1f0f206c98a8b1ac3" desc="">
+    Send
+  </message>
+  <message name="IDS_DEVTOOLS_96b0141273eabab320119c467cdcaf17" desc="">
+    Total
+  </message>
+  <message name="IDS_DEVTOOLS_96d960cc2b3394824ebfbf25bb960a90" desc="">
+    <ph name="LOCALIZEDDESCRIPTION">$1s</ph> (Opcode <ph name="OPCODE">$2s</ph>, mask)
+  </message>
+  <message name="IDS_DEVTOOLS_96e9bc575b5d3ed541113a249da8bd24" desc="">
+    Capture screenshots
+  </message>
+  <message name="IDS_DEVTOOLS_97b7320892b0db86ff1d8dc28ba1af95" desc="">
+    Are you sure you want to clear browser cache?
+  </message>
+  <message name="IDS_DEVTOOLS_97f0a2ba508f8299c686818366ad712a" desc="">
+    (data)
+  </message>
+  <message name="IDS_DEVTOOLS_985187565936a7c1e02c9f96852c0f9a" desc="">
+    subresource-filter
+  </message>
+  <message name="IDS_DEVTOOLS_986371172510b03c03ac7cd17c1f84d4" desc="">
+    Served from Signed HTTP Exchange, resource size: <ph name="RESOURCESIZE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_986491ef3610ed7ef82bd863e4ee00a2" desc="">
+    Request blocking
+  </message>
+  <message name="IDS_DEVTOOLS_9979c41f94d4d232c06b4c87f2d0f951" desc="">
+    Push / 
+  </message>
+  <message name="IDS_DEVTOOLS_9a41e9b9ca01e7239185b042be18f9eb" desc="">
+    Connection ID
+  </message>
+  <message name="IDS_DEVTOOLS_9a83ab0d60fed7c37d928ccb30d1b6ae" desc="">
+    Parser
+  </message>
+  <message name="IDS_DEVTOOLS_9aa1b03934893d7134a660af4204f2a9" desc="">
+    Server
+  </message>
+  <message name="IDS_DEVTOOLS_9c1ab57e621c2bb257798752dbbe6f14" desc="">
+    view source
+  </message>
+  <message name="IDS_DEVTOOLS_9cabd6c0f7878c8106104aee4a24a41e" desc="">
+    Copy as cURL (cmd)
+  </message>
+  <message name="IDS_DEVTOOLS_9e08e91089d39bc26c4c57e9780c2f60" desc="">
+    (from memory cache)
+  </message>
+  <message name="IDS_DEVTOOLS_9e65b51e82f2a9b9f72ebe3e083582bb" desc="">
+    (empty)
+  </message>
+  <message name="IDS_DEVTOOLS_9ffaf77e2c524827dff95993361e7115" desc="">
+    Raw response data
+  </message>
+  <message name="IDS_DEVTOOLS_a00705e19cc5f358d77688d197604cc3" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_TRANSFERSIZE_">$1s</ph> transferred
+  </message>
+  <message name="IDS_DEVTOOLS_a0820b213c0f695e95fc0c278a05400f" desc="">
+    <ph name="COUNT">$1d</ph> blocked
+  </message>
+  <message name="IDS_DEVTOOLS_a217246afb12245a032617715f81923b" desc="">
+    Manage Header Columns
+  </message>
+  <message name="IDS_DEVTOOLS_a227f203e4a2e520debf44ae78f16847" desc="">
+    Copied as Base64
+  </message>
+  <message name="IDS_DEVTOOLS_a249aec821f73349cc457658bd6c04f3" desc="">
+    Copy as Hex
+  </message>
+  <message name="IDS_DEVTOOLS_a299d2f506523f8104dc4202de7b0c64" desc="">
+    Export HAR...
+  </message>
+  <message name="IDS_DEVTOOLS_a5d6e0224f694699dde6d1bd34d608bd" desc="">
+    Copy as cURL
+  </message>
+  <message name="IDS_DEVTOOLS_a612782072a3b8f151c5e2120ef20efd" desc="">
+    Copy to clipboard
+  </message>
+  <message name="IDS_DEVTOOLS_a74e6894e1f36ce12a6773b9a6b9aea8" desc="">
+    <ph name="NODECOUNT">$1s</ph> requests
+  </message>
+  <message name="IDS_DEVTOOLS_a76d4ef5f3f6a672bbfab2865563e530" desc="">
+    Time
+  </message>
+  <message name="IDS_DEVTOOLS_a976624c5265b8187b19aea9df9230eb" desc="">
+    Color-code resource types
+  </message>
+  <message name="IDS_DEVTOOLS_abe6fec6834dc303e1abfb03f9874786" desc="">
+    DOMContentLoaded: <ph name="NUMBER_SECONDSTOSTRING_THIS__MAINREQUESTDOMCONTENTLOADEDTIME___BASETIME_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_ac5eb504b5a840271e066bf6fd3000b8" desc="">
+    view parsed
+  </message>
+  <message name="IDS_DEVTOOLS_ad86890fb40822a3b12627efaca4ecd7" desc="">
+    (disk cache)
+  </message>
+  <message name="IDS_DEVTOOLS_add0160d0ea7e2969930b281a6ba1456" desc="">
+    Drop HAR files here
+  </message>
+  <message name="IDS_DEVTOOLS_ae3b3df9970b49b6523e608759bc957d" desc="">
+    UTF-8
+  </message>
+  <message name="IDS_DEVTOOLS_af0a229a0c5be77de07889743db3b409" desc="">
+    Copied as UTF-8
+  </message>
+  <message name="IDS_DEVTOOLS_af6ef9fe7e48178f3765aa8e44f9ce5d" desc="">
+    Group network log items by frame
+  </message>
+  <message name="IDS_DEVTOOLS_b021df6aac4654c454f46c77646e745f" desc="">
+    Label
+  </message>
+  <message name="IDS_DEVTOOLS_b1f63146853f7f450d8622aae6a73408" desc="">
+    Copy as cURL (bash)
+  </message>
+  <message name="IDS_DEVTOOLS_b2844b8e17ecaaeae68d018fe9418af0" desc="">
+    Valid until
+  </message>
+  <message name="IDS_DEVTOOLS_b4774747599df05309e1de2e2734dd3e" desc="">
+    Request to ServiceWorker
+  </message>
+  <message name="IDS_DEVTOOLS_b6434258c743f8673997b5aeb3721c27" desc="">
+    Request Method
+  </message>
+  <message name="IDS_DEVTOOLS_b72ac10807b29c77f5b7e4b80ea40414" desc="">
+    Explanation
+  </message>
+  <message name="IDS_DEVTOOLS_b926fd82158cde57655d0cd1dd8dbc70" desc="">
+    Query String Parameters
+  </message>
+  <message name="IDS_DEVTOOLS_b9449f52ba4f16fc7dd7fb7cd0c6c5c7" desc="">
+    Network throttling
+  </message>
+  <message name="IDS_DEVTOOLS_b94a47df08b4ab492c78deb7a2940662" desc="">
+    Disable cache
+  </message>
+  <message name="IDS_DEVTOOLS_b9ad5629c19552041dadd5b4feb22772" desc="">
+    Response Time
+  </message>
+  <message name="IDS_DEVTOOLS_ba2a9c6c8c77e03f83ef8bf543612275" desc="">
+    Length
+  </message>
+  <message name="IDS_DEVTOOLS_bd474658f3a7ae560cc97b6b64264045" desc="">
+    mixed-content
+  </message>
+  <message name="IDS_DEVTOOLS_bd9176ee57c46268a853e038b133966a" desc="">
+    Keep-Alive
+  </message>
+  <message name="IDS_DEVTOOLS_bdaacef16991cfa4cf17a388579e7c06" desc="">
+    EventStream
+  </message>
+  <message name="IDS_DEVTOOLS_c02504bf83e5cc0d2f582f189a804aef" desc="">
+    Request Cookies
+  </message>
+  <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="">
+    Connection
+  </message>
+  <message name="IDS_DEVTOOLS_c33fa8b7d663932b656f0f7f53a74e77" desc="">
+    Requests are not blocked. 
+  </message>
+  <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="">
+    Copy all as PowerShell
+  </message>
+  <message name="IDS_DEVTOOLS_c4e4fcc7d371549aec967e7157ba436d" desc="">
+    SignedExchange error
+  </message>
+  <message name="IDS_DEVTOOLS_c54dcc2fd5e72371ef21f1553d79e740" desc="">
+    (canceled)
+  </message>
+  <message name="IDS_DEVTOOLS_c6f969f563d21beac9731f177053484c" desc="">
+    <ph name="SELECTEDRESOURCESIZE">$1s</ph> B / <ph name="RESOURCESIZE">$2s</ph> B resources
+  </message>
+  <message name="IDS_DEVTOOLS_c7892ebbb139886662c6f2fc8c450710" desc="">
+    Subject
+  </message>
+  <message name="IDS_DEVTOOLS_c81e295bfd7fbaec6257ea14992f4643" desc="">
+    Request and response cookies
+  </message>
+  <message name="IDS_DEVTOOLS_c84718b71b8ad70dde23736e79e25e83" desc="">
+    Pong Message
+  </message>
+  <message name="IDS_DEVTOOLS_c91a577b72313356fad611c55f43c10f" desc="">
+    End Time
+  </message>
+  <message name="IDS_DEVTOOLS_cb64a2679b345ae476ea3a7fb6a70080" desc="">
+    Binary Message
+  </message>
+  <message name="IDS_DEVTOOLS_cc0af601bfd673427a8abb171f62c707" desc="">
+    content-type
+  </message>
+  <message name="IDS_DEVTOOLS_cebd9a3a94f022d3600e0f81a9aa2060" desc="">
+    <ph name="NUMBER_BYTESTOSTRING_SELECTEDRESOURCESIZE_">$1s</ph> / <ph name="NUMBER_BYTESTOSTRING_RESOURCESIZE_">$2s</ph> resources
+  </message>
+  <message name="IDS_DEVTOOLS_cf5c8b06caaf075b4e453ce29d27760f" desc="">
+    Served from prefetch cache, resource size: <ph name="RESOURCESIZE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_cfc36842a01da69c484ffdcc6782f437" desc="">
+    Expires
+  </message>
+  <message name="IDS_DEVTOOLS_d0a9f074f48f9416d043f27687c1f030" desc="">
+    Proxy negotiation
+  </message>
+  <message name="IDS_DEVTOOLS_d0e5383d7c91948cfab6cacccec8812d" desc="">
+    (from signed-exchange)
+  </message>
+  <message name="IDS_DEVTOOLS_d3b69e993f4e9bf9c479c7e794ede387" desc="">
+    Timing
+  </message>
+  <message name="IDS_DEVTOOLS_d64ed3e9c10229648e069f56e32f4c8e" desc="">
+    Response
+  </message>
+  <message name="IDS_DEVTOOLS_d76e44f856d0114826e7436a630a3fa7" desc="">
+    (signed-exchange)
+  </message>
+  <message name="IDS_DEVTOOLS_d7e76ea0c048939444b2aa8653f048d0" desc="">
+    Record (<ph name="RECORDNODE">$1s</ph>) to display network activity.
+  </message>
+  <message name="IDS_DEVTOOLS_d82a834165b99c4ea0969316296a2bc2" desc="">
+    Vary
+  </message>
+  <message name="IDS_DEVTOOLS_db67b2de0114bd82fe1383aa067fa6b2" desc="">
+    Unblock <ph name="CROPPEDURL">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_dc30bc0c7914db5918da4263fce93ad2" desc="">
+    Clear
+  </message>
+  <message name="IDS_DEVTOOLS_dc5d60b066d9a30e68dd648dcabf8579" desc="">
+    This request has no cookies.
+  </message>
+  <message name="IDS_DEVTOOLS_dc66e209093fbef0daa224f2b6401b39" desc="">
+    Request/Response
+  </message>
+  <message name="IDS_DEVTOOLS_dd47445f60115097d07d4cf2e61d933b" desc="">
+    CAUTION: request is not finished yet!
+  </message>
+  <message name="IDS_DEVTOOLS_de4642e93235c872dcc21d7e4c926c36" desc="">
+    Copy all as fetch
+  </message>
+  <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="">
+    Provisional headers are shown
+  </message>
+  <message name="IDS_DEVTOOLS_df080c10e2e9f1e98c180fe2645f6132" desc="">
+    Request URL
+  </message>
+  <message name="IDS_DEVTOOLS_e186ebc46177c666cd1d5bda52ade420" desc="">
+    Response preview
+  </message>
+  <message name="IDS_DEVTOOLS_e1905358311029126da11f4e24fca90d" desc="">
+     (<ph name="PARAMS_LENGTH">$1d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_e44c5fc0f8fc0dc0181254373cb07c47" desc="">
+    Load: <ph name="NUMBER_SECONDSTOSTRING_THIS__MAINREQUESTLOADTIME___BASETIME_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e49d4e7e01be604cfb0cf20a72e0853c" desc="">
+    Server Timing
+  </message>
+  <message name="IDS_DEVTOOLS_e6702855087694e24e954afab8b7e5d0" desc="">
+    Connection Close Message
+  </message>
+  <message name="IDS_DEVTOOLS_e6fb9da54f521b9c33d41121d4fcd35c" desc="">
+    (memory cache)
+  </message>
+  <message name="IDS_DEVTOOLS_e77fef0167598bb39846637ac3915f4e" desc="">
+    Clear All
+  </message>
+  <message name="IDS_DEVTOOLS_ea52c36203c5f99c3ce2442d531b1a22" desc="">
+    SSL
+  </message>
+  <message name="IDS_DEVTOOLS_eb0bd7de3ba805621bf9e03e4d16b510" desc="">
+    Queued at <ph name="CALCULATOR_FORMATVALUE_REQUEST_ISSUETIME______">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_eb0f48a107df1a0f343d4cd513b555e6" desc="">
+    Certificate
+  </message>
+  <message name="IDS_DEVTOOLS_eb902cf204f3e4dfffeb56d92a9b5c26" desc="">
+    Valid from
+  </message>
+  <message name="IDS_DEVTOOLS_ec53a8c4f07baed5d8825072c89799be" desc="">
+    Status
+  </message>
+  <message name="IDS_DEVTOOLS_ec559fc895e8cc77ef0c4d6fdff5bdcb" desc="">
+    Form Data
+  </message>
+  <message name="IDS_DEVTOOLS_ec9dca2a4b061ad202945d88657e5ddf" desc="">
+    Started at <ph name="CALCULATOR_FORMATVALUE_REQUEST_STARTTIME____">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_edfffa5a1ffba7492b25869813e7e15e" desc="">
+    Content-Encoding
+  </message>
+  <message name="IDS_DEVTOOLS_ef110dd7355d7315c73995a47fe77dfd" desc="">
+    DNS Lookup
+  </message>
+  <message name="IDS_DEVTOOLS_f1019fecd69b0e6b6bd12db7f58bbb90" desc="">
+    Copy message
+  </message>
+  <message name="IDS_DEVTOOLS_f1495279152e772a4ecf5cbf17a07c64" desc="">
+    Copy message...
+  </message>
+  <message name="IDS_DEVTOOLS_f15c1cae7882448b3fb0404682e17e61" desc="">
+    Content
+  </message>
+  <message name="IDS_DEVTOOLS_f312b3f268931a1367de22756237b197" desc="">
+    Headers and request body
+  </message>
+  <message name="IDS_DEVTOOLS_f3f97de67c80480904f958df15b8a57b" desc="">
+    Integrity
+  </message>
+  <message name="IDS_DEVTOOLS_f508b22c8fc4486b19fee39d5ded3841" desc="">
+    Network settings
+  </message>
+  <message name="IDS_DEVTOOLS_f531e0844f007af2fa80b328e7c82e72" desc="">
+    (from disk cache)
+  </message>
+  <message name="IDS_DEVTOOLS_f6068daa29dbb05a7ead1e3b5a48bbee" desc="">
+    Data
+  </message>
+  <message name="IDS_DEVTOOLS_f6c804a6be9719c98a260380833bfde7" desc="">
+    Block request URL
+  </message>
+  <message name="IDS_DEVTOOLS_f6d1d4157b75f9b68298f7df187a177c" desc="">
+    Finish: <ph name="NUMBER_SECONDSTOSTRING_MAXTIME___BASETIME_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f9069c6541beaac49cce4b2542069f02" desc="">
+    Referrer Policy
+  </message>
+  <message name="IDS_DEVTOOLS_f907e651164789346ae0a1e257c462d8" desc="">
+    Script
+  </message>
+  <message name="IDS_DEVTOOLS_f95d3d09fc16ae9294fbef87ac8d17cb" desc="">
+    (pending)
+  </message>
+  <message name="IDS_DEVTOOLS_fae900d6e2cf6b54ffae8cad77b9e2a6" desc="">
+    (prefetch cache)
+  </message>
+  <message name="IDS_DEVTOOLS_fb0df508eafce0076286884cd92fc8fd" desc="">
+    Copy request headers
+  </message>
+  <message name="IDS_DEVTOOLS_fb6024596d77a7d0ac213f1f12fa1d8b" desc="">
+    Text pattern to block matching requests; use * for wildcard
+  </message>
+  <message name="IDS_DEVTOOLS_fd747cf7093bd6b5c8eb3b40658a3b13" desc="">
+    Total Duration
+  </message>
+  <message name="IDS_DEVTOOLS_fe1bc3eb2f3e1a9a90b5401eb6baa5b9" desc="">
+    Copy all as cURL
+  </message>
+</grit-part>

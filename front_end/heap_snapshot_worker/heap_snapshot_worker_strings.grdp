@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_239026e523e6f9780426e03637c5b4a4" desc="">
+    Loading strings…
+  </message>
+  <message name="IDS_DEVTOOLS_58e8a5ca400f834526b09d680ddbc5d5" desc="">
+    Loading samples…
+  </message>
+  <message name="IDS_DEVTOOLS_6a542856aa30e3e814eaed146e67b2fd" desc="">
+    Loading nodes… <ph name="PH1">$1d</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_7da2f27d62adf93b01c2c041f37667b9" desc="">
+    Processing snapshot…
+  </message>
+  <message name="IDS_DEVTOOLS_84c0ec1ee2bc769daf265e63bd793201" desc="">
+    Loading snapshot info…
+  </message>
+  <message name="IDS_DEVTOOLS_9bdae72f224411b7f1027a2c5c7c519b" desc="">
+    Loading locations…
+  </message>
+  <message name="IDS_DEVTOOLS_b0da59cea23d810234b75c2357748ad3" desc="">
+    Loading edges… <ph name="PH1">$1d</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_d67d63eca2747a30e1ffaeb04389c0bb" desc="">
+    Loading allocation traces… <ph name="PH1">$1d</ph>%%
+  </message>
+</grit-part>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="">
+    Help
+  </message>
+  <message name="IDS_DEVTOOLS_7d0ee6fed10d3d4e5c9ee496729ab519" desc="">
+    Release notes
+  </message>
+  <message name="IDS_DEVTOOLS_8aac48e1ab540a0467ac1c4b884f68c1" desc="">
+    Do not show What&apos;s New after each update
+  </message>
+  <message name="IDS_DEVTOOLS_8caba5463b13f01c4168decae23f9aff" desc="">
+    Show What&apos;s New after each update
+  </message>
+  <message name="IDS_DEVTOOLS_91770f038cd944a1d3b9b347edeb2b10" desc="">
+    What&apos;s New
+  </message>
+  <message name="IDS_DEVTOOLS_a1c58e94227389415de133efdf78ea6e" desc="">
+    Appearance
+  </message>
+</grit-part>

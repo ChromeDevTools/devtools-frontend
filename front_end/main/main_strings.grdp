@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_00463255013f500126fb5cc8c824e384" desc="">
+    Panel layout:
+  </message>
+  <message name="IDS_DEVTOOLS_08e71f00acd63d0a546ba42f9e780ddc" desc="">
+    Customize and control DevTools
+  </message>
+  <message name="IDS_DEVTOOLS_0a0afb342478f201b92cbc89d19bf14d" desc="">
+    Switch to dark theme
+  </message>
+  <message name="IDS_DEVTOOLS_13348442cc6a27032d2b4aa28b75a5d3" desc="">
+    Search
+  </message>
+  <message name="IDS_DEVTOOLS_15fa1acc2a998159c4ed2a950c5c231d" desc="">
+    Toggle drawer
+  </message>
+  <message name="IDS_DEVTOOLS_1b1ac1c7a54457ce73ddd25a5b51c47d" desc="">
+    Drawer sidebar
+  </message>
+  <message name="IDS_DEVTOOLS_1cf59b16fd253d6ff4bbee7c237cea0d" desc="">
+    Show console
+  </message>
+  <message name="IDS_DEVTOOLS_2ab5656e27a0ed871c8de44368f807c6" desc="">
+    Styles Pane
+  </message>
+  <message name="IDS_DEVTOOLS_2ad9d63b69c4a10a5cc9cad923133bc4" desc="">
+    Bottom
+  </message>
+  <message name="IDS_DEVTOOLS_36634aa462472ceb907f3aa4401d3a61" desc="">
+    Undocked
+  </message>
+  <message name="IDS_DEVTOOLS_3b40834e60f26865c1b9582f1745476e" desc="">
+    Use horizontal panel layout
+  </message>
+  <message name="IDS_DEVTOOLS_3b7e62b6a175b75f4ecf012d17ba7fef" desc="">
+    Focus debuggee
+  </message>
+  <message name="IDS_DEVTOOLS_4505cad087312551a6fbbe6ebe163e0f" desc="">
+    horizontal
+  </message>
+  <message name="IDS_DEVTOOLS_4f1133a5722c0189f59e0490b2ae1c31" desc="">
+    Go to source
+  </message>
+  <message name="IDS_DEVTOOLS_581138047ce1459b079a8c4abba128a1" desc="">
+    Go to the panel to the left/right
+  </message>
+  <message name="IDS_DEVTOOLS_586740a88e6502850bc64f9f2d04d380" desc="">
+    Placement of DevTools relative to the page. (<ph name="TOGGLEDOCKSIDESHORCUTS____NAME">$1s</ph> to restore last position)
+  </message>
+  <message name="IDS_DEVTOOLS_5bf4a92da989a6943e3fed84f18c3f0f" desc="">
+    Search across all sources
+  </message>
+  <message name="IDS_DEVTOOLS_5e2f5f3c24ae8c6ab3eca618826b0e23" desc="">
+    Extensions
+  </message>
+  <message name="IDS_DEVTOOLS_62fcd77216b456123c822a40ded03347" desc="">
+    Select node to inspect
+  </message>
+  <message name="IDS_DEVTOOLS_71f0df44b05415f2d20b59bb6188a118" desc="">
+    Toggle dock side
+  </message>
+  <message name="IDS_DEVTOOLS_75def4784fa71c4ccde7762316ed0e3e" desc="">
+    Find next/previous
+  </message>
+  <message name="IDS_DEVTOOLS_787ae37366b7a8c53f381abfd315c647" desc="">
+    Elements Panel
+  </message>
+  <message name="IDS_DEVTOOLS_8645bf45e76c3f958ae99c114c419743" desc="">
+    Hide console drawer
+  </message>
+  <message name="IDS_DEVTOOLS_92b09c7c48c520c3c55e497875da437c" desc="">
+    Right
+  </message>
+  <message name="IDS_DEVTOOLS_93445501d5239cedddc0bd6a0a453a95" desc="">
+    Dock side
+  </message>
+  <message name="IDS_DEVTOOLS_9914a0ce04a7b7b6a8e39bec55064b82" desc="">
+    Light
+  </message>
+  <message name="IDS_DEVTOOLS_9b1ed2cbe56f7a315f0a365d2b97cb59" desc="">
+    Drawer
+  </message>
+  <message name="IDS_DEVTOOLS_a18366b217ebf811ad1886e4f4f865b2" desc="">
+    Dark
+  </message>
+  <message name="IDS_DEVTOOLS_a9e4402481bd9b8e36752bf731f67eb6" desc="">
+    Theme:
+  </message>
+  <message name="IDS_DEVTOOLS_b0659ae6872366589300ed6c2033ba26" desc="">
+    Toggle device mode
+  </message>
+  <message name="IDS_DEVTOOLS_b3bf148a3dc8b3367191419e52380982" desc="">
+    Use vertical panel layout
+  </message>
+  <message name="IDS_DEVTOOLS_b8da6df14bf06283cbf588df6998722e" desc="">
+    Panel
+  </message>
+  <message name="IDS_DEVTOOLS_b94d8a074eddd267702810179875737f" desc="">
+    Debugger
+  </message>
+  <message name="IDS_DEVTOOLS_b9cd538a753713464d2ea17d7e975041" desc="">
+    More tools
+  </message>
+  <message name="IDS_DEVTOOLS_c0fef4f5cd015e4b1e5477f511dc3939" desc="">
+    Use automatic panel layout
+  </message>
+  <message name="IDS_DEVTOOLS_c2376cec424de4cead5272c492d3d269" desc="">
+    Restore last dock position
+  </message>
+  <message name="IDS_DEVTOOLS_d33bf99e0756e1d5008cb78902e38ca9" desc="">
+    All Panels
+  </message>
+  <message name="IDS_DEVTOOLS_db5d5dd2ff01f52ffee4b57ca2b1fcfd" desc="">
+    Enable Ctrl + 1-9 shortcut to switch panels
+  </message>
+  <message name="IDS_DEVTOOLS_debb0ba164edd1f9254b644de3c6d716" desc="">
+    Enable ⌘ + 1-9 shortcut to switch panels
+  </message>
+  <message name="IDS_DEVTOOLS_e472458a8014f14176e3c3c3d4dd0ad9" desc="">
+    Switch to light theme
+  </message>
+  <message name="IDS_DEVTOOLS_e6dec152d6a941fccb0a5e8cc2579cc3" desc="">
+    vertical
+  </message>
+  <message name="IDS_DEVTOOLS_eafbab965ec3970b0e97705882ebf8d0" desc="">
+    Show console drawer
+  </message>
+</grit-part>

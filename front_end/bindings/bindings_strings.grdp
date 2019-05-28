@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_412dac8227bbaf752fecaad8826f20e6" desc="">
+    LiveEdit failed: <ph name="ERROR">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d3ff22990e37ccce8a501ffba38626b7" desc="">
+    LiveEdit compile failed: <ph name="EXCEPTIONDETAILS_TEXT">$1s</ph>
+  </message>
+</grit-part>

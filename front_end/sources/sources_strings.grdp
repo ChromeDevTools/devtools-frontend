@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_00a2f9d16aa26eb89a776a3d1ed4f9cd" desc="">
+    Expression to check before pausing, e.g. x &gt; 5
+  </message>
+  <message name="IDS_DEVTOOLS_01f0097c3b7f0774139005734eacbae4" desc="">
+    Add property path to watch
+  </message>
+  <message name="IDS_DEVTOOLS_035e70b676c1a7f341f758eb10a3bd1d" desc="">
+    Add conditional breakpoint…
+  </message>
+  <message name="IDS_DEVTOOLS_03bfaee27b3b5cfb28deef84a0f416e5" desc="">
+    Threads
+  </message>
+  <message name="IDS_DEVTOOLS_03c2e7e41ffc181a4e84080b4710e81e" desc="">
+    New
+  </message>
+  <message name="IDS_DEVTOOLS_05184fe2fb6c76214bc56796837f1c9b" desc="">
+    Next call frame
+  </message>
+  <message name="IDS_DEVTOOLS_06a75795f2a3be3930c707d64fd488c0" desc="">
+    Show trailing whitespace characters
+  </message>
+  <message name="IDS_DEVTOOLS_08355a3ae65d425a4a6bac94ce97dcb4" desc="">
+    Edit breakpoint…
+  </message>
+  <message name="IDS_DEVTOOLS_08fb8cd30c88d3b186962bb2c3226479" desc="">
+    Enabled all breakpoints in line
+  </message>
+  <message name="IDS_DEVTOOLS_0ab9daf7d77e9446aeae5f66be24e800" desc="">
+    Never pause here
+  </message>
+  <message name="IDS_DEVTOOLS_0b7328e087472930bcd6e51a840bb454" desc="">
+    Open color picker.
+  </message>
+  <message name="IDS_DEVTOOLS_0c2c743a6d4f5bb5d3689cd87f7f5e1b" desc="">
+    Disable CSS source maps
+  </message>
+  <message name="IDS_DEVTOOLS_0d09bbb2a0380f333de821bf7b3aec61" desc="">
+    Not paused
+  </message>
+  <message name="IDS_DEVTOOLS_1223c0b07c7cf71289fa7f390c192ab5" desc="">
+    Bracket matching
+  </message>
+  <message name="IDS_DEVTOOLS_127c3c0187f2be68a7c19273f4d8a71b" desc="">
+    Delete all watch expressions
+  </message>
+  <message name="IDS_DEVTOOLS_14acf8c40287aedb6124add396f6d1c5" desc="">
+    Local Modifications...
+  </message>
+  <message name="IDS_DEVTOOLS_160023e58c0251b10b570f6b43914bfc" desc="">
+    Drop workspace folder here
+  </message>
+  <message name="IDS_DEVTOOLS_1cd54499835432c724e9654327ca5788" desc="">
+    Code folding
+  </message>
+  <message name="IDS_DEVTOOLS_1ced1baad9bf7cd516caae0aa7558853" desc="">
+    Debugger paused
+  </message>
+  <message name="IDS_DEVTOOLS_1d76fdc8e9a79fa435ee5a2afa4c9bb8" desc="">
+    Paused before potential out-of-memory crash
+  </message>
+  <message name="IDS_DEVTOOLS_1f15646f60fc3c1dea747963f02d51ac" desc="">
+    Group by folder
+  </message>
+  <message name="IDS_DEVTOOLS_216a9080bf22a993b2d7f9331d34cc68" desc="">
+    Don&apos;t pause on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_23682ad11e062879a37272dce2948fa5" desc="">
+    Clear configuration
+  </message>
+  <message name="IDS_DEVTOOLS_25eeda4a035b17ed5a353480e79dc6fb" desc="">
+    Do not detect indentation
+  </message>
+  <message name="IDS_DEVTOOLS_26fff70cf6b5204fa5154fa62f5b7b69" desc="">
+    Add to watch
+  </message>
+  <message name="IDS_DEVTOOLS_27cd6a52dd9de75342d5115dc6bca6ba" desc="">
+    Associated files are available via file tree or <ph name="UI_SHORTCUTREGISTRY_SHORTCUTTITLEFORACTION__QUICKOPEN_SHOW__">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_30af0d86fe286708503f94e65c4da3f6" desc="">
+    Paused on breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_30e71ab6fb45b9773731a0af4d7fb3b4" desc="">
+    Do not show whitespace characters
+  </message>
+  <message name="IDS_DEVTOOLS_327cbc7239d92013006f601d8b9aff8f" desc="">
+    Remove folder from workspace
+  </message>
+  <message name="IDS_DEVTOOLS_33121362971f65350982fbfea136c37d" desc="">
+    Log a message to Console, do not break
+  </message>
+  <message name="IDS_DEVTOOLS_339ba442656bbc8e43e64b427dc598ff" desc="">
+    Type a number to go to that line.
+  </message>
+  <message name="IDS_DEVTOOLS_3486ec2a2dd86270ed12b46a54372d06" desc="">
+    Blackbox all content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_348b4e067738aac6d7d6c30ccdb59beb" desc="">
+    Source Map detected.
+  </message>
+  <message name="IDS_DEVTOOLS_34b75062caaa3ec1d9e1ee9b725ae303" desc="">
+    Do not automatically reveal files in sidebar
+  </message>
+  <message name="IDS_DEVTOOLS_37d2aa45fbe4026fc347be7b07a8a468" desc="">
+    Deactivate breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_38173eb2f7725d12dfcf1a920a77ecb4" desc="">
+    Create new snippet
+  </message>
+  <message name="IDS_DEVTOOLS_3831f64f248899a06a6bbc8b82fccfdf" desc="">
+    Log message, e.g. &apos;x is&apos;, x
+  </message>
+  <message name="IDS_DEVTOOLS_38b6dddcf45b3d2c9fc86ce4dd2592ba" desc="">
+    Add expression
+  </message>
+  <message name="IDS_DEVTOOLS_3a4c2017c43ba6b63be4576d17893645" desc="">
+    Source map found, but ignored for blackboxed file.
+  </message>
+  <message name="IDS_DEVTOOLS_3a9bd88b445fd1f4d4d8c3ce995be74a" desc="">
+    Step over next function call
+  </message>
+  <message name="IDS_DEVTOOLS_3e27fe84bd1fddd585c8d06e6307b67a" desc="">
+    Remove all breakpoints in line
+  </message>
+  <message name="IDS_DEVTOOLS_3fd3dddd9661349b90b648bba2748f1b" desc="">
+    Sources panel
+  </message>
+  <message name="IDS_DEVTOOLS_41c03dfb0ea5890d60756ad55c6e47b1" desc="">
+    Detect indentation
+  </message>
+  <message name="IDS_DEVTOOLS_434a4d8ac15ff124add730be03574f41" desc="">
+    Enable all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_4541d5953fd7db4d62ef89e9717f845a" desc="">
+    Disable autocompletion
+  </message>
+  <message name="IDS_DEVTOOLS_46e8256224399a2d32a2f988a21d6562" desc="">
+    Select folder for overrides
+  </message>
+  <message name="IDS_DEVTOOLS_47dbdb85aee276cd77a84a067af48aa5" desc="">
+    Enable tab moves focus
+  </message>
+  <message name="IDS_DEVTOOLS_48c7c41b72e1d678923ce3571aa65b2d" desc="">
+    Step
+  </message>
+  <message name="IDS_DEVTOOLS_4b3812a22a58f04fb5a0598658a3bd27" desc="">
+    Go to symbol
+  </message>
+  <message name="IDS_DEVTOOLS_4ba67b3e9f4bf3135a50fa54c133fba6" desc="">
+    Conditional breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_4bc16757f0e30f62902ac7f86f19b23b" desc="">
+    Show function definition
+  </message>
+  <message name="IDS_DEVTOOLS_51eb42e9c7ed7951fea0d51a1e4a2cfc" desc="">
+    Go to line <ph name="POSITION_LINE">$1s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_520d0db389f362bf79ef56ca0af3dcab" desc="">
+    Format
+  </message>
+  <message name="IDS_DEVTOOLS_52b3bc5e77aa070243c36cd40a4d6b6d" desc="">
+    Autocompletion
+  </message>
+  <message name="IDS_DEVTOOLS_58943fa26a94bc86f7f45106080e4496" desc="">
+    Resume script execution
+  </message>
+  <message name="IDS_DEVTOOLS_590d0b32e1139c6c3bcb0f99ed978dff" desc="">
+    subtree modifications
+  </message>
+  <message name="IDS_DEVTOOLS_5a0a64ecca63ba9a006b6397cbdc2b8c" desc="">
+    Go to line
+  </message>
+  <message name="IDS_DEVTOOLS_5a3bb6a64da384e59876cd0bc00a6eae" desc="">
+    Unblackbox this script
+  </message>
+  <message name="IDS_DEVTOOLS_5bcc1f50ed61246502d37ce93368dda8" desc="">
+    Paused on XHR or fetch
+  </message>
+  <message name="IDS_DEVTOOLS_5d113f2038d289f391614c39043629e8" desc="">
+    Scope
+  </message>
+  <message name="IDS_DEVTOOLS_5e7d63192de1cf31345f98b0252bc523" desc="">
+    &lt;not available&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_6005268f51bade5b1f650b47b7ff68ff" desc="">
+    Stop blackboxing all content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_610fbde3ea8bddc086a8f50a83f0fedf" desc="">
+    Previous call frame
+  </message>
+  <message name="IDS_DEVTOOLS_6121be69f70b38551bf15d90d0806778" desc="">
+    Automatically reveal files in sidebar
+  </message>
+  <message name="IDS_DEVTOOLS_61cb6bc6751fc6b516847995380fdced" desc="">
+    New snippet
+  </message>
+  <message name="IDS_DEVTOOLS_64c5d2b51d86c5e1d22a77a4ea5ed174" desc="">
+    Disable code folding
+  </message>
+  <message name="IDS_DEVTOOLS_6700b68e0b1cd0ed13778682cc1b376d" desc="">
+    Enable code folding
+  </message>
+  <message name="IDS_DEVTOOLS_681e10aecbafd7dd385fa51798ca0fd6" desc="">
+    New file
+  </message>
+  <message name="IDS_DEVTOOLS_686182a69271ee4d9caa32b17ad56e9f" desc="">
+    Show whitespace characters:
+  </message>
+  <message name="IDS_DEVTOOLS_68b3c10a88384bc903eb0bcb08f5e17c" desc="">
+    Disable JavaScript source maps
+  </message>
+  <message name="IDS_DEVTOOLS_69a309503a6b6e3265981a5db92c82ac" desc="">
+    Paused on promise rejection
+  </message>
+  <message name="IDS_DEVTOOLS_6bb8aa3b54918eeb27dafcace1e5addd" desc="">
+    (no domain)
+  </message>
+  <message name="IDS_DEVTOOLS_6cc39b227b3571623cfa817ed5df1c8b" desc="">
+    Disable all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_6e0fdbff6068d8b45cac1f4ae39d6798" desc="">
+    Enable autocompletion
+  </message>
+  <message name="IDS_DEVTOOLS_6f92b50cf0c9932b9359e4cfa2a6473b" desc="">
+    Restart frame
+  </message>
+  <message name="IDS_DEVTOOLS_70f2eb480d2c49d1ca88ba9da0af545a" desc="">
+    Debugger will skip stepping through this script, and will not stop on exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_7129472c5eb598faf47e4e877f2618fd" desc="">
+    Breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_74313a1b4f28fd0980e0c7677b38373c" desc="">
+    Show all whitespace characters
+  </message>
+  <message name="IDS_DEVTOOLS_74662a9a81d3f50d9d1f3dddf044b550" desc="">
+    Exclude folder
+  </message>
+  <message name="IDS_DEVTOOLS_74ff4bad28abee3489bd8ca138b80bb6" desc="">
+    No files found
+  </message>
+  <message name="IDS_DEVTOOLS_77898d40c8a26a07d05eedb991359804" desc="">
+    (source mapped from <ph name="COMPONENTS_LINKIFIER_LINKIFYURL_ORIGINURL_">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_7b5c591188e24ed71b8c72b32e86af5e" desc="">
+    Disable all breakpoints in line
+  </message>
+  <message name="IDS_DEVTOOLS_7e469e0762bb1a977747a18457c2e66f" desc="">
+    Show blackboxed frames
+  </message>
+  <message name="IDS_DEVTOOLS_80bd21c435b5e5ba6890161f3bc4bfd7" desc="">
+    Search in folder
+  </message>
+  <message name="IDS_DEVTOOLS_820587f2a3808a99f9ffcc0576b31681" desc="">
+    Make a copy…
+  </message>
+  <message name="IDS_DEVTOOLS_8317db413bca5e9ed3305fdac525ddd2" desc="">
+    No variables
+  </message>
+  <message name="IDS_DEVTOOLS_8560d166d251804230566118358414e5" desc="">
+    Add watch expression
+  </message>
+  <message name="IDS_DEVTOOLS_87837d0ddaa832891236be71b7bf6935" desc="">
+    Pause on caught exceptions
+  </message>
+  <message name="IDS_DEVTOOLS_906646d2d69e110dcd4cfc74e5790f6f" desc="">
+    Paused on event listener
+  </message>
+  <message name="IDS_DEVTOOLS_923dab99a01b578dbf1ec09277a0ed2e" desc="">
+    Rename…
+  </message>
+  <message name="IDS_DEVTOOLS_945efe35b9e3950bd1a796a9310736a6" desc="">
+    Go to line <ph name="POSITION_LINE">$1s</ph> and column <ph name="POSITION_COLUMN">$2s</ph>.
+  </message>
+  <message name="IDS_DEVTOOLS_9757132fffae1fe86f7c3329dc189e8d" desc="">
+    Paused on exception
+  </message>
+  <message name="IDS_DEVTOOLS_97edd5423acfdf412ad9ba7f4eaa6d39" desc="">
+    No file selected.
+  </message>
+  <message name="IDS_DEVTOOLS_9bbb0377ecbf31fdcfcce3283e815311" desc="">
+    Ctrl+Enter
+  </message>
+  <message name="IDS_DEVTOOLS_9ce5614862050d067b2fca22f4190d12" desc="">
+    Source map URL: 
+  </message>
+  <message name="IDS_DEVTOOLS_9db6195620a7743228ce74addf1414d8" desc="">
+    Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.
+  </message>
+  <message name="IDS_DEVTOOLS_9f7753821d867a81273a50de2b1e0cac" desc="">
+    Pause script execution
+  </message>
+  <message name="IDS_DEVTOOLS_a0b40b72aff4851f0c49348f8868b935" desc="">
+    Disable bracket matching
+  </message>
+  <message name="IDS_DEVTOOLS_a17411e9872c82855a0dc0d000e50c22" desc="">
+    Call Stack
+  </message>
+  <message name="IDS_DEVTOOLS_a1942a7798767819b93df38c18d1696d" desc="">
+    Display variable values inline while debugging
+  </message>
+  <message name="IDS_DEVTOOLS_a22d670bd986f8f534fe07a96b38f217" desc="">
+    Add logpoint…
+  </message>
+  <message name="IDS_DEVTOOLS_a271d86904edd95b1e28f6df6c74c9ac" desc="">
+    Disable tab moves focus
+  </message>
+  <message name="IDS_DEVTOOLS_a2c01e3ac442e470bc38437752707518" desc="">
+    Return value
+  </message>
+  <message name="IDS_DEVTOOLS_a2ca04f270c5acfa0cda3aa0fc6976c5" desc="">
+    Do not search in anonymous and content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_a3fec1fa9178602843f79537c66b1496" desc="">
+    Step out of current function
+  </message>
+  <message name="IDS_DEVTOOLS_a570cb902fdec05031ec1a25634bdbdb" desc="">
+    Open a JavaScript or CSS file to see symbols
+  </message>
+  <message name="IDS_DEVTOOLS_a6e75eb31dc77e8d077fb6f92909e191" desc="">
+    Open folder
+  </message>
+  <message name="IDS_DEVTOOLS_a7706b6eb022a90c58cf658d0085d6d1" desc="">
+    Possible ways to cancel this behavior are:
+  </message>
+  <message name="IDS_DEVTOOLS_a95c3c1dc2719e527889096bbd7b662c" desc="">
+    Search in all files
+  </message>
+  <message name="IDS_DEVTOOLS_abe5b14af1d1b81dffc5d6009dead621" desc="">
+    Pause only when the condition is true
+  </message>
+  <message name="IDS_DEVTOOLS_ac52cf637478f3656a1fdee5c02324fd" desc="">
+    Filesystem
+  </message>
+  <message name="IDS_DEVTOOLS_acd2fcf9aed3ee59e77566016a828d14" desc="">
+    Paused on debugged function
+  </message>
+  <message name="IDS_DEVTOOLS_ae76c8d643589ff25d35455a80f12061" desc="">
+    Do not display variable values inline while debugging
+  </message>
+  <message name="IDS_DEVTOOLS_b16d05636bde9fe84392fd4af198e9c1" desc="">
+    Quick source
+  </message>
+  <message name="IDS_DEVTOOLS_b1a3aaa0de38001a39eeaf44c523a98c" desc="">
+    Changes to this file were not saved to file system.
+  </message>
+  <message name="IDS_DEVTOOLS_b2accffe28bb4f4b596c9be64a28d281" desc="">
+    Snippets
+  </message>
+  <message name="IDS_DEVTOOLS_b402b605feaea6029ac976f4963e20cd" desc="">
+    Are you sure you want to close unsaved file: <ph name="UISOURCECODE_NAME__">$1s</ph>?
+  </message>
+  <message name="IDS_DEVTOOLS_b526d5bfa95ab0d53b118425336d52a3" desc="">
+    Are you sure you want to remove this folder?
+  </message>
+  <message name="IDS_DEVTOOLS_b55fd1bae7b054568efa40f60f5b6c43" desc="">
+    Enable CSS source maps
+  </message>
+  <message name="IDS_DEVTOOLS_b7e7eecbc4a9a1151ccae2f9c5aa7b14" desc="">
+    Trailing
+  </message>
+  <message name="IDS_DEVTOOLS_b8f2563abb6a5253a6f11f95be0b9b62" desc="">
+    Open in Sources panel
+  </message>
+  <message name="IDS_DEVTOOLS_b918846bd0a77b2051d8c4019201315f" desc="">
+    Remove other breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_b9947e230aa5ac451e3b0649bdb1c7fc" desc="">
+    DevTools have unsaved changes that will be permanently lost.
+  </message>
+  <message name="IDS_DEVTOOLS_bb9f288b958ce8c8d250cb392e2f1309" desc="">
+    You can click the <ph name="TOOLBAR_ELEMENT">$1s</ph> button on the bottom status bar, and continue debugging with the new formatted source.
+  </message>
+  <message name="IDS_DEVTOOLS_bd1066101df937dfc5704f95ef779f62" desc="">
+    No watch expressions
+  </message>
+  <message name="IDS_DEVTOOLS_c081841ffd8efaef2ee0c7bf0507758a" desc="">
+    Enable bracket matching
+  </message>
+  <message name="IDS_DEVTOOLS_c12de9f9edb401ca79a3291f1831ae6f" desc="">
+    Closure (<ph name="UI_BEAUTIFYFUNCTIONNAME_SCOPENAME_">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_c2e59ab4f410655458110ae524bdc9be" desc="">
+    Go to &quot;<ph name="COMMON_UISTRING__BLACKBOXING__">$1s</ph>&quot; tab in settings
+  </message>
+  <message name="IDS_DEVTOOLS_c322e65e12002c3bd486ff62ff5b1fd6" desc="">
+    node removal
+  </message>
+  <message name="IDS_DEVTOOLS_c42094126c68a61cc5359460681e1d90" desc="">
+    ⌘+Enter
+  </message>
+  <message name="IDS_DEVTOOLS_c5301693c4e792bcd5a479ef38fb8f8d" desc="">
+    Run
+  </message>
+  <message name="IDS_DEVTOOLS_c70f6a5cffc2538db7304f46556f0b30" desc="">
+    Add selected text to watches
+  </message>
+  <message name="IDS_DEVTOOLS_c79e1cbadc868bad54f2eabe113c06f0" desc="">
+    Enable breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="">
+    Disable breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_d07d651006c823c6f008158f6eb63056" desc="">
+    Resume with all pauses blocked for 500 ms
+  </message>
+  <message name="IDS_DEVTOOLS_d127dbe7fc7834601145be34349fc60f" desc="">
+    Evaluate selected text in console
+  </message>
+  <message name="IDS_DEVTOOLS_d13c3f7baed576768b11a714ef4d90e2" desc="">
+    paused
+  </message>
+  <message name="IDS_DEVTOOLS_d19dc64c372f09800d8117286c3d0aff" desc="">
+    Breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_d1d71571592bcbb9f99bf726a9d0fe0a" desc="">
+    Delete watch expression
+  </message>
+  <message name="IDS_DEVTOOLS_d280677ba371231189ef4c4fdaa9b4b3" desc="">
+    Pretty-print this minified file?
+  </message>
+  <message name="IDS_DEVTOOLS_d318592071e92890f8046b4eeeecbdf1" desc="">
+    attribute modifications
+  </message>
+  <message name="IDS_DEVTOOLS_d6444e40ec843a5dc64161f9eafe07a4" desc="">
+    Logpoint
+  </message>
+  <message name="IDS_DEVTOOLS_da1c6b95e46b078b40e1a53bc7c44f17" desc="">
+    Step into next function call
+  </message>
+  <message name="IDS_DEVTOOLS_dab88f58b06d64f6f2b0c157580c8d36" desc="">
+    Add source map…
+  </message>
+  <message name="IDS_DEVTOOLS_db49f36ab9f08d646ff4416ab5009ab9" desc="">
+    This script is blackboxed in debugger
+  </message>
+  <message name="IDS_DEVTOOLS_dbcfcc422f1a9f6e817bb7670a93f7d3" desc="">
+    Are you sure you want to exclude this folder?
+  </message>
+  <message name="IDS_DEVTOOLS_de1b7eb1c5cad7712d521bade538de6e" desc="">
+    Search in anonymous and content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_e3de97b1a66edbe3fceddb1d5db2df2d" desc="">
+    Copy value
+  </message>
+  <message name="IDS_DEVTOOLS_e64479370fed877b3ff0b51ee73c95ac" desc="">
+    Reveal in sidebar
+  </message>
+  <message name="IDS_DEVTOOLS_e68f8487d76aeb933b5b06d7999a0e44" desc="">
+    Enable JavaScript source maps
+  </message>
+  <message name="IDS_DEVTOOLS_ed5eceb0fe85ceeeabf4b4b93eeca711" desc="">
+    Continue to here
+  </message>
+  <message name="IDS_DEVTOOLS_f0a47f037ca7a988466a647277ef1134" desc="">
+    Paused on assertion
+  </message>
+  <message name="IDS_DEVTOOLS_f20658650d987d31063b593c05980397" desc="">
+    Watch
+  </message>
+  <message name="IDS_DEVTOOLS_f2e95c3adb199ba9a0ec03526b6126ba" desc="">
+    Drop in a folder to add to workspace
+  </message>
+  <message name="IDS_DEVTOOLS_f395c33fe9c382316b99128e087cb697" desc="">
+    Close All
+  </message>
+  <message name="IDS_DEVTOOLS_f515d5945239e7a61fa267bd058134f1" desc="">
+    Add folder to workspace
+  </message>
+  <message name="IDS_DEVTOOLS_f96985d765ed09d4930d76a3ca869508" desc="">
+    Terminate current JavaScript call
+  </message>
+  <message name="IDS_DEVTOOLS_fd1be3efcf102a4183d9445d789574f4" desc="">
+    Are you sure you want to delete this file?
+  </message>
+  <message name="IDS_DEVTOOLS_fd8c5cf684c7bd30f907a74603e204ac" desc="">
+    Activate breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_fe6e43324287cedf01c16c9eb8d2b121" desc="">
+    Copy stack trace
+  </message>
+</grit-part>

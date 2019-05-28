@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_30b6c2858b9a03c8518c8804bb96067c" desc="">
+    Profiling in progress
+  </message>
+  <message name="IDS_DEVTOOLS_e2ed1dadec9e90b7108be8256808a5c0" desc="">
+    Toggle screencast
+  </message>
+  <message name="IDS_DEVTOOLS_f775403b2922abfa05ae76f922fcacf3" desc="">
+    The tab is inactive
+  </message>
+</grit-part>

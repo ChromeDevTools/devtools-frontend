@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0ca08f8f4a8a19f7f1ae87c119494327" desc="">
+    Overrides
+  </message>
+  <message name="IDS_DEVTOOLS_1106d01848580ffc52dd36e2d60316d9" desc="">
+    XHR/fetch Breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_193cfc9be3b995831c6af2fea6650e60" desc="">
+    Page
+  </message>
+  <message name="IDS_DEVTOOLS_2daf59f0ff992924e42c14c1e674bd6a" desc="">
+    Attribute modified
+  </message>
+  <message name="IDS_DEVTOOLS_30d67fd6c32c9a9ff5ecb4472b44ed54" desc="">
+    Break when URL contains:
+  </message>
+  <message name="IDS_DEVTOOLS_340641a167ad6da1bcb4016357f4695d" desc="">
+    Content scripts
+  </message>
+  <message name="IDS_DEVTOOLS_39c145d69ad05e44e74017346c116251" desc="">
+    Remove all DOM breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_47bda3033cb8fe0e76c45c293db011b5" desc="">
+    No breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_59eaf6955f44a94237b6d26911c1d983" desc="">
+    Break on
+  </message>
+  <message name="IDS_DEVTOOLS_626585724f35f9d9fce0bd36525cb7de" desc="">
+    DOM Breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_63a6a88c066880c5ac42394a22803ca6" desc="">
+    Refresh
+  </message>
+  <message name="IDS_DEVTOOLS_66b74432bdc2797086f419010cc5ff86" desc="">
+    DOM Breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="">
+    Remove all breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="">
+    Add breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_b839f802a330e4d4145cb182e6767f45" desc="">
+    Any XHR or fetch
+  </message>
+  <message name="IDS_DEVTOOLS_c22470110316d6334bed53ae61a08f59" desc="">
+    URL contains &quot;<ph name="URL">$1s</ph>&quot;
+  </message>
+  <message name="IDS_DEVTOOLS_c4bd9c57c6b315e3f7374cf77143ca58" desc="">
+    Subtree modified
+  </message>
+  <message name="IDS_DEVTOOLS_d5bfaaca8e28f8b9b9211038f86a4494" desc="">
+    Remove breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_e30c4292775f68b2bc9eb3957a69f899" desc="">
+    Global Listeners
+  </message>
+  <message name="IDS_DEVTOOLS_ebdb33cde9015fa4b294220ee89cff00" desc="">
+    Event Listener Breakpoints
+  </message>
+  <message name="IDS_DEVTOOLS_f80938ab8ce27f3427af09c97a718fff" desc="">
+    Node removed
+  </message>
+</grit-part>

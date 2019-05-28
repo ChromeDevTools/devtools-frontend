@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_03250d684b667899552f89911582dbdc" desc="">
+    <ph name="ITEM">$1s</ph> (via .devtools)
+  </message>
+  <message name="IDS_DEVTOOLS_03a21915504df93cf5dba0636080f62e" desc="">
+    Workspace
+  </message>
+  <message name="IDS_DEVTOOLS_03ad5ac9c1a313e19064670f92981353" desc="">
+    Add folder…
+  </message>
+  <message name="IDS_DEVTOOLS_14f221497f99c10993cd293628adeefd" desc="">
+    Open in containing folder
+  </message>
+  <message name="IDS_DEVTOOLS_17d5f7dcd4ef6b9702a8b2ac7d237e5b" desc="">
+    Enable override network requests
+  </message>
+  <message name="IDS_DEVTOOLS_25ee7702f0b5dbe737d8f0f2ba3ce591" desc="">
+    Save for overrides
+  </message>
+  <message name="IDS_DEVTOOLS_486658cc6336ffa59ef2fdff0b977a91" desc="">
+    Excluded folders
+  </message>
+  <message name="IDS_DEVTOOLS_5f6bb21e40e670952b73ca35eafbe35a" desc="">
+    Disable override network requests
+  </message>
+  <message name="IDS_DEVTOOLS_62def4422771353f5e30763d92474b43" desc="">
+    Linked to source map: <ph name="BINDING_NETWORK_URL___TRIMMIDDLE_____">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8d646fe956bbc874d742471885ffd77c" desc="">
+    Folder exclude pattern
+  </message>
+  <message name="IDS_DEVTOOLS_ab130072b340b847d8d45ec45d191c3b" desc="">
+    Mappings are inferred automatically.
+  </message>
+  <message name="IDS_DEVTOOLS_afb4ea732ebcf8bd51a3d99a1b8909a8" desc="">
+    Linked to <ph name="PATH">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_cf703cce77386955bfbff86f6ad9be03" desc="">
+    Unable to add filesystem: <ph name="ERRORMESSAGE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_da0b472ac86851a3c0b623260d09546c" desc="">
+    Persistence
+  </message>
+  <message name="IDS_DEVTOOLS_e13c8cb15857d020445d01a8817f7d34" desc="">
+    File system error: <ph name="ERROR_MESSAGE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e2b63f5cab4f80fb6745f2f941105371" desc="">
+    Enable Local Overrides
+  </message>
+  <message name="IDS_DEVTOOLS_ec211f7c20af43e742bf2570c3cb84f9" desc="">
+    Add
+  </message>
+  <message name="IDS_DEVTOOLS_fddede572fa09e1b1bb28504d8c43343" desc="">
+    Folder path
+  </message>
+</grit-part>

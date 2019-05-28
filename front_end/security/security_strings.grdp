@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_02e168aecffdbc00d48c952eba310b02" desc="">
+    Main origin
+  </message>
+  <message name="IDS_DEVTOOLS_0f22d804f6720086f2ffe6c4e9d7d3fd" desc="">
+    Unknown / canceled
+  </message>
+  <message name="IDS_DEVTOOLS_1238f21584e6dc18c44c4d96fc9bef13" desc="">
+    Issued at
+  </message>
+  <message name="IDS_DEVTOOLS_1dc6f97ea55d39e862637dcb0298a3ff" desc="">
+    Open full certificate details
+  </message>
+  <message name="IDS_DEVTOOLS_22b29ad1d12365f80273c5b173b2ac6b" desc="">
+    Not secure (broken)
+  </message>
+  <message name="IDS_DEVTOOLS_22fcd09f19102f883a8e337ea1624b20" desc="">
+    Log ID
+  </message>
+  <message name="IDS_DEVTOOLS_278dded33791cce4bb389fdf6a516856" desc="">
+    Your connection to this origin is not secure.
+  </message>
+  <message name="IDS_DEVTOOLS_2ad7083a628c9593e4c538deab838d77" desc="">
+    This page is not secure (broken HTTPS).
+  </message>
+  <message name="IDS_DEVTOOLS_2fae32629d4ef4fc6341f1751b405e45" desc="">
+    Security
+  </message>
+  <message name="IDS_DEVTOOLS_36cc7ab088ee5ea657c3d1e47016901b" desc="">
+    The security details above are from the first inspected response.
+  </message>
+  <message name="IDS_DEVTOOLS_3b878279a04dc47d60932cb294d96259" desc="">
+    Overview
+  </message>
+  <message name="IDS_DEVTOOLS_3bc80b82af3a60973d57e8ff762b87eb" desc="">
+    Your page requested non-secure resources that were blocked.
+  </message>
+  <message name="IDS_DEVTOOLS_4212f531450435498e750858b23cc739" desc="">
+    No security details are available for this origin.
+  </message>
+  <message name="IDS_DEVTOOLS_45c618734371071e7c335c06c1d2852d" desc="">
+    This page is secure (valid HTTPS).
+  </message>
+  <message name="IDS_DEVTOOLS_46b0ab970c4705a3a388a6d86aa831c2" desc="">
+    Main origin (secure)
+  </message>
+  <message name="IDS_DEVTOOLS_472acd9e75af12adb6421b3eedc8f975" desc="">
+    Reload the page to record requests for HTTP resources.
+  </message>
+  <message name="IDS_DEVTOOLS_4b1f76eea8c3d555f4fe2a9efe4513a5" desc="">
+    SCT
+  </message>
+  <message name="IDS_DEVTOOLS_4e6509e12a8c0ebf2b39fd7e158d48c2" desc="">
+    This origin is a non-HTTPS secure origin.
+  </message>
+  <message name="IDS_DEVTOOLS_55c917250d323e0d8572a1c3673bc80d" desc="">
+    The security of this page is unknown.
+  </message>
+  <message name="IDS_DEVTOOLS_5a70e1c7b4fa71a69851e44cda14dff7" desc="">
+    Secure origins
+  </message>
+  <message name="IDS_DEVTOOLS_628b50e6d53ec0d0e9b62971872e6b8b" desc="">
+    Show more (<ph name="SANLIST_LENGTH">$1d</ph> total)
+  </message>
+  <message name="IDS_DEVTOOLS_62a0282d39568be094470486eaf70c4f" desc="">
+    SAN
+  </message>
+  <message name="IDS_DEVTOOLS_6792733f0a02ad04a0a660c9a0bcfad1" desc="">
+    Main origin (non-secure)
+  </message>
+  <message name="IDS_DEVTOOLS_6f5168da8d36a44f8c196c8aa3ff3e40" desc="">
+    Certificate Transparency
+  </message>
+  <message name="IDS_DEVTOOLS_71d09158378f6d5172ac991d5f26a1c1" desc="">
+    Log name
+  </message>
+  <message name="IDS_DEVTOOLS_77ee7df08008633ded94db7e019a2bcc" desc="">
+    Non-secure origins
+  </message>
+  <message name="IDS_DEVTOOLS_7d5b05ab7e3853d483726a5b1a94c475" desc="">
+    Signature algorithm
+  </message>
+  <message name="IDS_DEVTOOLS_7e025c9c2b87ac6d946747ea156b3f37" desc="">
+    Blocked mixed content
+  </message>
+  <message name="IDS_DEVTOOLS_918fa99baa381e2902ad2185ea659228" desc="">
+    Hash algorithm
+  </message>
+  <message name="IDS_DEVTOOLS_9859694a15c021aa640bfda6b3e4423f" desc="">
+    Key exchange group
+  </message>
+  <message name="IDS_DEVTOOLS_98bce0cf672e732251f6f4327749ed18" desc="">
+    (n/a)
+  </message>
+  <message name="IDS_DEVTOOLS_9b30e34fce49de00a7fefd64aa5371fd" desc="">
+    This page is not secure.
+  </message>
+  <message name="IDS_DEVTOOLS_9c5ad7ee1f9630b92891a478327e670f" desc="">
+    View <ph name="FILTERREQUESTCOUNT">$1d</ph> requests in Network Panel
+  </message>
+  <message name="IDS_DEVTOOLS_a10edd2a3893a9ba446fb26e7c27556a" desc="">
+    This request complies with Chrome&apos;s Certificate Transparency policy.
+  </message>
+  <message name="IDS_DEVTOOLS_a2b16c6b3db371738d0e5c3f3ba2b54d" desc="">
+    This response was loaded from cache. Some security details might be missing.
+  </message>
+  <message name="IDS_DEVTOOLS_a574d935216052d2d6ee69b743cd4147" desc="">
+    Show full details
+  </message>
+  <message name="IDS_DEVTOOLS_a5f643359ba723c6f26cc3a3cfc14874" desc="">
+    No security information
+  </message>
+  <message name="IDS_DEVTOOLS_a7ec70e97f31322dc2e9aaa805b102ab" desc="">
+    View <ph name="FILTERREQUESTCOUNT">$1d</ph> request in Network Panel
+  </message>
+  <message name="IDS_DEVTOOLS_b92f649b203ca680d444432324771186" desc="">
+    This request does not comply with Chrome&apos;s Certificate Transparency policy.
+  </message>
+  <message name="IDS_DEVTOOLS_c3db8a95444ea6caa45cc7dcb6e78d64" desc="">
+    Security overview
+  </message>
+  <message name="IDS_DEVTOOLS_c64a179b75e6bf377700187bea8de65e" desc="">
+    Reload to view details
+  </message>
+  <message name="IDS_DEVTOOLS_c8ef68c0fce4f4bfe0219809473d3651" desc="">
+    Cipher
+  </message>
+  <message name="IDS_DEVTOOLS_d42c8bbf1d0f4a65f4dec450f2bc4439" desc="">
+    Key exchange
+  </message>
+  <message name="IDS_DEVTOOLS_decb9f523d4cf5dc037b61cb555e6bf3" desc="">
+    Not secure
+  </message>
+  <message name="IDS_DEVTOOLS_ebcaa68d6546adbf82e22d0384d945cf" desc="">
+    Hide full details
+  </message>
+  <message name="IDS_DEVTOOLS_f701897bd65f88245ebde54a818953a1" desc="">
+    Signature data
+  </message>
+  <message name="IDS_DEVTOOLS_ffb9069b5d779f0a9e37dfbd47d9edfb" desc="">
+    Validation status
+  </message>
+</grit-part>

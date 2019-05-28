@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_05245b74ad79bb210a68107f7de0c27f" desc="">
+    Layer for scrolling container.
+  </message>
+  <message name="IDS_DEVTOOLS_08415c56f6c6c2efb0218629836e31bc" desc="">
+    Composition due to association with an element with a &quot;backface-visibility: hidden&quot; style.
+  </message>
+  <message name="IDS_DEVTOOLS_0aa3ae694efd06789ae1867c80d30222" desc="">
+    Composition due to association with an element with a &quot;position: fixed&quot; or &quot;position: sticky&quot; style.
+  </message>
+  <message name="IDS_DEVTOOLS_0b4eb322e51b61340668247151340346" desc="">
+    Rotate mode (V)
+  </message>
+  <message name="IDS_DEVTOOLS_0dd70cbbb618cf0ea39d7e01238ca1b9" desc="">
+    Composition due to association with an animated element.
+  </message>
+  <message name="IDS_DEVTOOLS_135d78fcc62ff8df8028c33c768900c5" desc="">
+    Layer for background.
+  </message>
+  <message name="IDS_DEVTOOLS_219e2fb2d37a581ab2bae57397b601f1" desc="">
+    &lt;unnamed&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_233612553595af00e5d227e136252422" desc="">
+    Composition due to association with an element with composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_25d066be1268d5c07cae5cc26e06ad2b" desc="">
+    Slow scroll regions
+  </message>
+  <message name="IDS_DEVTOOLS_28b5b4891eb05cc50f537526b24038a9" desc="">
+    Composition due to association with a masked element and composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_2a2924d1d77c00d27ce2509c34861804" desc="">
+    Layer for clip.
+  </message>
+  <message name="IDS_DEVTOOLS_2ae207ddfe5cd256a768769d93a879e5" desc="">
+    Paint Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_2ca2308d45c04266f0fb51786e407287" desc="">
+    Composition due to association with an element with CSS filters applied and composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_3228417bf9ed949e7447e7c8dcb17090" desc="">
+    Memory estimate
+  </message>
+  <message name="IDS_DEVTOOLS_37de7295335e95cb7caf78303a1edad3" desc="">
+    Composition due to association with an element with a CSS 3D transform.
+  </message>
+  <message name="IDS_DEVTOOLS_398b889c147f3b2cb3c674cfb07315b5" desc="">
+    Composition due to association with an element with opacity applied and composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_3f03ed88ee58335aa3df453443b9c8bc" desc="">
+    Profiling…
+  </message>
+  <message name="IDS_DEVTOOLS_441f5e043a240bac8dca50f90f7be3de" desc="">
+    repaints on scroll
+  </message>
+  <message name="IDS_DEVTOOLS_45567a52ec61e3e2b5469b397db3fc2a" desc="">
+    <ph name="LAYERVIEWER_LAYERDETAILSVIEW__SLOWSCROLLRECTNAMES_GET_SCROLLRECT_TYPE_">$1s</ph> <ph name="SCROLLRECT_RECT_X">$2d</ph> × <ph name="SCROLLRECT_RECT_Y">$3d</ph> (at <ph name="SCROLLRECT_RECT_WIDTH">$4d</ph>, <ph name="SCROLLRECT_RECT_HEIGHT">$5d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_459be6cdd6650871d6b740d1ce6bc7a3" desc="">
+    mousewheel event listener
+  </message>
+  <message name="IDS_DEVTOOLS_4881cc76c5e57422d2841026b9b93692" desc="">
+    Wheel event handler
+  </message>
+  <message name="IDS_DEVTOOLS_49ceda18652e222780b8a35f506b4678" desc="">
+    Pan mode (X)
+  </message>
+  <message name="IDS_DEVTOOLS_4a1a29f7d8a02e0294dc9134e97e9134" desc="">
+    Sticky position constraint
+  </message>
+  <message name="IDS_DEVTOOLS_4ee55709b19d806bb2f83a264a8a0f75" desc="">
+    Sticky Box <ph name="STICKYBOXRECT_WIDTH">$1d</ph> × <ph name="STICKYBOXRECT_HEIGHT">$2d</ph> (at <ph name="STICKYBOXRECT_X">$3d</ph>, <ph name="STICKYBOXRECT_Y">$4d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_5337a3314b26561ccf364e1777455933" desc="">
+    Composition due to association with a &lt;video&gt; element.
+  </message>
+  <message name="IDS_DEVTOOLS_5639e2813d9549835010567a48349127" desc="">
+     (<ph name="THIS__LAYER_WIDTH__">$1d</ph> × <ph name="THIS__LAYER_HEIGHT__">$2d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_602f4c0713480f019b24f09218dcc7e0" desc="">
+    Reset View
+  </message>
+  <message name="IDS_DEVTOOLS_697e0fb75c6cf44734697517d44b5922" desc="">
+    Composition due to association with an element clipping compositing descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_6fac3a4381f0fb07bbf498a08d301d40" desc="">
+    Repaints on scroll
+  </message>
+  <message name="IDS_DEVTOOLS_7069651490219723e31a486d60d96fc8" desc="">
+    Nearest Layer Shifting Sticky Box
+  </message>
+  <message name="IDS_DEVTOOLS_70baf8087d35f6bf5bde8b7c0645a1e8" desc="">
+    <ph name="TITLE">$1s</ph>: <ph name="NAME">$2s</ph> (<ph name="LAYER_ID__">$3s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_71084df87a4cc161f7542a0f5295a950" desc="">
+    Select a layer to see its details
+  </message>
+  <message name="IDS_DEVTOOLS_73c57dbc070bac535d75b4abe9f614a3" desc="">
+    Composition due to association with an element overlapping other composited elements.
+  </message>
+  <message name="IDS_DEVTOOLS_74248c725e00bf9fe04df4e35b249a19" desc="">
+    Misc
+  </message>
+  <message name="IDS_DEVTOOLS_74ae7b35b54cd38a932ccc4f1d1c3775" desc="">
+    Touch event handler
+  </message>
+  <message name="IDS_DEVTOOLS_791faaf55ae39199cc0b4edde837f07a" desc="">
+    Layer for video overlay.
+  </message>
+  <message name="IDS_DEVTOOLS_7eb830853b9ed22a567e4d7582eafe7c" desc="">
+    Composition due to association with an element with CSS filters applied.
+  </message>
+  <message name="IDS_DEVTOOLS_82505980aa6b0cabf4cb8013a8a43b62" desc="">
+    Non fast scrollable
+  </message>
+  <message name="IDS_DEVTOOLS_82d7a4981a35bb7f6dfc8a5485a61bc6" desc="">
+    <ph name="LAYER_WIDTH__">$1d</ph> × <ph name="LAYER_HEIGHT__">$2d</ph> (at <ph name="LAYER_OFFSETX__">$3d</ph>,<ph name="LAYER_OFFSETY__">$4d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_86ee74baff479d85d18f2cda9f8a9518" desc="">
+    Bitmap
+  </message>
+  <message name="IDS_DEVTOOLS_8810c4e0c498b81a6e4adaeabcb9f624" desc="">
+    Composition due to association with an element with a &quot;overflow-scrolling: touch&quot; style.
+  </message>
+  <message name="IDS_DEVTOOLS_894982f4a3bc0e770cece61dd12dde55" desc="">
+    Composition due to association with an &lt;iframe&gt; element.
+  </message>
+  <message name="IDS_DEVTOOLS_932a3ef55ce8133be7b33ded2992fd97" desc="">
+    Compositing Reasons
+  </message>
+  <message name="IDS_DEVTOOLS_93c3341232864688bcea4d53dff1bf10" desc="">
+    Composition due to association with an element with perspective applied.
+  </message>
+  <message name="IDS_DEVTOOLS_991bd14abd9e6004de4e7b9bc0769d9d" desc="">
+    Layer for foreground.
+  </message>
+  <message name="IDS_DEVTOOLS_9b8379825de60ccb900acf83934e1409" desc="">
+    Show internal layers
+  </message>
+  <message name="IDS_DEVTOOLS_9dffbf69ffba8bc38bc4e01abf4b1675" desc="">
+    Text
+  </message>
+  <message name="IDS_DEVTOOLS_a673813c8d6c5f511cc4d80830fc4503" desc="">
+    Can&apos;t display layers,
+  </message>
+  <message name="IDS_DEVTOOLS_aefd09cd861bbb01d381cfd74856e877" desc="">
+    Composition due to the element being a &lt;canvas&gt; element.
+  </message>
+  <message name="IDS_DEVTOOLS_b336b2cbaa7391e6e0dfef888d35a837" desc="">
+    touch event listener
+  </message>
+  <message name="IDS_DEVTOOLS_b4cc0ce8b989d360cf2bef966626e683" desc="">
+    Layer information is not yet available.
+  </message>
+  <message name="IDS_DEVTOOLS_b520b88ac5b8fbc5138849baddef2040" desc="">
+    Paint count
+  </message>
+  <message name="IDS_DEVTOOLS_b7fec868f7541e449cbb32b506aa3668" desc="">
+    Check <ph name="UI_XLINK_CREATE__ABOUT_GPU__">$1s</ph> for possible reasons.
+  </message>
+  <message name="IDS_DEVTOOLS_c0f4be326648f3fee18ffd278b614126" desc="">
+    Profiling Results
+  </message>
+  <message name="IDS_DEVTOOLS_c634209b1884c963528d21a21cb64ac8" desc="">
+    Nearest Layer Shifting Containing Block
+  </message>
+  <message name="IDS_DEVTOOLS_cd5be434fea99c341680590738e3b6d5" desc="">
+    WebGL support is disabled in your browser.
+  </message>
+  <message name="IDS_DEVTOOLS_ce1efcf7f040106cc8cb2f24c9efee35" desc="">
+    Show Paint Profiler
+  </message>
+  <message name="IDS_DEVTOOLS_cf4db365a841e7208aad0d474cbfa8e3" desc="">
+    Composition due to association with an element with descendants that have a negative z-index.
+  </message>
+  <message name="IDS_DEVTOOLS_d446f65fe70f9a640908576792497e25" desc="">
+    Composition due to association with an element with a reflection and composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_dd4d335a4deb975546acc9fb5aa3ffce" desc="">
+    Composition due to association with an element that may overlap other composited elements.
+  </message>
+  <message name="IDS_DEVTOOLS_dff689f21faf977ee865e312c011c84a" desc="">
+    Root layer.
+  </message>
+  <message name="IDS_DEVTOOLS_e397c87a940fc2c10225a407c7f124a7" desc="">
+    Composition due to association with a plugin.
+  </message>
+  <message name="IDS_DEVTOOLS_e763043c4af617c6f33da361d990a77b" desc="">
+    Reset transform (0)
+  </message>
+  <message name="IDS_DEVTOOLS_e7ee6a7ae0e6f824f5609c7bdac34375" desc="">
+    Shapes
+  </message>
+  <message name="IDS_DEVTOOLS_ed3a481889f16ef0aab2349f5d8b5f12" desc="">
+    Containing Block <ph name="CONTAININGBLOCKRECT_WIDTH">$1d</ph> × <ph name="CONTAININGBLOCKRECT_HEIGHT">$2d</ph> (at <ph name="CONTAININGBLOCKRECT_X">$3d</ph>, <ph name="CONTAININGBLOCKRECT_Y">$4d</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_f1eb415fdb8a15856c29cc2b679e416b" desc="">
+    Composition due to association with an element with a &quot;transform-style: preserve-3d&quot; style.
+  </message>
+  <message name="IDS_DEVTOOLS_f2a4f55a424726ae504f2e694e3dc2a2" desc="">
+    Composition due to association with an element with CSS blending applied and composited descendants.
+  </message>
+  <message name="IDS_DEVTOOLS_fa055d01c0a331d642c2f55a39d4e1bb" desc="">
+    Composition due to association with an element that has blend mode other than &quot;normal&quot;.
+  </message>
+  <message name="IDS_DEVTOOLS_fb8ed4e0cd9d6ac3630df425c80d9036" desc="">
+    Layer for mask.
+  </message>
+  <message name="IDS_DEVTOOLS_fd63c694ddc8073cf10bb8025aa9aaaf" desc="">
+    Layer for scrollbar.
+  </message>
+</grit-part>

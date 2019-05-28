@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="">
+    Scroll
+  </message>
+  <message name="IDS_DEVTOOLS_28d0edd045e05cf5af64e35ae0c4c6ef" desc="">
+    Low
+  </message>
+  <message name="IDS_DEVTOOLS_2bd10b449de36fcff52a5d91a97a7365" desc="">
+    %.<ph name="FRACTIONDIGITS">$1s</ph>f
+  </message>
+  <message name="IDS_DEVTOOLS_3c4684d2d502d7f9d20e05451c2f581c" desc="">
+    Next frame
+  </message>
+  <message name="IDS_DEVTOOLS_3f21c340f01b96cb3325a5d38ece9da6" desc="">
+    Live memory allocation annotations
+  </message>
+  <message name="IDS_DEVTOOLS_4789f23283b3a61f858b641a1bef19a3" desc="">
+    Memory
+  </message>
+  <message name="IDS_DEVTOOLS_4a6d0345e7b6cfcf339237b9cf2d27b4" desc="">
+    Flamechart mouse wheel action:
+  </message>
+  <message name="IDS_DEVTOOLS_529a032eab49b8ddc6f49f8bcc086607" desc="">
+    Previous frame
+  </message>
+  <message name="IDS_DEVTOOLS_582996407922dab08d5cf2b3d2a7c1c9" desc="">
+    Highest
+  </message>
+  <message name="IDS_DEVTOOLS_655d20c1ca69519ca647684edbb2db35" desc="">
+    High
+  </message>
+  <message name="IDS_DEVTOOLS_77c168e60d966216cd1261c200f87e27" desc="">
+    Show live memory allocation annotations
+  </message>
+  <message name="IDS_DEVTOOLS_87f8a6ab85c9ced3702b4ea641ad4bb5" desc="">
+    Medium
+  </message>
+  <message name="IDS_DEVTOOLS_8d8fcc1abd550c5f25dbfaa57d59cb67" desc="">
+    MB
+  </message>
+  <message name="IDS_DEVTOOLS_90c96ccfe47a731972d5e64deb5fea36" desc="">
+    Hide live memory allocation annotations
+  </message>
+  <message name="IDS_DEVTOOLS_ab57fd0432e25d5b3013133a1c910d56" desc="">
+    KB
+  </message>
+  <message name="IDS_DEVTOOLS_b5b8e20937205384be7b9e0c29a28fdb" desc="">
+    Lowest
+  </message>
+  <message name="IDS_DEVTOOLS_d085f278b95f303c39ba30f1817cca95" desc="">
+    Collect garbage
+  </message>
+  <message name="IDS_DEVTOOLS_dac0f9afd816c579ba5c6d7a987c4ba6" desc="">
+    <ph name="VALUE">$1.1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_e2885880b7034cd40dce71aeffa3662f" desc="">
+    Doubleclick to zoom image. Click to view preceding requests.
+  </message>
+</grit-part>

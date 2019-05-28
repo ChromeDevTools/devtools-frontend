@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_068bc495b79facfaa7918369fa9909eb" desc="">
+    Cut element
+  </message>
+  <message name="IDS_DEVTOOLS_07f01edb2a05909a9c0d04031d7c43e1" desc="">
+    Filter Styles
+  </message>
+  <message name="IDS_DEVTOOLS_081c9f670acb11b080077b3fb6127b4c" desc="">
+    Add box-shadow
+  </message>
+  <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="">
+    Inherited from<ph name="___">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0b17e22ff13be64e3216014d9c2a5354" desc="">
+    Enable DOM word wrap
+  </message>
+  <message name="IDS_DEVTOOLS_10d084d908583b210d2b1c470855a1d4" desc="">
+    Hide HTML comments
+  </message>
+  <message name="IDS_DEVTOOLS_14ec3eb094717596986aeef905ecb2d2" desc="">
+    New Style Rule
+  </message>
+  <message name="IDS_DEVTOOLS_1bc005d87dc22486bbb3c662b6fe46ce" desc="">
+    Pseudo ::<ph name="PSEUDOTYPE">$1s</ph> element
+  </message>
+  <message name="IDS_DEVTOOLS_1cc5c88b14a818f9f8d053f3c9f9249e" desc="">
+    Word wrap
+  </message>
+  <message name="IDS_DEVTOOLS_20bfc7bb53e1d2639556bce9852c32d8" desc="">
+    Resolve event listeners bound with framework
+  </message>
+  <message name="IDS_DEVTOOLS_21c12abe8367dcbdf5d3fee56a4ae9d8" desc="">
+    Show detailed inspect tooltip
+  </message>
+  <message name="IDS_DEVTOOLS_22a11a2e07e4412afd106977262d7617" desc="">
+    Copy selector
+  </message>
+  <message name="IDS_DEVTOOLS_254dd634c2a4b01fad95fe963b193ba8" desc="">
+    Page DOM
+  </message>
+  <message name="IDS_DEVTOOLS_28c0a3050f784583d52339ddb0bc1274" desc="">
+    Paste element
+  </message>
+  <message name="IDS_DEVTOOLS_2becb310c9830fe3fb19d18eb1808712" desc="">
+    (<ph name="USAGE">$1d</ph> glyph)
+  </message>
+  <message name="IDS_DEVTOOLS_2c0a7043a9e736eaf14b6614fff102c0" desc="">
+    Computed
+  </message>
+  <message name="IDS_DEVTOOLS_2ce5967e3862c73a31059c4aa5847464" desc="">
+    Open shadow editor.
+  </message>
+  <message name="IDS_DEVTOOLS_2ddaa8e6378b906b42429dc4003edbd3" desc="">
+    Reveal in Elements panel
+  </message>
+  <message name="IDS_DEVTOOLS_2de42fbb00305f8282310f1b3e10ce9a" desc="">
+    border
+  </message>
+  <message name="IDS_DEVTOOLS_2dff19d6ed78c6ca35cb3beab7b5bf55" desc="">
+    Rendered Fonts
+  </message>
+  <message name="IDS_DEVTOOLS_2e6591ba49ec23bf6725b74589b66ba3" desc="">
+    styles sidebar
+  </message>
+  <message name="IDS_DEVTOOLS_2f76fab71405b40cf521f64eab0d350f" desc="">
+    Delete element
+  </message>
+  <message name="IDS_DEVTOOLS_3427db2c4cb9d8d61c1dd32d218d5699" desc="">
+    Use $0 in the console to refer to this element.
+  </message>
+  <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="">
+    user agent stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_3afbd9828e011526955ca93b48b57524" desc="">
+    Screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_3bb3e8c8a24891ba0f7608bcc96f8b0a" desc="">
+    Frame
+  </message>
+  <message name="IDS_DEVTOOLS_3e255d6c811a40b9ad197fedeadc342c" desc="">
+    Local file
+  </message>
+  <message name="IDS_DEVTOOLS_3e9bec182c7495247f5f93d3881d630b" desc="">
+    :hov
+  </message>
+  <message name="IDS_DEVTOOLS_3f8f88e3686b2345cecc9530e19e6172" desc="">
+    Store as global variable
+  </message>
+  <message name="IDS_DEVTOOLS_417117e823d14c9b7c6533e4b04600a6" desc="">
+    (text)
+  </message>
+  <message name="IDS_DEVTOOLS_44beac36afb00f088edb0aeab28a300d" desc="">
+    Edit text
+  </message>
+  <message name="IDS_DEVTOOLS_45a921ffccbc28c2ff80adada350224f" desc="">
+    &lt;node&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_47210336f82b1488b69932b14038bdff" desc="">
+    Increment/decrement with mousewheel or up/down keys. <ph name="CMDORCTRL">$1s</ph>: ±100, Shift: ±10, Alt: ±0.1
+  </message>
+  <message name="IDS_DEVTOOLS_4757fe07fd492a8be0ea6a760d683d6e" desc="">
+    position
+  </message>
+  <message name="IDS_DEVTOOLS_4c1c7d945fcd04d68bd3b3f1d99a55a1" desc="">
+    Styles
+  </message>
+  <message name="IDS_DEVTOOLS_4ca94080ccbd5784f5fe296bf1ae3e12" desc="">
+    Event Listeners
+  </message>
+  <message name="IDS_DEVTOOLS_4cf8e5f6ffbb182b5d480cbabae6a028" desc="">
+    Edit attribute
+  </message>
+  <message name="IDS_DEVTOOLS_4d9468d79ef34f71ba78a28688fa5d31" desc="">
+    Ancestors
+  </message>
+  <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="">
+    Hide element
+  </message>
+  <message name="IDS_DEVTOOLS_51f30f4743bd8f0e7141781bd2d93abb" desc="">
+    Set color format as authored
+  </message>
+  <message name="IDS_DEVTOOLS_55e1bbb4e00add64284ed28f15d40b25" desc="">
+    Color format:
+  </message>
+  <message name="IDS_DEVTOOLS_581b87189d0bd86aa707e42553032a3e" desc="">
+    Children:
+  </message>
+  <message name="IDS_DEVTOOLS_5ad5ecf0bc5b6e08d886efd6f6e5649b" desc="">
+    Show HTML comments
+  </message>
+  <message name="IDS_DEVTOOLS_5adda1916cde33ce6e49c22ba58f03f7" desc="">
+    injected stylesheet
+  </message>
+  <message name="IDS_DEVTOOLS_5c6236c705b0086fbbdb2df3133f8a06" desc="">
+    Reveal DOM node on hover
+  </message>
+  <message name="IDS_DEVTOOLS_5de39fa1bce4bbf9232597a2120bc4d4" desc="">
+    Open cubic bezier editor.
+  </message>
+  <message name="IDS_DEVTOOLS_5eeb03a9c080c299d4804ac765c818c2" desc="">
+    No matching selector or style
+  </message>
+  <message name="IDS_DEVTOOLS_5fb63579fc981698f97d55bfecb213ea" desc="">
+    Copy
+  </message>
+  <message name="IDS_DEVTOOLS_6053f828a109e7d9da3690a7416e4eec" desc="">
+    Copy XPath
+  </message>
+  <message name="IDS_DEVTOOLS_605e072850e19521394f8bad7082acf4" desc="">
+    Force element state
+  </message>
+  <message name="IDS_DEVTOOLS_63041e09c8660107e507c9c27c08199c" desc="">
+    Expand recursively
+  </message>
+  <message name="IDS_DEVTOOLS_686676f33cf19ca00788564f43b992cb" desc="">
+    Filter Computed Styles
+  </message>
+  <message name="IDS_DEVTOOLS_68a483c15a1730a88f2a57b1b1b8b69a" desc="">
+    Event listeners category
+  </message>
+  <message name="IDS_DEVTOOLS_69f83bbab45ca27c374e76d304ab76be" desc="">
+    Find by string, selector, or XPath
+  </message>
+  <message name="IDS_DEVTOOLS_6ac7142d0aa79d17f03677fac1249c98" desc="">
+    Force state
+  </message>
+  <message name="IDS_DEVTOOLS_6ae2f9f803d108269a2cdb714b9851a1" desc="">
+    <ph name="NODE_NODENAMEINCORRECTCASE__">$1s</ph>[Attributes Style]
+  </message>
+  <message name="IDS_DEVTOOLS_6f3cab519fe7e8f3b7834cf882f9dfe6" desc="">
+    Element Classes
+  </message>
+  <message name="IDS_DEVTOOLS_78e0b69d17e0287aaae4f79171e5b059" desc="">
+    Disable DOM word wrap
+  </message>
+  <message name="IDS_DEVTOOLS_795630f9fe735d5c002f28f851d78fac" desc="">
+    Framework listeners
+  </message>
+  <message name="IDS_DEVTOOLS_7c90d60be6418bb4a858b3733b2560a8" desc="">
+    Unknown property name
+  </message>
+  <message name="IDS_DEVTOOLS_8551fe4a09c280c278283c10a5a6aa4e" desc="">
+    Increment/decrement with mousewheel or up/down keys. <ph name="CMDORCTRL">$1s</ph>: R ±1, Shift: G ±1, Alt: B ±1
+  </message>
+  <message name="IDS_DEVTOOLS_88556207e275bc7d802b4706268d61ae" desc="">
+    Copy JS path
+  </message>
+  <message name="IDS_DEVTOOLS_88a306e559954dc8c8ae9eb55d62297f" desc="">
+    Add attribute
+  </message>
+  <message name="IDS_DEVTOOLS_8bd236209fc42bdeffdecd1cc68d7b86" desc="">
+    Open color picker. <ph name="SHIFTCLICKMESSAGE">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8d41e41bf0856d309b43d776c24a0316" desc="">
+    Add new class
+  </message>
+  <message name="IDS_DEVTOOLS_8f17243e20db8af877d205e488b1f521" desc="">
+    Element state: <ph name="______NODE_DOMMODEL___CSSMODEL___PSEUDOSTATE_NODE__JOIN_______">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_91d17eff6a1529e8a4f67a5aa4cabec7" desc="">
+    No matching property
+  </message>
+  <message name="IDS_DEVTOOLS_956853d02d2c6947b6c15515e669dfad" desc="">
+    Set color format to RGB
+  </message>
+  <message name="IDS_DEVTOOLS_9835cebf3cf1d09803b6e2c02bc71401" desc="">
+    HSL: hsl(300, 80%, 90%)
+  </message>
+  <message name="IDS_DEVTOOLS_9a0364b9e99bb480dd25e1f0284c8555" desc="">
+    content
+  </message>
+  <message name="IDS_DEVTOOLS_9fc2d28c05ed9eb1d75ba4465abf15a9" desc="">
+    Properties
+  </message>
+  <message name="IDS_DEVTOOLS_a05fb8660778069f6d4a5c5b40a6dbc9" desc="">
+    Show user agent shadow DOM
+  </message>
+  <message name="IDS_DEVTOOLS_a2f8f2d457d122dd0d135781187aef31" desc="">
+    Invalid property value
+  </message>
+  <message name="IDS_DEVTOOLS_a78163b8c3f5e5a69fddd2a70c7f7309" desc="">
+    Style Attribute
+  </message>
+  <message name="IDS_DEVTOOLS_a98895bde5922dd43c82ad7050abc05a" desc="">
+    Show listeners on the ancestors
+  </message>
+  <message name="IDS_DEVTOOLS_aa56a2e65d8106aef3c61e4f6bf94fdb" desc="">
+    Elements
+  </message>
+  <message name="IDS_DEVTOOLS_abdf882c25e08d9ba219fe33f17591fe" desc="">
+    reveal
+  </message>
+  <message name="IDS_DEVTOOLS_acc24772ac31677d076f17d9002b57cd" desc="">
+    Collapse children
+  </message>
+  <message name="IDS_DEVTOOLS_ad4ac01e4a5688063dace5ba5d0f04de" desc="">
+    Insert Style Rule Below
+  </message>
+  <message name="IDS_DEVTOOLS_b0351810a5721f657b088608865849dd" desc="">
+    via inspector
+  </message>
+  <message name="IDS_DEVTOOLS_b1c94ca2fbc3e78fc30069c8d0f01680" desc="">
+    All
+  </message>
+  <message name="IDS_DEVTOOLS_b70cdb878a204fecf91c7dd1af312421" desc="">
+    padding
+  </message>
+  <message name="IDS_DEVTOOLS_b9740e9a829cf440e2e863124d53eba3" desc="">
+    Shift + Click to change color format.
+  </message>
+  <message name="IDS_DEVTOOLS_bd0ca6be53b0f3d2886fd53fcb52574e" desc="">
+    Blocking
+  </message>
+  <message name="IDS_DEVTOOLS_be9548cd999232697505d4ca2eed2a23" desc="">
+    Elements panel
+  </message>
+  <message name="IDS_DEVTOOLS_bf22eb56a74b42a33fecf10c831e9509" desc="">
+    Copy outerHTML
+  </message>
+  <message name="IDS_DEVTOOLS_c3c20058cbdd08782b780612204daafd" desc="">
+    Select an element in the page to inspect it
+  </message>
+  <message name="IDS_DEVTOOLS_c63621d0ad5163e8c643bb65c65b5aee" desc="">
+    Set color format to HEX
+  </message>
+  <message name="IDS_DEVTOOLS_c64955a6a59816d4e1206d600020a9fe" desc="">
+    Copy element
+  </message>
+  <message name="IDS_DEVTOOLS_c736f6b512801b5fe4670e5968ee7be7" desc="">
+    Toggle Element State
+  </message>
+  <message name="IDS_DEVTOOLS_c8466ef18413aebb4d6ebfce4e1f739d" desc="">
+    RGB: rgb(128, 255, 255)
+  </message>
+  <message name="IDS_DEVTOOLS_c8997c00026b49aa07e0a8c11511e390" desc="">
+    Add text-shadow
+  </message>
+  <message name="IDS_DEVTOOLS_c8f439c7ee24c34bc0b2e39a976509ad" desc="">
+    (<ph name="USAGE">$1d</ph> glyphs)
+  </message>
+  <message name="IDS_DEVTOOLS_cbb022167129a9f635cb4a73b5c72caa" desc="">
+    &lt;value is too large to edit&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_d0ad356f675744ef8f0311e83400b6ba" desc="">
+    Network resource
+  </message>
+  <message name="IDS_DEVTOOLS_d42f4851e770aa0f758b01388874f67b" desc="">
+    margin
+  </message>
+  <message name="IDS_DEVTOOLS_d838bef326860912aa08d977cf3a5f8b" desc="">
+    HEX: #dac0de
+  </message>
+  <message name="IDS_DEVTOOLS_d981fcf0c74837202331700aca88c801" desc="">
+    As authored
+  </message>
+  <message name="IDS_DEVTOOLS_eb92025cb8c66f1850c13a9b602a1856" desc="">
+    Show all
+  </message>
+  <message name="IDS_DEVTOOLS_eeb9a8e813f34f5f036332efc0257246" desc="">
+    Capture area screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_f2a70e3a6d14a56de7ebbb5b748ed127" desc="">
+    Add color
+  </message>
+  <message name="IDS_DEVTOOLS_f3d48b9ad0a801282e3adc8b452d5fc0" desc="">
+    Edit as HTML
+  </message>
+  <message name="IDS_DEVTOOLS_f750c8807bc5f4a7bd259788114a4ebd" desc="">
+    Add background-color
+  </message>
+  <message name="IDS_DEVTOOLS_f80bc338b6146b566004a046f8137c85" desc="">
+    Passive
+  </message>
+  <message name="IDS_DEVTOOLS_f8d0f1896a9e4ad16d43caa28534df32" desc="">
+    Show All Properties (<ph name="PROPERTIES_LENGTH___COUNT">$1s</ph> more)
+  </message>
+  <message name="IDS_DEVTOOLS_fa480abba67730dd6bd15aa40308d78a" desc="">
+    Set color format to HSL
+  </message>
+  <message name="IDS_DEVTOOLS_fcc980247db918e1b666b78ec7093d8c" desc="">
+    Element is hidden
+  </message>
+  <message name="IDS_DEVTOOLS_fd9bcae718daadf263a2e73c7745f0a7" desc="">
+    Show All Nodes (<ph name="VISIBLECHILDREN_LENGTH___EXPANDEDCHILDCOUNT">$1d</ph> More)
+  </message>
+</grit-part>

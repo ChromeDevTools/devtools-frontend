@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_025502db49a6cf61a8245998129bd973" desc="">
+    <ph name="DELETIONS">$1s</ph> deletions (-)
+  </message>
+  <message name="IDS_DEVTOOLS_5c2892cb638ec999fe22612587cd4a00" desc="">
+    No changes
+  </message>
+  <message name="IDS_DEVTOOLS_70c85e43e99bc0cfcbb656123306eb19" desc="">
+    <ph name="INSERTIONS">$1s</ph> insertion (+),
+  </message>
+  <message name="IDS_DEVTOOLS_af2c230293677261fe33ba6d3fbf02e3" desc="">
+    <ph name="INSERTIONS">$1s</ph> insertions (+),
+  </message>
+  <message name="IDS_DEVTOOLS_c112bb3542e98308d12d5ecb10a67abc" desc="">
+    Changes
+  </message>
+  <message name="IDS_DEVTOOLS_c73e4e53c15d9971d9293fcff6c0d8c0" desc="">
+    ( … Skipping <ph name="LINES_LENGTH___PADDINGLINES____">$1d</ph> matching lines … )
+  </message>
+  <message name="IDS_DEVTOOLS_ca012662d53a8bde28b4d82722aaff7e" desc="">
+    Changes drawer
+  </message>
+  <message name="IDS_DEVTOOLS_df5f7764a0991b372d30c55eb57f6a55" desc="">
+    Revert all changes
+  </message>
+  <message name="IDS_DEVTOOLS_e0e5ea9203300d2eb8ced39dd88c214e" desc="">
+    <ph name="DELETIONS">$1s</ph> deletion (-)
+  </message>
+  <message name="IDS_DEVTOOLS_f550ec70278cc72604795d91ff8dcd30" desc="">
+    Binary data
+  </message>
+  <message name="IDS_DEVTOOLS_fa6711f918fe2018131a4ad0380b9e56" desc="">
+    <ph name="THIS_UISOURCECODE_DISPLAYNAME__">$1s</ph> (from source map)
+  </message>
+</grit-part>

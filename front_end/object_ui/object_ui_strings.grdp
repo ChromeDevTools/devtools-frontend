@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_1381e657bdaaff914f1cf300d9ae12ba" desc="">
+    The property is computed with a getter
+  </message>
+  <message name="IDS_DEVTOOLS_1e7528fc0ca67eed52813139d5208882" desc="">
+    No property getter
+  </message>
+  <message name="IDS_DEVTOOLS_21a396ebc3d3f5a85721e8328da386dc" desc="">
+    &lt;string is too large to edit&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_2c8631472a99e236bd93244d69705c7c" desc="">
+    Copy property path
+  </message>
+  <message name="IDS_DEVTOOLS_2f68e12de25d8be39f50adf5f7714b3d" desc="">
+    Show as JavaScript object
+  </message>
+  <message name="IDS_DEVTOOLS_376f6694932cd7a556445e2058dd4255" desc="">
+    empty × <ph name="COUNT">$1d</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_4ced885857185cb26f013fcaaa03a086" desc="">
+    &lt;unreadable&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_59aeb2c9970b7b25be2fab2317e31fcb" desc="">
+    keywords
+  </message>
+  <message name="IDS_DEVTOOLS_a2e4822a98337283e39f7b60acf85ec9" desc="">
+    empty
+  </message>
+  <message name="IDS_DEVTOOLS_a6565c5180039dd2ca1249796bba00a5" desc="">
+    No properties
+  </message>
+  <message name="IDS_DEVTOOLS_a73e6bf278578e09d2351ee2ec7a7908" desc="">
+    Keys
+  </message>
+  <message name="IDS_DEVTOOLS_a983530c8e824d30e214200ef6f8a2d7" desc="">
+    (...)
+  </message>
+  <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="">
+    unknown
+  </message>
+  <message name="IDS_DEVTOOLS_b0d4998a26f5b5742ad38c4af8817e32" desc="">
+    Exception
+  </message>
+  <message name="IDS_DEVTOOLS_b46f6ce1cece499f73c9d5c36e4a3de4" desc="">
+    Invoke property getter
+  </message>
+  <message name="IDS_DEVTOOLS_d50bbea3c85be098dcf221e622cd7718" desc="">
+    Lexical scope variables
+  </message>
+</grit-part>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_2e7501c512976a9d9a9dca45bce9f128" desc="">
+    Expires / Max-Age
+  </message>
+  <message name="IDS_DEVTOOLS_382b0f5185773fa0f67a8ed8056c7759" desc="">
+    N/A
+  </message>
+  <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="">
+    Name
+  </message>
+  <message name="IDS_DEVTOOLS_6c8f0cef6081f0f97ec0f01a5a3ce2a7" desc="">
+    HttpOnly
+  </message>
+  <message name="IDS_DEVTOOLS_6f6cb72d544962fa333e2e34ce64f719" desc="">
+    Size
+  </message>
+  <message name="IDS_DEVTOOLS_71c7ae294b7abd866b3fb295b3b9e4a4" desc="">
+    Session
+  </message>
+  <message name="IDS_DEVTOOLS_7a2ccf251ecb20b2b84ce0e3c3f72a29" desc="">
+    Secure
+  </message>
+  <message name="IDS_DEVTOOLS_9f8e4d5e9b6d7a439dc6b5ebc5eedca4" desc="">
+    SameSite
+  </message>
+  <message name="IDS_DEVTOOLS_ac70412e939d72a9234cdebb1af5867b" desc="">
+    Path
+  </message>
+  <message name="IDS_DEVTOOLS_eae639a70006feff484a39363c977e24" desc="">
+    Domain
+  </message>
+</grit-part>

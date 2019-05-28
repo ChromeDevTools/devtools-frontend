@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="">
+    Restore defaults and reload
+  </message>
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="">
+    Shortcuts
+  </message>
+  <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="">
+    Blackbox
+  </message>
+  <message name="IDS_DEVTOOLS_331f303e56b067dd84abf94c3bd349c4" desc="">
+    Framework Blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="">
+    Experiments
+  </message>
+  <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="">
+    Pattern
+  </message>
+  <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="">
+    WARNING:
+  </message>
+  <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="">
+    No blackboxed patterns
+  </message>
+  <message name="IDS_DEVTOOLS_b39a035a995fc6597c8eb942210d1527" desc="">
+    Behavior
+  </message>
+  <message name="IDS_DEVTOOLS_b791f463c10f80e87e887e1f863f6209" desc="">
+    Add pattern...
+  </message>
+  <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="">
+    Blackbox content scripts (extension scripts in the page)
+  </message>
+  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="">
+    Blackboxing
+  </message>
+  <message name="IDS_DEVTOOLS_ce85958ff51e825dcf797d0451b96b71" desc="">
+    Blackbox scripts whose names match
+  </message>
+  <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="">
+    Preferences
+  </message>
+  <message name="IDS_DEVTOOLS_d2ef7dcdede23820e315ca1c3425ba4f" desc="">
+    Debugger will skip through the scripts and will not stop on exceptions thrown by them.
+  </message>
+  <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="">
+    These experiments could be dangerous and may require restart.
+  </message>
+  <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="">
+    Blackbox content scripts
+  </message>
+</grit-part>

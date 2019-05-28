@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_28e2b83d6f10a98be7535c7b40b05c6e" desc="">
+    Add connection
+  </message>
+  <message name="IDS_DEVTOOLS_3fd49f986cbd5dd3148c27c9aaaaa700" desc="">
+    Network address (e.g. localhost:9229)
+  </message>
+  <message name="IDS_DEVTOOLS_75997049f01ae448c39b8a937c4e2035" desc="">
+    No connections specified
+  </message>
+  <message name="IDS_DEVTOOLS_81c731365b52528d7d0fdb477ebc3b1d" desc="">
+    Specify network endpoint and DevTools will connect to it automatically. 
+  </message>
+  <message name="IDS_DEVTOOLS_b1f0f05f6f7dcbf25e065bb4c31fec72" desc="">
+    Node.js: <ph name="TARGETINFO_URL">$1s</ph>
+  </message>
+</grit-part>

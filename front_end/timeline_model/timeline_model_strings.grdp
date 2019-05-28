@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_3f2fac4932c34252407760c51ae69add" desc="">
+    Two flings at the same time? <ph name="FLINGSTART_STARTTIME">$1s</ph> vs <ph name="EVENT_STARTTIME">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_939f0ea548384887196004acbb969c45" desc="">
+    Two touches at the same time? <ph name="TOUCHSTART_STARTTIME">$1s</ph> vs <ph name="EVENT_STARTTIME">$2s</ph>
+  </message>
+</grit-part>

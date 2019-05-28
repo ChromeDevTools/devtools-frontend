@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DevTools-specific strings. -->
+<grit latest_public_release="0" current_release="1" output_all_resource_defines="false" source_lang_id="en">
+  <outputs>
+    <output filename="devtools_ui_strings.h" type="rc_header">
+      <emit emit_type='prepend'></emit>
+    </output>
+    <output filename="devtools_ui_strings_en-US.pak" type="data_package" lang="en-US" />
+  </outputs>
+  <translations>
+  </translations>
+  <release seq="1" allow_pseudo="false">
+    <messages fallback_to_english="true">
+      <part file="../accessibility/accessibility_strings.grdp" />
+      <part file="../animation/animation_strings.grdp" />
+      <part file="../audits2/audits2_strings.grdp" />
+      <part file="../bindings/bindings_strings.grdp" />
+      <part file="../browser_debugger/browser_debugger_strings.grdp" />
+      <part file="../browser_sdk/browser_sdk_strings.grdp" />
+      <part file="../changes/changes_strings.grdp" />
+      <part file="../color_picker/color_picker_strings.grdp" />
+      <part file="../components/components_strings.grdp" />
+      <part file="../console/console_strings.grdp" />
+      <part file="../console_counters/console_counters_strings.grdp" />
+      <part file="../cookie_table/cookie_table_strings.grdp" />
+      <part file="../coverage/coverage_strings.grdp" />
+      <part file="../data_grid/data_grid_strings.grdp" />
+      <part file="../devices/devices_strings.grdp" />
+      <part file="../elements/elements_strings.grdp" />
+      <part file="../emulated_devices/emulated_devices_strings.grdp" />
+      <part file="../emulation/emulation_strings.grdp" />
+      <part file="../event_listeners/event_listeners_strings.grdp" />
+      <part file="../heap_snapshot_worker/heap_snapshot_worker_strings.grdp" />
+      <part file="../help/help_strings.grdp" />
+      <part file="../host/host_strings.grdp" />
+      <part file="../inline_editor/inline_editor_strings.grdp" />
+      <part file="../inspector_main/inspector_main_strings.grdp" />
+      <part file="../js_profiler/js_profiler_strings.grdp" />
+      <part file="../layer_viewer/layer_viewer_strings.grdp" />
+      <part file="../layers/layers_strings.grdp" />
+      <part file="../main/main_strings.grdp" />
+      <part file="../mobile_throttling/mobile_throttling_strings.grdp" />
+      <part file="../network/network_strings.grdp" />
+      <part file="../node_debugger/node_debugger_strings.grdp" />
+      <part file="../node_main/node_main_strings.grdp" />
+      <part file="../object_ui/object_ui_strings.grdp" />
+      <part file="../perf_ui/perf_ui_strings.grdp" />
+      <part file="../performance_monitor/performance_monitor_strings.grdp" />
+      <part file="../persistence/persistence_strings.grdp" />
+      <part file="../product_registry/product_registry_strings.grdp" />
+      <part file="../profiler/profiler_strings.grdp" />
+      <part file="../protocol_monitor/protocol_monitor_strings.grdp" />
+      <part file="../quick_open/quick_open_strings.grdp" />
+      <part file="../resources/resources_strings.grdp" />
+      <part file="../screencast/screencast_strings.grdp" />
+      <part file="../sdk/sdk_strings.grdp" />
+      <part file="../search/search_strings.grdp" />
+      <part file="../security/security_strings.grdp" />
+      <part file="../settings/settings_strings.grdp" />
+      <part file="../snippets/snippets_strings.grdp" />
+      <part file="../source_frame/source_frame_strings.grdp" />
+      <part file="../sources/sources_strings.grdp" />
+      <part file="../terminal/terminal_strings.grdp" />
+      <part file="../text_editor/text_editor_strings.grdp" />
+      <part file="../timeline/timeline_strings.grdp" />
+      <part file="../timeline_model/timeline_model_strings.grdp" />
+      <part file="../ui/ui_strings.grdp" />
+      <part file="../web_audio/web_audio_strings.grdp" />
+      <part file="../workspace/workspace_strings.grdp" />
+    </messages>
+  </release>
+</grit>

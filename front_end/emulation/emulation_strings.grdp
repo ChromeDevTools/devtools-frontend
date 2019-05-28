@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_09109d98eee81aa68f1196a7a0753240" desc="">
+    DPR: <ph name="DEVICESCALE">$1.1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0c78cd3aa4c94a64675bc6aa77802843" desc="">
+    Device-based
+  </message>
+  <message name="IDS_DEVTOOLS_0eb264d46c88af61e587c18f60662df0" desc="">
+    Device pixel ratio
+  </message>
+  <message name="IDS_DEVTOOLS_0edd9b471d32d5e3bbec7ca8df113568" desc="">
+    Toggle device toolbar
+  </message>
+  <message name="IDS_DEVTOOLS_138d1a442ecb2e2fd3b083f1842658d0" desc="">
+    Custom orientation...
+  </message>
+  <message name="IDS_DEVTOOLS_146bdebb324a64d327b1dde22a07d0bd" desc="">
+    Laptop
+  </message>
+  <message name="IDS_DEVTOOLS_19ada73af65f7c221bd28e78b2eda5cd" desc="">
+    Edit…
+  </message>
+  <message name="IDS_DEVTOOLS_1b962c3d36319947efad5a45c1ee62b0" desc="">
+    Desktop (touch)
+  </message>
+  <message name="IDS_DEVTOOLS_1c7444be9626d149ab598fb79b639f96" desc="">
+    Portrait
+  </message>
+  <message name="IDS_DEVTOOLS_21e2bb42873eddcb9b476b8eafbe0c18" desc="">
+    Reset to defaults
+  </message>
+  <message name="IDS_DEVTOOLS_223bf25f178896660d7d73af6e0a540d" desc="">
+    Laptop L
+  </message>
+  <message name="IDS_DEVTOOLS_2496af30b64c3a4ff21e8505ea439a73" desc="">
+    50%
+  </message>
+  <message name="IDS_DEVTOOLS_29260f495ba8adcc62fd1307c758ff4e" desc="">
+    Show rulers
+  </message>
+  <message name="IDS_DEVTOOLS_29296fcb28eb4edf5d0049b6cac7bbd1" desc="">
+    <ph name="THIS__MODEL_SCALE________">$1.0f</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_29eaeee66d8210c1261d748071fb7b0a" desc="">
+    Landscape right
+  </message>
+  <message name="IDS_DEVTOOLS_2a04aad9d1e40781d70537def184749d" desc="">
+    α (alpha)
+  </message>
+  <message name="IDS_DEVTOOLS_2d7084def320939c86d40f1208717083" desc="">
+    Location unavailable
+  </message>
+  <message name="IDS_DEVTOOLS_30bd7ce7de206924302499f197c7a966" desc="">
+    100%
+  </message>
+  <message name="IDS_DEVTOOLS_323d4eb70b252acb4a04eaf9e0882597" desc="">
+    Geolocation
+  </message>
+  <message name="IDS_DEVTOOLS_32954654ac8fe66a1d09be19001de2d4" desc="">
+    Width
+  </message>
+  <message name="IDS_DEVTOOLS_34e34c43ec6b943c10a3cc1a1a16fb11" desc="">
+    Manage
+  </message>
+  <message name="IDS_DEVTOOLS_36384a9ea3ec791e6bd4ab6b36f2ff2a" desc="">
+    Tablet
+  </message>
+  <message name="IDS_DEVTOOLS_3836c33415a6d95d4a63388a6bcadf3b" desc="">
+    Device type
+  </message>
+  <message name="IDS_DEVTOOLS_38795baa79c9e2422a84156b83d0b73a" desc="">
+    Mobile (no touch)
+  </message>
+  <message name="IDS_DEVTOOLS_39335086fbaba7128eff0ef52d396131" desc="">
+    Show media queries
+  </message>
+  <message name="IDS_DEVTOOLS_396f64970a094d8b66d9863bd073eb72" desc="">
+    Force enabled
+  </message>
+  <message name="IDS_DEVTOOLS_3b0eb7469ba9c95f3a05c4cef1f6aac4" desc="">
+    Latitude
+  </message>
+  <message name="IDS_DEVTOOLS_414b730ab2cf9123d9230740864ffeec" desc="">
+    Close DevTools
+  </message>
+  <message name="IDS_DEVTOOLS_4252b72e6ebcd4d4b4c2e46a786f03d2" desc="">
+    Zoom
+  </message>
+  <message name="IDS_DEVTOOLS_45f80006d304f294d6c1de50c244856e" desc="">
+    Add location...
+  </message>
+  <message name="IDS_DEVTOOLS_4dab36ac83853282fc0d7bae20c19e90" desc="">
+    More options
+  </message>
+  <message name="IDS_DEVTOOLS_50510c6a5a0e14ddd3a68f6dd1cf2f79" desc="">
+    Device name
+  </message>
+  <message name="IDS_DEVTOOLS_526d688f37a86d3c3f27d0c5016eb71d" desc="">
+    Reset
+  </message>
+  <message name="IDS_DEVTOOLS_58cc7602635a11277aa7531e14b32c97" desc="">
+    Portrait upside down
+  </message>
+  <message name="IDS_DEVTOOLS_59c06928c1dcdb1a687bf21d73e53a09" desc="">
+    Show device frame
+  </message>
+  <message name="IDS_DEVTOOLS_614103b76fd0d9de068d69034fb6f987" desc="">
+    (<ph name="THIS__MODEL_DEVICE___TITLE">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_6149711fb8edc5e2adeea7aa63ee11ff" desc="">
+    150%
+  </message>
+  <message name="IDS_DEVTOOLS_62759e0d418d7391bf2d54e70cbcc05d" desc="">
+    Remove device type
+  </message>
+  <message name="IDS_DEVTOOLS_633c01074b6726183e20f42bb3ee01c0" desc="">
+    4K
+  </message>
+  <message name="IDS_DEVTOOLS_649676015173b6195516eed77e5aee60" desc="">
+    125%
+  </message>
+  <message name="IDS_DEVTOOLS_6adf97f83acf6453d4a6a4b1070f3754" desc="">
+    None
+  </message>
+  <message name="IDS_DEVTOOLS_7087f70b643f941c968dc3b327cbe111" desc="">
+    Adjust with mousewheel or up/down keys. <ph name="CMDORCTRL">$1s</ph>: ±10, Shift: ±1, Alt: ±0.01
+  </message>
+  <message name="IDS_DEVTOOLS_75a37bfcbfe2678114513aef903c4ba5" desc="">
+    Default: <ph name="DEFAULTVALUE">$1.1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_7ad87024f63b3bb0292c21d76f2c7438" desc="">
+    Add device pixel ratio
+  </message>
+  <message name="IDS_DEVTOOLS_7addb86955014a622eaefae5134fcb7a" desc="">
+    Remove device pixel ratio
+  </message>
+  <message name="IDS_DEVTOOLS_7f163d0494446906a484df67e90c1d6b" desc="">
+    Hide device frame
+  </message>
+  <message name="IDS_DEVTOOLS_815dff01257e5ef182b25d4c1ef0a7a0" desc="">
+    Landscape
+  </message>
+  <message name="IDS_DEVTOOLS_81c3744a7fe979d029d1e7b84afd613f" desc="">
+    *Requires reload
+  </message>
+  <message name="IDS_DEVTOOLS_82a9b801e28c4dec617b1cabc329f5bd" desc="">
+    Capture screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_8394f0347c184cf156ac5924dccb773b" desc="">
+    Long
+  </message>
+  <message name="IDS_DEVTOOLS_8d2de5368588552fbae54044ac5c7b3d" desc="">
+    Rotate
+  </message>
+  <message name="IDS_DEVTOOLS_8d7b5211545faceef57a041ee56a2f5e" desc="">
+    Capture full size screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_901bc0a4714ff81c24943a50e620de71" desc="">
+    User agent string
+  </message>
+  <message name="IDS_DEVTOOLS_95129d2a7de16087427f1632dc691287" desc="">
+    Hide media queries
+  </message>
+  <message name="IDS_DEVTOOLS_9b4dabc50f0b8ccba1c8981831abdad8" desc="">
+    Longitude
+  </message>
+  <message name="IDS_DEVTOOLS_9fa08fa6b5a65fd3a2e14858a2559027" desc="">
+    β (beta)
+  </message>
+  <message name="IDS_DEVTOOLS_9fd04ab471b39141991551708305ceb5" desc="">
+    Add custom device...
+  </message>
+  <message name="IDS_DEVTOOLS_a043e816a2c42b9290b672b1aa22cb73" desc="">
+    Mobile M
+  </message>
+  <message name="IDS_DEVTOOLS_a07f7588275e6b286450c54c3fb5bc92" desc="">
+    No override
+  </message>
+  <message name="IDS_DEVTOOLS_a68cfcae283e3b2a60c99386c809fd6e" desc="">
+    Shift+drag horizontally to rotate around the y-axis
+  </message>
+  <message name="IDS_DEVTOOLS_a88789aba0125292a7a2b8774a979b37" desc="">
+    Geolocations
+  </message>
+  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="">
+    Orientation
+  </message>
+  <message name="IDS_DEVTOOLS_af29aa178ae43211319e28f627e96590" desc="">
+    Sensors
+  </message>
+  <message name="IDS_DEVTOOLS_b0ac9a67aaac87b4b70f5e1b7292b2cc" desc="">
+    Fit to window (<ph name="THIS__MODEL_FITSCALE________">$1.0f</ph>%%)
+  </message>
+  <message name="IDS_DEVTOOLS_b1596787a9a32a2626743258abf34e80" desc="">
+    Landscape left
+  </message>
+  <message name="IDS_DEVTOOLS_b2b22e112d16f958f75ea888f9ce8eeb" desc="">
+    Display down
+  </message>
+  <message name="IDS_DEVTOOLS_b2b2df378a7c7ade199bbaf944cb3f35" desc="">
+    Responsive
+  </message>
+  <message name="IDS_DEVTOOLS_b435e227d5dd201e1768b2bcb2e0aa81" desc="">
+    height
+  </message>
+  <message name="IDS_DEVTOOLS_b85e1916c38f0c0c2d0f7c8d210bcf9e" desc="">
+    Height (leave empty for full)
+  </message>
+  <message name="IDS_DEVTOOLS_b8d750b6ef9a441434c83df4334c4fa0" desc="">
+    Display up
+  </message>
+  <message name="IDS_DEVTOOLS_b90203c84f857a0403751bf77f100400" desc="">
+    Reveal in source code
+  </message>
+  <message name="IDS_DEVTOOLS_bb3680a6300bf660b59ba8783b18689b" desc="">
+    Hide rulers
+  </message>
+  <message name="IDS_DEVTOOLS_c107e6e26d3b1b5eadbf9e842f6c0e05" desc="">
+    Add device type
+  </message>
+  <message name="IDS_DEVTOOLS_c23fc6f13afcbcd7dee750fe4f074421" desc="">
+    Lat
+  </message>
+  <message name="IDS_DEVTOOLS_c3abc91ecb930fd1d8a6b1e738eb36be" desc="">
+    Custom Geolocations
+  </message>
+  <message name="IDS_DEVTOOLS_c3c3720080d9497b9df37fcd78994144" desc="">
+    Location name
+  </message>
+  <message name="IDS_DEVTOOLS_c4ca4238a0b923820dcc509a6f75849b" desc="">
+    1
+  </message>
+  <message name="IDS_DEVTOOLS_c81e728d9d4c2f636f067f89cc14862c" desc="">
+    2
+  </message>
+  <message name="IDS_DEVTOOLS_cb211766ff41a03bb9f324be3db9dae0" desc="">
+    Mobile L
+  </message>
+  <message name="IDS_DEVTOOLS_d15305d7a4e34e02489c74a5ef542f36" desc="">
+    Off
+  </message>
+  <message name="IDS_DEVTOOLS_da31f3ff326e70f6b08748520c553920" desc="">
+    γ (gamma)
+  </message>
+  <message name="IDS_DEVTOOLS_decc67818f6be186e03a3c27c2eedc9e" desc="">
+    Double-click for full height
+  </message>
+  <message name="IDS_DEVTOOLS_e67750c8b85dbe1b938397e55488e2d8" desc="">
+    Other…
+  </message>
+  <message name="IDS_DEVTOOLS_e85c8bc51cfa9b2d3713091fdc87d551" desc="">
+    Auto-adjust zoom
+  </message>
+  <message name="IDS_DEVTOOLS_eccbc87e4b5ce2fe28308fd9f2a7baf3" desc="">
+    3
+  </message>
+  <message name="IDS_DEVTOOLS_ee1cab1975e28575b1631ee8fc4ea749" desc="">
+    Capture node screenshot
+  </message>
+  <message name="IDS_DEVTOOLS_ee4cf994f6defec5951824b44f8047b1" desc="">
+    Screen options
+  </message>
+  <message name="IDS_DEVTOOLS_f0f31c9700c6b10d8a20dc487b2ae6a8" desc="">
+    Touch
+  </message>
+  <message name="IDS_DEVTOOLS_f2a72a44f7b7d30829c0405ed2385345" desc="">
+    Mobile S
+  </message>
+  <message name="IDS_DEVTOOLS_f819de81247be4a5428dc0e169de28b8" desc="">
+    75%
+  </message>
+  <message name="IDS_DEVTOOLS_fd0a6990abd15cd06c80309237b01262" desc="">
+    Emulated Devices
+  </message>
+</grit-part>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_13d286ca90ba61a4151f3dcb6e353cc8" desc="">
+    OfflineAudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_28fce67b0d0976eaca9b69748126a6d2" desc="">
+    Open a page that uses Web Audio API to start monitoring.
+  </message>
+  <message name="IDS_DEVTOOLS_40097404a926dce6324e58f598bd7dcb" desc="">
+    Render Capacity
+  </message>
+  <message name="IDS_DEVTOOLS_40734192aacef5d658541080315dd644" desc="">
+    Callback Buffer Size
+  </message>
+  <message name="IDS_DEVTOOLS_545e39748691e8a65093c525011a321b" desc="">
+    Max Output Channels
+  </message>
+  <message name="IDS_DEVTOOLS_5f8695ebb8bc9a78c593ee7bfae153a5" desc="">
+    AudioContext
+  </message>
+  <message name="IDS_DEVTOOLS_b78dc7712ef83a078c1c68822d2a1a3f" desc="">
+    BaseAudioContexts
+  </message>
+  <message name="IDS_DEVTOOLS_f047f03535a9154caf9a858b5aed17c0" desc="">
+    Current Time
+  </message>
+  <message name="IDS_DEVTOOLS_f579f693ac9ecb3fb9e822bf32028e13" desc="">
+    Sample Rate
+  </message>
+</grit-part>

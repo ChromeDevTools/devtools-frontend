@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_00fcbe531dd989e566cab0a9e250f14c" desc="">
+    Port Forwarding:
+  </message>
+  <message name="IDS_DEVTOOLS_03fc5c0bd59679c442b86074c7a7cc3a" desc="">
+    Port forwarding
+  </message>
+  <message name="IDS_DEVTOOLS_042909a8044ec8e1a97069bfdde2fe58" desc="">
+    Connected: <ph name="CONNECTED_JOIN______">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_049c45b298c6bc7540d84ab593bedaa6" desc="">
+    Transient: <ph name="TRANSIENT_JOIN______">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_0dec6438ad2d934e57d33026770654d1" desc="">
+    remote debugging documentation
+  </message>
+  <message name="IDS_DEVTOOLS_10e10a814f3c1f9a5e847376c975ea3c" desc="">
+    Error: <ph name="ERROR_JOIN______">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2157ba7738ed20565fd089f2a6287cdd" desc="">
+    View less tabs…
+  </message>
+  <message name="IDS_DEVTOOLS_258771f02f7548d3282560829e7c9b69" desc="">
+    Define the listening port on your device that maps to a port accessible from your development machine. 
+  </message>
+  <message name="IDS_DEVTOOLS_2ec0d16e4ca169baedb9b2d50ec5c6d7" desc="">
+    Connected
+  </message>
+  <message name="IDS_DEVTOOLS_34fdf6d76ae3464206146053c8aedcd7" desc="">
+    <ph name="THIS__DEVICES_LENGTH">$1d</ph> devices detected.
+  </message>
+  <message name="IDS_DEVTOOLS_35a9dbe6b748771b9ea4d5962d37ff6f" desc="">
+    Inspect
+  </message>
+  <message name="IDS_DEVTOOLS_405590b3c5865df635f2373ee4cb799c" desc="">
+    Remote devices
+  </message>
+  <message name="IDS_DEVTOOLS_4d1c8263ba1036754f8db14a98f9f006" desc="">
+    Reload
+  </message>
+  <message name="IDS_DEVTOOLS_67afa587522e088dedac9f252362d16a" desc="">
+    Discover USB devices
+  </message>
+  <message name="IDS_DEVTOOLS_6ab4529805e55f79b589f0676435dc4e" desc="">
+    Pending Authorization
+  </message>
+  <message name="IDS_DEVTOOLS_85bd3d2945bf008087e0a3a7d714ae80" desc="">
+    localhost:
+  </message>
+  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="">
+    Unknown
+  </message>
+  <message name="IDS_DEVTOOLS_8c7074069d61ba9d2f76b078fb1dd154" desc="">
+    Need help? Read Chrome 
+  </message>
+  <message name="IDS_DEVTOOLS_926f97ab5b90b053d6a3a31082316f15" desc="">
+    No browsers detected.
+  </message>
+  <message name="IDS_DEVTOOLS_9b5e7fc14b157afb268b71b01d397eef" desc="">
+    Add rule
+  </message>
+  <message name="IDS_DEVTOOLS_9ba01fbecae523e4160afa26f75f1757" desc="">
+    View more tabs…
+  </message>
+  <message name="IDS_DEVTOOLS_a105a2ea6a8f53afe9640d8684ffe5d5" desc="">
+     Read 
+  </message>
+  <message name="IDS_DEVTOOLS_a2040c5569ac3718b10af77aaa3fbb03" desc="">
+    Pending authentication: please accept debugging session on the device.
+  </message>
+  <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="">
+    1 device detected.
+  </message>
+  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="">
+    Devices
+  </message>
+  <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="">
+    Open
+  </message>
+  <message name="IDS_DEVTOOLS_c9d2bd107ad7a2c20f80efcaaf365d23" desc="">
+     for more information.
+  </message>
+  <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="">
+    No rules
+  </message>
+  <message name="IDS_DEVTOOLS_ceb747e16b7e536d03047492e4491314" desc="">
+    remote debugging documentation.
+  </message>
+  <message name="IDS_DEVTOOLS_d38dcac8af912356e255cbace8984e9a" desc="">
+    New tab:
+  </message>
+  <message name="IDS_DEVTOOLS_dabcc308341c912a6b620e1c980e16d6" desc="">
+    No devices detected.
+  </message>
+  <message name="IDS_DEVTOOLS_e1f70f4a4265cb51c1b219aa60eaa441" desc="">
+    Enter URL
+  </message>
+  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="">
+    Focus
+  </message>
+  <message name="IDS_DEVTOOLS_f114563447e4786042d7e7ce05f1157c" desc="">
+    Device port (3333)
+  </message>
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="">
+    Settings
+  </message>
+  <message name="IDS_DEVTOOLS_ff89b835f4fc414c9c8f4f96695c2ea8" desc="">
+    Local address (dev.example.corp:3333)
+  </message>
+</grit-part>

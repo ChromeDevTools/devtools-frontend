@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<grit-part>
+  <message name="IDS_DEVTOOLS_029ce83ef9e87df61fb9e580ac165b4a" desc="">
+    DOM Nodes
+  </message>
+  <message name="IDS_DEVTOOLS_23ab71fd0704d52052b95e54f8e72fb9" desc="">
+    Performance monitor
+  </message>
+  <message name="IDS_DEVTOOLS_2bd1b3d3ed5950a8e5a28340e368a4ee" desc="">
+    Document Frames
+  </message>
+  <message name="IDS_DEVTOOLS_5c1131c8862a07ce54be057f516c840e" desc="">
+    Layouts / sec
+  </message>
+  <message name="IDS_DEVTOOLS_6cce53fb6e5ccd4313ae3ec26fa42ca4" desc="">
+    JS event listeners
+  </message>
+  <message name="IDS_DEVTOOLS_81f2166e08f25234e2fbb2cd3175f83e" desc="">
+    Graphs displaying a real-time view of performance metrics
+  </message>
+  <message name="IDS_DEVTOOLS_9ff3fcf082193aaf2b6889fb4662706a" desc="">
+    JS heap size
+  </message>
+  <message name="IDS_DEVTOOLS_ac2137ec7c503f6997ddb414265791a9" desc="">
+    CPU usage
+  </message>
+  <message name="IDS_DEVTOOLS_b4cb01a2ff8576df8cbad0872cc6e4a2" desc="">
+    Style recalcs / sec
+  </message>
+  <message name="IDS_DEVTOOLS_e99180abf47a8b3a856e0bcb2656990a" desc="">
+    Paused
+  </message>
+  <message name="IDS_DEVTOOLS_f28128b38efbc6134dc40751ee21fd29" desc="">
+    Documents
+  </message>
+</grit-part>

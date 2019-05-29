@@ -535,20 +535,6 @@ SDK.NetworkDispatcher = class {
       }
     }
 
-    if ('public-key-pins' in lowercaseHeaders || 'public-key-pins-report-only' in lowercaseHeaders) {
-      if (!this._hpkpDomains)
-        this._hpkpDomains = new Set();
-      const parsed = new Common.ParsedURL(response.url);
-      if (parsed.isValid && !this._hpkpDomains.has(parsed.host)) {
-        this._hpkpDomains.add(parsed.host);
-        const message = Common.UIString(
-            'HTTP-Based Public Key Pinning is deprecated. Chrome 69 and later will ignore HPKP response headers. (Host: %s)',
-            parsed.host);
-        this._manager.dispatchEventToListeners(
-            SDK.NetworkManager.Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
-      }
-    }
-
     this._updateNetworkRequestWithResponse(networkRequest, response);
 
     this._updateNetworkRequest(networkRequest);
@@ -827,10 +813,8 @@ SDK.NetworkDispatcher = class {
     this._inflightRequestsByURL[networkRequest.url()] = networkRequest;
     // The following relies on the fact that loaderIds and requestIds are
     // globally unique and that the main request has them equal.
-    if (networkRequest.loaderId === networkRequest.requestId()) {
+    if (networkRequest.loaderId === networkRequest.requestId())
       SDK.multitargetNetworkManager._inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
-      delete this._hpkpDomains;
-    }
 
     this._manager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestStarted, networkRequest);
   }

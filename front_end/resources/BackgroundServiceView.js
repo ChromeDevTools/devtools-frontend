@@ -234,7 +234,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       swScope = registration.scopeURL.substr(registration.securityOrigin.length);
 
     return {
-      id: this._dataGrid.rootNode().children.length,
+      id: this._dataGrid.rootNode().children.length + 1,
       timestamp: UI.formatTimestamp(serviceEvent.timestamp * 1000, /* full= */ true),
       origin: serviceEvent.origin,
       swScope,
@@ -339,7 +339,7 @@ Resources.BackgroundServiceView.EventDataNode = class extends DataGrid.DataGridN
     super(data);
 
     /** @const {!Array<!Protocol.BackgroundService.EventMetadata>} */
-    this._eventMetadata = eventMetadata;
+    this._eventMetadata = eventMetadata.sort((m1, m2) => m1.key.compareTo(m2.key));
   }
 
   /**

@@ -237,7 +237,7 @@ Audits2.RuntimeSettings = [
     setting: Common.settings.createSetting('audits2.device_type', 'mobile'),
     description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
-      flags.disableDeviceEmulation = value === 'desktop';
+      flags.emulatedFormFactor = value;
     },
     options: [
       {label: ls`Mobile`, value: 'mobile'},

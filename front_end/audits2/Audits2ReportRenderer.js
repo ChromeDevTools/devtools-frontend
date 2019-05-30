@@ -57,4 +57,12 @@ Audits2.ReportRenderer = class extends ReportRenderer {
       origElement.appendChild(element);
     }
   }
+
+  /**
+   * @param {!Element} el
+   */
+  static handleDarkMode(el) {
+    if (UI.themeSupport.themeName() === 'dark')
+      el.classList.add('dark');
+  }
 };

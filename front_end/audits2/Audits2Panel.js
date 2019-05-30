@@ -148,6 +148,11 @@ Audits2.Audits2Panel = class extends UI.Panel {
     const el = renderer.renderReport(lighthouseResult, reportContainer);
     Audits2.ReportRenderer.addViewTraceButton(el, artifacts);
     Audits2.ReportRenderer.linkifyNodeDetails(el);
+    Audits2.ReportRenderer.handleDarkMode(el);
+
+    const features = new ReportUIFeatures(dom);
+    features.setTemplateContext(templatesDOM);
+    features.initFeatures(lighthouseResult);
 
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
   }
@@ -245,7 +250,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
     emulationModel.toolbarControlsEnabledSetting().set(false);
 
-    if (flags.disableDeviceEmulation) {
+    if (flags.emulatedFormFactor === 'desktop') {
       emulationModel.enabledSetting().set(false);
       emulationModel.deviceOutlineSetting().set(false);
       emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);

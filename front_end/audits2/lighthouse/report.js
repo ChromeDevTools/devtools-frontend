@@ -16,11 +16,12 @@
  */
 'use strict';
 
-/* globals self URL */
+/* globals self, URL */
 
 const ELLIPSIS = '\u2026';
 const NBSP = '\xa0';
 const PASS_THRESHOLD = 0.9;
+const SCREENSHOT_PREFIX = 'data:image/jpeg;base64,';
 
 const RATINGS = {
   PASS: {label: 'pass', minScore: PASS_THRESHOLD},
@@ -28,6 +29,14 @@ const RATINGS = {
   FAIL: {label: 'fail'},
   ERROR: {label: 'error'},
 };
+
+// 25 most used tld plus one domains (aka public suffixes) from http archive.
+// @see https://github.com/GoogleChrome/lighthouse/pull/5065#discussion_r191926212
+// The canonical list is https://publicsuffix.org/learn/ but we're only using subset to conserve bytes
+const listOfTlds = [
+  'com', 'co', 'gov', 'edu', 'ac', 'org', 'go', 'gob', 'or', 'net', 'in', 'ne', 'nic', 'gouv',
+  'web', 'spb', 'blog', 'jus', 'kiev', 'mil', 'wi', 'qc', 'ca', 'bel', 'on',
+];
 
 class Util {
   static get PASS_THRESHOLD() {
@@ -40,7 +49,8 @@ class Util {
 
   /**
    * Returns a new LHR that's reshaped for slightly better ergonomics within the report rendereer.
-   * Also, sets up the localized UI strings used within renderer and number/date formatting
+   * Also, sets up the localized UI strings used within renderer and makes changes to old LHRs to be
+   * compatible with current renderer.
    * The LHR passed in is not mutated.
    * TODO(team): we all agree the LHR shape change is technical debt we should fix
    * @param {LH.Result} result
@@ -50,33 +60,65 @@ class Util {
     // If any mutations happen to the report within the renderers, we want the original object untouched
     const clone = /** @type {LH.ReportResult} */ (JSON.parse(JSON.stringify(result)));
 
-    // If LHR is older (\\u22643.0.3), it has no locale setting. Set default.
+    // If LHR is older (≤3.0.3), it has no locale setting. Set default.
     if (!clone.configSettings.locale) {
       clone.configSettings.locale = 'en';
     }
+
+    for (const audit of Object.values(clone.audits)) {
+      // Turn 'not-applicable' (LHR <4.0) and 'not_applicable' (older proto versions)
+      // into 'notApplicable' (LHR ≥4.0).
+      // @ts-ignore tsc rightly flags that these values shouldn't occur.
+      // eslint-disable-next-line max-len
+      if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
+        audit.scoreDisplayMode = 'notApplicable';
+      }
+
+      if (audit.details) {
+        // Turn `auditDetails.type` of undefined (LHR <4.2) and 'diagnostic' (LHR <5.0)
+        // into 'debugdata' (LHR ≥5.0).
+        // @ts-ignore tsc rightly flags that these values shouldn't occur.
+        if (audit.details.type === undefined || audit.details.type === 'diagnostic') {
+          audit.details.type = 'debugdata';
+        }
+
+        // Add the jpg data URL prefix to filmstrip screenshots without them (LHR <5.0).
+        if (audit.details.type === 'filmstrip') {
+          for (const screenshot of audit.details.items) {
+            if (!screenshot.data.startsWith(SCREENSHOT_PREFIX)) {
+              screenshot.data = SCREENSHOT_PREFIX + screenshot.data;
+            }
+          }
+        }
+      }
+    }
+
+    // Set locale for number/date formatting and grab localized renderer strings from the LHR.
     Util.setNumberDateLocale(clone.configSettings.locale);
     if (clone.i18n && clone.i18n.rendererFormattedStrings) {
       Util.updateAllUIStrings(clone.i18n.rendererFormattedStrings);
     }
 
+    // For convenience, smoosh all AuditResults into their auditRef (which has just weight & group)
     if (typeof clone.categories !== 'object') throw new Error('No categories provided.');
-    clone.reportCategories = Object.values(clone.categories);
+    for (const category of Object.values(clone.categories)) {
+      category.auditRefs.forEach(auditRef => {
+        const result = clone.audits[auditRef.id];
+        auditRef.result = result;
 
-    // Turn 'not-applicable' and 'not_applicable' into 'notApplicable' to support old reports.
-    // TODO: remove when underscore/hyphen proto issue is resolved. See #6371, #6201, #6783.
-    for (const audit of Object.values(clone.audits)) {
-      // @ts-ignore tsc rightly flags that this value shouldn't occur.
-      // eslint-disable-next-line max-len
-      if (audit.scoreDisplayMode === 'not_applicable' || audit.scoreDisplayMode === 'not-applicable') {
-        audit.scoreDisplayMode = 'notApplicable';
-      }
-    }
-
-    // For convenience, smoosh all AuditResults into their auditDfn (which has just weight & group)
-    for (const category of clone.reportCategories) {
-      category.auditRefs.forEach(auditMeta => {
-        const result = clone.audits[auditMeta.id];
-        auditMeta.result = result;
+        // attach the stackpacks to the auditRef object
+        if (clone.stackPacks) {
+          clone.stackPacks.forEach(pack => {
+            if (pack.descriptions[auditRef.id]) {
+              auditRef.stackPacks = auditRef.stackPacks || [];
+              auditRef.stackPacks.push({
+                title: pack.title,
+                iconDataURL: pack.iconDataURL,
+                description: pack.descriptions[auditRef.id],
+              });
+            }
+          });
+        }
       });
     }
 
@@ -323,6 +365,51 @@ class Util {
   }
 
   /**
+   * @param {string|URL} value
+   * @return {URL}
+   */
+  static createOrReturnURL(value) {
+    if (value instanceof URL) {
+      return value;
+    }
+
+    return new URL(value);
+  }
+
+  /**
+   * Gets the tld of a domain
+   *
+   * @param {string} hostname
+   * @return {string} tld
+   */
+  static getTld(hostname) {
+    const tlds = hostname.split('.').slice(-2);
+
+    if (!listOfTlds.includes(tlds[0])) {
+      return `.${tlds[tlds.length - 1]}`;
+    }
+
+    return `.${tlds.join('.')}`;
+  }
+
+  /**
+   * Returns a primary domain for provided hostname (e.g. www.example.com -> example.com).
+   * @param {string|URL} url hostname or URL object
+   * @returns {string}
+   */
+  static getRootDomain(url) {
+    const hostname = Util.createOrReturnURL(url).hostname;
+    const tld = Util.getTld(hostname);
+
+    // tld is .com or .co.uk which means we means that length is 1 to big
+    // .com => 2 & .co.uk => 3
+    const splitTld = tld.split('.');
+
+    // get TLD + root domain
+    return hostname.split('.').slice(-splitTld.length).join('.');
+  }
+
+  /**
    * @param {LH.Config.Settings} settings
    * @return {Array<{name: string, description: string}>}
    */
@@ -386,10 +473,8 @@ class Util {
     }
 
     let deviceEmulation = 'No emulation';
-    if (!settings.disableDeviceEmulation) {
-      if (settings.emulatedFormFactor === 'mobile') deviceEmulation = 'Emulated Nexus 5X';
-      if (settings.emulatedFormFactor === 'desktop') deviceEmulation = 'Emulated Desktop';
-    }
+    if (settings.emulatedFormFactor === 'mobile') deviceEmulation = 'Emulated Nexus 5X';
+    if (settings.emulatedFormFactor === 'desktop') deviceEmulation = 'Emulated Desktop';
 
     return {
       deviceEmulation,
@@ -451,6 +536,13 @@ class Util {
 
     return lines.filter(line => lineNumbersToKeep.has(line.lineNumber));
   }
+
+  /**
+   * @param {string} categoryId
+   */
+  static isPluginCategory(categoryId) {
+    return categoryId.startsWith('lighthouse-plugin-');
+  }
 }
 
 /**
@@ -490,8 +582,6 @@ Util.UIStrings = {
 
   /** Label shown preceding any important warnings that may have invalidated the entire report. For example, if the user has Chrome extensions installed, they may add enough performance overhead that Lighthouse's performance metrics are unreliable. If shown, this will be displayed at the top of the report UI. */
   toplevelWarningsMessage: 'There were issues affecting this run of Lighthouse:',
-  /** Label preceding a pictorial explanation of the scoring scale: 0-50 is red (bad), 50-90 is orange (ok), 90-100 is green (good). These colors are used throughout the report to provide context for how good/bad a particular result is. */
-  scorescaleLabel: 'Score scale:',
 
   /** String of text shown in a graphical representation of the flow of network requests for the web page. This label represents the initial network request that fetches an HTML page. This navigation may be redirected (eg. Initial navigation to http://example.com redirects to https://www.example.com). */
   crcInitialNavigation: 'Initial Navigation',
@@ -507,6 +597,9 @@ Util.UIStrings = {
   lsPerformanceCategoryDescription: '[Lighthouse](https://developers.google.com/web/tools/lighthouse/) analysis of the current page on an emulated mobile network. Values are estimated and may vary.',
   /** Title of the lab data section of the Performance category. Within this section are various speed metrics which quantify the pageload performance into values presented in seconds and milliseconds. "Lab" is an abbreviated form of "laboratory", and refers to the fact that the data is from a controlled test of a website, not measurements from real users visiting that site.  */
   labDataTitle: 'Lab Data',
+
+  /** This label is for a checkbox above a table of items loaded by a web page. The checkbox is used to show or hide third-party (or "3rd-party") resources in the table, where "third-party resources" refers to items loaded by a web page from URLs that aren't controlled by the owner of the web page. */
+  thirdPartyResourcesLabel: 'Show 3rd-party resources',
 };
 
 if (typeof module !== 'undefined' && module.exports) {
@@ -744,7 +837,7 @@ if (typeof module !== 'undefined' && module.exports) {
 ;
 /*
 Details Element Polyfill 2.2.0
-Copyright \\ua9 2018 Javan Makhmali
+Copyright © 2018 Javan Makhmali
  */
 (function() {
   "use strict";
@@ -763,7 +856,7 @@ Copyright \\ua9 2018 Javan Makhmali
     element.parentNode.removeChild(element);
     return closedHeight != openedHeight;
   }
-  var styles = '\ndetails, summary {\n  display: block;\n}\ndetails:not([open]) > *:not(summary) {\n  display: none;\n}\ndetails > summary::before {\n  content: "\\u25ba";\n  padding-right: 0.3rem;\n  font-size: 0.6rem;\n  cursor: default;\n}\ndetails[open] > summary::before {\n  content: "\\u25bc";\n}\n';
+  var styles = '\ndetails, summary {\n  display: block;\n}\ndetails:not([open]) > *:not(summary) {\n  display: none;\n}\ndetails > summary::before {\n  content: "►";\n  padding-right: 0.3rem;\n  font-size: 0.6rem;\n  cursor: default;\n}\ndetails[open] > summary::before {\n  content: "▼";\n}\n';
   var _ref = [], forEach = _ref.forEach, slice = _ref.slice;
   if (!support.open) {
     polyfillStyles();
@@ -1007,10 +1100,7 @@ class DetailsRenderer {
 
       // Internal-only details, not for rendering.
       case 'screenshot':
-      case 'diagnostic':
-        return null;
-      // Fallback for old LHRs, where no type meant don't render.
-      case undefined:
+      case 'debugdata':
         return null;
 
       default: {
@@ -1072,7 +1162,11 @@ class DetailsRenderer {
       element.appendChild(hostElem);
     }
 
-    if (title) element.title = url;
+    if (title) {
+      element.title = url;
+      // set the url on the element's dataset which we use to check 3rd party origins
+      element.dataset.url = url;
+    }
     return element;
   }
 
@@ -1279,7 +1373,7 @@ class DetailsRenderer {
 
   /**
    * @param {LH.Audit.Details.List} details
-   * @returns {Element}
+   * @return {Element}
    */
   _renderList(details) {
     const listContainer = this._dom.createElement('div', 'lh-list');
@@ -1299,8 +1393,16 @@ class DetailsRenderer {
    */
   renderNode(item) {
     const element = this._dom.createElement('span', 'lh-node');
+    if (item.nodeLabel) {
+      const nodeLabelEl = this._dom.createElement('div');
+      nodeLabelEl.textContent = item.nodeLabel;
+      element.appendChild(nodeLabelEl);
+    }
     if (item.snippet) {
-      element.textContent = item.snippet;
+      const snippetEl = this._dom.createElement('div');
+      snippetEl.classList.add('lh-node__snippet');
+      snippetEl.textContent = item.snippet;
+      element.appendChild(snippetEl);
     }
     if (item.selector) {
       element.title = item.selector;
@@ -1308,6 +1410,7 @@ class DetailsRenderer {
     if (item.path) element.setAttribute('data-path', item.path);
     if (item.selector) element.setAttribute('data-selector', item.selector);
     if (item.snippet) element.setAttribute('data-snippet', item.snippet);
+
     return element;
   }
 
@@ -1321,7 +1424,7 @@ class DetailsRenderer {
     for (const thumbnail of details.items) {
       const frameEl = this._dom.createChildOf(filmstripEl, 'div', 'lh-filmstrip__frame');
       this._dom.createChildOf(frameEl, 'img', 'lh-filmstrip__thumbnail', {
-        src: `data:image/jpeg;base64,${thumbnail.data}`,
+        src: thumbnail.data,
         alt: `Screenshot`,
       });
     }
@@ -1622,7 +1725,7 @@ function getMessagesForLineNumber(messages, lineNumber) {
 
 /**
  * @param {LH.Audit.Details.SnippetValue} details
- * @returns {LH.Audit.Details.SnippetValue['lines']}
+ * @return {LH.Audit.Details.SnippetValue['lines']}
  */
 function getLinesWhenCollapsed(details) {
   const SURROUNDING_LINES_TO_SHOW_WHEN_COLLAPSED = 2;
@@ -1714,7 +1817,7 @@ class SnippetRenderer {
       classList.add('lh-snippet__show-if-expanded');
     }
 
-    const lineContent = content + (truncated ? '\\u2026' : '');
+    const lineContent = content + (truncated ? '…' : '');
     const lineContentEl = dom.find('.lh-snippet__line code', contentLine);
     if (contentType === LineContentType.MESSAGE) {
       lineContentEl.appendChild(dom.convertMarkdownLinkSnippets(lineContent));
@@ -1752,7 +1855,7 @@ class SnippetRenderer {
    */
   static renderOmittedLinesPlaceholder(dom, tmpl, visibility) {
     return SnippetRenderer.renderSnippetLine(dom, tmpl, {
-      lineNumber: '\\u2026',
+      lineNumber: '…',
       content: '',
       visibility,
       contentType: LineContentType.PLACEHOLDER,
@@ -1783,7 +1886,7 @@ class SnippetRenderer {
    * @param {DOM} dom
    * @param {DocumentFragment} tmpl
    * @param {LH.Audit.Details.SnippetValue} details
-   * @returns {DocumentFragment}
+   * @return {DocumentFragment}
    */
   static renderSnippetLines(dom, tmpl, details) {
     const {lineMessages, generalMessages, lineCount, lines} = details;
@@ -1938,7 +2041,7 @@ if (typeof module !== 'undefined' && module.exports) {
  * @return {string}
  */
 function getFilenamePrefix(lhr) {
-  const hostname = new (getUrlConstructor())(lhr.finalUrl).hostname;
+  const hostname = new URL(lhr.finalUrl).hostname;
   const date = (lhr.fetchTime && new Date(lhr.fetchTime)) || new Date();
 
   const timeStr = date.toLocaleTimeString('en-US', {hour12: false});
@@ -1952,14 +2055,6 @@ function getFilenamePrefix(lhr) {
   const filenamePrefix = `${hostname}_${dateStr}_${timeStr}`;
   // replace characters that are unfriendly to filenames
   return filenamePrefix.replace(/[/?<>\\:*|":]/g, '-');
-}
-
-function getUrlConstructor() {
-  if (typeof module !== 'undefined' && module.exports) {
-    return require('./url-shim');
-  } else {
-    return URL;
-  }
 }
 
 // don't attempt to export in the browser.
@@ -2067,6 +2162,656 @@ if (typeof module !== 'undefined' && module.exports) {
  */
 'use strict';
 
+/* eslint-env browser */
+
+/**
+ * @fileoverview Adds export button, print, and other dynamic functionality to
+ * the report.
+ */
+
+/* globals getFilenamePrefix Util */
+
+/**
+ * @param {HTMLTableElement} tableEl
+ * @return {Array<HTMLTableRowElement>}
+ */
+function getTableRows(tableEl) {
+  return Array.from(tableEl.tBodies[0].rows);
+}
+
+class ReportUIFeatures {
+  /**
+   * @param {DOM} dom
+   */
+  constructor(dom) {
+    /** @type {LH.Result} */
+    this.json; // eslint-disable-line no-unused-expressions
+    /** @type {DOM} */
+    this._dom = dom;
+    /** @type {Document} */
+    this._document = this._dom.document();
+    /** @type {ParentNode} */
+    this._templateContext = this._dom.document();
+    /** @type {boolean} */
+    this._copyAttempt = false;
+    /** @type {HTMLElement} */
+    this.exportButton; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement} */
+    this.topbarEl; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement} */
+    this.scoreScaleEl; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement} */
+    this.stickyHeaderEl; // eslint-disable-line no-unused-expressions
+    /** @type {HTMLElement} */
+    this.highlightEl; // eslint-disable-line no-unused-expressions
+
+    this.onMediaQueryChange = this.onMediaQueryChange.bind(this);
+    this.onCopy = this.onCopy.bind(this);
+    this.onExportButtonClick = this.onExportButtonClick.bind(this);
+    this.onExport = this.onExport.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
+    this.onChevronClick = this.onChevronClick.bind(this);
+    this.collapseAllDetails = this.collapseAllDetails.bind(this);
+    this.expandAllDetails = this.expandAllDetails.bind(this);
+    this._toggleDarkTheme = this._toggleDarkTheme.bind(this);
+    this._updateStickyHeaderOnScroll = this._updateStickyHeaderOnScroll.bind(this);
+  }
+
+  /**
+   * Adds export button, print, and other functionality to the report. The method
+   * should be called whenever the report needs to be re-rendered.
+   * @param {LH.Result} report
+   */
+  initFeatures(report) {
+    this.json = report;
+
+    this._setupMediaQueryListeners();
+    this._setupExportButton();
+    this._setupThirdPartyFilter();
+    this._setUpCollapseDetailsAfterPrinting();
+    this._resetUIState();
+    this._document.addEventListener('keyup', this.onKeyUp);
+    this._document.addEventListener('copy', this.onCopy);
+
+    const topbarLogo = this._dom.find('.lh-topbar__logo', this._document);
+    topbarLogo.addEventListener('click', () => this._toggleDarkTheme());
+
+    let turnOffTheLights = false;
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      turnOffTheLights = true;
+    }
+
+    // Fireworks.
+    const scoresAll100 = Object.values(report.categories).every(cat => cat.score === 1);
+    const hasAllCoreCategories =
+      Object.keys(report.categories).filter(id => !Util.isPluginCategory(id)).length >= 5;
+    if (scoresAll100 && hasAllCoreCategories) {
+      turnOffTheLights = true;
+      this._enableFireworks();
+    }
+
+    if (turnOffTheLights) {
+      this._toggleDarkTheme(true);
+    }
+
+    // There is only a sticky header when at least 2 categories are present.
+    if (Object.keys(this.json.categories).length >= 2) {
+      this._setupStickyHeaderElements();
+      const containerEl = this._dom.find('.lh-container', this._document);
+      const elToAddScrollListener = this._getScrollParent(containerEl);
+      elToAddScrollListener.addEventListener('scroll', this._updateStickyHeaderOnScroll);
+
+      // Use ResizeObserver where available.
+      // TODO: there is an issue with incorrect position numbers and, as a result, performance
+      // issues due to layout thrashing.
+      // See https://github.com/GoogleChrome/lighthouse/pull/9023/files#r288822287 for details.
+      // For now, limit to DevTools.
+      if (this._dom.isDevTools()) {
+        const resizeObserver = new window.ResizeObserver(this._updateStickyHeaderOnScroll);
+        resizeObserver.observe(containerEl);
+      } else {
+        window.addEventListener('resize', this._updateStickyHeaderOnScroll);
+      }
+    }
+
+    // Show the metric descriptions by default when there is an error.
+    const hasMetricError = report.categories.performance && report.categories.performance.auditRefs
+      .some(audit => Boolean(audit.group === 'metrics' && report.audits[audit.id].errorMessage));
+    if (hasMetricError) {
+      const toggleInputEl = /** @type {HTMLInputElement} */ (
+        this._dom.find('.lh-metrics-toggle__input', this._document));
+      toggleInputEl.checked = true;
+    }
+  }
+
+  /**
+   * Define a custom element for <templates> to be extracted from. For example:
+   *     this.setTemplateContext(new DOMParser().parseFromString(htmlStr, 'text/html'))
+   * @param {ParentNode} context
+   */
+  setTemplateContext(context) {
+    this._templateContext = context;
+  }
+
+  /**
+   * Finds the first scrollable ancestor of `element`. Falls back to the document.
+   * @param {HTMLElement} element
+   * @return {Node}
+   */
+  _getScrollParent(element) {
+    const {overflowY} = window.getComputedStyle(element);
+    const isScrollable = overflowY !== 'visible' && overflowY !== 'hidden';
+
+    if (isScrollable) {
+      return element;
+    }
+
+    if (element.parentElement) {
+      return this._getScrollParent(element.parentElement);
+    }
+
+    return document;
+  }
+
+  _enableFireworks() {
+    const scoresContainer = this._dom.find('.lh-scores-container', this._document);
+    scoresContainer.classList.add('score100');
+    scoresContainer.addEventListener('click', _ => {
+      scoresContainer.classList.toggle('fireworks-paused');
+    });
+  }
+
+  /**
+   * Fires a custom DOM event on target.
+   * @param {string} name Name of the event.
+   * @param {Node=} target DOM node to fire the event on.
+   * @param {*=} detail Custom data to include.
+   */
+  _fireEventOn(name, target = this._document, detail) {
+    const event = new CustomEvent(name, detail ? {detail} : undefined);
+    target.dispatchEvent(event);
+  }
+
+  _setupMediaQueryListeners() {
+    const mediaQuery = self.matchMedia('(max-width: 500px)');
+    mediaQuery.addListener(this.onMediaQueryChange);
+    // Ensure the handler is called on init
+    this.onMediaQueryChange(mediaQuery);
+  }
+
+  /**
+   * Handle media query change events.
+   * @param {MediaQueryList|MediaQueryListEvent} mql
+   */
+  onMediaQueryChange(mql) {
+    const root = this._dom.find('.lh-root', this._document);
+    root.classList.toggle('lh-narrow', mql.matches);
+  }
+
+  _setupExportButton() {
+    this.exportButton = this._dom.find('.lh-export__button', this._document);
+    this.exportButton.addEventListener('click', this.onExportButtonClick);
+
+    const dropdown = this._dom.find('.lh-export__dropdown', this._document);
+    dropdown.addEventListener('click', this.onExport);
+  }
+
+  _setupThirdPartyFilter() {
+    // Some audits should not display the third party filter option.
+    const thirdPartyFilterAuditExclusions = [
+      // This audit deals explicitly with third party resources.
+      'uses-rel-preconnect',
+    ];
+
+    // Get all tables with a text url column.
+    /** @type {Array<HTMLTableElement>} */
+    const tables = Array.from(this._document.querySelectorAll('.lh-table'));
+    const tablesWithUrls = tables
+      .filter(el => el.querySelector('td.lh-table-column--url'))
+      .filter(el => {
+        const containingAudit = el.closest('.lh-audit');
+        if (!containingAudit) throw new Error('.lh-table not within audit');
+        return !thirdPartyFilterAuditExclusions.includes(containingAudit.id);
+      });
+
+    tablesWithUrls.forEach((tableEl, index) => {
+      const urlItems = this._getUrlItems(tableEl);
+      const thirdPartyRows = this._getThirdPartyRows(tableEl, urlItems, this.json.finalUrl);
+      // If all or none of the rows are 3rd party, no checkbox!
+      if (thirdPartyRows.size === urlItems.length || !thirdPartyRows.size) return;
+
+      // create input box
+      const filterTemplate = this._dom.cloneTemplate('#tmpl-lh-3p-filter', this._templateContext);
+      const filterInput = this._dom.find('input', filterTemplate);
+      const id = `lh-3p-filter-label--${index}`;
+
+      filterInput.id = id;
+      filterInput.addEventListener('change', e => {
+        // Remove rows from the dom and keep track of them to re-add on uncheck.
+        // Why removing instead of hiding? To keep nth-child(even) background-colors working.
+        if (e.target instanceof HTMLInputElement && !e.target.checked) {
+          for (const row of thirdPartyRows.values()) {
+            row.remove();
+          }
+        } else {
+          // Add row elements back to original positions.
+          for (const [position, row] of thirdPartyRows.entries()) {
+            const childrenArr = getTableRows(tableEl);
+            tableEl.tBodies[0].insertBefore(row, childrenArr[position]);
+          }
+        }
+      });
+
+      this._dom.find('label', filterTemplate).setAttribute('for', id);
+      this._dom.find('.lh-3p-filter-count', filterTemplate).textContent =
+          `${thirdPartyRows.size}`;
+      this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =
+          Util.UIStrings.thirdPartyResourcesLabel;
+
+      // Finally, add checkbox to the DOM.
+      if (!tableEl.parentNode) return; // Keep tsc happy.
+      tableEl.parentNode.insertBefore(filterTemplate, tableEl);
+    });
+  }
+
+  /**
+   * From a table with URL entries, finds the rows containing third-party URLs
+   * and returns a Map of those rows, mapping from row index to row Element.
+   * @param {HTMLTableElement} el
+   * @param {string} finalUrl
+   * @param {Array<HTMLElement>} urlItems
+   * @return {Map<number, HTMLTableRowElement>}
+   */
+  _getThirdPartyRows(el, urlItems, finalUrl) {
+    const finalUrlRootDomain = Util.getRootDomain(finalUrl);
+
+    /** @type {Map<number, HTMLTableRowElement>} */
+    const thirdPartyRows = new Map();
+    for (const urlItem of urlItems) {
+      const datasetUrl = urlItem.dataset.url;
+      if (!datasetUrl) continue;
+      const isThirdParty = Util.getRootDomain(datasetUrl) !== finalUrlRootDomain;
+      if (!isThirdParty) continue;
+
+      const urlRowEl = urlItem.closest('tr');
+      if (urlRowEl) {
+        const rowPosition = getTableRows(el).indexOf(urlRowEl);
+        thirdPartyRows.set(rowPosition, urlRowEl);
+      }
+    }
+
+    return thirdPartyRows;
+  }
+
+  /**
+   * From a table, finds and returns URL items.
+   * @param {HTMLTableElement} tableEl
+   * @return {Array<HTMLElement>}
+   */
+  _getUrlItems(tableEl) {
+    return this._dom.findAll('.lh-text__url', tableEl);
+  }
+
+  _setupStickyHeaderElements() {
+    this.topbarEl = this._dom.find('.lh-topbar', this._document);
+    this.scoreScaleEl = this._dom.find('.lh-scorescale', this._document);
+    this.stickyHeaderEl = this._dom.find('.lh-sticky-header', this._document);
+
+    // Position highlighter at first gauge; will be transformed on scroll.
+    const firstGauge = this._dom.find('.lh-gauge__wrapper', this.stickyHeaderEl);
+    this.highlightEl = this._dom.createChildOf(firstGauge, 'div', 'lh-highlighter');
+  }
+
+  /**
+   * Handle copy events.
+   * @param {ClipboardEvent} e
+   */
+  onCopy(e) {
+    // Only handle copy button presses (e.g. ignore the user copying page text).
+    if (this._copyAttempt) {
+      // We want to write our own data to the clipboard, not the user's text selection.
+      e.preventDefault();
+      e.clipboardData.setData('text/plain', JSON.stringify(this.json, null, 2));
+
+      this._fireEventOn('lh-log', this._document, {
+        cmd: 'log', msg: 'Report JSON copied to clipboard',
+      });
+    }
+
+    this._copyAttempt = false;
+  }
+
+  /**
+   * Copies the report JSON to the clipboard (if supported by the browser).
+   */
+  onCopyButtonClick() {
+    this._fireEventOn('lh-analytics', this._document, {
+      cmd: 'send',
+      fields: {hitType: 'event', eventCategory: 'report', eventAction: 'copy'},
+    });
+
+    try {
+      if (this._document.queryCommandSupported('copy')) {
+        this._copyAttempt = true;
+
+        // Note: In Safari 10.0.1, execCommand('copy') returns true if there's
+        // a valid text selection on the page. See http://caniuse.com/#feat=clipboard.
+        if (!this._document.execCommand('copy')) {
+          this._copyAttempt = false; // Prevent event handler from seeing this as a copy attempt.
+
+          this._fireEventOn('lh-log', this._document, {
+            cmd: 'warn', msg: 'Your browser does not support copy to clipboard.',
+          });
+        }
+      }
+    } catch (/** @type {Error} */ e) {
+      this._copyAttempt = false;
+      this._fireEventOn('lh-log', this._document, {cmd: 'log', msg: e.message});
+    }
+  }
+
+  onChevronClick() {
+    const toggle = this._dom.find('.lh-config__settings-toggle', this._document);
+
+    if (toggle.hasAttribute('open')) {
+      toggle.removeAttribute('open');
+    } else {
+      toggle.setAttribute('open', 'true');
+    }
+  }
+
+  closeExportDropdown() {
+    this.exportButton.classList.remove('active');
+  }
+
+  /**
+   * Click handler for export button.
+   * @param {Event} e
+   */
+  onExportButtonClick(e) {
+    e.preventDefault();
+    this.exportButton.classList.toggle('active');
+    this._document.addEventListener('keydown', this.onKeyDown);
+  }
+
+  /**
+   * Resets the state of page before capturing the page for export.
+   * When the user opens the exported HTML page, certain UI elements should
+   * be in their closed state (not opened) and the templates should be unstamped.
+   */
+  _resetUIState() {
+    this.closeExportDropdown();
+    this._dom.resetTemplates();
+  }
+
+  /**
+   * Handler for "export as" button.
+   * @param {Event} e
+   */
+  onExport(e) {
+    e.preventDefault();
+
+    const el = /** @type {?Element} */ (e.target);
+
+    if (!el || !el.hasAttribute('data-action')) {
+      return;
+    }
+
+    switch (el.getAttribute('data-action')) {
+      case 'copy':
+        this.onCopyButtonClick();
+        break;
+      case 'print-summary':
+        this.collapseAllDetails();
+        this.closeExportDropdown();
+        self.print();
+        break;
+      case 'print-expanded':
+        this.expandAllDetails();
+        this.closeExportDropdown();
+        self.print();
+        break;
+      case 'save-json': {
+        const jsonStr = JSON.stringify(this.json, null, 2);
+        this._saveFile(new Blob([jsonStr], {type: 'application/json'}));
+        break;
+      }
+      case 'save-html': {
+        const htmlStr = this.getReportHtml();
+        try {
+          this._saveFile(new Blob([htmlStr], {type: 'text/html'}));
+        } catch (/** @type {Error} */ e) {
+          this._fireEventOn('lh-log', this._document, {
+            cmd: 'error', msg: 'Could not export as HTML. ' + e.message,
+          });
+        }
+        break;
+      }
+      case 'open-viewer': {
+        const viewerPath = '/lighthouse/viewer/';
+        ReportUIFeatures.openTabAndSendJsonReport(this.json, viewerPath);
+        break;
+      }
+      case 'save-gist': {
+        this.saveAsGist();
+        break;
+      }
+      case 'toggle-dark': {
+        this._toggleDarkTheme();
+        break;
+      }
+    }
+
+    this.closeExportDropdown();
+    this._document.removeEventListener('keydown', this.onKeyDown);
+  }
+
+  /**
+   * Keydown handler for the document.
+   * @param {KeyboardEvent} e
+   */
+  onKeyDown(e) {
+    if (e.keyCode === 27) { // ESC
+      this.closeExportDropdown();
+    }
+  }
+
+  /**
+   * Keyup handler for the document.
+   * @param {KeyboardEvent} e
+   */
+  onKeyUp(e) {
+    // Ctrl+P - Expands audit details when user prints via keyboard shortcut.
+    if ((e.ctrlKey || e.metaKey) && e.keyCode === 80) {
+      this.closeExportDropdown();
+    }
+  }
+
+  /**
+   * Opens a new tab to the online viewer and sends the local page's JSON results
+   * to the online viewer using postMessage.
+   * @param {LH.Result} reportJson
+   * @param {string} viewerPath
+   * @protected
+   */
+  static openTabAndSendJsonReport(reportJson, viewerPath) {
+    const VIEWER_ORIGIN = 'https://googlechrome.github.io';
+    // Chrome doesn't allow us to immediately postMessage to a popup right
+    // after it's created. Normally, we could also listen for the popup window's
+    // load event, however it is cross-domain and won't fire. Instead, listen
+    // for a message from the target app saying "I'm open".
+    const json = reportJson;
+    window.addEventListener('message', function msgHandler(messageEvent) {
+      if (messageEvent.origin !== VIEWER_ORIGIN) {
+        return;
+      }
+      if (popup && messageEvent.data.opened) {
+        popup.postMessage({lhresults: json}, VIEWER_ORIGIN);
+        window.removeEventListener('message', msgHandler);
+      }
+    });
+
+    // The popup's window.name is keyed by version+url+fetchTime, so we reuse/select tabs correctly
+    // @ts-ignore - If this is a v2 LHR, use old `generatedTime`.
+    const fallbackFetchTime = /** @type {string} */ (json.generatedTime);
+    const fetchTime = json.fetchTime || fallbackFetchTime;
+    const windowName = `${json.lighthouseVersion}-${json.requestedUrl}-${fetchTime}`;
+    const popup = window.open(`${VIEWER_ORIGIN}${viewerPath}`, windowName);
+  }
+
+  /**
+   * Expands all audit `<details>`.
+   * Ideally, a print stylesheet could take care of this, but CSS has no way to
+   * open a `<details>` element.
+   */
+  expandAllDetails() {
+    const details = /** @type {Array<HTMLDetailsElement>} */ (this._dom.findAll(
+        '.lh-categories details', this._document));
+    details.map(detail => detail.open = true);
+  }
+
+  /**
+   * Collapses all audit `<details>`.
+   * open a `<details>` element.
+   */
+  collapseAllDetails() {
+    const details = /** @type {Array<HTMLDetailsElement>} */ (this._dom.findAll(
+        '.lh-categories details', this._document));
+    details.map(detail => detail.open = false);
+  }
+
+  /**
+   * Sets up listeners to collapse audit `<details>` when the user closes the
+   * print dialog, all `<details>` are collapsed.
+   */
+  _setUpCollapseDetailsAfterPrinting() {
+    // FF and IE implement these old events.
+    if ('onbeforeprint' in self) {
+      self.addEventListener('afterprint', this.collapseAllDetails);
+    } else {
+      const win = /** @type {Window} */ (self);
+      // Note: FF implements both window.onbeforeprint and media listeners. However,
+      // it doesn't matchMedia doesn't fire when matching 'print'.
+      win.matchMedia('print').addListener(mql => {
+        if (mql.matches) {
+          this.expandAllDetails();
+        } else {
+          this.collapseAllDetails();
+        }
+      });
+    }
+  }
+
+  /**
+   * Returns the html that recreates this report.
+   * @return {string}
+   * @protected
+   */
+  getReportHtml() {
+    this._resetUIState();
+    return this._document.documentElement.outerHTML;
+  }
+
+  /**
+   * Save json as a gist. Unimplemented in base UI features.
+   * @protected
+   */
+  saveAsGist() {
+    throw new Error('Cannot save as gist from base report');
+  }
+
+  /**
+   * Downloads a file (blob) using a[download].
+   * @param {Blob|File} blob The file to save.
+   * @private
+   */
+  _saveFile(blob) {
+    const filename = getFilenamePrefix({
+      finalUrl: this.json.finalUrl,
+      fetchTime: this.json.fetchTime,
+    });
+
+    const ext = blob.type.match('json') ? '.json' : '.html';
+    const href = URL.createObjectURL(blob);
+
+    const a = this._dom.createElement('a');
+    a.download = `${filename}${ext}`;
+    a.href = href;
+    this._document.body.appendChild(a); // Firefox requires anchor to be in the DOM.
+    a.click();
+
+    // cleanup.
+    this._document.body.removeChild(a);
+    setTimeout(_ => URL.revokeObjectURL(href), 500);
+  }
+
+  /**
+   * @private
+   * @param {boolean} [force]
+   */
+  _toggleDarkTheme(force) {
+    const el = this._dom.find('.lh-vars', this._document);
+    // This seems unnecessary, but in DevTools, passing "undefined" as the second
+    // parameter acts like passing "false".
+    // https://github.com/ChromeDevTools/devtools-frontend/blob/dd6a6d4153647c2a4203c327c595692c5e0a4256/front_end/dom_extension/DOMExtension.js#L809-L819
+    if (typeof force === 'undefined') {
+      el.classList.toggle('dark');
+    } else {
+      el.classList.toggle('dark', force);
+    }
+  }
+
+  _updateStickyHeaderOnScroll() {
+    // Show sticky header when the score scale begins to go underneath the topbar.
+    const topbarBottom = this.topbarEl.getBoundingClientRect().bottom;
+    const scoreScaleTop = this.scoreScaleEl.getBoundingClientRect().top;
+    const showStickyHeader = topbarBottom >= scoreScaleTop;
+
+    // Highlight mini gauge when section is in view.
+    // In view = the last category that starts above the middle of the window.
+    const categoryEls = Array.from(this._document.querySelectorAll('.lh-category'));
+    const categoriesAboveTheMiddle =
+      categoryEls.filter(el => el.getBoundingClientRect().top - window.innerHeight / 2 < 0);
+    const highlightIndex =
+      categoriesAboveTheMiddle.length > 0 ? categoriesAboveTheMiddle.length - 1 : 0;
+
+    // Category order matches gauge order in sticky header.
+    const gaugeWrapperEls = this.stickyHeaderEl.querySelectorAll('.lh-gauge__wrapper');
+    const gaugeToHighlight = gaugeWrapperEls[highlightIndex];
+    const origin = gaugeWrapperEls[0].getBoundingClientRect().left;
+    const offset = gaugeToHighlight.getBoundingClientRect().left - origin;
+
+    // Mutate at end to avoid layout thrashing.
+    this.highlightEl.style.transform = `translate(${offset}px)`;
+    this.stickyHeaderEl.classList.toggle('lh-sticky-header--visible', showStickyHeader);
+  }
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = ReportUIFeatures;
+} else {
+  self.ReportUIFeatures = ReportUIFeatures;
+}
+;
+/**
+ * @license
+ * Copyright 2017 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS-IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+'use strict';
+
 /* globals self, Util */
 
 /** @typedef {import('./dom.js')} DOM */
@@ -2105,22 +2850,20 @@ class CategoryRenderer {
 
   /**
    * @param {LH.ReportResult.AuditRef} audit
-   * @param {number} index
    * @return {Element}
    */
-  renderAudit(audit, index) {
+  renderAudit(audit) {
     const tmpl = this.dom.cloneTemplate('#tmpl-lh-audit', this.templateContext);
-    return this.populateAuditValues(audit, index, tmpl);
+    return this.populateAuditValues(audit, tmpl);
   }
 
   /**
    * Populate an DOM tree with audit details. Used by renderAudit and renderOpportunity
    * @param {LH.ReportResult.AuditRef} audit
-   * @param {number} index
    * @param {DocumentFragment} tmpl
    * @return {Element}
    */
-  populateAuditValues(audit, index, tmpl) {
+  populateAuditValues(audit, tmpl) {
     const auditEl = this.dom.find('.lh-audit', tmpl);
     auditEl.id = audit.result.id;
     const scoreDisplayMode = audit.result.scoreDisplayMode;
@@ -2134,6 +2877,24 @@ class CategoryRenderer {
     this.dom.find('.lh-audit__description', auditEl)
         .appendChild(this.dom.convertMarkdownLinkSnippets(audit.result.description));
 
+    if (audit.stackPacks) {
+      audit.stackPacks.forEach(pack => {
+        const packElm = this.dom.createElement('div');
+        packElm.classList.add('lh-audit__stackpack');
+
+        const packElmImg = this.dom.createElement('img');
+        packElmImg.classList.add('lh-audit__stackpack__img');
+        packElmImg.src = pack.iconDataURL;
+        packElmImg.alt = pack.title;
+        packElm.appendChild(packElmImg);
+
+        packElm.appendChild(this.dom.convertMarkdownLinkSnippets(pack.description));
+
+        this.dom.find('.lh-audit__stackpacks', auditEl)
+          .appendChild(packElm);
+      });
+    }
+
     const header = /** @type {HTMLDetailsElement} */ (this.dom.find('details', auditEl));
     if (audit.result.details) {
       const elem = this.detailsRenderer.render(audit.result.details);
@@ -2142,7 +2903,6 @@ class CategoryRenderer {
         header.appendChild(elem);
       }
     }
-    this.dom.find('.lh-audit__index', auditEl).textContent = `${index + 1}`;
 
     // Add chevron SVG to the end of the summary
     this.dom.find('.lh-chevron-container', auditEl).appendChild(this._createChevron());
@@ -2164,10 +2924,10 @@ class CategoryRenderer {
 
     // Add list of warnings or singular warning
     const warningsEl = this.dom.createChildOf(titleEl, 'div', 'lh-warnings');
+    this.dom.createChildOf(warningsEl, 'span').textContent = Util.UIStrings.warningHeader;
     if (warnings.length === 1) {
-      warningsEl.textContent = `${Util.UIStrings.warningHeader} ${warnings.join('')}`;
+      warningsEl.appendChild(this.dom.document().createTextNode(warnings.join('')));
     } else {
-      warningsEl.textContent = Util.UIStrings.warningHeader;
       const warningsUl = this.dom.createChildOf(warningsEl, 'ul');
       for (const warning of warnings) {
         const item = this.dom.createChildOf(warningsUl, 'li');
@@ -2194,7 +2954,10 @@ class CategoryRenderer {
    */
   _setRatingClass(element, score, scoreDisplayMode) {
     const rating = Util.calculateRating(score, scoreDisplayMode);
-    element.classList.add(`lh-audit--${rating}`, `lh-audit--${scoreDisplayMode.toLowerCase()}`);
+    element.classList.add(`lh-audit--${scoreDisplayMode.toLowerCase()}`);
+    if (scoreDisplayMode !== 'informative') {
+      element.classList.add(`lh-audit--${rating}`);
+    }
     return element;
   }
 
@@ -2210,8 +2973,6 @@ class CategoryRenderer {
     const gaugeEl = this.renderScoreGauge(category, groupDefinitions);
     gaugeContainerEl.appendChild(gaugeEl);
 
-    this.dom.find('.lh-category-header__title', tmpl).appendChild(
-      this.dom.convertMarkdownCodeSnippets(category.title));
     if (category.description) {
       const descEl = this.dom.convertMarkdownLinkSnippets(category.description);
       this.dom.find('.lh-category-header__description', tmpl).appendChild(descEl);
@@ -2228,16 +2989,17 @@ class CategoryRenderer {
    */
   renderAuditGroup(group) {
     const groupEl = this.dom.createElement('div', 'lh-audit-group');
-    const summaryEl = this.dom.createChildOf(groupEl, 'div');
-    const summaryInnerEl = this.dom.createChildOf(summaryEl, 'div', 'lh-audit-group__summary');
-    const headerEl = this.dom.createChildOf(summaryInnerEl, 'div', 'lh-audit-group__header');
 
+    const auditGroupHeader = this.dom.createElement('div', 'lh-audit-group__header');
+
+    this.dom.createChildOf(auditGroupHeader, 'span', 'lh-audit-group__title')
+      .textContent = group.title;
     if (group.description) {
-      const auditGroupDescription = this.dom.createElement('div', 'lh-audit-group__description');
-      auditGroupDescription.appendChild(this.dom.convertMarkdownLinkSnippets(group.description));
-      groupEl.appendChild(auditGroupDescription);
+      const descriptionEl = this.dom.convertMarkdownLinkSnippets(group.description);
+      descriptionEl.classList.add('lh-audit-group__description');
+      auditGroupHeader.appendChild(descriptionEl);
     }
-    headerEl.textContent = group.title;
+    groupEl.appendChild(auditGroupHeader);
 
     return groupEl;
   }
@@ -2267,14 +3029,12 @@ class CategoryRenderer {
 
     /** @type {Array<Element>} */
     const auditElements = [];
-    // Continuous numbering across all groups.
-    let index = 0;
 
     for (const [groupId, groupAuditRefs] of grouped) {
       if (groupId === notAGroup) {
         // Push not-grouped audits individually.
         for (const auditRef of groupAuditRefs) {
-          auditElements.push(this.renderAudit(auditRef, index++));
+          auditElements.push(this.renderAudit(auditRef));
         }
         continue;
       }
@@ -2283,7 +3043,7 @@ class CategoryRenderer {
       const groupDef = groupDefinitions[groupId];
       const auditGroupElem = this.renderAuditGroup(groupDef);
       for (const auditRef of groupAuditRefs) {
-        auditGroupElem.appendChild(this.renderAudit(auditRef, index++));
+        auditGroupElem.appendChild(this.renderAudit(auditRef));
       }
       auditGroupElem.classList.add(`lh-audit-group--${groupId}`);
       auditElements.push(auditGroupElem);
@@ -2327,17 +3087,15 @@ class CategoryRenderer {
 
     const headerEl = this.dom.find('.lh-audit-group__header', clumpElement);
     const title = this._clumpTitles[clumpId];
-    headerEl.textContent = title;
+    this.dom.find('.lh-audit-group__title', headerEl).textContent = title;
     if (description) {
-      const markdownDescriptionEl = this.dom.convertMarkdownLinkSnippets(description);
-      const auditGroupDescription = this.dom.createElement('div', 'lh-audit-group__description');
-      auditGroupDescription.appendChild(markdownDescriptionEl);
-      clumpElement.appendChild(auditGroupDescription);
+      const descriptionEl = this.dom.convertMarkdownLinkSnippets(description);
+      descriptionEl.classList.add('lh-audit-group__description');
+      headerEl.appendChild(descriptionEl);
     }
 
     const itemCountEl = this.dom.find('.lh-audit-group__itemcount', clumpElement);
-    // TODO(i18n): support multiple locales here
-    itemCountEl.textContent = `${auditRefs.length} audits`;
+    itemCountEl.textContent = `(${auditRefs.length})`;
 
     // Add all audit results to the clump.
     const auditElements = auditRefs.map(this.renderAudit.bind(this));
@@ -2366,16 +3124,20 @@ class CategoryRenderer {
     wrapper.href = `#${category.id}`;
     wrapper.classList.add(`lh-gauge__wrapper--${Util.calculateRating(category.score)}`);
 
+    if (Util.isPluginCategory(category.id)) {
+      wrapper.classList.add('lh-gauge__wrapper--plugin');
+    }
+
     // Cast `null` to 0
     const numericScore = Number(category.score);
     const gauge = this.dom.find('.lh-gauge', tmpl);
-    // 329 is ~= 2 * Math.PI * gauge radius (53)
+    // 352 is ~= 2 * Math.PI * gauge radius (56)
     // https://codepen.io/xgad/post/svg-radial-progress-meters
-    // score of 50: `stroke-dasharray: 164.5 329`;
+    // score of 50: `stroke-dasharray: 176 352`;
     /** @type {?SVGCircleElement} */
     const gaugeArc = gauge.querySelector('.lh-gauge-arc');
     if (gaugeArc) {
-      gaugeArc.style.strokeDasharray = `${numericScore * 329} 329`;
+      gaugeArc.style.strokeDasharray = `${numericScore * 352} 352`;
     }
 
     const scoreOutOf100 = Math.round(numericScore * 100);
@@ -2425,19 +3187,19 @@ class CategoryRenderer {
    * manual, passed, or notApplicable. The result ends up something like:
    *
    * failed clump
-   *   \\u251c\\u2500\\u2500 audit 1 (w/o group)
-   *   \\u251c\\u2500\\u2500 audit 2 (w/o group)
-   *   \\u251c\\u2500\\u2500 audit group
-   *   |  \\u251c\\u2500\\u2500 audit 3
-   *   |  \\u2514\\u2500\\u2500 audit 4
-   *   \\u2514\\u2500\\u2500 audit group
-   *      \\u251c\\u2500\\u2500 audit 5
-   *      \\u2514\\u2500\\u2500 audit 6
+   *   ├── audit 1 (w/o group)
+   *   ├── audit 2 (w/o group)
+   *   ├── audit group
+   *   |  ├── audit 3
+   *   |  └── audit 4
+   *   └── audit group
+   *      ├── audit 5
+   *      └── audit 6
    * other clump (e.g. 'manual')
-   *   \\u251c\\u2500\\u2500 audit 1
-   *   \\u251c\\u2500\\u2500 audit 2
-   *   \\u251c\\u2500\\u2500 \\u2026
-   *   \\u22ee
+   *   ├── audit 1
+   *   ├── audit 2
+   *   ├── …
+   *   ⋮
    * @param {LH.ReportResult.Category} category
    * @param {Object<string, LH.Result.ReportGroup>} [groupDefinitions]
    * @return {Element}
@@ -2555,13 +3317,12 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
   /**
    * @param {LH.ReportResult.AuditRef} audit
-   * @param {number} index
    * @param {number} scale
    * @return {Element}
    */
-  _renderOpportunity(audit, index, scale) {
+  _renderOpportunity(audit, scale) {
     const oppTmpl = this.dom.cloneTemplate('#tmpl-lh-opportunity', this.templateContext);
-    const element = this.populateAuditValues(audit, index, oppTmpl);
+    const element = this.populateAuditValues(audit, oppTmpl);
     element.id = audit.result.id;
 
     if (!audit.result.details || audit.result.scoreDisplayMode === 'error') {
@@ -2625,9 +3386,14 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       element.appendChild(this.renderCategoryHeader(category, groups));
     }
 
-    // Metrics
+    // Metrics.
     const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
     const metricAuditsEl = this.renderAuditGroup(groups.metrics);
+
+    // Metric descriptions toggle.
+    const toggleTmpl = this.dom.cloneTemplate('#tmpl-lh-metrics-toggle', this.templateContext);
+    const toggleEl = this.dom.find('.lh-metrics-toggle', toggleTmpl);
+    metricAuditsEl.prepend(...toggleEl.childNodes);
 
     const keyMetrics = metricAudits.filter(a => a.weight >= 3);
     const otherMetrics = metricAudits.filter(a => a.weight < 3);
@@ -2645,8 +3411,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
     // 'Values are estimated and may vary' is used as the category description for PSI
     if (environment !== 'PSI') {
-      const estValuesEl = this.dom.createChildOf(metricsColumn2El, 'div',
-          'lh-metrics__disclaimer lh-metrics__disclaimer');
+      const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
       estValuesEl.textContent = Util.UIStrings.varianceDisclaimer;
     }
 
@@ -2661,6 +3426,20 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
       timelineEl.id = thumbnailResult.id;
       const filmstripEl = this.detailsRenderer.render(thumbnailResult.details);
       filmstripEl && timelineEl.appendChild(filmstripEl);
+    }
+
+    // Budgets
+    const budgetAudit = category.auditRefs.find(audit => audit.id === 'performance-budget');
+    if (budgetAudit && budgetAudit.result.details) {
+      const table = this.detailsRenderer.render(budgetAudit.result.details);
+      if (table) {
+        table.id = budgetAudit.id;
+        table.classList.add('lh-audit');
+        const budgetsGroupEl = this.renderAuditGroup(groups.budgets);
+        budgetsGroupEl.appendChild(table);
+        budgetsGroupEl.classList.add('lh-audit-group--budgets');
+        element.appendChild(budgetsGroupEl);
+      }
     }
 
     // Opportunities
@@ -2684,8 +3463,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
       const headerEl = this.dom.find('.lh-load-opportunity__header', tmpl);
       groupEl.appendChild(headerEl);
-      opportunityAudits.forEach((item, i) =>
-          groupEl.appendChild(this._renderOpportunity(item, i, scale)));
+      opportunityAudits.forEach(item => groupEl.appendChild(this._renderOpportunity(item, scale)));
       groupEl.classList.add('lh-audit-group--load-opportunities');
       element.appendChild(groupEl);
     }
@@ -2701,7 +3479,7 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
 
     if (diagnosticAudits.length) {
       const groupEl = this.renderAuditGroup(groups['diagnostics']);
-      diagnosticAudits.forEach((item, i) => groupEl.appendChild(this.renderAudit(item, i)));
+      diagnosticAudits.forEach(item => groupEl.appendChild(this.renderAudit(item)));
       groupEl.classList.add('lh-audit-group--diagnostics');
       element.appendChild(groupEl);
     }
@@ -2961,35 +3739,23 @@ class ReportRenderer {
    * @param {LH.ReportResult} report
    * @return {DocumentFragment}
    */
-  _renderReportHeader(report) {
-    const el = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);
-    const domFragment = this._dom.cloneTemplate('#tmpl-lh-scores-wrapper', this._templateContext);
-    const placeholder = this._dom.find('.lh-scores-wrapper-placeholder', el);
-    /** @type {HTMLDivElement} */ (placeholder.parentNode).replaceChild(domFragment, placeholder);
-
-    this._dom.find('.lh-config__timestamp', el).textContent =
-        Util.formatDateTime(report.fetchTime);
-    this._dom.find('.lh-product-info__version', el).textContent = report.lighthouseVersion;
-    const metadataUrl = /** @type {HTMLAnchorElement} */ (this._dom.find('.lh-metadata__url', el));
-    const toolbarUrl = /** @type {HTMLAnchorElement}*/ (this._dom.find('.lh-toolbar__url', el));
+  _renderReportTopbar(report) {
+    const el = this._dom.cloneTemplate('#tmpl-lh-topbar', this._templateContext);
+    const metadataUrl = /** @type {HTMLAnchorElement} */ (this._dom.find('.lh-topbar__url', el));
     metadataUrl.href = metadataUrl.textContent = report.finalUrl;
-    toolbarUrl.href = toolbarUrl.textContent = report.finalUrl;
-
-    const emulationDescriptions = Util.getEmulationDescriptions(report.configSettings || {});
-    this._dom.find('.lh-config__emulation', el).textContent = emulationDescriptions.summary;
     return el;
   }
 
   /**
-   * @return {Element}
+   * @return {DocumentFragment}
    */
-  _renderReportShortHeader() {
-    const shortHeaderContainer = this._dom.createElement('div', 'lh-header-container');
-    const wrapper = this._dom.cloneTemplate('#tmpl-lh-scores-wrapper', this._templateContext);
-    shortHeaderContainer.appendChild(wrapper);
-    return shortHeaderContainer;
+  _renderReportHeader() {
+    const el = this._dom.cloneTemplate('#tmpl-lh-heading', this._templateContext);
+    const domFragment = this._dom.cloneTemplate('#tmpl-lh-scores-wrapper', this._templateContext);
+    const placeholder = this._dom.find('.lh-scores-wrapper-placeholder', el);
+    /** @type {HTMLDivElement} */ (placeholder.parentNode).replaceChild(domFragment, placeholder);
+    return el;
   }
-
 
   /**
    * @param {LH.ReportResult} report
@@ -3014,7 +3780,7 @@ class ReportRenderer {
       if (!runtime.description) return;
 
       const item = this._dom.cloneTemplate('#tmpl-lh-env__items', env);
-      this._dom.find('.lh-env__name', item).textContent = `${runtime.name}:`;
+      this._dom.find('.lh-env__name', item).textContent = runtime.name;
       this._dom.find('.lh-env__description', item).textContent = runtime.description;
       env.appendChild(item);
     });
@@ -3048,33 +3814,42 @@ class ReportRenderer {
 
   /**
    * @param {LH.ReportResult} report
+   * @param {CategoryRenderer} categoryRenderer
+   * @param {Record<string, CategoryRenderer>} specificCategoryRenderers
+   * @return {DocumentFragment[]}
+   */
+  _renderScoreGauges(report, categoryRenderer, specificCategoryRenderers) {
+    // Group gauges in this order: default, pwa, plugins.
+    const defaultGauges = [];
+    const customGauges = []; // PWA.
+    const pluginGauges = [];
+
+    for (const category of Object.values(report.categories)) {
+      const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
+      const categoryGauge = renderer.renderScoreGauge(category, report.categoryGroups || {});
+
+      if (Util.isPluginCategory(category.id)) {
+        pluginGauges.push(categoryGauge);
+      } else if (renderer.renderScoreGauge === categoryRenderer.renderScoreGauge) {
+        // The renderer for default categories is just the default CategoryRenderer.
+        // If the functions are equal, then renderer is an instance of CategoryRenderer.
+        // For example, the PWA category uses PwaCategoryRenderer, which overrides
+        // CategoryRenderer.renderScoreGauge, so it would fail this check and be placed
+        // in the customGauges bucket.
+        defaultGauges.push(categoryGauge);
+      } else {
+        customGauges.push(categoryGauge);
+      }
+    }
+
+    return [...defaultGauges, ...customGauges, ...pluginGauges];
+  }
+
+  /**
+   * @param {LH.ReportResult} report
    * @return {DocumentFragment}
    */
   _renderReport(report) {
-    let header;
-    const headerContainer = this._dom.createElement('div');
-    if (this._dom.isDevTools()) {
-      headerContainer.classList.add('lh-header-plain');
-      header = this._renderReportShortHeader();
-    } else {
-      headerContainer.classList.add('lh-header-sticky');
-      header = this._renderReportHeader(report);
-    }
-    headerContainer.appendChild(header);
-
-    const container = this._dom.createElement('div', 'lh-container');
-    const reportSection = container.appendChild(this._dom.createElement('div', 'lh-report'));
-
-    reportSection.appendChild(this._renderReportWarnings(report));
-
-    let scoreHeader;
-    const isSoloCategory = report.reportCategories.length === 1;
-    if (!isSoloCategory) {
-      scoreHeader = this._dom.createElement('div', 'lh-scores-header');
-    } else {
-      headerContainer.classList.add('lh-header--solo-category');
-    }
-
     const detailsRenderer = new DetailsRenderer(this._dom);
     const categoryRenderer = new CategoryRenderer(this._dom, detailsRenderer);
     categoryRenderer.setTemplateContext(this._templateContext);
@@ -3088,51 +3863,52 @@ class ReportRenderer {
       renderer.setTemplateContext(this._templateContext);
     });
 
-    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
+    const headerContainer = this._dom.createElement('div');
+    headerContainer.appendChild(this._renderReportHeader());
 
-    for (const category of report.reportCategories) {
-      const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
-      categories.appendChild(renderer.render(category, report.categoryGroups));
-    }
+    const container = this._dom.createElement('div', 'lh-container');
+    const reportSection = this._dom.createElement('div', 'lh-report');
+    reportSection.appendChild(this._renderReportWarnings(report));
 
-    // Fireworks
-    const scoresAll100 = report.reportCategories.every(cat => cat.score === 1);
-    if (!this._dom.isDevTools() && scoresAll100) {
-      headerContainer.classList.add('score100');
-      this._dom.find('.lh-header', headerContainer).addEventListener('click', _ => {
-        headerContainer.classList.toggle('fireworks-paused');
-      });
+    let scoreHeader;
+    const isSoloCategory = Object.keys(report.categories).length === 1;
+    if (!isSoloCategory) {
+      scoreHeader = this._dom.createElement('div', 'lh-scores-header');
+    } else {
+      headerContainer.classList.add('lh-header--solo-category');
     }
 
     if (scoreHeader) {
-      const defaultGauges = [];
-      const customGauges = [];
-      for (const category of report.reportCategories) {
-        const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
-        const categoryGauge = renderer.renderScoreGauge(category, report.categoryGroups || {});
-
-        // Group gauges that aren't default at the end of the header
-        if (renderer.renderScoreGauge === categoryRenderer.renderScoreGauge) {
-          defaultGauges.push(categoryGauge);
-        } else {
-          customGauges.push(categoryGauge);
-        }
-      }
-      scoreHeader.append(...defaultGauges, ...customGauges);
-
       const scoreScale = this._dom.cloneTemplate('#tmpl-lh-scorescale', this._templateContext);
-      this._dom.find('.lh-scorescale-label', scoreScale).textContent =
-        Util.UIStrings.scorescaleLabel;
       const scoresContainer = this._dom.find('.lh-scores-container', headerContainer);
+      scoreHeader.append(
+        ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
       scoresContainer.appendChild(scoreHeader);
       scoresContainer.appendChild(scoreScale);
+
+      const stickyHeader = this._dom.createElement('div', 'lh-sticky-header');
+      stickyHeader.append(
+        ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
+      container.appendChild(stickyHeader);
     }
 
-    reportSection.appendChild(this._renderReportFooter(report));
+    const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
+    for (const category of Object.values(report.categories)) {
+      const renderer = specificCategoryRenderers[category.id] || categoryRenderer;
+      // .lh-category-wrapper is full-width and provides horizontal rules between categories.
+      // .lh-category within has the max-width: var(--report-width);
+      const wrapper = renderer.dom.createChildOf(categories, 'div', 'lh-category-wrapper');
+      wrapper.appendChild(renderer.render(category, report.categoryGroups));
+    }
 
     const reportFragment = this._dom.createFragment();
-    reportFragment.appendChild(headerContainer);
+    const topbarDocumentFragment = this._renderReportTopbar(report);
+
+    reportFragment.appendChild(topbarDocumentFragment);
     reportFragment.appendChild(container);
+    container.appendChild(headerContainer);
+    container.appendChild(reportSection);
+    reportSection.appendChild(this._renderReportFooter(report));
 
     return reportFragment;
   }

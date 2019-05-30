@@ -906,6 +906,24 @@ ReportRenderer.prototype = {
 };
 
 /**
+ * @constructor
+ * @param {!DOM} dom
+ */
+const ReportUIFeatures = function(dom) {};
+
+ReportUIFeatures.prototype = {
+  /**
+   * @param {!Document|!Element} context
+   */
+  setTemplateContext: function(context) {},
+
+  /**
+   * @param {!ReportRenderer.ReportJSON} report
+   */
+  initFeatures: function(report) {},
+};
+
+/**
  * @typedef {{
  *     rawValue: (number|boolean|undefined),
  *     id: string,

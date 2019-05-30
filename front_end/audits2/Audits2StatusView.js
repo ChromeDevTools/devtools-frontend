@@ -273,14 +273,14 @@ Audits2.StatusView.StatusPhases = [
     id: 'gathering',
     progressBarClass: 'gathering',
     message: 'Lighthouse is gathering information about the page to compute your score.',
-    statusMessagePrefix: 'Retrieving',
+    statusMessagePrefix: 'Gathering',
     order: 20,
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
     message: 'Almost there! Lighthouse is now generating your report.',
-    statusMessagePrefix: 'Evaluating',
+    statusMessagePrefix: 'Auditing',
     order: 30,
   }
 ];

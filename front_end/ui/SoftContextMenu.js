@@ -138,10 +138,13 @@ UI.SoftContextMenu = class {
     menuItemElement._actionId = item.id;
 
     let accessibleName = item.label;
-    if (item.checked)
-      accessibleName += ', checked';
-    if (item.shortcut)
-      accessibleName += ', ' + item.shortcut;
+    if (item.checked && item.shortcut)
+      accessibleName = ls`${item.label}, checked, ${item.shortcut}`;
+    else if (item.shortcut)
+      accessibleName = ls`${item.label}, ${item.shortcut}`;
+    else if (item.checked)
+      accessibleName = ls`${item.label}, checked`;
+
     UI.ARIAUtils.setAccessibleName(menuItemElement, accessibleName);
 
     return menuItemElement;

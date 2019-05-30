@@ -203,7 +203,6 @@ Emulation.SensorsView = class extends UI.VBox {
     this._deviceOrientationFieldset = this._createDeviceOrientationOverrideElement(this._deviceOrientation);
 
     this._stageElement = orientationContent.createChild('div', 'orientation-stage');
-    this._stageElement.title = Common.UIString('Shift+drag horizontally to rotate around the y-axis');
     this._orientationLayer = this._stageElement.createChild('div', 'orientation-layer');
     this._boxElement = this._orientationLayer.createChild('section', 'orientation-box orientation-element');
 
@@ -230,9 +229,11 @@ Emulation.SensorsView = class extends UI.VBox {
     if (disable) {
       this._deviceOrientationFieldset.disabled = true;
       this._stageElement.classList.add('disabled');
+      this._stageElement.title = ls`Enable orientation to rotate`;
     } else {
       this._deviceOrientationFieldset.disabled = false;
       this._stageElement.classList.remove('disabled');
+      this._stageElement.title = ls`Shift+drag horizontally to rotate around the y-axis`;
     }
   }
 

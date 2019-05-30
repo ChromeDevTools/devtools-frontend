@@ -15,9 +15,6 @@
   <message name="IDS_DEVTOOLS_1023bf87beb1d2947824df00fa0898ad" desc="">
     Disable async stack traces
   </message>
-  <message name="IDS_DEVTOOLS_150fa516787b5e5d1d2723c84574dbee" desc="">
-    HTTP-Based Public Key Pinning is deprecated. Chrome 69 and later will ignore HPKP response headers. (Host: <ph name="PARSED_HOST">$1s</ph>)
-  </message>
   <message name="IDS_DEVTOOLS_185bf49541541933dc3fd1fb89d3fea3" desc="">
     Enable custom formatters
   </message>

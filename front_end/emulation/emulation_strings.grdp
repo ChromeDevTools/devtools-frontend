@@ -180,6 +180,9 @@
   <message name="IDS_DEVTOOLS_a68cfcae283e3b2a60c99386c809fd6e" desc="">
     Shift+drag horizontally to rotate around the y-axis
   </message>
+  <message name="IDS_DEVTOOLS_a7e2da1e5160847a88912b69027bca09" desc="">
+    Enable orientation to rotate
+  </message>
   <message name="IDS_DEVTOOLS_a88789aba0125292a7a2b8774a979b37" desc="">
     Geolocations
   </message>

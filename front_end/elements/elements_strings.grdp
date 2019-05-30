@@ -67,7 +67,7 @@
     Delete element
   </message>
   <message name="IDS_DEVTOOLS_3427db2c4cb9d8d61c1dd32d218d5699" desc="">
-    Use $0 in the console to refer to this element.
+    Use <ph name="ELEMENTS_HINT">$1s</ph> in the console to refer to this element.
   </message>
   <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="">
     user agent stylesheet

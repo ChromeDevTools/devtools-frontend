@@ -109,7 +109,9 @@ Resources.AppManifestView = class extends UI.VBox {
     this._emptyView.hideWidget();
     this._reportView.showWidget();
 
-    this._reportView.setURL(Components.Linkifier.linkifyURL(url));
+    const link = Components.Linkifier.linkifyURL(url);
+    link.tabIndex = 0;
+    this._reportView.setURL(link);
     this._errorsSection.clearContent();
     this._errorsSection.element.classList.toggle('hidden', !errors.length);
     for (const error of errors) {
@@ -131,7 +133,9 @@ Resources.AppManifestView = class extends UI.VBox {
     const startURL = stringProperty('start_url');
     if (startURL) {
       const completeURL = /** @type {string} */ (Common.ParsedURL.completeURL(url, startURL));
-      this._startURLField.appendChild(Components.Linkifier.linkifyURL(completeURL, {text: startURL}));
+      const link = Components.Linkifier.linkifyURL(completeURL, {text: startURL});
+      link.tabIndex = 0;
+      this._startURLField.appendChild(link);
     }
 
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
@@ -187,6 +191,7 @@ Resources.AppManifestView = class extends UI.VBox {
       image.onerror = r;
     });
     image.src = url;
+    image.alt = ls`Image from ${url}`;
     try {
       await result;
       return image;

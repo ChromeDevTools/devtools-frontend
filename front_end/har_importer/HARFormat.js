@@ -169,12 +169,38 @@ HARImporter.HAREntry = class extends HARImporter.HARBase {
 
     // Chrome specific.
     this._fromCache = HARImporter.HARBase._optionalString(data['_fromCache']);
-    if (data['_initiator'])
-      this._initiator = new HARImporter.HARInitiator(data['_initiator']);
+    this._initiator = this._importInitiator(data['_initiator']);
     this._priority = HARImporter.HARBase._optionalString(data['_priority']);
     this._resourceType = HARImporter.HARBase._optionalString(data['_resourceType']);
-    if (Array.isArray(data['_webSocketMessages']))
-      this._webSocketMessages = data['_webSocketMessages'].map(message => new HARImporter.HARWebSocketMessage(message));
+    this._webSocketMessages = this._importWebSocketMessages(data['_webSocketMessages']);
+  }
+
+  /**
+   * @param {*} initiator
+   * @return {!HARImporter.HARInitiator|undefined}
+   */
+  _importInitiator(initiator) {
+    if (typeof initiator !== 'object')
+      return;
+
+    return new HARImporter.HARInitiator(initiator);
+  }
+
+  /**
+   * @param {*} inputMessages
+   * @return {!Array<!HARImporter.HARInitiator>|undefined}
+   */
+  _importWebSocketMessages(inputMessages) {
+    if (!Array.isArray(inputMessages))
+      return;
+
+    const outputMessages = [];
+    for (const message of inputMessages) {
+      if (typeof message !== 'object')
+        return;
+      outputMessages.push(new HARImporter.HARWebSocketMessage(message));
+    }
+    return outputMessages;
   }
 };
 

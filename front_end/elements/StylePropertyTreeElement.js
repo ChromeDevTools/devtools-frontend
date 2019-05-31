@@ -32,6 +32,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this.nameElement = null;
     this._expandElement = null;
     this._originalPropertyText = '';
+    this._hasBeenEditedIncrementally = false;
     this._prompt = null;
     this._lastComputedValue = null;
     /** @type {(!Elements.StylePropertyTreeElement.Context|undefined)} */
@@ -738,7 +739,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (context.isEditingName) {
       if (valueText.includes(':'))
         await this.applyStyleText(valueText, false);
-      else if (this._hasBeenEditedIncrementally())
+      else if (this._hasBeenEditedIncrementally)
         await this._applyOriginalStyle(context);
     } else {
       await this.applyStyleText(`${this.nameElement.textContent}: ${valueText}`, false);
@@ -769,20 +770,13 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @return {boolean}
-   */
-  _hasBeenEditedIncrementally() {
-    return this.property.propertyText !== this._originalPropertyText;
-  }
-
-  /**
    * @param {?Element} element
    * @param {!Elements.StylePropertyTreeElement.Context} context
    */
   editingCancelled(element, context) {
     this._removePrompt();
 
-    if (this._hasBeenEditedIncrementally())
+    if (this._hasBeenEditedIncrementally)
       this._applyOriginalStyle(context);
     else if (this._newProperty)
       this.treeOutline.removeChild(this);
@@ -981,7 +975,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     if (!oldStyleRange)
       return;
 
-    const hasBeenEditedIncrementally = this._hasBeenEditedIncrementally();
+    const hasBeenEditedIncrementally = this._hasBeenEditedIncrementally;
     styleText = styleText.replace(/\s/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this._newProperty && !hasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
@@ -1018,6 +1012,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
 
     this._matchedStyles.resetActiveProperties();
+    this._hasBeenEditedIncrementally = true;
     this.property = property || this._style.propertyAt(this.property.index);
 
     if (currentNode === this.node())

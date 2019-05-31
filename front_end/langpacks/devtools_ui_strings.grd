@@ -13,7 +13,7 @@
     <messages fallback_to_english="true">
       <part file="../accessibility/accessibility_strings.grdp" />
       <part file="../animation/animation_strings.grdp" />
-      <part file="../audits2/audits2_strings.grdp" />
+      <part file="../audits/audits_strings.grdp" />
       <part file="../bindings/bindings_strings.grdp" />
       <part file="../browser_debugger/browser_debugger_strings.grdp" />
       <part file="../browser_sdk/browser_sdk_strings.grdp" />

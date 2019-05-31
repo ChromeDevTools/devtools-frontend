@@ -71,7 +71,8 @@
   cursor: pointer;
 }
 
-.console-delete-pin:hover {
+.console-delete-pin:hover,
+.console-delete-pin[data-keyboard-focus="true"]:focus {
   opacity: 1;
 }
 

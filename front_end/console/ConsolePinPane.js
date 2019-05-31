@@ -102,6 +102,13 @@ Console.ConsolePin = class extends Common.Object {
     super();
     const deletePinIcon = UI.Icon.create('smallicon-cross', 'console-delete-pin');
     deletePinIcon.addEventListener('click', () => pinPane._removePin(this));
+    deletePinIcon.addEventListener('keydown', event => {
+      if (isEnterKey(event) || event.key === ' ')
+        pinPane._removePin(this);
+    });
+    deletePinIcon.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(deletePinIcon, ls`Remove expression`);
+    UI.ARIAUtils.markAsButton(deletePinIcon);
 
     const fragment = UI.Fragment.build`
     <div class='console-pin'>

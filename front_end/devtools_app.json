@@ -6,7 +6,7 @@
 
     { "name": "accessibility", "type": "remote" },
     { "name": "animation" },
-    { "name": "audits2" },
+    { "name": "audits" },
     { "name": "browser_debugger" },
     { "name": "cookie_table" },
     { "name": "devices" },

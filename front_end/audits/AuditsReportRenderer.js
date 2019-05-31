@@ -5,7 +5,7 @@
 /**
  * @override
  */
-Audits2.ReportRenderer = class extends ReportRenderer {
+Audits.ReportRenderer = class extends ReportRenderer {
   /**
    * @param {!Element} el Parent element to render the report into.
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
@@ -20,7 +20,7 @@ Audits2.ReportRenderer = class extends ReportRenderer {
     return el;
 
     async function onViewTraceClick() {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2ViewTrace);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsViewTrace);
       await UI.inspectorView.showPanel('timeline');
       Timeline.TimelinePanel.instance().loadFromEvents(defaultPassTrace.traceEvents);
     }

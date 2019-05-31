@@ -107,7 +107,8 @@ Host.UserMetrics.Action = {
   TimelineStarted: 4,
   ProfilesCPUProfileTaken: 5,
   ProfilesHeapProfileTaken: 6,
-  AuditsStarted: 7,
+  // Keep key around because length of object is important. See Host.UserMetrics.actionTaken.
+  'LegacyAuditsStarted-deprecated': 7,
   ConsoleEvaluated: 8,
   FileSavedInWorkspace: 9,
   DeviceModeEnabled: 10,
@@ -129,10 +130,10 @@ Host.UserMetrics.Action = {
   ChangeInspectedNodeInElementsPanel: 26,
   StyleRuleCopied: 27,
   CoverageStarted: 28,
-  Audits2Started: 29,
-  Audits2Finished: 30,
+  AuditsStarted: 29,
+  AuditsFinished: 30,
   ShowedThirdPartyBadges: 31,
-  Audits2ViewTrace: 32,
+  AuditsViewTrace: 32,
   FilmStripStartedRecording: 33,
 };
 
@@ -143,7 +144,8 @@ Host.UserMetrics._PanelCodes = {
   sources: 4,
   timeline: 5,
   heap_profiler: 6,
-  audits: 7,
+  // Keep key around because length of object is important. See Host.UserMetrics.panelShown.
+  'legacy-audits-deprecated': 7,
   console: 8,
   layers: 9,
   'drawer-console-view': 10,
@@ -154,7 +156,7 @@ Host.UserMetrics._PanelCodes = {
   'drawer-sources.search': 15,
   security: 16,
   js_profiler: 17,
-  audits2: 18,
+  audits: 18,
 };
 
 /** @type {!Host.UserMetrics} */

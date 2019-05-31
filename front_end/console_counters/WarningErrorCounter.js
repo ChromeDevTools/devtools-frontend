@@ -20,7 +20,7 @@ ConsoleCounters.WarningErrorCounter = class {
 
     this._violationCounter = createElement('div');
     this._violationCounter.addEventListener('click', () => {
-      UI.viewManager.showView('audits2');
+      UI.viewManager.showView('audits');
     });
     const violationShadowRoot =
         UI.createShadowRootWithCoreStyles(this._violationCounter, 'console_counters/errorWarningCounter.css');

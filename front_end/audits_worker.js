@@ -4,4 +4,4 @@
 // Release build has Runtime.js bundled.
 if (!self.Runtime)
   self.importScripts('Runtime.js');
-Runtime.startWorker('audits2_worker');
+Runtime.startWorker('audits_worker');

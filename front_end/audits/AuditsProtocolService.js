@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits2.ProtocolService = class extends Common.Object {
+Audits.ProtocolService = class extends Common.Object {
   constructor() {
     super();
     /** @type {?Protocol.Connection} */
@@ -60,14 +60,13 @@ Audits2.ProtocolService = class extends Common.Object {
   }
 
   _initWorker() {
-    this._backendPromise =
-        Services.serviceManager.createAppService('audits2_worker', 'Audits2Service').then(backend => {
-          if (this._backend)
-            return;
-          this._backend = backend;
-          this._backend.on('statusUpdate', result => this._status(result.message));
-          this._backend.on('sendProtocolMessage', result => this._sendProtocolMessage(result.message));
-        });
+    this._backendPromise = Services.serviceManager.createAppService('audits_worker', 'AuditsService').then(backend => {
+      if (this._backend)
+        return;
+      this._backend = backend;
+      this._backend.on('statusUpdate', result => this._status(result.message));
+      this._backend.on('sendProtocolMessage', result => this._sendProtocolMessage(result.message));
+    });
   }
 
   /**

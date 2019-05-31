@@ -5,16 +5,16 @@
 /**
  * @unrestricted
  */
-Audits2.Audits2Panel = class extends UI.Panel {
+Audits.AuditsPanel = class extends UI.Panel {
   constructor() {
-    super('audits2');
-    this.registerRequiredCSS('audits2/lighthouse/report.css');
-    this.registerRequiredCSS('audits2/audits2Panel.css');
+    super('audits');
+    this.registerRequiredCSS('audits/lighthouse/report.css');
+    this.registerRequiredCSS('audits/auditsPanel.css');
 
-    this._protocolService = new Audits2.ProtocolService();
-    this._controller = new Audits2.AuditController(this._protocolService);
-    this._startView = new Audits2.StartView(this._controller);
-    this._statusView = new Audits2.StatusView(this._controller);
+    this._protocolService = new Audits.ProtocolService();
+    this._controller = new Audits.AuditController(this._protocolService);
+    this._startView = new Audits.StartView(this._controller);
+    this._statusView = new Audits.StatusView(this._controller);
 
     this._unauditableExplanation = null;
     this._cachedRenderedReports = new Map();
@@ -23,13 +23,13 @@ Audits2.Audits2Panel = class extends UI.Panel {
         this.contentElement, [UI.DropTarget.Type.File], Common.UIString('Drop audit file here'),
         this._handleDrop.bind(this));
 
-    this._controller.addEventListener(Audits2.Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
-    this._controller.addEventListener(Audits2.Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
-    this._controller.addEventListener(Audits2.Events.RequestAuditStart, this._startAudit.bind(this));
-    this._controller.addEventListener(Audits2.Events.RequestAuditCancel, this._cancelAudit.bind(this));
+    this._controller.addEventListener(Audits.Events.PageAuditabilityChanged, this._refreshStartAuditUI.bind(this));
+    this._controller.addEventListener(Audits.Events.AuditProgressChanged, this._refreshStatusUI.bind(this));
+    this._controller.addEventListener(Audits.Events.RequestAuditStart, this._startAudit.bind(this));
+    this._controller.addEventListener(Audits.Events.RequestAuditCancel, this._cancelAudit.bind(this));
 
     this._renderToolbar();
-    this._auditResultsElement = this.contentElement.createChild('div', 'audits2-results-container');
+    this._auditResultsElement = this.contentElement.createChild('div', 'audits-results-container');
     this._renderStartView();
 
     this._controller.recomputePageAuditability();
@@ -79,7 +79,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
 
     toolbar.appendSeparator();
 
-    this._reportSelector = new Audits2.ReportSelector(() => this._renderStartView());
+    this._reportSelector = new Audits.ReportSelector(() => this._renderStartView());
     toolbar.appendToolbarItem(this._reportSelector.comboBox());
 
     this._clearButton = new UI.ToolbarButton(Common.UIString('Clear all'), 'largeicon-clear');
@@ -137,18 +137,18 @@ Audits2.Audits2Panel = class extends UI.Panel {
     const reportContainer = this._auditResultsElement.createChild('div', 'lh-vars lh-root lh-devtools');
 
     const dom = new DOM(/** @type {!Document} */ (this._auditResultsElement.ownerDocument));
-    const renderer = new Audits2.ReportRenderer(dom);
+    const renderer = new Audits.ReportRenderer(dom);
 
-    const templatesHTML = Runtime.cachedResources['audits2/lighthouse/templates.html'];
+    const templatesHTML = Runtime.cachedResources['audits/lighthouse/templates.html'];
     const templatesDOM = new DOMParser().parseFromString(templatesHTML, 'text/html');
     if (!templatesDOM)
       return;
 
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
-    Audits2.ReportRenderer.addViewTraceButton(el, artifacts);
-    Audits2.ReportRenderer.linkifyNodeDetails(el);
-    Audits2.ReportRenderer.handleDarkMode(el);
+    Audits.ReportRenderer.addViewTraceButton(el, artifacts);
+    Audits.ReportRenderer.linkifyNodeDetails(el);
+    Audits.ReportRenderer.handleDarkMode(el);
 
     const features = new ReportUIFeatures(dom);
     features.setTemplateContext(templatesDOM);
@@ -165,7 +165,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
     if (lighthouseResult === null)
       return;
 
-    const optionElement = new Audits2.ReportSelector.Item(
+    const optionElement = new Audits.ReportSelector.Item(
         lighthouseResult, () => this._renderReport(lighthouseResult, artifacts), this._renderStartView.bind(this));
     this._reportSelector.prepend(optionElement);
     this._refreshToolbarUI();
@@ -203,7 +203,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
   }
 
   async _startAudit() {
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Started);
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsStarted);
 
     try {
       const inspectedURL = await this._controller.getInspectedURL({force: true});
@@ -225,7 +225,7 @@ Audits2.Audits2Panel = class extends UI.Panel {
       if (!lighthouseResponse)
         throw new Error('Auditing failed to produce a result');
 
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.Audits2Finished);
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsFinished);
 
       await this._resetEmulationAndProtocolConnection();
       this._buildReportUI(lighthouseResponse.lhr, lighthouseResponse.artifacts);

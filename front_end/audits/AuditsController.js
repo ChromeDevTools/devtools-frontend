@@ -6,14 +6,14 @@
  * @implements {SDK.SDKModelObserver<!SDK.ServiceWorkerManager>}
  * @unrestricted
  */
-Audits2.AuditController = class extends Common.Object {
+Audits.AuditController = class extends Common.Object {
   constructor(protocolService) {
     super();
 
     protocolService.registerStatusCallback(
-        message => this.dispatchEventToListeners(Audits2.Events.AuditProgressChanged, {message}));
+        message => this.dispatchEventToListeners(Audits.Events.AuditProgressChanged, {message}));
 
-    for (const preset of Audits2.Presets)
+    for (const preset of Audits.Presets)
       preset.setting.addChangeListener(this.recomputePageAuditability.bind(this));
 
     SDK.targetManager.observeModels(SDK.ServiceWorkerManager, this);
@@ -83,7 +83,7 @@ Audits2.AuditController = class extends Common.Object {
    * @return {boolean}
    */
   _hasAtLeastOneCategory() {
-    return Audits2.Presets.some(preset => preset.setting.get());
+    return Audits.Presets.some(preset => preset.setting.get());
   }
 
   /**
@@ -143,7 +143,7 @@ Audits2.AuditController = class extends Common.Object {
    */
   getFlags() {
     const flags = {};
-    for (const runtimeSetting of Audits2.RuntimeSettings)
+    for (const runtimeSetting of Audits.RuntimeSettings)
       runtimeSetting.setFlags(flags, runtimeSetting.setting.get());
     return flags;
   }
@@ -153,7 +153,7 @@ Audits2.AuditController = class extends Common.Object {
    */
   getCategoryIDs() {
     const categoryIDs = [];
-    for (const preset of Audits2.Presets) {
+    for (const preset of Audits.Presets) {
       if (preset.setting.get())
         categoryIDs.push(preset.configID);
     }
@@ -185,43 +185,43 @@ Audits2.AuditController = class extends Common.Object {
       helpText = unauditablePageMessage;
     }
 
-    this.dispatchEventToListeners(Audits2.Events.PageAuditabilityChanged, {helpText});
+    this.dispatchEventToListeners(Audits.Events.PageAuditabilityChanged, {helpText});
   }
 };
 
 
 /** @typedef {{setting: !Common.Setting, configID: string, title: string, description: string}} */
-Audits2.Preset;
+Audits.Preset;
 
-/** @type {!Array.<!Audits2.Preset>} */
-Audits2.Presets = [
+/** @type {!Array.<!Audits.Preset>} */
+Audits.Presets = [
   // configID maps to Lighthouse's Object.keys(config.categories)[0] value
   {
-    setting: Common.settings.createSetting('audits2.cat_perf', true),
+    setting: Common.settings.createSetting('audits.cat_perf', true),
     configID: 'performance',
     title: ls`Performance`,
     description: ls`How long does this app take to show content and become usable`
   },
   {
-    setting: Common.settings.createSetting('audits2.cat_pwa', true),
+    setting: Common.settings.createSetting('audits.cat_pwa', true),
     configID: 'pwa',
     title: ls`Progressive Web App`,
     description: ls`Does this page meet the standard of a Progressive Web App`
   },
   {
-    setting: Common.settings.createSetting('audits2.cat_best_practices', true),
+    setting: Common.settings.createSetting('audits.cat_best_practices', true),
     configID: 'best-practices',
     title: ls`Best practices`,
     description: ls`Does this page follow best practices for modern web development`
   },
   {
-    setting: Common.settings.createSetting('audits2.cat_a11y', true),
+    setting: Common.settings.createSetting('audits.cat_a11y', true),
     configID: 'accessibility',
     title: ls`Accessibility`,
     description: ls`Is this page usable by people with disabilities or impairments`
   },
   {
-    setting: Common.settings.createSetting('audits2.cat_seo', true),
+    setting: Common.settings.createSetting('audits.cat_seo', true),
     configID: 'seo',
     title: ls`SEO`,
     description: ls`Is this page optimized for search engine results ranking`
@@ -229,12 +229,12 @@ Audits2.Presets = [
 ];
 
 /** @typedef {{setting: !Common.Setting, description: string, setFlags: function(!Object, string), options: (!Array|undefined), title: (string|undefined)}} */
-Audits2.RuntimeSetting;
+Audits.RuntimeSetting;
 
-/** @type {!Array.<!Audits2.RuntimeSetting>} */
-Audits2.RuntimeSettings = [
+/** @type {!Array.<!Audits.RuntimeSetting>} */
+Audits.RuntimeSettings = [
   {
-    setting: Common.settings.createSetting('audits2.device_type', 'mobile'),
+    setting: Common.settings.createSetting('audits.device_type', 'mobile'),
     description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
       flags.emulatedFormFactor = value;
@@ -245,7 +245,7 @@ Audits2.RuntimeSettings = [
     ],
   },
   {
-    setting: Common.settings.createSetting('audits2.throttling', 'default'),
+    setting: Common.settings.createSetting('audits.throttling', 'default'),
     setFlags: (flags, value) => {
       switch (value) {
         case 'devtools':
@@ -277,7 +277,7 @@ Audits2.RuntimeSettings = [
     ],
   },
   {
-    setting: Common.settings.createSetting('audits2.clear_storage', true),
+    setting: Common.settings.createSetting('audits.clear_storage', true),
     title: ls`Clear storage`,
     description: ls`Reset storage (localStorage, IndexedDB, etc) before auditing. (Good for performance & PWA testing)`,
     setFlags: (flags, value) => {
@@ -286,7 +286,7 @@ Audits2.RuntimeSettings = [
   },
 ];
 
-Audits2.Events = {
+Audits.Events = {
   PageAuditabilityChanged: Symbol('PageAuditabilityChanged'),
   AuditProgressChanged: Symbol('AuditProgressChanged'),
   RequestAuditStart: Symbol('RequestAuditStart'),

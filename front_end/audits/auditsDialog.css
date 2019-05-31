@@ -4,7 +4,7 @@
  * found in the LICENSE file.
  */
 
-.audits2-view {
+.audits-view {
     --view-horizontal-margin: 20px;
     margin: 7px var(--view-horizontal-margin);
     flex: auto;
@@ -13,7 +13,7 @@
     max-width: 500px;
 }
 
-.audits2-view h2 {
+.audits-view h2 {
     color: #666;
     font-weight: bold;
     font-size: 14px;
@@ -22,20 +22,20 @@
     text-align: left;
 }
 
-.audits2-view button {
+.audits-view button {
     z-index: 10;
     margin-left: auto;
     margin-right: 0px;
 }
 
-.audits2-status {
+.audits-status {
     width: 100%;
     flex: auto;
     align-items: center;
     color: #666;
 }
 
-.audits2-status-text {
+.audits-status-text {
     text-align: center;
     min-height: 50px;
     margin-bottom: 10px;
@@ -44,14 +44,14 @@
     flex-direction: column;
 }
 
-.audits2-status-text code {
+.audits-status-text code {
     user-select: text;
     text-align: left;
     white-space: pre-wrap;
     overflow: auto;
 }
 
-.audits2-progress-wrapper {
+.audits-progress-wrapper {
     width: calc(100% + 2 * var(--view-horizontal-margin));
     height: 2px;
     background-color: #E1F5FE;
@@ -59,7 +59,7 @@
     margin: 10px;
 }
 
-.audits2-progress-bar {
+.audits-progress-bar {
     width: 0%;
     height: 100%;
     background: #039BE5;
@@ -74,12 +74,12 @@
     --progress-bar-auditing-percent: 95%;
 }
 
-.audits2-progress-bar.errored {
+.audits-progress-bar.errored {
     width: 100%;
     background: #E50303;
 }
 
-.audits2-progress-bar.loading {
+.audits-progress-bar.loading {
     animation-duration: var(--progress-bar-loading-duration);
     animation-name: progressBarLoading;
 }
@@ -89,7 +89,7 @@
   100% { width: var(--progress-bar-gathering-percent); }
 }
 
-.audits2-progress-bar.gathering {
+.audits-progress-bar.gathering {
     animation-duration: var(--progress-bar-gathering-duration);
     animation-name: progressBarGathering;
 }
@@ -99,7 +99,7 @@
   100% { width: var(--progress-bar-auditing-percent); }
 }
 
-.audits2-progress-bar.auditing {
+.audits-progress-bar.auditing {
     animation-duration: var(--progress-bar-auditing-duration);
     animation-name: progressBarAuditing;
 }
@@ -107,4 +107,9 @@
 @keyframes progressBarAuditing {
   0% { width: var(--progress-bar-auditing-percent); }
   100% { width: 99%; }
+}
+
+.audits-report-error {
+    display: block;
+    margin-top: 5px;
 }

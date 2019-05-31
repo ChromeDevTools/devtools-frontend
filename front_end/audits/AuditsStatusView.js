@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits2.StatusView = class {
+Audits.StatusView = class {
   /**
-   * @param {!Audits2.AuditController} controller
+   * @param {!Audits.AuditController} controller
    */
   constructor(controller) {
     this._controller = controller;
@@ -17,7 +17,7 @@ Audits2.StatusView = class {
 
     this._inspectedURL = '';
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits2.StatusView.FastFacts.slice();
+    this._fastFactsQueued = Audits.StatusView.FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -30,18 +30,18 @@ Audits2.StatusView = class {
   }
 
   _render() {
-    const dialogRoot = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits2/audits2Dialog.css');
-    const auditsViewElement = dialogRoot.createChild('div', 'audits2-view vbox');
+    const dialogRoot = UI.createShadowRootWithCoreStyles(this._dialog.contentElement, 'audits/auditsDialog.css');
+    const auditsViewElement = dialogRoot.createChild('div', 'audits-view vbox');
 
     const cancelButton = UI.createTextButton(ls`Cancel`, this._cancel.bind(this));
     const fragment = UI.Fragment.build`
-      <div class="audits2-view vbox">
+      <div class="audits-view vbox">
         <h2 $="status-header">Auditing your web page\u2026</h2>
-        <div class="audits2-status vbox" $="status-view">
-          <div class="audits2-progress-wrapper" $="progress-wrapper">
-            <div class="audits2-progress-bar" $="progress-bar"></div>
+        <div class="audits-status vbox" $="status-view">
+          <div class="audits-progress-wrapper" $="progress-wrapper">
+            <div class="audits-progress-bar" $="progress-bar"></div>
           </div>
-          <div class="audits2-status-text" $="status-text"></div>
+          <div class="audits-status-text" $="status-text"></div>
         </div>
         ${cancelButton}
       </div>
@@ -66,7 +66,7 @@ Audits2.StatusView = class {
     clearTimeout(this._scheduledFastFactTimeout);
 
     this._textChangedAt = 0;
-    this._fastFactsQueued = Audits2.StatusView.FastFacts.slice();
+    this._fastFactsQueued = Audits.StatusView.FastFacts.slice();
     this._currentPhase = null;
     this._scheduledTextChangeTimeout = null;
     this._scheduledFastFactTimeout = null;
@@ -125,20 +125,20 @@ Audits2.StatusView = class {
   }
 
   _cancel() {
-    this._controller.dispatchEventToListeners(Audits2.Events.RequestAuditCancel);
+    this._controller.dispatchEventToListeners(Audits.Events.RequestAuditCancel);
   }
 
   /**
-   * @param {!Audits2.StatusView.StatusPhases} phase
+   * @param {!Audits.StatusView.StatusPhases} phase
    * @return {string}
    */
   _getMessageForPhase(phase) {
     if (phase.message)
       return Common.UIString(phase.message);
 
-    const deviceType = Audits2.RuntimeSettings.find(item => item.setting.name === 'audits2.device_type').setting.get();
-    const throttling = Audits2.RuntimeSettings.find(item => item.setting.name === 'audits2.throttling').setting.get();
-    const match = Audits2.StatusView.LoadingMessages.find(item => {
+    const deviceType = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
+    const throttling = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
+    const match = Audits.StatusView.LoadingMessages.find(item => {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
@@ -147,17 +147,17 @@ Audits2.StatusView = class {
 
   /**
    * @param {string} message
-   * @return {?Audits2.StatusView.StatusPhases}
+   * @return {?Audits.StatusView.StatusPhases}
    */
   _getPhaseForMessage(message) {
-    return Audits2.StatusView.StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
+    return Audits.StatusView.StatusPhases.find(phase => message.startsWith(phase.statusMessagePrefix));
   }
 
   _resetProgressBarClasses() {
     if (!this._progressBar)
       return;
 
-    this._progressBar.className = 'audits2-progress-bar';
+    this._progressBar.className = 'audits-progress-bar';
   }
 
   _scheduleFastFactCheck() {
@@ -174,7 +174,7 @@ Audits2.StatusView = class {
 
   _updateFastFactIfNecessary() {
     const now = performance.now();
-    if (now - this._textChangedAt < Audits2.StatusView.fastFactRotationInterval)
+    if (now - this._textChangedAt < Audits.StatusView.fastFactRotationInterval)
       return;
     if (!this._fastFactsQueued.length)
       return;
@@ -202,7 +202,7 @@ Audits2.StatusView = class {
       clearTimeout(this._scheduledTextChangeTimeout);
 
     const msSinceLastChange = performance.now() - this._textChangedAt;
-    const msToTextChange = Audits2.StatusView.minimumTextVisibilityDuration - msSinceLastChange;
+    const msToTextChange = Audits.StatusView.minimumTextVisibilityDuration - msSinceLastChange;
 
     this._scheduledTextChangeTimeout = setTimeout(() => {
       this._commitTextChange(text);
@@ -221,7 +221,7 @@ Audits2.StatusView = class {
 
     this._commitTextChange('');
     this._statusText.createChild('p').createTextChild(Common.UIString('Ah, sorry! We ran into an error.'));
-    if (Audits2.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
+    if (Audits.StatusView.KnownBugPatterns.some(pattern => pattern.test(err.message))) {
       const message = Common.UIString(
           'Try to navigate to the URL in a fresh Chrome profile without any other tabs or extensions open and try again.');
       this._statusText.createChild('p').createTextChild(message);
@@ -252,7 +252,7 @@ Stack Trace: ${err.stack}
 
 
 /** @type {!Array.<!RegExp>} */
-Audits2.StatusView.KnownBugPatterns = [
+Audits.StatusView.KnownBugPatterns = [
   /PARSING_PROBLEM/,
   /DOCUMENT_REQUEST/,
   /READ_FAILED/,
@@ -262,7 +262,7 @@ Audits2.StatusView.KnownBugPatterns = [
 ];
 
 /** @typedef {{message: string, progressBarClass: string, order: number}} */
-Audits2.StatusView.StatusPhases = [
+Audits.StatusView.StatusPhases = [
   {
     id: 'loading',
     progressBarClass: 'loading',
@@ -286,7 +286,7 @@ Audits2.StatusView.StatusPhases = [
 ];
 
 /** @typedef {{message: string, deviceType: string, throttling: string}} */
-Audits2.StatusView.LoadingMessages = [
+Audits.StatusView.LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
@@ -309,7 +309,7 @@ Audits2.StatusView.LoadingMessages = [
   },
 ];
 
-Audits2.StatusView.FastFacts = [
+Audits.StatusView.FastFacts = [
   '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].',
   'Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]',
   'BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]',
@@ -329,6 +329,6 @@ Audits2.StatusView.FastFacts = [
 ];
 
 /** @const */
-Audits2.StatusView.fastFactRotationInterval = 6000;
+Audits.StatusView.fastFactRotationInterval = 6000;
 /** @const */
-Audits2.StatusView.minimumTextVisibilityDuration = 3000;
+Audits.StatusView.minimumTextVisibilityDuration = 3000;

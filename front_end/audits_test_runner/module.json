@@ -1,9 +1,9 @@
 {
   "dependencies": [
     "test_runner",
-    "audits2"
+    "audits"
   ],
   "scripts": [
-    "Audits2TestRunner.js"
+    "AuditsTestRunner.js"
   ]
 }

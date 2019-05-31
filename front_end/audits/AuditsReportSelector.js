@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits2.ReportSelector = class {
+Audits.ReportSelector = class {
   constructor(renderNewAuditView) {
     this._renderNewAuditView = renderNewAuditView;
     this._newAuditItem = createElement('option');
-    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits2-report');
+    this._comboBox = new UI.ToolbarComboBox(this._handleChange.bind(this), 'audits-report');
     this._comboBox.setTitle(ls`Reports`);
     this._comboBox.setMaxWidth(180);
     this._comboBox.setMinWidth(140);
@@ -36,7 +36,7 @@ Audits2.ReportSelector = class {
   }
 
   /**
-   * @return {!Audits2.ReportSelector.Item}
+   * @return {!Audits.ReportSelector.Item}
    */
   _selectedItem() {
     const option = this._comboBox.selectedOption();
@@ -65,7 +65,7 @@ Audits2.ReportSelector = class {
   }
 
   /**
-   * @param {!Audits2.ReportSelector.Item} item
+   * @param {!Audits.ReportSelector.Item} item
    */
   prepend(item) {
     const optionEl = item.optionElement();
@@ -101,7 +101,7 @@ Audits2.ReportSelector = class {
   }
 };
 
-Audits2.ReportSelector.Item = class {
+Audits.ReportSelector.Item = class {
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
    * @param {function()} renderReport

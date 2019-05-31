@@ -27,7 +27,7 @@ class LighthousePort {
  * @implements {Service}
  * @unrestricted
  */
-var Audits2Service = class {  // eslint-disable-line
+var AuditsService = class {  // eslint-disable-line
   /**
    * @override
    * @param {function(string)}

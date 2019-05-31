@@ -5,13 +5,13 @@
     "extensions": [
         {
             "type": "@Service",
-            "factoryName": "Audits2Service",
-            "name": "Audits2Service"
+            "factoryName": "AuditsService",
+            "name": "AuditsService"
         }
     ],
     "scripts": [
         "lighthouse/lighthouse-dt-bundle.js",
-        "Audits2Service.js"
+        "AuditsService.js"
     ],
     "skip_compilation": [
         "lighthouse/lighthouse-dt-bundle.js"

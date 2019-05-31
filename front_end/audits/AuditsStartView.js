@@ -5,13 +5,13 @@
 /**
  * @unrestricted
  */
-Audits2.StartView = class extends UI.Widget {
+Audits.StartView = class extends UI.Widget {
   /**
-   * @param {!Audits2.AuditController} controller
+   * @param {!Audits.AuditController} controller
    */
   constructor(controller) {
     super();
-    this.registerRequiredCSS('audits2/audits2StartView.css');
+    this.registerRequiredCSS('audits/auditsStartView.css');
     this._controller = controller;
     this._render();
   }
@@ -21,11 +21,11 @@ Audits2.StartView = class extends UI.Widget {
    * @param {!Element} parentElement
    */
   _populateRuntimeSettingAsRadio(settingName, parentElement) {
-    const runtimeSetting = Audits2.RuntimeSettings.find(item => item.setting.name === settingName);
+    const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.options)
       throw new Error(`${settingName} is not a setting with options`);
 
-    const control = new Audits2.RadioSetting(runtimeSetting.options, runtimeSetting.setting);
+    const control = new Audits.RadioSetting(runtimeSetting.options, runtimeSetting.setting);
     control.element.title = runtimeSetting.description;
     parentElement.appendChild(control.element);
   }
@@ -35,7 +35,7 @@ Audits2.StartView = class extends UI.Widget {
    * @param {!Element} parentElement
    */
   _populateRuntimeSettingAsCheckbox(settingName, parentElement) {
-    const runtimeSetting = Audits2.RuntimeSettings.find(item => item.setting.name === settingName);
+    const runtimeSetting = Audits.RuntimeSettings.find(item => item.setting.name === settingName);
     if (!runtimeSetting || !runtimeSetting.title)
       throw new Error(`${settingName} is not a setting with a title`);
 
@@ -50,32 +50,32 @@ Audits2.StartView = class extends UI.Widget {
   _populateFormControls(fragment) {
     // Populate the device type
     const deviceTypeFormElements = fragment.$('device-type-form-elements');
-    this._populateRuntimeSettingAsRadio('audits2.device_type', deviceTypeFormElements);
+    this._populateRuntimeSettingAsRadio('audits.device_type', deviceTypeFormElements);
 
     // Populate the audit categories
     const categoryFormElements = fragment.$('categories-form-elements');
-    for (const preset of Audits2.Presets) {
+    for (const preset of Audits.Presets) {
       preset.setting.setTitle(preset.title);
       const checkbox = new UI.ToolbarSettingCheckbox(preset.setting);
-      const row = categoryFormElements.createChild('div', 'vbox audits2-launcher-row');
+      const row = categoryFormElements.createChild('div', 'vbox audits-launcher-row');
       row.title = preset.description;
       row.appendChild(checkbox.element);
     }
 
     // Populate the throttling
     const throttlingFormElements = fragment.$('throttling-form-elements');
-    this._populateRuntimeSettingAsRadio('audits2.throttling', throttlingFormElements);
+    this._populateRuntimeSettingAsRadio('audits.throttling', throttlingFormElements);
 
 
     // Populate other settings
     const otherFormElements = fragment.$('other-form-elements');
-    this._populateRuntimeSettingAsCheckbox('audits2.clear_storage', otherFormElements);
+    this._populateRuntimeSettingAsCheckbox('audits.clear_storage', otherFormElements);
   }
 
   _render() {
     this._startButton = UI.createTextButton(
-        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits2.Events.RequestAuditStart),
-        'audits2-start-button', true /* primary */);
+        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits.Events.RequestAuditStart),
+        'audits-start-button', true /* primary */);
     this.setDefaultFocusedElement(this._startButton);
 
     const deviceIcon = UI.Icon.create('largeicon-phone');
@@ -83,10 +83,10 @@ Audits2.StartView = class extends UI.Widget {
     const throttlingIcon = UI.Icon.create('largeicon-settings-gear');
 
     const fragment = UI.Fragment.build`
-      <div class="vbox audits2-start-view">
+      <div class="vbox audits-start-view">
         <header>
-          <div class="audits2-logo"></div>
-          <div class="audits2-start-view-text">
+          <div class="audits-logo"></div>
+          <div class="audits-start-view-text">
             <h2>${ls`Audits`}</h2>
             <p>
               ${ls`Identify and fix common problems that affect your site's performance,
@@ -96,36 +96,36 @@ Audits2.StartView = class extends UI.Widget {
           </div>
         </header>
         <form>
-          <div class="audits2-form-section">
-            <div class="audits2-form-section-label">
+          <div class="audits-form-section">
+            <div class="audits-form-section-label">
               <i>${deviceIcon}</i>
-              <div class="audits2-icon-label">${ls`Device`}</div>
+              <div class="audits-icon-label">${ls`Device`}</div>
             </div>
-            <div class="audits2-form-elements" $="device-type-form-elements"></div>
+            <div class="audits-form-elements" $="device-type-form-elements"></div>
           </div>
-          <div class="audits2-form-section">
-            <div class="audits2-form-section-label">
+          <div class="audits-form-section">
+            <div class="audits-form-section-label">
               <i>${categoriesIcon}</i>
-              <div class="audits2-icon-label">${ls`Audits`}</div>
+              <div class="audits-icon-label">${ls`Audits`}</div>
             </div>
-            <div class="audits2-form-elements" $="categories-form-elements"></div>
+            <div class="audits-form-elements" $="categories-form-elements"></div>
           </div>
-          <div class="audits2-form-section">
-            <div class="audits2-form-section-label">
+          <div class="audits-form-section">
+            <div class="audits-form-section-label">
               <i>${throttlingIcon}</i>
-              <div class="audits2-icon-label">${ls`Throttling`}</div>
+              <div class="audits-icon-label">${ls`Throttling`}</div>
             </div>
-            <div class="audits2-form-elements" $="throttling-form-elements"></div>
+            <div class="audits-form-elements" $="throttling-form-elements"></div>
           </div>
-          <div class="audits2-form-section">
-            <div class="audits2-form-section-label"></div>
-            <div class="audits2-form-elements" $="other-form-elements"></div>
+          <div class="audits-form-section">
+            <div class="audits-form-section-label"></div>
+            <div class="audits-form-elements" $="other-form-elements"></div>
           </div>
-          <div class="audits2-form-section">
-            <div class="audits2-form-section-label"></div>
-            <div class="audits2-form-elements audits2-start-button-container hbox">
+          <div class="audits-form-section">
+            <div class="audits-form-section-label"></div>
+            <div class="audits-form-elements audits-start-button-container hbox">
               ${this._startButton}
-              <div $="help-text" class="audits2-help-text hidden"></div>
+              <div $="help-text" class="audits-help-text hidden"></div>
             </div>
           </div>
         </form>

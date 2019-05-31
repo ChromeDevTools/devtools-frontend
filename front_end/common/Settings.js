@@ -809,6 +809,39 @@ Common.VersionController = class {
     oldSetting.remove();
   }
 
+  _updateVersionFrom26To27() {
+    /**
+     * @param {string} settingName
+     * @param {string} from
+     * @param {string} to
+     */
+    function renameKeyInObjectSetting(settingName, from, to) {
+      const setting = Common.settings.createSetting(settingName, {});
+      const value = setting.get();
+      if (from in value) {
+        value[to] = value[from];
+        delete value[from];
+        setting.set(value);
+      }
+    }
+
+    /**
+     * @param {string} settingName
+     * @param {string} from
+     * @param {string} to
+     */
+    function renameInStringSetting(settingName, from, to) {
+      const setting = Common.settings.createSetting(settingName, '');
+      const value = setting.get();
+      if (value === from)
+        setting.set(to);
+    }
+
+    renameKeyInObjectSetting('panel-tabOrder', 'audits2', 'audits');
+    renameKeyInObjectSetting('panel-closeableTabs', 'audits2', 'audits');
+    renameInStringSetting('panel-selectedTab', 'audits2', 'audits');
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set([
@@ -841,7 +874,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 26;
+Common.VersionController.currentVersion = 27;
 
 /**
  * @type {!Common.Settings}

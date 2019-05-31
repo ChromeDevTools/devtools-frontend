@@ -3,10 +3,10 @@
         {
             "type": "view",
             "location": "panel",
-            "id": "audits2",
+            "id": "audits",
             "title": "Audits",
             "order": 90,
-            "className": "Audits2.Audits2Panel",
+            "className": "Audits.AuditsPanel",
             "tags": "lighthouse, pwa"
         }
     ],
@@ -22,18 +22,18 @@
     "scripts": [
         "lighthouse/report.js",
         "RadioSetting.js",
-        "Audits2Panel.js",
-        "Audits2Controller.js",
-        "Audits2ReportSelector.js",
-        "Audits2ReportRenderer.js",
-        "Audits2StartView.js",
-        "Audits2StatusView.js",
-        "Audits2ProtocolService.js"
+        "AuditsPanel.js",
+        "AuditsController.js",
+        "AuditsReportSelector.js",
+        "AuditsReportRenderer.js",
+        "AuditsStartView.js",
+        "AuditsStatusView.js",
+        "AuditsProtocolService.js"
     ],
     "resources": [
-        "audits2Dialog.css",
-        "audits2Panel.css",
-        "audits2StartView.css",
+        "auditsDialog.css",
+        "auditsPanel.css",
+        "auditsStartView.css",
         "lighthouse/templates.html",
         "lighthouse/report.css",
         "lighthouse/report.js"

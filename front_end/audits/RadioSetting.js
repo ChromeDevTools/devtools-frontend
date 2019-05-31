@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-Audits2.RadioSetting = class {
+Audits.RadioSetting = class {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
@@ -11,12 +11,12 @@ Audits2.RadioSetting = class {
     this._setting = setting;
     this._options = options;
 
-    this.element = createElement('div', 'audits2-radio-group');
+    this.element = createElement('div', 'audits-radio-group');
 
     this._radioElements = [];
     for (const option of this._options) {
       const fragment = UI.Fragment.build`
-        <label $="label" class="audits2-radio">
+        <label $="label" class="audits-radio">
           <input $="input" type="radio" value=${option.value} name=${setting.name}>
           ${option.label}
         </label>

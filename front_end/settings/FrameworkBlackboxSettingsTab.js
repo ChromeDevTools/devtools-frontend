@@ -12,7 +12,9 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('settings/frameworkBlackboxSettingsTab.css');
 
-    this.contentElement.createChild('div', 'header').textContent = Common.UIString('Framework Blackboxing');
+    const header = this.contentElement.createChild('div', 'header');
+    header.textContent = ls`Framework Blackboxing`;
+    UI.ARIAUtils.markAsHeading(header, 1);
     this.contentElement.createChild('div', 'intro').textContent =
         ls`Debugger will skip through the scripts and will not stop on exceptions thrown by them.`;
 
@@ -40,7 +42,6 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     this._setting.addChangeListener(this._settingUpdated, this);
 
     this.setDefaultFocusedElement(addPatternButton);
-    this.contentElement.tabIndex = 0;
   }
 
   /**
@@ -138,11 +139,13 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     titles.createChild('div', 'blackbox-behavior').textContent = Common.UIString('Behavior');
 
     const fields = content.createChild('div', 'blackbox-edit-row');
-    fields.createChild('div', 'blackbox-pattern')
-        .appendChild(editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this)));
+    const pattern = editor.createInput('pattern', 'text', '/framework\\.js$', patternValidator.bind(this));
+    UI.ARIAUtils.setAccessibleName(pattern, ls`Pattern`);
+    fields.createChild('div', 'blackbox-pattern').appendChild(pattern);
     fields.createChild('div', 'blackbox-separator blackbox-separator-invisible');
-    fields.createChild('div', 'blackbox-behavior')
-        .appendChild(editor.createSelect('behavior', [this._blackboxLabel, this._disabledLabel], behaviorValidator));
+    const behavior = editor.createSelect('behavior', [this._blackboxLabel, this._disabledLabel], behaviorValidator);
+    UI.ARIAUtils.setAccessibleName(behavior, ls`Behavior`);
+    fields.createChild('div', 'blackbox-behavior').appendChild(behavior);
 
     return editor;
 

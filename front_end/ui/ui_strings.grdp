@@ -45,6 +45,9 @@
   <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="">
     Step into
   </message>
+  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="">
+    <ph name="ITEM_LABEL">$1s</ph>, <ph name="ITEM_SHORTCUT">$2s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_2dfef1e9ae6e4da36eb0bbeea94742b9" desc="">
     <ph name="MEGABYTES">$1.1f</ph> MB
   </message>
@@ -218,6 +221,12 @@
   </message>
   <message name="IDS_DEVTOOLS_b228e7bd736e688236ab3aa37996bf8f" desc="">
     Decrement by <ph name="__">$1f</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_b4b10705557aadcdad1f3182cadeaa76" desc="">
+    <ph name="ITEM_LABEL">$1s</ph>, checked
+  </message>
+  <message name="IDS_DEVTOOLS_b508f4cb8252d1d90689d1a61344c8fc" desc="">
+    <ph name="ITEM_LABEL">$1s</ph>, checked, <ph name="ITEM_SHORTCUT">$2s</ph>
   </message>
   <message name="IDS_DEVTOOLS_b79165bf6163186253ed04568e1aee11" desc="">
     Pause/ Continue

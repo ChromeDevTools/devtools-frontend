@@ -83,7 +83,6 @@ var Runtime = class {  // eslint-disable-line
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.onreadystatechange = onreadystatechange;
-      const requestStart = performance.now();
 
       /**
        * @param {Event} e
@@ -94,13 +93,6 @@ var Runtime = class {  // eslint-disable-line
 
         // DevTools Proxy server can mask 404s as 200s, check the body to be sure
         const status = /^HTTP\/1.1 404/.test(e.target.response) ? 404 : xhr.status;
-
-        if (url.indexOf('remote') > -1) {
-          // Log performance for remote modules
-          const requestDone = performance.now();
-          InspectorFrontendHost.recordPerformanceHistogram(
-              'DevTools.FrontendRemoteRequestLoadTime', (requestDone - requestStart));
-        }
 
         if ([0, 200, 304].indexOf(status) === -1)  // Testing harness file:/// results in 0.
           reject(new Error('While loading from url ' + url + ' server responded with a status of ' + status));

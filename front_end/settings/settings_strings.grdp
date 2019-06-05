@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="">
     Experiments
   </message>
+  <message name="IDS_DEVTOOLS_4a3aaf1edf15288e9ff3994088e2277a" desc="">
+    Blackbox scripts whose names match &apos;<ph name="ITEM_PATTERN">$1s</ph>&apos;
+  </message>
   <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="">
     Pattern
   </message>
@@ -35,9 +38,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="">
     Blackboxing
-  </message>
-  <message name="IDS_DEVTOOLS_ce85958ff51e825dcf797d0451b96b71" desc="">
-    Blackbox scripts whose names match
   </message>
   <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="">
     Preferences

@@ -27,14 +27,14 @@
   <message name="IDS_DEVTOOLS_15fa5e18dc110ac96ef35fd19abc78b3" desc="">
     Time Cached
   </message>
-  <message name="IDS_DEVTOOLS_1722d5b7f86af20cbd8d1981f23a15a3" desc="">
-    cookies used by frames from 
-  </message>
   <message name="IDS_DEVTOOLS_1818d506396d77b3d035f719885c4cd1" desc="">
     focus
   </message>
   <message name="IDS_DEVTOOLS_1bea0f12b50db07ee7f2265b790417ff" desc="">
     Installability
+  </message>
+  <message name="IDS_DEVTOOLS_1e9cf6d18aa0124e44d013131c79b0c1" desc="">
+    Version: <ph name="THIS__DATABASE_VERSION">$1s</ph> (empty)
   </message>
   <message name="IDS_DEVTOOLS_1fece652e0dde2e00d1a7662f081dd71" desc="">
     The &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot;
@@ -72,6 +72,9 @@ table is empty.
   </message>
   <message name="IDS_DEVTOOLS_3a771376134eb624f3e1fdd3d92d9f4c" desc="">
     Select a cache entry above to preview
+  </message>
+  <message name="IDS_DEVTOOLS_3af55819bc887213086b7ba5c5e25042" desc="">
+    Version: <ph name="THIS__DATABASE_VERSION">$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_3afd748bcc6315d69cff002ec6c377ed" desc="">
     <ph name="THIS__REGISTRATION_ERRORS_LENGTH">$1s</ph> registration errors
@@ -184,6 +187,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_8f67973007158337346584551b093be8" desc="">
     Icons
   </message>
+  <message name="IDS_DEVTOOLS_9093b5a47841e196aeee81e9441eb23b" desc="">
+    cookies used by frames from <ph name="COOKIEDOMAIN">$1s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_90e4c7584668933aebe8cf1cbccfe82d" desc="">
     Please confirm delete of &quot;<ph name="THIS__DATABASE_DATABASEID_NAME">$1s</ph>&quot; database.
   </message>
@@ -205,9 +211,6 @@ read the &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_9b2a7456cec10d8b5ab8ce656598320b" desc="">
     Key path: 
-  </message>
-  <message name="IDS_DEVTOOLS_9b790a1c94937c437f9801d3c970efa7" desc="">
-     (empty)
   </message>
   <message name="IDS_DEVTOOLS_9c6a9d9f033001a9b3104984d319563b" desc="">
     Push
@@ -343,6 +346,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot; table.
   </message>
   <message name="IDS_DEVTOOLS_da131b6bd53f501c1323af4b198740d2" desc="">
     Push Messaging
+  </message>
+  <message name="IDS_DEVTOOLS_db01fae7397127fd9712b2efe6f8346f" desc="">
+    Key path: <ph name="KEYPATHSTRING">$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_dc105ac52c237f9f09c74b0767f64f74" desc="">
     Content-Type

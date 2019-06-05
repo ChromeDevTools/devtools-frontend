@@ -539,7 +539,7 @@ Profiler.HeapSnapshotGenericObjectNode = class extends Profiler.HeapSnapshotGrid
         valueStyle = 'null';
         break;
       case 'array':
-        value = (value || ls`(internal array)`) + '[]';
+        value = value ? `${value}[]` : ls`(internal array)[]`;
         break;
     }
     return this._createObjectCellWithValue(valueStyle, value);

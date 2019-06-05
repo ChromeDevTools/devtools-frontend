@@ -159,9 +159,6 @@
   <message name="IDS_DEVTOOLS_54afafa921428eed23978f633af4ce99" desc="">
     Allocation sampling
   </message>
-  <message name="IDS_DEVTOOLS_57b1250c3cbec60c67810ac83afb2c64" desc="">
-    (internal array)
-  </message>
   <message name="IDS_DEVTOOLS_5dd1d9f5baa173ae9267b3631da17a83" desc="">
     Self size
   </message>
@@ -260,6 +257,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9206de0db462c24e8a56433e2f7b7c75" desc="">
     Heap Snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_9274c1c81e169e786d1dc76b464b9089" desc="">
+    (internal array)[]
   </message>
   <message name="IDS_DEVTOOLS_959f661cf87130eea5c8e5671c013741" desc="">
     Objects allocated before <ph name="LIST_I__TITLE">$1s</ph>

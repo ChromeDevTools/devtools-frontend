@@ -88,15 +88,30 @@ function buildConcatenatedNodesList(node, nodes) {
 
 /**
  * Recursively check if there is concatenation to localization call.
- * Concatenation is allowed between localized strings and non-alphabetic strings.
- * It is not allowed between a localized string and a word.
- * Example (allowed): ls`Status Code` + ": "
- * Example (disallowed): ls`Status` + " Code" + ": "
+ * Concatenation is allowed between localized strings and strings that
+ * don't contain letters.
+ * Example (allowed): ls`Status code: ${statusCode}`
+ * Example (allowed): ls`Status code` + ': '
+ * Example (disallowed): ls`Status code: ` + statusCode
+ * Example (disallowed): ls`Status ` + 'code'
  */
 function checkConcatenation(parentNode, node, filePath, errors) {
-  function isWord(node) {
-    return (node.type === esprimaTypes.LITERAL && !!node.value.match(/[a-z]/i));
+  function isConcatenationDisallowed(node) {
+    if (node.type !== esprimaTypes.LITERAL && node.type !== esprimaTypes.TEMP_LITERAL)
+      return true;
+
+    let value;
+    if (node.type === esprimaTypes.LITERAL)
+      value = node.value;
+    else if (node.type === esprimaTypes.TEMP_LITERAL && node.expressions.length === 0)
+      value = node.quasis[0].value.cooked;
+
+    if (!value || typeof value !== 'string')
+      return true;
+
+    return value.match(/[a-z]/i) !== null;
   }
+
   function isConcatenation(node) {
     return (node !== undefined && node.type === esprimaTypes.BI_EXPR && node.operator === '+');
   }
@@ -107,11 +122,12 @@ function checkConcatenation(parentNode, node, filePath, errors) {
   if (isConcatenation(node)) {
     const concatenatedNodes = [];
     buildConcatenatedNodesList(node, concatenatedNodes);
-    const hasLocalizationCall =
-        !!concatenatedNodes.find(currentNode => localizationUtils.isLocalizationCall(currentNode));
+    const nonLocalizationCalls = concatenatedNodes.filter(node => !localizationUtils.isLocalizationCall(node));
+    const hasLocalizationCall = nonLocalizationCalls.length !== concatenatedNodes.length;
     if (hasLocalizationCall) {
-      const hasAlphabeticLiteral = !!concatenatedNodes.find(currentNode => isWord(currentNode));
-      if (hasAlphabeticLiteral) {
+      // concatenation with localization call
+      const hasConcatenationViolation = nonLocalizationCalls.some(isConcatenationDisallowed);
+      if (hasConcatenationViolation) {
         const code = escodegen.generate(node);
         addError(
             `${filePath}${

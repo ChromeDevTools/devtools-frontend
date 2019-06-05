@@ -73,8 +73,7 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     const element = createElementWithClass('div', 'blackbox-list-item');
     const pattern = element.createChild('div', 'blackbox-pattern');
     pattern.textContent = item.pattern;
-    pattern.title = ls`Blackbox scripts whose names match` +
-        ' \'' + item.pattern + '\'';
+    pattern.title = ls`Blackbox scripts whose names match '${item.pattern}'`;
     element.createChild('div', 'blackbox-separator');
     element.createChild('div', 'blackbox-behavior').textContent =
         item.disabled ? this._disabledLabel : this._blackboxLabel;

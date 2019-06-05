@@ -24,8 +24,8 @@
   <message name="IDS_DEVTOOLS_0f8854fb5bc175b0cd33a1e8518b366f" desc="">
     Switch to pan mode
   </message>
-  <message name="IDS_DEVTOOLS_10f0bad7213cafe18fb1cf55180a11da" desc="">
-    (async)
+  <message name="IDS_DEVTOOLS_103e6e056329361a5d169154f52771d0" desc="">
+    <ph name="DESCRIPTION">$1s</ph> (async)
   </message>
   <message name="IDS_DEVTOOLS_1299e7f10b9d0110e7fa5368d1307500" desc="">
     long text was truncated (<ph name="TOTALBYTES">$1s</ph>)
@@ -122,9 +122,6 @@
   </message>
   <message name="IDS_DEVTOOLS_678b7bbae3b9b67cee8bce1fac3067d7" desc="">
     Full list of DevTools keyboard shortcuts and gestures
-  </message>
-  <message name="IDS_DEVTOOLS_6a5fa3625d6317cd74f686720d9c411e" desc="">
-    Promise rejected
   </message>
   <message name="IDS_DEVTOOLS_6e0e121820384f135321cb766273f4da" desc="">
     Soft undo
@@ -228,6 +225,9 @@
   <message name="IDS_DEVTOOLS_b508f4cb8252d1d90689d1a61344c8fc" desc="">
     <ph name="ITEM_LABEL">$1s</ph>, checked, <ph name="ITEM_SHORTCUT">$2s</ph>
   </message>
+  <message name="IDS_DEVTOOLS_b6da8d6392710f305d7176a134971514" desc="">
+    Promise rejected (async)
+  </message>
   <message name="IDS_DEVTOOLS_b79165bf6163186253ed04568e1aee11" desc="">
     Pause/ Continue
   </message>
@@ -236,6 +236,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b7ad6a024765bbfbff22dedf9afe0d17" desc="">
     Jump to previous editing location
+  </message>
+  <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="">
+    Promise resolved (async)
   </message>
   <message name="IDS_DEVTOOLS_bc39d641a1e16fb73f2ce5520d250ed0" desc="">
     Go to member
@@ -248,9 +251,6 @@
   </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="">
     More tabs
-  </message>
-  <message name="IDS_DEVTOOLS_d2923d7d060c61c17d06c22166b2be41" desc="">
-    Promise resolved
   </message>
   <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="">
     Evaluate selection in console

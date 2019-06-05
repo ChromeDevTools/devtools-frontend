@@ -16,11 +16,13 @@ Network.NetworkConfigView = class extends UI.VBox {
   }
 
   /**
+   * @param {string} title
    * @return {{select: !Element, input: !Element}}
    */
-  static createUserAgentSelectAndInput() {
+  static createUserAgentSelectAndInput(title) {
     const userAgentSetting = Common.settings.createSetting('customUserAgent', '');
     const userAgentSelectElement = createElement('select');
+    UI.ARIAUtils.setAccessibleName(userAgentSelectElement, title);
 
     const customOverride = {title: Common.UIString('Custom...'), value: 'custom'};
     userAgentSelectElement.appendChild(new Option(customOverride.title, customOverride.value));
@@ -42,6 +44,7 @@ Network.NetworkConfigView = class extends UI.VBox {
     otherUserAgentElement.title = userAgentSetting.get();
     otherUserAgentElement.placeholder = Common.UIString('Enter a custom user agent');
     otherUserAgentElement.required = true;
+    UI.ARIAUtils.setAccessibleName(otherUserAgentElement, otherUserAgentElement.placeholder);
 
     settingChanged();
     userAgentSelectElement.addEventListener('change', userAgentSelected, false);
@@ -105,14 +108,17 @@ Network.NetworkConfigView = class extends UI.VBox {
   }
 
   _createNetworkThrottlingSection() {
-    const section = this._createSection(Common.UIString('Network throttling'), 'network-config-throttling');
+    const title = ls`Network throttling`;
+    const section = this._createSection(title, 'network-config-throttling');
     const networkThrottlingSelect =
         /** @type {!HTMLSelectElement} */ (section.createChild('select', 'chrome-select'));
     MobileThrottling.throttlingManager().decorateSelectWithNetworkThrottling(networkThrottlingSelect);
+    UI.ARIAUtils.setAccessibleName(networkThrottlingSelect, title);
   }
 
   _createUserAgentSection() {
-    const section = this._createSection(Common.UIString('User agent'), 'network-config-ua');
+    const title = ls`User agent`;
+    const section = this._createSection(title, 'network-config-ua');
     const checkboxLabel = UI.CheckboxLabel.create(Common.UIString('Select automatically'), true);
     section.appendChild(checkboxLabel);
     const autoCheckbox = checkboxLabel.checkboxElement;
@@ -125,7 +131,7 @@ Network.NetworkConfigView = class extends UI.VBox {
     });
     const customUserAgentSelectBox = section.createChild('div', 'network-config-ua-custom');
     autoCheckbox.addEventListener('change', userAgentSelectBoxChanged);
-    const customSelectAndInput = Network.NetworkConfigView.createUserAgentSelectAndInput();
+    const customSelectAndInput = Network.NetworkConfigView.createUserAgentSelectAndInput(title);
     customSelectAndInput.select.classList.add('chrome-select');
     customUserAgentSelectBox.appendChild(customSelectAndInput.select);
     customUserAgentSelectBox.appendChild(customSelectAndInput.input);

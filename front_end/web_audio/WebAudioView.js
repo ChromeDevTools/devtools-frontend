@@ -175,7 +175,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
       // Display summary only for real-time context.
       if (context.contextType === 'realtime') {
         const realtimeData = await model.requestRealtimeData(context.contextId);
-        if (realtimeData && realtimeData.currentTime && realtimeData.renderCapacity)
+        if (realtimeData)
           this._updateSummaryBar(context.contextId, realtimeData);
       } else {
         this._clearSummaryBar();

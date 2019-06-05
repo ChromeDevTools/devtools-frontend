@@ -69,11 +69,15 @@ WebAudio.AudioContextSummaryBuilder = class {
    */
   constructor(contextId, contextRealtimeData) {
     const time = contextRealtimeData.currentTime.toFixed(3);
+    const mean = (contextRealtimeData.callbackIntervalMean * 1000).toFixed(3);
+    const stddev = (Math.sqrt(contextRealtimeData.callbackIntervalVariance) * 1000).toFixed(3);
     const capacity = (contextRealtimeData.renderCapacity * 100).toFixed(3);
     this._fragment = createDocumentFragment();
     this._fragment.appendChild(UI.html`
       <div class="context-summary-container">
         <span>${ls`Current Time`}: ${time} s</span>
+        <span>\u2758</span>
+        <span>${ls`Callback Interval`}: μ = ${mean} ms, σ = ${stddev} ms</span>
         <span>\u2758</span>
         <span>${ls`Render Capacity`}: ${capacity} %</span>
       </div>

@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_5f8695ebb8bc9a78c593ee7bfae153a5" desc="">
     AudioContext
   </message>
+  <message name="IDS_DEVTOOLS_ab7799fb0ebb5a4167781f756efb820a" desc="">
+    Callback Interval
+  </message>
   <message name="IDS_DEVTOOLS_b78dc7712ef83a078c1c68822d2a1a3f" desc="">
     BaseAudioContexts
   </message>

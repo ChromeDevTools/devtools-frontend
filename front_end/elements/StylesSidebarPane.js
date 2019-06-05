@@ -2143,6 +2143,8 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
         }
         break;
       case 'Enter':
+        if (event.shiftKey)
+          return;
         // Accept any available autocompletions and advance to the next field.
         this.tabKeyPressed();
         event.preventDefault();
@@ -2341,6 +2343,8 @@ Elements.StylesSidebarPropertyRenderer = class {
     this._bezierHandler = null;
     /** @type {?function(string, string):!Node} */
     this._shadowHandler = null;
+    /** @type {?function(string, string):!Node} */
+    this._gridHandler = null;
     /** @type {?function(string):!Node} */
     this._varHandler = createTextNode;
   }
@@ -2364,6 +2368,13 @@ Elements.StylesSidebarPropertyRenderer = class {
    */
   setShadowHandler(handler) {
     this._shadowHandler = handler;
+  }
+
+  /**
+   * @param {function(string, string):!Node} handler
+   */
+  setGridHandler(handler) {
+    this._gridHandler = handler;
   }
 
   /**
@@ -2397,6 +2408,12 @@ Elements.StylesSidebarPropertyRenderer = class {
                                 this._propertyName === '-webkit-box-shadow') &&
         !SDK.CSSMetadata.VariableRegex.test(this._propertyValue)) {
       valueElement.appendChild(this._shadowHandler(this._propertyValue, this._propertyName));
+      valueElement.normalize();
+      return valueElement;
+    }
+
+    if (this._gridHandler && SDK.cssMetadata().isGridAreaDefiningProperty(this._propertyName)) {
+      valueElement.appendChild(this._gridHandler(this._propertyValue, this._propertyName));
       valueElement.normalize();
       return valueElement;
     }

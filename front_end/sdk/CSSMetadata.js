@@ -158,6 +158,15 @@ SDK.CSSMetadata = class {
    * @param {string} propertyName
    * @return {boolean}
    */
+  isGridAreaDefiningProperty(propertyName) {
+    propertyName = propertyName.toLowerCase();
+    return propertyName === 'grid' || propertyName === 'grid-template' || propertyName === 'grid-template-areas';
+  }
+
+  /**
+   * @param {string} propertyName
+   * @return {boolean}
+   */
   isLengthProperty(propertyName) {
     propertyName = propertyName.toLowerCase();
     if (propertyName === 'line-height')
@@ -283,6 +292,16 @@ SDK.CSSMetadata = class {
 
 SDK.CSSMetadata.VariableRegex = /(var\(--.*?\))/g;
 SDK.CSSMetadata.URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+
+/**
+ * Matches an instance of a grid area 'row' definition.
+ * 'grid-template-areas', e.g.
+ *    "a a ."
+ *
+ * 'grid', 'grid-template', e.g.
+ *    [track-name] "a a ." minmax(50px, auto) [track-name]
+ */
+SDK.CSSMetadata.GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
 
 /**
  * @return {!SDK.CSSMetadata}

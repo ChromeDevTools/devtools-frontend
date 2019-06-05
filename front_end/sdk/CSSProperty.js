@@ -180,9 +180,11 @@ SDK.CSSProperty = class {
    * @return {string}
    */
   static _formatStyle(styleText, indentation, endIndentation, tokenizerFactory) {
+    const doubleIndent = indentation.substring(endIndentation.length) + indentation;
     if (indentation)
       indentation = '\n' + indentation;
     let result = '';
+    let propertyName = '';
     let propertyText;
     let insideProperty = false;
     let needsSemi = false;
@@ -225,9 +227,17 @@ SDK.CSSProperty = class {
         result = result.trimRight() + indentation + propertyText.trim() + ';';
         needsSemi = false;
         insideProperty = false;
+        propertyName = '';
         if (token === '}')
           result += '}';
       } else {
+        if (SDK.cssMetadata().isGridAreaDefiningProperty(propertyName)) {
+          const rowResult = SDK.CSSMetadata.GridAreaRowRegex.exec(token);
+          if (rowResult && rowResult.index === 0 && !propertyText.trimRight().endsWith(']'))
+            propertyText = propertyText.trimRight() + '\n' + doubleIndent;
+        }
+        if (!propertyName && token === ':')
+          propertyName = propertyText;
         propertyText += token;
       }
     }

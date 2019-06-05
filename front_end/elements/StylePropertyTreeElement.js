@@ -232,6 +232,26 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     return container;
   }
 
+  /**
+   * @param {string} propertyValue
+   * @param {string} propertyName
+   * @return {!Node}
+   */
+  _processGrid(propertyValue, propertyName) {
+    const splitResult = TextUtils.TextUtils.splitStringByRegexes(propertyValue, [SDK.CSSMetadata.GridAreaRowRegex]);
+    if (splitResult.length <= 1)
+      return createTextNode(propertyValue);
+
+    const indent = Common.moduleSetting('textEditorIndent').get();
+    const container = createDocumentFragment();
+    for (const result of splitResult) {
+      const value = result.value.trim();
+      const content = UI.html`<br /><span class='styles-clipboard-only'>${indent.repeat(2)}</span>${value}`;
+      container.appendChild(content);
+    }
+    return container;
+  }
+
   _updateState() {
     if (!this.listItemElement)
       return;
@@ -413,6 +433,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       propertyRenderer.setColorHandler(this._processColor.bind(this));
       propertyRenderer.setBezierHandler(this._processBezier.bind(this));
       propertyRenderer.setShadowHandler(this._processShadow.bind(this));
+      propertyRenderer.setGridHandler(this._processGrid.bind(this));
     }
 
     this.listItemElement.removeChildren();
@@ -427,7 +448,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     this.listItemElement.createChild('span', 'styles-clipboard-only')
         .createTextChild(indent + (this.property.disabled ? '/* ' : ''));
     this.listItemElement.appendChild(this.nameElement);
-    this.listItemElement.createTextChild(': ');
+    const lineBreakValue = this.valueElement.firstElementChild && this.valueElement.firstElementChild.tagName === 'BR';
+    const separator = lineBreakValue ? ':' : ': ';
+    this.listItemElement.createChild('span', 'styles-name-value-separator').textContent = separator;
     if (this._expandElement)
       this.listItemElement.appendChild(this._expandElement);
     this.listItemElement.appendChild(this.valueElement);
@@ -523,8 +546,19 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return;
 
     const isEditingName = selectElement === this.nameElement;
-    if (!isEditingName)
+    if (!isEditingName) {
+      if (SDK.cssMetadata().isGridAreaDefiningProperty(this.name))
+        this.valueElement.textContent = restoreGridIndents(this.value);
       this.valueElement.textContent = restoreURLs(this.valueElement.textContent, this.value);
+    }
+
+    /**
+     * @param {string} value
+     */
+    function restoreGridIndents(value) {
+      const splitResult = TextUtils.TextUtils.splitStringByRegexes(value, [SDK.CSSMetadata.GridAreaRowRegex]);
+      return splitResult.map(result => result.value.trim()).join('\n');
+    }
 
     /**
      * @param {string} fieldValue
@@ -638,7 +672,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     let result;
 
-    if (isEnterKey(event)) {
+    if (isEnterKey(event) && !event.shiftKey) {
       result = 'forward';
     } else if (event.keyCode === UI.KeyboardShortcut.Keys.Esc.code || event.key === 'Escape') {
       result = 'cancel';
@@ -976,7 +1010,7 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       return;
 
     const hasBeenEditedIncrementally = this._hasBeenEditedIncrementally;
-    styleText = styleText.replace(/\s/g, ' ').trim();  // Replace &nbsp; with whitespace.
+    styleText = styleText.replace(/[\u00a0\t]/g, ' ').trim();  // Replace &nbsp; with whitespace.
     if (!styleText.length && majorChange && this._newProperty && !hasBeenEditedIncrementally) {
       // The user deleted everything and never applied a new property value via Up/Down scrolling/live editing, so remove the tree element and update.
       this.parent.removeChild(this);

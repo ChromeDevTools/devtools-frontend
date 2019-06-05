@@ -165,6 +165,13 @@ ol.expanded {
     cursor: default;
 }
 
+.styles-name-value-separator {
+    display: inline-block;
+    width: 14px;
+    text-decoration: inherit;
+    white-space: pre;
+}
+
 .styles-clipboard-only {
     display: inline-block;
     width: 0;

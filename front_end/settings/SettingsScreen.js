@@ -41,9 +41,11 @@ Settings.SettingsScreen = class extends UI.VBox {
     this.contentElement.classList.add('vbox');
 
     const settingsLabelElement = createElement('div');
-    UI.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
-        .createChild('div', 'settings-window-title')
-        .textContent = Common.UIString('Settings');
+    const settingsTitleElement = UI.createShadowRootWithCoreStyles(settingsLabelElement, 'settings/settingsScreen.css')
+                                     .createChild('div', 'settings-window-title');
+
+    UI.ARIAUtils.markAsHeading(settingsTitleElement, 1);
+    settingsTitleElement.textContent = ls`Settings`;
 
     this._tabbedLocation =
         UI.viewManager.createTabbedLocation(() => Settings.SettingsScreen._showSettingsScreen(), 'settings-view');
@@ -51,7 +53,7 @@ Settings.SettingsScreen = class extends UI.VBox {
     tabbedPane.leftToolbar().appendToolbarItem(new UI.ToolbarItem(settingsLabelElement));
     tabbedPane.setShrinkableTabs(false);
     tabbedPane.makeVerticalTabLayout();
-    const shortcutsView = new UI.SimpleView(Common.UIString('Shortcuts'));
+    const shortcutsView = new UI.SimpleView(ls`Shortcuts`);
     UI.shortcutsScreen.createShortcutsTabView().show(shortcutsView.element);
     this._tabbedLocation.appendView(shortcutsView);
     tabbedPane.show(this.contentElement);

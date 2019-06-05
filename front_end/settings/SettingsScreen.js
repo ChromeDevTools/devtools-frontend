@@ -71,7 +71,7 @@ Settings.SettingsScreen = class extends UI.VBox {
         /** @type {!Settings.SettingsScreen} */ (self.runtime.sharedInstance(Settings.SettingsScreen));
     if (settingsScreen.isShowing())
       return;
-    const dialog = new UI.Dialog();
+    const dialog = new UI.Dialog(/* modal=*/ true);
     dialog.addCloseButton();
     settingsScreen.show(dialog.contentElement);
     dialog.show();

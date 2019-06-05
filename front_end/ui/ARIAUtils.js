@@ -21,6 +21,16 @@ UI.ARIAUtils.markAsCheckbox = function(element) {
 
 /**
  * @param {!Element} element
+ * @param {boolean=} modal
+ */
+UI.ARIAUtils.markAsDialog = function(element, modal) {
+  element.setAttribute('role', 'dialog');
+  if (modal)
+    element.setAttribute('aria-modal', 'true');
+};
+
+/**
+ * @param {!Element} element
  */
 UI.ARIAUtils.markAsGroup = function(element) {
   element.setAttribute('role', 'group');

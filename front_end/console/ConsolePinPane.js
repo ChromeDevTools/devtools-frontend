@@ -144,6 +144,7 @@ Console.ConsolePin = class extends Common.Object {
 
     this._editorPromise = self.runtime.extension(UI.TextEditorFactory).instance().then(factory => {
       this._editor = factory.createEditor({
+        devtoolsAccessibleName: ls`Live expression editor`,
         lineNumbers: false,
         lineWrapping: true,
         mimeType: 'javascript',

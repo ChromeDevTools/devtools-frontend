@@ -43,6 +43,7 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
     this.registerRequiredCSS('text_editor/cmdevtools.css');
 
     this._codeMirror = new CodeMirror(this.element, {
+      devtoolsAccessibleName: options.devtoolsAccessibleName,
       lineNumbers: options.lineNumbers,
       matchBrackets: true,
       smartIndent: true,
@@ -1739,7 +1740,7 @@ CodeMirror.inputStyles.devToolsAccessibleTextArea = class extends CodeMirror.inp
    */
   init(display) {
     super.init(display);
-    UI.ARIAUtils.setAccessibleName(this.textarea, ls`Code editor`);
+    UI.ARIAUtils.setAccessibleName(this.textarea, this.cm.options.devtoolsAccessibleName || ls`Code editor`);
     this.textarea.addEventListener('compositionstart', this._onCompositionStart.bind(this));
   }
 

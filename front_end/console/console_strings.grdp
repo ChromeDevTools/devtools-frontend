@@ -126,6 +126,9 @@
   <message name="IDS_DEVTOOLS_650140bd73628d283d870d4648ae3324" desc="">
     Find string in logs
   </message>
+  <message name="IDS_DEVTOOLS_6775864ce3df150aabbf2d60eb12f513" desc="">
+    Live expression editor
+  </message>
   <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="">
     Value
   </message>

@@ -108,6 +108,7 @@ UI.TextEditor.Events = {
 /**
  * @typedef {{
  *  bracketMatchingSetting: (!Common.Setting|undefined),
+ *  devtoolsAccessibleName: (string|undefined),
  *  lineNumbers: boolean,
  *  lineWrapping: boolean,
  *  mimeType: (string|undefined),

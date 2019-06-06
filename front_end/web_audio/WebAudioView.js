@@ -50,6 +50,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
    * @override
    */
   wasShown() {
+    super.wasShown();
     for (const model of SDK.targetManager.models(WebAudio.WebAudioModel))
       this._addEventListeners(model);
   }

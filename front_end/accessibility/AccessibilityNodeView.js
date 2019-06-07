@@ -164,7 +164,7 @@ Accessibility.AXNodePropertyTreeElement = class extends UI.TreeElement {
     const nameElement = createElement('span');
     const AXAttributes = Accessibility.AccessibilityStrings.AXAttributes;
     if (name in AXAttributes) {
-      nameElement.textContent = ls(AXAttributes[name].name);
+      nameElement.textContent = AXAttributes[name].name;
       nameElement.title = AXAttributes[name].description;
       nameElement.classList.add('ax-readable-name');
     } else {
@@ -392,8 +392,8 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
         if (source.nativeSource) {
           const AXNativeSourceTypes = Accessibility.AccessibilityStrings.AXNativeSourceTypes;
           const nativeSource = source.nativeSource;
-          nameElement.textContent = ls(AXNativeSourceTypes[nativeSource].name);
-          nameElement.title = ls(AXNativeSourceTypes[nativeSource].description);
+          nameElement.textContent = AXNativeSourceTypes[nativeSource].name;
+          nameElement.title = AXNativeSourceTypes[nativeSource].description;
           nameElement.classList.add('ax-readable-name');
           break;
         }
@@ -404,12 +404,12 @@ Accessibility.AXValueSourceTreeElement = class extends Accessibility.AXNodePrope
       default:
         const AXSourceTypes = Accessibility.AccessibilityStrings.AXSourceTypes;
         if (type in AXSourceTypes) {
-          nameElement.textContent = ls(AXSourceTypes[type].name);
-          nameElement.title = ls(AXSourceTypes[type].description);
+          nameElement.textContent = AXSourceTypes[type].name;
+          nameElement.title = AXSourceTypes[type].description;
           nameElement.classList.add('ax-readable-name');
         } else {
           console.warn(type, 'not in AXSourceTypes');
-          nameElement.textContent = ls(type);
+          nameElement.textContent = type;
         }
     }
     this.listItemElement.appendChild(nameElement);

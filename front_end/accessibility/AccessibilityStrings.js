@@ -5,186 +5,186 @@ Accessibility.AccessibilityStrings = {};
 
 Accessibility.AccessibilityStrings.AXAttributes = {
   'disabled': {
-    name: 'Disabled',
-    description: 'If true, this element currently cannot be interacted with.',
+    name: ls`Disabled`,
+    description: ls`If true, this element currently cannot be interacted with.`,
     group: 'AXGlobalStates'
   },
   'invalid': {
-    name: 'Invalid user entry',
-    description: 'If true, this element\'s user-entered value does not conform to validation requirement.',
+    name: ls`Invalid user entry`,
+    description: ls`If true, this element's user-entered value does not conform to validation requirement.`,
     group: 'AXGlobalStates'
   },
-  'editable': {name: 'Editable', description: 'If and how this element can be edited.'},
-  'focusable': {name: 'Focusable', description: 'If true, this element can recieve focus.'},
-  'focused': {name: 'Focused', description: 'If true, this element currently has focus.'},
-  'settable': {name: 'Can set value', description: 'Whether the value of this element can be set.'},
+  'editable': {name: ls`Editable`, description: ls`If and how this element can be edited.`},
+  'focusable': {name: ls`Focusable`, description: ls`If true, this element can receive focus.`},
+  'focused': {name: ls`Focused`, description: ls`If true, this element currently has focus.`},
+  'settable': {name: ls`Can set value`, description: ls`Whether the value of this element can be set.`},
   'live': {
-    name: 'Live region',
-    description: 'Whether and what priority of live updates may be expected for this element.',
+    name: ls`Live region`,
+    description: ls`Whether and what priority of live updates may be expected for this element.`,
     group: 'AXLiveRegionAttributes'
   },
-  'atomic': {
-    name: 'Atomic (live regions)',
-    description:
-        'If this element may receive live updates, whether the entire live region should be presented to the user on changes, or only changed nodes.',
+  'atomic': {name: ls`Atomic (live regions)`, description: ls
+    `If this element may receive live updates, whether the entire live region should be presented to the user on changes, or only changed nodes.`,
     group: 'AXLiveRegionAttributes'
   },
   'relevant': {
-    name: 'Relevant (live regions)',
-    description: 'If this element may receive live updates, what type of updates should trigger a notification.',
+    name: ls`Relevant (live regions)`,
+    description: ls`If this element may receive live updates, what type of updates should trigger a notification.`,
     group: 'AXLiveRegionAttributes'
   },
   'busy': {
-    name: 'Busy (live regions)',
-    description:
-        'Whether this element or its subtree are currently being updated (and thus may be in an inconsistent state).',
+    name: ls`Busy (live regions)`,
+    description: ls
+    `Whether this element or its subtree are currently being updated (and thus may be in an inconsistent state).`,
     group: 'AXLiveRegionAttributes'
   },
   'root': {
-    name: 'Live region root',
-    description: 'If this element may receive live updates, the root element of the containing live region.',
+    name: ls`Live region root`,
+    description: ls`If this element may receive live updates, the root element of the containing live region.`,
     group: 'AXLiveRegionAttributes'
   },
   'autocomplete': {
-    name: 'Has autocomplete',
-    description: 'Whether and what type of autocomplete suggestions are currently provided by this element.',
+    name: ls`Has autocomplete`,
+    description: ls`Whether and what type of autocomplete suggestions are currently provided by this element.`,
     group: 'AXWidgetAttributes'
   },
   'haspopup': {
-    name: 'Has popup',
-    description: 'Whether this element has caused some kind of pop-up (such as a menu) to appear.',
+    name: ls`Has popup`,
+    description: ls`Whether this element has caused some kind of pop-up (such as a menu) to appear.`,
     group: 'AXWidgetAttributes'
   },
-  'level': {name: 'Level', description: 'The hierarchical level of this element.', group: 'AXWidgetAttributes'},
+  'level': {name: ls`Level`, description: ls`The hierarchical level of this element.`, group: 'AXWidgetAttributes'},
   'multiselectable': {
-    name: 'Multi-selectable',
-    description: 'Whether a user may select more than one option from this widget.',
+    name: ls`Multi-selectable`,
+    description: ls`Whether a user may select more than one option from this widget.`,
     group: 'AXWidgetAttributes'
   },
   'orientation': {
-    name: 'Orientation',
-    description: 'Whether this linear element\'s orientation is horizontal or vertical.',
+    name: ls`Orientation`,
+    description: ls`Whether this linear element's orientation is horizontal or vertical.`,
     group: 'AXWidgetAttributes'
   },
   'multiline': {
-    name: 'Multi-line',
-    description: 'Whether this textbox may have more than one line.',
+    name: ls`Multi-line`,
+    description: ls`Whether this text box may have more than one line.`,
     group: 'AXWidgetAttributes'
   },
   'readonly': {
-    name: 'Read-only',
-    description: 'If true, this element may be interacted with, but its value cannot be changed.',
+    name: ls`Read-only`,
+    description: ls`If true, this element may be interacted with, but its value cannot be changed.`,
     group: 'AXWidgetAttributes'
   },
   'required': {
-    name: 'Required',
-    description: 'Whether this element is a required field in a form.',
+    name: ls`Required`,
+    description: ls`Whether this element is a required field in a form.`,
     group: 'AXWidgetAttributes'
   },
   'valuemin': {
-    name: 'Minimum value',
-    description: 'For a range widget, the minimum allowed value.',
+    name: ls`Minimum value`,
+    description: ls`For a range widget, the minimum allowed value.`,
     group: 'AXWidgetAttributes'
   },
   'valuemax': {
-    name: 'Maximum value',
-    description: 'For a range widget, the maximum allowed value.',
+    name: ls`Maximum value`,
+    description: ls`For a range widget, the maximum allowed value.`,
     group: 'AXWidgetAttributes'
   },
   'valuetext': {
-    name: 'Value description',
-    description: 'A human-readable version of the value of a range widget (where necessary).',
+    name: ls`Value description`,
+    description: ls`A human-readable version of the value of a range widget (where necessary).`,
     group: 'AXWidgetAttributes'
   },
   'checked': {
-    name: 'Checked',
-    description:
-        'Whether this checkbox, radio button or tree item is checked, unchecked, or mixed (e.g. has both checked and un-checked children).',
+    name: ls`Checked`,
+    description: ls
+    `Whether this checkbox, radio button or tree item is checked, unchecked, or mixed (e.g. has both checked and un-checked children).`,
     group: 'AXWidgetStates'
   },
   'expanded': {
-    name: 'Expanded',
-    description: 'Whether this element, or another grouping element it controls, is expanded.',
+    name: ls`Expanded`,
+    description: ls`Whether this element, or another grouping element it controls, is expanded.`,
     group: 'AXWidgetStates'
   },
   'pressed': {
-    name: 'Pressed',
-    description: 'Whether this toggle button is currently in a pressed state.',
+    name: ls`Pressed`,
+    description: ls`Whether this toggle button is currently in a pressed state.`,
     group: 'AXWidgetStates'
   },
   'selected': {
-    name: 'Selected',
-    description: 'Whether the option represented by this element is currently selected.',
+    name: ls`Selected`,
+    description: ls`Whether the option represented by this element is currently selected.`,
     group: 'AXWidgetStates'
   },
   'activedescendant': {
-    name: 'Active descendant',
-    description: 'The descendant of this element which is active; i.e. the element to which focus should be delegated.',
+    name: ls`Active descendant`,
+    description: ls
+    `The descendant of this element which is active; i.e. the element to which focus should be delegated.`,
     group: 'AXRelationshipAttributes'
   },
   'flowto': {
-    name: 'Flows to',
-    description:
-        'Element to which the user may choose to navigate after this one, instead of the next element in the DOM order.',
+    name: ls`Flows to`,
+    description: ls
+    `Element to which the user may choose to navigate after this one, instead of the next element in the DOM order.`,
     group: 'AXRelationshipAttributes'
   },
   'controls': {
-    name: 'Controls',
-    description: 'Element or elements whose content or presence is/are controlled by this widget.',
+    name: ls`Controls`,
+    description: ls`Element or elements whose content or presence is/are controlled by this widget.`,
     group: 'AXRelationshipAttributes'
   },
   'describedby': {
-    name: 'Described by',
-    description: 'Element or elements which form the description of this element.',
+    name: ls`Described by`,
+    description: ls`Element or elements which form the description of this element.`,
     group: 'AXRelationshipAttributes'
   },
   'labelledby': {
-    name: 'Labeled by',
-    description: 'Element or elements which may form the name of this element.',
+    name: ls`Labeled by`,
+    description: ls`Element or elements which may form the name of this element.`,
     group: 'AXRelationshipAttributes'
   },
   'owns': {
-    name: 'Owns',
-    description:
-        'Element or elements which should be considered descendants of this element, despite not being descendants in the DOM.',
+    name: ls`Owns`,
+    description: ls
+    `Element or elements which should be considered descendants of this element, despite not being descendants in the DOM.`,
     group: 'AXRelationshipAttributes'
   },
-  'name': {name: 'Name', description: 'The computed name of this element.', group: 'Default'},
+  'name': {name: ls`Name`, description: ls`The computed name of this element.`, group: 'Default'},
   'role': {
-    name: 'Role',
-    description:
-        'Indicates the purpose of this element, such as a user interface idiom for a widget, or structural role within a document.',
+    name: ls`Role`,
+    description: ls
+    `Indicates the purpose of this element, such as a user interface idiom for a widget, or structural role within a document.`,
     group: 'Default'
   },
   'value': {
-    name: 'Value',
-    description:
-        'The value of this element; this may be user-provided or developer-provided, depending on the element.',
+    name: ls`Value`,
+    description: ls
+    `The value of this element; this may be user-provided or developer-provided, depending on the element.`,
     group: 'Default'
   },
-  'help': {name: 'Help', description: 'The computed help text for this element.', group: 'Default'},
-  'description': {name: 'Description', description: 'The accessible description for this element.', group: 'Default'}
+  'help': {name: ls`Help`, description: ls`The computed help text for this element.`, group: 'Default'},
+  'description':
+      {name: ls`Description`, description: ls`The accessible description for this element.`, group: 'Default'}
 };
 
 Accessibility.AccessibilityStrings.AXSourceTypes = {
-  'attribute': {name: 'From attribute', description: 'Value from attribute.'},
+  'attribute': {name: ls`From attribute`, description: ls`Value from attribute.`},
   'implicit': {
-    name: 'Implicit',
-    description: 'Implicit value.',
+    name: ls`Implicit`,
+    description: ls`Implicit value.`,
   },
-  'style': {name: 'From style', description: 'Value from style.'},
-  'contents': {name: 'Contents', description: 'Value from element contents.'},
-  'placeholder': {name: 'From placeholder attribute', description: 'Value from placeholder attribute.'},
-  'relatedElement': {name: 'Related element', description: 'Value from related element.'}
+  'style': {name: ls`From style`, description: ls`Value from style.`},
+  'contents': {name: ls`Contents`, description: ls`Value from element contents.`},
+  'placeholder': {name: ls`From placeholder attribute`, description: ls`Value from placeholder attribute.`},
+  'relatedElement': {name: ls`Related element`, description: ls`Value from related element.`}
 };
 
 Accessibility.AccessibilityStrings.AXNativeSourceTypes = {
-  'figcaption': {name: 'From caption', description: 'Value from figcaption element.'},
-  'label': {name: 'From label', description: 'Value from label element.'},
-  'labelfor': {name: 'From label (for)', description: 'Value from label element with for= attribute.'},
-  'labelwrapped': {name: 'From label (wrapped)', description: 'Value from label element wrapped.'},
-  'tablecaption': {name: 'From caption', description: 'Value from table caption.'},
-  'title': {'name': 'From title', 'description': 'Value from title attribute.'},
-  'other': {name: 'From native HTML', description: 'Value from native HTML (unknown source).'},
+  'figcaption': {name: ls`From caption`, description: ls`Value from figcaption element.`},
+  'label': {name: ls`From label`, description: ls`Value from label element.`},
+  'labelfor': {name: ls`From label (for)`, description: ls`Value from label element with for= attribute.`},
+  'labelwrapped': {name: ls`From label (wrapped)`, description: ls`Value from label element wrapped.`},
+  'tablecaption': {name: ls`From caption`, description: ls`Value from table caption.`},
+  'title': {name: ls`From title`, description: ls`Value from title attribute.`},
+  'other': {name: ls`From native HTML`, description: ls`Value from native HTML (unknown source).`},
 
 };

@@ -10,6 +10,8 @@ Resources.AppManifestView = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('resources/appManifestView.css');
 
+    Common.moduleSetting('colorFormat').addChangeListener(this._updateManifest.bind(this, true));
+
     this._emptyView = new UI.EmptyWidget(Common.UIString('No manifest detected'));
     this._emptyView.appendLink(
         'https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/?utm_source=devtools');
@@ -141,10 +143,12 @@ Resources.AppManifestView = class extends UI.VBox {
     this._themeColorSwatch.classList.toggle('hidden', !stringProperty('theme_color'));
     const themeColor = Common.Color.parse(stringProperty('theme_color') || 'white') || Common.Color.parse('white');
     this._themeColorSwatch.setColor(/** @type {!Common.Color} */ (themeColor));
+    this._themeColorSwatch.setFormat(Common.Color.detectColorFormat(this._themeColorSwatch.color()));
     this._backgroundColorSwatch.classList.toggle('hidden', !stringProperty('background_color'));
     const backgroundColor =
         Common.Color.parse(stringProperty('background_color') || 'white') || Common.Color.parse('white');
     this._backgroundColorSwatch.setColor(/** @type {!Common.Color} */ (backgroundColor));
+    this._backgroundColorSwatch.setFormat(Common.Color.detectColorFormat(this._backgroundColorSwatch.color()));
 
     this._orientationField.textContent = stringProperty('orientation');
     const displayType = stringProperty('display');

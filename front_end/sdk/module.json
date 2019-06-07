@@ -135,6 +135,24 @@
         {
             "type": "setting",
             "category": "Rendering",
+            "settingName": "showLayoutShiftRegions",
+            "settingType": "boolean",
+            "storageType": "session",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Show layout shift regions"
+                },
+                {
+                    "value": false,
+                    "title": "Hide layout shift regions"
+                }
+            ],
+            "defaultValue": false
+        },
+        {
+            "type": "setting",
+            "category": "Rendering",
             "settingName": "showAdHighlights",
             "settingType": "boolean",
             "storageType": "session",

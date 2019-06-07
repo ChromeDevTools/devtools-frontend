@@ -34,6 +34,7 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     this._highlighter = this._defaultHighlighter;
 
     this._showPaintRectsSetting = Common.moduleSetting('showPaintRects');
+    this._showLayoutShiftRegionsSetting = Common.moduleSetting('showLayoutShiftRegions');
     this._showAdHighlightsSetting = Common.moduleSetting('showAdHighlights');
     this._showDebugBordersSetting = Common.moduleSetting('showDebugBorders');
     this._showFPSCounterSetting = Common.moduleSetting('showFPSCounter');
@@ -77,6 +78,8 @@ SDK.OverlayModel = class extends SDK.SDKModel {
     this._registeredListeners = [
       this._showPaintRectsSetting.addChangeListener(
           () => this._overlayAgent.setShowPaintRects(this._showPaintRectsSetting.get())),
+      this._showLayoutShiftRegionsSetting.addChangeListener(
+          () => this._overlayAgent.setShowLayoutShiftRegions(this._showLayoutShiftRegionsSetting.get())),
       this._showAdHighlightsSetting.addChangeListener(
           () => this._overlayAgent.setShowAdHighlights(this._showAdHighlightsSetting.get())),
       this._showDebugBordersSetting.addChangeListener(
@@ -91,6 +94,8 @@ SDK.OverlayModel = class extends SDK.SDKModel {
 
     if (this._showPaintRectsSetting.get())
       this._overlayAgent.setShowPaintRects(true);
+    if (this._showLayoutShiftRegionsSetting.get())
+      this._overlayAgent.setShowLayoutShiftRegions(true);
     if (this._showAdHighlightsSetting.get())
       this._overlayAgent.setShowAdHighlights(true);
     if (this._showDebugBordersSetting.get())

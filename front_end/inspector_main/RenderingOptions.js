@@ -38,6 +38,10 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
         Common.UIString('Highlights areas of the page (green) that need to be repainted'),
         Common.moduleSetting('showPaintRects'));
     this._appendCheckbox(
+        Common.UIString('Layout Shift Regions'),
+        Common.UIString('Highlights areas of the page (blue) that were shifted'),
+        Common.moduleSetting('showLayoutShiftRegions'));
+    this._appendCheckbox(
         Common.UIString('Layer borders'), Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
         Common.moduleSetting('showDebugBorders'));
     this._appendCheckbox(

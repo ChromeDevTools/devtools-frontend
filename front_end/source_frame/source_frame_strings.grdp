@@ -18,11 +18,17 @@
   <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="">
     Find
   </message>
+  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="">
+    Image from <ph name="THIS__URL">$1s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="">
     Pretty print
   </message>
   <message name="IDS_DEVTOOLS_5ada9c9e1dad2e7e20aaa7688d7bd6c7" desc="">
     Line <ph name="LOCATION_______">$1s</ph>, Column <ph name="LOCATION_______">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_69614e5ef242926a61b58cebd303d4f4" desc="">
+    Preview of font from <ph name="THIS__URL">$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_6efb3f8d955fc3395726044acec66129" desc="">
     <ph name="THIS__IMAGEPREVIEWELEMENT_NATURALWIDTH">$1d</ph> × <ph name="THIS__IMAGEPREVIEWELEMENT_NATURALHEIGHT">$2d</ph>

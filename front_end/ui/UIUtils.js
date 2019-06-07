@@ -2037,6 +2037,11 @@ UI.createInlineButton = function(toolbarButton) {
  * @return {!DocumentFragment}
  */
 UI.createExpandableText = function(text, maxLength) {
+  const clickHandler = () => {
+    if (expandElement.parentElement)
+      expandElement.parentElement.insertBefore(createTextNode(text.slice(maxLength)), expandElement);
+    expandElement.remove();
+  };
   const fragment = createDocumentFragment();
   fragment.textContent = text.slice(0, maxLength);
   const expandElement = fragment.createChild('span');
@@ -2044,11 +2049,13 @@ UI.createExpandableText = function(text, maxLength) {
   if (text.length < 10000000) {
     expandElement.setAttribute('data-text', ls`Show more (${totalBytes})`);
     expandElement.classList.add('expandable-inline-button');
-    expandElement.addEventListener('click', () => {
-      if (expandElement.parentElement)
-        expandElement.parentElement.insertBefore(createTextNode(text.slice(maxLength)), expandElement);
-      expandElement.remove();
+    expandElement.addEventListener('click', clickHandler);
+    expandElement.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ')
+        clickHandler();
     });
+    UI.ARIAUtils.markAsButton(expandElement);
+
   } else {
     expandElement.setAttribute('data-text', ls`long text was truncated (${totalBytes})`);
     expandElement.classList.add('undisplayable-text');
@@ -2059,6 +2066,11 @@ UI.createExpandableText = function(text, maxLength) {
   copyButton.addEventListener('click', () => {
     InspectorFrontendHost.copyText(text);
   });
+  copyButton.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ')
+      InspectorFrontendHost.copyText(text);
+  });
+  UI.ARIAUtils.markAsButton(copyButton);
   return fragment;
 };
 

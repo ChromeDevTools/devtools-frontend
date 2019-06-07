@@ -113,20 +113,27 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
       return 1;
     if (propertyB.symbol && !propertyA.symbol)
       return -1;
+    if (propertyA.private && !propertyB.private)
+      return 1;
+    if (propertyB.private && !propertyA.private)
+      return -1;
     return String.naturalOrderComparator(a, b);
   }
 
   /**
-   * @param {?string} name
+   * @param {string} name
+   * @param {boolean=} isPrivate
    * @return {!Element}
    */
-  static createNameElement(name) {
-    const nameElement = createElementWithClass('span', 'name');
+  static createNameElement(name, isPrivate) {
     if (/^\s|\s$|^$|\n/.test(name))
-      nameElement.createTextChildren('"', name.replace(/\n/g, '\u21B5'), '"');
-    else
-      nameElement.textContent = name;
-    return nameElement;
+      return UI.html`<span class="name">"${name.replace(/\n/g, '\u21B5')}"</span>`;
+    if (isPrivate) {
+      return UI.html`<span class="name">
+        <span class="private-property-hash">${name[0]}</span>${name.substring(1)}
+      </span>`;
+    }
+    return UI.html`<span class="name">${name}</span>`;
   }
 
   /**
@@ -798,7 +805,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
   }
 
   update() {
-    this.nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this.property.name);
+    this.nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this.property.name, this.property.private);
     if (!this.property.enumerable)
       this.nameElement.classList.add('object-properties-section-dimmed');
     if (this.property.synthetic)
@@ -851,7 +858,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     const parentPath =
         (this.parent.nameElement && !this.parent.property.synthetic) ? this.parent.nameElement.title : '';
 
-    if (useDotNotation.test(name))
+    if (this.property.private || useDotNotation.test(name))
       this.nameElement.title = parentPath ? `${parentPath}.${name}` : name;
     else if (isInteger.test(name))
       this.nameElement.title = parentPath + '[' + name + ']';

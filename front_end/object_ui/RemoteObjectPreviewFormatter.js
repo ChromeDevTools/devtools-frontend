@@ -18,14 +18,16 @@ ObjectUI.RemoteObjectPreviewFormatter = class {
      * @return {number}
      */
     function sortValue(property) {
+      // TODO(einbinder) expose whether preview properties are actually internal.
       const internalName = ObjectUI.RemoteObjectPreviewFormatter._internalName;
       if (property.name === internalName.PromiseStatus)
         return 1;
       else if (property.name === internalName.PromiseValue)
         return 2;
-      else if (property.name === internalName.GeneratorStatus || internalName.PrimitiveValue)
+      else if (property.name === internalName.GeneratorStatus || property.name === internalName.PrimitiveValue)
         return 3;
-      else if (property.type !== 'function')
+      // TODO(einbinder) expose whether preview properties are actually private.
+      else if (property.type !== 'function' && !property.name.startsWith('#'))
         return 4;
       return 5;
     }

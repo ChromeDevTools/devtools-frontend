@@ -500,11 +500,9 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       this._runtimeModel.exceptionThrown(Date.now(), response.exceptionDetails);
       return /** @type {!SDK.GetPropertiesResult} */ ({properties: null, internalProperties: null});
     }
-    const properties = response.result;
-    const internalProperties = response.internalProperties;
+    const {result: properties = [], internalProperties = [], privateProperties = []} = response;
     const result = [];
-    for (let i = 0; properties && i < properties.length; ++i) {
-      const property = properties[i];
+    for (const property of properties) {
       const propertyValue = property.value ? this._runtimeModel.createRemoteObject(property.value) : null;
       const propertySymbol = property.symbol ? this._runtimeModel.createRemoteObject(property.symbol) : null;
       const remoteProperty = new SDK.RemoteObjectProperty(
@@ -519,19 +517,22 @@ SDK.RemoteObjectImpl = class extends SDK.RemoteObject {
       }
       result.push(remoteProperty);
     }
-    let internalPropertiesResult = null;
-    if (internalProperties) {
-      internalPropertiesResult = [];
-      for (let i = 0; i < internalProperties.length; i++) {
-        const property = internalProperties[i];
-        if (!property.value)
-          continue;
-        if (property.name === '[[StableObjectId]]')
-          continue;
-        const propertyValue = this._runtimeModel.createRemoteObject(property.value);
-        internalPropertiesResult.push(new SDK.RemoteObjectProperty(
-            property.name, propertyValue, true, false, undefined, undefined, undefined, true));
-      }
+    for (const property of privateProperties) {
+      const propertyValue = this._runtimeModel.createRemoteObject(property.value);
+      const remoteProperty = new SDK.RemoteObjectProperty(
+          property.name, propertyValue, true, true, true, false, undefined, false, undefined, true);
+      result.push(remoteProperty);
+    }
+
+    const internalPropertiesResult = [];
+    for (const property of internalProperties) {
+      if (!property.value)
+        continue;
+      if (property.name === '[[StableObjectId]]')
+        continue;
+      const propertyValue = this._runtimeModel.createRemoteObject(property.value);
+      internalPropertiesResult.push(new SDK.RemoteObjectProperty(
+          property.name, propertyValue, true, false, undefined, undefined, undefined, true));
     }
     return {properties: result, internalProperties: internalPropertiesResult};
   }
@@ -773,8 +774,9 @@ SDK.RemoteObjectProperty = class {
    * @param {?SDK.RemoteObject=} symbol
    * @param {boolean=} synthetic
    * @param {function(string):!Promise<?SDK.RemoteObject>=} syntheticSetter
+   * @param {boolean=} isPrivate
    */
-  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic, syntheticSetter) {
+  constructor(name, value, enumerable, writable, isOwn, wasThrown, symbol, synthetic, syntheticSetter, isPrivate) {
     this.name = name;
     if (value !== null)
       this.value = value;
@@ -788,6 +790,7 @@ SDK.RemoteObjectProperty = class {
     this.synthetic = !!synthetic;
     if (syntheticSetter)
       this.syntheticSetter = syntheticSetter;
+    this.private = !!isPrivate;
   }
 
   /**

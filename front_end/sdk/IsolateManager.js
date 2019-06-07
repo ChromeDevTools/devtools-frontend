@@ -17,7 +17,7 @@ SDK.IsolateManager = class extends Common.Object {
     /** @type {!Set<!SDK.IsolateManager.Observer>} */
     this._observers = new Set();
     SDK.targetManager.observeModels(SDK.RuntimeModel, this);
-    this._poll();
+    this._pollId = 0;
   }
 
   /**
@@ -26,6 +26,8 @@ SDK.IsolateManager = class extends Common.Object {
   observeIsolates(observer) {
     if (this._observers.has(observer))
       throw new Error('Observer can only be registered once');
+    if (!this._observers.size)
+      this._poll();
     this._observers.add(observer);
     for (const isolate of this._isolates.values())
       observer.isolateAdded(isolate);
@@ -36,6 +38,8 @@ SDK.IsolateManager = class extends Common.Object {
    */
   unobserveIsolates(observer) {
     this._observers.delete(observer);
+    if (!this._observers.size)
+      ++this._pollId;  // Stops the current polling loop.
   }
 
   /**
@@ -113,7 +117,8 @@ SDK.IsolateManager = class extends Common.Object {
   }
 
   async _poll() {
-    while (true) {
+    const pollId = this._pollId;
+    while (pollId === this._pollId) {
       await Promise.all(Array.from(this.isolates(), isolate => isolate._update()));
       await new Promise(r => setTimeout(r, SDK.IsolateManager.PollIntervalMs));
     }

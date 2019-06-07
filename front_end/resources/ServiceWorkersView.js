@@ -233,7 +233,7 @@ Resources.ServiceWorkersView = class extends UI.VBox {
   _updateRegistration(registration, skipUpdate) {
     let section = this._sections.get(registration);
     if (!section) {
-      const title = Resources.ServiceWorkersView._displayScopeURL(registration.scopeURL);
+      const title = registration.scopeURL;
       const uiSection = this._getReportViewForOrigin(registration.securityOrigin).appendSection(title);
       uiSection[this._registrationSymbol] = registration;
       section = new Resources.ServiceWorkersView.Section(
@@ -291,18 +291,6 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     else
       this._otherWorkersView.hideWidget();
     this._otherWorkersView.setHeaderVisible(false);
-  }
-
-  /**
-   * @param {string} scopeURL
-   * @return {string}
-   */
-  static _displayScopeURL(scopeURL) {
-    const parsedURL = scopeURL.asParsedURL();
-    let path = parsedURL.path;
-    if (path.endsWith('/'))
-      path = path.substring(0, path.length - 1);
-    return parsedURL.domain() + path;
   }
 
   _updateListVisibility() {
@@ -468,7 +456,7 @@ Resources.ServiceWorkersView.Section = class {
     this._toolbar.setEnabled(!this._registration.isDeleted);
 
     const versions = this._registration.versionsByMode();
-    const scopeURL = Resources.ServiceWorkersView._displayScopeURL(this._registration.scopeURL);
+    const scopeURL = this._registration.scopeURL;
     const title = this._registration.isDeleted ? Common.UIString('%s - deleted', scopeURL) : scopeURL;
     this._section.setTitle(title);
 

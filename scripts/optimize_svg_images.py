@@ -27,8 +27,8 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
 import os.path
-import re
 import subprocess
 import sys
 
@@ -39,6 +39,22 @@ try:
 except ImportError:
     import simplejson as json
 
+scripts_path = os.path.dirname(os.path.abspath(__file__))
+devtools_path = os.path.dirname(scripts_path)
+blink_source_path = os.path.dirname(devtools_path)
+blink_path = os.path.dirname(blink_source_path)
+chromium_src_path = os.path.dirname(os.path.dirname(blink_path))
+devtools_frontend_path = os.path.join(devtools_path, "front_end")
+images_path = os.path.join(devtools_frontend_path, "Images")
+image_sources_path = os.path.join(images_path, "src")
+HASHES_FILE_NAME = "optimize_svg.hashes"
+HASHES_FILE_PATH = os.path.join(image_sources_path, HASHES_FILE_NAME)
+
+file_names = os.listdir(image_sources_path)
+svg_file_paths = [os.path.join(image_sources_path, file_name) for file_name in file_names if file_name.endswith(".svg")]
+SVG_FILE_PATHS_TO_OPTIMIZE = devtools_file_hashes.files_with_invalid_hashes(HASHES_FILE_PATH, svg_file_paths)
+SVG_FILE_NAMES = [os.path.basename(file_path) for file_path in SVG_FILE_PATHS_TO_OPTIMIZE]
+
 
 def check_installed(app_name):
     proc = subprocess.Popen("which %s" % app_name, stdout=subprocess.PIPE, shell=True)
@@ -48,40 +64,29 @@ def check_installed(app_name):
         sys.exit(1)
 
 
-check_installed("inkscape")
-
-scripts_path = os.path.dirname(os.path.abspath(__file__))
-devtools_path = os.path.dirname(scripts_path)
-devtools_frontend_path = devtools_path + "/front_end"
-images_path = devtools_frontend_path + "/Images"
-image_sources_path = images_path + "/src"
-hashes_file_name = "svg2png.hashes"
-hashes_file_path = image_sources_path + "/" + hashes_file_name
-
-file_names = os.listdir(image_sources_path)
-svg_file_paths = [image_sources_path + "/" + file_name for file_name in file_names if file_name.endswith(".svg")]
-
-svg_file_paths_to_convert = devtools_file_hashes.files_with_invalid_hashes(hashes_file_path, svg_file_paths)
-svg_file_names = [re.sub(".svg$", "", re.sub(".*/", "", file_path)) for file_path in svg_file_paths_to_convert]
+check_installed("npx")
 
 
-def convert_svg_to_png(svg_file_name, png_file_name, dpi):
-    svg_full_path = image_sources_path + "/" + svg_file_name + ".svg"
-    png_full_path = images_path + "/" + png_file_name + ".png"
-    convert_command = "inkscape -f %s -e %s -d %s" % (svg_full_path, png_full_path, dpi)
-    proc = subprocess.Popen(convert_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
+def optimize_svg(svg_input_path):
+    svg_output_path = os.path.join(images_path, os.path.basename(svg_input_path))
+    optimize_command = "npx svgo -i %s -o %s" % (svg_input_path, svg_output_path)
+    proc = subprocess.Popen(optimize_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, cwd=chromium_src_path)
     return proc
 
 
+if len(SVG_FILE_NAMES):
+    print "%d unoptimized svg files found." % len(SVG_FILE_NAMES)
+else:
+    print "All svg files are already optimized."
+    sys.exit()
+
 processes = {}
-for file_name in svg_file_names:
-    name = re.sub(".svg$", "", file_name)
-    name2x = name + "_2x"
-    processes[name] = convert_svg_to_png(name, name, 96)
-    processes[name2x] = convert_svg_to_png(name, name2x, 192)
+for svg_file_path in SVG_FILE_PATHS_TO_OPTIMIZE:
+    name = os.path.splitext(os.path.basename(svg_file_path))[0]
+    processes[name] = optimize_svg(svg_file_path)
 
 for file_name, proc in processes.items():
-    (convert_out, _) = proc.communicate()
-    print("Conversion of %s finished: %s" % (file_name, convert_out))
+    (optimize_out, _) = proc.communicate()
+    print("Optimization of %s finished: %s" % (file_name, optimize_out))
 
-devtools_file_hashes.update_file_hashes(hashes_file_path, svg_file_paths)
+devtools_file_hashes.update_file_hashes(HASHES_FILE_PATH, svg_file_paths)

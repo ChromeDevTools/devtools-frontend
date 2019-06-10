@@ -45,7 +45,7 @@ input.dt-checkbox-themed:checked:after {
 }
 
 input.dt-checkbox-themed:after {
-    -webkit-mask-image: url(Images/checkboxCheckmark.png);
+    -webkit-mask-image: url(Images/checkboxCheckmark.svg);
     -webkit-mask-size: 11px 11px;
     -webkit-mask-position: 0 0;
 }
@@ -53,13 +53,6 @@ input.dt-checkbox-themed:after {
 :host-context(.-theme-with-dark-background) input:not(.dt-checkbox-themed) {
     filter: invert(80%);
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-input.dt-checkbox-themed:after {
-    -webkit-mask-image: url(Images/checkboxCheckmark_2x.png);
-}
-
-} /* media */
 
 .dt-checkbox-text {
     margin-left: 3px;

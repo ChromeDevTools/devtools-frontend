@@ -16,7 +16,8 @@
     "check-json": "node scripts/json_validator/validate_module_json.js",
     "check-loc": "node scripts/check_localizability.js -a",
     "check-grdp": "node scripts/check_localizable_resources.js",
-    "generate-jsconfig": "node scripts/generate_jsconfig.js"
+    "generate-jsconfig": "node scripts/generate_jsconfig.js",
+    "optimize-svg-images": "python scripts/optimize_svg_images.py"
   },
   "repository": {
     "type": "git",

@@ -240,7 +240,7 @@ input {
     outline: none;
     padding-right: 20px;
     padding-left: 6px;
-    background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
+    background-image: url(Images/chromeSelect.svg);
     background-color: hsl(0, 0%, 98%);
     background-position: right center;
     background-repeat: no-repeat;
@@ -352,27 +352,27 @@ span[is=dt-icon-label] {
 }
 
 .spritesheet-smallicons:not(.icon-mask) {
-    background-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
+    background-image: url(Images/smallIcons.svg);
 }
 
 .spritesheet-smallicons.icon-mask {
-    -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/smallIcons.svg);
 }
 
 .spritesheet-largeicons:not(.icon-mask) {
-    background-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
+    background-image: url(Images/largeIcons.svg);
 }
 
 .spritesheet-largeicons.icon-mask {
-    -webkit-mask-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/largeIcons.svg);
 }
 
 .spritesheet-mediumicons:not(.icon-mask) {
-    background-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
+    background-image: url(Images/mediumIcons.svg);
 }
 
 .spritesheet-mediumicons.icon-mask {
-    -webkit-mask-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/mediumIcons.svg);
 }
 
 .spritesheet-arrowicons {
@@ -380,19 +380,19 @@ span[is=dt-icon-label] {
 }
 
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-smallicons, .force-white-icons [is=ui-icon].spritesheet-smallicons, [is=ui-icon].force-white-icons.spritesheet-smallicons, -theme-preserve {
-    -webkit-mask-image: -webkit-image-set(url(Images/smallIcons.png) 1x, url(Images/smallIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/smallIcons.svg);
     -webkit-mask-position: var(--spritesheet-position);
     background: #fafafa !important;
 }
 
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-largeicons, .force-white-icons [is=ui-icon].spritesheet-largeicons, [is=ui-icon].force-white-icons.spritesheet-largeicons, -theme-preserve {
-    -webkit-mask-image: -webkit-image-set(url(Images/largeIcons.png) 1x, url(Images/largeIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/largeIcons.svg);
     -webkit-mask-position: var(--spritesheet-position);
     background: #fafafa !important;
 }
 
 :host-context(.force-white-icons) [is=ui-icon].spritesheet-mediumicon, .force-white-icons [is=ui-icon].spritesheet-mediumicons, [is=ui-icon].force-white-icons.spritesheet-mediumicons, -theme-preserve {
-    -webkit-mask-image: -webkit-image-set(url(Images/mediumIcons.png) 1x, url(Images/mediumIcons_2x.png) 2x);
+    -webkit-mask-image: url(Images/mediumIcons.svg);
     -webkit-mask-position: var(--spritesheet-position);
     background: #fafafa !important;
 }

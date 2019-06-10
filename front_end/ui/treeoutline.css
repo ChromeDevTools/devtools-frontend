@@ -105,7 +105,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 
 .tree-outline li::before {
     -webkit-user-select: none;
-    -webkit-mask-image: url(Images/treeoutlineTriangles.png);
+    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
     -webkit-mask-size: 32px 24px;
     content: "\00a0\00a0";
     text-shadow: none;
@@ -117,12 +117,6 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus * {
 .tree-outline li:not(.parent)::before {
     background-color: transparent;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.tree-outline li::before {
-    -webkit-mask-image: url(Images/treeoutlineTriangles_2x.png);
-}
-} /* media */
 
 .tree-outline li::before {
     -webkit-mask-position: 0 0;

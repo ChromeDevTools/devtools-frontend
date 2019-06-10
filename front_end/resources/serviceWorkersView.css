@@ -141,7 +141,7 @@
 
 .service-worker-filter-label::before {
     -webkit-user-select: none;
-    -webkit-mask-image: url(Images/treeoutlineTriangles.png);
+    -webkit-mask-image: url(Images/treeoutlineTriangles.svg);
     -webkit-mask-size: 32px 24px;
     content: '';
     color: transparent;
@@ -151,12 +151,6 @@
     width: 10px;
     display: inline-block;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.service-worker-filter-label::before {
-    -webkit-mask-image: url(Images/treeoutlineTriangles_2x.png);
-}
-} /* media */
 
 .service-worker-filter[aria-checked="true"] .service-worker-filter-label::before {
     -webkit-mask-position: -16px 0;

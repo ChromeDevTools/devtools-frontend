@@ -19,11 +19,10 @@ The newer scripts such as for testing and hosted mode are written in Node.js, wh
 - local_node - installs a local runtime of node.js
 
 ### Python Scripts
-- convert_svg_images_to_png.py - manually run when adding svg images
 - compile_frontend.py - runs closure compiler to do static type analysis
     - Note: the compiled outputs are not actually used to run DevTools
 - lint_javascript.py - run eslint
-- optimize_png_images.py - manually run when adding png images
+- optimize_svg_images.py - manually run when changing svg images
 
 ### Node.js scripts
 

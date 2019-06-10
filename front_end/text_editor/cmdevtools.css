@@ -170,7 +170,7 @@
 .cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber, -theme-preserve {
     color: white;
     border-width: 1px 4px 1px 1px !important;
-    -webkit-border-image: url(Images/breakpoint.png) 1 4 1 1;
+    -webkit-border-image: url(Images/breakpoint.svg) 1 4 1 1;
     margin: 0 0 0 3px !important;
     padding-right: 3px;
     padding-left: 1px;
@@ -184,17 +184,8 @@
 }
 
 .cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {
-    -webkit-border-image: url(Images/breakpointConditional.png) 1 4 1 1;
+    -webkit-border-image: url(Images/breakpointConditional.svg) 1 4 1 1;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.cm-breakpoint .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
-    -webkit-border-image: url(Images/breakpoint_2x.png) 2 8 2 2;
-}
-.cm-breakpoint.cm-breakpoint-conditional .CodeMirror-linenumber {
-    -webkit-border-image: url(Images/breakpointConditional_2x.png) 2 8 2 2;
-}
-} /* media */
 
 :host-context(.-theme-with-dark-background) .cm-breakpoint:not(.cm-breakpoint-conditional) .CodeMirror-gutter-wrapper .CodeMirror-linenumber,
 .-theme-with-dark-background .cm-breakpoint:not(.cm-breakpoint-conditional) .CodeMirror-gutter-wrapper .CodeMirror-linenumber {
@@ -512,16 +503,10 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-line-decoration-wave {
-    background-image: url(Images/errorWave.png);
+    background-image: url(Images/errorWave.svg);
     background-repeat: repeat-x;
     background-size: contain;
 }
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-.CodeMirror .text-editor-line-decoration-wave {
-    background-image: url(Images/errorWave_2x.png);
-}
-} /* media */
 
 /** @see crbug.com/358161 */
 .CodeMirror .CodeMirror-vscrollbar, .CodeMirror .CodeMirror-hscrollbar {

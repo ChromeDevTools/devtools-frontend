@@ -1282,9 +1282,6 @@ UI.TreeElement._ArrowToggleWidth = 10;
 
 (function() {
 const img = new Image();
-if (window.devicePixelRatio > 1)
-  img.src = 'Images/treeoutlineTriangles_2x.png';
-else
-  img.src = 'Images/treeoutlineTriangles.png';
+img.src = 'Images/treeoutlineTriangles.svg';
 UI.TreeElement._imagePreload = img;
 })();

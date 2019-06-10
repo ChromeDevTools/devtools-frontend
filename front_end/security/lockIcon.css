@@ -8,17 +8,10 @@
     height: 16px;
     width: 16px;
 
-    -webkit-mask-image: url(Images/securityIcons.png);
+    -webkit-mask-image: url(Images/securityIcons.svg);
     -webkit-mask-size: 80px 32px;
 
     background-color: #888;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1) {
-    .lock-icon,
-    .security-property {
-        -webkit-mask-image: url(Images/securityIcons_2x.png);
-    }
 }
 
 .lock-icon-secure {

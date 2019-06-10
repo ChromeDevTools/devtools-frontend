@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_04042b5589b3d4fd4e1e7e44265ad247" desc="">
     Total page JS heap size change trend over the last <ph name="TRENDINTERVALMINUTES">$1s</ph> minutes.
   </message>
+  <message name="IDS_DEVTOOLS_04e6490352d0b1a16a0391513cdd1b69" desc="">
+    Number of VMs sharing the same script source
+  </message>
   <message name="IDS_DEVTOOLS_05ce989cc1015cd221844376fc4cf206" desc="">
     Snapshot <ph name="PROFILE_UID">$1d</ph>
   </message>
@@ -168,6 +171,9 @@
   <message name="IDS_DEVTOOLS_60dcffb26f0ed1b0c73f8cea5d5d9772" desc="">
     Native memory allocation snapshot (<ph name="PROCESSTYPE">$1s</ph>)
   </message>
+  <message name="IDS_DEVTOOLS_610de28d957d1148614ecc6b2ec48443" desc="">
+    URL of the script source
+  </message>
   <message name="IDS_DEVTOOLS_61b4b76027d49142c386737a0e94cedb" desc="">
     NATIVE SNAPSHOTS
   </message>
@@ -176,6 +182,9 @@
   </message>
   <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="">
     Constructor
+  </message>
+  <message name="IDS_DEVTOOLS_6a5084781ea4e6bf97a2dcd0cda17a1a" desc="">
+    Start recording heap allocations
   </message>
   <message name="IDS_DEVTOOLS_6b59ba1fcfd868474cae169876f9cbfa" desc="">
     Native memory snapshots show sampled native allocations in the renderer process since start up.
@@ -216,6 +225,9 @@
   </message>
   <message name="IDS_DEVTOOLS_7ae47a5ac9257db8c7bb89c7afa4db7c" desc="">
     Take snapshot
+  </message>
+  <message name="IDS_DEVTOOLS_7c2fa80073bfcabb697478facdd1209a" desc="">
+    Start recording heap allocations and reload the page
   </message>
   <message name="IDS_DEVTOOLS_7cb94d94002a34c350cad72e6649c5fe" desc="">
     Stack was not recorded for this object because it had been allocated before this profile recording started.
@@ -324,6 +336,9 @@
   <message name="IDS_DEVTOOLS_bd0a5e31e9b3c87eb2d3c19b00cedfc3" desc="">
     Heap memory usage
   </message>
+  <message name="IDS_DEVTOOLS_be1f3410c6bc2e72817218db717fa91c" desc="">
+    Allocated JS heap size currently in use
+  </message>
   <message name="IDS_DEVTOOLS_c22d30084d8ddc9a571512ddee6a83e9" desc="">
     Total time
   </message>
@@ -426,6 +441,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f6ff777632b4b524d2f203c78359eed2" desc="">
     Saving… <ph name="PERCENTVALUE">$1d</ph>%%
+  </message>
+  <message name="IDS_DEVTOOLS_f7f9f5196d0888dc2cf6aa05be182e1f" desc="">
+    Stop recording heap allocations
   </message>
   <message name="IDS_DEVTOOLS_fbbe8b507083defdbfe14a341551c77b" desc="">
     CPU profiles show where the execution time is spent in your page&apos;s JavaScript functions.

@@ -11,6 +11,34 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     /** @type {!Map<string, !Profiler.LiveHeapProfileView.GridNode>} */
     this._gridNodeByUrl = new Map();
     this.registerRequiredCSS('profiler/liveHeapProfile.css');
+
+    this._setting = Common.settings.moduleSetting('memoryLiveHeapProfile');
+    const toolbar = new UI.Toolbar('live-heap-profile-toolbar', this.contentElement);
+
+    this._toggleRecordAction =
+        /** @type {!UI.Action }*/ (UI.actionRegistry.action('live-heap-profile.toggle-recording'));
+    this._toggleRecordButton = UI.Toolbar.createActionButton(this._toggleRecordAction);
+    this._toggleRecordButton.setToggled(this._setting.get());
+    toolbar.appendToolbarItem(this._toggleRecordButton);
+
+    const mainTarget = SDK.targetManager.mainTarget();
+    if (mainTarget && mainTarget.model(SDK.ResourceTreeModel)) {
+      const startWithReloadAction =
+          /** @type {!UI.Action }*/ (UI.actionRegistry.action('live-heap-profile.start-with-reload'));
+      this._startWithReloadButton = UI.Toolbar.createActionButton(startWithReloadAction);
+      toolbar.appendToolbarItem(this._startWithReloadButton);
+    }
+
+    this._dataGrid = this._createDataGrid();
+    this._dataGrid.asWidget().show(this.contentElement);
+
+    this._currentPollId = 0;
+  }
+
+  /**
+   * @return {!DataGrid.SortableDataGrid}
+   */
+  _createDataGrid() {
     const columns = [
       {
         id: 'size',
@@ -19,19 +47,31 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
         fixedWidth: true,
         sortable: true,
         align: DataGrid.DataGrid.Align.Right,
-        sort: DataGrid.DataGrid.Order.Descending
+        sort: DataGrid.DataGrid.Order.Descending,
+        tooltip: ls`Allocated JS heap size currently in use`,
       },
-      {id: 'isolates', title: ls`VMs`, width: '40px', fixedWidth: true, align: DataGrid.DataGrid.Align.Right},
-      {id: 'url', title: ls`Script URL`, fixedWidth: false, sortable: true}
+      {
+        id: 'isolates',
+        title: ls`VMs`,
+        width: '40px',
+        fixedWidth: true,
+        align: DataGrid.DataGrid.Align.Right,
+        tooltip: ls`Number of VMs sharing the same script source`
+      },
+      {id: 'url', title: ls`Script URL`, fixedWidth: false, sortable: true, tooltip: ls`URL of the script source`}
     ];
-    this._dataGrid = new DataGrid.SortableDataGrid(columns);
-    this._dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
-    this._dataGrid.element.classList.add('flex-auto');
-    this._dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this._revealSourceForSelectedNode, this);
-    this._dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
-    this._dataGrid.asWidget().show(this.contentElement);
-    this._currentPollId = 0;
+    const dataGrid = new DataGrid.SortableDataGrid(columns);
+    dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.Last);
+    dataGrid.element.classList.add('flex-auto');
+    dataGrid.element.addEventListener('keydown', this._onKeyDown.bind(this), false);
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.OpenedNode, this._revealSourceForSelectedNode, this);
+    dataGrid.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this._sortingChanged, this);
+    for (const info of columns) {
+      const headerCell = dataGrid.headerTableHeader(info.id);
+      if (headerCell)
+        headerCell.setAttribute('title', info.tooltip);
+    }
+    return dataGrid;
   }
 
   /**
@@ -39,6 +79,7 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
    */
   wasShown() {
     this._poll();
+    this._setting.addChangeListener(this._settingChanged, this);
   }
 
   /**
@@ -46,6 +87,14 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
    */
   willHide() {
     ++this._currentPollId;
+    this._setting.removeChangeListener(this._settingChanged, this);
+  }
+
+  /**
+   * @param {!Common.Event} value
+   */
+  _settingChanged(value) {
+    this._toggleRecordButton.setToggled(/** @type {boolean} */ (value.data));
   }
 
   async _poll() {
@@ -167,6 +216,33 @@ Profiler.LiveHeapProfileView = class extends UI.VBox {
     const sortFunction = columnId === 'url' ? sortByUrl : sortBySize;
     this._dataGrid.sortNodes(sortFunction, this._dataGrid.isSortOrderAscending());
   }
+
+  _toggleRecording() {
+    const enable = !this._setting.get();
+    if (enable)
+      this._startRecording(false);
+    else
+      this._stopRecording();
+  }
+
+  /**
+   * @param {boolean=} reload
+   */
+  _startRecording(reload) {
+    this._setting.set(true);
+    if (!reload)
+      return;
+    const mainTarget = SDK.targetManager.mainTarget();
+    if (!mainTarget)
+      return;
+    const resourceTreeModel = /** @type {?SDK.ResourceTreeModel} */ (mainTarget.model(SDK.ResourceTreeModel));
+    if (resourceTreeModel)
+      resourceTreeModel.reloadPage();
+  }
+
+  async _stopRecording() {
+    this._setting.set(false);
+  }
 };
 
 Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridNode {
@@ -214,5 +290,43 @@ Profiler.LiveHeapProfileView.GridNode = class extends DataGrid.SortableDataGridN
         break;
     }
     return cell;
+  }
+};
+
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Profiler.LiveHeapProfileView.ActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    (async () => {
+      const profileViewId = 'live_heap_profile';
+      await UI.viewManager.showView(profileViewId);
+      const widget = await UI.viewManager.view(profileViewId).widget();
+      this._innerHandleAction(/** @type {!Profiler.LiveHeapProfileView} */ (widget), actionId);
+    })();
+    return true;
+  }
+
+  /**
+   * @param {!Profiler.LiveHeapProfileView} profilerView
+   * @param {string} actionId
+   */
+  _innerHandleAction(profilerView, actionId) {
+    switch (actionId) {
+      case 'live-heap-profile.toggle-recording':
+        profilerView._toggleRecording();
+        break;
+      case 'live-heap-profile.start-with-reload':
+        profilerView._startRecording(true);
+        break;
+      default:
+        console.assert(false, `Unknown action: ${actionId}`);
+    }
   }
 };

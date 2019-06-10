@@ -43,6 +43,33 @@
         },
         {
             "type": "action",
+            "actionId": "live-heap-profile.toggle-recording",
+            "iconClass": "largeicon-start-recording",
+            "toggledIconClass": "largeicon-stop-recording",
+            "toggleWithRedColor": true,
+            "className": "Profiler.LiveHeapProfileView.ActionDelegate",
+            "category": "Performance",
+            "options": [
+                {
+                    "value": true,
+                    "title": "Start recording heap allocations"
+                },
+                {
+                    "value": false,
+                    "title": "Stop recording heap allocations"
+                }
+            ]
+        },
+        {
+            "type": "action",
+            "actionId": "live-heap-profile.start-with-reload",
+            "iconClass": "largeicon-refresh",
+            "className": "Profiler.LiveHeapProfileView.ActionDelegate",
+            "category": "Performance",
+            "title": "Start recording heap allocations and reload the page"
+        },
+        {
+            "type": "action",
             "actionId": "profiler.heap-toggle-recording",
             "iconClass": "largeicon-start-recording",
             "toggledIconClass": "largeicon-stop-recording",

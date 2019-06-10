@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_1808fb32cf4e8a03daa326b48d4246eb" desc="">
     Disable paused state overlay
   </message>
+  <message name="IDS_DEVTOOLS_1e7cf45a622bb0fe494f9e4da1016982" desc="">
+    Layout Shift Regions
+  </message>
   <message name="IDS_DEVTOOLS_2b1a578586beb46008e1542e9283ad99" desc="">
     Scrolling performance issues
   </message>
@@ -62,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="">
     Emulate a focused page
+  </message>
+  <message name="IDS_DEVTOOLS_901fd018d4023042914dedd5fee7f0d6" desc="">
+    Highlights areas of the page (blue) that were shifted
   </message>
   <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="">
     Do not emulate a focused page

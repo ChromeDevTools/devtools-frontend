@@ -153,6 +153,9 @@
   <message name="IDS_DEVTOOLS_9108ae673b7efa9620aec771edc9d4de" desc="">
     setTimeout fired
   </message>
+  <message name="IDS_DEVTOOLS_92907ecce0019f3a10f867cfd53dad0c" desc="">
+    Show layout shift regions
+  </message>
   <message name="IDS_DEVTOOLS_930c85a96d7227c515891c4f86a17c30" desc="">
     Disable JavaScript
   </message>
@@ -200,6 +203,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b600e0facf21b7d4a9a769a60b236ba1" desc="">
     Enable JavaScript
+  </message>
+  <message name="IDS_DEVTOOLS_b9a5a0162829cba9db8b77daa75ec604" desc="">
+    Hide layout shift regions
   </message>
   <message name="IDS_DEVTOOLS_ba50636875d999db0c9218b48b23027d" desc="">
     Do not capture async stack traces

@@ -7,6 +7,18 @@
  * @suppress {accessControls}
  */
 
+const DEFAULT_CONFIG = {
+  checks: [
+    // This is a workaround for a bug in our version of axe-core
+    // which does not support aria-placeholder.
+    // Any attribute included in the options array will be
+    // ignored by the 'aria-valid-attr' rule.
+    // This should be removed after axe-core is updated.
+    // See: https://github.com/dequelabs/axe-core/issues/1457
+    {id: 'aria-valid-attr', options: ['aria-placeholder']}
+  ]
+};
+
 AxeCoreTestRunner.processAxeResult = function(violations) {
   const result = violations.map(function(rule) {
     return {
@@ -30,7 +42,9 @@ AxeCoreTestRunner.processAxeResultNodesArray = function(nodes) {
   return list;
 };
 
-AxeCoreTestRunner.runValidation = async function(element, rules) {
+AxeCoreTestRunner.runValidation = async function(element, rules, config) {
+  axe.configure(Object.assign({}, DEFAULT_CONFIG, config));
+
   try {
     const results = await axe.run(element, {rules});
     const violations = AxeCoreTestRunner.processAxeResult(results.violations);

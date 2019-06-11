@@ -251,7 +251,7 @@ UI.ShortcutsScreen = class {
     const widget = new UI.Widget();
 
     widget.element.className = 'settings-tab-container';  // Override
-    widget.element.createChild('header').createChild('h3').createTextChild(Common.UIString('Shortcuts'));
+    widget.element.createChild('header').createChild('h1').createTextChild(ls`Shortcuts`);
     const scrollPane = widget.element.createChild('div', 'settings-container-wrapper');
     const container = scrollPane.createChild('div');
     container.className = 'settings-content settings-container';

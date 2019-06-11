@@ -1171,16 +1171,6 @@ UI.beautifyFunctionName = function(name) {
 };
 
 /**
- * @param {!Element} label
- * @param {!Element} control
- */
-UI.bindLabelToControl = function(label, control) {
-  const controlId = UI.ARIAUtils.nextId('labelledControl');
-  control.id = controlId;
-  label.setAttribute('for', controlId);
-};
-
-/**
  * @param {string} localName
  * @param {string} typeExtension
  * @param {function(new:HTMLElement, *)} definition
@@ -1241,7 +1231,7 @@ UI.createLabel = function(title, className, associatedControl) {
   const element = createElementWithClass('label', className || '');
   element.textContent = title;
   if (associatedControl)
-    UI.bindLabelToControl(element, associatedControl);
+    UI.ARIAUtils.bindLabelToControl(element, associatedControl);
 
   return element;
 };

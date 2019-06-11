@@ -119,7 +119,7 @@ Settings.SettingsTab = class extends UI.VBox {
     if (id)
       this.element.id = id;
     const header = this.element.createChild('header');
-    header.createChild('h3').createTextChild(name);
+    header.createChild('h1').createTextChild(name);
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');
   }
@@ -130,8 +130,13 @@ Settings.SettingsTab = class extends UI.VBox {
    */
   _appendSection(name) {
     const block = this.containerElement.createChild('div', 'settings-block');
-    if (name)
-      block.createChild('div', 'settings-section-title').textContent = name;
+    if (name) {
+      UI.ARIAUtils.markAsGroup(block);
+      const title = block.createChild('div', 'settings-section-title');
+      title.textContent = name;
+      UI.ARIAUtils.markAsHeading(title, 2);
+      UI.ARIAUtils.setLabelledBy(block, title);
+    }
     return block;
   }
 };

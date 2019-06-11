@@ -51,7 +51,7 @@ Emulation.SensorsView = class extends UI.VBox {
     };
 
     this._locationSelectElement = fields.createChild('select', 'chrome-select');
-    UI.bindLabelToControl(geogroupTitle, this._locationSelectElement);
+    UI.ARIAUtils.bindLabelToControl(geogroupTitle, this._locationSelectElement);
 
     // No override
     this._locationSelectElement.appendChild(new Option(noOverrideOption.title, noOverrideOption.location));
@@ -182,7 +182,7 @@ Emulation.SensorsView = class extends UI.VBox {
       orientation: Emulation.SensorsView.NonPresetOptions.Custom
     };
     this._orientationSelectElement = this.contentElement.createChild('select', 'chrome-select');
-    UI.bindLabelToControl(orientationTitle, this._orientationSelectElement);
+    UI.ARIAUtils.bindLabelToControl(orientationTitle, this._orientationSelectElement);
     this._orientationSelectElement.appendChild(
         new Option(orientationOffOption.title, orientationOffOption.orientation));
     this._orientationSelectElement.appendChild(
@@ -458,7 +458,7 @@ Emulation.SensorsView = class extends UI.VBox {
     const fieldsElement = groupElement.createChild('div', 'sensors-group-fields');
 
     const select = fieldsElement.createChild('select', 'chrome-select');
-    UI.bindLabelToControl(title, select);
+    UI.ARIAUtils.bindLabelToControl(title, select);
     select.appendChild(new Option(Common.UIString('Device-based'), 'auto'));
     select.appendChild(new Option(Common.UIString('Force enabled'), 'enabled'));
     select.addEventListener('change', applyTouch, false);

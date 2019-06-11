@@ -6,6 +6,16 @@ UI.ARIAUtils = {};
 UI.ARIAUtils._id = 0;
 
 /**
+ * @param {!Element} label
+ * @param {!Element} control
+ */
+UI.ARIAUtils.bindLabelToControl = function(label, control) {
+  const controlId = UI.ARIAUtils.nextId('labelledControl');
+  control.id = controlId;
+  label.setAttribute('for', controlId);
+};
+
+/**
  * @param {!Element} element
  */
 UI.ARIAUtils.markAsButton = function(element) {

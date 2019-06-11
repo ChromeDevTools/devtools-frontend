@@ -42,6 +42,12 @@
   <message name="IDS_DEVTOOLS_4f1133a5722c0189f59e0490b2ae1c31" desc="">
     Go to source
   </message>
+  <message name="IDS_DEVTOOLS_51f30f4743bd8f0e7141781bd2d93abb" desc="">
+    Set color format as authored
+  </message>
+  <message name="IDS_DEVTOOLS_55e1bbb4e00add64284ed28f15d40b25" desc="">
+    Color format:
+  </message>
   <message name="IDS_DEVTOOLS_581138047ce1459b079a8c4abba128a1" desc="">
     Go to the panel to the left/right
   </message>
@@ -74,6 +80,12 @@
   </message>
   <message name="IDS_DEVTOOLS_93445501d5239cedddc0bd6a0a453a95" desc="">
     Dock side
+  </message>
+  <message name="IDS_DEVTOOLS_956853d02d2c6947b6c15515e669dfad" desc="">
+    Set color format to RGB
+  </message>
+  <message name="IDS_DEVTOOLS_9835cebf3cf1d09803b6e2c02bc71401" desc="">
+    HSL: hsl(300, 80%, 90%)
   </message>
   <message name="IDS_DEVTOOLS_9914a0ce04a7b7b6a8e39bec55064b82" desc="">
     Light
@@ -108,8 +120,20 @@
   <message name="IDS_DEVTOOLS_c2376cec424de4cead5272c492d3d269" desc="">
     Restore last dock position
   </message>
+  <message name="IDS_DEVTOOLS_c63621d0ad5163e8c643bb65c65b5aee" desc="">
+    Set color format to HEX
+  </message>
+  <message name="IDS_DEVTOOLS_c8466ef18413aebb4d6ebfce4e1f739d" desc="">
+    RGB: rgb(128, 255, 255)
+  </message>
   <message name="IDS_DEVTOOLS_d33bf99e0756e1d5008cb78902e38ca9" desc="">
     All Panels
+  </message>
+  <message name="IDS_DEVTOOLS_d838bef326860912aa08d977cf3a5f8b" desc="">
+    HEX: #dac0de
+  </message>
+  <message name="IDS_DEVTOOLS_d981fcf0c74837202331700aca88c801" desc="">
+    As authored
   </message>
   <message name="IDS_DEVTOOLS_db5d5dd2ff01f52ffee4b57ca2b1fcfd" desc="">
     Enable Ctrl + 1-9 shortcut to switch panels
@@ -125,5 +149,8 @@
   </message>
   <message name="IDS_DEVTOOLS_eafbab965ec3970b0e97705882ebf8d0" desc="">
     Show console drawer
+  </message>
+  <message name="IDS_DEVTOOLS_fa480abba67730dd6bd15aa40308d78a" desc="">
+    Set color format to HSL
   </message>
 </grit-part>

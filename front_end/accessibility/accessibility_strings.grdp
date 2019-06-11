@@ -99,6 +99,9 @@
   <message name="IDS_DEVTOOLS_46a64c89d66d278297b6346c60f67e2c" desc="Tooltip text that appears when hovering over the 'Value description' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     A human-readable version of the value of a range widget (where necessary).
   </message>
+  <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Name
+  </message>
   <message name="IDS_DEVTOOLS_4ada42850cc2d4e41f3da5254ec2feee" desc="">
     Element is inert.
   </message>
@@ -146,6 +149,12 @@
   </message>
   <message name="IDS_DEVTOOLS_674d8a03d6bb22d48dff01565c2b10a3" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Owns
+  </message>
+  <message name="IDS_DEVTOOLS_689202409e48743b914713f96d93947c" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Value
+  </message>
+  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Help
   </message>
   <message name="IDS_DEVTOOLS_73f3b04d99cdbbfb2045ad2285986d77" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Maximum value
@@ -234,6 +243,9 @@
   <message name="IDS_DEVTOOLS_a858dfbc32e2169e89668adf8e997f6f" desc="">
     No accessibility node
   </message>
+  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Orientation
+  </message>
   <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="">
     Part of label element: 
   </message>
@@ -260,6 +272,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b9db1026019a8730b64397052a61ded0" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Atomic (live regions)
+  </message>
+  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
+    Disabled
   </message>
   <message name="IDS_DEVTOOLS_bb129d779ae1ffda5fda12070a4a142b" desc="Tooltip text that appears when hovering over the 'From caption' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from figcaption element.

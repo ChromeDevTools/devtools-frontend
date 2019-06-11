@@ -24,11 +24,10 @@ const grdpFileStart = '<?xml version="1.0" encoding="utf-8"?>\n<grit-part>\n';
 const grdpFileEnd = '</grit-part>';
 
 async function main() {
-  let frontendStrings;
-  let IDSkeys;
-
   try {
-    [frontendStrings, IDSkeys] = await checkLocalizedStrings.parseLocalizableResourceMaps(false);
+    await checkLocalizedStrings.parseLocalizableResourceMaps(false);
+    const frontendStrings = checkLocalizedStrings.frontendStrings;
+    const IDSkeys = checkLocalizedStrings.IDSkeys;
 
     if (process.argv.includes('--autofix')) {
       await autofix(frontendStrings, IDSkeys);
@@ -59,8 +58,10 @@ async function getErrors(frontendStrings, IDSkeys) {
 }
 
 async function autofix(frontendStrings, IDSkeys) {
-  const resourceAdded = await addResourcesToGRDP(frontendStrings, IDSkeys);
-  const resourceRemoved = await removeResourcesFromGRDP(frontendStrings, IDSkeys);
+  const keysToAddToGRD = checkLocalizedStrings.getDifference(IDSkeys, frontendStrings);
+  const keysToRemoveFromGRD = checkLocalizedStrings.getDifference(frontendStrings, IDSkeys);
+  const resourceAdded = await addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD);
+  const resourceRemoved = await removeResourcesFromGRDP(keysToRemoveFromGRD);
 
   if (!resourceAdded && !resourceRemoved) {
     console.log('DevTools localizable resources checker passed.');
@@ -76,35 +77,26 @@ async function autofix(frontendStrings, IDSkeys) {
 }
 
 // Return true if any resources are added
-async function addResourcesToGRDP(frontendStrings, IDSkeys) {
-  const keysToAddToGRD = checkLocalizedStrings.getDifference(IDSkeys, frontendStrings);
+async function addResourcesToGRDP(keysToAddToGRD, keysToRemoveFromGRD) {
   if (keysToAddToGRD.size === 0)
     return false;
 
-  const frontendPath = path.resolve(__dirname, '..', 'front_end');
-  const frontendDirs = await localizationUtils.getChildDirectoriesFromDirectory(frontendPath);
-  // Map file path to its parent grdp file path
-  const filePathToGrdpFilePath = new Map();
   // Map grdp file path to strings to be added to that file so that we only need to
   // modify every grdp file once
   const grdpFilePathToStrings = new Map();
 
   // Get the grdp files that need to be modified
   for (const [key, stringObj] of keysToAddToGRD) {
-    let grdpFilePath = '';
-    if (filePathToGrdpFilePath.has(stringObj.filepath)) {
-      grdpFilePath = filePathToGrdpFilePath.get(stringObj.filepath);
-    } else {
-      grdpFilePath = localizationUtils.getGRDPFilePath(stringObj.filepath, frontendDirs);
-      filePathToGrdpFilePath.set(stringObj.filepath, grdpFilePath);
-    }
-
-    if (!grdpFilePathToStrings.has(grdpFilePath))
-      grdpFilePathToStrings.set(grdpFilePath, []);
+    if (!grdpFilePathToStrings.has(stringObj.grdpPath))
+      grdpFilePathToStrings.set(stringObj.grdpPath, []);
 
     // Add the IDS key to stringObj so we have access to it later
     stringObj.ids = key;
-    grdpFilePathToStrings.get(grdpFilePath).push(stringObj);
+    // If the same key is to be removed, this is likely a string copy
+    // to another folder. Keep the description.
+    if (keysToRemoveFromGRD.has(key))
+      stringObj.description = keysToRemoveFromGRD.get(key).description;
+    grdpFilePathToStrings.get(stringObj.grdpPath).push(stringObj);
   }
 
   const promises = [];
@@ -197,18 +189,17 @@ async function addChildGRDPFilePathsToGRD(relativeGrdpFilePaths) {
 }
 
 // Return true if any resources are removed
-async function removeResourcesFromGRDP(frontendStrings, IDSkeys) {
-  const keysToRemoveFromGRD = checkLocalizedStrings.getDifference(frontendStrings, IDSkeys);
+async function removeResourcesFromGRDP(keysToRemoveFromGRD) {
   if (keysToRemoveFromGRD.size === 0)
     return false;
 
   // Map grdp file path to message IDS keys to remove
   const grdpFilePathToKeys = new Map();
   for (const [key, messageObj] of keysToRemoveFromGRD) {
-    if (!grdpFilePathToKeys.has(messageObj.filepath))
-      grdpFilePathToKeys.set(messageObj.filepath, []);
+    if (!grdpFilePathToKeys.has(messageObj.grdpPath))
+      grdpFilePathToKeys.set(messageObj.grdpPath, []);
 
-    grdpFilePathToKeys.get(messageObj.filepath).push(key);
+    grdpFilePathToKeys.get(messageObj.grdpPath).push(key);
   }
 
   const promises = [];

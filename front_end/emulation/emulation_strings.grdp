@@ -186,9 +186,6 @@
   <message name="IDS_DEVTOOLS_a88789aba0125292a7a2b8774a979b37" desc="">
     Geolocations
   </message>
-  <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="">
-    Orientation
-  </message>
   <message name="IDS_DEVTOOLS_af29aa178ae43211319e28f627e96590" desc="">
     Sensors
   </message>

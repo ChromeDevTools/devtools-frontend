@@ -189,18 +189,6 @@ async function getChildDirectoriesFromDirectory(directoryPath) {
   return dirPaths;
 }
 
-/**
- * Get the parent grdp file path for the input frontend file path.
- * NOTE: Naming convention of a grdp file is the name of the child directory under
- * devtools/front_end plus _strings.grdp
- */
-function getGRDPFilePath(frontendFilepath, frontendDirs) {
-  const frontendDirsLowerCase = frontendDirs.map(dir => dir.toLowerCase());
-  const dirpath = path.dirname(frontendFilepath);
-  if (frontendDirsLowerCase.includes(dirpath.toLowerCase()))
-    return path.resolve(dirpath, `${path.basename(dirpath)}_strings.grdp`);
-}
-
 function modifyStringIntoGRDFormat(str, args) {
   let sanitizedStr = sanitizeStringIntoGRDFormat(str);
 
@@ -236,7 +224,7 @@ function modifyStringIntoGRDFormat(str, args) {
 }
 
 function createGrdpMessage(ids, stringObj) {
-  let message = `  <message name="${ids}" desc="">\n`;
+  let message = `  <message name="${ids}" desc="${stringObj.description || ''}">\n`;
   message += `    ${modifyStringIntoGRDFormat(stringObj.string, stringObj.arguments)}\n`;
   message += '  </message>\n';
   return message;
@@ -253,7 +241,6 @@ module.exports = {
   esprimaTypes,
   getChildDirectoriesFromDirectory,
   getFilesFromDirectory,
-  getGRDPFilePath,
   getIDSKey,
   getLocalizationCase,
   getLocationMessage,

@@ -9,6 +9,9 @@
   <message name="IDS_DEVTOOLS_02b411e36e8eaa1f554ca176a106a79d" desc="">
     <ph name="MEGABYTES">$1.0f</ph> MB
   </message>
+  <message name="IDS_DEVTOOLS_03342349032c8ef8f5898c49a088de55" desc="">
+    Accept suggestion
+  </message>
   <message name="IDS_DEVTOOLS_0c89face91afb1a048a34349404d11c0" desc="">
     Add selection to watch
   </message>
@@ -29,6 +32,9 @@
   </message>
   <message name="IDS_DEVTOOLS_1299e7f10b9d0110e7fa5368d1307500" desc="">
     long text was truncated (<ph name="TOTALBYTES">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_142329f312b9f9a97f9726342813dec2" desc="">
+    Next/previous line
   </message>
   <message name="IDS_DEVTOOLS_16d0b9499edfdb8274382a91686ae1ae" desc="">
     Performance Panel
@@ -95,6 +101,9 @@
   </message>
   <message name="IDS_DEVTOOLS_4f348d8d1f134f0980102a4a6508cd5e" desc="">
     Pan or rotate left/right
+  </message>
+  <message name="IDS_DEVTOOLS_4f9afe303d0e8c68e3518756e1734924" desc="">
+    Clear console prompt
   </message>
   <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="">
     Zoom out
@@ -192,6 +201,9 @@
   <message name="IDS_DEVTOOLS_96fb9e0d650af5b1fc4ec6c7bc11b49b" desc="">
     More Tools
   </message>
+  <message name="IDS_DEVTOOLS_988aa266ba49ce9da4c7e10f4b477ec4" desc="">
+    Next/previous command
+  </message>
   <message name="IDS_DEVTOOLS_9f52d2760e4266c7904c59fd9d3e7321" desc="">
     Pick a recording from history
   </message>
@@ -239,6 +251,9 @@
   </message>
   <message name="IDS_DEVTOOLS_b94d1b250ba62f06dadf0edc4a947f5c" desc="">
     Promise resolved (async)
+  </message>
+  <message name="IDS_DEVTOOLS_bb63b17b21e67aa2cc30cf01bae36695" desc="">
+    Execute command
   </message>
   <message name="IDS_DEVTOOLS_bc39d641a1e16fb73f2ce5520d250ed0" desc="">
     Go to member

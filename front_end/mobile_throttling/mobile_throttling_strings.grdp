@@ -63,9 +63,6 @@
   <message name="IDS_DEVTOOLS_b27fdc01c81857f96f3d5d37d323bcb6" desc="">
     Enable fast 3G throttling
   </message>
-  <message name="IDS_DEVTOOLS_b9f5c797ebbf55adccdd8539a65a0241" desc="">
-    Disabled
-  </message>
   <message name="IDS_DEVTOOLS_c47c85f963782364d32f428fcf7631ff" desc="">
     No internet connectivity
   </message>

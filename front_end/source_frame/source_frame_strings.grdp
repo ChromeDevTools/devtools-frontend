@@ -18,9 +18,6 @@
   <message name="IDS_DEVTOOLS_4cfa6c981549e990fe2344e4c805405e" desc="">
     Find
   </message>
-  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="">
-    Image from <ph name="THIS__URL">$1s</ph>
-  </message>
   <message name="IDS_DEVTOOLS_59cc7cb8dfb2491cc5dfe8ebc546d797" desc="">
     Pretty print
   </message>

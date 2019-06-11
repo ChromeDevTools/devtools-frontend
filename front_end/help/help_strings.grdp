@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_6a26f548831e6a8c26bfbbd9f6ec61e0" desc="">
-    Help
-  </message>
   <message name="IDS_DEVTOOLS_7d0ee6fed10d3d4e5c9ee496729ab519" desc="">
     Release notes
   </message>

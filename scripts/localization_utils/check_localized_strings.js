@@ -277,19 +277,22 @@ function convertToFrontendPlaceholders(message) {
   return message;
 }
 
-function trimGrdpMessage(message) {
-  // '    Message text \n  ' trims to ' Message text '.
-  const fixedLeadingWhitespace = 4;  // GRDP encoding uses 4 leading spaces.
-  const trimmedMessage = message.substring(4);
-  return trimmedMessage.substring(0, trimmedMessage.lastIndexOf('\n'));
-}
-
 async function parseGRDPFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
 
   function lineNumberOfIndex(str, index) {
     const stringToIndex = str.substr(0, index);
     return stringToIndex.split('\n').length;
+  }
+
+  function stripWhitespacePadding(message) {
+    let match = message.match(/^'''/);
+    if (match)
+      message = message.substring(3);
+    match = message.match(/(.*?)'''$/);
+    if (match)
+      message = match[1];
+    return message;
   }
 
   // Example:
@@ -305,8 +308,8 @@ async function parseGRDPFile(filePath) {
     const line = lineNumberOfIndex(fileContent, match.index);
     const description = match[1];
     let message = match[2];
-    message = trimGrdpMessage(message);
-    message = convertToFrontendPlaceholders(message);
+    message = convertToFrontendPlaceholders(message.trim());
+    message = stripWhitespacePadding(message);
     message = localizationUtils.sanitizeStringIntoFrontendFormat(message);
 
     const ids = localizationUtils.getIDSKey(message);

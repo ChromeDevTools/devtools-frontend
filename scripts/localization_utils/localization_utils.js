@@ -189,8 +189,21 @@ async function getChildDirectoriesFromDirectory(directoryPath) {
   return dirPaths;
 }
 
+/**
+ * Pad leading / trailing whitespace with ''' so that the whitespace is preserved. See
+ * https://www.chromium.org/developers/tools-we-use-in-chromium/grit/grit-users-guide.
+ */
+function padWhitespace(str) {
+  if (str.match(/^\s+/))
+    str = `'''${str}`;
+  if (str.match(/\s+$/))
+    str = `${str}'''`;
+  return str;
+}
+
 function modifyStringIntoGRDFormat(str, args) {
   let sanitizedStr = sanitizeStringIntoGRDFormat(str);
+  sanitizedStr = padWhitespace(sanitizedStr);
 
   const phRegex = /%d|%f|%s|%.[0-9]f/gm;
   if (!str.match(phRegex))

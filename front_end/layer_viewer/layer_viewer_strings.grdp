@@ -76,7 +76,7 @@
     Composition due to association with a &lt;video&gt; element.
   </message>
   <message name="IDS_DEVTOOLS_5639e2813d9549835010567a48349127" desc="">
-     (<ph name="THIS__LAYER_WIDTH__">$1d</ph> × <ph name="THIS__LAYER_HEIGHT__">$2d</ph>)
+    ''' (<ph name="THIS__LAYER_WIDTH__">$1d</ph> × <ph name="THIS__LAYER_HEIGHT__">$2d</ph>)
   </message>
   <message name="IDS_DEVTOOLS_602f4c0713480f019b24f09218dcc7e0" desc="">
     Reset View

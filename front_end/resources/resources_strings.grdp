@@ -68,7 +68,7 @@ table is empty.
     Background color
   </message>
   <message name="IDS_DEVTOOLS_37acadd70183e7ed00222ff38248a6ff" desc="">
-    <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s</ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s</ph> storage quota. 
+    <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s</ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s</ph> storage quota. '''
   </message>
   <message name="IDS_DEVTOOLS_3a771376134eb624f3e1fdd3d92d9f4c" desc="">
     Select a cache entry above to preview
@@ -210,7 +210,7 @@ read the &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot; table.
     #<ph name="WAITING_ID">$1s</ph> waiting to activate
   </message>
   <message name="IDS_DEVTOOLS_9b2a7456cec10d8b5ab8ce656598320b" desc="">
-    Key path: 
+    Key path: '''
   </message>
   <message name="IDS_DEVTOOLS_9c6a9d9f033001a9b3104984d319563b" desc="">
     Push

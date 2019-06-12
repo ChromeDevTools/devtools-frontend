@@ -4,7 +4,7 @@
     Layout Invalidations
   </message>
   <message name="IDS_DEVTOOLS_0060636b449d1da5a8581bfee180f0c2" desc="">
-     and 
+    ''' and '''
   </message>
   <message name="IDS_DEVTOOLS_00c3783a786856df24fd85e1093ef516" desc="">
     DCL
@@ -143,10 +143,10 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
     Group by Activity
   </message>
   <message name="IDS_DEVTOOLS_232e59f3380381caf0634ab2f035dbf2" desc="">
-     (from service worker)
+    ''' (from service worker)
   </message>
   <message name="IDS_DEVTOOLS_237f26bfdd9351cd363bca657ff35551" desc="">
-    . Long frame times are an indication of 
+    . Long frame times are an indication of '''
   </message>
   <message name="IDS_DEVTOOLS_2383a71629ce9189cb494c3fb8af7ac4" desc="">
     Heaviest stack
@@ -515,10 +515,10 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
     Group by Frame
   </message>
   <message name="IDS_DEVTOOLS_88d982014902936a7e7ab24058c88ed0" desc="">
-    Unknown cause for 
+    Unknown cause for '''
   </message>
   <message name="IDS_DEVTOOLS_89be1120d42e0cbacbf46eee77766b76" desc="">
-    . 
+    . '''
   </message>
   <message name="IDS_DEVTOOLS_8a51f964740c2a7cb6e68404bda36ef1" desc="">
     <ph name="NUMBER_BYTESTOSTRING_DELTA_">$1s</ph> collected
@@ -571,13 +571,13 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     Paint Image
   </message>
   <message name="IDS_DEVTOOLS_9399a34c7d7f4a7c046016e38f80e046" desc="">
-     is a likely performance bottleneck.
+    ''' is a likely performance bottleneck.
   </message>
   <message name="IDS_DEVTOOLS_93c8e71d1b0e18d58736d3e255a14533" desc="">
     Buffer usage
   </message>
   <message name="IDS_DEVTOOLS_956f8281d37fdceec7698094b6236870" desc="">
-     (from cache)
+    ''' (from cache)
   </message>
   <message name="IDS_DEVTOOLS_9669f96ca9d2e20feda07d349d3cac86" desc="">
     Key Up
@@ -793,7 +793,7 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     Idle Callback Requested
   </message>
   <message name="IDS_DEVTOOLS_d49a276b363c437fe2446074595fd325" desc="">
-    <ph name="REASON">$1s</ph> for 
+    <ph name="REASON">$1s</ph> for '''
   </message>
   <message name="IDS_DEVTOOLS_d5b4c38ebb6e58f520e8d1e816ad841e" desc="">
     Stopping timeline…
@@ -871,7 +871,7 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     GPU Memory
   </message>
   <message name="IDS_DEVTOOLS_e77edad5ae632de2e062ef4bb6c80d8a" desc="">
-     took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>.
+    ''' took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>.
   </message>
   <message name="IDS_DEVTOOLS_e88587c08bb701308040c1d45394ecad" desc="">
     Tap Down
@@ -931,7 +931,7 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
     Digest Reply
   </message>
   <message name="IDS_DEVTOOLS_fc763cb31e9938f37737394681228f83" desc="">
-    , 
+    , '''
   </message>
   <message name="IDS_DEVTOOLS_fd87735db5aee919b6f95f0413a5f542" desc="">
     Forced reflow

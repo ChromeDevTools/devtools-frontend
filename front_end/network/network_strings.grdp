@@ -448,7 +448,7 @@
     Request blocking
   </message>
   <message name="IDS_DEVTOOLS_9979c41f94d4d232c06b4c87f2d0f951" desc="">
-    Push / 
+    Push / '''
   </message>
   <message name="IDS_DEVTOOLS_9a41e9b9ca01e7239185b042be18f9eb" desc="">
     Connection ID
@@ -577,7 +577,7 @@
     Connection
   </message>
   <message name="IDS_DEVTOOLS_c33fa8b7d663932b656f0f7f53a74e77" desc="">
-    Requests are not blocked. 
+    Requests are not blocked. '''
   </message>
   <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="">
     Copy all as PowerShell
@@ -667,7 +667,7 @@
     Response preview
   </message>
   <message name="IDS_DEVTOOLS_e1905358311029126da11f4e24fca90d" desc="">
-     (<ph name="PARAMS_LENGTH">$1d</ph>)
+    ''' (<ph name="PARAMS_LENGTH">$1d</ph>)
   </message>
   <message name="IDS_DEVTOOLS_e44c5fc0f8fc0dc0181254373cb07c47" desc="">
     Load: <ph name="NUMBER_SECONDSTOSTRING_THIS__MAINREQUESTLOADTIME___BASETIME_">$1s</ph>

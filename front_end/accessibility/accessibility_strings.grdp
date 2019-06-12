@@ -73,7 +73,7 @@
     Value from title attribute.
   </message>
   <message name="IDS_DEVTOOLS_3b1afa99cd297c96939424e1438e12f2" desc="">
-    Element inherits presentational role from 
+    Element inherits presentational role from '''
   </message>
   <message name="IDS_DEVTOOLS_3cf113006fc26a6c1b47b15659b3f4eb" desc="Tooltip text that appears when hovering over the 'Labeled by' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Element or elements which may form the name of this element.
@@ -112,7 +112,7 @@
     The hierarchical level of this element.
   </message>
   <message name="IDS_DEVTOOLS_52886045a6932b0bbb56620fe5c584bf" desc="">
-    Ancestor&apos;s children are all presentational: 
+    Ancestor&apos;s children are all presentational: '''
   </message>
   <message name="IDS_DEVTOOLS_54b1f0b8e6ab39d96897d1c05836db84" desc="Tooltip text that appears when hovering over the 'Relevant (live regions)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     If this element may receive live updates, what type of updates should trigger a notification.
@@ -133,7 +133,7 @@
     No ARIA attributes
   </message>
   <message name="IDS_DEVTOOLS_5d910721a6256ce42c8c6308dc60ff40" desc="">
-    Static text node is used as name for 
+    Static text node is used as name for '''
   </message>
   <message name="IDS_DEVTOOLS_5e2c648cec53676f6fa0acbf702eccfc" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From style
@@ -247,7 +247,7 @@
     Orientation
   </message>
   <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="">
-    Part of label element: 
+    Part of label element: '''
   </message>
   <message name="IDS_DEVTOOLS_b05cf8cea038a89494e9e232e65af3f3" desc="">
     Element is not rendered.
@@ -301,10 +301,10 @@
     If true, this element currently cannot be interacted with.
   </message>
   <message name="IDS_DEVTOOLS_cd9da90ce06215f24f648786501e4073" desc="">
-    Element is hidden by active modal dialog: 
+    Element is hidden by active modal dialog: '''
   </message>
   <message name="IDS_DEVTOOLS_cfa5234b2737df4bc3dc737484605c39" desc="">
-    <ph name="ARIAHIDDENSPAN">$1s</ph> is <ph name="TRUESPAN">$2s</ph> on ancestor: 
+    <ph name="ARIAHIDDENSPAN">$1s</ph> is <ph name="TRUESPAN">$2s</ph> on ancestor: '''
   </message>
   <message name="IDS_DEVTOOLS_d3fd6a090f523416f156281b8735573b" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From title
@@ -358,10 +358,10 @@
     Flows to
   </message>
   <message name="IDS_DEVTOOLS_e71c63b8e5a312662941ee8606e8c43a" desc="">
-    Label for 
+    Label for '''
   </message>
   <message name="IDS_DEVTOOLS_e7be8f80bd8db0b8ca6bb2dee175b623" desc="">
-    Element is in an inert subtree from 
+    Element is in an inert subtree from '''
   </message>
   <message name="IDS_DEVTOOLS_e8ce1fb5b4c870b68d6f6e5c7037c61f" desc="Tooltip text that appears when hovering over the 'From style' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from style.

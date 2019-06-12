@@ -22,7 +22,7 @@
     View less tabs…
   </message>
   <message name="IDS_DEVTOOLS_258771f02f7548d3282560829e7c9b69" desc="">
-    Define the listening port on your device that maps to a port accessible from your development machine. 
+    Define the listening port on your device that maps to a port accessible from your development machine. '''
   </message>
   <message name="IDS_DEVTOOLS_2ec0d16e4ca169baedb9b2d50ec5c6d7" desc="">
     Connected
@@ -52,7 +52,7 @@
     Unknown
   </message>
   <message name="IDS_DEVTOOLS_8c7074069d61ba9d2f76b078fb1dd154" desc="">
-    Need help? Read Chrome 
+    Need help? Read Chrome '''
   </message>
   <message name="IDS_DEVTOOLS_926f97ab5b90b053d6a3a31082316f15" desc="">
     No browsers detected.
@@ -64,7 +64,7 @@
     View more tabs…
   </message>
   <message name="IDS_DEVTOOLS_a105a2ea6a8f53afe9640d8684ffe5d5" desc="">
-     Read 
+    ''' Read '''
   </message>
   <message name="IDS_DEVTOOLS_a2040c5569ac3718b10af77aaa3fbb03" desc="">
     Pending authentication: please accept debugging session on the device.
@@ -79,7 +79,7 @@
     Open
   </message>
   <message name="IDS_DEVTOOLS_c9d2bd107ad7a2c20f80efcaaf365d23" desc="">
-     for more information.
+    ''' for more information.
   </message>
   <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="">
     No rules

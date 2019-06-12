@@ -109,7 +109,7 @@
     Zoom out
   </message>
   <message name="IDS_DEVTOOLS_534d1b2eaff704d4888de7c4a5e282c0" desc="">
-    Debugging connection was closed. Reason: 
+    Debugging connection was closed. Reason: '''
   </message>
   <message name="IDS_DEVTOOLS_5372591390f99dcf8e0467c671abbc23" desc="">
     Switch to rotate mode

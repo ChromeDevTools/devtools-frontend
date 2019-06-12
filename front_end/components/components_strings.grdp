@@ -25,7 +25,7 @@
     <ph name="RENDEREDWIDTH">$1s</ph> × <ph name="RENDEREDHEIGHT">$2s</ph> pixels
   </message>
   <message name="IDS_DEVTOOLS_b836d99a391a4d2baf6624f8f4acbfc0" desc="">
-     (intrinsic: <ph name="INTRINSICWIDTH">$1s</ph> × <ph name="INTRINSICHEIGHT">$2s</ph> pixels)
+    ''' (intrinsic: <ph name="INTRINSICWIDTH">$1s</ph> × <ph name="INTRINSICHEIGHT">$2s</ph> pixels)
   </message>
   <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="">
     Dock to bottom

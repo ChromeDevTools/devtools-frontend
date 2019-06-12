@@ -10,7 +10,7 @@
     No connections specified
   </message>
   <message name="IDS_DEVTOOLS_81c731365b52528d7d0fdb477ebc3b1d" desc="">
-    Specify network endpoint and DevTools will connect to it automatically. 
+    Specify network endpoint and DevTools will connect to it automatically. '''
   </message>
   <message name="IDS_DEVTOOLS_b1f0f05f6f7dcbf25e065bb4c31fec72" desc="">
     Node.js: <ph name="TARGETINFO_URL">$1s</ph>

@@ -283,7 +283,7 @@
     Ctrl+Enter
   </message>
   <message name="IDS_DEVTOOLS_9ce5614862050d067b2fca22f4190d12" desc="">
-    Source map URL: 
+    Source map URL: '''
   </message>
   <message name="IDS_DEVTOOLS_9db6195620a7743228ce74addf1414d8" desc="">
     Associated files should be added to the file tree. You can debug these resolved source files as regular JavaScript files.

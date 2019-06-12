@@ -223,7 +223,7 @@
     Hide network
   </message>
   <message name="IDS_DEVTOOLS_d35866a5d1161b48670e28e8c8550e89" desc="">
-    Assertion failed: 
+    Assertion failed: '''
   </message>
   <message name="IDS_DEVTOOLS_d3f526e5326c06d47ab12240d604f87a" desc="">
     took &lt;N&gt;ms
@@ -232,7 +232,7 @@
     Verbose
   </message>
   <message name="IDS_DEVTOOLS_d61de8e8b9dfdf0e7a52bf2e4fd23e72" desc="">
-     M&lt;XX&gt;
+    ''' M&lt;XX&gt;
   </message>
   <message name="IDS_DEVTOOLS_d7746aa6b562c73487a4015eef3244e9" desc="">
     IFrame

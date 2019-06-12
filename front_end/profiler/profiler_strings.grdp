@@ -379,7 +379,7 @@
     Heap snapshot
   </message>
   <message name="IDS_DEVTOOLS_d5a263d11105678cc9ae7d29efc4ccc8" desc="">
-    
+    '''
         Allocation timelines show instrumented JavaScript memory allocations over time.
         Once profile is recorded you can select a time interval to see objects that
         were allocated within it and still alive by the end of recording.

@@ -794,7 +794,7 @@ Security.SecurityOriginView = class extends UI.VBox {
       ]);
     }, 'origin-button'));
 
-    if (originState.securityDetails) {
+    if (originState.securityDetails && originState.securityDetails.protocol.length > 0) {
       const connectionSection = this.element.createChild('div', 'origin-view-section');
       connectionSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Connection');
 

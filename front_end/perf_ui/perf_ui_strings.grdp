@@ -33,6 +33,9 @@
   <message name="IDS_DEVTOOLS_77c168e60d966216cd1261c200f87e27" desc="">
     Show live memory allocation annotations
   </message>
+  <message name="IDS_DEVTOOLS_85386891ddce057fa25f92fe4ad28190" desc="">
+    Flame Chart
+  </message>
   <message name="IDS_DEVTOOLS_87f8a6ab85c9ced3702b4ea641ad4bb5" desc="">
     Medium
   </message>

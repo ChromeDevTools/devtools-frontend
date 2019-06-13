@@ -87,7 +87,10 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._canvas = /** @type {!HTMLCanvasElement} */ (this._viewportElement.createChild('canvas', 'fill'));
 
     this._canvas.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(this._canvas, ls`Flame Chart`);
+    UI.ARIAUtils.markAsTree(this._canvas);
     this.setDefaultFocusedElement(this._canvas);
+    this._canvas.classList.add('flame-chart-canvas');
     this._canvas.addEventListener('mousemove', this._onMouseMove.bind(this), false);
     this._canvas.addEventListener('mouseout', this._onMouseOut.bind(this), false);
     this._canvas.addEventListener('click', this._onClick.bind(this), false);
@@ -134,6 +137,10 @@ PerfUI.FlameChart = class extends UI.VBox {
 
     this._lastMouseOffsetX = 0;
     this._selectedGroup = -1;
+
+    // Keyboard focused group is used to navigate groups irrespective of whether they are selectable or not
+    this._keyboardFocusedGroup = -1;
+
     this._selectedGroupBackroundColor = UI.themeSupport.patchColorText(
         PerfUI.FlameChart.Colors.SelectedGroupBackground, UI.ThemeSupport.ColorUsage.Background);
     this._selectedGroupBorderColor = UI.themeSupport.patchColorText(
@@ -421,7 +428,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       return;
 
     this._selectGroup(this._coordinatesToGroupIndex(event.offsetX, event.offsetY, false /* headerOnly */));
-    this._toggleGroupVisibility(this._coordinatesToGroupIndex(event.offsetX, event.offsetY, true /* headerOnly */));
+    this._toggleGroupExpand(this._coordinatesToGroupIndex(event.offsetX, event.offsetY, true /* headerOnly */));
     const timelineData = this._timelineData();
     if (event.shiftKey && this._highlightedEntryIndex !== -1 && timelineData) {
       const start = timelineData.entryStartTimes[this._highlightedEntryIndex];
@@ -437,26 +444,62 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {number} groupIndex
    */
   _selectGroup(groupIndex) {
-    const groups = this._rawTimelineData.groups;
-    if (groupIndex < 0 || !groups[groupIndex].selectable || this._selectedGroup === groupIndex)
+    if (groupIndex < 0 || this._selectedGroup === groupIndex)
       return;
+    const groups = this._rawTimelineData.groups;
+    this._keyboardFocusedGroup = groupIndex;
+    if (!groups[groupIndex].selectable) {
+      this._deselectAllGroups();
+    } else {
+      this._selectedGroup = groupIndex;
+      this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
+      this._resetCanvas();
+      this._draw();
+    }
+  }
 
-    this._selectedGroup = groupIndex;
-    this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
+  _deselectAllGroups() {
+    this._selectedGroup = -1;
+    this._flameChartDelegate.updateSelectedGroup(this, null);
+    this._resetCanvas();
+    this._draw();
+  }
+
+  _deselectAllEntries() {
+    this._selectedEntryIndex = -1;
     this._resetCanvas();
     this._draw();
   }
 
   /**
+   * @param {number} index
+   */
+  _isGroupFocused(index) {
+    return index === this._selectedGroup || index === this._keyboardFocusedGroup;
+  }
+
+  /**
    * @param {number} groupIndex
    */
-  _toggleGroupVisibility(groupIndex) {
+  _toggleGroupExpand(groupIndex) {
+    if (groupIndex < 0 || !this._isGroupCollapsible(groupIndex))
+      return;
+
+    this._expandGroup(groupIndex, !this._rawTimelineData.groups[groupIndex].expanded /* setExpanded */);
+  }
+
+  /**
+   * @param {number} groupIndex
+   * @param {boolean=} setExpanded
+   */
+  _expandGroup(groupIndex, setExpanded = true) {
     if (groupIndex < 0 || !this._isGroupCollapsible(groupIndex))
       return;
 
     const groups = this._rawTimelineData.groups;
     const group = groups[groupIndex];
-    group.expanded = !group.expanded;
+    group.expanded = setExpanded;
+
     this._groupExpansionState[group.name] = group.expanded;
     if (this._groupExpansionSetting)
       this._groupExpansionSetting.set(this._groupExpansionState);
@@ -480,20 +523,149 @@ PerfUI.FlameChart = class extends UI.VBox {
    * @param {!Event} e
    */
   _onKeyDown(e) {
-    this._handleSelectionNavigation(e);
+    if (!UI.KeyboardShortcut.hasNoModifiers(e) || !this._timelineData())
+      return;
+
+    const eventHandled = this._handleSelectionNavigation(e);
+
+    // Handle keyboard navigation in groups
+    if (!eventHandled && this._rawTimelineData && this._rawTimelineData.groups)
+      this._handleKeyboardGroupNavigation(e);
   }
 
   /**
    * @param {!Event} e
    */
+  _handleKeyboardGroupNavigation(e) {
+    let handled = false;
+    let entrySelected = false;
+
+    if (e.code === 'ArrowUp') {
+      handled = this._selectPreviousGroup();
+    } else if (e.code === 'ArrowDown') {
+      handled = this._selectNextGroup();
+    } else if (e.code === 'ArrowLeft') {
+      if (this._keyboardFocusedGroup >= 0) {
+        this._expandGroup(this._keyboardFocusedGroup, false /* setExpanded */);
+        handled = true;
+      }
+    } else if (e.code === 'ArrowRight') {
+      if (this._keyboardFocusedGroup >= 0) {
+        this._expandGroup(this._keyboardFocusedGroup, true /* setExpanded */);
+        this._selectFirstChild();
+        handled = true;
+      }
+    } else if (isEnterKey(e)) {
+      entrySelected = this._selectFirstEntryInCurrentGroup();
+      handled = entrySelected;
+    }
+
+    if (handled && !entrySelected)
+      this._deselectAllEntries();
+
+    if (handled)
+      e.consume(true);
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _selectFirstEntryInCurrentGroup() {
+    const allGroups = this._rawTimelineData.groups;
+
+    if (this._keyboardFocusedGroup < 0)
+      return false;
+
+    const group = allGroups[this._keyboardFocusedGroup];
+    const startLevelInGroup = group.startLevel;
+
+    // Return if no levels in this group
+    if (startLevelInGroup < 0)
+      return false;
+
+    // Make sure this is the innermost nested group with this startLevel
+    // This is because a parent group also contains levels of all its child groups
+    // So check if the next group has the same level, if it does, user should
+    // go to that child group to select this entry
+    if (this._keyboardFocusedGroup < allGroups.length - 1 &&
+        allGroups[this._keyboardFocusedGroup + 1].startLevel === startLevelInGroup)
+      return false;
+
+
+    // Get first (default) entry in startLevel of selected group
+    const firstEntryIndex = this._timelineLevels[startLevelInGroup][0];
+
+    this._expandGroup(this._keyboardFocusedGroup, true /* setExpanded */);
+    this.setSelectedEntry(firstEntryIndex);
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _selectPreviousGroup() {
+    if (this._keyboardFocusedGroup <= 0)
+      return false;
+
+    const groupIndexToSelect = this._getGroupIndexToSelect(-1 /* offset */);
+    this._selectGroup(groupIndexToSelect);
+    return true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  _selectNextGroup() {
+    if (this._keyboardFocusedGroup >= this._rawTimelineData.groups.length - 1)
+      return false;
+
+    const groupIndexToSelect = this._getGroupIndexToSelect(1 /* offset */);
+    this._selectGroup(groupIndexToSelect);
+    return true;
+  }
+
+  /**
+   * @param {number} offset
+   * @return {number}
+   */
+  _getGroupIndexToSelect(offset) {
+    const allGroups = this._rawTimelineData.groups;
+    let groupIndexToSelect = this._keyboardFocusedGroup;
+    let groupName, groupWithSubNestingLevel;
+
+    do {
+      groupIndexToSelect += offset;
+      groupName = this._rawTimelineData.groups[groupIndexToSelect].name;
+      groupWithSubNestingLevel = this._keyboardFocusedGroup !== -1 &&
+          allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this._keyboardFocusedGroup].style.nestingLevel;
+    } while (groupIndexToSelect > 0 && groupIndexToSelect < allGroups.length - 1 &&
+             (!groupName || groupWithSubNestingLevel));
+
+    return groupIndexToSelect;
+  }
+
+  _selectFirstChild() {
+    const allGroups = this._rawTimelineData.groups;
+    if (this._keyboardFocusedGroup < 0 || this._keyboardFocusedGroup >= allGroups.length - 1)
+      return;
+
+    const groupIndexToSelect = this._keyboardFocusedGroup + 1;
+    if (allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this._keyboardFocusedGroup].style.nestingLevel) {
+      this._selectGroup(groupIndexToSelect);
+      this._expandGroup(groupIndexToSelect, true /* setExpanded */);
+    }
+  }
+
+  /**
+   * @param {!Event} e
+   * @return {boolean}
+   */
   _handleSelectionNavigation(e) {
-    if (!UI.KeyboardShortcut.hasNoModifiers(e))
-      return;
     if (this._selectedEntryIndex === -1)
-      return;
+      return false;
     const timelineData = this._timelineData();
     if (!timelineData)
-      return;
+      return false;
 
     /**
      * @param {number} time
@@ -526,14 +698,16 @@ PerfUI.FlameChart = class extends UI.VBox {
       e.consume(true);
       if (indexOnLevel >= 0 && indexOnLevel < levelIndexes.length)
         this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
-      return;
+      return true;
     }
     if (e.keyCode === keys.Up.code || e.keyCode === keys.Down.code) {
-      e.consume(true);
       let level = timelineData.entryLevels[this._selectedEntryIndex];
       level += e.keyCode === keys.Up.code ? -1 : 1;
-      if (level < 0 || level >= this._timelineLevels.length)
-        return;
+      if (level < 0 || level >= this._timelineLevels.length) {
+        this._deselectAllEntries();
+        e.consume(true);
+        return true;
+      }
       const entryTime = timelineData.entryStartTimes[this._selectedEntryIndex] +
           timelineData.entryTotalTimes[this._selectedEntryIndex] / 2;
       const levelIndexes = this._timelineLevels[level];
@@ -541,11 +715,21 @@ PerfUI.FlameChart = class extends UI.VBox {
       if (!entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
         ++indexOnLevel;
         if (indexOnLevel >= levelIndexes.length ||
-            !entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel]))
-          return;
+            !entriesIntersect(this._selectedEntryIndex, levelIndexes[indexOnLevel])) {
+          if (e.code === 'ArrowDown')
+            return false;
+
+          // Stay in the current group and give focus to the parent group instead of entries
+          this._deselectAllEntries();
+          e.consume(true);
+          return true;
+        }
       }
+      e.consume(true);
       this.dispatchEventToListeners(PerfUI.FlameChart.Events.EntrySelected, levelIndexes[indexOnLevel]);
+      return true;
     }
+    return false;
   }
 
   /**
@@ -759,7 +943,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     } else {
       context.save();
       this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
-        if (index === this._selectedGroup) {
+        if (this._isGroupFocused(index)) {
           context.fillStyle = this._selectedGroupBackroundColor;
           context.fillRect(0, offset, width, groupHeight - group.style.padding);
         }
@@ -1117,7 +1301,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       if (group.style.useFirstLineForOverview)
         return;
       if (!this._isGroupCollapsible(index) || group.expanded) {
-        if (!group.style.shareHeaderLine && index !== this._selectedGroup) {
+        if (!group.style.shareHeaderLine && this._isGroupFocused(index)) {
           context.fillStyle = group.style.backgroundColor;
           context.fillRect(0, offset, width, group.style.height);
         }
@@ -1137,7 +1321,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       context.font = group.style.font;
       if (this._isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         const width = this._labelWidthForGroup(context, group) + 2;
-        if (index === this._selectedGroup)
+        if (this._isGroupFocused(index))
           context.fillStyle = this._selectedGroupBackroundColor;
         else
           context.fillStyle = Common.Color.parse(group.style.backgroundColor).setAlpha(0.8).asString(null);
@@ -1169,7 +1353,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     context.stroke();
 
     this._forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
-      if (index === this._selectedGroup) {
+      if (this._isGroupFocused(index)) {
         const lineWidth = 2;
         const bracketLength = 10;
         context.fillStyle = this._selectedGroupBorderColor;
@@ -1451,6 +1635,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._entryColorsCache = null;
       this._rawTimelineDataLength = 0;
       this._selectedGroup = -1;
+      this._keyboardFocusedGroup = -1;
       this._flameChartDelegate.updateSelectedGroup(this, null);
       return;
     }
@@ -1472,6 +1657,7 @@ PerfUI.FlameChart = class extends UI.VBox {
       levelIndexes[i] = new Uint32Array(entryCounters[i]);
       entryCounters[i] = 0;
     }
+
     for (let i = 0; i < timelineData.entryLevels.length; ++i) {
       const level = timelineData.entryLevels[i];
       levelIndexes[level][entryCounters[level]++] = i;
@@ -1487,6 +1673,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._updateHeight();
 
     this._selectedGroup = timelineData.selectedGroup ? groups.indexOf(timelineData.selectedGroup) : -1;
+    this._keyboardFocusedGroup = this._selectedGroup;
     this._flameChartDelegate.updateSelectedGroup(this, timelineData.selectedGroup);
   }
 

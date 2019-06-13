@@ -29,7 +29,7 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
   }
 
   static webSocketConnectionLost() {
-    UI.RemoteDebuggingTerminatedScreen.show('WebSocket disconnected');
+    UI.RemoteDebuggingTerminatedScreen.show(ls`WebSocket disconnected`);
   }
 
   /**

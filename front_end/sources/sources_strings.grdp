@@ -84,6 +84,9 @@
   <message name="IDS_DEVTOOLS_30e71ab6fb45b9773731a0af4d7fb3b4" desc="">
     Do not show whitespace characters
   </message>
+  <message name="IDS_DEVTOOLS_31e8c8e899cef6cd6751e92daf6ff6d5" desc="Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a child is added to the subtree">
+    Child <ph name="TARGETNODELINK">$1s</ph> added
+  </message>
   <message name="IDS_DEVTOOLS_327cbc7239d92013006f601d8b9aff8f" desc="">
     Remove folder from workspace
   </message>
@@ -453,6 +456,9 @@
   <message name="IDS_DEVTOOLS_ed5eceb0fe85ceeeabf4b4b93eeca711" desc="">
     Continue to here
   </message>
+  <message name="IDS_DEVTOOLS_f0044321a791b3a9942860e8df9d8bea" desc="Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is added">
+    Descendant <ph name="TARGETNODELINK">$1s</ph> added
+  </message>
   <message name="IDS_DEVTOOLS_f0a47f037ca7a988466a647277ef1134" desc="">
     Paused on assertion
   </message>
@@ -468,8 +474,14 @@
   <message name="IDS_DEVTOOLS_f515d5945239e7a61fa267bd058134f1" desc="">
     Add folder to workspace
   </message>
+  <message name="IDS_DEVTOOLS_f6acaaac4875e10151fa08b8d01e0b98" desc="Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit">
+    Paused on <ph name="BREAKPOINTTYPE">$1s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_f96985d765ed09d4930d76a3ca869508" desc="">
     Terminate current JavaScript call
+  </message>
+  <message name="IDS_DEVTOOLS_fada802796e35f867c2b3f605982b21d" desc="Text in the JavaScript Debugging pane of the Sources pane when a DOM breakpoint is hit because a descendant is removed">
+    Descendant <ph name="TARGETNODELINK">$1s</ph> removed
   </message>
   <message name="IDS_DEVTOOLS_fd1be3efcf102a4183d9445d789574f4" desc="">
     Are you sure you want to delete this file?

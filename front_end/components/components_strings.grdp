@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_d3d2e617335f08df83599665eef8a418" desc="">
     Close
   </message>
+  <message name="IDS_DEVTOOLS_e3de40c656e1189770049db9846b69df" desc="Text on the remote debugging window to indicate the connection is lost">
+    WebSocket disconnected
+  </message>
   <message name="IDS_DEVTOOLS_e48081c5f0698efee665fbf8e9d123f9" desc="">
     Open using <ph name="TITLE">$1s</ph>
   </message>

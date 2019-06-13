@@ -42,8 +42,8 @@ Sources.DebuggerPausedMessage = class {
 
     const mainElement = messageWrapper.createChild('div', 'status-main');
     mainElement.appendChild(UI.Icon.create('smallicon-info', 'status-icon'));
-    mainElement.appendChild(createTextNode(
-        String.sprintf('Paused on %s', Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(data.type))));
+    const breakpointType = Sources.DebuggerPausedMessage.BreakpointTypeNouns.get(data.type);
+    mainElement.appendChild(createTextNode(ls`Paused on ${breakpointType}`));
 
     const subElement = messageWrapper.createChild('div', 'status-sub monospace');
     const linkifiedNode = await Common.Linkifier.linkify(data.node);
@@ -51,13 +51,17 @@ Sources.DebuggerPausedMessage = class {
 
     if (data.targetNode) {
       const targetNodeLink = await Common.Linkifier.linkify(data.targetNode);
-      let message;
-      if (data.insertion)
-        message = data.targetNode === data.node ? 'Child %s added' : 'Descendant %s added';
-      else
-        message = 'Descendant %s removed';
+      let messageElement;
+      if (data.insertion) {
+        if (data.targetNode === data.node)
+          messageElement = UI.formatLocalized('Child %s added', [targetNodeLink]);
+        else
+          messageElement = UI.formatLocalized('Descendant %s added', [targetNodeLink]);
+      } else {
+        messageElement = UI.formatLocalized('Descendant %s removed', [targetNodeLink]);
+      }
       subElement.appendChild(createElement('br'));
-      subElement.appendChild(UI.formatLocalized(message, [targetNodeLink]));
+      subElement.appendChild(messageElement);
     }
     return messageWrapper;
   }

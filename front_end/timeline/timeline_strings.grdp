@@ -3,9 +3,6 @@
   <message name="IDS_DEVTOOLS_0007333f80790cc7ef6b97ce5e0ac297" desc="">
     Layout Invalidations
   </message>
-  <message name="IDS_DEVTOOLS_0060636b449d1da5a8581bfee180f0c2" desc="">
-    ''' and '''
-  </message>
   <message name="IDS_DEVTOOLS_00c3783a786856df24fd85e1093ef516" desc="">
     DCL
   </message>
@@ -127,6 +124,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   <message name="IDS_DEVTOOLS_1e3eaaac8d3c9cffea8ee7f03a8a6121" desc="">
     DOMContentLoaded Event
   </message>
+  <message name="IDS_DEVTOOLS_1f114223c455157e25d2544f39d50397" desc="">
+    <ph name="DURATIONTEXT">$1s</ph>. Long frame times are an indication of <ph name="LINK">$2s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_205fd38626b73da9d837e61b2c7af71f" desc="">
     Evaluate Script
   </message>
@@ -144,9 +144,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   </message>
   <message name="IDS_DEVTOOLS_232e59f3380381caf0634ab2f035dbf2" desc="">
     ''' (from service worker)
-  </message>
-  <message name="IDS_DEVTOOLS_237f26bfdd9351cd363bca657ff35551" desc="">
-    . Long frame times are an indication of '''
   </message>
   <message name="IDS_DEVTOOLS_2383a71629ce9189cb494c3fb8af7ac4" desc="">
     Heaviest stack
@@ -199,6 +196,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   <message name="IDS_DEVTOOLS_2f709c2af7d47a610e3c48a87d1ec429" desc="">
     Invalidate Layout
   </message>
+  <message name="IDS_DEVTOOLS_2f9e914aab76c16d0bf5f8cc86a3465f" desc="">
+    <ph name="INVALIDATIONNODES___">$1s</ph>, <ph name="INVALIDATIONNODES___">$2s</ph>, and <ph name="_INVALIDATIONNODES_LENGTH______TOSTRING__">$3s</ph> others
+  </message>
   <message name="IDS_DEVTOOLS_2fc3f5e968c02091e3ba9863088f0651" desc="">
     Callback Function
   </message>
@@ -217,8 +217,14 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   <message name="IDS_DEVTOOLS_324118a6721dd6b8a9b9f4e327df2bf5" desc="">
     Input
   </message>
+  <message name="IDS_DEVTOOLS_3287905fc669793beb13cdfe2014b379" desc="">
+    <ph name="LONGTASKLINK">$1s</ph> took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$2s</ph>.
+  </message>
   <message name="IDS_DEVTOOLS_33991558a089f674da1c5c26fd0a6161" desc="">
     jank
+  </message>
+  <message name="IDS_DEVTOOLS_341ac96ec665dea8de30e9ff69c35349" desc="">
+    <ph name="REASON">$1s</ph> for <ph name="TRUNCATEDNODELIST">$2s</ph>
   </message>
   <message name="IDS_DEVTOOLS_347aadfc505a4bc6b2f9d81363d2331c" desc="">
     NET
@@ -291,6 +297,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   </message>
   <message name="IDS_DEVTOOLS_498f79c4c5bbde77f1bceb6c86fd0f6d" desc="">
     Show
+  </message>
+  <message name="IDS_DEVTOOLS_4a6f828a0efc23b056b73d24ab01a468" desc="">
+    <ph name="FORCEDREFLOWLINK">$1s</ph> is a likely performance bottleneck.
   </message>
   <message name="IDS_DEVTOOLS_4bbc0d1543b5258061fd5c8590fdbe9e" desc="">
     Encoded Data
@@ -514,12 +523,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s</ph> or hit <ph name="RELOAD
   <message name="IDS_DEVTOOLS_883b293ae308d8e3caf1614c8a2fda61" desc="">
     Group by Frame
   </message>
-  <message name="IDS_DEVTOOLS_88d982014902936a7e7ab24058c88ed0" desc="">
-    Unknown cause for '''
-  </message>
-  <message name="IDS_DEVTOOLS_89be1120d42e0cbacbf46eee77766b76" desc="">
-    . '''
-  </message>
   <message name="IDS_DEVTOOLS_8a51f964740c2a7cb6e68404bda36ef1" desc="">
     <ph name="NUMBER_BYTESTOSTRING_DELTA_">$1s</ph> collected
   </message>
@@ -549,6 +552,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_8dc1f1afb0dcd5282b146c8cf5d758e1" desc="">
     Unexpected entryIndex <ph name="ENTRYINDEX">$1d</ph>
   </message>
+  <message name="IDS_DEVTOOLS_8e5a67121e2a36110fef3aa447993acd" desc="">
+    Unknown cause
+  </message>
   <message name="IDS_DEVTOOLS_8f25fae98e6ef6ff87364e590df8cee5" desc="">
     Long task
   </message>
@@ -570,11 +576,11 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_9352d706112654ca7c3f2595bc529cf5" desc="">
     Paint Image
   </message>
-  <message name="IDS_DEVTOOLS_9399a34c7d7f4a7c046016e38f80e046" desc="">
-    ''' is a likely performance bottleneck.
-  </message>
   <message name="IDS_DEVTOOLS_93c8e71d1b0e18d58736d3e255a14533" desc="">
     Buffer usage
+  </message>
+  <message name="IDS_DEVTOOLS_9467817bf2985168e61e3f2b23f87a81" desc="">
+    <ph name="TITLE">$1s</ph>. <ph name="STACK">$2s</ph>
   </message>
   <message name="IDS_DEVTOOLS_956f8281d37fdceec7698094b6236870" desc="">
     ''' (from cache)
@@ -687,9 +693,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_b8a4d4c7e6bb7b5534b856ce7a9ccde0" desc="">
     Drag
   </message>
-  <message name="IDS_DEVTOOLS_b9048f8879ceb809dd8d8bc0866306b5" desc="">
-    , and <ph name="INVALIDATIONNODES_LENGTH____">$1s</ph> others
-  </message>
   <message name="IDS_DEVTOOLS_b94c9f4242a696995ec1a85feeb138e2" desc="">
     Layer Root
   </message>
@@ -792,9 +795,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_d47c9bd21b8b13b29cb0757777f54d04" desc="">
     Idle Callback Requested
   </message>
-  <message name="IDS_DEVTOOLS_d49a276b363c437fe2446074595fd325" desc="">
-    <ph name="REASON">$1s</ph> for '''
-  </message>
   <message name="IDS_DEVTOOLS_d5b4c38ebb6e58f520e8d1e816ad841e" desc="">
     Stopping timeline…
   </message>
@@ -869,9 +869,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_e6dd8524d6da96536b22201a9a46285a" desc="">
     GPU Memory
-  </message>
-  <message name="IDS_DEVTOOLS_e77edad5ae632de2e062ef4bb6c80d8a" desc="">
-    ''' took <ph name="NUMBER_MILLISTOSTRING_EVENT_DURATION__TRUE_">$1s</ph>.
   </message>
   <message name="IDS_DEVTOOLS_e88587c08bb701308040c1d45394ecad" desc="">
     Tap Down

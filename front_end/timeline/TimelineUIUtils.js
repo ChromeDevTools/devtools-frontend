@@ -1615,15 +1615,11 @@ Timeline.TimelineUIUtils = class {
     const durationText = Common.UIString(
         '%s (at %s)', Number.millisToString(frame.endTime - frame.startTime, true),
         Number.millisToString(frame.startTimeOffset, true));
-    const element = createElement('span');
-    element.createTextChild(durationText);
     if (!frame.hasWarnings())
-      return element;
-    element.createTextChild(Common.UIString('. Long frame times are an indication of '));
-    element.appendChild(UI.XLink.create(
-        'https://developers.google.com/web/fundamentals/performance/rendering/', Common.UIString('jank')));
-    element.createTextChild('.');
-    return element;
+      return UI.formatLocalized('%s', [durationText]);
+
+    const link = UI.XLink.create('https://developers.google.com/web/fundamentals/performance/rendering/', ls`jank`);
+    return UI.formatLocalized('%s. Long frame times are an indication of %s', [durationText, link]);
   }
 
   /**
@@ -1812,10 +1808,10 @@ Timeline.TimelineUIUtils = class {
     switch (warning) {
       case warnings.ForcedStyle:
       case warnings.ForcedLayout:
-        span.appendChild(UI.createDocumentationLink(
+        const forcedReflowLink = UI.createDocumentationLink(
             '../../fundamentals/performance/rendering/avoid-large-complex-layouts-and-layout-thrashing#avoid-forced-synchronous-layouts',
-            Common.UIString('Forced reflow')));
-        span.createTextChild(Common.UIString(' is a likely performance bottleneck.'));
+            ls`Forced reflow`);
+        span.appendChild(UI.formatLocalized('%s is a likely performance bottleneck.', [forcedReflowLink]));
         break;
       case warnings.IdleDeadlineExceeded:
         const exceededMs = Number.millisToString(event.duration - eventData['allottedMilliseconds'], true);
@@ -1828,9 +1824,10 @@ Timeline.TimelineUIUtils = class {
         span.textContent = Common.UIString('Recurring handler took %s', Number.millisToString(event.duration, true));
         break;
       case warnings.LongTask:
+        const longTaskLink =
+            UI.createDocumentationLink('../../fundamentals/performance/rail#goals-and-guidelines', ls`Long task`);
         span.appendChild(
-            UI.createDocumentationLink('../../fundamentals/performance/rail#goals-and-guidelines', ls`Long task`));
-        span.createTextChild(ls` took ${Number.millisToString(event.duration, true)}.`);
+            UI.formatLocalized('%s took %s.', [longTaskLink, Number.millisToString(event.duration, true)]));
         break;
       case warnings.V8Deopt:
         span.appendChild(UI.XLink.create(
@@ -1916,26 +1913,25 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
    */
   _createTitle(target) {
     const first = this._invalidations[0];
-    const reason = first.cause.reason;
+    const reason = first.cause.reason || ls`Unknown cause`;
     const topFrame = first.cause.stackTrace && first.cause.stackTrace[0];
 
-    const title = createElement('span');
-    if (reason)
-      title.createTextChild(Common.UIString('%s for ', reason));
-    else
-      title.createTextChild(Common.UIString('Unknown cause for '));
+    const truncatedNodesElement = this._getTruncatedNodesElement(this._invalidations);
+    if (truncatedNodesElement === null)
+      return UI.formatLocalized(reason, []);
 
-    this._appendTruncatedNodeList(title, this._invalidations);
+    const title = UI.formatLocalized('%s for %s', [reason, truncatedNodesElement]);
 
     if (topFrame && this._contentHelper.linkifier()) {
-      title.createTextChild(Common.UIString('. '));
-      const stack = title.createChild('span', 'monospace');
+      const stack = createElementWithClass('span', 'monospace');
+      const completeTitle = UI.formatLocalized('%s. %s', [title, stack]);
       stack.createChild('span').textContent = Timeline.TimelineUIUtils.frameDisplayName(topFrame);
       const link = this._contentHelper.linkifier().maybeLinkifyConsoleCallFrame(target, topFrame);
       if (link) {
         stack.createChild('span').textContent = ' @ ';
         stack.createChild('span').appendChild(link);
       }
+      return completeTitle;
     }
 
     return title;
@@ -1991,10 +1987,10 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
   }
 
   /**
-   * @param {!Element} parentElement
    * @param {!Array.<!TimelineModel.InvalidationTrackingEvent>} invalidations
+   * @returns {?Element}
    */
-  _appendTruncatedNodeList(parentElement, invalidations) {
+  _getTruncatedNodesElement(invalidations) {
     const invalidationNodes = [];
     const invalidationNodeIdMap = {};
     for (let i = 0; i < invalidations.length; i++) {
@@ -2008,17 +2004,16 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
     }
 
     if (invalidationNodes.length === 1) {
-      parentElement.appendChild(invalidationNodes[0]);
+      return invalidationNodes[0];
     } else if (invalidationNodes.length === 2) {
-      parentElement.appendChild(invalidationNodes[0]);
-      parentElement.createTextChild(Common.UIString(' and '));
-      parentElement.appendChild(invalidationNodes[1]);
-    } else if (invalidationNodes.length >= 3) {
-      parentElement.appendChild(invalidationNodes[0]);
-      parentElement.createTextChild(Common.UIString(', '));
-      parentElement.appendChild(invalidationNodes[1]);
-      parentElement.createTextChild(Common.UIString(', and %s others', invalidationNodes.length - 2));
+      return UI.formatLocalized('%s and %s', invalidationNodes);
+    } else if (invalidationNodes.length === 3) {
+      return UI.formatLocalized('%s, %s, and 1 other', invalidationNodes.slice(0, 2));
+    } else if (invalidationNodes.length >= 4) {
+      return UI.formatLocalized(
+          '%s, %s, and %s others', [...invalidationNodes.slice(0, 2), (invalidationNodes.length - 2).toString()]);
     }
+    return null;
   }
 
   /**

@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_00fcbe531dd989e566cab0a9e250f14c" desc="">
     Port Forwarding:
   </message>
+  <message name="IDS_DEVTOOLS_034fd013261994214d1e8cb42571d191" desc="">
+    Need help? Read Chrome <ph name="DOCUMENTATIONLINK">$1s</ph>.
+  </message>
   <message name="IDS_DEVTOOLS_03fc5c0bd59679c442b86074c7a7cc3a" desc="">
     Port forwarding
   </message>
@@ -20,9 +23,6 @@
   </message>
   <message name="IDS_DEVTOOLS_2157ba7738ed20565fd089f2a6287cdd" desc="">
     View less tabs…
-  </message>
-  <message name="IDS_DEVTOOLS_258771f02f7548d3282560829e7c9b69" desc="">
-    Define the listening port on your device that maps to a port accessible from your development machine. '''
   </message>
   <message name="IDS_DEVTOOLS_2ec0d16e4ca169baedb9b2d50ec5c6d7" desc="">
     Connected
@@ -51,9 +51,6 @@
   <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="">
     Unknown
   </message>
-  <message name="IDS_DEVTOOLS_8c7074069d61ba9d2f76b078fb1dd154" desc="">
-    Need help? Read Chrome '''
-  </message>
   <message name="IDS_DEVTOOLS_926f97ab5b90b053d6a3a31082316f15" desc="">
     No browsers detected.
   </message>
@@ -63,11 +60,11 @@
   <message name="IDS_DEVTOOLS_9ba01fbecae523e4160afa26f75f1757" desc="">
     View more tabs…
   </message>
-  <message name="IDS_DEVTOOLS_a105a2ea6a8f53afe9640d8684ffe5d5" desc="">
-    ''' Read '''
-  </message>
   <message name="IDS_DEVTOOLS_a2040c5569ac3718b10af77aaa3fbb03" desc="">
     Pending authentication: please accept debugging session on the device.
+  </message>
+  <message name="IDS_DEVTOOLS_bb65fcb8595fb531c5be41fa427d39a0" desc="">
+    <ph name="THIS__DEVICECOUNTSPAN">$1s</ph> Read <ph name="DOCUMENTATIONLINK">$2s</ph> for more information.
   </message>
   <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="">
     1 device detected.
@@ -78,14 +75,8 @@
   <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="">
     Open
   </message>
-  <message name="IDS_DEVTOOLS_c9d2bd107ad7a2c20f80efcaaf365d23" desc="">
-    ''' for more information.
-  </message>
   <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="">
     No rules
-  </message>
-  <message name="IDS_DEVTOOLS_ceb747e16b7e536d03047492e4491314" desc="">
-    remote debugging documentation.
   </message>
   <message name="IDS_DEVTOOLS_d38dcac8af912356e255cbace8984e9a" desc="">
     New tab:
@@ -98,6 +89,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="">
     Focus
+  </message>
+  <message name="IDS_DEVTOOLS_ed725244eec042fa550990c608639b38" desc="">
+    Define the listening port on your device that maps to a port accessible from your development machine. Read <ph name="DOCUMENTATIONLINK">$1s</ph> for more.
   </message>
   <message name="IDS_DEVTOOLS_f114563447e4786042d7e7ce05f1157c" desc="">
     Device port (3333)

@@ -50,11 +50,9 @@ Network.BlockedURLsPane = class extends UI.VBox {
    */
   _createEmptyPlaceholder() {
     const element = this.contentElement.createChild('div', 'no-blocked-urls');
-    element.createChild('span').textContent = Common.UIString('Requests are not blocked. ');
-    const addLink = element.createChild('span', 'link');
-    addLink.textContent = Common.UIString('Add pattern.');
-    addLink.href = '';
+    const addLink = UI.XLink.create('', ls`Add pattern`);
     addLink.addEventListener('click', this._addButtonClicked.bind(this), false);
+    element.appendChild(UI.formatLocalized('Requests are not blocked. %s.', [addLink]));
     return element;
   }
 

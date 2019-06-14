@@ -84,6 +84,9 @@
   <message name="IDS_DEVTOOLS_2537b3e6907e17001b7cdf121cd39dc0" desc="">
     (from ServiceWorker)
   </message>
+  <message name="IDS_DEVTOOLS_25f77a709e3c31285e8411402420b72d" desc="">
+    Requests are not blocked. <ph name="ADDLINK">$1s</ph>.
+  </message>
   <message name="IDS_DEVTOOLS_26b6b5ae2c6e2575b2a451c35e94df23" desc="">
     Waiting (TTFB)
   </message>
@@ -107,9 +110,6 @@
   </message>
   <message name="IDS_DEVTOOLS_30ad3ea5e350075c1c0a1171c5006ed7" desc="">
     Fetching frames...
-  </message>
-  <message name="IDS_DEVTOOLS_3136ed000d43bebb4ca53a9312fbd32c" desc="">
-    Add pattern.
   </message>
   <message name="IDS_DEVTOOLS_31977081ea2c828cc70e6151ab5d7da8" desc="">
     view decoded
@@ -575,9 +575,6 @@
   </message>
   <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="">
     Connection
-  </message>
-  <message name="IDS_DEVTOOLS_c33fa8b7d663932b656f0f7f53a74e77" desc="">
-    Requests are not blocked. '''
   </message>
   <message name="IDS_DEVTOOLS_c3c14eb17a6cf9c6120f381790ed06eb" desc="">
     Copy all as PowerShell

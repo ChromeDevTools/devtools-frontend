@@ -342,6 +342,9 @@
   <message name="IDS_DEVTOOLS_ae76c8d643589ff25d35455a80f12061" desc="">
     Do not display variable values inline while debugging
   </message>
+  <message name="IDS_DEVTOOLS_b0d4998a26f5b5742ad38c4af8817e32" desc="">
+    Exception
+  </message>
   <message name="IDS_DEVTOOLS_b16d05636bde9fe84392fd4af198e9c1" desc="">
     Quick source
   </message>

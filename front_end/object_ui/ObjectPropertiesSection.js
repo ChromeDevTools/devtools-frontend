@@ -286,9 +286,7 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
 
     if (wasThrown) {
       const wrapperElement = createElementWithClass('span', 'error value');
-      wrapperElement.createTextChild('[' + Common.UIString('Exception') + ': ');
-      wrapperElement.appendChild(valueElement);
-      wrapperElement.createTextChild(']');
+      wrapperElement.appendChild(UI.formatLocalized('[Exception: %s]', [valueElement]));
       return wrapperElement;
     }
     valueElement.classList.add('value');

@@ -39,13 +39,13 @@
   <message name="IDS_DEVTOOLS_ad921d60486366258809553a3db49a4a" desc="">
     unknown
   </message>
-  <message name="IDS_DEVTOOLS_b0d4998a26f5b5742ad38c4af8817e32" desc="">
-    Exception
-  </message>
   <message name="IDS_DEVTOOLS_b46f6ce1cece499f73c9d5c36e4a3de4" desc="">
     Invoke property getter
   </message>
   <message name="IDS_DEVTOOLS_d50bbea3c85be098dcf221e622cd7718" desc="">
     Lexical scope variables
+  </message>
+  <message name="IDS_DEVTOOLS_ecaa3f03d3f2556acc42a409ae0e00d4" desc="">
+    [Exception: <ph name="VALUEELEMENT">$1s</ph>]
   </message>
 </grit-part>

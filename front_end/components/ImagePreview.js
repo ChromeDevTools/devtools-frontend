@@ -49,9 +49,12 @@ Components.ImagePreview = class {
       const renderedHeight = precomputedFeatures ? precomputedFeatures.renderedHeight : intrinsicHeight;
       let description;
       if (showDimensions) {
-        description = ls`${renderedWidth} \xd7 ${renderedHeight} pixels`;
-        if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth)
-          description += ls` (intrinsic: ${intrinsicWidth} \xd7 ${intrinsicHeight} pixels)`;
+        if (renderedHeight !== intrinsicHeight || renderedWidth !== intrinsicWidth) {
+          description = ls`${renderedWidth} \xd7 ${renderedHeight} pixels (intrinsic: ${intrinsicWidth} \xd7 ${
+              intrinsicHeight} pixels)`;
+        } else {
+          description = ls`${renderedWidth} \xd7 ${renderedHeight} pixels`;
+        }
       }
 
       container.createChild('tr').createChild('td', 'image-container').appendChild(imageElement);

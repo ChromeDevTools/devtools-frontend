@@ -15,6 +15,9 @@
   <message name="IDS_DEVTOOLS_7f52f5f786eb8d9bf9e56ce89fb3db3a" desc="">
     Show 1 more frame
   </message>
+  <message name="IDS_DEVTOOLS_908ae571a925e675f5c55619aa16a99b" desc="">
+    <ph name="RENDEREDWIDTH">$1s</ph> × <ph name="RENDEREDHEIGHT">$2s</ph> pixels (intrinsic: <ph name="INTRINSICWIDTH">$3s</ph> × <ph name="INTRINSICHEIGHT">$4s</ph> pixels)
+  </message>
   <message name="IDS_DEVTOOLS_93898e12951c906e5286ccb36d980ce5" desc="">
     Blackbox script
   </message>
@@ -23,9 +26,6 @@
   </message>
   <message name="IDS_DEVTOOLS_a498f0751d1221223efb0defc71cc804" desc="">
     <ph name="RENDEREDWIDTH">$1s</ph> × <ph name="RENDEREDHEIGHT">$2s</ph> pixels
-  </message>
-  <message name="IDS_DEVTOOLS_b836d99a391a4d2baf6624f8f4acbfc0" desc="">
-    ''' (intrinsic: <ph name="INTRINSICWIDTH">$1s</ph> × <ph name="INTRINSICHEIGHT">$2s</ph> pixels)
   </message>
   <message name="IDS_DEVTOOLS_b9dee6bade160c89fb7f0e539d453513" desc="">
     Dock to bottom

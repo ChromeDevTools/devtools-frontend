@@ -10,8 +10,9 @@ UI.RemoteDebuggingTerminatedScreen = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('ui/remoteDebuggingTerminatedScreen.css');
     const message = this.contentElement.createChild('div', 'message');
-    message.createChild('span').textContent = Common.UIString('Debugging connection was closed. Reason: ');
-    message.createChild('span', 'reason').textContent = reason;
+    const reasonElement = message.createChild('span', 'reason');
+    reasonElement.textContent = reason;
+    message.appendChild(UI.formatLocalized('Debugging connection was closed. Reason: %s', [reasonElement]));
     this.contentElement.createChild('div', 'message').textContent =
         Common.UIString('Reconnect when ready by reopening DevTools.');
     const button = UI.createTextButton(Common.UIString('Reconnect DevTools'), () => window.location.reload());

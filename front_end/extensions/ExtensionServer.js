@@ -620,8 +620,6 @@ Extensions.ExtensionServer = class extends Common.Object {
     this._registerResourceContentCommittedHandler(this._notifyUISourceCodeContentCommitted);
 
     SDK.targetManager.addEventListener(SDK.TargetManager.Events.InspectedURLChanged, this._inspectedURLChanged, this);
-
-    self.InspectorExtensionRegistry.getExtensionsAsync();
   }
 
   _notifyResourceAdded(event) {

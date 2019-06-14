@@ -284,7 +284,6 @@ all_devtools_files = [
   "front_end/event_listeners/module.json",
   "front_end/extensions/ExtensionAPI.js",
   "front_end/extensions/ExtensionPanel.js",
-  "front_end/extensions/ExtensionRegistryStub.js",
   "front_end/extensions/ExtensionServer.js",
   "front_end/extensions/ExtensionTraceProvider.js",
   "front_end/extensions/ExtensionView.js",

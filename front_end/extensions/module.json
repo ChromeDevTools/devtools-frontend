@@ -6,7 +6,6 @@
     ],
     "scripts": [
         "ExtensionAPI.js",
-        "ExtensionRegistryStub.js",
         "ExtensionTraceProvider.js",
         "ExtensionServer.js",
         "ExtensionPanel.js",

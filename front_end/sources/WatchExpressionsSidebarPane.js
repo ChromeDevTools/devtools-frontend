@@ -371,7 +371,7 @@ Sources.WatchExpression = class extends Common.Object {
     headerElement.appendChild(deleteButton);
 
     const titleElement = headerElement.createChild('div', 'watch-expression-title');
-    this._nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(/** @type {string} */ (this._expression));
+    this._nameElement = ObjectUI.ObjectPropertiesSection.createNameElement(this._expression);
     if (!!exceptionDetails || !result) {
       this._valueElement = createElementWithClass('span', 'watch-expression-error value');
       titleElement.classList.add('dimmed');

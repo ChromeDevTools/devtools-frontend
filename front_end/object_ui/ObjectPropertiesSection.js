@@ -121,11 +121,13 @@ ObjectUI.ObjectPropertiesSection = class extends UI.TreeOutlineInShadow {
   }
 
   /**
-   * @param {string} name
+   * @param {?string} name
    * @param {boolean=} isPrivate
    * @return {!Element}
    */
   static createNameElement(name, isPrivate) {
+    if (name === null)
+      return UI.html`<span class="name"></span>`;
     if (/^\s|\s$|^$|\n/.test(name))
       return UI.html`<span class="name">"${name.replace(/\n/g, '\u21B5')}"</span>`;
     if (isPrivate) {

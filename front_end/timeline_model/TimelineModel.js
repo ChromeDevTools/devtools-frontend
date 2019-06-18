@@ -726,8 +726,6 @@ TimelineModel.TimelineModel = class {
       case recordTypes.StyleRecalcInvalidationTracking:
       case recordTypes.StyleInvalidatorInvalidationTracking:
       case recordTypes.LayoutInvalidationTracking:
-      case recordTypes.LayerInvalidationTracking:
-      case recordTypes.PaintInvalidationTracking:
         this._invalidationTracker.addInvalidation(new TimelineModel.InvalidationTrackingEvent(event));
         break;
 
@@ -1210,8 +1208,6 @@ TimelineModel.TimelineModel.RecordType = {
   StyleRecalcInvalidationTracking: 'StyleRecalcInvalidationTracking',
   StyleInvalidatorInvalidationTracking: 'StyleInvalidatorInvalidationTracking',
   LayoutInvalidationTracking: 'LayoutInvalidationTracking',
-  LayerInvalidationTracking: 'LayerInvalidationTracking',
-  PaintInvalidationTracking: 'PaintInvalidationTracking',
 
   ParseHTML: 'ParseHTML',
   ParseAuthorStyleSheet: 'ParseAuthorStyleSheet',
@@ -1593,8 +1589,6 @@ TimelineModel.InvalidationTrackingEvent = class {
     /** @type {?string} */
     this.nodeName = eventData['nodeName'];
     /** @type {?number} */
-    this.paintId = eventData['paintId'];
-    /** @type {?number} */
     this.invalidationSet = eventData['invalidationSet'];
     /** @type {?string} */
     this.invalidatedSelectorId = eventData['invalidatedSelectorId'];
@@ -1649,24 +1643,13 @@ TimelineModel.InvalidationTracker = class {
   addInvalidation(invalidation) {
     this._startNewFrameIfNeeded();
 
-    if (!invalidation.nodeId && !invalidation.paintId) {
+    if (!invalidation.nodeId) {
       console.error('Invalidation lacks node information.');
       console.error(invalidation);
       return;
     }
 
-    // PaintInvalidationTracking events provide a paintId and a nodeId which
-    // we can use to update the paintId for all other invalidation tracking
-    // events.
     const recordTypes = TimelineModel.TimelineModel.RecordType;
-    if (invalidation.type === recordTypes.PaintInvalidationTracking && invalidation.nodeId) {
-      const invalidations = this._invalidationsByNodeId[invalidation.nodeId] || [];
-      for (let i = 0; i < invalidations.length; ++i)
-        invalidations[i].paintId = invalidation.paintId;
-
-      // PaintInvalidationTracking is only used for updating paintIds.
-      return;
-    }
 
     // Suppress StyleInvalidator StyleRecalcInvalidationTracking invalidations because they
     // will be handled by StyleInvalidatorInvalidationTracking.
@@ -1812,28 +1795,6 @@ TimelineModel.InvalidationTracker = class {
    */
   didPaint(paintEvent) {
     this._didPaint = true;
-
-    // If a paint doesn't have a corresponding graphics layer id, it paints
-    // into its parent so add an effectivePaintId to these events.
-    const layerId = paintEvent.args['data']['layerId'];
-    if (layerId)
-      this._lastPaintWithLayer = paintEvent;
-    // Quietly discard top-level paints without layerId, as these are likely
-    // to come from overlay.
-    if (!this._lastPaintWithLayer)
-      return;
-
-    const effectivePaintId = this._lastPaintWithLayer.args['data']['nodeId'];
-    const paintFrameId = paintEvent.args['data']['frame'];
-    const types = [
-      TimelineModel.TimelineModel.RecordType.StyleRecalcInvalidationTracking,
-      TimelineModel.TimelineModel.RecordType.LayoutInvalidationTracking,
-      TimelineModel.TimelineModel.RecordType.PaintInvalidationTracking
-    ];
-    for (const invalidation of this._invalidationsOfTypes(types)) {
-      if (invalidation.paintId === effectivePaintId)
-        this._addInvalidationToEvent(paintEvent, paintFrameId, invalidation);
-    }
   }
 
   /**

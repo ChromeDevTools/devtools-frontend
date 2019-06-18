@@ -240,7 +240,7 @@ input {
     outline: none;
     padding-right: 20px;
     padding-left: 6px;
-    background-image: url(Images/chromeSelect.svg);
+    background-image: -webkit-image-set(url(Images/chromeSelect.png) 1x, url(Images/chromeSelect_2x.png) 2x);
     background-color: hsl(0, 0%, 98%);
     background-position: right center;
     background-repeat: no-repeat;

@@ -518,12 +518,6 @@
        style="fill:#ad8601" />
     <mask
        id="path4453-6-mask">
-      <path
-         transform="translate(-60)"
-         d="m 64,3 h 2 V 5.25 L 65.5,7 h -1 L 64,5.25 V 3 m 0,5 h 2 v 1 h -2"
-         id="path4453-6"
-         inkscape:connector-curvature="0"
-         style="fill:#000000" />
       <rect
          width="10"
          height="10"
@@ -531,6 +525,12 @@
          id="rect8990"
          x="0"
          y="0" />
+      <path
+         transform="translate(-60)"
+         d="m 64,3 h 2 V 5.25 L 65.5,7 h -1 L 64,5.25 V 3 m 0,5 h 2 v 1 h -2"
+         id="path4453-6"
+         inkscape:connector-curvature="0"
+         style="fill:#000000" />
     </mask>
   </g>
   <g
@@ -551,12 +551,6 @@
        style="fill:#2a53cd" />
     <mask
        id="path4287-3-mask">
-      <path
-         transform="translate(-80)"
-         d="m 83.93,2.14 c -0.03,-0.53 0.55,-0.97 1.06,-0.83 0.5,0.12 0.79,0.73 0.56,1.18 -0.2,0.44 -0.79,0.61 -1.2,0.36 C 84.09,2.71 83.93,2.43 83.93,2.14 Z m 1.7,5.46 H 86.3 V 8.13 H 83.41 V 7.6 h 0.66 V 3.99 H 83.41 V 3.46 h 2.22 z"
-         id="path4287-3"
-         inkscape:connector-curvature="0"
-         style="fill:#000000" />
       <rect
          width="10"
          height="10"
@@ -564,6 +558,12 @@
          id="rect8997"
          x="0"
          y="0" />
+      <path
+         transform="translate(-80)"
+         d="m 83.93,2.14 c -0.03,-0.53 0.55,-0.97 1.06,-0.83 0.5,0.12 0.79,0.73 0.56,1.18 -0.2,0.44 -0.79,0.61 -1.2,0.36 C 84.09,2.71 83.93,2.43 83.93,2.14 Z m 1.7,5.46 H 86.3 V 8.13 H 83.41 V 7.6 h 0.66 V 3.99 H 83.41 V 3.46 h 2.22 z"
+         id="path4287-3"
+         inkscape:connector-curvature="0"
+         style="fill:#000000" />
     </mask>
     <defs
        id="defs4289-6">
@@ -607,6 +607,13 @@
        style="fill:#eb3941" />
     <mask
        id="path4229-9-path4231-2-mask">
+      <rect
+         width="10"
+         height="10"
+         style="fill:#ffffff"
+         id="rect9010"
+         x="0"
+         y="0" />
       <path
          transform="translate(-20)"
          d="m 23,3 4,4"
@@ -619,13 +626,6 @@
          id="path4231-2"
          inkscape:connector-curvature="0"
          style="stroke:#000000" />
-      <rect
-         width="10"
-         height="10"
-         style="fill:#ffffff"
-         id="rect9010"
-         x="0"
-         y="0" />
     </mask>
     <defs
        id="defs4233-0">

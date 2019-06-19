@@ -20,7 +20,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
     this._editor = null;
     this.element.tabIndex = -1;
 
-    const logpointPrefix = Sources.BreakpointEditDialog._LogpointPrefix;
+    const logpointPrefix = Sources.BreakpointEditDialog.LogpointPrefix;
     const logpointSuffix = Sources.BreakpointEditDialog._LogpointSuffix;
     this._isLogpoint = oldCondition.startsWith(logpointPrefix) && oldCondition.endsWith(logpointSuffix);
     if (this._isLogpoint)
@@ -64,7 +64,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
    * @return {string}
    */
   static _conditionForLogpoint(condition) {
-    return `${Sources.BreakpointEditDialog._LogpointPrefix}${condition}${Sources.BreakpointEditDialog._LogpointSuffix}`;
+    return `${Sources.BreakpointEditDialog.LogpointPrefix}${condition}${Sources.BreakpointEditDialog._LogpointSuffix}`;
   }
 
   _onTypeChanged() {
@@ -119,7 +119,7 @@ Sources.BreakpointEditDialog = class extends UI.Widget {
   }
 };
 
-Sources.BreakpointEditDialog._LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
+Sources.BreakpointEditDialog.LogpointPrefix = '/** DEVTOOLS_LOGPOINT */ console.log(';
 Sources.BreakpointEditDialog._LogpointSuffix = ')';
 
 Sources.BreakpointEditDialog.BreakpointType = {

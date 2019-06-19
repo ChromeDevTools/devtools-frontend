@@ -529,6 +529,22 @@ Sources.DebuggerPlugin = class extends Sources.UISourceCodeFrame.Plugin {
       event.consume(true);
       return;
     }
+    if (UI.shortcutRegistry.eventMatchesAction(event, 'debugger.breakpoint-input-window')) {
+      const selection = this._textEditor.selection();
+      if (!selection)
+        return;
+      const breakpoints = this._lineBreakpointDecorations(selection.startLine)
+                              .map(decoration => decoration.breakpoint)
+                              .filter(breakpoint => !!breakpoint);
+      let breakpoint;
+      if (breakpoints.length)
+        breakpoint = breakpoints[0];
+      const isLogpoint =
+          breakpoint ? breakpoint.condition().includes(Sources.BreakpointEditDialog.LogpointPrefix) : false;
+      this._editBreakpointCondition(selection.startLine, breakpoint, null, isLogpoint);
+      event.consume(true);
+      return;
+    }
 
     if (UI.KeyboardShortcut.eventHasCtrlOrMeta(event) && this._executionLocation) {
       this._controlDown = true;

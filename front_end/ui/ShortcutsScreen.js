@@ -134,6 +134,9 @@ UI.ShortcutsScreen = class {
     debuggerSection.addAlternateKeys(
         UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.toggle-breakpoints-active'),
         Common.UIString('Toggle all breakpoints'));
+    debuggerSection.addAlternateKeys(
+        UI.shortcutRegistry.shortcutDescriptorsForAction('debugger.breakpoint-input-window'),
+        ls`Open breakpoint editor`);
 
     // Editing
     const editingSection = UI.shortcutsScreen.section(Common.UIString('Text Editor'));

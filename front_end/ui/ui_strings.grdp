@@ -108,6 +108,9 @@
   <message name="IDS_DEVTOOLS_4f9afe303d0e8c68e3518756e1734924" desc="">
     Clear console prompt
   </message>
+  <message name="IDS_DEVTOOLS_50071e5690f1fa19ea303c55302ce167" desc="">
+    Open breakpoint editor
+  </message>
   <message name="IDS_DEVTOOLS_52ebc26c2921d5b84fc670dff9891821" desc="">
     Zoom out
   </message>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="">
+    Sort By
+  </message>
   <message name="IDS_DEVTOOLS_28de94c6a82d4419a4014addb8aba93c" desc="">
     Show <ph name="THIS__CHUNKSIZE">$1d</ph> after
   </message>

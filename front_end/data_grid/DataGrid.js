@@ -937,7 +937,16 @@ DataGrid.DataGrid = class extends Common.Object {
    */
   _clickInHeaderCell(event) {
     const cell = event.target.enclosingNodeOrSelfWithNodeName('th');
-    if (!cell || (cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
+    if (!cell)
+      return;
+    this._sortByColumnHeaderCell(cell);
+  }
+
+  /**
+   * @param {!Node} cell
+   */
+  _sortByColumnHeaderCell(cell) {
+    if ((cell[DataGrid.DataGrid._columnIdSymbol] === undefined) || !cell.classList.contains('sortable'))
       return;
 
     let sortOrder = DataGrid.DataGrid.Order.Ascending;
@@ -1020,9 +1029,23 @@ DataGrid.DataGrid = class extends Common.Object {
     const contextMenu = new UI.ContextMenu(event);
     const target = /** @type {!Node} */ (event.target);
 
+    const sortableVisibleColumns = this._visibleColumnsArray.filter(column => {
+      return (column.sortable && column.title);
+    });
+    if (sortableVisibleColumns.length > 0) {
+      const sortMenu = contextMenu.defaultSection().appendSubMenuItem(ls`Sort By`);
+      for (const column of sortableVisibleColumns) {
+        const headerCell = this._headerTableHeaders[column.id];
+        sortMenu.defaultSection().appendItem(
+            /** @type {string} */ (column.title), this._sortByColumnHeaderCell.bind(this, headerCell));
+      }
+    }
+
     if (target.isSelfOrDescendant(this._headerTableBody)) {
       if (this._headerContextMenuCallback)
         this._headerContextMenuCallback(contextMenu);
+      else
+        contextMenu.show();
       return;
     }
 

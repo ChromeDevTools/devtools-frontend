@@ -321,6 +321,7 @@ UI.TreeOutline = class extends Common.Object {
 /** @enum {symbol} */
 UI.TreeOutline.Events = {
   ElementAttached: Symbol('ElementAttached'),
+  ElementsDetached: Symbol('ElementsDetached'),
   ElementExpanded: Symbol('ElementExpanded'),
   ElementCollapsed: Symbol('ElementCollapsed'),
   ElementSelected: Symbol('ElementSelected')
@@ -570,6 +571,8 @@ UI.TreeElement = class {
       this.treeOutline._unbindTreeElement(current);
 
     child._detach();
+    if (this.treeOutline)
+      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementsDetached);
   }
 
   /**
@@ -607,6 +610,8 @@ UI.TreeElement = class {
       child._detach();
     }
     this._children = [];
+    if (this.treeOutline)
+      this.treeOutline.dispatchEventToListeners(UI.TreeOutline.Events.ElementsDetached);
   }
 
   get selectable() {

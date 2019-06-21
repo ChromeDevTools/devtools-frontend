@@ -147,6 +147,12 @@
   <message name="IDS_DEVTOOLS_48c7c41b72e1d678923ce3571aa65b2d" desc="">
     Step
   </message>
+  <message name="IDS_DEVTOOLS_49548c72b5647f1e23d3dbcdce63b062" desc="">
+    Override page assets with files from a local folder
+  </message>
+  <message name="IDS_DEVTOOLS_49a4a1505587da9f4475db7ee9958853" desc="">
+    Sync changes in DevTools with the local filesystem
+  </message>
   <message name="IDS_DEVTOOLS_4b3812a22a58f04fb5a0598658a3bd27" desc="">
     Go to symbol
   </message>
@@ -237,6 +243,9 @@
   <message name="IDS_DEVTOOLS_74313a1b4f28fd0980e0c7677b38373c" desc="">
     Show all whitespace characters
   </message>
+  <message name="IDS_DEVTOOLS_745b08105fff497904dacce4da1712c3" desc="">
+    Create and save code snippets for later reuse
+  </message>
   <message name="IDS_DEVTOOLS_74662a9a81d3f50d9d1f3dddf044b550" desc="">
     Exclude folder
   </message>
@@ -245,6 +254,9 @@
   </message>
   <message name="IDS_DEVTOOLS_77898d40c8a26a07d05eedb991359804" desc="">
     (source mapped from <ph name="COMPONENTS_LINKIFIER_LINKIFYURL_ORIGINURL_">$1s</ph>)
+  </message>
+  <message name="IDS_DEVTOOLS_7b4181bd55aaaf857e8ac861019fb530" desc="">
+    Content scripts served by extensions appear here
   </message>
   <message name="IDS_DEVTOOLS_7b5c591188e24ed71b8c72b32e86af5e" desc="">
     Disable all breakpoints in line

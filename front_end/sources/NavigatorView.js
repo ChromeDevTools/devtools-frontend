@@ -34,6 +34,8 @@ Sources.NavigatorView = class extends UI.VBox {
     super(true);
     this.registerRequiredCSS('sources/navigatorView.css');
 
+    /** @type {?UI.Widget} */
+    this._placeholder = null;
     this._scriptsTree = new UI.TreeOutlineInShadow();
     this._scriptsTree.registerRequiredCSS('sources/navigatorTree.css');
     this._scriptsTree.setComparator(Sources.NavigatorView._treeElementsCompare);
@@ -144,6 +146,23 @@ Sources.NavigatorView = class extends UI.VBox {
     if (typeWeight1 < typeWeight2)
       return -1;
     return treeElement1.titleAsText().compareTo(treeElement2.titleAsText());
+  }
+
+  /**
+   * @param {!UI.Widget} placeholder
+   */
+  setPlaceholder(placeholder) {
+    console.assert(!this._placeholder, 'A placeholder widget was already set');
+    this._placeholder = placeholder;
+    placeholder.show(this.contentElement, this.contentElement.firstChild);
+    if (this._scriptsTree.firstChild())
+      placeholder.hideWidget();
+
+    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => placeholder.hideWidget());
+    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => {
+      if (!this._scriptsTree.firstChild())
+        placeholder.showWidget();
+    });
   }
 
   /**
@@ -484,8 +503,10 @@ Sources.NavigatorView = class extends UI.VBox {
     const parentFrame = frame.parentFrame || frame.crossTargetParentFrame();
     this._frameNode(project, parentFrame ? parentFrame.resourceTreeModel().target() : target, parentFrame)
         .appendChild(frameNode);
-    if (!parentFrame)
+    if (!parentFrame) {
       frameNode.treeNode()._boostOrder = true;
+      frameNode.treeNode().expand();
+    }
 
     /**
      * @param {boolean} hovered

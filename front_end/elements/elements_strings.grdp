@@ -66,9 +66,6 @@
   <message name="IDS_DEVTOOLS_2f76fab71405b40cf521f64eab0d350f" desc="">
     Delete element
   </message>
-  <message name="IDS_DEVTOOLS_3427db2c4cb9d8d61c1dd32d218d5699" desc="">
-    Use <ph name="ELEMENTS_HINT">$1s</ph> in the console to refer to this element.
-  </message>
   <message name="IDS_DEVTOOLS_365fee797b55ffeac84d2ba82507b721" desc="">
     user agent stylesheet
   </message>
@@ -164,6 +161,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6f3cab519fe7e8f3b7834cf882f9dfe6" desc="">
     Element Classes
+  </message>
+  <message name="IDS_DEVTOOLS_7490f30ff46ab588405acd7109915139" desc="">
+    Use <ph name="ELEMENTS_HINT">$1s</ph> in the console to refer to this element.
   </message>
   <message name="IDS_DEVTOOLS_78e0b69d17e0287aaae4f79171e5b059" desc="">
     Disable DOM word wrap

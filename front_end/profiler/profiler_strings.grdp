@@ -81,6 +81,9 @@
   <message name="IDS_DEVTOOLS_2f318b400ebcb22420251535452efef0" desc="">
     Containment
   </message>
+  <message name="IDS_DEVTOOLS_30f4a219667bb46c6fc92f3d665a866c" desc="aria label for javascript VM instances target list in heap profiler">
+    JavaScript VM instances
+  </message>
   <message name="IDS_DEVTOOLS_32e679bdbd5dd7a0bacf024bc30e8a75" desc="">
     Recording…
   </message>

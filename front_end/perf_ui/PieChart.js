@@ -88,7 +88,7 @@ PerfUI.PieChart = class {
     if (this._legend) {
       this._legend.removeChildren();
       const legendItem = this._addLegendItem(totalValue, ls`Total`);
-      UI.ARIAUtils.setLabelledBy(this._totalElement, legendItem);
+      UI.ARIAUtils.setLabelledBy(this._totalElement, [legendItem]);
     }
   }
 
@@ -130,7 +130,7 @@ PerfUI.PieChart = class {
     this._slices.push(path);
     if (this._legend) {
       const legendItem = this._addLegendItem(value, name, color);
-      UI.ARIAUtils.setLabelledBy(path, legendItem);
+      UI.ARIAUtils.setLabelledBy(path, [legendItem]);
     }
   }
 

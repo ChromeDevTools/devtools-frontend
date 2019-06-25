@@ -124,6 +124,12 @@ Profiler.ProfileType = class extends Common.Object {
   }
 
   /**
+   * @param {boolean} enable
+   */
+  setCustomContentEnabled(enable) {
+  }
+
+  /**
    * @param {number} uid
    * @return {?Profiler.ProfileHeader}
    */

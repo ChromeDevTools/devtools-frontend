@@ -24,7 +24,7 @@
 }
 
 .profile-launcher-view-content p {
-    color: grey;
+    color: hsl(0, 0%, 45%);
     margin-top: 1px;
     margin-left: 22px;
 }

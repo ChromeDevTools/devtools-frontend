@@ -229,6 +229,27 @@ Node.prototype.enclosingNodeOrSelfWithClassList = function(classNames, stayWithi
 };
 
 /**
+ * @return {?Node}
+ */
+Node.prototype.enclosingShadowRoot = function() {
+  let parentNode = this.parentNodeOrShadowHost();
+  while (parentNode) {
+    if (parentNode instanceof ShadowRoot)
+      return parentNode;
+    parentNode = parentNode.parentNodeOrShadowHost();
+  }
+  return null;
+};
+
+/**
+ * @param {!Node} node
+ * @return {boolean}
+ */
+Node.prototype.hasSameShadowRoot = function(node) {
+  return this.enclosingShadowRoot() === node.enclosingShadowRoot();
+};
+
+/**
  * @return {?Element}
  */
 Node.prototype.parentElementOrShadowHost = function() {

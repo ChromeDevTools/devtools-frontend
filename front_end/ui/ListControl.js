@@ -448,6 +448,11 @@ UI.ListControl = class {
     this._selectedItem = index === -1 ? null : this._model.at(index);
     const newItem = this._selectedItem;
     const newElement = this._selectedIndex !== -1 ? this._elementAtIndex(index) : null;
+    if (oldElement)
+      UI.ARIAUtils.setSelected(oldElement, false);
+    if (newElement)
+      UI.ARIAUtils.setSelected(newElement, true);
+    UI.ARIAUtils.setActiveDescendant(this.element, newElement);
     this._delegate.selectedItemChanged(oldItem, newItem, /** @type {?Element} */ (oldElement), newElement);
   }
 

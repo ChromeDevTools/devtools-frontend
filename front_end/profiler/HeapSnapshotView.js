@@ -1167,6 +1167,8 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
   constructor() {
     super(Profiler.TrackingHeapSnapshotProfileType.TypeId, ls`Allocation instrumentation on timeline`);
     this._recordAllocationStacksSetting = Common.settings.createSetting('recordAllocationStacks', false);
+    /** @type {?UI.CheckboxLabel} */
+    this._customContent = null;
   }
 
   /**
@@ -1269,8 +1271,18 @@ Profiler.TrackingHeapSnapshotProfileType = class extends Profiler.HeapSnapshotPr
    * @return {?Element}
    */
   customContent() {
-    return UI.SettingsUI.createSettingCheckbox(
+    const checkboxSetting = UI.SettingsUI.createSettingCheckbox(
         ls`Record allocation stacks (extra performance overhead)`, this._recordAllocationStacksSetting, true);
+    this._customContent = /** @type {!UI.CheckboxLabel} */ (checkboxSetting);
+    return checkboxSetting;
+  }
+
+  /**
+   * @override
+   * @param {boolean} enable
+   */
+  setCustomContentEnabled(enable) {
+    this._customContent.checkboxElement.disabled = !enable;
   }
 
   /**

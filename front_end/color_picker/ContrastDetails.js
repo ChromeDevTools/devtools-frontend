@@ -61,7 +61,6 @@ ColorPicker.ContrastDetails = class {
     expandToolbar.appendToolbarItem(this._expandButton);
 
     this._expandedDetails = this._element.createChild('div', 'expanded-details');
-    this._expandedDetails.id = 'expanded-contrast-details';
     UI.ARIAUtils.setControls(this._expandButton.element, this._expandedDetails);
 
     this._contrastThresholds = this._expandedDetails.createChild('div', 'contrast-thresholds');

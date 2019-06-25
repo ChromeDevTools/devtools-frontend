@@ -135,7 +135,7 @@ Settings.SettingsTab = class extends UI.VBox {
       const title = block.createChild('div', 'settings-section-title');
       title.textContent = name;
       UI.ARIAUtils.markAsHeading(title, 2);
-      UI.ARIAUtils.setLabelledBy(block, title);
+      UI.ARIAUtils.setLabelledBy(block, [title]);
     }
     return block;
   }

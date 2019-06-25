@@ -14,6 +14,9 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._items = new UI.ListModel();
     /** @type {!UI.ListControl<!Profiler.IsolateSelector.ListItem>} */
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
+    UI.ARIAUtils.markAsListBox(this._list.element);
+    this._list.element.tabIndex = 0;
+    UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
     this.contentElement.appendChild(this._list.element);
 
     /** @type {!Map<!SDK.IsolateManager.Isolate, !Profiler.IsolateSelector.ListItem>} */
@@ -196,11 +199,14 @@ Profiler.IsolateSelector.ListItem = class {
     this._isolate = isolate;
     const trendIntervalMinutes = Math.round(SDK.IsolateManager.MemoryTrendWindowMs / 60e3);
     this.element = createElementWithClass('div', 'profile-memory-usage-item hbox');
+    UI.ARIAUtils.markAsOption(this.element);
     this._heapDiv = this.element.createChild('div', 'profile-memory-usage-item-size');
-    this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
-    this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
     this._heapDiv.title = ls`Heap size in use by live JS objects.`;
+    this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
     this._trendDiv.title = ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`;
+    this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
+    UI.ARIAUtils.setLabelledBy(this.element, [this._nameDiv]);
+    UI.ARIAUtils.setDescribedBy(this.element, [this._heapDiv, this._trendDiv]);
     this.updateTitle();
   }
 

@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.Lighthouse || (g.Lighthouse = {})).ReportGenerator = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"./html/html-report-assets":[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}(g.Lighthouse || (g.Lighthouse = {})).ReportGenerator = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"./html/html-report-assets.js":[function(require,module,exports){
 /**
  * @license Copyright 2019 Google Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
@@ -32,7 +32,7 @@ module.exports = {
  */
 'use strict';
 
-const htmlReportAssets = require('./html/html-report-assets');
+const htmlReportAssets = require('./html/html-report-assets.js');
 
 class ReportGenerator {
   /**
@@ -84,14 +84,14 @@ class ReportGenerator {
    *  - the score value of the audit
    *
    * @param {LH.Result} lhr
-   * @returns {string}
+   * @return {string}
    */
   static generateReportCSV(lhr) {
     // To keep things "official" we follow the CSV specification (RFC4180)
     // The document describes how to deal with escaping commas and quotes etc.
     const CRLF = '\r\n';
     const separator = ',';
-    /** @param {string} value @returns {string} */
+    /** @param {string} value @return {string} */
     const escape = value => `"${value.replace(/"/g, '""')}"`;
 
     // Possible TODO: tightly couple headers and row values
@@ -144,5 +144,5 @@ class ReportGenerator {
 
 module.exports = ReportGenerator;
 
-},{"./html/html-report-assets":"./html/html-report-assets"}]},{},[1])(1)
+},{"./html/html-report-assets.js":"./html/html-report-assets.js"}]},{},[1])(1)
 });

@@ -741,7 +741,8 @@ Runtime.Module = class {
     const promises = [];
     for (let i = 0; i < resources.length; ++i) {
       const url = this._modularizeURL(resources[i]);
-      promises.push(Runtime._loadResourceIntoCache(url, true));
+      const isHtml = url.endsWith('.html');
+      promises.push(Runtime._loadResourceIntoCache(url, !isHtml /* appendSourceURL */));
     }
     return Promise.all(promises).then(undefined);
   }

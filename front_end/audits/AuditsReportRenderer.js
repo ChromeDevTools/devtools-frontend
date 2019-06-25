@@ -31,9 +31,6 @@ Audits.ReportRenderer = class extends ReportRenderer {
    */
   static async linkifyNodeDetails(el) {
     const mainTarget = SDK.targetManager.mainTarget();
-    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
-    await resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
-
     const domModel = mainTarget.model(SDK.DOMModel);
 
     for (const origElement of el.getElementsByClassName('lh-node')) {
@@ -64,5 +61,64 @@ Audits.ReportRenderer = class extends ReportRenderer {
   static handleDarkMode(el) {
     if (UI.themeSupport.themeName() === 'dark')
       el.classList.add('dark');
+  }
+};
+
+/**
+ * @override
+ */
+Audits.ReportUIFeatures = class extends ReportUIFeatures {
+  /**
+   * Returns the html that recreates this report.
+   * @return {string}
+   * @protected
+   */
+  getReportHtml() {
+    this.resetUIState();
+    return Lighthouse.ReportGenerator.generateReportHtml(this.json);
+  }
+
+  /**
+   * Downloads a file (blob) using the system dialog prompt.
+   * @param {!Blob|!File} blob The file to save.
+   */
+  async _saveFile(blob) {
+    const domain = new Common.ParsedURL(this.json.finalUrl).domain();
+    const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
+    const timestamp = new Date(this.json.fetchTime).toISO8601Compact();
+    const ext = blob.type.match('json') ? '.json' : '.html';
+    const basename = `${sanitizedDomain}-${timestamp}${ext}`;
+    const text = await blob.text();
+    Workspace.fileManager.save(basename, text, true /* forceSaveAs */);
+  }
+
+  async _print() {
+    const document = this.getDocument();
+    const clonedReport = document.querySelector('.lh-root').cloneNode(true /* deep */);
+    const printWindow = window.open('', '_blank', 'channelmode=1,status=1,resizable=1');
+    const style = printWindow.document.createElement('style');
+    style.textContent = Runtime.cachedResources['audits/lighthouse/report.css'];
+    printWindow.document.head.appendChild(style);
+    printWindow.document.body.replaceWith(clonedReport);
+    // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
+    await Audits.ReportRenderer.linkifyNodeDetails(clonedReport);
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  }
+
+  /**
+   * @suppress {visibility}
+   * @return {!Document}
+   */
+  getDocument() {
+    return this._document;
+  }
+
+  /**
+   * @suppress {visibility}
+   */
+  resetUIState() {
+    this._resetUIState();
   }
 };

@@ -36,7 +36,7 @@ limitations under the License.
   </script>
   <script>window.__LIGHTHOUSE_JSON__ = %%LIGHTHOUSE_JSON%%;</script>
   <script>
-    window.addEventListener('DOMContentLoaded', _ => {
+    function __initLighthouseReport__() {
       const dom = new DOM(document);
       const renderer = new ReportRenderer(dom);
 
@@ -47,7 +47,8 @@ limitations under the License.
       // is in the document.
       const features = new ReportUIFeatures(dom);
       features.initFeatures(window.__LIGHTHOUSE_JSON__);
-    });
+    }
+    window.addEventListener('DOMContentLoaded', __initLighthouseReport__);
 
     document.addEventListener('lh-analytics', e => {
       if (window.ga) {

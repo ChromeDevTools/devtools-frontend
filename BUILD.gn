@@ -53,6 +53,8 @@ all_devtools_files = [
   "front_end/audits/RadioSetting.js",
   "front_end/audits/lighthouse/report.css",
   "front_end/audits/lighthouse/report.js",
+  "front_end/audits/lighthouse/report-generator.js",
+  "front_end/audits/lighthouse/template.html",
   "front_end/audits/lighthouse/templates.html",
   "front_end/audits/module.json",
   "front_end/audits_test_runner/AuditsTestRunner.js",

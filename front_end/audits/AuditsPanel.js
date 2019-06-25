@@ -52,7 +52,6 @@ Audits.AuditsPanel = class extends UI.Panel {
   }
 
   _refreshToolbarUI() {
-    this._downloadButton.setEnabled(this._reportSelector.hasCurrentSelection());
     this._clearButton.setEnabled(this._reportSelector.hasItems());
   }
 
@@ -62,20 +61,12 @@ Audits.AuditsPanel = class extends UI.Panel {
     this._refreshToolbarUI();
   }
 
-  _downloadSelected() {
-    this._reportSelector.downloadSelected();
-  }
-
   _renderToolbar() {
     const toolbar = new UI.Toolbar('', this.element);
 
     this._newButton = new UI.ToolbarButton(Common.UIString('Perform an audit\u2026'), 'largeicon-add');
     toolbar.appendToolbarItem(this._newButton);
     this._newButton.addEventListener(UI.ToolbarButton.Events.Click, this._renderStartView.bind(this));
-
-    this._downloadButton = new UI.ToolbarButton(Common.UIString('Download report'), 'largeicon-download');
-    toolbar.appendToolbarItem(this._downloadButton);
-    this._downloadButton.addEventListener(UI.ToolbarButton.Events.Click, this._downloadSelected.bind(this));
 
     toolbar.appendSeparator();
 
@@ -147,14 +138,25 @@ Audits.AuditsPanel = class extends UI.Panel {
     renderer.setTemplateContext(templatesDOM);
     const el = renderer.renderReport(lighthouseResult, reportContainer);
     Audits.ReportRenderer.addViewTraceButton(el, artifacts);
-    Audits.ReportRenderer.linkifyNodeDetails(el);
+    // Linkifying requires the target be loaded. Do not block the report
+    // from rendering, as this is just an embellishment and the main target
+    // could take awhile to load.
+    this._waitForMainTargetLoad().then(() => {
+      Audits.ReportRenderer.linkifyNodeDetails(el);
+    });
     Audits.ReportRenderer.handleDarkMode(el);
 
-    const features = new ReportUIFeatures(dom);
+    const features = new Audits.ReportUIFeatures(dom);
     features.setTemplateContext(templatesDOM);
     features.initFeatures(lighthouseResult);
 
     this._cachedRenderedReports.set(lighthouseResult, reportContainer);
+  }
+
+  _waitForMainTargetLoad() {
+    const mainTarget = SDK.targetManager.mainTarget();
+    const resourceTreeModel = mainTarget.model(SDK.ResourceTreeModel);
+    return resourceTreeModel.once(SDK.ResourceTreeModel.Events.Load);
   }
 
   /**

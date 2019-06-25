@@ -292,6 +292,11 @@
   overflow-y: scroll;
   height: calc(100% - var(--topbar-height));
 }
+@media print {
+  .lh-devtools .lh-container {
+    overflow: unset;
+  }
+}
 .lh-devtools .lh-sticky-header {
   /* Is normally the height of the topbar. */
   top: 0;

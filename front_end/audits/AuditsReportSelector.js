@@ -90,12 +90,6 @@ Audits.ReportSelector = class {
     this._setEmptyState();
   }
 
-  downloadSelected() {
-    const item = this._selectedItem();
-    if (item)
-      item.download();
-  }
-
   selectNewAudit() {
     this._comboBox.select(this._newAuditItem);
   }
@@ -133,13 +127,5 @@ Audits.ReportSelector.Item = class {
     if (this._element)
       this._element.remove();
     this._showLandingCallback();
-  }
-
-  download() {
-    const domain = new Common.ParsedURL(this._lighthouseResult.finalUrl).domain();
-    const sanitizedDomain = domain.replace(/[^a-z0-9.-]+/gi, '_');
-    const timestamp = this._lighthouseResult.fetchTime;
-    const fileName = `${sanitizedDomain}-${new Date(timestamp).toISO8601Compact()}.json`;
-    Workspace.fileManager.save(fileName, JSON.stringify(this._lighthouseResult), true);
   }
 };

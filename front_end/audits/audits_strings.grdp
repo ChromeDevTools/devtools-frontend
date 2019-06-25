@@ -78,9 +78,6 @@
   <message name="IDS_DEVTOOLS_6565973a762b83f476e9a76a0015b539" desc="">
     At least one category must be selected.
   </message>
-  <message name="IDS_DEVTOOLS_671b3beee69d9180412202b6528ec8f7" desc="">
-    Download report
-  </message>
   <message name="IDS_DEVTOOLS_67aa731132e0e7bbabb1b3d3c363e7d6" desc="">
     Multiple tabs are being controlled by the same service worker. Close your other tabs on the same origin to audit this page.
   </message>

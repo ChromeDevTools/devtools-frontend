@@ -39,7 +39,8 @@ Resources.DOMStorageItemsView = class extends Resources.StorageItemsView {
       {id: 'key', title: Common.UIString('Key'), sortable: false, editable: true, longText: true, weight: 50},
       {id: 'value', title: Common.UIString('Value'), sortable: false, editable: true, longText: true, weight: 50}
     ]);
-    this._dataGrid = new DataGrid.DataGrid(columns, this._editingCallback.bind(this), this._deleteCallback.bind(this));
+    this._dataGrid = new DataGrid.DataGrid(
+        columns, this._editingCallback.bind(this), this._deleteCallback.bind(this), this.refreshItems.bind(this));
     this._dataGrid.addEventListener(
         DataGrid.DataGrid.Events.SelectedNode,
         event => this._previewEntry(/** @type {!DataGrid.DataGridNode} */ (event.data)));

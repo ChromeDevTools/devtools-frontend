@@ -29,7 +29,6 @@ Resources.StorageItemsView = class extends UI.VBox {
     for (const item of toolbarItems)
       this._mainToolbar.appendToolbarItem(item);
 
-    this.element.addEventListener('contextmenu', this._showContextMenu.bind(this), true);
   }
 
   /**
@@ -42,15 +41,6 @@ Resources.StorageItemsView = class extends UI.VBox {
     const button = new UI.ToolbarButton(label, glyph);
     button.addEventListener(UI.ToolbarButton.Events.Click, callback, this);
     return button;
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _showContextMenu(event) {
-    const contextMenu = new UI.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(Common.UIString('Refresh'), this.refreshItems.bind(this));
-    contextMenu.show();
   }
 
   /**

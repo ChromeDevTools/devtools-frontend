@@ -78,8 +78,8 @@ async function parseLocalizableResourceMaps(isDebug) {
 }
 
 /**
- * The following functions parse localizable strings (wrapped in
- * Common.UIString, UI.formatLocalized or ls``) from devtools frontend files.
+ * The following functions parse localizable strings (wrapped in Common.UIString,
+ * Common.UIStringFormat, UI.formatLocalized or ls``) from devtools frontend files.
  */
 
 async function parseLocalizableStrings(devtoolsFiles, isDebug) {
@@ -142,6 +142,7 @@ function parseLocalizableStringFromNode(node, filePath) {
   const locCase = localizationUtils.getLocalizationCase(node);
   switch (locCase) {
     case 'Common.UIString':
+    case 'Common.UIStringFormat':
       handleCommonUIString(node, filePath);
       break;
     case 'UI.formatLocalized':

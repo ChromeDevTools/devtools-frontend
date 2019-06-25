@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_17d440bf27df66479f0fb39cb4f4ad09" desc="">
     Reset view
   </message>
+  <message name="IDS_DEVTOOLS_1886cc68b0d9c0a0f4a9436258cf11e1" desc="">
+    <ph name="PH1">$1.1f</ph> days
+  </message>
   <message name="IDS_DEVTOOLS_1d5f9d3b8b2be8824c18022f024a43a0" desc="">
     Decrement value
   </message>
@@ -53,6 +56,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="">
     <ph name="ITEM_LABEL">$1s</ph>, <ph name="ITEM_SHORTCUT">$2s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="">
+    <ph name="PH1">$1.1f</ph> hrs
   </message>
   <message name="IDS_DEVTOOLS_2dfef1e9ae6e4da36eb0bbeea94742b9" desc="">
     <ph name="MEGABYTES">$1.1f</ph> MB
@@ -80,6 +86,9 @@
   </message>
   <message name="IDS_DEVTOOLS_44ac014b674d7d86a04702e6fd1fa858" desc="">
     Reconnect when ready by reopening DevTools.
+  </message>
+  <message name="IDS_DEVTOOLS_45b471827af8ba9628e1914afbb13980" desc="">
+    <ph name="PH1">$1.1f</ph> min
   </message>
   <message name="IDS_DEVTOOLS_471566447bf928c469d32014791036cc" desc="">
     Debugging connection was closed. Reason: <ph name="REASONELEMENT">$1s</ph>
@@ -141,6 +150,9 @@
   <message name="IDS_DEVTOOLS_6ed5ccb02cd39be4a7a98739f5696d43" desc="">
     Record page reload
   </message>
+  <message name="IDS_DEVTOOLS_70e8cfcb06bc768ce53af9757940cb67" desc="">
+    <ph name="PH1">$1.0f</ph> μs
+  </message>
   <message name="IDS_DEVTOOLS_7102e4c0bf381bdbaa934e3dccb5b283" desc="">
     (anonymous)
   </message>
@@ -170,6 +182,9 @@
   </message>
   <message name="IDS_DEVTOOLS_7dce122004969d56ae2e0245cb754d35" desc="">
     Edit
+  </message>
+  <message name="IDS_DEVTOOLS_7e97bc09f074ed05b7afd49cb4ba0411" desc="">
+    <ph name="PH1">$1.0f</ph> ms
   </message>
   <message name="IDS_DEVTOOLS_84e1d403df34bad00840ee636021698c" desc="">
     Close <ph name="THIS_TITLE">$1s</ph>
@@ -267,8 +282,14 @@
   <message name="IDS_DEVTOOLS_c449b64ade0e464abfc5cb5368775233" desc="">
     Decrement CSS unit by 1
   </message>
+  <message name="IDS_DEVTOOLS_c486d3222f16146af0711d84a14b62fb" desc="">
+    <ph name="PH1">$1.2f</ph> ms
+  </message>
   <message name="IDS_DEVTOOLS_d06337cfbcc777e0a7caa50ef1a9986a" desc="">
     More tabs
+  </message>
+  <message name="IDS_DEVTOOLS_d916eea6390ddc39ee5fbc5c984e940c" desc="">
+    <ph name="PH1">$1.2f</ph> s
   </message>
   <message name="IDS_DEVTOOLS_d9f57fb1f634a4e047fd69b574434c7f" desc="">
     Evaluate selection in console

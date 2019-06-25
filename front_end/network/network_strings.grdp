@@ -414,6 +414,9 @@
   <message name="IDS_DEVTOOLS_9254e453e41bb4058ee1e8c1a2b81a4d" desc="">
     Queueing
   </message>
+  <message name="IDS_DEVTOOLS_9335c2ae6503deed338e5c608fe74f3c" desc="">
+    <ph name="PH1">$1s</ph> download
+  </message>
   <message name="IDS_DEVTOOLS_935f218785830f964d0c537b23027045" desc="">
     <ph name="NUMBER_BYTESTOSTRING_SELECTEDTRANSFERSIZE_">$1s</ph> / <ph name="NUMBER_BYTESTOSTRING_TRANSFERSIZE_">$2s</ph> transferred
   </message>
@@ -479,6 +482,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a0820b213c0f695e95fc0c278a05400f" desc="">
     <ph name="COUNT">$1d</ph> blocked
+  </message>
+  <message name="IDS_DEVTOOLS_a09b75f1cd4e3d54099fa8e14ff5056d" desc="">
+    <ph name="PH1">$1s</ph> (from ServiceWorker)
   </message>
   <message name="IDS_DEVTOOLS_a217246afb12245a032617715f81923b" desc="">
     Manage Header Columns
@@ -654,11 +660,17 @@
   <message name="IDS_DEVTOOLS_de4642e93235c872dcc21d7e4c926c36" desc="">
     Copy all as fetch
   </message>
+  <message name="IDS_DEVTOOLS_de99618e7e2cc63c7262c12965fa31f3" desc="">
+    <ph name="PH1">$1s</ph> latency
+  </message>
   <message name="IDS_DEVTOOLS_de9b14d980b77c264d42463f407180be" desc="">
     Provisional headers are shown
   </message>
   <message name="IDS_DEVTOOLS_df080c10e2e9f1e98c180fe2645f6132" desc="">
     Request URL
+  </message>
+  <message name="IDS_DEVTOOLS_e12d71bcdc8fd61f60b6fdccb4b5fedd" desc="">
+    <ph name="PH1">$1s</ph> latency, <ph name="PH2">$2s</ph> download (<ph name="PH3">$3s</ph> total)
   </message>
   <message name="IDS_DEVTOOLS_e186ebc46177c666cd1d5bda52ade420" desc="">
     Response preview
@@ -737,6 +749,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f6d1d4157b75f9b68298f7df187a177c" desc="">
     Finish: <ph name="NUMBER_SECONDSTOSTRING_MAXTIME___BASETIME_">$1s</ph>
+  </message>
+  <message name="IDS_DEVTOOLS_f750833a940ae1ba3cd75b86d520fda3" desc="">
+    <ph name="PH1">$1s</ph> (from cache)
   </message>
   <message name="IDS_DEVTOOLS_f9069c6541beaac49cce4b2542069f02" desc="">
     Referrer Policy

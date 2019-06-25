@@ -17,6 +17,7 @@ const esprimaTypes = {
   IDENTIFIER: 'Identifier',
   LITERAL: 'Literal',
   MEMBER_EXPR: 'MemberExpression',
+  NEW_EXPR: 'NewExpression',
   TAGGED_TEMP_EXPR: 'TaggedTemplateExpression',
   TEMP_LITERAL: 'TemplateLiteral'
 };
@@ -66,6 +67,11 @@ function isNodeCommonUIStringCall(node) {
   return isNodeCallOnObject(node, 'Common', 'UIString');
 }
 
+function isNodeCommonUIStringFormat(node) {
+  return node && node.type === esprimaTypes.NEW_EXPR &&
+      verifyCallExpressionCallee(node.callee, 'Common', 'UIStringFormat');
+}
+
 function isNodeUIformatLocalized(node) {
   return isNodeCallOnObject(node, 'UI', 'formatLocalized');
 }
@@ -90,6 +96,8 @@ function verifyIdentifier(node, name) {
 function getLocalizationCase(node) {
   if (isNodeCommonUIStringCall(node))
     return 'Common.UIString';
+  else if (isNodeCommonUIStringFormat(node))
+    return 'Common.UIStringFormat';
   else if (isNodelsTaggedTemplateExpression(node))
     return 'Tagged Template';
   else if (isNodeUIformatLocalized(node))

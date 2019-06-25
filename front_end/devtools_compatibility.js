@@ -20,6 +20,16 @@
        * @type {!Object.<number, function(?Object)>}
        */
       this._callbacks = {};
+
+      /**
+       * @type {!Array.<!ExtensionDescriptor>}
+       */
+      this._pendingExtensionDescriptors = [];
+
+      /**
+       * @type {?function(!ExtensionDescriptor)}
+       */
+      this._addExtensionCallback = null;
     }
 
     /**
@@ -66,11 +76,14 @@
       // Support for legacy front-ends (<M41).
       if (window['WebInspector'] && window['WebInspector']['addExtensions']) {
         window['WebInspector']['addExtensions'](extensions);
-      } else if (window['InspectorFrontendAPI']) {
+      } else {
         // The addExtensions command is sent as the onload event happens for
-        // DevTools front-end. In case of hosted mode, this
-        // happens before the InspectorFrontendAPI is initialized.
-        this._dispatchOnInspectorFrontendAPI('addExtensions', [extensions]);
+        // DevTools front-end. We should buffer this command until the frontend
+        // is ready for it.
+        if (this._addExtensionCallback)
+          extensions.forEach(this._addExtensionCallback);
+        else
+          this._pendingExtensionDescriptors.pushAll(extensions);
       }
     }
 
@@ -223,6 +236,17 @@
     keyEventUnhandled(event) {
       event.keyIdentifier = keyCodeToKeyIdentifier(event.keyCode);
       this._dispatchOnInspectorFrontendAPI('keyEventUnhandled', [event]);
+    }
+
+    /**
+     * @param {function(!ExtensionDescriptor)} callback
+     */
+    setAddExtensionCallback(callback) {
+      this._addExtensionCallback = callback;
+      if (this._pendingExtensionDescriptors.length) {
+        this._pendingExtensionDescriptors.forEach(this._addExtensionCallback);
+        this._pendingExtensionDescriptors = [];
+      }
     }
 
     /**
@@ -775,6 +799,14 @@
      */
     isHostedMode() {
       return DevToolsHost.isHostedMode();
+    }
+
+    /**
+     * @override
+     * @param {function(!ExtensionDescriptor)} callback
+     */
+    setAddExtensionCallback(callback) {
+      DevToolsAPI.setAddExtensionCallback(callback);
     }
 
     // Backward-compatible methods below this line --------------------------------------------

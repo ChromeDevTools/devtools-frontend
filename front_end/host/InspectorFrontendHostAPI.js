@@ -25,7 +25,6 @@ InspectorFrontendHostAPI.LoadNetworkResourceResult;
 
 /** @enum {symbol} */
 InspectorFrontendHostAPI.Events = {
-  AddExtensions: Symbol('addExtensions'),
   AppendedToURL: Symbol('appendedToURL'),
   CanceledSaveURL: Symbol('canceledSaveURL'),
   ContextMenuCleared: Symbol('contextMenuCleared'),
@@ -56,7 +55,6 @@ InspectorFrontendHostAPI.Events = {
 };
 
 InspectorFrontendHostAPI.EventDescriptors = [
-  [InspectorFrontendHostAPI.Events.AddExtensions, 'addExtensions', ['extensions']],
   [InspectorFrontendHostAPI.Events.AppendedToURL, 'appendedToURL', ['url']],
   [InspectorFrontendHostAPI.Events.CanceledSaveURL, 'canceledSaveURL', ['url']],
   [InspectorFrontendHostAPI.Events.ContextMenuCleared, 'contextMenuCleared', []],
@@ -328,5 +326,10 @@ InspectorFrontendHostAPI.prototype = {
   /**
    * @return {boolean}
    */
-  isHostedMode() {}
+  isHostedMode() {},
+
+  /**
+   * @param {function(!ExtensionDescriptor)} callback
+   */
+  setAddExtensionCallback(callback) {}
 };

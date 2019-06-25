@@ -57,10 +57,8 @@ ExtensionsTestRunner.runExtensionTests = async function(tests) {
   let extensionURL = pageURL.replace(/^(https?:\/\/[^\/]*\/).*$/, '$1') + 'devtools/resources/extension-main.html';
   extensionURL = extensionURL.replace('127.0.0.1', extensionsHost);
 
-  InspectorFrontendAPI.addExtensions(
-      [{startPage: extensionURL, name: 'test extension', exposeWebInspectorNamespace: true}]);
-
-  Extensions.extensionServer.initializeExtensions();
+  Extensions.extensionServer._addExtension(
+      {startPage: extensionURL, name: 'test extension', exposeWebInspectorNamespace: true});
 };
 
 (function disableLogging() {

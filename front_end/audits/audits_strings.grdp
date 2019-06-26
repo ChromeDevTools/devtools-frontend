@@ -117,10 +117,6 @@
   <message name="IDS_DEVTOOLS_c2ffe02d76c4f089648f1647b43e4ee5" desc="">
     Best practices
   </message>
-  <message name="IDS_DEVTOOLS_c3669fa42d4becdd2831b9685cf607bb" desc="">
-    Identify and fix common problems that affect your site&apos;s performance,
-                accessibility, and user experience.
-  </message>
   <message name="IDS_DEVTOOLS_c91c7b93c28cd18741b71f727ee81ee3" desc="">
     Reports
   </message>
@@ -129,6 +125,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d88946b678e4c2f251d4e292e8142291" desc="">
     SEO
+  </message>
+  <message name="IDS_DEVTOOLS_deeacee140c7d3a451440dd0e206e256" desc="">
+    Identify and fix common problems that affect your site&apos;s performance, accessibility, and user experience.
   </message>
   <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="">
     Device

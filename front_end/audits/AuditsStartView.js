@@ -81,18 +81,19 @@ Audits.StartView = class extends UI.Widget {
     const deviceIcon = UI.Icon.create('largeicon-phone');
     const categoriesIcon = UI.Icon.create('largeicon-checkmark');
     const throttlingIcon = UI.Icon.create('largeicon-settings-gear');
+    const auditsDescription = ls
+    `Identify and fix common problems that affect your site's performance, accessibility, and user experience.`;  // crbug.com/972969
 
     const fragment = UI.Fragment.build`
       <div class="vbox audits-start-view">
         <header>
           <div class="audits-logo"></div>
           <div class="audits-start-view-text">
-            <h2>${ls`Audits`}</h2>
-            <p>
-              ${ls`Identify and fix common problems that affect your site's performance,
-                accessibility, and user experience.`}
-              <span class="link" $="learn-more">${ls`Learn more`}</a>
-            </p>
+          <h2>${ls`Audits`}</h2>
+          <p>
+            <span class="text">${auditsDescription}</span>
+            <span class="link" $="learn-more">${ls`Learn more`}</a>
+          </p>
           </div>
         </header>
         <form>

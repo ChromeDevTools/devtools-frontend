@@ -41,6 +41,11 @@
   margin-top: 0;
 }
 
+.audits-start-view-text .text {
+  display: inline-block;
+  margin-right: 5px;
+}
+
 .audits-start-view form {
   padding: 0 16px;
 }

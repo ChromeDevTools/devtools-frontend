@@ -229,8 +229,13 @@
             "title": "Theme:",
             "settingName": "uiTheme",
             "settingType": "enum",
-            "defaultValue": "default",
+            "defaultValue": "systemPreferred",
             "options": [
+                {
+                    "title": "Switch to system preferred color theme",
+                    "text": "System preference",
+                    "value": "systemPreferred"
+                },
                 {
                     "title": "Switch to light theme",
                     "text": "Light",

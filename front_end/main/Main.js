@@ -152,7 +152,7 @@ Main.Main = class {
     // Request filesystems early, we won't create connections until callback is fired. Things will happen in parallel.
     Persistence.isolatedFileSystemManager = new Persistence.IsolatedFileSystemManager();
 
-    const themeSetting = Common.settings.createSetting('uiTheme', 'default');
+    const themeSetting = Common.settings.createSetting('uiTheme', 'systemPreferred');
     UI.initializeUIUtils(document, themeSetting);
     themeSetting.addChangeListener(Components.reload.bind(Components));
 

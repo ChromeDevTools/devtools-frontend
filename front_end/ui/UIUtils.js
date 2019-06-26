@@ -1655,7 +1655,8 @@ UI.ThemeSupport = class {
    * @param {!Common.Setting} setting
    */
   constructor(setting) {
-    this._themeName = setting.get() || 'default';
+    const systemPreferredTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+    this._themeName = setting.get() === 'systemPreferred' ? systemPreferredTheme : setting.get();
     this._themableProperties = new Set([
       'color', 'box-shadow', 'text-shadow', 'outline-color', 'background-image', 'background-color',
       'border-left-color', 'border-right-color', 'border-top-color', 'border-bottom-color', '-webkit-border-image',

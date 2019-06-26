@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_8645bf45e76c3f958ae99c114c419743" desc="">
     Hide console drawer
   </message>
+  <message name="IDS_DEVTOOLS_875edcc9e39b54457d954c9775dea04d" desc="">
+    System preference
+  </message>
   <message name="IDS_DEVTOOLS_92b09c7c48c520c3c55e497875da437c" desc="">
     Right
   </message>
@@ -152,5 +155,8 @@
   </message>
   <message name="IDS_DEVTOOLS_fa480abba67730dd6bd15aa40308d78a" desc="">
     Set color format to HSL
+  </message>
+  <message name="IDS_DEVTOOLS_fa4ab936aaa8ad819e491af0ec0b674b" desc="">
+    Switch to system preferred color theme
   </message>
 </grit-part>

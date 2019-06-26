@@ -842,6 +842,12 @@ Common.VersionController = class {
     renameInStringSetting('panel-selectedTab', 'audits2', 'audits');
   }
 
+  _updateVersionFrom27To28() {
+    const setting = Common.settings.createSetting('uiTheme', 'systemPreferred');
+    if (setting.get() === 'default')
+      setting.set('systemPreferred');
+  }
+
   _migrateSettingsFromLocalStorage() {
     // This step migrates all the settings except for the ones below into the browser profile.
     const localSettings = new Set([
@@ -874,7 +880,7 @@ Common.VersionController = class {
 };
 
 Common.VersionController._currentVersionName = 'inspectorVersion';
-Common.VersionController.currentVersion = 27;
+Common.VersionController.currentVersion = 28;
 
 /**
  * @type {!Common.Settings}

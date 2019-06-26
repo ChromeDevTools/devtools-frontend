@@ -99,6 +99,9 @@
   <message name="IDS_DEVTOOLS_4757fe07fd492a8be0ea6a760d683d6e" desc="">
     position
   </message>
+  <message name="IDS_DEVTOOLS_4a27b8d01ae86c80074e4c57be48f8c6" desc="">
+    Copy styles
+  </message>
   <message name="IDS_DEVTOOLS_4c1c7d945fcd04d68bd3b3f1d99a55a1" desc="">
     Styles
   </message>

@@ -526,6 +526,7 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       section.appendItem(Common.UIString('Copy selector'), this._copyCSSPath.bind(this));
       section.appendItem(
           Common.UIString('Copy JS path'), this._copyJSPath.bind(this), !Elements.DOMPath.canGetJSPath(this._node));
+      section.appendItem(ls`Copy styles`, this._copyStyles.bind(this));
     }
     if (!isShadowRoot) {
       section.appendItem(Common.UIString('Copy XPath'), this._copyXPath.bind(this));
@@ -1639,6 +1640,30 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
   _copyFullXPath() {
     InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, false));
+  }
+
+  async _copyStyles() {
+    const node = this._node;
+    const cssModel = node.domModel().cssModel();
+    const cascade = await cssModel.cachedMatchedCascadeForNode(node);
+    if (!cascade)
+      return;
+    /** @type {!Array<string>} */
+    const lines = [];
+    for (const style of cascade.nodeStyles().reverse()) {
+      for (const property of style.leadingProperties()) {
+        if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit)
+          continue;
+        if (cascade.isInherited(style) && !SDK.cssMetadata().isPropertyInherited(property.name))
+          continue;
+        if (style.parentRule && style.parentRule.isUserAgent())
+          continue;
+        if (cascade.propertyState(property) !== SDK.CSSMatchedStyles.PropertyState.Active)
+          continue;
+        lines.push(`${property.name}: ${property.value};`);
+      }
+    }
+    InspectorFrontendHost.copyText(lines.join('\n'));
   }
 
   _highlightSearchResults() {

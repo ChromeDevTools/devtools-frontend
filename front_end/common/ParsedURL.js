@@ -215,7 +215,8 @@ Common.ParsedURL = class {
   static completeURL(baseURL, href) {
     // Return special URLs as-is.
     const trimmedHref = href.trim();
-    if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:'))
+    if (trimmedHref.startsWith('data:') || trimmedHref.startsWith('blob:') || trimmedHref.startsWith('javascript:') ||
+        trimmedHref.startsWith('mailto:'))
       return href;
 
     // Return absolute URLs as-is.

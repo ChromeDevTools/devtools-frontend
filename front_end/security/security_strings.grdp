@@ -60,9 +60,6 @@
   <message name="IDS_DEVTOOLS_5a70e1c7b4fa71a69851e44cda14dff7" desc="">
     Secure origins
   </message>
-  <message name="IDS_DEVTOOLS_628b50e6d53ec0d0e9b62971872e6b8b" desc="">
-    Show more (<ph name="SANLIST_LENGTH">$1d</ph> total)
-  </message>
   <message name="IDS_DEVTOOLS_62a0282d39568be094470486eaf70c4f" desc="">
     SAN
   </message>
@@ -113,6 +110,9 @@
   </message>
   <message name="IDS_DEVTOOLS_a7ec70e97f31322dc2e9aaa805b102ab" desc="">
     View <ph name="FILTERREQUESTCOUNT">$1d</ph> request in Network Panel
+  </message>
+  <message name="IDS_DEVTOOLS_aa043eca48e5c05602ee440521a2d8fc" desc="">
+    Show more (<ph name="SANLIST_LENGTH">$1s</ph> total)
   </message>
   <message name="IDS_DEVTOOLS_b92f649b203ca680d444432324771186" desc="">
     This request does not comply with Chrome&apos;s Certificate Transparency policy.

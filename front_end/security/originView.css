@@ -95,8 +95,12 @@
     padding-bottom: 0;
 }
 
+.security-origin-view .details-toggle {
+  margin-left: 126px;
+}
+
 .security-origin-view .sct-toggle {
-    padding-left: 143px;
+    margin-left: 145px;
     padding-top: 5px;
 }
 

@@ -44,11 +44,13 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @return {!Element}
    */
   static createCertificateViewerButtonForOrigin(text, origin) {
-    return UI.createTextButton(text, async e => {
+    const certificateButton = UI.createTextButton(text, async e => {
       e.consume();
       const names = await SDK.multitargetNetworkManager.getCertificate(origin);
       InspectorFrontendHost.showCertificateViewer(names);
     }, 'origin-button');
+    UI.ARIAUtils.markAsMenuButton(certificateButton);
+    return certificateButton;
   }
 
   /**
@@ -57,10 +59,12 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
    * @return {!Element}
    */
   static createCertificateViewerButtonForCert(text, names) {
-    return UI.createTextButton(text, e => {
+    const certificateButton = UI.createTextButton(text, e => {
       e.consume();
       InspectorFrontendHost.showCertificateViewer(names);
     }, 'security-certificate-button');
+    UI.ARIAUtils.markAsMenuButton(certificateButton);
+    return certificateButton;
   }
 
   /**
@@ -598,8 +602,9 @@ Security.SecurityMainView = class extends UI.VBox {
         this.contentElement.createChild('div', 'security-explanation-list security-explanations-extra');
 
     // Fill the security summary section.
-    this._summarySection.createChild('div', 'security-summary-section-title').textContent =
-        Common.UIString('Security overview');
+    const summaryDiv = this._summarySection.createChild('div', 'security-summary-section-title');
+    summaryDiv.textContent = ls`Security overview`;
+    UI.ARIAUtils.markAsHeading(summaryDiv, 1);
 
     const lockSpectrum = this._summarySection.createChild('div', 'lock-spectrum');
     lockSpectrum.createChild('div', 'lock-icon lock-icon-secure').title = Common.UIString('Secure');
@@ -611,6 +616,7 @@ Security.SecurityMainView = class extends UI.VBox {
         .createChild('div', 'triangle-pointer');
 
     this._summaryText = this._summarySection.createChild('div', 'security-summary-text');
+    UI.ARIAUtils.markAsHeading(this._summaryText, 2);
   }
 
   /**
@@ -665,10 +671,10 @@ Security.SecurityMainView = class extends UI.VBox {
     this._securityState = newSecurityState;
     this._summarySection.classList.add('security-summary-' + this._securityState);
     const summaryExplanationStrings = {
-      'unknown': Common.UIString('The security of this page is unknown.'),
-      'insecure': Common.UIString('This page is not secure (broken HTTPS).'),
-      'neutral': Common.UIString('This page is not secure.'),
-      'secure': Common.UIString('This page is secure (valid HTTPS).')
+      'unknown': ls`The security of this page is unknown.`,
+      'insecure': ls`This page is not secure (broken HTTPS).`,
+      'neutral': ls`This page is not secure.`,
+      'secure': ls`This page is secure (valid HTTPS).`
     };
 
     // Use override summary if present, otherwise use base explanation
@@ -736,14 +742,19 @@ Security.SecurityMainView = class extends UI.VBox {
       return;
     }
 
-    const requestsAnchor = element.createChild('div', 'security-mixed-content link');
+    const requestsAnchor = element.createChild('div', 'security-mixed-content devtools-link');
+    UI.ARIAUtils.markAsLink(requestsAnchor);
+    requestsAnchor.tabIndex = 0;
     if (filterRequestCount === 1)
       requestsAnchor.textContent = Common.UIString('View %d request in Network Panel', filterRequestCount);
     else
       requestsAnchor.textContent = Common.UIString('View %d requests in Network Panel', filterRequestCount);
 
-    requestsAnchor.href = '';
     requestsAnchor.addEventListener('click', this.showNetworkFilter.bind(this, filterKey));
+    requestsAnchor.addEventListener('keydown', event => {
+      if (isEnterKey(event))
+        this.showNetworkFilter(filterKey, event);
+    });
   }
 
   /**
@@ -776,7 +787,9 @@ Security.SecurityOriginView = class extends UI.VBox {
     this.registerRequiredCSS('security/lockIcon.css');
 
     const titleSection = this.element.createChild('div', 'title-section');
-    titleSection.createChild('div', 'title-section-header').textContent = ls`Origin`;
+    const titleDiv = titleSection.createChild('div', 'title-section-header');
+    titleDiv.textContent = ls`Origin`;
+    UI.ARIAUtils.markAsHeading(titleDiv, 1);
 
     const originDisplay = titleSection.createChild('div', 'origin-display');
     this._originLockIcon = originDisplay.createChild('span', 'security-property');
@@ -784,19 +797,23 @@ Security.SecurityOriginView = class extends UI.VBox {
 
     originDisplay.appendChild(Security.SecurityPanel.createHighlightedUrl(origin, originState.securityState));
 
-    const originNetworkButton = titleSection.createChild('div', 'view-network-button');
-    originNetworkButton.appendChild(UI.createTextButton('View requests in Network Panel', e => {
+    const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
+    const originNetworkButton = UI.createTextButton('View requests in Network Panel', e => {
       e.consume();
       const parsedURL = new Common.ParsedURL(origin);
       Network.NetworkPanel.revealAndFilter([
         {filterType: Network.NetworkLogView.FilterType.Domain, filterValue: parsedURL.host},
         {filterType: Network.NetworkLogView.FilterType.Scheme, filterValue: parsedURL.scheme}
       ]);
-    }, 'origin-button'));
+    }, 'origin-button');
+    UI.ARIAUtils.markAsLink(originNetworkButton);
+    originNetworkDiv.appendChild(originNetworkButton);
 
     if (originState.securityDetails && originState.securityDetails.protocol.length > 0) {
       const connectionSection = this.element.createChild('div', 'origin-view-section');
-      connectionSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Connection');
+      const connectionDiv = connectionSection.createChild('div', 'origin-view-section-title');
+      connectionDiv.textContent = ls`Connection`;
+      UI.ARIAUtils.markAsHeading(connectionDiv, 2);
 
       let table = new Security.SecurityDetailsTable();
       connectionSection.appendChild(table.element());
@@ -812,7 +829,9 @@ Security.SecurityOriginView = class extends UI.VBox {
 
       // Create the certificate section outside the callback, so that it appears in the right place.
       const certificateSection = this.element.createChild('div', 'origin-view-section');
-      certificateSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Certificate');
+      const certificateDiv = certificateSection.createChild('div', 'origin-view-section-title');
+      certificateDiv.textContent = ls`Certificate`;
+      UI.ARIAUtils.markAsHeading(certificateDiv, 2);
 
       const sctListLength = originState.securityDetails.signedCertificateTimestampList.length;
       const ctCompliance = originState.securityDetails.certificateTransparencyCompliance;
@@ -820,8 +839,9 @@ Security.SecurityOriginView = class extends UI.VBox {
       if (sctListLength || ctCompliance !== Protocol.Network.CertificateTransparencyCompliance.Unknown) {
         // Create the Certificate Transparency section outside the callback, so that it appears in the right place.
         sctSection = this.element.createChild('div', 'origin-view-section');
-        sctSection.createChild('div', 'origin-view-section-title').textContent =
-            Common.UIString('Certificate Transparency');
+        const sctDiv = sctSection.createChild('div', 'origin-view-section-title');
+        sctDiv.textContent = ls`Certificate Transparency`;
+        UI.ARIAUtils.markAsHeading(sctDiv, 2);
       }
 
       const sanDiv = this._createSanDiv(originState.securityDetails.sanList);
@@ -873,19 +893,18 @@ Security.SecurityOriginView = class extends UI.VBox {
 
       // Add link to toggle between displaying of the summary of the SCT(s) and the detailed SCT(s).
       if (sctListLength) {
-        const toggleSctsDetailsLink = sctSection.createChild('div', 'link');
-        toggleSctsDetailsLink.classList.add('sct-toggle');
-        toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
         function toggleSctDetailsDisplay() {
           const isDetailsShown = !sctTableWrapper.classList.contains('hidden');
           if (isDetailsShown)
-            toggleSctsDetailsLink.textContent = Common.UIString('Show full details');
+            toggleSctsDetailsLink.textContent = ls`Show full details`;
           else
-            toggleSctsDetailsLink.textContent = Common.UIString('Hide full details');
+            toggleSctsDetailsLink.textContent = ls`Hide full details`;
           sctSummaryTable.element().classList.toggle('hidden');
           sctTableWrapper.classList.toggle('hidden');
         }
-        toggleSctsDetailsLink.addEventListener('click', toggleSctDetailsDisplay, false);
+        const toggleSctsDetailsLink =
+            UI.createTextButton(ls`Show full details`, toggleSctDetailsDisplay, 'details-toggle');
+        sctSection.appendChild(toggleSctsDetailsLink);
       }
 
       switch (ctCompliance) {
@@ -913,17 +932,22 @@ Security.SecurityOriginView = class extends UI.VBox {
       // this means that the origin is a non-cryptographic secure origin, e.g.
       // chrome:// or about:.
       const secureSection = this.element.createChild('div', 'origin-view-section');
-      secureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Secure');
-      secureSection.createChild('div').textContent = Common.UIString('This origin is a non-HTTPS secure origin.');
+      const secureDiv = secureSection.createChild('div', 'origin-view-section-title');
+      secureDiv.textContent = ls`Secure`;
+      UI.ARIAUtils.markAsHeading(secureDiv, 2);
+      secureSection.createChild('div').textContent = ls`This origin is a non-HTTPS secure origin.`;
     } else if (originState.securityState !== Protocol.Security.SecurityState.Unknown) {
       const notSecureSection = this.element.createChild('div', 'origin-view-section');
-      notSecureSection.createChild('div', 'origin-view-section-title').textContent = Common.UIString('Not secure');
+      const notSecureDiv = notSecureSection.createChild('div', 'origin-view-section-title');
+      notSecureDiv.textContent = ls`Not secure`;
+      UI.ARIAUtils.markAsHeading(notSecureDiv, 2);
       notSecureSection.createChild('div').textContent =
           Common.UIString('Your connection to this origin is not secure.');
     } else {
       const noInfoSection = this.element.createChild('div', 'origin-view-section');
-      noInfoSection.createChild('div', 'origin-view-section-title').textContent =
-          Common.UIString('No security information');
+      const noInfoDiv = noInfoSection.createChild('div', 'origin-view-section-title');
+      noInfoDiv.textContent = ls`No security information`;
+      UI.ARIAUtils.markAsHeading(noInfoDiv, 2);
       noInfoSection.createChild('div').textContent =
           Common.UIString('No security details are available for this origin.');
     }
@@ -931,7 +955,7 @@ Security.SecurityOriginView = class extends UI.VBox {
 
   /**
    * @param {!Array<string>} sanList
-   * *return {!Element}
+   * @return {!Element}
    */
   _createSanDiv(sanList) {
     const sanDiv = createElement('div');
@@ -948,19 +972,17 @@ Security.SecurityOriginView = class extends UI.VBox {
           span.classList.add('truncated-entry');
       }
       if (listIsTruncated) {
-        const truncatedSANToggle = sanDiv.createChild('div', 'link');
-        truncatedSANToggle.href = '';
-
         function toggleSANTruncation() {
           if (sanDiv.classList.contains('truncated-san')) {
             sanDiv.classList.remove('truncated-san');
-            truncatedSANToggle.textContent = Common.UIString('Show less');
+            truncatedSANToggle.textContent = ls`Show less`;
           } else {
             sanDiv.classList.add('truncated-san');
-            truncatedSANToggle.textContent = Common.UIString('Show more (%d total)', sanList.length);
+            truncatedSANToggle.textContent = ls`Show more (${sanList.length} total)`;
           }
         }
-        truncatedSANToggle.addEventListener('click', toggleSANTruncation, false);
+        const truncatedSANToggle = UI.createTextButton(ls`Show more (${sanList.length} total)`, toggleSANTruncation);
+        sanDiv.appendChild(truncatedSANToggle);
         toggleSANTruncation();
       }
     }

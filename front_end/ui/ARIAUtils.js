@@ -56,6 +56,14 @@ UI.ARIAUtils.markAsLink = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsMenuButton = function(element) {
+  UI.ARIAUtils.markAsButton(element);
+  element.setAttribute('aria-haspopup', true);
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsTab = function(element) {
   element.setAttribute('role', 'tab');
 };

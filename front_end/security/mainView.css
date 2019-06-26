@@ -3,6 +3,10 @@
  * found in the LICENSE file.
  */
 
+.devtools-link {
+  display: inline-block;
+}
+
 .security-main-view {
     -webkit-user-select: text;
     overflow-x: hidden;

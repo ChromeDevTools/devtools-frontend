@@ -26,7 +26,7 @@ AxeCoreTestRunner.processAxeResult = function(violations) {
       helpUrl: rule.helpUrl,
       ruleId: rule.id,
       impact: rule.impact,
-      faildedNodes: AxeCoreTestRunner.processAxeResultNodesArray(rule.nodes)
+      failedNodes: AxeCoreTestRunner.processAxeResultNodesArray(rule.nodes)
     };
   });
   return JSON.stringify(result, undefined, 2);

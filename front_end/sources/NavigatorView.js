@@ -155,14 +155,21 @@ Sources.NavigatorView = class extends UI.VBox {
     console.assert(!this._placeholder, 'A placeholder widget was already set');
     this._placeholder = placeholder;
     placeholder.show(this.contentElement, this.contentElement.firstChild);
-    if (this._scriptsTree.firstChild())
-      placeholder.hideWidget();
+    updateVisibility.call(this);
+    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, updateVisibility.bind(this));
+    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, updateVisibility.bind(this));
 
-    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementAttached, () => placeholder.hideWidget());
-    this._scriptsTree.addEventListener(UI.TreeOutline.Events.ElementsDetached, () => {
-      if (!this._scriptsTree.firstChild())
+    /**
+     * @this {!Sources.NavigatorView}
+     */
+    function updateVisibility() {
+      const showTree = this._scriptsTree.firstChild();
+      if (showTree)
+        placeholder.hideWidget();
+      else
         placeholder.showWidget();
-    });
+      this._scriptsTree.element.classList.toggle('hidden', !showTree);
+    }
   }
 
   /**

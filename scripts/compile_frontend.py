@@ -68,32 +68,32 @@ def to_platform_path_exact(filepath):
     return output.strip().replace('\\', '\\\\')
 
 
-scripts_path = path.dirname(path.abspath(__file__))
-devtools_path = path.dirname(scripts_path)
-inspector_path = path.join(path.dirname(devtools_path), 'core', 'inspector')
+SCRIPTS_PATH = path.dirname(path.abspath(__file__))
+DEVTOOLS_PATH = path.dirname(SCRIPTS_PATH)
+INSPECTOR_PATH = path.join(path.dirname(DEVTOOLS_PATH), 'core', 'inspector')
 # TODO(dgozman): move these checks to v8.
-v8_inspector_path = path.normpath(path.join(path.dirname(devtools_path), os.pardir, os.pardir, os.pardir, 'v8', 'src', 'inspector'))
-devtools_frontend_path = path.join(devtools_path, 'front_end')
-global_externs_file = to_platform_path(path.join(devtools_frontend_path, 'externs.js'))
-protocol_externs_file = path.join(devtools_frontend_path, 'protocol_externs.js')
-runtime_file = to_platform_path(path.join(devtools_frontend_path, 'Runtime.js'))
+V8_INCLUDE_PATH = path.normpath(path.join(path.dirname(DEVTOOLS_PATH), os.pardir, os.pardir, os.pardir, 'v8', 'include'))
+DEVTOOLS_FRONTEND_PATH = path.join(DEVTOOLS_PATH, 'front_end')
+GLOBAL_EXTERNS_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'externs.js'))
+DEFAULT_PROTOCOL_EXTERNS_FILE = path.join(DEVTOOLS_FRONTEND_PATH, 'protocol_externs.js')
+RUNTIME_FILE = to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'Runtime.js'))
 
-closure_compiler_jar = to_platform_path(path.join(scripts_path, 'closure', 'compiler.jar'))
-closure_runner_jar = to_platform_path(path.join(scripts_path, 'closure', 'closure_runner', 'closure_runner.jar'))
-jsdoc_validator_jar = to_platform_path(path.join(scripts_path, 'jsdoc_validator', 'jsdoc_validator.jar'))
+CLOSURE_COMPILER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'compiler.jar'))
+CLOSURE_RUNNER_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'closure', 'closure_runner', 'closure_runner.jar'))
+JSDOC_VALIDATOR_JAR = to_platform_path(path.join(SCRIPTS_PATH, 'jsdoc_validator', 'jsdoc_validator.jar'))
 
-type_checked_jsdoc_tags_list = ['param', 'return', 'type', 'enum']
-type_checked_jsdoc_tags_or = '|'.join(type_checked_jsdoc_tags_list)
+TYPE_CHECKED_JSDOC_TAGS_LIST = ['param', 'return', 'type', 'enum']
+TYPE_CHECKED_JSDOC_TAGS_OR = '|'.join(TYPE_CHECKED_JSDOC_TAGS_LIST)
 
 # Basic regex for invalid JsDoc types: an object type name ([A-Z][_A-Za-z0-9.]+[A-Za-z0-9]) not preceded by '!', '?', ':' (this, new), or '.' (object property).
-invalid_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or +
+INVALID_TYPE_REGEX = re.compile(r'@(?:' + TYPE_CHECKED_JSDOC_TAGS_OR +
                                 r')\s*\{.*(?<![!?:._A-Za-z0-9])([A-Z][_A-Za-z0-9.]+[A-Za-z0-9])[^/]*\}')
-invalid_type_designator_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*.*(?<![{: ])([?!])=?\}')
-invalid_non_object_type_regex = re.compile(r'@(?:' + type_checked_jsdoc_tags_or + r')\s*\{.*(![a-z]+)[^/]*\}')
-error_warning_regex = re.compile(r'WARNING|ERROR')
-loaded_css_regex = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.createStyleElement)\s*\(\s*"(.+)"\s*\)')
+INVALID_TYPE_DESIGNATOR_REGEX = re.compile(r'@(?:' + TYPE_CHECKED_JSDOC_TAGS_OR + r')\s*.*(?<![{: ])([?!])=?\}')
+INVALID_NON_OBJECT_TYPE_REGEX = re.compile(r'@(?:' + TYPE_CHECKED_JSDOC_TAGS_OR + r')\s*\{.*(![a-z]+)[^/]*\}')
+ERROR_WARNING_REGEX = re.compile(r'WARNING|ERROR')
+LOADED_CSS_REGEX = re.compile(r'(?:registerRequiredCSS|WebInspector\.View\.createStyleElement)\s*\(\s*"(.+)"\s*\)')
 
-java_build_regex = re.compile(r'\w+ version "(\d+)\.(\d+)')
+JAVA_BUILD_REGEX = re.compile(r'\w+ version "(\d+)\.(\d+)')
 
 
 def log_error(message):
@@ -107,7 +107,7 @@ def error_excepthook(exctype, value, traceback):
 
 sys.excepthook = error_excepthook
 
-application_descriptors = [
+APPLICATION_DESCRIPTORS = [
     'inspector',
     'toolbox',
     'integration_test_runner',
@@ -115,7 +115,7 @@ application_descriptors = [
     'heap_snapshot_worker',
 ]
 
-skipped_namespaces = {
+SKIPPED_NAMESPACES = {
     'Console',  # Closure uses Console as a namespace item so we cannot override it right now.
     'Gonzales',  # third party module defined in front_end/externs.js
     'Terminal',  # third party module defined in front_end/externs.js
@@ -123,7 +123,7 @@ skipped_namespaces = {
 
 
 def has_errors(output):
-    return re.search(error_warning_regex, output) != None
+    return re.search(ERROR_WARNING_REGEX, output) is not None
 
 
 class JSDocChecker:
@@ -146,7 +146,7 @@ class JSDocChecker:
             file_list.write('\n'.join(files))
         finally:
             file_list.close()
-        proc = popen(self._java_exec + ['-jar', jsdoc_validator_jar, '--files-list-name', to_platform_path_exact(file_list.name)])
+        proc = popen(self._java_exec + ['-jar', JSDOC_VALIDATOR_JAR, '--files-list-name', to_platform_path_exact(file_list.name)])
         (out, _) = proc.communicate()
         if out:
             print('JSDoc validator output:%s%s' % (os.linesep, out))
@@ -169,30 +169,30 @@ class JSDocChecker:
                                                    ' ' * error_position + '^', os.linesep)
 
         known_css = {}
-        match = re.search(invalid_type_regex, line)
+        match = re.search(INVALID_TYPE_REGEX, line)
         if match:
             print_error('Type "%s" nullability not marked explicitly with "?" (nullable) or "!" (non-nullable)' % match.group(1),
                         match.start(1))
             self._error_found = True
 
-        match = re.search(invalid_non_object_type_regex, line)
+        match = re.search(INVALID_NON_OBJECT_TYPE_REGEX, line)
         if match:
             print_error('Non-object type explicitly marked with "!" (non-nullable), which is the default and should be omitted',
                         match.start(1))
             self._error_found = True
 
-        match = re.search(invalid_type_designator_regex, line)
+        match = re.search(INVALID_TYPE_DESIGNATOR_REGEX, line)
         if match:
             print_error('Type nullability indicator misplaced, should precede type', match.start(1))
             self._error_found = True
 
-        match = re.search(loaded_css_regex, line)
+        match = re.search(LOADED_CSS_REGEX, line)
         if match:
-            file = path.join(devtools_frontend_path, match.group(1))
-            exists = known_css.get(file)
+            css_file = path.join(DEVTOOLS_FRONTEND_PATH, match.group(1))
+            exists = known_css.get(css_file)
             if exists is None:
-                exists = path.isfile(file)
-                known_css[file] = exists
+                exists = path.isfile(css_file)
+                known_css[css_file] = exists
             if not exists:
                 print_error('Dynamically loaded CSS stylesheet is missing in the source tree', match.start(1))
                 self._error_found = True
@@ -212,7 +212,7 @@ def find_java():
     is_ok = False
     java_version_out, _ = popen([java_path, '-version']).communicate()
     # pylint: disable=E1103
-    match = re.search(java_build_regex, java_version_out)
+    match = re.search(JAVA_BUILD_REGEX, java_version_out)
     if match:
         major = int(match.group(1))
         minor = int(match.group(2))
@@ -268,18 +268,18 @@ def check_conditional_dependencies(modules_by_name):
     return errors_found
 
 
-def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_externs_path):
+def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_externs_path, protocol_externs_file):
     temp_frontend_path = path.join(temp_devtools_path, 'front_end')
-    checker = dependency_preprocessor.DependencyPreprocessor(descriptors, temp_frontend_path, devtools_frontend_path)
+    checker = dependency_preprocessor.DependencyPreprocessor(descriptors, temp_frontend_path, DEVTOOLS_FRONTEND_PATH)
     checker.enforce_dependencies()
 
     command = common_closure_args + [
         '--externs',
-        to_platform_path(global_externs_file),
+        to_platform_path(GLOBAL_EXTERNS_FILE),
         '--externs',
         namespace_externs_path,
         '--js',
-        runtime_file,
+        RUNTIME_FILE,
     ]
 
     all_files = descriptors.all_compiled_files()
@@ -289,7 +289,7 @@ def prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_
         if "InspectorBackend.js" in file:
             args.extend(['--js', protocol_externs_file])
     command += args
-    command = [arg.replace(devtools_frontend_path, temp_frontend_path) for arg in command]
+    command = [arg.replace(DEVTOOLS_FRONTEND_PATH, temp_frontend_path) for arg in command]
     compiler_args_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
         compiler_args_file.write('devtools_frontend %s' % (' '.join(command)))
@@ -311,7 +311,7 @@ def generate_namespace_externs(modules_by_name):
         return ''.join(x.title() for x in components)
 
     all_namespaces = [map_module_to_namespace(module) for module in modules_by_name]
-    namespaces = [namespace for namespace in all_namespaces if namespace not in skipped_namespaces]
+    namespaces = [namespace for namespace in all_namespaces if namespace not in SKIPPED_NAMESPACES]
     namespaces.sort()
     namespace_externs_file = tempfile.NamedTemporaryFile(mode='wt', delete=False)
     try:
@@ -325,7 +325,7 @@ def generate_namespace_externs(modules_by_name):
 
 
 def main():
-    global protocol_externs_file
+    protocol_externs_file = DEFAULT_PROTOCOL_EXTERNS_FILE
     errors_found = False
     parser = argparse.ArgumentParser()
     parser.add_argument('--protocol-externs-file')
@@ -333,11 +333,10 @@ def main():
     if args.protocol_externs_file:
         protocol_externs_file = args.protocol_externs_file
     else:
-        generate_protocol_externs.generate_protocol_externs(protocol_externs_file,
-                                                            path.join(inspector_path, 'browser_protocol.pdl'),
-                                                            path.join(v8_inspector_path, 'js_protocol.pdl'))
-    loader = modular_build.DescriptorLoader(devtools_frontend_path)
-    descriptors = loader.load_applications(application_descriptors)
+        generate_protocol_externs.generate_protocol_externs(protocol_externs_file, path.join(
+            INSPECTOR_PATH, 'browser_protocol.pdl'), path.join(V8_INCLUDE_PATH, 'js_protocol.pdl'))
+    loader = modular_build.DescriptorLoader(DEVTOOLS_FRONTEND_PATH)
+    descriptors = loader.load_applications(APPLICATION_DESCRIPTORS)
     modules_by_name = descriptors.modules
 
     java_exec = find_java()
@@ -346,18 +345,22 @@ def main():
     print 'Compiling frontend...'
     temp_devtools_path = tempfile.mkdtemp()
     namespace_externs_path = generate_namespace_externs(modules_by_name)
-    compiler_args_file_path = prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_externs_path)
+    compiler_args_file_path = prepare_closure_frontend_compile(temp_devtools_path, descriptors, namespace_externs_path,
+                                                               protocol_externs_file)
     frontend_compile_proc = popen(
-        java_exec + ['-jar', closure_runner_jar, '--compiler-args-file', to_platform_path_exact(compiler_args_file_path)])
+        java_exec + ['-jar', CLOSURE_RUNNER_JAR, '--compiler-args-file',
+                     to_platform_path_exact(compiler_args_file_path)])
 
     print 'Compiling devtools_compatibility.js...'
 
-    closure_compiler_command = java_exec + ['-jar', closure_compiler_jar] + common_closure_args
+    closure_compiler_command = java_exec + ['-jar', CLOSURE_COMPILER_JAR] + common_closure_args
 
     devtools_js_compile_command = closure_compiler_command + [
-        '--externs', to_platform_path(global_externs_file), '--externs',
-        to_platform_path(path.join(devtools_frontend_path, 'host', 'InspectorFrontendHostAPI.js')),
-        '--jscomp_off=externsValidation', '--js', to_platform_path(path.join(devtools_frontend_path, 'devtools_compatibility.js'))
+        '--externs',
+        to_platform_path(GLOBAL_EXTERNS_FILE), '--externs',
+        to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'host', 'InspectorFrontendHostAPI.js')),
+        '--jscomp_off=externsValidation', '--js',
+        to_platform_path(path.join(DEVTOOLS_FRONTEND_PATH, 'devtools_compatibility.js'))
     ]
     devtools_js_compile_proc = popen(devtools_js_compile_command)
 

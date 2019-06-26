@@ -1467,7 +1467,7 @@ group("devtools_closure_compile") {
     "//testing/xvfb.py",
     "//third_party/blink/renderer/core/inspector/browser_protocol.pdl",
     "//third_party/inspector_protocol/pdl.py",
-    "//v8/src/inspector/js_protocol.pdl",
+    "//v8/include/js_protocol.pdl",
   ]
 }
 

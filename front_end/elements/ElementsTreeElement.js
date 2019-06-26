@@ -287,16 +287,18 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
-    this.treeOutline.populateTreeElement(this);
+  async onpopulate() {
+    return this.treeOutline.populateTreeElement(this);
   }
 
   /**
    * @override
    */
-  expandRecursively() {
-    this._node.getSubtree(-1, true).then(UI.TreeElement.prototype.expandRecursively.bind(this, Number.MAX_VALUE));
+  async expandRecursively() {
+    await this._node.getSubtree(-1, true);
+    await super.expandRecursively(Number.MAX_VALUE);
   }
 
   /**

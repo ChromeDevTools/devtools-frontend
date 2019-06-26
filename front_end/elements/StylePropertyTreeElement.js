@@ -341,8 +341,9 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     // Only populate once and if this property is a shorthand.
     if (this.childCount() || !this.isShorthand)
       return;

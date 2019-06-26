@@ -497,9 +497,10 @@ ObjectUI.ObjectPropertiesSection.RootElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
-    ObjectUI.ObjectPropertyTreeElement._populate(
+  async onpopulate() {
+    return ObjectUI.ObjectPropertyTreeElement._populate(
         this, this._object, !!this.treeOutline._skipProto, this._linkifier, this._emptyPlaceholder,
         this._ignoreHasOwnProperty, this._extraProperties);
   }
@@ -728,13 +729,14 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     const propertyValue = /** @type {!SDK.RemoteObject} */ (this.property.value);
     console.assert(propertyValue);
     const skipProto = this.treeOutline ? this.treeOutline._skipProto : true;
     const targetValue = this.property.name !== '__proto__' ? propertyValue : this.property.parentObject;
-    ObjectUI.ObjectPropertyTreeElement._populate(
+    await ObjectUI.ObjectPropertyTreeElement._populate(
         this, propertyValue, skipProto, this._linkifier, undefined, undefined, undefined, targetValue);
   }
 
@@ -930,8 +932,9 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
 
   /**
    * @param {string} originalContent
+   * @returns {!Promise}
    */
-  _editingCommitted(originalContent) {
+  async _editingCommitted(originalContent) {
     const userInput = this._prompt.text();
     if (userInput === originalContent) {
       this._editingCancelled();  // nothing changed, so cancel
@@ -939,7 +942,7 @@ ObjectUI.ObjectPropertyTreeElement = class extends UI.TreeElement {
     }
 
     this._editingEnded();
-    this._applyExpression(userInput);
+    await this._applyExpression(userInput);
   }
 
   /**
@@ -1059,9 +1062,10 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {number} fromIndex
    * @param {number} toIndex
    * @param {!Components.Linkifier=} linkifier
+   * @returns {!Promise}
    */
-  static _populateArray(treeNode, object, fromIndex, toIndex, linkifier) {
-    ObjectUI.ArrayGroupingTreeElement._populateRanges(treeNode, object, fromIndex, toIndex, true, linkifier);
+  static async _populateArray(treeNode, object, fromIndex, toIndex, linkifier) {
+    await ObjectUI.ArrayGroupingTreeElement._populateRanges(treeNode, object, fromIndex, toIndex, true, linkifier);
   }
 
   /**
@@ -1072,17 +1076,16 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
    * @param {boolean} topLevel
    * @param {!Components.Linkifier=} linkifier
    * @this {ObjectUI.ArrayGroupingTreeElement}
+   * @returns {!Promise}
    */
-  static _populateRanges(treeNode, object, fromIndex, toIndex, topLevel, linkifier) {
-    object
-        .callFunctionJSON(
-            packRanges,
-            [
-              {value: fromIndex}, {value: toIndex}, {value: ObjectUI.ArrayGroupingTreeElement._bucketThreshold},
-              {value: ObjectUI.ArrayGroupingTreeElement._sparseIterationThreshold},
-              {value: ObjectUI.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold}
-            ])
-        .then(callback);
+  static async _populateRanges(treeNode, object, fromIndex, toIndex, topLevel, linkifier) {
+    const jsonValue = await object.callFunctionJSON(packRanges, [
+      {value: fromIndex}, {value: toIndex}, {value: ObjectUI.ArrayGroupingTreeElement._bucketThreshold},
+      {value: ObjectUI.ArrayGroupingTreeElement._sparseIterationThreshold},
+      {value: ObjectUI.ArrayGroupingTreeElement._getOwnPropertyNamesThreshold}
+    ]);
+
+    await callback(jsonValue);
 
     /**
      * Note: must declare params as optional.
@@ -1160,25 +1163,28 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
       return {ranges: ranges, skipGetOwnPropertyNames: skipGetOwnPropertyNames};
     }
 
-    function callback(result) {
+    async function callback(result) {
       if (!result)
         return;
       const ranges = /** @type {!Array.<!Array.<number>>} */ (result.ranges);
       if (ranges.length === 1) {
-        ObjectUI.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, ranges[0][0], ranges[0][1], linkifier);
+        await ObjectUI.ArrayGroupingTreeElement._populateAsFragment(
+            treeNode, object, ranges[0][0], ranges[0][1], linkifier);
       } else {
         for (let i = 0; i < ranges.length; ++i) {
           const fromIndex = ranges[i][0];
           const toIndex = ranges[i][1];
           const count = ranges[i][2];
-          if (fromIndex === toIndex)
-            ObjectUI.ArrayGroupingTreeElement._populateAsFragment(treeNode, object, fromIndex, toIndex, linkifier);
-          else
+          if (fromIndex === toIndex) {
+            await ObjectUI.ArrayGroupingTreeElement._populateAsFragment(
+                treeNode, object, fromIndex, toIndex, linkifier);
+          } else {
             treeNode.appendChild(new ObjectUI.ArrayGroupingTreeElement(object, fromIndex, toIndex, count, linkifier));
+          }
         }
       }
       if (topLevel) {
-        ObjectUI.ArrayGroupingTreeElement._populateNonIndexProperties(
+        await ObjectUI.ArrayGroupingTreeElement._populateNonIndexProperties(
             treeNode, object, result.skipGetOwnPropertyNames, linkifier);
       }
     }
@@ -1293,14 +1299,15 @@ ObjectUI.ArrayGroupingTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     if (this._propertyCount >= ObjectUI.ArrayGroupingTreeElement._bucketThreshold) {
-      ObjectUI.ArrayGroupingTreeElement._populateRanges(
+      await ObjectUI.ArrayGroupingTreeElement._populateRanges(
           this, this._object, this._fromIndex, this._toIndex, false, this._linkifier);
       return;
     }
-    ObjectUI.ArrayGroupingTreeElement._populateAsFragment(
+    await ObjectUI.ArrayGroupingTreeElement._populateAsFragment(
         this, this._object, this._fromIndex, this._toIndex, this._linkifier);
   }
 

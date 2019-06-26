@@ -367,8 +367,9 @@ SourceFrame.XMLView.Node = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     SourceFrame.XMLView.Node.populate(this, this._node, this._xmlView);
     this.appendChild(new SourceFrame.XMLView.Node(this._node, true, this._xmlView));
   }

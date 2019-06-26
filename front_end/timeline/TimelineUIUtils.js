@@ -1939,8 +1939,9 @@ Timeline.TimelineUIUtils.InvalidationsGroupElement = class extends UI.TreeElemen
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     const content = createElementWithClass('div', 'content');
 
     const first = this._invalidations[0];

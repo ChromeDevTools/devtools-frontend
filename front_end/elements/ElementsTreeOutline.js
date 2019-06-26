@@ -1156,13 +1156,18 @@ Elements.ElementsTreeOutline = class extends UI.TreeOutline {
 
   /**
    * @param {!Elements.ElementsTreeElement} treeElement
+   * @returns {!Promise}
    */
   populateTreeElement(treeElement) {
     if (treeElement.childCount() || !treeElement.isExpandable())
-      return;
-    treeElement.node().getChildNodes(() => {
-      treeElement.populated = true;
-      this._updateModifiedParentNode(treeElement.node());
+      return Promise.resolve();
+
+    return new Promise(resolve => {
+      treeElement.node().getChildNodes(() => {
+        treeElement.populated = true;
+        this._updateModifiedParentNode(treeElement.node());
+        resolve();
+      });
     });
   }
 

@@ -267,8 +267,9 @@ EventListeners.ObjectEventListenerBar = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     const properties = [];
     const eventListener = this._eventListener;
     const runtimeModel = eventListener.domDebuggerModel().runtimeModel();

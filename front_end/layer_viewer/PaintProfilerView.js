@@ -450,8 +450,9 @@ LayerViewer.LogTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     for (const param in this._logItem.params)
       LayerViewer.LogPropertyTreeElement._appendLogPropertyItem(this, param, this._logItem.params[param]);
   }

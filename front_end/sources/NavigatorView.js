@@ -920,8 +920,9 @@ Sources.NavigatorFolderTreeElement = class extends UI.TreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     this._node.populate();
   }
 

@@ -264,8 +264,9 @@ Resources.FrameTreeElement = class extends Resources.BaseStorageTreeElement {
 
   /**
    * @override
+   * @returns {!Promise}
    */
-  onpopulate() {
+  async onpopulate() {
     this._populated = true;
     for (const child of this._frame.childFrames)
       this._section._frameAdded(child);

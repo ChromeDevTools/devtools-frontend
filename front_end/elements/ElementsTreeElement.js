@@ -525,8 +525,11 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
       section.appendItem(
           Common.UIString('Copy JS path'), this._copyJSPath.bind(this), !Elements.DOMPath.canGetJSPath(this._node));
     }
-    if (!isShadowRoot)
+    if (!isShadowRoot) {
       section.appendItem(Common.UIString('Copy XPath'), this._copyXPath.bind(this));
+      section.appendItem(ls`Copy full XPath`, this._copyFullXPath.bind(this));
+    }
+
     if (!isShadowRoot) {
       menuItem = copyMenu.clipboardSection().appendItem(
           Common.UIString('Cut element'), treeOutline.performCopyOrCut.bind(treeOutline, true, this._node),
@@ -1630,6 +1633,10 @@ Elements.ElementsTreeElement = class extends UI.TreeElement {
 
   _copyXPath() {
     InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, true));
+  }
+
+  _copyFullXPath() {
+    InspectorFrontendHost.copyText(Elements.DOMPath.xPath(this._node, false));
   }
 
   _highlightSearchResults() {

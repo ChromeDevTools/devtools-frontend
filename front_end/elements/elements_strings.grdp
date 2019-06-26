@@ -195,6 +195,9 @@
   <message name="IDS_DEVTOOLS_91d17eff6a1529e8a4f67a5aa4cabec7" desc="">
     No matching property
   </message>
+  <message name="IDS_DEVTOOLS_97d28fbc573f9f331f5b1886b5c1eeef" desc="">
+    Copy full XPath
+  </message>
   <message name="IDS_DEVTOOLS_9a0364b9e99bb480dd25e1f0284c8555" desc="">
     content
   </message>

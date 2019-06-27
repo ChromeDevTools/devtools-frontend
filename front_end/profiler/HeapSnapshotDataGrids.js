@@ -69,6 +69,7 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
     this._nodeFilter = new HeapSnapshotModel.NodeFilter();
     this.addEventListener(Profiler.HeapSnapshotSortableDataGrid.Events.SortingComplete, this._sortingComplete, this);
     this.addEventListener(DataGrid.DataGrid.Events.SortingChanged, this.sortingChanged, this);
+    this.setRowContextMenuCallback(this._populateContextMenu.bind(this));
   }
 
   /**
@@ -134,13 +135,10 @@ Profiler.HeapSnapshotSortableDataGrid = class extends DataGrid.DataGrid {
 
   /**
    * @param {!UI.ContextMenu} contextMenu
-   * @param {!Event} event
+   * @param {!DataGrid.DataGridNode} gridNode
    */
-  populateContextMenu(contextMenu, event) {
-    const td = event.target.enclosingNodeOrSelfWithNodeName('td');
-    if (!td)
-      return;
-    const node = td.heapSnapshotNode;
+  _populateContextMenu(contextMenu, gridNode) {
+    const node = /** @type {!Profiler.HeapSnapshotGridNode} */ (gridNode);
     contextMenu.revealSection().appendItem(ls`Reveal in Summary view`, () => {
       this._dataDisplayDelegate.showObject(node.snapshotNodeId, ls`Summary`);
     });

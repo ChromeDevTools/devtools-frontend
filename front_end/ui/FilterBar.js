@@ -263,13 +263,17 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
   constructor(items, setting) {
     super();
     this._filtersElement = createElementWithClass('div', 'filter-bitset-filter');
+    UI.ARIAUtils.markAsListBox(this._filtersElement);
+    UI.ARIAUtils.markAsMultiSelectable(this._filtersElement);
     this._filtersElement.title = Common.UIString(
         '%sClick to select multiple types',
         UI.KeyboardShortcut.shortcutToString('', UI.KeyboardShortcut.Modifiers.CtrlOrMeta));
 
     this._allowedTypes = {};
-    this._typeFilterElements = {};
+    /** @type {!Array.<!Element>} */
+    this._typeFilterElements = [];
     this._addBit(UI.NamedBitSetFilterUI.ALL_TYPES, Common.UIString('All'));
+    this._typeFilterElements[0].tabIndex = 0;
     this._filtersElement.createChild('div', 'filter-bitset-filter-divider');
 
     for (let i = 0; i < items.length; ++i)
@@ -315,9 +319,9 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
   _settingChanged() {
     const allowedTypes = this._setting.get();
     this._allowedTypes = {};
-    for (const typeName in this._typeFilterElements) {
-      if (allowedTypes[typeName])
-        this._allowedTypes[typeName] = true;
+    for (const element of this._typeFilterElements) {
+      if (allowedTypes[element.typeName])
+        this._allowedTypes[element.typeName] = true;
     }
     this._update();
   }
@@ -327,8 +331,12 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
       this._allowedTypes = {};
       this._allowedTypes[UI.NamedBitSetFilterUI.ALL_TYPES] = true;
     }
-    for (const typeName in this._typeFilterElements)
-      this._typeFilterElements[typeName].classList.toggle('selected', !!this._allowedTypes[typeName]);
+    for (const element of this._typeFilterElements) {
+      const typeName = element.typeName;
+      const active = !!this._allowedTypes[typeName];
+      element.classList.toggle('selected', active);
+      UI.ARIAUtils.setSelected(element, active);
+    }
     this.dispatchEventToListeners(UI.FilterUI.Events.FilterChanged, null);
   }
 
@@ -339,12 +347,15 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
    */
   _addBit(name, label, title) {
     const typeFilterElement = this._filtersElement.createChild('span', name);
+    typeFilterElement.tabIndex = -1;
     typeFilterElement.typeName = name;
     typeFilterElement.createTextChild(label);
+    UI.ARIAUtils.markAsOption(typeFilterElement);
     if (title)
       typeFilterElement.title = title;
     typeFilterElement.addEventListener('click', this._onTypeFilterClicked.bind(this), false);
-    this._typeFilterElements[name] = typeFilterElement;
+    typeFilterElement.addEventListener('keydown', this._onTypeFilterKeydown.bind(this), false);
+    this._typeFilterElements.push(typeFilterElement);
   }
 
   /**
@@ -357,6 +368,50 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
     else
       toggle = e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey;
     this._toggleTypeFilter(e.target.typeName, toggle);
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onTypeFilterKeydown(event) {
+    const element = /** @type {?Element} */ (event.target);
+    if (!element)
+      return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      if (this._keyFocusNextBit(element, true)) {
+        event.consume(true);
+        return;
+      }
+    } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      if (this._keyFocusNextBit(element, false)) {
+        event.consume(true);
+        return;
+      }
+    } else if (!(event.key === ' ' || isEnterKey(event))) {
+      return;
+    }
+
+    this._onTypeFilterClicked(event);
+  }
+
+  /**
+   * @param {!Element} target
+   * @param {boolean} selectPrevious
+   * @returns {!boolean}
+   */
+  _keyFocusNextBit(target, selectPrevious) {
+    const index = this._typeFilterElements.indexOf(target);
+    if (index === -1)
+      return false;
+    const nextIndex = selectPrevious ? index - 1 : index + 1;
+    if (nextIndex < 0 || nextIndex >= this._typeFilterElements.length)
+      return false;
+
+    const nextElement = this._typeFilterElements[nextIndex];
+    nextElement.tabIndex = 0;
+    target.tabIndex = -1;
+    nextElement.focus();
+    return true;
   }
 
   /**

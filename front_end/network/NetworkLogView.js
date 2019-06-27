@@ -123,6 +123,7 @@ Network.NetworkLogView = class extends UI.VBox {
         Object.values(Common.resourceCategories)
             .map(category => ({name: category.title, label: category.shortTitle, title: category.title}));
     this._resourceCategoryFilterUI = new UI.NamedBitSetFilterUI(filterItems, this._networkResourceTypeFiltersSetting);
+    UI.ARIAUtils.setAccessibleName(this._resourceCategoryFilterUI.element(), ls`Resource types to include`);
     this._resourceCategoryFilterUI.addEventListener(
         UI.FilterUI.Events.FilterChanged, this._filterChanged.bind(this), this);
     filterBar.addFilter(this._resourceCategoryFilterUI);

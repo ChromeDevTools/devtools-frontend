@@ -201,6 +201,9 @@
   <message name="IDS_DEVTOOLS_4dea2ac78e9450e62e96c166ef9f5d4c" desc="">
     Manage Header Columns…
   </message>
+  <message name="IDS_DEVTOOLS_4dec8df20c6bc162fd77420b6f17edc5" desc="">
+    Resource types to include
+  </message>
   <message name="IDS_DEVTOOLS_4e88c13fb97f356a81c48bf2644bef51" desc="">
     Connection Start
   </message>

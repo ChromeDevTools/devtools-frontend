@@ -112,6 +112,13 @@ UI.ARIAUtils.markAsListBox = function(element) {
 };
 
 /**
+ * @param {!Element} element
+ */
+UI.ARIAUtils.markAsMultiSelectable = function(element) {
+  element.setAttribute('aria-multiselectable', 'true');
+};
+
+/**
  * Must be contained in, or owned by, an element with the role listbox.
  * @param {!Element} element
  */

@@ -66,6 +66,10 @@
     overflow: hidden;
 }
 
+.filter-bitset-filter span[data-keyboard-focus="true"] {
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
 .filter-bitset-filter-divider {
     background-color: #ccc;
     height: 16px;

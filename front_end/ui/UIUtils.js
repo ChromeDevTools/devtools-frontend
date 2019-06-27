@@ -1466,6 +1466,7 @@ UI.registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement 
     super();
     const root = UI.createShadowRootWithCoreStyles(this, 'ui/closeButton.css');
     this._buttonElement = root.createChild('div', 'close-button');
+    UI.ARIAUtils.setAccessibleName(this._buttonElement, ls`Close`);
     UI.ARIAUtils.markAsButton(this._buttonElement);
     const regularIcon = UI.Icon.create('smallicon-cross', 'default-icon');
     this._hoverIcon = UI.Icon.create('mediumicon-red-cross-hover', 'hover-icon');

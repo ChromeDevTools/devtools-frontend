@@ -131,8 +131,8 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
     this.doUpdate();
   }
 
-  _clear() {
-    if (!this._securityOrigin)
+  async _clear() {
+    if (!this._securityOrigin || !this._target)
       return;
     const selectedStorageTypes = [];
     for (const type of this._settings.keys()) {
@@ -140,16 +140,15 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
         selectedStorageTypes.push(type);
     }
 
-    if (this._target)
-      Resources.ClearStorageView.clear(this._target, this._securityOrigin, selectedStorageTypes);
-
     this._clearButton.disabled = true;
     const label = this._clearButton.textContent;
     this._clearButton.textContent = Common.UIString('Clearing...');
-    setTimeout(() => {
-      this._clearButton.disabled = false;
-      this._clearButton.textContent = label;
-    }, 500);
+
+    await Resources.ClearStorageView.clear(
+        /** @type {!SDK.Target} */ (this._target), /** @type {string} */ (this._securityOrigin), selectedStorageTypes);
+
+    this._clearButton.disabled = false;
+    this._clearButton.textContent = label;
   }
 
   /**
@@ -157,51 +156,53 @@ Resources.ClearStorageView = class extends UI.ThrottledWidget {
    * @param {string} securityOrigin
    * @param {!Array<string>} selectedStorageTypes
    */
-  static clear(target, securityOrigin, selectedStorageTypes) {
-    target.storageAgent().clearDataForOrigin(securityOrigin, selectedStorageTypes.join(','));
+  static async clear(target, securityOrigin, selectedStorageTypes) {
+    const promises = [];
+
+    promises.push(target.storageAgent().clearDataForOrigin(securityOrigin, selectedStorageTypes.join(',')));
 
     const set = new Set(selectedStorageTypes);
     const hasAll = set.has(Protocol.Storage.StorageType.All);
     if (set.has(Protocol.Storage.StorageType.Cookies) || hasAll) {
       const cookieModel = target.model(SDK.CookieModel);
       if (cookieModel)
-        cookieModel.clear();
+        promises.push(new Promise(resolve => cookieModel.clear(null, resolve)));
     }
 
     if (set.has(Protocol.Storage.StorageType.Indexeddb) || hasAll) {
       for (const target of SDK.targetManager.targets()) {
         const indexedDBModel = target.model(Resources.IndexedDBModel);
         if (indexedDBModel)
-          indexedDBModel.clearForOrigin(securityOrigin);
+          promises.push(indexedDBModel.clearForOrigin(securityOrigin));
       }
     }
 
     if (set.has(Protocol.Storage.StorageType.Local_storage) || hasAll) {
       const storageModel = target.model(Resources.DOMStorageModel);
       if (storageModel)
-        storageModel.clearForOrigin(securityOrigin);
+        promises.push(storageModel.clearForOrigin(securityOrigin));
     }
 
     if (set.has(Protocol.Storage.StorageType.Websql) || hasAll) {
       const databaseModel = target.model(Resources.DatabaseModel);
-      if (databaseModel) {
-        databaseModel.disable();
-        databaseModel.enable();
-      }
+      if (databaseModel)
+        promises.push(databaseModel.disable().then(() => databaseModel.enable()));
     }
 
     if (set.has(Protocol.Storage.StorageType.Cache_storage) || hasAll) {
       const target = SDK.targetManager.mainTarget();
       const model = target && target.model(SDK.ServiceWorkerCacheModel);
       if (model)
-        model.clearForOrigin(securityOrigin);
+        promises.push(model.clearForOrigin(securityOrigin));
     }
 
     if (set.has(Protocol.Storage.StorageType.Appcache) || hasAll) {
       const appcacheModel = target.model(Resources.ApplicationCacheModel);
       if (appcacheModel)
-        appcacheModel.reset();
+        appcacheModel.reset();  // the method is sync
     }
+
+    await Promise.all(promises);
   }
 
   /**

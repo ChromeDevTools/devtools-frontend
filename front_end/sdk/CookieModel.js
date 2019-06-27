@@ -75,7 +75,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {string=} domain
+   * @param {?string} domain
    * @param {function()=} callback
    */
   clear(domain, callback) {

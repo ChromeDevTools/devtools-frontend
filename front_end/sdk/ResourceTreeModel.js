@@ -1018,6 +1018,13 @@ SDK.PageDispatcher = class {
 
   /**
    * @override
+   * @param {string} mode
+   */
+  fileChooserOpened(mode) {
+  }
+
+  /**
+   * @override
    * @param {!Protocol.Page.FrameId} frameId
    * @param {string} url
    */

@@ -230,6 +230,13 @@ SDK.ScreenCaptureModel = class extends SDK.SDKModel {
 
   /**
    * @override
+   * @param {string} mode
+   */
+  fileChooserOpened(mode) {
+  }
+
+  /**
+   * @override
    * @param {string} url
    * @param {string} data
    */

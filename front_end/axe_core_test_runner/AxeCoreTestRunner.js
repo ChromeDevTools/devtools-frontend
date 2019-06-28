@@ -7,6 +7,66 @@
  * @suppress {accessControls}
  */
 
+// These rules are disabled for one or more of the following reasons:
+// * The rule is slow enough to cause flaky timeouts.
+// * The rule has known issues.
+// * The rule is low value so we disable it to improve overall test time.
+// For performance issues see:
+//
+const DISABLED_RULES = {
+  // Slow rules
+  // https://github.com/dequelabs/axe-core/blob/develop/doc/API.md#section-4-performance
+  // (more performance investigation) https://github.com/dequelabs/axe-core/pull/1503
+  'color-contrast': {
+    enabled: false,
+  },
+  'image-redundant-alt': {
+    enabled: false,
+  },
+  // Rules with issues
+  // https://github.com/dequelabs/axe-core/issues/1444
+  'aria-required-children': {
+    enabled: false,
+  },
+  // Low value rules
+  'audio-caption': {
+    enabled: false,
+  },
+  'blink': {
+    enabled: false,
+  },
+  'html-has-lang': {
+    enabled: false,
+  },
+  'html-lang-valid': {
+    enabled: false,
+  },
+  'marquee': {
+    enabled: false,
+  },
+  'meta-refresh': {
+    enabled: false,
+  },
+  'meta-viewport': {
+    enabled: false,
+  },
+  'meta-viewport-large': {
+    enabled: false,
+  },
+  'object-alt': {
+    enabled: false,
+  },
+  'video-caption': {
+    enabled: false,
+  },
+  'video-description': {
+    enabled: false,
+  },
+  'valid-lang': {
+    enabled: false,
+  },
+};
+
 const DEFAULT_CONFIG = {
   checks: [
     // This is a workaround for a bug in our version of axe-core
@@ -46,7 +106,7 @@ AxeCoreTestRunner.runValidation = async function(element, rules, config) {
   axe.configure(Object.assign({}, DEFAULT_CONFIG, config));
 
   try {
-    const results = await axe.run(element, {rules});
+    const results = await axe.run(element, {rules: Object.assign({}, DISABLED_RULES, rules)});
     const violations = AxeCoreTestRunner.processAxeResult(results.violations);
     TestRunner.addResult(`aXe violations: ${violations}\n`);
   } catch (e) {

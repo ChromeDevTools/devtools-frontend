@@ -89,11 +89,8 @@ Resources.DOMStorage = class extends Common.Object {
     this._model._agent.removeDOMStorageItem(this.id, key);
   }
 
-  /**
-   * @return {!Promise}
-   */
   clear() {
-    return this._model._agent.clear(this.id);
+    this._model._agent.clear(this.id);
   }
 };
 
@@ -141,15 +138,14 @@ Resources.DOMStorageModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} origin
-   * @return {!Promise}
    */
-  async clearForOrigin(origin) {
+  clearForOrigin(origin) {
     if (!this._enabled)
       return;
     for (const isLocal of [true, false]) {
       const key = this._storageKey(origin, isLocal);
       const storage = this._storages[key];
-      await storage.clear();
+      storage.clear();
     }
     this._removeOrigin(origin);
     this._addOrigin(origin);

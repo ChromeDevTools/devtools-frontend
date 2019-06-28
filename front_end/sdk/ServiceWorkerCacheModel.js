@@ -45,11 +45,10 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} origin
-   * @return {!Promise}
    */
-  async clearForOrigin(origin) {
-    await this._removeOrigin(origin);
-    await this._addOrigin(origin);
+  clearForOrigin(origin) {
+    this._removeOrigin(origin);
+    this._addOrigin(origin);
   }
 
   refreshCacheNames() {
@@ -124,21 +123,16 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
     }
   }
 
-  /**
-   * @param {string} securityOrigin
-   * @return {!Promise}
-   */
-  async _addOrigin(securityOrigin) {
-    await this._loadCacheNames(securityOrigin);
+  _addOrigin(securityOrigin) {
+    this._loadCacheNames(securityOrigin);
     if (this._isValidSecurityOrigin(securityOrigin))
-      return this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
+      this._storageAgent.trackCacheStorageForOrigin(securityOrigin);
   }
 
   /**
    * @param {string} securityOrigin
-   * @return {!Promise}
    */
-  async _removeOrigin(securityOrigin) {
+  _removeOrigin(securityOrigin) {
     for (const opaqueId of this._caches.keys()) {
       const cache = this._caches.get(opaqueId);
       if (cache.securityOrigin === securityOrigin) {
@@ -146,9 +140,8 @@ SDK.ServiceWorkerCacheModel = class extends SDK.SDKModel {
         this._cacheRemoved(cache);
       }
     }
-    if (!this._isValidSecurityOrigin(securityOrigin))
-      return;
-    return this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
+    if (this._isValidSecurityOrigin(securityOrigin))
+      this._storageAgent.untrackCacheStorageForOrigin(securityOrigin);
   }
 
   /**

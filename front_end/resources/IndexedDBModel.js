@@ -158,14 +158,13 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} origin
-   * @return {!Promise}
    */
-  async clearForOrigin(origin) {
+  clearForOrigin(origin) {
     if (!this._enabled)
       return;
 
-    await this._removeOrigin(origin);
-    await this._addOrigin(origin);
+    this._removeOrigin(origin);
+    this._addOrigin(origin);
   }
 
   /**
@@ -230,29 +229,25 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
 
   /**
    * @param {string} securityOrigin
-   * @return {!Promise}
    */
-  async _addOrigin(securityOrigin) {
+  _addOrigin(securityOrigin) {
     console.assert(!this._databaseNamesBySecurityOrigin[securityOrigin]);
     this._databaseNamesBySecurityOrigin[securityOrigin] = [];
-    await this._loadDatabaseNames(securityOrigin);
-    if (!this._isValidSecurityOrigin(securityOrigin))
-      return;
-    return this._storageAgent.trackIndexedDBForOrigin(securityOrigin);
+    this._loadDatabaseNames(securityOrigin);
+    if (this._isValidSecurityOrigin(securityOrigin))
+      this._storageAgent.trackIndexedDBForOrigin(securityOrigin);
   }
 
   /**
    * @param {string} securityOrigin
-   * @return {!Promise}
    */
-  async _removeOrigin(securityOrigin) {
+  _removeOrigin(securityOrigin) {
     console.assert(this._databaseNamesBySecurityOrigin[securityOrigin]);
     for (let i = 0; i < this._databaseNamesBySecurityOrigin[securityOrigin].length; ++i)
       this._databaseRemoved(securityOrigin, this._databaseNamesBySecurityOrigin[securityOrigin][i]);
     delete this._databaseNamesBySecurityOrigin[securityOrigin];
-    if (!this._isValidSecurityOrigin(securityOrigin))
-      return;
-    return this._storageAgent.untrackIndexedDBForOrigin(securityOrigin);
+    if (this._isValidSecurityOrigin(securityOrigin))
+      this._storageAgent.untrackIndexedDBForOrigin(securityOrigin);
   }
 
   /**

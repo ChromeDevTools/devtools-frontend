@@ -131,25 +131,19 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
     this.target().registerDatabaseDispatcher(new Resources.DatabaseDispatcher(this));
   }
 
-  /**
-   * @return {!Promise}
-   */
-  async enable() {
+  enable() {
     if (this._enabled)
       return;
-    await this._agent.enable();
+    this._agent.enable();
     this._enabled = true;
   }
 
-  /**
-   * @return {!Promise}
-   */
-  async disable() {
+  disable() {
     if (!this._enabled)
       return;
     this._enabled = false;
     this._databases = [];
-    await this._agent.disable();
+    this._agent.disable();
     this.dispatchEventToListeners(Resources.DatabaseModel.Events.DatabasesRemoved);
   }
 

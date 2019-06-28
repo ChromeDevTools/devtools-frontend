@@ -809,7 +809,7 @@ Security.SecurityOriginView = class extends UI.VBox {
     UI.ARIAUtils.markAsLink(originNetworkButton);
     originNetworkDiv.appendChild(originNetworkButton);
 
-    if (originState.securityDetails && originState.securityDetails.protocol.length > 0) {
+    if (originState.securityDetails) {
       const connectionSection = this.element.createChild('div', 'origin-view-section');
       const connectionDiv = connectionSection.createChild('div', 'origin-view-section-title');
       connectionDiv.textContent = ls`Connection`;

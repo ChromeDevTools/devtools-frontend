@@ -660,6 +660,9 @@
   <message name="IDS_DEVTOOLS_dd47445f60115097d07d4cf2e61d933b" desc="">
     CAUTION: request is not finished yet!
   </message>
+  <message name="IDS_DEVTOOLS_dd89b012e0c000394cd13185cb4d6756" desc="">
+    Header integrity hash
+  </message>
   <message name="IDS_DEVTOOLS_de4642e93235c872dcc21d7e4c926c36" desc="">
     Copy all as fetch
   </message>

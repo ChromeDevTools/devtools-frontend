@@ -46,8 +46,13 @@ Console.ConsolePrompt = class extends UI.Widget {
      * @this {Console.ConsolePrompt}
      */
     function gotFactory(factory) {
-      this._editor =
-          factory.createEditor({lineNumbers: false, lineWrapping: true, mimeType: 'javascript', autoHeight: true});
+      this._editor = factory.createEditor({
+        devtoolsAccessibleName: ls`Console prompt`,
+        lineNumbers: false,
+        lineWrapping: true,
+        mimeType: 'javascript',
+        autoHeight: true
+      });
 
       this._defaultAutocompleteConfig = ObjectUI.JavaScriptAutocompleteConfig.createConfigForEditor(this._editor);
       this._editor.configureAutocomplete(Object.assign({}, this._defaultAutocompleteConfig, {

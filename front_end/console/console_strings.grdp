@@ -198,6 +198,9 @@
   <message name="IDS_DEVTOOLS_c0274fa278f2e0dfef862234e0eb9b8b" desc="">
     &lt;exception&gt;
   </message>
+  <message name="IDS_DEVTOOLS_c43a34d2abee57824fac5bb704994d88" desc="">
+    Console prompt
+  </message>
   <message name="IDS_DEVTOOLS_c9818b2c0890a205d294a2b31354f8b4" desc="">
     All levels
   </message>

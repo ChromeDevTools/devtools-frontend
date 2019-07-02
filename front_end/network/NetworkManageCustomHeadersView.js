@@ -142,13 +142,14 @@ Network.NetworkManageCustomHeadersView = class extends UI.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @this {Network.NetworkManageCustomHeadersView}
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function validateHeader(item, index, input) {
+      let valid = true;
       const headerId = editor.control('header').value.trim().toLowerCase();
       if (this._columnConfigs.has(headerId) && item.header !== headerId)
-        return false;
-      return true;
+        valid = false;
+      return {valid};
     }
   }
 };

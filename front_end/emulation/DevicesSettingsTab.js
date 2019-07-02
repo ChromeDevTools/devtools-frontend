@@ -200,23 +200,24 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
     const content = editor.contentElement();
 
     const fields = content.createChild('div', 'devices-edit-fields');
-    fields.createChild('div', 'hbox')
-        .appendChild(editor.createInput('title', 'text', Common.UIString('Device name'), titleValidator));
+    fields.createChild('div', 'hbox').appendChild(editor.createInput('title', 'text', ls`Device Name`, titleValidator));
     const screen = fields.createChild('div', 'hbox');
-    screen.appendChild(editor.createInput('width', 'text', Common.UIString('Width'), sizeValidator));
-    screen.appendChild(editor.createInput('height', 'text', Common.UIString('height'), sizeValidator));
-    const dpr = editor.createInput('scale', 'text', Common.UIString('Device pixel ratio'), scaleValidator);
+    screen.appendChild(editor.createInput('width', 'text', ls`Width`, widthValidator));
+    screen.appendChild(editor.createInput('height', 'text', ls`Height`, heightValidator));
+    const dpr = editor.createInput('scale', 'text', ls`Device pixel ratio`, scaleValidator);
     dpr.classList.add('device-edit-fixed');
     screen.appendChild(dpr);
     const ua = fields.createChild('div', 'hbox');
-    ua.appendChild(editor.createInput('user-agent', 'text', Common.UIString('User agent string'), () => true));
-    const uaType = editor.createSelect(
-        'ua-type',
-        [
-          Emulation.DeviceModeModel.UA.Mobile, Emulation.DeviceModeModel.UA.MobileNoTouch,
-          Emulation.DeviceModeModel.UA.Desktop, Emulation.DeviceModeModel.UA.DesktopTouch
-        ],
-        () => true);
+    ua.appendChild(editor.createInput('user-agent', 'text', ls`User agent string`, () => {
+      return {valid: true};
+    }));
+    const uaTypeOptions = [
+      Emulation.DeviceModeModel.UA.Mobile, Emulation.DeviceModeModel.UA.MobileNoTouch,
+      Emulation.DeviceModeModel.UA.Desktop, Emulation.DeviceModeModel.UA.DesktopTouch
+    ];
+    const uaType = editor.createSelect('ua-type', uaTypeOptions, () => {
+      return {valid: true};
+    }, ls`User agent type`);
     uaType.classList.add('device-edit-fixed');
     ua.appendChild(uaType);
 
@@ -226,31 +227,51 @@ Emulation.DevicesSettingsTab = class extends UI.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function titleValidator(item, index, input) {
+      let valid = false;
+      let errorMessage;
+
       const value = input.value.trim();
-      return value.length > 0 && value.length < 50;
+      if (value.length >= Emulation.DeviceModeModel.MaxDeviceNameLength)
+        errorMessage = ls`Device name must be less than ${Emulation.DeviceModeModel.MaxDeviceNameLength} characters.`;
+      else if (value.length === 0)
+        errorMessage = ls`Device name cannot be empty.`;
+      else
+        valid = true;
+
+      return {valid, errorMessage};
     }
 
     /**
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
-    function sizeValidator(item, index, input) {
-      return Emulation.DeviceModeModel.deviceSizeValidator(input.value);
+    function widthValidator(item, index, input) {
+      return Emulation.DeviceModeModel.widthValidator(input.value);
     }
 
     /**
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
+     */
+    function heightValidator(item, index, input) {
+      return Emulation.DeviceModeModel.heightValidator(input.value);
+    }
+
+    /**
+     * @param {*} item
+     * @param {number} index
+     * @param {!HTMLInputElement|!HTMLSelectElement} input
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function scaleValidator(item, index, input) {
-      return Emulation.DeviceModeModel.deviceScaleFactorValidator(input.value);
+      return Emulation.DeviceModeModel.scaleValidator(input.value);
     }
   }
 };

@@ -272,6 +272,9 @@ UI.ListWidget.Editor = class {
 
     this._contentElement = this.element.createChild('div', 'editor-content');
 
+    this._errorMessageContainer = this.element.createChild('div', 'list-widget-input-validation-error');
+    UI.ARIAUtils.markAsAlert(this._errorMessageContainer);
+
     const buttonsRow = this.element.createChild('div', 'editor-buttons');
     this._commitButton = UI.createTextButton('', this._commitClicked.bind(this), '', true /* primary */);
     buttonsRow.appendChild(this._commitButton);
@@ -296,7 +299,7 @@ UI.ListWidget.Editor = class {
     this._controls = [];
     /** @type {!Map<string, !HTMLInputElement|!HTMLSelectElement>} */
     this._controlByName = new Map();
-    /** @type {!Array<function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean>} */
+    /** @type {!Array<function(!T, number, (!HTMLInputElement|!HTMLSelectElement)): !UI.ListWidget.ValidatorResult>} */
     this._validators = [];
 
     /** @type {?function()} */
@@ -320,7 +323,7 @@ UI.ListWidget.Editor = class {
    * @param {string} name
    * @param {string} type
    * @param {string} title
-   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)): !UI.ListWidget.ValidatorResult} validator
    * @return {!HTMLInputElement}
    */
   createInput(name, type, title, validator) {
@@ -328,6 +331,7 @@ UI.ListWidget.Editor = class {
     input.placeholder = title;
     input.addEventListener('input', this._validateControls.bind(this, false), false);
     input.addEventListener('blur', this._validateControls.bind(this, false), false);
+    UI.ARIAUtils.setAccessibleName(input, title);
     this._controlByName.set(name, input);
     this._controls.push(input);
     this._validators.push(validator);
@@ -337,15 +341,20 @@ UI.ListWidget.Editor = class {
   /**
    * @param {string} name
    * @param {!Array<string>} options
-   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)):boolean} validator
+   * @param {function(!T, number, (!HTMLInputElement|!HTMLSelectElement)): !UI.ListWidget.ValidatorResult} validator
+   * @param {string=} title
    * @return {!HTMLSelectElement}
    */
-  createSelect(name, options, validator) {
+  createSelect(name, options, validator, title) {
     const select = /** @type {!HTMLSelectElement} */ (createElementWithClass('select', 'chrome-select'));
     for (let index = 0; index < options.length; ++index) {
       const option = select.createChild('option');
       option.value = options[index];
       option.textContent = options[index];
+    }
+    if (title) {
+      select.title = title;
+      UI.ARIAUtils.setAccessibleName(select, title);
     }
     select.addEventListener('input', this._validateControls.bind(this, false), false);
     select.addEventListener('blur', this._validateControls.bind(this, false), false);
@@ -368,10 +377,20 @@ UI.ListWidget.Editor = class {
    */
   _validateControls(forceValid) {
     let allValid = true;
+    this._errorMessageContainer.textContent = '';
     for (let index = 0; index < this._controls.length; ++index) {
       const input = this._controls[index];
-      const valid = this._validators[index].call(null, this._item, this._index, input);
+      const {valid, errorMessage} = this._validators[index].call(null, this._item, this._index, input);
+
       input.classList.toggle('error-input', !valid && !forceValid);
+      if (valid || forceValid)
+        UI.ARIAUtils.setInvalid(input, false);
+      else
+        UI.ARIAUtils.setInvalid(input, true);
+
+      if (!forceValid && errorMessage && !this._errorMessageContainer.textContent)
+        this._errorMessageContainer.textContent = errorMessage;
+
       allValid &= valid;
     }
     this._commitButton.disabled = !allValid;
@@ -418,3 +437,6 @@ UI.ListWidget.Editor = class {
     cancel();
   }
 };
+
+/** @typedef {{valid: boolean, errorMessage: (string|undefined)}} */
+UI.ListWidget.ValidatorResult;

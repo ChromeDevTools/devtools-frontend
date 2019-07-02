@@ -69,23 +69,67 @@ Emulation.DeviceModeModel = class extends Common.Object {
 
   /**
    * @param {string} value
-   * @return {boolean}
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
    */
-  static deviceSizeValidator(value) {
-    if (/^[\d]+$/.test(value) && value >= Emulation.DeviceModeModel.MinDeviceSize &&
-        value <= Emulation.DeviceModeModel.MaxDeviceSize)
-      return true;
-    return false;
+  static widthValidator(value) {
+    let valid = false;
+    let errorMessage;
+
+    if (!/^[\d]+$/.test(value))
+      errorMessage = ls`Width must be a number.`;
+    else if (value > Emulation.DeviceModeModel.MaxDeviceSize)
+      errorMessage = ls`Width must be less than or equal to ${Emulation.DeviceModeModel.MaxDeviceSize}.`;
+    else if (value < Emulation.DeviceModeModel.MinDeviceSize)
+      errorMessage = ls`Width must be greater than or equal to ${Emulation.DeviceModeModel.MinDeviceSize}.`;
+    else
+      valid = true;
+
+    return {valid, errorMessage};
   }
 
   /**
    * @param {string} value
-   * @return {boolean}
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
    */
-  static deviceScaleFactorValidator(value) {
-    if (!value || (/^[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= 0 && value <= 10))
-      return true;
-    return false;
+  static heightValidator(value) {
+    let valid = false;
+    let errorMessage;
+
+    if (!/^[\d]+$/.test(value))
+      errorMessage = ls`Height must be a number.`;
+    else if (value > Emulation.DeviceModeModel.MaxDeviceSize)
+      errorMessage = ls`Height must be less than or equal to ${Emulation.DeviceModeModel.MaxDeviceSize}.`;
+    else if (value < Emulation.DeviceModeModel.MinDeviceSize)
+      errorMessage = ls`Height must be greater than or equal to ${Emulation.DeviceModeModel.MinDeviceSize}.`;
+    else
+      valid = true;
+
+    return {valid, errorMessage};
+  }
+
+  /**
+   * @param {string} value
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
+   */
+  static scaleValidator(value) {
+    let valid = false;
+    let errorMessage;
+
+    if (!value) {
+      valid = true;
+    } else if (!/^[\d]+(\.\d+)?|\.\d+$/.test(value)) {
+      errorMessage = ls`Device pixel ratio must be a number or blank.`;
+    } else if (value > Emulation.DeviceModeModel.MaxDeviceScaleFactor) {
+      errorMessage =
+          ls`Device pixel ratio must be less than or equal to ${Emulation.DeviceModeModel.MaxDeviceScaleFactor}.`;
+    } else if (value < Emulation.DeviceModeModel.MinDeviceScaleFactor) {
+      errorMessage =
+          ls`Device pixel ratio must be greater than or equal to ${Emulation.DeviceModeModel.MinDeviceScaleFactor}.`;
+    } else {
+      valid = true;
+    }
+
+    return {valid, errorMessage};
   }
 
   /**
@@ -722,6 +766,9 @@ Emulation.DeviceModeModel.UA = {
 
 Emulation.DeviceModeModel.MinDeviceSize = 50;
 Emulation.DeviceModeModel.MaxDeviceSize = 9999;
+Emulation.DeviceModeModel.MinDeviceScaleFactor = 0;
+Emulation.DeviceModeModel.MaxDeviceScaleFactor = 10;
+Emulation.DeviceModeModel.MaxDeviceNameLength = 50;
 
 
 Emulation.DeviceModeModel._defaultMobileUserAgent =

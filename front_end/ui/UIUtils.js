@@ -1503,7 +1503,7 @@ UI.registerCustomElement('div', 'dt-close-button', class extends HTMLDivElement 
 /**
  * @param {!Element} input
  * @param {function(string)} apply
- * @param {function(string):boolean} validate
+ * @param {function(string):{valid: boolean, errorMessage: (string|undefined)}} validate
  * @param {boolean} numeric
  * @param {number=} modifierMultiplier
  * @return {function(string)}
@@ -1519,7 +1519,7 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
   }
 
   function onChange() {
-    const valid = validate(input.value);
+    const {valid} = validate(input.value);
     input.classList.toggle('error-input', !valid);
     if (valid)
       apply(input.value);
@@ -1530,7 +1530,8 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
    */
   function onKeyDown(event) {
     if (isEnterKey(event)) {
-      if (validate(input.value))
+      const {valid} = validate(input.value);
+      if (valid)
         apply(input.value);
       event.preventDefault();
       return;
@@ -1541,7 +1542,8 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
 
     const value = UI._modifiedFloatNumber(parseFloat(input.value), event, modifierMultiplier);
     const stringValue = value ? String(value) : '';
-    if (!validate(stringValue) || !value)
+    const {valid} = validate(stringValue);
+    if (!valid || !value)
       return;
 
     input.value = stringValue;
@@ -1555,7 +1557,7 @@ UI.bindInput = function(input, apply, validate, numeric, modifierMultiplier) {
   function setValue(value) {
     if (value === input.value)
       return;
-    const valid = validate(value);
+    const {valid} = validate(value);
     input.classList.toggle('error-input', !valid);
     input.value = value;
   }

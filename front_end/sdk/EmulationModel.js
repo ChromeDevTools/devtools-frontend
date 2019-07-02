@@ -192,8 +192,8 @@ SDK.EmulationModel.Geolocation = class {
     if (!latitudeString && !longitudeString)
       return null;
 
-    const isLatitudeValid = SDK.EmulationModel.Geolocation.latitudeValidator(latitudeString);
-    const isLongitudeValid = SDK.EmulationModel.Geolocation.longitudeValidator(longitudeString);
+    const {valid: isLatitudeValid} = SDK.EmulationModel.Geolocation.latitudeValidator(latitudeString);
+    const {valid: isLongitudeValid} = SDK.EmulationModel.Geolocation.longitudeValidator(longitudeString);
 
     if (!isLatitudeValid && !isLongitudeValid)
       return null;
@@ -205,20 +205,22 @@ SDK.EmulationModel.Geolocation = class {
 
   /**
    * @param {string} value
-   * @return {boolean}
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
    */
   static latitudeValidator(value) {
     const numValue = parseFloat(value);
-    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
+    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -90 && numValue <= 90;
+    return {valid};
   }
 
   /**
    * @param {string} value
-   * @return {boolean}
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
    */
   static longitudeValidator(value) {
     const numValue = parseFloat(value);
-    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
+    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value) && numValue >= -180 && numValue <= 180;
+    return {valid};
   }
 
   /**
@@ -261,9 +263,9 @@ SDK.EmulationModel.DeviceOrientation = class {
     if (!alphaString && !betaString && !gammaString)
       return null;
 
-    const isAlphaValid = SDK.EmulationModel.DeviceOrientation.validator(alphaString);
-    const isBetaValid = SDK.EmulationModel.DeviceOrientation.validator(betaString);
-    const isGammaValid = SDK.EmulationModel.DeviceOrientation.validator(gammaString);
+    const {valid: isAlphaValid} = SDK.EmulationModel.DeviceOrientation.validator(alphaString);
+    const {valid: isBetaValid} = SDK.EmulationModel.DeviceOrientation.validator(betaString);
+    const {valid: isGammaValid} = SDK.EmulationModel.DeviceOrientation.validator(gammaString);
 
     if (!isAlphaValid && !isBetaValid && !isGammaValid)
       return null;
@@ -277,10 +279,11 @@ SDK.EmulationModel.DeviceOrientation = class {
 
   /**
    * @param {string} value
-   * @return {boolean}
+   * @return {{valid: boolean, errorMessage: (string|undefined)}}
    */
   static validator(value) {
-    return /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
+    const valid = /^([+-]?[\d]+(\.\d+)?|[+-]?\.\d+)$/.test(value);
+    return {valid};
   }
 
   /**

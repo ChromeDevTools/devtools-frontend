@@ -63,7 +63,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
 
     /**
      * @param {string} value
-     * @return {boolean}
+     * @return {{valid: boolean, errorMessage: (string|undefined)}}
      */
     function regexValidator(value) {
       let regex;
@@ -71,7 +71,8 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
         regex = new RegExp(value);
       } catch (e) {
       }
-      return !!regex;
+      const valid = !!regex;
+      return {valid};
     }
   }
 

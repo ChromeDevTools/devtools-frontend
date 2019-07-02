@@ -153,33 +153,36 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function titleValidator(item, index, input) {
       const value = input.value.trim();
-      return value.length > 0 && value.length < 50;
+      const valid = value.length > 0 && value.length < 50;
+      return {valid};
     }
 
     /**
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function latValidator(item, index, input) {
       const value = input.value.trim();
-      return !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -90 && value <= 90);
+      const valid = !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -90 && value <= 90);
+      return {valid};
     }
 
     /**
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function longValidator(item, index, input) {
       const value = input.value.trim();
-      return !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -180 && value <= 180);
+      const valid = !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -180 && value <= 180);
+      return {valid};
     }
   }
 };

@@ -390,35 +390,38 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @this {Devices.DevicesView.PortForwardingView}
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function portValidator(rule, index, input) {
+      let valid = true;
       const value = input.value.trim();
       const match = value.match(/^(\d+)$/);
-      if (!match)
-        return false;
-      const port = parseInt(match[1], 10);
-      if (port < 1024 || port > 65535)
-        return false;
-      for (let i = 0; i < this._portForwardingConfig.length; ++i) {
-        if (i !== index && this._portForwardingConfig[i].port === value)
-          return false;
+      if (!match) {
+        valid = false;
+      } else {
+        const port = parseInt(match[1], 10);
+        if (port < 1024 || port > 65535)
+          valid = false;
+        for (let i = 0; i < this._portForwardingConfig.length; ++i) {
+          if (i !== index && this._portForwardingConfig[i].port === value)
+            valid = false;
+        }
       }
-      return true;
+      return {valid};
     }
 
     /**
      * @param {!Adb.PortForwardingRule} rule
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function addressValidator(rule, index, input) {
       const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match)
-        return false;
+        return {valid: false};
       const port = parseInt(match[2], 10);
-      return port <= 65535;
+      return {valid: port <= 65535};
     }
   }
 };

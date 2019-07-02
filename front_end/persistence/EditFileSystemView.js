@@ -164,7 +164,7 @@ Persistence.EditFileSystemView = class extends UI.VBox {
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      * @this {Persistence.EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
@@ -173,9 +173,9 @@ Persistence.EditFileSystemView = class extends UI.VBox {
           Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix)
-          return false;
+          return {valid: false};
       }
-      return !!prefix;
+      return {valid: !!prefix};
     }
   }
 

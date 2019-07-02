@@ -170,14 +170,14 @@ NodeMain.NodeConnectionsView = class extends UI.VBox {
      * @param {!Adb.PortForwardingRule} rule
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function addressValidator(rule, index, input) {
       const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
       if (!match)
-        return false;
+        return {valid: false};
       const port = parseInt(match[2], 10);
-      return port <= 65535;
+      return {valid: port <= 65535};
     }
   }
 };

@@ -94,7 +94,7 @@ Emulation.DeviceModeToolbar = class {
     widthInput.maxLength = 4;
     widthInput.title = Common.UIString('Width');
     this._updateWidthInput =
-        UI.bindInput(widthInput, this._applyWidth.bind(this), Emulation.DeviceModeModel.deviceSizeValidator, true);
+        UI.bindInput(widthInput, this._applyWidth.bind(this), Emulation.DeviceModeModel.widthValidator, true);
     this._widthInput = widthInput;
     this._widthItem = this._wrapToolbarItem(widthInput);
     toolbar.appendToolbarItem(this._widthItem);
@@ -114,10 +114,12 @@ Emulation.DeviceModeToolbar = class {
 
     /**
      * @param {string} value
-     * @return {boolean}
+     * @return {{valid: boolean, errorMessage: (string|undefined)}}
      */
     function validateHeight(value) {
-      return !value || Emulation.DeviceModeModel.deviceSizeValidator(value);
+      if (!value)
+        return {valid: true};
+      return Emulation.DeviceModeModel.heightValidator(value);
     }
   }
 

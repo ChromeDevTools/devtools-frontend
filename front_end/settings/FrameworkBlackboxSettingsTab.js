@@ -153,14 +153,14 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
      * @this {Settings.FrameworkBlackboxSettingsTab}
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function patternValidator(item, index, input) {
       const pattern = input.value.trim();
       const patterns = this._setting.getAsArray();
       for (let i = 0; i < patterns.length; ++i) {
         if (i !== index && patterns[i].pattern === pattern)
-          return false;
+          return {valid: false};
       }
 
       let regex;
@@ -168,17 +168,17 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
         regex = new RegExp(pattern);
       } catch (e) {
       }
-      return !!(pattern && regex);
+      return {valid: !!(pattern && regex)};
     }
 
     /**
      * @param {*} item
      * @param {number} index
      * @param {!HTMLInputElement|!HTMLSelectElement} input
-     * @return {boolean}
+     * @return {!UI.ListWidget.ValidatorResult}
      */
     function behaviorValidator(item, index, input) {
-      return true;
+      return {valid: true};
     }
   }
 };

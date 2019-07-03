@@ -273,6 +273,9 @@
   <message name="IDS_DEVTOOLS_ebfab4df1bb91688c62d4523eba870a5" desc="">
     Evaluate triggers user activation
   </message>
+  <message name="IDS_DEVTOOLS_f0b0e075af71ecd9b3435697417c1f05" desc="">
+    Log level: <ph name="TEXT">$1s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_f8ec55cf268ca6106fb23a98523b7549" desc="">
     user message
   </message>

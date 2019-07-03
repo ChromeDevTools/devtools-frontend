@@ -1330,6 +1330,7 @@ Console.ConsoleViewFilter = class {
       text = text || Common.UIString('Hide all');
     this._levelMenuButton.element.classList.toggle('warning', !isAll && !isDefault);
     this._levelMenuButton.setText(text);
+    this._levelMenuButton.setTitle(ls`Log level: ${text}`);
   }
 
   /**

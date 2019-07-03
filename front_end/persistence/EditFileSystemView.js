@@ -60,7 +60,6 @@ Persistence.EditFileSystemView = class extends UI.VBox {
     this._excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this._excludedFoldersList.show(this.contentElement);
 
-    this.contentElement.tabIndex = 0;
     this._update();
   }
 

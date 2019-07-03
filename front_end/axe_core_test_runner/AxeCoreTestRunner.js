@@ -97,6 +97,7 @@ AxeCoreTestRunner.processAxeResultNodesArray = function(nodes) {
     return {
       target: node.target,
       html: node.html,
+      failureSummary: node.failureSummary,
     };
   });
   return list;

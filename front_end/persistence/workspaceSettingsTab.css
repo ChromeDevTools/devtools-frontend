@@ -9,7 +9,7 @@ header {
     border-bottom: 1px solid #EEEEEE;
 }
 
-header > h3 {
+header > h1 {
     font-size: 18px;
     font-weight: normal;
     margin: 0;

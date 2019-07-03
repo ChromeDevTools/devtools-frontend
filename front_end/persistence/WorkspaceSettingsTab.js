@@ -8,7 +8,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     this.registerRequiredCSS('persistence/workspaceSettingsTab.css');
 
     const header = this.element.createChild('header');
-    header.createChild('h3').createTextChild(Common.UIString('Workspace'));
+    header.createChild('h1').createTextChild(Common.UIString('Workspace'));
 
     this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
                                 .createChild('div', 'settings-tab settings-content settings-container');

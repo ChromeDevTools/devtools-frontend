@@ -14,7 +14,7 @@ Console.ConsoleContextSelector = class {
     this._dropDown.setRowHeight(36);
     this._toolbarItem = new UI.ToolbarItem(this._dropDown.element);
     this._toolbarItem.setEnabled(false);
-    this._toolbarItem.setTitle(ls`JavaScript contexts`);
+    this._toolbarItem.setTitle(ls`JavaScript context: Not selected`);
     this._items.addEventListener(
         UI.ListModel.Events.ItemsReplaced, () => this._toolbarItem.setEnabled(!!this._items.length));
 
@@ -314,6 +314,8 @@ Console.ConsoleContextSelector = class {
    */
   itemSelected(item) {
     this._toolbarItem.element.classList.toggle('warning', !this._isTopContext(item) && this._hasTopContext());
+    const title = item ? ls`JavaScript context: ${this.titleFor(item)}` : ls`JavaScript context: Not selected`;
+    this._toolbarItem.setTitle(title);
     UI.context.setFlavor(SDK.ExecutionContext, item);
   }
 

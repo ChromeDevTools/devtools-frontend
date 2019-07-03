@@ -3,6 +3,9 @@
   <message name="IDS_DEVTOOLS_02969932cf572213e2401893f4182af2" desc="">
     Remove all expressions
   </message>
+  <message name="IDS_DEVTOOLS_0351df5b6bdc3a8cfb762210881619a4" desc="">
+    JavaScript context: Not selected
+  </message>
   <message name="IDS_DEVTOOLS_047e62ee63b0c14a249a79bc6be0a493" desc="">
     Do not group similar messages in console
   </message>
@@ -186,9 +189,6 @@
   <message name="IDS_DEVTOOLS_b2f8489bbd55a4e9b9edbbbfe49edf70" desc="">
     not available
   </message>
-  <message name="IDS_DEVTOOLS_b5735f8c6deff6306a2216612ca80f0e" desc="">
-    JavaScript contexts
-  </message>
   <message name="IDS_DEVTOOLS_bafd7322c6e97d25b6299b5d6fe8920b" desc="">
     No
   </message>
@@ -263,6 +263,9 @@
   </message>
   <message name="IDS_DEVTOOLS_e1dd1b8e32626f508bd3a5612a60ab97" desc="">
     Create live expression
+  </message>
+  <message name="IDS_DEVTOOLS_e6320ee2b5f66ac1520e6156e5ac8fb3" desc="">
+    JavaScript context: <ph name="THIS_TITLEFOR_ITEM_">$1s</ph>
   </message>
   <message name="IDS_DEVTOOLS_eacaf2bd1c1414e5086cf04573e154ef" desc="">
     e.g. /event\d/ -cdn url:a.com

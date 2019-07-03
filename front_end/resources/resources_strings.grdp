@@ -404,4 +404,7 @@ read the &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot; table.
   <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="">
     Source
   </message>
+  <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="">
+    Payment Handler
+  </message>
 </grit-part>

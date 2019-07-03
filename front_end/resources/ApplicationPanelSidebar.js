@@ -119,6 +119,11 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
             new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.Notifications);
         backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
       }
+      if (Runtime.experiments.isEnabled('backgroundServicesPaymentHandler')) {
+        this.paymentHandlerTreeElement =
+            new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PaymentHandler);
+        backgroundServiceTreeElement.appendChild(this.paymentHandlerTreeElement);
+      }
       if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging')) {
         this.pushMessagingTreeElement =
             new Resources.BackgroundServiceTreeElement(panel, Protocol.BackgroundService.ServiceName.PushMessaging);
@@ -245,6 +250,8 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       this.backgroundSyncTreeElement._initialize(backgroundServiceModel);
       if (Runtime.experiments.isEnabled('backgroundServicesNotifications'))
         this.notificationsTreeElement._initialize(backgroundServiceModel);
+      if (Runtime.experiments.isEnabled('backgroundServicesPaymentHandler'))
+        this.paymentHandlerTreeElement._initialize(backgroundServiceModel);
       if (Runtime.experiments.isEnabled('backgroundServicesPushMessaging'))
         this.pushMessagingTreeElement._initialize(backgroundServiceModel);
     }
@@ -762,6 +769,8 @@ Resources.BackgroundServiceTreeElement = class extends Resources.BaseStorageTree
         return 'mediumicon-cloud';
       case Protocol.BackgroundService.ServiceName.Notifications:
         return 'mediumicon-bell';
+      case Protocol.BackgroundService.ServiceName.PaymentHandler:
+        return 'mediumicon-payment';
       default:
         console.error(`Service ${this._serviceName} does not have a dedicated icon`);
         return 'mediumicon-table';

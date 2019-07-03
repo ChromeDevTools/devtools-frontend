@@ -17,6 +17,8 @@ Resources.BackgroundServiceView = class extends UI.VBox {
         return ls`Push Messaging`;
       case Protocol.BackgroundService.ServiceName.Notifications:
         return ls`Notifications`;
+      case Protocol.BackgroundService.ServiceName.PaymentHandler:
+        return ls`Payment Handler`;
       default:
         return '';
     }

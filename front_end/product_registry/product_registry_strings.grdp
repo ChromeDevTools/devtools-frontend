@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_8cb0e09c4d24f1c4aef14d8e2f1592a6" desc="">
+  <message name="IDS_DEVTOOLS_8cb0e09c4d24f1c4aef14d8e2f1592a6" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Show third party badges
   </message>
-  <message name="IDS_DEVTOOLS_c9b7856510bf5901af2e388926d77b94" desc="">
+  <message name="IDS_DEVTOOLS_c9b7856510bf5901af2e388926d77b94" desc="Title of a setting under the Appearance category in Settings">
     Show third party URL badges
   </message>
-  <message name="IDS_DEVTOOLS_e56f0c64e0eb84e8799baa5bf890acb5" desc="">
+  <message name="IDS_DEVTOOLS_e56f0c64e0eb84e8799baa5bf890acb5" desc="Title of a setting under the Appearance category that can be invoked through the Command Menu">
     Do not show third party badges
   </message>
 </grit-part>

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="">
+  <message name="IDS_DEVTOOLS_059a1aa256b770eca2d69c096f759ad0" desc="A context menu item in the Data Grid of a data grid">
     Sort By
   </message>
-  <message name="IDS_DEVTOOLS_28de94c6a82d4419a4014addb8aba93c" desc="">
-    Show <ph name="THIS__CHUNKSIZE">$1d</ph> after
+  <message name="IDS_DEVTOOLS_28de94c6a82d4419a4014addb8aba93c" desc="Show last text content in Show More Data Grid Node of a data grid">
+    Show <ph name="THIS__CHUNKSIZE">$1d<ex>5</ex></ph> after
   </message>
-  <message name="IDS_DEVTOOLS_b33d161950658a73abe8675d311345d2" desc="">
-    Edit &quot;<ph name="THIS__COLUMNS_COLUMNID__TITLE">$1s</ph>&quot;
+  <message name="IDS_DEVTOOLS_b33d161950658a73abe8675d311345d2" desc="A context menu item in the Data Grid of a data grid">
+    Edit &quot;<ph name="THIS__COLUMNS_COLUMNID__TITLE">$1s<ex>pattern</ex></ph>&quot;
   </message>
-  <message name="IDS_DEVTOOLS_d73d1ee203c4075522513de6fe5557c8" desc="">
-    Show <ph name="THIS__CHUNKSIZE">$1d</ph> before
+  <message name="IDS_DEVTOOLS_d73d1ee203c4075522513de6fe5557c8" desc="Show next text content in Show More Data Grid Node of a data grid">
+    Show <ph name="THIS__CHUNKSIZE">$1d<ex>5</ex></ph> before
   </message>
-  <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="">
-    Show all <ph name="TOTALSIZE">$1d</ph>
+  <message name="IDS_DEVTOOLS_e199c6bb662785b037c5f330f58878ce" desc="Show all text content in Show More Data Grid Node of a data grid">
+    Show all <ph name="TOTALSIZE">$1d<ex>5</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_ef61fb324d729c341ea8ab9901e23566" desc="">
+  <message name="IDS_DEVTOOLS_ef61fb324d729c341ea8ab9901e23566" desc="A context menu item in the Data Grid of a data grid">
     Add new
   </message>
-  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="">
+  <message name="IDS_DEVTOOLS_f2a6c498fb90ee345d997f888fce3b18" desc="A context menu item in the Data Grid of a data grid">
     Delete
   </message>
 </grit-part>

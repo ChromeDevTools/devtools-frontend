@@ -1,105 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_00fcbe531dd989e566cab0a9e250f14c" desc="">
+  <message name="IDS_DEVTOOLS_00fcbe531dd989e566cab0a9e250f14c" desc="Text in Devices View of the Remote Devices tab">
     Port Forwarding:
   </message>
-  <message name="IDS_DEVTOOLS_034fd013261994214d1e8cb42571d191" desc="">
-    Need help? Read Chrome <ph name="DOCUMENTATIONLINK">$1s</ph>.
+  <message name="IDS_DEVTOOLS_034fd013261994214d1e8cb42571d191" desc="Text in Devices View of the Remote Devices tab">
+    Need help? Read Chrome <ph name="DOCUMENTATIONLINK">$1s<ex>documentation link</ex></ph>.
   </message>
-  <message name="IDS_DEVTOOLS_03fc5c0bd59679c442b86074c7a7cc3a" desc="">
+  <message name="IDS_DEVTOOLS_03fc5c0bd59679c442b86074c7a7cc3a" desc="Text in Devices View of the Remote Devices tab">
     Port forwarding
   </message>
-  <message name="IDS_DEVTOOLS_042909a8044ec8e1a97069bfdde2fe58" desc="">
-    Connected: <ph name="CONNECTED_JOIN______">$1s</ph>
+  <message name="IDS_DEVTOOLS_042909a8044ec8e1a97069bfdde2fe58" desc="Text in Devices View of the Remote Devices tab">
+    Connected: <ph name="CONNECTED_JOIN______">$1s<ex>iPhone Xs, iPhone X</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_049c45b298c6bc7540d84ab593bedaa6" desc="">
-    Transient: <ph name="TRANSIENT_JOIN______">$1s</ph>
+  <message name="IDS_DEVTOOLS_049c45b298c6bc7540d84ab593bedaa6" desc="Text in Devices View of the Remote Devices tab">
+    Transient: <ph name="TRANSIENT_JOIN______">$1s<ex>8080, 8888</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_0dec6438ad2d934e57d33026770654d1" desc="">
+  <message name="IDS_DEVTOOLS_0dec6438ad2d934e57d33026770654d1" desc="Text in Devices View of the Remote Devices tab">
     remote debugging documentation
   </message>
-  <message name="IDS_DEVTOOLS_10e10a814f3c1f9a5e847376c975ea3c" desc="">
-    Error: <ph name="ERROR_JOIN______">$1s</ph>
+  <message name="IDS_DEVTOOLS_10e10a814f3c1f9a5e847376c975ea3c" desc="Text in Devices View of the Remote Devices tab">
+    Error: <ph name="ERROR_JOIN______">$1s<ex>8080, 8888</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_2157ba7738ed20565fd089f2a6287cdd" desc="">
+  <message name="IDS_DEVTOOLS_2157ba7738ed20565fd089f2a6287cdd" desc="Text in Devices View of the Remote Devices tab">
     View less tabs…
   </message>
-  <message name="IDS_DEVTOOLS_2ec0d16e4ca169baedb9b2d50ec5c6d7" desc="">
+  <message name="IDS_DEVTOOLS_2ec0d16e4ca169baedb9b2d50ec5c6d7" desc="Text in Devices View of the Remote Devices tab">
     Connected
   </message>
-  <message name="IDS_DEVTOOLS_34fdf6d76ae3464206146053c8aedcd7" desc="">
-    <ph name="THIS__DEVICES_LENGTH">$1d</ph> devices detected.
+  <message name="IDS_DEVTOOLS_34fdf6d76ae3464206146053c8aedcd7" desc="Text in Devices View of the Remote Devices tab">
+    <ph name="THIS__DEVICES_LENGTH">$1d<ex>2</ex></ph> devices detected.
   </message>
-  <message name="IDS_DEVTOOLS_35a9dbe6b748771b9ea4d5962d37ff6f" desc="">
+  <message name="IDS_DEVTOOLS_35a9dbe6b748771b9ea4d5962d37ff6f" desc="Text of the inspect in Devices View of the Remote Devices tab">
     Inspect
   </message>
-  <message name="IDS_DEVTOOLS_405590b3c5865df635f2373ee4cb799c" desc="">
+  <message name="IDS_DEVTOOLS_405590b3c5865df635f2373ee4cb799c" desc="Title of the 'Remote devices' tool in the bottom drawer">
     Remote devices
   </message>
-  <message name="IDS_DEVTOOLS_4d1c8263ba1036754f8db14a98f9f006" desc="">
+  <message name="IDS_DEVTOOLS_4d1c8263ba1036754f8db14a98f9f006" desc="A context menu item in the Devices View of the Remote Devices tab">
     Reload
   </message>
-  <message name="IDS_DEVTOOLS_67afa587522e088dedac9f252362d16a" desc="">
+  <message name="IDS_DEVTOOLS_67afa587522e088dedac9f252362d16a" desc="Text in Devices View of the Remote Devices tab">
     Discover USB devices
   </message>
-  <message name="IDS_DEVTOOLS_6ab4529805e55f79b589f0676435dc4e" desc="">
+  <message name="IDS_DEVTOOLS_6ab4529805e55f79b589f0676435dc4e" desc="Text in Devices View of the Remote Devices tab">
     Pending Authorization
   </message>
-  <message name="IDS_DEVTOOLS_85bd3d2945bf008087e0a3a7d714ae80" desc="">
+  <message name="IDS_DEVTOOLS_85bd3d2945bf008087e0a3a7d714ae80" desc="Text in Devices View of the Remote Devices tab">
     localhost:
   </message>
-  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="">
+  <message name="IDS_DEVTOOLS_88183b946cc5f0e8c96b2e66e1c74a7e" desc="Device adb model in Devices View of the Remote Devices tab">
     Unknown
   </message>
-  <message name="IDS_DEVTOOLS_926f97ab5b90b053d6a3a31082316f15" desc="">
+  <message name="IDS_DEVTOOLS_926f97ab5b90b053d6a3a31082316f15" desc="No browsers text content in Devices View of the Remote Devices tab">
     No browsers detected.
   </message>
-  <message name="IDS_DEVTOOLS_9b5e7fc14b157afb268b71b01d397eef" desc="">
+  <message name="IDS_DEVTOOLS_9b5e7fc14b157afb268b71b01d397eef" desc="Text of add rule button in Devices View of the Remote Devices tab">
     Add rule
   </message>
-  <message name="IDS_DEVTOOLS_9ba01fbecae523e4160afa26f75f1757" desc="">
+  <message name="IDS_DEVTOOLS_9ba01fbecae523e4160afa26f75f1757" desc="Text in Devices View of the Remote Devices tab">
     View more tabs…
   </message>
-  <message name="IDS_DEVTOOLS_a2040c5569ac3718b10af77aaa3fbb03" desc="">
+  <message name="IDS_DEVTOOLS_a2040c5569ac3718b10af77aaa3fbb03" desc="Device offline text content in Devices View of the Remote Devices tab">
     Pending authentication: please accept debugging session on the device.
   </message>
-  <message name="IDS_DEVTOOLS_bb65fcb8595fb531c5be41fa427d39a0" desc="">
-    <ph name="THIS__DEVICECOUNTSPAN">$1s</ph> Read <ph name="DOCUMENTATIONLINK">$2s</ph> for more information.
+  <message name="IDS_DEVTOOLS_bb65fcb8595fb531c5be41fa427d39a0" desc="Text in Devices View of the Remote Devices tab">
+    <ph name="THIS__DEVICECOUNTSPAN">$1s<ex>No devices detected.</ex></ph> Read <ph name="DOCUMENTATIONLINK">$2s<ex>documentation link</ex></ph> for more information.
   </message>
-  <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="">
+  <message name="IDS_DEVTOOLS_bcca96534b404f08faf65d76be6aa782" desc="Text in Devices View of the Remote Devices tab">
     1 device detected.
   </message>
-  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="">
+  <message name="IDS_DEVTOOLS_c03ca67dda321195d74c951097f240c6" desc="Text of a DOM element in Devices View of the Remote Devices tab">
     Devices
   </message>
-  <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="">
+  <message name="IDS_DEVTOOLS_c3bf447eabe632720a3aa1a7ce401274" desc="Text of the new tab button in Devices View of the Remote Devices tab">
     Open
   </message>
-  <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="">
+  <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="Placeholder text content in Devices View of the Remote Devices tab">
     No rules
   </message>
-  <message name="IDS_DEVTOOLS_d38dcac8af912356e255cbace8984e9a" desc="">
+  <message name="IDS_DEVTOOLS_d38dcac8af912356e255cbace8984e9a" desc="Text in Devices View of the Remote Devices tab">
     New tab:
   </message>
-  <message name="IDS_DEVTOOLS_dabcc308341c912a6b620e1c980e16d6" desc="">
+  <message name="IDS_DEVTOOLS_dabcc308341c912a6b620e1c980e16d6" desc="Text in Devices View of the Remote Devices tab">
     No devices detected.
   </message>
-  <message name="IDS_DEVTOOLS_e1f70f4a4265cb51c1b219aa60eaa441" desc="">
+  <message name="IDS_DEVTOOLS_e1f70f4a4265cb51c1b219aa60eaa441" desc="New tab input placeholder in Devices View of the Remote Devices tab">
     Enter URL
   </message>
-  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="">
+  <message name="IDS_DEVTOOLS_e24ee2487879116dcab772c0ac4fe341" desc="A context menu item in the Devices View of the Remote Devices tab">
     Focus
   </message>
-  <message name="IDS_DEVTOOLS_ed725244eec042fa550990c608639b38" desc="">
-    Define the listening port on your device that maps to a port accessible from your development machine. Read <ph name="DOCUMENTATIONLINK">$1s</ph> for more.
+  <message name="IDS_DEVTOOLS_ed725244eec042fa550990c608639b38" desc="Text in Devices View of the Remote Devices tab">
+    Define the listening port on your device that maps to a port accessible from your development machine. Read <ph name="DOCUMENTATIONLINK">$1s<ex>documentation link</ex></ph> for more.
   </message>
-  <message name="IDS_DEVTOOLS_f114563447e4786042d7e7ce05f1157c" desc="">
+  <message name="IDS_DEVTOOLS_f114563447e4786042d7e7ce05f1157c" desc="Text in Devices View of the Remote Devices tab">
     Device port (3333)
   </message>
-  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="">
+  <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Discovery list item text content in Devices View of the Remote Devices tab">
     Settings
   </message>
-  <message name="IDS_DEVTOOLS_ff89b835f4fc414c9c8f4f96695c2ea8" desc="">
+  <message name="IDS_DEVTOOLS_ff89b835f4fc414c9c8f4f96695c2ea8" desc="Text in Devices View of the Remote Devices tab">
     Local address (dev.example.corp:3333)
   </message>
 </grit-part>

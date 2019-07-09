@@ -33,16 +33,16 @@
   <message name="IDS_DEVTOOLS_15fb40082ce66f64f2025f64cb49c170" desc="Tooltip text that appears when hovering over the 'Active descendant' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     The descendant of this element which is active; i.e. the element to which focus should be delegated.
   </message>
-  <message name="IDS_DEVTOOLS_185551542d4a950d6ed4a90e0875dfde" desc="">
+  <message name="IDS_DEVTOOLS_185551542d4a950d6ed4a90e0875dfde" desc="Text in Accessibility Node View of the Accessibility panel">
     Computed Properties
   </message>
-  <message name="IDS_DEVTOOLS_191abc41f8f74fb8c9671ca8f21b7433" desc="">
+  <message name="IDS_DEVTOOLS_191abc41f8f74fb8c9671ca8f21b7433" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element not interesting for accessibility.
   </message>
   <message name="IDS_DEVTOOLS_1a759e882af91f6d006758443983681a" desc="Tooltip text that appears when hovering over the 'Multi-selectable' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether a user may select more than one option from this widget.
   </message>
-  <message name="IDS_DEVTOOLS_1c2be4cda7b85620e6dca5fb505feedc" desc="">
+  <message name="IDS_DEVTOOLS_1c2be4cda7b85620e6dca5fb505feedc" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element has empty alt text.
   </message>
   <message name="IDS_DEVTOOLS_1d95e5222e3708a525194a4a9a084275" desc="Tooltip text that appears when hovering over the 'Has autocomplete' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -72,7 +72,7 @@
   <message name="IDS_DEVTOOLS_38d37768a9274b6bca0dca4329513be5" desc="Tooltip text that appears when hovering over the 'From title' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from title attribute.
   </message>
-  <message name="IDS_DEVTOOLS_3b1afa99cd297c96939424e1438e12f2" desc="">
+  <message name="IDS_DEVTOOLS_3b1afa99cd297c96939424e1438e12f2" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element inherits presentational role from '''
   </message>
   <message name="IDS_DEVTOOLS_3cf113006fc26a6c1b47b15659b3f4eb" desc="Tooltip text that appears when hovering over the 'Labeled by' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -102,7 +102,7 @@
   <message name="IDS_DEVTOOLS_49ee3087348e8d44e1feda1917443987" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Name
   </message>
-  <message name="IDS_DEVTOOLS_4ada42850cc2d4e41f3da5254ec2feee" desc="">
+  <message name="IDS_DEVTOOLS_4ada42850cc2d4e41f3da5254ec2feee" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is inert.
   </message>
   <message name="IDS_DEVTOOLS_4ecb3834878eb89dd33d5aa34ba17b3e" desc="Tooltip text that appears when hovering over the 'Orientation' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -111,7 +111,7 @@
   <message name="IDS_DEVTOOLS_524c2f4506c117954fd1c95ec5247495" desc="Tooltip text that appears when hovering over the 'Level' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     The hierarchical level of this element.
   </message>
-  <message name="IDS_DEVTOOLS_52886045a6932b0bbb56620fe5c584bf" desc="">
+  <message name="IDS_DEVTOOLS_52886045a6932b0bbb56620fe5c584bf" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Ancestor&apos;s children are all presentational: '''
   </message>
   <message name="IDS_DEVTOOLS_54b1f0b8e6ab39d96897d1c05836db84" desc="Tooltip text that appears when hovering over the 'Relevant (live regions)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -123,22 +123,22 @@
   <message name="IDS_DEVTOOLS_570e629208d2b9a6e2a312dcd7fa855d" desc="Tooltip text that appears when hovering over the 'From label (for)' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from label element with for= attribute.
   </message>
-  <message name="IDS_DEVTOOLS_5a51e4de1a235f3f67e816cb561d3d5a" desc="">
-    Element is <ph name="ARIAHIDDENSPAN">$1s</ph>.
+  <message name="IDS_DEVTOOLS_5a51e4de1a235f3f67e816cb561d3d5a" desc="Reason element in Accessibility Node View of the Accessibility panel">
+    Element is <ph name="ARIAHIDDENSPAN">$1s<ex>aria-hidden</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_5cb7a9a4a6eb6614869a518b7323a61d" desc="Tooltip text that appears when hovering over the 'Description' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     The accessible description for this element.
   </message>
-  <message name="IDS_DEVTOOLS_5cd2b4477fa05212ce32e073702b6938" desc="">
+  <message name="IDS_DEVTOOLS_5cd2b4477fa05212ce32e073702b6938" desc="Text in ARIAAttributes View of the Accessibility panel">
     No ARIA attributes
   </message>
-  <message name="IDS_DEVTOOLS_5d910721a6256ce42c8c6308dc60ff40" desc="">
+  <message name="IDS_DEVTOOLS_5d910721a6256ce42c8c6308dc60ff40" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Static text node is used as name for '''
   </message>
   <message name="IDS_DEVTOOLS_5e2c648cec53676f6fa0acbf702eccfc" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From style
   </message>
-  <message name="IDS_DEVTOOLS_5f05a00053834655de812d3447545a17" desc="">
+  <message name="IDS_DEVTOOLS_5f05a00053834655de812d3447545a17" desc="Text in Accessibility Node View of the Accessibility panel">
     No node with this ID.
   </message>
   <message name="IDS_DEVTOOLS_63f6baf1d88963b8c8210751c8530e94" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -168,7 +168,7 @@
   <message name="IDS_DEVTOOLS_7882d6b9ff794f0ed72656149e7dd037" desc="Tooltip text that appears when hovering over the 'Implicit' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Implicit value.
   </message>
-  <message name="IDS_DEVTOOLS_7d615068dd4fb142c11a29553b9b83bf" desc="">
+  <message name="IDS_DEVTOOLS_7d615068dd4fb142c11a29553b9b83bf" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is presentational.
   </message>
   <message name="IDS_DEVTOOLS_7eedfa765b9cfe7345e3b7e20148738d" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -177,7 +177,7 @@
   <message name="IDS_DEVTOOLS_806cb54fdaa10d7c21dc6c00d17e9a08" desc="Tooltip text that appears when hovering over the 'From native HTML' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from native HTML (unknown source).
   </message>
-  <message name="IDS_DEVTOOLS_80c9f4e5b244cf617075b8ce23a3ed27" desc="">
+  <message name="IDS_DEVTOOLS_80c9f4e5b244cf617075b8ce23a3ed27" desc="Text in ARIAAttributes View of the Accessibility panel">
     ARIA Attributes
   </message>
   <message name="IDS_DEVTOOLS_874b430cd4166d886a99f05d7fc14a81" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -195,7 +195,7 @@
   <message name="IDS_DEVTOOLS_91b442d385b54e1418d81adc34871053" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Selected
   </message>
-  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="">
+  <message name="IDS_DEVTOOLS_939aaa05e0943b39eab3a34fd609384d" desc="A context menu item in the AXBreadcrumbs Pane of the Accessibility panel">
     Scroll into view
   </message>
   <message name="IDS_DEVTOOLS_953f80ed9077d40149a8e68448f09e47" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -207,10 +207,10 @@
   <message name="IDS_DEVTOOLS_95ed994edf3b74ebaa5c07378adb1b6a" desc="Tooltip text that appears when hovering over the 'Multi-line' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Whether this text box may have more than one line.
   </message>
-  <message name="IDS_DEVTOOLS_970e14ef4e4d726d36b6ed0ea92bef83" desc="">
+  <message name="IDS_DEVTOOLS_970e14ef4e4d726d36b6ed0ea92bef83" desc="Text in Accessibility Node View of the Accessibility panel">
     Accessibility node not exposed
   </message>
-  <message name="IDS_DEVTOOLS_98b6f72f9b4c1883deddc61bc62d71eb" desc="">
+  <message name="IDS_DEVTOOLS_98b6f72f9b4c1883deddc61bc62d71eb" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is not visible.
   </message>
   <message name="IDS_DEVTOOLS_98bd032b07fb2909f106262ffb0a6c4f" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -231,7 +231,7 @@
   <message name="IDS_DEVTOOLS_a38feabd83f0c880aee942fef26450a2" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From label
   </message>
-  <message name="IDS_DEVTOOLS_a4853b77c462337ed9fecc32e4d44d7b" desc="">
+  <message name="IDS_DEVTOOLS_a4853b77c462337ed9fecc32e4d44d7b" desc="Text in AXBreadcrumbs Pane of the Accessibility panel">
     Accessibility Tree
   </message>
   <message name="IDS_DEVTOOLS_a52f614f078fc6dc7273418b6b35b75a" desc="Tooltip text that appears when hovering over the 'Related element' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -240,16 +240,16 @@
   <message name="IDS_DEVTOOLS_a69a05e6fc6cc0de6eb9b43a720d6a2b" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From caption
   </message>
-  <message name="IDS_DEVTOOLS_a858dfbc32e2169e89668adf8e997f6f" desc="">
+  <message name="IDS_DEVTOOLS_a858dfbc32e2169e89668adf8e997f6f" desc="Text in Accessibility Node View of the Accessibility panel">
     No accessibility node
   </message>
   <message name="IDS_DEVTOOLS_abbd64f40c34c537d3a571af068fce29" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Orientation
   </message>
-  <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="">
+  <message name="IDS_DEVTOOLS_aff2b966e54c2212e86343d2bb8d3f88" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Part of label element: '''
   </message>
-  <message name="IDS_DEVTOOLS_b05cf8cea038a89494e9e232e65af3f3" desc="">
+  <message name="IDS_DEVTOOLS_b05cf8cea038a89494e9e232e65af3f3" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is not rendered.
   </message>
   <message name="IDS_DEVTOOLS_b0b4bb7fc3f54f770e2368651fc2b285" desc="Tooltip text that appears when hovering over the 'Can set value' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -300,11 +300,11 @@
   <message name="IDS_DEVTOOLS_c9bbad3047af039c14d0e7ec957bb867" desc="Tooltip text that appears when hovering over the 'Disabled' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     If true, this element currently cannot be interacted with.
   </message>
-  <message name="IDS_DEVTOOLS_cd9da90ce06215f24f648786501e4073" desc="">
+  <message name="IDS_DEVTOOLS_cd9da90ce06215f24f648786501e4073" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is hidden by active modal dialog: '''
   </message>
-  <message name="IDS_DEVTOOLS_cfa5234b2737df4bc3dc737484605c39" desc="">
-    <ph name="ARIAHIDDENSPAN">$1s</ph> is <ph name="TRUESPAN">$2s</ph> on ancestor: '''
+  <message name="IDS_DEVTOOLS_cfa5234b2737df4bc3dc737484605c39" desc="Reason element in Accessibility Node View of the Accessibility panel">
+    <ph name="ARIAHIDDENSPAN">$1s<ex>aria-hidden</ex></ph> is <ph name="TRUESPAN">$2s<ex>true</ex></ph> on ancestor: '''
   </message>
   <message name="IDS_DEVTOOLS_d3fd6a090f523416f156281b8735573b" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     From title
@@ -321,28 +321,28 @@
   <message name="IDS_DEVTOOLS_d7c640cc33c74791ecd8fd06e5158d34" desc="Tooltip text that appears when hovering over the 'Name' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     The computed name of this element.
   </message>
-  <message name="IDS_DEVTOOLS_d7dff47e75bfd5f107407eded09ee6f0" desc="">
-    Element has <ph name="ROLEPRESENTATIONSPAN">$1s</ph>.
+  <message name="IDS_DEVTOOLS_d7dff47e75bfd5f107407eded09ee6f0" desc="Reason element in Accessibility Node View of the Accessibility panel">
+    Element has <ph name="ROLEPRESENTATIONSPAN">$1s<ex>role=link</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_d8bd6e60adcc01ce20f509ea6800de8f" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Read-only
   </message>
-  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="">
+  <message name="IDS_DEVTOOLS_d96143ba1b15645919cea00ec9d1be62" desc="Ignored node element text content in AXBreadcrumbs Pane of the Accessibility panel">
     Ignored
   </message>
   <message name="IDS_DEVTOOLS_d98e6d7300cfa4e03c4ac9cf658449a7" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Live region root
   </message>
-  <message name="IDS_DEVTOOLS_dd3195ced9c1810388e28ca2b4eb921f" desc="">
+  <message name="IDS_DEVTOOLS_dd3195ced9c1810388e28ca2b4eb921f" desc="Text in Accessibility Node View of the Accessibility panel">
     Not specified
   </message>
   <message name="IDS_DEVTOOLS_dfea140c0381b0207a499a890fde2e31" desc="Tooltip text that appears when hovering over the 'Described by' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Element or elements which form the description of this element.
   </message>
-  <message name="IDS_DEVTOOLS_e0dcc9aef6db5e61e4102efdf5d54378" desc="">
+  <message name="IDS_DEVTOOLS_e0dcc9aef6db5e61e4102efdf5d54378" desc="Text in Accessibility Node View of the Accessibility panel">
     Invalid source.
   </message>
-  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="">
+  <message name="IDS_DEVTOOLS_e0e4fc6213e8b3593495a7260c3a4c2e" desc="Title of the 'Accessibility' tool in the sidebar of the elements tool">
     Accessibility
   </message>
   <message name="IDS_DEVTOOLS_e1312fc3ec5859447389668b721d932f" desc="Tooltip text that appears when hovering over the 'Pressed' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -357,10 +357,10 @@
   <message name="IDS_DEVTOOLS_e633854d55dfd9bbb2d91a63f09db7c5" desc="Accessibility attribute name that appears under the Computed Properties section in the Accessibility pane of the Elements pane">
     Flows to
   </message>
-  <message name="IDS_DEVTOOLS_e71c63b8e5a312662941ee8606e8c43a" desc="">
+  <message name="IDS_DEVTOOLS_e71c63b8e5a312662941ee8606e8c43a" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Label for '''
   </message>
-  <message name="IDS_DEVTOOLS_e7be8f80bd8db0b8ca6bb2dee175b623" desc="">
+  <message name="IDS_DEVTOOLS_e7be8f80bd8db0b8ca6bb2dee175b623" desc="Reason element in Accessibility Node View of the Accessibility panel">
     Element is in an inert subtree from '''
   </message>
   <message name="IDS_DEVTOOLS_e8ce1fb5b4c870b68d6f6e5c7037c61f" desc="Tooltip text that appears when hovering over the 'From style' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
@@ -375,7 +375,7 @@
   <message name="IDS_DEVTOOLS_f94f9f1c2f3bda21d4a1d4dd222cbe9f" desc="Tooltip text that appears when hovering over the 'From placeholder attribute' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">
     Value from placeholder attribute.
   </message>
-  <message name="IDS_DEVTOOLS_fc6dc044799975f19c864e9b31e3bb76" desc="">
+  <message name="IDS_DEVTOOLS_fc6dc044799975f19c864e9b31e3bb76" desc="Reason element in Accessibility Node View of the Accessibility panel">
     No text content.
   </message>
   <message name="IDS_DEVTOOLS_feb0d74c82c7ade6758ced29e8ba7f13" desc="Tooltip text that appears when hovering over the 'From label' attribute name under the Computed Properties section in the Accessibility pane of the Elements pane">

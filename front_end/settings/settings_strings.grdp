@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="">
+  <message name="IDS_DEVTOOLS_0f653ae68147586eb189d7baf37a696a" desc="Text of button in Settings Screen of the Settings">
     Restore defaults and reload
   </message>
-  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="">
+  <message name="IDS_DEVTOOLS_29e9d8e295b1d5b3002d2d3d5baa4c37" desc="Text in Settings Screen of the Settings">
     Shortcuts
   </message>
-  <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="">
+  <message name="IDS_DEVTOOLS_2cce43a6505a5d1bdf7ea98bf7fd1bc8" desc="Blackbox label in Framework Blackbox Settings Tab of the Settings">
     Blackbox
   </message>
-  <message name="IDS_DEVTOOLS_331f303e56b067dd84abf94c3bd349c4" desc="">
+  <message name="IDS_DEVTOOLS_331f303e56b067dd84abf94c3bd349c4" desc="Header text content in Framework Blackbox Settings Tab of the Settings">
     Framework Blackboxing
   </message>
-  <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="">
+  <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="Text in Settings Screen of the Settings">
     Experiments
   </message>
-  <message name="IDS_DEVTOOLS_4a3aaf1edf15288e9ff3994088e2277a" desc="">
-    Blackbox scripts whose names match &apos;<ph name="ITEM_PATTERN">$1s</ph>&apos;
+  <message name="IDS_DEVTOOLS_4a3aaf1edf15288e9ff3994088e2277a" desc="Pattern title in Framework Blackbox Settings Tab of the Settings">
+    Blackbox scripts whose names match &apos;<ph name="ITEM_PATTERN">$1s<ex>ad.*?</ex></ph>&apos;
   </message>
-  <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="">
+  <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Pattern
   </message>
-  <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="">
+  <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="Warning text content in Settings Screen of the Settings">
     WARNING:
   </message>
-  <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="">
+  <message name="IDS_DEVTOOLS_ae25bc3ceebf44be4b59d0ade0e53f0b" desc="Placeholder text content in Framework Blackbox Settings Tab of the Settings">
     No blackboxed patterns
   </message>
-  <message name="IDS_DEVTOOLS_b39a035a995fc6597c8eb942210d1527" desc="">
+  <message name="IDS_DEVTOOLS_b39a035a995fc6597c8eb942210d1527" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Behavior
   </message>
-  <message name="IDS_DEVTOOLS_b791f463c10f80e87e887e1f863f6209" desc="">
+  <message name="IDS_DEVTOOLS_b791f463c10f80e87e887e1f863f6209" desc="Text of the add pattern button in Framework Blackbox Settings Tab of the Settings">
     Add pattern...
   </message>
-  <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="">
+  <message name="IDS_DEVTOOLS_c745d3ac390f120535d734cd14e2f6aa" desc="Blackbox content scripts title in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts (extension scripts in the page)
   </message>
-  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="">
+  <message name="IDS_DEVTOOLS_c9deece3e6de26d07ef6409b96f21fd0" desc="Title of Blackboxing settings">
     Blackboxing
   </message>
-  <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="">
+  <message name="IDS_DEVTOOLS_d0834fcec6337785ee749c8f5464f6f6" desc="Text in Settings Screen of the Settings">
     Preferences
   </message>
-  <message name="IDS_DEVTOOLS_d2ef7dcdede23820e315ca1c3425ba4f" desc="">
+  <message name="IDS_DEVTOOLS_d2ef7dcdede23820e315ca1c3425ba4f" desc="Text in Framework Blackbox Settings Tab of the Settings">
     Debugger will skip through the scripts and will not stop on exceptions thrown by them.
   </message>
-  <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="">
+  <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
     These experiments could be dangerous and may require restart.
   </message>
-  <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="">
+  <message name="IDS_DEVTOOLS_ffebb5ad32e2b253aa418b8d7a70028e" desc="Text in Framework Blackbox Settings Tab of the Settings">
     Blackbox content scripts
   </message>
 </grit-part>

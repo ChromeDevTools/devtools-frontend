@@ -1,410 +1,410 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
-  <message name="IDS_DEVTOOLS_01abfc750a0c942167651c40d088531d" desc="">
+  <message name="IDS_DEVTOOLS_01abfc750a0c942167651c40d088531d" desc="Text in Background Service View of the Application panel">
     #
   </message>
-  <message name="IDS_DEVTOOLS_05b2812ab435addb8ae4853ead93f1b3" desc="">
-    Received <ph name="NEW_DATE_VERSION_SCRIPTRESPONSETIME_________TOLOCALESTRING__">$1s</ph>
+  <message name="IDS_DEVTOOLS_05b2812ab435addb8ae4853ead93f1b3" desc="Text in Service Workers View of the Application panel">
+    Received <ph name="NEW_DATE_VERSION_SCRIPTRESPONSETIME_________TOLOCALESTRING__">$1s<ex>7/3/2019, 3:38:37 PM</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_06933067aafd48425d67bcb01bba5cb6" desc="">
+  <message name="IDS_DEVTOOLS_06933067aafd48425d67bcb01bba5cb6" desc="Text in Service Workers View of the Application panel">
     Update
   </message>
-  <message name="IDS_DEVTOOLS_09428a9282bbb3ffcf3caa7826f0bf83" desc="">
-    An unexpected error <ph name="SQLERROR_CODE">$1s</ph> occurred.
+  <message name="IDS_DEVTOOLS_09428a9282bbb3ffcf3caa7826f0bf83" desc="Message in Database Model of the Application panel">
+    An unexpected error <ph name="SQLERROR_CODE">$1s<ex>-197</ex></ph> occurred.
   </message>
-  <message name="IDS_DEVTOOLS_0d6fa553290eb4bf9eabe203a43b01d9" desc="">
+  <message name="IDS_DEVTOOLS_0d6fa553290eb4bf9eabe203a43b01d9" desc="Text in Clear Storage View of the Application panel">
     Application cache
   </message>
-  <message name="IDS_DEVTOOLS_0f558243fbf45f1cd840fff01957f57b" desc="">
+  <message name="IDS_DEVTOOLS_0f558243fbf45f1cd840fff01957f57b" desc="Text in Service Workers View of the Application panel">
     Clients
   </message>
-  <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="">
-    Worker: <ph name="TARGETINFO_URL">$1s</ph>
+  <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="Text of a DOM element in Service Workers View of the Application panel">
+    Worker: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_136e9c46f48bf8798df663c4e786c3e3" desc="">
+  <message name="IDS_DEVTOOLS_136e9c46f48bf8798df663c4e786c3e3" desc="Title of update on reload setting in service workers view of the application panel">
     Update on reload
   </message>
-  <message name="IDS_DEVTOOLS_15fa5e18dc110ac96ef35fd19abc78b3" desc="">
+  <message name="IDS_DEVTOOLS_15fa5e18dc110ac96ef35fd19abc78b3" desc="Text in Service Worker Cache Views of the Application panel">
     Time Cached
   </message>
-  <message name="IDS_DEVTOOLS_1818d506396d77b3d035f719885c4cd1" desc="">
+  <message name="IDS_DEVTOOLS_1818d506396d77b3d035f719885c4cd1" desc="Text in Service Workers View of the Application panel">
     focus
   </message>
-  <message name="IDS_DEVTOOLS_1bea0f12b50db07ee7f2265b790417ff" desc="">
+  <message name="IDS_DEVTOOLS_1bea0f12b50db07ee7f2265b790417ff" desc="Text in App Manifest View of the Application panel">
     Installability
   </message>
-  <message name="IDS_DEVTOOLS_1e9cf6d18aa0124e44d013131c79b0c1" desc="">
-    Version: <ph name="THIS__DATABASE_VERSION">$1s</ph> (empty)
+  <message name="IDS_DEVTOOLS_1e9cf6d18aa0124e44d013131c79b0c1" desc="Tooltip in Application Panel Sidebar of the Application panel">
+    Version: <ph name="THIS__DATABASE_VERSION">$1s<ex>1.0</ex></ph> (empty)
   </message>
-  <message name="IDS_DEVTOOLS_1fece652e0dde2e00d1a7662f081dd71" desc="">
-    The &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot;
+  <message name="IDS_DEVTOOLS_1fece652e0dde2e00d1a7662f081dd71" desc="Text in Database Table View of the Application panel">
+    The &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot;
 table is empty.
   </message>
-  <message name="IDS_DEVTOOLS_22554c2f3f431fa4243965df392b9ea9" desc="">
+  <message name="IDS_DEVTOOLS_22554c2f3f431fa4243965df392b9ea9" desc="Text in Application Cache Items View of the Application panel">
     AppCache
   </message>
-  <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="">
+  <message name="IDS_DEVTOOLS_29104d3ede0231043a4b92a90b9c2873" desc="Title of needs refresh in indexed dbviews of the application panel">
     Some entries may have been modified
   </message>
-  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="">
+  <message name="IDS_DEVTOOLS_2b81bb9b3deebcbfa05edad7a845005a" desc="Text in Application Panel Sidebar of the Application panel">
     Frames
   </message>
-  <message name="IDS_DEVTOOLS_2bf0a735c3ff964861a2b55319edd355" desc="">
+  <message name="IDS_DEVTOOLS_2bf0a735c3ff964861a2b55319edd355" desc="Text in Clear Storage View of the Application panel">
     Unregister service workers
   </message>
-  <message name="IDS_DEVTOOLS_2e9d8504b07d0bdf4887f27c070cbbb6" desc="">
+  <message name="IDS_DEVTOOLS_2e9d8504b07d0bdf4887f27c070cbbb6" desc="Text in Application Panel Sidebar of the Application panel">
     autoIncrement
   </message>
-  <message name="IDS_DEVTOOLS_301addf2037879acf2a972b157d2f4a7" desc="">
+  <message name="IDS_DEVTOOLS_301addf2037879acf2a972b157d2f4a7" desc="Text in Application Panel Sidebar of the Application panel">
     Local Files
   </message>
-  <message name="IDS_DEVTOOLS_3472423ee4037c94e20d64b3aea8aa49" desc="">
-    <ph name="SCOPEURL">$1s</ph> - deleted
+  <message name="IDS_DEVTOOLS_3472423ee4037c94e20d64b3aea8aa49" desc="Text in Service Workers View of the Application panel">
+    <ph name="SCOPEURL">$1s<ex>example.com</ex></ph> - deleted
   </message>
-  <message name="IDS_DEVTOOLS_34b6cd75171affba6957e308dcbd92be" desc="">
+  <message name="IDS_DEVTOOLS_34b6cd75171affba6957e308dcbd92be" desc="Text in Indexed DBViews of the Application panel">
     Version
   </message>
-  <message name="IDS_DEVTOOLS_368d9ac76af05f714092bc808a426bfc" desc="">
+  <message name="IDS_DEVTOOLS_368d9ac76af05f714092bc808a426bfc" desc="Text in App Manifest View of the Application panel">
     Background color
   </message>
-  <message name="IDS_DEVTOOLS_37acadd70183e7ed00222ff38248a6ff" desc="">
-    <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s</ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s</ph> storage quota. '''
+  <message name="IDS_DEVTOOLS_37acadd70183e7ed00222ff38248a6ff" desc="Quota row text content in Clear Storage View of the Application panel">
+    <ph name="NUMBER_BYTESTOSTRING_RESPONSE_USAGE_">$1s<ex>30 MB</ex></ph> used out of <ph name="NUMBER_BYTESTOSTRING_RESPONSE_QUOTA_">$2s<ex>100 MB</ex></ph> storage quota. '''
   </message>
-  <message name="IDS_DEVTOOLS_3a771376134eb624f3e1fdd3d92d9f4c" desc="">
+  <message name="IDS_DEVTOOLS_3a771376134eb624f3e1fdd3d92d9f4c" desc="Text in Service Worker Cache Views of the Application panel">
     Select a cache entry above to preview
   </message>
-  <message name="IDS_DEVTOOLS_3af55819bc887213086b7ba5c5e25042" desc="">
-    Version: <ph name="THIS__DATABASE_VERSION">$1s</ph>
+  <message name="IDS_DEVTOOLS_3af55819bc887213086b7ba5c5e25042" desc="Tooltip in Application Panel Sidebar of the Application panel">
+    Version: <ph name="THIS__DATABASE_VERSION">$1s<ex>1.0</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_3afd748bcc6315d69cff002ec6c377ed" desc="">
-    <ph name="THIS__REGISTRATION_ERRORS_LENGTH">$1s</ph> registration errors
+  <message name="IDS_DEVTOOLS_3afd748bcc6315d69cff002ec6c377ed" desc="Aria accessible name in Service Workers View of the Application panel">
+    <ph name="THIS__REGISTRATION_ERRORS_LENGTH">$1s<ex>3</ex></ph> registration errors
   </message>
-  <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="">
+  <message name="IDS_DEVTOOLS_3eab5d12656f2f4462f6594019e77355" desc="Text in Database Table View of the Application panel">
     Visible columns
   </message>
-  <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="">
+  <message name="IDS_DEVTOOLS_3edf8ca26a1ec14dd6e91dd277ae1de6" desc="Text in Background Service View of the Application panel">
     Origin
   </message>
-  <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="">
+  <message name="IDS_DEVTOOLS_458efe6e41ed41835b8d84b28db3f394" desc="Filter label text content in Service Workers View of the Application panel">
     Service workers from other origins
   </message>
-  <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="">
+  <message name="IDS_DEVTOOLS_45e035baf33a8e403766a606457f8b10" desc="Text in App Manifest View of the Application panel">
     Theme color
   </message>
-  <message name="IDS_DEVTOOLS_4f36f645368158bc46346b8902fc2566" desc="">
-    #<ph name="ACTIVE_ID">$1s</ph> activated and is <ph name="ACTIVE_RUNNINGSTATUS">$2s</ph>
+  <message name="IDS_DEVTOOLS_4f36f645368158bc46346b8902fc2566" desc="Text in Service Workers View of the Application panel">
+    #<ph name="ACTIVE_ID">$1s<ex>1</ex></ph> activated and is <ph name="ACTIVE_RUNNINGSTATUS">$2s<ex>stopped</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_50868c2251b0c3b64ca50052891aec4c" desc="">
+  <message name="IDS_DEVTOOLS_50868c2251b0c3b64ca50052891aec4c" desc="Text in Service Workers View of the Application panel">
     Push data
   </message>
-  <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="">
+  <message name="IDS_DEVTOOLS_536cf547cb6ecfe32be6ed3ffdabf893" desc="Text of button in Clear Storage View of the Application panel">
     Clear site data
   </message>
-  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="">
-    Image from <ph name="URL">$1s</ph>
+  <message name="IDS_DEVTOOLS_53cd8180752335dce4f9b9ed493ef58d" desc="Image alt in App Manifest View of the Application panel">
+    Image from <ph name="URL">$1s<ex>example.com</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="">
+  <message name="IDS_DEVTOOLS_54f664c70c22054ea0d8d26fc3997ce7" desc="Connectivity icon text content in Application Cache Items View of the Application panel">
     Online
   </message>
-  <message name="IDS_DEVTOOLS_55bce575c41275ddaf5fbd1beb7d6018" desc="">
-    #<ph name="INSTALLING_ID">$1s</ph> trying to install
+  <message name="IDS_DEVTOOLS_55bce575c41275ddaf5fbd1beb7d6018" desc="Text in Service Workers View of the Application panel">
+    #<ph name="INSTALLING_ID">$1s<ex>2</ex></ph> trying to install
   </message>
-  <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="">
+  <message name="IDS_DEVTOOLS_579fdc74b6520ab8906ecddf3e62d951" desc="Text in Application Panel Sidebar of the Application panel">
     Application Cache
   </message>
-  <message name="IDS_DEVTOOLS_5bb07b23ba5cd47d49a0a030556b21ba" desc="">
+  <message name="IDS_DEVTOOLS_5bb07b23ba5cd47d49a0a030556b21ba" desc="Text in Background Service View of the Application panel">
     Background Fetch
   </message>
-  <message name="IDS_DEVTOOLS_625bee64c286ac3018d57e87162f44e9" desc="">
+  <message name="IDS_DEVTOOLS_625bee64c286ac3018d57e87162f44e9" desc="Text of button in Indexed DBViews of the Application panel">
     Delete database
   </message>
-  <message name="IDS_DEVTOOLS_626e8008b253bc4fbef9dca0a3f63903" desc="">
+  <message name="IDS_DEVTOOLS_626e8008b253bc4fbef9dca0a3f63903" desc="Text in Background Service View of the Application panel">
     Instance ID
   </message>
-  <message name="IDS_DEVTOOLS_65ebb2ea77ddbe405def1ad1d01e2e7b" desc="">
+  <message name="IDS_DEVTOOLS_65ebb2ea77ddbe405def1ad1d01e2e7b" desc="Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel">
     Bypass the service worker and load resources from the network
   </message>
-  <message name="IDS_DEVTOOLS_6670d47e57b4fe982554519effc771c5" desc="">
+  <message name="IDS_DEVTOOLS_6670d47e57b4fe982554519effc771c5" desc="Text in Indexed DBViews of the Application panel">
     Object stores
   </message>
-  <message name="IDS_DEVTOOLS_673eb027e9c056f57140322807351dd5" desc="">
+  <message name="IDS_DEVTOOLS_673eb027e9c056f57140322807351dd5" desc="Text in Application Panel Sidebar of the Application panel">
     unique
   </message>
-  <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="">
+  <message name="IDS_DEVTOOLS_6827a85b76e967f6a129e08f9272e76d" desc="Text in Application Panel Sidebar of the Application panel">
     Local Storage
   </message>
-  <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="">
+  <message name="IDS_DEVTOOLS_6c202452e44c42e323204da2a3a3c24a" desc="Text in Clear Storage View of the Application panel">
     File System
   </message>
-  <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="">
-    #<ph name="REDUNDANT_ID">$1s</ph> is redundant
+  <message name="IDS_DEVTOOLS_6e72748dc2f2224dfabb374ca0cc988f" desc="Text in Service Workers View of the Application panel">
+    #<ph name="REDUNDANT_ID">$1s<ex>2</ex></ph> is redundant
   </message>
-  <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="">
-    Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s</ph>
+  <message name="IDS_DEVTOOLS_76c18f2b1e4155961e10434e3d83317f" desc="Text in Indexed DBViews of the Application panel">
+    Key generator value: <ph name="STRING_METADATA_KEYGENERATORVALUE_">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="">
+  <message name="IDS_DEVTOOLS_76c3e002d3c052bd6a909366a8dc3845" desc="Text in Application Panel Sidebar of the Application panel">
     Manifest
   </message>
-  <message name="IDS_DEVTOOLS_795a813f20a4d4b04f85ddb86287fce4" desc="">
+  <message name="IDS_DEVTOOLS_795a813f20a4d4b04f85ddb86287fce4" desc="Quota row title in Clear Storage View of the Application panel">
     Storage quota is limited in Incognito mode
   </message>
-  <message name="IDS_DEVTOOLS_798a0aef3a97a3eab63d88a0b6c07341" desc="">
+  <message name="IDS_DEVTOOLS_798a0aef3a97a3eab63d88a0b6c07341" desc="Text in Background Service View of the Application panel">
     SW Scope
   </message>
-  <message name="IDS_DEVTOOLS_7a06b1cc41f027f75bc7be8ee937c344" desc="">
+  <message name="IDS_DEVTOOLS_7a06b1cc41f027f75bc7be8ee937c344" desc="Message in Database Model of the Application panel">
     Database no longer has expected version.
   </message>
-  <message name="IDS_DEVTOOLS_7adc295d89feec026fbcee16448c31d8" desc="">
-    <ph name="UNREACHABLEMAINORIGIN">$1s</ph> (failed to load)
+  <message name="IDS_DEVTOOLS_7adc295d89feec026fbcee16448c31d8" desc="Text in Clear Storage View of the Application panel">
+    <ph name="UNREACHABLEMAINORIGIN">$1s<ex>https://example.com</ex></ph> (failed to load)
   </message>
-  <message name="IDS_DEVTOOLS_7d52bfc51222e4122623057310cba1ce" desc="">
+  <message name="IDS_DEVTOOLS_7d52bfc51222e4122623057310cba1ce" desc="Tooltip text that appears when hovering over the largeicon play back button in the Indexed DBViews of the Application panel">
     Show previous page
   </message>
-  <message name="IDS_DEVTOOLS_7e91f7be5e9ff7a50a44d4a7f21afb90" desc="">
+  <message name="IDS_DEVTOOLS_7e91f7be5e9ff7a50a44d4a7f21afb90" desc="Text in App Manifest View of the Application panel">
     Start URL
   </message>
-  <message name="IDS_DEVTOOLS_7ed01b26177166f3627e29da31bc7e28" desc="">
+  <message name="IDS_DEVTOOLS_7ed01b26177166f3627e29da31bc7e28" desc="Text in Application Cache Items View of the Application panel">
     No Application Cache information available.
   </message>
-  <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="">
+  <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="Text in DOMStorage Items View of the Application panel">
     Select a value to preview
   </message>
-  <message name="IDS_DEVTOOLS_86befdf33863a849060cf9f6d2425cdb" desc="">
+  <message name="IDS_DEVTOOLS_86befdf33863a849060cf9f6d2425cdb" desc="Text in Indexed DBViews of the Application panel">
     Security origin
   </message>
-  <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="">
+  <message name="IDS_DEVTOOLS_87e059dc2492bd5041581f05daef12f7" desc="Text in Service Worker Cache Views of the Application panel">
     Filter by Path
   </message>
-  <message name="IDS_DEVTOOLS_886b9bffdebad3a988a8da87b1affa2d" desc="">
+  <message name="IDS_DEVTOOLS_886b9bffdebad3a988a8da87b1affa2d" desc="Text in Service Workers View of the Application panel">
     Filter service worker
   </message>
-  <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="">
+  <message name="IDS_DEVTOOLS_897356954c2cd3d41b221e3f24f99bba" desc="Text in DOMStorage Items View of the Application panel">
     Key
   </message>
-  <message name="IDS_DEVTOOLS_8c4aa541ee911e8d80451ef8cc304806" desc="">
+  <message name="IDS_DEVTOOLS_8c4aa541ee911e8d80451ef8cc304806" desc="Text in Application Panel Sidebar of the Application panel">
     Storage
   </message>
-  <message name="IDS_DEVTOOLS_8f67973007158337346584551b093be8" desc="">
+  <message name="IDS_DEVTOOLS_8f67973007158337346584551b093be8" desc="Text in App Manifest View of the Application panel">
     Icons
   </message>
-  <message name="IDS_DEVTOOLS_9093b5a47841e196aeee81e9441eb23b" desc="">
-    cookies used by frames from <ph name="COOKIEDOMAIN">$1s</ph>
+  <message name="IDS_DEVTOOLS_9093b5a47841e196aeee81e9441eb23b" desc="Tooltip in Application Panel Sidebar of the Application panel">
+    cookies used by frames from <ph name="COOKIEDOMAIN">$1s<ex>https://example.com</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_90e4c7584668933aebe8cf1cbccfe82d" desc="">
-    Please confirm delete of &quot;<ph name="THIS__DATABASE_DATABASEID_NAME">$1s</ph>&quot; database.
+  <message name="IDS_DEVTOOLS_90e4c7584668933aebe8cf1cbccfe82d" desc="Text in Indexed DBViews of the Application panel">
+    Please confirm delete of &quot;<ph name="THIS__DATABASE_DATABASEID_NAME">$1s<ex>msb</ex></ph>&quot; database.
   </message>
-  <message name="IDS_DEVTOOLS_9122ec25094d00855f48a500241c6008" desc="">
+  <message name="IDS_DEVTOOLS_9122ec25094d00855f48a500241c6008" desc="Text in Application Panel Sidebar of the Application panel">
     Service Workers
   </message>
-  <message name="IDS_DEVTOOLS_9350cbb84e8ab827898a783d8f724951" desc="">
+  <message name="IDS_DEVTOOLS_9350cbb84e8ab827898a783d8f724951" desc="Text in Service Workers View of the Application panel">
     inspect
   </message>
-  <message name="IDS_DEVTOOLS_94aa6cfa461998abe42d53963f1344c3" desc="">
+  <message name="IDS_DEVTOOLS_94aa6cfa461998abe42d53963f1344c3" desc="Error msg element text content in Database Table View of the Application panel">
     An error occurred trying to
-read the &quot;<ph name="THIS_TABLENAME">$1s</ph>&quot; table.
+read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   </message>
-  <message name="IDS_DEVTOOLS_98fc9226c3fe878e39cd048fbd1c3692" desc="">
+  <message name="IDS_DEVTOOLS_98fc9226c3fe878e39cd048fbd1c3692" desc="Text in App Manifest View of the Application panel">
     Short name
   </message>
-  <message name="IDS_DEVTOOLS_9999106349673567ecaf1c32c07301a5" desc="">
-    #<ph name="WAITING_ID">$1s</ph> waiting to activate
+  <message name="IDS_DEVTOOLS_9999106349673567ecaf1c32c07301a5" desc="Text in Service Workers View of the Application panel">
+    #<ph name="WAITING_ID">$1s<ex>2</ex></ph> waiting to activate
   </message>
-  <message name="IDS_DEVTOOLS_9b2a7456cec10d8b5ab8ce656598320b" desc="">
+  <message name="IDS_DEVTOOLS_9b2a7456cec10d8b5ab8ce656598320b" desc="Text in Indexed DBViews of the Application panel">
     Key path: '''
   </message>
-  <message name="IDS_DEVTOOLS_9c6a9d9f033001a9b3104984d319563b" desc="">
+  <message name="IDS_DEVTOOLS_9c6a9d9f033001a9b3104984d319563b" desc="Text in Service Workers View of the Application panel">
     Push
   </message>
-  <message name="IDS_DEVTOOLS_9d4a8f2dfe3c62f3ce3011035d28fb66" desc="">
+  <message name="IDS_DEVTOOLS_9d4a8f2dfe3c62f3ce3011035d28fb66" desc="Text in Service Workers View of the Application panel">
     Unregister
   </message>
-  <message name="IDS_DEVTOOLS_9dce9dd0f39a17c2e029174f5bc86ef9" desc="">
+  <message name="IDS_DEVTOOLS_9dce9dd0f39a17c2e029174f5bc86ef9" desc="Text in Background Service View of the Application panel">
     Background Sync
   </message>
-  <message name="IDS_DEVTOOLS_9ff9f5649294f7200b671d6389d17d9a" desc="">
+  <message name="IDS_DEVTOOLS_9ff9f5649294f7200b671d6389d17d9a" desc="Text in Application Panel Sidebar of the Application panel">
     multiEntry
   </message>
-  <message name="IDS_DEVTOOLS_a049ac2b4afe0fb6e78656082858067e" desc="">
+  <message name="IDS_DEVTOOLS_a049ac2b4afe0fb6e78656082858067e" desc="Text in Clear Storage View of the Application panel">
     Storage Usage
   </message>
-  <message name="IDS_DEVTOOLS_a274f4d4670213a9045ce258c6c56b80" desc="">
+  <message name="IDS_DEVTOOLS_a274f4d4670213a9045ce258c6c56b80" desc="Text in Background Service View of the Application panel">
     Notifications
   </message>
-  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="">
+  <message name="IDS_DEVTOOLS_a4ecfc70574394990cf17bd83df499f7" desc="Text in Background Service View of the Application panel">
     Event
   </message>
-  <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="">
+  <message name="IDS_DEVTOOLS_a7d5ee58baead2f3bc229d3d9c047875" desc="Text in Service Workers View of the Application panel">
     Unregister service worker
   </message>
-  <message name="IDS_DEVTOOLS_a89edb1e05005c844b684d1eb0de111a" desc="">
+  <message name="IDS_DEVTOOLS_a89edb1e05005c844b684d1eb0de111a" desc="Text in Application Panel Sidebar of the Application panel">
     Cache Storage
   </message>
-  <message name="IDS_DEVTOOLS_ab0cf104f39708eabd07b8cb67e149ba" desc="">
+  <message name="IDS_DEVTOOLS_ab0cf104f39708eabd07b8cb67e149ba" desc="Text in Application Panel Sidebar of the Application panel">
     Cache
   </message>
-  <message name="IDS_DEVTOOLS_ab6ee23f23d1d5f342588e64297efc1c" desc="">
+  <message name="IDS_DEVTOOLS_ab6ee23f23d1d5f342588e64297efc1c" desc="Text in Application Panel Sidebar of the Application panel">
     Session Storage
   </message>
-  <message name="IDS_DEVTOOLS_acb91a6bfd0644c5b90280f9ebf38774" desc="">
+  <message name="IDS_DEVTOOLS_acb91a6bfd0644c5b90280f9ebf38774" desc="Text in Service Worker Cache Views of the Application panel">
     Response-Type
   </message>
-  <message name="IDS_DEVTOOLS_ad2669a90d3964bc67a1a34152122845" desc="">
-    Matching entries: <ph name="THIS__RETURNCOUNT">$1s</ph>
+  <message name="IDS_DEVTOOLS_ad2669a90d3964bc67a1a34152122845" desc="Span text content in Service Worker Cache Views of the Application panel">
+    Matching entries: <ph name="THIS__RETURNCOUNT">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_ae262bf758227f7e319ba799a861681a" desc="">
+  <message name="IDS_DEVTOOLS_ae262bf758227f7e319ba799a861681a" desc="Text in Clear Storage View of the Application panel">
     Local and session storage
   </message>
-  <message name="IDS_DEVTOOLS_b275ec0eb3bbc2f5ab8988fe15b47817" desc="">
+  <message name="IDS_DEVTOOLS_b275ec0eb3bbc2f5ab8988fe15b47817" desc="Text in App Manifest View of the Application panel">
     Errors and warnings
   </message>
-  <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="">
+  <message name="IDS_DEVTOOLS_b5dc9b0e6beecb1e80f6f1b5b3050f12" desc="The UI destination when right clicking an item that can be revealed">
     Application panel
   </message>
-  <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="">
+  <message name="IDS_DEVTOOLS_b66b856833f34a841b51c7207dbc601f" desc="Text in Application Panel Sidebar of the Application panel">
     IndexedDB
   </message>
-  <message name="IDS_DEVTOOLS_b704442a84076f1139cd70604553e8dc" desc="">
+  <message name="IDS_DEVTOOLS_b704442a84076f1139cd70604553e8dc" desc="Tooltip text that appears when hovering over the largeicon clear button in the Indexed DBViews of the Application panel">
     Clear object store
   </message>
-  <message name="IDS_DEVTOOLS_b9987a246a537f4fe86f1f2e3d10dbdb" desc="">
+  <message name="IDS_DEVTOOLS_b9987a246a537f4fe86f1f2e3d10dbdb" desc="Text in App Manifest View of the Application panel">
     Display
   </message>
-  <message name="IDS_DEVTOOLS_ba8d2e1eca2bf52ab3cd0202d4d04c07" desc="">
+  <message name="IDS_DEVTOOLS_ba8d2e1eca2bf52ab3cd0202d4d04c07" desc="Text in Service Workers View of the Application panel">
     Test push message from DevTools.
   </message>
-  <message name="IDS_DEVTOOLS_bb8839cf9d324a22591ff426c28c5345" desc="">
+  <message name="IDS_DEVTOOLS_bb8839cf9d324a22591ff426c28c5345" desc="Tooltip text that appears when hovering over the largeicon play button in the Indexed DBViews of the Application panel">
     Show next page
   </message>
-  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="">
+  <message name="IDS_DEVTOOLS_be8545ae7ab0276e15898aae7acfbd7a" desc="Text in Application Cache Items View of the Application panel">
     Resource
   </message>
-  <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="">
+  <message name="IDS_DEVTOOLS_bebc9b50966d8d2bd1913a3c25b707d4" desc="Text in Indexed DBViews of the Application panel">
     Data may be stale
   </message>
-  <message name="IDS_DEVTOOLS_bec9bd97f1cda22686854c090b5133fc" desc="">
+  <message name="IDS_DEVTOOLS_bec9bd97f1cda22686854c090b5133fc" desc="Tooltip text that appears when hovering over the largeicon download button in the Background Service View of the Application panel">
     Save events
   </message>
-  <message name="IDS_DEVTOOLS_c13af79d63bfcb3f07bc3810418c99f8" desc="">
+  <message name="IDS_DEVTOOLS_c13af79d63bfcb3f07bc3810418c99f8" desc="Tooltip text that appears when hovering over the largeicon delete button in the Service Worker Cache Views of the Application panel">
     Delete Selected
   </message>
-  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="">
+  <message name="IDS_DEVTOOLS_c1ea3facd2946b59df718d8dd2737cfa" desc="Text in Application Panel Sidebar of the Application panel">
     Background Services
   </message>
-  <message name="IDS_DEVTOOLS_c64518704ce0c0d5501a45763f464276" desc="">
+  <message name="IDS_DEVTOOLS_c64518704ce0c0d5501a45763f464276" desc="Text in Clear Storage View of the Application panel">
     Usage
   </message>
-  <message name="IDS_DEVTOOLS_c6661c86882ff82da47747b673907fa2" desc="">
+  <message name="IDS_DEVTOOLS_c6661c86882ff82da47747b673907fa2" desc="Text in App Manifest View of the Application panel">
     No manifest detected
   </message>
-  <message name="IDS_DEVTOOLS_c76eb02deaa41ffd58d22d08c213fea5" desc="">
+  <message name="IDS_DEVTOOLS_c76eb02deaa41ffd58d22d08c213fea5" desc="Text in Background Service View of the Application panel">
     Select an entry to view metadata
   </message>
-  <message name="IDS_DEVTOOLS_c7bc3fddddb62d5b656adc30cea77a55" desc="">
+  <message name="IDS_DEVTOOLS_c7bc3fddddb62d5b656adc30cea77a55" desc="Text in App Manifest View of the Application panel">
     Presentation
   </message>
-  <message name="IDS_DEVTOOLS_c9a5ab3cec5c1de816c0f8ea8d7edfed" desc="">
+  <message name="IDS_DEVTOOLS_c9a5ab3cec5c1de816c0f8ea8d7edfed" desc="Title of an action under the Background Services category that can be invoked through the Command Menu">
     Stop recording events
   </message>
-  <message name="IDS_DEVTOOLS_c9c5c65fb4af9cf90eb99b3b84424189" desc="">
+  <message name="IDS_DEVTOOLS_c9c5c65fb4af9cf90eb99b3b84424189" desc="Text in App Manifest View of the Application panel">
     Identity
   </message>
-  <message name="IDS_DEVTOOLS_cc0041e1d664fd87ad1cfaae4265893f" desc="">
+  <message name="IDS_DEVTOOLS_cc0041e1d664fd87ad1cfaae4265893f" desc="Title of bypass service worker setting in service workers view of the application panel">
     Bypass for network
   </message>
-  <message name="IDS_DEVTOOLS_cc8763e24276418641ca188290e3334c" desc="">
+  <message name="IDS_DEVTOOLS_cc8763e24276418641ca188290e3334c" desc="Tooltip text that appears on the setting when hovering over it in Service Workers View of the Application panel">
     On page reload, force the service worker to update, and activate it
   </message>
-  <message name="IDS_DEVTOOLS_ccdc0553283bddb674e37e272a9832f0" desc="">
+  <message name="IDS_DEVTOOLS_ccdc0553283bddb674e37e272a9832f0" desc="Clear button text content in Clear Storage View of the Application panel">
     Clearing...
   </message>
-  <message name="IDS_DEVTOOLS_cd461eb091b5b58a6fe5a1b5edba4c5f" desc="">
+  <message name="IDS_DEVTOOLS_cd461eb091b5b58a6fe5a1b5edba4c5f" desc="A context menu item in the Application Panel Sidebar of the Application panel">
     Refresh Caches
   </message>
-  <message name="IDS_DEVTOOLS_ce0540adc848ff5957d4d857984592d1" desc="">
+  <message name="IDS_DEVTOOLS_ce0540adc848ff5957d4d857984592d1" desc="Text in Clear Storage View of the Application panel">
     Cache storage
   </message>
-  <message name="IDS_DEVTOOLS_ce9d3c5ae4d74bd1e8d01732e264e36b" desc="">
+  <message name="IDS_DEVTOOLS_ce9d3c5ae4d74bd1e8d01732e264e36b" desc="Text in Background Service View of the Application panel">
     No metadata for this event
   </message>
-  <message name="IDS_DEVTOOLS_cfde4f71aaac6d02831a661f4f9990f1" desc="">
+  <message name="IDS_DEVTOOLS_cfde4f71aaac6d02831a661f4f9990f1" desc="Text in App Manifest View of the Application panel">
     App Manifest
   </message>
-  <message name="IDS_DEVTOOLS_d3b206d196cd6be3a2764c1fb90b200f" desc="">
+  <message name="IDS_DEVTOOLS_d3b206d196cd6be3a2764c1fb90b200f" desc="Tooltip text that appears when hovering over the largeicon delete button in the Indexed DBViews of the Application panel">
     Delete selected
   </message>
-  <message name="IDS_DEVTOOLS_d4f61ad886e0b169b0394d97bb1a649a" desc="">
-    Recording <ph name="RESOURCES_BACKGROUNDSERVICEVIEW_GETUISTRING_THIS__SERVICENAME_">$1s</ph> activity...
+  <message name="IDS_DEVTOOLS_d4f61ad886e0b169b0394d97bb1a649a" desc="Text in Background Service View of the Application panel">
+    Recording <ph name="RESOURCES_BACKGROUNDSERVICEVIEW_GETUISTRING_THIS__SERVICENAME_">$1s<ex>Background Fetch</ex></ph> activity...
   </message>
-  <message name="IDS_DEVTOOLS_d6f875d9f87efbee1a96b8c4f5784d47" desc="">
+  <message name="IDS_DEVTOOLS_d6f875d9f87efbee1a96b8c4f5784d47" desc="Text in Indexed DBViews of the Application panel">
     Primary key
   </message>
-  <message name="IDS_DEVTOOLS_d892ca11530be1235ec05eb368ecaf37" desc="">
+  <message name="IDS_DEVTOOLS_d892ca11530be1235ec05eb368ecaf37" desc="Text in Indexed DBViews of the Application panel">
     Start from key
   </message>
-  <message name="IDS_DEVTOOLS_d8e87c0927539672f54462c837be0b7f" desc="">
+  <message name="IDS_DEVTOOLS_d8e87c0927539672f54462c837be0b7f" desc="Text in Service Workers View of the Application panel">
     Sync
   </message>
-  <message name="IDS_DEVTOOLS_da131b6bd53f501c1323af4b198740d2" desc="">
+  <message name="IDS_DEVTOOLS_da131b6bd53f501c1323af4b198740d2" desc="Text in Background Service View of the Application panel">
     Push Messaging
   </message>
-  <message name="IDS_DEVTOOLS_db01fae7397127fd9712b2efe6f8346f" desc="">
-    Key path: <ph name="KEYPATHSTRING">$1s</ph>
+  <message name="IDS_DEVTOOLS_db01fae7397127fd9712b2efe6f8346f" desc="Text in Application Panel Sidebar of the Application panel">
+    Key path: <ph name="KEYPATHSTRING">$1s<ex>"key path"</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_dc105ac52c237f9f09c74b0767f64f74" desc="">
+  <message name="IDS_DEVTOOLS_dc105ac52c237f9f09c74b0767f64f74" desc="Text in Service Worker Cache Views of the Application panel">
     Content-Type
   </message>
-  <message name="IDS_DEVTOOLS_dc5f1eac93c7e0c1f63f360b24fd8489" desc="">
+  <message name="IDS_DEVTOOLS_dc5f1eac93c7e0c1f63f360b24fd8489" desc="Text of button in Indexed DBViews of the Application panel">
     Refresh database
   </message>
-  <message name="IDS_DEVTOOLS_dc87ca61695d643744b53bca9bf3f1d5" desc="">
-    Total entries: <ph name="STRING_METADATA_ENTRIESCOUNT_">$1s</ph>
+  <message name="IDS_DEVTOOLS_dc87ca61695d643744b53bca9bf3f1d5" desc="Span text content in Indexed DBViews of the Application panel">
+    Total entries: <ph name="STRING_METADATA_ENTRIESCOUNT_">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="">
+  <message name="IDS_DEVTOOLS_ddcf50c29294d4414f3f7c1bbc892cb5" desc="A title of the 'Resources' action category">
     Resources
   </message>
-  <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="">
+  <message name="IDS_DEVTOOLS_e00a7ac13697ba51e098449fd644935b" desc="Text in Background Service View of the Application panel">
     Show events from other domains
   </message>
-  <message name="IDS_DEVTOOLS_e307db07b3975fef922a80d07455ee5e" desc="">
+  <message name="IDS_DEVTOOLS_e307db07b3975fef922a80d07455ee5e" desc="Text in Database Table View of the Application panel">
     Database
   </message>
-  <message name="IDS_DEVTOOLS_e44ec1cd1aa0128f893c1c815ea1abe0" desc="">
-    Click the record button <ph name="UI_CREATEINLINEBUTTON_LANDINGRECORDBUTTON_">$1s</ph> or hit <ph name="RECORDKEY">$2s</ph> to start recording.
+  <message name="IDS_DEVTOOLS_e44ec1cd1aa0128f893c1c815ea1abe0" desc="Text in Background Service View of the Application panel">
+    Click the record button <ph name="UI_CREATEINLINEBUTTON_LANDINGRECORDBUTTON_">$1s<ex>record</ex></ph> or hit <ph name="RECORDKEY">$2s<ex>Ctrl + R</ex></ph> to start recording.
   </message>
-  <message name="IDS_DEVTOOLS_e498749f3c42246d50b15c81c101d988" desc="">
+  <message name="IDS_DEVTOOLS_e498749f3c42246d50b15c81c101d988" desc="Text in Application Panel Sidebar of the Application panel">
     Application
   </message>
-  <message name="IDS_DEVTOOLS_e60593abb5603af48307343eb862d86a" desc="">
+  <message name="IDS_DEVTOOLS_e60593abb5603af48307343eb862d86a" desc="Text in DOMStorage Items View of the Application panel">
     DOM Storage
   </message>
-  <message name="IDS_DEVTOOLS_e918a12b0b4a962aff8b7119643af250" desc="">
+  <message name="IDS_DEVTOOLS_e918a12b0b4a962aff8b7119643af250" desc="Text in Service Workers View of the Application panel">
     skipWaiting
   </message>
-  <message name="IDS_DEVTOOLS_ea2b2676c28c0db26d39331a336c6b92" desc="">
+  <message name="IDS_DEVTOOLS_ea2b2676c28c0db26d39331a336c6b92" desc="Text in Service Workers View of the Application panel">
     start
   </message>
-  <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="">
+  <message name="IDS_DEVTOOLS_ec1e074d56484165315c26a9baebaebd" desc="Text in Application Panel Sidebar of the Application panel">
     Web SQL
   </message>
-  <message name="IDS_DEVTOOLS_ec3c33fb128aab90f46c922f8f7098f1" desc="">
+  <message name="IDS_DEVTOOLS_ec3c33fb128aab90f46c922f8f7098f1" desc="Title of an action under the Background Services category that can be invoked through the Command Menu">
     Start recording events
   </message>
-  <message name="IDS_DEVTOOLS_ed1f65c89bd76342be87bec8edd63904" desc="">
+  <message name="IDS_DEVTOOLS_ed1f65c89bd76342be87bec8edd63904" desc="A context menu item in the Application Panel Sidebar of the Application panel">
     Refresh IndexedDB
   </message>
-  <message name="IDS_DEVTOOLS_eeb6ddeed2e08678ebc14eb39c8340bf" desc="">
+  <message name="IDS_DEVTOOLS_eeb6ddeed2e08678ebc14eb39c8340bf" desc="Text in Indexed DBViews of the Application panel">
     IDB
   </message>
-  <message name="IDS_DEVTOOLS_ef34ee8b3523f523efcf74d28fab2b47" desc="">
+  <message name="IDS_DEVTOOLS_ef34ee8b3523f523efcf74d28fab2b47" desc="Text in Service Workers View of the Application panel">
     Sync tag
   </message>
-  <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="">
+  <message name="IDS_DEVTOOLS_ef399b2d446bb37b7c32ad2cc1b6045b" desc="Text in Service Workers View of the Application panel">
     stop
   </message>
-  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="">
+  <message name="IDS_DEVTOOLS_f31bbdd1b3e85bccd652680e16935819" desc="Text in Service Workers View of the Application panel">
     Source
   </message>
-  <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="">
+  <message name="IDS_DEVTOOLS_fb1508747fe448fd8b006e923ba1c3ef" desc="Text in Background Service View of the Application panel">
     Payment Handler
   </message>
 </grit-part>

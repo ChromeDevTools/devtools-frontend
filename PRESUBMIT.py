@@ -95,23 +95,15 @@ def _CheckFormat(input_api, output_api):
     ]
 
 
-def _CheckDevtoolsWithNodeScript(input_api, output_api, script_path, script_arguments=None):  # pylint: disable=invalid-name
-    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
-    if len(affected_front_end_files) == 0:
-        return []
-    else:
-        if script_arguments is None:
-            script_arguments = []
-        return _checkWithNodeScript(input_api, output_api, script_path, script_arguments)
-
-
 def _CheckDevtoolsLocalizableResources(input_api, output_api):  # pylint: disable=invalid-name
-    affected_front_end_files = _getAffectedFrontEndFiles(input_api)
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], [], [".js", "module.json", ".grd", ".grdp"])
     if len(affected_front_end_files) == 0:
         return []
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_localizable_resources.js")
     args = ['--autofix']
-    return _CheckDevtoolsWithNodeScript(input_api, output_api, script_path, args)
+    return _checkWithNodeScript(input_api, output_api, script_path, args)
 
 
 def _CheckDevtoolsLocalization(input_api, output_api):  # pylint: disable=invalid-name
@@ -207,25 +199,33 @@ def CheckChangeOnCommit(input_api, output_api):
     return []
 
 
+def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_endings):  # pylint: disable=invalid-name
+    '''Return absolute file paths of affected files (not due to an excluded action)
+       under a parent directory with an accepted file ending.
+    '''
+    local_paths = [
+        f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if all(f.Action() != action for action in excluded_actions)
+    ]
+    affected_files = [
+        file_name for file_name in local_paths
+        if any(parent_directory in file_name for parent_directory in parent_directories) and any(
+            file_name.endswith(accepted_ending) for accepted_ending in accepted_endings)
+    ]
+    return affected_files
+
+
 def _getAffectedFrontEndFiles(input_api):
-    local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
-    affected_front_end_files = [
-        file_name for file_name in local_paths if devtools_front_end in file_name and file_name.endswith(".js")
-    ]
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ["D"], [".js"])
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_front_end_files]
 
 
 def _getAffectedJSFiles(input_api):
-    local_paths = [f.AbsoluteLocalPath() for f in input_api.AffectedFiles() if f.Action() != "D"]
     devtools_root = input_api.PresubmitLocalPath()
     devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
     devtools_scripts = input_api.os_path.join(devtools_root, "scripts")
-    affected_js_files = [
-        file_name for file_name in local_paths
-        if (devtools_front_end in file_name or devtools_scripts in file_name) and file_name.endswith(".js")
-    ]
+    affected_js_files = _getAffectedFiles(input_api, [devtools_front_end, devtools_scripts], ["D"], [".js"])
     return [input_api.os_path.relpath(file_name, devtools_root) for file_name in affected_js_files]
 
 

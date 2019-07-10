@@ -48,7 +48,7 @@ UI.SyntaxHighlighter = class {
    */
   createSpan(content, className) {
     const span = createElement('span');
-    span.className = 'cm-' + className;
+    span.className = className.replace(/\S+/g, 'cm-$&');
     if (this._stripExtraWhitespace && className !== 'whitespace')
       content = content.replace(/^[\n\r]*/, '').replace(/\s*$/, '');
     span.createTextChild(content);

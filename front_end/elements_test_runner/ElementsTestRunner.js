@@ -1155,6 +1155,19 @@ ElementsTestRunner.dumpInspectorDistanceJSON = function(idValue, callback) {
   }
 };
 
+ElementsTestRunner.dumpInspectorHighlightStyleJSON = async function(idValue) {
+  const node = await ElementsTestRunner.nodeWithIdPromise(idValue);
+  const result = await TestRunner.OverlayAgent.getHighlightObjectForTest(node.id, false, true /* includeStyle */);
+  const info = result['elementInfo'] ? result['elementInfo']['style'] : null;
+  if (!info) {
+    TestRunner.addResult(`${idValue}: No style info`);
+  } else {
+    if (info['font-family'])
+      info['font-family'] = '<font-family value>';
+    TestRunner.addResult(idValue + JSON.stringify(info, null, 2));
+  }
+};
+
 ElementsTestRunner.waitForAnimationAdded = function(callback) {
   TestRunner.addSniffer(Animation.AnimationTimeline.prototype, '_addAnimationGroup', callback);
 };

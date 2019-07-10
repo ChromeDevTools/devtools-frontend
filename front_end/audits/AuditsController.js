@@ -235,13 +235,20 @@ Audits.RuntimeSetting;
 Audits.RuntimeSettings = [
   {
     setting: Common.settings.createSetting('audits.device_type', 'mobile'),
-    description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
       flags.emulatedFormFactor = value;
     },
     options: [
-      {label: ls`Mobile`, value: 'mobile'},
-      {label: ls`Desktop`, value: 'desktop'},
+      {
+        label: ls`Mobile`,
+        value: 'mobile',
+        title: ls`Apply mobile emulation during auditing`,
+      },
+      {
+        label: ls`Desktop`,
+        value: 'desktop',
+        title: ls`Apply desktop emulation during auditing`,
+      },
     ],
   },
   {

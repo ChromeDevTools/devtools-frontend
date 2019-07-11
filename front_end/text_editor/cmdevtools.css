@@ -115,7 +115,7 @@
 }
 
 .CodeMirror-linenumber {
-    color: rgb(128, 128, 128);
+    color: hsl(0, 0%, 46%);
     padding: 0 3px 0 5px;
     min-width: 22px;
     text-align: right;

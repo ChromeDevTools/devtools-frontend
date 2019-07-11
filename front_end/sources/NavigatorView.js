@@ -321,6 +321,7 @@ Sources.NavigatorView = class extends UI.VBox {
     const uiSourceCodeNode = new Sources.NavigatorUISourceCodeTreeNode(this, uiSourceCode, frame);
     folderNode.appendChild(uiSourceCodeNode);
     this._uiSourceCodeNodes.set(uiSourceCode, uiSourceCodeNode);
+    this._selectDefaultTreeNode();
   }
 
   /**
@@ -363,6 +364,14 @@ Sources.NavigatorView = class extends UI.VBox {
       return;
     this._rootNode.appendChild(new Sources.NavigatorGroupTreeNode(
         this, project, project.id(), Sources.NavigatorView.Types.FileSystem, project.displayName()));
+    this._selectDefaultTreeNode();
+  }
+
+  // TODO(einbinder) remove this code after crbug.com/964075 is fixed
+  _selectDefaultTreeNode() {
+    const children = this._rootNode.children();
+    if (children.length && !this._scriptsTree.selectedTreeElement)
+      children[0].treeNode().select(true /* omitFocus */, false /* selectedByUser */);
   }
 
   _computeUniqueFileSystemProjectNames() {

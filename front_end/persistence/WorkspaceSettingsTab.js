@@ -111,7 +111,9 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
     const element = createElementWithClass('div', 'file-system-container');
     const header = element.createChild('div', 'file-system-header');
 
-    header.createChild('div', 'file-system-name').textContent = folderName;
+    const nameElement = header.createChild('div', 'file-system-name');
+    nameElement.textContent = folderName;
+    UI.ARIAUtils.markAsHeading(nameElement, 2);
     const path = header.createChild('div', 'file-system-path');
     path.textContent = fileSystemPath;
     path.title = fileSystemPath;

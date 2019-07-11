@@ -105,7 +105,7 @@ Persistence.WorkspaceSettingsTab = class extends UI.VBox {
    */
   _renderFileSystem(fileSystem) {
     const fileSystemPath = fileSystem.path();
-    const lastIndexOfSlash = fileSystemPath.lastIndexOf(Host.isWin() ? '\\' : '/');
+    const lastIndexOfSlash = fileSystemPath.lastIndexOf('/');
     const folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
 
     const element = createElementWithClass('div', 'file-system-container');

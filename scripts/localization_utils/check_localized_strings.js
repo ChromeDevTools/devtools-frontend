@@ -42,6 +42,7 @@ const frontendStrings = new Map();
 // Format
 // {
 //   IDS_KEY => {
+//     actualIDSKey: string,  // the IDS key in the message tag
 //     description: string,
 //     filepath: string,
 //     location: {
@@ -297,31 +298,33 @@ async function parseGRDPFile(filePath) {
   }
 
   // Example:
-  //  <message name="IDS_*" desc="Description of this message">
+  //  <message name="IDS_DEVTOOLS_md5_hash" desc="Description of this message">
   //      Message text here with optional placeholders <ph name="phname">$1s</ph>
   //  </message>
   // match[0]: the entire '<message>...</message>' block.
-  // match[1]: 'Description of this message'
-  // match[2]: '     Message text here with optional placeholders <ph name="phname">$1s</ph>\n  '
-  const messageRegex = new RegExp('<message[^>]*desc="([^"]*)"[^>]*>\s*\n(.*?)<\/message>', 'gms');
+  // match[1]: 'IDS_DEVTOOLS_md5_hash'
+  // match[2]: 'Description of this message'
+  // match[3]: '     Message text here with optional placeholders <ph name="phname">$1s</ph>\n  '
+  const messageRegex = new RegExp('<message[^>]*name="([^"]*)"[^>]*desc="([^"]*)"[^>]*>\s*\n(.*?)<\/message>', 'gms');
   let match;
   while ((match = messageRegex.exec(fileContent)) !== null) {
     const line = lineNumberOfIndex(fileContent, match.index);
-    const description = match[1];
-    let message = match[2];
+    const actualIDSKey = match[1];
+    const description = match[2];
+    let message = match[3];
     message = convertToFrontendPlaceholders(message.trim());
     message = stripWhitespacePadding(message);
     message = localizationUtils.sanitizeStringIntoFrontendFormat(message);
 
     const ids = localizationUtils.getIDSKey(message);
-    IDSkeys.set(ids, {grdpPath: filePath, location: {start: {line}, end: {line}}, description});
+    IDSkeys.set(ids, {actualIDSKey, grdpPath: filePath, location: {start: {line}, end: {line}}, description});
   }
 }
 
 /**
  * The following functions compare frontend localizable strings
- * with grdp <message>s and report error of resources to add or
- * remove.
+ * with grdp <message>s and report error of resources to add,
+ * remove or modify.
  */
 async function getAndReportResourcesToAdd(frontendStrings, IDSkeys) {
   const keysToAddToGRD = getDifference(IDSkeys, frontendStrings);
@@ -363,6 +366,22 @@ function getAndReportResourcesToRemove(frontendStrings, IDSkeys) {
   return errorStr;
 }
 
+function getAndReportIDSKeysToModify() {
+  const messagesToModify = getIDSKeysToModify();
+  if (messagesToModify.size === 0)
+    return;
+
+  let errorStr = '\nThe following GRD/GRDP message(s) do not have the correct IDS key.\n';
+  errorStr += 'Please update the key(s) by changing the "name" value.\n\n';
+
+  for (const [expectedIDSKey, message] of messagesToModify) {
+    errorStr += `${localizationUtils.getRelativeFilePathFromSrc(message.grdpPath)}${
+        localizationUtils.getLocationMessage(message.location)}:\n`;
+    errorStr += `${message.actualIDSKey} --> ${expectedIDSKey}\n\n`;
+  }
+  return errorStr;
+}
+
 /**
  * Output a Map containing sorted entries that are in @comparison but not @reference,
  * or entries that are in both but belong to different grdp files.
@@ -376,11 +395,22 @@ function getDifference(reference, comparison) {
   return new Map(difference.sort());
 }
 
+function getIDSKeysToModify() {
+  const messagesToModify = new Map();
+  for (const [expectedIDSKey, message] of IDSkeys) {
+    if (expectedIDSKey !== message.actualIDSKey)
+      messagesToModify.set(expectedIDSKey, message);
+  }
+  return messagesToModify;
+}
+
 module.exports = {
   frontendStrings,
   IDSkeys,
   parseLocalizableResourceMaps,
+  getAndReportIDSKeysToModify,
   getAndReportResourcesToAdd,
   getAndReportResourcesToRemove,
-  getDifference
+  getDifference,
+  getIDSKeysToModify
 };

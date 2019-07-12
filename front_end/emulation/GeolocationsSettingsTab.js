@@ -26,7 +26,6 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
     this._customSetting.addChangeListener(this._geolocationsUpdated, this);
 
     this.setDefaultFocusedElement(addButton);
-    this.contentElement.tabIndex = 0;
   }
 
   /**
@@ -137,15 +136,15 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
 
     const fields = content.createChild('div', 'geolocations-edit-row');
     fields.createChild('div', 'geolocations-list-text geolocations-list-title')
-        .appendChild(editor.createInput('title', 'text', '', titleValidator));
+        .appendChild(editor.createInput('title', 'text', ls`Location name`, titleValidator));
     fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
 
     let cell = fields.createChild('div', 'geolocations-list-text');
-    cell.appendChild(editor.createInput('lat', 'text', '', latValidator));
+    cell.appendChild(editor.createInput('lat', 'text', ls`Latitude`, latValidator));
     fields.createChild('div', 'geolocations-list-separator geolocations-list-separator-invisible');
 
     cell = fields.createChild('div', 'geolocations-list-text');
-    cell.appendChild(editor.createInput('long', 'text', '', longValidator));
+    cell.appendChild(editor.createInput('long', 'text', ls`Longitude`, longValidator));
 
     return editor;
 
@@ -156,9 +155,18 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function titleValidator(item, index, input) {
+      const maxLength = 50;
       const value = input.value.trim();
-      const valid = value.length > 0 && value.length < 50;
-      return {valid};
+
+      let errorMessage;
+      if (!value.length)
+        errorMessage = ls`Location name cannot be empty`;
+      else if (value.length > maxLength)
+        errorMessage = ls`Location name must be less than ${maxLength} characters`;
+
+      if (errorMessage)
+        return {valid: false, errorMessage};
+      return {valid: true};
     }
 
     /**
@@ -168,9 +176,24 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function latValidator(item, index, input) {
+      const minLat = -90;
+      const maxLat = 90;
       const value = input.value.trim();
-      const valid = !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -90 && value <= 90);
-      return {valid};
+
+      if (!value)
+        return {valid: true};
+
+      let errorMessage;
+      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value))
+        errorMessage = ls`Latitude must be a number`;
+      else if (parseFloat(value) < minLat)
+        errorMessage = ls`Latitude must be greater than or equal to ${minLat}`;
+      else if (parseFloat(value) > maxLat)
+        errorMessage = ls`Latitude must be less than or equal to ${maxLat}`;
+
+      if (errorMessage)
+        return {valid: false, errorMessage};
+      return {valid: true};
     }
 
     /**
@@ -180,9 +203,24 @@ Emulation.GeolocationsSettingsTab = class extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function longValidator(item, index, input) {
+      const minLong = -180;
+      const maxLong = 180;
       const value = input.value.trim();
-      const valid = !value || (/^-?[\d]+(\.\d+)?|\.\d+$/.test(value) && value >= -180 && value <= 180);
-      return {valid};
+
+      if (!value)
+        return {valid: true};
+
+      let errorMessage;
+      if (!/^-?[\d]+(\.\d+)?|\.\d+$/.test(value))
+        errorMessage = ls`Longitude must be a number`;
+      else if (parseFloat(value) < minLong)
+        errorMessage = ls`Longitude must be greater than or equal to ${minLong}`;
+      else if (parseFloat(value) > maxLong)
+        errorMessage = ls`Longitude must be less than or equal to ${maxLong}`;
+
+      if (errorMessage)
+        return {valid: false, errorMessage};
+      return {valid: true};
     }
   }
 };

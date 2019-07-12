@@ -329,6 +329,7 @@ UI.ShortcutsSection = class {
     const headLine = parent.createChild('div', 'settings-line');
     headLine.createChild('div', 'settings-key-cell');
     headLine.createChild('div', 'settings-section-title settings-cell').textContent = this.name;
+    UI.ARIAUtils.markAsHeading(headLine, /* level */ 2);
 
     for (let i = 0; i < this._lines.length; ++i) {
       const line = parent.createChild('div', 'settings-line');

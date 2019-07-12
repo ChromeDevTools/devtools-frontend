@@ -9,8 +9,9 @@ This requires the following steps to be done:
 1. File `headlesscodemirror.js` is a `runmode-standalone.js` file from CodeMirror distribution, but wrapped in `(function(window) { ... }(this))`
 construction. This is needed to support in web workers.
 2. File `markselection.js` is a `mark-selection.js` from CodeMirror distribution. The "dash" is removed due to the restriction on the chromium grd generator.
-4. File codemirror.css contains both the default theme of CodeMirror and structural css required for it to work. Discard everything in the file up to the word `/* STOP */`.
-3. All other files in front_end/cm/ folder should be substituted with their newer versions from the upstream.
+3. File codemirror.css contains both the default theme of CodeMirror and structural css required for it to work. Discard everything in the file up to the word `/* STOP */`.
+4. All other files in front_end/cm/ folder should be substituted with their newer versions from the upstream. Note that some need to be renamed to remove `-` from the file name.
+5. All files in front_end/cm_web_modes/ and front_end/cm_modes/ should be updated with newer versions from upstream.
 
 ## Testing
 DevTools wrap CodeMirror via `CodeMirrorTextEditor.js` and `cmdevtools.css` files.

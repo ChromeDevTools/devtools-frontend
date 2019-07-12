@@ -284,7 +284,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   // and those that end in _t (Reserved by POSIX for types)
   // http://www.gnu.org/software/libc/manual/html_node/Reserved-Names.html
   function cTypes(identifier) {
-    return contains(basicCTypes, identifier) || /.+_t/.test(identifier);
+    return contains(basicCTypes, identifier) || /.+_t$/.test(identifier);
   }
 
   // Returns true if identifier is a "Objective C" type.
@@ -467,7 +467,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
   def("text/x-java", {
     name: "clike",
     keywords: words("abstract assert break case catch class const continue default " +
-                    "do else enum extends final finally float for goto if implements import " +
+                    "do else enum extends final finally for goto if implements import " +
                     "instanceof interface native new package private protected public " +
                     "return static strictfp super switch synchronized this throw throws transient " +
                     "try volatile while @interface"),

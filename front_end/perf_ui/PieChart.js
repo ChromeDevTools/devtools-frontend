@@ -87,8 +87,7 @@ PerfUI.PieChart = class {
     this._totalElement.textContent = totalString;
     if (this._legend) {
       this._legend.removeChildren();
-      const legendItem = this._addLegendItem(totalValue, ls`Total`);
-      UI.ARIAUtils.setLabelledBy(this._totalElement, [legendItem]);
+      this._addLegendItem(this._totalElement, totalValue, ls`Total`);
     }
   }
 
@@ -128,10 +127,8 @@ PerfUI.PieChart = class {
         `M${x1},${y1} A1,1,0,${largeArc},1,${x2},${y2} L${x3},${y3} A${r2},${r2},0,${largeArc},0,${x4},${y4} Z`);
     path.setAttribute('fill', color);
     this._slices.push(path);
-    if (this._legend) {
-      const legendItem = this._addLegendItem(value, name, color);
-      UI.ARIAUtils.setLabelledBy(path, [legendItem]);
-    }
+    if (this._legend)
+      this._addLegendItem(path, value, name, color);
   }
 
   /**
@@ -146,12 +143,13 @@ PerfUI.PieChart = class {
   }
 
   /**
+   * @param {!Element} figureElement
    * @param {number} value
    * @param {string=} name
    * @param {string=} color
    * @returns {!Element}
    */
-  _addLegendItem(value, name, color) {
+  _addLegendItem(figureElement, value, name, color) {
     const node = this._legend.ownerDocument.createElement('div');
     node.className = 'pie-chart-legend-row';
     // make sure total always appears at the bottom
@@ -167,7 +165,9 @@ PerfUI.PieChart = class {
     else
       swatchDiv.classList.add('pie-chart-empty-swatch');
     nameDiv.textContent = name;
-    sizeDiv.textContent = this._formatter ? this._formatter(value) : value;
+    const size = this._formatter ? this._formatter(value) : value;
+    sizeDiv.textContent = size;
+    UI.ARIAUtils.setAccessibleName(figureElement, name + ' ' + size);
     return node;
   }
 };

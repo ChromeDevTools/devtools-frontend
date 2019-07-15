@@ -451,3 +451,10 @@ button.link[data-keyboard-focus="true"]:focus {
     background-color: rgba(0, 0, 0, 0.08);
     border-radius: 2px;
 }
+
+/* See ARIAUtils.js */
+[data-aria-utils-animation-hack] {
+    animation: ANIMATION-HACK 0s;
+}
+@keyframes ANIMATION-HACK {
+}

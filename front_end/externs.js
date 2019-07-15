@@ -665,6 +665,17 @@ CodeMirror.defineMIME = function(mime, mode) {};
 window.dispatchStandaloneTestRunnerMessages;
 
 /**
+ * Inserts the given HTML Element into the node at the location.
+ * @param {string} where Where to insert the HTML text, one of 'beforeBegin',
+ *     'afterBegin', 'beforeEnd', 'afterEnd'.
+ * @param {!Element} element DOM Element to insert.
+ * @return {?Element} The element that was inserted, or null, if the
+ *     insertion failed.
+ * @see https://dom.spec.whatwg.org/#dom-element-insertadjacentelement
+ */
+Node.prototype.insertAdjacentElement = function(where, element) {};
+
+/**
  * @param {Array.<Object>} keyframes
  * @param {number|Object} timing
  * @return {Object}

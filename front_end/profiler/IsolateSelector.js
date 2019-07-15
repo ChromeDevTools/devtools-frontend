@@ -205,8 +205,6 @@ Profiler.IsolateSelector.ListItem = class {
     this._trendDiv = this.element.createChild('div', 'profile-memory-usage-item-trend');
     this._trendDiv.title = ls`Heap size change trend over the last ${trendIntervalMinutes} minutes.`;
     this._nameDiv = this.element.createChild('div', 'profile-memory-usage-item-name');
-    UI.ARIAUtils.setLabelledBy(this.element, [this._nameDiv]);
-    UI.ARIAUtils.setDescribedBy(this.element, [this._heapDiv, this._trendDiv]);
     this.updateTitle();
   }
 
@@ -234,9 +232,14 @@ Profiler.IsolateSelector.ListItem = class {
       modelCountByName.set(title, (modelCountByName.get(title) || 0) + 1);
     }
     this._nameDiv.removeChildren();
+    const titles = [];
     for (const [name, count] of modelCountByName) {
       const title = count > 1 ? `${name} (${count})` : name;
-      this._nameDiv.appendChild(UI.html`<div title="${title}">${title}</div>`);
+      titles.push(title);
+      const titleDiv = this._nameDiv.createChild('div');
+      titleDiv.textContent = title;
+      titleDiv.title = title;
     }
+    UI.ARIAUtils.setAccessibleName(this.element, titles.join(' '));
   }
 };

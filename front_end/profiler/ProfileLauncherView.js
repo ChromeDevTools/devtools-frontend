@@ -48,7 +48,6 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     this._profileTypeHeaderElement = profileTypeSelectorElement.createChild('h1');
     this._profileTypeSelectorForm = profileTypeSelectorElement.createChild('form');
     UI.ARIAUtils.markAsRadioGroup(this._profileTypeSelectorForm);
-    UI.ARIAUtils.setLabelledBy(this._profileTypeSelectorForm, [this._profileTypeHeaderElement]);
 
     const isolateSelectorElement = this._contentElement.createChild('div', 'vbox profile-isolate-selector-block');
     isolateSelectorElement.createChild('h1').textContent = ls`Select JavaScript VM instance`;
@@ -128,16 +127,15 @@ Profiler.ProfileLauncherView = class extends UI.VBox {
     optionElement.addEventListener('change', this._profileTypeChanged.bind(this, profileType), false);
     const descriptionElement = this._profileTypeSelectorForm.createChild('p');
     descriptionElement.textContent = profileType.description;
-    UI.ARIAUtils.setDescribedBy(optionElement, [descriptionElement]);
+    UI.ARIAUtils.setDescription(optionElement, profileType.description);
     const customContent = profileType.customContent();
     if (customContent) {
       this._profileTypeSelectorForm.createChild('p').appendChild(customContent);
       profileType.setCustomContentEnabled(false);
     }
-    if (this._typeIdToOptionElement.size > 1)
-      this._profileTypeHeaderElement.textContent = ls`Select profiling type`;
-    else
-      this._profileTypeHeaderElement.textContent = profileType.name;
+    const headerText = this._typeIdToOptionElement.size > 1 ? ls`Select profiling type` : profileType.name;
+    this._profileTypeHeaderElement.textContent = headerText;
+    UI.ARIAUtils.setAccessibleName(this._profileTypeSelectorForm, headerText);
   }
 
   restoreSelectedProfileType() {

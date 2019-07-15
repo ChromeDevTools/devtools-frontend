@@ -299,7 +299,8 @@ ol:hover > li > .elements-tree-shortcut-link {
 }
 
 .gutter-menu-icon {
-    display: none;
+    display: block;
+    visibility: hidden;
     transform: rotate(-90deg) scale(0.8);
     background-color: white;
     position: relative;
@@ -308,7 +309,7 @@ ol:hover > li > .elements-tree-shortcut-link {
 }
 
 .elements-disclosure li.selected .gutter-container:not(.has-decorations) .gutter-menu-icon {
-    display: block;
+    visibility: visible;
 }
 
 /** Guide line */

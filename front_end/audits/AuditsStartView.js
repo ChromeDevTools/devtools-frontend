@@ -25,8 +25,7 @@ Audits.StartView = class extends UI.Widget {
     if (!runtimeSetting || !runtimeSetting.options)
       throw new Error(`${settingName} is not a setting with options`);
 
-    const control = new Audits.RadioSetting(runtimeSetting.options, runtimeSetting.setting);
-    control.element.title = runtimeSetting.description;
+    const control = new Audits.RadioSetting(runtimeSetting.options, runtimeSetting.setting, runtimeSetting.description);
     parentElement.appendChild(control.element);
   }
 

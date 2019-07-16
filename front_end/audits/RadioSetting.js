@@ -6,12 +6,15 @@ Audits.RadioSetting = class {
   /**
    * @param {!Array<!{value: string, label: string}>} options
    * @param {!Common.Setting} setting
+   * @param {string} description
    */
-  constructor(options, setting) {
+  constructor(options, setting, description) {
     this._setting = setting;
     this._options = options;
 
     this.element = createElement('div', 'audits-radio-group');
+    this.element.title = description;
+    UI.ARIAUtils.setDescription(this.element, description);
 
     this._radioElements = [];
     for (const option of this._options) {

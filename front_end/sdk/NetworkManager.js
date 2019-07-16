@@ -767,6 +767,29 @@ SDK.NetworkDispatcher = class {
   }
 
   /**
+   * @override
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Array<!Protocol.Network.BlockedCookieWithReason>} blockedCookies
+   * @param {!Protocol.Network.Headers} headers
+   */
+  requestWillBeSentExtraInfo(requestId, blockedCookies, headers) {
+    // TODO(http://crbug.com/868407): Populate request info with these new raw headers
+    // TODO(http://crbug.com/856777): Populate request info with blocked cookies
+  }
+
+  /**
+   * @override
+   * @param {!Protocol.Network.RequestId} requestId
+   * @param {!Array<!Protocol.Network.BlockedSetCookieWithReason>} blockedCookies
+   * @param {!Protocol.Network.Headers} headers
+   * @param {string=} headersText
+   */
+  responseReceivedExtraInfo(requestId, blockedCookies, headers, headersText) {
+    // TODO(http://crbug.com/868407): Populate request info with these new raw headers
+    // TODO(http://crbug.com/856777): Populate request info with blocked cookies
+  }
+
+  /**
    * @param {!Protocol.Network.RequestId} requestId
    * @param {!Protocol.Network.MonotonicTime} time
    * @param {string} redirectURL

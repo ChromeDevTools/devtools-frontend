@@ -45,6 +45,7 @@
             "type": "action",
             "actionId": "live-heap-profile.toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "className": "Profiler.LiveHeapProfileView.ActionDelegate",
@@ -72,6 +73,7 @@
             "type": "action",
             "actionId": "profiler.heap-toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": [
@@ -93,6 +95,7 @@
             "type": "action",
             "actionId": "profiler.js-toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": [

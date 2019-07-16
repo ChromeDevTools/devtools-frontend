@@ -24,6 +24,7 @@
             "category": "Debugger",
             "actionId": "debugger.toggle-pause",
             "iconClass": "largeicon-pause",
+            "toggleable": true,
             "toggledIconClass": "largeicon-resume",
             "className": "Sources.SourcesPanel.RevealingActionDelegate",
             "contextTypes": [
@@ -155,6 +156,7 @@
             "category": "Debugger",
             "actionId": "debugger.toggle-breakpoints-active",
             "iconClass": "largeicon-deactivate-breakpoints",
+            "toggleable": true,
             "toggledIconClass": "largeicon-activate-breakpoints",
             "className": "Sources.SourcesPanel.DebuggingActionDelegate",
             "contextTypes": [

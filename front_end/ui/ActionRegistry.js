@@ -166,6 +166,13 @@ UI.Action = class extends Common.Object {
   }
 
   /**
+   * @return {boolean}
+   */
+  toggleable() {
+    return !!this._extension.descriptor()['toggleable'];
+  }
+
+  /**
    * @return {string}
    */
   title() {
@@ -191,6 +198,7 @@ UI.Action = class extends Common.Object {
    * @param {boolean} toggled
    */
   setToggled(toggled) {
+    console.assert(this.toggleable(), 'Shouldn\'t be toggling an untoggleable action', this.id());
     if (this._toggled === toggled)
       return;
 

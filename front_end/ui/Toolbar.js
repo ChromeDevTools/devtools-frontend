@@ -50,42 +50,24 @@ UI.Toolbar = class {
 
   /**
    * @param {!UI.Action} action
-   * @param {!Array<!UI.ToolbarButton>=} toggledOptions
-   * @param {!Array<!UI.ToolbarButton>=} untoggledOptions
-   * @param {boolean=} showLabel
-   * @return {!UI.ToolbarToggle}
+   * @param {!Array<!UI.ToolbarButton>} toggledOptions
+   * @param {!Array<!UI.ToolbarButton>} untoggledOptions
+   * @return {!UI.ToolbarButton}
    */
-  static createActionButton(action, toggledOptions, untoggledOptions, showLabel) {
-    const button = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
-    if (showLabel)
-      button.setText(action.title());
-    button.setToggleWithRedColor(action.toggleWithRedColor());
-    button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
-    action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
-    action.addEventListener(UI.Action.Events.Toggled, toggled);
+  static createLongPressActionButton(action, toggledOptions, untoggledOptions) {
+    const button = UI.Toolbar.createActionButton(action);
+    const mainButtonClone = UI.Toolbar.createActionButton(action);
+
     /** @type {?UI.LongClickController} */
     let longClickController = null;
     /** @type {?Array<!UI.ToolbarButton>} */
     let longClickButtons = null;
     /** @type {?Element} */
     let longClickGlyph = null;
-    toggled();
-    button.setEnabled(action.enabled());
+
+    action.addEventListener(UI.Action.Events.Toggled, updateOptions);
+    updateOptions();
     return button;
-
-    /**
-     * @param {!Common.Event} event
-     */
-    function enabledChanged(event) {
-      button.setEnabled(/** @type {boolean} */ (event.data));
-    }
-
-    function toggled() {
-      button.setToggled(action.toggled());
-      if (action.title())
-        UI.Tooltip.install(button.element, action.title(), action.id());
-      updateOptions();
-    }
 
     function updateOptions() {
       const buttons = action.toggled() ? (toggledOptions || null) : (untoggledOptions || null);
@@ -110,17 +92,6 @@ UI.Toolbar = class {
 
     function showOptions() {
       let buttons = longClickButtons.slice();
-      const mainButtonClone = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
-      mainButtonClone.addEventListener(UI.ToolbarButton.Events.Click, clicked);
-
-      /**
-       * @param {!Common.Event} event
-       */
-      function clicked(event) {
-        button._clicked(/** @type {!Event} */ (event.data));
-      }
-
-      mainButtonClone.setToggled(action.toggled());
       buttons.push(mainButtonClone);
 
       const document = button.element.ownerDocument;
@@ -187,14 +158,54 @@ UI.Toolbar = class {
   }
 
   /**
+   * @param {!UI.Action} action
+   * @param {boolean=} showLabel
+   * @return {!UI.ToolbarButton}
+   */
+  static createActionButton(action, showLabel) {
+    const button = makeButtonOrToggle();
+    if (showLabel)
+      button.setText(action.title());
+    button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
+    action.addEventListener(UI.Action.Events.Enabled, enabledChanged);
+    button.setEnabled(action.enabled());
+    return button;
+
+    /**
+     * @return {!UI.ToolbarButton}
+     */
+    function makeButtonOrToggle() {
+      if (!action.toggleable())
+        return new UI.ToolbarButton(action.title(), action.icon());
+      const toggleButton = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
+      toggleButton.setToggleWithRedColor(action.toggleWithRedColor());
+      action.addEventListener(UI.Action.Events.Toggled, toggled);
+      toggled();
+      return toggleButton;
+
+      function toggled() {
+        toggleButton.setToggled(action.toggled());
+        if (action.title())
+          UI.Tooltip.install(toggleButton.element, action.title(), action.id());
+      }
+    }
+
+    /**
+     * @param {!Common.Event} event
+     */
+    function enabledChanged(event) {
+      button.setEnabled(/** @type {boolean} */ (event.data));
+    }
+  }
+
+  /**
    * @param {string} actionId
    * @param {boolean=} showLabel
-   * @return {!UI.ToolbarToggle}
+   * @return {!UI.ToolbarButton}
    */
   static createActionButtonForId(actionId, showLabel) {
     const action = UI.actionRegistry.action(actionId);
-    return UI.Toolbar.createActionButton(
-        /** @type {!UI.Action} */ (action), undefined, undefined, showLabel);
+    return UI.Toolbar.createActionButton(/** @type {!UI.Action} */ (action), showLabel);
   }
 
   /**

@@ -693,8 +693,8 @@ Sources.SourcesPanel = class extends UI.Panel {
     const terminateExecutionButton =
         new UI.ToolbarButton(ls`Terminate current JavaScript call`, 'largeicon-terminate-execution');
     terminateExecutionButton.addEventListener(UI.ToolbarButton.Events.Click, this._terminateExecution, this);
-    debugToolbar.appendToolbarItem(
-        UI.Toolbar.createActionButton(this._togglePauseAction, [terminateExecutionButton, longResumeButton], []));
+    debugToolbar.appendToolbarItem(UI.Toolbar.createLongPressActionButton(
+        this._togglePauseAction, [terminateExecutionButton, longResumeButton], []));
 
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepOverAction));
     debugToolbar.appendToolbarItem(UI.Toolbar.createActionButton(this._stepIntoAction));

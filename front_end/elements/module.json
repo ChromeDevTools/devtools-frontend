@@ -217,6 +217,7 @@
         {
             "type": "action",
             "actionId": "elements.toggle-element-search",
+            "toggleable": true,
             "className": "Elements.InspectElementModeController.ToggleSearchActionDelegate",
             "title": "Select an element in the page to inspect it",
             "iconClass": "largeicon-node-search",

@@ -55,7 +55,7 @@ Resources.BackgroundServiceView = class extends UI.VBox {
 
     /** @const {!UI.Action} */
     this._recordAction = /** @type {!UI.Action} */ (UI.actionRegistry.action('background-service.toggle-recording'));
-    /** @type {?UI.ToolbarToggle} */
+    /** @type {?UI.ToolbarButton} */
     this._recordButton = null;
 
     /** @type {?UI.ToolbarCheckbox} */

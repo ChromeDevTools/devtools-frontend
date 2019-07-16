@@ -10,6 +10,7 @@
             "type": "action",
             "category": "Mobile",
             "actionId": "emulation.toggle-device-mode",
+            "toggleable": true,
             "className": "Emulation.DeviceModeWrapper.ActionDelegate",
             "condition": "can_dock",
             "title": "Toggle device toolbar",

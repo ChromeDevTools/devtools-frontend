@@ -18,6 +18,7 @@
             "type": "action",
             "actionId": "coverage.toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "className": "Coverage.CoverageView.ActionDelegate",

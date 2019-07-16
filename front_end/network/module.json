@@ -74,6 +74,7 @@
             "type": "action",
             "actionId": "network.toggle-recording",
             "iconClass": "largeicon-start-recording",
+            "toggleable": true,
             "toggledIconClass": "largeicon-stop-recording",
             "toggleWithRedColor": true,
             "contextTypes": [

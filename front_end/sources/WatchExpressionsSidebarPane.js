@@ -43,6 +43,8 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
     this._watchExpressions = [];
     this._watchExpressionsSetting = Common.settings.createLocalSetting('watchExpressions', []);
 
+    this._clearButton = new UI.ToolbarButton(Common.UIString('Clear'), 'largeicon-clear');
+    this._clearButton.addEventListener(UI.ToolbarButton.Events.Click, this._deleteAllButtonClicked.bind(this));
     this._addButton = new UI.ToolbarButton(Common.UIString('Add expression'), 'largeicon-add');
     this._addButton.addEventListener(UI.ToolbarButton.Events.Click, this._addButtonClicked.bind(this));
     this._refreshButton = new UI.ToolbarButton(Common.UIString('Refresh'), 'largeicon-refresh');
@@ -63,7 +65,7 @@ Sources.WatchExpressionsSidebarPane = class extends UI.ThrottledWidget {
    * @return {!Array<!UI.ToolbarItem>}
    */
   toolbarItems() {
-    return [this._addButton, this._refreshButton];
+    return [this._clearButton, this._addButton, this._refreshButton];
   }
 
   /**

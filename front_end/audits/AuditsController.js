@@ -237,7 +237,9 @@ Audits.RuntimeSettings = [
     setting: Common.settings.createSetting('audits.device_type', 'mobile'),
     description: ls`Apply mobile emulation during auditing`,
     setFlags: (flags, value) => {
-      flags.emulatedFormFactor = value;
+      flags._devtoolsEmulationType = value;
+      // See Audits.AuditsPanel._setupEmulationAndProtocolConnection()
+      flags.emulatedFormFactor = 'none';
     },
     options: [
       {label: ls`Mobile`, value: 'mobile'},

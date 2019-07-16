@@ -92,7 +92,7 @@ Audits.StartView = class extends UI.Widget {
           <h2>${ls`Audits`}</h2>
           <p>
             <span class="text">${auditsDescription}</span>
-            <span class="link" $="learn-more">${ls`Learn more`}</a>
+            ${UI.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}
           </p>
           </div>
         </header>
@@ -134,11 +134,6 @@ Audits.StartView = class extends UI.Widget {
     `;
 
     this._helpText = fragment.$('help-text');
-
-    const learnMoreLink = fragment.$('learn-more');
-    learnMoreLink.addEventListener(
-        'click', () => InspectorFrontendHost.openInNewTab('https://developers.google.com/web/tools/lighthouse/'));
-
     this._populateFormControls(fragment);
     this.contentElement.appendChild(fragment.element());
     this.contentElement.style.overflow = 'auto';

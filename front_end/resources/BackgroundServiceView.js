@@ -295,9 +295,10 @@ Resources.BackgroundServiceView = class extends UI.VBox {
       recordKey.textContent =
           UI.shortcutRegistry.shortcutDescriptorsForAction('background-service.toggle-recording')[0].name;
 
-      centered.createChild('h2').appendChild(UI.formatLocalized(
-          'Click the record button %s or hit %s to start recording.',
-          [UI.createInlineButton(landingRecordButton), recordKey]));
+      centered.createChild('div', 'empty-bold-text')
+          .appendChild(UI.formatLocalized(
+              'Click the record button %s or hit %s to start recording.',
+              [UI.createInlineButton(landingRecordButton), recordKey]));
     }
 
     this._preview.show(this._previewPanel.contentElement);

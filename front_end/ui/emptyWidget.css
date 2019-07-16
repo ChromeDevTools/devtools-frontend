@@ -4,6 +4,13 @@
  * found in the LICENSE file.
  */
 
+ .empty-bold-text {
+    display: block;
+    font-size: 1.5em;
+    margin: .83em 0 .83em;
+    font-weight: bold;
+ }
+
 .empty-view {
     color: hsla(0, 0%, 43%, 1);
     padding: 30px;

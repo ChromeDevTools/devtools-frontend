@@ -104,10 +104,10 @@ AxeCoreTestRunner.processAxeResultNodesArray = function(nodes) {
 };
 
 AxeCoreTestRunner.runValidation = async function(element, rules, config) {
-  axe.configure(Object.assign({}, DEFAULT_CONFIG, config));
+  axe.configure({...DEFAULT_CONFIG, ...config});
 
   try {
-    const results = await axe.run(element, {rules: Object.assign({}, DISABLED_RULES, rules)});
+    const results = await axe.run(element, {rules: {...DISABLED_RULES, ...rules}});
     const violations = AxeCoreTestRunner.processAxeResult(results.violations);
     TestRunner.addResult(`aXe violations: ${violations}\n`);
   } catch (e) {

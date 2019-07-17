@@ -15,6 +15,7 @@ Audits.RadioSetting = class {
     this.element = createElement('div', 'audits-radio-group');
     this.element.title = description;
     UI.ARIAUtils.setDescription(this.element, description);
+    UI.ARIAUtils.markAsRadioGroup(this.element);
 
     this._radioElements = [];
     for (const option of this._options) {

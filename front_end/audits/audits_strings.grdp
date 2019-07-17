@@ -51,7 +51,7 @@
   <message name="IDS_DEVTOOLS_3ee3aab0791156ff1d5e0481ed4589b2" desc="Text in Audits Controller">
     Applied Slow 4G, 4x CPU Slowdown
   </message>
-  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text in Audits Start View">
+  <message name="IDS_DEVTOOLS_41fdb410354e76ef7674f98e1cc84c8f" desc="Text in Audits Start View labeling throttling configration control group">
     Throttling
   </message>
   <message name="IDS_DEVTOOLS_48d24d11c7c71282366fe2007d4cee3b" desc="Text in Audits Controller">
@@ -129,7 +129,7 @@
   <message name="IDS_DEVTOOLS_deeacee140c7d3a451440dd0e206e256" desc="Text in Audits Start View">
     Identify and fix common problems that affect your site&apos;s performance, accessibility, and user experience.
   </message>
-  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text in Audits Start View">
+  <message name="IDS_DEVTOOLS_e0ac20adce6ffee48c7151b070aa5737" desc="Text in Audits Start View labeling device configration control group">
     Device
   </message>
   <message name="IDS_DEVTOOLS_e499f5109f685235e6280179fe22beec" desc="Text that appears when user drag and drop something (for example, a file) in Audits Panel">

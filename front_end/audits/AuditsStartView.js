@@ -90,7 +90,7 @@ Audits.StartView = class extends UI.Widget {
         <header>
           <div class="audits-logo"></div>
           <div class="audits-start-view-text">
-          <h2>${ls`Audits`}</h2>
+          <h1>${ls`Audits`}</h1>
           <p>
             <span class="text">${auditsDescription}</span>
             ${UI.XLink.create('https://developers.google.com/web/tools/lighthouse/', ls`Learn more`)}

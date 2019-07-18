@@ -75,6 +75,9 @@
   <message name="IDS_DEVTOOLS_32954654ac8fe66a1d09be19001de2d4" desc="Width input title in Device Mode Toolbar of the Device Toolbar">
     Width
   </message>
+  <message name="IDS_DEVTOOLS_34a8ca19d04d2af1f2761370580a4b10" desc="Aria-label for geolocation manage button in Sensors View">
+    Manage the list of geolocations
+  </message>
   <message name="IDS_DEVTOOLS_34e34c43ec6b943c10a3cc1a1a16fb11" desc="Text of button in Sensors View of the Device Toolbar">
     Manage
   </message>
@@ -83,6 +86,9 @@
   </message>
   <message name="IDS_DEVTOOLS_36384a9ea3ec791e6bd4ab6b36f2ff2a" desc="Text in Device Mode View of the Device Toolbar">
     Tablet
+  </message>
+  <message name="IDS_DEVTOOLS_3727b84b924b896c2824b70f1c7757c8" desc="Aria-label for orientation reset button in Sensors View">
+    Reset device orientation
   </message>
   <message name="IDS_DEVTOOLS_3836c33415a6d95d4a63388a6bcadf3b" desc="Title of ua item in device mode toolbar of the device toolbar">
     Device type

@@ -60,7 +60,9 @@ Emulation.SensorsView = class extends UI.VBox {
     this._customLocationsGroup = this._locationSelectElement.createChild('optgroup');
     this._customLocationsGroup.label = ls`Overrides`;
     const customGeolocations = Common.moduleSetting('emulation.geolocations');
-    fields.appendChild(UI.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations)));
+    const manageButton = UI.createTextButton(ls`Manage`, () => Common.Revealer.reveal(customGeolocations));
+    UI.ARIAUtils.setAccessibleName(manageButton, ls`Manage the list of geolocations`);
+    fields.appendChild(manageButton);
     const fillCustomSettings = () => {
       this._customLocationsGroup.removeChildren();
       for (const geolocation of customGeolocations.get())
@@ -358,6 +360,7 @@ Emulation.SensorsView = class extends UI.VBox {
 
     const resetButton = UI.createTextButton(
         Common.UIString('Reset'), this._resetDeviceOrientation.bind(this), 'orientation-reset-button');
+    UI.ARIAUtils.setAccessibleName(resetButton, ls`Reset device orientation`);
     resetButton.setAttribute('type', 'reset');
     cellElement.appendChild(resetButton);
     return fieldsetElement;
@@ -465,6 +468,7 @@ Emulation.SensorsView = class extends UI.VBox {
 
     const reloadWarning = groupElement.createChild('div', 'reload-warning hidden');
     reloadWarning.textContent = Common.UIString('*Requires reload');
+    UI.ARIAUtils.markAsAlert(reloadWarning);
 
     function applyTouch() {
       for (const emulationModel of SDK.targetManager.models(SDK.EmulationModel))

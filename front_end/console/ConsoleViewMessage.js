@@ -1432,10 +1432,19 @@ Console.ConsoleViewMessage = class {
 
       let openBracketIndex = -1;
       let closeBracketIndex = -1;
-      const match = /\([^\)\(]+\)/.exec(lines[i]);
-      if (match) {
-        openBracketIndex = match.index;
-        closeBracketIndex = match.index + match[0].length - 1;
+      const inBracketsWithLineAndColumn = /\([^\)\(]+:\d+:\d+\)/g;
+      const inBrackets = /\([^\)\(]+\)/g;
+      let lastMatch = null;
+      let currentMatch;
+      while ((currentMatch = inBracketsWithLineAndColumn.exec(lines[i])))
+        lastMatch = currentMatch;
+      if (!lastMatch) {
+        while ((currentMatch = inBrackets.exec(lines[i])))
+          lastMatch = currentMatch;
+      }
+      if (lastMatch) {
+        openBracketIndex = lastMatch.index;
+        closeBracketIndex = lastMatch.index + lastMatch[0].length - 1;
       }
       const hasOpenBracket = openBracketIndex !== -1;
       const left = hasOpenBracket ? openBracketIndex + 1 : lines[i].indexOf('at') + 3;

@@ -72,6 +72,15 @@ UI.ARIAUtils.markAsMenuButton = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsProgressBar = function(element) {
+  element.setAttribute('role', 'progressbar');
+  element.setAttribute('aria-valuemin', 0);
+  element.setAttribute('aria-valuemax', 100);
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.markAsTab = function(element) {
   element.setAttribute('role', 'tab');
 };
@@ -178,6 +187,13 @@ UI.ARIAUtils.markAsPresentation = function(element) {
 /**
  * @param {!Element} element
  */
+UI.ARIAUtils.markAsStatus = function(element) {
+  element.setAttribute('role', 'status');
+};
+
+/**
+ * @param {!Element} element
+ */
 UI.ARIAUtils.ensureId = function(element) {
   if (!element.id)
     element.id = UI.ARIAUtils.nextId('ariaElement');
@@ -259,6 +275,14 @@ UI.ARIAUtils.setPressed = function(element, value) {
   // Often times undefined values are unintentionally typed as booleans.
   // Use !! to make sure this is true or false.
   element.setAttribute('aria-pressed', !!value);
+};
+
+/**
+ * @param {!Element} element
+ * @param {number} value
+ */
+UI.ARIAUtils.setProgressBarCurrentPercentage = function(element, value) {
+  element.setAttribute('aria-valuenow', value);
 };
 
 /**

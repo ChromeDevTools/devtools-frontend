@@ -1035,6 +1035,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     const statusLine = this.contentElement.createChild('div', 'status-dialog-line status');
     statusLine.createChild('div', 'label').textContent = Common.UIString('Status');
     this._status = statusLine.createChild('div', 'content');
+    UI.ARIAUtils.markAsStatus(this._status);
 
     if (showTimer) {
       const timeLine = this.contentElement.createChild('div', 'status-dialog-line time');
@@ -1044,6 +1045,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     const progressLine = this.contentElement.createChild('div', 'status-dialog-line progress');
     this._progressLabel = progressLine.createChild('div', 'label');
     this._progressBar = progressLine.createChild('div', 'indicator-container').createChild('div', 'indicator');
+    UI.ARIAUtils.markAsProgressBar(this._progressBar);
 
     this._stopButton = UI.createTextButton(Common.UIString('Stop'), stopCallback, '', true);
     this.contentElement.createChild('div', 'stop-button').appendChild(this._stopButton);
@@ -1082,6 +1084,7 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
   updateProgressBar(activity, percent) {
     this._progressLabel.textContent = activity;
     this._progressBar.style.width = percent.toFixed(1) + '%';
+    UI.ARIAUtils.setProgressBarCurrentPercentage(this._progressBar, percent);
     this._updateTimer();
   }
 

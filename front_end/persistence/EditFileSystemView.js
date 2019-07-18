@@ -167,14 +167,18 @@ Persistence.EditFileSystemView = class extends UI.VBox {
      * @this {Persistence.EditFileSystemView}
      */
     function pathPrefixValidator(item, index, input) {
-      const prefix = this._normalizePrefix(input.value);
+      const prefix = this._normalizePrefix(input.value.trim());
+
+      if (!prefix)
+        return {valid: false, errorMessage: ls`Enter a path`};
+
       const configurableCount =
           Persistence.isolatedFileSystemManager.fileSystem(this._fileSystemPath).excludedFolders().size;
       for (let i = 0; i < configurableCount; ++i) {
         if (i !== index && this._excludedFolders[i] === prefix)
-          return {valid: false};
+          return {valid: false, errorMessage: ls`Enter a unique path`};
       }
-      return {valid: !!prefix};
+      return {valid: true};
     }
   }
 

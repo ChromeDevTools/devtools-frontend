@@ -18,6 +18,9 @@
   <message name="IDS_DEVTOOLS_25ee7702f0b5dbe737d8f0f2ba3ce591" desc="A context menu item in the Persistence Actions of the Workspace settings in Settings">
     Save for overrides
   </message>
+  <message name="IDS_DEVTOOLS_57e01423e2b182ada052707cbb8d7b3a" desc="Error message when a file system path is an empty string.">
+    Enter a path
+  </message>
   <message name="IDS_DEVTOOLS_486658cc6336ffa59ef2fdff0b977a91" desc="Text in Edit File System View of the Workspace settings in Settings">
     Excluded folders
   </message>
@@ -26,6 +29,9 @@
   </message>
   <message name="IDS_DEVTOOLS_62def4422771353f5e30763d92474b43" desc="Text in Persistence Utils of the Workspace settings in Settings">
     Linked to source map: <ph name="BINDING_NETWORK_URL___TRIMMIDDLE_____">$1s<ex>example.url</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_8cf868306a4e5f1b685566867ff0e31d" desc="Error message when a file system path is identical to an existing path.">
+    Enter a unique path
   </message>
   <message name="IDS_DEVTOOLS_8d646fe956bbc874d742471885ffd77c" desc="Label element text content in Workspace Settings Tab of the Workspace settings in Settings">
     Folder exclude pattern

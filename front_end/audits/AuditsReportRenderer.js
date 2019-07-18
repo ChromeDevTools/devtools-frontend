@@ -16,7 +16,8 @@ Audits.ReportRenderer = class extends ReportRenderer {
 
     const defaultPassTrace = artifacts.traces.defaultPass;
     const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
-    el.querySelector('.lh-column').appendChild(timelineButton);
+    const container = el.querySelector('.lh-audit-group');
+    container.insertBefore(timelineButton, container.querySelector('.lh-columns').nextSibling);
     return el;
 
     async function onViewTraceClick() {

@@ -55,6 +55,7 @@ Audits.StatusView = class {
     this._progressWrapper = fragment.$('progress-wrapper');
     this._progressBar = fragment.$('progress-bar');
     this._statusText = fragment.$('status-text');
+    UI.ARIAUtils.markAsStatus(this._statusText);
 
     this._dialog.setDefaultFocusedElement(cancelButton);
     this._dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.SetExactWidthMaxHeight);

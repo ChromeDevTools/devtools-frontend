@@ -239,6 +239,9 @@ read the &quot;<ph name="THIS_TABLENAME">$1s<ex>database</ex></ph>&quot; table.
   <message name="IDS_DEVTOOLS_a89edb1e05005c844b684d1eb0de111a" desc="Text in Application Panel Sidebar of the Application panel">
     Cache Storage
   </message>
+  <message name="IDS_DEVTOOLS_a9cd2046f50376846feaa11c68e56e2f" desc="">
+    DevTools will record all <ph name="FEATURENAME">$1s</ph> activity for up to 3 days, even when closed.
+  </message>
   <message name="IDS_DEVTOOLS_ab0cf104f39708eabd07b8cb67e149ba" desc="Text in Application Panel Sidebar of the Application panel">
     Cache
   </message>

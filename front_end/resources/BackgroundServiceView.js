@@ -277,28 +277,33 @@ Resources.BackgroundServiceView = class extends UI.VBox {
 
     if (this._selectedEventNode) {
       this._preview = this._selectedEventNode.createPreview();
-    } else if (this._dataGrid.rootNode().children.length) {
+      this._preview.show(this._previewPanel.contentElement);
+      return;
+    }
+
+    this._preview = new UI.VBox();
+    this._preview.contentElement.classList.add('background-service-preview', 'fill');
+    const centered = this._preview.contentElement.createChild('div');
+
+    if (this._dataGrid.rootNode().children.length) {
       // Inform users that grid entries are clickable.
-      this._preview = new UI.EmptyWidget(ls`Select an entry to view metadata`);
+      centered.createChild('p').textContent = ls`Select an entry to view metadata`;
     } else if (this._recordButton.toggled()) {
       // Inform users that we are recording/waiting for events.
-      this._preview = new UI.EmptyWidget(
-          ls`Recording ${Resources.BackgroundServiceView.getUIString(this._serviceName)} activity...`);
+      const featureName = Resources.BackgroundServiceView.getUIString(this._serviceName);
+      centered.createChild('p').textContent = ls`Recording ${featureName} activity...`;
+      centered.createChild('p').textContent =
+          ls`DevTools will record all ${featureName} activity for up to 3 days, even when closed.`;
     } else {
-      this._preview = new UI.VBox();
-      this._preview.contentElement.classList.add('empty-view-scroller');
-      const centered = this._preview.contentElement.createChild('div', 'empty-view');
-
       const landingRecordButton = UI.Toolbar.createActionButton(this._recordAction);
 
       const recordKey = createElementWithClass('b', 'background-service-shortcut');
       recordKey.textContent =
           UI.shortcutRegistry.shortcutDescriptorsForAction('background-service.toggle-recording')[0].name;
 
-      centered.createChild('div', 'empty-bold-text')
-          .appendChild(UI.formatLocalized(
-              'Click the record button %s or hit %s to start recording.',
-              [UI.createInlineButton(landingRecordButton), recordKey]));
+      centered.createChild('p').appendChild(UI.formatLocalized(
+          'Click the record button %s or hit %s to start recording.',
+          [UI.createInlineButton(landingRecordButton), recordKey]));
     }
 
     this._preview.show(this._previewPanel.contentElement);
@@ -355,7 +360,12 @@ Resources.BackgroundServiceView.EventDataNode = class extends DataGrid.DataGridN
     for (const entry of this._eventMetadata) {
       const div = createElementWithClass('div', 'background-service-metadata-entry');
       div.createChild('div', 'background-service-metadata-name').textContent = entry.key + ': ';
-      div.createChild('div', 'background-service-metadata-value source-code').textContent = entry.value;
+      if (entry.value) {
+        div.createChild('div', 'background-service-metadata-value source-code').textContent = entry.value;
+      } else {
+        div.createChild('div', 'background-service-metadata-value background-service-empty-value').textContent =
+            ls`empty`;
+      }
       preview.element.appendChild(div);
     }
 

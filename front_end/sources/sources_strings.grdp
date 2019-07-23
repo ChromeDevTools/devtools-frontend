@@ -114,9 +114,6 @@
   <message name="IDS_DEVTOOLS_3831f64f248899a06a6bbc8b82fccfdf" desc="Text in Breakpoint Edit Dialog of the Sources panel">
     Log message, e.g. &apos;x is&apos;, x
   </message>
-  <message name="IDS_DEVTOOLS_38b6dddcf45b3d2c9fc86ce4dd2592ba" desc="Tooltip text that appears when hovering over the largeicon add button in the Watch Expressions Sidebar Pane of the Sources panel">
-    Add expression
-  </message>
   <message name="IDS_DEVTOOLS_3a4c2017c43ba6b63be4576d17893645" desc="Text in Debugger Plugin of the Sources panel">
     Source map found, but ignored for blackboxed file.
   </message>
@@ -476,6 +473,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f0a47f037ca7a988466a647277ef1134" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on assertion
+  </message>
+  <message name="IDS_DEVTOOLS_f156b89abea73d4db0bf1b212d198c41" desc="Tooltip/screen reader label of a button in the Sources panel that refreshes all watch expressions.">
+    Refresh watch expressions
   </message>
   <message name="IDS_DEVTOOLS_f20658650d987d31063b593c05980397" desc="Title of the sources watch">
     Watch

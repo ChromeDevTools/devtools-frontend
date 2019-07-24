@@ -169,6 +169,9 @@ table is empty.
   <message name="IDS_DEVTOOLS_83b33e9633245178cb76ecb91dd424d8" desc="Text in DOMStorage Items View of the Application panel">
     Select a value to preview
   </message>
+  <message name="IDS_DEVTOOLS_85b285ed4a5b8960e8f85a6e5c125680" desc="Text in the Periodic Background Service View of the Application panel">
+    Periodic Background Sync
+  </message>
   <message name="IDS_DEVTOOLS_86befdf33863a849060cf9f6d2425cdb" desc="Text in Indexed DBViews of the Application panel">
     Security origin
   </message>

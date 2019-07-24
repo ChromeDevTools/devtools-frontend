@@ -112,6 +112,8 @@ Main.Main = class {
     Runtime.experiments.register('backgroundServicesNotifications', 'Background services section for Notifications');
     Runtime.experiments.register('backgroundServicesPaymentHandler', 'Background services section for Payment Handler');
     Runtime.experiments.register('backgroundServicesPushMessaging', 'Background services section for Push Messaging');
+    Runtime.experiments.register(
+        'backgroundServicesPeriodicBackgroundSync', 'Background services section for Periodic Background Sync');
     Runtime.experiments.register('blackboxJSFramesOnTimeline', 'Blackbox JavaScript frames on Timeline', true);
     Runtime.experiments.register('emptySourceMapAutoStepping', 'Empty sourcemap auto-stepping');
     Runtime.experiments.register('inputEventsOnTimelineOverview', 'Input events on Timeline overview', true);

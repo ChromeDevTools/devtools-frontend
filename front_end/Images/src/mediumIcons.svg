@@ -100,9 +100,9 @@
      id="namedview4913"
      showgrid="true"
      inkscape:zoom="5.2149126"
-     inkscape:cx="-97.043259"
+     inkscape:cx="-59.586191"
      inkscape:cy="76.536441"
-     inkscape:window-x="2611"
+     inkscape:window-x="39"
      inkscape:window-y="26"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg4775">
@@ -884,6 +884,23 @@
     <path
        id="path220"
        d="M 20,4 H 4 C 2.89,4 2.01,4.89 2.01,6 L 2,18 c 0,1.11 0.89,2 2,2 h 16 c 1.11,0 2,-0.89 2,-2 V 6 C 22,4.89 21.11,4 20,4 Z m 0,14 H 4 V 12 H 20 Z M 20,8 H 4 V 6 h 16 z"
+       inkscape:connector-curvature="0" />
+  </g>
+  <g
+     id="g306"
+     transform="matrix(0.66666667,0,0,0.66666667,48,0)">
+    <path
+       id="path289"
+       d="M 11.99,2 C 6.47,2 2,6.48 2,12 2,17.52 6.47,22 11.99,22 17.52,22 22,17.52 22,12 22,6.48 17.52,2 11.99,2 Z M 12,20 C 7.58,20 4,16.42 4,12 4,7.58 7.58,4 12,4 c 4.42,0 8,3.58 8,8 0,4.42 -3.58,8 -8,8 z"
+       inkscape:connector-curvature="0" />
+    <path
+       id="path291"
+       d="M 0,0 H 24 V 24 H 0 Z"
+       inkscape:connector-curvature="0"
+       style="fill:none" />
+    <path
+       id="path293"
+       d="M 12.5,7 H 11 v 6 l 5.25,3.15 0.75,-1.23 -4.5,-2.67 z"
        inkscape:connector-curvature="0" />
   </g>
 </svg>

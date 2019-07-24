@@ -2,10 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/**
- * @implements {Persistence.MappingSystem}
- * @unrestricted
- */
 Persistence.Automapping = class {
   /**
    * @param {!Workspace.Workspace} workspace
@@ -19,6 +15,10 @@ Persistence.Automapping = class {
     this._onStatusRemoved = onStatusRemoved;
     /** @type {!Set<!Persistence.AutomappingStatus>} */
     this._statuses = new Set();
+    this._statusSymbol = Symbol('Automapping.Status');
+    this._processingPromiseSymbol = Symbol('Automapping.ProcessingPromise');
+    this._metadataSymbol = Symbol('Automapping.Metadata');
+
 
     /** @type {!Map<string, !Workspace.UISourceCode>} */
     this._fileSystemUISourceCodes = new Map();
@@ -29,22 +29,22 @@ Persistence.Automapping = class {
     this._projectFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
     this._activeFoldersIndex = new Persistence.Automapping.FolderIndex(pathEncoder);
 
-    this._eventListeners = [
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeAdded,
-          event => this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode} */ (event.data))),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeRemoved,
-          event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode} */ (event.data))),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.UISourceCodeRenamed, this._onUISourceCodeRenamed, this),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.ProjectAdded,
-          event => this._onProjectAdded(/** @type {!Workspace.Project} */ (event.data)), this),
-      this._workspace.addEventListener(
-          Workspace.Workspace.Events.ProjectRemoved,
-          event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)), this),
-    ];
+    /** @type {!Array<function(!Workspace.UISourceCode):boolean>} */
+    this._interceptors = [];
+
+    this._workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeAdded,
+        event => this._onUISourceCodeAdded(/** @type {!Workspace.UISourceCode} */ (event.data)));
+    this._workspace.addEventListener(
+        Workspace.Workspace.Events.UISourceCodeRemoved,
+        event => this._onUISourceCodeRemoved(/** @type {!Workspace.UISourceCode} */ (event.data)));
+    this._workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRenamed, this._onUISourceCodeRenamed, this);
+    this._workspace.addEventListener(
+        Workspace.Workspace.Events.ProjectAdded,
+        event => this._onProjectAdded(/** @type {!Workspace.Project} */ (event.data)), this);
+    this._workspace.addEventListener(
+        Workspace.Workspace.Events.ProjectRemoved,
+        event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)), this);
 
     for (const fileSystem of workspace.projects())
       this._onProjectAdded(fileSystem);
@@ -52,7 +52,15 @@ Persistence.Automapping = class {
       this._onUISourceCodeAdded(uiSourceCode);
   }
 
-  _scheduleRemap() {
+  /**
+   * @param {function(!Workspace.UISourceCode):boolean} interceptor
+   */
+  addNetworkInterceptor(interceptor) {
+    this._interceptors.push(interceptor);
+    this.scheduleRemap();
+  }
+
+  scheduleRemap() {
     for (const status of this._statuses.valuesArray())
       this._clearNetworkStatus(status.network);
     this._scheduleSweep();
@@ -91,7 +99,7 @@ Persistence.Automapping = class {
     for (const gitFolder of fileSystem.initialGitFolders())
       this._projectFoldersIndex.removeFolder(gitFolder);
     this._projectFoldersIndex.removeFolder(fileSystem.fileSystemPath());
-    this._scheduleRemap();
+    this.scheduleRemap();
   }
 
   /**
@@ -105,7 +113,7 @@ Persistence.Automapping = class {
       this._projectFoldersIndex.addFolder(gitFolder);
     this._projectFoldersIndex.addFolder(fileSystem.fileSystemPath());
     project.uiSourceCodes().forEach(this._onUISourceCodeAdded.bind(this));
-    this._scheduleRemap();
+    this.scheduleRemap();
   }
 
   /**
@@ -131,7 +139,7 @@ Persistence.Automapping = class {
     if (uiSourceCode.project().type() === Workspace.projectTypes.FileSystem) {
       this._filesIndex.removePath(uiSourceCode.url());
       this._fileSystemUISourceCodes.delete(uiSourceCode.url());
-      const status = uiSourceCode[Persistence.Automapping._status];
+      const status = uiSourceCode[this._statusSymbol];
       if (status)
         this._clearNetworkStatus(status.network);
     } else if (uiSourceCode.project().type() === Workspace.projectTypes.Network) {
@@ -150,7 +158,7 @@ Persistence.Automapping = class {
 
     this._filesIndex.removePath(oldURL);
     this._fileSystemUISourceCodes.delete(oldURL);
-    const status = uiSourceCode[Persistence.Automapping._status];
+    const status = uiSourceCode[this._statusSymbol];
     if (status)
       this._clearNetworkStatus(status.network);
 
@@ -163,14 +171,15 @@ Persistence.Automapping = class {
    * @param {!Workspace.UISourceCode} networkSourceCode
    */
   _computeNetworkStatus(networkSourceCode) {
-    if (networkSourceCode[Persistence.Automapping._processingPromise] ||
-        networkSourceCode[Persistence.Automapping._status])
+    if (networkSourceCode[this._processingPromiseSymbol] || networkSourceCode[this._statusSymbol])
+      return;
+    if (this._interceptors.some(interceptor => interceptor(networkSourceCode)))
       return;
     if (networkSourceCode.url().startsWith('wasm://'))
       return;
     const createBindingPromise =
         this._createBinding(networkSourceCode).then(validateStatus.bind(this)).then(onStatus.bind(this));
-    networkSourceCode[Persistence.Automapping._processingPromise] = createBindingPromise;
+    networkSourceCode[this._processingPromiseSymbol] = createBindingPromise;
 
     /**
      * @param {?Persistence.AutomappingStatus} status
@@ -180,7 +189,7 @@ Persistence.Automapping = class {
     async function validateStatus(status) {
       if (!status)
         return null;
-      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
         return null;
       if (status.network.contentType().isFromSourceMap() || !status.fileSystem.contentType().isTextType())
         return status;
@@ -214,7 +223,7 @@ Persistence.Automapping = class {
       if (fileSystemContent === null || networkContent === null)
         return null;
 
-      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
         return null;
 
       const target = Bindings.NetworkProject.targetForUISourceCode(status.network);
@@ -239,20 +248,20 @@ Persistence.Automapping = class {
      * @this {Persistence.Automapping}
      */
     function onStatus(status) {
-      if (networkSourceCode[Persistence.Automapping._processingPromise] !== createBindingPromise)
+      if (networkSourceCode[this._processingPromiseSymbol] !== createBindingPromise)
         return;
-      networkSourceCode[Persistence.Automapping._processingPromise] = null;
-      if (!status || this._disposed) {
+      networkSourceCode[this._processingPromiseSymbol] = null;
+      if (!status) {
         this._onBindingFailedForTest();
         return;
       }
       // TODO(lushnikov): remove this check once there's a single uiSourceCode per url. @see crbug.com/670180
-      if (status.network[Persistence.Automapping._status] || status.fileSystem[Persistence.Automapping._status])
+      if (status.network[this._statusSymbol] || status.fileSystem[this._statusSymbol])
         return;
 
       this._statuses.add(status);
-      status.network[Persistence.Automapping._status] = status;
-      status.fileSystem[Persistence.Automapping._status] = status;
+      status.network[this._statusSymbol] = status;
+      status.fileSystem[this._statusSymbol] = status;
       if (status.exactMatch) {
         const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
         const newFolderAdded = projectFolder ? this._activeFoldersIndex.addFolder(projectFolder) : false;
@@ -276,17 +285,17 @@ Persistence.Automapping = class {
    * @param {!Workspace.UISourceCode} networkSourceCode
    */
   _clearNetworkStatus(networkSourceCode) {
-    if (networkSourceCode[Persistence.Automapping._processingPromise]) {
-      networkSourceCode[Persistence.Automapping._processingPromise] = null;
+    if (networkSourceCode[this._processingPromiseSymbol]) {
+      networkSourceCode[this._processingPromiseSymbol] = null;
       return;
     }
-    const status = networkSourceCode[Persistence.Automapping._status];
+    const status = networkSourceCode[this._statusSymbol];
     if (!status)
       return;
 
     this._statuses.delete(status);
-    status.network[Persistence.Automapping._status] = null;
-    status.fileSystem[Persistence.Automapping._status] = null;
+    status.network[this._statusSymbol] = null;
+    status.fileSystem[this._statusSymbol] = null;
     if (status.exactMatch) {
       const projectFolder = this._projectFoldersIndex.closestParentFolder(status.fileSystem.url());
       if (projectFolder)
@@ -325,7 +334,7 @@ Persistence.Automapping = class {
      */
     function onMetadatas() {
       const activeFiles = similarFiles.filter(file => !!this._activeFoldersIndex.closestParentFolder(file.url()));
-      const networkMetadata = networkSourceCode[Persistence.Automapping._metadata];
+      const networkMetadata = networkSourceCode[this._metadataSymbol];
       if (!networkMetadata || (!networkMetadata.modificationTime && typeof networkMetadata.contentSize !== 'number')) {
         // If networkSourceCode does not have metadata, try to match against active folders.
         if (activeFiles.length !== 1)
@@ -348,16 +357,9 @@ Persistence.Automapping = class {
    * @return {!Promise}
    */
   _pullMetadatas(uiSourceCodes) {
-    const promises = uiSourceCodes.map(file => fetchMetadata(file));
-    return Promise.all(promises);
-
-    /**
-     * @param {!Workspace.UISourceCode} file
-     * @return {!Promise}
-     */
-    function fetchMetadata(file) {
-      return file.requestMetadata().then(metadata => file[Persistence.Automapping._metadata] = metadata);
-    }
+    return Promise.all(uiSourceCodes.map(async file => {
+      file[this._metadataSymbol] = await file.requestMetadata();
+    }));
   }
 
   /**
@@ -367,7 +369,7 @@ Persistence.Automapping = class {
    */
   _filterWithMetadata(files, networkMetadata) {
     return files.filter(file => {
-      const fileMetadata = file[Persistence.Automapping._metadata];
+      const fileMetadata = file[this._metadataSymbol];
       if (!fileMetadata)
         return false;
       // Allow a second of difference due to network timestamps lack of precision.
@@ -377,23 +379,7 @@ Persistence.Automapping = class {
       return timeMatches && contentMatches;
     });
   }
-
-  /**
-   * @override
-   */
-  dispose() {
-    if (this._disposed)
-      return;
-    this._disposed = true;
-    Common.EventTarget.removeEventListeners(this._eventListeners);
-    for (const status of this._statuses.valuesArray())
-      this._clearNetworkStatus(status.network);
-  }
 };
-
-Persistence.Automapping._status = Symbol('Automapping.Status');
-Persistence.Automapping._processingPromise = Symbol('Automapping.ProcessingPromise');
-Persistence.Automapping._metadata = Symbol('Automapping.Metadata');
 
 /**
  * @unrestricted

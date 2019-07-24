@@ -55,7 +55,7 @@ BindingsTestRunner.initializeTestMapping = function() {
 class TestMapping {
   constructor(persistence) {
     this._persistence = persistence;
-    persistence.setAutomappingEnabled(false);
+    persistence.addNetworkInterceptor(() => true);
     this._bindings = new Set();
   }
 

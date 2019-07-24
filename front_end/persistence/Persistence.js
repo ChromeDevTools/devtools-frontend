@@ -22,23 +22,20 @@ Persistence.Persistence = class extends Common.Object {
 
     const linkDecorator = new Persistence.PersistenceUtils.LinkDecorator(this);
     Components.Linkifier.setLinkDecorator(linkDecorator);
-    this._mapping = null;
-    this.setAutomappingEnabled(true);
+
+    this._mapping =
+        new Persistence.Automapping(this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
   }
 
   /**
-   * @param {boolean} enabled
+   * @param {function(!Workspace.UISourceCode):boolean} interceptor
    */
-  setAutomappingEnabled(enabled) {
-    if (enabled === !!this._mapping)
-      return;
-    if (!enabled) {
-      this._mapping.dispose();
-      this._mapping = null;
-    } else {
-      this._mapping = new Persistence.Automapping(
-          this._workspace, this._onStatusAdded.bind(this), this._onStatusRemoved.bind(this));
-    }
+  addNetworkInterceptor(interceptor) {
+    this._mapping.addNetworkInterceptor(interceptor);
+  }
+
+  refreshAutomapping() {
+    this._mapping.scheduleRemap();
   }
 
   /**
@@ -387,13 +384,6 @@ Persistence.Persistence = class extends Common.Object {
       filePath += '/';
     return this._filePathPrefixesToBindingCount.has(filePath);
   }
-
-  dispose() {
-    if (this._mapping) {
-      this._mapping.dispose();
-      this._mapping = null;
-    }
-  }
 };
 
 Persistence.Persistence._binding = Symbol('Persistence.Binding');
@@ -447,15 +437,6 @@ Persistence.PersistenceBinding = class {
     this.network = network;
     this.fileSystem = fileSystem;
   }
-};
-
-/**
- * @interface
- */
-Persistence.MappingSystem = function() {};
-
-Persistence.MappingSystem.prototype = {
-  dispose: function() {}
 };
 
 /** @type {!Persistence.Persistence} */

@@ -37,6 +37,8 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
         Workspace.Workspace.Events.ProjectRemoved,
         event => this._onProjectRemoved(/** @type {!Workspace.Project} */ (event.data)));
 
+    Persistence.persistence.addNetworkInterceptor(this._canHandleNetworkUISourceCode.bind(this));
+
     /** @type {!Array<!Common.EventTarget.EventDescriptor>} */
     this._eventDescriptors = [];
     this._enabledChanged();
@@ -114,7 +116,7 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
       this._project.uiSourceCodes().forEach(this._filesystemUISourceCodeRemoved.bind(this));
       this._networkUISourceCodeForEncodedPath.clear();
     }
-    Persistence.persistence.setAutomappingEnabled(!this._active);
+    Persistence.persistence.refreshAutomapping();
   }
 
   /**
@@ -290,8 +292,16 @@ Persistence.NetworkPersistenceManager = class extends Common.Object {
   /**
    * @param {!Workspace.UISourceCode} uiSourceCode
    */
+  _canHandleNetworkUISourceCode(uiSourceCode) {
+    return this._active && !uiSourceCode.url().startsWith('snippet://');
+  }
+
+  /**
+   * @param {!Workspace.UISourceCode} uiSourceCode
+   */
   _networkUISourceCodeAdded(uiSourceCode) {
-    if (!this._active || uiSourceCode.project().type() !== Workspace.projectTypes.Network)
+    if (uiSourceCode.project().type() !== Workspace.projectTypes.Network ||
+        !this._canHandleNetworkUISourceCode(uiSourceCode))
       return;
     const url = Common.ParsedURL.urlWithoutHash(uiSourceCode.url());
     this._networkUISourceCodeForEncodedPath.set(this._encodedPathFromUrl(url), uiSourceCode);

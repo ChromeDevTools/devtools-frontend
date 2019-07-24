@@ -1402,10 +1402,6 @@ if (debug_devtools) {
   action("build_debug_devtools") {
     script = "scripts/build/build_debug_applications.py"
 
-    deps = [
-      ":copy_generated_scripts",
-    ]
-
     inputs = all_devtools_files + application_templates
     outputs = [
       "$resources_out_debug_dir/devtools_app.html",
@@ -1418,16 +1414,17 @@ if (debug_devtools) {
       "$resources_out_debug_dir/worker_app.html",
     ]
 
-    args = devtools_applications + [
-             "--input_path",
-             rebase_path("front_end", root_build_dir),
-             "--output_path",
-             rebase_path(resources_out_debug_dir, root_build_dir),
-           ]
+    args = [
+      "--input_path",
+      rebase_path("front_end", root_build_dir),
+      "--output_path",
+      rebase_path(resources_out_debug_dir, root_build_dir),
+    ]
   }
 
   copy("copy_generated_scripts") {
     deps = [
+      ":build_debug_devtools",
       ":frontend_protocol_sources",
       ":supported_css_properties",
     ]

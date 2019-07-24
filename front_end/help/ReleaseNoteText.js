@@ -7,11 +7,63 @@
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
 const continueToHereShortcut = Host.isMac() ? 'Command' : 'Control';
-const networkSearchShortcut = Host.isMac() ? 'Command + F' : 'Control + F';
-const commandMenuShortcut = Host.isMac() ? 'Command + Shift + P' : 'Control + Shift + P';
+const networkSearchShortcut = Host.isMac() ? 'Command+F' : 'Control+F';
+const commandMenuShortcut = Host.isMac() ? 'Command+Shift+P' : 'Control+Shift+P';
 
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
+  {
+    version: 19,
+    header: 'Highlights from the Chrome 77 update',
+    highlights: [
+      {
+        title: 'Copy element styles',
+        subtitle: 'Right-click an element in the DOM Tree and select Copy > Copy Styles.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#copystyles',
+      },
+      {
+        title: 'Visualize layout shifts',
+        subtitle: `Press ${
+            commandMenuShortcut}, run Show Rendering, and enable Layout Shift Regions to visualize content shifts.`,
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#layoutshifts',
+      },
+      {
+        title: 'Lighthouse 5.1 in the Audits panel',
+        subtitle: 'New audits for checking for PWA installability on iOS, keeping resource counts low, and more.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#audits',
+      },
+      {
+        title: 'OS theme syncing',
+        subtitle: 'DevTools now automatically switches to its own dark theme when it detects an OS in dark mode.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#theming',
+      },
+      {
+        title: 'Keyboard shortcut for opening the Breakpoint Editor',
+        subtitle: `Press ${
+            Host.isMac() ?
+                'Command+Option+B' :
+                'Control+Alt+B'} when focused in the Editor to create Logpoints and Conditional Breakpoints more quickly.`,
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#breakpointeditor',
+      },
+      {
+        title: 'Prefetch cache in Network panel',
+        subtitle: 'The Size column now indicates whether a resource came from the prefetch cache.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#prefetch',
+      },
+      {
+        title: 'Private properties when viewing objects',
+        subtitle: 'The Console now shows private class fields in its object previews.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#privateclassfields',
+      },
+      {
+        title: 'Notification and push message logs',
+        subtitle:
+            'Go to Application > Background Services > Notifications or Messages and click Record to log events for 3 days.',
+        link: 'https://developers.google.com/web/updates/2019/07/devtools#backgroundservices',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/07/devtools',
+  },
   {
     version: 18,
     header: 'Highlights from the Chrome 76 update',

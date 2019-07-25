@@ -557,7 +557,7 @@ Util.numberDateLocale = 'en';
  */
 Util.UIStrings = {
   /** Disclaimer shown to users below the metric values (First Contentful Paint, Time to Interactive, etc) to warn them that the numbers they see will likely change slightly the next time they run Lighthouse. */
-  varianceDisclaimer: 'Values are estimated and may vary.',
+  varianceDisclaimer: 'Values are estimated and may vary. The performance score is [based only on these metrics](https://github.com/GoogleChrome/lighthouse/blob/d2ec9ffbb21de9ad1a0f86ed24575eda32c796f0/docs/scoring.md#how-are-the-scores-weighted).',
   /** Column heading label for the listing of opportunity audits. Each audit title represents an opportunity. There are only 2 columns, so no strict character limit.  */
   opportunityResourceColumnLabel: 'Opportunity',
   /** Column heading label for the estimated page load savings of opportunity audits. Estimated Savings is the total amount of time (in seconds) that Lighthouse computed could be reduced from the total page load time, if the suggested action is taken. There are only 2 columns, so no strict character limit. */
@@ -1094,7 +1094,7 @@ class DetailsRenderer {
       case 'table':
         return this._renderTable(details);
       case 'criticalrequestchain':
-        return CriticalRequestChainRenderer.render(this._dom, this._templateContext, details);
+        return CriticalRequestChainRenderer.render(this._dom, this._templateContext, details, this);
       case 'opportunity':
         return this._renderTable(details);
 
@@ -1138,7 +1138,7 @@ class DetailsRenderer {
    * @param {string} text
    * @return {HTMLElement}
    */
-  _renderTextURL(text) {
+  renderTextURL(text) {
     const url = text;
 
     let displayedPath;
@@ -1154,7 +1154,7 @@ class DetailsRenderer {
     }
 
     const element = this._dom.createElement('div', 'lh-text__url');
-    element.appendChild(this._renderText(displayedPath));
+    element.appendChild(this._renderLink({text: displayedPath, url}));
 
     if (displayedHost) {
       const hostElem = this._renderText(displayedHost);
@@ -1171,14 +1171,18 @@ class DetailsRenderer {
   }
 
   /**
-   * @param {LH.Audit.Details.LinkValue} details
+   * @param {{text: string, url: string}} details
    * @return {Element}
    */
   _renderLink(details) {
     const allowedProtocols = ['https:', 'http:'];
-    const url = new URL(details.url);
-    if (!allowedProtocols.includes(url.protocol)) {
-      // Fall back to just the link text if protocol not allowed.
+    let url;
+    try {
+      url = new URL(details.url);
+    } catch (_) {}
+
+    if (!url || !allowedProtocols.includes(url.protocol)) {
+      // Fall back to just the link text if invalid or protocol not allowed.
       return this._renderText(details.text);
     }
 
@@ -1252,7 +1256,7 @@ class DetailsRenderer {
           return this.renderNode(value);
         }
         case 'url': {
-          return this._renderTextURL(value.value);
+          return this.renderTextURL(value.value);
         }
         default: {
           throw new Error(`Unknown valueType: ${value.type}`);
@@ -1297,7 +1301,7 @@ class DetailsRenderer {
       case 'url': {
         const strValue = String(value);
         if (URL_PREFIXES.some(prefix => strValue.startsWith(prefix))) {
-          return this._renderTextURL(strValue);
+          return this.renderTextURL(strValue);
         } else {
           // Fall back to <pre> rendering if not actually a URL.
           return this._renderCode(strValue);
@@ -1534,9 +1538,10 @@ class CriticalRequestChainRenderer {
    * @param {DOM} dom
    * @param {DocumentFragment} tmpl
    * @param {CRCSegment} segment
+   * @param {DetailsRenderer} detailsRenderer
    * @return {Node}
    */
-  static createChainNode(dom, tmpl, segment) {
+  static createChainNode(dom, tmpl, segment, detailsRenderer) {
     const chainsEl = dom.cloneTemplate('#tmpl-lh-crc__chains', tmpl);
 
     // Hovering over request shows full URL.
@@ -1570,10 +1575,10 @@ class CriticalRequestChainRenderer {
     }
 
     // Fill in url, host, and request size information.
-    const {file, hostname} = Util.parseURL(segment.node.request.url);
+    const url = segment.node.request.url;
+    const linkEl = detailsRenderer.renderTextURL(url);
     const treevalEl = dom.find('.crc-node__tree-value', chainsEl);
-    dom.find('.crc-node__tree-file', treevalEl).textContent = `${file}`;
-    dom.find('.crc-node__tree-hostname', treevalEl).textContent = hostname ? `(${hostname})` : '';
+    treevalEl.appendChild(linkEl);
 
     if (!segment.hasChildren) {
       const {startTime, endTime, transferSize} = segment.node.request;
@@ -1596,14 +1601,15 @@ class CriticalRequestChainRenderer {
    * @param {CRCSegment} segment
    * @param {Element} elem Parent element.
    * @param {LH.Audit.Details.CriticalRequestChain} details
+   * @param {DetailsRenderer} detailsRenderer
    */
-  static buildTree(dom, tmpl, segment, elem, details) {
-    elem.appendChild(CriticalRequestChainRenderer.createChainNode(dom, tmpl, segment));
+  static buildTree(dom, tmpl, segment, elem, details, detailsRenderer) {
+    elem.appendChild(CRCRenderer.createChainNode(dom, tmpl, segment, detailsRenderer));
     if (segment.node.children) {
       for (const key of Object.keys(segment.node.children)) {
-        const childSegment = CriticalRequestChainRenderer.createSegment(segment.node.children, key,
+        const childSegment = CRCRenderer.createSegment(segment.node.children, key,
           segment.startTime, segment.transferSize, segment.treeMarkers, segment.isLastChild);
-        CriticalRequestChainRenderer.buildTree(dom, tmpl, childSegment, elem, details);
+        CRCRenderer.buildTree(dom, tmpl, childSegment, elem, details, detailsRenderer);
       }
     }
   }
@@ -1612,9 +1618,10 @@ class CriticalRequestChainRenderer {
    * @param {DOM} dom
    * @param {ParentNode} templateContext
    * @param {LH.Audit.Details.CriticalRequestChain} details
+   * @param {DetailsRenderer} detailsRenderer
    * @return {Element}
    */
-  static render(dom, templateContext, details) {
+  static render(dom, templateContext, details, detailsRenderer) {
     const tmpl = dom.cloneTemplate('#tmpl-lh-crc', templateContext);
     const containerEl = dom.find('.lh-crc', tmpl);
 
@@ -1626,16 +1633,18 @@ class CriticalRequestChainRenderer {
         Util.formatMilliseconds(details.longestChain.duration);
 
     // Construct visual tree.
-    const root = CriticalRequestChainRenderer.initTree(details.chains);
+    const root = CRCRenderer.initTree(details.chains);
     for (const key of Object.keys(root.tree)) {
-      const segment = CriticalRequestChainRenderer.createSegment(root.tree, key,
-          root.startTime, root.transferSize);
-      CriticalRequestChainRenderer.buildTree(dom, tmpl, segment, containerEl, details);
+      const segment = CRCRenderer.createSegment(root.tree, key, root.startTime, root.transferSize);
+      CRCRenderer.buildTree(dom, tmpl, segment, containerEl, details, detailsRenderer);
     }
 
     return dom.find('.lh-crc-container', tmpl);
   }
 }
+
+// Alias b/c the name is really long.
+const CRCRenderer = CriticalRequestChainRenderer;
 
 // Allow Node require()'ing.
 if (typeof module !== 'undefined' && module.exports) {
@@ -2054,7 +2063,7 @@ function getFilenamePrefix(lhr) {
 
   const filenamePrefix = `${hostname}_${dateStr}_${timeStr}`;
   // replace characters that are unfriendly to filenames
-  return filenamePrefix.replace(/[/?<>\\:*|":]/g, '-');
+  return filenamePrefix.replace(/[/?<>\\:*|"]/g, '-');
 }
 
 // don't attempt to export in the browser.
@@ -2165,7 +2174,7 @@ if (typeof module !== 'undefined' && module.exports) {
 /* eslint-env browser */
 
 /**
- * @fileoverview Adds export button, print, and other dynamic functionality to
+ * @fileoverview Adds tools button, print, and other dynamic functionality to
  * the report.
  */
 
@@ -2195,7 +2204,7 @@ class ReportUIFeatures {
     /** @type {boolean} */
     this._copyAttempt = false;
     /** @type {HTMLElement} */
-    this.exportButton; // eslint-disable-line no-unused-expressions
+    this.toolsButton; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
     this.topbarEl; // eslint-disable-line no-unused-expressions
     /** @type {HTMLElement} */
@@ -2207,8 +2216,8 @@ class ReportUIFeatures {
 
     this.onMediaQueryChange = this.onMediaQueryChange.bind(this);
     this.onCopy = this.onCopy.bind(this);
-    this.onExportButtonClick = this.onExportButtonClick.bind(this);
-    this.onExport = this.onExport.bind(this);
+    this.onToolsButtonClick = this.onToolsButtonClick.bind(this);
+    this.onToolAction = this.onToolAction.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onChevronClick = this.onChevronClick.bind(this);
@@ -2219,7 +2228,7 @@ class ReportUIFeatures {
   }
 
   /**
-   * Adds export button, print, and other functionality to the report. The method
+   * Adds tools button, print, and other functionality to the report. The method
    * should be called whenever the report needs to be re-rendered.
    * @param {LH.Result} report
    */
@@ -2227,7 +2236,7 @@ class ReportUIFeatures {
     this.json = report;
 
     this._setupMediaQueryListeners();
-    this._setupExportButton();
+    this._setupToolsButton();
     this._setupThirdPartyFilter();
     this._setUpCollapseDetailsAfterPrinting();
     this._resetUIState();
@@ -2238,7 +2247,9 @@ class ReportUIFeatures {
     topbarLogo.addEventListener('click', () => this._toggleDarkTheme());
 
     let turnOffTheLights = false;
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    // Do not query the system preferences for DevTools - DevTools should only apply dark theme
+    // if dark is selected in the settings panel.
+    if (!this._dom.isDevTools() && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       turnOffTheLights = true;
     }
 
@@ -2349,12 +2360,12 @@ class ReportUIFeatures {
     root.classList.toggle('lh-narrow', mql.matches);
   }
 
-  _setupExportButton() {
-    this.exportButton = this._dom.find('.lh-export__button', this._document);
-    this.exportButton.addEventListener('click', this.onExportButtonClick);
+  _setupToolsButton() {
+    this.toolsButton = this._dom.find('.lh-tools__button', this._document);
+    this.toolsButton.addEventListener('click', this.onToolsButtonClick);
 
-    const dropdown = this._dom.find('.lh-export__dropdown', this._document);
-    dropdown.addEventListener('click', this.onExport);
+    const dropdown = this._dom.find('.lh-tools__dropdown', this._document);
+    dropdown.addEventListener('click', this.onToolAction);
   }
 
   _setupThirdPartyFilter() {
@@ -2378,12 +2389,11 @@ class ReportUIFeatures {
     tablesWithUrls.forEach((tableEl, index) => {
       const urlItems = this._getUrlItems(tableEl);
       const thirdPartyRows = this._getThirdPartyRows(tableEl, urlItems, this.json.finalUrl);
-      // If all or none of the rows are 3rd party, no checkbox!
-      if (thirdPartyRows.size === urlItems.length || !thirdPartyRows.size) return;
 
       // create input box
       const filterTemplate = this._dom.cloneTemplate('#tmpl-lh-3p-filter', this._templateContext);
-      const filterInput = this._dom.find('input', filterTemplate);
+      const filterInput =
+        /** @type {HTMLInputElement} */ (this._dom.find('input', filterTemplate));
       const id = `lh-3p-filter-label--${index}`;
 
       filterInput.id = id;
@@ -2408,6 +2418,12 @@ class ReportUIFeatures {
           `${thirdPartyRows.size}`;
       this._dom.find('.lh-3p-ui-string', filterTemplate).textContent =
           Util.UIStrings.thirdPartyResourcesLabel;
+
+      // If all or none of the rows are 3rd party, disable the checkbox.
+      if (thirdPartyRows.size === urlItems.length || !thirdPartyRows.size) {
+        filterInput.disabled = true;
+        filterInput.checked = thirdPartyRows.size === urlItems.length;
+      }
 
       // Finally, add checkbox to the DOM.
       if (!tableEl.parentNode) return; // Keep tsc happy.
@@ -2458,9 +2474,8 @@ class ReportUIFeatures {
     this.scoreScaleEl = this._dom.find('.lh-scorescale', this._document);
     this.stickyHeaderEl = this._dom.find('.lh-sticky-header', this._document);
 
-    // Position highlighter at first gauge; will be transformed on scroll.
-    const firstGauge = this._dom.find('.lh-gauge__wrapper', this.stickyHeaderEl);
-    this.highlightEl = this._dom.createChildOf(firstGauge, 'div', 'lh-highlighter');
+    // Highlighter will be absolutely positioned at first gauge, then transformed on scroll.
+    this.highlightEl = this._dom.createChildOf(this.stickyHeaderEl, 'div', 'lh-highlighter');
   }
 
   /**
@@ -2469,7 +2484,7 @@ class ReportUIFeatures {
    */
   onCopy(e) {
     // Only handle copy button presses (e.g. ignore the user copying page text).
-    if (this._copyAttempt) {
+    if (this._copyAttempt && e.clipboardData) {
       // We want to write our own data to the clipboard, not the user's text selection.
       e.preventDefault();
       e.clipboardData.setData('text/plain', JSON.stringify(this.json, null, 2));
@@ -2521,17 +2536,17 @@ class ReportUIFeatures {
     }
   }
 
-  closeExportDropdown() {
-    this.exportButton.classList.remove('active');
+  closeToolsDropdown() {
+    this.toolsButton.classList.remove('active');
   }
 
   /**
-   * Click handler for export button.
+   * Click handler for tools button.
    * @param {Event} e
    */
-  onExportButtonClick(e) {
+  onToolsButtonClick(e) {
     e.preventDefault();
-    this.exportButton.classList.toggle('active');
+    this.toolsButton.classList.toggle('active');
     this._document.addEventListener('keydown', this.onKeyDown);
   }
 
@@ -2541,15 +2556,15 @@ class ReportUIFeatures {
    * be in their closed state (not opened) and the templates should be unstamped.
    */
   _resetUIState() {
-    this.closeExportDropdown();
+    this.closeToolsDropdown();
     this._dom.resetTemplates();
   }
 
   /**
-   * Handler for "export as" button.
+   * Handler for tool button.
    * @param {Event} e
    */
-  onExport(e) {
+  onToolAction(e) {
     e.preventDefault();
 
     const el = /** @type {?Element} */ (e.target);
@@ -2564,12 +2579,12 @@ class ReportUIFeatures {
         break;
       case 'print-summary':
         this.collapseAllDetails();
-        this.closeExportDropdown();
+        this.closeToolsDropdown();
         this._print();
         break;
       case 'print-expanded':
         this.expandAllDetails();
-        this.closeExportDropdown();
+        this.closeToolsDropdown();
         this._print();
         break;
       case 'save-json': {
@@ -2603,7 +2618,7 @@ class ReportUIFeatures {
       }
     }
 
-    this.closeExportDropdown();
+    this.closeToolsDropdown();
     this._document.removeEventListener('keydown', this.onKeyDown);
   }
 
@@ -2617,7 +2632,7 @@ class ReportUIFeatures {
    */
   onKeyDown(e) {
     if (e.keyCode === 27) { // ESC
-      this.closeExportDropdown();
+      this.closeToolsDropdown();
     }
   }
 
@@ -2628,7 +2643,7 @@ class ReportUIFeatures {
   onKeyUp(e) {
     // Ctrl+P - Expands audit details when user prints via keyboard shortcut.
     if ((e.ctrlKey || e.metaKey) && e.keyCode === 80) {
-      this.closeExportDropdown();
+      this.closeToolsDropdown();
     }
   }
 
@@ -3391,14 +3406,14 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     }
 
     // Metrics.
-    const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
     const metricAuditsEl = this.renderAuditGroup(groups.metrics);
 
     // Metric descriptions toggle.
     const toggleTmpl = this.dom.cloneTemplate('#tmpl-lh-metrics-toggle', this.templateContext);
     const toggleEl = this.dom.find('.lh-metrics-toggle', toggleTmpl);
-    metricAuditsEl.prepend(...toggleEl.childNodes);
+    metricAuditsEl.append(...toggleEl.childNodes);
 
+    const metricAudits = category.auditRefs.filter(audit => audit.group === 'metrics');
     const keyMetrics = metricAudits.filter(a => a.weight >= 3);
     const otherMetrics = metricAudits.filter(a => a.weight < 3);
 
@@ -3416,7 +3431,8 @@ class PerformanceCategoryRenderer extends CategoryRenderer {
     // 'Values are estimated and may vary' is used as the category description for PSI
     if (environment !== 'PSI') {
       const estValuesEl = this.dom.createChildOf(metricAuditsEl, 'div', 'lh-metrics__disclaimer');
-      estValuesEl.textContent = Util.UIStrings.varianceDisclaimer;
+      const disclaimerEl = this.dom.convertMarkdownLinkSnippets(Util.UIStrings.varianceDisclaimer);
+      estValuesEl.appendChild(disclaimerEl);
     }
 
     metricAuditsEl.classList.add('lh-audit-group--metrics');
@@ -3531,6 +3547,16 @@ if (typeof module !== 'undefined' && module.exports) {
 
 /* globals self, Util, CategoryRenderer */
 
+/**
+ * An always-increasing counter for making unique SVG ID suffixes.
+ */
+const getUniqueSuffix = (() => {
+  let svgSuffix = 0;
+  return function() {
+    return svgSuffix++;
+  };
+})();
+
 class PwaCategoryRenderer extends CategoryRenderer {
   /**
    * @param {LH.ReportResult.Category} category
@@ -3574,6 +3600,11 @@ class PwaCategoryRenderer extends CategoryRenderer {
     const wrapper = /** @type {HTMLAnchorElement} */ (this.dom.find('.lh-gauge--pwa__wrapper',
       tmpl));
     wrapper.href = `#${category.id}`;
+
+    // Correct IDs in case multiple instances end up in the page.
+    const svgRoot = tmpl.querySelector('svg');
+    if (!svgRoot) throw new Error('no SVG element found in PWA score gauge template');
+    PwaCategoryRenderer._makeSvgReferencesUnique(svgRoot);
 
     const allGroups = this._getGroupIds(category.auditRefs);
     const passingGroupIds = this._getPassingGroupIds(category.auditRefs);
@@ -3659,6 +3690,38 @@ class PwaCategoryRenderer extends CategoryRenderer {
     }
 
     return auditsElem;
+  }
+
+  /**
+   * Alters SVG id references so multiple instances of an SVG element can coexist
+   * in a single page. If `svgRoot` has a `<defs>` block, gives all elements defined
+   * in it unique ids, then updates id references (`<use xlink:href="...">`,
+   * `fill="url(#...)"`) to the altered ids in all descendents of `svgRoot`.
+   * @param {SVGElement} svgRoot
+   */
+  static _makeSvgReferencesUnique(svgRoot) {
+    const defsEl = svgRoot.querySelector('defs');
+    if (!defsEl) return;
+
+    const idSuffix = getUniqueSuffix();
+    const elementsToUpdate = defsEl.querySelectorAll('[id]');
+    for (const el of elementsToUpdate) {
+      const oldId = el.id;
+      const newId = `${oldId}-${idSuffix}`;
+      el.id = newId;
+
+      // Update all <use>s.
+      const useEls = svgRoot.querySelectorAll(`use[href="#${oldId}"]`);
+      for (const useEl of useEls) {
+        useEl.setAttribute('href', `#${newId}`);
+      }
+
+      // Update all fill="url(#...)"s.
+      const fillEls = svgRoot.querySelectorAll(`[fill="url(#${oldId})"]`);
+      for (const fillEl of fillEls) {
+        fillEl.setAttribute('fill', `url(#${newId})`);
+      }
+    }
   }
 }
 
@@ -3870,7 +3933,7 @@ class ReportRenderer {
     const headerContainer = this._dom.createElement('div');
     headerContainer.appendChild(this._renderReportHeader());
 
-    const container = this._dom.createElement('div', 'lh-container');
+    const reportContainer = this._dom.createElement('div', 'lh-container');
     const reportSection = this._dom.createElement('div', 'lh-report');
     reportSection.appendChild(this._renderReportWarnings(report));
 
@@ -3893,7 +3956,7 @@ class ReportRenderer {
       const stickyHeader = this._dom.createElement('div', 'lh-sticky-header');
       stickyHeader.append(
         ...this._renderScoreGauges(report, categoryRenderer, specificCategoryRenderers));
-      container.appendChild(stickyHeader);
+      reportContainer.appendChild(stickyHeader);
     }
 
     const categories = reportSection.appendChild(this._dom.createElement('div', 'lh-categories'));
@@ -3909,9 +3972,9 @@ class ReportRenderer {
     const topbarDocumentFragment = this._renderReportTopbar(report);
 
     reportFragment.appendChild(topbarDocumentFragment);
-    reportFragment.appendChild(container);
-    container.appendChild(headerContainer);
-    container.appendChild(reportSection);
+    reportFragment.appendChild(reportContainer);
+    reportContainer.appendChild(headerContainer);
+    reportContainer.appendChild(reportSection);
     reportSection.appendChild(this._renderReportFooter(report));
 
     return reportFragment;

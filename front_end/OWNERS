@@ -5,3 +5,6 @@ einbinder@chromium.org
 luoe@chromium.org
 lushnikov@chromium.org
 pfeldman@chromium.org
+
+per-file audits*=cjamcl@google.com
+per-file audits*=paulirish@chromium.org

@@ -19,8 +19,3 @@ npm-debug.log
 package-lock.json
 .vscode
 /front_end/*/jsconfig.json
-
-# These are generated for build and would be put in the symlinked folder (thus this folder)
-front_end/InspectorBackendCommands.js
-front_end/SupportedCSSProperties.js
-front_end/accessibility/ARIAProperties.js

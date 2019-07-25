@@ -22,10 +22,10 @@
     Requests may be rewritten by local overrides
   </message>
   <message name="IDS_DEVTOOLS_37234a1bcbabe4e8e7448f4bbcf5c2b4" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>kb/s
+    <ph name="THROUGHPUTINKBPS">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>kb/s
   </message>
   <message name="IDS_DEVTOOLS_38c8cb828795cd6ff1cddda9b4ffcfa8" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS___________">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>Mb/s
+    <ph name="THROUGHPUTINKBPS___________">$1d<ex>25</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>Mb/s
   </message>
   <message name="IDS_DEVTOOLS_4fafba98ddd8a8663d8775a928f2450e" desc="Icon title in Network Panel Indicator of the Network panel">
     Requests may be blocked
@@ -76,7 +76,7 @@
     <ph name="RATE">$1d<ex>2</ex></ph>× slowdown
   </message>
   <message name="IDS_DEVTOOLS_d33468989239f9d3c708d05dcd7824f3" desc="Text in Throttling Settings Tab of the Network panel">
-    <ph name="THROUGHPUTINKBPS_______">$1.1f<ex>25.4</ex></ph><ph name="DELIMITER">$2s<ex> </ex></ph>Mb/s
+    <ph name="THROUGHPUTINKBPS_______">$1.1f<ex>25.4</ex></ph><ph name="DELIMITER">$2s<ex>''' '''</ex></ph>Mb/s
   </message>
   <message name="IDS_DEVTOOLS_d49429dd3e92758c218f94ed0219d620" desc="Icon title in Throttling Manager of the Network panel">
     CPU throttling is enabled

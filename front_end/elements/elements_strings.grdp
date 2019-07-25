@@ -10,7 +10,7 @@
     Add box-shadow
   </message>
   <message name="IDS_DEVTOOLS_084cd932d6dd317197a20945c76603e2" desc="Text of a DOM element in Styles Sidebar Pane of the Elements panel">
-    Inherited from<ph name="___">$1s<ex> </ex></ph>
+    Inherited from<ph name="___">$1s<ex>''' '''</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_0b17e22ff13be64e3216014d9c2a5354" desc="Title of a setting under the Elements category that can be invoked through the Command Menu">
     Enable DOM word wrap

@@ -331,9 +331,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_53081d6225e780e0f0d94351251be91c" desc="Text of a DOM element in Timeline UIUtils of the Performance panel">
     (changed &quot;<ph name="INVALIDATION_SELECTORPART">$1s<ex>part</ex></ph>&quot;<ph name="EXTRADATA">$2s<ex>a, b</ex></ph>)
   </message>
-  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text in Timeline UIUtils of the Performance panel">
-    Stack Trace
-  </message>
   <message name="IDS_DEVTOOLS_5402f18025999ebf70fd56d8ca1b1909" desc="Text in Timeline UIUtils of the Performance panel">
     GC Event
   </message>

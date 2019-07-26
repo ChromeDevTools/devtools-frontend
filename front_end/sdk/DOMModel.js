@@ -75,6 +75,7 @@ SDK.DOMNode = class {
     this._frameOwnerFrameId = payload.frameId || null;
     this._xmlVersion = payload.xmlVersion;
     this._isSVGNode = !!payload.isSVG;
+    this._creationStackTrace = null;
 
     this._shadowRoots = [];
 
@@ -158,6 +159,18 @@ SDK.DOMNode = class {
    */
   isSVGNode() {
     return this._isSVGNode;
+  }
+
+  /**
+   * @return {!Promise<?Protocol.Runtime.StackTrace>}
+   */
+  creationStackTrace() {
+    if (this._creationStackTrace)
+      return this._creationStackTrace;
+
+    const stackTracesPromise = this._agent.invoke_getNodeStackTraces({nodeId: this.id});
+    this._creationStackTrace = stackTracesPromise.then(res => res.creation);
+    return this._creationStackTrace;
   }
 
   /**
@@ -1111,6 +1124,9 @@ SDK.DOMModel = class extends SDK.SDKModel {
 
     if (!target.suspended())
       this._agent.enable();
+
+    if (Runtime.experiments.isEnabled('captureNodeCreationStacks'))
+      this._agent.setNodeStackTracesEnabled(true);
   }
 
   /**

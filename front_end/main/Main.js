@@ -107,6 +107,7 @@ Main.Main = class {
   _initializeExperiments() {
     // Keep this sorted alphabetically: both keys and values.
     Runtime.experiments.register('applyCustomStylesheet', 'Allow custom UI themes');
+    Runtime.experiments.register('captureNodeCreationStacks', 'Capture node creation stacks');
     Runtime.experiments.register('sourcesPrettyPrint', 'Automatically pretty print in the Sources Panel');
     Runtime.experiments.register('backgroundServices', 'Background web platform feature events', true);
     Runtime.experiments.register('backgroundServicesNotifications', 'Background services section for Notifications');

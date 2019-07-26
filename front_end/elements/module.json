@@ -269,6 +269,16 @@
             "order": 7,
             "persistence": "permanent",
             "className": "Elements.PropertiesWidget"
+        },
+        {
+            "type": "view",
+            "experiment": "captureNodeCreationStacks",
+            "location": "elements-sidebar",
+            "id": "elements.domCreation",
+            "title": "Stack Trace",
+            "order": 10,
+            "persistence": "permanent",
+            "className": "Elements.NodeStackTraceWidget"
         }
     ],
     "dependencies": [
@@ -293,6 +303,7 @@
         "MetricsSidebarPane.js",
         "PlatformFontsWidget.js",
         "PropertiesWidget.js",
+        "NodeStackTraceWidget.js",
         "StylePropertyHighlighter.js",
         "StylesSidebarPane.js",
         "StylePropertyTreeElement.js",
@@ -314,6 +325,7 @@
         "metricsSidebarPane.css",
         "platformFontsWidget.css",
         "propertiesWidget.css",
+        "nodeStackTraceWidget.css",
         "stylesSectionTree.css",
         "stylesSidebarPane.css"
     ]

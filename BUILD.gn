@@ -244,6 +244,8 @@ all_devtools_files = [
   "front_end/elements/MarkerDecorator.js",
   "front_end/elements/metricsSidebarPane.css",
   "front_end/elements/MetricsSidebarPane.js",
+  "front_end/elements/nodeStackTraceWidget.css",
+  "front_end/elements/NodeStackTraceWidget.js",
   "front_end/elements/module.json",
   "front_end/elements/platformFontsWidget.css",
   "front_end/elements/PlatformFontsWidget.js",

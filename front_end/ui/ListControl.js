@@ -239,10 +239,11 @@ UI.ListControl = class {
         return;
       }
     }
-    if (this._selectedIndex !== index)
-      this._select(index);
+    // Scrolling the item before selection ensures it is in the DOM.
     if (index !== -1 && !dontScroll)
       this._scrollIntoView(index, center);
+    if (this._selectedIndex !== index)
+      this._select(index);
   }
 
   /**

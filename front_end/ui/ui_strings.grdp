@@ -54,8 +54,8 @@
   <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="Text in the Shortcuts page to explain a keyboard shortcut (step into a function in debugger)">
     Step into
   </message>
-  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Accessible name in Soft Context Menu">
-    <ph name="ITEM_LABEL">$1s<ex>Preserve log</ex></ph>, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + P</ex></ph>
+  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Accessibility label for checkable items in the SoftContextMenu">
+    <ph name="ITEM_LABEL">$1s</ph>, <ph name="CHECKEDSTATE">$2s</ph>
   </message>
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
@@ -65,6 +65,9 @@
   </message>
   <message name="IDS_DEVTOOLS_2ea54663ae9e3a586132a34a98d85ccf" desc="Text for the title of asynchronous function calls group in Call Stack">
     Async Call
+  </message>
+  <message name="IDS_DEVTOOLS_3793ea52a7be2d7deafd858fda50775c" desc="Accessibility label for checked items in the SoftContextMenu">
+    checked
   </message>
   <message name="IDS_DEVTOOLS_3a39eb38e879f66d1c57dedd478272da" desc="label to open link externally">
     Open in new tab
@@ -228,11 +231,17 @@
   <message name="IDS_DEVTOOLS_9f98ff6e7e9fd0475daeb2005234ab5d" desc="Text to show how many kilobytes the data size is. The number has 0 digit decimal point">
     <ph name="KILOBYTES">$1.0f<ex>2</ex></ph> KB
   </message>
+  <message name="IDS_DEVTOOLS_a169aab715858133b50d2e72ece74f14" desc="Accessibility label for checkable SoftContextMenuItems with shortcuts">
+    <ph name="ITEM_LABEL">$1s</ph>, <ph name="ITEM_SHORTCUT">$2s</ph>, <ph name="CHECKEDSTATE">$3s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_a7659dc1b20557ca85c11efc57ace59f" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle all breakpoints in debugger)">
     Toggle all breakpoints
   </message>
   <message name="IDS_DEVTOOLS_a950da8e902568f9a6879abe4313efe7" desc="Text content of content element">
     Once page is reloaded, DevTools will automatically reconnect.
+  </message>
+  <message name="IDS_DEVTOOLS_ad91a1da588ce256d30b1af38f78f84e" desc="Accessibility label for unchecked items in the SoftContextMenu">
+    unchecked
   </message>
   <message name="IDS_DEVTOOLS_addec426932e71323700afa1911f8f1c" desc="Text on a button to show more info in the infobar">
     more
@@ -248,12 +257,6 @@
   </message>
   <message name="IDS_DEVTOOLS_b228e7bd736e688236ab3aa37996bf8f" desc="Text in the Shortcuts page to explain a keyboard shortcut (decrement value by a number in Styles pane) in the Shortcuts page">
     Decrement by <ph name="__">$1f<ex>2.12</ex></ph>
-  </message>
-  <message name="IDS_DEVTOOLS_b4b10705557aadcdad1f3182cadeaa76" desc="Accessible name in Soft Context Menu">
-    <ph name="ITEM_LABEL">$1s<ex>Setting</ex></ph>, checked
-  </message>
-  <message name="IDS_DEVTOOLS_b508f4cb8252d1d90689d1a61344c8fc" desc="Accessible name in Soft Context Menu">
-    <ph name="ITEM_LABEL">$1s<ex>Setting</ex></ph>, checked, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + X</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_b6da8d6392710f305d7176a134971514" desc="Text in UIUtils">
     Promise rejected (async)

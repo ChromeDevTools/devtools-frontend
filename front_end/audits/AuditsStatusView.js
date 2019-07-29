@@ -48,7 +48,6 @@ Audits.StatusView = class {
     `;
 
     auditsViewElement.appendChild(fragment.element());
-    auditsViewElement.tabIndex = 0;
 
     this._statusView = fragment.$('status-view');
     this._statusHeader = fragment.$('status-header');

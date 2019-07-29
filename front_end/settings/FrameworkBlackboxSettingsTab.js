@@ -158,9 +158,13 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
     function patternValidator(item, index, input) {
       const pattern = input.value.trim();
       const patterns = this._setting.getAsArray();
+
+      if (!pattern.length)
+        return {valid: false, errorMessage: ls`Pattern cannot be empty`};
+
       for (let i = 0; i < patterns.length; ++i) {
         if (i !== index && patterns[i].pattern === pattern)
-          return {valid: false};
+          return {valid: false, errorMessage: ls`Pattern already exists`};
       }
 
       let regex;
@@ -168,7 +172,10 @@ Settings.FrameworkBlackboxSettingsTab = class extends UI.VBox {
         regex = new RegExp(pattern);
       } catch (e) {
       }
-      return {valid: !!(pattern && regex)};
+      if (!regex)
+        return {valid: false, errorMessage: ls`Pattern must be a valid regular expression`};
+      else
+        return {valid: true};
     }
 
     /**

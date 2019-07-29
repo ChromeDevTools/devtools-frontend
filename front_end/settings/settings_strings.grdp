@@ -12,6 +12,9 @@
   <message name="IDS_DEVTOOLS_331f303e56b067dd84abf94c3bd349c4" desc="Header text content in Framework Blackbox Settings Tab of the Settings">
     Framework Blackboxing
   </message>
+  <message name="IDS_DEVTOOLS_34fbf59db640eda5a3c07d59333f1d18" desc="Error message in Framework Blackbox settings pane that declares pattern must not be empty">
+    Pattern cannot be empty
+  </message>
   <message name="IDS_DEVTOOLS_4829262cecb9828817b33e0f9c907f91" desc="Text in Settings Screen of the Settings">
     Experiments
   </message>
@@ -20,6 +23,9 @@
   </message>
   <message name="IDS_DEVTOOLS_57391192dfa1f247ad015a0fe2eca48e" desc="Aria accessible name in Framework Blackbox Settings Tab of the Settings">
     Pattern
+  </message>
+  <message name="IDS_DEVTOOLS_87ae3156c118350d6b13cdebc37485e9" desc="Error message in Framework Blackbox settings pane that declares pattern must be a valid regular expression">
+    Pattern must be a valid regular expression
   </message>
   <message name="IDS_DEVTOOLS_89bacc9715d030658f2602ce65426a7f" desc="Warning text content in Settings Screen of the Settings">
     WARNING:
@@ -44,6 +50,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d2ef7dcdede23820e315ca1c3425ba4f" desc="Text in Framework Blackbox Settings Tab of the Settings">
     Debugger will skip through the scripts and will not stop on exceptions thrown by them.
+  </message>
+  <message name="IDS_DEVTOOLS_dd08f9d5ae3e9ba421754fd31db1a44a" desc="Error message in Framework Blackbox settings pane that declares pattern already exits">
+    Pattern already exists
   </message>
   <message name="IDS_DEVTOOLS_e3b2f7d0af9c89f5ea504968ffcd2ef0" desc="Message text content in Settings Screen of the Settings">
     These experiments could be dangerous and may require restart.

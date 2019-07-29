@@ -55,7 +55,7 @@
     Step into
   </message>
   <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Accessibility label for checkable items in the SoftContextMenu">
-    <ph name="ITEM_LABEL">$1s</ph>, <ph name="CHECKEDSTATE">$2s</ph>
+    <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>checked</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
@@ -232,7 +232,7 @@
     <ph name="KILOBYTES">$1.0f<ex>2</ex></ph> KB
   </message>
   <message name="IDS_DEVTOOLS_a169aab715858133b50d2e72ece74f14" desc="Accessibility label for checkable SoftContextMenuItems with shortcuts">
-    <ph name="ITEM_LABEL">$1s</ph>, <ph name="ITEM_SHORTCUT">$2s</ph>, <ph name="CHECKEDSTATE">$3s</ph>
+    <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="ITEM_SHORTCUT">$2s<ex>Ctrl + P</ex></ph>, <ph name="CHECKEDSTATE">$3s<ex>checked</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_a7659dc1b20557ca85c11efc57ace59f" desc="Text in the Shortcuts page to explain a keyboard shortcut (toggle all breakpoints in debugger)">
     Toggle all breakpoints

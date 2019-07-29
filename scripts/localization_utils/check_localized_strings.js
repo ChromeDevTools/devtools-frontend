@@ -278,11 +278,6 @@ function convertToFrontendPlaceholders(message) {
 async function parseGRDPFile(filePath) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
 
-  function lineNumberOfIndex(str, index) {
-    const stringToIndex = str.substr(0, index);
-    return stringToIndex.split('\n').length;
-  }
-
   function stripWhitespacePadding(message) {
     let match = message.match(/^'''/);
     if (match)
@@ -304,7 +299,7 @@ async function parseGRDPFile(filePath) {
   const messageRegex = new RegExp('<message[^>]*name="([^"]*)"[^>]*desc="([^"]*)"[^>]*>\s*\n(.*?)<\/message>', 'gms');
   let match;
   while ((match = messageRegex.exec(fileContent)) !== null) {
-    const line = lineNumberOfIndex(fileContent, match.index);
+    const line = localizationUtils.lineNumberOfIndex(fileContent, match.index);
     const actualIDSKey = match[1];
     const description = match[2];
     let message = match[3];

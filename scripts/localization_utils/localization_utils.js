@@ -255,6 +255,12 @@ function getIDSKey(str) {
   return `${IDSPrefix}${md5(str)}`
 }
 
+// Get line number in the file of a character at given index
+function lineNumberOfIndex(str, index) {
+  const stringToIndex = str.substr(0, index);
+  return stringToIndex.split('\n').length;
+}
+
 module.exports = {
   createGrdpMessage,
   escodegen,
@@ -269,6 +275,7 @@ module.exports = {
   GRD_PATH,
   IDSPrefix,
   isLocalizationCall,
+  lineNumberOfIndex,
   modifyStringIntoGRDFormat,
   parseFileContent,
   sanitizeStringIntoCppFormat,

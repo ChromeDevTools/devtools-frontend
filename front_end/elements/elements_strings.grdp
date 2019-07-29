@@ -117,7 +117,7 @@
   <message name="IDS_DEVTOOLS_5134111907df828fc575c69e22480c1e" desc="Text in Elements Tree Element of the Elements panel">
     Hide element
   </message>
-  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Text in Timeline UIUtils of the Performance panel">
+  <message name="IDS_DEVTOOLS_539dddc574d3cd85ba73df93df7a76d0" desc="Title of the Stack Trace widget in the Elements panel">
     Stack Trace
   </message>
   <message name="IDS_DEVTOOLS_581b87189d0bd86aa707e42553032a3e" desc="Element text content in Elements Tree Element of the Elements panel">
@@ -180,7 +180,7 @@
   <message name="IDS_DEVTOOLS_7c90d60be6418bb4a858b3733b2560a8" desc="Text in Styles Sidebar Pane of the Elements panel">
     Unknown property name
   </message>
-  <message name="IDS_DEVTOOLS_80d9fa4ba717772a3fb8305172064ff9" desc="">
+  <message name="IDS_DEVTOOLS_80d9fa4ba717772a3fb8305172064ff9" desc="Message displayed when no JavaScript stack trace is available for the DOM node in the Stack Trace widget of the Elements panel">
     No stack trace available
   </message>
   <message name="IDS_DEVTOOLS_8551fe4a09c280c278283c10a5a6aa4e" desc="Title of  in styles sidebar pane of the elements panel">

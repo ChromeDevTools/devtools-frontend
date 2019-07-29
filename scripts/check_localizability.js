@@ -4,6 +4,7 @@
 'use strict';
 
 // Description: Scans for localizability violations in the DevTools front-end.
+// Checks all .grdp files and reports messages without descriptions and placeholder examples.
 // Audits all Common.UIString(), UI.formatLocalized(), and ls`` calls and
 // checks for misuses of concatenation and conditionals. It also looks for
 // specific arguments to functions that are expected to be a localized string.
@@ -40,18 +41,16 @@ async function main() {
 
   try {
     let filePaths = [];
-    if (process.argv[2] === '-a') {
-      const frontendPath = path.resolve(__dirname, '..', 'front_end');
-      await localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']);
-    } else {
+    const frontendPath = path.resolve(__dirname, '..', 'front_end');
+    let filePathPromises = [localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.grdp'])];
+    if (process.argv[2] === '-a')
+      filePathPromises.push(localizationUtils.getFilesFromDirectory(frontendPath, filePaths, ['.js']));
+    else
       filePaths = process.argv.slice(2);
-    }
+    await Promise.all(filePathPromises);
 
-    const promises = [];
-    for (const filePath of filePaths)
-      promises.push(auditFileForLocalizability(filePath, errors));
-
-    await Promise.all(promises);
+    const auditFilePromises = filePaths.map(filePath => auditFileForLocalizability(filePath, errors));
+    await Promise.all(auditFilePromises);
   } catch (err) {
     console.log(err);
     process.exit(1);
@@ -130,7 +129,7 @@ function checkConcatenation(parentNode, node, filePath, errors) {
       if (hasConcatenationViolation) {
         const code = escodegen.generate(node);
         addError(
-            `${filePath}${
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
                 localizationUtils.getLocationMessage(
                     node.loc)}: string concatenation should be changed to variable substitution with ls: ${code}`,
             errors);
@@ -167,8 +166,9 @@ function checkFunctionArgument(functionName, argumentIndex, node, filePath, erro
           order = `${argumentIndex + 1}th`;
       }
       addError(
-          `${filePath}${localizationUtils.getLocationMessage(node.loc)}: ${order} argument to ${
-              functionName}() should be localized: ${escodegen.generate(node)}`,
+          `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+              localizationUtils.getLocationMessage(
+                  node.loc)}: ${order} argument to ${functionName}() should be localized: ${escodegen.generate(node)}`,
           errors);
     }
   }
@@ -207,13 +207,14 @@ function analyzeNode(parentNode, node, filePath, errors) {
       if (firstArgType !== esprimaTypes.LITERAL && firstArgType !== esprimaTypes.TEMP_LITERAL &&
           firstArgType !== esprimaTypes.IDENTIFIER && !excludeErrors.includes(code)) {
         addError(
-            `${filePath}${localizationUtils.getLocationMessage(node.loc)}: first argument to call should be a string: ${
-                code}`,
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: first argument to call should be a string: ${code}`,
             errors);
       }
       if (includesConditionalExpression(node.arguments.slice(1))) {
         addError(
-            `${filePath}${localizationUtils.getLocationMessage(node.loc)}: conditional(s) found in ${
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: conditional(s) found in ${
                 code}. Please extract conditional(s) out of the localization call.`,
             errors);
       }
@@ -221,7 +222,8 @@ function analyzeNode(parentNode, node, filePath, errors) {
     case 'Tagged Template':
       if (includesConditionalExpression(node.quasi.expressions)) {
         addError(
-            `${filePath}${localizationUtils.getLocationMessage(node.loc)}: conditional(s) found in ${
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)}${
+                localizationUtils.getLocationMessage(node.loc)}: conditional(s) found in ${
                 code}. Please extract conditional(s) out of the localization call.`,
             errors);
       }
@@ -238,8 +240,50 @@ function analyzeNode(parentNode, node, filePath, errors) {
   }
 }
 
+function auditGrdpFile(filePath, fileContent, errors) {
+  function reportMissingPlaceholderExample(messageContent, lineNumber) {
+    const phRegex = /<ph[^>]*name="([^"]*)">\$\d(s|d|\.\df)(?!<ex>)<\/ph>/gms;
+    let match;
+    // ph tag that contains $1.2f format placeholder without <ex>
+    // match[0]: full match
+    // match[1]: ph name
+    while ((match = phRegex.exec(messageContent)) !== null) {
+      addError(
+          `${localizationUtils.getRelativeFilePathFromSrc(filePath)} Line ${
+              lineNumber +
+              localizationUtils.lineNumberOfIndex(
+                  messageContent, match.index)}: missing <ex> in <ph> tag with the name "${match[1]}"`,
+          errors);
+    }
+  }
+
+  function reportMissingDescriptionAndPlaceholderExample() {
+    const messageRegex = /<message[^>]*name="([^"]*)"[^>]*desc="([^"]*)"[^>]*>\s*\n(.*?)<\/message>/gms;
+    let match;
+    // match[0]: full match
+    // match[1]: message IDS_ key
+    // match[2]: description
+    // match[3]: message content
+    while ((match = messageRegex.exec(fileContent)) !== null) {
+      const lineNumber = localizationUtils.lineNumberOfIndex(fileContent, match.index);
+      if (match[2].trim() === '') {
+        addError(
+            `${localizationUtils.getRelativeFilePathFromSrc(filePath)} Line ${
+                lineNumber}: missing description for message with the name "${match[1]}"`,
+            errors);
+      }
+      reportMissingPlaceholderExample(match[3], lineNumber);
+    }
+  }
+
+  reportMissingDescriptionAndPlaceholderExample();
+}
+
 async function auditFileForLocalizability(filePath, errors) {
   const fileContent = await localizationUtils.parseFileContent(filePath);
+  if (path.extname(filePath) === '.grdp')
+    return auditGrdpFile(filePath, fileContent, errors);
+
   const ast = esprima.parse(fileContent, {loc: true});
 
   const relativeFilePath = localizationUtils.getRelativeFilePathFromSrc(filePath);

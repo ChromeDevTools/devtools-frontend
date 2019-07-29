@@ -37,7 +37,7 @@
     Portrait
   </message>
   <message name="IDS_DEVTOOLS_1ef9df27aa7a5f5c87af01dbcbb1e7fc" desc="Error message in the Geolocations settings pane that declares the maximum length of the location name">
-    Location name must be less than <ph name="MAXLENGTH">$1s</ph> characters
+    Location name must be less than <ph name="MAXLENGTH">$1s<ex>50</ex></ph> characters
   </message>
   <message name="IDS_DEVTOOLS_21e2bb42873eddcb9b476b8eafbe0c18" desc="A context menu item in the Device Mode Toolbar of the Device Toolbar">
     Reset to defaults
@@ -82,7 +82,7 @@
     Manage
   </message>
   <message name="IDS_DEVTOOLS_34fbcb0154374365e4a109c39b7dfe3a" desc="Error message in the Geolocations settings pane that declares the maximum value for the longitude input">
-    Longitude must be less than or equal to <ph name="MAXLONG">$1s</ph>
+    Longitude must be less than or equal to <ph name="MAXLONG">$1s<ex>180</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_36384a9ea3ec791e6bd4ab6b36f2ff2a" desc="Text in Device Mode View of the Device Toolbar">
     Tablet
@@ -157,7 +157,7 @@
     Width must be a number.
   </message>
   <message name="IDS_DEVTOOLS_741f22b07be0231ec5e3040ae4291710" desc="Error message in the Geolocations settings pane that declares the maximum value for the latitude input">
-    Latitude must be less than or equal to <ph name="MAXLAT">$1s</ph>
+    Latitude must be less than or equal to <ph name="MAXLAT">$1s<ex>90</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_75a37bfcbfe2678114513aef903c4ba5" desc="Text in Device Mode Toolbar of the Device Toolbar">
     Default: <ph name="DEFAULTVALUE">$1.1f<ex>4.3</ex></ph>
@@ -214,7 +214,7 @@
     Longitude
   </message>
   <message name="IDS_DEVTOOLS_9d3d232f9353731108f5756ec4bfa4b6" desc="Error message in the Geolocations settings pane that declares the minimum value for the latitude input">
-    Latitude must be greater than or equal to <ph name="MINLAT">$1s</ph>
+    Latitude must be greater than or equal to <ph name="MINLAT">$1s<ex>-90</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_9fa08fa6b5a65fd3a2e14858a2559027" desc="Text in Sensors View of the Device Toolbar">
     β (beta)
@@ -292,7 +292,7 @@
     Height must be less than or equal to <ph name="EMULATION_DEVICEMODEMODEL_MAXDEVICESIZE">$1s<ex>9999</ex></ph>.
   </message>
   <message name="IDS_DEVTOOLS_d0f57f3a1b5b308c6cd7af48b420eb03" desc="Error message in the Geolocations settings pane that declares the minimum value for the longitude input">
-    Longitude must be greater than or equal to <ph name="MINLONG">$1s</ph>
+    Longitude must be greater than or equal to <ph name="MINLONG">$1s<ex>-180</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_d15305d7a4e34e02489c74a5ef542f36" desc="Text in Sensors View of the Device Toolbar">
     Off

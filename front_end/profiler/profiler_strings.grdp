@@ -186,6 +186,9 @@
   <message name="IDS_DEVTOOLS_678d0a4421b60dc59999ac02837496a6" desc="Text in Heap Snapshot Data Grids of a profiler tool">
     Constructor
   </message>
+  <message name="IDS_DEVTOOLS_6861e4e238e968ec0ee3e9d3cb3b893f" desc="Alternate text read when describing the size of a memory allocation in bytes and percentage of heap.">
+    <ph name="THIS_DATA_COLUMNID_">$1s</ph> bytes, <ph name="THIS_DATA_PERCENTCOLUMN_">$2s</ph>
+  </message>
   <message name="IDS_DEVTOOLS_6a5084781ea4e6bf97a2dcd0cda17a1a" desc="Title of an action under the Performance category that can be invoked through the Command Menu">
     Start recording heap allocations
   </message>

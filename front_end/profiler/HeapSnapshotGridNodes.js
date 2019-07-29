@@ -194,11 +194,17 @@ Profiler.HeapSnapshotGridNode = class extends DataGrid.DataGridNode {
   _createValueCell(columnId) {
     const cell = UI.html`<td class="numeric-column" />`;
     if (this.dataGrid.snapshot.totalSize !== 0) {
-      const div = UI.html`<div><span>${this.data[columnId]}</span></div>`;
+      const div = createElement('div');
+      const valueSpan = UI.html`<span>${this.data[columnId]}</span>`;
+      div.appendChild(valueSpan);
       const percentColumn = columnId + '-percent';
       if (percentColumn in this.data) {
-        div.appendChild(UI.html`<span class="percent-column">${this.data[percentColumn]}</span>`);
+        const percentSpan = UI.html`<span class="percent-column">${this.data[percentColumn]}</span>`;
+        div.appendChild(percentSpan);
         div.classList.add('profile-multiple-values');
+        UI.ARIAUtils.markAsHidden(valueSpan);
+        UI.ARIAUtils.markAsHidden(percentSpan);
+        UI.ARIAUtils.setAccessibleName(div, ls`${this.data[columnId]}, ${this.data[percentColumn]}`);
       }
       cell.appendChild(div);
     }

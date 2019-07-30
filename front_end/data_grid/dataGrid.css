@@ -173,6 +173,11 @@
     background-color: hsla(0, 0%, 90%, 1);
 }
 
+.data-grid .top-filler-td {
+    border-bottom: 0 none transparent;
+    line-height: 0;
+}
+
 .data-grid button {
     line-height: 18px;
     color: inherit;

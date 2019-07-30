@@ -253,12 +253,16 @@ DataGrid.DataGrid = class extends Common.Object {
         dataColumn.style.width = column.width;
       }
       this._headerRow.appendChild(this._headerTableHeaders[columnId]);
-      this._topFillerRow.createChild('td', 'top-filler-td');
+      const topFillerRowCell = this._topFillerRow.createChild('th', 'top-filler-td');
+      topFillerRowCell.textContent = column.title;
+      topFillerRowCell.scope = 'col';
       this._bottomFillerRow.createChild('td', 'bottom-filler-td')[DataGrid.DataGrid._columnIdSymbol] = columnId;
     }
 
     this._headerRow.createChild('th', 'corner');
-    this._topFillerRow.createChild('td', 'corner').classList.add('top-filler-td');
+    const topFillerRowCornerCell = this._topFillerRow.createChild('th', 'corner');
+    topFillerRowCornerCell.classList.add('top-filler-td');
+    topFillerRowCornerCell.scope = 'col';
     this._bottomFillerRow.createChild('td', 'corner').classList.add('bottom-filler-td');
     this._headerTableColumnGroup.createChild('col', 'corner');
     this._dataTableColumnGroup.createChild('col', 'corner');
@@ -1625,7 +1629,6 @@ DataGrid.DataGridNode = class extends Common.Object {
    */
   createCell(columnId) {
     const cell = this.createTD(columnId);
-
     const data = this.data[columnId];
     if (data instanceof Node)
       cell.appendChild(data);

@@ -76,7 +76,7 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {!Protocol.WebAudio.ContextId} contextId
    * @override
    */
-  contextDestroyed(contextId) {
+  contextWillBeDestroyed(contextId) {
     this._contextMapById.delete(contextId);
     this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ContextDestroyed, contextId);
   }

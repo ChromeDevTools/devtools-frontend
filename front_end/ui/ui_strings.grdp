@@ -54,9 +54,6 @@
   <message name="IDS_DEVTOOLS_2c0924faed417c521b57d553c678ec21" desc="Text in the Shortcuts page to explain a keyboard shortcut (step into a function in debugger)">
     Step into
   </message>
-  <message name="IDS_DEVTOOLS_2ce2fc341b0bd9219a3634ff43a90bde" desc="Accessibility label for checkable items in the SoftContextMenu">
-    <ph name="ITEM_LABEL">$1s<ex>Open File</ex></ph>, <ph name="CHECKEDSTATE">$2s<ex>checked</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_2d56db467b153fe19f6f059f7f29be97" desc="Hours format in UIUtils">
     <ph name="PH1">$1.1f<ex>2.2</ex></ph> hrs
   </message>

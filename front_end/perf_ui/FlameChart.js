@@ -1714,24 +1714,24 @@ PerfUI.FlameChart = class extends UI.VBox {
         if (parentGroupIsVisible && !style.shareHeaderLine)
           currentOffset += style.height;
       }
+      if (level >= levelCount)
+        continue;
       const isFirstOnLevel = groupIndex >= 0 && level === groups[groupIndex].startLevel;
       const thisLevelIsVisible =
           parentGroupIsVisible && (visible || isFirstOnLevel && groups[groupIndex].style.useFirstLineForOverview);
-      if (level < levelCount) {
-        let height;
-        if (groupIndex >= 0) {
-          const group = groups[groupIndex];
-          const styleB = group.style;
-          height = isFirstOnLevel && !styleB.shareHeaderLine || (styleB.collapsible && !group.expanded) ?
-              styleB.height :
-              (styleB.itemsHeight || this._barHeight);
-        } else {
-          height = this._barHeight;
-        }
-        this._visibleLevels[level] = thisLevelIsVisible;
-        this._visibleLevelOffsets[level] = currentOffset;
-        this._visibleLevelHeights[level] = height;
+      let height;
+      if (groupIndex >= 0) {
+        const group = groups[groupIndex];
+        const styleB = group.style;
+        height = isFirstOnLevel && !styleB.shareHeaderLine || (styleB.collapsible && !group.expanded) ?
+            styleB.height :
+            (styleB.itemsHeight || this._barHeight);
+      } else {
+        height = this._barHeight;
       }
+      this._visibleLevels[level] = thisLevelIsVisible;
+      this._visibleLevelOffsets[level] = currentOffset;
+      this._visibleLevelHeights[level] = height;
       if (thisLevelIsVisible || (parentGroupIsVisible && style && style.shareHeaderLine && isFirstOnLevel))
         currentOffset += this._visibleLevelHeights[level];
     }

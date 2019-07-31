@@ -200,7 +200,7 @@ PerformanceTestRunner.walkTimelineEventTreeUnderNode = function(callback, root, 
   const event = root.event;
 
   if (event)
-    callback(event, level);
+    callback(event, level, root);
 
   for (const child of root.children().values())
     PerformanceTestRunner.walkTimelineEventTreeUnderNode(callback, child, (level || 0) + 1);

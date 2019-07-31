@@ -273,16 +273,18 @@ TimelineModel.TimelineProfileTree.TopDownRootNode = class extends TimelineModel.
 TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel.TimelineProfileTree.Node {
   /**
    * @param {!Array<!SDK.TracingModel.Event>} events
+   * @param {!TimelineModel.TimelineModelFilter} textFilter
    * @param {!Array<!TimelineModel.TimelineModelFilter>} filters
    * @param {number} startTime
    * @param {number} endTime
    * @param {?function(!SDK.TracingModel.Event):string} eventGroupIdCallback
    */
-  constructor(events, filters, startTime, endTime, eventGroupIdCallback) {
+  constructor(events, textFilter, filters, startTime, endTime, eventGroupIdCallback) {
     super('', null);
     /** @type {?Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     this._children = null;
     this._events = events;
+    this._textFilter = textFilter;
     this._filter = e => filters.every(f => f.accept(e));
     this._startTime = startTime;
     this._endTime = endTime;
@@ -299,11 +301,25 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
   }
 
   /**
+   * @param {!Map<string, !TimelineModel.TimelineProfileTree.Node>} children
+   * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
+   */
+  _filterChildren(children) {
+    for (const [id, child] of children) {
+      if (child.event && !this._textFilter.accept(child.event))
+        children.delete(/** @type {string} */ (id));
+    }
+    return children;
+  }
+
+  /**
    * @override
    * @return {!Map<string, !TimelineModel.TimelineProfileTree.Node>}
    */
   children() {
-    return this._children || this._grouppedTopNodes();
+    if (!this._children)
+      this._children = this._filterChildren(this._grouppedTopNodes());
+    return this._children;
   }
 
   /**
@@ -370,10 +386,8 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
    */
   _grouppedTopNodes() {
     const flatNodes = this._ungrouppedTopNodes();
-    if (!this._eventGroupIdCallback) {
-      this._children = flatNodes;
+    if (!this._eventGroupIdCallback)
       return flatNodes;
-    }
     const groupNodes = new Map();
     for (const node of flatNodes.values()) {
       const groupId = this._eventGroupIdCallback(/** @type {!SDK.TracingModel.Event} */ (node.event));
@@ -385,7 +399,6 @@ TimelineModel.TimelineProfileTree.BottomUpRootNode = class extends TimelineModel
       }
       groupNode.addChild(node, node.selfTime, node.selfTime);
     }
-    this._children = groupNodes;
     return groupNodes;
   }
 };
@@ -445,6 +458,7 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
     this.parent = parent;
     this._root = root;
     this._depth = (parent._depth || 0) + 1;
+    /** @type {?Map<string, !TimelineModel.TimelineProfileTree.Node>} */
     this._cachedChildren = null;
     this._hasChildren = hasChildren;
   }
@@ -525,8 +539,8 @@ TimelineModel.TimelineProfileTree.BottomUpNode = class extends TimelineModel.Tim
       lastTimeMarker = Math.min(e.endTime, endTime);
     }
 
-    this._cachedChildren = nodeById;
-    return nodeById;
+    this._cachedChildren = this._root._filterChildren(nodeById);
+    return this._cachedChildren;
   }
 
   /**

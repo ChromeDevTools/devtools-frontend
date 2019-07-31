@@ -129,6 +129,22 @@ Timeline.TimelineTreeView = class extends UI.VBox {
   }
 
   /**
+   * @protected
+   * @return {!Array<!TimelineModel.TimelineModelFilter>}
+   */
+  filtersWithoutTextFilter() {
+    return [this._taskFilter, ...this._model.filters()];
+  }
+
+  /**
+   * @protected
+   * @return {!Timeline.TimelineFilters.RegExp}
+   */
+  textFilter() {
+    return this._textFilter;
+  }
+
+  /**
    * @return {boolean}
    */
   _exposePercentages() {
@@ -977,7 +993,7 @@ Timeline.BottomUpTimelineTreeView = class extends Timeline.AggregatedTimelineTre
    */
   _buildTree() {
     return new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-        this._modelEvents(), this.filters(), this._startTime, this._endTime,
+        this._modelEvents(), this.textFilter(), this.filtersWithoutTextFilter(), this._startTime, this._endTime,
         this._groupingFunction(this._groupBySetting.get()));
   }
 };

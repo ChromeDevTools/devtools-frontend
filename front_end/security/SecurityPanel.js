@@ -47,7 +47,8 @@ Security.SecurityPanel = class extends UI.PanelWithSidebar {
     const certificateButton = UI.createTextButton(text, async e => {
       e.consume();
       const names = await SDK.multitargetNetworkManager.getCertificate(origin);
-      InspectorFrontendHost.showCertificateViewer(names);
+      if (names.length > 0)
+        InspectorFrontendHost.showCertificateViewer(names);
     }, 'origin-button');
     UI.ARIAUtils.markAsMenuButton(certificateButton);
     return certificateButton;

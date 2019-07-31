@@ -331,6 +331,10 @@
     background-color: #EEEEEE;
 }
 
+.spectrum-switcher[data-keyboard-focus="true"]:focus {
+  background-color: var(--focus-bg-color);
+}
+
 .spectrum-eye-dropper {
     width: 32px;
     height: 24px;
@@ -490,6 +494,7 @@ div.palette-preview {
     margin-top: 1px;
 }
 
+.palette-preview[data-keyboard-focus="true"]:focus,
 .palette-preview:hover {
     background-color: #eee;
 }

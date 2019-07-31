@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_74421a69b1bc40c166be4de5caf0b036" desc="Text of a DOM element in Contrast Details of the Color Picker">
     Contrast ratio
   </message>
+  <message name="IDS_DEVTOOLS_a03d142f9d52eae6793de3951b4b58f9" desc="Screen reader reads this text when palette switcher button receives focus">
+    Preview palettes
+  </message>
   <message name="IDS_DEVTOOLS_b201b2e7e7a20df48b625f20c2f0933e" desc="Title text content in Spectrum of the Color Picker">
     Color Palettes
   </message>

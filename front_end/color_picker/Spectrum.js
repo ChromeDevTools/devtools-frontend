@@ -129,6 +129,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._palettes = new Map();
     this._palettePanel = this.contentElement.createChild('div', 'palette-panel');
     this._palettePanel.tabIndex = -1;
+    this._palettePanel.addEventListener('keydown', this._onPalettePanelKeydown.bind(this));
     this._palettePanelShowing = false;
     this._paletteSectionContainer = this.contentElement.createChild('div', 'spectrum-palette-container');
     this._paletteContainer = this._paletteSectionContainer.createChild('div', 'spectrum-palette');
@@ -140,7 +141,11 @@ ColorPicker.Spectrum = class extends UI.VBox {
     const paletteSwitcher =
         this._paletteSectionContainer.createChild('div', 'spectrum-palette-switcher spectrum-switcher');
     appendSwitcherIcon(paletteSwitcher);
+    UI.ARIAUtils.markAsButton(paletteSwitcher);
+    UI.ARIAUtils.setAccessibleName(paletteSwitcher, ls`Preview palettes`);
+    paletteSwitcher.tabIndex = 0;
     paletteSwitcher.addEventListener('click', this._togglePalettePanel.bind(this, true));
+    paletteSwitcher.addEventListener('keydown', this._onTogglePaletteKeydown.bind(this));
 
     this._deleteIconToolbar = new UI.Toolbar('delete-color-toolbar');
     this._deleteButton = new UI.ToolbarButton('', 'largeicon-trash-bin');
@@ -239,6 +244,26 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
     this._focus();
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onTogglePaletteKeydown(event) {
+    if (isEnterKey(event) || event.key === ' ') {
+      this._togglePalettePanel(true);
+      event.consume(true);
+    }
+  }
+
+  /**
+   * @param {!Event} event
+   */
+  _onPalettePanelKeydown(event) {
+    if (isEscKey(event)) {
+      this._togglePalettePanel(false);
+      event.consume(true);
+    }
   }
 
   /**
@@ -499,6 +524,8 @@ ColorPicker.Spectrum = class extends UI.VBox {
   _createPreviewPaletteElement(palette) {
     const colorsPerPreviewRow = 5;
     const previewElement = createElementWithClass('div', 'palette-preview');
+    UI.ARIAUtils.markAsButton(previewElement);
+    previewElement.tabIndex = 0;
     const titleElement = previewElement.createChild('div', 'palette-preview-title');
     titleElement.textContent = palette.title;
     let i;
@@ -507,6 +534,7 @@ ColorPicker.Spectrum = class extends UI.VBox {
     for (; i < colorsPerPreviewRow; i++)
       previewElement.createChild('div', 'spectrum-palette-color empty-color');
     previewElement.addEventListener('click', this._paletteSelected.bind(this, palette));
+    previewElement.addEventListener('keydown', this._onSelectedPaletteKeydown.bind(this, palette));
     return previewElement;
   }
 
@@ -516,6 +544,17 @@ ColorPicker.Spectrum = class extends UI.VBox {
   _paletteSelected(palette) {
     this._selectedColorPalette.set(palette.title);
     this._showPalette(palette, true);
+  }
+
+  /**
+   * @param {!ColorPicker.Spectrum.Palette} palette
+   * @param {!Event} event
+   */
+  _onSelectedPaletteKeydown(palette, event) {
+    if (isEnterKey(event) || event.key === ' ') {
+      this._paletteSelected(palette);
+      event.consume(true);
+    }
   }
 
   /**

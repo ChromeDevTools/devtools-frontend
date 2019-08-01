@@ -27,8 +27,14 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
     if (!this._currentUISourceCode())
       return Common.UIString('No file selected.');
     const position = this._parsePosition(query);
-    if (!position)
-      return Common.UIString('Type a number to go to that line.');
+    if (!position) {
+      const sourceFrame = this._currentSourceFrame();
+      if (!sourceFrame)
+        return ls`Type a number to go to that line.`;
+      const currentLineNumber = sourceFrame.textEditor.currentLineNumber() + 1;
+      const linesCount = sourceFrame.textEditor.linesCount;
+      return ls`Current line: ${currentLineNumber}. Type a line number between 1 and ${linesCount} to navigate to.`;
+    }
     if (position.column && position.column > 1)
       return ls`Go to line ${position.line} and column ${position.column}.`;
     return ls`Go to line ${position.line}.`;
@@ -57,5 +63,15 @@ Sources.GoToLineQuickOpen = class extends QuickOpen.FilteredListWidget.Provider 
     if (!sourcesView)
       return null;
     return sourcesView.currentUISourceCode();
+  }
+
+  /**
+   * @return {?Sources.UISourceCodeFrame}
+   */
+  _currentSourceFrame() {
+    const sourcesView = UI.context.flavor(Sources.SourcesView);
+    if (!sourcesView)
+      return null;
+    return sourcesView.currentSourceFrame();
   }
 };

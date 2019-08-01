@@ -276,6 +276,9 @@
   <message name="IDS_DEVTOOLS_87837d0ddaa832891236be71b7bf6935" desc="Text in Sources Panel of the Sources panel">
     Pause on caught exceptions
   </message>
+  <message name="IDS_DEVTOOLS_88da81657234efcab8a23679d2e97b8e" desc="Text in the GoToLine dialog of the Sources pane that describes the current line number, file line number range, and use of the GoToLine dialog">
+    Current line: <ph name="CURRENTLINENUMBER">$1s</ph>. Type a line number between 1 and <ph name="LINESCOUNT">$2s</ph> to navigate to.
+  </message>
   <message name="IDS_DEVTOOLS_906646d2d69e110dcd4cfc74e5790f6f" desc="Text in Debugger Paused Message of the Sources panel">
     Paused on event listener
   </message>

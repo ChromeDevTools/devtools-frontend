@@ -1275,6 +1275,13 @@ TextEditor.CodeMirrorTextEditor = class extends UI.VBox {
   }
 
   /**
+   * @return {number}
+   */
+  currentLineNumber() {
+    return this._codeMirror.getCursor().line;
+  }
+
+  /**
    * @override
    * @param {number} lineNumber
    * @return {string}

@@ -630,7 +630,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     "katakana", "katakana-iroha", "keep-all", "khmer",
     "korean-hangul-formal", "korean-hanja-formal", "korean-hanja-informal",
     "landscape", "lao", "large", "larger", "left", "level", "lighter", "lighten",
-    "line-through", "linear", "linear-gradient", "lines", "list-item", "listbox", "listitem",
+    "line-through", "linear", "linear-gradient", "lines", "linktext", "list-item", "listbox", "listitem",
     "local", "logical", "loud", "lower", "lower-alpha", "lower-armenian",
     "lower-greek", "lower-hexadecimal", "lower-latin", "lower-norwegian",
     "lower-roman", "lowercase", "ltr", "luminosity", "malayalam", "match", "matrix", "matrix3d",
@@ -681,7 +681,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
     "upper-alpha", "upper-armenian", "upper-greek", "upper-hexadecimal",
     "upper-latin", "upper-norwegian", "upper-roman", "uppercase", "urdu", "url",
     "var", "vertical", "vertical-text", "visible", "visibleFill", "visiblePainted",
-    "visibleStroke", "visual", "w-resize", "wait", "wave", "wider",
+    "visibleStroke", "visitedtext", "visual", "w-resize", "wait", "wave", "wider",
     "window", "windowframe", "windowtext", "words", "wrap", "wrap-reverse", "x-large", "x-small", "xor",
     "xx-large", "xx-small"
   ], valueKeywords = keySet(valueKeywords_);

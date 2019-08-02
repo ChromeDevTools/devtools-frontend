@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_035f93937dfd06c795a75877c9e6ddeb" desc="">
+    Plots frames per second, frame rate distribution, and GPU memory.
+  </message>
   <message name="IDS_DEVTOOLS_099969ccad146161b304e766f9a1fe56" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Show ads on this site, if allowed
   </message>
@@ -12,23 +15,20 @@
   <message name="IDS_DEVTOOLS_0ef16a6645018dec4609e392c7e9bda1" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Do not auto-open DevTools for popups
   </message>
-  <message name="IDS_DEVTOOLS_115c68d941dcba0167cee3483c1bbbb2" desc="Text in Rendering Options">
-    Shows layer borders (orange/olive) and tiles (cyan)
-  </message>
   <message name="IDS_DEVTOOLS_1808fb32cf4e8a03daa326b48d4246eb" desc="Title of a setting under the Appearance category in Settings">
     Disable paused state overlay
   </message>
   <message name="IDS_DEVTOOLS_1e7cf45a622bb0fe494f9e4da1016982" desc="Text in Rendering Options">
     Layout Shift Regions
   </message>
-  <message name="IDS_DEVTOOLS_2b1a578586beb46008e1542e9283ad99" desc="Text in Rendering Options">
+  <message name="IDS_DEVTOOLS_2b1a578586beb46008e1542e9283ad99" desc="">
     Scrolling performance issues
   </message>
-  <message name="IDS_DEVTOOLS_417316246f12b8235535182cc9eebe45" desc="Text in Rendering Options">
-    Forces media type for testing print and screen styles
+  <message name="IDS_DEVTOOLS_36bec95bf12fb795a5a100251f0cc421" desc="">
+    Shows layer borders (orange/olive) and tiles (cyan).
   </message>
-  <message name="IDS_DEVTOOLS_441e4ae4f15d6bdee7939aa9bfd61010" desc="Text in Rendering Options">
-    Plots frames per second, frame rate distribution, and GPU memory
+  <message name="IDS_DEVTOOLS_43f244627bf87f76a0dee86f364df473" desc="">
+    Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
   <message name="IDS_DEVTOOLS_482a4dca0bbd8fcdda5acc6f95f3c279" desc="A title of the 'DevTools' setting category">
     DevTools
@@ -36,11 +36,11 @@
   <message name="IDS_DEVTOOLS_53f2f05226edcd77bd4351cb27d07ba8" desc="Text in Rendering Options">
     Highlights frames (red) detected to be ads.
   </message>
+  <message name="IDS_DEVTOOLS_6526f858ca97d80241dacb00b40504bb" desc="">
+    Shows borders around hit-test regions.
+  </message>
   <message name="IDS_DEVTOOLS_6eac03f446434baa29ece59d88410812" desc="Text in Rendering Options">
     FPS meter
-  </message>
-  <message name="IDS_DEVTOOLS_6f762270888a17bde49797355db7a410" desc="Text in Rendering Options">
-    Shows borders around hit-test regions
   </message>
   <message name="IDS_DEVTOOLS_7962fd6013e985379fd3a4964d769703" desc="Text in Rendering Options">
     Hit-test borders
@@ -66,9 +66,6 @@
   <message name="IDS_DEVTOOLS_886f598a8a9e6a4bfe0c09fcf7779611" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Emulate a focused page
   </message>
-  <message name="IDS_DEVTOOLS_901fd018d4023042914dedd5fee7f0d6" desc="Text in Rendering Options">
-    Highlights areas of the page (blue) that were shifted
-  </message>
   <message name="IDS_DEVTOOLS_9182eda0635ccdc88276ba9e013c5c1b" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Do not emulate a focused page
   </message>
@@ -81,11 +78,17 @@
   <message name="IDS_DEVTOOLS_a15932c4dfbbcbc1ac6f5c27c6fa530f" desc="Text in Rendering Options">
     Highlights elements (teal) that can slow down scrolling, including touch &amp; wheel event handlers and other main-thread scrolling situations.
   </message>
+  <message name="IDS_DEVTOOLS_a4c766a2e6eb33e7575331b6affd9778" desc="">
+    Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.
+  </message>
   <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the 'Rendering' tool in the bottom drawer">
     Rendering
   </message>
   <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
     Reload page
+  </message>
+  <message name="IDS_DEVTOOLS_d013165b46f5c1f0f780ea3fc92c04f1" desc="">
+    Forces media type for testing print and screen styles.
   </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page
@@ -95,8 +98,5 @@
   </message>
   <message name="IDS_DEVTOOLS_f23c9ba06e7123f0b4c906de90fbcc9f" desc="Title of a setting under the DevTools category that can be invoked through the Command Menu">
     Auto-open DevTools for popups
-  </message>
-  <message name="IDS_DEVTOOLS_f6b139a6b392ab11c9c5c8210c525688" desc="Text in Rendering Options">
-    Highlights areas of the page (green) that need to be repainted
   </message>
 </grit-part>

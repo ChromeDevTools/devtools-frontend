@@ -34,41 +34,42 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
     this.registerRequiredCSS('inspector_main/renderingOptions.css');
 
     this._appendCheckbox(
-        Common.UIString('Paint flashing'),
-        Common.UIString('Highlights areas of the page (green) that need to be repainted'),
+        ls`Paint flashing`,
+        ls
+        `Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.`,
         Common.moduleSetting('showPaintRects'));
     this._appendCheckbox(
-        Common.UIString('Layout Shift Regions'),
-        Common.UIString('Highlights areas of the page (blue) that were shifted'),
+        ls`Layout Shift Regions`,
+        ls
+        `Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.`,
         Common.moduleSetting('showLayoutShiftRegions'));
+        this._appendCheckbox(
+            ls`Layer borders`, ls`Shows layer borders (orange/olive) and tiles (cyan).`,
+            Common.moduleSetting('showDebugBorders'));
+        this._appendCheckbox(
+            ls`FPS meter`, ls`Plots frames per second, frame rate distribution, and GPU memory.`,
+            Common.moduleSetting('showFPSCounter'));
     this._appendCheckbox(
-        Common.UIString('Layer borders'), Common.UIString('Shows layer borders (orange/olive) and tiles (cyan)'),
-        Common.moduleSetting('showDebugBorders'));
-    this._appendCheckbox(
-        Common.UIString('FPS meter'),
-        Common.UIString('Plots frames per second, frame rate distribution, and GPU memory'),
-        Common.moduleSetting('showFPSCounter'));
-    this._appendCheckbox(
-        Common.UIString('Scrolling performance issues'),
-        Common.UIString(
-            'Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.'),
+        ls`Scrolling performance issues`,
+        ls
+        `Highlights elements (teal) that can slow down scrolling, including touch & wheel event handlers and other main-thread scrolling situations.`,
         Common.moduleSetting('showScrollBottleneckRects'));
-    this._appendCheckbox(
-        Common.UIString('Highlight ad frames'), Common.UIString('Highlights frames (red) detected to be ads.'),
-        Common.moduleSetting('showAdHighlights'));
-    this._appendCheckbox(
-        Common.UIString('Hit-test borders'), Common.UIString('Shows borders around hit-test regions'),
-        Common.moduleSetting('showHitTestBorders'));
-    this.contentElement.createChild('div').classList.add('panel-section-separator');
+        this._appendCheckbox(
+            ls`Highlight ad frames`, ls`Highlights frames (red) detected to be ads.`,
+            Common.moduleSetting('showAdHighlights'));
+        this._appendCheckbox(
+            ls`Hit-test borders`, ls`Shows borders around hit-test regions.`,
+            Common.moduleSetting('showHitTestBorders'));
+        this.contentElement.createChild('div').classList.add('panel-section-separator');
 
-    const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
-    const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
-    if (mediaSelect) {
-      const mediaRow = this.contentElement.createChild('span', 'media-row');
-      mediaRow.createChild('label').textContent = Common.UIString('Emulate CSS media');
-      mediaRow.createChild('p').textContent = Common.UIString('Forces media type for testing print and screen styles');
-      mediaRow.appendChild(mediaSelect);
-    }
+        const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
+        const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
+        if (mediaSelect) {
+          const mediaRow = this.contentElement.createChild('span', 'media-row');
+          mediaRow.createChild('label').textContent = ls`Emulate CSS media`;
+          mediaRow.createChild('p').textContent = ls`Forces media type for testing print and screen styles.`;
+          mediaRow.appendChild(mediaSelect);
+        }
   }
 
   /**

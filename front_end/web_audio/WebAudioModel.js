@@ -14,7 +14,7 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
 
     this._enabled = false;
 
-    /** @type {!Map<!Protocol.WebAudio.ContextId, !Protocol.WebAudio.BaseAudioContext>} */
+    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !Protocol.WebAudio.BaseAudioContext>} */
     this._contextMapById = new Map();
 
     this._agent = target.webAudioAgent();
@@ -73,7 +73,7 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Protocol.WebAudio.ContextId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @override
    */
   contextWillBeDestroyed(contextId) {
@@ -94,7 +94,85 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Protocol.WebAudio.ContextId} contextId
+   * @param {!Protocol.WebAudio.AudioListener} listener
+   * @override
+   */
+  audioListenerCreated(listener) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} listenerId
+   * @override
+   */
+  audioListenerWillBeDestroyed(contextId, listenerId) {}
+
+  /**
+   * @param {!Protocol.WebAudio.AudioNode} node
+   * @override
+   */
+  audioNodeCreated(node) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} nodeId
+   * @override
+   */
+  audioNodeWillBeDestroyed(contextId, nodeId) {}
+
+  /**
+   * @param {!Protocol.WebAudio.AudioParam} param
+   * @override
+   */
+  audioParamCreated(param) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} nodeId
+   * @param {!Protocol.WebAudio.GraphObjectId} paramId
+   * @override
+   */
+  audioParamWillBeDestroyed(contextId, nodeId, paramId) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} sourceId
+   * @param {!Protocol.WebAudio.GraphObjectId} destinationId
+   * @param {number=} sourceOutputIndex
+   * @param {number=} destinationInputIndex
+   * @override
+   */
+  nodesConnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} sourceId
+   * @param {?Protocol.WebAudio.GraphObjectId=} destinationId
+   * @param {number=} sourceOutputIndex
+   * @param {number=} destinationInputIndex
+   * @override
+   */
+  nodesDisconnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} sourceId
+   * @param {!Protocol.WebAudio.GraphObjectId} destinationId
+   * @param {number=} sourceOutputIndex
+   * @override
+   */
+  nodeParamConnected(contextId, sourceId, destinationId, sourceOutputIndex) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} sourceId
+   * @param {!Protocol.WebAudio.GraphObjectId} destinationId
+   * @param {number=} sourceOutputIndex
+   * @override
+   */
+  nodeParamDisconnected(contextId, sourceId, destinationId, sourceOutputIndex) {}
+
+  /**
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @return {!Promise<?Protocol.WebAudio.ContextRealtimeData>}
    */
   async requestRealtimeData(contextId) {

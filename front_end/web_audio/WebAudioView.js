@@ -151,7 +151,7 @@ WebAudio.WebAudioView = class extends UI.ThrottledWidget {
   }
 
   /**
-   * @param {!Protocol.WebAudio.ContextId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.ContextRealtimeData} contextRealtimeData
    */
   _updateSummaryBar(contextId, contextRealtimeData) {

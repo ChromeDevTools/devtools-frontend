@@ -64,7 +64,7 @@ WebAudio.ContextDetailBuilder = class {
 
 WebAudio.AudioContextSummaryBuilder = class {
   /**
-   * @param {!Protocol.WebAudio.ContextId} contextId
+   * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.ContextRealtimeData} contextRealtimeData
    */
   constructor(contextId, contextRealtimeData) {

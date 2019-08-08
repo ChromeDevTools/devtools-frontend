@@ -46,7 +46,7 @@ WebAudio.AudioContextSelector = class extends Common.Object {
    * @param {!Common.Event} event
    */
   contextDestroyed(event) {
-    const contextId = /** @type {!Protocol.WebAudio.ContextId} */ (event.data);
+    const contextId = /** @type {!Protocol.WebAudio.GraphObjectId} */ (event.data);
     const contextIndex = this._items.findIndex(context => context.contextId === contextId);
     if (contextIndex > -1)
       this._items.remove(contextIndex);

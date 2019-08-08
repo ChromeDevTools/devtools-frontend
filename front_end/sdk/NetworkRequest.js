@@ -503,8 +503,7 @@ SDK.NetworkRequest = class extends Common.Object {
     const networkManager = SDK.NetworkManager.forRequest(this);
     if (!networkManager)
       return false;
-    return networkManager.target().type() === SDK.Target.Type.Worker && !!networkManager.target().parentTarget() &&
-        networkManager.target().parentTarget().type() === SDK.Target.Type.ServiceWorker;
+    return networkManager.target().type() === SDK.Target.Type.ServiceWorker;
   }
 
   /**

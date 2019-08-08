@@ -106,12 +106,8 @@ Console.ConsoleContextSelector = class {
       }
     }
     let targetDepth = 0;
-    while (target.parentTarget()) {
-      if (target.parentTarget().type() === SDK.Target.Type.ServiceWorker) {
-        // Special casing service workers to be top-level.
-        targetDepth = 0;
-        break;
-      }
+    // Special casing service workers to be top-level.
+    while (target.parentTarget() && target.type() !== SDK.Target.Type.ServiceWorker) {
       targetDepth++;
       target = target.parentTarget();
     }
@@ -150,11 +146,6 @@ Console.ConsoleContextSelector = class {
    * @param {!SDK.ExecutionContext} executionContext
    */
   _executionContextCreated(executionContext) {
-    // FIXME(413886): We never want to show execution context for the main thread of shadow page in service/shared worker frontend.
-    // This check could be removed once we do not send this context to frontend.
-    if (executionContext.target().type() === SDK.Target.Type.ServiceWorker)
-      return;
-
     this._items.insertWithComparator(executionContext, executionContext.runtimeModel.executionContextComparator());
 
     if (executionContext === UI.context.flavor(SDK.ExecutionContext))

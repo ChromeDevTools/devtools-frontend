@@ -81,4 +81,4 @@ SDK.PerformanceMetricsModel.MetricMode = {
   CumulativeCount: Symbol('CumulativeCount'),
 };
 
-SDK.SDKModel.register(SDK.PerformanceMetricsModel, SDK.Target.Capability.Browser, false);
+SDK.SDKModel.register(SDK.PerformanceMetricsModel, SDK.Target.Capability.DOM, false);

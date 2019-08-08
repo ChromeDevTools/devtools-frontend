@@ -326,12 +326,7 @@ SDK.NetworkLog = class extends Common.Object {
     // Preserve service worker requests from the new session.
     const serviceWorkerRequestsToAdd = [];
     for (const swRequest of oldRequests) {
-      const networkManager = SDK.NetworkManager.forRequest(swRequest);
-      if (!networkManager)
-        continue;
-      const target = networkManager.target();
-      if (!(target.type() === SDK.Target.Type.Worker && target.parentTarget() &&
-            target.parentTarget().type() === SDK.Target.Type.ServiceWorker))
+      if (!swRequest.initiatedByServiceWorker())
         continue;
 
       // If there is a matching request that came before this one, keep it.

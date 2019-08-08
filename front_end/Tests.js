@@ -562,7 +562,7 @@
   TestSuite.prototype.testPauseInSharedWorkerInitialization1 = function() {
     // Make sure the worker is loaded.
     this.takeControl();
-    this._waitForTargets(2, callback.bind(this));
+    this._waitForTargets(1, callback.bind(this));
 
     function callback() {
       Protocol.test.deprecatedRunAfterPendingDispatches(this.releaseControl.bind(this));
@@ -571,7 +571,7 @@
 
   TestSuite.prototype.testPauseInSharedWorkerInitialization2 = function() {
     this.takeControl();
-    this._waitForTargets(2, callback.bind(this));
+    this._waitForTargets(1, callback.bind(this));
 
     function callback() {
       const debuggerModel = SDK.targetManager.models(SDK.DebuggerModel)[0];

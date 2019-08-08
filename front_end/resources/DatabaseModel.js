@@ -166,7 +166,7 @@ Resources.DatabaseModel = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.None, false);
+SDK.SDKModel.register(Resources.DatabaseModel, SDK.Target.Capability.DOM, false);
 
 /** @enum {symbol} */
 Resources.DatabaseModel.Events = {

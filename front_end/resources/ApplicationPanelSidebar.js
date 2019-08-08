@@ -183,8 +183,10 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       return;
     this._target = target;
     this._databaseModel = target.model(Resources.DatabaseModel);
-    this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
-    this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    if (this._databaseModel) {
+      this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
+      this._databaseModel.addEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    }
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel);
     if (!resourceTreeModel)
@@ -213,8 +215,11 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
       resourceTreeModel.removeEventListener(
           SDK.ResourceTreeModel.Events.WillLoadCachedResources, this._resetWithFrames, this);
     }
-    this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
-    this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+    if (this._databaseModel) {
+      this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabaseAdded, this._databaseAdded, this);
+      this._databaseModel.removeEventListener(Resources.DatabaseModel.Events.DatabasesRemoved, this._resetWebSQL, this);
+      this._databaseModel = null;
+    }
 
     this._resetWithFrames();
   }
@@ -229,7 +234,8 @@ Resources.ApplicationPanelSidebar = class extends UI.VBox {
   _initialize() {
     for (const frame of SDK.ResourceTreeModel.frames())
       this._addCookieDocument(frame);
-    this._databaseModel.enable();
+    if (this._databaseModel)
+      this._databaseModel.enable();
 
     const cacheStorageModel = this._target.model(SDK.ServiceWorkerCacheModel);
     if (cacheStorageModel)

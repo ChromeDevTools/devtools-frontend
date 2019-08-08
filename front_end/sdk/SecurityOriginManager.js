@@ -75,6 +75,7 @@ SDK.SecurityOriginManager = class extends SDK.SDKModel {
   }
 };
 
+// TODO(jarhar): this is the only usage of Capability.None. Do something about it!
 SDK.SDKModel.register(SDK.SecurityOriginManager, SDK.Target.Capability.None, false);
 
 /** @enum {symbol} */

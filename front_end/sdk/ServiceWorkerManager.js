@@ -255,7 +255,7 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
   }
 };
 
-SDK.SDKModel.register(SDK.ServiceWorkerManager, SDK.Target.Capability.Target | SDK.Target.Capability.Browser, true);
+SDK.SDKModel.register(SDK.ServiceWorkerManager, SDK.Target.Capability.ServiceWorker, true);
 
 /** @enum {symbol} */
 SDK.ServiceWorkerManager.Events = {
@@ -578,7 +578,7 @@ SDK.ServiceWorkerContextNamer = class {
    */
   _executionContextCreated(event) {
     const executionContext = /** @type {!SDK.ExecutionContext} */ (event.data);
-    const serviceWorkerTargetId = this._serviceWorkerTargetIdForWorker(executionContext.target());
+    const serviceWorkerTargetId = this._serviceWorkerTargetId(executionContext.target());
     if (!serviceWorkerTargetId)
       return;
     this._updateContextLabel(executionContext, this._versionByTargetId.get(serviceWorkerTargetId) || null);
@@ -588,16 +588,15 @@ SDK.ServiceWorkerContextNamer = class {
    * @param {!SDK.Target} target
    * @return {?string}
    */
-  _serviceWorkerTargetIdForWorker(target) {
-    const parent = target.parentTarget();
-    if (!parent || parent.parentTarget() !== this._target)
+  _serviceWorkerTargetId(target) {
+    if (target.parentTarget() !== this._target || target.type() !== SDK.Target.Type.ServiceWorker)
       return null;
-    return parent.type() === SDK.Target.Type.ServiceWorker ? parent.id() : null;
+    return target.id();
   }
 
   _updateAllContextLabels() {
     for (const target of SDK.targetManager.targets()) {
-      const serviceWorkerTargetId = this._serviceWorkerTargetIdForWorker(target);
+      const serviceWorkerTargetId = this._serviceWorkerTargetId(target);
       if (!serviceWorkerTargetId)
         continue;
       const version = this._versionByTargetId.get(serviceWorkerTargetId) || null;

@@ -49,6 +49,7 @@ Components.TargetDetachedDialog = class extends SDK.SDKModel {
    * @override;
    */
   targetReloadedAfterCrash() {
+    this.target().runtimeAgent().runIfWaitingForDebugger();
     if (this._hideCrashedDialog) {
       this._hideCrashedDialog.call(null);
       this._hideCrashedDialog = null;

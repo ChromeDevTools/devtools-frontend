@@ -27,19 +27,23 @@ SDK.Target = class extends Protocol.TargetBase {
     this._capabilitiesMask = 0;
     switch (type) {
       case SDK.Target.Type.Frame:
-        this._capabilitiesMask = SDK.Target.Capability.Browser | SDK.Target.Capability.DOM | SDK.Target.Capability.JS |
-            SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target |
-            SDK.Target.Capability.Tracing | SDK.Target.Capability.Emulation | SDK.Target.Capability.Input;
+        this._capabilitiesMask = SDK.Target.Capability.Browser | SDK.Target.Capability.Storage |
+            SDK.Target.Capability.DOM | SDK.Target.Capability.JS | SDK.Target.Capability.Log |
+            SDK.Target.Capability.Network | SDK.Target.Capability.Target | SDK.Target.Capability.Tracing |
+            SDK.Target.Capability.Emulation | SDK.Target.Capability.Input | SDK.Target.Capability.Inspector;
         if (!parentTarget) {
+          // This matches backend exposing certain capabilities only for the main frame.
           this._capabilitiesMask |= SDK.Target.Capability.DeviceEmulation | SDK.Target.Capability.ScreenCapture |
-              SDK.Target.Capability.Security | SDK.Target.Capability.Inspector;
+              SDK.Target.Capability.Security | SDK.Target.Capability.ServiceWorker;
+          // TODO(dgozman): we report service workers for the whole frame tree on the main frame,
+          // while we should be able to only cover the subtree corresponding to the target.
         }
         break;
       case SDK.Target.Type.ServiceWorker:
-        this._capabilitiesMask =
-            SDK.Target.Capability.Log | SDK.Target.Capability.Network | SDK.Target.Capability.Target;
+        this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
+            SDK.Target.Capability.Target | SDK.Target.Capability.Inspector;
         if (!parentTarget)
-          this._capabilitiesMask |= SDK.Target.Capability.Browser | SDK.Target.Capability.Inspector;
+          this._capabilitiesMask |= SDK.Target.Capability.Browser;
         break;
       case SDK.Target.Type.Worker:
         this._capabilitiesMask = SDK.Target.Capability.JS | SDK.Target.Capability.Log | SDK.Target.Capability.Network |
@@ -246,6 +250,8 @@ SDK.Target.Capability = {
   Input: 1 << 10,
   Inspector: 1 << 11,
   DeviceEmulation: 1 << 12,
+  Storage: 1 << 13,
+  ServiceWorker: 1 << 14,
 
   None: 0,
 };

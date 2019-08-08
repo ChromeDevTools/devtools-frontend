@@ -24,14 +24,9 @@ ApplicationTestRunner.postToServiceWorker = function(scope, message) {
 };
 
 ApplicationTestRunner.waitForServiceWorker = function(callback) {
-  function isRightTarget(target) {
-    return target.type() === SDK.Target.Type.Worker && target.parentTarget() &&
-        target.parentTarget().type() === SDK.Target.Type.ServiceWorker;
-  }
-
   SDK.targetManager.observeTargets({
     targetAdded: function(target) {
-      if (isRightTarget(target) && callback) {
+      if (target.type() === SDK.Target.Type.ServiceWorker && callback) {
         setTimeout(callback.bind(null, target), 0);
         callback = null;
       }

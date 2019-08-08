@@ -952,10 +952,15 @@ SDK.MultitargetNetworkManager = class extends Common.Object {
    */
   static patchUserAgentWithChromeVersion(uaString) {
     // Patches Chrome/CriOS version from user agent ("1.2.3.4" when user agent is: "Chrome/1.2.3.4").
+    // Edge also contains an appVersion which should be patched to match the Chrome major version.
+    // Otherwise, ignore it. This assumes additional appVersions appear after the Chrome version.
     const chromeRegex = new RegExp('(?:^|\\W)Chrome/(\\S+)');
     const chromeMatch = navigator.userAgent.match(chromeRegex);
-    if (chromeMatch && chromeMatch.length > 1)
-      return String.sprintf(uaString, chromeMatch[1]);
+    if (chromeMatch && chromeMatch.length > 1) {
+      // "1.2.3.4" becomes "1.0.100.0"
+      const additionalAppVersion = chromeMatch[1].split('.', 1)[0] + '.0.100.0';
+      return String.sprintf(uaString, chromeMatch[1], additionalAppVersion);
+    }
     return uaString;
   }
 

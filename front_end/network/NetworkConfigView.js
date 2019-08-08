@@ -224,26 +224,6 @@ Network.NetworkConfigView._userAgentGroups = [
     ]
   },
   {
-    title: 'Edge',
-    values: [
-      {
-        title: 'Edge \u2014 Windows',
-        value:
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240'
-      },
-      {
-        title: 'Edge \u2014 Mobile',
-        value:
-            'Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 XL LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Mobile Safari/537.36 Edge/12.10166'
-      },
-      {
-        title: 'Edge \u2014 XBox',
-        value:
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586'
-      }
-    ]
-  },
-  {
     title: 'Firefox',
     values: [
       {
@@ -292,6 +272,51 @@ Network.NetworkConfigView._userAgentGroups = [
       {title: 'Internet Explorer 9', value: 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'},
       {title: 'Internet Explorer 8', value: 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)'},
       {title: 'Internet Explorer 7', value: 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'}
+    ]
+  },
+  {
+    title: 'Microsoft Edge',
+    values: [
+      {
+        title: 'Microsoft Edge (Chromium) \u2014 Windows',
+        value:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36 Edg/%s'
+      },
+      {
+        title: 'Microsoft Edge (Chromium) \u2014 Mac',
+        value:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/%s Safari/537.36 Edg/%s'
+      },
+      {
+        title: 'Microsoft Edge \u2014 iPhone',
+        value:
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 EdgiOS/44.5.0.10 Mobile/15E148 Safari/604.1'
+      },
+      {
+        title: 'Microsoft Edge \u2014 iPad',
+        value:
+            'Mozilla/5.0 (iPad; CPU OS 12_3_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 EdgiOS/44.5.2 Mobile/15E148 Safari/605.1.15'
+      },
+      {
+        title: 'Microsoft Edge \u2014 Android Mobile',
+        value:
+            'Mozilla/5.0 (Linux; Android 8.1.0; Pixel Build/OPM4.171019.021.D1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.109 Mobile Safari/537.36 EdgA/42.0.0.2057'
+      },
+      {
+        title: 'Microsoft Edge \u2014 Android Tablet',
+        value:
+            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 7 Build/MOB30X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.109 Safari/537.36 EdgA/42.0.0.2057'
+      },
+      {
+        title: 'Microsoft Edge (EdgeHTML) \u2014 Windows',
+        value:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362'
+      },
+      {
+        title: 'Microsoft Edge (EdgeHTML) \u2014 XBox',
+        value:
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; Xbox; Xbox One) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362'
+      }
     ]
   },
   {

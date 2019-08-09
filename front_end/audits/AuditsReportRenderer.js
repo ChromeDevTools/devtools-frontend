@@ -14,11 +14,15 @@ Audits.ReportRenderer = class extends ReportRenderer {
     if (!artifacts || !artifacts.traces || !artifacts.traces.defaultPass)
       return;
 
+    const container = el.querySelector('.lh-audit-group');
+    const columnsEl = container.querySelector('.lh-columns');
+    // There will be no columns if just the PWA category.
+    if (!columnsEl)
+      return;
+
     const defaultPassTrace = artifacts.traces.defaultPass;
     const timelineButton = UI.createTextButton(Common.UIString('View Trace'), onViewTraceClick, 'view-trace');
-    const container = el.querySelector('.lh-audit-group');
-    container.insertBefore(timelineButton, container.querySelector('.lh-columns').nextSibling);
-    return el;
+    container.insertBefore(timelineButton, columnsEl.nextSibling);
 
     async function onViewTraceClick() {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AuditsViewTrace);

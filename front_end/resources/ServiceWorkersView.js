@@ -319,6 +319,8 @@ Resources.ServiceWorkersView.Section = class {
     this._pushNotificationDataSetting =
         Common.settings.createLocalSetting('pushData', Common.UIString('Test push message from DevTools.'));
     this._syncTagNameSetting = Common.settings.createLocalSetting('syncTagName', 'test-tag-from-devtools');
+    this._periodicSyncTagNameSetting =
+        Common.settings.createLocalSetting('periodicSyncTagName', 'test-tag-from-devtools');
 
     this._toolbar = section.createToolbar();
     this._toolbar.renderAsLinks();
@@ -339,6 +341,11 @@ Resources.ServiceWorkersView.Section = class {
         this._push.bind(this));
     this._createSyncNotificationField(
         Common.UIString('Sync'), this._syncTagNameSetting.get(), Common.UIString('Sync tag'), this._sync.bind(this));
+    if (Runtime.experiments.isEnabled('backgroundServicesPeriodicBackgroundSync')) {
+      this._createSyncNotificationField(
+          ls`Periodic Sync`, this._periodicSyncTagNameSetting.get(), ls`Periodic Sync tag`,
+          tag => this._periodicSync(tag));
+    }
 
     this._linkifier = new Components.Linkifier();
     /** @type {!Map<string, !Protocol.Target.TargetInfo>} */
@@ -557,6 +564,14 @@ Resources.ServiceWorkersView.Section = class {
   _sync(tag) {
     this._syncTagNameSetting.set(tag);
     this._manager.dispatchSyncEvent(this._registration.id, tag, true);
+  }
+
+  /**
+   * @param {string} tag
+   */
+  _periodicSync(tag) {
+    this._periodicSyncTagNameSetting.set(tag);
+    this._manager.dispatchPeriodicSyncEvent(this._registration.id, tag);
   }
 
   /**

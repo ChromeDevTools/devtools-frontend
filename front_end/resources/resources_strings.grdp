@@ -12,11 +12,17 @@
   <message name="IDS_DEVTOOLS_09428a9282bbb3ffcf3caa7826f0bf83" desc="Message in Database Model of the Application panel">
     An unexpected error <ph name="SQLERROR_CODE">$1s<ex>-197</ex></ph> occurred.
   </message>
+  <message name="IDS_DEVTOOLS_0ace6faf288026c1adc56a2a1e7bb6be" desc="Default tag for a periodicsync event in Service Workers View of the Application panel">
+    Periodic Sync tag
+  </message>
   <message name="IDS_DEVTOOLS_0d6fa553290eb4bf9eabe203a43b01d9" desc="Text in Clear Storage View of the Application panel">
     Application cache
   </message>
   <message name="IDS_DEVTOOLS_0f558243fbf45f1cd840fff01957f57b" desc="Text in Service Workers View of the Application panel">
     Clients
+  </message>
+  <message name="IDS_DEVTOOLS_10a77618ffc0466753fde85f9bec01fd" desc="Text for button in Service Workers View of the Application panel that dispatches a periodicsync event">
+    Periodic Sync
   </message>
   <message name="IDS_DEVTOOLS_1351a3eaa0f925dad980e83905bc1230" desc="Text of a DOM element in Service Workers View of the Application panel">
     Worker: <ph name="TARGETINFO_URL">$1s<ex>example.com</ex></ph>

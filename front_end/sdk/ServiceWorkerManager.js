@@ -151,6 +151,18 @@ SDK.ServiceWorkerManager = class extends SDK.SDKModel {
   }
 
   /**
+   * @param {string} registrationId
+   * @param {string} tag
+   */
+  dispatchPeriodicSyncEvent(registrationId, tag) {
+    const registration = this._registrations.get(registrationId);
+    if (!registration)
+      return;
+    const origin = Common.ParsedURL.extractOrigin(registration.scopeURL);
+    this._agent.dispatchPeriodicSyncEvent(origin, registrationId, tag);
+  }
+
+  /**
    * @param {string} scope
    */
   _unregister(scope) {

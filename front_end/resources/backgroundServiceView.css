@@ -62,3 +62,7 @@
     color: #888;
     font-style: italic;
 }
+
+.background-service-record-inline-button {
+    margin-bottom: 6px;
+}

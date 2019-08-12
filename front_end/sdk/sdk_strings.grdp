@@ -298,7 +298,7 @@
     DOM Mutation
   </message>
   <message name="IDS_DEVTOOLS_f99d691018d8f37dda14a9cd29c1d1ee" desc="Text in DOMDebugger Model">
-    Script blocked due to Content Security Policy directive: <ph name="AUXDATA__DIRECTIVETEXT__">$1s<ex>"script-src 'self' chrome-extension-resource:"</ex></ph>
+    Script blocked due to Content Security Policy directive: <ph name="AUXDATA__DIRECTIVETEXT__">$1s<ex>"script-src 'self'"</ex></ph>
   </message>
   <message name="IDS_DEVTOOLS_fa79cdac06c8d2166fd5cda17ccbc0ce" desc="Text in Server Timing">
     Extraneous trailing characters.

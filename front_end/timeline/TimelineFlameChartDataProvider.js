@@ -267,7 +267,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
     };
 
     const tracks = this._model.tracks().slice();
-    tracks.stableSort((a, b) => weight(a) - weight(b));
+    tracks.sort((a, b) => weight(a) - weight(b));
     let rasterCount = 0;
     for (const track of tracks) {
       switch (track.type) {
@@ -540,7 +540,7 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
       }
     }
 
-    metricEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
+    metricEvents.sort(SDK.TracingModel.Event.compareStartTime);
     const totalTimes = this._timelineData.entryTotalTimes;
     for (const event of metricEvents) {
       this._appendEvent(event, this._currentLevel);

@@ -524,8 +524,6 @@ Object.defineProperty(Array.prototype, 'sortNumbers', {
   }
 });
 
-Object.defineProperty(Uint32Array.prototype, 'sort', {value: Array.prototype.sort});
-
 (function() {
 const partition = {
   /**
@@ -589,55 +587,6 @@ const sortRange = {
 Object.defineProperty(Array.prototype, 'sortRange', sortRange);
 Object.defineProperty(Uint32Array.prototype, 'sortRange', sortRange);
 })();
-
-Object.defineProperty(Array.prototype, 'stableSort', {
-  /**
-   * @param {function(?T, ?T): number=} comparator
-   * @return {!Array.<?T>}
-   * @this {Array.<?T>}
-   * @template T
-   */
-  value: function(comparator) {
-    function defaultComparator(a, b) {
-      return a < b ? -1 : (a > b ? 1 : 0);
-    }
-    comparator = comparator || defaultComparator;
-
-    const indices = new Array(this.length);
-    for (let i = 0; i < this.length; ++i)
-      indices[i] = i;
-    const self = this;
-    /**
-     * @param {number} a
-     * @param {number} b
-     * @return {number}
-     */
-    function indexComparator(a, b) {
-      const result = comparator(self[a], self[b]);
-      return result ? result : a - b;
-    }
-    indices.sort(indexComparator);
-
-    for (let i = 0; i < this.length; ++i) {
-      if (indices[i] < 0 || i === indices[i])
-        continue;
-      let cyclical = i;
-      const saved = this[i];
-      while (true) {
-        const next = indices[cyclical];
-        indices[cyclical] = -1;
-        if (next === i) {
-          this[cyclical] = saved;
-          break;
-        } else {
-          this[cyclical] = this[next];
-          cyclical = next;
-        }
-      }
-    }
-    return this;
-  }
-});
 
 Object.defineProperty(Array.prototype, 'qselect', {
   /**

@@ -465,7 +465,7 @@ SDK.TextSourceMap = class {
     }
 
     // As per spec, mappings are not necessarily sorted.
-    this._mappings.stableSort(SDK.SourceMapEntry.compare);
+    this._mappings.sort(SDK.SourceMapEntry.compare);
   }
 
   /**

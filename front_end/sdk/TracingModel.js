@@ -313,7 +313,7 @@ SDK.TracingModel = class {
   }
 
   _processPendingAsyncEvents() {
-    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
+    this._asyncEvents.sort(SDK.TracingModel.Event.compareStartTime);
     for (let i = 0; i < this._asyncEvents.length; ++i) {
       const event = this._asyncEvents[i];
       if (SDK.TracingModel.isNestableAsyncPhase(event.phase))
@@ -884,8 +884,8 @@ SDK.TracingModel.Thread = class extends SDK.TracingModel.NamedObject {
   }
 
   tracingComplete() {
-    this._asyncEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
-    this._events.stableSort(SDK.TracingModel.Event.compareStartTime);
+    this._asyncEvents.sort(SDK.TracingModel.Event.compareStartTime);
+    this._events.sort(SDK.TracingModel.Event.compareStartTime);
     const phases = SDK.TracingModel.Phase;
     const stack = [];
     for (let i = 0; i < this._events.length; ++i) {

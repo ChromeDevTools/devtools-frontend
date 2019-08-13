@@ -193,7 +193,7 @@ SDK.CPUProfileDataModel = class extends SDK.ProfileTreeModel {
       return;
     const samples = this.samples;
     const indices = timestamps.map((x, index) => index);
-    indices.stableSort((a, b) => timestamps[a] - timestamps[b]);
+    indices.sort((a, b) => timestamps[a] - timestamps[b]);
     for (let i = 0; i < timestamps.length; ++i) {
       let index = indices[i];
       if (index === i)

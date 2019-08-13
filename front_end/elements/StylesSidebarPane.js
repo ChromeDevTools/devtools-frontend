@@ -2275,7 +2275,7 @@ Elements.StylesSidebarPane.CSSPropertyPrompt = class extends UI.TextPrompt {
       }
     });
     if (this._isColorAware && !this._isEditingName) {
-      results.stableSort((a, b) => {
+      results.sort((a, b) => {
         if (!!a.subtitleRenderer === !!b.subtitleRenderer)
           return 0;
         return a.subtitleRenderer ? -1 : 1;

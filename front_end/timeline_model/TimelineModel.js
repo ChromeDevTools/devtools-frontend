@@ -170,7 +170,7 @@ TimelineModel.TimelineModel = class {
       else
         this._processGenericTrace(tracingModel);
     }
-    this._inspectedTargetEvents.stableSort(SDK.TracingModel.Event.compareStartTime);
+    this._inspectedTargetEvents.sort(SDK.TracingModel.Event.compareStartTime);
     this._processAsyncBrowserEvents(tracingModel);
     this._buildGPUEvents(tracingModel);
     this._resetProcessingState();

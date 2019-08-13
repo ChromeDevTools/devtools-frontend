@@ -128,14 +128,6 @@ Array.prototype.binaryIndexOf = function(value, comparator) {};
 Array.prototype.sortRange = function(comparator, leftBound, rightBound, sortWindowLeft, sortWindowRight) {};
 
 /**
- * @param {function(!T,!T): number=} comparator
- * @return {!Array.<T>}
- * @this {Array.<T>}
- * @template T
- */
-Array.prototype.stableSort = function(comparator) {};
-
-/**
  * @this {Array.<number>}
  * @param {function(number,number):boolean} comparator
  * @param {number} left

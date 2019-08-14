@@ -387,7 +387,7 @@ UI.NamedBitSetFilterUI = class extends Common.Object {
         event.consume(true);
         return;
       }
-    } else if (!(event.key === ' ' || isEnterKey(event))) {
+    } else if (!isEnterOrSpaceKey(event)) {
       return;
     }
 

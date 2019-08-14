@@ -144,8 +144,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
     UI.ARIAUtils.markAsButton(paletteSwitcher);
     UI.ARIAUtils.setAccessibleName(paletteSwitcher, ls`Preview palettes`);
     paletteSwitcher.tabIndex = 0;
-    paletteSwitcher.addEventListener('click', this._togglePalettePanel.bind(this, true));
-    paletteSwitcher.addEventListener('keydown', this._onTogglePaletteKeydown.bind(this));
+    onInvokeElement(paletteSwitcher, event => {
+      this._togglePalettePanel(true);
+      event.consume(true);
+    });
 
     this._deleteIconToolbar = new UI.Toolbar('delete-color-toolbar');
     this._deleteButton = new UI.ToolbarButton('', 'largeicon-trash-bin');
@@ -244,16 +246,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
     this._palettePanelShowing = show;
     this.contentElement.classList.toggle('palette-panel-showing', show);
     this._focus();
-  }
-
-  /**
-   * @param {!Event} event
-   */
-  _onTogglePaletteKeydown(event) {
-    if (isEnterKey(event) || event.key === ' ') {
-      this._togglePalettePanel(true);
-      event.consume(true);
-    }
   }
 
   /**
@@ -533,8 +525,10 @@ ColorPicker.Spectrum = class extends UI.VBox {
       previewElement.appendChild(this._createPaletteColor(palette.colors[i], palette.colorNames[i]));
     for (; i < colorsPerPreviewRow; i++)
       previewElement.createChild('div', 'spectrum-palette-color empty-color');
-    previewElement.addEventListener('click', this._paletteSelected.bind(this, palette));
-    previewElement.addEventListener('keydown', this._onSelectedPaletteKeydown.bind(this, palette));
+    onInvokeElement(previewElement, event => {
+      this._paletteSelected(palette);
+      event.consume(true);
+    });
     return previewElement;
   }
 
@@ -544,17 +538,6 @@ ColorPicker.Spectrum = class extends UI.VBox {
   _paletteSelected(palette) {
     this._selectedColorPalette.set(palette.title);
     this._showPalette(palette, true);
-  }
-
-  /**
-   * @param {!ColorPicker.Spectrum.Palette} palette
-   * @param {!Event} event
-   */
-  _onSelectedPaletteKeydown(palette, event) {
-    if (isEnterKey(event) || event.key === ' ') {
-      this._paletteSelected(palette);
-      event.consume(true);
-    }
   }
 
   /**

@@ -35,15 +35,12 @@ Resources.ServiceWorkersView = class extends UI.VBox {
     this._otherSWFilter.setAttribute('tabindex', 0);
     this._otherSWFilter.setAttribute('role', 'switch');
     this._otherSWFilter.setAttribute('aria-checked', false);
-    this._otherSWFilter.addEventListener('keydown', event => {
-      if (event.target !== this._otherSWFilter)
-        return;
-      if (isEnterKey(event) || event.key === ' ')
-        this._toggleFilter();
-    });
     const filterLabel = this._otherSWFilter.createChild('label', 'service-worker-filter-label');
     filterLabel.textContent = Common.UIString('Service workers from other origins');
-    filterLabel.addEventListener('click', () => this._toggleFilter());
+    onInvokeElement(this._otherSWFilter, event => {
+      if (event.target === this._otherSWFilter || event.target === filterLabel)
+        this._toggleFilter();
+    });
 
     const toolbar = new UI.Toolbar('service-worker-filter-toolbar', this._otherSWFilter);
     this._filter = new UI.ToolbarInput(ls`Filter service worker`, 1);
@@ -440,11 +437,7 @@ Resources.ServiceWorkersView.Section = class {
       errorsLabel.classList.add('link');
       errorsLabel.tabIndex = 0;
       UI.ARIAUtils.setAccessibleName(errorsLabel, ls`${this._registration.errors.length} registration errors`);
-      errorsLabel.addEventListener('click', () => Common.console.show());
-      errorsLabel.addEventListener('keydown', event => {
-        if (isEnterKey(event) || event.key === ' ')
-          Common.console.show();
-      });
+      onInvokeElement(errorsLabel, () => Common.console.show());
       name.appendChild(errorsLabel);
     }
     this._sourceField.createChild('div', 'report-field-value-subtitle').textContent =

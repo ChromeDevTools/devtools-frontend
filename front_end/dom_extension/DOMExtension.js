@@ -811,12 +811,32 @@ Node.prototype.getComponentRoot = function() {
 };
 
 /**
+ * @param {!Element} element
+ * @param {function(!Event)} callback
+ */
+function onInvokeElement(element, callback) {
+  element.addEventListener('keydown', event => {
+    if (isEnterOrSpaceKey(event))
+      callback(event);
+  });
+  element.addEventListener('click', event => callback(event));
+}
+
+/**
  * @param {!Event} event
  * @return {boolean}
  */
 function isEnterKey(event) {
   // Check if in IME.
   return event.keyCode !== 229 && event.key === 'Enter';
+}
+
+/**
+ * @param {!Event} event
+ * @return {boolean}
+ */
+function isEnterOrSpaceKey(event) {
+  return isEnterKey(event) || event.key === ' ';
 }
 
 /**

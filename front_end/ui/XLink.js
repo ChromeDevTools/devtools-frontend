@@ -42,10 +42,10 @@ UI.XLink = class extends UI.XElement {
       InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
     };
     this._onKeyDown = event => {
-      if (event.key !== ' ' && !isEnterKey(event))
-        return;
-      event.consume(true);
-      InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+      if (isEnterOrSpaceKey(event)) {
+        event.consume(true);
+        InspectorFrontendHost.openInNewTab(/** @type {string} */ (this._href));
+      }
     };
   }
 

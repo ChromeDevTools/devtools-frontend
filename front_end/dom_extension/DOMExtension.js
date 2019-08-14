@@ -325,18 +325,18 @@ Element.prototype.removeChildren = function() {
  * @suppress {checkTypes}
  * @suppressGlobalPropertiesCheck
  */
-function createElement(tagName, customElementType) {
+self.createElement = function(tagName, customElementType) {
   return document.createElement(tagName, {is: customElementType});
-}
+};
 
 /**
  * @param {number|string} data
  * @return {!Text}
  * @suppressGlobalPropertiesCheck
  */
-function createTextNode(data) {
+self.createTextNode = function(data) {
   return document.createTextNode(data);
-}
+};
 
 /**
  * @param {string} elementName
@@ -359,9 +359,9 @@ Document.prototype.createElementWithClass = function(elementName, className, cus
  * @return {!Element}
  * @suppressGlobalPropertiesCheck
  */
-function createElementWithClass(elementName, className, customElementType) {
+self.createElementWithClass = function(elementName, className, customElementType) {
   return document.createElementWithClass(elementName, className, customElementType);
-}
+};
 
 /**
  * @param {string} childType
@@ -381,17 +381,17 @@ Document.prototype.createSVGElement = function(childType, className) {
  * @return {!Element}
  * @suppressGlobalPropertiesCheck
  */
-function createSVGElement(childType, className) {
+self.createSVGElement = function(childType, className) {
   return document.createSVGElement(childType, className);
-}
+};
 
 /**
  * @return {!DocumentFragment}
  * @suppressGlobalPropertiesCheck
  */
-function createDocumentFragment() {
+self.createDocumentFragment = function() {
   return document.createDocumentFragment();
-}
+};
 
 /**
  * @param {string} elementName
@@ -816,7 +816,7 @@ Node.prototype.getComponentRoot = function() {
  */
 function onInvokeElement(element, callback) {
   element.addEventListener('keydown', event => {
-    if (isEnterOrSpaceKey(event))
+    if (self.isEnterOrSpaceKey(event))
       callback(event);
   });
   element.addEventListener('click', event => callback(event));
@@ -826,26 +826,26 @@ function onInvokeElement(element, callback) {
  * @param {!Event} event
  * @return {boolean}
  */
-function isEnterKey(event) {
+self.isEnterKey = function(event) {
   // Check if in IME.
   return event.keyCode !== 229 && event.key === 'Enter';
-}
+};
 
 /**
  * @param {!Event} event
  * @return {boolean}
  */
-function isEnterOrSpaceKey(event) {
-  return isEnterKey(event) || event.key === ' ';
-}
+self.isEnterOrSpaceKey = function(event) {
+  return self.isEnterKey(event) || event.key === ' ';
+};
 
 /**
  * @param {!Event} event
  * @return {boolean}
  */
-function isEscKey(event) {
+self.isEscKey = function(event) {
   return event.keyCode === 27;
-}
+};
 
 // DevTools front-end still assumes that
 //   classList.toggle('a', undefined) works as

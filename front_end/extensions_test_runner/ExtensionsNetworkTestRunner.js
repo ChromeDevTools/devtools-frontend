@@ -7,7 +7,7 @@
  * @suppress {accessControls}
  */
 
-function extension_getRequestByUrl(urls, callback) {
+self.extension_getRequestByUrl = function(urls, callback) {
   function onHAR(response) {
     const entries = response.entries;
 
@@ -25,4 +25,4 @@ function extension_getRequestByUrl(urls, callback) {
   }
 
   webInspector.network.getHAR(onHAR);
-}
+};

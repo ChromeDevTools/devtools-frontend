@@ -1,10 +1,11 @@
 // Copyright (c) 2016 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 /**
  * @interface
  */
-class LighthousePort {
+const LighthousePort = class {
   /**
    * @param {!string} eventName, 'message', 'close'
    * @param {function(string|undefined)} cb
@@ -20,7 +21,7 @@ class LighthousePort {
 
   close() {
   }
-}
+};
 
 /**
  * @implements {LighthousePort}

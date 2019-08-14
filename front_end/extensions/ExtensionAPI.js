@@ -812,11 +812,11 @@ function injectedExtensionAPI(extensionInfo, inspectedTabId, themeName, keysToFo
  * @param {function(!Object, !Object)|undefined} testHook
  * @return {string}
  */
-function buildExtensionAPIInjectedScript(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
+self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {
   const argumentsJSON = [extensionInfo, inspectedTabId || null, themeName, keysToForward].map(_ => JSON.stringify(_)).join(',');
   if (!testHook)
     testHook = () => {};
   return '(function(injectedScriptId){ ' + defineCommonExtensionSymbols.toString() + ';' +
       '(' + injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
       '})';
-}
+};

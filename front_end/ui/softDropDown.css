@@ -20,3 +20,7 @@
     color: var(--selection-fg-color);
     background-color: var(--selection-bg-color);
 }
+
+.list-container {
+    width: 100%;
+}

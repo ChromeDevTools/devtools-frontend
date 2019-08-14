@@ -28,8 +28,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable no-unused-vars */
-
 // Blink Web Facing API
 
 /**
@@ -189,7 +187,7 @@ Array.prototype.mergeOrdered = function(array, comparator) {};
  */
 Int32Array.prototype.lowerBound = function(object, comparator, left, right) {};
 
-// TODO(luoe): remove these BigInt and ArrayLike types once closure supports them.
+// TODO(luoe): remove these BigInt types once closure supports them.
 /**
  * @param {number|string} value
  */
@@ -197,9 +195,6 @@ const BigInt = function(value) {};
 
 /** @typedef {*} */
 const bigint = null;
-
-/** @typedef {Array|NodeList|Arguments|{length: number}} */
-let ArrayLike;
 
 // File System API
 /**
@@ -870,7 +865,6 @@ Terminal.prototype = {
  */
 Console.prototype.context = function(context) {};
 
-// Globally defined functions
 
 /**
  * @param {!Array<string>|string} strings
@@ -878,139 +872,6 @@ Console.prototype.context = function(context) {};
  * @return {string}
  */
 const ls = function(strings, vararg) {};
-
-/**
-* @param {string} tagName
-* @param {string=} customElementType
-* @return {!Element}
-*/
-const createElement = function(tagName, customElementType) {};
-
-/**
- * @param {number|string} data
- * @return {!Text}
- */
-const createTextNode = function(data) {};
-
-/**
- * @param {string} elementName
- * @param {string=} className
- * @param {string=} customElementType
- * @return {!Element}
- */
-const createElementWithClass = function(elementName, className, customElementType) {};
-
-/**
- * @param {string} childType
- * @param {string=} className
- * @return {!Element}
- */
-const createSVGElement = function(childType, className) {};
-
-/**
- * @return {!DocumentFragment}
- */
-const createDocumentFragment = function() {};
-
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-const isEnterKey = function(event) {};
-
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-const isEnterOrSpaceKey = function(event) {};
-
-/**
- * @param {!Event} event
- * @return {boolean}
- */
-const isEscKey = function(event) {};
-
-/**
- * @param {!ExtensionDescriptor} extensionInfo
- * @param {string} inspectedTabId
- * @param {string} themeName
- * @param {!Array<number>} keysToForward
- * @param {function(!Object, !Object)|undefined} testHook
- * @return {string}
- */
-const buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, themeName, keysToForward, testHook) {};
-
-/**
- * @param {number} m
- * @param {number} n
- * @return {number}
- */
-const mod = function(m, n) {};
-
-/**
- * @param {string} query
- * @param {boolean} caseSensitive
- * @param {boolean} isRegex
- * @return {!RegExp}
- */
-const createSearchRegex = function(query, caseSensitive, isRegex) {};
-
-/**
- * @param {string} query
- * @param {string=} flags
- * @return {!RegExp}
- */
-const createPlainTextSearchRegex = function(query, flags) {};
-
-/**
- * @param {!RegExp} regex
- * @param {string} content
- * @return {number}
- */
-const countRegexMatches = function(regex, content) {};
-
-/**
- * @param {number} spacesCount
- * @return {string}
- */
-const spacesPadding = function(spacesCount) {};
-
-/**
- * @param {number} value
- * @param {number} symbolsCount
- * @return {string}
- */
-const numberToStringWithSpacesPadding = function(value, symbolsCount) {};
-
-/**
- * @param {string} url
- * @return {!Promise.<string>}
- */
-const loadXHR = function(url) {};
-
-/**
- * @param {*} value
- */
-const suppressUnused = function(value) {};
-
-/**
- * TODO: move into its own module
- * @param {function()} callback
- */
-const runOnWindowLoad = function(callback) {};
-
-/**
- * @template T
- * @param {function(new:T, ...)} constructorFunction
- * @return {!T}
- */
-const singleton = function(constructorFunction) {};
-
-/**
- * @param {?string} content
- * @return {number}
- */
-const base64ToSize = function(content) {};
 
 /**
  * @constructor

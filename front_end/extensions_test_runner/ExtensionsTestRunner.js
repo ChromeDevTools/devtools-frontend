@@ -8,6 +8,7 @@
  */
 
 const extensionsHost = 'devtools-extensions.oopif.test';
+const extensionsOrigin = `http://${extensionsHost}:8000`;
 Extensions.extensionServer._registerHandler('evaluateForTestInFrontEnd', onEvaluate);
 
 Extensions.extensionServer._extensionAPITestHook = function(extensionServerClient, coreAPI) {

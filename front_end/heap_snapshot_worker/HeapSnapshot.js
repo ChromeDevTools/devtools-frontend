@@ -2168,7 +2168,7 @@ const HeapSnapshotMetainfo = class {
 /**
  * @unrestricted
  */
-HeapSnapshotWorker.HeapSnapshotHeader = class {
+const HeapSnapshotHeader = class {
   constructor() {
     // New format.
     this.title = '';

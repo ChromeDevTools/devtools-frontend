@@ -27,14 +27,17 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/** @typedef {Array|NodeList|Arguments|{length: number}} */
+let ArrayLike;
+
 /**
  * @param {number} m
  * @param {number} n
  * @return {number}
  */
-self.mod = function(m, n) {
+function mod(m, n) {
   return ((m % n) + n) % n;
-};
+}
 
 /**
  * @param {string} string
@@ -993,7 +996,7 @@ String.format = function(format, substitutions, formatters, initialValue, append
  * @param {boolean} isRegex
  * @return {!RegExp}
  */
-self.createSearchRegex = function(query, caseSensitive, isRegex) {
+function createSearchRegex(query, caseSensitive, isRegex) {
   const regexFlags = caseSensitive ? 'g' : 'gi';
   let regexObject;
 
@@ -1006,17 +1009,17 @@ self.createSearchRegex = function(query, caseSensitive, isRegex) {
   }
 
   if (!regexObject)
-    regexObject = self.createPlainTextSearchRegex(query, regexFlags);
+    regexObject = createPlainTextSearchRegex(query, regexFlags);
 
   return regexObject;
-};
+}
 
 /**
  * @param {string} query
  * @param {string=} flags
  * @return {!RegExp}
  */
-self.createPlainTextSearchRegex = function(query, flags) {
+function createPlainTextSearchRegex(query, flags) {
   // This should be kept the same as the one in StringUtil.cpp.
   const regexSpecialCharacters = String.regexSpecialCharacters();
   let regex = '';
@@ -1027,14 +1030,14 @@ self.createPlainTextSearchRegex = function(query, flags) {
     regex += c;
   }
   return new RegExp(regex, flags || '');
-};
+}
 
 /**
  * @param {!RegExp} regex
  * @param {string} content
  * @return {number}
  */
-self.countRegexMatches = function(regex, content) {
+function countRegexMatches(regex, content) {
   let text = content;
   let result = 0;
   let match;
@@ -1044,26 +1047,26 @@ self.countRegexMatches = function(regex, content) {
     text = text.substring(match.index + 1);
   }
   return result;
-};
+}
 
 /**
  * @param {number} spacesCount
  * @return {string}
  */
-self.spacesPadding = function(spacesCount) {
+function spacesPadding(spacesCount) {
   return '\u00a0'.repeat(spacesCount);
-};
+}
 
 /**
  * @param {number} value
  * @param {number} symbolsCount
  * @return {string}
  */
-self.numberToStringWithSpacesPadding = function(value, symbolsCount) {
+function numberToStringWithSpacesPadding(value, symbolsCount) {
   const numberString = value.toString();
   const paddingLength = Math.max(0, symbolsCount - numberString.length);
-  return self.spacesPadding(paddingLength) + numberString;
-};
+  return spacesPadding(paddingLength) + numberString;
+}
 
 /**
  * @return {!Array.<T>}
@@ -1248,7 +1251,7 @@ Multimap.prototype = {
  * @param {string} url
  * @return {!Promise.<string>}
  */
-self.loadXHR = function(url) {
+function loadXHR(url) {
   return new Promise(load);
 
   function load(successCallback, failureCallback) {
@@ -1270,12 +1273,13 @@ self.loadXHR = function(url) {
     xhr.onreadystatechange = onReadyStateChanged;
     xhr.send(null);
   }
-};
+}
 
 /**
  * @param {*} value
  */
-self.suppressUnused = function(value) {};
+function suppressUnused(value) {
+}
 
 /**
  * @param {function()} callback
@@ -1360,8 +1364,9 @@ Map.prototype.diff = function(other, isEqual) {
 /**
  * TODO: move into its own module
  * @param {function()} callback
+ * @suppressGlobalPropertiesCheck
  */
-self.runOnWindowLoad = function(callback) {
+function runOnWindowLoad(callback) {
   /**
    * @suppressGlobalPropertiesCheck
    */
@@ -1374,7 +1379,7 @@ self.runOnWindowLoad = function(callback) {
     callback();
   else
     self.addEventListener('DOMContentLoaded', windowLoaded, false);
-};
+}
 
 const _singletonSymbol = Symbol('singleton');
 
@@ -1383,19 +1388,19 @@ const _singletonSymbol = Symbol('singleton');
  * @param {function(new:T, ...)} constructorFunction
  * @return {!T}
  */
-self.singleton = function(constructorFunction) {
+function singleton(constructorFunction) {
   if (_singletonSymbol in constructorFunction)
     return constructorFunction[_singletonSymbol];
   const instance = new constructorFunction();
   constructorFunction[_singletonSymbol] = instance;
   return instance;
-};
+}
 
 /**
  * @param {?string} content
  * @return {number}
  */
-self.base64ToSize = function(content) {
+function base64ToSize(content) {
   if (!content)
     return 0;
   let size = content.length * 3 / 4;
@@ -1404,4 +1409,4 @@ self.base64ToSize = function(content) {
   if (content.length > 1 && content[content.length - 2] === '=')
     size--;
   return size;
-};
+}

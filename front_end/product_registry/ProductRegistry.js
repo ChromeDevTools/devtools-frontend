@@ -8,34 +8,32 @@ ProductRegistry.instance = function() {
   const extension = self.runtime.extension(ProductRegistry.Registry);
   if (extension)
     return extension.instance();
-  // TODO(tvanderlippe): Remove type-cast once Closure compiler is updated to latest version.
-  return Promise.resolve(/** @type {!ProductRegistry.Registry} */ (self.singleton(ProductRegistry.RegistryStub)));
+  return Promise.resolve(self.singleton(ProductRegistry.RegistryStub));
 };
 
 /**
  * @interface
  */
-ProductRegistry.Registry = class {
+ProductRegistry.Registry = function() {};
+
+ProductRegistry.Registry.prototype = {
   /**
    * @param {!Common.ParsedURL} parsedUrl
    * @return {?string}
    */
-  nameForUrl(parsedUrl) {
-  }
+  nameForUrl: function(parsedUrl) {},
 
   /**
    * @param {!Common.ParsedURL} parsedUrl
    * @return {?ProductRegistry.Registry.ProductEntry}
    */
-  entryForUrl(parsedUrl) {
-  }
+  entryForUrl: function(parsedUrl) {},
 
   /**
    * @param {!Common.ParsedURL} parsedUrl
    * @return {?number}
    */
-  typeForUrl(parsedUrl) {
-  }
+  typeForUrl: function(parsedUrl) {}
 };
 
 /**

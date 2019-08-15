@@ -21,6 +21,9 @@
   <message name="IDS_DEVTOOLS_10e10a814f3c1f9a5e847376c975ea3c" desc="Text in Devices View of the Remote Devices tab">
     Error: <ph name="ERROR_JOIN______">$1s<ex>8080, 8888</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_1218feca45b00d1bed88ed6e666704fe" desc="Error message for local address input box when add port forwarding rule">
+    Port number must be not greater than 65535
+  </message>
   <message name="IDS_DEVTOOLS_2157ba7738ed20565fd089f2a6287cdd" desc="Text in Devices View of the Remote Devices tab">
     View less tabs…
   </message>
@@ -33,11 +36,20 @@
   <message name="IDS_DEVTOOLS_35a9dbe6b748771b9ea4d5962d37ff6f" desc="Text of the inspect in Devices View of the Remote Devices tab">
     Inspect
   </message>
+  <message name="IDS_DEVTOOLS_3a1230af73b98072b85f03de079cd602" desc="Error message for device port input box when add port forwarding rule">
+    Device port number must be between 1024 and 65535
+  </message>
   <message name="IDS_DEVTOOLS_405590b3c5865df635f2373ee4cb799c" desc="Title of the 'Remote devices' tool in the bottom drawer">
     Remote devices
   </message>
   <message name="IDS_DEVTOOLS_4d1c8263ba1036754f8db14a98f9f006" desc="A context menu item in the Devices View of the Remote Devices tab">
     Reload
+  </message>
+  <message name="IDS_DEVTOOLS_588c54a3158082418d50afdfce55f954" desc="Error message for device port input box when add port forwarding rule">
+    Device port numbers can only be used once
+  </message>
+  <message name="IDS_DEVTOOLS_62e8d0a52dd33aa2b6548f7056739421" desc="Error message for device port input box when add port forwarding rule">
+    Device port number field is required
   </message>
   <message name="IDS_DEVTOOLS_67afa587522e088dedac9f252362d16a" desc="Text in Devices View of the Remote Devices tab">
     Discover USB devices
@@ -78,11 +90,17 @@
   <message name="IDS_DEVTOOLS_cc63a5ac37dd9d1c607a59aad3292392" desc="Placeholder text content in Devices View of the Remote Devices tab">
     No rules
   </message>
+  <message name="IDS_DEVTOOLS_cfaefe70821c59f5910d4a8ec28e2023" desc="Error message for local address input box when add port forwarding rule">
+    Local address field is required
+  </message>
   <message name="IDS_DEVTOOLS_d38dcac8af912356e255cbace8984e9a" desc="Text in Devices View of the Remote Devices tab">
     New tab:
   </message>
   <message name="IDS_DEVTOOLS_dabcc308341c912a6b620e1c980e16d6" desc="Text in Devices View of the Remote Devices tab">
     No devices detected.
+  </message>
+  <message name="IDS_DEVTOOLS_e1c8d1943e37c10f0a2bae51f5e89915" desc="Error message for local address input box when add port forwarding rule">
+    Local address must match this pattern: dev.example.corp:3333
   </message>
   <message name="IDS_DEVTOOLS_e1f70f4a4265cb51c1b219aa60eaa441" desc="New tab input placeholder in Devices View of the Remote Devices tab">
     Enter URL
@@ -98,6 +116,9 @@
   </message>
   <message name="IDS_DEVTOOLS_f4f70727dc34561dfde1a3c529b6205c" desc="Discovery list item text content in Devices View of the Remote Devices tab">
     Settings
+  </message>
+  <message name="IDS_DEVTOOLS_fa5ef75cf38d69be2973c570c1d47b29" desc="Error message for device port input box when add port forwarding rule">
+    Device port must be a number
   </message>
   <message name="IDS_DEVTOOLS_ff89b835f4fc414c9c8f4f96695c2ea8" desc="Text in Devices View of the Remote Devices tab">
     Local address (dev.example.corp:3333)

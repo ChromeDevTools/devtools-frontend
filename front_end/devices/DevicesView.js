@@ -51,8 +51,6 @@ Devices.DevicesView = class extends UI.VBox {
         InspectorFrontendHostAPI.Events.DevicesPortForwardingStatusChanged, this._devicesPortForwardingStatusChanged,
         this);
 
-    this.contentElement.tabIndex = 0;
-    this.setDefaultFocusedElement(this.contentElement);
   }
 
   /**
@@ -283,8 +281,10 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
     /** @type {?UI.ListWidget.Editor<!Adb.PortForwardingRule>} */
     this._editor = null;
 
-    this.element.appendChild(
-        UI.createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button'));
+    const addButton =
+        UI.createTextButton(Common.UIString('Add rule'), this._addRuleButtonClicked.bind(this), 'add-rule-button');
+    this.element.appendChild(addButton);
+    this.setDefaultFocusedElement(addButton);
 
     /** @type {!Array<!Adb.PortForwardingRule>} */
     this._portForwardingConfig = [];
@@ -393,21 +393,30 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function portValidator(rule, index, input) {
-      let valid = true;
+      let errorMessage;
       const value = input.value.trim();
+      if (!value) {
+        errorMessage = ls`Device port number field is required`;
+        return {valid: false, errorMessage};
+      }
       const match = value.match(/^(\d+)$/);
       if (!match) {
-        valid = false;
+        errorMessage = ls`Device port must be a number`;
       } else {
         const port = parseInt(match[1], 10);
         if (port < 1024 || port > 65535)
-          valid = false;
+          errorMessage = ls`Device port number must be between 1024 and 65535`;
         for (let i = 0; i < this._portForwardingConfig.length; ++i) {
-          if (i !== index && this._portForwardingConfig[i].port === value)
-            valid = false;
+          if (i !== index && this._portForwardingConfig[i].port === value) {
+            errorMessage = ls`Device port numbers can only be used once`;
+            break;
+          }
         }
       }
-      return {valid};
+
+      if (errorMessage)
+        return {valid: false, errorMessage};
+      return {valid: true};
     }
 
     /**
@@ -417,11 +426,24 @@ Devices.DevicesView.PortForwardingView = class extends UI.VBox {
      * @return {!UI.ListWidget.ValidatorResult}
      */
     function addressValidator(rule, index, input) {
-      const match = input.value.trim().match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
-      if (!match)
-        return {valid: false};
-      const port = parseInt(match[2], 10);
-      return {valid: port <= 65535};
+      let errorMessage;
+      const value = input.value.trim();
+      if (!value) {
+        errorMessage = ls`Local address field is required`;
+        return {valid: false, errorMessage};
+      }
+      const match = value.match(/^([a-zA-Z0-9\.\-_]+):(\d+)$/);
+      if (!match) {
+        errorMessage = ls`Local address must match this pattern: dev.example.corp:3333`;
+      } else {
+        const port = parseInt(match[2], 10);
+        if (port > 65535)
+          errorMessage = ls`Port number must be not greater than 65535`;
+      }
+
+      if (errorMessage)
+        return {valid: false, errorMessage};
+      return {valid: true};
     }
   }
 };

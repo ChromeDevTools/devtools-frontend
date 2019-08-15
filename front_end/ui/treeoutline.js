@@ -761,7 +761,7 @@ UI.TreeElement = class {
     this._listItemNode.classList.toggle('parent', expandable);
     if (!expandable) {
       this.collapse();
-      UI.ARIAUtils.unsetExpanded(this._listItemNode);
+      UI.ARIAUtils.unsetExpandable(this._listItemNode);
     } else {
       UI.ARIAUtils.setExpanded(this._listItemNode, false);
     }

@@ -240,7 +240,7 @@ UI.ARIAUtils.setExpanded = function(element, value) {
 /**
  * @param {!Element} element
  */
-UI.ARIAUtils.unsetExpanded = function(element) {
+UI.ARIAUtils.unsetExpandable = function(element) {
   element.removeAttribute('aria-expanded');
 };
 

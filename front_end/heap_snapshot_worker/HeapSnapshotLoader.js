@@ -183,7 +183,7 @@ HeapSnapshotWorker.HeapSnapshotLoader = class {
     this._jsonTokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(metaJSON => {
       this._json = this._jsonTokenizer.remainder();
       this._jsonTokenizer = null;
-      this._snapshot.snapshot = /** @type {!HeapSnapshotHeader} */ (JSON.parse(metaJSON));
+      this._snapshot.snapshot = /** @type {!HeapSnapshotWorker.HeapSnapshotHeader} */ (JSON.parse(metaJSON));
     });
     this._jsonTokenizer.write(json);
     while (this._jsonTokenizer)

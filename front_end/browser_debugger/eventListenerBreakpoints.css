@@ -39,6 +39,7 @@
 
 .breakpoint-hit .breakpoint-hit-marker {
     background-color: rgb(255, 255, 194);
+    border-right: 3px solid rgb(107, 97, 48);
     height: 18px;
     left: 0;
     margin-left: -30px;
@@ -46,3 +47,8 @@
     right: -4px;
     z-index: -1;
 }
+
+:host-context(.-theme-with-dark-background) .breakpoint-hit .breakpoint-hit-marker {
+    background-color: hsl(46, 98%, 22%);
+}
+

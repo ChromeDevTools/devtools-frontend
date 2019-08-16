@@ -35,6 +35,7 @@
 
 .breakpoint-hit {
     background-color: rgb(255, 255, 194);
+    border-right: 3px solid rgb(107, 97, 48);
 }
 
 :host-context(.-theme-with-dark-background) .breakpoint-hit {

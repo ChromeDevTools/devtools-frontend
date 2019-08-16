@@ -393,21 +393,21 @@ Profiler.CPUFlameChartDataProvider = class extends Profiler.ProfileFlameChartDat
       return Number.secondsToString(ms / 1000, true);
     }
     const name = UI.beautifyFunctionName(node.functionName);
-    pushEntryInfoRow(Common.UIString('Name'), name);
+    pushEntryInfoRow(ls`Name`, name);
     const selfTime = millisecondsToString(this._entrySelfTimes[entryIndex]);
     const totalTime = millisecondsToString(timelineData.entryTotalTimes[entryIndex]);
-    pushEntryInfoRow(Common.UIString('Self time'), selfTime);
-    pushEntryInfoRow(Common.UIString('Total time'), totalTime);
+    pushEntryInfoRow(ls`Self time`, selfTime);
+    pushEntryInfoRow(ls`Total time`, totalTime);
     const linkifier = new Components.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._cpuProfilerModel && this._cpuProfilerModel.target(), node.callFrame);
     if (link)
-      pushEntryInfoRow(Common.UIString('URL'), link.textContent);
+      pushEntryInfoRow(ls`URL`, link.textContent);
     linkifier.dispose();
-    pushEntryInfoRow(Common.UIString('Aggregated self time'), Number.secondsToString(node.self / 1000, true));
-    pushEntryInfoRow(Common.UIString('Aggregated total time'), Number.secondsToString(node.total / 1000, true));
+    pushEntryInfoRow(ls`Aggregated self time`, Number.secondsToString(node.self / 1000, true));
+    pushEntryInfoRow(ls`Aggregated total time`, Number.secondsToString(node.total / 1000, true));
     if (node.deoptReason)
-      pushEntryInfoRow(Common.UIString('Not optimized'), node.deoptReason);
+      pushEntryInfoRow(ls`Not optimized`, node.deoptReason);
 
     return Profiler.ProfileView.buildPopoverTable(entryInfo);
   }

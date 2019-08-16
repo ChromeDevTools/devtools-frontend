@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_05dedc41542c728955023577fd58be7a" desc="Text for screen reader to announce a collapsed group">
+    <ph name="GROUPNAME">$1s</ph> collapsed
+  </message>
   <message name="IDS_DEVTOOLS_105078d294d30c978ca2badf7f376934" desc="Title of a setting under the Performance category that can be invoked through the Command Menu">
     Scroll
   </message>
@@ -27,6 +30,9 @@
   <message name="IDS_DEVTOOLS_582996407922dab08d5cf2b3d2a7c1c9" desc="Text in Network Priorities of the Performance panel">
     Highest
   </message>
+  <message name="IDS_DEVTOOLS_633e3b5b30fecc6b3749fab9975c893c" desc="Text for screen reader to announce an expanded group">
+    <ph name="GROUPNAME">$1s</ph> expanded
+  </message>
   <message name="IDS_DEVTOOLS_655d20c1ca69519ca647684edbb2db35" desc="Text in Network Priorities of the Performance panel">
     High
   </message>
@@ -41,6 +47,9 @@
   </message>
   <message name="IDS_DEVTOOLS_8d8fcc1abd550c5f25dbfaa57d59cb67" desc="Units in Line Level Profile of the Performance panel">
     MB
+  </message>
+  <message name="IDS_DEVTOOLS_9033a3ec0d5878d8181cfafca376b978" desc="Text for screen reader to announce a selected group.">
+    <ph name="GROUPNAME">$1s</ph> selected
   </message>
   <message name="IDS_DEVTOOLS_90c96ccfe47a731972d5e64deb5fea36" desc="Title of a setting under the Memory category that can be invoked through the Command Menu">
     Hide live memory allocation annotations

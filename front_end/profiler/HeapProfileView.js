@@ -810,14 +810,14 @@ Profiler.HeapFlameChartDataProvider = class extends Profiler.ProfileFlameChartDa
     function pushEntryInfoRow(title, value) {
       entryInfo.push({title: title, value: value});
     }
-    pushEntryInfoRow(Common.UIString('Name'), UI.beautifyFunctionName(node.functionName));
-    pushEntryInfoRow(Common.UIString('Self size'), Number.bytesToString(node.self));
-    pushEntryInfoRow(Common.UIString('Total size'), Number.bytesToString(node.total));
+    pushEntryInfoRow(ls`Name`, UI.beautifyFunctionName(node.functionName));
+    pushEntryInfoRow(ls`Self size`, Number.bytesToString(node.self));
+    pushEntryInfoRow(ls`Total size`, Number.bytesToString(node.total));
     const linkifier = new Components.Linkifier();
     const link = linkifier.maybeLinkifyConsoleCallFrame(
         this._heapProfilerModel ? this._heapProfilerModel.target() : null, node.callFrame);
     if (link)
-      pushEntryInfoRow(Common.UIString('URL'), link.textContent);
+      pushEntryInfoRow(ls`URL`, link.textContent);
     linkifier.dispose();
     return Profiler.ProfileView.buildPopoverTable(entryInfo);
   }

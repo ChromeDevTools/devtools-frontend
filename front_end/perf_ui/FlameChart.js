@@ -455,6 +455,9 @@ PerfUI.FlameChart = class extends UI.VBox {
       this._flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this._resetCanvas();
       this._draw();
+
+      const groupName = groups[groupIndex].name;
+      UI.ARIAUtils.alert(ls`${groupName} selected`, this._canvas);
     }
   }
 
@@ -491,8 +494,9 @@ PerfUI.FlameChart = class extends UI.VBox {
   /**
    * @param {number} groupIndex
    * @param {boolean=} setExpanded
+   * @param {boolean=} propagatedExpand
    */
-  _expandGroup(groupIndex, setExpanded = true) {
+  _expandGroup(groupIndex, setExpanded = true, propagatedExpand = false) {
     if (groupIndex < 0 || !this._isGroupCollapsible(groupIndex))
       return;
 
@@ -517,6 +521,13 @@ PerfUI.FlameChart = class extends UI.VBox {
     this._updateHeight();
     this._resetCanvas();
     this._draw();
+
+    // We only want to read expanded/collapsed state on user inputted expand/collapse
+    if (!propagatedExpand) {
+      const groupName = groups[groupIndex].name;
+      const content = group.expanded ? ls`${groupName} expanded` : ls`${groupName} collapsed`;
+      UI.ARIAUtils.alert(content, this._canvas);
+    }
   }
 
   /**
@@ -652,7 +663,7 @@ PerfUI.FlameChart = class extends UI.VBox {
     const groupIndexToSelect = this._keyboardFocusedGroup + 1;
     if (allGroups[groupIndexToSelect].style.nestingLevel > allGroups[this._keyboardFocusedGroup].style.nestingLevel) {
       this._selectGroup(groupIndexToSelect);
-      this._expandGroup(groupIndexToSelect, true /* setExpanded */);
+      this._expandGroup(groupIndexToSelect, true /* setExpanded */, true /* propagatedExpand */);
     }
   }
 

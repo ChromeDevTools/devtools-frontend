@@ -41,9 +41,9 @@ Timeline.TimelineController = class {
   /**
    * @param {!Timeline.TimelineController.RecordingOptions} options
    * @param {!Array<!Extensions.ExtensionTraceProvider>} providers
-   * @return {!Promise}
+   * @return {!Promise<!Object>}
    */
-  startRecording(options, providers) {
+  async startRecording(options, providers) {
     this._extensionTraceProviders = Extensions.extensionServer.traceProviders().slice();
 
     /**
@@ -83,32 +83,43 @@ Timeline.TimelineController = class {
     this._extensionSessions =
         providers.map(provider => new Timeline.ExtensionTracingSession(provider, this._performanceModel));
     this._extensionSessions.forEach(session => session.start());
-    const startPromise = this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
     this._performanceModel.setRecordStartTime(Date.now());
-    return startPromise;
+    const response = await this._startRecordingWithCategories(categoriesArray.join(','), options.enableJSSampling);
+    if (response[Protocol.Error])
+      await this._waitForTracingToStop(false);
+    return response;
   }
 
   /**
    * @return {!Promise<!Timeline.PerformanceModel>}
    */
   async stopRecording() {
-    const tracingStoppedPromises = [];
-    if (this._tracingManager)
-      tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
-    tracingStoppedPromises.push(this._stopProfilingOnAllModels());
     if (this._tracingManager)
       this._tracingManager.stop();
 
     this._client.loadingStarted();
+    await this._waitForTracingToStop(true);
+    this._allSourcesFinished();
+    return this._performanceModel;
+  }
+
+
+  /**
+   * @param {boolean} awaitTracingCompleteCallback - Whether to wait for the _tracingCompleteCallback to happen
+   * @return {!Promise}
+   */
+  _waitForTracingToStop(awaitTracingCompleteCallback) {
+    const tracingStoppedPromises = [];
+    if (this._tracingManager && awaitTracingCompleteCallback)
+      tracingStoppedPromises.push(new Promise(resolve => this._tracingCompleteCallback = resolve));
+    tracingStoppedPromises.push(this._stopProfilingOnAllModels());
 
     const extensionCompletionPromises = this._extensionSessions.map(session => session.stop());
     if (extensionCompletionPromises.length) {
       tracingStoppedPromises.push(
           Promise.race([Promise.all(extensionCompletionPromises), new Promise(r => setTimeout(r, 5000))]));
     }
-    await Promise.all(tracingStoppedPromises);
-    this._allSourcesFinished();
-    return this._performanceModel;
+    return Promise.all(tracingStoppedPromises);
   }
 
   /**
@@ -170,7 +181,7 @@ Timeline.TimelineController = class {
   /**
    * @param {string} categories
    * @param {boolean=} enableJSSampling
-   * @return {!Promise}
+   * @return {!Promise<!Object>}
    */
   async _startRecordingWithCategories(categories, enableJSSampling) {
     SDK.targetManager.suspendAllTargets();

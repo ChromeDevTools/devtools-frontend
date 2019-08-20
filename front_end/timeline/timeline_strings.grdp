@@ -493,6 +493,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)
   </message>
+  <message name="IDS_DEVTOOLS_812f4cf4e8c262a256350332191a52b2" desc="">
+    Recording failed
+  </message>
   <message name="IDS_DEVTOOLS_81e91be8db96be69e372f0c715ec7444" desc="Text in Timeline UIUtils of the Performance panel">
     Collected
   </message>

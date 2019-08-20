@@ -464,9 +464,6 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._recordingOptionUIControls.forEach(control => control.setEnabled(enabled));
   }
 
-  /**
-   * @return {!Promise}
-   */
   async _startRecording() {
     console.assert(!this._statusPane, 'Status pane is already opened.');
     this._setState(Timeline.TimelinePanel.State.StartPending);
@@ -485,8 +482,11 @@ Timeline.TimelinePanel = class extends UI.Panel {
     this._controller = new Timeline.TimelineController(mainTarget, this);
     this._setUIControlsEnabled(false);
     this._hideLandingPage();
-    await this._controller.startRecording(recordingOptions, enabledTraceProviders);
-    this._recordingStarted();
+    const response = await this._controller.startRecording(recordingOptions, enabledTraceProviders);
+    if (response[Protocol.Error])
+      this._recordingFailed(response[Protocol.Error]);
+    else
+      this._recordingStarted();
   }
 
   async _stopRecording() {
@@ -496,8 +496,27 @@ Timeline.TimelinePanel = class extends UI.Panel {
       this._statusPane.updateProgressBar(Common.UIString('Received'), 0);
     }
     this._setState(Timeline.TimelinePanel.State.StopPending);
-    this._performanceModel = await this._controller.stopRecording();
+    const model = await this._controller.stopRecording();
+    this._performanceModel = model;
     this._setUIControlsEnabled(true);
+    this._controller.dispose();
+    this._controller = null;
+  }
+
+  /**
+   * @param {string} error The error message to display
+   */
+  _recordingFailed(error) {
+    if (this._statusPane)
+      this._statusPane.hide();
+    this._statusPane = new Timeline.TimelinePanel.StatusPane({description: error}, () => this.loadingComplete(null));
+    this._statusPane.showPane(this._statusPaneContainer);
+    this._statusPane.updateStatus(ls`Recording failed`);
+    this._statusPane.updateButton(ls`Close`);
+
+    this._setState(Timeline.TimelinePanel.State.RecordingFailed);
+    this._performanceModel = null;
+    this._setUIControlsEnabled(false);
     this._controller.dispose();
     this._controller = null;
   }
@@ -677,7 +696,7 @@ Timeline.TimelinePanel = class extends UI.Panel {
 
     if (this._statusPane)
       this._statusPane.hide();
-    this._statusPane = new Timeline.TimelinePanel.StatusPane(false, this._cancelLoading.bind(this));
+    this._statusPane = new Timeline.TimelinePanel.StatusPane({showProgress: true}, this._cancelLoading.bind(this));
     this._statusPane.showPane(this._statusPaneContainer);
     this._statusPane.updateStatus(Common.UIString('Loading profile\u2026'));
     // FIXME: make loading from backend cancelable as well.
@@ -729,7 +748,8 @@ Timeline.TimelinePanel = class extends UI.Panel {
   _showRecordingStarted() {
     if (this._statusPane)
       return;
-    this._statusPane = new Timeline.TimelinePanel.StatusPane(true, this._stopRecording.bind(this));
+    this._statusPane =
+        new Timeline.TimelinePanel.StatusPane({showTimer: true, showProgress: true}, this._stopRecording.bind(this));
     this._statusPane.showPane(this._statusPaneContainer);
     this._statusPane.updateStatus(Common.UIString('Initializing profiler\u2026'));
   }
@@ -887,7 +907,8 @@ Timeline.TimelinePanel.State = {
   StartPending: Symbol('StartPending'),
   Recording: Symbol('Recording'),
   StopPending: Symbol('StopPending'),
-  Loading: Symbol('Loading')
+  Loading: Symbol('Loading'),
+  RecordingFailed: Symbol('RecordingFailed')
 };
 
 /**
@@ -1024,10 +1045,14 @@ Timeline.TimelineModeViewDelegate.prototype = {
  */
 Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
   /**
-   * @param {boolean} showTimer
+   * @param {!{showTimer: (boolean|undefined), showProgress: (boolean|undefined), description: (string|undefined)}} options - a collection of options controlling the appearance of the pane.
+   *   The options object can have the following properties:
+   *   - **showTimer** - `{boolean}` - Display seconds since dialog opened
+   *   - **showProgress** - `{boolean}` - Display a progress bar
+   *   - **description** - `{string}` - Display this string in a description line
    * @param {function()} stopCallback
    */
-  constructor(showTimer, stopCallback) {
+  constructor(options, stopCallback) {
     super(true);
     this.registerRequiredCSS('timeline/timelineStatusDialog.css');
     this.contentElement.classList.add('timeline-status-dialog');
@@ -1037,15 +1062,25 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     this._status = statusLine.createChild('div', 'content');
     UI.ARIAUtils.markAsStatus(this._status);
 
-    if (showTimer) {
+    if (options.showTimer) {
       const timeLine = this.contentElement.createChild('div', 'status-dialog-line time');
       timeLine.createChild('div', 'label').textContent = Common.UIString('Time');
       this._time = timeLine.createChild('div', 'content');
     }
-    const progressLine = this.contentElement.createChild('div', 'status-dialog-line progress');
-    this._progressLabel = progressLine.createChild('div', 'label');
-    this._progressBar = progressLine.createChild('div', 'indicator-container').createChild('div', 'indicator');
-    UI.ARIAUtils.markAsProgressBar(this._progressBar);
+
+    if (options.showProgress) {
+      const progressLine = this.contentElement.createChild('div', 'status-dialog-line progress');
+      this._progressLabel = progressLine.createChild('div', 'label');
+      this._progressBar = progressLine.createChild('div', 'indicator-container').createChild('div', 'indicator');
+      UI.ARIAUtils.markAsProgressBar(this._progressBar);
+    }
+
+    if (typeof options.description === 'string') {
+      const descriptionLine = this.contentElement.createChild('div', 'status-dialog-line description');
+      descriptionLine.createChild('div', 'label').textContent = ls`Description`;
+      this._description = descriptionLine.createChild('div', 'content');
+      this._description.innerText = options.description;
+    }
 
     this._stopButton = UI.createTextButton(Common.UIString('Stop'), stopCallback, '', true);
     this.contentElement.createChild('div', 'stop-button').appendChild(this._stopButton);
@@ -1086,6 +1121,13 @@ Timeline.TimelinePanel.StatusPane = class extends UI.VBox {
     this._progressBar.style.width = percent.toFixed(1) + '%';
     UI.ARIAUtils.setProgressBarCurrentPercentage(this._progressBar, percent);
     this._updateTimer();
+  }
+
+  /**
+   * @param {string} caption
+   */
+  updateButton(caption) {
+    this._stopButton.innerText = caption;
   }
 
   startTimer() {

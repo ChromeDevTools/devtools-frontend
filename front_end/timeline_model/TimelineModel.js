@@ -244,8 +244,7 @@ TimelineModel.TimelineModel = class {
           data = [];
           processData.set(pid, data);
         }
-        const to = i === frame.processes.length - 1 ? (frame.deletedTime || this._maximumRecordTime) :
-                                                      frame.processes[i + 1].time;
+        const to = i === frame.processes.length - 1 ? (frame.deletedTime || Infinity) : frame.processes[i + 1].time;
         data.push({from: frame.processes[i].time, to: to, main: !frame.parent, url: frame.processes[i].url});
       }
     }

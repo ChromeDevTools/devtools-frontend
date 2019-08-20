@@ -107,6 +107,17 @@ Audits.AuditsPanel = class extends UI.Panel {
     this._statusView.show(this.contentElement);
   }
 
+  _beforePrint() {
+    this._statusView.show(this.contentElement);
+    this._statusView.toggleCancelButton(false);
+    this._statusView.renderText(ls`Printing`, ls`The print popup window is open. Please close it to continue.`);
+  }
+
+  _afterPrint() {
+    this._statusView.hide();
+    this._statusView.toggleCancelButton(true);
+  }
+
   /**
    * @param {!ReportRenderer.ReportJSON} lighthouseResult
    * @param {!ReportRenderer.RunnerResultArtifacts=} artifacts
@@ -147,6 +158,8 @@ Audits.AuditsPanel = class extends UI.Panel {
     Audits.ReportRenderer.handleDarkMode(el);
 
     const features = new Audits.ReportUIFeatures(dom);
+    features.setBeforePrint(this._beforePrint.bind(this));
+    features.setAfterPrint(this._afterPrint.bind(this));
     features.setTemplateContext(templatesDOM);
     features.initFeatures(lighthouseResult);
 

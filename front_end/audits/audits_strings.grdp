@@ -33,6 +33,9 @@
   <message name="IDS_DEVTOOLS_1c481aa99d081c32182011a758f73d33" desc="Text in Audits Status View">
     <ph name="MATCH_MESSAGE">$1s<ex>Lighthouse is loading your page.</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_2046d43f4cc1f59c06f764da2ca2355a" desc="">
+    The print popup window is open. Please close it to continue.
+  </message>
   <message name="IDS_DEVTOOLS_2310408a63388fe57e3a4177168a8798" desc="Text in Audits Controller">
     Desktop
   </message>
@@ -101,6 +104,9 @@
   </message>
   <message name="IDS_DEVTOOLS_9446a98ad14416153cc4d45ab8b531bf" desc="Text in Audits Controller">
     Performance
+  </message>
+  <message name="IDS_DEVTOOLS_b002a564ceda05dbdf012a48a145d0d3" desc="">
+    Printing
   </message>
   <message name="IDS_DEVTOOLS_b06c94565d768dd75535120f2f8482a7" desc="Text in Audits Start View">
     Audits

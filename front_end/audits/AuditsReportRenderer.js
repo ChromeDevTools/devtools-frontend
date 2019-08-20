@@ -74,6 +74,29 @@ Audits.ReportRenderer = class extends ReportRenderer {
  */
 Audits.ReportUIFeatures = class extends ReportUIFeatures {
   /**
+   * @param {!DOM} dom
+   */
+  constructor(dom) {
+    super(dom);
+    this._beforePrint = null;
+    this._afterPrint = null;
+  }
+
+  /**
+   * @param {?function()} beforePrint
+   */
+  setBeforePrint(beforePrint) {
+    this._beforePrint = beforePrint;
+  }
+
+  /**
+   * @param {?function()} afterPrint
+   */
+  setAfterPrint(afterPrint) {
+    this._afterPrint = afterPrint;
+  }
+
+  /**
    * Returns the html that recreates this report.
    * @return {string}
    * @protected
@@ -107,9 +130,14 @@ Audits.ReportUIFeatures = class extends ReportUIFeatures {
     printWindow.document.body.replaceWith(clonedReport);
     // Linkified nodes are shadow elements, which aren't exposed via `cloneNode`.
     await Audits.ReportRenderer.linkifyNodeDetails(clonedReport);
+
+    if (this._beforePrint)
+      this._beforePrint();
     printWindow.focus();
     printWindow.print();
     printWindow.close();
+    if (this._afterPrint)
+      this._afterPrint();
   }
 
   /**

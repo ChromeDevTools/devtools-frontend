@@ -532,12 +532,27 @@ Timeline.TimelineFlameChartDataProvider = class extends Common.Object {
 
     /** @type {!Array<!SDK.TracingModel.Event>} */
     const metricEvents = [];
+    const lcpEvents = [];
+    const timelineModel = this._performanceModel.timelineModel();
     for (const track of this._model.tracks()) {
       for (const event of track.events) {
-        if (!this._performanceModel.timelineModel().isMarkerEvent(event))
+        if (!timelineModel.isMarkerEvent(event))
           continue;
-        metricEvents.push(event);
+        if (timelineModel.isLCPCandidateEvent(event) || timelineModel.isLCPInvalidateEvent(event))
+          lcpEvents.push(event);
+        else
+          metricEvents.push(event);
       }
+    }
+
+    // Only the LCP event with the largest candidate index is relevant.
+    // Do not record an LCP event if it is an invalidate event.
+    if (lcpEvents.length > 0) {
+      const winning_event = lcpEvents.reduce(function(a, b) {
+        return Number(a.args['data']['candidateIndex']) > Number(b.args['data']['candidateIndex']) ? a : b;
+      });
+      if (timelineModel.isLCPCandidateEvent(winning_event))
+        metricEvents.push(winning_event);
     }
 
     metricEvents.sort(SDK.TracingModel.Event.compareStartTime);

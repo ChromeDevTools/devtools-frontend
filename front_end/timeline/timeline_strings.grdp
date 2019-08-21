@@ -358,6 +358,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_5878904937ecbc1d0556f79782ab03cd" desc="Text in Timeline UIUtils of the Performance panel">
     Scroll Update
   </message>
+  <message name="IDS_DEVTOOLS_5936c61a9f71fdd7e0cfd388a4c37353" desc="Text in Timeline UIUtils of the Performance panel">
+    LCP
+  </message>
   <message name="IDS_DEVTOOLS_59cf59caeba8075dec6a745b083edd0c" desc="Text in Timeline UIUtils of the Performance panel">
     Time Waiting for Main Thread
   </message>
@@ -806,6 +809,9 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   </message>
   <message name="IDS_DEVTOOLS_d88a137b62e15eece2884fa04bc36099" desc="Text in Timeline Flame Chart View of the Performance panel">
     <ph name="THIS__STYLE_TITLE">$1s<ex>Frame</ex></ph> at <ph name="STARTTIME">$2s<ex>10ms</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_d9070adf25882bbae3339d42bd4efd62" desc="Text in Timeline UIUtils of the Performance panel">
+    Largest Contentful Paint
   </message>
   <message name="IDS_DEVTOOLS_d97477d6d8a838ead9348185bb5b6742" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Thread

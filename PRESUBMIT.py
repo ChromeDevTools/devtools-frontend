@@ -107,9 +107,9 @@ def _CheckDevtoolsLocalizableResources(input_api, output_api):  # pylint: disabl
 
 
 def _CheckDevtoolsLocalization(input_api, output_api):  # pylint: disable=invalid-name
-    affected_front_end_files = [
-        input_api.os_path.join(input_api.PresubmitLocalPath(), file_path) for file_path in _getAffectedFrontEndFiles(input_api)
-    ]
+    devtools_root = input_api.PresubmitLocalPath()
+    devtools_front_end = input_api.os_path.join(devtools_root, "front_end")
+    affected_front_end_files = _getAffectedFiles(input_api, [devtools_front_end], ["D"], [".js", ".grdp"])
     if len(affected_front_end_files) == 0:
         return []
     script_path = input_api.os_path.join(input_api.PresubmitLocalPath(), "scripts", "check_localizability.js")

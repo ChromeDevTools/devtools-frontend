@@ -196,7 +196,10 @@ def CheckChangeOnUpload(input_api, output_api):
 
 
 def CheckChangeOnCommit(input_api, output_api):
-    return []
+    results = []
+    results.extend(_CheckDevtoolsLocalizableResources(input_api, output_api))
+    results.extend(_CheckDevtoolsLocalization(input_api, output_api))
+    return results
 
 
 def _getAffectedFiles(input_api, parent_directories, excluded_actions, accepted_endings):  # pylint: disable=invalid-name

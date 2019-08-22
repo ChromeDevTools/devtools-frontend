@@ -17,6 +17,10 @@
     background-image: none;
 }
 
+.websocket-frame-view-td {
+    border-bottom: 1px solid #ccc;
+}
+
 .websocket-frame-view .data-grid tr.selected {
     background-color: #def;
 }
@@ -43,7 +47,12 @@
     color: white;
 }
 
+.websocket-frame-view-row-send {
+    background-color: rgb(226, 247, 218);
+}
+
 .websocket-frame-view-row-error {
+    background-color: rgb(255, 237, 237);
     color: rgb(182, 0, 0);
 }
 

@@ -46,7 +46,7 @@ Network.ResourceWebSocketFrameView = class extends UI.VBox {
     this._dataGrid = new DataGrid.SortableDataGrid(columns);
     this._dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
     this._dataGrid.setStickToBottom(true);
-    this._dataGrid.setStriped(true);
+    this._dataGrid.setCellClass('websocket-frame-view-td');
     this._timeComparator =
         /** @type {function(!Network.ResourceWebSocketFrameNode, !Network.ResourceWebSocketFrameNode):number} */ (
             Network.ResourceWebSocketFrameNodeTimeComparator);

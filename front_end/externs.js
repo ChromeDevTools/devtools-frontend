@@ -140,14 +140,6 @@ Array.prototype.sortRange = function(comparator, leftBound, rightBound, sortWind
 Array.prototype.partition = function(comparator, left, right, pivotIndex) {};
 
 /**
- * @this {Array.<number>}
- * @param {number} k
- * @param {function(number,number):boolean=} comparator
- * @return {number}
- */
-Array.prototype.qselect = function(k, comparator) {};
-
-/**
  * @param {string} field
  * @return {!Array.<!T>}
  * @this {Array.<!Object.<string,T>>}

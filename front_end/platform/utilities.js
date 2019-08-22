@@ -585,36 +585,6 @@ Object.defineProperty(Array.prototype, 'sortRange', sortRange);
 Object.defineProperty(Uint32Array.prototype, 'sortRange', sortRange);
 })();
 
-Object.defineProperty(Array.prototype, 'qselect', {
-  /**
-   * @param {number} k
-   * @param {function(number, number): number=} comparator
-   * @return {number|undefined}
-   * @this {Array.<number>}
-   */
-  value: function(k, comparator) {
-    if (k < 0 || k >= this.length)
-      return;
-    if (!comparator) {
-      comparator = function(a, b) {
-        return a - b;
-      };
-    }
-
-    let low = 0;
-    let high = this.length - 1;
-    for (;;) {
-      const pivotPosition = this.partition(comparator, low, high, Math.floor((high + low) / 2));
-      if (pivotPosition === k)
-        return this[k];
-      else if (pivotPosition > k)
-        high = pivotPosition - 1;
-      else
-        low = pivotPosition + 1;
-    }
-  }
-});
-
 Object.defineProperty(Array.prototype, 'lowerBound', {
   /**
    * Return index of the leftmost element that is equal or greater

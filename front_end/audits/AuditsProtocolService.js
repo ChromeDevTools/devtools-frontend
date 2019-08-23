@@ -18,10 +18,10 @@ Audits.ProtocolService = class extends Common.Object {
   /**
    * @return {!Promise<undefined>}
    */
-  attach() {
-    return SDK.interceptMainConnection(this._dispatchProtocolMessage.bind(this)).then(rawConnection => {
-      this._rawConnection = rawConnection;
-    });
+  async attach() {
+    await SDK.targetManager.suspendAllTargets();
+    const childTargetManager = SDK.targetManager.mainTarget().model(SDK.ChildTargetManager);
+    this._rawConnection = await childTargetManager.createParallelConnection(this._dispatchProtocolMessage.bind(this));
   }
 
   /**
@@ -35,14 +35,15 @@ Audits.ProtocolService = class extends Common.Object {
   }
 
   /**
-   * @return {!Promise<!Object|undefined>}
+   * @return {!Promise<undefined>}
    */
-  detach() {
-    return Promise.resolve().then(() => this._send('stop')).then(() => this._backend.dispose()).then(() => {
-      delete this._backend;
-      delete this._backendPromise;
-      return this._rawConnection.disconnect();
-    });
+  async detach() {
+    await this._send('stop');
+    await this._backend.dispose();
+    delete this._backend;
+    delete this._backendPromise;
+    await this._rawConnection.disconnect();
+    await SDK.targetManager.resumeAllTargets();
   }
 
   /**
@@ -53,10 +54,10 @@ Audits.ProtocolService = class extends Common.Object {
   }
 
   /**
-   * @param {!Object|string} message
+   * @param {!Object} message
    */
   _dispatchProtocolMessage(message) {
-    this._send('dispatchProtocolMessage', {message: message});
+    this._send('dispatchProtocolMessage', {message: JSON.stringify(message)});
   }
 
   _initWorker() {

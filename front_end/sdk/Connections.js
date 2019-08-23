@@ -80,14 +80,9 @@ SDK.MainConnection = class {
     this._onDisconnect = null;
     this._onMessage = null;
 
-    let fulfill;
-    const promise = new Promise(f => fulfill = f);
-    InspectorFrontendHost.reattach(() => {
-      if (onDisconnect)
-        onDisconnect.call(null, 'force disconnect');
-      fulfill();
-    });
-    return promise;
+    if (onDisconnect)
+      onDisconnect.call(null, 'force disconnect');
+    return Promise.resolve();
   }
 };
 
@@ -254,53 +249,84 @@ SDK.StubConnection = class {
 };
 
 /**
- * @param {function()} createMainTarget
+ * @implements {Protocol.Connection}
+ */
+SDK.ParallelConnection = class {
+  /**
+   * @param {!Protocol.Connection} connection
+   * @param {string} sessionId
+   */
+  constructor(connection, sessionId) {
+    this._connection = connection;
+    this._sessionId = sessionId;
+    this._onMessage = null;
+    this._onDisconnect = null;
+  }
+
+  /**
+   * @override
+   * @param {function(!Object)} onMessage
+   */
+  setOnMessage(onMessage) {
+    this._onMessage = onMessage;
+  }
+
+  /**
+   * @override
+   * @param {function(string)} onDisconnect
+   */
+  setOnDisconnect(onDisconnect) {
+    this._onDisconnect = onDisconnect;
+  }
+
+  /**
+   * @override
+   * @param {string} message
+   */
+  sendRawMessage(message) {
+    const messageObject = JSON.parse(message);
+    messageObject.sessionId = this._sessionId;
+    this._connection.sendRawMessage(JSON.stringify(messageObject));
+  }
+
+  /**
+   * @override
+   * @return {!Promise}
+   */
+  disconnect() {
+    if (this._onDisconnect)
+      this._onDisconnect.call(null, 'force disconnect');
+    this._onDisconnect = null;
+    this._onMessage = null;
+    return Promise.resolve();
+  }
+};
+
+/**
+ * @param {function():!Promise<undefined>} createMainTarget
  * @param {function()} websocketConnectionLost
  * @return {!Promise}
  */
 SDK.initMainConnection = async function(createMainTarget, websocketConnectionLost) {
-  SDK._websocketConnectionLost = websocketConnectionLost;
-  SDK._createMainTarget = createMainTarget;
-  Protocol.Connection.setFactory(SDK._createMainConnection);
-  await SDK._createMainTarget();
+  Protocol.Connection.setFactory(SDK._createMainConnection.bind(null, websocketConnectionLost));
+  await createMainTarget();
   InspectorFrontendHost.connectionReady();
   return Promise.resolve();
 };
 
 /**
+ * @param {function()} websocketConnectionLost
  * @return {!Protocol.Connection}
  */
-SDK._createMainConnection = function() {
+SDK._createMainConnection = function(websocketConnectionLost) {
   const wsParam = Runtime.queryParam('ws');
   const wssParam = Runtime.queryParam('wss');
   if (wsParam || wssParam) {
     const ws = wsParam ? `ws://${wsParam}` : `wss://${wssParam}`;
-    SDK._mainConnection = new SDK.WebSocketConnection(ws, SDK._websocketConnectionLost);
+    return new SDK.WebSocketConnection(ws, websocketConnectionLost);
   } else if (InspectorFrontendHost.isHostedMode()) {
-    SDK._mainConnection = new SDK.StubConnection();
-  } else {
-    SDK._mainConnection = new SDK.MainConnection();
+    return new SDK.StubConnection();
   }
-  return SDK._mainConnection;
-};
 
-/** @type {!Protocol.Connection} */
-SDK._mainConnection;
-
-/** @type {function()} */
-SDK._createMainTarget;
-
-/** @type {function()} */
-SDK._websocketConnectionLost;
-
-/**
- * @param {function((!Object|string))} onMessage
- * @return {!Promise<!Protocol.Connection>}
- */
-SDK.interceptMainConnection = async function(onMessage) {
-  await SDK._mainConnection.disconnect();
-  const connection = SDK._createMainConnection();
-  connection.setOnMessage(onMessage);
-  connection.setOnDisconnect(SDK._createMainTarget);
-  return connection;
+  return new SDK.MainConnection();
 };

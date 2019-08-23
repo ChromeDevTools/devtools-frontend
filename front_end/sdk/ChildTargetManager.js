@@ -20,6 +20,12 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
     /** @type {!Map<string, !SDK.Target>} */
     this._childTargets = new Map();
 
+    /** @type {!Map<string, !Protocol.Connection>} */
+    this._parallelConnections = new Map();
+
+    /** @type {string | null} */
+    this._parentTargetId = null;
+
     parentTarget.registerTargetDispatcher(this);
     this._targetAgent.invoke_setAutoAttach({autoAttach: true, waitForDebuggerOnStart: true, flatten: true});
 
@@ -103,12 +109,24 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
   }
 
   /**
+   * @return {!Promise<string>}
+   */
+  async _getParentTargetId() {
+    if (!this._parentTargetId)
+      this._parentTargetId = (await this._parentTarget.targetAgent().getTargetInfo()).targetId;
+    return this._parentTargetId;
+  }
+
+  /**
    * @override
    * @param {string} sessionId
    * @param {!Protocol.Target.TargetInfo} targetInfo
    * @param {boolean} waitingForDebugger
    */
   attachedToTarget(sessionId, targetInfo, waitingForDebugger) {
+    if (this._parentTargetId === targetInfo.targetId)
+      return;
+
     let targetName = '';
     if (targetInfo.type === 'worker' && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
@@ -148,8 +166,12 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    * @param {string=} childTargetId
    */
   detachedFromTarget(sessionId, childTargetId) {
-    this._childTargets.get(sessionId).dispose('target terminated');
-    this._childTargets.delete(sessionId);
+    if (this._parallelConnections.has(sessionId)) {
+      this._parallelConnections.delete(sessionId);
+    } else {
+      this._childTargets.get(sessionId).dispose('target terminated');
+      this._childTargets.delete(sessionId);
+    }
   }
 
   /**
@@ -160,6 +182,39 @@ SDK.ChildTargetManager = class extends SDK.SDKModel {
    */
   receivedMessageFromTarget(sessionId, message, childTargetId) {
     // We use flatten protocol.
+  }
+
+  /**
+   * @param {function(!Object)} onMessage
+   * @return {!Promise<!Protocol.Connection>}
+   */
+  async createParallelConnection(onMessage) {
+    // The main SDK.Target id is actually just `main`, instead of the real targetId.
+    // Get the real id (requires an async operation) so that it can be used synchronously later.
+    const targetId = await this._getParentTargetId();
+    const {connection, sessionId} =
+        await this._createParallelConnectionAndSessionForTarget(this._parentTarget, targetId);
+    connection.setOnMessage(onMessage);
+    this._parallelConnections.set(sessionId, connection);
+    return connection;
+  }
+
+  /**
+   * @param {!SDK.Target} target
+   * @param {string} targetId
+   * @return {!Promise<!{connection: !Protocol.Connection, sessionId: string}>}
+   */
+  async _createParallelConnectionAndSessionForTarget(target, targetId) {
+    const targetAgent = target.targetAgent();
+    const targetRouter = target.router();
+    const sessionId = await targetAgent.attachToTarget(targetId, true /* flatten */);
+    const connection = new SDK.ParallelConnection(targetRouter.connection(), sessionId);
+    targetRouter.registerSession(target, sessionId, connection);
+    connection.setOnDisconnect(async () => {
+      await targetAgent.detachFromTarget(sessionId);
+      targetRouter.unregisterSession(sessionId);
+    });
+    return {connection, sessionId};
   }
 };
 

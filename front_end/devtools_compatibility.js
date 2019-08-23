@@ -706,6 +706,7 @@
     }
 
     /**
+     * Only needed to run Lighthouse on old devtools.
      * @override
      * @param {function()} callback
      */

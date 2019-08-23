@@ -39,6 +39,10 @@ Audits.AuditsPanel = class extends UI.Panel {
    * @param {!Common.Event} evt
    */
   _refreshStartAuditUI(evt) {
+    // PageAuditabilityChanged fires multiple times during an audit, which we want to ignore.
+    if (this._isLHAttached)
+      return;
+
     this._unauditableExplanation = evt.data.helpText;
     this._startView.setUnauditableExplanation(evt.data.helpText);
     this._startView.setStartButtonEnabled(!evt.data.helpText);
@@ -261,17 +265,23 @@ Audits.AuditsPanel = class extends UI.Panel {
    * We set the device emulation on the DevTools-side for two reasons:
    * 1. To workaround some odd device metrics emulation bugs like occuluding viewports
    * 2. To get the attractive device outline
-   * flags.emulatedFormFactor is always set to none, so Lighthouse doesn't apply its own emulation.
+   *
    * We also set flags.deviceScreenEmulationMethod = 'provided' to let LH only apply UA emulation
    */
   async _setupEmulationAndProtocolConnection() {
     const flags = this._controller.getFlags();
 
     const emulationModel = self.singleton(Emulation.DeviceModeModel);
-    this._emulationEnabledBefore = emulationModel.enabledSetting().get();
-    this._emulationOutlineEnabledBefore = emulationModel.deviceOutlineSetting().get();
-    emulationModel.toolbarControlsEnabledSetting().set(false);
+    this._stateBefore = {
+      emulation: {
+        enabled: emulationModel.enabledSetting().get(),
+        outlineEnabled: emulationModel.deviceOutlineSetting().get(),
+        toolbarControlsEnabled: emulationModel.toolbarControlsEnabledSetting().get()
+      },
+      network: {conditions: SDK.multitargetNetworkManager.networkConditions()}
+    };
 
+    emulationModel.toolbarControlsEnabledSetting().set(false);
     if (flags.emulatedFormFactor === 'desktop') {
       emulationModel.enabledSetting().set(false);
       emulationModel.emulate(Emulation.DeviceModeModel.Type.None, null, null);
@@ -296,10 +306,15 @@ Audits.AuditsPanel = class extends UI.Panel {
     this._isLHAttached = false;
     await this._protocolService.detach();
 
-    const emulationModel = self.singleton(Emulation.DeviceModeModel);
-    emulationModel.enabledSetting().set(this._emulationEnabledBefore);
-    emulationModel.deviceOutlineSetting().set(this._emulationOutlineEnabledBefore);
-    emulationModel.toolbarControlsEnabledSetting().set(true);
+    if (this._stateBefore) {
+      const emulationModel = self.singleton(Emulation.DeviceModeModel);
+      emulationModel.enabledSetting().set(this._stateBefore.emulation.enabled);
+      emulationModel.deviceOutlineSetting().set(this._stateBefore.emulation.outlineEnabled);
+      emulationModel.toolbarControlsEnabledSetting().set(this._stateBefore.emulation.toolbarControlsEnabled);
+      SDK.multitargetNetworkManager.setNetworkConditions(this._stateBefore.network.conditions);
+      delete this._stateBefore;
+    }
+
     Emulation.InspectedPagePlaceholder.instance().update(true);
 
     const resourceTreeModel = SDK.targetManager.mainTarget().model(SDK.ResourceTreeModel);

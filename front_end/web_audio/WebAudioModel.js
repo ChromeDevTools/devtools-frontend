@@ -14,15 +14,12 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
 
     this._enabled = false;
 
-    /** @type {!Map<!Protocol.WebAudio.GraphObjectId, !Protocol.WebAudio.BaseAudioContext>} */
-    this._contextMapById = new Map();
-
     this._agent = target.webAudioAgent();
     target.registerWebAudioDispatcher(this);
 
     // TODO(crbug.com/963510): Some OfflineAudioContexts are not uninitialized
     // properly because LifeCycleObserver::ContextDestroyed() is not fired for
-    // unknown reasons. This creates inconsistency in BaseAudioContextTracker
+    // unknown reasons. This creates inconsistency in AudioGraphTracer
     // and AudioContextSelector in DevTools.
     //
     // To resolve this inconsistency, we flush the leftover from the previous
@@ -33,7 +30,6 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
   }
 
   _flushContexts() {
-    this._contextMapById.clear();
     this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ModelReset);
   }
 
@@ -42,7 +38,7 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   suspendModel() {
-    this._contextMapById.clear();
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ModelSuspend);
     return this._agent.disable();
   }
 
@@ -68,7 +64,6 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @override
    */
   contextCreated(context) {
-    this._contextMapById.set(context.contextId, context);
     this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ContextCreated, context);
   }
 
@@ -77,7 +72,6 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @override
    */
   contextWillBeDestroyed(contextId) {
-    this._contextMapById.delete(contextId);
     this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ContextDestroyed, contextId);
   }
 
@@ -86,10 +80,6 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @override
    */
   contextChanged(context) {
-    if (!this._contextMapById.has(context.contextId))
-      return;
-
-    this._contextMapById.set(context.contextId, context);
     this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.ContextChanged, context);
   }
 
@@ -97,33 +87,43 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {!Protocol.WebAudio.AudioListener} listener
    * @override
    */
-  audioListenerCreated(listener) {}
+  audioListenerCreated(listener) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioListenerCreated, listener);
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.GraphObjectId} listenerId
    * @override
    */
-  audioListenerWillBeDestroyed(contextId, listenerId) {}
+  audioListenerWillBeDestroyed(contextId, listenerId) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioListenerWillBeDestroyed, {contextId, listenerId});
+  }
 
   /**
    * @param {!Protocol.WebAudio.AudioNode} node
    * @override
    */
-  audioNodeCreated(node) {}
+  audioNodeCreated(node) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioNodeCreated, node);
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @param {!Protocol.WebAudio.GraphObjectId} nodeId
    * @override
    */
-  audioNodeWillBeDestroyed(contextId, nodeId) {}
+  audioNodeWillBeDestroyed(contextId, nodeId) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioNodeWillBeDestroyed, {contextId, nodeId});
+  }
 
   /**
    * @param {!Protocol.WebAudio.AudioParam} param
    * @override
    */
-  audioParamCreated(param) {}
+  audioParamCreated(param) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioParamCreated, param);
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
@@ -131,7 +131,9 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {!Protocol.WebAudio.GraphObjectId} paramId
    * @override
    */
-  audioParamWillBeDestroyed(contextId, nodeId, paramId) {}
+  audioParamWillBeDestroyed(contextId, nodeId, paramId) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.AudioParamWillBeDestroyed, {contextId, paramId});
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
@@ -141,7 +143,11 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {number=} destinationInputIndex
    * @override
    */
-  nodesConnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {}
+  nodesConnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {
+    this.dispatchEventToListeners(
+        WebAudio.WebAudioModel.Events.NodesConnected,
+        {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex});
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
@@ -151,7 +157,11 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {number=} destinationInputIndex
    * @override
    */
-  nodesDisconnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {}
+  nodesDisconnected(contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex) {
+    this.dispatchEventToListeners(
+        WebAudio.WebAudioModel.Events.NodesDisconnected,
+        {contextId, sourceId, destinationId, sourceOutputIndex, destinationInputIndex});
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
@@ -160,7 +170,14 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {number=} sourceOutputIndex
    * @override
    */
-  nodeParamConnected(contextId, sourceId, destinationId, sourceOutputIndex) {}
+  nodeParamConnected(contextId, sourceId, destinationId, sourceOutputIndex) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.NodeParamConnected, {
+      contextId,
+      sourceId,
+      destinationId,
+      sourceOutputIndex,
+    });
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
@@ -169,15 +186,20 @@ WebAudio.WebAudioModel = class extends SDK.SDKModel {
    * @param {number=} sourceOutputIndex
    * @override
    */
-  nodeParamDisconnected(contextId, sourceId, destinationId, sourceOutputIndex) {}
+  nodeParamDisconnected(contextId, sourceId, destinationId, sourceOutputIndex) {
+    this.dispatchEventToListeners(WebAudio.WebAudioModel.Events.NodeParamDisconnected, {
+      contextId,
+      sourceId,
+      destinationId,
+      sourceOutputIndex,
+    });
+  }
 
   /**
    * @param {!Protocol.WebAudio.GraphObjectId} contextId
    * @return {!Promise<?Protocol.WebAudio.ContextRealtimeData>}
    */
   async requestRealtimeData(contextId) {
-    if (!this._contextMapById.has(contextId))
-      return Promise.resolve();
     return await this._agent.getRealtimeData(contextId);
   }
 };
@@ -190,4 +212,15 @@ WebAudio.WebAudioModel.Events = {
   ContextDestroyed: Symbol('ContextDestroyed'),
   ContextChanged: Symbol('ContextChanged'),
   ModelReset: Symbol('ModelReset'),
+  ModelSuspend: Symbol('ModelSuspend'),
+  AudioListenerCreated: Symbol('AudioListenerCreated'),
+  AudioListenerWillBeDestroyed: Symbol('AudioListenerWillBeDestroyed'),
+  AudioNodeCreated: Symbol('AudioNodeCreated'),
+  AudioNodeWillBeDestroyed: Symbol('AudioNodeWillBeDestroyed'),
+  AudioParamCreated: Symbol('AudioParamCreated'),
+  AudioParamWillBeDestroyed: Symbol('AudioParamWillBeDestroyed'),
+  NodesConnected: Symbol('NodesConnected'),
+  NodesDisconnected: Symbol('NodesDisconnected'),
+  NodeParamConnected: Symbol('NodeParamConnected'),
+  NodeParamDisconnected: Symbol('NodeParamDisconnected'),
 };

@@ -16,6 +16,7 @@ Profiler.IsolateSelector = class extends UI.VBox {
     this._list = new UI.ListControl(this._items, this, UI.ListMode.NonViewport);
     UI.ARIAUtils.markAsListBox(this._list.element);
     this._list.element.tabIndex = 0;
+    this._list.element.classList.add('javascript-vm-instances-list');
     UI.ARIAUtils.setAccessibleName(this._list.element, ls`JavaScript VM instances`);
     this.contentElement.appendChild(this._list.element);
 

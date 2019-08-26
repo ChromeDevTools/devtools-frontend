@@ -20,7 +20,7 @@
 }
 
 .value.object-value-node:hover {
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: var(--item-hover-color);
 }
 
 .object-value-function-prefix,

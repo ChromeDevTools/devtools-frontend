@@ -70,13 +70,17 @@ body.inactive .profile-launcher-view-content button.running:not(.toolbar-item) {
     overflow-x: hidden;
 }
 
-.profile-launcher-target-list .profile-memory-usage-item:hover {
-    background-color: hsla(0, 0%, 0%, 0.05);
+.profile-launcher-target-list .profile-memory-usage-item:hover:not(.selected) {
+    background-color: var(--item-hover-color);
+}
+
+.javascript-vm-instances-list:focus .profile-memory-usage-item.selected {
+    border-color: var(--selection-bg-color);
+    background-color: var(--item-selection-bg-color);
 }
 
 .profile-memory-usage-item.selected {
-    border-color: #4285f4;
-    background-color: #4285f420;
+    background-color: var(--item-selection-inactive-bg-color);
 }
 
 .profile-memory-usage-item > div {

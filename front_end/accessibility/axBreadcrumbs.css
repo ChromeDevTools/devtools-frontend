@@ -80,7 +80,7 @@
     display: block;
     left: 2px;
     right: 2px;
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: var(--item-hover-color);
     border-radius: 5px;
 }
 

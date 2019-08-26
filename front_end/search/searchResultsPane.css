@@ -82,7 +82,7 @@ li.search-match .search-match-line-number {
 }
 
 li.search-match:hover {
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: var(--item-hover-color);
 }
 
 li.search-match .highlighted-match {

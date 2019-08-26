@@ -70,7 +70,7 @@
     display: block;
     left: 3px;
     right: 3px;
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: var(--item-hover-color);
     border-radius: 5px;
 }
 
@@ -83,7 +83,7 @@
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
-    background-color: var(--editor-selection-inactive-bg-color);
+    background-color: var(--item-selection-inactive-bg-color);
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus[data-keyboard-focus="true"] .highlight > * {
@@ -121,7 +121,7 @@
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
-    background-color: var(--editor-selection-bg-color);
+    background-color: var(--item-selection-bg-color);
 }
 
 .elements-tree-outline ol.shadow-root-depth-4 {

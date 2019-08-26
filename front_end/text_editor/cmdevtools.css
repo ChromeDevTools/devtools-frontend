@@ -633,15 +633,15 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .CodeMirror-selected {
-    background-color: var(--editor-selection-inactive-bg-color);
+    background-color: var(--item-selection-inactive-bg-color);
 }
 
 .CodeMirror-focused .CodeMirror-selected {
-    background-color: var(--editor-selection-bg-color);
+    background-color: var(--item-selection-bg-color);
 }
 
 .CodeMirror .CodeMirror-line::selection,
 .CodeMirror .CodeMirror-line > span::selection,
 .CodeMirror .CodeMirror-line > span > span::selection {
-    background: var(--editor-selection-bg-color);
+    background: var(--item-selection-bg-color);
 }

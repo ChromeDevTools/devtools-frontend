@@ -50,5 +50,5 @@ li .largeicon-navigator-folder {
 
 .tree-outline li:hover:not(.selected) .selection {
     display: block;
-    background-color: rgba(56, 121, 217, 0.1);
+    background-color: var(--item-hover-color);
 }

@@ -376,6 +376,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_5c593b83b0fca15af4b50ca95c9d3e87" desc="Text in Timeline UIUtils of the Performance panel">
     Sign Reply
   </message>
+  <message name="IDS_DEVTOOLS_5e1f827f43b25804948ad57149ad369e" desc="Screen reader label for a select box that filters the Performance panel Event Log by duration.">
+    Duration filter
+  </message>
   <message name="IDS_DEVTOOLS_5e8170b28aaa693ca9170bb0d65b3043" desc="Text in Timeline UIUtils of the Performance panel">
     Destroy WebSocket
   </message>

@@ -167,6 +167,7 @@ Timeline.EventsTimelineTreeView.Filters = class extends Common.Object {
                        Common.UIString('Show all records'),
           String(durationMs)));
     }
+    UI.ARIAUtils.setAccessibleName(durationFilterUI.selectElement(), ls`Duration filter`);
     toolbar.appendToolbarItem(durationFilterUI);
 
     const categoryFiltersUI = {};

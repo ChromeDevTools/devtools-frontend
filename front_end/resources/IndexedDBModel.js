@@ -160,7 +160,7 @@ Resources.IndexedDBModel = class extends SDK.SDKModel {
    * @param {string} origin
    */
   clearForOrigin(origin) {
-    if (!this._enabled)
+    if (!this._enabled || !this._databaseNamesBySecurityOrigin[origin])
       return;
 
     this._removeOrigin(origin);

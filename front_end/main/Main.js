@@ -139,8 +139,12 @@ Main.Main = class {
     const enabledExperiments = Runtime.queryParam('enabledExperiments');
     if (enabledExperiments)
       Runtime.experiments.setServerEnabledExperiments(enabledExperiments.split(';'));
-    Runtime.experiments.setDefaultExperiments(
-        ['backgroundServices', 'backgroundServicesNotifications', 'backgroundServicesPushMessaging']);
+    Runtime.experiments.setDefaultExperiments([
+      'backgroundServices',
+      'backgroundServicesNotifications',
+      'backgroundServicesPushMessaging',
+      'backgroundServicesPaymentHandler',
+    ]);
 
     if (Host.isUnderTest() && Runtime.queryParam('test').includes('live-line-level-heap-profile.js'))
       Runtime.experiments.enableForTest('liveHeapProfile');

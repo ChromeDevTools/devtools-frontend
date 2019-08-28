@@ -14,6 +14,10 @@
     pointer-events: auto;
 }
 
+.node-link[data-keyboard-focus="true"]:focus {
+    outline-width: unset;
+}
+
 .node-label-name {
     color: rgb(136, 18, 128);
 }

@@ -61,10 +61,10 @@ Elements.DOMLinkifier.decorateNodeLabel = function(node, parentElement, tooltipC
 
 /**
  * @param {?SDK.DOMNode} node
- * @param {string=} tooltipContent
+ * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
-Elements.DOMLinkifier.linkifyNodeReference = function(node, tooltipContent) {
+Elements.DOMLinkifier.linkifyNodeReference = function(node, options = {}) {
   if (!node)
     return createTextNode(Common.UIString('<node>'));
 
@@ -72,26 +72,39 @@ Elements.DOMLinkifier.linkifyNodeReference = function(node, tooltipContent) {
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
 
-  Elements.DOMLinkifier.decorateNodeLabel(node, link, tooltipContent);
+  Elements.DOMLinkifier.decorateNodeLabel(node, link, options.tooltip);
 
   link.addEventListener('click', () => Common.Revealer.reveal(node, false) && false, false);
   link.addEventListener('mouseover', node.highlight.bind(node, undefined), false);
   link.addEventListener('mouseleave', () => SDK.OverlayModel.hideDOMNodeHighlight(), false);
+
+  if (!options.preventKeyboardFocus) {
+    link.addEventListener('keydown', event => isEnterKey(event) && Common.Revealer.reveal(node, false) && false);
+    link.tabIndex = 0;
+    UI.ARIAUtils.markAsLink(link);
+  }
 
   return root;
 };
 
 /**
  * @param {!SDK.DeferredDOMNode} deferredNode
+ * @param {!Common.Linkifier.Options=} options
  * @return {!Node}
  */
-Elements.DOMLinkifier.linkifyDeferredNodeReference = function(deferredNode) {
+Elements.DOMLinkifier.linkifyDeferredNodeReference = function(deferredNode, options = {}) {
   const root = createElement('div');
   const shadowRoot = UI.createShadowRootWithCoreStyles(root, 'elements/domLinkifier.css');
   const link = shadowRoot.createChild('div', 'node-link');
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);
   link.addEventListener('mousedown', e => e.consume(), false);
+
+  if (!options.preventKeyboardFocus) {
+    link.addEventListener('keydown', event => isEnterKey(event) && deferredNode.resolve(onDeferredNodeResolved));
+    link.tabIndex = 0;
+    UI.ARIAUtils.markAsLink(link);
+  }
 
   /**
    * @param {?SDK.DOMNode} node
@@ -115,9 +128,9 @@ Elements.DOMLinkifier.Linkifier = class {
    */
   linkify(object, options) {
     if (object instanceof SDK.DOMNode)
-      return Elements.DOMLinkifier.linkifyNodeReference(object, options ? options.title : undefined);
+      return Elements.DOMLinkifier.linkifyNodeReference(object, options);
     if (object instanceof SDK.DeferredDOMNode)
-      return Elements.DOMLinkifier.linkifyDeferredNodeReference(object);
+      return Elements.DOMLinkifier.linkifyDeferredNodeReference(object, options);
     throw new Error('Can\'t linkify non-node');
   }
 };

@@ -121,7 +121,7 @@ Common.Linkifier.linkify = function(object, options) {
       .then(linkifier => linkifier.linkify(object, options));
 };
 
-/** @typedef {{tooltip: string}} */
+/** @typedef {{tooltip: (string|undefined), preventKeyboardFocus: (boolean|undefined)}} */
 Common.Linkifier.Options;
 
 /**

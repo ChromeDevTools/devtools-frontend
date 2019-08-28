@@ -782,7 +782,7 @@ Elements.SectionBlock = class {
     const separatorElement = createElement('div');
     separatorElement.className = 'sidebar-separator';
     separatorElement.createTextChild(ls`Inherited from${' '}`);
-    const link = await Common.Linkifier.linkify(node);
+    const link = await Common.Linkifier.linkify(node, {preventKeyboardFocus: true});
     separatorElement.appendChild(link);
     return new Elements.SectionBlock(separatorElement);
   }
@@ -932,7 +932,7 @@ Elements.StylePropertiesSection = class {
       return createTextNode(Common.UIString('via inspector'));
 
     if (header && header.ownerNode) {
-      const link = Elements.DOMLinkifier.linkifyDeferredNodeReference(header.ownerNode);
+      const link = Elements.DOMLinkifier.linkifyDeferredNodeReference(header.ownerNode, {preventKeyboardFocus: true});
       link.textContent = '<style>';
       return link;
     }

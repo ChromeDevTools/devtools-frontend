@@ -52,8 +52,7 @@ Audits.ReportRenderer = class extends ReportRenderer {
       if (!node)
         continue;
 
-      const element =
-          await Common.Linkifier.linkify(node, /** @type {!Common.Linkifier.Options} */ ({title: detailsItem.snippet}));
+      const element = await Common.Linkifier.linkify(node, {tooltip: detailsItem.snippet});
       origElement.title = '';
       origElement.textContent = '';
       origElement.appendChild(element);

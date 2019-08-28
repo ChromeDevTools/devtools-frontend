@@ -508,7 +508,8 @@ Accessibility.AXRelatedNodeElement = class {
       valueElement = createElement('span');
       element.appendChild(valueElement);
       this._deferredNode.resolvePromise().then(node => {
-        Common.Linkifier.linkify(node).then(linkfied => valueElement.appendChild(linkfied));
+        Common.Linkifier.linkify(node, {preventKeyboardFocus: true})
+            .then(linkfied => valueElement.appendChild(linkfied));
       });
     } else if (this._idref) {
       element.classList.add('invalid');

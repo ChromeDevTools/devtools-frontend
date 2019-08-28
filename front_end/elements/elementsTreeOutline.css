@@ -272,17 +272,8 @@ button, input, select {
     padding-left: 2px;
 }
 
-.elements-tree-shortcut-title {
+.elements-tree-shortcut-title, .elements-tree-shortcut-link {
     color: rgb(87, 87, 87);
-}
-
-ol:hover > li > .elements-tree-shortcut-link {
-    display: initial;
-}
-
-.elements-tree-shortcut-link {
-    color: rgb(87, 87, 87);
-    display: none;
 }
 
 .elements-disclosure .gutter-container {

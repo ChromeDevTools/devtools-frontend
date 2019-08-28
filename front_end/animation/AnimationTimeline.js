@@ -678,7 +678,7 @@ Animation.AnimationTimeline.NodeUI = class {
   /**
    * @param {?SDK.DOMNode} node
    */
-  async nodeResolved(node) {
+  nodeResolved(node) {
     if (!node) {
       this._description.createTextChild('<node>');
       return;

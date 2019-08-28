@@ -81,5 +81,21 @@ Help.ReleaseNotesActionDelegate = class {
   }
 };
 
+/**
+ * @implements {UI.ActionDelegate}
+ */
+Help.ReportIssueActionDelegate = class {
+  /**
+   * @override
+   * @param {!UI.Context} context
+   * @param {string} actionId
+   * @return {boolean}
+   */
+  handleAction(context, actionId) {
+    InspectorFrontendHost.openInNewTab('https://bugs.chromium.org/p/chromium/issues/entry?template=DevTools+issue');
+    return true;
+  }
+};
+
 /** @type {!Common.Setting} */
 Help._releaseNoteVersionSetting = Common.settings.createSetting('releaseNoteVersionSeen', 0);

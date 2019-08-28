@@ -41,6 +41,20 @@
       "order": 10
     },
     {
+      "type": "action",
+      "category": "Help",
+      "actionId": "help.report-issue",
+      "title": "Report a DevTools issue",
+      "className": "Help.ReportIssueActionDelegate",
+      "tags": "bug"
+    },
+    {
+      "type": "context-menu-item",
+      "location": "mainMenuHelp/default",
+      "actionId": "help.report-issue",
+      "order": 11
+    },
+    {
       "type": "late-initialization",
       "className": "Help.HelpLateInitialization"
     }

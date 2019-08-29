@@ -490,6 +490,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_798afebf1a5e9d795a96f0c82cccaae2" desc="Text in Timeline UIUtils of the Performance panel">
     Cached Wasm Module
   </message>
+  <message name="IDS_DEVTOOLS_7ac6c415cd08c0ba2c0a1f54c0a62a52" desc="Text in Timeline UIUtils of the Performance panel">
+    ''' (from push)
+  </message>
   <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Thread <ph name="__THREADINDEX">$1s<ex>2</ex></ph>
   </message>
@@ -513,6 +516,9 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   </message>
   <message name="IDS_DEVTOOLS_83e393be9178c404eb013bca48782312" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="CLIPWIDTH">$1s<ex>2</ex></ph> × <ph name="CLIPHEIGHT">$2s<ex>2</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_84497a704396fa5a9e67913f67fc465a" desc="Text in Timeline UIUtils of the Performance panel">
+    ''' (from memory cache)
   </message>
   <message name="IDS_DEVTOOLS_86c8559f4d7d1d74dc3e04baf2b65cc6" desc="Text in Timeline UIUtils of the Performance panel">
     Decoded Body

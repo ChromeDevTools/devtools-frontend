@@ -1164,7 +1164,7 @@ Timeline.TimelineUIUtils = class {
     const color = Timeline.TimelineUIUtils.networkCategoryColor(category);
     contentHelper.addSection(ls`Network request`, color);
 
-    const duration = request.endTime - (request.startTime || -Infinity);
+    const duration = request.endTime - (request.getStartTime() || -Infinity);
     if (request.url)
       contentHelper.appendElementRow(ls`URL`, Components.Linkifier.linkifyURL(request.url));
     Timeline.TimelineUIUtils._maybeAppendProductToDetails(contentHelper, badgePool, request.url);
@@ -1180,8 +1180,12 @@ Timeline.TimelineUIUtils = class {
     if (request.mimeType)
       contentHelper.appendTextRow(ls`Mime Type`, request.mimeType);
     let lengthText = '';
-    if (request.fromCache)
+    if (request.memoryCached())
+      lengthText += ls` (from memory cache)`;
+    else if (request.cached())
       lengthText += ls` (from cache)`;
+    else if (request.timing && request.timing.pushStart)
+      lengthText += ls` (from push)`;
     if (request.fromServiceWorker)
       lengthText += ls` (from service worker)`;
     if (request.encodedDataLength || !lengthText)

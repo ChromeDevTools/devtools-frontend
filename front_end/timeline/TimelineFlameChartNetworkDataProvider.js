@@ -189,21 +189,18 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     if (!request.timing)
       return false;
 
+    const beginTime = request.beginTime();
     /**
      * @param {number} time
      * @return {number}
      */
-    function timeToPixel(time) {
-      return Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
-    }
-
-    const /** @const */ minBarWidthPx = 2;
-    const beginTime = request.beginTime();
-    const startTime = Math.min(request.startTime, request.timing && request.timing.requestTime * 1000 || Infinity);
+    const timeToPixel = time => Math.floor(unclippedBarX + (time - beginTime) * timeToPixelRatio);
+    const minBarWidthPx = 2;
+    const startTime = request.getStartTime();
     const endTime = request.endTime;
-    const requestTime = request.timing.requestTime * 1000;
-    const sendStart = Math.max(timeToPixel(requestTime + request.timing.sendStart), unclippedBarX);
-    const headersEnd = Math.max(timeToPixel(requestTime + request.timing.receiveHeadersEnd), sendStart);
+    const {sendStartTime, headersEndTime} = request.getSendReceiveTiming();
+    const sendStart = Math.max(timeToPixel(sendStartTime), unclippedBarX);
+    const headersEnd = Math.max(timeToPixel(headersEndTime), sendStart);
     const finish = Math.max(timeToPixel(request.finishTime || endTime), headersEnd + minBarWidthPx);
     const start = timeToPixel(startTime);
     const end = Math.max(timeToPixel(endTime), finish);
@@ -216,9 +213,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     context.fillRect(barX, barY - 0.5, sendStart - barX, barHeight);
     context.fillRect(finish, barY - 0.5, barX + barWidth - finish, barHeight);
 
-    if (request.timing.pushStart) {
+    // If the request is from cache, pushStart refers to the original request, and hence cannot be used.
+    if (!request.cached() && request.timing.pushStart) {
       const pushStart = timeToPixel(request.timing.pushStart * 1000);
-      const pushEnd = timeToPixel(request.timing.pushEnd * 1000);
+      const pushEnd = request.timing.pushEnd ? timeToPixel(request.timing.pushEnd * 1000) : start;
       const dentSize = Number.constrain(pushEnd - pushStart - 2, 0, 4);
       const padding = 1;
       context.save();
@@ -230,7 +228,16 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
       context.lineTo(pushEnd - dentSize, barY + barHeight - padding);
       context.lineTo(pushStart, barY + barHeight - padding);
       context.closePath();
-      context.fillStyle = this.entryColor(index);
+      if (request.timing.pushEnd) {
+        context.fillStyle = this.entryColor(index);
+      } else {
+        // Use a gradient to indicate that `pushEnd` is not known here to work
+        // around BUG(chromium:998411).
+        const gradient = context.createLinearGradient(pushStart, 0, pushEnd, 0);
+        gradient.addColorStop(0, this.entryColor(index));
+        gradient.addColorStop(1, 'white');
+        context.fillStyle = gradient;
+      }
       context.globalAlpha = 0.3;
       context.fill();
       context.restore();
@@ -309,9 +316,10 @@ Timeline.TimelineFlameChartNetworkDataProvider = class {
     const element = createElement('div');
     const root = UI.createShadowRootWithCoreStyles(element, 'timeline/timelineFlamechartPopover.css');
     const contents = root.createChild('div', 'timeline-flamechart-popover');
-    const duration = request.endTime - request.startTime;
-    if (request.startTime && isFinite(duration))
-      contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration);
+    const startTime = request.getStartTime();
+    const duration = request.endTime - startTime;
+    if (startTime && isFinite(duration))
+      contents.createChild('span', 'timeline-info-network-time').textContent = Number.millisToString(duration, true);
     if (typeof request.priority === 'string') {
       const div = contents.createChild('span');
       div.textContent =

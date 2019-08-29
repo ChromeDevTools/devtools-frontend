@@ -511,21 +511,13 @@ function buildMarkedSelectors(element) {
 ElementsTestRunner.toggleStyleProperty = function(propertyName, checked) {
   const treeItem = ElementsTestRunner.getElementStylePropertyTreeItem(propertyName);
 
-  treeItem._toggleEnabled({
-    target: {checked: checked},
-
-    consume: function() {}
-  });
+  treeItem._toggleDisabled(!checked);
 };
 
 ElementsTestRunner.toggleMatchedStyleProperty = function(propertyName, checked) {
   const treeItem = ElementsTestRunner.getMatchedStylePropertyTreeItem(propertyName);
 
-  treeItem._toggleEnabled({
-    target: {checked: checked},
-
-    consume: function() {}
-  });
+  treeItem._toggleDisabled(!checked);
 };
 
 ElementsTestRunner.eventListenersWidget = function() {

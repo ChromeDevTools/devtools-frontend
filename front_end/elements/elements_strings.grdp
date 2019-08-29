@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_254dd634c2a4b01fad95fe963b193ba8" desc="Aria accessible name in Elements Tree Outline of the Elements panel">
     Page DOM
   </message>
+  <message name="IDS_DEVTOOLS_26396cca3eae28fc6e39123edb2f1510" desc="Context menu item for style property in edit mode">
+    Reveal in Sources panel
+  </message>
   <message name="IDS_DEVTOOLS_28c0a3050f784583d52339ddb0bc1274" desc="Text in Elements Tree Element of the Elements panel">
     Paste element
   </message>
@@ -92,6 +95,9 @@
   </message>
   <message name="IDS_DEVTOOLS_45a921ffccbc28c2ff80adada350224f" desc="Text in DOMLinkifier of the Elements panel">
     &lt;node&gt;
+  </message>
+  <message name="IDS_DEVTOOLS_46dbb18ed3ab2bf6a5e3be93674b5a31" desc="Context menu item for style property in edit mode">
+    Toggle property and continue editing
   </message>
   <message name="IDS_DEVTOOLS_47210336f82b1488b69932b14038bdff" desc="Title of  in styles sidebar pane of the elements panel">
     Increment/decrement with mousewheel or up/down keys. <ph name="CMDORCTRL">$1s<ex>Ctrl</ex></ph>: ±100, Shift: ±10, Alt: ±0.1

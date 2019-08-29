@@ -312,31 +312,22 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
   }
 
   /**
-   * @param {!Event} event
+   * @param {boolean} disabled
    */
-  _toggleEnabled(event) {
-    const disabled = !event.target.checked;
+  async _toggleDisabled(disabled) {
     const oldStyleRange = this._style.range;
     if (!oldStyleRange)
       return;
 
-    /**
-     * @param {boolean} success
-     * @this {Elements.StylePropertyTreeElement}
-     */
-    function callback(success) {
-      this._parentPane.setUserOperation(false);
-
-      if (!success)
-        return;
-      this._matchedStyles.resetActiveProperties();
-      this._updatePane();
-      this.styleTextAppliedForTest();
-    }
-
-    event.consume();
     this._parentPane.setUserOperation(true);
-    this.property.setDisabled(disabled).then(callback.bind(this));
+    const success = await this.property.setDisabled(disabled);
+    this._parentPane.setUserOperation(false);
+
+    if (!success)
+      return;
+    this._matchedStyles.resetActiveProperties();
+    this._updatePane();
+    this.styleTextAppliedForTest();
   }
 
   /**
@@ -477,7 +468,12 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
       enabledCheckboxElement.type = 'checkbox';
       enabledCheckboxElement.checked = !this.property.disabled;
       enabledCheckboxElement.addEventListener('mousedown', event => event.consume(), false);
-      enabledCheckboxElement.addEventListener('click', this._toggleEnabled.bind(this), false);
+      enabledCheckboxElement.addEventListener('click', event => {
+        this._toggleDisabled(!this.property.disabled);
+        event.consume();
+      }, false);
+      UI.ARIAUtils.setAccessibleName(
+          enabledCheckboxElement, `${this.nameElement.textContent} ${this.valueElement.textContent}`);
       this.listItemElement.insertBefore(enabledCheckboxElement, this.listItemElement.firstChild);
     }
   }
@@ -506,6 +502,26 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
     }
 
     this.startEditing(/** @type {!Element} */ (event.target));
+  }
+
+  /**
+   * @param {!Elements.StylePropertyTreeElement.Context} context
+   * @param {!Event} event
+   */
+  _handleContextMenuEvent(context, event) {
+    const contextMenu = new UI.ContextMenu(event);
+    if (this.property.parsedOk && this.section() && this.parent.root) {
+      contextMenu.defaultSection().appendCheckboxItem(ls`Toggle property and continue editing`, async () => {
+        this.editingCancelled(null, context);
+        const sectionIndex = this._parentPane.focusedSectionIndex();
+        const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
+        await this._toggleDisabled(!this.property.disabled);
+        event.consume();
+        this._parentPane.continueEditingElement(sectionIndex, propertyIndex);
+      }, !this.property.disabled);
+    }
+    contextMenu.defaultSection().appendItem(ls`Reveal in Sources panel`, this._navigateToSource.bind(this));
+    contextMenu.show();
   }
 
   /**
@@ -657,9 +673,10 @@ Elements.StylePropertyTreeElement = class extends UI.TreeElement {
 
     proxyElement.addEventListener('keydown', this._editingNameValueKeyDown.bind(this, context), false);
     proxyElement.addEventListener('keypress', this._editingNameValueKeyPress.bind(this, context), false);
-    if (isEditingName)
+    if (isEditingName) {
       proxyElement.addEventListener('paste', pasteHandler.bind(this, context), false);
-
+      proxyElement.addEventListener('contextmenu', this._handleContextMenuEvent.bind(this, context), false);
+    }
     selectElement.getComponentSelection().selectAllChildren(selectElement);
   }
 

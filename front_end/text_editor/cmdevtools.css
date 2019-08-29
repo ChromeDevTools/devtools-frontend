@@ -441,7 +441,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-coverage-unused-marker::after {
-    content: " ";
+    content: "\200B";
 }
 
 .CodeMirror .text-editor-coverage-used-marker {
@@ -451,7 +451,7 @@ div.CodeMirror:focus-within span.CodeMirror-nonmatchingbracket {
 }
 
 .CodeMirror .text-editor-coverage-used-marker::after {
-    content: " ";
+    content: "\200B";
 }
 
 .CodeMirror .text-editor-line-decoration {

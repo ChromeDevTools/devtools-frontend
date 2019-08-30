@@ -73,8 +73,8 @@ Common.Settings = class {
     }
     const setting = isRegex ? this.createRegExpSetting(settingName, defaultValue, undefined, storageType) :
                               this.createSetting(settingName, defaultValue, storageType);
-    if (descriptor['title'])
-      setting.setTitle(descriptor['title']);
+    if (extension.title())
+      setting.setTitle(extension.title());
     if (descriptor['userActionCondition'])
       setting.setRequiresUserAction(!!Runtime.queryParam(descriptor['userActionCondition']));
     setting._extension = extension;

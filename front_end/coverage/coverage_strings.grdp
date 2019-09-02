@@ -37,6 +37,10 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   <message name="IDS_DEVTOOLS_95dd3a82779cda9791819969c51c97d3" desc="Message in Coverage View of the Coverage tab">
     Click the record button <ph name="RECORD_BUTTON_ICON">$1s<ex>record button icon</ex></ph> to start capturing coverage.
   </message>
+  <message name="IDS_DEVTOOLS_977836743b030a9eda23b81f3c7b6193" desc="Footer message in Coverage View of the Coverage tab">
+    <ph name="NUMBER_BYTESTOSTRING_USED_">$1s<ex>bytes used</ex></ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s<ex>bytes total</ex></ph> (<ph name="PERCENTUSED">$3s<ex>percentage used</ex></ph>%) used so far.
+        <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$4s<ex>percentage unused</ex></ph> unused.
+  </message>
   <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
     Coverage
   </message>
@@ -45,9 +49,6 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
   </message>
   <message name="IDS_DEVTOOLS_bca27ccb808f436cd1ce828dd47604b7" desc="Title of an action in the coverage tool to start with reload">
     Start instrumenting coverage and reload page
-  </message>
-  <message name="IDS_DEVTOOLS_c4ba5b981ea7d2c17178a6c879cc03bd" desc="Status message element text content in Coverage View of the Coverage tab">
-    <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$1s<ex>20</ex></ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s<ex>40</ex></ph> bytes are not used. (<ph name="PERCENTUNUSED">$3d<ex>50</ex></ph>%%)
   </message>
   <message name="IDS_DEVTOOLS_d95b97f3bac1a32fc1f27686f74b97de" desc="Cell title in Coverage List View of the Coverage tab">
     JS coverage is function-level only. Reload the page for block-level coverage.

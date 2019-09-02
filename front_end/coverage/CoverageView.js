@@ -197,10 +197,11 @@ Coverage.CoverageView = class extends UI.VBox {
       unused += info.unusedSize();
     }
 
-    const percentUnused = total ? Math.round(100 * unused / total) : 0;
-    this._statusMessageElement.textContent = Common.UIString(
-        '%s of %s bytes are not used. (%d%%)', Number.bytesToString(unused), Number.bytesToString(total),
-        percentUnused);
+    const used = total - unused;
+    const percentUsed = total ? Math.round(100 * used / total) : 0;
+    this._statusMessageElement.textContent =
+        ls`${Number.bytesToString(used)} of ${Number.bytesToString(total)} (${percentUsed}%) used so far.
+        ${Number.bytesToString(unused)} unused.`;
   }
 
   _onFilterChanged() {

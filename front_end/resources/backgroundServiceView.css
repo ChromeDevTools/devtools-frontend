@@ -21,12 +21,12 @@
 .background-service-preview > div {
     max-width: 450px;
     margin: 10px;
+    text-align: center;
 }
 
 .background-service-preview > div > p {
     flex: none;
     white-space: pre-line;
-    text-align: center;
 }
 
 .background-service-shortcut {

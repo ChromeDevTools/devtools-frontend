@@ -12,6 +12,7 @@
     background-repeat: no-repeat;
     background-position: center;
     opacity: 0.8;
+    cursor: auto;
 }
 
 .node-icon:hover {

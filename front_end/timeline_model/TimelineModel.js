@@ -1605,12 +1605,13 @@ TimelineModel.TimelineModel.NetworkRequest = class {
 
   /**
    * Return whether this request was cached. This works around BUG(chromium:998397),
-   * which reports pushed resources as disk cached. Pushed resources that were not
-   * disk cached, however, have a non-zero `_transferSize`.
+   * which reports pushed resources, and resources serverd by a service worker as
+   * disk cached. Pushed resources that were not disk cached, however, have a non-zero
+   * `_transferSize`.
    * @return {boolean}
    */
   cached() {
-    return !!this._memoryCached || (!!this._maybeDiskCached && !this._transferSize);
+    return !!this._memoryCached || (!!this._maybeDiskCached && !this._transferSize && !this.fromServiceWorker);
   }
 
   /**

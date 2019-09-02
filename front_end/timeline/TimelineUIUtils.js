@@ -700,6 +700,36 @@ Timeline.TimelineUIUtils = class {
 
   /**
    * @param {!SDK.TracingModel.Event} event
+   * @return {!Element}
+   */
+  static buildDetailsNodeForPerformanceEvent(event) {
+    /** @type {string} */
+    let link =
+        'https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#user-centric_performance_metrics';
+    let name = 'page performance metrics';
+    const recordType = TimelineModel.TimelineModel.RecordType;
+    switch (event.name) {
+      case recordType.MarkLCPCandidate:
+        link = 'https://web.dev/largest-contentful-paint';
+        name = 'largest contentful paint';
+        break;
+      case recordType.MarkFCP:
+        link = 'https://web.dev/first-contentful-paint';
+        name = 'first contentful paint';
+        break;
+      case recordType.MarkFMP:
+        link = 'https://web.dev/first-meaningful-paint/';
+        name = 'first meaningful paint';
+        break;
+      default:
+        break;
+    }
+
+    return UI.html`<div>${UI.XLink.create(link, ls`Learn more`)} about ${name}.</div>`;
+  }
+
+  /**
+   * @param {!SDK.TracingModel.Event} event
    * @param {!TimelineModel.TimelineModel} model
    * @param {!Components.Linkifier} linkifier
    * @param {!ProductRegistry.BadgePool} badgePool
@@ -954,11 +984,8 @@ Timeline.TimelineUIUtils = class {
       case recordTypes.MarkDOMContent:
         contentHelper.appendTextRow(
             ls`Timestamp`, Number.preciseMillisToString(event.startTime - model.minimumRecordTime(), 1));
-        const learnMoreLink = UI.XLink.create(
-            'https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics#user-centric_performance_metrics',
-            ls`Learn more`);
-        const linkDiv = UI.html`<div>${learnMoreLink} about page performance metrics.</div>`;
-        contentHelper.appendElementRow(ls`Details`, linkDiv);
+        contentHelper.appendElementRow(
+            ls`Details`, Timeline.TimelineUIUtils.buildDetailsNodeForPerformanceEvent(event));
         break;
 
       default: {

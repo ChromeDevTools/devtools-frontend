@@ -93,8 +93,8 @@ Sources.SourcesPanel = class extends UI.Panel {
     this._sourcesView = new Sources.SourcesView();
     this._sourcesView.addEventListener(Sources.SourcesView.Events.EditorSelected, this._editorSelected.bind(this));
 
-    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton('navigator');
-    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton('debugger');
+    this._toggleNavigatorSidebarButton = this.editorView.createShowHideSidebarButton(ls`navigator`);
+    this._toggleDebuggerSidebarButton = this._splitWidget.createShowHideSidebarButton(ls`debugger`);
     this.editorView.setMainWidget(this._sourcesView);
 
     this._threadsSidebarPane = null;

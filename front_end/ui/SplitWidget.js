@@ -881,7 +881,7 @@ UI.SplitWidget = class extends UI.Widget {
    * @return {!UI.ToolbarButton}
    */
   createShowHideSidebarButton(title) {
-    this._showHideSidebarButtonTitle = Common.UIString(title);
+    this._showHideSidebarButtonTitle = title;
     this._showHideSidebarButton = new UI.ToolbarButton('', '');
     this._showHideSidebarButton.addEventListener(UI.ToolbarButton.Events.Click, buttonClicked, this);
     this._updateShowHideSidebarButton();

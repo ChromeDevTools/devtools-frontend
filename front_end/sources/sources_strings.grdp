@@ -201,6 +201,9 @@
   <message name="IDS_DEVTOOLS_61cb6bc6751fc6b516847995380fdced" desc="Text in Sources Navigator of the Sources panel">
     New snippet
   </message>
+  <message name="IDS_DEVTOOLS_61fa153f2827c887a48a351ae3c6cfd3" desc="Title of the debugger sidebar in the Sources panel">
+    debugger
+  </message>
   <message name="IDS_DEVTOOLS_64c5d2b51d86c5e1d22a77a4ea5ed174" desc="Title of a setting under the Sources category that can be invoked through the Command Menu">
     Disable code folding
   </message>
@@ -416,6 +419,9 @@
   </message>
   <message name="IDS_DEVTOOLS_c79e1cbadc868bad54f2eabe113c06f0" desc="Text in Debugger Plugin of the Sources panel">
     Enable breakpoint
+  </message>
+  <message name="IDS_DEVTOOLS_c9f7198c57735fa7a7a8ac2cc18dd542" desc="Title of the file navigator sidebar in the Sources panel">
+    navigator
   </message>
   <message name="IDS_DEVTOOLS_cd26a6a87959e99fdf99f5ccccef0464" desc="Text in Debugger Plugin of the Sources panel">
     Disable breakpoint

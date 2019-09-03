@@ -98,7 +98,7 @@ Console.ConsoleView = class extends UI.VBox {
 
     const toolbar = new UI.Toolbar('console-main-toolbar', consoleToolbarContainer);
     const rightToolbar = new UI.Toolbar('', consoleToolbarContainer);
-    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton('console sidebar'));
+    toolbar.appendToolbarItem(this._splitWidget.createShowHideSidebarButton(ls`console sidebar`));
     toolbar.appendToolbarItem(UI.Toolbar.createActionButton(
         /** @type {!UI.Action }*/ (UI.actionRegistry.action('console.clear'))));
     toolbar.appendSeparator();

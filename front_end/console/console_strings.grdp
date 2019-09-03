@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_003dec76aeb8e364febdc819d0587626" desc="Title of the sidebar in the Console">
+    console sidebar
+  </message>
   <message name="IDS_DEVTOOLS_02969932cf572213e2401893f4182af2" desc="A context menu item in the Console Pin Pane of the Console panel">
     Remove all expressions
   </message>

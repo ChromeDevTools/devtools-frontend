@@ -28,6 +28,6 @@ button.view-trace {
 
 /** `window.opener` is null for windows opened from DevTools. This breaks
     the LH viewer app, so disable this feature. */
-.lh-export--viewer {
+.lh-tools--viewer {
   display: none !important;
 }

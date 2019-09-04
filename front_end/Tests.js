@@ -1093,7 +1093,6 @@
 
         case 2:  // HSTS internal redirect
           test.assertTrue(networkRequest.url().startsWith('http://'));
-          test.assertEquals(undefined, networkRequest.requestHeadersText());
           test.assertEquals(307, networkRequest.statusCode);
           test.assertEquals('Internal Redirect', networkRequest.statusText);
           test.assertEquals('HSTS', networkRequest.responseHeaderValue('Non-Authoritative-Reason'));

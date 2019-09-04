@@ -112,6 +112,11 @@ SDK.NetworkRequest = class extends Common.Object {
     // Assume no body initially
     /** @type {?Promise<?string>} */
     this._requestFormDataPromise = /** @type {?Promise<?string>} */ (Promise.resolve(null));
+
+    /** @type {boolean} */
+    this._hasExtraRequestInfo = false;
+    /** @type {boolean} */
+    this._hasExtraResponseInfo = false;
   }
 
   /**
@@ -1290,6 +1295,57 @@ SDK.NetworkRequest = class extends Common.Object {
 
     return null;
   }
+
+  /**
+   * @param {!SDK.NetworkRequest.ExtraRequestInfo} extraRequestInfo
+   */
+  addExtraRequestInfo(extraRequestInfo) {
+    this._blockedRequestCookies = extraRequestInfo.blockedRequestCookies;
+    this.setRequestHeaders(extraRequestInfo.requestHeaders);
+    this._hasExtraRequestInfo = true;
+    this.setRequestHeadersText('');  // Mark request headers as non-provisional
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasExtraRequestInfo() {
+    return this._hasExtraRequestInfo;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest.ExtraResponseInfo} extraResponseInfo
+   */
+  addExtraResponseInfo(extraResponseInfo) {
+    this._blockedResponseCookies = extraResponseInfo.blockedResponseCookies;
+    this.responseHeaders = extraResponseInfo.responseHeaders;
+
+    if (extraResponseInfo.responseHeadersText) {
+      this.responseHeadersText = extraResponseInfo.responseHeadersText;
+
+      if (!this.requestHeadersText()) {
+        // Generate request headers text from raw headers in extra request info because
+        // Network.requestWillBeSentExtraInfo doesn't include headers text.
+        let requestHeadersText = `${this.requestMethod} ${this.parsedURL.path}`;
+        if (this.parsedURL.queryParams)
+          requestHeadersText += `?${this.parsedURL.queryParams}`;
+        requestHeadersText += ` HTTP/1.1\r\n`;
+
+        for (const {name, value} of this.requestHeaders())
+          requestHeadersText += `${name}: ${value}\r\n`;
+        this.setRequestHeadersText(requestHeadersText);
+      }
+    }
+
+    this._hasExtraResponseInfo = true;
+  }
+
+  /**
+   * @return {boolean}
+   */
+  hasExtraResponseInfo() {
+    return this._hasExtraResponseInfo;
+  }
 };
 
 /** @enum {symbol} */
@@ -1331,3 +1387,20 @@ SDK.NetworkRequest.EventSourceMessage;
 
 /** @typedef {!{error: ?string, content: ?string, encoded: boolean}} */
 SDK.NetworkRequest.ContentData;
+
+/**
+ * @typedef {!{
+ *   blockedRequestCookies: !Array<!Protocol.Network.BlockedCookieWithReason>,
+ *   requestHeaders: !Array<!SDK.NetworkRequest.NameValue>
+ * }}
+ */
+SDK.NetworkRequest.ExtraRequestInfo;
+
+/**
+ * @typedef {!{
+ *   blockedResponseCookies: !Array<!Protocol.Network.BlockedSetCookieWithReason>,
+ *   responseHeaders: !Array<!SDK.NetworkRequest.NameValue>,
+ *   responseHeadersText: (string|undefined)
+ * }}
+ */
+SDK.NetworkRequest.ExtraResponseInfo;

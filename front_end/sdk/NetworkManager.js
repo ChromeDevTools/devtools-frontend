@@ -280,6 +280,8 @@ SDK.NetworkDispatcher = class {
     this._inflightRequestsById = {};
     /** @type {!Object<string, !SDK.NetworkRequest>} */
     this._inflightRequestsByURL = {};
+    /** @type {!Map<string, !RedirectExtraInfoBuilder>} */
+    this._requestIdToRedirectExtraInfoBuilder = new Map();
   }
 
   /**
@@ -319,12 +321,16 @@ SDK.NetworkDispatcher = class {
     networkRequest.mimeType = response.mimeType;
     networkRequest.statusCode = response.status;
     networkRequest.statusText = response.statusText;
-    networkRequest.responseHeaders = this._headersMapToHeadersArray(response.headers);
+    if (!networkRequest.hasExtraResponseInfo())
+      networkRequest.responseHeaders = this._headersMapToHeadersArray(response.headers);
+
     if (response.encodedDataLength >= 0)
       networkRequest.setTransferSize(response.encodedDataLength);
-    if (response.headersText)
-      networkRequest.responseHeadersText = response.headersText;
-    if (response.requestHeaders) {
+
+    if (response.requestHeaders && !networkRequest.hasExtraRequestInfo()) {
+      // TODO(http://crbug.com/991471): Stop using response.requestHeaders and
+      //   response.requestHeadersText once service workers and shared workers
+      //   emit Network.*ExtraInfo events for their network requests.
       networkRequest.setRequestHeaders(this._headersMapToHeadersArray(response.requestHeaders));
       networkRequest.setRequestHeadersText(response.requestHeadersText || '');
     }
@@ -477,6 +483,8 @@ SDK.NetworkDispatcher = class {
     networkRequest.setResourceType(
         resourceType ? Common.resourceTypes[resourceType] : Protocol.Network.ResourceType.Other);
 
+    this._getExtraInfoBuilder(requestId).addRequest(networkRequest);
+
     this._startNetworkRequest(networkRequest);
   }
 
@@ -576,6 +584,7 @@ SDK.NetworkDispatcher = class {
       networkRequest = this._maybeAdoptMainResourceRequest(requestId);
     if (!networkRequest)
       return;
+    this._getExtraInfoBuilder(requestId).finished();
     this._finishNetworkRequest(networkRequest, finishTime, encodedDataLength, shouldReportCorbBlocking);
   }
 
@@ -605,6 +614,7 @@ SDK.NetworkDispatcher = class {
       }
     }
     networkRequest.localizedFailDescription = localizedDescription;
+    this._getExtraInfoBuilder(requestId).finished();
     this._finishNetworkRequest(networkRequest, time, -1);
   }
 
@@ -773,8 +783,12 @@ SDK.NetworkDispatcher = class {
    * @param {!Protocol.Network.Headers} headers
    */
   requestWillBeSentExtraInfo(requestId, blockedCookies, headers) {
-    // TODO(http://crbug.com/868407): Populate request info with these new raw headers
-    // TODO(http://crbug.com/856777): Populate request info with blocked cookies
+    /** @type {!SDK.NetworkRequest.ExtraRequestInfo} */
+    const extraRequestInfo = {
+      blockedRequestCookies: blockedCookies,
+      requestHeaders: this._headersMapToHeadersArray(headers)
+    };
+    this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
   }
 
   /**
@@ -785,8 +799,27 @@ SDK.NetworkDispatcher = class {
    * @param {string=} headersText
    */
   responseReceivedExtraInfo(requestId, blockedCookies, headers, headersText) {
-    // TODO(http://crbug.com/868407): Populate request info with these new raw headers
-    // TODO(http://crbug.com/856777): Populate request info with blocked cookies
+    /** @type {!SDK.NetworkRequest.ExtraResponseInfo} */
+    const extraResponseInfo = {
+      blockedResponseCookies: blockedCookies,
+      responseHeaders: this._headersMapToHeadersArray(headers),
+      responseHeadersText: headersText
+    };
+    this._getExtraInfoBuilder(requestId).addResponseExtraInfo(extraResponseInfo);
+  }
+
+  /**
+   * @param {string} requestId
+   * @return {!RedirectExtraInfoBuilder}
+   */
+  _getExtraInfoBuilder(requestId) {
+    if (!this._requestIdToRedirectExtraInfoBuilder.get(requestId)) {
+      const deleteCallback = () => {
+        this._requestIdToRedirectExtraInfoBuilder.delete(requestId);
+      };
+      this._requestIdToRedirectExtraInfoBuilder.set(requestId, new RedirectExtraInfoBuilder(deleteCallback));
+    }
+    return this._requestIdToRedirectExtraInfoBuilder.get(requestId);
   }
 
   /**
@@ -1357,6 +1390,97 @@ SDK.MultitargetNetworkManager.InterceptedRequest = class {
     return {error: error, content: error ? null : response.body, encoded: response.base64Encoded};
   }
 };
+
+/**
+ * Helper class to match requests created from requestWillBeSent with
+ * requestWillBeSentExtraInfo and responseReceivedExtraInfo when they have the
+ * same requestId due to redirects.
+ */
+class RedirectExtraInfoBuilder {
+  /**
+   * @param {function()} deleteCallback
+   */
+  constructor(deleteCallback) {
+    /** @type {!Array<!SDK.NetworkRequest>} */
+    this._requests = [];
+    /** @type {!Array<?SDK.NetworkRequest.ExtraRequestInfo>} */
+    this._requestExtraInfos = [];
+    /** @type {!Array<?SDK.NetworkRequest.ExtraResponseInfo>} */
+    this._responseExtraInfos = [];
+    /** @type {boolean} */
+    this._finished = false;
+    /** @type {boolean} */
+    this._hasExtraInfo = false;
+    /** @type {function()} */
+    this._deleteCallback = deleteCallback;
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest} req
+   */
+  addRequest(req) {
+    this._requests.push(req);
+    this._sync(this._requests.length - 1);
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest.ExtraRequestInfo} info
+   */
+  addRequestExtraInfo(info) {
+    this._hasExtraInfo = true;
+    this._requestExtraInfos.push(info);
+    this._sync(this._requestExtraInfos.length - 1);
+  }
+
+  /**
+   * @param {!SDK.NetworkRequest.ExtraResponseInfo} info
+   */
+  addResponseExtraInfo(info) {
+    this._responseExtraInfos.push(info);
+    this._sync(this._responseExtraInfos.length - 1);
+  }
+
+  finished() {
+    this._finished = true;
+    this._deleteIfComplete();
+  }
+
+  /**
+   * @param {number} index
+   */
+  _sync(index) {
+    const req = this._requests[index];
+    if (!req)
+      return;
+
+    const requestExtraInfo = this._requestExtraInfos[index];
+    if (requestExtraInfo) {
+      req.addExtraRequestInfo(requestExtraInfo);
+      this._requestExtraInfos[index] = null;
+    }
+
+    const responseExtraInfo = this._responseExtraInfos[index];
+    if (responseExtraInfo) {
+      req.addExtraResponseInfo(responseExtraInfo);
+      this._responseExtraInfos[index] = null;
+    }
+
+    this._deleteIfComplete();
+  }
+
+  _deleteIfComplete() {
+    if (!this._finished)
+      return;
+
+    if (this._hasExtraInfo) {
+      // if we haven't gotten the last responseExtraInfo event, we have to wait for it.
+      if (!this._requests.peekLast().hasExtraResponseInfo())
+        return;
+    }
+
+    this._deleteCallback();
+  }
+}
 
 /** @typedef {!{urlPattern: string, interceptionStage: !Protocol.Network.InterceptionStage}} */
 SDK.MultitargetNetworkManager.InterceptionPattern;

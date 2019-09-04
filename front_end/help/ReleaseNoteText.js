@@ -13,6 +13,30 @@ const commandMenuShortcut = Host.isMac() ? 'Command+Shift+P' : 'Control+Shift+P'
 /** @type {!Array<!Help.ReleaseNote>} */
 Help.releaseNoteText = [
   {
+    version: 20,
+    header: 'Highlights from the Chrome 78 update',
+    highlights: [
+      {
+        title: 'Lighthouse 5.2 in the Audits panel',
+        subtitle:
+            'Measure the impact of third-party code on your load performance with the new Third-Party Usage audit.',
+        link: 'https://developers.google.com/web/updates/2019/09/devtools#audits',
+      },
+      {
+        title: 'Largest Contentful Paint (LCP) in the Performance panel',
+        subtitle: 'Click the new LCP marker in the Timing section to see the DOM node associated with your LCP.',
+        link: 'https://developers.google.com/web/updates/2019/09/devtools#LCP',
+      },
+      {
+        title: 'File issues and feature requests from the Main Menu',
+        subtitle:
+            'Found a bug? Got an idea on how to improve DevTools? Go to Main Menu > Help > Report a DevTools issue.',
+        link: 'https://developers.google.com/web/updates/2019/09/devtools#issues',
+      },
+    ],
+    link: 'https://developers.google.com/web/updates/2019/09/devtools',
+  },
+  {
     version: 19,
     header: 'Highlights from the Chrome 77 update',
     highlights: [

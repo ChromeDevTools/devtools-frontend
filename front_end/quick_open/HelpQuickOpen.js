@@ -13,8 +13,8 @@ QuickOpen.HelpQuickOpen = class extends QuickOpen.FilteredListWidget.Provider {
    * @param {!Runtime.Extension} extension
    */
   _addProvider(extension) {
-    if (extension.descriptor()['title'])
-      this._providers.push({prefix: extension.descriptor()['prefix'], title: extension.descriptor()['title']});
+    if (extension.title())
+      this._providers.push({prefix: extension.descriptor()['prefix'], title: extension.title()});
   }
 
   /**

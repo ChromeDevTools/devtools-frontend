@@ -58,6 +58,9 @@ SDK.CSSModel = class extends SDK.SDKModel {
     /** @type {!Map.<!SDK.CSSStyleSheetHeader, !Promise<?string>>} */
     this._originalStyleSheetText = new Map();
 
+    /** @type {boolean} */
+    this._isRuleUsageTrackingEnabled = false;
+
     this._sourceMapManager.setEnabled(Common.moduleSetting('cssSourceMapsEnabled').get());
     Common.moduleSetting('cssSourceMapsEnabled')
         .addChangeListener(event => this._sourceMapManager.setEnabled(/** @type {boolean} */ (event.data)));
@@ -172,7 +175,8 @@ SDK.CSSModel = class extends SDK.SDKModel {
   }
 
   startCoverage() {
-    this._agent.startRuleUsageTracking();
+    this._isRuleUsageTrackingEnabled = true;
+    return this._agent.startRuleUsageTracking();
   }
 
   /**
@@ -186,6 +190,7 @@ SDK.CSSModel = class extends SDK.SDKModel {
    * @return {!Promise}
    */
   stopCoverage() {
+    this._isRuleUsageTrackingEnabled = false;
     return this._agent.stopRuleUsageTracking();
   }
 
@@ -210,6 +215,8 @@ SDK.CSSModel = class extends SDK.SDKModel {
   async _enable() {
     await this._agent.enable();
     this._isEnabled = true;
+    if (this._isRuleUsageTrackingEnabled)
+      await this.startCoverage();
     this.dispatchEventToListeners(SDK.CSSModel.Events.ModelWasEnabled);
   }
 

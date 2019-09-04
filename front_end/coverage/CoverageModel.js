@@ -36,19 +36,21 @@ Coverage.CoverageModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @return {boolean}
+   * @return {!Promise<boolean>}
    */
-  start() {
+  async start() {
+    const promises = [];
     if (this._cssModel) {
       // Note there's no JS coverage since JS won't ever return
       // coverage twice, even after it's restarted.
       this._clearCSS();
-      this._cssModel.startCoverage();
+      promises.push(this._cssModel.startCoverage());
     }
     if (this._cpuProfilerModel) {
       this._bestEffortCoveragePromise = this._cpuProfilerModel.bestEffortCoverage();
-      this._cpuProfilerModel.startPreciseCoverage();
+      promises.push(this._cpuProfilerModel.startPreciseCoverage());
     }
+    await Promise.all(promises);
     return !!(this._cssModel || this._cpuProfilerModel);
   }
 

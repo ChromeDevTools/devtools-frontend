@@ -184,6 +184,9 @@ Timeline.TimelineController = class {
    * @return {!Promise<!Object>}
    */
   async _startRecordingWithCategories(categories, enableJSSampling) {
+    // There might be a significant delay in the beginning of timeline recording
+    // caused by starting CPU profiler, that needs to traverse JS heap to collect
+    // all the functions data.
     SDK.targetManager.suspendAllTargets();
     if (enableJSSampling && Runtime.queryParam('timelineTracingJSProfileDisabled'))
       await this._startProfilingOnAllModels();

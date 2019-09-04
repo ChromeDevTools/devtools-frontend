@@ -7,10 +7,10 @@
  * @suppress {accessControls}
  */
 
-CoverageTestRunner.startCoverage = function() {
+CoverageTestRunner.startCoverage = async function() {
   UI.viewManager.showView('coverage');
   const coverageView = self.runtime.sharedInstance(Coverage.CoverageView);
-  coverageView._startRecording();
+  await coverageView._startRecording();
 };
 
 /**

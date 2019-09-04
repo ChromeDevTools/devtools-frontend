@@ -75,8 +75,8 @@ Audits.StartView = class extends UI.Widget {
 
   _render() {
     this._startButton = UI.createTextButton(
-        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits.Events.RequestAuditStart),
-        'audits-start-button', true /* primary */);
+        ls`Run audits`, () => this._controller.dispatchEventToListeners(Audits.Events.RequestAuditStart), '',
+        true /* primary */);
     this.setDefaultFocusedElement(this._startButton);
 
     const deviceIcon = UI.Icon.create('largeicon-phone');

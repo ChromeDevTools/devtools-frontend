@@ -99,10 +99,6 @@
   align-items: center;
 }
 
-.audits-start-button {
-  max-width: 100px;
-}
-
 .audits-start-view .toolbar-dropdown-arrow {
   display: none;
 }

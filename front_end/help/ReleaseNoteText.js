@@ -17,6 +17,16 @@ Help.releaseNoteText = [
     header: 'Highlights from the Chrome 78 update',
     highlights: [
       {
+        title: 'Multi-client support in the Audits panel',
+        subtitle: 'Use the Audits panel in combination with other features, like Local Overrides or Request Blocking.',
+        link: 'https://developers.google.com/web/updates/2019/09/devtools#multiclient',
+      },
+      {
+        title: 'Payment Handler debugging',
+        subtitle: 'Record Payment Handler events for 3 days, even when DevTools is closed.',
+        link: 'https://developers.google.com/web/updates/2019/09/devtools#payments',
+      },
+      {
         title: 'Lighthouse 5.2 in the Audits panel',
         subtitle:
             'Measure the impact of third-party code on your load performance with the new Third-Party Usage audit.',

@@ -27,6 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+FormatterWorker.ACORN_ECMA_VERSION = 2018;
+
 /**
  * @param {string} mimeType
  * @return {function(string, function(string, ?string, number, number):(!Object|undefined))}
@@ -109,7 +112,7 @@ FormatterWorker.parseJSONRelaxed = function(content) {
  * @param {string} content
  */
 FormatterWorker.evaluatableJavaScriptSubstring = function(content) {
-  const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
+  const tokenizer = acorn.tokenizer(content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
   let result = '';
   try {
     let token = tokenizer.getToken();
@@ -155,7 +158,7 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
   let root;
   let body;
   try {
-    root = acorn.parse(wrapped, {ecmaVersion: 10});
+    root = acorn.parse(wrapped, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     body = root.body[0].expression.callee.body;
   } catch (e) {
     postMessage('');
@@ -251,7 +254,7 @@ FormatterWorker.preprocessTopLevelAwaitExpressions = function(content) {
 FormatterWorker.javaScriptIdentifiers = function(content) {
   let root = null;
   try {
-    root = acorn.parse(content, {ranges: false, ecmaVersion: 9});
+    root = acorn.parse(content, {ranges: false, ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
   } catch (e) {
   }
 
@@ -351,7 +354,7 @@ FormatterWorker.findLastFunctionCall = function(content) {
   if (content.length > 10000)
     return null;
   try {
-    const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
     }
   } catch (e) {
@@ -396,13 +399,13 @@ FormatterWorker.argumentsList = function(content) {
   let parsed = null;
   try {
     // Try to parse as a function, anonymous function, or arrow function.
-    parsed = acorn.parse(`(${content})`, {ecmaVersion: 9});
+    parsed = acorn.parse(`(${content})`, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
   } catch (e) {
   }
   if (!parsed) {
     try {
       // Try to parse as a method.
-      parsed = acorn.parse(`({${content}})`, {ecmaVersion: 9});
+      parsed = acorn.parse(`({${content}})`, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     } catch (e) {
     }
   }
@@ -457,7 +460,7 @@ FormatterWorker.findLastExpression = function(content) {
   if (content.length > 10000)
     return null;
   try {
-    const tokenizer = acorn.tokenizer(content, {ecmaVersion: 9});
+    const tokenizer = acorn.tokenizer(content, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
     while (tokenizer.getToken().type !== acorn.tokTypes.eof) {
     }
   } catch (e) {
@@ -466,7 +469,7 @@ FormatterWorker.findLastExpression = function(content) {
 
   const suffix = '.DEVTOOLS';
   try {
-    acorn.parse(content + suffix, {ecmaVersion: 9});
+    acorn.parse(content + suffix, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
   } catch (parseError) {
     // If this is an invalid location for a '.', don't attempt to give autocomplete
     if (parseError.message.startsWith('Unexpected token') && parseError.pos === content.length)
@@ -494,7 +497,7 @@ FormatterWorker._lastCompleteExpression = function(content, suffix, types) {
     try {
       // Wrap content in paren to successfully parse object literals
       parsedContent = content[i] === '{' ? `(${content.substring(i)})${suffix}` : `${content.substring(i)}${suffix}`;
-      ast = acorn.parse(parsedContent, {ecmaVersion: 9});
+      ast = acorn.parse(parsedContent, {ecmaVersion: FormatterWorker.ACORN_ECMA_VERSION});
       break;
     } catch (e) {
     }

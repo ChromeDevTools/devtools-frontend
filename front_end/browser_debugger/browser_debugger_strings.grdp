@@ -39,6 +39,9 @@
   <message name="IDS_DEVTOOLS_6ba3a9ac3e0d57683c56299484b7ee3b" desc="Text in XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Remove all breakpoints
   </message>
+  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Aria-label for DOMBreakpoint checkboxes">
+    <ph name="BREAKPOINTTYPELABEL">$1s<ex>Node removed</ex></ph>: <ph name="LINKIFIED_DEEPTEXTCONTENT__">$2s<ex>div#id1</ex></ph>
+  </message>
   <message name="IDS_DEVTOOLS_b4e79b551a1ceae24b7de243ab1fd27c" desc="Tooltip text that appears when hovering over the largeicon add button in the XHRBreakpoints Sidebar Pane of the JavaScript Debugging pane in the Sources panel or the DOM Breakpoints pane in the Elements panel">
     Add breakpoint
   </message>

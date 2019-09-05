@@ -109,13 +109,16 @@ BrowserDebugger.DOMBreakpointsSidebarPane = class extends UI.VBox {
     const labelElement = createElementWithClass('div', 'dom-breakpoint');
     element.appendChild(labelElement);
 
+    const description = createElement('div');
+    const breakpointTypeLabel = BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
+    description.textContent = breakpointTypeLabel;
     const linkifiedNode = createElementWithClass('monospace');
     linkifiedNode.style.display = 'block';
     labelElement.appendChild(linkifiedNode);
-    Common.Linkifier.linkify(breakpoint.node).then(linkified => linkifiedNode.appendChild(linkified));
-
-    const description = createElement('div');
-    description.textContent = BrowserDebugger.DOMBreakpointsSidebarPane.BreakpointTypeLabels.get(breakpoint.type);
+    Common.Linkifier.linkify(breakpoint.node).then(linkified => {
+      linkifiedNode.appendChild(linkified);
+      UI.ARIAUtils.setAccessibleName(checkboxElement, ls`${breakpointTypeLabel}: ${linkified.deepTextContent()}`);
+    });
     labelElement.appendChild(description);
 
     const item = {breakpoint: breakpoint, element: element, checkbox: checkboxElement};

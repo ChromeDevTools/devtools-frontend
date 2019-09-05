@@ -496,9 +496,6 @@ Click the reload button <ph name="RELOADBUTTON">$3s<ex>reload</ex></ph> or hit <
   <message name="IDS_DEVTOOLS_7b3a6b02f467b95f2b5267aa94708c07" desc="Text in Timeline Flame Chart Data Provider of the Performance panel">
     Thread <ph name="__THREADINDEX">$1s<ex>2</ex></ph>
   </message>
-  <message name="IDS_DEVTOOLS_7d341c08fd102f0b86285b5ff2e26ea7" desc="Text in Timeline UIUtils of the Performance panel">
-    <ph name="TITLE">$1s<ex>Loading</ex></ph>: <ph name="EVENTDATA__MESSAGE__">$2s<ex>paint</ex></ph>
-  </message>
   <message name="IDS_DEVTOOLS_80a4b8755d836d50c19e6eefb976bc2e" desc="Text in Timeline UIUtils of the Performance panel">
     <ph name="SELFCATEGORY_TITLE">$1s<ex>blink.console</ex></ph> (self)
   </message>

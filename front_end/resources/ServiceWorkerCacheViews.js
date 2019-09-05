@@ -166,6 +166,8 @@ Resources.ServiceWorkerCacheView = class extends UI.SimpleView {
       comparator = (a, b) => a.data.resourceSize - b.data.resourceSize;
     else if (columnId === 'responseTime')
       comparator = (a, b) => a.data.endTime - b.data.endTime;
+    else if (columnId === 'responseType')
+      comparator = (a, b) => a._responseType.localeCompare(b._responseType);
 
     const children = this._dataGrid.rootNode().children.slice();
     this._dataGrid.rootNode().removeChildren();

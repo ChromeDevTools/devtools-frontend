@@ -15,16 +15,28 @@
 .network-timing-start {
     border-top: 5px solid transparent;
 }
+
+.network-timing-start th span.network-timing-hidden-header {
+    height: 1px;
+    width: 1px;
+    position: absolute;
+    overflow: hidden;
+}
+
 .network-timing-table-header td, .network-timing-footer td {
     border-top: 10px solid transparent;
 }
 
 .network-timing-table-header td {
-    color: #bbb;
+    color: #737373;
 }
 
 .network-timing-table-header td:last-child {
     text-align: right;
+}
+
+table.network-timing-table > tr:not(.network-timing-table-header):not(.network-timing-footer) > td:first-child {
+    padding-left: 12px;
 }
 
 .network-timing-table col.labels {

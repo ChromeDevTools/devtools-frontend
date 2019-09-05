@@ -180,6 +180,9 @@
   <message name="IDS_DEVTOOLS_459c830504806e5747ddc40008ccbade" desc="Text of add button in Network Manage Custom Headers View of the Network panel">
     Add custom header…
   </message>
+  <message name="IDS_DEVTOOLS_46b4d9ff37717009d48acedceece6914" desc="Header for last column of network timing tab.">
+    DURATION
+  </message>
   <message name="IDS_DEVTOOLS_46ff2c7bbdbb02687287512c874d391f" desc="Text in Network Data Grid Node of the Network panel">
     signed-exchange
   </message>
@@ -674,6 +677,9 @@
   </message>
   <message name="IDS_DEVTOOLS_df080c10e2e9f1e98c180fe2645f6132" desc="Text in Request Headers View of the Network panel">
     Request URL
+  </message>
+  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text that labels the length of time a network request took.">
+    Duration
   </message>
   <message name="IDS_DEVTOOLS_e12d71bcdc8fd61f60b6fdccb4b5fedd" desc="Latency download total format in Network Time Calculator of the Network panel">
     <ph name="PH1">$1s<ex>20ms</ex></ph> latency, <ph name="PH2">$2s<ex>20ms</ex></ph> download (<ph name="PH3">$3s<ex>40ms</ex></ph> total)

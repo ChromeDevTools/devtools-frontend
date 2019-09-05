@@ -864,9 +864,6 @@ Then, zoom and pan the timeline with the mousewheel or <ph name="NAVIGATENODE">$
   <message name="IDS_DEVTOOLS_dfe67b764ba5e3f6b674f049db64e165" desc="Call site stack label in Timeline UIUtils of the Performance panel">
     First Layout Invalidation
   </message>
-  <message name="IDS_DEVTOOLS_e02d2ae03de9d493df2b6b2d2813d302" desc="Text in Timeline UIUtils of the Performance panel">
-    Duration
-  </message>
   <message name="IDS_DEVTOOLS_e0c70bcb54d7f58615eb895c232049ce" desc="Text in Timeline UIUtils of the Performance panel">
     Composite Layers
   </message>

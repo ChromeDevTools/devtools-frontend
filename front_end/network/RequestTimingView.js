@@ -201,9 +201,20 @@ Network.RequestTimingView = class extends UI.VBox {
     let totalDuration = 0;
 
     const startTimeHeader = tableElement.createChild('thead', 'network-timing-start');
+    const tableHeaderRow = startTimeHeader.createChild('tr');
+    const activityHeaderCell = tableHeaderRow.createChild('th');
+    activityHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Label`;
+    activityHeaderCell.scope = 'col';
+    const waterfallHeaderCell = tableHeaderRow.createChild('th');
+    waterfallHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Waterfall`;
+    waterfallHeaderCell.scope = 'col';
+    const durationHeaderCell = tableHeaderRow.createChild('th');
+    durationHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = ls`Duration`;
+    durationHeaderCell.scope = 'col';
+
     const queuedCell = startTimeHeader.createChild('tr').createChild('td');
     const startedCell = startTimeHeader.createChild('tr').createChild('td');
-    queuedCell.colSpan = startedCell.colSpan = 2;
+    queuedCell.colSpan = startedCell.colSpan = 3;
     queuedCell.createTextChild(Common.UIString('Queued at %s', calculator.formatValue(request.issueTime(), 2)));
     startedCell.createTextChild(Common.UIString('Started at %s', calculator.formatValue(request.startTime, 2)));
 
@@ -218,10 +229,8 @@ Network.RequestTimingView = class extends UI.VBox {
       if (rangeName === Network.RequestTimeRangeNames.Push) {
         createHeader(Common.UIString('Server Push'));
       } else if (rangeName === Network.RequestTimeRangeNames.Queueing) {
-        queueingHeader = tableElement.createChild('tr', 'network-timing-table-header');
-        queueingHeader.createChild('td').createTextChild(Common.UIString('Resource Scheduling'));
-        queueingHeader.createChild('td').createTextChild('');
-        queueingHeader.createChild('td').createTextChild(Common.UIString('TIME'));
+        if (!queueingHeader)
+          queueingHeader = createHeader(ls`Resource Scheduling`);
       } else if (Network.RequestTimingView.ConnectionSetupRangeNames.has(rangeName)) {
         if (!connectionHeader)
           connectionHeader = createHeader(Common.UIString('Connection Start'));
@@ -242,6 +251,7 @@ Network.RequestTimingView = class extends UI.VBox {
       bar.style.left = left + '%';
       bar.style.right = right + '%';
       bar.textContent = '\u200B';  // Important for 0-time items to have 0 width.
+      UI.ARIAUtils.setAccessibleName(row, ls`Started at ${calculator.formatValue(range.start, 2)}`);
       const label = tr.createChild('td').createChild('div', 'network-timing-bar-title');
       label.textContent = Number.secondsToString(duration, true);
     }
@@ -315,9 +325,11 @@ Network.RequestTimingView = class extends UI.VBox {
      */
     function createHeader(title) {
       const dataHeader = tableElement.createChild('tr', 'network-timing-table-header');
-      dataHeader.createChild('td').createTextChild(title);
+      const headerCell = dataHeader.createChild('td');
+      headerCell.createTextChild(title);
+      UI.ARIAUtils.markAsHeading(headerCell, 2);
       dataHeader.createChild('td').createTextChild('');
-      dataHeader.createChild('td').createTextChild(Common.UIString('TIME'));
+      dataHeader.createChild('td').createTextChild(ls`DURATION`);
       return dataHeader;
     }
   }

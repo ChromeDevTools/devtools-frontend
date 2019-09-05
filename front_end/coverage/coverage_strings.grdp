@@ -38,8 +38,8 @@ Click the reload button <ph name="RELOAD_BUTTON_ICON">$2s<ex>reload button icon<
     Click the record button <ph name="RECORD_BUTTON_ICON">$1s<ex>record button icon</ex></ph> to start capturing coverage.
   </message>
   <message name="IDS_DEVTOOLS_977836743b030a9eda23b81f3c7b6193" desc="Footer message in Coverage View of the Coverage tab">
-    <ph name="NUMBER_BYTESTOSTRING_USED_">$1s<ex>bytes used</ex></ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s<ex>bytes total</ex></ph> (<ph name="PERCENTUSED">$3s<ex>percentage used</ex></ph>%) used so far.
-        <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$4s<ex>percentage unused</ex></ph> unused.
+    <ph name="NUMBER_BYTESTOSTRING_USED_">$1s<ex>1.5 MB</ex></ph> of <ph name="NUMBER_BYTESTOSTRING_TOTAL_">$2s<ex>2.1 MB</ex></ph> (<ph name="PERCENTUSED">$3s<ex>71%</ex></ph>%) used so far.
+        <ph name="NUMBER_BYTESTOSTRING_UNUSED_">$4s<ex>29%</ex></ph> unused.
   </message>
   <message name="IDS_DEVTOOLS_9841bdc50c4226cb6ec5db76494249e6" desc="Title of the 'Coverage' tool in the bottom drawer">
     Coverage

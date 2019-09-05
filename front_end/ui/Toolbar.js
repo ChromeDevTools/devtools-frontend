@@ -163,7 +163,8 @@ UI.Toolbar = class {
    * @return {!UI.ToolbarButton}
    */
   static createActionButton(action, showLabel) {
-    const button = makeButtonOrToggle();
+    const button = action.toggleable() ? makeToggle() : makeButton();
+
     if (showLabel)
       button.setText(action.title());
     button.addEventListener(UI.ToolbarButton.Events.Click, action.execute, action);
@@ -174,9 +175,18 @@ UI.Toolbar = class {
     /**
      * @return {!UI.ToolbarButton}
      */
-    function makeButtonOrToggle() {
-      if (!action.toggleable())
-        return new UI.ToolbarButton(action.title(), action.icon());
+
+    function makeButton() {
+      const button = new UI.ToolbarButton(action.title(), action.icon());
+      if (action.title())
+        UI.Tooltip.install(button.element, action.title(), action.id());
+      return button;
+    }
+
+    /**
+     * @return {!UI.ToolbarToggle}
+     */
+    function makeToggle() {
       const toggleButton = new UI.ToolbarToggle(action.title(), action.icon(), action.toggledIcon());
       toggleButton.setToggleWithRedColor(action.toggleWithRedColor());
       action.addEventListener(UI.Action.Events.Toggled, toggled);

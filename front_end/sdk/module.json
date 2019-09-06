@@ -264,7 +264,8 @@
                     "value": "screen"
                 }
             ],
-            "tags": "query"
+            "tags": "query",
+            "title": "Emulate CSS media"
         },
         {
             "type": "setting",

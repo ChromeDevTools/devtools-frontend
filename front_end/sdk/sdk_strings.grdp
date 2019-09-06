@@ -144,6 +144,9 @@
   <message name="IDS_DEVTOOLS_83f2229658949472d34f78e19475fcdd" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show layer borders
   </message>
+  <message name="IDS_DEVTOOLS_869a8b1ed99306604574dca474a13994" desc="Title for emulatedCSSMedia setting">
+    Emulate CSS media
+  </message>
   <message name="IDS_DEVTOOLS_9028784c589c0c809700c7fbc66a5d96" desc="Text in Network Manager">
     Resource interpreted as <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>application</ex></ph> but transferred with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>image</ex></ph>: &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>

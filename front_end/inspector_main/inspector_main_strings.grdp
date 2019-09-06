@@ -27,6 +27,9 @@
   <message name="IDS_DEVTOOLS_36bec95bf12fb795a5a100251f0cc421" desc="Checkbox subtitle for 'Layer boarders' in the Rendering tool">
     Shows layer borders (orange/olive) and tiles (cyan).
   </message>
+  <message name="IDS_DEVTOOLS_417316246f12b8235535182cc9eebe45" desc="Accessibility subtitle for media select element in Rendering tool">
+    Forces media type for testing print and screen styles
+  </message>
   <message name="IDS_DEVTOOLS_43f244627bf87f76a0dee86f364df473" desc="Checkbox subtitle for 'Layout Shift Regions' in the Rendering tool">
     Highlights areas of the page (blue) that were shifted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
@@ -57,9 +60,6 @@
   <message name="IDS_DEVTOOLS_8634af2a16e41305fc8dca2d67360810" desc="Title of button in inspector main">
     Open dedicated DevTools for Node.js
   </message>
-  <message name="IDS_DEVTOOLS_869a8b1ed99306604574dca474a13994" desc="Text in Rendering Options">
-    Emulate CSS media
-  </message>
   <message name="IDS_DEVTOOLS_86f849e1a655c2df19f28cb3dfe07bc9" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Block ads on this site
   </message>
@@ -81,14 +81,11 @@
   <message name="IDS_DEVTOOLS_a4c766a2e6eb33e7575331b6affd9778" desc="Checkbox subtitle for 'Paint flashing' in the Rendering tool">
     Highlights areas of the page (green) that need to be repainted. May not be suitable for people prone to photosensitive epilepsy.
   </message>
-  <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the 'Rendering' tool in the bottom drawer">
+  <message name="IDS_DEVTOOLS_a6e8f9aed2ac6481dc25a18a33342d03" desc="Title of the Rendering tool in the bottom drawer">
     Rendering
   </message>
   <message name="IDS_DEVTOOLS_cb835af5f855f79e8611dd3f8fec6aac" desc="Title of an action in the inspector main tool to reload">
     Reload page
-  </message>
-  <message name="IDS_DEVTOOLS_d013165b46f5c1f0f780ea3fc92c04f1" desc="Subtitle of 'Emulate CSS media' in the Rendering tool">
-    Forces media type for testing print and screen styles.
   </message>
   <message name="IDS_DEVTOOLS_d543dbe64db0c952d6e13c9519218b3e" desc="Title of an action in the inspector main tool to hard reload">
     Hard reload page

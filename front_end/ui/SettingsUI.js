@@ -57,13 +57,18 @@ UI.SettingsUI.createSettingCheckbox = function(name, setting, omitParagraphEleme
  * @param {string} name
  * @param {!Array<!{text: string, value: *, raw: (boolean|undefined)}>} options
  * @param {!Common.Setting} setting
+ * @param {string=} subtitle
  * @return {!Element}
  */
-UI.SettingsUI.createSettingSelect = function(name, options, setting) {
-  const p = createElement('p');
-  const label = p.createChild('label');
+UI.SettingsUI.createSettingSelect = function(name, options, setting, subtitle) {
+  const settingSelectElement = createElement('p');
+  const label = settingSelectElement.createChild('label');
+  const select = settingSelectElement.createChild('select', 'chrome-select');
   label.textContent = name;
-  const select = p.createChild('select', 'chrome-select');
+  if (subtitle) {
+    settingSelectElement.classList.add('chrome-select-label');
+    label.createChild('p').textContent = subtitle;
+  }
   UI.ARIAUtils.bindLabelToControl(label, select);
 
   for (let i = 0; i < options.length; ++i) {
@@ -76,7 +81,7 @@ UI.SettingsUI.createSettingSelect = function(name, options, setting) {
   setting.addChangeListener(settingChanged);
   settingChanged();
   select.addEventListener('change', selectChanged, false);
-  return p;
+  return settingSelectElement;
 
   function settingChanged() {
     const newValue = setting.get();
@@ -128,9 +133,10 @@ UI.SettingsUI.createCustomSetting = function(name, element) {
 
 /**
  * @param {!Common.Setting} setting
+ * @param {string=} subtitle
  * @return {?Element}
  */
-UI.SettingsUI.createControlForSetting = function(setting) {
+UI.SettingsUI.createControlForSetting = function(setting, subtitle) {
   if (!setting.extension())
     return null;
   const descriptor = setting.extension().descriptor();
@@ -140,7 +146,7 @@ UI.SettingsUI.createControlForSetting = function(setting) {
       return UI.SettingsUI.createSettingCheckbox(uiTitle, setting);
     case 'enum':
       if (Array.isArray(descriptor['options']))
-        return UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting);
+        return UI.SettingsUI.createSettingSelect(uiTitle, descriptor['options'], setting, subtitle);
       console.error('Enum setting defined without options');
       return null;
     default:

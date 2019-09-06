@@ -269,6 +269,16 @@ input {
     opacity: 0.38;
 }
 
+.chrome-select-label {
+  margin: 0px 22px;
+  flex: none;
+}
+
+.chrome-select-label p {
+  margin-top: 0;
+  color: gray;
+}
+
 .chrome-select optgroup,
 .chrome-select option {
     background-color: #EEEEEE;

@@ -63,13 +63,10 @@ InspectorMain.RenderingOptionsView = class extends UI.VBox {
         this.contentElement.createChild('div').classList.add('panel-section-separator');
 
         const mediaSetting = Common.moduleSetting('emulatedCSSMedia');
-        const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting);
-        if (mediaSelect) {
-          const mediaRow = this.contentElement.createChild('span', 'media-row');
-          mediaRow.createChild('label').textContent = ls`Emulate CSS media`;
-          mediaRow.createChild('p').textContent = ls`Forces media type for testing print and screen styles.`;
-          mediaRow.appendChild(mediaSelect);
-        }
+        const selectSubtitle = ls`Forces media type for testing print and screen styles`;
+        const mediaSelect = UI.SettingsUI.createControlForSetting(mediaSetting, selectSubtitle);
+        if (mediaSelect)
+          this.contentElement.appendChild(mediaSelect);
   }
 
   /**

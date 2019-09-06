@@ -13,16 +13,6 @@
     flex: none;
 }
 
-.media-row {
-    margin-left: 22px;
-    flex: none;
-}
-
-.media-row p {
-    margin-top: 0;
-    color: gray;
-}
-
 .panel-section-separator {
     height: 1px;
     margin-bottom: 10px;

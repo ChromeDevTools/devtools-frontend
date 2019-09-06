@@ -301,7 +301,9 @@ Network.RequestTimingView = class extends UI.VBox {
       const isTotal = serverTiming.metric.toLowerCase() === 'total';
       const tr = tableElement.createChild('tr', isTotal ? 'network-timing-footer' : '');
       const metric = tr.createChild('td', 'network-timing-metric');
-      metric.createTextChild(serverTiming.description || serverTiming.metric);
+      const description = serverTiming.description || serverTiming.metric;
+      metric.createTextChild(description);
+      metric.title = description;
       const row = tr.createChild('td').createChild('div', 'network-timing-row');
 
       if (serverTiming.value === null)

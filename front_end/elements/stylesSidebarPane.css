@@ -188,6 +188,10 @@
     box-shadow: var(--focus-ring-active-shadow);
 }
 
+.styles-sidebar-pane-filter-box > input::placeholder {
+    color: rgba(0, 0, 0, 0.54);
+}
+
 .styles-section.styles-panel-hovered:not(.read-only) span.simple-selector:hover,
 .styles-section.styles-panel-hovered:not(.read-only) .media-text :hover{
     text-decoration: underline;

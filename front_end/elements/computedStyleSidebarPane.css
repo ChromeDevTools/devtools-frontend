@@ -32,3 +32,7 @@
 .styles-sidebar-pane-filter-box > input:not(:placeholder-shown) {
     box-shadow: var(--focus-ring-active-shadow);
 }
+
+.styles-sidebar-pane-filter-box > input::placeholder {
+    color: rgba(0, 0, 0, 0.54);
+}

@@ -60,7 +60,10 @@ Coverage.CoverageDecorationManager = class {
    */
   async usageByLine(uiSourceCode) {
     const result = [];
-    const sourceText = new TextUtils.Text(uiSourceCode.content() || '');
+    const content = await uiSourceCode.requestContent();
+    if (!content)
+      return [];
+    const sourceText = new TextUtils.Text(/** @type {string} */ (content));
     await this._updateTexts(uiSourceCode, sourceText);
     const lineEndings = sourceText.lineEndings();
     for (let line = 0; line < sourceText.lineCount(); ++line) {
@@ -292,7 +295,8 @@ Coverage.CoverageView.LineDecorator = class {
   _innerDecorate(textEditor, lineUsage) {
     const gutterType = Coverage.CoverageView.LineDecorator._gutterType;
     textEditor.uninstallGutter(gutterType);
-    textEditor.installGutter(gutterType, false);
+    if (lineUsage.length)
+      textEditor.installGutter(gutterType, false);
     for (let line = 0; line < lineUsage.length; ++line) {
       // Do not decorate the line if we don't have data.
       if (typeof lineUsage[line] !== 'boolean')

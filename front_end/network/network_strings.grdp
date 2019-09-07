@@ -42,6 +42,9 @@
   <message name="IDS_DEVTOOLS_0f591b1d87c91e77d4fa11dc6e44288c" desc="Text in Network Item View of the Network panel">
     Request and response timeline
   </message>
+  <message name="IDS_DEVTOOLS_100b560e280fea6e7d5ab12179d3f0e2" desc="Tooltip to explain what malformed response cookies are">
+    Cookies that were received from the server in the &apos;set-cookie&apos; header of the response but were malformed
+  </message>
   <message name="IDS_DEVTOOLS_117068a6e55846888cbb60978fe82ca2" desc="Text in Request Timing View of the Network panel">
     Stalled
   </message>
@@ -293,6 +296,9 @@
   </message>
   <message name="IDS_DEVTOOLS_6dd7482f131dc036ea08395a7f3f5e08" desc="Other user agent element placeholder in Network Config View of the Network panel">
     Enter a custom user agent
+  </message>
+  <message name="IDS_DEVTOOLS_6dec00f9ae08edb5af58e6efb699dba0" desc="Label for showing request cookies that were not actually sent">
+    show filtered out request cookies
   </message>
   <message name="IDS_DEVTOOLS_6e68a529a38966508d348e9f65d7ea31" desc="Title of an action in the network tool to toggle recording">
     Record network log
@@ -585,6 +591,9 @@
   <message name="IDS_DEVTOOLS_c02504bf83e5cc0d2f582f189a804aef" desc="Text in Request Cookies View of the Network panel">
     Request Cookies
   </message>
+  <message name="IDS_DEVTOOLS_c0c7145bdb8a2311e11528eaacf7f41d" desc="Tooltip to explain what request cookies are">
+    Cookies that were sent to the server in the &apos;cookie&apos; header of the request
+  </message>
   <message name="IDS_DEVTOOLS_c2cc7082a89c1ad6631a2f66af5f00c0" desc="Text in Network Log View Columns of the Network panel">
     Connection
   </message>
@@ -618,6 +627,9 @@
   <message name="IDS_DEVTOOLS_cc0af601bfd673427a8abb171f62c707" desc="Reason in Network Data Grid Node of the Network panel">
     content-type
   </message>
+  <message name="IDS_DEVTOOLS_ce9d64b8fde226fd9e5fa4c0947c7ee0" desc="Tooltip to explain what response cookies are">
+    Cookies that were received from the server in the &apos;set-cookie&apos; header of the response
+  </message>
   <message name="IDS_DEVTOOLS_cebd9a3a94f022d3600e0f81a9aa2060" desc="Text in Network Log View of the Network panel">
     <ph name="NUMBER_BYTESTOSTRING_SELECTEDRESOURCESIZE_">$1s<ex>40MB</ex></ph> / <ph name="NUMBER_BYTESTOSTRING_RESOURCESIZE_">$2s<ex>50MB</ex></ph> resources
   </message>
@@ -647,6 +659,9 @@
   </message>
   <message name="IDS_DEVTOOLS_d82a834165b99c4ea0969316296a2bc2" desc="Text in Network Log View Columns of the Network panel">
     Vary
+  </message>
+  <message name="IDS_DEVTOOLS_d8e381f360a750d29368d3ec51346006" desc="Label for response cookies with invalid syntax">
+    Malformed Response Cookies
   </message>
   <message name="IDS_DEVTOOLS_db67b2de0114bd82fe1383aa067fa6b2" desc="A context menu item in the Network Log View of the Network panel">
     Unblock <ph name="CROPPEDURL">$1s<ex>example.com</ex></ph>

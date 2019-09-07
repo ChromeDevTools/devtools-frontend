@@ -785,7 +785,12 @@ SDK.NetworkDispatcher = class {
   requestWillBeSentExtraInfo(requestId, blockedCookies, headers) {
     /** @type {!SDK.NetworkRequest.ExtraRequestInfo} */
     const extraRequestInfo = {
-      blockedRequestCookies: blockedCookies,
+      blockedRequestCookies: blockedCookies.map(blockedCookie => {
+        return {
+          blockedReason: blockedCookie.blockedReason,
+          cookie: SDK.Cookie.fromProtocolCookie(blockedCookie.cookie)
+        };
+      }),
       requestHeaders: this._headersMapToHeadersArray(headers)
     };
     this._getExtraInfoBuilder(requestId).addRequestExtraInfo(extraRequestInfo);
@@ -801,7 +806,13 @@ SDK.NetworkDispatcher = class {
   responseReceivedExtraInfo(requestId, blockedCookies, headers, headersText) {
     /** @type {!SDK.NetworkRequest.ExtraResponseInfo} */
     const extraResponseInfo = {
-      blockedResponseCookies: blockedCookies,
+      blockedResponseCookies: blockedCookies.map(blockedCookie => {
+        return {
+          blockedReason: blockedCookie.blockedReason,
+          cookieLine: blockedCookie.cookieLine,
+          cookie: blockedCookie.cookie ? SDK.Cookie.fromProtocolCookie(blockedCookie.cookie) : null
+        };
+      }),
       responseHeaders: this._headersMapToHeadersArray(headers),
       responseHeadersText: headersText
     };

@@ -5,17 +5,42 @@
  */
 
 .request-cookies-view {
-    display: flex;
     overflow: auto;
-    margin: 12px;
+    padding: 12px;
     height: 100%;
 }
 
-.request-cookies-view .data-grid {
-    flex: auto;
-    height: 100%;
-}
-
-.request-cookies-view .data-grid .row-group {
+.request-cookies-view .request-cookies-title {
+    font-size: 12px;
     font-weight: bold;
+    margin-right: 30px;
+    color: rgb(97, 97, 97);
+}
+
+.request-cookies-view .cookie-line {
+    margin-top: 6px;
+    display: inline-block;
+}
+
+.request-cookies-view .cookie-table {
+    margin-top: 6px;
+    margin-bottom: 16px;
+    flex: none;
+}
+
+.request-cookies-view .cookie-table .flagged-cookie-row {
+    background-color: yellow;
+}
+
+td.flagged-cookie-attribute-cell .cookie-warning-icon {
+    margin-right: 4px;
+    filter: grayscale();
+}
+
+.request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
+    background-color: hsl(51, 85%, 80%);
+}
+
+.request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(even) {
+    background-color: rgb(255, 240, 155);
 }

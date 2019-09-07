@@ -11,27 +11,6 @@ SDK.CookieModel = class extends SDK.SDKModel {
   }
 
   /**
-   * @param {!Protocol.Network.Cookie} protocolCookie
-   * @return {!SDK.Cookie}
-   */
-  static _parseProtocolCookie(protocolCookie) {
-    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null);
-    cookie.addAttribute('domain', protocolCookie['domain']);
-    cookie.addAttribute('path', protocolCookie['path']);
-    cookie.addAttribute('port', protocolCookie['port']);
-    if (protocolCookie['expires'])
-      cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
-    if (protocolCookie['httpOnly'])
-      cookie.addAttribute('httpOnly');
-    if (protocolCookie['secure'])
-      cookie.addAttribute('secure');
-    if (protocolCookie['sameSite'])
-      cookie.addAttribute('sameSite', protocolCookie['sameSite']);
-    cookie.setSize(protocolCookie['size']);
-    return cookie;
-  }
-
-  /**
    * @param {!SDK.Cookie} cookie
    * @param {string} resourceURL
    * @return {boolean}
@@ -63,7 +42,7 @@ SDK.CookieModel = class extends SDK.SDKModel {
    */
   getCookies(urls) {
     return this.target().networkAgent().getCookies(urls).then(
-        cookies => (cookies || []).map(cookie => SDK.CookieModel._parseProtocolCookie(cookie)));
+        cookies => (cookies || []).map(cookie => SDK.Cookie.fromProtocolCookie(cookie)));
   }
 
   /**

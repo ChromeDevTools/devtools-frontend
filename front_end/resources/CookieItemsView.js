@@ -92,10 +92,8 @@ Resources.CookieItemsView = class extends Resources.StorageItemsView {
 
     if (!this._cookiesTable) {
       this._cookiesTable = new CookieTable.CookiesTable(
-          this._saveCookie.bind(this),
-          this.refreshItems.bind(this),
-          () => this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie()),
-          this._deleteCookie.bind(this));
+          /* renderInline */ false, this._saveCookie.bind(this), this.refreshItems.bind(this),
+          () => this.setCanDeleteSelected(!!this._cookiesTable.selectedCookie()), this._deleteCookie.bind(this));
     }
 
     const parsedURL = this._cookieDomain.asParsedURL();

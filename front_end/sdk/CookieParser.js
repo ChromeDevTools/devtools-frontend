@@ -112,14 +112,18 @@ SDK.CookieParser = class {
       return false;
     this._cookies = [];
     this._lastCookie = null;
+    this._lastCookieLine = '';
     this._originalInputLength = this._input.length;
     return true;
   }
 
   _flushCookie() {
-    if (this._lastCookie)
+    if (this._lastCookie) {
       this._lastCookie.setSize(this._originalInputLength - this._input.length - this._lastCookiePosition);
+      this._lastCookie._setCookieLine(this._lastCookieLine.replace('\n', ''));
+    }
     this._lastCookie = null;
+    this._lastCookieLine = '';
   }
 
   /**
@@ -141,6 +145,7 @@ SDK.CookieParser = class {
 
     const result = new SDK.CookieParser.KeyValue(
         keyValueMatch[1], keyValueMatch[2] && keyValueMatch[2].trim(), this._originalInputLength - this._input.length);
+    this._lastCookieLine += keyValueMatch[0];
     this._input = this._input.slice(keyValueMatch[0].length);
     return result;
   }
@@ -152,6 +157,7 @@ SDK.CookieParser = class {
     const match = /^\s*[\n;]\s*/.exec(this._input);
     if (!match)
       return false;
+    this._lastCookieLine += match[0];
     this._input = this._input.slice(match[0].length);
     return match[0].match('\n') !== null;
   }
@@ -205,6 +211,29 @@ SDK.Cookie = class {
     this._type = type;
     this._attributes = {};
     this._size = 0;
+    /** @type {string|null} */
+    this._cookieLine = null;
+  }
+
+  /**
+   * @param {!Protocol.Network.Cookie} protocolCookie
+   * @return {!SDK.Cookie}
+   */
+  static fromProtocolCookie(protocolCookie) {
+    const cookie = new SDK.Cookie(protocolCookie.name, protocolCookie.value, null);
+    cookie.addAttribute('domain', protocolCookie['domain']);
+    cookie.addAttribute('path', protocolCookie['path']);
+    cookie.addAttribute('port', protocolCookie['port']);
+    if (protocolCookie['expires'])
+      cookie.addAttribute('expires', protocolCookie['expires'] * 1000);
+    if (protocolCookie['httpOnly'])
+      cookie.addAttribute('httpOnly');
+    if (protocolCookie['secure'])
+      cookie.addAttribute('secure');
+    if (protocolCookie['sameSite'])
+      cookie.addAttribute('sameSite', protocolCookie['sameSite']);
+    cookie.setSize(protocolCookie['size']);
+    return cookie;
   }
 
   /**
@@ -345,6 +374,20 @@ SDK.Cookie = class {
   addAttribute(key, value) {
     this._attributes[key.toLowerCase()] = value;
   }
+
+  /**
+   * @param {string} cookieLine
+   */
+  _setCookieLine(cookieLine) {
+    this._cookieLine = cookieLine;
+  }
+
+  /**
+   * @return {string|null}
+   */
+  getCookieLine() {
+    return this._cookieLine;
+  }
 };
 
 /**
@@ -353,4 +396,19 @@ SDK.Cookie = class {
 SDK.Cookie.Type = {
   Request: 0,
   Response: 1
+};
+
+/**
+ * @enum {string}
+ */
+SDK.Cookie.Attributes = {
+  Name: 'name',
+  Value: 'value',
+  Size: 'size',
+  Domain: 'domain',
+  Path: 'path',
+  Expires: 'expires',
+  HttpOnly: 'httpOnly',
+  Secure: 'secure',
+  SameSite: 'sameSite',
 };

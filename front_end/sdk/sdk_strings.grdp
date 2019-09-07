@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <grit-part>
+  <message name="IDS_DEVTOOLS_021aa7730980fe55529e460ee1367179" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;SameSite=Extended&quot; attribute and the request was made on a different site. The different site is outside of the cookie&apos;s trusted first-party set.
+  </message>
   <message name="IDS_DEVTOOLS_07553a11db31a4433684be32cc4716e3" desc="Text in Network Manager">
     Cross-Origin Read Blocking (CORB) blocked cross-origin response <ph name="NETWORKREQUEST_URL__">$1s<ex>https://example.com</ex></ph> with MIME type <ph name="NETWORKREQUEST_MIMETYPE">$2s<ex>application</ex></ph>. See https://www.chromestatus.com/feature/5629709824032768 for more details.
   </message>
@@ -8,6 +11,9 @@
   </message>
   <message name="IDS_DEVTOOLS_09cdd6a7321c64bae05b8cca859f1461" desc="Title of a setting under the Network category that can be invoked through the Command Menu">
     Enable cache
+  </message>
+  <message name="IDS_DEVTOOLS_0b4e8f2008c602c781fee001c917dbf9" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had invalid syntax.
   </message>
   <message name="IDS_DEVTOOLS_0fe1f9158e2f164da1332501f9e65702" desc="Text in Console Model">
     Navigated to <ph name="EVENT_DATA_URL">$1s<ex>https://example.com</ex></ph>
@@ -21,6 +27,9 @@
   <message name="IDS_DEVTOOLS_1985576209a186984f171efd81e91e3d" desc="Text in Network Log">
     &lt;anonymous&gt;
   </message>
+  <message name="IDS_DEVTOOLS_1a4157cb54ce78ee862a88ecd1a66916" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie used the &quot;__Secure-&quot; or &quot;__Host-&quot; prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.
+  </message>
   <message name="IDS_DEVTOOLS_21070fd87b02611a5426d726a70a5502" desc="Text in Server Timing">
     No value found for parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot;.
   </message>
@@ -33,11 +42,20 @@
   <message name="IDS_DEVTOOLS_23e8e5daea7e9dc939ae4298a6f74e36" desc="Text in Server Timing">
     ServerTiming: <ph name="MSG">$1s<ex>Extraneous trailing characters.</ex></ph>
   </message>
+  <message name="IDS_DEVTOOLS_25121e2acd3c495847c5592661c2a2f9" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie&apos;s Domain attribute was invalid with regards to the current host url.
+  </message>
+  <message name="IDS_DEVTOOLS_27d7b4e470e9a00b0fc6cf26fb3c5100" desc="Tooltip to explain why a cookie was blocked">
+    This cookie&apos;s domain is not configured to match the request url&apos;s domain, even though they share a common TLD+1 (TLD+1 of foo.bar.example.com is example.com).
+  </message>
   <message name="IDS_DEVTOOLS_28e486be4b3bad598b6e9eaa34ebec76" desc="Text in Network Manager">
     Set-Cookie header is ignored in response from url: <ph name="RESPONSE_URL">$1s<ex>https://example.com</ex></ph>. Cookie length should be less than or equal to 4096 characters.
   </message>
   <message name="IDS_DEVTOOLS_2973958e77629e3a167a1a4c60dd5c5f" desc="Text in Network Manager">
     Slow 3G
+  </message>
+  <message name="IDS_DEVTOOLS_2cc895b2288b4709e1620a1510322de0" desc="Tooltip to explain why a cookie was blocked">
+    This cookie was not sent due to user preferences.
   </message>
   <message name="IDS_DEVTOOLS_3034e08ec0b14678ddb50284eef02ee4" desc="Title of a setting under the Console category that can be invoked through the Command Menu">
     Do not preserve log upon navigation
@@ -56,6 +74,12 @@
   </message>
   <message name="IDS_DEVTOOLS_3b563524fdb17b4a86590470d40bef74" desc="Text in DOMDebugger Model">
     Media
+  </message>
+  <message name="IDS_DEVTOOLS_3c000cf06aef2d48a8bfe568e1d6ef65" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.
+  </message>
+  <message name="IDS_DEVTOOLS_3c2de12122c9b36f60cb989a6e0589b9" desc="Tooltip to explain why a cookie was blocked">
+    This cookie&apos;s path was not within the request url&apos;s path.
   </message>
   <message name="IDS_DEVTOOLS_3d9320c6e796b65a6c91fcd64e27fa88" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide frames per second (FPS) meter
@@ -84,6 +108,9 @@
   <message name="IDS_DEVTOOLS_4cc6684df7b4a92b1dec6fce3264fac8" desc="Text in Debugger Model">
     Global
   </message>
+  <message name="IDS_DEVTOOLS_50103f373f2d49a21139259d81f472d9" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;Secure&quot; attribute and the connection was not secure.
+  </message>
   <message name="IDS_DEVTOOLS_509820290d57f333403f490dde7316f4" desc="Text in Debugger Model">
     Local
   </message>
@@ -92,6 +119,9 @@
   </message>
   <message name="IDS_DEVTOOLS_52da3e7fcf6abefc2a8807df4b759ef8" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     setInterval fired
+  </message>
+  <message name="IDS_DEVTOOLS_58c00b9a5a2a60122f4ac08e4610d9e2" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had the &quot;SameSite=Extended&quot; attribute but came from a cross-origin response.
   </message>
   <message name="IDS_DEVTOOLS_599eba19aa93a929cb8589f148b8a6c4" desc="A drop-down menu option to emulate css screen media type">
     screen
@@ -105,11 +135,17 @@
   <message name="IDS_DEVTOOLS_61cf8510205077b6f5491d38cd44c0f7" desc="Text in DOMDebugger Model">
     Pointer
   </message>
+  <message name="IDS_DEVTOOLS_6242258a3bddacbd457df5c049591257" desc="Tooltip to explain why a cookie was blocked">
+    An unknown error was encountered when trying to store this cookie.
+  </message>
   <message name="IDS_DEVTOOLS_62efb9ec331e364b96efe68c8b03ca20" desc="Text in DOMDebugger Model">
     Worker
   </message>
   <message name="IDS_DEVTOOLS_62fce3f916fe47f75c391fd5e4fc3eca" desc="Text in Network Log">
     Consider disabling <ph name="COMMON_UISTRING__CHROME_DATA_SAVER__">$1s<ex>Chrome Data Saver</ex></ph> while debugging. For more info see: <ph name="_HTTPS___SUPPORT_GOOGLE_COM_CHROME__P_DATASAVER_">$2s<ex>https://example.com</ex></ph>
+  </message>
+  <message name="IDS_DEVTOOLS_646554c61e2132b9c32db710eaca838b" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie was not stored due to user preferences.
   </message>
   <message name="IDS_DEVTOOLS_6617a779f50f7afb7949c7ea3ad52b28" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show hit-test borders
@@ -132,14 +168,29 @@
   <message name="IDS_DEVTOOLS_7121afd196f5c52bef488d5a0f4c097b" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Script First Statement
   </message>
+  <message name="IDS_DEVTOOLS_77454122d17d16885c51c0d57f5c7bd3" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;SameSite=Strict&quot; attribute and the request was made on on a different site. This includes navigation requests initiated by other sites.
+  </message>
+  <message name="IDS_DEVTOOLS_792c21f9d971ea4d5a4fa7891dcebe02" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie didn&apos;t specify a &quot;SameSite&quot; attribute and was defaulted to &quot;SameSite=Lax&quot; and broke the same rules specified in the SameSiteLax value.
+  </message>
   <message name="IDS_DEVTOOLS_794f64c7f20487f6e13679201deeab3d" desc="Text in DOMDebugger Model">
     Picture-in-Picture
+  </message>
+  <message name="IDS_DEVTOOLS_7a3a5ae00a1133b1042cf4edf671736a" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;SameSite=None&quot; attribute and the connection was not secure. Cookies without SameSite restrictions must be sent over a secure connection.
   </message>
   <message name="IDS_DEVTOOLS_7c2bc755363ab11a1611bfa369654ff8" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show frames per second (FPS) meter
   </message>
+  <message name="IDS_DEVTOOLS_7d38391da564c2d9f767c440bbe531f9" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had the &quot;SameSite=None&quot; attribute but did not have the &quot;Secure&quot; attribute, which is required in order to use &quot;SameSite=None&quot;.
+  </message>
   <message name="IDS_DEVTOOLS_81961fe251f4d1cb4df131561dedf319" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Hide layer borders
+  </message>
+  <message name="IDS_DEVTOOLS_829450ef4b9cf5fb35bbc1da8aeec72c" desc="Tooltip to explain why a cookie was blocked">
+    The scheme of this connection is not allowed to store cookies.
   </message>
   <message name="IDS_DEVTOOLS_83f2229658949472d34f78e19475fcdd" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Show layer borders
@@ -174,6 +225,9 @@
   <message name="IDS_DEVTOOLS_9850063efe194af1c63d2aa61ef94c62" desc="Text in the Event Listener Breakpoints Panel of the JavaScript Debugger in the Sources Panel">
     Create canvas context
   </message>
+  <message name="IDS_DEVTOOLS_9995eb02238160b5b11b6097b8eb5008" desc="Tooltip to explain why a cookie was blocked">
+    This cookie didn&apos;t specify a SameSite attribute when it was stored and was defaulted to &quot;SameSite=Lax&quot; and broke the same rules specified in the SameSiteLax value. The cookie had to have been set with &quot;SameSite=None&quot; to enable third-party usage.
+  </message>
   <message name="IDS_DEVTOOLS_9dd7b9f5cc1c19a830f153c3e8f1ad89" desc="Text in Network Manager">
     Fast 3G
   </message>
@@ -189,11 +243,20 @@
   <message name="IDS_DEVTOOLS_a720fc15eb9ec85751969e8615ace9e1" desc="Text in Server Timing">
     Duplicate parameter &quot;<ph name="PARAMNAME">$1s<ex>https</ex></ph>&quot; ignored.
   </message>
+  <message name="IDS_DEVTOOLS_ab91d7ba3d80985f31629857bb57db5a" desc="Tooltip to explain why a cookie was blocked">
+    This cookie had the &quot;SameSite=Lax&quot; attribute and the request was made on a different site. This does not include navigation requests initiated by other sites.
+  </message>
   <message name="IDS_DEVTOOLS_ac4aac1ba23d844f4976e9fcd1fd4a61" desc="Text in DOMDebugger Model">
     WebGL Error Fired (<ph name="ERRORNAME">$1s<ex>Snag Error</ex></ph>)
   </message>
+  <message name="IDS_DEVTOOLS_ae0d59f889c8a03301b9adb5ff1f5bd2" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had the &quot;SameSite=Strict&quot; attribute but came from a cross-origin response. This includes navigation requests intitiated by other origins.
+  </message>
   <message name="IDS_DEVTOOLS_af4bb376939e77df0e7c2332b837a866" desc="Text in Debugger Model">
     Closure
+  </message>
+  <message name="IDS_DEVTOOLS_b1d4660db82a3d7b85dca58e8635ce13" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had the &quot;SameSite=Lax&quot; attribute but came from a cross-origin response.
   </message>
   <message name="IDS_DEVTOOLS_b28354b543375bfa94dabaeda722927f" desc="Text in Resource Tree Model">
     top
@@ -234,6 +297,9 @@
   <message name="IDS_DEVTOOLS_c9ad95228aa735bdda1aebf38da022af" desc="Text in DOMDebugger Model">
     Parse
   </message>
+  <message name="IDS_DEVTOOLS_ccab918ce9f085b521a52ac13f653c0b" desc="Tooltip to explain why a cookie was blocked">
+    An unknown error was encountered when trying to send this cookie.
+  </message>
   <message name="IDS_DEVTOOLS_cedab6b9e4e794e93bba797e8aff218a" desc="Message in Network Manager">
     <ph name="NETWORKREQUEST_RESOURCETYPE___TITLE__">$1s<ex>XHR</ex></ph> finished loading: <ph name="NETWORKREQUEST_REQUESTMETHOD">$2s<ex>GET</ex></ph> &quot;<ph name="NETWORKREQUEST_URL__">$3s<ex>https://example.com</ex></ph>&quot;.
   </message>
@@ -254,6 +320,9 @@
   </message>
   <message name="IDS_DEVTOOLS_df9f4292c1d025cbada13b25744d34e5" desc="Title of a setting under the Rendering category that can be invoked through the Command Menu">
     Do not emulate CSS media type
+  </message>
+  <message name="IDS_DEVTOOLS_dfc84699a635ac79c7512494a2ebec91" desc="Tooltip to explain why a cookie was blocked">
+    This set-cookie had the &quot;Secure&quot; attribute but was not received over a secure connection.
   </message>
   <message name="IDS_DEVTOOLS_e1e4c8c9ccd9fc39c391da4bcd093fb2" desc="Text in Debugger Model">
     Block

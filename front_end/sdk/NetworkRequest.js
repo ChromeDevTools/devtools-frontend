@@ -117,6 +117,11 @@ SDK.NetworkRequest = class extends Common.Object {
     this._hasExtraRequestInfo = false;
     /** @type {boolean} */
     this._hasExtraResponseInfo = false;
+
+    /** @type {!Array<!SDK.NetworkRequest.BlockedCookieWithReason>} */
+    this._blockedRequestCookies = [];
+    /** @type {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>} */
+    this._blockedResponseCookies = [];
   }
 
   /**
@@ -715,14 +720,14 @@ SDK.NetworkRequest = class extends Common.Object {
    * @return {string|undefined}
    */
   requestHeaderValue(headerName) {
-    if (headerName in this._requestHeaderValues)
+    if (this._requestHeaderValues[headerName])
       return this._requestHeaderValues[headerName];
     this._requestHeaderValues[headerName] = this._computeHeaderValue(this.requestHeaders(), headerName);
     return this._requestHeaderValues[headerName];
   }
 
   /**
-   * @return {!Array.<!SDK.Cookie>}
+   * @return {?Array.<!SDK.Cookie>}
    */
   get requestCookies() {
     if (!this._requestCookies)
@@ -1314,6 +1319,13 @@ SDK.NetworkRequest = class extends Common.Object {
   }
 
   /**
+   * @return {!Array<!SDK.NetworkRequest.BlockedCookieWithReason>}
+   */
+  blockedRequestCookies() {
+    return this._blockedRequestCookies;
+  }
+
+  /**
    * @param {!SDK.NetworkRequest.ExtraResponseInfo} extraResponseInfo
    */
   addExtraResponseInfo(extraResponseInfo) {
@@ -1345,6 +1357,13 @@ SDK.NetworkRequest = class extends Common.Object {
    */
   hasExtraResponseInfo() {
     return this._hasExtraResponseInfo;
+  }
+
+  /**
+   * @return {!Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>}
+   */
+  blockedResponseCookies() {
+    return this._blockedResponseCookies;
   }
 };
 
@@ -1389,8 +1408,148 @@ SDK.NetworkRequest.EventSourceMessage;
 SDK.NetworkRequest.ContentData;
 
 /**
+ * @param {!Protocol.Network.CookieBlockedReason} blockedReason
+ * @return {string}
+ */
+SDK.NetworkRequest.cookieBlockedReasonToUiString = function(blockedReason) {
+  switch (blockedReason) {
+    case Protocol.Network.CookieBlockedReason.SecureOnly:
+      return ls`This cookie had the "Secure" attribute and the connection was not secure.`;
+    case Protocol.Network.CookieBlockedReason.NotOnPath:
+      return ls`This cookie's path was not within the request url's path.`;
+    case Protocol.Network.CookieBlockedReason.DomainMismatch:
+      return ls
+      `This cookie's domain is not configured to match the request url's domain, even though they share a common TLD+1 (TLD+1 of foo.bar.example.com is example.com).`;
+    case Protocol.Network.CookieBlockedReason.SameSiteStrict:
+      return ls
+      `This cookie had the "SameSite=Strict" attribute and the request was made on on a different site. This includes navigation requests initiated by other sites.`;
+    case Protocol.Network.CookieBlockedReason.SameSiteLax:
+      return ls
+      `This cookie had the "SameSite=Lax" attribute and the request was made on a different site. This does not include navigation requests initiated by other sites.`;
+    case Protocol.Network.CookieBlockedReason.SameSiteExtended:
+      return ls
+      `This cookie had the "SameSite=Extended" attribute and the request was made on a different site. The different site is outside of the cookie's trusted first-party set.`;
+    case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
+      return ls
+      `This cookie didn't specify a SameSite attribute when it was stored and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value. The cookie had to have been set with "SameSite=None" to enable third-party usage.`;
+    case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
+      return ls
+      `This cookie had the "SameSite=None" attribute and the connection was not secure. Cookies without SameSite restrictions must be sent over a secure connection.`;
+    case Protocol.Network.CookieBlockedReason.UserPreferences:
+      return ls`This cookie was not sent due to user preferences.`;
+    case Protocol.Network.CookieBlockedReason.UnknownError:
+      return ls`An unknown error was encountered when trying to send this cookie.`;
+  }
+  return '';
+};
+
+/**
+ * @param {!Protocol.Network.SetCookieBlockedReason} blockedReason
+ * @return {string}
+ */
+SDK.NetworkRequest.setCookieBlockedReasonToUiString = function(blockedReason) {
+  switch (blockedReason) {
+    case Protocol.Network.SetCookieBlockedReason.SecureOnly:
+      return ls
+      `This set-cookie had the "Secure" attribute but was not received over a secure connection.`;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
+      return ls
+      `This set-cookie had the "SameSite=Strict" attribute but came from a cross-origin response. This includes navigation requests intitiated by other origins.`;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
+      return ls`This set-cookie had the "SameSite=Lax" attribute but came from a cross-origin response.`;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteExtended:
+      return ls`This set-cookie had the "SameSite=Extended" attribute but came from a cross-origin response.`;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
+      return ls
+      `This set-cookie didn't specify a "SameSite" attribute and was defaulted to "SameSite=Lax" and broke the same rules specified in the SameSiteLax value.`;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
+      return ls
+      `This set-cookie had the "SameSite=None" attribute but did not have the "Secure" attribute, which is required in order to use "SameSite=None".`;
+    case Protocol.Network.SetCookieBlockedReason.UserPreferences:
+      return ls`This set-cookie was not stored due to user preferences.`;
+    case Protocol.Network.SetCookieBlockedReason.SyntaxError:
+      return ls`This set-cookie had invalid syntax.`;
+    case Protocol.Network.SetCookieBlockedReason.SchemeNotSupported:
+      return ls`The scheme of this connection is not allowed to store cookies.`;
+    case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
+      return ls
+      `This set-cookie was not sent over a secure connection and would have overwritten a cookie with the Secure attribute.`;
+    case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
+      return ls`This set-cookie's Domain attribute was invalid with regards to the current host url.`;
+    case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
+      return ls
+      `This set-cookie used the "__Secure-" or "__Host-" prefix in its name and broke the additional rules applied to cookies with these prefixes as defined in https://tools.ietf.org/html/draft-west-cookie-prefixes-05.`;
+    case Protocol.Network.SetCookieBlockedReason.UnknownError:
+      return ls`An unknown error was encountered when trying to store this cookie.`;
+  }
+  return '';
+};
+
+/**
+ * @param {!Protocol.Network.CookieBlockedReason} blockedReason
+ * @return {?SDK.Cookie.Attributes}
+ */
+SDK.NetworkRequest.cookieBlockedReasonToAttribute = function(blockedReason) {
+  switch (blockedReason) {
+    case Protocol.Network.CookieBlockedReason.SecureOnly:
+      return SDK.Cookie.Attributes.Secure;
+    case Protocol.Network.CookieBlockedReason.NotOnPath:
+      return SDK.Cookie.Attributes.Path;
+    case Protocol.Network.CookieBlockedReason.DomainMismatch:
+      return SDK.Cookie.Attributes.Domain;
+    case Protocol.Network.CookieBlockedReason.SameSiteStrict:
+    case Protocol.Network.CookieBlockedReason.SameSiteLax:
+    case Protocol.Network.CookieBlockedReason.SameSiteExtended:
+    case Protocol.Network.CookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
+    case Protocol.Network.CookieBlockedReason.SameSiteNoneInsecure:
+      return SDK.Cookie.Attributes.SameSite;
+    case Protocol.Network.CookieBlockedReason.UserPreferences:
+    case Protocol.Network.CookieBlockedReason.UnknownError:
+      return null;
+  }
+  return null;
+};
+
+/**
+ * @param {!Protocol.Network.SetCookieBlockedReason} blockedReason
+ * @return {?SDK.Cookie.Attributes}
+ */
+SDK.NetworkRequest.setCookieBlockedReasonToAttribute = function(blockedReason) {
+  switch (blockedReason) {
+    case Protocol.Network.SetCookieBlockedReason.SecureOnly:
+    case Protocol.Network.SetCookieBlockedReason.OverwriteSecure:
+      return SDK.Cookie.Attributes.Secure;
+    case Protocol.Network.SetCookieBlockedReason.SameSiteStrict:
+    case Protocol.Network.SetCookieBlockedReason.SameSiteLax:
+    case Protocol.Network.SetCookieBlockedReason.SameSiteExtended:
+    case Protocol.Network.SetCookieBlockedReason.SameSiteUnspecifiedTreatedAsLax:
+    case Protocol.Network.SetCookieBlockedReason.SameSiteNoneInsecure:
+      return SDK.Cookie.Attributes.SameSite;
+    case Protocol.Network.SetCookieBlockedReason.InvalidDomain:
+      return SDK.Cookie.Attributes.Domain;
+    case Protocol.Network.SetCookieBlockedReason.InvalidPrefix:
+      return SDK.Cookie.Attributes.Name;
+    case Protocol.Network.SetCookieBlockedReason.UserPreferences:
+    case Protocol.Network.SetCookieBlockedReason.SyntaxError:
+    case Protocol.Network.SetCookieBlockedReason.SchemeNotSupported:
+    case Protocol.Network.SetCookieBlockedReason.UnknownError:
+      return null;
+  }
+  return null;
+};
+
+
+/**
  * @typedef {!{
- *   blockedRequestCookies: !Array<!Protocol.Network.BlockedCookieWithReason>,
+ *   blockedReason: !Protocol.Network.CookieBlockedReason,
+ *   cookie: !SDK.Cookie
+ * }}
+ */
+SDK.NetworkRequest.BlockedCookieWithReason;
+
+/**
+ * @typedef {!{
+ *   blockedRequestCookies: !Array<!SDK.NetworkRequest.BlockedCookieWithReason>,
  *   requestHeaders: !Array<!SDK.NetworkRequest.NameValue>
  * }}
  */
@@ -1398,7 +1557,16 @@ SDK.NetworkRequest.ExtraRequestInfo;
 
 /**
  * @typedef {!{
- *   blockedResponseCookies: !Array<!Protocol.Network.BlockedSetCookieWithReason>,
+ *   blockedReason: !Protocol.Network.SetCookieBlockedReason,
+ *   cookieLine: string,
+ *   cookie: ?SDK.Cookie
+ * }}
+ */
+SDK.NetworkRequest.BlockedSetCookieWithReason;
+
+/**
+ * @typedef {!{
+ *   blockedResponseCookies: !Array<!SDK.NetworkRequest.BlockedSetCookieWithReason>,
  *   responseHeaders: !Array<!SDK.NetworkRequest.NameValue>,
  *   responseHeadersText: (string|undefined)
  * }}

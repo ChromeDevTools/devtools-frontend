@@ -143,7 +143,7 @@ Audits.StatusView = class {
    */
   _getMessageForPhase(phase) {
     if (phase.message)
-      return Common.UIString(phase.message);
+      return phase.message;
 
     const deviceType = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.device_type').setting.get();
     const throttling = Audits.RuntimeSettings.find(item => item.setting.name === 'audits.throttling').setting.get();
@@ -151,7 +151,7 @@ Audits.StatusView = class {
       return item.deviceType === deviceType && item.throttling === throttling;
     });
 
-    return match ? ls`${match.message}` : ls`Lighthouse is loading your page`;
+    return match ? match.message : ls`Lighthouse is loading your page`;
   }
 
   /**
@@ -297,14 +297,14 @@ Audits.StatusView.StatusPhases = [
   {
     id: 'gathering',
     progressBarClass: 'gathering',
-    message: 'Lighthouse is gathering information about the page to compute your score.',
+    message: ls`Lighthouse is gathering information about the page to compute your score.`,
     statusMessagePrefix: 'Gathering',
     order: 20,
   },
   {
     id: 'auditing',
     progressBarClass: 'auditing',
-    message: 'Almost there! Lighthouse is now generating your report.',
+    message: ls`Almost there! Lighthouse is now generating your report.`,
     statusMessagePrefix: 'Auditing',
     order: 30,
   }
@@ -315,42 +315,42 @@ Audits.StatusView.LoadingMessages = [
   {
     deviceType: 'mobile',
     throttling: 'on',
-    message: 'Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.',
+    message: ls`Lighthouse is loading your page with throttling to measure performance on a mobile device on 3G.`,
   },
   {
     deviceType: 'desktop',
     throttling: 'on',
-    message: 'Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G.',
+    message: ls`Lighthouse is loading your page with throttling to measure performance on a slow desktop on 3G.`,
   },
   {
     deviceType: 'mobile',
     throttling: 'off',
-    message: 'Lighthouse is loading your page with mobile emulation.',
+    message: ls`Lighthouse is loading your page with mobile emulation.`,
   },
   {
     deviceType: 'desktop',
     throttling: 'off',
-    message: 'Lighthouse is loading your page.',
+    message: ls`Lighthouse is loading your page.`,
   },
 ];
 
 Audits.StatusView.FastFacts = [
-  '1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].',
-  'Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]',
-  'BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]',
-  'By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]',
-  'Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]',
-  'If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]',
-  '75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]',
-  'The average user device costs less than 200 USD. [Source: International Data Corporation]',
-  '53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]',
-  '19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]',
-  '14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]',
-  '70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]',
-  'As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]',
-  'As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]',
-  '70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]',
-  'Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]',
+  ls`1MB takes a minimum of 5 seconds to download on a typical 3G connection [Source: WebPageTest and DevTools 3G definition].`,
+  ls`Rebuilding Pinterest pages for performance increased conversion rates by 15% [Source: WPO Stats]`,
+  ls`BBC has seen a loss of 10% of their users for every extra second of page load [Source: WPO Stats]`,
+  ls`By reducing the response size of JSON needed for displaying comments, Instagram saw increased impressions [Source: WPO Stats]`,
+  ls`Walmart saw a 1% increase in revenue for every 100ms improvement in page load [Source: WPO Stats]`,
+  ls`If a site takes >1 second to become interactive, users lose attention, and their perception of completing the page task is broken [Source: Google Developers Blog]`,
+  ls`75% of global mobile users in 2016 were on 2G or 3G [Source: GSMA Mobile]`,
+  ls`The average user device costs less than 200 USD. [Source: International Data Corporation]`,
+  ls`53% of all site visits are abandoned if page load takes more than 3 seconds [Source: Google DoubleClick blog]`,
+  ls`19 seconds is the average time a mobile web page takes to load on a 3G connection [Source: Google DoubleClick blog]`,
+  ls`14 seconds is the average time a mobile web page takes to load on a 4G connection [Source: Google DoubleClick blog]`,
+  ls`70% of mobile pages take nearly 7 seconds for the visual content above the fold to display on the screen. [Source: Think with Google]`,
+  ls`As page load time increases from one second to seven seconds, the probability of a mobile site visitor bouncing increases 113%. [Source: Think with Google]`,
+  ls`As the number of elements on a page increases from 400 to 6,000, the probability of conversion drops 95%. [Source: Think with Google]`,
+  ls`70% of mobile pages weigh over 1MB, 36% over 2MB, and 12% over 4MB. [Source: Think with Google]`,
+  ls`Lighthouse only simulates mobile performance; to measure performance on a real device, try WebPageTest.org [Source: Lighthouse team]`,
 ];
 
 /** @const */
